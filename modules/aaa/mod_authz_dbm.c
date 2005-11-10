@@ -90,7 +90,7 @@ module AP_MODULE_DECLARE_DATA authz_dbm_module;
  *      key=username value=":"groupname [":"anything here is ignored]
  * otherwise we now (0.8.14+) assume that the format is
  *      key=username value=groupname
- * The first allows the password and group files to be the same 
+ * The first allows the password and group files to be the same
  * physical DBM file;   key=username value=password":"groupname[":"anything]
  *
  * mark@telescope.org, 22Sep95
@@ -104,7 +104,7 @@ static apr_status_t get_dbm_grp(request_rec *r, char *key1, char *key2,
     apr_status_t retval;
     apr_dbm_t *f;
 
-    retval = apr_dbm_open_ex(&f, dbtype, dbmgrpfile, APR_DBM_READONLY, 
+    retval = apr_dbm_open_ex(&f, dbtype, dbmgrpfile, APR_DBM_READONLY,
                              APR_OS_DEFAULT, r->pool);
 
     if (retval != APR_SUCCESS) {
@@ -166,10 +166,10 @@ static int dbm_check_auth(request_rec *r)
 
         t = reqs[x].requirement;
         w = ap_getword_white(r->pool, &t);
- 
+
         if (!strcasecmp(w, "file-group")) {
             filegroup = apr_table_get(r->notes, AUTHZ_GROUP_NOTE);
-            
+
             if (!filegroup) {
                 /* mod_authz_owner is not present or not
                  * authoritative. We are just a helper module for testing

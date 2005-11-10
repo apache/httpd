@@ -33,10 +33,10 @@
  * the source code.
  *
  * For an ASCII machine, these remain NULL so that when they are stored
- * in the BUFF via ap_bsetop(BO_RXLATE) it ensures that no translation is 
+ * in the BUFF via ap_bsetop(BO_RXLATE) it ensures that no translation is
  * performed.
  */
- 
+
 apr_xlate_t *ap_hdrs_to_ascii, *ap_hdrs_from_ascii;
 
 #endif /*APR_CHARSET_EBCDIC */

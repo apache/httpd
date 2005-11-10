@@ -73,7 +73,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
     cfg = (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                   &core_module);
     etag_bits = (cfg->etag_bits & (~ cfg->etag_remove)) | cfg->etag_add;
-    
+
     /*
      * If it's a file (or we wouldn't be here) and no ETags
      * should be set for files, return an empty string and
@@ -173,7 +173,7 @@ AP_DECLARE(void) ap_set_etag(request_rec *r)
 
     if (!r->vlist_validator) {
         etag = ap_make_etag(r, 0);
-    
+
         /* If we get a blank etag back, don't set the header. */
         if (!etag[0]) {
             return;

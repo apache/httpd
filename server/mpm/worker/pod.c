@@ -33,7 +33,7 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
     apr_file_pipe_timeout_set((*pod)->pod_in, 0);
 */
     (*pod)->p = p;
-    
+
     /* close these before exec. */
     apr_file_inherit_unset((*pod)->pod_in);
     apr_file_inherit_unset((*pod)->pod_out);

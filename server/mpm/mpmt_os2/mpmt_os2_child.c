@@ -39,8 +39,8 @@
 
 /* XXXXXX move these to header file private to this MPM */
 
-/* We don't need many processes, 
- * they're only for redundancy in the event of a crash 
+/* We don't need many processes,
+ * they're only for redundancy in the event of a crash
  */
 #define HARD_SERVER_LIMIT 10
 
@@ -332,7 +332,7 @@ ULONG APIENTRY thread_exception_handler(EXCEPTIONREPORTRECORD *pReportRec,
         kill(getpid(), SIGHUP);
         DosUnwindException(UNWIND_ALL, 0, 0);
     }
-  
+
     return XCPT_CONTINUE_SEARCH;
 }
 
@@ -355,7 +355,7 @@ static void worker_main(void *vpArg)
     int thread_slot = (int)vpArg;
     EXCEPTIONREGISTRATIONRECORD reg_rec = { NULL, thread_exception_handler };
     ap_sb_handle_t *sbh;
-  
+
     /* Trap exceptions in this thread so we don't take down the whole process */
     DosSetExceptionHandler( &reg_rec );
 
@@ -369,7 +369,7 @@ static void worker_main(void *vpArg)
     }
 
     conn_id = ID_FROM_CHILD_THREAD(child_slot, thread_slot);
-    ap_update_child_status_from_indexes(child_slot, thread_slot, SERVER_READY, 
+    ap_update_child_status_from_indexes(child_slot, thread_slot, SERVER_READY,
                                         NULL);
 
     apr_allocator_create(&allocator);
@@ -390,11 +390,11 @@ static void worker_main(void *vpArg)
         }
 
         apr_pool_destroy(pconn);
-        ap_update_child_status_from_indexes(child_slot, thread_slot, 
+        ap_update_child_status_from_indexes(child_slot, thread_slot,
                                             SERVER_READY, NULL);
     }
 
-    ap_update_child_status_from_indexes(child_slot, thread_slot, SERVER_DEAD, 
+    ap_update_child_status_from_indexes(child_slot, thread_slot, SERVER_DEAD,
                                         NULL);
 
     apr_bucket_alloc_destroy(bucket_alloc);

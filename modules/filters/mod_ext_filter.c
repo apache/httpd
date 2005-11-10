@@ -76,8 +76,8 @@ module AP_MODULE_DECLARE_DATA ext_filter_module;
 static const server_rec *main_server;
 
 static apr_status_t ef_output_filter(ap_filter_t *, apr_bucket_brigade *);
-static apr_status_t ef_input_filter(ap_filter_t *, apr_bucket_brigade *, 
-                                    ap_input_mode_t, apr_read_type_e, 
+static apr_status_t ef_input_filter(ap_filter_t *, apr_bucket_brigade *,
+                                    ap_input_mode_t, apr_read_type_e,
                                     apr_off_t);
 
 #define DBGLVL_SHOWOPTIONS         1
@@ -143,7 +143,7 @@ static const char *add_options(cmd_parms *cmd, void *in_dc,
         dc->log_stderr = 0;
     }
     else {
-        return apr_pstrcat(cmd->temp_pool, 
+        return apr_pstrcat(cmd->temp_pool,
                            "Invalid ExtFilterOptions option: ",
                            arg,
                            NULL);
@@ -196,7 +196,7 @@ static const char *parse_cmd(apr_pool_t *p, const char **args, ef_filter_t *filt
         return "Invalid cmd= parameter";
     }
     filter->command = filter->args[0];
-    
+
     return NULL;
 }
 
@@ -239,7 +239,7 @@ static const char *define_filter(cmd_parms *cmd, void *dummy, const char *args)
                 filter->preserves_content_length = 1;
             }
             else {
-                return apr_psprintf(cmd->pool, 
+                return apr_psprintf(cmd->pool,
                                     "mangled argument `%s'",
                                     token);
             }
@@ -275,14 +275,14 @@ static const char *define_filter(cmd_parms *cmd, void *dummy, const char *args)
             filter->enable_env = token;
             continue;
         }
-        
+
         if (!strncasecmp(args, "disableenv=", 11)) {
             args += 11;
             token = ap_getword_white(cmd->pool, &args);
             filter->disable_env = token;
             continue;
         }
-        
+
         if (!strncasecmp(args, "intype=", 7)) {
             args += 7;
             filter->intype = ap_getword_white(cmd->pool, &args);
@@ -307,7 +307,7 @@ static const char *define_filter(cmd_parms *cmd, void *dummy, const char *args)
                             args);
     }
 
-    /* parsing is done...  register the filter 
+    /* parsing is done...  register the filter
      */
     if (filter->mode == OUTPUT_FILTER) {
         /* XXX need a way to ensure uniqueness among all filters */
@@ -350,12 +350,12 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_config(ef_init, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-static apr_status_t set_resource_limits(request_rec *r, 
+static apr_status_t set_resource_limits(request_rec *r,
                                         apr_procattr_t *procattr)
 {
 #if defined(RLIMIT_CPU)  || defined(RLIMIT_NPROC) || \
     defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined (RLIMIT_AS)
-    core_dir_config *conf = 
+    core_dir_config *conf =
         (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                 &core_module);
     apr_status_t rv;
@@ -438,12 +438,12 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
     rc = apr_procattr_child_errfn_set(ctx->procattr, child_errfn);
     ap_assert(rc == APR_SUCCESS);
     apr_pool_userdata_set(f->r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, ctx->p);
-    
+
     if (dc->debug >= DBGLVL_ERRORCHECK) {
         rc = apr_procattr_error_check_set(ctx->procattr, 1);
         ap_assert(rc == APR_SUCCESS);
     }
-    
+
     /* add standard CGI variables as well as DOCUMENT_URI, DOCUMENT_PATH_INFO,
      * and QUERY_STRING_UNESCAPED
      */
@@ -462,11 +462,11 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
     env = (const char * const *) ap_create_environment(ctx->p,
                                                        f->r->subprocess_env);
 
-    rc = apr_proc_create(ctx->proc, 
-                            ctx->filter->command, 
-                            (const char * const *)ctx->filter->args, 
+    rc = apr_proc_create(ctx->proc,
+                            ctx->filter->command,
+                            (const char * const *)ctx->filter->args,
                             env, /* environment */
-                            ctx->procattr, 
+                            ctx->procattr,
                             ctx->p);
     if (rc != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, f->r,
@@ -483,7 +483,7 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
      * be open.
      */
 
-    apr_pool_cleanup_register(ctx->p, ctx->proc->in, 
+    apr_pool_cleanup_register(ctx->p, ctx->proc->in,
                          apr_pool_cleanup_null, /* other mechanism */
                          ef_close_file);
 
@@ -513,7 +513,7 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
 
 static const char *get_cfg_string(ef_dir_t *dc, ef_filter_t *filter, apr_pool_t *p)
 {
-    const char *debug_str = dc->debug == -1 ? 
+    const char *debug_str = dc->debug == -1 ?
         "DebugLevel=0" : apr_psprintf(p, "DebugLevel=%d", dc->debug);
     const char *log_stderr_str = dc->log_stderr < 1 ?
         "NoLogStderr" : "LogStderr";
@@ -523,7 +523,7 @@ static const char *get_cfg_string(ef_dir_t *dc, ef_filter_t *filter, apr_pool_t 
         "*/*" : filter->intype;
     const char *outtype_str = !filter->outtype ?
         "(unchanged)" : filter->outtype;
-    
+
     return apr_psprintf(p,
                         "ExtFilterOptions %s %s %s ExtFilterInType %s "
                         "ExtFilterOuttype %s",
@@ -583,7 +583,7 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
                 /* wrong IMT for us; don't mess with the output */
                 ctx->noop = 1;
             }
-        } 
+        }
         else {
             ctx->noop = 1;
         }
@@ -608,7 +608,7 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
             ap_set_content_type(f->r, ctx->filter->outtype);
         }
         if (ctx->filter->preserves_content_length != 1) {
-            /* nasty, but needed to avoid confusing the browser 
+            /* nasty, but needed to avoid confusing the browser
              */
             apr_table_unset(f->r->headers_out, "Content-Length");
         }
@@ -627,7 +627,7 @@ static apr_status_t init_filter_instance(ap_filter_t *f)
     return APR_SUCCESS;
 }
 
-/* drain_available_output(): 
+/* drain_available_output():
  *
  * if any data is available from the filter, read it and append it
  * to the the bucket brigade
@@ -663,12 +663,12 @@ static apr_status_t drain_available_output(ap_filter_t *f,
         return APR_SUCCESS;
     }
     /* we should never get here; if we do, a bogus error message would be
-     * the least of our problems 
+     * the least of our problems
      */
     return APR_ANONYMOUS;
 }
 
-static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data, 
+static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
                                         apr_size_t len, apr_bucket_brigade *bb)
 {
     ef_ctx_t *ctx = f->ctx;
@@ -676,7 +676,7 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
     apr_status_t rv;
     apr_size_t bytes_written = 0;
     apr_size_t tmplen;
-    
+
     do {
         tmplen = len - bytes_written;
         rv = apr_file_write(ctx->proc->in,
@@ -690,7 +690,7 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
             return rv;
         }
         if (APR_STATUS_IS_EAGAIN(rv)) {
-            /* XXX handle blocking conditions here...  if we block, we need 
+            /* XXX handle blocking conditions here...  if we block, we need
              * to read data from the child process and pass it down to the
              * next filter!
              */
@@ -699,24 +699,24 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
 #if APR_FILES_AS_SOCKETS
                 int num_events;
                 const apr_pollfd_t *pdesc;
-                
+
                 rv = apr_pollset_poll(ctx->pollset, f->r->server->timeout,
                                       &num_events, &pdesc);
                 if (rv || dc->debug >= DBGLVL_GORY) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG,
                                   rv, f->r, "apr_pollset_poll()");
                 }
-                if (rv != APR_SUCCESS && !APR_STATUS_IS_EINTR(rv)) { 
+                if (rv != APR_SUCCESS && !APR_STATUS_IS_EINTR(rv)) {
                     /* some error such as APR_TIMEUP */
                     return rv;
                 }
 #else /* APR_FILES_AS_SOCKETS */
                 /* Yuck... I'd really like to wait until I can read
-                 * or write, but instead I have to sleep and try again 
+                 * or write, but instead I have to sleep and try again
                  */
                 apr_sleep(100000); /* 100 milliseconds */
                 if (dc->debug >= DBGLVL_GORY) {
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG,
                                   0, f->r, "apr_sleep()");
                 }
 #endif /* APR_FILES_AS_SOCKETS */
@@ -729,9 +729,9 @@ static apr_status_t pass_data_to_filter(ap_filter_t *f, const char *data,
     return rv;
 }
 
-/* ef_unified_filter: 
+/* ef_unified_filter:
  *
- * runs the bucket brigade bb through the filter and puts the result into 
+ * runs the bucket brigade bb through the filter and puts the result into
  * bb, dropping the previous content of bb (the input)
  */
 
@@ -778,7 +778,7 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_brigade_cleanup(bb);
     APR_BRIGADE_CONCAT(bb, bb_tmp);
     apr_brigade_destroy(bb_tmp);
-    
+
     if (eos) {
         /* close the child's stdin to signal that no more data is coming;
          * that will cause the child to finish generating output
@@ -788,10 +788,10 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                           "apr_file_close(child input)");
             return rv;
         }
-        /* since we've seen eos and closed the child's stdin, set the proper pipe 
-         * timeout; we don't care if we don't return from apr_file_read() for a while... 
+        /* since we've seen eos and closed the child's stdin, set the proper pipe
+         * timeout; we don't care if we don't return from apr_file_read() for a while...
          */
-        rv = apr_file_pipe_timeout_set(ctx->proc->out, 
+        rv = apr_file_pipe_timeout_set(ctx->proc->out,
                                        r->server->timeout);
         if (rv) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -818,7 +818,7 @@ static int ef_unified_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             }
             return APR_SUCCESS;
         }
-        
+
         if (rv == APR_SUCCESS) {
             b = apr_bucket_heap_create(buf, len, NULL, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -855,7 +855,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     }
 
     rv = ef_unified_filter(f, bb);
-    if (rv != APR_SUCCESS) { 
+    if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "ef_unified_filter() failed");
     }
@@ -867,7 +867,7 @@ static apr_status_t ef_output_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     return rv;
 }
 
-static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb, 
+static int ef_input_filter(ap_filter_t *f, apr_bucket_brigade *bb,
                            ap_input_mode_t mode, apr_read_type_e block,
                            apr_off_t readbytes)
 {

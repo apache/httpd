@@ -64,7 +64,7 @@ static int process_echo_connection(conn_rec *c)
 
         /* Get a single line of input from the client */
         if ((rv = ap_get_brigade(c->input_filters, bb, AP_MODE_GETLINE,
-                                 APR_BLOCK_READ, 0) != APR_SUCCESS || 
+                                 APR_BLOCK_READ, 0) != APR_SUCCESS ||
              APR_BRIGADE_EMPTY(bb))) {
             apr_brigade_destroy(bb);
             break;
@@ -81,7 +81,7 @@ static int process_echo_connection(conn_rec *c)
     return OK;
 }
 
-static const command_rec echo_cmds[] = 
+static const command_rec echo_cmds[] =
 {
     AP_INIT_FLAG("ProtocolEcho", echo_on, NULL, RSRC_CONF,
                  "Run an echo server on this host"),

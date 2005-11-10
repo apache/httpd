@@ -16,14 +16,14 @@
 
 /*
  * http_script: keeps all script-related ramblings together.
- * 
+ *
  * Compliant to CGI/1.1 spec
- * 
+ *
  * Adapted by rst from original NCSA code by Rob McCool
  *
  * Apache adds some new env vars; REDIRECT_URL and REDIRECT_QUERY_STRING for
  * custom error responses, and DOCUMENT_ROOT because we found it useful.
- * It also adds SERVER_ADMIN - useful for scripts to know who to mail when 
+ * It also adds SERVER_ADMIN - useful for scripts to know who to mail when
  * they fail.
  */
 
@@ -165,7 +165,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     char time_str[APR_CTIME_LEN];
     int log_flags = rv ? APLOG_ERR : APLOG_ERR;
 
-    ap_log_rerror(APLOG_MARK, log_flags, rv, r, 
+    ap_log_rerror(APLOG_MARK, log_flags, rv, r,
                   "%s: %s", error, r->filename);
 
     /* XXX Very expensive mainline case! Open, then getfileinfo! */
@@ -192,7 +192,7 @@ static int log_scripterror(request_rec *r, cgi_server_conf * conf, int ret,
     return ret;
 }
 
-/* Soak up stderr from a script and redirect it to the error log. 
+/* Soak up stderr from a script and redirect it to the error log.
  */
 static apr_status_t log_script_err(request_rec *r, apr_file_t *script_err)
 {
@@ -206,15 +206,15 @@ static apr_status_t log_script_err(request_rec *r, apr_file_t *script_err)
         if (newline) {
             *newline = '\0';
         }
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, 
-                      "%s", argsbuffer);            
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "%s", argsbuffer);
     }
 
     return rv;
 }
 
 static int log_script(request_rec *r, cgi_server_conf * conf, int ret,
-                      char *dbuf, const char *sbuf, apr_bucket_brigade *bb, 
+                      char *dbuf, const char *sbuf, apr_bucket_brigade *bb,
                       apr_file_t *script_err)
 {
     const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
@@ -372,7 +372,7 @@ static void cgi_child_errfn(apr_pool_t *pool, apr_status_t err,
 
 static apr_status_t run_cgi_child(apr_file_t **script_out,
                                   apr_file_t **script_in,
-                                  apr_file_t **script_err, 
+                                  apr_file_t **script_err,
                                   const char *command,
                                   const char * const argv[],
                                   request_rec *r,
@@ -423,7 +423,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
                                    e_info->in_pipe,
                                    e_info->out_pipe,
                                    e_info->err_pipe)) != APR_SUCCESS) ||
-        ((rc = apr_procattr_dir_set(procattr, 
+        ((rc = apr_procattr_dir_set(procattr,
                         ap_make_dirstr_parent(r->pool,
                                               r->filename))) != APR_SUCCESS) ||
 #ifdef RLIMIT_CPU
@@ -454,7 +454,7 @@ static apr_status_t run_cgi_child(apr_file_t **script_out,
         procnew = apr_pcalloc(p, sizeof(*procnew));
         rc = ap_os_create_privileged_process(r, procnew, command, argv, env,
                                              procattr, p);
-    
+
         if (rc != APR_SUCCESS) {
             /* Bad things happened. Everyone should have cleaned up. */
             ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, rc, r,
@@ -499,7 +499,7 @@ static apr_status_t default_build_command(const char **cmd, const char ***argv,
 
     if (e_info->process_cgi) {
         *cmd = r->filename;
-        /* Do not process r->args if they contain an '=' assignment 
+        /* Do not process r->args if they contain an '=' assignment
          */
         if (r->args && r->args[0] && !ap_strchr_c(r->args, '=')) {
             args = r->args;
@@ -517,9 +517,9 @@ static apr_status_t default_build_command(const char **cmd, const char ***argv,
             }
         }
     }
-    /* Everything is - 1 to account for the first parameter 
+    /* Everything is - 1 to account for the first parameter
      * which is the program name.
-     */ 
+     */
     if (numwords > APACHE_ARG_MAX - 1) {
         numwords = APACHE_ARG_MAX - 1;    /* Truncate args to prevent overrun */
     }
@@ -577,7 +577,7 @@ static apr_bucket *cgi_bucket_create(request_rec *r,
     apr_status_t rv;
     apr_pollfd_t fd;
     struct cgi_bucket_data *data = apr_palloc(r->pool, sizeof *data);
-    
+
     APR_BUCKET_INIT(b);
     b->free = apr_bucket_free;
     b->list = list;
@@ -596,12 +596,12 @@ static apr_bucket *cgi_bucket_create(request_rec *r,
     fd.client_data = (void *)1;
     rv = apr_pollset_add(data->pollset, &fd);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
-    
+
     fd.desc.f = err; /* script's stderr */
     fd.client_data = (void *)2;
     rv = apr_pollset_add(data->pollset, &fd);
     AP_DEBUG_ASSERT(rv == APR_SUCCESS);
-    
+
     data->r = r;
     b->data = data;
     return b;
@@ -696,7 +696,7 @@ static apr_status_t cgi_bucket_read(apr_bucket *b, const char **str,
                           "poll failed waiting for CGI child");
             return rv;
         }
-        
+
         for (; num; num--, results++) {
             if (results[0].client_data == (void *)1) {
                 /* stdout */
@@ -807,7 +807,7 @@ static int cgi_handler(request_rec *r)
     /* build the command line */
     if ((rv = cgi_build_command(&command, &argv, r, p, &e_info)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "don't know how to spawn child process: %s", 
+                      "don't know how to spawn child process: %s",
                       r->filename);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -835,7 +835,7 @@ static int cgi_handler(request_rec *r)
 
         rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
                             APR_BLOCK_READ, HUGE_STRING_LEN);
-       
+
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -860,11 +860,11 @@ static int cgi_handler(request_rec *r)
             /* If the child stopped, we still must read to EOS. */
             if (child_stopped_reading) {
                 continue;
-            } 
+            }
 
             /* read */
             apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
-            
+
             if (conf->logname && dbpos < conf->bufbytes) {
                 int cursize;
 
@@ -906,7 +906,7 @@ static int cgi_handler(request_rec *r)
 #if APR_FILES_AS_SOCKETS
     apr_file_pipe_timeout_set(script_in, 0);
     apr_file_pipe_timeout_set(script_err, 0);
-    
+
     b = cgi_bucket_create(r, script_in, script_err, c->bucket_alloc);
 #else
     b = apr_bucket_pipe_create(script_in, c->bucket_alloc);
@@ -956,7 +956,7 @@ static int cgi_handler(request_rec *r)
             r->method_number = M_GET;
 
             /* We already read the message body (if any), so don't allow
-             * the redirected request to think it has one.  We can ignore 
+             * the redirected request to think it has one.  We can ignore
              * Transfer-Encoding, since we used REQUEST_CHUNKED_ERROR.
              */
             apr_table_unset(r->headers_in, "Content-Length");
@@ -975,7 +975,7 @@ static int cgi_handler(request_rec *r)
     }
     else /* nph */ {
         struct ap_filter_t *cur;
-        
+
         /* get rid of all filters up through protocol...  since we
          * haven't parsed off the headers, there is no way they can
          * work
@@ -998,7 +998,7 @@ static int cgi_handler(request_rec *r)
         apr_file_pipe_timeout_set(script_err, r->server->timeout);
         log_script_err(r, script_err);
     }
-    
+
     apr_file_close(script_err);
 
     return OK;                      /* NOT r->status, even if it has changed. */
@@ -1090,7 +1090,7 @@ static apr_status_t include_cmd(include_ctx_t *ctx, ap_filter_t *f,
     if ((rv = cgi_build_command(&command, &argv, r, r->pool,
                                 &e_info)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "don't know how to spawn cmd child process: %s", 
+                      "don't know how to spawn cmd child process: %s",
                       r->filename);
         return rv;
     }

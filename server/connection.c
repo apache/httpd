@@ -173,7 +173,7 @@ AP_CORE_DECLARE(void) ap_process_connection(conn_rec *c, void *csd)
     if (rc != OK && rc != DONE) {
         c->aborted = 1;
     }
-    
+
     if (!c->aborted) {
         ap_run_process_connection(c);
     }

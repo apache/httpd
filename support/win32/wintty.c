@@ -16,7 +16,7 @@
 
 /* --------------------------------------------------------------------
  *
- * wintty : a Apache/WinNT support utility for monitoring and 
+ * wintty : a Apache/WinNT support utility for monitoring and
  *          reflecting user feedback from the Apache process via
  *          stdin/stdout, even as running within the service context.
  *
@@ -30,7 +30,7 @@
  *
  * Also note the isservice detection semantics, which far exceed any
  * mechanism we have discovered thus far.
- * 
+ *
  * --------------------------------------------------------------------
  */
 
@@ -39,7 +39,7 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-const char *options = 
+const char *options =
 "\nwintty: a utility for echoing the stdin stream to a new console window,\n"
 "\teven when invoked from within a service (such as the Apache server.)\n"
 "\tAlso reflects the console input back to the stdout stream, allowing\n"
@@ -56,7 +56,7 @@ const char *options =
 
 BOOL verbose = FALSE;
 
-void printerr(char *fmt, ...) 
+void printerr(char *fmt, ...)
 {
     char str[1024];
     va_list args;
@@ -124,7 +124,7 @@ int main(int argc, char** argv)
                     }
                     else {
                         timeout = 0;
-                    }	
+                    }
                     break;
                 case 'v':
                     verbose = TRUE;
@@ -163,46 +163,46 @@ int main(int argc, char** argv)
 
     hstdin = GetStdHandle(STD_INPUT_HANDLE);
     if (!hstdin || hstdin == INVALID_HANDLE_VALUE) {
-        printerr("GetStdHandle(STD_INPUT_HANDLE) failed (%d)\n", 
+        printerr("GetStdHandle(STD_INPUT_HANDLE) failed (%d)\n",
                  GetLastError());
     }
-    else if (DuplicateHandle(hproc, hstdin, hproc, &hdup, 0, 
+    else if (DuplicateHandle(hproc, hstdin, hproc, &hdup, 0,
                              isservice, DUPLICATE_SAME_ACCESS)) {
         CloseHandle(hstdin);
         hstdin = hdup;
     }
     else {
-        printerr("DupHandle(stdin [%x]) failed (%d)\n", 
+        printerr("DupHandle(stdin [%x]) failed (%d)\n",
                  hstdin, GetLastError());
     }
 
     hstdout = GetStdHandle(STD_OUTPUT_HANDLE);
     if (!hstdout || hstdout == INVALID_HANDLE_VALUE) {
-        printerr("GetStdHandle(STD_OUTPUT_HANDLE) failed (%d)\n", 
+        printerr("GetStdHandle(STD_OUTPUT_HANDLE) failed (%d)\n",
                  GetLastError());
     }
-    else if (DuplicateHandle(hproc, hstdout, hproc, &hdup, 0, 
+    else if (DuplicateHandle(hproc, hstdout, hproc, &hdup, 0,
                              isservice, DUPLICATE_SAME_ACCESS)) {
         CloseHandle(hstdout);
         hstdout = hdup;
     }
     else {
-        printerr("DupHandle(stdout [%x]) failed (%d)\n", 
+        printerr("DupHandle(stdout [%x]) failed (%d)\n",
                  hstdout, GetLastError());
     }
 
     hstderr = GetStdHandle(STD_ERROR_HANDLE);
     if (!hstderr || hstderr == INVALID_HANDLE_VALUE) {
-        printerr("GetStdHandle(STD_ERROR_HANDLE) failed (%d)\n", 
+        printerr("GetStdHandle(STD_ERROR_HANDLE) failed (%d)\n",
                  GetLastError());
     }
-    else if (DuplicateHandle(hproc, hstderr, hproc, &hdup, 0, 
+    else if (DuplicateHandle(hproc, hstderr, hproc, &hdup, 0,
                              isservice, DUPLICATE_SAME_ACCESS)) {
         CloseHandle(hstderr);
         hstderr = hdup;
     }
     else {
-        printerr("DupHandle(stderr [%x]) failed (%d)\n", 
+        printerr("DupHandle(stderr [%x]) failed (%d)\n",
                  hstderr, GetLastError());
     }
 
@@ -211,7 +211,7 @@ int main(int argc, char** argv)
      */
     if (!FreeConsole())
         printerr("FreeConsole() failed (%d)\n", GetLastError());
-        
+
     if (isservice) {
 #ifdef WE_EVER_FIGURE_OUT_WHY_THIS_DOESNT_WORK
         hsavedesk = GetThreadDesktop(GetCurrentThreadId());
@@ -229,7 +229,7 @@ int main(int argc, char** argv)
         hdesk = OpenDesktop("Default", 0, TRUE, MAXIMUM_ALLOWED);
         if (!hdesk || hdesk == INVALID_HANDLE_VALUE) {
             printerr("OpenDesktop(Default) failed (%d)\n", GetLastError());
-        } 
+        }
         else if (!SetThreadDesktop(hdesk)) {
             printerr("SetThreadDesktop(Default) failed (%d)\n", GetLastError());
         }
@@ -240,11 +240,11 @@ int main(int argc, char** argv)
         char appbuff[MAX_PATH];
         char *appname = NULL;
         char *cmdline = GetCommandLine();
-        
+
         if (!GetModuleFileName(NULL, appbuff, sizeof(appbuff))) {
             appname = appbuff;
         }
-        
+
         memset(&si, 0, sizeof(si));
         si.cb = sizeof(si);
         si.dwFlags     = STARTF_USESHOWWINDOW
@@ -262,7 +262,7 @@ int main(int argc, char** argv)
          * receive their EOF notification.
          */
         if (CreateProcess(appname, cmdline, NULL, NULL, TRUE,
-                          CREATE_SUSPENDED | CREATE_NEW_CONSOLE, 
+                          CREATE_SUSPENDED | CREATE_NEW_CONSOLE,
                           NULL, NULL, &si, &pi)) {
             CloseHandle(si.hStdInput);
             CloseHandle(si.hStdOutput);
@@ -286,8 +286,8 @@ int main(int argc, char** argv)
         printerr("SetConsoleTitle() failed (%d)\n", GetLastError());
     }
 
-    conout = CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE, 
-                        FILE_SHARE_READ | FILE_SHARE_WRITE, 
+    conout = CreateFile("CONOUT$", GENERIC_READ | GENERIC_WRITE,
+                        FILE_SHARE_READ | FILE_SHARE_WRITE,
                         FALSE, OPEN_EXISTING, 0, NULL);
     if (!conout || conout == INVALID_HANDLE_VALUE) {
         printerr("CreateFile(CONOUT$) failed (%d)\n", GetLastError());
@@ -297,12 +297,12 @@ int main(int argc, char** argv)
     }
     else if (!SetConsoleMode(conout, conmode = ((conmode | newoutmode)
                                                          & ~notoutmode))) {
-        printerr("SetConsoleMode(CONOUT, 0x%x) failed (%d)\n", 
+        printerr("SetConsoleMode(CONOUT, 0x%x) failed (%d)\n",
                  conmode, GetLastError());
     }
 
-    conin = CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE, 
-                       FILE_SHARE_READ | FILE_SHARE_WRITE, 
+    conin = CreateFile("CONIN$", GENERIC_READ | GENERIC_WRITE,
+                       FILE_SHARE_READ | FILE_SHARE_WRITE,
                        FALSE, OPEN_EXISTING, 0, NULL);
     if (!conin || conin == INVALID_HANDLE_VALUE) {
         printerr("CreateFile(CONIN$) failed (%d)\n", GetLastError());
@@ -310,9 +310,9 @@ int main(int argc, char** argv)
     else if (!GetConsoleMode(conin, &conmode)) {
         printerr("GetConsoleMode(CONIN) failed (%d)\n", GetLastError());
     }
-    else if (!SetConsoleMode(conin, conmode = ((conmode | newinmode) 
+    else if (!SetConsoleMode(conin, conmode = ((conmode | newinmode)
                                                         & ~notinmode))) {
-        printerr("SetConsoleMode(CONIN, 0x%x) failed (%d)\n", 
+        printerr("SetConsoleMode(CONIN, 0x%x) failed (%d)\n",
                  conmode, GetLastError());
     }
 

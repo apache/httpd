@@ -45,7 +45,7 @@
  * the VirtualHost will _not_ be used. This makes this module compatable
  * with the CLF and config log modules, where the use of TransferLog
  * inside the VirtualHost section overrides its use outside.
- * 
+ *
  * Examples:
  *
  *    TransferLog    logs/access_log
@@ -176,20 +176,20 @@ static int xfer_flags = (APR_WRITE | APR_APPEND | APR_CREATE | APR_LARGEFILE);
 static apr_fileperms_t xfer_perms = APR_OS_DEFAULT;
 static apr_hash_t *log_hash;
 static apr_status_t ap_default_log_writer(request_rec *r,
-                           void *handle, 
+                           void *handle,
                            const char **strs,
                            int *strl,
                            int nelts,
                            apr_size_t len);
 static apr_status_t ap_buffered_log_writer(request_rec *r,
-                           void *handle, 
+                           void *handle,
                            const char **strs,
                            int *strl,
                            int nelts,
                            apr_size_t len);
-static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s, 
+static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
                                         const char* name);
-static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s, 
+static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
                                         const char* name);
 
 static ap_log_writer_init* ap_log_set_writer_init(ap_log_writer_init *handle);
@@ -242,10 +242,10 @@ typedef struct {
  * be NULL, which means this module does no logging for this
  * request. format might be NULL, in which case the default_format
  * from the multi_log_state should be used, or if that is NULL as
- * well, use the CLF. 
+ * well, use the CLF.
  * log_writer is NULL before the log file is opened and is
  * set to a opaque structure (usually a fd) after it is opened.
- 
+
  */
 typedef struct {
     apr_file_t *handle;
@@ -507,7 +507,7 @@ static const char *log_cookie(request_rec *r, char *a)
             start_cookie += strlen(a) + 1; /* cookie_name + '=' */
             cookie = apr_pstrdup(r->pool, start_cookie);
             /* kill everything in cookie after ';' */
-            end_cookie = strchr(cookie, ';'); 
+            end_cookie = strchr(cookie, ';');
             if (end_cookie) {
                 *end_cookie = '\0';
             }
@@ -619,7 +619,7 @@ static const char *log_request_duration(request_rec *r, char *a)
 
 static const char *log_request_duration_microseconds(request_rec *r, char *a)
 {
-    return apr_psprintf(r->pool, "%" APR_TIME_T_FMT, 
+    return apr_psprintf(r->pool, "%" APR_TIME_T_FMT,
                         (apr_time_now() - r->request_time));
 }
 
@@ -675,7 +675,7 @@ static const char *log_connection_status(request_rec *r, char *a)
     if (r->connection->aborted)
         return "X";
 
-    if (r->connection->keepalive == AP_CONN_KEEPALIVE && 
+    if (r->connection->keepalive == AP_CONN_KEEPALIVE &&
         (!r->server->keep_alive_max ||
          (r->server->keep_alive_max - r->connection->keepalives) > 0)) {
         return "+";
@@ -767,7 +767,7 @@ static char *parse_log_item(apr_pool_t *p, log_format_item *it, const char **sa)
         it->arg = "%";
         it->func = constant_item;
         *sa = ++s;
-    
+
         return NULL;
     }
 
@@ -1153,10 +1153,10 @@ static config_log_state *open_config_log(server_rec *s, apr_pool_t *p,
     if (cls->fname == NULL) {
         return cls;             /* Leave it NULL to decline.  */
     }
-    
+
     cls->log_writer = log_writer_init(p, s, cls->fname);
     if (cls->log_writer == NULL)
-        return NULL; 
+        return NULL;
 
     return cls;
 }
@@ -1175,7 +1175,7 @@ static int open_multi_logs(server_rec *s, apr_pool_t *p)
         if (format) {
             mls->default_format = parse_log_string(p, format, &dummy);
         }
-    }    
+    }
 
     if (!mls->default_format) {
         mls->default_format = parse_log_string(p, DEFAULT_LOG_FORMAT, &dummy);
@@ -1233,7 +1233,7 @@ static apr_status_t flush_all_logs(void *data)
 
     if (!buffered_logs)
         return APR_SUCCESS;
-    
+
     for (; s; s = s->next) {
         mls = ap_get_module_config(s->module_config, &log_config_module);
         log_list = NULL;
@@ -1288,12 +1288,12 @@ static void init_child(apr_pool_t *p, server_rec *s)
     if (buffered_logs) {
         int i;
         buffered_log **array = (buffered_log **)all_buffered_logs->elts;
-        
+
         apr_pool_cleanup_register(p, s, flush_all_logs, flush_all_logs);
 
         for (i = 0; i < all_buffered_logs->nelts; i++) {
             buffered_log *this = array[i];
-            
+
 #if APR_HAS_THREADS
             if (mpm_threads > 1) {
                 apr_status_t rv;
@@ -1318,7 +1318,7 @@ static void init_child(apr_pool_t *p, server_rec *s)
     }
 }
 
-static void ap_register_log_handler(apr_pool_t *p, char *tag, 
+static void ap_register_log_handler(apr_pool_t *p, char *tag,
                                     ap_log_handler_fn_t *handler, int def)
 {
     ap_log_handler *log_struct = apr_palloc(p, sizeof(*log_struct));
@@ -1329,7 +1329,7 @@ static void ap_register_log_handler(apr_pool_t *p, char *tag,
 }
 static ap_log_writer_init* ap_log_set_writer_init(ap_log_writer_init *handle)
 {
-    ap_log_writer_init *old = log_writer_init; 
+    ap_log_writer_init *old = log_writer_init;
     log_writer_init = handle;
 
     return old;
@@ -1337,14 +1337,14 @@ static ap_log_writer_init* ap_log_set_writer_init(ap_log_writer_init *handle)
 }
 static ap_log_writer *ap_log_set_writer(ap_log_writer *handle)
 {
-    ap_log_writer *old = log_writer; 
+    ap_log_writer *old = log_writer;
     log_writer = handle;
 
     return old;
 }
 
 static apr_status_t ap_default_log_writer( request_rec *r,
-                           void *handle, 
+                           void *handle,
                            const char **strs,
                            int *strl,
                            int nelts,
@@ -1367,7 +1367,7 @@ static apr_status_t ap_default_log_writer( request_rec *r,
 
     return rv;
 }
-static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s, 
+static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
                                         const char* name)
 {
     if (*name == '|') {
@@ -1398,13 +1398,13 @@ static void *ap_default_log_writer_init(apr_pool_t *p, server_rec *s,
         return fd;
     }
 }
-static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s, 
+static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
                                         const char* name)
 {
     buffered_log *b;
     b = apr_pcalloc(p, sizeof(buffered_log));
     b->handle = ap_default_log_writer_init(p, s, name);
-    
+
     if (b->handle) {
         *(buffered_log **)apr_array_push(all_buffered_logs) = b;
         return b;
@@ -1413,7 +1413,7 @@ static void *ap_buffered_log_writer_init(apr_pool_t *p, server_rec *s,
         return NULL;
 }
 static apr_status_t ap_buffered_log_writer(request_rec *r,
-                                           void *handle, 
+                                           void *handle,
                                            const char **strs,
                                            int *strl,
                                            int nelts,
@@ -1443,7 +1443,7 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
         }
         w = len;
         rv = apr_file_write(buf->handle, str, &w);
-        
+
     }
     else {
         for (i = 0, s = &buf->outbuf[buf->outcnt]; i < nelts; ++i) {
@@ -1461,7 +1461,7 @@ static apr_status_t ap_buffered_log_writer(request_rec *r,
 static int log_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     static APR_OPTIONAL_FN_TYPE(ap_register_log_handler) *log_pfn_register;
-    
+
     log_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_log_handler);
 
     if (log_pfn_register) {
@@ -1504,12 +1504,12 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_open_logs(init_config_log,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_log_transaction(multi_log_transaction,NULL,NULL,APR_HOOK_MIDDLE);
 
-    /* Init log_hash before we register the optional function. It is 
+    /* Init log_hash before we register the optional function. It is
      * possible for the optional function, ap_register_log_handler,
      * to be called before any other mod_log_config hooks are called.
      * As a policy, we should init everything required by an optional function
      * before calling APR_REGISTER_OPTIONAL_FN.
-     */ 
+     */
     log_hash = apr_hash_make(p);
     APR_REGISTER_OPTIONAL_FN(ap_register_log_handler);
     APR_REGISTER_OPTIONAL_FN(ap_log_set_writer_init);

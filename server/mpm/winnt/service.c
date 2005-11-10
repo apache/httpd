@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-/* This module ALONE requires the window message API from user.h 
+/* This module ALONE requires the window message API from user.h
  * and the default APR include of windows.h will omit it, so
  * preload the API symbols now...
  */
 
-#define CORE_PRIVATE 
+#define CORE_PRIVATE
 #define _WINUSER_
 
 #include "httpd.h"
@@ -67,19 +67,19 @@ apr_status_t ap_registry_get_server_root(apr_pool_t *p, char **buf)
     apr_status_t rv;
     ap_regkey_t *key;
 
-    if ((rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, PRODREGKEY, 
+    if ((rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, PRODREGKEY,
                              APR_READ, p)) == APR_SUCCESS) {
         rv = ap_regkey_value_get(buf, key, "ServerRoot", p);
         ap_regkey_close(key);
-        if (rv == APR_SUCCESS) 
+        if (rv == APR_SUCCESS)
             return rv;
     }
 
-    if ((rv = ap_regkey_open(&key, AP_REGKEY_CURRENT_USER, PRODREGKEY, 
+    if ((rv = ap_regkey_open(&key, AP_REGKEY_CURRENT_USER, PRODREGKEY,
                              APR_READ, p)) == APR_SUCCESS) {
         rv = ap_regkey_value_get(buf, key, "ServerRoot", p);
         ap_regkey_close(key);
-        if (rv == APR_SUCCESS) 
+        if (rv == APR_SUCCESS)
             return rv;
     }
 
@@ -102,7 +102,7 @@ apr_status_t ap_registry_get_server_root(apr_pool_t *p, char **buf)
  */
 
 
-/* exit() for Win32 is macro mapped (horrible, we agree) that allows us 
+/* exit() for Win32 is macro mapped (horrible, we agree) that allows us
  * to catch the non-zero conditions and inform the console process that
  * the application died, and hang on to the console a bit longer.
  *
@@ -128,7 +128,7 @@ void hold_console_open_on_error(void)
     CONSOLE_SCREEN_BUFFER_INFO coninfo;
     INPUT_RECORD in;
     char count[16];
-    
+
     if (!ap_real_exit_code)
         return;
     hConIn = GetStdHandle(STD_INPUT_HANDLE);
@@ -141,7 +141,7 @@ void hold_console_open_on_error(void)
         return;
     if (!SetConsoleMode(hConIn, ENABLE_MOUSE_INPUT | 0x80))
         return;
-        
+
     start = time(NULL);
     do
     {
@@ -149,18 +149,18 @@ void hold_console_open_on_error(void)
         {
             if (!ReadConsoleInput(hConIn, &in, 1, &result) || !result)
                 return;
-            if ((in.EventType == KEY_EVENT) && in.Event.KeyEvent.bKeyDown 
+            if ((in.EventType == KEY_EVENT) && in.Event.KeyEvent.bKeyDown
                     && (in.Event.KeyEvent.uChar.AsciiChar == 27))
                 return;
-            if (in.EventType == MOUSE_EVENT 
+            if (in.EventType == MOUSE_EVENT
                     && (in.Event.MouseEvent.dwEventFlags == DOUBLE_CLICK))
                 return;
         }
-        remains = ((start + 30) - time(NULL)); 
+        remains = ((start + 30) - time(NULL));
         sprintf (count, "%d...", remains);
         if (!SetConsoleCursorPosition(hConErr, coninfo.dwCursorPosition))
             return;
-        if (!WriteConsole(hConErr, count, (DWORD)strlen(count), &result, NULL) 
+        if (!WriteConsole(hConErr, count, (DWORD)strlen(count), &result, NULL)
                 || !result)
             return;
     }
@@ -169,7 +169,7 @@ void hold_console_open_on_error(void)
 
 static BOOL  die_on_logoff = FALSE;
 
-static LRESULT CALLBACK monitor_service_9x_proc(HWND hWnd, UINT msg, 
+static LRESULT CALLBACK monitor_service_9x_proc(HWND hWnd, UINT msg,
                                                 WPARAM wParam, LPARAM lParam)
 {
 /* This is the WndProc procedure for our invisible window.
@@ -177,7 +177,7 @@ static LRESULT CALLBACK monitor_service_9x_proc(HWND hWnd, UINT msg,
  * a signal WM_ENDSESSION. We clean up by signaling Apache
  * to shut down, and idle until Apache's primary thread quits.
  */
-    if ((msg == WM_ENDSESSION) 
+    if ((msg == WM_ENDSESSION)
             && (die_on_logoff || (lParam != ENDSESSION_LOGOFF)))
     {
         ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
@@ -192,7 +192,7 @@ static LRESULT CALLBACK monitor_service_9x_proc(HWND hWnd, UINT msg,
 static DWORD WINAPI monitor_service_9x_thread(void *service_name)
 {
     /* When running as a service under Windows 9x, there is no console
-     * window present, and no ConsoleCtrlHandler to call when the system 
+     * window present, and no ConsoleCtrlHandler to call when the system
      * is shutdown.  If the WatchWindow thread is created with a NULL
      * service_name argument, then the ...SystemMonitor window class is
      * used to create the "Apache" window to watch for logoff and shutdown.
@@ -203,11 +203,11 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
     WNDCLASS wc;
     HWND hwndMain;
     MSG msg;
-    
+
     wc.style         = CS_GLOBALCLASS;
-    wc.lpfnWndProc   = monitor_service_9x_proc; 
+    wc.lpfnWndProc   = monitor_service_9x_proc;
     wc.cbClsExtra    = 0;
-    wc.cbWndExtra    = 0; 
+    wc.cbWndExtra    = 0;
     wc.hInstance     = NULL;
     wc.hIcon         = NULL;
     wc.hCursor       = NULL;
@@ -217,27 +217,27 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
         wc.lpszClassName = "ApacheWin95ServiceMonitor";
     else
         wc.lpszClassName = "ApacheWin95SystemMonitor";
- 
+
     die_on_logoff = service_name ? FALSE : TRUE;
 
-    if (!RegisterClass(&wc)) 
+    if (!RegisterClass(&wc))
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(),
                      NULL, "Could not register window class for WatchWindow");
         globdat.service_thread_id = 0;
         return 0;
     }
-    
+
     /* Create an invisible window */
-    hwndMain = CreateWindow(wc.lpszClassName, 
+    hwndMain = CreateWindow(wc.lpszClassName,
                             service_name ? (char *) service_name : "Apache",
- 	                    WS_OVERLAPPEDWINDOW & ~WS_VISIBLE, 
-                            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT, 
+ 	                    WS_OVERLAPPEDWINDOW & ~WS_VISIBLE,
+                            CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
                             CW_USEDEFAULT, NULL, NULL, NULL, NULL);
-                            
+
     if (!hwndMain)
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(),
                      NULL, "Could not create WatchWindow");
         globdat.service_thread_id = 0;
         return 0;
@@ -250,10 +250,10 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
     FreeConsole();
     SetEvent(globdat.service_init);
 
-    while (GetMessage(&msg, NULL, 0, 0)) 
+    while (GetMessage(&msg, NULL, 0, 0))
     {
         if (msg.message == WM_CLOSE)
-            DestroyWindow(hwndMain); 
+            DestroyWindow(hwndMain);
         else {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
@@ -295,7 +295,7 @@ static BOOL CALLBACK console_control_handler(DWORD ctrl_type)
             Sleep(30000);
             return TRUE;
     }
- 
+
     /* We should never get here, but this is (mostly) harmless */
     return FALSE;
 }
@@ -341,7 +341,7 @@ static BOOL CALLBACK child_control_handler(DWORD ctrl_type)
             Sleep(30000);
             return TRUE;
     }
- 
+
     /* We should never get here, but this is (mostly) harmless */
     return FALSE;
 }
@@ -374,7 +374,7 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
 {
     static int checkPoint = 1;
     int rv = APR_SUCCESS;
-    
+
     if (globdat.hServiceStatus)
     {
         if (currentState == SERVICE_RUNNING) {
@@ -385,7 +385,7 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
         else if (currentState == SERVICE_STOPPED) {
             globdat.ssStatus.dwWaitHint = 0;
             globdat.ssStatus.dwCheckPoint = 0;
-            if (!exitCode && globdat.ssStatus.dwCurrentState 
+            if (!exitCode && globdat.ssStatus.dwCurrentState
                                            != SERVICE_STOP_PENDING) {
                 /* An unexpected exit?  Better to error! */
                 exitCode = 1;
@@ -403,7 +403,7 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
         }
 
         globdat.ssStatus.dwCurrentState = currentState;
-        
+
         rv = SetServiceStatus(globdat.hServiceStatus, &globdat.ssStatus);
     }
     return(rv);
@@ -438,11 +438,11 @@ static void set_service_description(void)
      */
     full_description = ap_get_server_version();
 
-    if ((osver.dwPlatformId == VER_PLATFORM_WIN32_NT) 
-          && (osver.dwMajorVersion > 4) 
+    if ((osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
+          && (osver.dwMajorVersion > 4)
           && (ChangeServiceConfig2)
           && (schSCManager = OpenSCManager(NULL, NULL, SC_MANAGER_CONNECT)))
-    {    
+    {
         SC_HANDLE schService = OpenService(schSCManager, mpm_service_name,
                                            SERVICE_CHANGE_CONFIG);
         if (schService) {
@@ -460,15 +460,15 @@ static void set_service_description(void)
         CloseServiceHandle(schSCManager);
     }
 
-    if (full_description) 
+    if (full_description)
     {
         char szPath[MAX_PATH];
         ap_regkey_t *svckey;
         apr_status_t rv;
 
         /* Find the Service key that Monitor Applications iterate */
-        apr_snprintf(szPath, sizeof(szPath), 
-                     "SYSTEM\\CurrentControlSet\\Services\\%s", 
+        apr_snprintf(szPath, sizeof(szPath),
+                     "SYSTEM\\CurrentControlSet\\Services\\%s",
                      mpm_service_name);
         rv = ap_regkey_open(&svckey, AP_REGKEY_LOCAL_MACHINE, szPath,
                             APR_READ | APR_WRITE, pconf);
@@ -497,8 +497,8 @@ static VOID WINAPI service_nt_ctrl(DWORD dwCtrlCode)
         ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 30000);
         return;
     }
-    
-    ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, NO_ERROR, 0);            
+
+    ReportStatusToSCMgr(globdat.ssStatus.dwCurrentState, NO_ERROR, 0);
 }
 
 
@@ -524,7 +524,7 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     /* ###: utf-ize */
     if (!(globdat.hServiceStatus = RegisterServiceCtrlHandler(argv[0], service_nt_ctrl)))
     {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), 
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(),
                      NULL, "Failure registering service handler");
         return;
     }
@@ -532,11 +532,11 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
     /* Report status, no errors, and buy 3 more seconds */
     ReportStatusToSCMgr(SERVICE_START_PENDING, NO_ERROR, 30000);
 
-    /* We need to append all the command arguments passed via StartService() 
+    /* We need to append all the command arguments passed via StartService()
      * to our running service... which just got here via the SCM...
      * but we hvae no interest in argv[0] for the mpm_new_argv list.
      */
-    if (argc > 1) 
+    if (argc > 1)
     {
         char **cmb_data;
 
@@ -544,13 +544,13 @@ static void __stdcall service_nt_main_fn(DWORD argc, LPTSTR *argv)
         cmb_data = malloc(mpm_new_argv->nalloc * sizeof(const char *));
 
         /* mpm_new_argv remains first (of lower significance) */
-        memcpy (cmb_data, mpm_new_argv->elts, 
+        memcpy (cmb_data, mpm_new_argv->elts,
                 mpm_new_argv->elt_size * mpm_new_argv->nelts);
-        
+
         /* Service args follow from StartService() invocation */
-        memcpy (cmb_data + mpm_new_argv->nelts, argv + 1, 
+        memcpy (cmb_data + mpm_new_argv->nelts, argv + 1,
                 mpm_new_argv->elt_size * (argc - 1));
-        
+
         /* The replacement arg list is complete */
         mpm_new_argv->elts = (char *)cmb_data;
         mpm_new_argv->nelts = mpm_new_argv->nalloc;
@@ -588,15 +588,15 @@ DWORD WINAPI service_nt_dispatch_thread(LPVOID nada)
 }
 
 
-apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name, 
+apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name,
                                   const char *set_name)
 {
     char key_name[MAX_PATH];
     ap_regkey_t *key;
     apr_status_t rv;
 
-    /* ### Needs improvement, on Win2K the user can _easily_ 
-     * change the display name to a string that doesn't reflect 
+    /* ### Needs improvement, on Win2K the user can _easily_
+     * change the display name to a string that doesn't reflect
      * the internal service name + whitespace!
      */
     mpm_service_name = apr_palloc(p, strlen(set_name) + 1);
@@ -610,14 +610,14 @@ apr_status_t mpm_service_set_name(apr_pool_t *p, const char **display_name,
     if (rv != APR_SUCCESS) {
         /* Take the given literal name if there is no service entry */
         mpm_display_name = apr_pstrdup(p, set_name);
-    } 
+    }
     *display_name = mpm_display_name;
     return rv;
 }
 
 
-apr_status_t mpm_merge_service_args(apr_pool_t *p, 
-                                   apr_array_header_t *args, 
+apr_status_t mpm_merge_service_args(apr_pool_t *p,
+                                   apr_array_header_t *args,
                                    int fixed_args)
 {
     apr_array_header_t *svc_args = NULL;
@@ -636,12 +636,12 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
         if (rv == ERROR_FILE_NOT_FOUND) {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, NULL,
                          "No ConfigArgs registered for %s, perhaps "
-                         "this service is not installed?", 
+                         "this service is not installed?",
                          mpm_service_name);
             return APR_SUCCESS;
         }
         else
-            return (rv);        
+            return (rv);
     }
 
     if (!svc_args || svc_args->nelts == 0) {
@@ -649,8 +649,8 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
     }
 
     /* Now we have the mpm_service_name arg, and the mpm_runservice_nt()
-     * call appended the arguments passed by StartService(), so it's  
-     * time to _prepend_ the default arguments for the server from 
+     * call appended the arguments passed by StartService(), so it's
+     * time to _prepend_ the default arguments for the server from
      * the service's default arguments (all others override them)...
      */
     args->nalloc = args->nelts + svc_args->nelts;
@@ -658,16 +658,16 @@ apr_status_t mpm_merge_service_args(apr_pool_t *p,
 
     /* First three args (argv[0], -f, path) remain first */
     memcpy(cmb_data, args->elts, args->elt_size * fixed_args);
-    
+
     /* Service args follow from service registry array */
-    memcpy(cmb_data + fixed_args, svc_args->elts, 
+    memcpy(cmb_data + fixed_args, svc_args->elts,
            svc_args->elt_size * svc_args->nelts);
-    
+
     /* Remaining new args follow  */
     memcpy(cmb_data + fixed_args + svc_args->nelts,
-           (const char **)args->elts + fixed_args, 
+           (const char **)args->elts + fixed_args,
            args->elt_size * (args->nelts - fixed_args));
-    
+
     args->elts = (char *)cmb_data;
     args->nelts = args->nalloc;
 
@@ -720,7 +720,7 @@ apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
                          0, FALSE, DUPLICATE_SAME_ACCESS)) {
         return APR_ENOTHREAD;
     }
-    
+
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
         globdat.service_init = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -729,12 +729,12 @@ apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
              return APR_EGENERAL;
         }
 
-        globdat.service_thread = CreateThread(NULL, 0, service_nt_dispatch_thread, 
+        globdat.service_thread = CreateThread(NULL, 0, service_nt_dispatch_thread,
                                               NULL, 0, &globdat.service_thread_id);
     }
     else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
     {
-        if (!RegisterServiceProcess(0, 1)) 
+        if (!RegisterServiceProcess(0, 1))
             return GetLastError();
 
         globdat.service_init = CreateEvent(NULL, FALSE, FALSE, NULL);
@@ -742,7 +742,7 @@ apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
             return APR_EGENERAL;
         }
 
-        globdat.service_thread = CreateThread(NULL, 0, monitor_service_9x_thread, 
+        globdat.service_thread = CreateThread(NULL, 0, monitor_service_9x_thread,
                                               (LPVOID) mpm_service_name, 0,
                                               &globdat.service_thread_id);
     }
@@ -760,7 +760,7 @@ apr_status_t mpm_service_to_start(const char **display_name, apr_pool_t *p)
     }
 
     atexit(service_stopped);
-    *display_name = mpm_display_name; 
+    *display_name = mpm_display_name;
     return APR_SUCCESS;
 }
 
@@ -787,7 +787,7 @@ void mpm_service_stopping(void)
 }
 
 
-apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc, 
+apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
                                  const char * const * argv, int reconfig)
 {
     char key_name[MAX_PATH];
@@ -795,7 +795,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
     char *launch_cmd;
     ap_regkey_t *key;
     apr_status_t rv;
-    
+
     fprintf(stderr,reconfig ? "Reconfiguring the %s service\n"
                    : "Installing the %s service\n", mpm_display_name);
 
@@ -826,22 +826,22 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
 
         if (reconfig) {
             /* ###: utf-ize */
-            schService = OpenService(schSCManager, mpm_service_name, 
+            schService = OpenService(schSCManager, mpm_service_name,
                                      SERVICE_CHANGE_CONFIG);
             if (!schService) {
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_ERR, 
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_ERR,
                              apr_get_os_error(), NULL,
                              "OpenService failed");
             }
             /* ###: utf-ize */
-            else if (!ChangeServiceConfig(schService, 
+            else if (!ChangeServiceConfig(schService,
                                           SERVICE_WIN32_OWN_PROCESS,
                                           SERVICE_AUTO_START,
                                           SERVICE_ERROR_NORMAL,
-                                          launch_cmd, NULL, NULL, 
+                                          launch_cmd, NULL, NULL,
                                           "Tcpip\0Afd\0", NULL, NULL,
                                           mpm_display_name)) {
-                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_ERR, 
+                ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_ERR,
                              apr_get_os_error(), NULL,
                              "ChangeServiceConfig failed");
                 /* !schService aborts configuration below */
@@ -850,10 +850,10 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
             }
         }
         else {
-            /* RPCSS is the Remote Procedure Call (RPC) Locator required 
-             * for DCOM communication pipes.  I am far from convinced we 
-             * should add this to the default service dependencies, but 
-             * be warned that future apache modules or ISAPI dll's may 
+            /* RPCSS is the Remote Procedure Call (RPC) Locator required
+             * for DCOM communication pipes.  I am far from convinced we
+             * should add this to the default service dependencies, but
+             * be warned that future apache modules or ISAPI dll's may
              * depend on it.
              */
             /* ###: utf-ize */
@@ -871,61 +871,61 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
                                    NULL,                 // use SYSTEM account
                                    NULL);                // no password
 
-            if (!schService) 
+            if (!schService)
             {
                 rv = apr_get_os_error();
-                ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
+                ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                              "Failed to create WinNT Service Profile");
                 CloseServiceHandle(schSCManager);
                 return (rv);
             }
         }
-        
+
         CloseServiceHandle(schService);
         CloseServiceHandle(schSCManager);
     }
     else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
     {
         /* Store the launch command in the registry */
-        launch_cmd = apr_psprintf(ptemp, "\"%s\" -n %s -k runservice", 
+        launch_cmd = apr_psprintf(ptemp, "\"%s\" -n %s -k runservice",
                                  exe_path, mpm_service_name);
-        rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, SERVICECONFIG9X, 
+        rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, SERVICECONFIG9X,
                             APR_READ | APR_WRITE | APR_CREATE, pconf);
         if (rv == APR_SUCCESS) {
-            rv = ap_regkey_value_set(key, mpm_service_name, 
+            rv = ap_regkey_value_set(key, mpm_service_name,
                                      launch_cmd, 0, pconf);
             ap_regkey_close(key);
         }
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
-                         "%s: Failed to add the RunServices registry entry.", 
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
+                         "%s: Failed to add the RunServices registry entry.",
                          mpm_display_name);
             return (rv);
         }
 
         apr_snprintf(key_name, sizeof(key_name), SERVICECONFIG, mpm_service_name);
-        rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name, 
+        rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name,
                             APR_READ | APR_WRITE | APR_CREATE, pconf);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
-                         "%s: Failed to create the registry service key.", 
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
+                         "%s: Failed to create the registry service key.",
                          mpm_display_name);
             return (rv);
         }
         rv = ap_regkey_value_set(key, "ImagePath", launch_cmd, 0, pconf);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
-                         "%s: Failed to store ImagePath in the registry.", 
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
+                         "%s: Failed to store ImagePath in the registry.",
                          mpm_display_name);
             ap_regkey_close(key);
             return (rv);
         }
-        rv = ap_regkey_value_set(key, "DisplayName", 
+        rv = ap_regkey_value_set(key, "DisplayName",
                                  mpm_display_name, 0, pconf);
         ap_regkey_close(key);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
-                         "%s: Failed to store DisplayName in the registry.", 
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
+                         "%s: Failed to store DisplayName in the registry.",
                          mpm_display_name);
             return (rv);
         }
@@ -936,15 +936,15 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
     /* For both WinNT & Win9x store the service ConfigArgs in the registry...
      */
     apr_snprintf(key_name, sizeof(key_name), SERVICEPARAMS, mpm_service_name);
-    rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name, 
+    rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, key_name,
                         APR_READ | APR_WRITE | APR_CREATE, pconf);
     if (rv == APR_SUCCESS) {
         rv = ap_regkey_value_array_set(key, "ConfigArgs", argc, argv, pconf);
         ap_regkey_close(key);
     }
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL, 
-                     "%s: Failed to store the ConfigArgs in the registry.", 
+        ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
+                     "%s: Failed to store the ConfigArgs in the registry.",
                      mpm_display_name);
         return (rv);
     }
@@ -973,7 +973,7 @@ apr_status_t mpm_service_uninstall(void)
                          "Failed to open the WinNT service manager.");
             return (rv);
         }
-        
+
         /* ###: utf-ize */
         schService = OpenService(schSCManager, mpm_service_name, DELETE);
 
@@ -983,7 +983,7 @@ apr_status_t mpm_service_uninstall(void)
                         "%s: OpenService failed", mpm_display_name);
            return (rv);
         }
-        
+
         /* assure the service is stopped before continuing
          *
          * This may be out of order... we might not be able to be
@@ -1000,8 +1000,8 @@ apr_status_t mpm_service_uninstall(void)
                          "%s: Failed to delete the service.", mpm_display_name);
             return (rv);
         }
-        
-        CloseServiceHandle(schService);        
+
+        CloseServiceHandle(schService);
         CloseServiceHandle(schSCManager);
     }
     else /* osver.dwPlatformId != VER_PLATFORM_WIN32_NT */
@@ -1012,7 +1012,7 @@ apr_status_t mpm_service_uninstall(void)
 
         /* TODO: assure the service is stopped before continuing */
 
-        rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, SERVICECONFIG9X, 
+        rv = ap_regkey_open(&key, AP_REGKEY_LOCAL_MACHINE, SERVICECONFIG9X,
                             APR_READ | APR_WRITE | APR_CREATE, pconf);
         if (rv == APR_SUCCESS) {
             rv = ap_regkey_value_remove(key, mpm_service_name, pconf);
@@ -1023,7 +1023,7 @@ apr_status_t mpm_service_uninstall(void)
                          "%s: Failed to remove the RunServices registry "
                          "entry.", mpm_display_name);
         }
-        
+
         /* we blast Services/us, not just the Services/us/Parameters branch */
         apr_snprintf(key_name, sizeof(key_name), SERVICEPARAMS, mpm_service_name);
         rv2 = ap_regkey_remove(AP_REGKEY_LOCAL_MACHINE, key_name, pconf);
@@ -1046,31 +1046,31 @@ apr_status_t mpm_service_uninstall(void)
 
 /* signal_service_transition is a simple thunk to signal the service
  * and monitor its successful transition.  If the signal passed is 0,
- * then the caller is assumed to already have performed some service 
+ * then the caller is assumed to already have performed some service
  * operation to be monitored (such as StartService), and no actual
  * ControlService signal is sent.
  */
 
 static int signal_service_transition(SC_HANDLE schService, DWORD signal, DWORD pending, DWORD complete)
 {
-    if (signal && !ControlService(schService, signal, &globdat.ssStatus)) 
+    if (signal && !ControlService(schService, signal, &globdat.ssStatus))
         return FALSE;
-    
+
     do {
-        Sleep(1000);    
+        Sleep(1000);
         if (!QueryServiceStatus(schService, &globdat.ssStatus))
             return FALSE;
     } while (globdat.ssStatus.dwCurrentState == pending);
-        
+
     return (globdat.ssStatus.dwCurrentState == complete);
 }
 
 
-apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc, 
+apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
                                const char * const * argv)
 {
     apr_status_t rv;
-    
+
     fprintf(stderr,"Starting the %s service\n", mpm_display_name);
 
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
@@ -1089,7 +1089,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         }
 
         /* ###: utf-ize */
-        schService = OpenService(schSCManager, mpm_service_name, 
+        schService = OpenService(schSCManager, mpm_service_name,
                                  SERVICE_START | SERVICE_QUERY_STATUS);
         if (!schService) {
             rv = apr_get_os_error();
@@ -1107,7 +1107,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
             CloseServiceHandle(schSCManager);
             return 0;
         }
-        
+
         start_argv = malloc((argc + 1) * sizeof(const char **));
         memcpy(start_argv, argv, argc * sizeof(const char **));
         start_argv[argc] = NULL;
@@ -1116,13 +1116,13 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         /* ###: utf-ize */
         if (StartService(schService, argc, start_argv)
             && signal_service_transition(schService, 0, /* test only */
-                                         SERVICE_START_PENDING, 
+                                         SERVICE_START_PENDING,
                                          SERVICE_RUNNING))
                 rv = APR_SUCCESS;
 
         if (rv != APR_SUCCESS)
             rv = apr_get_os_error();
-        
+
         CloseServiceHandle(schService);
         CloseServiceHandle(schSCManager);
     }
@@ -1150,7 +1150,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
          * console window.
          * The config is pre-flighted, so there should be no danger of failure.
          */
-        
+
         if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
         {
             apr_status_t rv = apr_get_os_error();
@@ -1158,27 +1158,27 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
                          "GetModuleFileName failed");
             return rv;
         }
-        
-        apr_snprintf(exe_cmd, sizeof(exe_cmd), 
-                     "\"%s\" -n %s -k runservice", 
-                     exe_path, mpm_service_name);  
+
+        apr_snprintf(exe_cmd, sizeof(exe_cmd),
+                     "\"%s\" -n %s -k runservice",
+                     exe_path, mpm_service_name);
         next_arg = strchr(exe_cmd, '\0');
         for (i = 0; i < argc; ++i) {
-            apr_snprintf(next_arg, sizeof(exe_cmd) - (next_arg - exe_cmd), 
+            apr_snprintf(next_arg, sizeof(exe_cmd) - (next_arg - exe_cmd),
                          " \"%s\"", argv[i]);
             next_arg = strchr(exe_cmd, '\0');
         }
-        
+
         memset(&si, 0, sizeof(si));
         memset(&pi, 0, sizeof(pi));
         si.cb = sizeof(si);
         si.dwFlags     = STARTF_USESHOWWINDOW;
         si.wShowWindow = SW_HIDE;   /* This might be redundant */
-        
+
         rv = APR_EINIT;
-        if (CreateProcess(NULL, exe_cmd, NULL, NULL, FALSE, 
+        if (CreateProcess(NULL, exe_cmd, NULL, NULL, FALSE,
                            DETACHED_PROCESS, /* Creation flags */
-                           NULL, NULL, &si, &pi)) 
+                           NULL, NULL, &si, &pi))
         {
             DWORD code;
             while (GetExitCodeProcess(pi.hProcess, &code) == STILL_ACTIVE) {
@@ -1189,13 +1189,13 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
                 Sleep (1000);
             }
         }
-        
+
         if (rv != APR_SUCCESS)
             rv = apr_get_os_error();
-        
+
         CloseHandle(pi.hProcess);
         CloseHandle(pi.hThread);
-    }    
+    }
 
     if (rv == APR_SUCCESS)
         fprintf(stderr,"The %s service is running.\n", mpm_display_name);
@@ -1203,7 +1203,7 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                      "%s: Failed to start the service process.",
                      mpm_display_name);
-        
+
     return rv;
 }
 
@@ -1213,15 +1213,15 @@ apr_status_t mpm_service_start(apr_pool_t *ptemp, int argc,
 void mpm_signal_service(apr_pool_t *ptemp, int signal)
 {
     int success = FALSE;
-    
-    if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) 
+
+    if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
     {
         SC_HANDLE   schService;
         SC_HANDLE   schSCManager;
 
         schSCManager = OpenSCManager(NULL, NULL, // default machine & database
                                      SC_MANAGER_CONNECT);
-        
+
         if (!schSCManager) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), NULL,
                          "Failed to open the NT Service Manager");
@@ -1229,8 +1229,8 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
         }
 
         /* ###: utf-ize */
-        schService = OpenService(schSCManager, mpm_service_name, 
-                                 SERVICE_INTERROGATE | SERVICE_QUERY_STATUS | 
+        schService = OpenService(schSCManager, mpm_service_name,
+                                 SERVICE_INTERROGATE | SERVICE_QUERY_STATUS |
                                  SERVICE_USER_DEFINED_CONTROL |
                                  SERVICE_START | SERVICE_STOP);
 
@@ -1241,7 +1241,7 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
             CloseServiceHandle(schSCManager);
             return;
         }
-        
+
         if (!QueryServiceStatus(schService, &globdat.ssStatus)) {
             ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, apr_get_os_error(), NULL,
                          "Query of Service %s failed", mpm_display_name);
@@ -1256,14 +1256,14 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
             CloseServiceHandle(schSCManager);
             return;
         }
-        
-        fprintf(stderr,"The %s service is %s.\n", mpm_display_name, 
+
+        fprintf(stderr,"The %s service is %s.\n", mpm_display_name,
                signal ? "restarting" : "stopping");
 
         if (!signal)
-            success = signal_service_transition(schService, 
-                                                SERVICE_CONTROL_STOP, 
-                                                SERVICE_STOP_PENDING, 
+            success = signal_service_transition(schService,
+                                                SERVICE_CONTROL_STOP,
+                                                SERVICE_STOP_PENDING,
                                                 SERVICE_STOPPED);
         else if (globdat.ssStatus.dwCurrentState == SERVICE_STOPPED) {
             mpm_service_start(ptemp, 0, NULL);
@@ -1272,9 +1272,9 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
             return;
         }
         else
-            success = signal_service_transition(schService, 
-                                                SERVICE_APACHE_RESTART, 
-                                                SERVICE_START_PENDING, 
+            success = signal_service_transition(schService,
+                                                SERVICE_APACHE_RESTART,
+                                                SERVICE_START_PENDING,
                                                 SERVICE_RUNNING);
 
         CloseServiceHandle(schService);
@@ -1300,13 +1300,13 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
             }
         }
 
-        fprintf(stderr,"The %s service is %s.\n", mpm_display_name, 
+        fprintf(stderr,"The %s service is %s.\n", mpm_display_name,
                signal ? "restarting" : "stopping");
 
         apr_snprintf(prefix, sizeof(prefix), "ap%ld", (long)service_pid);
         setup_signal_names(prefix);
 
-        if (!signal) 
+        if (!signal)
         {
             int ticks = 60;
             ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
@@ -1320,7 +1320,7 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
             }
         }
         else /* !stop */
-        {   
+        {
             /* TODO: Aught to add a little test to the restart logic, and
              * store the restart counter in the window's user dword.
              * Then we can hang on and report a successful restart.  But
@@ -1338,9 +1338,9 @@ void mpm_signal_service(apr_pool_t *ptemp, int signal)
     }
 
     if (success)
-        fprintf(stderr,"The %s service has %s.\n", mpm_display_name, 
+        fprintf(stderr,"The %s service has %s.\n", mpm_display_name,
                signal ? "restarted" : "stopped");
     else
-        fprintf(stderr,"Failed to %s the %s service.\n", 
+        fprintf(stderr,"Failed to %s the %s service.\n",
                signal ? "restart" : "stop", mpm_display_name);
 }

@@ -403,11 +403,11 @@ static void usage(process_rec *process)
                  "  -t -D DUMP_VHOSTS  : show parsed settings (currently only "
                  "vhost settings)");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -S                 : a synonym for -t -D DUMP_VHOSTS");   
+                 "  -S                 : a synonym for -t -D DUMP_VHOSTS");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -t -D DUMP_MODULES : show all loaded modules ");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "  -M                 : a synonym for -t -D DUMP_MODULES");   
+                 "  -M                 : a synonym for -t -D DUMP_MODULES");
     ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "  -t                 : run syntax check for config files");
 
@@ -563,7 +563,7 @@ int main(int argc, const char * const argv[])
         case 't':
             configtestonly = 1;
             break;
-        
+
         case 'S':
             configtestonly = 1;
             new = (char **)apr_array_push(ap_server_config_defines);
@@ -575,7 +575,7 @@ int main(int argc, const char * const argv[])
             new = (char **)apr_array_push(ap_server_config_defines);
             *new = "DUMP_MODULES";
             break;
-            
+
         case 'h':
         case '?':
             usage(process);

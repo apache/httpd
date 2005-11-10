@@ -176,4 +176,4 @@ ascii2ebcdic(void *dest, const void *srce, size_t count)
     }
 }
 #endif /*APR_CHARSET_EBCDIC*/
- 
+

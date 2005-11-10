@@ -23,9 +23,9 @@
  * Usage instructions:
  *
  * Action mime/type /cgi-bin/script
- * 
- * will activate /cgi-bin/script when a file of content type mime/type is 
- * requested. It sends the URL and file path of the requested document using 
+ *
+ * will activate /cgi-bin/script when a file of content type mime/type is
+ * requested. It sends the URL and file path of the requested document using
  * the standard CGI PATH_INFO and PATH_TRANSLATED environment variables.
  *
  * Script PUT /cgi-bin/script
@@ -89,7 +89,7 @@ static void *merge_action_dir_configs(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *add_action(cmd_parms *cmd, void *m_v, 
+static const char *add_action(cmd_parms *cmd, void *m_v,
                               const char *type, const char *script,
                               const char *option)
 {
@@ -110,8 +110,8 @@ static const char *add_action(cmd_parms *cmd, void *m_v,
 static const char *set_script(cmd_parms *cmd, void *m_v,
                               const char *method, const char *script)
 {
-    action_dir_config *m = (action_dir_config *)m_v;    
-    
+    action_dir_config *m = (action_dir_config *)m_v;
+
     /* ap_method_register recognizes already registered methods,
      * so don't bother to check its previous existence explicitely.
      */

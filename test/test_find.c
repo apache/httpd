@@ -23,7 +23,7 @@
             -DSOLARIS2=250 -Wall -DALLOC_DEBUG -DPOOL_DEBUG \
             ../main/alloc.o ../main/buff.o ../main/util.o \
             ../ap/libap.a -lsocket -lnsl test_find.c
- * 
+ *
  * Roy Fielding, 1999
  */
 #include <stdio.h>
@@ -73,6 +73,6 @@ int main (void)
                                   ? "Yes" : "No");
         printf("Enter search item:\n");
     }
-    
+
     exit(0);
 }

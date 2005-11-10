@@ -170,29 +170,29 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
     }
 
     num_ranges = ap_set_byterange(r);
-    
+
     /* We have nothing to do, get out of the way. */
     if (num_ranges == 0) {
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, bb);
     }
-    
+
     ctx = apr_pcalloc(r->pool, sizeof(*ctx));
     ctx->num_ranges = num_ranges;
     /* create a brigade in case we never call ap_save_brigade() */
     ctx->bb = apr_brigade_create(r->pool, c->bucket_alloc);
-    
+
     if (ctx->num_ranges > 1) {
         /* Is ap_make_content_type required here? */
         const char *orig_ct = ap_make_content_type(r, r->content_type);
         ctx->boundary = apr_psprintf(r->pool, "%" APR_UINT64_T_HEX_FMT "%lx",
                                      (apr_uint64_t)r->request_time, (long) getpid());
-        
+
         ap_set_content_type(r, apr_pstrcat(r->pool, "multipart",
                                            use_range_x(r) ? "/x-" : "/",
                                            "byteranges; boundary=",
                                            ctx->boundary, NULL));
-        
+
         ctx->bound_head = apr_pstrcat(r->pool,
                                       CRLF "--", ctx->boundary,
                                       CRLF "Content-type: ",

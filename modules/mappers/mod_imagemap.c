@@ -29,14 +29,14 @@
  *
  * Randy Terbush, randy@zyzzyva.com
  * port to Apache module format, "base_uri" and support for relative URLs
- * 
+ *
  * James H. Cloos, Jr., cloos@jhcloos.com
  * Added point datatype, using code in NCSA's version 1.8 imagemap.c
  * program, as distributed with version 1.4.1 of their server.
  * The point code is originally added by Craig Milo Rogers, Rogers@ISI.Edu
  *
  * Nathan Kurz, nate@tripod.com
- * Rewrite/reorganization.  New handling of default, base and relative URLs.  
+ * Rewrite/reorganization.  New handling of default, base and relative URLs.
  * New Configuration directives:
  *    ImapMenu {none, formatted, semiformatted, unformatted}
  *    ImapDefault {error, nocontent, referer, menu, URL}
@@ -415,7 +415,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
 
         if (directory && (slen = strlen(directory))) {
 
-            /* for each '..',  knock a directory off the end 
+            /* for each '..',  knock a directory off the end
                by ending the string right at the last slash.
                But only consider the directory portion: don't eat
                into the server name.  And only try if a directory
@@ -591,7 +591,7 @@ static int imap_handler_internal(request_rec *r)
     char *imap_default;
     char *imap_base;
 
-    ap_configfile_t *imap; 
+    ap_configfile_t *imap;
 
     icr = ap_get_module_config(r->per_dir_config, &imagemap_module);
 

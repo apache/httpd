@@ -7,21 +7,21 @@ This program is Copyright (C) Zeus Technology Limited 1996.
 This program may be used and copied freely providing this copyright notice
 is not removed.
 
-This software is provided "as is" and any express or implied waranties, 
+This software is provided "as is" and any express or implied waranties,
 including but not limited to, the implied warranties of merchantability and
-fitness for a particular purpose are disclaimed.  In no event shall 
-Zeus Technology Ltd. be liable for any direct, indirect, incidental, special, 
-exemplary, or consequential damaged (including, but not limited to, 
+fitness for a particular purpose are disclaimed.  In no event shall
+Zeus Technology Ltd. be liable for any direct, indirect, incidental, special,
+exemplary, or consequential damaged (including, but not limited to,
 procurement of substitute good or services; loss of use, data, or profits;
 or business interruption) however caused and on theory of liability.  Whether
-in contract, strict liability or tort (including negligence or otherwise) 
+in contract, strict liability or tort (including negligence or otherwise)
 arising in any way out of the use of this software, even if advised of the
 possibility of such damage.
 
      Written by Adam Twiss (adam@zeus.co.uk).  March 1996
 
 Thanks to the following people for their input:
-  Mike Belshe (mbelshe@netscape.com) 
+  Mike Belshe (mbelshe@netscape.com)
   Michael Campanella (campanella@stevms.enet.dec.com)
 
 */
@@ -33,12 +33,12 @@ IRIX, Solaris, AIX and Digital Unix (OSF).  On Solaris 2.x you will
 need to compile with "-lnsl -lsocket" options.  If you have any
 difficulties compiling then let me know.
 
-On SunOS 4.x.x you may need to compile with -DSUNOS4 to add the following 
+On SunOS 4.x.x you may need to compile with -DSUNOS4 to add the following
 two lines of code which appear not to exist in my SunOS headers */
 
 #ifdef SUNOS4
-extern char *optarg; 
-extern int optind, opterr, optopt;   
+extern char *optarg;
+extern int optind, opterr, optopt;
 #endif
 
 /*  -------------------------------------------------------------------- */
@@ -46,7 +46,7 @@ extern int optind, opterr, optopt;
 /* affects include files on Solaris */
 #define BSD_COMP
 
-#include <sys/time.h> 
+#include <sys/time.h>
 #include <sys/ioctl.h>
 #include <unistd.h>
 #include <stdlib.h>
@@ -54,7 +54,7 @@ extern int optind, opterr, optopt;
 #include <fcntl.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <netdb.h> 
+#include <netdb.h>
 #include <errno.h>
 #include <sys/ioctl.h>
 #include <string.h>
@@ -62,7 +62,7 @@ extern int optind, opterr, optopt;
 /* ------------------- DEFINITIONS -------------------------- */
 
 /* maximum number of requests on a time limited test */
-#define MAX_REQUESTS 50000 
+#define MAX_REQUESTS 50000
 
 /* good old state machine */
 #define STATE_UNCONNECTED 0
@@ -71,7 +71,7 @@ extern int optind, opterr, optopt;
 
 #define CBUFFSIZE       512
 
-struct connection 
+struct connection
 {
   int fd;
   int state;
@@ -82,10 +82,10 @@ struct connection
   int cbx;                /* offset in cbuffer */
   int keepalive;          /* non-zero if a keep-alive request */
   int gotheader;          /* non-zero if we have the entire header in cbuff */
-  struct timeval start, connect, done; 
+  struct timeval start, connect, done;
 };
 
-struct data 
+struct data
 {
   int read;      /* number of bytes read */
   int ctime;     /* time in ms to connect */
@@ -135,7 +135,7 @@ struct sockaddr_in server;   /* server addr structure */
 
 /* simple little function to perror and exit */
 
-static void err(char *s) 
+static void err(char *s)
 {
   perror(s);
   exit(errno);
@@ -143,13 +143,13 @@ static void err(char *s)
 
 /* --------------------------------------------------------- */
 
-/* write out request to a connection - assumes we can write 
+/* write out request to a connection - assumes we can write
    (small) request out in one go into our new socket buffer  */
 
 void write_request(struct connection *c)
 {
   gettimeofday(&c->connect,0);
-  write(c->fd,request, reqlen);  
+  write(c->fd,request, reqlen);
   c->state = STATE_READ;
   FD_SET(c->fd, &readbits);
   FD_CLR(c->fd, &writebits);
@@ -159,7 +159,7 @@ void write_request(struct connection *c)
 
 /* make an fd non blocking */
 
-void nonblock(int fd) 
+void nonblock(int fd)
 {
   int i=1;
   ioctl(fd, FIONBIO, &i);
@@ -187,15 +187,15 @@ int timedif(struct timeval a, struct timeval b)
 void output_results()
 {
   int timetaken;
-  
+
   gettimeofday(&endtime,0);
   timetaken = timedif(endtime, start);
-  
+
   printf("\n---\n");
   printf("Server:                 %s\n", server_name);
-  printf("Document Length:        %d\n", doclen);  
+  printf("Document Length:        %d\n", doclen);
   printf("Concurency Level:       %d\n", concurrency);
-  printf("Time taken for tests:   %d.%03d seconds\n", 
+  printf("Time taken for tests:   %d.%03d seconds\n",
          timetaken/1000, timetaken%1000);
   printf("Complete requests:      %d\n", done);
   printf("Failed requests:        %d\n", bad);
@@ -204,11 +204,11 @@ void output_results()
   if(keepalive) printf("Keep-Alive requests:    %d\n", doneka);
   printf("Bytes transferred:      %d\n", totalread);
   printf("HTML transferred:       %d\n", totalbread);
-  
+
   /* avoid divide by zero */
   if(timetaken) {
     printf("Requests per seconds:   %.2f\n", 1000*(float)(done)/timetaken);
-    printf("Transfer rate:          %.2f kb/s\n", 
+    printf("Transfer rate:          %.2f kb/s\n",
            (float)(totalread)/timetaken);
   }
 
@@ -247,7 +247,7 @@ void start_connect(struct connection *c)
   c->read = 0;
   c->bread = 0;
   c->keepalive = 0;
-  c->cbx = 0; 
+  c->cbx = 0;
   c->gotheader = 0;
 
   c->fd = socket(AF_INET, SOCK_STREAM, 0);
@@ -268,11 +268,11 @@ void start_connect(struct connection *c)
       if(bad++>10) {
         printf("\nTest aborted after 10 failures\n\n");
         exit(1);
-      } 
+      }
       start_connect(c);
-    }      
+    }
   }
-  
+
   /* connected first time */
   write_request(c);
 }
@@ -286,16 +286,16 @@ void close_connection(struct connection *c)
   if(c->read == 0 && c->keepalive) {
     /* server has legitiamately shut down an idle keep alive request */
     good--;  /* connection never happend */
-  } 
+  }
   else {
     if(good==1) {
       /* first time here */
       doclen = c->bread;
-    } else if (c->bread!=doclen) { 
-      bad++; 
-      err_length++; 
+    } else if (c->bread!=doclen) {
+      bad++;
+      err_length++;
     }
-    
+
     /* save out time */
     if(done < requests) {
       struct data s;
@@ -312,7 +312,7 @@ void close_connection(struct connection *c)
   FD_CLR(c->fd, &writebits);
 
   /* connect again */
-  start_connect(c); 
+  start_connect(c);
   return;
 }
 
@@ -323,19 +323,19 @@ void close_connection(struct connection *c)
 void read_connection(struct connection *c)
 {
   int r;
-  
+
   r=read(c->fd,buffer,sizeof(buffer));
   if(r==0 || (r<0 && errno!=EAGAIN)) {
     good++;
     close_connection(c);
     return;
-  } 
-  
+  }
+
   if(r<0 && errno==EAGAIN) return;
 
   c->read += r;
   totalread += r;
-  
+
   if(!c->gotheader) {
     char *s;
     int l=4;
@@ -345,13 +345,13 @@ void read_connection(struct connection *c)
     c->cbx += tocopy; space -= tocopy;
     c->cbuff[c->cbx] = 0; /* terminate for benefit of strstr */
     s = strstr(c->cbuff, "\r\n\r\n");
-    /* this next line is so that we talk to NCSA 1.5 which blatantly breaks 
+    /* this next line is so that we talk to NCSA 1.5 which blatantly breaks
        the http specifaction */
     if(!s) { s = strstr(c->cbuff,"\n\n"); l=2; }
 
     if(!s) {
        /* read rest next time */
-      if(space) 
+      if(space)
         return;
       else {
         /* header is in invalid or too big - close connection */
@@ -359,10 +359,10 @@ void read_connection(struct connection *c)
         if(bad++>10) {
           printf("\nTest aborted after 10 failures\n\n");
           exit(1);
-        } 
+        }
         FD_CLR(c->fd, &writebits);
         start_connect(c);
-      }	
+      }
     }
     else {
       /* have full header */
@@ -374,16 +374,16 @@ void read_connection(struct connection *c)
         if(p) { p+=8; while(*p>32) *q++ = *p++; }
         *q = 0;
       }
-        
+
       c->gotheader = 1;
       *s = 0; /* terminate at end of header */
-      if(keepalive && 
-         (strstr(c->cbuff, "Keep-Alive") 
+      if(keepalive &&
+         (strstr(c->cbuff, "Keep-Alive")
           || strstr(c->cbuff, "keep-alive")))  /* for benefit of MSIIS */
         {
         char *cl;
         cl = strstr(c->cbuff, "Content-Length:");
-        /* for cacky servers like NCSA which break the spec and send a 
+        /* for cacky servers like NCSA which break the spec and send a
            lower case 'l' */
         if(!cl) cl = strstr(c->cbuff, "Content-length:");
         if(cl) {
@@ -394,7 +394,7 @@ void read_connection(struct connection *c)
       c->bread += c->cbx - (s+l-c->cbuff) + r-tocopy;
       totalbread += c->bread;
     }
-  }  
+  }
   else {
     /* outside header, everything we have read is entity body */
     c->bread += r;
@@ -428,12 +428,12 @@ void read_connection(struct connection *c)
 
 /* run the tests */
 
-int test() 
+int test()
 {
   struct timeval timeout, now;
   fd_set sel_read, sel_except, sel_write;
   int i;
-  
+
   {
     /* get server information */
     struct hostent *he;
@@ -446,7 +446,7 @@ int test()
 
   con = malloc(concurrency*sizeof(struct connection));
   memset(con,0,concurrency*sizeof(struct connection));
-  
+
   stats = malloc(requests * sizeof(struct data));
 
   FD_ZERO(&readbits);
@@ -454,9 +454,9 @@ int test()
 
   /* setup request */
   sprintf(request,"GET %s HTTP/1.0\r\nUser-Agent: ZeusBench/1.0\r\n"
-          "%sHost: %s\r\nAccept: */*\r\n\r\n", file, 
+          "%sHost: %s\r\nAccept: */*\r\n\r\n", file,
           keepalive?"Connection: Keep-Alive\r\n":"", machine );
-    
+
   reqlen = strlen(request);
 
   /* ok - lets start */
@@ -491,7 +491,7 @@ int test()
     for(i=0; i<concurrency; i++) {
       int s = con[i].fd;
       if(FD_ISSET(s, &sel_except)) {
-        bad++; 
+        bad++;
         err_except++;
         start_connect(&con[i]);
         continue;
@@ -523,15 +523,15 @@ void usage(char *progname) {
 int main(int argc, char **argv) {
   int c;
   if (argc < 3) usage(argv[0]);
-  
-  machine = argv[1]; 
+
+  machine = argv[1];
   file = argv[2];
   optind = 3;
   while ((c = getopt(argc,argv,"p:n:c:d:t:d:k"))>0) {
     switch(c) {
     case 'd':
       break;
-    case 'n': 
+    case 'n':
       requests = atoi(optarg);
       if(!requests) {
         printf("Invalid number of requests\n");
@@ -555,7 +555,7 @@ int main(int argc, char **argv) {
       usage(argv[0]);
       break;
     }
-  }   
+  }
   test();
   return 0;
 }

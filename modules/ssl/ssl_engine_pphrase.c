@@ -324,9 +324,9 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
                     for (i=0; i < SSL_AIDX_MAX; i++) {
                         const char *key_id =
                             ssl_asn1_table_keyfmt(p, cpVHostID, i);
-                        ssl_asn1_t *asn1 = 
+                        ssl_asn1_t *asn1 =
                             ssl_asn1_table_get(mc->tPrivateKey, key_id);
-                    
+
                         if (asn1 && (asn1->source_mtime == pkey_mtime)) {
                             ap_log_error(APLOG_MARK, APLOG_INFO,
                                          0, pServ,
@@ -466,20 +466,20 @@ void ssl_pphrase_Handle(server_rec *s, apr_pool_t *p)
              * Log the type of reading
              */
             if (nPassPhraseDialogCur == 0) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, pServ, 
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, pServ,
                              "unencrypted %s private key - pass phrase not "
                              "required", an);
             }
             else {
                 if (cpPassPhraseCur != NULL) {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
-                                 pServ, 
+                                 pServ,
                                  "encrypted %s private key - pass phrase "
                                  "requested", an);
                 }
                 else {
                     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0,
-                                 pServ, 
+                                 pServ,
                                  "encrypted %s private key - pass phrase"
                                  " reused", an);
                 }
@@ -566,7 +566,7 @@ static apr_status_t ssl_pipe_child_create(apr_pool_t *p, const char *progname)
                                    APR_NO_PIPE)) == APR_SUCCESS)) {
         char **args;
         const char *pname;
-        
+
         apr_tokenize_to_argv(progname, &args, p);
         pname = apr_pstrdup(p, args[0]);
         procnew = (apr_proc_t *)apr_pcalloc(p, sizeof(*procnew));
@@ -594,7 +594,7 @@ static int pipe_get_passwd_cb(char *buf, int length, char *prompt, int verify)
     buf[0]='\0';
     rc = apr_file_gets(buf, length, readtty);
     apr_file_puts(APR_EOL_STR, writetty);
-    
+
     if (rc != APR_SUCCESS || apr_file_eof(readtty)) {
         memset(buf, 0, length);
         return 1;  /* failure */
@@ -689,7 +689,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                          "Init: Requesting pass phrase via piped dialog");
         }
-        else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */ 
+        else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */
 #ifdef WIN32
             PEMerr(PEM_F_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
             memset(buf, 0, (unsigned int)bufsize);
@@ -736,11 +736,11 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
         for (;;) {
             apr_file_puts(prompt, writetty);
             if (sc->server->pphrase_dialog_type == SSL_PPTYPE_PIPE) {
-                i = pipe_get_passwd_cb(buf, bufsize, "", FALSE); 
-            }  
+                i = pipe_get_passwd_cb(buf, bufsize, "", FALSE);
+            }
             else { /* sc->server->pphrase_dialog_type == SSL_PPTYPE_BUILTIN */
-                i = EVP_read_pw_string(buf, bufsize, "", FALSE); 
-            }  
+                i = EVP_read_pw_string(buf, bufsize, "", FALSE);
+            }
             if (i != 0) {
                 PEMerr(PEM_F_DEF_CALLBACK,PEM_R_PROBLEMS_GETTING_PASSWORD);
                 memset(buf, 0, (unsigned int)bufsize);

@@ -142,7 +142,7 @@ AP_DECLARE(int) unixd_setup_child(void)
                     (long) unixd_config.user_id);
         return -1;
     }
-#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE) 
+#if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE)
     /* this applies to Linux 2.4+ */
 #ifdef AP_MPM_WANT_SET_COREDUMPDIR
     if (ap_coredumpdir_configured) {
@@ -159,7 +159,7 @@ AP_DECLARE(int) unixd_setup_child(void)
 }
 
 
-AP_DECLARE(const char *) unixd_set_user(cmd_parms *cmd, void *dummy, 
+AP_DECLARE(const char *) unixd_set_user(cmd_parms *cmd, void *dummy,
                                         const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -186,7 +186,7 @@ AP_DECLARE(const char *) unixd_set_user(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-AP_DECLARE(const char *) unixd_set_group(cmd_parms *cmd, void *dummy, 
+AP_DECLARE(const char *) unixd_set_group(cmd_parms *cmd, void *dummy,
                                          const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -209,7 +209,7 @@ AP_DECLARE(void) unixd_pre_config(apr_pool_t *ptemp)
 
     /* Check for suexec */
     unixd_config.suexec_enabled = 0;
-    if ((apr_stat(&wrapper, SUEXEC_BIN, 
+    if ((apr_stat(&wrapper, SUEXEC_BIN,
                   APR_FINFO_NORM, ptemp)) != APR_SUCCESS) {
         return;
     }
@@ -220,7 +220,7 @@ AP_DECLARE(void) unixd_pre_config(apr_pool_t *ptemp)
 }
 
 
-AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit, 
+AP_DECLARE(void) unixd_set_rlimit(cmd_parms *cmd, struct rlimit **plimit,
                            const char *arg, const char * arg2, int type)
 {
 #if (defined(RLIMIT_CPU) || defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_NPROC) || defined(RLIMIT_AS)) && APR_HAVE_STRUCT_RLIMIT && APR_HAVE_GETRLIMIT
@@ -407,7 +407,7 @@ AP_DECLARE(apr_status_t) unixd_set_proc_mutex_perms(apr_proc_mutex_t *pmutex)
 #endif
             union semun ick;
             struct semid_ds buf;
-        
+
             apr_os_proc_mutex_get(&ospmutex, pmutex);
             buf.sem_perm.uid = unixd_config.user_id;
             buf.sem_perm.gid = unixd_config.group_id;
@@ -464,7 +464,7 @@ AP_DECLARE(apr_status_t) unixd_accept(void **accepted, ap_listen_rec *lr,
 
     *accepted = NULL;
     status = apr_socket_accept(&csd, lr->sd, ptrans);
-    if (status == APR_SUCCESS) { 
+    if (status == APR_SUCCESS) {
         *accepted = csd;
 #ifdef _OSD_POSIX
         apr_os_sock_get(&sockdes, csd);

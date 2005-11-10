@@ -16,9 +16,9 @@
 
 /*
  * http_auth: authentication
- * 
+ *
  * Rob McCool & Brian Behlendorf.
- * 
+ *
  * Adapted to Apache by rst.
  *
  */
@@ -54,12 +54,12 @@ static void *create_authn_dbm_dir_config(apr_pool_t *p, char *d)
     return conf;
 }
 
-static const char *set_dbm_type(cmd_parms *cmd, 
-                                void *dir_config, 
+static const char *set_dbm_type(cmd_parms *cmd,
+                                void *dir_config,
                                 const char *arg)
 {
     authn_dbm_config_rec *conf = dir_config;
-   
+
     conf->dbmtype = apr_pstrdup(cmd->pool, arg);
     return NULL;
 }
@@ -85,7 +85,7 @@ static apr_status_t fetch_dbm_value(const char *dbmtype, const char *dbmfile,
     apr_datum_t key, val;
     apr_status_t rv;
 
-    rv = apr_dbm_open_ex(&f, dbmtype, dbmfile, APR_DBM_READONLY, 
+    rv = apr_dbm_open_ex(&f, dbmtype, dbmfile, APR_DBM_READONLY,
                          APR_OS_DEFAULT, pool);
 
     if (rv != APR_SUCCESS) {
@@ -106,7 +106,7 @@ static apr_status_t fetch_dbm_value(const char *dbmtype, const char *dbmfile,
     }
 
     apr_dbm_close(f);
-    
+
     return rv;
 }
 

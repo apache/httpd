@@ -202,7 +202,7 @@ static void authn_dbd_hooks(apr_pool_t *p)
         &authn_dbd_password,
         &authn_dbd_realm
     };
-    
+
     ap_register_provider(p, AUTHN_PROVIDER_GROUP, "dbd", "0", &authn_dbd_provider);
 }
 module AP_MODULE_DECLARE_DATA authn_dbd_module =

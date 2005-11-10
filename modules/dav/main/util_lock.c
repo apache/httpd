@@ -55,7 +55,7 @@ DAV_DECLARE(const char *) dav_lock_get_activelock(request_rec *r,
     /* If no locks or no lock provider, there are no locks */
     if (lock == NULL || hooks == NULL) {
         /*
-        ** Since resourcediscovery is defined with (activelock)*, 
+        ** Since resourcediscovery is defined with (activelock)*,
         ** <D:activelock/> shouldn't be necessary for an empty lock.
         */
         return "";
@@ -129,7 +129,7 @@ DAV_DECLARE(const char *) dav_lock_get_activelock(request_rec *r,
             */
             dav_buffer_append(p, pbuf, lock->owner);
         }
-                
+
         dav_buffer_append(p, pbuf, "<D:timeout>");
         if (lock->timeout == DAV_TIMEOUT_INFINITE) {
             dav_buffer_append(p, pbuf, "Infinite");
@@ -223,7 +223,7 @@ DAV_DECLARE(dav_error *) dav_lock_parse_lockinfo(request_rec *r,
             ** Store a full <DAV:owner> element with namespace definitions
             ** and an xml:lang definition, if applicable.
             */
-            apr_xml_to_text(p, child, APR_XML_X2T_FULL_NS_LANG, doc->namespaces, 
+            apr_xml_to_text(p, child, APR_XML_X2T_FULL_NS_LANG, doc->namespaces,
                             NULL, &text, NULL);
             lock->owner = text;
 
@@ -359,7 +359,7 @@ DAV_DECLARE(dav_error *) dav_add_lock(request_rec *r,
 ** dav_lock_query:  Opens the lock database. Returns a linked list of
 **    dav_lock structures for all direct locks on path.
 */
-DAV_DECLARE(dav_error*) dav_lock_query(dav_lockdb *lockdb, 
+DAV_DECLARE(dav_error*) dav_lock_query(dav_lockdb *lockdb,
                                        const dav_resource *resource,
                                        dav_lock **locks)
 {
@@ -507,7 +507,7 @@ DAV_DECLARE(int) dav_unlock(request_rec *r, const dav_resource *resource,
     /* 2518 requires the entire lock to be removed if resource/locktoken
      * point to an indirect lock.  We need resource of the _direct_
      * lock in order to walk down the tree and remove the locks.  So,
-     * If locktoken != null_locktoken, 
+     * If locktoken != null_locktoken,
      *    Walk up the resource hierarchy until we see a direct lock.
      *    Or, we could get the direct lock's db/key, pick out the URL
      *    and do a subrequest.  I think walking up is faster and will work
@@ -711,7 +711,7 @@ DAV_DECLARE(int) dav_get_resource_state(request_rec *r,
         if (r->path_info != NULL && *r->path_info != '\0') {
             return DAV_RESOURCE_NULL;
         }
-        
+
         if ((err = (*hooks->open_lockdb)(r, 1, 1, &lockdb)) == NULL) {
             /* note that we might see some expired locks... *shrug* */
             err = (*hooks->has_locks)(lockdb, resource, &locks_present);

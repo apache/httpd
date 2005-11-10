@@ -88,7 +88,7 @@ const unsigned char os_toascii_strictly[256] = {
  * are stored as EBCDIC, only the semantics of \012 is completely
  * different from LF (look it up in the apr_table_t above). \015 happens to be
  * mapped to \015 anyway, so there's no special case for it.
- * 
+ *
  * In THIS table, EBCDIC-\012 is mapped to ASCII-\012.
  * This apr_table_t is therefore used wherever an EBCDIC to ASCII conversion is
  * needed in the server.

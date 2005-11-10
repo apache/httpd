@@ -20,7 +20,7 @@
  * as the password.
  *
  * Just add the following tokes to your <directory> setup:
- * 
+ *
  * Anonymous                    magic-userid [magic-userid]...
  *
  * Anonymous_MustGiveEmail      [ on | off ] default = on
@@ -28,8 +28,8 @@
  * Anonymous_VerifyEmail        [ on | off ] default = off
  * Anonymous_NoUserId           [ on | off ] default = off
  *
- * The magic user id is something like 'anonymous', it is NOT case sensitive. 
- * 
+ * The magic user id is something like 'anonymous', it is NOT case sensitive.
+ *
  * The MustGiveEmail flag can be used to force users to enter something
  * in the password field (like an email address). Default is on.
  *
@@ -38,7 +38,7 @@
  * in broken GUIs like W95 is often given by the user. The Default is off.
  *
  * Dirk.vanGulik@jrc.it; http://ewse.ceo.org; http://me-www.jrc.it/~dirkx
- * 
+ *
  */
 
 #include "apr_strings.h"
@@ -113,7 +113,7 @@ static const char *anon_set_string_slots(cmd_parms *cmd,
 
 static const command_rec authn_anon_cmds[] =
 {
-    AP_INIT_ITERATE("Anonymous", anon_set_string_slots, NULL, OR_AUTHCFG, 
+    AP_INIT_ITERATE("Anonymous", anon_set_string_slots, NULL, OR_AUTHCFG,
      "a space-separated list of user IDs"),
     AP_INIT_FLAG("Anonymous_MustGiveEmail", ap_set_flag_slot,
      (void *)APR_OFFSETOF(authn_anon_config_rec, mustemail),

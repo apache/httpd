@@ -20,7 +20,7 @@
  * Contributed by Mladen Turk <mturk mappingsoft.com>
  *
  * 05 Aug 2001
- * ==================================================================== 
+ * ====================================================================
  */
 
 #define _WIN32_WINNT 0x0400
@@ -89,8 +89,8 @@ BOOL              g_bConsoleRun = FALSE;
 ST_APACHE_SERVICE g_stServices[MAX_APACHE_SERVICES];
 ST_MONITORED_COMP g_stComputers[MAX_APACHE_COMPUTERS];
 
-HBITMAP           g_hBmpStart, g_hBmpStop; 
-HBITMAP           g_hBmpPicture, g_hBmpOld; 
+HBITMAP           g_hBmpStart, g_hBmpStop;
+HBITMAP           g_hBmpPicture, g_hBmpOld;
 BOOL              g_bRescanServices;
 HWND              g_hwndServiceDlg;
 HWND              g_hwndMain;
@@ -116,7 +116,7 @@ static CHAR *g_lpMsg[IDS_MSG_LAST - IDS_MSG_FIRST + 1];
 void am_ClearServicesSt()
 {
     int i;
-    for (i = 0; i < MAX_APACHE_SERVICES; i++) 
+    for (i = 0; i < MAX_APACHE_SERVICES; i++)
     {
         if (g_stServices[i].szServiceName) {
             free(g_stServices[i].szServiceName);
@@ -187,7 +187,7 @@ void am_DisconnectComputer(LPSTR szComputerName)
             g_stComputers[i].szComputerName = NULL;
             g_stComputers[i].hRegistry = NULL;
         }
-    } 
+    }
 
 }
 
@@ -205,7 +205,7 @@ void ErrorMessage(LPCSTR szError, BOOL bFatal)
                       FORMAT_MESSAGE_IGNORE_INSERTS,
                       NULL, GetLastError(), g_LangID,
                       (LPSTR) &lpMsgBuf, 0, NULL);
-        MessageBox(NULL, (LPCSTR)lpMsgBuf, 
+        MessageBox(NULL, (LPCSTR)lpMsgBuf,
                    g_lpMsg[IDS_MSG_ERROR - IDS_MSG_FIRST],
                    MB_OK | (bFatal ? MB_ICONERROR : MB_ICONEXCLAMATION));
         LocalFree(lpMsgBuf);
@@ -231,9 +231,9 @@ BOOL am_ConnectComputer(LPSTR szComputerName)
     if (i > MAX_APACHE_COMPUTERS - 1) {
         return FALSE;
     }
-    if (RegConnectRegistry(szComputerName, HKEY_LOCAL_MACHINE, &hKeyRemote) 
+    if (RegConnectRegistry(szComputerName, HKEY_LOCAL_MACHINE, &hKeyRemote)
             != ERROR_SUCCESS) {
-        sprintf(szTmp, g_lpMsg[IDS_MSG_ECONNECT - IDS_MSG_FIRST], 
+        sprintf(szTmp, g_lpMsg[IDS_MSG_ECONNECT - IDS_MSG_FIRST],
                 szComputerName);
         ErrorMessage(szTmp, FALSE);
         return FALSE;
@@ -243,7 +243,7 @@ BOOL am_ConnectComputer(LPSTR szComputerName)
         g_stComputers[i].hRegistry = hKeyRemote;
         return TRUE;
     }
-} 
+}
 
 
 LPSTR GetStringRes(int id)
@@ -259,7 +259,7 @@ LPSTR GetStringRes(int id)
 BOOL GetSystemOSVersion(LPDWORD dwVersion)
 {
     OSVERSIONINFO osvi;
-    /* 
+    /*
     Try calling GetVersionEx using the OSVERSIONINFOEX structure.
     If that fails, try using the OSVERSIONINFO structure.
     */
@@ -293,7 +293,7 @@ BOOL GetSystemOSVersion(LPDWORD dwVersion)
         *dwVersion = 0;
         return FALSE;
     }
-    return TRUE; 
+    return TRUE;
 }
 
 
@@ -344,7 +344,7 @@ static VOID ShowNotifyIcon(HWND hWnd, DWORD dwMessage)
 }
 
 
-void appendMenuItem(HMENU hMenu, UINT uMenuId, LPSTR szName, 
+void appendMenuItem(HMENU hMenu, UINT uMenuId, LPSTR szName,
                     BOOL fDefault, BOOL fEnabled)
 {
     MENUITEMINFO mii;
@@ -371,7 +371,7 @@ void appendMenuItem(HMENU hMenu, UINT uMenuId, LPSTR szName,
 }
 
 
-void appendServiceMenu(HMENU hMenu, UINT uMenuId, 
+void appendServiceMenu(HMENU hMenu, UINT uMenuId,
                        LPSTR szServiceName, BOOL fRunning)
 {
     MENUITEMINFO mii;
@@ -379,16 +379,16 @@ void appendServiceMenu(HMENU hMenu, UINT uMenuId,
 
     smh = CreatePopupMenu();
 
-    appendMenuItem(smh, IDM_SM_START + uMenuId, 
+    appendMenuItem(smh, IDM_SM_START + uMenuId,
                    g_lpMsg[IDS_MSG_SSTART - IDS_MSG_FIRST], FALSE, !fRunning);
-    appendMenuItem(smh, IDM_SM_STOP + uMenuId, 
+    appendMenuItem(smh, IDM_SM_STOP + uMenuId,
                    g_lpMsg[IDS_MSG_SSTOP - IDS_MSG_FIRST], FALSE, fRunning);
-    appendMenuItem(smh, IDM_SM_RESTART + uMenuId, 
+    appendMenuItem(smh, IDM_SM_RESTART + uMenuId,
                    g_lpMsg[IDS_MSG_SRESTART - IDS_MSG_FIRST], FALSE, fRunning);
 
     memset(&mii, 0, sizeof(MENUITEMINFO));
     mii.cbSize = sizeof(MENUITEMINFO);
-    mii.fMask = MIIM_ID | MIIM_TYPE | MIIM_STATE | MIIM_SUBMENU 
+    mii.fMask = MIIM_ID | MIIM_TYPE | MIIM_STATE | MIIM_SUBMENU
               | MIIM_CHECKMARKS;
     mii.fType = MFT_STRING;
     mii.wID = uMenuId;
@@ -409,16 +409,16 @@ void ShowTryPopupMenu(HWND hWnd)
 
     if (hMenu)
     {
-        appendMenuItem(hMenu, IDM_RESTORE, 
-                       g_lpMsg[IDS_MSG_MNUSHOW - IDS_MSG_FIRST], 
+        appendMenuItem(hMenu, IDM_RESTORE,
+                       g_lpMsg[IDS_MSG_MNUSHOW - IDS_MSG_FIRST],
                        TRUE, TRUE);
         if (g_dwOSVersion >= OS_VERSION_WINNT) {
-            appendMenuItem(hMenu, IDC_SMANAGER, 
-                           g_lpMsg[IDS_MSG_MNUSERVICES - IDS_MSG_FIRST], 
+            appendMenuItem(hMenu, IDC_SMANAGER,
+                           g_lpMsg[IDS_MSG_MNUSERVICES - IDS_MSG_FIRST],
                            FALSE, TRUE);
         }
         appendMenuItem(hMenu, 0, "", FALSE, TRUE);
-        appendMenuItem(hMenu, IDM_EXIT, 
+        appendMenuItem(hMenu, IDM_EXIT,
                        g_lpMsg[IDS_MSG_MNUEXIT - IDS_MSG_FIRST],
                        FALSE, TRUE);
 
@@ -426,7 +426,7 @@ void ShowTryPopupMenu(HWND hWnd)
             SetForegroundWindow(NULL);
         }
         GetCursorPos(&pt);
-        TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, 
+        TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON,
                        pt.x, pt.y, 0, hWnd, NULL);
         DestroyMenu(hMenu);
     }
@@ -454,7 +454,7 @@ void ShowTryServicesMenu(HWND hWnd)
                 SetForegroundWindow(NULL);
             }
             GetCursorPos(&pt);
-            TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON, 
+            TrackPopupMenu(hMenu, TPM_LEFTALIGN|TPM_RIGHTBUTTON,
                            pt.x, pt.y, 0, hWnd, NULL);
             DestroyMenu(hMenu);
         }
@@ -486,18 +486,18 @@ BOOL CenterWindow(HWND hwndChild)
    /* Calculate new X and Y position*/
    xNew = (rWorkArea.right - wChild) / 2;
    yNew = (rWorkArea.bottom - hChild) / 2;
-   return SetWindowPos(hwndChild, HWND_TOP, xNew, yNew, 0, 0, 
+   return SetWindowPos(hwndChild, HWND_TOP, xNew, yNew, 0, 0,
                        SWP_NOSIZE | SWP_SHOWWINDOW);
 }
 
 
-static void addListBoxItem(HWND hDlg, LPSTR lpStr, HBITMAP hBmp) 
-{ 
-    LRESULT nItem; 
- 
-    nItem = SendMessage(hDlg, LB_ADDSTRING, 0, (LPARAM)lpStr); 
-    SendMessage(hDlg, LB_SETITEMDATA, nItem, (LPARAM)hBmp); 
-} 
+static void addListBoxItem(HWND hDlg, LPSTR lpStr, HBITMAP hBmp)
+{
+    LRESULT nItem;
+
+    nItem = SendMessage(hDlg, LB_ADDSTRING, 0, (LPARAM)lpStr);
+    SendMessage(hDlg, LB_SETITEMDATA, nItem, (LPARAM)hBmp);
+}
 
 
 static void addListBoxString(HWND hListBox, LPSTR lpStr)
@@ -507,9 +507,9 @@ static void addListBoxString(HWND hListBox, LPSTR lpStr)
         return;
     }
     ++nItems;
-    if (nItems > MAX_LOADSTRING) 
+    if (nItems > MAX_LOADSTRING)
     {
-        SendMessage(hListBox, LB_RESETCONTENT, 0, 0); 
+        SendMessage(hListBox, LB_RESETCONTENT, 0, 0);
         nItems = 1;
     }
     ListBox_SetCurSel(hListBox,
@@ -525,17 +525,17 @@ static DWORD WINAPI ConsoleOutputThread(LPVOID lpThreadParameter)
     BYTE ch;
     DWORD dwReaded;
 
-    while (ReadFile(g_hpipeOutRead, &ch, 1, &dwReaded, NULL) == TRUE) 
+    while (ReadFile(g_hpipeOutRead, &ch, 1, &dwReaded, NULL) == TRUE)
     {
-        if (dwReaded > 0) 
+        if (dwReaded > 0)
         {
-            if (ch == '\n' || nPtr >= MAX_PATH) 
+            if (ch == '\n' || nPtr >= MAX_PATH)
             {
                 lpBuffer[nPtr] = '\0';
                 addListBoxString(g_hwndStdoutList, lpBuffer);
                 nPtr = 0;
-            } 
-            else if (ch == '\t' && nPtr < (MAX_PATH - 4)) 
+            }
+            else if (ch == '\t' && nPtr < (MAX_PATH - 4))
             {
                 int i;
                 for (i = 0; i < 4; ++i) {
@@ -585,11 +585,11 @@ BOOL RunRedirectedConsole(LPSTR szCmdLine)
     if (!CreatePipe(&g_hpipeOutRead, &g_hpipeOutWrite, NULL, MAX_PATH*8)) {
         ErrorMessage(NULL, TRUE);
     }
-    DuplicateHandle(hProc, g_hpipeInRead, hProc, &g_hpipeInRead, 0, TRUE, 
+    DuplicateHandle(hProc, g_hpipeInRead, hProc, &g_hpipeInRead, 0, TRUE,
                     DUPLICATE_CLOSE_SOURCE|DUPLICATE_SAME_ACCESS);
-    DuplicateHandle(hProc, g_hpipeOutWrite, hProc, &g_hpipeOutWrite, 0, TRUE, 
+    DuplicateHandle(hProc, g_hpipeOutWrite, hProc, &g_hpipeOutWrite, 0, TRUE,
                     DUPLICATE_CLOSE_SOURCE|DUPLICATE_SAME_ACCESS);
-    DuplicateHandle(hProc, g_hpipeOutWrite, hProc, &g_hpipeStdError, 0, TRUE, 
+    DuplicateHandle(hProc, g_hpipeOutWrite, hProc, &g_hpipeStdError, 0, TRUE,
                     DUPLICATE_SAME_ACCESS);
     if (!g_hpipeInRead && !g_hpipeOutWrite && !g_hpipeStdError) {
         ErrorMessage(NULL, TRUE);
@@ -622,7 +622,7 @@ BOOL RunRedirectedConsole(LPSTR szCmdLine)
         return FALSE;
     }
 
-    CloseHandle(CreateThread(NULL, 0, ConsoleOutputThread, 
+    CloseHandle(CreateThread(NULL, 0, ConsoleOutputThread,
                              0, 0, &dwThreadId));
     ResumeThread(g_lpRedirectProc.hThread);
     CloseHandle(CreateThread(NULL, 0, ConsoleWaitingThread,
@@ -671,7 +671,7 @@ BOOL RunAndForgetConsole(LPSTR szCmdLine, BOOL bRedirectConsole)
 }
 
 
-BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath, 
+BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
                          LPSTR szComputerName, DWORD dwCommand)
 {
     CHAR szBuf[MAX_PATH];
@@ -697,7 +697,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
                 break;
 
             case SERVICE_CONTROL_CONTINUE:
-                sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTART - IDS_MSG_FIRST], 
+                sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTART - IDS_MSG_FIRST],
                         szServiceName);
                 addListBoxString(g_hwndStdoutList, szMsg);
                 lstrcat(szBuf, " -k start -n ");
@@ -727,7 +727,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
         }
         else if (!serviceFlag)
         {
-            sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTARTED - IDS_MSG_FIRST], 
+            sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTARTED - IDS_MSG_FIRST],
                     szServiceName);
             addListBoxString(g_hwndStdoutList, szMsg);
             g_bConsoleRun = FALSE;
@@ -743,8 +743,8 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
             return FALSE;
         }
 
-        schService = OpenService(schSCManager, szServiceName, 
-                                 SERVICE_QUERY_STATUS | SERVICE_START | 
+        schService = OpenService(schSCManager, szServiceName,
+                                 SERVICE_QUERY_STATUS | SERVICE_START |
                                  SERVICE_STOP | SERVICE_USER_DEFINED_CONTROL);
         if (schService != NULL)
         {
@@ -754,13 +754,13 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
             switch (dwCommand)
             {
             case SERVICE_CONTROL_STOP:
-                sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTOP - IDS_MSG_FIRST], 
+                sprintf(szMsg, g_lpMsg[IDS_MSG_SRVSTOP - IDS_MSG_FIRST],
                         szServiceName);
                 addListBoxString(g_hwndStdoutList, szMsg);
-                if (ControlService(schService, SERVICE_CONTROL_STOP, 
+                if (ControlService(schService, SERVICE_CONTROL_STOP,
                                    &schSStatus)) {
                     Sleep(1000);
-                    while (QueryServiceStatus(schService, &schSStatus)) 
+                    while (QueryServiceStatus(schService, &schSStatus))
                     {
                         if (schSStatus.dwCurrentState == SERVICE_STOP_PENDING)
                         {
@@ -776,8 +776,8 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
                     if (schSStatus.dwCurrentState == SERVICE_STOPPED)
                     {
                         retValue = TRUE;
-                        sprintf(szMsg, 
-                                g_lpMsg[IDS_MSG_SRVSTOPPED - IDS_MSG_FIRST], 
+                        sprintf(szMsg,
+                                g_lpMsg[IDS_MSG_SRVSTOPPED - IDS_MSG_FIRST],
                                 szServiceName);
                         addListBoxString(g_hwndStdoutList, szMsg);
                     }
@@ -789,10 +789,10 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
                         szServiceName);
                 addListBoxString(g_hwndStdoutList, szMsg);
 
-                if (StartService(schService, 0, NULL)) 
+                if (StartService(schService, 0, NULL))
                 {
                     Sleep(1000);
-                    while (QueryServiceStatus(schService, &schSStatus)) 
+                    while (QueryServiceStatus(schService, &schSStatus))
                     {
                         if (schSStatus.dwCurrentState == SERVICE_START_PENDING)
                         {
@@ -808,7 +808,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
                     if (schSStatus.dwCurrentState == SERVICE_RUNNING)
                     {
                         retValue = TRUE;
-                        sprintf(szMsg, 
+                        sprintf(szMsg,
                                 g_lpMsg[IDS_MSG_SRVSTARTED - IDS_MSG_FIRST],
                                 szServiceName);
                         addListBoxString(g_hwndStdoutList, szMsg);
@@ -821,7 +821,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
                         szServiceName);
                 addListBoxString(g_hwndStdoutList, szMsg);
                 if (ControlService(schService, SERVICE_APACHE_RESTART,
-                                   &schSStatus)) 
+                                   &schSStatus))
                 {
                     ticks = 60;
                     while (schSStatus.dwCurrentState == SERVICE_START_PENDING)
@@ -843,7 +843,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
                 if (schSStatus.dwCurrentState == SERVICE_RUNNING)
                 {
                     retValue = TRUE;
-                    sprintf(szMsg, 
+                    sprintf(szMsg,
                             g_lpMsg[IDS_MSG_SRVRESTARTED - IDS_MSG_FIRST],
                             szServiceName);
                     addListBoxString(g_hwndStdoutList, szMsg);
@@ -853,7 +853,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
             CloseServiceHandle(schService);
             CloseServiceHandle(schSCManager);
             if (!retValue) {
-                ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST], 
+                ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST],
                              FALSE);
             }
             g_bConsoleRun = FALSE;
@@ -871,7 +871,7 @@ BOOL ApacheManageService(LPCSTR szServiceName, LPCSTR szImagePath,
 }
 
 
-BOOL IsServiceRunning(LPCSTR szServiceName, LPCSTR szComputerName, 
+BOOL IsServiceRunning(LPCSTR szServiceName, LPCSTR szComputerName,
                       LPDWORD lpdwPid)
 {
     DWORD dwPid;
@@ -883,7 +883,7 @@ BOOL IsServiceRunning(LPCSTR szServiceName, LPCSTR szComputerName,
     if (g_dwOSVersion == OS_VERSION_WIN9X)
     {
         hWnd = FindWindow("ApacheWin95ServiceMonitor", szServiceName);
-        if (hWnd && GetWindowThreadProcessId(hWnd, &dwPid)) 
+        if (hWnd && GetWindowThreadProcessId(hWnd, &dwPid))
         {
             *lpdwPid = 1;
             return TRUE;
@@ -901,7 +901,7 @@ BOOL IsServiceRunning(LPCSTR szServiceName, LPCSTR szComputerName,
             return FALSE;
         }
 
-        schService = OpenService(schSCManager, szServiceName, 
+        schService = OpenService(schSCManager, szServiceName,
                                  SERVICE_QUERY_STATUS);
         if (schService != NULL)
         {
@@ -935,7 +935,7 @@ BOOL FindRunningServices(void)
     BOOL rv = FALSE;
     while (g_stServices[i].szServiceName != NULL)
     {
-        if (!IsServiceRunning(g_stServices[i].szServiceName, 
+        if (!IsServiceRunning(g_stServices[i].szServiceName,
                               g_stServices[i].szComputerName, &dwPid)) {
             dwPid = 0;
         }
@@ -983,7 +983,7 @@ BOOL GetApacheServicesStatus()
                 lstrcpy(szKey, "System\\CurrentControlSet\\Services\\");
                 lstrcat(szKey, achKey);
 
-                if (RegOpenKeyEx(hKeyRemote, szKey, 0, 
+                if (RegOpenKeyEx(hKeyRemote, szKey, 0,
                                  KEY_QUERY_VALUE, &hSubKey) == ERROR_SUCCESS)
                 {
                     dwBufLen = MAX_PATH;
@@ -991,7 +991,7 @@ BOOL GetApacheServicesStatus()
                                          &dwKeyType, szImagePath, &dwBufLen);
 
                     if (rv == ERROR_SUCCESS
-                            && (dwKeyType == REG_SZ 
+                            && (dwKeyType == REG_SZ
                              || dwKeyType == REG_EXPAND_SZ)
                             && dwBufLen)
                     {
@@ -1000,30 +1000,30 @@ BOOL GetApacheServicesStatus()
                         /* the service name could be httpd*.exe or Apache*.exe */
                         if (((strstr(szBuf, "\\apache") != NULL)
                              || (strstr(szBuf, "\\httpd") != NULL))
-                                && strstr(szBuf, ".exe") 
-                                && (strstr(szBuf, "--ntservice") != NULL 
+                                && strstr(szBuf, ".exe")
+                                && (strstr(szBuf, "--ntservice") != NULL
                                        || strstr(szBuf, "-k ") != NULL))
                         {
                             g_stServices[stPos].szServiceName = strdup(achKey);
-                            g_stServices[stPos].szImagePath = 
+                            g_stServices[stPos].szImagePath =
                                                            strdup(szImagePath);
-                            g_stServices[stPos].szComputerName = 
+                            g_stServices[stPos].szComputerName =
                                strdup(g_stComputers[computers].szComputerName);
                             dwBufLen = MAX_PATH;
                             if (RegQueryValueEx(hSubKey, "Description", NULL,
-                                                &dwKeyType, szBuf, &dwBufLen) 
+                                                &dwKeyType, szBuf, &dwBufLen)
                                     == ERROR_SUCCESS) {
-                                g_stServices[stPos].szDescription = 
+                                g_stServices[stPos].szDescription =
                                                                  strdup(szBuf);
                             }
                             dwBufLen = MAX_PATH;
                             if (RegQueryValueEx(hSubKey, "DisplayName", NULL,
-                                                &dwKeyType, szBuf, &dwBufLen) 
-                                    == ERROR_SUCCESS) 
+                                                &dwKeyType, szBuf, &dwBufLen)
+                                    == ERROR_SUCCESS)
                             {
                                 if (strcmp(g_stComputers[computers]
-                                        .szComputerName, g_szLocalHost) != 0) 
-                                { 
+                                        .szComputerName, g_szLocalHost) != 0)
+                                {
                                     strcpy(szTmp, g_stComputers[computers]
                                                       .szComputerName + 2);
                                     strcat(szTmp, "@");
@@ -1032,7 +1032,7 @@ BOOL GetApacheServicesStatus()
                                 else {
                                     strcpy(szTmp, szBuf);
                                 }
-                                g_stServices[stPos].szDisplayName 
+                                g_stServices[stPos].szDisplayName
                                                         = strdup(szTmp);
 
                             }
@@ -1054,13 +1054,13 @@ BOOL GetApacheServicesStatus()
 }
 
 
-LRESULT CALLBACK ConnectDlgProc(HWND hDlg, UINT message, 
+LRESULT CALLBACK ConnectDlgProc(HWND hDlg, UINT message,
                                 WPARAM wParam, LPARAM lParam)
 {
     CHAR szCmp[MAX_COMPUTERNAME_LENGTH+4];
-    switch (message) 
-    { 
-    case WM_INITDIALOG: 
+    switch (message)
+    {
+    case WM_INITDIALOG:
         ShowWindow(hDlg, SW_HIDE);
         g_hwndConnectDlg = hDlg;
         CenterWindow(hDlg);
@@ -1068,27 +1068,27 @@ LRESULT CALLBACK ConnectDlgProc(HWND hDlg, UINT message,
         SetFocus(GetDlgItem(hDlg, IDC_COMPUTER));
         return TRUE;
 
-    case WM_COMMAND: 
-        switch (LOWORD(wParam)) 
-        { 
-        case IDOK: 
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
+        case IDOK:
             memset(szCmp, 0, MAX_COMPUTERNAME_LENGTH+4);
             strcpy(szCmp, "\\\\");
-            SendMessage(GetDlgItem(hDlg, IDC_COMPUTER), WM_GETTEXT, 
-                        (WPARAM) MAX_COMPUTERNAME_LENGTH, 
-                        (LPARAM) szCmp+2); 
+            SendMessage(GetDlgItem(hDlg, IDC_COMPUTER), WM_GETTEXT,
+                        (WPARAM) MAX_COMPUTERNAME_LENGTH,
+                        (LPARAM) szCmp+2);
 
             strupr(szCmp);
             if (strlen(szCmp) < 3) {
-                EndDialog(hDlg, TRUE); 
+                EndDialog(hDlg, TRUE);
                 return TRUE;
             }
             am_ConnectComputer(szCmp);
             SendMessage(g_hwndMain, WM_TIMER, WM_TIMER_RESCAN, 0);
 
         case IDCANCEL:
-            EndDialog(hDlg, TRUE); 
-            return TRUE; 
+            EndDialog(hDlg, TRUE);
+            return TRUE;
 
         case IDC_LBROWSE:
         {
@@ -1108,9 +1108,9 @@ LRESULT CALLBACK ConnectDlgProc(HWND hDlg, UINT message,
             bi.pidlRoot =       il;
 
             if (SHBrowseForFolder(&bi) != NULL) {
-                SendMessage(GetDlgItem(hDlg, IDC_COMPUTER), 
-                            WM_SETTEXT, 
-                            (WPARAM) NULL, (LPARAM) szCmp); 
+                SendMessage(GetDlgItem(hDlg, IDC_COMPUTER),
+                            WM_SETTEXT,
+                            (WPARAM) NULL, (LPARAM) szCmp);
             }
             if (SHGetMalloc(&pMalloc)) {
                 pMalloc->lpVtbl->Free(pMalloc, il);
@@ -1122,7 +1122,7 @@ LRESULT CALLBACK ConnectDlgProc(HWND hDlg, UINT message,
         break;
 
     case WM_QUIT:
-    case WM_CLOSE: 
+    case WM_CLOSE:
         EndDialog(hDlg, TRUE);
         return TRUE;
 
@@ -1134,24 +1134,24 @@ LRESULT CALLBACK ConnectDlgProc(HWND hDlg, UINT message,
 }
 
 
-LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message, 
+LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
                                 WPARAM wParam, LPARAM lParam)
 {
-    CHAR szBuf[MAX_PATH]; 
+    CHAR szBuf[MAX_PATH];
     HWND hListBox;
-    static HWND hStatusBar; 
-    TEXTMETRIC tm; 
-    int i, y; 
-    HDC hdcMem; 
-    RECT rcBitmap; 
+    static HWND hStatusBar;
+    TEXTMETRIC tm;
+    int i, y;
+    HDC hdcMem;
+    RECT rcBitmap;
     LRESULT nItem;
-    LPMEASUREITEMSTRUCT lpmis; 
-    LPDRAWITEMSTRUCT lpdis; 
+    LPMEASUREITEMSTRUCT lpmis;
+    LPDRAWITEMSTRUCT lpdis;
 
     memset(szBuf, 0, MAX_PATH);
-    switch (message) 
+    switch (message)
     {
-    case WM_INITDIALOG: 
+    case WM_INITDIALOG:
         ShowWindow(hDlg, SW_HIDE);
         g_hwndServiceDlg = hDlg;
         SetWindowText(hDlg, g_szTitle);
@@ -1159,17 +1159,17 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
         Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), FALSE);
         Button_Enable(GetDlgItem(hDlg, IDC_SRESTART), FALSE);
         Button_Enable(GetDlgItem(hDlg, IDC_SDISCONN), FALSE);
-        SetWindowText(GetDlgItem(hDlg, IDC_SSTART), 
+        SetWindowText(GetDlgItem(hDlg, IDC_SSTART),
                       g_lpMsg[IDS_MSG_SSTART - IDS_MSG_FIRST]);
-        SetWindowText(GetDlgItem(hDlg, IDC_SSTOP), 
+        SetWindowText(GetDlgItem(hDlg, IDC_SSTOP),
                       g_lpMsg[IDS_MSG_SSTOP - IDS_MSG_FIRST]);
-        SetWindowText(GetDlgItem(hDlg, IDC_SRESTART), 
+        SetWindowText(GetDlgItem(hDlg, IDC_SRESTART),
                       g_lpMsg[IDS_MSG_SRESTART - IDS_MSG_FIRST]);
-        SetWindowText(GetDlgItem(hDlg, IDC_SMANAGER), 
+        SetWindowText(GetDlgItem(hDlg, IDC_SMANAGER),
                       g_lpMsg[IDS_MSG_SERVICES - IDS_MSG_FIRST]);
-        SetWindowText(GetDlgItem(hDlg, IDC_SCONNECT), 
+        SetWindowText(GetDlgItem(hDlg, IDC_SCONNECT),
                       g_lpMsg[IDS_MSG_CONNECT - IDS_MSG_FIRST]);
-        SetWindowText(GetDlgItem(hDlg, IDC_SEXIT), 
+        SetWindowText(GetDlgItem(hDlg, IDC_SEXIT),
                       g_lpMsg[IDS_MSG_MNUEXIT - IDS_MSG_FIRST]);
         if (g_dwOSVersion < OS_VERSION_WINNT)
         {
@@ -1177,7 +1177,7 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
             ShowWindow(GetDlgItem(hDlg, IDC_SCONNECT), SW_HIDE);
             ShowWindow(GetDlgItem(hDlg, IDC_SDISCONN), SW_HIDE);
         }
-        hListBox = GetDlgItem(hDlg, IDL_SERVICES); 
+        hListBox = GetDlgItem(hDlg, IDL_SERVICES);
         g_hwndStdoutList = GetDlgItem(hDlg, IDL_STDOUT);
         hStatusBar = CreateStatusWindow(0x0800 /* SBT_TOOLTIPS */
                                       | WS_CHILD | WS_VISIBLE,
@@ -1188,15 +1188,15 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
             while (g_stServices[i].szServiceName != NULL)
             {
                 addListBoxItem(hListBox, g_stServices[i].szDisplayName,
-                               g_stServices[i].dwPid == 0 ? g_hBmpStop 
+                               g_stServices[i].dwPid == 0 ? g_hBmpStop
                                                           : g_hBmpStart);
                 ++i;
             }
         }
         CenterWindow(hDlg);
         ShowWindow(hDlg, SW_SHOW);
-        SetFocus(hListBox); 
-        SendMessage(hListBox, LB_SETCURSEL, 0, 0); 
+        SetFocus(hListBox);
+        SendMessage(hListBox, LB_SETCURSEL, 0, 0);
         return TRUE;
         break;
 
@@ -1210,8 +1210,8 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
         break;
 
     case WM_UPDATEMESSAGE:
-        hListBox = GetDlgItem(hDlg, IDL_SERVICES); 
-        SendMessage(hListBox, LB_RESETCONTENT, 0, 0); 
+        hListBox = GetDlgItem(hDlg, IDL_SERVICES);
+        SendMessage(hListBox, LB_RESETCONTENT, 0, 0);
         SendMessage(hStatusBar, SB_SETTEXT, 0, (LPARAM)"");
         Button_Enable(GetDlgItem(hDlg, IDC_SSTART), FALSE);
         Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), FALSE);
@@ -1220,24 +1220,24 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
         i = 0;
         while (g_stServices[i].szServiceName != NULL)
         {
-            addListBoxItem(hListBox, g_stServices[i].szDisplayName, 
+            addListBoxItem(hListBox, g_stServices[i].szDisplayName,
                 g_stServices[i].dwPid == 0 ? g_hBmpStop : g_hBmpStart);
             ++i;
         }
-        SendMessage(hListBox, LB_SETCURSEL, 0, 0); 
+        SendMessage(hListBox, LB_SETCURSEL, 0, 0);
         /* Dirty hack to bring the window to the foreground */
         SetWindowPos(hDlg, HWND_TOPMOST, 0, 0, 0, 0,
                                 SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
         SetWindowPos(hDlg, HWND_NOTOPMOST, 0, 0, 0, 0,
                                 SWP_NOSIZE | SWP_NOMOVE | SWP_SHOWWINDOW);
-        SetFocus(hListBox); 
+        SetFocus(hListBox);
         return TRUE;
         break;
 
-    case WM_MEASUREITEM: 
-        lpmis = (LPMEASUREITEMSTRUCT) lParam; 
-        lpmis->itemHeight = YBITMAP; 
-        return TRUE; 
+    case WM_MEASUREITEM:
+        lpmis = (LPMEASUREITEMSTRUCT) lParam;
+        lpmis->itemHeight = YBITMAP;
+        return TRUE;
 
     case WM_SETCURSOR:
         if (g_bConsoleRun) {
@@ -1248,49 +1248,49 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
         }
         return TRUE;
 
-    case WM_DRAWITEM: 
-        lpdis = (LPDRAWITEMSTRUCT) lParam; 
-        if (lpdis->itemID == -1) { 
-            break; 
-        } 
-        switch (lpdis->itemAction) 
-        { 
-        case ODA_SELECT: 
-        case ODA_DRAWENTIRE: 
-            g_hBmpPicture = (HBITMAP)SendMessage(lpdis->hwndItem, 
+    case WM_DRAWITEM:
+        lpdis = (LPDRAWITEMSTRUCT) lParam;
+        if (lpdis->itemID == -1) {
+            break;
+        }
+        switch (lpdis->itemAction)
+        {
+        case ODA_SELECT:
+        case ODA_DRAWENTIRE:
+            g_hBmpPicture = (HBITMAP)SendMessage(lpdis->hwndItem,
                                                  LB_GETITEMDATA,
                                                  lpdis->itemID, (LPARAM) 0);
 
-            hdcMem = CreateCompatibleDC(lpdis->hDC); 
-            g_hBmpOld = SelectObject(hdcMem, g_hBmpPicture); 
+            hdcMem = CreateCompatibleDC(lpdis->hDC);
+            g_hBmpOld = SelectObject(hdcMem, g_hBmpPicture);
 
             BitBlt(lpdis->hDC, lpdis->rcItem.left, lpdis->rcItem.top,
                    lpdis->rcItem.right - lpdis->rcItem.left,
                    lpdis->rcItem.bottom - lpdis->rcItem.top,
                    hdcMem, 0, 0, SRCCOPY);
-            SendMessage(lpdis->hwndItem, LB_GETTEXT, 
-                        lpdis->itemID, (LPARAM) szBuf); 
+            SendMessage(lpdis->hwndItem, LB_GETTEXT,
+                        lpdis->itemID, (LPARAM) szBuf);
 
             GetTextMetrics(lpdis->hDC, &tm);
             y = (lpdis->rcItem.bottom + lpdis->rcItem.top - tm.tmHeight) / 2;
 
-            SelectObject(hdcMem, g_hBmpOld); 
-            DeleteDC(hdcMem); 
+            SelectObject(hdcMem, g_hBmpOld);
+            DeleteDC(hdcMem);
 
-            rcBitmap.left = lpdis->rcItem.left + XBITMAP + 2; 
-            rcBitmap.top = lpdis->rcItem.top; 
-            rcBitmap.right = lpdis->rcItem.right; 
-            rcBitmap.bottom = lpdis->rcItem.top + YBITMAP; 
+            rcBitmap.left = lpdis->rcItem.left + XBITMAP + 2;
+            rcBitmap.top = lpdis->rcItem.top;
+            rcBitmap.right = lpdis->rcItem.right;
+            rcBitmap.bottom = lpdis->rcItem.top + YBITMAP;
 
-            if (lpdis->itemState & ODS_SELECTED) 
-            { 
+            if (lpdis->itemState & ODS_SELECTED)
+            {
                 if (g_hBmpPicture == g_hBmpStop)
                 {
                     Button_Enable(GetDlgItem(hDlg, IDC_SSTART), TRUE);
                     Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), FALSE);
                     Button_Enable(GetDlgItem(hDlg, IDC_SRESTART), FALSE);
                 }
-                else if (g_hBmpPicture == g_hBmpStart) 
+                else if (g_hBmpPicture == g_hBmpStart)
                 {
                     Button_Enable(GetDlgItem(hDlg, IDC_SSTART), FALSE);
                     Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), TRUE);
@@ -1301,7 +1301,7 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
                     Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), FALSE);
                     Button_Enable(GetDlgItem(hDlg, IDC_SRESTART), FALSE);
                 }
-                if (strcmp(g_stServices[lpdis->itemID].szComputerName, 
+                if (strcmp(g_stServices[lpdis->itemID].szComputerName,
                            g_szLocalHost) == 0) {
                     Button_Enable(GetDlgItem(hDlg, IDC_SDISCONN), FALSE);
                 }
@@ -1310,50 +1310,50 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
                 }
 
                 if (g_stServices[lpdis->itemID].szDescription) {
-                    SendMessage(hStatusBar, SB_SETTEXT, 0, 
+                    SendMessage(hStatusBar, SB_SETTEXT, 0,
                             (LPARAM)g_stServices[lpdis->itemID].szDescription);
                 }
                 else {
                     SendMessage(hStatusBar, SB_SETTEXT, 0, (LPARAM)"");
                 }
-                SetTextColor(lpdis->hDC, GetSysColor(COLOR_HIGHLIGHTTEXT)); 
-                SetBkColor(lpdis->hDC, GetSysColor(COLOR_HIGHLIGHT)); 
+                SetTextColor(lpdis->hDC, GetSysColor(COLOR_HIGHLIGHTTEXT));
+                SetBkColor(lpdis->hDC, GetSysColor(COLOR_HIGHLIGHT));
                 FillRect(lpdis->hDC, &rcBitmap, (HBRUSH)(COLOR_HIGHLIGHTTEXT));
-            } 
+            }
             else
             {
-               SetTextColor(lpdis->hDC, GetSysColor(COLOR_MENUTEXT)); 
-               SetBkColor(lpdis->hDC, GetSysColor(COLOR_WINDOW)); 
-               FillRect(lpdis->hDC, &rcBitmap, (HBRUSH)(COLOR_WINDOW+1)); 
+               SetTextColor(lpdis->hDC, GetSysColor(COLOR_MENUTEXT));
+               SetBkColor(lpdis->hDC, GetSysColor(COLOR_WINDOW));
+               FillRect(lpdis->hDC, &rcBitmap, (HBRUSH)(COLOR_WINDOW+1));
             }
-            TextOut(lpdis->hDC, XBITMAP + 6, y, szBuf, (int)strlen(szBuf)); 
-            break; 
+            TextOut(lpdis->hDC, XBITMAP + 6, y, szBuf, (int)strlen(szBuf));
+            break;
 
-        case ODA_FOCUS: 
-            break; 
-        } 
+        case ODA_FOCUS:
+            break;
+        }
         return TRUE;
-    case WM_COMMAND: 
-        switch (LOWORD(wParam)) 
-        { 
+    case WM_COMMAND:
+        switch (LOWORD(wParam))
+        {
         case IDL_SERVICES:
             switch (HIWORD(wParam))
             {
             case LBN_DBLCLK:
                 /* if started then stop, if stopped then start */
-                hListBox = GetDlgItem(hDlg, IDL_SERVICES); 
+                hListBox = GetDlgItem(hDlg, IDL_SERVICES);
                 nItem = SendMessage(hListBox, LB_GETCURSEL, 0, 0);
                 if (nItem != LB_ERR)
                 {
-                    g_hBmpPicture = (HBITMAP)SendMessage(hListBox, 
+                    g_hBmpPicture = (HBITMAP)SendMessage(hListBox,
                                                          LB_GETITEMDATA,
                                                          nItem, (LPARAM) 0);
                     if (g_hBmpPicture == g_hBmpStop) {
-                        SendMessage(hDlg, WM_MANAGEMESSAGE, nItem, 
+                        SendMessage(hDlg, WM_MANAGEMESSAGE, nItem,
                                     SERVICE_CONTROL_CONTINUE);
                     }
                     else {
-                        SendMessage(hDlg, WM_MANAGEMESSAGE, nItem, 
+                        SendMessage(hDlg, WM_MANAGEMESSAGE, nItem,
                                     SERVICE_CONTROL_STOP);
                     }
 
@@ -1362,44 +1362,44 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
             }
             break;
 
-        case IDOK: 
-            EndDialog(hDlg, TRUE); 
-            return TRUE; 
+        case IDOK:
+            EndDialog(hDlg, TRUE);
+            return TRUE;
 
-        case IDC_SSTART: 
+        case IDC_SSTART:
             Button_Enable(GetDlgItem(hDlg, IDC_SSTART), FALSE);
-            hListBox = GetDlgItem(hDlg, IDL_SERVICES); 
-            nItem = SendMessage(hListBox, LB_GETCURSEL, 0, 0); 
+            hListBox = GetDlgItem(hDlg, IDL_SERVICES);
+            nItem = SendMessage(hListBox, LB_GETCURSEL, 0, 0);
             if (nItem != LB_ERR) {
-                SendMessage(hDlg, WM_MANAGEMESSAGE, nItem, 
+                SendMessage(hDlg, WM_MANAGEMESSAGE, nItem,
                             SERVICE_CONTROL_CONTINUE);
             }
             Button_Enable(GetDlgItem(hDlg, IDC_SSTART), TRUE);
             return TRUE;
 
-        case IDC_SSTOP: 
+        case IDC_SSTOP:
             Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), FALSE);
-            hListBox = GetDlgItem(hDlg, IDL_SERVICES); 
-            nItem = SendMessage(hListBox, LB_GETCURSEL, 0, 0); 
+            hListBox = GetDlgItem(hDlg, IDL_SERVICES);
+            nItem = SendMessage(hListBox, LB_GETCURSEL, 0, 0);
             if (nItem != LB_ERR) {
-                SendMessage(hDlg, WM_MANAGEMESSAGE, nItem, 
+                SendMessage(hDlg, WM_MANAGEMESSAGE, nItem,
                             SERVICE_CONTROL_STOP);
             }
             Button_Enable(GetDlgItem(hDlg, IDC_SSTOP), TRUE);
             return TRUE;
 
-        case IDC_SRESTART: 
+        case IDC_SRESTART:
             Button_Enable(GetDlgItem(hDlg, IDC_SRESTART), FALSE);
-            hListBox = GetDlgItem(hDlg, IDL_SERVICES); 
-            nItem = SendMessage(hListBox, LB_GETCURSEL, 0, 0); 
+            hListBox = GetDlgItem(hDlg, IDL_SERVICES);
+            nItem = SendMessage(hListBox, LB_GETCURSEL, 0, 0);
             if (nItem != LB_ERR) {
-                SendMessage(hDlg, WM_MANAGEMESSAGE, nItem, 
+                SendMessage(hDlg, WM_MANAGEMESSAGE, nItem,
                             SERVICE_APACHE_RESTART);
             }
             Button_Enable(GetDlgItem(hDlg, IDC_SRESTART), TRUE);
             return TRUE;
 
-        case IDC_SMANAGER: 
+        case IDC_SMANAGER:
             if (g_dwOSVersion >= OS_VERSION_WIN2K) {
                 ShellExecute(hDlg, "open", "services.msc", "/s",
                              NULL, SW_NORMAL);
@@ -1409,19 +1409,19 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
             }
             return TRUE;
 
-        case IDC_SEXIT: 
+        case IDC_SEXIT:
             EndDialog(hDlg, TRUE);
             SendMessage(g_hwndMain, WM_COMMAND, (WPARAM)IDM_EXIT, 0);
             return TRUE;
 
-        case IDC_SCONNECT: 
+        case IDC_SCONNECT:
             DialogBox(g_hInstance, MAKEINTRESOURCE(IDD_DLGCONNECT),
                       hDlg, (DLGPROC)ConnectDlgProc);
             return TRUE;
 
-        case IDC_SDISCONN: 
-            hListBox = GetDlgItem(hDlg, IDL_SERVICES); 
-            nItem = SendMessage(hListBox, LB_GETCURSEL, 0, 0); 
+        case IDC_SDISCONN:
+            hListBox = GetDlgItem(hDlg, IDL_SERVICES);
+            nItem = SendMessage(hListBox, LB_GETCURSEL, 0, 0);
             if (nItem != LB_ERR) {
                 am_DisconnectComputer(g_stServices[nItem].szComputerName);
                 SendMessage(g_hwndMain, WM_TIMER, WM_TIMER_RESCAN, 0);
@@ -1431,17 +1431,17 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
         break;
 
     case WM_SIZE:
-        switch (LOWORD(wParam)) 
-        { 
+        switch (LOWORD(wParam))
+        {
         case SIZE_MINIMIZED:
-            EndDialog(hDlg, TRUE); 
-            return TRUE; 
+            EndDialog(hDlg, TRUE);
+            return TRUE;
             break;
         }
         break;
 
     case WM_QUIT:
-    case WM_CLOSE: 
+    case WM_CLOSE:
         EndDialog(hDlg, TRUE);
         return TRUE;
 
@@ -1461,7 +1461,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
         ShowNotifyIcon(hWnd, NIM_ADD);
         return DefWindowProc(hWnd, message, wParam, lParam);
     }
-    switch (message) 
+    switch (message)
     {
     case WM_CREATE:
         GetApacheServicesStatus();
@@ -1565,33 +1565,33 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
     case WM_COMMAND:
         if ((LOWORD(wParam) & IDM_SM_START) == IDM_SM_START)
         {
-            ApacheManageService(g_stServices[LOWORD(wParam) 
+            ApacheManageService(g_stServices[LOWORD(wParam)
                                            - IDM_SM_START].szServiceName,
-                                g_stServices[LOWORD(wParam) 
+                                g_stServices[LOWORD(wParam)
                                            - IDM_SM_START].szImagePath,
-                                g_stServices[LOWORD(wParam) 
+                                g_stServices[LOWORD(wParam)
                                            - IDM_SM_START].szComputerName,
                                 SERVICE_CONTROL_CONTINUE);
             return TRUE;
         }
         else if ((LOWORD(wParam) & IDM_SM_STOP) == IDM_SM_STOP)
         {
-            ApacheManageService(g_stServices[LOWORD(wParam) 
+            ApacheManageService(g_stServices[LOWORD(wParam)
                                            - IDM_SM_STOP].szServiceName,
-                                g_stServices[LOWORD(wParam) 
+                                g_stServices[LOWORD(wParam)
                                            - IDM_SM_STOP].szImagePath,
-                                g_stServices[LOWORD(wParam) 
+                                g_stServices[LOWORD(wParam)
                                            - IDM_SM_STOP].szComputerName,
                                 SERVICE_CONTROL_STOP);
             return TRUE;
         }
         else if ((LOWORD(wParam) & IDM_SM_RESTART) == IDM_SM_RESTART)
         {
-            ApacheManageService(g_stServices[LOWORD(wParam) 
+            ApacheManageService(g_stServices[LOWORD(wParam)
                                            - IDM_SM_RESTART].szServiceName,
-                                g_stServices[LOWORD(wParam) 
+                                g_stServices[LOWORD(wParam)
                                            - IDM_SM_RESTART].szImagePath,
-                                g_stServices[LOWORD(wParam) 
+                                g_stServices[LOWORD(wParam)
                                            - IDM_SM_RESTART].szComputerName,
                                 SERVICE_APACHE_RESTART);
             return TRUE;
@@ -1612,7 +1612,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
             }
             break;
 
-        case IDC_SMANAGER: 
+        case IDC_SMANAGER:
             if (g_dwOSVersion >= OS_VERSION_WIN2K) {
                 ShellExecute(NULL, "open", "services.msc", "/s",
                              NULL, SW_NORMAL);
@@ -1648,7 +1648,7 @@ HWND CreateMainWindow(HINSTANCE hInstance)
         return hWnd;
     }
 
-    wcex.cbSize = sizeof(WNDCLASSEX); 
+    wcex.cbSize = sizeof(WNDCLASSEX);
 
     wcex.style          = CS_HREDRAW | CS_VREDRAW;
     wcex.lpfnWndProc    = (WNDPROC)WndProc;
@@ -1711,17 +1711,17 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                                    IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
     g_icoRun           = LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICORUN),
                                    IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
-    g_hCursorHourglass = LoadImage(NULL, MAKEINTRESOURCE(OCR_WAIT), 
-                                   IMAGE_CURSOR, LR_DEFAULTSIZE, 
+    g_hCursorHourglass = LoadImage(NULL, MAKEINTRESOURCE(OCR_WAIT),
+                                   IMAGE_CURSOR, LR_DEFAULTSIZE,
                                    LR_DEFAULTSIZE, LR_SHARED);
-    g_hCursorArrow     = LoadImage(NULL, MAKEINTRESOURCE(OCR_NORMAL), 
-                                   IMAGE_CURSOR, LR_DEFAULTSIZE, 
+    g_hCursorArrow     = LoadImage(NULL, MAKEINTRESOURCE(OCR_NORMAL),
+                                   IMAGE_CURSOR, LR_DEFAULTSIZE,
                                    LR_DEFAULTSIZE, LR_SHARED);
     g_hBmpStart        = LoadImage(hInstance, MAKEINTRESOURCE(IDB_BMPRUN),
-                                   IMAGE_BITMAP, XBITMAP, YBITMAP, 
+                                   IMAGE_BITMAP, XBITMAP, YBITMAP,
                                    LR_DEFAULTCOLOR);
     g_hBmpStop         = LoadImage(hInstance, MAKEINTRESOURCE(IDB_BMPSTOP),
-                                   IMAGE_BITMAP, XBITMAP, YBITMAP, 
+                                   IMAGE_BITMAP, XBITMAP, YBITMAP,
                                    LR_DEFAULTCOLOR);
 
     hMutex = CreateMutex(NULL, FALSE, "APSRVMON_MUTEX");
@@ -1744,7 +1744,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     g_hwndServiceDlg = NULL;
     if (g_hwndMain != NULL)
     {
-        while (GetMessage(&msg, NULL, 0, 0) == TRUE) 
+        while (GetMessage(&msg, NULL, 0, 0) == TRUE)
         {
             TranslateMessage(&msg);
             DispatchMessage(&msg);
@@ -1758,8 +1758,8 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     DestroyIcon(g_icoRun);
     DestroyCursor(g_hCursorHourglass);
     DestroyCursor(g_hCursorArrow);
-    DeleteObject(g_hBmpStart); 
-    DeleteObject(g_hBmpStop); 
+    DeleteObject(g_hBmpStart);
+    DeleteObject(g_hBmpStop);
     CoUninitialize();
     return 0;
 }

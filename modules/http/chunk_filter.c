@@ -52,7 +52,7 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
         apr_off_t bytes = 0;
         apr_bucket *eos = NULL;
         apr_bucket *flush = NULL;
-        /* XXX: chunk_hdr must remain at this scope since it is used in a 
+        /* XXX: chunk_hdr must remain at this scope since it is used in a
          *      transient bucket.
          */
         char chunk_hdr[20]; /* enough space for the snprintf below */

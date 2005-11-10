@@ -229,7 +229,7 @@ static int mget(request_rec *, union VALUETYPE *, unsigned char *,
 static int mcheck(request_rec *, union VALUETYPE *, struct magic *);
 static void mprint(request_rec *, union VALUETYPE *, struct magic *);
 
-static int uncompress(request_rec *, int, 
+static int uncompress(request_rec *, int,
                       unsigned char **, apr_size_t);
 static long from_oct(int, char *);
 static int fsmagic(request_rec *r, const char *fn);
@@ -885,7 +885,7 @@ static int tryit(request_rec *r, unsigned char *buf, apr_size_t nb,
     /*
      * Try compression stuff
      */
-        if (checkzmagic == 1) {  
+        if (checkzmagic == 1) {
                         if (zmagic(r, buf, nb) == 1)
                         return OK;
         }
@@ -933,8 +933,8 @@ static int apprentice(server_rec *s, apr_pool_t *p)
         ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
                      MODNAME ": Invalid magic file path %s", conf->magicfile);
         return -1;
-    }        
-    if ((result = apr_file_open(&f, fname, APR_READ | APR_BUFFERED, 
+    }
+    if ((result = apr_file_open(&f, fname, APR_READ | APR_BUFFERED,
                                 APR_OS_DEFAULT, p) != APR_SUCCESS)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, result, s,
                      MODNAME ": can't read magic file %s", fname);
@@ -957,7 +957,7 @@ static int apprentice(server_rec *s, apr_pool_t *p)
             *last = '\0';
             --last;
         }
-        
+
         /* skip leading whitespace */
         ws_offset = 0;
         while (line[ws_offset] && apr_isspace(line[ws_offset])) {
@@ -2127,16 +2127,16 @@ static int create_uncompress_child(struct uncompress_parms *parm, apr_pool_t *cn
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
-    /* XXX missing 1.3 logic: 
+    /* XXX missing 1.3 logic:
      *
      * what happens when !compr[parm->method].silent?
      * Should we create the err pipe, read it, and copy to the log?
      */
-        
+
     env = (const char *const *)ap_create_environment(child_context, r->subprocess_env);
 
     if ((apr_procattr_create(&procattr, child_context) != APR_SUCCESS) ||
-        (apr_procattr_io_set(procattr, APR_FULL_BLOCK, 
+        (apr_procattr_io_set(procattr, APR_FULL_BLOCK,
                            APR_FULL_BLOCK, APR_NO_PIPE)   != APR_SUCCESS) ||
         (apr_procattr_dir_set(procattr, r->filename)        != APR_SUCCESS) ||
         (apr_procattr_cmdtype_set(procattr, APR_PROGRAM)    != APR_SUCCESS)) {
@@ -2169,7 +2169,7 @@ static int create_uncompress_child(struct uncompress_parms *parm, apr_pool_t *cn
     return (rc);
 }
 
-static int uncompress(request_rec *r, int method, 
+static int uncompress(request_rec *r, int method,
                       unsigned char **newch, apr_size_t n)
 {
     struct uncompress_parms parm;
@@ -2341,7 +2341,7 @@ static int revision_suffix(request_rec *r)
                 apr_pstrdup(r->pool, sub->content_encoding);
         if (sub->content_languages) {
             int n;
-            r->content_languages = apr_array_copy(r->pool, 
+            r->content_languages = apr_array_copy(r->pool,
                                                   sub->content_languages);
             for (n = 0; n < r->content_languages->nelts; ++n) {
                 char **lang = ((char **)r->content_languages->elts) + n;

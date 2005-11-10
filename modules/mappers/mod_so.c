@@ -14,10 +14,10 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * This module is used to load Apache modules at runtime. This means that the
  * server functionality can be extended without recompiling and even without
- * taking the server down at all. Only a HUP or AP_SIG_GRACEFUL signal 
+ * taking the server down at all. Only a HUP or AP_SIG_GRACEFUL signal
  * needs to be sent to the server to reload the dynamically loaded modules.
  *
  * To use, you'll first need to build your module as a shared library, then
@@ -40,7 +40,7 @@
  *
  * To use the shared module, move the .so file(s) into an appropriate
  * directory. You might like to create a directory called "modules" under you
- * server root for this (e.g. /usr/local/httpd/modules). 
+ * server root for this (e.g. /usr/local/httpd/modules).
  *
  * Then edit your conf/httpd.conf file, and add LoadModule lines. For
  * example
@@ -56,8 +56,8 @@
  * directive to get these log messages).
  *
  * If you edit the LoadModule directives while the server is live you can get
- * Apache to re-load the modules by sending it a HUP or AP_SIG_GRACEFUL 
- * signal as normal.  You can use this to dynamically change the capability 
+ * Apache to re-load the modules by sending it a HUP or AP_SIG_GRACEFUL
+ * signal as normal.  You can use this to dynamically change the capability
  * of your server without bringing it down.
  *
  * Because currently there is only limited builtin support in the Configure
@@ -114,7 +114,7 @@ static void *so_sconf_create(apr_pool_t *p, server_rec *s)
     so_server_conf *soc;
 
     soc = (so_server_conf *)apr_pcalloc(p, sizeof(so_server_conf));
-    soc->loaded_modules = apr_array_make(p, DYNAMIC_MODULE_LIMIT, 
+    soc->loaded_modules = apr_array_make(p, DYNAMIC_MODULE_LIMIT,
                                      sizeof(ap_module_symbol_t));
 
     return (void *)soc;
@@ -144,12 +144,12 @@ static apr_status_t unload_module(void *data)
     return APR_SUCCESS;
 }
 
-/* 
+/*
  * This is called for the directive LoadModule and actually loads
  * a shared object file into the address space of the server process.
  */
 
-static const char *load_module(cmd_parms *cmd, void *dummy, 
+static const char *load_module(cmd_parms *cmd, void *dummy,
                                const char *modname, const char *filename)
 {
     apr_dso_handle_t *modhandle;
@@ -169,16 +169,16 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     *(ap_directive_t **)dummy = NULL;
 
     if (!szModuleFile) {
-        return apr_pstrcat(cmd->pool, "Invalid LoadModule path ", 
+        return apr_pstrcat(cmd->pool, "Invalid LoadModule path ",
                            filename, NULL);
     }
 
-    /* 
+    /*
      * check for already existing module
-     * If it already exists, we have nothing to do 
+     * If it already exists, we have nothing to do
      * Check both dynamically-loaded modules and statically-linked modules.
      */
-    sconf = (so_server_conf *)ap_get_module_config(cmd->server->module_config, 
+    sconf = (so_server_conf *)ap_get_module_config(cmd->server->module_config,
                                                 &so_module);
     modie = (ap_module_symbol_t *)sconf->loaded_modules->elts;
     for (i = 0; i < sconf->loaded_modules->nelts; i++) {
@@ -255,7 +255,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         char my_error[256];
 
         return apr_pstrcat(cmd->pool, "Can't locate API module structure `",
-                          modname, "' in file ", szModuleFile, ": ", 
+                          modname, "' in file ", szModuleFile, ": ",
                           apr_dso_error(modhandle, my_error, sizeof(my_error)),
                           NULL);
     }
@@ -263,9 +263,9 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     modp->dynamic_load_handle = (apr_dso_handle_t *)modhandle;
     modi->modp = modp;
 
-    /* 
+    /*
      * Make sure the found module structure is really a module structure
-     * 
+     *
      */
     if (modp->magic != MODULE_MAGIC_COOKIE) {
         return apr_pstrcat(cmd->pool, "API module structure `", modname,
@@ -273,7 +273,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
                           " perhaps this is not an Apache module DSO?", NULL);
     }
 
-    /* 
+    /*
      * Add this module to the Apache core structures
      */
     error = ap_add_loaded_module(modp, cmd->pool);
@@ -281,14 +281,14 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         return error;
     }
 
-    /* 
+    /*
      * Register a cleanup in the config apr_pool_t (normally pconf). When
      * we do a restart (or shutdown) this cleanup will cause the
      * shared object to be unloaded.
      */
     apr_pool_cleanup_register(cmd->pool, modi, unload_module, apr_pool_cleanup_null);
 
-    /* 
+    /*
      * Finally we need to run the configuration process for the module
      */
     ap_single_module_configure(cmd->pool, cmd->server, modp);
@@ -296,7 +296,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-/* 
+/*
  * This implements the LoadFile directive and loads an arbitrary
  * shared object file into the adress space of the server process.
  */
@@ -307,21 +307,21 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
     const char *file;
 
     file = ap_server_root_relative(cmd->pool, filename);
-    
+
     if (!file) {
-        return apr_pstrcat(cmd->pool, "Invalid LoadFile path ", 
+        return apr_pstrcat(cmd->pool, "Invalid LoadFile path ",
                            filename, NULL);
     }
 
     if (apr_dso_load(&handle, file, cmd->pool) != APR_SUCCESS) {
         char my_error[256];
 
-        return apr_pstrcat(cmd->pool, "Cannot load ", filename, 
-                          " into server: ", 
+        return apr_pstrcat(cmd->pool, "Cannot load ", filename,
+                          " into server: ",
                           apr_dso_error(handle, my_error, sizeof(my_error)),
                           NULL);
     }
-    
+
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
                  "loaded file %s", filename);
 
@@ -335,7 +335,7 @@ static module *ap_find_loaded_module_symbol(server_rec *s, const char *modname)
     ap_module_symbol_t *modie;
     int i;
 
-    sconf = (so_server_conf *)ap_get_module_config(s->module_config, 
+    sconf = (so_server_conf *)ap_get_module_config(s->module_config,
                                                    &so_module);
     modie = (ap_module_symbol_t *)sconf->loaded_modules->elts;
 
@@ -364,7 +364,7 @@ static void dump_loaded_modules(apr_pool_t *p, server_rec *s)
 
     apr_file_printf(out, "Loaded Modules:\n");
 
-    sconf = (so_server_conf *)ap_get_module_config(s->module_config, 
+    sconf = (so_server_conf *)ap_get_module_config(s->module_config,
                                                    &so_module);
     for (i = 0; ; i++) {
         modi = &ap_prelinked_module_symbols[i];
@@ -389,15 +389,15 @@ static void dump_loaded_modules(apr_pool_t *p, server_rec *s)
 
 static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 {
-    ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, cmd->pool, 
+    ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, cmd->pool,
                  "WARNING: LoadFile not supported on this platform");
     return NULL;
 }
 
-static const char *load_module(cmd_parms *cmd, void *dummy, 
+static const char *load_module(cmd_parms *cmd, void *dummy,
                                const char *modname, const char *filename)
 {
-    ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, cmd->pool, 
+    ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, cmd->pool,
                  "WARNING: LoadModule not supported on this platform");
     return NULL;
 }

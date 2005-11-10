@@ -20,8 +20,8 @@
  ***********************************************************************
  *
  * NOTE! : DO NOT edit this code!!!  Unless you know what you are doing,
- *         editing this code might open up your system in unexpected 
- *         ways to would-be crackers.  Every precaution has been taken 
+ *         editing this code might open up your system in unexpected
+ *         ways to would-be crackers.  Every precaution has been taken
  *         to make this code as safe as possible; alter it at your own
  *         risk.
  *
@@ -217,9 +217,9 @@ static void clean_env(void)
      */
     char **envp = environ;
     char *empty_ptr = NULL;
- 
+
     environ = &empty_ptr; /* VERY safe environment */
-    
+
     if ((cleanenv = (char **) calloc(AP_ENVBUF, sizeof(char *))) == NULL) {
         log_err("failed to malloc memory for environment\n");
         exit(120);
@@ -429,7 +429,7 @@ int main(int argc, char *argv[])
         }
     }
 #endif /*_OSD_POSIX*/
-    
+
     /*
      * Save these for later since initgroups will hose the struct
      */
@@ -438,7 +438,7 @@ int main(int argc, char *argv[])
     target_homedir = strdup(pw->pw_dir);
 
     /*
-     * Log the transaction here to be sure we have an open log 
+     * Log the transaction here to be sure we have an open log
      * before we setuid().
      */
     log_no_err("uid: (%s/%s) gid: (%s/%s) cmd: %s\n",
@@ -595,9 +595,9 @@ int main(int argc, char *argv[])
     umask(AP_SUEXEC_UMASK);
 #endif /* AP_SUEXEC_UMASK */
 
-    /* 
+    /*
      * Be sure to close the log file so the CGI can't
-     * mess with it.  If the exec fails, it will be reopened 
+     * mess with it.  If the exec fails, it will be reopened
      * automatically when log_err is called.  Note that the log
      * might not actually be open if AP_LOG_EXEC isn't defined.
      * However, the "log" cell isn't ifdef'd so let's be defensive

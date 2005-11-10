@@ -61,7 +61,7 @@ static int check_user_access(request_rec *r)
     const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs;
 
-    /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive, 
+    /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive,
      * then any user will do.
      */
     if (!reqs_arr) {
@@ -81,7 +81,7 @@ static int check_user_access(request_rec *r)
             return OK;
         }
         if (!strcasecmp(w, "user")) {
-            /* And note that there are applicable requirements 
+            /* And note that there are applicable requirements
              * which we consider ourselves the owner of.
              */
             required_user = 1;
@@ -107,7 +107,7 @@ static int check_user_access(request_rec *r)
                   "access to %s failed, reason: user '%s' does not meet "
                   "'require'ments for user/valid-user to be allowed access",
                   r->uri, user);
-        
+
     ap_note_auth_failure(r);
     return HTTP_UNAUTHORIZED;
 }

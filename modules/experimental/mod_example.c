@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * Apache example module.  Provide demonstrations of how modules do things.
  * It is not meant to be used in a production server.  Since it participates
  * in all of the processing phases, it could conceivable interfere with
@@ -458,7 +458,7 @@ static void trace_add(server_rec *s, request_rec *r, x_cfg *mconfig,
 /* at it.  If it returns any other value, it's treated as the text of an    */
 /* error message.                                                           */
 /*--------------------------------------------------------------------------*/
-/* 
+/*
  * Command handler for the NO_ARGS "Example" directive.  All we do is mark the
  * call in the trace log, and flag the applicability of the directive to the
  * current location in that location's configuration record.
@@ -489,7 +489,7 @@ static const char *cmd_example(cmd_parms *cmd, void *mconfig)
 /* calling send_http_header().  Otherwise, no header will be sent at all,   */
 /* and the output sent to the client will actually be HTTP-uncompliant.     */
 /*--------------------------------------------------------------------------*/
-/* 
+/*
  * Sample content handler.  All this does is display the call list that has
  * been built up so far.
  *
@@ -627,7 +627,7 @@ static int x_handler(request_rec *r)
 /* see the individual handler comments below for details.                   */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
-/* 
+/*
  * This function is called during server initialisation.  Any information
  * that needs to be recorded must be in static cells, since there's no
  * configuration record.
@@ -635,7 +635,7 @@ static int x_handler(request_rec *r)
  * There is no return value.
  */
 
-/* 
+/*
  * This function is called when an heavy-weight process (such as a child) is
  * being run down or destroyed.  As with the child initialisation function,
  * any information that needs to be recorded must be in static cells, since
@@ -644,7 +644,7 @@ static int x_handler(request_rec *r)
  * There is no return value.
  */
 
-/* 
+/*
  * This function is called during server initialisation when an heavy-weight
  * process (such as a child) is being initialised.  As with the
  * module initialisation function, any information that needs to be recorded
@@ -1014,7 +1014,7 @@ static int x_pre_connection(conn_rec *c, void *csd)
  * some other protocol.  Both echo and POP3 modules are available as
  * examples.
  *
- * The return VALUE is OK, DECLINED, or HTTP_mumble.  If we return OK, no 
+ * The return VALUE is OK, DECLINED, or HTTP_mumble.  If we return OK, no
  * further modules are called for this phase.
  */
 static int x_process_connection(conn_rec *c)
@@ -1244,9 +1244,9 @@ static int x_logger(request_rec *r)
 /* Which functions are responsible for which hooks in the server.           */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
-/* 
+/*
  * Each function our module provides to handle a particular hook is
- * specified here.  The functions are registered using 
+ * specified here.  The functions are registered using
  * ap_hook_foo(name, predecessors, successors, position)
  * where foo is the name of the hook.
  *
@@ -1262,7 +1262,7 @@ static int x_logger(request_rec *r)
  *                 modules use the same relative position, Apache will
  *                 determine which to call first.
  *                 If your module relies on another module to run first,
- *                 or another module running after yours, use the 
+ *                 or another module running after yours, use the
  *                 predecessors and/or successors.
  *
  * The number in brackets indicates the order in which the routine is called
@@ -1309,7 +1309,7 @@ static void x_register_hooks(apr_pool_t *p)
 /* collisions of directive names between modules.                           */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
-/* 
+/*
  * List of directives specific to our module.
  */
 static const command_rec x_cmds[] =
@@ -1329,7 +1329,7 @@ static const command_rec x_cmds[] =
 /* the static hooks into our module from the other parts of the server.     */
 /*                                                                          */
 /*--------------------------------------------------------------------------*/
-/* 
+/*
  * Module definition for configuration.  If a particular callback is not
  * needed, replace its routine name below with the word NULL.
  */

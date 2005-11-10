@@ -65,7 +65,7 @@ static const char *const pstring[] = {
   "match failed"                     /* AP_REG_NOMATCH */
 };
 
-AP_DECLARE(apr_size_t) ap_regerror(int errcode, const ap_regex_t *preg, 
+AP_DECLARE(apr_size_t) ap_regerror(int errcode, const ap_regex_t *preg,
                                    char *errbuf, apr_size_t errbuf_size)
 {
 const char *message, *addmessage;

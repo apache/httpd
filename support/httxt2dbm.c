@@ -157,7 +157,7 @@ static apr_status_t to_dbm(apr_dbm_t *dbm, apr_file_t *fp, apr_pool_t *pool)
         dbmval.dsize = (c - line);
 
         if (verbose) {
-            apr_file_printf(errfile, "    '%s' -> '%s'"NL, 
+            apr_file_printf(errfile, "    '%s' -> '%s'"NL,
                             dbmkey.dptr, dbmval.dptr);
         }
 
@@ -173,7 +173,7 @@ static apr_status_t to_dbm(apr_dbm_t *dbm, apr_file_t *fp, apr_pool_t *pool)
     return rv;
 }
 
-int main(int argc, const char *const argv[]) 
+int main(int argc, const char *const argv[])
 {
     apr_pool_t *pool;
     apr_status_t rv = APR_SUCCESS;
@@ -280,12 +280,12 @@ int main(int argc, const char *const argv[])
         rv = apr_file_open_stdin(&infile, pool);
     }
     else {
-        rv = apr_file_open(&infile, input, APR_READ|APR_BUFFERED, 
+        rv = apr_file_open(&infile, input, APR_READ|APR_BUFFERED,
                            APR_OS_DEFAULT, pool);
     }
 
     if (rv != APR_SUCCESS) {
-        apr_file_printf(errfile, 
+        apr_file_printf(errfile,
                         "Error: Cannot open input file '%s': (%d) %s" NL NL,
                          input, rv, apr_strerror(rv, errbuf, sizeof(errbuf)));
         return 1;
@@ -295,18 +295,18 @@ int main(int argc, const char *const argv[])
         apr_file_printf(errfile, "Input File: %s"NL, input);
     }
 
-    rv = apr_dbm_open_ex(&outdbm, format, output, APR_DBM_RWCREATE, 
+    rv = apr_dbm_open_ex(&outdbm, format, output, APR_DBM_RWCREATE,
                     APR_OS_DEFAULT, pool);
 
     if (APR_STATUS_IS_ENOTIMPL(rv)) {
-        apr_file_printf(errfile, 
+        apr_file_printf(errfile,
                         "Error: The requested DBM Format '%s' is not available." NL NL,
                          format);
         return 1;
     }
 
     if (rv != APR_SUCCESS) {
-        apr_file_printf(errfile, 
+        apr_file_printf(errfile,
                         "Error: Cannot open output DBM '%s': (%d) %s" NL NL,
                          output, rv, apr_strerror(rv, errbuf, sizeof(errbuf)));
         return 1;
@@ -319,7 +319,7 @@ int main(int argc, const char *const argv[])
     rv = to_dbm(outdbm, infile, pool);
 
     if (rv != APR_SUCCESS) {
-        apr_file_printf(errfile, 
+        apr_file_printf(errfile,
                         "Error: Converting to DBM: (%d) %s" NL NL,
                          rv, apr_strerror(rv, errbuf, sizeof(errbuf)));
         return 1;

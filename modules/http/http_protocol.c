@@ -459,7 +459,7 @@ AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
     if (methname == NULL) {
         return M_INVALID;
     }
-    
+
     /* Check if the method was previously registered.  If it was
      * return the associated method number.
      */
@@ -467,7 +467,7 @@ AP_DECLARE(int) ap_method_register(apr_pool_t *p, const char *methname)
                                   APR_HASH_KEY_STRING);
     if (methnum != NULL)
         return *methnum;
-        
+
     if (cur_method_number > METHOD_NUMBER_LAST) {
         /* The method registry  has run out of dynamically
          * assignable method numbers. Log this and return M_INVALID.
@@ -822,9 +822,9 @@ AP_DECLARE(void) ap_set_content_type(request_rec *r, const char *ct)
     else if (!r->content_type || strcmp(r->content_type, ct)) {
         r->content_type = ct;
 
-        /* Insert filters requested by the AddOutputFiltersByType 
-         * configuration directive. Content-type filters must be 
-         * inserted after the content handlers have run because 
+        /* Insert filters requested by the AddOutputFiltersByType
+         * configuration directive. Content-type filters must be
+         * inserted after the content handlers have run because
          * only then, do we reliably know the content-type.
          */
         ap_add_output_filters_by_type(r);
@@ -1107,7 +1107,7 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
      */
     r->eos_sent = 0;
 
-    /* and we need to get rid of any RESOURCE filters that might be lurking 
+    /* and we need to get rid of any RESOURCE filters that might be lurking
      * around, thinking they are in the middle of the original request
      */
 
@@ -1196,11 +1196,11 @@ AP_DECLARE(void) ap_send_error_response(request_rec *r, int recursive_error)
          * as a text message, so first check the custom response
          * string to ensure that it is a text-string (using the
          * same test used in ap_die(), i.e. does it start with a ").
-         * 
-         * If it's not a text string, we've got a recursive error or 
+         *
+         * If it's not a text string, we've got a recursive error or
          * an external redirect.  If it's a recursive error, ap_die passes
-         * us the second error code so we can write both, and has already 
-         * backed up to the original error.  If it's an external redirect, 
+         * us the second error code so we can write both, and has already
+         * backed up to the original error.  If it's an external redirect,
          * it hasn't happened yet; we may never know if it fails.
          */
         if (custom_response[0] == '\"') {

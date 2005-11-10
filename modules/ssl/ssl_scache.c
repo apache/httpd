@@ -162,7 +162,7 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
     else if (sc->mc->nSessionCacheMode == SSL_SCMODE_DC)
         ssl_scache_dc_status(r, flags, r->pool);
 #endif
-    
+
     ap_rputs("</td></tr>\n", r);
     ap_rputs("</table>\n", r);
     return OK;

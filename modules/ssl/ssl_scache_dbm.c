@@ -209,7 +209,7 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
     dbmkey.dptr  = (char *)id;
     dbmkey.dsize = idlen;
 
-    /* and fetch it from the DBM file 
+    /* and fetch it from the DBM file
      * XXX: Should we open the dbm against r->pool so the cleanup will
      * do the apr_dbm_close? This would make the code a bit cleaner.
      */
@@ -244,7 +244,7 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
         return NULL;
     }
     /* Cast needed, ucpData may be const */
-    memcpy((unsigned char *)ucpData, 
+    memcpy((unsigned char *)ucpData,
            (char *)dbmval.dptr + sizeof(time_t), nData);
     memcpy(&expiry, dbmval.dptr, sizeof(time_t));
 
@@ -347,7 +347,7 @@ static void ssl_scache_dbm_expire(server_rec *s)
 
         /* pass 1: scan DBM database */
         keyidx = 0;
-        if ((rv = apr_dbm_open(&dbm, mc->szSessionCacheDataFile, 
+        if ((rv = apr_dbm_open(&dbm, mc->szSessionCacheDataFile,
                                APR_DBM_RWCREATE,SSL_DBM_FILE_MODE,
                                p)) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
