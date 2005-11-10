@@ -36,43 +36,43 @@ static int asis_handler(request_rec *r)
     const char *location;
 
     if(strcmp(r->handler,ASIS_MAGIC_TYPE) && strcmp(r->handler,"send-as-is"))
-	return DECLINED;
+        return DECLINED;
 
     r->allowed |= (AP_METHOD_BIT << M_GET);
     if (r->method_number != M_GET)
-	return DECLINED;
+        return DECLINED;
     if (r->finfo.filetype == 0) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-		    "File does not exist: %s", r->filename);
-	return HTTP_NOT_FOUND;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                    "File does not exist: %s", r->filename);
+        return HTTP_NOT_FOUND;
     }
 
     if ((rv = apr_file_open(&f, r->filename, APR_READ, 
                 APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-		    "file permissions deny server access: %s", r->filename);
-	return HTTP_FORBIDDEN;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                    "file permissions deny server access: %s", r->filename);
+        return HTTP_FORBIDDEN;
     }
 
     ap_scan_script_header_err(r, f, NULL);
     location = apr_table_get(r->headers_out, "Location");
 
     if (location && location[0] == '/' &&
-	((r->status == HTTP_OK) || ap_is_HTTP_REDIRECT(r->status))) {
+        ((r->status == HTTP_OK) || ap_is_HTTP_REDIRECT(r->status))) {
 
-	apr_file_close(f);
+        apr_file_close(f);
 
-	/* Internal redirect -- fake-up a pseudo-request */
-	r->status = HTTP_OK;
+        /* Internal redirect -- fake-up a pseudo-request */
+        r->status = HTTP_OK;
 
-	/* This redirect needs to be a GET no matter what the original
-	 * method was.
-	 */
-	r->method = apr_pstrdup(r->pool, "GET");
-	r->method_number = M_GET;
+        /* This redirect needs to be a GET no matter what the original
+         * method was.
+         */
+        r->method = apr_pstrdup(r->pool, "GET");
+        r->method_number = M_GET;
 
-	ap_internal_redirect_handler(location, r);
-	return OK;
+        ap_internal_redirect_handler(location, r);
+        return OK;
     }
 
     if (!r->header_only) {

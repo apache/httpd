@@ -81,7 +81,7 @@ static void server_maintenance(void *vpArg);
 static void clean_child_exit(int code)
 {
     if (pchild) {
-	apr_pool_destroy(pchild);
+        apr_pool_destroy(pchild);
     }
 
     exit(code);
@@ -471,10 +471,10 @@ static void set_signals()
     sa.sa_handler = sig_term;
 
     if (sigaction(SIGTERM, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGTERM)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGTERM)");
 
     sa.sa_handler = sig_hup;
 
     if (sigaction(SIGHUP, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGHUP)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGHUP)");
 }

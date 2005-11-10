@@ -46,7 +46,7 @@ static const command_rec authn_default_cmds[] =
                  OR_AUTHCFG,
                  "Set to 'Off' to allow access control to be passed along to "
                  "lower modules if the UserID is not known to this module. "
-		         "(default is On)."),
+                         "(default is On)."),
     {NULL}
 };
 
@@ -60,7 +60,7 @@ static int authenticate_no_user(request_rec *r)
     const char *type;
 
     if (!(type = ap_auth_type(r))) {
-	return DECLINED;
+        return DECLINED;
     }
 
     /* fill in the r->user field */
@@ -74,7 +74,7 @@ static int authenticate_no_user(request_rec *r)
     }
 
     if (conf->authoritative == 0) {
-	return DECLINED;
+        return DECLINED;
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,

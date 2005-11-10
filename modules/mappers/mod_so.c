@@ -179,7 +179,7 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * Check both dynamically-loaded modules and statically-linked modules.
      */
     sconf = (so_server_conf *)ap_get_module_config(cmd->server->module_config, 
-	                                        &so_module);
+                                                &so_module);
     modie = (ap_module_symbol_t *)sconf->loaded_modules->elts;
     for (i = 0; i < sconf->loaded_modules->nelts; i++) {
         modi = &modie[i];
@@ -239,12 +239,12 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
         char my_error[256];
 
         return apr_pstrcat(cmd->pool, "Cannot load ", szModuleFile,
-			  " into server: ",
-			  apr_dso_error(modhandle, my_error, sizeof(my_error)),
-			  NULL);
+                          " into server: ",
+                          apr_dso_error(modhandle, my_error, sizeof(my_error)),
+                          NULL);
     }
     ap_log_perror(APLOG_MARK, APLOG_DEBUG, 0, cmd->pool,
-		 "loaded module %s", modname);
+                 "loaded module %s", modname);
 
     /*
      * Retrieve the pointer to the module structure through the module name:
@@ -254,10 +254,10 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
     if (apr_dso_sym(&modsym, modhandle, modname) != APR_SUCCESS) {
         char my_error[256];
 
-	return apr_pstrcat(cmd->pool, "Can't locate API module structure `",
-			  modname, "' in file ", szModuleFile, ": ", 
-			  apr_dso_error(modhandle, my_error, sizeof(my_error)),
-			  NULL);
+        return apr_pstrcat(cmd->pool, "Can't locate API module structure `",
+                          modname, "' in file ", szModuleFile, ": ", 
+                          apr_dso_error(modhandle, my_error, sizeof(my_error)),
+                          NULL);
     }
     modp = (module*) modsym;
     modp->dynamic_load_handle = (apr_dso_handle_t *)modhandle;
@@ -316,14 +316,14 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
     if (apr_dso_load(&handle, file, cmd->pool) != APR_SUCCESS) {
         char my_error[256];
 
-	return apr_pstrcat(cmd->pool, "Cannot load ", filename, 
-			  " into server: ", 
-			  apr_dso_error(handle, my_error, sizeof(my_error)),
-			  NULL);
+        return apr_pstrcat(cmd->pool, "Cannot load ", filename, 
+                          " into server: ", 
+                          apr_dso_error(handle, my_error, sizeof(my_error)),
+                          NULL);
     }
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
-		 "loaded file %s", filename);
+                 "loaded file %s", filename);
 
     return NULL;
 }
@@ -395,7 +395,7 @@ static const char *load_file(cmd_parms *cmd, void *dummy, const char *filename)
 }
 
 static const char *load_module(cmd_parms *cmd, void *dummy, 
-	                       const char *modname, const char *filename)
+                               const char *modname, const char *filename)
 {
     ap_log_perror(APLOG_MARK, APLOG_STARTUP, 0, cmd->pool, 
                  "WARNING: LoadModule not supported on this platform");

@@ -43,9 +43,9 @@
     cachefile directives into your configuration to direct files to
     be cached.
 
-	cachefile /path/to/file1
-	cachefile /path/to/file2
-	...
+        cachefile /path/to/file1
+        cachefile /path/to/file2
+        ...
 
     These files are only cached when the server is restarted, so if you 
     change the list, or if the files are changed, then you'll need to 
@@ -138,23 +138,23 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
         ap_log_error(APLOG_MARK, APLOG_WARNING, APR_EBADPATH, cmd->server,
                      "mod_file_cache: invalid file path "
                      "%s, skipping", filename);
-	return;
+        return;
     }
     if ((rc = apr_stat(&tmp.finfo, fspec, APR_FINFO_MIN, 
                                  cmd->temp_pool)) != APR_SUCCESS) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
-	    "mod_file_cache: unable to stat(%s), skipping", fspec);
-	return;
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
+            "mod_file_cache: unable to stat(%s), skipping", fspec);
+        return;
     }
     if (tmp.finfo.filetype != APR_REG) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
-	    "mod_file_cache: %s isn't a regular file, skipping", fspec);
-	return;
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+            "mod_file_cache: %s isn't a regular file, skipping", fspec);
+        return;
     }
     if (tmp.finfo.size > AP_MAX_SENDFILE) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
-	    "mod_file_cache: %s is too large to cache, skipping", fspec);
-	return;
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+            "mod_file_cache: %s is too large to cache, skipping", fspec);
+        return;
     }
 
     rc = apr_file_open(&fd, fspec, APR_READ | APR_BINARY | APR_XTHREAD,
@@ -162,7 +162,7 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
                      "mod_file_cache: unable to open(%s, O_RDONLY), skipping", fspec);
-	return;
+        return;
     }
     apr_file_inherit_set(fd);
 
@@ -248,12 +248,12 @@ static int file_cache_xlat(request_rec *r)
 
     /* we only operate when at least one cachefile directive was used */
     if (!apr_hash_count(sconf->fileht)) {
-	return DECLINED;
+        return DECLINED;
     }
 
     res = ap_core_translate(r);
     if (res != OK || !r->filename) {
-	return res;
+        return res;
     }
 
     /* search the cache */
@@ -329,7 +329,7 @@ static int file_cache_handler(request_rec *r)
     match = ap_get_module_config(r->request_config, &file_cache_module);
 
     if (match == NULL) {
-	return DECLINED;
+        return DECLINED;
     }
 
     /* note that we would handle GET on this resource */

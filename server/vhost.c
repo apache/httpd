@@ -726,12 +726,12 @@ static void fix_hostname(request_rec *r)
     }
     else if (port) {
         /* Don't throw the Host: header's port number away:
-	   save it in parsed_uri -- ap_get_server_port() needs it! */
+           save it in parsed_uri -- ap_get_server_port() needs it! */
         /* @@@ XXX there should be a better way to pass the port.
-	 *         Like r->hostname, there should be a r->portno
-	 */
+         *         Like r->hostname, there should be a r->portno
+         */
         r->parsed_uri.port = port;
-	r->parsed_uri.port_str = apr_itoa(r->pool, (int)port);
+        r->parsed_uri.port_str = apr_itoa(r->pool, (int)port);
     }
 
     /* if the hostname is an IPv6 numeric address string, it was validated 

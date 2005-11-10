@@ -269,15 +269,15 @@ static char master_main()
 
     ap_scoreboard_image->global->restart_time = apr_time_now();
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
-		"%s configured -- resuming normal operations",
-		ap_get_server_version());
+                "%s configured -- resuming normal operations",
+                ap_get_server_version());
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
-		"Server built: %s", ap_get_server_built());
+                "Server built: %s", ap_get_server_built());
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-		"AcceptMutex: %s (default: %s)",
-		apr_proc_mutex_name(accept_mutex),
-		apr_proc_mutex_defname());
+                "AcceptMutex: %s (default: %s)",
+                apr_proc_mutex_name(accept_mutex),
+                apr_proc_mutex_defname());
 #endif
     if (one_process) {
         ap_scoreboard_image->parent[0].pid = getpid();
@@ -398,7 +398,7 @@ static void set_signals()
     sa.sa_handler = sig_term;
 
     if (sigaction(SIGTERM, &sa, NULL) < 0)
-	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGTERM)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGTERM)");
 
     if (sigaction(SIGINT, &sa, NULL) < 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGINT)");
@@ -471,7 +471,7 @@ static int mpmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *
     ap_min_spare_threads = DEFAULT_MIN_SPARE_THREAD;
     ap_max_spare_threads = DEFAULT_MAX_SPARE_THREAD;
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
-	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+        ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 #endif
 
     return OK;
@@ -501,7 +501,7 @@ static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char 
 
 
 static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy,
-					 const char *arg)
+                                         const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
@@ -527,7 +527,7 @@ static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy,
 
 
 static const char *set_max_spare_threads(cmd_parms *cmd, void *dummy,
-					 const char *arg)
+                                         const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 

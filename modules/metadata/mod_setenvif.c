@@ -249,7 +249,7 @@ static const char *non_regex_pattern(apr_pool_t *p, const char *s)
 }
 
 static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
-				     char *fname, const char *args)
+                                     char *fname, const char *args)
 {
     char *regex;
     const char *simple_pattern;
@@ -270,7 +270,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
     sconf = (cmd->path != NULL)
       ? (sei_cfg_rec *) mconfig
       : (sei_cfg_rec *) ap_get_module_config(cmd->server->module_config,
-					       &setenvif_module);
+                                               &setenvif_module);
     entries = (sei_entry *) sconf->conditionals->elts;
     /* get regex */
     regex = ap_getword_conf(cmd->pool, &args);
@@ -398,7 +398,7 @@ static const char *add_setenvif_core(cmd_parms *cmd, void *mconfig,
 }
 
 static const char *add_setenvif(cmd_parms *cmd, void *mconfig,
-				const char *args)
+                                const char *args)
 {
     char *fname;
 

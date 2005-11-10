@@ -57,36 +57,36 @@ void main( int argc, char **argv )
 
     if( argc != 3 ) {
 usage:
-	fprintf( stderr, "usage: test-writev a.b.c.d port#\n" );
-	exit( 1 );
+        fprintf( stderr, "usage: test-writev a.b.c.d port#\n" );
+        exit( 1 );
     }
     server_addr.sin_family = AF_INET;
     server_addr.sin_addr.s_addr = inet_addr( argv[1] );
     if( server_addr.sin_addr.s_addr == INADDR_NONE ) {
-	fprintf( stderr, "bogus address\n" );
-	goto usage;
+        fprintf( stderr, "bogus address\n" );
+        goto usage;
     }
     server_addr.sin_port = htons( atoi( argv[2] ) );
 
     s = socket( AF_INET, SOCK_STREAM, 0 );
     if( s < 0 ) {
-	perror("socket");
-	exit(1);
+        perror("socket");
+        exit(1);
     }
     if( connect( s, (struct sockaddr *)&server_addr, sizeof( server_addr ) )
-	!= 0 ) {
-	perror("connect");
-	exit(1);
+        != 0 ) {
+        perror("connect");
+        exit(1);
     }
 
     if( setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&just_say_no,
-	sizeof(just_say_no)) != 0 ) {
-	perror( "TCP_NODELAY" );
-	exit(1);
+        sizeof(just_say_no)) != 0 ) {
+        perror( "TCP_NODELAY" );
+        exit(1);
     }
     /* now build up a two part writev and write it out */
     for( i = 0; i < sizeof( buf ); ++i ) {
-	buf[i] = 'x';
+        buf[i] = 'x';
     }
     vector[0].iov_base = buf;
     vector[0].iov_len = sizeof(buf);

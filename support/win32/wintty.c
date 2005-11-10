@@ -136,7 +136,7 @@ int main(int argc, char** argv)
                 case '?':
                     printf(options, arg0);
                     exit(1);
-		default:
+                default:
                     printf("wintty option %s not recognized, use -? for help.\n\n", *argv);
                     exit(1);
             }
@@ -214,7 +214,7 @@ int main(int argc, char** argv)
         
     if (isservice) {
 #ifdef WE_EVER_FIGURE_OUT_WHY_THIS_DOESNT_WORK
-	hsavedesk = GetThreadDesktop(GetCurrentThreadId());
+        hsavedesk = GetThreadDesktop(GetCurrentThreadId());
         if (!hsavedesk || hsavedesk == INVALID_HANDLE_VALUE) {
             printerr("GetThreadDesktop(GetTID()) failed (%d)\n", GetLastError());
         }
