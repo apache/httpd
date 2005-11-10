@@ -343,7 +343,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
             fscan = fscan->next;
 
         f->next = fscan->next;
-	fscan->next = f;
+        fscan->next = f;
     }
 
     if (frec->ftype < AP_FTYPE_CONNECTION && (*r_filters == *c_filters)) {

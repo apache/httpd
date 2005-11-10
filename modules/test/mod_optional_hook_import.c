@@ -22,7 +22,7 @@
 static int ImportOptionalHookTestHook(const char *szStr)
 {
     ap_log_error(APLOG_MARK,APLOG_ERR,OK,NULL,"Optional hook test said: %s",
-		 szStr);
+                 szStr);
 
     return OK;
 }
@@ -30,7 +30,7 @@ static int ImportOptionalHookTestHook(const char *szStr)
 static void ImportRegisterHooks(apr_pool_t *p)
 {
     AP_OPTIONAL_HOOK(optional_hook_test,ImportOptionalHookTestHook,NULL,
-		     NULL,APR_HOOK_MIDDLE);
+                     NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA optional_hook_import_module=

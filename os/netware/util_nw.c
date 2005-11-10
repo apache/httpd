@@ -37,13 +37,13 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 
 int  _NonAppCheckUnload( void )
 {
-	return nlmUnloadSignaled(1);
+        return nlmUnloadSignaled(1);
 }
 
 // down server event callback
 void ap_down_server_cb(void *, void *)
 {
-	nlmUnloadSignaled(0);
+        nlmUnloadSignaled(0);
     return;
 }
 

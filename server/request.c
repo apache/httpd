@@ -825,7 +825,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 }
 
                 res = ap_parse_htaccess(&htaccess_conf, r, opts.override,
-					opts.override_opts,
+                                        opts.override_opts,
                                         apr_pstrdup(r->pool, r->filename),
                                         sconf->access_name);
                 if (res) {

@@ -89,20 +89,20 @@ static void *mva_merge_server_config(apr_pool_t *p, void *parentv, void *childv)
 
     conf = (mva_sconf_t *) apr_pcalloc(p, sizeof(*conf));
     if (child->doc_root_mode == VHOST_ALIAS_UNSET) {
-	conf->doc_root_mode = parent->doc_root_mode;
-	conf->doc_root = parent->doc_root;
+        conf->doc_root_mode = parent->doc_root_mode;
+        conf->doc_root = parent->doc_root;
     }
     else {
-	conf->doc_root_mode = child->doc_root_mode;
-	conf->doc_root = child->doc_root;
+        conf->doc_root_mode = child->doc_root_mode;
+        conf->doc_root = child->doc_root;
     }
     if (child->cgi_root_mode == VHOST_ALIAS_UNSET) {
-	conf->cgi_root_mode = parent->cgi_root_mode;
-	conf->cgi_root = parent->cgi_root;
+        conf->cgi_root_mode = parent->cgi_root_mode;
+        conf->cgi_root = parent->cgi_root;
     }
     else {
-	conf->cgi_root_mode = child->cgi_root_mode;
-	conf->cgi_root = child->cgi_root;
+        conf->cgi_root_mode = child->cgi_root_mode;
+        conf->cgi_root = child->cgi_root;
     }
     return conf;
 }
@@ -125,87 +125,87 @@ static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, const char *map)
     const char *p;
   
     conf = (mva_sconf_t *) ap_get_module_config(cmd->server->module_config,
-						&vhost_alias_module);
+                                                &vhost_alias_module);
     /* there ought to be a better way of doing this */
     if (&vhost_alias_set_doc_root_ip == cmd->info) {
-	mode = VHOST_ALIAS_IP;
-	pmap = &conf->doc_root;
-	pmode = &conf->doc_root_mode;
+        mode = VHOST_ALIAS_IP;
+        pmap = &conf->doc_root;
+        pmode = &conf->doc_root_mode;
     }
     else if (&vhost_alias_set_cgi_root_ip == cmd->info) {
-	mode = VHOST_ALIAS_IP;
-	pmap = &conf->cgi_root;
-	pmode = &conf->cgi_root_mode;
+        mode = VHOST_ALIAS_IP;
+        pmap = &conf->cgi_root;
+        pmode = &conf->cgi_root_mode;
     }
     else if (&vhost_alias_set_doc_root_name == cmd->info) {
-	mode = VHOST_ALIAS_NAME;
-	pmap = &conf->doc_root;
-	pmode = &conf->doc_root_mode;
+        mode = VHOST_ALIAS_NAME;
+        pmap = &conf->doc_root;
+        pmode = &conf->doc_root_mode;
     }
     else if (&vhost_alias_set_cgi_root_name == cmd->info) {
-	mode = VHOST_ALIAS_NAME;
-	pmap = &conf->cgi_root;
-	pmode = &conf->cgi_root_mode;
+        mode = VHOST_ALIAS_NAME;
+        pmap = &conf->cgi_root;
+        pmode = &conf->cgi_root_mode;
     }
     else {
-	return "INTERNAL ERROR: unknown command info";
+        return "INTERNAL ERROR: unknown command info";
     }
 
     if (!ap_os_is_path_absolute(cmd->pool, map)) {
-	if (strcasecmp(map, "none")) {
-	    return "format string must be an absolute path, or 'none'";
-	}
-	*pmap = NULL;
-	*pmode = VHOST_ALIAS_NONE;
-	return NULL;
+        if (strcasecmp(map, "none")) {
+            return "format string must be an absolute path, or 'none'";
+        }
+        *pmap = NULL;
+        *pmode = VHOST_ALIAS_NONE;
+        return NULL;
     }
 
     /* sanity check */
     p = map;
     while (*p != '\0') {
-	if (*p++ != '%') {
-	    continue;
-	}
-	/* we just found a '%' */
-	if (*p == 'p' || *p == '%') {
-	    ++p;
-	    continue;
-	}
-	/* optional dash */
-	if (*p == '-') {
-	    ++p;
-	}
-	/* digit N */
-	if (apr_isdigit(*p)) {
-	    ++p;
-	}
-	else {
-	    return "syntax error in format string";
-	}
-	/* optional plus */
-	if (*p == '+') {
-	    ++p;
-	}
-	/* do we end here? */
-	if (*p != '.') {
-	    continue;
-	}
-	++p;
-	/* optional dash */
-	if (*p == '-') {
-	    ++p;
-	}
-	/* digit M */
-	if (apr_isdigit(*p)) {
-	    ++p;
-	}
-	else {
-	    return "syntax error in format string";
-	}
-	/* optional plus */
-	if (*p == '+') {
-	    ++p;
-	}
+        if (*p++ != '%') {
+            continue;
+        }
+        /* we just found a '%' */
+        if (*p == 'p' || *p == '%') {
+            ++p;
+            continue;
+        }
+        /* optional dash */
+        if (*p == '-') {
+            ++p;
+        }
+        /* digit N */
+        if (apr_isdigit(*p)) {
+            ++p;
+        }
+        else {
+            return "syntax error in format string";
+        }
+        /* optional plus */
+        if (*p == '+') {
+            ++p;
+        }
+        /* do we end here? */
+        if (*p != '.') {
+            continue;
+        }
+        ++p;
+        /* optional dash */
+        if (*p == '-') {
+            ++p;
+        }
+        /* digit M */
+        if (apr_isdigit(*p)) {
+            ++p;
+        }
+        else {
+            return "syntax error in format string";
+        }
+        /* optional plus */
+        if (*p == '+') {
+            ++p;
+        }
     }
     *pmap = map;
     *pmode = mode;
@@ -235,23 +235,23 @@ static const command_rec mva_commands[] =
  * but C is too feeble to support them.
  */
 static APR_INLINE void vhost_alias_checkspace(request_rec *r, char *buf,
-					     char **pdest, int size)
+                                             char **pdest, int size)
 {
     /* XXX: what if size > HUGE_STRING_LEN? */
     if (*pdest + size > buf + HUGE_STRING_LEN) {
-	**pdest = '\0';
-	if (r->filename) {
-	    r->filename = apr_pstrcat(r->pool, r->filename, buf, NULL);
-	}
-	else {
-	    r->filename = apr_pstrdup(r->pool, buf);
-	}
-	*pdest = buf;
+        **pdest = '\0';
+        if (r->filename) {
+            r->filename = apr_pstrcat(r->pool, r->filename, buf, NULL);
+        }
+        else {
+            r->filename = apr_pstrdup(r->pool, buf);
+        }
+        *pdest = buf;
     }
 }
 
 static void vhost_alias_interpolate(request_rec *r, const char *name,
-				    const char *map, const char *uri)
+                                    const char *map, const char *uri)
 {
     /* 0..9 9..0 */
     enum { MAXDOTS = 19 };
@@ -269,9 +269,9 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
     ndots = 0;
     dots[ndots++] = name-1; /* slightly naughty */
     for (p = name; *p; ++p){
-	if (*p == '.' && ndots < MAXDOTS) {
-	    dots[ndots++] = p;
-	}
+        if (*p == '.' && ndots < MAXDOTS) {
+            dots[ndots++] = p;
+        }
     }
     dots[ndots] = p;
 
@@ -280,103 +280,103 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
     dest = buf;
     last = '\0';
     while (*map) {
-	if (*map != '%') {
-	    /* normal characters */
-	    vhost_alias_checkspace(r, buf, &dest, 1);
-	    last = *dest++ = *map++;
-	    continue;
-	}
-	/* we are in a format specifier */
-	++map;
-	/* can't be a slash */
-	last = '\0';
-	/* %% -> % */
-	if (*map == '%') {
-	    ++map;
-	    vhost_alias_checkspace(r, buf, &dest, 1);
-	    *dest++ = '%';
-	    continue;
-	}
-	/* port number */
-	if (*map == 'p') {
-	    ++map;
-	    /* no. of decimal digits in a short plus one */
-	    vhost_alias_checkspace(r, buf, &dest, 7);
-	    dest += apr_snprintf(dest, 7, "%d", ap_get_server_port(r));
-	    continue;
-	}
-	/* deal with %-N+.-M+ -- syntax is already checked */
-	N = M = 0;   /* value */
-	Np = Mp = 0; /* is there a plus? */
-	Nd = Md = 0; /* is there a dash? */
-	if (*map == '-') ++map, Nd = 1;
-	N = *map++ - '0';
-	if (*map == '+') ++map, Np = 1;
-	if (*map == '.') {
-	    ++map;
-	    if (*map == '-') {
-		++map, Md = 1;
-	    }
-	    M = *map++ - '0';
-	    if (*map == '+') {
-		++map, Mp = 1;
-	    }
-	}
-	/* note that N and M are one-based indices, not zero-based */
-	start = dots[0]+1; /* ptr to the first character */
-	end = dots[ndots]; /* ptr to the character after the last one */
-	if (N != 0) {
-	    if (N > ndots) {
-		start = "_";
-		end = start+1;
-	    }
-	    else if (!Nd) {
-		start = dots[N-1]+1;
-		if (!Np) {
-		    end = dots[N];
-		}
-	    }
-	    else {
-		if (!Np) {
-		    start = dots[ndots-N]+1;
-		}
-		end = dots[ndots-N+1];
-	    }
-	}
-	if (M != 0) {
-	    if (M > end - start) {
-		start = "_";
-		end = start+1;
-	    }
-	    else if (!Md) {
-		start = start+M-1;
-		if (!Mp) {
-		    end = start+1;
-		}
-	    }
-	    else {
-		if (!Mp) {
-		    start = end-M;
-		}
-		end = end-M+1;
-	    }
-	}
-	vhost_alias_checkspace(r, buf, &dest, end - start);
-	for (p = start; p < end; ++p) {
-	    *dest++ = apr_tolower(*p);
-	}
+        if (*map != '%') {
+            /* normal characters */
+            vhost_alias_checkspace(r, buf, &dest, 1);
+            last = *dest++ = *map++;
+            continue;
+        }
+        /* we are in a format specifier */
+        ++map;
+        /* can't be a slash */
+        last = '\0';
+        /* %% -> % */
+        if (*map == '%') {
+            ++map;
+            vhost_alias_checkspace(r, buf, &dest, 1);
+            *dest++ = '%';
+            continue;
+        }
+        /* port number */
+        if (*map == 'p') {
+            ++map;
+            /* no. of decimal digits in a short plus one */
+            vhost_alias_checkspace(r, buf, &dest, 7);
+            dest += apr_snprintf(dest, 7, "%d", ap_get_server_port(r));
+            continue;
+        }
+        /* deal with %-N+.-M+ -- syntax is already checked */
+        N = M = 0;   /* value */
+        Np = Mp = 0; /* is there a plus? */
+        Nd = Md = 0; /* is there a dash? */
+        if (*map == '-') ++map, Nd = 1;
+        N = *map++ - '0';
+        if (*map == '+') ++map, Np = 1;
+        if (*map == '.') {
+            ++map;
+            if (*map == '-') {
+                ++map, Md = 1;
+            }
+            M = *map++ - '0';
+            if (*map == '+') {
+                ++map, Mp = 1;
+            }
+        }
+        /* note that N and M are one-based indices, not zero-based */
+        start = dots[0]+1; /* ptr to the first character */
+        end = dots[ndots]; /* ptr to the character after the last one */
+        if (N != 0) {
+            if (N > ndots) {
+                start = "_";
+                end = start+1;
+            }
+            else if (!Nd) {
+                start = dots[N-1]+1;
+                if (!Np) {
+                    end = dots[N];
+                }
+            }
+            else {
+                if (!Np) {
+                    start = dots[ndots-N]+1;
+                }
+                end = dots[ndots-N+1];
+            }
+        }
+        if (M != 0) {
+            if (M > end - start) {
+                start = "_";
+                end = start+1;
+            }
+            else if (!Md) {
+                start = start+M-1;
+                if (!Mp) {
+                    end = start+1;
+                }
+            }
+            else {
+                if (!Mp) {
+                    start = end-M;
+                }
+                end = end-M+1;
+            }
+        }
+        vhost_alias_checkspace(r, buf, &dest, end - start);
+        for (p = start; p < end; ++p) {
+            *dest++ = apr_tolower(*p);
+        }
     }
     *dest = '\0';
     /* no double slashes */
     if (last == '/') {
-	++uri;
+        ++uri;
     }
 
     if (r->filename) {
-	r->filename = apr_pstrcat(r->pool, r->filename, buf, uri, NULL);
+        r->filename = apr_pstrcat(r->pool, r->filename, buf, uri, NULL);
     }
     else {
-	r->filename = apr_pstrcat(r->pool, buf, uri, NULL);
+        r->filename = apr_pstrcat(r->pool, buf, uri, NULL);
     }
 }
 
@@ -388,36 +388,36 @@ static int mva_translate(request_rec *r)
     const char *cgi;
   
     conf = (mva_sconf_t *) ap_get_module_config(r->server->module_config,
-					      &vhost_alias_module);
+                                              &vhost_alias_module);
     cgi = NULL;
     if (conf->cgi_root) {
-	cgi = strstr(r->uri, "cgi-bin/");
-	if (cgi && (cgi != r->uri + strspn(r->uri, "/"))) {
-	    cgi = NULL;
-	}
+        cgi = strstr(r->uri, "cgi-bin/");
+        if (cgi && (cgi != r->uri + strspn(r->uri, "/"))) {
+            cgi = NULL;
+        }
     }
     if (cgi) {
-	mode = conf->cgi_root_mode;
-	map = conf->cgi_root;
-	uri = cgi + strlen("cgi-bin");
+        mode = conf->cgi_root_mode;
+        map = conf->cgi_root;
+        uri = cgi + strlen("cgi-bin");
     }
     else if (r->uri[0] == '/') {
-	mode = conf->doc_root_mode;
-	map = conf->doc_root;
-	uri = r->uri;
+        mode = conf->doc_root_mode;
+        map = conf->doc_root;
+        uri = r->uri;
     }
     else {
-	return DECLINED;
+        return DECLINED;
     }
   
     if (mode == VHOST_ALIAS_NAME) {
-	name = ap_get_server_name(r);
+        name = ap_get_server_name(r);
     }
     else if (mode == VHOST_ALIAS_IP) {
-	name = r->connection->local_ip;
+        name = r->connection->local_ip;
     }
     else {
-	return DECLINED;
+        return DECLINED;
     }
 
     /* ### There is an optimization available here to determine the
@@ -429,9 +429,9 @@ static int mva_translate(request_rec *r)
     vhost_alias_interpolate(r, name, map, uri);
 
     if (cgi) {
-	/* see is_scriptaliased() in mod_cgi */
-	r->handler = "cgi-script";
-	apr_table_setn(r->notes, "alias-forced-type", r->handler);
+        /* see is_scriptaliased() in mod_cgi */
+        r->handler = "cgi-script";
+        apr_table_setn(r->notes, "alias-forced-type", r->handler);
     }
 
     return OK;

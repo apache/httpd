@@ -596,16 +596,16 @@ static int pipe_get_passwd_cb(char *buf, int length, char *prompt, int verify)
     apr_file_puts(APR_EOL_STR, writetty);
     
     if (rc != APR_SUCCESS || apr_file_eof(readtty)) {
-	memset(buf, 0, length);
+        memset(buf, 0, length);
         return 1;  /* failure */
     }
     if ((p = strchr(buf, '\n')) != NULL) {
-	*p = '\0';
+        *p = '\0';
     }
 #ifdef WIN32
     /* XXX: apr_sometest */
     if ((p = strchr(buf, '\r')) != NULL) {
-	*p = '\0';
+        *p = '\0';
     }
 #endif
     return 0;
@@ -676,7 +676,7 @@ int ssl_pphrase_Handle_CB(char *buf, int bufsize, int verify, void *srv)
                 ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                              "Init: Creating pass phrase dialog pipe child "
                              "'%s'", sc->server->pphrase_dialog_path);
-	        if (ssl_pipe_child_create(p, sc->server->pphrase_dialog_path)
+                if (ssl_pipe_child_create(p, sc->server->pphrase_dialog_path)
                         != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                                  "Init: Failed to create pass phrase pipe '%s'",

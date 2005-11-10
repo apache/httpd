@@ -114,9 +114,9 @@ CACHE_DECLARE(cache_hash_index_t *) cache_hash_next(cache_hash_index_t *hi)
 {
     hi->this = hi->next;
     while (!hi->this) {
-	if (hi->index > hi->ht->max)
-	    return NULL;
-	hi->this = hi->ht->array[hi->index++];
+        if (hi->index > hi->ht->max)
+            return NULL;
+        hi->this = hi->ht->array[hi->index++];
     }
     hi->next = hi->this->next;
     return hi;
@@ -216,15 +216,15 @@ static cache_hash_entry_t **find_entry(cache_hash_t *ht,
     
     /* scan linked list */
     for (hep = &ht->array[hash % ht->max], he = *hep;
-	 he;
-	 hep = &he->next, he = *hep) {
-	if (he->hash == hash &&
-	    he->klen == klen &&
-	    memcmp(he->key, key, klen) == 0)
-	    break;
+         he;
+         hep = &he->next, he = *hep) {
+        if (he->hash == hash &&
+            he->klen == klen &&
+            memcmp(he->key, key, klen) == 0)
+            break;
     }
     if (he || !val)
-	return hep;
+        return hep;
     /* add a new entry for non-NULL values */
     he = malloc(sizeof(*he));
     if (!he) {
@@ -247,9 +247,9 @@ CACHE_DECLARE(void *) cache_hash_get(cache_hash_t *ht,
     cache_hash_entry_t *he;
     he = *find_entry(ht, key, klen, NULL);
     if (he)
-	return (void *)he->val;
+        return (void *)he->val;
     else
-	return NULL;
+        return NULL;
 }
 
 CACHE_DECLARE(void *) cache_hash_set(cache_hash_t *ht,

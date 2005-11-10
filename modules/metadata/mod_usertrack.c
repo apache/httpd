@@ -95,12 +95,12 @@ typedef struct {
 static void make_cookie(request_rec *r)
 {
     cookie_log_state *cls = ap_get_module_config(r->server->module_config,
-						 &usertrack_module);
+                                                 &usertrack_module);
     /* 1024 == hardcoded constant */
     char cookiebuf[1024];
     char *new_cookie;
     const char *rname = ap_get_remote_host(r->connection, r->per_dir_config,
-					   REMOTE_NAME, NULL);
+                                           REMOTE_NAME, NULL);
     cookie_dir_rec *dcfg;
 
     dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
@@ -116,7 +116,7 @@ static void make_cookie(request_rec *r)
                                   dcfg->cookie_name, cookiebuf);
 
         if ((dcfg->style == CT_UNSET) || (dcfg->style == CT_NETSCAPE)) {
-	    apr_time_exp_t tms;
+            apr_time_exp_t tms;
             apr_time_exp_gmt(&tms, r->request_time 
                                  + apr_time_from_sec(cls->expires));
             new_cookie = apr_psprintf(r->pool,
@@ -207,7 +207,7 @@ static void set_and_comp_regexp(cookie_dir_rec *dcfg,
 static int spot_cookie(request_rec *r)
 {
     cookie_dir_rec *dcfg = ap_get_module_config(r->per_dir_config,
-						&usertrack_module);
+                                                &usertrack_module);
     const char *cookie_header;
     ap_regmatch_t regm[NUM_SUBS];
 
@@ -308,7 +308,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy,
     /* {<num> <type>}* */
     while (word[0]) {
         /* <num> */
-	if (apr_isdigit(word[0]))
+        if (apr_isdigit(word[0]))
             num = atoi(word);
         else
             return "bad expires code, numeric value expected.";

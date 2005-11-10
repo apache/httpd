@@ -1,6 +1,6 @@
 
 /*                          ZeusBench V1.01
-			    ===============
+                            ===============
 
 This program is Copyright (C) Zeus Technology Limited 1996.
 
@@ -196,11 +196,11 @@ void output_results()
   printf("Document Length:        %d\n", doclen);  
   printf("Concurency Level:       %d\n", concurrency);
   printf("Time taken for tests:   %d.%03d seconds\n", 
-	 timetaken/1000, timetaken%1000);
+         timetaken/1000, timetaken%1000);
   printf("Complete requests:      %d\n", done);
   printf("Failed requests:        %d\n", bad);
   if(bad) printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
-		 err_conn, err_length, err_except);
+                 err_conn, err_length, err_except);
   if(keepalive) printf("Keep-Alive requests:    %d\n", doneka);
   printf("Bytes transferred:      %d\n", totalread);
   printf("HTML transferred:       %d\n", totalbread);
@@ -209,7 +209,7 @@ void output_results()
   if(timetaken) {
     printf("Requests per seconds:   %.2f\n", 1000*(float)(done)/timetaken);
     printf("Transfer rate:          %.2f kb/s\n", 
-	   (float)(totalread)/timetaken);
+           (float)(totalread)/timetaken);
   }
 
   {
@@ -266,8 +266,8 @@ void start_connect(struct connection *c)
       close(c->fd);
       err_conn++;
       if(bad++>10) {
-	printf("\nTest aborted after 10 failures\n\n");
-	exit(1);
+        printf("\nTest aborted after 10 failures\n\n");
+        exit(1);
       } 
       start_connect(c);
     }      
@@ -352,44 +352,44 @@ void read_connection(struct connection *c)
     if(!s) {
        /* read rest next time */
       if(space) 
-	return;
+        return;
       else {
-	/* header is in invalid or too big - close connection */
-	close(c->fd);
-	if(bad++>10) {
-	  printf("\nTest aborted after 10 failures\n\n");
-	  exit(1);
-	} 
-	FD_CLR(c->fd, &writebits);
-	start_connect(c);
+        /* header is in invalid or too big - close connection */
+        close(c->fd);
+        if(bad++>10) {
+          printf("\nTest aborted after 10 failures\n\n");
+          exit(1);
+        } 
+        FD_CLR(c->fd, &writebits);
+        start_connect(c);
       }	
     }
     else {
       /* have full header */
       if(!good) {
-	/* this is first time, extract some interesting info */
-	char *p, *q;
-	p = strstr(c->cbuff, "Server:");
-	q = server_name;
-	if(p) { p+=8; while(*p>32) *q++ = *p++; }
-	*q = 0;
+        /* this is first time, extract some interesting info */
+        char *p, *q;
+        p = strstr(c->cbuff, "Server:");
+        q = server_name;
+        if(p) { p+=8; while(*p>32) *q++ = *p++; }
+        *q = 0;
       }
-	
+        
       c->gotheader = 1;
       *s = 0; /* terminate at end of header */
       if(keepalive && 
-	 (strstr(c->cbuff, "Keep-Alive") 
-	  || strstr(c->cbuff, "keep-alive")))  /* for benefit of MSIIS */
-	{
-	char *cl;
-	cl = strstr(c->cbuff, "Content-Length:");
-	/* for cacky servers like NCSA which break the spec and send a 
-	   lower case 'l' */
-	if(!cl) cl = strstr(c->cbuff, "Content-length:");
-	if(cl) {
-	  c->keepalive=1;
-	  c->length = atoi(cl+16);
-	}
+         (strstr(c->cbuff, "Keep-Alive") 
+          || strstr(c->cbuff, "keep-alive")))  /* for benefit of MSIIS */
+        {
+        char *cl;
+        cl = strstr(c->cbuff, "Content-Length:");
+        /* for cacky servers like NCSA which break the spec and send a 
+           lower case 'l' */
+        if(!cl) cl = strstr(c->cbuff, "Content-length:");
+        if(cl) {
+          c->keepalive=1;
+          c->length = atoi(cl+16);
+        }
       }
       c->bread += c->cbx - (s+l-c->cbuff) + r-tocopy;
       totalbread += c->bread;
@@ -454,8 +454,8 @@ int test()
 
   /* setup request */
   sprintf(request,"GET %s HTTP/1.0\r\nUser-Agent: ZeusBench/1.0\r\n"
-	  "%sHost: %s\r\nAccept: */*\r\n\r\n", file, 
-	  keepalive?"Connection: Keep-Alive\r\n":"", machine );
+          "%sHost: %s\r\nAccept: */*\r\n\r\n", file, 
+          keepalive?"Connection: Keep-Alive\r\n":"", machine );
     
   reqlen = strlen(request);
 
@@ -491,10 +491,10 @@ int test()
     for(i=0; i<concurrency; i++) {
       int s = con[i].fd;
       if(FD_ISSET(s, &sel_except)) {
-	bad++; 
-	err_except++;
-	start_connect(&con[i]);
-	continue;
+        bad++; 
+        err_except++;
+        start_connect(&con[i]);
+        continue;
       }
       if(FD_ISSET(s, &sel_read)) read_connection(&con[i]);
       if(FD_ISSET(s, &sel_write)) write_request(&con[i]);
@@ -511,7 +511,7 @@ int test()
 void usage(char *progname) {
   printf("\nZeusBench v1.0\n\n");
   printf("Usage: %s <machine> <file> [-k] [-n requests | -t timelimit (sec)]"
-	 "\n\t\t[-c concurrency] [-p port] \n",progname);
+         "\n\t\t[-c concurrency] [-p port] \n",progname);
   printf("Filename should start with a '/' e.g. /index.html\n\n");
   exit(EINVAL);
 }
@@ -534,8 +534,8 @@ int main(int argc, char **argv) {
     case 'n': 
       requests = atoi(optarg);
       if(!requests) {
-	printf("Invalid number of requests\n");
-	exit(1);
+        printf("Invalid number of requests\n");
+        exit(1);
       }
       break;
     case 'k':

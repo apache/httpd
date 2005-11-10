@@ -181,9 +181,9 @@ static LRESULT CALLBACK monitor_service_9x_proc(HWND hWnd, UINT msg,
             && (die_on_logoff || (lParam != ENDSESSION_LOGOFF)))
     {
         ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
-	if (wParam)
+        if (wParam)
             /* Don't leave this message until we are dead! */
-	    WaitForSingleObject(globdat.mpm_thread, 30000);
+            WaitForSingleObject(globdat.mpm_thread, 30000);
         return 0;
     }
     return (DefWindowProc(hWnd, msg, wParam, lParam));
@@ -214,9 +214,9 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
     wc.hbrBackground = NULL;
     wc.lpszMenuName  = NULL;
     if (service_name)
-	wc.lpszClassName = "ApacheWin95ServiceMonitor";
+        wc.lpszClassName = "ApacheWin95ServiceMonitor";
     else
-	wc.lpszClassName = "ApacheWin95SystemMonitor";
+        wc.lpszClassName = "ApacheWin95SystemMonitor";
  
     die_on_logoff = service_name ? FALSE : TRUE;
 
@@ -255,8 +255,8 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
         if (msg.message == WM_CLOSE)
             DestroyWindow(hwndMain); 
         else {
-	    TranslateMessage(&msg);
-	    DispatchMessage(&msg);
+            TranslateMessage(&msg);
+            DispatchMessage(&msg);
         }
     }
     globdat.service_thread_id = 0;
@@ -397,7 +397,7 @@ static int ReportStatusToSCMgr(int currentState, int exitCode, int waitHint)
         }
         else {
             globdat.ssStatus.dwCheckPoint = ++checkPoint;
-	    globdat.ssStatus.dwControlsAccepted = 0;
+            globdat.ssStatus.dwControlsAccepted = 0;
             if(waitHint)
                 globdat.ssStatus.dwWaitHint = waitHint;
         }
@@ -797,7 +797,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
     apr_status_t rv;
     
     fprintf(stderr,reconfig ? "Reconfiguring the %s service\n"
-		   : "Installing the %s service\n", mpm_display_name);
+                   : "Installing the %s service\n", mpm_display_name);
 
     /* ###: utf-ize */
     if (GetModuleFileName(NULL, exe_path, sizeof(exe_path)) == 0)
@@ -844,10 +844,10 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
                 ap_log_error(APLOG_MARK, APLOG_ERR|APLOG_ERR, 
                              apr_get_os_error(), NULL,
                              "ChangeServiceConfig failed");
-	        /* !schService aborts configuration below */
-	        CloseServiceHandle(schService);
-	        schService = NULL;
-	    }
+                /* !schService aborts configuration below */
+                CloseServiceHandle(schService);
+                schService = NULL;
+            }
         }
         else {
             /* RPCSS is the Remote Procedure Call (RPC) Locator required 
@@ -880,7 +880,7 @@ apr_status_t mpm_service_install(apr_pool_t *ptemp, int argc,
                 return (rv);
             }
         }
-	
+        
         CloseServiceHandle(schService);
         CloseServiceHandle(schSCManager);
     }
@@ -980,7 +980,7 @@ apr_status_t mpm_service_uninstall(void)
         if (!schService) {
            rv = apr_get_os_error();
            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
-			"%s: OpenService failed", mpm_display_name);
+                        "%s: OpenService failed", mpm_display_name);
            return (rv);
         }
         
@@ -996,7 +996,7 @@ apr_status_t mpm_service_uninstall(void)
 
         if (DeleteService(schService) == 0) {
             rv = apr_get_os_error();
-	    ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to delete the service.", mpm_display_name);
             return (rv);
         }
@@ -1019,7 +1019,7 @@ apr_status_t mpm_service_uninstall(void)
             ap_regkey_close(key);
         }
         if (rv != APR_SUCCESS) {
-	    ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
+            ap_log_error(APLOG_MARK, APLOG_ERR | APLOG_STARTUP, rv, NULL,
                          "%s: Failed to remove the RunServices registry "
                          "entry.", mpm_display_name);
         }

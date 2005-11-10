@@ -534,11 +534,11 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
         header_entry *hdr = &((header_entry *) (fixup->elts))[i];
         const char *envar = hdr->condition_var;
 
-	/* ignore early headers in late calls */
+        /* ignore early headers in late calls */
         if (!early && (envar == condition_early)) {
             continue;
         }
-	/* ignore late headers in early calls */
+        /* ignore late headers in early calls */
         else if (early && (envar != condition_early)) {
             continue;
         }

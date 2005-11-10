@@ -246,7 +246,7 @@ static void authn_ldap_build_filter(char *filtbuf,
                 *q++ = '5';
                 *q++ = 'c';
                 break;
-		        }
+                        }
         }
         else
             *q++ = *p++;

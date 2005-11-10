@@ -44,8 +44,8 @@ static bs2_ForkType forktype = bs2_unknown;
 static void ap_str_toupper(char *str)
 {
     while (*str) {
-	*str = apr_toupper(*str);
-	++str;
+        *str = apr_toupper(*str);
+        ++str;
     }
 }
 
@@ -90,12 +90,12 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
 
     if (one_process) {
 
-	type = forktype = bs2_noFORK;
+        type = forktype = bs2_noFORK;
 
-	ap_log_error(APLOG_MARK, APLOG_ERR, 0, server,
-		     "The debug mode of Apache should only "
-		     "be started by an unprivileged user!");
-	return 0;
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, server,
+                     "The debug mode of Apache should only "
+                     "be started by an unprivileged user!");
+        return 0;
     }
 
     return 0;
@@ -110,27 +110,27 @@ pid_t os_fork(const char *user)
     switch (os_forktype(0)) {
 
       case bs2_FORK:
-	pid = fork();
-	break;
+        pid = fork();
+        break;
 
       case bs2_UFORK:
-	apr_cpystrn(username, user, sizeof username);
+        apr_cpystrn(username, user, sizeof username);
 
-	/* Make user name all upper case - for some versions of ufork() */
-	ap_str_toupper(username);
+        /* Make user name all upper case - for some versions of ufork() */
+        ap_str_toupper(username);
 
-	pid = ufork(username);
-	if (pid == -1 && errno == EPERM) {
-	    ap_log_error(APLOG_MARK, APLOG_EMERG, errno,
-			 NULL, "ufork: Possible mis-configuration "
-			 "for user %s - Aborting.", user);
-	    exit(1);
-	}
-	break;
+        pid = ufork(username);
+        if (pid == -1 && errno == EPERM) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, errno,
+                         NULL, "ufork: Possible mis-configuration "
+                         "for user %s - Aborting.", user);
+            exit(1);
+        }
+        break;
 
       default:
-	pid = 0;
-	break;
+        pid = 0;
+        break;
     }
 
     return pid;
