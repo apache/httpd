@@ -93,12 +93,12 @@ static void print_statistics (apr_file_t *output)
     apr_file_printf(output, "    Resolves    : %d" NL, resolves);
 
     if (noreverse) {
-    	apr_file_printf(output, "    - No reverse : %d" NL,
+        apr_file_printf(output, "    - No reverse : %d" NL,
                         noreverse);
     }
 
     if (doublefailed) {
-    	apr_file_printf(output, "    - Double lookup failed : %d" NL,
+        apr_file_printf(output, "    - Double lookup failed : %d" NL,
                         doublefailed);
     }
 
