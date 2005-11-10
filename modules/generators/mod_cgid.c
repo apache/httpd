@@ -635,8 +635,8 @@ static int cgid_server(void *data)
 #if defined(ENETDOWN)
             if (errno == ENETDOWN) {
                 /* The network has been shut down, no need to continue. Die gracefully */
-		++daemon_should_exit;
-	    }
+                ++daemon_should_exit;
+            }
 #endif
             if (errno != EINTR) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, errno, 

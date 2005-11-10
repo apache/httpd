@@ -209,9 +209,9 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
         || ap_cache_liststr(NULL, cc_req, "no-cache", NULL)) {
 
         if (!conf->ignorecachecontrol) {
-	    /* Treat as stale, causing revalidation */
-	    return 0;
-	}
+            /* Treat as stale, causing revalidation */
+            return 0;
+        }
 
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                      "Incoming request is asking for a uncached version of "

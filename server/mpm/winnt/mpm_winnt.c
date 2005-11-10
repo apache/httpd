@@ -132,9 +132,9 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg
         ap_threads_per_child = thread_limit;
     }
     else if (ap_threads_per_child < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require ThreadsPerChild > 0, setting to 1");
-	ap_threads_per_child = 1;
+        ap_threads_per_child = 1;
     }
     return NULL;
 }
@@ -171,9 +171,9 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
        thread_limit = MAX_THREAD_LIMIT;
     } 
     else if (thread_limit < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require ThreadLimit > 0, setting to 1");
-	thread_limit = 1;
+        thread_limit = 1;
     }
     return NULL;
 }
@@ -244,9 +244,9 @@ void setup_signal_names(char *prefix)
 {
     apr_snprintf(signal_name_prefix, sizeof(signal_name_prefix), prefix);    
     apr_snprintf(signal_shutdown_name, sizeof(signal_shutdown_name), 
-	"%s_shutdown", signal_name_prefix);    
+        "%s_shutdown", signal_name_prefix);    
     apr_snprintf(signal_restart_name, sizeof(signal_restart_name), 
-	"%s_restart", signal_name_prefix);    
+        "%s_restart", signal_name_prefix);    
 }
 
 int volatile is_graceful = 0;
@@ -277,7 +277,7 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
                break;
            }
         }
-	return;
+        return;
     }
 
     switch(type) {
@@ -300,19 +300,19 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
 
     e = OpenEvent(EVENT_MODIFY_STATE, FALSE, signal_name);
     if (!e) {
-	/* Um, problem, can't signal the parent, which means we can't
-	 * signal ourselves to die. Ignore for now...
-	 */
-	ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), ap_server_conf,
+        /* Um, problem, can't signal the parent, which means we can't
+         * signal ourselves to die. Ignore for now...
+         */
+        ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), ap_server_conf,
                      "OpenEvent on %s event", signal_name);
-	return;
+        return;
     }
     if (SetEvent(e) == 0) {
-	/* Same problem as above */
-	ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), ap_server_conf,
+        /* Same problem as above */
+        ap_log_error(APLOG_MARK, APLOG_EMERG, apr_get_os_error(), ap_server_conf,
                      "SetEvent on %s event", signal_name);
-	CloseHandle(e);
-	return;
+        CloseHandle(e);
+        return;
     }
     CloseHandle(e);
 }
@@ -390,7 +390,7 @@ void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
 
     rv = ap_reopen_scoreboard(s->process->pool, scoreboard_shm, 1);
     if (rv || !(sb_shared = apr_shm_baseaddr_get(*scoreboard_shm))) {
-	ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL, 
                      "Child %d: Unable to reopen the scoreboard from the parent", my_pid);
         exit(APEXIT_CHILDINIT);
     }
@@ -1402,7 +1402,7 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
-	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+        ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 #endif
     /* use_acceptex which is enabled by default is not available on Win9x.
      */

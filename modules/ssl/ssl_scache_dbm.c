@@ -44,7 +44,7 @@ void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
     /* open it once to create it and to make sure it _can_ be created */
     ssl_mutex_on(s);
     if ((rv = apr_dbm_open(&dbm, mc->szSessionCacheDataFile,
-	    APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
+            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "Cannot create SSLSessionCache DBM file `%s'",
                      mc->szSessionCacheDataFile);
@@ -159,7 +159,7 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SS
     /* and store it to the DBM file */
     ssl_mutex_on(s);
     if ((rv = apr_dbm_open(&dbm, mc->szSessionCacheDataFile,
-	    APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
+            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "Cannot open SSLSessionCache DBM file `%s' for writing "
                      "(store)",
@@ -215,7 +215,7 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
      */
     ssl_mutex_on(s);
     if ((rc = apr_dbm_open(&dbm, mc->szSessionCacheDataFile,
-	    APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
+            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
                      "Cannot open SSLSessionCache DBM file `%s' for reading "
                      "(fetch)",
@@ -278,7 +278,7 @@ void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen)
     /* and delete it from the DBM file */
     ssl_mutex_on(s);
     if ((rv = apr_dbm_open(&dbm, mc->szSessionCacheDataFile,
-	    APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
+            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "Cannot open SSLSessionCache DBM file `%s' for writing "
                      "(delete)",
@@ -384,7 +384,7 @@ static void ssl_scache_dbm_expire(server_rec *s)
 
         /* pass 2: delete expired elements */
         if (apr_dbm_open(&dbm, mc->szSessionCacheDataFile,
-		APR_DBM_RWCREATE,SSL_DBM_FILE_MODE, p) != APR_SUCCESS) {
+                APR_DBM_RWCREATE,SSL_DBM_FILE_MODE, p) != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          "Cannot re-open SSLSessionCache DBM file `%s' for "
                          "expiring",
@@ -431,7 +431,7 @@ void ssl_scache_dbm_status(request_rec *r, int flags, apr_pool_t *p)
      * XXX - Check what pool is to be used - TBD
      */
     if ((rv = apr_dbm_open(&dbm, mc->szSessionCacheDataFile,
-	                       APR_DBM_RWCREATE, SSL_DBM_FILE_MODE,
+                               APR_DBM_RWCREATE, SSL_DBM_FILE_MODE,
                            mc->pPool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                      "Cannot open SSLSessionCache DBM file `%s' for status "

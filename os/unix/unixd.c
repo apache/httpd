@@ -63,49 +63,49 @@ unixd_config_rec unixd_config;
 static int set_group_privs(void)
 {
     if (!geteuid()) {
-	const char *name;
+        const char *name;
 
-	/* Get username if passed as a uid */
+        /* Get username if passed as a uid */
 
-	if (unixd_config.user_name[0] == '#') {
-	    struct passwd *ent;
-	    uid_t uid = atoi(&unixd_config.user_name[1]);
+        if (unixd_config.user_name[0] == '#') {
+            struct passwd *ent;
+            uid_t uid = atoi(&unixd_config.user_name[1]);
 
-	    if ((ent = getpwuid(uid)) == NULL) {
-		ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-			 "getpwuid: couldn't determine user name from uid %u, "
-			 "you probably need to modify the User directive",
-			 (unsigned)uid);
-		return -1;
-	    }
+            if ((ent = getpwuid(uid)) == NULL) {
+                ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "getpwuid: couldn't determine user name from uid %u, "
+                         "you probably need to modify the User directive",
+                         (unsigned)uid);
+                return -1;
+            }
 
-	    name = ent->pw_name;
-	}
-	else
-	    name = unixd_config.user_name;
+            name = ent->pw_name;
+        }
+        else
+            name = unixd_config.user_name;
 
 #if !defined(OS2) && !defined(TPF)
-	/* OS/2 and TPF don't support groups. */
+        /* OS/2 and TPF don't support groups. */
 
-	/*
-	 * Set the GID before initgroups(), since on some platforms
-	 * setgid() is known to zap the group list.
-	 */
-	if (setgid(unixd_config.group_id) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-			"setgid: unable to set group id to Group %u",
-			(unsigned)unixd_config.group_id);
-	    return -1;
-	}
+        /*
+         * Set the GID before initgroups(), since on some platforms
+         * setgid() is known to zap the group list.
+         */
+        if (setgid(unixd_config.group_id) == -1) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                        "setgid: unable to set group id to Group %u",
+                        (unsigned)unixd_config.group_id);
+            return -1;
+        }
 
-	/* Reset `groups' attributes. */
+        /* Reset `groups' attributes. */
 
-	if (initgroups(name, unixd_config.group_id) == -1) {
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-			"initgroups: unable to set groups for User %s "
-			"and Group %u", name, (unsigned)unixd_config.group_id);
-	    return -1;
-	}
+        if (initgroups(name, unixd_config.group_id) == -1) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                        "initgroups: unable to set groups for User %s "
+                        "and Group %u", name, (unsigned)unixd_config.group_id);
+            return -1;
+        }
 #endif /* !defined(OS2) && !defined(TPF) */
     }
     return 0;
@@ -115,32 +115,32 @@ static int set_group_privs(void)
 AP_DECLARE(int) unixd_setup_child(void)
 {
     if (set_group_privs()) {
-	return -1;
+        return -1;
     }
 #ifdef MPE
     /* Only try to switch if we're running as MANAGER.SYS */
     if (geteuid() == 1 && unixd_config.user_id > 1) {
-	GETPRIVMODE();
-	if (setuid(unixd_config.user_id) == -1) {
-	    GETUSERMODE();
-	    ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-			"setuid: unable to change to uid: %ld",
+        GETPRIVMODE();
+        if (setuid(unixd_config.user_id) == -1) {
+            GETUSERMODE();
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                        "setuid: unable to change to uid: %ld",
                         (long) unixd_config.user_id);
-	    exit(1);
-	}
-	GETUSERMODE();
+            exit(1);
+        }
+        GETUSERMODE();
     }
 #else
     /* Only try to switch if we're running as root */
     if (!geteuid() && (
 #ifdef _OSD_POSIX
-	os_init_job_environment(NULL, unixd_config.user_name, ap_exists_config_define("DEBUG")) != 0 ||
+        os_init_job_environment(NULL, unixd_config.user_name, ap_exists_config_define("DEBUG")) != 0 ||
 #endif
-	setuid(unixd_config.user_id) == -1)) {
-	ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
-		    "setuid: unable to change to uid: %ld",
+        setuid(unixd_config.user_id) == -1)) {
+        ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                    "setuid: unable to change to uid: %ld",
                     (long) unixd_config.user_id);
-	return -1;
+        return -1;
     }
 #if defined(HAVE_PRCTL) && defined(PR_SET_DUMPABLE) 
     /* this applies to Linux 2.4+ */
@@ -171,15 +171,15 @@ AP_DECLARE(const char *) unixd_set_user(cmd_parms *cmd, void *dummy,
     unixd_config.user_id = ap_uname2id(arg);
 #if !defined (BIG_SECURITY_HOLE) && !defined (OS2)
     if (unixd_config.user_id == 0) {
-	return "Error:\tApache has not been designed to serve pages while\n"
-		"\trunning as root.  There are known race conditions that\n"
-		"\twill allow any local user to read any file on the system.\n"
-		"\tIf you still desire to serve pages as root then\n"
-		"\tadd -DBIG_SECURITY_HOLE to the CFLAGS env variable\n"
-		"\tand then rebuild the server.\n"
-		"\tIt is strongly suggested that you instead modify the User\n"
-		"\tdirective in your httpd.conf file to list a non-root\n"
-		"\tuser.\n";
+        return "Error:\tApache has not been designed to serve pages while\n"
+                "\trunning as root.  There are known race conditions that\n"
+                "\twill allow any local user to read any file on the system.\n"
+                "\tIf you still desire to serve pages as root then\n"
+                "\tadd -DBIG_SECURITY_HOLE to the CFLAGS env variable\n"
+                "\tand then rebuild the server.\n"
+                "\tIt is strongly suggested that you instead modify the User\n"
+                "\tdirective in your httpd.conf file to list a non-root\n"
+                "\tuser.\n";
     }
 #endif
 
@@ -330,7 +330,7 @@ static apr_status_t ap_unix_create_privileged_process(
     if (args) {
         while (args[i]) {
             i++;
-	    }
+            }
     }
     /* allocate space for 4 new args, the input args, and a null terminator */
     newargs = apr_palloc(p, sizeof(char *) * (i + 4));
@@ -622,8 +622,8 @@ static bs2_ForkType forktype = bs2_unknown;
 static void ap_str_toupper(char *str)
 {
     while (*str) {
-	*str = apr_toupper(*str);
-	++str;
+        *str = apr_toupper(*str);
+        ++str;
     }
 }
 
@@ -668,12 +668,12 @@ int os_init_job_environment(server_rec *server, const char *user_name, int one_p
 
     if (one_process) {
 
-	type = forktype = bs2_noFORK;
+        type = forktype = bs2_noFORK;
 
-	ap_log_error(APLOG_MARK, APLOG_ERR, 0, server,
-		     "The debug mode of Apache should only "
-		     "be started by an unprivileged user!");
-	return 0;
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, server,
+                     "The debug mode of Apache should only "
+                     "be started by an unprivileged user!");
+        return 0;
     }
 
     return 0;
@@ -688,27 +688,27 @@ pid_t os_fork(const char *user)
     switch (os_forktype(0)) {
 
       case bs2_FORK:
-	pid = fork();
-	break;
+        pid = fork();
+        break;
 
       case bs2_UFORK:
-	apr_cpystrn(username, user, sizeof username);
+        apr_cpystrn(username, user, sizeof username);
 
-	/* Make user name all upper case - for some versions of ufork() */
-	ap_str_toupper(username);
+        /* Make user name all upper case - for some versions of ufork() */
+        ap_str_toupper(username);
 
-	pid = ufork(username);
-	if (pid == -1 && errno == EPERM) {
-	    ap_log_error(APLOG_MARK, APLOG_EMERG, errno,
-			 NULL, "ufork: Possible mis-configuration "
-			 "for user %s - Aborting.", user);
-	    exit(1);
-	}
-	break;
+        pid = ufork(username);
+        if (pid == -1 && errno == EPERM) {
+            ap_log_error(APLOG_MARK, APLOG_EMERG, errno,
+                         NULL, "ufork: Possible mis-configuration "
+                         "for user %s - Aborting.", user);
+            exit(1);
+        }
+        break;
 
       default:
-	pid = 0;
-	break;
+        pid = 0;
+        break;
     }
 
     return pid;

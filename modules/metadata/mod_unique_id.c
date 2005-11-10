@@ -284,8 +284,8 @@ static int gen_unique_id(request_rec *r)
      */
     unique_id_rec new_unique_id;
     struct {
-	unique_id_rec foo;
-	unsigned char pad[2];
+        unique_id_rec foo;
+        unsigned char pad[2];
     } paddedbuf;
     unsigned char *x,*y;
     unsigned short counter;
@@ -296,8 +296,8 @@ static int gen_unique_id(request_rec *r)
      * actually called for sub requests, so we don't need to test for
      * them) */
     if (r->prev && (e = apr_table_get(r->subprocess_env, "REDIRECT_UNIQUE_ID"))) {
-	apr_table_setn(r->subprocess_env, "UNIQUE_ID", e);
-	return DECLINED;
+        apr_table_setn(r->subprocess_env, "UNIQUE_ID", e);
+        return DECLINED;
     }
     
     new_unique_id.in_addr = cur_unique_id.in_addr;

@@ -78,7 +78,7 @@ static void *merge_action_dir_configs(apr_pool_t *p, void *basev, void *addv)
     int i;
 
     new->action_types = apr_table_overlay(p, add->action_types,
-				       base->action_types);
+                                       base->action_types);
 
     for (i = 0; i < METHODS; ++i) {
         new->scripted[i] = add->scripted[i] ? add->scripted[i]
@@ -173,7 +173,7 @@ static int action_handler(request_rec *r)
 
     /* Check for looping, which can happen if the CGI script isn't */
     if (script && r->prev && r->prev->prev)
-	return DECLINED;
+        return DECLINED;
 
     /* Second, check for actions (which override the method scripts) */
     action = r->handler ? r->handler :
@@ -195,7 +195,7 @@ static int action_handler(request_rec *r)
     }
 
     if (script == NULL)
-	return DECLINED;
+        return DECLINED;
 
     ap_internal_redirect_handler(apr_pstrcat(r->pool, script,
                                              ap_escape_uri(r->pool, r->uri),

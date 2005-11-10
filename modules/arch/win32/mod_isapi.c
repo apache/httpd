@@ -136,20 +136,20 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
      */
     fspec = ap_server_root_relative(cmd->pool, filename);
     if (!fspec) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, APR_EBADPATH, cmd->server,
-	             "ISAPI: invalid module path, skipping %s", filename);
-	return NULL;
+        ap_log_error(APLOG_MARK, APLOG_WARNING, APR_EBADPATH, cmd->server,
+                     "ISAPI: invalid module path, skipping %s", filename);
+        return NULL;
     }
     if ((rv = apr_stat(&tmp, fspec, APR_FINFO_TYPE, 
                       cmd->temp_pool)) != APR_SUCCESS) { 
-	ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server,
-	    "ISAPI: unable to stat, skipping %s", fspec);
-	return NULL;
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server,
+            "ISAPI: unable to stat, skipping %s", fspec);
+        return NULL;
     }
     if (tmp.filetype != APR_REG) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
-	    "ISAPI: not a regular file, skipping %s", fspec);
-	return NULL;
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+            "ISAPI: not a regular file, skipping %s", fspec);
+        return NULL;
     }
 
     /* Load the extention as cached (with null request_rec) */
@@ -157,7 +157,7 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server,
                      "ISAPI: unable to cache, skipping %s", fspec);
-	return NULL;
+        return NULL;
     }
 
     return NULL;
@@ -874,12 +874,12 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             apr_bucket_brigade *bb;
             apr_bucket *b;
             bb = apr_brigade_create(cid->r->pool, c->bucket_alloc);
-	    b = apr_bucket_transient_create((char*) data_type + ate, 
+            b = apr_bucket_transient_create((char*) data_type + ate, 
                                            headlen - ate, c->bucket_alloc);
-	    APR_BRIGADE_INSERT_TAIL(bb, b);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
             b = apr_bucket_flush_create(c->bucket_alloc);
-	    APR_BRIGADE_INSERT_TAIL(bb, b);
-	    ap_pass_brigade(cid->r->output_filters, bb);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
+            ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
         }
         return 1;
@@ -1274,13 +1274,13 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             apr_bucket_brigade *bb;
             apr_bucket *b;
             bb = apr_brigade_create(cid->r->pool, c->bucket_alloc);
-	    b = apr_bucket_transient_create(shi->pszHeader + ate, 
+            b = apr_bucket_transient_create(shi->pszHeader + ate, 
                                             shi->cchHeader - ate,
                                             c->bucket_alloc);
-	    APR_BRIGADE_INSERT_TAIL(bb, b);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
             b = apr_bucket_flush_create(c->bucket_alloc);
-	    APR_BRIGADE_INSERT_TAIL(bb, b);
-	    ap_pass_brigade(cid->r->output_filters, bb);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
+            ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
         }
         return 1;
@@ -1608,8 +1608,8 @@ static int isapi_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
 
     apr_pool_create_ex(&loaded.pool, pconf, NULL, NULL);
     if (!loaded.pool) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, NULL,
-	             "ISAPI: could not create the isapi cache pool");
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, NULL,
+                     "ISAPI: could not create the isapi cache pool");
         return APR_EGENERAL;
     }
     

@@ -260,7 +260,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     }
 
     if (!(new->override_opts & OPT_UNSET)) {
-	conf->override_opts = new->override_opts;
+        conf->override_opts = new->override_opts;
     }
 
     if (new->ap_default_type) {
@@ -750,7 +750,7 @@ char *ap_response_code_string(request_rec *r, int error_index)
                                                       &core_module);
 
     if (dirconf->response_code_strings == NULL) {
-	return NULL;
+        return NULL;
     }
 
     if (dirconf->response_code_strings[error_index] == &errordocument_default) {
@@ -1343,21 +1343,21 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
     while (l[0]) {
         w = ap_getword_conf(cmd->pool, &l);
 
-	k = w;
-	v = strchr(k, '=');
-	if (v) {
-		*v++ = '\0';
-	}
+        k = w;
+        v = strchr(k, '=');
+        if (v) {
+                *v++ = '\0';
+        }
 
         if (!strcasecmp(w, "Limit")) {
             d->override |= OR_LIMIT;
         }
         else if (!strcasecmp(k, "Options")) {
             d->override |= OR_OPTIONS;
-	    if (v) 
+            if (v) 
                 set_allow_opts(cmd, &(d->override_opts), v);
-	    else
-	        d->override_opts = OPT_ALL;
+            else
+                d->override_opts = OPT_ALL;
         }
         else if (!strcasecmp(w, "FileInfo")) {
             d->override |= OR_FILEINFO;
@@ -1437,8 +1437,8 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
             return apr_pstrcat(cmd->pool, "Illegal option ", w, NULL);
         }
 
-	if (!(cmd->override_opts & opt) && opt != OPT_NONE) {
-	    return apr_pstrcat(cmd->pool, "Option ", w, " not allowed here", NULL);
+        if (!(cmd->override_opts & opt) && opt != OPT_NONE) {
+            return apr_pstrcat(cmd->pool, "Option ", w, " not allowed here", NULL);
         }
         else if (action == '-') {
             /* we ensure the invariant (d->opts_add & d->opts_remove) == 0 */

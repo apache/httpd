@@ -20,7 +20,7 @@
 #include "http_protocol.h"
 
 AP_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(int,optional_hook_test,(const char *szStr),
-				    (szStr),OK,DECLINED)
+                                    (szStr),OK,DECLINED)
 
 static int ExportLogTransaction(request_rec *r)
 {

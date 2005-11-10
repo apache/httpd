@@ -276,7 +276,7 @@ static void add_job(SOCKET sock)
 
     new_job = (joblist *) malloc(sizeof(joblist));
     if (new_job == NULL) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "Ouch!  Out of memory in add_job()!");
         return;
     }
@@ -286,10 +286,10 @@ static void add_job(SOCKET sock)
     apr_thread_mutex_lock(allowed_globals.jobmutex);
 
     if (allowed_globals.jobtail != NULL)
-	allowed_globals.jobtail->next = new_job;
+        allowed_globals.jobtail->next = new_job;
     allowed_globals.jobtail = new_job;
     if (!allowed_globals.jobhead)
-	allowed_globals.jobhead = new_job;
+        allowed_globals.jobhead = new_job;
     allowed_globals.jobcount++;
     ReleaseSemaphore(allowed_globals.jobsemaphore, 1, NULL);
 
@@ -307,13 +307,13 @@ static SOCKET remove_job(void)
 
     if (shutdown_in_progress && !allowed_globals.jobhead) {
         apr_thread_mutex_unlock(allowed_globals.jobmutex);
-	return (INVALID_SOCKET);
+        return (INVALID_SOCKET);
     }
     job = allowed_globals.jobhead;
     ap_assert(job);
     allowed_globals.jobhead = job->next;
     if (allowed_globals.jobhead == NULL)
-	allowed_globals.jobtail = NULL;
+        allowed_globals.jobtail = NULL;
     apr_thread_mutex_unlock(allowed_globals.jobmutex);
     sock = job->sock;
     free(job);
@@ -356,9 +356,9 @@ static unsigned int __stdcall win9x_accept(void * dummy)
     head_listener = ap_listeners;
 
     while (!shutdown_in_progress) {
-	tv.tv_sec = wait_time;
-	tv.tv_usec = 0;
-	memcpy(&main_fds, &listenfds, sizeof(fd_set));
+        tv.tv_sec = wait_time;
+        tv.tv_usec = 0;
+        memcpy(&main_fds, &listenfds, sizeof(fd_set));
 
         /* First parameter of select() is ignored on Windows */
         rc = select(0, &main_fds, NULL, NULL, &tv);
@@ -381,30 +381,30 @@ static unsigned int __stdcall win9x_accept(void * dummy)
                              "Too many errors in select loop. Child process exiting.");
                 break;
             }
-	} else {
-	    ap_listen_rec *lr;
+        } else {
+            ap_listen_rec *lr;
 
-	    lr = find_ready_listener(&main_fds);
-	    if (lr != NULL) {
+            lr = find_ready_listener(&main_fds);
+            if (lr != NULL) {
                 /* fetch the native socket descriptor */
                 apr_os_sock_get(&nsd, lr->sd);
-	    }
-	}
+            }
+        }
 
-	do {
+        do {
             clen = sizeof(sa_client);
             csd = accept(nsd, (struct sockaddr *) &sa_client, &clen);
         } while (csd < 0 && APR_STATUS_IS_EINTR(apr_get_netos_error()));
 
-	if (csd < 0) {
+        if (csd < 0) {
             if (APR_STATUS_IS_ECONNABORTED(apr_get_netos_error())) {
-		ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), ap_server_conf,
-			    "accept: (client socket)");
+                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), ap_server_conf,
+                            "accept: (client socket)");
             }
-	}
-	else {
-	    add_job(csd);
-	}
+        }
+        else {
+            add_job(csd);
+        }
     }
     SetEvent(exit_event);
     return 0;
@@ -809,7 +809,7 @@ static void cleanup_thread(HANDLE *handles, int *thread_cnt, int thread_to_clean
 
     CloseHandle(handles[thread_to_clean]);
     for (i = thread_to_clean; i < ((*thread_cnt) - 1); i++)
-	handles[i] = handles[i + 1];
+        handles[i] = handles[i + 1];
     (*thread_cnt)--;
 }
 

@@ -1127,7 +1127,7 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
     	    ap_show_modules();
         }
         else if (!strnicmp("DIRECTIVES",&szcommandLine[iCommandLen],3)) {
-	        ap_show_directives();
+                ap_show_directives();
         }
         else if (!strnicmp("SHUTDOWN",&szcommandLine[iCommandLen],3)) {
             printf("Shutdown Requested...\n");

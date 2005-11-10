@@ -782,7 +782,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
                                                       &core_module);
 
     if (conf->trace_enable == AP_TRACE_DISABLE) {
-	apr_table_setn(r->notes, "error-notes",
+        apr_table_setn(r->notes, "error-notes",
                       "TRACE denied by server configuration");
         return HTTP_FORBIDDEN;
     }
@@ -804,7 +804,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
 
         if (r->remaining > 0) {
             if (r->remaining > 65536) {
-	        apr_table_setn(r->notes, "error-notes",
+                apr_table_setn(r->notes, "error-notes",
                        "Extended TRACE request bodies cannot exceed 64k\n");
                 return HTTP_REQUEST_ENTITY_TOO_LARGE;
             }
@@ -829,7 +829,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
             /* discard_rest_of_request_body into our buffer */
             while (ap_get_client_block(r, bodyread, bodylen) > 0)
                 ;
-	    apr_table_setn(r->notes, "error-notes",
+            apr_table_setn(r->notes, "error-notes",
                    "Extended TRACE request bodies cannot exceed 64k\n");
             return HTTP_REQUEST_ENTITY_TOO_LARGE;
         }

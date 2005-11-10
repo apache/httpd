@@ -121,13 +121,13 @@ PSECURITY_ATTRIBUTES GetNullACL()
     }
     apr_set_os_error(0);
     if (!InitializeSecurityDescriptor(pSD, SECURITY_DESCRIPTOR_REVISION)
-	|| apr_get_os_error()) {
+        || apr_get_os_error()) {
         LocalFree( pSD );
         LocalFree( sa );
         return NULL;
     }
     if (!SetSecurityDescriptorDacl(pSD, TRUE, (PACL) NULL, FALSE)
-	|| apr_get_os_error()) {
+        || apr_get_os_error()) {
         LocalFree( pSD );
         LocalFree( sa );
         return NULL;

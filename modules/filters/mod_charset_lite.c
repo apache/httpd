@@ -861,7 +861,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                               "can't open translation %s->%s",
                               dc->charset_source, dc->charset_default);
                 ctx->noop = 1;
-	    }
+            }
         }
         else {
                 ctx->noop = 1;

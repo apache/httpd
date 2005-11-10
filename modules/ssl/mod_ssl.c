@@ -144,7 +144,7 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_SRV(HonorCipherOrder, FLAG,
                 "Use the server's cipher ordering preference")
     SSL_CMD_ALL(UserName, TAKE1,
-		"Set user name to SSL variable value")
+                "Set user name to SSL variable value")
 
     /* 
      * Proxy configuration for remote SSL connections
