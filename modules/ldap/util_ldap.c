@@ -309,15 +309,15 @@ static int uldap_connection_open(request_rec *r,
             result->rc = ldapssl_set_verify_mode(LDAPSSL_VERIFY_NONE);
         }
 #elif defined(LDAP_OPT_X_TLS_REQUIRE_CERT)
-		/* This is not a per-connection setting so just pass NULL for the
-		   Ldap connection handle */
+                /* This is not a per-connection setting so just pass NULL for the
+                   Ldap connection handle */
         if (st->verify_svr_cert) {
-			int i = LDAP_OPT_X_TLS_DEMAND;
-			result->rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
+                        int i = LDAP_OPT_X_TLS_DEMAND;
+                        result->rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
         }
         else {
-			int i = LDAP_OPT_X_TLS_NEVER;
-			result->rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
+                        int i = LDAP_OPT_X_TLS_NEVER;
+                        result->rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
         }
 #endif
 #endif
@@ -635,20 +635,20 @@ static int uldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
 
 start_over:
     if (failures++ > 10) {
-	/* too many failures */
+        /* too many failures */
         return result;
     }
 
     /* make a server connection */
     if (LDAP_SUCCESS != (result = uldap_connection_open(r, ldc))) {
-	/* connect to server failed */
+        /* connect to server failed */
         return result;
     }
 
     /* search for reqdn */
     if ((result = ldap_search_ext_s(ldc->ldap, (char *)reqdn, LDAP_SCOPE_BASE,
-				    "(objectclass=*)", NULL, 1, 
-				    NULL, NULL, NULL, -1, &res)) 
+                                    "(objectclass=*)", NULL, 1, 
+                                    NULL, NULL, NULL, -1, &res)) 
             == LDAP_SERVER_DOWN) 
     {
         ldc->reason = "DN Comparison ldap_search_ext_s() "
@@ -924,9 +924,9 @@ start_over:
 
     /* try do the search */
     if ((result = ldap_search_ext_s(ldc->ldap,
-				    (char *)basedn, scope, 
-				    (char *)filter, attrs, 0, 
-				    NULL, NULL, NULL, -1, &res)) 
+                                    (char *)basedn, scope, 
+                                    (char *)filter, attrs, 0, 
+                                    NULL, NULL, NULL, -1, &res)) 
             == LDAP_SERVER_DOWN) 
     {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
@@ -1164,9 +1164,9 @@ start_over:
 
     /* try do the search */
     if ((result = ldap_search_ext_s(ldc->ldap,
-				    (char *)basedn, scope,
+                                    (char *)basedn, scope,
                                     (char *)filter, attrs, 0, 
-				    NULL, NULL, NULL, -1, &res)) 
+                                    NULL, NULL, NULL, -1, &res)) 
             == LDAP_SERVER_DOWN) 
     {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
@@ -1295,7 +1295,7 @@ static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy,
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
-						  &ldap_module);
+                                                  &ldap_module);
 
     st->cache_bytes = atol(bytes);
 
@@ -1333,7 +1333,7 @@ static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy,
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
-						  &ldap_module);
+                                                  &ldap_module);
 
     st->search_cache_ttl = atol(ttl) * 1000000;
 
@@ -1349,7 +1349,7 @@ static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy,
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
-						  &ldap_module);
+                                                  &ldap_module);
 
 
     st->search_cache_size = atol(size);
@@ -1369,7 +1369,7 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy,
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
-						  &ldap_module);
+                                                  &ldap_module);
 
     st->compare_cache_ttl = atol(ttl) * 1000000;
 
@@ -1385,7 +1385,7 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy,
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
-						  &ldap_module);
+                                                  &ldap_module);
 
     st->compare_cache_size = atol(size);
     if (st->compare_cache_size < 0) {
@@ -1699,7 +1699,7 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
 {
     util_ldap_state_t *st = 
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config, 
-						  &ldap_module);
+                                                  &ldap_module);
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
     if (err != NULL) {

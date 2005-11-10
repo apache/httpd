@@ -375,7 +375,7 @@ static void *merge_expires_dir_configs(apr_pool_t *p, void *basev, void *addv)
         new->expiresdefault = add->expiresdefault;
     }
     else {
-	new->expiresdefault = base->expiresdefault;
+        new->expiresdefault = base->expiresdefault;
     }
     new->wildcards = add->wildcards;
     new->expiresbytype = apr_table_overlay(p, add->expiresbytype,
@@ -399,13 +399,13 @@ static int set_expiration_fields(request_rec *r, const char *code,
 
     switch (code[0]) {
     case 'M':
-	if (r->finfo.filetype == 0) { 
-	    /* file doesn't exist on disk, so we can't do anything based on
-	     * modification time.  Note that this does _not_ log an error.
-	     */
-	    return DECLINED;
-	}
-	base = r->finfo.mtime;
+        if (r->finfo.filetype == 0) { 
+            /* file doesn't exist on disk, so we can't do anything based on
+             * modification time.  Note that this does _not_ log an error.
+             */
+            return DECLINED;
+        }
+        base = r->finfo.mtime;
         additional_sec = atoi(&code[1]);
         additional = apr_time_from_sec(additional_sec);
         break;

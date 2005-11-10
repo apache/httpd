@@ -93,15 +93,15 @@ DAV_DECLARE(int) dav_do_find_liveprop(const char *ns_uri, const char *name,
         if (strcmp(ns_uri, uris[ns]) == 0)
             break;
     if (uris[ns] == NULL) {
-	/* not our property (the namespace matched none of ours) */
-	return 0;
+        /* not our property (the namespace matched none of ours) */
+        return 0;
     }
 
     /* second: look for the property in the liveprop specs */
     for (scan = group->specs; scan->name != NULL; ++scan)
-	if (ns == scan->ns && strcmp(name, scan->name) == 0) {
+        if (ns == scan->ns && strcmp(name, scan->name) == 0) {
             *hooks = group->hooks;
-	    return scan->propid;
+            return scan->propid;
         }
 
     /* not our property (same namespace, but no matching prop name) */

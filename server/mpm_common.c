@@ -1049,7 +1049,7 @@ void ap_mpm_rewrite_args(process_rec *process)
 apr_uint32_t ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 
 const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
-	                            const char *arg)
+                                    const char *arg)
 {
     long value;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
@@ -1111,7 +1111,7 @@ const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
     }
 
     if (cmd->server->is_virtual) {
-	return "EnableExceptionHook directive not allowed in <VirtualHost>";
+        return "EnableExceptionHook directive not allowed in <VirtualHost>";
     }
 
     if (strcasecmp(arg, "on") == 0) {

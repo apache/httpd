@@ -296,7 +296,7 @@ static apr_status_t beos_accept(void **accepted, ap_listen_rec *lr, apr_pool_t *
     if (APR_STATUS_IS_EINTR(status)) {
         return status;
     }
-	/* This switch statement provides us with better error details. */
+        /* This switch statement provides us with better error details. */
     switch (status) {
 #ifdef ECONNABORTED
         case ECONNABORTED:
@@ -376,7 +376,7 @@ static void set_signals(void)
     /* These next two are handled by sig_term */
     sa.sa_handler = sig_term;
     if (sigaction(SIGTERM, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGTERM)");
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGTERM)");
     if (sigaction(SIGINT, &sa, NULL) < 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGINT)");
     
@@ -393,7 +393,7 @@ static void set_signals(void)
     if (sigaction(SIGHUP, &sa, NULL) < 0)
     	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGHUP)");
     if (sigaction(AP_SIG_GRACEFUL, &sa, NULL) < 0)
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(" AP_SIG_GRACEFUL_STRING ")");
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(" AP_SIG_GRACEFUL_STRING ")");
 }
 
 /*****************************************************************
@@ -489,7 +489,7 @@ static int32 worker_thread(void *dummy)
 
     mpm_state = AP_MPMQ_RUNNING;
 
-	while (!this_worker_should_exit) {
+        while (!this_worker_should_exit) {
         conn_rec *current_conn;
         void *csd;
 
@@ -603,7 +603,7 @@ static int make_worker(int slot)
     thread_id tid;
 
     if (slot + 1 > ap_max_child_assigned)
-	    ap_max_child_assigned = slot + 1;
+            ap_max_child_assigned = slot + 1;
 
     (void) ap_update_child_status_from_indexes(0, slot, SERVER_STARTING, (request_rec*)NULL);
 
@@ -663,7 +663,7 @@ static void startup_threads(int number_to_start)
             continue;
 
         if (make_worker(i) < 0)
-	        break;
+                break;
 
         --number_to_start;
     }
@@ -704,23 +704,23 @@ static void perform_idle_server_maintenance(void)
         }
 
     	if (i >= ap_max_child_assigned && free_length >= spawn_rate) {
-	         break;
-	    }
+                 break;
+            }
     }
     ap_max_child_assigned = last_non_dead + 1;
 
     if (free_length > 0) {
     	for (i = 0; i < free_length; ++i) {
-	        make_worker(free_slots[i]);
-	    }
-	    /* the next time around we want to spawn twice as many if this
-	     * wasn't good enough, but not if we've just done a graceful
-	     */
-	    if (hold_off_on_exponential_spawning) {
-	        --hold_off_on_exponential_spawning;
-	    } else if (spawn_rate < MAX_SPAWN_RATE) {
-	        spawn_rate *= 2;
-	    }
+                make_worker(free_slots[i]);
+            }
+            /* the next time around we want to spawn twice as many if this
+             * wasn't good enough, but not if we've just done a graceful
+             */
+            if (hold_off_on_exponential_spawning) {
+                --hold_off_on_exponential_spawning;
+            } else if (spawn_rate < MAX_SPAWN_RATE) {
+                spawn_rate *= 2;
+            }
     } else {
         spawn_rate = 1;
     }
@@ -759,13 +759,13 @@ static void server_main_loop(int remaining_threads_to_start)
                                                            (request_rec*)NULL);
                 
                 if (remaining_threads_to_start
-		            && child_slot < ap_thread_limit) {
+                            && child_slot < ap_thread_limit) {
                     /* we're still doing a 1-for-1 replacement of dead
                      * children with new children
                      */
                     make_worker(child_slot);
                     --remaining_threads_to_start;
-		        }
+                        }
 /* TODO
 #if APR_HAS_OTHER_CHILD
             }
@@ -779,9 +779,9 @@ static void server_main_loop(int remaining_threads_to_start)
                  * child.
                  */
                  ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
-			                  "long lost child came home! (pid %ld)", pid.pid);
+                                          "long lost child came home! (pid %ld)", pid.pid);
             }
-	    
+            
             /* Don't perform idle maintenance when a child dies,
              * only do it when there's a timeout.  Remember only a
              * finite number of children can die, and it's pretty
@@ -789,7 +789,7 @@ static void server_main_loop(int remaining_threads_to_start)
              */
              continue;
          }
-	     else if (remaining_threads_to_start) {
+             else if (remaining_threads_to_start) {
              /* we hit a 1 second timeout in which none of the previous
               * generation of children needed to be reaped... so assume
               * they're all done, and pick up the slack if any is left.
@@ -913,7 +913,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     remaining_threads_to_start = ap_threads_to_start;
     /* sanity check on the number to start... */
     if (remaining_threads_to_start > ap_thread_limit) {
-	    remaining_threads_to_start = ap_thread_limit;
+            remaining_threads_to_start = ap_thread_limit;
     }
 
     /* If we're doing the single process thing or we're in a graceful_restart
@@ -922,11 +922,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * do we??
      */
     if (!is_graceful && !one_process) {
-	    startup_threads(remaining_threads_to_start);
-	    remaining_threads_to_start = 0;
+            startup_threads(remaining_threads_to_start);
+            remaining_threads_to_start = 0;
     } else {
-	    /* give the system some time to recover before kicking into
-	     * exponential mode */
+            /* give the system some time to recover before kicking into
+             * exponential mode */
         hold_off_on_exponential_spawning = 10;
     }
 
@@ -934,11 +934,11 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      * record that we've entered the world !
      */
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
-		"%s configured -- resuming normal operations",
-		ap_get_server_version());
+                "%s configured -- resuming normal operations",
+                ap_get_server_version());
 
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
-		"Server built: %s", ap_get_server_built());
+                "Server built: %s", ap_get_server_built());
 
     restart_pending = shutdown_pending = 0;
 
@@ -1003,16 +1003,16 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     if (is_graceful) {
         ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
-		    AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
+                    AP_SIG_GRACEFUL_STRING " received.  Doing graceful restart");
     } else {
         /* Kill 'em all.  Since the child acts the same on the parents SIGTERM 
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
          */
-	    
+            
         ap_reclaim_child_processes(1);		/* Start with SIGTERM */
-	    ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
-		    "SIGHUP received.  Attempting to restart");
+            ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
+                    "SIGHUP received.  Attempting to restart");
     }
     
     /* just before we go, tidy up the lock we created to prevent a 
@@ -1070,7 +1070,7 @@ static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_max_requests_per_thread = DEFAULT_MAX_REQUESTS_PER_THREAD;
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
-	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+        ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 #endif
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));

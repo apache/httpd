@@ -23,16 +23,16 @@ to be used:
     - NFS filesystems absolutely suck for fcntl() and flock()
 
     - uslock absolutely sucks on single-processor IRIX boxes, but
-	absolutely rocks on multi-processor boxes.  The converse
-	is true for fcntl.  sysvsem seems a moderate balance.
+        absolutely rocks on multi-processor boxes.  The converse
+        is true for fcntl.  sysvsem seems a moderate balance.
 
     - Under Solaris you can't have too many processes use SEM_UNDO, there
-	might be a tuneable somewhere that increases the limit from 29.
-	We're not sure what the tunable is, so there's a define
-	NO_SEM_UNDO which can be used to simulate us trapping/blocking
-	signals to be able to properly release the semaphore on a clean
-	child death.  You'll also need to define NEED_UNION_SEMUN
-	under solaris.
+        might be a tuneable somewhere that increases the limit from 29.
+        We're not sure what the tunable is, so there's a define
+        NO_SEM_UNDO which can be used to simulate us trapping/blocking
+        signals to be able to properly release the semaphore on a clean
+        child death.  You'll also need to define NEED_UNION_SEMUN
+        under solaris.
 
 You'll need to define USE_SHMGET_SCOREBOARD if anonymous shared mmap()
 doesn't work on your system (i.e. linux).
@@ -101,9 +101,9 @@ accept_mutex_init(void)
     fcntl_fd = open("test-lock-thing", O_CREAT | O_WRONLY | O_EXCL, 0644);
     if (fcntl_fd == -1)
     {
-	perror ("open");
-	fprintf (stderr, "Cannot open lock file: %s\n", "test-lock-thing");
-	exit (1);
+        perror ("open");
+        fprintf (stderr, "Cannot open lock file: %s\n", "test-lock-thing");
+        exit (1);
     }
     unlink("test-lock-thing");
 }
@@ -113,11 +113,11 @@ void accept_mutex_on(void)
     int ret;
     
     while ((ret = fcntl(fcntl_fd, F_SETLKW, &lock_it)) < 0 && errno == EINTR)
-	continue;
+        continue;
 
     if (ret < 0) {
-	perror ("fcntl lock_it");
-	exit(1);
+        perror ("fcntl lock_it");
+        exit(1);
     }
 }
 
@@ -125,8 +125,8 @@ void accept_mutex_off(void)
 {
     if (fcntl (fcntl_fd, F_SETLKW, &unlock_it) < 0)
     {
-	perror ("fcntl unlock_it");
-	exit(1);
+        perror ("fcntl unlock_it");
+        exit(1);
     }
 }
 
@@ -149,9 +149,9 @@ void accept_mutex_init(void)
     flock_fd = open(FNAME, O_CREAT | O_WRONLY | O_EXCL, 0644);
     if (flock_fd == -1)
     {
-	perror ("open");
-	fprintf (stderr, "Cannot open lock file: %s\n", "test-lock-thing");
-	exit (1);
+        perror ("open");
+        fprintf (stderr, "Cannot open lock file: %s\n", "test-lock-thing");
+        exit (1);
     }
 }
 
@@ -159,8 +159,8 @@ void accept_mutex_child_init(void)
 {
     flock_fd = open(FNAME, O_WRONLY, 0600);
     if (flock_fd == -1) {
-	perror("open");
-	exit(1);
+        perror("open");
+        exit(1);
     }
 }
 
@@ -174,11 +174,11 @@ void accept_mutex_on(void)
     int ret;
     
     while ((ret = flock(flock_fd, LOCK_EX)) < 0 && errno == EINTR)
-	continue;
+        continue;
 
     if (ret < 0) {
-	perror ("flock(LOCK_EX)");
-	exit(1);
+        perror ("flock(LOCK_EX)");
+        exit(1);
     }
 }
 
@@ -186,8 +186,8 @@ void accept_mutex_off(void)
 {
     if (flock (flock_fd, LOCK_UN) < 0)
     {
-	perror ("flock(LOCK_UN)");
-	exit(1);
+        perror ("flock(LOCK_UN)");
+        exit(1);
     }
 }
 
@@ -211,9 +211,9 @@ void accept_mutex_init(void)
 #ifdef NEED_UNION_SEMUN
     /* believe it or not, you need to define this under solaris */
     union semun {
-	int val;
-	struct semid_ds *buf;
-	ushort *array;
+        int val;
+        struct semid_ds *buf;
+        ushort *array;
     };
 #endif
 
@@ -243,8 +243,8 @@ void accept_mutex_on()
 
 #ifdef NO_SEM_UNDO
     if (sigprocmask(SIG_BLOCK, &accept_block_mask, &accept_previous_mask)) {
-	perror("sigprocmask(SIG_BLOCK)");
-	exit (1);
+        perror("sigprocmask(SIG_BLOCK)");
+        exit (1);
     }
     op.sem_flg = 0;
 #else
@@ -253,8 +253,8 @@ void accept_mutex_on()
     op.sem_num = 0;
     op.sem_op  = -1;
     if (semop(sem_id, &op, 1) < 0) {
-	perror ("accept_mutex_on");
-	exit (1);
+        perror ("accept_mutex_on");
+        exit (1);
     }
 }
 
@@ -270,13 +270,13 @@ void accept_mutex_off()
     op.sem_flg = SEM_UNDO;
 #endif
     if (semop(sem_id, &op, 1) < 0) {
-	perror ("accept_mutex_off");
+        perror ("accept_mutex_off");
         exit (1);
     }
 #ifdef NO_SEM_UNDO
     if (sigprocmask(SIG_SETMASK, &accept_previous_mask, NULL)) {
-	perror("sigprocmask(SIG_SETMASK)");
-	exit (1);
+        perror("sigprocmask(SIG_SETMASK)");
+        exit (1);
     }
 #endif
 }
@@ -304,27 +304,27 @@ void accept_mutex_init(void)
 
     fd = open ("/dev/zero", O_RDWR);
     if (fd == -1) {
-	perror ("open(/dev/zero)");
-	exit (1);
+        perror ("open(/dev/zero)");
+        exit (1);
     }
     mutex = (pthread_mutex_t *)mmap ((caddr_t)0, sizeof (*mutex),
-		    PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
+                    PROT_READ|PROT_WRITE, MAP_SHARED, fd, 0);
     if (mutex == (void *)(caddr_t)-1) {
-	perror ("mmap");
-	exit (1);
+        perror ("mmap");
+        exit (1);
     }
     close (fd);
     if (pthread_mutexattr_init(&mattr)) {
-	perror ("pthread_mutexattr_init");
-	exit (1);
+        perror ("pthread_mutexattr_init");
+        exit (1);
     }
     if (pthread_mutexattr_setpshared(&mattr, PTHREAD_PROCESS_SHARED)) {
-	perror ("pthread_mutexattr_setpshared");
-	exit (1);
+        perror ("pthread_mutexattr_setpshared");
+        exit (1);
     }
     if (pthread_mutex_init(mutex, &mattr)) {
-	perror ("pthread_mutex_init");
-	exit (1);
+        perror ("pthread_mutex_init");
+        exit (1);
     }
     sigfillset(&accept_block_mask);
     sigdelset(&accept_block_mask, SIGHUP);
@@ -335,24 +335,24 @@ void accept_mutex_init(void)
 void accept_mutex_on()
 {
     if (sigprocmask(SIG_BLOCK, &accept_block_mask, &accept_previous_mask)) {
-	perror("sigprocmask(SIG_BLOCK)");
-	exit (1);
+        perror("sigprocmask(SIG_BLOCK)");
+        exit (1);
     }
     if (pthread_mutex_lock (mutex)) {
-	perror ("pthread_mutex_lock");
-	exit (1);
+        perror ("pthread_mutex_lock");
+        exit (1);
     }
 }
 
 void accept_mutex_off()
 {
     if (pthread_mutex_unlock (mutex)) {
-	perror ("pthread_mutex_unlock");
-	exit (1);
+        perror ("pthread_mutex_unlock");
+        exit (1);
     }
     if (sigprocmask(SIG_SETMASK, &accept_previous_mask, NULL)) {
-	perror("sigprocmask(SIG_SETMASK)");
-	exit (1);
+        perror("sigprocmask(SIG_SETMASK)");
+        exit (1);
     }
 }
 
@@ -423,10 +423,10 @@ static void *get_shared_mem(apr_size_t size)
 
     /* allocate shared memory for the shared_counter */
     result = (unsigned long *)mmap ((caddr_t)0, size,
-		    PROT_READ|PROT_WRITE, MAP_ANON|MAP_SHARED, -1, 0);
+                    PROT_READ|PROT_WRITE, MAP_ANON|MAP_SHARED, -1, 0);
     if (result == (void *)(caddr_t)-1) {
-	perror ("mmap");
-	exit (1);
+        perror ("mmap");
+        exit (1);
     }
     return result;
 }
@@ -448,8 +448,8 @@ static void *get_shared_mem(apr_size_t size)
 #endif
 
     if ((shmid = shmget(shmkey, size, IPC_CREAT | SHM_R | SHM_W)) == -1) {
-	perror("shmget");
-	exit(1);
+        perror("shmget");
+        exit(1);
     }
 
 #ifdef MOVEBREAK
@@ -463,29 +463,29 @@ static void *get_shared_mem(apr_size_t size)
      * attach the segment and then move break back down. Ugly
      */
     if ((obrk = sbrk(MOVEBREAK)) == (char *) -1) {
-	perror("sbrk");
+        perror("sbrk");
     }
 #endif
 
 #define BADSHMAT	((void *)(-1))
     if ((result = shmat(shmid, 0, 0)) == BADSHMAT) {
-	perror("shmat");
+        perror("shmat");
     }
     /*
      * We must avoid leaving segments in the kernel's
      * (small) tables.
      */
     if (shmctl(shmid, IPC_RMID, NULL) != 0) {
-	perror("shmctl(IPC_RMID)");
+        perror("shmctl(IPC_RMID)");
     }
     if (result == BADSHMAT)	/* now bailout */
-	exit(1);
+        exit(1);
 
 #ifdef MOVEBREAK
     if (obrk == (char *) -1)
-	return;			/* nothing else to do */
+        return;			/* nothing else to do */
     if (sbrk(-(MOVEBREAK)) == (char *) -1) {
-	perror("sbrk 2");
+        perror("sbrk 2");
     }
 #endif
     return result;
@@ -513,8 +513,8 @@ void main (int argc, char **argv)
     unsigned long *shared_counter;
 
     if (argc != 3) {
-	fprintf (stderr, "Usage: time-sem num-child num iter\n");
-	exit (1);
+        fprintf (stderr, "Usage: time-sem num-child num iter\n");
+        exit (1);
     }
 
     num_child = atoi (argv[1]);
@@ -532,54 +532,54 @@ void main (int argc, char **argv)
     accept_mutex_on ();
 
     for (i = 0; i < num_child; ++i) {
-	pid = fork();
-	if (pid == 0) {
-	    /* child, do our thing */
-	    accept_mutex_child_init();
-	    for (i = 0; i < num_iter; ++i) {
-		unsigned long tmp;
+        pid = fork();
+        if (pid == 0) {
+            /* child, do our thing */
+            accept_mutex_child_init();
+            for (i = 0; i < num_iter; ++i) {
+                unsigned long tmp;
 
-		accept_mutex_on ();
-		tmp = *shared_counter;
-		YIELD;
-		*shared_counter = tmp + 1;
-		accept_mutex_off ();
-	    }
-	    exit (0);
-	} else if (pid == -1) {
-	    perror ("fork");
-	    exit (1);
-	}
+                accept_mutex_on ();
+                tmp = *shared_counter;
+                YIELD;
+                *shared_counter = tmp + 1;
+                accept_mutex_off ();
+            }
+            exit (0);
+        } else if (pid == -1) {
+            perror ("fork");
+            exit (1);
+        }
     }
 
     /* a quick test to see that nothing is screwed up */
     if (*shared_counter != 0) {
-	puts ("WTF! shared_counter != 0 before the children have been started!");
-	exit (1);
+        puts ("WTF! shared_counter != 0 before the children have been started!");
+        exit (1);
     }
 
     gettimeofday (&first, NULL);
     /* launch children into action */
     accept_mutex_off ();
     for (i = 0; i < num_child; ++i) {
-	if (wait(NULL) == -1) {
-	    perror ("wait");
-	}
+        if (wait(NULL) == -1) {
+            perror ("wait");
+        }
     }
     gettimeofday (&last, NULL);
 
     if (*shared_counter != num_child * num_iter) {
-	printf ("WTF! shared_counter != num_child * num_iter!\n"
-		"shared_counter = %lu\nnum_child = %d\nnum_iter=%d\n",
-		*shared_counter,
-		num_child, num_iter);
+        printf ("WTF! shared_counter != num_child * num_iter!\n"
+                "shared_counter = %lu\nnum_child = %d\nnum_iter=%d\n",
+                *shared_counter,
+                num_child, num_iter);
     }
 
     last.tv_sec -= first.tv_sec;
     ms = last.tv_usec - first.tv_usec;
     if (ms < 0) {
-	--last.tv_sec;
-	ms += 1000000;
+        --last.tv_sec;
+        ms += 1000000;
     }
     last.tv_usec = ms;
     printf ("%8lu.%06lu\n", last.tv_sec, last.tv_usec);

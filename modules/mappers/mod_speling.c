@@ -164,22 +164,22 @@ static sp_reason spdist(const char *s, const char *t)
     for (; apr_tolower(*s) == apr_tolower(*t); t++, s++) {
         if (*t == '\0') {
             return SP_MISCAPITALIZED;   /* exact match (sans case) */
-	}
+        }
     }
     if (*s) {
         if (*t) {
             if (s[1] && t[1] && apr_tolower(*s) == apr_tolower(t[1])
-		&& apr_tolower(*t) == apr_tolower(s[1])
-		&& strcasecmp(s + 2, t + 2) == 0) {
+                && apr_tolower(*t) == apr_tolower(s[1])
+                && strcasecmp(s + 2, t + 2) == 0) {
                 return SP_TRANSPOSITION;        /* transposition */
-	    }
+            }
             if (strcasecmp(s + 1, t + 1) == 0) {
                 return SP_SIMPLETYPO;   /* 1 char mismatch */
-	    }
+            }
         }
         if (strcasecmp(s + 1, t) == 0) {
             return SP_EXTRACHAR;        /* extra character */
-	}
+        }
     }
     if (*t && strcasecmp(s, t + 1) == 0) {
         return SP_MISSINGCHAR;  /* missing character */
@@ -296,7 +296,7 @@ static int check_speling(request_rec *r)
         else if (strcasecmp(bad, dirent.name) == 0) {
             misspelled_file *sp_new;
 
-	    sp_new = (misspelled_file *) apr_array_push(candidates);
+            sp_new = (misspelled_file *) apr_array_push(candidates);
             sp_new->name = apr_pstrdup(r->pool, dirent.name);
             sp_new->quality = SP_MISCAPITALIZED;
         }
@@ -308,17 +308,17 @@ static int check_speling(request_rec *r)
         else if ((q = spdist(bad, dirent.name)) != SP_VERYDIFFERENT) {
             misspelled_file *sp_new;
 
-	    sp_new = (misspelled_file *) apr_array_push(candidates);
+            sp_new = (misspelled_file *) apr_array_push(candidates);
             sp_new->name = apr_pstrdup(r->pool, dirent.name);
             sp_new->quality = q;
         }
 
         /*
-	 * The spdist() should have found the majority of the misspelled
-	 * requests.  It is of questionable use to continue looking for
-	 * files with the same base name, but potentially of totally wrong
-	 * type (index.html <-> index.db).
-	 * I would propose to not set the WANT_BASENAME_MATCH define.
+         * The spdist() should have found the majority of the misspelled
+         * requests.  It is of questionable use to continue looking for
+         * files with the same base name, but potentially of totally wrong
+         * type (index.html <-> index.db).
+         * I would propose to not set the WANT_BASENAME_MATCH define.
          *      08-Aug-1997 <Martin.Kraemer@Mch.SNI.De>
          *
          * However, Alexei replied giving some reasons to add it anyway:
@@ -326,12 +326,12 @@ static int check_speling(request_rec *r)
          * > extension-stripping-and-matching stuff is a good idea:
          * >
          * > If you're using MultiViews, and have a file named foobar.html,
-	 * > which you refer to as "foobar", and someone tried to access
-	 * > "Foobar", mod_speling won't find it, because it won't find
-	 * > anything matching that spelling. With the extension-munging,
-	 * > it would locate "foobar.html". Not perfect, but I ran into
-	 * > that problem when I first wrote the module.
-	 */
+         * > which you refer to as "foobar", and someone tried to access
+         * > "Foobar", mod_speling won't find it, because it won't find
+         * > anything matching that spelling. With the extension-munging,
+         * > it would locate "foobar.html". Not perfect, but I ran into
+         * > that problem when I first wrote the module.
+         */
         else {
 #ifdef WANT_BASENAME_MATCH
             /*
@@ -348,13 +348,13 @@ static int check_speling(request_rec *r)
             int entloc = ap_ind(dirent.name, '.');
             if (entloc == -1) {
                 entloc = strlen(dirent.name);
-	    }
+            }
 
             if ((dotloc == entloc)
                 && !strncasecmp(bad, dirent.name, dotloc)) {
                 misspelled_file *sp_new;
 
-		sp_new = (misspelled_file *) apr_array_push(candidates);
+                sp_new = (misspelled_file *) apr_array_push(candidates);
                 sp_new->name = apr_pstrdup(r->pool, dirent.name);
                 sp_new->quality = SP_VERYDIFFERENT;
             }
@@ -366,7 +366,7 @@ static int check_speling(request_rec *r)
     if (candidates->nelts != 0) {
         /* Wow... we found us a mispelling. Construct a fixed url */
         char *nuri;
-	const char *ref;
+        const char *ref;
         misspelled_file *variant = (misspelled_file *) candidates->elts;
         int i;
 
@@ -379,27 +379,27 @@ static int check_speling(request_rec *r)
          * Conditions for immediate redirection: 
          *     a) the first candidate was not found by stripping the suffix 
          * AND b) there exists only one candidate OR the best match is not
-	 *        ambiguous
+         *        ambiguous
          * then return a redirection right away.
          */
         if (variant[0].quality != SP_VERYDIFFERENT
-	    && (candidates->nelts == 1
-		|| variant[0].quality != variant[1].quality)) {
+            && (candidates->nelts == 1
+                || variant[0].quality != variant[1].quality)) {
 
             nuri = ap_escape_uri(r->pool, apr_pstrcat(r->pool, url,
-						     variant[0].name,
-						     r->path_info, NULL));
-	    if (r->parsed_uri.query)
-		nuri = apr_pstrcat(r->pool, nuri, "?", r->parsed_uri.query, NULL);
+                                                     variant[0].name,
+                                                     r->path_info, NULL));
+            if (r->parsed_uri.query)
+                nuri = apr_pstrcat(r->pool, nuri, "?", r->parsed_uri.query, NULL);
 
             apr_table_setn(r->headers_out, "Location",
-			  ap_construct_url(r->pool, nuri, r));
+                          ap_construct_url(r->pool, nuri, r));
 
             ap_log_rerror(APLOG_MARK, APLOG_INFO, APR_SUCCESS,
-			  r, 
-			  ref ? "Fixed spelling: %s to %s from %s"
-			      : "Fixed spelling: %s to %s",
-			  r->uri, nuri, ref);
+                          r, 
+                          ref ? "Fixed spelling: %s to %s from %s"
+                              : "Fixed spelling: %s to %s",
+                          r->uri, nuri, ref);
 
             return HTTP_MOVED_PERMANENTLY;
         }
@@ -410,9 +410,9 @@ static int check_speling(request_rec *r)
         else {
             apr_pool_t *p;
             apr_table_t *notes;
-	    apr_pool_t *sub_pool;
-	    apr_array_header_t *t;
-	    apr_array_header_t *v;
+            apr_pool_t *sub_pool;
+            apr_array_header_t *t;
+            apr_array_header_t *v;
 
 
             if (r->main == NULL) {
@@ -424,49 +424,49 @@ static int check_speling(request_rec *r)
                 notes = r->main->notes;
             }
 
-	    if (apr_pool_create(&sub_pool, p) != APR_SUCCESS)
-		return DECLINED;
+            if (apr_pool_create(&sub_pool, p) != APR_SUCCESS)
+                return DECLINED;
 
-	    t = apr_array_make(sub_pool, candidates->nelts * 8 + 8,
-			      sizeof(char *));
-	    v = apr_array_make(sub_pool, candidates->nelts * 5,
-			      sizeof(char *));
+            t = apr_array_make(sub_pool, candidates->nelts * 8 + 8,
+                              sizeof(char *));
+            v = apr_array_make(sub_pool, candidates->nelts * 5,
+                              sizeof(char *));
 
             /* Generate the response text. */
 
-	    *(const char **)apr_array_push(t) =
-			  "The document name you requested (<code>";
-	    *(const char **)apr_array_push(t) = ap_escape_html(sub_pool, r->uri);
-	    *(const char **)apr_array_push(t) =
-			   "</code>) could not be found on this server.\n"
-			   "However, we found documents with names similar "
-			   "to the one you requested.<p>"
-			   "Available documents:\n<ul>\n";
+            *(const char **)apr_array_push(t) =
+                          "The document name you requested (<code>";
+            *(const char **)apr_array_push(t) = ap_escape_html(sub_pool, r->uri);
+            *(const char **)apr_array_push(t) =
+                           "</code>) could not be found on this server.\n"
+                           "However, we found documents with names similar "
+                           "to the one you requested.<p>"
+                           "Available documents:\n<ul>\n";
 
             for (i = 0; i < candidates->nelts; ++i) {
-		char *vuri;
-		const char *reason;
+                char *vuri;
+                const char *reason;
 
-		reason = sp_reason_str[(int) (variant[i].quality)];
+                reason = sp_reason_str[(int) (variant[i].quality)];
                 /* The format isn't very neat... */
-		vuri = apr_pstrcat(sub_pool, url, variant[i].name, r->path_info,
-				  (r->parsed_uri.query != NULL) ? "?" : "",
-				  (r->parsed_uri.query != NULL)
-				      ? r->parsed_uri.query : "",
-				  NULL);
-		*(const char **)apr_array_push(v) = "\"";
-		*(const char **)apr_array_push(v) = ap_escape_uri(sub_pool, vuri);
-		*(const char **)apr_array_push(v) = "\";\"";
-		*(const char **)apr_array_push(v) = reason;
-		*(const char **)apr_array_push(v) = "\"";
+                vuri = apr_pstrcat(sub_pool, url, variant[i].name, r->path_info,
+                                  (r->parsed_uri.query != NULL) ? "?" : "",
+                                  (r->parsed_uri.query != NULL)
+                                      ? r->parsed_uri.query : "",
+                                  NULL);
+                *(const char **)apr_array_push(v) = "\"";
+                *(const char **)apr_array_push(v) = ap_escape_uri(sub_pool, vuri);
+                *(const char **)apr_array_push(v) = "\";\"";
+                *(const char **)apr_array_push(v) = reason;
+                *(const char **)apr_array_push(v) = "\"";
 
-		*(const char **)apr_array_push(t) = "<li><a href=\"";
-		*(const char **)apr_array_push(t) = ap_escape_uri(sub_pool, vuri);
-		*(const char **)apr_array_push(t) = "\">";
-		*(const char **)apr_array_push(t) = ap_escape_html(sub_pool, vuri);
-		*(const char **)apr_array_push(t) = "</a> (";
-		*(const char **)apr_array_push(t) = reason;
-		*(const char **)apr_array_push(t) = ")\n";
+                *(const char **)apr_array_push(t) = "<li><a href=\"";
+                *(const char **)apr_array_push(t) = ap_escape_uri(sub_pool, vuri);
+                *(const char **)apr_array_push(t) = "\">";
+                *(const char **)apr_array_push(t) = ap_escape_html(sub_pool, vuri);
+                *(const char **)apr_array_push(t) = "</a> (";
+                *(const char **)apr_array_push(t) = reason;
+                *(const char **)apr_array_push(t) = ")\n";
 
                 /*
                  * when we have printed the "close matches" and there are
@@ -478,36 +478,36 @@ static int check_speling(request_rec *r)
                 if (i > 0 && i < candidates->nelts - 1
                     && variant[i].quality != SP_VERYDIFFERENT
                     && variant[i + 1].quality == SP_VERYDIFFERENT) {
-		    *(const char **)apr_array_push(t) = 
-				   "</ul>\nFurthermore, the following related "
-				   "documents were found:\n<ul>\n";
+                    *(const char **)apr_array_push(t) = 
+                                   "</ul>\nFurthermore, the following related "
+                                   "documents were found:\n<ul>\n";
                 }
             }
-	    *(const char **)apr_array_push(t) = "</ul>\n";
+            *(const char **)apr_array_push(t) = "</ul>\n";
 
             /* If we know there was a referring page, add a note: */
             if (ref != NULL) {
                 *(const char **)apr_array_push(t) =
-			       "Please consider informing the owner of the "
-			       "<a href=\"";
-		*(const char **)apr_array_push(t) = ap_escape_uri(sub_pool, ref);
+                               "Please consider informing the owner of the "
+                               "<a href=\"";
+                *(const char **)apr_array_push(t) = ap_escape_uri(sub_pool, ref);
                 *(const char **)apr_array_push(t) = "\">referring page</a> "
-			       "about the broken link.\n";
-	    }
+                               "about the broken link.\n";
+            }
 
 
             /* Pass our apr_table_t to http_protocol.c (see mod_negotiation): */
             apr_table_setn(notes, "variant-list", apr_array_pstrcat(p, t, 0));
 
-	    apr_table_mergen(r->subprocess_env, "VARIANTS",
-			    apr_array_pstrcat(p, v, ','));
-	  
-	    apr_pool_destroy(sub_pool);
+            apr_table_mergen(r->subprocess_env, "VARIANTS",
+                            apr_array_pstrcat(p, v, ','));
+          
+            apr_pool_destroy(sub_pool);
 
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-			 ref ? "Spelling fix: %s: %d candidates from %s"
-			     : "Spelling fix: %s: %d candidates",
-			 r->uri, candidates->nelts, ref);
+                         ref ? "Spelling fix: %s: %d candidates from %s"
+                             : "Spelling fix: %s: %d candidates",
+                         r->uri, candidates->nelts, ref);
 
             return HTTP_MULTIPLE_CHOICES;
         }

@@ -1534,9 +1534,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                 "Server built: %s", ap_get_server_built());
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, ap_server_conf,
-		"AcceptMutex: %s (default: %s)",
-		apr_proc_mutex_name(accept_mutex),
-		apr_proc_mutex_defname());
+                "AcceptMutex: %s (default: %s)",
+                apr_proc_mutex_name(accept_mutex),
+                apr_proc_mutex_defname());
 #endif
     restart_pending = shutdown_pending = 0;
     mpm_state = AP_MPMQ_RUNNING;
@@ -1550,9 +1550,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * (By "gracefully" we don't mean graceful in the same sense as 
          * "apachectl graceful" where we allow old connections to finish.)
          */
-	if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
-	    ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGTERM");
-	}
+        if (unixd_killpg(getpgrp(), SIGTERM) < 0) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "killpg SIGTERM");
+        }
         ap_reclaim_child_processes(1);                /* Start with SIGTERM */
 
         if (!child_fatal) {
@@ -1726,7 +1726,7 @@ static int leader_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
     ap_extended_status = 0;
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
-	ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
+        ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 #endif
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
@@ -1918,9 +1918,9 @@ static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *ar
        server_limit = MAX_SERVER_LIMIT;
     } 
     else if (server_limit < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require ServerLimit > 0, setting to 1");
-	server_limit = 1;
+        server_limit = 1;
     }
     return NULL;
 }
@@ -1958,9 +1958,9 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
        thread_limit = MAX_THREAD_LIMIT;
     } 
     else if (thread_limit < 1) {
-	ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
                      "WARNING: Require ThreadLimit > 0, setting to 1");
-	thread_limit = 1;
+        thread_limit = 1;
     }
     return NULL;
 }

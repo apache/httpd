@@ -34,8 +34,8 @@
 
 APR_HOOK_STRUCT(
             APR_HOOK_LINK(create_connection)
-	    APR_HOOK_LINK(process_connection)
-	    APR_HOOK_LINK(pre_connection)
+            APR_HOOK_LINK(process_connection)
+            APR_HOOK_LINK(pre_connection)
 )
 AP_IMPLEMENT_HOOK_RUN_FIRST(conn_rec *,create_connection,
                             (apr_pool_t *p, server_rec *server, apr_socket_t *csd, long conn_id, void *sbh, apr_bucket_alloc_t *alloc),

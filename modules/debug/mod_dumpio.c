@@ -49,7 +49,7 @@ static void dumpit(ap_filter_t *f, apr_bucket *b)
     conn_rec *c = f->c;
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
-	"mod_dumpio:  %s (%s-%s): %" APR_SIZE_T_FMT " bytes",
+        "mod_dumpio:  %s (%s-%s): %" APR_SIZE_T_FMT " bytes",
                 f->frec->name,
                 (APR_BUCKET_IS_METADATA(b)) ? "metadata" : "data",
                 b->type->name,
@@ -101,9 +101,9 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
     conn_rec *c = f->c;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
-	"mod_dumpio: %s [%s-%s] %" APR_OFF_T_FMT " readbytes",
+        "mod_dumpio: %s [%s-%s] %" APR_OFF_T_FMT " readbytes",
          f->frec->name,
-	 whichmode(mode),
+         whichmode(mode),
          ((block) == APR_BLOCK_READ) ? "blocking" : "nonblocking",
          readbytes) ;
 
@@ -115,7 +115,7 @@ static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
         }
     } else {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
-	"mod_dumpio: %s - %d", f->frec->name, ret) ;
+        "mod_dumpio: %s - %d", f->frec->name, ret) ;
     }
 
     return APR_SUCCESS ;
@@ -161,10 +161,10 @@ static void dumpio_register_hooks(apr_pool_t *p)
  * We know that SSL is CONNECTION + 5
  */
   ap_register_output_filter("DUMPIO_OUT", dumpio_output_filter,
-	NULL, AP_FTYPE_CONNECTION + 3) ;
+        NULL, AP_FTYPE_CONNECTION + 3) ;
 
   ap_register_input_filter("DUMPIO_IN", dumpio_input_filter,
-	NULL, AP_FTYPE_CONNECTION + 3) ;
+        NULL, AP_FTYPE_CONNECTION + 3) ;
 
   ap_hook_pre_connection(dumpio_pre_conn, NULL, NULL, APR_HOOK_MIDDLE);
 }
@@ -205,11 +205,11 @@ static const command_rec dumpio_cmds[] = {
 };
 
 module AP_MODULE_DECLARE_DATA dumpio_module = {
-	STANDARD20_MODULE_STUFF,
-	NULL,
-	NULL,
-	dumpio_create_sconfig,
-	NULL,
-	dumpio_cmds,
-	dumpio_register_hooks
+        STANDARD20_MODULE_STUFF,
+        NULL,
+        NULL,
+        dumpio_create_sconfig,
+        NULL,
+        dumpio_cmds,
+        dumpio_register_hooks
 };

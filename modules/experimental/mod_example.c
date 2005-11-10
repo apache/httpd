@@ -546,7 +546,7 @@ static int x_handler(request_rec *r)
     ap_rputs("  </H1>\n", r);
     ap_rputs("  <P>\n", r);
     ap_rprintf(r, "  Apache HTTP Server version: \"%s\"\n",
-	    ap_get_server_version());
+            ap_get_server_version());
     ap_rputs("  <BR>\n", r);
     ap_rprintf(r, "  Server built: \"%s\"\n", ap_get_server_built());
     ap_rputs("  </P>\n", r);;

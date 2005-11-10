@@ -824,7 +824,7 @@ int main(int argc, const char * const argv[])
                 }
                 benice = 1;
                 break;
-		
+                
             case 't':
                 if (deldirs) {
                     usage();

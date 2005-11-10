@@ -113,7 +113,7 @@ struct seclistenup_rec {
 struct NWSSLSrvConfigRec {
     apr_table_t *sltable;
     apr_table_t *slutable;
-	apr_pool_t *pPool;
+        apr_pool_t *pPool;
 };
 
 struct secsocket_data {
@@ -266,7 +266,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
         
     if (!mutual) {
         optParam = SO_SSL_ENABLE | SO_SSL_SERVER;
-		    
+                    
         if (WSAIoctl(s, SO_SSL_SET_FLAGS, (char *)&optParam,
             sizeof(optParam), NULL, 0, NULL, NULL, NULL)) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, WSAGetLastError(), sconf,
@@ -311,9 +311,9 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
 
 int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
 {
-	int rcode;
-	struct tlsclientopts sWS2Opts;
-	struct nwtlsopts sNWTLSOpts;
+        int rcode;
+        struct tlsclientopts sWS2Opts;
+        struct nwtlsopts sNWTLSOpts;
    	struct sslserveropts opts;
     unsigned long ulFlags;
     SOCKET sock;
@@ -322,22 +322,22 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
     apr_os_sock_get(&sock, csd);
 
     /* zero out buffers */
-	memset((char *)&sWS2Opts, 0, sizeof(struct tlsclientopts));
-	memset((char *)&sNWTLSOpts, 0, sizeof(struct nwtlsopts));
+        memset((char *)&sWS2Opts, 0, sizeof(struct tlsclientopts));
+        memset((char *)&sNWTLSOpts, 0, sizeof(struct nwtlsopts));
 
     /* turn on ssl for the socket */
-	ulFlags = (numcerts ? SO_TLS_ENABLE : SO_TLS_ENABLE | SO_TLS_BLIND_ACCEPT);
-	rcode = WSAIoctl(sock, SO_TLS_SET_FLAGS, &ulFlags, sizeof(unsigned long),
+        ulFlags = (numcerts ? SO_TLS_ENABLE : SO_TLS_ENABLE | SO_TLS_BLIND_ACCEPT);
+        rcode = WSAIoctl(sock, SO_TLS_SET_FLAGS, &ulFlags, sizeof(unsigned long),
                      NULL, 0, NULL, NULL, NULL);
-	if (SOCKET_ERROR == rcode)
-	{
+        if (SOCKET_ERROR == rcode)
+        {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
                      "Error: %d with ioctlsocket(flag SO_TLS_ENABLE)", WSAGetLastError());
-		return rcode;
-	}
+                return rcode;
+        }
 
     ulFlags = SO_TLS_UNCLEAN_SHUTDOWN;
-	WSAIoctl(sock, SO_TLS_SET_FLAGS, &ulFlags, sizeof(unsigned long),
+        WSAIoctl(sock, SO_TLS_SET_FLAGS, &ulFlags, sizeof(unsigned long),
                      NULL, 0, NULL, NULL, NULL);
 
     /* setup the socket for SSL */
@@ -365,11 +365,11 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
                      NULL, NULL);
 
     /* make sure that it was successfull */
-	if(SOCKET_ERROR == rcode ){
+        if(SOCKET_ERROR == rcode ){
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
                      "Error: %d with ioctl (SO_TLS_SET_CLIENT)", WSAGetLastError());
-	}		
-	return rcode;
+        }		
+        return rcode;
 }
 
 int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
@@ -879,19 +879,19 @@ static int isSecureConnUpgradeable (const server_rec *s, const conn_rec *c)
 
 static int isSecure (const request_rec *r)
 {
-	return isSecureConn (r->server, r->connection);
+        return isSecureConn (r->server, r->connection);
 }
 
 static int isSecureUpgradeable (const request_rec *r)
 {
-	return isSecureConnUpgradeable (r->server, r->connection);
+        return isSecureConnUpgradeable (r->server, r->connection);
 }
 
 static int isSecureUpgraded (const request_rec *r)
 {
     secsocket_data *csd_data = (secsocket_data*)ap_get_module_config(r->connection->conn_config, &nwssl_module);
 
-	return csd_data->is_secure;
+        return csd_data->is_secure;
 }
 
 static int nwssl_hook_Fixup(request_rec *r)
@@ -1053,14 +1053,14 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      */
     if (result == NULL && c != NULL) {
 
-		/* XXX-Can't get specific SSL info from NetWare */
+                /* XXX-Can't get specific SSL info from NetWare */
         /* SSLConnRec *sslconn = myConnConfig(c);
         if (strlen(var) > 4 && strcEQn(var, "SSL_", 4) 
             && sslconn && sslconn->ssl)
             result = ssl_var_lookup_ssl(p, c, var+4);*/
 
-		if (strlen(var) > 4 && strcEQn(var, "SSL_", 4))
-			result = NULL;
+                if (strlen(var) > 4 && strcEQn(var, "SSL_", 4))
+                        result = NULL;
         else if (strcEQ(var, "REMOTE_ADDR"))
             result = c->remote_ip;
     }
@@ -1070,7 +1070,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      */
     if (result == NULL) {
         if (strlen(var) > 12 && strcEQn(var, "SSL_VERSION_", 12))
-			result = NULL;
+                        result = NULL;
             /* XXX-Can't get specific SSL info from NetWare */
             /*result = ssl_var_lookup_ssl_version(p, var+12);*/
         else if (strcEQ(var, "SERVER_SOFTWARE"))

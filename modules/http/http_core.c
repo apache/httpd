@@ -42,7 +42,7 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_byterange_filter_handle;
 
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
-					  const char *arg)
+                                          const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
@@ -54,7 +54,7 @@ static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
 }
 
 static const char *set_keep_alive(cmd_parms *cmd, void *dummy,
-				  const char *arg) 
+                                  const char *arg) 
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
@@ -65,16 +65,16 @@ static const char *set_keep_alive(cmd_parms *cmd, void *dummy,
      * so we accept anything but "Off" or "0" as "On"
      */
     if (!strcasecmp(arg, "off") || !strcmp(arg, "0")) {
-	cmd->server->keep_alive = 0;
+        cmd->server->keep_alive = 0;
     }
     else {
-	cmd->server->keep_alive = 1;
+        cmd->server->keep_alive = 1;
     }
     return NULL;
 }
 
 static const char *set_keep_alive_max(cmd_parms *cmd, void *dummy,
-				      const char *arg)
+                                      const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
