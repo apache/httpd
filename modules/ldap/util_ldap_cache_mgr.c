@@ -484,7 +484,7 @@ char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char
             for (n = cache->nodes[i];
                  n != NULL && n != n->next;
                  n = n->next) {
-            	totchainlen++;
+                totchainlen++;
             }
         }
     }

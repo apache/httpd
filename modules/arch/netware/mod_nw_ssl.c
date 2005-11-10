@@ -314,7 +314,7 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
         int rcode;
         struct tlsclientopts sWS2Opts;
         struct nwtlsopts sNWTLSOpts;
-   	struct sslserveropts opts;
+        struct sslserveropts opts;
     unsigned long ulFlags;
     SOCKET sock;
     unicode_t keyFileName[60];
@@ -346,17 +346,17 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
     sWS2Opts.options = &sNWTLSOpts;
 
     if (numcerts) {
-    	sNWTLSOpts.walletProvider 		= WAL_PROV_DER;	//the wallet provider defined in wdefs.h
-    	sNWTLSOpts.TrustedRootList 		= certarray;	//array of certs in UNICODE format
-    	sNWTLSOpts.numElementsInTRList 	= numcerts;     //number of certs in TRList
+        sNWTLSOpts.walletProvider 		= WAL_PROV_DER;	//the wallet provider defined in wdefs.h
+        sNWTLSOpts.TrustedRootList 		= certarray;	//array of certs in UNICODE format
+        sNWTLSOpts.numElementsInTRList 	= numcerts;     //number of certs in TRList
     }
     else {
         /* setup the socket for SSL */
-    	unicpy(keyFileName, L"SSL CertificateIP");
-    	sWS2Opts.wallet = keyFileName;    /* no client certificate */
-    	sWS2Opts.walletlen = unilen(keyFileName);
+        unicpy(keyFileName, L"SSL CertificateIP");
+        sWS2Opts.wallet = keyFileName;    /* no client certificate */
+        sWS2Opts.walletlen = unilen(keyFileName);
 
-    	sNWTLSOpts.walletProvider 		= WAL_PROV_KMO;	//the wallet provider defined in wdefs.h
+        sNWTLSOpts.walletProvider 		= WAL_PROV_KMO;	//the wallet provider defined in wdefs.h
     }
 
     /* make the IOCTL call */
