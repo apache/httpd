@@ -231,7 +231,7 @@ static DWORD WINAPI monitor_service_9x_thread(void *service_name)
     /* Create an invisible window */
     hwndMain = CreateWindow(wc.lpszClassName,
                             service_name ? (char *) service_name : "Apache",
- 	                    WS_OVERLAPPEDWINDOW & ~WS_VISIBLE,
+                            WS_OVERLAPPEDWINDOW & ~WS_VISIBLE,
                             CW_USEDEFAULT, CW_USEDEFAULT, CW_USEDEFAULT,
                             CW_USEDEFAULT, NULL, NULL, NULL, NULL);
 
