@@ -16,9 +16,9 @@
 
 /*
  * http_mime.c: Sends/gets MIME headers for requests
- * 
+ *
  * Rob McCool
- * 
+ *
  */
 
 #include "apr.h"
@@ -39,16 +39,16 @@
 /* XXXX - fix me / EBCDIC
  *        there was a cludge here which would use its
  *        own version apr_isascii(). Indicating that
- *        on some platforms that might be needed. 
+ *        on some platforms that might be needed.
  *
- *        #define OS_ASC(c) (c)             -- for mere mortals 
+ *        #define OS_ASC(c) (c)             -- for mere mortals
  *     or
  *        #define OS_ASC(c) (ebcdic2ascii[c]) -- for dino's
  *
  *        #define apr_isascii(c) ((OS_ASC(c) & 0x80) == 0)
  */
 
-/* XXXXX - fix me - See note with NOT_PROXY 
+/* XXXXX - fix me - See note with NOT_PROXY
  */
 
 typedef struct attrib_info {
@@ -83,13 +83,13 @@ typedef struct {
     char *default_language;     /* Language if no AddLanguage ext found */
 
     int multimatch;       /* Extensions to include in multiview matching
-                           * for filenames, e.g. Filters and Handlers 
+                           * for filenames, e.g. Filters and Handlers
                            */
     int use_path_info;    /* If set to 0, only use filename.
                            * If set to 1, append PATH_INFO to filename for
                            *   lookups.
                            * If set to 2, this value is unset and is
-                           *   effectively 0.  
+                           *   effectively 0.
                            */
 } mime_dir_config;
 
@@ -170,9 +170,9 @@ static void *overlay_extension_mappings(apr_pool_t *p,
     return new_info;
 }
 
-/* Member is the offset within an extension_info of the pointer to reset 
+/* Member is the offset within an extension_info of the pointer to reset
  */
-static void remove_items(apr_pool_t *p, apr_array_header_t *remove, 
+static void remove_items(apr_pool_t *p, apr_array_header_t *remove,
                          apr_hash_t *mappings)
 {
     attrib_info *suffix = (attrib_info *) remove->elts;
@@ -184,7 +184,7 @@ static void remove_items(apr_pool_t *p, apr_array_header_t *remove,
         if (exinfo && *(const char**)((char *)exinfo + suffix[i].offset)) {
             extension_info *copyinfo = exinfo;
             exinfo = (extension_info*)apr_palloc(p, sizeof(*exinfo));
-            apr_hash_set(mappings, suffix[i].name, 
+            apr_hash_set(mappings, suffix[i].name,
                          APR_HASH_KEY_STRING, exinfo);
             memcpy(exinfo, copyinfo, sizeof(*exinfo));
             *(const char**)((char *)exinfo + suffix[i].offset) = NULL;
@@ -243,7 +243,7 @@ static void *merge_mime_dir_configs(apr_pool_t *p, void *basev, void *addv)
     return new;
 }
 
-static const char *add_extension_info(cmd_parms *cmd, void *m_, 
+static const char *add_extension_info(cmd_parms *cmd, void *m_,
                                       const char *value_, const char* ext)
 {
     mime_dir_config *m=m_;
@@ -279,7 +279,7 @@ static const char *add_extension_info(cmd_parms *cmd, void *m_,
  * This keeps the association from being inherited, but not
  * from being re-added at a subordinate level.
  */
-static const char *remove_extension_info(cmd_parms *cmd, void *m_, 
+static const char *remove_extension_info(cmd_parms *cmd, void *m_,
                                          const char *ext)
 {
     mime_dir_config *m = (mime_dir_config *) m_;
@@ -309,7 +309,7 @@ static const char *set_types_config(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *multiviews_match(cmd_parms *cmd, void *m_, 
+static const char *multiviews_match(cmd_parms *cmd, void *m_,
                                     const char *include)
 {
     mime_dir_config *m = (mime_dir_config *) m_;
@@ -329,14 +329,14 @@ static const char *multiviews_match(cmd_parms *cmd, void *m_,
         m->multimatch |= MULTIMATCH_NEGOTIATED;
     }
     else if (strcasecmp(include, "Filters") == 0) {
-        if (m->multimatch && (m->multimatch & (MULTIMATCH_NEGOTIATED 
+        if (m->multimatch && (m->multimatch & (MULTIMATCH_NEGOTIATED
                                              | MULTIMATCH_ANY))) {
             return "Filters is incompatible with Any and NegotiatedOnly";
         }
         m->multimatch |= MULTIMATCH_FILTERS;
     }
     else if (strcasecmp(include, "Handlers") == 0) {
-        if (m->multimatch && (m->multimatch & (MULTIMATCH_NEGOTIATED 
+        if (m->multimatch && (m->multimatch & (MULTIMATCH_NEGOTIATED
                                              | MULTIMATCH_ANY))) {
             return "Handlers is incompatible with Any and NegotiatedOnly";
         }
@@ -351,54 +351,54 @@ static const char *multiviews_match(cmd_parms *cmd, void *m_,
 
 static const command_rec mime_cmds[] =
 {
-    AP_INIT_ITERATE2("AddCharset", add_extension_info, 
+    AP_INIT_ITERATE2("AddCharset", add_extension_info,
         (void *)APR_OFFSETOF(extension_info, charset_type), OR_FILEINFO,
         "a charset (e.g., iso-2022-jp), followed by one or more "
         "file extensions"),
-    AP_INIT_ITERATE2("AddEncoding", add_extension_info, 
+    AP_INIT_ITERATE2("AddEncoding", add_extension_info,
         (void *)APR_OFFSETOF(extension_info, encoding_type), OR_FILEINFO,
         "an encoding (e.g., gzip), followed by one or more file extensions"),
-    AP_INIT_ITERATE2("AddHandler", add_extension_info, 
+    AP_INIT_ITERATE2("AddHandler", add_extension_info,
         (void *)APR_OFFSETOF(extension_info, handler), OR_FILEINFO,
         "a handler name followed by one or more file extensions"),
-    AP_INIT_ITERATE2("AddInputFilter", add_extension_info, 
+    AP_INIT_ITERATE2("AddInputFilter", add_extension_info,
         (void *)APR_OFFSETOF(extension_info, input_filters), OR_FILEINFO,
         "input filter name (or ; delimited names) followed by one or "
         "more file extensions"),
-    AP_INIT_ITERATE2("AddLanguage", add_extension_info, 
+    AP_INIT_ITERATE2("AddLanguage", add_extension_info,
         (void *)APR_OFFSETOF(extension_info, language_type), OR_FILEINFO,
         "a language (e.g., fr), followed by one or more file extensions"),
-    AP_INIT_ITERATE2("AddOutputFilter", add_extension_info, 
-        (void *)APR_OFFSETOF(extension_info, output_filters), OR_FILEINFO, 
+    AP_INIT_ITERATE2("AddOutputFilter", add_extension_info,
+        (void *)APR_OFFSETOF(extension_info, output_filters), OR_FILEINFO,
         "output filter name (or ; delimited names) followed by one or "
         "more file extensions"),
-    AP_INIT_ITERATE2("AddType", add_extension_info, 
-        (void *)APR_OFFSETOF(extension_info, forced_type), OR_FILEINFO, 
+    AP_INIT_ITERATE2("AddType", add_extension_info,
+        (void *)APR_OFFSETOF(extension_info, forced_type), OR_FILEINFO,
         "a mime type followed by one or more file extensions"),
     AP_INIT_TAKE1("DefaultLanguage", ap_set_string_slot,
         (void*)APR_OFFSETOF(mime_dir_config, default_language), OR_FILEINFO,
         "language to use for documents with no other language file extension"),
     AP_INIT_ITERATE("MultiviewsMatch", multiviews_match, NULL, OR_FILEINFO,
         "NegotiatedOnly (default), Handlers and/or Filters, or Any"),
-    AP_INIT_ITERATE("RemoveCharset", remove_extension_info, 
+    AP_INIT_ITERATE("RemoveCharset", remove_extension_info,
         (void *)APR_OFFSETOF(extension_info, charset_type), OR_FILEINFO,
         "one or more file extensions"),
-    AP_INIT_ITERATE("RemoveEncoding", remove_extension_info, 
+    AP_INIT_ITERATE("RemoveEncoding", remove_extension_info,
         (void *)APR_OFFSETOF(extension_info, encoding_type), OR_FILEINFO,
         "one or more file extensions"),
-    AP_INIT_ITERATE("RemoveHandler", remove_extension_info, 
+    AP_INIT_ITERATE("RemoveHandler", remove_extension_info,
         (void *)APR_OFFSETOF(extension_info, handler), OR_FILEINFO,
         "one or more file extensions"),
-    AP_INIT_ITERATE("RemoveInputFilter", remove_extension_info, 
+    AP_INIT_ITERATE("RemoveInputFilter", remove_extension_info,
         (void *)APR_OFFSETOF(extension_info, input_filters), OR_FILEINFO,
         "one or more file extensions"),
-    AP_INIT_ITERATE("RemoveLanguage", remove_extension_info, 
+    AP_INIT_ITERATE("RemoveLanguage", remove_extension_info,
         (void *)APR_OFFSETOF(extension_info, language_type), OR_FILEINFO,
         "one or more file extensions"),
-    AP_INIT_ITERATE("RemoveOutputFilter", remove_extension_info, 
+    AP_INIT_ITERATE("RemoveOutputFilter", remove_extension_info,
         (void *)APR_OFFSETOF(extension_info, output_filters), OR_FILEINFO,
         "one or more file extensions"),
-    AP_INIT_ITERATE("RemoveType", remove_extension_info, 
+    AP_INIT_ITERATE("RemoveType", remove_extension_info,
         (void *)APR_OFFSETOF(extension_info, forced_type), OR_FILEINFO,
         "one or more file extensions"),
     AP_INIT_TAKE1("TypesConfig", set_types_config, NULL, RSRC_CONF,
@@ -426,15 +426,15 @@ static int mime_post_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
     types_confname = ap_server_root_relative(p, types_confname);
     if (!types_confname) {
         ap_log_error(APLOG_MARK, APLOG_ERR, APR_EBADPATH, s,
-                     "Invalid mime types config path %s", 
+                     "Invalid mime types config path %s",
                      (const char *)ap_get_module_config(s->module_config,
                                                         &mime_module));
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    if ((status = ap_pcfg_openfile(&f, ptemp, types_confname)) 
+    if ((status = ap_pcfg_openfile(&f, ptemp, types_confname))
                 != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, s,
-                     "could not open mime types config file %s.", 
+                     "could not open mime types config file %s.",
                      types_confname);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -781,7 +781,7 @@ static int find_ct(request_rec *r)
     ext = ap_getword(r->pool, &fn, '.');
     *((const char **)apr_array_push(exception_list)) = ext;
 
-    /* Parse filename extensions which can be in any order 
+    /* Parse filename extensions which can be in any order
      */
     while (*fn && (ext = ap_getword(r->pool, &fn, '.'))) {
         const extension_info *exinfo = NULL;
@@ -848,7 +848,7 @@ static int find_ct(request_rec *r)
             }
             /* The following extensions are not 'Found'.  That is, they don't
              * make any contribution to metadata negotation, so they must have
-             * been explicitly requested by name. 
+             * been explicitly requested by name.
              */
             if (exinfo->handler && r->proxyreq == PROXYREQ_NONE) {
                 r->handler = exinfo->handler;
@@ -862,7 +862,7 @@ static int find_ct(request_rec *r)
              */
             if (exinfo->input_filters && r->proxyreq == PROXYREQ_NONE) {
                 const char *filter, *filters = exinfo->input_filters;
-                while (*filters 
+                while (*filters
                     && (filter = ap_getword(r->pool, &filters, ';'))) {
                     ap_add_input_filter(filter, NULL, r, r->connection);
                 }
@@ -872,7 +872,7 @@ static int find_ct(request_rec *r)
             }
             if (exinfo->output_filters && r->proxyreq == PROXYREQ_NONE) {
                 const char *filter, *filters = exinfo->output_filters;
-                while (*filters 
+                while (*filters
                     && (filter = ap_getword(r->pool, &filters, ';'))) {
                     ap_add_output_filter(filter, NULL, r, r->connection);
                 }
@@ -896,7 +896,7 @@ static int find_ct(request_rec *r)
      * skip the notes to alert mod_negotiation we are clueless.
      */
     if (found_metadata) {
-        apr_table_setn(r->notes, "ap-mime-exceptions-list", 
+        apr_table_setn(r->notes, "ap-mime-exceptions-list",
                        (void *)exception_list);
     }
 
@@ -972,7 +972,7 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(mime_post_config,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_type_checker(find_ct,NULL,NULL,APR_HOOK_MIDDLE);
-    /* 
+    /*
      * this hook seems redundant ... is there any reason a type checker isn't
      * allowed to do this already?  I'd think that fixups in general would be
      * the last opportunity to get the filters right.

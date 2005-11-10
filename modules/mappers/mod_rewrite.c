@@ -866,7 +866,7 @@ static int prefix_stat(const char *path, apr_pool_t *pool)
 
     if (rv == APR_SUCCESS) {
         apr_finfo_t sb;
-        
+
         if (apr_stat(&sb, statpath, APR_FINFO_MIN, pool) == APR_SUCCESS) {
             return 1;
         }
@@ -1296,7 +1296,7 @@ static char *lookup_map_dbmfile(request_rec *r, const char *file,
     apr_datum_t dbmval;
     char *value;
 
-    if (apr_dbm_open_ex(&dbmfp, dbmtype, file, APR_DBM_READONLY, APR_OS_DEFAULT, 
+    if (apr_dbm_open_ex(&dbmfp, dbmtype, file, APR_DBM_READONLY, APR_OS_DEFAULT,
                         r->pool) != APR_SUCCESS) {
         return NULL;
     }
@@ -1421,7 +1421,7 @@ static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
             else if (i) {
                 curbuf->next = apr_palloc(r->pool, sizeof(*buflist));
                 curbuf = curbuf->next;
-                
+
             }
             curbuf->next = NULL;
 
@@ -1768,7 +1768,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
                 return (char *)result;
             }
             break;
-            
+
         case  5:
             if (!strcmp(var, "HTTPS")) {
                 int flag = rewrite_is_https && rewrite_is_https(r->connection);
@@ -4532,7 +4532,7 @@ static int hook_fixup(request_rec *r)
                 cp = r->filename + skip;
 
                 if ((cp = ap_strchr(cp, '/')) != NULL && *(++cp)) {
-                    rewritelog((r, 2, dconf->directory, 
+                    rewritelog((r, 2, dconf->directory,
                                 "trying to replace prefix %s with %s",
                                 dconf->directory, dconf->baseurl));
 

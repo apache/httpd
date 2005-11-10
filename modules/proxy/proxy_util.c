@@ -38,7 +38,7 @@ static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_hostname(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
 
-APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req, 
+APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req,
                                    (request_rec *r, request_rec *pr), (r, pr),
                                    OK, DECLINED)
 
@@ -132,7 +132,7 @@ PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x)
  * Convert a URL-encoded string to canonical form.
  * It decodes characters which need not be encoded,
  * and encodes those which must be encoded, and does not touch
- * those which must not be touched. 
+ * those which must not be touched.
  */
 PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len, enum enctype t,
     int forcedec, int proxyreq)
@@ -495,14 +495,14 @@ PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y)
 PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *message)
 {
     apr_table_setn(r->notes, "error-notes",
-    apr_pstrcat(r->pool, 
+    apr_pstrcat(r->pool,
         "The proxy server could not handle the request "
         "<em><a href=\"", ap_escape_uri(r->pool, r->uri),
         "\">", ap_escape_html(r->pool, r->method),
-        "&nbsp;", 
+        "&nbsp;",
         ap_escape_html(r->pool, r->uri), "</a></em>.<p>\n"
         "Reason: <strong>",
-        ap_escape_html(r->pool, message), 
+        ap_escape_html(r->pool, message),
         "</strong></p>", NULL));
 
     /* Allow "error-notes" string to be printed by ap_send_error_response() */
@@ -698,7 +698,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
         != APR_SUCCESS) {
 #if DEBUGGING
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-             "2)IP-NoMatch: hostname=%s msg=Host not found", 
+             "2)IP-NoMatch: hostname=%s msg=Host not found",
              host);
 #endif
         return 0;
@@ -711,7 +711,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
         if (This->addr.s_addr == (ip->s_addr & This->mask.s_addr)) {
 #if DEBUGGING
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "3)IP-Match: %s[%s] <-> ", host, 
+                 "3)IP-Match: %s[%s] <-> ", host,
                  inet_ntoa(*ip));
         ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "%s/", inet_ntoa(This->addr));
@@ -723,7 +723,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
 #if DEBUGGING
         else {
                 ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                 "3)IP-NoMatch: %s[%s] <-> ", host, 
+                 "3)IP-NoMatch: %s[%s] <-> ", host,
                  inet_ntoa(*ip));
                 ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                  "%s/", inet_ntoa(This->addr));
@@ -868,7 +868,7 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r)
 }
 
 /* checks whether a host in uri_addr matches proxyblock */
-PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf, 
+PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *conf,
                              apr_sockaddr_t *uri_addr)
 {
     int j;
@@ -915,7 +915,7 @@ PROXY_DECLARE(int) ap_proxy_pre_http_request(conn_rec *c, request_rec *r)
 }
 
 /*
- * converts a series of buckets into a string 
+ * converts a series of buckets into a string
  * XXX: BillS says this function performs essentially the same function as
  * ap_rgetline() in protocol.c. Deprecate this function and use ap_rgetline()
  * instead? I think ap_proxy_string_read() will not work properly on non ASCII
@@ -938,7 +938,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
     /* loop through each brigade */
     while (!found) {
         /* get brigade from network one line at a time */
-        if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb, 
+        if (APR_SUCCESS != (rv = ap_get_brigade(c->input_filters, bb,
                                                 AP_MODE_GETLINE,
                                                 APR_BLOCK_READ,
                                                 0))) {
@@ -1149,7 +1149,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     char *c, *uri = apr_pstrdup(p, url);
     int i;
 
-    c = strchr(uri, ':');   
+    c = strchr(uri, ':');
     if (c == NULL || c[1] != '/' || c[2] != '/' || c[3] == '\0')
        return NULL;
     /* remove path from uri */
@@ -1243,7 +1243,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     } else {
         ap_str_tolower(url_copy);
     }
-    
+
     worker = (proxy_worker *)conf->workers->elts;
 
     /*
@@ -1280,7 +1280,7 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
     proxy_conn_pool *cp;
 
     /*
-     * Create a connection pool's subpool. 
+     * Create a connection pool's subpool.
      * This pool is used for connection recycling.
      * Once the worker is added it is never removed but
      * it can be disabled.
@@ -1288,10 +1288,10 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
     apr_pool_create(&pool, p);
     /*
      * Alloc from the same pool as worker.
-     * proxy_conn_pool is permanently attached to the worker. 
+     * proxy_conn_pool is permanently attached to the worker.
      */
     cp = (proxy_conn_pool *)apr_pcalloc(p, sizeof(proxy_conn_pool));
-    cp->pool = pool;    
+    cp->pool = pool;
     worker->cp = cp;
 }
 
@@ -1345,7 +1345,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_create_worker(apr_pool_t *p)
     return worker;
 }
 
-PROXY_DECLARE(void) 
+PROXY_DECLARE(void)
 ap_proxy_add_worker_to_balancer(apr_pool_t *pool, proxy_balancer *balancer,
                                 proxy_worker *worker)
 {
@@ -1562,7 +1562,7 @@ static apr_status_t connection_destructor(void *resource, void *params,
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)resource;
 
-    /* Destroy the pool only if not called from reslist_destroy */    
+    /* Destroy the pool only if not called from reslist_destroy */
     if (conn->worker->cp->pool)
         apr_pool_destroy(conn->pool);
 
@@ -1645,7 +1645,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
             worker->smax = worker->hmax;
         /* Set min to be lower then smax */
         if (worker->min > worker->smax)
-            worker->min = worker->smax; 
+            worker->min = worker->smax;
     }
     else {
         /* This will supress the apr_reslist creation */
@@ -1813,7 +1813,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                  uri->port);
 
     /*
-     * allocate these out of the specified connection pool 
+     * allocate these out of the specified connection pool
      * The scheme handler decides if this is permanent or
      * short living pool.
      */
@@ -1918,7 +1918,7 @@ static int is_socket_connected(apr_socket_t *sock)
 
 {
     apr_size_t buffer_len = 1;
-    char test_buffer[1]; 
+    char test_buffer[1];
     apr_status_t socket_status;
     apr_interval_time_t current_timeout;
 
@@ -1995,7 +1995,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         }
         /* Set a keepalive option */
         if (worker->keepalive) {
-            if ((rv = apr_socket_opt_set(newsock, 
+            if ((rv = apr_socket_opt_set(newsock,
                             APR_SO_KEEPALIVE, 1)) != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                              "apr_socket_opt_set(SO_KEEPALIVE): Failed to set"
@@ -2088,7 +2088,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
         if (!ap_proxy_ssl_enable(conn->connection)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                          s, "proxy: %s: failed to enable ssl support "
-                         "for %pI (%s)", proxy_function, 
+                         "for %pI (%s)", proxy_function,
                          backend_addr, conn->hostname);
             return HTTP_INTERNAL_SERVER_ERROR;
         }

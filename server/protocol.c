@@ -224,30 +224,30 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
         if (rv != APR_SUCCESS) {
             return rv;
         }
-        
+
         /* Something horribly wrong happened.  Someone didn't block! */
         if (APR_BRIGADE_EMPTY(bb)) {
             return APR_EGENERAL;
         }
-        
+
         for (e = APR_BRIGADE_FIRST(bb);
              e != APR_BRIGADE_SENTINEL(bb);
              e = APR_BUCKET_NEXT(e))
         {
             const char *str;
             apr_size_t len;
-            
+
             /* If we see an EOS, don't bother doing anything more. */
             if (APR_BUCKET_IS_EOS(e)) {
                 saw_eos = 1;
                 break;
             }
-            
+
             rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
             if (rv != APR_SUCCESS) {
                 return rv;
             }
-            
+
             if (len == 0) {
                 /* no use attempting a zero-byte alloc (hurts when
                  * using --with-efence --enable-pool-debug) or
@@ -255,7 +255,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                  */
                 continue;
             }
-            
+
             /* Would this overrun our buffer?  If so, we'll die. */
             if (n < bytes_handled + len) {
                 *read = bytes_handled;
@@ -270,7 +270,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                 }
                 return APR_ENOSPC;
             }
-            
+
             /* Do we have to handle the allocation ourselves? */
             if (do_alloc) {
                 /* We'll assume the common case where one bucket is enough. */
@@ -285,13 +285,13 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                     /* Increase the buffer size */
                     apr_size_t new_size = current_alloc * 2;
                     char *new_buffer;
-                    
+
                     if (bytes_handled + len > new_size) {
                         new_size = (bytes_handled + len) * 2;
                     }
-                    
+
                     new_buffer = apr_palloc(r->pool, new_size);
-                    
+
                     /* Copy what we already had. */
                     memcpy(new_buffer, *s, bytes_handled);
                     current_alloc = new_size;
@@ -303,18 +303,18 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             pos = *s + bytes_handled;
             memcpy(pos, str, len);
             last_char = pos + len - 1;
-            
+
             /* We've now processed that new data - update accordingly. */
             bytes_handled += len;
         }
-        
+
         /* If we got a full line of input, stop reading */
         if (last_char && (*last_char == APR_ASCII_LF)) {
             break;
         }
     }
 
-    /* Now NUL-terminate the string at the end of the line; 
+    /* Now NUL-terminate the string at the end of the line;
      * if the last-but-one character is a CR, terminate there */
     if (last_char > *s && last_char[-1] == APR_ASCII_CR) {
         last_char--;
@@ -331,34 +331,34 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
             const char *str;
             apr_size_t len;
             char c;
-            
+
             /* Clear the temp brigade for this filter read. */
             apr_brigade_cleanup(bb);
-            
+
             /* We only care about the first byte. */
             rv = ap_get_brigade(r->input_filters, bb, AP_MODE_SPECULATIVE,
                                 APR_BLOCK_READ, 1);
             if (rv != APR_SUCCESS) {
                 return rv;
             }
-            
+
             if (APR_BRIGADE_EMPTY(bb)) {
                 break;
             }
-            
+
             e = APR_BRIGADE_FIRST(bb);
-            
+
             /* If we see an EOS, don't bother doing anything more. */
             if (APR_BUCKET_IS_EOS(e)) {
                 break;
             }
-            
+
             rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
             if (rv != APR_SUCCESS) {
                 apr_brigade_cleanup(bb);
                 return rv;
             }
-            
+
             /* Found one, so call ourselves again to get the next line.
              *
              * FIXME: If the folding line is completely blank, should we
@@ -381,7 +381,7 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                 else {
                     apr_size_t next_size, next_len;
                     char *tmp;
-                    
+
                     /* If we're doing the allocations for them, we have to
                      * give ourselves a NULL and copy it on return.
                      */
@@ -391,25 +391,25 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
                         /* We're null terminated. */
                         tmp = last_char;
                     }
-                    
+
                     next_size = n - bytes_handled;
-                    
+
                     rv = ap_rgetline_core(&tmp, next_size,
                                           &next_len, r, 0, bb);
                     if (rv != APR_SUCCESS) {
                         return rv;
                     }
-                    
+
                     if (do_alloc && next_len > 0) {
                         char *new_buffer;
                         apr_size_t new_size = bytes_handled + next_len + 1;
-                        
+
                         /* we need to alloc an extra byte for a null */
                         new_buffer = apr_palloc(r->pool, new_size);
 
                         /* Copy what we already had. */
                         memcpy(new_buffer, *s, bytes_handled);
-                        
+
                         /* copy the new line, including the trailing null */
                         memcpy(new_buffer + bytes_handled, tmp, next_len + 1);
                         *s = new_buffer;
@@ -719,7 +719,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                      */
                     apr_table_setn(r->notes, "error-notes",
                                    apr_pstrcat(r->pool,
-                                               "Size of a request header field " 
+                                               "Size of a request header field "
                                                "after folding "
                                                "exceeds server limit.<br />\n"
                                                "<pre>\n",
@@ -765,7 +765,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                                                "</pre>\n", NULL));
                     return;
                 }
-                
+
                 tmp_field = value - 1; /* last character of field-name */
 
                 *value++ = '\0'; /* NUL-terminate at colon */
@@ -775,11 +775,11 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
                 }
 
                 /* Strip LWS after field-name: */
-                while (tmp_field > last_field 
+                while (tmp_field > last_field
                        && (*tmp_field == ' ' || *tmp_field == '\t')) {
                     *tmp_field-- = '\0';
                 }
-                
+
                 /* Strip LWS after field-value: */
                 tmp_field = last_field + last_len - 1;
                 while (tmp_field > value
@@ -955,7 +955,7 @@ request_rec *ap_read_request(conn_rec *conn)
      */
     ap_update_vhost_from_headers(r);
 
-    /* Toggle to the Host:-based vhost's timeout mode to fetch the 
+    /* Toggle to the Host:-based vhost's timeout mode to fetch the
      * request body and send the response body, if needed.
      */
     if (cur_timeout != r->server->timeout) {
@@ -1044,7 +1044,7 @@ static void clone_headers_no_body(request_rec *rnew,
     apr_table_unset(rnew->headers_in, "Expires");
     apr_table_unset(rnew->headers_in, "Last-Modified");
     apr_table_unset(rnew->headers_in, "Transfer-Encoding");
-}        
+}
 
 /*
  * A couple of other functions which initialize some of the fields of
@@ -1307,13 +1307,13 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
          * by something like proxy.  the brigade only has an EOS bucket
          * in this case, making r->bytes_sent zero.
          *
-         * if r->bytes_sent > 0 we have a (temporary) body whose length may 
-         * have been changed by a filter.  the C-L header might not have been 
-         * updated so we do it here.  long term it would be cleaner to have 
-         * such filters update or remove the C-L header, and just use it 
+         * if r->bytes_sent > 0 we have a (temporary) body whose length may
+         * have been changed by a filter.  the C-L header might not have been
+         * updated so we do it here.  long term it would be cleaner to have
+         * such filters update or remove the C-L header, and just use it
          * if present.
          */
-        !(r->header_only && r->bytes_sent == 0 &&   
+        !(r->header_only && r->bytes_sent == 0 &&
             apr_table_get(r->headers_out, "Content-Length"))) {
         ap_set_content_length(r, r->bytes_sent);
     }

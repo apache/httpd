@@ -23,7 +23,7 @@
 
 module AP_MODULE_DECLARE_DATA proxy_connect_module;
 
-/*  
+/*
  * This handles Netscape CONNECT method secure proxy requests.
  * A connection is opened to the specified host and data is
  * passed through between the WWW site and the browser.
@@ -32,8 +32,8 @@ module AP_MODULE_DECLARE_DATA proxy_connect_module;
  * "Tunneling SSL Through a WWW Proxy" currently at
  * http://www.mcom.com/newsref/std/tunneling_ssl.html.
  *
- * If proxyhost and proxyport are set, we send a CONNECT to 
- * the specified proxy..  
+ * If proxyhost and proxyport are set, we send a CONNECT to
+ * the specified proxy..
  *
  * FIXME: this doesn't log the number of bytes sent, but
  *        that may be okay, since the data is supposed to
@@ -73,8 +73,8 @@ static int proxy_connect_canon(request_rec *r, char *url)
 
 /* CONNECT handler */
 static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
-                                 proxy_server_conf *conf, 
-                                 char *url, const char *proxyname, 
+                                 proxy_server_conf *conf,
+                                 char *url, const char *proxyname,
                                  apr_port_t proxyport)
 {
     apr_pool_t *p = r->pool;
@@ -239,7 +239,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         ap_xlate_proto_to_ascii(buffer, nbytes);
         apr_socket_send(client_socket, buffer, &nbytes);
 #if 0
-        /* This is safer code, but it doesn't work yet.  I'm leaving it 
+        /* This is safer code, but it doesn't work yet.  I'm leaving it
          * here so that I can fix it later.
          */
         r->status = HTTP_OK;

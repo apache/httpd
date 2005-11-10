@@ -55,14 +55,14 @@ static void *merge_env_dir_configs(apr_pool_t *p, void *basev, void *addv)
 
     int i;
 
-    /* 
+    /*
      * res->vars = copy_table( p, base->vars );
      * foreach $unsetenv ( @add->unsetenv )
      *     table_unset( res->vars, $unsetenv );
      * foreach $element ( @add->vars )
      *     table_set( res->vars, $element.key, $element.val );
      *
-     * add->unsetenv already removed the vars from add->vars, 
+     * add->unsetenv already removed the vars from add->vars,
      * if they preceeded the UnsetEnv directive.
      */
     res->vars = apr_table_copy(p, base->vars);
@@ -95,7 +95,7 @@ static const char *add_env_module_vars_passed(cmd_parms *cmd, void *sconf_,
     env_dir_config_rec *sconf = sconf_;
     apr_table_t *vars = sconf->vars;
     const char *env_var;
-    
+
     env_var = getenv(arg);
     if (env_var != NULL) {
         apr_table_setn(vars, arg, apr_pstrdup(cmd->pool, env_var));
@@ -112,7 +112,7 @@ static const char *add_env_module_vars_set(cmd_parms *cmd, void *sconf_,
                                            const char *name, const char *value)
 {
     env_dir_config_rec *sconf = sconf_;
-    
+
     /* name is mandatory, value is optional.  no value means
      * set the variable to an empty string
      */

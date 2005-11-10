@@ -171,7 +171,7 @@ int main (int argc, const char * const argv[])
             apr_finfo_t finfo;
             apr_off_t current_size = -1;
 
-            if ((nLogFD != NULL) && 
+            if ((nLogFD != NULL) &&
                 (apr_file_info_get(&finfo, APR_FINFO_SIZE, nLogFD) == APR_SUCCESS)) {
                 current_size = finfo.size;
             }
@@ -188,7 +188,7 @@ int main (int argc, const char * const argv[])
 
         if (nLogFD == NULL) {
             int tLogStart;
-                
+
             if (tRotation) {
                 tLogStart = (now / tRotation) * tRotation;
             }

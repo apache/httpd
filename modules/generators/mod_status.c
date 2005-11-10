@@ -233,7 +233,7 @@ static int status_handler(request_rec *r)
     clock_t tu, ts, tcu, tcs;
     ap_generation_t worker_generation;
 
-    if (strcmp(r->handler, STATUS_MAGIC_TYPE) && 
+    if (strcmp(r->handler, STATUS_MAGIC_TYPE) &&
         strcmp(r->handler, "server-status")) {
         return DECLINED;
     }
@@ -288,7 +288,7 @@ static int status_handler(request_rec *r)
                                 + 1) > 0)
                         apr_table_set(r->headers_out,
                                       status_options[i].hdr_out_str,
-                                      loc + 
+                                      loc +
                                       strlen(status_options[i].hdr_out_str) +
                                       1);
                     else
@@ -314,7 +314,7 @@ static int status_handler(request_rec *r)
         clock_t proc_tu = 0, proc_ts = 0, proc_tcu = 0, proc_tcs = 0;
         clock_t tmp_tu, tmp_ts, tmp_tcu, tmp_tcs;
 #endif
-        
+
         ps_record = ap_get_scoreboard_process(i);
         for (j = 0; j < thread_limit; ++j) {
             int indx = (i * thread_limit) + j;
@@ -574,7 +574,7 @@ static int status_handler(request_rec *r)
                     req_time = 0L;
                 else
                     req_time = (long)
-                        ((ws_record->stop_time - 
+                        ((ws_record->stop_time -
                           ws_record->start_time) / 1000);
                 if (req_time < 0L)
                     req_time = 0L;
@@ -593,7 +593,7 @@ static int status_handler(request_rec *r)
                     worker_pid = ps_record->pid;
                     worker_generation = ps_record->generation;
                 }
- 
+
                 if (no_table_report) {
                     if (ws_record->status == SERVER_DEAD)
                         ap_rprintf(r,
@@ -607,7 +607,7 @@ static int status_handler(request_rec *r)
                                    i, (int) worker_generation,
                                    worker_pid,
                                    (int)conn_lres, my_lres, lres);
-                    
+
                     switch (ws_record->status) {
                     case SERVER_READY:
                         ap_rputs("Ready", r);
@@ -646,7 +646,7 @@ static int status_handler(request_rec *r)
                         ap_rputs("?STATE?", r);
                         break;
                     }
-                    
+
                     ap_rprintf(r, "] "
 #ifdef HAVE_TIMES
                                "u%g s%g cu%g cs%g"
@@ -692,7 +692,7 @@ static int status_handler(request_rec *r)
                                    worker_pid,
                                    (int)conn_lres,
                                    my_lres, lres);
-                    
+
                     switch (ws_record->status) {
                     case SERVER_READY:
                         ap_rputs("</td><td>_", r);
@@ -731,7 +731,7 @@ static int status_handler(request_rec *r)
                         ap_rputs("</td><td>?", r);
                         break;
                     }
-                    
+
                     ap_rprintf(r,
                                "\n</td>"
 #ifdef HAVE_TIMES
@@ -747,11 +747,11 @@ static int status_handler(request_rec *r)
                                (long)apr_time_sec(nowtime -
                                                   ws_record->last_used),
                                (long)req_time);
-                    
+
                     ap_rprintf(r, "</td><td>%-1.1f</td><td>%-2.2f</td><td>%-2.2f\n",
                                (float)conn_bytes / KBYTE, (float) my_bytes / MBYTE,
                                (float)bytes / MBYTE);
-                    
+
                     if (ws_record->status == SERVER_BUSY_READ)
                         ap_rprintf(r,
                                    "</td><td>?</td><td nowrap>?</td><td nowrap>..reading.. </td></tr>\n\n");
@@ -800,11 +800,11 @@ static int status_handler(request_rec *r)
 
     {
         /* Run extension hooks to insert extra content. */
-        int flags = 
-            (short_report ? AP_STATUS_SHORT : 0) | 
+        int flags =
+            (short_report ? AP_STATUS_SHORT : 0) |
             (no_table_report ? AP_STATUS_NOTABLE : 0) |
             (ap_extended_status ? AP_STATUS_EXTENDED : 0);
-        
+
         ap_run_status_hook(r, flags);
     }
 

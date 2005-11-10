@@ -129,13 +129,13 @@ dav_error * dav_dbm_open_direct(apr_pool_t *p, const char *pathname, int ro,
     *pdb = NULL;
 
     if ((status = apr_dbm_open(&file, pathname,
-                               ro ? APR_DBM_READONLY : APR_DBM_RWCREATE, 
+                               ro ? APR_DBM_READONLY : APR_DBM_RWCREATE,
                                APR_OS_DEFAULT, p))
                 != APR_SUCCESS
         && !ro) {
         /* ### do something with 'status' */
 
-        /* we can't continue if we couldn't open the file 
+        /* we can't continue if we couldn't open the file
            and we need to write */
         return dav_fs_dbm_error(NULL, p, status);
     }

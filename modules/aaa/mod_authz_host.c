@@ -16,9 +16,9 @@
 
 /*
  * Security options etc.
- * 
+ *
  * Module derived from code originally written by Rob McCool
- * 
+ *
  */
 
 #include "apr_strings.h"
@@ -106,7 +106,7 @@ static const char *order(cmd_parms *cmd, void *dv, const char *arg)
     return NULL;
 }
 
-static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from, 
+static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
                              const char *where_c)
 {
     authz_host_dir_conf *d = (authz_host_dir_conf *) dv;

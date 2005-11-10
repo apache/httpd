@@ -18,7 +18,7 @@
  * mod_setenvif.c
  * Set environment variables based on matching request headers or
  * attributes against regex strings
- * 
+ *
  * Paul Sutton <paul@ukweb.com> 27 Oct 1996
  * Based on mod_browser by Alexei Kosut <akosut@organic.com>
  */
@@ -34,12 +34,12 @@
  *
  * where name is either a HTTP request header name, or one of the
  * special values (see below). 'name' may be a regex when it is used
- * to specify an HTTP request header name. The 'value' of the header 
+ * to specify an HTTP request header name. The 'value' of the header
  & (or the value of the special value from below) are compared against
  * the regex argument. If this is a simple string, a simple sub-string
  * match is performed. Otherwise, a request expression match is
  * done. If the value matches the string or regular expression, the
- * environment variables listed as var ... are set. Each var can 
+ * environment variables listed as var ... are set. Each var can
  * be in one of three formats: var, which sets the named variable
  * (the value value "1"); var=value, which sets the variable to
  * the given value; or !var, which unsets the variable is it has
@@ -169,7 +169,7 @@ static void *merge_setenvif_config(apr_pool_t *p, void *basev, void *overridesv)
 #define ICASE_MAGIC	((void *)(&setenvif_module))
 #define SEI_MAGIC_HEIRLOOM "setenvif-phase-flag"
 
-static int is_header_regex(apr_pool_t *p, const char* name) 
+static int is_header_regex(apr_pool_t *p, const char* name)
 {
     /* If a Header name contains characters other than:
      *    -,_,[A-Z\, [a-z] and [0-9].
@@ -570,7 +570,7 @@ static int match_headers(request_rec *r)
                     elts = (const apr_table_entry_t *) arr->elts;
                     val = NULL;
                     for (j = 0; j < arr->nelts; ++j) {
-                        if (!ap_regexec(b->pnamereg, elts[j].key, 0, NULL, 0)) { 
+                        if (!ap_regexec(b->pnamereg, elts[j].key, 0, NULL, 0)) {
                             val = elts[j].val;
                         }
                     }

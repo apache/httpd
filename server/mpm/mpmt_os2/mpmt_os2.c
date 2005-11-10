@@ -58,8 +58,8 @@
 #include <os2.h>
 #include <process.h>
 
-/* We don't need many processes, 
- * they're only for redundancy in the event of a crash 
+/* We don't need many processes,
+ * they're only for redundancy in the event of a crash
  */
 #define HARD_SERVER_LIMIT 10
 
@@ -441,10 +441,10 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
             return APR_SUCCESS;
         case AP_MPMQ_MAX_REQUESTS_DAEMON:
             *result = ap_max_requests_per_child;
-            return APR_SUCCESS; 
+            return APR_SUCCESS;
     }
     return APR_ENOTIMPL;
-} 
+}
 
 
 
@@ -459,7 +459,7 @@ int ap_graceful_stop_signalled(void)
 
 static int mpmt_os2_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp)
 {
-    one_process = ap_exists_config_define("ONE_PROCESS") || 
+    one_process = ap_exists_config_define("ONE_PROCESS") ||
                   ap_exists_config_define("DEBUG");
     is_graceful = 0;
     ap_listen_pre_config();
@@ -512,15 +512,15 @@ static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy,
     ap_min_spare_threads = atoi(arg);
 
     if (ap_min_spare_threads <= 0) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     "WARNING: detected MinSpareThreads set to non-positive.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     "Resetting to 1 to avoid almost certain Apache failure.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     "Please read the documentation.");
        ap_min_spare_threads = 1;
     }
-       
+
     return NULL;
 }
 
@@ -550,7 +550,7 @@ static const char *ignore_cmd(cmd_parms *cmd, void *dummy, const char *arg)
 
 static const command_rec mpmt_os2_cmds[] = {
 LISTEN_COMMANDS,
-AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF, 
+AP_INIT_TAKE1( "StartServers", set_daemons_to_start, NULL, RSRC_CONF,
   "Number of child processes launched at server startup" ),
 AP_INIT_TAKE1("MinSpareThreads", set_min_spare_threads, NULL, RSRC_CONF,
   "Minimum number of idle children, to handle request spikes"),

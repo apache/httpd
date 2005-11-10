@@ -56,7 +56,7 @@ static const char *ssl_log_annotation(const char *error)
 {
     int i = 0;
 
-    while (ssl_log_annotate[i].cpPattern != NULL 
+    while (ssl_log_annotate[i].cpPattern != NULL
            && ap_strcmp_match(error, ssl_log_annotate[i].cpPattern) != 0)
         i++;
 
@@ -90,12 +90,12 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
         if (annotation) {
             ap_log_error(file, line, level, 0, s,
                          "SSL Library Error: %lu %s %s",
-                         e, err, annotation); 
+                         e, err, annotation);
         }
         else {
             ap_log_error(file, line, level, 0, s,
                          "SSL Library Error: %lu %s",
-                         e, err); 
+                         e, err);
         }
     }
 }

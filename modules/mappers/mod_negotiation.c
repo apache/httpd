@@ -381,7 +381,7 @@ static float atoq(const char *string)
         /* better only one division later, than dealing with fscking
          * IEEE format 0.1 factors ...
          */
-        int i = 0;        
+        int i = 0;
 
         if (*++string >= '0' && *string <= '9') {
             i += (*string - '0') * 100;

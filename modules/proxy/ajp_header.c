@@ -18,20 +18,20 @@
 #include "ajp.h"
 
 static const char *response_trans_headers[] = {
-    "Content-Type", 
-    "Content-Language", 
-    "Content-Length", 
-    "Date", 
-    "Last-Modified", 
-    "Location", 
-    "Set-Cookie", 
-    "Set-Cookie2", 
-    "Servlet-Engine", 
-    "Status", 
+    "Content-Type",
+    "Content-Language",
+    "Content-Length",
+    "Date",
+    "Last-Modified",
+    "Location",
+    "Set-Cookie",
+    "Set-Cookie2",
+    "Servlet-Engine",
+    "Status",
     "WWW-Authenticate"
 };
 
-static const char *long_res_header_for_sc(int sc) 
+static const char *long_res_header_for_sc(int sc)
 {
     const char *rc = NULL;
     sc = sc & 0X00FF;
@@ -56,7 +56,7 @@ static int sc_for_req_header(const char *header_name)
      */
     if (len < 4 || len > 15)
         return UNKNOWN_METHOD;
-    
+
     while (*p)
         header[i++] = apr_toupper(*p++);
     header[i] = '\0';
@@ -158,7 +158,7 @@ static const unsigned char sc_for_req_method_table[] = {
     SC_M_MKWORKSPACE,
     SC_M_MKACTIVITY,
     SC_M_BASELINE_CONTROL,
-    SC_M_MERGE,           
+    SC_M_MERGE,
     0                       /* M_INVALID */
 };
 
@@ -218,7 +218,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "Into ajp_marshal_into_msgb");
 
-    if ((method = sc_for_req_method_by_id(r->method_number)) == UNKNOWN_METHOD) { 
+    if ((method = sc_for_req_method_by_id(r->method_number)) == UNKNOWN_METHOD) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_marshal_into_msgb - No such method %s",
                r->method);
@@ -274,7 +274,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
                 return AJP_EOVERFLOW;
             }
         }
-        
+
         if (ajp_msg_append_string(msg, elts[i].val)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                    "ajp_marshal_into_msgb: "
@@ -297,7 +297,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
         }
     }
  */
-        
+
     if (r->user) {
         if (ajp_msg_append_uint8(msg, SC_A_REMOTE_USER) ||
             ajp_msg_append_string(msg, r->user)) {
@@ -337,7 +337,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     }
 /* XXX: Is the subprocess_env a right place?
  * <Location /examples>
- *   ProxyPass ajp://remote:8009/servlets-examples 
+ *   ProxyPass ajp://remote:8009/servlets-examples
  *   SetEnv SSL_SESSION_ID CUSTOM_SSL_SESSION_ID
  * </Location>
  */
@@ -436,10 +436,10 @@ AJPV13_RESPONSE/AJPV14_RESPONSE:=
     *body_chunk
     terminator      boolean <! -- recycle connection or not  -->
 
-req_header_name := 
+req_header_name :=
     sc_req_header_name | (string)
 
-res_header_name := 
+res_header_name :=
     sc_res_header_name | (string)
 
 header_value :=
@@ -504,7 +504,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         if (rc != APR_SUCCESS) {
             return rc;
         }
-                
+
         if ((name & 0XFF00) == 0XA000) {
             ajp_msg_peek_uint16(msg, &name);
             stringname = long_res_header_for_sc(name);
@@ -555,7 +555,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         ap_xlate_proto_from_ascii(value, strlen(value));
 #endif
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-               "ajp_unmarshal_response: Header[%d] [%s] = [%s]", 
+               "ajp_unmarshal_response: Header[%d] [%s] = [%s]",
                        i, stringname, value);
 
         apr_table_add(r->headers_out, stringname, value);
@@ -589,7 +589,7 @@ apr_status_t ajp_send_header(apr_socket_t *sock,
         return rc;
     }
 
-    rc = ajp_marshal_into_msgb(msg, r, uri);    
+    rc = ajp_marshal_into_msgb(msg, r, uri);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_send_header: ajp_marshal_into_msgb failed");
@@ -615,7 +615,7 @@ apr_status_t ajp_read_header(apr_socket_t *sock,
 {
     apr_byte_t result;
     apr_status_t rc;
-   
+
     if (*msg) {
         rc = ajp_msg_reuse(*msg);
         if (rc != APR_SUCCESS) {

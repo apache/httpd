@@ -8,17 +8,17 @@
  *
  * FreeBSD 2.2.x, FreeBSD 3.0, IRIX 5.3, IRIX 6.2:
  *   gcc -o test_limits test_limits.c
- * 
+ *
  * Solaris 2.5.1:
  *   gcc -o test_limits test_limits.c -lsocket -lnsl
- * 
+ *
  *
  * Message-ID: <861zqspvtw.fsf@niobe.ewox.org>
  * Date: 	Fri, 7 Aug 1998 19:04:27 +0200
  * Sender: Bugtraq List <BUGTRAQ@netspace.org>
  * From: Dag-Erling Coidan =?ISO-8859-1?Q?Sm=F8rgrav?= <finrod@EWOX.ORG>
  * Subject:      YA Apache DoS attack
- * 
+ *
  * Copyright (c) 1998 Dag-Erling Codan Smrgrav
  * All rights reserved.
  *

@@ -17,7 +17,7 @@
 #include "httpd.h"
 #include "http_connection.h"
 
-static apr_status_t eoc_bucket_read(apr_bucket *b, const char **str, 
+static apr_status_t eoc_bucket_read(apr_bucket *b, const char **str,
                                     apr_size_t *len, apr_read_type_e block)
 {
     *str = NULL;
@@ -31,7 +31,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_eoc_make(apr_bucket *b)
     b->start       = 0;
     b->data        = NULL;
     b->type        = &ap_bucket_type_eoc;
-    
+
     return b;
 }
 

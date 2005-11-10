@@ -231,8 +231,8 @@ static ap_filter_rec_t *register_filter(const char *name,
     frec->filter_func = filter_func;
     frec->filter_init_func = filter_init;
     frec->ftype = ftype;
-    
-    apr_pool_cleanup_register(FILTER_POOL, NULL, filter_cleanup, 
+
+    apr_pool_cleanup_register(FILTER_POOL, NULL, filter_cleanup,
                               apr_pool_cleanup_null);
     return frec;
 }
@@ -246,7 +246,7 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_input_filter(const char *name,
     f.in_func = filter_func;
     return register_filter(name, f, filter_init, ftype,
                            &registered_input_filters);
-}                                                                    
+}
 
 AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter(const char *name,
                                            ap_out_filter_func filter_func,
@@ -273,8 +273,8 @@ AP_DECLARE(ap_filter_rec_t *) ap_register_output_filter_protocol(
     return ret ;
 }
 
-static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx, 
-                                          request_rec *r, conn_rec *c, 
+static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
+                                          request_rec *r, conn_rec *c,
                                           ap_filter_t **r_filters,
                                           ap_filter_t **p_filters,
                                           ap_filter_t **c_filters)
@@ -352,10 +352,10 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
     return f;
 }
 
-static ap_filter_t *add_any_filter(const char *name, void *ctx, 
-                                   request_rec *r, conn_rec *c, 
+static ap_filter_t *add_any_filter(const char *name, void *ctx,
+                                   request_rec *r, conn_rec *c,
                                    const filter_trie_node *reg_filter_set,
-                                   ap_filter_t **r_filters, 
+                                   ap_filter_t **r_filters,
                                    ap_filter_t **p_filters,
                                    ap_filter_t **c_filters)
 {
@@ -389,7 +389,7 @@ static ap_filter_t *add_any_filter(const char *name, void *ctx,
         }
 
         if (node && node->frec) {
-            return add_any_filter_handle(node->frec, ctx, r, c, r_filters, 
+            return add_any_filter_handle(node->frec, ctx, r, c, r_filters,
                                          p_filters, c_filters);
         }
     }
@@ -403,7 +403,7 @@ AP_DECLARE(ap_filter_t *) ap_add_input_filter(const char *name, void *ctx,
                                               request_rec *r, conn_rec *c)
 {
     return add_any_filter(name, ctx, r, c, registered_input_filters,
-                          r ? &r->input_filters : NULL, 
+                          r ? &r->input_filters : NULL,
                           r ? &r->proto_input_filters : NULL, &c->input_filters);
 }
 
@@ -413,7 +413,7 @@ AP_DECLARE(ap_filter_t *) ap_add_input_filter_handle(ap_filter_rec_t *f,
                                                      conn_rec *c)
 {
     return add_any_filter_handle(f, ctx, r, c, r ? &r->input_filters : NULL,
-                                 r ? &r->proto_input_filters : NULL, 
+                                 r ? &r->proto_input_filters : NULL,
                                  &c->input_filters);
 }
 
@@ -421,7 +421,7 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx,
                                                request_rec *r, conn_rec *c)
 {
     return add_any_filter(name, ctx, r, c, registered_output_filters,
-                          r ? &r->output_filters : NULL, 
+                          r ? &r->output_filters : NULL,
                           r ? &r->proto_output_filters : NULL, &c->output_filters);
 }
 
@@ -460,33 +460,33 @@ static void remove_any_filter(ap_filter_t *f, ap_filter_t **r_filt, ap_filter_t 
 
 AP_DECLARE(void) ap_remove_input_filter(ap_filter_t *f)
 {
-    remove_any_filter(f, f->r ? &f->r->input_filters : NULL, 
-                      f->r ? &f->r->proto_input_filters : NULL, 
+    remove_any_filter(f, f->r ? &f->r->input_filters : NULL,
+                      f->r ? &f->r->proto_input_filters : NULL,
                       &f->c->input_filters);
 }
 
 AP_DECLARE(void) ap_remove_output_filter(ap_filter_t *f)
 {
-    remove_any_filter(f, f->r ? &f->r->output_filters : NULL, 
-                      f->r ? &f->r->proto_output_filters : NULL, 
+    remove_any_filter(f, f->r ? &f->r->output_filters : NULL,
+                      f->r ? &f->r->proto_output_filters : NULL,
                       &f->c->output_filters);
 }
 
-/* 
- * Read data from the next filter in the filter stack.  Data should be 
+/*
+ * Read data from the next filter in the filter stack.  Data should be
  * modified in the bucket brigade that is passed in.  The core allocates the
  * bucket brigade, modules that wish to replace large chunks of data or to
  * save data off to the side should probably create their own temporary
  * brigade especially for that use.
  */
 AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next,
-                                        apr_bucket_brigade *bb, 
+                                        apr_bucket_brigade *bb,
                                         ap_input_mode_t mode,
                                         apr_read_type_e block,
                                         apr_off_t readbytes)
 {
     if (next) {
-        return next->frec->filter_func.in_func(next, bb, mode, block, 
+        return next->frec->filter_func.in_func(next, bb, mode, block,
                                                readbytes);
     }
     return AP_NOBODY_READ;
@@ -497,7 +497,7 @@ AP_DECLARE(apr_status_t) ap_get_brigade(ap_filter_t *next,
  * the current filter.  At that point, we can just call the first filter in
  * the stack, or r->output_filters.
  */
-AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next, 
+AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next,
                                          apr_bucket_brigade *bb)
 {
     if (next) {
@@ -528,7 +528,7 @@ AP_DECLARE(apr_status_t) ap_pass_brigade(ap_filter_t *next,
     return AP_NOBODY_WROTE;
 }
 
-AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f, 
+AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
                                          apr_bucket_brigade **saveto,
                                          apr_bucket_brigade **b, apr_pool_t *p)
 {
@@ -541,7 +541,7 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
     if (!(*saveto)) {
         *saveto = apr_brigade_create(p, f->c->bucket_alloc);
     }
-    
+
     for (e = APR_BRIGADE_FIRST(*b);
          e != APR_BRIGADE_SENTINEL(*b);
          e = APR_BUCKET_NEXT(e))
@@ -574,7 +574,7 @@ AP_DECLARE(apr_status_t) ap_save_brigade(ap_filter_t *f,
     return srv;
 }
 
-AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb, 
+AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb,
                                                 void *ctx)
 {
     ap_filter_t *f = ctx;

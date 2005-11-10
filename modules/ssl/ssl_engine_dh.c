@@ -24,7 +24,7 @@
  * | | | | | | (_) | (_| |   \__ \__ \ |
  * |_| |_| |_|\___/ \__,_|___|___/___/_|
  *                      |_____|
- * ssl_engine_dh.c 
+ * ssl_engine_dh.c
  * Diffie-Hellman Built-in Temporary Parameters
  */
 
@@ -153,7 +153,7 @@ close(FP);
 #   generate the DH parameters
 print "1. Generate 512 and 1024 bit Diffie-Hellman parameters (p, g)\n";
 my $rand = '';
-foreach $file (qw(/var/log/messages /var/adm/messages 
+foreach $file (qw(/var/log/messages /var/adm/messages
                   /kernel /vmunix /vmlinuz /etc/hosts /etc/resolv.conf)) {
     if (-f $file) {
         $rand = $file     if ($rand eq '');
@@ -164,7 +164,7 @@ $rand = "-rand $rand" if ($rand ne '');
 system("openssl gendh $rand -out dh512.pem 512");
 system("openssl gendh $rand -out dh1024.pem 1024");
 
-#   generate DH param info 
+#   generate DH param info
 my $dhinfo = '';
 open(FP, "openssl dh -noout -text -in dh512.pem |") || die;
 $dhinfo .= $_ while (<FP>);

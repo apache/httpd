@@ -65,7 +65,7 @@
 #define ALG_PLAIN 0
 #define ALG_APMD5 1
 #define ALG_APSHA 2
- 
+
 #if APR_HAVE_CRYPT_H
 #define ALG_CRYPT 3
 #endif
@@ -114,7 +114,7 @@ static void terminate(void)
 #endif
 }
 
-static void htdbm_terminate(htdbm_t *htdbm) 
+static void htdbm_terminate(htdbm_t *htdbm)
 {
     if (htdbm->dbm)
         apr_dbm_close(htdbm->dbm);
@@ -122,15 +122,15 @@ static void htdbm_terminate(htdbm_t *htdbm)
 }
 
 static htdbm_t *h;
-  
-static void htdbm_interrupted(void) 
+
+static void htdbm_interrupted(void)
 {
     htdbm_terminate(h);
     fprintf(stderr, "htdbm Interrupted !\n");
     exit(ERR_INTERRUPTED);
 }
 
-static apr_status_t htdbm_init(apr_pool_t **pool, htdbm_t **hdbm) 
+static apr_status_t htdbm_init(apr_pool_t **pool, htdbm_t **hdbm)
 {
 
 #if APR_CHARSET_EBCDIC
@@ -167,18 +167,18 @@ static apr_status_t htdbm_init(apr_pool_t **pool, htdbm_t **hdbm)
     return APR_SUCCESS;
 }
 
-static apr_status_t htdbm_open(htdbm_t *htdbm) 
+static apr_status_t htdbm_open(htdbm_t *htdbm)
 {
     if (htdbm->create)
-        return apr_dbm_open_ex(&htdbm->dbm, htdbm->type, htdbm->filename, APR_DBM_RWCREATE, 
+        return apr_dbm_open_ex(&htdbm->dbm, htdbm->type, htdbm->filename, APR_DBM_RWCREATE,
                             APR_OS_DEFAULT, htdbm->pool);
     else
-        return apr_dbm_open_ex(&htdbm->dbm, htdbm->type, htdbm->filename, 
-                            htdbm->rdonly ? APR_DBM_READONLY : APR_DBM_READWRITE, 
+        return apr_dbm_open_ex(&htdbm->dbm, htdbm->type, htdbm->filename,
+                            htdbm->rdonly ? APR_DBM_READONLY : APR_DBM_READWRITE,
                             APR_OS_DEFAULT, htdbm->pool);
 }
 
-static apr_status_t htdbm_save(htdbm_t *htdbm, int *changed) 
+static apr_status_t htdbm_save(htdbm_t *htdbm, int *changed)
 {
     apr_datum_t key, val;
 
@@ -201,7 +201,7 @@ static apr_status_t htdbm_save(htdbm_t *htdbm, int *changed)
     return apr_dbm_store(htdbm->dbm, key, val);
 }
 
-static apr_status_t htdbm_del(htdbm_t *htdbm) 
+static apr_status_t htdbm_del(htdbm_t *htdbm)
 {
     apr_datum_t key;
 
@@ -213,7 +213,7 @@ static apr_status_t htdbm_del(htdbm_t *htdbm)
     return apr_dbm_delete(htdbm->dbm, key);
 }
 
-static apr_status_t htdbm_verify(htdbm_t *htdbm) 
+static apr_status_t htdbm_verify(htdbm_t *htdbm)
 {
     apr_datum_t key, val;
     char pwd[MAX_STRING_LEN] = {0};
@@ -222,7 +222,7 @@ static apr_status_t htdbm_verify(htdbm_t *htdbm)
     key.dptr = htdbm->username;
     key.dsize = strlen(htdbm->username);
     if (!apr_dbm_exists(htdbm->dbm, key))
-        return APR_ENOENT;    
+        return APR_ENOENT;
     if (apr_dbm_fetch(htdbm->dbm, key, &val) != APR_SUCCESS)
         return APR_ENOENT;
     rec = apr_pstrndup(htdbm->pool, val.dptr, val.dsize);
@@ -234,7 +234,7 @@ static apr_status_t htdbm_verify(htdbm_t *htdbm)
     return apr_password_validate(htdbm->userpass, pwd);
 }
 
-static apr_status_t htdbm_list(htdbm_t *htdbm) 
+static apr_status_t htdbm_list(htdbm_t *htdbm)
 {
     apr_status_t rv;
     apr_datum_t key, val;
@@ -244,13 +244,13 @@ static apr_status_t htdbm_list(htdbm_t *htdbm)
 
     rv = apr_dbm_firstkey(htdbm->dbm, &key);
     if (rv != APR_SUCCESS) {
-        fprintf(stderr, "Empty database -- %s\n", htdbm->filename); 
+        fprintf(stderr, "Empty database -- %s\n", htdbm->filename);
         return APR_ENOENT;
     }
     rec = apr_pcalloc(htdbm->pool, HUGE_STRING_LEN);
 
-    fprintf(stderr, "Dumping records from database -- %s\n", htdbm->filename); 
-    fprintf(stderr, "    %-32sComment\n", "Username");    
+    fprintf(stderr, "Dumping records from database -- %s\n", htdbm->filename);
+    fprintf(stderr, "    %-32sComment\n", "Username");
     while (key.dptr != NULL) {
         rv = apr_dbm_fetch(htdbm->dbm, key, &val);
         if (rv != APR_SUCCESS) {
@@ -287,7 +287,7 @@ static void to64(char *s, unsigned long v, int n)
     }
 }
 
-static apr_status_t htdbm_make(htdbm_t *htdbm) 
+static apr_status_t htdbm_make(htdbm_t *htdbm)
 {
     char cpw[MAX_STRING_LEN];
     char salt[9];
@@ -298,7 +298,7 @@ static apr_status_t htdbm_make(htdbm_t *htdbm)
             apr_sha1_base64(htdbm->userpass,strlen(htdbm->userpass),cpw);
         break;
 
-        case ALG_APMD5: 
+        case ALG_APMD5:
             (void) srand((int) time((time_t *) NULL));
             to64(&salt[0], rand(), 8);
             salt[8] = '\0';
@@ -404,7 +404,7 @@ int main(int argc, const char * const argv[])
     }
     /*
      * Preliminary check to make sure they provided at least
-     * three arguments, we'll do better argument checking as 
+     * three arguments, we'll do better argument checking as
      * we parse the command line.
      */
     if (argc < 3)
@@ -417,7 +417,7 @@ int main(int argc, const char * const argv[])
         arg = argv[i];
         if (*arg != '-')
             break;
-        
+
         while (*++arg != '\0') {
             switch (*arg) {
             case 'b':
@@ -520,7 +520,7 @@ int main(int argc, const char * const argv[])
             fprintf(stderr, "Password verification error\n");
             exit(ERR_PWMISMATCH);
         }
-            
+
         h->userpass = apr_pstrdup(pool,  pwi);
     }
     if (need_cmnt && pwd_supplied)
@@ -558,13 +558,13 @@ int main(int argc, const char * const argv[])
             htdbm_make(h);
             break;
 
-    }    
+    }
     if (need_file && !h->rdonly) {
         if ((rv = htdbm_save(h, &changed)) != APR_SUCCESS) {
             apr_strerror(rv, errbuf, sizeof(errbuf));
             exit(ERR_FILEPERM);
         }
-        fprintf(stdout, "Database %s %s.\n", h->filename, 
+        fprintf(stdout, "Database %s %s.\n", h->filename,
                 h->create ? "created" : (changed ? "modified" : "updated"));
     }
     if (cmd == HTDBM_NOFILE) {
@@ -577,6 +577,6 @@ int main(int argc, const char * const argv[])
         }
     }
     htdbm_terminate(h);
-    
+
     return 0; /* Suppress compiler warning. */
 }

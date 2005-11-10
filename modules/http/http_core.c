@@ -54,7 +54,7 @@ static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
 }
 
 static const char *set_keep_alive(cmd_parms *cmd, void *dummy,
-                                  const char *arg) 
+                                  const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
     if (err != NULL) {
@@ -110,17 +110,17 @@ static int ap_process_http_async_connection(conn_rec *c)
 {
     request_rec *r;
     conn_state_t *cs = c->cs;
-    
+
     AP_DEBUG_ASSERT(cs->state == CONN_STATE_READ_REQUEST_LINE);
-    
+
     while (cs->state == CONN_STATE_READ_REQUEST_LINE) {
         ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
-            
+
         if ((r = ap_read_request(c))) {
 
             c->keepalive = AP_CONN_UNKNOWN;
             /* process the request if it was read without error */
-                                                       
+
             ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
             if (r->status == HTTP_OK) {
                 cs->state = CONN_STATE_HANDLER;
@@ -158,13 +158,13 @@ static int ap_process_http_connection(conn_rec *c)
      * Read and process each request found on our connection
      * until no requests are left or we decide to close.
      */
- 
+
     ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
     while ((r = ap_read_request(c)) != NULL) {
 
         c->keepalive = AP_CONN_UNKNOWN;
         /* process the request if it was read without error */
- 
+
         ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
         if (r->status == HTTP_OK) {
             cs->state = CONN_STATE_HANDLER;
@@ -181,9 +181,9 @@ static int ap_process_http_connection(conn_rec *c)
 
         if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted)
             break;
- 
+
         ap_update_child_status(c->sbh, SERVER_BUSY_KEEPALIVE, NULL);
- 
+
         if (ap_graceful_stop_signalled())
             break;
 
@@ -194,7 +194,7 @@ static int ap_process_http_connection(conn_rec *c)
         apr_socket_timeout_set(csd, c->base_server->keep_alive_timeout);
         /* Go straight to select() to wait for the next request */
     }
- 
+
     return OK;
 }
 
@@ -219,13 +219,13 @@ static void register_hooks(apr_pool_t *p)
      * use a different processing function
      */
     int async_mpm = 0;
-    if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) == APR_SUCCESS 
+    if (ap_mpm_query(AP_MPMQ_IS_ASYNC, &async_mpm) == APR_SUCCESS
         && async_mpm == 1) {
         ap_hook_process_connection(ap_process_http_async_connection, NULL,
                                    NULL, APR_HOOK_REALLY_LAST);
     }
     else {
-        ap_hook_process_connection(ap_process_http_connection, NULL, NULL, 
+        ap_hook_process_connection(ap_process_http_connection, NULL, NULL,
                                    APR_HOOK_REALLY_LAST);
     }
 
@@ -237,7 +237,7 @@ static void register_hooks(apr_pool_t *p)
         ap_register_input_filter("HTTP_IN", ap_http_filter,
                                  NULL, AP_FTYPE_PROTOCOL);
     ap_http_header_filter_handle =
-        ap_register_output_filter("HTTP_HEADER", ap_http_header_filter, 
+        ap_register_output_filter("HTTP_HEADER", ap_http_header_filter,
                                   NULL, AP_FTYPE_PROTOCOL);
     ap_chunk_filter_handle =
         ap_register_output_filter("CHUNK", ap_http_chunk_filter,

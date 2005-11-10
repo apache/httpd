@@ -91,14 +91,14 @@ static void print_statistics (apr_file_t *output)
     apr_file_printf(output, "Entries: %d" NL, entries);
     apr_file_printf(output, "    With name   : %d" NL, withname);
     apr_file_printf(output, "    Resolves    : %d" NL, resolves);
-    
+
     if (noreverse) {
-    	apr_file_printf(output, "    - No reverse : %d" NL, 
+    	apr_file_printf(output, "    - No reverse : %d" NL,
                         noreverse);
     }
-    
+
     if (doublefailed) {
-    	apr_file_printf(output, "    - Double lookup failed : %d" NL, 
+    	apr_file_printf(output, "    - Double lookup failed : %d" NL,
                         doublefailed);
     }
 
@@ -123,7 +123,7 @@ static void usage(void)
     exit(1);
 }
 #undef NL
- 
+
 int main(int argc, const char * const argv[])
 {
     apr_file_t * outfile;
@@ -139,18 +139,18 @@ int main(int argc, const char * const argv[])
     char * stats = NULL;
     char * space;
     char * hostname;
-#if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 3) 
+#if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 3)
     char * inbuffer;
     char * outbuffer;
 #endif
     char line[2048];
     int doublelookups = 0;
-    
+
     if (apr_app_initialize(&argc, &argv, NULL) != APR_SUCCESS) {
         return 1;
     }
     atexit(apr_terminate);
- 
+
     if (argc) {
         shortname = apr_filepath_name_get(argv[0]);
     }
@@ -160,7 +160,7 @@ int main(int argc, const char * const argv[])
     }
     apr_file_open_stderr(&errfile, pool);
     apr_getopt_init(&o, pool, argc, argv);
- 
+
     while (1) {
         status = apr_getopt(o, "s:c", &opt, &arg);
         if (status == APR_EOF) {
@@ -186,22 +186,22 @@ int main(int argc, const char * const argv[])
             } /* switch */
         } /* else */
     } /* while */
- 
+
     apr_file_open_stdout(&outfile, pool);
     apr_file_open_stdin(&infile, pool);
 
-#if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 3) 
+#if APR_MAJOR_VERSION > 1 || (APR_MAJOR_VERSION == 1 && APR_MINOR_VERSION >= 3)
     /* Allocate two new 10k file buffers */
     if ((outbuffer = apr_palloc(pool, 10240)) == NULL ||
         (inbuffer = apr_palloc(pool, 10240)) == NULL) {
         return 1;
     }
-    
+
     /* Set the buffers */
     apr_file_buffer_set(infile, inbuffer, 10240);
     apr_file_buffer_set(outfile, outbuffer, 10240);
 #endif
-    
+
     cache = apr_hash_make(pool);
 
     while (apr_file_gets(line, 2048, infile) == APR_SUCCESS) {
@@ -216,9 +216,9 @@ int main(int argc, const char * const argv[])
         if (!apr_isxdigit(line[0]) && line[0] != ':') {
                 withname++;
             apr_file_puts(line, outfile);
-            continue;    
+            continue;
         }
-        
+
         /* Terminate the line at the next space */
         if ((space = strchr(line, ' ')) != NULL) {
             *space = '\0';
@@ -241,18 +241,18 @@ int main(int argc, const char * const argv[])
             apr_file_puts(line, outfile);
             continue;
         }
-        
+
         /* This does not make much sense, but historically "resolves" means
          * "parsed as an IP address". It does not mean we actually resolved
          * the IP address into a hostname.
-         */ 
+         */
             resolves++;
-        
+
         /* From here on our we cache each result, even if it was not
-         * succesful 
+         * succesful
          */
         cachesize++;
-        
+
         /* Try and perform a reverse lookup */
         status = apr_getnameinfo(&hostname, ip, 0) != APR_SUCCESS;
         if (status || hostname == NULL) {
@@ -263,7 +263,7 @@ int main(int argc, const char * const argv[])
 
             /* Add to cache */
             *space = '\0';
-            apr_hash_set(cache, line, APR_HASH_KEY_STRING, 
+            apr_hash_set(cache, line, APR_HASH_KEY_STRING,
                          apr_pstrdup(pool, line));
             continue;
         }
@@ -273,9 +273,9 @@ int main(int argc, const char * const argv[])
             /* Do a forward lookup on our hostname, and see if that matches our
              * original IP address.
              */
-            status = apr_sockaddr_info_get(&ipdouble, hostname, ip->family, 0, 
+            status = apr_sockaddr_info_get(&ipdouble, hostname, ip->family, 0,
                                            0, pool);
-            if (status == APR_SUCCESS || 
+            if (status == APR_SUCCESS ||
                 memcmp(ipdouble->ipaddr_ptr, ip->ipaddr_ptr, ip->ipaddr_len)) {
                 /* Double-lookup failed  */
                 *space = ' ';
@@ -284,7 +284,7 @@ int main(int argc, const char * const argv[])
 
                 /* Add to cache */
                 *space = '\0';
-                apr_hash_set(cache, line, APR_HASH_KEY_STRING, 
+                apr_hash_set(cache, line, APR_HASH_KEY_STRING,
                              apr_pstrdup(pool, line));
                 continue;
             }
@@ -294,18 +294,18 @@ int main(int argc, const char * const argv[])
         apr_file_printf(outfile, "%s %s", hostname, space + 1);
 
         /* Store it in the cache */
-        apr_hash_set(cache, line, APR_HASH_KEY_STRING, 
+        apr_hash_set(cache, line, APR_HASH_KEY_STRING,
                      apr_pstrdup(pool, hostname));
     }
 
     /* Flush any remaining output */
     apr_file_flush(outfile);
-    
+
     if (stats) {
-        if (apr_file_open(&statsfile, stats, 
-                       APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE, 
+        if (apr_file_open(&statsfile, stats,
+                       APR_FOPEN_WRITE | APR_FOPEN_CREATE | APR_FOPEN_TRUNCATE,
                           APR_OS_DEFAULT, pool) != APR_SUCCESS) {
-            apr_file_printf(errfile, "%s: Could not open %s for writing.", 
+            apr_file_printf(errfile, "%s: Could not open %s for writing.",
                             shortname, stats);
             return 1;
         }

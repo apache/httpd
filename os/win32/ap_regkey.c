@@ -29,7 +29,7 @@ struct ap_regkey_t {
 
 AP_DECLARE(const ap_regkey_t *) ap_regkey_const(int i)
 {
-    static struct ap_regkey_t ap_regkey_consts[7] = 
+    static struct ap_regkey_t ap_regkey_consts[7] =
     {
         {NULL, HKEY_CLASSES_ROOT},
         {NULL, HKEY_CURRENT_CONFIG},
@@ -55,10 +55,10 @@ apr_status_t regkey_cleanup(void *key)
 }
 
 
-AP_DECLARE(apr_status_t) ap_regkey_open(ap_regkey_t **newkey, 
+AP_DECLARE(apr_status_t) ap_regkey_open(ap_regkey_t **newkey,
                                         const ap_regkey_t *parentkey,
                                         const char *keyname,
-                                        apr_int32_t flags, 
+                                        apr_int32_t flags,
                                         apr_pool_t *pool)
 {
     DWORD access = KEY_QUERY_VALUE;
@@ -69,10 +69,10 @@ AP_DECLARE(apr_status_t) ap_regkey_open(ap_regkey_t **newkey,
     if (flags & APR_READ)
         access |= KEY_READ;
     if (flags & APR_WRITE)
-        access |= KEY_WRITE; 
+        access |= KEY_WRITE;
 
 #if APR_HAS_UNICODE_FS
-    IF_WIN_OS_IS_UNICODE 
+    IF_WIN_OS_IS_UNICODE
     {
         apr_size_t keylen = strlen(keyname) + 1;
         apr_size_t wkeylen = 256;
@@ -84,7 +84,7 @@ AP_DECLARE(apr_status_t) ap_regkey_open(ap_regkey_t **newkey,
             return APR_ENAMETOOLONG;
 
         if (flags & APR_CREATE)
-            rc = RegCreateKeyExW(parentkey->hkey, wkeyname, 0, NULL, 0, 
+            rc = RegCreateKeyExW(parentkey->hkey, wkeyname, 0, NULL, 0,
                                  access, NULL, &hkey, &exists);
         else
             rc = RegOpenKeyExW(parentkey->hkey, wkeyname, 0, access, &hkey);
@@ -94,7 +94,7 @@ AP_DECLARE(apr_status_t) ap_regkey_open(ap_regkey_t **newkey,
     ELSE_WIN_OS_IS_ANSI
     {
         if (flags & APR_CREATE)
-            rc = RegCreateKeyEx(parentkey->hkey, keyname, 0, NULL, 0, 
+            rc = RegCreateKeyEx(parentkey->hkey, keyname, 0, NULL, 0,
                                 access, NULL, &hkey, &exists);
         else
             rc = RegOpenKeyEx(parentkey->hkey, keyname, 0, access, &hkey);
@@ -111,7 +111,7 @@ AP_DECLARE(apr_status_t) ap_regkey_open(ap_regkey_t **newkey,
     *newkey = apr_palloc(pool, sizeof(**newkey));
     (*newkey)->pool = pool;
     (*newkey)->hkey = hkey;
-    apr_pool_cleanup_register((*newkey)->pool, (void *)(*newkey), 
+    apr_pool_cleanup_register((*newkey)->pool, (void *)(*newkey),
                               regkey_cleanup, apr_pool_cleanup_null);
     return APR_SUCCESS;
 }
@@ -127,14 +127,14 @@ AP_DECLARE(apr_status_t) ap_regkey_close(ap_regkey_t *regkey)
 }
 
 
-AP_DECLARE(apr_status_t) ap_regkey_remove(const ap_regkey_t *parent, 
+AP_DECLARE(apr_status_t) ap_regkey_remove(const ap_regkey_t *parent,
                                           const char *keyname,
                                           apr_pool_t *pool)
 {
     LONG rc;
 
 #if APR_HAS_UNICODE_FS
-    IF_WIN_OS_IS_UNICODE 
+    IF_WIN_OS_IS_UNICODE
     {
         apr_size_t keylen = strlen(keyname) + 1;
         apr_size_t wkeylen = 256;
@@ -176,9 +176,9 @@ AP_DECLARE(apr_status_t) ap_regkey_remove(const ap_regkey_t *parent,
 }
 
 
-AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result, 
-                                             ap_regkey_t *key, 
-                                             const char *valuename, 
+AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
+                                             ap_regkey_t *key,
+                                             const char *valuename,
                                              apr_pool_t *pool)
 {
     /* Retrieve a registry string value, and explode any envvars
@@ -187,9 +187,9 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
     LONG rc;
     DWORD type;
     apr_size_t size = 0;
-    
+
 #if APR_HAS_UNICODE_FS
-    IF_WIN_OS_IS_UNICODE 
+    IF_WIN_OS_IS_UNICODE
     {
         apr_size_t valuelen = strlen(valuename) + 1;
         apr_size_t wvallen = 256;
@@ -212,7 +212,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
 
         wvalue = apr_palloc(pool, size);
         /* Read value based on size query above */
-        rc = RegQueryValueExW(key->hkey, wvalname, 0, &type, 
+        rc = RegQueryValueExW(key->hkey, wvalname, 0, &type,
                               (LPBYTE)wvalue, (DWORD *)&size);
         if (rc != ERROR_SUCCESS) {
             return APR_FROM_OS_ERROR(rc);
@@ -280,10 +280,10 @@ AP_DECLARE(apr_status_t) ap_regkey_value_get(char **result,
 }
 
 
-AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key, 
-                                             const char *valuename, 
-                                             const char *value, 
-                                             apr_int32_t flags, 
+AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
+                                             const char *valuename,
+                                             const char *value,
+                                             apr_int32_t flags,
                                              apr_pool_t *pool)
 {
     /* Retrieve a registry string value, and explode any envvars
@@ -292,9 +292,9 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
     LONG rc;
     apr_size_t size = strlen(value) + 1;
     DWORD type = (flags & AP_REGKEY_EXPAND) ? REG_EXPAND_SZ : REG_SZ;
-    
+
 #if APR_HAS_UNICODE_FS
-    IF_WIN_OS_IS_UNICODE 
+    IF_WIN_OS_IS_UNICODE
     {
         apr_size_t alloclen;
         apr_size_t valuelen = strlen(valuename) + 1;
@@ -307,7 +307,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
             return rv;
         else if (valuelen)
             return APR_ENAMETOOLONG;
-        
+
         wvallen = alloclen = size;
         wvalue = apr_palloc(pool, alloclen * 2);
         rv = apr_conv_utf8_to_ucs2(value, &size, wvalue, &wvallen);
@@ -320,7 +320,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
          * converted to bytes; the trailing L'\0' continues to be counted.
          */
         size = (alloclen - wvallen) * 2;
-        rc = RegSetValueExW(key->hkey, wvalname, 0, type, 
+        rc = RegSetValueExW(key->hkey, wvalname, 0, type,
                             (LPBYTE)wvalue, (DWORD)size);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
@@ -338,20 +338,20 @@ AP_DECLARE(apr_status_t) ap_regkey_value_set(ap_regkey_t *key,
 }
 
 
-AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result, 
+AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
                                                  apr_size_t *resultsize,
                                                  apr_int32_t *resulttype,
-                                                 ap_regkey_t *key, 
-                                                 const char *valuename, 
+                                                 ap_regkey_t *key,
+                                                 const char *valuename,
                                                  apr_pool_t *pool)
 {
     /* Retrieve a registry string value, and explode any envvars
      * that the system has configured (e.g. %SystemRoot%/someapp.exe)
      */
     LONG rc;
-    
+
 #if APR_HAS_UNICODE_FS
-    IF_WIN_OS_IS_UNICODE 
+    IF_WIN_OS_IS_UNICODE
     {
         apr_size_t valuelen = strlen(valuename) + 1;
         apr_size_t wvallen = 256;
@@ -363,7 +363,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
         else if (valuelen)
             return APR_ENAMETOOLONG;
         /* Read to NULL buffer to determine value size */
-        rc = RegQueryValueExW(key->hkey, wvalname, 0, resulttype, 
+        rc = RegQueryValueExW(key->hkey, wvalname, 0, resulttype,
                               NULL, (LPDWORD)resultsize);
         if (rc != ERROR_SUCCESS) {
             return APR_FROM_OS_ERROR(rc);
@@ -371,7 +371,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
 
         /* Read value based on size query above */
         *result = apr_palloc(pool, *resultsize);
-        rc = RegQueryValueExW(key->hkey, wvalname, 0, resulttype, 
+        rc = RegQueryValueExW(key->hkey, wvalname, 0, resulttype,
                              (LPBYTE)*result, (LPDWORD)resultsize);
     }
 #endif /* APR_HAS_UNICODE_FS */
@@ -379,14 +379,14 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
     ELSE_WIN_OS_IS_ANSI
     {
         /* Read to NULL buffer to determine value size */
-        rc = RegQueryValueEx(key->hkey, valuename, 0, resulttype, 
+        rc = RegQueryValueEx(key->hkey, valuename, 0, resulttype,
                              NULL, (LPDWORD)resultsize);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
 
         /* Read value based on size query above */
         *result = apr_palloc(pool, *resultsize);
-        rc = RegQueryValueEx(key->hkey, valuename, 0, resulttype, 
+        rc = RegQueryValueEx(key->hkey, valuename, 0, resulttype,
                              (LPBYTE)*result, (LPDWORD)resultsize);
         if (rc != ERROR_SUCCESS)
             return APR_FROM_OS_ERROR(rc);
@@ -400,17 +400,17 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_get(void **result,
 }
 
 
-AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key, 
-                                                 const char *valuename, 
-                                                 const void *value, 
+AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key,
+                                                 const char *valuename,
+                                                 const void *value,
                                                  apr_size_t valuesize,
                                                  apr_int32_t valuetype,
                                                  apr_pool_t *pool)
 {
     LONG rc;
-    
+
 #if APR_HAS_UNICODE_FS
-    IF_WIN_OS_IS_UNICODE 
+    IF_WIN_OS_IS_UNICODE
     {
         apr_size_t valuelen = strlen(valuename) + 1;
         apr_size_t wvallen = 256;
@@ -422,14 +422,14 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key,
         else if (valuelen)
             return APR_ENAMETOOLONG;
 
-        rc = RegSetValueExW(key->hkey, wvalname, 0, valuetype, 
+        rc = RegSetValueExW(key->hkey, wvalname, 0, valuetype,
                             (LPBYTE)value, (DWORD)valuesize);
     }
 #endif /* APR_HAS_UNICODE_FS */
 #if APR_HAS_ANSI_FS
     ELSE_WIN_OS_IS_ANSI
     {
-        rc = RegSetValueEx(key->hkey, valuename, 0, valuetype, 
+        rc = RegSetValueEx(key->hkey, valuename, 0, valuetype,
                             (LPBYTE)value, (DWORD)valuesize);
     }
 #endif
@@ -440,9 +440,9 @@ AP_DECLARE(apr_status_t) ap_regkey_value_raw_set(ap_regkey_t *key,
 }
 
 
-AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result, 
+AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
                                                    ap_regkey_t *key,
-                                                   const char *valuename, 
+                                                   const char *valuename,
                                                    apr_pool_t *pool)
 {
     /* Retrieve a registry string value, and explode any envvars
@@ -464,7 +464,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
     }
 
 #if APR_HAS_UNICODE_FS
-    IF_WIN_OS_IS_UNICODE 
+    IF_WIN_OS_IS_UNICODE
     {
         apr_size_t alloclen;
         apr_size_t valuelen = strlen(valuename) + 1;
@@ -490,7 +490,7 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
 #if APR_HAS_ANSI_FS
     ELSE_WIN_OS_IS_ANSI
     {
-        /* Small possiblity the array is either unterminated 
+        /* Small possiblity the array is either unterminated
          * or single NULL terminated.  Avert.
          */
         buf = (char *)value;
@@ -524,9 +524,9 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_get(apr_array_header_t **result,
 }
 
 
-AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key, 
-                                                   const char *valuename, 
-                                                   int nelts, 
+AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key,
+                                                   const char *valuename,
+                                                   int nelts,
                                                    const char * const * elts,
                                                    apr_pool_t *pool)
 {
@@ -536,9 +536,9 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key,
     int i;
     const void *value;
     apr_size_t bufsize;
-    
+
 #if APR_HAS_UNICODE_FS
-    IF_WIN_OS_IS_UNICODE 
+    IF_WIN_OS_IS_UNICODE
     {
         apr_status_t rv;
         apr_wchar_t *buf;
@@ -604,19 +604,19 @@ AP_DECLARE(apr_status_t) ap_regkey_value_array_set(ap_regkey_t *key,
         value = buf;
     }
 #endif
-    return ap_regkey_value_raw_set(key, valuename, value, 
+    return ap_regkey_value_raw_set(key, valuename, value,
                                    bufsize, REG_MULTI_SZ, pool);
 }
 
 
-AP_DECLARE(apr_status_t) ap_regkey_value_remove(const ap_regkey_t *key, 
+AP_DECLARE(apr_status_t) ap_regkey_value_remove(const ap_regkey_t *key,
                                                 const char *valuename,
                                                 apr_pool_t *pool)
 {
     LONG rc;
 
 #if APR_HAS_UNICODE_FS
-    IF_WIN_OS_IS_UNICODE 
+    IF_WIN_OS_IS_UNICODE
     {
         apr_size_t valuelen = strlen(valuename) + 1;
         apr_size_t wvallen = 256;

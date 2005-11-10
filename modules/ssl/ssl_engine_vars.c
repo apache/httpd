@@ -117,7 +117,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
 
         case 'R':
         case 'r':
-            if (strcEQ(var, "REQUEST_METHOD")) 
+            if (strcEQ(var, "REQUEST_METHOD"))
                 result = r->method;
             else if (strcEQ(var, "REQUEST_SCHEME"))
                 result = ap_http_scheme(r);
@@ -126,7 +126,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             else if (strcEQ(var, "REQUEST_FILENAME"))
                 result = r->filename;
             else if (strcEQ(var, "REMOTE_HOST"))
-                result = ap_get_remote_host(r->connection, r->per_dir_config, 
+                result = ap_get_remote_host(r->connection, r->per_dir_config,
                                             REMOTE_NAME, NULL);
             else if (strcEQ(var, "REMOTE_IDENT"))
                 result = ap_get_remote_logname(r);
@@ -137,7 +137,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         case 'S':
         case 's':
             if (strcEQn(var, "SSL", 3)) break; /* shortcut common case */
-            
+
             if (strcEQ(var, "SERVER_ADMIN"))
                 result = r->server->server_admin;
             else if (strcEQ(var, "SERVER_NAME"))
@@ -149,7 +149,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             else if (strcEQ(var, "SCRIPT_FILENAME"))
                 result = r->filename;
             break;
-            
+
         default:
             if (strcEQ(var, "PATH_INFO"))
                 result = r->path_info;
@@ -172,7 +172,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      */
     if (result == NULL && c != NULL) {
         SSLConnRec *sslconn = myConnConfig(c);
-        if (strlen(var) > 4 && strcEQn(var, "SSL_", 4) 
+        if (strlen(var) > 4 && strcEQn(var, "SSL_", 4)
             && sslconn && sslconn->ssl)
             result = ssl_var_lookup_ssl(p, c, var+4);
         else if (strcEQ(var, "REMOTE_ADDR"))
@@ -357,7 +357,7 @@ static char *ssl_var_lookup_ssl_cert(apr_pool_t *p, X509 *xs, char *var)
     }
     else if (strcEQ(var, "A_SIG")) {
         nid = OBJ_obj2nid((ASN1_OBJECT *)X509_get_signature_algorithm(xs));
-        result = apr_pstrdup(p, 
+        result = apr_pstrdup(p,
                              (nid == NID_undef) ? "UNKNOWN" : OBJ_nid2ln(nid));
         resdup = FALSE;
     }
@@ -476,7 +476,7 @@ static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_UTCTIME *tm)
 
     /* Fail if the time isn't a valid ASN.1 UTCTIME; RFC3280 mandates
      * that the seconds digits are present even though ASN.1
-     * doesn't. */    
+     * doesn't. */
     if (tm->length < 11 || !ASN1_UTCTIME_check(tm)) {
         return apr_pstrdup(p, "0");
     }
@@ -493,7 +493,7 @@ static char *ssl_var_lookup_ssl_cert_remain(apr_pool_t *p, ASN1_UTCTIME *tm)
     if (apr_time_exp_gmt_get(&then, &exp) != APR_SUCCESS) {
         return apr_pstrdup(p, "0");
     }
-    
+
     diff = (long)((apr_time_sec(then) - apr_time_sec(now)) / (60*60*24));
 
     return diff > 0 ? apr_ltoa(p, diff) : apr_pstrdup(p, "0");
@@ -589,7 +589,7 @@ static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c)
 
 static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var)
 {
-    SSLConnRec *sslconn = myConnConfig(c);    
+    SSLConnRec *sslconn = myConnConfig(c);
     char *result;
     BOOL resdup;
     int usekeysize, algkeysize;
@@ -676,13 +676,13 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
     }
     ssl = sslconn->ssl;
 
-    /* We accept the "extension" string to be converted as 
-     * a long name (nsComment), short name (DN) or 
+    /* We accept the "extension" string to be converted as
+     * a long name (nsComment), short name (DN) or
      * numeric OID (1.2.3.4).
      */
     oid = OBJ_txt2obj(extension, 0);
     if (!oid) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                       "Failed to create an object for extension '%s'",
                       extension);
         ERR_clear_error();
@@ -707,9 +707,9 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
 
             /* We want to obtain a string representation of the extensions
              * value and add it to the array we're building.
-             * X509V3_EXT_print() doesn't know about all the possible 
+             * X509V3_EXT_print() doesn't know about all the possible
              * data types, but the value is stored as an ASN1_OCTET_STRING
-             * allowing us a fallback in case of X509V3_EXT_print 
+             * allowing us a fallback in case of X509V3_EXT_print
              * not knowing how to handle the data.
              */
             if (X509V3_EXT_print(bio, ext, 0, 0) == 1 ||
@@ -721,7 +721,7 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer,
             } else {
                 ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                               "Found an extension '%s', but failed to "
-                              "create a string from it", extension); 
+                              "create a string from it", extension);
             }
             BIO_vfree(bio);
         }

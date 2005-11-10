@@ -16,10 +16,10 @@
 
 /*
  * http_alias.c: Stuff for dealing with directory aliases
- * 
+ *
  * Original by Rob McCool, rewritten in succession by David Robinson
  * and rst.
- * 
+ *
  */
 
 #include "apr_strings.h"
@@ -168,7 +168,7 @@ static const char *add_alias_regex(cmd_parms *cmd, void *dummy, const char *f,
 
 static const char *add_redirect_internal(cmd_parms *cmd,
                                          alias_dir_conf *dirconf,
-                                         const char *arg1, const char *arg2, 
+                                         const char *arg1, const char *arg2,
                                          const char *arg3, int use_regex)
 {
     alias_entry *new;
@@ -258,14 +258,14 @@ static const command_rec alias_cmds[] =
                   "a regular expression and a filename"),
     AP_INIT_TAKE2("ScriptAliasMatch", add_alias_regex, "cgi-script", RSRC_CONF,
                   "a regular expression and a filename"),
-    AP_INIT_TAKE23("RedirectMatch", add_redirect_regex, 
+    AP_INIT_TAKE23("RedirectMatch", add_redirect_regex,
                    (void *) HTTP_MOVED_TEMPORARILY, OR_FILEINFO,
                    "an optional status, then a regular expression and "
                    "destination URL"),
     AP_INIT_TAKE2("RedirectTemp", add_redirect2,
                   (void *) HTTP_MOVED_TEMPORARILY, OR_FILEINFO,
                   "a document to be redirected, then the destination URL"),
-    AP_INIT_TAKE2("RedirectPermanent", add_redirect2, 
+    AP_INIT_TAKE2("RedirectPermanent", add_redirect2,
                   (void *) HTTP_MOVED_PERMANENTLY, OR_FILEINFO,
                   "a document to be redirected, then the destination URL"),
     {NULL}
@@ -331,15 +331,15 @@ static char *try_alias_list(request_rec *r, apr_array_header_t *aliases,
                         apr_uri_t uri;
                         apr_uri_parse(r->pool, found, &uri);
                         /* Do not escape the query string or fragment. */
-                        found = apr_uri_unparse(r->pool, &uri, 
+                        found = apr_uri_unparse(r->pool, &uri,
                                                 APR_URI_UNP_OMITQUERY);
                         found = ap_escape_uri(r->pool, found);
                         if (uri.query) {
-                            found = apr_pstrcat(r->pool, found, "?", 
+                            found = apr_pstrcat(r->pool, found, "?",
                                                 uri.query, NULL);
                         }
                         if (uri.fragment) {
-                            found = apr_pstrcat(r->pool, found, "#", 
+                            found = apr_pstrcat(r->pool, found, "#",
                                                 uri.fragment, NULL);
                         }
                     }

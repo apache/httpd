@@ -16,7 +16,7 @@
 
 /*
  * mod_vhost_alias.c: support for dynamically configured mass virtual hosting
- * 
+ *
  * Copyright (c) 1998-1999 Demon Internet Ltd.
  *
  * This software was submitted by Demon Internet to the Apache Software Foundation
@@ -123,7 +123,7 @@ static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, const char *map)
     mva_mode_e mode, *pmode;
     const char **pmap;
     const char *p;
-  
+
     conf = (mva_sconf_t *) ap_get_module_config(cmd->server->module_config,
                                                 &vhost_alias_module);
     /* there ought to be a better way of doing this */
@@ -214,17 +214,17 @@ static const char *vhost_alias_set(cmd_parms *cmd, void *dummy, const char *map)
 
 static const command_rec mva_commands[] =
 {
-    AP_INIT_TAKE1("VirtualScriptAlias", vhost_alias_set, 
-                  &vhost_alias_set_cgi_root_name, RSRC_CONF, 
+    AP_INIT_TAKE1("VirtualScriptAlias", vhost_alias_set,
+                  &vhost_alias_set_cgi_root_name, RSRC_CONF,
                   "how to create a ScriptAlias based on the host"),
-    AP_INIT_TAKE1("VirtualDocumentRoot", vhost_alias_set, 
-                  &vhost_alias_set_doc_root_name, RSRC_CONF, 
+    AP_INIT_TAKE1("VirtualDocumentRoot", vhost_alias_set,
+                  &vhost_alias_set_doc_root_name, RSRC_CONF,
                   "how to create the DocumentRoot based on the host"),
-    AP_INIT_TAKE1("VirtualScriptAliasIP", vhost_alias_set, 
-                  &vhost_alias_set_cgi_root_ip, RSRC_CONF, 
+    AP_INIT_TAKE1("VirtualScriptAliasIP", vhost_alias_set,
+                  &vhost_alias_set_cgi_root_ip, RSRC_CONF,
                   "how to create a ScriptAlias based on the host"),
-    AP_INIT_TAKE1("VirtualDocumentRootIP", vhost_alias_set, 
-                  &vhost_alias_set_doc_root_ip, RSRC_CONF, 
+    AP_INIT_TAKE1("VirtualDocumentRootIP", vhost_alias_set,
+                  &vhost_alias_set_doc_root_ip, RSRC_CONF,
                   "how to create the DocumentRoot based on the host"),
     { NULL }
 };
@@ -276,7 +276,7 @@ static void vhost_alias_interpolate(request_rec *r, const char *name,
     dots[ndots] = p;
 
     r->filename = NULL;
-  
+
     dest = buf;
     last = '\0';
     while (*map) {
@@ -386,7 +386,7 @@ static int mva_translate(request_rec *r)
     const char *name, *map, *uri;
     mva_mode_e mode;
     const char *cgi;
-  
+
     conf = (mva_sconf_t *) ap_get_module_config(r->server->module_config,
                                               &vhost_alias_module);
     cgi = NULL;
@@ -409,7 +409,7 @@ static int mva_translate(request_rec *r)
     else {
         return DECLINED;
     }
-  
+
     if (mode == VHOST_ALIAS_NAME) {
         name = ap_get_server_name(r);
     }
@@ -421,7 +421,7 @@ static int mva_translate(request_rec *r)
     }
 
     /* ### There is an optimization available here to determine the
-     * absolute portion of the path from the server config phase, 
+     * absolute portion of the path from the server config phase,
      * through the first % segment, and note that portion of the path
      * canonical_path buffer.
      */

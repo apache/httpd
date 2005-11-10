@@ -18,13 +18,13 @@
  * mod_cern_meta.c
  * version 0.1.0
  * status beta
- * 
+ *
  * Andrew Wilson <Andrew.Wilson@cm.cf.ac.uk> 25.Jan.96
  *
  * *** IMPORTANT ***
  * This version of mod_cern_meta.c controls Meta File behaviour on a
  * per-directory basis.  Previous versions of the module defined behaviour
- * on a per-server basis.  The upshot is that you'll need to revisit your 
+ * on a per-server basis.  The upshot is that you'll need to revisit your
  * configuration files in order to make use of the new module.
  * ***
  *
@@ -38,30 +38,30 @@
  * who can exploit this module.  It should be noted that there are probably
  * more sensitive ways of managing the Expires: header specifically.
  *
- * The module obeys the following directives, which can appear 
+ * The module obeys the following directives, which can appear
  * in the server's .conf files and in .htaccess files.
  *
- *  MetaFiles <on|off> 
+ *  MetaFiles <on|off>
  *
- *    turns on|off meta file processing for any directory.  
+ *    turns on|off meta file processing for any directory.
  *    Default value is off
  *
  *        # turn on MetaFiles in this directory
  *        MetaFiles on
  *
  *  MetaDir <directory name>
- *      
+ *
  *    specifies the name of the directory in which Apache can find
  *    meta information files.  The directory is usually a 'hidden'
  *    subdirectory of the directory that contains the file being
  *    accessed.  eg:
  *
- *        # .meta files are in the *same* directory as the 
+ *        # .meta files are in the *same* directory as the
  *        # file being accessed
  *        MetaDir .
  *
  *    the default is to look in a '.web' subdirectory. This is the
- *    same as for CERN 3.+ webservers and behaviour is the same as 
+ *    same as for CERN 3.+ webservers and behaviour is the same as
  *    for the directive:
  *
  *        MetaDir .web
@@ -87,7 +87,7 @@
  *
  *   DOCUMENT_ROOT/somedir/.web/index.html.meta
  *
- * and will use its contents to generate additional MIME header 
+ * and will use its contents to generate additional MIME header
  * information.
  *
  * For more information on the CERN Meta file semantics see:
@@ -98,7 +98,7 @@
  * 29.Jan.96 pfopen/pfclose instead of fopen/fclose
  *           DECLINE when real file not found, we may be checking each
  *           of the index.html/index.shtml/index.htm variants and don't
- *           need to report missing ones as spurious errors. 
+ *           need to report missing ones as spurious errors.
  * 31.Jan.96 log_error reports about a malformed .meta file, rather
  *           than a script error.
  * 20.Jun.96 MetaFiles <on|off> default off, added, so that module

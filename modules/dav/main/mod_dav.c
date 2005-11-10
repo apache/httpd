@@ -440,13 +440,13 @@ static void dav_send_one_response(dav_response *response,
       }
       ap_fputc(output, bb, '>');
     }
-    
+
     ap_fputstrs(output, bb,
                 DEBUG_CR "<D:href>",
                 dav_xml_escape_uri(pool, response->href),
                 "</D:href>" DEBUG_CR,
                 NULL);
-    
+
     if (response->propresult.propstats == NULL) {
       /* use the Status-Line text from Apache.  Note, this will
        * default to 500 Internal Server Error if first->status
@@ -464,7 +464,7 @@ static void dav_send_one_response(dav_response *response,
         ap_fputs(output, bb, t->text);
       }
     }
-    
+
     if (response->desc != NULL) {
       /*
        * We supply the description, so we know it doesn't have to
@@ -476,7 +476,7 @@ static void dav_send_one_response(dav_response *response,
                   "</D:responsedescription>" DEBUG_CR,
                   NULL);
     }
-    
+
     ap_fputs(output, bb, "</D:response>" DEBUG_CR);
 }
 
@@ -514,9 +514,9 @@ static apr_status_t dav_finish_multistatus(request_rec *r,
                                            apr_bucket_brigade *bb)
 {
     apr_bucket *b;
-    
+
     ap_fputs(r->output_filters, bb, "</D:multistatus>" DEBUG_CR);
-    
+
     /* indicate the end of the response body */
     b = apr_bucket_eos_create(r->connection->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -1437,7 +1437,7 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
             if (elem->first_child == NULL) {
                 /* show all supported reports */
                 for (rp = reports; rp->nmspace != NULL; ++rp) {
-                    /* Note: we presume reports->namespace is 
+                    /* Note: we presume reports->namespace is
                      * properly XML/URL quoted */
                     s = apr_psprintf(r->pool,
                                      "<D:supported-report D:name=\"%s\" "
@@ -1478,7 +1478,7 @@ static dav_error *dav_gen_supported_reports(request_rec *r,
                             if (strcmp(name, rp->name) == 0
                                 && strcmp(nmspace, rp->nmspace) == 0) {
                                 /* Note: we presume reports->nmspace is
-                                 * properly XML/URL quoted 
+                                 * properly XML/URL quoted
                                  */
                                 s = apr_psprintf(r->pool,
                                                  "<D:supported-report "
@@ -4557,7 +4557,7 @@ static int dav_handler(request_rec *r)
     if (r->parsed_uri.fragment != NULL) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                      "buggy client used un-escaped hash in Request-URI");
-        return dav_error_response(r, HTTP_BAD_REQUEST, 
+        return dav_error_response(r, HTTP_BAD_REQUEST,
                                   "The request was invalid: the URI included "
                                   "an un-escaped hash character");
     }
@@ -4769,7 +4769,7 @@ static int dav_fixups(request_rec *r)
     /* ### this is wrong.  We should only be setting the r->handler for the
      * requests that mod_dav knows about.  If we set the handler for M_POST
      * requests, then CGI scripts that use POST will return the source for the
-     * script.  However, mod_dav DOES handle POST, so something else needs 
+     * script.  However, mod_dav DOES handle POST, so something else needs
      * to be fixed.
      */
     if (r->method_number != M_POST) {

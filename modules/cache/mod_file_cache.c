@@ -15,7 +15,7 @@
  */
 
 /*
- * Author: mod_file_cache by Bill Stoddard <stoddard apache.org> 
+ * Author: mod_file_cache by Bill Stoddard <stoddard apache.org>
  *         Based on mod_mmap_static by Dean Gaudet <dgaudet arctic.org>
  *
  * v0.01: initial implementation
@@ -24,22 +24,22 @@
 /*
     Documentation:
 
-    Some sites have a set of static files that are really busy, and 
-    change infrequently (or even on a regular schedule). Save time 
-    by caching open handles to these files. This module, unlike 
-    mod_mmap_static, caches open file handles, not file content. 
+    Some sites have a set of static files that are really busy, and
+    change infrequently (or even on a regular schedule). Save time
+    by caching open handles to these files. This module, unlike
+    mod_mmap_static, caches open file handles, not file content.
     On systems (like Windows) with heavy system call overhead and
     that have an efficient sendfile implementation, caching file handles
     offers several advantages over caching content. First, the file system
     can manage the memory, allowing infrequently hit cached files to
     be paged out. Second, since caching open handles does not consume
     significant resources, it will be possible to enable an AutoLoadCache
-    feature where static files are dynamically loaded in the cache 
+    feature where static files are dynamically loaded in the cache
     as the server runs. On systems that have file change notification,
-    this module can be enhanced to automatically garbage collect 
+    this module can be enhanced to automatically garbage collect
     cached files that change on disk.
 
-    This module should work on Unix systems that have sendfile. Place 
+    This module should work on Unix systems that have sendfile. Place
     cachefile directives into your configuration to direct files to
     be cached.
 
@@ -47,14 +47,14 @@
         cachefile /path/to/file2
         ...
 
-    These files are only cached when the server is restarted, so if you 
-    change the list, or if the files are changed, then you'll need to 
+    These files are only cached when the server is restarted, so if you
+    change the list, or if the files are changed, then you'll need to
     restart the server.
 
     To reiterate that point:  if the files are modified *in place*
     without restarting the server you may end up serving requests that
     are completely bogus.  You should update files by unlinking the old
-    copy and putting a new copy in place. 
+    copy and putting a new copy in place.
 
     There's no such thing as inheriting these files across vhosts or
     whatever... place the directives in the main server only.
@@ -108,7 +108,7 @@ typedef struct {
     apr_mmap_t *mm;
 #endif
     char mtimestr[APR_RFC822_DATE_LEN];
-    char sizestr[21];	/* big enough to hold any 64-bit file size + null */ 
+    char sizestr[21];	/* big enough to hold any 64-bit file size + null */
 } a_file;
 
 typedef struct {
@@ -140,7 +140,7 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
                      "%s, skipping", filename);
         return;
     }
-    if ((rc = apr_stat(&tmp.finfo, fspec, APR_FINFO_MIN, 
+    if ((rc = apr_stat(&tmp.finfo, fspec, APR_FINFO_MIN,
                                  cmd->temp_pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
             "mod_file_cache: unable to stat(%s), skipping", fspec);
@@ -176,9 +176,9 @@ static void cache_the_file(cmd_parms *cmd, const char *filename, int mmap)
          * XXX: APR_HAS_LARGE_FILES issue; need to reject this request if
          * size is greater than MAX(apr_size_t) (perhaps greater than 1M?).
          */
-        if ((rc = apr_mmap_create(&new_file->mm, fd, 0, 
+        if ((rc = apr_mmap_create(&new_file->mm, fd, 0,
                                   (apr_size_t)new_file->finfo.size,
-                                  APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) { 
+                                  APR_MMAP_READ, cmd->pool)) != APR_SUCCESS) {
             apr_file_close(fd);
             ap_log_error(APLOG_MARK, APLOG_WARNING, rc, cmd->server,
                          "mod_file_cache: unable to mmap %s, skipping", filename);
@@ -216,7 +216,7 @@ static const char *cachefilehandle(cmd_parms *cmd, void *dummy, const char *file
 #endif
     return NULL;
 }
-static const char *cachefilemmap(cmd_parms *cmd, void *dummy, const char *filename) 
+static const char *cachefilemmap(cmd_parms *cmd, void *dummy, const char *filename)
 {
 #if APR_HAS_MMAP
     cache_the_file(cmd, filename, 1);
@@ -309,7 +309,7 @@ static int sendfile_handler(request_rec *r, a_file *file)
     return OK;
 }
 
-static int file_cache_handler(request_rec *r) 
+static int file_cache_handler(request_rec *r)
 {
     a_file *match;
     int errstatus;
@@ -373,7 +373,7 @@ static int file_cache_handler(request_rec *r)
     apr_table_setn(r->headers_out, "Content-Length", match->sizestr);
 
     /* Call appropriate handler */
-    if (!r->header_only) {    
+    if (!r->header_only) {
         if (match->is_mmapped == TRUE)
             rc = mmap_handler(r, match);
         else
@@ -398,9 +398,9 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_post_config(file_cache_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_translate_name(file_cache_xlat, NULL, NULL, APR_HOOK_MIDDLE);
     /* This trick doesn't work apparently because the translate hooks
-       are single shot. If the core_hook returns OK, then our hook is 
+       are single shot. If the core_hook returns OK, then our hook is
        not called.
-    ap_hook_translate_name(file_cache_xlat, aszPre, NULL, APR_HOOK_MIDDLE); 
+    ap_hook_translate_name(file_cache_xlat, aszPre, NULL, APR_HOOK_MIDDLE);
     */
 
 }

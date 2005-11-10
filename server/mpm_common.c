@@ -135,7 +135,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     switch(action) {
     case DO_NOTHING:
         break;
-        
+
     case SEND_SIGTERM:
         /* ok, now it's being annoying */
         ap_log_error(APLOG_MARK, APLOG_WARNING,
@@ -146,7 +146,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
                      pid);
         kill(pid, SIGTERM);
         break;
-        
+
     case SEND_SIGKILL:
         ap_log_error(APLOG_MARK, APLOG_ERR,
                      0, ap_server_conf,
@@ -166,7 +166,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
         kill_thread(pid);
 #endif
         break;
-                
+
     case GIVEUP:
         /* gave it our best shot, but alas...  If this really
          * is a child we are trying to kill and it really hasn't
@@ -181,7 +181,7 @@ static int reclaim_one_pid(pid_t pid, action_t action)
                      pid);
         break;
     }
-    
+
     return 0;
 }
 
@@ -359,7 +359,7 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
      * check for bad rc from us and exit, running any
      * appropriate cleanups.
      *
-     * If the child died due to a resource shortage, 
+     * If the child died due to a resource shortage,
      * the parent should limit the rate of forking
      */
     if (APR_PROC_CHECK_EXIT(why)) {
@@ -634,15 +634,15 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
      * adminstrators can track down the cause of the odd-looking
      * requests in their logs.
      */
-    srequest = apr_pstrcat(p, "GET / HTTP/1.0\r\nUser-Agent: ", 
-                           ap_get_server_version(), 
+    srequest = apr_pstrcat(p, "GET / HTTP/1.0\r\nUser-Agent: ",
+                           ap_get_server_version(),
                            " (internal dummy connection)\r\n\r\n", NULL);
-    
-    /* Since some operating systems support buffering of data or entire 
-     * requests in the kernel, we send a simple request, to make sure 
-     * the server pops out of a blocking accept(). 
+
+    /* Since some operating systems support buffering of data or entire
+     * requests in the kernel, we send a simple request, to make sure
+     * the server pops out of a blocking accept().
      */
-    /* XXX: This is HTTP specific. We should look at the Protocol for each 
+    /* XXX: This is HTTP specific. We should look at the Protocol for each
      * listener, and send the correct type of request to trigger any Accept
      * Filters.
      */
@@ -775,7 +775,7 @@ const char *ap_mpm_set_coredumpdir(cmd_parms *cmd, void *dummy,
 
     fname = ap_server_root_relative(cmd->pool, arg);
     if (!fname) {
-        return apr_pstrcat(cmd->pool, "Invalid CoreDumpDirectory path ", 
+        return apr_pstrcat(cmd->pool, "Invalid CoreDumpDirectory path ",
                            arg, NULL);
     }
     if ((rv = apr_stat(&finfo, fname, APR_FINFO_TYPE, cmd->pool)) != APR_SUCCESS) {
@@ -902,7 +902,7 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
     int running = 0;
     int have_pid_file = 0;
     const char *status;
-    
+
     *exit_status = 0;
 
     rv = ap_read_pid(pconf, ap_pid_fname, &otherpid);
@@ -921,7 +921,7 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
         have_pid_file = 1;
         if (kill(otherpid, 0) == 0) {
             running = 1;
-            status = apr_psprintf(pconf, 
+            status = apr_psprintf(pconf,
                                   "httpd (pid %" APR_PID_T_FMT ") already "
                                   "running", otherpid);
         }
@@ -968,7 +968,7 @@ int ap_signal_server(int *exit_status, apr_pool_t *pconf)
             return 1;
         }
     }
-    
+
     if (!strcmp(dash_k_arg, "graceful-stop")) {
 #ifdef AP_MPM_WANT_SET_GRACEFUL_SHUTDOWN
         if (!running) {
@@ -1056,10 +1056,10 @@ const char *ap_mpm_set_max_mem_free(cmd_parms *cmd, void *dummy,
     if (err != NULL) {
         return err;
     }
-    
+
     value = strtol(arg, NULL, 0);
     if (value < 0 || errno == ERANGE)
-        return apr_pstrcat(cmd->pool, "Invalid MaxMemFree value: ", 
+        return apr_pstrcat(cmd->pool, "Invalid MaxMemFree value: ",
                            arg, NULL);
 
     ap_max_mem_free = (apr_uint32_t)value * 1024;
@@ -1080,10 +1080,10 @@ const char *ap_mpm_set_thread_stacksize(cmd_parms *cmd, void *dummy,
     if (err != NULL) {
         return err;
     }
-    
+
     value = strtol(arg, NULL, 0);
     if (value < 0 || errno == ERANGE)
-        return apr_pstrcat(cmd->pool, "Invalid ThreadStackSize value: ", 
+        return apr_pstrcat(cmd->pool, "Invalid ThreadStackSize value: ",
                            arg, NULL);
 
     ap_thread_stacksize = (apr_size_t)value;
@@ -1132,7 +1132,7 @@ static void run_fatal_exception_hook(int sig)
     ap_exception_info_t ei = {0};
 
     if (exception_hook_enabled &&
-        geteuid() != 0 && 
+        geteuid() != 0 &&
         my_pid != parent_pid) {
         ei.sig = sig;
         ei.pid = my_pid;
@@ -1189,7 +1189,7 @@ apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf)
     struct sigaction sa;
 
     sigemptyset(&sa.sa_mask);
-    
+
 #if defined(SA_ONESHOT)
     sa.sa_flags = SA_ONESHOT;
 #elif defined(SA_RESETHAND)
@@ -1219,7 +1219,7 @@ apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf)
 #endif
 
 #else /* NO_USE_SIGACTION */
-    
+
     apr_signal(SIGSEGV, sig_coredump);
 #ifdef SIGBUS
     apr_signal(SIGBUS, sig_coredump);

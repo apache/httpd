@@ -33,7 +33,7 @@
 #include "http_log.h"
 #include "http_protocol.h"
 
-DAV_DECLARE(dav_error*) dav_new_error(apr_pool_t *p, int status, 
+DAV_DECLARE(dav_error*) dav_new_error(apr_pool_t *p, int status,
                                       int error_id, const char *desc)
 {
     int save_errno = errno;
@@ -49,7 +49,7 @@ DAV_DECLARE(dav_error*) dav_new_error(apr_pool_t *p, int status,
     return err;
 }
 
-DAV_DECLARE(dav_error*) dav_new_error_tag(apr_pool_t *p, int status, 
+DAV_DECLARE(dav_error*) dav_new_error_tag(apr_pool_t *p, int status,
                                           int error_id, const char *desc,
                                           const char *namespace,
                                           const char *tagname)
@@ -63,8 +63,8 @@ DAV_DECLARE(dav_error*) dav_new_error_tag(apr_pool_t *p, int status,
 }
 
 
-DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status, 
-                                       int error_id, const char *desc, 
+DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status,
+                                       int error_id, const char *desc,
                                        dav_error *prev)
 {
     dav_error *err = apr_pcalloc(p, sizeof(*err));
@@ -77,7 +77,7 @@ DAV_DECLARE(dav_error*) dav_push_error(apr_pool_t *p, int status,
     return err;
 }
 
-DAV_DECLARE(void) dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf, 
+DAV_DECLARE(void) dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf,
                                     apr_size_t extra_needed)
 {
     /* grow the buffer if necessary */
@@ -91,7 +91,7 @@ DAV_DECLARE(void) dav_check_bufsize(apr_pool_t * p, dav_buffer *pbuf,
     }
 }
 
-DAV_DECLARE(void) dav_set_bufsize(apr_pool_t * p, dav_buffer *pbuf, 
+DAV_DECLARE(void) dav_set_bufsize(apr_pool_t * p, dav_buffer *pbuf,
                                   apr_size_t size)
 {
     /* NOTE: this does not retain prior contents */
@@ -113,7 +113,7 @@ DAV_DECLARE(void) dav_set_bufsize(apr_pool_t * p, dav_buffer *pbuf,
 
 
 /* initialize a buffer and copy the specified (null-term'd) string into it */
-DAV_DECLARE(void) dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf, 
+DAV_DECLARE(void) dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf,
                                   const char *str)
 {
     dav_set_bufsize(p, pbuf, strlen(str));
@@ -121,7 +121,7 @@ DAV_DECLARE(void) dav_buffer_init(apr_pool_t *p, dav_buffer *pbuf,
 }
 
 /* append a string to the end of the buffer, adjust length */
-DAV_DECLARE(void) dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf, 
+DAV_DECLARE(void) dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf,
                                     const char *str)
 {
     apr_size_t len = strlen(str);
@@ -132,7 +132,7 @@ DAV_DECLARE(void) dav_buffer_append(apr_pool_t *p, dav_buffer *pbuf,
 }
 
 /* place a string on the end of the buffer, do NOT adjust length */
-DAV_DECLARE(void) dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf, 
+DAV_DECLARE(void) dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf,
                                    const char *str)
 {
     apr_size_t len = strlen(str);
@@ -142,8 +142,8 @@ DAV_DECLARE(void) dav_buffer_place(apr_pool_t *p, dav_buffer *pbuf,
 }
 
 /* place some memory on the end of a buffer; do NOT adjust length */
-DAV_DECLARE(void) dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf, 
-                                       const void *mem, apr_size_t amt, 
+DAV_DECLARE(void) dav_buffer_place_mem(apr_pool_t *p, dav_buffer *pbuf,
+                                       const void *mem, apr_size_t amt,
                                        apr_size_t pad)
 {
     dav_check_bufsize(p, pbuf, amt + pad);
@@ -237,7 +237,7 @@ DAV_DECLARE(dav_lookup_result) dav_lookup_uri(const char *uri,
     /* we have verified the scheme, port, and general structure */
 
     /*
-    ** Hrm.  IE5 will pass unqualified hostnames for both the 
+    ** Hrm.  IE5 will pass unqualified hostnames for both the
     ** Host: and Destination: headers.  This breaks the
     ** http_vhost.c::matches_aliases function.
     **
@@ -297,7 +297,7 @@ DAV_DECLARE(int) dav_validate_root(const apr_xml_doc *doc,
 }
 
 /* find and return the (unique) child with a given DAV: tagname */
-DAV_DECLARE(apr_xml_elem *) dav_find_child(const apr_xml_elem *elem, 
+DAV_DECLARE(apr_xml_elem *) dav_find_child(const apr_xml_elem *elem,
                                            const char *tagname)
 {
     apr_xml_elem *child = elem->first_child;
@@ -533,7 +533,7 @@ static dav_error * dav_add_if_state(apr_pool_t *p, dav_if_header *ih,
 
     new_sl->condition = condition;
     new_sl->type      = t;
-    
+
     if (t == dav_if_opaquelock) {
         dav_error *err;
 
@@ -568,7 +568,7 @@ static char *dav_fetch_next_token(char **str, char term)
 {
     char *sp;
     char *token;
-        
+
     token = *str + 1;
 
     while (*token && (*token == ' ' || *token == '\t'))
@@ -604,7 +604,7 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
     const dav_hooks_locks *locks_hooks = DAV_GET_HOOKS_LOCKS(r);
     enum {no_tagged, tagged, unknown} list_type = unknown;
     int condition;
-        
+
     *p_ih = NULL;
 
     if ((str = apr_pstrdup(r->pool, apr_table_get(r->headers_in, "If"))) == NULL)
@@ -621,7 +621,7 @@ static dav_error * dav_process_if_header(request_rec *r, dav_if_header **p_ih)
                                      "Invalid If-header: unclosed \"<\" or "
                                      "unexpected tagged-list production.");
             }
-            
+
             /* 2518 specifies this must be an absolute URI; just take the
              * relative part for later comparison against r->uri */
             if (apr_uri_parse(r->pool, uri, &parsed_uri) != APR_SUCCESS) {
@@ -876,14 +876,14 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
         /* lock_list now determines whether we're in State 1, 2, or 3. */
     }
 
-    /* 
+    /*
     ** For a new, exclusive lock: if any locks exist, fail.
     ** For a new, shared lock:    if an exclusive lock exists, fail.
     **                            else, do not require a token to be seen.
     */
     if (flags & DAV_LOCKSCOPE_EXCLUSIVE) {
         if (lock_list != NULL) {
-            return dav_new_error(p, HTTP_LOCKED, 0, 
+            return dav_new_error(p, HTTP_LOCKED, 0,
                                  "Existing lock(s) on the requested resource "
                                  "prevent an exclusive lock.");
         }
@@ -1160,13 +1160,13 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                     ** the lock, only the same user may submit that locktoken
                     ** to manipulate a resource.
                     */
-                    if (lock->auth_user && 
+                    if (lock->auth_user &&
                         (!r->user ||
                          strcmp(lock->auth_user, r->user))) {
                         const char *errmsg;
 
                         errmsg = apr_pstrcat(p, "User \"",
-                                            r->user, 
+                                            r->user,
                                             "\" submitted a locktoken created "
                                             "by user \"",
                                             lock->auth_user, "\".", NULL);
@@ -1204,9 +1204,9 @@ static dav_error * dav_validate_resource_state(apr_pool_t *p,
                 /* Request is predicated on some unknown state token,
                  * which must be presumed to *not* match, so fail
                  * unless this is a Not condition. */
-                
+
                 if (state_list->condition == DAV_IF_COND_NORMAL) {
-                    reason = 
+                    reason =
                         "an unknown state token was supplied";
                     goto state_list_failed;
                 }
@@ -1417,7 +1417,7 @@ static dav_error * dav_validate_walker(dav_walk_resource *wres, int calltype)
 ** On error, return appropriate HTTP_* code, and log error. If a multi-stat
 ** error is necessary, response will point to it, else NULL.
 */
-DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r, 
+DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
                                               dav_resource *resource,
                                               int depth,
                                               dav_locktoken *locktoken,
@@ -1449,7 +1449,7 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
     if (response != NULL)
         *response = NULL;
 
-    /* Do the standard checks for conditional requests using 
+    /* Do the standard checks for conditional requests using
      * If-..-Since, If-Match etc */
     if ((result = ap_meets_conditions(r)) != OK) {
         /* ### fix this up... how? */
@@ -1545,7 +1545,7 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
                                               if_header,
                                               flags | DAV_VALIDATE_IS_PARENT,
                                               &work_buf, r);
-            
+
             /*
             ** This error occurred on the parent resource. This implies that
             ** we have to create a multistatus response (to report the error
@@ -1554,7 +1554,7 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
             */
             if (err != NULL) {
                 new_response = apr_pcalloc(r->pool, sizeof(*new_response));
-                
+
                 new_response->href = parent_resource->uri;
                 new_response->status = err->status;
                 new_response->desc =
@@ -1567,11 +1567,11 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
                                                     " The error was: ",
                                                     err->desc, NULL);
                 }
-                
+
                 /* assert: DAV_VALIDATE_PARENT implies response != NULL */
                 new_response->next = *response;
                 *response = new_response;
-                
+
                 err = NULL;
             }
         }
@@ -1642,20 +1642,20 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
  * else NULL if no If-header, or no positive locktokens.
  */
 DAV_DECLARE(dav_error *) dav_get_locktoken_list(request_rec *r,
-                                                dav_locktoken_list **ltl) 
+                                                dav_locktoken_list **ltl)
 {
     dav_error *err;
     dav_if_header *if_header;
     dav_if_state_list *if_state;
-    dav_locktoken_list *lock_token = NULL;                
-        
+    dav_locktoken_list *lock_token = NULL;
+
     *ltl = NULL;
 
     if ((err = dav_process_if_header(r, &if_header)) != NULL) {
         /* ### add a higher-level description? */
         return err;
     }
-                         
+
     while (if_header != NULL) {
         if_state = if_header->state;        /* Begining of the if_state linked list */
         while (if_state != NULL)        {
@@ -1666,7 +1666,7 @@ DAV_DECLARE(dav_error *) dav_get_locktoken_list(request_rec *r,
                 lock_token->next = *ltl;
                 *ltl = lock_token;
             }
-            if_state = if_state->next; 
+            if_state = if_state->next;
         }
         if_header = if_header->next;
     }
@@ -1750,7 +1750,7 @@ DAV_DECLARE(void) dav_add_vary_header(request_rec *in_req,
  * auto_checkout - set to 1 if auto-checkout enabled
  */
 static dav_error * dav_can_auto_checkout(
-    request_rec *r,                                         
+    request_rec *r,
     dav_resource *resource,
     dav_auto_version auto_version,
     dav_lockdb **lockdb,

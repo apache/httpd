@@ -36,7 +36,7 @@ int cache_remove_url(cache_request_rec *cache, apr_pool_t *p)
     list = cache->providers;
 
     /* Remove the stale cache entry if present. If not, we're
-     * being called from outside of a request; remove the 
+     * being called from outside of a request; remove the
      * non-stalle handle.
      */
     h = cache->stale_handle ? cache->stale_handle : cache->handle;
@@ -72,7 +72,7 @@ int cache_create_entity(request_rec *r, apr_off_t size)
     cache_handle_t *h = apr_pcalloc(r->pool, sizeof(cache_handle_t));
     char *key;
     apr_status_t rv;
-    cache_request_rec *cache = (cache_request_rec *) 
+    cache_request_rec *cache = (cache_request_rec *)
                          ap_get_module_config(r->request_config, &cache_module);
 
     rv = cache_generate_key(r, r->pool, &key);
@@ -175,7 +175,7 @@ int cache_select(request_rec *r)
     apr_status_t rv;
     cache_handle_t *h;
     char *key;
-    cache_request_rec *cache = (cache_request_rec *) 
+    cache_request_rec *cache = (cache_request_rec *)
                          ap_get_module_config(r->request_config, &cache_module);
 
     rv = cache_generate_key(r, r->pool, &key);
@@ -200,7 +200,7 @@ int cache_select(request_rec *r)
 
             /*
              * Check Content-Negotiation - Vary
-             * 
+             *
              * At this point we need to make sure that the object we found in
              * the cache is the same object that would be delivered to the
              * client, when the effects of content negotiation are taken into
@@ -286,7 +286,7 @@ int cache_select(request_rec *r)
                     if (etag) {
                         apr_table_set(r->headers_in, "If-None-Match", etag);
                     }
-                    
+
                     if (lastmod) {
                         apr_table_set(r->headers_in, "If-Modified-Since",
                                       lastmod);
@@ -325,8 +325,8 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
     int i;
 
     /* Use the canonical name to improve cache hit rate, but only if this is
-     * not a proxy request. 
-     */ 
+     * not a proxy request.
+     */
     if (!r->proxyreq) {
         /* Use _default_ as the hostname if none present, as in mod_vhost */
         hostname =  ap_get_server_name(r);
@@ -386,8 +386,8 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
              * entities.
              */
             port_str = "";
-        }       
-    }       
+        }
+    }
     else {
         /* Use the server port */
         port_str = apr_psprintf(p, ":%u", ap_get_server_port(r));

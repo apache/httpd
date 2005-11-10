@@ -92,7 +92,7 @@ static int proxy_http_canon(request_rec *r, char *url)
     if (ap_strchr_c(host, ':')) { /* if literal IPv6 address */
         host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
-    r->filename = apr_pstrcat(r->pool, "proxy:", scheme, "://", host, sport, 
+    r->filename = apr_pstrcat(r->pool, "proxy:", scheme, "://", host, sport,
             "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
     return OK;
 }
@@ -228,20 +228,20 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
         apr_brigade_length(input_brigade, 1, &bytes);
 
         hdr_len = apr_snprintf(chunk_hdr, sizeof(chunk_hdr),
-                               "%" APR_UINT64_T_HEX_FMT CRLF, 
+                               "%" APR_UINT64_T_HEX_FMT CRLF,
                                (apr_uint64_t)bytes);
-        
+
         ap_xlate_proto_to_ascii(chunk_hdr, hdr_len);
         e = apr_bucket_transient_create(chunk_hdr, hdr_len,
                                         bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(input_brigade, e);
-        
+
         /*
          * Append the end-of-chunk CRLF
          */
         e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(input_brigade, e);
-        
+
         if (header_brigade) {
             /* we never sent the header brigade, so go ahead and
              * take care of that now
@@ -267,7 +267,7 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
         else {
             bb = input_brigade;
         }
-        
+
         /* The request is flushed below this loop with chunk EOS header */
         status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 0);
         if (status != APR_SUCCESS) {
@@ -388,7 +388,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         else {
             bb = input_brigade;
         }
-        
+
         /* Once we hit EOS, we are ready to flush. */
         status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, seen_eos);
         if (status != APR_SUCCESS) {
@@ -407,7 +407,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             return status;
         }
     }
-    
+
     if (bytes_streamed != cl_val) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: client %s given Content-Length did not match"
@@ -520,7 +520,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
             }
 
         }
-        
+
         bytes_spooled += bytes;
 
         if (seen_eos) {
@@ -605,7 +605,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     /* strip connection listed hop-by-hop headers from the request */
     /* even though in theory a connection: close coming from the client
      * should not affect the connection to the server, it's unlikely
-     * that subsequent client requests will hit this thread/process, 
+     * that subsequent client requests will hit this thread/process,
      * so we cancel server keepalive if the client does.
      */
     if (ap_proxy_liststr(apr_table_get(r->headers_in,
@@ -641,25 +641,25 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         } else {
             buf = apr_pstrcat(p, "Host: ", uri->hostname, CRLF, NULL);
         }
-    } 
+    }
     else {
-        /* don't want to use r->hostname, as the incoming header might have a 
-         * port attached 
+        /* don't want to use r->hostname, as the incoming header might have a
+         * port attached
          */
-        const char* hostname = apr_table_get(r->headers_in,"Host");        
+        const char* hostname = apr_table_get(r->headers_in,"Host");
         if (!hostname) {
             hostname =  r->server->server_hostname;
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "proxy: no HTTP 0.9 request (with no host line) "
                           "on incoming request and preserve host set "
-                          "forcing hostname to be %s for uri %s", 
-                          hostname, 
+                          "forcing hostname to be %s for uri %s",
+                          hostname,
                           r->uri );
         }
         buf = apr_pstrcat(p, "Host: ", hostname, CRLF, NULL);
     }
     ap_xlate_proto_to_ascii(buf, strlen(buf));
-    e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);        
+    e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 
     /* handle Via */
@@ -741,7 +741,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     headers_in_array = apr_table_elts(r->headers_in);
     headers_in = (const apr_table_entry_t *) headers_in_array->elts;
     for (counter = 0; counter < headers_in_array->nelts; counter++) {
-        if (headers_in[counter].key == NULL 
+        if (headers_in[counter].key == NULL
              || headers_in[counter].val == NULL
 
             /* Already sent */
@@ -755,7 +755,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
              || !strcasecmp(headers_in[counter].key, "Trailer")
              || !strcasecmp(headers_in[counter].key, "Upgrade")
 
-            /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be 
+            /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be
              * suppressed if THIS server requested the authentication,
              * not when a frontend proxy requested it!
              *
@@ -830,7 +830,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * that the can and have done so unless they they remove
      * their decoding from the headers_in T-E list.
      * XXX: Make this extensible, but in doing so, presume the
-     * encoding has been done by the extensions' handler, and 
+     * encoding has been done by the extensions' handler, and
      * do not modify add_te_chunked's logic
      */
     if (old_te_val && strcmp(old_te_val, "chunked") != 0) {
@@ -900,7 +900,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * surrender once we hit 80 bytes less than MAX_MEM_SPOOL
      * (an arbitrary value.)
      */
-    } while ((bytes_read < MAX_MEM_SPOOL - 80) 
+    } while ((bytes_read < MAX_MEM_SPOOL - 80)
               && !APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade)));
 
     /* Use chunked request body encoding or send a content-length body?
@@ -909,10 +909,10 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      *
      *   We have no request body (handled by RB_STREAM_CL)
      *
-     *   We have a request body length <= MAX_MEM_SPOOL 
+     *   We have a request body length <= MAX_MEM_SPOOL
      *
      *   The administrator has setenv force-proxy-request-1.0
-     *   
+     *
      *   The client sent a C-L body, and the administrator has
      *   not setenv proxy-sendchunked or has set setenv proxy-sendcl
      *
@@ -935,12 +935,12 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * input to a temporary file.  Chunked is always preferable.
      *
      * We can only trust the client-provided C-L if the T-E header
-     * is absent, and the filters are unchanged (the body won't 
+     * is absent, and the filters are unchanged (the body won't
      * be resized by another content filter).
      */
     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
         /* The whole thing fit, so our decision is trivial, use
-         * the filtered bytes read from the client for the request 
+         * the filtered bytes read from the client for the request
          * body Content-Length.
          *
          * If we expected no body, and read no body, do not set
@@ -952,7 +952,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         rb_method = RB_STREAM_CL;
     }
     else if (old_te_val) {
-        if (force10 
+        if (force10
              || (apr_table_get(r->subprocess_env, "proxy-sendcl")
                   && !apr_table_get(r->subprocess_env, "proxy-sendchunks"))) {
             rb_method = RB_SPOOL_CL;
@@ -965,7 +965,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         if (r->input_filters == r->proto_input_filters) {
             rb_method = RB_STREAM_CL;
         }
-        else if (!force10 
+        else if (!force10
                   && apr_table_get(r->subprocess_env, "proxy-sendchunks")
                   && !apr_table_get(r->subprocess_env, "proxy-sendcl")) {
             rb_method = RB_STREAM_CHUNKED;
@@ -995,11 +995,11 @@ skip_body:
     /* send the request body, if any. */
     switch(rb_method) {
     case RB_STREAM_CHUNKED:
-        status = stream_reqbody_chunked(p, r, p_conn, origin, header_brigade, 
+        status = stream_reqbody_chunked(p, r, p_conn, origin, header_brigade,
                                         input_brigade);
         break;
     case RB_STREAM_CL:
-        status = stream_reqbody_cl(p, r, p_conn, origin, header_brigade, 
+        status = stream_reqbody_cl(p, r, p_conn, origin, header_brigade,
                                    input_brigade, old_cl_val);
         break;
     case RB_SPOOL_CL:
@@ -1018,7 +1018,7 @@ skip_body:
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request body failed to %pI (%s)"
                      " from %s (%s)",
-                     p_conn->addr, 
+                     p_conn->addr,
                      p_conn->hostname ? p_conn->hostname: "",
                      c->remote_ip,
                      c->remote_host ? c->remote_host: "");
@@ -1265,7 +1265,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 buffer[13] = '\0';
             }
             r->status_line = apr_pstrdup(p, &buffer[9]);
-            
+
 
             /* read the headers. */
             /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers*/
@@ -1312,10 +1312,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             /* can't have both Content-Length and Transfer-Encoding */
             if (apr_table_get(r->headers_out, "Transfer-Encoding")
                     && apr_table_get(r->headers_out, "Content-Length")) {
-                /* 
+                /*
                  * 2616 section 4.4, point 3: "if both Transfer-Encoding
                  * and Content-Length are received, the latter MUST be
-                 * ignored"; 
+                 * ignored";
                  *
                  * To help mitigate HTTP Splitting, unset Content-Length
                  * and shut down the backend server connection
@@ -1335,7 +1335,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_proxy_clear_connection(p, r->headers_out);
             if ((buf = apr_table_get(r->headers_out, "Content-Type"))) {
                 ap_set_content_type(r, apr_pstrdup(p, buf));
-            }            
+            }
             ap_proxy_pre_http_request(origin,rp);
 
             /* handle Via header in response */
@@ -1442,7 +1442,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: start body send");
-             
+
             /*
              * if we are overriding the errors, we can't put the content
              * of the page into the brigade
@@ -1456,7 +1456,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     apr_off_t readbytes;
                     apr_status_t rv;
 
-                    rv = ap_get_brigade(rp->input_filters, bb, 
+                    rv = ap_get_brigade(rp->input_filters, bb,
                                         AP_MODE_READBYTES, mode,
                                         conf->io_buffer_size);
 
@@ -1467,7 +1467,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         /* flush to the client and switch to blocking mode */
                         e = apr_bucket_flush_create(c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(bb, e);
-                        if (ap_pass_brigade(r->output_filters, bb) 
+                        if (ap_pass_brigade(r->output_filters, bb)
                             || c->aborted) {
                             backend->close = 1;
                             break;
@@ -1486,7 +1486,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
                     /* next time try a non-blocking read */
                     mode = APR_NONBLOCK_READ;
-                    
+
                     apr_brigade_length(bb, 0, &readbytes);
                     backend->worker->s->read += readbytes;
 #if DEBUGGING
@@ -1565,7 +1565,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
            }
             return status;
         }
-    } else 
+    } else
         return OK;
 }
 
@@ -1583,7 +1583,7 @@ apr_status_t ap_proxy_http_cleanup(const char *scheme, request_rec *r,
     if (backend->close || (r->proto_num < HTTP_VERSION(1,1))) {
         backend->close_on_recycle = 1;
         ap_set_module_config(r->connection->conn_config, &proxy_http_module, NULL);
-        ap_proxy_release_connection(scheme, backend, r->server);    
+        ap_proxy_release_connection(scheme, backend, r->server);
     }
     return OK;
 }
@@ -1599,7 +1599,7 @@ apr_status_t ap_proxy_http_cleanup(const char *scheme, request_rec *r,
  */
 static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                               proxy_server_conf *conf,
-                              char *url, const char *proxyname, 
+                              char *url, const char *proxyname,
                               apr_port_t proxyport)
 {
     int status;
@@ -1660,9 +1660,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
              "proxy: HTTP: serving URL %s", url);
-    
-    
-    /* only use stored info for top-level pages. Sub requests don't share 
+
+
+    /* only use stored info for top-level pages. Sub requests don't share
      * in keepalives
      */
     if (!r->main) {
@@ -1705,7 +1705,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
                                                  c, r->server)) != OK)
             goto cleanup;
     }
-   
+
     /* Step Four: Send the Request */
     if ((status = ap_proxy_http_request(p, r, backend, backend->connection,
                                         conf, uri, url, server_portstr)) != OK)

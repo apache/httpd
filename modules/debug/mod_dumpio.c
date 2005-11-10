@@ -47,7 +47,7 @@ typedef struct dumpio_conf_t {
 static void dumpit(ap_filter_t *f, apr_bucket *b)
 {
     conn_rec *c = f->c;
-    
+
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server,
         "mod_dumpio:  %s (%s-%s): %" APR_SIZE_T_FMT " bytes",
                 f->frec->name,
@@ -91,7 +91,7 @@ static void dumpit(ap_filter_t *f, apr_bucket *b)
    (( mode ) == AP_MODE_EXHAUSTIVE) ? "exhaustive" : \
    (( mode ) == AP_MODE_INIT) ? "init" : "unknown" \
  )
-       
+
 static int dumpio_input_filter (ap_filter_t *f, apr_bucket_brigade *bb,
     ap_input_mode_t mode, apr_read_type_e block, apr_off_t readbytes)
 {
@@ -125,9 +125,9 @@ static int dumpio_output_filter (ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_bucket *b;
     conn_rec *c = f->c;
-    
+
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, c->base_server, "mod_dumpio: %s", f->frec->name) ;
-    
+
     for (b = APR_BRIGADE_FIRST(bb); b != APR_BRIGADE_SENTINEL(bb); b = APR_BUCKET_NEXT(b)) {
         /*
          * If we ever see an EOS, make sure to FLUSH.
@@ -138,7 +138,7 @@ static int dumpio_output_filter (ap_filter_t *f, apr_bucket_brigade *bb)
         }
         dumpit(f, b);
     }
-    
+
     return ap_pass_brigade(f->next, bb) ;
 }
 
@@ -147,7 +147,7 @@ static int dumpio_pre_conn(conn_rec *c, void *csd)
     dumpio_conf_t *ptr =
     (dumpio_conf_t *) ap_get_module_config(c->base_server->module_config,
                                            &dumpio_module);
-    
+
     if (ptr->enable_input)
         ap_add_input_filter("DUMPIO_IN", NULL, NULL, c);
     if (ptr->enable_output)
@@ -181,7 +181,7 @@ static const char *dumpio_enable_input(cmd_parms *cmd, void *dummy, int arg)
     dumpio_conf_t *ptr =
     (dumpio_conf_t *) ap_get_module_config(cmd->server->module_config,
                                            &dumpio_module);
-    
+
     ptr->enable_input = arg;
     return NULL;
 }
@@ -191,7 +191,7 @@ static const char *dumpio_enable_output(cmd_parms *cmd, void *dummy, int arg)
     dumpio_conf_t *ptr =
     (dumpio_conf_t *) ap_get_module_config(cmd->server->module_config,
                                            &dumpio_module);
-    
+
     ptr->enable_output = arg;
     return NULL;
 }

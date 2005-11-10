@@ -198,7 +198,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
         /* Try to send something */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "proxy: data to read (max %" APR_SIZE_T_FMT 
+                     "proxy: data to read (max %" APR_SIZE_T_FMT
                      " at %" APR_SIZE_T_FMT ")", bufsiz, msg->pos);
 
         status = apr_brigade_flatten(input_brigade, buff, &bufsiz);

@@ -26,7 +26,7 @@
 
 #include "ssl_private.h"
 
-/* 
+/*
  * This shared memory based SSL session cache implementation was
  * originally written by Geoff Thorpe <geoff geoffthorpe.net> for C2Net
  * Europe as a contribution to Ralf Engelschall's mod_ssl project.
@@ -88,7 +88,7 @@
  *   how many session-retrieves have failed.
  * - removes_hit (unsigned long):
  * - removes_miss (unsigned long):
- * 
+ *
  * Following immediately after the header is an array of "divisions".
  * Each division is simply a "queue" immediately followed by its
  * corresponding "cache". Each division handles some pre-defined band
@@ -135,7 +135,7 @@
  * sessions are stored.
  */
 
-/* 
+/*
  * Header - can be memcpy'd to and from the front of the shared
  * memory segment. NB: The first copy (commented out) has the
  * elements in a meaningful order, but due to data-alignment
@@ -161,7 +161,7 @@ typedef struct {
     unsigned int index_size;
 } SHMCBHeader;
 
-/* 
+/*
  * Index - can be memcpy'd to and from an index inside each
  * queue's index array.
  */
@@ -172,7 +172,7 @@ typedef struct {
     unsigned char removed;
 } SHMCBIndex;
 
-/* 
+/*
  * Queue - must be populated by a call to shmcb_get_division
  * and the structure's pointers are used for updating (ie.
  * the structure doesn't need any "set" to update values).
@@ -184,7 +184,7 @@ typedef struct {
     SHMCBIndex *indexes;
 } SHMCBQueue;
 
-/* 
+/*
  * Cache - same comment as for Queue. 'Queue's are in a 1-1
  * correspondance with 'Cache's and are usually carried round
  * in a pair, they are only seperated for clarity.
@@ -341,17 +341,17 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
     }
 
     /* Use anonymous shm by default, fall back on name-based. */
-    rv = apr_shm_create(&(mc->pSessionCacheDataMM), 
-                        mc->nSessionCacheDataSize, 
+    rv = apr_shm_create(&(mc->pSessionCacheDataMM),
+                        mc->nSessionCacheDataSize,
                         NULL, mc->pPool);
-    
+
     if (APR_STATUS_IS_ENOTIMPL(rv)) {
         /* For a name-based segment, remove it first in case of a
          * previous unclean shutdown. */
         apr_shm_remove(mc->szSessionCacheDataFile, mc->pPool);
-        
-        rv = apr_shm_create(&(mc->pSessionCacheDataMM), 
-                            mc->nSessionCacheDataSize, 
+
+        rv = apr_shm_create(&(mc->pSessionCacheDataMM),
+                            mc->nSessionCacheDataSize,
                             mc->szSessionCacheDataFile,
                             mc->pPool);
     }
@@ -367,7 +367,7 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
     shm_segsize = apr_shm_size_get(mc->pSessionCacheDataMM);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "shmcb_init allocated %" APR_SIZE_T_FMT 
+                 "shmcb_init allocated %" APR_SIZE_T_FMT
                  " bytes of shared memory",
                  shm_segsize);
     if (!shmcb_init_memory(s, shm_segment, shm_segsize)) {
@@ -378,8 +378,8 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                  "Shared memory session cache initialised");
 
-    /* 
-     * Success ... 
+    /*
+     * Success ...
      */
     mc->tSessionCacheDataTable = shm_segment;
     return;
@@ -509,9 +509,9 @@ void ssl_scache_shmcb_status(request_rec *r, int flags, apr_pool_t *p)
                        (int)(average_expiry - now), (int) (min_expiry - now),
                        (int)(max_expiry - now));
         else
-            ap_rprintf(r, "expiry threshold: <b>Calculation Error!</b>" 
+            ap_rprintf(r, "expiry threshold: <b>Calculation Error!</b>"
                        "<br>");
-        
+
     }
     ap_rprintf(r, "index usage: <b>%d%%</b>, cache usage: <b>%d%%</b>"
                "<br>", index_pct, cache_pct);
@@ -533,7 +533,7 @@ void ssl_scache_shmcb_status(request_rec *r, int flags, apr_pool_t *p)
 
 /*
 **
-** Memory manipulation and low-level cache operations 
+** Memory manipulation and low-level cache operations
 **
 */
 
@@ -546,7 +546,7 @@ static BOOL shmcb_init_memory(
     SHMCBCache cache;
     unsigned int temp, loop, granularity;
 
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "entered shmcb_init_memory()");
 
     /* Calculate some sizes... */
@@ -784,7 +784,7 @@ static BOOL shmcb_remove_session(
 }
 
 
-/* 
+/*
 **
 ** Weirdo cyclic buffer functions
 **
@@ -1015,7 +1015,7 @@ static unsigned int shmcb_expire_division(
             shmcb_set_safe_uint(queue->first_pos, new_pos);
             /* peek to the start of the next session */
             idx = shmcb_get_index(queue, new_pos);
-            /* We can use shmcb_cyclic_space because we've guaranteed 
+            /* We can use shmcb_cyclic_space because we've guaranteed
              * we don't fit the ambiguous full/empty case. */
             shmcb_set_safe_uint(cache->pos_count,
                                shmcb_get_safe_uint(cache->pos_count) -
@@ -1314,7 +1314,7 @@ static BOOL shmcb_remove_session_id(
             session_id_length = SSL_SESSION_get_session_id_length(pSession);
             session_id = SSL_SESSION_get_session_id(pSession);
 
-            if ((session_id_length == idlen) 
+            if ((session_id_length == idlen)
                  && (memcmp(id, session_id, idlen) == 0)) {
                 ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                             "a match!");

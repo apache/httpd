@@ -104,7 +104,7 @@ static const char *CaseFilterEnable(cmd_parms *cmd, void *dummy, int arg)
     return NULL;
     }
 
-static const command_rec CaseFilterCmds[] = 
+static const command_rec CaseFilterCmds[] =
     {
     AP_INIT_FLAG("CaseFilter", CaseFilterEnable, NULL, RSRC_CONF,
                  "Run a case filter on this host"),

@@ -17,7 +17,7 @@
 /*
  * mod_version.c
  * Allow conditional configuration depending on the httpd version
- * 
+ *
  * André Malo (nd/perlig.de), January 2004
  *
  * Some stuff coded here is heavily based on the core <IfModule>
@@ -163,7 +163,7 @@ static int match_version(apr_pool_t *pool, char *version_string,
     rc = !ap_regexec(compiled, to_match, 0, NULL, 0);
 
     ap_pregfree(pool, compiled);
-    return rc;    
+    return rc;
 }
 
 /*

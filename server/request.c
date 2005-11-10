@@ -356,8 +356,8 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
     savename = (lfi->valid & APR_FINFO_NAME) ? lfi->name : NULL;
 
     if (opts & OPT_SYM_LINKS) {
-        if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME 
-                                                 | APR_FINFO_LINK), p)) 
+        if ((res = apr_stat(&fi, d, lfi->valid & ~(APR_FINFO_NAME
+                                                 | APR_FINFO_LINK), p))
                  != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
         }
@@ -377,7 +377,7 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
      * owner of the symlink, then get the info of the target.
      */
     if (!(lfi->valid & APR_FINFO_OWNER)) {
-        if ((res = apr_stat(&fi, d, 
+        if ((res = apr_stat(&fi, d,
                             lfi->valid | APR_FINFO_LINK | APR_FINFO_OWNER, p))
             != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
@@ -817,8 +817,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
                 ap_conf_vector_t *htaccess_conf = NULL;
 
-                /* No htaccess in an incomplete root path, 
-                 * nor if it's disabled 
+                /* No htaccess in an incomplete root path,
+                 * nor if it's disabled
                  */
                 if (seg < startseg || !opts.override) {
                     break;
@@ -939,15 +939,15 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 continue;
             }
 
-            /* We choose apr_stat with flag APR_FINFO_LINK here, rather that 
+            /* We choose apr_stat with flag APR_FINFO_LINK here, rather that
              * plain apr_stat, so that we capture this path object rather than
-             * its target.  We will replace the info with our target's info 
-             * below.  We especially want the name of this 'link' object, not 
-             * the name of its target, if we are fixing the filename 
+             * its target.  We will replace the info with our target's info
+             * below.  We especially want the name of this 'link' object, not
+             * the name of its target, if we are fixing the filename
              * case/resolving aliases.
              */
             rv = apr_stat(&thisinfo, r->filename,
-                          APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK, 
+                          APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK,
                           r->pool);
 
             if (APR_STATUS_IS_ENOENT(rv)) {
@@ -999,7 +999,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 
             /* Ok, we are done with the link's info, test the real target
              */
-            if (thisinfo.filetype == APR_REG || 
+            if (thisinfo.filetype == APR_REG ||
                 thisinfo.filetype == APR_NOFILE) {
                 /* That was fun, nothing left for us here
                  */
@@ -1587,7 +1587,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
 {
     request_rec *rnew;
     /* Initialise res, to avoid a gcc warning */
-    int res = HTTP_INTERNAL_SERVER_ERROR; 
+    int res = HTTP_INTERNAL_SERVER_ERROR;
     char *udir;
 
     rnew = make_sub_request(r, next_filter);
@@ -1612,14 +1612,14 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
         return rnew;
     }
 
-    /* lookup_uri 
+    /* lookup_uri
      * If the content can be served by the quick_handler, we can
      * safely bypass request_internal processing.
      *
-     * If next_filter is NULL we are expecting to be 
-     * internal_fast_redirect'ed to the subrequest, or the subrequest will 
-     * never be invoked. We need to make sure that the quickhandler is not 
-     * invoked by any lookups. Since an internal_fast_redirect will always 
+     * If next_filter is NULL we are expecting to be
+     * internal_fast_redirect'ed to the subrequest, or the subrequest will
+     * never be invoked. We need to make sure that the quickhandler is not
+     * invoked by any lookups. Since an internal_fast_redirect will always
      * occur too late for the quickhandler to handle the request.
      */
     if (next_filter) {
@@ -1630,7 +1630,7 @@ AP_DECLARE(request_rec *) ap_sub_req_method_uri(const char *method,
         if ((res = ap_process_request_internal(rnew))) {
             rnew->status = res;
         }
-    } 
+    }
 
     return rnew;
 }
@@ -1700,8 +1700,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         /*
          * apr_dir_read isn't very complete on this platform, so
          * we need another apr_stat (with or without APR_FINFO_LINK
-         * depending on whether we allow all symlinks here.)  If this 
-         * is an APR_LNK that resolves to an APR_DIR, then we will rerun 
+         * depending on whether we allow all symlinks here.)  If this
+         * is an APR_LNK that resolves to an APR_DIR, then we will rerun
          * everything anyways... this should be safe.
          */
         apr_status_t rv;
@@ -1714,7 +1714,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         }
         else {
             if (((rv = apr_stat(&rnew->finfo, rnew->filename,
-                                APR_FINFO_LINK | APR_FINFO_MIN, 
+                                APR_FINFO_LINK | APR_FINFO_MIN,
                                 rnew->pool)) != APR_SUCCESS)
                 && (rv != APR_INCOMPLETE)) {
                 rnew->finfo.filetype = 0;
@@ -1820,7 +1820,7 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
         }
         else {
             if (((rv = apr_stat(&rnew->finfo, rnew->filename,
-                                APR_FINFO_LINK | APR_FINFO_MIN, 
+                                APR_FINFO_LINK | APR_FINFO_MIN,
                                 rnew->pool)) != APR_SUCCESS)
                 && (rv != APR_INCOMPLETE)) {
                 rnew->finfo.filetype = 0;
@@ -1869,8 +1869,8 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_file(const char *new_file,
 AP_DECLARE(int) ap_run_sub_req(request_rec *r)
 {
     int retval = DECLINED;
-    /* Run the quick handler if the subrequest is not a dirent or file 
-     * subrequest 
+    /* Run the quick handler if the subrequest is not a dirent or file
+     * subrequest
      */
     if (!(r->filename && r->finfo.filetype)) {
         retval = ap_run_quick_handler(r, 0);

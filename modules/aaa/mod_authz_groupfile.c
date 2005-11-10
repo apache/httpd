@@ -21,24 +21,24 @@
  * and the presense of a
  *
  *         require group <list-of-groups>
- * 
+ *
  * In an applicable limit/directory block for that method.
  *
- * If there are no AuthGroupFile directives valid for 
+ * If there are no AuthGroupFile directives valid for
  * the request; we DECLINED.
- * 
+ *
  * If the AuthGroupFile is defined; but somehow not
  * accessible: we SERVER_ERROR (was DECLINED).
  *
  * If there are no 'require ' directives defined for
  * this request then we DECLINED (was OK).
- * 
+ *
  * If there are no 'require ' directives valid for
  * this request method then we DECLINED. (was OK)
  *
  * If there are any 'require group' blocks and we
  * are not in any group - we HTTP_UNAUTHORIZE
- * unless we are non-authoritative; in which  
+ * unless we are non-authoritative; in which
  * case we DECLINED.
  *
  */
@@ -65,12 +65,12 @@ static void *create_authz_groupfile_dir_config(apr_pool_t *p, char *d)
 {
     authz_groupfile_config_rec *conf = apr_palloc(p, sizeof(*conf));
 
-    conf->groupfile = NULL;    
+    conf->groupfile = NULL;
     conf->authoritative = 1; /* keep the fortress secure by default */
     return conf;
 }
 
-static const char *set_authz_groupfile_slot(cmd_parms *cmd, void *offset, const char *f, 
+static const char *set_authz_groupfile_slot(cmd_parms *cmd, void *offset, const char *f,
                                  const char *t)
 {
     if (t && strcmp(t, "standard")) {
@@ -163,7 +163,7 @@ static int check_user_access(request_rec *r)
     char *reason = NULL;
 
     /* If there is no group file - then we are not
-     * configured. So decline. 
+     * configured. So decline.
      */
     if (!(conf->groupfile)) {
         return DECLINED;
@@ -171,8 +171,8 @@ static int check_user_access(request_rec *r)
 
     if (!reqs_arr) {
         return DECLINED; /* XXX change from legacy */
-    } 
-    
+    }
+
     reqs = (require_line *)reqs_arr->elts;
 
     for (x = 0; x < reqs_arr->nelts; x++) {
@@ -187,7 +187,7 @@ static int check_user_access(request_rec *r)
         /* needs mod_authz_owner to be present */
         if (!strcasecmp(w, "file-group")) {
             filegroup = apr_table_get(r->notes, AUTHZ_GROUP_NOTE);
-            
+
             if (!filegroup) {
                 /* mod_authz_owner is not present or not
                  * authoritative. We are just a helper module for testing

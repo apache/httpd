@@ -23,7 +23,7 @@
             -DSOLARIS2=250 -Wall -DALLOC_DEBUG -DPOOL_DEBUG \
             ../main/alloc.o ../main/buff.o ../main/util.o \
             ../ap/libap.a -lsocket -lnsl test_parser.c
- * 
+ *
  * Roy Fielding, 1999
  */
 #include <stdio.h>
@@ -70,6 +70,6 @@ int main (void)
         while ((newstr = ap_get_list_item(p, &field)) != NULL)
             printf("  <%s> ..\n", newstr);
     }
-    
+
     exit(0);
 }

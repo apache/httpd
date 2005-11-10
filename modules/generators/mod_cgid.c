@@ -14,18 +14,18 @@
  * limitations under the License.
  */
 
-/* 
- * http_script: keeps all script-related ramblings together. 
- * 
- * Compliant to cgi/1.1 spec 
- * 
- * Adapted by rst from original NCSA code by Rob McCool 
- * 
- * Apache adds some new env vars; REDIRECT_URL and REDIRECT_QUERY_STRING for 
- * custom error responses, and DOCUMENT_ROOT because we found it useful. 
- * It also adds SERVER_ADMIN - useful for scripts to know who to mail when 
- * they fail. 
- */ 
+/*
+ * http_script: keeps all script-related ramblings together.
+ *
+ * Compliant to cgi/1.1 spec
+ *
+ * Adapted by rst from original NCSA code by Rob McCool
+ *
+ * Apache adds some new env vars; REDIRECT_URL and REDIRECT_QUERY_STRING for
+ * custom error responses, and DOCUMENT_ROOT because we found it useful.
+ * It also adds SERVER_ADMIN - useful for scripts to know who to mail when
+ * they fail.
+ */
 
 #include "apr_lib.h"
 #include "apr_strings.h"
@@ -49,17 +49,17 @@
 #include <sys/types.h>
 #endif
 
-#define CORE_PRIVATE 
+#define CORE_PRIVATE
 
 #include "util_filter.h"
-#include "httpd.h" 
-#include "http_config.h" 
-#include "http_request.h" 
-#include "http_core.h" 
-#include "http_protocol.h" 
-#include "http_main.h" 
-#include "http_log.h" 
-#include "util_script.h" 
+#include "httpd.h"
+#include "http_config.h"
+#include "http_request.h"
+#include "http_core.h"
+#include "http_protocol.h"
+#include "http_main.h"
+#include "http_log.h"
+#include "util_script.h"
 #include "ap_mpm.h"
 #include "unixd.h"
 #include "mod_suexec.h"
@@ -73,17 +73,17 @@
 #include <sys/un.h> /* for sockaddr_un */
 
 
-module AP_MODULE_DECLARE_DATA cgid_module; 
+module AP_MODULE_DECLARE_DATA cgid_module;
 
 static int cgid_start(apr_pool_t *p, server_rec *main_server, apr_proc_t *procnew);
-static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server); 
+static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *main_server);
 static int handle_exec(include_ctx_t *ctx, ap_filter_t *f, apr_bucket_brigade *bb);
 
 static APR_OPTIONAL_FN_TYPE(ap_register_include_handler) *cgid_pfn_reg_with_ssi;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_get_tag_and_value) *cgid_pfn_gtv;
 static APR_OPTIONAL_FN_TYPE(ap_ssi_parse_string) *cgid_pfn_ps;
 
-static apr_pool_t *pcgi = NULL; 
+static apr_pool_t *pcgi = NULL;
 static int total_modules = 0;
 static pid_t daemon_pid;
 static int daemon_should_exit = 0;
@@ -101,26 +101,26 @@ static void discard_script_output(apr_bucket_brigade *bb);
  */
 static ap_unix_identity_t *cgid_suexec_id_doer(const request_rec *r)
 {
-    return (ap_unix_identity_t *) 
+    return (ap_unix_identity_t *)
                         ap_get_module_config(r->request_config, &cgid_module);
 }
 
 /* KLUDGE --- for back-combatibility, we don't have to check ExecCGI
- * in ScriptAliased directories, which means we need to know if this 
- * request came through ScriptAlias or not... so the Alias module 
- * leaves a note for us. 
- */ 
+ * in ScriptAliased directories, which means we need to know if this
+ * request came through ScriptAlias or not... so the Alias module
+ * leaves a note for us.
+ */
 
-static int is_scriptaliased(request_rec *r) 
-{ 
-    const char *t = apr_table_get(r->notes, "alias-forced-type"); 
-    return t && (!strcasecmp(t, "cgi-script")); 
-} 
+static int is_scriptaliased(request_rec *r)
+{
+    const char *t = apr_table_get(r->notes, "alias-forced-type");
+    return t && (!strcasecmp(t, "cgi-script"));
+}
 
-/* Configuration stuff */ 
+/* Configuration stuff */
 
-#define DEFAULT_LOGBYTES 10385760 
-#define DEFAULT_BUFBYTES 1024 
+#define DEFAULT_LOGBYTES 10385760
+#define DEFAULT_BUFBYTES 1024
 #define DEFAULT_SOCKET  DEFAULT_REL_RUNTIMEDIR "/cgisock"
 
 #define CGI_REQ    1
@@ -153,11 +153,11 @@ static int is_scriptaliased(request_rec *r)
 #define DEFAULT_CONNECT_ATTEMPTS  15
 #endif
 
-typedef struct { 
-    const char *logname; 
-    long logbytes; 
-    int bufbytes; 
-} cgid_server_conf; 
+typedef struct {
+    const char *logname;
+    long logbytes;
+    int bufbytes;
+} cgid_server_conf;
 
 typedef struct {
     int req_type; /* request type (CGI_REQ, SSI_REQ, etc.) */
@@ -199,7 +199,7 @@ static char **create_argv(apr_pool_t *p, char *path, char *user, char *group,
     }
     else {
         /* count the number of keywords */
-        
+
         for (x = 0, numwords = 1; args[x]; x++) {
             if (args[x] == '+') {
                 ++numwords;
@@ -331,16 +331,16 @@ static apr_status_t sock_write(int fd, const void *buf, size_t buf_size)
     return APR_SUCCESS;
 }
 
-static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env, 
+static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
                             cgid_req_t *req)
-{ 
-    int i; 
-    char **environ; 
-    core_request_config *temp_core; 
+{
+    int i;
+    char **environ;
+    core_request_config *temp_core;
     void **rconf;
     apr_status_t stat;
 
-    r->server = apr_pcalloc(r->pool, sizeof(server_rec)); 
+    r->server = apr_pcalloc(r->pool, sizeof(server_rec));
 
     /* read the request header */
     stat = sock_read(fd, req, sizeof(*req));
@@ -356,11 +356,11 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     /* handle module indexes and such */
     rconf = (void **) apr_pcalloc(r->pool, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
 
-    temp_core = (core_request_config *)apr_palloc(r->pool, sizeof(core_module)); 
+    temp_core = (core_request_config *)apr_palloc(r->pool, sizeof(core_module));
     rconf[req->core_module_index] = (void *)temp_core;
-    r->request_config = (ap_conf_vector_t *)rconf; 
+    r->request_config = (ap_conf_vector_t *)rconf;
     ap_set_module_config(r->request_config, &cgid_module, (void *)&req->ugid);
-    
+
     /* Read the filename, argv0, uri, and args */
     r->filename = apr_pcalloc(r->pool, req->filename_len + 1);
     *argv0 = apr_pcalloc(r->pool, req->argv0_len + 1);
@@ -394,46 +394,46 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     *env = environ;
 
 #if 0
-#ifdef RLIMIT_CPU 
-    sock_read(fd, &j, sizeof(int)); 
-    if (j) { 
-        temp_core->limit_cpu = (struct rlimit *)apr_palloc (sizeof(struct rlimit)); 
-        sock_read(fd, temp_core->limit_cpu, sizeof(struct rlimit)); 
-    } 
-    else { 
-        temp_core->limit_cpu = NULL; 
-    } 
-#endif 
+#ifdef RLIMIT_CPU
+    sock_read(fd, &j, sizeof(int));
+    if (j) {
+        temp_core->limit_cpu = (struct rlimit *)apr_palloc (sizeof(struct rlimit));
+        sock_read(fd, temp_core->limit_cpu, sizeof(struct rlimit));
+    }
+    else {
+        temp_core->limit_cpu = NULL;
+    }
+#endif
 
-#if defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS) 
-    sock_read(fd, &j, sizeof(int)); 
-    if (j) { 
-        temp_core->limit_mem = (struct rlimit *)apr_palloc(r->pool, sizeof(struct rlimit)); 
-        sock_read(fd, temp_core->limit_mem, sizeof(struct rlimit)); 
-    } 
-    else { 
-        temp_core->limit_mem = NULL; 
-    } 
-#endif 
+#if defined (RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+    sock_read(fd, &j, sizeof(int));
+    if (j) {
+        temp_core->limit_mem = (struct rlimit *)apr_palloc(r->pool, sizeof(struct rlimit));
+        sock_read(fd, temp_core->limit_mem, sizeof(struct rlimit));
+    }
+    else {
+        temp_core->limit_mem = NULL;
+    }
+#endif
 
-#ifdef RLIMIT_NPROC 
-    sock_read(fd, &j, sizeof(int)); 
-    if (j) { 
-        temp_core->limit_nproc = (struct rlimit *)apr_palloc(r->pool, sizeof(struct rlimit)); 
-        sock_read(fd, temp_core->limit_nproc, sizeof(struct rlimit)); 
-    } 
-    else { 
-        temp_core->limit_nproc = NULL; 
-    } 
-#endif 
+#ifdef RLIMIT_NPROC
+    sock_read(fd, &j, sizeof(int));
+    if (j) {
+        temp_core->limit_nproc = (struct rlimit *)apr_palloc(r->pool, sizeof(struct rlimit));
+        sock_read(fd, temp_core->limit_nproc, sizeof(struct rlimit));
+    }
+    else {
+        temp_core->limit_nproc = NULL;
+    }
+#endif
 #endif
 
     return APR_SUCCESS;
-} 
+}
 
-static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env, 
-                             int req_type) 
-{ 
+static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
+                             int req_type)
+{
     int i;
     cgid_req_t req = {0};
     apr_status_t stat;
@@ -444,13 +444,13 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     } else {
         memcpy(&req.ugid, ugid, sizeof(ap_unix_identity_t));
     }
-    
+
     req.req_type = req_type;
     req.ppid = parent_pid;
     req.conn_id = r->connection->id;
     req.core_module_index = core_module.module_index;
     for (req.env_count = 0; env[req.env_count]; req.env_count++) {
-        continue; 
+        continue;
     }
     req.filename_len = strlen(r->filename);
     req.argv0_len = strlen(argv0);
@@ -482,51 +482,51 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
         if ((stat = sock_write(fd, &curlen, sizeof(curlen))) != APR_SUCCESS) {
             return stat;
         }
-            
+
         if ((stat = sock_write(fd, env[i], curlen)) != APR_SUCCESS) {
             return stat;
         }
     }
 
 #if 0
-#ifdef RLIMIT_CPU 
-    if (conf->limit_cpu) { 
-        len = 1; 
-        stat = sock_write(fd, &len, sizeof(int)); 
-        stat = sock_write(fd, conf->limit_cpu, sizeof(struct rlimit)); 
-    } 
-    else { 
-        len = 0; 
-        stat = sock_write(fd, &len, sizeof(int)); 
-    } 
-#endif 
+#ifdef RLIMIT_CPU
+    if (conf->limit_cpu) {
+        len = 1;
+        stat = sock_write(fd, &len, sizeof(int));
+        stat = sock_write(fd, conf->limit_cpu, sizeof(struct rlimit));
+    }
+    else {
+        len = 0;
+        stat = sock_write(fd, &len, sizeof(int));
+    }
+#endif
 
-#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS) 
-    if (conf->limit_mem) { 
-        len = 1; 
-        stat = sock_write(fd, &len, sizeof(int)); 
-        stat = sock_write(fd, conf->limit_mem, sizeof(struct rlimit)); 
-    } 
-    else { 
-        len = 0; 
-        stat = sock_write(fd, &len, sizeof(int)); 
-    } 
-#endif 
-  
-#ifdef RLIMIT_NPROC 
-    if (conf->limit_nproc) { 
-        len = 1; 
-        stat = sock_write(fd, &len, sizeof(int)); 
-        stat = sock_write(fd, conf->limit_nproc, sizeof(struct rlimit)); 
-    } 
-    else { 
-        len = 0; 
-        stat = sock_write(fd, &len, sizeof(int)); 
-    } 
+#if defined(RLIMIT_DATA) || defined(RLIMIT_VMEM) || defined(RLIMIT_AS)
+    if (conf->limit_mem) {
+        len = 1;
+        stat = sock_write(fd, &len, sizeof(int));
+        stat = sock_write(fd, conf->limit_mem, sizeof(struct rlimit));
+    }
+    else {
+        len = 0;
+        stat = sock_write(fd, &len, sizeof(int));
+    }
+#endif
+
+#ifdef RLIMIT_NPROC
+    if (conf->limit_nproc) {
+        len = 1;
+        stat = sock_write(fd, &len, sizeof(int));
+        stat = sock_write(fd, conf->limit_nproc, sizeof(struct rlimit));
+    }
+    else {
+        len = 0;
+        stat = sock_write(fd, &len, sizeof(int));
+    }
 #endif
 #endif
     return APR_SUCCESS;
-} 
+}
 
 static void daemon_signal_handler(int sig)
 {
@@ -551,8 +551,8 @@ static void cgid_child_errfn(apr_pool_t *pool, apr_status_t err,
     ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server, "%s", description);
 }
 
-static int cgid_server(void *data) 
-{ 
+static int cgid_server(void *data)
+{
     struct sockaddr_un unix_addr;
     int sd, sd2, rc;
     mode_t omask;
@@ -561,9 +561,9 @@ static int cgid_server(void *data)
     server_rec *main_server = data;
     apr_hash_t *script_hash = apr_hash_make(pcgi);
 
-    apr_pool_create(&ptrans, pcgi); 
+    apr_pool_create(&ptrans, pcgi);
 
-    apr_signal(SIGCHLD, SIG_IGN); 
+    apr_signal(SIGCHLD, SIG_IGN);
     apr_signal(SIGHUP, daemon_signal_handler);
 
     /* Close our copy of the listening sockets */
@@ -575,10 +575,10 @@ static int cgid_server(void *data)
     apr_hook_sort_all();
 
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
                      "Couldn't create unix domain socket");
         return errno;
-    } 
+    }
 
     memset(&unix_addr, 0, sizeof(unix_addr));
     unix_addr.sun_family = AF_UNIX;
@@ -588,34 +588,34 @@ static int cgid_server(void *data)
     rc = bind(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr));
     umask(omask); /* can't fail, so can't clobber errno */
     if (rc < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
                      "Couldn't bind unix domain socket %s",
-                     sockname); 
+                     sockname);
         return errno;
-    } 
+    }
 
     if (listen(sd, DEFAULT_CGID_LISTENBACKLOG) < 0) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
-                     "Couldn't listen on unix domain socket"); 
+        ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
+                     "Couldn't listen on unix domain socket");
         return errno;
-    } 
+    }
 
     if (!geteuid()) {
         if (chown(sockname, unixd_config.user_id, -1) < 0) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
+            ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server,
                          "Couldn't change owner of unix domain socket %s",
-                         sockname); 
+                         sockname);
             return errno;
         }
     }
-    
+
     unixd_setup_child(); /* if running as root, switch to configured user/group */
 
     while (!daemon_should_exit) {
         int errfileno = STDERR_FILENO;
-        char *argv0; 
-        char **env; 
-        const char * const *argv; 
+        char *argv0;
+        char **env;
+        const char * const *argv;
         apr_int32_t in_pipe;
         apr_int32_t out_pipe;
         apr_int32_t err_pipe;
@@ -639,17 +639,17 @@ static int cgid_server(void *data)
             }
 #endif
             if (errno != EINTR) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, errno, 
+                ap_log_error(APLOG_MARK, APLOG_ERR, errno,
                              (server_rec *)data,
                              "Error accepting on cgid socket");
             }
             continue;
         }
-       
-        r = apr_pcalloc(ptrans, sizeof(request_rec)); 
+
+        r = apr_pcalloc(ptrans, sizeof(request_rec));
         procnew = apr_pcalloc(ptrans, sizeof(*procnew));
-        r->pool = ptrans; 
-        stat = get_req(sd2, r, &argv0, &env, &cgid_req); 
+        r->pool = ptrans;
+        stat = get_req(sd2, r, &argv0, &env, &cgid_req);
         if (stat != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, stat,
                          main_server,
@@ -696,12 +696,12 @@ static int cgid_server(void *data)
         }
 
         if (((rc = apr_procattr_create(&procattr, ptrans)) != APR_SUCCESS) ||
-            ((cgid_req.req_type == CGI_REQ) && 
+            ((cgid_req.req_type == CGI_REQ) &&
              (((rc = apr_procattr_io_set(procattr,
                                         in_pipe,
                                         out_pipe,
                                         err_pipe)) != APR_SUCCESS) ||
-              /* XXX apr_procattr_child_*_set() is creating an unnecessary 
+              /* XXX apr_procattr_child_*_set() is creating an unnecessary
                * pipe between this process and the child being created...
                * It is cleaned up with the temporary pool for this request.
                */
@@ -734,25 +734,25 @@ static int cgid_server(void *data)
             close(sd2);
 
             if (memcmp(&empty_ugid, &cgid_req.ugid, sizeof(empty_ugid))) {
-                /* We have a valid identity, and can be sure that 
-                 * cgid_suexec_id_doer will return a valid ugid 
+                /* We have a valid identity, and can be sure that
+                 * cgid_suexec_id_doer will return a valid ugid
                  */
                 rc = ap_os_create_privileged_process(r, procnew, argv0, argv,
                                                      (const char * const *)env,
                                                      procattr, ptrans);
             } else {
-                rc = apr_proc_create(procnew, argv0, argv, 
-                                     (const char * const *)env, 
+                rc = apr_proc_create(procnew, argv0, argv,
+                                     (const char * const *)env,
                                      procattr, ptrans);
             }
-                
+
             if (rc != APR_SUCCESS) {
                 /* Bad things happened. Everyone should have cleaned up.
                  * ap_log_rerror() won't work because the header table used by
                  * ap_log_rerror() hasn't been replicated in the phony r
                  */
                 ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
-                             "couldn't create child process: %d: %s", rc, 
+                             "couldn't create child process: %d: %s", rc,
                              apr_filepath_name_get(r->filename));
             }
             else {
@@ -779,9 +779,9 @@ static int cgid_server(void *data)
                              (void *)((long)procnew->pid));
             }
         }
-    } 
-    return -1; 
-} 
+    }
+    return -1;
+}
 
 static int cgid_start(apr_pool_t *p, server_rec *main_server,
                       apr_proc_t *procnew)
@@ -816,9 +816,9 @@ static int cgid_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     return OK;
 }
 
-static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, 
-                     server_rec *main_server) 
-{ 
+static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
+                     server_rec *main_server)
+{
     apr_proc_t *procnew = NULL;
     int first_time = 0;
     const char *userdata_key = "cgid_init";
@@ -865,31 +865,31 @@ static int cgid_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp,
         }
     }
     return ret;
-} 
+}
 
-static void *create_cgid_config(apr_pool_t *p, server_rec *s) 
-{ 
-    cgid_server_conf *c = 
-    (cgid_server_conf *) apr_pcalloc(p, sizeof(cgid_server_conf)); 
+static void *create_cgid_config(apr_pool_t *p, server_rec *s)
+{
+    cgid_server_conf *c =
+    (cgid_server_conf *) apr_pcalloc(p, sizeof(cgid_server_conf));
 
-    c->logname = NULL; 
-    c->logbytes = DEFAULT_LOGBYTES; 
-    c->bufbytes = DEFAULT_BUFBYTES; 
-    return c; 
-} 
+    c->logname = NULL;
+    c->logbytes = DEFAULT_LOGBYTES;
+    c->bufbytes = DEFAULT_BUFBYTES;
+    return c;
+}
 
-static void *merge_cgid_config(apr_pool_t *p, void *basev, void *overridesv) 
-{ 
-    cgid_server_conf *base = (cgid_server_conf *) basev, *overrides = (cgid_server_conf *) overridesv; 
+static void *merge_cgid_config(apr_pool_t *p, void *basev, void *overridesv)
+{
+    cgid_server_conf *base = (cgid_server_conf *) basev, *overrides = (cgid_server_conf *) overridesv;
 
-    return overrides->logname ? overrides : base; 
-} 
+    return overrides->logname ? overrides : base;
+}
 
-static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg) 
-{ 
-    server_rec *s = cmd->server; 
+static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    server_rec *s = cmd->server;
     cgid_server_conf *conf = ap_get_module_config(s->module_config,
-                                                  &cgid_module); 
+                                                  &cgid_module);
 
     conf->logname = ap_server_root_relative(cmd->pool, arg);
 
@@ -897,31 +897,31 @@ static const char *set_scriptlog(cmd_parms *cmd, void *dummy, const char *arg)
         return apr_pstrcat(cmd->pool, "Invalid ScriptLog path ",
                            arg, NULL);
     }
-    return NULL; 
-} 
+    return NULL;
+}
 
-static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, const char *arg) 
-{ 
-    server_rec *s = cmd->server; 
+static const char *set_scriptlog_length(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    server_rec *s = cmd->server;
     cgid_server_conf *conf = ap_get_module_config(s->module_config,
-                                                  &cgid_module); 
+                                                  &cgid_module);
 
-    conf->logbytes = atol(arg); 
-    return NULL; 
-} 
+    conf->logbytes = atol(arg);
+    return NULL;
+}
 
-static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, const char *arg) 
-{ 
-    server_rec *s = cmd->server; 
+static const char *set_scriptlog_buffer(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    server_rec *s = cmd->server;
     cgid_server_conf *conf = ap_get_module_config(s->module_config,
-                                                  &cgid_module); 
+                                                  &cgid_module);
 
-    conf->bufbytes = atoi(arg); 
-    return NULL; 
-} 
+    conf->bufbytes = atoi(arg);
+    return NULL;
+}
 
-static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *arg) 
-{ 
+static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *arg)
+{
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
@@ -929,126 +929,126 @@ static const char *set_script_socket(cmd_parms *cmd, void *dummy, const char *ar
 
     /* Make sure the pid is appended to the sockname */
     sockname = ap_append_pid(cmd->pool, arg, ".");
-    sockname = ap_server_root_relative(cmd->pool, sockname); 
+    sockname = ap_server_root_relative(cmd->pool, sockname);
 
     if (!sockname) {
         return apr_pstrcat(cmd->pool, "Invalid ScriptSock path",
                            arg, NULL);
     }
 
-    return NULL; 
-} 
+    return NULL;
+}
 
-static const command_rec cgid_cmds[] = 
-{ 
+static const command_rec cgid_cmds[] =
+{
     AP_INIT_TAKE1("ScriptLog", set_scriptlog, NULL, RSRC_CONF,
-                  "the name of a log for script debugging info"), 
+                  "the name of a log for script debugging info"),
     AP_INIT_TAKE1("ScriptLogLength", set_scriptlog_length, NULL, RSRC_CONF,
-                  "the maximum length (in bytes) of the script debug log"), 
+                  "the maximum length (in bytes) of the script debug log"),
     AP_INIT_TAKE1("ScriptLogBuffer", set_scriptlog_buffer, NULL, RSRC_CONF,
-                  "the maximum size (in bytes) to record of a POST request"), 
+                  "the maximum size (in bytes) to record of a POST request"),
     AP_INIT_TAKE1("ScriptSock", set_script_socket, NULL, RSRC_CONF,
                   "the name of the socket to use for communication with "
-                  "the cgi daemon."), 
-    {NULL} 
-}; 
+                  "the cgi daemon."),
+    {NULL}
+};
 
-static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret, 
-                           apr_status_t rv, char *error) 
-{ 
-    apr_file_t *f = NULL; 
-    struct stat finfo; 
+static int log_scripterror(request_rec *r, cgid_server_conf * conf, int ret,
+                           apr_status_t rv, char *error)
+{
+    apr_file_t *f = NULL;
+    struct stat finfo;
     char time_str[APR_CTIME_LEN];
     int log_flags = rv ? APLOG_ERR : APLOG_ERR;
 
-    ap_log_rerror(APLOG_MARK, log_flags, rv, r, 
-                "%s: %s", error, r->filename); 
+    ap_log_rerror(APLOG_MARK, log_flags, rv, r,
+                "%s: %s", error, r->filename);
 
     /* XXX Very expensive mainline case! Open, then getfileinfo! */
-    if (!conf->logname || 
-        ((stat(conf->logname, &finfo) == 0) 
-         && (finfo.st_size > conf->logbytes)) || 
+    if (!conf->logname ||
+        ((stat(conf->logname, &finfo) == 0)
+         && (finfo.st_size > conf->logbytes)) ||
          (apr_file_open(&f, conf->logname,
-                  APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
-        return ret; 
-    } 
+                  APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
+        return ret;
+    }
 
-    /* "%% [Wed Jun 19 10:53:21 1996] GET /cgid-bin/printenv HTTP/1.0" */ 
+    /* "%% [Wed Jun 19 10:53:21 1996] GET /cgid-bin/printenv HTTP/1.0" */
     apr_ctime(time_str, apr_time_now());
-    apr_file_printf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri, 
-            r->args ? "?" : "", r->args ? r->args : "", r->protocol); 
-    /* "%% 500 /usr/local/apache/cgid-bin */ 
-    apr_file_printf(f, "%%%% %d %s\n", ret, r->filename); 
+    apr_file_printf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri,
+            r->args ? "?" : "", r->args ? r->args : "", r->protocol);
+    /* "%% 500 /usr/local/apache/cgid-bin */
+    apr_file_printf(f, "%%%% %d %s\n", ret, r->filename);
 
-    apr_file_printf(f, "%%error\n%s\n", error); 
+    apr_file_printf(f, "%%error\n%s\n", error);
 
-    apr_file_close(f); 
-    return ret; 
-} 
+    apr_file_close(f);
+    return ret;
+}
 
-static int log_script(request_rec *r, cgid_server_conf * conf, int ret, 
+static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
                       char *dbuf, const char *sbuf, apr_bucket_brigade *bb,
-                      apr_file_t *script_err) 
-{ 
-    const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in); 
-    const apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts; 
-    char argsbuffer[HUGE_STRING_LEN]; 
-    apr_file_t *f = NULL; 
+                      apr_file_t *script_err)
+{
+    const apr_array_header_t *hdrs_arr = apr_table_elts(r->headers_in);
+    const apr_table_entry_t *hdrs = (apr_table_entry_t *) hdrs_arr->elts;
+    char argsbuffer[HUGE_STRING_LEN];
+    apr_file_t *f = NULL;
     apr_bucket *e;
     const char *buf;
     apr_size_t len;
     apr_status_t rv;
     int first;
-    int i; 
-    struct stat finfo; 
+    int i;
+    struct stat finfo;
     char time_str[APR_CTIME_LEN];
 
     /* XXX Very expensive mainline case! Open, then getfileinfo! */
-    if (!conf->logname || 
-        ((stat(conf->logname, &finfo) == 0) 
-         && (finfo.st_size > conf->logbytes)) || 
-         (apr_file_open(&f, conf->logname, 
-                  APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) { 
-        /* Soak up script output */ 
+    if (!conf->logname ||
+        ((stat(conf->logname, &finfo) == 0)
+         && (finfo.st_size > conf->logbytes)) ||
+         (apr_file_open(&f, conf->logname,
+                  APR_APPEND|APR_WRITE|APR_CREATE, APR_OS_DEFAULT, r->pool) != APR_SUCCESS)) {
+        /* Soak up script output */
         discard_script_output(bb);
         if (script_err) {
-            while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, 
-                                 script_err) == APR_SUCCESS) 
-                continue; 
+            while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
+                                 script_err) == APR_SUCCESS)
+                continue;
         }
-        return ret; 
-    } 
+        return ret;
+    }
 
-    /* "%% [Wed Jun 19 10:53:21 1996] GET /cgid-bin/printenv HTTP/1.0" */ 
+    /* "%% [Wed Jun 19 10:53:21 1996] GET /cgid-bin/printenv HTTP/1.0" */
     apr_ctime(time_str, apr_time_now());
-    apr_file_printf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri, 
-            r->args ? "?" : "", r->args ? r->args : "", r->protocol); 
-    /* "%% 500 /usr/local/apache/cgid-bin" */ 
-    apr_file_printf(f, "%%%% %d %s\n", ret, r->filename); 
+    apr_file_printf(f, "%%%% [%s] %s %s%s%s %s\n", time_str, r->method, r->uri,
+            r->args ? "?" : "", r->args ? r->args : "", r->protocol);
+    /* "%% 500 /usr/local/apache/cgid-bin" */
+    apr_file_printf(f, "%%%% %d %s\n", ret, r->filename);
 
-    apr_file_puts("%request\n", f); 
-    for (i = 0; i < hdrs_arr->nelts; ++i) { 
-        if (!hdrs[i].key) 
-            continue; 
-        apr_file_printf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val); 
-    } 
-    if ((r->method_number == M_POST || r->method_number == M_PUT) 
-        && *dbuf) { 
-        apr_file_printf(f, "\n%s\n", dbuf); 
-    } 
+    apr_file_puts("%request\n", f);
+    for (i = 0; i < hdrs_arr->nelts; ++i) {
+        if (!hdrs[i].key)
+            continue;
+        apr_file_printf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
+    }
+    if ((r->method_number == M_POST || r->method_number == M_PUT)
+        && *dbuf) {
+        apr_file_printf(f, "\n%s\n", dbuf);
+    }
 
-    apr_file_puts("%response\n", f); 
-    hdrs_arr = apr_table_elts(r->err_headers_out); 
-    hdrs = (const apr_table_entry_t *) hdrs_arr->elts; 
+    apr_file_puts("%response\n", f);
+    hdrs_arr = apr_table_elts(r->err_headers_out);
+    hdrs = (const apr_table_entry_t *) hdrs_arr->elts;
 
-    for (i = 0; i < hdrs_arr->nelts; ++i) { 
-        if (!hdrs[i].key) 
-            continue; 
-        apr_file_printf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val); 
-    } 
+    for (i = 0; i < hdrs_arr->nelts; ++i) {
+        if (!hdrs[i].key)
+            continue;
+        apr_file_printf(f, "%s: %s\n", hdrs[i].key, hdrs[i].val);
+    }
 
-    if (sbuf && *sbuf) 
-        apr_file_printf(f, "%s\n", sbuf); 
+    if (sbuf && *sbuf)
+        apr_file_printf(f, "%s\n", sbuf);
 
     first = 1;
 
@@ -1072,29 +1072,29 @@ static int log_script(request_rec *r, cgid_server_conf * conf, int ret,
     }
 
     if (script_err) {
-        if (apr_file_gets(argsbuffer, HUGE_STRING_LEN, 
-                          script_err) == APR_SUCCESS) { 
-            apr_file_puts("%stderr\n", f); 
-            apr_file_puts(argsbuffer, f); 
-            while (apr_file_gets(argsbuffer, HUGE_STRING_LEN, 
-                                 script_err) == APR_SUCCESS) 
-                apr_file_puts(argsbuffer, f); 
-            apr_file_puts("\n", f); 
-        } 
+        if (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
+                          script_err) == APR_SUCCESS) {
+            apr_file_puts("%stderr\n", f);
+            apr_file_puts(argsbuffer, f);
+            while (apr_file_gets(argsbuffer, HUGE_STRING_LEN,
+                                 script_err) == APR_SUCCESS)
+                apr_file_puts(argsbuffer, f);
+            apr_file_puts("\n", f);
+        }
     }
 
     if (script_err) {
-        apr_file_close(script_err); 
+        apr_file_close(script_err);
     }
 
-    apr_file_close(f); 
-    return ret; 
-} 
+    apr_file_close(f);
+    return ret;
+}
 
 static apr_status_t close_unix_socket(void *thefd)
 {
     int fd = (int)((long)thefd);
-    
+
     return close(fd);
 }
 
@@ -1115,7 +1115,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
     while (1) {
         ++connect_tries;
         if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
-            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno, 
+            return log_scripterror(r, conf, HTTP_INTERNAL_SERVER_ERROR, errno,
                                    "unable to create socket to cgi daemon");
         }
         if (connect(sd, (struct sockaddr *)&unix_addr, sizeof(unix_addr)) < 0) {
@@ -1131,7 +1131,7 @@ static int connect_to_daemon(int *sdptr, request_rec *r,
             }
             else {
                 close(sd);
-                return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, errno, 
+                return log_scripterror(r, conf, HTTP_SERVICE_UNAVAILABLE, errno,
                                        "unable to connect to cgi daemon after multiple tries");
             }
         }
@@ -1171,10 +1171,10 @@ static void discard_script_output(apr_bucket_brigade *bb)
     }
 }
 
-/**************************************************************** 
- * 
- * Actual cgid handling... 
- */ 
+/****************************************************************
+ *
+ * Actual cgid handling...
+ */
 
 struct cleanup_script_info {
     request_rec *r;
@@ -1271,18 +1271,18 @@ static apr_status_t cleanup_script(void *vptr)
     return cleanup_nonchild_process(info->r, pid);
 }
 
-static int cgid_handler(request_rec *r) 
-{ 
+static int cgid_handler(request_rec *r)
+{
     conn_rec *c = r->connection;
-    int retval, nph, dbpos = 0; 
-    char *argv0, *dbuf = NULL; 
+    int retval, nph, dbpos = 0;
+    char *argv0, *dbuf = NULL;
     apr_bucket_brigade *bb;
     apr_bucket *b;
     cgid_server_conf *conf;
     int is_included;
     int seen_eos, child_stopped_reading;
     int sd;
-    char **env; 
+    char **env;
     apr_file_t *tempsock;
     struct cleanup_script_info *info;
     apr_status_t rv;
@@ -1290,36 +1290,36 @@ static int cgid_handler(request_rec *r)
     if (strcmp(r->handler,CGI_MAGIC_TYPE) && strcmp(r->handler,"cgi-script"))
         return DECLINED;
 
-    conf = ap_get_module_config(r->server->module_config, &cgid_module); 
-    is_included = !strcmp(r->protocol, "INCLUDED"); 
+    conf = ap_get_module_config(r->server->module_config, &cgid_module);
+    is_included = !strcmp(r->protocol, "INCLUDED");
 
     if ((argv0 = strrchr(r->filename, '/')) != NULL)
         argv0++;
     else
         argv0 = r->filename;
- 
-    nph = !(strncmp(argv0, "nph-", 4)); 
 
-    argv0 = r->filename; 
+    nph = !(strncmp(argv0, "nph-", 4));
 
-    if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r)) 
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, 
-                               "Options ExecCGI is off in this directory"); 
-    if (nph && is_included) 
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, 
-                               "attempt to include NPH CGI script"); 
+    argv0 = r->filename;
+
+    if (!(ap_allow_options(r) & OPT_EXECCGI) && !is_scriptaliased(r))
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
+                               "Options ExecCGI is off in this directory");
+    if (nph && is_included)
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
+                               "attempt to include NPH CGI script");
 
 #if defined(OS2) || defined(WIN32)
-#error mod_cgid does not work on this platform.  If you teach it to, look 
+#error mod_cgid does not work on this platform.  If you teach it to, look
 #error at mod_cgi.c for required code in this path.
-#else 
-    if (r->finfo.filetype == 0) 
-        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0, 
-                               "script not found or unable to stat"); 
-#endif 
-    if (r->finfo.filetype == APR_DIR) 
-        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, 
-                               "attempt to invoke directory as script"); 
+#else
+    if (r->finfo.filetype == 0)
+        return log_scripterror(r, conf, HTTP_NOT_FOUND, 0,
+                               "script not found or unable to stat");
+#endif
+    if (r->finfo.filetype == APR_DIR)
+        return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
+                               "attempt to invoke directory as script");
 
     if ((r->used_path_info == AP_REQ_REJECT_PATH_INFO) &&
         r->path_info && *r->path_info)
@@ -1329,21 +1329,21 @@ static int cgid_handler(request_rec *r)
                                "AcceptPathInfo off disallows user's path");
     }
 /*
-    if (!ap_suexec_enabled) { 
-        if (!ap_can_exec(&r->finfo)) 
-            return log_scripterror(r, conf, HTTP_FORBIDDEN, 0, 
-                                   "file permissions deny server execution"); 
-    } 
+    if (!ap_suexec_enabled) {
+        if (!ap_can_exec(&r->finfo))
+            return log_scripterror(r, conf, HTTP_FORBIDDEN, 0,
+                                   "file permissions deny server execution");
+    }
 */
-    ap_add_common_vars(r); 
-    ap_add_cgi_vars(r); 
-    env = ap_create_environment(r->pool, r->subprocess_env); 
+    ap_add_common_vars(r);
+    ap_add_cgi_vars(r);
+    env = ap_create_environment(r->pool, r->subprocess_env);
 
     if ((retval = connect_to_daemon(&sd, r, conf)) != OK) {
         return retval;
     }
 
-    rv = send_req(sd, r, argv0, env, CGI_REQ); 
+    rv = send_req(sd, r, argv0, env, CGI_REQ);
     if (rv != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                      "write to cgi daemon process");
@@ -1361,18 +1361,18 @@ static int cgid_handler(request_rec *r)
      * a cleanup for the apr_file_t which will close the socket, so we'll
      * get rid of the cleanup we registered when we created the socket.
      */
-    
+
     apr_os_pipe_put_ex(&tempsock, &sd, 1, r->pool);
     apr_pool_cleanup_kill(r->pool, (void *)((long)sd), close_unix_socket);
 
-    if ((argv0 = strrchr(r->filename, '/')) != NULL) 
-        argv0++; 
-    else 
-        argv0 = r->filename; 
+    if ((argv0 = strrchr(r->filename, '/')) != NULL)
+        argv0++;
+    else
+        argv0 = r->filename;
 
-    /* Transfer any put/post args, CERN style... 
-     * Note that we already ignore SIGPIPE in the core server. 
-     */ 
+    /* Transfer any put/post args, CERN style...
+     * Note that we already ignore SIGPIPE in the core server.
+     */
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     seen_eos = 0;
     child_stopped_reading = 0;
@@ -1385,11 +1385,11 @@ static int cgid_handler(request_rec *r)
 
         rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
                             APR_BLOCK_READ, HUGE_STRING_LEN);
-       
+
         if (rv != APR_SUCCESS) {
             return rv;
         }
- 
+
         for (bucket = APR_BRIGADE_FIRST(bb);
              bucket != APR_BRIGADE_SENTINEL(bb);
              bucket = APR_BUCKET_NEXT(bucket))
@@ -1410,11 +1410,11 @@ static int cgid_handler(request_rec *r)
             /* If the child stopped, we still must read to EOS. */
             if (child_stopped_reading) {
                 continue;
-            } 
+            }
 
             /* read */
             apr_bucket_read(bucket, &data, &len, APR_BLOCK_READ);
-            
+
             if (conf->logname && dbpos < conf->bufbytes) {
                 int cursize;
 
@@ -1441,7 +1441,7 @@ static int cgid_handler(request_rec *r)
         apr_brigade_cleanup(bb);
     }
     while (!seen_eos);
- 
+
     if (conf->logname) {
         dbuf[dbpos] = '\0';
     }
@@ -1452,11 +1452,11 @@ static int cgid_handler(request_rec *r)
      */
     shutdown(sd, 1);
 
-    /* Handle script return... */ 
-    if (!nph) { 
-        const char *location; 
-        char sbuf[MAX_STRING_LEN]; 
-        int ret; 
+    /* Handle script return... */
+    if (!nph) {
+        const char *location;
+        char sbuf[MAX_STRING_LEN];
+        int ret;
 
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
         b = apr_bucket_pipe_create(tempsock, c->bucket_alloc);
@@ -1464,47 +1464,47 @@ static int cgid_handler(request_rec *r)
         b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
 
-        if ((ret = ap_scan_script_header_err_brigade(r, bb, sbuf))) { 
-            return log_script(r, conf, ret, dbuf, sbuf, bb, NULL); 
-        } 
+        if ((ret = ap_scan_script_header_err_brigade(r, bb, sbuf))) {
+            return log_script(r, conf, ret, dbuf, sbuf, bb, NULL);
+        }
 
-        location = apr_table_get(r->headers_out, "Location"); 
+        location = apr_table_get(r->headers_out, "Location");
 
-        if (location && location[0] == '/' && r->status == 200) { 
+        if (location && location[0] == '/' && r->status == 200) {
 
             /* Soak up all the script output */
             discard_script_output(bb);
             apr_brigade_destroy(bb);
-            /* This redirect needs to be a GET no matter what the original 
-             * method was. 
-             */ 
-            r->method = apr_pstrdup(r->pool, "GET"); 
-            r->method_number = M_GET; 
+            /* This redirect needs to be a GET no matter what the original
+             * method was.
+             */
+            r->method = apr_pstrdup(r->pool, "GET");
+            r->method_number = M_GET;
 
-            /* We already read the message body (if any), so don't allow 
-             * the redirected request to think it has one. We can ignore 
-             * Transfer-Encoding, since we used REQUEST_CHUNKED_ERROR. 
-             */ 
-            apr_table_unset(r->headers_in, "Content-Length"); 
+            /* We already read the message body (if any), so don't allow
+             * the redirected request to think it has one. We can ignore
+             * Transfer-Encoding, since we used REQUEST_CHUNKED_ERROR.
+             */
+            apr_table_unset(r->headers_in, "Content-Length");
 
-            ap_internal_redirect_handler(location, r); 
-            return OK; 
-        } 
-        else if (location && r->status == 200) { 
-            /* XX Note that if a script wants to produce its own Redirect 
-             * body, it now has to explicitly *say* "Status: 302" 
-             */ 
+            ap_internal_redirect_handler(location, r);
+            return OK;
+        }
+        else if (location && r->status == 200) {
+            /* XX Note that if a script wants to produce its own Redirect
+             * body, it now has to explicitly *say* "Status: 302"
+             */
             discard_script_output(bb);
             apr_brigade_destroy(bb);
-            return HTTP_MOVED_TEMPORARILY; 
-        } 
+            return HTTP_MOVED_TEMPORARILY;
+        }
 
         ap_pass_brigade(r->output_filters, bb);
-    } 
+    }
 
     if (nph) {
         struct ap_filter_t *cur;
-        
+
         /* get rid of all filters up through protocol...  since we
          * haven't parsed off the headers, there is no way they can
          * work
@@ -1522,10 +1522,10 @@ static int cgid_handler(request_rec *r)
         b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
         ap_pass_brigade(r->output_filters, bb);
-    } 
+    }
 
-    return OK; /* NOT r->status, even if it has changed. */ 
-} 
+    return OK; /* NOT r->status, even if it has changed. */
+}
 
 
 
@@ -1622,13 +1622,13 @@ static void add_ssi_vars(request_rec *r)
 static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
                        apr_bucket_brigade *bb, char *command)
 {
-    char **env; 
+    char **env;
     int sd;
     int retval;
     apr_file_t *tempsock = NULL;
     request_rec *r = f->r;
     cgid_server_conf *conf = ap_get_module_config(r->server->module_config,
-                                                  &cgid_module); 
+                                                  &cgid_module);
     struct cleanup_script_info *info;
 
     add_ssi_vars(r);
@@ -1638,14 +1638,14 @@ static int include_cmd(include_ctx_t *ctx, ap_filter_t *f,
         return retval;
     }
 
-    send_req(sd, r, command, env, SSI_REQ); 
+    send_req(sd, r, command, env, SSI_REQ);
 
     info = apr_palloc(r->pool, sizeof(struct cleanup_script_info));
     info->r = r;
     info->conn_id = r->connection->id;
     info->conf = conf;
     /* for this type of request, the script is invoked through an
-     * intermediate shell process...  cleanup_script is only able 
+     * intermediate shell process...  cleanup_script is only able
      * to knock out the shell process, not the actual script
      */
     apr_pool_cleanup_register(r->pool, info,
@@ -1761,13 +1761,13 @@ static void register_hook(apr_pool_t *p)
     ap_hook_handler(cgid_handler, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA cgid_module = { 
-    STANDARD20_MODULE_STUFF, 
-    NULL, /* dir config creater */ 
-    NULL, /* dir merger --- default is to override */ 
-    create_cgid_config, /* server config */ 
-    merge_cgid_config, /* merge server config */ 
-    cgid_cmds, /* command table */ 
-    register_hook /* register_handlers */ 
-}; 
+module AP_MODULE_DECLARE_DATA cgid_module = {
+    STANDARD20_MODULE_STUFF,
+    NULL, /* dir config creater */
+    NULL, /* dir merger --- default is to override */
+    create_cgid_config, /* server config */
+    merge_cgid_config, /* merge server config */
+    cgid_cmds, /* command table */
+    register_hook /* register_handlers */
+};
 

@@ -418,7 +418,7 @@ static apr_datum_t dav_generic_build_key(apr_pool_t *p,
 }
 
 /*
- * dav_generic_lock_expired:  return 1 (true) if the given timeout is in the 
+ * dav_generic_lock_expired:  return 1 (true) if the given timeout is in the
  *    past or present (the lock has expired), or 0 (false) if in the future
  *    (the lock has not yet expired).
  */
@@ -647,7 +647,7 @@ static dav_error * dav_generic_load_lock_record(dav_lockdb *lockdb,
             /* length of datum */
             ip->key.dsize = *((int *) (val.dptr + offset));
             offset += sizeof(ip->key.dsize);
-            ip->key.dptr = apr_palloc(p, ip->key.dsize); 
+            ip->key.dptr = apr_palloc(p, ip->key.dsize);
             memcpy(ip->key.dptr, val.dptr + offset, ip->key.dsize);
             offset += ip->key.dsize;
 

@@ -31,7 +31,7 @@
  *  Original Code Copyright (C) 1994, Jeff Hostetler, Spyglass, Inc.
  *  Portions of Content-MD5 code Copyright (C) 1993, 1994 by Carnegie Mellon
  *     University (see Copyright below).
- *  Portions of Content-MD5 code Copyright (C) 1991 Bell Communications 
+ *  Portions of Content-MD5 code Copyright (C) 1991 Bell Communications
  *     Research, Inc. (Bellcore) (see Copyright below).
  *  Portions extracted from mpack, John G. Myers - jgm+@cmu.edu
  *  Content-MD5 Code contributed by Martin Hamilton (martin@net.lut.ac.uk)
@@ -122,7 +122,7 @@ AP_DECLARE(char *) ap_md5(apr_pool_t *p, const unsigned char *string)
  * of an authorized representative of Bellcore.  BELLCORE
  * MAKES NO REPRESENTATIONS ABOUT THE ACCURACY OR SUITABILITY
  * OF THIS MATERIAL FOR ANY PURPOSE.  IT IS PROVIDED "AS IS",
- * WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.  
+ * WITHOUT ANY EXPRESS OR IMPLIED WARRANTIES.
  */
 
 static char basis_64[] =

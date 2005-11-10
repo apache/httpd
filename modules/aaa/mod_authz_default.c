@@ -59,7 +59,7 @@ static int check_user_access(request_rec *r)
     const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs;
 
-    /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive, 
+    /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive,
      * then any user will do.
      */
     if (!reqs_arr) {
@@ -84,7 +84,7 @@ static int check_user_access(request_rec *r)
     }
 
     /* if we aren't authoritative, any require directive could be
-     * considered valid even if noone groked it.  However, if we are 
+     * considered valid even if noone groked it.  However, if we are
      * authoritative, we can warn the user they did something wrong.
      *
      * That something could be a missing "AuthAuthoritative off", but
