@@ -111,7 +111,7 @@ accept_mutex_init(void)
 void accept_mutex_on(void)
 {
     int ret;
-    
+
     while ((ret = fcntl(fcntl_fd, F_SETLKW, &lock_it)) < 0 && errno == EINTR)
         continue;
 
@@ -172,7 +172,7 @@ void accept_mutex_cleanup(void)
 void accept_mutex_on(void)
 {
     int ret;
-    
+
     while ((ret = flock(flock_fd, LOCK_EX)) < 0 && errno == EINTR)
         continue;
 

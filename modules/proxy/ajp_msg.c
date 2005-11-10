@@ -42,7 +42,7 @@ char * ajp_msg_dump(apr_pool_t *pool, ajp_msg_t *msg, char *err)
         len = 1024;
     rv = apr_palloc(pool, bl);
     apr_snprintf(rv, bl,
-                 "ajp_msg_dump(): %s pos=%" APR_SIZE_T_FMT 
+                 "ajp_msg_dump(): %s pos=%" APR_SIZE_T_FMT
                  " len=%" APR_SIZE_T_FMT " max=%d\n",
                  err, msg->pos, msg->len, AJP_MSG_BUFFER_SZ);
     bl -= strlen(rv);
@@ -79,7 +79,7 @@ char * ajp_msg_dump(apr_pool_t *pool, ajp_msg_t *msg, char *err)
         p = rv + strlen(rv);
 
     }
-    
+
     return rv;
 }
 
@@ -120,7 +120,7 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
     msg->len = msglen + AJP_HEADER_LEN;
     msg->pos = AJP_HEADER_LEN;
     *len     = msglen;
-    
+
     return APR_SUCCESS;
 }
 
@@ -134,7 +134,7 @@ apr_status_t ajp_msg_reset(ajp_msg_t *msg)
 {
     msg->len = AJP_HEADER_LEN;
     msg->pos = AJP_HEADER_LEN;
-    
+
     return APR_SUCCESS;
 }
 
@@ -177,14 +177,14 @@ apr_status_t ajp_msg_end(ajp_msg_t *msg)
 
     msg->buf[2] = (apr_byte_t)((len >> 8) & 0xFF);
     msg->buf[3] = (apr_byte_t)(len & 0xFF);
-    
+
     return APR_SUCCESS;
 }
 
 static APR_INLINE int ajp_log_overflow(ajp_msg_t *msg, const char *context)
 {
     ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                 "%s(): BufferOverflowException %" APR_SIZE_T_FMT 
+                 "%s(): BufferOverflowException %" APR_SIZE_T_FMT
                  " %" APR_SIZE_T_FMT,
                  context, msg->pos, msg->len);
     return AJP_EOVERFLOW;
@@ -260,8 +260,8 @@ apr_status_t ajp_msg_append_uint8(ajp_msg_t *msg, apr_byte_t value)
 }
 
 /**
- *  Add a String in AJP message, and transform the String in ASCII 
- *  if convert is set and we're on an EBCDIC machine    
+ *  Add a String in AJP message, and transform the String in ASCII
+ *  if convert is set and we're on an EBCDIC machine
  *
  * @param msg       AJP Message to get value from
  * @param value     Pointer to String
@@ -341,7 +341,7 @@ apr_status_t ajp_msg_get_uint32(ajp_msg_t *msg, apr_uint32_t *rvalue)
     value |= ((msg->buf[(msg->pos++)] & 0xFF) << 16);
     value |= ((msg->buf[(msg->pos++)] & 0xFF) << 8);
     value |= ((msg->buf[(msg->pos++)] & 0xFF));
-    
+
     *rvalue = value;
     return APR_SUCCESS;
 }
@@ -357,7 +357,7 @@ apr_status_t ajp_msg_get_uint32(ajp_msg_t *msg, apr_uint32_t *rvalue)
 apr_status_t ajp_msg_get_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
 {
     apr_uint16_t value;
-    
+
     if ((msg->pos + 1) > msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_get_uint16");
     }
@@ -384,10 +384,10 @@ apr_status_t ajp_msg_peek_uint16(ajp_msg_t *msg, apr_uint16_t *rvalue)
     if ((msg->pos + 1) > msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_peek_uint16");
     }
-    
+
     value = ((msg->buf[(msg->pos)] & 0xFF) << 8);
     value += ((msg->buf[(msg->pos + 1)] & 0xFF));
-    
+
     *rvalue = value;
     return APR_SUCCESS;
 }
@@ -405,7 +405,7 @@ apr_status_t ajp_msg_peek_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
     if (msg->pos > msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_peek_uint8");
     }
-    
+
     *rvalue = msg->buf[msg->pos];
     return APR_SUCCESS;
 }
@@ -423,7 +423,7 @@ apr_status_t ajp_msg_get_uint8(ajp_msg_t *msg, apr_byte_t *rvalue)
     if (msg->pos > msg->len) {
         return ajp_log_overflow(msg, "ajp_msg_get_uint8");
     }
-    
+
     *rvalue = msg->buf[msg->pos++];
     return APR_SUCCESS;
 }
@@ -441,7 +441,7 @@ apr_status_t ajp_msg_get_string(ajp_msg_t *msg, const char **rvalue)
     apr_uint16_t size;
     apr_size_t   start;
     apr_status_t status;
-       
+
     status = ajp_msg_get_uint16(msg, &size);
     start = msg->pos;
 
@@ -504,11 +504,11 @@ apr_status_t ajp_msg_create(apr_pool_t *pool, ajp_msg_t **rmsg)
                       "ajp_msg_create(): can't allocate AJP message memory");
         return APR_ENOPOOL;
     }
-    
+
     msg->server_side = 0;
 
     msg->buf = (apr_byte_t *)apr_palloc(pool, AJP_MSG_BUFFER_SZ);
-    
+
     /* XXX: This should never happen
      * In case if the OS cannont allocate 8K of data
      * we are in serious trouble
@@ -524,7 +524,7 @@ apr_status_t ajp_msg_create(apr_pool_t *pool, ajp_msg_t **rmsg)
     msg->len = 0;
     msg->header_len = AJP_HEADER_LEN;
     *rmsg = msg;
-    
+
     return APR_SUCCESS;
 }
 
@@ -542,7 +542,7 @@ apr_status_t ajp_msg_copy(ajp_msg_t *smsg, ajp_msg_t *dmsg)
                      "ajp_msg_copy(): destination msg is null");
         return AJP_EINVAL;
     }
-    
+
     if (smsg->len > AJP_MSG_BUFFER_SZ) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                      "ajp_msg_copy(): destination buffer too "
@@ -576,11 +576,11 @@ apr_status_t ajp_msg_serialize_ping(ajp_msg_t *msg)
 
     if ((rc = ajp_msg_append_uint8(msg, CMD_AJP13_PING)) != APR_SUCCESS)
         return rc;
-        
+
     return APR_SUCCESS;
 }
 
-/** 
+/**
  * Serialize in an AJP Message a CPING command
  *
  * +-----------------------+
@@ -597,6 +597,6 @@ apr_status_t ajp_msg_serialize_cping(ajp_msg_t *msg)
 
     if ((rc = ajp_msg_append_uint8(msg, CMD_AJP13_CPING)) != APR_SUCCESS)
         return rc;
-        
+
     return APR_SUCCESS;
 }

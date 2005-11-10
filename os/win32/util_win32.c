@@ -31,12 +31,12 @@ AP_DECLARE(apr_status_t) ap_os_proc_filepath(char **binpath, apr_pool_t *p)
     apr_wchar_t wbinpath[APR_PATH_MAX];
 
 #if APR_HAS_UNICODE_FS
-    IF_WIN_OS_IS_UNICODE 
+    IF_WIN_OS_IS_UNICODE
     {
         apr_size_t binlen;
         apr_size_t wbinlen;
         apr_status_t rv;
-        if (!GetModuleFileNameW(NULL, wbinpath, sizeof(wbinpath) 
+        if (!GetModuleFileNameW(NULL, wbinpath, sizeof(wbinpath)
                                               / sizeof(apr_wchar_t))) {
             return apr_get_os_error();
         }
@@ -77,7 +77,7 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
 
 
 /* This code is stolen from misc/win32/misc.c and apr_private.h
- * This helper code resolves late bound entry points 
+ * This helper code resolves late bound entry points
  * missing from one or more releases of the Win32 API...
  * but it sure would be nice if we didn't duplicate this code
  * from the APR ;-)
@@ -90,7 +90,7 @@ static HMODULE lateDllHandle[DLL_defined] = {
 
 FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal)
 {
-    if (!lateDllHandle[fnLib]) { 
+    if (!lateDllHandle[fnLib]) {
         lateDllHandle[fnLib] = LoadLibrary(lateDllName[fnLib]);
         if (!lateDllHandle[fnLib])
             return NULL;
@@ -138,7 +138,7 @@ PSECURITY_ATTRIBUTES GetNullACL()
 }
 
 
-void CleanNullACL(void *sa) 
+void CleanNullACL(void *sa)
 {
     if (sa) {
         LocalFree(((PSECURITY_ATTRIBUTES)sa)->lpSecurityDescriptor);
@@ -148,39 +148,39 @@ void CleanNullACL(void *sa)
 
 
 /*
- * The Win32 call WaitForMultipleObjects will only allow you to wait for 
- * a maximum of MAXIMUM_WAIT_OBJECTS (current 64).  Since the threading 
- * model in the multithreaded version of apache wants to use this call, 
- * we are restricted to a maximum of 64 threads.  This is a simplistic 
+ * The Win32 call WaitForMultipleObjects will only allow you to wait for
+ * a maximum of MAXIMUM_WAIT_OBJECTS (current 64).  Since the threading
+ * model in the multithreaded version of apache wants to use this call,
+ * we are restricted to a maximum of 64 threads.  This is a simplistic
  * routine that will increase this size.
  */
-DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles, 
+DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles,
                             DWORD dwSeconds)
 {
     time_t tStopTime;
     DWORD dwRet = WAIT_TIMEOUT;
     DWORD dwIndex=0;
     BOOL bFirst = TRUE;
-  
+
     tStopTime = time(NULL) + dwSeconds;
-  
+
     do {
         if (!bFirst)
             Sleep(1000);
         else
             bFirst = FALSE;
-          
+
         for (dwIndex = 0; dwIndex * MAXIMUM_WAIT_OBJECTS < nCount; dwIndex++) {
-            dwRet = WaitForMultipleObjects( 
+            dwRet = WaitForMultipleObjects(
                 min(MAXIMUM_WAIT_OBJECTS, nCount - (dwIndex * MAXIMUM_WAIT_OBJECTS)),
-                lpHandles + (dwIndex * MAXIMUM_WAIT_OBJECTS), 
+                lpHandles + (dwIndex * MAXIMUM_WAIT_OBJECTS),
                 0, 0);
-                                           
-            if (dwRet != WAIT_TIMEOUT) {                                          
+
+            if (dwRet != WAIT_TIMEOUT) {
               break;
             }
         }
     } while((time(NULL) < tStopTime) && (dwRet == WAIT_TIMEOUT));
-    
+
     return dwRet;
 }

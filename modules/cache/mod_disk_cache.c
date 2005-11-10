@@ -36,13 +36,13 @@
  *      regenerate <hash> using HeaderName+HeaderValue+.../foo/bar/baz
  *      re-read in <hash>.header (must be format #2)
  *   read in <hash>.data
- *   
+ *
  * Format #1:
  *   apr_uint32_t format;
  *   apr_time_t expire;
  *   apr_array_t vary_headers (delimited by CRLF)
  *
- * Format #2: 
+ * Format #2:
  *   disk_cache_info_t (first sizeof(apr_uint32_t) bytes is the format)
  *   entity name (dobj->name) [length is in disk_cache_info_t->name_len]
  *   r->headers_out (delimited by CRLF)
@@ -59,7 +59,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r);
 static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
-static apr_status_t read_array(request_rec *r, apr_array_header_t* arr, 
+static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
                                apr_file_t *file);
 
 /*
@@ -70,7 +70,7 @@ static char *header_file(apr_pool_t *p, disk_cache_conf *conf,
                          disk_cache_object_t *dobj, const char *name)
 {
     if (!dobj->hashfile) {
-        dobj->hashfile = ap_cache_generate_name(p, conf->dirlevels, 
+        dobj->hashfile = ap_cache_generate_name(p, conf->dirlevels,
                                                 conf->dirlength, name);
     }
 
@@ -88,7 +88,7 @@ static char *data_file(apr_pool_t *p, disk_cache_conf *conf,
                        disk_cache_object_t *dobj, const char *name)
 {
     if (!dobj->hashfile) {
-        dobj->hashfile = ap_cache_generate_name(p, conf->dirlevels, 
+        dobj->hashfile = ap_cache_generate_name(p, conf->dirlevels,
                                                 conf->dirlength, name);
     }
 
@@ -251,12 +251,12 @@ static const char* regen_key(apr_pool_t *p, apr_table_t *headers,
     iov = apr_palloc(p, sizeof(struct iovec) * nvec);
     elts = (const char **) varray->elts;
 
-    /* TODO: 
+    /* TODO:
      *    - Handle multiple-value headers better. (sort them?)
      *    - Handle Case in-sensitive Values better.
-     *        This isn't the end of the world, since it just lowers the cache 
+     *        This isn't the end of the world, since it just lowers the cache
      *        hit rate, but it would be nice to fix.
-     *  
+     *
      * The majority are case insenstive if they are values (encoding etc).
      * Most of rfc2616 is case insensitive on header contents.
      *
@@ -411,7 +411,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
         rc = read_array(r, varray, dobj->hfd);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
-                         "disk_cache: Cannot parse vary header file: %s", 
+                         "disk_cache: Cannot parse vary header file: %s",
                          dobj->hdrsfile);
             return DECLINED;
         }
@@ -437,8 +437,8 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     }
     else {
         apr_off_t offset = 0;
-        /* This wasn't a Vary Format file, so we must seek to the 
-         * start of the file again, so that later reads work. 
+        /* This wasn't a Vary Format file, so we must seek to the
+         * start of the file again, so that later reads work.
          */
         apr_file_seek(dobj->hfd, APR_SET, &offset);
         nkey = key;
@@ -573,7 +573,7 @@ static int remove_url(cache_handle_t *h, apr_pool_t *p)
     return OK;
 }
 
-static apr_status_t read_array(request_rec *r, apr_array_header_t* arr, 
+static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
                                apr_file_t *file)
 {
     char w[MAX_STRING_LEN];
@@ -821,7 +821,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
         if (tmp) {
             apr_array_header_t* varray;
-            apr_uint32_t format = VARY_FORMAT_VERSION; 
+            apr_uint32_t format = VARY_FORMAT_VERSION;
 
             mkdir_structure(conf, dobj->hdrsfile, r->pool);
 
@@ -929,7 +929,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
             return rv;
         }
     }
-    
+
     apr_file_close(dobj->hfd); /* flush and close */
 
     /* Remove old file with the same name. If remove fails, then

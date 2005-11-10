@@ -83,15 +83,15 @@
    **/
 
 /* Note: this version string should start with \d+[\d\.]* and be a valid
- * string for an HTTP Agent: header when prefixed with 'ApacheBench/'. 
- * It should reflect the version of AB - and not that of the apache server 
- * it happens to accompany. And it should be updated or changed whenever 
- * the results are no longer fundamentally comparable to the results of 
+ * string for an HTTP Agent: header when prefixed with 'ApacheBench/'.
+ * It should reflect the version of AB - and not that of the apache server
+ * it happens to accompany. And it should be updated or changed whenever
+ * the results are no longer fundamentally comparable to the results of
  * a previous version of ab. Either due to a change in the logic of
- * ab - or to due to a change in the distribution it is compiled with 
+ * ab - or to due to a change in the distribution it is compiled with
  * (such as an APR change in for example blocking).
  */
-#define AP_AB_BASEREVISION "2.0.40-dev"    
+#define AP_AB_BASEREVISION "2.0.40-dev"
 
 /*
  * BUGS:
@@ -469,14 +469,14 @@ static int ssl_print_connection_info(BIO *bio, SSL *ssl)
 {
     SSL_CIPHER *c;
     int alg_bits,bits;
-    
+
     c = SSL_get_current_cipher(ssl);
     BIO_printf(bio,"Cipher Suite Protocol   :%s\n", SSL_CIPHER_get_version(c));
     BIO_printf(bio,"Cipher Suite Name       :%s\n",SSL_CIPHER_get_name(c));
-    
+
     bits = SSL_CIPHER_get_bits(c,&alg_bits);
     BIO_printf(bio,"Cipher Suite Cipher Bits:%d (%d)\n",bits,alg_bits);
-    
+
     return(1);
 }
 
@@ -556,7 +556,7 @@ static void ssl_proceed_handshake(struct connection *c)
                 SSL_CIPHER *ci;
                 X509 *cert;
                 int sk_bits, pk_bits, swork;
-                
+
                 ci = SSL_get_current_cipher(c->ssl);
                 sk_bits = SSL_CIPHER_get_bits(ci, &swork);
                 cert = SSL_get_peer_certificate(c->ssl);
@@ -564,7 +564,7 @@ static void ssl_proceed_handshake(struct connection *c)
                     pk_bits = EVP_PKEY_bits(X509_get_pubkey(cert));
                 else
                     pk_bits = 0;  /* Anon DH */
-                
+
                 ssl_info = malloc(128);
                 apr_snprintf(ssl_info, 128, "%s,%s,%d,%d",
                              SSL_CIPHER_get_version(ci),
@@ -607,7 +607,7 @@ static void write_request(struct connection * c)
         apr_time_t tnow = apr_time_now();
         apr_size_t l = c->rwrite;
         apr_status_t e = APR_SUCCESS; /* prevent gcc warning */
-    
+
         /*
          * First time round ?
          */
@@ -624,7 +624,7 @@ static void write_request(struct connection * c)
             close_connection(c);
             return;
         }
-    
+
 #ifdef USE_SSL
         if (c->ssl) {
             apr_size_t e_ssl;
@@ -647,7 +647,7 @@ static void write_request(struct connection * c)
          */
         if (l == c->rwrite)
             break;
-    
+
         if (e != APR_SUCCESS) {
             /*
              * Let's hope this traps EWOULDBLOCK too !
@@ -727,7 +727,7 @@ static void output_results(void)
     timetakenusec = endtime - start;
     timetaken = ((float)apr_time_sec(timetakenusec)) +
         ((float)apr_time_usec(timetakenusec)) / 1000000.0F;
-    
+
     printf("\n\n");
     printf("Server Software:        %s\n", servername);
     printf("Server Hostname:        %s\n", hostname);
@@ -762,9 +762,9 @@ static void output_results(void)
 
     /* avoid divide by zero */
     if (timetaken) {
-        printf("Requests per second:    %.2f [#/sec] (mean)\n", 
+        printf("Requests per second:    %.2f [#/sec] (mean)\n",
                (float) (done / timetaken));
-        printf("Time per request:       %.3f [ms] (mean)\n", 
+        printf("Time per request:       %.3f [ms] (mean)\n",
                (float) (1000 * concurrency * timetaken / done));
         printf("Time per request:       %.3f [ms] (mean, across all concurrent requests)\n",
            (float) (1000 * timetaken / done));
@@ -783,7 +783,7 @@ static void output_results(void)
         long i;
         apr_time_t totalcon = 0, total = 0, totald = 0, totalwait = 0;
         apr_time_t meancon, meantot, meand, meanwait;
-        apr_interval_time_t mincon = AB_MAX, mintot = AB_MAX, mind = AB_MAX, 
+        apr_interval_time_t mincon = AB_MAX, mintot = AB_MAX, mind = AB_MAX,
                             minwait = AB_MAX;
         apr_interval_time_t maxcon = 0, maxtot = 0, maxd = 0, maxwait = 0;
         apr_interval_time_t mediancon = 0, mediantot = 0, mediand = 0, medianwait = 0;
@@ -795,12 +795,12 @@ static void output_results(void)
             mintot = ap_min(mintot, s.time);
             mind = ap_min(mind, s.time - s.ctime);
             minwait = ap_min(minwait, s.waittime);
-    
+
             maxcon = ap_max(maxcon, s.ctime);
             maxtot = ap_max(maxtot, s.time);
             maxd = ap_max(maxd, s.time - s.ctime);
             maxwait = ap_max(maxwait, s.waittime);
-    
+
             totalcon += s.ctime;
             total += s.time;
             totald += s.time - s.ctime;
@@ -829,7 +829,7 @@ static void output_results(void)
         sdcon = (requests > 1) ? sqrt(sdcon / (requests - 1)) : 0;
         sdd = (requests > 1) ? sqrt(sdd / (requests - 1)) : 0;
         sdwait = (requests > 1) ? sqrt(sdwait / (requests - 1)) : 0;
-    
+
         if (gnuplot) {
             FILE *out = fopen(gnuplot, "w");
             long i;
@@ -866,7 +866,7 @@ static void output_results(void)
             mediancon = (stats[requests / 2].ctime + stats[requests / 2 + 1].ctime) / 2;
         else
             mediancon = stats[requests / 2].ctime;
-    
+
         qsort(stats, requests, sizeof(struct data),
               (int (*) (const void *, const void *)) compri);
         if ((requests > 1) && (requests % 2))
@@ -874,27 +874,27 @@ static void output_results(void)
             -stats[requests / 2].ctime - stats[requests / 2 + 1].ctime) / 2;
         else
             mediand = stats[requests / 2].time - stats[requests / 2].ctime;
-    
+
         qsort(stats, requests, sizeof(struct data),
               (int (*) (const void *, const void *)) compwait);
         if ((requests > 1) && (requests % 2))
             medianwait = (stats[requests / 2].waittime + stats[requests / 2 + 1].waittime) / 2;
         else
             medianwait = stats[requests / 2].waittime;
-    
+
         qsort(stats, requests, sizeof(struct data),
               (int (*) (const void *, const void *)) comprando);
         if ((requests > 1) && (requests % 2))
             mediantot = (stats[requests / 2].time + stats[requests / 2 + 1].time) / 2;
         else
             mediantot = stats[requests / 2].time;
-    
+
         printf("\nConnection Times (ms)\n");
 
         if (confidence) {
 #define CONF_FMT_STRING "%5" APR_TIME_T_FMT " %4d %5.1f %6" APR_TIME_T_FMT " %7" APR_TIME_T_FMT "\n"
             printf("              min  mean[+/-sd] median   max\n");
-            printf("Connect:    " CONF_FMT_STRING, 
+            printf("Connect:    " CONF_FMT_STRING,
                        mincon, (int) (meancon + 0.5), sdcon, mediancon, maxcon);
             printf("Processing: " CONF_FMT_STRING,
                mind, (int) (meand + 0.5), sdd, mediand, maxd);
@@ -923,11 +923,11 @@ static void output_results(void)
         else {
             printf("              min   avg   max\n");
 #define CONF_FMT_STRING "%5" APR_TIME_T_FMT " %5" APR_TIME_T_FMT "%5" APR_TIME_T_FMT "\n"
-            printf("Connect:    " CONF_FMT_STRING, 
+            printf("Connect:    " CONF_FMT_STRING,
                 mincon, meancon, maxcon);
-            printf("Processing: " CONF_FMT_STRING, 
+            printf("Processing: " CONF_FMT_STRING,
                 mintot - mincon, meantot - meancon,  maxtot - maxcon);
-            printf("Total:      " CONF_FMT_STRING, 
+            printf("Total:      " CONF_FMT_STRING,
                 mintot, meantot, maxtot);
 #undef CONF_FMT_STRING
         }
@@ -943,7 +943,7 @@ static void output_results(void)
                     printf(" 100%%  %5" APR_TIME_T_FMT " (longest request)\n",
                            stats[requests - 1].time);
                 else
-                    printf("  %d%%  %5" APR_TIME_T_FMT "\n", percs[i], 
+                    printf("  %d%%  %5" APR_TIME_T_FMT "\n", percs[i],
                            stats[(int) (requests * percs[i] / 100)].time);
             }
         }
@@ -1051,14 +1051,14 @@ static void output_html_results(void)
                trstring, tdstring, tdstring,
                (float) (totalread + totalposted) / timetaken);
         }
-    } 
+    }
     {
         /* work out connection times */
         long i;
         apr_interval_time_t totalcon = 0, total = 0;
         apr_interval_time_t mincon = AB_MAX, mintot = AB_MAX;
         apr_interval_time_t maxcon = 0, maxtot = 0;
-    
+
         for (i = 0; i < requests; i++) {
             struct data s = stats[i];
             mincon = ap_min(mincon, s.ctime);
@@ -1068,7 +1068,7 @@ static void output_html_results(void)
             totalcon += s.ctime;
             total += s.time;
         }
-    
+
         if (requests > 0) { /* avoid division by zero (if 0 requests) */
             printf("<tr %s><th %s colspan=4>Connnection Times (ms)</th></tr>\n",
                trstring, tdstring);
@@ -1268,12 +1268,12 @@ static void read_connection(struct connection * c)
         status = SSL_read(c->ssl, buffer, r);
         if (status <= 0) {
             int scode = SSL_get_error(c->ssl, status);
-            
+
             if (scode == SSL_ERROR_ZERO_RETURN) {
                 /* connection closed cleanly: */
                 good++;
                 close_connection(c);
-            } 
+            }
             else if (scode != SSL_ERROR_WANT_WRITE
                      && scode != SSL_ERROR_WANT_READ) {
                 /* some fatal error: */
@@ -1286,7 +1286,7 @@ static void read_connection(struct connection * c)
         }
         r = status;
     }
-    else 
+    else
 #endif
     {
         status = apr_socket_recv(c->aprsock, buffer, &r);
@@ -1320,7 +1320,7 @@ static void read_connection(struct connection * c)
         int tocopy = (space < r) ? space : r;
 #ifdef NOT_ASCII
         apr_size_t inbytes_left = space, outbytes_left = space;
-    
+
         status = apr_xlate_conv_buffer(from_ascii, buffer, &inbytes_left,
                            c->cbuff + c->cbx, &outbytes_left);
         if (status || inbytes_left || outbytes_left) {
@@ -1388,7 +1388,7 @@ static void read_connection(struct connection * c)
              * needs to be extended to handle whatever servers folks want to
              * test against. -djg
              */
-    
+
             /* check response code */
             part = strstr(c->cbuff, "HTTP");    /* really HTTP/1.x_ */
             if (part && strlen(part) > strlen("HTTP/1.x_")) {
@@ -1398,7 +1398,7 @@ static void read_connection(struct connection * c)
             else {
                 strcpy(respcode, "500");
             }
-    
+
             if (respcode[0] != '2') {
                 err_response++;
                 if (verbosity >= 2)
@@ -1505,7 +1505,7 @@ static void test(void)
     now = apr_time_now();
 
     con = calloc(concurrency, sizeof(struct connection));
-    
+
     stats = calloc(requests, sizeof(struct data));
 
     if ((status = apr_pollset_create(&readbits, concurrency, cntxt, 0)) != APR_SUCCESS) {
@@ -1514,7 +1514,7 @@ static void test(void)
 
     /* setup request */
     if (posting <= 0) {
-        snprintf_res = apr_snprintf(request, sizeof(_request), 
+        snprintf_res = apr_snprintf(request, sizeof(_request),
             "%s %s HTTP/1.0\r\n"
             "User-Agent: ApacheBench/%s\r\n"
             "%s" "%s" "%s"
@@ -1601,7 +1601,7 @@ static void test(void)
         apr_int32_t n;
         apr_int32_t timed;
             const apr_pollfd_t *pollresults;
-    
+
         /* check for time limit expiry */
         now = apr_time_now();
         timed = (apr_int32_t)apr_time_sec(now - start);
@@ -1609,20 +1609,20 @@ static void test(void)
             requests = done;    /* so stats are correct */
             break;      /* no need to do another round */
         }
-    
+
         n = concurrency;
         status = apr_pollset_poll(readbits, aprtimeout, &n, &pollresults);
         if (status != APR_SUCCESS)
             apr_err("apr_poll", status);
-    
+
         if (!n) {
             err("\nServer timed out\n\n");
         }
-    
+
         for (i = 0; i < n; i++) {
             const apr_pollfd_t *next_fd = &(pollresults[i]);
             struct connection *c;
-                
+
                 c = next_fd->client_data;
 
             /*
@@ -1630,7 +1630,7 @@ static void test(void)
              */
             if (c->state == STATE_UNCONNECTED)
                 continue;
-    
+
             rv = next_fd->rtnevents;
 
 #ifdef USE_SSL
@@ -1694,7 +1694,7 @@ static void test(void)
                     write_request(c);
                 }
             }
-    
+
             /*
              * When using a select based poll every time we check the bits
              * are reset. In 1.3's ab we copied the FD_SET's each time
@@ -2014,7 +2014,7 @@ int main(int argc, const char * const argv[])
                 }
                 l = apr_base64_encode(tmp, optarg, strlen(optarg));
                 tmp[l] = '\0';
-        
+
                 auth = apr_pstrcat(cntxt, auth, "Authorization: Basic ", tmp,
                                        "\r\n", NULL);
                 break;
@@ -2029,7 +2029,7 @@ int main(int argc, const char * const argv[])
                 }
                 l = apr_base64_encode(tmp, optarg, strlen(optarg));
                 tmp[l] = '\0';
-        
+
                 auth = apr_pstrcat(cntxt, auth, "Proxy-Authorization: Basic ",
                                        tmp, "\r\n", NULL);
                 break;

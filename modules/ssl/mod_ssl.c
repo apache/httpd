@@ -146,7 +146,7 @@ static const command_rec ssl_config_cmds[] = {
     SSL_CMD_ALL(UserName, TAKE1,
                 "Set user name to SSL variable value")
 
-    /* 
+    /*
      * Proxy configuration for remote SSL connections
      */
     SSL_CMD_SRV(ProxyEngine, FLAG,
@@ -197,11 +197,11 @@ static const command_rec ssl_config_cmds[] = {
                "(arbitrary complex boolean expression - see manual)")
 
     /* Deprecated directives. */
-    AP_INIT_RAW_ARGS("SSLLog", ap_set_deprecated, NULL, OR_ALL, 
+    AP_INIT_RAW_ARGS("SSLLog", ap_set_deprecated, NULL, OR_ALL,
       "SSLLog directive is no longer supported - use ErrorLog."),
-    AP_INIT_RAW_ARGS("SSLLogLevel", ap_set_deprecated, NULL, OR_ALL, 
+    AP_INIT_RAW_ARGS("SSLLogLevel", ap_set_deprecated, NULL, OR_ALL,
       "SSLLogLevel directive is no longer supported - use LogLevel."),
-    
+
     AP_END_CMD
 };
 
@@ -238,8 +238,8 @@ static apr_status_t ssl_cleanup_pre_config(void *data)
      * actually load the error strings once per process due to static
      * variable abuse in OpenSSL. */
 
-    /* 
-     * TODO: determine somewhere we can safely shove out diagnostics 
+    /*
+     * TODO: determine somewhere we can safely shove out diagnostics
      *       (when enabled) at this late stage in the game:
      * CRYPTO_mem_leaks_fp(stderr);
      */
@@ -250,7 +250,7 @@ static int ssl_hook_pre_config(apr_pool_t *pconf,
                                apr_pool_t *plog,
                                apr_pool_t *ptemp)
 {
-    /* We must register the library in full, to ensure our configuration 
+    /* We must register the library in full, to ensure our configuration
      * code can successfully test the SSL environment.
      */
     CRYPTO_malloc_init();
@@ -480,7 +480,7 @@ static void ssl_hook_Insert_Filter(request_rec *r)
 static void ssl_register_hooks(apr_pool_t *p)
 {
     /* ssl_hook_ReadReq needs to use the BrowserMatch settings so must
-     * run after mod_setenvif's post_read_request hook. */ 
+     * run after mod_setenvif's post_read_request hook. */
     static const char *pre_prr[] = { "mod_setenvif.c", NULL };
 
     ssl_io_filter_register(p);

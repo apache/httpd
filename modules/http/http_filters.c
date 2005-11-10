@@ -69,10 +69,10 @@ typedef struct http_filter_ctx {
     int eos_sent;
 } http_ctx_t;
 
-/* This is the HTTP_INPUT filter for HTTP requests and responses from 
- * proxied servers (mod_proxy).  It handles chunked and content-length 
+/* This is the HTTP_INPUT filter for HTTP requests and responses from
+ * proxied servers (mod_proxy).  It handles chunked and content-length
  * bodies.  This can only be inserted/used after the headers
- * are successfully parsed. 
+ * are successfully parsed.
  */
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ap_input_mode_t mode, apr_read_type_e block,
@@ -97,8 +97,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         ctx->eos_sent = 0;
 
         /* LimitRequestBody does not apply to proxied responses.
-         * Consider implementing this check in its own filter. 
-         * Would adding a directive to limit the size of proxied 
+         * Consider implementing this check in its own filter.
+         * Would adding a directive to limit the size of proxied
          * responses be useful?
          */
         if (!f->r->proxyreq) {
@@ -144,12 +144,12 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             }
 
             /* If we have a limit in effect and we know the C-L ahead of
-             * time, stop it here if it is invalid. 
-             */ 
+             * time, stop it here if it is invalid.
+             */
             if (ctx->limit && ctx->limit < ctx->remaining) {
                 apr_bucket_brigade *bb;
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
-                          "Requested content-length of %" APR_OFF_T_FMT 
+                          "Requested content-length of %" APR_OFF_T_FMT
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->remaining, ctx->limit);
                 bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
@@ -183,7 +183,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         /* Since we're about to read data, send 100-Continue if needed.
          * Only valid on chunked and C-L bodies where the C-L is > 0. */
-        if ((ctx->state == BODY_CHUNK || 
+        if ((ctx->state == BODY_CHUNK ||
             (ctx->state == BODY_LENGTH && ctx->remaining > 0)) &&
             f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1)) {
             char *tmp;
@@ -254,7 +254,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 ctx->eos_sent = 1;
                 return APR_SUCCESS;
             }
-        } 
+        }
     }
 
     if (ctx->eos_sent) {
@@ -262,7 +262,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         APR_BRIGADE_INSERT_TAIL(b, e);
         return APR_SUCCESS;
     }
-        
+
     if (!ctx->remaining) {
         switch (ctx->state) {
         case BODY_NONE:
@@ -351,7 +351,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         ctx->remaining -= totalread;
     }
 
-    /* If we have no more bytes remaining on a C-L request, 
+    /* If we have no more bytes remaining on a C-L request,
      * save the callter a roundtrip to discover EOS.
      */
     if (ctx->state == BODY_LENGTH && ctx->remaining == 0) {
@@ -368,7 +368,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         if (ctx->limit < ctx->limit_used) {
             apr_bucket_brigade *bb;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
-                          "Read content-length of %" APR_OFF_T_FMT 
+                          "Read content-length of %" APR_OFF_T_FMT
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->limit_used, ctx->limit);
             bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
@@ -853,11 +853,11 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
 
     /* If configured to accept a body, echo the body */
     if (bodylen) {
-        b = apr_bucket_pool_create(bodyread, bodylen, 
+        b = apr_bucket_pool_create(bodyread, bodylen,
                                    r->pool, bb->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
     }
-    
+
     ap_pass_brigade(r->output_filters,  bb);
 
     return DONE;
@@ -953,7 +953,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
-    apr_table_setn(r->headers_out, "Content-Type", 
+    apr_table_setn(r->headers_out, "Content-Type",
                    ap_make_content_type(r, r->content_type));
 
     if (r->content_encoding) {
@@ -1094,7 +1094,7 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
         if (rv != APR_SUCCESS) {
             /* FIXME: If we ever have a mapping from filters (apr_status_t)
              * to HTTP error codes, this would be a good place for them.
-             * 
+             *
              * If we received the special case AP_FILTER_ERROR, it means
              * that the filters have already handled this error.
              * Otherwise, we should assume we have a bad request.
@@ -1174,7 +1174,7 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
  *    return the length of the input block. When it is done reading, it will
  *    return 0 if EOF, or -1 if there was an error.
  *    If an error occurs on input, we force an end to keepalive.
- *    
+ *
  *    This step also sends a 100 Continue response to HTTP/1.1 clients if appropriate.
  */
 
@@ -1272,11 +1272,11 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
 
     rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
                         APR_BLOCK_READ, bufsiz);
-  
+
     /* We lose the failure code here.  This is why ap_get_client_block should
      * not be used.
      */
-    if (rv != APR_SUCCESS) { 
+    if (rv != APR_SUCCESS) {
         /* if we actually fail here, we want to just return and
          * stop trying to read data from the client.
          */

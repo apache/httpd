@@ -45,10 +45,10 @@
 #define INPUT_XLATE_BUF_SIZE  (8*1024)  /* size of translation buffer used on input */
 
 #define XLATE_MIN_BUFF_LEFT 128  /* flush once there is no more than this much
-                                  * space left in the translation buffer 
+                                  * space left in the translation buffer
                                   */
 
-#define FATTEST_CHAR  8          /* we don't handle chars wider than this that straddle 
+#define FATTEST_CHAR  8          /* we don't handle chars wider than this that straddle
                                   * two buckets
                                   */
 
@@ -67,15 +67,15 @@ typedef enum {
 /* registered name of the output translation filter */
 #define XLATEOUT_FILTER_NAME "XLATEOUT"
 /* registered name of input translation filter */
-#define XLATEIN_FILTER_NAME  "XLATEIN" 
+#define XLATEIN_FILTER_NAME  "XLATEIN"
 
 typedef struct charset_dir_t {
     /** debug level; -1 means uninitialized, 0 means no debug */
     int debug;
     const char *charset_source; /* source encoding */
     const char *charset_default; /* how to ship on wire */
-    /** module does ap_add_*_filter()? */    
-    enum {IA_INIT, IA_IMPADD, IA_NOIMPADD} implicit_add; 
+    /** module does ap_add_*_filter()? */
+    enum {IA_INIT, IA_IMPADD, IA_NOIMPADD} implicit_add;
 } charset_dir_t;
 
 /* charset_filter_ctx_t is created for each filter instance; because the same
@@ -126,14 +126,14 @@ static void *merge_charset_dir_conf(apr_pool_t *p, void *basev, void *overridesv
         *over = (charset_dir_t *)overridesv;
 
     /* If it is defined in the current container, use it.  Otherwise, use the one
-     * from the enclosing container. 
+     * from the enclosing container.
      */
 
-    a->debug = 
+    a->debug =
         over->debug != -1 ? over->debug : base->debug;
-    a->charset_default = 
+    a->charset_default =
         over->charset_default ? over->charset_default : base->charset_default;
-    a->charset_source = 
+    a->charset_source =
         over->charset_source ? over->charset_source : base->charset_source;
     a->implicit_add =
         over->implicit_add != IA_INIT ? over->implicit_add : base->implicit_add;
@@ -153,7 +153,7 @@ static const char *add_charset_source(cmd_parms *cmd, void *in_dc,
 
 /* CharsetDefault charset
  */
-static const char *add_charset_default(cmd_parms *cmd, void *in_dc, 
+static const char *add_charset_default(cmd_parms *cmd, void *in_dc,
                                        const char *name)
 {
     charset_dir_t *dc = in_dc;
@@ -164,7 +164,7 @@ static const char *add_charset_default(cmd_parms *cmd, void *in_dc,
 
 /* CharsetOptions optionflag...
  */
-static const char *add_charset_options(cmd_parms *cmd, void *in_dc, 
+static const char *add_charset_options(cmd_parms *cmd, void *in_dc,
                                        const char *flag)
 {
     charset_dir_t *dc = in_dc;
@@ -179,7 +179,7 @@ static const char *add_charset_options(cmd_parms *cmd, void *in_dc,
         dc->debug = atoi(flag + 11);
     }
     else {
-        return apr_pstrcat(cmd->temp_pool, 
+        return apr_pstrcat(cmd->temp_pool,
                            "Invalid CharsetOptions option: ",
                            flag,
                            NULL);
@@ -194,7 +194,7 @@ static const char *add_charset_options(cmd_parms *cmd, void *in_dc,
  */
 static int find_code_page(request_rec *r)
 {
-    charset_dir_t *dc = ap_get_module_config(r->per_dir_config, 
+    charset_dir_t *dc = ap_get_module_config(r->per_dir_config,
                                              &charset_lite_module);
     charset_req_t *reqinfo;
     charset_filter_ctx_t *input_ctx, *output_ctx;
@@ -228,21 +228,21 @@ static int find_code_page(request_rec *r)
     /* catch proxy requests */
     if (r->proxyreq) return DECLINED;
     /* mod_rewrite indicators */
-    if (!strncmp(r->filename, "redirect:", 9)) return DECLINED; 
-    if (!strncmp(r->filename, "gone:", 5)) return DECLINED; 
-    if (!strncmp(r->filename, "passthrough:", 12)) return DECLINED; 
-    if (!strncmp(r->filename, "forbidden:", 10)) return DECLINED; 
-    
+    if (!strncmp(r->filename, "redirect:", 9)) return DECLINED;
+    if (!strncmp(r->filename, "gone:", 5)) return DECLINED;
+    if (!strncmp(r->filename, "passthrough:", 12)) return DECLINED;
+    if (!strncmp(r->filename, "forbidden:", 10)) return DECLINED;
+
     mime_type = r->content_type ? r->content_type : ap_default_type(r);
 
     /* If mime type isn't text or message, bail out.
      */
 
 /* XXX When we handle translation of the request body, watch out here as
- *     1.3 allowed additional mime types: multipart and 
+ *     1.3 allowed additional mime types: multipart and
  *     application/x-www-form-urlencoded
  */
-             
+
     if (strncasecmp(mime_type, "text/", 5) &&
 #if APR_CHARSET_EBCDIC || AP_WANT_DIR_TRANSLATION
         /* On an EBCDIC machine, be willing to translate mod_autoindex-
@@ -283,8 +283,8 @@ static int find_code_page(request_rec *r)
     /* Get storage for the request data and the output filter context.
      * We rarely need the input filter context, so allocate that separately.
      */
-    reqinfo = (charset_req_t *)apr_pcalloc(r->pool, 
-                                           sizeof(charset_req_t) + 
+    reqinfo = (charset_req_t *)apr_pcalloc(r->pool,
+                                           sizeof(charset_req_t) +
                                            sizeof(charset_filter_ctx_t));
     output_ctx = (charset_filter_ctx_t *)(reqinfo + 1);
 
@@ -305,8 +305,8 @@ static int find_code_page(request_rec *r)
     switch (r->method_number) {
     case M_PUT:
     case M_POST:
-        /* Set up input translation.  Note: A request body can be included 
-         * with the OPTIONS method, but for now we don't set up translation 
+        /* Set up input translation.  Note: A request body can be included
+         * with the OPTIONS method, but for now we don't set up translation
          * of it.
          */
         input_ctx = apr_pcalloc(r->pool, sizeof(charset_filter_ctx_t));
@@ -315,7 +315,7 @@ static int find_code_page(request_rec *r)
         input_ctx->tmp = apr_palloc(r->pool, INPUT_XLATE_BUF_SIZE);
         input_ctx->dc = dc;
         reqinfo->input_ctx = input_ctx;
-        rv = apr_xlate_open(&input_ctx->xlate, dc->charset_source, 
+        rv = apr_xlate_open(&input_ctx->xlate, dc->charset_source,
                             dc->charset_default, r->pool);
         if (rv != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -358,20 +358,20 @@ static int configured_on_output(request_rec *r, const char *filter_name)
 static void xlate_insert_filter(request_rec *r)
 {
     /* Hey... don't be so quick to use reqinfo->dc here; reqinfo may be NULL */
-    charset_req_t *reqinfo = ap_get_module_config(r->request_config, 
+    charset_req_t *reqinfo = ap_get_module_config(r->request_config,
                                                   &charset_lite_module);
-    charset_dir_t *dc = ap_get_module_config(r->per_dir_config, 
+    charset_dir_t *dc = ap_get_module_config(r->per_dir_config,
                                              &charset_lite_module);
 
     if (reqinfo) {
         if (reqinfo->output_ctx && !configured_on_output(r, XLATEOUT_FILTER_NAME)) {
-            ap_add_output_filter(XLATEOUT_FILTER_NAME, reqinfo->output_ctx, r, 
+            ap_add_output_filter(XLATEOUT_FILTER_NAME, reqinfo->output_ctx, r,
                                  r->connection);
         }
         else if (dc->debug >= DBGLVL_FLOW) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "xlate output filter not added implicitly because %s",
-                          !reqinfo->output_ctx ? 
+                          !reqinfo->output_ctx ?
                           "no output configuration available" :
                           "another module added the filter");
         }
@@ -443,7 +443,7 @@ static apr_status_t send_eos(ap_filter_t *f)
     return rv;
 }
 
-static apr_status_t set_aside_partial_char(charset_filter_ctx_t *ctx, 
+static apr_status_t set_aside_partial_char(charset_filter_ctx_t *ctx,
                                            const char *partial,
                                            apr_size_t partial_len)
 {
@@ -456,8 +456,8 @@ static apr_status_t set_aside_partial_char(charset_filter_ctx_t *ctx,
     }
     else {
         rv = APR_INCOMPLETE;
-        ctx->ees = EES_LIMIT; /* we don't handle chars this wide which straddle 
-                               * buckets 
+        ctx->ees = EES_LIMIT; /* we don't handle chars this wide which straddle
+                               * buckets
                                */
     }
     return rv;
@@ -465,7 +465,7 @@ static apr_status_t set_aside_partial_char(charset_filter_ctx_t *ctx,
 
 static apr_status_t finish_partial_char(charset_filter_ctx_t *ctx,
                                         /* input buffer: */
-                                        const char **cur_str, 
+                                        const char **cur_str,
                                         apr_size_t *cur_len,
                                         /* output buffer: */
                                         char **out_str,
@@ -530,7 +530,7 @@ static void log_xlate_error(ap_filter_t *f, apr_status_t rv)
         strcpy(msgbuf, "xlate filter - incomplete char at end of input - ");
         cur = 0;
         while ((apr_size_t)cur < ctx->saved) {
-            apr_snprintf(msgbuf + strlen(msgbuf), sizeof(msgbuf) - strlen(msgbuf), 
+            apr_snprintf(msgbuf + strlen(msgbuf), sizeof(msgbuf) - strlen(msgbuf),
                          "%02X", (unsigned)ctx->buf[cur]);
             ++cur;
         }
@@ -602,15 +602,15 @@ static void chk_filter_chain(ap_filter_t *f)
             else {
                 if (strcmp(last_xlate_ctx->dc->charset_default,
                            curctx->dc->charset_source)) {
-                    /* incompatible translation 
+                    /* incompatible translation
                      * if our filter instance is incompatible with an instance
                      * already in place, noop our instance
-                     * Notes: 
+                     * Notes:
                      * . We are only willing to noop our own instance.
                      * . It is possible to noop another instance which has not
                      *   yet run, but this is not currently implemented.
                      *   Hopefully it will not be needed.
-                     * . It is not possible to noop an instance which has 
+                     * . It is not possible to noop an instance which has
                      *   already run.
                      */
                     if (last_xlate_ctx == f->ctx) {
@@ -680,7 +680,7 @@ static void chk_filter_chain(ap_filter_t *f)
  */
 static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
                                   apr_bucket_brigade *bb,
-                                  char *buffer, 
+                                  char *buffer,
                                   apr_size_t *buffer_avail,
                                   int *hit_eos)
 {
@@ -737,7 +737,7 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
                                            buffer_avail);
                 buffer  += old_buffer_avail - *buffer_avail;
                 bucket  += old_bucket_avail - bucket_avail;
-                
+
                 if (rv == APR_INCOMPLETE) { /* partial character at end of input */
                     /* We need to save the final byte(s) for next time; we can't
                      * convert it until we look at the next bucket.
@@ -781,7 +781,7 @@ static apr_status_t xlate_brigade(charset_filter_ctx_t *ctx,
     return rv;
 }
 
-/* xlate_out_filter() handles (almost) arbitrary conversions from one charset 
+/* xlate_out_filter() handles (almost) arbitrary conversions from one charset
  * to another...
  * translation is determined in the fixup hook (find_code_page), which is
  * where the filter's context data is set up... the context data gives us
@@ -802,7 +802,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     int done;
     apr_status_t rv = APR_SUCCESS;
 
-    if (!ctx) { 
+    if (!ctx) {
         /* this is SetOutputFilter path; grab the preallocated context,
          * if any; note that if we decided not to do anything in an earlier
          * handler, we won't even have a reqinfo
@@ -833,7 +833,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         const char *mime_type = f->r->content_type ? f->r->content_type : ap_default_type(f->r);
 
         /* XXX When we handle translation of the request body, watch out here as
-         *     1.3 allowed additional mime types: multipart and 
+         *     1.3 allowed additional mime types: multipart and
          *     application/x-www-form-urlencoded
          */
         if (strncasecmp(mime_type, "text/", 5) == 0 ||
@@ -854,7 +854,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 #endif
         strncasecmp(mime_type, "message/", 8) == 0) {
 
-            rv = apr_xlate_open(&ctx->xlate, 
+            rv = apr_xlate_open(&ctx->xlate,
                         dc->charset_default, dc->charset_source, f->r->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
@@ -865,7 +865,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         }
         else {
                 ctx->noop = 1;
-                if (dc->debug >= DBGLVL_GORY) 
+                if (dc->debug >= DBGLVL_GORY)
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
                                   "mime type is %s; no translation selected",
                                   mime_type);
@@ -925,7 +925,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 break;
             }
             consumed_bucket = dptr; /* for axing when we're done reading it */
-            dptr = APR_BUCKET_NEXT(dptr); /* get ready for when we access the 
+            dptr = APR_BUCKET_NEXT(dptr); /* get ready for when we access the
                                           * next bucket */
         }
         /* Try to fill up our tmp buffer with translated data. */
@@ -937,7 +937,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                  * bucket.
                  */
                 char *tmp_tmp;
-                
+
                 tmp_tmp = tmp + sizeof(tmp) - space_avail;
                 rv = finish_partial_char(ctx,
                                          &cur_str, &cur_len,
@@ -947,11 +947,11 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 rv = apr_xlate_conv_buffer(ctx->xlate,
                                            cur_str, &cur_avail,
                                            tmp + sizeof(tmp) - space_avail, &space_avail);
-                
+
                 /* Update input ptr and len after consuming some bytes */
                 cur_str += cur_len - cur_avail;
                 cur_len = cur_avail;
-                
+
                 if (rv == APR_INCOMPLETE) { /* partial character at end of input */
                     /* We need to save the final byte(s) for next time; we can't
                      * convert it until we look at the next bucket.
@@ -975,7 +975,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             if (rv != APR_SUCCESS) {
                 done = 1;
             }
-            
+
             /* tmp is now empty */
             space_avail = sizeof(tmp);
         }
@@ -998,7 +998,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     return rv;
 }
 
-static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb, 
+static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
                            ap_input_mode_t mode, apr_read_type_e block,
                            apr_off_t readbytes)
 {
@@ -1011,7 +1011,7 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     apr_size_t buffer_size;
     int hit_eos;
 
-    if (!ctx) { 
+    if (!ctx) {
         /* this is SetInputFilter path; grab the preallocated context,
          * if any; note that if we decided not to do anything in an earlier
          * handler, we won't even have a reqinfo
@@ -1048,7 +1048,7 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     }
 
     if (APR_BRIGADE_EMPTY(ctx->bb)) {
-        if ((rv = ap_get_brigade(f->next, bb, mode, block, 
+        if ((rv = ap_get_brigade(f->next, bb, mode, block,
                                  readbytes)) != APR_SUCCESS) {
             return rv;
         }
@@ -1071,11 +1071,11 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
         if (buffer_size < INPUT_XLATE_BUF_SIZE) { /* do we have output? */
             apr_bucket *e;
 
-            e = apr_bucket_heap_create(ctx->tmp, 
+            e = apr_bucket_heap_create(ctx->tmp,
                                        INPUT_XLATE_BUF_SIZE - buffer_size,
                                        NULL, f->r->connection->bucket_alloc);
             /* make sure we insert at the head, because there may be
-             * an eos bucket already there, and the eos bucket should 
+             * an eos bucket already there, and the eos bucket should
              * come after the data
              */
             APR_BRIGADE_INSERT_HEAD(bb, e);
@@ -1102,10 +1102,10 @@ static const command_rec cmds[] =
                   NULL,
                   OR_FILEINFO,
                   "source (html,cgi,ssi) file charset"),
-    AP_INIT_TAKE1("CharsetDefault", 
+    AP_INIT_TAKE1("CharsetDefault",
                   add_charset_default,
                   NULL,
-                  OR_FILEINFO, 
+                  OR_FILEINFO,
                   "name of default charset"),
     AP_INIT_ITERATE("CharsetOptions",
                     add_charset_options,
@@ -1130,7 +1130,7 @@ module AP_MODULE_DECLARE_DATA charset_lite_module =
     STANDARD20_MODULE_STUFF,
     create_charset_dir_conf,
     merge_charset_dir_conf,
-    NULL, 
+    NULL,
     NULL,
     cmds,
     charset_register_hooks

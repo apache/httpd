@@ -28,9 +28,9 @@ apr_status_t ajp_ilink_send(apr_socket_t *sock, ajp_msg_t *msg)
                       "ajp_ilink_send(): NULL socket provided");
         return AJP_EINVAL;
     }
-    
+
     ajp_msg_end(msg);
-    
+
     length = msg->len;
     buf    = (char *)msg->buf;
 
@@ -68,7 +68,7 @@ static apr_status_t ilink_read(apr_socket_t *sock, apr_byte_t *buf,
             continue;
         else if (status != APR_SUCCESS)
             return status;          /* any error. */
-            
+
         rdlen += length;
         length = len - rdlen;
     }
@@ -89,15 +89,15 @@ apr_status_t ajp_ilink_receive(apr_socket_t *sock, ajp_msg_t *msg)
     }
 
     hlen = msg->header_len;
-    
+
     status = ilink_read(sock, msg->buf, hlen);
-    
+
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, NULL,
                      "ajp_ilink_receive() can't receive header");
         return AJP_ENO_HEADER;
     }
-    
+
     status = ajp_msg_check_header(msg, &blen);
 
     if (status != APR_SUCCESS) {

@@ -64,10 +64,10 @@
  * - The char* is placed in a brigade and returned
  *
  * Since connection-level input filters in httpd need to be able to
- * handle AP_MODE_GETLINE calls (namely identifying LF-terminated strings), 
+ * handle AP_MODE_GETLINE calls (namely identifying LF-terminated strings),
  * ssl_io_input_getline which will handle this special case.
  *
- * Due to AP_MODE_GETLINE and AP_MODE_SPECULATIVE, we may sometimes have 
+ * Due to AP_MODE_GETLINE and AP_MODE_SPECULATIVE, we may sometimes have
  * 'leftover' decoded data which must be setaside for the next read.  That
  * is currently handled by the char_buffer_{read|write} functions.  So,
  * ssl_io_input_read may be able to fulfill reads without invoking
@@ -81,7 +81,7 @@
  *
  */
 
-/* this custom BIO allows us to hook SSL_write directly into 
+/* this custom BIO allows us to hook SSL_write directly into
  * an apr_bucket_brigade and use transient buckets with the SSL
  * malloc-ed buffer, rather than copying into a mem BIO.
  * also allows us to pass the brigade as data is being written
@@ -141,7 +141,7 @@ static int bio_filter_out_flush(BIO *bio)
     if (outctx->blen) {
         e = apr_bucket_transient_create(outctx->buffer, outctx->blen,
                                         outctx->bb->bucket_alloc);
-        /* we filled this buffer first so add it to the 
+        /* we filled this buffer first so add it to the
          * head of the brigade
          */
         APR_BRIGADE_INSERT_HEAD(outctx->bb, e);
@@ -182,7 +182,7 @@ static int bio_filter_destroy(BIO *bio)
      */
     return 1;
 }
-        
+
 static int bio_filter_out_read(BIO *bio, char *out, int outl)
 {
     /* this is never called */
@@ -213,7 +213,7 @@ static int bio_filter_out_write(BIO *bio, const char *in, int inl)
     }
     else {
         /* pass along the encrypted data
-         * need to flush since we're using SSL's malloc-ed buffer 
+         * need to flush since we're using SSL's malloc-ed buffer
          * which will be overwritten once we leave here
          */
         apr_bucket *bucket = apr_bucket_transient_create(in, inl,
@@ -375,7 +375,7 @@ static apr_status_t brigade_consume(apr_bucket_brigade *bb,
 {
     apr_size_t actual = 0;
     apr_status_t status = APR_SUCCESS;
- 
+
     while (!APR_BRIGADE_EMPTY(bb)) {
         apr_bucket *b = APR_BRIGADE_FIRST(bb);
         const char *str;
@@ -398,11 +398,11 @@ static apr_status_t brigade_consume(apr_bucket_brigade *bb,
          * this sort of case (caller provided buffer) it
          * would be much more trivial for apr_bucket_consume
          * to do all the work that follows, based on the
-         * particular characteristics of the bucket we are 
+         * particular characteristics of the bucket we are
          * consuming here.
          */
         status = apr_bucket_read(b, &str, &str_len, block);
-        
+
         if (status != APR_SUCCESS) {
             if (APR_STATUS_IS_EOF(status)) {
                 /* This stream bucket was consumed */
@@ -471,7 +471,7 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
      */
     if ((SSL_version(inctx->ssl) == SSL2_VERSION) || sslconn->is_proxy) {
         if (bio_filter_out_flush(inctx->bio_out) < 0) {
-            bio_filter_out_ctx_t *outctx = 
+            bio_filter_out_ctx_t *outctx =
                    (bio_filter_out_ctx_t *)(inctx->bio_out->ptr);
             inctx->rc = outctx->rc;
             return -1;
@@ -488,7 +488,7 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     if (APR_BRIGADE_EMPTY(inctx->bb)) {
 
         inctx->rc = ap_get_brigade(inctx->f->next, inctx->bb,
-                                   AP_MODE_READBYTES, block, 
+                                   AP_MODE_READBYTES, block,
                                    inl);
 
         /* If the read returns EAGAIN or success with an empty
@@ -515,12 +515,12 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
         return (int)inl;
     }
 
-    if (APR_STATUS_IS_EAGAIN(inctx->rc) 
+    if (APR_STATUS_IS_EAGAIN(inctx->rc)
             || APR_STATUS_IS_EINTR(inctx->rc)) {
         BIO_set_retry_read(bio);
         return (int)inl;
     }
-        
+
     /* Unexpected errors and APR_EOF clean out the brigade.
      * Subsequent calls will return APR_EOF.
      */
@@ -625,7 +625,7 @@ static apr_status_t ssl_io_input_read(bio_filter_in_ctx_t *inctx,
              */
             if (APR_STATUS_IS_EAGAIN(inctx->rc)
                     || APR_STATUS_IS_EINTR(inctx->rc)) {
-                /* Already read something, return APR_SUCCESS instead. 
+                /* Already read something, return APR_SUCCESS instead.
                  * On win32 in particular, but perhaps on other kernels,
                  * a blocking call isn't 'always' blocking.
                  */
@@ -725,7 +725,7 @@ static apr_status_t ssl_io_input_getline(bio_filter_in_ctx_t *inctx,
 
     while (tmplen > 0) {
         status = ssl_io_input_read(inctx, buf + offset, &tmplen);
-        
+
         if (status != APR_SUCCESS) {
             return status;
         }
@@ -815,7 +815,7 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
         }
 
         ap_log_cerror(APLOG_MARK, APLOG_INFO, outctx->rc, c,
-                      "failed to write %" APR_SSIZE_T_FMT 
+                      "failed to write %" APR_SSIZE_T_FMT
                       " of %" APR_SIZE_T_FMT " bytes (%s)",
                       len - (apr_size_t)res, len, reason);
 
@@ -887,7 +887,7 @@ static const char ssl_io_buffer[] = "SSL/TLS Buffer";
 /*
  *  Close the SSL part of the socket connection
  *  (called immediately _before_ the socket is closed)
- *  or called with 
+ *  or called with
  */
 static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
                                            conn_rec *c,
@@ -974,7 +974,7 @@ static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     if (c->base_server->loglevel >= APLOG_INFO) {
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                       "Connection closed to child %ld with %s shutdown "
-                      "(server %s)", 
+                      "(server %s)",
                       c->id, type, ssl_util_vhostid(c->pool, c->base_server));
     }
 
@@ -1006,7 +1006,7 @@ static apr_status_t ssl_io_filter_cleanup(void *data)
         SSL_free(filter_ctx->pssl);
         sslconn->ssl = filter_ctx->pssl = NULL;
     }
-  
+
     return APR_SUCCESS;
 }
 
@@ -1051,7 +1051,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
                                        (filter_ctx->pbioWrite->ptr);
         apr_status_t rc = inctx->rc ? inctx->rc : outctx->rc ;
         ssl_err = SSL_get_error(filter_ctx->pssl, n);
-        
+
         if (ssl_err == SSL_ERROR_ZERO_RETURN) {
             /*
              * The case where the connection was closed before any data
@@ -1063,7 +1063,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
         }
         else if (ssl_err == SSL_ERROR_WANT_READ) {
             /*
-             * This is in addition to what was present earlier. It is 
+             * This is in addition to what was present earlier. It is
              * borrowed from openssl_state_machine.c [mod_tls].
              * TBD.
              */
@@ -1117,7 +1117,7 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
             /* leaving this log message as an error for the moment,
              * according to the mod_ssl docs:
              * "level optional_no_ca is actually against the idea
-             *  of authentication (but can be used to establish 
+             *  of authentication (but can be used to establish
              * SSL test pages, etc.)"
              * optional_no_ca doesn't appear to work as advertised
              * in 1.x
@@ -1205,20 +1205,20 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
 
     /* Send the interim 101 response. */
     upgradebb = apr_brigade_create(r->pool, f->c->bucket_alloc);
-    
+
     ap_fputstrs(f->next, upgradebb, SWITCH_STATUS_LINE, CRLF,
                 UPGRADE_HEADER, CRLF, CONNECTION_HEADER, CRLF, CRLF, NULL);
 
     b = apr_bucket_flush_create(f->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(upgradebb, b);
-    
+
     rv = ap_pass_brigade(f->next, upgradebb);
     if (rv) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                       "could not send interim 101 Upgrade response");
         return AP_FILTER_ERROR;
     }
-    
+
     ssl_init_ssl_connection(f->c);
 
     ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
@@ -1228,7 +1228,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     ssl = sslconn->ssl;
 
     /* XXX: Should replace SSL_set_state with SSL_renegotiate(ssl);
-     * However, this causes failures in perl-framework currently, 
+     * However, this causes failures in perl-framework currently,
      * perhaps pre-test if we have already negotiated?
      */
     SSL_set_accept_state(ssl);
@@ -1242,8 +1242,8 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
         return AP_FILTER_ERROR;
     }
 
-    /* Now that we have initialized the ssl connection which added the ssl_io_filter, 
-       pass the brigade off to the connection based output filters so that the 
+    /* Now that we have initialized the ssl connection which added the ssl_io_filter,
+       pass the brigade off to the connection based output filters so that the
        request can complete encrypted */
     return ap_pass_brigade(f->c->output_filters, bb);
 
@@ -1276,7 +1276,7 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     }
 
     /* XXX: we don't currently support anything other than these modes. */
-    if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE && 
+    if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE &&
         mode != AP_MODE_SPECULATIVE && mode != AP_MODE_INIT) {
         return APR_ENOTIMPL;
     }
@@ -1300,9 +1300,9 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         return APR_SUCCESS;
     }
 
-    if (inctx->mode == AP_MODE_READBYTES || 
+    if (inctx->mode == AP_MODE_READBYTES ||
         inctx->mode == AP_MODE_SPECULATIVE) {
-        /* Protected from truncation, readbytes < MAX_SIZE_T 
+        /* Protected from truncation, readbytes < MAX_SIZE_T
          * FIXME: No, it's *not* protected.  -- jre */
         if (readbytes < len) {
             len = (apr_size_t)readbytes;
@@ -1367,8 +1367,8 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
     while (!APR_BRIGADE_EMPTY(bb)) {
         apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
 
-        /* If it is a flush or EOS, we need to pass this down. 
-         * These types do not require translation by OpenSSL.  
+        /* If it is a flush or EOS, we need to pass this down.
+         * These types do not require translation by OpenSSL.
          */
         if (APR_BUCKET_IS_EOS(bucket) || APR_BUCKET_IS_FLUSH(bucket)) {
             if (bio_filter_out_flush(filter_ctx->pbioWrite) < 0) {
@@ -1416,7 +1416,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
             /* filter output */
             const char *data;
             apr_size_t len;
-            
+
             status = apr_bucket_read(bucket, &data, &len, rblock);
 
             if (APR_STATUS_IS_EAGAIN(status)) {
@@ -1464,7 +1464,7 @@ int ssl_io_buffer_fill(request_rec *r)
     apr_bucket_brigade *tempb;
     apr_off_t total = 0; /* total length buffered */
     int eos = 0; /* non-zero once EOS is seen */
-    
+
     /* Create the context which will be passed to the input filter;
      * containing a setaside pool and a brigade which constrain the
      * lifetime of the buffered data. */
@@ -1493,10 +1493,10 @@ int ssl_io_buffer_fill(request_rec *r)
                           "could not read request body for SSL buffer");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-        
+
         /* Iterate through the returned brigade: setaside each bucket
          * into the context's pool and move it into the brigade. */
-        for (e = APR_BRIGADE_FIRST(tempb); 
+        for (e = APR_BRIGADE_FIRST(tempb);
              e != APR_BRIGADE_SENTINEL(tempb) && !eos; e = next) {
             const char *data;
             apr_size_t len;
@@ -1514,19 +1514,19 @@ int ssl_io_buffer_fill(request_rec *r)
                 }
                 total += len;
             }
-                
+
             rv = apr_bucket_setaside(e, ctx->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                               "could not setaside bucket for SSL buffer");
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
-            
+
             APR_BUCKET_REMOVE(e);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
         }
 
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c, 
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
                       "total of %" APR_OFF_T_FMT " bytes in buffer, eos=%d",
                       total, eos);
 
@@ -1587,7 +1587,7 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
             apr_bucket *d = APR_BRIGADE_FIRST(ctx->bb);
 
             e = APR_BUCKET_PREV(e);
-            
+
             /* Unsplice the partitioned segment and move it into the
              * passed-in brigade; no convenient way to do this with
              * the APR_BRIGADE_* macros. */
@@ -1612,7 +1612,7 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
 
     if (APR_BRIGADE_EMPTY(ctx->bb)) {
         apr_bucket *e = APR_BRIGADE_LAST(bb);
-        
+
         /* Ensure that the brigade is terminated by an EOS if the
          * buffered request body has been entirely consumed. */
         if (e == APR_BRIGADE_SENTINEL(bb) || !APR_BUCKET_IS_EOS(e)) {
@@ -1690,7 +1690,7 @@ void ssl_io_filter_register(apr_pool_t *p)
 
     ap_register_input_filter  (ssl_io_filter, ssl_io_filter_input,  NULL, AP_FTYPE_CONNECTION + 5);
     ap_register_output_filter (ssl_io_filter, ssl_io_filter_output, NULL, AP_FTYPE_CONNECTION + 5);
-    
+
     ap_register_input_filter  (ssl_io_buffer, ssl_io_filter_buffer, NULL, AP_FTYPE_PROTOCOL - 1);
 
     return;

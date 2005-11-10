@@ -16,9 +16,9 @@
 
 /*
  * util_ldap_cache.c: LDAP cache things
- * 
+ *
  * Original code from auth_ldap module for Apache v1.3:
- * Copyright 1998, 1999 Enbridge Pipelines Inc. 
+ * Copyright 1998, 1999 Enbridge Pipelines Inc.
  * Copyright 1999-2001 Dave Carrigan
  */
 
@@ -100,14 +100,14 @@ void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n
                 type_str = "DN Compares";
                 break;
         }
-        
+
         if (cache_node->marktime) {
             apr_ctime(date_str, cache_node->marktime);
         }
-        else 
+        else
             date_str[0] = 0;
 
-        ap_rprintf(r, 
+        ap_rprintf(r,
                    "<tr valign='top'>"
                    "<td nowrap>%s (%s)</td>"
                    "<td nowrap>%ld</td>"
@@ -299,7 +299,7 @@ void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, voi
         cmp_result = apr_itoa(r->pool, node->result);
     }
 
-    ap_rprintf(r, 
+    ap_rprintf(r,
                "<tr valign='top'>"
                "<td nowrap>%s</td>"
                "<td nowrap>%s</td>"
@@ -360,7 +360,7 @@ void util_ldap_dn_compare_node_display(request_rec *r, util_ald_cache_t *cache, 
 {
     util_dn_compare_node_t *node = n;
 
-    ap_rprintf(r, 
+    ap_rprintf(r,
                "<tr valign='top'>"
                "<td nowrap>%s</td>"
                "<td nowrap>%s</td>"
@@ -412,8 +412,8 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st)
     size = apr_shm_size_get(st->cache_shm);
 
     /* This will create a rmm "handler" to get into the shared memory area */
-    result = apr_rmm_init(&st->cache_rmm, NULL, 
-                          apr_shm_baseaddr_get(st->cache_shm), size, 
+    result = apr_rmm_init(&st->cache_rmm, NULL,
+                          apr_shm_baseaddr_get(st->cache_shm), size,
                           st->pool);
     if (result != APR_SUCCESS) {
         return result;

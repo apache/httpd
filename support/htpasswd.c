@@ -23,7 +23,7 @@
 /*
  * htpasswd.c: simple program for manipulating password file for
  * the Apache HTTP server
- * 
+ *
  * Originally by Rob McCool
  *
  * Exit values:
@@ -84,7 +84,7 @@
 #define ALG_PLAIN 0
 #define ALG_CRYPT 1
 #define ALG_APMD5 2
-#define ALG_APSHA 3 
+#define ALG_APSHA 3
 
 #define ERR_FILEPERM 1
 #define ERR_SYNTAX 2
@@ -141,7 +141,7 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
     else {
         bufsize = sizeof(pwin);
         if (apr_password_get("New password: ", pwin, &bufsize) != 0) {
-            apr_snprintf(record, (rlen - 1), "password too long (>%" 
+            apr_snprintf(record, (rlen - 1), "password too long (>%"
                          APR_SIZE_T_FMT ")", sizeof(pwin) - 1);
             return ERR_OVERFLOW;
         }
@@ -161,7 +161,7 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         apr_sha1_base64(pw,strlen(pw),cpw);
         break;
 
-    case ALG_APMD5: 
+    case ALG_APMD5:
         (void) srand((int) time((time_t *) NULL));
         to64(&salt[0], rand(), 8);
         salt[8] = '\0';
@@ -272,8 +272,8 @@ static void terminate(void)
 #endif
 }
 
-static void check_args(apr_pool_t *pool, int argc, const char *const argv[], 
-                       int *alg, int *mask, char **user, char **pwfilename, 
+static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
+                       int *alg, int *mask, char **user, char **pwfilename,
                        char **password)
 {
     const char *arg;
@@ -282,7 +282,7 @@ static void check_args(apr_pool_t *pool, int argc, const char *const argv[],
 
     /*
      * Preliminary check to make sure they provided at least
-     * three arguments, we'll do better argument checking as 
+     * three arguments, we'll do better argument checking as
      * we parse the command line.
      */
     if (argc < 3) {
@@ -517,7 +517,7 @@ int main(int argc, const char * const argv[])
     dirname = apr_psprintf(pool, "%s/%s", dirname, tn);
 
     if (apr_file_mktemp(&ftemp, dirname, 0, pool) != APR_SUCCESS) {
-        apr_file_printf(errfile, "%s: unable to create temporary file %s" NL, 
+        apr_file_printf(errfile, "%s: unable to create temporary file %s" NL,
                         argv[0], dirname);
         exit(ERR_FILEPERM);
     }
@@ -529,7 +529,7 @@ int main(int argc, const char * const argv[])
     if (existing_file && !(mask & APHTP_NEWFILE)) {
         if (apr_file_open(&fpw, pwfilename, APR_READ | APR_BUFFERED,
                           APR_OS_DEFAULT, pool) != APR_SUCCESS) {
-            apr_file_printf(errfile, "%s: unable to read file %s" NL, 
+            apr_file_printf(errfile, "%s: unable to read file %s" NL,
                             argv[0], pwfilename);
             exit(ERR_FILEPERM);
         }
@@ -555,7 +555,7 @@ int main(int argc, const char * const argv[])
             }
             else {
                 /*
-                 * If we've not got a colon on the line, this could well 
+                 * If we've not got a colon on the line, this could well
                  * not be a valid htpasswd file.
                  * We should bail at this point.
                  */
@@ -603,7 +603,7 @@ int main(int argc, const char * const argv[])
      */
     if (apr_file_copy(dirname, pwfilename, APR_FILE_SOURCE_PERMS, pool) !=
         APR_SUCCESS) {
-        apr_file_printf(errfile, "%s: unable to update file %s" NL, 
+        apr_file_printf(errfile, "%s: unable to update file %s" NL,
                         argv[0], pwfilename);
         exit(ERR_FILEPERM);
     }

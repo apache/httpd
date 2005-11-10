@@ -16,9 +16,9 @@
 
 /*
  * util_ldap_cache_mgr.c: LDAP cache manager things
- * 
+ *
  * Original code from auth_ldap module for Apache v1.3:
- * Copyright 1998, 1999 Enbridge Pipelines Inc. 
+ * Copyright 1998, 1999 Enbridge Pipelines Inc.
  * Copyright 1999-2001 Dave Carrigan
  */
 
@@ -138,7 +138,7 @@ const char *util_ald_strdup(util_ald_cache_t *cache, const char *s)
 
 /*
  * Computes the hash on a set of strings. The first argument is the number
- * of strings to hash, the rest of the args are strings. 
+ * of strings to hash, the rest of the args are strings.
  * Algorithm taken from glibc.
  */
 unsigned long util_ald_hash_string(int nstr, ...)
@@ -147,7 +147,7 @@ unsigned long util_ald_hash_string(int nstr, ...)
     va_list args;
     unsigned long h=0, g;
     char *str, *p;
-  
+
     va_start(args, nstr);
     for (i=0; i < nstr; ++i) {
         str = va_arg(args, char *);
@@ -204,8 +204,8 @@ void util_ald_cache_purge(util_ald_cache_t *cache)
     }
 
     t = apr_time_now();
-    cache->avg_purgetime = 
-         ((t - cache->last_purge) + (cache->avg_purgetime * (cache->numpurges-1))) / 
+    cache->avg_purgetime =
+         ((t - cache->last_purge) + (cache->avg_purgetime * (cache->numpurges-1))) /
          cache->numpurges;
 }
 
@@ -265,7 +265,7 @@ util_url_node_t *util_ald_create_caches(util_ldap_state_t *st, const char *url)
 
 util_ald_cache_t *util_ald_create_cache(util_ldap_state_t *st,
                                 long cache_size,
-                                unsigned long (*hashfunc)(void *), 
+                                unsigned long (*hashfunc)(void *),
                                 int (*comparefunc)(void *, void *),
                                 void * (*copyfunc)(util_ald_cache_t *cache, void *),
                                 void (*freefunc)(util_ald_cache_t *cache, void *),
@@ -365,7 +365,7 @@ void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload)
     cache->fetches++;
 
     hashval = (*cache->hash)(payload) % cache->size;
-    for (p = cache->nodes[hashval]; 
+    for (p = cache->nodes[hashval];
          p && !(*cache->compare)(p->payload, payload);
     p = p->next) ;
 
@@ -379,7 +379,7 @@ void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload)
 }
 
 /*
- * Insert an item into the cache. 
+ * Insert an item into the cache.
  * *** Does not catch duplicates!!! ***
  */
 void *util_ald_cache_insert(util_ald_cache_t *cache, void *payload)
@@ -435,7 +435,7 @@ void util_ald_cache_remove(util_ald_cache_t *cache, void *payload)
 {
     unsigned long hashval;
     util_cache_node_t *p, *q;
-  
+
     if (cache == NULL)
         return;
 
@@ -491,7 +491,7 @@ char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char
     chainlen = nchains? (double)totchainlen / (double)nchains : 0;
 
     if (id) {
-        buf2 = apr_psprintf(p, 
+        buf2 = apr_psprintf(p,
                  "<a href=\"%s?%s\">%s</a>",
              r->uri,
              id,
@@ -501,7 +501,7 @@ char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char
         buf2 = name;
     }
 
-    buf = apr_psprintf(p, 
+    buf = apr_psprintf(p,
              "<tr valign='top'>"
              "<td nowrap>%s</td>"
              "<td align='right' nowrap>%lu (%.0f%% full)</td>"
@@ -510,7 +510,7 @@ char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char
              "<td align='right'>%.0f%%</td>"
              "<td align='right'>%lu/%lu</td>",
          buf2,
-         cache->numentries, 
+         cache->numentries,
          (double)cache->numentries / (double)cache->maxentries * 100.0,
          chainlen,
          cache->hits,
@@ -526,13 +526,13 @@ char *util_ald_cache_display_stats(request_rec *r, util_ald_cache_t *cache, char
         buf = apr_psprintf(p,
                  "%s"
                  "<td align='right'>%lu</td>\n"
-                 "<td align='right' nowrap>%s</td>\n", 
+                 "<td align='right' nowrap>%s</td>\n",
              buf,
              cache->numpurges,
              str_ctime);
     }
     else {
-        buf = apr_psprintf(p, 
+        buf = apr_psprintf(p,
                  "%s<td colspan='2' align='center'>(none)</td>\n",
              buf);
     }
@@ -585,10 +585,10 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                        "</tr>\n"
                        "</table>\n</p>\n",
                        buf,
-                       cachetype[0] == 'm'? "Main" : 
-                       (cachetype[0] == 's' ? "Search" : 
+                       cachetype[0] == 'm'? "Main" :
+                       (cachetype[0] == 's' ? "Search" :
                         (cachetype[0] == 'c' ? "Compares" : "DNCompares")));
-            
+
             switch (cachetype[0]) {
                 case 'm':
                     if (util_ldap_cache->marktime) {
@@ -645,7 +645,7 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                         }
                     }
                     ap_rputs("</table>\n</p>\n", r);
-                    
+
 
                     break;
                 case 's':
@@ -660,7 +660,7 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                     if (n) {
                         for (i=0; i < n->search_cache->size; ++i) {
                             for (p = n->search_cache->nodes[i]; p != NULL; p = p->next) {
-    
+
                                 (*n->search_cache->display)(r, n->search_cache, p->payload);
                             }
                         }
@@ -681,7 +681,7 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                     if (n) {
                         for (i=0; i < n->compare_cache->size; ++i) {
                             for (p = n->compare_cache->nodes[i]; p != NULL; p = p->next) {
-    
+
                                 (*n->compare_cache->display)(r, n->compare_cache, p->payload);
                             }
                         }
@@ -699,7 +699,7 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                     if (n) {
                         for (i=0; i < n->dn_compare_cache->size; ++i) {
                             for (p = n->dn_compare_cache->nodes[i]; p != NULL; p = p->next) {
-    
+
                                 (*n->dn_compare_cache->display)(r, n->dn_compare_cache, p->payload);
                             }
                         }
@@ -732,19 +732,19 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
 
         id1 = apr_psprintf(pool, argfmt, "main", 0, 0);
         buf = util_ald_cache_display_stats(r, st->util_ldap_cache, "LDAP URL Cache", id1);
-    
+
         for (i=0; i < util_ldap_cache->size; ++i) {
             for (p = util_ldap_cache->nodes[i],j=0; p != NULL; p = p->next,j++) {
-    
+
                 n = (util_url_node_t *)p->payload;
-    
+
                 t1 = apr_psprintf(pool, "%s (Searches)", n->url);
                 t2 = apr_psprintf(pool, "%s (Compares)", n->url);
                 t3 = apr_psprintf(pool, "%s (DNCompares)", n->url);
                 id1 = apr_psprintf(pool, argfmt, "srch", i, j);
                 id2 = apr_psprintf(pool, argfmt, "cmpr", i, j);
                 id3 = apr_psprintf(pool, argfmt, "dncp", i, j);
-    
+
                 buf = apr_psprintf(pool, "%s\n\n"
                                          "%s\n\n"
                                          "%s\n\n"

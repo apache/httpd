@@ -120,8 +120,8 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
 
     return APR_SUCCESS;
 }
-            
-        
+
+
 static const char *CaseFilterInEnable(cmd_parms *cmd, void *dummy, int arg)
 {
     CaseFilterInConfig *pConfig
@@ -132,7 +132,7 @@ static const char *CaseFilterInEnable(cmd_parms *cmd, void *dummy, int arg)
     return NULL;
 }
 
-static const command_rec CaseFilterInCmds[] = 
+static const command_rec CaseFilterInCmds[] =
 {
     AP_INIT_FLAG("CaseFilterIn", CaseFilterInEnable, NULL, RSRC_CONF,
                  "Run an input case filter on this host"),
@@ -142,7 +142,7 @@ static const command_rec CaseFilterInCmds[] =
 
 static void CaseFilterInRegisterHooks(apr_pool_t *p)
 {
-    ap_hook_insert_filter(CaseFilterInInsertFilter, NULL, NULL, 
+    ap_hook_insert_filter(CaseFilterInInsertFilter, NULL, NULL,
                           APR_HOOK_MIDDLE);
     ap_register_input_filter(s_szCaseFilterName, CaseFilterInFilter, NULL,
                              AP_FTYPE_RESOURCE);

@@ -55,7 +55,7 @@ static /* but must be exported to mpm_winnt */
 APR_HOOK_STRUCT(
     APR_HOOK_LINK(pre_mpm)
 )
- 
+
 AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_mpm,
                           (apr_pool_t *p, ap_scoreboard_e sb_type),
                           (p, sb_type),OK,DECLINED)
@@ -77,7 +77,7 @@ static apr_size_t scoreboard_size;
  * and it should handle cleaning up a scoreboard shared
  * between processes using any form of IPC (file, shared memory
  * segment, etc.). Leave it as is now because it is being used
- * by various MPMs. 
+ * by various MPMs.
  */
 static apr_status_t ap_cleanup_shared_mem(void *d)
 {
@@ -114,9 +114,9 @@ void ap_init_scoreboard(void *shared_score)
 {
     char *more_storage;
     int i;
-    
+
     ap_calc_scoreboard_size();
-    ap_scoreboard_image = 
+    ap_scoreboard_image =
         calloc(1, sizeof(scoreboard) + server_limit * sizeof(worker_score *) +
                server_limit * lb_limit * sizeof(lb_score *));
     more_storage = shared_score;
@@ -124,7 +124,7 @@ void ap_init_scoreboard(void *shared_score)
     more_storage += sizeof(global_score);
     ap_scoreboard_image->parent = (process_score *)more_storage;
     more_storage += sizeof(process_score) * server_limit;
-    ap_scoreboard_image->servers = 
+    ap_scoreboard_image->servers =
         (worker_score **)((char*)ap_scoreboard_image + sizeof(scoreboard));
     for (i = 0; i < server_limit; i++) {
         ap_scoreboard_image->servers[i] = (worker_score *)more_storage;
@@ -133,7 +133,7 @@ void ap_init_scoreboard(void *shared_score)
     if (lb_limit) {
         ap_scoreboard_image->balancers = (lb_score *)more_storage;
         more_storage += lb_limit * sizeof(lb_score);
-    }    
+    }
     ap_assert(more_storage == (char*)shared_score + scoreboard_size);
     ap_scoreboard_image->global->server_limit = server_limit;
     ap_scoreboard_image->global->thread_limit = thread_limit;
@@ -165,8 +165,8 @@ static apr_status_t create_namebased_scoreboard(apr_pool_t *pool,
     return APR_SUCCESS;
 }
 
-/* ToDo: This function should be made to handle setting up 
- * a scoreboard shared between processes using any IPC technique, 
+/* ToDo: This function should be made to handle setting up
+ * a scoreboard shared between processes using any IPC technique,
  * not just a shared memory segment
  */
 static apr_status_t open_scoreboard(apr_pool_t *pconf)
@@ -275,7 +275,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
     if (ap_scoreboard_image) {
         running_gen = ap_scoreboard_image->global->running_generation;
         ap_scoreboard_image->global->restart_time = apr_time_now();
-        memset(ap_scoreboard_image->parent, 0, 
+        memset(ap_scoreboard_image->parent, 0,
                sizeof(process_score) * server_limit);
         for (i = 0; i < server_limit; i++) {
             memset(ap_scoreboard_image->servers[i], 0,
@@ -285,7 +285,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
         if (lb_limit) {
             memset(ap_scoreboard_image->balancers, 0,
                    sizeof(lb_score) * lb_limit);
-        }        
+        }
         return OK;
     }
 
@@ -300,7 +300,7 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
         memset(sb_shared, 0, scoreboard_size);
         ap_init_scoreboard(sb_shared);
     }
-    else 
+    else
 #endif
     {
         /* A simple malloc will suffice */
@@ -398,7 +398,7 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
     ws->status = status;
 
     ps = &ap_scoreboard_image->parent[child_num];
-    
+
     if (status == SERVER_READY
         && old_status == SERVER_STARTING) {
         ws->thread_num = child_num * thread_limit + thread_num;
@@ -438,7 +438,7 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
                         sizeof(ws->vhost));
         }
     }
-    
+
     return old_status;
 }
 
@@ -460,10 +460,10 @@ void ap_time_process_request(ap_sb_handle_t *sbh, int status)
     ws = &ap_scoreboard_image->servers[sbh->child_num][sbh->thread_num];
 
     if (status == START_PREQUEST) {
-        ws->start_time = apr_time_now(); 
+        ws->start_time = apr_time_now();
     }
     else if (status == STOP_PREQUEST) {
-        ws->stop_time = apr_time_now(); 
+        ws->stop_time = apr_time_now();
     }
 }
 

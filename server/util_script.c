@@ -74,7 +74,7 @@ static char *http2env(apr_pool_t *a, const char *w)
         }
     }
     *cp = 0;
- 
+
     return res;
 }
 
@@ -171,7 +171,7 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
          * in the environment with "ps -e".  But, if you must...
          */
 #ifndef SECURITY_HOLE_PASS_AUTHORIZATION
-        else if (!strcasecmp(hdrs[i].key, "Authorization") 
+        else if (!strcasecmp(hdrs[i].key, "Authorization")
                  || !strcasecmp(hdrs[i].key, "Proxy-Authorization")) {
             continue;
         }
@@ -188,13 +188,13 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
 
 #ifdef WIN32
     if (env_temp = getenv("SystemRoot")) {
-        apr_table_addn(e, "SystemRoot", env_temp);         
+        apr_table_addn(e, "SystemRoot", env_temp);
     }
     if (env_temp = getenv("COMSPEC")) {
-        apr_table_addn(e, "COMSPEC", env_temp);            
+        apr_table_addn(e, "COMSPEC", env_temp);
     }
     if (env_temp = getenv("PATHEXT")) {
-        apr_table_addn(e, "PATHEXT", env_temp);            
+        apr_table_addn(e, "PATHEXT", env_temp);
     }
     if (env_temp = getenv("WINDIR")) {
         apr_table_addn(e, "WINDIR", env_temp);
@@ -203,22 +203,22 @@ AP_DECLARE(void) ap_add_common_vars(request_rec *r)
 
 #ifdef OS2
     if ((env_temp = getenv("COMSPEC")) != NULL) {
-        apr_table_addn(e, "COMSPEC", env_temp);            
+        apr_table_addn(e, "COMSPEC", env_temp);
     }
     if ((env_temp = getenv("ETC")) != NULL) {
-        apr_table_addn(e, "ETC", env_temp);            
+        apr_table_addn(e, "ETC", env_temp);
     }
     if ((env_temp = getenv("DPATH")) != NULL) {
-        apr_table_addn(e, "DPATH", env_temp);            
+        apr_table_addn(e, "DPATH", env_temp);
     }
     if ((env_temp = getenv("PERLLIB_PREFIX")) != NULL) {
-        apr_table_addn(e, "PERLLIB_PREFIX", env_temp);            
+        apr_table_addn(e, "PERLLIB_PREFIX", env_temp);
     }
 #endif
 
 #ifdef BEOS
     if ((env_temp = getenv("LIBRARY_PATH")) != NULL) {
-        apr_table_addn(e, "LIBRARY_PATH", env_temp);            
+        apr_table_addn(e, "LIBRARY_PATH", env_temp);
     }
 #endif
 
@@ -341,7 +341,7 @@ AP_DECLARE(void) ap_add_cgi_vars(request_rec *r)
     apr_table_setn(e, "SERVER_PROTOCOL", r->protocol);
     apr_table_setn(e, "REQUEST_METHOD", r->method);
     apr_table_setn(e, "QUERY_STRING", r->args ? r->args : "");
-    apr_table_setn(e, "REQUEST_URI", original_uri(r)); 
+    apr_table_setn(e, "REQUEST_URI", original_uri(r));
 
     /* Note that the code below special-cases scripts run from includes,
      * because it "knows" that the sub_request has been hacked to have the
@@ -430,7 +430,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 
         if ((*getsfunc) (w, MAX_STRING_LEN - 1, getsfunc_data) == 0) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
-                          "Premature end of script headers: %s", 
+                          "Premature end of script headers: %s",
                           apr_filepath_name_get(r->filename));
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -441,7 +441,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
              /* Indeed, the host's '\n':
                 '\012' for UNIX; '\015' for MacOS; '\025' for OS/390
                  -- whatever the script generates.
-             */                                  
+             */
         if (p > 0 && w[p - 1] == '\n') {
             if (p > 1 && w[p - 2] == CR) {
                 w[p - 2] = '\0';
@@ -523,7 +523,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
             }
 
             ap_log_rerror(APLOG_MARK, APLOG_ERR|APLOG_TOCLIENT, 0, r,
-                          "%s: %s", malformed, 
+                          "%s: %s", malformed,
                           apr_filepath_name_get(r->filename));
             return HTTP_INTERNAL_SERVER_ERROR;
         }
@@ -660,8 +660,8 @@ static int getsfunc_STRING(char *w, int len, void *pvastrs)
     struct vastrs *strs = (struct vastrs*) pvastrs;
     const char *p;
     int t;
-    
-    if (!strs->curpos || !*strs->curpos) 
+
+    if (!strs->curpos || !*strs->curpos)
         return 0;
     p = ap_strchr_c(strs->curpos, '\n');
     if (p)
@@ -679,7 +679,7 @@ static int getsfunc_STRING(char *w, int len, void *pvastrs)
     }
     else
         strs->curpos += t;
-    return t;    
+    return t;
 }
 
 /* ap_scan_script_header_err_strs() accepts additional const char* args...
@@ -687,8 +687,8 @@ static int getsfunc_STRING(char *w, int len, void *pvastrs)
  * character is returned to **arg, **data.  (The first optional arg is
  * counted as 0.)
  */
-AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r, 
-                                                      char *buffer, 
+AP_DECLARE_NONSTD(int) ap_scan_script_header_err_strs(request_rec *r,
+                                                      char *buffer,
                                                       const char **termch,
                                                       int *termarg, ...)
 {

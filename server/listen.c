@@ -160,7 +160,7 @@ static apr_status_t make_sock(apr_pool_t *p, ap_listen_rec *server)
     stat = apr_socket_opt_set(s, APR_SO_REUSEADDR, one);
     if (stat != APR_SUCCESS && stat != APR_ENOTIMPL) {
         ap_log_perror(APLOG_MARK, APLOG_CRIT, stat, p,
-                    "make_sock: for address %pI, apr_socket_opt_set: (SO_REUSEADDR)", 
+                    "make_sock: for address %pI, apr_socket_opt_set: (SO_REUSEADDR)",
                      server->bind_addr);
         apr_socket_close(s);
         return stat;
@@ -197,7 +197,7 @@ static const char* find_accf_name(server_rec *s, const char *proto)
     return accf;
 }
 
-static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis, 
+static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis,
                                            server_rec *server)
 {
     apr_socket_t *s = lis->sd;
@@ -216,7 +216,7 @@ static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis,
 
     if (accf) {
 #if APR_HAS_SO_ACCEPTFILTER
-        rv = apr_socket_accept_filter(s, apr_pstrdup(p, accf), 
+        rv = apr_socket_accept_filter(s, apr_pstrdup(p, accf),
                                       apr_pstrdup(p,""));
         if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p,
@@ -225,7 +225,7 @@ static void ap_apply_accept_filter(apr_pool_t *p, ap_listen_rec *lis,
         }
 #else
 #ifdef APR_TCP_DEFER_ACCEPT
-        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 1);   
+        rv = apr_socket_opt_set(s, APR_TCP_DEFER_ACCEPT, 1);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_ENOTIMPL(rv)) {
             ap_log_perror(APLOG_MARK, APLOG_WARNING, rv, p,
                               "Failed to enable APR_TCP_DEFER_ACCEPT");
@@ -241,7 +241,7 @@ static apr_status_t close_listeners_on_exec(void *v)
     return APR_SUCCESS;
 }
 
-static const char *alloc_listener(process_rec *process, char *addr, 
+static const char *alloc_listener(process_rec *process, char *addr,
                                   apr_port_t port, const char* proto)
 {
     ap_listen_rec **walk, *last;
@@ -515,8 +515,8 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
         proto = ap_get_server_protocol(ls);
         if (!proto) {
             found = 0;
-            /* No protocol was set for this vhost, 
-             * use the default for this listener. 
+            /* No protocol was set for this vhost,
+             * use the default for this listener.
              */
             for (addr = ls->addrs; addr && !found; addr = addr->next) {
                 for (lr = ap_listeners; lr; lr = lr->next) {
@@ -561,7 +561,7 @@ AP_DECLARE(int) ap_setup_listeners(server_rec *s)
     return num_listeners;
 }
 
-AP_DECLARE_NONSTD(void) ap_close_listeners(void) 
+AP_DECLARE_NONSTD(void) ap_close_listeners(void)
 {
     ap_listen_rec *lr;
 

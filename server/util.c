@@ -16,10 +16,10 @@
 
 /*
  * util.c: string utility things
- * 
+ *
  * 3/21/93 Rob McCool
  * 1995-96 Many changes by the Apache Software Foundation
- * 
+ *
  */
 
 /* Debugging aid:
@@ -96,7 +96,7 @@ AP_DECLARE(char *) ap_field_noparam(apr_pool_t *p, const char *intype)
     semi = ap_strchr_c(intype, ';');
     if (semi == NULL) {
         return apr_pstrdup(p, intype);
-    } 
+    }
     else {
         while ((semi > intype) && apr_isspace(semi[-1])) {
             semi--;
@@ -221,11 +221,11 @@ AP_DECLARE(int) ap_strcasecmp_match(const char *str, const char *expected)
 }
 
 /* We actually compare the canonical root to this root, (but we don't
- * waste time checking the case), since every use of this function in 
+ * waste time checking the case), since every use of this function in
  * httpd-2.1 tests if the path is 'proper', meaning we've already passed
  * it through apr_filepath_merge, or we haven't.
  */
-AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir) 
+AP_DECLARE(int) ap_os_is_path_absolute(apr_pool_t *p, const char *dir)
 {
     const char *newpath;
     const char *ourdir = dir;
@@ -439,7 +439,7 @@ AP_DECLARE(void) ap_getparents(char *name)
     /* a) remove ./ path segments */
     for (next = name; *next && (*next != '.'); next++) {
     }
-    
+
     l = w = first_dot = next - name;
     while (name[l] != '\0') {
         if (name[l] == '.' && IS_SLASH(name[l + 1])
@@ -529,8 +529,8 @@ AP_DECLARE(void) ap_no2slash(char *name)
  * assumes n > 0
  * the return value is the ever useful pointer to the trailing \0 of d
  *
- * MODIFIED FOR HAVE_DRIVE_LETTERS and NETWARE environments, 
- * so that if n == 0, "/" is returned in d with n == 1 
+ * MODIFIED FOR HAVE_DRIVE_LETTERS and NETWARE environments,
+ * so that if n == 0, "/" is returned in d with n == 1
  * and s == "e:/test.html", "e:/" is returned in d
  * *** See also directory_walk in modules/http/http_request.c
 
@@ -732,7 +732,7 @@ AP_DECLARE(char *) ap_getword_conf(apr_pool_t *p, const char **line)
     if ((quote = *str) == '"' || quote == '\'') {
         strend = str + 1;
         while (*strend && *strend != quote) {
-            if (*strend == '\\' && strend[1] && 
+            if (*strend == '\\' && strend[1] &&
                 (strend[1] == quote || strend[1] == '\\')) {
                 strend += 2;
             }
@@ -851,7 +851,7 @@ AP_DECLARE(const char *) ap_resolve_env(apr_pool_t *p, const char * word)
 AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp)
 {
 #ifdef DEBUG
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
         "Done with config file %s", cfp->name);
 #endif
     return (cfp->close == NULL) ? 0 : cfp->close(cfp->param);
@@ -906,7 +906,7 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
 #ifdef DEBUG
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
                 "Opening config file %s (%s)",
-                name, (status != APR_SUCCESS) ? 
+                name, (status != APR_SUCCESS) ?
                 apr_strerror(status, buf, sizeof(buf)) : "successful");
 #endif
     if (status != APR_SUCCESS)
@@ -937,14 +937,14 @@ AP_DECLARE(apr_status_t) ap_pcfg_openfile(ap_configfile_t **ret_cfg,
      * would signify utf-8 text files.
      *
      * Since MS configuration files are all protecting utf-8 encoded
-     * Unicode path, file and resource names, we already have the correct 
+     * Unicode path, file and resource names, we already have the correct
      * WinNT encoding.  But at least eat the stupid three bytes up front.
      */
     {
         unsigned char buf[4];
         apr_size_t len = 3;
         status = apr_file_read(file, buf, &len);
-        if ((status != APR_SUCCESS) || (len < 3) 
+        if ((status != APR_SUCCESS) || (len < 3)
               || memcmp(buf, "\xEF\xBB\xBF", 3) != 0) {
             apr_off_t zero = 0;
             apr_file_seek(file, APR_SET, &zero);
@@ -985,16 +985,16 @@ AP_DECLARE(ap_configfile_t *) ap_pcfg_open_custom(apr_pool_t *p,
     new_cfg->line_number = 0;
     return new_cfg;
 }
-   
+
 /* Read one character from a configfile_t */
 AP_DECLARE(int) ap_cfg_getc(ap_configfile_t *cfp)
 {
     register int ch = cfp->getch(cfp->param);
-    if (ch == LF) 
+    if (ch == LF)
         ++cfp->line_number;
     return ch;
 }
-  
+
 /* Read one line from open ap_configfile_t, strip LF, increase line number */
 /* If custom handler does not define a getstr() function, read char by char */
 AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
@@ -1034,13 +1034,13 @@ AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
                         continue;
                     }
                     else {
-                        /* 
+                        /*
                          * no real continuation because escaped -
                          * then just remove escape character
                          */
                         for ( ; cp < cbuf+cbufsize && *cp != '\0'; cp++)
                             cp[0] = cp[1];
-                    }   
+                    }
                 }
             }
             break;
@@ -1078,7 +1078,7 @@ AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
 
         if (c == EOF)
             return 1;
-        
+
         if(bufsize < 2) {
             /* too small, assume caller is crazy */
             return 1;
@@ -1099,7 +1099,7 @@ AP_DECLARE(int) ap_cfg_getline(char *buf, size_t bufsize, ap_configfile_t *cfp)
                 ++cfp->line_number;
             }
             if (c == EOF || c == 0x4 || c == LF || i >= (bufsize - 2)) {
-                /* 
+                /*
                  *  check for line continuation
                  */
                 if (i > 0 && buf[i-1] == '\\') {
@@ -1497,7 +1497,7 @@ AP_DECLARE(char *) ap_escape_shell_cmd(apr_pool_t *p, const char *str)
     for (; *s; ++s) {
 
 #if defined(OS2) || defined(WIN32)
-        /* 
+        /*
          * Newlines to Win32/OS2 CreateProcess() are ill advised.
          * Convert them to spaces since they are effectively white
          * space to most applications
@@ -2016,14 +2016,14 @@ char *ap_get_local_host(apr_pool_t *a)
         }
     }
 
-    if (!server_hostname) 
+    if (!server_hostname)
         server_hostname = apr_pstrdup(a, "127.0.0.1");
 
     ap_log_perror(APLOG_MARK, APLOG_ALERT|APLOG_STARTUP, 0, a,
                  "%s: Could not reliably determine the server's fully qualified "
                  "domain name, using %s for ServerName",
                  ap_server_argv0, server_hostname);
-             
+
     return server_hostname;
 }
 
@@ -2041,8 +2041,8 @@ AP_DECLARE(char *) ap_pbase64decode(apr_pool_t *p, const char *bufcoded)
     return decoded;
 }
 
-AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string) 
-{ 
+AP_DECLARE(char *) ap_pbase64encode(apr_pool_t *p, char *string)
+{
     char *encoded;
     int l = strlen(string);
 

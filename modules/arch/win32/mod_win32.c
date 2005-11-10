@@ -35,15 +35,15 @@
 extern OSVERSIONINFO osver; /* hiding in mpm_winnt.c */
 static int win_nt;
 
-/* 
+/*
  * CGI Script stuff for Win32...
  */
-typedef enum { eFileTypeUNKNOWN, eFileTypeBIN, eFileTypeEXE16, eFileTypeEXE32, 
+typedef enum { eFileTypeUNKNOWN, eFileTypeBIN, eFileTypeEXE16, eFileTypeEXE32,
                eFileTypeSCRIPT } file_type_e;
-typedef enum { INTERPRETER_SOURCE_UNSET, INTERPRETER_SOURCE_REGISTRY_STRICT, 
-               INTERPRETER_SOURCE_REGISTRY, INTERPRETER_SOURCE_SHEBANG 
+typedef enum { INTERPRETER_SOURCE_UNSET, INTERPRETER_SOURCE_REGISTRY_STRICT,
+               INTERPRETER_SOURCE_REGISTRY, INTERPRETER_SOURCE_SHEBANG
              } interpreter_source_e;
-AP_DECLARE(file_type_e) ap_get_win32_interpreter(const request_rec *, 
+AP_DECLARE(file_type_e) ap_get_win32_interpreter(const request_rec *,
                                                  char **interpreter,
                                                  char **arguments);
 
@@ -69,9 +69,9 @@ static void *merge_win32_dir_configs(apr_pool_t *p, void *basev, void *addv)
     win32_dir_conf *add = (win32_dir_conf *) addv;
 
     new = (win32_dir_conf *) apr_pcalloc(p, sizeof(win32_dir_conf));
-    new->script_interpreter_source = (add->script_interpreter_source 
+    new->script_interpreter_source = (add->script_interpreter_source
                                            != INTERPRETER_SOURCE_UNSET)
-                                   ? add->script_interpreter_source 
+                                   ? add->script_interpreter_source
                                    : base->script_interpreter_source;
     return new;
 }
@@ -90,7 +90,7 @@ static const char *set_interpreter_source(cmd_parms *cmd, void *dv,
         d->script_interpreter_source = INTERPRETER_SOURCE_SHEBANG;
     }
     else {
-        return apr_pstrcat(cmd->temp_pool, "ScriptInterpreterSource \"", arg, 
+        return apr_pstrcat(cmd->temp_pool, "ScriptInterpreterSource \"", arg,
                            "\" must be \"registry\", \"registry-strict\" or "
                            "\"script\"", NULL);
     }
@@ -104,7 +104,7 @@ static const char *set_interpreter_source(cmd_parms *cmd, void *dv,
  * varies between msdos and Windows applications.
  * For subsystem 2 [GUI] the default is the system Ansi CP.
  * For subsystem 3 [CLI] the default is the system OEM CP.
- */ 
+ */
 static void prep_string(const char ** str, apr_pool_t *p)
 {
     const char *ch = *str;
@@ -141,7 +141,7 @@ static void prep_string(const char ** str, apr_pool_t *p)
 /* Somewhat more exciting ... figure out where the registry has stashed the
  * ExecCGI or Open command - it may be nested one level deep (or more???)
  */
-static char* get_interpreter_from_win32_registry(apr_pool_t *p, 
+static char* get_interpreter_from_win32_registry(apr_pool_t *p,
                                                  const char* ext,
                                                  int strict)
 {
@@ -153,11 +153,11 @@ static char* get_interpreter_from_win32_registry(apr_pool_t *p,
     char execopen_path[] = "SHELL\\OPEN\\COMMAND";
     char *type_name;
     char *buffer;
-    
+
     if (!ext) {
         return NULL;
     }
-    /* 
+    /*
      * Future optimization:
      * When the registry is successfully searched, store the strings for
      * interpreter and arguments in an ext hash to speed up subsequent look-ups
@@ -175,12 +175,12 @@ static char* get_interpreter_from_win32_registry(apr_pool_t *p,
 
     if (rv == APR_SUCCESS && type_name[0]) {
         /* Open the key associated with the script filetype extension */
-        rv = ap_regkey_open(&name_key, AP_REGKEY_CLASSES_ROOT, type_name, 
+        rv = ap_regkey_open(&name_key, AP_REGKEY_CLASSES_ROOT, type_name,
                             APR_READ, p);
     }
 
     /* Open the key for the script command path by:
-     * 
+     *
      *   1) the 'named' filetype key for ExecCGI/Command
      *   2) the extension's type key for ExecCGI/Command
      *
@@ -241,7 +241,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
 {
     apr_array_header_t *args = apr_array_make(p, 8, sizeof(char*));
     char *d = apr_palloc(p, strlen(interp)+1);
-    const char *ch = interp; 
+    const char *ch = interp;
     const char **arg;
     int prgtaken = 0;
     int argtaken = 0;
@@ -289,8 +289,8 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
             ch += 2;
             continue;
         }
-        if ((*ch == '\"') && ((*(ch + 1) == '$') 
-                              || (*(ch + 1) == '%')) && (*(ch + 2) == '1') 
+        if ((*ch == '\"') && ((*(ch + 1) == '$')
+                              || (*(ch + 1) == '%')) && (*(ch + 2) == '1')
             && (*(ch + 3) == '\"')) {
             prgtaken = 1;
             arg = (const char**)apr_array_push(args);
@@ -374,7 +374,7 @@ static apr_array_header_t *split_argv(apr_pool_t *p, const char *interp,
 
 
 static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
-                                         request_rec *r, apr_pool_t *p, 
+                                         request_rec *r, apr_pool_t *p,
                                          cgi_exec_info_t *e_info)
 {
     const apr_array_header_t *elts_arr = apr_table_elts(r->subprocess_env);
@@ -386,7 +386,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     const char *args = "";
     int i;
 
-    d = (win32_dir_conf *)ap_get_module_config(r->per_dir_config, 
+    d = (win32_dir_conf *)ap_get_module_config(r->per_dir_config,
                                                &win32_module);
 
     if (e_info->cmd_type) {
@@ -406,7 +406,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
      * we will consider.
      */
     ext = strrchr(apr_filepath_name_get(*cmd), '.');
-    
+
     /* If the file has an extension and it is not .com and not .exe and
      * we've been instructed to search the registry, then do so.
      * Let apr_proc_create do all of the .bat/.cmd dirty work.
@@ -415,13 +415,13 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
                 || !strcasecmp(ext,".bat") || !strcasecmp(ext,".cmd"))) {
         interpreter = "";
     }
-    if (!interpreter && ext 
-          && (d->script_interpreter_source 
+    if (!interpreter && ext
+          && (d->script_interpreter_source
                      == INTERPRETER_SOURCE_REGISTRY
-           || d->script_interpreter_source 
+           || d->script_interpreter_source
                      == INTERPRETER_SOURCE_REGISTRY_STRICT)) {
          /* Check the registry */
-        int strict = (d->script_interpreter_source 
+        int strict = (d->script_interpreter_source
                       == INTERPRETER_SOURCE_REGISTRY_STRICT);
         interpreter = get_interpreter_from_win32_registry(r->pool, ext,
                                                           strict);
@@ -431,7 +431,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         else {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                  strict ? "No ExecCGI verb found for files of type '%s'."
-                        : "No ExecCGI or Open verb found for files of type '%s'.", 
+                        : "No ExecCGI or Open verb found for files of type '%s'.",
                  ext);
         }
     }
@@ -441,7 +441,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         apr_size_t bytes = sizeof(buffer);
         apr_size_t i;
 
-        /* Need to peek into the file figure out what it really is... 
+        /* Need to peek into the file figure out what it really is...
          * ### aught to go back and build a cache for this one of these days.
          */
         if ((rv = apr_file_open(&fh, *cmd, APR_READ | APR_BUFFERED,
@@ -464,7 +464,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
          * would signify utf-8 text files.
          *
          * Since MS configuration files are all protecting utf-8 encoded
-         * Unicode path, file and resource names, we already have the correct 
+         * Unicode path, file and resource names, we already have the correct
          * WinNT encoding.  But at least eat the stupid three bytes up front.
          *
          * ### A more thorough check would also allow UNICODE text in buf, and
@@ -496,7 +496,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
         }
         else if (bytes >= sizeof(IMAGE_DOS_HEADER)) {
             /* Not a script, is it an executable? */
-            IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)buffer;    
+            IMAGE_DOS_HEADER *hdr = (IMAGE_DOS_HEADER*)buffer;
             if (hdr->e_magic == IMAGE_DOS_SIGNATURE) {
                 if (hdr->e_lfarlc < 0x40) {
                     /* Ought to invoke this 16 bit exe by a stub, (cmd /c?) */
@@ -528,7 +528,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
      * application (following the OEM or Ansi code page in effect.)
      */
     for (i = 0; i < elts_arr->nelts; ++i) {
-        if (win_nt && elts[i].key && *elts[i].key 
+        if (win_nt && elts[i].key && *elts[i].key
                 && (strncmp(elts[i].key, "HTTP_", 5) == 0
                  || strncmp(elts[i].key, "SERVER_", 7) == 0
                  || strncmp(elts[i].key, "REQUEST_", 8) == 0
@@ -541,7 +541,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     return APR_SUCCESS;
 }
 
-static int win32_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *ptemp) 
+static int win32_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *ptemp)
 {
     win_nt = (osver.dwPlatformId != VER_PLATFORM_WIN32_WINDOWS);
     return OK;

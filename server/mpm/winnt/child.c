@@ -16,12 +16,12 @@
 
 #ifdef WIN32
 
-#define CORE_PRIVATE 
-#include "httpd.h" 
-#include "http_main.h" 
-#include "http_log.h" 
-#include "http_config.h"	/* for read_config */ 
-#include "http_core.h"		/* for get_remote_host */ 
+#define CORE_PRIVATE
+#include "httpd.h"
+#include "http_main.h"
+#include "http_log.h"
+#include "http_config.h"	/* for read_config */
+#include "http_core.h"		/* for get_remote_host */
 #include "http_connection.h"
 #include "apr_portable.h"
 #include "apr_thread_proc.h"
@@ -74,8 +74,8 @@ void mpm_recycle_completion_context(PCOMP_CONTEXT context)
     /* Recycle the completion context.
      * - clear the ptrans pool
      * - put the context on the queue to be consumed by the accept thread
-     * Note: 
-     * context->accept_socket may be in a disconnected but reusable 
+     * Note:
+     * context->accept_socket may be in a disconnected but reusable
      * state so -don't- close it.
      */
     if (context) {
@@ -111,11 +111,11 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
             ResetEvent(qwait_event);
         }
         apr_thread_mutex_unlock(qlock);
-  
+
         if (!context) {
             /* We failed to grab a context off the queue, consider allocating
-             * a new one out of the child pool. There may be up to 
-             * (ap_threads_per_child + num_listeners) contexts in the system 
+             * a new one out of the child pool. There may be up to
+             * (ap_threads_per_child + num_listeners) contexts in the system
              * at once.
              */
             if (num_completion_contexts >= max_num_completion_contexts) {
@@ -148,7 +148,7 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
 
                 apr_thread_mutex_lock(child_lock);
                 context = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
-  
+
                 context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
                 if (context->Overlapped.hEvent == NULL) {
                     /* Hopefully this is a temporary condition ... */
@@ -158,7 +158,7 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
                     apr_thread_mutex_unlock(child_lock);
                     return NULL;
                 }
- 
+
                 /* Create the tranaction pool */
                 apr_allocator_create(&allocator);
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
@@ -173,10 +173,10 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
                 }
                 apr_allocator_owner_set(allocator, context->ptrans);
                 apr_pool_tag(context->ptrans, "transaction");
- 
+
                 context->accept_socket = INVALID_SOCKET;
                 context->ba = apr_bucket_alloc_create(pchild);
-                apr_atomic_inc32(&num_completion_contexts); 
+                apr_atomic_inc32(&num_completion_contexts);
 
                 apr_thread_mutex_unlock(child_lock);
                 break;
@@ -190,7 +190,7 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
     return context;
 }
 
-apr_status_t mpm_post_completion_context(PCOMP_CONTEXT context, 
+apr_status_t mpm_post_completion_context(PCOMP_CONTEXT context,
                                          io_state_e state)
 {
     LPOVERLAPPED pOverlapped;
@@ -206,7 +206,7 @@ apr_status_t mpm_post_completion_context(PCOMP_CONTEXT context,
 
 /*
  * find_ready_listener()
- * Only used by Win9* and should go away when the win9*_accept() function is 
+ * Only used by Win9* and should go away when the win9*_accept() function is
  * reimplemented using apr_poll().
  */
 static ap_listen_rec *head_listener;
@@ -236,19 +236,19 @@ static APR_INLINE ap_listen_rec *find_ready_listener(fd_set * main_fds)
 
 
 /* Windows 9x specific code...
- * Accept processing for on Windows 95/98 uses a producer/consumer queue 
- * model. A single thread accepts connections and queues the accepted socket 
+ * Accept processing for on Windows 95/98 uses a producer/consumer queue
+ * model. A single thread accepts connections and queues the accepted socket
  * to the accept queue for consumption by a pool of worker threads.
  *
  * win9x_accept()
- *    The accept threads runs this function, which accepts connections off 
+ *    The accept threads runs this function, which accepts connections off
  *    the network and calls add_job() to queue jobs to the accept_queue.
  * add_job()/remove_job()
- *    Add or remove an accepted socket from the list of sockets 
+ *    Add or remove an accepted socket from the list of sockets
  *    connected to clients. allowed_globals.jobmutex protects
  *    against multiple concurrent access to the linked list of jobs.
  * win9x_get_connection()
- *    Calls remove_job() to pull a job from the accept queue. All the worker 
+ *    Calls remove_job() to pull a job from the accept queue. All the worker
  *    threads block on remove_job.
  */
 
@@ -276,7 +276,7 @@ static void add_job(SOCKET sock)
 
     new_job = (joblist *) malloc(sizeof(joblist));
     if (new_job == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                      "Ouch!  Out of memory in add_job()!");
         return;
     }
@@ -340,7 +340,7 @@ static unsigned int __stdcall win9x_accept(void * dummy)
     struct sockaddr_in sa_client;
 #endif
 
-    /* Setup the listeners 
+    /* Setup the listeners
      * ToDo: Use apr_poll()
      */
     FD_ZERO(&listenfds);
@@ -364,7 +364,7 @@ static unsigned int __stdcall win9x_accept(void * dummy)
         rc = select(0, &main_fds, NULL, NULL, &tv);
 
         if (rc == 0 || (rc == SOCKET_ERROR && APR_STATUS_IS_EINTR(apr_get_netos_error()))) {
-            count_select_errors = 0;    /* reset count of errors */            
+            count_select_errors = 0;    /* reset count of errors */
             continue;
         }
         else if (rc == SOCKET_ERROR) {
@@ -372,7 +372,7 @@ static unsigned int __stdcall win9x_accept(void * dummy)
              * select errors. This count is used to ensure we don't go into
              * a busy loop of continuous errors.
              */
-            ap_log_error(APLOG_MARK, APLOG_INFO, apr_get_netos_error(), ap_server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_INFO, apr_get_netos_error(), ap_server_conf,
                          "select failed with error %d", apr_get_netos_error());
             count_select_errors++;
             if (count_select_errors > MAX_SELECT_ERRORS) {
@@ -435,18 +435,18 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         context->ba = apr_bucket_alloc_create(pchild);
         apr_thread_mutex_unlock(child_lock);
     }
-    
+
     while (1) {
-        apr_pool_clear(context->ptrans);        
+        apr_pool_clear(context->ptrans);
         context->accept_socket = remove_job();
         if (context->accept_socket == INVALID_SOCKET) {
             return NULL;
         }
         len = salen;
         context->sa_server = apr_palloc(context->ptrans, len);
-        if (getsockname(context->accept_socket, 
+        if (getsockname(context->accept_socket,
                         context->sa_server, &len)== SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
                          "getsockname failed");
             continue;
         }
@@ -454,7 +454,7 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         context->sa_client = apr_palloc(context->ptrans, len);
         if ((getpeername(context->accept_socket,
                          context->sa_client, &len)) == SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf, 
+            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
                          "getpeername failed");
             memset(&context->sa_client, '\0', sizeof(context->sa_client));
         }
@@ -471,21 +471,21 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
 
 
 /* Windows NT/2000 specific code...
- * Accept processing for on Windows NT uses a producer/consumer queue 
+ * Accept processing for on Windows NT uses a producer/consumer queue
  * model. An accept thread accepts connections off the network then issues
- * PostQueuedCompletionStatus() to awake a thread blocked on the ThreadDispatch 
+ * PostQueuedCompletionStatus() to awake a thread blocked on the ThreadDispatch
  * IOCompletionPort.
  *
  * winnt_accept()
- *    One or more accept threads run in this function, each of which accepts 
+ *    One or more accept threads run in this function, each of which accepts
  *    connections off the network and calls PostQueuedCompletionStatus() to
  *    queue an io completion packet to the ThreadDispatch IOCompletionPort.
  * winnt_get_connection()
- *    Worker threads block on the ThreadDispatch IOCompletionPort awaiting 
+ *    Worker threads block on the ThreadDispatch IOCompletionPort awaiting
  *    connections to service.
  */
 #define MAX_ACCEPTEX_ERR_COUNT 100
-static unsigned int __stdcall winnt_accept(void *lr_) 
+static unsigned int __stdcall winnt_accept(void *lr_)
 {
     ap_listen_rec *lr = (ap_listen_rec *)lr_;
     apr_os_sock_info_t sockinfo;
@@ -501,7 +501,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
     apr_os_sock_get(&nlsd, lr->sd);
 
 #if APR_HAVE_IPV6
-    if (getsockname(nlsd, (struct sockaddr *)&ss_listen, &namelen) == SOCKET_ERROR) { 
+    if (getsockname(nlsd, (struct sockaddr *)&ss_listen, &namelen) == SOCKET_ERROR) {
         ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_netos_error(), ap_server_conf,
                     "winnt_accept: getsockname error on listening socket, is IPv6 available?");
         return 1;
@@ -526,7 +526,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
             context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, IPPROTO_TCP);
             context->socket_family = ss_listen.ss_family;
         }
-        else if (context->socket_family != ss_listen.ss_family) { 
+        else if (context->socket_family != ss_listen.ss_family) {
             closesocket(context->accept_socket);
             context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, IPPROTO_TCP);
             context->socket_family = ss_listen.ss_family;
@@ -552,13 +552,13 @@ static unsigned int __stdcall winnt_accept(void *lr_)
             }
         }
 #endif
-        /* AcceptEx on the completion context. The completion context will be 
-         * signaled when a connection is accepted. 
+        /* AcceptEx on the completion context. The completion context will be
+         * signaled when a connection is accepted.
          */
         if (!AcceptEx(nlsd, context->accept_socket,
                       context->buff,
                       0,
-                      PADDED_ADDR_SIZE, 
+                      PADDED_ADDR_SIZE,
                       PADDED_ADDR_SIZE,
                       &BytesRead,
                       &context->Overlapped)) {
@@ -581,13 +581,13 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                                  "Possible causes: dynamic address renewal, or incompatible VPN or firewall software. "
                                  "Try using the Win32DisableAcceptEx directive.", my_pid);
                     err_count = 0;
-                }          
+                }
                 continue;
             }
             else if ((rv != APR_FROM_OS_ERROR(ERROR_IO_PENDING)) &&
                      (rv != APR_FROM_OS_ERROR(WSA_IO_PENDING))) {
                 ++err_count;
-                if (err_count > MAX_ACCEPTEX_ERR_COUNT) { 
+                if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
                     ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
                                  "Child %d: Encountered too many errors accepting client connections. "
                                  "Possible causes: Unknown. "
@@ -598,9 +598,9 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                 context->accept_socket = INVALID_SOCKET;
                 continue;
             }
-            err_count = 0;  
+            err_count = 0;
 
-            /* Wait for pending i/o. 
+            /* Wait for pending i/o.
              * Wake up once per second to check for shutdown .
              * XXX: We should be waiting on exit_event instead of polling
              */
@@ -611,10 +611,10 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                         /* socket already closed */
                         break;
                     }
-                    if (!GetOverlappedResult((HANDLE)context->accept_socket, 
-                                             &context->Overlapped, 
+                    if (!GetOverlappedResult((HANDLE)context->accept_socket,
+                                             &context->Overlapped,
                                              &BytesRead, FALSE)) {
-                        ap_log_error(APLOG_MARK, APLOG_WARNING, 
+                        ap_log_error(APLOG_MARK, APLOG_WARNING,
                                      apr_get_os_error(), ap_server_conf,
                              "winnt_accept: Asynchronous AcceptEx failed.");
                         closesocket(context->accept_socket);
@@ -633,9 +633,9 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                 continue;
             }
         }
-        err_count = 0;  
-        /* Inherit the listen socket settings. Required for 
-         * shutdown() to work 
+        err_count = 0;
+        /* Inherit the listen socket settings. Required for
+         * shutdown() to work
          */
         if (setsockopt(context->accept_socket, SOL_SOCKET,
                        SO_UPDATE_ACCEPT_CONTEXT, (char *)&nlsd,
@@ -729,7 +729,7 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
 
 /*
  * worker_main()
- * Main entry point for the worker threads. Worker threads block in 
+ * Main entry point for the worker threads. Worker threads block in
  * win*_get_connection() awaiting a connection to service.
  */
 static unsigned int __stdcall worker_main(void *thread_num_val)
@@ -752,7 +752,7 @@ static unsigned int __stdcall worker_main(void *thread_num_val)
         else {
             context = win9x_get_connection(context);
         }
-        
+
         if (!context) {
             /* Time for the thread to exit */
             break;
@@ -773,17 +773,17 @@ static unsigned int __stdcall worker_main(void *thread_num_val)
 
         if (c) {
             ap_process_connection(c, context->sock);
-            apr_socket_opt_get(context->sock, APR_SO_DISCONNECTED, 
+            apr_socket_opt_get(context->sock, APR_SO_DISCONNECTED,
                                &disconnected);
             if (!disconnected) {
                 context->accept_socket = INVALID_SOCKET;
                 ap_lingering_close(c);
             }
             else if (!use_acceptex) {
-                /* If the socket is disconnected but we are not using acceptex, 
+                /* If the socket is disconnected but we are not using acceptex,
                  * we cannot reuse the socket. Disconnected sockets are removed
                  * from the apr_socket_t struct by apr_sendfile() to prevent the
-                 * socket descriptor from being inadvertently closed by a call 
+                 * socket descriptor from being inadvertently closed by a call
                  * to apr_socket_close(), so close it directly.
                  */
                 closesocket(context->accept_socket);
@@ -796,7 +796,7 @@ static unsigned int __stdcall worker_main(void *thread_num_val)
         }
     }
 
-    ap_update_child_status_from_indexes(0, thread_num, SERVER_DEAD, 
+    ap_update_child_status_from_indexes(0, thread_num, SERVER_DEAD,
                                         (request_rec *) NULL);
 
     return 0;
@@ -815,8 +815,8 @@ static void cleanup_thread(HANDLE *handles, int *thread_cnt, int thread_to_clean
 
 
 /*
- * child_main() 
- * Entry point for the main control thread for the child process. 
+ * child_main()
+ * Entry point for the main control thread for the child process.
  * This thread creates the accept thread, worker threads and
  * monitors the child process for maintenance and shutdown
  * events.
@@ -829,7 +829,7 @@ static void create_listener_thread()
         _beginthreadex(NULL, 0, win9x_accept,
                        NULL, 0, &tid);
     } else {
-        /* Start an accept thread per listener 
+        /* Start an accept thread per listener
          * XXX: Why would we have a NULL sd in our listeners?
          */
         ap_listen_rec *lr;
@@ -838,7 +838,7 @@ static void create_listener_thread()
          * (ap_threads_per_child + num_listeners). We need the additional
          * completion contexts to prevent server hangs when ThreadsPerChild
          * is configured to something less than or equal to the number
-         * of listeners. This is not a usual case, but people have 
+         * of listeners. This is not a usual case, but people have
          * encountered it.
          * */
         for (lr = ap_listeners; lr ; lr = lr->next) {
@@ -889,7 +889,7 @@ void child_main(apr_pool_t *pconf)
     child_events[1] = max_requests_per_child_event;
 
     allowed_globals.jobsemaphore = CreateSemaphore(NULL, 0, 1000000, NULL);
-    apr_thread_mutex_create(&allowed_globals.jobmutex, 
+    apr_thread_mutex_create(&allowed_globals.jobmutex,
                             APR_THREAD_MUTEX_DEFAULT, pchild);
 
     /*
@@ -903,7 +903,7 @@ void child_main(apr_pool_t *pconf)
                      "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
         exit(APEXIT_CHILDINIT);
     }
-    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
+    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Child %d: Acquired the start mutex.", my_pid);
 
     /*
@@ -925,10 +925,10 @@ void child_main(apr_pool_t *pconf)
         }
     }
 
-    /* 
+    /*
      * Create the pool of worker threads
      */
-    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
+    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Child %d: Starting %d worker threads.", my_pid, ap_threads_per_child);
     child_handles = (HANDLE) apr_pcalloc(pchild, ap_threads_per_child * sizeof(HANDLE));
     apr_thread_mutex_create(&child_lock, APR_THREAD_MUTEX_DEFAULT, pchild);
@@ -946,13 +946,13 @@ void child_main(apr_pool_t *pconf)
             if (child_handles[i] == 0) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
                              "Child %d: _beginthreadex failed. Unable to create all worker threads. "
-                             "Created %d of the %d threads requested with the ThreadsPerChild configuration directive.", 
+                             "Created %d of the %d threads requested with the ThreadsPerChild configuration directive.",
                              my_pid, threads_created, ap_threads_per_child);
                 ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
                 goto shutdown;
             }
             threads_created++;
-            /* Save the score board index in ht keyed to the thread handle. We need this 
+            /* Save the score board index in ht keyed to the thread handle. We need this
              * when cleaning up threads down below...
              */
             apr_thread_mutex_lock(child_lock);
@@ -979,11 +979,11 @@ void child_main(apr_pool_t *pconf)
     }
 
     /* Wait for one of three events:
-     * exit_event: 
-     *    The exit_event is signaled by the parent process to notify 
+     * exit_event:
+     *    The exit_event is signaled by the parent process to notify
      *    the child that it is time to exit.
      *
-     * max_requests_per_child_event: 
+     * max_requests_per_child_event:
      *    This event is signaled by the worker threads to indicate that
      *    the process has handled MaxRequestsPerChild connections.
      *
@@ -998,8 +998,8 @@ void child_main(apr_pool_t *pconf)
      *      named well, it's more like a_p_o_c_died.)
      *
      * XXX: however - if we get a_p_o_c handle inheritance working, and
-     *      the parent process creates other children and passes the pipes 
-     *      to our worker processes, then we have no business doing such 
+     *      the parent process creates other children and passes the pipes
+     *      to our worker processes, then we have no business doing such
      *      things in the child_main loop, but should happen in master_main.
      */
     while (1) {
@@ -1012,7 +1012,7 @@ void child_main(apr_pool_t *pconf)
         if (rv == WAIT_TIMEOUT) {
             apr_proc_other_child_refresh_all(APR_OC_REASON_RUNNING);
         }
-        else 
+        else
 #endif
             if (rv == WAIT_FAILED) {
             /* Something serious is wrong */
@@ -1039,14 +1039,14 @@ void child_main(apr_pool_t *pconf)
         }
     }
 
-    /* 
-     * Time to shutdown the child process 
+    /*
+     * Time to shutdown the child process
      */
 
  shutdown:
 
     winnt_mpm_state = AP_MPMQ_STOPPING;
-    /* Setting is_graceful will cause threads handling keep-alive connections 
+    /* Setting is_graceful will cause threads handling keep-alive connections
      * to close the connection after handling the current request.
      */
     is_graceful = 1;
@@ -1059,7 +1059,7 @@ void child_main(apr_pool_t *pconf)
         apr_socket_close(lr->sd);
     }
 
-    /* Shutdown listener threads and pending AcceptEx socksts 
+    /* Shutdown listener threads and pending AcceptEx socksts
      * but allow the worker threads to continue consuming from
      * the queue of accepted connections.
      */
@@ -1071,15 +1071,15 @@ void child_main(apr_pool_t *pconf)
     workers_may_exit = 1;
 
     /* Release the start_mutex to let the new process (in the restart
-     * scenario) a chance to begin accepting and servicing requests 
+     * scenario) a chance to begin accepting and servicing requests
      */
     rv = apr_proc_mutex_unlock(start_mutex);
     if (rv == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK,APLOG_NOTICE, rv, ap_server_conf, 
+        ap_log_error(APLOG_MARK,APLOG_NOTICE, rv, ap_server_conf,
                      "Child %d: Released the start mutex", my_pid);
     }
     else {
-        ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf, 
+        ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
                      "Child %d: Failure releasing the start mutex", my_pid);
     }
 
@@ -1092,7 +1092,7 @@ void child_main(apr_pool_t *pconf)
     else { /* Windows NT/2000 */
         /* Post worker threads blocked on the ThreadDispatch IOCompletion port */
         while (g_blocked_threads > 0) {
-            ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf, 
+            ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf,
                          "Child %d: %d threads blocked on the completion port", my_pid, g_blocked_threads);
             for (i=g_blocked_threads; i > 0; i--) {
                 PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_SHUTDOWN, NULL);
@@ -1110,7 +1110,7 @@ void child_main(apr_pool_t *pconf)
     }
 
     /* Give busy worker threads a chance to service their connections */
-    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
+    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Child %d: Waiting for %d worker threads to exit.", my_pid, threads_created);
     end_time = time(NULL) + 180;
     while (threads_created) {
@@ -1126,7 +1126,7 @@ void child_main(apr_pool_t *pconf)
 
     /* Kill remaining threads off the hard way */
     if (threads_created) {
-        ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
+        ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                      "Child %d: Terminating %d threads that failed to exit.",
                      my_pid, threads_created);
     }
@@ -1136,9 +1136,9 @@ void child_main(apr_pool_t *pconf)
         CloseHandle(child_handles[i]);
         /* Reset the scoreboard entry for the thread we just whacked */
         score_idx = apr_hash_get(ht, &child_handles[i], sizeof(HANDLE));
-        ap_update_child_status_from_indexes(0, *score_idx, SERVER_DEAD, NULL);        
+        ap_update_child_status_from_indexes(0, *score_idx, SERVER_DEAD, NULL);
     }
-    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf, 
+    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Child %d: All worker threads have exited.", my_pid);
 
     CloseHandle(allowed_globals.jobsemaphore);

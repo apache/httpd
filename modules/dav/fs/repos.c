@@ -183,7 +183,7 @@ struct dav_stream {
     const char *pathname;       /* we may need to remove it at close time */
 };
 
-/* returns an appropriate HTTP status code given an APR status code for a 
+/* returns an appropriate HTTP status code given an APR status code for a
  * failed I/O operation.  ### use something besides 500? */
 #define MAP_IO2HTTP(e) (APR_STATUS_IS_ENOSPC(e) ? HTTP_INSUFFICIENT_STORAGE : \
                         HTTP_INTERNAL_SERVER_ERROR)
@@ -232,7 +232,7 @@ dav_error * dav_fs_dir_file_name(
         if (dirlen > 0) {
             rv = apr_filepath_root(&rootpath, &testpath, 0, ctx->pool);
         }
-        
+
         /* remove trailing slash from dirpath, unless it's a root path
          */
         if ((rv == APR_SUCCESS && testpath && *testpath)
@@ -241,7 +241,7 @@ dav_error * dav_fs_dir_file_name(
                 dirpath[dirlen - 1] = '\0';
             }
         }
-        
+
         /* ###: Looks like a response could be appropriate
          *
          * APR_SUCCESS     here tells us the dir is a root
@@ -272,7 +272,7 @@ dav_error * dav_fs_dir_file_name(
 static void dav_format_time(int style, apr_time_t sec, char *buf)
 {
     apr_time_exp_t tms;
-    
+
     /* ### what to do if fails? */
     (void) apr_time_exp_gmt(&tms, sec);
 
@@ -330,14 +330,14 @@ static dav_error * dav_fs_copymove_file(
                                      "Could not set permissions on destination");
             }
         }
-    } 
+    }
     else {
         perms = APR_OS_DEFAULT;
     }
 
     dav_set_bufsize(p, pbuf, DAV_FS_COPY_BLOCKSIZE);
 
-    if ((apr_file_open(&inf, src, APR_READ | APR_BINARY, APR_OS_DEFAULT, p)) 
+    if ((apr_file_open(&inf, src, APR_READ | APR_BINARY, APR_OS_DEFAULT, p))
             != APR_SUCCESS) {
         /* ### use something besides 500? */
         return dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
@@ -345,7 +345,7 @@ static dav_error * dav_fs_copymove_file(
     }
 
     /* ### do we need to deal with the umask? */
-    status = apr_file_open(&outf, dst, APR_WRITE | APR_CREATE | APR_TRUNCATE 
+    status = apr_file_open(&outf, dst, APR_WRITE | APR_CREATE | APR_TRUNCATE
                            | APR_BINARY, perms, p);
     if (status != APR_SUCCESS) {
         apr_file_close(inf);
@@ -361,7 +361,7 @@ static dav_error * dav_fs_copymove_file(
         if (status != APR_SUCCESS && status != APR_EOF) {
             apr_file_close(inf);
             apr_file_close(outf);
-            
+
             if (apr_file_remove(dst, p) != APR_SUCCESS) {
                 /* ### ACK! Inconsistent state... */
 
@@ -750,7 +750,7 @@ static dav_error * dav_fs_get_parent_resource(const dav_resource *resource,
      */
     testpath = ctx->pathname;
     rv = apr_filepath_root(&testroot, &testpath, 0, ctx->pool);
-    if ((rv != APR_SUCCESS && rv != APR_ERELATIVE) 
+    if ((rv != APR_SUCCESS && rv != APR_ERELATIVE)
         || !testpath || !*testpath) {
         *result_parent = NULL;
         return NULL;
@@ -765,7 +765,7 @@ static dav_error * dav_fs_get_parent_resource(const dav_resource *resource,
     parent_ctx->pool = ctx->pool;
 
     dirpath = ap_make_dirstr_parent(ctx->pool, ctx->pathname);
-    if (strlen(dirpath) > 1 && dirpath[strlen(dirpath) - 1] == '/') 
+    if (strlen(dirpath) > 1 && dirpath[strlen(dirpath) - 1] == '/')
         dirpath[strlen(dirpath) - 1] = '\0';
     parent_ctx->pathname = dirpath;
 
@@ -782,7 +782,7 @@ static dav_error * dav_fs_get_parent_resource(const dav_resource *resource,
         parent_resource->uri = uri;
     }
 
-    rv = apr_stat(&parent_ctx->finfo, parent_ctx->pathname, 
+    rv = apr_stat(&parent_ctx->finfo, parent_ctx->pathname,
                   APR_FINFO_NORM, ctx->pool);
     if (rv == APR_SUCCESS || rv == APR_INCOMPLETE) {
         parent_resource->exists = 1;
@@ -1056,9 +1056,9 @@ static dav_error * dav_fs_copymove_walker(dav_walk_resource *wres,
         }
     }
     else {
-        err = dav_fs_copymove_file(ctx->is_move, ctx->pool, 
-                                   srcinfo->pathname, dstinfo->pathname, 
-                                   &srcinfo->finfo, 
+        err = dav_fs_copymove_file(ctx->is_move, ctx->pool,
+                                   srcinfo->pathname, dstinfo->pathname,
+                                   &srcinfo->finfo,
                                    ctx->res_dst->exists ? &dstinfo->finfo : NULL,
                                    &ctx->work_buf);
         /* ### push a higher-level description? */
@@ -1141,13 +1141,13 @@ static dav_error *dav_fs_copymove_resource(
     /* not a collection */
     if ((err = dav_fs_copymove_file(is_move, src->info->pool,
                                     src->info->pathname, dst->info->pathname,
-                                    &src->info->finfo, 
+                                    &src->info->finfo,
                                     dst->exists ? &dst->info->finfo : NULL,
                                     &work_buf)) != NULL) {
         /* ### push a higher-level description? */
         return err;
     }
-        
+
     /* copy/move properties as well */
     return dav_fs_copymoveset(is_move, src->info->pool, src, dst, &work_buf);
 }
@@ -1223,10 +1223,10 @@ static dav_error * dav_fs_move_resource(
          * so try it
          */
         dirpath = ap_make_dirstr_parent(dstinfo->pool, dstinfo->pathname);
-        /* 
+        /*
          * XXX: If missing dev ... then what test?
          * Really need a try and failover for those platforms.
-         * 
+         *
          */
         rv = apr_stat(&finfo, dirpath, APR_FINFO_DEV, dstinfo->pool);
         if ((rv == APR_SUCCESS || rv == APR_INCOMPLETE)
@@ -1456,7 +1456,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
         len = strlen(dirent.name);
 
         /* avoid recursing into our current, parent, or state directories */
-        if (dirent.name[0] == '.' 
+        if (dirent.name[0] == '.'
               && (len == 1 || (dirent.name[1] == '.' && len == 2))) {
             continue;
         }
@@ -1481,7 +1481,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
 
 
         /* ### Optimize me, dirent can give us what we need! */
-        status = apr_stat(&fsctx->info1.finfo, fsctx->path1.buf, 
+        status = apr_stat(&fsctx->info1.finfo, fsctx->path1.buf,
                           APR_FINFO_NORM | APR_FINFO_LINK, pool);
         if (status != APR_SUCCESS && status != APR_INCOMPLETE) {
             /* woah! where'd it go? */
@@ -1611,7 +1611,7 @@ static dav_error * dav_fs_walker(dav_fs_walker_context *fsctx, int depth)
             ** resource, query the lock database to force removal
             ** of both the lock entry and .locknull, if necessary..
             ** Sure, the query in PROPFIND would do this.. after
-            ** the locknull resource was already included in the 
+            ** the locknull resource was already included in the
             ** return.
             **
             ** NOTE: we assume the caller has opened the lock database
@@ -1773,7 +1773,7 @@ static const char *dav_fs_getetag(const dav_resource *resource)
 {
     dav_resource_private *ctx = resource->info;
 
-    if (!resource->exists) 
+    if (!resource->exists)
         return apr_pstrdup(ctx->pool, "");
 
     if (ctx->finfo.filetype != 0) {

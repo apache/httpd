@@ -185,7 +185,7 @@ AP_DECLARE(void) ap_open_stderr_log(apr_pool_t *p)
     apr_file_open_stderr(&stderr_log, p);
 }
 
-AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p, 
+AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
                                                const char *fname)
 {
     apr_file_t *stderr_file;
@@ -328,7 +328,7 @@ static int open_error_log(server_rec *s, apr_pool_t *p)
     return OK;
 }
 
-int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */, 
+int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
                  apr_pool_t *ptemp, server_rec *s_main)
 {
     apr_status_t rc = APR_SUCCESS;
@@ -679,7 +679,7 @@ AP_DECLARE(void) ap_log_pid(apr_pool_t *p, const char *filename)
 
     fname = ap_server_root_relative(p, filename);
     if (!fname) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH,
                      NULL, "Invalid PID file path %s, ignoring.", filename);
         return;
     }
@@ -732,7 +732,7 @@ AP_DECLARE(apr_status_t) ap_read_pid(apr_pool_t *p, const char *filename,
 
     fname = ap_server_root_relative(p, filename);
     if (!fname) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP|APLOG_CRIT, APR_EBADPATH,
                      NULL, "Invalid PID file path %s, ignoring.", filename);
         return APR_EGENERAL;
     }
@@ -794,7 +794,7 @@ static apr_status_t piped_log_spawn(piped_log *pl)
 
     if (((status = apr_procattr_create(&procattr, pl->p)) != APR_SUCCESS) ||
         ((status = apr_procattr_cmdtype_set(procattr,
-                                            APR_SHELLCMD_ENV)) != APR_SUCCESS) || 
+                                            APR_SHELLCMD_ENV)) != APR_SUCCESS) ||
         ((status = apr_procattr_child_in_set(procattr,
                                              ap_piped_log_read_fd(pl),
                                              ap_piped_log_write_fd(pl)))

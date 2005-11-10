@@ -17,15 +17,15 @@
 /*
  * httpd.c: simple http daemon for answering WWW file requests
  *
- * 
+ *
  * 03-21-93  Rob McCool wrote original code (up to NCSA HTTPd 1.3)
- * 
+ *
  * 03-06-95  blong
  *  changed server number for child-alone processes to 0 and changed name
  *   of processes
  *
  * 03-10-95  blong
- *      Added numerous speed hacks proposed by Robert S. Thau (rst@ai.mit.edu) 
+ *      Added numerous speed hacks proposed by Robert S. Thau (rst@ai.mit.edu)
  *      including set group before fork, and call gettime before to fork
  *      to set up libraries.
  *
@@ -174,9 +174,9 @@ static int volatile wait_to_finish=1;
 ap_generation_t volatile ap_my_generation=0;
 
 /* a clean exit from a child with proper cleanup */
-static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans, 
+static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans,
                              apr_bucket_alloc_t *bucket_alloc) __attribute__ ((noreturn));
-static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans, 
+static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans,
                              apr_bucket_alloc_t *bucket_alloc)
 {
     apr_bucket_alloc_destroy(bucket_alloc);
@@ -186,7 +186,7 @@ static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans,
 
     atomic_dec (&worker_thread_count);
     if (worker_num >=0)
-        ap_update_child_status_from_indexes(0, worker_num, WORKER_DEAD, 
+        ap_update_child_status_from_indexes(0, worker_num, WORKER_DEAD,
                                             (request_rec *) NULL);
     NXThreadExit((void*)&code);
 }
@@ -370,7 +370,7 @@ void worker_main(void *arg)
             clean_child_exit(0, my_worker_num, ptrans, bucket_alloc);
         }
 
-        ap_update_child_status_from_indexes(0, my_worker_num, WORKER_READY, 
+        ap_update_child_status_from_indexes(0, my_worker_num, WORKER_READY,
                                             (request_rec *) NULL);
 
         /*
@@ -431,7 +431,7 @@ void worker_main(void *arg)
                 }
                 else {
                     /* if the error is a wouldblock then maybe we were too
-                        quick try to pull the next request from the listen 
+                        quick try to pull the next request from the listen
                         queue.  Try a few more times then return to our idle
                         listen state. */
                     if (!APR_STATUS_IS_EAGAIN(stat)) {
@@ -490,7 +490,7 @@ void worker_main(void *arg)
                         */
                         ap_log_error(APLOG_MARK, APLOG_EMERG, stat, ap_server_conf,
                             "apr_socket_accept: giving up.");
-                        clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, ptrans, 
+                        clean_child_exit(APEXIT_CHILDFATAL, my_worker_num, ptrans,
                                          bucket_alloc);
                 }
 #endif
@@ -507,7 +507,7 @@ void worker_main(void *arg)
         * We now have a connection, so set it up with the appropriate
         * socket options, file descriptors, and read/write buffers.
         */
-        current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd, 
+        current_conn = ap_run_create_connection(ptrans, ap_server_conf, csd,
                                                 my_worker_num, sbh,
                                                 bucket_alloc);
         if (current_conn) {
@@ -530,7 +530,7 @@ static int make_child(server_rec *s, int slot)
         ap_max_workers_limit = slot + 1;
     }
 
-    ap_update_child_status_from_indexes(0, slot, WORKER_STARTING, 
+    ap_update_child_status_from_indexes(0, slot, WORKER_STARTING,
                                         (request_rec *) NULL);
 
     if (ctx = NXContextAlloc((void (*)(void *)) worker_main, (void*)slot, NX_PRIO_MED, ap_thread_stacksize, NX_CTX_NORMAL, &err)) {
@@ -548,7 +548,7 @@ static int make_child(server_rec *s, int slot)
         /* create thread didn't succeed. Fix the scoreboard or else
         * it will say SERVER_STARTING forever and ever
         */
-        ap_update_child_status_from_indexes(0, slot, WORKER_DEAD, 
+        ap_update_child_status_from_indexes(0, slot, WORKER_DEAD,
                                             (request_rec *) NULL);
 
         /* In case system resources are maxxed out, we don't want
@@ -661,7 +661,7 @@ static void perform_idle_server_maintenance(apr_pool_t *p)
         * while we were counting
         */
         idle_spawn_rate = 1;
-        ap_update_child_status_from_indexes(0, last_non_dead, WORKER_IDLE_KILL, 
+        ap_update_child_status_from_indexes(0, last_non_dead, WORKER_IDLE_KILL,
                                             (request_rec *) NULL);
         DBPRINT1("\nKilling idle thread: %d\n", last_non_dead);
     }
@@ -716,9 +716,9 @@ static void display_settings ()
     int reqs = request_count;
 #ifdef DBINFO_ON
     int wblock = would_block;
-    
+
     would_block = 0;
-#endif    
+#endif
 
     request_count = 0;
 
@@ -779,7 +779,7 @@ static void display_settings ()
     }
     printf ("Total Running:\t%d\tout of: \t%d\n", total, ap_threads_limit);
     printf ("Requests per interval:\t%d\n", reqs);
-    
+
 #ifdef DBINFO_ON
     printf ("Would blocks:\t%d\n", wblock);
     printf ("Successful retries:\t%d\n", retry_success);
@@ -805,9 +805,9 @@ static void show_server_data()
        printf(" %d", lr->bind_addr->port);
        lr = lr->next;
     } while(lr && lr != ap_listeners);
-    
+
     /* Display dynamic modules loaded */
-    printf("\n");    
+    printf("\n");
     for (m = ap_loaded_modules; *m != NULL; m++) {
         if (((module*)*m)->dynamic_load_handle) {
             printf("   Loaded dynamic module %s\n", ((module*)*m)->name);
@@ -921,7 +921,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     mpm_state = AP_MPMQ_STOPPING;
 
 
-    /* Shutdown the listen sockets so that we don't get stuck in a blocking call. 
+    /* Shutdown the listen sockets so that we don't get stuck in a blocking call.
     shutdown_listeners();*/
 
     if (shutdown_pending) { /* Got an unload from the console */
@@ -929,7 +929,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             "caught SIGTERM, shutting down");
 
         while (worker_thread_count > 0) {
-            printf ("\rShutdown pending. Waiting for %d thread(s) to terminate...", 
+            printf ("\rShutdown pending. Waiting for %d thread(s) to terminate...",
                     worker_thread_count);
             apr_thread_yield();
         }
@@ -1000,7 +1000,7 @@ static void netware_mpm_hooks(apr_pool_t *p)
     ap_hook_pre_config(netware_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-void netware_rewrite_args(process_rec *process) 
+void netware_rewrite_args(process_rec *process)
 {
     char *def_server_root;
     char optbuf[3];
@@ -1015,10 +1015,10 @@ void netware_rewrite_args(process_rec *process)
     /* Make sure to hold the Apache screen open if exit() is called */
     hold_screen_on_exit = 1;
 
-    /* Rewrite process->argv[]; 
+    /* Rewrite process->argv[];
      *
      * add default -d serverroot from the path of this executable
-     * 
+     *
      * The end result will look like:
      *     The -d serverroot default from the running executable
      */
@@ -1030,14 +1030,14 @@ void netware_rewrite_args(process_rec *process)
             for (i=len; i; i--) {
                 if (s[i] == '\\' || s[i] == '/') {
                     s[i] = '\0';
-                    apr_filepath_merge(&def_server_root, NULL, s, 
+                    apr_filepath_merge(&def_server_root, NULL, s,
                         APR_FILEPATH_TRUENAME, process->pool);
                     break;
                 }
             }
             /* Use process->pool so that the rewritten argv
             * lasts for the lifetime of the server process,
-            * because pconf will be destroyed after the 
+            * because pconf will be destroyed after the
             * initial pre-flight of the config parser.
             */
             mpm_new_argv = apr_array_make(process->pool, process->argc + 2,
@@ -1069,7 +1069,7 @@ void netware_rewrite_args(process_rec *process)
                     break;
                 }
             }
-            process->argc = mpm_new_argv->nelts; 
+            process->argc = mpm_new_argv->nelts;
             process->argv = (const char * const *) mpm_new_argv->elts;
         }
     }
@@ -1096,14 +1096,14 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
     if (!strnicmp(szCommand, szcommandLine, iCommandLen)) {
         ActivateScreen (getscreenhandle());
 
-        /* If an instance id was not given but the nlm is loaded in 
+        /* If an instance id was not given but the nlm is loaded in
             protected space, then the the command belongs to the
             OS address space instance to pass it on. */
         pID = strstr (szcommandLine, "-p");
         if ((pID == NULL) && nlmisloadedprotected())
             return NOTMYCOMMAND;
 
-        /* If we got an instance id but it doesn't match this 
+        /* If we got an instance id but it doesn't match this
             instance of the nlm, pass it on. */
         if (pID) {
             pID = &pID[2];
@@ -1195,7 +1195,7 @@ static void RemoveConsoleHandler(void)
     NX_UNWRAP_INTERFACE(ConsoleHandler.parser);
 }
 
-static const char *set_threads_to_start(cmd_parms *cmd, void *dummy, const char *arg) 
+static const char *set_threads_to_start(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1215,15 +1215,15 @@ static const char *set_min_free_threads(cmd_parms *cmd, void *dummy, const char 
 
     ap_threads_min_free = atoi(arg);
     if (ap_threads_min_free <= 0) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     "WARNING: detected MinSpareServers set to non-positive.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     "Resetting to 1 to avoid almost certain Apache failure.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     "Please read the documentation.");
        ap_threads_min_free = 1;
     }
-       
+
     return NULL;
 }
 
@@ -1238,7 +1238,7 @@ static const char *set_max_free_threads(cmd_parms *cmd, void *dummy, const char 
     return NULL;
 }
 
-static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *arg) 
+static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
@@ -1247,19 +1247,19 @@ static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *ar
 
     ap_threads_limit = atoi(arg);
     if (ap_threads_limit > HARD_THREAD_LIMIT) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     "WARNING: MaxThreads of %d exceeds compile time limit "
                     "of %d threads,", ap_threads_limit, HARD_THREAD_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     " lowering MaxThreads to %d.  To increase, please "
                     "see the", HARD_THREAD_LIMIT);
        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                     " HARD_THREAD_LIMIT define in %s.",
                     AP_MPM_HARD_LIMITS_FILE);
        ap_threads_limit = HARD_THREAD_LIMIT;
-    } 
+    }
     else if (ap_threads_limit < 1) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
             "WARNING: Require MaxThreads > 0, setting to 1");
         ap_threads_limit = 1;
     }

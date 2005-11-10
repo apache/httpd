@@ -43,8 +43,8 @@
  *
  * When the request is processed, the header directives are processed in
  * this order: firstly, the main server, then the virtual server handling
- * this request (if any), then any <Directory> sections (working downwards 
- * from the root dir), then an <Location> sections (working down from 
+ * this request (if any), then any <Directory> sections (working downwards
+ * from the root dir), then an <Location> sections (working down from
  * shortest URL component), the any <File> sections. This order is
  * important if any 'set' or 'unset' actions are used. For example,
  * the following two directives have different effect if applied in
@@ -100,7 +100,7 @@ static char hdr_out = '1';  /* Header onsuccess */
 static char hdr_err = '2';  /* Header always */
 
 /*
- * There is an array of struct format_tag per Header/RequestHeader 
+ * There is an array of struct format_tag per Header/RequestHeader
  * config directive
  */
 typedef struct {
@@ -151,8 +151,8 @@ static const char *constant_item(request_rec *r, char *stuff)
 }
 static const char *header_request_duration(request_rec *r, char *a)
 {
-    return apr_psprintf(r->pool, "D=%" APR_TIME_T_FMT, 
-                        (apr_time_now() - r->request_time)); 
+    return apr_psprintf(r->pool, "D=%" APR_TIME_T_FMT,
+                        (apr_time_now() - r->request_time));
 }
 static const char *header_request_time(request_rec *r, char *a)
 {
@@ -165,9 +165,9 @@ static const char *unwrap_header(apr_pool_t *p, const char *hdr)
 {
     if (ap_strchr_c(hdr, APR_ASCII_LF) || ap_strchr_c(hdr, APR_ASCII_CR)) {
         char *ptr;
-        
+
         hdr = ptr = apr_pstrdup(p, hdr);
-        
+
         do {
             if (*ptr == APR_ASCII_LF || *ptr == APR_ASCII_CR)
                 *ptr = APR_ASCII_BLANK;
@@ -189,7 +189,7 @@ static const char *header_request_env_var(request_rec *r, char *a)
 static const char *header_request_ssl_var(request_rec *r, char *name)
 {
     if (header_ssl_lookup) {
-        const char *val = header_ssl_lookup(r->pool, r->server, 
+        const char *val = header_ssl_lookup(r->pool, r->server,
                                             r->connection, r, name);
         if (val && val[0])
             return unwrap_header(r->pool, val);
@@ -231,7 +231,7 @@ static void *merge_headers_config(apr_pool_t *p, void *basev, void *overridesv)
 
     return newconf;
 }
- 
+
 static char *parse_misc_string(apr_pool_t *p, format_tag *tag, const char **sa)
 {
     const char *s;
@@ -270,7 +270,7 @@ static char *parse_misc_string(apr_pool_t *p, format_tag *tag, const char **sa)
                 *d++ = '\n';
                 s++;
                 break;
-            case 't':   
+            case 't':
                 *d++ = '\t';
                 s++;
                 break;
@@ -293,7 +293,7 @@ static char *parse_misc_string(apr_pool_t *p, format_tag *tag, const char **sa)
 }
 
 static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
-{ 
+{
     const char *s = *sa;
     const char * (*tag_handler)(request_rec *,char *);
 
@@ -333,13 +333,13 @@ static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
 }
 
 /*
- * A format string consists of white space, text and optional format 
- * tags in any order. E.g., 
+ * A format string consists of white space, text and optional format
+ * tags in any order. E.g.,
  *
  * Header add MyHeader "Free form text %D %t more text"
  *
  * Decompose the format string into its tags. Each tag (struct format_tag)
- * contains a pointer to the function used to format the tag. Then save each 
+ * contains a pointer to the function used to format the tag. Then save each
  * tag in the tag array anchored in the header_entry.
  */
 static char *parse_format_string(apr_pool_t *p, header_entry *hdr, const char *s)
@@ -446,7 +446,7 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
             condition_var = envclause + 4;
         }
     }
-    
+
     if ((colon = ap_strchr_c(hdr, ':'))) {
         hdr = apr_pstrmemdup(cmd->pool, hdr, colon-hdr);
     }
@@ -489,23 +489,23 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
 }
 
 /*
- * Process the tags in the format string. Tags may be format specifiers 
+ * Process the tags in the format string. Tags may be format specifiers
  * (%D, %t, etc.), whitespace or text strings. For each tag, run the handler
  * (formatter) specific to the tag. Handlers return text strings.
- * Concatenate the return from each handler into one string that is 
+ * Concatenate the return from each handler into one string that is
  * returned from this call.
  */
-static char* process_tags(header_entry *hdr, request_rec *r) 
+static char* process_tags(header_entry *hdr, request_rec *r)
 {
     int i;
     const char *s;
     char *str = NULL;
 
     format_tag *tag = (format_tag*) hdr->ta->elts;
- 
+
     for (i = 0; i < hdr->ta->nelts; i++) {
         s = tag[i].func(r, tag[i].arg);
-        if (str == NULL) 
+        if (str == NULL)
             str = apr_pstrdup(r->pool, s);
         else
             str = apr_pstrcat(r->pool, str, s, NULL);
@@ -515,7 +515,7 @@ static char* process_tags(header_entry *hdr, request_rec *r)
 
 static int echo_header(echo_do *v, const char *key, const char *val)
 {
-    /* If the input header (key) matches the regex, echo it intact to 
+    /* If the input header (key) matches the regex, echo it intact to
      * r->headers_out.
      */
     if (!ap_regexec(v->hdr->regex, key, 0, NULL, 0)) {
@@ -572,7 +572,7 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
             echo_do v;
             v.r = r;
             v.hdr = hdr;
-            apr_table_do((int (*) (void *, const char *, const char *)) 
+            apr_table_do((int (*) (void *, const char *, const char *))
                          echo_header, (void *) &v, r->headers_in, NULL);
             break;
         }

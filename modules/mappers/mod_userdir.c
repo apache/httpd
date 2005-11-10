@@ -73,8 +73,8 @@
 #endif
 
 
-/* 
- * The default directory in user's home dir 
+/*
+ * The default directory in user's home dir
  * In the default install, the module is disabled
  */
 #ifndef DEFAULT_USER_DIR
@@ -259,7 +259,7 @@ static int translate_userdir(request_rec *r)
                  * Crummy hack. Need to figure out whether we have been
                  * redirected to a URL or to a file on some drive. Since I
                  * know of no protocols that are a single letter, ignore
-                 * a : as the first or second character, and assume a file 
+                 * a : as the first or second character, and assume a file
                  * was specified
                  */
                 if (strchr(x + 2, ':'))
@@ -300,7 +300,7 @@ static int translate_userdir(request_rec *r)
          * anyway, in the hope that some handler might handle it. This can be
          * used, for example, to run a CGI script for the user.
          */
-        if (filename && (!*userdirs 
+        if (filename && (!*userdirs
                       || ((rv = apr_stat(&statbuf, filename, APR_FINFO_MIN,
                                          r->pool)) == APR_SUCCESS
                                              || rv == APR_INCOMPLETE))) {
@@ -342,7 +342,7 @@ static ap_unix_identity_t *get_suexec_id_doer(const request_rec *r)
     }
 
     ugid->userdir = 1;
-#endif 
+#endif
     return ugid;
 }
 #endif /* HAVE_UNIX_SUEXEC */

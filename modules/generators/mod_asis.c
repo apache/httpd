@@ -47,7 +47,7 @@ static int asis_handler(request_rec *r)
         return HTTP_NOT_FOUND;
     }
 
-    if ((rv = apr_file_open(&f, r->filename, APR_READ, 
+    if ((rv = apr_file_open(&f, r->filename, APR_READ,
                 APR_OS_DEFAULT, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                     "file permissions deny server access: %s", r->filename);
@@ -92,7 +92,7 @@ static int asis_handler(request_rec *r)
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
 #if APR_HAS_LARGE_FILES
         if (r->finfo.size - pos > AP_MAX_SENDFILE) {
-            /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets, 
+            /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets,
              * no greater than MAX(apr_size_t), and more granular than that
              * in case the brigade code/filters attempt to read it directly.
              */

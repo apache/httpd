@@ -105,7 +105,7 @@ static void stats(FILE *output);
 
 /*
  * struct nsrec - record of nameservice for cache linked list
- * 
+ *
  * ipnum - IP number hostname - hostname noname - nonzero if IP number has no
  * hostname, i.e. hostname=IP number
  */
@@ -307,7 +307,7 @@ int main (int argc, char *argv[])
 
 #if defined(WIN32) || (defined(NETWARE) && defined(USE_WINSOCK))
     /*  If we apr'ify this code, apr_pool_create/apr_pool_destroy
-     *  should perform the WSAStartup/WSACleanup for us. 
+     *  should perform the WSAStartup/WSACleanup for us.
      */
     WSADATA wsaData;
     WSAStartup(MAKEWORD(2, 0), &wsaData);

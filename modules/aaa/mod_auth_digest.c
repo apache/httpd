@@ -51,7 +51,7 @@
  *       The only problem is that it allows replay attacks when somebody
  *       captures a packet sent to one server and sends it to another
  *       one. Should we add "AuthDigestNcCheck Strict"?
- *   - expired nonces give amaya fits.  
+ *   - expired nonces give amaya fits.
  */
 
 #include "apr_sha1.h"
@@ -80,8 +80,8 @@
 
 #include "mod_auth.h"
 
-/* Disable shmem until pools/init gets sorted out 
- * remove following two lines when fixed 
+/* Disable shmem until pools/init gets sorted out
+ * remove following two lines when fixed
  */
 #undef APR_HAS_SHARED_MEMORY
 #define APR_HAS_SHARED_MEMORY 0
@@ -200,7 +200,7 @@ module AP_MODULE_DECLARE_DATA auth_digest_module;
 
 static apr_status_t cleanup_tables(void *not_used)
 {
-    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL, 
+    ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                   "Digest: cleaning up shared memory");
     fflush(stderr);
 
@@ -238,7 +238,7 @@ static apr_status_t initialize_secret(server_rec *s)
     if (status != APR_SUCCESS) {
         char buf[120];
         ap_log_error(APLOG_MARK, APLOG_CRIT, status, s,
-                     "Digest: error generating secret: %s", 
+                     "Digest: error generating secret: %s",
                      apr_strerror(status, buf, sizeof(buf)));
         return status;
     }
@@ -447,13 +447,13 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
     digest_config_rec *conf = (digest_config_rec*)config;
     authn_provider_list *newp;
     const char *provider_name;
-    
+
     if (strcasecmp(arg, "on") == 0) {
         provider_name = AUTHN_DEFAULT_PROVIDER;
     }
     else if (strcasecmp(arg, "off") == 0) {
         /* Clear all configured providers and return. */
-        conf->providers = NULL; 
+        conf->providers = NULL;
         return NULL;
     }
     else {
@@ -540,7 +540,7 @@ static const char *set_nonce_lifetime(cmd_parms *cmd, void *config,
     char *endptr;
     long  lifetime;
 
-    lifetime = strtol(t, &endptr, 10); 
+    lifetime = strtol(t, &endptr, 10);
     if (endptr < (t+strlen(t)) && !apr_isspace(*endptr)) {
         return apr_pstrcat(cmd->pool,
                            "Invalid time in AuthDigestNonceLifetime: ",
@@ -608,7 +608,7 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
     char *endptr;
     long  size, min;
 
-    size = strtol(size_str, &endptr, 10); 
+    size = strtol(size_str, &endptr, 10);
     while (apr_isspace(*endptr)) endptr++;
     if (*endptr == '\0' || *endptr == 'b' || *endptr == 'B') {
         ;
@@ -645,23 +645,23 @@ static const char *set_shmem_size(cmd_parms *cmd, void *config,
 
 static const command_rec digest_cmds[] =
 {
-    AP_INIT_TAKE1("AuthName", set_realm, NULL, OR_AUTHCFG, 
+    AP_INIT_TAKE1("AuthName", set_realm, NULL, OR_AUTHCFG,
      "The authentication realm (e.g. \"Members Only\")"),
     AP_INIT_ITERATE("AuthDigestProvider", add_authn_provider, NULL, OR_AUTHCFG,
                      "specify the auth providers for a directory or location"),
-    AP_INIT_ITERATE("AuthDigestQop", set_qop, NULL, OR_AUTHCFG, 
+    AP_INIT_ITERATE("AuthDigestQop", set_qop, NULL, OR_AUTHCFG,
      "A list of quality-of-protection options"),
-    AP_INIT_TAKE1("AuthDigestNonceLifetime", set_nonce_lifetime, NULL, OR_AUTHCFG, 
+    AP_INIT_TAKE1("AuthDigestNonceLifetime", set_nonce_lifetime, NULL, OR_AUTHCFG,
      "Maximum lifetime of the server nonce (seconds)"),
-    AP_INIT_TAKE1("AuthDigestNonceFormat", set_nonce_format, NULL, OR_AUTHCFG, 
+    AP_INIT_TAKE1("AuthDigestNonceFormat", set_nonce_format, NULL, OR_AUTHCFG,
      "The format to use when generating the server nonce"),
-    AP_INIT_FLAG("AuthDigestNcCheck", set_nc_check, NULL, OR_AUTHCFG, 
+    AP_INIT_FLAG("AuthDigestNcCheck", set_nc_check, NULL, OR_AUTHCFG,
      "Whether or not to check the nonce-count sent by the client"),
-    AP_INIT_TAKE1("AuthDigestAlgorithm", set_algorithm, NULL, OR_AUTHCFG, 
+    AP_INIT_TAKE1("AuthDigestAlgorithm", set_algorithm, NULL, OR_AUTHCFG,
      "The algorithm used for the hash calculation"),
-    AP_INIT_ITERATE("AuthDigestDomain", set_uri_list, NULL, OR_AUTHCFG, 
+    AP_INIT_ITERATE("AuthDigestDomain", set_uri_list, NULL, OR_AUTHCFG,
      "A list of URI's which belong to the same protection space as the current URI"),
-    AP_INIT_TAKE1("AuthDigestShmemSize", set_shmem_size, NULL, RSRC_CONF, 
+    AP_INIT_TAKE1("AuthDigestShmemSize", set_shmem_size, NULL, RSRC_CONF,
      "The amount of shared memory to allocate for keeping track of clients"),
     {NULL}
 };
@@ -1300,13 +1300,13 @@ static void note_digest_auth_failure(request_rec *r,
      * unneccessarily (it's usually > 200 bytes!).
      */
 
-    
+
     /* don't send domain
      * - for proxy requests
      * - if it's no specified
      */
     if (r->proxyreq || !conf->uri_list) {
-        domain = NULL;  
+        domain = NULL;
     }
     else {
         domain = conf->uri_list;
@@ -1464,7 +1464,7 @@ static int check_nonce(request_rec *r, digest_header_rec *resp,
         if (dt > conf->nonce_lifetime) {
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0,r,
                           "Digest: user %s: nonce expired (%.2f seconds old "
-                          "- max lifetime %.2f) - sending new nonce", 
+                          "- max lifetime %.2f) - sending new nonce",
                           r->user, (double)apr_time_sec(dt),
                           (double)apr_time_sec(conf->nonce_lifetime));
             note_digest_auth_failure(r, conf, resp, 1);
@@ -1536,7 +1536,7 @@ static const char *new_digest(const request_rec *r,
 }
 
 
-static void copy_uri_components(apr_uri_t *dst, 
+static void copy_uri_components(apr_uri_t *dst,
                                 apr_uri_t *src, request_rec *r) {
     if (src->scheme && src->scheme[0] != '\0') {
         dst->scheme = src->scheme;
@@ -1684,30 +1684,30 @@ static int authenticate_digest_user(request_rec *r)
             ap_unescape_url(d_uri.query);
         }
         else if (r_uri.query) {
-            /* MSIE compatibility hack.  MSIE has some RFC issues - doesn't 
+            /* MSIE compatibility hack.  MSIE has some RFC issues - doesn't
              * include the query string in the uri Authorization component
              * or when computing the response component.  the second part
              * works out ok, since we can hash the header and get the same
              * result.  however, the uri from the request line won't match
-             * the uri Authorization component since the header lacks the 
+             * the uri Authorization component since the header lacks the
              * query string, leaving us incompatable with a (broken) MSIE.
-             * 
+             *
              * the workaround is to fake a query string match if in the proper
              * environment - BrowserMatch MSIE, for example.  the cool thing
-             * is that if MSIE ever fixes itself the simple match ought to 
+             * is that if MSIE ever fixes itself the simple match ought to
              * work and this code won't be reached anyway, even if the
              * environment is set.
              */
 
-            if (apr_table_get(r->subprocess_env, 
+            if (apr_table_get(r->subprocess_env,
                               "AuthDigestEnableQueryStringHack")) {
-            
+
                 ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, "Digest: "
                               "applying AuthDigestEnableQueryStringHack "
                               "to uri <%s>", resp->raw_request_uri);
 
                d_uri.query = r_uri.query;
-            } 
+            }
         }
 
         if (r->method_number == M_CONNECT) {
@@ -1800,7 +1800,7 @@ static int authenticate_digest_user(request_rec *r)
          */
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    
+
     if (resp->message_qop == NULL) {
         /* old (rfc-2069) style digest */
         if (strcmp(resp->digest, old_digest(r, resp, conf->ha1))) {

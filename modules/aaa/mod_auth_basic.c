@@ -256,7 +256,7 @@ static int authenticate_basic_user(request_rec *r)
 
         current_provider = current_provider->next;
     } while (current_provider);
-    
+
     if (auth_result != AUTH_GRANTED) {
         int return_code;
 
@@ -280,7 +280,7 @@ static int authenticate_basic_user(request_rec *r)
             break;
         case AUTH_GENERAL_ERROR:
         default:
-            /* We'll assume that the module has already said what its error 
+            /* We'll assume that the module has already said what its error
              * was in the logs.
              */
             return_code = HTTP_INTERNAL_SERVER_ERROR;

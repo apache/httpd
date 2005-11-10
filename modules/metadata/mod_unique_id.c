@@ -47,10 +47,10 @@ typedef struct {
  * cannot guarantee the thread_id will be an integer.
  *
  * This code looks like it won't give a unique ID with the new thread logic.
- * It will.  The reason is, we don't increment the counter in a thread_safe 
+ * It will.  The reason is, we don't increment the counter in a thread_safe
  * manner.  Because the thread_index is also in the unique ID now, this does
  * not matter.  In order for the id to not be unique, the same thread would
- * have to get the same counter twice in the same second. 
+ * have to get the same counter twice in the same second.
  */
 
 /* Comments:
@@ -123,7 +123,7 @@ static unique_id_rec cur_unique_id;
 /*
  * Number of elements in the structure unique_id_rec.
  */
-#define UNIQUE_ID_REC_MAX 5 
+#define UNIQUE_ID_REC_MAX 5
 
 static unsigned short unique_id_rec_offset[UNIQUE_ID_REC_MAX],
                       unique_id_rec_size[UNIQUE_ID_REC_MAX],
@@ -199,12 +199,12 @@ static int unique_id_global_init(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *pt
      * If the server is pummelled with restart requests we could possibly end
      * up in a situation where we're starting again during the same second
      * that has been used in previous identifiers.  Avoid that situation.
-     * 
+     *
      * In truth, for this to actually happen not only would it have to restart
      * in the same second, but it would have to somehow get the same pids as
      * one of the other servers that was running in that second. Which would
      * mean a 64k wraparound on pids ... not very likely at all.
-     * 
+     *
      * But protecting against it is relatively cheap.  We just sleep into the
      * next second.
      */
@@ -222,7 +222,7 @@ static void unique_id_child_init(apr_pool_t *p, server_rec *s)
      * physical machine there are multiple servers (i.e. using Listen). But
      * it's guaranteed that none of them will share the same pids between
      * children.
-     * 
+     *
      * XXX: for multithread this needs to use a pid/tid combo and probably
      * needs to be expanded to 32 bits
      */
@@ -299,7 +299,7 @@ static int gen_unique_id(request_rec *r)
         apr_table_setn(r->subprocess_env, "UNIQUE_ID", e);
         return DECLINED;
     }
-    
+
     new_unique_id.in_addr = cur_unique_id.in_addr;
     new_unique_id.pid = cur_unique_id.pid;
     new_unique_id.counter = cur_unique_id.counter;
@@ -323,7 +323,7 @@ static int gen_unique_id(request_rec *r)
      */
     x[k++] = '\0';
     x[k++] = '\0';
-    
+
     /* alloc str and do the uuencoding */
     str = (char *)apr_palloc(r->pool, unique_id_rec_size_uu + 1);
     k = 0;
@@ -353,7 +353,7 @@ static void register_hooks(apr_pool_t *p)
 {
     ap_hook_post_config(unique_id_global_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(unique_id_child_init, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_post_read_request(gen_unique_id, NULL, NULL, APR_HOOK_MIDDLE); 
+    ap_hook_post_read_request(gen_unique_id, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA unique_id_module = {

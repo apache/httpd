@@ -15,7 +15,7 @@
  */
 
 /**
- * @file  core_filters.c 
+ * @file  core_filters.c
  * @brief Core input/output network filters.
  */
 
@@ -86,7 +86,7 @@ do { \
 static void brigade_move(apr_bucket_brigade *b, apr_bucket_brigade *a,
                          apr_bucket *e)
 {
-    apr_bucket *f;     
+    apr_bucket *f;
 
     if (e != APR_BRIGADE_SENTINEL(b)) {
         f = APR_RING_LAST(&b->list);
@@ -370,7 +370,7 @@ static apr_status_t sendfile_it_all(core_net_rec *c,
     apr_interval_time_t timeout = 0;
 #endif
 
-    AP_DEBUG_ASSERT((apr_socket_timeout_get(c->client_socket, &timeout) 
+    AP_DEBUG_ASSERT((apr_socket_timeout_get(c->client_socket, &timeout)
                          == APR_SUCCESS)
                     && timeout > 0);  /* socket must be in timeout mode */
 
@@ -517,7 +517,7 @@ static apr_status_t emulate_sendfile(core_net_rec *c, apr_file_t *fd,
     return rv;
 }
 
-#ifndef APR_MAX_IOVEC_SIZE 
+#ifndef APR_MAX_IOVEC_SIZE
 #define MAX_IOVEC_TO_WRITE 16
 #else
 #if APR_MAX_IOVEC_SIZE > 16
@@ -874,8 +874,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
         }
 
         apr_brigade_destroy(b);
-        
-        /* drive cleanups for resources which were set aside 
+
+        /* drive cleanups for resources which were set aside
          * this may occur before or after termination of the request which
          * created the resource
          */
@@ -888,15 +888,15 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b)
                     more = NULL;
                 }
                 else {
-                    /* uh oh... change more's lifetime 
-                     * to the input brigade's lifetime 
+                    /* uh oh... change more's lifetime
+                     * to the input brigade's lifetime
                      */
                     apr_bucket_brigade *tmp_more = more;
                     more = NULL;
                     ap_save_brigade(f, &more, &tmp_more, input_pool);
                 }
             }
-            apr_pool_clear(ctx->deferred_write_pool);  
+            apr_pool_clear(ctx->deferred_write_pool);
         }
 
         if (rv != APR_SUCCESS) {

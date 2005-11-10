@@ -41,7 +41,7 @@
 
 /*
 ** LOCK DATABASES
-** 
+**
 ** Lockdiscovery information is stored in the single lock database specified
 ** by the DAVLockDB directive.  Information about this db is stored in the
 ** global server configuration.
@@ -107,7 +107,7 @@ struct dav_locktoken {
 
 /*
 ** We need to reliably size the fixed-length portion of
-** dav_lock_discovery; best to separate it into another 
+** dav_lock_discovery; best to separate it into another
 ** struct for a convenient sizeof, unless we pack lock_discovery.
 */
 typedef struct dav_lock_discovery_fixed
@@ -146,7 +146,7 @@ typedef struct dav_lock_indirect
 
 
 /*
-** Stored direct lock info - full lock_discovery length:  
+** Stored direct lock info - full lock_discovery length:
 ** prefix + Fixed length + lock token + 2 strings + 2 nulls (one for each string)
 */
 #define dav_size_direct(a)	(1 + sizeof(dav_lock_discovery_fixed) \
@@ -258,7 +258,7 @@ static dav_error * dav_fs_parse_locktoken(
                              "The opaquelocktoken has an incorrect format "
                              "and could not be parsed.");
     }
-    
+
     *locktoken_p = locktoken;
     return NULL;
 }
@@ -480,7 +480,7 @@ static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, apr_datum_t key,
         (void) dav_dbm_delete(lockdb->info->db, key);
         return NULL;
     }
-                
+
     while(dp) {
         val.dsize += dav_size_direct(dp);
         dp = dp->next;
@@ -506,7 +506,7 @@ static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, apr_datum_t key,
             *ptr++ = '\0';
         }
         else {
-            memcpy(ptr, dp->owner, strlen(dp->owner) + 1);	
+            memcpy(ptr, dp->owner, strlen(dp->owner) + 1);
             ptr += strlen(dp->owner) + 1;
         }
         if (dp->auth_user == NULL) {
@@ -588,7 +588,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
 
     if ((err = dav_dbm_fetch(lockdb->info->db, key, &val)) != NULL)
         return err;
-        
+
     if (!val.dsize)
         return NULL;
 
@@ -613,7 +613,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
 
             if (*(val.dptr + offset) == '\0') {
                 ++offset;
-            } 
+            }
             else {
                 dp->auth_user = apr_pstrdup(p, val.dptr + offset);
                 offset += strlen(dp->auth_user) + 1;
@@ -655,7 +655,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
             offset += sizeof(ip->timeout);
             memcpy(&ip->key.dsize, val.dptr + offset, sizeof(ip->key.dsize)); /* length of datum */
             offset += sizeof(ip->key.dsize);
-            ip->key.dptr = apr_palloc(p, ip->key.dsize); 
+            ip->key.dptr = apr_palloc(p, ip->key.dsize);
             memcpy(ip->key.dptr, val.dptr + offset, ip->key.dsize);
             offset += ip->key.dsize;
 
@@ -710,7 +710,7 @@ static dav_error * dav_fs_resolve(dav_lockdb *lockdb,
     dav_error *err;
     dav_lock_discovery *dir;
     dav_lock_indirect *ind;
-        
+
     if ((err = dav_fs_load_lock_record(lockdb, indirect->key,
                                        DAV_CREATE_LIST,
                                        &dir, &ind)) != NULL) {
@@ -721,7 +721,7 @@ static dav_error * dav_fs_resolve(dav_lockdb *lockdb,
         *ref_dp = dir;
         *ref_ip = ind;
     }
-                
+
     for (; dir != NULL; dir = dir->next) {
         if (!dav_compare_locktoken(indirect->locktoken, dir->locktoken)) {
             *direct = dir;
@@ -783,7 +783,7 @@ static const char *dav_fs_get_supportedlock(const dav_resource *resource)
 **    for the given directory.
 */
 static dav_error * dav_fs_load_locknull_list(apr_pool_t *p, const char *dirpath,
-                                             dav_buffer *pbuf) 
+                                             dav_buffer *pbuf)
 {
     apr_finfo_t finfo;
     apr_file_t *file = NULL;
@@ -888,7 +888,7 @@ static dav_error * dav_fs_save_locknull_list(apr_pool_t *p, const char *dirpath,
         || amt != pbuf->cur_len) {
         err = dav_new_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,
                             apr_psprintf(p,
-                                        "Error writing %" APR_SIZE_T_FMT 
+                                        "Error writing %" APR_SIZE_T_FMT
                                         " bytes to %s",
                                         pbuf->cur_len, pathname));
     }

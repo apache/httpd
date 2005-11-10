@@ -316,7 +316,7 @@ static int ap_invoke_filter_init(ap_filter_t *filters)
             }
         }
         filters = filters->next;
-    } 
+    }
     return OK;
 }
 
@@ -419,19 +419,19 @@ struct ap_mod_list_struct {
     const command_rec *cmd;
 };
 
-static apr_status_t reload_conf_hash(void *baton) 
+static apr_status_t reload_conf_hash(void *baton)
 {
     ap_config_hash = NULL;
     return APR_SUCCESS;
 }
 
-static void rebuild_conf_hash(apr_pool_t *p, int add_prelinked) 
+static void rebuild_conf_hash(apr_pool_t *p, int add_prelinked)
 {
     module **m;
 
     ap_config_hash = apr_hash_make(p);
 
-    apr_pool_cleanup_register(p, NULL, reload_conf_hash, 
+    apr_pool_cleanup_register(p, NULL, reload_conf_hash,
                               apr_pool_cleanup_null);
     if (add_prelinked) {
         for (m = ap_prelinked_modules; *m != NULL; m++) {
@@ -440,7 +440,7 @@ static void rebuild_conf_hash(apr_pool_t *p, int add_prelinked)
     }
 }
 
-static void ap_add_module_commands(module *m, apr_pool_t *p) 
+static void ap_add_module_commands(module *m, apr_pool_t *p)
 {
     apr_pool_t *tpool;
     ap_mod_list *mln;
@@ -1073,7 +1073,7 @@ AP_DECLARE(const char *) ap_build_cont_config(apr_pool_t *p,
     ap_directive_t *sub_tree = NULL;
 
     /* Since this function can be called recursively, allocate
-     * the temporary 8k string buffer from the temp_pool rather 
+     * the temporary 8k string buffer from the temp_pool rather
      * than the stack to avoid over-running a fixed length stack.
      */
     l = apr_palloc(temp_pool, MAX_STRING_LEN);
@@ -1142,14 +1142,14 @@ static const char *ap_walk_config_sub(const ap_directive_t *current,
 
         if (retval != NULL && strcmp(retval, DECLINE_CMD) != 0) {
             /* If the directive in error has already been set, don't
-             * replace it.  Otherwise, an error inside a container 
+             * replace it.  Otherwise, an error inside a container
              * will be reported as occuring on the first line of the
              * container.
              */
             if (!parms->err_directive) {
                 parms->err_directive = current;
             }
-            return retval; 
+            return retval;
         }
     }
 
@@ -1335,7 +1335,7 @@ AP_DECLARE(char *) ap_server_root_relative(apr_pool_t *p, const char *file)
     apr_status_t rv;
     rv = apr_filepath_merge(&newpath, ap_server_root, file,
                             APR_FILEPATH_TRUENAME, p);
-    if (newpath && (rv == APR_SUCCESS || APR_STATUS_IS_EPATHWILD(rv) 
+    if (newpath && (rv == APR_SUCCESS || APR_STATUS_IS_EPATHWILD(rv)
                                       || APR_STATUS_IS_ENOENT(rv)
                                       || APR_STATUS_IS_ENOTDIR(rv))) {
         return newpath;
@@ -1419,7 +1419,7 @@ static const char *execute_now(char *cmd_line, const char *args,
         retval = invoke_cmd(cmd, parms, sub_tree, args);
 
         if (retval != NULL) {
-            return retval; 
+            return retval;
         }
     }
 
@@ -1601,7 +1601,7 @@ static const char *process_resource_config_nofnmatch(server_rec *s,
     parms.override = (RSRC_CONF | OR_ALL) & ~(OR_AUTHCFG | OR_LIMIT);
     parms.override_opts = OPT_ALL | OPT_INCNOEXEC | OPT_SYM_OWNER | OPT_MULTI;
 
-    rv = ap_pcfg_openfile(&cfp, p, fname); 
+    rv = ap_pcfg_openfile(&cfp, p, fname);
     if (rv != APR_SUCCESS) {
         char errmsg[120];
         return apr_psprintf(p, "Could not open configuration file %s: %s",
@@ -1664,7 +1664,7 @@ AP_DECLARE(const char *) ap_process_resource_config(server_rec *s,
                                fname, NULL);
         }
 
-        if (!ap_is_directory(p, path)){ 
+        if (!ap_is_directory(p, path)){
             return apr_pstrcat(p, "Include directory '", path, "' not found",
                                NULL);
         }
