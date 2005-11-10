@@ -795,7 +795,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
 
     if ((rv = ap_setup_client_block(r, body))) {
         if (rv == HTTP_REQUEST_ENTITY_TOO_LARGE)
-    	    apr_table_setn(r->notes, "error-notes",
+            apr_table_setn(r->notes, "error-notes",
                           "TRACE with a request body is not allowed");
         return rv;
     }

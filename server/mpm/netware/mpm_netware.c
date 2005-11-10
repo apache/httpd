@@ -1124,7 +1124,7 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
             printf("Server built:   %s\n", ap_get_server_built());
         }
         else if (!strnicmp("MODULES",&szcommandLine[iCommandLen],3)) {
-    	    ap_show_modules();
+            ap_show_modules();
         }
         else if (!strnicmp("DIRECTIVES",&szcommandLine[iCommandLen],3)) {
                 ap_show_directives();

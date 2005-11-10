@@ -383,7 +383,7 @@ static void set_signals(void)
     /* We ignore SIGPIPE */
     sa.sa_handler = SIG_IGN;
     if (sigaction(SIGPIPE, &sa, NULL) < 0)
-    	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGPIPE)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGPIPE)");
 
     /* we want to ignore HUPs and AP_SIG_GRACEFUL while we're busy
      * processing one */
@@ -391,7 +391,7 @@ static void set_signals(void)
     sigaddset(&sa.sa_mask, AP_SIG_GRACEFUL);
     sa.sa_handler = restart;
     if (sigaction(SIGHUP, &sa, NULL) < 0)
-    	ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGHUP)");
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(SIGHUP)");
     if (sigaction(AP_SIG_GRACEFUL, &sa, NULL) < 0)
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(" AP_SIG_GRACEFUL_STRING ")");
 }
@@ -521,7 +521,7 @@ static int32 worker_thread(void *dummy)
                 }
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv,
                              ap_server_conf, "apr_pollset_poll: (listen)");
-    	        clean_child_exit(1, worker_slot);
+                clean_child_exit(1, worker_slot);
             }
             /* We can always use pdesc[0], but sockets at position N
              * could end up completely starved of attention in a very
@@ -592,7 +592,7 @@ got_fd:
 got_a_black_spot:
     }
 
-   	apr_pool_destroy(ptrans);
+    apr_pool_destroy(ptrans);
     apr_pool_destroy(pworker);
 
     clean_child_exit(0, worker_slot);
@@ -608,7 +608,7 @@ static int make_worker(int slot)
     (void) ap_update_child_status_from_indexes(0, slot, SERVER_STARTING, (request_rec*)NULL);
 
     if (one_process) {
-    	set_signals();
+        set_signals();
         ap_scoreboard_image->parent[0].pid = getpid();
         ap_scoreboard_image->servers[0][slot].tid = find_thread(NULL);
         return 0;
@@ -626,8 +626,8 @@ static int make_worker(int slot)
         (void) ap_update_child_status_from_indexes(0, slot, SERVER_DEAD,
                                                    (request_rec*)NULL);
 
-    	sleep(10);
-    	return -1;
+        sleep(10);
+        return -1;
     }
     resume_thread(tid);
 
@@ -703,24 +703,24 @@ static void perform_idle_server_maintenance(void)
             last_non_dead = i;
         }
 
-    	if (i >= ap_max_child_assigned && free_length >= spawn_rate) {
+        if (i >= ap_max_child_assigned && free_length >= spawn_rate) {
                  break;
-            }
+        }
     }
     ap_max_child_assigned = last_non_dead + 1;
 
     if (free_length > 0) {
-    	for (i = 0; i < free_length; ++i) {
+        for (i = 0; i < free_length; ++i) {
                 make_worker(free_slots[i]);
-            }
-            /* the next time around we want to spawn twice as many if this
-             * wasn't good enough, but not if we've just done a graceful
-             */
-            if (hold_off_on_exponential_spawning) {
-                --hold_off_on_exponential_spawning;
-            } else if (spawn_rate < MAX_SPAWN_RATE) {
-                spawn_rate *= 2;
-            }
+        }
+        /* the next time around we want to spawn twice as many if this
+         * wasn't good enough, but not if we've just done a graceful
+         */
+        if (hold_off_on_exponential_spawning) {
+            --hold_off_on_exponential_spawning;
+        } else if (spawn_rate < MAX_SPAWN_RATE) {
+            spawn_rate *= 2;
+        }
     } else {
         spawn_rate = 1;
     }
@@ -747,7 +747,7 @@ static void server_main_loop(int remaining_threads_to_start)
             /* non-fatal death... note that it's gone in the scoreboard. */
             child_slot = -1;
             for (i = 0; i < ap_max_child_assigned; ++i) {
-        	if (ap_scoreboard_image->servers[0][i].tid == pid.pid) {
+                if (ap_scoreboard_image->servers[0][i].tid == pid.pid) {
                     child_slot = i;
                     break;
                 }
