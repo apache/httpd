@@ -105,7 +105,7 @@ static int fixup_dir(request_rec *r)
     if (r->finfo.filetype != APR_DIR) {
         return DECLINED;
     }
-    
+
     /* In case mod_mime wasn't present, and no handler was assigned. */
     if (!r->handler) {
         r->handler = DIR_MAGIC_TYPE;
@@ -120,7 +120,7 @@ static int fixup_dir(request_rec *r)
                                                &dir_module);
 
     /* Redirect requests that are not '/' terminated */
-    if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/') 
+    if (r->uri[0] == '\0' || r->uri[strlen(r->uri) - 1] != '/')
     {
         char *ifile;
 
@@ -129,8 +129,8 @@ static int fixup_dir(request_rec *r)
         }
 
         /* Only redirect non-get requests if we have no note to warn
-         * that this browser cannot handle redirs on non-GET requests 
-         * (such as Microsoft's WebFolders). 
+         * that this browser cannot handle redirs on non-GET requests
+         * (such as Microsoft's WebFolders).
          */
         if ((r->method_number != M_GET)
                 && apr_table_get(r->subprocess_env, "redirect-carefully")) {
@@ -180,12 +180,12 @@ static int fixup_dir(request_rec *r)
 
         /* The sub request lookup is very liberal, and the core map_to_storage
          * handler will almost always result in HTTP_OK as /foo/index.html
-         * may be /foo with PATH_INFO="/index.html", or even / with 
+         * may be /foo with PATH_INFO="/index.html", or even / with
          * PATH_INFO="/foo/index.html". To get around this we insist that the
          * the index be a regular filetype.
          *
-         * Another reason is that the core handler also makes the assumption 
-         * that if r->finfo is still NULL by the time it gets called, the 
+         * Another reason is that the core handler also makes the assumption
+         * that if r->finfo is still NULL by the time it gets called, the
          * file does not exist.
          */
         if (rr->status == HTTP_OK
@@ -194,7 +194,7 @@ static int fixup_dir(request_rec *r)
             ap_internal_fast_redirect(rr, r);
             return OK;
         }
-            
+
         /* If the request returned a redirect, propagate it to the client */
 
         if (ap_is_HTTP_REDIRECT(rr->status)

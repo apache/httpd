@@ -19,7 +19,7 @@
 #include "http_protocol.h"
 #include "scoreboard.h"
 
-static apr_status_t eor_bucket_read(apr_bucket *b, const char **str, 
+static apr_status_t eor_bucket_read(apr_bucket *b, const char **str,
                                     apr_size_t *len, apr_read_type_e block)
 {
     *str = NULL;
@@ -33,7 +33,7 @@ AP_DECLARE(apr_bucket *) ap_bucket_eor_make(apr_bucket *b, request_rec *r)
     b->start       = 0;
     b->data        = r;
     b->type        = &ap_bucket_type_eor;
-    
+
     return b;
 }
 

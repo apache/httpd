@@ -74,7 +74,7 @@ int ssl_hook_ReadReq(request_rec *r)
          * with using SSL on this request.
          */
         sslconn->non_ssl_request = 0;
-        
+
 
         return HTTP_BAD_REQUEST;
     }
@@ -191,7 +191,7 @@ int ssl_hook_Access(request_rec *r)
             return HTTP_UPGRADE_REQUIRED;
         }
 
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, 
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "access to %s failed, reason: %s",
                       r->filename, "SSL connection required");
 
@@ -214,8 +214,8 @@ int ssl_hook_Access(request_rec *r)
      * reconfigured parameter suite. But Apache's internal API processing
      * makes our life very hard here, because when internal sub-requests occur
      * we nevertheless should avoid multiple unnecessary SSL handshakes (they
-     * require extra network I/O and especially time to perform). 
-     * 
+     * require extra network I/O and especially time to perform).
+     *
      * But the optimization for filtering out the unnecessary handshakes isn't
      * obvious and trivial.  Especially because while Apache is in its
      * sub-request processing the client could force additional handshakes,
@@ -369,7 +369,7 @@ int ssl_hook_Access(request_rec *r)
      * override of SSLVerifyClient
      *
      * We force a renegotiation if the reconfigured/new verify type is
-     * stronger than the currently active verify type. 
+     * stronger than the currently active verify type.
      *
      * The order is: none << optional_no_ca << optional << require
      *
@@ -498,7 +498,7 @@ int ssl_hook_Access(request_rec *r)
      * handshake immediately; once the SSL library moves to the
      * "accept" state, it will reject the SSL packets which the client
      * is sending for the request body.
-     * 
+     *
      * To allow authentication to complete in this auth hook, the
      * solution used here is to fill a (bounded) buffer with the
      * request body, and then to reinject that request body later.
@@ -633,7 +633,7 @@ int ssl_hook_Access(request_rec *r)
                          "Awaiting re-negotiation handshake");
 
             /* XXX: Should replace SSL_set_state with SSL_renegotiate(ssl);
-             * However, this causes failures in perl-framework currently, 
+             * However, this causes failures in perl-framework currently,
              * perhaps pre-test if we have already negotiated?
              */
             SSL_set_state(ssl, SSL_ST_ACCEPT);
@@ -686,7 +686,7 @@ int ssl_hook_Access(request_rec *r)
                 X509_free(peercert);
             }
         }
-        
+
         /*
          * Also check that SSLCipherSuite has been enforced as expected.
          */
@@ -718,7 +718,7 @@ int ssl_hook_Access(request_rec *r)
         else
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "Failed to set r->user to '%s'", dc->szUserName);
-    } 
+    }
 
     /*
      * Check SSLRequire boolean expressions
@@ -736,7 +736,7 @@ int ssl_hook_Access(request_rec *r)
                               "SSL requirement expression: %s",
                               ssl_expr_get_error());
 
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, 
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "access to %s failed, reason: %s",
                           r->filename, cp);
 
@@ -755,7 +755,7 @@ int ssl_hook_Access(request_rec *r)
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                          "Failed expression: %s", req->cpExpr);
 
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, 
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "access to %s failed, reason: %s",
                           r->filename,
                           "SSL requirement expression not fulfilled "
@@ -844,13 +844,13 @@ int ssl_hook_UserCheck(request_rec *r)
      * - ssl not enabled
      * - client did not present a certificate
      */
-    if (!((sc->enabled == SSL_ENABLED_TRUE || sc->enabled == SSL_ENABLED_OPTIONAL) 
+    if (!((sc->enabled == SSL_ENABLED_TRUE || sc->enabled == SSL_ENABLED_OPTIONAL)
           && sslconn && sslconn->ssl && sslconn->client_cert) ||
         !(dc->nOptions & SSL_OPT_FAKEBASICAUTH) || r->user)
     {
         return DECLINED;
     }
-    
+
     if (!sslconn->client_dn) {
         X509_NAME *name = X509_get_subject_name(sslconn->client_cert);
         char *cp = X509_NAME_oneline(name, NULL, 0);
@@ -871,9 +871,9 @@ int ssl_hook_UserCheck(request_rec *r)
      * adding the string "xxj31ZMTZzkVA" as the password in the user file.
      * This is just the crypted variant of the word "password" ;-)
      */
-    auth_line = apr_pstrcat(r->pool, "Basic ", 
-                            ap_pbase64encode(r->pool, 
-                                             apr_pstrcat(r->pool, clientdn, 
+    auth_line = apr_pstrcat(r->pool, "Basic ",
+                            ap_pbase64encode(r->pool,
+                                             apr_pstrcat(r->pool, clientdn,
                                                          ":password", NULL)),
                             NULL);
     apr_table_set(r->headers_in, "Authorization", auth_line);
@@ -1016,7 +1016,7 @@ int ssl_hook_Fixup(request_rec *r)
      * Annotate the SSI/CGI environment with standard SSL information
      */
     /* the always present HTTPS (=HTTP over SSL) flag! */
-    apr_table_setn(env, "HTTPS", "on"); 
+    apr_table_setn(env, "HTTPS", "on");
 
     /* standard SSL environment variables */
     if (dc->nOptions & SSL_OPT_STDENVVARS) {
@@ -1131,7 +1131,7 @@ RSA *ssl_callback_TmpRSA(SSL *ssl, int export, int keylen)
     return (RSA *)mc->pTmpKeys[idx];
 }
 
-/* 
+/*
  * Hand out the already generated DH parameters...
  */
 DH *ssl_callback_TmpDH(SSL *ssl, int export, int keylen)
@@ -1214,7 +1214,7 @@ int ssl_callback_SSLVerify(int ok, X509_STORE_CTX *ctx)
     }
 
     if (verify == SSL_CVERIFY_NONE) {
-        /* 
+        /*
          * SSLProxyVerify is either not configured or set to "none".
          * (this callback doesn't happen in the server context if SSLVerify
          *  is not configured or set to "none")
@@ -1497,7 +1497,7 @@ static void modssl_proxy_info_log(server_rec *s,
     dn = X509_NAME_oneline(name, name_buf, sizeof(name_buf));
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 SSLPROXY_CERT_CB_LOG_FMT "%s, sending %s", 
+                 SSLPROXY_CERT_CB_LOG_FMT "%s, sending %s",
                  sc->vhost_id, msg, dn ? dn : "-uknown-");
 }
 
@@ -1512,7 +1512,7 @@ static void modssl_proxy_info_log(server_rec *s,
     *pkey = info->x_pkey->dec_pkey; \
     EVP_PKEY_reference_inc(*pkey)
 
-int ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey) 
+int ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP_PKEY **pkey)
 {
     conn_rec *c = (conn_rec *)SSL_get_app_data(ssl);
     server_rec *s = c->base_server;
@@ -1522,8 +1522,8 @@ int ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP
     STACK_OF(X509_NAME) *ca_list;
     STACK_OF(X509_INFO) *certs = sc->proxy->pkp->certs;
     int i, j;
-    
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, 
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  SSLPROXY_CERT_CB_LOG_FMT "entered",
                  sc->vhost_id);
 
@@ -1533,23 +1533,23 @@ int ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP
                      "downstream server wanted client certificate "
                      "but none are configured", sc->vhost_id);
         return FALSE;
-    }                                                                     
+    }
 
     ca_list = SSL_get_client_CA_list(ssl);
 
     if (!ca_list || (sk_X509_NAME_num(ca_list) <= 0)) {
-        /* 
-         * downstream server didn't send us a list of acceptable CA certs, 
+        /*
+         * downstream server didn't send us a list of acceptable CA certs,
          * so we send the first client cert in the list.
-         */   
+         */
         info = sk_X509_INFO_value(certs, 0);
-        
+
         modssl_proxy_info_log(s, info, "no acceptable CA list");
 
         modssl_set_cert_info(info, x509, pkey);
 
         return TRUE;
-    }         
+    }
 
     for (i = 0; i < sk_X509_NAME_num(ca_list); i++) {
         ca_name = sk_X509_NAME_value(ca_list, i);
@@ -1572,7 +1572,7 @@ int ssl_callback_proxy_cert(SSL *ssl, MODSSL_CLIENT_CERT_CB_ARG_TYPE **x509, EVP
                  SSLPROXY_CERT_CB_LOG_FMT
                  "no client certificate found!?", sc->vhost_id);
 
-    return FALSE; 
+    return FALSE;
 }
 
 static void ssl_session_log(server_rec *s,

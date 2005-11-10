@@ -34,10 +34,10 @@ int pipe(int fildes[2])
     return(-1);
 }
 #endif
-  
+
 /* fork and exec functions are not defined on
    TPF due to the implementation of tpf_fork() */
- 
+
 pid_t fork(void)
 {
     errno = ENOSYS;

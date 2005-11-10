@@ -1305,7 +1305,7 @@ static struct ent *make_autoindex_entry(const apr_finfo_t *dirent,
         return (NULL);
     }
 
-    if((autoindex_opts & SHOW_FORBIDDEN)  
+    if((autoindex_opts & SHOW_FORBIDDEN)
         && (rr->status == HTTP_UNAUTHORIZED || rr->status == HTTP_FORBIDDEN)) {
         show_forbidden = 1;
     }
@@ -2070,7 +2070,7 @@ static int index_directory(request_rec *r,
                 else if (qstring[2] == '1') {
                     autoindex_opts |= VERSION_SORT;
                 }
-                strcpy(vval, ";V= "); 
+                strcpy(vval, ";V= ");
                 vval[3] = qstring[2];
                 qstring += qstring[3] ? 4 : 3;
             }

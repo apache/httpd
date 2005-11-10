@@ -195,7 +195,7 @@ static int check_file_owner(request_rec *r)
     if (!required_owner || !conf->authoritative) {
         return DECLINED;
     }
-    
+
     /* allow file-group passed to group db modules either if this is the
      * only applicable requirement here or if a file-owner failed but we're
      * not authoritative.

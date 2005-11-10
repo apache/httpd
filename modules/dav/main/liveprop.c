@@ -128,7 +128,7 @@ DAV_DECLARE(long) dav_get_liveprop_info(int propid,
     return 0;
 }
 
-DAV_DECLARE(void) dav_register_liveprop_group(apr_pool_t *p, 
+DAV_DECLARE(void) dav_register_liveprop_group(apr_pool_t *p,
                                               const dav_liveprop_group *group)
 {
     /* register the namespace URIs */

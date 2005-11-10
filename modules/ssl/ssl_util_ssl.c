@@ -90,7 +90,7 @@ X509 *SSL_read_X509(char* filename, X509 **x509, modssl_read_bio_cb_fn *cb)
         /* 2. try DER+Base64 */
         if ((bioS=BIO_new_file(filename, "r")) == NULL)
             return NULL;
-                      
+
         if ((bioF = BIO_new(BIO_f_base64())) == NULL) {
             BIO_free(bioS);
             return NULL;
@@ -119,8 +119,8 @@ X509 *SSL_read_X509(char* filename, X509 **x509, modssl_read_bio_cb_fn *cb)
 static EVP_PKEY *d2i_PrivateKey_bio(BIO *bio, EVP_PKEY **key)
 {
      return ((EVP_PKEY *)ASN1_d2i_bio(
-             (char *(*)())EVP_PKEY_new, 
-             (char *(*)())d2i_PrivateKey, 
+             (char *(*)())EVP_PKEY_new,
+             (char *(*)())d2i_PrivateKey,
              (bio), (unsigned char **)(key)));
 }
 #endif
@@ -256,7 +256,7 @@ char *SSL_make_ciphersuite(apr_pool_t *p, SSL *ssl)
     char *cpCipherSuite;
     char *cp;
 
-    if (ssl == NULL) 
+    if (ssl == NULL)
         return "";
     if ((sk = (STACK_OF(SSL_CIPHER) *)SSL_get_ciphers(ssl)) == NULL)
         return "";
@@ -298,7 +298,7 @@ BOOL SSL_X509_isSGC(X509 *cert)
     BOOL is_sgc;
     int idx;
     int i;
-    
+
     is_sgc = FALSE;
     idx = X509_get_ext_by_NID(cert, NID_ext_key_usage, -1);
     if (idx >= 0) {
@@ -328,7 +328,7 @@ BOOL SSL_X509_getBC(X509 *cert, int *ca, int *pathlen)
     int idx;
     BIGNUM *bn = NULL;
     char *cp;
-    
+
     if ((idx = X509_get_ext_by_NID(cert, NID_basic_constraints, -1)) < 0)
         return FALSE;
     ext = X509_get_ext(cert, idx);
@@ -447,7 +447,7 @@ BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
     apr_dir_close(dir);
 
     return ok;
-}              
+}
 
 /*  _________________________________________________________________
 **
@@ -455,7 +455,7 @@ BOOL SSL_X509_INFO_load_path(apr_pool_t *ptemp,
 **  _________________________________________________________________
 */
 
-/* 
+/*
  * Read a file that optionally contains the server certificate in PEM
  * format, possibly followed by a sequence of CA certificates that
  * should be sent to the peer in the SSL Certificate message.
@@ -492,7 +492,7 @@ int SSL_CTX_use_certificate_chain(
     /* create new extra chain by loading the certs */
     n = 0;
     while ((x509 = modssl_PEM_read_bio_X509(bio, NULL, cb, NULL)) != NULL) {
-        if (!SSL_CTX_add_extra_chain_cert(ctx, x509)) { 
+        if (!SSL_CTX_add_extra_chain_cert(ctx, x509)) {
             X509_free(x509);
             BIO_free(bio);
             return -1;
@@ -501,7 +501,7 @@ int SSL_CTX_use_certificate_chain(
     }
     /* Make sure that only the error is just an EOF */
     if ((err = ERR_peek_error()) > 0) {
-        if (!(   ERR_GET_LIB(err) == ERR_LIB_PEM 
+        if (!(   ERR_GET_LIB(err) == ERR_LIB_PEM
               && ERR_GET_REASON(err) == PEM_R_NO_START_LINE)) {
             BIO_free(bio);
             return -1;

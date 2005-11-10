@@ -308,7 +308,7 @@ apr_status_t ap_queue_init(fd_queue_t * queue, int queue_capacity,
 }
 
 /**
- * Push a new socket onto the queue. 
+ * Push a new socket onto the queue.
  *
  * precondition: ap_queue_info_wait_for_idler has already been called
  *               to reserve an idle worker thread
@@ -409,7 +409,7 @@ apr_status_t ap_queue_term(fd_queue_t * queue)
         return rv;
     }
     /* we must hold one_big_mutex when setting this... otherwise,
-     * we could end up setting it and waking everybody up just after a 
+     * we could end up setting it and waking everybody up just after a
      * would-be popper checks it but right before they block
      */
     queue->terminated = 1;

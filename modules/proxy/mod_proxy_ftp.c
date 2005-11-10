@@ -733,7 +733,7 @@ apr_status_t proxy_ftp_cleanup(request_rec *r, proxy_conn_rec *backend)
 
     backend->close_on_recycle = 1;
     ap_set_module_config(r->connection->conn_config, &proxy_ftp_module, NULL);
-    ap_proxy_release_connection("FTP", backend, r->server);    
+    ap_proxy_release_connection("FTP", backend, r->server);
 
     return OK;
 }
@@ -769,7 +769,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     char buffer[MAX_STRING_LEN];
     char *ftpmessage = NULL;
     char *path, *strp, *type_suffix, *cwd = NULL;
-    apr_uri_t uri; 
+    apr_uri_t uri;
     char *user = NULL;
 /*    char *account = NULL; how to supply an account in a URL? */
     const char *password = NULL;
@@ -914,8 +914,8 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                                     connectname, APR_UNSPEC,
                                     connectport, 0,
                                     address_pool);
-    if (worker->is_address_reusable && !worker->cp->addr) {        
-        worker->cp->addr = connect_addr;            
+    if (worker->is_address_reusable && !worker->cp->addr) {
+        worker->cp->addr = connect_addr;
         PROXY_THREAD_UNLOCK(worker);
     }
     /*
@@ -945,9 +945,9 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             }
             return status;
         }
-        /* TODO: see if ftp could use determine_connection */ 
+        /* TODO: see if ftp could use determine_connection */
         backend->addr = connect_addr;
-        ap_set_module_config(c->conn_config, &proxy_ftp_module, backend);        
+        ap_set_module_config(c->conn_config, &proxy_ftp_module, backend);
     }
 
 
@@ -1221,7 +1221,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 }
 
 #if !defined (TPF) && !defined(BEOS)
-                if (conf->recv_buffer_size > 0 
+                if (conf->recv_buffer_size > 0
                         && (rv = apr_socket_opt_set(data_sock, APR_SO_RCVBUF,
                                                     conf->recv_buffer_size))) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -1309,7 +1309,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                 }
 
 #if !defined (TPF) && !defined(BEOS)
-                if (conf->recv_buffer_size > 0 
+                if (conf->recv_buffer_size > 0
                         && (rv = apr_socket_opt_set(data_sock, APR_SO_RCVBUF,
                                                     conf->recv_buffer_size))) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -1355,7 +1355,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         local_port = local_addr->port;
         apr_sockaddr_ip_get(&local_ip, local_addr);
 
-        if ((rv = apr_socket_opt_set(local_sock, APR_SO_REUSEADDR, one)) 
+        if ((rv = apr_socket_opt_set(local_sock, APR_SO_REUSEADDR, one))
                 != APR_SUCCESS) {
 #ifndef _OSD_POSIX              /* BS2000 has this option "always on" */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
@@ -1478,7 +1478,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                              "proxy: FTP: SIZE shows this is a directory");
             dirlisting = 1;
-            rc = proxy_ftp_command(apr_pstrcat(p, "CWD ", 
+            rc = proxy_ftp_command(apr_pstrcat(p, "CWD ",
                            ftp_escape_globbingchars(p, path), CRLF, NULL),
                            r, origin, bb, &ftpmessage);
             /* possible results: 250, 421, 500, 501, 502, 530, 550 */
@@ -1778,10 +1778,10 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                      "proxy: FTP: start body send");
 
         /* read the body, pass it to the output filters */
-        while (ap_get_brigade(data->input_filters, 
-                              bb, 
-                              AP_MODE_READBYTES, 
-                              APR_BLOCK_READ, 
+        while (ap_get_brigade(data->input_filters,
+                              bb,
+                              AP_MODE_READBYTES,
+                              APR_BLOCK_READ,
                               conf->io_buffer_size) == APR_SUCCESS) {
 #if DEBUGGING
             {

@@ -115,7 +115,7 @@ static int log_init(apr_pool_t *pc, apr_pool_t *p, apr_pool_t *pt,
     return OK;
 }
 
-  
+
 /* e is the first _invalid_ location in q
    N.B. returns the terminating NUL.
  */

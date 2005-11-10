@@ -27,7 +27,7 @@
  *   # - lowercase letter
  *   & - hex digit
  *   # - digit
- *   * - swallow remaining characters 
+ *   * - swallow remaining characters
  *  <x> - exact match for any other character
  */
 static int checkmask(const char *data, const char *mask)

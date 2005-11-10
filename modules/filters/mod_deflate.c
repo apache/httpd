@@ -67,7 +67,7 @@ typedef struct deflate_filter_config_t
  * |ID1|ID2|CM |FLG|     MTIME     |XFL|OS |
  * +---+---+---+---+---+---+---+---+---+---+
  */
-static const char gzip_header[10] = 
+static const char gzip_header[10] =
 { '\037', '\213', Z_DEFLATED, 0,
   0, 0, 0, 0, /* mtime */
   0, 0x03 /* Unix OS_CODE */
@@ -152,7 +152,7 @@ static const char *deflate_set_note(cmd_parms *cmd, void *dummy,
 {
     deflate_filter_config *c = ap_get_module_config(cmd->server->module_config,
                                                     &deflate_module);
-    
+
     if (arg2 == NULL) {
         c->note_ratio_name = apr_pstrdup(cmd->pool, arg1);
     }
@@ -264,7 +264,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             if ( env_value && (strcmp(env_value,"1") == 0) ) {
                 ap_remove_output_filter(f);
                 return ap_pass_brigade(f->next, bb);
-            }            
+            }
         }
 
         /* Let's see what our current Content-Encoding is.
@@ -332,7 +332,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             token = ap_get_token(r->pool, &accepts, 0);
             while (token && token[0] && strcasecmp(token, "gzip")) {
                 /* skip parameters, XXX: ;q=foo evaluation? */
-                while (*accepts == ';') { 
+                while (*accepts == ';') {
                     ++accepts;
                     token = ap_get_token(r->pool, &accepts, 1);
                 }
@@ -394,7 +394,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         ctx->stream.next_out = ctx->buffer;
         ctx->stream.avail_out = c->bufferSize;
     }
-    
+
     while (!APR_BRIGADE_EMPTY(bb))
     {
         const char *data;
@@ -627,8 +627,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             return rv;
         }
 
-        len = 10; 
-        rv = apr_brigade_flatten(ctx->bb, deflate_hdr, &len); 
+        len = 10;
+        rv = apr_brigade_flatten(ctx->bb, deflate_hdr, &len);
         if (rv != APR_SUCCESS) {
             return rv;
         }
@@ -784,7 +784,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 inflateEnd(&ctx->stream);
 
                 eos = apr_bucket_eos_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, eos); 
+                APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, eos);
                 break;
             }
 
@@ -831,7 +831,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 {
     int zlib_method;
     int zlib_flags;
-    int deflate_init = 1; 
+    int deflate_init = 1;
     apr_bucket *bkt;
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
@@ -961,7 +961,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Insufficient data for inflate");
                 return APR_EGENERAL;
-            } 
+            }
             else  {
                 zlib_method = data[2];
                 zlib_flags = data[3];
@@ -1077,7 +1077,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             inflateEnd(&ctx->stream);
 
             eos = apr_bucket_eos_create(f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, eos); 
+            APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, eos);
             break;
         }
 

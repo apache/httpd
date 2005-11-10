@@ -66,12 +66,12 @@ apr_file_t *ssl_util_ppopen(server_rec *s, apr_pool_t *p, const char *cmd,
     apr_procattr_t *procattr;
     apr_proc_t *proc;
 
-    if (apr_procattr_create(&procattr, p) != APR_SUCCESS) 
+    if (apr_procattr_create(&procattr, p) != APR_SUCCESS)
         return NULL;
-    if (apr_procattr_io_set(procattr, APR_FULL_BLOCK, APR_FULL_BLOCK, 
+    if (apr_procattr_io_set(procattr, APR_FULL_BLOCK, APR_FULL_BLOCK,
                             APR_FULL_BLOCK) != APR_SUCCESS)
         return NULL;
-    if (apr_procattr_dir_set(procattr, 
+    if (apr_procattr_dir_set(procattr,
                              ap_make_dirstr_parent(p, cmd)) != APR_SUCCESS)
         return NULL;
     if (apr_procattr_cmdtype_set(procattr, APR_PROGRAM) != APR_SUCCESS)
@@ -122,7 +122,7 @@ BOOL ssl_util_path_check(ssl_pathcheck_t pcm, const char *path, apr_pool_t *p)
 
     if (path == NULL)
         return FALSE;
-    if (pcm & SSL_PCM_EXISTS && apr_stat(&finfo, path, 
+    if (pcm & SSL_PCM_EXISTS && apr_stat(&finfo, path,
                                 APR_FINFO_TYPE|APR_FINFO_SIZE, p) != 0)
         return FALSE;
     if (pcm & SSL_PCM_ISREG && finfo.filetype != APR_REG)
@@ -134,20 +134,20 @@ BOOL ssl_util_path_check(ssl_pathcheck_t pcm, const char *path, apr_pool_t *p)
     return TRUE;
 }
 
-ssl_algo_t ssl_util_algotypeof(X509 *pCert, EVP_PKEY *pKey) 
+ssl_algo_t ssl_util_algotypeof(X509 *pCert, EVP_PKEY *pKey)
 {
     ssl_algo_t t;
     EVP_PKEY *pFreeKey = NULL;
-            
+
     t = SSL_ALGO_UNKNOWN;
     if (pCert != NULL)
         pFreeKey = pKey = X509_get_pubkey(pCert);
     if (pKey != NULL) {
         switch (EVP_PKEY_key_type(pKey)) {
-            case EVP_PKEY_RSA: 
+            case EVP_PKEY_RSA:
                 t = SSL_ALGO_RSA;
                 break;
-            case EVP_PKEY_DSA: 
+            case EVP_PKEY_DSA:
                 t = SSL_ALGO_DSA;
                 break;
             default:
@@ -162,16 +162,16 @@ ssl_algo_t ssl_util_algotypeof(X509 *pCert, EVP_PKEY *pKey)
     return t;
 }
 
-char *ssl_util_algotypestr(ssl_algo_t t) 
+char *ssl_util_algotypestr(ssl_algo_t t)
 {
     char *cp;
 
     cp = "UNKNOWN";
     switch (t) {
-        case SSL_ALGO_RSA: 
+        case SSL_ALGO_RSA:
             cp = "RSA";
             break;
-        case SSL_ALGO_DSA: 
+        case SSL_ALGO_DSA:
             cp = "DSA";
             break;
         default:
@@ -307,8 +307,8 @@ static void ssl_util_thr_lock(int mode, int type,
 
 static unsigned long ssl_util_thr_id(void)
 {
-    /* OpenSSL needs this to return an unsigned long.  On OS/390, the pthread 
-     * id is a structure twice that big.  Use the TCB pointer instead as a 
+    /* OpenSSL needs this to return an unsigned long.  On OS/390, the pthread
+     * id is a structure twice that big.  Use the TCB pointer instead as a
      * unique unsigned long.
      */
 #ifdef __MVS__
@@ -328,7 +328,7 @@ static apr_status_t ssl_util_thread_cleanup(void *data)
     CRYPTO_set_locking_callback(NULL);
     CRYPTO_set_id_callback(NULL);
 
-    /* Let the registered mutex cleanups do their own thing 
+    /* Let the registered mutex cleanups do their own thing
      */
     return APR_SUCCESS;
 }

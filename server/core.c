@@ -435,7 +435,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     }
 
     conf->allow_encoded_slashes = new->allow_encoded_slashes;
-    
+
     return (void*)conf;
 }
 
@@ -476,7 +476,7 @@ static void *create_core_server_config(apr_pool_t *a, server_rec *s)
 #define ACCEPT_FILTER_NAME "dataready"
 #endif
 #endif
-#endif 
+#endif
     apr_table_set(conf->accf_map, "http", ACCEPT_FILTER_NAME);
     apr_table_set(conf->accf_map, "https", "dataready");
 #endif
@@ -1062,7 +1062,7 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
             return NULL;
         }
     }
-    
+
     if (((forbidden & NOT_IN_DIRECTORY)
          && ((found = find_parent(cmd->directive, "<Directory"))
              || (found = find_parent(cmd->directive, "<DirectoryMatch"))))
@@ -1354,7 +1354,7 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
         }
         else if (!strcasecmp(k, "Options")) {
             d->override |= OR_OPTIONS;
-            if (v) 
+            if (v)
                 set_allow_opts(cmd, &(d->override_opts), v);
             else
                 d->override_opts = OPT_ALL;
@@ -2234,19 +2234,19 @@ static const char *set_accf_map(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-AP_DECLARE(const char*) ap_get_server_protocol(server_rec* s) 
+AP_DECLARE(const char*) ap_get_server_protocol(server_rec* s)
 {
     core_server_config *conf = ap_get_module_config(s->module_config,
                                                     &core_module);
     return conf->protocol;
-} 
+}
 
-AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto) 
+AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto)
 {
     core_server_config *conf = ap_get_module_config(s->module_config,
                                                     &core_module);
     conf->protocol = proto;
-} 
+}
 
 static const char *set_protocol(cmd_parms *cmd, void *dummy,
                                 const char *arg)
@@ -2513,7 +2513,7 @@ static const char *include_config (cmd_parms *cmd, void *dummy,
     conffile = ap_server_root_relative(cmd->pool, name);
     if (!conffile) {
         *recursion = 0;
-        return apr_pstrcat(cmd->pool, "Invalid Include path ", 
+        return apr_pstrcat(cmd->pool, "Invalid Include path ",
                            name, NULL);
     }
 
@@ -2596,7 +2596,7 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
     apr_snprintf(sport, sizeof sport, "%u", (unsigned) ap_get_server_port(r));
 
     if (conf->server_signature == srv_sig_withmail) {
-        return apr_pstrcat(r->pool, prefix, "<address>", 
+        return apr_pstrcat(r->pool, prefix, "<address>",
                            ap_get_server_version(),
                            " Server at <a href=\"",
                            ap_is_url(r->server->server_admin) ? "" : "mailto:",
@@ -3085,13 +3085,13 @@ static const char *add_ct_output_filters(cmd_parms *cmd, void *conf_,
     if (!new) {
         return "invalid filter name";
     }
-    
+
     return NULL;
 }
-/* 
- * Insert filters requested by the AddOutputFilterByType 
- * configuration directive. We cannot add filters based 
- * on content-type until after the handler has started 
+/*
+ * Insert filters requested by the AddOutputFilterByType
+ * configuration directive. We cannot add filters based
+ * on content-type until after the handler has started
  * to run. Only then do we reliably know the content-type.
  */
 void ap_add_output_filters_by_type(request_rec *r)
@@ -3129,7 +3129,7 @@ static const char *set_trace_enable(cmd_parms *cmd, void *dummy,
 {
     core_server_config *conf = ap_get_module_config(cmd->server->module_config,
                                                     &core_module);
-    
+
     if (strcasecmp(arg1, "on") == 0) {
         conf->trace_enable = AP_TRACE_ENABLE;
     }
@@ -3373,7 +3373,7 @@ AP_INIT_TAKE1("ThreadStackSize", ap_mpm_set_thread_stacksize, NULL, RSRC_CONF,
 AP_INIT_TAKE1("EnableExceptionHook", ap_mpm_set_exception_hook, NULL, RSRC_CONF,
               "Controls whether exception hook may be called after a crash"),
 #endif
-AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF, 
+AP_INIT_TAKE1("TraceEnable", set_trace_enable, NULL, RSRC_CONF,
               "'on' (default), 'off' or 'extended' to trace request body content"),
 { NULL }
 };
@@ -3405,9 +3405,9 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
         && !strncmp(r->uri, r->server->path, r->server->pathlen)
         && (r->server->path[r->server->pathlen - 1] == '/'
             || r->uri[r->server->pathlen] == '/'
-            || r->uri[r->server->pathlen] == '\0')) 
+            || r->uri[r->server->pathlen] == '\0'))
     {
-        /* skip all leading /'s (e.g. http://localhost///foo) 
+        /* skip all leading /'s (e.g. http://localhost///foo)
          * so we are looking at only the relative path.
          */
         char *path = r->uri + r->server->pathlen;
@@ -3430,7 +3430,7 @@ AP_DECLARE_NONSTD(int) ap_core_translate(request_rec *r)
          * /'s in a row.  This happens under windows when the document
          * root ends with a /
          */
-        /* skip all leading /'s (e.g. http://localhost///foo) 
+        /* skip all leading /'s (e.g. http://localhost///foo)
          * so we are looking at only the relative path.
          */
         char *path = r->uri;
@@ -3590,7 +3590,7 @@ static int default_handler(request_rec *r)
 
         if ((status = apr_file_open(&fd, r->filename, APR_READ | APR_BINARY
 #if APR_HAS_SENDFILE
-                            | ((d->enable_sendfile == ENABLE_SENDFILE_OFF) 
+                            | ((d->enable_sendfile == ENABLE_SENDFILE_OFF)
                                                 ? 0 : APR_SENDFILE_ENABLED)
 #endif
                                     , 0, r->pool)) != APR_SUCCESS) {
@@ -3610,7 +3610,7 @@ static int default_handler(request_rec *r)
         if ((errstatus = ap_meets_conditions(r)) != OK) {
             apr_file_close(fd);
             r->status = errstatus;
-        } 
+        }
         else {
             if (bld_content_md5) {
                 apr_table_setn(r->headers_out, "Content-MD5",
@@ -3621,7 +3621,7 @@ static int default_handler(request_rec *r)
              * that which can be stored in a single bucket (where the
              * length field is an apr_size_t), split it into several
              * buckets: */
-            if (sizeof(apr_off_t) > sizeof(apr_size_t) 
+            if (sizeof(apr_off_t) > sizeof(apr_size_t)
                 && r->finfo.size > AP_MAX_SENDFILE) {
                 apr_off_t fsize = r->finfo.size;
                 e = apr_bucket_file_create(fd, 0, AP_MAX_SENDFILE, r->pool,

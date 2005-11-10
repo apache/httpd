@@ -81,8 +81,8 @@ void ssl_scache_dc_init(server_rec *s, apr_pool_t *p)
         ssl_die();
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "distributed scache context initialised");
-    /* 
-     * Success ... 
+    /*
+     * Success ...
      */
     mc->tSessionCacheDataTable = ctx;
     return;
@@ -167,7 +167,7 @@ void ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool)
 {
     SSLModConfigRec *mc = myModConfig(r->server);
 
-    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, 
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "distributed scache 'ssl_scache_dc_status'");
     ap_rprintf(r, "cache type: <b>DC (Distributed Cache)</b>, "
                " target: <b>%s</b><br>", mc->szSessionCacheDataFile);

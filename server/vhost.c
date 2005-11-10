@@ -15,7 +15,7 @@
  */
 
 /**
- * @file  vhost.c 
+ * @file  vhost.c
  * @brief functions pertaining to virtual host addresses
  *        (configuration and run-time)
  */
@@ -137,7 +137,7 @@ AP_DECLARE(void) ap_init_vhost_config(apr_pool_t *p)
  * port is the default port to assume
  */
 static const char *get_addresses(apr_pool_t *p, const char *w_,
-                                 server_addr_rec ***paddr, 
+                                 server_addr_rec ***paddr,
                                  apr_port_t default_port)
 {
     apr_sockaddr_t *my_addr;
@@ -382,7 +382,7 @@ static APR_INLINE ipaddr_chain *find_ipaddr(apr_sockaddr_t *sa)
             if (apr_sockaddr_equal(cur, sa)) {
                 return trav;
             }
-        }    
+        }
     }
     return NULL;
 }
@@ -504,7 +504,7 @@ static void remove_unused_name_vhosts(server_rec *main_s, ipaddr_chain **pic)
 {
     while (*pic) {
         ipaddr_chain *ic = *pic;
-        
+
         if (ic->server == NULL) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, main_s,
                          "NameVirtualHost %s:%u has no VirtualHosts",
@@ -550,7 +550,7 @@ AP_DECLARE(void) ap_fini_vhost_config(apr_pool_t *p, server_rec *main_s)
         unsigned bucket = hash_addr(sar->host_addr);
         ipaddr_chain *ic = new_ipaddr_chain(p, NULL, sar);
 
-        if (memcmp(sar->host_addr->ipaddr_ptr, inaddr_any, 
+        if (memcmp(sar->host_addr->ipaddr_ptr, inaddr_any,
                    sar->host_addr->ipaddr_len)) { /* not IN[6]ADDR_ANY */
             *iphash_table_tail[bucket] = ic;
             iphash_table_tail[bucket] = &ic->next;
@@ -734,8 +734,8 @@ static void fix_hostname(request_rec *r)
         r->parsed_uri.port_str = apr_itoa(r->pool, (int)port);
     }
 
-    /* if the hostname is an IPv6 numeric address string, it was validated 
-     * already; otherwise, further validation is needed 
+    /* if the hostname is an IPv6 numeric address string, it was validated
+     * already; otherwise, further validation is needed
      */
     if (r->hostname[0] != '[') {
         for (dst = host; *dst; dst++) {
@@ -821,7 +821,7 @@ AP_DECLARE(int) ap_matches_request_vhost(request_rec *r, const char *host,
 
     /* search all the <VirtualHost> values */
     /* XXX: If this is a NameVirtualHost then we may not be doing the Right Thing
-     * consider: 
+     * consider:
      *
      *     NameVirtualHost 10.1.1.1
      *     <VirtualHost 10.1.1.1>
@@ -987,7 +987,7 @@ AP_DECLARE(void) ap_update_vhost_from_headers(request_rec *r)
 /**
  * For every virtual host on this connection, call func_cb.
  */
-AP_DECLARE(int) ap_vhost_iterate_given_conn(conn_rec *conn, 
+AP_DECLARE(int) ap_vhost_iterate_given_conn(conn_rec *conn,
                                             ap_vhost_iterate_conn_cb func_cb,
                                             void* baton)
 {
@@ -1004,7 +1004,7 @@ AP_DECLARE(int) ap_vhost_iterate_given_conn(conn_rec *conn,
         for (src = conn->vhost_lookup_data; src; src = src->next) {
             server_addr_rec *sar;
 
-            /* We only consider addresses on the name_chain which have a 
+            /* We only consider addresses on the name_chain which have a
              * matching port.
              */
             sar = src->sar;

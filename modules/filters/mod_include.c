@@ -1218,7 +1218,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
                     current = root = new;
                     continue;
                 }
-            
+
                 new->left = current->right;
                 new->left->parent = new;
                 new->parent = current;
@@ -1554,7 +1554,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
             if (rr->status == HTTP_OK && rr->finfo.filetype != 0) {
                 to_send = rr->filename;
-                if ((rv = apr_stat(finfo, to_send, 
+                if ((rv = apr_stat(finfo, to_send,
                     APR_FINFO_GPROT | APR_FINFO_MIN, rr->pool)) != APR_SUCCESS
                     && rv != APR_INCOMPLETE) {
                     error_fmt = "unable to get information about \"%s\" "
@@ -1574,7 +1574,7 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
         }
 
         if (rr) ap_destroy_sub_req(rr);
-        
+
         return ret;
     }
     else if (!strcmp(tag, "virtual")) {
@@ -1862,12 +1862,12 @@ static apr_status_t handle_config(include_ctx_t *ctx, ap_filter_t *f,
             ctx->time_str = ap_ssi_parse_string(ctx, tag_val, NULL, 0,
                                                 SSI_EXPAND_DROP_NAME);
 
-            apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date, 
+            apr_table_setn(env, "DATE_LOCAL", ap_ht_time(r->pool, date,
                            ctx->time_str, 0));
-            apr_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date, 
+            apr_table_setn(env, "DATE_GMT", ap_ht_time(r->pool, date,
                            ctx->time_str, 1));
             apr_table_setn(env, "LAST_MODIFIED",
-                           ap_ht_time(r->pool, r->finfo.mtime, 
+                           ap_ht_time(r->pool, r->finfo.mtime,
                            ctx->time_str, 0));
         }
         else if (!strcmp(tag, "sizefmt")) {
@@ -2215,7 +2215,7 @@ static apr_status_t handle_else(include_ctx_t *ctx, ap_filter_t *f,
     }
 
     DEBUG_DUMP_COND(ctx, " else");
-            
+
     if (ctx->flags & SSI_FLAG_COND_TRUE) {
         ctx->flags &= SSI_FLAG_CLEAR_PRINTING;
     }
@@ -2286,7 +2286,7 @@ static apr_status_t handle_set(include_ctx_t *ctx, ap_filter_t *f,
         return APR_SUCCESS;
     }
 
-    /* we need to use the 'main' request pool to set notes as that is 
+    /* we need to use the 'main' request pool to set notes as that is
      * a notes lifetime
      */
     while (sub) {
@@ -2415,15 +2415,15 @@ static apr_status_t handle_printenv(include_ctx_t *ctx, ap_filter_t *f,
 
 /* This is an implementation of the BNDM search algorithm.
  *
- * Fast and Flexible String Matching by Combining Bit-parallelism and 
- * Suffix Automata (2001) 
+ * Fast and Flexible String Matching by Combining Bit-parallelism and
+ * Suffix Automata (2001)
  * Gonzalo Navarro, Mathieu Raffinot
  *
  * http://www-igm.univ-mlv.fr/~raffinot/ftp/jea2001.ps.gz
  *
  * Initial code submitted by Sascha Schumann.
  */
-   
+
 /* Precompile the bndm_t data structure. */
 static bndm_t *bndm_compile(apr_pool_t *pool, const char *n, apr_size_t nl)
 {
@@ -2447,7 +2447,7 @@ static bndm_t *bndm_compile(apr_pool_t *pool, const char *n, apr_size_t nl)
  *
  * h  - the string to look in
  * hl - length of the string to look for
- * t  - precompiled bndm structure against the pattern 
+ * t  - precompiled bndm structure against the pattern
  *
  * Returns the count of character that is the first match or hl if no
  * match is found.
@@ -3573,7 +3573,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 
     /* Always unset the Last-Modified field - see RFC2616 - 13.3.4.
      * We don't know if we are going to be including a file or executing
-     * a program which may change the Last-Modified header or make the 
+     * a program which may change the Last-Modified header or make the
      * content completely dynamic.  Therefore, we can't support these
      * headers.
      * Exception: XBitHack full means we *should* set the Last-Modified field.
@@ -3606,17 +3606,17 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
 static int include_fixup(request_rec *r)
 {
     include_dir_config *conf;
- 
+
     conf = ap_get_module_config(r->per_dir_config, &include_module);
- 
-    if (r->handler && (strcmp(r->handler, "server-parsed") == 0)) 
+
+    if (r->handler && (strcmp(r->handler, "server-parsed") == 0))
     {
         if (!r->content_type || !*r->content_type) {
             ap_set_content_type(r, "text/html");
         }
         r->handler = "default-handler";
     }
-    else 
+    else
 #if defined(OS2) || defined(WIN32) || defined(NETWARE)
     /* These OS's don't support xbithack. This is being worked on. */
     {
@@ -3674,7 +3674,7 @@ static void *create_includes_server_config(apr_pool_t *p, server_rec *server)
     result->default_end_tag    = DEFAULT_END_SEQUENCE;
     result->default_start_tag  = DEFAULT_START_SEQUENCE;
 
-    return result; 
+    return result;
 }
 
 static const char *set_xbithack(cmd_parms *cmd, void *mconfig, const char *arg)
@@ -3799,9 +3799,9 @@ static int include_post_config(apr_pool_t *p, apr_pool_t *plog,
 
 static const command_rec includes_cmds[] =
 {
-    AP_INIT_TAKE1("XBitHack", set_xbithack, NULL, OR_OPTIONS, 
+    AP_INIT_TAKE1("XBitHack", set_xbithack, NULL, OR_OPTIONS,
                   "Off, On, or Full"),
-    AP_INIT_TAKE1("SSIErrorMsg", set_default_error_msg, NULL, OR_ALL, 
+    AP_INIT_TAKE1("SSIErrorMsg", set_default_error_msg, NULL, OR_ALL,
                   "a string"),
     AP_INIT_TAKE1("SSITimeFormat", set_default_time_fmt, NULL, OR_ALL,
                   "a strftime(3) formatted string"),

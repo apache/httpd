@@ -18,13 +18,13 @@
  * mod_expires.c
  * version 0.0.11
  * status beta
- * 
+ *
  * Andrew Wilson <Andrew.Wilson@cm.cf.ac.uk> 26.Jan.96
  *
  * This module allows you to control the form of the Expires: header
  * that Apache issues for each access.  Directives can appear in
  * configuration files or in .htaccess files so expiry semantics can
- * be defined on a per-directory basis.  
+ * be defined on a per-directory basis.
  *
  * DIRECTIVE SYNTAX
  *
@@ -56,7 +56,7 @@
  *
  * Another example, our html pages can change all the time, the gifs
  * tend not to change often:
- * 
+ *
  *     # pages are hot (1 week), images are cold (1 month)
  *     ExpiresByType text/html A604800
  *     ExpiresByType image/gif A2592000
@@ -85,7 +85,7 @@
  *     ExpiresByType type/encoding "<base> [plus] {<num> <type>}*"
  *
  * where <base> is one of:
- *      access  
+ *      access
  *      now             equivalent to 'access'
  *      modification
  *
@@ -134,8 +134,8 @@
  *              rely on presence of HTTP_TIME_FORMAT in Apache 1.1+.
  * 21.Feb.96    This version (0.0.9) reverses assumptions made in 0.0.8
  *              about star/star handlers.  Reverting to 0.0.7 behaviour.
- * 08.Jun.96    allows ExpiresDefault to be used with responses that use 
- *              the DefaultType by not DECLINING, but instead skipping 
+ * 08.Jun.96    allows ExpiresDefault to be used with responses that use
+ *              the DefaultType by not DECLINING, but instead skipping
  *              the table_get check and then looking for an ExpiresDefault.
  *              [Rob Hartill]
  * 04.Nov.96    'const' definitions added.
@@ -324,7 +324,7 @@ static const char *set_expiresbytype(cmd_parms *cmd, void *in_dir_config,
     if ((strlen(++check) == 1) && (*check == '*')) {
         dir_config->wildcards = 1;
     }
-    
+
     if ((response = check_code(cmd->pool, code, &real_code)) == NULL) {
         apr_table_setn(dir_config->expiresbytype, mime, real_code);
         return NULL;
@@ -399,7 +399,7 @@ static int set_expiration_fields(request_rec *r, const char *code,
 
     switch (code[0]) {
     case 'M':
-        if (r->finfo.filetype == 0) { 
+        if (r->finfo.filetype == 0) {
             /* file doesn't exist on disk, so we can't do anything based on
              * modification time.  Note that this does _not_ log an error.
              */
@@ -410,7 +410,7 @@ static int set_expiration_fields(request_rec *r, const char *code,
         additional = apr_time_from_sec(additional_sec);
         break;
     case 'A':
-        /* there's been some discussion and it's possible that 
+        /* there's been some discussion and it's possible that
          * 'access time' will be stored in request structure
          */
         base = r->request_time;
@@ -418,7 +418,7 @@ static int set_expiration_fields(request_rec *r, const char *code,
         additional = apr_time_from_sec(additional_sec);
         break;
     default:
-        /* expecting the add_* routines to be case-hardened this 
+        /* expecting the add_* routines to be case-hardened this
          * is just a reminder that module is beta
          */
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -472,7 +472,7 @@ static apr_status_t expires_filter(ap_filter_t *f,
          * this module.  First, check to see if there is an applicable
          * ExpiresByType directive.
          */
-        expiry = apr_table_get(conf->expiresbytype, 
+        expiry = apr_table_get(conf->expiresbytype,
                                ap_field_noparam(r->pool, r->content_type));
         if (expiry == NULL) {
             int usedefault = 1;
@@ -530,7 +530,7 @@ static void expires_insert_filter(request_rec *r)
     conf = (expires_dir_config *) ap_get_module_config(r->per_dir_config,
                                                        &expires_module);
 
-    /* Check to see if the filter is enabled and if there are any applicable 
+    /* Check to see if the filter is enabled and if there are any applicable
      * config directives for this directory scope
      */
     if (conf->active != ACTIVE_ON ||

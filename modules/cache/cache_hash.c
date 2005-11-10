@@ -213,7 +213,7 @@ static cache_hash_entry_t **find_entry(cache_hash_t *ht,
             hash = hash * 33 + *p;
         }
     }
-    
+
     /* scan linked list */
     for (hep = &ht->array[hash % ht->max], he = *hep;
          he;
@@ -275,7 +275,7 @@ CACHE_DECLARE(void *) cache_hash_set(cache_hash_t *ht,
             tval = (*hep)->val;
             (*hep)->val = val;
         }
-        /* Return the object just removed from the cache to let the 
+        /* Return the object just removed from the cache to let the
          * caller clean it up. Cast the constness away upon return.
          */
         return (void *) tval;

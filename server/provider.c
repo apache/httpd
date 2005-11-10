@@ -55,7 +55,7 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
         provider_group_hash = apr_hash_make(pool);
         apr_hash_set(global_providers, provider_group, APR_HASH_KEY_STRING,
                      provider_group_hash);
-        
+
     }
 
     provider_version_hash = apr_hash_get(provider_group_hash, provider_name,
@@ -65,7 +65,7 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
         provider_version_hash = apr_hash_make(pool);
         apr_hash_set(provider_group_hash, provider_name, APR_HASH_KEY_STRING,
                      provider_version_hash);
-        
+
     }
 
     /* just set it. no biggy if it was there before. */
@@ -80,7 +80,7 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
         provider_group_hash = apr_hash_make(pool);
         apr_hash_set(global_providers_names, provider_group, APR_HASH_KEY_STRING,
                      provider_group_hash);
-        
+
     }
 
     provider_version_hash = apr_hash_get(provider_group_hash, provider_version,
@@ -90,7 +90,7 @@ AP_DECLARE(apr_status_t) ap_register_provider(apr_pool_t *pool,
         provider_version_hash = apr_hash_make(pool);
         apr_hash_set(provider_group_hash, provider_version, APR_HASH_KEY_STRING,
                      provider_version_hash);
-        
+
     }
 
     /* just set it. no biggy if it was there before. */

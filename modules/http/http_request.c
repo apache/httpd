@@ -55,12 +55,12 @@
  * Mainline request processing...
  */
 
-/* XXX A cleaner and faster way to do this might be to pass the request_rec 
- * down the filter chain as a parameter.  It would need to change for 
- * subrequest vs. main request filters; perhaps the subrequest filter could 
+/* XXX A cleaner and faster way to do this might be to pass the request_rec
+ * down the filter chain as a parameter.  It would need to change for
+ * subrequest vs. main request filters; perhaps the subrequest filter could
  * make the switch.
  */
-static void update_r_in_filters(ap_filter_t *f, 
+static void update_r_in_filters(ap_filter_t *f,
                                 request_rec *from,
                                 request_rec *to)
 {
@@ -103,8 +103,8 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
         if (r_1st_err != r) {
             /* The recursive error was caused by an ErrorDocument specifying
              * an internal redirect to a bad URI.  ap_internal_redirect has
-             * changed the filter chains to point to the ErrorDocument's 
-             * request_rec.  Back out those changes so we can safely use the 
+             * changed the filter chains to point to the ErrorDocument's
+             * request_rec.  Back out those changes so we can safely use the
              * original failing request_rec to send the canned error message.
              *
              * ap_send_error_response gets rid of existing resource filters
@@ -168,7 +168,7 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
              * more informative (than the plain canned) messages to us.
              * Propagate them to ErrorDocuments via the ERROR_NOTES variable:
              */
-            if ((error_notes = apr_table_get(r->notes, 
+            if ((error_notes = apr_table_get(r->notes,
                                              "error-notes")) != NULL) {
                 apr_table_setn(r->subprocess_env, "ERROR_NOTES", error_notes);
             }
@@ -196,7 +196,7 @@ static void check_pipeline(conn_rec *c)
     /* ### is zero correct? that means "read one line" */
     if (c->keepalive != AP_CONN_CLOSE) {
         apr_bucket_brigade *bb = apr_brigade_create(c->pool, c->bucket_alloc);
-        if (ap_get_brigade(c->input_filters, bb, AP_MODE_EATCRLF, 
+        if (ap_get_brigade(c->input_filters, bb, AP_MODE_EATCRLF,
                        APR_NONBLOCK_READ, 0) != APR_SUCCESS) {
             c->data_in_input_filters = 0;  /* we got APR_EOF or an error */
         }
@@ -217,15 +217,15 @@ void ap_process_async_request(request_rec *r)
     /* Give quick handlers a shot at serving the request on the fast
      * path, bypassing all of the other Apache hooks.
      *
-     * This hook was added to enable serving files out of a URI keyed 
-     * content cache ( e.g., Mike Abbott's Quick Shortcut Cache, 
+     * This hook was added to enable serving files out of a URI keyed
+     * content cache ( e.g., Mike Abbott's Quick Shortcut Cache,
      * described here: http://oss.sgi.com/projects/apache/mod_qsc.html )
      *
      * It may have other uses as well, such as routing requests directly to
      * content handlers that have the ability to grok HTTP and do their
-     * own access checking, etc (e.g. servlet engines). 
-     * 
-     * Use this hook with extreme care and only if you know what you are 
+     * own access checking, etc (e.g. servlet engines).
+     *
+     * Use this hook with extreme care and only if you know what you are
      * doing.
      */
     if (ap_extended_status)
@@ -388,7 +388,7 @@ static request_rec *internal_internal_redirect(const char *new_uri,
         ap_add_output_filter_handle(ap_subreq_core_filter_handle,
                                     NULL, new, new->connection);
     }
-    
+
     update_r_in_filters(new->input_filters, r, new);
     update_r_in_filters(new->output_filters, r, new);
 
@@ -517,7 +517,7 @@ AP_DECLARE(void) ap_internal_redirect_handler(const char *new_uri, request_rec *
     }
 }
 
-AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...) 
+AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...)
 {
     const char *method;
     va_list methods;

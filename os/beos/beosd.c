@@ -49,14 +49,14 @@ int beosd_setup_child(void)
 }
 
 
-AP_DECLARE(const char *) beosd_set_user(cmd_parms *cmd, 
+AP_DECLARE(const char *) beosd_set_user(cmd_parms *cmd,
                                         void *dummy, const char *arg)
 {
     /* no-op */
     return NULL;
 }
 
-AP_DECLARE(const char *) beosd_set_group(cmd_parms *cmd, 
+AP_DECLARE(const char *) beosd_set_group(cmd_parms *cmd,
                                          void *dummy, const char *arg)
 {
     /* no-op */
@@ -78,7 +78,7 @@ AP_DECLARE(apr_status_t) beosd_accept(void **accepted, ap_listen_rec *lr,
     int sockdes;
 
     status = apr_socket_accept(&csd, lr->sd, ptrans);
-    if (status == APR_SUCCESS) { 
+    if (status == APR_SUCCESS) {
         *accepted = csd;
         apr_os_sock_get(&sockdes, csd);
         if (sockdes >= FD_SETSIZE) {
@@ -89,7 +89,7 @@ AP_DECLARE(apr_status_t) beosd_accept(void **accepted, ap_listen_rec *lr,
                          sockdes, FD_SETSIZE);
             apr_socket_close(csd);
             return APR_EINTR;
-        } 
+        }
         return status;
     }
 

@@ -15,7 +15,7 @@
  */
 
 /**
- * @file  core_filters.c 
+ * @file  core_filters.c
  * @brief Core input/output network filters.
  */
 
@@ -87,7 +87,7 @@ do { \
 static void brigade_move(apr_bucket_brigade *b, apr_bucket_brigade *a,
                          apr_bucket *e)
 {
-    apr_bucket *f;     
+    apr_bucket *f;
 
     if (e != APR_BRIGADE_SENTINEL(b)) {
         f = APR_RING_LAST(&b->list);
@@ -350,7 +350,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     apr_bucket_brigade *bb;
     apr_bucket *bucket, *next;
     apr_size_t bytes_in_brigade, non_file_bytes_in_brigade;
-       
+
     if (ctx == NULL) {
         apr_status_t rv;
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
@@ -368,7 +368,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
             }
         }
     }
-    
+
     if ((ctx->buffered_bb != NULL) &&
         !APR_BRIGADE_EMPTY(ctx->buffered_bb)) {
         bb = ctx->buffered_bb;
@@ -420,7 +420,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         setaside_remaining_output(f, ctx, bb, 0, c);
         return rv;
     }
-    
+
     bytes_in_brigade = 0;
     non_file_bytes_in_brigade = 0;
     for (bucket = APR_BRIGADE_FIRST(bb); bucket != APR_BRIGADE_SENTINEL(bb);
@@ -506,8 +506,8 @@ static void setaside_remaining_output(ap_filter_t *f,
         apr_brigade_destroy(bb);
     }
 }
- 
-#ifndef APR_MAX_IOVEC_SIZE 
+
+#ifndef APR_MAX_IOVEC_SIZE
 #define MAX_IOVEC_TO_WRITE 16
 #else
 #if APR_MAX_IOVEC_SIZE > 16
@@ -656,7 +656,7 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
     if (arv != APR_SUCCESS) {
         return arv;
     }
-    
+
     for (i = 0; i < nvec; i++) {
         bytes_to_write += vec[i].iov_len;
     }

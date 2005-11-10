@@ -49,21 +49,21 @@ apr_status_t ap_init_ebcdic(apr_pool_t *pool)
                      "apr_MD5InitEBCDIC() failed");
         return rv;
     }
-    
+
     rv = apr_base64init_ebcdic(ap_hdrs_to_ascii, ap_hdrs_from_ascii);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                      "apr_base64init_ebcdic() failed");
         return rv;
     }
-    
+
     rv = apr_SHA1InitEBCDIC(ap_hdrs_to_ascii);
     if (rv) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                      "apr_SHA1InitEBCDIC() failed");
         return rv;
     }
-    
+
     return APR_SUCCESS;
 }
 
@@ -106,7 +106,7 @@ int ap_rvputs_proto_in_ascii(request_rec *r, ...)
         written += len;
     }
     va_end(va);
- 
+
     return written;
-}    
+}
 #endif /* APR_CHARSET_EBCDIC */

@@ -176,7 +176,7 @@ typedef struct
     int sd;
 } proc_info;
 
-/* Structure used to pass information to the thread responsible for 
+/* Structure used to pass information to the thread responsible for
  * creating the rest of the threads.
  */
 typedef struct
@@ -204,8 +204,8 @@ typedef struct
 
 /*
  * The max child slot ever assigned, preserved across restarts.  Necessary
- * to deal with MaxClients changes across AP_SIG_GRACEFUL restarts.  We 
- * use this value to optimize routines that have to scan the entire 
+ * to deal with MaxClients changes across AP_SIG_GRACEFUL restarts.  We
+ * use this value to optimize routines that have to scan the entire
  * scoreboard.
  */
 int ap_max_daemons_limit = -1;
@@ -238,14 +238,14 @@ int raise_sigstop_flags;
 static apr_pool_t *pconf;       /* Pool for config stuff */
 static apr_pool_t *pchild;      /* Pool for httpd child stuff */
 
-static pid_t ap_my_pid;         /* Linux getpid() doesn't work except in main 
+static pid_t ap_my_pid;         /* Linux getpid() doesn't work except in main
                                    thread. Use this instead */
 static pid_t parent_pid;
 static apr_os_thread_t *listener_os_thread;
 
-/* The LISTENER_SIGNAL signal will be sent from the main thread to the 
- * listener thread to wake it up for graceful termination (what a child 
- * process from an old generation does when the admin does "apachectl 
+/* The LISTENER_SIGNAL signal will be sent from the main thread to the
+ * listener thread to wake it up for graceful termination (what a child
+ * process from an old generation does when the admin does "apachectl
  * graceful").  This signal will be blocked in all threads of a child
  * process except for the listener thread.
  */
@@ -272,7 +272,7 @@ static void wakeup_listener(void)
     listener_may_exit = 1;
     if (!listener_os_thread) {
         /* XXX there is an obscure path that this doesn't handle perfectly:
-         *     right after listener thread is created but before 
+         *     right after listener thread is created but before
          *     listener_os_thread is set, the first worker thread hits an
          *     error and starts graceful termination
          */
@@ -280,7 +280,7 @@ static void wakeup_listener(void)
     }
     /*
      * we should just be able to "kill(ap_my_pid, LISTENER_SIGNAL)" on all
-     * platforms and wake up the listener thread since it is the only thread 
+     * platforms and wake up the listener thread since it is the only thread
      * with SIGHUP unblocked, but that doesn't work on Linux
      */
 #ifdef HAVE_PTHREAD_KILL
@@ -399,8 +399,8 @@ ap_generation_t volatile ap_my_generation;
 
 /*
  * ap_start_shutdown() and ap_start_restart(), below, are a first stab at
- * functions to initiate shutdown or restart without relying on signals. 
- * Previously this was initiated in sig_term() and restart() signal handlers, 
+ * functions to initiate shutdown or restart without relying on signals.
+ * Previously this was initiated in sig_term() and restart() signal handlers,
  * but we want to be able to start a shutdown/restart from other sources --
  * e.g. on Win32, from the service manager. Now the service manager can
  * call ap_start_shutdown() or ap_start_restart() as appropiate.  Note that
@@ -499,7 +499,7 @@ static void set_signals(void)
                      "sigaction(SIGPIPE)");
 #endif
 
-    /* we want to ignore HUPs and AP_SIG_GRACEFUL while we're busy 
+    /* we want to ignore HUPs and AP_SIG_GRACEFUL while we're busy
      * processing one */
     sigaddset(&sa.sa_mask, SIGHUP);
     sigaddset(&sa.sa_mask, AP_SIG_GRACEFUL);
@@ -604,14 +604,14 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         }
 
         /**
-         * XXX If the platform does not have a usable way of bundling 
-         * accept() with a socket readability check, like Win32, 
+         * XXX If the platform does not have a usable way of bundling
+         * accept() with a socket readability check, like Win32,
          * and there are measurable delays before the
          * socket is readable due to the first data packet arriving,
          * it might be better to create the cs on the listener thread
          * with the state set to CONN_STATE_CHECK_REQUEST_LINE_READABLE
          *
-         * FreeBSD users will want to enable the HTTP accept filter 
+         * FreeBSD users will want to enable the HTTP accept filter
          * module in their kernel for the highest performance
          * When the accept filter is active, sockets are kept in the
          * kernel until a HTTP request is received.
@@ -639,7 +639,7 @@ read_request:
             cs->state = CONN_STATE_LINGER;
         }
     }
-    
+
     if (cs->state == CONN_STATE_WRITE_COMPLETION) {
         /* For now, do blocking writes in this thread to transfer the
          * rest of the response.  TODO: Hand off this connection to a
@@ -670,7 +670,7 @@ read_request:
             rc = apr_pollset_add(event_pollset, &cs->pfd);
             return 1;
         }
-        else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted || 
+        else if (c->keepalive != AP_CONN_KEEPALIVE || c->aborted ||
             ap_graceful_stop_signalled()) {
             c->cs->state = CONN_STATE_LINGER;
         }
@@ -780,7 +780,7 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
 
     rc = apr_pollset_remove(pollset, pfd);
 
-    /* 
+    /*
      * Some of the pollset backends, like KQueue or Epoll
      * automagically remove the FD if the socket is closed,
      * therefore, we can accept _SUCCESS or _NOTFOUND,
@@ -793,7 +793,7 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
     rc = ap_queue_push(worker_queue, cs->pfd.desc.s, cs, cs->p);
     if (rc != APR_SUCCESS) {
         /* trash the connection; we couldn't queue the connected
-         * socket to a worker 
+         * socket to a worker
          */
         apr_bucket_alloc_destroy(cs->bucket_alloc);
         apr_socket_close(cs->pfd.desc.s);
@@ -1023,7 +1023,7 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
                     rc = ap_queue_push(worker_queue, csd, NULL, ptrans);
                     if (rc != APR_SUCCESS) {
                         /* trash the connection; we couldn't queue the connected
-                         * socket to a worker 
+                         * socket to a worker
                          */
                         apr_socket_close(csd);
                         ap_log_error(APLOG_MARK, APLOG_CRIT, rc,
@@ -1340,14 +1340,14 @@ static void *APR_THREAD_FUNC start_threads(apr_thread_t * thd, void *dummy)
         }
     }
 
-    /* What state should this child_main process be listed as in the 
+    /* What state should this child_main process be listed as in the
      * scoreboard...?
-     *  ap_update_child_status_from_indexes(my_child_num, i, SERVER_STARTING, 
+     *  ap_update_child_status_from_indexes(my_child_num, i, SERVER_STARTING,
      *                                      (request_rec *) NULL);
-     * 
+     *
      *  This state should be listed separately in the scoreboard, in some kind
-     *  of process_status, not mixed in with the worker threads' status.   
-     *  "life_status" is almost right, but it's in the worker's structure, and 
+     *  of process_status, not mixed in with the worker threads' status.
+     *  "life_status" is almost right, but it's in the worker's structure, and
      *  the name could be clearer.   gla
      */
     apr_thread_exit(thd, APR_SUCCESS);
@@ -1412,8 +1412,8 @@ static void join_start_thread(apr_thread_t * start_thread_id)
 {
     apr_status_t rv, thread_rv;
 
-    start_thread_may_exit = 1;  /* tell it to give up in case it is still 
-                                 * trying to take over slots from a 
+    start_thread_may_exit = 1;  /* tell it to give up in case it is still
+                                 * trying to take over slots from a
                                  * previous generation
                                  */
     rv = apr_thread_join(&thread_rv, start_thread_id);
@@ -1470,7 +1470,7 @@ static void child_main(int child_num_arg)
 
     /* Setup worker threads */
 
-    /* clear the storage; we may not create all our threads immediately, 
+    /* clear the storage; we may not create all our threads immediately,
      * and we want a 0 entry to indicate a thread which was not created
      */
     threads = (apr_thread_t **) calloc(1,
@@ -1513,7 +1513,7 @@ static void child_main(int child_num_arg)
     if (one_process) {
         /* Block until we get a terminating signal. */
         apr_signal_thread(check_signal);
-        /* make sure the start thread has finished; signal_threads() 
+        /* make sure the start thread has finished; signal_threads()
          * and join_workers() depend on that
          */
         /* XXX join_start_thread() won't be awakened if one of our
@@ -1558,7 +1558,7 @@ static void child_main(int child_num_arg)
                 }
             }
             if (rv == AP_GRACEFUL || rv == AP_RESTART) {
-                /* make sure the start thread has finished; 
+                /* make sure the start thread has finished;
                  * signal_threads() and join_workers depend on that
                  */
                 join_start_thread(start_thread_id);
@@ -1728,14 +1728,14 @@ static void perform_idle_server_maintenance(void)
                 }
             }
         }
-        if (any_dead_threads 
-            && totally_free_length < idle_spawn_rate 
-            && free_length < MAX_SPAWN_RATE 
+        if (any_dead_threads
+            && totally_free_length < idle_spawn_rate
+            && free_length < MAX_SPAWN_RATE
             && (!ps->pid      /* no process in the slot */
                   || ps->quiescing)) {  /* or at least one is going away */
             if (all_dead_threads) {
                 /* great! we prefer these, because the new process can
-                 * start more threads sooner.  So prioritize this slot 
+                 * start more threads sooner.  So prioritize this slot
                  * by putting it ahead of any slots with active threads.
                  *
                  * first, make room by moving a slot that's potentially still
@@ -1766,7 +1766,7 @@ static void perform_idle_server_maintenance(void)
             sick_child_detected = 0;
         }
         else {
-            /* looks like a basket case.  give up.  
+            /* looks like a basket case.  give up.
              */
             shutdown_pending = 1;
             child_fatal = 1;
@@ -1778,7 +1778,7 @@ static void perform_idle_server_maintenance(void)
             return;
         }
     }
-                                                    
+
     ap_max_daemons_limit = last_non_dead + 1;
 
     if (idle_thread_count > max_spare_threads) {
@@ -2065,7 +2065,7 @@ int ap_mpm_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
         ap_reclaim_child_processes(1);
 
         return 1;
-    } 
+    }
 
     /* we've been told to restart */
     apr_signal(SIGHUP, SIG_IGN);
@@ -2096,7 +2096,7 @@ int ap_mpm_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
 
     }
     else {
-        /* Kill 'em all.  Since the child acts the same on the parents SIGTERM 
+        /* Kill 'em all.  Since the child acts the same on the parents SIGTERM
          * and a SIGHUP, we may as well use the same signal, because some user
          * pthreads are stealing signals from us left and right.
          */

@@ -239,7 +239,7 @@ static int check_speling(request_rec *r)
     filoc = ap_rind(r->filename, '/');
     /*
      * Don't do anything if the request doesn't contain a slash, or
-     * requests "/" 
+     * requests "/"
      */
     if (filoc == -1 || strcmp(r->uri, "/") == 0) {
         return DECLINED;
@@ -376,8 +376,8 @@ static int check_speling(request_rec *r)
               sizeof(misspelled_file), sort_by_quality);
 
         /*
-         * Conditions for immediate redirection: 
-         *     a) the first candidate was not found by stripping the suffix 
+         * Conditions for immediate redirection:
+         *     a) the first candidate was not found by stripping the suffix
          * AND b) there exists only one candidate OR the best match is not
          *        ambiguous
          * then return a redirection right away.
@@ -396,7 +396,7 @@ static int check_speling(request_rec *r)
                           ap_construct_url(r->pool, nuri, r));
 
             ap_log_rerror(APLOG_MARK, APLOG_INFO, APR_SUCCESS,
-                          r, 
+                          r,
                           ref ? "Fixed spelling: %s to %s from %s"
                               : "Fixed spelling: %s to %s",
                           r->uri, nuri, ref);
@@ -478,7 +478,7 @@ static int check_speling(request_rec *r)
                 if (i > 0 && i < candidates->nelts - 1
                     && variant[i].quality != SP_VERYDIFFERENT
                     && variant[i + 1].quality == SP_VERYDIFFERENT) {
-                    *(const char **)apr_array_push(t) = 
+                    *(const char **)apr_array_push(t) =
                                    "</ul>\nFurthermore, the following related "
                                    "documents were found:\n<ul>\n";
                 }
@@ -501,7 +501,7 @@ static int check_speling(request_rec *r)
 
             apr_table_mergen(r->subprocess_env, "VARIANTS",
                             apr_array_pstrcat(p, v, ','));
-          
+
             apr_pool_destroy(sub_pool);
 
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,

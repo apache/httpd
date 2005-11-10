@@ -345,7 +345,7 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
             file = NULL;
         }
     }
-    
+
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
     }
@@ -382,7 +382,7 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
 #if APR_HAS_POSIXSEM_SERIALIZE
     else if (!strcasecmp(meth, "posixsem") || !strcasecmp(meth, "sem")) {
         mc->nMutexMech = APR_LOCK_POSIXSEM;
-        /* Posix/SysV semaphores aren't file based, use the literal name 
+        /* Posix/SysV semaphores aren't file based, use the literal name
          * if provided and fall back on APR's default if not.  Today, APR
          * will ignore it, but once supported it has an absurdly short limit.
          */
@@ -415,7 +415,7 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
     if (file) {
         mc->szMutexFile = ap_server_root_relative(cmd->server->process->pool, file);
         if (!mc->szMutexFile) {
-            return apr_pstrcat(cmd->pool, "Invalid SSLMutex ", meth, 
+            return apr_pstrcat(cmd->pool, "Invalid SSLMutex ", meth,
                                ": filepath ", file, NULL);
         }
     }
@@ -493,10 +493,10 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
     else {
         err = "SSLCryptoDevice: Invalid argument; must be one of: "
               "'builtin' (none)";
-        e = ENGINE_get_first(); 
+        e = ENGINE_get_first();
         while (e) {
             ENGINE *en;
-            err = apr_pstrcat(cmd->pool, err, ", '", ENGINE_get_id(e), 
+            err = apr_pstrcat(cmd->pool, err, ", '", ENGINE_get_id(e),
                                          "' (", ENGINE_get_name(e), ")", NULL);
             en = ENGINE_get_next(e);
             ENGINE_free(e);
@@ -511,7 +511,7 @@ const char *ssl_cmd_SSLCryptoDevice(cmd_parms *cmd,
 
 const char *ssl_cmd_SSLRandomSeed(cmd_parms *cmd,
                                   void *dcfg,
-                                  const char *arg1, 
+                                  const char *arg1,
                                   const char *arg2,
                                   const char *arg3)
 {
@@ -658,7 +658,7 @@ static const char *ssl_cmd_check_file(cmd_parms *parms,
     }
 
     return apr_pstrcat(parms->pool, parms->cmd->name,
-                       ": file '", *file, 
+                       ": file '", *file,
                        "' does not exist or is empty", NULL);
 
 }
@@ -690,7 +690,7 @@ static const char *ssl_cmd_check_dir(cmd_parms *parms,
     }
 
     return apr_pstrcat(parms->pool, parms->cmd->name,
-                       ": directory '", *dir, 
+                       ": directory '", *dir,
                        "' does not exist", NULL);
 
 }
@@ -730,7 +730,7 @@ static const char *ssl_cmd_check_aidx_max(cmd_parms *parms,
 
     return apr_psprintf(parms->pool,
                         "%s: only up to %d "
-                        "different %s per virtual host allowed", 
+                        "different %s per virtual host allowed",
                          parms->cmd->name, SSL_AIDX_MAX, desc);
 }
 
@@ -930,7 +930,7 @@ const char *ssl_cmd_SSLVerifyClient(cmd_parms *cmd,
     if ((err = ssl_cmd_verify_parse(cmd, arg, &mode))) {
         return err;
     }
-    
+
     if (cmd->path) {
         dc->nVerifyClient = mode;
     }
@@ -1064,7 +1064,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
         mc->nSessionCacheMode      = SSL_SCMODE_DC;
         mc->szSessionCacheDataFile = apr_pstrdup(mc->pPool, arg+3);
         if (!mc->szSessionCacheDataFile) {
-            return apr_pstrcat(cmd->pool, 
+            return apr_pstrcat(cmd->pool,
                                "SSLSessionCache: Invalid cache file path: ",
                                arg+3, NULL);
         }
@@ -1252,7 +1252,7 @@ const char *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag)
     return NULL;
 }
 
-const char *ssl_cmd_SSLProxyProtocol(cmd_parms *cmd, 
+const char *ssl_cmd_SSLProxyProtocol(cmd_parms *cmd,
                                      void *dcfg,
                                      const char *arg)
 {
@@ -1403,7 +1403,7 @@ const char *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *cmd,
 }
 
 
-const char *ssl_cmd_SSLUserName(cmd_parms *cmd, void *dcfg, 
+const char *ssl_cmd_SSLUserName(cmd_parms *cmd, void *dcfg,
                                 const char *arg)
 {
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;

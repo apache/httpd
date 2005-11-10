@@ -171,7 +171,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
      * but it should be initialized for startup before we
      * call ssl_rand_seed() below.
      */
-    mc->pid = getpid(); 
+    mc->pid = getpid();
 
     /*
      * Let us cleanup on restarts and exists
@@ -207,7 +207,7 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
         sc->vhost_id = ssl_util_vhostid(p, s);
         sc->vhost_id_len = strlen(sc->vhost_id);
 
-        if (ap_get_server_protocol(s) && 
+        if (ap_get_server_protocol(s) &&
             strcmp("https", ap_get_server_protocol(s)) == 0) {
             sc->enabled = SSL_ENABLED_TRUE;
         }
@@ -460,7 +460,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
     SSL_CTX_set_options(ctx, SSL_OP_SINGLE_DH_USE);
 
 #ifdef SSL_OP_NO_SESSION_RESUMPTION_ON_RENEGOTIATION
-    /* 
+    /*
      * Disallow a session from being resumed during a renegotiation,
      * so that an acceptable cipher suite can be negotiated.
      */
@@ -608,7 +608,7 @@ static void ssl_init_ctx_cipher_suite(server_rec *s,
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "Configuring permitted SSL ciphers [%s]", 
+                 "Configuring permitted SSL ciphers [%s]",
                  suite);
 
     if (!SSL_CTX_set_cipher_list(ctx, MODSSL_PCHAR_CAST suite)) {
@@ -657,7 +657,7 @@ static void ssl_init_ctx_cert_chain(server_rec *s,
     int i, n;
     const char *chain = mctx->cert_chain;
 
-    /* 
+    /*
      * Optionally configure extra server certificate chain certificates.
      * This is usually done by OpenSSL automatically when one of the
      * server cert issuers are found under SSLCACertificatePath or in
@@ -683,7 +683,7 @@ static void ssl_init_ctx_cert_chain(server_rec *s,
     }
 
     n = SSL_CTX_use_certificate_chain(mctx->ssl_ctx,
-                                      (char *)chain, 
+                                      (char *)chain,
                                       skip_first, NULL);
     if (n < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
@@ -833,7 +833,7 @@ static void ssl_check_public_cert(server_rec *s,
     if (SSL_X509_isSGC(cert)) {
         ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                      "%s server certificate enables "
-                     "Server Gated Cryptography (SGC)", 
+                     "Server Gated Cryptography (SGC)",
                      ssl_asn1_keystr(type));
     }
 
@@ -1019,7 +1019,7 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
     BOOL conflict = FALSE;
 
     /*
-     * Give out warnings when a server has HTTPS configured 
+     * Give out warnings when a server has HTTPS configured
      * for the HTTP port or vice versa
      */
     for (s = base_server; s; s = s->next) {
@@ -1070,11 +1070,11 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
                          base_server,
                          "Init: SSL server IP/port conflict: "
                          "%s (%s:%d) vs. %s (%s:%d)",
-                         ssl_util_vhostid(p, s), 
+                         ssl_util_vhostid(p, s),
                          (s->defn_name ? s->defn_name : "unknown"),
                          s->defn_line_number,
                          ssl_util_vhostid(p, ps),
-                         (ps->defn_name ? ps->defn_name : "unknown"), 
+                         (ps->defn_name ? ps->defn_name : "unknown"),
                          ps->defn_line_number);
             conflict = TRUE;
             continue;
@@ -1258,7 +1258,7 @@ apr_status_t ssl_init_ModuleKill(void *data)
      */
     ssl_scache_kill(base_server);
 
-    /* 
+    /*
      * Destroy the temporary keys and params
      */
     ssl_tmp_keys_free(base_server);

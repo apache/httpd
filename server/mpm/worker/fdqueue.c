@@ -233,7 +233,7 @@ apr_status_t ap_queue_info_term(fd_queue_info_t *queue_info)
  * Callback routine that is called to destroy this
  * fd_queue_t when its pool is destroyed.
  */
-static apr_status_t ap_queue_destroy(void *data) 
+static apr_status_t ap_queue_destroy(void *data)
 {
     fd_queue_t *queue = data;
 
@@ -276,7 +276,7 @@ apr_status_t ap_queue_init(fd_queue_t *queue, int queue_capacity, apr_pool_t *a)
 }
 
 /**
- * Push a new socket onto the queue. 
+ * Push a new socket onto the queue.
  *
  * precondition: ap_queue_info_wait_for_idler has already been called
  *               to reserve an idle worker thread
@@ -340,7 +340,7 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
                 return APR_EINTR;
             }
         }
-    } 
+    }
 
     elem = &queue->data[--queue->nelts];
     *sd = elem->sd;
@@ -357,7 +357,7 @@ apr_status_t ap_queue_pop(fd_queue_t *queue, apr_socket_t **sd, apr_pool_t **p)
 apr_status_t ap_queue_interrupt_all(fd_queue_t *queue)
 {
     apr_status_t rv;
-    
+
     if ((rv = apr_thread_mutex_lock(queue->one_big_mutex)) != APR_SUCCESS) {
         return rv;
     }
@@ -373,7 +373,7 @@ apr_status_t ap_queue_term(fd_queue_t *queue)
         return rv;
     }
     /* we must hold one_big_mutex when setting this... otherwise,
-     * we could end up setting it and waking everybody up just after a 
+     * we could end up setting it and waking everybody up just after a
      * would-be popper checks it but right before they block
      */
     queue->terminated = 1;

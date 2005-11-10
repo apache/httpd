@@ -450,10 +450,10 @@ static int process_dir(char *path, apr_pool_t *pool)
         case HEADERDATA:
             nextpath = apr_pstrcat(p, path, "/", d->basename,
                                    CACHE_HEADER_SUFFIX, NULL);
-            if (apr_file_open(&fd, nextpath, APR_FOPEN_READ | APR_FOPEN_BINARY, 
+            if (apr_file_open(&fd, nextpath, APR_FOPEN_READ | APR_FOPEN_BINARY,
                               APR_OS_DEFAULT, p) == APR_SUCCESS) {
                 len = sizeof(format);
-                if (apr_file_read_full(fd, &format, len, 
+                if (apr_file_read_full(fd, &format, len,
                                        &len) == APR_SUCCESS) {
                     if (format == DISK_FORMAT_VERSION) {
                         apr_off_t offset = 0;
@@ -483,11 +483,11 @@ static int process_dir(char *path, apr_pool_t *pool)
                         }
                     }
                     else if (format == VARY_FORMAT_VERSION) {
-                        /* This must be a URL that added Vary headers later, 
+                        /* This must be a URL that added Vary headers later,
                          * so kill the orphaned .data file
                          */
                         apr_file_close(fd);
-                        apr_file_remove(apr_pstrcat(p, path, "/", d->basename, 
+                        apr_file_remove(apr_pstrcat(p, path, "/", d->basename,
                                                     CACHE_DATA_SUFFIX, NULL),
                                         p);
                     }
@@ -526,7 +526,7 @@ static int process_dir(char *path, apr_pool_t *pool)
             if (apr_file_open(&fd, nextpath, APR_FOPEN_READ | APR_FOPEN_BINARY,
                               APR_OS_DEFAULT, p) == APR_SUCCESS) {
                 len = sizeof(format);
-                if (apr_file_read_full(fd, &format, len, 
+                if (apr_file_read_full(fd, &format, len,
                                        &len) == APR_SUCCESS) {
                     if (format == VARY_FORMAT_VERSION) {
                         apr_time_t expires;
@@ -824,7 +824,7 @@ int main(int argc, const char * const argv[])
                 }
                 benice = 1;
                 break;
-                
+
             case 't':
                 if (deldirs) {
                     usage();

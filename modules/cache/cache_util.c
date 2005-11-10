@@ -72,7 +72,7 @@ static int uri_meets_conditions(apr_uri_t filter, int pathlen, apr_uri_t url)
 }
 
 CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
-                                                  cache_server_conf *conf, 
+                                                  cache_server_conf *conf,
                                                   apr_uri_t uri)
 {
     cache_provider_list *providers = NULL;
@@ -80,7 +80,7 @@ CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
 
     /* loop through all the cacheenable entries */
     for (i = 0; i < conf->cacheenable->nelts; i++) {
-        struct cache_enable *ent = 
+        struct cache_enable *ent =
                                 (struct cache_enable *)conf->cacheenable->elts;
         if (uri_meets_conditions(ent[i].url, ent[i].pathlen, uri)) {
             /* Fetch from global config and add to the list. */
@@ -117,7 +117,7 @@ CACHE_DECLARE(cache_provider_list *)ap_cache_get_providers(request_rec *r,
      * This means we are disabling cachedisable url and below...
      */
     for (i = 0; i < conf->cachedisable->nelts; i++) {
-        struct cache_disable *ent = 
+        struct cache_disable *ent =
                                (struct cache_disable *)conf->cachedisable->elts;
         if (uri_meets_conditions(ent[i].url, ent[i].pathlen, uri)) {
             /* Stop searching now. */
@@ -176,29 +176,29 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
      * either the request or the cached response means that we must
      * revalidate the request unconditionally, overriding any expiration
      * mechanism. It's equivalent to max-age=0,must-revalidate.
-     * 
+     *
      * - RFC2616 14.32 Pragma: no-cache This is treated the same as
      * Cache-Control: no-cache.
-     * 
+     *
      * - RFC2616 14.9.3 Cache-Control: max-stale, must-revalidate,
      * proxy-revalidate if the max-stale request header exists, modify the
      * stale calculations below so that an object can be at most <max-stale>
      * seconds stale before we request a revalidation, _UNLESS_ a
      * must-revalidate or proxy-revalidate cached response header exists to
      * stop us doing this.
-     * 
+     *
      * - RFC2616 14.9.3 Cache-Control: s-maxage the origin server specifies the
      * maximum age an object can be before it is considered stale. This
      * directive has the effect of proxy|must revalidate, which in turn means
      * simple ignore any max-stale setting.
-     * 
+     *
      * - RFC2616 14.9.4 Cache-Control: max-age this header can appear in both
      * requests and responses. If both are specified, the smaller of the two
      * takes priority.
-     * 
+     *
      * - RFC2616 14.21 Expires: if this request header exists in the cached
      * entity, and it's value is in the past, it has expired.
-     * 
+     *
      */
 
     /* This value comes from the client's initial request. */
@@ -322,10 +322,10 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
                                 "110 Response is stale");
             }
         }
-        /* 
-         * If none of Expires, Cache-Control: max-age, or Cache-Control: 
-         * s-maxage appears in the response, and the respose header age 
-         * calculated is more than 24 hours add the warning 113 
+        /*
+         * If none of Expires, Cache-Control: max-age, or Cache-Control:
+         * s-maxage appears in the response, and the respose header age
+         * calculated is more than 24 hours add the warning 113
          */
         if ((maxage_cresp == -1) && (smaxage == -1) &&
             (expstr == NULL) && (age > 86400)) {
@@ -451,7 +451,7 @@ CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list,
 }
 
 /*
- * Converts apr_time_t expressed as hex digits to 
+ * Converts apr_time_t expressed as hex digits to
  * a true apr_time_t.
  */
 CACHE_DECLARE(apr_time_t) ap_cache_hex2usec(const char *x)
@@ -503,8 +503,8 @@ static void cache_hash(const char *it, char *val, int ndepth, int nlength)
     apr_md5_update(&context, (const unsigned char *) it, strlen(it));
     apr_md5_final(digest, &context);
 
-    /* encode 128 bits as 22 characters, using a modified uuencoding 
-     * the encoding is 3 bytes -> 4 characters* i.e. 128 bits is 
+    /* encode 128 bits as 22 characters, using a modified uuencoding
+     * the encoding is 3 bytes -> 4 characters* i.e. 128 bits is
      * 5 x 3 bytes + 1 byte -> 5 * 4 characters + 2 characters
      */
     for (i = 0, k = 0; i < 15; i += 3) {

@@ -39,7 +39,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
     SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
 
-    if (mc->nMutexMode == SSL_MUTEXMODE_NONE) 
+    if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
         return TRUE;
 
     if (mc->pMutex) {

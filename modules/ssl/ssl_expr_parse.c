@@ -1,5 +1,5 @@
 #ifndef lint
-static char const 
+static char const
 ssl_expr_yyrcsid[] = "$FreeBSD: src/usr.bin/yacc/skeleton.c,v 1.28.2.1 2001/07/19 05:46:39 peter Exp $";
 #endif
 #include <stdlib.h>
@@ -530,9 +530,9 @@ case 25:
 break;
 case 26:
 #line 121 "ssl_expr_parse.y"
-{ 
+{
                 ap_regex_t *regex;
-                if ((regex = ap_pregcomp(ssl_expr_info.pool, ssl_expr_yyvsp[0].cpVal, 
+                if ((regex = ap_pregcomp(ssl_expr_info.pool, ssl_expr_yyvsp[0].cpVal,
                                          AP_REG_EXTENDED|AP_REG_NOSUB)) == NULL) {
                     ssl_expr_error = "Failed to compile regular expression";
                     YYERROR;
@@ -544,7 +544,7 @@ case 27:
 #line 130 "ssl_expr_parse.y"
 {
                 ap_regex_t *regex;
-                if ((regex = ap_pregcomp(ssl_expr_info.pool, ssl_expr_yyvsp[0].cpVal, 
+                if ((regex = ap_pregcomp(ssl_expr_info.pool, ssl_expr_yyvsp[0].cpVal,
                                          AP_REG_EXTENDED|AP_REG_NOSUB|AP_REG_ICASE)) == NULL) {
                     ssl_expr_error = "Failed to compile regular expression";
                     YYERROR;
@@ -554,7 +554,7 @@ case 27:
 break;
 case 28:
 #line 141 "ssl_expr_parse.y"
-{ 
+{
                ssl_expr *args = ssl_expr_make(op_ListElement, ssl_expr_yyvsp[-1].cpVal, NULL);
                ssl_expr_yyval.exVal = ssl_expr_make(op_Func, "file", args);
             }

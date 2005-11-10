@@ -75,9 +75,9 @@ static const char *set_extension_map(cmd_parms *cmd, netware_dir_config *m,
 
     if (*ext == '.')
         ++ext;
-  
+
     if (CGIhdlr != NULL) {
-        len = strlen(CGIhdlr);    
+        len = strlen(CGIhdlr);
         for (i=0; i<len; i++) {
             if (CGIhdlr[i] == '\\') {
                 CGIhdlr[i] = '/';
@@ -94,7 +94,7 @@ static const char *set_extension_map(cmd_parms *cmd, netware_dir_config *m,
 }
 
 static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
-                                         request_rec *r, apr_pool_t *p, 
+                                         request_rec *r, apr_pool_t *p,
                                          cgi_exec_info_t *e_info)
 {
     char *ext = NULL;
@@ -104,7 +104,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     apr_file_t *fh;
     const char *args = "";
 
-    d = (netware_dir_config *)ap_get_module_config(r->per_dir_config, 
+    d = (netware_dir_config *)ap_get_module_config(r->per_dir_config,
                                                &netware_module);
 
     if (e_info->process_cgi) {
@@ -135,7 +135,7 @@ static apr_status_t ap_cgi_build_command(const char **cmd, const char ***argv,
     if (!ext) {
         ext = "";
     }
-    
+
     /* eliminate the '.' if there is one */
     if (*ext == '.')
         ++ext;
@@ -173,7 +173,7 @@ static void register_hooks(apr_pool_t *p)
 }
 
 static const command_rec netware_cmds[] = {
-AP_INIT_TAKE23("CGIMapExtension", set_extension_map, NULL, OR_FILEINFO, 
+AP_INIT_TAKE23("CGIMapExtension", set_extension_map, NULL, OR_FILEINFO,
               "Full path to the CGI NLM module followed by a file extension. If the "
               "first parameter is set to \"OS\" then the following file extension is "
               "treated as NLM. The optional parameter \"detach\" can be specified if "

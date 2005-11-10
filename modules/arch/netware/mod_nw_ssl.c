@@ -29,7 +29,7 @@
  *
  *  Examples:
  *
- *          SecureListen 443 "SSL CertificateIP"  
+ *          SecureListen 443 "SSL CertificateIP"
  *          SecureListen 123.45.67.89:443 mycert
  */
 
@@ -183,7 +183,7 @@ static unsigned long parse_addr(const char *w, unsigned short *ports)
     hep = gethostbyname(w);
 
     if ((!hep) || (hep->h_addrtype != AF_INET || !hep->h_addr_list[0])) {
-        /* XXX Should be echoing by h_errno the actual failure, no? 
+        /* XXX Should be echoing by h_errno the actual failure, no?
          * ap_log_error would be good here.  Better yet - APRize.
          */
         fprintf(stderr, "Cannot resolve host name %s --- exiting!\n", w);
@@ -212,7 +212,7 @@ static int find_secure_listener(seclisten_rec *lr)
             sl->used = 1;
             return sl->fd;
         }
-    }    
+    }
     return -1;
 }
 
@@ -221,11 +221,11 @@ static char *get_port_key(conn_rec *c)
     seclistenup_rec *sl;
 
     for (sl = ap_seclistenersup; sl; sl = sl->next) {
-        if ((sl->port == (c->local_addr)->port) && 
+        if ((sl->port == (c->local_addr)->port) &&
             ((strcmp(sl->addr, "0.0.0.0") == 0) || (strcmp(sl->addr, c->local_ip) == 0))) {
             return sl->key;
         }
-    }    
+    }
     return NULL;
 }
 
@@ -239,7 +239,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
     unsigned int optParam;
     WSAPROTOCOL_INFO SecureProtoInfo;
     int no = 1;
-    
+
     if (server->sin_addr.s_addr != htonl(INADDR_ANY))
         apr_snprintf(addr, sizeof(addr), "address %s port %d",
             inet_ntoa(server->sin_addr), ntohs(server->sin_port));
@@ -251,22 +251,22 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
 
     SecureProtoInfo.iAddressFamily = AF_INET;
     SecureProtoInfo.iSocketType = SOCK_STREAM;
-    SecureProtoInfo.iProtocol = IPPROTO_TCP;   
+    SecureProtoInfo.iProtocol = IPPROTO_TCP;
     SecureProtoInfo.iSecurityScheme = SECURITY_PROTOCOL_SSL;
 
     s = WSASocket(AF_INET, SOCK_STREAM, IPPROTO_TCP,
             (LPWSAPROTOCOL_INFO)&SecureProtoInfo, 0, 0);
-            
+
     if (s == INVALID_SOCKET) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, WSAGetLastError(), sconf,
-                     "make_secure_socket: failed to get a socket for %s", 
+                     "make_secure_socket: failed to get a socket for %s",
                      addr);
         return -1;
     }
-        
+
     if (!mutual) {
         optParam = SO_SSL_ENABLE | SO_SSL_SERVER;
-                    
+
         if (WSAIoctl(s, SO_SSL_SET_FLAGS, (char *)&optParam,
             sizeof(optParam), NULL, 0, NULL, NULL, NULL)) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, WSAGetLastError(), sconf,
@@ -303,7 +303,7 @@ static int make_secure_socket(apr_pool_t *pconf, const struct sockaddr_in *serve
     }
 
     optParam = SO_TLS_UNCLEAN_SHUTDOWN;
-    WSAIoctl(s, SO_SSL_SET_FLAGS, (char *)&optParam, sizeof(optParam), 
+    WSAIoctl(s, SO_SSL_SET_FLAGS, (char *)&optParam, sizeof(optParam),
              NULL, 0, NULL, NULL, NULL);
 
     return s;
@@ -355,7 +355,7 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
     	unicpy(keyFileName, L"SSL CertificateIP");
     	sWS2Opts.wallet = keyFileName;    /* no client certificate */
     	sWS2Opts.walletlen = unilen(keyFileName);
-    
+
     	sNWTLSOpts.walletProvider 		= WAL_PROV_KMO;	//the wallet provider defined in wdefs.h
     }
 
@@ -368,7 +368,7 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
         if(SOCKET_ERROR == rcode ){
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, c->base_server,
                      "Error: %d with ioctl (SO_TLS_SET_CLIENT)", WSAGetLastError());
-        }		
+        }
         return rcode;
 }
 
@@ -379,11 +379,11 @@ int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
     struct nwtlsopts    sNWTLSOpts;
     unicode_t SASKey[512];
     unsigned long ulFlag;
-    
+
     memset((char *)&sWS2Opts, 0, sizeof(struct tlsserveropts));
     memset((char *)&sNWTLSOpts, 0, sizeof(struct nwtlsopts));
-    
-    
+
+
     ulFlag = SO_TLS_ENABLE;
     rcode = WSAIoctl(socketHnd, SO_TLS_SET_FLAGS, &ulFlag, sizeof(unsigned long), NULL, 0, NULL, NULL, NULL);
     if(rcode)
@@ -392,18 +392,18 @@ int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
                      "Error: %d with WSAIoctl(SO_TLS_SET_FLAGS, SO_TLS_ENABLE)", WSAGetLastError());
         goto ERR;
     }
-    
-    
+
+
     ulFlag = SO_TLS_SERVER;
     rcode = WSAIoctl(socketHnd, SO_TLS_SET_FLAGS, &ulFlag, sizeof(unsigned long),NULL, 0, NULL, NULL, NULL);
-    
+
     if(rcode)
     {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "Error: %d with WSAIoctl(SO_TLS_SET_FLAGS, SO_TLS_SERVER)", WSAGetLastError());
         goto ERR;
     }
-    
+
     loc2uni(UNI_LOCAL_DEFAULT, SASKey, key, 0, 0);
 
     //setup the tlsserveropts struct
@@ -413,9 +413,9 @@ int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
     sWS2Opts.sidentries = 0;
     sWS2Opts.siddir = NULL;
     sWS2Opts.options = &sNWTLSOpts;
-    
+
     //setup the nwtlsopts structure
-    
+
     sNWTLSOpts.walletProvider               = WAL_PROV_KMO;
     sNWTLSOpts.keysList                     = NULL;
     sNWTLSOpts.numElementsInKeyList         = 0;
@@ -425,29 +425,29 @@ int SSLize_Socket(SOCKET socketHnd, char *key, request_rec *r)
     sNWTLSOpts.reserved1                    = NULL;
     sNWTLSOpts.reserved2                    = NULL;
     sNWTLSOpts.reserved3                    = NULL;
-    
-    
-    rcode = WSAIoctl(socketHnd, 
-                     SO_TLS_SET_SERVER, 
-                     &sWS2Opts, 
-                     sizeof(struct tlsserveropts), 
-                     NULL, 
-                     0, 
-                     NULL, 
-                     NULL, 
+
+
+    rcode = WSAIoctl(socketHnd,
+                     SO_TLS_SET_SERVER,
+                     &sWS2Opts,
+                     sizeof(struct tlsserveropts),
+                     NULL,
+                     0,
+                     NULL,
+                     NULL,
                      NULL);
     if(SOCKET_ERROR == rcode) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "Error: %d with WSAIoctl(SO_TLS_SET_SERVER)", WSAGetLastError());
         goto ERR;
     }
-    
+
 ERR:
     return rcode;
 }
 
-static const char *set_secure_listener(cmd_parms *cmd, void *dummy, 
-                                       const char *ips, const char* key, 
+static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
+                                       const char *ips, const char* key,
                                        const char* mutual)
 {
     NWSSLSrvConfigRec* sc = get_nwssl_cfg(cmd->server);
@@ -459,27 +459,27 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
     apr_sockaddr_t *sa;
     int found_listener = 0;
 
-    
-    if (err != NULL) 
+
+    if (err != NULL)
         return err;
 
     ports = strchr(ips, ':');
-    
-    if (ports != NULL) {    
+
+    if (ports != NULL) {
         if (ports == ips)
             return "Missing IP address";
         else if (ports[1] == '\0')
             return "Address must end in :<port-number>";
-            
+
         *(ports++) = '\0';
     }
     else {
         ports = (char*)ips;
     }
-    
-    new = apr_pcalloc(cmd->server->process->pool, sizeof(seclisten_rec)); 
+
+    new = apr_pcalloc(cmd->server->process->pool, sizeof(seclisten_rec));
     new->local_addr.sin_family = AF_INET;
-    
+
     if (ports == ips) {
         new->local_addr.sin_addr.s_addr = htonl(INADDR_ANY);
         addr = apr_pstrdup(cmd->server->process->pool, "0.0.0.0");
@@ -488,12 +488,12 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
         new->local_addr.sin_addr.s_addr = parse_addr(ips, NULL);
         addr = apr_pstrdup(cmd->server->process->pool, ips);
     }
-    
+
     port = atoi(ports);
-    
-    if (!port) 
+
+    if (!port)
         return "Port must be numeric";
-        
+
     /* If the specified addr:port was created previously, put the listen
        socket record back on the ap_listeners list so that the socket
        will be reused rather than recreated */
@@ -529,7 +529,7 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
     }
 
     apr_table_add(sc->sltable, ports, addr);
-    
+
     new->local_addr.sin_port = htons(port);
     new->fd = -1;
     new->used = 0;
@@ -542,7 +542,7 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_secure_upgradeable_listener(cmd_parms *cmd, void *dummy, 
+static const char *set_secure_upgradeable_listener(cmd_parms *cmd, void *dummy,
                                        const char *ips, const char* key)
 {
     NWSSLSrvConfigRec* sc = get_nwssl_cfg(cmd->server);
@@ -552,23 +552,23 @@ static const char *set_secure_upgradeable_listener(cmd_parms *cmd, void *dummy,
     unsigned short port;
     seclistenup_rec *new;
 
-    if (err != NULL) 
+    if (err != NULL)
         return err;
 
     ports = strchr(ips, ':');
-    
-    if (ports != NULL) {    
+
+    if (ports != NULL) {
         if (ports == ips)
             return "Missing IP address";
         else if (ports[1] == '\0')
             return "Address must end in :<port-number>";
-            
+
         *(ports++) = '\0';
     }
     else {
         ports = (char*)ips;
     }
-    
+
     if (ports == ips) {
         addr = apr_pstrdup(cmd->pool, "0.0.0.0");
     }
@@ -577,13 +577,13 @@ static const char *set_secure_upgradeable_listener(cmd_parms *cmd, void *dummy,
     }
 
     port = atoi(ports);
-    
-    if (!port) 
+
+    if (!port)
         return "Port must be numeric";
 
     apr_table_set(sc->slutable, ports, addr);
 
-    new = apr_pcalloc(cmd->pool, sizeof(seclistenup_rec)); 
+    new = apr_pcalloc(cmd->pool, sizeof(seclistenup_rec));
     new->next = ap_seclistenersup;
     strcpy(new->key, key);
     new->addr = addr;
@@ -632,8 +632,8 @@ static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     seclisten_rec **secwalk;
     apr_sockaddr_t *sa;
     int found;
-    
-  /* Pull all of the listeners that were created by mod_nw_ssl out of the 
+
+  /* Pull all of the listeners that were created by mod_nw_ssl out of the
      ap_listeners list so that the normal listen socket processing does
      automatically close them */
     nw_old_listeners = NULL;
@@ -647,7 +647,7 @@ static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                 ap_listen_rec *new;
                 seclisten_rec *secnew;
                 apr_port_t oldport;
-    
+
                 oldport = sa->port;
                 /* If both ports are equivalent, then if their names are equivalent,
                  * then we will re-use the existing record.
@@ -670,7 +670,7 @@ static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                     break;
                 }
             }
-    
+
             walk = &(*walk)->next;
         }
         if (!found && &(*secwalk)->next) {
@@ -684,10 +684,10 @@ static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     ap_seclistenersup = NULL;
     certlist = apr_array_make(pconf, 1, sizeof(char *));
 
-    /* Now that we have removed all of the mod_nw_ssl created socket records, 
+    /* Now that we have removed all of the mod_nw_ssl created socket records,
        allow the normal listen socket handling to occur.
        NOTE: If for any reason mod_nw_ssl is removed as a built-in module,
-       the following call must be put back into the pre-config handler of the 
+       the following call must be put back into the pre-config handler of the
        MPM.  It is only here to ensure that mod_nw_ssl fixes up the listen
        socket list before anything else looks at it. */
     ap_listen_pre_config();
@@ -697,7 +697,7 @@ static int nwssl_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 
 static int nwssl_pre_connection(conn_rec *c, void *csd)
 {
-    
+
     if (apr_table_get(c->notes, "nwconv-ssl")) {
         convert_secure_socket(c, (apr_socket_t*)csd);
     }
@@ -708,7 +708,7 @@ static int nwssl_pre_connection(conn_rec *c, void *csd)
         csd_data->is_secure = 0;
         ap_set_module_config(c->conn_config, &nwssl_module, (void*)csd_data);
     }
-    
+
     return OK;
 }
 
@@ -770,8 +770,8 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         }
 
         if (sl->fd < 0)
-            sl->fd = make_secure_socket(s->process->pool, &sl->local_addr, sl->key, sl->mutual, s);            
-            
+            sl->fd = make_secure_socket(s->process->pool, &sl->local_addr, sl->key, sl->mutual, s);
+
         if (sl->fd >= 0) {
             apr_os_sock_info_t sock_info;
 
@@ -784,10 +784,10 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             apr_os_sock_make(&sd, &sock_info, s->process->pool);
 
             lr = apr_pcalloc(s->process->pool, sizeof(ap_listen_rec));
-        
+
             if (lr) {
                 lr->sd = sd;
-                if ((status = apr_sockaddr_info_get(&lr->bind_addr, sl->addr, APR_UNSPEC, sl->port, 0, 
+                if ((status = apr_sockaddr_info_get(&lr->bind_addr, sl->addr, APR_UNSPEC, sl->port, 0,
                                               s->process->pool)) != APR_SUCCESS) {
                     ap_log_perror(APLOG_MARK, APLOG_CRIT, status, pconf,
                                  "alloc_listener: failed to set up sockaddr for %s:%d", sl->addr, sl->port);
@@ -800,7 +800,7 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
         } else {
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-    } 
+    }
 
     for (slu = ap_seclistenersup; slu; slu = slu->next) {
         /* Check the listener list for a matching upgradeable listener */
@@ -815,7 +815,7 @@ static int nwssl_post_config(apr_pool_t *pconf, apr_pool_t *plog,
             ap_log_perror(APLOG_MARK, APLOG_WARNING, 0, plog,
                          "No Listen directive found for upgradeable listener %s:%d", slu->addr, slu->port);
         }
-    }    
+    }
 
     build_cert_list(s->process->pool);
 
@@ -842,8 +842,8 @@ static int compare_ipports(void *rec, const char *key, const char *value)
 {
     conn_rec *c = (conn_rec*)rec;
 
-    if (value && 
-        ((strcmp(value, "0.0.0.0") == 0) || (strcmp(value, c->local_ip) == 0))) 
+    if (value &&
+        ((strcmp(value, "0.0.0.0") == 0) || (strcmp(value, c->local_ip) == 0)))
     {
         return 0;
     }
@@ -998,7 +998,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
 
         case 'R':
         case 'r':
-            if (strcEQ(var, "REQUEST_METHOD")) 
+            if (strcEQ(var, "REQUEST_METHOD"))
                 result = r->method;
             else if (strcEQ(var, "REQUEST_SCHEME"))
                 result = ap_http_scheme(r);
@@ -1007,7 +1007,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             else if (strcEQ(var, "REQUEST_FILENAME"))
                 result = r->filename;
             else if (strcEQ(var, "REMOTE_HOST"))
-                result = ap_get_remote_host(r->connection, r->per_dir_config, 
+                result = ap_get_remote_host(r->connection, r->per_dir_config,
                                             REMOTE_NAME, NULL);
             else if (strcEQ(var, "REMOTE_IDENT"))
                 result = ap_get_remote_logname(r);
@@ -1018,7 +1018,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         case 'S':
         case 's':
             if (strcEQn(var, "SSL", 3)) break; /* shortcut common case */
-            
+
             if (strcEQ(var, "SERVER_ADMIN"))
                 result = r->server->server_admin;
             else if (strcEQ(var, "SERVER_NAME"))
@@ -1030,7 +1030,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
             else if (strcEQ(var, "SCRIPT_FILENAME"))
                 result = r->filename;
             break;
-            
+
         default:
             if (strcEQ(var, "PATH_INFO"))
                 result = r->path_info;
@@ -1055,7 +1055,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
 
                 /* XXX-Can't get specific SSL info from NetWare */
         /* SSLConnRec *sslconn = myConnConfig(c);
-        if (strlen(var) > 4 && strcEQn(var, "SSL_", 4) 
+        if (strlen(var) > 4 && strcEQn(var, "SSL_", 4)
             && sslconn && sslconn->ssl)
             result = ssl_var_lookup_ssl(p, c, var+4);*/
 
@@ -1196,7 +1196,7 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     }
 
     key = get_port_key(r->connection);
-    
+
     if (csd && key) {
         int sockdes;
         apr_os_sock_get(&sockdes, csd);
@@ -1216,8 +1216,8 @@ static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                  "Awaiting re-negotiation handshake");
 
-    /* Now that we have initialized the ssl connection which added the ssl_io_filter, 
-       pass the brigade off to the connection based output filters so that the 
+    /* Now that we have initialized the ssl connection which added the ssl_io_filter,
+       pass the brigade off to the connection based output filters so that the
        request can complete encrypted */
     return ap_pass_brigade(f->c->output_filters, bb);
 }
@@ -1258,7 +1258,7 @@ static void register_hooks(apr_pool_t *p)
 
     APR_REGISTER_OPTIONAL_FN(ssl_is_https);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
-    
+
     APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
     APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);
 }

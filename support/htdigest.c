@@ -96,7 +96,7 @@ static int get_line(char *s, int n, apr_file_t *f)
     char ch;
     apr_status_t rv = APR_EINVAL;
 
-    while (i < (n - 1) && 
+    while (i < (n - 1) &&
            ((rv = apr_file_getc(&ch, f)) == APR_SUCCESS) && (ch != '\n')) {
         s[i++] = ch;
     }
@@ -104,7 +104,7 @@ static int get_line(char *s, int n, apr_file_t *f)
         s[i++] = ch;
     s[i] = '\0';
 
-    if (rv != APR_SUCCESS) 
+    if (rv != APR_SUCCESS)
         return 1;
 
     return 0;
@@ -193,9 +193,9 @@ int main(int argc, const char * const argv[])
     char w[MAX_STRING_LEN];
     char x[MAX_STRING_LEN];
     int found;
-   
+
     apr_app_initialize(&argc, &argv, NULL);
-    atexit(terminate); 
+    atexit(terminate);
     apr_pool_create(&cntxt, NULL);
     apr_file_open_stderr(&errfile, cntxt);
 
@@ -207,7 +207,7 @@ int main(int argc, const char * const argv[])
         exit(1);
     }
 #endif
-    
+
     apr_signal(SIGINT, (void (*)(int)) interrupted);
     if (argc == 5) {
         if (strcmp(argv[1], "-c"))
@@ -222,7 +222,7 @@ int main(int argc, const char * const argv[])
                     apr_strerror(rv, errmsg, sizeof errmsg));
             exit(1);
         }
-        apr_file_printf(errfile, "Adding password for %s in realm %s.\n", 
+        apr_file_printf(errfile, "Adding password for %s in realm %s.\n",
                     argv[4], argv[3]);
         add_password(argv[4], argv[3], f);
         apr_file_close(f);
@@ -266,7 +266,7 @@ int main(int argc, const char * const argv[])
             continue;
         }
         else {
-            apr_file_printf(errfile, "Changing password for user %s in realm %s\n", 
+            apr_file_printf(errfile, "Changing password for user %s in realm %s\n",
                     user, realm);
             add_password(user, realm, tfp);
             found = 1;
@@ -282,7 +282,7 @@ int main(int argc, const char * const argv[])
      */
     if (apr_file_copy(dirname, argv[1], APR_FILE_SOURCE_PERMS, cntxt) !=
                 APR_SUCCESS) {
-        apr_file_printf(errfile, "%s: unable to update file %s\n", 
+        apr_file_printf(errfile, "%s: unable to update file %s\n",
                         argv[0], argv[1]);
     }
     apr_file_close(tfp);

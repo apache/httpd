@@ -69,7 +69,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
     c = ap_get_module_config(r->server->module_config, &bucketeer_module);
 
     /* If have a context, it means we've done this before successfully. */
-    if (!ctx) {  
+    if (!ctx) {
         if (!r->content_type || strncmp(r->content_type, "text/", 5)) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
@@ -77,7 +77,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
 
         /* We're cool with filtering this. */
         ctx = f->ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
-        ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc); 
+        ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
         apr_table_unset(f->r->headers_out, "Content-Length");
     }
 
@@ -98,9 +98,9 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, ctx->bb);
         }
 
-        if (APR_BUCKET_IS_FLUSH(e)) {     
+        if (APR_BUCKET_IS_FLUSH(e)) {
             /*
-             * Ignore flush buckets for the moment.. 
+             * Ignore flush buckets for the moment..
              * we decide what to stream
              */
             continue;
@@ -143,7 +143,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
                         ap_pass_brigade(f->next, ctx->bb);
                        /* apr_brigade_cleanup(ctx->bb);*/
                     }
-                }                       
+                }
             }
             /* XXX: really should append this to the next 'real' bucket */
             if (lastpos < i) {
@@ -157,7 +157,7 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
                 lastpos = i;
                 APR_BRIGADE_INSERT_TAIL(ctx->bb, p);
             }
-        }     
+        }
     }
 
     return APR_SUCCESS;

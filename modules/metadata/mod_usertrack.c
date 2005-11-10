@@ -106,7 +106,7 @@ static void make_cookie(request_rec *r)
     dcfg = ap_get_module_config(r->per_dir_config, &usertrack_module);
 
     /* XXX: hmm, this should really tie in with mod_unique_id */
-    apr_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%" APR_TIME_T_FMT, rname, 
+    apr_snprintf(cookiebuf, sizeof(cookiebuf), "%s.%" APR_TIME_T_FMT, rname,
                  apr_time_now());
 
     if (cls->expires) {
@@ -117,7 +117,7 @@ static void make_cookie(request_rec *r)
 
         if ((dcfg->style == CT_UNSET) || (dcfg->style == CT_NETSCAPE)) {
             apr_time_exp_t tms;
-            apr_time_exp_gmt(&tms, r->request_time 
+            apr_time_exp_gmt(&tms, r->request_time
                                  + apr_time_from_sec(cls->expires));
             new_cookie = apr_psprintf(r->pool,
                                        "%s; expires=%s, "
@@ -295,7 +295,7 @@ static const char *set_cookie_exp(cmd_parms *parms, void *dummy,
     }
 
     /*
-     * The harder case - stolen from mod_expires 
+     * The harder case - stolen from mod_expires
      *
      * CookieExpires "[plus] {<num> <type>}*"
      */

@@ -475,16 +475,16 @@ char *yytext;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-/*                      _             _ 
- *  _ __ ___   ___   __| |    ___ ___| |  
- * | '_ ` _ \ / _ \ / _` |   / __/ __| |  
+/*                      _             _
+ *  _ __ ___   ___   __| |    ___ ___| |
+ * | '_ ` _ \ / _ \ / _` |   / __/ __| |
  * | | | | | | (_) | (_| |   \__ \__ \ | mod_ssl - Apache Interface to OpenSSL
  * |_| |_| |_|\___/ \__,_|___|___/___/_| http://www.modssl.org/
- *                      |_____|         
+ *                      |_____|
  *  ssl_expr_scan.l
  *  Expression Scanner
  */
-/* ``Killing for peace is 
+/* ``Killing for peace is
 like fucking for virginity.''
 -- Unknown  */
 /*  _________________________________________________________________
@@ -665,7 +665,7 @@ YY_DECL
 
 #line 58 "ssl_expr_scan.l"
 
-  
+
   char  caStr[MAX_STR_LEN];
   char *cpStr = NULL;
   char  caRegex[MAX_STR_LEN];
@@ -757,7 +757,7 @@ do_action:	/* This label is used only to access EOF actions. */
 case 1:
 YY_RULE_SETUP
 #line 69 "ssl_expr_scan.l"
-{ 
+{
     /* NOP */
 }
         YY_BREAK
@@ -1071,7 +1071,7 @@ YY_RULE_SETUP
 case 46:
 YY_RULE_SETUP
 #line 208 "ssl_expr_scan.l"
-{ 
+{
     return yytext[0];
 }
         YY_BREAK
@@ -1977,7 +1977,7 @@ int yyinput(char *buf, int max_size)
     int n;
 
     if ((n = MIN(max_size, ssl_expr_info.inputbuf
-                         + ssl_expr_info.inputlen 
+                         + ssl_expr_info.inputlen
                          - ssl_expr_info.inputptr)) <= 0)
         return YY_NULL;
     memcpy(buf, ssl_expr_info.inputptr, n);

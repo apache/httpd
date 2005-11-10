@@ -23,7 +23,7 @@
 #include "os.h"
 #include "httpd.h"
 #include "apr_thread_proc.h"
-#include "ap_mpm.h" /* needed for definition of 
+#include "ap_mpm.h" /* needed for definition of
                      * ap_os_create_privileged_process */
 
 AP_DECLARE(apr_status_t) ap_os_create_privileged_process(

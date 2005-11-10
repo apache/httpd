@@ -42,7 +42,7 @@
 module AP_MODULE_DECLARE_DATA filter_module;
 
 /**
- * @brief is a filter provider, as defined and implemented by mod_filter.  
+ * @brief is a filter provider, as defined and implemented by mod_filter.
  *
  * The struct is a linked list, with dispatch criteria
  * defined for each filter.  The provider implementation itself is a
@@ -278,10 +278,10 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
              * The idea is that by putting this in mod_filter, we relieve
              * filter implementations of the burden of fixing up HTTP headers
              * for cases that are routinely affected by filters.
-             * 
+             *
              * Default is ALWAYS to do nothing, so as not to tread on the
              * toes of filters which want to do it themselves.
-             * 
+             *
              */
             proto_flags = provider->frec->proto_flags;
 
@@ -650,7 +650,7 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *args)
         str = apr_pstrdup(cmd->pool, condition);
         ap_str_tolower(str);
     }
-   
+
     if (   (provider->dispatch == RESPONSE_HEADERS)
         && !strcmp(str, "content-type")) {
         provider->dispatch = CONTENT_TYPE;

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/* 
+/*
  * Info Module.  Display configuration information for the server and
  * all included modules.
  *
@@ -29,15 +29,15 @@
  * GET /server-info?config - Returns full configuration
  * GET /server-info?hooks - Returns a listing of the modules active for each hook
  *
- * Original Author: 
+ * Original Author:
  *   Rasmus Lerdorf <rasmus vex.net>, May 1996
  *
- * Modified By: 
+ * Modified By:
  *   Lou Langholtz <ldl usi.utah.edu>, July 1997
  *
  * Apache 2.0 Port:
  *   Ryan Morgan <rmorgan covalent.net>, August 2000
- * 
+ *
  */
 
 
@@ -220,7 +220,7 @@ typedef struct
  * hook_get_t is a pointer to a function that takes void as an argument and
  * returns a pointer to an apr_array_header_t.  The nasty WIN32 ifdef
  * is required to account for the fact that the ap_hook* calls all use
- * STDCALL calling convention. 
+ * STDCALL calling convention.
  */
 typedef apr_array_header_t *(
 #ifdef WIN32
@@ -387,8 +387,8 @@ static int show_server_settings(request_rec * r)
     ap_rputs("<dt><strong>Server Built With:</strong>\n"
              "<tt style=\"white-space: pre;\">\n", r);
 
-    /* TODO: Not all of these defines are getting set like they do in main.c. 
-     *       Missing some headers? 
+    /* TODO: Not all of these defines are getting set like they do in main.c.
+     *       Missing some headers?
      */
 
 #ifdef BIG_SECURITY_HOLE

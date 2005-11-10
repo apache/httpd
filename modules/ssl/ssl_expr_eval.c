@@ -228,7 +228,7 @@ static char *ssl_expr_eval_func_file(request_rec *r, char *filename)
     apr_size_t len;
     apr_finfo_t finfo;
 
-    if (apr_file_open(&fp, filename, APR_READ|APR_BUFFERED, 
+    if (apr_file_open(&fp, filename, APR_READ|APR_BUFFERED,
                       APR_OS_DEFAULT, r->pool) != APR_SUCCESS) {
         ssl_expr_error = "Cannot open file";
         return "";
