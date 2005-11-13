@@ -34,25 +34,34 @@
     <li><a href="#background.logo">May I use the Apache logo on my 
     product or Web site?</a></li>
     </ul>
-    
+
     <h3><a name="background.what-is-apache" id="background.what-is-apache">What is Apache?</a></h3>
       
 
-      <p>The Apache Software Foundation (ASF) is a 501(c)3 non-profit
-      organization providing support for the Apache community of
-      open-sourced software projects.  For more details, please see the <a href="http://www.apache.org/foundation/faq.html">Apache Software
+      <p>The <a href="http://www.apache.org/">Apache Software Foundation</a>
+         provides organizational, legal, and financial support for a broad
+         range of open source software projects. The Foundation provides
+         an established framework for intellectual property and financial
+         contributions that simultaneously limits contributors potential
+         legal exposure.  Through a collaborative and meritocratic
+         development process, Apache projects deliver enterprise-grade,
+         freely available software products that attract large communities
+         of users.  The pragmatic Apache License makes it easy for all
+         users, commercial and individual, to deploy Apache products.</p>
+
+      <p>For more details about the Foundation, please see the <a href="http://www.apache.org/foundation/faq.html">Apache Software
       Foundation FAQ</a></p>
 
       <p>The Apache HTTP Server -- sometimes called Apache httpd -- is
-      a project of the Apache Software foundation aimed at creating a
+      a project of the Apache Software Foundation aimed at creating a
       robust, commercial-grade, featureful, and freely-available
       source code implementation of an HTTP (Web) server.  For more
       information, please see the <a href="http://httpd.apache.org/ABOUT_APACHE.html">About
       Apache</a> page.</p>
 
     
-	
-	<h3><a name="background.what-is-httpd" id="background.what-is-httpd">What is the Apache HTTP Server?</a></h3>
+
+    <h3><a name="background.what-is-httpd" id="background.what-is-httpd">What is the Apache HTTP Server?</a></h3>
       
       <ul>
         <li>is a powerful, flexible, HTTP/1.1 compliant web server</li>
@@ -70,9 +79,9 @@
         <li>encourages user feedback through new ideas, bug reports and
         patches</li>
       </ul>
-	
-	
-	<h3><a name="background.tested" id="background.tested">How thoroughly tested is Apache?</a></h3>
+    
+
+    <h3><a name="background.tested" id="background.tested">How thoroughly tested is Apache?</a></h3>
       
       <p>Apache is run on millions of Internet servers.
       It has been tested thoroughly by both developers and users. The Apache
@@ -83,7 +92,7 @@
       available.</p>
     
 
-	<h3><a name="background.logo" id="background.logo">&gt;May I use the Apache logo on my product or Web site?</a></h3>
+    <h3><a name="background.logo" id="background.logo">May I use the Apache logo on my product or Web site?</a></h3>
       
       <p>You may <em>NOT</em> use any original artwork from the Apache
       Software Foundation, nor make or use modified versions of such
@@ -96,10 +105,13 @@
         graphic</a> or the <a href="http://www.apache.org/images/asf_logo.gif">Apache Software
         Foundation logo</a> in product description and promotional material
         <em>IF and ONLY IF</em> such use can in no way be interpreted as
-        anything other than an attribution. Using the Apache name and 
-        artwork in a manner that implies endorsement of a product or
-        service is <a href="">strictly forbidden.</a></li>
+        anything other than an attribution.</li>
       </ul>
+
+      <div class="warning">Using the Apache name and artwork in a manner that
+        implies endorsement of a product or service is strictly
+        forbidden.</div>
+
     
  </div></div>
 <div class="bottomlang">
