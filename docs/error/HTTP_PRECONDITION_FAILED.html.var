@@ -62,6 +62,18 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: ga
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ga--
+<!--#set var="TITLE" value="Theip ar r&eacute;amhchoinn&iacute;oll!"
+--><!--#include virtual="include/top.html" -->
+
+    Theip meast&oacute;ireacht an r&eacute;amhchoinn&iacute;oll 
+    don iarratais den URL.
+    
+<!--#include virtual="include/bottom.html" -->
+----------ga--
+
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
