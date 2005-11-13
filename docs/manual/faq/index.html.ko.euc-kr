@@ -25,7 +25,7 @@
 <div class="outofdate">이 문서는 최신판 번역이 아닙니다.
             최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 
-    <p>FAQ 최신판은 아파치 웹사이트 &lt;<a href="http://httpd.apache.org/docs-2.1/faq/">http://httpd.apache.org/docs-2.1/faq/</a>&gt;에서 볼 수
+    <p>FAQ 최신판은 아파치 웹사이트 &lt;<a href="http://httpd.apache.org/docs/trunk/faq/">http://httpd.apache.org/docs/trunk/faq/</a>&gt;에서 볼 수
     있다. 또, 검색하고 출력하기 편하게 FAQ를 <a href="all_in_one.html">한 페이지로</a> 볼 수 있다.</p>
 
     <p>아파치 2.0이 나온지 얼마 안되서 우리는 아직 <em>자주

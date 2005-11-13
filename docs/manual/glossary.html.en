@@ -421,7 +421,7 @@
     informal term for what is formally called a <a class="glossarylink" href="./glossary.html#uniformresourceidentifier" title="see glossary">Uniform Resource Identifier</a>.
     URLs are usually made up of a scheme, like <code>http</code> or
     <code>https</code>, a hostname, and a path.  A URL for this page might
-    be <code>http://httpd.apache.org/docs-2.1/glossary.html</code>.
+    be <code>http://httpd.apache.org/docs/trunk/glossary.html</code>.
   </dd> 
 
   <dt><a name="uniformresourceidentifier" id="uniformresourceidentifier">Uniform Resource Identifier</a>
