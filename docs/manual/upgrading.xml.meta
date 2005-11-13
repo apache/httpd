@@ -6,7 +6,7 @@
   <relpath>.</relpath>
 
   <variants>
-    <variant>de</variant>
+    <variant outdated="yes">de</variant>
     <variant>en</variant>
     <variant htmlonly="yes">fr</variant>
     <variant outdated="yes">ja</variant>

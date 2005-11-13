@@ -43,6 +43,15 @@
 
   <section id="compile-time">
     <title>Compile-Time Configuration Changes</title>
+    <ul>
+      <li>Upgraded to require the APR 1.0 API.</li>
+      <li>Updated bundled PCRE version to 5.0</li>
+      <li>mod_imap has been renamed to <module>mod_imagemap</module></li>
+      <li>mod_auth has been split up into <module>mod_auth_basic</module>
+          and <module>mod_authn_file</module></li>
+      <li>mod_access has been renamed to <module>mod_authz_host</module></li>
+      <li>mod_auth_ldap has been renamed to <module>mod_authnz_ldap</module></li>
+    </ul>
 
   </section>
 
