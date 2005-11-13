@@ -12,11 +12,11 @@
 <link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="module-index"><div id="page-header">
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.1 del Servidor HTTP Apache</p>
+<p class="apache">Versión 2.2 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="../">Versión 2.1</a></div><div id="page-content"><div id="preamble"><h1>Índice de Módulos</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="../">Versión 2.2</a></div><div id="page-content"><div id="preamble"><h1>Índice de Módulos</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -55,16 +55,10 @@ more than one multi-processing module (MPM)</dd>
 optimizado para BeOS.</dd>
 <dt><a href="event.html">event</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
 MPM</dd>
-<dt><a href="leader.html">leader</a></dt><dd>An experimental variant of the standard <code class="module"><a href="../mod/worker.html">worker</a></code>
-MPM</dd>
 <dt><a href="mpm_netware.html">mpm_netware</a></dt><dd>Multi-Processing Module implementing an exclusively threaded web
     server optimized for Novell NetWare</dd>
 <dt><a href="mpmt_os2.html">mpmt_os2</a></dt><dd>Hybrid multi-process, multi-threaded MPM for OS/2</dd>
-<dt><a href="perchild.html">perchild</a></dt><dd>Multi-Processing Module allowing for daemon processes serving
-requests to be assigned a variety of different userids</dd>
 <dt><a href="prefork.html">prefork</a></dt><dd>Implements a non-threaded, pre-forking web server</dd>
-<dt><a href="threadpool.html">threadpool</a></dt><dd>Yet another experimental variant of the standard
-<code class="module"><a href="../mod/worker.html">worker</a></code> MPM</dd>
 <dt><a href="mpm_winnt.html">mpm_winnt</a></dt><dd>This Multi-Processing Module is optimized for Windows
 NT.</dd>
 <dt><a href="worker.html">worker</a></dt><dd>Multi-Processing Module implementing a hybrid
