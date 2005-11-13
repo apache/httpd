@@ -35,7 +35,7 @@
   <p>Dieses Dokument beschreibt lediglich die &Auml;nderungen von Version
     2.2 gegen&uuml;ber Version 2.0. Wenn Sie ein Upgrade von Version 1.3
     durchf&uuml;hren, sollten Sie auch <a
-    href="http://httpd.apache.org/docs-2.0/upgrading.html">Upgrade von 1.3
+    href="http://httpd.apache.org/docs/2.0/upgrading.html">Upgrade von 1.3
     auf 2.0</a> zu Rate ziehen.</p>
 </summary>
 <seealso><a href="new_features_2_0.html">&Uuml;bersicht der neuen Funktionen
