@@ -37,9 +37,12 @@
 
       <dt>Authn/Authz</dt>
       <dd>The bundled authentication and authorization modules have
-          been refactored.  There is a new authentication backend provider
-          scheme which greatly eases the construction of new authentication
-          backends.</dd>
+          been refactored.  The new <module>mod_authn_alias</module> module
+          can greatly simplify certain authentication configurations.
+          See <a href="#module">module name changes</a>, and
+          <a href="#developer">the developer changes</a> for more
+          information about how these changes affects users and module
+          writers.</dd>
 
       <dt>Caching</dt>
       <dd><module>mod_cache</module>, <module>mod_disk_cache</module>, and
@@ -110,6 +113,17 @@
   <section id="module">
     <title>Module Enhancements</title>
     <dl>
+      <dt>Authn/Authz</dt>
+      <dd>Modules in the aaa directory have been renamed and offer
+          better support for digest authentication.  For example, mod_auth
+          is now split into <module>mod_auth_basic</module> and
+          <module>mod_auth_file</module>; mod_auth_dbm is now called
+          <module>mod_authn_dbm</module>; mod_access has been renamed
+          <module>mod_authz_host</module>.  There is also a new
+          <module>mod_authn_alias</module> module for simplifying
+          certain authentication configurations.
+      </dd>
+
       <dt><module>mod_authnz_ldap</module></dt>
       <dd>This module is a port of the 2.0 
           <code>mod_auth_ldap</code> module to the 2.2 <code>Authn/Authz</code> 
@@ -152,6 +166,19 @@
           symbols have been removed from <code>APR</code> and 
           <code>APR-Util</code>. For details, see the 
           <a href="http://apr.apache.org/">APR Website</a>.</dd>
+
+      <dt>Authn/Authz</dt>
+      <dd>The bundled authentication and authorization modules have
+          been renamed along the following lines:
+          <ul>
+          <li>mod_auth_*  -> Modules that implement an HTTP authentication mechanism</li>
+          <li>mod_authn_* -> Modules that provide a backend authentication provider</li>
+          <li>mod_authz_* -> Modules that implement authorization (or access)</li>
+          <li>mod_authnz_*-> Module that implements both authentication &amp; authorization</li>
+          </ul>
+          There is a new authentication backend provider
+          scheme which greatly eases the construction of new authentication
+          backends.</dd>
 
       <dt>Connection Error Logging</dt>
 
