@@ -538,7 +538,26 @@
 <h2><a name="other" id="other">Other Log Files</a></h2>
     
 
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
+
+    <h3>Logging actual bytes sent and recieved</h3>
+      
+
+      <p><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code> adds in two additional
+         <code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code> fields
+         (%I and %O) that log the actual number of bytes received and sent
+         on the network.</p>
+    
+
+    <h3>Forensic Logging</h3>
+      
+
+      <p><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code> provides for forensic logging of
+         client requests. Logging is done before and after processing a
+         request, so the forensic log contains two log lines for each
+         request. The forensic logger is very strict with no customizations.
+         It can be an invaluable debugging and security tool.</p>
+    
 
     <h3><a name="pidfile" id="pidfile">PID File</a></h3>
       
