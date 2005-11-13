@@ -176,7 +176,7 @@
     <input type="hidden" name="btnG" value="Google Search" />
 
     <!-- including the exact phrase "Version major.minor" -->
-    <input type="hidden" value="{normalize-space($message[@id='version']})"
+    <input type="hidden" value="{normalize-space($message[@id='version'])}"
            name="as_epq" />
 
     <!-- with at least one of the words (none) -->
