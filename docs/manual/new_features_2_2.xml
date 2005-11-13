@@ -143,7 +143,12 @@
       <dd>Added a support for 
          <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, which 
          allows connections to upgrade from clear text to TLS encryption.</dd>
+
+      <dt><module>mod_imagemap</module></dt>
+      <dd>mod_imap has been renamed to <module>mod_imagemap</module> to avoid
+          user confusion.</dd>
     </dl>
+
   </section>
 
   <section id="programs">
