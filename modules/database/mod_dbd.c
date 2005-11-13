@@ -322,7 +322,8 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
                       "Failed to acquire DBD connection from pool!");
         return NULL;
     }
-    if (apr_dbd_check_conn(arec->driver, pool, arec->handle) != APR_SUCCESS) {
+    rv = apr_dbd_check_conn(arec->driver, pool, arec->handle);
+    if ((rv != APR_SUCCESS) && (rv != APR_ENOTIMPL)) {
         errmsg = apr_dbd_error(arec->driver, arec->handle, rv);
         if (!errmsg) {
             errmsg = "(unknown)";
@@ -351,7 +352,8 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
 /* since we're in nothread-land, we can mess with svr->conn with impunity */
 /* If we have a persistent connection and it's good, we'll use it */
     if (svr->conn) {
-        if (apr_dbd_check_conn(svr->conn->driver, pool, svr->conn->handle) != 0){
+        rv = apr_dbd_check_conn(svr->conn->driver, pool, svr->conn->handle);
+        if ((rv != APR_SUCCESS) && (rv != APR_ENOTIMPL)) {
             errmsg = apr_dbd_error(arec->driver, arec->handle, rv);
             if (!errmsg) {
                 errmsg = "(unknown)";
