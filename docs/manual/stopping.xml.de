@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 151408:290427 (outdated) -->
+<!-- English Revision: 332981 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors,
@@ -62,12 +62,11 @@
 
     <p>Die zweite Methode, dem <program>httpd</program>-Prozess zu
     signalisieren, ist die Verwendung der <code>-k</code>-Befehlszeilenoptionen
-    <code>stop</code>, <code>restart</code> und <code>graceful</code>, wie
-    unten beschrieben. Dies sind Argumente des <program>
-    httpd</program>-Programms, es wird jedoch
-    empfohlen, sie unter Verwendung des Steuerskripts <program>
-    apachectl</program> zu senden, welches diese
-    an <program>httpd</program> durchreicht.</p>
+    <code>stop</code>, <code>restart</code>, <code>graceful</code> und
+    <code>graceful-stop</code>, wie unten beschrieben. Dies sind Argumente des
+    <program> httpd</program>-Programms, es wird jedoch empfohlen, sie unter
+    Verwendung des Steuerskripts <program> apachectl</program> zu senden,
+    welches diese an <program>httpd</program> durchreicht.</p>
 
     <p>Nachdem Sie <program>httpd</program> signalisiert haben, k&#246;nnen Sie
     dessen Fortschritt beobachten, indem Sie eingeben:</p>
@@ -109,12 +108,6 @@
     Konfigurations-<em>Generation</em>. Dieses beginnt sofort damit,
     neue Anfragen zu bedienen.</p>
 
-    <note>Auf bestimmten Plattformen, welche kein <code>USR1</code>
-    f&#252;r einen unterbrechungsfreien Neustart erlauben, kann ein
-    alternatives Signal verwendet werden (wie z.B.
-    <code>WINCH</code>). Der Befehl <code>apachectl graceful</code>
-    sendet das jeweils richtige Signal f&#252;r Ihre Platform.</note>
-
     <p>Der Code ist daf&#252;r ausgelegt, stets die MPM-Direktiven
     zur Prozesssteuerung zu beachten, so dass die Anzahl der Prozesse
     und Threads, die zur Bedienung der Clients bereitstehen, w&#228;hrend
@@ -126,7 +119,8 @@
     beschleunigen, entsprechend weitere erstellt. Auf diese Weise versucht
     der Code sowohl die Anzahl der Kinder entsprechend der Serverlast
     anzupassen als auch Ihre W&#252;nsche hinsichtlich des Parameters
-    <directive>StartServers</directive> zu ber&#252;cksichtigen.</p>
+    <directive module="mpm_common">StartServers</directive> zu
+    ber&#252;cksichtigen.</p>
 
     <p>Benutzer von <module>mod_status</module> werden feststellen,
     dass die Serverstatistiken <strong>nicht</strong> auf Null
@@ -202,21 +196,79 @@
     wie Sie das vermeiden k&#246;nnen.</note>
 </section>
 
-<section id="race"><title>Anhang: Signale und Wettkampfsituationen</title>
+
+<section id="gracefulstop"><title>Rücksichtsvolles Beenden</title>
+
+    <dl>
+        <dt>Signal: WINCH</dt>
+        <dd><code>apachectl -k gracefull stop</code></dd>
+    </dl>
+
+    <p>Das <code>WINCH</code>- oder <code>graceful-stop</code>-Signal
+    veranlasst den Elternprozess, die Kinder <em>anzuweisen</em>, sich nach
+    Abschlu&szlig; ihrer momentan bearbeiteten Anfrage zu beenden (oder sich
+    sofort zu beenden, wenn sie gerade nichts bedienen). Der Elternprozess
+    entfernt dann sein <directive module="mpm_common">PidFile</directive> und
+    stellt das Lauschen auf allen Ports ein. Er l&auml;uft weiter und
+    beobachtet alle Kindprozesse, die noch Anfragen bearbeiten. Sobald alle
+    Kindprozesse fertig sind und beendet haben oder die mit <directive
+    module="mpm_common">GracefulShutdownTimeout</directive> definierte
+    Zeit&uuml;berschreitung erreicht wurde, beendet sich der Elternprozess
+    ebenfalls. Jedem verbliebenen Kindprozess wird beim Erreichen der
+    Zeit&uuml;berschreitung das <code>TERM</code>-Signal gesendet, um diesen
+    zum Beenden zu zwingen.</p>
+    
+    <p>Ein <code>TERM</code>-Signal beendet den Elternprozess und alle
+    Kindprozesse unverz&uuml;glich, wenn sie sich im "graceful"-Status
+    <transnote>wörtl. "gnädiger" Status</transnote> befinden. Da jedoch das
+    <directive module="mpm_common">PidFile</directive>dann schon gel&ouml;scht
+    ist, werden Sie dieses Signal nicht mehr mit <code>apachectl</code> oder
+    <code>httpd</code> senden k&ouml;nnen.</p>
+
+    <note><p>Das Signal <code>graceful-stop</code> erm&ouml;glicht Ihnen den
+    Betrieb mehrerer identisch konfigurierter Instanzen von <code>httpd</code>
+    zur gleichen Zeit. Dies ist eine m&auml;chtige Funktionalit&auml;t bei der
+    Aufr&uuml;stung des Apache. Sie kann jedoch bei einigen Konfigurationen
+    auch zur gegenseitigen Blockierung und zu Wettlaufsituationen
+    f&uuml;hren.</p>
+
+    <p>Es ist besonders darauf zu achten, dass auf Festplatte gespeicherte
+    Dateien wie <directive module="core">Lockfile</directive> und <directive
+    module="mod_cgid">ScriptSock</directive> die Server-PID enthalten und ohne
+    Probleme nebeneinander existieren m&uuml;ssen. Wann auch immer eine
+    Konfigurationsanweisung, ein Drittanbieter-Modul oder ein persistentes
+    CGI-Skript irgend eine Sperre oder eine Statusdatei auf Festplatte
+    speichert, muss besonders darauf geachtet werden, dass mehrere
+    gleichzeitig laufende Instanzen von <code>httpd</code> sich nicht
+    gegenseitig die Dateien zerst&ouml;ren.</p>
+
+    <p>Sie sollten ebenfalls vorsichtig mit m&ouml;glichen Wettlaufsituationen
+    sein, wie beispielsweise der Verwendung von weitergeleiteter
+    Protokollierung nach der Art von <program>rotatelogs</program>. Mehrere
+    gleichzeitig laufende Instanzen von <program>rotatelogs</program>, die
+    versuchen, die gleichen Protokolldateien zu rotieren, k&ouml;nnen sich
+    gegenseitig die Protokolldateien zerst&ouml;ren.</p></note>
+
+</section>
+
+
+<section id="race"><title>Anhang: Signale und Wettlaufsituationen</title>
 
     <p>Vor der Version 1.2b9 des Apache existierten verschiedene
-    <em>Wettkampfsituationen</em> (race conditions), die den Neustart und
-    die Signale beeinflu&#223;t haben. (Eine einfache Beschreibung einer
-    Wettkampfsituation lautet: es ist ein zeitabh&#228;ngiges Problem; wenn
-    etwas zum falschen Zeitpunkt erfolgt, wird es sich nicht wie erwartet
-    verhalten.) Bei Architekturen mit dem "richtigen" Funktionsumfang
-    haben wir so viele eliminiert wie wir nur konnten. Dennoch
-    sollte beachtet werden, dass noch immer Wettkampfsituationen auf
-    bestimmten Architekturen existieren.</p>
+    <em>Wettlaufsituationen</em> <transnote>engl.: race
+    conditions</transnote>, die den Neustart und die Signale beeinflu&#223;t
+    haben (einfach gesagt, eine Wettlaufstituation ist ein zeitabh&#228;ngiges
+    Problem - wenn etwas zum falschen Zeitpunkt oder in der falschen
+    Reihenfolge geschieht, kommt es zu nicht erw&uuml;nschten Ergebnissen.
+    Geschehen die gleichen Dinge zur rechten Zeit, ist alles in Ordnung).  Bei
+    Architekturen mit dem "richtigen" <transnote>im Sinne von
+    "geeignet"</transnote> Funktionsumfang haben wir so viele eliminiert wie
+    wir nur konnten. Dennoch sollte beachtet werden, dass noch immer
+    Wettlaufsituationen auf bestimmten Architekturen existieren.</p>
 
     <p>Bei Architekturen, die ein <directive
     module="mpm_common">ScoreBoardFile</directive> auf Platte verwenden,
-    besteht die Gefahr, dass die Statustabelle besch&#228;digt wird.
+    kann die Statustabelle besch&#228;digt werden.
     Das kann zu "bind: Address already in use" ("bind: Adresse wird
     bereits verwendet", nach einem <code>HUP</code>) oder "long lost
     child came home!" ("Der verlorene Sohn ist heimgekehrt", nach einem
@@ -231,7 +283,7 @@
     module="mpm_common">ScoreBoardFile</directive>.</p>
 
     <p>Alle Architekturen haben in jedem Kindprozess eine kleine
-    Wettkampfsituation, welche die zweite und nachfolgende Anfragen
+    Wettlaufsituation, welche die zweite und nachfolgende Anfragen
     einer persistenten HTTP-Verbindung (KeepAlive) umfa&#223;t. Der Prozess
     kann nach dem Lesen der Anfragezeile aber vor dem Lesen der Anfrage-Header
     enden. Es existiert eine Korrektur, die f&#252;r 1.2 zu sp&#228;t kam.
