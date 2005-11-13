@@ -23,9 +23,6 @@
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Dieses Glossar erläutert einige gebräuchliche Fachbegriffe im
       Zusammenhang mit dem Apache im Speziellen und Web-Diensten im
@@ -466,8 +463,8 @@
       <a class="glossarylink" href="./glossary.html#uniformresourceidentifier" title="siehe Glossar">Uniform Resource
       Identifier</a>. URLs bestehen üblicherweise aus einem
       Schema wie <code>http</code> oder <code>https</code>, einem Hostnamen
-      und einem Pfad. Die URL für diese Seite ist
-      <code>http://httpd.apache.org/docs-2.1/glossary.html</code>.
+      und einem Pfad. Die URL für diese Seite könnte
+      <code>http://httpd.apache.org/docs-2.1/glossary.html</code> lauten.
     </dd>
 
     <dt><a name="uniformresourceidentifier" id="uniformresourceidentifier">Uniform Resource Identifier</a>
