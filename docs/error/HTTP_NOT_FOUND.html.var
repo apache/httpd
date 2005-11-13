@@ -138,6 +138,34 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: ga 
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ga--
+<!--#set var="TITLE" value="Aidhm ar iarraidh!"
+--><!--#include virtual="include/top.html" -->
+
+    N&iacute;or aimsigh an URL iarraithe ar an fhreastala&iacute; seo.
+
+  <!--#if expr="$HTTP_REFERER" -->
+
+    Is cos&uacute;il go bhfuil an nasc ar an
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->">leathanach
+    thagarthach</a> m&iacute;cheart n&oacute; as d&aacute;ta. 
+    Cur in i&uacute;l d'&uacute;adar 
+    <a href="<!--#echo encoding="url" var="HTTP_REFERER" -->"
+    >an leathanach sin</a> go bhfuil earr&aacute;id ann, le do thoil.
+
+  <!--#else -->
+
+    M&aacute; chuir t&uacute; isteach an URL t&uacute; f&eacute;in, deimhnigh
+    go bhfuil s&eacute; litrithe i gceart agat, agus d&eacute;an iarracht eile
+    le do thoil.
+
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ga--
+
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
