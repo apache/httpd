@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE xsl:stylesheet [
+    <!ENTITY % HTTPD-VERSION SYSTEM "../version.ent">
+    %HTTPD-VERSION;
+]>
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors, as
@@ -122,7 +126,7 @@ during development, the PDF version may contain some errors and
 inconsistencies, especially in formatting.  If you have difficulty
 reading a part of this file, please consult the HTML version
 of the documentation on the Apache HTTP Server website at
-\href{http://httpd.apache.org/docs-2.0/}{http://httpd.apache.org/docs-2.0/}
+\href{http://httpd.apache.org/docs/&httpd.docs;/}{http://httpd.apache.org/docs/&httpd.docs;/}
 
 The Apache HTTP Server Documentation is maintained by the Apache HTTP
 Server Documentation Project.  More information is available at

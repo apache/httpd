@@ -26,8 +26,8 @@
 
 <summary>
 <p>Esta p&#225;gina contiene la lista con los documentos actualmente
-disponibles de la <a href="./">Versi&#243;n 2.1 de la Documentaci&#243;n del
-Servidor HTTP Apache</a>.</p>
+disponibles de la <a href="./">Versi&#243;n &httpd.major;.&httpd.minor; de la
+Documentaci&#243;n del Servidor HTTP Apache</a>.</p>
 </summary>
 
 <category id="release">

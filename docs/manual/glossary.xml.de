@@ -496,7 +496,8 @@
       Identifier</glossary>. URLs bestehen &uuml;blicherweise aus einem
       Schema wie <code>http</code> oder <code>https</code>, einem Hostnamen
       und einem Pfad. Die URL f&uuml;r diese Seite k&ouml;nnte
-      <code>http://httpd.apache.org/docs-2.1/glossary.html</code> lauten.
+      <code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>
+      lauten.
     </dd>
 
     <dt><a name="uniformresourceidentifier"

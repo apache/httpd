@@ -29,8 +29,8 @@
 
 <summary>
     <p>Apache の主サイト、&lt;<a
-	href="http://httpd.apache.org/docs-2.1/faq/"
-	>http://httpd.apache.org/docs-2.1/faq/</a>&gt;
+	href="http://httpd.apache.org/docs/&httpd.docs;/faq/"
+	>http://httpd.apache.org/docs/&httpd.docs;/faq/</a>&gt;
       から最新版の FAQ を常に手に入れることができます。</p>
 
     <p>Apache 2.0 はまだ新しいので、何が<em>よくある質問</em>なのか

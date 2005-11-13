@@ -53,7 +53,7 @@
       module="core">ErrorLog</directive> を見てください。</dd>
 
       <dt><a
-      href="http://httpd.apache.org/docs-2.1/faq/">FAQ</a> を調べる!</dt>
+      href="http://httpd.apache.org/docs/&httpd.docs;/faq/">FAQ</a> を調べる!</dt>
       <dd>Apache のよくある質問の最新版は常に Apache の主ウェブサイトに
       あります。</dd>
 
