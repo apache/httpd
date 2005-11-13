@@ -36,6 +36,15 @@ Si vous pensez qu'il s'agit d'une erreur du serveur, veuillez contacter le
 <a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">gestionnaire du site</a>.
 ----------fr--
 
+Content-language: ga
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ga--
+M&aacute; cheapann t&uacute; gur earr&aacute;id fhreastala&iacute; &iacute; seo,
+t&eacute;igh i dteagmh&aacute;il leis an 
+<a href="mailto:<!--#echo encoding="url" var="SERVER_ADMIN" -->">
+sti&uacute;rth&oacute;ir gr&eacute;as&aacute;in</a>, le do thoil.
+----------ga--
+
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--

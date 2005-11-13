@@ -73,6 +73,19 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: ga
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ga--
+<!--#set var="TITLE" value="Seirbh&iacute;s do&uacute;s&aacute;idte!"
+--><!--#include virtual="include/top.html" -->
+
+    N&iacute;l an freastala&iacute; seo in ann do chuid 
+    iarratais a l&iacute;onadh ag an am seo, toisc 
+    c&oacute;th&aacute;bh&aacute;il n&oacute; fhaidhbeanna cumas.
+    D&eacute;an iarracht eile n&iacute;os d&eacute;ana&iacute;, le do thoil.
+<!--#include virtual="include/bottom.html" -->
+----------ga--
+
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
