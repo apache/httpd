@@ -13,11 +13,11 @@
 <body id="directive-index">
 <div id="page-header">
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p>
-<p class="apache">Versión 2.1 del Servidor HTTP Apache</p>
+<p class="apache">Versión 2.3 del Servidor HTTP Apache</p>
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="../">Versión 2.1</a> &gt; <a href="./">Módulos</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a> &gt; <a href="../">Versión 2.3</a> &gt; <a href="./">Módulos</a></div>
 <div id="preamble"><h1>Guía Rápida de Referencia de Directivas</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="../de/mod/quickreference.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -141,8 +141,8 @@ formatted email address</td></tr>
 lower level modules</td></tr>
 <tr class="odd"><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
-<tr><td><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery <var>query</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">SQL query to look up a password for a user</td></tr>
-<tr class="odd"><td><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery <var>query</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SQL query to look up a password hash for a user and realm.
+<tr><td><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">SQL query to look up a password for a user</td></tr>
+<tr class="odd"><td><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SQL query to look up a password hash for a user and realm.
 </td></tr>
 <tr><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the database file containing the list
 of user groups for authorization</td></tr>
