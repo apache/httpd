@@ -24,6 +24,8 @@
 <a href="./ja/filter.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 
     <p>Apache でのフィルタの使い方について記述しています。</p>
   </div>
