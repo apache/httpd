@@ -101,8 +101,8 @@ SetHandler server-info<br />
 <div class="example"><p><code>
   AddModuleInfo mod_authn_file.c 'See &lt;a \<br />
   <span class="indent">
-    href="http://www.apache.org/docs-2.0/mod/mod_authn_file.html"&gt;\<br />
-    http://www.apache.org/docs-2.0/mod/mod_authn_file.html&lt;/a&gt;'
+    href="http://www.apache.org/docs/2.0/mod/mod_authn_file.html"&gt;\<br />
+    http://www.apache.org/docs/2.0/mod/mod_authn_file.html&lt;/a&gt;'
   </span>
 </code></p></div>
 

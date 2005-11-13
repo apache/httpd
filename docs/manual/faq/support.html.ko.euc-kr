@@ -49,7 +49,7 @@
       <code>/usr/local/apache2/logs/error_log</code>이지만,
       정확한 위치는 설정파일의 <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> 지시어를 참고하라.</dd>
 
-      <dt><a href="http://httpd.apache.org/docs-2.0/faq/">FAQ</a>를
+      <dt><a href="http://httpd.apache.org/docs/2.0/faq/">FAQ</a>를
       확인하라!</dt>
       <dd>아파치 웹사이트에서 항상 아파치 FAQ 최신판을 볼 수
       있다.</dd>

@@ -30,7 +30,7 @@
      writable for any other person than <code>root</code>.</p>
 
      <p>For further information about the concepts and and the security model
-     of suexec please refer to the suexec documentation (<a href="http://httpd.apache.org/docs-2.0/suexec.html">http://httpd.apache.org/docs-2.0/suexec.html</a>).</p>
+     of suexec please refer to the suexec documentation (<a href="http://httpd.apache.org/docs/2.0/suexec.html">http://httpd.apache.org/docs/2.0/suexec.html</a>).</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>

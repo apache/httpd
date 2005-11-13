@@ -315,7 +315,7 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
     <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
-    または、<a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>
+    または、<a href="http://httpd.apache.org/docs/2.0/">http://httpd.apache.org/docs/2.0/</a>
     にあるマニュアル最新版、<a href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

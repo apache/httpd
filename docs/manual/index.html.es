@@ -5,7 +5,8 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Documentación del Servidor HTTP Apache 2.0 - Servidor HTTP Apache</title>
+<title>Documentación del Servidor HTTP Apache
+2.0 - Servidor HTTP Apache</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -18,7 +19,8 @@
 <div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">Servidor HTTP</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentación</a></div>
-<div id="page-content"><h1>Documentación del Servidor HTTP Apache 2.0</h1>
+<div id="page-content"><h1>Documentación del Servidor HTTP Apache
+2.0</h1>
 <div class="toplang">
 <p><span>Idiomas disponibles: </span><a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |

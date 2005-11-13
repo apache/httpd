@@ -534,7 +534,7 @@ exclusion of operations which have to be done in a synchronized way between the
 pre-forked Apache server processes. This directive can only be used in the
 global server context because it's only useful to have one global mutex.
 This directive is designed to closely match the
-<a href="http://httpd.apache.org/docs-2.0/mod/mpm_common.html#acceptmutex">AcceptMutex</a> directive</p>
+<a href="http://httpd.apache.org/docs/2.0/mod/mpm_common.html#acceptmutex">AcceptMutex</a> directive</p>
 <p>
 The following Mutex <em>types</em> are available:</p>
 <ul>

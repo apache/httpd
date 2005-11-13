@@ -22,7 +22,7 @@
 <a href="../ko/faq/all_in_one.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
-    <p>FAQ 최신판은 아파치 웹사이트 &lt;<a href="http://httpd.apache.org/docs-2.1/faq/">http://httpd.apache.org/docs-2.0/faq/</a>&gt;에서 볼 수
+    <p>FAQ 최신판은 아파치 웹사이트 &lt;<a href="http://httpd.apache.org/docs/2.0/faq/">http://httpd.apache.org/docs/2.0/faq/</a>&gt;에서 볼 수
     있다.</p>
 
     <p>아파치 2.0이 나온지 얼마 안되서 우리는 아직 <em>자주
@@ -66,7 +66,7 @@
       <code>/usr/local/apache2/logs/error_log</code>이지만,
       정확한 위치는 설정파일의 <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> 지시어를 참고하라.</dd>
 
-      <dt><a href="http://httpd.apache.org/docs-2.0/faq/">FAQ</a>를
+      <dt><a href="http://httpd.apache.org/docs/2.0/faq/">FAQ</a>를
       확인하라!</dt>
       <dd>아파치 웹사이트에서 항상 아파치 FAQ 최신판을 볼 수
       있다.</dd>

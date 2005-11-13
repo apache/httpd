@@ -290,7 +290,7 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
     <p>사용가능한 <a href="mod/directives.html">설정 지시어</a>에
-    대한 완전한 설명과 이 문서의 가장 최근 판은 <a href="./">docs/manual/</a>이나 <a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>에 있는 아파치 설명서를
+    대한 완전한 설명과 이 문서의 가장 최근 판은 <a href="./">docs/manual/</a>이나 <a href="http://httpd.apache.org/docs/2.0/">http://httpd.apache.org/docs/2.0/</a>에 있는 아파치 설명서를
     참고하라.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

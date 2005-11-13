@@ -32,8 +32,8 @@
             recientemente.</div>
 
 <p>Esta página contiene la lista con los documentos actualmente
-disponibles de la <a href="./">Versión 2.0 de la Documentación del
-Servidor HTTP Apache</a>.</p>
+disponibles de la <a href="./">Versión 2.0 de la
+Documentación del Servidor HTTP Apache</a>.</p>
 </div>
 <div id="quickview"><ul id="toc">
 <li><img alt="" src="./images/down.gif" /> <a href="#release">Notas de la Versión</a></li>

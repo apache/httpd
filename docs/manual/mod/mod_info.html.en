@@ -111,8 +111,8 @@ information displayed by the server-info handler</td></tr>
     <div class="example"><p><code>
       AddModuleInfo mod_auth.c 'See &lt;a \<br />
       <span class="indent">
-        href="http://www.apache.org/docs-2.0/mod/mod_auth.html"&gt;\<br />
-        http://www.apache.org/docs-2.0/mod/mod_auth.html&lt;/a&gt;'
+        href="http://www.apache.org/docs/2.0/mod/mod_auth.html"&gt;\<br />
+        http://www.apache.org/docs/2.0/mod/mod_auth.html&lt;/a&gt;'
       </span>
     </code></p></div>
 

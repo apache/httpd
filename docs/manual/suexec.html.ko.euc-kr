@@ -478,7 +478,7 @@
 <h2><a name="jabberwock" id="jabberwock">다시 한번 조심하라: 경고와 예제</a></h2>
 
     <p><strong>주의!</strong> 이 섹션은 완전하지 않을 수 있다.
-    아파치그룹의 <a href="http://httpd.apache.org/docs-2.0/suexec.html">온라인
+    아파치그룹의 <a href="http://httpd.apache.org/docs/2.0/suexec.html">온라인
     문서</a>에서 이 문서의 최신판을 참고하라.</p>
 
     <p>wrapper가 서버 설정을 제약하는 몇가지 흥미로운 점이 있다.

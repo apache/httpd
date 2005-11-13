@@ -23,7 +23,7 @@
 </div>
 
     <p>The latest version of this FAQ is always available from the main Apache
-    web site, at &lt;<a href="http://httpd.apache.org/docs-2.0/faq/">http://httpd.apache.org/docs-2.0/faq/</a>&gt;.</p>
+    web site, at &lt;<a href="http://httpd.apache.org/docs/2.0/faq/">http://httpd.apache.org/docs/2.0/faq/</a>&gt;.</p>
 
     <p>Since Apache 2.0 is quite new, we don't yet know what the <em>Frequently
     Asked Questions</em> will be. While this section fills up, you should also
@@ -66,7 +66,7 @@
       <code>/usr/local/apache2/logs/error_log</code>, but see the <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> directive in your config files for the
       location on your server.</dd>
 
-      <dt>Check the <a href="http://httpd.apache.org/docs-2.0/faq/">FAQ</a>!</dt>
+      <dt>Check the <a href="http://httpd.apache.org/docs/2.0/faq/">FAQ</a>!</dt>
       <dd>The latest version of the Apache Frequently-Asked Questions list can
       always be found at the main Apache web site.</dd>
 

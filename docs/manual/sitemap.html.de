@@ -28,7 +28,8 @@
 </div>
 
 <p>Diese Seite verzeichnet die zur Zeit verfügbaren Dokumente der
-<a href="./">Dokumentation zum Apache HTTP Server Version 2.0</a>.</p>
+<a href="./">Dokumentation zum Apache HTTP Server Version
+2.0</a>.</p>
 </div>
 <div id="quickview"><ul id="toc">
 <li><img alt="" src="./images/down.gif" /> <a href="#release">Hinweise zur Version</a></li>

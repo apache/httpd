@@ -302,8 +302,8 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>Have a look at the Apache manual under <a href="./">docs/manual/</a> or consult <a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a> for the most recent version of
-    this manual and a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
+    <p>Have a look at the Apache manual under <a href="./">docs/manual/</a> or consult <a href="http://httpd.apache.org/docs/2.0/">http://httpd.apache.org/docs/2.0/</a> for the most recent
+    version of this manual and a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="test" id="test">Test</a></h2>

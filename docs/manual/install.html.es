@@ -344,7 +344,7 @@ directorios</a></h2>
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>échele un vistazo al Manual de Apache que está en <a href="./">docs/manual/</a> o consulte en <a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a> la versión más
+    <p>échele un vistazo al Manual de Apache que está en <a href="./">docs/manual/</a> o consulte en <a href="http://httpd.apache.org/docs/2.0/">http://httpd.apache.org/docs/2.0/</a> la versión más
     reciente de este manual y la Guia de Referencia de todas las <a href="mod/directives.html">directivas de configuración</a>
     disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
