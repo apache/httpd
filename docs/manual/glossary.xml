@@ -443,8 +443,8 @@
     informal term for what is formally called a <glossary
       ref="uniformresourceidentifier">Uniform Resource Identifier</glossary>.
     URLs are usually made up of a scheme, like <code>http</code> or
-    <code>https</code>, a hostname, and a path.  A URL for this page is
-    <code>http://httpd.apache.org/docs-2.1/glossary.html</code>.
+    <code>https</code>, a hostname, and a path.  A URL for this page might
+    be <code>http://httpd.apache.org/docs-2.1/glossary.html</code>.
   </dd> 
 
   <dt><a name="uniformresourceidentifier"
