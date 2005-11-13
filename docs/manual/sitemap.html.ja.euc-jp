@@ -13,11 +13,11 @@
 <body id="manual-page">
 <div id="page-header">
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
-<p class="apache">Apache HTTP サーバ バージョン 2.1</p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.1</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="./">バージョン 2.2</a></div>
 <div id="page-content"><div id="preamble"><h1>Site Map</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -152,12 +152,9 @@
 <li><a href="mod/mpm_common.html">Apache MPM 共通ディレクティブ</a></li>
 <li><a href="mod/beos.html">Apache MPM beos</a></li>
 <li><a href="mod/event.html">Apache MPM event</a></li>
-<li><a href="mod/leader.html">Apache MPM leader</a></li>
 <li><a href="mod/mpm_netware.html">Apache MPM netware</a></li>
 <li><a href="mod/mpmt_os2.html">Apache MPM os2</a></li>
-<li><a href="mod/perchild.html">Apache MPM perchild</a></li>
 <li><a href="mod/prefork.html">Apache MPM prefork</a></li>
-<li><a href="mod/threadpool.html">Apache MPM threadpool</a></li>
 <li><a href="mod/mpm_winnt.html">Apache MPM winnt</a></li>
 <li><a href="mod/worker.html">Apache MPM worker</a></li>
 </ul><ul><li><a href="mod/mod_actions.html">Apache モジュール mod_actions</a></li>
