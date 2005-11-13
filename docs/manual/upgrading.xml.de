@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 170636:333065 (outdated) -->
+<!-- English Revision: 333065 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors,
@@ -22,7 +22,7 @@
 
 <manualpage metafile="upgrading.xml.meta">
 
-<title>Upgrade von 2.0 auf 2.1</title>
+<title>Upgrade von 2.0 auf 2.2</title>
 
 <summary>
   <p>Dieses Dokument dient der Unterst&#252;tzung beim Upgrade. Es
@@ -43,7 +43,16 @@
 
   <section id="compile-time">
     <title>&#196;nderungen der Konfiguration bei der Kompilierung</title>
-
+    <ul>
+        <li>Die APR 1.0 API ist erforderlich.</li>
+        <li>Die mitgelieferte PCRE hat nun die Version 5.0.</li>
+        <li>mod_imap wurde in <module>mod_imagemap</module> umbenannt.</li>
+        <li>mod_auth wurde aufgeteilt in <module>mod_auth_basic</module> und
+        <module>mod_authn_file</module></li>
+        <li>mod_access wurde umbenannt in <module>mod_authz_host</module></li>
+        <li>mod_auth_ldap wurde umbenannt in
+        <module>mod_authz_ldap</module></li>
+    </ul>
   </section>
 
   <section id="run-time">
