@@ -464,7 +464,8 @@
       Identifier</a>. URLs bestehen üblicherweise aus einem
       Schema wie <code>http</code> oder <code>https</code>, einem Hostnamen
       und einem Pfad. Die URL für diese Seite könnte
-      <code>http://httpd.apache.org/docs-2.1/glossary.html</code> lauten.
+      <code>http://httpd.apache.org/docs/2.2/glossary.html</code>
+      lauten.
     </dd>
 
     <dt><a name="uniformresourceidentifier" id="uniformresourceidentifier">Uniform Resource Identifier</a>

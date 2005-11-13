@@ -52,7 +52,7 @@
       <code>/usr/local/apache2/logs/error_log</code> ですが、あなたのサーバ
       での場所を知るためには設定ファイル中の <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> を見てください。</dd>
 
-      <dt><a href="http://httpd.apache.org/docs-2.1/faq/">FAQ</a> を調べる!</dt>
+      <dt><a href="http://httpd.apache.org/docs/2.2/faq/">FAQ</a> を調べる!</dt>
       <dd>Apache のよくある質問の最新版は常に Apache の主ウェブサイトに
       あります。</dd>
 
