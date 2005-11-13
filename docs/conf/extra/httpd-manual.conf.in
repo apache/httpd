@@ -2,7 +2,7 @@
 # Provide access to the documentation on your server as
 #  http://yourserver.example.com/manual/
 # The documentation is always available at
-#  http://httpd.apache.org/docs-2.1/
+#  http://httpd.apache.org/docs/trunk/
 #
 # Required modules: mod_alias, mod_setenvif, mod_negotiation
 #
