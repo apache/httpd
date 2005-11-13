@@ -1,4 +1,4 @@
-APACHE 2.1 STATUS:                                              -*-text-*-
+APACHE 2.3 STATUS:                                              -*-text-*-
 Last modified at [$Date$]
 
 The current version of this file can be found at:
@@ -19,21 +19,13 @@ Patches considered for backport are noted in their branches' STATUS:
 
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/1.3.x/STATUS
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/STATUS
+  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
 
 
 Release history:
-    [NOTE that only Alpha/Beta releases occur in 2.1 development]
+    [NOTE that only Alpha/Beta releases occur in 2.3 development]
 
-    2.1.9   : in development
-    2.1.8   : Released on October 1, 2005 as beta.
-    2.1.7   : Released on September 12, 2005 as beta. 
-    2.1.6   : Released on June 27, 2005 as alpha.
-    2.1.5   : Tagged on June 17, 2005. 
-    2.1.4   : not released.
-    2.1.3   : Released on  February 22, 2005 as alpha.
-    2.1.2   : Released on December 8, 2004 as alpha.
-    2.1.1   : Released on November 19, 2004 as alpha.
-    2.1.0   : not released.
+    2.3.0   : in development
 
 
 Contributors looking for a mission:
