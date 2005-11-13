@@ -324,8 +324,8 @@
     href="./">docs/manual/</a>. Die aktuellste Version dieses Handbuchs
     sowie eine komplette Referenz der verf&#252;gbaren <a
     href="mod/directives.html">Konfigurationsanweisungen</a> finden
-    Sie unter <a href="http://httpd.apache.org/docs-2.1/"
-    >http://httpd.apache.org/docs-2.1/</a>.</p>
+    Sie unter <a href="http://httpd.apache.org/docs/&httpd.docs;/"
+    >http://httpd.apache.org/docs/&httpd.docs;/</a>.</p>
 </section>
 
 <section id="test"><title>Testen</title>

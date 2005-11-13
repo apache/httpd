@@ -343,8 +343,8 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
 
     <p>A consulter : le manuel d'Apache dans
     <a href="./">docs/manual/</a> ou bien <a
-    href="http://httpd.apache.org/docs-2.1/"
-    >http://httpd.apache.org/docs-2.1/</a> pour la derni&#232;re version de ce
+    href="http://httpd.apache.org/docs/&httpd.docs;/"
+    >http://httpd.apache.org/docs/&httpd.docs;/</a> pour la derni&#232;re version de ce
     manuel, ainsi qu'une r&#233;f&#233;rence compl&#232;te de toutes les
     <a href="mod/directives.html">directives de configuration</a>.</p>
 </section>

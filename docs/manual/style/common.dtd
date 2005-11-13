@@ -34,6 +34,11 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent">
 %HTMLspecial;
 
+<!-- HTTPD Version -->
+
+<!ENTITY % HTTPD-VERSION SYSTEM "version.ent">
+%HTTPD-VERSION;
+
 <!-- Generic tag entities -->
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module |
@@ -45,6 +50,8 @@ program | img | cite | q | dfn | var | transnote | glossary | phonetic">
 <!ENTITY % Block "(%blocktags;)*">
 <!ENTITY % Inline "(#PCDATA | %inlinetags;)*">
 <!ENTITY % BlockOrInline "(#PCDATA | %inlinetags; | %blocktags;)*">
+
+<!-- Common Elements -->
 
 <!ELEMENT title %Inline;>
 
