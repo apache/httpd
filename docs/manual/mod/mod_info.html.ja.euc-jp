@@ -17,7 +17,8 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.3</a> &gt; <a href="./">モジュール</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン
+            2.3</a> &gt; <a href="./">モジュール</a></div>
 <div id="page-content">
 <div id="preamble"><h1>Apache モジュール mod_info</h1>
 <div class="toplang">
@@ -25,6 +26,8 @@
 <a href="../ja/mod/mod_info.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_info.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバの設定の包括的な概観を提供する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>info_module</td></tr>
@@ -171,8 +174,8 @@
     <div class="example"><p><code>
       AddModuleInfo mod_deflate.c 'See &lt;a \<br />
       <span class="indent">
-        href="http://www.apache.org/docs-2.1/mod/mod_deflate.html"&gt;\<br />
-        http://www.apache.org/docs-2.1/mod/mod_deflate.html&lt;/a&gt;'
+        href="http://www.apache.org/docs/trunk/mod/mod_deflate.html"&gt;\<br />
+        http://www.apache.org/docs/trunk/mod/mod_deflate.html&lt;/a&gt;'
       </span>
     </code></p></div>
 

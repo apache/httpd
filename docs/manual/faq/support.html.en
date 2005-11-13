@@ -53,7 +53,7 @@
       <dt>Check the ErrorLog again!</dt>
       <dd>Nearly all problems can be solved by reading the error log.</dd>
       
-      <dt>Check the <a href="http://httpd.apache.org/docs/2.3/faq/">FAQ</a>!</dt>
+      <dt>Check the <a href="http://httpd.apache.org/docs/trunk/faq/">FAQ</a>!</dt>
       <dd>The latest version of the Apache Frequently-Asked Questions list can
       always be found at the main Apache web site.</dd>
 

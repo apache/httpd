@@ -342,7 +342,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
     <p>A consulter : le manuel d'Apache dans
-    <a href="./">docs/manual/</a> ou bien <a href="http://httpd.apache.org/docs-2.1/">http://httpd.apache.org/docs-2.1/</a> pour la dernière version de ce
+    <a href="./">docs/manual/</a> ou bien <a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a> pour la dernière version de ce
     manuel, ainsi qu'une référence complète de toutes les
     <a href="mod/directives.html">directives de configuration</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>

@@ -16,7 +16,8 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.3</a> &gt; <a href="./">FAQ</a></div><div id="page-content"><div id="preamble"><h1>サポート ― よくある質問</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs-project/">ドキュメンテーション</a> &gt; <a href="../">バージョン
+            2.3</a> &gt; <a href="./">FAQ</a></div><div id="page-content"><div id="preamble"><h1>サポート ― よくある質問</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/faq/support.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/faq/support.html" title="Japanese">&nbsp;ja&nbsp;</a> |
@@ -52,7 +53,7 @@
       <code>/usr/local/apache2/logs/error_log</code> ですが、あなたのサーバ
       での場所を知るためには設定ファイル中の <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> を見てください。</dd>
 
-      <dt><a href="http://httpd.apache.org/docs-2.1/faq/">FAQ</a> を調べる!</dt>
+      <dt><a href="http://httpd.apache.org/docs/trunk/faq/">FAQ</a> を調べる!</dt>
       <dd>Apache のよくある質問の最新版は常に Apache の主ウェブサイトに
       あります。</dd>
 
