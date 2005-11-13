@@ -39,15 +39,16 @@ to change the scope of other configuration directives.</p>
 <div class="section">
 <h2><a name="types" id="types">Types of Configuration Section Containers</a></h2>
 
-<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
 <p>There are two basic types of containers.  Most containers are
 evaluated for each request.  The enclosed directives are applied only
-for those requests that match the containers.  The <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> and <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> containers, on the
-other hand, are evaluated only at server startup and restart.  If
-their conditions are true at startup, then the enclosed directives
-will apply to all requests.  If the conditions are not true, the
-enclosed directives will be ignored.</p>
+for those requests that match the containers.  The <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>, <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>, and
+<code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code>
+containers, on the other hand, are evaluated only at server startup
+and restart.  If their conditions are true at startup, then the
+enclosed directives will apply to all requests.  If the conditions are
+not true, the enclosed directives will be ignored.</p>
 
 <p>The <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> directive
 encloses directives that will only be applied if an appropriate
@@ -82,8 +83,24 @@ MimeMagicFile conf/magic<br />
 &lt;/IfModule&gt;
 </code></p></div>
 
-<p>Both <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>
-and <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>
+<p>The <code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code>
+directive is very similar to <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> and <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>, except it encloses directives that will
+only be applied if a particular version of the server is executing.  This
+module is designed for the use in test suites and large networks which have to
+deal with different httpd versions and different configurations.</p>
+
+<div class="example"><p><code>
+  &lt;IfVersion &gt;= 2.1&gt;<br />
+  <span class="indent">
+    # this happens only in versions greater or<br />
+    # equal 2.1.0.<br />
+  </span>
+  &lt;/IfVersion&gt;
+</code></p></div>
+
+<p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code>,
+<code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code>, and the
+<code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code>
 can apply negative conditions by preceding their test with "!".
 Also, these sections can be nested to achieve more complex
 restrictions.</p>
