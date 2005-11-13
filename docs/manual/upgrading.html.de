@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Upgrade von 2.0 auf 2.1 - Apache HTTP Server</title>
+<title>Upgrade von 2.0 auf 2.2 - Apache HTTP Server</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
@@ -16,7 +16,7 @@
 <img alt="" src="./images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="./">Version 2.2</a></div><div id="page-content"><div id="preamble"><h1>Upgrade von 2.0 auf 2.1</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP-Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Dokumentation</a> &gt; <a href="./">Version 2.2</a></div><div id="page-content"><div id="preamble"><h1>Upgrade von 2.0 auf 2.2</h1>
 <div class="toplang">
 <p><span>Verfügbare Sprachen: </span><a href="./de/upgrading.html" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="./en/upgrading.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -26,9 +26,6 @@
 <a href="./pt-br/upgrading.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a> |
 <a href="./ru/upgrading.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
   <p>Dieses Dokument dient der Unterstützung beim Upgrade. Es
     enthält die entscheidenden Informationen für bisherige
@@ -52,7 +49,16 @@
 <div class="section">
 <h2><a name="compile-time" id="compile-time">Änderungen der Konfiguration bei der Kompilierung</a></h2>
     
-
+    <ul>
+        <li>Die APR 1.0 API ist erforderlich.</li>
+        <li>Die mitgelieferte PCRE hat nun die Version 5.0.</li>
+        <li>mod_imap wurde in <code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code> umbenannt.</li>
+        <li>mod_auth wurde aufgeteilt in <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code> und
+        <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code></li>
+        <li>mod_access wurde umbenannt in <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code></li>
+        <li>mod_auth_ldap wurde umbenannt in
+        <code class="module"><a href="./mod/mod_authz_ldap.html">mod_authz_ldap</a></code></li>
+    </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="run-time" id="run-time">Änderungen der Laufzeit-Konfiguration</a></h2>
