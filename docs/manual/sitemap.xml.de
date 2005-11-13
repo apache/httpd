@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 290427:332906 (outdated) -->
+<!-- English Revision: 333001 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors,
@@ -32,6 +32,7 @@
 <category id="release">
 <title>Hinweise zur Version</title>
 <page href="upgrading.html">Upgrade von 1.3 auf 2.0</page>
+<page href="new_features_2_2.html">Neue Funktionen in Version 2.1/2.2</page>
 <page href="new_features_2_0.html">Neue Funktionen in Version 2.0</page>
 <page href="license.html">Apache-Lizenz</page>
 </category>
