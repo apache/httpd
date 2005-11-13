@@ -100,7 +100,7 @@
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP Server</message>
-        <message id="apachehttpserver">Apache HTTP Server Version 2.1</message>
+        <message id="apachehttpserver">Apache HTTP Server Version 2.3</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
         <message id="search">Google Search</message> <!-- search button -->
         <message id="index">Index</message> <!-- deprecated -->
@@ -110,7 +110,7 @@
         <message id="apache">Apache</message>
         <message id="http-server">HTTP Server</message>
         <message id="documentation">Documentation</message>
-        <message id="version">Version 2.1</message>
+        <message id="version">Version 2.3</message>
 
         <!-- super menu -->
         <message id="modules">Modules</message>

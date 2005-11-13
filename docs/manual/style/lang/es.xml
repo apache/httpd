@@ -98,7 +98,7 @@
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Servidor HTTP Apache</message>
-        <message id="apachehttpserver">Versi&#243;n 2.1 del Servidor HTTP
+        <message id="apachehttpserver">Versi&#243;n 2.3 del Servidor HTTP
             Apache</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
         <message id="search">Buscar en Google</message> <!-- search button -->
@@ -109,7 +109,7 @@
         <message id="apache">Apache</message>
         <message id="http-server">Servidor HTTP</message>
         <message id="documentation">Documentaci&#243;n</message>
-        <message id="version">Versi&#243;n 2.1</message>
+        <message id="version">Versi&#243;n 2.3</message>
 
         <!-- super menu -->
         <message id="modules">M&#243;dulos</message>

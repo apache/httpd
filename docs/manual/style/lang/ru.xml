@@ -87,7 +87,7 @@
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- HTTP сервер Apache</message>
-        <message id="apachehttpserver">HTTP сервер Apache Версия 2.1</message>
+        <message id="apachehttpserver">HTTP сервер Apache Версия 2.3</message>
         <message id="apachedocalt">[ДОКУМЕНТАЦИЯ APACHE]</message>
         <message id="search">Google Search</message> <!-- search button -->
         <message id="index">Оглавление</message> <!-- deprecated -->
@@ -97,7 +97,7 @@
         <message id="apache">Apache</message>
         <message id="http-server">HTTP сервер</message>
         <message id="documentation">Документация</message>
-        <message id="version">Версия 2.1</message>
+        <message id="version">Версия 2.3</message>
 
         <!-- super menu -->
         <message id="modules">Модули</message>

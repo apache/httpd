@@ -26,12 +26,14 @@
 
 <summary>
 <p>This page lists the currently available documents of the
-<a href="./">Apache HTTP Server Version 2.1 Documentation</a>.</p>
+<a href="./">Apache HTTP Server Version 2.3 Documentation</a>.</p>
 </summary>
 
 <category id="release">
 <title>Release Notes</title>
-<page href="upgrading.html">Upgrading to 2.0 from 1.3</page>
+<page href="upgrading.html">Upgrading to 2.2 from 2.0</page>
+<page href="new_features_2_4.html">New features with Apache 2.4</page>
+<page href="new_features_2_2.html">New features with Apache 2.2</page>
 <page href="new_features_2_0.html">New features with Apache 2.0</page>
 <page href="license.html">Apache License</page>
 </category>
