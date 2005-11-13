@@ -39,9 +39,10 @@ anonymous_logemail	mod/mod_authn_anon.html#anonymous_logemail
 anonymous_mustgiveemail	mod/mod_authn_anon.html#anonymous_mustgiveemail
 anonymous_nouserid	mod/mod_authn_anon.html#anonymous_nouserid
 anonymous_verifyemail	mod/mod_authn_anon.html#anonymous_verifyemail
-assignuserid	mod/perchild.html#assignuserid
 authbasicauthoritative	mod/mod_auth_basic.html#authbasicauthoritative
 authbasicprovider	mod/mod_auth_basic.html#authbasicprovider
+authdbduserpwquery	mod/mod_authn_dbd.html#authdbduserpwquery
+authdbduserrealmquery	mod/mod_authn_dbd.html#authdbduserrealmquery
 authdbmgroupfile	mod/mod_authz_dbm.html#authdbmgroupfile
 authdbmtype	mod/mod_authn_dbm.html#authdbmtype
 authdbmuserfile	mod/mod_authn_dbm.html#authdbmuserfile
@@ -100,7 +101,6 @@ charsetdefault	mod/mod_charset_lite.html#charsetdefault
 charsetoptions	mod/mod_charset_lite.html#charsetoptions
 charsetsourceenc	mod/mod_charset_lite.html#charsetsourceenc
 checkspelling	mod/mod_speling.html#checkspelling
-childperuserid	mod/perchild.html#childperuserid
 contentdigest	mod/core.html#contentdigest
 cookiedomain	mod/mod_usertrack.html#cookiedomain
 cookieexpires	mod/mod_usertrack.html#cookieexpires
@@ -162,6 +162,7 @@ filtertrace	mod/mod_filter.html#filtertrace
 forcelanguagepriority	mod/mod_negotiation.html#forcelanguagepriority
 forcetype	mod/core.html#forcetype
 forensiclog	mod/mod_log_forensic.html#forensiclog
+gracefulshutdowntimeout	mod/mpm_common.html#gracefulshutdowntimeout
 group	mod/mpm_common.html#group
 header	mod/mod_headers.html#header
 headername	mod/mod_autoindex.html#headername
@@ -224,7 +225,6 @@ maxrequestsperthread	mod/beos.html#maxrequestsperthread
 maxspareservers	mod/prefork.html#maxspareservers
 maxsparethreads	mod/mpm_common.html#maxsparethreads
 maxthreads	mod/mpm_netware.html#maxthreads
-maxthreadsperchild	mod/perchild.html#maxthreadsperchild
 mcachemaxobjectcount	mod/mod_mem_cache.html#mcachemaxobjectcount
 mcachemaxobjectsize	mod/mod_mem_cache.html#mcachemaxobjectsize
 mcachemaxstreamingbuffer	mod/mod_mem_cache.html#mcachemaxstreamingbuffer
@@ -242,7 +242,6 @@ modmimeusepathinfo	mod/mod_mime.html#modmimeusepathinfo
 multiviewsmatch	mod/mod_mime.html#multiviewsmatch
 namevirtualhost	mod/core.html#namevirtualhost
 noproxy	mod/mod_proxy.html#noproxy
-numservers	mod/perchild.html#numservers
 nwssltrustedcerts	mod/mod_nw_ssl.html#nwssltrustedcerts
 nwsslupgradeable	mod/mod_nw_ssl.html#nwsslupgradeable
 options	mod/core.html#options
@@ -270,6 +269,7 @@ proxyrequests	mod/mod_proxy.html#proxyrequests
 proxytimeout	mod/mod_proxy.html#proxytimeout
 proxyvia	mod/mod_proxy.html#proxyvia
 readmename	mod/mod_autoindex.html#readmename
+receivebuffersize	mod/mpm_common.html#receivebuffersize
 redirect	mod/mod_alias.html#redirect
 redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
@@ -369,6 +369,7 @@ threadlimit	mod/mpm_common.html#threadlimit
 threadsperchild	mod/mpm_common.html#threadsperchild
 threadstacksize	mod/mpm_common.html#threadstacksize
 timeout	mod/core.html#timeout
+traceenable	mod/core.html#traceenable
 transferlog	mod/mod_log_config.html#transferlog
 typesconfig	mod/mod_mime.html#typesconfig
 unsetenv	mod/mod_env.html#unsetenv
