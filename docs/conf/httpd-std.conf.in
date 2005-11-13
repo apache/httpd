@@ -3,7 +3,7 @@
 #
 # This is the main Apache server configuration file.  It contains the
 # configuration directives that give the server its instructions.
-# See <URL:http://httpd.apache.org/docs-2.0/> for detailed information about
+# See <URL:http://httpd.apache.org/docs/2.0/> for detailed information about
 # the directives.
 #
 # Do NOT simply read the instructions in here without understanding
@@ -42,7 +42,7 @@
 #
 # NOTE!  If you intend to place this on an NFS (or otherwise network)
 # mounted filesystem then please read the LockFile documentation (available
-# at <URL:http://httpd.apache.org/docs-2.0/mod/mpm_common.html#lockfile>);
+# at <URL:http://httpd.apache.org/docs/2.0/mod/mpm_common.html#lockfile>);
 # you will save yourself a lot of trouble.
 #
 # Do NOT add a slash at the end of the directory path.
@@ -341,7 +341,7 @@ DocumentRoot "@exp_htdocsdir@"
 # doesn't give it to you.
 #
 # The Options directive is both complicated and important.  Please see
-# http://httpd.apache.org/docs-2.0/mod/core.html#options
+# http://httpd.apache.org/docs/2.0/mod/core.html#options
 # for more information.
 #
     Options Indexes FollowSymLinks
@@ -452,7 +452,7 @@ HostnameLookups Off
 # The default is on; turn this off if you serve from NFS-mounted 
 # filesystems.  On some systems, turning it off (regardless of
 # filesystem) can improve performance; for details, please see
-# http://httpd.apache.org/docs-2.0/mod/core.html#enablemmap
+# http://httpd.apache.org/docs/2.0/mod/core.html#enablemmap
 #
 #EnableMMAP off
 
@@ -461,7 +461,7 @@ HostnameLookups Off
 # used  to deliver files (assuming that the OS supports it).
 # The default is on; turn this off if you serve from NFS-mounted 
 # filesystems.  Please see
-# http://httpd.apache.org/docs-2.0/mod/core.html#enablesendfile
+# http://httpd.apache.org/docs/2.0/mod/core.html#enablesendfile
 #
 #EnableSendfile off
 
@@ -1010,7 +1010,7 @@ BrowserMatch "^Dreamweaver-WebDAV-SCM1" redirect-carefully
 # IP addresses. This is indicated by the asterisks in the directives below.
 #
 # Please see the documentation at 
-# <URL:http://httpd.apache.org/docs-2.0/vhosts/>
+# <URL:http://httpd.apache.org/docs/2.0/vhosts/>
 # for further details before you try to setup virtual hosts.
 #
 # You may use the command line option '-S' to verify your virtual host
