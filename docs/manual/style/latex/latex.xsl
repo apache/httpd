@@ -1,4 +1,8 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE xsl:stylesheet [
+    <!ENTITY % HTTPD-VERSION SYSTEM "../version.ent">
+    %HTTPD-VERSION;
+]>
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors, as
