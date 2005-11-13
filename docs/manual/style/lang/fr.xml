@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE language [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE language SYSTEM "../lang.dtd">
 <!-- English revision: 151405 -->
 
 <!--
@@ -101,7 +101,8 @@
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Serveur Apache HTTP</message>
-        <message id="apachehttpserver">Serveur Apache HTTP Version 2.0</message>
+        <message id="apachehttpserver">Serveur Apache HTTP Version
+            &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[DOCUMENTATION APACHE]</message>
         <message id="search">Recherche Google</message> <!-- search button -->
         <message id="index">Index</message> <!-- deprecated -->
@@ -111,7 +112,7 @@
         <message id="apache">Apache</message>
         <message id="http-server">Serveur HTTP</message>
         <message id="documentation">Documentation</message>
-        <message id="version">Version 2.0</message>
+        <message id="version">Version &httpd.major;.&httpd.minor;</message>
 
         <!-- super menu -->
         <message id="modules">Modules</message>

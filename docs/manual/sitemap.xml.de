@@ -25,7 +25,8 @@
 
 <summary>
 <p>Diese Seite verzeichnet die zur Zeit verf&#252;gbaren Dokumente der
-<a href="./">Dokumentation zum Apache HTTP Server Version 2.0</a>.</p>
+<a href="./">Dokumentation zum Apache HTTP Server Version
+&httpd.major;.&httpd.minor;</a>.</p>
 </summary>
 
 <category id="release">

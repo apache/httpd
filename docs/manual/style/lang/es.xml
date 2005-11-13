@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
-<!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE messages SYSTEM "../lang.dtd">
 
 <!--
  Copyright 2004 The Apache Software Foundation
@@ -97,8 +97,8 @@
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Servidor HTTP Apache</message>
-        <message id="apachehttpserver">Versi&#243;n 2.0 del Servidor HTTP
-            Apache</message>
+        <message id="apachehttpserver">Versi&#243;n &httpd.major;.&httpd.minor;
+            del Servidor HTTP Apache</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
         <message id="search">Buscar en Google</message> <!-- search button -->
         <message id="index">&#205;ndice</message> <!-- deprecated -->
@@ -108,7 +108,7 @@
         <message id="apache">Apache</message>
         <message id="http-server">Servidor HTTP</message>
         <message id="documentation">Documentaci&#243;n</message>
-        <message id="version">Versi&#243;n 2.0</message>
+        <message id="version">Versi&#243;n &httpd.major;.&httpd.minor;</message>
 
         <!-- super menu -->
         <message id="modules">M&#243;dulos</message>

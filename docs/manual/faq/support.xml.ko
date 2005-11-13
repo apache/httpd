@@ -52,7 +52,7 @@
       module="core">ErrorLog</directive> 지시어를 참고하라.</dd>
 
       <dt><a
-      href="http://httpd.apache.org/docs-2.0/faq/">FAQ</a>를
+      href="http://httpd.apache.org/docs/&httpd.docs;/faq/">FAQ</a>를
       확인하라!</dt>
       <dd>아파치 웹사이트에서 항상 아파치 FAQ 최신판을 볼 수
       있다.</dd>

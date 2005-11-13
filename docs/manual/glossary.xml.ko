@@ -350,7 +350,7 @@ href="#uniformresourceidentifier">Uniform Resource
 Identifier</a>라고 하는 것의 일상적인 비공식 명칭이다. 보통 URL은
 <code>http</code>나 <code>https</code>같은 스킴(scheme), 호스트명,
 경로로 구성된다. 이 페이지의 URL은
-<code>http://httpd.apache.org/docs-2.0/glossary.html</code>이다.</dd>
+<code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>이다.</dd>
 
 <dt><a name="uniformresourceidentifier">Uniform Resource Identifier</a>
 <a name="URI">(URI)</a></dt>

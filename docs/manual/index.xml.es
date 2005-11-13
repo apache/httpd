@@ -23,7 +23,8 @@
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Documentaci&#243;n del Servidor HTTP Apache 2.0</title>
+<title>Documentaci&#243;n del Servidor HTTP Apache
+&httpd.major;.&httpd.minor;</title>
 
 <category id="release"><title>Notas de la Versi&#243;n</title> 
     <page href="new_features_2_0.html">Nuevas funcionalidades en

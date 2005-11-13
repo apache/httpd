@@ -25,7 +25,7 @@
 
 <summary>
 <p>이 페이지는 현재
-<a href="./">Apache HTTP Server Version 2.0 문서</a> 목록을
+<a href="./">Apache HTTP Server Version &httpd.major;.&httpd.minor; 문서</a> 목록을
 보여준다.</p>
 </summary>
 

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
-<!DOCTYPE messages [ <!ENTITY nbsp "&#160;"> ]>
+<!DOCTYPE messages SYSTEM "../lang.dtd">
 <!-- English revision: 1.5 -->
 
 <!--
@@ -88,7 +88,8 @@
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP サーバ</message>
-        <message id="apachehttpserver">Apache HTTP サーバ バージョン 2.0</message>
+        <message id="apachehttpserver">Apache HTTP サーバ
+            バージョン &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
         <message id="search">Google Search</message> <!-- search button -->
         <message id="index">索引</message> <!-- deprecated -->
@@ -98,7 +99,7 @@
         <message id="apache">Apache</message>
         <message id="http-server">HTTP サーバ</message>
         <message id="documentation">ドキュメンテーション</message>
-        <message id="version">バージョン 2.0</message>
+        <message id="version">バージョン &httpd.major;.&httpd.minor;</message>
 
         <!-- super menu -->
         <message id="modules">モジュール</message>

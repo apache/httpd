@@ -175,8 +175,9 @@
     <!-- (submit the original button and name) -->
     <input type="hidden" name="btnG" value="Google Search" />
 
-    <!-- including the exact phrase "Version 2.0" -->
-    <input type="hidden" value="{$message[@id='version']}" name="as_epq" />
+    <!-- including the exact phrase "Version major.minor" -->
+    <input type="hidden" value="{normalize-space($message[@id='version'])}"
+           name="as_epq" />
 
     <!-- with at least one of the words (none) -->
     <input type="hidden" value="" name="as_oq" />

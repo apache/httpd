@@ -1,7 +1,8 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 
 <!--
- Copyright 2002-2004 The Apache Software Foundation
+ Copyright 2002-2005 The Apache Software Foundation or its licensors,
+                     as applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -33,6 +34,11 @@
    "http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent">
 %HTMLspecial;
 
+<!-- HTTPD Version -->
+
+<!ENTITY % HTTPD-VERSION SYSTEM "version.ent">
+%HTTPD-VERSION;
+
 <!-- Generic tag entities -->
 
 <!ENTITY % inlinetags "em | strong | code | a | br | directive | module |
@@ -44,6 +50,8 @@ program | img | cite | q | dfn | var | transnote | glossary | phonetic">
 <!ENTITY % Block "(%blocktags;)*">
 <!ENTITY % Inline "(#PCDATA | %inlinetags;)*">
 <!ENTITY % BlockOrInline "(#PCDATA | %inlinetags; | %blocktags;)*">
+
+<!-- Common Elements -->
 
 <!ELEMENT title %Inline;>
 
@@ -175,7 +183,7 @@ program | img | cite | q | dfn | var | transnote | glossary | phonetic">
 <!-- The glossary element defines a special case of link. The referenced
      target is the name of an anchor within the glossary -->
 <!ELEMENT glossary %Inline;>
-<!ATTLIST glossary ref CDATA #REQUIRED>
+<!ATTLIST glossary ref CDATA #IMPLIED>
 
 <!-- The phonetic element should be used only within the glossary. It
      describes a pronounciation -->

@@ -29,7 +29,8 @@
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Докуменатция к HTTP серверу Apache версии 2.0</title>
+<title>Докуменатция к HTTP серверу Apache версии
+&httpd.major;.&httpd.minor;</title>
 
 <category id="release"><title>О версии 2.0</title>
     <page href="new_features_2_0.html">Обзор новых возможностей в Apache 2.0</page>

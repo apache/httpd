@@ -87,8 +87,8 @@
     <example>
       AddModuleInfo mod_auth.c 'See &lt;a \<br />
       <indent>
-        href="http://www.apache.org/docs-2.0/mod/mod_auth.html"&gt;\<br />
-        http://www.apache.org/docs-2.0/mod/mod_auth.html&lt;/a&gt;'
+        href="http://www.apache.org/docs/&httpd.docs;/mod/mod_auth.html"&gt;\<br />
+        http://www.apache.org/docs/&httpd.docs;/mod/mod_auth.html&lt;/a&gt;'
       </indent>
     </example>
 </usage>

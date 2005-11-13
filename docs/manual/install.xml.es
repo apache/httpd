@@ -338,8 +338,8 @@ directorios</title>
 
     <p>&#233;chele un vistazo al Manual de Apache que est&#225; en <a
     href="./">docs/manual/</a> o consulte en <a
-    href="http://httpd.apache.org/docs-2.0/"
-    >http://httpd.apache.org/docs-2.0/</a> la versi&#243;n m&#225;s
+    href="http://httpd.apache.org/docs/&httpd.docs;/"
+    >http://httpd.apache.org/docs/&httpd.docs;/</a> la versi&#243;n m&#225;s
     reciente de este manual y la Guia de Referencia de todas las <a
     href="mod/directives.html">directivas de configuraci&#243;n</a>
     disponibles.</p>

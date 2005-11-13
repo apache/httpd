@@ -319,7 +319,7 @@ $ tar xvf httpd-2_0_<em>NN</em>.tar
 
     <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
     または、<a
-    href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>
+    href="http://httpd.apache.org/docs/&httpd.docs;/">http://httpd.apache.org/docs/&httpd.docs;/</a>
     にあるマニュアル最新版、<a
     href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
 </section>

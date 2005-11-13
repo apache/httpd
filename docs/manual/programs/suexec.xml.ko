@@ -34,8 +34,8 @@
      다른 사용자가 쓰기권한을 가지면 안된다.</p>
 
      <p>suexec의 개념과 보안모델에 대한 정보는 suexec 문서를
-     (<a href="http://httpd.apache.org/docs-2.0/suexec.html"
-     >http://httpd.apache.org/docs-2.0/suexec.html</a>) 참고하라.</p>
+     (<a href="http://httpd.apache.org/docs/&httpd.docs;/suexec.html"
+     >http://httpd.apache.org/docs/&httpd.docs;/suexec.html</a>) 참고하라.</p>
 </summary>
 
 <section id="synopsis"><title>개요</title>

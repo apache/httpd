@@ -22,7 +22,7 @@
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Apache HTTP Server Version 2.0 문서</title>
+<title>Apache HTTP Server Version &httpd.major;.&httpd.minor; 문서</title>
 
 <category id="release"><title>발표문</title>
     <page href="new_features_2_0.html">버전 2.0의 새로운 기능</page>

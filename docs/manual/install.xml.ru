@@ -554,7 +554,8 @@
 
     <p>Руководство по использованию Apache вы можете найти либо по локальному
     адресу у себя на сервере <a href="./">docs/manual/</a>, либо на официальном
-    сайте Apache <a href="http://httpd.apache.org/docs-2.0/">http://httpd.apache.org/docs-2.0/</a>,
+    сайте Apache <a
+    href="http://httpd.apache.org/docs/&httpd.docs;/">http://httpd.apache.org/docs/&httpd.docs;/</a>,
     где опубликована самая последняя версия документации и вся необходимая справочная информация
     по всем возможным <a href="mod/directives.html">конфигурационным директивам</a>.</p>
 </section>

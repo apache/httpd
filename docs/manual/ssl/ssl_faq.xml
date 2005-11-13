@@ -923,8 +923,8 @@ for my core dump?</a></li>
 
     <dl>
     <dt>Answers in the User Manual's F.A.Q. List (this)</dt>
-    <dd><a href="http://httpd.apache.org/docs/2.1/ssl/ssl_faq.html">
-	http://httpd.apache.org/docs/2.1/ssl/ssl_faq.html</a><br />
+    <dd><a href="http://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html">
+	http://httpd.apache.org/docs/&httpd.docs;/ssl/ssl_faq.html</a><br />
 	First check the F.A.Q. (this text). If your problem is a common
 	one, it may have been answered several times before, and been included
 	in this doc.
