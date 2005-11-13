@@ -567,10 +567,14 @@
 
     <related>
       <modulelist>
+        <module>mod_logio</module>
+        <module>mod_log_forensic</module>
         <module>mod_cgi</module>
         <module>mod_rewrite</module>
       </modulelist>
       <directivelist>
+        <directive module="mod_log_config">LogFormat</directive>
+        <directive module="mod_log_forensic">ForensicLog</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mod_rewrite">RewriteLog</directive>
         <directive module="mod_rewrite">RewriteLogLevel</directive>
@@ -579,6 +583,25 @@
         <directive module="mod_cgi">ScriptLogLength</directive>
       </directivelist>
     </related>
+
+    <section>
+      <title>Logging actual bytes sent and recieved</title>
+
+      <p><module>mod_logio</module> adds in two additional
+         <directive module="mod_log_config">LogFormat</directive> fields
+         (%I and %O) that log the actual number of bytes received and sent
+         on the network.</p>
+    </section>
+
+    <section>
+      <title>Forensic Logging</title>
+
+      <p><module>mod_log_forensic</module> provides for forensic logging of
+         client requests. Logging is done before and after processing a
+         request, so the forensic log contains two log lines for each
+         request. The forensic logger is very strict with no customizations.
+         It can be an invaluable debugging and security tool.</p>
+    </section>
 
     <section id="pidfile">
       <title>PID File</title>
