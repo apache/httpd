@@ -24,9 +24,6 @@
 <a href="./ja/stopping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Dieses Dokument umfasst das Beenden und Neustarten des
     Apache auf Unix-ähnlichen Systemen. Anwender von Windows NT, 2000
@@ -40,7 +37,8 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#term">Beenden</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#graceful">Unterbrechungsfreier Neustart</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">Neustarten</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#race">Anhang: Signale und Wettkampfsituationen</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#gracefulstop">Rücksichtsvolles Beenden</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#race">Anhang: Signale und Wettlaufsituationen</a></li>
 </ul><h3>Siehe auch</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -68,10 +66,11 @@
 
     <p>Die zweite Methode, dem <code class="program"><a href="./programs/httpd.html">httpd</a></code>-Prozess zu
     signalisieren, ist die Verwendung der <code>-k</code>-Befehlszeilenoptionen
-    <code>stop</code>, <code>restart</code> und <code>graceful</code>, wie
-    unten beschrieben. Dies sind Argumente des <code class="program"><a href="./programs/httpd.html">httpd</a></code>-Programms, es wird jedoch
-    empfohlen, sie unter Verwendung des Steuerskripts <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> zu senden, welches diese
-    an <code class="program"><a href="./programs/httpd.html">httpd</a></code> durchreicht.</p>
+    <code>stop</code>, <code>restart</code>, <code>graceful</code> und
+    <code>graceful-stop</code>, wie unten beschrieben. Dies sind Argumente des
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code>-Programms, es wird jedoch empfohlen, sie unter
+    Verwendung des Steuerskripts <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> zu senden,
+    welches diese an <code class="program"><a href="./programs/httpd.html">httpd</a></code> durchreicht.</p>
 
     <p>Nachdem Sie <code class="program"><a href="./programs/httpd.html">httpd</a></code> signalisiert haben, können Sie
     dessen Fortschritt beobachten, indem Sie eingeben:</p>
@@ -111,12 +110,6 @@
     Konfigurations-<em>Generation</em>. Dieses beginnt sofort damit,
     neue Anfragen zu bedienen.</p>
 
-    <div class="note">Auf bestimmten Plattformen, welche kein <code>USR1</code>
-    für einen unterbrechungsfreien Neustart erlauben, kann ein
-    alternatives Signal verwendet werden (wie z.B.
-    <code>WINCH</code>). Der Befehl <code>apachectl graceful</code>
-    sendet das jeweils richtige Signal für Ihre Platform.</div>
-
     <p>Der Code ist dafür ausgelegt, stets die MPM-Direktiven
     zur Prozesssteuerung zu beachten, so dass die Anzahl der Prozesse
     und Threads, die zur Bedienung der Clients bereitstehen, während
@@ -128,7 +121,8 @@
     beschleunigen, entsprechend weitere erstellt. Auf diese Weise versucht
     der Code sowohl die Anzahl der Kinder entsprechend der Serverlast
     anzupassen als auch Ihre Wünsche hinsichtlich des Parameters
-    <code class="directive">StartServers</code> zu berücksichtigen.</p>
+    <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> zu
+    berücksichtigen.</p>
 
     <p>Benutzer von <code class="module"><a href="./mod/mod_status.html">mod_status</a></code> werden feststellen,
     dass die Serverstatistiken <strong>nicht</strong> auf Null
@@ -204,20 +198,74 @@
     wie Sie das vermeiden können.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="race" id="race">Anhang: Signale und Wettkampfsituationen</a></h2>
+<h2><a name="gracefulstop" id="gracefulstop">Rücksichtsvolles Beenden</a></h2>
+
+    <dl>
+        <dt>Signal: WINCH</dt>
+        <dd><code>apachectl -k gracefull stop</code></dd>
+    </dl>
+
+    <p>Das <code>WINCH</code>- oder <code>graceful-stop</code>-Signal
+    veranlasst den Elternprozess, die Kinder <em>anzuweisen</em>, sich nach
+    Abschluß ihrer momentan bearbeiteten Anfrage zu beenden (oder sich
+    sofort zu beenden, wenn sie gerade nichts bedienen). Der Elternprozess
+    entfernt dann sein <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> und
+    stellt das Lauschen auf allen Ports ein. Er läuft weiter und
+    beobachtet alle Kindprozesse, die noch Anfragen bearbeiten. Sobald alle
+    Kindprozesse fertig sind und beendet haben oder die mit <code class="directive"><a href="./mod/mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></code> definierte
+    Zeitüberschreitung erreicht wurde, beendet sich der Elternprozess
+    ebenfalls. Jedem verbliebenen Kindprozess wird beim Erreichen der
+    Zeitüberschreitung das <code>TERM</code>-Signal gesendet, um diesen
+    zum Beenden zu zwingen.</p>
+    
+    <p>Ein <code>TERM</code>-Signal beendet den Elternprozess und alle
+    Kindprozesse unverzüglich, wenn sie sich im "graceful"-Status
+    <span class="transnote">(<em>Anm.d.Ü.:</em> wörtl. "gnädiger" Status)</span> befinden. Da jedoch das
+    <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>dann schon gelöscht
+    ist, werden Sie dieses Signal nicht mehr mit <code>apachectl</code> oder
+    <code>httpd</code> senden können.</p>
+
+    <div class="note"><p>Das Signal <code>graceful-stop</code> ermöglicht Ihnen den
+    Betrieb mehrerer identisch konfigurierter Instanzen von <code>httpd</code>
+    zur gleichen Zeit. Dies ist eine mächtige Funktionalität bei der
+    Aufrüstung des Apache. Sie kann jedoch bei einigen Konfigurationen
+    auch zur gegenseitigen Blockierung und zu Wettlaufsituationen
+    führen.</p>
+
+    <p>Es ist besonders darauf zu achten, dass auf Festplatte gespeicherte
+    Dateien wie <code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> und <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> die Server-PID enthalten und ohne
+    Probleme nebeneinander existieren müssen. Wann auch immer eine
+    Konfigurationsanweisung, ein Drittanbieter-Modul oder ein persistentes
+    CGI-Skript irgend eine Sperre oder eine Statusdatei auf Festplatte
+    speichert, muss besonders darauf geachtet werden, dass mehrere
+    gleichzeitig laufende Instanzen von <code>httpd</code> sich nicht
+    gegenseitig die Dateien zerstören.</p>
+
+    <p>Sie sollten ebenfalls vorsichtig mit möglichen Wettlaufsituationen
+    sein, wie beispielsweise der Verwendung von weitergeleiteter
+    Protokollierung nach der Art von <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code>. Mehrere
+    gleichzeitig laufende Instanzen von <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code>, die
+    versuchen, die gleichen Protokolldateien zu rotieren, können sich
+    gegenseitig die Protokolldateien zerstören.</p></div>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="race" id="race">Anhang: Signale und Wettlaufsituationen</a></h2>
 
     <p>Vor der Version 1.2b9 des Apache existierten verschiedene
-    <em>Wettkampfsituationen</em> (race conditions), die den Neustart und
-    die Signale beeinflußt haben. (Eine einfache Beschreibung einer
-    Wettkampfsituation lautet: es ist ein zeitabhängiges Problem; wenn
-    etwas zum falschen Zeitpunkt erfolgt, wird es sich nicht wie erwartet
-    verhalten.) Bei Architekturen mit dem "richtigen" Funktionsumfang
-    haben wir so viele eliminiert wie wir nur konnten. Dennoch
-    sollte beachtet werden, dass noch immer Wettkampfsituationen auf
-    bestimmten Architekturen existieren.</p>
+    <em>Wettlaufsituationen</em> <span class="transnote">(<em>Anm.d.Ü.:</em> engl.: race
+    conditions)</span>, die den Neustart und die Signale beeinflußt
+    haben (einfach gesagt, eine Wettlaufstituation ist ein zeitabhängiges
+    Problem - wenn etwas zum falschen Zeitpunkt oder in der falschen
+    Reihenfolge geschieht, kommt es zu nicht erwünschten Ergebnissen.
+    Geschehen die gleichen Dinge zur rechten Zeit, ist alles in Ordnung).  Bei
+    Architekturen mit dem "richtigen" <span class="transnote">(<em>Anm.d.Ü.:</em> im Sinne von
+    "geeignet")</span> Funktionsumfang haben wir so viele eliminiert wie
+    wir nur konnten. Dennoch sollte beachtet werden, dass noch immer
+    Wettlaufsituationen auf bestimmten Architekturen existieren.</p>
 
     <p>Bei Architekturen, die ein <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code> auf Platte verwenden,
-    besteht die Gefahr, dass die Statustabelle beschädigt wird.
+    kann die Statustabelle beschädigt werden.
     Das kann zu "bind: Address already in use" ("bind: Adresse wird
     bereits verwendet", nach einem <code>HUP</code>) oder "long lost
     child came home!" ("Der verlorene Sohn ist heimgekehrt", nach einem
@@ -231,7 +279,7 @@
     die sie benötigen, die Dokumentation zu <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code>.</p>
 
     <p>Alle Architekturen haben in jedem Kindprozess eine kleine
-    Wettkampfsituation, welche die zweite und nachfolgende Anfragen
+    Wettlaufsituation, welche die zweite und nachfolgende Anfragen
     einer persistenten HTTP-Verbindung (KeepAlive) umfaßt. Der Prozess
     kann nach dem Lesen der Anfragezeile aber vor dem Lesen der Anfrage-Header
     enden. Es existiert eine Korrektur, die für 1.2 zu spät kam.
