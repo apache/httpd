@@ -43,16 +43,16 @@
 
   <section id="compile-time">
     <title>Compile-Time Configuration Changes</title>
-    <ul>
-    </ul>
+    <!-- <ul>
+    </ul> -->
 
   </section>
 
   <section id="run-time">
     <title>Run-Time Configuration Changes</title>
 
-    <ul>
-    </ul>
+    <!-- <ul>
+    </ul> -->
   </section>
 
   <section id="misc">

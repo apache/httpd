@@ -33,27 +33,26 @@
 
   <section id="core">
     <title>Core Enhancements</title>
-    <dl>
-
-    </dl>
+    <!-- <dl>
+    </dl> -->
   </section>
 
   <section id="module">
     <title>Module Enhancements</title>
-    <dl>
-    </dl>
+    <!-- <dl>
+    </dl> -->
 
   </section>
 
   <section id="programs">
     <title>Program Enhancements</title>
-    <dl>
-    </dl>
+    <!-- <dl>
+    </dl> -->
   </section>
 
   <section id="developer">
     <title>Module Developer Changes</title>
-    <dl>
-    </dl>
+    <!-- <dl>
+    </dl> -->
   </section>
 </manualpage>
