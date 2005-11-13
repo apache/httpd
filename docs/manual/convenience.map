@@ -42,6 +42,8 @@ anonymous_verifyemail	mod/mod_authn_anon.html#anonymous_verifyemail
 assignuserid	mod/perchild.html#assignuserid
 authbasicauthoritative	mod/mod_auth_basic.html#authbasicauthoritative
 authbasicprovider	mod/mod_auth_basic.html#authbasicprovider
+authdbduserpwquery	mod/mod_authn_dbd.html#authdbduserpwquery
+authdbduserrealmquery	mod/mod_authn_dbd.html#authdbduserrealmquery
 authdbmgroupfile	mod/mod_authz_dbm.html#authdbmgroupfile
 authdbmtype	mod/mod_authn_dbm.html#authdbmtype
 authdbmuserfile	mod/mod_authn_dbm.html#authdbmuserfile
@@ -162,6 +164,7 @@ filtertrace	mod/mod_filter.html#filtertrace
 forcelanguagepriority	mod/mod_negotiation.html#forcelanguagepriority
 forcetype	mod/core.html#forcetype
 forensiclog	mod/mod_log_forensic.html#forensiclog
+gracefulshutdowntimeout	mod/mpm_common.html#gracefulshutdowntimeout
 group	mod/mpm_common.html#group
 header	mod/mod_headers.html#header
 headername	mod/mod_autoindex.html#headername
@@ -270,6 +273,7 @@ proxyrequests	mod/mod_proxy.html#proxyrequests
 proxytimeout	mod/mod_proxy.html#proxytimeout
 proxyvia	mod/mod_proxy.html#proxyvia
 readmename	mod/mod_autoindex.html#readmename
+receivebuffersize	mod/mpm_common.html#receivebuffersize
 redirect	mod/mod_alias.html#redirect
 redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
@@ -369,6 +373,7 @@ threadlimit	mod/mpm_common.html#threadlimit
 threadsperchild	mod/mpm_common.html#threadsperchild
 threadstacksize	mod/mpm_common.html#threadstacksize
 timeout	mod/core.html#timeout
+traceenable	mod/core.html#traceenable
 transferlog	mod/mod_log_config.html#transferlog
 typesconfig	mod/mod_mime.html#typesconfig
 unsetenv	mod/mod_env.html#unsetenv
