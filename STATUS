@@ -115,15 +115,20 @@ CURRENT VOTES:
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Handling of non-trailing / config by non-default handler is broken
+
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105451701628081&w=2
+      http://mail-archives.apache.org/mod_mbox/httpd-dev/200306.mbox/%3c3EDAA6FE.7010109@stason.org%3e
+
       jerenkrantz asks: Why should this block a release?
       wsanchez agrees: this may be a change in behavior, but isn't
         clearly wrong, and even if so, it doesn't seem like a
         showstopper.
       pquerna agrees: Not a regression from 2.0.x.
 
-    * the edge connection filter cannot be removed 
+    * the edge connection filter cannot be removed
+
       http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=105366252619530&w=2
+      http://mail-archives.apache.org/mod_mbox/httpd-dev/200305.mbox/%3c3ECD9D29.7060406@stason.org%3e
 
       jerenkrantz asks: Why should this block a release?
 
