@@ -66,6 +66,21 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: ga
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ga--
+<!--#set var="TITLE" value="Content-Length m&iacute;cheart!"
+--><!--#include virtual="include/top.html" -->
+
+    Is g&aacute; go mbh&eacute;adh ceannt&aacute;isc 
+    <code>Content-Length</code>
+    bhail&iacute; do iarratais faoin modh 
+    <!--#echo var="REDIRECT_REQUEST_METHOD" -->.
+
+<!--#include virtual="include/bottom.html" -->
+----------ga--
+
+
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--

@@ -88,6 +88,24 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->   
 ----------fr--
 
+Content-language: ga
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ga--
+<!--#set var="CONTENT_LANGUAGE" value="ga"
+--><!--#set var="TITLE" value="Geata m&iacute;ceart!"
+--><!--#include virtual="include/top.html" -->
+
+    Fuair an seachfhreastala&iacute; freagairt neamhbhail&iacute;
+    &oacute; freastala&iacute; thuasthrutha.
+
+  <!--#if expr="$REDIRECT_ERROR_NOTES" -->
+    <!--#include virtual="include/spacer.html" -->
+    <!--#echo encoding="none" var="REDIRECT_ERROR_NOTES" -->
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ga--
+
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--

@@ -115,6 +115,29 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: ga
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ga--
+<!--#set var="TITLE" value="Rochtain neamh-cheadaithe!"
+--><!--#include virtual="include/top.html" -->
+
+  <!--#if expr="$REDIRECT_URL = /\/$/" -->
+
+    N&iacute;l cead agat rochtain a dh&eacute;anamh ar an comhadlann faoi
+    iarratais.  Is f&eacute;idir nach bhfuil aon doicim&eacute;ad
+    inn&eacute;acs, n&oacute; go bhfuil cosaint ar l&eacute;mh an comhadlann.
+
+  <!--#else -->
+
+    N&iacute;l cead agat rochtain a dh&eacute;anamh ar an aidhm faoi iarratais.
+    Is f&eacute;idir go bhfuil cosaint ar l&eacute; air, n&oacute; go bhfuil
+    s&eacute dol&eacute;ite don freastala&iacute;.
+    
+  <!--#endif -->
+
+<!--#include virtual="include/bottom.html" -->
+----------ga--
+
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
