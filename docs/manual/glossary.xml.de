@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 290805:332906 (outdated) -->
+<!-- English Revision: 332906 -->
 
 <!--
  Copyright 2004-2005 The Apache Software Foundation or its licensors,
@@ -495,8 +495,8 @@
       <glossary ref="uniformresourceidentifier">Uniform Resource
       Identifier</glossary>. URLs bestehen &uuml;blicherweise aus einem
       Schema wie <code>http</code> oder <code>https</code>, einem Hostnamen
-      und einem Pfad. Die URL f&uuml;r diese Seite ist
-      <code>http://httpd.apache.org/docs-2.1/glossary.html</code>.
+      und einem Pfad. Die URL f&uuml;r diese Seite k&ouml;nnte
+      <code>http://httpd.apache.org/docs-2.1/glossary.html</code> lauten.
     </dd>
 
     <dt><a name="uniformresourceidentifier"
