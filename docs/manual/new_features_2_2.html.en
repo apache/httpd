@@ -41,9 +41,12 @@
 
       <dt>Authn/Authz</dt>
       <dd>The bundled authentication and authorization modules have
-          been refactored.  There is a new authentication backend provider
-          scheme which greatly eases the construction of new authentication
-          backends.</dd>
+          been refactored.  The new <code class="module"><a href="./mod/mod_authn_alias.html">mod_authn_alias</a></code> module
+          can greatly simplify certain authentication configurations.
+          See <a href="#module">module name changes</a>, and
+          <a href="#developer">the developer changes</a> for more
+          information about how these changes affects users and module
+          writers.</dd>
 
       <dt>Caching</dt>
       <dd><code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code>, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code>, and
@@ -113,6 +116,17 @@
 <h2><a name="module" id="module">Module Enhancements</a></h2>
     
     <dl>
+      <dt>Authn/Authz</dt>
+      <dd>Modules in the aaa directory have been renamed and offer
+          better support for digest authentication.  For example, mod_auth
+          is now split into <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code> and
+          <code class="module"><a href="./mod/mod_auth_file.html">mod_auth_file</a></code>; mod_auth_dbm is now called
+          <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>; mod_access has been renamed
+          <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>.  There is also a new
+          <code class="module"><a href="./mod/mod_authn_alias.html">mod_authn_alias</a></code> module for simplifying
+          certain authentication configurations.
+      </dd>
+
       <dt><code class="module"><a href="./mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></dt>
       <dd>This module is a port of the 2.0 
           <code>mod_auth_ldap</code> module to the 2.2 <code>Authn/Authz</code> 
@@ -155,6 +169,19 @@
           symbols have been removed from <code>APR</code> and 
           <code>APR-Util</code>. For details, see the 
           <a href="http://apr.apache.org/">APR Website</a>.</dd>
+
+      <dt>Authn/Authz</dt>
+      <dd>The bundled authentication and authorization modules have
+          been renamed along the following lines:
+          <ul>
+          <li>mod_auth_*  -&gt; Modules that implement an HTTP authentication mechanism</li>
+          <li>mod_authn_* -&gt; Modules that provide a backend authentication provider</li>
+          <li>mod_authz_* -&gt; Modules that implement authorization (or access)</li>
+          <li>mod_authnz_*-&gt; Module that implements both authentication &amp; authorization</li>
+          </ul>
+          There is a new authentication backend provider
+          scheme which greatly eases the construction of new authentication
+          backends.</dd>
 
       <dt>Connection Error Logging</dt>
 

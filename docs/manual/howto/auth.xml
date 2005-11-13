@@ -31,11 +31,12 @@
     process by which someone is allowed to be where they want to
     go, or to have information that they want to have.</p>
 </summary>
-  
+
 <section id="related"><title>Related Modules and Directives</title>
     <related>
       <modulelist>
         <module>mod_auth_basic</module>
+        <module>mod_auth_digest</module>
         <module>mod_authn_file</module>
         <module>mod_authz_groupfile</module>
         <module>mod_authz_host</module>
@@ -47,6 +48,7 @@
         <directive module="core">AuthName</directive>
         <directive module="core">AuthType</directive>
         <directive module="mod_authn_file">AuthUserFile</directive>
+        <directive module="mod_auth_basic">AuthBasicProvider</directive>
         <directive module="mod_authz_host">Deny</directive>
         <directive module="core">Options</directive>
         <directive module="core">Require</directive>
@@ -357,7 +359,9 @@ do?</title>
 <section id="moreinformation"><title>More information</title>
     <p>You should also read the documentation for
     <module>mod_auth_basic</module> and <module>mod_authz_host</module> which
-    contain some more information about how this all works.</p>
+    contain some more information about how this all works.
+    <module>mod_authn_alias</module> can also help in simplifying certain
+    authentication configurations.</p>
 </section>
 
 </manualpage>
