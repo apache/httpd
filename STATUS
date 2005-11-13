@@ -57,12 +57,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * Missing Documentation on Upgrading from 2.0.x to 2.2.x.
-      Several modules were renamed (mod_imap, mod_access), and the AAA
-      rewrite added/changed some directives names.
-      jerenkrantz: I believe this is now resolved (or close enough to not
-                   be a valid showstopper).
-
 CURRENT VOTES:
 
     * httpd-std.conf and friends
