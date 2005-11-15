@@ -40,6 +40,7 @@ the basic operations of the server.</p>
         <directive module="core">ServerSignature</directive>
         <directive module="core">ServerTokens</directive>
         <directive module="core">UseCanonicalName</directive>
+        <directive module="core">UseCanonicalPhysicalPort</directive>
       </directivelist>
     </related>
 
@@ -50,8 +51,9 @@ the basic operations of the server.</p>
     <directive module="core">ServerTokens</directive> directive
     sets the value of the Server HTTP response header field.</p>
 
-    <p>The <directive module="core">ServerName</directive> and
-    <directive module="core">UseCanonicalName</directive>
+    <p>The <directive module="core">ServerName</directive>,
+    <directive module="core">UseCanonicalName</directive> and
+    <directive module="core">UseCanonicalPhysicalPort</directive>
     directives are used by the server to determine how to construct
     self-referential URLs. For example, when a client requests a
     directory, but does not include the trailing slash in the

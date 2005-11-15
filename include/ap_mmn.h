@@ -106,12 +106,13 @@
  * 20050708.0 (2.1.7-dev) Bump MODULE_MAGIC_COOKIE to "AP22"!
  * 20050708.1 (2.1.7-dev) add proxy request_status hook (minor)
  * 20051006.0 (2.1.8-dev) NET_TIME filter eliminated
+ * 20051115.0 (2.1.10-dev) Added use_canonical_phys_port to core_dir_config
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20051006
+#define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
