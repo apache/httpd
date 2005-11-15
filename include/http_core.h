@@ -482,6 +482,11 @@ typedef struct {
 #define USE_CANONICAL_NAME_UNSET (3)
     unsigned use_canonical_name : 2;
 
+#define USE_CANONICAL_PHYS_PORT_OFF   (0)
+#define USE_CANONICAL_PHYS_PORT_ON    (1)
+#define USE_CANONICAL_PHYS_PORT_UNSET (2)
+    unsigned use_canonical_phys_port : 2;
+
     /* since is_fnmatch(conf->d) was being called so frequently in
      * directory_walk() and its relatives, this field was created and
      * is set to the result of that call.

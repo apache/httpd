@@ -115,6 +115,7 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->accept_path_info = 3;
 
     conf->use_canonical_name = USE_CANONICAL_NAME_UNSET;
+    conf->use_canonical_phys_port = USE_CANONICAL_PHYS_PORT_UNSET;
 
     conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
     conf->satisfy = apr_palloc(a, sizeof(*conf->satisfy) * METHODS);
@@ -313,6 +314,10 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
 
     if (new->use_canonical_name != USE_CANONICAL_NAME_UNSET) {
         conf->use_canonical_name = new->use_canonical_name;
+    }
+
+    if (new->use_canonical_phys_port != USE_CANONICAL_PHYS_PORT_UNSET) {
+        conf->use_canonical_phys_port = new->use_canonical_phys_port;
     }
 
 #ifdef RLIMIT_CPU
@@ -888,9 +893,7 @@ AP_DECLARE(const char *) ap_get_remote_logname(request_rec *r)
 
 /* There are two options regarding what the "name" of a server is.  The
  * "canonical" name as defined by ServerName and Port, or the "client's
- * name" as supplied by a possible Host: header or full URI.  We never
- * trust the port passed in the client's headers, we always use the
- * port of the actual socket.
+ * name" as supplied by a possible Host: header or full URI.
  *
  * The DNS option to UseCanonicalName causes this routine to do a
  * reverse lookup on the local IP address of the connection and use
@@ -903,30 +906,38 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
 {
     conn_rec *conn = r->connection;
     core_dir_config *d;
+    const char *retval;
 
     d = (core_dir_config *)ap_get_module_config(r->per_dir_config,
                                                 &core_module);
 
-    if (d->use_canonical_name == USE_CANONICAL_NAME_ON) {
-        return r->server->server_hostname;
-    }
-
-    if (d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
-        if (conn->local_host == NULL) {
-            if (apr_getnameinfo(&conn->local_host,
+    switch (d->use_canonical_name) {
+        case USE_CANONICAL_NAME_ON:
+        case USE_CANONICAL_NAME_UNSET:
+            retval = r->server->server_hostname;
+            break;
+        case USE_CANONICAL_NAME_DNS:
+            if (conn->local_host == NULL) {
+                if (apr_getnameinfo(&conn->local_host,
                                 conn->local_addr, 0) != APR_SUCCESS)
-                conn->local_host = apr_pstrdup(conn->pool,
+                    conn->local_host = apr_pstrdup(conn->pool,
                                                r->server->server_hostname);
-            else {
-                ap_str_tolower(conn->local_host);
+                else {
+                    ap_str_tolower(conn->local_host);
+                }
             }
-        }
-
-        return conn->local_host;
+            retval = conn->local_host;
+            break;
+        case USE_CANONICAL_NAME_OFF:
+            retval = r->hostname ? r->hostname : r->server->server_hostname;
+            break;
+        default:
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                         "ap_get_server_name: Invalid UCN Option somehow");
+            retval = "localhost";
+            break;
     }
-
-    /* default */
-    return r->hostname ? r->hostname : r->server->server_hostname;
+    return retval;
 }
 
 /*
@@ -952,34 +963,44 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
     core_dir_config *d =
       (core_dir_config *)ap_get_module_config(r->per_dir_config, &core_module);
 
-    if (d->use_canonical_name == USE_CANONICAL_NAME_OFF
-        || d->use_canonical_name == USE_CANONICAL_NAME_DNS) {
-
-        /* With UseCanonicalName off Apache will form self-referential
-         * URLs using the hostname and port supplied by the client if
-         * any are supplied (otherwise it will use the canonical name).
-         */
-        port = r->parsed_uri.port_str ? r->parsed_uri.port :
-               r->connection->local_addr->port ? r->connection->local_addr->port :
-               r->server->port ? r->server->port :
-               ap_default_port(r);
+    switch (d->use_canonical_name) {
+        case USE_CANONICAL_NAME_OFF:
+        case USE_CANONICAL_NAME_DNS:
+            if (d->use_canonical_phys_port == USE_CANONICAL_PHYS_PORT_ON)
+                port = r->parsed_uri.port_str ? r->parsed_uri.port :
+                       r->connection->local_addr->port ? r->connection->local_addr->port :
+                       r->server->port ? r->server->port :
+                       ap_default_port(r);
+            else /* USE_CANONICAL_PHYS_PORT_OFF or USE_CANONICAL_PHYS_PORT_UNSET */
+                port = r->parsed_uri.port_str ? r->parsed_uri.port :
+                       r->server->port ? r->server->port :
+                       ap_default_port(r);
+            break;
+        case USE_CANONICAL_NAME_ON:
+        case USE_CANONICAL_NAME_UNSET:
+            /* With UseCanonicalName on (and in all versions prior to 1.3)
+             * Apache will use the hostname and port specified in the
+             * ServerName directive to construct a canonical name for the
+             * server. (If no port was specified in the ServerName
+             * directive, Apache uses the port supplied by the client if
+             * any is supplied, and finally the default port for the protocol
+             * used.
+             */
+            if (d->use_canonical_phys_port == USE_CANONICAL_PHYS_PORT_ON)
+                port = r->server->port ? r->server->port :
+                       r->connection->local_addr->port ? r->connection->local_addr->port :
+                       ap_default_port(r);
+            else /* USE_CANONICAL_PHYS_PORT_OFF or USE_CANONICAL_PHYS_PORT_UNSET */
+                port = r->server->port ? r->server->port :
+                       ap_default_port(r);
+            break;
+        default:
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                         "ap_get_server_port: Invalid UCN Option somehow");
+            port = ap_default_port(r);
+            break;
     }
-    else { /* d->use_canonical_name == USE_CANONICAL_NAME_ON */
 
-        /* With UseCanonicalName on (and in all versions prior to 1.3)
-         * Apache will use the hostname and port specified in the
-         * ServerName directive to construct a canonical name for the
-         * server. (If no port was specified in the ServerName
-         * directive, Apache uses the port supplied by the client if
-         * any is supplied, and finally the default port for the protocol
-         * used.
-         */
-        port = r->server->port ? r->server->port :
-               r->connection->local_addr->port ? r->connection->local_addr->port :
-               ap_default_port(r);
-    }
-
-    /* default */
     return port;
 }
 
@@ -2484,6 +2505,29 @@ static const char *set_use_canonical_name(cmd_parms *cmd, void *d_,
     return NULL;
 }
 
+static const char *set_use_canonical_phys_port(cmd_parms *cmd, void *d_,
+                                          const char *arg)
+{
+    core_dir_config *d = d_;
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
+
+    if (err != NULL) {
+        return err;
+    }
+
+    if (strcasecmp(arg, "on") == 0) {
+        d->use_canonical_phys_port = USE_CANONICAL_PHYS_PORT_ON;
+    }
+    else if (strcasecmp(arg, "off") == 0) {
+        d->use_canonical_phys_port = USE_CANONICAL_PHYS_PORT_OFF;
+    }
+    else {
+        return "parameter must be 'on' or 'off'";
+    }
+
+    return NULL;
+}
+
 
 static const char *include_config (cmd_parms *cmd, void *dummy,
                                    const char *name)
@@ -3259,6 +3303,9 @@ AP_INIT_FLAG("ContentDigest", set_content_md5, NULL, OR_OPTIONS,
 AP_INIT_TAKE1("UseCanonicalName", set_use_canonical_name, NULL,
   RSRC_CONF|ACCESS_CONF,
   "How to work out the ServerName : Port when constructing URLs"),
+AP_INIT_TAKE1("UseCanonicalPhysicalPort", set_use_canonical_phys_port, NULL,
+  RSRC_CONF|ACCESS_CONF,
+  "Whether to use the physical Port when constructing URLs"),
 /* TODO: RlimitFoo should all be part of mod_cgi, not in the core */
 /* TODO: ListenBacklog in MPM */
 AP_INIT_TAKE1("Include", include_config, NULL,
