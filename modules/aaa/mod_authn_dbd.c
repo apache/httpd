@@ -70,8 +70,7 @@ static const char *authn_dbd_prepare(cmd_parms *cmd, void *cfg, const char *quer
     authn_dbd_prepare_fn(cmd->server, query, label);
 
     /* save the label here for our own use */
-    *(void**)cfg = label;
-    return NULL;
+    return ap_set_string_slot(cmd, cfg, label);
 }
 static const command_rec authn_dbd_cmds[] =
 {
