@@ -2,10 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) Add in new UseCanonicalPhysicalPort directive, which controls
-     whether or not Apache will ever use the actual physical port
-     when constructing the canonical port number. [Jim Jagielski]
-
   *) Asynchronous write completion for the Event MPM.  [Brian Pane]
 
   *) Added an End-Of-Request bucket type.  The logging of a request and
@@ -36,6 +32,10 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.1.10
+
+  *) Add in new UseCanonicalPhysicalPort directive, which controls
+     whether or not Apache will ever use the actual physical port
+     when constructing the canonical port number. [Jim Jagielski]
 
   *) mod_dav: Fix a null pointer dereference in an error code path during the
      handling of MKCOL.
