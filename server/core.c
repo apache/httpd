@@ -913,7 +913,6 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
 
     switch (d->use_canonical_name) {
         case USE_CANONICAL_NAME_ON:
-        case USE_CANONICAL_NAME_UNSET:
             retval = r->server->server_hostname;
             break;
         case USE_CANONICAL_NAME_DNS:
@@ -929,6 +928,7 @@ AP_DECLARE(const char *) ap_get_server_name(request_rec *r)
             retval = conn->local_host;
             break;
         case USE_CANONICAL_NAME_OFF:
+        case USE_CANONICAL_NAME_UNSET:
             retval = r->hostname ? r->hostname : r->server->server_hostname;
             break;
         default:
@@ -966,6 +966,7 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
     switch (d->use_canonical_name) {
         case USE_CANONICAL_NAME_OFF:
         case USE_CANONICAL_NAME_DNS:
+        case USE_CANONICAL_NAME_UNSET:
             if (d->use_canonical_phys_port == USE_CANONICAL_PHYS_PORT_ON)
                 port = r->parsed_uri.port_str ? r->parsed_uri.port :
                        r->connection->local_addr->port ? r->connection->local_addr->port :
@@ -977,7 +978,6 @@ AP_DECLARE(apr_port_t) ap_get_server_port(const request_rec *r)
                        ap_default_port(r);
             break;
         case USE_CANONICAL_NAME_ON:
-        case USE_CANONICAL_NAME_UNSET:
             /* With UseCanonicalName on (and in all versions prior to 1.3)
              * Apache will use the hostname and port specified in the
              * ServerName directive to construct a canonical name for the

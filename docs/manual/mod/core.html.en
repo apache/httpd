@@ -3109,7 +3109,7 @@ requests</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configures how the server determines its own name and
 port</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UseCanonicalName On|Off|DNS</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>UseCanonicalName On</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>UseCanonicalName Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
