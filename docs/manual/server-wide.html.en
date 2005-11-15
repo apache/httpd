@@ -36,7 +36,7 @@ the basic operations of the server.</p>
 <h2><a name="identification" id="identification">Server Identification</a></h2>
     
 
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code></li><li><code class="directive"><a href="./mod/core.html#serversignature">ServerSignature</a></code></li><li><code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td /><td><ul><li><code class="directive"><a href="./mod/core.html#servername">ServerName</a></code></li><li><code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code></li><li><code class="directive"><a href="./mod/core.html#serversignature">ServerSignature</a></code></li><li><code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code></li><li><code class="directive"><a href="./mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code></li></ul></td></tr></table>
 
     <p>The <code class="directive"><a href="./mod/core.html#serveradmin">ServerAdmin</a></code> and
     <code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code> directives
@@ -45,8 +45,9 @@ the basic operations of the server.</p>
     <code class="directive"><a href="./mod/core.html#servertokens">ServerTokens</a></code> directive
     sets the value of the Server HTTP response header field.</p>
 
-    <p>The <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> and
-    <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code>
+    <p>The <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>,
+    <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code> and
+    <code class="directive"><a href="./mod/core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>
     directives are used by the server to determine how to construct
     self-referential URLs. For example, when a client requests a
     directory, but does not include the trailing slash in the

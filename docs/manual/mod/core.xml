@@ -2748,7 +2748,8 @@ itself</description>
     <code>Host:</code> header to match this virtual host.</p>
 
     <p>See the description of the
-    <directive module="core">UseCanonicalName</directive> directive for
+    <directive module="core">UseCanonicalName</directive> and
+    <directive module="core">UseCanonicalPhysicalPort</directive>directives for
     settings which determine whether self-referential URL's (e.g., by the
     <module>mod_dir</module> module) will refer to the
     specified port, or to the port number given in the client's request.
@@ -2760,6 +2761,7 @@ itself</description>
 <seealso><a href="../vhosts/">Apache virtual host
     documentation</a></seealso>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
+<seealso><directive module="core">UseCanonicalPhysicalPort</directive></seealso>
 <seealso><directive module="core">NameVirtualHost</directive></seealso>
 <seealso><directive module="core">ServerAlias</directive></seealso>
 </directivesynopsis>
@@ -3077,7 +3079,7 @@ requests</description>
 <description>Configures how the server determines its own name and
 port</description>
 <syntax>UseCanonicalName On|Off|DNS</syntax>
-<default>UseCanonicalName Off</default>
+<default>UseCanonicalName On</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 
@@ -3130,6 +3132,54 @@ port</description>
     then it should be just fine.</p>
     </note>
 </usage>
+<seealso><directive module="core">UseCanonicalPhysicalPort</directive></seealso>
+<seealso><directive module="core">ServerName</directive></seealso>
+<seealso><directive module="mpm_common">Listen</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UseCanonicalPhysicalPort</name>
+<description>Configures how the server determines its own name and
+port</description>
+<syntax>UseCanonicalPhysicalPort On|Off</syntax>
+<default>UseCanonicalPhysicalPort Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>In many situations Apache must construct a <em>self-referential</em>
+    URL -- that is, a URL that refers back to the same server. With
+    <code>UseCanonicalPhysicalPort On</code> Apache will, when
+    constructing the canonical port for the server to honor
+    the <directive module="core">UseCanonicalName</directive> directive,
+    provide the actual physical port number being used by this request
+    as a potential port. With <code>UseCanonicalPhysicalPort Off</code>
+    Apache will not ever use the actual physical port number, instead
+    relying on all configured information to construct a valid port number.</p>
+
+    <note><title>Note</title>
+    <p>The ordering of when the physical port is used is as follows:<br /><br />
+     <code>UseCanonicalName On</code>
+     <ul>
+      <li>Port provided in <code>Servername</code></li>
+      <li>Physical port</li>
+      <li>Default port</li>
+     </ul>
+     <code>UseCanonicalName Off | DNS</code>
+     <ul>
+      <li>Parsed port from <code>Host:</code> header</li>
+      <li>Physical port</li>
+      <li>Port provided in <code>Servername</code></li>
+      <li>Default port</li>
+     </ul>
+    </p>
+    
+    <p>With <code>UseCanonicalPhysicalPort Off</code>, the
+    physical ports are removed from the ordering.</p>
+    </note>
+
+</usage>
+<seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><directive module="core">ServerName</directive></seealso>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
 </directivesynopsis>
