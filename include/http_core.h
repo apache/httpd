@@ -549,6 +549,12 @@ typedef struct {
     unsigned int enable_sendfile : 2;  /* files in this dir can be mmap'ed */
     unsigned int allow_encoded_slashes : 1; /* URLs may contain %2f w/o being
                                              * pitched indiscriminately */
+
+#define USE_CANONICAL_PHYS_PORT_OFF   (0)
+#define USE_CANONICAL_PHYS_PORT_ON    (1)
+#define USE_CANONICAL_PHYS_PORT_UNSET (2)
+    unsigned use_canonical_phys_port : 2;
+
 } core_dir_config;
 
 /* Per-server core configuration */
