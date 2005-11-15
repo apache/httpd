@@ -278,7 +278,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <example>$ make</example>
 
     <p>Please be patient here, since a base configuration takes
-    serveral minutes to compile and the time will vary widely
+    several minutes to compile and the time will vary widely
     depending on your hardware and the number of modules that you
     have enabled.</p> 
 </section>
