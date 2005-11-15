@@ -57,8 +57,9 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * UseCanonicalName changes between 2.0 and 2.1/2.2. A patch has
-      been proposed to allow for both behaviors.
+    * UseCanonicalName changes between 2.0 and 2.1/2.2. httpd-trunk
+      (r344369) includes a new directive (UseCanonicalPhysicalPort)
+      which resolves this.
 
 CURRENT VOTES:
 
