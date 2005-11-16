@@ -27,7 +27,7 @@
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>filter_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_filter.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.1 and higher</td></tr></table>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Version 2.1 and later</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module enables smart, context-sensitive configuration of
@@ -220,7 +220,7 @@
     content filter modules. This is work-in-progress; the
     <code class="directive"><a href="#filterprotocol">FilterProtocol</a></code> implements
     some of this functionality for back-compatibility with Apache 2.0
-    modules.  For httpd 2.1 and up, the
+    modules.  For httpd 2.1 and later, the
     <code>ap_register_output_filter_protocol</code> and
     <code>ap_filter_protocol</code> API enables filter modules to
     declare their own behaviour.</p>

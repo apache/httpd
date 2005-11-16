@@ -3190,7 +3190,7 @@ port</td></tr>
 
     <div class="note"><h3>Note</h3>
     <p>The ordering of when the physical port is used is as follows:<br /><br />
-     <code>UseCanonicalName On</code>
+     <code>UseCanonicalName On</code></p>
      <ul>
       <li>Port provided in <code>Servername</code></li>
       <li>Physical port</li>
@@ -3203,7 +3203,6 @@ port</td></tr>
       <li>Port provided in <code>Servername</code></li>
       <li>Default port</li>
      </ul>
-    </p>
     
     <p>With <code>UseCanonicalPhysicalPort Off</code>, the
     physical ports are removed from the ordering.</p>
