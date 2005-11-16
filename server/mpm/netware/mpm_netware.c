@@ -884,7 +884,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     apr_pool_create(&pmain, pconf);
     ap_run_child_init(pmain, ap_server_conf);
 
-    if (ap_threads_max_free < ap_threads_min_free + 1)	/* Don't thrash... */
+    if (ap_threads_max_free < ap_threads_min_free + 1)  /* Don't thrash... */
         ap_threads_max_free = ap_threads_min_free + 1;
     request_count = 0;
 
@@ -1282,10 +1282,10 @@ AP_INIT_TAKE1("MaxThreads", set_thread_limit, NULL, RSRC_CONF,
 module AP_MODULE_DECLARE_DATA mpm_netware_module = {
     MPM20_MODULE_STUFF,
     netware_rewrite_args,   /* hook to run before apache parses args */
-    NULL,			        /* create per-directory config structure */
-    NULL,			        /* merge per-directory config structures */
-    NULL,			        /* create per-server config structure */
-    NULL,			        /* merge per-server config structures */
+    NULL,                   /* create per-directory config structure */
+    NULL,                   /* merge per-directory config structures */
+    NULL,                   /* create per-server config structure */
+    NULL,                   /* merge per-server config structures */
     netware_mpm_cmds,       /* command apr_table_t */
     netware_mpm_hooks,      /* register hooks */
 };

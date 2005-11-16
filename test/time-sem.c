@@ -467,7 +467,7 @@ static void *get_shared_mem(apr_size_t size)
     }
 #endif
 
-#define BADSHMAT	((void *)(-1))
+#define BADSHMAT  ((void *)(-1))
     if ((result = shmat(shmid, 0, 0)) == BADSHMAT) {
         perror("shmat");
     }
@@ -478,12 +478,12 @@ static void *get_shared_mem(apr_size_t size)
     if (shmctl(shmid, IPC_RMID, NULL) != 0) {
         perror("shmctl(IPC_RMID)");
     }
-    if (result == BADSHMAT)	/* now bailout */
+    if (result == BADSHMAT)  /* now bailout */
         exit(1);
 
 #ifdef MOVEBREAK
     if (obrk == (char *) -1)
-        return;			/* nothing else to do */
+        return;  /* nothing else to do */
     if (sbrk(-(MOVEBREAK)) == (char *) -1) {
         perror("sbrk 2");
     }
@@ -496,9 +496,9 @@ static void *get_shared_mem(apr_size_t size)
 /* don't ask */
 #define _P __P
 #include <sched.h>
-#define YIELD	sched_yield()
+#define YIELD  sched_yield()
 #else
-#define YIELD	do { struct timeval zero; zero.tv_sec = zero.tv_usec = 0; select(0,0,0,0,&zero); } while(0)
+#define YIELD  do { struct timeval zero; zero.tv_sec = zero.tv_usec = 0; select(0,0,0,0,&zero); } while(0)
 #endif
 
 void main (int argc, char **argv)

@@ -108,7 +108,7 @@ typedef struct {
     apr_mmap_t *mm;
 #endif
     char mtimestr[APR_RFC822_DATE_LEN];
-    char sizestr[21];	/* big enough to hold any 64-bit file size + null */
+    char sizestr[21];   /* big enough to hold any 64-bit file size + null */
 } a_file;
 
 typedef struct {

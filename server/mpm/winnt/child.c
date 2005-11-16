@@ -20,8 +20,8 @@
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
-#include "http_config.h"	/* for read_config */
-#include "http_core.h"		/* for get_remote_host */
+#include "http_config.h"  /* for read_config */
+#include "http_core.h"    /* for get_remote_host */
 #include "http_connection.h"
 #include "apr_portable.h"
 #include "apr_thread_proc.h"

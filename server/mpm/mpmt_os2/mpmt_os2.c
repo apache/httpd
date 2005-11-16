@@ -47,7 +47,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "http_config.h"
-#include "http_core.h"		/* for get_remote_host */
+#include "http_core.h"  /* for get_remote_host */
 #include "http_connection.h"
 #include "mpm.h"
 #include "ap_mpm.h"
@@ -70,7 +70,7 @@
 #endif
 
 server_rec *ap_server_conf;
-static apr_pool_t *pconf = NULL;		/* Pool for config stuff */
+static apr_pool_t *pconf = NULL;  /* Pool for config stuff */
 static const char *ap_pid_fname=NULL;
 
 /* Config globals */
@@ -567,11 +567,11 @@ AP_INIT_TAKE1("ScoreBoardFile", ignore_cmd, NULL, RSRC_CONF, \
 
 module AP_MODULE_DECLARE_DATA mpm_mpmt_os2_module = {
     MPM20_MODULE_STUFF,
-    NULL,                       /* hook to run before apache parses args */
-    NULL,			/* create per-directory config structure */
-    NULL,			/* merge per-directory config structures */
-    NULL,			/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    mpmt_os2_cmds,		/* command apr_table_t */
-    mpmt_os2_hooks,		/* register_hooks */
+    NULL,            /* hook to run before apache parses args */
+    NULL,            /* create per-directory config structure */
+    NULL,            /* merge per-directory config structures */
+    NULL,            /* create per-server config structure */
+    NULL,            /* merge per-server config structures */
+    mpmt_os2_cmds,   /* command apr_table_t */
+    mpmt_os2_hooks,  /* register_hooks */
 };

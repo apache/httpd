@@ -20,8 +20,8 @@
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
-#include "http_config.h"	/* for read_config */
-#include "http_core.h"		/* for get_remote_host */
+#include "http_config.h" /* for read_config */
+#include "http_core.h"   /* for get_remote_host */
 #include "http_connection.h"
 #include "apr_portable.h"
 #include "apr_thread_proc.h"
@@ -47,8 +47,8 @@ extern apr_shm_t *ap_scoreboard_shm;
 server_rec *ap_server_conf;
 
 /* Definitions of WINNT MPM specific config globals */
-static HANDLE shutdown_event;	/* used to signal the parent to shutdown */
-static HANDLE restart_event;	/* used to signal the parent to restart */
+static HANDLE shutdown_event;  /* used to signal the parent to shutdown */
+static HANDLE restart_event;   /* used to signal the parent to restart */
 
 static char ap_coredump_dir[MAX_STRING_LEN];
 
@@ -1712,13 +1712,13 @@ static void winnt_hooks(apr_pool_t *p)
 
 AP_MODULE_DECLARE_DATA module mpm_winnt_module = {
     MPM20_MODULE_STUFF,
-    winnt_rewrite_args,         /* hook to run before apache parses args */
-    NULL,			/* create per-directory config structure */
-    NULL,			/* merge per-directory config structures */
-    NULL,			/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    winnt_cmds,		        /* command apr_table_t */
-    winnt_hooks 		/* register_hooks */
+    winnt_rewrite_args,    /* hook to run before apache parses args */
+    NULL,                  /* create per-directory config structure */
+    NULL,                  /* merge per-directory config structures */
+    NULL,                  /* create per-server config structure */
+    NULL,                  /* merge per-server config structures */
+    winnt_cmds,            /* command apr_table_t */
+    winnt_hooks            /* register_hooks */
 };
 
 #endif /* def WIN32 */

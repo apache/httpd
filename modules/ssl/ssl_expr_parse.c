@@ -274,22 +274,22 @@ static int ssl_expr_yygrowstack()
 #if defined(__cplusplus) || __STDC__
 #define YYPARSE_PARAM_ARG void
 #define YYPARSE_PARAM_DECL
-#else	/* ! ANSI-C/C++ */
+#else  /* ! ANSI-C/C++ */
 #define YYPARSE_PARAM_ARG
 #define YYPARSE_PARAM_DECL
-#endif	/* ANSI-C/C++ */
-#else	/* YYPARSE_PARAM */
+#endif  /* ANSI-C/C++ */
+#else   /* YYPARSE_PARAM */
 #ifndef YYPARSE_PARAM_TYPE
 #define YYPARSE_PARAM_TYPE void *
 #endif
 #if defined(__cplusplus) || __STDC__
 #define YYPARSE_PARAM_ARG YYPARSE_PARAM_TYPE YYPARSE_PARAM
 #define YYPARSE_PARAM_DECL
-#else	/* ! ANSI-C/C++ */
+#else  /* ! ANSI-C/C++ */
 #define YYPARSE_PARAM_ARG YYPARSE_PARAM
 #define YYPARSE_PARAM_DECL YYPARSE_PARAM_TYPE YYPARSE_PARAM;
-#endif	/* ANSI-C/C++ */
-#endif	/* ! YYPARSE_PARAM */
+#endif  /* ANSI-C/C++ */
+#endif  /* ! YYPARSE_PARAM */
 
 int
 ssl_expr_yyparse (YYPARSE_PARAM_ARG)
