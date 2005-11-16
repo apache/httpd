@@ -25,7 +25,7 @@
 #include "http_config.h"
 #include "http_connection.h"
 #include "http_core.h"
-#include "http_protocol.h"	/* For index_of_response().  Grump. */
+#include "http_protocol.h"   /* For index_of_response().  Grump. */
 #include "http_request.h"
 
 #include "util_filter.h"
@@ -250,10 +250,10 @@ static void register_hooks(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA http_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* create per-directory config structure */
-    NULL,			/* merge per-directory config structures */
-    NULL,			/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    http_cmds,			/* command apr_table_t */
-    register_hooks		/* register hooks */
+    NULL,              /* create per-directory config structure */
+    NULL,              /* merge per-directory config structures */
+    NULL,              /* create per-server config structure */
+    NULL,              /* merge per-server config structures */
+    http_cmds,         /* command apr_table_t */
+    register_hooks     /* register hooks */
 };

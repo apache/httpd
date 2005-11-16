@@ -119,52 +119,52 @@
 #define MAXMIMESTRING        256
 
 /* HOWMANY must be at least 4096 to make gzip -dcq work */
-#define HOWMANY	4096
+#define HOWMANY  4096
 /* SMALL_HOWMANY limits how much work we do to figure out text files */
 #define SMALL_HOWMANY 1024
-#define MAXDESC    50		/* max leng of text description */
-#define MAXstring 64		/* max leng of "string" types */
+#define MAXDESC    50   /* max leng of text description */
+#define MAXstring 64    /* max leng of "string" types */
 
 struct magic {
-    struct magic *next;		/* link to next entry */
-    int lineno;			/* line number from magic file */
+    struct magic *next;     /* link to next entry */
+    int lineno;             /* line number from magic file */
 
     short flag;
-#define INDIR    1		/* if '>(...)' appears,  */
-#define    UNSIGNED 2		/* comparison is unsigned */
-    short cont_level;		/* level of ">" */
+#define INDIR  1            /* if '>(...)' appears,  */
+#define UNSIGNED 2          /* comparison is unsigned */
+    short cont_level;       /* level of ">" */
     struct {
-        char type;		/* byte short long */
-        long offset;		/* offset from indirection */
+        char type;          /* byte short long */
+        long offset;        /* offset from indirection */
     } in;
-    long offset;		/* offset to magic number */
-    unsigned char reln;		/* relation (0=eq, '>'=gt, etc) */
-    char type;			/* int, short, long or string. */
-    char vallen;		/* length of string value, if any */
-#define BYTE    1
-#define SHORT    2
-#define LONG    4
+    long offset;            /* offset to magic number */
+    unsigned char reln;     /* relation (0=eq, '>'=gt, etc) */
+    char type;              /* int, short, long or string. */
+    char vallen;            /* length of string value, if any */
+#define BYTE      1
+#define SHORT     2
+#define LONG      4
 #define STRING    5
-#define DATE    6
-#define BESHORT    7
+#define DATE      6
+#define BESHORT   7
 #define BELONG    8
 #define BEDATE    9
-#define LESHORT    10
-#define LELONG    11
-#define LEDATE    12
+#define LESHORT  10
+#define LELONG   11
+#define LEDATE   12
     union VALUETYPE {
         unsigned char b;
         unsigned short h;
         unsigned long l;
         char s[MAXstring];
-        unsigned char hs[2];	/* 2 bytes of a fixed-endian "short" */
-        unsigned char hl[4];	/* 2 bytes of a fixed-endian "long" */
-    } value;			/* either number or string */
-    unsigned long mask;		/* mask before comparison with value */
-    char nospflag;		/* supress space character */
+        unsigned char hs[2];   /* 2 bytes of a fixed-endian "short" */
+        unsigned char hl[4];   /* 2 bytes of a fixed-endian "long" */
+    } value;                   /* either number or string */
+    unsigned long mask;        /* mask before comparison with value */
+    char nospflag;             /* supress space character */
 
     /* NOTE: this string is suspected of overrunning - find it! */
-    char desc[MAXDESC];		/* description */
+    char desc[MAXDESC];        /* description */
 };
 
 /*
@@ -207,7 +207,7 @@ union record {
 };
 
 /* The magic field is filled with this if uname and gname are valid. */
-#define    TMAGIC        "ustar  "	/* 7 chars and a null */
+#define    TMAGIC        "ustar  "   /* 7 chars and a null */
 
 /*
  * file-function prototypes
@@ -246,30 +246,30 @@ static int fsmagic(request_rec *r, const char *fn);
 
 /* these types are used to index the apr_table_t 'types': keep em in sync! */
 /* HTML inserted in first because this is a web server module now */
-#define L_HTML    0		/* HTML */
-#define L_C       1		/* first and foremost on UNIX */
-#define L_FORT    2		/* the oldest one */
-#define L_MAKE    3		/* Makefiles */
-#define L_PLI     4		/* PL/1 */
-#define L_MACH    5		/* some kinda assembler */
-#define L_ENG     6		/* English */
-#define L_PAS     7		/* Pascal */
-#define L_MAIL    8		/* Electronic mail */
-#define L_NEWS    9		/* Usenet Netnews */
+#define L_HTML    0   /* HTML */
+#define L_C       1   /* first and foremost on UNIX */
+#define L_FORT    2   /* the oldest one */
+#define L_MAKE    3   /* Makefiles */
+#define L_PLI     4   /* PL/1 */
+#define L_MACH    5   /* some kinda assembler */
+#define L_ENG     6   /* English */
+#define L_PAS     7   /* Pascal */
+#define L_MAIL    8   /* Electronic mail */
+#define L_NEWS    9   /* Usenet Netnews */
 
 static char *types[] =
 {
-    "text/html",		/* HTML */
-    "text/plain",		/* "c program text", */
-    "text/plain",		/* "fortran program text", */
-    "text/plain",		/* "make commands text", */
-    "text/plain",		/* "pl/1 program text", */
-    "text/plain",		/* "assembler program text", */
-    "text/plain",		/* "English text", */
-    "text/plain",		/* "pascal program text", */
-    "message/rfc822",		/* "mail text", */
-    "message/news",		/* "news text", */
-    "application/binary",	/* "can't happen error on names.h/types", */
+    "text/html",             /* HTML */
+    "text/plain",            /* "c program text", */
+    "text/plain",            /* "fortran program text", */
+    "text/plain",            /* "make commands text", */
+    "text/plain",            /* "pl/1 program text", */
+    "text/plain",            /* "assembler program text", */
+    "text/plain",            /* "English text", */
+    "text/plain",            /* "pascal program text", */
+    "message/rfc822",        /* "mail text", */
+    "message/news",          /* "news text", */
+    "application/binary",    /* "can't happen error on names.h/types", */
     0
 };
 
@@ -312,7 +312,7 @@ static struct names {
     },
     {
         "/*", L_C
-    },				/* must precede "The", "the", etc. */
+    },               /* must precede "The", "the", etc. */
     {
         "#include", L_C
     },
@@ -443,8 +443,8 @@ static struct names {
  */
 
 typedef struct magic_rsl_s {
-    char *str;			/* string, possibly a fragment */
-    struct magic_rsl_s *next;	/* pointer to next fragment */
+    char *str;                  /* string, possibly a fragment */
+    struct magic_rsl_s *next;   /* pointer to next fragment */
 } magic_rsl;
 
 /*
@@ -453,16 +453,16 @@ typedef struct magic_rsl_s {
 
 /* per-server info */
 typedef struct {
-    const char *magicfile;		/* where magic be found */
-    struct magic *magic;	/* head of magic config list */
+    const char *magicfile;    /* where magic be found */
+    struct magic *magic;      /* head of magic config list */
     struct magic *last;
 } magic_server_config_rec;
 
 /* per-request info */
 typedef struct {
-    magic_rsl *head;		/* result string list */
+    magic_rsl *head;          /* result string list */
     magic_rsl *tail;
-    unsigned suf_recursion;	/* recursion depth in suffix check */
+    unsigned suf_recursion;   /* recursion depth in suffix check */
 } magic_req_rec;
 
 /*
@@ -612,11 +612,11 @@ static int magic_rsl_putchar(request_rec *r, char c)
 /* allocate and copy a contiguous string from a result string list */
 static char *rsl_strdup(request_rec *r, int start_frag, int start_pos, int len)
 {
-    char *result;		/* return value */
-    int cur_frag,		/* current fragment number/counter */
-        cur_pos,		/* current position within fragment */
-        res_pos;		/* position in result string */
-    magic_rsl *frag;		/* list-traversal pointer */
+    char *result;       /* return value */
+    int cur_frag,       /* current fragment number/counter */
+        cur_pos,        /* current position within fragment */
+        res_pos;        /* position in result string */
+    magic_rsl *frag;    /* list-traversal pointer */
     magic_req_rec *req_dat = (magic_req_rec *)
                     ap_get_module_config(r->request_config, &mime_magic_module);
 
@@ -664,16 +664,16 @@ typedef enum {
 /* process the RSL and set the MIME info in the request record */
 static int magic_rsl_to_request(request_rec *r)
 {
-    int cur_frag,		/* current fragment number/counter */
-        cur_pos,		/* current position within fragment */
-        type_frag,		/* content type starting point: fragment */
-        type_pos,		/* content type starting point: position */
-        type_len,		/* content type length */
-        encoding_frag,		/* content encoding starting point: fragment */
-        encoding_pos,		/* content encoding starting point: position */
-        encoding_len;		/* content encoding length */
+    int cur_frag,         /* current fragment number/counter */
+        cur_pos,          /* current position within fragment */
+        type_frag,        /* content type starting point: fragment */
+        type_pos,         /* content type starting point: position */
+        type_len,         /* content type length */
+        encoding_frag,    /* content encoding starting point: fragment */
+        encoding_pos,     /* content encoding starting point: position */
+        encoding_len;     /* content encoding length */
 
-    magic_rsl *frag;		/* list-traversal pointer */
+    magic_rsl *frag;      /* list-traversal pointer */
     rsl_states state;
 
     magic_req_rec *req_dat = (magic_req_rec *)
@@ -825,8 +825,8 @@ static int magic_rsl_to_request(request_rec *r)
 static int magic_process(request_rec *r)
 {
     apr_file_t *fd = NULL;
-    unsigned char buf[HOWMANY + 1];	/* one extra for terminating '\0' */
-    apr_size_t nbytes = 0;		/* number of bytes read from a datafile */
+    unsigned char buf[HOWMANY + 1];  /* one extra for terminating '\0' */
+    apr_size_t nbytes = 0;           /* number of bytes read from a datafile */
     int result;
 
     /*
@@ -865,7 +865,7 @@ static int magic_process(request_rec *r)
         return DECLINED;
     }
     else {
-        buf[nbytes++] = '\0';	/* null-terminate it */
+        buf[nbytes++] = '\0';  /* null-terminate it */
         result = tryit(r, buf, nbytes, 1);
         if (result != OK) {
             return result;
@@ -1090,12 +1090,12 @@ static int parse(server_rec *serv, apr_pool_t *p, char *l, int lineno)
     m->lineno = lineno;
 
     while (*l == '>') {
-        ++l;			/* step over */
+        ++l;  /* step over */
         m->cont_level++;
     }
 
     if (m->cont_level != 0 && *l == '(') {
-        ++l;			/* step over */
+        ++l;  /* step over */
         m->flag |= INDIR;
     }
 
@@ -1250,7 +1250,7 @@ static int parse(server_rec *serv, apr_pool_t *p, char *l, int lineno)
         if (*l == 'x' && apr_isspace(l[1])) {
             m->reln = *l;
             ++l;
-            goto GetDesc;	/* Bill The Cat */
+            goto GetDesc;  /* Bill The Cat */
         }
         m->reln = '=';
         break;
@@ -1370,10 +1370,10 @@ static char *getstr(server_rec *serv, register char *s, register char *p,
             case '6':
             case '7':
                 val = c - '0';
-                c = *s++;	/* try for 2 */
+                c = *s++;  /* try for 2 */
                 if (c >= '0' && c <= '7') {
                     val = (val << 3) | (c - '0');
-                    c = *s++;	/* try for 3 */
+                    c = *s++;  /* try for 3 */
                     if (c >= '0' && c <= '7')
                         val = (val << 3) | (c - '0');
                     else
@@ -1386,8 +1386,8 @@ static char *getstr(server_rec *serv, register char *s, register char *p,
 
                 /* \x and up to 3 hex digits */
             case 'x':
-                val = 'x';	/* Default if no digits */
-                c = hextoint(*s++);	/* Get next char */
+                val = 'x';            /* Default if no digits */
+                c = hextoint(*s++);   /* Get next char */
                 if (c >= 0) {
                     val = c;
                     c = hextoint(*s++);
@@ -1684,13 +1684,13 @@ static int match(request_rec *r, unsigned char *s, apr_size_t nbytes)
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                     MODNAME ": matched after %d rules", rule_counter);
 #endif
-        return 1;		/* all through */
+        return 1;  /* all through */
     }
 #if MIME_MAGIC_DEBUG
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                 MODNAME ": failed after %d rules", rule_counter);
 #endif
-    return 0;			/* no match at all */
+    return 0;  /* no match at all */
 }
 
 static void mprint(request_rec *r, union VALUETYPE *p, struct magic *m)
@@ -1977,7 +1977,7 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
 {
     int has_escapes = 0;
     unsigned char *s;
-    char nbuf[HOWMANY + 1];	/* one extra for terminating '\0' */
+    char nbuf[HOWMANY + 1];  /* one extra for terminating '\0' */
     char *token;
     register struct names *p;
     int small_nbytes;
@@ -1994,7 +1994,7 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
         unsigned char *tp = buf + 1;
 
         while (apr_isspace(*tp))
-            ++tp;		/* skip leading whitespace */
+            ++tp;  /* skip leading whitespace */
         if ((apr_isalnum(*tp) || *tp == '\\') &&
              (apr_isalnum(*(tp + 1)) || *tp == '"')) {
             magic_rsl_puts(r, "application/x-troff");
@@ -2015,7 +2015,7 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
     s[small_nbytes] = '\0';
     has_escapes = (memchr(s, '\033', small_nbytes) != NULL);
     while ((token = apr_strtok((char *) s, " \t\n\r\f", &strtok_state)) != NULL) {
-        s = NULL;		/* make apr_strtok() keep on tokin' */
+        s = NULL;  /* make apr_strtok() keep on tokin' */
         for (p = names; p < names + NNAMES; p++) {
             if (STREQ(p->name, token)) {
                 magic_rsl_puts(r, types[p->type]);
@@ -2053,7 +2053,7 @@ static struct {
     apr_size_t maglen;
     char *argv[3];
     int silent;
-    char *encoding;	/* MUST be lowercase */
+    char *encoding;  /* MUST be lowercase */
 } compr[] = {
 
     /* we use gzip here rather than uncompress because we have to pass
@@ -2252,12 +2252,12 @@ static int is_tar(unsigned char *buf, apr_size_t nbytes)
     sum += ' ' * sizeof header->header.chksum;
 
     if (sum != recsum)
-        return 0;		/* Not a tar archive */
+        return 0;   /* Not a tar archive */
 
     if (0 == strcmp(header->header.magic, TMAGIC))
-        return 2;		/* Unix Standard tar archive */
+        return 2;   /* Unix Standard tar archive */
 
-    return 1;			/* Old fashioned tar archive */
+    return 1;       /* Old fashioned tar archive */
 }
 
 
@@ -2270,19 +2270,19 @@ static long from_oct(int digs, char *where)
 {
     register long value;
 
-    while (apr_isspace(*where)) {	/* Skip spaces */
+    while (apr_isspace(*where)) {  /* Skip spaces */
         where++;
         if (--digs <= 0)
-            return -1;		/* All blank field */
+            return -1;  /* All blank field */
     }
     value = 0;
-    while (digs > 0 && isodigit(*where)) {	/* Scan til nonoctal */
+    while (digs > 0 && isodigit(*where)) {  /* Scan til nonoctal */
         value = (value << 3) | (*where++ - '0');
         --digs;
     }
 
     if (digs > 0 && *where && !apr_isspace(*where))
-        return -1;		/* Ended on non-space/nul */
+        return -1;  /* Ended on non-space/nul */
 
     return value;
 }

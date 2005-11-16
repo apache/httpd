@@ -447,11 +447,11 @@ static void register_hooks(apr_pool_t *p)
 module AP_MODULE_DECLARE_DATA vhost_alias_module =
 {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* dir config creater */
-    NULL,			/* dir merger --- default is to override */
-    mva_create_server_config,	/* server config */
-    mva_merge_server_config,	/* merge server configs */
-    mva_commands,		/* command apr_table_t */
+    NULL,                       /* dir config creater */
+    NULL,                       /* dir merger --- default is to override */
+    mva_create_server_config,   /* server config */
+    mva_merge_server_config,    /* merge server configs */
+    mva_commands,               /* command apr_table_t */
     register_hooks              /* register hooks */
 };
 

@@ -56,34 +56,34 @@
 **
 ** The value consists of a list of elements.
 **    DIRECT LOCK:     [char      (DAV_LOCK_DIRECT),
-**			char      (dav_lock_scope),
-**			char      (dav_lock_type),
-**			int        depth,
-**			time_t     expires,
-**			apr_uuid_t locktoken,
-**			char[]     owner,
+**                      char      (dav_lock_scope),
+**                      char      (dav_lock_type),
+**                      int        depth,
+**                      time_t     expires,
+**                      apr_uuid_t locktoken,
+**                      char[]     owner,
 **                      char[]     auth_user]
 **
 **    INDIRECT LOCK:   [char      (DAV_LOCK_INDIRECT),
-**			apr_uuid_t locktoken,
-**			time_t     expires,
-**			apr_size_t key_size,
-**			char[]     key]
+**                      apr_uuid_t locktoken,
+**                      time_t     expires,
+**                      apr_size_t key_size,
+**                      char[]     key]
 **       The key is to the collection lock that resulted in this indirect lock
 */
 
-#define DAV_TRUE		1
-#define DAV_FALSE		0
+#define DAV_TRUE                1
+#define DAV_FALSE               0
 
-#define DAV_CREATE_LIST		23
-#define DAV_APPEND_LIST		24
+#define DAV_CREATE_LIST         23
+#define DAV_APPEND_LIST         24
 
 /* Stored lock_discovery prefix */
-#define DAV_LOCK_DIRECT		1
-#define DAV_LOCK_INDIRECT	2
+#define DAV_LOCK_DIRECT         1
+#define DAV_LOCK_INDIRECT       2
 
-#define DAV_TYPE_INODE		10
-#define DAV_TYPE_FNAME		11
+#define DAV_TYPE_INODE          10
+#define DAV_TYPE_FNAME          11
 
 
 /* ack. forward declare. */
@@ -123,8 +123,8 @@ typedef struct dav_lock_discovery
     struct dav_lock_discovery_fixed f;
 
     dav_locktoken *locktoken;
-    const char *owner;		/* owner field from activelock */
-    const char *auth_user;	/* authenticated user who created the lock */
+    const char *owner;         /* owner field from activelock */
+    const char *auth_user;     /* authenticated user who created the lock */
     struct dav_lock_discovery *next;
 } dav_lock_discovery;
 
@@ -149,14 +149,14 @@ typedef struct dav_lock_indirect
 ** Stored direct lock info - full lock_discovery length:
 ** prefix + Fixed length + lock token + 2 strings + 2 nulls (one for each string)
 */
-#define dav_size_direct(a)	(1 + sizeof(dav_lock_discovery_fixed) \
+#define dav_size_direct(a)   ( 1 + sizeof(dav_lock_discovery_fixed) \
                                  + sizeof(apr_uuid_t) \
                                  + ((a)->owner ? strlen((a)->owner) : 0) \
                                  + ((a)->auth_user ? strlen((a)->auth_user) : 0) \
                                  + 2)
 
 /* Stored indirect lock info - lock token and apr_datum_t */
-#define dav_size_indirect(a)	(1 + sizeof(apr_uuid_t) \
+#define dav_size_indirect(a)  (1 + sizeof(apr_uuid_t) \
                                  + sizeof(time_t) \
                                  + sizeof((a)->key.dsize) + (a)->key.dsize)
 
@@ -177,12 +177,12 @@ typedef struct dav_lock_indirect
 */
 struct dav_lockdb_private
 {
-    request_rec *r;			/* for accessing the uuid state */
-    apr_pool_t *pool;			/* a pool to use */
-    const char *lockdb_path;		/* where is the lock database? */
+    request_rec *r;                  /* for accessing the uuid state */
+    apr_pool_t *pool;                /* a pool to use */
+    const char *lockdb_path;         /* where is the lock database? */
 
-    int opened;				/* we opened the database */
-    dav_db *db;				/* if non-NULL, the lock database */
+    int opened;                      /* we opened the database */
+    dav_db *db;                      /* if non-NULL, the lock database */
 };
 typedef struct
 {
@@ -195,7 +195,7 @@ typedef struct
 */
 struct dav_lock_private
 {
-    apr_datum_t key;	/* key into the lock database */
+    apr_datum_t key;   /* key into the lock database */
 };
 typedef struct
 {
@@ -497,8 +497,8 @@ static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, apr_datum_t key,
     ip  = indirect;
 
     while(dp) {
-        *ptr++ = DAV_LOCK_DIRECT;	/* Direct lock - lock_discovery struct follows */
-        memcpy(ptr, dp, sizeof(dp->f));	/* Fixed portion of struct */
+        *ptr++ = DAV_LOCK_DIRECT;   /* Direct lock - lock_discovery struct follows */
+        memcpy(ptr, dp, sizeof(dp->f));   /* Fixed portion of struct */
         ptr += sizeof(dp->f);
         memcpy(ptr, dp->locktoken, sizeof(*dp->locktoken));
         ptr += sizeof(*dp->locktoken);
@@ -521,14 +521,14 @@ static dav_error * dav_fs_save_lock_record(dav_lockdb *lockdb, apr_datum_t key,
     }
 
     while(ip) {
-        *ptr++ = DAV_LOCK_INDIRECT;	/* Indirect lock prefix */
-        memcpy(ptr, ip->locktoken, sizeof(*ip->locktoken));	/* Locktoken */
+        *ptr++ = DAV_LOCK_INDIRECT;   /* Indirect lock prefix */
+        memcpy(ptr, ip->locktoken, sizeof(*ip->locktoken));   /* Locktoken */
         ptr += sizeof(*ip->locktoken);
-        memcpy(ptr, &ip->timeout, sizeof(ip->timeout));		/* Expire time */
+        memcpy(ptr, &ip->timeout, sizeof(ip->timeout));   /* Expire time */
         ptr += sizeof(ip->timeout);
-        memcpy(ptr, &ip->key.dsize, sizeof(ip->key.dsize));	/* Size of key */
+        memcpy(ptr, &ip->key.dsize, sizeof(ip->key.dsize));   /* Size of key */
         ptr += sizeof(ip->key.dsize);
-        memcpy(ptr, ip->key.dptr, ip->key.dsize);	/* Key data */
+        memcpy(ptr, ip->key.dptr, ip->key.dsize);   /* Key data */
         ptr += ip->key.dsize;
         ip = ip->next;
     }
@@ -980,7 +980,7 @@ static dav_error * dav_fs_add_locknull_state(
     }
 
     dav_buffer_append(p, &buf, fname);
-    buf.cur_len++;	/* we want the null-term here */
+    buf.cur_len++;   /* we want the null-term here */
 
     if ((err = dav_fs_save_locknull_list(p, dirpath, &buf)) != NULL) {
         return dav_push_error(p, HTTP_INTERNAL_SERVER_ERROR, 0,

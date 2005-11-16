@@ -96,10 +96,10 @@ static void register_hooks(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA echo_module = {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* create per-directory config structure */
-    NULL,			/* merge per-directory config structures */
-    create_echo_server_config,	/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    echo_cmds,			/* command apr_table_t */
-    register_hooks		/* register hooks */
+    NULL,                       /* create per-directory config structure */
+    NULL,                       /* merge per-directory config structures */
+    create_echo_server_config,  /* create per-server config structure */
+    NULL,                       /* merge per-server config structures */
+    echo_cmds,                  /* command apr_table_t */
+    register_hooks              /* register hooks */
 };

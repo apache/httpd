@@ -299,20 +299,20 @@ static void read_quoted(char **string, char **quoted_part)
     *quoted_part = NULL;
 
     while (apr_isspace(*strp)) {
-        strp++;               	/* go along string until non-whitespace */
+        strp++;                 /* go along string until non-whitespace */
     }
 
-    if (*strp == '"') {       	/* if that character is a double quote */
-        strp++;               	/* step over it */
-        *quoted_part = strp;  	/* note where the quoted part begins */
+    if (*strp == '"') {         /* if that character is a double quote */
+        strp++;                 /* step over it */
+        *quoted_part = strp;    /* note where the quoted part begins */
 
         while (*strp && *strp != '"') {
-            ++strp;		/* skip the quoted portion */
+            ++strp;             /* skip the quoted portion */
         }
 
-        *strp = '\0';    	/* end the string with a NUL */
+        *strp = '\0';           /* end the string with a NUL */
 
-        strp++;               	/* step over the last double quote */
+        strp++;                 /* step over the last double quote */
         *string = strp;
     }
 }
@@ -661,20 +661,20 @@ static int imap_handler_internal(request_rec *r)
          * memory for every line of the map file
          */
         string_pos = input;
-        if (!*string_pos) {		/* need at least two fields */
+        if (!*string_pos) {   /* need at least two fields */
             goto need_2_fields;
         }
 
         directive = string_pos;
-        while (*string_pos && !apr_isspace(*string_pos)) {	/* past directive */
+        while (*string_pos && !apr_isspace(*string_pos)) {   /* past directive */
             ++string_pos;
         }
-        if (!*string_pos) {		/* need at least two fields */
+        if (!*string_pos) {   /* need at least two fields */
             goto need_2_fields;
         }
         *string_pos++ = '\0';
 
-        if (!*string_pos) {		/* need at least two fields */
+        if (!*string_pos) {   /* need at least two fields */
             goto need_2_fields;
         }
         while(*string_pos && apr_isspace(*string_pos)) { /* past whitespace */
@@ -682,7 +682,7 @@ static int imap_handler_internal(request_rec *r)
         }
 
         value = string_pos;
-        while (*string_pos && !apr_isspace(*string_pos)) {	/* past value */
+        while (*string_pos && !apr_isspace(*string_pos)) {   /* past value */
             ++string_pos;
         }
         if (apr_isspace(*string_pos)) {

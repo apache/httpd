@@ -82,7 +82,7 @@ static int hex2sec(const char *x)
             j |= ch - ('a' - 10);
     }
     if (j == 0xffffffff)
-        return -1;		/* so that it works with 8-byte ints */
+        return -1;  /* so that it works with 8-byte ints */
     else
         return j;
 }

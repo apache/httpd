@@ -47,15 +47,15 @@
 /* The "const" storage-class-modifier is valid. */
 #define YY_USE_CONST
 
-#else	/* ! __cplusplus */
+#else  /* ! __cplusplus */
 
 #if __STDC__
 
 #define YY_USE_PROTOS
 #define YY_USE_CONST
 
-#endif	/* __STDC__ */
-#endif	/* ! __cplusplus */
+#endif  /* __STDC__ */
+#endif  /* ! __cplusplus */
 
 #ifdef __TURBOC__
  #pragma warn -rch
@@ -126,10 +126,10 @@ extern FILE *yyin, *yyout;
  * int a single C statement (which needs a semi-colon terminator).  This
  * avoids problems with code like:
  *
- * 	if ( condition_holds )
- *		yyless( 5 );
- *	else
- *		do_something_else();
+ *    if ( condition_holds )
+ *       yyless( 5 );
+ *    else
+ *       do_something_else();
  *
  * Prior to using the do-while the compiler would get upset at the
  * "else" because it interpreted the "if" statement as being all
@@ -162,8 +162,8 @@ struct yy_buffer_state
         {
         FILE *yy_input_file;
 
-        char *yy_ch_buf;		/* input buffer */
-        char *yy_buf_pos;		/* current position in input buffer */
+        char *yy_ch_buf;    /* input buffer */
+        char *yy_buf_pos;   /* current position in input buffer */
 
         /* Size of input buffer in bytes, not including room for EOB
          * characters.
@@ -227,15 +227,15 @@ static YY_BUFFER_STATE yy_current_buffer = 0;
 /* yy_hold_char holds the character lost when yytext is formed. */
 static char yy_hold_char;
 
-static int yy_n_chars;		/* number of characters read into yy_ch_buf */
+static int yy_n_chars;  /* number of characters read into yy_ch_buf */
 
 
 int yyleng;
 
 /* Points to current character in buffer. */
 static char *yy_c_buf_p = (char *) 0;
-static int yy_init = 1;		/* whether we need to initialize */
-static int yy_start = 0;	/* start state number */
+static int yy_init = 1;   /* whether we need to initialize */
+static int yy_start = 0;  /* start state number */
 
 /* Flag which is used to allow yywrap()'s to do buffer switches
  * instead of setting up a fresh yyin.  A bit of a hack ...
@@ -686,7 +686,7 @@ YY_DECL
 #endif
 
                 if ( ! yy_start )
-                        yy_start = 1;	/* first start state */
+                        yy_start = 1;  /* first start state */
 
                 if ( ! yyin )
                         yyin = stdin;
@@ -701,7 +701,7 @@ YY_DECL
                 yy_load_buffer_state();
                 }
 
-        while ( 1 )		/* loops until end-of-file is reached */
+        while ( 1 )  /* loops until end-of-file is reached */
                 {
                 yy_cp = yy_c_buf_p;
 
@@ -742,7 +742,7 @@ yy_find_action:
                 YY_DO_BEFORE_ACTION;
 
 
-do_action:	/* This label is used only to access EOF actions. */
+do_action:  /* This label is used only to access EOF actions. */
 
 
                 switch ( yy_act )
@@ -1220,9 +1220,9 @@ case YY_STATE_EOF(regex):
 /* yy_get_next_buffer - try to read in a new buffer
  *
  * Returns a code representing an action:
- *	EOB_ACT_LAST_MATCH -
- *	EOB_ACT_CONTINUE_SCAN - continue scanning from current position
- *	EOB_ACT_END_OF_FILE - end of file
+ *   EOB_ACT_LAST_MATCH -
+ *   EOB_ACT_CONTINUE_SCAN - continue scanning from current position
+ *   EOB_ACT_END_OF_FILE - end of file
  */
 
 static int yy_get_next_buffer()
@@ -1388,7 +1388,7 @@ static yy_state_type yy_get_previous_state()
 /* yy_try_NUL_trans - try to make a transition on the NUL character
  *
  * synopsis
- *	next_state = yy_try_NUL_trans( current_state );
+ *   next_state = yy_try_NUL_trans( current_state );
  */
 
 #ifdef YY_USE_PROTOS
@@ -1462,7 +1462,7 @@ register char *yy_bp;
         yy_hold_char = *yy_cp;
         yy_c_buf_p = yy_cp;
         }
-#endif	/* ifndef YY_NO_UNPUT */
+#endif  /* ifndef YY_NO_UNPUT */
 
 
 #ifdef __cplusplus
@@ -1529,8 +1529,8 @@ static int input()
                         }
                 }
 
-        c = *(unsigned char *) yy_c_buf_p;	/* cast for 8-bit char's */
-        *yy_c_buf_p = '\0';	/* preserve yytext */
+        c = *(unsigned char *) yy_c_buf_p;  /* cast for 8-bit char's */
+        *yy_c_buf_p = '\0';  /* preserve yytext */
         yy_hold_char = *++yy_c_buf_p;
 
 
@@ -1731,7 +1731,7 @@ yy_size_t size;
         if ( ! b )
                 YY_FATAL_ERROR( "out of dynamic memory in yy_scan_buffer()" );
 
-        b->yy_buf_size = size - 2;	/* "- 2" to take care of EOB's */
+        b->yy_buf_size = size - 2;  /* "- 2" to take care of EOB's */
         b->yy_buf_pos = b->yy_ch_buf = base;
         b->yy_is_our_buffer = 0;
         b->yy_input_file = 0;

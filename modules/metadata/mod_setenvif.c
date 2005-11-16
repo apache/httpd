@@ -50,8 +50,8 @@
  *
  * Special values for 'name' are:
  *
- *   server_addr      	IP address of interface on which request arrived
- *			(analogous to SERVER_ADDR set in ap_add_common_vars())
+ *   server_addr        IP address of interface on which request arrived
+ *                      (analogous to SERVER_ADDR set in ap_add_common_vars())
  *   remote_host        Remote host name (if available)
  *   remote_addr        Remote IP address
  *   request_method     Request method (GET, POST, etc)
@@ -166,7 +166,7 @@ static void *merge_setenvif_config(apr_pool_t *p, void *basev, void *overridesv)
  * any non-NULL magic constant will do... used to indicate if AP_REG_ICASE should
  * be used
  */
-#define ICASE_MAGIC	((void *)(&setenvif_module))
+#define ICASE_MAGIC  ((void *)(&setenvif_module))
 #define SEI_MAGIC_HEIRLOOM "setenvif-phase-flag"
 
 static int is_header_regex(apr_pool_t *p, const char* name)
@@ -651,5 +651,5 @@ module AP_MODULE_DECLARE_DATA setenvif_module =
     create_setenvif_config_svr, /* server config */
     merge_setenvif_config,      /* merge server configs */
     setenvif_module_cmds,       /* command apr_table_t */
-    register_hooks		/* register hooks */
+    register_hooks              /* register hooks */
 };

@@ -422,10 +422,10 @@ static const command_rec so_cmds[] = {
 
 module AP_MODULE_DECLARE_DATA so_module = {
    STANDARD20_MODULE_STUFF,
-   NULL,			    /* create per-dir config */
-   NULL,			    /* merge per-dir config */
-   so_sconf_create,		/* server config */
-   NULL,			    /* merge server config */
-   so_cmds,			    /* command apr_table_t */
-   register_hooks	    /* register hooks */
+   NULL,                 /* create per-dir config */
+   NULL,                 /* merge per-dir config */
+   so_sconf_create,      /* server config */
+   NULL,                 /* merge server config */
+   so_cmds,              /* command apr_table_t */
+   register_hooks        /* register hooks */
 };

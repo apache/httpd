@@ -14,7 +14,7 @@
  *
  *
  * Message-ID: <861zqspvtw.fsf@niobe.ewox.org>
- * Date: 	Fri, 7 Aug 1998 19:04:27 +0200
+ * Date: Fri, 7 Aug 1998 19:04:27 +0200
  * Sender: Bugtraq List <BUGTRAQ@netspace.org>
  * From: Dag-Erling Coidan =?ISO-8859-1?Q?Sm=F8rgrav?= <finrod@EWOX.ORG>
  * Subject:      YA Apache DoS attack
