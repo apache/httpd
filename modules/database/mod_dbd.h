@@ -64,7 +64,10 @@ AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
  */
 AP_DECLARE(ap_dbd_t*) ap_dbd_cacquire(conn_rec*);
 
-/* Prepare a statement for use by a client module */
+/* Prepare a statement for use by a client module during
+ * the server startup/configuration phase.  Can't be called
+ * after the server has created its children (use apr_dbd_*).
+ */
 AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
 
 /* Also export them as optional functions for modules that prefer it */
