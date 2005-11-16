@@ -185,6 +185,7 @@ static void *dbd_cfg(apr_pool_t *p, server_rec *x)
 {
     svr_cfg *svr = (svr_cfg*) apr_pcalloc(p, sizeof(svr_cfg));
     svr->persist = -1;
+    svr->name = svr->params = ""; /* don't risk segfault on misconfiguration */
 #if APR_HAS_THREADS
     svr->nmin = DEFAULT_NMIN;
     svr->nkeep = DEFAULT_NKEEP;
