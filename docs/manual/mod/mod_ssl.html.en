@@ -624,8 +624,8 @@ SSLEngine on<br />
 ...<br />
 &lt;/VirtualHost&gt;
 </code></p></div>
-<p>New in Apache 2.1, <code class="directive">SSLEngine</code> can be set to <code>
-optional</code>. This enables support for 
+<p>In Apache 2.1 and later, <code class="directive">SSLEngine</code> can be set to 
+<code>optional</code>. This enables support for 
 <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, Upgrading to TLS 
 Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
 
