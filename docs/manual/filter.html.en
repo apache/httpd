@@ -75,7 +75,7 @@ filter modules.  A few of these are:</p>
 <p class="figure">
 <img src="images/mod_filter_new.png" width="423" height="331" alt="Smart filtering applies different filter providers according to the state of request processing" />
 </p>
-<p><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>, included in Apache 2.1 and up,
+<p><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>, included in Apache 2.1 and later,
 enables the filter chain to be configured dynamically at run time.
 So for example you can set up a proxy to rewrite
 HTML with an HTML filter and JPEG images with a completely

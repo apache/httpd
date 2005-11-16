@@ -267,8 +267,8 @@ delivery to the client</td></tr>
 
       <dd>Use <code>mode=output</code> (the default) for filters which
       process the response.  Use <code>mode=input</code> for filters
-      which process the request.  <code>mode=input</code> is new with
-      Apache 2.1.</dd>
+      which process the request.  <code>mode=input</code> is available
+      in Apache 2.1 and later.</dd>
 
       <dt><code>intype=<var>imt</var></code></dt>
 
