@@ -34,7 +34,7 @@
 
   <p>This document describes only the changes from 2.2 to 2.4.  If you
   are upgrading from version 2.0, you should also consult the <a
-  href="http://httpd.apache.org/docs/2.0/upgrading.html">2.0 to 2.2
+  href="http://httpd.apache.org/docs/2.2/upgrading.html">2.0 to 2.2
   upgrading document.</a></p>
 
 </summary>
