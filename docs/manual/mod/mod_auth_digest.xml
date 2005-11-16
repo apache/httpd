@@ -122,9 +122,9 @@
 <directivesynopsis>
 <name>AuthDigestProvider</name>
 <description>Sets the authentication provider(s) for this location</description>
-<syntax>AuthDigestProvider On|Off|<var>provider-name</var>
+<syntax>AuthDigestProvider <var>provider-name</var>
 [<var>provider-name</var>] ...</syntax>
-<default>AuthDigestProvider On</default>
+<default>AuthDigestProvider file</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -132,16 +132,12 @@
 <usage>
     <p>The <directive>AuthDigestProvider</directive> directive sets 
     which provider is used to authenticate the users for this location.
-    Setting the value to <code>On</code> will choose the default provider
-    (<code>file</code>). Since the <code>file</code> provider is implemented
-    by the <module>mod_authn_file</module> module, you have to make sure,
-    that the module is present in the server.</p>
+    The default <code>file</code> provider is implemented
+    by the <module>mod_authn_file</module> module.  Make sure
+    that the chosen provider module is present in the server.</p>
 
     <p>See <module>mod_authn_dbm</module> and <module>mod_authn_file</module>
     for providers.</p>
-
-    <p>The value <code>Off</code> clears the provider list and sets it back
-    to the default.</p>
 </usage>
 </directivesynopsis>
 
