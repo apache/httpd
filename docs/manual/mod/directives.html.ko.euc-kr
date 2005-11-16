@@ -407,6 +407,7 @@
 <li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
 <li><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv</a></li>
 <li><a href="core.html#usecanonicalname">UseCanonicalName</a></li>
+<li><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
 <li><a href="mpm_common.html#user">User</a></li>
 <li><a href="mod_userdir.html#userdir">UserDir</a></li>
 <li><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot</a></li>

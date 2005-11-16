@@ -32,15 +32,12 @@
     installation on Windows, see <a href="platform/windows.html">Using Apache with Microsoft
     Windows</a>. For other platforms, see the <a href="platform/">platform</a> documentation.</p>
 
-    <p>Apache 2.0's configuration and installation environment has
-    changed completely from Apache 1.3. Apache 1.3 used a custom
-    set of scripts to achieve easy installation. Apache 2.0 now
-    uses <code>libtool</code> and <code>autoconf</code>
-    to create an environment that looks like many other Open Source
+    <p>Apache httpd uses <code>libtool</code> and <code>autoconf</code>
+    to create a build environment that looks like many other Open Source
     projects.</p>
 
     <p>If you are upgrading from one minor version to the next (for
-    example, 2.0.50 to 2.0.51), please skip down to the <a href="#upgrading">upgrading</a> section.</p>
+    example, 2.2.50 to 2.2.51), please skip down to the <a href="#upgrading">upgrading</a> section.</p>
 
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#overview">Overview for the
@@ -72,8 +69,9 @@
       <tr>
         <td><a href="#extract">Extract</a></td>
 
-        <td><code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-2_1_<em>NN</em>.tar</code> </td>
+        <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-<em>NN</em>.tar</code><br />
+         $ cd httpd-<em>NN</em></td>
       </tr>
 
       <tr>
@@ -104,12 +102,12 @@
       <tr>
         <td><a href="#test">Test</a></td>
 
-        <td><code>$ <em>PREFIX</em>/bin/apachectl start</code>
+        <td><code>$ <em>PREFIX</em>/bin/apachectl -k start</code>
         </td>
       </tr>
     </table>
 
-    <p><em>NN</em> must be replaced with the current minor version
+    <p><em>NN</em> must be replaced with the current version
     number, and <em>PREFIX</em> must be replaced with the
     filesystem path under which the server should be installed. If
     <em>PREFIX</em> is not specified, it defaults to
@@ -117,7 +115,7 @@
 
     <p>Each section of the compilation and installation process is
     described in more detail below, beginning with the requirements
-    for compiling and installing Apache HTTPD.</p>
+    for compiling and installing Apache httpd.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requirements" id="requirements">Requirements</a></h2>
@@ -146,8 +144,7 @@
       synchronization facility on your system. Usually the
       <code>ntpdate</code> or <code>xntpd</code> programs are used for
       this purpose which are based on the Network Time Protocol (NTP).
-      See the Usenet newsgroup <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a>
-      and the <a href="http://www.ntp.org">NTP
+      See the <a href="http://www.ntp.org">NTP
       homepage</a> for more details about NTP software and public
       time servers.</dd>
 
@@ -163,14 +160,14 @@
       If no Perl 5 interpreter is found by the 
       <code class="program"><a href="./programs/configure.html">configure</a></code> script, you will not be able to use 
       the affected support scripts. Of course, you will still be able to 
-      build and use Apache 2.0.</dd>
+      build and use Apache httpd.</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="download" id="download">Download</a></h2>
 
-    <p>Apache can be downloaded from the <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server
-    download site</a> which lists several mirrors.  Most users of
+    <p>The Apache HTTP Server can be downloaded from the <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server
+    download site</a>, which lists several mirrors.  Most users of
     Apache on unix-like systems will be better off downloading and
     compiling a source version.  The build process (described below) is
     easy, and it allows you to customize your server to suit your needs.
@@ -193,8 +190,8 @@
     simple matter of uncompressing, and then untarring:</p>
 
 <div class="example"><p><code>
-$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-$ tar xvf httpd-2_1_<em>NN</em>.tar
+$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+$ tar xvf httpd-<em>NN</em>.tar
 </code></p></div>
 
     <p>This will create a new directory under the current directory
@@ -209,7 +206,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     particular platform and personal requirements. This is done using
     the script <code class="program"><a href="./programs/configure.html">configure</a></code> included in
     the root directory of the distribution. (Developers downloading
-    the CVS version of the Apache source tree will need to have
+    an unreleased version of the Apache source tree will need to have
     <code>autoconf</code> and <code>libtool</code> installed and will
     need to run <code>buildconf</code> before proceeding with the next
     steps. This is not necessary for official releases.)</p>
@@ -277,9 +274,9 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
 <div class="example"><p><code>$ make</code></p></div>
 
     <p>Please be patient here, since a base configuration takes
-    approximately 3 minutes to compile under a Pentium III/Linux
-    2.2 system, but this will vary widely depending on your
-    hardware and the number of modules which you have enabled.</p>
+    several minutes to compile and the time will vary widely
+    depending on your hardware and the number of modules that you
+    have enabled.</p> 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="install" id="install">Install</a></h2>
@@ -311,16 +308,16 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     <p>Now you can <a href="invoking.html">start</a> your Apache
     HTTP server by immediately running:</p>
 
-<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl start</code></p></div>
+<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k start</code></p></div>
 
     <p>and then you should be able to request your first document
     via URL <code>http://localhost/</code>. The web page you see is located
-    under the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>
+    under the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>,
     which will usually be <code><em>PREFIX</em>/htdocs/</code>.
     Then <a href="stopping.html">stop</a> the server again by
     running:</p>
 
-<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
+<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="upgrading" id="upgrading">Upgrading</a></h2>
@@ -335,7 +332,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     module API.</p>
 
     <p>Upgrading from one minor version to the next (for example, from
-    2.0.55 to 2.0.57) is easier.  The <code>make install</code>
+    2.2.55 to 2.2.57) is easier.  The <code>make install</code>
     process will not overwrite any of your existing documents, log
     files, or configuration files.  In addition, the developers make
     every effort to avoid incompatible changes in the
@@ -343,8 +340,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     module API between minor versions.  In most cases you should be able to
     use an identical <code class="program"><a href="./programs/configure.html">configure</a></code> command line, an identical
     configuration file, and all of your modules should continue to
-    work.  (This is only valid for versions after 2.0.41; earlier
-    versions have incompatible changes.)</p>
+    work.</p>
 
     <p>To upgrade across minor versions, start by finding the file
     <code>config.nice</code> in the <code>build</code> directory of
@@ -360,8 +356,8 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     $ ./config.nice<br />
     $ make<br />
     $ make install<br />
-    $ <em>PREFIX</em>/bin/apachectl stop<br />
-    $ <em>PREFIX</em>/bin/apachectl start<br />
+    $ <em>PREFIX</em>/bin/apachectl -k graceful-stop<br />
+    $ <em>PREFIX</em>/bin/apachectl -k start<br />
     </code></p></div>
 
     <div class="warning">You should always test any new version in your

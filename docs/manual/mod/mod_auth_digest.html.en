@@ -239,9 +239,9 @@ server</td></tr>
 <div class="directive-section"><h2><a name="AuthDigestProvider" id="AuthDigestProvider">AuthDigestProvider</a> <a name="authdigestprovider" id="authdigestprovider">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets the authentication provider(s) for this location</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestProvider On|Off|<var>provider-name</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDigestProvider <var>provider-name</var>
 [<var>provider-name</var>] ...</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestProvider On</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthDigestProvider file</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -249,16 +249,12 @@ server</td></tr>
 </table>
     <p>The <code class="directive">AuthDigestProvider</code> directive sets 
     which provider is used to authenticate the users for this location.
-    Setting the value to <code>On</code> will choose the default provider
-    (<code>file</code>). Since the <code>file</code> provider is implemented
-    by the <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> module, you have to make sure,
-    that the module is present in the server.</p>
+    The default <code>file</code> provider is implemented
+    by the <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> module.  Make sure
+    that the chosen provider module is present in the server.</p>
 
     <p>See <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> and <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>
     for providers.</p>
-
-    <p>The value <code>Off</code> clears the provider list and sets it back
-    to the default.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
