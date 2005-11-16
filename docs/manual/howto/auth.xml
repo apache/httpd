@@ -33,27 +33,54 @@
 </summary>
 
 <section id="related"><title>Related Modules and Directives</title>
-    <related>
-      <modulelist>
-        <module>mod_auth_basic</module>
-        <module>mod_auth_digest</module>
-        <module>mod_authn_file</module>
-        <module>mod_authz_groupfile</module>
-        <module>mod_authz_host</module>
-      </modulelist>
 
-      <directivelist>
-        <directive module="mod_authz_host">Allow</directive>
-        <directive module="mod_authz_groupfile">AuthGroupFile</directive>
-        <directive module="core">AuthName</directive>
-        <directive module="core">AuthType</directive>
-        <directive module="mod_authn_file">AuthUserFile</directive>
-        <directive module="mod_auth_basic">AuthBasicProvider</directive>
-        <directive module="mod_authz_host">Deny</directive>
-        <directive module="core">Options</directive>
-        <directive module="core">Require</directive>
-      </directivelist>
-    </related>
+<p>There are three types of modules involved in the authentication and
+authorization process.  You will usually need to choose at least one
+module from each group.</p>
+
+<ul>
+  <li>Authentication type (see the 
+      <directive module="core">AuthType</directive> directive)
+    <ul>
+      <li><module>mod_auth_basic</module></li>
+      <li><module>mod_auth_digest</module></li>
+    </ul>
+  </li>
+  <li>Authentication provider
+    <ul>
+      <li><module>mod_authn_alias</module></li>
+      <li><module>mod_authn_anon</module></li>
+      <li><module>mod_authn_dbd</module></li>
+      <li><module>mod_authn_dbm</module></li>
+      <li><module>mod_authn_default</module></li>
+      <li><module>mod_authn_file</module></li>
+      <li><module>mod_authnz_ldap</module></li>
+    </ul>
+  </li>
+  <li>Authorization (see the 
+      <directive module="core">Require</directive> directive)
+    <ul>
+      <li><module>mod_authnz_ldap</module></li>
+      <li><module>mod_authz_dbm</module></li>
+      <li><module>mod_authz_default</module></li>
+      <li><module>mod_authz_groupfile</module></li>
+      <li><module>mod_authz_owner</module></li>
+      <li><module>mod_authz_user</module></li>
+    </ul>
+  </li>
+</ul>
+
+  <p>The module <module>mod_authnz_ldap</module> is both an
+  authentication and authorization provider.  The module
+  <module>mod_authn_alias</module> is not an authentication provider
+  in itself, but allows other authentication providers to be
+  configured in a flexible manner.</p>
+
+  <p>The module <module>mod_authz_host</module> provides authorization
+  and access control based on hostname, IP address or characteristics
+  of the request, but is not part of the authentication provider
+  system.</p>
+
 </section>
 
 <section id="introduction"><title>Introduction</title>
