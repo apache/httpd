@@ -33,7 +33,10 @@
     <p>This module allows the use of HTTP Basic Authentication to
     restrict access by looking up users in the given providers.
     HTTP Digest Authentication is provided by
-    <module>mod_auth_digest</module>.</p>
+    <module>mod_auth_digest</module>.  This module should
+    usually be combined with at least one authentication module
+    such as <module>mod_authn_file</module> and one authorization
+    module such as <module>mod_authz_user</module>.</p>
 </summary>
 <seealso><directive module="core">AuthName</directive></seealso>
 <seealso><directive module="core">AuthType</directive></seealso>
@@ -41,9 +44,9 @@
 <directivesynopsis>
 <name>AuthBasicProvider</name>
 <description>Sets the authentication provider(s) for this location</description>
-<syntax>AuthBasicProvider On|Off|<var>provider-name</var>
+<syntax>AuthBasicProvider <var>provider-name</var>
 [<var>provider-name</var>] ...</syntax>
-<default>AuthBasicProvider On</default>
+<default>AuthBasicProvider file</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
@@ -51,14 +54,14 @@
 <usage>
     <p>The <directive>AuthBasicProvider</directive> directive sets 
     which provider is used to authenticate the users for this location.
-    Setting the value to <code>On</code> will choose the default provider
-    (<code>file</code>). Since the <code>file</code> provider is implemented
-    by the <module>mod_authn_file</module> module, you have to make sure,
-    that the module is present in the server.</p>
+    The default <code>file</code> provider is implemented
+    by the <module>mod_authn_file</module> module.  Make sure
+    that the chosen provider module is present in the server.</p>
 
     <example><title>Example</title>
       &lt;Location /secure&gt;<br />
       <indent>
+        AuthType basic<br />
         AuthBasicProvider  dbm<br />
         AuthDBMType        SDBM<br />
         AuthDBMUserFile    /www/etc/dbmpasswd<br />
@@ -67,11 +70,9 @@
       &lt;/Location&gt;
     </example>
 
-    <p>See <module>mod_authn_dbm</module> and <module>mod_authn_file</module>
-    for providers.</p>
-
-    <p>The value <code>Off</code> clears the provider list and sets it back
-    to the default.</p>
+    <p>Providers are implemented by <module>mod_authn_dbm</module>,
+    <module>mod_authn_file</module>, <module>mod_authn_dbd</module>,
+    and <module>mod_authnz_ldap</module>.</p>
 </usage>
 </directivesynopsis>
 
@@ -86,26 +87,20 @@ lower level modules</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>Setting the <directive>AuthBasicAuthoritative</directive> directive
-    explicitly to <code>Off</code> allows for both
-    authentication and authorization to be passed on to lower level
-    modules (as defined in the <code>modules.c</code> files) if there is
-    <strong>no userID</strong> or <strong>rule</strong> matching the
-    supplied userID. If there is a userID and/or rule specified, the usual
-    password and access checks will be applied and a failure will give
-    an "Authentication Required" reply.</p>
-
-    <p>So if a userID appears in the database of more than one module;
-    or if a valid <directive module="core">Require</directive>
-    directive applies to more than one module; then the first module
-    will verify the credentials; and no access is passed on;
-    regardless of the <directive>AuthBasicAuthoritative</directive>
-    setting.</p>
-
-    <p>By default control is not passed on and an unknown userID or
-    rule will result in an "Authentication Required" reply. Not setting
-    it thus keeps the system secure and forces an NCSA compliant
-    behaviour.</p>
+    <p>Normally, each authorization module listed in <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> will attempt
+    to verify the user, and if the user is not found in any provider,
+    access will be denied. Setting the
+    <directive>AuthBasicAuthoritative</directive> directive explicitly
+    to <code>Off</code> allows for both authentication and
+    authorization to be passed on to other non-provider-based modules
+    if there is <strong>no userID</strong> or <strong>rule</strong>
+    matching the supplied userID.  This should only be necessary when
+    combining <module>mod_auth_basic</module> with third-party modules
+    that are not configured with the <directive
+    module="mod_auth_basic">AuthBasicProvider</directive>
+    directive.  When using such modules, the order of processing
+    is determined in the modules' source code and is not configurable.</p>
 </usage>
 </directivesynopsis>
 
