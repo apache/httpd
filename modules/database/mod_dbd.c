@@ -76,7 +76,7 @@ static const char *dbd_param(cmd_parms *cmd, void *cfg, const char *val)
         svr->name = val;
         /* loading the driver involves once-only dlloading that is
          * best done at server startup.  This also guarantees that
-         * load_driver won't return an error later.
+         * we won't return an error later.
          */
         switch (apr_dbd_get_driver(cmd->pool, svr->name, &driver)) {
         case APR_ENOTIMPL:
@@ -298,6 +298,23 @@ static apr_status_t dbd_setup(apr_pool_t *pool, server_rec *s)
         - open acquires a connection from the pool (opens one if necessary)
         - close releases it back in to the pool
 */
+void ap_dbd_close(server_rec *s, ap_dbd_t *sql)
+{
+    svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
+    if (!svr->persist) {
+        apr_dbd_close(sql->driver, sql->handle);
+    }
+#if APR_HAS_THREADS
+    else {
+        apr_reslist_release(svr->dbpool, sql);
+    }
+#endif
+}
+static apr_status_t dbd_close(void *CONN)
+{
+    ap_dbd_t *conn = CONN;
+    return apr_dbd_close(conn->driver, conn->handle);
+}
 #define arec ((ap_dbd_t*)rec)
 #if APR_HAS_THREADS
 ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
@@ -366,29 +383,15 @@ ap_dbd_t* ap_dbd_open(apr_pool_t *pool, server_rec *s)
     }
 /* We don't have a connection right now, so we'll open one */
     if (!svr->conn) {
-        rv = dbd_construct(&rec, svr, s->process->pool);
-        svr->conn = (rv == APR_SUCCESS) ? arec : NULL;
+        if (dbd_construct(&rec, svr, s->process->pool) == APR_SUCCESS) {
+            svr->conn = arec ;
+            apr_pool_cleanup_register(s->process->pool, svr->conn,
+                                      dbd_close, apr_pool_cleanup_null);
+        }
     }
     return svr->conn;
 }
 #endif
-void ap_dbd_close(server_rec *s, ap_dbd_t *sql)
-{
-    svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
-    if (!svr->persist) {
-        apr_dbd_close(sql->driver, sql->handle);
-    }
-#if APR_HAS_THREADS
-    else {
-        apr_reslist_release(svr->dbpool, sql);
-    }
-#endif
-}
-static apr_status_t dbd_close(void *CONN)
-{
-    ap_dbd_t *conn = CONN;
-    return apr_dbd_close(conn->driver, conn->handle);
-}
 #if APR_HAS_THREADS
 typedef struct {
     ap_dbd_t *conn;
