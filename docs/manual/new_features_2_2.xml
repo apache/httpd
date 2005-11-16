@@ -233,9 +233,9 @@
       had to take responsibility for managing it themselves.  Apart
       from reinventing the wheel, this can be very inefficient, for
       example when several modules each maintain their own connections.</p>
-      <p>Apache 2.1 and up provides the <code>ap_dbd</code> API for
+      <p>Apache 2.1 and later provides the <code>ap_dbd</code> API for
       managing database connections (including optimised strategies
-      for threaded and unthreaded MPMs), while APR 1.2 and up provides
+      for threaded and unthreaded MPMs), while APR 1.2 and later provides
       the <code>apr_dbd</code> API for interacting with the database.</p>
       <p>New modules SHOULD now use these APIs for all SQL database
       operations.  Existing applications SHOULD be upgraded to use it
