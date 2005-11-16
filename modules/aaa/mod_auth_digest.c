@@ -446,22 +446,9 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
 {
     digest_config_rec *conf = (digest_config_rec*)config;
     authn_provider_list *newp;
-    const char *provider_name;
-
-    if (strcasecmp(arg, "on") == 0) {
-        provider_name = AUTHN_DEFAULT_PROVIDER;
-    }
-    else if (strcasecmp(arg, "off") == 0) {
-        /* Clear all configured providers and return. */
-        conf->providers = NULL;
-        return NULL;
-    }
-    else {
-        provider_name = apr_pstrdup(cmd->pool, arg);
-    }
 
     newp = apr_pcalloc(cmd->pool, sizeof(authn_provider_list));
-    newp->provider_name = provider_name;
+    newp->provider_name = apr_pstrdup(cmd->pool, arg);
 
     /* lookup and cache the actual provider now */
     newp->provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP,
@@ -479,7 +466,7 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
         /* if it doesn't provide the appropriate function, reject it */
         return apr_psprintf(cmd->pool,
                             "The '%s' Authn provider doesn't support "
-                            "Digest Authentication", provider_name);
+                            "Digest Authentication", newp->provider_name);
     }
 
     /* Add it to the list now. */

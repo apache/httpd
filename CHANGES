@@ -36,6 +36,9 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.1.10
 
+  *) Remove support for 'On' and 'Off' for AuthBasicProvider and
+     AuthDigestProvider.  [Joshua Slive, Justin Erenkrantz]
+
   *) Add in new UseCanonicalPhysicalPort directive, which controls
      whether or not Apache will ever use the actual physical port
      when constructing the canonical port number. [Jim Jagielski]
