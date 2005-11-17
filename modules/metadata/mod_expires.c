@@ -559,5 +559,5 @@ module AP_MODULE_DECLARE_DATA expires_module =
     NULL,                       /* server config */
     NULL,                       /* merge server configs */
     expires_cmds,               /* command apr_table_t */
-    register_hooks		/* register hooks */
+    register_hooks              /* register hooks */
 };

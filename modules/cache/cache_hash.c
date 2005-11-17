@@ -39,11 +39,11 @@
 typedef struct cache_hash_entry_t cache_hash_entry_t;
 
 struct cache_hash_entry_t {
-    cache_hash_entry_t	*next;
-    unsigned int	 hash;
-    const void		*key;
-    apr_ssize_t		 klen;
-    const void		*val;
+    cache_hash_entry_t   *next;
+    unsigned int         hash;
+    const void           *key;
+    apr_ssize_t          klen;
+    const void           *val;
 };
 
 /*
@@ -54,7 +54,7 @@ struct cache_hash_entry_t {
  * cache_hash_next().
  */
 struct cache_hash_index_t {
-    cache_hash_t	 *ht;
+    cache_hash_t         *ht;
     cache_hash_entry_t   *this, *next;
     int                  index;
 };

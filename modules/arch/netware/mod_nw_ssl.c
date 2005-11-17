@@ -94,9 +94,9 @@ typedef struct secsocket_data secsocket_data;
 
 struct seclisten_rec {
     seclisten_rec *next;
-    struct sockaddr_in local_addr;	/* local IP address and port */
+    struct sockaddr_in local_addr;   /* local IP address and port */
     int fd;
-    int used;			            /* Only used during restart */
+    int used;                        /* Only used during restart */
     char key[MAX_KEY];
     int mutual;
     char *addr;
@@ -346,9 +346,9 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
     sWS2Opts.options = &sNWTLSOpts;
 
     if (numcerts) {
-        sNWTLSOpts.walletProvider 		= WAL_PROV_DER;	//the wallet provider defined in wdefs.h
-        sNWTLSOpts.TrustedRootList 		= certarray;	//array of certs in UNICODE format
-        sNWTLSOpts.numElementsInTRList 	= numcerts;     //number of certs in TRList
+        sNWTLSOpts.walletProvider = WAL_PROV_DER;   //the wallet provider defined in wdefs.h
+        sNWTLSOpts.TrustedRootList = certarray;     //array of certs in UNICODE format
+        sNWTLSOpts.numElementsInTRList = numcerts;  //number of certs in TRList
     }
     else {
         /* setup the socket for SSL */
@@ -356,7 +356,7 @@ int convert_secure_socket(conn_rec *c, apr_socket_t *csd)
         sWS2Opts.wallet = keyFileName;    /* no client certificate */
         sWS2Opts.walletlen = unilen(keyFileName);
 
-        sNWTLSOpts.walletProvider 		= WAL_PROV_KMO;	//the wallet provider defined in wdefs.h
+        sNWTLSOpts.walletProvider = WAL_PROV_KMO;  //the wallet provider defined in wdefs.h
     }
 
     /* make the IOCTL call */

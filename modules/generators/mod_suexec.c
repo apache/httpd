@@ -134,5 +134,5 @@ module AP_MODULE_DECLARE_DATA suexec_module =
     create_mconfig_for_server,  /* server config */
     NULL,                       /* merge server config */
     suexec_cmds,                /* command table */
-    suexec_hooks		/* register hooks */
+    suexec_hooks                /* register hooks */
 };

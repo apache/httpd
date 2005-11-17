@@ -25,7 +25,7 @@
 #include "http_config.h"
 #include "http_connection.h"
 #include "http_core.h"
-#include "http_protocol.h"	/* For index_of_response().  Grump. */
+#include "http_protocol.h"   /* For index_of_response().  Grump. */
 #include "http_request.h"
 
 /* Generate the human-readable hex representation of an unsigned long

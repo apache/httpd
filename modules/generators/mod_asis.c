@@ -136,10 +136,10 @@ static void register_hooks(apr_pool_t *p)
 module AP_MODULE_DECLARE_DATA asis_module =
 {
     STANDARD20_MODULE_STUFF,
-    NULL,			/* create per-directory config structure */
-    NULL,			/* merge per-directory config structures */
-    NULL,			/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    NULL,			/* command apr_table_t */
-    register_hooks		/* register hooks */
+    NULL,              /* create per-directory config structure */
+    NULL,              /* merge per-directory config structures */
+    NULL,              /* create per-server config structure */
+    NULL,              /* merge per-server config structures */
+    NULL,              /* command apr_table_t */
+    register_hooks     /* register hooks */
 };
