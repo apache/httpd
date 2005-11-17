@@ -67,17 +67,20 @@ independent of the traditional request processing phases.</p>
 </p>
 <p>Some examples of filtering in the standard Apache distribution are:</p>
 <ul>
-<li>mod_includes, implements server-side includes.</li>
-<li>mod_ssl, implements SSL encryption (https).</li>
-<li>mod_deflate, implements compression/decompression on the fly.</li>
-<li>mod_charset_lite, transcodes between different character sets.</li>
-<li>mod_ext_filter, runs an external program as a filter.</li>
+<li><module>mod_include</module>, implements server-side includes.</li>
+<li><module>mod_ssl</module>, implements SSL encryption (https).</li>
+<li><module>mod_deflate</module>, implements compression/decompression on the fly.</li>
+<li><module>mod_charset_lite</module>, transcodes between different character sets.</li>
+<li><module>mod_ext_filter</module>, runs an external program as a filter.</li>
 </ul>
-<p>Apache also uses a number of filters internally, to perform
+<p>Apache also uses a number of filters internally to perform
 functions like chunking and byte-range handling.</p>
 
-<p>A wider range of applications are implemented by third-party
-filter modules.  A few of these are:</p>
+<p>A wider range of applications are implemented by third-party filter
+modules available from <a
+href="http://modules.apache.org/">modules.apache.org</a> and
+elsewhere.  A few of these are:</p>
+
 <ul>
 <li>HTML and XML processing and rewriting</li>
 <li>XSLT transforms and XIncludes</li>
@@ -88,6 +91,7 @@ filter modules.  A few of these are:</p>
 <li>Text search-and-replace editing</li>
 </ul>
 </section>
+
 <section id="smart">
 <title>Smart Filtering</title>
 <p class="figure">
@@ -108,7 +112,7 @@ used as a provider and inserted dynamically.  For example,</p>
 <li>an HTML processing filter will only run if the content is
 text/html or application/xhtml+xml</li>
 <li>A compression filter will only run if the input is a
-compressable type and not already compressed</li>
+compressible type and not already compressed</li>
 <li>A charset conversion filter will be inserted if a text
 document is not already in the desired charset</li>
 </ul>
@@ -117,11 +121,11 @@ document is not already in the desired charset</li>
 <section id="using">
 <title>Using Filters</title>
 <p>There are two ways to use filtering: Simple and Dynamic.
-In general, you should use one or the other: mixing them can
+In general, you should use one or the other; mixing them can
 have unexpected consequences (although simple Input filtering
-can be mixed freely with either simple or dynamic Output filtering!</p>
+can be mixed freely with either simple or dynamic Output filtering).</p>
 <p>The Simple Way is the only way to configure input filters, and is
-suficient for output filters where you need a static filter chain.
+sufficient for output filters where you need a static filter chain.
 Relevant directives are
     <directive module="core">SetInputFilter</directive>,
     <directive module="core">SetOutputFilter</directive>,
@@ -134,10 +138,13 @@ Relevant directives are
 of output filters, as discussed in the <module>mod_filter</module> page.
 Relevant directives are
     <directive module="mod_filter">FilterChain</directive>,
-    <directive module="mod_filter">FilterDeclare</directive>,
+    <directive module="mod_filter">FilterDeclare</directive>, and
     <directive module="mod_filter">FilterProvider</directive>.</p>
-<p>One further directive AddOutputFilterByType is still supported,
-but may be problematic and is now deprecated.  Use dynamic configuration
-instead.</p>
+
+<p>One further directive <directive
+module="core">AddOutputFilterByType</directive> is still supported,
+but may be problematic and is now deprecated.  Use dynamic
+configuration instead.</p>
+
   </section>
 </manualpage>
