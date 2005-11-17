@@ -242,12 +242,14 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Available in Apache 2.0.33 and later</compatibility>
+<compatibility>Available in Apache 2.0.33 and later; deprecated in Apache 2.1 and later</compatibility>
 
 <usage>
     <p>This directive activates a particular output <a
     href="../filter.html">filter</a> for a request depending on the
-    response <glossary>MIME-type</glossary>.</p>
+    response <glossary>MIME-type</glossary>.  Because of certain
+    problems discussed below, this directive is deprecated.  The same
+    functionality is available using <module>mod_filter</module>.</p>
 
     <p>The following example uses the <code>DEFLATE</code> filter, which
     is provided by <module>mod_deflate</module>. It will compress all
@@ -513,18 +515,21 @@ authentication</description>
 
 <usage>
     <p>This directive selects the type of user authentication for a
-    directory. Only <code>Basic</code> and <code>Digest</code> are
-    currently implemented.
+    directory. The authentication types available are
+    <code>Basic</code> (implemented by
+    <module>mod_auth_basic</module>) and <code>Digest</code>
+    (implemented by <module>mod_auth_digest</module>).</p>
 
-     It must be accompanied by <directive
-     module="core">AuthName</directive> and <directive
-     module="core">Require</directive> directives, and directives such
-     as <directive module="mod_authn_file">AuthUserFile</directive> and
-     <directive module="mod_authz_groupfile">AuthGroupFile</directive> to
-     work.</p>
-</usage>
+    <p>To implement authentication, you must also use the <directive
+    module="core">AuthName</directive> and <directive
+    module="core">Require</directive> directives.  In addition, the
+    server must have an authentication-provider module such as
+    <module>mod_authn_file</module> and an authorization module such
+    as <module>mod_authz_user</module>.</p>
+</usage> 
+
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
-and Access Control</a></seealso>
+    and Access Control</a></seealso> 
 </directivesynopsis>
 
 <directivesynopsis>
@@ -2392,13 +2397,16 @@ a resource</description>
 <override>AuthConfig</override>
 
 <usage>
-    <p>This directive selects which authenticated users can access
-    a resource. The allowed syntaxes are:</p>
+    <p>This directive selects which authenticated users can access a
+    resource.  The restrictions are processed by authorization
+    modules.  Some of the allowed syntaxes provided by
+    <module>mod_authz_owner</module> and
+    <module>mod_authz_groupfile</module> are:</p>
 
     <dl>
       <dt><code>Require user <var>userid</var> [<var>userid</var>]
       ...</code></dt>
-      <dd>Only the named users can access the resource.</dd>
+      <dd>Only the named users can access the resource. (<module>mod_authz_user</module>)</dd>
 
       <dt><code>Require group <var>group-name</var> [<var>group-name</var>]
       ...</code></dt>
@@ -2407,6 +2415,11 @@ a resource</description>
       <dt><code>Require valid-user</code></dt>
       <dd>All valid users can access the resource.</dd>
     </dl>
+
+    <p>Other authorization modules that implement require options
+    include <module>mod_authnz_ldap</module>,
+    <module>mod_authz_dbm</module>, and
+    <module>mod_authz_owner</module>.</p>
 
     <p><directive>Require</directive> must be accompanied by
     <directive module="core">AuthName</directive> and <directive
@@ -2431,6 +2444,9 @@ a resource</description>
     <directive module="core" type="section">Limit</directive>
     section.</p>
 </usage>
+
+<seealso><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></seealso> 
 <seealso><directive module="core">Satisfy</directive></seealso>
 <seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>
