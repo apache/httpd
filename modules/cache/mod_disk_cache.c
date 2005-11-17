@@ -1161,6 +1161,6 @@ module AP_MODULE_DECLARE_DATA disk_cache_module = {
     NULL,                       /* merge per-directory config structures */
     create_config,              /* create per-server config structure */
     NULL,                       /* merge per-server config structures */
-    disk_cache_cmds,	        /* command apr_table_t */
-    disk_cache_register_hook	/* register hooks */
+    disk_cache_cmds,            /* command apr_table_t */
+    disk_cache_register_hook    /* register hooks */
 };

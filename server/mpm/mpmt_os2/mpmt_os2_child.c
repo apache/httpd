@@ -25,7 +25,7 @@
 #include "http_main.h"
 #include "http_log.h"
 #include "http_config.h"
-#include "http_core.h"		/* for get_remote_host */
+#include "http_core.h"  /* for get_remote_host */
 #include "http_connection.h"
 #include "mpm.h"
 #include "ap_mpm.h"

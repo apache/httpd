@@ -43,8 +43,8 @@
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"
-#include "http_config.h"	/* for read_config */
-#include "http_core.h"		/* for get_remote_host */
+#include "http_config.h"        /* for read_config */
+#include "http_core.h"          /* for get_remote_host */
 #include "http_connection.h"
 #include "ap_mpm.h"
 #include "beosd.h"
@@ -101,7 +101,7 @@ static int num_listening_sockets = 0;
 static int mpm_state = AP_MPMQ_STARTING;
 apr_thread_mutex_t *accept_mutex = NULL;
 
-static apr_pool_t *pconf;		/* Pool for config stuff */
+static apr_pool_t *pconf;    /* Pool for config stuff */
 
 static int server_pid;
 
@@ -678,7 +678,7 @@ static void startup_threads(int number_to_start)
  */
 static int spawn_rate = 1;
 #ifndef MAX_SPAWN_RATE
-#define MAX_SPAWN_RATE	(32)
+#define MAX_SPAWN_RATE  (32)
 #endif
 static int hold_off_on_exponential_spawning;
 
@@ -1010,7 +1010,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
          * pthreads are stealing signals from us left and right.
          */
 
-        ap_reclaim_child_processes(1);		/* Start with SIGTERM */
+        ap_reclaim_child_processes(1);   /* Start with SIGTERM */
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                     "SIGHUP received.  Attempting to restart");
     }
@@ -1196,12 +1196,12 @@ AP_INIT_TAKE1( "MaxRequestsPerThread", set_max_requests_per_thread, NULL, RSRC_C
 
 module AP_MODULE_DECLARE_DATA mpm_beos_module = {
     MPM20_MODULE_STUFF,
-    NULL,                       /* hook to run before apache parses args */
-    NULL,			/* create per-directory config structure */
-    NULL,			/* merge per-directory config structures */
-    NULL,			/* create per-server config structure */
-    NULL,			/* merge per-server config structures */
-    beos_cmds,		/* command apr_table_t */
-    beos_hooks		/* register_hooks */
+    NULL,          /* hook to run before apache parses args */
+    NULL,          /* create per-directory config structure */
+    NULL,          /* merge per-directory config structures */
+    NULL,          /* create per-server config structure */
+    NULL,          /* merge per-server config structures */
+    beos_cmds,     /* command apr_table_t */
+    beos_hooks     /* register_hooks */
 };
 

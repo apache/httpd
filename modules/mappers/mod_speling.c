@@ -525,9 +525,9 @@ module AP_MODULE_DECLARE_DATA speling_module =
 {
     STANDARD20_MODULE_STUFF,
     create_mconfig_for_directory,  /* create per-dir config */
-    NULL,                       /* merge per-dir config */
-    create_mconfig_for_server,  /* server config */
-    NULL,                       /* merge server config */
-    speling_cmds,               /* command apr_table_t */
-    register_hooks		/* register hooks */
+    NULL,                          /* merge per-dir config */
+    create_mconfig_for_server,     /* server config */
+    NULL,                          /* merge server config */
+    speling_cmds,                  /* command apr_table_t */
+    register_hooks                 /* register hooks */
 };

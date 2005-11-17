@@ -850,9 +850,9 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
     char *dn;
     int count;
     int failures = 0;
-    util_url_node_t *curl;		/* Cached URL node */
+    util_url_node_t *curl;              /* Cached URL node */
     util_url_node_t curnode;
-    util_search_node_t *search_nodep;	/* Cached search node */
+    util_search_node_t *search_nodep;   /* Cached search node */
     util_search_node_t the_search_node;
     apr_time_t curtime;
 
@@ -1096,9 +1096,9 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
     char *dn;
     int count;
     int failures = 0;
-    util_url_node_t *curl;		/* Cached URL node */
+    util_url_node_t *curl;              /* Cached URL node */
     util_url_node_t curnode;
-    util_search_node_t *search_nodep;	/* Cached search node */
+    util_search_node_t *search_nodep;   /* Cached search node */
     util_search_node_t the_search_node;
     apr_time_t curtime;
 
@@ -2041,10 +2041,10 @@ static void util_ldap_register_hooks(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA ldap_module = {
    STANDARD20_MODULE_STUFF,
-   NULL,				/* create dir config */
-   NULL,				/* merge dir config */
-   util_ldap_create_config,		/* create server config */
-   util_ldap_merge_config,		/* merge server config */
-   util_ldap_cmds,			/* command table */
-   util_ldap_register_hooks,		/* set up request processing hooks */
+   NULL,                        /* create dir config */
+   NULL,                        /* merge dir config */
+   util_ldap_create_config,     /* create server config */
+   util_ldap_merge_config,      /* merge server config */
+   util_ldap_cmds,              /* command table */
+   util_ldap_register_hooks,    /* set up request processing hooks */
 };

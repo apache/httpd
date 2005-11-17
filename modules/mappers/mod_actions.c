@@ -212,10 +212,10 @@ static void register_hooks(apr_pool_t *p)
 module AP_MODULE_DECLARE_DATA actions_module =
 {
     STANDARD20_MODULE_STUFF,
-    create_action_dir_config,	/* dir config creater */
-    merge_action_dir_configs,	/* dir merger --- default is to override */
-    NULL,			/* server config */
-    NULL,			/* merge server config */
-    action_cmds,		/* command apr_table_t */
-    register_hooks		/* register hooks */
+    create_action_dir_config,   /* dir config creater */
+    merge_action_dir_configs,   /* dir merger --- default is to override */
+    NULL,                       /* server config */
+    NULL,                       /* merge server config */
+    action_cmds,                /* command apr_table_t */
+    register_hooks              /* register hooks */
 };

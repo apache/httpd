@@ -449,5 +449,5 @@ module AP_MODULE_DECLARE_DATA usertrack_module = {
     make_cookie_log_state,      /* server config */
     NULL,                       /* merge server configs */
     cookie_log_cmds,            /* command apr_table_t */
-    register_hooks		/* register hooks */
+    register_hooks              /* register hooks */
 };
