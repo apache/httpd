@@ -2406,7 +2406,7 @@ a resource</description>
     <dl>
       <dt><code>Require user <var>userid</var> [<var>userid</var>]
       ...</code></dt>
-      <dd>Only the named users can access the resource. (<module>mod_authz_user</module>)</dd>
+      <dd>Only the named users can access the resource.</dd>
 
       <dt><code>Require group <var>group-name</var> [<var>group-name</var>]
       ...</code></dt>
