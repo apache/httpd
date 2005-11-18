@@ -316,10 +316,12 @@ content-type is <code>text/plain</code> or <code>text/html</code></td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.33 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0.33 and later; deprecated in Apache 2.1 and later</td></tr>
 </table>
     <p>This directive activates a particular output <a href="../filter.html">filter</a> for a request depending on the
-    response <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a>.</p>
+    response <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a>.  Because of certain
+    problems discussed below, this directive is deprecated.  The same
+    functionality is available using <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>.</p>
 
     <p>The following example uses the <code>DEFLATE</code> filter, which
     is provided by <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>. It will compress all
@@ -554,18 +556,20 @@ authentication</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>This directive selects the type of user authentication for a
-    directory. Only <code>Basic</code> and <code>Digest</code> are
-    currently implemented.
+    directory. The authentication types available are
+    <code>Basic</code> (implemented by
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>) and <code>Digest</code>
+    (implemented by <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code>).</p>
 
-     It must be accompanied by <code class="directive"><a href="#authname">AuthName</a></code> and <code class="directive"><a href="#require">Require</a></code> directives, and directives such
-     as <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code> and
-     <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> to
-     work.</p>
+    <p>To implement authentication, you must also use the <code class="directive"><a href="#authname">AuthName</a></code> and <code class="directive"><a href="#require">Require</a></code> directives.  In addition, the
+    server must have an authentication-provider module such as
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> and an authorization module such
+    as <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>.</p>
 
 <h3>See also</h3>
 <ul>
 <li><a href="../howto/auth.html">Authentication, Authorization,
-and Access Control</a></li>
+    and Access Control</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -2398,8 +2402,11 @@ a resource</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
-    <p>This directive selects which authenticated users can access
-    a resource. The allowed syntaxes are:</p>
+    <p>This directive selects which authenticated users can access a
+    resource.  The restrictions are processed by authorization
+    modules.  Some of the allowed syntaxes provided by
+    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> and
+    <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> are:</p>
 
     <dl>
       <dt><code>Require user <var>userid</var> [<var>userid</var>]
@@ -2413,6 +2420,11 @@ a resource</td></tr>
       <dt><code>Require valid-user</code></dt>
       <dd>All valid users can access the resource.</dd>
     </dl>
+
+    <p>Other authorization modules that implement require options
+    include <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>,
+    <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, and
+    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>.</p>
 
     <p><code class="directive">Require</code> must be accompanied by
     <code class="directive"><a href="#authname">AuthName</a></code> and <code class="directive"><a href="#authtype">AuthType</a></code> directives, and directives such
@@ -2438,6 +2450,8 @@ a resource</td></tr>
 
 <h3>See also</h3>
 <ul>
+<li><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></li>
 <li><code class="directive"><a href="#satisfy">Satisfy</a></code></li>
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 </ul>
