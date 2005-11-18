@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /><!--
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>mod_authz_dbd - Apache HTTP Server</title>
-<link title="Main stylesheet" type="text/css" media="all" rel="stylesheet" href="../style/css/manual.css" />
-<link title="No Sidebar - Default font size" type="text/css" media="all" rel="alternate stylesheet" href="../style/css/manual-loose-100pc.css" />
-<link type="text/css" media="print" rel="stylesheet" href="../style/css/manual-print.css" />
-<link rel="shortcut icon" href="../images/favicon.ico" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body>
 <div id="page-header">
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img src="../images/feather.gif" alt="" /></div>
-<div class="up"><a href="./"><img src="../images/left.gif" alt="&lt;-" title="&lt;-" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
 <div id="page-content">
@@ -38,16 +38,16 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img src="../images/down.gif" alt="" /> <a href="#authzdbdauthoritative">AuthzDBDAuthoritative</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#authzdbdquery">AuthzDBDQuery</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdauthoritative">AuthzDBDAuthoritative</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdquery">AuthzDBDQuery</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img src="../images/down.gif" alt="" /> <a href="#login">Database Login</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#client">Client Login</a></li>
-<li><img src="../images/down.gif" alt="" /> <a href="#example">Configuration Example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#login">Database Login</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#client">Client Login</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#example">Configuration Example</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
@@ -55,9 +55,9 @@
 <li><code class="directive"><a href="../mod/mod_dbd.html#dbdriver">DBDriver</a></code></li>
 <li><code class="directive"><a href="../mod/mod_dbd.html#dbdparams">DBDParams</a></code></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="login" name="login">Database Login</a></h2>
+<h2><a name="login" id="login">Database Login</a></h2>
 
 <p>In addition to the standard authz function of checking group
 membership, this module provides database Login/Logout capability.
@@ -68,9 +68,9 @@ of course to users supplying the necessary credentials).</p>
 <code class="directive"><a href="../mod/core.html#require">Require</a></code> types:
 <code>Require dbd-login</code> and <code>Require dbd-logout</code>.
 For usage details, see the configuration example below.</p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="client" name="client">Client Login</a></h2>
+<h2><a name="client" id="client">Client Login</a></h2>
 
 <p>In conjunction with server login/logout, we may wish to implement
 clientside login/out, for example by setting and unsetting a cookie
@@ -81,9 +81,9 @@ operation in to database login/logout.  To support this,
 be run whenever a user successfully logs into or out of the database.
 Session management modules can use the hook to implement functions
 to start and end a client session.</p>
-</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a id="example" name="example">Configuration Example</a></h2>
+<h2><a name="example" id="example">Configuration Example</a></h2>
 
 <div class="example"><pre><code>
 # DBD Configuration
@@ -129,8 +129,8 @@ DBDExptime 300
 &lt;/Directory&gt;
 </code></pre></div>
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="AuthzDBDAuthoritative" name="AuthzDBDAuthoritative">AuthzDBDAuthoritative</a> <a id="authzdbdauthoritative" name="authzdbdauthoritative">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzDBDAuthoritative" id="AuthzDBDAuthoritative">AuthzDBDAuthoritative</a> <a name="authzdbdauthoritative" id="authzdbdauthoritative">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authorization will be passed on to lower level
 modules</td></tr>
@@ -166,8 +166,8 @@ modules</td></tr>
     compliant behaviour.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="AuthzDBDLoginToReferer" name="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a> <a id="authzdbdlogintoreferer" name="authzdbdlogintoreferer">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a> <a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to redirect the Client to the Referring
 page on successful login or logout if a <code>Referer</code> request
@@ -186,8 +186,8 @@ header is present</td></tr>
     <code>AuthzDBDLoginToReferer On</code> will be ignored.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="AuthzDBDQuery" name="AuthzDBDQuery">AuthzDBDQuery</a> <a id="authzdbdquery" name="authzdbdquery">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzDBDQuery" id="AuthzDBDQuery">AuthzDBDQuery</a> <a name="authzdbdquery" id="authzdbdquery">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the SQL Query for the required operation</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDQuery SQL-Query</code></td></tr>
@@ -217,8 +217,8 @@ header is present</td></tr>
     </ul>
 
 </div>
-<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
-<div class="directive-section"><h2><a id="AuthzDBDRedirectQuery" name="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</a> <a id="authzdbdredirectquery" name="authzdbdredirectquery">Directive</a></h2>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzDBDRedirectQuery" id="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</a> <a name="authzdbdredirectquery" id="authzdbdredirectquery">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a query to look up a login page for the user</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDRedirectQuery SQL-Query</code></td></tr>
