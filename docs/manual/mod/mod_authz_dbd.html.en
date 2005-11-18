@@ -1,0 +1,244 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_authz_dbd - Apache HTTP Server</title>
+<link title="Main stylesheet" type="text/css" media="all" rel="stylesheet" href="../style/css/manual.css" />
+<link title="No Sidebar - Default font size" type="text/css" media="all" rel="alternate stylesheet" href="../style/css/manual-loose-100pc.css" />
+<link type="text/css" media="print" rel="stylesheet" href="../style/css/manual-print.css" />
+<link rel="shortcut icon" href="../images/favicon.ico" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img src="../images/feather.gif" alt="" /></div>
+<div class="up"><a href="./"><img src="../images/left.gif" alt="&lt;-" title="&lt;-" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_authz_dbd</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authz_dbd.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Group Authorization and Login using SQL</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>authz_dbd_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_authz_dbd.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.2 and later</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module provides authorization capabilities so that
+       authenticated users can be allowed or denied access to portions
+       of the web site by group membership. It also provides
+       database/backend login/logout in conjunction with
+       <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img src="../images/down.gif" alt="" /> <a href="#authzdbdauthoritative">AuthzDBDAuthoritative</a></li>
+<li><img src="../images/down.gif" alt="" /> <a href="#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
+<li><img src="../images/down.gif" alt="" /> <a href="#authzdbdquery">AuthzDBDQuery</a></li>
+<li><img src="../images/down.gif" alt="" /> <a href="#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img src="../images/down.gif" alt="" /> <a href="#login">Database Login</a></li>
+<li><img src="../images/down.gif" alt="" /> <a href="#client">Client Login</a></li>
+<li><img src="../images/down.gif" alt="" /> <a href="#example">Configuration Example</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
+<li><code class="directive"><a href="../mod/mod_dbd.html#dbdriver">DBDriver</a></code></li>
+<li><code class="directive"><a href="../mod/mod_dbd.html#dbdparams">DBDParams</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="section">
+<h2><a id="login" name="login">Database Login</a></h2>
+
+<p>In addition to the standard authz function of checking group
+membership, this module provides database Login/Logout capability.
+Specifically, we can maintain a logged in/logged out status in
+the database, and control the status via designated URLs (subject
+of course to users supplying the necessary credentials).</p>
+<p>This works by defining two special
+<code class="directive"><a href="../mod/core.html#require">Require</a></code> types:
+<code>Require dbd-login</code> and <code>Require dbd-logout</code>.
+For usage details, see the configuration example below.</p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="section">
+<h2><a id="client" name="client">Client Login</a></h2>
+
+<p>In conjunction with server login/logout, we may wish to implement
+clientside login/out, for example by setting and unsetting a cookie
+or other such token.  Although this is not the business of an authz
+module, client session management software should be able to tie its
+operation in to database login/logout.  To support this,
+<code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code> exports an optional hook that will
+be run whenever a user successfully logs into or out of the database.
+Session management modules can use the hook to implement functions
+to start and end a client session.</p>
+</div><div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="section">
+<h2><a id="example" name="example">Configuration Example</a></h2>
+
+<div class="example"><pre><code>
+# DBD Configuration
+DBDriver oracle
+DBDParams "dbname=apacheauth user=apache pass=xxxxxx"
+
+DBDMin  4
+DBDKeep 8
+DBDMax  20
+DBDExptime 300
+
+&lt;Directory /usr/www/my.site/team-private/&gt;
+   # authn with mod_authn_dbd
+   AuthType Basic
+   AuthName Team
+   AuthBasicProvider dbd
+   AuthDBDUserPWQuery "SELECT pass FROM authn WHERE user = %s AND login = true"
+
+   # Require dbd-group and authz_dbd implementation
+   Require dbd-group team
+   AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
+
+   # When a user fails to authn/authz, invite them to login
+   ErrorDocument 401 /team-private/login-form.html
+
+   &lt;Files login.html&gt;
+      # Don't require that we're already logged in!
+      AuthDBDUserPWQuery "SELECT pass FROM authn WHERE user = %s"
+
+      # dbd-login action executes a query to set our own state
+      Require dbd-login
+      AuthzDBDQuery "UPDATE authn SET login = true WHERE user = %s"
+
+      # Return user to referring page (if any) on successful login
+      AuthzDBDLoginToReferer On
+   &lt;/Files&gt;
+
+   &lt;Files logout.html&gt;
+      # dbd-logout action executes a query to set our own state
+      Require dbd-logout
+      AuthzDBDQuery "UPDATE authn SET login = false WHERE user = %s"
+   &lt;/Files&gt;
+&lt;/Directory&gt;
+</code></pre></div>
+</div>
+<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="directive-section"><h2><a id="AuthzDBDAuthoritative" name="AuthzDBDAuthoritative">AuthzDBDAuthoritative</a> <a id="authzdbdauthoritative" name="authzdbdauthoritative">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authorization will be passed on to lower level
+modules</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDAuthoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzDBDAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
+</table>
+    <p>Setting the <code class="directive">AuthzDBDAuthoritative</code>
+    directive explicitly to <code>Off</code> allows group authorization
+    to be handled by another authz module if the userID is not
+    in any authorized dbd-group. If there are any groups
+    specified, the usual checks will be applied and a failure will
+    give an Authentication Required reply.</p>
+
+    <p>So if a userID appears in the database of more than one module;
+    or if a valid <code class="directive"><a href="../mod/core.html#require">Require</a></code>
+    directive applies to more than one module; then the first module
+    will verify the credentials; and no access is passed on;
+    regardless of the <code class="directive">AuthAuthoritative</code> setting.</p>
+
+    <p>A common use for this is in conjunction with one of the
+    auth providers; such or
+    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Whereas this DBD module supplies
+    the bulk of the user credential checking; a few (administrator) related
+    accesses fall through to a lower level with a well protected
+    <code>.htpasswd</code> file.</p>
+
+    <p>By default, control is not passed on and an unknown group
+    will result in an Authentication Required reply. Not
+    setting it thus keeps the system secure and forces an NCSA
+    compliant behaviour.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="directive-section"><h2><a id="AuthzDBDLoginToReferer" name="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a> <a id="authzdbdlogintoreferer" name="authzdbdlogintoreferer">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to redirect the Client to the Referring
+page on successful login or logout if a <code>Referer</code> request
+header is present</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDLoginToReferer On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzDBDLoginToReferer Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
+</table>
+    <p>In conjunction with <code>Require dbd-login</code> or
+    <code>Require dbd-logout</code>, this provides the option to
+    redirect the client back to the Referring page (the URL in
+    the <code>Referer</code> HTTP request header, if present.
+    When there is no <code>Referer</code> header,
+    <code>AuthzDBDLoginToReferer On</code> will be ignored.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="directive-section"><h2><a id="AuthzDBDQuery" name="AuthzDBDQuery">AuthzDBDQuery</a> <a id="authzdbdquery" name="authzdbdquery">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify the SQL Query for the required operation</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDQuery SQL-Query</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
+</table>
+    <p>The <code class="directive">AuthzDBDQuery</code> specifies an SQL
+    query to run.  The purpose of the query depends on the
+    <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive in
+    effect.</p>
+    <ul>
+    <li>With <code>Require dbd-group</code>, it specifies a query
+    to look up groups for the current user.  This is the standard
+    functionality of other authz modules such as
+    <code class="module"><a href="../mod/mod_authz_file.html">mod_authz_file</a></code> and <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>.
+    In this case it will typically take the form<br />
+    <code>AuthzDBDQuery "SELECT group FROM groups WHERE user= %s"</code>
+    </li>
+    <li>With <code>Require dbd-login</code> or <code>Require dbd-logout</code>,
+    it will never deny access, but will instead execute an SQL Query
+    designed to log the user (who must already be authenticated with
+    <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>) in or out.  Such a query will
+    typically take the form<br />
+    <code>AuthzDBDQuery "UPDATE authn SET login = true WHERE user = %s"</code>
+    </li>
+    </ul>
+
+</div>
+<div class="top"><a href="#page-header"><img src="../images/up.gif" alt="top" /></a></div>
+<div class="directive-section"><h2><a id="AuthzDBDRedirectQuery" name="AuthzDBDRedirectQuery">AuthzDBDRedirectQuery</a> <a id="authzdbdredirectquery" name="authzdbdredirectquery">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specify a query to look up a login page for the user</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDRedirectQuery SQL-Query</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
+</table>
+    <p>Specifies an optional query to use after successful login
+    (or logout) to redirect the user to a page, which may be
+    specific to the user.  Such a query will take the form<br />
+    <code>AuthzDBDRedirectQuery "SELECT userpage FROM userpages WHERE user = %s"</code>
+    </p>
+    <p>Note that <code class="directive">AuthzDBDLoginToReferer</code> takes
+    precedence if both are set.</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authz_dbd.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
