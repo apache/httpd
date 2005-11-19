@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_negotiation: Minor performance tweak by reusing already calculated
+     strlen.
+     [Ruediger Pluem, Christophe Jaillet <christophe.jaillet wanadoo.fr>]
+
   *) mod_authz_dbd: SQL authz with Login/Session support [Nick Kew]
 
   *) Fix typo in ProxyStatus syntax error message.
