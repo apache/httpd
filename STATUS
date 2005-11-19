@@ -304,6 +304,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           Trunk version of patch will work
        +1: rpluem, trawick
 
+    *) mod_auth: Fix PR37566 (Write message to error log if AuthGroupFile
+       cannot be opened.)
+       Trunk version of patch:
+          N/A: mod_auth does not exist any more on trunk
+       Backport version for 2.0.x of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=16998
+       +1: rpluem
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
