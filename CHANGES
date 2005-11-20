@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.1.10
 
+  *) mod_negotiation: Minor performance tweak by reusing already calculated
+     strlen.
+     [Ruediger Pluem, Christophe Jaillet <christophe.jaillet wanadoo.fr>]
+
   *) Remove support for 'On' and 'Off' for AuthBasicProvider and
      AuthDigestProvider.  [Joshua Slive, Justin Erenkrantz]
 
