@@ -854,7 +854,7 @@ static apr_off_t get_body(char *buffer, apr_size_t *len, const char *tag,
         return -1;
     }
     bodylen = endbody - buffer;
-    endbody += strlen(tag);
+    endbody += taglen;
     /* Skip all the trailing cruft after the end tag to the next line */
     while (*endbody) {
         if (*endbody == '\n') {
