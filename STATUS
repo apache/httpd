@@ -310,7 +310,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           N/A: mod_auth does not exist any more on trunk
        Backport version for 2.0.x of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16998
-       +1: rpluem
+       +1: rpluem, trawick
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
