@@ -1,4 +1,7 @@
                                                         -*- coding: utf-8 -*-
+Changes with Apache 2.1.11
+
+
 Changes with Apache 2.1.10
 
   *) mod_negotiation: Minor performance tweak by reusing already calculated
