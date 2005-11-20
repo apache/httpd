@@ -58,6 +58,15 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+    * Tarball is currently un-configurable on systems with APR 1.0 or
+      1.1 installed as APR_FIND_APR (and _APU) will find this installation
+      but we will then use APACHE_CHECK_APxVER to insist on APR 1.2. The
+      only workaround for users is to manually configure and install
+      apr 1.2, either in a location preceding the existing installation
+      or over it. However, since /usr is the first path searched this
+      would probably mean installing over a system-packaged/bundled
+      APR.  
+
 CURRENT VOTES:
 
     * httpd-std.conf and friends
