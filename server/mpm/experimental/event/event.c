@@ -641,10 +641,6 @@ read_request:
     }
 
     if (cs->state == CONN_STATE_WRITE_COMPLETION) {
-        /* For now, do blocking writes in this thread to transfer the
-         * rest of the response.  TODO: Hand off this connection to a
-         * pollset for asynchronous write completion.
-         */
         ap_filter_t *output_filter = c->output_filters;
         apr_status_t rv;
         while (output_filter->next != NULL) {
