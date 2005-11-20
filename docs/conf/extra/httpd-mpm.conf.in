@@ -57,22 +57,6 @@ LockFile @rel_logfiledir@/accept.lock
     MaxRequestsPerChild   0
 </IfModule>
 
-# perchild MPM
-# NumServers: constant number of server processes
-# StartThreads: initial number of worker threads in each server process
-# MinSpareThreads: minimum number of worker threads which are kept spare
-# MaxSpareThreads: maximum number of worker threads which are kept spare
-# MaxThreadsPerChild: maximum number of worker threads in each server process
-# MaxRequestsPerChild: maximum number of connections per server process
-<IfModule mpm_perchild_module>
-    NumServers            5
-    StartThreads          5
-    MinSpareThreads       5
-    MaxSpareThreads      10
-    MaxThreadsPerChild   20
-    MaxRequestsPerChild   0
-</IfModule>
-
 # WinNT MPM
 # ThreadsPerChild: constant number of worker threads in the server process
 # MaxRequestsPerChild: maximum  number of requests a server process serves
