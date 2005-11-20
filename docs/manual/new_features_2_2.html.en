@@ -162,7 +162,7 @@
       lists all modules that are loaded based on the current
       configuration. Unlike the <code>-l</code> option, this list
       includes DSOs loaded via <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>.</dd>
-      <dt><code class="program"><a href="./programs/htttxt2dbm.html">htttxt2dbm</a></code></dt>
+      <dt><code class="program"><a href="./programs/httxt2dbm.html">httxt2dbm</a></code></dt>
       <dd>A new program used to generate dbm files from text input, 
           for use in <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
           with the <code>dbm</code> map type.</dd>
