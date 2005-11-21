@@ -40,6 +40,7 @@ typedef struct {
     apr_dbd_t *handle;
     const apr_dbd_driver_t *driver;
     apr_hash_t *prepared;
+    apr_pool_t *pool;
 } ap_dbd_t;
 
 /* Export functions to access the database */
