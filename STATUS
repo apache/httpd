@@ -312,6 +312,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16998
        +1: rpluem, trawick
 
+    *) mod_deflate: Fix PR37559 (mod_deflate + mod_proxy overwrite the
+       Vary: header)
+       Trunk version of patch:
+          http://svn.apache.org/viewcvs.cgi?rev=161691&view=rev
+       Backport version for 2.0.x of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=16995
+       +1: rpluem
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
