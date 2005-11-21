@@ -522,13 +522,13 @@ static const char *set_secure_listener(cmd_parms *cmd, void *dummy,
         walk = &(*walk)->next;
     }
 
+    apr_table_add(sc->sltable, ports, addr);
+
     /* If we found a pre-existing listen socket record, then there
        is no need to create a new secure listen socket record. */
     if (found_listener) {
         return NULL;
     }
-
-    apr_table_add(sc->sltable, ports, addr);
 
     new->local_addr.sin_port = htons(port);
     new->fd = -1;
