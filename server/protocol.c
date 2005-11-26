@@ -543,17 +543,75 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
     }
 }
 
-static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
+static void set_request_line(request_rec *r, char *line)
 {
-    const char *ll;
-    const char *uri;
-    const char *pro;
-
 #if 0
     conn_rec *conn = r->connection;
 #endif
+    const char *ll;
+    const char *uri;
+    const char *pro;
     int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     char http[5];
+    apr_size_t len;
+
+    r->request_time = apr_time_now();
+    ll = r->the_request = line;
+    r->method = ap_getword_white(r->pool, &ll);
+
+    uri = ap_getword_white(r->pool, &ll);
+
+    /* Provide quick information about the request method as soon as known */
+
+    r->method_number = ap_method_number_of(r->method);
+    if (r->method_number == M_GET && r->method[0] == 'H') {
+        r->header_only = 1;
+    }
+
+    ap_parse_uri(r, uri);
+
+    if (ll[0]) {
+        r->assbackwards = 0;
+        pro = ll;
+        len = strlen(ll);
+    } else {
+        r->assbackwards = 1;
+        pro = "HTTP/0.9";
+        len = 8;
+    }
+    r->protocol = apr_pstrmemdup(r->pool, pro, len);
+
+    /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
+
+    /* Avoid sscanf in the common case */
+    if (len == 8
+        && pro[0] == 'H' && pro[1] == 'T' && pro[2] == 'T' && pro[3] == 'P'
+        && pro[4] == '/' && apr_isdigit(pro[5]) && pro[6] == '.'
+        && apr_isdigit(pro[7])) {
+        r->proto_num = HTTP_VERSION(pro[5] - '0', pro[7] - '0');
+    }
+    else if (3 == sscanf(r->protocol, "%4s/%u.%u", http, &major, &minor)
+             && (strcasecmp("http", http) == 0)
+             && (minor < HTTP_VERSION(1, 0)) ) { /* don't allow HTTP/0.1000 */
+        r->proto_num = HTTP_VERSION(major, minor);
+    }
+    else {
+        r->proto_num = HTTP_VERSION(1, 0);
+    }
+
+#if 0
+/* XXX If we want to keep track of the Method, the protocol module should do
+ * it.  That support isn't in the scoreboard yet.  Hopefully next week
+ * sometime.   rbb */
+    ap_update_connection_status(AP_CHILD_THREAD_FROM_ID(conn->id), "Method",
+                                r->method);
+#endif
+
+    return;
+}
+
+static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
+{
     apr_size_t len;
     int num_blank_lines = 0;
     int max_blank_lines = r->server->limit_req_fields;
@@ -605,55 +663,7 @@ static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
 
     /* we've probably got something to do, ignore graceful restart requests */
 
-    r->request_time = apr_time_now();
-    ll = r->the_request;
-    r->method = ap_getword_white(r->pool, &ll);
-
-#if 0
-/* XXX If we want to keep track of the Method, the protocol module should do
- * it.  That support isn't in the scoreboard yet.  Hopefully next week
- * sometime.   rbb */
-    ap_update_connection_status(AP_CHILD_THREAD_FROM_ID(conn->id), "Method",
-                                r->method);
-#endif
-
-    uri = ap_getword_white(r->pool, &ll);
-
-    /* Provide quick information about the request method as soon as known */
-
-    r->method_number = ap_method_number_of(r->method);
-    if (r->method_number == M_GET && r->method[0] == 'H') {
-        r->header_only = 1;
-    }
-
-    ap_parse_uri(r, uri);
-
-    if (ll[0]) {
-        r->assbackwards = 0;
-        pro = ll;
-        len = strlen(ll);
-    } else {
-        r->assbackwards = 1;
-        pro = "HTTP/0.9";
-        len = 8;
-    }
-    r->protocol = apr_pstrmemdup(r->pool, pro, len);
-
-    /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
-
-    /* Avoid sscanf in the common case */
-    if (len == 8
-        && pro[0] == 'H' && pro[1] == 'T' && pro[2] == 'T' && pro[3] == 'P'
-        && pro[4] == '/' && apr_isdigit(pro[5]) && pro[6] == '.'
-        && apr_isdigit(pro[7])) {
-        r->proto_num = HTTP_VERSION(pro[5] - '0', pro[7] - '0');
-    }
-    else if (3 == sscanf(r->protocol, "%4s/%u.%u", http, &major, &minor)
-             && (strcasecmp("http", http) == 0)
-             && (minor < HTTP_VERSION(1, 0)) ) /* don't allow HTTP/0.1000 */
-        r->proto_num = HTTP_VERSION(major, minor);
-    else
-        r->proto_num = HTTP_VERSION(1, 0);
+    set_request_line(r, r->the_request);
 
     return 1;
 }
@@ -825,16 +835,11 @@ AP_DECLARE(void) ap_get_mime_headers(request_rec *r)
     apr_brigade_destroy(tmp_bb);
 }
 
-request_rec *ap_read_request(conn_rec *conn)
+static request_rec *init_request(conn_rec *conn)
 {
     request_rec *r;
     apr_pool_t *p;
-    const char *expect;
-    int access_status;
-    apr_bucket_brigade *tmp_bb;
-    apr_socket_t *csd;
-    apr_interval_time_t cur_timeout;
-
+    
     apr_pool_create(&p, conn->pool);
     apr_pool_tag(p, "request");
     r = apr_pcalloc(p, sizeof(request_rec));
@@ -876,77 +881,14 @@ request_rec *ap_read_request(conn_rec *conn)
      */
     r->used_path_info = AP_REQ_DEFAULT_PATH_INFO;
 
-    tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    return r;
+}
 
-    /* Get the request... */
-    if (!read_request_line(r, tmp_bb)) {
-        if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "request failed: URI too long (longer than %d)", r->server->limit_req_line);
-            ap_send_error_response(r, 0);
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-            ap_run_log_transaction(r);
-            apr_brigade_destroy(tmp_bb);
-            return r;
-        }
-
-        apr_brigade_destroy(tmp_bb);
-        return NULL;
-    }
-
-    /* We may have been in keep_alive_timeout mode, so toggle back
-     * to the normal timeout mode as we fetch the header lines,
-     * as necessary.
-     */
-    csd = ap_get_module_config(conn->conn_config, &core_module);
-    apr_socket_timeout_get(csd, &cur_timeout);
-    if (cur_timeout != conn->base_server->timeout) {
-        apr_socket_timeout_set(csd, conn->base_server->timeout);
-        cur_timeout = conn->base_server->timeout;
-    }
-
-    if (!r->assbackwards) {
-        ap_get_mime_headers_core(r, tmp_bb);
-        if (r->status != HTTP_REQUEST_TIME_OUT) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "request failed: error reading the headers");
-            ap_send_error_response(r, 0);
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-            ap_run_log_transaction(r);
-            apr_brigade_destroy(tmp_bb);
-            return r;
-        }
-
-        if (apr_table_get(r->headers_in, "Transfer-Encoding")
-            && apr_table_get(r->headers_in, "Content-Length")) {
-            /* 2616 section 4.4, point 3: "if both Transfer-Encoding
-             * and Content-Length are received, the latter MUST be
-             * ignored"; so unset it here to prevent any confusion
-             * later. */
-            apr_table_unset(r->headers_in, "Content-Length");
-        }
-    }
-    else {
-        if (r->header_only) {
-            /*
-             * Client asked for headers only with HTTP/0.9, which doesn't send
-             * headers! Have to dink things just to make sure the error message
-             * comes through...
-             */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "client sent invalid HTTP/0.9 request: HEAD %s",
-                          r->uri);
-            r->header_only = 0;
-            r->status = HTTP_BAD_REQUEST;
-            ap_send_error_response(r, 0);
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-            ap_run_log_transaction(r);
-            apr_brigade_destroy(tmp_bb);
-            return r;
-        }
-    }
-
-    apr_brigade_destroy(tmp_bb);
+static request_rec *request_post_read(request_rec *r, conn_rec *conn)
+{
+    apr_socket_t *csd;
+    const char *expect;
+    int access_status;
 
     r->status = HTTP_OK;                         /* Until further notice. */
 
@@ -958,9 +900,17 @@ request_rec *ap_read_request(conn_rec *conn)
     /* Toggle to the Host:-based vhost's timeout mode to fetch the
      * request body and send the response body, if needed.
      */
-    if (cur_timeout != r->server->timeout) {
-        apr_socket_timeout_set(csd, r->server->timeout);
-        cur_timeout = r->server->timeout;
+    csd = ap_get_module_config(conn->conn_config, &core_module);
+    apr_socket_timeout_set(csd, r->server->timeout);
+
+    if (apr_table_get(r->headers_in, "Transfer-Encoding") &&
+        apr_table_get(r->headers_in, "Content-Length")) {
+        /* 2616 section 4.4, point 3: "if both Transfer-Encoding
+         * and Content-Length are received, the latter MUST be
+         * ignored"; so unset it here to prevent any confusion
+         * later.
+         */
+        apr_table_unset(r->headers_in, "Content-Length");
     }
 
     /* we may have switched to another server */
@@ -1021,8 +971,82 @@ request_rec *ap_read_request(conn_rec *conn)
 
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
-
     return r;
+}
+
+request_rec *ap_read_request(conn_rec *conn)
+{
+    request_rec *r;
+    apr_bucket_brigade *tmp_bb;
+    apr_socket_t *csd;
+    apr_interval_time_t cur_timeout;
+
+    r = init_request(conn);
+
+    tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+
+    /* Get the request... */
+    if (!read_request_line(r, tmp_bb)) {
+        if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "request failed: URI too long (longer than %d)", r->server->limit_req_line);
+            ap_send_error_response(r, 0);
+            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+            ap_run_log_transaction(r);
+            apr_brigade_destroy(tmp_bb);
+            return r;
+        }
+
+        apr_brigade_destroy(tmp_bb);
+        return NULL;
+    }
+
+    /* We may have been in keep_alive_timeout mode, so toggle back
+     * to the normal timeout mode as we fetch the header lines,
+     * as necessary.
+     */
+    csd = ap_get_module_config(conn->conn_config, &core_module);
+    apr_socket_timeout_get(csd, &cur_timeout);
+    if (cur_timeout != conn->base_server->timeout) {
+        apr_socket_timeout_set(csd, conn->base_server->timeout);
+        cur_timeout = conn->base_server->timeout;
+    }
+
+    if (!r->assbackwards) {
+        ap_get_mime_headers_core(r, tmp_bb);
+        if (r->status != HTTP_REQUEST_TIME_OUT) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "request failed: error reading the headers");
+            ap_send_error_response(r, 0);
+            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+            ap_run_log_transaction(r);
+            apr_brigade_destroy(tmp_bb);
+            return r;
+        }
+    }
+    else {
+        if (r->header_only) {
+            /*
+             * Client asked for headers only with HTTP/0.9, which doesn't send
+             * headers! Have to dink things just to make sure the error message
+             * comes through...
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "client sent invalid HTTP/0.9 request: HEAD %s",
+                          r->uri);
+            r->header_only = 0;
+            r->status = HTTP_BAD_REQUEST;
+            ap_send_error_response(r, 0);
+            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+            ap_run_log_transaction(r);
+            apr_brigade_destroy(tmp_bb);
+            return r;
+        }
+    }
+
+    apr_brigade_destroy(tmp_bb);
+
+    return request_post_read(r, conn);
 }
 
 /* if a request with a body creates a subrequest, clone the original request's
