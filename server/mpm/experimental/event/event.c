@@ -565,13 +565,10 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
     long conn_id = ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
     int csd;
     int rc;
-    apr_time_t time_now = 0;
     ap_sb_handle_t *sbh;
 
     ap_create_sb_handle(&sbh, p, my_child_num, my_thread_num);
     apr_os_sock_get(&csd, sock);
-
-    time_now = apr_time_now();
 
     if (cs == NULL) {           /* This is a new connection */
 
@@ -657,7 +654,7 @@ read_request:
              * Set a write timeout for this connection, and let the
              * event thread poll for writeability.
              */
-            cs->expiration_time = ap_server_conf->timeout + time_now;
+            cs->expiration_time = ap_server_conf->timeout + apr_time_now();
             apr_thread_mutex_lock(timeout_mutex);
             APR_RING_INSERT_TAIL(&timeout_head, cs, conn_state_t, timeout_list);
             apr_thread_mutex_unlock(timeout_mutex);
@@ -698,7 +695,8 @@ read_request:
          * timeout today.  With a normal client, the socket will be readable in
          * a few milliseconds anyway.
          */
-        cs->expiration_time = ap_server_conf->keep_alive_timeout + time_now;
+        cs->expiration_time = ap_server_conf->keep_alive_timeout +
+                              apr_time_now();
         apr_thread_mutex_lock(timeout_mutex);
         APR_RING_INSERT_TAIL(&keepalive_timeout_head, cs, conn_state_t, timeout_list);
         apr_thread_mutex_unlock(timeout_mutex);
