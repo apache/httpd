@@ -93,6 +93,23 @@
   <section id="misc">
     <title>Misc Changes</title>
 
+    <ul>
+      <li>The module <module>mod_cache</module>, which was
+      experimental in Apache 2.0, is now a standard module.</li>
+
+      <li>The module <module>mod_disk_cache</module>, which was
+      experimental in Apache 2.0, is now a standard module.</li>
+
+      <li>The module <module>mod_mem_cache</module>, which was
+      experimental in Apache 2.0, is now a standard module.</li>
+
+      <li>The module <module>mod_charset_lite</module>, which was
+      experimental in Apache 2.0, is now a standard module.</li>
+
+      <li>The module <module>mod_dumpio</module>, which was
+      experimental in Apache 2.0, is now a standard module.</li>
+
+    </ul>
   </section>
 
   <section id="third-party">
