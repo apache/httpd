@@ -383,14 +383,14 @@ static long ssl_print_cb(BIO *bio,int cmd,const char *argp,int argi,long argl,lo
     if (out == NULL) return(ret);
 
     if (cmd == (BIO_CB_READ|BIO_CB_RETURN)) {
-        BIO_printf(out,"read from %08X [%08lX] (%d bytes => %ld (0x%X))\n",
-                bio,argp,argi,ret,ret);
+        BIO_printf(out,"read from %p [%p] (%d bytes => %ld (0x%lX))\n",
+                   bio, argp, argi, ret, ret);
         BIO_dump(out,(char *)argp,(int)ret);
         return(ret);
     }
     else if (cmd == (BIO_CB_WRITE|BIO_CB_RETURN)) {
-        BIO_printf(out,"write to %08X [%08lX] (%d bytes => %ld (0x%X))\n",
-            bio,argp,argi,ret,ret);
+        BIO_printf(out,"write to %p [%p] (%d bytes => %ld (0x%lX))\n",
+                   bio, argp, argi, ret, ret);
         BIO_dump(out,(char *)argp,(int)ret);
     }
     return ret;
@@ -485,7 +485,7 @@ static void ssl_print_cert_info(BIO *bio, X509 *cert)
     X509_NAME *dn;
     char buf[1024];
 
-    BIO_printf(bio, "Certificate version: %d\n", X509_get_version(cert)+1);
+    BIO_printf(bio, "Certificate version: %ld\n", X509_get_version(cert)+1);
     BIO_printf(bio,"Valid from: ");
     ASN1_UTCTIME_print(bio, X509_get_notBefore(cert));
     BIO_printf(bio,"\n");
