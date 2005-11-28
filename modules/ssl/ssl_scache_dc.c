@@ -127,7 +127,7 @@ SSL_SESSION *ssl_scache_dc_retrieve(server_rec *s, UCHAR *id, int idlen)
     unsigned char der[SSL_SESSION_MAX_DER];
     unsigned int der_len;
     SSL_SESSION *pSession;
-    unsigned char *pder = der;
+    MODSSL_D2I_SSL_SESSION_CONST unsigned char *pder = der;
     SSLModConfigRec *mc = myModConfig(s);
     DC_CTX *ctx = mc->tSessionCacheDataTable;
 
