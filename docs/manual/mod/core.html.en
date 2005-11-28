@@ -1556,6 +1556,10 @@ the server configuration files</td></tr>
     encoding will be used in order to send content of unknown
     length over persistent connections.</p>
 
+    <p>When a client uses a Keep-Alive connection it will be counted
+    as a single "request" for the MaxRequestsPerChild directive, regardless
+    of how many requests are sent using the connection.</p>
+
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></code></li>
