@@ -543,7 +543,7 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
     }
 }
 
-static void set_request_line(request_rec *r, char *line)
+static void set_the_request(request_rec *r, char *line)
 {
 #if 0
     conn_rec *conn = r->connection;
@@ -554,6 +554,7 @@ static void set_request_line(request_rec *r, char *line)
     int major = 1, minor = 0;   /* Assume HTTP/1.0 if non-"HTTP" protocol */
     char http[5];
     apr_size_t len;
+    apr_socket_t *csd;
 
     r->request_time = apr_time_now();
     ll = r->the_request = line;
@@ -581,8 +582,6 @@ static void set_request_line(request_rec *r, char *line)
     }
     r->protocol = apr_pstrmemdup(r->pool, pro, len);
 
-    /* XXX ap_update_connection_status(conn->id, "Protocol", r->protocol); */
-
     /* Avoid sscanf in the common case */
     if (len == 8
         && pro[0] == 'H' && pro[1] == 'T' && pro[2] == 'T' && pro[3] == 'P'
@@ -599,73 +598,14 @@ static void set_request_line(request_rec *r, char *line)
         r->proto_num = HTTP_VERSION(1, 0);
     }
 
-#if 0
-/* XXX If we want to keep track of the Method, the protocol module should do
- * it.  That support isn't in the scoreboard yet.  Hopefully next week
- * sometime.   rbb */
-    ap_update_connection_status(AP_CHILD_THREAD_FROM_ID(conn->id), "Method",
-                                r->method);
-#endif
+    /* We may have been in keep_alive_timeout mode, so toggle back
+     * to the normal timeout mode as we fetch the header lines,
+     * as necessary.
+     */
+    csd = ap_get_module_config(r->connection->conn_config, &core_module);
+    apr_socket_timeout_set(csd, r->connection->base_server->timeout);
 
     return;
-}
-
-static int read_request_line(request_rec *r, apr_bucket_brigade *bb)
-{
-    apr_size_t len;
-    int num_blank_lines = 0;
-    int max_blank_lines = r->server->limit_req_fields;
-
-    if (max_blank_lines <= 0) {
-        max_blank_lines = DEFAULT_LIMIT_REQUEST_FIELDS;
-    }
-
-    /* Read past empty lines until we get a real request line,
-     * a read error, the connection closes (EOF), or we timeout.
-     *
-     * We skip empty lines because browsers have to tack a CRLF on to the end
-     * of POSTs to support old CERN webservers.  But note that we may not
-     * have flushed any previous response completely to the client yet.
-     * We delay the flush as long as possible so that we can improve
-     * performance for clients that are pipelining requests.  If a request
-     * is pipelined then we won't block during the (implicit) read() below.
-     * If the requests aren't pipelined, then the client is still waiting
-     * for the final buffer flush from us, and we will block in the implicit
-     * read().  B_SAFEREAD ensures that the BUFF layer flushes if it will
-     * have to block during a read.
-     */
-
-    do {
-        apr_status_t rv;
-
-        /* insure ap_rgetline allocates memory each time thru the loop
-         * if there are empty lines
-         */
-        r->the_request = NULL;
-        rv = ap_rgetline(&(r->the_request), (apr_size_t)(r->server->limit_req_line + 2),
-                         &len, r, 0, bb);
-
-        if (rv != APR_SUCCESS) {
-            r->request_time = apr_time_now();
-
-            /* ap_rgetline returns APR_ENOSPC if it fills up the
-             * buffer before finding the end-of-line.  This is only going to
-             * happen if it exceeds the configured limit for a request-line.
-             */
-            if (rv == APR_ENOSPC) {
-                r->status    = HTTP_REQUEST_URI_TOO_LARGE;
-                r->proto_num = HTTP_VERSION(1,0);
-                r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
-            }
-            return 0;
-        }
-    } while ((len <= 0) && (++num_blank_lines < max_blank_lines));
-
-    /* we've probably got something to do, ignore graceful restart requests */
-
-    set_request_line(r, r->the_request);
-
-    return 1;
 }
 
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb)
@@ -974,77 +914,215 @@ static request_rec *request_post_read(request_rec *r, conn_rec *conn)
     return r;
 }
 
+static apr_status_t set_mime_header(request_rec *r, char *line)
+{
+    char *value, *tmp_field;
+
+    /* TODO check for # fields exceeding r->server->limit_req_fields */
+    
+    if (!(value = strchr(line, ':'))) { /* Find ':' or    */
+        r->status = HTTP_BAD_REQUEST;      /* abort bad request */
+        apr_table_setn(r->notes, "error-notes",
+                       apr_pstrcat(r->pool,
+                                   "Request header field is "
+                                   "missing ':' separator.<br />\n"
+                                   "<pre>\n",
+                                   ap_escape_html(r->pool, line),
+                                   "</pre>\n", NULL));
+        return APR_EGENERAL;
+    }
+
+    tmp_field = value - 1; /* last character of field-name */
+
+    *value++ = '\0'; /* NUL-terminate at colon */
+
+    while (*value == ' ' || *value == '\t') {
+        ++value;            /* Skip to start of value   */
+    }
+
+    /* Strip LWS after field-name: */
+    while (tmp_field > line
+           && (*tmp_field == ' ' || *tmp_field == '\t')) {
+        *tmp_field-- = '\0';
+    }
+
+    /* Strip LWS after field-value: */
+    tmp_field = strchr(value, '\0') - 1;
+    while (tmp_field > value
+           && (*tmp_field == ' ' || *tmp_field == '\t')) {
+        *tmp_field-- = '\0';
+    }
+
+    apr_table_addn(r->headers_in, line, value);
+    return APR_SUCCESS;
+}
+
+static apr_status_t process_request_line(request_rec *r, char *line)
+{
+    if (r->the_request == NULL) {
+        /* This is the first line of the request */
+        if ((line == NULL) || (*line == '\0')) {
+            /* We skip empty lines because browsers have to tack a CRLF on to the end
+             * of POSTs to support old CERN webservers.
+             */
+            int max_blank_lines = r->server->limit_req_fields;
+            if (max_blank_lines <= 0) {
+                max_blank_lines = DEFAULT_LIMIT_REQUEST_FIELDS;
+            }
+            r->num_blank_lines++;
+            if (r->num_blank_lines < max_blank_lines) {
+                return APR_SUCCESS;
+            }
+        }
+        set_the_request(r, line);
+    }
+    else {
+        /* We've already read the first line of the request.  This is either
+         * a header field or the blank line terminating the header
+         */
+        if ((line == NULL) || (*line == '\0')) {
+            if (r->pending_header_line != NULL) {
+                (void)set_mime_header(r, r->pending_header_line);  /* TODO check for errors */
+                r->pending_header_line = NULL;
+            }
+            if (r->status == HTTP_REQUEST_TIME_OUT) {
+                apr_table_compress(r->headers_in, APR_OVERLAP_TABLES_MERGE);
+                r->status = HTTP_OK;
+            }
+        }
+        else {
+            if ((*line == ' ') || (*line == '\t')) {
+                /* This line is a continuation of the previous one */
+                if (r->pending_header_line == NULL) {
+                    r->pending_header_line = line;
+                    r->pending_header_size = 0;
+                }
+                else {
+                    apr_size_t pending_len = strlen(r->pending_header_line);
+                    apr_size_t fold_len = strlen(line);
+                    if (pending_len + fold_len >
+                        r->server->limit_req_fieldsize) {
+                        /* CVE-2004-0942 */
+                        r->status = HTTP_BAD_REQUEST;
+                        return APR_ENOSPC;
+                    }
+                    if (pending_len + fold_len + 1 > r->pending_header_size) {
+                        /* Allocate a new buffer big enough to hold the
+                         * concatenated lines
+                         */
+                        apr_size_t new_size = r->pending_header_size;
+                        char *new_buf;
+                        if (new_size == 0) {
+                            new_size = pending_len + fold_len + 1;
+                        }
+                        else {
+                            do {
+                                new_size *= 2;
+                            } while (new_size < pending_len + fold_len + 1);
+                        }
+                        new_buf = (char *)apr_palloc(r->pool, new_size);
+                        memcpy(new_buf, r->pending_header_line, pending_len);
+                        r->pending_header_line = new_buf;
+                        r->pending_header_size = new_size;
+                    }
+                    memcpy(r->pending_header_line + pending_len, line,
+                           fold_len + 1);
+                }
+            }
+            else {
+                /* Set aside this line in case the next line is a continuation
+                 */
+                if (r->pending_header_line != NULL) {
+                    (void)set_mime_header(r, r->pending_header_line);  /* TODO check for errors */
+                }
+                r->pending_header_line = line;
+                r->pending_header_size = 0;
+            }
+        }
+    }
+    return APR_SUCCESS;
+}
+
+static apr_status_t read_partial_request(request_rec *r) {
+    apr_bucket_brigade *tmp_bb;
+
+    /* Read and process lines of the request until we
+     * encounter a complete request header, an error, or EAGAIN
+     */
+    tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    while (r->status == HTTP_REQUEST_TIME_OUT) {
+        char *line = NULL;
+        apr_size_t line_length;
+        apr_status_t rv;
+        apr_size_t length_limit;
+        int first_line = (r->the_request == NULL);
+        if (first_line) {
+            length_limit = r->server->limit_req_line;
+        }
+        else {
+            length_limit = r->server->limit_req_fieldsize;
+        }
+        /* TODO: use a nonblocking call in place of ap_rgetline */
+        rv = ap_rgetline(&line, length_limit + 2,
+                         &line_length, r, 0, tmp_bb);
+        if (rv != APR_SUCCESS) {
+            r->request_time = apr_time_now();
+            /* ap_rgetline returns APR_ENOSPC if it fills up the
+             * buffer before finding the end-of-line.  This is only going to
+             * happen if it exceeds the configured limit for a request-line.
+             */
+            if (rv == APR_ENOSPC) {
+                if (first_line) {
+                    r->status    = HTTP_REQUEST_URI_TOO_LARGE;
+                    r->proto_num = HTTP_VERSION(1,0);
+                    r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
+                }
+                else {
+                    r->status = HTTP_BAD_REQUEST;
+                }
+            }
+            return rv;
+        }
+        rv = process_request_line(r, line);  /* TODO check for errors */
+    }
+    return APR_SUCCESS;
+}
+
 request_rec *ap_read_request(conn_rec *conn)
 {
     request_rec *r;
-    apr_bucket_brigade *tmp_bb;
-    apr_socket_t *csd;
-    apr_interval_time_t cur_timeout;
 
     r = init_request(conn);
 
-    tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
-
-    /* Get the request... */
-    if (!read_request_line(r, tmp_bb)) {
+    if (read_partial_request(r) != APR_SUCCESS) {
         if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "request failed: URI too long (longer than %d)", r->server->limit_req_line);
             ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
-            apr_brigade_destroy(tmp_bb);
             return r;
         }
 
-        apr_brigade_destroy(tmp_bb);
         return NULL;
     }
 
-    /* We may have been in keep_alive_timeout mode, so toggle back
-     * to the normal timeout mode as we fetch the header lines,
-     * as necessary.
-     */
-    csd = ap_get_module_config(conn->conn_config, &core_module);
-    apr_socket_timeout_get(csd, &cur_timeout);
-    if (cur_timeout != conn->base_server->timeout) {
-        apr_socket_timeout_set(csd, conn->base_server->timeout);
-        cur_timeout = conn->base_server->timeout;
+    if (r->assbackwards && r->header_only) {
+        /*
+         * Client asked for headers only with HTTP/0.9, which doesn't send
+         * headers! Have to dink things just to make sure the error message
+         * comes through...
+         */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "client sent invalid HTTP/0.9 request: HEAD %s",
+                      r->uri);
+        r->header_only = 0;
+        r->status = HTTP_BAD_REQUEST;
+        ap_send_error_response(r, 0);
+        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+        ap_run_log_transaction(r);
+        return r;
     }
-
-    if (!r->assbackwards) {
-        ap_get_mime_headers_core(r, tmp_bb);
-        if (r->status != HTTP_REQUEST_TIME_OUT) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "request failed: error reading the headers");
-            ap_send_error_response(r, 0);
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-            ap_run_log_transaction(r);
-            apr_brigade_destroy(tmp_bb);
-            return r;
-        }
-    }
-    else {
-        if (r->header_only) {
-            /*
-             * Client asked for headers only with HTTP/0.9, which doesn't send
-             * headers! Have to dink things just to make sure the error message
-             * comes through...
-             */
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "client sent invalid HTTP/0.9 request: HEAD %s",
-                          r->uri);
-            r->header_only = 0;
-            r->status = HTTP_BAD_REQUEST;
-            ap_send_error_response(r, 0);
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-            ap_run_log_transaction(r);
-            apr_brigade_destroy(tmp_bb);
-            return r;
-        }
-    }
-
-    apr_brigade_destroy(tmp_bb);
 
     return request_post_read(r, conn);
 }

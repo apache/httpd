@@ -967,6 +967,16 @@ struct request_rec {
     /** A flag to determine if the eos bucket has been sent yet */
     int eos_sent;
 
+    /** Number of leading blank lines encountered before request header */
+    int num_blank_lines;
+
+    /** A buffered header line, used to support header folding while
+     *  reading the request */
+    char *pending_header_line;
+
+    /** If nonzero, the number of bytes allocated to hold pending_header_line */
+    apr_size_t pending_header_size;
+
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire
  * record to improve 64bit alignment the next time we need to break
