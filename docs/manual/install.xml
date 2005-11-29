@@ -63,8 +63,8 @@
         <td><a href="#extract">Extract</a></td>
 
         <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-<em>NN</em>.tar</code><br />
-         $ cd httpd-<em>NN</em></td>
+         $ tar xvf httpd-<em>NN</em>.tar<br />
+         $ cd httpd-<em>NN</em></code></td>
       </tr>
 
       <tr>
