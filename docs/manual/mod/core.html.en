@@ -2409,7 +2409,7 @@ a resource</td></tr>
     <p>This directive selects which authenticated users can access a
     resource.  The restrictions are processed by authorization
     modules.  Some of the allowed syntaxes provided by
-    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> and
+    <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> and
     <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> are:</p>
 
     <dl>
@@ -2451,6 +2451,36 @@ a resource</td></tr>
     place the <code class="directive">Require</code> statement into a
     <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code>
     section.</p>
+ 
+    <p>If <code class="directive">Require</code> is used together with 
+    the <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> or
+    <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> directives,
+    then the interaction of these restrictions is controlled by
+    the <code class="directive"><a href="#satisfy">Satisfy</a></code> directive.</p>
+
+    <div class="note"><h3>Removing controls in subdirectories</h3>
+    <p>The following example shows how to use the <code class="directive"><a href="#satisfy">Satisfy</a></code> directive to disable access
+    controls in a subdirectory of a protected directory.  This
+    technique should be used with caution, because it will also
+    disable any access controls imposed by
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>.</p>
+    <div class="example"><p><code>
+      &lt;Directory /path/to/protected/&gt;<br />
+        <span class="indent">
+        Require user david<br />
+        </span>
+      &lt;/Directory&gt;<br />
+      &lt;Directory /path/to/protected/unprotected&gt;<br />
+        <span class="indent">
+        # All access controls and authentication are disabled<br />
+        # in this directory<br />
+        Satisfy Any<br />
+        Allow from all<br />
+        </span>
+      &lt;/Directory&gt;<br />
+    </code></p></div>
+    </div>
+      
 
 <h3>See also</h3>
 <ul>
