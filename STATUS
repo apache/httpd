@@ -56,6 +56,14 @@ Contributors looking for a mission:
 
 CURRENT RELEASE NOTES:
 
+    * Forward binary compatibility is expected of Apache 2.2.x releases, such
+      that no MMN major number changes will occur.  Such changes can only be
+      made in the trunk.
+
+    * All commits to branches/2.2.x must be reflected in SVN trunk,
+      as well, if they apply.  Logical progression is commit to trunk,
+      get feedback and votes on list or in STATUS, then merge into
+      branches/2.2.x, as applicable.
 
 RELEASE SHOWSTOPPERS:
 
