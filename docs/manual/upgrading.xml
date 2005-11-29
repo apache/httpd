@@ -89,7 +89,7 @@
 
     <ul>
       <li>The <program>apachectl</program> option
-      <code>startssl</code> is no longer available.  To enable ssl
+      <code>startssl</code> is no longer available.  To enable SSL
       support, you should edit <code>httpd.conf</code> to include the
       relevant <module>mod_ssl</module> directives and then use
       <code>apachectl start</code> to start the server.  An example
@@ -139,7 +139,7 @@
 
    <p>Many third-party modules designed for version 2.0 will work
    unchanged with the the Apache HTTP Server version 2.2.  But all
-   modules must be recompiled before begin loaded.</p>
+   modules must be recompiled before being loaded.</p>
 
   </section>
 </manualpage>
