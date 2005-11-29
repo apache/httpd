@@ -1,4 +1,4 @@
-APACHE 2.1 STATUS:                                              -*-text-*-
+APACHE 2.2 STATUS:                                              -*-text-*-
 Last modified at [$Date$]
 
 The current version of this file can be found at:
@@ -24,7 +24,9 @@ Patches considered for backport are noted in their branches' STATUS:
 Release history:
     [NOTE that only Alpha/Beta releases occur in 2.1 development]
 
-    2.1.10  : in development
+    2.2.1   : in development
+    2.2.0   : Released on ?, ? 2005.
+    2.1.10  : Tagged on November 19, 2005, voted to 2.2.0.
     2.1.9   : Released on November 5, 2005 as beta.
     2.1.8   : Released on October 1, 2005 as beta.
     2.1.7   : Released on September 12, 2005 as beta.

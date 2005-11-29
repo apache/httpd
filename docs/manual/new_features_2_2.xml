@@ -154,6 +154,10 @@
       lists all modules that are loaded based on the current
       configuration. Unlike the <code>-l</code> option, this list
       includes DSOs loaded via <module>mod_so</module>.</dd>
+      <dt><program>httxt2dbm</program></dt>
+      <dd>A new program used to generate dbm files from text input, 
+          for use in <directive module="mod_rewrite">RewriteMap</directive>
+          with the <code>dbm</code> map type.</dd>
     </dl>
   </section>
 

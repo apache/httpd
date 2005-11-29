@@ -1,5 +1,5 @@
                                                         -*- coding: utf-8 -*-
-Changes with Apache 2.1.10
+Changes with Apache 2.2.0
 
   *) mod_negotiation: Minor performance tweak by reusing already calculated
      strlen.
