@@ -103,9 +103,13 @@
           timeout was reached.</dd>
 
       <dt>SQL Database Support</dt>
-      <dd><module>mod_dbd</module>, together with the apr_dbd framework,
+      <dd><p><module>mod_dbd</module>, together with the apr_dbd framework,
           brings direct SQL support to modules that need it.  Supports
-          connection pooling in threaded MPMs.</dd>
+          connection pooling in threaded MPMs.</p>
+	  <p><strong>Windows Users</strong> please note that this is not
+	  yet included in the standard windows build.  If you try to use
+	  it on the Windows platform, please let us know how you get on.</p>
+	  </dd>
 
     </dl>
   </section>
@@ -143,7 +147,12 @@
       <dd>Added a support for 
          <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, which 
          allows connections to upgrade from clear text to TLS encryption.</dd>
+
+      <dt><module>mod_imagemap</module></dt>
+      <dd>mod_imap has been renamed to <module>mod_imagemap</module> to avoid
+          user confusion.</dd>
     </dl>
+
   </section>
 
   <section id="programs">
