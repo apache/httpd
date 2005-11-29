@@ -71,7 +71,12 @@
     <p>Your existing version 2.0 config files and startup scripts can
       usually be used unchanged in version 2.2.  Some small
       adjustments may be necessary for particular configurations as
-      discussed below.  If you choose to use the new default
+      discussed below.  In addition, if you dynamically load the
+      standard modules using the <directive
+      module="mod_so">LoadModule</directive> directive, then you will
+      need to account for the module name changes mentioned above.</p>
+
+    <p>If you choose to use the new default
       configuration file for version 2.2, you will find that it has
       been greatly simplified by removing all but the most essential
       configuration settings.  A set of example configuration settings
