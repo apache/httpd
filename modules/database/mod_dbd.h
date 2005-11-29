@@ -32,6 +32,27 @@
 #ifndef DBD_H
 #define DBD_H
 
+/* Create a set of DBD_DECLARE(type), DBD_DECLARE_NONSTD(type) and 
+ * DBD_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define DBD_DECLARE(type)            type
+#define DBD_DECLARE_NONSTD(type)     type
+#define DBD_DECLARE_DATA
+#elif defined(DBD_DECLARE_STATIC)
+#define DBD_DECLARE(type)            type __stdcall
+#define DBD_DECLARE_NONSTD(type)     type
+#define DBD_DECLARE_DATA
+#elif defined(DBD_DECLARE_EXPORT)
+#define DBD_DECLARE(type)            __declspec(dllexport) type __stdcall
+#define DBD_DECLARE_NONSTD(type)     __declspec(dllexport) type
+#define DBD_DECLARE_DATA             __declspec(dllexport)
+#else
+#define DBD_DECLARE(type)            __declspec(dllimport) type __stdcall
+#define DBD_DECLARE_NONSTD(type)     __declspec(dllimport) type
+#define DBD_DECLARE_DATA             __declspec(dllimport)
+#endif
+
 #include <httpd.h>
 #include <apr_optional.h>
 #include <apr_hash.h>
@@ -48,28 +69,28 @@ typedef struct {
 /* acquire a connection that MUST be explicitly closed.
  * Returns NULL on error
  */
-AP_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t*, server_rec*);
+DBD_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t*, server_rec*);
 
 /* release a connection acquired with ap_dbd_open */
-AP_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
+DBD_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
 
 /* acquire a connection that will have the lifetime of a request
  * and MUST NOT be explicitly closed.  Return NULL on error.
  * This is the preferred function for most applications.
  */
-AP_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
+DBD_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
 
 /* acquire a connection that will have the lifetime of a connection
  * and MUST NOT be explicitly closed.  Return NULL on error.
  * This is the preferred function for most applications.
  */
-AP_DECLARE(ap_dbd_t*) ap_dbd_cacquire(conn_rec*);
+DBD_DECLARE(ap_dbd_t*) ap_dbd_cacquire(conn_rec*);
 
 /* Prepare a statement for use by a client module during
  * the server startup/configuration phase.  Can't be called
  * after the server has created its children (use apr_dbd_*).
  */
-AP_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
+DBD_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
 
 /* Also export them as optional functions for modules that prefer it */
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
