@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en"><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1" /><!--
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Overview of new features in Apache 2.2 - Apache HTTP Server</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link title="Main stylesheet" type="text/css" media="all" rel="stylesheet" href="./style/css/manual.css" />
+<link title="No Sidebar - Default font size" type="text/css" media="all" rel="alternate stylesheet" href="./style/css/manual-loose-100pc.css" />
+<link type="text/css" media="print" rel="stylesheet" href="./style/css/manual-print.css" />
+<link rel="shortcut icon" href="./images/favicon.ico" /></head>
 <body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="./images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img src="./images/feather.gif" alt="" /></div>
+<div class="up"><a href="./"><img src="./images/left.gif" alt="&lt;-" title="&lt;-" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Overview of new features in Apache 2.2</h1>
 <div class="toplang">
@@ -28,14 +28,14 @@
      version 1.3, see the <a href="new_features_2_0.html">2.0 new features</a>
      document.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#core">Core Enhancements</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#module">Module Enhancements</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#programs">Program Enhancements</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#developer">Module Developer Changes</a></li>
+<div id="quickview"><ul id="toc"><li><img src="./images/down.gif" alt="" /> <a href="#core">Core Enhancements</a></li>
+<li><img src="./images/down.gif" alt="" /> <a href="#module">Module Enhancements</a></li>
+<li><img src="./images/down.gif" alt="" /> <a href="#programs">Program Enhancements</a></li>
+<li><img src="./images/down.gif" alt="" /> <a href="#developer">Module Developer Changes</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div>
 <div class="section">
-<h2><a name="core" id="core">Core Enhancements</a></h2>
+<h2><a id="core" name="core">Core Enhancements</a></h2>
     
     <dl>
 
@@ -106,14 +106,18 @@
           timeout was reached.</dd>
 
       <dt>SQL Database Support</dt>
-      <dd><code class="module"><a href="./mod/mod_dbd.html">mod_dbd</a></code>, together with the apr_dbd framework,
+      <dd><p><code class="module"><a href="./mod/mod_dbd.html">mod_dbd</a></code>, together with the apr_dbd framework,
           brings direct SQL support to modules that need it.  Supports
-          connection pooling in threaded MPMs.</dd>
+          connection pooling in threaded MPMs.</p>
+	  <p><strong>Windows Users</strong> please note that this is not
+	  yet included in the standard windows build.  If you try to use
+	  it on the Windows platform, please let us know how you get on.</p>
+	  </dd>
 
     </dl>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div>
 <div class="section">
-<h2><a name="module" id="module">Module Enhancements</a></h2>
+<h2><a id="module" name="module">Module Enhancements</a></h2>
     
     <dl>
       <dt>Authn/Authz</dt>
@@ -152,9 +156,9 @@
           user confusion.</dd>
     </dl>
 
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div>
 <div class="section">
-<h2><a name="programs" id="programs">Program Enhancements</a></h2>
+<h2><a id="programs" name="programs">Program Enhancements</a></h2>
     
     <dl>
       <dt><code class="program"><a href="./programs/httpd.html">httpd</a></code></dt>
@@ -167,12 +171,12 @@
           for use in <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
           with the <code>dbm</code> map type.</dd>
     </dl>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img src="./images/up.gif" alt="top" /></a></div>
 <div class="section">
-<h2><a name="developer" id="developer">Module Developer Changes</a></h2>
+<h2><a id="developer" name="developer">Module Developer Changes</a></h2>
     
     <dl>
-      <dt><a class="glossarylink" href="./glossary.html#apr" title="see glossary">APR</a> 1.0 API</dt>
+      <dt><a href="./glossary.html#apr" class="glossarylink" title="see glossary">APR</a> 1.0 API</dt>
 
       <dd>Apache 2.2 uses the APR 1.0 API.  All deprecated functions and 
           symbols have been removed from <code>APR</code> and 
