@@ -2404,7 +2404,7 @@ a resource</description>
     <p>This directive selects which authenticated users can access a
     resource.  The restrictions are processed by authorization
     modules.  Some of the allowed syntaxes provided by
-    <module>mod_authz_owner</module> and
+    <module>mod_authz_user</module> and
     <module>mod_authz_groupfile</module> are:</p>
 
     <dl>
@@ -2447,6 +2447,37 @@ a resource</description>
     place the <directive>Require</directive> statement into a
     <directive module="core" type="section">Limit</directive>
     section.</p>
+ 
+    <p>If <directive>Require</directive> is used together with 
+    the <directive module="mod_authz_host">Allow</directive> or
+    <directive module="mod_authz_host">Deny</directive> directives,
+    then the interaction of these restrictions is controlled by
+    the <directive module="core">Satisfy</directive> directive.</p>
+
+    <note><title>Removing controls in subdirectories</title>
+    <p>The following example shows how to use the <directive
+    module="core">Satisfy</directive> directive to disable access
+    controls in a subdirectory of a protected directory.  This
+    technique should be used with caution, because it will also
+    disable any access controls imposed by
+    <module>mod_authz_host</module>.</p>
+    <example>
+      &lt;Directory /path/to/protected/&gt;<br />
+        <indent>
+        Require user david<br />
+        </indent>
+      &lt;/Directory&gt;<br />
+      &lt;Directory /path/to/protected/unprotected&gt;<br />
+        <indent>
+        # All access controls and authentication are disabled<br />
+        # in this directory<br />
+        Satisfy Any<br />
+        Allow from all<br />
+        </indent>
+      &lt;/Directory&gt;<br />
+    </example>
+    </note>
+      
 </usage>
 
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
