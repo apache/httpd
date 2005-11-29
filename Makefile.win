@@ -127,13 +127,7 @@ PORT=80
 
 !IFNDEF MAKEOPT
 # Only default the behavior if MAKEOPT= is omitted
-!IF "($MAKE)" == "NMAKE"
-# Microsoft NMake options
 MAKEOPT=-nologo
-!ELSEIF "($MAKE)" == "make"
-# Borland make options?  Not really supported (yet)
-MAKEOPT=-s -N
-!ENDIF
 !ENDIF
 
 _dummy:
