@@ -43,14 +43,24 @@
 
   <section id="compile-time">
     <title>Compile-Time Configuration Changes</title>
+
+    <p>The compilation process is very similar to the one used in
+    version 2.0.  Your old <code>configure</code> command line (as
+    found in <code>build/config.nice</code> in the installed server
+    directory) can be used in some cases.  The most significant change
+    required will be to account for changes in module names, in
+    particular for the authentication and authorization modules.
+    Some details of changes:</p>
+
     <ul>
-      <li>Upgraded to require the APR 1.0 API.</li>
-      <li>Updated bundled PCRE version to 5.0</li>
       <li>mod_imap has been renamed to <module>mod_imagemap</module></li>
-      <li>mod_auth has been split up into <module>mod_auth_basic</module>
-          and <module>mod_authn_file</module></li>
+      <li>mod_auth has been split up into <module>mod_auth_basic</module>,
+          <module>mod_authn_file</module>, <module>mod_authz_user</module>, and
+          <module>mod_authz_groupfile</module></li>
       <li>mod_access has been renamed to <module>mod_authz_host</module></li>
       <li>mod_auth_ldap has been renamed to <module>mod_authnz_ldap</module></li>
+      <li>Upgraded to require the APR 1.0 API.</li>
+      <li>Updated bundled PCRE version to 5.0</li>
     </ul>
 
   </section>
@@ -58,21 +68,28 @@
   <section id="run-time">
     <title>Run-Time Configuration Changes</title>
 
-    <ul>
-      <li>The config file <code>httpd.conf</code> distributed with the
-      Apache HTTP Server has been greatly simplified by removing all
-      but the most essential configuration settings.  A set of example
-      configuration settings for more advanced features is present in
-      the <code>conf/extra/</code> directory of the installed
-      server.</li>
+    <p>Your existing version 2.0 config files and startup scripts can
+      usually be used unchanged in version 2.2.  Some small
+      adjustments may be necessary for particular configurations as
+      discussed below.  If you choose to use the new default
+      configuration file for version 2.2, you will find that it has
+      been greatly simplified by removing all but the most essential
+      configuration settings.  A set of example configuration settings
+      for more advanced features is present in the
+      <code>conf/extra/</code> directory of the installed server.  Default
+      configuration files are installed in the <code>conf/original</code>
+      directory.</p>
 
+    <p>Some runtime configuration changes that you may notice:</p>
+
+    <ul>
       <li>The <program>apachectl</program> option
       <code>startssl</code> is no longer available.  To enable ssl
       support, you should edit <code>httpd.conf</code> to include the
       relevant <module>mod_ssl</module> directives and then use
       <code>apachectl start</code> to start the server.  An example
-      configuration to activate <module>mod_ssl</module> has been included
-      in <code>conf/extra/httpd-ssl.conf</code>.</li>
+      configuration to activate <module>mod_ssl</module> has been
+      included in <code>conf/extra/httpd-ssl.conf</code>.</li>
 
       <li>The default setting of <directive
       module="core">UseCanonicalName</directive> is now
@@ -114,6 +131,10 @@
 
   <section id="third-party">
     <title>Third Party Modules</title>
+
+   <p>Many third-party modules designed for version 2.0 will work
+   unchanged with the the Apache HTTP Server version 2.2.  But all
+   modules must be recompiled before begin loaded.</p>
 
   </section>
 </manualpage>
