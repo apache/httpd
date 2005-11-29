@@ -69,28 +69,28 @@ typedef struct {
 /* acquire a connection that MUST be explicitly closed.
  * Returns NULL on error
  */
-DBD_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t*, server_rec*);
+DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t*, server_rec*);
 
 /* release a connection acquired with ap_dbd_open */
-DBD_DECLARE(void) ap_dbd_close(server_rec*, ap_dbd_t*);
+DBD_DECLARE_NONSTD(void) ap_dbd_close(server_rec*, ap_dbd_t*);
 
 /* acquire a connection that will have the lifetime of a request
  * and MUST NOT be explicitly closed.  Return NULL on error.
  * This is the preferred function for most applications.
  */
-DBD_DECLARE(ap_dbd_t*) ap_dbd_acquire(request_rec*);
+DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_acquire(request_rec*);
 
 /* acquire a connection that will have the lifetime of a connection
  * and MUST NOT be explicitly closed.  Return NULL on error.
  * This is the preferred function for most applications.
  */
-DBD_DECLARE(ap_dbd_t*) ap_dbd_cacquire(conn_rec*);
+DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_cacquire(conn_rec*);
 
 /* Prepare a statement for use by a client module during
  * the server startup/configuration phase.  Can't be called
  * after the server has created its children (use apr_dbd_*).
  */
-DBD_DECLARE(void) ap_dbd_prepare(server_rec*, const char*, const char*);
+DBD_DECLARE_NONSTD(void) ap_dbd_prepare(server_rec*, const char*, const char*);
 
 /* Also export them as optional functions for modules that prefer it */
 APR_DECLARE_OPTIONAL_FN(ap_dbd_t*, ap_dbd_open, (apr_pool_t*, server_rec*));
