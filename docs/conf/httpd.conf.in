@@ -53,7 +53,6 @@ Listen @@Port@@
 #
 @@LoadModule@@
 
-<IfModule !mpm_winnt_module>
 <IfModule !mpm_netware_module>
 #
 # If you wish httpd to run as a different user or group, you must run
@@ -65,7 +64,6 @@ Listen @@Port@@
 #
 User daemon
 Group daemon
-</IfModule>
 </IfModule>
 
 # 'Main' server configuration
@@ -173,6 +171,7 @@ DocumentRoot "@exp_htdocsdir@"
 <FilesMatch "^\.ht">
     Order allow,deny
     Deny from all
+    Satisfy All
 </FilesMatch>
 
 #
@@ -315,12 +314,6 @@ DefaultType text/plain
     # (You will also need to add "ExecCGI" to the "Options" directive.)
     #
     #AddHandler cgi-script .cgi
-
-    # For files that include their own HTTP headers:
-    #AddHandler send-as-is asis
-
-    # For server-parsed imagemap files:
-    #AddHandler imap-file map
 
     # For type maps (negotiated resources):
     #AddHandler type-map var
