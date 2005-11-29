@@ -126,6 +126,9 @@ Package=<4>
     Project_Dep_Name mod_dav_fs
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_dbd
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_dir
     End Project Dependency
     Begin Project Dependency
@@ -1105,6 +1108,27 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_dav
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_dbd"=.\modules\database\mod_dbd.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
     End Project Dependency
 }}}
 
