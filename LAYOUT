@@ -1,7 +1,7 @@
-The httpd-2.1 Source Tree LAYOUT
+The httpd-2.2 Source Tree LAYOUT
 --------------------------------
 
-./ .................... Top-Level httpd-2.1 Root Directory
+./ .................... Top-Level httpd-2.2 Root Directory
 
   ABOUT_APACHE .......... Overview of the Apache HTTP Server
   LAYOUT ................ This file describing the source tree
