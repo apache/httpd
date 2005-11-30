@@ -1834,6 +1834,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     if (!worker->is_address_reusable ||
          (r->connection->keepalives &&
          (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE) &&
+         (conn->hostname != NULL) &&
          (strcasecmp(conn->hostname, uri->hostname) != 0) ) ) {
         if (proxyname) {
             conn->hostname = apr_pstrdup(conn->pool, proxyname);
