@@ -73,7 +73,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~colm/httpd-2.2.0-dbd-win32.patch
         http://people.apache.org/~colm/mod_dbd.dsp
         http://people.apache.org/~colm/mod_authn_dbd.dsp
-      colm: +1
+      +1: colm
 
 CURRENT VOTES:
     
