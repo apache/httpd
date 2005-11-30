@@ -454,9 +454,9 @@ typedef struct {
     /* Authentication stuff.  Groan... */
     
     int *satisfy; /* for every method one */
-    char *ap_auth_type;
-    char *ap_auth_name;
-    apr_array_header_t *ap_requires;
+    char *ap_auth_type; /* Deprecated see mod_authz_host */
+    char *ap_auth_name; /* Deprecated see mod_authz_host */
+    apr_array_header_t *ap_requires; /* Deprecated see mod_authz_host */
 
     /* Custom response config. These can contain text or a URL to redirect to.
      * if response_code_strings is NULL then there are none in the config,
@@ -679,6 +679,18 @@ APR_DECLARE_OPTIONAL_FN(void, ap_logio_add_bytes_out,
 
 APR_DECLARE_OPTIONAL_FN(const char *, ap_ident_lookup,
                         (request_rec *r));
+
+/* ----------------------------------------------------------------------
+ *
+ * authorization values with mod_authz_host
+ */
+
+APR_DECLARE_OPTIONAL_FN(const apr_array_header_t *, authz_host_ap_requires,
+                        (request_rec *r));
+/*
+APR_DECLARE_OPTIONAL_FN(const char *, authz_host_ap_auth_type, (request_rec *r));
+APR_DECLARE_OPTIONAL_FN(const char *, authz_host_ap_auth_name, (request_rec *r));
+*/
 
 /* ---------------------------------------------------------------------- */
 

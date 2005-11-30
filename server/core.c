@@ -268,18 +268,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->ap_default_type = new->ap_default_type;
     }
 
-    if (new->ap_auth_type) {
-        conf->ap_auth_type = new->ap_auth_type;
-    }
-
-    if (new->ap_auth_name) {
-        conf->ap_auth_name = new->ap_auth_name;
-    }
-
-    if (new->ap_requires) {
-        conf->ap_requires = new->ap_requires;
-    }
-
     if (conf->response_code_strings == NULL) {
         conf->response_code_strings = new->response_code_strings;
     }
@@ -675,20 +663,50 @@ AP_DECLARE(const char *) ap_auth_type(request_rec *r)
     core_dir_config *conf;
 
     conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
+    &core_module);
 
     return conf->ap_auth_type;
 }
+
+/*
+ * Optional function coming from mod_ident, used for looking up ident user
+ */
+/*
+static APR_OPTIONAL_FN_TYPE(authz_host_ap_auth_type) *azh_ap_auth_type;
+
+AP_DECLARE(const char *) ap_auth_type(request_rec *r)
+{
+    if (azh_ap_auth_type) {
+        return azh_ap_auth_type(r);
+    }
+    return NULL;
+}
+*/
 
 AP_DECLARE(const char *) ap_auth_name(request_rec *r)
 {
     core_dir_config *conf;
 
     conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
+    &core_module);
 
     return conf->ap_auth_name;
 }
+
+/*
+ * Optional function coming from mod_ident, used for looking up ident user
+ */
+/*
+static APR_OPTIONAL_FN_TYPE(authz_host_ap_auth_name) *azh_ap_auth_name;
+
+AP_DECLARE(const char *) ap_auth_name(request_rec *r)
+{
+    if (azh_ap_auth_name) {
+        return azh_ap_auth_name(r);
+    }
+    return NULL;
+}
+*/
 
 AP_DECLARE(const char *) ap_default_type(request_rec *r)
 {
@@ -712,14 +730,17 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r) /* Don't use this! */
     return conf->ap_document_root;
 }
 
+/*
+ * Optional function coming from mod_ident, used for looking up ident user
+ */
+static APR_OPTIONAL_FN_TYPE(authz_host_ap_requires) *azh_ap_requires;
+
 AP_DECLARE(const apr_array_header_t *) ap_requires(request_rec *r)
 {
-    core_dir_config *conf;
-
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
-
-    return conf->ap_requires;
+    if (azh_ap_requires) {
+        return azh_ap_requires(r);
+    }
+    return NULL;
 }
 
 AP_DECLARE(int) ap_satisfies(request_rec *r)
@@ -1680,22 +1701,6 @@ static const char *satisfy(cmd_parms *cmd, void *c_, const char *arg)
             c->satisfy[i] = satisfy;
         }
     }
-
-    return NULL;
-}
-
-static const char *require(cmd_parms *cmd, void *c_, const char *arg)
-{
-    require_line *r;
-    core_dir_config *c = c_;
-
-    if (!c->ap_requires) {
-        c->ap_requires = apr_array_make(cmd->pool, 2, sizeof(require_line));
-    }
-
-    r = (require_line *)apr_array_push(c->ap_requires);
-    r->requirement = apr_pstrdup(cmd->pool, arg);
-    r->method_mask = cmd->limited;
 
     return NULL;
 }
@@ -3232,8 +3237,6 @@ AP_INIT_TAKE1("AuthType", ap_set_string_slot,
   "An HTTP authorization type (e.g., \"Basic\")"),
 AP_INIT_TAKE1("AuthName", set_authname, NULL, OR_AUTHCFG,
   "The authentication realm (e.g. \"Members Only\")"),
-AP_INIT_RAW_ARGS("Require", require, NULL, OR_AUTHCFG,
-  "Selects which authenticated users or groups may access a protected space"),
 AP_INIT_TAKE1("Satisfy", satisfy, NULL, OR_AUTHCFG,
   "access policy if both allow and require used ('all' or 'any')"),
 #ifdef GPROF
@@ -3723,6 +3726,11 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
 {
     logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
     ident_lookup = APR_RETRIEVE_OPTIONAL_FN(ap_ident_lookup);
+    azh_ap_requires = APR_RETRIEVE_OPTIONAL_FN(authz_host_ap_requires);
+    /*
+    azh_ap_auth_type = APR_RETRIEVE_OPTIONAL_FN(authz_host_ap_auth_type);
+    azh_ap_auth_name = APR_RETRIEVE_OPTIONAL_FN(authz_host_ap_auth_name);
+    */
 
     ap_set_version(pconf);
     ap_setup_make_content_type(pconf);

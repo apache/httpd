@@ -35,10 +35,13 @@ extern "C" {
 #endif
 
 #define AUTHN_PROVIDER_GROUP "authn"
+#define AUTHZ_PROVIDER_GROUP "authz"
 #define AUTHN_DEFAULT_PROVIDER "file"
+#define AUTHZ_DEFAULT_PROVIDER "valid-user"
     
 #define AUTHZ_GROUP_NOTE "authz_group_note"
 #define AUTHN_PROVIDER_NAME_NOTE "authn_provider_name"
+#define AUTHZ_PROVIDER_NAME_NOTE "authz_provider_name"
 
 typedef enum {
     AUTH_DENIED,
@@ -72,9 +75,36 @@ struct authn_provider_list {
 };
 
 typedef struct {
+    /* Given a username and password, expected to return AUTH_GRANTED
+    * if we can validate this user/password combination.
+    */
+    authn_status (*check_authorization)(request_rec *r);
+} authz_provider;
+
+/* A linked-list of authn providers. */
+typedef struct authz_provider_list authz_provider_list;
+
+struct authz_provider_list {
+    const char *provider_name;
+    const authz_provider *provider;
+    authz_provider_list *next;
+    /** Where the require line is in the config file. */
+    apr_int64_t method_mask;
+    /** The complete string from the command line */
+    char *requirement;
+};
+
+/* Need to add an enum for authz_status.  Convert one of the authorization
+   modules to deal with the new require directive.
+*/
+
+
+#if 0
+typedef struct {
     /* For a given user, return a hash of all groups the user belongs to.  */
     apr_hash_t * (*get_user_groups)(request_rec *r, const char *user);
 } authz_provider;
+#endif
 
 #ifdef __cplusplus
 }
