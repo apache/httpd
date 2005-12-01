@@ -17,12 +17,15 @@
 #include "apr_strings.h"
 
 #include "ap_config.h"
+#include "ap_provider.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"
+
+#include "mod_auth.h"
 
 typedef struct {
     int authoritative;
@@ -49,6 +52,7 @@ static const command_rec authz_user_cmds[] =
 
 module AP_MODULE_DECLARE_DATA authz_user_module;
 
+#if 0
 static int check_user_access(request_rec *r)
 {
     authz_user_config_rec *conf = ap_get_module_config(r->per_dir_config,
@@ -111,10 +115,68 @@ static int check_user_access(request_rec *r)
     ap_note_auth_failure(r);
     return HTTP_UNAUTHORIZED;
 }
+#endif
+
+static authn_status user_check_authorization(request_rec *r, apr_int64_t method_mask, const char *require_line)
+{
+    char *user = r->user;
+    int m = r->method_number;
+    const char *t, *w;
+
+    if (!(method_mask & (AP_METHOD_BIT << m))) {
+        return DECLINED;
+    }
+
+    t = require_line;
+    w = ap_getword_white(r->pool, &t);
+    if (!strcasecmp(w, "user")) {
+        /* And note that there are applicable requirements
+        * which we consider ourselves the owner of.
+        */
+        while (t[0]) {
+            w = ap_getword_conf(r->pool, &t);
+            if (!strcmp(user, w)) {
+                return OK;
+            }
+        }
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                  "access to %s failed, reason: user '%s' does not meet "
+                          "'require'ments for user to be allowed access",
+                  r->uri, user);
+
+    ap_note_auth_failure(r);
+    return HTTP_UNAUTHORIZED;
+}
+
+static authn_status validuser_check_authorization(request_rec *r, apr_int64_t method_mask, const char *require_line)
+{
+    int m = r->method_number;
+
+    if (!(method_mask & (AP_METHOD_BIT << m))) {
+        return DECLINED;
+    }
+    return OK;
+}
+
+static const authz_provider authz_user_provider =
+{
+    &user_check_authorization,
+};
+static const authz_provider authz_validuser_provider =
+{
+    &validuser_check_authorization,
+};
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_auth_checker(check_user_access, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "user", "0",
+                         &authz_user_provider);
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "valid-user", "0",
+                         &authz_validuser_provider);
+
+    /*    ap_hook_auth_checker(check_user_access, NULL, NULL, APR_HOOK_MIDDLE);*/
 }
 
 module AP_MODULE_DECLARE_DATA authz_user_module =

@@ -75,10 +75,10 @@ struct authn_provider_list {
 };
 
 typedef struct {
-    /* Given a username and password, expected to return AUTH_GRANTED
-    * if we can validate this user/password combination.
+    /* Given a request_rec, expected to return AUTH_GRANTED
+    * if we can authorize user access.
     */
-    authn_status (*check_authorization)(request_rec *r);
+    authn_status (*check_authorization)(request_rec *r, apr_int64_t method_mask, const char *require_line);
 } authz_provider;
 
 /* A linked-list of authn providers. */

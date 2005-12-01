@@ -459,7 +459,7 @@ static int authorize_user(request_rec *r)
         }
 
 
-        auth_result = provider->check_authorization(r);
+        auth_result = provider->check_authorization(r, current_provider->method_mask, current_provider->requirement);
 
         apr_table_unset(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
 
