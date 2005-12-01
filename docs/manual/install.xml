@@ -128,7 +128,7 @@
       href="http://www.gnu.org/software/gcc/gcc.html">GNU C
       compiler (GCC)</a> from the <a
       href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
-      is recommended (version 2.7.2 is fine). If you don't have GCC
+      is recommended. If you don't have GCC
       then at least make sure your vendor's compiler is ANSI
       compliant. In addition, your <code>PATH</code> must contain
       basic build tools such as <code>make</code>.</dd>
