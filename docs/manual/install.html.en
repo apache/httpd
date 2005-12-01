@@ -162,14 +162,14 @@
       the affected support scripts. Of course, you will still be able to 
       build and use Apache httpd.</dd>
 
-      <dt><a href="http://apr.apache.org">Apr/Apr-util 1.2</a></dt>
+      <dt><a href="http://apr.apache.org">apr/apr-util &gt;= 1.2</a></dt>
       <dd><code>apr</code> and <code>apr-util</code> are bundled
       with the Apache httpd source releases, and will be used without any 
-      problems in all most all circumstances. However, if 
+      problems in almost all circumstances. However, if 
       <code>apr</code> or <code>apr-util</code> 1.0 or 1.1 
       installed on your system you must decide to upgrade your
       <code>apr</code>/<code>apr-util</code> installations to
-      apr 1.2 or to have httpd use seperate builds. To use the bundled 
+      1.2 or to have httpd use seperate builds. To use the bundled 
       <code>apr</code>/<code>apr-util</code> sources for this
       purpose you must <code class="program"><a href="./programs/configure.html">configure</a></code> them manually:
 <div class="example"><p><code>
