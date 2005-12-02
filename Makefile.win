@@ -246,9 +246,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_dumpio.mak      CFG="mod_dumpio - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\experimental
-	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\filters
+	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !IF EXIST("srclib\zlib")
 	 $(MAKE) $(MAKEOPT) -f mod_deflate.mak     CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !ENDIF
@@ -400,7 +400,7 @@ _copybin:
 	copy modules\dav\main\$(LONG)\mod_dav.$(src_so)		"$(inst_so)" <.y
 	copy modules\debug\$(LONG)\mod_bucketeer.$(src_so)	"$(inst_so)" <.y
 	copy modules\debug\$(LONG)\mod_dumpio.$(src_so)		"$(inst_so)" <.y
-	copy modules\experimental\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
+	copy modules\filters\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib")
 	copy modules\filters\$(LONG)\mod_deflate.$(src_so) 	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib\zlib1.$(src_dll)")
