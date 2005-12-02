@@ -431,7 +431,7 @@ static int authorize_user(request_rec *r)
 {
     authz_host_dir_conf *conf = ap_get_module_config(r->per_dir_config,
             &authz_host_module);
-    authn_status auth_result;
+    authz_status auth_result;
     authz_provider_list *current_provider;
 
     current_provider = conf->providers;
@@ -448,7 +448,7 @@ static int authorize_user(request_rec *r)
             if (!provider || !provider->check_authorization) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "No Authz provider configured");
-                auth_result = AUTH_GENERAL_ERROR;
+                auth_result = AUTHZ_GENERAL_ERROR;
                 break;
             }
             apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE, AUTHZ_DEFAULT_PROVIDER);
@@ -464,7 +464,7 @@ static int authorize_user(request_rec *r)
         apr_table_unset(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
 
         /* Something occured. Stop checking. */
-        if (auth_result != AUTH_DENIED) {
+        if (auth_result != AUTHZ_DENIED) {
             break;
         }
 
@@ -476,7 +476,7 @@ static int authorize_user(request_rec *r)
         current_provider = current_provider->next;
     } while (current_provider);
 
-    if (auth_result != AUTH_GRANTED) {
+    if (auth_result != AUTHZ_GRANTED) {
         int return_code;
 
 /* XXX need to deal with DECLINED vs DENIED.  DECLINED may not even
@@ -485,13 +485,13 @@ static int authorize_user(request_rec *r)
    according to the order and the Authz_xxx_Authoritative directives.
 */
         switch (auth_result) {
-            case AUTH_DENIED:
+            case AUTHZ_DENIED:
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "user %s: authorization failure for \"%s\": ",
                               r->user, r->uri);
                 return_code = HTTP_UNAUTHORIZED;
                 break;
-            case AUTH_GENERAL_ERROR:
+            case AUTHZ_GENERAL_ERROR:
             default:
             /* We'll assume that the module has already said what its error
                 * was in the logs.
@@ -535,15 +535,16 @@ static int authz_some_auth_required(request_rec *r)
         * provider.
         */
         if (!current_provider) {
-            provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
+/*            provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
                                           AUTHZ_DEFAULT_PROVIDER, "0");
 
             if (!provider || !provider->check_authorization) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "No Authz providers configured.  Assmuming no authorization required.");
+*/
                 req_authz = 0;
                 break;
-            }
+/*            }*/
         }
         else {
             provider = current_provider->provider;
@@ -600,7 +601,7 @@ module AP_MODULE_DECLARE_DATA authz_host_module =
 {
     STANDARD20_MODULE_STUFF,
     create_authz_host_dir_config,   /* dir config creater */
-    merge_authz_host_dir_config,    /* dir merger --- default is to override */
+    NULL,                           /* dir merger --- default is to override */
     NULL,                           /* server config */
     NULL,                           /* merge server config */
     authz_host_cmds,

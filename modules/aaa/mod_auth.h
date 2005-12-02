@@ -51,6 +51,13 @@ typedef enum {
     AUTH_GENERAL_ERROR
 } authn_status;
 
+typedef enum {
+    AUTHZ_DENIED,
+    AUTHZ_DECLINED,
+    AUTHZ_GRANTED,
+    AUTHZ_GENERAL_ERROR
+} authz_status;
+
 typedef struct {
     /* Given a username and password, expected to return AUTH_GRANTED
      * if we can validate this user/password combination.
@@ -78,7 +85,7 @@ typedef struct {
     /* Given a request_rec, expected to return AUTH_GRANTED
     * if we can authorize user access.
     */
-    authn_status (*check_authorization)(request_rec *r, apr_int64_t method_mask, const char *require_line);
+    authz_status (*check_authorization)(request_rec *r, apr_int64_t method_mask, const char *require_line);
 } authz_provider;
 
 /* A linked-list of authn providers. */

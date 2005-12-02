@@ -268,6 +268,14 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->ap_default_type = new->ap_default_type;
     }
 
+    if (new->ap_auth_type) {
+        conf->ap_auth_type = new->ap_auth_type;
+    }
+
+    if (new->ap_auth_name) {
+        conf->ap_auth_name = new->ap_auth_name;
+    }
+
     if (conf->response_code_strings == NULL) {
         conf->response_code_strings = new->response_code_strings;
     }

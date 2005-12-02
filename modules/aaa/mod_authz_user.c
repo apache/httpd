@@ -117,14 +117,14 @@ static int check_user_access(request_rec *r)
 }
 #endif
 
-static authn_status user_check_authorization(request_rec *r, apr_int64_t method_mask, const char *require_line)
+static authz_status user_check_authorization(request_rec *r, apr_int64_t method_mask, const char *require_line)
 {
     char *user = r->user;
     int m = r->method_number;
     const char *t, *w;
 
     if (!(method_mask & (AP_METHOD_BIT << m))) {
-        return DECLINED;
+        return AUTHZ_DECLINED;
     }
 
     t = require_line;
@@ -136,7 +136,7 @@ static authn_status user_check_authorization(request_rec *r, apr_int64_t method_
         while (t[0]) {
             w = ap_getword_conf(r->pool, &t);
             if (!strcmp(user, w)) {
-                return OK;
+                return AUTHZ_GRANTED;
             }
         }
     }
@@ -147,17 +147,17 @@ static authn_status user_check_authorization(request_rec *r, apr_int64_t method_
                   r->uri, user);
 
     ap_note_auth_failure(r);
-    return HTTP_UNAUTHORIZED;
+    return AUTHZ_GENERAL_ERROR;
 }
 
-static authn_status validuser_check_authorization(request_rec *r, apr_int64_t method_mask, const char *require_line)
+static authz_status validuser_check_authorization(request_rec *r, apr_int64_t method_mask, const char *require_line)
 {
     int m = r->method_number;
 
     if (!(method_mask & (AP_METHOD_BIT << m))) {
-        return DECLINED;
+        return AUTHZ_DECLINED;
     }
-    return OK;
+    return AUTHZ_GRANTED;
 }
 
 static const authz_provider authz_user_provider =
