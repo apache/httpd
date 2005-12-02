@@ -140,7 +140,8 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
     *) Add httxt2dbm for creating RewriteMap DBM Files.
        http://svn.apache.org/viewcvs.cgi?rev=209539&view=rev
-       +1: pquerna, jorton, trawick
+       http://people.apache.org/~rbowen/httxt2dbm_proposed_patch
+       +1: pquerna, jorton, trawick, rbowen, jerenkrantz
 
     *) Remove the base href tag from mod_proxy_ftp, as it breaks relative
        links for clients not using an Authorization header.
@@ -319,12 +320,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Backport version for 2.0.x of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16995
        +1: rpluem
-
-     *) httxt2dbm: Backport of the httxt2dbm utility for mod_rewrite
-        RewriteMap dbm files.
-        Backport version for 2.0.x of patch:
-           http://people.apache.org/~rbowen/httxt2dbm_proposed_patch
-        +1: rbowen, jerenkrantz
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
