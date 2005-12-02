@@ -216,7 +216,7 @@
 
     <xsl:text> &gt; </xsl:text>
 
-    <a href="http://httpd.apache.org/docs-project/">
+    <a href="http://httpd.apache.org/docs/">
         <xsl:if test="$ext-target">
             <xsl:attribute name="target">_blank</xsl:attribute>
         </xsl:if>
