@@ -320,6 +320,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16995
        +1: rpluem
 
+     *) httxt2dbm: Backport of the httxt2dbm utility for mod_rewrite
+        RewriteMap dbm files.
+        Backport version for 2.0.x of patch:
+           http://people.apache.org/~rbowen/httxt2dbm_proposed_patch
+        +1: rbowen, jerenkrantz
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
