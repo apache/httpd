@@ -121,7 +121,7 @@
       <dd>Modules in the aaa directory have been renamed and offer
           better support for digest authentication.  For example, mod_auth
           is now split into <module>mod_auth_basic</module> and
-          <module>mod_auth_file</module>; mod_auth_dbm is now called
+          <module>mod_authn_file</module>; mod_auth_dbm is now called
           <module>mod_authn_dbm</module>; mod_access has been renamed
           <module>mod_authz_host</module>.  There is also a new
           <module>mod_authn_alias</module> module for simplifying
