@@ -246,10 +246,10 @@ _build:
 	cd modules\experimental
 	cd ..\..
 	cd modules\filters
+	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !IF EXIST("srclib\zlib")
 	 $(MAKE) $(MAKEOPT) -f mod_deflate.mak     CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !ENDIF
-	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
