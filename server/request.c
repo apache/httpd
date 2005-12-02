@@ -1555,11 +1555,12 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+extern APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *azh_ap_some_auth_required;
 
 AP_DECLARE(int) ap_some_auth_required(request_rec *r)
 {
     /* Is there a require line configured for the type of *this* req? */
-
+/*
     const apr_array_header_t *reqs_arr = ap_requires(r);
     require_line *reqs;
     int i;
@@ -1577,6 +1578,12 @@ AP_DECLARE(int) ap_some_auth_required(request_rec *r)
     }
 
     return 0;
+*/
+    if (azh_ap_some_auth_required) {
+        return azh_ap_some_auth_required(r);
+    }
+    else
+        return 0;
 }
 
 

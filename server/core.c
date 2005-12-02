@@ -3721,12 +3721,14 @@ static int default_handler(request_rec *r)
  * traffic
  */
 APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
+APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *azh_ap_some_auth_required;
 
 static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
     ident_lookup = APR_RETRIEVE_OPTIONAL_FN(ap_ident_lookup);
     azh_ap_requires = APR_RETRIEVE_OPTIONAL_FN(authz_host_ap_requires);
+    azh_ap_some_auth_required = APR_RETRIEVE_OPTIONAL_FN(authz_some_auth_required);
     /*
     azh_ap_auth_type = APR_RETRIEVE_OPTIONAL_FN(authz_host_ap_auth_type);
     azh_ap_auth_name = APR_RETRIEVE_OPTIONAL_FN(authz_host_ap_auth_name);

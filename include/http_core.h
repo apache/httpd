@@ -687,6 +687,7 @@ APR_DECLARE_OPTIONAL_FN(const char *, ap_ident_lookup,
 
 APR_DECLARE_OPTIONAL_FN(const apr_array_header_t *, authz_host_ap_requires,
                         (request_rec *r));
+APR_DECLARE_OPTIONAL_FN(int, authz_some_auth_required, (request_rec *r));
 /*
 APR_DECLARE_OPTIONAL_FN(const char *, authz_host_ap_auth_type, (request_rec *r));
 APR_DECLARE_OPTIONAL_FN(const char *, authz_host_ap_auth_name, (request_rec *r));

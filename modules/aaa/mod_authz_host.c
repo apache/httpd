@@ -520,6 +520,46 @@ static const apr_array_header_t *authz_host_ap_requires(request_rec *r)
     return conf->ap_requires;
 }
 
+static int authz_some_auth_required(request_rec *r)
+{
+    authz_host_dir_conf *conf = ap_get_module_config(r->per_dir_config,
+            &authz_host_module);
+    authz_provider_list *current_provider;
+    int req_authz = 1;
+
+    current_provider = conf->providers;
+    do {
+        const authz_provider *provider;
+
+        /* For now, if a provider isn't set, we'll be nice and use the file
+        * provider.
+        */
+        if (!current_provider) {
+            provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
+                                          AUTHZ_DEFAULT_PROVIDER, "0");
+
+            if (!provider || !provider->check_authorization) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "No Authz providers configured.  Assmuming no authorization required.");
+                req_authz = 0;
+                break;
+            }
+        }
+        else {
+            provider = current_provider->provider;
+        }
+
+        if (current_provider->method_mask & (AP_METHOD_BIT << r->method_number)) {
+            req_authz = 1;
+            break;
+        }
+    
+        current_provider = current_provider->next;
+    } while (current_provider);
+
+    return req_authz;
+}
+
 /*
 static const char *authz_host_ap_auth_type(request_rec *r)
 {
@@ -545,6 +585,7 @@ static const char *authz_host_ap_auth_name(request_rec *r)
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(authz_host_ap_requires);
+    APR_REGISTER_OPTIONAL_FN(authz_some_auth_required);
     /*
     APR_REGISTER_OPTIONAL_FN(authz_host_ap_auth_type);
     APR_REGISTER_OPTIONAL_FN(authz_host_ap_auth_name);
