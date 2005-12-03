@@ -715,6 +715,8 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
     }
 }
 
+#if APR_HAS_SENDFILE
+
 static apr_status_t sendfile_nonblocking(apr_socket_t *s,
                                          apr_bucket_brigade *bb,
                                          apr_size_t *cumulative_bytes_written,
@@ -777,3 +779,4 @@ static apr_status_t sendfile_nonblocking(apr_socket_t *s,
     return rv;
 }
 
+#endif
