@@ -75,3 +75,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * Backport Win32 build fixes for mod_dbd and mod_authn_dbd
         http://people.apache.org/~colm/httpd-2.2.0-dbd-win32.patch
       +1: colm, pquerna
+
+    * mod_proxy_balancer: Fix PR37753 (mod_proxy_balancer Stickysession that
+      uses URL doesn't work)
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=352010&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
