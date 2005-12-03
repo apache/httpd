@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_balancer: Sticky session identifiers supplied in URL do not work.
+     PR37753. [Ruediger Pluem, Kazuhiro Osawa <ko yappo.ne.jp>]
+
   *) mod_authz_dbd: SQL authz with Login/Session support [Nick Kew]
 
   *) Fix typo in ProxyStatus syntax error message.
