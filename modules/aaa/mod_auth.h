@@ -16,7 +16,7 @@
 
 /**
  * @file  mod_auth.h
- * @brief uthentication Extension Module for Apache
+ * @brief Authentication and Authorization Extension for Apache
  *
  * @defgroup MOD_AUTH mod_auth
  * @ingroup  APACHE_MODS
@@ -38,7 +38,7 @@ extern "C" {
 #define AUTHZ_PROVIDER_GROUP "authz"
 #define AUTHN_DEFAULT_PROVIDER "file"
 #define AUTHZ_DEFAULT_PROVIDER "valid-user"
-    
+
 #define AUTHZ_GROUP_NOTE "authz_group_note"
 #define AUTHN_PROVIDER_NAME_NOTE "authn_provider_name"
 #define AUTHZ_PROVIDER_NAME_NOTE "authz_provider_name"
@@ -53,7 +53,6 @@ typedef enum {
 
 typedef enum {
     AUTHZ_DENIED,
-    AUTHZ_DECLINED,
     AUTHZ_GRANTED,
     AUTHZ_GENERAL_ERROR
 } authz_status;
@@ -63,7 +62,7 @@ typedef struct {
      * if we can validate this user/password combination.
      */
     authn_status (*check_password)(request_rec *r, const char *user,
-                                  const char *password);
+                                   const char *password);
 
     /* Given a user and realm, expected to return AUTH_USER_FOUND if we
      * can find a md5 hash of 'user:realm:password'
@@ -83,9 +82,11 @@ struct authn_provider_list {
 
 typedef struct {
     /* Given a request_rec, expected to return AUTH_GRANTED
-    * if we can authorize user access.
-    */
-    authz_status (*check_authorization)(request_rec *r, apr_int64_t method_mask, const char *require_line);
+     * if we can authorize user access.
+     */
+    authz_status (*check_authorization)(request_rec *r,
+                                        apr_int64_t method_mask,
+                                        const char *require_line);
 } authz_provider;
 
 /* A linked-list of authn providers. */
@@ -95,23 +96,11 @@ struct authz_provider_list {
     const char *provider_name;
     const authz_provider *provider;
     authz_provider_list *next;
-    /** Where the require line is in the config file. */
+    /** If a Limit method is in effect, this field will be set */
     apr_int64_t method_mask;
-    /** The complete string from the command line */
+    /** String following 'require <provider>' from config file */
     char *requirement;
 };
-
-/* Need to add an enum for authz_status.  Convert one of the authorization
-   modules to deal with the new require directive.
-*/
-
-
-#if 0
-typedef struct {
-    /* For a given user, return a hash of all groups the user belongs to.  */
-    apr_hash_t * (*get_user_groups)(request_rec *r, const char *user);
-} authz_provider;
-#endif
 
 #ifdef __cplusplus
 }

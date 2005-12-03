@@ -96,7 +96,7 @@ static void *merge_authz_host_dir_config(apr_pool_t *a, void *basev, void *newv)
     authz_host_dir_conf *base = (authz_host_dir_conf *)basev;
     authz_host_dir_conf *new = (authz_host_dir_conf *)newv;
     authz_host_dir_conf *conf;
-    
+
     /* Create this conf by duplicating the base, replacing elements
     * (or creating copies for merging) where new-> values exist.
     */
@@ -234,6 +234,7 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     authz_provider_list *newp;
 
     newp = apr_pcalloc(cmd->pool, sizeof(authz_provider_list));
+    /* XXX: Split this out to the name and then the rest of the directive. */
     newp->provider_name = apr_pstrdup(cmd->pool, arg);
     newp->requirement = apr_pstrdup(cmd->pool, arg);
     newp->method_mask = cmd->limited;
@@ -242,19 +243,21 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     newp->provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
                                         newp->provider_name, "0");
 
+    /* by the time the config file is used, the provider should be loaded
+     * and registered with us.
+     */
     if (newp->provider == NULL) {
-        /* by the time they use it, the provider should be loaded and
-        registered with us. */
         return apr_psprintf(cmd->pool,
                             "Unknown Authz provider: %s",
                             newp->provider_name);
     }
 
+    /* if the provider doesn't provide the appropriate function, reject it */
     if (!newp->provider->check_authorization) {
-        /* if it doesn't provide the appropriate function, reject it */
         return apr_psprintf(cmd->pool,
-                            "The '%s' Authz provider is not supported by any of the "
-                                    "loaded authorization modules", newp->provider_name);
+                            "The '%s' Authz provider is not supported by any "
+                            "of the loaded authorization modules ",
+                            newp->provider_name);
     }
 
     /* Add it to the list now. */
@@ -284,7 +287,8 @@ static const command_rec authz_host_cmds[] =
     AP_INIT_ITERATE2("deny", allow_cmd, NULL, OR_LIMIT,
                      "'from' followed by hostnames or IP-address wildcards"),
     AP_INIT_RAW_ARGS("Require", add_authz_provider, NULL, OR_AUTHCFG,
-                     "Selects which authenticated users or groups may access a protected space"),
+                     "Selects which authenticated users or groups may access "
+                     "a protected space"),
     {NULL}
 };
 /*
@@ -430,7 +434,7 @@ static int check_dir_access(request_rec *r)
 static int authorize_user(request_rec *r)
 {
     authz_host_dir_conf *conf = ap_get_module_config(r->per_dir_config,
-            &authz_host_module);
+                                                     &authz_host_module);
     authz_status auth_result;
     authz_provider_list *current_provider;
 
@@ -439,31 +443,39 @@ static int authorize_user(request_rec *r)
         const authz_provider *provider;
 
         /* For now, if a provider isn't set, we'll be nice and use the file
-        * provider.
-        */
+         * provider.
+         */
         if (!current_provider) {
             provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
                                           AUTHZ_DEFAULT_PROVIDER, "0");
 
             if (!provider || !provider->check_authorization) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "No Authz provider configured");
+                              "No default authz provider configured");
                 auth_result = AUTHZ_GENERAL_ERROR;
                 break;
             }
-            apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE, AUTHZ_DEFAULT_PROVIDER);
+            apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE,
+                           AUTHZ_DEFAULT_PROVIDER);
         }
         else {
             provider = current_provider->provider;
-            apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE, current_provider->provider_name);
+            apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE,
+                           current_provider->provider_name);
         }
 
 
-        auth_result = provider->check_authorization(r, current_provider->method_mask, current_provider->requirement);
+        auth_result = provider->check_authorization(r,
+                        current_provider->method_mask,
+                        current_provider->requirement);
 
         apr_table_unset(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
 
         /* Something occured. Stop checking. */
+        /* XXX: We need to figure out what the implications of multiple
+         * require directives are.  Must all satisfy?  Can we leverage
+         * satisfy here then?
+         */
         if (auth_result != AUTHZ_DENIED) {
             break;
         }
@@ -479,11 +491,6 @@ static int authorize_user(request_rec *r)
     if (auth_result != AUTHZ_GRANTED) {
         int return_code;
 
-/* XXX need to deal with DECLINED vs DENIED.  DECLINED may not even
-   be needed since we are only going to call registered require providers.
-   I assume that it will deal with passing from one provider to the next
-   according to the order and the Authz_xxx_Authoritative directives.
-*/
         switch (auth_result) {
             case AUTHZ_DENIED:
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -493,15 +500,16 @@ static int authorize_user(request_rec *r)
                 break;
             case AUTHZ_GENERAL_ERROR:
             default:
-            /* We'll assume that the module has already said what its error
-                * was in the logs.
-            */
+                /* We'll assume that the module has already said what its
+                 * error was in the logs.
+                 */
                 return_code = HTTP_INTERNAL_SERVER_ERROR;
                 break;
         }
 
         /* If we're returning 403, tell them to try again. */
         if (return_code == HTTP_UNAUTHORIZED) {
+            /* XXX: Why is this a basic auth failure? */
             ap_note_basic_auth_failure (r);
         }
         return return_code;
@@ -525,38 +533,20 @@ static int authz_some_auth_required(request_rec *r)
     authz_host_dir_conf *conf = ap_get_module_config(r->per_dir_config,
             &authz_host_module);
     authz_provider_list *current_provider;
-    int req_authz = 1;
+    int req_authz = 0;
 
     current_provider = conf->providers;
-    do {
-        const authz_provider *provider;
+    while (current_provider) {
 
-        /* For now, if a provider isn't set, we'll be nice and use the file
-        * provider.
-        */
-        if (!current_provider) {
-/*            provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
-                                          AUTHZ_DEFAULT_PROVIDER, "0");
-
-            if (!provider || !provider->check_authorization) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "No Authz providers configured.  Assmuming no authorization required.");
-*/
-                req_authz = 0;
-                break;
-/*            }*/
-        }
-        else {
-            provider = current_provider->provider;
-        }
-
-        if (current_provider->method_mask & (AP_METHOD_BIT << r->method_number)) {
+        /* Does this provider config apply for this method */
+        if (current_provider->method_mask &
+                (AP_METHOD_BIT << r->method_number)) {
             req_authz = 1;
             break;
         }
-    
+
         current_provider = current_provider->next;
-    } while (current_provider);
+    }
 
     return req_authz;
 }
@@ -593,7 +583,7 @@ static void register_hooks(apr_pool_t *p)
     */
 
     /* This can be access checker since we don't require r->user to be set. */
-    ap_hook_access_checker(check_dir_access,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_access_checker(check_dir_access, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_auth_checker(authorize_user, NULL, NULL, APR_HOOK_MIDDLE);
 }
 

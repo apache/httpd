@@ -117,9 +117,10 @@ static int check_user_access(request_rec *r)
 }
 #endif
 
-static authz_status user_check_authorization(request_rec *r, apr_int64_t method_mask, const char *require_line)
+static authz_status user_check_authorization(request_rec *r,
+                                             apr_int64_t method_mask,
+                                             const char *require_line)
 {
-    char *user = r->user;
     int m = r->method_number;
     const char *t, *w;
 
@@ -131,11 +132,11 @@ static authz_status user_check_authorization(request_rec *r, apr_int64_t method_
     w = ap_getword_white(r->pool, &t);
     if (!strcasecmp(w, "user")) {
         /* And note that there are applicable requirements
-        * which we consider ourselves the owner of.
-        */
+         * which we consider ourselves the owner of.
+         */
         while (t[0]) {
             w = ap_getword_conf(r->pool, &t);
-            if (!strcmp(user, w)) {
+            if (!strcmp(r->user, w)) {
                 return AUTHZ_GRANTED;
             }
         }
@@ -143,11 +144,11 @@ static authz_status user_check_authorization(request_rec *r, apr_int64_t method_
 
     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                   "access to %s failed, reason: user '%s' does not meet "
-                          "'require'ments for user to be allowed access",
-                  r->uri, user);
+                  "'require'ments for user to be allowed access",
+                  r->uri, r->user);
 
     ap_note_auth_failure(r);
-    return AUTHZ_GENERAL_ERROR;
+    return AUTHZ_DENIED;
 }
 
 static authz_status validuser_check_authorization(request_rec *r, apr_int64_t method_mask, const char *require_line)
