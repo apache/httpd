@@ -70,6 +70,10 @@ authname	mod/core.html#authname
 authnprovideralias	mod/mod_authn_alias.html#authnprovideralias
 authtype	mod/core.html#authtype
 authuserfile	mod/mod_authn_file.html#authuserfile
+authzdbdauthoritative	mod/mod_authz_dbd.html#authzdbdauthoritative
+authzdbdlogintoreferer	mod/mod_authz_dbd.html#authzdbdlogintoreferer
+authzdbdquery	mod/mod_authz_dbd.html#authzdbdquery
+authzdbdredirectquery	mod/mod_authz_dbd.html#authzdbdredirectquery
 authzdbmauthoritative	mod/mod_authz_dbm.html#authzdbmauthoritative
 authzdbmtype	mod/mod_authz_dbm.html#authzdbmtype
 authzdefaultauthoritative	mod/mod_authz_default.html#authzdefaultauthoritative
@@ -378,6 +382,7 @@ transferlog	mod/mod_log_config.html#transferlog
 typesconfig	mod/mod_mime.html#typesconfig
 unsetenv	mod/mod_env.html#unsetenv
 usecanonicalname	mod/core.html#usecanonicalname
+usecanonicalphysicalport	mod/core.html#usecanonicalphysicalport
 user	mod/mpm_common.html#user
 userdir	mod/mod_userdir.html#userdir
 virtualdocumentroot	mod/mod_vhost_alias.html#virtualdocumentroot

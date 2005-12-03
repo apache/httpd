@@ -16,7 +16,7 @@
 <img alt="" src="../images/feather.gif" /></div>
 <div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs-project/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>모듈 목록</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>모듈 목록</h1>
 <div class="toplang">
 <p><span>가능한 언어: </span><a href="../de/mod/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
@@ -118,7 +118,7 @@ index 파일을 서비스한다</dd>
 <dt><a href="mod_filter.html">mod_filter</a></dt><dd>Context-sensitive smart filter configuration module</dd>
 <dt><a href="mod_headers.html" id="H" name="H">mod_headers</a></dt><dd>HTTP 요청 헤더와 응답 헤더 수정</dd>
 <dt><a href="mod_ident.html" id="I" name="I">mod_ident</a></dt><dd>RFC 1413 ident 검색</dd>
-<dt><a href="mod_imap.html">mod_imap</a></dt><dd>서버측 이미지맵(imagemap) 처리</dd>
+<dt><a href="mod_imagemap.html">mod_imagemap</a></dt><dd>서버측 이미지맵(imagemap) 처리</dd>
 <dt><a href="mod_include.html">mod_include</a></dt><dd>Server-parsed html documents (Server Side Includes)</dd>
 <dt><a href="mod_info.html">mod_info</a></dt><dd>서버 설정에 대한 종합적인 정보를 보여준다</dd>
 <dt><a href="mod_isapi.html">mod_isapi</a></dt><dd>Windows용 아파치에서 ISAPI Extension 사용</dd>

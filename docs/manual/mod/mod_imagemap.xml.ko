@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="EUC-KR" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 151408:160365 (outdated) -->
+<!-- English Revision: 151408:352025 (outdated) -->
 
 <!--
  Copyright 2004-2005 The Apache Software Foundation or its licensors,
@@ -99,7 +99,7 @@
       기능을 한다. 맵파일에서 나오는 URL은 절대 URL이 아니라면
       이 값에 상대 URL로 취급한다. <code>base</code> 지시어는
       <code>.htaccess</code> 파일이나 서버설정파일에서 설정한
-      <directive module="mod_imap">ImapBase</directive> 값을
+      <directive module="mod_imagemap">ImapBase</directive> 값을
       무시한다. <directive>ImapBase</directive> 설정지시어가
       없다면 기본 <code>base</code> 값은
       <code>http://server_name/</code>이다.</p>
@@ -111,7 +111,7 @@
       <dd>해당 좌표가 <code>poly</code>, <code>circle</code>,
       <code>rect</code> 지시어에 해당하지 않고 <code>point</code>
       지시어를 사용하지 않은 경우 행동을 지정한다. <directive
-      module="mod_imap">ImapDefault</directive> 설정이 없다면
+      module="mod_imagemap">ImapDefault</directive> 설정이 없다면
       기본값은 <code>204 No Content</code> 상태코드를 반환하는
       <code>nocontent</code>이다. 이 경우 클라이언트는 동일한
       페이지를 보여줘야 한다.</dd>
@@ -157,7 +157,7 @@
       <dt><code>map</code></dt>
 
       <dd>이미지맵 파일 자체 URL과 같다. 좌표가 없고 <directive
-      module="mod_imap">ImapMenu</directive>가 <code>none</code>이
+      module="mod_imagemap">ImapMenu</directive>가 <code>none</code>이
       아니라면 메뉴를 만든다.</dd>
 
       <dt><code>menu</code></dt>
