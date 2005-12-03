@@ -35,7 +35,7 @@
         <module>mod_actions</module>
         <module>mod_asis</module>
         <module>mod_cgi</module>
-        <module>mod_imap</module>
+        <module>mod_imagemap</module>
         <module>mod_info</module>
         <module>mod_mime</module>
         <module>mod_negotiation</module>
@@ -88,7 +88,7 @@
       CGI. (<module>mod_cgi</module>)</li>
 
       <li><strong>imap-file</strong>: Trata el fichero como un mapa de
-      im&#225;genes. (<module>mod_imap</module>)</li>
+      im&#225;genes. (<module>mod_imagemap</module>)</li>
 
       <li><strong>server-info</strong>: Extrae la informaci&#243;n de
       configuraci&#243;n del
