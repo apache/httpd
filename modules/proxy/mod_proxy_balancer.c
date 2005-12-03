@@ -113,7 +113,7 @@ static char *get_path_param(apr_pool_t *pool, char *url,
     char *path = NULL;
 
     for (path = strstr(url, name); path; path = strstr(path + 1, name)) {
-        path += (strlen(name) + 1);
+        path += strlen(name);
         if (*path == '=') {
             /*
              * Session path was found, get it's value
