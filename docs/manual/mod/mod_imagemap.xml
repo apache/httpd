@@ -26,7 +26,7 @@
 <description>Server-side imagemap processing</description>
 <status>Base</status>
 <sourcefile>mod_imagemap.c</sourcefile>
-<identifier>imap_module</identifier>
+<identifier>imagemap_module</identifier>
 
 <summary>
     <p>This module processes <code>.map</code> files, thereby
