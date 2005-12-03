@@ -355,8 +355,8 @@
             <br/>
             주의: 이 모듈은 항상 정적으로 링크된다.</dd>
 
-        <dt><code>--disable-imap</code></dt>
-        <dd><module>mod_imap</module>이 제공하는 서버기반 imagemap
+        <dt><code>--disable-imagemap</code></dt>
+        <dd><module>mod_imagemap</module>이 제공하는 서버기반 imagemap
           기능을 사용하지 않는다.</dd>
 
         <dt><code>--disable-include</code></dt>
