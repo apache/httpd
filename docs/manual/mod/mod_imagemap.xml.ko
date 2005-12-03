@@ -22,11 +22,11 @@
 
 <modulesynopsis metafile="mod_imagemap.xml.meta">
 
-<name>mod_imap</name>
+<name>mod_imagemap</name>
 <description>서버측 이미지맵(imagemap) 처리</description>
 <status>Base</status>
-<sourcefile>mod_imap.c</sourcefile>
-<identifier>imap_module</identifier>
+<sourcefile>mod_imagemap.c</sourcefile>
+<identifier>imagemap_module</identifier>
 
 <summary>
     <p>이 모듈은 <code>imagemap</code> CGI 프로그램을 대신하여

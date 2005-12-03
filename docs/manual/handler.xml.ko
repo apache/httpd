@@ -35,7 +35,7 @@
         <module>mod_actions</module>
         <module>mod_asis</module>
         <module>mod_cgi</module>
-        <module>mod_imap</module>
+        <module>mod_imagemap</module>
         <module>mod_info</module>
         <module>mod_mime</module>
         <module>mod_negotiation</module>
@@ -79,7 +79,7 @@
       (<module>mod_cgi</module>)</li>
 
       <li><strong>imap-file</strong>: imagemap 규칙 파일로
-      처리한다. (<module>mod_imap</module>)</li>
+      처리한다. (<module>mod_imagemap</module>)</li>
 
       <li><strong>server-info</strong>: 서버의 설정 정보를
       알려준다. (<module>mod_info</module>)</li>

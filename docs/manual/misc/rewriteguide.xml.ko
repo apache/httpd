@@ -511,7 +511,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
 
     <section>
 
-      <title>NCSA imagemap을 아파치 <code>mod_imap</code>으로</title>
+      <title>NCSA imagemap을 아파치 <code>mod_imagemap</code>으로</title>
 
       <dl>
         <dt>상황설명:</dt>
@@ -520,7 +520,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
           <p>사람들은 NCSA 웹서버에서 현대적인 아파치 웹서버로
           자연스럽게 옮겨가길 바란다. 그래서 오래된 NCSA
           <code>imagemap</code> 프로그램을 사용한 페이지를 현대적인
-          아파치 <module>mod_imap</module>로 처리하길 바란다.
+          아파치 <module>mod_imagemap</module>로 처리하길 바란다.
           문제는 <code>imagemap</code> 프로그램을
           <code>/cgi-bin/imagemap/path/to/page.map</code>과
           같이 참조하는 하이퍼링크가 많다는 것이다. 아파치는
