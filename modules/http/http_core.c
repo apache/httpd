@@ -108,41 +108,35 @@ static apr_port_t http_port(const request_rec *r)
 
 static int ap_process_http_async_connection(conn_rec *c)
 {
-    request_rec *r;
+    apr_status_t rv;
     conn_state_t *cs = c->cs;
 
     AP_DEBUG_ASSERT(cs->state == CONN_STATE_READ_REQUEST_LINE);
 
-    while (cs->state == CONN_STATE_READ_REQUEST_LINE) {
-        ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
+    ap_update_child_status(c->sbh, SERVER_BUSY_READ, NULL);
 
-        if ((r = ap_read_request(c))) {
-
-            c->keepalive = AP_CONN_UNKNOWN;
-            /* process the request if it was read without error */
-
-            ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
-            if (r->status == HTTP_OK) {
-                cs->state = CONN_STATE_HANDLER;
-                ap_process_async_request(r);
-                /* After the call to ap_process_request, the
-                 * request pool may have been deleted.  We set
-                 * r=NULL here to ensure that any dereference
-                 * of r that might be added later in this function
-                 * will result in a segfault immediately instead
-                 * of nondeterministic failures later.
-                 */
-                r = NULL;
-            }
-
-            if (cs->state != CONN_STATE_WRITE_COMPLETION) {
-                /* Something went wrong; close the connection */
-                cs->state = CONN_STATE_LINGER;
-            }
+    rv = ap_read_async_request(c);
+    if (rv == APR_SUCCESS) {
+        c->keepalive = AP_CONN_UNKNOWN;
+        /* process the request if it was read without error */
+        ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, c->request);
+        if (c->request->status == HTTP_OK) {
+            cs->state = CONN_STATE_HANDLER;
+            ap_process_async_request(c->request);
+            c->request = NULL;
         }
-        else {   /* ap_read_request failed - client may have closed */
+
+        if (cs->state != CONN_STATE_WRITE_COMPLETION) {
+            /* Something went wrong; close the connection */
             cs->state = CONN_STATE_LINGER;
         }
+    }
+    else if (!APR_STATUS_IS_EAGAIN(rv)) {
+        /* EAGAIN means that we've successfully read a partial request
+         * header, which is valid in an async server.  For any other error,
+         * close the connection.
+         */
+        cs->state = CONN_STATE_LINGER;
     }
 
     return OK;
@@ -164,11 +158,12 @@ static int ap_process_http_connection(conn_rec *c)
 
         c->keepalive = AP_CONN_UNKNOWN;
         /* process the request if it was read without error */
-
+        c->request = r;
         ap_update_child_status(c->sbh, SERVER_BUSY_WRITE, r);
         if (r->status == HTTP_OK) {
             cs->state = CONN_STATE_HANDLER;
             ap_process_request(r);
+            c->request = NULL;
             /* After the call to ap_process_request, the
              * request pool will have been deleted.  We set
              * r=NULL here to ensure that any dereference

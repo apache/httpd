@@ -62,6 +62,16 @@ AP_DECLARE_DATA extern ap_filter_rec_t *ap_old_write_func;
 request_rec *ap_read_request(conn_rec *c);
 
 /**
+ * Read part or all of a request and fill in the fields.
+ * @param c The current connection
+ * @return APR_SUCCESS if the request header is completely read,
+ *         APR_EAGAIN if the caller should wait for readability on
+ *         the connection and try again, arbirary other apr_status_t
+ *         values if the read fails for any other reason
+ */ 
+apr_status_t ap_read_async_request(conn_rec *c);
+
+/**
  * Read the mime-encoded headers.
  * @param r The current request
  */

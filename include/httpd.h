@@ -1078,6 +1078,9 @@ struct conn_rec {
     int data_in_input_filters;
     /** Is there data pending in the output filters? */
     int data_in_output_filters;
+    /** The request (possibly incomplete) currently being processed
+     *  on this connection, or NULL if not applicable */
+    request_rec *request;
 };
 
 /** 

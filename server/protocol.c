@@ -1002,6 +1002,55 @@ static apr_status_t read_partial_request(request_rec *r) {
     return rv;
 }
 
+AP_DECLARE(apr_status_t) ap_read_async_request(conn_rec *conn)
+{
+    apr_status_t rv;
+    request_rec *r;
+
+    if (conn->request == NULL) {
+        conn->request = init_request(conn);
+        if (conn->request == NULL) {
+            return APR_EGENERAL;
+        }
+    }
+
+    r = conn->request;
+    rv = read_partial_request(r);
+    if (APR_STATUS_IS_EAGAIN(rv)) {
+        return APR_EAGAIN;
+    }
+    if (r->status != HTTP_OK) {
+        ap_send_error_response(r, 0);
+        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+        ap_run_log_transaction(r);
+        return APR_EGENERAL;
+    }
+
+    if (r->assbackwards && r->header_only) {
+        /*
+         * Client asked for headers only with HTTP/0.9, which doesn't send
+         * headers! Have to dink things just to make sure the error message
+         * comes through...
+         */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "client sent invalid HTTP/0.9 request: HEAD %s",
+                      r->uri);
+        r->header_only = 0;
+        r->status = HTTP_BAD_REQUEST;
+        ap_send_error_response(r, 0);
+        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+        ap_run_log_transaction(r);
+        return APR_EGENERAL;
+    }
+
+    if (request_post_read(r, conn) == NULL) {
+        return APR_EGENERAL;
+    }
+    else {
+        return APR_SUCCESS;
+    }
+}
+
 request_rec *ap_read_request(conn_rec *conn)
 {
     request_rec *r;
@@ -1010,7 +1059,6 @@ request_rec *ap_read_request(conn_rec *conn)
     r = init_request(conn);
 
     rv = read_partial_request(r);
-    /* TODO poll if EAGAIN */
     if (r->status != HTTP_OK) {
         ap_send_error_response(r, 0);
         ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
