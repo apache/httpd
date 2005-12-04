@@ -545,9 +545,6 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
 
 static void set_the_request(request_rec *r, char *line)
 {
-#if 0
-    conn_rec *conn = r->connection;
-#endif
     const char *ll;
     const char *uri;
     const char *pro;
@@ -918,7 +915,16 @@ static apr_status_t set_mime_header(request_rec *r, char *line)
 {
     char *value, *tmp_field;
 
-    /* TODO check for # fields exceeding r->server->limit_req_fields */
+    if (r->server->limit_req_fields) {
+        const apr_array_header_t *mime_headers = apr_table_elts(r->headers_in);
+        if (mime_headers->nelts >= r->server->limit_req_fields) {
+            apr_table_setn(r->notes, "error-notes",
+                           "The number of request header fields "
+                           "exceeds this server's limit.");
+            r->status = HTTP_BAD_REQUEST;
+            return APR_ENOSPC;
+        }
+    }
     
     if (!(value = strchr(line, ':'))) { /* Find ':' or    */
         r->status = HTTP_BAD_REQUEST;      /* abort bad request */
@@ -929,7 +935,7 @@ static apr_status_t set_mime_header(request_rec *r, char *line)
                                    "<pre>\n",
                                    ap_escape_html(r->pool, line),
                                    "</pre>\n", NULL));
-        return APR_EGENERAL;
+        return APR_ENOSPC;
     }
 
     tmp_field = value - 1; /* last character of field-name */
@@ -982,7 +988,10 @@ static apr_status_t process_request_line(request_rec *r, char *line)
          */
         if ((line == NULL) || (*line == '\0')) {
             if (r->pending_header_line != NULL) {
-                (void)set_mime_header(r, r->pending_header_line);  /* TODO check for errors */
+                apr_status_t rv = set_mime_header(r, r->pending_header_line);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
                 r->pending_header_line = NULL;
             }
             if (r->status == HTTP_REQUEST_TIME_OUT) {
@@ -1033,7 +1042,10 @@ static apr_status_t process_request_line(request_rec *r, char *line)
                 /* Set aside this line in case the next line is a continuation
                  */
                 if (r->pending_header_line != NULL) {
-                    (void)set_mime_header(r, r->pending_header_line);  /* TODO check for errors */
+                    apr_status_t rv = set_mime_header(r, r->pending_header_line);
+                    if (rv != APR_SUCCESS) {
+                        return rv;
+                    }
                 }
                 r->pending_header_line = line;
                 r->pending_header_size = 0;
@@ -1065,6 +1077,9 @@ static apr_status_t read_partial_request(request_rec *r) {
         /* TODO: use a nonblocking call in place of ap_rgetline */
         rv = ap_rgetline(&line, length_limit + 2,
                          &line_length, r, 0, tmp_bb);
+        if (rv == APR_SUCCESS) {
+            rv = process_request_line(r, line);
+        }
         if (rv != APR_SUCCESS) {
             r->request_time = apr_time_now();
             /* ap_rgetline returns APR_ENOSPC if it fills up the
@@ -1073,17 +1088,23 @@ static apr_status_t read_partial_request(request_rec *r) {
              */
             if (rv == APR_ENOSPC) {
                 if (first_line) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                  "request failed: URI too long (longer than %d)",
+                                  r->server->limit_req_line);
                     r->status    = HTTP_REQUEST_URI_TOO_LARGE;
                     r->proto_num = HTTP_VERSION(1,0);
                     r->protocol  = apr_pstrdup(r->pool, "HTTP/1.0");
                 }
                 else {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                  "request failed: header line too long "
+                                  "(longer than %d)",
+                                  r->server->limit_req_fieldsize);
                     r->status = HTTP_BAD_REQUEST;
                 }
             }
             return rv;
         }
-        rv = process_request_line(r, line);  /* TODO check for errors */
     }
     return APR_SUCCESS;
 }
@@ -1091,19 +1112,16 @@ static apr_status_t read_partial_request(request_rec *r) {
 request_rec *ap_read_request(conn_rec *conn)
 {
     request_rec *r;
+    apr_status_t rv;
 
     r = init_request(conn);
 
-    if (read_partial_request(r) != APR_SUCCESS) {
-        if (r->status == HTTP_REQUEST_URI_TOO_LARGE) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "request failed: URI too long (longer than %d)", r->server->limit_req_line);
-            ap_send_error_response(r, 0);
-            ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
-            ap_run_log_transaction(r);
-            return r;
-        }
-
+    rv = read_partial_request(r);
+    /* TODO poll if EAGAIN */
+    if (r->status != HTTP_OK) {
+        ap_send_error_response(r, 0);
+        ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
+        ap_run_log_transaction(r);
         return NULL;
     }
 
