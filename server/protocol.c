@@ -935,7 +935,7 @@ static apr_status_t set_mime_header(request_rec *r, char *line)
                                    "<pre>\n",
                                    ap_escape_html(r->pool, line),
                                    "</pre>\n", NULL));
-        return APR_ENOSPC;
+        return APR_EGENERAL;
     }
 
     tmp_field = value - 1; /* last character of field-name */
@@ -1072,6 +1072,10 @@ static apr_status_t read_partial_request(request_rec *r) {
             length_limit = r->server->limit_req_line;
         }
         else {
+            if (r->assbackwards) {
+                r->status = HTTP_OK;
+                break;
+            }
             length_limit = r->server->limit_req_fieldsize;
         }
         /* TODO: use a nonblocking call in place of ap_rgetline */
