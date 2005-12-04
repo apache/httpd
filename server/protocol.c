@@ -786,80 +786,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             }
             return;
         }
-
-#if 0
-        if (last_field != NULL) {
-            if ((len > 0) && ((*field == '\t') || *field == ' ')) {
-                /* This line is a continuation of the preceding line(s),
-                 * so append it to the line that we've set aside.
-                 * Note: this uses a power-of-two allocator to avoid
-                 * doing O(n) allocs and using O(n^2) space for
-                 * continuations that span many many lines.
-                 */
-                apr_size_t fold_len = last_len + len + 1; /* trailing null */
-
-                if (fold_len >= (apr_size_t)(r->server->limit_req_fieldsize)) {
-                    r->status = HTTP_BAD_REQUEST;
-                    /* report what we have accumulated so far before the
-                     * overflow (last_field) as the field with the problem
-                     */
-                    apr_table_setn(r->notes, "error-notes",
-                                   apr_pstrcat(r->pool,
-                                               "Size of a request header field "
-                                               "after folding "
-                                               "exceeds server limit.<br />\n"
-                                               "<pre>\n",
-                                               ap_escape_html(r->pool, last_field),
-                                               "</pre>\n", NULL));
-                    return;
-                }
-
-                if (fold_len > alloc_len) {
-                    char *fold_buf;
-                    alloc_len += alloc_len;
-                    if (fold_len > alloc_len) {
-                        alloc_len = fold_len;
-                    }
-                    fold_buf = (char *)apr_palloc(r->pool, alloc_len);
-                    memcpy(fold_buf, last_field, last_len);
-                    last_field = fold_buf;
-                }
-                memcpy(last_field + last_len, field, len +1); /* +1 for nul */
-                last_len += len;
-                folded = 1;
-            }
-            else /* not a continuation line */ {
-
-                apr_status_t rv;
-                rv = set_mime_header(r, last_field);
-                if (rv != APR_SUCCESS) {
-                    return;
-                }
-
-                /* reset the alloc_len so that we'll allocate a new
-                 * buffer if we have to do any more folding: we can't
-                 * use the previous buffer because its contents are
-                 * now part of r->headers_in
-                 */
-                alloc_len = 0;
-
-            } /* end if current line is not a continuation starting with tab */
-        }
-
-        /* Found a blank line, stop. */
-        if (len == 0) {
-            break;
-        }
-
-        /* Keep track of this line so that we can parse it on
-         * the next loop iteration.  (In the folded case, last_field
-         * has been updated already.)
-         */
-        if (!folded) {
-            last_field = field;
-            last_len = len;
-        }
-#else
         rv = process_request_line(r, field, 1);
         if (rv != APR_SUCCESS) {
             return;
@@ -867,7 +793,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
         if ((field == NULL) || (*field == '\0')) {
             return;
         }
-#endif /* 0 */
     }
 }
 
