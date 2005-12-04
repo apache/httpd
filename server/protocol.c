@@ -945,6 +945,7 @@ static request_rec *request_post_read(request_rec *r, conn_rec *conn)
 
 static apr_status_t read_partial_request(request_rec *r) {
     apr_bucket_brigade *tmp_bb;
+    apr_status_t rv = APR_SUCCESS;
 
     /* Read and process lines of the request until we
      * encounter a complete request header, an error, or EAGAIN
@@ -953,7 +954,6 @@ static apr_status_t read_partial_request(request_rec *r) {
     while (r->status == HTTP_REQUEST_TIME_OUT) {
         char *line = NULL;
         apr_size_t line_length;
-        apr_status_t rv;
         apr_size_t length_limit;
         int first_line = (r->the_request == NULL);
         if (first_line) {
@@ -995,10 +995,11 @@ static apr_status_t read_partial_request(request_rec *r) {
                     r->status = HTTP_BAD_REQUEST;
                 }
             }
-            return rv;
+            break;
         }
     }
-    return APR_SUCCESS;
+    apr_brigade_destroy(tmp_bb);
+    return rv;
 }
 
 request_rec *ap_read_request(conn_rec *conn)
