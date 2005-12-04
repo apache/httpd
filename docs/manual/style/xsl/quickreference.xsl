@@ -179,7 +179,7 @@
             <xsl:attribute name="class">odd</xsl:attribute>
         </xsl:if>
 
-        <td class="descr">
+        <td colspan="4" class="descr">
             <xsl:choose>
             <xsl:when test="string-length(normalize-space(description)) &gt; 0">
                 <xsl:apply-templates select="description"/>
@@ -189,19 +189,6 @@
             </xsl:otherwise>
             </xsl:choose>
         </td>
-
-        <td>
-           <code class="module">
-             <a href="{../name}.html">
-                <xsl:value-of select="../name"/> 
-             </a>
-           </code>
-        </td>
-
-        <td colspan="2">
-          <xsl:value-of select="override"/>
-        </td>
-
     </tr>&lf;
 </xsl:for-each> <!-- /directives -->
 
