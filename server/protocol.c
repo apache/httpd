@@ -605,16 +605,65 @@ static void set_the_request(request_rec *r, char *line)
     return;
 }
 
+static apr_status_t set_mime_header(request_rec *r, char *line)
+{
+    char *value, *tmp_field;
+
+    if (r->server->limit_req_fields) {
+        const apr_array_header_t *mime_headers = apr_table_elts(r->headers_in);
+        if (mime_headers->nelts >= r->server->limit_req_fields) {
+            apr_table_setn(r->notes, "error-notes",
+                           "The number of request header fields "
+                           "exceeds this server's limit.");
+            r->status = HTTP_BAD_REQUEST;
+            return APR_ENOSPC;
+        }
+    }
+    
+    if (!(value = strchr(line, ':'))) { /* Find ':' or    */
+        r->status = HTTP_BAD_REQUEST;      /* abort bad request */
+        apr_table_setn(r->notes, "error-notes",
+                       apr_pstrcat(r->pool,
+                                   "Request header field is "
+                                   "missing ':' separator.<br />\n"
+                                   "<pre>\n",
+                                   ap_escape_html(r->pool, line),
+                                   "</pre>\n", NULL));
+        return APR_EGENERAL;
+    }
+
+    tmp_field = value - 1; /* last character of field-name */
+
+    *value++ = '\0'; /* NUL-terminate at colon */
+
+    while (*value == ' ' || *value == '\t') {
+        ++value;            /* Skip to start of value   */
+    }
+
+    /* Strip LWS after field-name: */
+    while (tmp_field > line
+           && (*tmp_field == ' ' || *tmp_field == '\t')) {
+        *tmp_field-- = '\0';
+    }
+
+    /* Strip LWS after field-value: */
+    tmp_field = strchr(value, '\0') - 1;
+    while (tmp_field > value
+           && (*tmp_field == ' ' || *tmp_field == '\t')) {
+        *tmp_field-- = '\0';
+    }
+
+    apr_table_addn(r->headers_in, line, value);
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb)
 {
     char *last_field = NULL;
     apr_size_t last_len = 0;
     apr_size_t alloc_len = 0;
     char *field;
-    char *value;
     apr_size_t len;
-    int fields_read = 0;
-    char *tmp_field;
 
     /*
      * Read header lines until we get the empty separator line, a read error,
@@ -691,50 +740,11 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             }
             else /* not a continuation line */ {
 
-                if (r->server->limit_req_fields
-                    && (++fields_read > r->server->limit_req_fields)) {
-                    r->status = HTTP_BAD_REQUEST;
-                    apr_table_setn(r->notes, "error-notes",
-                                   "The number of request header fields "
-                                   "exceeds this server's limit.");
+                apr_status_t rv;
+                rv = set_mime_header(r, last_field);
+                if (rv != APR_SUCCESS) {
                     return;
                 }
-
-                if (!(value = strchr(last_field, ':'))) { /* Find ':' or    */
-                    r->status = HTTP_BAD_REQUEST;      /* abort bad request */
-                    apr_table_setn(r->notes, "error-notes",
-                                   apr_pstrcat(r->pool,
-                                               "Request header field is "
-                                               "missing ':' separator.<br />\n"
-                                               "<pre>\n",
-                                               ap_escape_html(r->pool,
-                                                              last_field),
-                                               "</pre>\n", NULL));
-                    return;
-                }
-
-                tmp_field = value - 1; /* last character of field-name */
-
-                *value++ = '\0'; /* NUL-terminate at colon */
-
-                while (*value == ' ' || *value == '\t') {
-                    ++value;            /* Skip to start of value   */
-                }
-
-                /* Strip LWS after field-name: */
-                while (tmp_field > last_field
-                       && (*tmp_field == ' ' || *tmp_field == '\t')) {
-                    *tmp_field-- = '\0';
-                }
-
-                /* Strip LWS after field-value: */
-                tmp_field = last_field + last_len - 1;
-                while (tmp_field > value
-                       && (*tmp_field == ' ' || *tmp_field == '\t')) {
-                    *tmp_field-- = '\0';
-                }
-
-                apr_table_addn(r->headers_in, last_field, value);
 
                 /* reset the alloc_len so that we'll allocate a new
                  * buffer if we have to do any more folding: we can't
@@ -909,58 +919,6 @@ static request_rec *request_post_read(request_rec *r, conn_rec *conn)
     ap_add_input_filter_handle(ap_http_input_filter_handle,
                                NULL, r, r->connection);
     return r;
-}
-
-static apr_status_t set_mime_header(request_rec *r, char *line)
-{
-    char *value, *tmp_field;
-
-    if (r->server->limit_req_fields) {
-        const apr_array_header_t *mime_headers = apr_table_elts(r->headers_in);
-        if (mime_headers->nelts >= r->server->limit_req_fields) {
-            apr_table_setn(r->notes, "error-notes",
-                           "The number of request header fields "
-                           "exceeds this server's limit.");
-            r->status = HTTP_BAD_REQUEST;
-            return APR_ENOSPC;
-        }
-    }
-    
-    if (!(value = strchr(line, ':'))) { /* Find ':' or    */
-        r->status = HTTP_BAD_REQUEST;      /* abort bad request */
-        apr_table_setn(r->notes, "error-notes",
-                       apr_pstrcat(r->pool,
-                                   "Request header field is "
-                                   "missing ':' separator.<br />\n"
-                                   "<pre>\n",
-                                   ap_escape_html(r->pool, line),
-                                   "</pre>\n", NULL));
-        return APR_EGENERAL;
-    }
-
-    tmp_field = value - 1; /* last character of field-name */
-
-    *value++ = '\0'; /* NUL-terminate at colon */
-
-    while (*value == ' ' || *value == '\t') {
-        ++value;            /* Skip to start of value   */
-    }
-
-    /* Strip LWS after field-name: */
-    while (tmp_field > line
-           && (*tmp_field == ' ' || *tmp_field == '\t')) {
-        *tmp_field-- = '\0';
-    }
-
-    /* Strip LWS after field-value: */
-    tmp_field = strchr(value, '\0') - 1;
-    while (tmp_field > value
-           && (*tmp_field == ' ' || *tmp_field == '\t')) {
-        *tmp_field-- = '\0';
-    }
-
-    apr_table_addn(r->headers_in, line, value);
-    return APR_SUCCESS;
 }
 
 static apr_status_t process_request_line(request_rec *r, char *line)
