@@ -657,11 +657,101 @@ static apr_status_t set_mime_header(request_rec *r, char *line)
     return APR_SUCCESS;
 }
 
+static apr_status_t process_request_line(request_rec *r, char *line,
+                                         int skip_first)
+{
+    if (!skip_first && (r->the_request == NULL)) {
+        /* This is the first line of the request */
+        if ((line == NULL) || (*line == '\0')) {
+            /* We skip empty lines because browsers have to tack a CRLF on to the end
+             * of POSTs to support old CERN webservers.
+             */
+            int max_blank_lines = r->server->limit_req_fields;
+            if (max_blank_lines <= 0) {
+                max_blank_lines = DEFAULT_LIMIT_REQUEST_FIELDS;
+            }
+            r->num_blank_lines++;
+            if (r->num_blank_lines < max_blank_lines) {
+                return APR_SUCCESS;
+            }
+        }
+        set_the_request(r, line);
+    }
+    else {
+        /* We've already read the first line of the request.  This is either
+         * a header field or the blank line terminating the header
+         */
+        if ((line == NULL) || (*line == '\0')) {
+            if (r->pending_header_line != NULL) {
+                apr_status_t rv = set_mime_header(r, r->pending_header_line);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
+                r->pending_header_line = NULL;
+            }
+            if (r->status == HTTP_REQUEST_TIME_OUT) {
+                apr_table_compress(r->headers_in, APR_OVERLAP_TABLES_MERGE);
+                r->status = HTTP_OK;
+            }
+        }
+        else {
+            if ((*line == ' ') || (*line == '\t')) {
+                /* This line is a continuation of the previous one */
+                if (r->pending_header_line == NULL) {
+                    r->pending_header_line = line;
+                    r->pending_header_size = 0;
+                }
+                else {
+                    apr_size_t pending_len = strlen(r->pending_header_line);
+                    apr_size_t fold_len = strlen(line);
+                    if (pending_len + fold_len >
+                        r->server->limit_req_fieldsize) {
+                        /* CVE-2004-0942 */
+                        r->status = HTTP_BAD_REQUEST;
+                        return APR_ENOSPC;
+                    }
+                    if (pending_len + fold_len + 1 > r->pending_header_size) {
+                        /* Allocate a new buffer big enough to hold the
+                         * concatenated lines
+                         */
+                        apr_size_t new_size = r->pending_header_size;
+                        char *new_buf;
+                        if (new_size == 0) {
+                            new_size = pending_len + fold_len + 1;
+                        }
+                        else {
+                            do {
+                                new_size *= 2;
+                            } while (new_size < pending_len + fold_len + 1);
+                        }
+                        new_buf = (char *)apr_palloc(r->pool, new_size);
+                        memcpy(new_buf, r->pending_header_line, pending_len);
+                        r->pending_header_line = new_buf;
+                        r->pending_header_size = new_size;
+                    }
+                    memcpy(r->pending_header_line + pending_len, line,
+                           fold_len + 1);
+                }
+            }
+            else {
+                /* Set aside this line in case the next line is a continuation
+                 */
+                if (r->pending_header_line != NULL) {
+                    apr_status_t rv = set_mime_header(r, r->pending_header_line);
+                    if (rv != APR_SUCCESS) {
+                        return rv;
+                    }
+                }
+                r->pending_header_line = line;
+                r->pending_header_size = 0;
+            }
+        }
+    }
+    return APR_SUCCESS;
+}
+
 AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb)
 {
-    char *last_field = NULL;
-    apr_size_t last_len = 0;
-    apr_size_t alloc_len = 0;
     char *field;
     apr_size_t len;
 
@@ -671,7 +761,6 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
      */
     while(1) {
         apr_status_t rv;
-        int folded = 0;
 
         field = NULL;
         rv = ap_rgetline(&field, r->server->limit_req_fieldsize + 2,
@@ -698,6 +787,7 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             return;
         }
 
+#if 0
         if (last_field != NULL) {
             if ((len > 0) && ((*field == '\t') || *field == ' ')) {
                 /* This line is a continuation of the preceding line(s),
@@ -769,9 +859,16 @@ AP_DECLARE(void) ap_get_mime_headers_core(request_rec *r, apr_bucket_brigade *bb
             last_field = field;
             last_len = len;
         }
+#else
+        rv = process_request_line(r, field, 1);
+        if (rv != APR_SUCCESS) {
+            return;
+        }
+        if ((field == NULL) || (*field == '\0')) {
+            return;
+        }
+#endif /* 0 */
     }
-
-    apr_table_compress(r->headers_in, APR_OVERLAP_TABLES_MERGE);
 }
 
 AP_DECLARE(void) ap_get_mime_headers(request_rec *r)
@@ -921,98 +1018,6 @@ static request_rec *request_post_read(request_rec *r, conn_rec *conn)
     return r;
 }
 
-static apr_status_t process_request_line(request_rec *r, char *line)
-{
-    if (r->the_request == NULL) {
-        /* This is the first line of the request */
-        if ((line == NULL) || (*line == '\0')) {
-            /* We skip empty lines because browsers have to tack a CRLF on to the end
-             * of POSTs to support old CERN webservers.
-             */
-            int max_blank_lines = r->server->limit_req_fields;
-            if (max_blank_lines <= 0) {
-                max_blank_lines = DEFAULT_LIMIT_REQUEST_FIELDS;
-            }
-            r->num_blank_lines++;
-            if (r->num_blank_lines < max_blank_lines) {
-                return APR_SUCCESS;
-            }
-        }
-        set_the_request(r, line);
-    }
-    else {
-        /* We've already read the first line of the request.  This is either
-         * a header field or the blank line terminating the header
-         */
-        if ((line == NULL) || (*line == '\0')) {
-            if (r->pending_header_line != NULL) {
-                apr_status_t rv = set_mime_header(r, r->pending_header_line);
-                if (rv != APR_SUCCESS) {
-                    return rv;
-                }
-                r->pending_header_line = NULL;
-            }
-            if (r->status == HTTP_REQUEST_TIME_OUT) {
-                apr_table_compress(r->headers_in, APR_OVERLAP_TABLES_MERGE);
-                r->status = HTTP_OK;
-            }
-        }
-        else {
-            if ((*line == ' ') || (*line == '\t')) {
-                /* This line is a continuation of the previous one */
-                if (r->pending_header_line == NULL) {
-                    r->pending_header_line = line;
-                    r->pending_header_size = 0;
-                }
-                else {
-                    apr_size_t pending_len = strlen(r->pending_header_line);
-                    apr_size_t fold_len = strlen(line);
-                    if (pending_len + fold_len >
-                        r->server->limit_req_fieldsize) {
-                        /* CVE-2004-0942 */
-                        r->status = HTTP_BAD_REQUEST;
-                        return APR_ENOSPC;
-                    }
-                    if (pending_len + fold_len + 1 > r->pending_header_size) {
-                        /* Allocate a new buffer big enough to hold the
-                         * concatenated lines
-                         */
-                        apr_size_t new_size = r->pending_header_size;
-                        char *new_buf;
-                        if (new_size == 0) {
-                            new_size = pending_len + fold_len + 1;
-                        }
-                        else {
-                            do {
-                                new_size *= 2;
-                            } while (new_size < pending_len + fold_len + 1);
-                        }
-                        new_buf = (char *)apr_palloc(r->pool, new_size);
-                        memcpy(new_buf, r->pending_header_line, pending_len);
-                        r->pending_header_line = new_buf;
-                        r->pending_header_size = new_size;
-                    }
-                    memcpy(r->pending_header_line + pending_len, line,
-                           fold_len + 1);
-                }
-            }
-            else {
-                /* Set aside this line in case the next line is a continuation
-                 */
-                if (r->pending_header_line != NULL) {
-                    apr_status_t rv = set_mime_header(r, r->pending_header_line);
-                    if (rv != APR_SUCCESS) {
-                        return rv;
-                    }
-                }
-                r->pending_header_line = line;
-                r->pending_header_size = 0;
-            }
-        }
-    }
-    return APR_SUCCESS;
-}
-
 static apr_status_t read_partial_request(request_rec *r) {
     apr_bucket_brigade *tmp_bb;
 
@@ -1040,7 +1045,7 @@ static apr_status_t read_partial_request(request_rec *r) {
         rv = ap_rgetline(&line, length_limit + 2,
                          &line_length, r, 0, tmp_bb);
         if (rv == APR_SUCCESS) {
-            rv = process_request_line(r, line);
+            rv = process_request_line(r, line, 0);
         }
         if (rv != APR_SUCCESS) {
             r->request_time = apr_time_now();
