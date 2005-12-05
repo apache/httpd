@@ -130,7 +130,7 @@ PORT=80
 !IF "$(MAKE)" == "NMAKE"
 # Microsoft NMake options
 MAKEOPT=-nologo
-!ELSEIF "($MAKE)" == "make"
+!ELSEIF "$(MAKE)" == "make"
 # Borland make options?  Not really supported (yet)
 MAKEOPT=-s -N
 !ENDIF
