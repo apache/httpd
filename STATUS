@@ -105,4 +105,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * core: Fix recursive ErrorDocument handling
       http://svn.apache.org/viewcvs.cgi?rev=354118&view=rev
       PR: 36090
-      +1: niq
+      +1: niq, rpluem
