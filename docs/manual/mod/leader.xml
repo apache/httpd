@@ -43,7 +43,9 @@ MPM</description>
     <p>To use the <module>leader</module> MPM, add
       <code>--with-mpm=leader</code> to the <program>configure</program>
       script's arguments when building the <program>httpd</program>.</p>
-  
+
+</summary>
+<section id="requirements"><title>Requirements</title>
     <p>This MPM depends on APR's atomic compare-and-swap operations for
     thread synchronization. If you are compiling for an x86 target
     and you don't need to support 386s, or you are compiling for a
@@ -52,7 +54,9 @@ MPM</description>
     <program>configure</program> script's arguments. This will cause
     APR to implement atomic operations
     using efficient opcodes not available in older CPUs.</p>
-</summary>
+</section>
+
+<seealso><a href="worker.html">The worker MPM</a></seealso>
 
 <directivesynopsis location="mpm_common"><name>AcceptMutex</name>
 </directivesynopsis>
