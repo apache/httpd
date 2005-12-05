@@ -30,14 +30,46 @@ MPM</description>
 
 <summary>
     <note type="warning"><title>Warning</title>
-      <p>This MPM is experimental, so it may or may not work
-      as expected.</p>
+      <p>This MPM is experimental, so it may or may not work as
+      expected.</p> 
     </note>
-    
+
+    <p>The <module>event</module> Multi-Processing Module (MPM) is
+    designed to allow more requests to be served simultaneously by
+    passing off some processing work to supporting threads, freeing up
+    the main threads to work on new requests.  It is based on the
+    <module>worker</module> MPM, which implements a hybrid
+    multi-process multi-threaded server.  Run-time configuration
+    directives are identical to those provided by
+    <module>worker</module>.</p>
+
     <p>To use the <module>event</module> MPM, add
       <code>--with-mpm=event</code> to the <program>configure</program>
       script's arguments when building the <program>httpd</program>.</p>
-  
+
+</summary>
+
+<seealso><a href="worker.html">The worker MPM</a></seealso>
+
+<section id="how-it-works"><title>How it Works</title>
+    <p>This MPM tries to fix the 'keep alive problem' in HTTP. After a client
+    completes the first request, the client can keep the connection
+    open, and send further requests using the same socket. This can
+    save signifigant overhead in creating TCP connections. However,
+    Apache traditionally keeps an entire child process/thread waiting
+    for data from the client, which brings its own disadvantages. To
+    solve this problem, this MPM uses a dedicated thread to handle both
+    the Listening sockets, and all sockets that are in a Keep Alive
+    state.</p>
+
+    <p>The MPM assumes that the underlying <code>apr_pollset</code>
+    implementation is reasonably threadsafe. This enables the MPM to
+    avoid excessive high level locking, or having to wake up the listener
+    thread in order to send it a keep-alive socket. This is currently
+    only compatible with KQueue and EPoll.</p>
+
+</section>
+<section id="requirements"><title>Requirements</title>
     <p>This MPM depends on <glossary>APR</glossary>'s atomic
     compare-and-swap operations for thread synchronization. If you are
     compiling for an x86 target and you don't need to support 386s, or
@@ -46,8 +78,32 @@ MPM</description>
     <code>--enable-nonportable-atomics=yes</code> to the
     <program>configure</program> script's arguments. This will cause
     APR to implement atomic operations using efficient opcodes not
-    available in older CPUs.</p> 
-</summary>
+    available in older CPUs.</p>
+
+    <p>This MPM does not perform well on older platforms which lack good
+    threading, but the requirement for EPoll or KQueue makes this
+    moot.</p>
+
+    <ul>
+    
+      <li>To use this MPM on FreeBSD, FreeBSD 5.3 or higher is recommended.
+      However, it is possible to run this MPM on FreeBSD 5.2.1, if you
+      use <code>libkse</code> (see <code>man libmap.conf</code>).</li>
+
+      <li>For NetBSD, at least version 2.0 is recommended.</li>
+
+      <li>For Linux, a 2.6 kernel is recommended. It is also necessary to
+      ensure that your version of <code>glibc</code> has been compiled
+      with support for EPoll.</li>
+
+    </ul>
+</section>
+
+<section id="issues"><title>Issues</title>
+    <p>At present, this MPM is incompatible with <module>mod_ssl</module>, and
+    other input filters.</p>
+</section>
+
 
 <directivesynopsis location="mpm_common"><name>AcceptMutex</name>
 </directivesynopsis>
