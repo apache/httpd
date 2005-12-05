@@ -30,9 +30,9 @@
 
 <summary>
     <p>This Multi-Processing Module (MPM) implements a hybrid
-    multi-process multi-threaded server.  By using threads to serve
+    multi-process multi-threaded server. By using threads to serve
     requests, it is able to serve a large number of requests with
-    less system resources than a process-based server.  Yet it
+    fewer system resources than a process-based server. However, it
     retains much of the stability of a process-based server by
     keeping multiple processes available, each with many threads.</p>
 
@@ -60,7 +60,7 @@ uses</a></seealso>
     threads or processes to be created before their requests can be
     served. The number of processes that will initially launched is
     set by the <directive module="mpm_common">StartServers</directive>
-    directive. Then during operation, Apache assesses the total number
+    directive. During operation, Apache assesses the total number
     of idle threads in all processes, and forks or kills processes to
     keep this number within the boundaries specified by <directive
     module="mpm_common">MinSpareThreads</directive> and <directive
@@ -91,14 +91,14 @@ uses</a></seealso>
     non-default values are specified for these directives, they 
     should appear before other <module>worker</module> directives.</p>
 
-    <p>In addition to a the set of active child processes, there may 
-    be additional child processes which are terminating but where at
+    <p>In addition to the set of active child processes, there may 
+    be additional child processes which are terminating, but where at
     least one server thread is still handling an existing client
     connection.  Up to <directive 
     module="mpm_common">MaxClients</directive> terminating processes 
     may be present, though the actual number can be expected to be 
     much smaller.  This behavior can be avoided by disabling the 
-    termination of individual child processes, which is achieved by 
+    termination of individual child processes, which is achieved using
     the following:</p>
 
     <ul>
