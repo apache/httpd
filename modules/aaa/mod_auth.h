@@ -53,6 +53,7 @@ typedef enum {
 
 typedef enum {
     AUTHZ_DENIED,
+    AUTHZ_DECLINED,
     AUTHZ_GRANTED,
     AUTHZ_GENERAL_ERROR
 } authz_status;
