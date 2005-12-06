@@ -106,3 +106,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs.cgi?rev=354118&view=rev
       PR: 36090
       +1: niq, rpluem
+
+    * mod_dbd: When threaded, create a private pool in child_init
+      so we're not using the process pool later.  Also improve
+      configuration defaults and merge function.
+      (this assumes Colm's windows-build fixes are also backported)
+      http://svn.apache.org/viewcvs.cgi?rev=348026&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=354400&view=rev
+      +1 niq
+
+    * Backport mod_authz_dbd (it's had some testing now)
+      http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
+      +1 niq
