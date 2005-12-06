@@ -48,6 +48,10 @@
 #include <sys/ipc.h>
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
     uid_t uid;
     gid_t gid;
@@ -112,6 +116,10 @@ AP_INIT_TAKE1("User", unixd_set_user, NULL, RSRC_CONF, \
   "Effective user id for this server"), \
 AP_INIT_TAKE1("Group", unixd_set_group, NULL, RSRC_CONF, \
   "Effective group id for this server")
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 /** @} */
