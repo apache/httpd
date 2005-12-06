@@ -454,9 +454,9 @@ typedef struct {
     /* Authentication stuff.  Groan... */
     
     int *satisfy; /* for every method one */
-    char *ap_auth_type; /* Deprecated see mod_authz_host */
-    char *ap_auth_name; /* Deprecated see mod_authz_host */
-    apr_array_header_t *ap_requires; /* Deprecated see mod_authz_host */
+    char *ap_auth_type; /* Deprecated see mod_authn */
+    char *ap_auth_name; /* Deprecated see mod_authn */
+    apr_array_header_t *ap_requires; /* Deprecated see mod_authz */
 
     /* Custom response config. These can contain text or a URL to redirect to.
      * if response_code_strings is NULL then there are none in the config,
@@ -685,13 +685,11 @@ APR_DECLARE_OPTIONAL_FN(const char *, ap_ident_lookup,
  * authorization values with mod_authz_host
  */
 
-APR_DECLARE_OPTIONAL_FN(const apr_array_header_t *, authz_host_ap_requires,
+APR_DECLARE_OPTIONAL_FN(const apr_array_header_t *, authz_ap_requires,
                         (request_rec *r));
 APR_DECLARE_OPTIONAL_FN(int, authz_some_auth_required, (request_rec *r));
-/*
-APR_DECLARE_OPTIONAL_FN(const char *, authz_host_ap_auth_type, (request_rec *r));
-APR_DECLARE_OPTIONAL_FN(const char *, authz_host_ap_auth_name, (request_rec *r));
-*/
+APR_DECLARE_OPTIONAL_FN(const char *, authn_ap_auth_type, (request_rec *r));
+APR_DECLARE_OPTIONAL_FN(const char *, authn_ap_auth_name, (request_rec *r));
 
 /* ---------------------------------------------------------------------- */
 

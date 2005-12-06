@@ -268,14 +268,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->ap_default_type = new->ap_default_type;
     }
 
-    if (new->ap_auth_type) {
-        conf->ap_auth_type = new->ap_auth_type;
-    }
-
-    if (new->ap_auth_name) {
-        conf->ap_auth_name = new->ap_auth_name;
-    }
-
     if (conf->response_code_strings == NULL) {
         conf->response_code_strings = new->response_code_strings;
     }
@@ -666,6 +658,7 @@ AP_DECLARE(int) ap_allow_overrides(request_rec *r)
     return conf->override;
 }
 
+/*
 AP_DECLARE(const char *) ap_auth_type(request_rec *r)
 {
     core_dir_config *conf;
@@ -675,22 +668,22 @@ AP_DECLARE(const char *) ap_auth_type(request_rec *r)
 
     return conf->ap_auth_type;
 }
+*/
 
 /*
  * Optional function coming from mod_ident, used for looking up ident user
  */
-/*
-static APR_OPTIONAL_FN_TYPE(authz_host_ap_auth_type) *azh_ap_auth_type;
+static APR_OPTIONAL_FN_TYPE(authn_ap_auth_type) *authn_ap_auth_type;
 
 AP_DECLARE(const char *) ap_auth_type(request_rec *r)
 {
-    if (azh_ap_auth_type) {
-        return azh_ap_auth_type(r);
+    if (authn_ap_auth_type) {
+        return authn_ap_auth_type(r);
     }
     return NULL;
 }
-*/
 
+/*
 AP_DECLARE(const char *) ap_auth_name(request_rec *r)
 {
     core_dir_config *conf;
@@ -700,21 +693,20 @@ AP_DECLARE(const char *) ap_auth_name(request_rec *r)
 
     return conf->ap_auth_name;
 }
+*/
 
 /*
  * Optional function coming from mod_ident, used for looking up ident user
  */
-/*
-static APR_OPTIONAL_FN_TYPE(authz_host_ap_auth_name) *azh_ap_auth_name;
+static APR_OPTIONAL_FN_TYPE(authn_ap_auth_name) *authn_ap_auth_name;
 
 AP_DECLARE(const char *) ap_auth_name(request_rec *r)
 {
-    if (azh_ap_auth_name) {
-        return azh_ap_auth_name(r);
+    if (authn_ap_auth_name) {
+        return authn_ap_auth_name(r);
     }
     return NULL;
 }
-*/
 
 AP_DECLARE(const char *) ap_default_type(request_rec *r)
 {
@@ -741,12 +733,12 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r) /* Don't use this! */
 /*
  * Optional function coming from mod_ident, used for looking up ident user
  */
-static APR_OPTIONAL_FN_TYPE(authz_host_ap_requires) *azh_ap_requires;
+static APR_OPTIONAL_FN_TYPE(authz_ap_requires) *authz_ap_requires;
 
 AP_DECLARE(const apr_array_header_t *) ap_requires(request_rec *r)
 {
-    if (azh_ap_requires) {
-        return azh_ap_requires(r);
+    if (authz_ap_requires) {
+        return authz_ap_requires(r);
     }
     return NULL;
 }
@@ -2672,19 +2664,6 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
 }
 
 /*
- * Load an authorisation realm into our location configuration, applying the
- * usual rules that apply to realms.
- */
-static const char *set_authname(cmd_parms *cmd, void *mconfig,
-                                const char *word1)
-{
-    core_dir_config *aconfig = (core_dir_config *)mconfig;
-
-    aconfig->ap_auth_name = ap_escape_quotes(cmd->pool, word1);
-    return NULL;
-}
-
-/*
  * Handle a request to include the server's OS platform in the Server
  * response header field (the ServerTokens directive).  Unfortunately
  * this requires a new global in order to communicate the setting back to
@@ -3240,11 +3219,6 @@ AP_INIT_RAW_ARGS("<LocationMatch", urlsection, (void*)1, RSRC_CONF,
   "specified URL paths"),
 AP_INIT_RAW_ARGS("<FilesMatch", filesection, (void*)1, OR_ALL,
   "Container for directives affecting files matching specified patterns"),
-AP_INIT_TAKE1("AuthType", ap_set_string_slot,
-  (void*)APR_OFFSETOF(core_dir_config, ap_auth_type), OR_AUTHCFG,
-  "An HTTP authorization type (e.g., \"Basic\")"),
-AP_INIT_TAKE1("AuthName", set_authname, NULL, OR_AUTHCFG,
-  "The authentication realm (e.g. \"Members Only\")"),
 AP_INIT_TAKE1("Satisfy", satisfy, NULL, OR_AUTHCFG,
   "access policy if both allow and require used ('all' or 'any')"),
 #ifdef GPROF
@@ -3729,18 +3703,16 @@ static int default_handler(request_rec *r)
  * traffic
  */
 APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
-APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *azh_ap_some_auth_required;
+APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *authz_ap_some_auth_required;
 
 static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
     ident_lookup = APR_RETRIEVE_OPTIONAL_FN(ap_ident_lookup);
-    azh_ap_requires = APR_RETRIEVE_OPTIONAL_FN(authz_host_ap_requires);
-    azh_ap_some_auth_required = APR_RETRIEVE_OPTIONAL_FN(authz_some_auth_required);
-    /*
-    azh_ap_auth_type = APR_RETRIEVE_OPTIONAL_FN(authz_host_ap_auth_type);
-    azh_ap_auth_name = APR_RETRIEVE_OPTIONAL_FN(authz_host_ap_auth_name);
-    */
+    authz_ap_requires = APR_RETRIEVE_OPTIONAL_FN(authz_ap_requires);
+    authz_ap_some_auth_required = APR_RETRIEVE_OPTIONAL_FN(authz_some_auth_required);
+    authn_ap_auth_type = APR_RETRIEVE_OPTIONAL_FN(authn_ap_auth_type);
+    authn_ap_auth_name = APR_RETRIEVE_OPTIONAL_FN(authn_ap_auth_name);
 
     ap_set_version(pconf);
     ap_setup_make_content_type(pconf);

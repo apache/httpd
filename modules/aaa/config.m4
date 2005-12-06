@@ -21,6 +21,11 @@ APACHE_MODULE(authn_default, authentication backstopper, , , yes)
 dnl Provider alias module.
 APACHE_MODULE(authn_alias, auth provider alias, , , no)
 
+dnl General Authentication modules; module which implements the 
+dnl non-authn module specific directives.
+dnl
+APACHE_MODULE(authn, general authentication module, , , yes)
+
 dnl Authorization modules: modules which verify a certain property such as
 dnl membership of a group, value of the IP address against a list of pre
 dnl configured directives (e.g. require, allow) or against an external file
@@ -32,6 +37,11 @@ APACHE_MODULE(authz_user, 'require user' authorization control, , , yes)
 APACHE_MODULE(authz_dbm, DBM-based authorization control, , , most)
 APACHE_MODULE(authz_owner, 'require file-owner' authorization control, , , most)
 APACHE_MODULE(authz_dbd, SQL based authorization and Login/Session support, , , most)
+
+dnl General Authorization modules; provider module which implements the 
+dnl non-authz module specific directives.
+dnl
+APACHE_MODULE(authz, general authorization provider vector module, , , yes)
 
 dnl LDAP authentication module. This module has both the authn and authz
 dnl modules in one, so as to share the LDAP server config directives.
