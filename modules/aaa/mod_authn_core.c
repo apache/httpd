@@ -41,6 +41,15 @@
 #include <netinet/in.h>
 #endif
 
+/* TODO List
+
+- Track down all of the references to r->ap_auth_type
+   and change them to ap_auth_type()
+- Remove ap_auth_type and ap_auth_name from the 
+   request_rec   
+
+*/
+
 typedef struct {
     char *ap_auth_type;
     char *ap_auth_name;

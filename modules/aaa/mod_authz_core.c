@@ -44,6 +44,40 @@
 #include <netinet/in.h>
 #endif
 
+/* TODO List
+
+- Convert all of the authz modules to providers
+- Remove the ap_requires field from the request_rec
+- Remove the ap_requires field from authz_dir_conf   
+- Remove the function ap_requires() and authz_ap_requires()
+   since their functionality is no longer supported 
+   or necessary in the refactoring
+- Remove the calls to ap_some_auth_required() in the
+   core request handling to allow the hooks to be called
+   in all cases.  Is this function even necessary
+   anymore?
+- Determine of merge_authz_dir_config is even 
+   necessary and remove if not
+- Split the authz type from the arguments when the
+   authz provider is registered and store the type
+   in ->provider_name and the arguments in ->requirement
+- Move the check for METHOD_MASK out of the authz 
+   providers and into the provider vector
+- Change the status code to AUTHZ_DENIED, AUTHZ_GRANTED
+   and AUTHZ_GENERAL_ERROR   
+- Determine if setting the AUTHZ_PROVIDER_NAME_NOTE note
+   is even necessary.  This was used in authn to support
+   authn_alias.  Is there a need for an authz_alias?
+- Move the Satisfy directive out of mod_core and into
+   mod_authz_core.
+- Expand the Satisfy directive to handle 'and' and 'or'
+   logic for determining which authorization must succeed
+   vs. may succeed
+- Remove the AuthzXXXAuthoritative directives from all of
+   the authz providers
+      
+*/
+
 typedef struct {
     apr_array_header_t *ap_requires;
     authz_provider_list *providers;
