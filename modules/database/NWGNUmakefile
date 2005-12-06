@@ -222,6 +222,11 @@ FILES_nlm_Ximports = \
 #
 FILES_nlm_exports = \
 	dbd_module \
+	ap_dbd_open \
+	ap_dbd_close \
+	ap_dbd_acquire \
+	ap_dbd_cacquire \
+	ap_dbd_prepare \
 	$(EOLIST)
 	
 #   
