@@ -140,7 +140,7 @@ static const char *dbd_param_flag(cmd_parms *cmd, void *cfg, int flag)
     return NULL;
 }
 DBD_DECLARE_NONSTD(void) ap_dbd_prepare(server_rec *s, const char *query,
-                                const char *label)
+                                        const char *label)
 {
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
     dbd_prepared *prepared = apr_pcalloc(s->process->pool, sizeof(dbd_prepared));
@@ -194,10 +194,13 @@ static void *dbd_merge(apr_pool_t *pool, void *BASE, void *ADD) {
     cfg->set = add->set | base->set;
     return (void*) cfg;
 }
-#define DEFAULT_NMIN 0
-#define DEFAULT_NKEEP 1
-#define DEFAULT_NMAX 5
-#define DEFAULT_EXPTIME 120
+/* A default nmin of >0 will help with generating meaningful
+ * startup error messages if the database is down.
+ */
+#define DEFAULT_NMIN 1
+#define DEFAULT_NKEEP 2
+#define DEFAULT_NMAX 10
+#define DEFAULT_EXPTIME 300
 static void *dbd_cfg(apr_pool_t *p, server_rec *x)
 {
     svr_cfg *svr = (svr_cfg*) apr_pcalloc(p, sizeof(svr_cfg));
@@ -324,7 +327,7 @@ static apr_status_t dbd_setup(apr_pool_t *pool, svr_cfg *svr)
     }
 
     rv = apr_reslist_create(&svr->dbpool, svr->nmin, svr->nkeep, svr->nmax,
-                            ((apr_interval_time_t) svr->exptime) * 1000000,
+                            apr_time_from_sec(svr->exptime),
                             dbd_construct, dbd_destruct, svr, svr->pool);
     if (rv == APR_SUCCESS) {
         apr_pool_cleanup_register(svr->pool, svr->dbpool,
