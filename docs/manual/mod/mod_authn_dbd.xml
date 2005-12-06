@@ -101,7 +101,6 @@ DBDExptime 60</code>
 <syntax>AuthDBDUserPWQuery <var>query</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
-<override>AuthConfig</override>
 
 <usage>
     <p>The <directive>AuthDBDUserPWQuery</directive> specifies an
@@ -123,17 +122,16 @@ DBDExptime 60</code>
 <syntax>AuthDBDUserRealmQuery <var>query</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
-<override>AuthConfig</override>
 
 <usage>
-    <p>The <directive>AuthDBDUserRealmPWQuery</directive> specifies an
+    <p>The <directive>AuthDBDUserRealmQuery</directive> specifies an
     SQL query to look up a password for a specified user and realm.
     The query must take two string (typically SQL varchar) arguments
     (username and realm), and return a single value (encrypted password).
     </p>
     <example>
-    AuthDBDUserRealmPWQuery "SELECT password FROM authn
-                                    WHERE username = %s AND realm = %s"
+    AuthDBDUserRealmQuery "SELECT password FROM authn
+                              WHERE username = %s AND realm = %s"
     </example>
 
 </usage>
