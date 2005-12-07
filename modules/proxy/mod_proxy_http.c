@@ -1482,6 +1482,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     else if (rv != APR_SUCCESS) {
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
                                       "proxy: error reading response");
+                        c->aborted = 1;
                         break;
                     }
                     /* next time try a non-blocking read */
@@ -1546,6 +1547,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             apr_brigade_cleanup(bb);
         }
     } while (interim_response);
+
+    /* If we our connection with the client is to be aborted, return DONE. */
+    if (c->aborted) {
+        return DONE;
+    }
 
     if (conf->error_override) {
         /* the code above this checks for 'OK' which is what the hook expects */
