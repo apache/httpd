@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.0
 
+  *) Preserve the Content-Length header for a proxied HEAD response.
+     PR 18757.  [Greg Ames]
+
   *) mod_negotiation: Minor performance tweak by reusing already calculated
      strlen.
      [Ruediger Pluem, Christophe Jaillet <christophe.jaillet wanadoo.fr>]

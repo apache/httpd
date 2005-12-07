@@ -96,15 +96,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, jerenkrantz
 
-    * core: Stop stripping C-L from HEAD responses which prevents use
-      of Windows Update through mod_proxy amongst other things.
-        http://svn.apache.org/viewcvs.cgi?rev=327008&view=rev
-      PR: 18757
-      +1: jorton, jerenkrantz
-      +1: niq - this looks fine, but the comment about filters
-                misses the fact that mod_filter's protocol handling
-                gives us the 'long term' if we just use it.
-
     * mod_ssl/ab: Fix compiler warnings with OpenSSL 0.9.8a.
         http://svn.apache.org/viewcvs.cgi?rev=349415&view=rev
       +1: jorton, jerenkrantz
