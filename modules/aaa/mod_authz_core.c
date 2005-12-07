@@ -81,29 +81,29 @@
 typedef struct {
     apr_array_header_t *ap_requires;
     authz_provider_list *providers;
-} authz_dir_conf;
+} authz_core_dir_conf;
 
-module AP_MODULE_DECLARE_DATA authz_module;
+module AP_MODULE_DECLARE_DATA authz_core_module;
 
-static void *create_authz_dir_config(apr_pool_t *p, char *dummy)
+static void *create_authz_core_dir_config(apr_pool_t *p, char *dummy)
 {
-    authz_dir_conf *conf =
-            (authz_dir_conf *)apr_pcalloc(p, sizeof(authz_dir_conf));
+    authz_core_dir_conf *conf =
+            (authz_core_dir_conf *)apr_pcalloc(p, sizeof(authz_core_dir_conf));
 
     return (void *)conf;
 }
 
-static void *merge_authz_dir_config(apr_pool_t *a, void *basev, void *newv)
+static void *merge_authz_core_dir_config(apr_pool_t *a, void *basev, void *newv)
 {
-    authz_dir_conf *base = (authz_dir_conf *)basev;
-    authz_dir_conf *new = (authz_dir_conf *)newv;
-    authz_dir_conf *conf;
+    authz_core_dir_conf *base = (authz_core_dir_conf *)basev;
+    authz_core_dir_conf *new = (authz_core_dir_conf *)newv;
+    authz_core_dir_conf *conf;
 
     /* Create this conf by duplicating the base, replacing elements
     * (or creating copies for merging) where new-> values exist.
     */
-    conf = (authz_dir_conf *)apr_palloc(a, sizeof(authz_dir_conf));
-    memcpy(conf, base, sizeof(authz_dir_conf));
+    conf = (authz_core_dir_conf *)apr_palloc(a, sizeof(authz_core_dir_conf));
+    memcpy(conf, base, sizeof(authz_core_dir_conf));
 
     if (new->ap_requires) {
         conf->ap_requires = new->ap_requires;
@@ -115,7 +115,7 @@ static void *merge_authz_dir_config(apr_pool_t *a, void *basev, void *newv)
 static const char *add_authz_provider(cmd_parms *cmd, void *config,
                                       const char *arg)
 {
-    authz_dir_conf *conf = (authz_dir_conf*)config;
+    authz_core_dir_conf *conf = (authz_core_dir_conf*)config;
     authz_provider_list *newp;
 
     newp = apr_pcalloc(cmd->pool, sizeof(authz_provider_list));
@@ -171,8 +171,8 @@ static const command_rec authz_cmds[] =
 
 static int authorize_user(request_rec *r)
 {
-    authz_dir_conf *conf = ap_get_module_config(r->per_dir_config,
-            &authz_module);
+    authz_core_dir_conf *conf = ap_get_module_config(r->per_dir_config,
+            &authz_core_module);
     authz_status auth_result;
     authz_provider_list *current_provider;
 
@@ -258,18 +258,18 @@ static int authorize_user(request_rec *r)
 
 static const apr_array_header_t *authz_ap_requires(request_rec *r)
 {
-    authz_dir_conf *conf;
+    authz_core_dir_conf *conf;
 
-    conf = (authz_dir_conf *)ap_get_module_config(r->per_dir_config,
-        &authz_module);
+    conf = (authz_core_dir_conf *)ap_get_module_config(r->per_dir_config,
+        &authz_core_module);
 
     return conf->ap_requires;
 }
 
 static int authz_some_auth_required(request_rec *r)
 {
-    authz_dir_conf *conf = ap_get_module_config(r->per_dir_config,
-            &authz_module);
+    authz_core_dir_conf *conf = ap_get_module_config(r->per_dir_config,
+            &authz_core_module);
     authz_provider_list *current_provider;
     int req_authz = 0;
 
@@ -297,10 +297,10 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_auth_checker(authorize_user, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
-module AP_MODULE_DECLARE_DATA authz_module =
+module AP_MODULE_DECLARE_DATA authz_core_module =
 {
     STANDARD20_MODULE_STUFF,
-    create_authz_dir_config,   /* dir config creater */
+    create_authz_core_dir_config,   /* dir config creater */
     NULL,                           /* dir merger --- default is to override */
     NULL,                           /* server config */
     NULL,                           /* merge server config */

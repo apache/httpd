@@ -53,29 +53,29 @@
 typedef struct {
     char *ap_auth_type;
     char *ap_auth_name;
-} authn_dir_conf;
+} authn_core_dir_conf;
 
-module AP_MODULE_DECLARE_DATA authn_module;
+module AP_MODULE_DECLARE_DATA authn_core_module;
 
-static void *create_authn_dir_config(apr_pool_t *p, char *dummy)
+static void *create_authn_core_dir_config(apr_pool_t *p, char *dummy)
 {
-    authn_dir_conf *conf =
-            (authn_dir_conf *)apr_pcalloc(p, sizeof(authn_dir_conf));
+    authn_core_dir_conf *conf =
+            (authn_core_dir_conf *)apr_pcalloc(p, sizeof(authn_core_dir_conf));
 
     return (void *)conf;
 }
 
-static void *merge_authn_dir_config(apr_pool_t *a, void *basev, void *newv)
+static void *merge_authn_core_dir_config(apr_pool_t *a, void *basev, void *newv)
 {
-    authn_dir_conf *base = (authn_dir_conf *)basev;
-    authn_dir_conf *new = (authn_dir_conf *)newv;
-    authn_dir_conf *conf;
+    authn_core_dir_conf *base = (authn_core_dir_conf *)basev;
+    authn_core_dir_conf *new = (authn_core_dir_conf *)newv;
+    authn_core_dir_conf *conf;
 
     /* Create this conf by duplicating the base, replacing elements
     * (or creating copies for merging) where new-> values exist.
     */
-    conf = (authn_dir_conf *)apr_palloc(a, sizeof(authn_dir_conf));
-    memcpy(conf, base, sizeof(authn_dir_conf));
+    conf = (authn_core_dir_conf *)apr_palloc(a, sizeof(authn_core_dir_conf));
+    memcpy(conf, base, sizeof(authn_core_dir_conf));
 
     if (new->ap_auth_type) {
         conf->ap_auth_type = new->ap_auth_type;
@@ -95,7 +95,7 @@ static void *merge_authn_dir_config(apr_pool_t *a, void *basev, void *newv)
 static const char *set_authname(cmd_parms *cmd, void *mconfig,
                                 const char *word1)
 {
-    authn_dir_conf *aconfig = (authn_dir_conf *)mconfig;
+    authn_core_dir_conf *aconfig = (authn_core_dir_conf *)mconfig;
 
     aconfig->ap_auth_name = ap_escape_quotes(cmd->pool, word1);
     return NULL;
@@ -104,20 +104,20 @@ static const char *set_authname(cmd_parms *cmd, void *mconfig,
 
 static const char *authn_ap_auth_type(request_rec *r)
 {
-    authn_dir_conf *conf;
+    authn_core_dir_conf *conf;
 
-    conf = (authn_dir_conf *)ap_get_module_config(r->per_dir_config,
-        &authn_module);
+    conf = (authn_core_dir_conf *)ap_get_module_config(r->per_dir_config,
+        &authn_core_module);
 
     return apr_pstrdup(r->pool, conf->ap_auth_type);
 }
 
 static const char *authn_ap_auth_name(request_rec *r)
 {
-    authn_dir_conf *conf;
+    authn_core_dir_conf *conf;
 
-    conf = (authn_dir_conf *)ap_get_module_config(r->per_dir_config,
-        &authn_module);
+    conf = (authn_core_dir_conf *)ap_get_module_config(r->per_dir_config,
+        &authn_core_module);
 
     return apr_pstrdup(r->pool, conf->ap_auth_name);
 }
@@ -125,7 +125,7 @@ static const char *authn_ap_auth_name(request_rec *r)
 static const command_rec authn_cmds[] =
 {
     AP_INIT_TAKE1("AuthType", ap_set_string_slot,
-                  (void*)APR_OFFSETOF(authn_dir_conf, ap_auth_type), OR_AUTHCFG,
+                  (void*)APR_OFFSETOF(authn_core_dir_conf, ap_auth_type), OR_AUTHCFG,
                   "An HTTP authorization type (e.g., \"Basic\")"),
     AP_INIT_TAKE1("AuthName", set_authname, NULL, OR_AUTHCFG,
                   "The authentication realm (e.g. \"Members Only\")"),
@@ -138,11 +138,11 @@ static void register_hooks(apr_pool_t *p)
     APR_REGISTER_OPTIONAL_FN(authn_ap_auth_name);
 }
 
-module AP_MODULE_DECLARE_DATA authn_module =
+module AP_MODULE_DECLARE_DATA authn_core_module =
 {
     STANDARD20_MODULE_STUFF,
-    create_authn_dir_config,        /* dir config creater */
-    merge_authn_dir_config,         /* dir merger --- default is to override */
+    create_authn_core_dir_config,        /* dir config creater */
+    merge_authn_core_dir_config,         /* dir merger --- default is to override */
     NULL,                           /* server config */
     NULL,                           /* merge server config */
     authn_cmds,
