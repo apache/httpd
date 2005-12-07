@@ -19,6 +19,7 @@
 #include "apr_user.h"
 
 #include "ap_config.h"
+#include "ap_provider.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -52,6 +53,7 @@ static const command_rec authz_owner_cmds[] =
 
 module AP_MODULE_DECLARE_DATA authz_owner_module;
 
+#if 0
 static int check_file_owner(request_rec *r)
 {
     authz_owner_config_rec *conf = ap_get_module_config(r->per_dir_config,
@@ -221,9 +223,73 @@ static int check_file_owner(request_rec *r)
     ap_note_auth_failure(r);
     return HTTP_UNAUTHORIZED;
 }
+#endif
+static authz_status fileowner_check_authorization(request_rec *r,
+                                             const char *require_args)
+{
+#if !APR_HAS_USER
+    if ((required_owner & ~1) && conf->authoritative) {
+        break;
+    }
+
+    required_owner |= 1; /* remember the requirement */
+    reason = "'Require file-owner' is not supported on this platform.";
+    continue;
+#else  /* APR_HAS_USER */
+    char *owner = NULL;
+    apr_finfo_t finfo;
+
+    if ((required_owner & ~1) && conf->authoritative) {
+        break;
+    }
+
+    required_owner |= 1; /* remember the requirement */
+
+    if (!r->filename) {
+        reason = "no filename available";
+        continue;
+    }
+
+    status = apr_stat(&finfo, r->filename, APR_FINFO_USER, r->pool);
+    if (status != APR_SUCCESS) {
+        reason = apr_pstrcat(r->pool, "could not stat file ",
+                                r->filename, NULL);
+        continue;
+    }
+
+    if (!(finfo.valid & APR_FINFO_USER)) {
+        reason = "no file owner information available";
+        continue;
+    }
+
+    status = apr_uid_name_get(&owner, finfo.user, r->pool);
+    if (status != APR_SUCCESS || !owner) {
+        reason = "could not get name of file owner";
+        continue;
+    }
+
+    if (strcmp(owner, r->user)) {
+        reason = apr_psprintf(r->pool, "file owner %s does not match.",
+                                owner);
+        continue;
+    }
+
+    /* this user is authorized */
+    return OK;
+#endif /* APR_HAS_USER */
+    }
+}
+
+static const authz_provider authz_fileowner_provider =
+{
+    &fileowner_check_authorization,
+};
 
 static void register_hooks(apr_pool_t *p)
 {
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "file-owner", "0",
+                         &authz_fileowner_provider);
+
     ap_hook_auth_checker(check_file_owner, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
