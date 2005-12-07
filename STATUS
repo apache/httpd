@@ -67,6 +67,12 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+   * Proxy does not allow any more connections to a server when a server
+     is unavailable temporarily.
+     Message-ID: <31C9151F757B06E7A3956FD1@st-augustin.local>
+     Justin says: Yes, it's not a regression; but doing a release without
+                  this fixed is pretty stupid.
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
@@ -118,3 +124,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * Backport mod_authz_dbd (it's had some testing now)
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
       +1 niq
+
+    * mod_proxy: Correctly error out if we get an error from upstream
+      response.  Otherwise, we'll leave the client in a bad state.
+      http://svn.apache.org/viewcvs.cgi?rev=354628&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=354636&view=rev (comment only delta)
+      Message-ID: <4395A056.2070000@web.turner.com>
+      +1: jerenkrantz
+
+    * HTTP: If a connection aborts while waiting for a chunked line,
+      flag the connection as errored out.
+      http://svn.apache.org/viewcvs.cgi?rev=354630&view=rev
+      Message-ID: <4395A056.2070000@web.turner.com>
+      +1: jerenkrantz
