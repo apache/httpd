@@ -53,7 +53,6 @@ typedef enum {
 
 typedef enum {
     AUTHZ_DENIED,
-    AUTHZ_DECLINED,
     AUTHZ_GRANTED,
     AUTHZ_GENERAL_ERROR
 } authz_status;
@@ -86,7 +85,6 @@ typedef struct {
      * if we can authorize user access.
      */
     authz_status (*check_authorization)(request_rec *r,
-                                        apr_int64_t method_mask,
                                         const char *require_line);
 } authz_provider;
 

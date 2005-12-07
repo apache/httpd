@@ -118,27 +118,14 @@ static int check_user_access(request_rec *r)
 #endif
 
 static authz_status user_check_authorization(request_rec *r,
-                                             apr_int64_t method_mask,
-                                             const char *require_line)
+                                             const char *require_args)
 {
-    int m = r->method_number;
     const char *t, *w;
 
-    if (!(method_mask & (AP_METHOD_BIT << m))) {
-        return AUTHZ_DECLINED;
-    }
-
-    t = require_line;
-    w = ap_getword_white(r->pool, &t);
-    if (!strcasecmp(w, "user")) {
-        /* And note that there are applicable requirements
-         * which we consider ourselves the owner of.
-         */
-        while (t[0]) {
-            w = ap_getword_conf(r->pool, &t);
-            if (!strcmp(r->user, w)) {
-                return AUTHZ_GRANTED;
-            }
+    t = require_args;
+    while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
+        if (!strcmp(r->user, w)) {
+            return AUTHZ_GRANTED;
         }
     }
 
@@ -151,13 +138,8 @@ static authz_status user_check_authorization(request_rec *r,
     return AUTHZ_DENIED;
 }
 
-static authz_status validuser_check_authorization(request_rec *r, apr_int64_t method_mask, const char *require_line)
+static authz_status validuser_check_authorization(request_rec *r, const char *require_line)
 {
-    int m = r->method_number;
-
-    if (!(method_mask & (AP_METHOD_BIT << m))) {
-        return AUTHZ_DECLINED;
-    }
     return AUTHZ_GRANTED;
 }
 
@@ -176,8 +158,6 @@ static void register_hooks(apr_pool_t *p)
                          &authz_user_provider);
     ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "valid-user", "0",
                          &authz_validuser_provider);
-
-    /*    ap_hook_auth_checker(check_user_access, NULL, NULL, APR_HOOK_MIDDLE);*/
 }
 
 module AP_MODULE_DECLARE_DATA authz_user_module =

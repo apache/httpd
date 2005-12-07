@@ -117,11 +117,18 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
 {
     authz_core_dir_conf *conf = (authz_core_dir_conf*)config;
     authz_provider_list *newp;
+    const char *t, *w;
 
     newp = apr_pcalloc(cmd->pool, sizeof(authz_provider_list));
     /* XXX: Split this out to the name and then the rest of the directive. */
-    newp->provider_name = apr_pstrdup(cmd->pool, arg);
-    newp->requirement = apr_pstrdup(cmd->pool, arg);
+
+    t = arg;
+    w = ap_getword_white(cmd->pool, &t);
+
+    if (w)
+        newp->provider_name = apr_pstrdup(cmd->pool, w);
+    if (t)
+        newp->requirement = apr_pstrdup(cmd->pool, t);
     newp->method_mask = cmd->limited;
 
     /* lookup and cache the actual provider now */
@@ -202,9 +209,14 @@ static int authorize_user(request_rec *r)
                            current_provider->provider_name);
         }
 
+        /* check to make sure that the request method requires
+        authorization before calling the provider */
+        if (!(current_provider->method_mask & 
+            (AP_METHOD_BIT << r->method_number))) {
+            continue;
+        }
 
         auth_result = provider->check_authorization(r,
-                        current_provider->method_mask,
                         current_provider->requirement);
 
         apr_table_unset(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
@@ -247,8 +259,7 @@ static int authorize_user(request_rec *r)
 
         /* If we're returning 403, tell them to try again. */
         if (return_code == HTTP_UNAUTHORIZED) {
-            /* XXX: Why is this a basic auth failure? */
-            ap_note_basic_auth_failure (r);
+            ap_note_auth_failure (r);
         }
         return return_code;
     }
