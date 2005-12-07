@@ -130,10 +130,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs.cgi?rev=354628&view=rev
       http://svn.apache.org/viewcvs.cgi?rev=354636&view=rev (comment only delta)
       Message-ID: <4395A056.2070000@web.turner.com>
-      +1: jerenkrantz
+      +1: jerenkrantz, jim
 
     * HTTP: If a connection aborts while waiting for a chunked line,
       flag the connection as errored out.
       http://svn.apache.org/viewcvs.cgi?rev=354630&view=rev
       Message-ID: <4395A056.2070000@web.turner.com>
-      +1: jerenkrantz
+      +1: jerenkrantz, jim
+
+    * proxy_util: Fix case where a shared keepalive connection results in
+      different (and incorrect) workers from being accessed.
+      http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/proxy/proxy_util.c?rev=350250&view=diff&r1=350250&r2=332306
+      +1: jim
+
