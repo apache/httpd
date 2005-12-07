@@ -141,5 +141,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * proxy_util: Fix case where a shared keepalive connection results in
       different (and incorrect) workers from being accessed.
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/proxy/proxy_util.c?rev=350250&view=diff&r1=350250&r2=332306
-      +1: jim
 
+      http://svn.apache.org/viewcvs.cgi?rev=349723&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=350009&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=350250&view=rev
+      jerenkrantz: I don't like the fact that the if/else are doing the same
+                   thing.
+      +1: jim
+      +0: jerenkrantz
