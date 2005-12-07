@@ -1480,6 +1480,10 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         break;
                     }
                     else if (rv != APR_SUCCESS) {
+                        /* In this case, we are in real trouble because
+                         * our backend bailed on us, so abort our
+                         * connection to our user too.
+                         */
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
                                       "proxy: error reading response");
                         c->aborted = 1;
@@ -1548,7 +1552,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
     } while (interim_response);
 
-    /* If we our connection with the client is to be aborted, return DONE. */
+    /* If our connection with the client is to be aborted, return DONE. */
     if (c->aborted) {
         return DONE;
     }
