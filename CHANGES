@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) If a connection is aborted while waiting for a chunked line, flag the
+     connection as errored out.  [Justin Erenkrantz]
+
   *) mod_proxy: If we get an error reading the upstream response,
      close the connection.  [Brian Akins, Justin Erenkrantz]
 
