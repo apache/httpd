@@ -76,11 +76,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-
     * Backport Win32 build fixes for mod_dbd and mod_authn_dbd
         http://people.apache.org/~colm/httpd-2.2.0-dbd-win32.patch
       +1: colm, pquerna, niq
+
+    * core: Fix recursive ErrorDocument handling
+      http://svn.apache.org/viewcvs.cgi?rev=354118&view=rev
+      PR: 36090
+      +1: niq, rpluem, jerenkrantz
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_proxy_balancer: Fix PR37753 (mod_proxy_balancer Stickysession that
       uses URL doesn't work)
@@ -88,30 +94,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=352010&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, jerenkrantz
 
     * core: Stop stripping C-L from HEAD responses which prevents use
       of Windows Update through mod_proxy amongst other things.
         http://svn.apache.org/viewcvs.cgi?rev=327008&view=rev
       PR: 18757
-      +1: jorton
+      +1: jorton, jerenkrantz
       +1: niq - this looks fine, but the comment about filters
                 misses the fact that mod_filter's protocol handling
                 gives us the 'long term' if we just use it.
 
     * mod_ssl/ab: Fix compiler warnings with OpenSSL 0.9.8a.
         http://svn.apache.org/viewcvs.cgi?rev=349415&view=rev
-      +1: jorton
+      +1: jorton, jerenkrantz
 
     * core: Die properly if an error occurs in post_read_request
       http://svn.apache.org/viewcvs.cgi?rev=354085&view=rev
       PR: 37790
-      +1: niq
-
-    * core: Fix recursive ErrorDocument handling
-      http://svn.apache.org/viewcvs.cgi?rev=354118&view=rev
-      PR: 36090
-      +1: niq, rpluem
+      +1: niq, jerenkrantz
 
     * mod_dbd: When threaded, create a private pool in child_init
       so we're not using the process pool later.  Also improve
