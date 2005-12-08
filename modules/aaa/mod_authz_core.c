@@ -58,12 +58,12 @@
    anymore?
 - Determine of merge_authz_dir_config is even 
    necessary and remove if not
-- Split the authz type from the arguments when the
+X- Split the authz type from the arguments when the
    authz provider is registered and store the type
    in ->provider_name and the arguments in ->requirement
-- Move the check for METHOD_MASK out of the authz 
+X- Move the check for METHOD_MASK out of the authz 
    providers and into the provider vector
-- Change the status code to AUTHZ_DENIED, AUTHZ_GRANTED
+X- Change the status code to AUTHZ_DENIED, AUTHZ_GRANTED
    and AUTHZ_GENERAL_ERROR   
 - Determine if setting the AUTHZ_PROVIDER_NAME_NOTE note
    is even necessary.  This was used in authn to support

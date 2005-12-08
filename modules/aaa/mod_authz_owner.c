@@ -33,6 +33,8 @@ typedef struct {
     int authoritative;
 } authz_owner_config_rec;
 
+APR_DECLARE_OPTIONAL_FN(char*, authz_owner_get_file_group, (request_rec *r));
+
 static void *create_authz_owner_dir_config(apr_pool_t *p, char *d)
 {
     authz_owner_config_rec *conf = apr_palloc(p, sizeof(*conf));
@@ -224,60 +226,125 @@ static int check_file_owner(request_rec *r)
     return HTTP_UNAUTHORIZED;
 }
 #endif
+
 static authz_status fileowner_check_authorization(request_rec *r,
                                              const char *require_args)
 {
-#if !APR_HAS_USER
-    if ((required_owner & ~1) && conf->authoritative) {
-        break;
-    }
+    char *reason = NULL;
+    apr_status_t status = 0;
 
-    required_owner |= 1; /* remember the requirement */
+#if !APR_HAS_USER
     reason = "'Require file-owner' is not supported on this platform.";
-    continue;
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                  "Authorization of user %s to access %s failed, reason: %s",
+                  r->user, r->uri, reason ? reason : "unknown");
+    return AUTHZ_DENIED;
 #else  /* APR_HAS_USER */
     char *owner = NULL;
     apr_finfo_t finfo;
 
-    if ((required_owner & ~1) && conf->authoritative) {
-        break;
-    }
-
-    required_owner |= 1; /* remember the requirement */
-
     if (!r->filename) {
         reason = "no filename available";
-        continue;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Authorization of user %s to access %s failed, reason: %s",
+                      r->user, r->uri, reason ? reason : "unknown");
+        return AUTHZ_DENIED;
     }
 
     status = apr_stat(&finfo, r->filename, APR_FINFO_USER, r->pool);
     if (status != APR_SUCCESS) {
         reason = apr_pstrcat(r->pool, "could not stat file ",
                                 r->filename, NULL);
-        continue;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Authorization of user %s to access %s failed, reason: %s",
+                      r->user, r->uri, reason ? reason : "unknown");
+        return AUTHZ_DENIED;
     }
 
     if (!(finfo.valid & APR_FINFO_USER)) {
         reason = "no file owner information available";
-        continue;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Authorization of user %s to access %s failed, reason: %s",
+                      r->user, r->uri, reason ? reason : "unknown");
+        return AUTHZ_DENIED;
     }
 
     status = apr_uid_name_get(&owner, finfo.user, r->pool);
     if (status != APR_SUCCESS || !owner) {
         reason = "could not get name of file owner";
-        continue;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Authorization of user %s to access %s failed, reason: %s",
+                      r->user, r->uri, reason ? reason : "unknown");
+        return AUTHZ_DENIED;
     }
 
     if (strcmp(owner, r->user)) {
         reason = apr_psprintf(r->pool, "file owner %s does not match.",
                                 owner);
-        continue;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Authorization of user %s to access %s failed, reason: %s",
+                      r->user, r->uri, reason ? reason : "unknown");
+        return AUTHZ_DENIED;
     }
 
     /* this user is authorized */
-    return OK;
+    return AUTHZ_GRANTED;
 #endif /* APR_HAS_USER */
+}
+
+static char *authz_owner_get_file_group(request_rec *r)
+{
+    char *reason = NULL;
+
+    /* file-group only figures out the file's group and lets
+    * other modules do the actual authorization (against a group file/db).
+    * Thus, these modules have to hook themselves after
+    * mod_authz_owner and of course recognize 'file-group', too.
+    */
+#if !APR_HAS_USER
+    return NULL;
+#else  /* APR_HAS_USER */
+    char *group = NULL;
+    apr_finfo_t finfo;
+    apr_status_t status = 0;
+
+    if (!r->filename) {
+        reason = "no filename available";
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Authorization of user %s to access %s failed, reason: %s",
+                      r->user, r->uri, reason ? reason : "unknown");
+        return NULL;
     }
+
+    status = apr_stat(&finfo, r->filename, APR_FINFO_GROUP, r->pool);
+    if (status != APR_SUCCESS) {
+        reason = apr_pstrcat(r->pool, "could not stat file ",
+                                r->filename, NULL);
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Authorization of user %s to access %s failed, reason: %s",
+                      r->user, r->uri, reason ? reason : "unknown");
+        return NULL;
+    }
+
+    if (!(finfo.valid & APR_FINFO_GROUP)) {
+        reason = "no file group information available";
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Authorization of user %s to access %s failed, reason: %s",
+                      r->user, r->uri, reason ? reason : "unknown");
+        return NULL;
+    }
+
+    status = apr_gid_name_get(&group, finfo.group, r->pool);
+    if (status != APR_SUCCESS || !group) {
+        reason = "could not get name of file group";
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Authorization of user %s to access %s failed, reason: %s",
+                      r->user, r->uri, reason ? reason : "unknown");
+        return NULL;
+    }
+
+    return group;
+#endif /* APR_HAS_USER */
 }
 
 static const authz_provider authz_fileowner_provider =
@@ -287,10 +354,10 @@ static const authz_provider authz_fileowner_provider =
 
 static void register_hooks(apr_pool_t *p)
 {
+    APR_REGISTER_OPTIONAL_FN(authz_owner_get_file_group);
+
     ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "file-owner", "0",
                          &authz_fileowner_provider);
-
-    ap_hook_auth_checker(check_file_owner, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA authz_owner_module =
