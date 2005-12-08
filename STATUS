@@ -141,3 +141,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    thing.
       +1: jim
       +0: jerenkrantz
+
+    * httpd.h build fix for strict compilers.
+      http://svn.apache.org/viewcvs.cgi?rev=355143&view=rev
+      PR: 37840
+      +1: jorton
