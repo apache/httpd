@@ -316,7 +316,7 @@ static authz_status dbmgroup_check_authorization(request_rec *r,
     }
 
     t = require_args;
-    while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
+    while ((w = ap_getword_white(r->pool, &t)) && w[0]) {
         groups = orig_groups;
         while (groups[0]) {
             v = ap_getword(r->pool, &groups, ',');
