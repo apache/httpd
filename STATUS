@@ -80,12 +80,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~colm/httpd-2.2.0-dbd-win32.patch
       +1: colm, pquerna, niq
 
-    * core: Fix recursive ErrorDocument handling
-      http://svn.apache.org/viewcvs.cgi?rev=354118&view=rev
-      PR: 36090
-      +1: niq, rpluem, jerenkrantz
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_proxy_balancer: Fix PR37753 (mod_proxy_balancer Stickysession that
