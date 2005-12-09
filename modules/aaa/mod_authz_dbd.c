@@ -17,6 +17,7 @@
 #include "httpd.h"
 #include "http_log.h"
 #include "http_config.h"
+#include "ap_provider.h"
 #include "http_request.h"
 #include "http_protocol.h"
 #include "http_core.h"
@@ -24,6 +25,9 @@
 #include "mod_dbd.h"
 #include "apr_strings.h"
 #include "mod_authz_dbd.h"
+
+#include "mod_auth.h"
+
 
 module AP_MODULE_DECLARE_DATA authz_dbd_module;
 
@@ -181,6 +185,7 @@ static int authz_dbd_login(request_rec *r, authz_dbd_cfg *cfg,
         }
     }
     if (newuri != NULL) {
+        r->status = HTTP_MOVED_TEMPORARILY;
         apr_table_set(r->err_headers_out, "Location", newuri);
         rv = HTTP_MOVED_TEMPORARILY;
     }
@@ -242,6 +247,8 @@ static int authz_dbd_group_query(request_rec *r, authz_dbd_cfg *cfg,
     }
     return OK;
 }
+
+#if 0
 static int authz_dbd_check(request_rec *r)
 {
     int i, x, rv;
@@ -299,10 +306,83 @@ static int authz_dbd_check(request_rec *r)
     }
     return DECLINED;
 }
+#endif
+
+static authz_status dbdgroup_check_authorization(request_rec *r,
+                                              const char *require_args)
+{
+    int i, rv;
+    const char *w;
+    apr_array_header_t *groups = NULL;
+    const char *t;
+    authz_dbd_cfg *cfg = ap_get_module_config(r->per_dir_config,
+                                              &authz_dbd_module);
+
+    if (groups == NULL) {
+        groups = apr_array_make(r->pool, 4, sizeof(const char*));
+        rv = authz_dbd_group_query(r, cfg, groups);
+        if (rv != OK) {
+            return AUTHZ_GENERAL_ERROR;
+        }
+    }
+
+    t = require_args;
+    while (t[0]) {
+        w = ap_getword_white(r->pool, &t);
+        for (i=0; i < groups->nelts; ++i) {
+            if (!strcmp(w, ((const char**)groups->elts)[i])) {
+                return AUTHZ_GRANTED;
+            }
+        }
+    }
+
+    return AUTHZ_DENIED;
+}
+
+static authz_status dbdlogin_check_authorization(request_rec *r,
+                                              const char *require_args)
+{
+    authz_dbd_cfg *cfg = ap_get_module_config(r->per_dir_config,
+                                              &authz_dbd_module);
+
+    return (authz_dbd_login(r, cfg, "login") == OK ? AUTHZ_GRANTED : AUTHZ_DENIED);
+}
+
+static authz_status dbdlogout_check_authorization(request_rec *r,
+                                              const char *require_args)
+{
+    authz_dbd_cfg *cfg = ap_get_module_config(r->per_dir_config,
+                                              &authz_dbd_module);
+
+    return (authz_dbd_login(r, cfg, "logout") == OK ? AUTHZ_GRANTED : AUTHZ_DENIED);
+}
+
+static const authz_provider authz_dbdgroup_provider =
+{
+    &dbdgroup_check_authorization,
+};
+
+static const authz_provider authz_dbdlogin_provider =
+{
+    &dbdlogin_check_authorization,
+};
+
+
+static const authz_provider authz_dbdlogout_provider =
+{
+    &dbdlogout_check_authorization,
+};
+
 static void authz_dbd_hooks(apr_pool_t *p)
 {
-    ap_hook_auth_checker(authz_dbd_check, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "dbd-group", "0",
+                         &authz_dbdgroup_provider);
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "dbd-login", "0",
+                         &authz_dbdlogin_provider);
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "dbd-logout", "0",
+                         &authz_dbdlogout_provider);
 }
+
 module AP_MODULE_DECLARE_DATA authz_dbd_module =
 {
     STANDARD20_MODULE_STUFF,
