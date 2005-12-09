@@ -62,6 +62,7 @@
       &lt;Location /secure&gt;<br />
       <indent>
         AuthType basic<br />
+        AuthName "private area"<br />
         AuthBasicProvider  dbm<br />
         AuthDBMType        SDBM<br />
         AuthDBMUserFile    /www/etc/dbmpasswd<br />
