@@ -30,18 +30,30 @@
     
 
     <dl>
-      <dt>Authentication</dt>
+      <dt>Authentication and Authorization</dt>
       <dd>
         <p>Authentication is any process by which you verify that
         someone is who they claim they are. Authorization is any
         process by which someone is allowed to be where they want to
         go, or to have information that they want to have.</p>
 
-        <p>See: <a href="auth.html">Authentication, Authorization, and Access Control</a></p>
+        <p>See: <a href="auth.html">Authentication, Authorization</a></p>
       </dd>
     </dl>
 
     <dl>
+      <dt>Access Control</dt>
+      <dd>
+        <p>Access control refers to the process of restricting, or
+        granting access to a resource based on arbitrary criteria. There
+        are a variety of different ways that this can be
+        accomplished.</p>
+
+        <p>See: <a href="access.html">Access Control</a></p>
+      </dd>
+    </dl>
+
+   <dl>
       <dt>Dynamic Content with CGI</dt>
       <dd>
         <p>The CGI (Common Gateway Interface) defines a way for a web
