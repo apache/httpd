@@ -136,8 +136,8 @@
     by the <module>mod_authn_file</module> module.  Make sure
     that the chosen provider module is present in the server.</p>
 
-    <p>See <module>mod_authn_dbm</module> and <module>mod_authn_file</module>
-    for providers.</p>
+    <p>See <module>mod_authn_dbm</module>, <module>mod_authn_file</module>, 
+    and <module>mod_authn_dbd</module> for providers.</p>
 </usage>
 </directivesynopsis>
 
