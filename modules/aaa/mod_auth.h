@@ -37,7 +37,7 @@ extern "C" {
 #define AUTHN_PROVIDER_GROUP "authn"
 #define AUTHZ_PROVIDER_GROUP "authz"
 #define AUTHN_DEFAULT_PROVIDER "file"
-#define AUTHZ_DEFAULT_PROVIDER "valid-user"
+#define AUTHZ_DEFAULT_PROVIDER "default"
 
 #define AUTHZ_GROUP_NOTE "authz_group_note"
 #define AUTHN_PROVIDER_NAME_NOTE "authn_provider_name"
