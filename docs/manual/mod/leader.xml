@@ -45,6 +45,8 @@ MPM</description>
       script's arguments when building the <program>httpd</program>.</p>
 
 </summary>
+<seealso><a href="worker.html">The worker MPM</a></seealso>
+
 <section id="requirements"><title>Requirements</title>
     <p>This MPM depends on APR's atomic compare-and-swap operations for
     thread synchronization. If you are compiling for an x86 target
@@ -55,8 +57,6 @@ MPM</description>
     APR to implement atomic operations
     using efficient opcodes not available in older CPUs.</p>
 </section>
-
-<seealso><a href="worker.html">The worker MPM</a></seealso>
 
 <directivesynopsis location="mpm_common"><name>AcceptMutex</name>
 </directivesynopsis>
