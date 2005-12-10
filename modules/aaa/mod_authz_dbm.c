@@ -33,7 +33,6 @@
 typedef struct {
     char *grpfile;
     char *dbmtype;
-    int authoritative;
 } authz_dbm_config_rec;
 
 APR_DECLARE_OPTIONAL_FN(char*, authz_owner_get_file_group, (request_rec *r));
@@ -66,7 +65,6 @@ static void *create_authz_dbm_dir_config(apr_pool_t *p, char *d)
 
     conf->grpfile = NULL;
     conf->dbmtype = "default";
-    conf->authoritative = 1;  /* fortress is secure by default */
 
     return conf;
 }
@@ -79,11 +77,6 @@ static const command_rec authz_dbm_cmds[] =
     AP_INIT_TAKE1("AuthzDBMType", ap_set_string_slot,
      (void *)APR_OFFSETOF(authz_dbm_config_rec, dbmtype),
      OR_AUTHCFG, "what type of DBM file the group file is"),
-    AP_INIT_FLAG("AuthzDBMAuthoritative", ap_set_flag_slot,
-     (void *)APR_OFFSETOF(authz_dbm_config_rec, authoritative),
-     OR_AUTHCFG, "Set to 'Off' to allow access control to be passed along to "
-     "lower modules, if the group required is not found or empty, or the user "
-     " is not in the required groups. (default is On.)"),
     {NULL}
 };
 

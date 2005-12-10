@@ -38,8 +38,6 @@
  *
  * If there are any 'require group' blocks and we
  * are not in any group - we HTTP_UNAUTHORIZE
- * unless we are non-authoritative; in which
- * case we DECLINED.
  *
  */
 
@@ -59,7 +57,6 @@
 
 typedef struct {
     char *groupfile;
-    int authoritative;
 } authz_groupfile_config_rec;
 
 APR_DECLARE_OPTIONAL_FN(char*, authz_owner_get_file_group, (request_rec *r));
@@ -69,7 +66,6 @@ static void *create_authz_groupfile_dir_config(apr_pool_t *p, char *d)
     authz_groupfile_config_rec *conf = apr_palloc(p, sizeof(*conf));
 
     conf->groupfile = NULL;
-    conf->authoritative = 1; /* keep the fortress secure by default */
     return conf;
 }
 
@@ -89,13 +85,6 @@ static const command_rec authz_groupfile_cmds[] =
                    (void *)APR_OFFSETOF(authz_groupfile_config_rec, groupfile),
                    OR_AUTHCFG,
                    "text file containing group names and member user IDs"),
-    AP_INIT_FLAG("AuthzGroupFileAuthoritative", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authz_groupfile_config_rec,
-                                      authoritative),
-                 OR_AUTHCFG,
-                 "Set to 'Off' to allow access control to be passed along to "
-                 "lower modules if the 'require group' fails. (default is "
-                 "On)."),
     {NULL}
 };
 

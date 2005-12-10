@@ -28,25 +28,17 @@
 #include "mod_auth.h"
 
 typedef struct {
-    int authoritative;
 } authz_user_config_rec;
 
 static void *create_authz_user_dir_config(apr_pool_t *p, char *d)
 {
     authz_user_config_rec *conf = apr_palloc(p, sizeof(*conf));
 
-    conf->authoritative = 1; /* keep the fortress secure by default */
     return conf;
 }
 
 static const command_rec authz_user_cmds[] =
 {
-    AP_INIT_FLAG("AuthzUserAuthoritative", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authz_user_config_rec, authoritative),
-                 OR_AUTHCFG,
-                 "Set to 'Off' to allow access control to be passed along to "
-                 "lower modules if the 'require user' or 'require valid-user' "
-                 "statement is not met. (default: On)."),
     {NULL}
 };
 

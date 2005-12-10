@@ -44,7 +44,6 @@ typedef struct {
     const char *query;
     const char *redir_query;
     int redirect;
-    int authoritative;
 } authz_dbd_cfg ;
 
 static ap_dbd_t *(*dbd_handle)(request_rec*) = NULL;
@@ -55,7 +54,7 @@ static const char *const noerror = "???";
 static void *authz_dbd_cr_cfg(apr_pool_t *pool, char *dummy)
 {
     authz_dbd_cfg *ret = apr_pcalloc(pool, sizeof(authz_dbd_cfg));
-    ret->redirect = ret->authoritative = -1;
+    ret->redirect = -1;
     return ret;
 }
 static void *authz_dbd_merge_cfg(apr_pool_t *pool, void *BASE, void *ADD)
@@ -67,8 +66,6 @@ static void *authz_dbd_merge_cfg(apr_pool_t *pool, void *BASE, void *ADD)
     ret->query = (add->query == NULL) ? base->query : add->query;
     ret->redir_query = (add->redir_query == NULL)
                             ? base->redir_query : add->redir_query;
-    ret->authoritative = (add->authoritative == -1)
-                            ? base->authoritative : add->authoritative;
     ret->redirect = (add->redirect == -1) ? base->redirect : add->redirect;
     return ret;
 }
@@ -93,9 +90,6 @@ static const char *authz_dbd_prepare(cmd_parms *cmd, void *cfg,
     return ap_set_string_slot(cmd, cfg, label);
 }
 static const command_rec authz_dbd_cmds[] = {
-    AP_INIT_FLAG("AuthzDBDAuthoritative", ap_set_flag_slot,
-                 (void*)APR_OFFSETOF(authz_dbd_cfg, authoritative), ACCESS_CONF,
-                 "Whether dbd-group is authoritative"),
     AP_INIT_FLAG("AuthzDBDLoginToReferer", ap_set_flag_slot,
                  (void*)APR_OFFSETOF(authz_dbd_cfg, redirect), ACCESS_CONF,
                  "Whether to redirect to referer on successful login"),

@@ -30,7 +30,6 @@
 #include "mod_auth.h"     /* for AUTHZ_GROUP_NOTE */
 
 typedef struct {
-    int authoritative;
 } authz_owner_config_rec;
 
 APR_DECLARE_OPTIONAL_FN(char*, authz_owner_get_file_group, (request_rec *r));
@@ -39,17 +38,11 @@ static void *create_authz_owner_dir_config(apr_pool_t *p, char *d)
 {
     authz_owner_config_rec *conf = apr_palloc(p, sizeof(*conf));
 
-    conf->authoritative = 1; /* keep the fortress secure by default */
     return conf;
 }
 
 static const command_rec authz_owner_cmds[] =
 {
-    AP_INIT_FLAG("AuthzOwnerAuthoritative", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authz_owner_config_rec, authoritative),
-                 OR_AUTHCFG,
-                 "Set to 'Off' to allow access control to be passed along to "
-                 "lower modules. (default is On.)"),
     {NULL}
 };
 

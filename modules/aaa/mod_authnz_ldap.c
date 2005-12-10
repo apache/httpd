@@ -46,9 +46,6 @@ typedef struct {
 #if APR_HAS_THREADS
     apr_thread_mutex_t *lock;       /* Lock for this config */
 #endif
-    int auth_authoritative;         /* Is this auth method the one and only? */
-/*    int authz_enabled;              Is ldap authorization enabled in this directory? */
-
 
     /* These parameters are all derived from the AuthLDAPURL directive */
     char *url;                      /* String representation of the URL */
@@ -295,12 +292,6 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
     sec->bindpw = NULL;
     sec->deref = always;
     sec->group_attrib_is_dn = 1;
-    sec->auth_authoritative = 1;
-
-/*
-    sec->frontpage_hack = 0;
-*/
-
     sec->secure = -1;   /*Initialize to unset*/
 
     sec->user_is_dn = 0;
@@ -1036,7 +1027,7 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         if(result != LDAP_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                 "auth_ldap authorise: User DN not found, %s", ldc->reason);
-            return sec->auth_authoritative? HTTP_UNAUTHORIZED : DECLINED;
+            return AUTHZ_DENIED;
         }
 
         req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
@@ -1166,7 +1157,7 @@ static authz_status ldapdn_check_authorization(request_rec *r,
         if(result != LDAP_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                 "auth_ldap authorise: User DN not found, %s", ldc->reason);
-            return sec->auth_authoritative? HTTP_UNAUTHORIZED : DECLINED;
+            return AUTHZ_DENIED;
         }
 
         req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
@@ -1273,7 +1264,7 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
         if(result != LDAP_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                 "auth_ldap authorise: User DN not found, %s", ldc->reason);
-            return sec->auth_authoritative? HTTP_UNAUTHORIZED : DECLINED;
+            return AUTHZ_DENIED;
         }
 
         req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
@@ -1385,7 +1376,7 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
         if(result != LDAP_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                 "auth_ldap authorise: User DN not found, %s", ldc->reason);
-            return sec->auth_authoritative? HTTP_UNAUTHORIZED : DECLINED;
+            return AUTHZ_DENIED;
         }
 
         req = (authn_ldap_request_t *)apr_pcalloc(r->pool,
@@ -1669,11 +1660,6 @@ static const command_rec authnz_ldap_cmds[] =
                  "DN of the remote user. By default, this is set to off, meaning that "
                  "the REMOTE_USER variable will contain whatever value the remote user sent."),
 
-    AP_INIT_FLAG("AuthzLDAPAuthoritative", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authn_ldap_config_t, auth_authoritative), OR_AUTHCFG,
-                 "Set to 'off' to allow access control to be passed along to lower modules if "
-                 "the UserID and/or group is not known to this module"),
-
     AP_INIT_FLAG("AuthLDAPCompareDNOnServer", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(authn_ldap_config_t, compare_dn_on_server), OR_AUTHCFG,
                  "Set to 'on' to force auth_ldap to do DN compares (for the \"require dn\" "
@@ -1695,12 +1681,6 @@ static const command_rec authnz_ldap_cmds[] =
                   "Determines how aliases are handled during a search. Can bo one of the"
                   "values \"never\", \"searching\", \"finding\", or \"always\". "
                   "Defaults to always."),
-
-/*
-    AP_INIT_FLAG("AuthLDAPAuthzEnabled", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authn_ldap_config_t, authz_enabled), OR_AUTHCFG,
-                 "Set to off to disable the LDAP authorization handler, even if it's been enabled in a higher tree"),
-*/
 
     AP_INIT_TAKE1("AuthLDAPCharsetConfig", set_charset_config, NULL, RSRC_CONF,
                   "Character set conversion configuration file. If omitted, character set"

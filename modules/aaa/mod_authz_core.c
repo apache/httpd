@@ -46,7 +46,7 @@
 
 /* TODO List
 
-- Convert all of the authz modules to providers
+X- Convert all of the authz modules to providers
 - Remove the ap_requires field from the request_rec
 - Remove the ap_requires field from authz_dir_conf   
 - Remove the function ap_requires() and authz_ap_requires()
@@ -73,7 +73,7 @@ X- Change the status code to AUTHZ_DENIED, AUTHZ_GRANTED
 - Expand the Satisfy directive to handle 'and' and 'or'
    logic for determining which authorization must succeed
    vs. may succeed
-- Remove the AuthzXXXAuthoritative directives from all of
+X- Remove the AuthzXXXAuthoritative directives from all of
    the authz providers
       
 */
