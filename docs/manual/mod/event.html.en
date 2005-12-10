@@ -31,23 +31,23 @@ MPM</td></tr>
 <h3>Summary</h3>
 
     <div class="warning"><h3>Warning</h3>
-      <p>This MPM is experimental, so it may or may not work
-      as expected.</p>
+      <p>This MPM is experimental, so it may or may not work as
+      expected.</p> 
     </div>
-    
+
+    <p>The <code class="module"><a href="../mod/event.html">event</a></code> Multi-Processing Module (MPM) is
+    designed to allow more requests to be served simultaneously by
+    passing off some processing work to supporting threads, freeing up
+    the main threads to work on new requests.  It is based on the
+    <code class="module"><a href="../mod/worker.html">worker</a></code> MPM, which implements a hybrid
+    multi-process multi-threaded server.  Run-time configuration
+    directives are identical to those provided by
+    <code class="module"><a href="../mod/worker.html">worker</a></code>.</p>
+
     <p>To use the <code class="module"><a href="../mod/event.html">event</a></code> MPM, add
       <code>--with-mpm=event</code> to the <code class="program"><a href="../programs/configure.html">configure</a></code>
       script's arguments when building the <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
-  
-    <p>This MPM depends on <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>'s atomic
-    compare-and-swap operations for thread synchronization. If you are
-    compiling for an x86 target and you don't need to support 386s, or
-    you are compiling for a SPARC and you don't need to run on
-    pre-UltraSPARC chips, add
-    <code>--enable-nonportable-atomics=yes</code> to the
-    <code class="program"><a href="../programs/configure.html">configure</a></code> script's arguments. This will cause
-    APR to implement atomic operations using efficient opcodes not
-    available in older CPUs.</p> 
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -73,8 +73,70 @@ MPM</td></tr>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
 <li><img alt="" src="../images/right.gif" /> <a href="mpm_common.html#user">User</a></li>
 </ul>
-</div>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it Works</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requirements">Requirements</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#issues">Issues</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="worker.html">The worker MPM</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="how-it-works" id="how-it-works">How it Works</a></h2>
+    <p>This MPM tries to fix the 'keep alive problem' in HTTP. After a client
+    completes the first request, the client can keep the connection
+    open, and send further requests using the same socket. This can
+    save signifigant overhead in creating TCP connections. However,
+    Apache traditionally keeps an entire child process/thread waiting
+    for data from the client, which brings its own disadvantages. To
+    solve this problem, this MPM uses a dedicated thread to handle both
+    the Listening sockets, and all sockets that are in a Keep Alive
+    state.</p>
 
+    <p>The MPM assumes that the underlying <code>apr_pollset</code>
+    implementation is reasonably threadsafe. This enables the MPM to
+    avoid excessive high level locking, or having to wake up the listener
+    thread in order to send it a keep-alive socket. This is currently
+    only compatible with KQueue and EPoll.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="requirements" id="requirements">Requirements</a></h2>
+    <p>This MPM depends on <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a>'s atomic
+    compare-and-swap operations for thread synchronization. If you are
+    compiling for an x86 target and you don't need to support 386s, or
+    you are compiling for a SPARC and you don't need to run on
+    pre-UltraSPARC chips, add
+    <code>--enable-nonportable-atomics=yes</code> to the
+    <code class="program"><a href="../programs/configure.html">configure</a></code> script's arguments. This will cause
+    APR to implement atomic operations using efficient opcodes not
+    available in older CPUs.</p>
+
+    <p>This MPM does not perform well on older platforms which lack good
+    threading, but the requirement for EPoll or KQueue makes this
+    moot.</p>
+
+    <ul>
+    
+      <li>To use this MPM on FreeBSD, FreeBSD 5.3 or higher is recommended.
+      However, it is possible to run this MPM on FreeBSD 5.2.1, if you
+      use <code>libkse</code> (see <code>man libmap.conf</code>).</li>
+
+      <li>For NetBSD, at least version 2.0 is recommended.</li>
+
+      <li>For Linux, a 2.6 kernel is recommended. It is also necessary to
+      ensure that your version of <code>glibc</code> has been compiled
+      with support for EPoll.</li>
+
+    </ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="issues" id="issues">Issues</a></h2>
+    <p>At present, this MPM is incompatible with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, and
+    other input filters.</p>
+</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/event.html" title="English">&nbsp;en&nbsp;</a></p>

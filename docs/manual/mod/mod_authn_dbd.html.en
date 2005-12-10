@@ -110,7 +110,6 @@ DBDExptime 60</code>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>SQL query to look up a password for a user</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDBDUserPWQuery <var>query</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_dbd</td></tr>
 </table>
@@ -132,18 +131,17 @@ DBDExptime 60</code>
 </td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthDBDUserRealmQuery <var>query</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_dbd</td></tr>
 </table>
-    <p>The <code class="directive">AuthDBDUserRealmPWQuery</code> specifies an
+    <p>The <code class="directive">AuthDBDUserRealmQuery</code> specifies an
     SQL query to look up a password for a specified user and realm.
     The query must take two string (typically SQL varchar) arguments
     (username and realm), and return a single value (encrypted password).
     </p>
     <div class="example"><p><code>
-    AuthDBDUserRealmPWQuery "SELECT password FROM authn
-                                    WHERE username = %s AND realm = %s"
+    AuthDBDUserRealmQuery "SELECT password FROM authn
+                              WHERE username = %s AND realm = %s"
     </code></p></div>
 
 
