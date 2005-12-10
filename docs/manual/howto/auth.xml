@@ -81,6 +81,10 @@ module from each group.</p>
   of the request, but is not part of the authentication provider
   system.</p>
 
+  <p>You probably also want to take a look at the <a
+  href="access.html">Access Control</a> howto, which discusses the
+  various ways to control access to your server.</p>
+
 </section>
 
 <section id="introduction"><title>Introduction</title>
@@ -91,6 +95,11 @@ module from each group.</p>
 
     <p>This article covers the "standard" way of protecting parts
     of your web site that most of you are going to use.</p>
+
+    <note><title>Note:</title>
+    <p>If your data really needs to be secure, consider using
+    <module>mod_ssl</module> in addition to any authentication.</p>
+    </note>
 </section>
 
 <section id="theprerequisites"><title>The Prerequisites</title>
@@ -128,7 +137,12 @@ module from each group.</p>
     <p>Here's the basics of password protecting a directory on your
     server.</p>
 
-    <p>You'll need to create a password file. This file should be
+    <p>First, you need to create a password file. Exactly how you do
+    this will vary depending on what authentication provider you have
+    chosen. More on that later. To start with, we'll use a text password
+    file.</p>
+
+    <p>This file should be
     placed somewhere not accessible from the web. This is so that
     folks cannot download the password file. For example, if your
     documents are served out of <code>/usr/local/apache/htdocs</code> you
@@ -137,7 +151,10 @@ module from each group.</p>
 
     <p>To create the file, use the <program>htpasswd</program> utility that
     came with Apache. This will be located in the <code>bin</code> directory
-    of wherever you installed Apache. To create the file, type:</p>
+    of wherever you installed Apache. If you have installed Apache from
+    a third-party package, it may be in your execution path.</p>
+    
+    <p>To create the file, type:</p>
 
     <example>
       htpasswd -c /usr/local/apache/passwd/passwords rbowen
@@ -155,8 +172,8 @@ module from each group.</p>
 
     <p>If <program>htpasswd</program> is not in your path, of course
     you'll have to type the full path to the file to get it to run.
-    On my server, it's located at
-    <code>/usr/local/apache/bin/htpasswd</code></p>
+    With a default installation, it's located at
+    <code>/usr/local/apache2/bin/htpasswd</code></p>
 
     <p>Next, you'll need to configure the server to request a
     password and tell the server which users are allowed access.
@@ -172,6 +189,8 @@ module from each group.</p>
     <example>
       AuthType Basic<br />
       AuthName "Restricted Files"<br />
+      # (Following line optional)<br />
+      AuthBasicProvider file<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       Require user rbowen
     </example>
@@ -183,10 +202,11 @@ module from each group.</p>
     implemented by <module>mod_auth_basic</module>. It is important to be aware,
     however, that Basic authentication sends the password from the client to
     the server unencrypted. This method should therefore not be used for
-    highly sensitive data. Apache supports one other authentication method:
+    highly sensitive data, unless accompanied by <module>mod_ssl</module>.
+    Apache supports one other authentication method:
     <code>AuthType Digest</code>. This method is implemented by <module
-    >mod_auth_digest</module> and is much more secure. Only the most recent
-    versions of clients are known to support Digest authentication.</p>
+    >mod_auth_digest</module> and is much more secure. Most recent
+    browsers support Digest authentication.</p>
 
     <p>The <directive module="core">AuthName</directive> directive sets
     the <dfn>Realm</dfn> to be used in the authentication. The realm serves
@@ -204,6 +224,13 @@ module from each group.</p>
     the same realm. Of course, for security reasons, the client
     will always need to ask again for the password whenever the
     hostname of the server changes.</p>
+
+    <p>The <directive
+    module="mod_auth_basic">AuthBasicProvider</directive> is,
+    in this case, optional, since <code>file</code> is the default value
+    for this directive. You'll need to use this directive if you are
+    choosing a different source for authentication, such as
+    <module>mod_authn_dbm</module> or <module>mod_auth_dbd</module>.</p>
 
     <p>The <directive module="mod_authn_file">AuthUserFile</directive>
     directive sets the path to the password file that we just
@@ -314,81 +341,16 @@ person in</title>
     different authentication method at that time.</p>
 </section>
 
-<section id="whatotherneatstuffcanido"><title>What other neat stuff can I
-do?</title>
-    <p>Authentication by username and password is only part of the
-    story. Frequently you want to let people in based on something
-    other than who they are. Something such as where they are
-    coming from.</p>
-
-    <p>The <directive module="mod_authz_host">Allow</directive> and
-    <directive module="mod_authz_host">Deny</directive> directives let
-    you allow and deny access based on the host name, or host
-    address, of the machine requesting a document. The
-    <directive module="mod_authz_host">Order</directive> directive goes
-    hand-in-hand with these two, and tells Apache in which order to
-    apply the filters.</p>
-
-    <p>The usage of these directives is:</p>
-
-    <example>
-      Allow from <var>address</var>
-    </example>
-
-    <p>where <var>address</var> is an IP address (or a partial IP
-    address) or a fully qualified domain name (or a partial domain
-    name); you may provide multiple addresses or domain names, if
-    desired.</p>
-
-    <p>For example, if you have someone spamming your message
-    board, and you want to keep them out, you could do the
-    following:</p>
-
-    <example>
-      Deny from 205.252.46.165
-    </example>
-
-    <p>Visitors coming from that address will not be able to see
-    the content covered by this directive. If, instead, you have a
-    machine name, rather than an IP address, you can use that.</p>
-
-    <example>
-      Deny from <var>host.example.com</var>
-    </example>
-
-    <p>And, if you'd like to block access from an entire domain,
-    you can specify just part of an address or domain name:</p>
-
-    <example>
-      Deny from <var>192.101.205</var><br />
-      Deny from <var>cyberthugs.com</var> <var>moreidiots.com</var><br />
-      Deny from ke
-    </example>
-
-    <p>Using <directive module="mod_authz_host">Order</directive> will let you
-    be sure that you are actually restricting things to the group that you want
-    to let in, by combining a <directive
-    module="mod_authz_host">Deny</directive> and an <directive
-    module="mod_authz_host">Allow</directive> directive:</p>
-
-    <example>
-      Order deny,allow<br />
-      Deny from all<br />
-      Allow from <var>dev.example.com</var>
-    </example>
-
-    <p>Listing just the <directive module="mod_authz_host">Allow</directive>
-    directive would not do what you want, because it will let folks from that
-    host in, in addition to letting everyone in. What you want is to let
-    <em>only</em> those folks in.</p>
-</section>
-
 <section id="moreinformation"><title>More information</title>
     <p>You should also read the documentation for
     <module>mod_auth_basic</module> and <module>mod_authz_host</module> which
     contain some more information about how this all works.
     <module>mod_authn_alias</module> can also help in simplifying certain
     authentication configurations.</p>
+
+    <p>And you may want to look at the <a href="access.html">Access
+    Control</a> howto, which discusses a number of related topics.</p>
+
 </section>
 
 </manualpage>
