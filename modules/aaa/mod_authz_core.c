@@ -79,7 +79,6 @@ X- Remove the AuthzXXXAuthoritative directives from all of
 */
 
 typedef struct {
-    apr_array_header_t *ap_requires;
     authz_provider_list *providers;
 } authz_core_dir_conf;
 
@@ -93,6 +92,7 @@ static void *create_authz_core_dir_config(apr_pool_t *p, char *dummy)
     return (void *)conf;
 }
 
+#if 0
 static void *merge_authz_core_dir_config(apr_pool_t *a, void *basev, void *newv)
 {
     authz_core_dir_conf *base = (authz_core_dir_conf *)basev;
@@ -105,12 +105,9 @@ static void *merge_authz_core_dir_config(apr_pool_t *a, void *basev, void *newv)
     conf = (authz_core_dir_conf *)apr_palloc(a, sizeof(authz_core_dir_conf));
     memcpy(conf, base, sizeof(authz_core_dir_conf));
 
-    if (new->ap_requires) {
-        conf->ap_requires = new->ap_requires;
-    }
-
     return (void*)conf;
 }
+#endif
 
 static const char *add_authz_provider(cmd_parms *cmd, void *config,
                                       const char *arg)
@@ -267,16 +264,6 @@ static int authorize_user(request_rec *r)
     return OK;
 }
 
-static const apr_array_header_t *authz_ap_requires(request_rec *r)
-{
-    authz_core_dir_conf *conf;
-
-    conf = (authz_core_dir_conf *)ap_get_module_config(r->per_dir_config,
-        &authz_core_module);
-
-    return conf->ap_requires;
-}
-
 static int authz_some_auth_required(request_rec *r)
 {
     authz_core_dir_conf *conf = ap_get_module_config(r->per_dir_config,
@@ -302,9 +289,8 @@ static int authz_some_auth_required(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    APR_REGISTER_OPTIONAL_FN(authz_ap_requires);
     APR_REGISTER_OPTIONAL_FN(authz_some_auth_required);
-   
+
     ap_hook_auth_checker(authorize_user, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
