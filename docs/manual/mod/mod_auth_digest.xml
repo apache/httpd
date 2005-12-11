@@ -39,6 +39,7 @@
 <seealso><directive module="core">AuthType</directive></seealso>
 <seealso><directive module="core">Require</directive></seealso>
 <seealso><directive module="core">Satisfy</directive></seealso>
+<seealso><a href="../howto/auth.html">Authentication howto</a></seealso>
 
 <section id="using"><title>Using Digest Authentication</title>
 
