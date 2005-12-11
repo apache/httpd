@@ -1199,7 +1199,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                            * are being read. */
     int pread_len = 0;
     apr_table_t *save_table;
-    int backend_broken = 0;
 
     bb = apr_brigade_create(p, c->bucket_alloc);
 
@@ -1487,7 +1486,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          */
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
                                       "proxy: error reading response");
-                        backend_broken = 1;
+                        c->aborted = 1;
                         break;
                     }
                     /* next time try a non-blocking read */
@@ -1553,9 +1552,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
         }
     } while (interim_response);
 
-    /* Signal back that the backend broke after we sent the headers. */
-    if (backend_broken) {
-        return PROXY_BACKEND_BROKEN;
+    /* If our connection with the client is to be aborted, return DONE. */
+    if (c->aborted) {
+        return DONE;
     }
 
     if (conf->error_override) {

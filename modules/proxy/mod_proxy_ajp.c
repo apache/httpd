@@ -138,7 +138,6 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     int havebody = 1;
     int isok = 1;
     apr_off_t bb_len;
-    int data_sent = 0;
 #ifdef FLUSHING_BANDAID
     apr_int32_t conn_poll_fd;
     apr_pollfd_t *conn_poll;
@@ -349,8 +348,6 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                       "proxy: error processing body");
                         isok = 0;
                     }
-                    /* memorize that we sent data */
-                    data_sent = 1;
                     apr_brigade_cleanup(output_brigade);
                 }
                 else {
@@ -366,8 +363,6 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                   "proxy: error processing body");
                     isok = 0;
                 }
-                /* memorize that we sent data */
-                data_sent = 1;
                 break;
             default:
                 isok = 0;
@@ -414,15 +409,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: send body failed to %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
-        /*
-         * If we have sent data (and thus the headers) we must let the
-         * others know.
-         */
-        if (data_sent) {
-            return PROXY_BACKEND_BROKEN;
-        } else {
-            return HTTP_SERVICE_UNAVAILABLE;
-        }
+        return HTTP_SERVICE_UNAVAILABLE;
     }
 
     /* Nice we have answer to send to the client */
