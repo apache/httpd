@@ -238,6 +238,12 @@ struct proxy_conn_pool {
     proxy_conn_rec *conn;   /* Single connection for prefork mpm's */
 };
 
+/*
+ * Return code that scheme handlers should return if the backend connection
+ * broke after they have sent the headers
+ */
+#define PROXY_BACKEND_BROKEN -10
+
 /* woker status flags */
 #define PROXY_WORKER_INITIALIZED    0x0001
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
