@@ -138,6 +138,10 @@
           complicated search filters in the 
           <code class="directive"><a href="./mod/core.html#require">Require</a></code> directive.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></dt>
+      <dd>A new module that allows configuration blocks to be enabled based on the
+          version number of the running server.</dd>
+
       <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
       <dd>Added a new <code>?config</code> argument which will show
           the configuration directives as parsed by Apache, including
