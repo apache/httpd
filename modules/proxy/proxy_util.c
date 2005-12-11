@@ -1825,21 +1825,15 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                            uri->fragment ? uri->fragment : "", NULL);
     }
     /*
+     * Make sure that we pick the the correct and valid worker.
      * If a single keepalive connection triggers different workers,
      * then we have a problem (we don't select the correct one).
-     * Do an expensive check in this case.
+     * Do an expensive check in this case, where we compare the
+     * the hostnames associated between the two.
      *
      * TODO: Handle this much better...
      */
-    if (!conn->hostname) {
-        if (proxyname) {
-            conn->hostname = apr_pstrdup(conn->pool, proxyname);
-            conn->port = proxyport;
-        } else {
-            conn->hostname = apr_pstrdup(conn->pool, uri->hostname);
-            conn->port = uri->port;
-        }
-    } else if (!worker->is_address_reusable ||
+    if (!conn->hostname || !worker->is_address_reusable ||   
          (r->connection->keepalives &&
          (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE) &&
          (strcasecmp(conn->hostname, uri->hostname) != 0) ) ) {
