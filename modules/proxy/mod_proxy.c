@@ -758,20 +758,6 @@ static int proxy_handler(request_rec *r)
                 worker->s->status |= PROXY_WORKER_IN_ERROR;
             }
         }
-        else if (access_status == PROXY_BACKEND_BROKEN) {
-            /*
-             * If the backend broke after the headers had been sent do not
-             * try another worker, but leave. Do not mark the worker as
-             * unsuable as this problem may not reoccur on the next request.
-             *
-             * TODO: Currently we abort the connection and notify all parties
-             * on the upstream that something went wrong by setting c->aborted
-             * to 1. This idea is currently vetoed and should be replaced with
-             * other methods
-             */
-            r->connection->aborted = 1;
-            break;
-        }
         else {
             /* Unrecoverable error.
              * Return the origin status code to the client.
