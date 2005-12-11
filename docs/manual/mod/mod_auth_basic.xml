@@ -40,6 +40,9 @@
 </summary>
 <seealso><directive module="core">AuthName</directive></seealso>
 <seealso><directive module="core">AuthType</directive></seealso>
+<seealso><directive module="core">Require</directive></seealso>
+<seealso><directive module="core">Satisfy</directive></seealso>
+<seealso><a href="../howto/auth.html">Authentication howto</a></seealso>
 
 <directivesynopsis>
 <name>AuthBasicProvider</name>
