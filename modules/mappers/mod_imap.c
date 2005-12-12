@@ -342,7 +342,7 @@ static char *imap_url(request_rec *r, const char *base, const char *value)
     if (!strcasecmp(value, "referer")) {
         referer = apr_table_get(r->headers_in, "Referer");
         if (referer && *referer) {
-	    return apr_pstrdup(r->pool, referer);
+	    return ap_escape_html(r->pool, referer);
         }
         else {
 	    /* XXX:  This used to do *value = '\0'; ... which is totally bogus
