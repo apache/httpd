@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.1
 
+  *) Fix syntax error in httpd.h with strict compilers.  PR 38740.
+     [Per Olausson <pao darkheim.freeserve.co.uk>]
+
   *) Preserve the Content-Length header for a proxied HEAD response.
      PR 18757.  [Greg Ames]
 
