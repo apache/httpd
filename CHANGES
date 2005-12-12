@@ -4,8 +4,8 @@ Changes with Apache 2.2.1
   *) Preserve the Content-Length header for a proxied HEAD response.
      PR 18757.  [Greg Ames]
 
-  *) Fix recursive ErrorDocument handling
-     PR 36090 [Submitted Chris Darroch]
+  *) Fix recursive ErrorDocument handling.  PR 36090. 
+     [Chris Darroch <chrisd pearsoncmg.com>]
 
 Changes with Apache 2.2.0
 
