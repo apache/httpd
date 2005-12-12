@@ -256,7 +256,7 @@
  * initializers if using GCC (but not G++), or for any other compiler
  * which claims C99 support. */
 #if (defined(__GNUC__) && !defined(__cplusplus))                \
-     || (defined(__STDC_VERSION) && __STDC_VERSION__ >= 199901L)
+     || (defined(__STDC_VERSION__) && __STDC_VERSION__ >= 199901L)
 #define AP_HAVE_DESIGNATED_INITIALIZER
 #endif
 
