@@ -129,15 +129,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/proxy/proxy_util.c?rev=356030&view=diff&r1=356030&r2=332306
       +1: jim
 
-    * httpd.h build fix for strict compilers.
-      http://svn.apache.org/viewcvs.cgi?rev=355143&view=rev
-      PR: 37840
-      +1: jorton, rpluem, pquerna 
-
     * mod_ssl: Fix PR37791 (SEGV if the client is connection plain to a SSL
       enabled port)
       Trunk version of patch:
          http://svn.apache.org/viewcvs.cgi?rev=354394&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, jorton
+

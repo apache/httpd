@@ -1074,7 +1074,7 @@ struct conn_rec {
 typedef enum  {
     CONN_STATE_CHECK_REQUEST_LINE_READABLE,
     CONN_STATE_READ_REQUEST_LINE,
-    CONN_STATE_LINGER,
+    CONN_STATE_LINGER
 } conn_state_e;
 
 /** 
