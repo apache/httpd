@@ -1748,6 +1748,8 @@ AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s)
             j += 3;
         else if (s[i] == '&')
             j += 4;
+        else if (s[i] == '"')
+            j += 5;
 
     if (j == 0)
         return apr_pstrmemdup(p, s, i);
@@ -1765,6 +1767,10 @@ AP_DECLARE(char *) ap_escape_html(apr_pool_t *p, const char *s)
         else if (s[i] == '&') {
             memcpy(&x[j], "&amp;", 5);
             j += 4;
+        }
+        else if (s[i] == '"') {
+            memcpy(&x[j], "&quot;", 6);
+            j += 5;
         }
         else
             x[j] = s[i];
