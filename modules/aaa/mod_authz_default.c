@@ -29,6 +29,7 @@
 #include "mod_auth.h"
                           
 typedef struct {
+	int dummy;  /* Just here to stop compiler warnings for now */
 } authz_default_config_rec;
 
 static void *create_authz_default_dir_config(apr_pool_t *p, char *d)

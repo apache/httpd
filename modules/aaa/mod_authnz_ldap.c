@@ -1056,12 +1056,12 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         }
     }
 
+    t = require_args;
+
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "[%" APR_PID_T_FMT "] auth_ldap authorize: require group: "
                   "testing for group membership in \"%s\"",
                   getpid(), t);
-
-    t = require_args;
 
     for (i = 0; i < sec->groupattr->nelts; i++) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
