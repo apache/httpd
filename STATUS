@@ -82,22 +82,9 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
-    * mod_proxy_balancer: Fix PR37753 (mod_proxy_balancer Stickysession that
-      uses URL doesn't work)
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=352010&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jerenkrantz, jim
-
     * mod_ssl/ab: Fix compiler warnings with OpenSSL 0.9.8a.
         http://svn.apache.org/viewcvs.cgi?rev=349415&view=rev
       +1: jorton, jerenkrantz
-
-    * core: Die properly if an error occurs in post_read_request
-      http://svn.apache.org/viewcvs.cgi?rev=354085&view=rev
-      PR: 37790
-      +1: niq, jerenkrantz, jim
 
     * mod_dbd: When threaded, create a private pool in child_init
       so we're not using the process pool later.  Also improve

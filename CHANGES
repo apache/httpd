@@ -16,6 +16,11 @@ Changes with Apache 2.2.1
   *) Fix recursive ErrorDocument handling.  PR 36090. 
      [Chris Darroch <chrisd pearsoncmg.com>]
 
+  *) Don't hang on error return from post_read_request.  PR37790 [Nick Kew]
+
+  *) Fix off-by-one error in proxy_balancer.  PR37753
+     [Kazuhiro Osawa <ko yappo ne jp>]
+
 Changes with Apache 2.2.0
 
   *) mod_negotiation: Minor performance tweak by reusing already calculated
