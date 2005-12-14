@@ -33,10 +33,10 @@ CTARGET=/build
 
 !IF !EXIST("srclib\apr") || !EXIST("srclib\apr-util") || !EXIST("srclib\apr-iconv")
 !MESSAGE Please check out or download and unpack the Apache Portability Runtime
-!MESSAGE sources (apr, apr-iconv and apr-util) into your $(INSTDIR)\srclib dir.
+!MESSAGE sources (apr, apr-iconv and apr-util) into your srclib dir.
 !MESSAGE Apache cannot build without these libraries!
 !MESSAGE 
-!ERROR Need $(INSTDIR)\srclib\  apr, apr-iconv and apr-util
+!ERROR Need srclib\  apr, apr-iconv and apr-util
 !ENDIF
 
 # Note; _tryssl: is only used by the msvc developer studio environment to 'fix up'
