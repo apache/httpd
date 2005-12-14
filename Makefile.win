@@ -104,7 +104,7 @@ _tryzlib:
 !ENDIF
 
 !IF "$(INSTDIR)" == ""
-INSTDIR=\Apache23
+INSTDIR=\Apache2
 !ENDIF
 !IF "$(SERVERNAME)" == ""
 SERVERNAME=localhost
