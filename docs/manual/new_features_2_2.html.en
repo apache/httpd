@@ -138,6 +138,10 @@
           complicated search filters in the 
           <code class="directive"><a href="./mod/core.html#require">Require</a></code> directive.</dd>
 
+      <dt><code class="module"><a href="./mod/mod_authz_owner.html">mod_authz_owner</a></code></dt>
+      <dd>A new module that authorizes access to files based
+          on the owner of the file on the file system</dd>
+
       <dt><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></dt>
       <dd>A new module that allows configuration blocks to be enabled based on the
           version number of the running server.</dd>
