@@ -135,6 +135,10 @@
           complicated search filters in the 
           <directive module="core">Require</directive> directive.</dd>
 
+      <dt><module>mod_authz_owner</module></dt>
+      <dd>A new module that authorizes access to files based
+          on the owner of the file on the file system</dd>
+
       <dt><module>mod_version</module></dt>
       <dd>A new module that allows configuration blocks to be enabled based on the
           version number of the running server.</dd>
