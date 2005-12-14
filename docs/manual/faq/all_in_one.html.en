@@ -103,7 +103,7 @@
       available.</p>
     
 
-	<h3><a name="background.logo" id="background.logo">&gt;May I use the Apache logo on my product or Web site?</a></h3>
+	<h3><a name="background.logo" id="background.logo">May I use the Apache logo on my product or Web site?</a></h3>
       
       <p>You may <em>NOT</em> use any original artwork from the Apache
       Software Foundation, nor make or use modified versions of such
@@ -118,7 +118,7 @@
         <em>IF and ONLY IF</em> such use can in no way be interpreted as
         anything other than an attribution. Using the Apache name and 
         artwork in a manner that implies endorsement of a product or
-        service is <a href="">strictly forbidden.</a></li>
+        service is strictly forbidden.</li>
       </ul>
     
  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
