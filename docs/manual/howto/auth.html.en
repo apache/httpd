@@ -35,6 +35,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#lettingmorethanonepersonin">Letting more than one
 person in</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#possibleproblems">Possible problems</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">Alternate password storage</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">More information</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -233,7 +234,7 @@ module from each group.</p>
     in this case, optional, since <code>file</code> is the default value
     for this directive. You'll need to use this directive if you are
     choosing a different source for authentication, such as
-    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> or <code class="module"><a href="../mod/mod_auth_dbd.html">mod_auth_dbd</a></code>.</p>
+    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> or <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>.</p>
 
     <p>The <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
     directive sets the path to the password file that we just
@@ -292,6 +293,8 @@ person in</a></h2>
     <div class="example"><p><code>
       AuthType Basic<br />
       AuthName "By Invitation Only"<br />
+      # Optional line:
+      AuthBasicProvider file
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       AuthGroupFile /usr/local/apache/passwd/groups<br />
       Require group GroupName
@@ -338,6 +341,33 @@ person in</a></h2>
     server machine, but you can expect to see slowdowns once you
     get above a few hundred entries, and may wish to consider a
     different authentication method at that time.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dbmdbd" id="dbmdbd">Alternate password storage</a></h2>
+
+    <p>Because storing passwords in plain text files has the above
+    problems, you may wish to store your passwords somewhere else, such
+    as in a database.</p>
+
+    <p><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> and <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
+    are two modules which make this possible. Rather than selecting
+    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicsource">AuthBasicSource</a></code> file,
+    instead you can choose <code>dbm</code> or <code>dbd</code> as your
+    storage format.</p>
+
+    <p>To select a dbd file rather than a text file, for example:</p>
+
+    <div class="example"><p><code>
+    &lt;Directory /www/docs/private&gt;<br />
+    AuthName "Private"<br />
+    AuthType Basic<br />
+    AuthBasicProvider dbm<br />
+    AuthDBMUserFile /www/passwords/passwd.dbm<br />
+    Require valid-user
+    </code></p></div>
+
+    <p>Other options are available. Consult the
+    <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> documentation for more details.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="moreinformation" id="moreinformation">More information</a></h2>
