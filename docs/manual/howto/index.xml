@@ -1,15 +1,4 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-
-<metafile>
-  <basename>access</basename>
-  <path>/howto/</path>
-  <relpath>..</relpath>
-
-  <variants>
-    <variant>en</variant>
-  </variants>
-</metafile>
-<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
