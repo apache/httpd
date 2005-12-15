@@ -461,6 +461,9 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
     const char *ptr;
     apr_uint16_t  num_headers;
     int i;
+#if defined(AS400) || defined(_OSD_POSIX)
+    char *tmp;
+#endif
 
     rc = ajp_msg_get_uint16(msg, &status);
 
@@ -474,9 +477,9 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
     rc = ajp_msg_get_string(msg, &ptr);
     if (rc == APR_SUCCESS) {
 #if defined(AS400) || defined(_OSD_POSIX)
-        char *tmp = ap_pstrdup(r->pool, ptr);
+        tmp = ap_pstrdup(r->pool, ptr);
         ap_xlate_proto_from_ascii(tmp, strlen(tmp));
-        ptr = tmp
+        ptr = tmp;
 #endif
         r->status_line =  apr_psprintf(r->pool, "%d %s", status, ptr);
     } else {
