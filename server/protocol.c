@@ -1380,7 +1380,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
 
     AP_DEBUG_ASSERT(ctx);
 
-    if (ctx->bb != 0) {
+    if (ctx->bb != NULL) {
         /* whatever is coming down the pipe (we don't care), we
          * can simply insert our buffered data at the front and
          * pass the whole bundle down the chain.
