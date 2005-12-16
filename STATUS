@@ -19,6 +19,7 @@ Patches considered for backport are noted in their branches' STATUS:
 
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/1.3.x/STATUS
   * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.0.x/STATUS
+  * http://svn.apache.org/repos/asf/httpd/httpd/branches/2.2.x/STATUS
 
 
 Release history:
@@ -82,7 +83,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_ssl/ab: Fix compiler warnings with OpenSSL 0.9.8a.
         http://svn.apache.org/viewcvs.cgi?rev=349415&view=rev
-      +1: jorton, jerenkrantz
+      +1: jorton, jerenkrantz, wrowe
 
     * mod_dbd: When threaded, create a private pool in child_init
       so we're not using the process pool later.  Also improve
