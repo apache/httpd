@@ -328,14 +328,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
     * callers of ap_run_create_request() should check the return value
       for failure (Doug volunteers)
 
-    * Win32: Get Apache working on Windows 95/98. The following work
-        (at least) needs to be done:
-        - Document warning that OSR2 is required (for Crypt functions, in
-        rand.c, at least.)  This could be resolved with an SSL library, or
-        randomization in APR itself.
-        - Bring the Win9xConHook.dll from 1.3 into 2.0 (no sense till it
-        actually works) and add in a splash of Win9x service code.
-
     * Fix the worker MPM to use POD to kill child processes instead
       of ap_os_killpg, regardless of how they should die.
 
