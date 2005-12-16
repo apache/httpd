@@ -288,15 +288,20 @@ AC_DEFUN(APACHE_ENABLE_MODULES,[
   module_default=yes
 
   AC_ARG_ENABLE(modules,
-  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Space-separated list of modules to enable | "all" | "most"),[
-    for i in $enableval; do
-      if test "$i" = "all" -o "$i" = "most"; then
-        module_selection=$i
-      else
-        i=`echo $i | sed 's/-/_/g'`
-        eval "enable_$i=yes"
-      fi
-    done
+  APACHE_HELP_STRING(--enable-modules=MODULE-LIST,Space-separated list of modules to enable | "all" | "most" | "none"),[
+    if test "$enableval" = "none"; then
+       module_default=no
+       module_selection=none
+    else
+      for i in $enableval; do
+        if test "$i" = "all" -o "$i" = "most"; then
+          module_selection=$i
+        else
+          i=`echo $i | sed 's/-/_/g'`
+          eval "enable_$i=yes"
+        fi
+      done
+    fi
   ])
   
   AC_ARG_ENABLE(mods-shared,
