@@ -19,7 +19,7 @@
 #
 # For example;
 #
-#   nmake /f Makefile.win PORT=80 INSTDIR="d:\Program Files\Apache" installr
+#   nmake -f Makefile.win PORT=80 INSTDIR="d:\Program Files\Apache" installr
 #
 # Be aware that certain awk's will not accept backslahed names,
 # so the server root should be given in forward slashes (quoted),
@@ -119,15 +119,15 @@ PORT=80
 !MESSAGE SERVERNAME = $(SERVERNAME)
 !MESSAGE PORT       = $(PORT)
 !MESSAGE
-!MESSAGE To change these options use 'nmake /f Makefile.win [option=value]'
-!MESSAGE Example: nmake /f Makefile.win PORT=8080
+!MESSAGE To change these options use 'nmake -f Makefile.win [option=value]'
+!MESSAGE Example: nmake -f Makefile.win PORT=8080
 !MESSAGE
 !MESSAGE
 !ENDIF
 
 !IFNDEF MAKEOPT
 # Only default the behavior if MAKEOPT= is omitted
-!IF "$(MAKE)" == "NMAKE"
+!IFDEF _NMAKE_VER
 # Microsoft NMake options
 MAKEOPT=-nologo
 !ELSEIF "$(MAKE)" == "make"
@@ -178,14 +178,14 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f apriconv.mak  CFG="apriconv - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f libapriconv.mak  CFG="libapriconv - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !IF "$(CTARGET)" == "CLEAN"
-	$(MAKE) $(MAKEOPT) /f build\modules.mk.win clean \
+	$(MAKE) $(MAKEOPT) -f build\modules.mk.win clean \
 		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=.
 !ELSE
 	cd ccs
-	$(MAKE) /nologo /f Makefile.win all \
+	$(MAKE) $(MAKEOPT) -f Makefile.win all \
 		BUILD_MODE=$(LONG) BIND_MODE=shared
 	cd ..\ces
-	$(MAKE) /nologo /f Makefile.win all \
+	$(MAKE) $(MAKEOPT) -f Makefile.win all \
 		BUILD_MODE=$(LONG) BIND_MODE=shared
 	cd ..
 !ENDIF
@@ -340,7 +340,7 @@ _build:
 		"BuildBin - Win32 $(LONG)" $(CTARGET)
 !IF "$(CTARGET)" == "/CLEAN"
 	@cd srclib\apr-iconv
-	@$(MAKE) $(MAKEOPT) /f build\modules.mk.win clean \
+	@$(MAKE) $(MAKEOPT) -f build\modules.mk.win clean \
 		BUILD_MODE=$(LONG) BIND_MODE=shared API_SOURCE=.
 	@cd ..\..
 !ENDIF
