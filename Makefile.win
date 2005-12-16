@@ -216,6 +216,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_auth_basic.mak  CFG="mod_auth_basic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_digest.mak CFG="mod_auth_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_anon.mak  CFG="mod_authn_anon - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_authn_dbd.mak   CFG="mod_authn_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_dbm.mak   CFG="mod_authn_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_default.mak CFG="mod_authn_default - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_file.mak  CFG="mod_authn_file - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -234,6 +235,9 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_file_cache.mak  CFG="mod_file_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_mem_cache.mak   CFG="mod_mem_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_disk_cache.mak  CFG="mod_disk_cache - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..
+	cd modules\database
+	 $(MAKE) $(MAKEOPT) -f mod_dbd.mak         CFG="mod_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\dav\main
 	 $(MAKE) $(MAKEOPT) -f mod_dav.mak         CFG="mod_dav - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -382,6 +386,7 @@ _copybin:
 	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_digest.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_anon.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authn_dbd.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_dbm.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_default.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_file.$(src_so) 	"$(inst_so)" <.y
@@ -396,6 +401,7 @@ _copybin:
 	copy modules\cache\$(LONG)\mod_file_cache.$(src_so) 	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_mem_cache.$(src_so)	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_disk_cache.$(src_so)	"$(inst_so)" <.y
+	copy modules\database\$(LONG)\mod_dbd.$(src_so)		"$(inst_so)" <.y
 	copy modules\dav\fs\$(LONG)\mod_dav_fs.$(src_so) 	"$(inst_so)" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.$(src_so)		"$(inst_so)" <.y
 	copy modules\debug\$(LONG)\mod_bucketeer.$(src_so)	"$(inst_so)" <.y

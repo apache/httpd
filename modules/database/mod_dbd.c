@@ -119,7 +119,7 @@ static const char *dbd_param(cmd_parms *cmd, void *cfg, const char *val)
     }
     return NULL;
 }
-AP_DECLARE(void) ap_dbd_prepare(server_rec *s, const char *query,
+DBD_DECLARE_NONSTD(void) ap_dbd_prepare(server_rec *s, const char *query,
                                 const char *label)
 {
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
@@ -300,7 +300,7 @@ static apr_status_t dbd_setup(apr_pool_t *pool, server_rec *s)
         - open acquires a connection from the pool (opens one if necessary)
         - close releases it back in to the pool
 */
-AP_DECLARE(void) ap_dbd_close(server_rec *s, ap_dbd_t *sql)
+DBD_DECLARE_NONSTD(void) ap_dbd_close(server_rec *s, ap_dbd_t *sql)
 {
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
     if (!svr->persist) {
@@ -319,7 +319,7 @@ static apr_status_t dbd_close(void *CONN)
 }
 #define arec ((ap_dbd_t*)rec)
 #if APR_HAS_THREADS
-AP_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
+DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
 {
     void *rec = NULL;
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
@@ -356,7 +356,7 @@ AP_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
     return arec;
 }
 #else
-AP_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
+DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
 {
     apr_status_t rv = APR_SUCCESS;
     const char *errmsg;
@@ -405,7 +405,7 @@ static apr_status_t dbd_release(void *REQ)
     apr_reslist_release(req->dbpool, req->conn);
     return APR_SUCCESS;
 }
-AP_DECLARE(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
+DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
 {
     svr_cfg *svr;
     dbd_pool_rec *req = ap_get_module_config(r->request_config, &dbd_module);
@@ -428,7 +428,7 @@ AP_DECLARE(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
     }
     return req->conn;
 }
-AP_DECLARE(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
+DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
 {
     svr_cfg *svr;
     dbd_pool_rec *req = ap_get_module_config(c->conn_config, &dbd_module);
@@ -452,7 +452,7 @@ AP_DECLARE(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
     return req->conn;
 }
 #else
-AP_DECLARE(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
+DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
 {
     svr_cfg *svr;
     ap_dbd_t *ret = ap_get_module_config(r->request_config, &dbd_module);
@@ -470,7 +470,7 @@ AP_DECLARE(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
     }
     return ret;
 }
-AP_DECLARE(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
+DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
 {
     svr_cfg *svr;
     ap_dbd_t *ret = ap_get_module_config(c->conn_config, &dbd_module);

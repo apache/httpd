@@ -76,9 +76,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * Backport Win32 build fixes for mod_dbd and mod_authn_dbd
-        http://people.apache.org/~colm/httpd-2.2.0-dbd-win32.patch
-      +1: colm, pquerna, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
