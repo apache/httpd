@@ -138,10 +138,13 @@ static apr_status_t bucketeer_out_filter(ap_filter_t *f,
                         p = apr_bucket_flush_create(f->c->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(ctx->bb, p);
                     }
-                    if (data[i] == c->flushdelimiter ||
-                        data[i] == c->passdelimiter) {
-                        ap_pass_brigade(f->next, ctx->bb);
-                       /* apr_brigade_cleanup(ctx->bb);*/
+                    if (data[i] == c->passdelimiter) {
+                        apr_status_t rv;
+
+                        rv = ap_pass_brigade(f->next, ctx->bb);
+                        if (rv) {
+                            return rv;
+                        }
                     }
                 }
             }
