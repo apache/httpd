@@ -67,34 +67,6 @@ RELEASE SHOWSTOPPERS:
 
 CURRENT VOTES:
 
-    * httpd-std.conf and friends
-
-      a) httpd-std.conf should be tailored by install (from src or
-         binbuild) even if user has existing httpd.conf
-         +1:   trawick, slive, gregames, ianh, Ken, wrowe, jwoolley, jim, nd,
-               erikabele
-           wrowe - prefer httpd.default.conf to avoid ambiguity with cvs
-
-      b) tailored httpd-std.conf should be copied by install to
-         sysconfdir/examples
-         -0:   striker
-
-      c) tailored httpd-std.conf should be installed to
-         sysconfdir/examples or manualdir/exampleconf/
-         +1:   slive, trawick, Ken, nd (prefer the latter), erikabele
-         +1:   wsanchez (propose sysconfdir/examples/<version> for diffiness)
-
-      d) Installing a set of default config files when upgrading a server
-         doesn't make ANY sense at all.
-         +1:   ianh - medium/big sites don't use 'standard config' anyway, as it
-                      usually needs major customizations
-         -1:   Ken, wrowe, jwoolley, jim, nd, erikabele
-           wrowe - diff is wonderful when comparing old/new default configs,
-                   even for customized sites that ianh mentions
-           jim - ... assuming that the default configs have been updated
-                     with the required inline docs to explain the
-                     changes
-
     * If the parent process dies, should the remaining child processes
       "gracefully" self-terminate. Or maybe we should make it a runtime
       option, or have a concept of 2 parent processes (one being a 
