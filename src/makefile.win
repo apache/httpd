@@ -12,7 +12,7 @@
 # The default installation directory is \Apache. This can be changed
 # with the INSTDIR macro, for example:
 #
-#   nmake /f Makefile.win INSTDIR="d:\Program Files\Apache" installr
+#   nmake -f Makefile.win INSTDIR="d:\Program Files\Apache" installr
 #
 # Note: this does *NOT* change the compiled in default "server root"
 # Also be aware that certain awk's will not accept backslahed names,
@@ -24,15 +24,15 @@ INSTDIR=\Apache
 !MESSAGE Using default install directory \Apache
 !ENDIF 
 
-!IF "$(MAKE)" == "NMAKE"
+!IFNDEF MAKEOPT
+# Only default the behavior if MAKEOPT= is omitted
+!IFDEF _NMAKE_VER
 # Microsoft NMake options
 MAKEOPT=-nologo
 !ELSEIF "$(MAKE)" == "make"
-# Borland make options 
-# Borland build of Apache is highly experimental and unsupported.
+# Borland make options?  Not really supported (yet)
 MAKEOPT=-s -N
-!ELSE
-!MESSAGE Warning: unrecognized build command "$(MAKE)"
+!ENDIF
 !ENDIF
 
 default:        _apacher
