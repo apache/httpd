@@ -328,7 +328,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs.cgi?rev=357328&view=rev
        Backport version for 2.2.x of patch:
           http://people.apache.org/~rpluem/patches/chunk_2.0.x.diff
-       +1: rpluem
+       +1: rpluem, jerenkrantz, jorton
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
