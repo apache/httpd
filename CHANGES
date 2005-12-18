@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) Chunk filter: Fix chunk filter to create correct chunks in the case that
-     a flush bucket is surrounded by data buckets. [Ruediger Pluem]
-
   *) If a connection is aborted while waiting for a chunked line, flag the
      connection as errored out.  [Justin Erenkrantz]
 
@@ -16,9 +13,6 @@ Changes with Apache 2.3.0
      "HTTP request received on SSL port" error message when an 400 
      ErrorDocument is configured, or if using "SSLEngine optional").
      PR 37791.  [Rüdiger Plüm, Joe Orton]
-
-  *) mod_proxy_balancer: Sticky session identifiers supplied in URL do not work.
-     PR37753. [Ruediger Pluem, Kazuhiro Osawa <ko yappo.ne.jp>]
 
   *) mod_authz_dbd: SQL authz with Login/Session support [Nick Kew]
 
@@ -41,9 +35,6 @@ Changes with Apache 2.3.0
   *) Added new connection states for handler and write completion
      [Brian Pane]
 
-  *) Preserve the Content-Length header for a proxied HEAD request.
-     PR 18757 [Greg Ames]
-
   *) New module: mod_authn_dbd [Nick Kew]
 
   *) mod_cgid: Refuse to work on Solaris 10 due to OS bugs.  PR 34264.
@@ -54,7 +45,32 @@ Changes with Apache 2.3.0
      access control, as in: SSLRequire "value" in OID("1.3.6.1.4.1.18060.1")
      [Martin Kraemer, David Reid]
 
-Changes with Apache 2.1.10
+Changes with Apache 2.2.1
+
+  *) Chunk filter: Fix chunk filter to create correct chunks in the case that
+     a flush bucket is surrounded by data buckets. [Ruediger Pluem]
+
+  *) SECURITY: CVE-2005-3352 (cve.mitre.org)
+     mod_imagemap: Escape untrusted referer header before outputting
+     in HTML to avoid potential cross-site scripting.  Change also
+     made to ap_escape_html so we escape quotes.  Reported by JPCERT.
+     [Mark Cox]
+
+  *) Fix syntax error in httpd.h with strict compilers.  PR 38740.
+     [Per Olausson <pao darkheim.freeserve.co.uk>]
+
+  *) Preserve the Content-Length header for a proxied HEAD response.
+     PR 18757.  [Greg Ames]
+
+  *) Fix recursive ErrorDocument handling.  PR 36090.
+     [Chris Darroch <chrisd pearsoncmg.com>]
+
+  *) Don't hang on error return from post_read_request.  PR37790 [Nick Kew]
+
+  *) Fix off-by-one error in proxy_balancer.  PR37753
+     [Kazuhiro Osawa <ko yappo ne jp>]
+
+Changes with Apache 2.2.0
 
   *) mod_negotiation: Minor performance tweak by reusing already calculated
      strlen.
@@ -980,6 +996,9 @@ Changes with Apache 2.1.1
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.56
+
+  *) Chunk filter: Fix chunk filter to create correct chunks in the case that
+     a flush bucket is surrounded by data buckets. [Ruediger Pluem]
 
   *) mod_cgi(d): Remove block on OPTIONS method so that scripts can
      respond to OPTIONS directly rather than via server default.
