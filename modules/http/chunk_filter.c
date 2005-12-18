@@ -47,6 +47,7 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
     apr_bucket_brigade *more;
     apr_bucket *e;
     apr_status_t rv;
+    int bad_gateway_seen = 0;
 
     for (more = NULL; b; b = more, more = NULL) {
         apr_off_t bytes = 0;
@@ -66,6 +67,13 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
                 /* there shouldn't be anything after the eos */
                 eos = e;
                 break;
+            }
+            if (AP_BUCKET_IS_ERROR(e)
+                && (((ap_bucket_error *)(e->data))->status
+                    == HTTP_BAD_GATEWAY)) {
+                /* We had a broken backend. Memorize this. */
+                bad_gateway_seen = 1;
+                continue;
             }
             if (APR_BUCKET_IS_FLUSH(e)) {
                 flush = e;
@@ -146,13 +154,19 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
          *   2) the trailer
          *   3) the end-of-chunked body CRLF
          *
-         * If there is no EOS bucket, then do nothing.
+         * If there is no EOS bucket, or if we had seen an error bucket with
+         * status HTTP_BAD_GATEWAY then do nothing.
+         * The error bucket with status HTTP_BAD_GATEWAY indicates that the
+         * connection to the backend (mod_proxy) broke in the middle of the
+         * response. In order to signal the client that something went wrong
+         * we do not create the last-chunk marker and set c->keepalive to
+         * AP_CONN_CLOSE in the core output filter.
          *
          * XXX: it would be nice to combine this with the end-of-chunk
          * marker above, but this is a bit more straight-forward for
          * now.
          */
-        if (eos != NULL) {
+        if (eos && !bad_gateway_seen) {
             /* XXX: (2) trailers ... does not yet exist */
             e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
                                            /* <trailers> */

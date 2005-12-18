@@ -6,7 +6,8 @@ Changes with Apache 2.3.0
      connection as errored out.  [Justin Erenkrantz]
 
   *) mod_proxy: If we get an error reading the upstream response,
-     close the connection.  [Brian Akins, Justin Erenkrantz]
+     close the connection.
+     [Justin Erenkrantz, Roy T. Fielding, Jim Jagielski, Ruediger Pluem]
 
   *) mod_ssl: Fix a possible crash during access control checks if a
      non-SSL request is processed for an SSL vhost (such as the

@@ -1481,12 +1481,18 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
                     else if (rv != APR_SUCCESS) {
                         /* In this case, we are in real trouble because
-                         * our backend bailed on us, so abort our
-                         * connection to our user too.
+                         * our backend bailed on us.
                          */
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
                                       "proxy: error reading response");
-                        c->aborted = 1;
+                        r->no_cache = 1;
+                        e = ap_bucket_error_create(HTTP_BAD_GATEWAY,  NULL,
+                                                   c->pool, c->bucket_alloc);
+                        APR_BRIGADE_INSERT_TAIL(bb, e);
+                        e = apr_bucket_eos_create(c->bucket_alloc);
+                        APR_BRIGADE_INSERT_TAIL(bb, e);
+                        ap_pass_brigade(r->output_filters, bb);
+                        backend->close = 1;
                         break;
                     }
                     /* next time try a non-blocking read */
