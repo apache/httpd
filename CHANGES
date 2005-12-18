@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) Chunk filter: Fix chunk filter to create correct chunks in the case that
+     a flush bucket is surrounded by data buckets. [Ruediger Pluem]
+
   *) SECURITY: CVE-2005-3352 (cve.mitre.org)
      mod_imap: Escape untrusted referer header before outputting in HTML
      to avoid potential cross-site scripting.  Change also made to
