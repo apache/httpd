@@ -1055,6 +1055,9 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
          */
         ap_add_output_filter("CHUNK", NULL, r, r->connection);
     }
+    /* If we have a Proxy request, add the BROKEN_BACKEND filter now */
+    if (r->proxyreq != PROXYREQ_NONE)
+        ap_add_output_filter("BROKEN_BACKEND", NULL, r, r->connection);
 
     /* Don't remove this filter until after we have added the CHUNK filter.
      * Otherwise, f->next won't be the CHUNK filter and thus the first
@@ -1328,5 +1331,25 @@ AP_DECLARE(long) ap_get_client_block(request_rec *r, char *buffer,
 
     apr_brigade_destroy(bb);
     return bufsiz;
+}
+
+apr_status_t ap_http_broken_backend_filter(ap_filter_t *f,
+                                           apr_bucket_brigade *b)
+{
+    request_rec *r = f->r;
+    apr_bucket *e;
+
+    for (e = APR_BRIGADE_FIRST(b);
+         e != APR_BRIGADE_SENTINEL(b);
+         e = APR_BUCKET_NEXT(e))
+    {
+        if (AP_BUCKET_IS_ERROR(e)
+            && (((ap_bucket_error *)(e->data))->status == HTTP_BAD_GATEWAY)) {
+            /* stream aborted and we have not ended it yet */
+            r->connection->keepalive = AP_CONN_CLOSE;
+        }
+    }
+
+    return ap_pass_brigade(f->next,  b);
 }
 

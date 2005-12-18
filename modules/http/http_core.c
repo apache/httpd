@@ -39,6 +39,7 @@
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_broken_backend_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_byterange_filter_handle;
 
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
@@ -242,6 +243,10 @@ static void register_hooks(apr_pool_t *p)
     ap_chunk_filter_handle =
         ap_register_output_filter("CHUNK", ap_http_chunk_filter,
                                   NULL, AP_FTYPE_TRANSCODE);
+    ap_broken_backend_filter_handle =
+        ap_register_output_filter("BROKEN_BACKEND",
+                                  ap_http_broken_backend_filter,
+                                  NULL, AP_FTYPE_PROTOCOL);
     ap_byterange_filter_handle =
         ap_register_output_filter("BYTERANGE", ap_byterange_filter,
                                   NULL, AP_FTYPE_PROTOCOL);

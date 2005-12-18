@@ -315,9 +315,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                                              apr_size_t *bytes_written,
                                              conn_rec *c);
 
-static void detect_error_bucket(apr_bucket *bucket, conn_rec *c);
-
-static void remove_empty_buckets(apr_bucket_brigade *bb, conn_rec *c);
+static void remove_empty_buckets(apr_bucket_brigade *bb);
 
 static apr_status_t send_brigade_blocking(apr_socket_t *s,
                                           apr_bucket_brigade *bb,
@@ -489,7 +487,7 @@ static void setaside_remaining_output(ap_filter_t *f,
     if (bb == NULL) {
         return;
     }
-    remove_empty_buckets(bb, c);
+    remove_empty_buckets(bb);
     if (!APR_BRIGADE_EMPTY(bb)) {
         c->data_in_output_filters = 1;
         if (make_a_copy) {
@@ -528,7 +526,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
     struct iovec vec[MAX_IOVEC_TO_WRITE];
     apr_size_t nvec = 0;
 
-    remove_empty_buckets(bb, c);
+    remove_empty_buckets(bb);
 
     for (bucket = APR_BRIGADE_FIRST(bb);
          bucket != APR_BRIGADE_SENTINEL(bb);
@@ -598,26 +596,16 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
         }
     }
 
-    remove_empty_buckets(bb, c);
+    remove_empty_buckets(bb);
 
     return APR_SUCCESS;
 }
 
-static void detect_error_bucket(apr_bucket *bucket, conn_rec *c)
-{
-    if (AP_BUCKET_IS_ERROR(bucket)
-        && (((ap_bucket_error *)(bucket->data))->status == HTTP_BAD_GATEWAY)) {
-        /* stream aborted and we have not ended it yet */
-        c->keepalive = AP_CONN_CLOSE;
-    }
-}
-
-static void remove_empty_buckets(apr_bucket_brigade *bb, conn_rec *c)
+static void remove_empty_buckets(apr_bucket_brigade *bb)
 {
     apr_bucket *bucket;
     while (((bucket = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) &&
            (APR_BUCKET_IS_METADATA(bucket) || (bucket->length == 0))) {
-        detect_error_bucket(bucket, c);
         APR_BUCKET_REMOVE(bucket);
         apr_bucket_destroy(bucket);
     }
@@ -690,7 +678,6 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
             for (i = offset; i < nvec; ) {
                 apr_bucket *bucket = APR_BRIGADE_FIRST(bb);
                 if (APR_BUCKET_IS_METADATA(bucket)) {
-                    detect_error_bucket(bucket, c);
                     APR_BUCKET_REMOVE(bucket);
                     apr_bucket_destroy(bucket);
                 }
