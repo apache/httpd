@@ -125,5 +125,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Fix for AP_HAVE_DESIGNATED_INITIALIZER vs C++ compilers
          http://svn.apache.org/viewcvs?rev=356234&view=rev
-      +1: jorton
+      +1: jorton, niq
 
