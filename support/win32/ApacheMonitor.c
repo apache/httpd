@@ -31,6 +31,11 @@
 #define OEMRESOURCE
 #endif
 
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+#define _CRT_SECURE_NO_DEPRECATE
+#pragma warning(disable: 4996)
+#endif
+
 #include <windows.h>
 #include <windowsx.h>
 #include <commctrl.h>

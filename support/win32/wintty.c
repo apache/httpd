@@ -35,6 +35,12 @@
  */
 
 #define WIN32_LEAN_AND_MEAN
+
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+#define _CRT_SECURE_NO_DEPRECATE
+#pragma warning(disable: 4996)
+#endif
+
 #include <windows.h>
 #include <stdlib.h>
 #include <stdio.h>
