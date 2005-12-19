@@ -39,6 +39,11 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+#define _CRT_SECURE_NO_DEPRECATE
+#pragma warning(disable: 4996)
+#endif
+
 const char *options =
 "\nwintty: a utility for echoing the stdin stream to a new console window,\n"
 "\teven when invoked from within a service (such as the Apache server.)\n"
