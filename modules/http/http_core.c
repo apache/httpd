@@ -39,7 +39,7 @@
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
-AP_DECLARE_DATA ap_filter_rec_t *ap_broken_backend_filter_handle;
+AP_DECLARE_DATA ap_filter_rec_t *ap_http_outerror_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_byterange_filter_handle;
 
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
@@ -208,6 +208,8 @@ static int http_create_request(request_rec *r)
                                     NULL, r, r->connection);
         ap_add_output_filter_handle(ap_http_header_filter_handle,
                                     NULL, r, r->connection);
+        ap_add_output_filter_handle(ap_http_outerror_filter_handle,
+                                    NULL, r, r->connection);
     }
 
     return OK;
@@ -243,9 +245,8 @@ static void register_hooks(apr_pool_t *p)
     ap_chunk_filter_handle =
         ap_register_output_filter("CHUNK", ap_http_chunk_filter,
                                   NULL, AP_FTYPE_TRANSCODE);
-    ap_broken_backend_filter_handle =
-        ap_register_output_filter("BROKEN_BACKEND",
-                                  ap_http_broken_backend_filter,
+    ap_http_outerror_filter_handle =
+        ap_register_output_filter("HTTP_OUTERROR", ap_http_outerror_filter,
                                   NULL, AP_FTYPE_PROTOCOL);
     ap_byterange_filter_handle =
         ap_register_output_filter("BYTERANGE", ap_byterange_filter,

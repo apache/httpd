@@ -42,7 +42,7 @@ extern "C" {
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
-extern AP_DECLARE_DATA ap_filter_rec_t *ap_broken_backend_filter_handle;
+extern AP_DECLARE_DATA ap_filter_rec_t *ap_http_outerror_filter_handle;
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_byterange_filter_handle;
 
 /*
@@ -55,9 +55,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 /* HTTP/1.1 chunked transfer encoding filter. */
 apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b);
 
-/* Filter to close the connection to the client if backend broke */
-apr_status_t ap_http_broken_backend_filter(ap_filter_t *f,
-                                           apr_bucket_brigade *b);
+/* Filter to handle any error buckets on output */
+apr_status_t ap_http_outerror_filter(ap_filter_t *f,
+                                     apr_bucket_brigade *b);
 
 char *ap_response_code_string(request_rec *r, int error_index);
 
