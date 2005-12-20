@@ -576,7 +576,7 @@ static int authz_ldap_check_user_access(request_rec *r)
     /* Loop through the requirements array until there's no elements
      * left, or something causes a return from inside the loop */
     for(x=0; x < reqs_arr->nelts; x++) {
-        if (! (reqs[x].method_mask & (1 << m))) {
+        if (! (reqs[x].method_mask & (APR_INT64_C(1) << m))) {
             continue;
         }
         method_restricted = 1;
