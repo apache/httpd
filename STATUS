@@ -78,12 +78,18 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-
     * mod_ssl/ab: Fix compiler warnings with OpenSSL 0.9.8a.
         http://svn.apache.org/viewcvs.cgi?rev=349415&view=rev
       +1: jorton, jerenkrantz, wrowe
+
+    * HTTP: If a connection aborts while waiting for a chunked line,
+      flag the connection as errored out.
+      http://svn.apache.org/viewcvs.cgi?rev=354630&view=rev
+      Message-ID: <4395A056.2070000@web.turner.com>
+      +1: jerenkrantz, jim, wrowe
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
       so we're not using the process pool later.  Also improve
@@ -104,12 +110,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Message-ID: <4395A056.2070000@web.turner.com>
       +1: jerenkrantz, jim
 
-    * HTTP: If a connection aborts while waiting for a chunked line,
-      flag the connection as errored out.
-      http://svn.apache.org/viewcvs.cgi?rev=354630&view=rev
-      Message-ID: <4395A056.2070000@web.turner.com>
-      +1: jerenkrantz, jim
-
     * proxy_util: Fix case where a shared keepalive connection results in
       different (and incorrect) workers from being accessed.
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/proxy/proxy_util.c?rev=356030&view=diff&r1=356030&r2=332306
@@ -126,4 +126,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * Fix for AP_HAVE_DESIGNATED_INITIALIZER vs C++ compilers
          http://svn.apache.org/viewcvs?rev=356234&view=rev
       +1: jorton, niq
+
+    * Fix mis-shifted 32 bit scope, masked to 64 bits as a method.
+        URL: http://svn.apache.org/viewcvs?rev=358040&view=rev
+      +1: wrowe
 
