@@ -1481,7 +1481,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                     }
                     else if (rv != APR_SUCCESS) {
                         /* In this case, we are in real trouble because
-                         * our backend bailed on us.
+                         * our backend bailed on us. Pass along a 502 error
+                         * error bucket
                          */
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
                                       "proxy: error reading response");
