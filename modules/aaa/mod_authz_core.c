@@ -29,10 +29,11 @@
 #define APR_WANT_BYTEFUNC
 #include "apr_want.h"
 
+#define CORE_PRIVATE
 #include "ap_config.h"
 #include "httpd.h"
-#include "http_core.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "http_log.h"
 #include "http_request.h"
 #include "http_protocol.h"
@@ -48,8 +49,8 @@
 
 X- Convert all of the authz modules to providers
 - Remove the ap_requires field from the request_rec
-- Remove the ap_requires field from authz_dir_conf   
-- Remove the function ap_requires() and authz_ap_requires()
+X- Remove the ap_requires field from authz_dir_conf   
+X- Remove the function ap_requires() and authz_ap_requires()
    since their functionality is no longer supported 
    or necessary in the refactoring
 - Remove the calls to ap_some_auth_required() in the
@@ -78,9 +79,24 @@ X- Remove the AuthzXXXAuthoritative directives from all of
       
 */
 
+typedef struct provider_alias_rec {
+	char *provider_name;
+	char *provider_alias;
+	char *provider_args;
+    ap_conf_vector_t *sec_auth;
+	const authz_provider *provider;
+} provider_alias_rec;
+
 typedef struct {
     authz_provider_list *providers;
+	authz_request_state req_state;
+	int req_state_level;
 } authz_core_dir_conf;
+
+typedef struct authz_core_srv_conf {
+    apr_hash_t *alias_rec;
+} authz_core_srv_conf;
+
 
 module AP_MODULE_DECLARE_DATA authz_core_module;
 
@@ -89,6 +105,8 @@ static void *create_authz_core_dir_config(apr_pool_t *p, char *dummy)
     authz_core_dir_conf *conf =
             (authz_core_dir_conf *)apr_pcalloc(p, sizeof(authz_core_dir_conf));
 
+	conf->req_state = AUTHZ_REQSTATE_DEFAULT;
+	conf->req_state_level = 0;
     return (void *)conf;
 }
 
@@ -108,6 +126,17 @@ static void *merge_authz_core_dir_config(apr_pool_t *a, void *basev, void *newv)
     return (void*)conf;
 }
 #endif
+
+static void *create_authz_core_svr_config(apr_pool_t *p, server_rec *s)
+{
+
+    authz_core_srv_conf *authcfg;
+
+    authcfg = (authz_core_srv_conf *) apr_pcalloc(p, sizeof(authz_core_srv_conf));
+    authcfg->alias_rec = apr_hash_make(p);
+
+    return (void *) authcfg;
+}
 
 static const char *add_authz_provider(cmd_parms *cmd, void *config,
                                       const char *arg)
@@ -131,6 +160,7 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     /* lookup and cache the actual provider now */
     newp->provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
                                         newp->provider_name, "0");
+	newp->req_state = conf->req_state;
 
     /* by the time the config file is used, the provider should be loaded
      * and registered with us.
@@ -155,14 +185,199 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     }
     else {
         authz_provider_list *last = conf->providers;
+		int level = conf->req_state_level;
 
-        while (last->next) {
-            last = last->next;
-        }
-        last->next = newp;
+		/* Traverse the list to find the last entry.Each level 
+		   indicates a transition in the logic. */
+		do {
+			while (last->one_next) {
+				last = last->one_next;
+				continue;
+			}
+			if (last->all_next) {
+				while (last->all_next) {
+					last = last->all_next;
+					continue;
+				}
+			}
+		} while (level--);
+
+		/* The current state flag indicates which way the transition should
+		   go.  If ALL then take the all_next path, otherwise one_next */
+		if (conf->req_state == AUTHZ_REQSTATE_ALL) {
+			last->all_next = newp;
+		}
+		else {
+			last->one_next = newp;
+		}
     }
 
     return NULL;
+}
+
+/* This is a fake authz provider that really merges various authz alias
+   configurations and then envokes them. */
+static authz_status authz_alias_check_authorization(request_rec *r,
+                                              const char *require_args)
+{
+	/* Look up the provider alias in the alias list */
+	/* Get the the dir_config and call ap_Merge_per_dir_configs() */
+	/* Call the real provider->check_authorization() function */
+	/* return the result of the above function call */
+
+	const char *provider_name = apr_table_get(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
+	authz_status ret = AUTHZ_DENIED;
+	authz_core_srv_conf *authcfg =
+		(authz_core_srv_conf *)ap_get_module_config(r->server->module_config,
+													 &authz_core_module);
+
+	if (provider_name) {
+		provider_alias_rec *prvdraliasrec = apr_hash_get(authcfg->alias_rec,
+														 provider_name, APR_HASH_KEY_STRING);
+		ap_conf_vector_t *orig_dir_config = r->per_dir_config;
+
+		/* If we found the alias provider in the list, then merge the directory
+		   configurations and call the real provider */
+		if (prvdraliasrec) {
+			r->per_dir_config = ap_merge_per_dir_configs(r->pool, orig_dir_config,
+														 prvdraliasrec->sec_auth);
+			ret = prvdraliasrec->provider->check_authorization(r, prvdraliasrec->provider_args);
+			r->per_dir_config = orig_dir_config;
+		}
+	}
+
+	return ret;
+}
+
+static const authz_provider authz_alias_provider =
+{
+    &authz_alias_check_authorization,
+};
+
+static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig, const char *arg)
+{
+    int old_overrides = cmd->override;
+    const char *endp = ap_strrchr_c(arg, '>');
+    const char *args;
+    char *provider_alias;
+	char *provider_name;
+	char *provider_args;
+    const char *errmsg;
+    ap_conf_vector_t *new_authz_config = ap_create_per_dir_config(cmd->pool);
+	authz_core_srv_conf *authcfg = 
+		(authz_core_srv_conf *)ap_get_module_config(cmd->server->module_config,
+													 &authz_core_module);
+
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (endp == NULL) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive missing closing '>'", NULL);
+    }
+
+    args = apr_pstrndup(cmd->pool, arg, endp - arg);
+
+    if (!args[0]) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive requires additional arguments", NULL);
+    }
+
+	/* Pull the real provider name and the alias name from the block header */
+	provider_name = ap_getword_conf(cmd->pool, &args);
+    provider_alias = ap_getword_conf(cmd->pool, &args);
+	provider_args = ap_getword_conf(cmd->pool, &args);
+
+	if (!provider_name[0] || !provider_alias[0]) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive requires additional arguments", NULL);
+    }
+
+    /* walk the subsection configuration to get the per_dir config that we will
+       merge just before the real provider is called. */
+    cmd->override = OR_ALL|ACCESS_CONF;
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_authz_config);
+
+    if (!errmsg) {
+        provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool, sizeof(provider_alias_rec));
+		const authz_provider *provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP, provider_name,"0");
+
+        /* Save off the new directory config along with the original provider name
+           and function pointer data */
+        prvdraliasrec->sec_auth = new_authz_config;
+		prvdraliasrec->provider_name = provider_name;
+		prvdraliasrec->provider_alias = provider_alias;
+		prvdraliasrec->provider_args = provider_args;
+		prvdraliasrec->provider = provider;			
+		
+        apr_hash_set(authcfg->alias_rec, provider_alias, APR_HASH_KEY_STRING, prvdraliasrec);
+
+        /* Register the fake provider so that we get called first */
+        ap_register_provider(cmd->pool, AUTHZ_PROVIDER_GROUP, provider_alias, "0",
+                             &authz_alias_provider);
+    }
+
+    cmd->override = old_overrides;
+
+    return errmsg;
+}
+
+static const char *authz_require_section(cmd_parms *cmd, void *mconfig, const char *arg)
+{
+    int old_overrides = cmd->override;
+    const char *endp = ap_strrchr_c(arg, '>');
+    const char *args;
+    const char *errmsg;
+	authz_request_state old_reqstate;
+	authz_core_dir_conf *conf = (authz_core_dir_conf*)mconfig;
+//	authz_core_srv_conf *authcfg = 
+//		(authz_core_srv_conf *)ap_get_module_config(cmd->server->module_config,
+//													 &authz_core_module);
+
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    if (endp == NULL) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive missing closing '>'", NULL);
+    }
+
+    args = apr_pstrndup(cmd->pool, arg, endp - arg);
+
+    if (args[0]) {
+        return apr_pstrcat(cmd->pool, cmd->cmd->name,
+                           "> directive doesn't take additional arguments", NULL);
+    }
+
+    /* Save off the current request state so that we can go back to it after walking
+	   the subsection.  Indicate a transition in the logic incrementing the level.
+	   After the subsection walk the level will be decremented to indicate the
+	   path to follow. As the require directives are read by the configuration
+	   the req_state and the level will allow it to traverse the list to find
+	   the last element in the provider calling list. */
+	old_reqstate = conf->req_state;
+	if (strcasecmp (arg, "RequireAll") == 0) {
+		conf->req_state = AUTHZ_REQSTATE_ALL;
+	}
+	else {
+		conf->req_state = AUTHZ_REQSTATE_ONE;
+	}
+	conf->req_state_level++;
+    cmd->override = OR_ALL|ACCESS_CONF;
+
+	/* walk the subsection configuration to get the per_dir config that we will
+	   merge just before the real provider is called. */
+    errmsg = ap_walk_config(cmd->directive->first_child, cmd, cmd->context);
+
+	conf->req_state_level--;
+	conf->req_state = old_reqstate;
+    cmd->override = old_overrides;
+
+    return errmsg;
 }
 
 static const command_rec authz_cmds[] =
@@ -170,8 +385,96 @@ static const command_rec authz_cmds[] =
     AP_INIT_RAW_ARGS("Require", add_authz_provider, NULL, OR_AUTHCFG,
                      "Selects which authenticated users or groups may access "
                      "a protected space"),
+	AP_INIT_RAW_ARGS("<RequireAlias", authz_require_alias_section, NULL, RSRC_CONF,
+					 "Container for authorization directives grouped under "
+					 "an authz provider alias"),
+	AP_INIT_RAW_ARGS("<RequireAll", authz_require_section, NULL, RSRC_CONF,
+					 "Container for grouping require statements that must all " 
+					 "succeed for authorization to be granted"),
+	AP_INIT_RAW_ARGS("<RequireOne", authz_require_section, NULL, RSRC_CONF,
+					 "Container for grouping require statements of which one " 
+					 "must succeed for authorization to be granted"),
     {NULL}
 };
+
+static authz_status check_provider_list (request_rec *r, authz_provider_list *current_provider)
+{
+    authz_status auth_result = AUTHZ_DENIED;
+
+	do {
+		const authz_provider *provider;
+
+		/* For now, if a provider isn't set, we'll be nice and use the file
+		 * provider.
+		 */
+		if (!current_provider) {
+			provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
+										  AUTHZ_DEFAULT_PROVIDER, "0");
+
+			if (!provider || !provider->check_authorization) {
+				ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+							  "No default authz provider configured");
+				auth_result = AUTHZ_GENERAL_ERROR;
+				break;
+			}
+			apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE,
+						   AUTHZ_DEFAULT_PROVIDER);
+		}
+		else {
+			provider = current_provider->provider;
+			apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE,
+						   current_provider->provider_name);
+		}
+
+		/* check to make sure that the request method requires
+		authorization before calling the provider */
+		if (!(current_provider->method_mask & 
+			(AP_METHOD_BIT << r->method_number))) {
+			continue;
+		}
+
+		auth_result = provider->check_authorization(r,
+						current_provider->requirement);
+
+		apr_table_unset(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
+
+		/* Something occured. Stop checking. */
+		/* XXX: We need to figure out what the implications of multiple
+		 * require directives are.  Must all satisfy?  Can we leverage
+		 * satisfy here then?
+		 */
+		if (current_provider->req_state == AUTHZ_REQSTATE_ONE) {
+			if (auth_result == AUTHZ_GRANTED) {
+				break;
+			}
+			if (current_provider->all_next) {
+				auth_result = check_provider_list (r, current_provider->all_next);
+				if (auth_result == AUTHZ_GRANTED) {
+					break;
+				}
+			}
+			current_provider = current_provider->one_next;
+			continue;
+		}
+
+		if (current_provider->req_state == AUTHZ_REQSTATE_ALL) {
+			if (auth_result == AUTHZ_DENIED) {
+				break;
+			}
+			if (current_provider->one_next) {
+				auth_result = check_provider_list (r, current_provider->one_next);
+				if (auth_result == AUTHZ_DENIED) {
+					break;
+				}
+			}
+			current_provider = current_provider->all_next;
+			continue;
+		}
+
+	} while (current_provider);
+
+	return auth_result;
+}
 
 static int authorize_user(request_rec *r)
 {
@@ -180,60 +483,16 @@ static int authorize_user(request_rec *r)
     authz_status auth_result;
     authz_provider_list *current_provider;
 
+    /* If we're not really configured for providers, stop now. */
+    if (!conf->providers) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "no authorization providers configured");
+        return HTTP_UNAUTHORIZED;
+    }
+
     current_provider = conf->providers;
-    do {
-        const authz_provider *provider;
 
-        /* For now, if a provider isn't set, we'll be nice and use the file
-         * provider.
-         */
-        if (!current_provider) {
-            provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
-                                          AUTHZ_DEFAULT_PROVIDER, "0");
-
-            if (!provider || !provider->check_authorization) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "No default authz provider configured");
-                auth_result = AUTHZ_GENERAL_ERROR;
-                break;
-            }
-            apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE,
-                           AUTHZ_DEFAULT_PROVIDER);
-        }
-        else {
-            provider = current_provider->provider;
-            apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE,
-                           current_provider->provider_name);
-        }
-
-        /* check to make sure that the request method requires
-        authorization before calling the provider */
-        if (!(current_provider->method_mask & 
-            (AP_METHOD_BIT << r->method_number))) {
-            continue;
-        }
-
-        auth_result = provider->check_authorization(r,
-                        current_provider->requirement);
-
-        apr_table_unset(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
-
-        /* Something occured. Stop checking. */
-        /* XXX: We need to figure out what the implications of multiple
-         * require directives are.  Must all satisfy?  Can we leverage
-         * satisfy here then?
-         */
-        if (auth_result != AUTHZ_DENIED) {
-            break;
-        }
-
-        /* If we're not really configured for providers, stop now. */
-        if (!conf->providers) {
-            break;
-        }
-
-        current_provider = current_provider->next;
-    } while (current_provider);
+	auth_result = check_provider_list (r, current_provider);
 
     if (auth_result != AUTHZ_GRANTED) {
         int return_code;
@@ -281,7 +540,7 @@ static int authz_some_auth_required(request_rec *r)
             break;
         }
 
-        current_provider = current_provider->next;
+        current_provider = current_provider->one_next;
     }
 
     return req_authz;
@@ -299,7 +558,7 @@ module AP_MODULE_DECLARE_DATA authz_core_module =
     STANDARD20_MODULE_STUFF,
     create_authz_core_dir_config,   /* dir config creater */
     NULL,                           /* dir merger --- default is to override */
-    NULL,                           /* server config */
+    create_authz_core_svr_config,   /* server config */
     NULL,                           /* merge server config */
     authz_cmds,
     register_hooks                  /* register hooks */
