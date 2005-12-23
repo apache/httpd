@@ -79,6 +79,51 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     return OK;
 }
 
+#define FCGI_VERSION 1
+
+#define FCGI_BEGIN_REQUEST       1
+#define FCGI_ABORT_REQUEST       2
+#define FCGI_END_REQUEST         3
+#define FCGI_PARAMS              4
+#define FCGI_STDIN               5
+#define FCGI_STDOUT              6
+#define FCGI_STDERR              7
+#define FCGI_DATA                8
+#define FCGI_GET_VALUES          9
+#define FCGI_GET_VALUES_RESULT  10
+#define FCGI_UNKNOWN_TYPE       11
+#define FCGI_MAXTYPE (FCGI_UNKNOWN_TYPE)
+
+typedef struct {
+    unsigned char version;
+    unsigned char type;
+    unsigned char requestIdB1;
+    unsigned char requestIdB0;
+    unsigned char contentLengthB1;
+    unsigned char contentLengthB0;
+    unsigned char paddingLength;
+    unsigned char reserved;
+} fcgi_header;
+
+/*
+ * Mask for flags component of FCGI_BeginRequestBody
+ */
+#define FCGI_KEEP_CONN  1
+
+/*
+ * Values for role component of FCGI_BeginRequestBody
+ */
+#define FCGI_RESPONDER  1
+#define FCGI_AUTHORIZER 2
+#define FCGI_FILTER     3
+
+typedef struct {
+    unsigned char roleB1;
+    unsigned char roleB0;
+    unsigned char flags;
+    unsigned char reserved[5];
+} fcgi_begin_request_body;
+
 /*
  * process the request and write the response.
  */
@@ -89,7 +134,44 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
                             apr_uri_t *uri,
                             char *url, char *server_portstr)
 {
-    /* TODO: Talk to a FastCGI Backend */
+    apr_status_t rv;
+
+    {
+        struct iovec vec[2];
+        fcgi_header header;
+        fcgi_begin_request_body brb;
+    
+        /* Step 1: Send FCGI_BEGIN_REQUEST */
+        header.version = FCGI_VERSION;
+        header.type = FCGI_BEGIN_REQUEST;
+        header.requestIdB1 = ((1 >> 8) & 0xff);
+        header.requestIdB0 = ((1) & 0xff); 
+        header.contentLengthB1 = ((sizeof(brb) >> 8) & 0xff);
+        header.contentLengthB0 = ((sizeof(brb)) & 0xff); 
+        header.paddingLength = 0;
+    
+        brb.roleB1 = ((FCGI_RESPONDER >> 8) & 0xff);
+        brb.roleB0 = ((FCGI_RESPONDER) & 0xff); 
+        brb.flags = FCGI_KEEP_CONN;
+
+        vec[0].iov_base = &header;
+        vec[0].iov_len = sizeof(header);
+        vec[1].iov_base = &brb;
+        vec[1].iov_len = sizeof(brb);
+
+        rv = apr_socket_sendv(conn->sock, vec, 2, NULL);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                         "proxy: FCGI: Failed Writing Request to %s:", server_portstr);
+        }
+    }
+    
+    /* Step 2: Send Enviroment via FCGI_PARAMS */
+    /* Step 3: Send Request Body via FCGI_STDIN */
+    /* Step 4: Read for CGI_STDOUT|CGI_STDERR */
+    /* Step 5: Parse reply headers. */
+    /* Step 6: Stream reply body. */
+    /* Step 7: Read FCGI_END_REQUEST -> Done */
     return HTTP_SERVICE_UNAVAILABLE;
 }
 
