@@ -28,20 +28,47 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
 {
     char *host, *path, *search, sport[7];
     const char *err;
+    const char* scheme;
     apr_port_t port = 8000;
 
-    if (strncasecmp(url, "fcgi:", 5) == 0) {
+    if (strncasecmp(url, "fcgi-", 5) == 0) {
         url += 5;
     }
     else {
         return DECLINED;
     }
     
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "proxy: FCGI: canonicalising URL %s", url);
+
     if (strncmp(url, "tcp://", 6) == 0) {
-        url += 6;
+        url += 4;
+        
+        scheme = "fcgi-tcp://";
+
+        err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
+        if (err) {
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "error parsing URL %s: %s",
+                          url, err);
+            return HTTP_BAD_REQUEST;
+        }
+        
+        apr_snprintf(sport, sizeof(sport), ":%d", port);
+        
+        if (ap_strchr_c(host, ':')) {
+            /* if literal IPv6 address */
+            host = apr_pstrcat(r->pool, "[", host, "]", NULL);
+        }
+        
+        r->filename = apr_pstrcat(r->pool, "proxy:", scheme, host, sport, "/", NULL);
     }
-    else if (strncmp(url, "local:", 6) == 0) {
+    else if (strncmp(url, "local://", 8) == 0) {
         url += 6;
+        scheme = "fcgi-local:";
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "proxy: FCGI: Local FastCGI not supported.");
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
@@ -49,51 +76,6 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-
-    /*
-     * do syntactic check.
-     * We break the URL into host, port, path, search
-     */
-    err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
-    if (err) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "error parsing URL %s: %s",
-                      url, err);
-        return HTTP_BAD_REQUEST;
-    }
-
-    /*
-     * now parse path/search args, according to rfc1738
-     *
-     * N.B. if this isn't a true proxy request, then the URL _path_
-     * has already been decoded.  True proxy requests have
-     * r->uri == r->unparsed_uri, and no others have that property.
-     */
-    if (r->uri == r->unparsed_uri) {
-        search = strchr(url, '?');
-        if (search != NULL)
-            *(search++) = '\0';
-    }
-    else {
-        search = r->args;
-    }
-
-    /* process path */
-    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
-                             r->proxyreq);
-    if (path == NULL) {
-        return HTTP_BAD_REQUEST;
-    }
-
-    apr_snprintf(sport, sizeof(sport), ":%d", port);
-
-    if (ap_strchr_c(host, ':')) {
-        /* if literal IPv6 address */
-        host = apr_pstrcat(r->pool, "[", host, "]", NULL);
-    }
-    r->filename = apr_pstrcat(r->pool, "proxy:ajp://", host, sport,
-                              "/", path, (search) ? "?" : "",
-                              (search) ? search : "", NULL);
     return OK;
 }
 
@@ -132,7 +114,10 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     apr_uri_t *uri = apr_palloc(r->pool, sizeof(*uri));
 
 
-    if (strncasecmp(url, "fcgi:", 5) == 0) {
+    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                 "proxy: FCGI: url: %s proxyname: %s proxyport: %d", url, proxyname, proxyport);
+
+    if (strncasecmp(url, "fcgi-", 5) == 0) {
         url += 5;
     }
     else {
@@ -144,8 +129,11 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     if (strncmp(url, "tcp://", 6) == 0) {
         scheme = "FCGI_TCP";
     }
-    else if (strncmpp(url, "local:", 6) == 0) {
+    else if (strncmp(url, "local://", 8) == 0) {
         scheme = "FCGI_LOCAL";
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "proxy: FCGI: local FastCGI not supported.");
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
     else {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
