@@ -87,7 +87,9 @@ static int sc_for_req_header(const char *header_name)
                 return UNKNOWN_METHOD;
         break;
         case 'C':
-            if (memcmp(p, "OOKIE", 5) == 0)
+            if(memcmp(p, "OOKIE2", 6) == 0)
+                return SC_COOKIE2;
+            else if (memcmp(p, "OOKIE", 5) == 0)
                 return SC_COOKIE;
             else if(memcmp(p, "ONNECTION", 9) == 0)
                 return SC_CONNECTION;
@@ -95,8 +97,6 @@ static int sc_for_req_header(const char *header_name)
                 return SC_CONTENT_TYPE;
             else if(memcmp(p, "ONTENT-LENGTH", 13) == 0)
                 return SC_CONTENT_LENGTH;
-            else if(memcmp(p, "OOKIE2", 6) == 0)
-                return SC_COOKIE2;
             else
                 return UNKNOWN_METHOD;
         break;
