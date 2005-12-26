@@ -26,7 +26,7 @@ module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
  */
 static int proxy_fcgi_canon(request_rec *r, char *url)
 {
-    char *host, *path, *search, sport[7];
+    char *host, sport[7];
     const char *err;
     const char* scheme;
     apr_port_t port = 8000;
@@ -61,7 +61,8 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
             host = apr_pstrcat(r->pool, "[", host, "]", NULL);
         }
         
-        r->filename = apr_pstrcat(r->pool, "proxy:", scheme, host, sport, "/", NULL);
+        r->filename = apr_pstrcat(r->pool, "proxy:", scheme, host, sport, "/",
+                                  NULL);
     }
     else if (strncmp(url, "local://", 8) == 0) {
         url += 6;
@@ -124,49 +125,208 @@ typedef struct {
     unsigned char reserved[5];
 } fcgi_begin_request_body;
 
+
+static apr_status_t send_begin_request (proxy_conn_rec *conn, int request_id)
+{
+    struct iovec vec[2];
+    fcgi_header header;
+    fcgi_begin_request_body brb;
+    apr_size_t len;
+
+    header.version = FCGI_VERSION;
+    header.type = FCGI_BEGIN_REQUEST;
+    header.requestIdB1 = ((request_id >> 8) & 0xff);
+    header.requestIdB0 = ((request_id) & 0xff); 
+    header.contentLengthB1 = ((sizeof(brb) >> 8) & 0xff);
+    header.contentLengthB0 = ((sizeof(brb)) & 0xff); 
+    header.paddingLength = 0;
+
+    brb.roleB1 = ((FCGI_RESPONDER >> 8) & 0xff);
+    brb.roleB0 = ((FCGI_RESPONDER) & 0xff); 
+    brb.flags = FCGI_KEEP_CONN;
+
+    vec[0].iov_base = &header;
+    vec[0].iov_len = sizeof(header);
+    vec[1].iov_base = &brb;
+    vec[1].iov_len = sizeof(brb);
+
+    return apr_socket_sendv(conn->sock, vec, 2, &len);
+}
+
+static apr_status_t send_environment (proxy_conn_rec *conn, request_rec *r, 
+                                      int request_id)
+{
+    const apr_array_header_t *envarr;
+    const apr_table_entry_t *elts;
+    struct iovec vec[2];
+    fcgi_header header;
+    apr_size_t bodylen;
+    char *body, *itr;
+    apr_status_t rv;
+    apr_size_t len;
+    int i;
+
+    header.version = FCGI_VERSION;
+    header.type = FCGI_PARAMS;
+    header.requestIdB1 = ((request_id >> 8) & 0xff);
+    header.requestIdB0 = ((request_id) & 0xff); 
+
+    ap_add_common_vars(r);
+    ap_add_cgi_vars(r);
+
+    /* XXX are there any FastCGI specific env vars we need to send? */
+
+    /* XXX What if there is over 64k worth of data in the env? */
+    bodylen = 0;
+
+    /* XXX mod_cgi/mod_cgid use ap_create_environment here, which fills in
+     *     the TZ value specially.  We could use that, but it would mean
+     *     parsing the key/value pairs back OUT of the allocated env array,
+     *     not to mention allocating a totally useless array in the first
+     *     place, which would suck. */
+
+    envarr = apr_table_elts(r->subprocess_env);
+
+    elts = (const apr_table_entry_t *) envarr->elts;
+
+    for (i = 0; i < envarr->nelts; ++i) {
+        apr_size_t keylen, vallen;
+
+        if (! elts[i].key) {
+            continue;
+        }
+
+        keylen = strlen(elts[i].key);
+
+        if (keylen >> 7 == 0) {
+            bodylen += 1;
+        }
+        else {
+            bodylen += 4;
+        }
+
+        bodylen += keylen;
+
+        vallen = strlen(elts[i].val);
+
+        if (vallen >> 7 == 0) {
+            bodylen += 1;
+        }
+        else {
+            bodylen += 4;
+        }
+
+        bodylen += vallen;
+    }
+
+    body = apr_pcalloc(r->pool, bodylen);
+
+    itr = body;
+
+    for (i = 0; i < envarr->nelts; ++i) {
+        apr_size_t keylen, vallen;
+       
+        if (! elts[i].key) {
+            continue;
+        }
+
+        keylen = strlen(elts[i].key);
+
+        if (keylen >> 7 == 0) {
+            itr[0] = keylen & 0xff;
+            itr += 1;
+        }
+        else {
+            itr[0] = ((keylen >> 24) & 0xff) | 0x80;
+            itr[1] = ((keylen >> 16) & 0xff);
+            itr[2] = ((keylen >> 8) & 0xff);
+            itr[3] = ((keylen) & 0xff);
+            itr += 4;
+        }
+
+        vallen = strlen(elts[i].val);
+
+        if (vallen >> 7 == 0) {
+            itr[0] = vallen & 0xff;
+            itr += 1;
+        }
+        else {
+            itr[0] = ((vallen >> 24) & 0xff) | 0x80;
+            itr[1] = ((vallen >> 16) & 0xff);
+            itr[2] = ((vallen >> 8) & 0xff);
+            itr[3] = ((vallen) & 0xff);
+            itr += 4;
+        }
+
+        memcpy(itr, elts[i].key, keylen);
+        itr += keylen;
+
+        memcpy(itr, elts[i].val, vallen);
+        itr += vallen;
+    }
+
+    /* First we send the actual env... */
+    header.contentLengthB1 = ((bodylen >> 8) & 0xff);
+    header.contentLengthB0 = ((bodylen) & 0xff); 
+    header.paddingLength = 0;
+
+    vec[0].iov_base = &header;
+    vec[0].iov_len = sizeof(header);
+    vec[1].iov_base = body;
+    vec[1].iov_len = bodylen;
+
+    rv = apr_socket_sendv(conn->sock, vec, 2, &len);
+    if (rv) {
+        return rv;
+    }
+
+    /* Then, an empty record to signify the end of the stream. */
+    header.contentLengthB1 = 0;
+    header.contentLengthB0 = 0;
+    header.paddingLength = 0;
+
+    vec[0].iov_base = &header;
+    vec[0].iov_len = sizeof(header);
+
+    return apr_socket_sendv(conn->sock, vec, 1, &len);
+}
+
 /*
  * process the request and write the response.
  */
 static int fcgi_do_request(apr_pool_t *p, request_rec *r,
-                            proxy_conn_rec *conn,
-                            conn_rec *origin,
-                            proxy_dir_conf *conf,
-                            apr_uri_t *uri,
-                            char *url, char *server_portstr)
+                           proxy_conn_rec *conn,
+                           conn_rec *origin,
+                           proxy_dir_conf *conf,
+                           apr_uri_t *uri,
+                           char *url, char *server_portstr)
 {
+    /* Request IDs are arbitrary numbers that we assign to a
+     * single request. This would allow multiplex/pipelinig of 
+     * multiple requests to the same FastCGI connection, but 
+     * we don't support that, and always use a value of '1' to
+     * keep things simple. */
+    int request_id = 1; 
     apr_status_t rv;
-
-    {
-        struct iovec vec[2];
-        fcgi_header header;
-        fcgi_begin_request_body brb;
-    
-        /* Step 1: Send FCGI_BEGIN_REQUEST */
-        header.version = FCGI_VERSION;
-        header.type = FCGI_BEGIN_REQUEST;
-        header.requestIdB1 = ((1 >> 8) & 0xff);
-        header.requestIdB0 = ((1) & 0xff); 
-        header.contentLengthB1 = ((sizeof(brb) >> 8) & 0xff);
-        header.contentLengthB0 = ((sizeof(brb)) & 0xff); 
-        header.paddingLength = 0;
-    
-        brb.roleB1 = ((FCGI_RESPONDER >> 8) & 0xff);
-        brb.roleB0 = ((FCGI_RESPONDER) & 0xff); 
-        brb.flags = FCGI_KEEP_CONN;
-
-        vec[0].iov_base = &header;
-        vec[0].iov_len = sizeof(header);
-        vec[1].iov_base = &brb;
-        vec[1].iov_len = sizeof(brb);
-
-        rv = apr_socket_sendv(conn->sock, vec, 2, NULL);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
-                         "proxy: FCGI: Failed Writing Request to %s:", server_portstr);
-        }
+   
+    /* Step 1: Send FCGI_BEGIN_REQUEST */
+    rv = send_begin_request(conn, request_id);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                     "proxy: FCGI: Failed Writing Request to %s:",
+                     server_portstr);
+        return HTTP_SERVICE_UNAVAILABLE;
     }
     
     /* Step 2: Send Enviroment via FCGI_PARAMS */
+    rv = send_environment(conn, r, request_id);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                     "proxy: FCGI: Failed writing Environment to %s:",
+                     server_portstr);
+        return HTTP_SERVICE_UNAVAILABLE;
+    }
+
     /* Step 3: Send Request Body via FCGI_STDIN */
     /* Step 4: Read for CGI_STDOUT|CGI_STDERR */
     /* Step 5: Parse reply headers. */
