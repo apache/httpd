@@ -53,7 +53,7 @@ X- Remove the ap_requires field from authz_dir_conf
 X- Remove the function ap_requires() and authz_ap_requires()
    since their functionality is no longer supported 
    or necessary in the refactoring
-- Remove the calls to ap_some_auth_required() in the
+X- Remove the calls to ap_some_auth_required() in the
    core request handling to allow the hooks to be called
    in all cases.  Is this function even necessary
    anymore?
