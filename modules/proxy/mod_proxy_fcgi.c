@@ -125,21 +125,37 @@ typedef struct {
     unsigned char reserved[5];
 } fcgi_begin_request_body;
 
+/*
+ * Initialize a fastcgi_header H of type TYPE with id ID.
+ *
+ * Sets the content length and padding length to 0, the caller should
+ * reset them to more appropriate values later if needed.
+ */
+static void fill_in_header(fcgi_header *h, int type, int id)
+{
+    h->version = FCGI_VERSION;
 
-static apr_status_t send_begin_request (proxy_conn_rec *conn, int request_id)
+    h->type = type;
+
+    h->requestIdB1 = ((id >> 8) & 0xff);
+    h->requestIdB0 = ((id) & 0xff); 
+
+    h->contentLengthB1 = 0;
+    h->contentLengthB0 = 0;
+    h->paddingLength = 0;
+}
+
+static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
 {
     struct iovec vec[2];
     fcgi_header header;
     fcgi_begin_request_body brb;
     apr_size_t len;
 
-    header.version = FCGI_VERSION;
-    header.type = FCGI_BEGIN_REQUEST;
-    header.requestIdB1 = ((request_id >> 8) & 0xff);
-    header.requestIdB0 = ((request_id) & 0xff); 
+    fill_in_header(&header, FCGI_BEGIN_REQUEST, request_id);
+
     header.contentLengthB1 = ((sizeof(brb) >> 8) & 0xff);
     header.contentLengthB0 = ((sizeof(brb)) & 0xff); 
-    header.paddingLength = 0;
 
     brb.roleB1 = ((FCGI_RESPONDER >> 8) & 0xff);
     brb.roleB0 = ((FCGI_RESPONDER) & 0xff); 
@@ -153,8 +169,8 @@ static apr_status_t send_begin_request (proxy_conn_rec *conn, int request_id)
     return apr_socket_sendv(conn->sock, vec, 2, &len);
 }
 
-static apr_status_t send_environment (proxy_conn_rec *conn, request_rec *r, 
-                                      int request_id)
+static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r, 
+                                     int request_id)
 {
     const apr_array_header_t *envarr;
     const apr_table_entry_t *elts;
@@ -166,10 +182,7 @@ static apr_status_t send_environment (proxy_conn_rec *conn, request_rec *r,
     apr_size_t len;
     int i;
 
-    header.version = FCGI_VERSION;
-    header.type = FCGI_PARAMS;
-    header.requestIdB1 = ((request_id >> 8) & 0xff);
-    header.requestIdB0 = ((request_id) & 0xff); 
+    fill_in_header(&header, FCGI_PARAMS, request_id);
 
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
@@ -292,6 +305,87 @@ static apr_status_t send_environment (proxy_conn_rec *conn, request_rec *r,
 }
 
 /*
+ * An arbitrary buffer size for reading the stdin data from the client.
+ *
+ * Need to find a "better" value here, or at least justify the current
+ * value somehow.
+ */
+#define MAX_INPUT_BYTES 1024
+
+static apr_status_t send_stdin(proxy_conn_rec *conn, request_rec *r,
+                               int request_id)
+{
+    apr_bucket_brigade *input_brigade;
+    apr_status_t rv = APR_SUCCESS;
+    struct iovec vec[2];
+    fcgi_header header;
+    int done = 0;
+
+    fill_in_header(&header, FCGI_STDIN, request_id);
+
+    input_brigade = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+
+    while (! done) {
+        char buff[MAX_INPUT_BYTES];
+        apr_size_t buflen, len;
+
+        rv = ap_get_brigade(r->input_filters, input_brigade,
+                            AP_MODE_READBYTES, APR_BLOCK_READ,
+                            MAX_INPUT_BYTES);
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+
+        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
+            done = 1;
+        }
+
+        buflen = sizeof(buff);
+
+        rv = apr_brigade_flatten(input_brigade, buff, &buflen);
+
+        apr_brigade_cleanup(input_brigade);
+
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+
+        header.contentLengthB1 = ((buflen >> 8) & 0xff);
+        header.contentLengthB0 = ((buflen) & 0xff); 
+
+        vec[0].iov_base = &header;
+        vec[0].iov_len = sizeof(header);
+        vec[1].iov_base = buff;
+        vec[1].iov_len = buflen;
+
+        rv = apr_socket_sendv(conn->sock, vec, 2, &len);
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+
+        /* XXX AJP updates conn->worker->s->transferred here, do we need to? */
+    }
+
+    /* If we got here successfully it means we sent all the data, so we need
+     * to send the final empty record to signify the end of the stream. */
+    if (rv == APR_SUCCESS) {
+        apr_size_t len;
+
+        header.contentLengthB1 = 0;
+        header.contentLengthB0 = 0;
+
+        vec[0].iov_base = &header;
+        vec[0].iov_len = sizeof(header);
+
+        rv = apr_socket_sendv(conn->sock, vec, 1, &len);
+    }
+
+    apr_brigade_destroy(input_brigade);
+
+    return rv;
+}
+
+/*
  * process the request and write the response.
  */
 static int fcgi_do_request(apr_pool_t *p, request_rec *r,
@@ -328,6 +422,14 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     }
 
     /* Step 3: Send Request Body via FCGI_STDIN */
+    rv = send_stdin(conn, r, request_id);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                     "proxy: FCGI: Failed writing STDIN to %s:",
+                     server_portstr);
+        return HTTP_SERVICE_UNAVAILABLE;
+    }
+
     /* Step 4: Read for CGI_STDOUT|CGI_STDERR */
     /* Step 5: Parse reply headers. */
     /* Step 6: Stream reply body. */
