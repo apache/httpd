@@ -166,6 +166,7 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
                                         newp->provider_name, "0");
     newp->req_state = conf->req_state;
     newp->req_state_level = conf->req_state_level;
+    newp->is_reject = (int)cmd->info;
 
     /* by the time the config file is used, the provider should be loaded
      * and registered with us.
@@ -433,6 +434,9 @@ static const command_rec authz_cmds[] =
     AP_INIT_RAW_ARGS("Require", add_authz_provider, NULL, OR_AUTHCFG,
                      "Selects which authenticated users or groups may access "
                      "a protected space"),
+    AP_INIT_RAW_ARGS("Reject", add_authz_provider, (void*)1, OR_AUTHCFG,
+                     "Rejects the specified authenticated users or groups from accessing "
+                     "a protected space"),
     AP_INIT_RAW_ARGS("<RequireAlias", authz_require_alias_section, NULL, RSRC_CONF,
                      "Container for authorization directives grouped under "
                      "an authz provider alias"),
@@ -482,6 +486,14 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
 
     auth_result = provider->check_authorization(r,
                     current_provider->requirement);
+
+    if (auth_result == AUTHZ_GENERAL_ERROR) {
+        return auth_result;
+    }
+
+    if (current_provider->is_reject) {
+        auth_result = auth_result == AUTHZ_DENIED ? AUTHZ_GRANTED : AUTHZ_DENIED;
+    }
 
     apr_table_unset(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
 

@@ -107,6 +107,7 @@ struct authz_provider_list {
     int req_state_level;
     /** String following 'require <provider>' from config file */
     char *requirement;
+    int is_reject;
 };
 
 #ifdef __cplusplus
