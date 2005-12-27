@@ -58,7 +58,6 @@ typedef enum {
 } authz_status;
 
 typedef enum {
-	AUTHZ_REQSTATE_DEFAULT,
 	AUTHZ_REQSTATE_ONE,
 	AUTHZ_REQSTATE_ALL
 } authz_request_state;
@@ -104,8 +103,8 @@ struct authz_provider_list {
 	authz_provider_list *all_next;
     /** If a Limit method is in effect, this field will be set */
     apr_int64_t method_mask;
-	/** If a request status is in effect, this filed will be set */
 	authz_request_state req_state;
+    int req_state_level;
     /** String following 'require <provider>' from config file */
     char *requirement;
 };
