@@ -17,7 +17,7 @@
 
 /**
  * @file  mod_dbd.h
- * @brief Database Acces Extension Module for Apache
+ * @brief Database Access Extension Module for Apache
  *
  * Overview of what this is and does:
  * http://www.apache.org/~niq/dbd.html
