@@ -30,16 +30,21 @@
 #include "apr_want.h"
 
 #include "ap_config.h"
+#include "ap_provider.h"
 #include "httpd.h"
 #include "http_core.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "http_protocol.h"
 #include "http_request.h"
+
+#include "mod_auth.h"
 
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
 #endif
 
+/*
 enum allowdeny_type {
     T_ENV,
     T_ALL,
@@ -56,35 +61,42 @@ typedef struct {
     } x;
     enum allowdeny_type type;
 } allowdeny;
+*/
 
 /* things in the 'order' array */
+/*
 #define DENY_THEN_ALLOW 0
 #define ALLOW_THEN_DENY 1
 #define MUTUAL_FAILURE 2
+*/
 
 typedef struct {
-    int order[METHODS];
+/*    int order[METHODS];
     apr_array_header_t *allows;
-    apr_array_header_t *denys;
+    apr_array_header_t *denys; */
+	int dummy;  /* just here to stop compiler warnings for now. */
 } authz_host_dir_conf;
 
 module AP_MODULE_DECLARE_DATA authz_host_module;
 
 static void *create_authz_host_dir_config(apr_pool_t *p, char *dummy)
 {
-    int i;
+/*    int i;*/
     authz_host_dir_conf *conf =
         (authz_host_dir_conf *)apr_pcalloc(p, sizeof(authz_host_dir_conf));
 
+/*
     for (i = 0; i < METHODS; ++i) {
         conf->order[i] = DENY_THEN_ALLOW;
     }
     conf->allows = apr_array_make(p, 1, sizeof(allowdeny));
     conf->denys = apr_array_make(p, 1, sizeof(allowdeny));
+*/    
 
     return (void *)conf;
 }
 
+/*
 static const char *order(cmd_parms *cmd, void *dv, const char *arg)
 {
     authz_host_dir_conf *d = (authz_host_dir_conf *) dv;
@@ -105,7 +117,9 @@ static const char *order(cmd_parms *cmd, void *dv, const char *arg)
 
     return NULL;
 }
+*/
 
+/*
 static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
                              const char *where_c)
 {
@@ -135,7 +149,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
         *s++ = '\0';
         rv = apr_ipsubnet_create(&a->x.ip, where, s, cmd->pool);
         if(APR_STATUS_IS_EINVAL(rv)) {
-            /* looked nothing like an IP address */
+            /* looked nothing like an IP address *
             return "An IP address was expected";
         }
         else if (rv != APR_SUCCESS) {
@@ -152,23 +166,26 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
         }
         a->type = T_IP;
     }
-    else { /* no slash, didn't look like an IP address => must be a host */
+    else { /* no slash, didn't look like an IP address => must be a host *
         a->type = T_HOST;
     }
 
     return NULL;
 }
+*/
 
-static char its_an_allow;
+/*static char its_an_allow;*/
 
 static const command_rec authz_host_cmds[] =
 {
+/*
     AP_INIT_TAKE1("order", order, NULL, OR_LIMIT,
                   "'allow,deny', 'deny,allow', or 'mutual-failure'"),
     AP_INIT_ITERATE2("allow", allow_cmd, &its_an_allow, OR_LIMIT,
                      "'from' followed by hostnames or IP-address wildcards"),
     AP_INIT_ITERATE2("deny", allow_cmd, NULL, OR_LIMIT,
                      "'from' followed by hostnames or IP-address wildcards"),
+*/                     
     {NULL}
 };
 
@@ -199,6 +216,7 @@ static int in_domain(const char *domain, const char *what)
     }
 }
 
+/*
 static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
 {
 
@@ -252,7 +270,7 @@ static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
             break;
 
         case T_FAIL:
-            /* do nothing? */
+            /* do nothing? *
             break;
         }
     }
@@ -303,11 +321,167 @@ static int check_dir_access(request_rec *r)
 
     return ret;
 }
+*/
+
+static authz_status env_check_authorization(request_rec *r, const char *require_line)
+{
+    const char *t, *w;
+
+    /* The 'env' provider will allow the configuration to specify a list of
+        env variables to check rather than a single variable.  This is different
+        from the previous host based syntax. */
+    t = require_line;
+    while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
+        if (apr_table_get(r->subprocess_env, w)) {
+            return AUTHZ_GRANTED;
+        }
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                  "access to %s failed, reason: env variable list does not meet "
+                  "'require'ments for user '%s' to be allowed access",
+                  r->uri, r->user);
+
+    ap_note_auth_failure(r);
+    return AUTHZ_DENIED;
+}
+
+static authz_status ip_check_authorization(request_rec *r, const char *require_line)
+{
+    const char *t, *w;
+
+    /* The 'ip' provider will allow the configuration to specify a list of
+        ip addresses to check rather than a single address.  This is different
+        from the previous host based syntax. */
+    t = require_line;
+    while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
+        char *where = apr_pstrdup(r->pool, w);
+        char *s;
+        char msgbuf[120];
+        apr_ipsubnet_t *ip;
+        apr_status_t rv;
+        int got_ip = 0;
+
+        if ((s = ap_strchr(where, '/'))) {
+            *s++ = '\0';
+            rv = apr_ipsubnet_create(&ip, where, s, r->pool);
+            if(APR_STATUS_IS_EINVAL(rv)) {
+                /* looked nothing like an IP address */
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "an ip address 'require' list appears to be invalid ");
+            }
+            else if (rv != APR_SUCCESS) {
+                apr_strerror(rv, msgbuf, sizeof msgbuf);
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "an ip address 'require' list appears to be invalid; %s ",
+                              msgbuf);
+            }
+            else
+                got_ip = 1;
+        }
+        else if (!APR_STATUS_IS_EINVAL(rv = apr_ipsubnet_create(&ip, where,
+                                                                NULL, r->pool))) {
+            if (rv != APR_SUCCESS) {
+                apr_strerror(rv, msgbuf, sizeof msgbuf);
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "an ip address 'require' list appears to be invalid; %s ",
+                              msgbuf);
+            }
+            else 
+                got_ip = 1;
+        }
+
+        if (got_ip && apr_ipsubnet_test(ip, r->connection->remote_addr)) {
+            return AUTHZ_GRANTED;
+        }
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                  "access to %s failed, reason: ip address list does not meet "
+                  "'require'ments for user '%s' to be allowed access",
+                  r->uri, r->user);
+
+    ap_note_auth_failure(r);
+    return AUTHZ_DENIED;
+}
+
+static authz_status host_check_authorization(request_rec *r, const char *require_line)
+{
+    const char *t, *w;
+    const char *remotehost = NULL;
+    int remotehost_is_ip;
+
+    remotehost = ap_get_remote_host(r->connection,
+                                    r->per_dir_config,
+                                    REMOTE_DOUBLE_REV,
+                                    &remotehost_is_ip);
+
+    if ((remotehost == NULL) || remotehost_is_ip) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "access to %s failed, reason: unable to get the "
+                      "remote host name", r->uri);
+    }
+    else {
+        /* The 'host' provider will allow the configuration to specify a list of
+            host names to check rather than a single name.  This is different
+            from the previous host based syntax. */
+        t = require_line;
+        while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
+            if (in_domain(w, remotehost)) {
+                return AUTHZ_GRANTED;
+            }
+        }
+
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "access to %s failed, reason: host name list does not meet "
+                      "'require'ments for user '%s' to be allowed access",
+                      r->uri, r->user);
+    }
+
+    ap_note_auth_failure(r);
+    return AUTHZ_DENIED;
+}
+
+static authz_status all_check_authorization(request_rec *r, const char *require_line)
+{
+    /* Just let everybody in. This is basically here for backward consistency since
+        this 'all' provider is the same as the 'valid-user' provider. */
+    return AUTHZ_GRANTED;
+}
+
+static const authz_provider authz_env_provider =
+{
+    &env_check_authorization,
+};
+
+static const authz_provider authz_ip_provider =
+{
+    &ip_check_authorization,
+};
+
+static const authz_provider authz_host_provider =
+{
+    &host_check_authorization,
+};
+
+static const authz_provider authz_all_provider =
+{
+    &all_check_authorization,
+};
 
 static void register_hooks(apr_pool_t *p)
 {
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "env", "0",
+                         &authz_env_provider);
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "ip", "0",
+                         &authz_ip_provider);
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "host", "0",
+                         &authz_host_provider);
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "all", "0",
+                         &authz_all_provider);
+
     /* This can be access checker since we don't require r->user to be set. */
-    ap_hook_access_checker(check_dir_access,NULL,NULL,APR_HOOK_MIDDLE);
+/*    ap_hook_access_checker(check_dir_access,NULL,NULL,APR_HOOK_MIDDLE); */
 }
 
 module AP_MODULE_DECLARE_DATA authz_host_module =

@@ -75,9 +75,9 @@ X- Implement the <RequireAll> <RequireOne> block directives
    to handle the 'and' and 'or' logic for authorization.
 X- Remove the AuthzXXXAuthoritative directives from all of
    the authz providers
-- Implement the Reject directive that will deny authorization
+X- Implement the Reject directive that will deny authorization
    if the argument is true
-- Fold the Reject directive into the <RequireAll> <RequireOne>
+X- Fold the Reject directive into the <RequireAll> <RequireOne>
    logic
 - Reimplement the host based authorization 'allow', 'deny'
    and 'order' as authz providers   
