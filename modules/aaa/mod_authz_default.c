@@ -20,46 +20,62 @@
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"
-#include "ap_provider.h"
 #include "http_core.h"
 #include "http_log.h"
 #include "http_protocol.h"
 #include "http_request.h"
 
-#include "mod_auth.h"
-                          
 typedef struct {
-	int dummy;  /* Just here to stop compiler warnings for now */
+    int authoritative;
 } authz_default_config_rec;
 
 static void *create_authz_default_dir_config(apr_pool_t *p, char *d)
 {
     authz_default_config_rec *conf = apr_palloc(p, sizeof(*conf));
 
+    conf->authoritative = 1; /* keep the fortress secure by default */
     return conf;
 }
 
 static const command_rec authz_default_cmds[] =
 {
+    AP_INIT_FLAG("AuthzDefaultAuthoritative", ap_set_flag_slot,
+                 (void *)APR_OFFSETOF(authz_default_config_rec, authoritative),
+                 OR_AUTHCFG,
+                 "Set to 'Off' to allow access control to be passed along to "
+                 "lower modules. (default is On.)"),
     {NULL}
 };
 
 module AP_MODULE_DECLARE_DATA authz_default_module;
 
-static authz_status default_check_authorization(request_rec *r, const char *require_line)
+static int check_user_access(request_rec *r)
 {
-    return AUTHZ_DENIED;
-}
+    authz_default_config_rec *conf = ap_get_module_config(r->per_dir_config,
+                                                 &authz_default_module);
 
-static const authz_provider authz_default_provider =
-{
-    &default_check_authorization,
-};
+    if (!(conf->authoritative)) {
+        return DECLINED;
+    }
+
+    /* if we aren't authoritative, any require directive could be
+     * considered valid even if noone groked it.  However, if we are
+     * authoritative, we can warn the user they did something wrong.
+     *
+     * That something could be a missing "AuthAuthoritative off", but
+     * more likely is a typo in the require directive.
+     */
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                          "access to %s failed, reason: require directives "
+                          "present and no Authoritative handler.", r->uri);
+
+    ap_note_auth_failure(r);
+    return HTTP_UNAUTHORIZED;
+}
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "default", "0",
-                         &authz_default_provider);
+    ap_hook_auth_checker(check_user_access,NULL,NULL,APR_HOOK_LAST);
 }
 
 module AP_MODULE_DECLARE_DATA authz_default_module =
