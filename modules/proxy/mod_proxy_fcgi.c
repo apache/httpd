@@ -304,83 +304,287 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     return apr_socket_sendv(conn->sock, vec, 1, &len);
 }
 
-/*
- * An arbitrary buffer size for reading the stdin data from the client.
+/* Try to parse the script headers in the response from the back end fastcgi
+ * server.  Assumes that the contents of READBUF have already been added to
+ * the end of OB.
  *
- * Need to find a "better" value here, or at least justify the current
- * value somehow.
- */
-#define MAX_INPUT_BYTES 1024
-
-static apr_status_t send_stdin(proxy_conn_rec *conn, request_rec *r,
-                               int request_id)
+ * Returns -1 on error, 0 if it can't find the end of the headers, and 1 if
+ * it found the end of the headers and scans them successfully. */
+static int handle_headers(request_rec *r,
+                          char *readbuf,
+                          apr_bucket_brigade *ob)
 {
-    apr_bucket_brigade *input_brigade;
+    conn_rec *c = r->connection;
+
+    /* XXX This is both slightly wrong and overly strict.  It's wrong
+     *     cause if we get part of the \r\n\r\n in one record, and the
+     *     rest in the next, we'll miss it, and it's too strict because
+     *     if a CGI uses just \n instead of \r\n we'll miss it, which
+     *     is bad. */
+
+    if (strstr(readbuf, "\r\n\r\n")) {
+        int status = ap_scan_script_header_err_brigade(r, ob,
+                                                       NULL);
+        if (status != OK) {
+            apr_bucket *b;
+
+            r->status = status;
+
+            apr_brigade_cleanup(ob);
+
+            b = apr_bucket_eos_create(c->bucket_alloc);
+
+            APR_BRIGADE_INSERT_TAIL(ob, b);
+
+            ap_pass_brigade(r->output_filters, ob);
+
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                         "proxy: FCGI: Error parsing script headers");
+
+            return -1;
+        }
+        else {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+
+static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
+                             int request_id)
+{
+    apr_bucket_brigade *ib, *ob;
+    int seen_end_of_headers = 0, done = 0;
     apr_status_t rv = APR_SUCCESS;
+    conn_rec *c = r->connection;
     struct iovec vec[2];
     fcgi_header header;
-    int done = 0;
+    apr_pollfd_t pfd;
 
     fill_in_header(&header, FCGI_STDIN, request_id);
 
-    input_brigade = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    pfd.desc_type = APR_POLL_SOCKET;
+    pfd.desc.s = conn->sock;
+    pfd.p = r->pool;
+    pfd.reqevents = APR_POLLIN | APR_POLLOUT;
+
+    ib = apr_brigade_create(r->pool, c->bucket_alloc);
+    ob = apr_brigade_create(r->pool, c->bucket_alloc);
 
     while (! done) {
-        char buff[MAX_INPUT_BYTES];
-        apr_size_t buflen, len;
-
-        rv = ap_get_brigade(r->input_filters, input_brigade,
-                            AP_MODE_READBYTES, APR_BLOCK_READ,
-                            MAX_INPUT_BYTES);
-        if (rv != APR_SUCCESS) {
-            break;
-        }
-
-        if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(input_brigade))) {
-            done = 1;
-        }
-
-        buflen = sizeof(buff);
-
-        rv = apr_brigade_flatten(input_brigade, buff, &buflen);
-
-        apr_brigade_cleanup(input_brigade);
-
-        if (rv != APR_SUCCESS) {
-            break;
-        }
-
-        header.contentLengthB1 = ((buflen >> 8) & 0xff);
-        header.contentLengthB0 = ((buflen) & 0xff); 
-
-        vec[0].iov_base = &header;
-        vec[0].iov_len = sizeof(header);
-        vec[1].iov_base = buff;
-        vec[1].iov_len = buflen;
-
-        rv = apr_socket_sendv(conn->sock, vec, 2, &len);
-        if (rv != APR_SUCCESS) {
-            break;
-        }
-
-        /* XXX AJP updates conn->worker->s->transferred here, do we need to? */
-    }
-
-    /* If we got here successfully it means we sent all the data, so we need
-     * to send the final empty record to signify the end of the stream. */
-    if (rv == APR_SUCCESS) {
         apr_size_t len;
+        int n;
 
-        header.contentLengthB1 = 0;
-        header.contentLengthB0 = 0;
+        rv = apr_poll(&pfd, 1, &n, -1);
+        if (rv != APR_SUCCESS) {
+            break;
+        }
 
-        vec[0].iov_base = &header;
-        vec[0].iov_len = sizeof(header);
+        if (pfd.rtnevents & APR_POLLOUT) {
+            char writebuf[AP_IOBUFSIZE];
+            apr_size_t writebuflen;
+            int last_stdin = 0;
 
-        rv = apr_socket_sendv(conn->sock, vec, 1, &len);
+            rv = ap_get_brigade(r->input_filters, ib,
+                                AP_MODE_READBYTES, APR_BLOCK_READ,
+                                AP_IOBUFSIZE);
+            if (rv != APR_SUCCESS) {
+                break;
+            }
+
+            if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(ib))) {
+                last_stdin = 1;
+            }
+
+            writebuflen = sizeof(writebuf);
+
+            rv = apr_brigade_flatten(ib, writebuf, &writebuflen);
+
+            apr_brigade_cleanup(ib);
+
+            if (rv != APR_SUCCESS) {
+                break;
+            }
+
+            header.contentLengthB1 = ((writebuflen >> 8) & 0xff);
+            header.contentLengthB0 = ((writebuflen) & 0xff); 
+
+            vec[0].iov_base = &header;
+            vec[0].iov_len = sizeof(header);
+            vec[1].iov_base = writebuf;
+            vec[1].iov_len = writebuflen;
+
+            /* XXX This should be nonblocking, and if we don't write all
+             *     the data we need to keep track of that fact so we can
+             *     get to it next time through. */
+            rv = apr_socket_sendv(conn->sock, vec, 2, &len);
+            if (rv != APR_SUCCESS) {
+                break;
+            }
+
+            /* XXX AJP updates conn->worker->s->transferred here, do we need
+             *     to? */
+
+            if (last_stdin) {
+                pfd.reqevents = APR_POLLIN; /* Done with input data */
+
+                header.contentLengthB1 = 0;
+                header.contentLengthB0 = 0;
+
+                vec[0].iov_base = &header;
+                vec[0].iov_len = sizeof(header);
+
+                rv = apr_socket_sendv(conn->sock, vec, 1, &len);
+            }
+        }
+
+        if (pfd.rtnevents & APR_POLLIN) {
+            /* readbuf has one byte on the end that is always 0, so it's
+             * able to work with a strstr when we search for the end of
+             * the headers, even if we fill the entire length in the recv. */
+            char readbuf[AP_IOBUFSIZE + 1];
+            apr_size_t readbuflen;
+            apr_size_t clen = 0;
+            int rid, type = 0;
+            char plen = 0;
+            apr_bucket *b;
+
+            memset(readbuf, 0, sizeof(readbuf));
+
+            /* First, we grab the header... */
+            readbuflen = 8;
+
+            rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
+            if (rv != APR_SUCCESS) {
+                break;
+            }
+
+            if (readbuflen != 8) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "proxy: FCGI: Failed to read entire header");
+                rv = APR_EINVAL;
+                break;
+            }
+
+            if (readbuf[0] != FCGI_VERSION) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "proxy: FCGI: Got bogus version %d",
+                             (int) readbuf[0]);
+                rv = APR_EINVAL;
+                break;
+            }
+
+            type = readbuf[1];
+
+            rid |= readbuf[2] << 8;
+            rid |= readbuf[3] << 0;
+
+            if (rid != request_id) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "proxy: FCGI: Got bogus rid %d, expected %d",
+                             rid, request_id);
+                rv = APR_EINVAL;
+                break;
+            }
+
+            clen |= readbuf[4] << 8;
+            clen |= readbuf[5] << 0;
+
+            plen = readbuf[6];
+
+            /* Clear out the header so our buffer is zeroed out again */
+            memset(readbuf, 0, 8);
+
+            /* XXX We need support for content length > buffer size, but for
+             *     now just punt. */
+            if ((clen + plen) > sizeof(readbuf) - 1) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "proxy: FCGI: back end server send more data "
+                             "than fits in buffer");
+                rv = APR_EINVAL;
+                break;
+            }
+
+            /* Now get the actual data.  Yes it sucks to do this in a second
+             * recv call, this will eventually change when we move to real
+             * nonblocking recv calls. */
+            if ((clen + plen) != 0) {
+                readbuflen = clen + plen;
+
+                rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
+                if (rv != APR_SUCCESS) {
+                    break;
+                }
+            }
+
+            switch (type) {
+            case FCGI_STDOUT:
+                if (clen != 0) {
+                    b = apr_bucket_transient_create(readbuf,
+                                                    clen,
+                                                    c->bucket_alloc);
+
+                    APR_BRIGADE_INSERT_TAIL(ob, b);
+
+                    if (! seen_end_of_headers) {
+                        int st = handle_headers(r, readbuf, ob);
+
+                        if (st == 1) {
+                            seen_end_of_headers = 1;
+                        }
+                        else if (st == -1) {
+                            rv = APR_EINVAL;
+                            break;
+                        }
+                    }
+
+                    /* XXX Update conn->worker->s->read like AJP does */
+
+                    if (seen_end_of_headers) {
+                        rv = ap_pass_brigade(r->output_filters, ob);
+                        if (rv != APR_SUCCESS) {
+                            break;
+                        }
+
+                        apr_brigade_cleanup(ob);
+                    } else {
+                        /* We're still looking for the end of the headers,
+                         * so this part of the data will need to persist. */
+                        apr_bucket_setaside(b, r->pool);
+                    }
+                } else {
+                    b = apr_bucket_eos_create(c->bucket_alloc);
+
+                    APR_BRIGADE_INSERT_TAIL(ob, b);
+
+                    rv = ap_pass_brigade(r->output_filters, ob);
+                    if (rv != APR_SUCCESS) {
+                        break;
+                    }
+
+                    /* XXX Why don't we cleanup here?  (logic from AJP) */
+                }
+                break;
+
+            case FCGI_STDERR:
+                /* XXX TODO FCGI_STDERR gets written to the log file. */
+                break;
+
+            case FCGI_END_REQUEST:
+                done = 1;
+                break;
+
+            default:
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "proxy: FCGI: Got bogus record %d", type);
+                break;
+            }
+        }
     }
 
-    apr_brigade_destroy(input_brigade);
+    apr_brigade_destroy(ib);
+    apr_brigade_destroy(ob);
 
     return rv;
 }
@@ -421,8 +625,8 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
         return HTTP_SERVICE_UNAVAILABLE;
     }
 
-    /* Step 3: Send Request Body via FCGI_STDIN */
-    rv = send_stdin(conn, r, request_id);
+    /* Step 3: Read records from the back end server and handle them. */
+    rv = dispatch(conn, r, request_id);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "proxy: FCGI: Failed writing STDIN to %s:",
@@ -430,11 +634,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
         return HTTP_SERVICE_UNAVAILABLE;
     }
 
-    /* Step 4: Read for CGI_STDOUT|CGI_STDERR */
-    /* Step 5: Parse reply headers. */
-    /* Step 6: Stream reply body. */
-    /* Step 7: Read FCGI_END_REQUEST -> Done */
-    return HTTP_SERVICE_UNAVAILABLE;
+    return OK;
 }
 
 /*
