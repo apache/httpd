@@ -444,9 +444,15 @@ static authz_status host_check_authorization(request_rec *r, const char *require
 
 static authz_status all_check_authorization(request_rec *r, const char *require_line)
 {
-    /* Just let everybody in. This is basically here for backward consistency since
-        this 'all' provider is the same as the 'valid-user' provider. */
-    return AUTHZ_GRANTED;
+    /* If the argument to the 'all' provider is 'granted' then just let 
+        everybody in. This would be equivalent to the previous syntax of
+        'allow from all'. If the argument is anything else, this would
+        be equivalent to 'deny from all' Of course the opposite would be 
+        true if the 'all' provider is invoked by the 'reject' directive */
+    if (strcasecmp(require_line, "granted") == 0) {
+        return AUTHZ_GRANTED;
+    }
+    return AUTHZ_DENIED;
 }
 
 static const authz_provider authz_env_provider =
