@@ -351,11 +351,16 @@ static int handle_headers(request_rec *r,
     return 0;
 }
 
+typedef struct {
+    apr_pool_t *scratch_pool;
+} proxy_fcgi_baton_t;
+
 static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                              int request_id)
 {
     apr_bucket_brigade *ib, *ob;
     int seen_end_of_headers = 0, done = 0;
+    proxy_fcgi_baton_t *pfb = conn->data;
     apr_status_t rv = APR_SUCCESS;
     conn_rec *c = r->connection;
     struct iovec vec[2];
@@ -388,7 +393,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
 
             rv = ap_get_brigade(r->input_filters, ib,
                                 AP_MODE_READBYTES, APR_BLOCK_READ,
-                                AP_IOBUFSIZE);
+                                sizeof(writebuf));
             if (rv != APR_SUCCESS) {
                 break;
             }
@@ -496,33 +501,29 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             /* Clear out the header so our buffer is zeroed out again */
             memset(readbuf, 0, 8);
 
-            /* XXX We need support for content length > buffer size, but for
-             *     now just punt. */
-            if ((clen + plen) > sizeof(readbuf) - 1) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                             "proxy: FCGI: back end server send more data "
-                             "than fits in buffer");
-                rv = APR_EINVAL;
-                break;
+recv_again:
+            if (clen > sizeof(readbuf) - 1) {
+                readbuflen = sizeof(readbuf) - 1;
+            } else {
+                readbuflen = clen;
             }
 
             /* Now get the actual data.  Yes it sucks to do this in a second
              * recv call, this will eventually change when we move to real
              * nonblocking recv calls. */
-            if ((clen + plen) != 0) {
-                readbuflen = clen + plen;
-
+            if (readbuflen != 0) {
                 rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
                 if (rv != APR_SUCCESS) {
                     break;
                 }
+                readbuf[readbuflen] = 0;
             }
 
             switch (type) {
             case FCGI_STDOUT:
                 if (clen != 0) {
                     b = apr_bucket_transient_create(readbuf,
-                                                    clen,
+                                                    readbuflen,
                                                     c->bucket_alloc);
 
                     APR_BRIGADE_INSERT_TAIL(ob, b);
@@ -548,10 +549,28 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                         }
 
                         apr_brigade_cleanup(ob);
+
+                        apr_pool_clear(pfb->scratch_pool);
                     } else {
                         /* We're still looking for the end of the headers,
                          * so this part of the data will need to persist. */
-                        apr_bucket_setaside(b, r->pool);
+                        apr_bucket_setaside(b, pfb->scratch_pool);
+                    }
+
+                    /* If we didn't read all the data go back and get the
+                     * rest of it. */
+                    if (clen > readbuflen) {
+                        clen -= readbuflen;
+                        goto recv_again;
+                    }
+
+                    if (plen) {
+                        readbuflen = plen;
+
+                        rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
+                        if (rv != APR_SUCCESS) {
+                            break;
+                        }
                     }
                 } else {
                     b = apr_bucket_eos_create(c->bucket_alloc);
@@ -698,6 +717,14 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
                 ap_proxy_release_connection(scheme, backend, r->server);
             }
             return status;
+        }
+
+        {
+            proxy_fcgi_baton_t *pfb = apr_pcalloc(r->pool, sizeof(*pfb));
+
+            apr_pool_create(&pfb->scratch_pool, r->pool);
+
+            backend->data = pfb;
         }
     }
 
