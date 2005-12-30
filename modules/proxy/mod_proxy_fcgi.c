@@ -632,6 +632,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "proxy: FCGI: Failed Writing Request to %s:",
                      server_portstr);
+        conn->close = 1;
         return HTTP_SERVICE_UNAVAILABLE;
     }
     
@@ -641,6 +642,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "proxy: FCGI: Failed writing Environment to %s:",
                      server_portstr);
+        conn->close = 1;
         return HTTP_SERVICE_UNAVAILABLE;
     }
 
@@ -650,6 +652,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "proxy: FCGI: Failed writing STDIN to %s:",
                      server_portstr);
+        conn->close = 1;
         return HTTP_SERVICE_UNAVAILABLE;
     }
 
