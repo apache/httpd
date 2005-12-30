@@ -5,7 +5,7 @@
   ------------------
 
   For complete installation documentation, see [ht]docs/manual/install.html or
-  http://httpd.apache.org/docs-2.1/install.html
+  http://httpd.apache.org/docs/trunk/install.html
 
      $ ./configure --prefix=PREFIX
      $ make
@@ -17,17 +17,25 @@
               might use "/usr/local/apache2" for PREFIX (without the
               quotes).
 
-            * If you are building on FreeBSD, be aware that threads will
-              be disabled and the prefork MPM will be used by default,
-              as threads do not work well with Apache on FreeBSD.  If
-              you wish to try a threaded Apache on FreeBSD anyway, use
-              "./configure --enable-threads".
+            * If you want to build a threaded MPM (for instance worker)
+              on  FreeBSD, be aware that threads do not work well with
+              Apache on FreeBSD versions before 5.4-RELEASE. If you wish
+              to try a threaded Apache on an earlier version of FreeBSD,
+              use the --enable-threads parameter to ./configure in
+              addition to the --with-mpm parameter.
 
-            * If you are building on Mac OS X (Darwin), make sure to
-              use libtool 1.4.2 or newer.
+            * If you are a developer building Apache directly from
+              Subversion, you will need to run ./buildconf before running
+              configure. This script bootstraps the build environment and
+              requires Python as well as GNU autoconf and libtool. If you
+              build Apache from a release tarball, you don't have to run
+              buildconf.
 
-            * If you are a developer building Apache directly from CVS,
-              you will need to run ./buildconf before running configure.
+            * If you are building directly from Subversion on Mac OS X
+              (Darwin), make sure to use GNU Libtool 1.4.2 or newer. All
+              recent versions of the developer tools on this platform
+              include a sufficiently recent version of GNU Libtool (named
+              glibtool, but buildconf knows where to find it).
 
   For a short impression of what possibilities you have, here is a
   typical example which configures Apache for the installation tree
@@ -40,7 +48,7 @@
      --enable-rewrite=shared \
      --enable-speling=shared 
 
-  The easiest way to find all of the configuration flags for Apache 2.1
+  The easiest way to find all of the configuration flags for Apache 2.3
   is to run ./configure --help.
 
 
@@ -48,14 +56,16 @@
   ---------------------
 
   For complete documentation, see [ht]docs/manual/platform/windows.html or
-  http://httpd.apache.org/docs-2.1/platform/windows.html.
+  http://httpd.apache.org/docs/trunk/platform/windows.html.
 
   The Apache/Win32 binaries are primarily distributed as a Windows Installer 
   package (.msi), and may be available as a .zip file as well.  These packages 
-  are named apache-2.1.xx-win32-x86.msi and apache-2.1.xx-win32-x86.zip.  
-  Please choose the .msi package if at all possible.
+  are named apache-2.3.xx-win32-x86.msi and apache-2.3.xx-win32-x86.zip.  
+  Please choose the .msi package if at all possible. Note that Apache version
+  2.3 is a development version and binaries may not be available. Use a 
+  released version from the stable 2.2 branch instead. 
 
-  If you have unpacked a source distribution (named httpd-2.1-xx.zip, without
+  If you have unpacked a source distribution (named httpd-2.3-xx.zip, without
   any -win32-x86 notation) you must compile the package yourself, see the links
   mentioned above.  Unless you intended to do this, please look again for the 
   binary package from http://www.apache.org/dist/httpd/binaries/win32/ and
@@ -85,7 +95,7 @@
   comp.infosystems.www.servers.unix or
   comp.infosystems.www.servers.ms-windows.
 
-  Thanks for using the Apache HTTP Server, version 2.1.
+  Thanks for using the Apache HTTP Server, version 2.3.
 
                                      The Apache Software Foundation
                                      http://www.apache.org/
