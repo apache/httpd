@@ -183,6 +183,19 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         r->ap_auth_type = r->prev->ap_auth_type;
     }
     else {
+        if ((access_status = ap_run_access_checker(r)) != 0) {
+            return decl_die(access_status, "check access", r);
+        }
+
+        if ((access_status = ap_run_check_user_id(r)) != 0) {
+            return decl_die(access_status, "check user", r);
+        }
+
+        if ((access_status = ap_run_auth_checker(r)) != 0) {
+            return decl_die(access_status, "check authorization", r);
+        }
+
+/*
         switch (ap_satisfies(r)) {
         case SATISFY_ALL:
         case SATISFY_NOSPEC:
@@ -228,6 +241,7 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             }
             break;
         }
+*/        
     }
     /* XXX Must make certain the ap_run_type_checker short circuits mime
      * in mod-proxy for r->proxyreq && r->parsed_uri.scheme
