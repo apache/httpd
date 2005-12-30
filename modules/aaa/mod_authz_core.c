@@ -69,8 +69,9 @@ X- Change the status code to AUTHZ_DENIED, AUTHZ_GRANTED
 - Determine if setting the AUTHZ_PROVIDER_NAME_NOTE note
    is even necessary.  This was used in authn to support
    authn_alias.  Is there a need for an authz_alias?
-- Remove the Satisfy directive and replace it with the
+X- Remove the Satisfy directive functionality and replace it with the
    <RequireAll>, <RequireOne> directives
+- Remove the Satisfy directive 
 X- Implement the <RequireAll> <RequireOne> block directives
    to handle the 'and' and 'or' logic for authorization.
 X- Remove the AuthzXXXAuthoritative directives from all of
@@ -79,9 +80,9 @@ X- Implement the Reject directive that will deny authorization
    if the argument is true
 X- Fold the Reject directive into the <RequireAll> <RequireOne>
    logic
-- Reimplement the host based authorization 'allow', 'deny'
+X- Reimplement the host based authorization 'allow', 'deny'
    and 'order' as authz providers   
-      
+X- Remove the 'allow', 'deny' and 'order' directives      
 */
 
 typedef struct provider_alias_rec {
@@ -589,7 +590,7 @@ static int authorize_user(request_rec *r)
     if (!conf->providers) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "no authorization providers configured");
-        return HTTP_UNAUTHORIZED;
+        return DECLINED;
     }
 
     current_provider = conf->providers;
