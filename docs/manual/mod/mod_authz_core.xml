@@ -1,0 +1,222 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 151408 $ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_authz_core.xml.meta">
+
+<name>mod_authz_core</name> 
+<description>Core Authorization</description>
+<status>Base</status>
+<sourcefile>mod_authz_core.c</sourcefile>
+<identifier>authz_core_module</identifier>
+<compatibility>Available in Apache 2.3 and later</compatibility>
+
+<summary>
+    <p>This module provides core authorization capabilities so that
+    authenticated users can be allowed or denied access to portions
+    of the web site. <module>mod_authz_core</module> provides the 
+    functionality to register various authorization providers. It is
+    usually used in conjunction with an authentication
+    provider module such as <module>mod_authn_file</module> and an 
+    authorization module such as <module>mod_authz_user</module>. It
+    also allows for "AND" and "OR" logic to be applied to the 
+    authorization processing.</p>
+</summary>
+
+<directivesynopsis>
+<name>Require</name>
+<description>Selects which authenticated users can access
+a resource</description>
+<syntax>Require <var>entity-name</var> [<var>entity-name</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>This directive selects which authenticated users can access a
+    resource.  The restrictions are processed by authorization
+    modules.  Some of the allowed syntaxes provided by
+    <module>mod_authz_user</module> and
+    <module>mod_authz_groupfile</module> are:</p>
+
+    <dl>
+      <dt><code>Require user <var>userid</var> [<var>userid</var>]
+      ...</code></dt>
+      <dd>Only the named users can access the resource.</dd>
+
+      <dt><code>Require group <var>group-name</var> [<var>group-name</var>]
+      ...</code></dt>
+      <dd>Only users in the named groups can access the resource.</dd>
+
+      <dt><code>Require valid-user</code></dt>
+      <dd>All valid users can access the resource.</dd>
+    </dl>
+
+    <p>Other authorization modules that implement require options
+    include <module>mod_authnz_ldap</module>,
+    <module>mod_authz_dbm</module>, <module>mod_authz_dbd</module>, 
+    <module>mod_authz_host</module>, and
+    <module>mod_authz_owner</module>.</p>
+
+    <p>For a complete authentication and authorization configuration, 
+    <directive>Require</directive> must be accompanied by
+    <directive module="mod_authn_core">AuthName</directive>, <directive
+    module="mod_authn_core">AuthType</directive> and 
+    <directive module="mod_auth_basic">AuthBasicProvider</directive> 
+    directives, and directives such as 
+    <directive module="mod_authn_file">AuthUserFile</directive>
+    and <directive module="mod_authz_groupfile">AuthGroupFile</directive> (to
+    define users and groups) in order to work correctly. Example:</p>
+
+    <example>
+       AuthType Basic<br />
+       AuthName "Restricted Resource"<br />
+       AuthBasicProvider file<br />
+       AuthUserFile /web/users<br />
+       AuthGroupFile /web/groups<br />
+       Require group admin
+    </example>
+
+    <p>Access controls which are applied in this way are effective for
+    <strong>all</strong> methods. <strong>This is what is normally
+    desired.</strong> If you wish to apply access controls only to
+    specific methods, while leaving other methods unprotected, then
+    place the <directive>Require</directive> statement into a
+    <directive module="core" type="section">Limit</directive>
+    section.</p>
+ 
+</usage>
+
+<seealso><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></seealso> 
+<seealso><module>mod_authz_host</module></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>Reject</name>
+<description>Rejects which authenticated users can access
+a resource</description>
+<syntax>Reject <var>entity-name</var> [<var>entity-name</var>] ...</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>This directive is similar to the 
+    <directive module="mod_authz_core">Require</directive> directive however
+    it rejects which authenticated users can access a resource.  The 
+    restrictions are processed by authorization modules.  See the 
+    <directive module="mod_authz_core">Require</directive> directive for details 
+    about usage.</p>
+</usage>
+
+<seealso><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></seealso> 
+<seealso><module>mod_authz_host</module></seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>RequireAll</name>
+<description>Enclose a group of authorization directives that must all
+be satisfied in order to grant access to a resource.  This block allows
+for 'AND' logic to be applied to various authorization providers.</description>
+<syntax>&lt;RequireAll&gt;
+... &lt;/RequireAll&gt;</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><directive type="section">RequireAll</directive> and
+    <code>&lt;/RequireAll&gt;</code> are used to enclose a group of
+    authorization directives that must all be satisfied in order to 
+    grant access to a resource.</p>
+
+    <p>The <directive module="mod_authz_core">
+    &lt;RequireAll&gt;</directive> block as well as the 
+    <directive module="mod_authz_core">&lt;RequireOne&gt;</directive> block 
+    allow you to apply "AND" and "OR" logic to the authorization processing. 
+    For example the following authorization block would apply the logic:</p>
+
+    <p><var>
+    if ((user == "John") || <br />
+    &nbsp;&nbsp;&nbsp;((Group == "admin") &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user) &amp;&amp;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;((ldap-attribute dept == "sales") || 
+    (file-group contains contains auth'ed_user))))<br />
+    then<br />
+    &nbsp;&nbsp;auth_granted<br />
+    else<br />
+    &nbsp;&nbsp;auth_denied<br />
+    </var></p>
+
+    <example>
+    &lt;Directory /www/mydocs&gt;<br />
+    &nbsp;  Authname ...<br />
+    &nbsp;  AuthBasicProvider ...<br />
+    &nbsp;  ...<br />
+    &nbsp;  Require user John<br />
+    &nbsp;  &lt;RequireAll&gt;<br />
+    &nbsp;&nbsp;    Require Group admins<br />
+    &nbsp;&nbsp;    Require ldap-group cn=mygroup,o=foo<br />
+    &nbsp;&nbsp;    &lt;RequireOne&gt;<br />
+    &nbsp;&nbsp;&nbsp;      Require ldap-attribute dept="sales"<br />
+    &nbsp;&nbsp;&nbsp;      Require file-group<br />
+    &nbsp;&nbsp;    &lt;/RequireOne&gt;<br />
+    &nbsp;  &lt;/RequireAll&gt;<br />
+    &lt;/Directory&gt;<br />
+    </example>
+
+</usage>
+
+<seealso><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></seealso> 
+
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>RequireOne</name>
+<description>Enclose a group of authorization directives that must 
+satisfy at least one in order to grant access to a resource.  This 
+block allows for 'OR' logic to be applied to various authorization 
+providers.</description>
+<syntax>&lt;RequireOne&gt;
+... &lt;/RequireOne&gt;</syntax>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p><directive type="section">RequireOne</directive> and
+    <code>&lt;/RequireOne&gt;</code> are used to enclose a group of
+    authorization directives that must satisfy at least one in order to 
+    grant access to a resource.</p>
+
+    <p>See the <directive module="mod_authz_core">
+    &lt;RequireAll&gt;</directive> directive for a usage example.</p>
+
+</usage>
+
+<seealso><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></seealso> 
+
+</directivesynopsis>
+
+</modulesynopsis>

@@ -50,6 +50,7 @@ module from each group.</p>
     <ul>
       <li><module>mod_authn_alias</module></li>
       <li><module>mod_authn_anon</module></li>
+      <li><module>mod_authn_core</module></li>
       <li><module>mod_authn_dbd</module></li>
       <li><module>mod_authn_dbm</module></li>
       <li><module>mod_authn_default</module></li>
@@ -58,9 +59,11 @@ module from each group.</p>
     </ul>
   </li>
   <li>Authorization (see the 
-      <directive module="core">Require</directive> directive)
+      <directive module="mod_authz_core">Require</directive> and
+      <directive module="mod_authz_core">Reject</directive> directives)
     <ul>
       <li><module>mod_authnz_ldap</module></li>
+      <li><module>mod_authz_core</module></li>
       <li><module>mod_authz_dbm</module></li>
       <li><module>mod_authz_default</module></li>
       <li><module>mod_authz_groupfile</module></li>
@@ -76,10 +79,10 @@ module from each group.</p>
   in itself, but allows other authentication providers to be
   configured in a flexible manner.</p>
 
-  <p>The module <module>mod_authz_host</module> provides authorization
-  and access control based on hostname, IP address or characteristics
-  of the request, but is not part of the authentication provider
-  system.</p>
+  <p>The modules <module>mod_authn_core</module> and <module>mod_authz_core
+  </module> should always be loaded. These module provide the core
+  directives and functionality that is common to all authentication 
+  and authorization providers.</p>
 
 </section>
 
@@ -172,6 +175,7 @@ module from each group.</p>
     <example>
       AuthType Basic<br />
       AuthName "Restricted Files"<br />
+      AuthBasicProvider file<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       Require user rbowen
     </example>
@@ -204,6 +208,10 @@ module from each group.</p>
     the same realm. Of course, for security reasons, the client
     will always need to ask again for the password whenever the
     hostname of the server changes.</p>
+
+    <p>The <directive module="mod_auth_basic">AuthBasicProvider</directive>
+    directive registers which provider or providers will be called to handle
+    the authentication processing.</p>
 
     <p>The <directive module="mod_authn_file">AuthUserFile</directive>
     directive sets the path to the password file that we just
@@ -266,6 +274,7 @@ person in</title>
     <example>
       AuthType Basic<br />
       AuthName "By Invitation Only"<br />
+      AuthBasicProvider file<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       AuthGroupFile /usr/local/apache/passwd/groups<br />
       Require group GroupName
@@ -321,31 +330,42 @@ do?</title>
     other than who they are. Something such as where they are
     coming from.</p>
 
-    <p>The <directive module="mod_authz_host">Allow</directive> and
-    <directive module="mod_authz_host">Deny</directive> directives let
-    you allow and deny access based on the host name, or host
-    address, of the machine requesting a document. The
-    <directive module="mod_authz_host">Order</directive> directive goes
-    hand-in-hand with these two, and tells Apache in which order to
-    apply the filters.</p>
+    <p>The authorization providers <directive module="mod_authz_host">
+    all</directive>, <directive module="mod_authz_host">
+    env</directive>, <directive module="mod_authz_host">
+    host</directive> and <directive module="mod_authz_host">
+    ip</directive> let you allow or deny access based other host based
+    criteria such as host name or ip address of te machine requesting 
+    a document.</p> 
 
-    <p>The usage of these directives is:</p>
+    <p>The usage of these providers is specified through the 
+    <directive module="mod_authz_core">Require</directive> and 
+    <directive module="mod_authz_core">Reject</directive> directives.
+    These directives register the authorization providers
+    that will be called during the authorization stage of the request
+    processing. For example:</p>
 
     <example>
-      Allow from <var>address</var>
+      Require ip <var>address</var>
     </example>
 
     <p>where <var>address</var> is an IP address (or a partial IP
-    address) or a fully qualified domain name (or a partial domain
-    name); you may provide multiple addresses or domain names, if
-    desired.</p>
+    address) or:</p>
+
+    <example>
+      Require host <var>domain_name</var>
+    </example>
+
+    <p>where <var>domain_name</var> is a fully qualified domain name 
+    (or a partial domain name); you may provide multiple addresses or 
+    domain names, if desired.</p>
 
     <p>For example, if you have someone spamming your message
     board, and you want to keep them out, you could do the
     following:</p>
 
     <example>
-      Deny from 205.252.46.165
+      Reject ip 205.252.46.165
     </example>
 
     <p>Visitors coming from that address will not be able to see
@@ -353,34 +373,62 @@ do?</title>
     machine name, rather than an IP address, you can use that.</p>
 
     <example>
-      Deny from <var>host.example.com</var>
+      Reject host <var>host.example.com</var>
     </example>
 
     <p>And, if you'd like to block access from an entire domain,
     you can specify just part of an address or domain name:</p>
 
     <example>
-      Deny from <var>192.101.205</var><br />
-      Deny from <var>cyberthugs.com</var> <var>moreidiots.com</var><br />
-      Deny from ke
+      &lt;RequireAll&gt;<br />
+      &nbsp;  Reject ip <var>192.101.205</var><br />
+      &nbsp;  Reject host <var>cyberthugs.com</var> <var>moreidiots.com</var><br />
+      &nbsp;  Reject host ke<br />
+      &lt;/RequireAll&gt;
     </example>
 
-    <p>Using <directive module="mod_authz_host">Order</directive> will let you
-    be sure that you are actually restricting things to the group that you want
-    to let in, by combining a <directive
-    module="mod_authz_host">Deny</directive> and an <directive
-    module="mod_authz_host">Allow</directive> directive:</p>
+    <p>Using the <directive module="mod_authz_host">Reject</directive> directive
+    inside of a <directive module="mod_authz_core">&lt;RequireAll&gt;</directive>
+    block, will let you be sure that you are actually restricting things to 
+    only the group that you want to let in.</p>
+
+    <p>The above example uses the <directive module="mod_authz_core">
+    &lt;RequireAll&gt;</directive> block to make sure that all of the 
+    <directive module="mod_authz_host">Reject</directive> directives are 
+    satisfied before granting access. The <directive module="mod_authz_core">
+    &lt;RequireAll&gt;</directive> block as well as the 
+    <directive module="mod_authz_core">&lt;RequireOne&gt;</directive> block 
+    allow you to apply "AND" and "OR" logic to the authorization processing. 
+    For example the following authorization block would apply the logic:</p>
+
+    <p><var>
+    if ((user == "John") || <br />
+    &nbsp;&nbsp;&nbsp;((Group == "admin") &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user) &amp;&amp;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;((ldap-attribute dept == "sales") || 
+    (file-group contains contains auth'ed_user))))<br />
+    then<br />
+    &nbsp;&nbsp;auth_granted<br />
+    else<br />
+    &nbsp;&nbsp;auth_denied<br />
+    </var></p>
 
     <example>
-      Order deny,allow<br />
-      Deny from all<br />
-      Allow from <var>dev.example.com</var>
+    &lt;Directory /www/mydocs&gt;<br />
+    &nbsp;  Authname ...<br />
+    &nbsp;  AuthBasicProvider ...<br />
+    &nbsp;  ...<br />
+    &nbsp;  Require user John<br />
+    &nbsp;  &lt;RequireAll&gt;<br />
+    &nbsp;&nbsp;    Require Group admins<br />
+    &nbsp;&nbsp;    Require ldap-group cn=mygroup,o=foo<br />
+    &nbsp;&nbsp;    &lt;RequireOne&gt;<br />
+    &nbsp;&nbsp;&nbsp;      Require ldap-attribute dept="sales"<br />
+    &nbsp;&nbsp;&nbsp;      Require file-group<br />
+    &nbsp;&nbsp;    &lt;/RequireOne&gt;<br />
+    &nbsp;  &lt;/RequireAll&gt;<br />
+    &lt;/Directory&gt;<br />
     </example>
 
-    <p>Listing just the <directive module="mod_authz_host">Allow</directive>
-    directive would not do what you want, because it will let folks from that
-    host in, in addition to letting everyone in. What you want is to let
-    <em>only</em> those folks in.</p>
 </section>
 
 <section id="moreinformation"><title>More information</title>
