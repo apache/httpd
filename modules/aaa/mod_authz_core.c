@@ -48,7 +48,7 @@
 /* TODO List
 
 X- Convert all of the authz modules to providers
-- Remove the ap_requires field from the request_rec
+X- Remove the ap_requires field from the core_dir_config structure
 X- Remove the ap_requires field from authz_dir_conf   
 X- Remove the function ap_requires() and authz_ap_requires()
    since their functionality is no longer supported 
@@ -71,7 +71,7 @@ X- Change the status code to AUTHZ_DENIED, AUTHZ_GRANTED
    authn_alias.  Is there a need for an authz_alias?
 X- Remove the Satisfy directive functionality and replace it with the
    <RequireAll>, <RequireOne> directives
-- Remove the Satisfy directive 
+X- Remove the Satisfy directive 
 X- Implement the <RequireAll> <RequireOne> block directives
    to handle the 'and' and 'or' logic for authorization.
 X- Remove the AuthzXXXAuthoritative directives from all of
@@ -83,6 +83,10 @@ X- Fold the Reject directive into the <RequireAll> <RequireOne>
 X- Reimplement the host based authorization 'allow', 'deny'
    and 'order' as authz providers   
 X- Remove the 'allow', 'deny' and 'order' directives      
+- Merge mod_authn_alias into mod_authn_core
+- Remove all of the references to the authzxxxAuthoritative
+   directives from the documentation
+- Remove the Satisfy directive from the documentation
 */
 
 typedef struct provider_alias_rec {
