@@ -242,66 +242,6 @@ static int authz_dbd_group_query(request_rec *r, authz_dbd_cfg *cfg,
     return OK;
 }
 
-#if 0
-static int authz_dbd_check(request_rec *r)
-{
-    int i, x, rv;
-    const char *w;
-    int m = r->method_number;
-    const apr_array_header_t *reqs_arr = ap_requires(r);
-    require_line *reqs = reqs_arr ? (require_line *) reqs_arr->elts : NULL;
-    apr_array_header_t *groups = NULL;
-    const char *t;
-    authz_dbd_cfg *cfg = ap_get_module_config(r->per_dir_config,
-                                              &authz_dbd_module);
-
-    if (!reqs_arr) {
-        return DECLINED;
-    }
-
-    for (x = 0; x < reqs_arr->nelts; x++) {
-        if (!(reqs[x].method_mask & (AP_METHOD_BIT << m))) {
-            continue;
-        }
-
-        t = reqs[x].requirement;
-        w = ap_getword_white(r->pool, &t);
-        if (!strcasecmp(w, "dbd-group")) {
-            if (groups == NULL) {
-                groups = apr_array_make(r->pool, 4, sizeof(const char*));
-                rv = authz_dbd_group_query(r, cfg, groups);
-                if (rv != OK) {
-                    return rv;
-                }
-            }
-            while (t[0]) {
-                w = ap_getword_white(r->pool, &t);
-                for (i=0; i < groups->nelts; ++i) {
-                    if (!strcmp(w, ((const char**)groups->elts)[i])) {
-                        return OK;
-                    }
-                }
-            }
-        }
-        else if (!strcasecmp(w, "dbd-login")) {
-            return authz_dbd_login(r, cfg, "login");
-        }
-        else if (!strcasecmp(w, "dbd-logout")) {
-            return authz_dbd_login(r, cfg, "logout");
-        }
-    }
-
-    if ((groups != NULL) && cfg->authoritative) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                   "authz_dbd: user %s denied access to %s",
-                   r->user, r->uri);
-        ap_note_auth_failure(r);
-        return HTTP_UNAUTHORIZED;
-    }
-    return DECLINED;
-}
-#endif
-
 static authz_status dbdgroup_check_authorization(request_rec *r,
                                               const char *require_args)
 {

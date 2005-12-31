@@ -195,10 +195,6 @@ static int authenticate_basic_user(request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    /*XXX Need to figure out how to remove ap_auth_type from 
-      the request_rec yet still make the data available
-      on a per-request basis.
-    */
     r->ap_auth_type = (char*)current_auth;
 
     res = get_basic_auth(r, &sent_user, &sent_pw);

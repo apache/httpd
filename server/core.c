@@ -99,7 +99,6 @@ static char errordocument_default;
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
-/*    int i;*/
 
     conf = (core_dir_config *)apr_pcalloc(a, sizeof(core_dir_config));
 
@@ -118,12 +117,6 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->use_canonical_phys_port = USE_CANONICAL_PHYS_PORT_UNSET;
 
     conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
-/*
-    conf->satisfy = apr_palloc(a, sizeof(*conf->satisfy) * METHODS);
-    for (i = 0; i < METHODS; ++i) {
-        conf->satisfy[i] = SATISFY_NOSPEC;
-    }
-*/    
 
 #ifdef RLIMIT_CPU
     conf->limit_cpu = NULL;
@@ -347,17 +340,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     }
     /* Otherwise we simply use the base->sec_file array
      */
-
-    /* use a separate ->satisfy[] array either way */
-/*    conf->satisfy = apr_palloc(a, sizeof(*conf->satisfy) * METHODS);
-    for (i = 0; i < METHODS; ++i) {
-        if (new->satisfy[i] != SATISFY_NOSPEC) {
-            conf->satisfy[i] = new->satisfy[i];
-        } else {
-            conf->satisfy[i] = base->satisfy[i];
-        }
-    }
-*/    
 
     if (new->server_signature != srv_sig_unset) {
         conf->server_signature = new->server_signature;
@@ -662,18 +644,6 @@ AP_DECLARE(int) ap_allow_overrides(request_rec *r)
 }
 
 /*
-AP_DECLARE(const char *) ap_auth_type(request_rec *r)
-{
-    core_dir_config *conf;
-
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-    &core_module);
-
-    return conf->ap_auth_type;
-}
-*/
-
-/*
  * Optional function coming from mod_ident, used for looking up ident user
  */
 static APR_OPTIONAL_FN_TYPE(authn_ap_auth_type) *authn_ap_auth_type;
@@ -685,18 +655,6 @@ AP_DECLARE(const char *) ap_auth_type(request_rec *r)
     }
     return NULL;
 }
-
-/*
-AP_DECLARE(const char *) ap_auth_name(request_rec *r)
-{
-    core_dir_config *conf;
-
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-    &core_module);
-
-    return conf->ap_auth_name;
-}
-*/
 
 /*
  * Optional function coming from mod_ident, used for looking up ident user
@@ -732,32 +690,6 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r) /* Don't use this! */
 
     return conf->ap_document_root;
 }
-
-/*
- * Optional function coming from mod_ident, used for looking up ident user
- *
-static APR_OPTIONAL_FN_TYPE(authz_ap_requires) *authz_ap_requires;
-
-AP_DECLARE(const apr_array_header_t *) ap_requires(request_rec *r)
-{
-    if (authz_ap_requires) {
-        return authz_ap_requires(r);
-    }
-    return NULL;
-}
-*/
-
-/*
-AP_DECLARE(int) ap_satisfies(request_rec *r)
-{
-    core_dir_config *conf;
-
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
-
-    return conf->satisfy[r->method_number];
-}
-*/
 
 /* Should probably just get rid of this... the only code that cares is
  * part of the core anyway (and in fact, it isn't publicised to other
@@ -1686,32 +1618,6 @@ static const char *set_enable_sendfile(cmd_parms *cmd, void *d_,
     return NULL;
 }
 
-/*
-static const char *satisfy(cmd_parms *cmd, void *c_, const char *arg)
-{
-    core_dir_config *c = c_;
-    int satisfy = SATISFY_NOSPEC;
-    int i;
-
-    if (!strcasecmp(arg, "all")) {
-        satisfy = SATISFY_ALL;
-    }
-    else if (!strcasecmp(arg, "any")) {
-        satisfy = SATISFY_ANY;
-    }
-    else {
-        return "Satisfy either 'any' or 'all'.";
-    }
-
-    for (i = 0; i < METHODS; ++i) {
-        if (cmd->limited & (AP_METHOD_BIT << i)) {
-            c->satisfy[i] = satisfy;
-        }
-    }
-
-    return NULL;
-}
-*/
 
 /*
  * Report a missing-'>' syntax error.
@@ -3227,10 +3133,6 @@ AP_INIT_RAW_ARGS("<LocationMatch", urlsection, (void*)1, RSRC_CONF,
   "specified URL paths"),
 AP_INIT_RAW_ARGS("<FilesMatch", filesection, (void*)1, OR_ALL,
   "Container for directives affecting files matching specified patterns"),
-/*
-AP_INIT_TAKE1("Satisfy", satisfy, NULL, OR_AUTHCFG,
-  "access policy if both allow and require used ('all' or 'any')"),
-*/  
 #ifdef GPROF
 AP_INIT_TAKE1("GprofDir", set_gprof_dir, NULL, RSRC_CONF,
   "Directory to plop gmon.out files"),
@@ -3719,7 +3621,6 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
 {
     logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
     ident_lookup = APR_RETRIEVE_OPTIONAL_FN(ap_ident_lookup);
-/*    authz_ap_requires = APR_RETRIEVE_OPTIONAL_FN(authz_ap_requires); */
     authz_ap_some_auth_required = APR_RETRIEVE_OPTIONAL_FN(authz_some_auth_required);
     authn_ap_auth_type = APR_RETRIEVE_OPTIONAL_FN(authn_ap_auth_type);
     authn_ap_auth_name = APR_RETRIEVE_OPTIONAL_FN(authn_ap_auth_name);

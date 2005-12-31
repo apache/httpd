@@ -195,53 +195,6 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
             return decl_die(access_status, "check authorization", r);
         }
 
-/*
-        switch (ap_satisfies(r)) {
-        case SATISFY_ALL:
-        case SATISFY_NOSPEC:
-            if ((access_status = ap_run_access_checker(r)) != 0) {
-                return decl_die(access_status, "check access", r);
-            }
-
-            if (((access_status = ap_run_check_user_id(r)) != 0)
-                || !ap_auth_type(r)) {
-                return decl_die(access_status, ap_auth_type(r)
-                              ? "check user.  No user file?"
-                              : "perform authentication. AuthType not set!",
-                              r);
-            }
-
-            if (((access_status = ap_run_auth_checker(r)) != 0)
-                || !ap_auth_type(r)) {
-                return decl_die(access_status, ap_auth_type(r)
-                              ? "check access.  No groups file?"
-                              : "perform authentication. AuthType not set!",
-                               r);
-            }
-            break;
-
-        case SATISFY_ANY:
-            if (((access_status = ap_run_access_checker(r)) != 0)) {
-
-                if (((access_status = ap_run_check_user_id(r)) != 0)
-                    || !ap_auth_type(r)) {
-                    return decl_die(access_status, ap_auth_type(r)
-                                  ? "check user.  No user file?"
-                                  : "perform authentication. AuthType not set!",
-                                  r);
-                }
-
-                if (((access_status = ap_run_auth_checker(r)) != 0)
-                    || !ap_auth_type(r)) {
-                    return decl_die(access_status, ap_auth_type(r)
-                                  ? "check access.  No groups file?"
-                                  : "perform authentication. AuthType not set!",
-                                  r);
-                }
-            }
-            break;
-        }
-*/        
     }
     /* XXX Must make certain the ap_run_type_checker short circuits mime
      * in mod-proxy for r->proxyreq && r->parsed_uri.scheme
