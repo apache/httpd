@@ -109,12 +109,14 @@
  * 20051005.0 (2.1.8-dev) NET_TIME filter eliminated
  * 20051005.0 (2.3.0-dev) Bump MODULE_MAGIC_COOKIE to "AP24"!
  * 20051115.0 (2.3.0-dev) Added use_canonical_phys_port to core_dir_config
+ * 20051231.0 (2.3.0-dev) Added num_blank_lines, pending_header_line, and
+ *                        pending_header_size to request_rec
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20051115
+#define MODULE_MAGIC_NUMBER_MAJOR 20051231
 #endif
 #define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
