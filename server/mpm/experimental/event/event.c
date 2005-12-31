@@ -678,7 +678,6 @@ read_request:
 
     if (cs->state == CONN_STATE_LINGER) {
         ap_lingering_close(c);
-        apr_bucket_alloc_destroy(cs->bucket_alloc);
         apr_pool_clear(p);
         ap_push_pool(worker_queue_info, p);
         return 1;
