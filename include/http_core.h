@@ -303,15 +303,17 @@ AP_DECLARE(const char *) ap_auth_name(request_rec *r);
  *      SATISFY_ALL    -- all of the requirements must be met.
  *      SATISFY_NOSPEC -- There are no applicable satisfy lines
  * </pre>
- */
-AP_DECLARE(int) ap_satisfies(request_rec *r);
+ *
+AP_DE CLARE(int) ap_satisfies(request_rec *r);
+*/
 
 /**
  * Retrieve information about all of the requires directives for this request
  * @param r The current request
  * @return An array of all requires directives for this request
- */
-AP_DECLARE(const apr_array_header_t *) ap_requires(request_rec *r);    
+ *
+AP_DE CLARE(const apr_array_header_t *) ap_requires(request_rec *r);    
+*/
 
 #ifdef CORE_PRIVATE
 
@@ -451,12 +453,12 @@ typedef struct {
     
     char *ap_default_type;
   
-    /* Authentication stuff.  Groan... */
-    
-    int *satisfy; /* for every method one */
-    char *ap_auth_type; /* Deprecated see mod_authn */
-    char *ap_auth_name; /* Deprecated see mod_authn */
-    apr_array_header_t *ap_requires; /* Deprecated see mod_authz */
+//    /* Authentication stuff.  Groan... */
+//    
+//    int *satisfy; /* for every method one */
+//    char *ap_auth_type; /* Deprecated see mod_authn */
+//    char *ap_auth_name; /* Deprecated see mod_authn */
+//    apr_array_header_t *ap_requires; /* Deprecated see mod_authz */
 
     /* Custom response config. These can contain text or a URL to redirect to.
      * if response_code_strings is NULL then there are none in the config,
@@ -685,8 +687,9 @@ APR_DECLARE_OPTIONAL_FN(const char *, ap_ident_lookup,
  * authorization values with mod_authz_host
  */
 
-APR_DECLARE_OPTIONAL_FN(const apr_array_header_t *, authz_ap_requires,
+/*APR_DECLARE_OPTIONAL_FN(const apr_array_header_t *, authz_ap_requires,
                         (request_rec *r));
+*/                        
 APR_DECLARE_OPTIONAL_FN(int, authz_some_auth_required, (request_rec *r));
 APR_DECLARE_OPTIONAL_FN(const char *, authn_ap_auth_type, (request_rec *r));
 APR_DECLARE_OPTIONAL_FN(const char *, authn_ap_auth_name, (request_rec *r));
