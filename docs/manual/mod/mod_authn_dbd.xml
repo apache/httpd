@@ -68,7 +68,7 @@ the Authentication and DBD frameworks.</p>
 <code>DBDriver pgsql</code>
 
 #Connection string: database name and login credentials
-<code>DBDParams "dbname=htpasswd user=apache pass=xxxxxx"</code>
+<code>DBDParams "dbname=htpasswd user=apache password=xxxxxx"</code>
 
 #Parameters for Connection Pool Management
 <code>DBDMin  1
