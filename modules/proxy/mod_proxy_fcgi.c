@@ -454,25 +454,27 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             int rid, type = 0;
             char plen = 0;
             apr_bucket *b;
+            fcgi_header rheader;
+            int rheader_size = sizeof(fcgi_header);
 
             memset(readbuf, 0, sizeof(readbuf));
 
             /* First, we grab the header... */
-            readbuflen = 8;
+            readbuflen = rheader_size;
 
-            rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
+            rv = apr_socket_recv(conn->sock, (char *)&rheader, &readbuflen);
             if (rv != APR_SUCCESS) {
                 break;
             }
 
-            if (readbuflen != 8) {
+            if (readbuflen != rheader_size) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Failed to read entire header");
                 rv = APR_EINVAL;
                 break;
             }
 
-            if (readbuf[0] != FCGI_VERSION) {
+            if (rheader.version != FCGI_VERSION) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Got bogus version %d",
                              (int) readbuf[0]);
@@ -480,10 +482,10 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 break;
             }
 
-            type = readbuf[1];
+            type = rheader.type;
 
-            rid |= readbuf[2] << 8;
-            rid |= readbuf[3] << 0;
+            rid |= rheader.requestIdB1 << 8;
+            rid |= rheader.requestIdB0 << 0;
 
             if (rid != request_id) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
@@ -493,13 +495,10 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 break;
             }
 
-            clen |= readbuf[4] << 8;
-            clen |= readbuf[5] << 0;
+            clen |= rheader.contentLengthB1 << 8;
+            clen |= rheader.contentLengthB0 << 0;
 
-            plen = readbuf[6];
-
-            /* Clear out the header so our buffer is zeroed out again */
-            memset(readbuf, 0, 8);
+            plen = rheader.paddingLength;
 
 recv_again:
             if (clen > sizeof(readbuf) - 1) {
