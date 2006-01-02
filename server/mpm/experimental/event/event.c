@@ -683,7 +683,8 @@ read_request:
         ap_push_pool(worker_queue_info, p);
         return 1;
     }
-    else if (cs->state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) {
+    else if ((cs->state == CONN_STATE_CHECK_REQUEST_LINE_READABLE) ||
+             (cs->state == CONN_STATE_READ_REQUEST_LINE)) {
         apr_status_t rc;
         listener_poll_type *pt = (listener_poll_type *) cs->pfd.client_data;
 
@@ -962,6 +963,7 @@ static void *listener_thread(apr_thread_t * thd, void *dummy)
                 case CONN_STATE_CHECK_REQUEST_LINE_READABLE:
                     cs->state = CONN_STATE_READ_REQUEST_LINE;
                     break;
+                case CONN_STATE_READ_REQUEST_LINE:
                 case CONN_STATE_WRITE_COMPLETION:
                     break;
                 default:

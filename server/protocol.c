@@ -476,6 +476,123 @@ AP_DECLARE(int) ap_getline(char *s, int n, request_rec *r, int fold)
     return (int)len;
 }
 
+static apr_status_t getline_nonblocking(char **s, apr_size_t n,
+                                        apr_size_t *read, request_rec *r,
+                                        apr_bucket_brigade *bb)
+{
+    apr_status_t rv;
+    apr_bucket *e;
+    apr_size_t bytes_handled = 0, current_alloc = 0;
+    char *pos, *last_char = *s;
+    int do_alloc = (*s == NULL), saw_eos = 0;
+
+    // return ap_rgetline_core(s, n, read, r, 0, bb);
+    apr_brigade_cleanup(bb);
+    rv = ap_get_brigade(r->input_filters, bb, AP_MODE_GETLINE,
+                        APR_NONBLOCK_READ, 0);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    
+    if (APR_BRIGADE_EMPTY(bb)) {
+        return APR_EAGAIN;
+    }
+    
+    for (e = APR_BRIGADE_FIRST(bb);
+         e != APR_BRIGADE_SENTINEL(bb);
+         e = APR_BUCKET_NEXT(e))
+    {
+        const char *str;
+        apr_size_t len;
+
+        /* If we see an EOS, don't bother doing anything more. */
+        if (APR_BUCKET_IS_EOS(e)) {
+            saw_eos = 1;
+            break;
+        }
+
+        rv = apr_bucket_read(e, &str, &len, APR_BLOCK_READ);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+
+        if (len == 0) {
+            /* no use attempting a zero-byte alloc (hurts when
+             * using --with-efence --enable-pool-debug) or
+             * doing any of the other logic either
+             */
+            continue;
+        }
+
+        /* Would this overrun our buffer?  If so, we'll die. */
+        if (n < bytes_handled + len) {
+            *read = bytes_handled;
+            if (*s) {
+                /* ensure this string is NUL terminated */
+                if (bytes_handled > 0) {
+                    (*s)[bytes_handled-1] = '\0';
+                }
+                else {
+                    (*s)[0] = '\0';
+                }
+            }
+            return APR_ENOSPC;
+        }
+
+        /* Do we have to handle the allocation ourselves? */
+        if (do_alloc) {
+            /* We'll assume the common case where one bucket is enough. */
+            if (!*s) {
+                current_alloc = len;
+                if (current_alloc < MIN_LINE_ALLOC) {
+                    current_alloc = MIN_LINE_ALLOC;
+                }
+                *s = apr_palloc(r->pool, current_alloc);
+            }
+            else if (bytes_handled + len > current_alloc) {
+                /* Increase the buffer size */
+                apr_size_t new_size = current_alloc * 2;
+                char *new_buffer;
+
+                if (bytes_handled + len > new_size) {
+                    new_size = (bytes_handled + len) * 2;
+                }
+
+                new_buffer = apr_palloc(r->pool, new_size);
+
+                /* Copy what we already had. */
+                memcpy(new_buffer, *s, bytes_handled);
+                current_alloc = new_size;
+                *s = new_buffer;
+            }
+        }
+
+        /* Just copy the rest of the data to the end of the old buffer. */
+        pos = *s + bytes_handled;
+        memcpy(pos, str, len);
+        last_char = pos + len - 1;
+
+        /* We've now processed that new data - update accordingly. */
+        bytes_handled += len;
+    }
+    
+    if (bytes_handled == 0) {
+        return APR_EAGAIN;
+    }
+
+    /* Now NUL-terminate the string at the end of the line;
+     * if the last-but-one character is a CR, terminate there */
+    if (last_char > *s && last_char[-1] == APR_ASCII_CR) {
+        last_char--;
+    }
+    *last_char = '\0';
+    bytes_handled = last_char - *s;
+    fprintf(stderr, "read line '%s'\n", *s);
+
+    *read = bytes_handled;
+    return APR_SUCCESS;
+}
+
 /* parse_uri: break apart the uri
  * Side Effects:
  * - sets r->args to rest after '?' (or NULL if no '?')
@@ -966,9 +1083,8 @@ static apr_status_t read_partial_request(request_rec *r) {
             }
             length_limit = r->server->limit_req_fieldsize;
         }
-        /* TODO: use a nonblocking call in place of ap_rgetline */
-        rv = ap_rgetline(&line, length_limit + 2,
-                         &line_length, r, 0, tmp_bb);
+        rv = getline_nonblocking(&line, length_limit + 2,
+                                 &line_length, r, tmp_bb);
         if (rv == APR_SUCCESS) {
             rv = process_request_line(r, line, 0);
         }
