@@ -669,6 +669,15 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
 PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                                               proxy_conn_rec *conn,
                                               conn_rec *c, server_rec *s);
+/**
+ * Signal the upstream chain that the connection to the backend broke in the
+ * middle of the response. This is done by sending an error bucket with
+ * status HTTP_BAD_GATEWAY and an EOS bucket up the filter chain.
+ * @param r       current request record of client request
+ * @param brigade The brigade that is sent through the output filter chain
+ */
+PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
+                                           apr_bucket_brigade *brigade);
 
 /* Scoreboard */
 #if MODULE_MAGIC_NUMBER_MAJOR > 20020903

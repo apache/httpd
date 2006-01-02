@@ -1199,6 +1199,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                            * are being read. */
     int pread_len = 0;
     apr_table_t *save_table;
+    int backend_broke = 0;
 
     bb = apr_brigade_create(p, c->bucket_alloc);
 
@@ -1486,13 +1487,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          */
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
                                       "proxy: error reading response");
-                        r->no_cache = 1;
-                        e = ap_bucket_error_create(HTTP_BAD_GATEWAY,  NULL,
-                                                   c->pool, c->bucket_alloc);
-                        APR_BRIGADE_INSERT_TAIL(bb, e);
-                        e = apr_bucket_eos_create(c->bucket_alloc);
-                        APR_BRIGADE_INSERT_TAIL(bb, e);
+                        ap_proxy_backend_broke(r, bb);
                         ap_pass_brigade(r->output_filters, bb);
+                        backend_broke = 1;
                         backend->close = 1;
                         break;
                     }
@@ -1560,7 +1557,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     } while (interim_response);
 
     /* If our connection with the client is to be aborted, return DONE. */
-    if (c->aborted) {
+    if (c->aborted || backend_broke) {
         return DONE;
     }
 

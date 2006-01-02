@@ -138,6 +138,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     int havebody = 1;
     int isok = 1;
     apr_off_t bb_len;
+    int data_sent = 0;
+    int rv = 0;
 #ifdef FLUSHING_BANDAID
     apr_int32_t conn_poll_fd;
     apr_pollfd_t *conn_poll;
@@ -348,6 +350,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                       "proxy: error processing body");
                         isok = 0;
                     }
+                    data_sent = 1;
                     apr_brigade_cleanup(output_brigade);
                 }
                 else {
@@ -363,6 +366,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                   "proxy: error processing body");
                     isok = 0;
                 }
+                data_sent = 1;
                 break;
             default:
                 isok = 0;
@@ -400,7 +404,11 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
     apr_brigade_destroy(input_brigade);
 
-    apr_brigade_destroy(output_brigade);
+    /*
+     * Clear output_brigade to remove possible buckets that remained there
+     * after an error.
+     */
+    apr_brigade_cleanup(output_brigade);
 
     if (status != APR_SUCCESS) {
         /* We had a failure: Close connection to backend */
@@ -409,8 +417,36 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: send body failed to %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
-        return HTTP_SERVICE_UNAVAILABLE;
+        /*
+         * If we already send data, signal a broken backend connection
+         * upwards in the chain.
+         */
+        if (data_sent) {
+            ap_proxy_backend_broke(r, output_brigade);
+            /* Return DONE to avoid error messages being added to the stream */
+            rv = DONE;
+        } else
+            rv = HTTP_SERVICE_UNAVAILABLE;
     }
+
+    /*
+     * Ensure that we sent an EOS bucket thru the filter chain, if we already
+     * have sent some data. Maybe ap_proxy_backend_broke was called and added
+     * one to the brigade already. So we should not do this in this case.
+     */
+    if (data_sent && !r->eos_sent && APR_BRIGADE_EMPTY(output_brigade)) {
+        e = apr_bucket_eos_create(r->connection->bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(output_brigade, e);
+    }
+
+    /* If we have added something to the brigade above, sent it */
+    if (!APR_BRIGADE_EMPTY(output_brigade))
+        ap_pass_brigade(r->output_filters, output_brigade);
+
+    apr_brigade_destroy(output_brigade);
+
+    if (rv)
+        return rv;
 
     /* Nice we have answer to send to the client */
     if (result == CMD_AJP13_END_RESPONSE && isok) {
