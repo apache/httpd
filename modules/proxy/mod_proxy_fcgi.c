@@ -15,6 +15,7 @@
  */
 
 #include "mod_proxy.h"
+#include "fcgi_protocol.h"
 
 module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 
@@ -79,51 +80,6 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
 
     return OK;
 }
-
-#define FCGI_VERSION 1
-
-#define FCGI_BEGIN_REQUEST       1
-#define FCGI_ABORT_REQUEST       2
-#define FCGI_END_REQUEST         3
-#define FCGI_PARAMS              4
-#define FCGI_STDIN               5
-#define FCGI_STDOUT              6
-#define FCGI_STDERR              7
-#define FCGI_DATA                8
-#define FCGI_GET_VALUES          9
-#define FCGI_GET_VALUES_RESULT  10
-#define FCGI_UNKNOWN_TYPE       11
-#define FCGI_MAXTYPE (FCGI_UNKNOWN_TYPE)
-
-typedef struct {
-    unsigned char version;
-    unsigned char type;
-    unsigned char requestIdB1;
-    unsigned char requestIdB0;
-    unsigned char contentLengthB1;
-    unsigned char contentLengthB0;
-    unsigned char paddingLength;
-    unsigned char reserved;
-} fcgi_header;
-
-/*
- * Mask for flags component of FCGI_BeginRequestBody
- */
-#define FCGI_KEEP_CONN  1
-
-/*
- * Values for role component of FCGI_BeginRequestBody
- */
-#define FCGI_RESPONDER  1
-#define FCGI_AUTHORIZER 2
-#define FCGI_FILTER     3
-
-typedef struct {
-    unsigned char roleB1;
-    unsigned char roleB0;
-    unsigned char flags;
-    unsigned char reserved[5];
-} fcgi_begin_request_body;
 
 /*
  * Initialize a fastcgi_header H of type TYPE with id ID.
