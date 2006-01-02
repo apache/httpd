@@ -2129,3 +2129,17 @@ int ap_proxy_lb_workers(void)
     lb_workers_limit = proxy_lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
     return lb_workers_limit;
 }
+
+PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
+                                           apr_bucket_brigade *brigade)
+{
+    apr_bucket *e;
+    conn_rec *c = r->connection;
+
+    r->no_cache = 1;
+    e = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL, c->pool,
+                               c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(brigade, e);
+    e = apr_bucket_eos_create(c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(brigade, e);
+}
