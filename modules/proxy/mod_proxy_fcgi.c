@@ -410,14 +410,21 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             int rid, type = 0;
             char plen = 0;
             apr_bucket *b;
-            fcgi_header rheader;
+            /*
+             * below mapped to fcgi_header layout. We
+             * use a unsigned char array to ensure the
+             * shifts are correct and avoid any potential
+             * internal padding when using structs.
+             */
+            unsigned char fheader[FCGI_HEADER_LEN];
 
+            memset(fheader, 0, FCGI_HEADER_LEN);
             memset(readbuf, 0, sizeof(readbuf));
 
             /* First, we grab the header... */
             readbuflen = FCGI_HEADER_LEN;
 
-            rv = apr_socket_recv(conn->sock, (char *)&rheader, &readbuflen);
+            rv = apr_socket_recv(conn->sock, fheader, &readbuflen);
             if (rv != APR_SUCCESS) {
                 break;
             }
@@ -429,7 +436,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 break;
             }
 
-            if (rheader.version != FCGI_VERSION) {
+            if (fheader[0] != FCGI_VERSION) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Got bogus version %d",
                              (int) readbuf[0]);
@@ -437,10 +444,10 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 break;
             }
 
-            type = rheader.type;
+            type = fheader[1];
 
-            rid |= rheader.requestIdB1 << 8;
-            rid |= rheader.requestIdB0 << 0;
+            rid |= fheader[2] << 8;
+            rid |= fheader[3] << 0;
 
             if (rid != request_id) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
@@ -452,10 +459,10 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
 #endif
             }
 
-            clen |= rheader.contentLengthB1 << 8;
-            clen |= rheader.contentLengthB0 << 0;
+            clen |= fheader[4] << 8;
+            clen |= fheader[5] << 0;
 
-            plen = rheader.paddingLength;
+            plen = fheader[6];
 
 recv_again:
             if (clen > sizeof(readbuf) - 1) {
