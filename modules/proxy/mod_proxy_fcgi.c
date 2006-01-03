@@ -411,19 +411,18 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             char plen = 0;
             apr_bucket *b;
             fcgi_header rheader;
-            int rheader_size = sizeof(fcgi_header);
 
             memset(readbuf, 0, sizeof(readbuf));
 
             /* First, we grab the header... */
-            readbuflen = rheader_size;
+            readbuflen = FCGI_HEADER_LEN;
 
             rv = apr_socket_recv(conn->sock, (char *)&rheader, &readbuflen);
             if (rv != APR_SUCCESS) {
                 break;
             }
 
-            if (readbuflen != rheader_size) {
+            if (readbuflen != FCGI_HEADER_LEN) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Failed to read entire header");
                 rv = APR_EINVAL;

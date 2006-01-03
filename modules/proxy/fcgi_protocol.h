@@ -53,6 +53,12 @@ typedef struct {
 } fcgi_header;
 
 /*
+ * Number of bytes in a fcgi_header.  Future versions of the protocol
+ * will not reduce this number.
+ */
+#define FCGI_HEADER_LEN  8
+
+/*
  * Mask for flags component of FCGI_BeginRequestBody
  */
 #define FCGI_KEEP_CONN  1
