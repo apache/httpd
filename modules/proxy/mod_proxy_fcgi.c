@@ -406,10 +406,10 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
              * the headers, even if we fill the entire length in the recv. */
             char readbuf[AP_IOBUFSIZE + 1];
             apr_size_t readbuflen;
-            apr_size_t clen = 0;
-            int rid, type = 0;
-            char plen = 0;
+            apr_size_t clen;
+            int rid, type;
             apr_bucket *b;
+            char plen;
             /*
              * below mapped to fcgi_header layout. We
              * use a unsigned char array to ensure the
@@ -424,7 +424,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             /* First, we grab the header... */
             readbuflen = FCGI_HEADER_LEN;
 
-            rv = apr_socket_recv(conn->sock, fheader, &readbuflen);
+            rv = apr_socket_recv(conn->sock, (char *) fheader, &readbuflen);
             if (rv != APR_SUCCESS) {
                 break;
             }
@@ -446,8 +446,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
 
             type = fheader[1];
 
-            rid |= fheader[2] << 8;
-            rid |= fheader[3] << 0;
+            rid = (fheader[2] << 8) | fheader[3];
 
             if (rid != request_id) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
@@ -459,8 +458,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
 #endif
             }
 
-            clen |= fheader[4] << 8;
-            clen |= fheader[5] << 0;
+            clen = (fheader[4] << 8) | fheader[5];
 
             plen = fheader[6];
 
