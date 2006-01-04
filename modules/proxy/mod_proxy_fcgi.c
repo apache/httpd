@@ -354,10 +354,14 @@ static void dump_header_to_log( request_rec *r, unsigned char fheader[], apr_siz
         i++;
         posn++;
     }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "HEADER: %s %s",
+    if ( i != 1) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "HEADER: %s %s",
                     asc_line,
                     hex_line);
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "HEADER: -EOH-");
 }
+
 static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                              int request_id)
 {
@@ -489,7 +493,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             if (fheader[0] != FCGI_VERSION) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Got bogus version %d",
-                             (int) readbuf[0]);
+                             (int) fheader[0]);
                 rv = APR_EINVAL;
                 break;
             }
@@ -512,6 +516,11 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
 
             plen = fheader[6];
 
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                "type %d request-id %d clen: %" APR_SIZE_T_FMT " plen %d",
+                type, rid,
+                clen, plen 
+                );
 recv_again:
             if (clen > sizeof(readbuf) - 1) {
                 readbuflen = sizeof(readbuf) - 1;
@@ -528,6 +537,9 @@ recv_again:
                     break;
                 }
                 readbuf[readbuflen] = 0;
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                    "readbuf (%" APR_SIZE_T_FMT "): %s", 
+                    readbuflen, readbuf );
             }
 
             switch (type) {
