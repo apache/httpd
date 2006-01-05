@@ -416,6 +416,10 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         if (APR_STATUS_IS_EAGAIN(rv)) {
             rv = APR_SUCCESS;
         }
+        else if (rv != APR_SUCCESS) {
+            /* The client has aborted the connection */
+            c->aborted = 1;
+        }
         setaside_remaining_output(f, ctx, bb, 0, c);
         return rv;
     }
@@ -430,6 +434,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
             apr_status_t rv = send_brigade_blocking(net->client_socket, bb,
                                                     &(ctx->bytes_written), c);
             if (rv != APR_SUCCESS) {
+                /* The client has aborted the connection */
+                c->aborted = 1;
                 return rv;
             }
             bb = remainder;
@@ -464,6 +470,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         apr_status_t rv = send_brigade_blocking(net->client_socket, bb,
                                                 &(ctx->bytes_written), c);
         if (rv != APR_SUCCESS) {
+            /* The client has aborted the connection */
+            c->aborted = 1;
             return rv;
         }
     }
@@ -471,6 +479,8 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
         apr_status_t rv = send_brigade_nonblocking(net->client_socket, bb,
                                                    &(ctx->bytes_written), c);
         if ((rv != APR_SUCCESS) && (!APR_STATUS_IS_EAGAIN(rv))) {
+            /* The client has aborted the connection */
+            c->aborted = 1;
             return rv;
         }
     }
