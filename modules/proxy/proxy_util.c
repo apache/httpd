@@ -2137,6 +2137,12 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
     conn_rec *c = r->connection;
 
     r->no_cache = 1;
+    /*
+     * If this is a subrequest, then prevent also caching of the main
+     * request.
+     */
+    if (r->main)
+        r->main->no_cache = 1;
     e = ap_bucket_error_create(HTTP_BAD_GATEWAY, NULL, c->pool,
                                c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(brigade, e);
