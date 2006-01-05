@@ -516,11 +516,6 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
 
             plen = fheader[6];
 
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                "type %d request-id %d clen: %" APR_SIZE_T_FMT " plen %d",
-                type, rid,
-                clen, plen 
-                );
 recv_again:
             if (clen > sizeof(readbuf) - 1) {
                 readbuflen = sizeof(readbuf) - 1;
@@ -537,9 +532,6 @@ recv_again:
                     break;
                 }
                 readbuf[readbuflen] = 0;
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                    "readbuf (%" APR_SIZE_T_FMT "): %s", 
-                    readbuflen, readbuf );
             }
 
             switch (type) {
@@ -586,15 +578,6 @@ recv_again:
                         clen -= readbuflen;
                         goto recv_again;
                     }
-
-                    if (plen) {
-                        readbuflen = plen;
-
-                        rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
-                        if (rv != APR_SUCCESS) {
-                            break;
-                        }
-                    }
                 } else {
                     b = apr_bucket_eos_create(c->bucket_alloc);
 
@@ -606,6 +589,15 @@ recv_again:
                     }
 
                     /* XXX Why don't we cleanup here?  (logic from AJP) */
+                }
+
+                if (plen) {
+                    readbuflen = plen;
+
+                    rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
+                    if (rv != APR_SUCCESS) {
+                        break;
+                    }
                 }
                 break;
 
