@@ -39,6 +39,12 @@
 
 #include "mod_core.h"
 
+/*
+ * A pointer to this is used to memorize in the filter context that a bad
+ * gateway error bucket had been seen. It is used as an invented unique pointer.
+ */
+static char bad_gateway_seen;
+
 apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
 {
 #define ASCII_CRLF  "\015\012"
@@ -47,7 +53,6 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
     apr_bucket_brigade *more;
     apr_bucket *e;
     apr_status_t rv;
-    int bad_gateway_seen = 0;
 
     for (more = NULL; b; b = more, more = NULL) {
         apr_off_t bytes = 0;
@@ -71,8 +76,11 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
             if (AP_BUCKET_IS_ERROR(e)
                 && (((ap_bucket_error *)(e->data))->status
                     == HTTP_BAD_GATEWAY)) {
-                /* We had a broken backend. Memorize this. */
-                bad_gateway_seen = 1;
+                /*
+                 * We had a broken backend. Memorize this in the filter
+                 * context.
+                 */
+                f->ctx = &bad_gateway_seen;
                 continue;
             }
             if (APR_BUCKET_IS_FLUSH(e)) {
@@ -155,7 +163,8 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
          *   3) the end-of-chunked body CRLF
          *
          * If there is no EOS bucket, or if we had seen an error bucket with
-         * status HTTP_BAD_GATEWAY then do nothing.
+         * status HTTP_BAD_GATEWAY then do nothing. We have memorized an
+         * error bucket that we had seen in the filter context.
          * The error bucket with status HTTP_BAD_GATEWAY indicates that the
          * connection to the backend (mod_proxy) broke in the middle of the
          * response. In order to signal the client that something went wrong
@@ -166,7 +175,7 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
          * marker above, but this is a bit more straight-forward for
          * now.
          */
-        if (eos && !bad_gateway_seen) {
+        if (eos && !f->ctx) {
             /* XXX: (2) trailers ... does not yet exist */
             e = apr_bucket_immortal_create(ASCII_ZERO ASCII_CRLF
                                            /* <trailers> */
