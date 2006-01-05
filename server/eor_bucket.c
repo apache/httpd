@@ -52,6 +52,7 @@ static void eor_bucket_destroy(void *data)
 {
     request_rec *r = (request_rec *)data;
     if (r != NULL) {
+        ap_update_child_status(r->connection->sbh, SERVER_BUSY_LOG, r);
         ap_run_log_transaction(r);
         if (ap_extended_status) {
             ap_increment_counts(r->connection->sbh, r);
