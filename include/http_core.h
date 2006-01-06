@@ -114,13 +114,6 @@ extern "C" {
 
 /** @} // get_remote_host */
 
-/** all of the requirements must be met */
-#define SATISFY_ALL 0
-/**  any of the requirements must be met */
-#define SATISFY_ANY 1
-/** There are no applicable satisfy lines */
-#define SATISFY_NOSPEC 2
-
 /** Make sure we don't write less than 8000 bytes at any one time.
  */
 #define AP_MIN_BYTES_TO_WRITE  8000
