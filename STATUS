@@ -91,10 +91,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
-    * mod_proxy: Call ap_proxy_http_cleanup after ap_log_rerror
-      because it resets backend->hostname to NULL.
-      http://svn.apache.org/viewcvs.cgi?rev=366279&view=rev
-
     * mod_dbd: When threaded, create a private pool in child_init
       so we're not using the process pool later.  Also improve
       configuration defaults and merge function.
@@ -117,7 +113,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * proxy_util: Fix case where a shared keepalive connection results in
       different (and incorrect) workers from being accessed.
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/proxy/proxy_util.c?rev=356030&view=diff&r1=356030&r2=332306
-      +1: jim
+      +1: jim, rpluem
 
     * mod_ssl: Fix PR37791 (SEGV if the client is connection plain to a SSL
       enabled port)
@@ -134,4 +130,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * Fix mis-shifted 32 bit scope, masked to 64 bits as a method.
         URL: http://svn.apache.org/viewcvs?rev=358040&view=rev
       +1: wrowe
+
+    * mod_proxy: Call ap_proxy_http_cleanup after ap_log_rerror
+      because it resets backend->hostname to NULL.
+      http://svn.apache.org/viewcvs.cgi?rev=366279&view=rev
+      +1: rpluem
 
