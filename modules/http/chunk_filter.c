@@ -162,8 +162,8 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
          *   2) the trailer
          *   3) the end-of-chunked body CRLF
          *
-         * If there is no EOS bucket, or if we had seen an error bucket with
-         * status HTTP_BAD_GATEWAY then do nothing. We have memorized an
+         * We only do this if we have not seen an error bucket with
+         * status HTTP_BAD_GATEWAY. We have memorized an
          * error bucket that we had seen in the filter context.
          * The error bucket with status HTTP_BAD_GATEWAY indicates that the
          * connection to the backend (mod_proxy) broke in the middle of the
