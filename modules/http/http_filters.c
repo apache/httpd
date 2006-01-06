@@ -907,7 +907,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
          e != APR_BRIGADE_SENTINEL(b);
          e = APR_BUCKET_NEXT(e))
     {
-        if (e->type == &ap_bucket_type_error) {
+        if (AP_BUCKET_IS_ERROR(e)) {
             ap_bucket_error *eb = e->data;
 
             ap_die(eb->status, r);
