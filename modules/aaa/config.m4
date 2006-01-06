@@ -18,9 +18,6 @@ dnl - and just in case all of the above punt; a default handler to
 dnl keep the bad guys out.
 APACHE_MODULE(authn_default, authentication backstopper, , , yes)
 
-dnl Provider alias module.
-APACHE_MODULE(authn_alias, auth provider alias, , , no)
-
 dnl General Authentication modules; module which implements the 
 dnl non-authn module specific directives.
 dnl
