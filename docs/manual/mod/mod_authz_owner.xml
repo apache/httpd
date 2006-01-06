@@ -70,7 +70,6 @@
     </note>
 </summary>
 <seealso><directive module="core">Require</directive></seealso>
-<seealso><directive module="core">Satisfy</directive></seealso>
 
 <section id="examples"><title>Configuration Examples</title>
 
@@ -93,7 +92,6 @@
           AuthName MyPrivateFiles<br />
           AuthBasicProvider dbm<br />
           AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
-          Satisfy All<br />
           Require file-owner<br />
         </indent>
         &lt;/Directory&gt;

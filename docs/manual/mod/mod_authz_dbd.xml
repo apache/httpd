@@ -38,7 +38,6 @@
 </summary>
 
 <seealso><directive module="core">Require</directive></seealso>
-<seealso><directive module="core">Satisfy</directive></seealso>
 <seealso><directive module="mod_dbd">DBDriver</directive></seealso>
 <seealso><directive module="mod_dbd">DBDParams</directive></seealso>
 

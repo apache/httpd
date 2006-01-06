@@ -38,7 +38,6 @@
 <seealso><directive module="core">AuthName</directive></seealso>
 <seealso><directive module="core">AuthType</directive></seealso>
 <seealso><directive module="core">Require</directive></seealso>
-<seealso><directive module="core">Satisfy</directive></seealso>
 
 <section id="using"><title>Using Digest Authentication</title>
 

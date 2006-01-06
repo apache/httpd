@@ -37,7 +37,6 @@
 </summary>
 
 <seealso><directive module="core">Require</directive></seealso>
-<seealso><directive module="core">Satisfy</directive></seealso>
 
 <directivesynopsis>
 <name>AuthDBMGroupFile</name>
