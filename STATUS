@@ -91,6 +91,10 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
+    * mod_proxy: Call ap_proxy_http_cleanup after ap_log_rerror
+      because it resets backend->hostname to NULL.
+      http://svn.apache.org/viewcvs.cgi?rev=366279&view=rev
+
     * mod_dbd: When threaded, create a private pool in child_init
       so we're not using the process pool later.  Also improve
       configuration defaults and merge function.
