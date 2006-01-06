@@ -311,54 +311,63 @@ typedef struct {
     apr_pool_t *scratch_pool;
 } proxy_fcgi_baton_t;
 
-static void dump_header_to_log( request_rec *r, unsigned char fheader[], apr_size_t length)
+static void dump_header_to_log(request_rec *r, unsigned char fheader[],
+                               apr_size_t length)
 {
+    apr_size_t posn = 0;
     char asc_line[20];
     char hex_line[60];
-    int i=0;
-    apr_size_t posn=0;
-    memset(asc_line,0,sizeof(asc_line));
-    memset(hex_line,0,sizeof(hex_line));
+    int i = 0;
+
+    memset(asc_line, 0, sizeof(asc_line));
+    memset(hex_line, 0, sizeof(hex_line));
+
     while (posn < length) {
         unsigned char c = fheader[posn]; 
         char hexval[3];
-        if (i >=  20) {
-            i=0;
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "HEADER: %s %s",
-                    asc_line,
-                    hex_line);
-            memset(asc_line,0,sizeof(asc_line));
-            memset(hex_line,0,sizeof(hex_line));
+
+        if (i >= 20) {
+            i = 0;
+
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                         "HEADER: %s %s", asc_line, hex_line);
+
+            memset(asc_line, 0, sizeof(asc_line));
+            memset(hex_line, 0, sizeof(hex_line));
         }
+
         if (isprint(c)) {
             asc_line[i] = c;
         }
         else {
             asc_line[i] = '.';
         }
-        if ( ( c >> 4 )  >= 10) {
-            hex_line[i*3] = 'a' + ((c >>4 ) - 10);
+
+        if ((c >> 4) >= 10) {
+            hex_line[i * 3] = 'a' + ((c >> 4) - 10);
         }
         else {
-            hex_line[i*3] = '0' + (c >>4 );
+            hex_line[i * 3] = '0' + (c >> 4);
         }
 
-        if ( ( c & 0x0F )  >= 10) {
-            hex_line[i*3+1] = 'a' + ((c & 0x0F ) - 10);
+        if ((c & 0x0F) >= 10) {
+            hex_line[i * 3 + 1] = 'a' + ((c & 0x0F) - 10);
         }
         else {
-            hex_line[i*3+1] = '0' + (c & 0xF );
+            hex_line[i * 3 + 1] = '0' + (c & 0xF);
         }
 
-        hex_line[i*3+2] = ' ';
+        hex_line[i * 3 + 2] = ' ';
+
         i++;
         posn++;
     }
-    if ( i != 1) {
+
+    if (i != 1) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "HEADER: %s %s",
-                    asc_line,
-                    hex_line);
+                     asc_line, hex_line);
     }
+
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "HEADER: -EOH-");
 }
 
@@ -480,11 +489,12 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 break;
             }
 
+            dump_header_to_log(r, fheader, readbuflen);
 
-            dump_header_to_log( r, fheader, readbuflen);
             if (readbuflen != FCGI_HEADER_LEN) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                             "proxy: FCGI: Failed to read entire header got %d wanted %d", 
+                             "proxy: FCGI: Failed to read entire header "
+                             "got %d wanted %d", 
                              readbuflen, FCGI_HEADER_LEN);
                 rv = APR_EINVAL;
                 break;
@@ -687,9 +697,9 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
  * This handles fcgi:(type):(dest) URLs
  */
 static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
-                                 proxy_server_conf *conf,
-                                 char *url, const char *proxyname,
-                                 apr_port_t proxyport)
+                              proxy_server_conf *conf,
+                              char *url, const char *proxyname,
+                              apr_port_t proxyport)
 {
     int status;
     char server_portstr[32];
@@ -705,7 +715,8 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
 
 
     ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                 "proxy: FCGI: url: %s proxyname: %s proxyport: %d", url, proxyname, proxyport);
+                 "proxy: FCGI: url: %s proxyname: %s proxyport: %d",
+                 url, proxyname, proxyport);
 
     if (strncasecmp(url, "fcgi-", 5) == 0) {
         url += 5;
@@ -734,8 +745,8 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: FCGI: serving URL %s via %s", url, scheme);
 
-    /* create space for state information */
-    if (!backend) {
+    /* Create space for state information */
+    if (! backend) {
         status = ap_proxy_acquire_connection(scheme, &backend, worker,
                                              r->server);
         if (status != OK) {
@@ -763,7 +774,6 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
                                            uri, &url, proxyname, proxyport,
                                            server_portstr,
                                            sizeof(server_portstr));
-
     if (status != OK) {
         goto cleanup;
     }
