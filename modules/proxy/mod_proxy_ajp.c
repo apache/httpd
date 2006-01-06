@@ -432,7 +432,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     /*
      * Ensure that we sent an EOS bucket thru the filter chain, if we already
      * have sent some data. Maybe ap_proxy_backend_broke was called and added
-     * one to the brigade already. So we should not do this in this case.
+     * one to the brigade already (no longer making it empty). So we should
+     * not do this in this case.
      */
     if (data_sent && !r->eos_sent && APR_BRIGADE_EMPTY(output_brigade)) {
         e = apr_bucket_eos_create(r->connection->bucket_alloc);
