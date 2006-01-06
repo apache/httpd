@@ -40,28 +40,4 @@
 <seealso><directive module="core">Require</directive></seealso>
 <seealso><directive module="core">Satisfy</directive></seealso>
 
-<directivesynopsis>
-<name>AuthzUserAuthoritative</name>
-<description>Sets whether authorization will be passed on to lower level
-modules</description>
-<syntax>AuthzUserAuthoritative On|Off</syntax>
-<default>AuthzUserAuthoritative On</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p>Setting the <directive>AuthzUserAuthoritative</directive>
-    directive explicitly to <code>Off</code> allows for
-    user authorization to be passed on to lower level modules (as defined
-    in the <code>modules.c</code> files) if there is <strong>no
-    user</strong> matching the supplied userID.</p>
-
-    <p>By default, control is not passed on and an unknown user
-    will result in an Authentication Required reply. Not
-    setting it to <code>Off</code> thus keeps the system secure and forces
-    an NCSA compliant behaviour.</p>
-</usage>
-</directivesynopsis>
-
 </modulesynopsis>

@@ -132,39 +132,4 @@
     </section>
 </section>
 
-<directivesynopsis>
-<name>AuthzOwnerAuthoritative</name>
-<description>Sets whether authorization will be passed on to lower level
-modules</description>
-<syntax>AuthzOwnerAuthoritative On|Off</syntax>
-<default>AuthzOwnerAuthoritative On</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p>Setting the <directive>AuthzOwnerAuthoritative</directive>
-    directive explicitly to <code>Off</code> allows for
-    user authorization to be passed on to lower level modules (as defined
-    in the <code>modules.c</code> files) if:</p>
-
-    <ul>
-    <li>in the case of <code>file-owner</code> the file-system owner does not
-    match the supplied web-username or could not be determined, or</li>
-
-    <li>in the case of <code>file-group</code> the file-system group does not
-    contain the supplied web-username or could not be determined.</li>
-    </ul>
-
-    <p>Note that setting the value to <code>Off</code> also allows the
-    combination of <code>file-owner</code> and <code>file-group</code>, so
-    access will be allowed if either one or the other (or both) match.</p>
-
-    <p>By default, control is not passed on and an authorization failure
-    will result in an "Authentication Required" reply. Not
-    setting it to <code>Off</code> thus keeps the system secure and forces
-    an NCSA compliant behaviour.</p>
-</usage>
-</directivesynopsis>
-
 </modulesynopsis>

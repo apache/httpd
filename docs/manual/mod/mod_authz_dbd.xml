@@ -182,40 +182,4 @@ header is present</description>
 </usage>
 </directivesynopsis>
 
-<directivesynopsis>
-<name>AuthzDBDAuthoritative</name>
-<description>Sets whether authorization will be passed on to lower level
-modules</description>
-<syntax>AuthzDBDAuthoritative On|Off</syntax>
-<default>AuthzDBDAuthoritative On</default>
-<contextlist><context>directory</context></contextlist>
-
-<usage>
-    <p>Setting the <directive>AuthzDBDAuthoritative</directive>
-    directive explicitly to <code>Off</code> allows group authorization
-    to be handled by another authz module if the userID is not
-    in any authorized dbd-group. If there are any groups
-    specified, the usual checks will be applied and a failure will
-    give an Authentication Required reply.</p>
-
-    <p>So if a userID appears in the database of more than one module;
-    or if a valid <directive module="core">Require</directive>
-    directive applies to more than one module; then the first module
-    will verify the credentials; and no access is passed on;
-    regardless of the <directive>AuthAuthoritative</directive> setting.</p>
-
-    <p>A common use for this is in conjunction with one of the
-    auth providers; such or
-    <module>mod_authn_file</module>. Whereas this DBD module supplies
-    the bulk of the user credential checking; a few (administrator) related
-    accesses fall through to a lower level with a well protected
-    <code>.htpasswd</code> file.</p>
-
-    <p>By default, control is not passed on and an unknown group
-    will result in an Authentication Required reply. Not
-    setting it thus keeps the system secure and forces an NCSA
-    compliant behaviour.</p>
-</usage>
-</directivesynopsis>
-
 </modulesynopsis>
