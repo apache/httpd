@@ -590,19 +590,19 @@ recv_again:
 
                     /* XXX Why don't we cleanup here?  (logic from AJP) */
                 }
-
-                if (plen) {
-                    readbuflen = plen;
-
-                    rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
-                    if (rv != APR_SUCCESS) {
-                        break;
-                    }
-                }
                 break;
 
             case FCGI_STDERR:
-                /* XXX TODO FCGI_STDERR gets written to the log file. */
+                /* TODO: Should probably clean up this logging a bit... */
+                if (clen) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                                 "proxy: FCGI: Got error '%s'", readbuf);
+                }
+
+                if (clen > readbuflen) {
+                    clen -= readbuflen;
+                    goto recv_again;
+                }
                 break;
 
             case FCGI_END_REQUEST:
@@ -613,6 +613,15 @@ recv_again:
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Got bogus record %d", type);
                 break;
+            }
+
+            if (plen) {
+                readbuflen = plen;
+
+                rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
+                if (rv != APR_SUCCESS) {
+                    break;
+                }
             }
         }
     }
