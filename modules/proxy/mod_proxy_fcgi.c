@@ -671,7 +671,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     rv = dispatch(conn, r, request_id);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
-                     "proxy: FCGI: Failed writing STDIN to %s:",
+                     "proxy: FCGI: Error dispatching request to %s:",
                      server_portstr);
         conn->close = 1;
         return HTTP_SERVICE_UNAVAILABLE;
