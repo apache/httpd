@@ -41,16 +41,31 @@
 #define FCGI_UNKNOWN_TYPE       11
 #define FCGI_MAXTYPE (FCGI_UNKNOWN_TYPE)
 
-typedef struct {
-    unsigned char version;
-    unsigned char type;
-    unsigned char requestIdB1;
-    unsigned char requestIdB0;
-    unsigned char contentLengthB1;
-    unsigned char contentLengthB0;
-    unsigned char paddingLength;
-    unsigned char reserved;
-} fcgi_header;
+/*
+ * In a padding free world, a FastCGI Header would look like this:
+ *
+ * typedef struct {
+ *     unsigned char version;
+ *     unsigned char type;
+ *     unsigned char requestIdB1;
+ *     unsigned char requestIdB0;
+ *     unsigned char contentLengthB1;
+ *     unsigned char contentLengthB0;
+ *     unsigned char paddingLength;
+ *     unsigned char reserved;
+ * } fcgi_header;
+ *
+ * But since we can't be sure the compiler won't introduce arbitrary padding,
+ * we use an unsigned char array, and the following offsets to build headers.
+ */
+#define FCGI_HDR_VERSION_OFFSET         0
+#define FCGI_HDR_TYPE_OFFSET            1
+#define FCGI_HDR_REQUEST_ID_B1_OFFSET   2
+#define FCGI_HDR_REQUEST_ID_B0_OFFSET   3
+#define FCGI_HDR_CONTENT_LEN_B1_OFFSET  4
+#define FCGI_HDR_CONTENT_LEN_B0_OFFSET  5
+#define FCGI_HDR_PADDING_LEN_OFFSET     6
+#define FCGI_HDR_RESERVED_OFFSET        7
 
 /*
  * Number of bytes in a fcgi_header.  Future versions of the protocol
