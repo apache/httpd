@@ -30,8 +30,8 @@
 #define CORE_PRIVATE
 #include "ap_config.h"
 #include "httpd.h"
-#include "http_core.h"
 #include "http_config.h"
+#include "http_core.h"
 #include "http_log.h"
 #include "http_request.h"
 #include "http_protocol.h"
@@ -114,7 +114,7 @@ static authn_status authn_alias_check_password(request_rec *r, const char *user,
     authn_status ret = AUTH_USER_NOT_FOUND;
     authn_alias_srv_conf *authcfg =
         (authn_alias_srv_conf *)ap_get_module_config(r->server->module_config,
-                                                     &authn_alias_module);
+                                                     &authn_core_module);
 
     if (provider_name) {
         provider_alias_rec *prvdraliasrec = apr_hash_get(authcfg->alias_rec,
@@ -146,7 +146,7 @@ static authn_status authn_alias_get_realm_hash(request_rec *r, const char *user,
     authn_status ret = AUTH_USER_NOT_FOUND;
     authn_alias_srv_conf *authcfg =
         (authn_alias_srv_conf *)ap_get_module_config(r->server->module_config,
-                                                     &authn_alias_module);
+                                                     &authn_core_module);
 
     if (provider_name) {
         provider_alias_rec *prvdraliasrec = apr_hash_get(authcfg->alias_rec,
@@ -194,7 +194,7 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
     ap_conf_vector_t *new_auth_config = ap_create_per_dir_config(cmd->pool);
     authn_alias_srv_conf *authcfg =
         (authn_alias_srv_conf *)ap_get_module_config(cmd->server->module_config,
-                                                     &authn_alias_module);
+                                                     &authn_core_module);
 
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {

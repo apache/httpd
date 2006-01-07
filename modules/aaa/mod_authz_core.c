@@ -84,9 +84,9 @@ X- Reimplement the host based authorization 'allow', 'deny'
    and 'order' as authz providers   
 X- Remove the 'allow', 'deny' and 'order' directives      
 - Merge mod_authn_alias into mod_authn_core
-- Remove all of the references to the authzxxxAuthoritative
+X- Remove all of the references to the authzxxxAuthoritative
    directives from the documentation
-- Remove the Satisfy directive from the documentation
+X- Remove the Satisfy directive from the documentation
 */
 
 typedef struct provider_alias_rec {
