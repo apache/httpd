@@ -112,8 +112,7 @@ DocumentRoot "@exp_htdocsdir@"
 <Directory />
     Options FollowSymLinks
     AllowOverride None
-    Order deny,allow
-    Deny from all
+    Require all denied
 </Directory>
 
 #
@@ -151,8 +150,7 @@ DocumentRoot "@exp_htdocsdir@"
     #
     # Controls who can get stuff from this server.
     #
-    Order allow,deny
-    Allow from all
+    Require all granted
 
 </Directory>
 
@@ -169,9 +167,7 @@ DocumentRoot "@exp_htdocsdir@"
 # viewed by Web clients. 
 #
 <FilesMatch "^\.ht">
-    Order allow,deny
-    Deny from all
-    Satisfy All
+    Require all denied
 </FilesMatch>
 
 #
@@ -265,8 +261,7 @@ LogLevel warn
 <Directory "@exp_cgidir@">
     AllowOverride None
     Options None
-    Order allow,deny
-    Allow from all
+    Require all granted
 </Directory>
 
 #

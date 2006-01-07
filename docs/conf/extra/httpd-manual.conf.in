@@ -12,8 +12,7 @@ AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|pt-br|ru))?(/.*)?$ "@exp_manualdir@$
 <Directory "@exp_manualdir@">
     Options Indexes
     AllowOverride None
-    Order allow,deny
-    Allow from all
+    Require all granted
 
     <Files *.html>
         SetHandler type-map
