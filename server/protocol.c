@@ -587,7 +587,6 @@ static apr_status_t getline_nonblocking(char **s, apr_size_t n,
     }
     *last_char = '\0';
     bytes_handled = last_char - *s;
-    fprintf(stderr, "read line '%s'\n", *s);
 
     *read = bytes_handled;
     return APR_SUCCESS;
@@ -791,8 +790,13 @@ static apr_status_t process_request_line(request_rec *r, char *line,
             if (r->num_blank_lines < max_blank_lines) {
                 return APR_SUCCESS;
             }
+            else {
+                set_the_request(r, "");
+            }
         }
-        set_the_request(r, line);
+        else {
+            set_the_request(r, line);
+        }
     }
     else {
         /* We've already read the first line of the request.  This is either
