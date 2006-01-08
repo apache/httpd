@@ -502,10 +502,8 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Got bogus rid %d, expected %d",
                              rid, request_id);
-#if defined(RID_MISMATCH_IS_TERMINAL_ERROR)
                 rv = APR_EINVAL;
                 break;
-#endif
             }
 
             clen = header[FCGI_HDR_CONTENT_LEN_B1_OFFSET] << 8;
