@@ -64,6 +64,8 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
         
         r->filename = apr_pstrcat(r->pool, "proxy:", scheme, host, sport, "/",
                                   NULL);
+
+        r->path_info = apr_pstrdup(r->pool, url);
     }
     else if (strncmp(url, "local://", 8) == 0) {
         url += 6;
