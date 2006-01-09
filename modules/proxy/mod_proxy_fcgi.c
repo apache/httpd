@@ -20,6 +20,53 @@
 module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 
 /*
+ * The below 3 functions serve to map the FCGI structs
+ * back and forth between an 8 byte array. We do this to avoid
+ * any potential padding issues when we send or read these
+ * structures.
+ *
+ * NOTE: These have specific internal knowledge of the
+ *       layout of the fcgi_header and fcgi_begin_request_body
+ *       structs!
+ */
+static void fcgi_header_to_array(fcgi_header *h, unsigned char a[])
+{
+    a[FCGI_HDR_VERSION_OFFSET]        = h->version;
+    a[FCGI_HDR_TYPE_OFFSET]           = h->type;
+    a[FCGI_HDR_REQUEST_ID_B1_OFFSET]  = h->requestIdB1;
+    a[FCGI_HDR_REQUEST_ID_B0_OFFSET]  = h->requestIdB0;
+    a[FCGI_HDR_CONTENT_LEN_B1_OFFSET] = h->contentLengthB1;
+    a[FCGI_HDR_CONTENT_LEN_B0_OFFSET] = h->contentLengthB0;
+    a[FCGI_HDR_PADDING_LEN_OFFSET]    = h->paddingLength;
+    a[FCGI_HDR_RESERVED_OFFSET]       = h->reserved;
+}
+
+static void fcgi_header_from_array(fcgi_header *h, unsigned char a[])
+{
+    h->version         = a[FCGI_HDR_VERSION_OFFSET];
+    h->type            = a[FCGI_HDR_TYPE_OFFSET];
+    h->requestIdB1     = a[FCGI_HDR_REQUEST_ID_B1_OFFSET];
+    h->requestIdB0     = a[FCGI_HDR_REQUEST_ID_B0_OFFSET];
+    h->contentLengthB1 = a[FCGI_HDR_CONTENT_LEN_B1_OFFSET];
+    h->contentLengthB0 = a[FCGI_HDR_CONTENT_LEN_B0_OFFSET];
+    h->paddingLength   = a[FCGI_HDR_PADDING_LEN_OFFSET];
+    h->reserved        = a[FCGI_HDR_RESERVED_OFFSET];
+}
+
+static void fcgi_begin_request_body_to_array(fcgi_begin_request_body *h,
+                                             unsigned char a[])
+{
+    a[FCGI_BRB_ROLEB1_OFFSET]    = h->roleB1;
+    a[FCGI_BRB_ROLEB0_OFFSET]    = h->roleB0;
+    a[FCGI_BRB_FLAGS_OFFSET]     = h->flags;
+    a[FCGI_BRB_RESERVED0_OFFSET] = h->reserved[0];
+    a[FCGI_BRB_RESERVED1_OFFSET] = h->reserved[1];
+    a[FCGI_BRB_RESERVED2_OFFSET] = h->reserved[2];
+    a[FCGI_BRB_RESERVED3_OFFSET] = h->reserved[3];
+    a[FCGI_BRB_RESERVED4_OFFSET] = h->reserved[4];
+}
+
+/*
  * Canonicalise http-like URLs.
  * scheme is the scheme for the URL
  * url is the URL starting with the first '/'
@@ -93,44 +140,49 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
  *
  * The header array must be at least FCGI_HEADER_LEN bytes long.
  */
-static void fill_in_header(unsigned char header[],
+static void fill_in_header(fcgi_header *header,
                            unsigned char type,
                            apr_uint16_t request_id,
                            apr_uint16_t content_len,
                            unsigned char padding_len)
 {
-    header[FCGI_HDR_VERSION_OFFSET] = 1;
+    header->version = 1;
 
-    header[FCGI_HDR_TYPE_OFFSET] = type;
+    header->type = type;
 
-    header[FCGI_HDR_REQUEST_ID_B1_OFFSET] = ((request_id >> 8) & 0xff);
-    header[FCGI_HDR_REQUEST_ID_B0_OFFSET] = ((request_id) & 0xff);
+    header->requestIdB1 = ((request_id >> 8) & 0xff);
+    header->requestIdB0 = ((request_id) & 0xff);
 
-    header[FCGI_HDR_CONTENT_LEN_B1_OFFSET] = ((content_len >> 8) & 0xff);
-    header[FCGI_HDR_CONTENT_LEN_B0_OFFSET] = ((content_len) & 0xff);
+    header->contentLengthB1 = ((content_len >> 8) & 0xff);
+    header->contentLengthB0 = ((content_len) & 0xff);
 
-    header[FCGI_HDR_PADDING_LEN_OFFSET] = padding_len;
+    header->paddingLength = padding_len;
 
-    header[FCGI_HDR_RESERVED_OFFSET] = 0;
+    header->reserved = 0;
 }
 
 static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
 {
     struct iovec vec[2];
-    unsigned char header[FCGI_HEADER_LEN];
+    fcgi_header header;
+    unsigned char farray[FCGI_HEADER_LEN];
     fcgi_begin_request_body brb;
+    unsigned char abrb[FCGI_HEADER_LEN];
     apr_size_t len;
 
-    fill_in_header(header, FCGI_BEGIN_REQUEST, request_id, sizeof(brb), 0);
+    fill_in_header(&header, FCGI_BEGIN_REQUEST, request_id, sizeof(abrb), 0);
 
     brb.roleB1 = ((FCGI_RESPONDER >> 8) & 0xff);
     brb.roleB0 = ((FCGI_RESPONDER) & 0xff); 
     brb.flags = FCGI_KEEP_CONN;
 
-    vec[0].iov_base = header;
-    vec[0].iov_len = sizeof(header);
-    vec[1].iov_base = &brb;
-    vec[1].iov_len = sizeof(brb);
+    fcgi_header_to_array(&header, farray);
+    fcgi_begin_request_body_to_array(&brb, abrb);
+
+    vec[0].iov_base = farray;
+    vec[0].iov_len = sizeof(farray);
+    vec[1].iov_base = abrb;
+    vec[1].iov_len = sizeof(abrb);
 
     return apr_socket_sendv(conn->sock, vec, 2, &len);
 }
@@ -141,7 +193,8 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     const apr_array_header_t *envarr;
     const apr_table_entry_t *elts;
     struct iovec vec[2];
-    unsigned char header[FCGI_HEADER_LEN];
+    fcgi_header header;
+    unsigned char farray[FCGI_HEADER_LEN];
     apr_size_t bodylen;
     char *body, *itr;
     apr_status_t rv;
@@ -242,10 +295,11 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         itr += vallen;
     }
 
-    fill_in_header(header, FCGI_PARAMS, request_id, bodylen, 0);
+    fill_in_header(&header, FCGI_PARAMS, request_id, bodylen, 0);
+    fcgi_header_to_array(&header, farray);
 
-    vec[0].iov_base = header;
-    vec[0].iov_len = sizeof(header);
+    vec[0].iov_base = farray;
+    vec[0].iov_len = sizeof(farray);
     vec[1].iov_base = body;
     vec[1].iov_len = bodylen;
 
@@ -254,10 +308,11 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         return rv;
     }
 
-    fill_in_header(header, FCGI_PARAMS, request_id, 0, 0);
+    fill_in_header(&header, FCGI_PARAMS, request_id, 0, 0);
+    fcgi_header_to_array(&header, farray);
 
-    vec[0].iov_base = header;
-    vec[0].iov_len = sizeof(header);
+    vec[0].iov_base = farray;
+    vec[0].iov_len = sizeof(farray);
 
     return apr_socket_sendv(conn->sock, vec, 1, &len);
 }
@@ -382,7 +437,8 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
     apr_status_t rv = APR_SUCCESS;
     conn_rec *c = r->connection;
     struct iovec vec[2];
-    unsigned char header[FCGI_HEADER_LEN];
+    fcgi_header header;
+    unsigned char farray[FCGI_HEADER_LEN];
     apr_pollfd_t pfd;
 
     pfd.desc_type = APR_POLL_SOCKET;
@@ -428,11 +484,12 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 break;
             }
 
-            fill_in_header(header, FCGI_STDIN, request_id,
+            fill_in_header(&header, FCGI_STDIN, request_id,
                            (apr_uint16_t) writebuflen, 0);
+            fcgi_header_to_array(&header, farray);
 
-            vec[0].iov_base = header;
-            vec[0].iov_len = sizeof(header);
+            vec[0].iov_base = farray;
+            vec[0].iov_len = sizeof(farray);
             vec[1].iov_base = writebuf;
             vec[1].iov_len = writebuflen;
 
@@ -450,10 +507,11 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             if (last_stdin) {
                 pfd.reqevents = APR_POLLIN; /* Done with input data */
 
-                fill_in_header(header, FCGI_STDIN, request_id, 0, 0);
+                fill_in_header(&header, FCGI_STDIN, request_id, 0, 0);
+                fcgi_header_to_array(&header, farray);
 
-                vec[0].iov_base = header;
-                vec[0].iov_len = sizeof(header);
+                vec[0].iov_base = farray;
+                vec[0].iov_len = sizeof(farray);
 
                 rv = apr_socket_sendv(conn->sock, vec, 1, &len);
             }
@@ -471,17 +529,18 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             char plen;
 
             memset(readbuf, 0, sizeof(readbuf));
+            memset(farray, 0, sizeof(farray));
 
             /* First, we grab the header... */
             readbuflen = FCGI_HEADER_LEN;
 
-            rv = apr_socket_recv(conn->sock, (char *) header, &readbuflen);
+            rv = apr_socket_recv(conn->sock, (char *) farray, &readbuflen);
             if (rv != APR_SUCCESS) {
                 break;
             }
 
-            dump_header_to_log(r, header, readbuflen);
-
+            dump_header_to_log(r, farray, readbuflen);
+            
             if (readbuflen != FCGI_HEADER_LEN) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Failed to read entire header "
@@ -491,18 +550,20 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 break;
             }
 
-            if (header[FCGI_HDR_VERSION_OFFSET] != FCGI_VERSION) {
+            fcgi_header_from_array(&header, farray);
+
+            if (header.version != FCGI_VERSION) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Got bogus version %d",
-                             (int) header[FCGI_HDR_VERSION_OFFSET]);
+                             (int) header.version);
                 rv = APR_EINVAL;
                 break;
             }
 
-            type = header[FCGI_HDR_TYPE_OFFSET];
+            type = header.type;
 
-            rid = header[FCGI_HDR_REQUEST_ID_B1_OFFSET] << 8;
-            rid |= header[FCGI_HDR_REQUEST_ID_B0_OFFSET];
+            rid = header.requestIdB1 << 8;
+            rid |= header.requestIdB0;
 
             if (rid != request_id) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
@@ -512,10 +573,10 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 break;
             }
 
-            clen = header[FCGI_HDR_CONTENT_LEN_B1_OFFSET] << 8;
-            clen |= header[FCGI_HDR_CONTENT_LEN_B0_OFFSET];
+            clen = header.contentLengthB1 << 8;
+            clen |= header.contentLengthB0;
 
-            plen = header[FCGI_HDR_PADDING_LEN_OFFSET];
+            plen = header.paddingLength;
 
 recv_again:
             if (clen > sizeof(readbuf) - 1) {
