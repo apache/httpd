@@ -28,8 +28,7 @@ module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 static int proxy_fcgi_canon(request_rec *r, char *url)
 {
     char *host, sport[7];
-    const char *err;
-    const char* scheme;
+    const char *err, *scheme, *path;
     apr_port_t port = 8000;
 
     if (strncasecmp(url, "fcgi-", 5) == 0) {
@@ -61,11 +60,16 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
             /* if literal IPv6 address */
             host = apr_pstrcat(r->pool, "[", host, "]", NULL);
         }
-        
-        r->filename = apr_pstrcat(r->pool, "proxy:", scheme, host, sport, "/",
-                                  NULL);
 
-        r->path_info = apr_pstrdup(r->pool, url);
+        path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
+                                 r->proxyreq);
+        if (path == NULL)
+            return HTTP_BAD_REQUEST;
+
+        r->filename = apr_pstrcat(r->pool, "proxy:", scheme, host, sport, "/",
+                                  path, NULL);
+
+        r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
     }
     else if (strncmp(url, "local://", 8) == 0) {
         url += 6;
