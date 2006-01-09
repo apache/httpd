@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 160701:333005 (outdated) -->
+<!-- English Revision: 333005 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors, as
@@ -23,12 +23,14 @@
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Apache HTTP サーバ バージョン &httpd.major;.&httpd.minor; ドキュメント</title>
+<title>Apache HTTP サーバ バージョン &httpd.major;.&httpd.minor;
+ドキュメント</title>
 
 <category id="release"><title>リリースノート</title>
+    <page href="new_features_2_4.html">Apache 2.3/2.4 の新機能</page>
     <page href="new_features_2_2.html">Apache 2.1/2.2 の新機能</page>
     <page href="new_features_2_0.html">Apache 2.0 の新機能</page>
-    <page href="upgrading.html">2.0 から 2.2 へのアップグレード</page>
+    <page href="upgrading.html">2.2 から 2.4 へのアップグレード</page>
     <page href="license.html">Apache ライセンス</page>
 </category>
 
@@ -50,6 +52,7 @@
     <page href="bind.html">アドレスとポートのバインド</page>
     <page href="configuring.html">設定ファイル</page>
     <page href="sections.html">セクションの設定</page>
+    <page href="caching.html">キャッシュ機能</page>
     <page href="content-negotiation.html">コンテントネゴシエーション</page>
     <page href="dso.html">動的共有オブジェクト (DSO)</page>
     <page href="env.html">環境変数</page>
