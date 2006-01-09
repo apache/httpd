@@ -1,11 +1,11 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:290816 (outdated) -->
+<!-- English Revision: 290816 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@
 
     <p>タイプマップは <code>type-map</code> ハンドラ
     (もしくは、古い Apache
-    の設定と下位互換である MIME タイプ
+    の設定と下位互換である <glossary ref="mime-type">MIME タイプ</glossary>
     <code>application/x-type-map</code>)
     に関連付けられたドキュメントです。
     この機能を使うためには、あるファイルの拡張子を
