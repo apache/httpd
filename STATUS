@@ -74,6 +74,12 @@ RELEASE SHOWSTOPPERS:
      Message-ID: <31C9151F757B06E7A3956FD1@st-augustin.local>
      Justin says: Yes, it's not a regression; but doing a release without
                   this fixed is pretty stupid.
+     Ruediger says: It would be nice to make the worker retry a configurable
+                    number of times, but as this problem can be mitigated by
+                    setting Retry to 1 for this worker I do not regard this
+                    as a showstopper. Furthermore I am open to change the
+                    default value for retry (PROXY_WORKER_DEFAULT_RETRY) from
+                    60 secs to 1 sec.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
