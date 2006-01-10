@@ -136,3 +136,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs.cgi?rev=366279&view=rev
       +1: rpluem
 
+    * mod_ssl: Fix PR38017 (mod_cache not working in reverse proxy setup?)
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=367798&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
