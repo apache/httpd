@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cache: Make caching of reverse proxies possible again. PR 38017.
+     [Ruediger Pluem]
+
   *) Refactored ap_read_request() to provide a foundation for
      nonblocking reads of requests.  [Brian Pane]
 
