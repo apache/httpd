@@ -324,10 +324,25 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
     const char * hostname;
     int i;
 
-    /* Use the canonical name to improve cache hit rate, but only if this is
-     * not a proxy request.
+    /*
+     * Use the canonical name to improve cache hit rate, but only if this is
+     * not a proxy request or if this is a reverse proxy request.
+     * We need to handle both cases in the same manner as for the reverse proxy
+     * case we have the following situation:
+     *
+     * If a cached entry is looked up by mod_cache's quick handler r->proxyreq
+     * is still unset in the reverse proxy case as it only gets set in the
+     * translate name hook (either by ProxyPass or mod_rewrite) which is run
+     * after the quick handler hook. This is different to the forward proxy
+     * case where it gets set before the quick handler is run (in the
+     * post_read_request hook).
+     * If a cache entry is created by the CACHE_SAVE filter we always have
+     * r->proxyreq set correctly.
+     * So we must ensure that in the reverse proxy case we use the same code
+     * path and using the canonical name seems to be the right thing to do
+     * in the reverse proxy case.
      */
-    if (!r->proxyreq) {
+    if (!r->proxyreq || (r->proxyreq == PROXYREQ_REVERSE)) {
         /* Use _default_ as the hostname if none present, as in mod_vhost */
         hostname =  ap_get_server_name(r);
         if (!hostname) {
