@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ Copyright 2002-2006 The Apache Software Foundation or its licensors, as
  applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -277,7 +277,7 @@
 
 <div id="footer">&lf;
     <p class="apache">
-        <xsl:text>Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.</xsl:text><br />
+        <xsl:text>Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.</xsl:text><br />
         <xsl:value-of select="$message[@id='licensed']"/>
         <xsl:text> </xsl:text>
 
