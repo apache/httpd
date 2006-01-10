@@ -70,15 +70,15 @@ X- Change the status code to AUTHZ_DENIED, AUTHZ_GRANTED
    is even necessary.  This was used in authn to support
    authn_alias.  Is there a need for an authz_alias?
 X- Remove the Satisfy directive functionality and replace it with the
-   <RequireAll>, <RequireOne> directives
+   <SatisfyAll>, <SatisfyOne> directives
 X- Remove the Satisfy directive 
-X- Implement the <RequireAll> <RequireOne> block directives
+X- Implement the <SatisfyAll> <SatisfyOne> block directives
    to handle the 'and' and 'or' logic for authorization.
 X- Remove the AuthzXXXAuthoritative directives from all of
    the authz providers
 X- Implement the Reject directive that will deny authorization
    if the argument is true
-X- Fold the Reject directive into the <RequireAll> <RequireOne>
+X- Fold the Reject directive into the <SatisfyAll> <SatisfyOne>
    logic
 X- Reimplement the host based authorization 'allow', 'deny'
    and 'order' as authz providers   
@@ -414,7 +414,7 @@ static const char *authz_require_section(cmd_parms *cmd, void *mconfig, const ch
        the req_state and the level will allow it to traverse the list to find
        the last element in the provider calling list. */
     old_reqstate = conf->req_state;
-    if (strcasecmp (cmd->directive->directive, "<RequireAll") == 0) {
+    if (strcasecmp (cmd->directive->directive, "<SatisfyAll") == 0) {
         conf->req_state = AUTHZ_REQSTATE_ALL;
     }
     else {
@@ -445,10 +445,10 @@ static const command_rec authz_cmds[] =
     AP_INIT_RAW_ARGS("<RequireAlias", authz_require_alias_section, NULL, RSRC_CONF,
                      "Container for authorization directives grouped under "
                      "an authz provider alias"),
-    AP_INIT_RAW_ARGS("<RequireAll", authz_require_section, NULL, OR_AUTHCFG,
+    AP_INIT_RAW_ARGS("<SatisfyAll", authz_require_section, NULL, OR_AUTHCFG,
                      "Container for grouping require statements that must all " 
                      "succeed for authorization to be granted"),
-    AP_INIT_RAW_ARGS("<RequireOne", authz_require_section, NULL, OR_AUTHCFG,
+    AP_INIT_RAW_ARGS("<SatisfyOne", authz_require_section, NULL, OR_AUTHCFG,
                      "Container for grouping require statements of which one " 
                      "must succeed for authorization to be granted"),
     {NULL}

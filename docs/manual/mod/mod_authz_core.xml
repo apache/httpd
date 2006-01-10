@@ -134,25 +134,25 @@ a resource</description>
 </directivesynopsis>
 
 <directivesynopsis type="section">
-<name>RequireAll</name>
+<name>SatisfyAll</name>
 <description>Enclose a group of authorization directives that must all
 be satisfied in order to grant access to a resource.  This block allows
 for 'AND' logic to be applied to various authorization providers.</description>
-<syntax>&lt;RequireAll&gt;
-... &lt;/RequireAll&gt;</syntax>
+<syntax>&lt;SatisfyAll&gt;
+... &lt;/SatisfyAll&gt;</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive type="section">RequireAll</directive> and
-    <code>&lt;/RequireAll&gt;</code> are used to enclose a group of
+    <p><directive type="section">SatisfyAll</directive> and
+    <code>&lt;/SatisfyAll&gt;</code> are used to enclose a group of
     authorization directives that must all be satisfied in order to 
     grant access to a resource.</p>
 
     <p>The <directive module="mod_authz_core">
-    &lt;RequireAll&gt;</directive> block as well as the 
-    <directive module="mod_authz_core">&lt;RequireOne&gt;</directive> block 
+    &lt;SatisfyAll&gt;</directive> block as well as the 
+    <directive module="mod_authz_core">&lt;SatisfyOne&gt;</directive> block 
     allow you to apply "AND" and "OR" logic to the authorization processing. 
     For example the following authorization block would apply the logic:</p>
 
@@ -173,14 +173,14 @@ for 'AND' logic to be applied to various authorization providers.</description>
     &nbsp;  AuthBasicProvider ...<br />
     &nbsp;  ...<br />
     &nbsp;  Require user John<br />
-    &nbsp;  &lt;RequireAll&gt;<br />
+    &nbsp;  &lt;SatisfyAll&gt;<br />
     &nbsp;&nbsp;    Require Group admins<br />
     &nbsp;&nbsp;    Require ldap-group cn=mygroup,o=foo<br />
-    &nbsp;&nbsp;    &lt;RequireOne&gt;<br />
+    &nbsp;&nbsp;    &lt;SatisfyOne&gt;<br />
     &nbsp;&nbsp;&nbsp;      Require ldap-attribute dept="sales"<br />
     &nbsp;&nbsp;&nbsp;      Require file-group<br />
-    &nbsp;&nbsp;    &lt;/RequireOne&gt;<br />
-    &nbsp;  &lt;/RequireAll&gt;<br />
+    &nbsp;&nbsp;    &lt;/SatisfyOne&gt;<br />
+    &nbsp;  &lt;/SatisfyAll&gt;<br />
     &lt;/Directory&gt;<br />
     </example>
 
@@ -192,25 +192,25 @@ for 'AND' logic to be applied to various authorization providers.</description>
 </directivesynopsis>
 
 <directivesynopsis type="section">
-<name>RequireOne</name>
+<name>SatisfyOne</name>
 <description>Enclose a group of authorization directives that must 
 satisfy at least one in order to grant access to a resource.  This 
 block allows for 'OR' logic to be applied to various authorization 
 providers.</description>
-<syntax>&lt;RequireOne&gt;
-... &lt;/RequireOne&gt;</syntax>
+<syntax>&lt;SatisfyOne&gt;
+... &lt;/SatisfyOne&gt;</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive type="section">RequireOne</directive> and
-    <code>&lt;/RequireOne&gt;</code> are used to enclose a group of
+    <p><directive type="section">SatisfyOne</directive> and
+    <code>&lt;/SatisfyOne&gt;</code> are used to enclose a group of
     authorization directives that must satisfy at least one in order to 
     grant access to a resource.</p>
 
     <p>See the <directive module="mod_authz_core">
-    &lt;RequireAll&gt;</directive> directive for a usage example.</p>
+    &lt;SatisfyAll&gt;</directive> directive for a usage example.</p>
 
 </usage>
 
