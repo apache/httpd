@@ -22,8 +22,7 @@ Alias /icons/ "@exp_iconsdir@/"
 <Directory "@exp_iconsdir@">
     Options Indexes MultiViews
     AllowOverride None
-    Order allow,deny
-    Allow from all
+    Require all granted
 </Directory>
 
 #

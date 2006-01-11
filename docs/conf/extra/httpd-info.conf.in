@@ -12,9 +12,7 @@
 
 <Location /server-status>
     SetHandler server-status
-    Order deny,allow
-    Deny from all
-    Allow from .example.com
+    Require host .example.com
 </Location>
 
 #
@@ -31,7 +29,5 @@
 #
 <Location /server-info>
     SetHandler server-info
-    Order deny,allow
-    Deny from all
-    Allow from .example.com
+    Require host .example.com
 </Location>

@@ -156,10 +156,12 @@ TARGET_nlm = \
 	$(OBJDIR)/authdigt.nlm \
 	$(OBJDIR)/authnano.nlm \
 	$(OBJDIR)/authnalias.nlm \
+	$(OBJDIR)/authncore.nlm \
 	$(OBJDIR)/authndbm.nlm \
 	$(OBJDIR)/authndef.nlm \
 	$(OBJDIR)/authnfil.nlm \
 	$(OBJDIR)/authndbd.nlm \
+	$(OBJDIR)/authzcore.nlm \
 	$(OBJDIR)/authzdbm.nlm \
 	$(OBJDIR)/authzdef.nlm \
 	$(OBJDIR)/authzgrp.nlm \

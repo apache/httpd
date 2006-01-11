@@ -38,8 +38,6 @@
  *
  * If there are any 'require group' blocks and we
  * are not in any group - we HTTP_UNAUTHORIZE
- * unless we are non-authoritative; in which
- * case we DECLINED.
  *
  */
 
@@ -47,6 +45,7 @@
 #include "apr_lib.h" /* apr_isspace */
 
 #include "ap_config.h"
+#include "ap_provider.h"
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"
@@ -58,15 +57,15 @@
 
 typedef struct {
     char *groupfile;
-    int authoritative;
 } authz_groupfile_config_rec;
+
+APR_DECLARE_OPTIONAL_FN(char*, authz_owner_get_file_group, (request_rec *r));
 
 static void *create_authz_groupfile_dir_config(apr_pool_t *p, char *d)
 {
     authz_groupfile_config_rec *conf = apr_palloc(p, sizeof(*conf));
 
     conf->groupfile = NULL;
-    conf->authoritative = 1; /* keep the fortress secure by default */
     return conf;
 }
 
@@ -86,13 +85,6 @@ static const command_rec authz_groupfile_cmds[] =
                    (void *)APR_OFFSETOF(authz_groupfile_config_rec, groupfile),
                    OR_AUTHCFG,
                    "text file containing group names and member user IDs"),
-    AP_INIT_FLAG("AuthzGroupFileAuthoritative", ap_set_flag_slot,
-                 (void *)APR_OFFSETOF(authz_groupfile_config_rec,
-                                      authoritative),
-                 OR_AUTHCFG,
-                 "Set to 'Off' to allow access control to be passed along to "
-                 "lower modules if the 'require group' fails. (default is "
-                 "On)."),
     {NULL}
 };
 
@@ -145,131 +137,139 @@ static apr_status_t groups_for_user(apr_pool_t *p, char *user, char *grpfile,
     return APR_SUCCESS;
 }
 
-/* Checking ID */
-
-static int check_user_access(request_rec *r)
+static authz_status group_check_authorization(request_rec *r,
+                                             const char *require_args)
 {
     authz_groupfile_config_rec *conf = ap_get_module_config(r->per_dir_config,
-                                                      &authz_groupfile_module);
+            &authz_groupfile_module);
     char *user = r->user;
-    int m = r->method_number;
-    int required_group = 0;
-    register int x;
     const char *t, *w;
     apr_table_t *grpstatus = NULL;
-    const apr_array_header_t *reqs_arr = ap_requires(r);
-    require_line *reqs;
-    const char *filegroup = NULL;
-    char *reason = NULL;
+    apr_status_t status;
 
     /* If there is no group file - then we are not
      * configured. So decline.
      */
     if (!(conf->groupfile)) {
-        return DECLINED;
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                        "No group file was specified in the configuration");
+        return AUTHZ_DENIED;
     }
 
-    if (!reqs_arr) {
-        return DECLINED; /* XXX change from legacy */
+    status = groups_for_user(r->pool, user, conf->groupfile,
+                                &grpstatus);
+
+    if (status != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                        "Could not open group file: %s",
+                        conf->groupfile);
+        return AUTHZ_DENIED;
     }
 
-    reqs = (require_line *)reqs_arr->elts;
-
-    for (x = 0; x < reqs_arr->nelts; x++) {
-
-        if (!(reqs[x].method_mask & (AP_METHOD_BIT << m))) {
-            continue;
-        }
-
-        t = reqs[x].requirement;
-        w = ap_getword_white(r->pool, &t);
-
-        /* needs mod_authz_owner to be present */
-        if (!strcasecmp(w, "file-group")) {
-            filegroup = apr_table_get(r->notes, AUTHZ_GROUP_NOTE);
-
-            if (!filegroup) {
-                /* mod_authz_owner is not present or not
-                 * authoritative. We are just a helper module for testing
-                 * group membership, so we don't care and decline.
-                 */
-                continue;
-            }
-        }
-
-        if (!strcasecmp(w, "group") || filegroup) {
-            required_group = 1; /* remember the requirement */
-
-            /* create group table only if actually needed. */
-            if (!grpstatus) {
-                apr_status_t status;
-
-                status = groups_for_user(r->pool, user, conf->groupfile,
-                                         &grpstatus);
-
-                if (status != APR_SUCCESS) {
-                    ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
-                                  "Could not open group file: %s",
-                                  conf->groupfile);
-                    return HTTP_INTERNAL_SERVER_ERROR;
-                }
-
-                if (apr_table_elts(grpstatus)->nelts == 0) {
-                    /* no groups available, so exit immediately */
-                    reason = apr_psprintf(r->pool,
-                                          "user doesn't appear in group file "
-                                          "(%s).", conf->groupfile);
-                    break;
-                }
-            }
-
-            if (filegroup) {
-                if (apr_table_get(grpstatus, filegroup)) {
-                    return OK;
-                }
-
-                if (conf->authoritative) {
-                    reason = apr_psprintf(r->pool,
-                                          "file group '%s' does not match.",
-                                          filegroup);
-                    break;
-                }
-
-                /* now forget the filegroup, thus alternatively require'd
-                   groups get a real chance */
-                filegroup = NULL;
-            }
-            else {
-                while (t[0]) {
-                    w = ap_getword_conf(r->pool, &t);
-                    if (apr_table_get(grpstatus, w)) {
-                        return OK;
-                    }
-                }
-            }
-        }
+    if (apr_table_elts(grpstatus)->nelts == 0) {
+        /* no groups available, so exit immediately */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "Authorization of user %s to access %s failed, reason: "
+                      "user doesn't appear in group file (%s).",
+                      r->user, r->uri, conf->groupfile);
+        return AUTHZ_DENIED;
     }
 
-    /* No applicable "require group" for this method seen */
-    if (!required_group || !conf->authoritative) {
-        return DECLINED;
+    t = require_args;
+    while ((w = ap_getword_conf(r->pool, &t)) && w[0]) {
+        if (apr_table_get(grpstatus, w)) {
+            return AUTHZ_GRANTED;
+        }
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                  "Authorization of user %s to access %s failed, reason: %s",
-                  r->user, r->uri,
-                  reason ? reason : "user is not part of the "
-                                    "'require'ed group(s).");
+                    "Authorization of user %s to access %s failed, reason: "
+                    "user is not part of the 'require'ed group(s).",
+                    r->user, r->uri);
 
-    ap_note_auth_failure(r);
-    return HTTP_UNAUTHORIZED;
+    return AUTHZ_DENIED;
 }
+
+APR_OPTIONAL_FN_TYPE(authz_owner_get_file_group) *authz_owner_get_file_group;
+
+static authz_status filegroup_check_authorization(request_rec *r,
+                                              const char *require_args)
+{
+    authz_groupfile_config_rec *conf = ap_get_module_config(r->per_dir_config,
+            &authz_groupfile_module);
+    char *user = r->user;
+    apr_table_t *grpstatus = NULL;
+    apr_status_t status;
+    const char *filegroup = NULL;
+
+    /* If there is no group file - then we are not
+     * configured. So decline.
+     */
+    if (!(conf->groupfile)) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                        "No group file was specified in the configuration");
+        return AUTHZ_DENIED;
+    }
+
+    status = groups_for_user(r->pool, user, conf->groupfile,
+                             &grpstatus);
+    if (status != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                      "Could not open group file: %s",
+                      conf->groupfile);
+        return AUTHZ_DENIED;
+    }
+
+    if (apr_table_elts(grpstatus)->nelts == 0) {
+        /* no groups available, so exit immediately */
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                        "Authorization of user %s to access %s failed, reason: "
+                        "user doesn't appear in group file (%s).",
+                        r->user, r->uri, conf->groupfile);
+        return AUTHZ_DENIED;
+    }
+
+    filegroup = authz_owner_get_file_group(r);
+
+    if (filegroup) {
+        if (apr_table_get(grpstatus, filegroup)) {
+            return AUTHZ_GRANTED;
+        }
+    }
+    else {
+        /* No need to emit a error log entry because the call
+        to authz_owner_get_file_group already did it
+        for us.
+        */
+        return AUTHZ_DENIED;
+    }
+
+    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                  "Authorization of user %s to access %s failed, reason: "
+                  "user is not part of the 'require'ed file group.",
+                  r->user, r->uri);
+
+    return AUTHZ_DENIED;
+}
+
+static const authz_provider authz_group_provider =
+{
+    &group_check_authorization,
+};
+
+static const authz_provider authz_filegroup_provider =
+{
+    &filegroup_check_authorization,
+};
 
 static void register_hooks(apr_pool_t *p)
 {
-    static const char * const aszPre[]={ "mod_authz_owner.c", NULL };
+    authz_owner_get_file_group = APR_RETRIEVE_OPTIONAL_FN(authz_owner_get_file_group);
 
-    ap_hook_auth_checker(check_user_access, aszPre, NULL, APR_HOOK_MIDDLE);
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "group", "0",
+                         &authz_group_provider);
+    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "file-group", "0",
+                         &authz_filegroup_provider);
 }
 
 module AP_MODULE_DECLARE_DATA authz_groupfile_module =

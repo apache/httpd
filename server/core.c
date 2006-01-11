@@ -99,7 +99,6 @@ static char errordocument_default;
 static void *create_core_dir_config(apr_pool_t *a, char *dir)
 {
     core_dir_config *conf;
-    int i;
 
     conf = (core_dir_config *)apr_pcalloc(a, sizeof(core_dir_config));
 
@@ -118,10 +117,6 @@ static void *create_core_dir_config(apr_pool_t *a, char *dir)
     conf->use_canonical_phys_port = USE_CANONICAL_PHYS_PORT_UNSET;
 
     conf->hostname_lookups = HOSTNAME_LOOKUP_UNSET;
-    conf->satisfy = apr_palloc(a, sizeof(*conf->satisfy) * METHODS);
-    for (i = 0; i < METHODS; ++i) {
-        conf->satisfy[i] = SATISFY_NOSPEC;
-    }
 
 #ifdef RLIMIT_CPU
     conf->limit_cpu = NULL;
@@ -268,18 +263,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->ap_default_type = new->ap_default_type;
     }
 
-    if (new->ap_auth_type) {
-        conf->ap_auth_type = new->ap_auth_type;
-    }
-
-    if (new->ap_auth_name) {
-        conf->ap_auth_name = new->ap_auth_name;
-    }
-
-    if (new->ap_requires) {
-        conf->ap_requires = new->ap_requires;
-    }
-
     if (conf->response_code_strings == NULL) {
         conf->response_code_strings = new->response_code_strings;
     }
@@ -357,16 +340,6 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     }
     /* Otherwise we simply use the base->sec_file array
      */
-
-    /* use a separate ->satisfy[] array either way */
-    conf->satisfy = apr_palloc(a, sizeof(*conf->satisfy) * METHODS);
-    for (i = 0; i < METHODS; ++i) {
-        if (new->satisfy[i] != SATISFY_NOSPEC) {
-            conf->satisfy[i] = new->satisfy[i];
-        } else {
-            conf->satisfy[i] = base->satisfy[i];
-        }
-    }
 
     if (new->server_signature != srv_sig_unset) {
         conf->server_signature = new->server_signature;
@@ -670,24 +643,30 @@ AP_DECLARE(int) ap_allow_overrides(request_rec *r)
     return conf->override;
 }
 
+/*
+ * Optional function coming from mod_ident, used for looking up ident user
+ */
+static APR_OPTIONAL_FN_TYPE(authn_ap_auth_type) *authn_ap_auth_type;
+
 AP_DECLARE(const char *) ap_auth_type(request_rec *r)
 {
-    core_dir_config *conf;
-
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
-
-    return conf->ap_auth_type;
+    if (authn_ap_auth_type) {
+        return authn_ap_auth_type(r);
+    }
+    return NULL;
 }
+
+/*
+ * Optional function coming from mod_ident, used for looking up ident user
+ */
+static APR_OPTIONAL_FN_TYPE(authn_ap_auth_name) *authn_ap_auth_name;
 
 AP_DECLARE(const char *) ap_auth_name(request_rec *r)
 {
-    core_dir_config *conf;
-
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
-
-    return conf->ap_auth_name;
+    if (authn_ap_auth_name) {
+        return authn_ap_auth_name(r);
+    }
+    return NULL;
 }
 
 AP_DECLARE(const char *) ap_default_type(request_rec *r)
@@ -710,26 +689,6 @@ AP_DECLARE(const char *) ap_document_root(request_rec *r) /* Don't use this! */
                                                       &core_module);
 
     return conf->ap_document_root;
-}
-
-AP_DECLARE(const apr_array_header_t *) ap_requires(request_rec *r)
-{
-    core_dir_config *conf;
-
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
-
-    return conf->ap_requires;
-}
-
-AP_DECLARE(int) ap_satisfies(request_rec *r)
-{
-    core_dir_config *conf;
-
-    conf = (core_dir_config *)ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
-
-    return conf->satisfy[r->method_number];
 }
 
 /* Should probably just get rid of this... the only code that cares is
@@ -1659,46 +1618,6 @@ static const char *set_enable_sendfile(cmd_parms *cmd, void *d_,
     return NULL;
 }
 
-static const char *satisfy(cmd_parms *cmd, void *c_, const char *arg)
-{
-    core_dir_config *c = c_;
-    int satisfy = SATISFY_NOSPEC;
-    int i;
-
-    if (!strcasecmp(arg, "all")) {
-        satisfy = SATISFY_ALL;
-    }
-    else if (!strcasecmp(arg, "any")) {
-        satisfy = SATISFY_ANY;
-    }
-    else {
-        return "Satisfy either 'any' or 'all'.";
-    }
-
-    for (i = 0; i < METHODS; ++i) {
-        if (cmd->limited & (AP_METHOD_BIT << i)) {
-            c->satisfy[i] = satisfy;
-        }
-    }
-
-    return NULL;
-}
-
-static const char *require(cmd_parms *cmd, void *c_, const char *arg)
-{
-    require_line *r;
-    core_dir_config *c = c_;
-
-    if (!c->ap_requires) {
-        c->ap_requires = apr_array_make(cmd->pool, 2, sizeof(require_line));
-    }
-
-    r = (require_line *)apr_array_push(c->ap_requires);
-    r->requirement = apr_pstrdup(cmd->pool, arg);
-    r->method_mask = cmd->limited;
-
-    return NULL;
-}
 
 /*
  * Report a missing-'>' syntax error.
@@ -2659,19 +2578,6 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
 }
 
 /*
- * Load an authorisation realm into our location configuration, applying the
- * usual rules that apply to realms.
- */
-static const char *set_authname(cmd_parms *cmd, void *mconfig,
-                                const char *word1)
-{
-    core_dir_config *aconfig = (core_dir_config *)mconfig;
-
-    aconfig->ap_auth_name = ap_escape_quotes(cmd->pool, word1);
-    return NULL;
-}
-
-/*
  * Handle a request to include the server's OS platform in the Server
  * response header field (the ServerTokens directive).  Unfortunately
  * this requires a new global in order to communicate the setting back to
@@ -3227,15 +3133,6 @@ AP_INIT_RAW_ARGS("<LocationMatch", urlsection, (void*)1, RSRC_CONF,
   "specified URL paths"),
 AP_INIT_RAW_ARGS("<FilesMatch", filesection, (void*)1, OR_ALL,
   "Container for directives affecting files matching specified patterns"),
-AP_INIT_TAKE1("AuthType", ap_set_string_slot,
-  (void*)APR_OFFSETOF(core_dir_config, ap_auth_type), OR_AUTHCFG,
-  "An HTTP authorization type (e.g., \"Basic\")"),
-AP_INIT_TAKE1("AuthName", set_authname, NULL, OR_AUTHCFG,
-  "The authentication realm (e.g. \"Members Only\")"),
-AP_INIT_RAW_ARGS("Require", require, NULL, OR_AUTHCFG,
-  "Selects which authenticated users or groups may access a protected space"),
-AP_INIT_TAKE1("Satisfy", satisfy, NULL, OR_AUTHCFG,
-  "access policy if both allow and require used ('all' or 'any')"),
 #ifdef GPROF
 AP_INIT_TAKE1("GprofDir", set_gprof_dir, NULL, RSRC_CONF,
   "Directory to plop gmon.out files"),
@@ -3718,11 +3615,15 @@ static int default_handler(request_rec *r)
  * traffic
  */
 APR_OPTIONAL_FN_TYPE(ap_logio_add_bytes_out) *logio_add_bytes_out;
+APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *authz_ap_some_auth_required;
 
 static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
     ident_lookup = APR_RETRIEVE_OPTIONAL_FN(ap_ident_lookup);
+    authz_ap_some_auth_required = APR_RETRIEVE_OPTIONAL_FN(authz_some_auth_required);
+    authn_ap_auth_type = APR_RETRIEVE_OPTIONAL_FN(authn_ap_auth_type);
+    authn_ap_auth_name = APR_RETRIEVE_OPTIONAL_FN(authn_ap_auth_name);
 
     ap_set_version(pconf);
     ap_setup_make_content_type(pconf);

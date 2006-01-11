@@ -16,7 +16,7 @@
 
 /**
  * @file  mod_auth.h
- * @brief uthentication Extension Module for Apache
+ * @brief Authentication and Authorization Extension for Apache
  *
  * @defgroup MOD_AUTH mod_auth
  * @ingroup  APACHE_MODS
@@ -35,10 +35,13 @@ extern "C" {
 #endif
 
 #define AUTHN_PROVIDER_GROUP "authn"
+#define AUTHZ_PROVIDER_GROUP "authz"
 #define AUTHN_DEFAULT_PROVIDER "file"
-    
+#define AUTHZ_DEFAULT_PROVIDER "default"
+
 #define AUTHZ_GROUP_NOTE "authz_group_note"
 #define AUTHN_PROVIDER_NAME_NOTE "authn_provider_name"
+#define AUTHZ_PROVIDER_NAME_NOTE "authz_provider_name"
 
 typedef enum {
     AUTH_DENIED,
@@ -48,12 +51,23 @@ typedef enum {
     AUTH_GENERAL_ERROR
 } authn_status;
 
+typedef enum {
+    AUTHZ_DENIED,
+    AUTHZ_GRANTED,
+    AUTHZ_GENERAL_ERROR
+} authz_status;
+
+typedef enum {
+	AUTHZ_REQSTATE_ONE,
+	AUTHZ_REQSTATE_ALL
+} authz_request_state;
+
 typedef struct {
     /* Given a username and password, expected to return AUTH_GRANTED
      * if we can validate this user/password combination.
      */
     authn_status (*check_password)(request_rec *r, const char *user,
-                                  const char *password);
+                                   const char *password);
 
     /* Given a user and realm, expected to return AUTH_USER_FOUND if we
      * can find a md5 hash of 'user:realm:password'
@@ -72,9 +86,29 @@ struct authn_provider_list {
 };
 
 typedef struct {
-    /* For a given user, return a hash of all groups the user belongs to.  */
-    apr_hash_t * (*get_user_groups)(request_rec *r, const char *user);
+    /* Given a request_rec, expected to return AUTH_GRANTED
+     * if we can authorize user access.
+     */
+    authz_status (*check_authorization)(request_rec *r,
+                                        const char *require_line);
 } authz_provider;
+
+/* A linked-list of authn providers. */
+typedef struct authz_provider_list authz_provider_list;
+
+struct authz_provider_list {
+    const char *provider_name;
+    const authz_provider *provider;
+	authz_provider_list *one_next;
+	authz_provider_list *all_next;
+    /** If a Limit method is in effect, this field will be set */
+    apr_int64_t method_mask;
+	authz_request_state req_state;
+    int req_state_level;
+    /** String following 'require <provider>' from config file */
+    char *requirement;
+    int is_reject;
+};
 
 #ifdef __cplusplus
 }

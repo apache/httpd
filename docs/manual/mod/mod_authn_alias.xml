@@ -76,7 +76,6 @@
     
          AuthType Basic<br />
          AuthName LDAP_Protected_Place<br />
-         AuthzLDAPAuthoritative off<br />
          require valid-user<br />
       </indent>
       &lt;/Directory&gt;<br />

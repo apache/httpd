@@ -37,7 +37,6 @@
 </summary>
 
 <seealso><directive module="core">Require</directive></seealso>
-<seealso><directive module="core">Satisfy</directive></seealso>
 
 <directivesynopsis>
 <name>AuthGroupFile</name>
@@ -71,38 +70,6 @@ of user groups for authorization</description>
       stored outside the document tree of the web-server; do <em>not</em>
       put it in the directory that it protects. Otherwise, clients may
       be able to download the <directive>AuthGroupFile</directive>.</p>
-    </note>
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>AuthzGroupFileAuthoritative</name>
-<description>Sets whether authorization will be passed on to lower level
-modules</description>
-<syntax>AuthzGroupFileAuthoritative On|Off</syntax>
-<default>AuthzGroupFileAuthoritative On</default>
-<contextlist><context>directory</context><context>.htaccess</context>
-</contextlist>
-<override>AuthConfig</override>
-
-<usage>
-    <p>Setting the <directive>AuthzGroupFileAuthoritative</directive>
-    directive explicitly to <code>Off</code> allows for
-    group authorization to be passed on to lower level modules (as defined
-    in the <code>modules.c</code> files) if there is <strong>no
-    group</strong> matching the supplied userID.</p>
-
-    <p>By default, control is not passed on and an unknown group
-    will result in an Authentication Required reply. Not
-    setting it thus keeps the system secure and forces an NCSA
-    compliant behaviour.</p>
-
-    <note type="warning"><title>Security</title>
-      <p>Do consider the implications of allowing a user to
-      allow fall-through in his <code>.htaccess</code> file; and verify
-      that this is really what you want; Generally it is easier to just
-      secure a single <code>.htpasswd</code> file, than it is to secure
-      a database which might have more access interfaces.</p>
     </note>
 </usage>
 </directivesynopsis>
