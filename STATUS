@@ -97,6 +97,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
+    * mod_proxy: Fix Cookie2 header problems that originates back
+      from mod_jk. Cookie2 was always sent as Cookie.
+      http://svn.apache.org/viewcvs.cgi?rev=358769&view=rev
+      +1: mturk
+
     * mod_dbd: When threaded, create a private pool in child_init
       so we're not using the process pool later.  Also improve
       configuration defaults and merge function.
