@@ -321,6 +321,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16995
        +1: rpluem
 
+    *) mod_ssl: Fix PR37791 (CVEID: CAN-2005-3357) (SEGV if the client is
+       connection plain to a SSL enabled port)
+       Trunk version of patch:
+          http://svn.apache.org/viewcvs.cgi?rev=354394&view=rev
+       Backport version for 2.0.x of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=17393
+       +1: rpluem
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Replace some of the mutex locking in the worker MPM with
