@@ -140,7 +140,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Fix mis-shifted 32 bit scope, masked to 64 bits as a method.
         URL: http://svn.apache.org/viewcvs?rev=358040&view=rev
-      +1: wrowe
+      +1: wrowe, mturk
 
     * mod_proxy: Call ap_proxy_http_cleanup after ap_log_rerror
       because it resets backend->hostname to NULL.
