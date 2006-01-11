@@ -31,6 +31,7 @@ XINCDIRS	+= \
 			$(APR)/include \
 			$(APRUTIL)/include \
 			$(AP_WORK)/include \
+			$(AP_WORK)/modules/aaa/ \
 			$(AP_WORK)/modules/filters/ \
 			$(AP_WORK)/modules/generators/ \
 			$(AP_WORK)/modules/http/ \
@@ -214,6 +215,10 @@ FILES_nlm_objs = \
 	$(OBJDIR)/listen.o \
 	$(OBJDIR)/log.o \
 	$(OBJDIR)/main.o \
+	$(OBJDIR)/mod_authn_core.o \
+	$(OBJDIR)/mod_authn_default.o \
+	$(OBJDIR)/mod_authz_core.o \
+	$(OBJDIR)/mod_authz_default.o \
 	$(OBJDIR)/mod_authz_host.o \
 	$(OBJDIR)/mod_alias.o \
 	$(OBJDIR)/mod_dir.o \
