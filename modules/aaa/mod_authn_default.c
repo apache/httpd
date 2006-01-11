@@ -59,8 +59,10 @@ static int authenticate_no_user(request_rec *r)
 
     const char *type;
 
+    /* if there isn't an auth_type, then assume that no authentication
+        is require so return OK */
     if (!(type = ap_auth_type(r))) {
-        return DECLINED;
+        return OK;
     }
 
     /* fill in the r->user field */

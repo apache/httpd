@@ -53,31 +53,6 @@ static int check_user_access(request_rec *r)
 {
     authz_default_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                  &authz_default_module);
-    int m = r->method_number;
-    int method_restricted = 0;
-    register int x;
-    const apr_array_header_t *reqs_arr = ap_requires(r);
-    require_line *reqs;
-
-    /* BUG FIX: tadc, 11-Nov-1995.  If there is no "requires" directive,
-     * then any user will do.
-     */
-    if (!reqs_arr) {
-        return OK;
-    }
-    reqs = (require_line *)reqs_arr->elts;
-
-    for (x = 0; x < reqs_arr->nelts; x++) {
-        if (!(reqs[x].method_mask & (AP_METHOD_BIT << m))) {
-            continue;
-        }
-        method_restricted = 1;
-        break;
-    }
-
-    if (method_restricted == 0) {
-        return OK;
-    }
 
     if (!(conf->authoritative)) {
         return DECLINED;

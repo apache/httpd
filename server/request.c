@@ -183,56 +183,18 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         r->ap_auth_type = r->prev->ap_auth_type;
     }
     else {
-        switch (ap_satisfies(r)) {
-        case SATISFY_ALL:
-        case SATISFY_NOSPEC:
-            if ((access_status = ap_run_access_checker(r)) != 0) {
-                return decl_die(access_status, "check access", r);
-            }
-
-            if (ap_some_auth_required(r)) {
-                if (((access_status = ap_run_check_user_id(r)) != 0)
-                    || !ap_auth_type(r)) {
-                    return decl_die(access_status, ap_auth_type(r)
-                                  ? "check user.  No user file?"
-                                  : "perform authentication. AuthType not set!",
-                                  r);
-                }
-
-                if (((access_status = ap_run_auth_checker(r)) != 0)
-                    || !ap_auth_type(r)) {
-                    return decl_die(access_status, ap_auth_type(r)
-                                  ? "check access.  No groups file?"
-                                  : "perform authentication. AuthType not set!",
-                                   r);
-                }
-            }
-            break;
-
-        case SATISFY_ANY:
-            if (((access_status = ap_run_access_checker(r)) != 0)) {
-                if (!ap_some_auth_required(r)) {
-                    return decl_die(access_status, "check access", r);
-                }
-
-                if (((access_status = ap_run_check_user_id(r)) != 0)
-                    || !ap_auth_type(r)) {
-                    return decl_die(access_status, ap_auth_type(r)
-                                  ? "check user.  No user file?"
-                                  : "perform authentication. AuthType not set!",
-                                  r);
-                }
-
-                if (((access_status = ap_run_auth_checker(r)) != 0)
-                    || !ap_auth_type(r)) {
-                    return decl_die(access_status, ap_auth_type(r)
-                                  ? "check access.  No groups file?"
-                                  : "perform authentication. AuthType not set!",
-                                  r);
-                }
-            }
-            break;
+        if ((access_status = ap_run_access_checker(r)) != 0) {
+            return decl_die(access_status, "check access", r);
         }
+
+        if ((access_status = ap_run_check_user_id(r)) != 0) {
+            return decl_die(access_status, "check user", r);
+        }
+
+        if ((access_status = ap_run_auth_checker(r)) != 0) {
+            return decl_die(access_status, "check authorization", r);
+        }
+
     }
     /* XXX Must make certain the ap_run_type_checker short circuits mime
      * in mod-proxy for r->proxyreq && r->parsed_uri.scheme
@@ -1555,28 +1517,16 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_sub_req_output_filter(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+extern APR_OPTIONAL_FN_TYPE(authz_some_auth_required) *authz_ap_some_auth_required;
 
 AP_DECLARE(int) ap_some_auth_required(request_rec *r)
 {
     /* Is there a require line configured for the type of *this* req? */
-
-    const apr_array_header_t *reqs_arr = ap_requires(r);
-    require_line *reqs;
-    int i;
-
-    if (!reqs_arr) {
+    if (authz_ap_some_auth_required) {
+        return authz_ap_some_auth_required(r);
+    }
+    else
         return 0;
-    }
-
-    reqs = (require_line *) reqs_arr->elts;
-
-    for (i = 0; i < reqs_arr->nelts; ++i) {
-        if (reqs[i].method_mask & (AP_METHOD_BIT << r->method_number)) {
-            return 1;
-        }
-    }
-
-    return 0;
 }
 
 

@@ -195,7 +195,7 @@ static int authenticate_basic_user(request_rec *r)
         return HTTP_INTERNAL_SERVER_ERROR;
     }
 
-    r->ap_auth_type = "Basic";
+    r->ap_auth_type = (char*)current_auth;
 
     res = get_basic_auth(r, &sent_user, &sent_pw);
     if (res) {

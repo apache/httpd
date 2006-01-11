@@ -17,12 +17,10 @@ UserDir public_html
     AllowOverride FileInfo AuthConfig Limit Indexes
     Options MultiViews Indexes SymLinksIfOwnerMatch IncludesNoExec
     <Limit GET POST OPTIONS>
-        Order allow,deny
-        Allow from all
+        Require all granted
     </Limit>
     <LimitExcept GET POST OPTIONS>
-        Order deny,allow
-        Deny from all
+        Require all denied
     </LimitExcept>
 </Directory>
 
