@@ -119,12 +119,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs.cgi?rev=354628&view=rev
       http://svn.apache.org/viewcvs.cgi?rev=354636&view=rev (comment only delta)
       Message-ID: <4395A056.2070000@web.turner.com>
-      +1: jerenkrantz, jim
+      +1: jerenkrantz, jim, mturk
 
     * proxy_util: Fix case where a shared keepalive connection results in
       different (and incorrect) workers from being accessed.
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/proxy/proxy_util.c?rev=356030&view=diff&r1=356030&r2=332306
-      +1: jim, rpluem
+      +1: jim, rpluem, mturk
 
     * mod_ssl: Fix PR37791 (SEGV if the client is connection plain to a SSL
       enabled port)
@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_proxy: Call ap_proxy_http_cleanup after ap_log_rerror
       because it resets backend->hostname to NULL.
       http://svn.apache.org/viewcvs.cgi?rev=366279&view=rev
-      +1: rpluem
+      +1: rpluem, mturk
 
     * mod_ssl: Fix PR38017 (mod_cache not working in reverse proxy setup?)
       Trunk version of patch:
