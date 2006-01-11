@@ -53,32 +53,29 @@ BEGIN {
     if (match ($0, /^.*Copyright /)) {
       copyright = substr($0, RLENGTH + 1);
     }
-    if (match ($0, /^#define AP_SERVER_MAJORVERSION_NUMBER [^*]/)) {
+    if (match ($0, /^#define AP_SERVER_MAJORVERSION_NUMBER /)) {
       ver_major = $3;
     }
-    else if (match ($0, /^#define AP_SERVER_MINORVERSION_NUMBER [^*]/)) {
+    else if (match ($0, /^#define AP_SERVER_MINORVERSION_NUMBER /)) {
       ver_minor = $3;
     }
-    else if (match ($0, /^#define AP_SERVER_PATCHLEVEL_NUMBER [^*]/)) {
+    else if (match ($0, /^#define AP_SERVER_PATCHLEVEL_NUMBER /)) {
       ver_patch = $3;
     }
-    else if (match ($0, /^#define AP_SERVER_ADD_STRING [^"]+"/)) {
-      ver_patch_modifier = substr($3, 2, length($3) - 2);
+    else if (match ($0, /^#define AP_SERVER_ADD_STRING +"[^"]+"/)) {
+      ver_build = substr($3, 2, length($3) - 2);
     }
   }
 
-  ver = ver_major "." ver_minor "." ver_patch ver_patch_modifier;
-  verc = ver_major "," ver_minor "," ver_patch;   
-  if (build) {
-    sub(/-.*/, "", verc)
-    verc = verc "," build;
-  } else if (sub(/-dev/, ",0", verc)) {
-      ff = ff + 2;
-  } else if (!sub(/-alpha/, ",10", verc)  \
-          && !sub(/-beta/, ",100", verc)  \
-          && !sub(/-gold/, ",200", verc)) {
-    sub(/-.*/, "", verc);
+  ver = ver_major "." ver_minor "." ver_patch ver_build;
+  gsub(/\./, ",", verc);
+  if (match (ver_build, /-dev/)) {
+    ff = ff + 2;
     verc = verc "," 0;
+  } else if (!ver_build) {
+    verc = verc "," 200;
+  } else {
+    verc = verc "," 100;
   }
   
   if (length(vendor)) {
