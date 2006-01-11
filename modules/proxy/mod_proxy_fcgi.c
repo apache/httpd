@@ -75,10 +75,10 @@ static void fcgi_begin_request_body_to_array(fcgi_begin_request_body *h,
 static int proxy_fcgi_canon(request_rec *r, char *url)
 {
     char *host, sport[7];
-    const char *err, *scheme, *path;
+    const char *err, *path;
     apr_port_t port = 8000;
 
-    if (strncasecmp(url, "fcgi-", 5) == 0) {
+    if (strncasecmp(url, "fcgi://", 7) == 0) {
         url += 5;
     }
     else {
@@ -88,48 +88,29 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: FCGI: canonicalising URL %s", url);
 
-    if (strncmp(url, "tcp://", 6) == 0) {
-        url += 4;
-        
-        scheme = "fcgi-tcp://";
-
-        err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
-        if (err) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "error parsing URL %s: %s",
-                          url, err);
-            return HTTP_BAD_REQUEST;
-        }
-        
-        apr_snprintf(sport, sizeof(sport), ":%d", port);
-        
-        if (ap_strchr_c(host, ':')) {
-            /* if literal IPv6 address */
-            host = apr_pstrcat(r->pool, "[", host, "]", NULL);
-        }
-
-        path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
-                                 r->proxyreq);
-        if (path == NULL)
-            return HTTP_BAD_REQUEST;
-
-        r->filename = apr_pstrcat(r->pool, "proxy:", scheme, host, sport, "/",
-                                  path, NULL);
-
-        r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+    err = ap_proxy_canon_netloc(r->pool, &url, NULL, NULL, &host, &port);
+    if (err) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "error parsing URL %s: %s", url, err);
+        return HTTP_BAD_REQUEST;
     }
-    else if (strncmp(url, "local://", 8) == 0) {
-        url += 6;
-        scheme = "fcgi-local:";
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "proxy: FCGI: Local FastCGI not supported.");
-        return HTTP_INTERNAL_SERVER_ERROR;
+        
+    apr_snprintf(sport, sizeof(sport), ":%d", port);
+        
+    if (ap_strchr_c(host, ':')) {
+        /* if literal IPv6 address */
+        host = apr_pstrcat(r->pool, "[", host, "]", NULL);
     }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-             "proxy: FCGI: mallformed destination: %s", url);
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
+
+    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
+                             r->proxyreq);
+    if (path == NULL)
+        return HTTP_BAD_REQUEST;
+
+    r->filename = apr_pstrcat(r->pool, "proxy:fcgi://", host, sport, "/",
+                              path, NULL);
+
+    r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
 
     return OK;
 }
@@ -745,6 +726,8 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     return OK;
 }
 
+#define FCGI_SCHEME "FCGI"
+
 /*
  * This handles fcgi:(type):(dest) URLs
  */
@@ -757,7 +740,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     char server_portstr[32];
     conn_rec *origin = NULL;
     proxy_conn_rec *backend = NULL;
-    const char *scheme;
+
     proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
                                                  &proxy_module);
 
@@ -770,7 +753,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
                  "proxy: FCGI: url: %s proxyname: %s proxyport: %d",
                  url, proxyname, proxyport);
 
-    if (strncasecmp(url, "fcgi-", 5) == 0) {
+    if (strncasecmp(url, "fcgi://", 7) == 0) {
         url += 5;
     }
     else {
@@ -779,32 +762,17 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
         return DECLINED;
     }
     
-    if (strncmp(url, "tcp://", 6) == 0) {
-        scheme = "FCGI_TCP";
-    }
-    else if (strncmp(url, "local://", 8) == 0) {
-        scheme = "FCGI_LOCAL";
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "proxy: FCGI: local FastCGI not supported.");
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-             "proxy: FCGI: mallformed destination: %s", url);
-        return HTTP_INTERNAL_SERVER_ERROR;
-    }
-
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "proxy: FCGI: serving URL %s via %s", url, scheme);
+                 "proxy: FCGI: serving URL %s", url);
 
     /* Create space for state information */
     if (! backend) {
-        status = ap_proxy_acquire_connection(scheme, &backend, worker,
+        status = ap_proxy_acquire_connection(FCGI_SCHEME, &backend, worker,
                                              r->server);
         if (status != OK) {
             if (backend) {
                 backend->close_on_recycle = 1;
-                ap_proxy_release_connection(scheme, backend, r->server);
+                ap_proxy_release_connection(FCGI_SCHEME, backend, r->server);
             }
             return status;
         }
@@ -831,7 +799,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     }
 
     /* Step Two: Make the Connection */
-    if (ap_proxy_connect_backend(scheme, backend, worker, r->server)) {
+    if (ap_proxy_connect_backend(FCGI_SCHEME, backend, worker, r->server)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: FCGI: failed to make connection to backend: %s",
                      backend->hostname);
@@ -845,7 +813,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
 
 cleanup:
     /* Do not close the socket */
-    ap_proxy_release_connection(scheme, backend, r->server);
+    ap_proxy_release_connection(FCGI_SCHEME, backend, r->server);
     return status;
 }
 
