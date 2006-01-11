@@ -28,7 +28,6 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
-#include <assert.h>
 #include "multithread.h"
 
 #ifdef NETWARE
@@ -162,9 +161,9 @@ static void log_init(server_rec *s, pool *p)
 static char *log_escape(char *q, const char *e, const char *p)
 {
     for ( ; *p ; ++p) {
-        assert(q < e);
+        ap_assert(q < e);
         if (test_char_table[*(unsigned char *)p]&T_ESCAPE_FORENSIC) {
-            assert(q+2 < e);
+            ap_assert(q+2 < e);
             *q++ = '%';
             sprintf(q, "%02x", *(unsigned char *)p);
             q += 2;
@@ -172,7 +171,7 @@ static char *log_escape(char *q, const char *e, const char *p)
         else
             *q++ = *p;
     }
-    assert(q < e);
+    ap_assert(q < e);
     *q = '\0';
 
     return q;
@@ -251,7 +250,7 @@ static int log_before(request_rec *r)
 
     ap_table_do(log_headers, &h, r->headers_in, NULL);
 
-    assert(h.pos < h.end);
+    ap_assert(h.pos < h.end);
     *h.pos++ = '\n';
 
     write(cfg->fd, h.log, h.count-1);
