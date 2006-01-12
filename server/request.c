@@ -183,15 +183,15 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         r->ap_auth_type = r->prev->ap_auth_type;
     }
     else {
-        if ((access_status = ap_run_access_checker(r)) != 0) {
+        if ((access_status = ap_run_access_checker(r)) != OK) {
             return decl_die(access_status, "check access", r);
         }
 
-        if ((access_status = ap_run_check_user_id(r)) != 0) {
+        if ((access_status = ap_run_check_user_id(r)) != OK) {
             return decl_die(access_status, "check user", r);
         }
 
-        if ((access_status = ap_run_auth_checker(r)) != 0) {
+        if ((access_status = ap_run_auth_checker(r)) != OK) {
             return decl_die(access_status, "check authorization", r);
         }
 
@@ -200,11 +200,11 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
      * in mod-proxy for r->proxyreq && r->parsed_uri.scheme
      *                              && !strcmp(r->parsed_uri.scheme, "http")
      */
-    if ((access_status = ap_run_type_checker(r)) != 0) {
+    if ((access_status = ap_run_type_checker(r)) != OK) {
         return decl_die(access_status, "find types", r);
     }
 
-    if ((access_status = ap_run_fixups(r)) != 0) {
+    if ((access_status = ap_run_fixups(r)) != OK) {
         return access_status;
     }
 
