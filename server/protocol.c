@@ -704,8 +704,9 @@ static apr_status_t process_request_line(request_rec *r, char *line,
                 else {
                     apr_size_t pending_len = strlen(r->pending_header_line);
                     apr_size_t fold_len = strlen(line);
-                    if (pending_len + fold_len >
-                        r->server->limit_req_fieldsize) {
+                    if ((r->server->limit_req_fieldsize > 0)
+						&& (pending_len + fold_len >
+                               (apr_size_t) r->server->limit_req_fieldsize)) {
                         /* CVE-2004-0942 */
                         r->status = HTTP_BAD_REQUEST;
                         return APR_ENOSPC;
