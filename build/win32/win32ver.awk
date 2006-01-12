@@ -1,4 +1,4 @@
-# Copyright 2001-2005 The Apache Software Foundation or its licensors, as
+# Copyright 2001-2006 The Apache Software Foundation or its licensors, as
 # applicable.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
@@ -50,30 +50,32 @@ BEGIN {
   }
 
   while ((getline < rel_h) > 0) {
-    if (match ($0, /^#define AP_SERVER_MAJORVERSION "[^"]+"/)) {
-      ver_major = substr($3, 2, length($3) - 2);
+    if (match ($0, /^.*\* Copyright /)) {
+      copyright = substr($0, RLENGTH + 1);
     }
-    else if (match ($0, /^#define AP_SERVER_MINORVERSION "[^"]+"/)) {
-      ver_minor = substr($3, 2, length($3) - 2);
+    if (match ($0, /^#define AP_SERVER_MAJORVERSION_NUMBER /)) {
+      ver_major = $3;
     }
-    else if (match ($0, /^#define AP_SERVER_PATCHLEVEL "[^"]+"/)) {
-      ver_patch = substr($3, 2, length($3) - 2);       
+    else if (match ($0, /^#define AP_SERVER_MINORVERSION_NUMBER /)) {
+      ver_minor = $3;
+    }
+    else if (match ($0, /^#define AP_SERVER_PATCHLEVEL_NUMBER /)) {
+      ver_patch = $3;
+    }
+    else if (match ($0, /^#define AP_SERVER_ADD_STRING +"[^"]*"/)) {
+      ver_build = substr($3, 2, length($3) - 2);
     }
   }
 
-  ver = ver_major "." ver_minor "." ver_patch;
-  verc = ver_major "," ver_minor "," ver_patch;   
-  gsub(/\./, ",", verc);
-  if (build) {
-    sub(/-.*/, "", verc)
-    verc = verc "," build;
-  } else if (sub(/-dev/, ",0", verc)) {
-      ff = ff + 2;
-  } else if (!sub(/-alpha/, ",10", verc)  \
-          && !sub(/-beta/, ",100", verc)  \
-          && !sub(/-gold/, ",200", verc)) {
-    sub(/-.*/, "", verc);
+  ver = ver_major "." ver_minor "." ver_patch ver_build;
+  verc = ver_major "," ver_minor "," ver_patch;
+  if (match (ver_build, /-dev/)) {
+    ff = ff + 2;
     verc = verc "," 0;
+  } else if (!ver_build) {
+    verc = verc "," 200;
+  } else {
+    verc = verc "," 100;
   }
   
   if (length(vendor)) {
@@ -100,17 +102,22 @@ BEGIN {
   print "  BEGIN";
   print "    BLOCK \"040904b0\"";
   print "    BEGIN";
-  print "      VALUE \"Comments\", \"All rights reserved.  The license "\
-        "is available at <http://www.apache.org/licenses/LICENSE-2.0.txt>. "\
-        "The Apache HTTP Server project pages are at "\
-        "<http://httpd.apache.org/>.\\0\"";
+  print "      VALUE \"Comments\", "\
+     "\"Licensed under the Apache License, Version 2.0 (the \"\"License\"\"); "\
+     "you may not use this file except in compliance with the License.  "\
+     "You may obtain a copy of the License at\\r\\n\\r\\n"\
+     "http://www.apache.org/licenses/LICENSE-2.0\\r\\n\\r\\n"\
+     "Unless required by applicable law or agreed to in writing, "\
+     "software distributed under the License is distributed on an "\
+     "\"\"AS IS\"\" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, "\
+     "either express or implied.  See the License for the specific "\
+     "language governing permissions and limitations under the License.\\0\"";
   print "      VALUE \"CompanyName\", \"Apache Software Foundation\\0\"";
   print "      VALUE \"FileDescription\", \"" desc "\\0\"";
   print "      VALUE \"FileVersion\", \"" ver "\\0\"";
   print "      VALUE \"InternalName\", \"" file "\\0\"";
-  print "      VALUE \"LegalCopyright\", \"Copyright © 2000-2004 "\
-        "The Apache Software Foundation.\\0\"";
-  print "      VALUE \"OriginalFilename\", \"" file ".exe\\0\"";
+  print "      VALUE \"LegalCopyright\", \"Copyright " copyright "\\0\"";
+  print "      VALUE \"OriginalFilename\", \"" file "\\0\"";
   if (vendor) {
     print "      VALUE \"PrivateBuild\", \"" vendor "\\0\"";
   }
