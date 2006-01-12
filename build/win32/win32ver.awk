@@ -50,7 +50,7 @@ BEGIN {
   }
 
   while ((getline < rel_h) > 0) {
-    if (match ($0, /^.*Copyright /)) {
+    if (match ($0, /^.*\* Copyright /)) {
       copyright = substr($0, RLENGTH + 1);
     }
     if (match ($0, /^#define AP_SERVER_MAJORVERSION_NUMBER /)) {
@@ -62,20 +62,25 @@ BEGIN {
     else if (match ($0, /^#define AP_SERVER_PATCHLEVEL_NUMBER /)) {
       ver_patch = $3;
     }
+    else if (match ($0, /^#define AP_SERVER_DEVBUILD_BOOLEAN /)) {
+      ver_devbuild = $3;
+    }
     else if (match ($0, /^#define AP_SERVER_ADD_STRING +"[^"]+"/)) {
       ver_build = substr($3, 2, length($3) - 2);
     }
   }
 
-  ver = ver_major "." ver_minor "." ver_patch ver_build;
-  gsub(/\./, ",", verc);
-  if (match (ver_build, /-dev/)) {
+  ver = ver_major "." ver_minor "." ver_patch;
+  if (!ver_devbuild) {
+    verc = ver_major "," ver_minor "," ver_patch;
+  } else if (!match (ver_build, /-dev/)) {
     ff = ff + 2;
-    verc = verc "," 0;
-  } else if (!ver_build) {
-    verc = verc "," 200;
+    verc = ver_major "," ver_minor "," ver_patch "," 100;
+    ver = ver ver_build;
   } else {
-    verc = verc "," 100;
+    ff = ff + 2;
+    verc = ver_major "," ver_minor "," ver_patch "," 0;
+    ver = ver ver_build;
   }
   
   if (length(vendor)) {

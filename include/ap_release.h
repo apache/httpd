@@ -1,5 +1,4 @@
-/* Copyright 2001-2005 The Apache Software Foundation or its licensors, as
- * applicable.
+/* Copyright 2001-2005 The Apache Software Foundation or its licensors, as applicable.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,13 +21,10 @@
 #ifndef AP_RELEASE_H
 #define AP_RELEASE_H
 
-/* The numeric compile-time version constants. These constants are the
- * authoritative version numbers for APR. 
- */
-/** Properly quote a value as a string in the C preprocessor */
-#define AP_STRINGIFY(n) AP_STRINGIFY_HELPER(n)
-/** Helper macro for AP_STRINGIFY */
-#define AP_STRINGIFY_HELPER(n) #n
+#include "apr_general.h" /* stringify */
+
+#define AP_SERVER_COPYRIGHT "Copyright 2001-2005 The Apache Software Foundation" \
+                            " or its licensors, as applicable."
 
 /*
  * The below defines the base string of the Server: header. Additional
@@ -57,9 +53,9 @@
 #endif
 
 /* keep old macros as well */
-#define AP_SERVER_MAJORVERSION  AP_STRINGIFY(AP_SERVER_MAJORVERSION_NUMBER)
-#define AP_SERVER_MINORVERSION  AP_STRINGIFY(AP_SERVER_MINORVERSION_NUMBER)
-#define AP_SERVER_PATCHLEVEL    AP_STRINGIFY(AP_SERVER_PATCHLEVEL_NUMBER) \
+#define AP_SERVER_MAJORVERSION  APR_STRINGIFY(AP_SERVER_MAJORVERSION_NUMBER)
+#define AP_SERVER_MINORVERSION  APR_STRINGIFY(AP_SERVER_MINORVERSION_NUMBER)
+#define AP_SERVER_PATCHLEVEL    APR_STRINGIFY(AP_SERVER_PATCHLEVEL_NUMBER) \
                                 AP_SERVER_ADD_STRING
 
 #define AP_SERVER_MINORREVISION AP_SERVER_MAJORVERSION "." AP_SERVER_MINORVERSION
