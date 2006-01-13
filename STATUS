@@ -99,13 +99,20 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Message-ID: <4395A056.2070000@web.turner.com>
       +1: jerenkrantz, jim, wrowe
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-
     * mod_proxy: Fix Cookie2 header problems that originates back
       from mod_jk. Cookie2 was always sent as Cookie.
       http://svn.apache.org/viewcvs.cgi?rev=358769&view=rev
-      +1: mturk, niq
+      +1: mturk, niq, jim
+
+    * mod_ssl: Fix PR37791 (CVEID: CAN-2005-3357) (SEGV if the client is
+      connection plain to a SSL enabled port)
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=354394&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jorton, jim
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
       so we're not using the process pool later.  Also improve
@@ -125,6 +132,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs.cgi?rev=354636&view=rev (comment only delta)
       Message-ID: <4395A056.2070000@web.turner.com>
       +1: jerenkrantz, jim, mturk
+      -1: roy
       rpluem says: The patch mentioned above had been vetoed by Roy on the list
                    (http://mail-archives.apache.org/mod_mbox/httpd-dev/200512.mbox/ajax/%3cA1E95672-E36F-40FB-B906-41A447D72504@gbiv.com%3e)
                    Several changes have been done to this patch to fix the
@@ -149,13 +157,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    As it is fundamentally different from the first approach I
                    would suggest to restart the voting.
 
-    * mod_ssl: Fix PR37791 (CVEID: CAN-2005-3357) (SEGV if the client is
-      connection plain to a SSL enabled port)
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=354394&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jorton
+      http://people.apache.org/~rpluem/patches/partial_2.2.diff
+      +1: jim
 
     * Fix for AP_HAVE_DESIGNATED_INITIALIZER vs C++ compilers
          http://svn.apache.org/viewcvs?rev=356234&view=rev
