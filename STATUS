@@ -99,11 +99,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Message-ID: <4395A056.2070000@web.turner.com>
       +1: jerenkrantz, jim, wrowe
 
-    * proxy_util: Fix case where a shared keepalive connection results in
-      different (and incorrect) workers from being accessed.
-      http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/proxy/proxy_util.c?rev=356030&view=diff&r1=356030&r2=332306
-      +1: jim, rpluem, mturk
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
