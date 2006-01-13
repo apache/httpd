@@ -104,11 +104,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/proxy/proxy_util.c?rev=356030&view=diff&r1=356030&r2=332306
       +1: jim, rpluem, mturk
 
-    * mod_proxy: Call ap_proxy_http_cleanup after ap_log_rerror
-      because it resets backend->hostname to NULL.
-      http://svn.apache.org/viewcvs.cgi?rev=366279&view=rev
-      +1: rpluem, mturk, niq
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
