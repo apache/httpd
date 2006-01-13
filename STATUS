@@ -89,23 +89,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_ssl/ab: Fix compiler warnings with OpenSSL 0.9.8a.
-        http://svn.apache.org/viewcvs.cgi?rev=349415&view=rev
-      +1: jorton, jerenkrantz, wrowe
-
     * HTTP: If a connection aborts while waiting for a chunked line,
       flag the connection as errored out.
       http://svn.apache.org/viewcvs.cgi?rev=354630&view=rev
       Message-ID: <4395A056.2070000@web.turner.com>
       +1: jerenkrantz, jim, wrowe
-
-    * mod_ssl: Fix PR37791 (CVEID: CAN-2005-3357) (SEGV if the client is
-      connection plain to a SSL enabled port)
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=354394&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jorton, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -164,6 +152,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * Fix mis-shifted 32 bit scope, masked to 64 bits as a method.
         URL: http://svn.apache.org/viewcvs?rev=358040&view=rev
       +1: wrowe, mturk
+      -0: jorton: should use AP_METHOD_BIT
 
     * mod_cache: Fix PR38017 (mod_cache not working in reverse proxy setup?)
       Trunk version of patch:
