@@ -141,7 +141,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    would suggest to restart the voting.
 
       http://people.apache.org/~rpluem/patches/partial_2.2.diff
-      +1: jim
+      +1: jim, rpluem
 
     * Fix for AP_HAVE_DESIGNATED_INITIALIZER vs C++ compilers
          http://svn.apache.org/viewcvs?rev=356234&view=rev
