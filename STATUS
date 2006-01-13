@@ -99,11 +99,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Message-ID: <4395A056.2070000@web.turner.com>
       +1: jerenkrantz, jim, wrowe
 
-    * mod_proxy: Fix Cookie2 header problems that originates back
-      from mod_jk. Cookie2 was always sent as Cookie.
-      http://svn.apache.org/viewcvs.cgi?rev=358769&view=rev
-      +1: mturk, niq, jim
-
     * mod_ssl: Fix PR37791 (CVEID: CAN-2005-3357) (SEGV if the client is
       connection plain to a SSL enabled port)
       Trunk version of patch:
