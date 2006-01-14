@@ -370,8 +370,6 @@ static int check_dir_access(request_rec *r)
     return ret;
 }
 
-APR_DECLARE_OPTIONAL_FN(int, ap_satisfies, (request_rec *r));
-
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(ap_satisfies);

@@ -101,8 +101,6 @@ typedef struct {
     authz_provider_list *providers;
     authz_request_state req_state;
     int req_state_level;
-//    int some_authz;
-//    char *path;
 } authz_core_dir_conf;
 
 typedef struct authz_core_srv_conf {
@@ -119,7 +117,6 @@ static void *create_authz_core_dir_config(apr_pool_t *p, char *dummy)
 
     conf->req_state = AUTHZ_REQSTATE_ONE;
     conf->req_state_level = 0;
-//    conf->some_authz = -1;
     return (void *)conf;
 }
 
@@ -159,9 +156,6 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     authz_core_dir_conf *conf = (authz_core_dir_conf*)config;
     authz_provider_list *newp;
     const char *t, *w;
-
-//    conf->some_authz = 1;
-//    conf->path = apr_pstrdup(cmd->pool, cmd->path);
 
     newp = apr_pcalloc(cmd->pool, sizeof(authz_provider_list));
 
@@ -399,9 +393,6 @@ static const char *authz_require_section(cmd_parms *cmd, void *mconfig, const ch
     const char *errmsg;
     authz_request_state old_reqstate;
     authz_core_dir_conf *conf = (authz_core_dir_conf*)mconfig;
-//  authz_core_srv_conf *authcfg = 
-//      (authz_core_srv_conf *)ap_get_module_config(cmd->server->module_config,
-//                                                   &authz_core_module);
 
     if (endp == NULL) {
         return apr_pstrcat(cmd->pool, cmd->cmd->name,
@@ -619,12 +610,11 @@ static int authorize_user(request_rec *r)
 
         switch (auth_result) {
             case AUTHZ_DENIED:
-                /* XXX If the deprecated Satisfy directive is set to Any and 
-                   authorization as denied, then check to see what
-                   the access control stage said.  Just the if statement
+                /* XXX If the deprecated Satisfy directive is set to anything
+                   but ANY a failure in access control or authz will cause
+                   an HTTP_UNAUTHORIZED.  Just the if statement
                    should be removed in 3.0 when the Satisfy directive
                    goes away. */
-//                if (!note || ((note[0] == 'N') && (ap_satisfies(r) != SATISFY_ANY))) {
                 if (!note || (ap_satisfies(r) != SATISFY_ANY) || (note[0] == 'N')) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                                   "user %s: authorization failure for \"%s\": ",
