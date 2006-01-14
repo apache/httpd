@@ -2127,8 +2127,10 @@ static int create_uncompress_child(struct uncompress_parms *parm, apr_pool_t *cn
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
+    /* XXX TODO: port to execd calls */    
+    
     /* XXX missing 1.3 logic:
-     *
+     * 
      * what happens when !compr[parm->method].silent?
      * Should we create the err pipe, read it, and copy to the log?
      */

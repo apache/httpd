@@ -66,6 +66,8 @@ apr_file_t *ssl_util_ppopen(server_rec *s, apr_pool_t *p, const char *cmd,
     apr_procattr_t *procattr;
     apr_proc_t *proc;
 
+    /* XXX TODO: port to execd calls */
+
     if (apr_procattr_create(&procattr, p) != APR_SUCCESS)
         return NULL;
     if (apr_procattr_io_set(procattr, APR_FULL_BLOCK, APR_FULL_BLOCK,

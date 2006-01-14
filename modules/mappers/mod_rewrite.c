@@ -1139,6 +1139,8 @@ static apr_status_t rewritemap_program_child(apr_pool_t *p,
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
 
+    /* XXX TODO: port to execd calls */
+
     if (   APR_SUCCESS == (rc=apr_procattr_create(&procattr, p))
         && APR_SUCCESS == (rc=apr_procattr_io_set(procattr, APR_FULL_BLOCK,
                                                   APR_FULL_BLOCK, APR_NO_PIPE))

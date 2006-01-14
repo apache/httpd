@@ -414,6 +414,8 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
     ef_dir_t *dc = ctx->dc;
     const char * const *env;
 
+    /* XXX TODO: port to execd calls */    
+
     ctx->proc = apr_pcalloc(ctx->p, sizeof(*ctx->proc));
 
     rc = apr_procattr_create(&ctx->procattr, ctx->p);
