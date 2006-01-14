@@ -42,6 +42,16 @@ extern "C" {
 #define AUTHZ_GROUP_NOTE "authz_group_note"
 #define AUTHN_PROVIDER_NAME_NOTE "authn_provider_name"
 #define AUTHZ_PROVIDER_NAME_NOTE "authz_provider_name"
+#define AUTHZ_ACCESS_PASSED_NOTE "authz_access_passed"
+
+/** all of the requirements must be met */
+#define SATISFY_ALL 0
+/**  any of the requirements must be met */
+#define SATISFY_ANY 1
+/** There are no applicable satisfy lines */
+#define SATISFY_NOSPEC 2
+
+APR_DECLARE_OPTIONAL_FN(int, ap_satisfies, (request_rec *r));
 
 typedef enum {
     AUTH_DENIED,

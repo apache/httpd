@@ -101,6 +101,8 @@ typedef struct {
     authz_provider_list *providers;
     authz_request_state req_state;
     int req_state_level;
+//    int some_authz;
+//    char *path;
 } authz_core_dir_conf;
 
 typedef struct authz_core_srv_conf {
@@ -117,6 +119,7 @@ static void *create_authz_core_dir_config(apr_pool_t *p, char *dummy)
 
     conf->req_state = AUTHZ_REQSTATE_ONE;
     conf->req_state_level = 0;
+//    conf->some_authz = -1;
     return (void *)conf;
 }
 
@@ -131,7 +134,9 @@ static void *merge_authz_core_dir_config(apr_pool_t *a, void *basev, void *newv)
     * (or creating copies for merging) where new-> values exist.
     */
     conf = (authz_core_dir_conf *)apr_palloc(a, sizeof(authz_core_dir_conf));
-    memcpy(conf, base, sizeof(authz_core_dir_conf));
+    memcpy(conf, new, sizeof(authz_core_dir_conf));
+
+    conf->some_authz = base->some_authz == -1 ? 0:base->some_authz == 0 ? 0:new->some_authz;
 
     return (void*)conf;
 }
@@ -154,6 +159,9 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
     authz_core_dir_conf *conf = (authz_core_dir_conf*)config;
     authz_provider_list *newp;
     const char *t, *w;
+
+//    conf->some_authz = 1;
+//    conf->path = apr_pstrdup(cmd->pool, cmd->path);
 
     newp = apr_pcalloc(cmd->pool, sizeof(authz_provider_list));
 
@@ -583,12 +591,17 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
     return auth_result;
 }
 
+APR_OPTIONAL_FN_TYPE(ap_satisfies) *ap_satisfies;
+
 static int authorize_user(request_rec *r)
 {
     authz_core_dir_conf *conf = ap_get_module_config(r->per_dir_config,
             &authz_core_module);
     authz_status auth_result;
     authz_provider_list *current_provider;
+    const char *note = apr_table_get(r->notes, AUTHZ_ACCESS_PASSED_NOTE);
+
+    ap_satisfies = APR_RETRIEVE_OPTIONAL_FN(ap_satisfies);
 
     /* If we're not really configured for providers, stop now. */
     if (!conf->providers) {
@@ -606,10 +619,21 @@ static int authorize_user(request_rec *r)
 
         switch (auth_result) {
             case AUTHZ_DENIED:
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "user %s: authorization failure for \"%s\": ",
-                              r->user, r->uri);
-                return_code = HTTP_UNAUTHORIZED;
+                /* XXX If the deprecated Satisfy directive is set to Any and 
+                   authorization as denied, then check to see what
+                   the access control stage said.  Just the if statement
+                   should be removed in 3.0 when the Satisfy directive
+                   goes away. */
+//                if (!note || ((note[0] == 'N') && (ap_satisfies(r) != SATISFY_ANY))) {
+                if (!note || (ap_satisfies(r) != SATISFY_ANY) || (note[0] == 'N')) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                  "user %s: authorization failure for \"%s\": ",
+                                  r->user, r->uri);
+                    return_code = HTTP_UNAUTHORIZED;
+                }
+                else {
+                    return_code = DECLINED;
+                }
                 break;
             case AUTHZ_GENERAL_ERROR:
             default:

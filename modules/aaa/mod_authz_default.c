@@ -25,6 +25,9 @@
 #include "http_protocol.h"
 #include "http_request.h"
 
+#include "mod_auth.h"
+
+
 typedef struct {
     int authoritative;
 } authz_default_config_rec;
@@ -49,10 +52,22 @@ static const command_rec authz_default_cmds[] =
 
 module AP_MODULE_DECLARE_DATA authz_default_module;
 
+APR_OPTIONAL_FN_TYPE(ap_satisfies) *ap_satisfies;
+
 static int check_user_access(request_rec *r)
 {
     authz_default_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                  &authz_default_module);
+    const char *note = apr_table_get(r->notes, AUTHZ_ACCESS_PASSED_NOTE);
+
+    ap_satisfies = APR_RETRIEVE_OPTIONAL_FN(ap_satisfies);
+
+    /* If we got here and there isn't any authz required and there is no
+       note from the access checker that it failed, assume access is OK */
+    if (!ap_some_auth_required(r) || 
+        (note && (note[0] == 'Y') && (ap_satisfies(r) == SATISFY_ANY))) {
+        return OK;
+    }
 
     if (!(conf->authoritative)) {
         return DECLINED;
