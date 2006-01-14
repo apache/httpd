@@ -48,6 +48,10 @@ dnl - and just in case all of the above punt; a default handler to
 dnl keep the bad guys out.
 APACHE_MODULE(authz_default, authorization control backstopper, , , yes)
 
+dnl - and just in case all of the above punt; a default handler to
+dnl keep the bad guys out.
+APACHE_MODULE(access_compat, mod_access compatibility, , , most)
+
 dnl these are the front-end authentication modules
 
 APACHE_MODULE(auth_basic, basic authentication, , , yes)
