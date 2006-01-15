@@ -174,11 +174,13 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_auth_digest.html">Módulo Apache mod_auth_digest</a></li>
 <li><a href="mod/mod_authn_alias.html">Módulo Apache mod_authn_alias</a></li>
 <li><a href="mod/mod_authn_anon.html">Módulo Apache mod_authn_anon</a></li>
+<li><a href="mod/mod_authn_core.html">Módulo Apache mod_authn_core</a></li>
 <li><a href="mod/mod_authn_dbd.html">Módulo Apache mod_authn_dbd</a></li>
 <li><a href="mod/mod_authn_dbm.html">Módulo Apache mod_authn_dbm</a></li>
 <li><a href="mod/mod_authn_default.html">Módulo Apache mod_authn_default</a></li>
 <li><a href="mod/mod_authn_file.html">Módulo Apache mod_authn_file</a></li>
 <li><a href="mod/mod_authnz_ldap.html">Módulo Apache mod_authnz_ldap</a></li>
+<li><a href="mod/mod_authz_core.html">Módulo Apache mod_authz_core</a></li>
 <li><a href="mod/mod_authz_dbd.html">Módulo Apache mod_authz_dbd</a></li>
 <li><a href="mod/mod_authz_dbm.html">Módulo Apache mod_authz_dbm</a></li>
 <li><a href="mod/mod_authz_default.html">Módulo Apache mod_authz_default</a></li>
@@ -268,6 +270,6 @@ Referencia de Directivas</a></li>
 <a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Módulos</a> | <a href="./mod/directives.html">Directivas</a> | <a href="./faq/">Preguntas Frecuentes</a> | <a href="./glossary.html">Glosario</a> | <a href="./sitemap.html">Mapa de este sitio web</a></p></div>
 </body></html>

@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_authz_core - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_authz_core</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authz_core.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Core Authorization</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>authz_core_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_authz_core.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3 and later</td></tr></table>
+<h3>Summary</h3>
+
+    <p>This module provides core authorization capabilities so that
+    authenticated users can be allowed or denied access to portions
+    of the web site. <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> provides the 
+    functionality to register various authorization providers. It is
+    usually used in conjunction with an authentication
+    provider module such as <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code> and an 
+    authorization module such as <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code>. It
+    also allows for "AND" and "OR" logic to be applied to the 
+    authorization processing.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#reject">Reject</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#satisfyall">&lt;SatisfyAll&gt;</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#satisfyone">&lt;SatisfyOne&gt;</a></li>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Reject" id="Reject">Reject</a> <a name="reject" id="reject">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Rejects which authenticated users can access
+a resource</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Reject <var>entity-name</var> [<var>entity-name</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
+</table>
+    <p>This directive is similar to the 
+    <code class="directive"><a href="#require">Require</a></code> directive however
+    it rejects which authenticated users can access a resource.  The 
+    restrictions are processed by authorization modules.  See the 
+    <code class="directive"><a href="#require">Require</a></code> directive for details 
+    about usage.</p>
+
+<h3>See also</h3>
+<ul>
+<li><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></li>
+<li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Require" id="Require">Require</a> <a name="require" id="require">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Selects which authenticated users can access
+a resource</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Require <var>entity-name</var> [<var>entity-name</var>] ...</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
+</table>
+    <p>This directive selects which authenticated users can access a
+    resource.  The restrictions are processed by authorization
+    modules.  Some of the allowed syntaxes provided by
+    <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> and
+    <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> are:</p>
+
+    <dl>
+      <dt><code>Require user <var>userid</var> [<var>userid</var>]
+      ...</code></dt>
+      <dd>Only the named users can access the resource.</dd>
+
+      <dt><code>Require group <var>group-name</var> [<var>group-name</var>]
+      ...</code></dt>
+      <dd>Only users in the named groups can access the resource.</dd>
+
+      <dt><code>Require valid-user</code></dt>
+      <dd>All valid users can access the resource.</dd>
+    </dl>
+
+    <p>Other authorization modules that implement require options
+    include <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>,
+    <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>, <code class="module"><a href="../mod/mod_authz_dbd.html">mod_authz_dbd</a></code>, 
+    <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code>, and
+    <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>.</p>
+
+    <p>For a complete authentication and authorization configuration, 
+    <code class="directive">Require</code> must be accompanied by
+    <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>, <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> and 
+    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> 
+    directives, and directives such as 
+    <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>
+    and <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code> (to
+    define users and groups) in order to work correctly. Example:</p>
+
+    <div class="example"><p><code>
+       AuthType Basic<br />
+       AuthName "Restricted Resource"<br />
+       AuthBasicProvider file<br />
+       AuthUserFile /web/users<br />
+       AuthGroupFile /web/groups<br />
+       Require group admin
+    </code></p></div>
+
+    <p>Access controls which are applied in this way are effective for
+    <strong>all</strong> methods. <strong>This is what is normally
+    desired.</strong> If you wish to apply access controls only to
+    specific methods, while leaving other methods unprotected, then
+    place the <code class="directive">Require</code> statement into a
+    <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code>
+    section.</p>
+ 
+
+<h3>See also</h3>
+<ul>
+<li><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></li>
+<li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SatisfyAll" id="SatisfyAll">&lt;SatisfyAll&gt;</a> <a name="satisfyall" id="satisfyall">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives that must all
+be satisfied in order to grant access to a resource.  This block allows
+for 'AND' logic to be applied to various authorization providers.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;SatisfyAll&gt;
+... &lt;/SatisfyAll&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
+</table>
+    <p><code class="directive">&lt;SatisfyAll&gt;</code> and
+    <code>&lt;/SatisfyAll&gt;</code> are used to enclose a group of
+    authorization directives that must all be satisfied in order to 
+    grant access to a resource.</p>
+
+    <p>The <code class="directive"><a href="#&#10;    &lt;satisfyall&gt;">
+    &lt;SatisfyAll&gt;</a></code> block as well as the 
+    <code class="directive"><a href="#&lt;satisfyone&gt;">&lt;SatisfyOne&gt;</a></code> block 
+    allow you to apply "AND" and "OR" logic to the authorization processing. 
+    For example the following authorization block would apply the logic:</p>
+
+    <p><var>
+    if ((user == "John") || <br />
+    &nbsp;&nbsp;&nbsp;((Group == "admin") &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user) &amp;&amp;<br />
+    &nbsp;&nbsp;&nbsp;&nbsp;((ldap-attribute dept == "sales") || 
+    (file-group contains contains auth'ed_user))))<br />
+    then<br />
+    &nbsp;&nbsp;auth_granted<br />
+    else<br />
+    &nbsp;&nbsp;auth_denied<br />
+    </var></p>
+
+    <div class="example"><p><code>
+    &lt;Directory /www/mydocs&gt;<br />
+    &nbsp;  Authname ...<br />
+    &nbsp;  AuthBasicProvider ...<br />
+    &nbsp;  ...<br />
+    &nbsp;  Require user John<br />
+    &nbsp;  &lt;SatisfyAll&gt;<br />
+    &nbsp;&nbsp;    Require Group admins<br />
+    &nbsp;&nbsp;    Require ldap-group cn=mygroup,o=foo<br />
+    &nbsp;&nbsp;    &lt;SatisfyOne&gt;<br />
+    &nbsp;&nbsp;&nbsp;      Require ldap-attribute dept="sales"<br />
+    &nbsp;&nbsp;&nbsp;      Require file-group<br />
+    &nbsp;&nbsp;    &lt;/SatisfyOne&gt;<br />
+    &nbsp;  &lt;/SatisfyAll&gt;<br />
+    &lt;/Directory&gt;<br />
+    </code></p></div>
+
+
+<h3>See also</h3>
+<ul>
+<li><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SatisfyOne" id="SatisfyOne">&lt;SatisfyOne&gt;</a> <a name="satisfyone" id="satisfyone">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of authorization directives that must 
+satisfy at least one in order to grant access to a resource.  This 
+block allows for 'OR' logic to be applied to various authorization 
+providers.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;SatisfyOne&gt;
+... &lt;/SatisfyOne&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
+</table>
+    <p><code class="directive">&lt;SatisfyOne&gt;</code> and
+    <code>&lt;/SatisfyOne&gt;</code> are used to enclose a group of
+    authorization directives that must satisfy at least one in order to 
+    grant access to a resource.</p>
+
+    <p>See the <code class="directive"><a href="#&#10;    &lt;satisfyall&gt;">
+    &lt;SatisfyAll&gt;</a></code> directive for a usage example.</p>
+
+
+<h3>See also</h3>
+<ul>
+<li><a href="../howto/auth.html">Authentication, Authorization,
+    and Access Control</a></li>
+</ul>
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authz_core.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
