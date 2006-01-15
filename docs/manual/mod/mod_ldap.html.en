@@ -104,7 +104,6 @@ by other LDAP modules</td></tr>
         Allow from yourdomain.example.com<br />
         AuthLDAPEnabled on<br />
         AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
-        AuthLDAPAuthoritative on<br />
         require valid-user<br />
       </span>
       &lt;/Location&gt;
@@ -233,7 +232,6 @@ by other LDAP modules</td></tr>
         Allow from yourdomain.example.com<br />
         AuthLDAPEnabled on<br />
         AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
-        AuthLDAPAuthoritative on<br />
         require valid-user<br />
       </span>
       &lt;/Location&gt;
@@ -255,7 +253,6 @@ by other LDAP modules</td></tr>
         AuthLDAPEnabled on<br />
         LDAPTrustedMode TLS
         AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
-        AuthLDAPAuthoritative on<br />
         require valid-user<br />
       </span>
       &lt;/Location&gt;
@@ -308,7 +305,6 @@ by other LDAP modules</td></tr>
                 AuthLDAPEnabled on<br />
                 LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt; [password]<br />
                 AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
-                AuthLDAPAuthoritative on<br />
                 require valid-user<br />
             </span>
             &lt;/Location&gt;
@@ -376,7 +372,6 @@ by other LDAP modules</td></tr>
                 LDAPTrustedClientCert CERT_BASE64 /certs/cert1.pem<br />
                 LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem<br />
                 AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
-                AuthLDAPAuthoritative on<br />
                 require valid-user<br />
             </span>
             &lt;/Location&gt;
@@ -628,6 +623,6 @@ Certificate Authority or global client certificates</td></tr>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_ldap.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

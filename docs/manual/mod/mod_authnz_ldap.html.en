@@ -67,7 +67,6 @@ for HTTP Basic authentication.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPUrl</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
@@ -316,9 +315,7 @@ for HTTP Basic authentication.</td></tr>
     <p>If this directive exists, <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> grants
     access to any user that has successfully authenticated during the
     search/bind phase.  Requires that <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> be 
-    loaded and that the 
-    <code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code>
-    directive be set to off.</p>
+    loaded.</p>
 
 
 <h3><a name="requser" id="requser">require ldap-user</a></h3>
@@ -578,16 +575,9 @@ require valid-user
     that gets created in the web</p>
 <div class="example"><pre>
 AuthLDAPURL            "the url"
-AuthzLDAPAuthoritative off
 AuthGroupFile <em>mygroupfile</em>
 require group <em>mygroupfile</em>
 </pre></div>
-
-    <p><code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code> 
-    must be off to allow <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> to decline group
-    authentication so that Apache will fall back to file
-    authentication for checking group membership. This allows the
-    FrontPage-managed group file to be used.</p>
 
 <h3><a name="howitworks" id="howitworks">How It Works</a></h3>
 
@@ -912,29 +902,10 @@ environment variable</td></tr>
     <p>See above for examples of <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> URLs.</p>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzLDAPAuthoritative" id="AuthzLDAPAuthoritative">AuthzLDAPAuthoritative</a> <a name="authzldapauthoritative" id="authzldapauthoritative">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Prevent other authentication modules from
-authenticating the user if this one fails</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzLDAPAuthoritative on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzLDAPAuthoritative on</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
-</table>
-    <p>Set to <code>off</code> if this module should let other
-    authentication modules attempt to authenticate the user, should
-    authentication with this module fail. Control is only passed on
-    to lower modules if there is no DN or rule that matches the
-    supplied user name (as passed by the client).</p>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authnz_ldap.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

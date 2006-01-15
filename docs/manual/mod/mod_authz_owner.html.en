@@ -69,16 +69,14 @@
     </div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
-<ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authzownerauthoritative">AuthzOwnerAuthoritative</a></li>
-</ul>
+<p>This module provides no
+            directives.</p>
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Configuration Examples</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -102,7 +100,6 @@
           AuthName MyPrivateFiles<br />
           AuthBasicProvider dbm<br />
           AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
-          Satisfy All<br />
           Require file-owner<br />
         </span>
         &lt;/Directory&gt;
@@ -139,47 +136,12 @@
       </code></p></div>
     
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzOwnerAuthoritative" id="AuthzOwnerAuthoritative">AuthzOwnerAuthoritative</a> <a name="authzownerauthoritative" id="authzownerauthoritative">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authorization will be passed on to lower level
-modules</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzOwnerAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzOwnerAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_owner</td></tr>
-</table>
-    <p>Setting the <code class="directive">AuthzOwnerAuthoritative</code>
-    directive explicitly to <code>Off</code> allows for
-    user authorization to be passed on to lower level modules (as defined
-    in the <code>modules.c</code> files) if:</p>
-
-    <ul>
-    <li>in the case of <code>file-owner</code> the file-system owner does not
-    match the supplied web-username or could not be determined, or</li>
-
-    <li>in the case of <code>file-group</code> the file-system group does not
-    contain the supplied web-username or could not be determined.</li>
-    </ul>
-
-    <p>Note that setting the value to <code>Off</code> also allows the
-    combination of <code>file-owner</code> and <code>file-group</code>, so
-    access will be allowed if either one or the other (or both) match.</p>
-
-    <p>By default, control is not passed on and an authorization failure
-    will result in an "Authentication Required" reply. Not
-    setting it to <code>Off</code> thus keeps the system secure and forces
-    an NCSA compliant behaviour.</p>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authz_owner.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_authz_owner.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_owner.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
