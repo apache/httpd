@@ -60,12 +60,13 @@ static int check_user_access(request_rec *r)
                                                  &authz_default_module);
     const char *note = apr_table_get(r->notes, AUTHZ_ACCESS_PASSED_NOTE);
 
-    ap_satisfies = APR_RETRIEVE_OPTIONAL_FN(ap_satisfies);
+    /* If we got here and access checker passed, assume access is OK */
+    if (note && (note[0] == 'Y') && (ap_satisfies(r) == SATISFY_ANY)) {
+        return OK;
+    }
 
-    /* If we got here and there isn't any authz required and there is no
-       note from the access checker that it failed, assume access is OK */
-    if (!ap_some_auth_required(r) || 
-        (note && (note[0] == 'Y') && (ap_satisfies(r) == SATISFY_ANY))) {
+    /* If we got here and there isn't any authz required, assume access is OK */
+    if (!ap_some_auth_required(r)) {
         return OK;
     }
 
@@ -88,9 +89,15 @@ static int check_user_access(request_rec *r)
     return HTTP_UNAUTHORIZED;
 }
 
+static void ImportAuthzDefOptFn(void)
+{
+    ap_satisfies = APR_RETRIEVE_OPTIONAL_FN(ap_satisfies);
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_auth_checker(check_user_access,NULL,NULL,APR_HOOK_LAST);
+    ap_hook_optional_fn_retrieve(ImportAuthzDefOptFn,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA authz_default_module =
