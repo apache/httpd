@@ -26,8 +26,6 @@
 <a href="./ja/install.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
 
     <p>この文書で扱う範囲は、Unix や Unix に類似したシステムでの
@@ -36,15 +34,12 @@
     Windows で Apache を使う</a>」をご覧下さい。
     その他のプラットホームに関しては「<a href="platform/">プラットホーム</a>」をご覧下さい。</p>
 
-    <p> Apache 2.0 の設定とインストールの環境は、Apache 1.3 とは
-    完全に異なるものになりました。簡単にインストールできるように、
-    Apache 1.3 では特製スクリプトを使っていました。
-    Apache 2.0 では他の Open Source プロジェクトと同様の環境に
-    するために <code>libtool</code> と <code>autoconf</code>
+    <p>Apache 2.0 では他の Open Source プロジェクトと同様、
+    ビルド環境構築に <code>libtool</code> と <code>autoconf</code>
     を使うようになっています。</p>
 
     <p>マイナーバージョンからその次のバージョンにアップグレードする
-    (2.0.50 から 2.0.51 へ等) 場合は、まず <a href="#upgrading">
+    (2.2.50 から 2.2.51 へ等) 場合は、まず <a href="#upgrading">
     アップグレード</a>をご覧下さい。</p>
 
 </div>
@@ -75,8 +70,9 @@
       <tr>
         <td><a href="#extract">展開</a></td>
 
-        <td><code>$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-2_1_<em>NN</em>.tar</code> </td>
+        <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+         $ tar xvf httpd-<em>NN</em>.tar<br />
+         $ cd httpd-<em>NN</em></code></td>
       </tr>
 
       <tr>
@@ -107,19 +103,18 @@
       <tr>
         <td><a href="#test">テスト</a></td>
 
-        <td><code>$ <em>PREFIX</em>/bin/apachectl start</code>
+        <td><code>$ <em>PREFIX</em>/bin/apachectl -k start</code>
         </td>
       </tr>
     </table>
 
-    <p><em>NN</em> は最新のマイナーバージョンナンバーに、
+    <p><em>NN</em> は最新のバージョンナンバーに、
     <em>PREFIX</em> はインストールするサーバでのファイルシステムのパスに、
     置き換えてください。<em>PREFIX</em> を指定しなかった場合は、
     デフォルトの <code>/usr/local/apache2</code> になります。</p>
 
-    <p>Apache HTTPD のコンパイルとインストールに必要なものをはじめとして、
-    編集とインストールプロセスでのそれぞれの項は
-    次に詳しく記述されています。</p>
+    <p>Apache httpd のコンパイルとインストールに必要なものをはじめとして、
+    コンパイルとインストールについては、次に詳しく記述されています。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requirements" id="requirements">必要なもの</a></h2>
@@ -137,7 +132,7 @@
       <dt>ANSI-C コンパイラとビルドシステム</dt>
       <dd>ANSI-C コンパイラをインストールしておいて下さい。お薦めは <a href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
       による <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
-      compiler (GCC)</a> です (バージョン 2.7.2 で大丈夫です)。GCC がない場合は、
+      compiler (GCC)</a> です。GCC がない場合は、
       少なくとも提供されているコンパイラが ANSI 準拠であることを確認しておいて下さい。
       それから、変数 <code>PATH</code> には <code>make</code>
       といった基本的なビルドツールが含まれている必要があります。</dd>
@@ -147,7 +142,7 @@
       正確な時刻にシンクロさせる機能をシステムに設定することを吟味してみて下さい。
       Network Time Protocol (NTP) をベースとした ntpdate や xntpd プログラムが
       この目的によく用いられます。NTP ソフトウェアや公開 NTP 
-      サーバに関する詳細は、Usenet ニュースグループ <a href="news:comp.protocols.time.ntp">comp.protocols.time.ntp</a> や <a href="http://www.ntp.org">NTP ホームページ</a> をご覧下さい。</dd>
+      サーバに関する詳細は、<a href="http://www.ntp.org">NTP ホームページ</a> をご覧下さい。</dd>
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
       [オプション]</dt>
@@ -155,20 +150,20 @@
       <code class="program"><a href="./programs/dbmmanage.html">dbmmanage</a></code> は
       Perl で書かれているので、Perl 
       5 インタプリタが必要になります (5.003 以降)。
-      <code class="program"><a href="./programs/configure.html">configure</a></code> スクリプトでこのようなインタプリタが見つからなくても、
-      別に不具合はありません。もちろん、Apache 
-      2.0 のコンパイルとインストールはできます。
-      これらのサポートスクリプトが使えなくなるだけです。
-      Perl インタプリタを複数インストールしている場合 (ベンダーの Perl
-      4 と自分で入れた Perl 5 がある場合など) は、
-      --with-perl オプション (下記参照) を使って <code class="program"><a href="./programs/configure.html">configure</a></code>
-      が適切なものを確実に選ぶようにすると良いでしょう。</dd>
+      Perl インタプリタを複数インストールしている (たとえば全体のシステムの一部
+      としてインストールされている Perl 4 と、自分で追加でインストールした
+      Perl 5 があるなどの) 場合、<code>--with-perl</code> オプション (下記参照)
+      を使って <code class="program"><a href="./programs/configure.html">configure</a></code> が意図したものを使うように
+      明示的に指定すると良いでしょう。
+      <code class="program"><a href="./programs/configure.html">configure</a></code> スクリプトで Perl 5 インタプリタが
+      見つからない場合は、この影響を受けるサポートスクリプトが使えなくなります。
+      もちろん、Apache httpd のコンパイルとインストールは問題なく行えます。</dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="download" id="download">ダウンロード</a></h2>
 
-    <p>Apache は <a href="http://httpd.apache.org/download.cgi">Apache HTTP
+    <p>Apache HTTP サーバは <a href="http://httpd.apache.org/download.cgi">Apache HTTP
     サーバダウンロードサイト</a>からダウンロードできますし、
     同じ場所に幾つかのミラーサイトもリストしています。
     UNIX に類似するシステムで Apache を使うユーザは、ソースを
@@ -198,8 +193,8 @@
     単なる圧縮の解除と tar の展開です:</p>
 
 <div class="example"><p><code>
-$ gzip -d httpd-2_1_<em>NN</em>.tar.gz<br />
-$ tar xvf httpd-2_1_<em>NN</em>.tar
+$ gzip -d httpd-<em>NN</em>.tar.gz<br />
+$ tar xvf httpd-<em>NN</em>.tar
 </code></p></div>
 
     <p>配布用のソースコードがある現在いるディレクトリの下に、
@@ -216,11 +211,11 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     これは配布ディレクトリのルートディレクトリにある、
     <code class="program"><a href="./programs/configure.html">configure</a></code>
     スクリプトで行ないます。
-     (Apache ソースツリーの CVS
+     (Apache ソースツリーの未リリース
     版をダウンロードした開発者は、次のステップに進む前に
     <code>autoconf</code> と<code>libtool</code>
     をインストールして <code>buildconf</code>
-    を実行する必要があるでしょう。
+    を実行する必要があります。
     公式リリースではこの作業は必要ありません。) </p>
 
     <p>デフォルトオプションを使ってソースツリーを全て設定する
@@ -289,9 +284,8 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
 
 <div class="example"><p><code>$ make</code></p></div>
 
-    <p>基本的な設定をするのに、Pentium III/Linux 2.2 
-    のシステムでおおよそ 3 分程度かかりますが、
-    あらかじめご了承下さい。
+    <p>基本的な設定をするのに数分かかりますが、
+    あらかじめご了承ください。
     また、時間はハードウェアや有効にしたモジュールの数に
     大きく依存するでしょう。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -325,7 +319,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
 
     <p>次のコマンドを実行して Apache HTTP サーバを<a href="invoking.html">開始</a>できます:</p>
 
-<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl start</code></p></div>
+<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k start</code></p></div>
 
     <p>URL <code>http://localhost/</code> を通して最初のドキュメントに対する
     リクエストを発行する事ができるはずです。これで見える
@@ -335,7 +329,7 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     サーバを再び<a href="stopping.html">停止</a>するには、
     次のコマンドを実行します:</p>
 
-<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl stop</code></p></div>
+<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="upgrading" id="upgrading">アップグレード</a></h2>
@@ -349,16 +343,14 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     の変更に合わせるためにアップグレードが必要になるでしょう。</p>
 
     <p>マイナーバージョンから次のバージョンにアップグレードする場合
-    (例えば 2.0.55 から 2.0.57 へ) は、もっと簡単です。
+    (例えば 2.2.55 から 2.2.57 へ) は、もっと簡単です。
     <code>make install</code> を実行しても今あるドキュメント、
     ログファイル、設定ファイルは上書きされません。
     さらに、マイナーバージョン間では <code class="program"><a href="./programs/configure.html">configure</a></code> オプション、
     実行時の設定、モジュール API に不整合が起こらないように、
     開発者は最大限の努力をしています。
     大抵の場合、同一の <code class="program"><a href="./programs/configure.html">configure</a></code> コマンドライン、
-    同一の設定ファイル、モジュール全てが正常に動作するはずです。
-    (2.0.41 以降ではそのようになっています。それ以前のバージョンには
-    不整合が存在します。)</p>
+    同一の設定ファイル、モジュール全てが正常に動作するはずです。</p>
 
     <p>マイナーバージョンでアップグレードする場合は、
     既にインストールされているサーバの <code>build</code> ディレクトリ内か、
@@ -374,8 +366,8 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
     $ ./config.nice<br />
     $ make<br />
     $ make install<br />
-    $ <em>PREFIX</em>/bin/apachectl stop<br />
-    $ <em>PREFIX</em>/bin/apachectl start<br />
+    $ <em>PREFIX</em>/bin/apachectl -k graceful-stop<br />
+    $ <em>PREFIX</em>/bin/apachectl -k start<br />
     </code></p></div>
 
     <div class="warning">新しいバージョンを使用する場合は、
@@ -393,6 +385,6 @@ $ tar xvf httpd-2_1_<em>NN</em>.tar
 <a href="./ja/install.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
 </body></html>

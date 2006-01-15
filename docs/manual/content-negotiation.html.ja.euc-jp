@@ -23,8 +23,6 @@
 <a href="./ja/content-negotiation.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
 
     <p>Apache は HTTP/1.1 の規格に記述されているコンテントネゴシエーションを
@@ -133,7 +131,7 @@
 
     <p>タイプマップは <code>type-map</code> ハンドラ
     (もしくは、古い Apache
-    の設定と下位互換である MIME タイプ
+    の設定と下位互換である <a class="glossarylink" href="./glossary.html#mime-type" title="用語集を参照">MIME タイプ</a>
     <code>application/x-type-map</code>)
     に関連付けられたドキュメントです。
     この機能を使うためには、あるファイルの拡張子を
@@ -725,6 +723,6 @@ RVSA/1.0 の実装では、最適な variant が見つかるまで、
 <a href="./ja/content-negotiation.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p></div>
 </body></html>

@@ -67,7 +67,6 @@
 <li><a href="mod_mime.html#addtype">AddType</a></li>
 <li><a href="mod_alias.html#alias">Alias</a></li>
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
-<li><a href="mod_authz_host.html#allow">Allow</a></li>
 <li><a href="mod_proxy.html#allowconnect">AllowCONNECT</a></li>
 <li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
 <li><a href="core.html#allowoverride">AllowOverride</a></li>
@@ -103,21 +102,15 @@
 <li><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
 <li><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
 <li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></li>
-<li><a href="core.html#authname">AuthName</a></li>
+<li><a href="mod_authn_core.html#authname">AuthName</a></li>
 <li><a href="mod_authn_alias.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
-<li><a href="core.html#authtype">AuthType</a></li>
+<li><a href="mod_authn_core.html#authtype">AuthType</a></li>
 <li><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></li>
-<li><a href="mod_authz_dbd.html#authzdbdauthoritative">AuthzDBDAuthoritative</a></li>
 <li><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
 <li><a href="mod_authz_dbd.html#authzdbdquery">AuthzDBDQuery</a></li>
 <li><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
-<li><a href="mod_authz_dbm.html#authzdbmauthoritative">AuthzDBMAuthoritative</a></li>
 <li><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType</a></li>
 <li><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative</a></li>
-<li><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative</a></li>
-<li><a href="mod_authnz_ldap.html#authzldapauthoritative">AuthzLDAPAuthoritative</a></li>
-<li><a href="mod_authz_owner.html#authzownerauthoritative">AuthzOwnerAuthoritative</a></li>
-<li><a href="mod_authz_user.html#authzuserauthoritative">AuthzUserAuthoritative</a></li>
 <li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
@@ -174,7 +167,6 @@
 <li><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote</a></li>
 <li><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel</a></li>
 <li><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize</a></li>
-<li><a href="mod_authz_host.html#deny">Deny</a></li>
 <li><a href="core.html#directory">&lt;Directory&gt;</a></li>
 <li><a href="mod_dir.html#directoryindex">DirectoryIndex</a></li>
 <li><a href="core.html#directorymatch">&lt;DirectoryMatch&gt;</a></li>
@@ -290,7 +282,6 @@
 <li><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts</a></li>
 <li><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable</a></li>
 <li><a href="core.html#options" id="O" name="O">Options</a></li>
-<li><a href="mod_authz_host.html#order">Order</a></li>
 <li><a href="mod_env.html#passenv" id="P" name="P">PassEnv</a></li>
 <li><a href="mpm_common.html#pidfile">PidFile</a></li>
 <li><a href="mod_echo.html#protocolecho">ProtocolEcho</a></li>
@@ -319,6 +310,7 @@
 <li><a href="mod_alias.html#redirectmatch">RedirectMatch</a></li>
 <li><a href="mod_alias.html#redirectpermanent">RedirectPermanent</a></li>
 <li><a href="mod_alias.html#redirecttemp">RedirectTemp</a></li>
+<li><a href="mod_authz_core.html#reject">Reject</a></li>
 <li><a href="mod_mime.html#removecharset">RemoveCharset</a></li>
 <li><a href="mod_mime.html#removeencoding">RemoveEncoding</a></li>
 <li><a href="mod_mime.html#removehandler">RemoveHandler</a></li>
@@ -327,7 +319,7 @@
 <li><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></li>
 <li><a href="mod_mime.html#removetype">RemoveType</a></li>
 <li><a href="mod_headers.html#requestheader">RequestHeader</a></li>
-<li><a href="core.html#require">Require</a></li>
+<li><a href="mod_authz_core.html#require">Require</a></li>
 <li><a href="mod_rewrite.html#rewritebase">RewriteBase</a></li>
 <li><a href="mod_rewrite.html#rewritecond">RewriteCond</a></li>
 <li><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></li>
@@ -340,7 +332,8 @@
 <li><a href="core.html#rlimitcpu">RLimitCPU</a></li>
 <li><a href="core.html#rlimitmem">RLimitMEM</a></li>
 <li><a href="core.html#rlimitnproc">RLimitNPROC</a></li>
-<li><a href="core.html#satisfy" id="S" name="S">Satisfy</a></li>
+<li><a href="mod_authz_core.html#satisfyall" id="S" name="S">&lt;SatisfyAll&gt;</a></li>
+<li><a href="mod_authz_core.html#satisfyone">&lt;SatisfyOne&gt;</a></li>
 <li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
 <li><a href="mod_actions.html#script">Script</a></li>
 <li><a href="mod_alias.html#scriptalias">ScriptAlias</a></li>
@@ -437,6 +430,6 @@
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div>
 </body></html>
