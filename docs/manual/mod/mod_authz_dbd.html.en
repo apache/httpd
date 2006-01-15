@@ -38,7 +38,6 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#authzdbdauthoritative">AuthzDBDAuthoritative</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzdbdlogintoreferer">AuthzDBDLoginToReferer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzdbdquery">AuthzDBDQuery</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authzdbdredirectquery">AuthzDBDRedirectQuery</a></li>
@@ -51,7 +50,6 @@
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
 <li><code class="directive"><a href="../mod/mod_dbd.html#dbdriver">DBDriver</a></code></li>
 <li><code class="directive"><a href="../mod/mod_dbd.html#dbdparams">DBDParams</a></code></li>
 </ul></div>
@@ -130,43 +128,6 @@ DBDExptime 300
 </code></pre></div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzDBDAuthoritative" id="AuthzDBDAuthoritative">AuthzDBDAuthoritative</a> <a name="authzdbdauthoritative" id="authzdbdauthoritative">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authorization will be passed on to lower level
-modules</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzDBDAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzDBDAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_dbd</td></tr>
-</table>
-    <p>Setting the <code class="directive">AuthzDBDAuthoritative</code>
-    directive explicitly to <code>Off</code> allows group authorization
-    to be handled by another authz module if the userID is not
-    in any authorized dbd-group. If there are any groups
-    specified, the usual checks will be applied and a failure will
-    give an Authentication Required reply.</p>
-
-    <p>So if a userID appears in the database of more than one module;
-    or if a valid <code class="directive"><a href="../mod/core.html#require">Require</a></code>
-    directive applies to more than one module; then the first module
-    will verify the credentials; and no access is passed on;
-    regardless of the <code class="directive">AuthAuthoritative</code> setting.</p>
-
-    <p>A common use for this is in conjunction with one of the
-    auth providers; such or
-    <code class="module"><a href="../mod/mod_authn_file.html">mod_authn_file</a></code>. Whereas this DBD module supplies
-    the bulk of the user credential checking; a few (administrator) related
-    accesses fall through to a lower level with a well protected
-    <code>.htpasswd</code> file.</p>
-
-    <p>By default, control is not passed on and an unknown group
-    will result in an Authentication Required reply. Not
-    setting it thus keeps the system secure and forces an NCSA
-    compliant behaviour.</p>
-
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthzDBDLoginToReferer" id="AuthzDBDLoginToReferer">AuthzDBDLoginToReferer</a> <a name="authzdbdlogintoreferer" id="authzdbdlogintoreferer">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determines whether to redirect the Client to the Referring
@@ -239,6 +200,6 @@ header is present</td></tr>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authz_dbd.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

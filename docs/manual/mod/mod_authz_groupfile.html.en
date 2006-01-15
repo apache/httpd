@@ -40,12 +40,10 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#authgroupfile">AuthGroupFile</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#authzgroupfileauthoritative">AuthzGroupFileAuthoritative</a></li>
 </ul>
 <h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
 </ul></div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -82,44 +80,12 @@ of user groups for authorization</td></tr>
     </div>
 
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="AuthzGroupFileAuthoritative" id="AuthzGroupFileAuthoritative">AuthzGroupFileAuthoritative</a> <a name="authzgroupfileauthoritative" id="authzgroupfileauthoritative">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Sets whether authorization will be passed on to lower level
-modules</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthzGroupFileAuthoritative On|Off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthzGroupFileAuthoritative On</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_groupfile</td></tr>
-</table>
-    <p>Setting the <code class="directive">AuthzGroupFileAuthoritative</code>
-    directive explicitly to <code>Off</code> allows for
-    group authorization to be passed on to lower level modules (as defined
-    in the <code>modules.c</code> files) if there is <strong>no
-    group</strong> matching the supplied userID.</p>
-
-    <p>By default, control is not passed on and an unknown group
-    will result in an Authentication Required reply. Not
-    setting it thus keeps the system secure and forces an NCSA
-    compliant behaviour.</p>
-
-    <div class="warning"><h3>Security</h3>
-      <p>Do consider the implications of allowing a user to
-      allow fall-through in his <code>.htaccess</code> file; and verify
-      that this is really what you want; Generally it is easier to just
-      secure a single <code>.htpasswd</code> file, than it is to secure
-      a database which might have more access interfaces.</p>
-    </div>
-
-</div>
 </div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/mod/mod_authz_groupfile.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mod_authz_groupfile.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_authz_groupfile.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2006 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
