@@ -592,8 +592,6 @@ static int authorize_user(request_rec *r)
     authz_provider_list *current_provider;
     const char *note = apr_table_get(r->notes, AUTHZ_ACCESS_PASSED_NOTE);
 
-    ap_satisfies = APR_RETRIEVE_OPTIONAL_FN(ap_satisfies);
-
     /* If we're not really configured for providers, stop now. */
     if (!conf->providers) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -667,11 +665,17 @@ static int authz_some_auth_required(request_rec *r)
     return req_authz;
 }
 
+static void ImportAuthzCoreOptFn(void)
+{
+    ap_satisfies = APR_RETRIEVE_OPTIONAL_FN(ap_satisfies);
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(authz_some_auth_required);
 
     ap_hook_auth_checker(authorize_user, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_optional_fn_retrieve(ImportAuthzCoreOptFn,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA authz_core_module =
