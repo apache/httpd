@@ -84,6 +84,7 @@
 #define MSEC_ONE_MIN    ((apr_time_t)(60*APR_USEC_PER_SEC))    /* one minute, in microseconds */
 #define MSEC_ONE_SEC    ((apr_time_t)(APR_USEC_PER_SEC))       /* one second, in microseconds */
 #define DEFAULT_CACHE_MAXEXPIRE MSEC_ONE_DAY
+#define DEFAULT_CACHE_MINEXPIRE 0
 #define DEFAULT_CACHE_EXPIRE    MSEC_ONE_HR
 #define DEFAULT_CACHE_LMFACTOR  (0.1)
 
@@ -150,6 +151,9 @@ typedef struct {
     #define CACHE_IGNORE_HEADERS_SET   1
     #define CACHE_IGNORE_HEADERS_UNSET 0
     int ignore_headers_set;
+    /* Minimum time to keep cached files in msecs */
+    apr_time_t minex;
+    int minex_set;
 } cache_server_conf;
 
 /* cache info information */

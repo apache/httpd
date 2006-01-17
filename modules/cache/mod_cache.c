@@ -689,6 +689,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         if ((lastmod != APR_DATE_BAD) && (lastmod < date)) {
             apr_time_t x = (apr_time_t) ((date - lastmod) * conf->factor);
 
+            if (x < conf->minex) {
+                x = conf->minex;
+            }
             if (x > conf->maxex) {
                 x = conf->maxex;
             }
@@ -872,6 +875,8 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     /* maximum time to cache a document */
     ps->maxex = DEFAULT_CACHE_MAXEXPIRE;
     ps->maxex_set = 0;
+    ps->minex = DEFAULT_CACHE_MINEXPIRE;
+    ps->minex_set = 0;
     /* default time to cache a document */
     ps->defex = DEFAULT_CACHE_EXPIRE;
     ps->defex_set = 0;
@@ -908,6 +913,7 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
                                        overrides->cacheenable);
     /* maximum time to cache a document */
     ps->maxex = (overrides->maxex_set == 0) ? base->maxex : overrides->maxex;
+    ps->minex = (overrides->minex_set == 0) ? base->minex : overrides->minex;
     /* default time to cache a document */
     ps->defex = (overrides->defex_set == 0) ? base->defex : overrides->defex;
     /* factor used to estimate Expires date from LastModified date */
@@ -1082,6 +1088,19 @@ static const char *set_cache_maxex(cmd_parms *parms, void *dummy,
     return NULL;
 }
 
+static const char *set_cache_minex(cmd_parms *parms, void *dummy,
+                                   const char *arg)
+{
+    cache_server_conf *conf;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    conf->minex = (apr_time_t) (atol(arg) * MSEC_ONE_SEC);
+    conf->minex_set = 1;
+    return NULL;
+}
+
 static const char *set_cache_defex(cmd_parms *parms, void *dummy,
                                    const char *arg)
 {
@@ -1144,6 +1163,8 @@ static const command_rec cache_cmds[] =
                   "A partial URL prefix below which caching is disabled"),
     AP_INIT_TAKE1("CacheMaxExpire", set_cache_maxex, NULL, RSRC_CONF,
                   "The maximum time in seconds to cache a document"),
+    AP_INIT_TAKE1("CacheMinExpire", set_cache_minex, NULL, RSRC_CONF,
+                  "The minimum time in seconds to cache a document"),
     AP_INIT_TAKE1("CacheDefaultExpire", set_cache_defex, NULL, RSRC_CONF,
                   "The default time in seconds to cache a document"),
     AP_INIT_FLAG("CacheIgnoreNoLastMod", set_cache_ignore_no_last_mod, NULL,
