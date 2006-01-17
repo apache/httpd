@@ -212,6 +212,26 @@ manager</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CacheMinExpire</name>
+<description>The minimum time in seconds to cache a document</description>
+<syntax>CacheMinExpire <var>seconds</var></syntax>
+<default>CacheMinExpire 0</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The <directive>CacheMinExpire</directive> directive specifies the minimum number of
+    seconds for which cachable HTTP documents will be retained without checking the origin
+    server. This is only used if no valid expire time was supplied with the document.</p>
+
+
+    <example>
+      CacheMinExpire 3600
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CacheDefaultExpire</name>
 <description>The default duration to cache a document when no expiry date is specified.</description>
 <syntax>CacheDefaultExpire <var>seconds</var></syntax>
