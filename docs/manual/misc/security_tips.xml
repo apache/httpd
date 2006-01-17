@@ -52,6 +52,63 @@
 
   </section>
 
+  <section id="dos">
+
+    <title>Denial of Service (DoS) attacks</title>
+
+    <p>All network servers are subject to denial of service atacks
+    that attempt to prevent responses to clients by tying up the
+    resources of the server.  It is not possible to prevent such
+    attacks entirely, but you can do certain things to mitigate the
+    problems that they create.</p>
+
+    <p>Often the most effective anti-DoS tools will be a firewall or
+    other operating-system tools.  For example, most firewalls can be
+    configured to restrict the number of simultaneous connections from
+    any individual IP address or network, thus preventing a range of
+    simple attacks.</p>
+
+    <p>There are also certain Apache HTTP Server configuration
+    settings that can help mitigate problems:</p>
+
+    <ul>
+      <li>The <directive module="core">TimeOut</directive> directive
+      should be lowered on sites that are subject to DoS attacks.
+      Setting this to as low as a few seconds may be appropriate.  See
+      also the <directive module="core">KeepAliveTimeout</directive>
+      directive and various timeout-related directives provided by
+      other modules.</li>
+
+      <li>On operating systems that support it, make sure that you use
+      the <directive mdoule="core">AcceptFilter</directive> directive
+      to offload part of the request processing to the operating
+      system.  This is active by default in Apache httpd, but may
+      require reconfiguration of your kernel.</li>
+
+      <li>Tune the <directive
+      module="mpm_common">MaxClients</directive> directive to allow
+      the server to handle the maximum number of simultaneous
+      connections without running out of resources.  See also the <a
+      href="perf-tuning.html">performance tuning
+      documentation</a>.</li>
+
+      <li>The use of a threaded <a href="../mpm.html">mpm</a> may
+      allow you to handle more simultaneous connections, thereby
+      mitigating DoS attacks.  Further, the <module>event</module> mpm
+      uses asynchronous processing to avoid devoting a thread to each
+      connection.</li>
+
+      <li>There are a number of third-party modules available through
+      <a
+      href="http://modules.apache.org/">http://modules.apache.org/</a>
+      that can restrict certain client behaviors and thereby mitigate
+      DoS problems.</li>
+     
+    </ul>
+
+  </section>
+    
+
   <section id="serverroot">
   
     <title>Permissions on ServerRoot Directories</title>

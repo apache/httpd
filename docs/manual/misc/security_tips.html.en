@@ -26,6 +26,7 @@
     Some of the suggestions will be general, others specific to Apache.</p>
   </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#uptodate">Keep up to Date</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dos">Denial of Service (DoS) attacks</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serverroot">Permissions on ServerRoot Directories</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssi">Server Side Includes</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgi">CGI in General</a></li>
@@ -56,6 +57,59 @@
     from problems in add-on code, CGI scripts, or the underlying
     Operating System.  You must therefore stay aware of problems and
     updates with all the software on your system.</p>
+
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dos" id="dos">Denial of Service (DoS) attacks</a></h2>
+
+    
+
+    <p>All network servers are subject to denial of service atacks
+    that attempt to prevent responses to clients by tying up the
+    resources of the server.  It is not possible to prevent such
+    attacks entirely, but you can do certain things to mitigate the
+    problems that they create.</p>
+
+    <p>Often the most effective anti-DoS tools will be a firewall or
+    other operating-system tools.  For example, most firewalls can be
+    configured to restrict the number of simultaneous connections from
+    any individual IP address or network, thus preventing a range of
+    simple attacks.</p>
+
+    <p>There are also certain Apache HTTP Server configuration
+    settings that can help mitigate problems:</p>
+
+    <ul>
+      <li>The <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> directive
+      should be lowered on sites that are subject to DoS attacks.
+      Setting this to as low as a few seconds may be appropriate.  See
+      also the <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>
+      directive and various timeout-related directives provided by
+      other modules.</li>
+
+      <li>On operating systems that support it, make sure that you use
+      the <code class="directive">AcceptFilter</code> directive
+      to offload part of the request processing to the operating
+      system.  This is active by default in Apache httpd, but may
+      require reconfiguration of your kernel.</li>
+
+      <li>Tune the <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> directive to allow
+      the server to handle the maximum number of simultaneous
+      connections without running out of resources.  See also the <a href="perf-tuning.html">performance tuning
+      documentation</a>.</li>
+
+      <li>The use of a threaded <a href="../mpm.html">mpm</a> may
+      allow you to handle more simultaneous connections, thereby
+      mitigating DoS attacks.  Further, the <code class="module"><a href="../mod/event.html">event</a></code> mpm
+      uses asynchronous processing to avoid devoting a thread to each
+      connection.</li>
+
+      <li>There are a number of third-party modules available through
+      <a href="http://modules.apache.org/">http://modules.apache.org/</a>
+      that can restrict certain client behaviors and thereby mitigate
+      DoS problems.</li>
+     
+    </ul>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
