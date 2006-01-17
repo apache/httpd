@@ -69,6 +69,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachemaxexpire">CacheMaxExpire</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheminexpire">CacheMinExpire</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestorenostore">CacheStoreNoStore</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#cachestoreprivate">CacheStorePrivate</a></li>
 </ul>
@@ -375,6 +376,26 @@ LastModified date.</td></tr>
 
     <div class="example"><p><code>
       CacheMaxExpire 604800
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheMinExpire" id="CacheMinExpire">CacheMinExpire</a> <a name="cacheminexpire" id="cacheminexpire">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The minimum time in seconds to cache a document</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheMinExpire <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheMinExpire 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+</table>
+    <p>The <code class="directive">CacheMinExpire</code> directive specifies the minimum number of
+    seconds for which cachable HTTP documents will be retained without checking the origin
+    server. This is only used if no valid expire time was supplied with the document.</p>
+
+
+    <div class="example"><p><code>
+      CacheMinExpire 3600
     </code></p></div>
 
 </div>

@@ -2,6 +2,7 @@
 
 <modulefilelist>
   <modulefile>core.xml.de</modulefile>
+  <modulefile>mod_access_compat.xml</modulefile>
   <modulefile>mod_actions.xml.de</modulefile>
   <modulefile>mod_alias.xml</modulefile>
   <modulefile>mod_asis.xml</modulefile>
