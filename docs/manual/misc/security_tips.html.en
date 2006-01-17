@@ -64,17 +64,17 @@
 
     
 
-    <p>All network servers are subject to denial of service atacks
+    <p>All network servers can be subject to denial of service atacks
     that attempt to prevent responses to clients by tying up the
     resources of the server.  It is not possible to prevent such
     attacks entirely, but you can do certain things to mitigate the
     problems that they create.</p>
 
-    <p>Often the most effective anti-DoS tools will be a firewall or
-    other operating-system tools.  For example, most firewalls can be
-    configured to restrict the number of simultaneous connections from
-    any individual IP address or network, thus preventing a range of
-    simple attacks.</p>
+    <p>Often the most effective anti-DoS tool will be a firewall or
+    other operating-system configurations.  For example, most
+    firewalls can be configured to restrict the number of simultaneous
+    connections from any individual IP address or network, thus
+    preventing a range of simple attacks.</p>
 
     <p>There are also certain Apache HTTP Server configuration
     settings that can help mitigate problems:</p>
@@ -85,10 +85,19 @@
       Setting this to as low as a few seconds may be appropriate.  See
       also the <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>
       directive and various timeout-related directives provided by
-      other modules.</li>
+      different modules.</li>
+
+      <li>The directives 
+      <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>,
+      <code class="directive"><a href="../mod/core.html#limitrequestfields">LimitRequestFields</a></code>,
+      <code class="directive"><a href="../mod/core.html#limitrequestfilesize">LimitRequestFileSize</a></code>,
+      <code class="directive"><a href="../mod/core.html#limitrequestline">LimitRequestLine</a></code>, and
+      <code class="directive"><a href="../mod/core.html#limitxmlrequestbody">LimitXMLRequestBody</a></code>
+      should be carefully configured to limit resource consumption
+      triggered by client input.</li>
 
       <li>On operating systems that support it, make sure that you use
-      the <code class="directive">AcceptFilter</code> directive
+      the <code class="directive"><a href="../mod/core.html#acceptfilter">AcceptFilter</a></code> directive
       to offload part of the request processing to the operating
       system.  This is active by default in Apache httpd, but may
       require reconfiguration of your kernel.</li>
