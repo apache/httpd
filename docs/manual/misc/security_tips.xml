@@ -398,5 +398,58 @@
     </example>
     
   </section>
+
+  <section id="timeoutsettings">
+
+    <title>Mitigate the risk of DoS attacks</title>
+
+    <p>DoS attacks on systems that assign one thread / process to a client
+    connection for the duration of the connection are a general problem and well
+    known for a long time. Not only httpd is affected by this problem, but also
+    several other servers of different vendors, e.g. smtp servers, pop3 servers,
+    application servers.</p>
+
+    <p>Usual approaches to mitigate this risk are</p>
+
+    <ol>
+        <li>Set a timeout value for the network operations, such that the
+        connection gets canceled if no data is transmitted on this connection
+        within the timeout period.</li>
+
+        <li>Limit the number of simultaneous connections that can be made from
+        one IP. Of course this is no help against DDoS.</li>
+    </ol>
+
+    <p>Mapping this back to the Apache httpd server 1. can be reached by
+    lowering the value of the parameters
+    <directive module="core">Timeout</directive> and
+    <directive module="core">KeepAliveTimeout</directive>. A value that should
+    work for most sites not using long running CGI scripts is between 5 and 10.
+    Some sites even turn off the keepalives completely, which has of course other
+    drawbacks on performance.</p>
+
+    <p>2. can be reached by either limiting this on firewall / OS level or by
+    using 3rd party httpd modules that limit the number of simultaneous
+    connections from one IP.</p>
+
+    <p>Since httpd 2.2.0 the risk of tying httpd processes / threads in request
+    reads can be further limited by the use of accept filters via the directive 
+    <directive module="core">AcceptFilter</directive>. These are currently only
+    available on Linux and FreeBSD systems. The protection by the FreeBSD accept
+    filters is better than by Linux's more primitive TCP_DEFER_ACCEPT. For more
+    details see the link above.</p>
+
+    <p>Another approach to mitigate this risk is to decouple the fixed one
+    thread / process to one client connection assignment and change it to an
+    event driven modell, that assigns threads / processes to the connection
+    only when there is data available to process. During the time where there
+    is no data available the client connections do not block a thread / process
+    but are only watched by one common event thread for new data to arrive via
+    system calls like poll. This is currently work in progress on the trunk
+    (development branch of httpd). It might be part of the next stable major
+    release (2.4 or 3.0). Parts of this are already available as the
+    experimental event MPM in httpd 2.2.x (see <module>event</module>).</p>
+
+  </section>
   
 </manualpage>
