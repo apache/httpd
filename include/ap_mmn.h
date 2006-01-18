@@ -114,6 +114,8 @@
  * 20060110.0 (2.3.0-dev) Conversion of Authz to be provider based 
                           addition of <SatisfyAll><SatisfyOne>
                           removal of Satisfy, Allow, Deny, Order
+ * 20060110.1 (2.3.0-dev) minex and minex_set members added to
+ *                        cache_server_conf (minor)
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -121,7 +123,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20060110
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
