@@ -62,7 +62,6 @@ static authz_status user_check_authorization(request_rec *r,
                   "'require'ments for user to be allowed access",
                   r->uri, r->user);
 
-    ap_note_auth_failure(r);
     return AUTHZ_DENIED;
 }
 

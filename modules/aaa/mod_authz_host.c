@@ -109,7 +109,6 @@ static authz_status env_check_authorization(request_rec *r, const char *require_
                   "'require'ments for user '%s' to be allowed access",
                   r->uri, r->user);
 
-    ap_note_auth_failure(r);
     return AUTHZ_DENIED;
 }
 
@@ -168,7 +167,6 @@ static authz_status ip_check_authorization(request_rec *r, const char *require_l
                   "'require'ments for user '%s' to be allowed access",
                   r->uri, r->user);
 
-    ap_note_auth_failure(r);
     return AUTHZ_DENIED;
 }
 
@@ -205,7 +203,6 @@ static authz_status host_check_authorization(request_rec *r, const char *require
                       r->uri, r->user);
     }
 
-    ap_note_auth_failure(r);
     return AUTHZ_DENIED;
 }
 
