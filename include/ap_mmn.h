@@ -40,82 +40,85 @@
  */
 
 /*
- * 20010224 (2.0.13-dev) MODULE_MAGIC_COOKIE reset to "AP20"
- * 20010523 (2.0.19-dev) bump for scoreboard structure reordering
- * 20010627 (2.0.19-dev) more API changes than I can count
- * 20010726 (2.0.22-dev) more big API changes
- * 20010808 (2.0.23-dev) dir d_is_absolute bit introduced, bucket changes, etc
- * 20010825 (2.0.25-dev) removed d_is_absolute, introduced map_to_storage hook
- * 20011002 (2.0.26-dev) removed 1.3-depreciated request_rec.content_language
- * 20011127 (2.0.29-dev) bump for postconfig hook change, and removal of socket
- *                       from connection record
- * 20011212 (2.0.30-dev) bump for new used_path_info member of request_rec
- * 20011218 (2.0.30-dev) bump for new sbh member of conn_rec, different 
- *                       declarations for scoreboard, new parameter to
- *                       create_connection hook
- * 20020102 (2.0.30-dev) bump for changed type of limit_req_body in 
- *                       core_dir_config
- * 20020109 (2.0.31-dev) bump for changed shm and scoreboard declarations
- * 20020111 (2.0.31-dev) bump for ETag fields added at end of cor_dir_config
- * 20020114 (2.0.31-dev) mod_dav changed how it asks its provider to fulfill
- *                       a GET request
- * 20020118 (2.0.31-dev) Input filtering split of blocking and mode
- * 20020127 (2.0.31-dev) bump for pre_mpm hook change
- * 20020128 (2.0.31-dev) bump for pre_config hook change
- * 20020218 (2.0.33-dev) bump for AddOutputFilterByType directive
- * 20020220 (2.0.33-dev) bump for scoreboard.h structure change
- * 20020302 (2.0.33-dev) bump for protocol_filter additions.
- * 20020306 (2.0.34-dev) bump for filter type renames.
- * 20020318 (2.0.34-dev) mod_dav's API for REPORT generation changed
- * 20020319 (2.0.34-dev) M_INVALID changed, plus new M_* methods for RFC 3253
- * 20020327 (2.0.35-dev) Add parameter to quick_handler hook
- * 20020329 (2.0.35-dev) bump for addition of freelists to bucket API
- * 20020329.1 (2.0.36) minor bump for new arg to opt fn ap_cgi_build_command
- * 20020506 (2.0.37-dev) Removed r->boundary in request_rec.
- * 20020529 (2.0.37-dev) Standardized the names of some apr_pool_*_set funcs
- * 20020602 (2.0.37-dev) Bucket API change (metadata buckets)
- * 20020612 (2.0.38-dev) Changed server_rec->[keep_alive_]timeout to apr time
- * 20020625 (2.0.40-dev) Changed conn_rec->keepalive to an enumeration
- * 20020628 (2.0.40-dev) Added filter_init to filter registration functions
- * 20020903 (2.0.41-dev) APR's error constants changed
- * 20020903.1 (2.1.0-dev) allow_encoded_slashes added to core_dir_config
+ * 20010224   (2.0.13-dev) MODULE_MAGIC_COOKIE reset to "AP20"
+ * 20010523   (2.0.19-dev) bump for scoreboard structure reordering
+ * 20010627   (2.0.19-dev) more API changes than I can count
+ * 20010726   (2.0.22-dev) more big API changes
+ * 20010808   (2.0.23-dev) dir d_is_absolute bit introduced, bucket changes, etc
+ * 20010825   (2.0.25-dev) removed d_is_absolute, introduced map_to_storage hook
+ * 20011002   (2.0.26-dev) removed 1.3-depreciated request_rec.content_language
+ * 20011127   (2.0.29-dev) bump for postconfig hook change, and removal of
+ *                         socket from connection record
+ * 20011212   (2.0.30-dev) bump for new used_path_info member of request_rec
+ * 20011218   (2.0.30-dev) bump for new sbh member of conn_rec, different
+ *                         declarations for scoreboard, new parameter to
+ *                         create_connection hook
+ * 20020102   (2.0.30-dev) bump for changed type of limit_req_body in
+ *                         core_dir_config
+ * 20020109   (2.0.31-dev) bump for changed shm and scoreboard declarations
+ * 20020111   (2.0.31-dev) bump for ETag fields added at end of cor_dir_config
+ * 20020114   (2.0.31-dev) mod_dav changed how it asks its provider to fulfill
+ *                         a GET request
+ * 20020118   (2.0.31-dev) Input filtering split of blocking and mode
+ * 20020127   (2.0.31-dev) bump for pre_mpm hook change
+ * 20020128   (2.0.31-dev) bump for pre_config hook change
+ * 20020218   (2.0.33-dev) bump for AddOutputFilterByType directive
+ * 20020220   (2.0.33-dev) bump for scoreboard.h structure change
+ * 20020302   (2.0.33-dev) bump for protocol_filter additions.
+ * 20020306   (2.0.34-dev) bump for filter type renames.
+ * 20020318   (2.0.34-dev) mod_dav's API for REPORT generation changed
+ * 20020319   (2.0.34-dev) M_INVALID changed, plus new M_* methods for RFC 3253
+ * 20020327   (2.0.35-dev) Add parameter to quick_handler hook
+ * 20020329   (2.0.35-dev) bump for addition of freelists to bucket API
+ * 20020329.1 (2.0.36)     minor bump for new arg to opt fn ap_cgi_build_command
+ * 20020506   (2.0.37-dev) Removed r->boundary in request_rec.
+ * 20020529   (2.0.37-dev) Standardized the names of some apr_pool_*_set funcs
+ * 20020602   (2.0.37-dev) Bucket API change (metadata buckets)
+ * 20020612   (2.0.38-dev) Changed server_rec->[keep_alive_]timeout to apr time
+ * 20020625   (2.0.40-dev) Changed conn_rec->keepalive to an enumeration
+ * 20020628   (2.0.40-dev) Added filter_init to filter registration functions
+ * 20020903   (2.0.41-dev) APR's error constants changed
+ * 20020903.1 (2.1.0-dev)  allow_encoded_slashes added to core_dir_config
  * 20020903.2 (2.0.46-dev) add ap_escape_logitem
- * 20030213.1 (2.1.0-dev) changed log_writer optional fn's to return previous
- *                        handler
- * 20030821 (2.1.0-dev) bumped mod_include's entire API
- * 20030821.1 (2.1.0-dev) added XHTML doctypes
- * 20030821.2 (2.1.0-dev) added ap_escape_errorlog_item
- * 20030821.3 (2.1.0-dev) added ap_get_server_revision / ap_version_t
- * 20040425 (2.1.0-dev) removed ap_add_named_module API
- *                      changed ap_add_module, ap_add_loaded_module,
- *                      ap_setup_prelinked_modules, ap_process_resource_config
- * 20040425.1 (2.1.0-dev) Added ap_module_symbol_t and ap_prelinked_module_symbols
- * 20050101.0 (2.1.2-dev) Axed misnamed http_method for http_scheme (which it was!)
- * 20050127.0 (2.1.3-dev) renamed regex_t->ap_regex_t, regmatch_t->ap_regmatch_t,
- *                        REG_*->AP_REG_*, removed reg* in place of ap_reg*;
- *                        added ap_regex.h
- * 20050217.0 (2.1.3-dev) Axed find_child_by_pid, mpm_*_completion_context (winnt mpm)
- *                        symbols from the public sector, and decorated real_exit_code
- *                        with ap_ in the win32 os.h.
- * 20050305.0 (2.1.4-dev) added pid and generation fields to worker_score
- * 20050305.1 (2.1.5-dev) added ap_vhost_iterate_given_conn.
- * 20050305.2 (2.1.5-dev) added AP_INIT_TAKE_ARGV.
- * 20050305.3 (2.1.5-dev) added Protocol Framework.
- * 20050701.0 (2.1.7-dev) Bump MODULE_MAGIC_COOKIE to "AP21"!
- * 20050701.1 (2.1.7-dev) trace_enable member added to core server_config
- * 20050708.0 (2.1.7-dev) Bump MODULE_MAGIC_COOKIE to "AP22"!
- * 20050708.1 (2.1.7-dev) add proxy request_status hook (minor)
- * 20050919.0 (2.1.8-dev) mod_ssl ssl_ext_list optional function added
- * 20051005.0 (2.1.8-dev) NET_TIME filter eliminated
- * 20051005.0 (2.3.0-dev) Bump MODULE_MAGIC_COOKIE to "AP24"!
- * 20051115.0 (2.3.0-dev) Added use_canonical_phys_port to core_dir_config
- * 20051231.0 (2.3.0-dev) Added num_blank_lines, pending_header_line, and
- *                        pending_header_size to request_rec
- * 20060110.0 (2.3.0-dev) Conversion of Authz to be provider based 
-                          addition of <SatisfyAll><SatisfyOne>
-                          removal of Satisfy, Allow, Deny, Order
- * 20060110.1 (2.3.0-dev) minex and minex_set members added to
- *                        cache_server_conf (minor)
+ * 20030213.1 (2.1.0-dev)  changed log_writer optional fn's to return previous
+ *                         handler
+ * 20030821   (2.1.0-dev)  bumped mod_include's entire API
+ * 20030821.1 (2.1.0-dev)  added XHTML doctypes
+ * 20030821.2 (2.1.0-dev)  added ap_escape_errorlog_item
+ * 20030821.3 (2.1.0-dev)  added ap_get_server_revision / ap_version_t
+ * 20040425   (2.1.0-dev)  removed ap_add_named_module API
+ *                         changed ap_add_module, ap_add_loaded_module,
+ *                         ap_setup_prelinked_modules,
+ *                         ap_process_resource_config
+ * 20040425.1 (2.1.0-dev)  Added ap_module_symbol_t and
+ *                         ap_prelinked_module_symbols
+ * 20050101.0 (2.1.2-dev)  Axed misnamed http_method for http_scheme
+ *                         (which it was!)
+ * 20050127.0 (2.1.3-dev)  renamed regex_t->ap_regex_t,
+ *                         regmatch_t->ap_regmatch_t, REG_*->AP_REG_*,
+ *                         removed reg* in place of ap_reg*; added ap_regex.h
+ * 20050217.0 (2.1.3-dev)  Axed find_child_by_pid, mpm_*_completion_context
+ *                         (winnt mpm) symbols from the public sector, and
+ *                         decorated real_exit_code with ap_ in the win32/os.h.
+ * 20050305.0 (2.1.4-dev)  added pid and generation fields to worker_score
+ * 20050305.1 (2.1.5-dev)  added ap_vhost_iterate_given_conn.
+ * 20050305.2 (2.1.5-dev)  added AP_INIT_TAKE_ARGV.
+ * 20050305.3 (2.1.5-dev)  added Protocol Framework.
+ * 20050701.0 (2.1.7-dev)  Bump MODULE_MAGIC_COOKIE to "AP21"!
+ * 20050701.1 (2.1.7-dev)  trace_enable member added to core server_config
+ * 20050708.0 (2.1.7-dev)  Bump MODULE_MAGIC_COOKIE to "AP22"!
+ * 20050708.1 (2.1.7-dev)  add proxy request_status hook (minor)
+ * 20050919.0 (2.1.8-dev)  mod_ssl ssl_ext_list optional function added
+ * 20051005.0 (2.1.8-dev)  NET_TIME filter eliminated
+ * 20051005.0 (2.3.0-dev)  Bump MODULE_MAGIC_COOKIE to "AP24"!
+ * 20051115.0 (2.3.0-dev)  Added use_canonical_phys_port to core_dir_config
+ * 20051231.0 (2.3.0-dev)  Added num_blank_lines, pending_header_line, and
+ *                         pending_header_size to request_rec
+ * 20060110.0 (2.3.0-dev)  Conversion of Authz to be provider based
+ *                         addition of <SatisfyAll><SatisfyOne>
+ *                         removal of Satisfy, Allow, Deny, Order
+ * 20060110.1 (2.3.0-dev)  minex and minex_set members added to
+ *                         cache_server_conf (minor)
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
