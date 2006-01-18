@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) core: Reject invalid Expect header immediately. PR 38123.
+     [Ruediger Pluem]
+
   *) Authz: Add the new module mod_authn_core that will provide common
      authn directives such as 'AuthType', 'AuthName'.  Move the directives
      'AuthType' and 'AuthName' out of the core module and merge mod_authz_alias 
