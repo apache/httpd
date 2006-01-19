@@ -29,17 +29,7 @@
 
 #include "mod_auth.h"     /* for AUTHZ_GROUP_NOTE */
 
-typedef struct {
-} authz_owner_config_rec;
-
 APR_DECLARE_OPTIONAL_FN(char*, authz_owner_get_file_group, (request_rec *r));
-
-static void *create_authz_owner_dir_config(apr_pool_t *p, char *d)
-{
-    authz_owner_config_rec *conf = apr_palloc(p, sizeof(*conf));
-
-    return conf;
-}
 
 static const command_rec authz_owner_cmds[] =
 {
@@ -184,7 +174,7 @@ static void register_hooks(apr_pool_t *p)
 module AP_MODULE_DECLARE_DATA authz_owner_module =
 {
     STANDARD20_MODULE_STUFF,
-    create_authz_owner_dir_config, /* dir config creater */
+    NULL,                          /* dir config creater */
     NULL,                          /* dir merger --- default is to override */
     NULL,                          /* server config */
     NULL,                          /* merge server config */
