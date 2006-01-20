@@ -160,4 +160,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem
+      
+    * mod_ldap: Set the LDAP protocol before setting extended LDAP options
+       Fix PR38146
+         http://svn.apache.org/viewcvs.cgi?rev=370856&view=rev
+      +1: bnicholes
+                
 
