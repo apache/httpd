@@ -153,6 +153,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         URL: http://svn.apache.org/viewcvs?rev=358040&view=rev
       +1: wrowe, mturk
       -0: jorton: should use AP_METHOD_BIT
+          wrowe asks; message ID of the long explanation, or a patch, please?
 
     * mod_cache: Fix PR38017 (mod_cache not working in reverse proxy setup?)
       Trunk version of patch:
@@ -164,6 +165,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_ldap: Set the LDAP protocol before setting extended LDAP options
        Fix PR38146
          http://svn.apache.org/viewcvs.cgi?rev=370856&view=rev
-      +1: bnicholes
+      +1: bnicholes, wrowe
                 
 
