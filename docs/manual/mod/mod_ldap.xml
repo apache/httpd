@@ -230,8 +230,7 @@ by other LDAP modules</description>
         Deny from all<br />
         Allow from yourdomain.example.com<br />
         AuthLDAPEnabled on<br />
-        LDAPTrustedMode TLS
-        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
+        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS<br />
         require valid-user<br />
       </indent>
       &lt;/Location&gt;
@@ -540,8 +539,7 @@ connection client certificates.</description>
 <name>LDAPTrustedMode</name>
 <description>Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</description>
 <syntax>LDAPTrustedMode <var>type</var></syntax>
-<contextlist><context>server config</context><context>virtual host</context>
-<context>directory</context><context>.htaccess</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p>The following modes are supported:</p>
