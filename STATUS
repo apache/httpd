@@ -177,3 +177,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, wrowe
 
+    * core: Fix PR38123 (Invalid Expect header not immediately rejected)
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=370172&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=371132&view=rev
+      Backport version for 2.2.x of patch:
+         http://issues.apache.org/bugzilla/attachment.cgi?id=17481
+      +1: rpluem
+
