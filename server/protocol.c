@@ -902,6 +902,16 @@ static request_rec *request_post_read(request_rec *r, conn_rec *conn)
                       "(see RFC2616 section 14.23): %s", r->uri);
     }
 
+    /*
+     * Add the HTTP_IN filter here to ensure that ap_discard_request_body
+     * called by ap_die and by ap_send_error_response works correctly on
+     * status codes that do not cause the connection to be dropped and
+     * in situations where the connection should be kept alive.
+     */
+
+    ap_add_input_filter_handle(ap_http_input_filter_handle,
+                               NULL, r, r->connection);
+
     if (r->status != HTTP_OK) {
         ap_send_error_response(r, 0);
         ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
@@ -910,8 +920,6 @@ static request_rec *request_post_read(request_rec *r, conn_rec *conn)
     }
 
     if ((access_status = ap_run_post_read_request(r))) {
-        ap_add_input_filter_handle(ap_http_input_filter_handle,
-                                   NULL, r, r->connection);
         ap_die(access_status, r);
         ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
         ap_run_log_transaction(r);
@@ -934,8 +942,6 @@ static request_rec *request_post_read(request_rec *r, conn_rec *conn)
             ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
                           "client sent an unrecognized expectation value of "
                           "Expect: %s", expect);
-            ap_add_input_filter_handle(ap_http_input_filter_handle,
-                                       NULL, r, r->connection);
             ap_send_error_response(r, 0);
             ap_update_child_status(conn->sbh, SERVER_BUSY_LOG, r);
             ap_run_log_transaction(r);
@@ -943,8 +949,6 @@ static request_rec *request_post_read(request_rec *r, conn_rec *conn)
         }
     }
 
-    ap_add_input_filter_handle(ap_http_input_filter_handle,
-                               NULL, r, r->connection);
     return r;
 }
 
