@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
+     PR 38340. [Aleksey Pesternikov <apesternikov yahoo.com>, Ruediger Pluem]
+
   *) core: Reject invalid Expect header immediately. PR 38123.
      [Ruediger Pluem]
 
@@ -9,17 +12,17 @@ Changes with Apache 2.3.0
      authn directives such as 'AuthType', 'AuthName'.  Move the directives
      'AuthType' and 'AuthName' out of the core module and merge mod_authz_alias 
      into mod_authn_core. [Brad Nicholes]
-      
+
   *) Authz: Mark the directives 'Order', 'Allow', 'Deny' and 'Satisfy' as 
      deprecated and move them into the new module mod_access_compat which
      can be loaded to provide backwards compatibility for these directives.
      [Brad Nicholes]
-     
+
   *) Authz: Move the 'Require' directive from the core module as well as 
      add the directives '<SatisfyAll>', '<SatisfyOne>', '<RequireAlias>' 
      and 'Reject' to mod_authz_core. The new directives introduce 'AND/OR' 
      logic into the authorization processing. [Brad Nicholes]
-     
+
   *) Authz: Add the new module mod_authz_core which acts as the 
      authorization provider vector and contains common authz 
      directives. [Brad Nicholes]
@@ -33,7 +36,7 @@ Changes with Apache 2.3.0
 
   *) Authz: Convert all of the authz modules from hook based to 
      provider based. [Brad Nicholes]
-  
+
   *) mod_cache: Add CacheMinExpire directive to set the minimum time in
      seconds to cache a document.
      [Brian Akins <brian.akins turner.com>, Ruediger Pluem]
