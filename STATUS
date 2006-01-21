@@ -147,31 +147,33 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=356234&view=rev
        + http://svn.apache.org/viewcvs?rev=356248&view=rev
        = http://people.apache.org/~jorton/httpd-2.2.0-cppheader.patch
-      +1: jorton
+      +1: jorton, wrowe
 
     * Fix mis-shifted 32 bit scope, masked to 64 bits as a method.
         URL: http://svn.apache.org/viewcvs?rev=358040&view=rev
       +1: wrowe, mturk
       -0: jorton: should use AP_METHOD_BIT
           wrowe asks; message ID of the long explanation, or a patch, please?
+          If proposing an alternative, please commit to trunk and modify this
+          STATUS backport proposal for revote.
 
     * mod_cache: Fix PR38017 (mod_cache not working in reverse proxy setup?)
       Trunk version of patch:
          http://svn.apache.org/viewcvs.cgi?rev=367798&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, wrowe
 
     * mod_ldap: Set the LDAP protocol before setting extended LDAP options
        Fix PR38146
          http://svn.apache.org/viewcvs.cgi?rev=370856&view=rev
       +1: bnicholes, wrowe, rpluem
 
-    * mod_proxy_ajp: Fix PR38340 (mod_proxy_ajp does not support support common
+    * mod_proxy_ajp: Fix PR38340 (mod_proxy_ajp does not support common
       headers (0xA0??))
       Trunk version of patch:
          http://svn.apache.org/viewcvs.cgi?rev=371013&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, wrowe
 
