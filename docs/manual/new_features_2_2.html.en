@@ -207,7 +207,7 @@
       <dt>Connection Error Logging</dt>
 
       <dd>A new function, <code>ap_log_cerror</code> has been added to log
-          errors that occure with the client's connection.  When logged, 
+          errors that occur with the client's connection.  When logged, 
           the message includes the client IP address.</dd>
 
       <dt>Test Configuration Hook Added</dt>
