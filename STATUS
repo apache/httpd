@@ -167,3 +167,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=370856&view=rev
       +1: bnicholes, wrowe, rpluem
 
+    * mod_proxy_ajp: Fix PR38340 (mod_proxy_ajp does not support support common
+      headers (0xA0??))
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=371013&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
