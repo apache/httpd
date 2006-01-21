@@ -183,5 +183,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=371132&view=rev
       Backport version for 2.2.x of patch:
          http://issues.apache.org/bugzilla/attachment.cgi?id=17481
-      +1: rpluem
+      +1: rpluem, niq
+      NOTE: this also supersedes previous fix to PR#37790
 
