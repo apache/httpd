@@ -240,10 +240,7 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
         e = APR_BRIGADE_FIRST(ctx->b);
         rv = apr_bucket_read(e, &str, &len, block);
 
-        if (APR_STATUS_IS_EAGAIN(rv)) {
-            return APR_SUCCESS;
-        }
-        else if (rv != APR_SUCCESS) {
+        if (rv != APR_SUCCESS) {
             return rv;
         }
         else if (block == APR_BLOCK_READ && len == 0) {
