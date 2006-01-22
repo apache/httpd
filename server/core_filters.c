@@ -153,12 +153,8 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
     if (mode == AP_MODE_GETLINE) {
         /* we are reading a single LF line, e.g. the HTTP headers */
         rv = apr_brigade_split_line(b, ctx->b, block, HUGE_STRING_LEN);
-        /* We should treat EAGAIN here the same as we do for EOF (brigade is
-         * empty).  We do this by returning whatever we have read.  This may
-         * or may not be bogus, but is consistent (for now) with EOF logic.
-         */
         if (APR_STATUS_IS_EAGAIN(rv)) {
-            rv = APR_SUCCESS;
+            APR_BRIGADE_PREPEND(ctx->b, b);
         }
         return rv;
     }
