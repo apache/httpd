@@ -459,6 +459,7 @@ static int bio_filter_in_read(BIO *bio, char *in, int inlen)
     apr_read_type_e block = inctx->block;
     SSLConnRec *sslconn = myConnConfig(inctx->f->c);
 
+    fprintf(stderr, "block mode is %d\n", (block == APR_BLOCK_READ ? 1 : 0));
     inctx->rc = APR_SUCCESS;
 
     /* OpenSSL catches this case, so should we. */
@@ -1281,6 +1282,11 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
         return APR_ENOTIMPL;
     }
 
+    /* XXX: for now, do blocking reads even if running in
+     * an asynchronous httpd.  mod_ssl will need some changes
+     * to deal with EAGAIN properly.
+     */
+    block = APR_BLOCK_READ;
     inctx->mode = mode;
     inctx->block = block;
 
