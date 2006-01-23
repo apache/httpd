@@ -1,7 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
-  *) Remove the base href tag from mod_proxy_ftp, as it breaks relative
+  *) Remove the base href tag from proxy_ftp, as it breaks relative
      links for clients not using an Authorization header. [Graham Leggett,
      Jon Snow <jsnow27 gatesec.net>]
 
