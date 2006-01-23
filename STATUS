@@ -133,11 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?view=rev&rev=154319
        +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
-    *) Remove the base href tag from mod_proxy_ftp, as it breaks relative
-       links for clients not using an Authorization header.
-         modules/proxy/mod_proxy_ftp.c: r231044
-       +1: minfrin, jim, nd
-
     *) mod_cache: Fix handling of 'Vary: *". PR 16125.
        Trunk: r180341
        2.0.x Patch: http://issues.apache.org/bugzilla/attachment.cgi?id=15297

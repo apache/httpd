@@ -353,11 +353,10 @@ apr_status_t ap_proxy_send_dir_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* print "ftp://host/" */
         str = apr_psprintf(p, DOCTYPE_HTML_3_2
                 "<html>\n <head>\n  <title>%s%s%s</title>\n"
-                "  <base href=\"%s%s%s\">\n </head>\n"
+                " </head>\n"
                 " <body>\n  <h2>Directory of "
                 "<a href=\"/\">%s</a>/%s",
                 site, basedir, ap_escape_html(p, path),
-                site, basedir, ap_escape_uri(p, path),
                 site, str);
 
         APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str),
