@@ -222,6 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  install machine are different.
          jim:    +1 on http://svn.apache.org/viewcvs?rev=326018&view=rev
                  as well.
+         colm:   another +1 on the later patch too.
 
     *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
        the non-cgid side of the handler, where the full per-server/dir/etc
