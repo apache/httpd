@@ -170,6 +170,8 @@ uses</a></seealso>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ScoreBoardFile</name>
 </directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
+</directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ServerLimit</name>

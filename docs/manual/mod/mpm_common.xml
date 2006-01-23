@@ -634,6 +634,26 @@ Apache</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ReceiveBufferSize</name>
+<description>TCP receive buffer size</description>
+<syntax>ReceiveBufferSize <var>bytes</var></syntax>
+<default>ReceiveBufferSize 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>The server will set the TCP receive buffer size to the number of
+    bytes specified.</p>
+
+    <p>If set to the value of <code>0</code>, the server will use the
+    OS default.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SendBufferSize</name>
 <description>TCP buffer size</description>
 <syntax>SendBufferSize <var>bytes</var></syntax>
@@ -645,13 +665,13 @@ Apache</a></seealso>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p>The server will set the TCP buffer size to the number of bytes
+    <p>The server will set the TCP send buffer size to the number of bytes
     specified. Very useful to increase past standard OS defaults on
     high speed high latency (<em>i.e.</em>, 100ms or so, such as
     transcontinental fast pipes).</p>
 
     <p>If set to the value of <code>0</code>, the server will use the
-    OS deault.</p>
+    OS default.</p>
 </usage>
 </directivesynopsis>
 

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) Document the ReceiveBufferSize change done in r157583 [Murray
+     Nesbitt <murray@cpan.org>]
+
   *) mod_deflate: Merge the Vary header, instead of Setting it. Fixes
      applications that send the Vary Header themselves. PR 37559. 
      [Paul Querna]
