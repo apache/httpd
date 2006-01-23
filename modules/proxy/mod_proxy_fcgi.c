@@ -142,6 +142,35 @@ static void fill_in_header(fcgi_header *header,
     header->reserved = 0;
 }
 
+/* Wrapper for apr_socket_sendv that handles updating the worker stats. */
+static apr_status_t send_data(proxy_conn_rec *conn,
+                              struct iovec *vec,
+                              int nvec,
+                              apr_size_t *len)
+{
+    apr_status_t rv = apr_socket_sendv(conn->sock, vec, nvec, len);
+
+    if (! rv) {
+        conn->worker->s->transferred += *len;
+    }
+
+    return rv;
+}
+
+/* Wrapper for apr_socket_recv that handles updating the worker stats. */
+static apr_status_t get_data(proxy_conn_rec *conn,
+                             char *buffer,
+                             apr_size_t *buflen)
+{
+    apr_status_t rv = apr_socket_recv(conn->sock, buffer, buflen);
+
+    if (! rv) {
+        conn->worker->s->read += *buflen;
+    }
+
+    return rv;
+}
+
 static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
 {
     struct iovec vec[2];
@@ -165,7 +194,7 @@ static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
     vec[1].iov_base = abrb;
     vec[1].iov_len = sizeof(abrb);
 
-    return apr_socket_sendv(conn->sock, vec, 2, &len);
+    return send_data(conn, vec, 2, &len);
 }
 
 static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r, 
@@ -284,7 +313,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     vec[1].iov_base = body;
     vec[1].iov_len = bodylen;
 
-    rv = apr_socket_sendv(conn->sock, vec, 2, &len);
+    rv = send_data(conn, vec, 2, &len);
     if (rv) {
         return rv;
     }
@@ -295,7 +324,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     vec[0].iov_base = farray;
     vec[0].iov_len = sizeof(farray);
 
-    return apr_socket_sendv(conn->sock, vec, 1, &len);
+    return send_data(conn, vec, 1, &len);
 }
 
 enum {
@@ -529,13 +558,10 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             /* XXX This should be nonblocking, and if we don't write all
              *     the data we need to keep track of that fact so we can
              *     get to it next time through. */
-            rv = apr_socket_sendv(conn->sock, vec, 2, &len);
+            rv = send_data(conn, vec, 2, &len);
             if (rv != APR_SUCCESS) {
                 break;
             }
-
-            /* XXX AJP updates conn->worker->s->transferred here, do we need
-             *     to? */
 
             if (last_stdin) {
                 pfd.reqevents = APR_POLLIN; /* Done with input data */
@@ -546,7 +572,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 vec[0].iov_base = farray;
                 vec[0].iov_len = sizeof(farray);
 
-                rv = apr_socket_sendv(conn->sock, vec, 1, &len);
+                rv = send_data(conn, vec, 1, &len);
             }
         }
 
@@ -567,7 +593,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             /* First, we grab the header... */
             readbuflen = FCGI_HEADER_LEN;
 
-            rv = apr_socket_recv(conn->sock, (char *) farray, &readbuflen);
+            rv = get_data(conn, (char *) farray, &readbuflen);
             if (rv != APR_SUCCESS) {
                 break;
             }
@@ -622,7 +648,7 @@ recv_again:
              * recv call, this will eventually change when we move to real
              * nonblocking recv calls. */
             if (readbuflen != 0) {
-                rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
+                rv = get_data(conn, readbuf, &readbuflen);
                 if (rv != APR_SUCCESS) {
                     break;
                 }
@@ -649,8 +675,6 @@ recv_again:
                             break;
                         }
                     }
-
-                    /* XXX Update conn->worker->s->read like AJP does */
 
                     if (seen_end_of_headers) {
                         rv = ap_pass_brigade(r->output_filters, ob);
@@ -713,7 +737,7 @@ recv_again:
             if (plen) {
                 readbuflen = plen;
 
-                rv = apr_socket_recv(conn->sock, readbuf, &readbuflen);
+                rv = get_data(conn, readbuf, &readbuflen);
                 if (rv != APR_SUCCESS) {
                     break;
                 }
