@@ -870,6 +870,8 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
             break;
 
+      case SSL_ERROR_WANT_READ:
+            return APR_EAGAIN;
       default:
         return status;
     }
