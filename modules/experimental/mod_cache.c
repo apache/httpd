@@ -256,7 +256,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     cache_request_rec *cache;
     cache_server_conf *conf;
     char *url = r->unparsed_uri;
-    const char *cc_in, *cc_out, *cl;
+    const char *cc_in, *cc_out, *cl, *vary_out;
     const char *exps, *lastmods, *dates, *etag;
     apr_time_t exp, date, lastmod, now;
     apr_off_t size;
@@ -267,7 +267,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     /* check first whether running this filter has any point or not */
     /* If the user has Cache-Control: no-store from RFC 2616, don't store! */
     cc_in = apr_table_get(r->headers_in, "Cache-Control");
-    if (r->no_cache || ap_cache_liststr(NULL, cc_in, "no-store", NULL)) {
+    vary_out = apr_table_get(r->headers_out, "Vary");
+    if (r->no_cache || ap_cache_liststr(NULL, cc_in, "no-store", NULL) || 
+        ap_cache_liststr(NULL, vary_out, "*", NULL)) {
         ap_remove_output_filter(f);
         return ap_pass_brigade(f->next, in);
     }

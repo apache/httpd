@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) mod_cache: Fix 'Vary: *' behavior to be RFC compliant. PR 16125.
+     [Paul Querna]
+
   *) Remove the base href tag from proxy_ftp, as it breaks relative
      links for clients not using an Authorization header. [Graham Leggett,
      Jon Snow <jsnow27 gatesec.net>]

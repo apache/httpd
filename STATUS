@@ -133,13 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?view=rev&rev=154319
        +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
-    *) mod_cache: Fix handling of 'Vary: *". PR 16125.
-       Trunk: r180341
-       2.0.x Patch: http://issues.apache.org/bugzilla/attachment.cgi?id=15297
-       +1: pquerna, jerenkrantz, colm
-       jerenkrantz notes: I do prefer the version from r190033 (own if check).
-
-
     *) mod_mime_magic: Handle CRLF-format^H^H^H^H^H^H^H magic files 
        with any trailing whitespace so that it works with the
        default installation on Windows.
