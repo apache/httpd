@@ -519,6 +519,7 @@ AP_DECLARE(void) ap_allow_methods(request_rec *r, int reset, ...)
     while ((method = va_arg(methods, const char *)) != NULL) {
         ap_method_list_add(r->allowed_methods, method);
     }
+    va_end(methods);
 }
 
 AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...)

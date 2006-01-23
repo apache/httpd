@@ -144,9 +144,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        +1: pquerna, jerenkrantz, colm
        jerenkrantz notes: I do prefer the version from r190033 (own if check).
 
-    *) Add missing va_end call
-         http://svn.apache.org/viewcvs?rev=321500&view=rev
-       +1: nd, trawick, colm
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to

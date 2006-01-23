@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) http_request.c: Add missing va_end call. [André Malo]
+
   *) Add httxt2dbm to support/ for creating RewriteMap DBM Files.
      [Paul Querna]
 
