@@ -268,7 +268,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        read (untimed) blocking on Linux, and failing read non-block on
        Solaris.  Leaves NET_TIME intact until after the 2.0.x branch.
          http://people.apache.org/~wrowe/httpd-2.0-proto-timeout.patch
-         +1: wrowe
+         +1: wrowe, colm
 
     *) mod_proxy: Fix PR37145
        (data loss with httpd-2.0.55 reverse proxy method=post).
