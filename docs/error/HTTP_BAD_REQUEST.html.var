@@ -63,6 +63,19 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->  
 ----------fr--
 
+Content-language: ga 
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ga--
+<!--#set var="TITLE" value="Iarratas m&iacute;cheart!"
+--><!--#include virtual="include/top.html" -->
+
+    Seol do chuid brabhs&aacute;la&iacute; (n&oacute;
+    seachfhreastala&iacute;) freagairt n&aacute;rbh fh&eacute;idir leis an
+    fhreastala&iacute; seo a thuisceant.
+
+<!--#include virtual="include/bottom.html" -->
+----------ga--
+
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--

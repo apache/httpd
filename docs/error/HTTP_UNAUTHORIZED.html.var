@@ -107,6 +107,30 @@ Body:----------fr--
 <!--#include virtual="include/bottom.html" -->
 ----------fr--
 
+Content-language: ga
+Content-type: text/html; charset=ISO-8859-1
+Body:----------ga--
+<!--#set var="TITLE" value="Is g&aacute; f&iacute;ordheimhni&uacute;!"
+--><!--#include virtual="include/top.html" -->
+
+    N&iacute;orbh fh&eacute;idir leis an freastala&iacute; a dheimhni&uacute;
+    go bhfuil an &uacute;dar&aacute;is agat rochtain a dheanamh ar an URL
+    "<!--#echo encoding="url" var="REDIRECT_URL" -->".  Is f&eacute;idir go
+    sol&aacute;thair t&uacute; faisn&eacute;is m&iacute;cheart (m.s.,
+    pasfhocail m&iacute;cheart), n&oacute; nach dtuigeann do chuid
+    brabhs&aacute;la&iacute; conas an faisn&eacute;is is g&aacute; a
+    sol&aacute;thair i gceart.
+
+  <!--#include virtual="include/spacer.html" -->
+
+    M&aacute;s &eacute; gur ceart go mbh&eacute;adh cead agat iarratais a
+    dheanamh don doicim&eacute;id, deimhnigh go bhfuil do chuid ainm
+    &uacute;s&aacute;ideora agus pasfhocal i gceart, agus dean iarracht eile,
+    le do thoil.
+
+<!--#include virtual="include/bottom.html" -->
+----------ga--
+
 Content-language: it
 Content-type: text/html; charset=ISO-8859-1
 Body:----------it--
