@@ -298,27 +298,78 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     return apr_socket_sendv(conn->sock, vec, 1, &len);
 }
 
+enum {
+  HDR_STATE_READING_HEADERS,
+  HDR_STATE_GOT_CR,
+  HDR_STATE_GOT_CRLF,
+  HDR_STATE_GOT_CRLFCR,
+  HDR_STATE_GOT_LF,
+  HDR_STATE_DONE_WITH_HEADERS
+};
+
 /* Try to parse the script headers in the response from the back end fastcgi
  * server.  Assumes that the contents of READBUF have already been added to
- * the end of OB.
+ * the end of OB.  STATE holds the current header parsing state for this
+ * request.
  *
  * Returns -1 on error, 0 if it can't find the end of the headers, and 1 if
  * it found the end of the headers and scans them successfully. */
 static int handle_headers(request_rec *r,
+                          int *state,
                           char *readbuf,
                           apr_bucket_brigade *ob)
 {
     conn_rec *c = r->connection;
+    const char *itr = readbuf;
 
-    /* XXX This is both slightly wrong and overly strict.  It's wrong
-     *     cause if we get part of the \r\n\r\n in one record, and the
-     *     rest in the next, we'll miss it, and it's too strict because
-     *     if a CGI uses just \n instead of \r\n we'll miss it, which
-     *     is bad. */
+    while (*itr) {
+        if (*itr == '\r') {
+            switch (*state) {
+                case HDR_STATE_READING_HEADERS:
+                    *state = HDR_STATE_GOT_CR;
+                    break;
 
-    if (strstr(readbuf, "\r\n\r\n")) {
-        int status = ap_scan_script_header_err_brigade(r, ob,
-                                                       NULL);
+                case HDR_STATE_GOT_CRLF:
+                    *state = HDR_STATE_GOT_CRLFCR;
+                    break;
+
+                default:
+                    *state = HDR_STATE_READING_HEADERS;
+                    break;
+            }
+        }
+        else if (*itr == '\n') {
+            switch (*state) {
+                 case HDR_STATE_READING_HEADERS:
+                     *state = HDR_STATE_GOT_LF;
+                     break;
+
+                 case HDR_STATE_GOT_LF:
+                     *state = HDR_STATE_DONE_WITH_HEADERS;
+                     break;
+
+                 case HDR_STATE_GOT_CR:
+                     *state = HDR_STATE_GOT_CRLF;
+                     break;
+
+                 case HDR_STATE_GOT_CRLFCR:
+                     *state = HDR_STATE_DONE_WITH_HEADERS;
+                     break;
+
+                 default:
+                     *state = HDR_STATE_READING_HEADERS;
+                     break;
+            }
+        }
+
+        if (*state == HDR_STATE_DONE_WITH_HEADERS)
+            break;
+
+        ++itr;
+    }
+
+    if (*state == HDR_STATE_DONE_WITH_HEADERS) {
+        int status = ap_scan_script_header_err_brigade(r, ob, NULL);
         if (status != OK) {
             apr_bucket *b;
 
@@ -421,6 +472,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
     fcgi_header header;
     unsigned char farray[FCGI_HEADER_LEN];
     apr_pollfd_t pfd;
+    int header_state = HDR_STATE_READING_HEADERS;
 
     pfd.desc_type = APR_POLL_SOCKET;
     pfd.desc.s = conn->sock;
@@ -587,7 +639,7 @@ recv_again:
                     APR_BRIGADE_INSERT_TAIL(ob, b);
 
                     if (! seen_end_of_headers) {
-                        int st = handle_headers(r, readbuf, ob);
+                        int st = handle_headers(r, &header_state, readbuf, ob);
 
                         if (st == 1) {
                             seen_end_of_headers = 1;
