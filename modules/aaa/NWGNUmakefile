@@ -162,7 +162,7 @@ TARGET_nlm = \
 	$(OBJDIR)/authzdbm.nlm \
 	$(OBJDIR)/authzgrp.nlm \
 	$(OBJDIR)/authzusr.nlm \
-	$(OBJDIR)/authzusr.nlm \
+	$(OBJDIR)/accesscompat.nlm \
 	$(EOLIST)
 
 # If LDAPSDK has been defined then build the authnz_ldap module
