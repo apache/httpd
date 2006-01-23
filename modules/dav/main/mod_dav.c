@@ -2490,7 +2490,7 @@ static int dav_method_mkcol(request_rec *r)
     }
     if (err2 != NULL) {
         /* just log a warning */
-        err = dav_push_error(r->pool, err->status, 0,
+        err = dav_push_error(r->pool, err2->status, 0,
                              "The MKCOL was successful, but there "
                              "was a problem automatically checking in "
                              "the parent collection.",
