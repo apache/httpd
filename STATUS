@@ -241,6 +241,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           jerenkrantz: Didn't a variant of this get committed to trunk?
                        If so, what revision?  And, is there a clean patch for
                        2.0?  (The patch in that message isn't clean.)
+          colm: The revision in trunk is 
+                http://svn.apache.org/viewcvs.cgi?rev=231355&view=rev
 
     *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
        the non-cgid side of the handler, where the full per-server/dir/etc
