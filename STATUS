@@ -165,14 +165,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16995
        +1: rpluem, colm, trawick
 
-    *) mod_ssl: Fix PR37791 (CVEID: CAN-2005-3357) (SEGV if the client is
-       connection plain to a SSL enabled port)
-       Trunk version of patch:
-          http://svn.apache.org/viewcvs.cgi?rev=354394&view=rev
-       Backport version for 2.0.x of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=17393
-       +1: rpluem, colm, trawick
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new

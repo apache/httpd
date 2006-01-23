@@ -202,11 +202,14 @@ int ssl_hook_Access(request_rec *r)
     }
 
     /*
-     * Check to see if SSL protocol is on
+     * Check to see whether SSL is in use; if it's not, then no
+     * further access control checks are relevant.  (the test for
+     * sc->enabled is probably strictly unnecessary)
      */
-    if (!(sc->enabled || ssl)) {
+    if (!sc->enabled || !ssl) {
         return DECLINED;
     }
+
     /*
      * Support for per-directory reconfigured SSL connection parameters.
      *

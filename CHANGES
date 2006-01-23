@@ -1,6 +1,13 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) SECURITY: CVE-2005-3357 (cve.mitre.org)
+     mod_ssl: Fix a possible crash during access control checks if a
+     non-SSL request is processed for an SSL vhost (such as the
+     "HTTP request received on SSL port" error message when an 400
+     ErrorDocument is configured, or if using "SSLEngine optional").
+     PR 37791.  [Rüdiger Plüm, Joe Orton]
+
   *) Add ReceiveBufferSize directive to control the TCP receive buffer.
      [Eric Covener <covener gmail.com>]
 
