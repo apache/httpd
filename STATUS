@@ -206,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         rediffed for 2.0.x as:
         http://issues.apache.org/bugzilla/attachment.cgi?id=14804
         PR: 34452
-        +1: jorton, trawick
+        +1: jorton, trawick, jim
 
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
@@ -220,7 +220,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     *) Block mod_cgid usage on Solaris 10 due to OS bugs.  PR 34264.
        http://svn.apache.org/viewcvs?view=rev&rev=264866
-       +1: jerenkrantz, colm
+       +1: jerenkrantz, colm, jim
          rpluem: Now that patches for this bug are available I would prefer
                  Justins patch:
                          http://svn.apache.org/viewcvs?rev=326018&view=rev
@@ -228,6 +228,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  Maybe it should spit out a BIG warning about the
                  patches in any case as sometimes build machine and
                  install machine are different.
+         jim:    +1 on http://svn.apache.org/viewcvs?rev=326018&view=rev
+                 as well.
 
     *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
        the non-cgid side of the handler, where the full per-server/dir/etc
@@ -245,7 +247,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        read (untimed) blocking on Linux, and failing read non-block on
        Solaris.  Leaves NET_TIME intact until after the 2.0.x branch.
          http://people.apache.org/~wrowe/httpd-2.0-proto-timeout.patch
-         +1: wrowe, colm
+         +1: wrowe, colm, jim
 
     *) mod_proxy: Fix PR37145
        (data loss with httpd-2.0.55 reverse proxy method=post).
@@ -253,7 +255,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs.cgi?rev=327590&view=rev
        Backport version for 2.0.x of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16744
-       +1: rpluem, trawick
+       +1: rpluem, trawick, jim
 
     *) mod_cache: Fix PR37347
        (mod_disk_cache replaces HTTP Status 301 with 200)
@@ -261,7 +263,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs.cgi?rev=220038&view=rev
        Backport version for 2.0.x of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16870
-       +1: rpluem, colm
+       +1: rpluem, colm, jim
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
