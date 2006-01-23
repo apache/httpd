@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) mod_mime_magic: Handle CRLF-format magic files so that it works with
+     the default installation on Windows.  [Jeff Trawick]
+
   *) Write message to error log if AuthGroupFile cannot be opened.
      PR 37566.  [Rüdiger Plüm]
 

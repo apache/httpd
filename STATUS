@@ -133,14 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?view=rev&rev=154319
        +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
-    *) mod_mime_magic: Handle CRLF-format^H^H^H^H^H^H^H magic files 
-       with any trailing whitespace so that it works with the
-       default installation on Windows.
-       http://svn.apache.org/viewcvs?rev=179622&view=rev
-       http://svn.apache.org/viewcvs?rev=280114&view=rev
-       +1: trawick, wrowe, colm
-        backported 280114 to 2.2.x branch already
-
     *) mod_dav: Fix a null pointer dereference in an error code path during the
        handling of MKCOL.
        Trunk version of patch:
