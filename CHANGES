@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) support/check_forensic: Fix temp file usage
+     [Javier Fernandez-Sanguino Pen~a <jfs computer.org>]
+
   *) Chunk filter: Fix chunk filter to create correct chunks in the case that
      a flush bucket is surrounded by data buckets. [Ruediger Pluem]
 

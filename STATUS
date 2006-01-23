@@ -128,19 +128,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           nd: I'm going to reverse the default
           jerenkrantz, striker: I'm confused as to the status of this backport.
 
-    *) support/check_forensic: Fix tempfile usage
-       svn rev 125495, 126224
-       jerenkrantz says: r126224 fixes brokenness with r125495 on Solaris.
-       +1: thommay, jerenkrantz, trawick
-       trawick: "which" isn't portable; I've suggested a work-around on dev@
-         (not standing in way of backport)
-       jorton said: NetBSD's which isn't sufficient either.
-       jerenkrantz: Since it's not in the critical path (and depends on
-                    mod_log_forensic), I think it's still worth it to backport
-                    it as-is.  For the one or two platforms that don't like 
-                    which, they can write their own version of the script.
-       (jorton agrees)
-
     *) Win32: Move call to mpm_service_install to the rewrite_args hook
        from the post_config hook.
          http://svn.apache.org/viewcvs?view=rev&rev=154319
