@@ -133,6 +133,55 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?view=rev&rev=154319
        +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
+    *) mod_ssl: Fix issues picking up ssl-unclean-shutdown setting
+       for e.g. a reverse proxy config, breaking interop with MSIE
+       in some cases.
+       http://svn.apache.org/viewcvs?view=rev&rev=161958
+       rediffed for 2.0.x as:
+       http://issues.apache.org/bugzilla/attachment.cgi?id=14804
+       PR: 34452
+       +1: jorton, trawick, jim
+
+    *) Block mod_cgid usage on Solaris 10 due to OS bugs.  PR 34264.
+       http://svn.apache.org/viewcvs?view=rev&rev=264866
+       +1: jerenkrantz, colm, jim
+         rpluem: Now that patches for this bug are available I would prefer
+                 Justins patch:
+                         http://svn.apache.org/viewcvs?rev=326018&view=rev
+                 which checks the patchlevel of the machine.
+                 Maybe it should spit out a BIG warning about the
+                 patches in any case as sometimes build machine and
+                 install machine are different.
+         jim:    +1 on http://svn.apache.org/viewcvs?rev=326018&view=rev
+                 as well.
+         colm:   another +1 on the later patch too.
+
+    *) Fix all non-http protocol modules that were modeled after the
+       broken mod_echo.c example; remove the -initial- timeout setting
+       from NET_TIME (never inserted by non-request based protocols)
+       and move it to the core pre_connection logic, so every core
+       connection can read with timeout on Linux, Solaris, instead of
+       read (untimed) blocking on Linux, and failing read non-block on
+       Solaris.  Leaves NET_TIME intact until after the 2.0.x branch.
+         http://people.apache.org/~wrowe/httpd-2.0-proto-timeout.patch
+         +1: wrowe, colm, jim
+
+    *) mod_proxy: Fix PR37145
+       (data loss with httpd-2.0.55 reverse proxy method=post).
+       Trunk version of patch:
+          http://svn.apache.org/viewcvs.cgi?rev=327590&view=rev
+       Backport version for 2.0.x of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=16744
+       +1: rpluem, trawick, jim
+
+    *) mod_cache: Fix PR37347
+       (mod_disk_cache replaces HTTP Status 301 with 200)
+       Trunk version of patch:
+          http://svn.apache.org/viewcvs.cgi?rev=220038&view=rev
+       Backport version for 2.0.x of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=16870
+       +1: rpluem, colm, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
@@ -183,15 +232,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        -0: pquerna (2.2)
        -0: jorton (msgid <20040305083540.GA24529@redhat.com>)
 
-     *) mod_ssl: Fix issues picking up ssl-unclean-shutdown setting
-        for e.g. a reverse proxy config, breaking interop with MSIE
-        in some cases.
-        http://svn.apache.org/viewcvs?view=rev&rev=161958
-        rediffed for 2.0.x as:
-        http://issues.apache.org/bugzilla/attachment.cgi?id=14804
-        PR: 34452
-        +1: jorton, trawick, jim
-
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
@@ -202,20 +242,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                        If so, what revision?  And, is there a clean patch for
                        2.0?  (The patch in that message isn't clean.)
 
-    *) Block mod_cgid usage on Solaris 10 due to OS bugs.  PR 34264.
-       http://svn.apache.org/viewcvs?view=rev&rev=264866
-       +1: jerenkrantz, colm, jim
-         rpluem: Now that patches for this bug are available I would prefer
-                 Justins patch:
-                         http://svn.apache.org/viewcvs?rev=326018&view=rev
-                 which checks the patchlevel of the machine.
-                 Maybe it should spit out a BIG warning about the
-                 patches in any case as sometimes build machine and
-                 install machine are different.
-         jim:    +1 on http://svn.apache.org/viewcvs?rev=326018&view=rev
-                 as well.
-         colm:   another +1 on the later patch too.
-
     *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
        the non-cgid side of the handler, where the full per-server/dir/etc
        configuration is available instead of using two mod_suexec and
@@ -224,32 +250,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
        +1: colm
   
-    *) Fix all non-http protocol modules that were modeled after the
-       broken mod_echo.c example; remove the -initial- timeout setting
-       from NET_TIME (never inserted by non-request based protocols)
-       and move it to the core pre_connection logic, so every core
-       connection can read with timeout on Linux, Solaris, instead of
-       read (untimed) blocking on Linux, and failing read non-block on
-       Solaris.  Leaves NET_TIME intact until after the 2.0.x branch.
-         http://people.apache.org/~wrowe/httpd-2.0-proto-timeout.patch
-         +1: wrowe, colm, jim
-
-    *) mod_proxy: Fix PR37145
-       (data loss with httpd-2.0.55 reverse proxy method=post).
-       Trunk version of patch:
-          http://svn.apache.org/viewcvs.cgi?rev=327590&view=rev
-       Backport version for 2.0.x of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=16744
-       +1: rpluem, trawick, jim
-
-    *) mod_cache: Fix PR37347
-       (mod_disk_cache replaces HTTP Status 301 with 200)
-       Trunk version of patch:
-          http://svn.apache.org/viewcvs.cgi?rev=220038&view=rev
-       Backport version for 2.0.x of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=16870
-       +1: rpluem, colm, jim
-
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) Replace some of the mutex locking in the worker MPM with
