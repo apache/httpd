@@ -95,11 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Message-ID: <4395A056.2070000@web.turner.com>
       +1: jerenkrantz, jim, wrowe
 
-    * mod_ldap: Set the LDAP protocol before setting extended LDAP options
-       Fix PR38146
-         http://svn.apache.org/viewcvs.cgi?rev=370856&view=rev
-      +1: bnicholes, wrowe, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
