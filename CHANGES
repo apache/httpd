@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) Add ReceiveBufferSize directive to control the TCP receive buffer.
+     [Eric Covener <covener gmail.com>]
+
   *) mod_cache: Fix 'Vary: *' behavior to be RFC compliant. PR 16125.
      [Paul Querna]
 
