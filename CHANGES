@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) Add httxt2dbm to support/ for creating RewriteMap DBM Files.
+     [Paul Querna]
+
   *) support/check_forensic: Fix temp file usage
      [Javier Fernandez-Sanguino Pen~a <jfs computer.org>]
 
