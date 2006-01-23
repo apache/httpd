@@ -336,7 +336,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
          * the Accept-Encoding, we need to note that we were looking
          * for this header and downstream proxies should be aware of that.
          */
-        apr_table_setn(r->headers_out, "Vary", "Accept-Encoding");
+        apr_table_mergen(r->headers_out, "Vary", "Accept-Encoding");
 
         /* if they don't have the line, then they can't play */
         accepts = apr_table_get(r->headers_in, "Accept-Encoding");

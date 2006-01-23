@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) mod_deflate: Merge the Vary header, instead of Setting it. Fixes
+     applications that send the Vary Header themselves. PR 37559. 
+     [Paul Querna]
+
   *) mod_dav: Fix a null pointer dereference in an error code path during the
      handling of MKCOL. [Ghassan Misherghi <ghassanm ucdavis.edu>]
 
