@@ -149,14 +149,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           Trunk version of patch will work
        +1: rpluem, trawick, colm
 
-    *) mod_auth: Fix PR37566 (Write message to error log if AuthGroupFile
-       cannot be opened.)
-       Trunk version of patch:
-          N/A: mod_auth does not exist any more on trunk
-       Backport version for 2.0.x of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=16998
-       +1: rpluem, trawick, colm
-
     *) mod_deflate: Fix PR37559 (mod_deflate + mod_proxy overwrite the
        Vary: header)
        Trunk version of patch:
