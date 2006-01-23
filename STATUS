@@ -145,6 +145,52 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        jerenkrantz notes: I do prefer the version from r190033 (own if check).
 
 
+    *) mod_mime_magic: Handle CRLF-format^H^H^H^H^H^H^H magic files 
+       with any trailing whitespace so that it works with the
+       default installation on Windows.
+       http://svn.apache.org/viewcvs?rev=179622&view=rev
+       http://svn.apache.org/viewcvs?rev=280114&view=rev
+       +1: trawick, wrowe, colm
+        backported 280114 to 2.2.x branch already
+
+    *) Add ReceiveBufferSize directive to control the TCP receive buffer. 
+       code: http://svn.apache.org/viewcvs?view=rev&rev=157583
+             http://svn.apache.org/viewcvs?rev=280401&view=rev
+       docs: http://svn.apache.org/viewcvs?rev=280384&view=rev
+       +1: stas, trawick, colm
+
+    *) mod_dav: Fix a null pointer dereference in an error code path during the
+       handling of MKCOL.
+       Trunk version of patch:
+          http://svn.apache.org/viewcvs.cgi?rev=331041&view=rev
+       Backport version for 2.0.x of patch:
+          Trunk version of patch will work
+       +1: rpluem, trawick, colm
+
+    *) mod_auth: Fix PR37566 (Write message to error log if AuthGroupFile
+       cannot be opened.)
+       Trunk version of patch:
+          N/A: mod_auth does not exist any more on trunk
+       Backport version for 2.0.x of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=16998
+       +1: rpluem, trawick, colm
+
+    *) mod_deflate: Fix PR37559 (mod_deflate + mod_proxy overwrite the
+       Vary: header)
+       Trunk version of patch:
+          http://svn.apache.org/viewcvs.cgi?rev=161691&view=rev
+       Backport version for 2.0.x of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=16995
+       +1: rpluem, colm, trawick
+
+    *) mod_ssl: Fix PR37791 (CVEID: CAN-2005-3357) (SEGV if the client is
+       connection plain to a SSL enabled port)
+       Trunk version of patch:
+          http://svn.apache.org/viewcvs.cgi?rev=354394&view=rev
+       Backport version for 2.0.x of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=17393
+       +1: rpluem, colm, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
@@ -204,14 +250,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         PR: 34452
         +1: jorton, trawick
 
-     *) mod_mime_magic: Handle CRLF-format^H^H^H^H^H^H^H magic files 
-        with any trailing whitespace so that it works with the
-        default installation on Windows.
-        http://svn.apache.org/viewcvs?rev=179622&view=rev
-        http://svn.apache.org/viewcvs?rev=280114&view=rev
-        +1: trawick, wrowe, colm
-         backported 280114 to 2.2.x branch already
-
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
@@ -241,12 +279,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
        +1: colm
   
-    *) Add ReceiveBufferSize directive to control the TCP receive buffer. 
-       code: http://svn.apache.org/viewcvs?view=rev&rev=157583
-             http://svn.apache.org/viewcvs?rev=280401&view=rev
-       docs: http://svn.apache.org/viewcvs?rev=280384&view=rev
-       +1: stas, trawick, colm
-
     *) Fix all non-http protocol modules that were modeled after the
        broken mod_echo.c example; remove the -initial- timeout setting
        from NET_TIME (never inserted by non-request based protocols)
@@ -271,38 +303,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs.cgi?rev=220038&view=rev
        Backport version for 2.0.x of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16870
-       +1: rpluem, colm
-
-    *) mod_dav: Fix a null pointer dereference in an error code path during the
-       handling of MKCOL.
-       Trunk version of patch:
-          http://svn.apache.org/viewcvs.cgi?rev=331041&view=rev
-       Backport version for 2.0.x of patch:
-          Trunk version of patch will work
-       +1: rpluem, trawick, colm
-
-    *) mod_auth: Fix PR37566 (Write message to error log if AuthGroupFile
-       cannot be opened.)
-       Trunk version of patch:
-          N/A: mod_auth does not exist any more on trunk
-       Backport version for 2.0.x of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=16998
-       +1: rpluem, trawick, colm
-
-    *) mod_deflate: Fix PR37559 (mod_deflate + mod_proxy overwrite the
-       Vary: header)
-       Trunk version of patch:
-          http://svn.apache.org/viewcvs.cgi?rev=161691&view=rev
-       Backport version for 2.0.x of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=16995
-       +1: rpluem, colm
-
-    *) mod_ssl: Fix PR37791 (CVEID: CAN-2005-3357) (SEGV if the client is
-       connection plain to a SSL enabled port)
-       Trunk version of patch:
-          http://svn.apache.org/viewcvs.cgi?rev=354394&view=rev
-       Backport version for 2.0.x of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=17393
        +1: rpluem, colm
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
