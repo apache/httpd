@@ -292,7 +292,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs.cgi?rev=331041&view=rev
        Backport version for 2.0.x of patch:
           Trunk version of patch will work
-       +1: rpluem, trawick
+       +1: rpluem, trawick, colm
 
     *) mod_auth: Fix PR37566 (Write message to error log if AuthGroupFile
        cannot be opened.)
@@ -300,7 +300,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           N/A: mod_auth does not exist any more on trunk
        Backport version for 2.0.x of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16998
-       +1: rpluem, trawick
+       +1: rpluem, trawick, colm
 
     *) mod_deflate: Fix PR37559 (mod_deflate + mod_proxy overwrite the
        Vary: header)
@@ -308,7 +308,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs.cgi?rev=161691&view=rev
        Backport version for 2.0.x of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=16995
-       +1: rpluem
+       +1: rpluem, colm
 
     *) mod_ssl: Fix PR37791 (CVEID: CAN-2005-3357) (SEGV if the client is
        connection plain to a SSL enabled port)
