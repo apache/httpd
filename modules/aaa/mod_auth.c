@@ -113,8 +113,9 @@ static char *get_pw(request_rec *r, char *user, char *auth_pwfile)
     return NULL;
 }
 
-static apr_table_t *groups_for_user(apr_pool_t *p, char *user, char *grpfile)
+static apr_table_t *groups_for_user(request_rec *r, char *user, char *grpfile)
 {
+    apr_pool_t *p = r->pool;
     ap_configfile_t *f;
     apr_table_t *grps = apr_table_make(p, 15);
     apr_pool_t *sp;
@@ -123,8 +124,8 @@ static apr_table_t *groups_for_user(apr_pool_t *p, char *user, char *grpfile)
     apr_status_t status;
 
     if ((status = ap_pcfg_openfile(&f, p, grpfile)) != APR_SUCCESS) {
-/*add?  aplog_error(APLOG_MARK, APLOG_ERR, NULL,
-                    "Could not open group file: %s", grpfile);*/
+         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
+                       "Could not open group file: %s", grpfile);
         return NULL;
     }
 
@@ -228,7 +229,7 @@ static int check_user_access(request_rec *r)
     reqs = (require_line *)reqs_arr->elts;
 
     if (conf->auth_grpfile) {
-        grpstatus = groups_for_user(r->pool, user, conf->auth_grpfile);
+        grpstatus = groups_for_user(r, user, conf->auth_grpfile);
     }
     else {
         grpstatus = NULL;

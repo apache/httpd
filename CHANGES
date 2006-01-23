@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) Write message to error log if AuthGroupFile cannot be opened.
+     PR 37566.  [Rüdiger Plüm]
+
   *) SECURITY: CVE-2005-3357 (cve.mitre.org)
      mod_ssl: Fix a possible crash during access control checks if a
      non-SSL request is processed for an SSL vhost (such as the
