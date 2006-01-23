@@ -781,7 +781,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
 #define FCGI_SCHEME "FCGI"
 
 /*
- * This handles fcgi:(type):(dest) URLs
+ * This handles fcgi:(dest) URLs
  */
 static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
                               proxy_server_conf *conf,
@@ -799,7 +799,6 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     apr_pool_t *p = r->pool;
 
     apr_uri_t *uri = apr_palloc(r->pool, sizeof(*uri));
-
 
     ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                  "proxy: FCGI: url: %s proxyname: %s proxyport: %d",
