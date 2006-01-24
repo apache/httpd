@@ -504,7 +504,21 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
              * take care of that now
              */
             bb = header_brigade;
-            APR_BRIGADE_CONCAT(bb, input_brigade);
+
+            /*
+             * Save input_brigade in bb brigade. (At least) in the SSL case
+             * input_brigade contains transient buckets whose data would get
+             * overwritten during the next call of ap_get_brigade in the loop.
+             * ap_save_brigade ensures these buckets to be set aside.
+             * Calling ap_save_brigade with NULL as filter is OK, because
+             * bb brigade already has been created and does not need to get
+             * created by ap_save_brigade.
+             */
+            status = ap_save_brigade(NULL, &bb, &input_brigade, p);
+            if (status != APR_SUCCESS) {
+                return status;
+            }
+
             header_brigade = NULL;
         }
         else {
@@ -611,7 +625,21 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
              * take care of that now
              */
             bb = header_brigade;
-            APR_BRIGADE_CONCAT(bb, input_brigade);
+
+            /*
+             * Save input_brigade in bb brigade. (At least) in the SSL case
+             * input_brigade contains transient buckets whose data would get
+             * overwritten during the next call of ap_get_brigade in the loop.
+             * ap_save_brigade ensures these buckets to be set aside.
+             * Calling ap_save_brigade with NULL as filter is OK, because
+             * bb brigade already has been created and does not need to get
+             * created by ap_save_brigade.
+             */
+            status = ap_save_brigade(NULL, &bb, &input_brigade, p);
+            if (status != APR_SUCCESS) {
+                return status;
+            }
+
             header_brigade = NULL;
         }
         else {
@@ -735,7 +763,21 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
             apr_brigade_cleanup(input_brigade);
         }
         else {
-            APR_BRIGADE_CONCAT(body_brigade, input_brigade);
+
+            /*
+             * Save input_brigade in body_brigade. (At least) in the SSL case
+             * input_brigade contains transient buckets whose data would get
+             * overwritten during the next call of ap_get_brigade in the loop.
+             * ap_save_brigade ensures these buckets to be set aside.
+             * Calling ap_save_brigade with NULL as filter is OK, because
+             * body_brigade already has been created and does not need to get
+             * created by ap_save_brigade.
+             */
+            status = ap_save_brigade(NULL, &body_brigade, &input_brigade, p);
+            if (status != APR_SUCCESS) {
+                return status;
+            }
+
         }
         
         bytes_spooled += bytes;
@@ -1081,8 +1123,26 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         }
 
         apr_brigade_length(temp_brigade, 1, &bytes);
-        APR_BRIGADE_CONCAT(input_brigade, temp_brigade);
         bytes_read += bytes;
+
+        /*
+         * Save temp_brigade in input_brigade. (At least) in the SSL case
+         * temp_brigade contains transient buckets whose data would get
+         * overwritten during the next call of ap_get_brigade in the loop.
+         * ap_save_brigade ensures these buckets to be set aside.
+         * Calling ap_save_brigade with NULL as filter is OK, because
+         * input_brigade already has been created and does not need to get
+         * created by ap_save_brigade.
+         */
+        status = ap_save_brigade(NULL, &input_brigade, &temp_brigade, p);
+        if (status != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+                         "proxy: processing prefetched request body failed"
+                         " to %s from %s (%s)",
+                         p_conn->name ? p_conn->name: "",
+                         c->remote_ip, c->remote_host ? c->remote_host: "");
+            return status;
+        }
 
     /* Ensure we don't hit a wall where we have a buffer too small
      * for ap_get_brigade's filters to fetch us another bucket,

@@ -106,15 +106,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-   *) mod_proxy: Fix PR37145 (data loss with httpd-2.0.55 reverse proxy
-      method=post).
-      Ruediger says: This is a regression against 2.0.54 and causes
-                     severe trouble with reverse proxy configurations
-                     in conjunction with SSL. Many users have complained
-                     about this problem in bugzilla and on the dev list.
-                     Plus: It is only missing one vote :-)
-
-
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
@@ -146,14 +137,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          jim:    +1 on http://svn.apache.org/viewcvs?rev=326018&view=rev
                  as well.
          colm:   another +1 on the later patch too.
-
-    *) mod_proxy: Fix PR37145
-       (data loss with httpd-2.0.55 reverse proxy method=post).
-       Trunk version of patch:
-          http://svn.apache.org/viewcvs.cgi?rev=327590&view=rev
-       Backport version for 2.0.x of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=16744
-       +1: rpluem, trawick, jim
 
     *) mod_cache: Fix PR37347
        (mod_disk_cache replaces HTTP Status 301 with 200)
