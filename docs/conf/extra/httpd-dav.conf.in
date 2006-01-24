@@ -19,6 +19,9 @@ Alias /uploads "@@ServerRoot@@/uploads"
 <Directory "@@ServerRoot@@/uploads">
     Dav On
 
+    Order Allow,Deny
+    Allow from all
+
     AuthType Digest
     AuthName DAV-upload
     # You can use the htdigest program to create the password database:
