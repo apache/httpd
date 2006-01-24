@@ -354,25 +354,17 @@ static int handle_headers(request_rec *r,
     while (*itr) {
         if (*itr == '\r') {
             switch (*state) {
-                case HDR_STATE_READING_HEADERS:
-                    *state = HDR_STATE_GOT_CR;
-                    break;
-
                 case HDR_STATE_GOT_CRLF:
                     *state = HDR_STATE_GOT_CRLFCR;
                     break;
 
                 default:
-                    *state = HDR_STATE_READING_HEADERS;
+                    *state = HDR_STATE_GOT_CR;
                     break;
             }
         }
         else if (*itr == '\n') {
             switch (*state) {
-                 case HDR_STATE_READING_HEADERS:
-                     *state = HDR_STATE_GOT_LF;
-                     break;
-
                  case HDR_STATE_GOT_LF:
                      *state = HDR_STATE_DONE_WITH_HEADERS;
                      break;
@@ -386,9 +378,12 @@ static int handle_headers(request_rec *r,
                      break;
 
                  default:
-                     *state = HDR_STATE_READING_HEADERS;
+                     *state = HDR_STATE_GOT_LF;
                      break;
             }
+        }
+        else {
+            *state = HDR_STATE_READING_HEADERS;
         }
 
         if (*state == HDR_STATE_DONE_WITH_HEADERS)
@@ -669,26 +664,26 @@ recv_again:
 
                         if (st == 1) {
                             seen_end_of_headers = 1;
+
+                            rv = ap_pass_brigade(r->output_filters, ob);
+                            if (rv != APR_SUCCESS) {
+                                break;
+                            }
+
+                            apr_brigade_cleanup(ob);
+
+                            apr_pool_clear(pfb->scratch_pool);
                         }
                         else if (st == -1) {
                             rv = APR_EINVAL;
                             break;
                         }
-                    }
-
-                    if (seen_end_of_headers) {
-                        rv = ap_pass_brigade(r->output_filters, ob);
-                        if (rv != APR_SUCCESS) {
-                            break;
+                        else {
+                            /* We're still looking for the end of the
+                             * headers, so this part of the data will need
+                             * to persist. */
+                            apr_bucket_setaside(b, pfb->scratch_pool);
                         }
-
-                        apr_brigade_cleanup(ob);
-
-                        apr_pool_clear(pfb->scratch_pool);
-                    } else {
-                        /* We're still looking for the end of the headers,
-                         * so this part of the data will need to persist. */
-                        apr_bucket_setaside(b, pfb->scratch_pool);
                     }
 
                     /* If we didn't read all the data go back and get the
@@ -698,6 +693,8 @@ recv_again:
                         goto recv_again;
                     }
                 } else {
+                    /* XXX what if we haven't seen end of the headers yet? */
+
                     b = apr_bucket_eos_create(c->bucket_alloc);
 
                     APR_BRIGADE_INSERT_TAIL(ob, b);
