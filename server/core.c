@@ -3679,11 +3679,9 @@ static int net_time_filter(ap_filter_t *f, apr_bucket_brigade *b,
     }
 
     if (mode != AP_MODE_INIT && mode != AP_MODE_EATCRLF) {
-        if (ctx->first_line) {
-            apr_socket_timeout_set(ctx->csd, 
-                                   keptalive
-                                      ? f->c->base_server->keep_alive_timeout
-                                      : f->c->base_server->timeout);
+        if (keptalive && ctx->first_line) {
+            apr_socket_timeout_set(ctx->csd,
+                                   f->c->base_server->keep_alive_timeout);
             ctx->first_line = 0;
         }
         else {
@@ -4493,10 +4491,9 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
 static int core_pre_connection(conn_rec *c, void *csd)
 {
     core_net_rec *net = apr_palloc(c->pool, sizeof(*net));
-
-#ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
     apr_status_t rv;
 
+#ifdef AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
     /* BillS says perhaps this should be moved to the MPMs. Some OSes
      * allow listening socket attributes to be inherited by the
      * accept sockets which means this call only needs to be made
@@ -4518,6 +4515,20 @@ static int core_pre_connection(conn_rec *c, void *csd)
                       "apr_socket_opt_set(APR_TCP_NODELAY)");
     }
 #endif
+
+    /* The core filter requires the timeout mode to be set, which
+     * incidentally sets the socket to be nonblocking.  If this
+     * is not initialized correctly, Linux - for example - will
+     * be initially blocking, while Solaris will be non blocking
+     * and any initial read will fail.
+     */
+    rv = apr_socket_timeout_set(csd, c->base_server->timeout);
+    if (rv != APR_SUCCESS) {
+        /* expected cause is that the client disconnected already */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, c,
+                     "apr_socket_timeout_set");
+    }
+
     net->c = c;
     net->in_ctx = NULL;
     net->out_ctx = NULL;

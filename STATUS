@@ -147,16 +147,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  as well.
          colm:   another +1 on the later patch too.
 
-    *) Fix all non-http protocol modules that were modeled after the
-       broken mod_echo.c example; remove the -initial- timeout setting
-       from NET_TIME (never inserted by non-request based protocols)
-       and move it to the core pre_connection logic, so every core
-       connection can read with timeout on Linux, Solaris, instead of
-       read (untimed) blocking on Linux, and failing read non-block on
-       Solaris.  Leaves NET_TIME intact until after the 2.0.x branch.
-         http://people.apache.org/~wrowe/httpd-2.0-proto-timeout.patch
-         +1: wrowe, colm, jim
-
     *) mod_proxy: Fix PR37145
        (data loss with httpd-2.0.55 reverse proxy method=post).
        Trunk version of patch:
