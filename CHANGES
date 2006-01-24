@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) mod_ssl: Correct issue where mod_ssl does not pick up the 
+     ssl-unclean-shutdown setting when configured. PR 34452. [Joe Orton]
+
   *) Document the ReceiveBufferSize change done in r157583 [Murray
      Nesbitt <murray@cpan.org>]
 

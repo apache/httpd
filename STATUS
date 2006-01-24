@@ -133,15 +133,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?view=rev&rev=154319
        +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
-    *) mod_ssl: Fix issues picking up ssl-unclean-shutdown setting
-       for e.g. a reverse proxy config, breaking interop with MSIE
-       in some cases.
-       http://svn.apache.org/viewcvs?view=rev&rev=161958
-       rediffed for 2.0.x as:
-       http://issues.apache.org/bugzilla/attachment.cgi?id=14804
-       PR: 34452
-       +1: jorton, trawick, jim
-
     *) Block mod_cgid usage on Solaris 10 due to OS bugs.  PR 34264.
        http://svn.apache.org/viewcvs?view=rev&rev=264866
        +1: jerenkrantz, colm, jim
