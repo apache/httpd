@@ -12,7 +12,7 @@
 # IndexOptions: Controls the appearance of server-generated directory
 # listings.
 #
-IndexOptions FancyIndexing VersionSort
+IndexOptions FancyIndexing HTMLTable VersionSort
 
 # We include the /icons/ alias for FancyIndexed directory listings.  If
 # you do not use FancyIndexing, you may comment this out.
