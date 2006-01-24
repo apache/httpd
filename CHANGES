@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) mod_cgid: Refuse to work on Solaris 10 due to OS bugs.  PR 34264.
+     [Justin Erenkrantz]
+
   *) mod_cache: Correctly handle responses with a 301 status. PR 37347. 
      [Paul Querna]
 
