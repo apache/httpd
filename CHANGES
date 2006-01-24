@@ -1,6 +1,19 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
+  *) SECURITY: CVE-2005-3357 (cve.mitre.org)
+     mod_ssl: Fix a possible crash during access control checks if a
+     non-SSL request is processed for an SSL vhost (such as the
+     "HTTP request received on SSL port" error message when an 400
+     ErrorDocument is configured, or if using "SSLEngine optional").
+     PR 37791.  [Rüdiger Plüm, Joe Orton]
+
+  *) SECURITY: CVE-2005-3352 (cve.mitre.org)
+     mod_imap: Escape untrusted referer header before outputting in HTML
+     to avoid potential cross-site scripting.  Change also made to
+     ap_escape_html so we escape quotes.  Reported by JPCERT.
+     [Mark Cox]
+
   *) mod_cgid: Refuse to work on Solaris 10 due to OS bugs.  PR 34264.
      [Justin Erenkrantz]
 
@@ -36,13 +49,6 @@ Changes with Apache 2.0.56
   *) Write message to error log if AuthGroupFile cannot be opened.
      PR 37566.  [Rüdiger Plüm]
 
-  *) SECURITY: CVE-2005-3357 (cve.mitre.org)
-     mod_ssl: Fix a possible crash during access control checks if a
-     non-SSL request is processed for an SSL vhost (such as the
-     "HTTP request received on SSL port" error message when an 400
-     ErrorDocument is configured, or if using "SSLEngine optional").
-     PR 37791.  [Rüdiger Plüm, Joe Orton]
-
   *) Add ReceiveBufferSize directive to control the TCP receive buffer.
      [Eric Covener <covener gmail.com>]
 
@@ -63,12 +69,6 @@ Changes with Apache 2.0.56
 
   *) Chunk filter: Fix chunk filter to create correct chunks in the case that
      a flush bucket is surrounded by data buckets. [Ruediger Pluem]
-
-  *) SECURITY: CVE-2005-3352 (cve.mitre.org)
-     mod_imap: Escape untrusted referer header before outputting in HTML
-     to avoid potential cross-site scripting.  Change also made to
-     ap_escape_html so we escape quotes.  Reported by JPCERT.
-     [Mark Cox]
 
   *) mod_cgi(d): Remove block on OPTIONS method so that scripts can
      respond to OPTIONS directly rather than via server default.
