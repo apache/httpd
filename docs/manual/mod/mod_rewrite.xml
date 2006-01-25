@@ -1150,12 +1150,13 @@ cannot use <code>$N</code> in the substitution string!
       These three types of variables are expanded in the order above.</p>
 
       <p>As already mentioned, all rewrite rules are
-      applied to the <em>Substitution</em> (in the in which they are defined
+      applied to the <em>Substitution</em> (in the order in which 
+      they are defined
       in the config file). The URL is <strong>completely
       replaced</strong> by the <em>Substitution</em> and the
       rewriting process continues until all rules have been applied,
       or it is explicitly terminated by a
-      <code><strong>L</strong></code> flag - see below.</p>
+      <code><strong>L</strong></code> flag.</p>
 
       <p>There is a special substitution string named
       '<code>-</code>' which means: <strong>NO
@@ -1365,7 +1366,7 @@ cannot use <code>$N</code> in the substitution string!
         <li>'<strong><code>qsappend|QSA</code></strong>'
         (<strong>q</strong>uery <strong>s</strong>tring
         <strong>a</strong>ppend)<br />
-        This flag forces the rewrit engine to append a query
+        This flag forces the rewrite engine to append a query
         string part of the substitution string to the existing string,
         instead of replacing it. Use this when you want to add more
         data to the query string via a rewrite rule.</li>
@@ -1386,15 +1387,14 @@ cannot use <code>$N</code> in the substitution string!
 	  translate ``<code>/~</code>'' into
           ``<code>/u/</code>'', or to always append a slash to
           <code>/u/</code><em>user</em>, etc.<br />
-           
-          <p><strong>Note:</strong> When you use this flag, make
+          <strong>Note:</strong> When you use this flag, make
           sure that the substitution field is a valid URL! Otherwise,
           you will be redirecting to an invalid location. Remember
           that this flag on its own will only prepend
           <code>http://thishost[:thisport]/</code> to the URL, and rewriting
 	  will continue. Usually, you will want to stop rewriting at this point,
 	  and redirect immediately. To stop rewriting, you should add 
-	  the 'L' flag.</p>
+	  the 'L' flag.
         </li>
 
         <li>'<strong><code>skip|S</code></strong>=<em>num</em>'
@@ -1466,7 +1466,7 @@ directory, which is not always possible.
           redirect to your own server will not work with the prefix
           <code>http://thishost</code> because of this feature. To
           achieve such a self-redirect, you have to use the
-          <strong>R</strong>-flag (see below).</p>
+          <strong>R</strong>-flag.</p>
 </note>
 
 <note><title>Note: Query String</title>
@@ -1480,7 +1480,7 @@ directory, which is not always possible.
       query string. When you want to erase an existing query string,
       end the substitution string with just a question mark. To
       combine new and old query strings, use the
-      <code>[QSA]</code> flag (see above).</p>
+      <code>[QSA]</code> flag.</p>
 </note>
 
      <p>Here are all possible substitution combinations and their
