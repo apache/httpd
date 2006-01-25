@@ -176,15 +176,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
      *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
-        http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=112365629308138&q=p4
+        http://people.apache.org/~colm/httpd-2.0-reverse-proxy-cookie.patch
         and is in production with Clients.
-        +1: niq, nd
-          niq: I'm seeing *a lot* of demand for this.
-          jerenkrantz: Didn't a variant of this get committed to trunk?
-                       If so, what revision?  And, is there a clean patch for
-                       2.0?  (The patch in that message isn't clean.)
-          colm: The revision in trunk is 
-                http://svn.apache.org/viewcvs.cgi?rev=231355&view=rev
+       +1: 
 
     *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
        the non-cgid side of the handler, where the full per-server/dir/etc
