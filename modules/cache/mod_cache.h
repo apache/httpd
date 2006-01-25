@@ -159,10 +159,21 @@ typedef struct {
 /* cache info information */
 typedef struct cache_info cache_info;
 struct cache_info {
-    int status;
-    apr_time_t date;
+    /** 
+     * HTTP status code of the cached entity. Though not neccessarily the
+     * status code finally issued to the request. 
+     */
+    int status; 
+    /** 
+     * the original time corresponding to the 'Date:' header of the request 
+     * served 
+     */
+    apr_time_t date; 
+    /** a time when the cached entity is due to expire */
     apr_time_t expire;
+    /** r->request_time from the same request */
     apr_time_t request_time;
+    /** apr_time_now() at the time the entity was acutally cached */
     apr_time_t response_time;
 };
 
