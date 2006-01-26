@@ -4525,7 +4525,7 @@ static int core_pre_connection(conn_rec *c, void *csd)
     rv = apr_socket_timeout_set(csd, c->base_server->timeout);
     if (rv != APR_SUCCESS) {
         /* expected cause is that the client disconnected already */
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, c,
+        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, rv, c,
                      "apr_socket_timeout_set");
     }
 
