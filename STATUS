@@ -95,12 +95,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Message-ID: <4395A056.2070000@web.turner.com>
       +1: jerenkrantz, jim, wrowe
 
-    * Fix for AP_HAVE_DESIGNATED_INITIALIZER vs C++ compilers
-         http://svn.apache.org/viewcvs?rev=356234&view=rev
-       + http://svn.apache.org/viewcvs?rev=356248&view=rev
-       = http://people.apache.org/~jorton/httpd-2.2.0-cppheader.patch
-      +1: jorton, wrowe, niq
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
