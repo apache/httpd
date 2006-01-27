@@ -132,7 +132,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        third-party get_suexec_identity implementation.
          http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
        +1: colm
-  
+
+    *) util_script: FIX PR38070, correctly honor a CGI Status: header.
+         http://svn.apache.org/viewcvs?rev=370692&view=rev
+       +1: colm
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
