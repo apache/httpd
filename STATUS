@@ -94,6 +94,8 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs.cgi?rev=354630&view=rev
       Message-ID: <4395A056.2070000@web.turner.com>
       +1: jerenkrantz, jim, wrowe
+      -0: niq: Please explain why return value of ap_pass_brigade is
+               put into a variable and immediately discarded.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
