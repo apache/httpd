@@ -135,7 +135,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     *) util_script: FIX PR38070, correctly honor a CGI Status: header.
          http://svn.apache.org/viewcvs?rev=370692&view=rev
-       +1: colm
+       +1: colm,niq
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
