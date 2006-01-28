@@ -36,6 +36,60 @@
     common to all authentication providers.</p>
 </summary>
 
+<section id="authnalias"><title>Creating Provider Aliases</title>
+
+    <p>Extended authentication providers can be created 
+    within the configuration file and assigned an alias name.  The alias 
+    providers can then be referenced through the directives 
+    <directive module="mod_auth_basic">AuthBasicProvider</directive> or 
+    <directive module="mod_auth_digest">AuthDigestProvider</directive> in
+    the same way as a base authentication provider.  Besides the ability
+    to create and alias an extended provider, it also allows the same 
+    extended authentication provider to be reference by multiple 
+    locations.</p>
+
+    <section id="example"><title>Example</title>
+        <p>The example below creates two different ldap authentication 
+        provider aliases based on the ldap provider.  This allows
+        a single authenticated location can be serviced by multiple 
+        ldap hosts:</p>
+    
+        <example><title>Example</title>
+          LoadModule authn_alias_module modules/mod_authn_alias.so<br /><br />
+          &lt;AuthnProviderAlias ldap ldap-alias1&gt;<br />
+          <indent>
+             AuthLDAPBindDN cn=youruser,o=ctx<br />
+             AuthLDAPBindPassword yourpassword<br />
+             AuthLDAPURL ldap://ldap.host/o=ctx<br />
+          </indent>
+          &lt;/AuthnProviderAlias&gt;<br /><br />
+          &lt;AuthnProviderAlias ldap ldap-other-alias&gt;<br />
+          <indent>
+             AuthLDAPBindDN cn=yourotheruser,o=dev<br />
+             AuthLDAPBindPassword yourotherpassword<br />
+             AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
+          </indent>
+          &lt;/AuthnProviderAlias&gt;<br /><br />
+    
+          Alias /secure /webpages/secure<br />
+          &lt;Directory /webpages/secure&gt;<br />
+          <indent>
+             Order deny,allow<br />
+             Allow from all<br /><br />
+        
+             AuthBasicProvider ldap-other-alias  ldap-alias1<br /><br />
+        
+             AuthType Basic<br />
+             AuthName LDAP_Protected_Place<br />
+             require valid-user<br />
+          </indent>
+          &lt;/Directory&gt;<br />
+        </example>
+    </section>
+
+</section>
+
+
 <directivesynopsis>
 <name>AuthName</name>
 <description>Authorization realm for use in HTTP
@@ -99,5 +153,25 @@ authentication</description>
     and Access Control</a></seealso> 
 </directivesynopsis>
 
+<directivesynopsis type="section">
+<name>AuthnProviderAlias</name>
+<description>Enclose a group of directives that represent an
+extension of a base authentication provider and referenced by
+the specified alias</description>
+<syntax>&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
+... &lt;/AuthnProviderAlias&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p><directive type="section">AuthnProviderAlias</directive> and
+    <code>&lt;/AuthnProviderAlias&gt;</code> are used to enclose a group of
+    authentication directives that can be referenced by the alias name 
+    using one of the directives <directive module="mod_auth_basic">
+    AuthBasicProvider</directive> or <directive module="mod_auth_digest">
+    AuthDigestProvider</directive>.</p>
+
+</usage>
+</directivesynopsis>
 
 </modulesynopsis>
