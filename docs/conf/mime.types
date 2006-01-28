@@ -414,6 +414,8 @@ audio/mpa
 audio/mpa-robust
 audio/mp4a-latm
 audio/mpeg			mpga mp2 mp3
+audio/x-m4a         m4a
+audio/x-m4b         m4b
 audio/parityfec
 audio/pcma
 audio/pcmu
