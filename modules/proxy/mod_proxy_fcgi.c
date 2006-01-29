@@ -420,10 +420,6 @@ static int handle_headers(request_rec *r,
     return 0;
 }
 
-typedef struct {
-    apr_pool_t *scratch_pool;
-} proxy_fcgi_baton_t;
-
 static void dump_header_to_log(request_rec *r, unsigned char fheader[],
                                apr_size_t length)
 {
@@ -489,7 +485,6 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
 {
     apr_bucket_brigade *ib, *ob;
     int seen_end_of_headers = 0, done = 0;
-    proxy_fcgi_baton_t *pfb = conn->data;
     apr_status_t rv = APR_SUCCESS;
     conn_rec *c = r->connection;
     struct iovec vec[2];
@@ -497,6 +492,9 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
     unsigned char farray[FCGI_HEADER_LEN];
     apr_pollfd_t pfd;
     int header_state = HDR_STATE_READING_HEADERS;
+    apr_pool_t *setaside_pool;
+
+    apr_pool_create(&setaside_pool, r->pool);
 
     pfd.desc_type = APR_POLL_SOCKET;
     pfd.desc.s = conn->sock;
@@ -672,7 +670,7 @@ recv_again:
 
                             apr_brigade_cleanup(ob);
 
-                            apr_pool_clear(pfb->scratch_pool);
+                            apr_pool_clear(setaside_pool);
                         }
                         else if (st == -1) {
                             rv = APR_EINVAL;
@@ -682,7 +680,7 @@ recv_again:
                             /* We're still looking for the end of the
                              * headers, so this part of the data will need
                              * to persist. */
-                            apr_bucket_setaside(b, pfb->scratch_pool);
+                            apr_bucket_setaside(b, setaside_pool);
                         }
                     }
 
@@ -847,14 +845,6 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
                 ap_proxy_release_connection(FCGI_SCHEME, backend, r->server);
             }
             return status;
-        }
-
-        {
-            proxy_fcgi_baton_t *pfb = apr_pcalloc(r->pool, sizeof(*pfb));
-
-            apr_pool_create(&pfb->scratch_pool, r->pool);
-
-            backend->data = pfb;
         }
     }
 
