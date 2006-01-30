@@ -94,7 +94,9 @@
       <br />
        &lt;Location /foo&gt;<br />
        <span class="indent">
-         Dav On<br />
+	 Order Allow,Deny<br />
+	 Allow from all<br />
+	 Dav On<br />
          <br />
          AuthType Basic<br />
          AuthName DAV<br />

@@ -74,7 +74,8 @@
     other operating-system configurations.  For example, most
     firewalls can be configured to restrict the number of simultaneous
     connections from any individual IP address or network, thus
-    preventing a range of simple attacks.</p>
+    preventing a range of simple attacks.  Of course this is no help
+    against Distributed Denial of Service attacks (DDoS).</p>
 
     <p>There are also certain Apache HTTP Server configuration
     settings that can help mitigate problems:</p>
@@ -82,10 +83,19 @@
     <ul>
       <li>The <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> directive
       should be lowered on sites that are subject to DoS attacks.
-      Setting this to as low as a few seconds may be appropriate.  See
-      also the <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>
-      directive and various timeout-related directives provided by
-      different modules.</li>
+      Setting this to as low as a few seconds may be appropriate.
+      As <code class="directive"><a href="../mod/core.html#timeout">TimeOut</a></code> is currently
+      used for several different operations, setting it to a low value
+      introduces problems with long running CGI scripts.</li>
+
+      <li>The <code class="directive"><a href="../mod/core.html#keepalivetimeout">KeepAliveTimeout</a></code>
+      directive may be also lowered on sites that are subject to DoS
+      attacks.  Some sites even turn off the keepalives completely via
+      <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code>, which has of course
+      other drawbacks on performance.</li>
+
+      <li>The values of various timeout-related directives provided by
+      other modules should be checked.</li>
 
       <li>The directives 
       <code class="directive"><a href="../mod/core.html#limitrequestbody">LimitRequestBody</a></code>,
@@ -109,9 +119,13 @@
 
       <li>The use of a threaded <a href="../mpm.html">mpm</a> may
       allow you to handle more simultaneous connections, thereby
-      mitigating DoS attacks.  Further, the <code class="module"><a href="../mod/event.html">event</a></code> mpm
+      mitigating DoS attacks.  Further, the experimental 
+      <code class="module"><a href="../mod/event.html">event</a></code> mpm
       uses asynchronous processing to avoid devoting a thread to each
-      connection.</li>
+      connection. At the current point of time this
+      is work in progress and not fully implemented.  Especially the
+      <code class="module"><a href="../mod/event.html">event</a></code> mpm is currently incompatible with 
+      <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> and other input filters.</li>
 
       <li>There are a number of third-party modules available through
       <a href="http://modules.apache.org/">http://modules.apache.org/</a>
