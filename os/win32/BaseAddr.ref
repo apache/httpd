@@ -60,3 +60,4 @@ mod_auth_ldap.so        0x6FB50000    0x00010000
 mod_log_forensic.so     0x6FB40000    0x00010000
 mod_bucketeer.so        0x6FB30000    0x00010000
 mod_echo.so             0x6FB20000    0x00010000
+mod_version.so          0x6FB10000    0x00010000
