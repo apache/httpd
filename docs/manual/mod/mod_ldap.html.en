@@ -251,8 +251,7 @@ by other LDAP modules</td></tr>
         Deny from all<br />
         Allow from yourdomain.example.com<br />
         AuthLDAPEnabled on<br />
-        LDAPTrustedMode TLS
-        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
+        AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS<br />
         require valid-user<br />
       </span>
       &lt;/Location&gt;
@@ -584,7 +583,7 @@ Certificate Authority or global client certificates</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the SSL/TLS mode to be used when connecting to an LDAP server.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LDAPTrustedMode <var>type</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ldap</td></tr>
 </table>
