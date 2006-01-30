@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_speling: Stop crashing with certain non-file requests.  [Jeff Trawick]
+
   *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
      PR 38340. [Aleksey Pesternikov <apesternikov yahoo.com>, Ruediger Pluem]
 
