@@ -37,7 +37,7 @@ Contributors looking for a mission:
 
     * Review the "PatchAvailable" bugs in the bug database:
 
-      http://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2.0&keywords=PatchAvailable
+      https://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
 
       After testing, you can append a comment saying "Reviewed and tested".
 
