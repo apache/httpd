@@ -1,9 +1,6 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
-  *) Fix PR#38070: Avoid server-driven negotiation when a CGI script
-     has emitted an explicit Status: header [Nick Kew].
-
   *) SECURITY: CVE-2005-3357 (cve.mitre.org)
      mod_ssl: Fix a possible crash during access control checks if a
      non-SSL request is processed for an SSL vhost (such as the
@@ -16,6 +13,9 @@ Changes with Apache 2.0.56
      to avoid potential cross-site scripting.  Change also made to
      ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
+
+  *) Avoid server-driven negotiation when a CGI script has emitted an 
+     explicit "Status:" header. PR 38070.  [Nick Kew]
 
   *) mod_log_config now logs all Set-Cookie headers if the %{Set-Cookie}o
      format is used. PR 27787.  [André Malo]
