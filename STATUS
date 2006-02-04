@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=367798&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, wrowe
+      +1: rpluem, wrowe, colm
 
     * mod_proxy_ajp: Fix PR38340 (mod_proxy_ajp does not support common
       headers (0xA0??))
@@ -186,5 +186,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       a symlink rather than a true directory in ./buildconf.
         http://svn.apache.org/viewcvs.cgi?rev=374821&view=rev
         http://people.apache.org/~wrowe/fixbuild-2.2.patch
-      +1: wrowe, rpluem
+      +1: wrowe, rpluem, colm
 
