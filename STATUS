@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * util_script: Fix PR#38070 - Honour a CGI Status header correctly
       http://svn.apache.org/viewcvs?rev=370692&view=rev
-      +1: niq, colm
+      +1: niq, colm, wrowe
 
     * Solaris build proposal; don't fail on missing .h files within
       a VPATH build, and don't test trees with -d (simply -f the
