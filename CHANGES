@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.1
 
+  *) PR#38070: Avoid Server-driven negotiation when a script has
+     emitted an explicit Status: header.
+
   *) Fix to avoid feeding C99 to C++ compilers [Joe Orton]
 
   *) SECURITY: CVE-2005-3357 (cve.mitre.org)
