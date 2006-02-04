@@ -394,6 +394,8 @@ static int set_cookie_doo_doo(void *v, const char *key, const char *val)
     return 1;
 }
 
+#define HTTP_UNSET (-HTTP_OK)
+
 AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 				       int (*getsfunc) (char *, int, void *),
 				       void *getsfunc_data)
@@ -401,7 +403,7 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
     char x[MAX_STRING_LEN];
     char *w, *l;
     int p;
-    int cgi_status = HTTP_OK;
+    int cgi_status = HTTP_UNSET;
     apr_table_t *merge;
     apr_table_t *cookie_table;
 
@@ -462,7 +464,18 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
 	if (w[0] == '\0') {
 	    int cond_status = OK;
 
-	    if ((cgi_status == HTTP_OK) && (r->method_number == M_GET)) {
+	    /* PR#38070: This fails because it gets confused when a
+             * CGI Status header overrides ap_meets_conditions.
+             * 
+             * We can fix that by dropping ap_meets_conditions when
+             * Status has been set.  Since this is the only place
+             * cgi_status gets used, let's test it explicitly.
+             *
+             * The alternative would be to ignore CGI Status when
+             * ap_meets_conditions returns anything interesting.
+             * That would be safer wrt HTTP, but would break CGI.
+             */
+	    if ((cgi_status == HTTP_UNSET) && (r->method_number == M_GET)) {
 		cond_status = ap_meets_conditions(r);
 	    }
 	    apr_table_overlap(r->err_headers_out, merge,
