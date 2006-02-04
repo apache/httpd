@@ -60,8 +60,7 @@ export_files:
 	    ls $$dir/*.h >> $$tmp; \
 	done; \
 	for dir in $(EXPORT_DIRS_APR); do \
-	    ls $$dir/ap[ru].h >> $$tmp; \
-	    ls $$dir/ap[ru]_*.h >> $$tmp; \
+	    (ls $$dir/ap[ru].h $$dir/ap[ru]_*.h >> $$tmp 2>/dev/null); \
 	done; \
 	sort -u $$tmp > $@; \
 	rm -f $$tmp

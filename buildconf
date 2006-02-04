@@ -54,7 +54,7 @@ done
 
 should_exit=0
 
-if [ ! -d "$apr_src_dir" -o ! -f "$apr_src_dir/build/apr_common.m4" ]; then
+if [ ! -f "$apr_src_dir/build/apr_common.m4" ]; then
     echo ""
     echo "You don't have a copy of the apr source in $apr_src_dir. " 
     echo "Please get the source using the following instructions," 
@@ -67,7 +67,7 @@ if [ ! -d "$apr_src_dir" -o ! -f "$apr_src_dir/build/apr_common.m4" ]; then
     should_exit=1
 fi
 
-if [ ! -d "$apu_src_dir" -o ! -f "$apu_src_dir/Makefile.in" ]; then
+if [ ! -f "$apu_src_dir/Makefile.in" ]; then
     echo ""
     echo "You don't have a copy of the apr-util source in $apu_src_dir. "
     echo "Please get one the source using the following instructions, "
@@ -107,7 +107,7 @@ config_h_in="include/ap_config_auto.h.in"
 
 cross_compile_warning="warning: AC_TRY_RUN called without default to allow cross compiling"
 
-if [ -d srclib/apr ]; then
+if [ "$apr_src_dir" = "srclib/apr" ]; then
     echo rebuilding $apr_configure
     (cd srclib/apr && ./buildconf) || {
         echo "./buildconf failed for apr"
@@ -116,14 +116,18 @@ if [ -d srclib/apr ]; then
     rm -f srclib/apr/apr.spec
 fi
 
-if [ -d srclib/apr-util ]; then
+apr_src_dir=`cd $apr_src_dir && pwd` 
+
+if [ "$apu_src_dir" = "srclib/apr-util" ]; then
     echo rebuilding $aprutil_configure
-    (cd srclib/apr-util && ./buildconf) || {
+    (cd srclib/apr-util && ./buildconf --with-apr=$apr_src_dir) || {
         echo "./buildconf failed for apr-util" 
         exit 1
     }
     rm -f srclib/apr-util/apr-util.spec
 fi
+
+apu_src_dir=`cd $apu_src_dir && pwd` 
 
 echo copying build files
 cp $apr_src_dir/build/config.guess $apr_src_dir/build/config.sub \

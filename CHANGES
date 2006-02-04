@@ -14,6 +14,11 @@ Changes with Apache 2.0.56
      ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
 
+  *) Modify apr[util] .h detection to avoid breakage on VPATH builds
+     using Solaris make (amoung others) and avoid breakage in ./buildconf
+     when srclib/apr[-util] are symlinks rather than directories proper.
+     [William Rowe]
+
   *) Avoid server-driven negotiation when a CGI script has emitted an 
      explicit "Status:" header. PR 38070.  [Nick Kew]
 
