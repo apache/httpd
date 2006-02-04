@@ -127,14 +127,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are!  Add all new
     proposals to the end of this list. ]
 
-    *) Solaris build proposal; don't fail on missing .h files within
-       a VPATH build, and don't test trees with -d (simply -f the
-       expected files) in case a tree such as srclib/apr is actually
-       a symlink rather than a true directory in ./buildconf.
-         http://svn.apache.org/viewcvs.cgi?rev=374821&view=rev
-         http://people.apache.org/~wrowe/buildfix-2.0.patch
-       +1: wrowe
-
     *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
         http://people.apache.org/~colm/httpd-2.0-reverse-proxy-cookie.patch
@@ -148,6 +140,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        third-party get_suexec_identity implementation.
          http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
        +1: colm
+
+    *) Solaris build proposal; don't fail on missing .h files within
+       a VPATH build, and don't test trees with -d (simply -f the
+       expected files) in case a tree such as srclib/apr is actually
+       a symlink rather than a true directory in ./buildconf.
+         http://svn.apache.org/viewcvs.cgi?rev=374821&view=rev
+         http://people.apache.org/~wrowe/buildfix-2.0.patch
+       +1: wrowe
+       
+    *) Backport 102870; PR 17217; stop linking OpenSSL to support/*
+       binaries (especially when compiled --with-static-support (!))
+       and fix mod_ssl.so when compiled against .a openssl archives.
+         http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
