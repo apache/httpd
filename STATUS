@@ -84,10 +84,6 @@ RELEASE SHOWSTOPPERS:
                     default value for retry (PROXY_WORKER_DEFAULT_RETRY) from
                     60 secs to 1 sec.
 
-   * mod_cache: Fix PR38017 (mod_cache not working in reverse proxy setup?)
-     Ruediger says: This is a regression against 2.0.x and makes it
-                    impossible to use mod_cache on reverse proxies.
-
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -156,13 +152,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 -        if (! (reqs[x].method_mask & (1 << m))) {
 +        if (! (reqs[x].method_mask & (AP_METHOD_BIT << m))) {
       +1: wrowe  (for flavor requested by jorton)
-
-    * mod_cache: Fix PR38017 (mod_cache not working in reverse proxy setup?)
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=367798&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, wrowe, colm
 
     * mod_proxy_ajp: Fix PR38340 (mod_proxy_ajp does not support common
       headers (0xA0??))
