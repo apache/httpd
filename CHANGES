@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Modify apr[util] .h detection to avoid breakage on VPATH builds
+     using Solaris make (amoung others) and avoid breakage in ./buildconf
+     when srclib/apr[-util] are symlinks rather than directories proper.
+     [William Rowe]
+
   *) mod_speling: Stop crashing with certain non-file requests.  [Jeff Trawick]
 
   *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
