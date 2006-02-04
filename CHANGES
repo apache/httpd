@@ -1,11 +1,6 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.1
 
-  *) PR#38070: Avoid Server-driven negotiation when a script has
-     emitted an explicit Status: header.
-
-  *) Fix to avoid feeding C99 to C++ compilers [Joe Orton]
-
   *) SECURITY: CVE-2005-3357 (cve.mitre.org)
      mod_ssl: Fix a possible crash during access control checks if a
      non-SSL request is processed for an SSL vhost (such as the
@@ -13,14 +8,24 @@ Changes with Apache 2.2.1
      ErrorDocument is configured, or if using "SSLEngine optional").
      PR 37791.  [Rüdiger Plüm, Joe Orton]
 
-  *) Chunk filter: Fix chunk filter to create correct chunks in the case that
-     a flush bucket is surrounded by data buckets. [Ruediger Pluem]
-
   *) SECURITY: CVE-2005-3352 (cve.mitre.org)
      mod_imagemap: Escape untrusted referer header before outputting
      in HTML to avoid potential cross-site scripting.  Change also
      made to ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
+
+  *) Modify apr[util] .h detection to avoid breakage on VPATH builds
+     using Solaris make (amoung others) and avoid breakage in ./buildconf
+     when srclib/apr[-util] are symlinks rather than directories proper.
+     [William Rowe]
+
+  *) PR#38070: Avoid Server-driven negotiation when a script has
+     emitted an explicit Status: header.
+
+  *) Fix to avoid feeding C99 to C++ compilers [Joe Orton]
+
+  *) Chunk filter: Fix chunk filter to create correct chunks in the case that
+     a flush bucket is surrounded by data buckets. [Ruediger Pluem]
 
   *) Fix syntax error in httpd.h with strict compilers.  PR 38740.
      [Per Olausson <pao darkheim.freeserve.co.uk>]
