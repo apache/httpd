@@ -47,9 +47,6 @@ Changes with Apache 2.3.0
      seconds to cache a document.
      [Brian Akins <brian.akins turner.com>, Ruediger Pluem]
 
-  *) mod_cache: Make caching of reverse proxies possible again. PR 38017.
-     [Ruediger Pluem]
-
   *) Refactored ap_read_request() to provide a foundation for
      nonblocking reads of requests.  [Brian Pane]
 
@@ -105,6 +102,9 @@ Changes with Apache 2.2.1
      in HTML to avoid potential cross-site scripting.  Change also
      made to ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
+
+  *) mod_cache: Make caching of reverse proxies possible again. PR 38017.
+     [Ruediger Pluem]
 
   *) Modify apr[util] .h detection to avoid breakage on VPATH builds
      using Solaris make (amoung others) and avoid breakage in ./buildconf
