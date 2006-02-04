@@ -2,11 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) Modify apr[util] .h detection to avoid breakage on VPATH builds
-     using Solaris make (amoung others) and avoid breakage in ./buildconf
-     when srclib/apr[-util] are symlinks rather than directories proper.
-     [William Rowe]
-
   *) mod_speling: Stop crashing with certain non-file requests.  [Jeff Trawick]
 
   *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
@@ -101,14 +96,19 @@ Changes with Apache 2.2.1
      ErrorDocument is configured, or if using "SSLEngine optional").
      PR 37791.  [Rüdiger Plüm, Joe Orton]
 
-  *) Chunk filter: Fix chunk filter to create correct chunks in the case that
-     a flush bucket is surrounded by data buckets. [Ruediger Pluem]
-
   *) SECURITY: CVE-2005-3352 (cve.mitre.org)
      mod_imagemap: Escape untrusted referer header before outputting
      in HTML to avoid potential cross-site scripting.  Change also
      made to ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
+
+  *) Modify apr[util] .h detection to avoid breakage on VPATH builds
+     using Solaris make (amoung others) and avoid breakage in ./buildconf
+     when srclib/apr[-util] are symlinks rather than directories proper.
+     [William Rowe]
+
+  *) Chunk filter: Fix chunk filter to create correct chunks in the case that
+     a flush bucket is surrounded by data buckets. [Ruediger Pluem]
 
   *) Fix syntax error in httpd.h with strict compilers.  PR 38740.
      [Per Olausson <pao darkheim.freeserve.co.uk>]
