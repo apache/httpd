@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_balancer: Do not overwrite the status of initialized workers and
+     respect the configured status of uninitilized workers when creating a new
+     child process. [Ruediger Pluem]
+
   *) mod_speling: Stop crashing with certain non-file requests.  [Jeff Trawick]
 
   *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
