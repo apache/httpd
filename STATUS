@@ -153,6 +153,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        binaries (especially when compiled --with-static-support (!))
        and fix mod_ssl.so when compiled against .a openssl archives.
          http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
+       +1: wrowe
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
