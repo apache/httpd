@@ -117,13 +117,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?view=rev&rev=154319
        +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
-    *) Solaris build proposal; don't fail on missing .h files within
-       a VPATH build, and don't test trees with -d (simply -f the
-       expected files) in case a tree such as srclib/apr is actually
-       a symlink rather than a true directory in ./buildconf.
-         http://svn.apache.org/viewcvs.cgi?rev=374821&view=rev
-         http://people.apache.org/~wrowe/fixbuild-2.0.patch
-       +1: wrowe, rpluem, colm
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
