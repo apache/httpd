@@ -146,9 +146,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        expected files) in case a tree such as srclib/apr is actually
        a symlink rather than a true directory in ./buildconf.
          http://svn.apache.org/viewcvs.cgi?rev=374821&view=rev
-         http://people.apache.org/~wrowe/buildfix-2.0.patch
-       +1: wrowe
-       
+         http://people.apache.org/~wrowe/fixbuild-2.0.patch
+       +1: wrowe, rpluem
+
     *) Backport 102870; PR 17217; stop linking OpenSSL to support/*
        binaries (especially when compiled --with-static-support (!))
        and fix mod_ssl.so when compiled against .a openssl archives.
