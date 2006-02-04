@@ -150,11 +150,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Fix mis-shifted 32 bit scope, masked to 64 bits as a method.
         URL: http://svn.apache.org/viewcvs?rev=358040&view=rev
-      +1: wrowe, mturk
+      +1: mturk
       -0: jorton: should use AP_METHOD_BIT
           wrowe asks; is this your desired patch?  Please vote;
 -        if (! (reqs[x].method_mask & (1 << m))) {
 +        if (! (reqs[x].method_mask & (AP_METHOD_BIT << m))) {
+      +1: wrowe  (for flavor requested by jorton)
 
     * mod_cache: Fix PR38017 (mod_cache not working in reverse proxy setup?)
       Trunk version of patch:
@@ -180,11 +181,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: rpluem, niq
       NOTE: this also supersedes previous fix to PR#37790
 
-    * Solaris build proposal; don't fail on missing .h files within
-      a VPATH build, and don't test trees with -d (simply -f the
-      expected files) in case a tree such as srclib/apr is actually
-      a symlink rather than a true directory in ./buildconf.
-        http://svn.apache.org/viewcvs.cgi?rev=374821&view=rev
-        http://people.apache.org/~wrowe/fixbuild-2.2.patch
-      +1: wrowe, rpluem, colm
 
