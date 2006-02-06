@@ -167,12 +167,12 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/threadpool.html">MPM de Apache threadpool</a></li>
 <li><a href="mod/mpm_winnt.html">MPM de Apache winnt</a></li>
 <li><a href="mod/worker.html">MPM de Apache worker</a></li>
-</ul><ul><li><a href="mod/mod_actions.html">Módulo Apache mod_actions</a></li>
+</ul><ul><li><a href="mod/mod_access_compat.html">Módulo Apache mod_access_compat</a></li>
+<li><a href="mod/mod_actions.html">Módulo Apache mod_actions</a></li>
 <li><a href="mod/mod_alias.html">Módulo Apache mod_alias</a></li>
 <li><a href="mod/mod_asis.html">Módulo Apache mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Módulo Apache mod_auth_basic</a></li>
 <li><a href="mod/mod_auth_digest.html">Módulo Apache mod_auth_digest</a></li>
-<li><a href="mod/mod_authn_alias.html">Módulo Apache mod_authn_alias</a></li>
 <li><a href="mod/mod_authn_anon.html">Módulo Apache mod_authn_anon</a></li>
 <li><a href="mod/mod_authn_core.html">Módulo Apache mod_authn_core</a></li>
 <li><a href="mod/mod_authn_dbd.html">Módulo Apache mod_authn_dbd</a></li>

@@ -68,7 +68,9 @@ requests to be assigned a variety of different userids</dd>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">他のモジュール</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
-<dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>メディアタイプやリクエストメソッドに応じて
+<dl><dt><a href="mod_access_compat.html" id="A" name="A">mod_access_compat</a></dt><dd>Group authorizations based on host (name or IP
+address)</dd>
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>メディアタイプやリクエストメソッドに応じて
 CGI スクリプトを実行する機能を提供</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>ホストファイルシステム上のいろいろな違う場所を
     ドキュメントツリーにマップする機能と、
@@ -77,8 +79,6 @@ CGI スクリプトを実行する機能を提供</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>基本認証</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd>
-<dt><a href="mod_authn_alias.html">mod_authn_alias</a></dt><dd>Provides the ability to create extended authentication 
-    providers based on actual providers</dd>
 <dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>認証が必要な領域への "anonymous" ユーザのアクセスを許可する
 </dd>
 <dt><a href="mod_authn_core.html">mod_authn_core</a></dt><dd>Core Authentication</dd>

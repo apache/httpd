@@ -65,15 +65,15 @@ NT.</dd>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">다른 모듈</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
-<dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>이 모듈은 미디어종류나 요청메서드에 따라 CGI
+<dl><dt><a href="mod_access_compat.html" id="A" name="A">mod_access_compat</a></dt><dd>Group authorizations based on host (name or IP
+address)</dd>
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>이 모듈은 미디어종류나 요청메서드에 따라 CGI
 스크립트를 실행한다.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>파일시스템의 다른 부분들을 문서 계층구조에 포함하고,
     URL 리다이렉션을 제공한다</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP 헤더를 포함한 파일을 보낸다</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>MD5 Digest Authentication을 사용한 사용자인증.</dd>
-<dt><a href="mod_authn_alias.html">mod_authn_alias</a></dt><dd>Provides the ability to create extended authentication 
-    providers based on actual providers</dd>
 <dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>인증영역에 "익명(anonymous)" 사용자의 접근을
 허용한다</dd>
 <dt><a href="mod_authn_core.html">mod_authn_core</a></dt><dd>Core Authentication</dd>
