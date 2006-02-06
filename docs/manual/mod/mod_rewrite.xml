@@ -1069,7 +1069,7 @@ Result:
         <strong><code>[</code><em>flags</em><code>]</code></strong>
       as the third argument to the <code>RewriteCond</code>
       directive, where <em>flags</em> is a comma-separated list of any of the
-      following flags:</li>
+      following flags:
 
       <ul>
         <li>'<strong><code>nocase|NC</code></strong>'
@@ -1100,6 +1100,7 @@ RewriteRule ...some special stuff for any of these hosts...
           pair three times.
         </li>
       </ul>
+      </li>
      </ol>
 
       <p><strong>Example:</strong></p>
