@@ -63,6 +63,7 @@
 <li><a href="mod_mime.html#addtype">AddType</a></li>
 <li><a href="mod_alias.html#alias">Alias</a></li>
 <li><a href="mod_alias.html#aliasmatch">AliasMatch</a></li>
+<li><a href="mod_access_compat.html#allow">Allow</a></li>
 <li><a href="mod_authz_host.html#allow">Allow</a></li>
 <li><a href="mod_proxy.html#allowconnect">AllowCONNECT</a></li>
 <li><a href="core.html#allowencodedslashes">AllowEncodedSlashes</a></li>
@@ -101,7 +102,7 @@
 <li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></li>
 <li><a href="core.html#authname">AuthName</a></li>
 <li><a href="mod_authn_core.html#authname">AuthName</a></li>
-<li><a href="mod_authn_alias.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
+<li><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
 <li><a href="core.html#authtype">AuthType</a></li>
 <li><a href="mod_authn_core.html#authtype">AuthType</a></li>
 <li><a href="mod_authn_file.html#authuserfile">AuthUserFile</a></li>
@@ -169,6 +170,7 @@
 <li><a href="mod_deflate.html#deflatefilternote">DeflateFilterNote</a></li>
 <li><a href="mod_deflate.html#deflatememlevel">DeflateMemLevel</a></li>
 <li><a href="mod_deflate.html#deflatewindowsize">DeflateWindowSize</a></li>
+<li><a href="mod_access_compat.html#deny">Deny</a></li>
 <li><a href="mod_authz_host.html#deny">Deny</a></li>
 <li><a href="core.html#directory">&lt;Directory&gt;</a></li>
 <li><a href="mod_dir.html#directoryindex">DirectoryIndex</a></li>
@@ -284,6 +286,7 @@
 <li><a href="mod_nw_ssl.html#nwssltrustedcerts">NWSSLTrustedCerts</a></li>
 <li><a href="mod_nw_ssl.html#nwsslupgradeable">NWSSLUpgradeable</a></li>
 <li><a href="core.html#options" id="O" name="O">Options</a></li>
+<li><a href="mod_access_compat.html#order">Order</a></li>
 <li><a href="mod_authz_host.html#order">Order</a></li>
 <li><a href="mod_env.html#passenv" id="P" name="P">PassEnv</a></li>
 <li><a href="mpm_common.html#pidfile">PidFile</a></li>
@@ -336,6 +339,7 @@
 <li><a href="core.html#rlimitmem">RLimitMEM</a></li>
 <li><a href="core.html#rlimitnproc">RLimitNPROC</a></li>
 <li><a href="core.html#satisfy" id="S" name="S">Satisfy</a></li>
+<li><a href="mod_access_compat.html#satisfy">Satisfy</a></li>
 <li><a href="mod_authz_core.html#satisfyall">&lt;SatisfyAll&gt;</a></li>
 <li><a href="mod_authz_core.html#satisfyone">&lt;SatisfyOne&gt;</a></li>
 <li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>

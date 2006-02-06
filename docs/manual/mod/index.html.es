@@ -73,7 +73,9 @@ NT.</dd>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section"><h2><a id="other" name="other">Otros Módulos</a></h2>
 <p class="letters"><a href="#A">&nbsp;A&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a></p>
-<dl><dt><a href="mod_actions.html" id="A" name="A">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
+<dl><dt><a href="mod_access_compat.html" id="A" name="A">mod_access_compat</a></dt><dd>Group authorizations based on host (name or IP
+address)</dd>
+<dt><a href="mod_actions.html">mod_actions</a></dt><dd>This module provides for executing CGI scripts based on
 media type or request method.</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>Provides for mapping different parts of the host
     filesystem in the document tree and for URL redirection</dd>
@@ -82,8 +84,6 @@ HTTP headers</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication.</dd>
-<dt><a href="mod_authn_alias.html">mod_authn_alias</a></dt><dd>Provides the ability to create extended authentication 
-    providers based on actual providers</dd>
 <dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>Allows "anonymous" user access to authenticated
     areas</dd>
 <dt><a href="mod_authn_core.html">mod_authn_core</a></dt><dd>Core Authentication</dd>
