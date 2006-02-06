@@ -26,6 +26,10 @@
 <a href="../es/mod/mpm_winnt.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/mpm_winnt.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Módulo de multiprocesamiento optimizado para Windows
 NT.</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>MPM</td></tr>

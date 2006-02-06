@@ -26,6 +26,10 @@
 <a href="../es/mod/prefork.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/prefork.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Implementa un servidor web pre-forking y no
 hebrado</td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>MPM</td></tr>

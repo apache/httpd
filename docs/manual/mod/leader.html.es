@@ -26,6 +26,10 @@
 <a href="../es/mod/leader.html" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ko/mod/leader.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Descripción:</a></th><td>Variante experimental del MPM estándar
 <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 <tr><th><a href="module-dict.html#Status">Estado:</a></th><td>MPM</td></tr>
