@@ -51,7 +51,7 @@ APACHE_MODULE(authz_default, authorization control backstopper, , , yes)
 dnl - host access control compatibility modules. Implements Order, Allow,
 dnl Deny, Satisfy for backward compatibility.  These directives have been
 dnl deprecated in 2.4.
-APACHE_MODULE(access_compat, mod_access compatibility, , , most)
+APACHE_MODULE(access_compat, mod_access compatibility, , , yes)
 
 dnl these are the front-end authentication modules
 
