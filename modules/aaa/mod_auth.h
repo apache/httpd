@@ -27,6 +27,7 @@
 
 #include "apr_pools.h"
 #include "apr_hash.h"
+#include "apr_optional.h"
 
 #include "httpd.h"
 
