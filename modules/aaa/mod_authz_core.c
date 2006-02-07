@@ -173,7 +173,7 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
                                         newp->provider_name, "0");
     newp->req_state = conf->req_state;
     newp->req_state_level = conf->req_state_level;
-    newp->is_reject = (int)cmd->info;
+    newp->is_reject = (cmd->info != NULL);
 
     /* by the time the config file is used, the provider should be loaded
      * and registered with us.
