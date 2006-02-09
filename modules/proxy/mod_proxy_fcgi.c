@@ -682,6 +682,11 @@ recv_again:
                              * to persist. */
                             apr_bucket_setaside(b, setaside_pool);
                         }
+                    } else {
+                            rv = ap_pass_brigade(r->output_filters, ob);
+                            if (rv != APR_SUCCESS) {
+                                break;
+                            }
                     }
 
                     /* If we didn't read all the data go back and get the
