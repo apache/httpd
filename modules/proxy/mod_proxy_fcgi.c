@@ -150,7 +150,7 @@ static apr_status_t send_data(proxy_conn_rec *conn,
 {
     apr_status_t rv = apr_socket_sendv(conn->sock, vec, nvec, len);
 
-    if (! rv) {
+    if (rv == APR_SUCCESS) {
         conn->worker->s->transferred += *len;
     }
 
@@ -164,7 +164,7 @@ static apr_status_t get_data(proxy_conn_rec *conn,
 {
     apr_status_t rv = apr_socket_recv(conn->sock, buffer, buflen);
 
-    if (! rv) {
+    if (rv == APR_SUCCESS) {
         conn->worker->s->read += *buflen;
     }
 
