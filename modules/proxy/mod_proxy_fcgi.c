@@ -683,10 +683,21 @@ recv_again:
                             apr_bucket_setaside(b, setaside_pool);
                         }
                     } else {
+                            /* we've already passed along the headers,
+                             * so now pass through the content.
+                             * we could simply continue to setaside
+                             * the content and not pass until we
+                             * see the 0 content-length (below, where
+                             * we append the EOS), but that
+                             * could be a huge amount of data;
+                             * so we pass along smaller chunks
+                             */
                             rv = ap_pass_brigade(r->output_filters, ob);
                             if (rv != APR_SUCCESS) {
                                 break;
                             }
+                            apr_brigade_cleanup(ob);
+
                     }
 
                     /* If we didn't read all the data go back and get the
