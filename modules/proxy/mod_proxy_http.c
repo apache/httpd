@@ -595,6 +595,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     apr_off_t bytes_read = 0;
     apr_off_t bytes;
     int force10;
+    apr_table_t *headers_in_copy;
 
     header_brigade = apr_brigade_create(p, origin->bucket_alloc);
 
@@ -611,13 +612,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     if (ap_proxy_liststr(apr_table_get(r->headers_in,
                          "Connection"), "close")) {
         p_conn->close++;
-        /* XXX: we are abusing r->headers_in rather than a copy,
-         * give the core output handler a clue the client would
-         * rather just close.
-         */
-        c->keepalive = AP_CONN_CLOSE;
     }
-    ap_proxy_clear_connection(p, r->headers_in);
 
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
@@ -736,9 +731,16 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                          r->server->server_hostname);
     }
 
-    /* send request headers */
     proxy_run_fixups(r);
-    headers_in_array = apr_table_elts(r->headers_in);
+    /*
+     * Make a copy of the headers_in table before clearing the connection
+     * headers as we need the connection headers later in the http output
+     * filter to prepare the correct response headers.
+     */
+    headers_in_copy = apr_table_copy(p, r->headers_in);
+    ap_proxy_clear_connection(p, headers_in_copy);
+    /* send request headers */
+    headers_in_array = apr_table_elts(headers_in_copy);
     headers_in = (const apr_table_entry_t *) headers_in_array->elts;
     for (counter = 0; counter < headers_in_array->nelts; counter++) {
         if (headers_in[counter].key == NULL
