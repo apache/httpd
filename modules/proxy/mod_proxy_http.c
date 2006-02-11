@@ -603,17 +603,6 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * Send the HTTP/1.1 request to the remote server
      */
 
-    /* strip connection listed hop-by-hop headers from the request */
-    /* even though in theory a connection: close coming from the client
-     * should not affect the connection to the server, it's unlikely
-     * that subsequent client requests will hit this thread/process,
-     * so we cancel server keepalive if the client does.
-     */
-    if (ap_proxy_liststr(apr_table_get(r->headers_in,
-                         "Connection"), "close")) {
-        p_conn->close++;
-    }
-
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
         force10 = 1;
