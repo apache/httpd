@@ -725,8 +725,14 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * Make a copy of the headers_in table before clearing the connection
      * headers as we need the connection headers later in the http output
      * filter to prepare the correct response headers.
+     *
+     * Note: We need to take r->pool for apr_table_copy as the key / value
+     * pairs in r->headers_in have been created out of r->pool and
+     * p might be (and actually is) a longer living pool.
+     * This would trigger the bad pool ancestry abort in apr_table_copy if
+     * apr is compiled with APR_POOL_DEBUG.
      */
-    headers_in_copy = apr_table_copy(p, r->headers_in);
+    headers_in_copy = apr_table_copy(r->pool, r->headers_in);
     ap_proxy_clear_connection(p, headers_in_copy);
     /* send request headers */
     headers_in_array = apr_table_elts(headers_in_copy);
