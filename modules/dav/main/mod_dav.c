@@ -314,9 +314,6 @@ static int dav_error_response(request_rec *r, int status, const char *body)
 {
     r->status = status;
 
-    /* ### I really don't think this is needed; gotta test */
-    r->status_line = ap_get_status_line(status);
-
     ap_set_content_type(r, "text/html");
 
     /* begin the response now... */
@@ -347,9 +344,6 @@ static int dav_error_response_tag(request_rec *r,
                                   dav_error *err)
 {
     r->status = err->status;
-
-    /* ### I really don't think this is needed; gotta test */
-    r->status_line = ap_get_status_line(err->status);
 
     ap_set_content_type(r, DAV_XML_CONTENT_TYPE);
 
