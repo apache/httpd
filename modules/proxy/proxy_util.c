@@ -1580,23 +1580,27 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
     void *score = NULL;
 #endif
 
-    if (worker->s && worker->s->status & PROXY_WORKER_INITIALIZED) {
+    if (worker->s && (worker->s->status & PROXY_WORKER_INITIALIZED)) {
         /* The worker share is already initialized */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+              "proxy: worker %s already initialized",
+              worker->name);
         return;
     }
 #if PROXY_HAS_SCOREBOARD
         /* Get scoreboard slot */
     if (ap_scoreboard_image) {
         score = ap_get_scoreboard_lb(worker->id);
-    if (!score)
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-              "proxy: ap_get_scoreboard_lb(%d) failed for worker %s",
-              worker->id, worker->name);
-    }
-    else {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-              "proxy: initialized scoreboard slot %d for worker %s",
-              worker->id, worker->name);
+        if (!score) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                  "proxy: ap_get_scoreboard_lb(%d) failed for worker %s",
+                  worker->id, worker->name);
+        }
+        else {
+             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                  "proxy: initialized scoreboard slot %d for worker %s",
+                  worker->id, worker->name);
+        }
     }
 #endif
     if (!score) {
