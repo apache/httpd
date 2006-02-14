@@ -38,10 +38,13 @@
     such as <module>mod_authn_file</module> and one authorization
     module such as <module>mod_authz_user</module>.</p>
 </summary>
-<seealso><directive module="core">AuthName</directive></seealso>
-<seealso><directive module="core">AuthType</directive></seealso>
-<seealso><directive module="core">Require</directive></seealso>
-<seealso><directive module="core">Satisfy</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso><directive module="mod_authz_core">Reject</directive></seealso>
+<seealso><directive module="mod_access_compat">Satisfy</directive> (Deprecated)</seealso>
+<seealso><directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive></seealso>
+<seealso><directive module="mod_authz_core">&lt;SatisfyOne&gt;</directive></seealso>
 <seealso><a href="../howto/auth.html">Authentication howto</a></seealso>
 
 <directivesynopsis>
