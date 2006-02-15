@@ -3,11 +3,11 @@ Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
   *) mod_proxy: Fix KeepAlives not being allowed and set to
-     backend servers. PR38602. [Ruediger Pluem, Jim Jagielski]
+     backend servers. PR 38602. [Ruediger Pluem, Jim Jagielski]
 
   *) Correctly initialize mod_proxy workers, which use a
      combination of local and shared datasets. Adjust logging
-     to better trace usage. PR38403. [Jim Jagielski]
+     to better trace usage. PR 38403. [Jim Jagielski]
 
   *) Respect GracefulShutdownTimeout in the worker and event MPMs.
      [Chris Darroch <chrisd pearsoncmg.com>, Garrett Rooney]
@@ -19,7 +19,7 @@ Changes with Apache 2.3.0
   *) mod_speling: Stop crashing with certain non-file requests.  [Jeff Trawick]
 
   *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
-     PR 38340. [Aleksey Pesternikov <apesternikov yahoo.com>, Ruediger Pluem]
+     PR 38340. [Aleksey Pesternikov <apesternikov yahoo.com>]
 
   *) core: Reject invalid Expect header immediately. PR 38123.
      [Ruediger Pluem]
