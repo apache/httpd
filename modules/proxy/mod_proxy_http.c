@@ -981,9 +981,18 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
 
 /* Yes I hate gotos.  This is the subrequest shortcut */
 skip_body:
-    /* Handle Connection: header */
-    if (!force10 && p_conn->close) {
-        buf = apr_pstrdup(p, "Connection: close" CRLF);
+    /*
+     * Handle Connection: header if we do HTTP/1.1 request:
+     * If we plan to close the backend connection sent Connection: close
+     * otherwise sent Connection: Keep-Alive.
+     */
+    if (!force10) {
+        if (p_conn->close) {
+            buf = apr_pstrdup(p, "Connection: close" CRLF);
+        }
+        else {
+            buf = apr_pstrdup(p, "Connection: Keep-Alive" CRLF);
+        }
         ap_xlate_proto_to_ascii(buf, strlen(buf));
         e = apr_bucket_pool_create(buf, strlen(buf), p, c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
@@ -1510,12 +1519,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
                     /* found the last brigade? */
                     if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-                        /* if this is the last brigade, cleanup the
-                         * backend connection first to prevent the
-                         * backend server from hanging around waiting
-                         * for a slow client to eat these bytes
-                         */
-                        backend->close = 1;
                         /* signal that we must leave */
                         finish = TRUE;
                     }
@@ -1584,18 +1587,7 @@ static
 apr_status_t ap_proxy_http_cleanup(const char *scheme, request_rec *r,
                                    proxy_conn_rec *backend)
 {
-    /* If there are no KeepAlives, or if the connection has been signalled
-     * to close, close the socket and clean up
-     */
-
-    /* if the connection is < HTTP/1.1, or Connection: close,
-     * we close the socket, otherwise we leave it open for KeepAlive support
-     */
-    if (backend->close || (r->proto_num < HTTP_VERSION(1,1))) {
-        backend->close_on_recycle = 1;
-        ap_set_module_config(r->connection->conn_config, &proxy_http_module, NULL);
-        ap_proxy_release_connection(scheme, backend, r->server);
-    }
+    ap_proxy_release_connection(scheme, backend, r->server);
     return OK;
 }
 
@@ -1673,26 +1665,13 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
              "proxy: HTTP: serving URL %s", url);
 
 
-    /* only use stored info for top-level pages. Sub requests don't share
-     * in keepalives
-     */
-    if (!r->main) {
-        backend = (proxy_conn_rec *) ap_get_module_config(c->conn_config,
-                                                      &proxy_http_module);
-    }
     /* create space for state information */
-    if (!backend) {
-        if ((status = ap_proxy_acquire_connection(proxy_function, &backend,
-                                                  worker, r->server)) != OK)
-            goto cleanup;
+    if ((status = ap_proxy_acquire_connection(proxy_function, &backend,
+                                              worker, r->server)) != OK)
+        goto cleanup;
 
-        if (!r->main) {
-            ap_set_module_config(c->conn_config, &proxy_http_module, backend);
-        }
-    }
 
     backend->is_ssl = is_ssl;
-    backend->close_on_recycle = 1;
 
     /* Step One: Determine Who To Connect To */
     if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
@@ -1732,10 +1711,8 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
 
 cleanup:
     if (backend) {
-        if (status != OK) {
+        if (status != OK)
             backend->close = 1;
-            backend->close_on_recycle = 1;
-        }
         ap_proxy_http_cleanup(proxy_function, r, backend);
     }
     return status;

@@ -1868,16 +1868,6 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->hostname = apr_pstrdup(conn->pool, uri->hostname);
             conn->port = uri->port;
         }
-    }
-    /*
-     * TODO: add address cache for generic forward proxies.
-     * At least level 0 -> compare with previous hostname:port
-     */
-    if (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE ||
-        !worker->is_address_reusable) {
-        /*
-         * TODO: Check if the connection can be reused
-         */
         if (conn->connection) {
             if (conn->sock) {
                 apr_socket_close(conn->sock);

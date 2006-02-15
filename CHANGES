@@ -2,6 +2,13 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy: Fix KeepAlives not being allowed and set to
+     backend servers. PR38602. [Ruediger Pluem, Jim Jagielski]
+
+  *) Correctly initialize mod_proxy workers, which use a
+     combination of local and shared datasets. Adjust logging
+     to better trace usage. PR38403. [Jim Jagielski]
+
   *) Respect GracefulShutdownTimeout in the worker and event MPMs.
      [Chris Darroch <chrisd pearsoncmg.com>, Garrett Rooney]
 
