@@ -436,7 +436,7 @@ person in</title>
 
 </section>
 
-<section id="multprovider"><title>Beyond just authorization</title>
+<section id="beyond"><title>Beyond just authorization</title>
 
     <p>The way that authorization can be apply is now much more flexible 
     than just a single check against a single data store. Ordering, logic
