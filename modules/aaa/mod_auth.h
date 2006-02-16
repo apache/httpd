@@ -54,6 +54,8 @@ extern "C" {
 
 APR_DECLARE_OPTIONAL_FN(int, ap_satisfies, (request_rec *r));
 
+extern APR_OPTIONAL_FN_TYPE(ap_satisfies) *ap_satisfies;
+
 typedef enum {
     AUTH_DENIED,
     AUTH_GRANTED,
