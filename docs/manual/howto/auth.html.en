@@ -36,6 +36,8 @@
 person in</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#possibleproblems">Possible problems</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dbmdbd">Alternate password storage</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#multprovider">Using multiple providers</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#beyond">Beyond just authorization</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#moreinformation">More information</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -54,9 +56,11 @@ module from each group.</p>
       <li><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></li>
     </ul>
   </li>
-  <li>Authentication provider
+  <li>Authentication provider (see the 
+  <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> and
+  <code class="directive"><a href="../mod/mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></code> directives)
+
     <ul>
-      <li><code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_anon.html">mod_authn_anon</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code></li>
       <li><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code></li>
@@ -70,24 +74,28 @@ module from each group.</p>
     <ul>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li>
+      <li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_default.html">mod_authz_default</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code></li>
+      <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code></li>
     </ul>
   </li>
 </ul>
 
-  <p>The module <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> is both an
-  authentication and authorization provider.  The module
-  <code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code> is not an authentication provider
-  in itself, but allows other authentication providers to be
-  configured in a flexible manner.</p>
+  <p>In addition to these modules, there are also 
+  <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> and 
+  <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code>.  These module implement core
+  directives that are core to all auth modules.</p>
 
-  <p>The module <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> provides authorization
+  <p>The module <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> is both an
+  authentication and authorization provider.  The module 
+  <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> provides authorization
   and access control based on hostname, IP address or characteristics
   of the request, but is not part of the authentication provider
-  system.</p>
+  system. For backwards compatibility with the mod_access, there is 
+  a new module <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>.</p>
 
   <p>You probably also want to take a look at the <a href="access.html">Access Control</a> howto, which discusses the
   various ways to control access to your server.</p>
@@ -138,6 +146,13 @@ module from each group.</p>
     structure of your server, in order to know where some files are
     kept. This should not be terribly difficult, and I'll try to
     make this clear when we come to that point.</p>
+
+    <p>You will also need to make sure that the modules 
+    <code class="module"><a href="../mod/mod_authn_core.html">mod_authn_core</a></code> and <code class="module"><a href="../mod/mod_authz_core.html">mod_authz_core</a></code> 
+    have either been built into the httpd binary or loaded by the 
+    httpd.conf configuration file. Both of these modules provide core 
+    directives and functionality that are critical to the configuration 
+    and use of authentication and authorization in the web server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="gettingitworking" id="gettingitworking">Getting it working</a></h2>
@@ -370,12 +385,239 @@ person in</a></h2>
     <code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> documentation for more details.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
+<h2><a name="multprovider" id="multprovider">Using multiple providers</a></h2>
+
+    <p>With the introduction of the new provider based authentication and
+    authorization architecture, you are no longer locked into a single 
+    authentication or authorization method. In fact any number of the 
+    providers can be mixed and matched to provide you with exactly the 
+    scheme that meets your needs. In the following example, both the 
+    file and ldap based authentication providers are being used.</p>
+
+    <div class="example"><p><code>
+    &lt;Directory /www/docs/private&gt;<br />
+    AuthName "Private"<br />
+    AuthType Basic<br />
+    AuthBasicProvider file ldap<br />
+    AuthUserFile /usr/local/apache/passwd/passwords<br />
+    AuthLDAPURL ldap://ldaphost/o=yourorg<br />
+    Require valid-user
+    </code></p></div>
+
+    <p>In this example the file provider will attempt to authenticate
+    the user first. If it is unable to authenticate the user, the ldap
+    provider will be called. This allows the scope of authentication
+    to be broadened if your organization implements more than
+    one type of authentication store. Other authentication and authorization
+    scenarios may include mixing one type of authentication with a
+    different type of authorization. For example, authenticating against
+    a password file yet authorizing against and ldap directory.</p>
+
+    <p>Just as multiple authentication providers can be implemented, multiple
+    authorization methods can also be used. In this example both file group
+    authorization as well as ldap group authorization is being used.</p>
+
+    <div class="example"><p><code>
+    &lt;Directory /www/docs/private&gt;<br />
+    AuthName "Private"<br />
+    AuthType Basic<br />
+    AuthBasicProvider file<br />
+    AuthUserFile /usr/local/apache/passwd/passwords<br />
+    AuthLDAPURL ldap://ldaphost/o=yourorg
+    AuthGroupFile /usr/local/apache/passwd/groups<br />
+    Require group GroupName<br />
+    Require ldap-group cn=mygroup,o=yourorg
+    </code></p></div>
+
+    <p>To take authorization a little further, the directives
+    <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyall&gt;">&lt;SatisfyAll&gt;</a></code> and
+    <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyone&gt;">&lt;SatisfyOne&gt;</a></code> allow
+    AND/OR logic to be applied so that the order in which authorization
+    is handled can be completely controled through the configuration. See
+    these directives for a complete example on they can be applied.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="beyond" id="beyond">Beyond just authorization</a></h2>
+
+    <p>The way that authorization can be apply is now much more flexible 
+    than just a single check against a single data store. Ordering, logic
+    and choosing how authorization will be done is now possible.</p>
+
+    <h3><a name="authandororder" id="authandororder">Applying AND/OR logic and ordering</a></h3>
+        <p>Controling how and in what order authorization will be applied
+        has been a bit of a mystery in the past. In Apache 2.2 a provider based
+        authentication mechanism was introduced to decouple the actual 
+        authentication process from authorization and supporting functionality.
+        One of the side benefits was that authentication providers could be
+        configured and called in a specific order which didn't depend on the 
+        load order of the auth module itself. This same provider based mechanism 
+        has been brought forward into authorization as well. What this means is 
+        that the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive 
+        not only specifies which authorization methods should be used, it also 
+        specifies the order in which they are called. Multiple autorization 
+        methods are called in the same order in which the 
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directives appear 
+        in the configuration.</p>
+
+        <p>With the introduction of the directives 
+        <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyall&gt;">&lt;SatisfyAll&gt;</a></code> and 
+        <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyone&gt;">&lt;SatisfyOne&gt;</a></code>, the 
+        configuration also has control over when the
+        authorization methods are called and what criteria determines when 
+        access is granted. For example the following authorization block would 
+        apply the logic:</p>
+
+        <p><var>
+        if ((user == "John") || <br />
+        &nbsp;&nbsp;&nbsp;((Group == "admin") &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user) &amp;&amp;<br />
+        &nbsp;&nbsp;&nbsp;&nbsp;((ldap-attribute dept == "sales") || 
+        (file-group contains contains auth'ed_user))))<br />
+        then<br />
+        &nbsp;&nbsp;auth_granted<br />
+        else<br />
+        &nbsp;&nbsp;auth_denied<br />
+        </var></p>
+    
+        <div class="example"><p><code>
+        &lt;Directory /www/mydocs&gt;<br />
+        &nbsp;  Authname ...<br />
+        &nbsp;  AuthBasicProvider ...<br />
+        &nbsp;  ...<br />
+        &nbsp;  Require user John<br />
+        &nbsp;  &lt;SatisfyAll&gt;<br />
+        &nbsp;&nbsp;    Require Group admins<br />
+        &nbsp;&nbsp;    Require ldap-group cn=mygroup,o=foo<br />
+        &nbsp;&nbsp;    &lt;SatisfyOne&gt;<br />
+        &nbsp;&nbsp;&nbsp;      Require ldap-attribute dept="sales"<br />
+        &nbsp;&nbsp;&nbsp;      Require file-group<br />
+        &nbsp;&nbsp;    &lt;/SatisfyOne&gt;<br />
+        &nbsp;  &lt;/SatisfyAll&gt;<br />
+        &lt;/Directory&gt;<br />
+        </code></p></div>
+
+        <p>By default all <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> 
+        directives are handled through and OR operation. In other words, if 
+        any of the specified authorization methods succeed, then authorization 
+        is granted. By enclosing a set of 
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directives within
+        a <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyall&gt;">&lt;SatisfyAll&gt;</a></code> block,
+        the processing switches to an AND operation which requires all authorization 
+        methods to succeed before authorization is granted.</p>
+
+    
+
+    <h3><a name="reqaccessctrl" id="reqaccessctrl">Using 'Require' or 'Reject' for access control</a></h3>
+        <p>Authentication by username and password is only part of the
+        story. Frequently you want to let people in based on something
+        other than who they are. Something such as where they are
+        coming from.</p>
+    
+        <p>The authorization providers <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        all">
+        all</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        env">
+        env</a></code>, <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        host">
+        host</a></code> and <code class="directive"><a href="../mod/mod_authz_host.html#&#10;        ip">
+        ip</a></code> let you allow or deny access based other host based
+        criteria such as host name or ip address of the machine requesting 
+        a document.</p> 
+    
+        <p>The usage of these providers is specified through the 
+        <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> and 
+        <code class="directive"><a href="../mod/mod_authz_core.html#reject">Reject</a></code> directives.
+        These directives register the authorization providers
+        that will be called during the authorization stage of the request
+        processing. For example:</p>
+    
+        <div class="example"><p><code>
+          Require ip <var>address</var>
+        </code></p></div>
+    
+        <p>where <var>address</var> is an IP address (or a partial IP
+        address) or:</p>
+    
+        <div class="example"><p><code>
+          Require host <var>domain_name</var>
+        </code></p></div>
+    
+        <p>where <var>domain_name</var> is a fully qualified domain name 
+        (or a partial domain name); you may provide multiple addresses or 
+        domain names, if desired.</p>
+    
+        <p>For example, if you have someone spamming your message
+        board, and you want to keep them out, you could do the
+        following:</p>
+    
+        <div class="example"><p><code>
+          Reject ip 205.252.46.165
+        </code></p></div>
+    
+        <p>Visitors coming from that address will not be able to see
+        the content covered by this directive. If, instead, you have a
+        machine name, rather than an IP address, you can use that.</p>
+    
+        <div class="example"><p><code>
+          Reject host <var>host.example.com</var>
+        </code></p></div>
+    
+        <p>And, if you'd like to block access from an entire domain,
+        you can specify just part of an address or domain name:</p>
+    
+        <div class="example"><p><code>
+          &lt;SatisfyAll&gt;<br />
+          &nbsp;  Reject ip <var>192.101.205</var><br />
+          &nbsp;  Reject host <var>cyberthugs.com</var> <var>moreidiots.com</var><br />
+          &nbsp;  Reject host ke<br />
+          &lt;/SatisfyAll&gt;
+        </code></p></div>
+    
+        <p>Using the <code class="directive"><a href="../mod/mod_authz_host.html#reject">Reject</a></code> directive
+        inside of a <code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyall&gt;">&lt;SatisfyAll&gt;</a></code>
+        block, will let you be sure that you are actually restricting things to 
+        only the group that you want to let in.</p>
+    
+        <p>The above example uses the <code class="directive"><a href="../mod/mod_authz_core.html#&#10;        &lt;satisfyall&gt;">
+        &lt;SatisfyAll&gt;</a></code> block to make sure that all of the 
+        <code class="directive"><a href="../mod/mod_authz_host.html#reject">Reject</a></code> directives are 
+        satisfied before granting access. </p>
+    
+    
+
+    <h3><a name="filesystem" id="filesystem">Access Control backwards compatibility</a></h3>
+        <p>One of the side effects of adopting a provider based mechanism for 
+        authentication is that the need for the previous access control directives
+        <code class="directive"><a href="../mod/mod_access_compat.html#order">Order</a></code>,
+        <code class="directive"><a href="../mod/mod_access_compat.html#allow">Allow</a></code>,
+        <code class="directive"><a href="../mod/mod_access_compat.html#deny">Deny</a></code> and 
+        <code class="directive"><a href="../mod/mod_access_compat.html#satisfy">Satisfy</a></code> are no longer needed. 
+        However to provide backwards compatibility for older configurations, these 
+        directives have been moved to the <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code> module.</p>
+
+        <p>One of the problems with these directives was that the line between
+        authorization and access control was very fuzzy. The 
+        <code class="directive"><a href="../mod/mod_access_compat.html#satisfy">Satisfy</a></code> directive
+        tried to tie these two stages together by hooking itself into the 
+        request processing itself. Now that these directive have been moved to the
+        <code class="module"><a href="../mod/mod_access_compat.html">mod_access_compat</a></code>, mixing the new authorization directives
+        with the older access control directives becomes difficult. To address this
+        issue, the <code class="module"><a href="../mod/mod_authz_default.html">mod_authz_default</a></code> module becomes very important and must
+        be loaded. The main purpose of the <code class="module"><a href="../mod/mod_authz_default.html">mod_authz_default</a></code> module is 
+        to handle any authorization requests that could not be handled by the 
+        authorization providers. But when the older access control directives are used, 
+        it also links access control with authorization and determines if access 
+        should be granted based on the outcome of each stage. Therefore if the 
+        older directives do not seem to be working properly, it might be because the
+        <code class="module"><a href="../mod/mod_authz_default.html">mod_authz_default</a></code> module has not been loaded.</p>
+
+    
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
 <h2><a name="moreinformation" id="moreinformation">More information</a></h2>
     <p>You should also read the documentation for
     <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> and <code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code> which
     contain some more information about how this all works.
-    <code class="module"><a href="../mod/mod_authn_alias.html">mod_authn_alias</a></code> can also help in simplifying certain
-    authentication configurations.</p>
+    The directive <code class="directive"><a href="../mod/mod_authn_core.html#&lt;authnprovideralias&gt;">&lt;AuthnProviderAlias&gt;</a></code> 
+    can also help in simplifying certain authentication configurations.</p>
 
     <p>And you may want to look at the <a href="access.html">Access
     Control</a> howto, which discusses a number of related topics.</p>

@@ -47,10 +47,13 @@
 </ul>
 <h3>See also</h3>
 <ul class="seealso">
-<li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#reject">Reject</a></code></li>
+<li><code class="directive"><a href="../mod/mod_access_compat.html#satisfy">Satisfy</a></code> (Deprecated)</li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyall&gt;">&lt;SatisfyAll&gt;</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#&lt;satisfyone&gt;">&lt;SatisfyOne&gt;</a></code></li>
 <li><a href="../howto/auth.html">Authentication howto</a></li>
 </ul></div>
 
