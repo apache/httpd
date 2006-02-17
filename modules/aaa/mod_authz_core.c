@@ -57,7 +57,7 @@ X- Remove the calls to ap_some_auth_required() in the
    core request handling to allow the hooks to be called
    in all cases.  Is this function even necessary
    anymore?
-- Determine of merge_authz_dir_config is even 
+ - Determine of merge_authz_dir_config is even 
    necessary and remove if not
 X- Split the authz type from the arguments when the
    authz provider is registered and store the type
@@ -201,10 +201,12 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
         int level = conf->req_state_level;
 
         /* if the level is 0 then take care of the implicit 'or'
-           operation at this level. */
+         * operation at this level. 
+         */
         if (level == 0) {
             /* Just run through the Require_one list and add the
-                node */
+             * node 
+             */
             while (last->one_next) {
                 last = last->one_next;
             }
@@ -212,17 +214,20 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
         } 
         else {
             /* Traverse the list to find the last entry.Each level 
-               indicates a transition in the logic. */
+             * indicates a transition in the logic. 
+             */
             for (;level;level--) {
                 /* if we are in a Require_all block then run through
-                    all of the Require_all nodes to the end of the list */
+                 * all of the Require_all nodes to the end of the list 
+                 */
                 if (last->req_state == AUTHZ_REQSTATE_ALL) {
                     while (last->all_next) {
                         last = last->all_next;
                     }
                     /* If the end of the list contains a node state
-                        change then run through all of the Require_one
-                        nodes to the end of that list */
+                     * change then run through all of the Require_one
+                     * nodes to the end of that list 
+                     */
                     if (level >= last->req_state_level) {
                         while (last->one_next) {
                             last = last->one_next;
@@ -231,14 +236,16 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
                     continue;
                 }
                 /* if we are in a Require_one block then run through
-                    all of the Require_one nodes to the end of the list */
+                 * all of the Require_one nodes to the end of the list 
+                 */
                 if (last->req_state == AUTHZ_REQSTATE_ONE) {
                     while (last->one_next) {
                         last = last->one_next;
                     }
                     /* If the end of the list contains a node state
-                        change then run through all of the Require_all
-                        nodes to the end of that list */
+                     * change then run through all of the Require_all
+                     * nodes to the end of that list 
+                     */
                     if (level >= last->req_state_level) {
                         while (last->all_next) {
                             last = last->all_next;
@@ -249,11 +256,13 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
             }
 
             /* The current state flag indicates which way the transition should
-               go.  If ALL then take the all_next path, otherwise one_next */
+             * go.  If ALL then take the all_next path, otherwise one_next 
+             */
             if (last->req_state == AUTHZ_REQSTATE_ALL) {
                 /* If we already have an all_next node, then
-                   we must have dropped back a level so assign
-                   the node to one_next */
+                 * we must have dropped back a level so assign
+                 * the node to one_next 
+                 */
                 if (!last->all_next) {
                     last->all_next = newp;
                 }
@@ -262,8 +271,9 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
             }
             else {
                 /* If we already have a one_next node, then
-                   we must have dropped back a level so assign
-                   the node to all_next */
+                 * we must have dropped back a level so assign
+                 * the node to all_next 
+                 */
                 if (!last->one_next) {
                     last->one_next = newp;
                 }
@@ -277,14 +287,16 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
 }
 
 /* This is a fake authz provider that really merges various authz alias
-   configurations and then envokes them. */
+ * configurations and then envokes them. 
+ */
 static authz_status authz_alias_check_authorization(request_rec *r,
-                                              const char *require_args)
+                                                    const char *require_args)
 {
-    /* Look up the provider alias in the alias list */
-    /* Get the the dir_config and call ap_Merge_per_dir_configs() */
-    /* Call the real provider->check_authorization() function */
-    /* return the result of the above function call */
+    /* Look up the provider alias in the alias list.
+     * Get the the dir_config and call ap_Merge_per_dir_configs()
+     * Call the real provider->check_authorization() function
+     * return the result of the above function call 
+     */
 
     const char *provider_name = apr_table_get(r->notes, AUTHZ_PROVIDER_NAME_NOTE);
     authz_status ret = AUTHZ_DENIED;
@@ -294,7 +306,8 @@ static authz_status authz_alias_check_authorization(request_rec *r,
 
     if (provider_name) {
         provider_alias_rec *prvdraliasrec = apr_hash_get(authcfg->alias_rec,
-                                                         provider_name, APR_HASH_KEY_STRING);
+                                                         provider_name,
+                                                         APR_HASH_KEY_STRING);
         ap_conf_vector_t *orig_dir_config = r->per_dir_config;
 
         /* If we found the alias provider in the list, then merge the directory
@@ -302,7 +315,8 @@ static authz_status authz_alias_check_authorization(request_rec *r,
         if (prvdraliasrec) {
             r->per_dir_config = ap_merge_per_dir_configs(r->pool, orig_dir_config,
                                                          prvdraliasrec->sec_auth);
-            ret = prvdraliasrec->provider->check_authorization(r, prvdraliasrec->provider_args);
+            ret = prvdraliasrec->provider->check_authorization(r, 
+                                                    prvdraliasrec->provider_args);
             r->per_dir_config = orig_dir_config;
         }
     }
@@ -315,7 +329,8 @@ static const authz_provider authz_alias_provider =
     &authz_alias_check_authorization,
 };
 
-static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig, const char *arg)
+static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig, 
+                                               const char *arg)
 {
     int old_overrides = cmd->override;
     const char *endp = ap_strrchr_c(arg, '>');
@@ -357,23 +372,28 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig, co
     }
 
     /* walk the subsection configuration to get the per_dir config that we will
-       merge just before the real provider is called. */
+     * merge just before the real provider is called. 
+     */
     cmd->override = OR_ALL|ACCESS_CONF;
     errmsg = ap_walk_config(cmd->directive->first_child, cmd, new_authz_config);
 
     if (!errmsg) {
-        provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool, sizeof(provider_alias_rec));
-        const authz_provider *provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP, provider_name,"0");
+        provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool, 
+                                                        sizeof(provider_alias_rec));
+        const authz_provider *provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
+                                                            provider_name,"0");
 
         /* Save off the new directory config along with the original provider name
-           and function pointer data */
+         * and function pointer data 
+         */
         prvdraliasrec->sec_auth = new_authz_config;
         prvdraliasrec->provider_name = provider_name;
         prvdraliasrec->provider_alias = provider_alias;
         prvdraliasrec->provider_args = provider_args;
         prvdraliasrec->provider = provider;         
         
-        apr_hash_set(authcfg->alias_rec, provider_alias, APR_HASH_KEY_STRING, prvdraliasrec);
+        apr_hash_set(authcfg->alias_rec, provider_alias, 
+                     APR_HASH_KEY_STRING, prvdraliasrec);
 
         /* Register the fake provider so that we get called first */
         ap_register_provider(cmd->pool, AUTHZ_PROVIDER_GROUP, provider_alias, "0",
@@ -407,11 +427,12 @@ static const char *authz_require_section(cmd_parms *cmd, void *mconfig, const ch
     }
 
     /* Save off the current request state so that we can go back to it after walking
-       the subsection.  Indicate a transition in the logic incrementing the level.
-       After the subsection walk the level will be decremented to indicate the
-       path to follow. As the require directives are read by the configuration
-       the req_state and the level will allow it to traverse the list to find
-       the last element in the provider calling list. */
+     *  the subsection.  Indicate a transition in the logic incrementing the level.
+     *  After the subsection walk the level will be decremented to indicate the
+     *  path to follow. As the require directives are read by the configuration
+     *  the req_state and the level will allow it to traverse the list to find
+     *  the last element in the provider calling list. 
+     */
     old_reqstate = conf->req_state;
     if (strcasecmp (cmd->directive->directive, "<SatisfyAll") == 0) {
         conf->req_state = AUTHZ_REQSTATE_ALL;
@@ -422,8 +443,9 @@ static const char *authz_require_section(cmd_parms *cmd, void *mconfig, const ch
     conf->req_state_level++;
     cmd->override = OR_ALL|ACCESS_CONF;
 
-    /* walk the subsection configuration to get the per_dir config that we will
-       merge just before the real provider is called. */
+    /* Walk the subsection configuration to get the per_dir config that we will
+     * merge just before the real provider is called. 
+     */
     errmsg = ap_walk_config(cmd->directive->first_child, cmd, cmd->context);
 
     conf->req_state_level--;
@@ -439,7 +461,8 @@ static const command_rec authz_cmds[] =
                      "Selects which authenticated users or groups may access "
                      "a protected space"),
     AP_INIT_RAW_ARGS("Reject", add_authz_provider, (void*)1, OR_AUTHCFG,
-                     "Rejects the specified authenticated users or groups from accessing "
+                     "Rejects the specified authenticated users or groups "
+                     "from accessing "
                      "a protected space"),
     AP_INIT_RAW_ARGS("<RequireAlias", authz_require_alias_section, NULL, RSRC_CONF,
                      "Container for authorization directives grouped under "
@@ -482,7 +505,8 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
     }
 
     /* check to make sure that the request method requires
-    authorization before calling the provider */
+     * authorization before calling the provider 
+     */
     if (!(current_provider->method_mask & 
         (AP_METHOD_BIT << r->method_number))) {
         return AUTHZ_DENIED;
@@ -503,8 +527,10 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
 
     /* If the current node is a Require_One type */
     if (current_provider->req_state == AUTHZ_REQSTATE_ONE) {
-        /* if the auth_result of *this* node was GRANTED and we are embedded in a Require_all block
-            then look to see if there is another Require_all node that needs to be satisfied */
+        /* If the auth_result of *this* node was GRANTED and we are 
+         * embedded in a Require_all block then look to see if there 
+         * is another Require_all node that needs to be satisfied 
+         */
         if (auth_result == AUTHZ_GRANTED) {
             if ((current_provider->all_next) && 
                 (current_provider->all_next->req_state_level < current_provider->req_state_level)) {
@@ -516,7 +542,8 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
         one_next:
 
         /* Traverse forward to the next Require_one node it one exists 
-            otherwise just return the auth_result */
+         * otherwise just return the auth_result 
+         */
         if (current_provider->one_next) {
             auth_result = check_provider_list (r, current_provider->one_next, 
                                                current_provider->req_state_level);
@@ -524,15 +551,19 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
         else
             return auth_result;
 
-        /* if the *last* auth_result was GRANTED and we are embedded in a Require_all block
-            then look to see if there is another Require_all node that needs to be satisfied */
+        /* If the *last* auth_result was GRANTED and we are embedded in 
+         * a Require_all block then look to see if there is another 
+         * Require_all node that needs to be satisfied 
+         */
         if ((auth_result == AUTHZ_GRANTED) && (current_provider->all_next) &&
             (current_provider->all_next->req_state_level < current_provider->req_state_level)) {
             auth_result = check_provider_list (r, current_provider->all_next,
                                                current_provider->req_state_level);
         }
-             /* If the *last* auth_result was DENIED and we are inside of a Require_one block
-                 then look to see if there is another Require_one node that can be satisfied */
+        /* If the *last* auth_result was DENIED and we are inside of a 
+         * Require_one block then look to see if there is another 
+         * Require_one node that can be satisfied 
+         */
         else if ((auth_result == AUTHZ_DENIED) && (current_provider->one_next) &&
                  (current_provider->one_next->req_state_level < current_provider->req_state_level)) {
             goto one_next;
@@ -543,8 +574,10 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
 
     /* If the current node is a Require_All type */
     if (current_provider->req_state == AUTHZ_REQSTATE_ALL) {
-        /* if the auth_result of *this* node was DENIED and we are embedded in a Require_one block
-            then look to see if there is another Require_one node that can be satisfied */
+        /* if the auth_result of *this* node was DENIED and we are 
+         * embedded in a Require_one block then look to see if there 
+         * is another Require_one node that can be satisfied 
+         */
         if (auth_result == AUTHZ_DENIED) {
             if ((current_provider->one_next) && 
                 (current_provider->one_next->req_state_level < current_provider->req_state_level)) {
@@ -556,7 +589,8 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
         all_next:
 
         /* Traverse forward to the next Require_all node it one exists 
-            otherwise just return the auth_result */
+         * otherwise just return the auth_result 
+         */
         if (current_provider->all_next) {
             auth_result = check_provider_list (r, current_provider->all_next,
                                                current_provider->req_state_level);
@@ -564,15 +598,19 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
         else
             return auth_result;
 
-        /* if the *last* auth_result was DENIED and we are embedded in a Require_one block
-            then look to see if there is another Require_one node that can be satisfied */
+        /* if the *last* auth_result was DENIED and we are embedded 
+         * in a Require_one block then look to see if there is another 
+         * Require_one node that can be satisfied 
+         */
         if ((auth_result == AUTHZ_DENIED) && (current_provider->one_next) &&
             (current_provider->one_next->req_state_level < current_provider->req_state_level)) {
             auth_result = check_provider_list (r, current_provider->one_next,
                                                current_provider->req_state_level);
         }
-             /* If the *last* auth_result was GRANTED and we are inside of a Require_all block
-                 then look to see if there is another Require_all node that needs to be satisfied */
+        /* If the *last* auth_result was GRANTED and we are inside of a 
+         * Require_all block then look to see if there is another 
+         * Require_all node that needs to be satisfied 
+         */
         else if ((auth_result == AUTHZ_GRANTED) && (current_provider->all_next) &&
                  (current_provider->all_next->req_state_level < current_provider->req_state_level)) {
             goto all_next;
@@ -650,6 +688,7 @@ static int authz_some_auth_required(request_rec *r)
     int req_authz = 0;
 
     current_provider = conf->providers;
+
     while (current_provider) {
 
         /* Does this provider config apply for this method */
