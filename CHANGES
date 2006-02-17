@@ -22,10 +22,10 @@ Changes with Apache 2.2.1
      when srclib/apr[-util] are symlinks rather than directories proper.
      [William Rowe]
 
-  *) PR#38070: Avoid Server-driven negotiation when a script has
-     emitted an explicit Status: header.
+  *) Avoid Server-driven negotiation when a script has emitted an 
+     explicit Status: header.  PR 38070.  [Nick Kew]
 
-  *) Fix to avoid feeding C99 to C++ compilers [Joe Orton]
+  *) Fix to avoid feeding C99 to C++ compilers.  [Joe Orton]
 
   *) Chunk filter: Fix chunk filter to create correct chunks in the case that
      a flush bucket is surrounded by data buckets. [Ruediger Pluem]
@@ -39,9 +39,10 @@ Changes with Apache 2.2.1
   *) Fix recursive ErrorDocument handling.  PR 36090. 
      [Chris Darroch <chrisd pearsoncmg.com>]
 
-  *) Don't hang on error return from post_read_request.  PR37790 [Nick Kew]
+  *) Don't hang on error return from post_read_request.  PR 37790.
+     [Nick Kew]
 
-  *) Fix off-by-one error in proxy_balancer.  PR37753
+  *) Fix off-by-one error in proxy_balancer.  PR 37753.
      [Kazuhiro Osawa <ko yappo ne jp>]
 
 Changes with Apache 2.2.0
