@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_ssl: Fix spurious hostname mismatch warning for valid
+     wildcard certificates.  PR 37911.  [Nick Burch <nick torchbox.com>]
+
   *) mod_proxy: Fix KeepAlives not being allowed and set to
      backend servers. PR 38602. [Ruediger Pluem, Jim Jagielski]
 
