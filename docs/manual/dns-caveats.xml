@@ -104,14 +104,18 @@
     configuration snippet:</p>
 
     <example>
-      &lt;VirtualHost www.abc.dom&gt; <br />
-      &nbsp;&nbsp;ServerAdmin webgirl@abc.dom <br />
-      &nbsp;&nbsp;DocumentRoot /www/abc <br />
-      &lt;/VirtualHost&gt; <br />
+      &lt;VirtualHost www.abc.dom&gt;<br />
+      <indent>
+        ServerAdmin webgirl@abc.dom<br />
+        DocumentRoot /www/abc<br />
+      </indent>
+      &lt;/VirtualHost&gt;<br />
       <br />
-      &lt;VirtualHost www.def.dom&gt; <br />
-      &nbsp;&nbsp;ServerAdmin webguy@def.dom <br />
-      &nbsp;&nbsp;DocumentRoot /www/def <br />
+      &lt;VirtualHost www.def.dom&gt;<br />
+      <indent>
+        ServerAdmin webguy@def.dom<br />
+        DocumentRoot /www/def<br />
+      </indent>
       &lt;/VirtualHost&gt;
     </example>
 
