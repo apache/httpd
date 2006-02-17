@@ -468,32 +468,37 @@ person in</a></h2>
         access is granted. For example the following authorization block would 
         apply the logic:</p>
 
-        <p><var>
-        if ((user == "John") || <br />
-        &nbsp;&nbsp;&nbsp;((Group == "admin") &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user) &amp;&amp;<br />
-        &nbsp;&nbsp;&nbsp;&nbsp;((ldap-attribute dept == "sales") || 
-        (file-group contains contains auth'ed_user))))<br />
-        then<br />
-        &nbsp;&nbsp;auth_granted<br />
-        else<br />
-        &nbsp;&nbsp;auth_denied<br />
-        </var></p>
-    
         <div class="example"><p><code>
-        &lt;Directory /www/mydocs&gt;<br />
-        &nbsp;  Authname ...<br />
-        &nbsp;  AuthBasicProvider ...<br />
-        &nbsp;  ...<br />
-        &nbsp;  Require user John<br />
-        &nbsp;  &lt;SatisfyAll&gt;<br />
-        &nbsp;&nbsp;    Require Group admins<br />
-        &nbsp;&nbsp;    Require ldap-group cn=mygroup,o=foo<br />
-        &nbsp;&nbsp;    &lt;SatisfyOne&gt;<br />
-        &nbsp;&nbsp;&nbsp;      Require ldap-attribute dept="sales"<br />
-        &nbsp;&nbsp;&nbsp;      Require file-group<br />
-        &nbsp;&nbsp;    &lt;/SatisfyOne&gt;<br />
-        &nbsp;  &lt;/SatisfyAll&gt;<br />
-        &lt;/Directory&gt;<br />
+          # if ((user == "John") ||<br />
+          # &nbsp;&nbsp; ((Group == "admin")<br />
+          # &nbsp; &nbsp; &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user)<br />
+          # &nbsp; &nbsp; &amp;&amp; ((ldap-attribute dept == "sales")<br />
+          # &nbsp; &nbsp; &nbsp; &nbsp; || (file-group contains auth'ed_user))))<br />
+          # then<br />
+          # &nbsp; auth_granted<br />
+          # else<br />
+          # &nbsp; auth_denied<br />
+          #<br />
+          &lt;Directory /www/mydocs&gt;<br />
+          <span class="indent">
+            Authname ...<br />
+            AuthBasicProvider ...<br />
+            ...<br />
+            Require user John<br />
+            &lt;SatisfyAll&gt;<br />
+            <span class="indent">
+              Require Group admins<br />
+              Require ldap-group cn=mygroup,o=foo<br />
+              &lt;SatisfyOne&gt;<br />
+              <span class="indent">
+                Require ldap-attribute dept="sales"<br />
+                Require file-group<br />
+              </span>
+              &lt;/SatisfyOne&gt;<br />
+            </span>
+            &lt;/SatisfyAll&gt;<br />
+          </span>
+          &lt;/Directory&gt;
         </code></p></div>
 
         <p>By default all <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> 
@@ -564,9 +569,10 @@ person in</a></h2>
     
         <div class="example"><p><code>
           &lt;SatisfyAll&gt;<br />
-          &nbsp;  Reject ip <var>192.101.205</var><br />
-          &nbsp;  Reject host <var>cyberthugs.com</var> <var>moreidiots.com</var><br />
-          &nbsp;  Reject host ke<br />
+          <span class="indent">
+            Reject ip <var>192.101.205</var><br />
+            Reject host <var>cyberthugs.com</var> <var>moreidiots.com</var><br />           Reject host ke<br />
+          </span>
           &lt;/SatisfyAll&gt;
         </code></p></div>
     
