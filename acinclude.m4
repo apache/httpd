@@ -368,6 +368,10 @@ if test "x$ap_ssltk_configured" = "x"; then
   if test "x$ap_ssltk_base" != "x"; then
     ap_ssltk_inc="-I$ap_ssltk_base/include"
     CPPFLAGS="$CPPFLAGS $ap_ssltk_inc"
+    # Ensure that the given path is used by pkg-config too, otherwise
+    # the system openssl.pc might be picked up instead.
+    PKG_CONFIG_PATH="${ap_ssltk_base}/lib/pkgconfig${PKG_CONFIG_PATH+:}${PKG_CONFIG_PATH}"
+    export PKG_CONFIG_PATH
   fi
   if test "x$ap_ssltk_type" = "x"; then
     AC_MSG_CHECKING(for OpenSSL version)
