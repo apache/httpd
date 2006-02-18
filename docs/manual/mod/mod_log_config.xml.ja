@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 178530:265033 (outdated) -->
+<!-- English Revision: 265033 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors, as
@@ -56,7 +56,7 @@
     ディレクティブの書式を指定する引数は文字列です。この文字列を使ってそれぞれの
     リクエストがログファイルにログ収集されます。その文字列には
     ログファイルにそのまま
-    書かれる文字列や、それぞれ改行とタブを現す C 言語
+    書かれる文字列や、それぞれ改行とタブを表す C 言語
     形式の制御文字 "\n" と "\t"
     とを含めることができます。そのまま出力させたい引用符とバックスラッシュは
     バックスラッシュでエスケープする必要があります。</p>
@@ -93,7 +93,7 @@
         <td>サーバに送られたリクエスト中のクッキー <var>Foobar</var> の値</td></tr>
 
     <tr><td><code>%D</code></td>
-        <td>リクエストを処理するのにかかった時間、ミリ秒単位</td></tr>
+        <td>リクエストを処理するのにかかった時間、マイクロ秒単位</td></tr>
 
     <tr><td><code>%{<var>FOOBAR</var>}e</code></td>
         <td>環境変数 <var>FOOBAR</var> の内容</td></tr>
@@ -135,7 +135,9 @@
 
     <tr><td><code>%{<var>format</var>}P</code></td>
         <td>リクエストを扱ったワーカーのプロセス ID かスレッド ID。
-        <var>format</var> として有効な値は <code>pid</code> と <code>tid</code>
+        <var>format</var> として有効な値は <code>pid</code>, <code>tid</code>,
+        <code>hextid</code> です。<code>hextid</code> を使うには
+        APR 1.2.0 以降が必要です。
         </td></tr>
 
     <tr><td><code>%q</code></td>
