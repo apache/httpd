@@ -54,7 +54,10 @@ extern "C" {
 
 APR_DECLARE_OPTIONAL_FN(int, ap_satisfies, (request_rec *r));
 
+/* If your module uses ap_satisfies then you MUST add the line
+ * below to your module for it to work correctly.
 extern APR_OPTIONAL_FN_TYPE(ap_satisfies) *ap_satisfies;
+ */
 
 typedef enum {
     AUTH_DENIED,
