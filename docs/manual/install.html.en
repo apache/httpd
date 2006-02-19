@@ -27,12 +27,12 @@
 </div>
 
 
-    <p>This document covers compilation and installation of Apache
-    on Unix and Unix-like systems only. For compiling and
-    installation on Windows, see <a href="platform/windows.html">Using Apache with Microsoft
+    <p>This document covers compilation and installation of the Apache HTTP
+    Server on Unix and Unix-like systems only. For compiling and
+    installation on Windows, see <a href="platform/windows.html">Using Apache HTTPd with Microsoft
     Windows</a>. For other platforms, see the <a href="platform/">platform</a> documentation.</p>
 
-    <p>Apache httpd uses <code>libtool</code> and <code>autoconf</code>
+    <p>Apache HTTPd uses <code>libtool</code> and <code>autoconf</code>
     to create a build environment that looks like many other Open Source
     projects.</p>
 
@@ -51,7 +51,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#customize">Customize</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#test">Test</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#upgrading">Upgrading</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><a href="programs/configure.html">Configure the source tree</a></li><li><a href="invoking.html">Starting Apache</a></li><li><a href="stopping.html">Stopping and Restarting</a></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><a href="programs/configure.html">Configure the source tree</a></li><li><a href="invoking.html">Starting the Apache HTTP Server</a></li><li><a href="stopping.html">Stopping and Restarting</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Overview for the
@@ -115,12 +115,12 @@
 
     <p>Each section of the compilation and installation process is
     described in more detail below, beginning with the requirements
-    for compiling and installing Apache httpd.</p>
+    for compiling and installing Apache HTTP Server.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requirements" id="requirements">Requirements</a></h2>
 
-    <p>The following requirements exist for building Apache:</p>
+    <p>The following requirements exist for building Apache HTTPd:</p>
 
     <dl>
       <dt>Disk Space</dt>
@@ -160,11 +160,11 @@
       If no Perl 5 interpreter is found by the 
       <code class="program"><a href="./programs/configure.html">configure</a></code> script, you will not be able to use 
       the affected support scripts. Of course, you will still be able to 
-      build and use Apache httpd.</dd>
+      build and use Apache HTTPd.</dd>
 
       <dt><a href="http://apr.apache.org">apr/apr-util &gt;= 1.2</a></dt>
       <dd><code>apr</code> and <code>apr-util</code> are bundled
-      with the Apache httpd source releases, and will be used without any 
+      with the Apache HTTPd source releases, and will be used without any 
       problems in almost all circumstances. However, if 
       <code>apr</code> or <code>apr-util</code>, versions 1.0 or 1.1,
       are installed on your system, you must either upgrade your
@@ -172,23 +172,25 @@
       1.2, or have httpd use seperate builds. To use the bundled 
       <code>apr</code>/<code>apr-util</code> sources for this
       purpose you must install them manually:
-<div class="example"><p><code>
-# Build and install apr 1.2<br />
-cd srclib/apr<br />
-./configure --prefix=/usr/local/apr-httpd/<br />
-make<br />
-make install<br />
-<br />
-# Build and install apr-util 1.2<br />
-cd ../apr-util<br />
-./configure --prefix=/usr/local/apr-util-httpd/ --with-apr=/usr/local/apr-httpd/<br />
-make<br />
-make install<br />
-<br />
-# Configure httpd<br />
-cd ../../<br />
-./configure --with-apr=/usr/local/apr-httpd/ --with-apr-util=/usr/local/apr-util-httpd/<br />
-</code></p></div>
+      <div class="example"><p><code>
+        # Build and install apr 1.2<br />
+        cd srclib/apr<br />
+        ./configure --prefix=/usr/local/apr-httpd/<br />
+        make<br />
+        make install<br />
+        <br />
+        # Build and install apr-util 1.2<br />
+        cd ../apr-util<br />
+        ./configure --prefix=/usr/local/apr-util-httpd/ 
+          --with-apr=/usr/local/apr-httpd/<br />
+        make<br />
+        make install<br />
+        <br />
+        # Configure httpd<br />
+        cd ../../<br />
+        ./configure --with-apr=/usr/local/apr-httpd/ 
+          --with-apr-util=/usr/local/apr-util-httpd/
+      </code></p></div>
       </dd>
     </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -197,7 +199,7 @@ cd ../../<br />
 
     <p>The Apache HTTP Server can be downloaded from the <a href="http://httpd.apache.org/download.cgi">Apache HTTP Server
     download site</a>, which lists several mirrors.  Most users of
-    Apache on unix-like systems will be better off downloading and
+    Apache HTTPd on unix-like systems will be better off downloading and
     compiling a source version.  The build process (described below) is
     easy, and it allows you to customize your server to suit your needs.
     In addition, binary releases are often not up to date with the latest
@@ -215,13 +217,13 @@ cd ../../<br />
 <div class="section">
 <h2><a name="extract" id="extract">Extract</a></h2>
 
-    <p>Extracting the source from the Apache HTTPD tarball is a
+    <p>Extracting the source from the Apache HTTPd tarball is a
     simple matter of uncompressing, and then untarring:</p>
 
-<div class="example"><p><code>
-$ gzip -d httpd-<em>NN</em>.tar.gz<br />
-$ tar xvf httpd-<em>NN</em>.tar
-</code></p></div>
+    <div class="example"><p><code>
+      $ gzip -d httpd-<em>NN</em>.tar.gz<br />
+      $ tar xvf httpd-<em>NN</em>.tar
+    </code></p></div>
 
     <p>This will create a new directory under the current directory
     containing the source code for the distribution. You should
@@ -231,11 +233,11 @@ $ tar xvf httpd-<em>NN</em>.tar
 <div class="section">
 <h2><a name="configure" id="configure">Configuring the source tree</a></h2>
 
-    <p>The next step is to configure the Apache source tree for your
+    <p>The next step is to configure the Apache HTTPd source tree for your
     particular platform and personal requirements. This is done using
     the script <code class="program"><a href="./programs/configure.html">configure</a></code> included in
     the root directory of the distribution. (Developers downloading
-    an unreleased version of the Apache source tree will need to have
+    an unreleased version of the Apache HTTPd source tree will need to have
     <code>autoconf</code> and <code>libtool</code> installed and will
     need to run <code>buildconf</code> before proceeding with the next
     steps. This is not necessary for official releases.)</p>
@@ -246,13 +248,14 @@ $ tar xvf httpd-<em>NN</em>.tar
     and command line options.</p>
 
     <p>The most important option is the location <code>--prefix</code>
-    where Apache is to be installed later, because Apache has to be
+    where the Apache HTTP Server is to be installed later, because Apache
+    HTTPd has to be
     configured for this location to work correctly.  More fine-tuned
     control of the location of files is possible with additional <a href="programs/configure.html#installationdirectories">configure
     options</a>.</p>
 
     <p>Also at this point, you can specify which <a href="programs/configure.html#optionalfeatures">features</a> you
-    want included in Apache by enabling and disabling <a href="mod/">modules</a>.  Apache comes with a <a href="mod/module-dict.html#Status">Base</a> set of modules included by
+    want included in Apache HTTPd by enabling and disabling <a href="mod/">modules</a>. The Apache HTTP Server comes with a <a href="mod/module-dict.html#Status">Base</a> set of modules included by
     default.  Other modules are enabled using the
     <code>--enable-<var>module</var></code> option, where
     <var>module</var> is the name of the module with the
@@ -280,12 +283,12 @@ $ tar xvf httpd-<em>NN</em>.tar
     <code class="module"><a href="./mod/mod_speling.html">mod_speling</a></code> for
     later loading through the DSO mechanism:</p>
 
-<div class="example"><p><code>
+    <div class="example"><p><code>
       $ CC="pgcc" CFLAGS="-O2" \<br />
        ./configure --prefix=/sw/pkg/apache \<br />
        --enable-rewrite=shared \<br />
        --enable-speling=shared
-</code></p></div>
+    </code></p></div>
 
     <p>When <code class="program"><a href="./programs/configure.html">configure</a></code> is run it will take several minutes to
     test for the availability of features on your system and build
@@ -297,7 +300,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <div class="section">
 <h2><a name="compile" id="compile">Build</a></h2>
 
-    <p>Now you can build the various parts which form the Apache
+    <p>Now you can build the various parts which form the Apache HTTPd
     package by simply running the command:</p>
 
 <div class="example"><p><code>$ make</code></p></div>
@@ -322,20 +325,20 @@ $ tar xvf httpd-<em>NN</em>.tar
 <div class="section">
 <h2><a name="customize" id="customize">Customize</a></h2>
 
-    <p>Next, you can customize your Apache HTTP server by editing
+    <p>Next, you can customize your Apache HTTP Server by editing
     the <a href="configuring.html">configuration files</a> under
     <code><em>PREFIX</em>/conf/</code>.</p>
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>Have a look at the Apache manual under <a href="./">docs/manual/</a> or consult <a href="http://httpd.apache.org/docs/2.2/">http://httpd.apache.org/docs/2.2/</a> for the most recent
+    <p>Have a look at the Apache HTTP Server manual under <a href="./">docs/manual/</a> or consult <a href="http://httpd.apache.org/docs/2.2/">http://httpd.apache.org/docs/2.2/</a> for the most recent
     version of this manual and a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="test" id="test">Test</a></h2>
 
     <p>Now you can <a href="invoking.html">start</a> your Apache
-    HTTP server by immediately running:</p>
+    HTTP Server by immediately running:</p>
 
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k start</code></p></div>
 
@@ -346,7 +349,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     Then <a href="stopping.html">stop</a> the server again by
     running:</p>
 
-<div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
+    <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k stop</code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="upgrading" id="upgrading">Upgrading</a></h2>
