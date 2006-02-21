@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Ensure that the proper status line is written to the client, fixing
+     incorrect status lines caused by filters which modify r->status without 
+     resetting r->status_line, such as the built-in byterange filter.
+     [Jeff Trawick]
+
   *) mod_ssl: Fix spurious hostname mismatch warning for valid
      wildcard certificates.  PR 37911.  [Nick Burch <nick torchbox.com>]
 
