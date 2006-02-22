@@ -26,8 +26,6 @@
 <a href="../ja/mod/mod_log_config.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_log_config.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>サーバへのリクエストのロギング</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>log_config_module</td></tr>
@@ -75,7 +73,7 @@
     ディレクティブの書式を指定する引数は文字列です。この文字列を使ってそれぞれの
     リクエストがログファイルにログ収集されます。その文字列には
     ログファイルにそのまま
-    書かれる文字列や、それぞれ改行とタブを現す C 言語
+    書かれる文字列や、それぞれ改行とタブを表す C 言語
     形式の制御文字 "\n" と "\t"
     とを含めることができます。そのまま出力させたい引用符とバックスラッシュは
     バックスラッシュでエスケープする必要があります。</p>
@@ -103,7 +101,7 @@
 <tr class="odd"><td><code>%{<var>Foobar</var>}C</code></td>
         <td>サーバに送られたリクエスト中のクッキー <var>Foobar</var> の値</td></tr>
 <tr><td><code>%D</code></td>
-        <td>リクエストを処理するのにかかった時間、ミリ秒単位</td></tr>
+        <td>リクエストを処理するのにかかった時間、マイクロ秒単位</td></tr>
 <tr class="odd"><td><code>%{<var>FOOBAR</var>}e</code></td>
         <td>環境変数 <var>FOOBAR</var> の内容</td></tr>
 <tr><td><code>%f</code></td>
@@ -133,7 +131,9 @@
         <td>リクエストを扱った子プロセスのプロセス ID</td></tr>
 <tr><td><code>%{<var>format</var>}P</code></td>
         <td>リクエストを扱ったワーカーのプロセス ID かスレッド ID。
-        <var>format</var> として有効な値は <code>pid</code> と <code>tid</code>
+        <var>format</var> として有効な値は <code>pid</code>, <code>tid</code>,
+        <code>hextid</code> です。<code>hextid</code> を使うには
+        APR 1.2.0 以降が必要です。
         </td></tr>
 <tr class="odd"><td><code>%q</code></td>
         <td>問い合せ文字列 (存在する場合は前に <code>?</code> が追加される。
