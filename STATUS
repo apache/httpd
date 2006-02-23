@@ -170,4 +170,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: rpluem, niq
       NOTE: this also supersedes previous fix to PR#37790
 
+    * mod_speling: Don't crash if r->filename unset.
+      Trunk version of patch, which applies fine:
+        http://svn.apache.org/viewcvs?rev=373519&view=rev
+      +1: trawick
+
+    * core: Fix up botched status lines (mismatch with r->status or
+      just badly formatted)
+      Trunk version of patch, which applies fine:
+        http://svn.apache.org/viewcvs?rev=379562&view=rev
+      +1: trawick
 
