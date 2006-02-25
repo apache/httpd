@@ -1137,6 +1137,7 @@ static void *APR_THREAD_FUNC worker_thread(apr_thread_t * thd, void *dummy)
     free(ti);
 
     ap_scoreboard_image->servers[process_slot][thread_slot].pid = ap_my_pid;
+    ap_scoreboard_image->servers[process_slot][thread_slot].tid = apr_os_thread_current();
     ap_scoreboard_image->servers[process_slot][thread_slot].generation = ap_my_generation;
     ap_update_child_status_from_indexes(process_slot, thread_slot,
                                         SERVER_STARTING, NULL);
