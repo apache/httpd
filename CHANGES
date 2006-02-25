@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Event MPM: Fill in the scoreboard's tid field. PR 38736.
+     [Chris Darroch <chrisd pearsoncmg.com>]
+
   *) mod_charset_lite: Remove Content-Length when output filter can 
      invalidate it.  Warn when input filter can invalidate it.
      [Jeff Trawick]
