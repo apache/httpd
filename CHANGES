@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_http: Do send keep-alive header if the client sent
+     connection: keep-alive and do not close backend connection if the client
+     sent connection: close. PR 38524. [Ruediger Pluem, Joe Orton]
+
   *) Event MPM: Fill in the scoreboard's tid field. PR 38736.
      [Chris Darroch <chrisd pearsoncmg.com>]
 
