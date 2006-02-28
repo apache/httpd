@@ -72,19 +72,6 @@ RELEASE SHOWSTOPPERS:
 
    * Awaiting next apr-util release to address licensing concerns.
 
-   * Proxy does not allow any more connections to a server when a server
-     is unavailable temporarily.
-     Message-ID: <31C9151F757B06E7A3956FD1@st-augustin.local>
-     Justin says: Yes, it's not a regression; but doing a release without
-                  this fixed is pretty stupid.
-     Ruediger says: It would be nice to make the worker retry a configurable
-                    number of times, but as this problem can be mitigated by
-                    setting Retry to 1 for this worker I do not regard this
-                    as a showstopper. Furthermore I am open to change the
-                    default value for retry (PROXY_WORKER_DEFAULT_RETRY) from
-                    60 secs to 1 sec.
-
-
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
@@ -95,6 +82,23 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       +1: jerenkrantz, jim, wrowe
       -0: niq: Please explain why return value of ap_pass_brigade is
                put into a variable and immediately discarded.
+
+    * mod_proxy_ajp: Fix PR38340 (mod_proxy_ajp does not support common
+      headers (0xA0??))
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=371013&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, wrowe, jerenkrantz
+
+    * core: Fix PR38123 (Invalid Expect header not immediately rejected)
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=370172&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=371132&view=rev
+      Backport version for 2.2.x of patch:
+         http://issues.apache.org/bugzilla/attachment.cgi?id=17481
+      +1: rpluem, niq, jerenkrantz
+      NOTE: this also supersedes previous fix to PR#37790
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -142,7 +146,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    would suggest to restart the voting.
 
       http://people.apache.org/~rpluem/patches/partial_2.2.diff
-      +1: jim, rpluem
+      +1: jim, rpluem, jerenkrantz
 
     * Fix mis-shifted 32 bit scope, masked to 64 bits as a method.
         URL: http://svn.apache.org/viewcvs?rev=358040&view=rev
@@ -153,31 +157,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 +        if (! (reqs[x].method_mask & (AP_METHOD_BIT << m))) {
       +1: wrowe  (for flavor requested by jorton)
 
-    * mod_proxy_ajp: Fix PR38340 (mod_proxy_ajp does not support common
-      headers (0xA0??))
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=371013&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, wrowe
-
-    * core: Fix PR38123 (Invalid Expect header not immediately rejected)
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=370172&view=rev
-         http://svn.apache.org/viewcvs.cgi?rev=371132&view=rev
-      Backport version for 2.2.x of patch:
-         http://issues.apache.org/bugzilla/attachment.cgi?id=17481
-      +1: rpluem, niq
-      NOTE: this also supersedes previous fix to PR#37790
-
     * mod_speling: Don't crash if r->filename unset.
       Trunk version of patch, which applies fine:
         http://svn.apache.org/viewcvs?rev=373519&view=rev
-      +1: trawick
+      +1: trawick, jerenkrantz
 
     * core: Fix up botched status lines (mismatch with r->status or
       just badly formatted)
       Trunk version of patch, which applies fine:
         http://svn.apache.org/viewcvs?rev=379562&view=rev
-      +1: trawick
+      +1: trawick, jerenkrantz
 
