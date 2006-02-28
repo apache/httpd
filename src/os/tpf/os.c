@@ -110,18 +110,38 @@ int tpf_select(int maxfds, fd_set *reads, fd_set *writes, fd_set *excepts,
 
 int tpf_accept(int sockfd, struct sockaddr *peer, int *paddrlen)
 {
+    extern pid_t tpf_parent_pid;
     int socks[1];
     int rv;
 
-    ap_check_signals();
     socks[0] = sockfd;
-    rv = select(socks, 1, 0, 0, TPF_ACCEPT_SECS_TO_BLOCK * 1000);
-    errno = sock_errno();
+    rv = select(socks, 1, 0, 0, 1 * 1000);
+    ap_check_signals();
+    if ((rv == 0) && (errno == 0)) {
+       /* select timed out */
+       errno = EINTR; /* make errno look like accept was interruped */
+       /* now's a good time to make sure our parent didn't abnormally exit */
+       if (getppid() == 1) {
+          /* our parent is gone... close the socket so Apache can restart
+             (it shouldn't still be open but we're taking no chances) */
+          closesocket(sockfd);
+          ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_NOERRNO, NULL,
+                       "child %d closing the socket because getppid()"
+                       " returned 1 instead of parent pid %d",
+                       getpid(), tpf_parent_pid);
+          errno = 0;
+       }
+       return -1;
+    }
+    /* paranoid check for rv == 0 and errno != 0, should never happen */
+    if (rv == 0) {
+       rv = -1;
+    }
+
     if(rv>0) {
         rv = accept(sockfd, peer, paddrlen);
         errno = sock_errno();
     }    
-    ap_check_signals();
     return rv;
 }
    
@@ -339,14 +359,6 @@ pid_t os_fork(server_rec *s, int slot)
     int count;
     listen_rec *lr;
 
-    fflush(stdin);
-    if (dup2(fileno(sock_fp), STDIN_FILENO) == -1)
-        ap_log_error(APLOG_MARK, APLOG_CRIT, s,
-        "unable to replace stdin with sock device driver");
-    fflush(stdout);
-    if (dup2(fileno(sock_fp), STDOUT_FILENO) == -1)
-        ap_log_error(APLOG_MARK, APLOG_CRIT, s,
-        "unable to replace stdout with sock device driver");
     input_parms.generation = ap_my_generation;
 #ifdef USE_SHMGET_SCOREBOARD
     input_parms.scoreboard_heap = ap_scoreboard_image;
@@ -424,21 +436,22 @@ int os_check_server(char *server) {
 
     ap_check_signals();
 
-    /* check that the program activation number hasn't changed */
-        current_acn = (int *)cinfc_fast(CINFC_CMMACNUM);
-        if (ecbp2()->ce2acn != *current_acn) {
-        return 1;  /* shutdown */
-        }
-
     /* check our InetD status */
     if (inetd_getServerStatus(server) != INETD_SERVER_STATUS_ACTIVE) {
         return 1;  /* shutdown */
     }
 
-    /* if DAEMON model, make sure parent is still around */
+    /* if DAEMON model, make sure CLTZ parent is still around */
     if (zinet_model == INETD_IDCF_MODEL_DAEMON) {
         if (getppid() == 1) {
             return 1;  /* shutdown */
+        }
+    } else {
+        /* this is the NOLISTEN model (INETD_IDCF_MODEL_NOLISTEN) */
+        /* check that the program activation number hasn't changed */
+        current_acn = (int *)cinfc_fast(CINFC_CMMACNUM);
+        if (ecbp2()->ce2acn != *current_acn) {
+           return 1;  /* shutdown */
         }
     }
 
@@ -451,8 +464,8 @@ void os_note_additional_cleanups(pool *p, int sd) {
        will close socket in case we happen to abend. */
     sprintf(sockfilename, "/dev/tpf.socket.file/%.8X", sd);
     sock_fp = fopen(sockfilename, "r+");
-    /* arrange to close on exec or restart */
-    ap_note_cleanups_for_file_ex(p, sock_fp, 1);
+    /* we don't want the children to inherit this fd */
+    fcntl(fileno(sock_fp), F_SETFD, FD_CLOEXEC);
     sock_sd = sd;
 }
 
@@ -744,6 +757,8 @@ int ap_check_shm_space(struct pool *a, int size)
 */
 int killpg(pid_t pgrp, int sig)
 {
+    struct ev0bk evnblock;
+    struct timeval tv;
     int i;
 
     ap_sync_scoreboard_image();
@@ -755,11 +770,27 @@ int killpg(pid_t pgrp, int sig)
             kill(pid, sig);
         }
     }
-    /* allow time for the signals to get to the children */
-    sleep(1);
-    /* get idle children's attention by closing the socket */
-    closesocket(sock_sd);
-    sleep(1);
+    /* Allow time for the signals to get to the children.
+       Note that ap_select is signal interruptable,
+       so we use evnwc instead. */
+    i = TPF_SHUTDOWN_SIGNAL_DELAY;
+    evnblock.evnpstinf.evnbkc1 = 1; /* nbr of posts needed */
+    evntc(&evnblock, EVENT_CNT, 'N', i, EVNTC_1052);
+    evnwc(&evnblock, EVENT_CNT);
+
+    if (sig == SIGTERM) {
+       /* get idle children's attention by closing the socket */
+       closesocket(sock_sd);
+       /* and close the /dev/tpf.socket.file special file */
+       fclose(sock_fp);
+       /* Allow the children some more time.
+          Note that ap_select is signal interruptable,
+          so we use evnwc instead. */
+    i = TPF_SHUTDOWN_CLOSING_DELAY;
+    evnblock.evnpstinf.evnbkc1 = 1; /* nbr of posts needed */
+    evntc(&evnblock, EVENT_CNT, 'N', i, EVNTC_1052);
+    evnwc(&evnblock, EVENT_CNT);
+    }
 
     return(0);
 }
@@ -809,7 +840,6 @@ int i;
     printf(" -D HAVE_SYSLOG\n");
 #endif
 
-    printf(" -D TPF_ACCEPT_SECS_TO_BLOCK=%i\n", TPF_ACCEPT_SECS_TO_BLOCK);
     /* round SCOREBOARD_MAINTENANCE_INTERVAL up to seconds */
     i = (SCOREBOARD_MAINTENANCE_INTERVAL + 999999) / 1000000;
     if (i == 1) {

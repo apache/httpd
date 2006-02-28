@@ -279,13 +279,8 @@ API_EXPORT_NONSTD(void) ap_null_cleanup(void *data);
  * up with timeout handling in general...
  */
 
-#ifdef TPF
-#define ap_block_alarms() (0)
-#define ap_unblock_alarms() (0)
-#else
 API_EXPORT(void) ap_block_alarms(void);
 API_EXPORT(void) ap_unblock_alarms(void);
-#endif /* TPF */
 
 /* Common cases which want utility support..
  * the note_cleanups_for_foo routines are for 

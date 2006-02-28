@@ -179,12 +179,6 @@
 
 #include "ap_config.h"
 
-/* TPF_ACCEPT_SECS_TO_BLOCK is the number of seconds to block while
-   waiting to accept a new request in the ap_accept/tpf_accept function */
-#ifndef TPF_ACCEPT_SECS_TO_BLOCK
-#define TPF_ACCEPT_SECS_TO_BLOCK 1
-#endif
-
 #if !defined(INLINE) && defined(USE_GNU_INLINE)
 /* Compiler supports inline, so include the inlineable functions as
  * part of the header
@@ -244,6 +238,29 @@ typedef struct fd_set {
  
 /* definitions for the file descriptor inheritance table */
 #define TPF_FD_LIST_SIZE 4000
+
+/* seconds to delay after shutdown/restart signals have been sent */
+#ifndef TPF_SHUTDOWN_SIGNAL_DELAY
+#define TPF_SHUTDOWN_SIGNAL_DELAY 2
+#endif
+
+/* seconds to delay after closing the port as part of shutdown */
+#ifndef TPF_SHUTDOWN_CLOSING_DELAY
+#define TPF_SHUTDOWN_CLOSING_DELAY 3
+#endif
+
+#ifndef AP_OS_RECLAIM_LOOP_ADJUSTMENTS
+/* expedite shutdown/restart in http_main.c's reclaim_child_processes
+   function by skipping some of the loop iterations                  */
+#define AP_OS_RECLAIM_LOOP_ADJUSTMENTS                                \
+        if (tries == 4) {                                             \
+           tries += 1; /* skip try #5 */                              \
+        } else {                                                      \
+           if (tries == 8) {                                          \
+              tries += 3; /* skip try #9, #10, & #11 */               \
+           }                                                          \
+        }
+#endif /* AP_OS_RECLAIM_LOOP_ADJUSTMENTS */
 
 enum FILE_TYPE { PIPE_OUT = 1, PIPE_IN, PIPE_ERR };
 

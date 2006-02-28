@@ -282,7 +282,10 @@ static ap_inline int buff_read(BUFF *fb, void *buf, int nbyte)
         FD_SET(fb->fd_in, &fds);
         tv.tv_sec = 1;
         tv.tv_usec = 0;
-        rv = ap_select(fb->fd_in + 1, &fds, NULL, NULL, &tv);
+        do {
+           rv = ap_select(fb->fd_in + 1, &fds, NULL, NULL, &tv);
+           ap_check_signals();
+        } while((rv == 0) && ap_check_alarm());
         if (rv > 0)
             rv = ap_read(fb, buf, nbyte);
     }

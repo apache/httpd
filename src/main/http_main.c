@@ -479,6 +479,13 @@ static void chdir_for_gprof(void)
 static void clean_child_exit(int code) __attribute__ ((noreturn));
 static void clean_child_exit(int code)
 {
+#ifdef TPF
+    /* run ptrans cleanups since TPF's sockets don't close upon exit */
+    if (ptrans) { 
+       ap_clear_pool(ptrans);
+    }
+#endif /* TPF */
+
     if (pchild) {
         /* make sure the accept mutex is released before calling child
          * exit hooks and cleanups...  otherwise, modules can segfault
@@ -1557,7 +1564,6 @@ static void timeout(int sig)
 }
 
 
-#ifndef TPF
 /*
  * These two called from alloc.c to protect its critical sections...
  * Note that they can nest (as when destroying the sub_pools of a pool
@@ -1597,7 +1603,6 @@ API_EXPORT(void) ap_unblock_alarms(void)
 	}
     }
 }
-#endif /* TPF */
 
 #ifndef NETWARE
 static APACHE_TLS void (*volatile alarm_fn) (int) = NULL;
@@ -1609,6 +1614,9 @@ static APACHE_TLS unsigned int alarm_expiry_time = 0;
 #if !defined(WIN32)  && !defined(NETWARE)
 static void alrm_handler(int sig)
 {
+#ifdef TPF41
+    signal(sig, exit);
+#endif
     if (alarm_fn) {
 	(*alarm_fn) (sig);
     }
@@ -1687,7 +1695,26 @@ API_EXPORT(int) ap_check_alarm(void)
 }
 #endif /* WIN32 */
 
+#ifdef TPF
+API_EXPORT(int) ap_check_alarm(void)
+{
+   int i;
 
+#ifdef OPTIMIZE_TIMEOUTS
+   /* just pull the timeout from the scoreboard */
+   ap_sync_scoreboard_image();
+   i = ap_scoreboard_image->servers[my_child_num].timeout_len;
+#else
+   i = ap_set_callback_and_alarm(alarm_fn, 3); /* determine time left */
+   /* the 3 seconds is just an arbitrary amount of time to keep the alarm
+      from expiring before it is reset on this next line: */
+   ap_set_callback_and_alarm(alarm_fn, i); /* restore time left */
+#endif
+
+   return i;                               /* return the time left */
+}
+
+#endif /* TPF */
 
 /* reset_timeout (request_rec *) resets the timeout in effect,
  * as long as it hasn't expired already.
@@ -2814,6 +2841,9 @@ static void reclaim_child_processes(int terminate)
 		break;
 	    }
 	}
+#ifdef TPF
+        AP_OS_RECLAIM_LOOP_ADJUSTMENTS
+#endif
 #ifndef NO_OTHER_CHILD
 	for (ocr = other_children; ocr; ocr = nocr) {
 	    nocr = ocr->next;
@@ -4671,11 +4701,6 @@ static void child_main(int child_num_arg)
 	}
 
 	SAFE_ACCEPT(accept_mutex_off());	/* unlock after "accept" */
-
-#ifdef TPF
-	if (csd == 0)                       /* 0 is invalid socket for TPF */
-	    continue;
-#endif
 
 	/* We've got a socket, let's at least process one request off the
 	 * socket before we accept a graceful restart request.
