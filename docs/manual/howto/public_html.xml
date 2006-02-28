@@ -33,7 +33,16 @@
     out of the home directory of the user "<code>username</code>", out of
     the subdirectory specified by the <directive
     module="mod_userdir">UserDir</directive> directive.</p>
-
+<p>Note that, by default, access to these directories is <strong>not</strong>
+    enabled. You can enable access when using <directive module="mod_userdir"
+    >UserDir</directive> by commenting out the line</p>
+    <example>
+	    Include conf/extra/httpd-userdir.conf
+    </example>
+    <p>in the default config file, and adapting the <code
+    >httpd-userdir.conf</code>
+    file as necessary, or by including the appropriate directives in a
+    <code>Directory</code> block within the main config file.</p>
 </summary>
 
 <seealso><a href="../urlmapping.html">Mapping URLs to the Filesystem</a></seealso>
