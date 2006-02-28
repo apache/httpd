@@ -166,5 +166,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       just badly formatted)
       Trunk version of patch, which applies fine:
         http://svn.apache.org/viewcvs?rev=379562&view=rev
-      +1: trawick, jerenkrantz
+      +1: trawick, jerenkrantz, jorton
 
