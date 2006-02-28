@@ -107,6 +107,7 @@ else
 
 
 
+#ifdef SUPPORT_UCP
 /*************************************************
 *          Find Unicode property name            *
 *************************************************/
@@ -121,6 +122,7 @@ for (i = sizeof(utt)/sizeof(ucp_type_table); i >= 0; i--)
   }
 return (i >= 0)? utt[i].name : "??";
 }
+#endif /* SUPPORT_UCP */
 
 
 
@@ -255,11 +257,13 @@ for(;;)
     if (*code >= OP_TYPESTAR)
       {
       fprintf(f, "%s", OP_names[code[1]]);
+#ifdef SUPPORT_UCP
       if (code[1] == OP_PROP || code[1] == OP_NOTPROP)
         {
         fprintf(f, " %s ", get_ucpname(code[2]));
         extra = 1;
         }
+#endif
       }
     else extra = print_char(f, code+1, utf8);
     fprintf(f, "%s", OP_names[*code]);
@@ -280,11 +284,13 @@ for(;;)
     case OP_TYPEUPTO:
     case OP_TYPEMINUPTO:
     fprintf(f, "    %s", OP_names[code[3]]);
+#ifdef SUPPORT_UCP
     if (code[3] == OP_PROP || code[3] == OP_NOTPROP)
       {
       fprintf(f, " %s ", get_ucpname(code[4]));
       extra = 1;
       }
+#endif
     fprintf(f, "{");
     if (*code != OP_TYPEEXACT) fprintf(f, "0,");
     fprintf(f, "%d}", GET2(code,1));
@@ -331,10 +337,12 @@ for(;;)
       GET(code, 2 + LINK_SIZE));
     break;
 
+#ifdef SUPPORT_UCP
     case OP_PROP:
     case OP_NOTPROP:
     fprintf(f, "    %s %s", OP_names[*code], get_ucpname(code[1]));
     break;
+#endif
 
     /* OP_XCLASS can only occur in UTF-8 mode. However, there's no harm in
     having this code always here, and it makes it less messy without all those
@@ -394,6 +402,7 @@ for(;;)
         int ch;
         while ((ch = *ccode++) != XCL_END)
           {
+#ifdef SUPPORT_UCP
           if (ch == XCL_PROP)
             {
             fprintf(f, "\\p{%s}", get_ucpname(*ccode++));
@@ -403,6 +412,7 @@ for(;;)
             fprintf(f, "\\P{%s}", get_ucpname(*ccode++));
             }
           else
+#endif
             {
             ccode += 1 + print_char(f, ccode, TRUE);
             if (ch == XCL_RANGE)
