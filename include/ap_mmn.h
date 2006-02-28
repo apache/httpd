@@ -112,8 +112,6 @@
  * 20051005.0 (2.1.8-dev)  NET_TIME filter eliminated
  * 20051005.0 (2.3.0-dev)  Bump MODULE_MAGIC_COOKIE to "AP24"!
  * 20051115.0 (2.3.0-dev)  Added use_canonical_phys_port to core_dir_config
- * 20051231.0 (2.3.0-dev)  Added num_blank_lines, pending_header_line, and
- *                         pending_header_size to request_rec
  * 20060110.0 (2.3.0-dev)  Conversion of Authz to be provider based
  *                         addition of <SatisfyAll><SatisfyOne>
  *                         removal of Satisfy, Allow, Deny, Order

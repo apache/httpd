@@ -76,9 +76,6 @@ Changes with Apache 2.3.0
      seconds to cache a document.
      [Brian Akins <brian.akins turner.com>, Ruediger Pluem]
 
-  *) Refactored ap_read_request() to provide a foundation for
-     nonblocking reads of requests.  [Brian Pane]
-
   *) If a connection is aborted while waiting for a chunked line, flag the
      connection as errored out.  [Justin Erenkrantz]
 
