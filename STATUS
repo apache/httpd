@@ -164,3 +164,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=379562&view=rev
       +1: trawick, jerenkrantz, jorton
 
+    * mod_include:  APR_FILEPATH_NOTABOVEROOT was undefined with
+      a left-hand NULL or empty path.  The SECUREROOTPATH and 
+      NOTABSOLUTE tests are sufficient for this application.  
+      Adjust for this bug in earlier versions of APR that mishandled
+      the NOTABOVEROOT flag with an empty left hand value.
+        http://svn.apache.org/viewcvs?rev=382147&view=rev
+      +1: wrowe
+       
