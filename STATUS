@@ -148,14 +148,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rpluem/patches/partial_2.2.diff
       +1: jim, rpluem, jerenkrantz
 
-    * Fix mis-shifted 32 bit scope, masked to 64 bits as a method.
-        URL: http://svn.apache.org/viewcvs?rev=358040&view=rev
-      +1: mturk
-      -0: jorton: should use AP_METHOD_BIT
-          wrowe asks; is this your desired patch?  Please vote;
--        if (! (reqs[x].method_mask & (1 << m))) {
-+        if (! (reqs[x].method_mask & (AP_METHOD_BIT << m))) {
-      +1: wrowe  (for flavor requested by jorton)
+    * Fix mis-shifted 32 bit scope, masked to 64 bits as a method, with
+      improvement (?) suggested by jorton;
+        URL: http://people.apache.org/~wrowe/fixldap_mask.patch
+      +1: wrowe
 
     * mod_speling: Don't crash if r->filename unset.
       Trunk version of patch, which applies fine:
