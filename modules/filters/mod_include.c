@@ -1539,7 +1539,6 @@ static int find_file(request_rec *r, const char *directive, const char *tag,
 
         /* be safe; only files in this directory or below allowed */
         rv = apr_filepath_merge(&newpath, NULL, tag_val,
-                                APR_FILEPATH_NOTABOVEROOT |
                                 APR_FILEPATH_SECUREROOTTEST |
                                 APR_FILEPATH_NOTABSOLUTE, r->pool);
 
@@ -1655,7 +1654,6 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
 
             /* be safe; only files in this directory or below allowed */
             rv = apr_filepath_merge(&newpath, NULL, parsed_string,
-                                    APR_FILEPATH_NOTABOVEROOT |
                                     APR_FILEPATH_SECUREROOTTEST |
                                     APR_FILEPATH_NOTABSOLUTE, ctx->dpool);
 
