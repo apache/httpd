@@ -113,6 +113,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * Backport mod_authz_dbd (it's had some testing now)
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
       +1 niq
+      -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
+                     This can not be backported to 2.2.
 
     * mod_proxy: Correctly error out if we get an error from upstream
       response.  Otherwise, we'll leave the client in a bad state.
@@ -170,5 +172,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Adjust for this bug in earlier versions of APR that mishandled
       the NOTABOVEROOT flag with an empty left hand value.
         http://svn.apache.org/viewcvs?rev=382147&view=rev
-      +1: wrowe
+      +1: wrowe, bnicholes
        
