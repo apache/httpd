@@ -234,8 +234,13 @@ static void shmcb_set_safe_time_ex(unsigned char *, const unsigned char *);
                         (const unsigned char *)(&tmp_time)); \
         } while(0)
 
-/* This is necessary simply so that the size passed to memset() is not a
- * compile-time constant, preventing the compiler from optimising it. */
+/* This is used to persuade the compiler from using an inline memset()
+ * which has no respect for alignment, since the size parameter is
+ * often a compile-time constant.  GCC >= 4 will aggressively inline
+ * static functions, so it's marked as explicitly not-inline. */
+#if defined(__GNUC__) && __GNUC__ > 3
+__attribute__((__noinline__))
+#endif
 static void shmcb_safe_clear(void *ptr, size_t size)
 {
         memset(ptr, 0, size);
