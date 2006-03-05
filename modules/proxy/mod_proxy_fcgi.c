@@ -110,7 +110,18 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     r->filename = apr_pstrcat(r->pool, "proxy:fcgi://", host, sport, "/",
                               path, NULL);
 
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                  "proxy: FCGI: set r->filename to %s", r->filename);
+
+    /* XXX NOTE: this isn't ever going to be called if we're in a balancer
+     *     setup, so either we need someplace else to set this up, or the
+     *     balancer code needs to do the same thing.  As things stand you
+     *     can't depend on the PATH_INFO being sent down to the back end. */
+
     r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+
+    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                  "proxy: FCGI: set r->path_info to %s", r->path_info);
 
     return OK;
 }
@@ -248,6 +259,12 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         bodylen += keylen;
 
         vallen = strlen(elts[i].val);
+
+#ifdef FCGI_DUMP_ENV_VARS
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                      "proxy: FCGI: sending env var '%s' value '%s'",
+                      elts[i].key, elts[i].val);
+#endif
 
         if (vallen >> 7 == 0) {
             bodylen += 1;
@@ -423,6 +440,7 @@ static int handle_headers(request_rec *r,
 static void dump_header_to_log(request_rec *r, unsigned char fheader[],
                                apr_size_t length)
 {
+#ifdef FCGI_DUMP_HEADERS
     apr_size_t posn = 0;
     char asc_line[20];
     char hex_line[60];
@@ -478,6 +496,7 @@ static void dump_header_to_log(request_rec *r, unsigned char fheader[],
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server, "HEADER: -EOH-");
+#endif
 }
 
 static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
