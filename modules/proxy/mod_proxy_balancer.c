@@ -71,6 +71,9 @@ static int proxy_balancer_canon(request_rec *r, char *url)
 
     r->filename = apr_pstrcat(r->pool, "proxy:balancer://", host,
             "/", path, (search) ? "?" : "", (search) ? search : "", NULL);
+
+    r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
+
     return OK;
 }
 

@@ -113,11 +113,6 @@ static int proxy_fcgi_canon(request_rec *r, char *url)
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "proxy: FCGI: set r->filename to %s", r->filename);
 
-    /* XXX NOTE: this isn't ever going to be called if we're in a balancer
-     *     setup, so either we need someplace else to set this up, or the
-     *     balancer code needs to do the same thing.  As things stand you
-     *     can't depend on the PATH_INFO being sent down to the back end. */
-
     r->path_info = apr_pstrcat(r->pool, "/", path, NULL);
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
