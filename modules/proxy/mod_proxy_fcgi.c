@@ -527,7 +527,8 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
         apr_size_t len;
         int n;
 
-        rv = apr_poll(&pfd, 1, &n, -1);
+        /* XXX don't hardcode 30 seconds */
+        rv = apr_poll(&pfd, 1, &n, apr_time_from_sec(30));
         if (rv != APR_SUCCESS) {
             break;
         }
@@ -881,7 +882,13 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
     }
 
     backend->is_ssl = 0;
-    backend->close_on_recycle = 0;
+
+    /* XXX Setting close_on_recycle to 0 is a great way to end up with
+     *     timeouts at this point, since we lack good ways to manage the
+     *     back end fastcgi processes.  This should be revisited when we
+     *     have a better story on that part of things. */
+
+    backend->close_on_recycle = 1;
 
     /* Step One: Determine Who To Connect To */
     status = ap_proxy_determine_connection(p, r, conf, worker, backend,
