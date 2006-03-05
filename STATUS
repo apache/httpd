@@ -159,7 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_speling: Don't crash if r->filename unset.
       Trunk version of patch, which applies fine:
         http://svn.apache.org/viewcvs?rev=373519&view=rev
-      +1: trawick, jerenkrantz
+      +1: trawick, jerenkrantz, jim
 
     * core: Fix up botched status lines (mismatch with r->status or
       just badly formatted)
@@ -181,7 +181,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=378032&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, jim
 
     * mod_proxy: Fix PR38403 (Child-Thread uses 100%CPU usage, mod_proxy ?)
       Trunk version of patch:
@@ -189,7 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=377780&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, jim
 
     * mod_proxy_http: Fix PR38524 (mod_proxy(_http) does not send keep-alive
       headers)
@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=377525&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, jim
 
     * mod_proxy_ajp: Crosscheck the length of the body chunk with the length
       of the ajp message to prevent readings beyond the buffer boundaries
@@ -217,5 +217,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=374929&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, jim
 
