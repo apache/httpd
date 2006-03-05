@@ -97,7 +97,7 @@ int main(int argc, const char *argv[])
             case 'p':
                 port = atoi(arg);
                 if (! port) {
-                    /* XXX error message */
+                    usage();
                 }
                 break;
 
