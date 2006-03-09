@@ -1850,19 +1850,6 @@ static int authenticate_digest_user(request_rec *r)
  * Authorization-Info header code
  */
 
-#ifdef SEND_DIGEST
-static const char *hdr(const apr_table_t *tbl, const char *name)
-{
-    const char *val = apr_table_get(tbl, name);
-    if (val) {
-        return val;
-    }
-    else {
-        return "";
-    }
-}
-#endif
-
 static int add_auth_info(request_rec *r)
 {
     const digest_config_rec *conf =
@@ -1871,53 +1858,14 @@ static int add_auth_info(request_rec *r)
     digest_header_rec *resp =
                 (digest_header_rec *) ap_get_module_config(r->request_config,
                                                            &auth_digest_module);
-    const char *ai = NULL, *digest = NULL, *nextnonce = "";
+    const char *ai = NULL, *nextnonce = "";
 
     if (resp == NULL || !resp->needed_auth || conf == NULL) {
         return OK;
     }
 
-
-    /* rfc-2069 digest
-     */
-    if (resp->message_qop == NULL) {
-        /* old client, so calc rfc-2069 digest */
-
-#ifdef SEND_DIGEST
-        /* most of this totally bogus because the handlers don't set the
-         * headers until the final handler phase (I wonder why this phase
-         * is called fixup when there's almost nothing you can fix up...)
-         *
-         * Because it's basically impossible to get this right (e.g. the
-         * Content-length is never set yet when we get here, and we can't
-         * calc the entity hash) it's best to just leave this #def'd out.
-         */
-        char date[APR_RFC822_DATE_LEN];
-        apr_rfc822_date(date, r->request_time);
-        char *entity_info =
-            ap_md5(r->pool,
-                   (unsigned char *) apr_pstrcat(r->pool, resp->raw_request_uri,
-                       ":",
-                       r->content_type ? r->content_type : ap_default_type(r), ":",
-                       hdr(r->headers_out, "Content-Length"), ":",
-                       r->content_encoding ? r->content_encoding : "", ":",
-                       hdr(r->headers_out, "Last-Modified"), ":",
-                       r->no_cache && !apr_table_get(r->headers_out, "Expires") ?
-                            date :
-                            hdr(r->headers_out, "Expires"),
-                       NULL));
-        digest =
-            ap_md5(r->pool,
-                   (unsigned char *)apr_pstrcat(r->pool, conf->ha1, ":",
-                                               resp->nonce, ":",
-                                               r->method, ":",
-                                               date, ":",
-                                               entity_info, ":",
-                                               ap_md5(r->pool, (unsigned char *) ""), /* H(entity) - TBD */
-                                               NULL));
-#endif
-    }
-
+    /* 2069-style entity-digest is not supported (it's too hard, and
+     * there are no clients which support 2069 but not 2617). */
 
     /* setup nextnonce
      */
@@ -1946,12 +1894,7 @@ static int add_auth_info(request_rec *r)
     if (conf->qop_list[0] && !strcasecmp(conf->qop_list[0], "none")
         && resp->message_qop == NULL) {
         /* use only RFC-2069 format */
-        if (digest) {
-            ai = apr_pstrcat(r->pool, "digest=\"", digest, "\"", nextnonce,NULL);
-        }
-        else {
-            ai = nextnonce;
-        }
+        ai = nextnonce;
     }
     else {
         const char *resp_dig, *ha1, *a2, *ha2;
@@ -2004,9 +1947,6 @@ static int add_auth_info(request_rec *r)
                          resp->nonce_count ? resp->nonce_count : "",
                          resp->message_qop ? ", qop=" : "",
                          resp->message_qop ? resp->message_qop : "",
-                         digest ? "digest=\"" : "",
-                         digest ? digest : "",
-                         digest ? "\"" : "",
                          NULL);
     }
 
