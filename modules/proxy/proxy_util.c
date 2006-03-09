@@ -1318,6 +1318,8 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     (*worker)->hostname = uri.hostname;
     (*worker)->port = uri.port;
     (*worker)->id   = proxy_lb_workers;
+    (*worker)->ajp_flush_packets = ajp_flush_off;
+    (*worker)->ajp_flush_wait = AJP_FLUSH_WAIT;
     /* Increase the total worker count */
     proxy_lb_workers++;
     init_conn_pool(p, *worker);

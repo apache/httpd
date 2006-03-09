@@ -90,7 +90,7 @@ static int proxy_ajp_canon(request_rec *r, char *url)
 }
 
 /*
- * XXX: Flushing bandaid
+ * XXX: AJP Auto Flushing
  *
  * When processing CMD_AJP13_SEND_BODY_CHUNK AJP messages we will do a poll
  * with FLUSH_WAIT miliseconds timeout to determine if more data is currently
@@ -105,15 +105,6 @@ static int proxy_ajp_canon(request_rec *r, char *url)
  * For further discussion see PR37100.
  * http://issues.apache.org/bugzilla/show_bug.cgi?id=37100
  */
-#define FLUSHING_BANDAID 1
-
-#ifdef FLUSHING_BANDAID
-/*
- * Wait 10000 microseconds to find out if more data is currently
- * available at the backend. Just an arbitrary choose.
- */
-#define FLUSH_WAIT 10000
-#endif
 
 /*
  * process the request and write the response.
@@ -140,10 +131,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     apr_off_t bb_len;
     int data_sent = 0;
     int rv = 0;
-#ifdef FLUSHING_BANDAID
     apr_int32_t conn_poll_fd;
     apr_pollfd_t *conn_poll;
-#endif
 
     /*
      * Send the AJP request to the remote server
@@ -250,9 +239,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     result = ajp_parse_type(r, conn->data);
     output_brigade = apr_brigade_create(p, r->connection->bucket_alloc);
 
-#ifdef FLUSHING_BANDAID
     /*
-     * Prepare apr_pollfd_t struct for later check if there is currently
+     * Prepare apr_pollfd_t struct for possible later check if there is currently
      * data available from the backend (do not flush response to client)
      * or not (flush response to client)
      */
@@ -260,7 +248,6 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     conn_poll->reqevents = APR_POLLIN;
     conn_poll->desc_type = APR_POLL_SOCKET;
     conn_poll->desc.s = conn->sock;
-#endif
 
     bufsiz = AJP13_MAX_SEND_BODY_SZ;
     while (isok) {
@@ -330,17 +317,14 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                                     r->connection->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(output_brigade, e);
 
-#ifdef FLUSHING_BANDAID
-                    /*
-                     * If there is no more data available from backend side
-                     * currently, flush response to client.
-                     */
-                    if (apr_poll(conn_poll, 1, &conn_poll_fd, FLUSH_WAIT)
-                        == APR_TIMEUP) {
+                    if ( (conn->worker->ajp_flush_packets == ajp_flush_on) ||
+                         ( (conn->worker->ajp_flush_packets == ajp_flush_auto) &&
+                           (apr_poll(conn_poll, 1, &conn_poll_fd,
+                                     conn->worker->ajp_flush_wait)
+                             == APR_TIMEUP) ) ) {
                         e = apr_bucket_flush_create(r->connection->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(output_brigade, e);
                     }
-#endif
                     apr_brigade_length(output_brigade, 0, &bb_len);
                     if (bb_len != -1)
                         conn->worker->s->read += bb_len;
@@ -366,6 +350,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                   "proxy: error processing body");
                     isok = 0;
                 }
+                /* XXX: what about flush here? See mod_jk */
                 data_sent = 1;
                 break;
             default:
