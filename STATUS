@@ -143,6 +143,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
        +1: wrowe, colm
 
+    *) backport 327008 PR 18757.   keep the proxied Content-Length 
+       header for a HEAD request.  recently received a private email
+       saying it also fixes a PHP HEAD request in 2.0.x.
+       http://svn.apache.org/viewcvs?rev=327008&view=rev
+       +1: gregames
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
