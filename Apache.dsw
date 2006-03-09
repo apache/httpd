@@ -345,9 +345,6 @@ Package=<4>
     Project_Dep_Name apriconv
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name gen_uri_delims
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name xml
     End Project Dependency
 }}}
@@ -377,18 +374,6 @@ Package=<4>
     Begin Project Dependency
     Project_Dep_Name libapr
     End Project Dependency
-}}}
-
-###############################################################################
-
-Project: "gen_uri_delims"=".\srclib\apr-util\uri\gen_uri_delims.dsp" - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
 }}}
 
 ###############################################################################
@@ -541,9 +526,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name libapriconv
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name gen_uri_delims
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name xml
