@@ -52,7 +52,7 @@ static const command_rec authz_default_cmds[] =
 
 module AP_MODULE_DECLARE_DATA authz_default_module;
 
-extern APR_OPTIONAL_FN_TYPE(ap_satisfies) *ap_satisfies;
+static APR_OPTIONAL_FN_TYPE(ap_satisfies) *ap_satisfies;
 
 static int check_user_access(request_rec *r)
 {
