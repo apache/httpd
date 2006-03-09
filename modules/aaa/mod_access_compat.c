@@ -98,7 +98,7 @@ static const char *order(cmd_parms *cmd, void *dv, const char *arg)
     access_compat_dir_conf *d = (access_compat_dir_conf *) dv;
     int i, o;
 
-    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server,
                   "The 'Order' directive has been deprecated. "
                   "Consider using '<SatisfyAll><SatisfyOne>' directives."); 
 
@@ -124,7 +124,7 @@ static const char *satisfy(cmd_parms *cmd, void *dv, const char *arg)
     int satisfy = SATISFY_NOSPEC;
     int i;
 
-    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server,
                   "The 'Satisfy' directive has been deprecated. "
                   "Consider using '<SatisfyAll><SatisfyOne>' directives."); 
 
@@ -157,7 +157,7 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
     char msgbuf[120];
     apr_status_t rv;
 
-    ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server,
                   "The 'Allow/Deny' directives have been deprecated. "
                   "Consider using one of the host providers in mod_authz_host.");   
 
