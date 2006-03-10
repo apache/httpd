@@ -219,3 +219,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, jim
 
+    * mod_isapi: Trivial compiler emit fix for const'ness - noticed on OS/X
+      but not noticed before on VC.
+         http://svn.apache.org/viewcvs?rev=384731&view=rev
+      +1: wrowe
+
