@@ -629,7 +629,7 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
 {
     int head_present = 1;
     int termarg;
-    char *termch;
+    const char *termch;
     apr_size_t ate = 0;
 
     if (!head || headlen == 0 || !*head) {
