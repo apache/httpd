@@ -28,7 +28,14 @@
     to a URL <code>http://example.com/~username/</code> will get content
     out of the home directory of the user "<code>username</code>", out of
     the subdirectory specified by the <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive.</p>
-
+<p>Note that, by default, access to these directories is <strong>not</strong>
+    enabled. You can enable access when using <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> by uncommenting the line</p>
+    <div class="example"><p><code>
+	    #Include conf/extra/httpd-userdir.conf
+    </code></p></div>
+    <p>in the default config file, and adapting the <code>httpd-userdir.conf</code>
+    file as necessary, or by including the appropriate directives in a
+    <code>Directory</code> block within the main config file.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#related">Per-user web directories</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#userdir">Setting the file path with UserDir</a></li>
