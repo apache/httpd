@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
-<!-- English Revision: 106753 -->
+<!-- English Revision: 333005 -->
 
 <!--
  Copyright 2005 The Apache Software Foundation or its licensors,
@@ -47,14 +47,14 @@
         <message id="nativename">Portugu&#234;s (Brasil)</message>
 
         <!-- Used for the moduleindex -->
-        <message id="corefeatures">Funcionalidades Principais e M&#243;dulos de Multi-Processos (MPM)</message>
+        <message id="corefeatures">Principais Funcionalidades e M&#243;dulos de Multi-Processos (MPM)</message>
         <message id="othermodules">Outros M&#243;dulos</message>
         <message id="obsoletemodules">M&#243;dulos Obsoletos</message>
 
         <!-- Used for the modulesynopsis and sitemap -->
         <message id="obsoleteapachemodule">M&#243;dulo Obsoleto Apache</message>
         <message id="apachemodule">M&#243;dulo Apache</message>
-        <message id="apachecore">Funcionalidades Principais Apache</message>
+        <message id="apachecore">Principais Funcionalidades do Apache</message>
         <message id="apachempmcommon">Diretrizes Comuns Apache MPM</message>
         <message id="apachempm">Apache MPM</message>
 
@@ -63,7 +63,7 @@
         <message id="seealso">Veja tamb&#233;m</message>
         <message id="topics">T&#243;picos</message>
         <message id="status">Status</message>
-        <message id="moduleidentifier">Identificador do M&#243;dulo</message>
+        <message id="moduleidentifier">Identificador de M&#243;dulo</message>
         <message id="sourcefile">Arquivo Fonte</message>
         <message id="compatibility">Compatibilidade</message>
 
@@ -121,12 +121,12 @@
         <message id="glossary">Gloss&#225;rio</message>
         <message id="sitemap">Mapa do site</message>
 
-        <!-- footer line -->
+        <!-- footer line -->	
         <message id="licensed">Licenciado sob a</message>
         <message id="langavail">L&#237;nguas Dispon&#237;veis</message>
  
         <!-- not up to date -->
         <message id="outofdate">Esta tradu&#231;&#227;o pode estar desatualizada. 
-        Verifique a vers&#227;o em Ingl&#234;s para mudan&#231;as recentes.</message>
+        Confira a vers&#227;o em Ingl&#234;s para mudan&#231;as recentes.</message>
     </messages>
 </language>
