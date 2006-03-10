@@ -149,6 +149,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs?rev=327008&view=rev
        +1: gregames
 
+    * mod_isapi: Trivial compiler emit fix for const'ness - noticed on OS/X
+      but not noticed before on VC.
+         http://svn.apache.org/viewcvs?rev=384731&view=rev
+      +1: wrowe
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
