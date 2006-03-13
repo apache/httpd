@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.1
 
+  *) Ensure that the proper status line is written to the client, fixing
+     incorrect status lines caused by filters which modify r->status without 
+     resetting r->status_line, such as the built-in byterange filter.
+     [Jeff Trawick]
+
   *) mod_speling: Stop crashing with certain non-file requests.  [Jeff Trawick]
 
   *) SECURITY: CVE-2005-3357 (cve.mitre.org)
