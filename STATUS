@@ -156,12 +156,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         URL: http://people.apache.org/~wrowe/fixldap_mask.patch
       +1: wrowe
 
-    * core: Fix up botched status lines (mismatch with r->status or
-      just badly formatted)
-      Trunk version of patch, which applies fine:
-        http://svn.apache.org/viewcvs?rev=379562&view=rev
-      +1: trawick, jerenkrantz, jorton
-
     * mod_include:  APR_FILEPATH_NOTABOVEROOT was undefined with
       a left-hand NULL or empty path.  The SECUREROOTPATH and 
       NOTABSOLUTE tests are sufficient for this application.  
