@@ -1,6 +1,8 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.1
 
+  *) mod_speling: Stop crashing with certain non-file requests.  [Jeff Trawick]
+
   *) SECURITY: CVE-2005-3357 (cve.mitre.org)
      mod_ssl: Fix a possible crash during access control checks if a
      non-SSL request is processed for an SSL vhost (such as the
