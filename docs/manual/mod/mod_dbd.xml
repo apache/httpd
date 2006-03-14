@@ -136,6 +136,19 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     <p>As required by the underlying driver.  Typically this will be
     used to pass whatever cannot be defaulted amongst username,
     password, database name, hostname and port number for connection.</p>
+    <p>Connection string parameters for current drivers include:</p>
+    <dl>
+    <dt>MySQL</dt>
+    <dd>host, port, user, pass, dbname, sock</dd> 
+    <dt>Oracle</dt>
+    <dd>user, pass, dbname, server</dd> 
+    <dt>PostgreSQL</dt>
+    <dd>The connection string is passed straight through to <code>PQconnectdb</code></dd>
+    <dt>SQLite2</dt>
+    <dd>The connection string is split on a colon, and <code>part1:part2</code> is used as <code>sqlite_open(part1, atoi(part2), NULL)</code></dd>
+    <dt>SQLite3</dt>
+    <dd>The connection string is passed straight through to <code>sqlite3_open</code></dd>
+    </dl>
 </usage>
 </directivesynopsis>
 
