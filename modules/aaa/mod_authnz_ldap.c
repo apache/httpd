@@ -1117,11 +1117,7 @@ static const char *mod_auth_ldap_parse_url(cmd_parms *cmd,
 
     /* Set all the values, or at least some sane defaults */
     if (sec->host) {
-        char *p = apr_palloc(cmd->pool, strlen(sec->host) + strlen(urld->lud_host) + 2);
-        strcpy(p, urld->lud_host);
-        strcat(p, " ");
-        strcat(p, sec->host);
-        sec->host = p;
+        sec->host = apr_pstrcat(cmd->pool, urld->lud_host, " ", sec->host, NULL);
     }
     else {
         sec->host = urld->lud_host? apr_pstrdup(cmd->pool, urld->lud_host) : "localhost";
