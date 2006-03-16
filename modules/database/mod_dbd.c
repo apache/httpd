@@ -294,6 +294,10 @@ static apr_status_t dbd_construct(void **db, void *params, apr_pool_t *pool)
     }
     *db = rec;
     rv = dbd_prepared_init(rec->pool, svr, rec);
+    if (rv != APR_SUCCESS) {
+        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, rec->pool,
+                      "DBD: failed to initialise prepared SQL statements");
+    }
     return rv;
 }
 static apr_status_t dbd_close(void *CONN)
