@@ -439,10 +439,6 @@ static util_ldap_connection_t *
 
 #if APR_HAS_THREADS
     /* mutex lock this function */
-    if (!st->mutex) {
-        apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT,
-                                st->pool);
-    }
     apr_thread_mutex_lock(st->mutex);
 #endif
 
@@ -1200,7 +1196,7 @@ start_over:
 
     /* Grab the dn, copy it into the pool, and free it again */
     dn = ldap_get_dn(ldc->ldap, entry);
-    *binddn = apr_pstrdup(st->pool, dn);
+    *binddn = apr_pstrdup(r->pool, dn);
     ldap_memfree(dn);
 
     /*
@@ -1727,7 +1723,11 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     util_ldap_state_t *st =
         (util_ldap_state_t *)apr_pcalloc(p, sizeof(util_ldap_state_t));
 
-    st->pool = p;
+    /* Create a pool for mod_ldap to use */
+    apr_pool_create(&st->pool, p);
+#if APR_HAS_THREADS
+    apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT, st->pool);
+#endif
 
     st->cache_bytes = 100000;
     st->search_cache_ttl = 600000000;
@@ -1753,7 +1753,10 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     util_ldap_state_t *base = (util_ldap_state_t *) basev;
     util_ldap_state_t *overrides = (util_ldap_state_t *) overridesv;
 
-    st->pool = p;
+    st->pool = base->pool;
+#if APR_HAS_THREADS
+    st->mutex = base->mutex;
+#endif
 
     st->cache_bytes = base->cache_bytes;
     st->search_cache_ttl = base->search_cache_ttl;
@@ -1815,7 +1818,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         /* If the cache file already exists then delete it.  Otherwise we are
          * going to run into problems creating the shared memory. */
         if (st->cache_file) {
-            char *lck_file = apr_pstrcat(st->pool, st->cache_file, ".lck",
+            char *lck_file = apr_pstrcat(ptemp, st->cache_file, ".lck",
                                          NULL);
             apr_file_remove(lck_file, ptemp);
         }
