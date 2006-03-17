@@ -134,6 +134,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rpluem/patches/partial_2.2.diff
       +1: jim, rpluem, jerenkrantz
 
+    * mod_proxy_balancer: Do not overwrite the status of initialized workers and
+      respect the configured status of uninitilized workers when creating a new
+      child process.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs?rev=374929&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, pquerna
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -154,7 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * Fix mis-shifted 32 bit scope, masked to 64 bits as a method, with
       improvement (?) suggested by jorton;
         URL: http://people.apache.org/~wrowe/fixldap_mask.patch
-      +1: wrowe
+      +1: wrowe, pquerna
 
     * mod_include:  APR_FILEPATH_NOTABOVEROOT was undefined with
       a left-hand NULL or empty path.  The SECUREROOTPATH and 
@@ -197,19 +206,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=383339&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
-
-    * mod_proxy_balancer: Do not overwrite the status of initialized workers and
-      respect the configured status of uninitilized workers when creating a new
-      child process.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs?rev=374929&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim
+      +1: rpluem, pquerna
 
     * mod_isapi: Trivial compiler emit fix for const'ness - noticed on OS/X
       but not noticed before on VC.
          http://svn.apache.org/viewcvs?rev=384731&view=rev
-      +1: wrowe
+      +1: wrowe, pquerna
 
