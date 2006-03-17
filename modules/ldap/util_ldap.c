@@ -1292,6 +1292,11 @@ static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     st->cache_bytes = atol(bytes);
 
@@ -1309,6 +1314,11 @@ static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     if (file) {
         st->cache_file = ap_server_root_relative(st->pool, file);
@@ -1330,6 +1340,11 @@ static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     st->search_cache_ttl = atol(ttl) * 1000000;
 
@@ -1346,7 +1361,11 @@ static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
+    if (err != NULL) {
+        return err;
+    }
 
     st->search_cache_size = atol(size);
     if (st->search_cache_size < 0) {
@@ -1366,6 +1385,11 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     st->compare_cache_ttl = atol(ttl) * 1000000;
 
@@ -1382,6 +1406,11 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     st->compare_cache_size = atol(size);
     if (st->compare_cache_size < 0) {
@@ -1696,11 +1725,6 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
-    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
-
-    if (err != NULL) {
-        return err;
-    }
 
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
     st->connectionTimeout = atol(ttl);
