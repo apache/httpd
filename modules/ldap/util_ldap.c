@@ -1753,24 +1753,36 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     util_ldap_state_t *base = (util_ldap_state_t *) basev;
     util_ldap_state_t *overrides = (util_ldap_state_t *) overridesv;
 
-    st->pool = base->pool;
+    st->pool = overrides->pool;
 #if APR_HAS_THREADS
-    st->mutex = base->mutex;
+    st->mutex = overrides->mutex;
 #endif
 
+    /* The cache settings can not be modified in a 
+        virtual host since all server use the same
+        shared memory cache. */
     st->cache_bytes = base->cache_bytes;
     st->search_cache_ttl = base->search_cache_ttl;
     st->search_cache_size = base->search_cache_size;
     st->compare_cache_ttl = base->compare_cache_ttl;
     st->compare_cache_size = base->compare_cache_size;
-    st->connections = base->connections;
-    st->ssl_supported = base->ssl_supported;
+
+    st->connections = NULL;
+    st->ssl_supported = 0;
     st->global_certs = apr_array_append(p, base->global_certs,
                                            overrides->global_certs);
     st->client_certs = apr_array_append(p, base->client_certs,
                                            overrides->client_certs);
     st->secure = (overrides->secure_set == 0) ? base->secure
                                               : overrides->secure;
+
+    /* LDAP connection settings can be overwritten in a virtual host */
+    st->connectionTimeout = (overrides->connectionTimeout == 10) 
+                                ? base->connectionTimeout
+                                : overrides->connectionTimeout;
+    st->verify_svr_cert = (overrides->verify_svr_cert == 1) 
+                                ? base->verify_svr_cert
+                                : overrides->verify_svr_cert;
 
     return st;
 }
