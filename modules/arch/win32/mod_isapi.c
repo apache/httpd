@@ -487,11 +487,12 @@ struct isapi_cid {
 
 int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
                                        char         *variable_name,
-                                       void         *buf_data,
+                                       void         *buf_ptr,
                                        apr_uint32_t *buf_size)
 {
     request_rec *r = cid->r;
     const char *result;
+    char *buf_data = (char*)buf_ptr;
     apr_uint32_t len;
 
     if (!strcmp(variable_name, "ALL_HTTP"))
@@ -518,16 +519,16 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
         for (i = 0; i < arr->nelts; i++) {
             if (!strncmp(elts[i].key, "HTTP_", 5)) {
                 strcpy(buf_data, elts[i].key);
-                ((char*)buf_data) += strlen(elts[i].key);
-                *(((char*)buf_data)++) = ':';
+                buf_data += strlen(elts[i].key);
+                *(buf_data++) = ':';
                 strcpy(buf_data, elts[i].val);
-                ((char*)buf_data) += strlen(elts[i].val);
-                *(((char*)buf_data)++) = '\r';
-                *(((char*)buf_data)++) = '\n';
+                buf_data += strlen(elts[i].val);
+                *(buf_data++) = '\r';
+                *(buf_data++) = '\n';
             }
         }
 
-        *(((char*)buf_data)++) = '\0';
+        *(buf_data++) = '\0';
         *buf_size = len + 1;
         return 1;
     }
@@ -553,15 +554,15 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
 
         for (i = 0; i < arr->nelts; i++) {
             strcpy(buf_data, elts[i].key);
-            ((char*)buf_data) += strlen(elts[i].key);
-            *(((char*)buf_data)++) = ':';
-            *(((char*)buf_data)++) = ' ';
+            buf_data += strlen(elts[i].key);
+            *(buf_data++) = ':';
+            *(buf_data++) = ' ';
             strcpy(buf_data, elts[i].val);
-            ((char*)buf_data) += strlen(elts[i].val);
-            *(((char*)buf_data)++) = '\r';
-            *(((char*)buf_data)++) = '\n';
+            buf_data += strlen(elts[i].val);
+            *(buf_data++) = '\r';
+            *(buf_data++) = '\n';
         }
-        *(((char*)buf_data)++) = '\0';
+        *(buf_data++) = '\0';
         *buf_size = len + 1;
         return 1;
     }
@@ -760,13 +761,14 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
 }
 
 int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
-                                void         *buf_data,
+                                void         *buf_ptr,
                                 apr_uint32_t *size_arg,
                                 apr_uint32_t  flags)
 {
     request_rec *r = cid->r;
     conn_rec *c = r->connection;
     apr_uint32_t buf_size = *size_arg;
+    char *buf_data = (char*)buf_ptr;
     apr_bucket_brigade *bb;
     apr_bucket *b;
     apr_status_t rv;
@@ -777,14 +779,13 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
          * Parse them out, or die trying.
          */
         apr_ssize_t ate;
-        ate = send_response_header(cid, NULL, (char*)buf_data,
-                                   0, buf_size);
+        ate = send_response_header(cid, NULL, buf_data, 0, buf_size);
         if (ate < 0) {
             SetLastError(ERROR_INVALID_PARAMETER);
             return 0;
         }
 
-        (char*)buf_data += ate;
+        buf_data += ate;
         buf_size -= ate;
     }
 
@@ -813,12 +814,13 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
 
 int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                                           apr_uint32_t  HSE_code,
-                                          void         *buf_data,
+                                          void         *buf_ptr,
                                           apr_uint32_t *buf_size,
                                           apr_uint32_t *data_type)
 {
     request_rec *r = cid->r;
     conn_rec *c = r->connection;
+    char *buf_data = (char*)buf_ptr;
     request_rec *subreq;
 
     switch (HSE_code) {
@@ -850,8 +852,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         apr_table_unset(r->headers_in, "Content-Length");
 
         /* AV fault per PR3598 - redirected path is lost! */
-        (char*)buf_data = apr_pstrdup(r->pool, (char*)buf_data);
-        ap_internal_redirect((char*)buf_data, r);
+        buf_data = apr_pstrdup(r->pool, (char*)buf_data);
+        ap_internal_redirect(buf_data, r);
         return 1;
 
     case HSE_REQ_SEND_RESPONSE_HEADER:
@@ -1453,7 +1455,7 @@ apr_status_t isapi_handler (request_rec *r)
 
         read = 0;
         while (read < cid->ecb->cbAvailable &&
-               ((res = ap_get_client_block(r, cid->ecb->lpbData + read,
+               ((res = ap_get_client_block(r, (char*)cid->ecb->lpbData + read,
                                         cid->ecb->cbAvailable - read)) > 0)) {
             read += res;
         }
