@@ -147,12 +147,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        header for a HEAD request.  recently received a private email
        saying it also fixes a PHP HEAD request in 2.0.x.
        http://svn.apache.org/viewcvs?rev=327008&view=rev
-       +1: gregames
+       +1: gregames, trawick
 
-    * mod_isapi: Trivial compiler emit fix for const'ness - noticed on OS/X
-      but not noticed before on VC.
+    *) mod_isapi: Trivial compiler emit fix for const'ness - noticed on OS/X
+       but not noticed before on VC.
          http://svn.apache.org/viewcvs?rev=384731&view=rev
-      +1: wrowe
+       +1: wrowe, trawick
+
+    *) mod_ldap: Brad's pool fixes to fix a race condition during
+       first request as well as thread-safety issues between threads
+       handling different vhosts at steady state
+       trunk revision:
+         http://svn.apache.org/viewcvs.cgi?view=rev&rev=386477
+         (there's some server config merge logic which does not apply
+         to 2.0)
+       2.0 patch is at
+         http://people.apache.org/~trawick/20_ldap_pool.patch
+       +1: trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
