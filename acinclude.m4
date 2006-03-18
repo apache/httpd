@@ -183,6 +183,9 @@ AC_DEFUN(APACHE_MODPATH_ADD,[
 $libname: $objects
 	\$(MOD_LINK) $objects $5
 EOF
+      if test ! -z "$5"; then
+        APR_ADDTO(AP_LIBS, [$5])
+      fi
     else
       apache_need_shared=yes
       libname="mod_$1.la"
