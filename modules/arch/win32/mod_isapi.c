@@ -265,7 +265,7 @@ static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, isapi_loaded *isa)
      * reference to the .dll no matter what context (vhost,
      * location, etc) they apply to.
      */
-    isa->report_version = MAKELONG(0, 5); /* Revision 5.0 */
+    isa->report_version = 0x500; /* Revision 5.0 */
     isa->timeout = 300 * 1000000; /* microsecs, not used */
 
     rv = apr_dso_load(&isa->handle, isa->filename, p);
@@ -304,7 +304,7 @@ static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, isapi_loaded *isa)
     /* TerminateExtension() is an optional interface */
     rv = apr_dso_sym((void**)&isa->TerminateExtension, isa->handle,
                      "TerminateExtension");
-    SetLastError(0);
+    apr_set_os_error(0);
 
     /* Run GetExtensionVersion() */
     if (!(isa->GetExtensionVersion)(isa->isapi_version)) {
@@ -512,7 +512,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
 
         if (*buf_size < len + 1) {
             *buf_size = len + 1;
-            SetLastError(ERROR_INSUFFICIENT_BUFFER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INSUFFICIENT_BUFFER));
             return 0;
         }
 
@@ -548,7 +548,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
 
         if (*buf_size < len + 1) {
             *buf_size = len + 1;
-            SetLastError(ERROR_INSUFFICIENT_BUFFER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INSUFFICIENT_BUFFER));
             return 0;
         }
 
@@ -574,7 +574,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
         len = strlen(result);
         if (*buf_size < len + 1) {
             *buf_size = len + 1;
-            SetLastError(ERROR_INSUFFICIENT_BUFFER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INSUFFICIENT_BUFFER));
             return 0;
         }
         strcpy(buf_data, result);
@@ -583,7 +583,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
     }
 
     /* Not Found */
-    SetLastError(ERROR_INVALID_INDEX);
+    apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_INDEX));
     return 0;
 }
 
@@ -607,7 +607,7 @@ int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
 
     *buf_size = read;
     if (res < 0) {
-        SetLastError(ERROR_READ_FAULT);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_READ_FAULT));
     }
     return (res >= 0);
 }
@@ -781,7 +781,7 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
         apr_ssize_t ate;
         ate = send_response_header(cid, NULL, buf_data, 0, buf_size);
         if (ate < 0) {
-            SetLastError(ERROR_INVALID_PARAMETER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
 
@@ -869,7 +869,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                                    (char*) data_type,
                                    statlen, headlen);
         if (ate < 0) {
-            SetLastError(ERROR_INVALID_PARAMETER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
         else if ((apr_size_t)ate < headlen) {
@@ -901,7 +901,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "HSE_REQ_DONE_WITH_SESSION is not supported: %s",
                           r->filename);
         }
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_MAP_URL_TO_PATH:
@@ -931,7 +931,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                            "ISAPI: ServerSupportFunction HSE_REQ_GET_SSPI_INFO "
                            "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_APPEND_LOG_PARAMETER:
@@ -966,7 +966,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                       "ISAPI: ServerSupportFunction HSE_REQ_IO_COMPLETION "
                       "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_TRANSMIT_FILE:
@@ -987,7 +987,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                          "ISAPI: ServerSupportFunction HSE_REQ_TRANSMIT_FILE "
                          "as HSE_IO_ASYNC is not supported: %s", r->filename);
-            SetLastError(ERROR_INVALID_PARAMETER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
 
@@ -1005,7 +1005,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         else {
             apr_finfo_t fi;
             if (apr_file_info_get(&fi, APR_FINFO_SIZE, fd) != APR_SUCCESS) {
-                SetLastError(ERROR_INVALID_PARAMETER);
+                apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
                 return 0;
             }
             fsize = fi.size - tf->Offset;
@@ -1036,7 +1036,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             if (ate < 0)
             {
                 apr_brigade_destroy(bb);
-                SetLastError(ERROR_INVALID_PARAMETER);
+                apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
                 return 0;
             }
         }
@@ -1119,7 +1119,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_REFRESH_ISAPI_ACL "
                           "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_IS_KEEP_CONN:
@@ -1135,7 +1135,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                             "ISAPI: asynchronous I/O not supported: %s",
                             r->filename);
-            SetLastError(ERROR_INVALID_PARAMETER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
 
@@ -1168,7 +1168,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_GET_IMPERSONATION_TOKEN "
                           "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_MAP_URL_TO_PATH_EX:
@@ -1246,7 +1246,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "ISAPI: ServerSupportFunction HSE_REQ_ABORTIVE_CLOSE"
                           " is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_GET_CERT_INFO_EX:  /* Added in ISAPI 4.0 */
@@ -1255,7 +1255,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_GET_CERT_INFO_EX "
                           "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_SEND_RESPONSE_HEADER_EX:  /* Added in ISAPI 4.0 */
@@ -1269,7 +1269,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                                                shi->cchStatus,
                                                shi->cchHeader);
         if (ate < 0) {
-            SetLastError(ERROR_INVALID_PARAMETER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
         else if ((apr_size_t)ate < shi->cchHeader) {
@@ -1294,7 +1294,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_CLOSE_CONNECTION "
                           "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_IS_CONNECTED:  /* Added after ISAPI 4.0 */
@@ -1312,7 +1312,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_EXTENSION_TRIGGER "
                           "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     default:
@@ -1320,7 +1320,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "ISAPI: ServerSupportFunction (%d) not supported: "
                           "%s", HSE_code, r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
     }
 }
