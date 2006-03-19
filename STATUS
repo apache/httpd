@@ -117,6 +117,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?view=rev&rev=154319
        +1: stoddard, striker, wrowe (as corrected in subsequent patches)
 
+    *) backport 327008 PR 18757.   keep the proxied Content-Length 
+       header for a HEAD request.  recently received a private email
+       saying it also fixes a PHP HEAD request in 2.0.x.
+       http://svn.apache.org/viewcvs?rev=327008&view=rev
+       +1: gregames, trawick, niq
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -143,12 +149,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
        +1: wrowe, colm
 
-    *) backport 327008 PR 18757.   keep the proxied Content-Length 
-       header for a HEAD request.  recently received a private email
-       saying it also fixes a PHP HEAD request in 2.0.x.
-       http://svn.apache.org/viewcvs?rev=327008&view=rev
-       +1: gregames, trawick
-
     *) mod_isapi: Trivial compiler emit fix for const'ness - noticed on OS/X
        but not noticed before on VC.
          http://svn.apache.org/viewcvs?rev=384731&view=rev
@@ -167,7 +167,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     *) mod_speling: Don't crash if r->filename is unset.
        http://svn.apache.org/viewcvs.cgi?rev=385580&view=rev
-       +1: trawick
+       +1: trawick, niq
 
     *) Make sure we write a reasonable status line (e.g., if byterange
        filter modifies status and custom status line is left
@@ -175,7 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs.cgi?rev=385581&view=rev
        2.0 patch is at
          http://people.apache.org/~trawick/20_validate_status_line.patch
-       +1: trawick
+       +1: trawick, niq
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
