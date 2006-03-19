@@ -165,6 +165,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~trawick/20_ldap_pool.patch
        +1: trawick
 
+    *) mod_speling: Don't crash if r->filename is unset.
+       http://svn.apache.org/viewcvs.cgi?rev=385580&view=rev
+       +1: trawick
+
+    *) Make sure we write a reasonable status line (e.g., if byterange
+       filter modifies status and custom status line is left
+       unmodified).
+       http://svn.apache.org/viewcvs.cgi?rev=385581&view=rev
+       2.0 patch is at
+         http://people.apache.org/~trawick/20_validate_status_line.patch
+       +1: trawick
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
