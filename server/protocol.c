@@ -1240,7 +1240,19 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_content_length_filter(
      * We can only set a C-L in the response header if we haven't already
      * sent any buckets on to the next output filter for this request.
      */
-    if (ctx->data_sent == 0 && eos) {
+    if (ctx->data_sent == 0 && eos &&
+        /* don't whack the C-L if it has already been set for a HEAD
+         * by something like proxy.  the brigade only has an EOS bucket
+         * in this case, making r->bytes_sent zero.
+         *
+         * if r->bytes_sent > 0 we have a (temporary) body whose length may 
+         * have been changed by a filter.  the C-L header might not have been 
+         * updated so we do it here.  long term it would be cleaner to have 
+         * such filters update or remove the C-L header, and just use it 
+         * if present.
+         */
+        !(r->header_only && r->bytes_sent == 0 &&   
+            apr_table_get(r->headers_out, "Content-Length"))) {
         ap_set_content_length(r, r->bytes_sent);
     }
 
