@@ -40,9 +40,6 @@ Changes with Apache 2.2.1
   *) Fix syntax error in httpd.h with strict compilers.  PR 38740.
      [Per Olausson <pao darkheim.freeserve.co.uk>]
 
-  *) Preserve the Content-Length header for a proxied HEAD response.
-     PR 18757.  [Greg Ames]
-
   *) Fix recursive ErrorDocument handling.  PR 36090. 
      [Chris Darroch <chrisd pearsoncmg.com>]
 
@@ -994,6 +991,9 @@ Changes with Apache 2.1.1
    Apache 2.0.xx tree as documented, and except as noted, below.]
 
 Changes with Apache 2.0.56
+
+  *) Preserve the Content-Length header for a proxied HEAD response.
+     PR 18757.  [Greg Ames]
 
   *) mod_cgi(d): Remove block on OPTIONS method so that scripts can
      respond to OPTIONS directly rather than via server default.
