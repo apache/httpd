@@ -1707,6 +1707,11 @@ static const char *util_ldap_set_verify_srv_cert(cmd_parms *cmd,
     util_ldap_state_t *st =
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                               &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: SSL verify server certificate - %s",
@@ -1725,6 +1730,11 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
 #ifdef LDAP_OPT_NETWORK_TIMEOUT
     st->connectionTimeout = atol(ttl);
@@ -1800,13 +1810,18 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     st->secure = (overrides->secure_set == 0) ? base->secure
                                               : overrides->secure;
 
-    /* LDAP connection settings can be overwritten in a virtual host */
-    st->connectionTimeout = (overrides->connectionTimeout == 10) 
-                                ? base->connectionTimeout
-                                : overrides->connectionTimeout;
-    st->verify_svr_cert = (overrides->verify_svr_cert == 1) 
-                                ? base->verify_svr_cert
-                                : overrides->verify_svr_cert;
+    /* These LDAP connection settings can not be overwritten in 
+        a virtual host. Once set in the base server, they must 
+        remain the same. None of the LDAP SDKs seem to be able
+        to handle setting the verify_svr_cert flag on a 
+        per-connection basis.  The OpenLDAP client appears to be
+        able to handle the connection timeout per-connection
+        but the Novell SDK cannot.  Allowing the timeout to
+        be set by each vhost is of little value so rather than
+        trying to make special expections for one LDAP SDK, GLOBAL_ONLY 
+        is being enforced on this setting as well. */
+    st->connectionTimeout = base->connectionTimeout;
+    st->verify_svr_cert = base->verify_svr_cert;
 
     return st;
 }
