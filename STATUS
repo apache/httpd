@@ -213,13 +213,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: wrowe, pquerna
 
     * mod_ldap: Fix a race condition when creating the connection pool mutex
-	and also clean up the server_merge function to allow the overwritible
-	settings to be set within a vhost.
-         http://svn.apache.org/viewcvs.cgi?view=rev&rev=386477
-	 http://svn.apache.org/viewcvs.cgi?view=rev&rev=386698
+	and make sure that memory is being allocated from the correct pools
+	when connections are being established. Enforce the GLOBAL_ONLY 
+	parameter for all of the directives.
+         http://people.apache.org/~bnicholes/util_ldap.c.patch
       +1: bnicholes
-         the two commits above plus this to get the contexts right:
-         http://svn.apache.org/viewcvs?rev=386751&view=rev
-      +1: trawick
-      trawick says: This needs a CHANGES entry by the time it gets merged
-                    to 2.2. 
+         
