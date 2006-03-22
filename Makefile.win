@@ -190,9 +190,6 @@ _build:
 	cd ..
 !ENDIF
 	cd ..\..
-	cd srclib\apr-util\uri
-	 $(MAKE) $(MAKEOPT) -f gen_uri_delims.mak  CFG="gen_uri_delims - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	cd ..\..\..
 	cd srclib\apr-util\xml\expat\lib
 	 $(MAKE) $(MAKEOPT) -f xml.mak             CFG="xml - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
