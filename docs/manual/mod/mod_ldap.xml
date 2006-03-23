@@ -563,7 +563,7 @@ connection client certificates.</description>
 <name>LDAPConnectionTimeout</name>
 <description>Specifies the socket connection timeout in seconds</description>
 <syntax>LDAPConnectionTimeout <var>seconds</var></syntax>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>Specifies the timeout value (in seconds) in which the module will
@@ -579,7 +579,7 @@ connection client certificates.</description>
 <description>Force server certificate verification</description>
 <syntax>LDAPVerifyServerCert <var>On|Off</var></syntax>
 <default>LDAPVerifyServerCert On</default>
-<contextlist><context>server config</context><context>virtual host</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>Specifies whether to force the verification of a 
