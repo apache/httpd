@@ -112,6 +112,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    *) mod_speling: Don't crash if r->filename is unset.
+       http://svn.apache.org/viewcvs.cgi?rev=385580&view=rev
+       +1: trawick, niq, colm
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
@@ -157,10 +161,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~trawick/20_ldap_pool.patch
        +1: trawick
 
-    *) mod_speling: Don't crash if r->filename is unset.
-       http://svn.apache.org/viewcvs.cgi?rev=385580&view=rev
-       +1: trawick, niq
-
     *) Make sure we write a reasonable status line (e.g., if byterange
        filter modifies status and custom status line is left
        unmodified).
@@ -168,6 +168,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        2.0 patch is at
          http://people.apache.org/~trawick/20_validate_status_line.patch
        +1: trawick, niq
+       -0: colm
+       colm: Wouldn't it be a whole lot less cycles to use ISDIGIT?
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
