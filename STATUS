@@ -112,11 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    *) Win32: Move call to mpm_service_install to the rewrite_args hook
-       from the post_config hook.
-         http://svn.apache.org/viewcvs?view=rev&rev=154319
-       +1: stoddard, striker, wrowe (as corrected in subsequent patches)
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
