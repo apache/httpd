@@ -314,7 +314,7 @@ do?</title>
     following:</p>
 
     <example>
-      Deny from 205.252.46.165
+      Deny from 10.252.46.165
     </example>
 
     <p>Visitors coming from that address will not be able to see
@@ -329,8 +329,8 @@ do?</title>
     you can specify just part of an address or domain name:</p>
 
     <example>
-      Deny from <var>192.101.205</var><br />
-      Deny from <var>cyberthugs.com</var> <var>moreidiots.com</var><br />
+      Deny from <var>192.168.205</var><br />
+      Deny from <var>phishers.example.com</var> <var>moreidiots.example</var><br />
       Deny from ke
     </example>
 
