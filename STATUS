@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * Fix mis-shifted 32 bit scope, masked to 64 bits as a method, with
       improvement (?) suggested by jorton;
         URL: http://people.apache.org/~wrowe/fixldap_mask.patch
-      +1: wrowe, pquerna
+      +1: wrowe, pquerna, jim
 
     * mod_include:  APR_FILEPATH_NOTABOVEROOT was undefined with
       a left-hand NULL or empty path.  The SECUREROOTPATH and 
