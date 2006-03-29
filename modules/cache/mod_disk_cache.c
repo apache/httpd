@@ -984,7 +984,15 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     {
         const char *str;
         apr_size_t length, written;
-        apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
+        rv = apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                         "cache_disk: Error when reading bucket for URL %s",
+                         h->cache_obj->key);
+            /* Remove the intermediate cache file and return non-APR_SUCCESS */
+            file_cache_errorcleanup(dobj, r);
+            return APR_EGENERAL;
+        }
         rv = apr_file_write_full(dobj->tfd, str, length, &written);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
