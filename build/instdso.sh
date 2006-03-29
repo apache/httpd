@@ -63,8 +63,8 @@ fi
 
 if test -s "$TARGETDIR/$DSOARCHIVE_BASENAME"
 then
-  DLNAME=`sed -n "/^dlname=/{s/.*='\([^']*\)'/\1/;p}" $TARGETDIR/$DSOARCHIVE_BASENAME`
-  LIBRARY_NAMES=`sed -n "/^library_names/{s/library_names='\([^']*\)'/\1/;p}" $TARGETDIR/$DSOARCHIVE_BASENAME`
+  DLNAME=`sed -n "/^dlname=/{s/.*='\([^']*\)'/\1/;p;}" $TARGETDIR/$DSOARCHIVE_BASENAME`
+  LIBRARY_NAMES=`sed -n "/^library_names/{s/library_names='\([^']*\)'/\1/;p;}" $TARGETDIR/$DSOARCHIVE_BASENAME`
   LIBRARY_NAMES=`echo $LIBRARY_NAMES | sed -e "s/ *$DLNAME//g"`
 fi
 
