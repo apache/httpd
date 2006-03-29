@@ -95,6 +95,13 @@ typedef struct {
     unsigned char reserved[5];
 } fcgi_begin_request_body;
 
+/*
+ * Maximum size of the allowed environment.
+ */
+#define FCGI_MAX_ENV_SIZE  65535
+
+/* #define FCGI_DUMP_ENV_VARS */
+
 
 #endif /* FCGI_PROTOCOL_H */
 /** @} */

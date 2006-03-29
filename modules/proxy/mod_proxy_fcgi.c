@@ -211,19 +211,18 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     struct iovec vec[2];
     fcgi_header header;
     unsigned char farray[FCGI_HEADER_LEN];
-    apr_size_t bodylen;
+    apr_size_t bodylen, envlen;
     char *body, *itr;
     apr_status_t rv;
     apr_size_t len;
-    int i;
+    int i, numenv;
 
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
 
     /* XXX are there any FastCGI specific env vars we need to send? */
 
-    /* XXX What if there is over 64k worth of data in the env? */
-    bodylen = 0;
+    bodylen = envlen = 0;
 
     /* XXX mod_cgi/mod_cgid use ap_create_environment here, which fills in
      *     the TZ value specially.  We could use that, but it would mean
@@ -245,13 +244,13 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
         keylen = strlen(elts[i].key);
 
         if (keylen >> 7 == 0) {
-            bodylen += 1;
+            envlen += 1;
         }
         else {
-            bodylen += 4;
+            envlen += 4;
         }
 
-        bodylen += keylen;
+        envlen += keylen;
 
         vallen = strlen(elts[i].val);
 
@@ -262,20 +261,31 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
 #endif
 
         if (vallen >> 7 == 0) {
-            bodylen += 1;
+            envlen += 1;
         }
         else {
-            bodylen += 4;
+            envlen += 4;
         }
 
-        bodylen += vallen;
+        envlen += vallen;
+
+        if (envlen > FCGI_MAX_ENV_SIZE) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "proxy: FCGI: truncating environment to %d bytes and %d elements",
+                          (int)bodylen, i);
+            break;
+        }
+
+        bodylen = envlen;
     }
+
+    numenv = i;
 
     body = apr_pcalloc(r->pool, bodylen);
 
     itr = body;
 
-    for (i = 0; i < envarr->nelts; ++i) {
+    for (i = 0; i < numenv; ++i) {
         apr_size_t keylen, vallen;
        
         if (! elts[i].key) {
