@@ -2,11 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) mod_proxy_ajp: Crosscheck the length of the body chunk with the length of
-     the ajp message to prevent mod_proxy_ajp from reading beyond the buffer
-     boundaries and thus revealing possibly sensitive memory contents to the
-     client. [Ruediger Pluem]
-
   *) mod_proxy_http: Do send keep-alive header if the client sent
      connection: keep-alive and do not close backend connection if the client
      sent connection: close. PR 38524. [Ruediger Pluem, Joe Orton]
@@ -30,13 +25,6 @@ Changes with Apache 2.3.0
 
   *) Respect GracefulShutdownTimeout in the worker and event MPMs.
      [Chris Darroch <chrisd pearsoncmg.com>, Garrett Rooney]
-
-  *) mod_proxy_balancer: Do not overwrite the status of initialized workers and
-     respect the configured status of uninitilized workers when creating a new
-     child process. [Ruediger Pluem]
-
-  *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
-     PR 38340. [Aleksey Pesternikov <apesternikov yahoo.com>]
 
   *) core: Reject invalid Expect header immediately. PR 38123.
      [Ruediger Pluem]
@@ -113,6 +101,18 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.1
+
+  *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
+     PR 38340. [Aleksey Pesternikov <apesternikov yahoo.com>]
+
+  *) mod_proxy_balancer: Do not overwrite the status of initialized workers and
+     respect the configured status of uninitilized workers when creating a new
+     child process. [Ruediger Pluem]
+
+  *) mod_proxy_ajp: Crosscheck the length of the body chunk with the length of
+     the ajp message to prevent mod_proxy_ajp from reading beyond the buffer
+     boundaries and thus revealing possibly sensitive memory contents to the
+     client. [Ruediger Pluem]
 
   *) Ensure that the proper status line is written to the client, fixing
      incorrect status lines caused by filters which modify r->status without 
