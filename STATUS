@@ -92,40 +92,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       +1: rpluem, niq, jerenkrantz
       NOTE: this also supersedes previous fix to PR#37790
 
-    * mod_proxy: Correctly error out if we get an error from upstream
-      response.  Otherwise, we'll leave the client in a bad state.
-      http://svn.apache.org/viewcvs.cgi?rev=354628&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=354636&view=rev (comment only delta)
-      Message-ID: <4395A056.2070000@web.turner.com>
-      +1: jerenkrantz, jim, mturk
-      -1: roy
-      rpluem says: The patch mentioned above had been vetoed by Roy on the list
-                   (http://mail-archives.apache.org/mod_mbox/httpd-dev/200512.mbox/ajax/%3cA1E95672-E36F-40FB-B906-41A447D72504@gbiv.com%3e)
-                   Several changes have been done to this patch to fix the
-                   problem and to address Roys veto (see also
-                   http://mail-archives.apache.org/mod_mbox/httpd-dev/200601.mbox/%3c43BF83EB.8090703@apache.org%3e)
-                   The patch now consists of the following revisions on
-                   trunk:
-
-                   http://svn.apache.org/viewcvs.cgi?rev=354628&view=rev
-                   http://svn.apache.org/viewcvs.cgi?rev=354636&view=rev
-                   http://svn.apache.org/viewcvs.cgi?rev=357461&view=rev
-                   http://svn.apache.org/viewcvs.cgi?rev=357519&view=rev
-                   http://svn.apache.org/viewcvs.cgi?rev=358022&view=rev
-                   http://svn.apache.org/viewcvs.cgi?rev=365374&view=rev
-                   http://svn.apache.org/viewcvs.cgi?rev=366181&view=rev
-                   http://svn.apache.org/viewcvs.cgi?rev=366554&view=rev
-                   http://svn.apache.org/viewcvs.cgi?rev=366558&view=rev
-
-                   A consolidated version of these revisions can be found at
-                   http://people.apache.org/~rpluem/patches/partial_2.2.diff
-
-                   As it is fundamentally different from the first approach I
-                   would suggest to restart the voting.
-
-      http://people.apache.org/~rpluem/patches/partial_2.2.diff
-      +1: jim, rpluem, jerenkrantz
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init

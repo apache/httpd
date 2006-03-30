@@ -1199,6 +1199,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                            * are being read. */
     int pread_len = 0;
     apr_table_t *save_table;
+    int backend_broke = 0;
 
     bb = apr_brigade_create(p, c->bucket_alloc);
 
@@ -1480,8 +1481,16 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                         break;
                     }
                     else if (rv != APR_SUCCESS) {
+                        /* In this case, we are in real trouble because
+                         * our backend bailed on us. Pass along a 502 error
+                         * error bucket
+                         */
                         ap_log_cerror(APLOG_MARK, APLOG_ERR, rv, c,
                                       "proxy: error reading response");
+                        ap_proxy_backend_broke(r, bb);
+                        ap_pass_brigade(r->output_filters, bb);
+                        backend_broke = 1;
+                        backend->close = 1;
                         break;
                     }
                     /* next time try a non-blocking read */
@@ -1546,6 +1555,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             apr_brigade_cleanup(bb);
         }
     } while (interim_response);
+
+    /* If our connection with the client is to be aborted, return DONE. */
+    if (c->aborted || backend_broke) {
+        return DONE;
+    }
 
     if (conf->error_override) {
         /* the code above this checks for 'OK' which is what the hook expects */
