@@ -317,10 +317,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                                     r->connection->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(output_brigade, e);
 
-                    if ( (conn->worker->ajp_flush_packets == ajp_flush_on) ||
-                         ( (conn->worker->ajp_flush_packets == ajp_flush_auto) &&
+                    if ( (conn->worker->flush_packets == flush_on) ||
+                         ( (conn->worker->flush_packets == flush_auto) &&
                            (apr_poll(conn_poll, 1, &conn_poll_fd,
-                                     conn->worker->ajp_flush_wait)
+                                     conn->worker->flush_wait)
                              == APR_TIMEUP) ) ) {
                         e = apr_bucket_flush_create(r->connection->bucket_alloc);
                         APR_BRIGADE_INSERT_TAIL(output_brigade, e);

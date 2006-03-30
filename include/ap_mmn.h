@@ -117,6 +117,8 @@
  *                         removal of Satisfy, Allow, Deny, Order
  * 20060110.1 (2.3.0-dev)  minex and minex_set members added to
  *                         cache_server_conf (minor)
+ * 20060110.2 (2.3.0-dev)  flush_packets and flush_wait members added to
+ *                         proxy_server (minor)
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
