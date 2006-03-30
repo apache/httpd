@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.1
 
+  *) mod_proxy_balancer: Do not overwrite the status of initialized workers and
+     respect the configured status of uninitilized workers when creating a new
+     child process. [Ruediger Pluem]
+
   *) mod_proxy_ajp: Crosscheck the length of the body chunk with the length of
      the ajp message to prevent mod_proxy_ajp from reading beyond the buffer
      boundaries and thus revealing possibly sensitive memory contents to the

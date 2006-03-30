@@ -84,7 +84,16 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         ap_proxy_initialize_worker_share(conf, workers, s);
-        workers->s->status = PROXY_WORKER_INITIALIZED;
+        if (!(workers->s->status & PROXY_WORKER_INITIALIZED)) {
+            workers->s->status |= (workers->status | PROXY_WORKER_INITIALIZED);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "proxy: BALANCER: initialized balancer member %d for "
+                         "balancer %s in child %" APR_PID_T_FMT " for (%s) "
+                         "min=%d max=%d smax=%d",
+                          workers->id, balancer->name, getpid(),
+                          workers->hostname, workers->min, workers->hmax,
+                          workers->smax);
+        }
         ++workers;
     }
 
