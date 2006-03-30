@@ -83,14 +83,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       -0: niq: Please explain why return value of ap_pass_brigade is
                put into a variable and immediately discarded.
 
-    * mod_proxy_ajp: Fix PR38340 (mod_proxy_ajp does not support common
-      headers (0xA0??))
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=371013&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, wrowe, jerenkrantz
-
     * core: Fix PR38123 (Invalid Expect header not immediately rejected)
       Trunk version of patch:
          http://svn.apache.org/viewcvs.cgi?rev=370172&view=rev
