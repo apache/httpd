@@ -65,10 +65,6 @@ Changes with Apache 2.3.0
   *) If a connection is aborted while waiting for a chunked line, flag the
      connection as errored out.  [Justin Erenkrantz]
 
-  *) mod_proxy: If we get an error reading the upstream response,
-     close the connection.
-     [Justin Erenkrantz, Roy T. Fielding, Jim Jagielski, Ruediger Pluem]
-
   *) mod_authz_dbd: SQL authz with Login/Session support [Nick Kew]
 
   *) Fix typo in ProxyStatus syntax error message.
@@ -101,6 +97,10 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.1
+
+  *) mod_proxy: If we get an error reading the upstream response,
+     close the connection.
+     [Justin Erenkrantz, Roy T. Fielding, Jim Jagielski, Ruediger Pluem]
 
   *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
      PR 38340. [Aleksey Pesternikov <apesternikov yahoo.com>]
