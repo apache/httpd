@@ -173,3 +173,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs?rev=382799&view=rev
       PR: 38838
       +1: jorton
+
+    * mod_proxy_ajp: Remove the Flushing Bandaid from compile time
+      to a more admin-friendly runtime setting.
+         http://svn.apache.org/viewcvs?rev=384580&view=rev
+         http://svn.apache.org/viewcvs?rev=390210&view=rev
+      +1: jim
