@@ -790,6 +790,29 @@ through</td></tr>
         redirected to the BalancerMember that has route parametar
         equal as this value.
     </td></tr>
+    <tr><td>status</td>
+        <td>-</td>
+        <td>Single letter value defining the initial status of
+        this worker: 'D' is disabled, 'S' is stopped and 'E' is
+        in an error state. Status can be set (which is the default)
+        by prepending with '+' or cleared by prepending with '-'.
+        Thus, a setting of 'S-E' sets this worker to Stopped and
+        clears the in-error flag.
+    </td></tr>
+    <tr><td>flushpackets</td>
+        <td>off</td>
+        <td>Determines whether the proxy module will auto-flush the output
+        brigade after each "chunk" of data. 'off' means that it will flush
+        only when needed, 'on' means after each chunk is sent and
+        'auto' means poll/wait for a period of time and flush if
+        no input has been received for 'flushwait' milliseconds.
+        Currently this is in effect only for AJP.
+    </td></tr>
+    <tr><td>flushwait</td>
+        <td>10</td>
+        <td>The time to wait for additional input, in milliseconds, before
+        flushing the output brigade if 'flushpackets' is 'auto'.
+    </td></tr>
 
     </table>
 

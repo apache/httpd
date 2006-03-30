@@ -553,7 +553,7 @@ person in</a></h2>
         following:</p>
     
         <div class="example"><p><code>
-          Reject ip 205.252.46.165
+          Reject ip 10.252.46.165
         </code></p></div>
     
         <p>Visitors coming from that address will not be able to see
@@ -570,8 +570,8 @@ person in</a></h2>
         <div class="example"><p><code>
           &lt;SatisfyAll&gt;<br />
           <span class="indent">
-            Reject ip <var>192.101.205</var><br />
-            Reject host <var>cyberthugs.com</var> <var>moreidiots.com</var><br />           Reject host ke<br />
+            Reject ip <var>192.168.205</var><br />
+            Reject host <var>phishers.example.com</var> <var>moreidiots.example</var><br />           Reject host ke<br />
           </span>
           &lt;/SatisfyAll&gt;
         </code></p></div>
