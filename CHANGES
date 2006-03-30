@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_ajp: Flushing of the output after each AJP chunk is now
+     configurable at runtime via the 'flushpackets' and 'flushwait' worker
+     params.  [Jim Jagielski]
+
   *) mod_proxy_http: Do send keep-alive header if the client sent
      connection: keep-alive and do not close backend connection if the client
      sent connection: close. PR 38524. [Ruediger Pluem, Joe Orton]

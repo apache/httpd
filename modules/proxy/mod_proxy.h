@@ -303,18 +303,18 @@ struct proxy_worker {
 #endif
     void                *context;   /* general purpose storage */
     enum {
-         ajp_flush_off,
-         ajp_flush_on,
-         ajp_flush_auto
-    } ajp_flush_packets;           /* control AJP flushing */
-    int                 ajp_flush_wait;  /* poll wait time in microseconds if flush_auto */
+         flush_off,
+         flush_on,
+         flush_auto
+    } flush_packets;           /* control AJP flushing */
+    int                 flush_wait;  /* poll wait time in microseconds if flush_auto */
 };
 
 /*
  * Wait 10000 microseconds to find out if more data is currently
  * available at the backend. Just an arbitrary choose.
  */
-#define AJP_FLUSH_WAIT 10000
+#define PROXY_FLUSH_WAIT 10000
 
 struct proxy_balancer {
     apr_array_header_t *workers; /* array of proxy_workers */
