@@ -92,6 +92,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       +1: rpluem, niq, jerenkrantz
       NOTE: this also supersedes previous fix to PR#37790
 
+    * Fix mis-shifted 32 bit scope, masked to 64 bits as a method, with
+      improvement (?) suggested by jorton;
+        URL: http://people.apache.org/~wrowe/fixldap_mask.patch
+      +1: wrowe, pquerna, jim, jorton
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
@@ -107,11 +112,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1 niq
       -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
                      This can not be backported to 2.2.
-
-    * Fix mis-shifted 32 bit scope, masked to 64 bits as a method, with
-      improvement (?) suggested by jorton;
-        URL: http://people.apache.org/~wrowe/fixldap_mask.patch
-      +1: wrowe, pquerna, jim, jorton
 
     * mod_include:  APR_FILEPATH_NOTABOVEROOT was undefined with
       a left-hand NULL or empty path.  The SECUREROOTPATH and 
@@ -167,15 +167,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://issues.apache.org/bugzilla/attachment.cgi?id=17816
         (http://svn.apache.org/viewcvs?rev=389797&view=rev on trunk)
       PR: 38108
-      +1: jorton
+      +1: jorton, rpluem
 
     * mod_ssl: Fix shmcb possible SIGBUS in shmcb on SPARC et al with gcc >= 4
         http://svn.apache.org/viewcvs?rev=382799&view=rev
       PR: 38838
-      +1: jorton
+      +1: jorton, rpluem
 
     * mod_proxy_ajp: Remove the Flushing Bandaid from compile time
       to a more admin-friendly runtime setting.
          http://svn.apache.org/viewcvs?rev=384580&view=rev
          http://svn.apache.org/viewcvs?rev=390210&view=rev
-      +1: jim
+      +1: jim, rpluem
