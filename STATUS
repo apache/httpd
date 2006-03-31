@@ -83,15 +83,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       -0: niq: Please explain why return value of ap_pass_brigade is
                put into a variable and immediately discarded.
 
-    * core: Fix PR38123 (Invalid Expect header not immediately rejected)
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=370172&view=rev
-         http://svn.apache.org/viewcvs.cgi?rev=371132&view=rev
-      Backport version for 2.2.x of patch:
-         http://issues.apache.org/bugzilla/attachment.cgi?id=17481
-      +1: rpluem, niq, jerenkrantz
-      NOTE: this also supersedes previous fix to PR#37790
-
     * mod_ldap: Fix a race condition when creating the connection pool mutex
 	and make sure that memory is being allocated from the correct pools
 	when connections are being established. Enforce the GLOBAL_ONLY 
