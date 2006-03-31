@@ -99,6 +99,22 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.1
 
+  *) SECURITY: CVE-2005-3357 (cve.mitre.org)
+     mod_ssl: Fix a possible crash during access control checks if a
+     non-SSL request is processed for an SSL vhost (such as the
+     "HTTP request received on SSL port" error message when an 400 
+     ErrorDocument is configured, or if using "SSLEngine optional").
+     PR 37791.  [Rüdiger Plüm, Joe Orton]
+
+  *) SECURITY: CVE-2005-3352 (cve.mitre.org)
+     mod_imagemap: Escape untrusted referer header before outputting
+     in HTML to avoid potential cross-site scripting.  Change also
+     made to ap_escape_html so we escape quotes.  Reported by JPCERT.
+     [Mark Cox]
+
+  *) core: Reject invalid Expect header immediately. PR 38123.
+     [Ruediger Pluem]
+
   *) mod_proxy: Fix KeepAlives not being allowed and set to
      backend servers. PR 38602. [Ruediger Pluem, Jim Jagielski]
 
@@ -124,19 +140,6 @@ Changes with Apache 2.2.1
      [Jeff Trawick]
 
   *) mod_speling: Stop crashing with certain non-file requests.  [Jeff Trawick]
-
-  *) SECURITY: CVE-2005-3357 (cve.mitre.org)
-     mod_ssl: Fix a possible crash during access control checks if a
-     non-SSL request is processed for an SSL vhost (such as the
-     "HTTP request received on SSL port" error message when an 400 
-     ErrorDocument is configured, or if using "SSLEngine optional").
-     PR 37791.  [Rüdiger Plüm, Joe Orton]
-
-  *) SECURITY: CVE-2005-3352 (cve.mitre.org)
-     mod_imagemap: Escape untrusted referer header before outputting
-     in HTML to avoid potential cross-site scripting.  Change also
-     made to ap_escape_html so we escape quotes.  Reported by JPCERT.
-     [Mark Cox]
 
   *) mod_cache: Make caching of reverse proxies possible again. PR 38017.
      [Ruediger Pluem]
