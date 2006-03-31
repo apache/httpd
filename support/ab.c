@@ -80,6 +80,10 @@
    **     Switched to the new abstract pollset API, allowing ab to
    **     take advantage of future apr_pollset_t scalability improvements.
    **     Contributed by Brian Pane, August 31, 2002
+   **
+   ** Version 2.3
+   **     SIGINT now triggers output_results().
+   **     Conributed by colm, March 30, 2006
    **/
 
 /* Note: this version string should start with \d+[\d\.]* and be a valid
@@ -91,7 +95,7 @@
  * ab - or to due to a change in the distribution it is compiled with
  * (such as an APR change in for example blocking).
  */
-#define AP_AB_BASEREVISION "2.0.40-dev"
+#define AP_AB_BASEREVISION "2.3"
 
 /*
  * BUGS:
@@ -719,7 +723,7 @@ static int compwait(struct data * a, struct data * b)
     return 0;
 }
 
-static void output_results(void)
+static void output_results(int sig)
 {
     apr_interval_time_t timetakenusec;
     float timetaken;
@@ -969,6 +973,10 @@ static void output_results(void)
             fclose(out);
         }
 
+    }
+
+    if (sig) {
+        exit(1);
     }
 }
 
@@ -1606,6 +1614,11 @@ static void test(void)
     /* ok - lets start */
     start = apr_time_now();
 
+#ifdef SIGINT 
+    /* Output the results if the user terminates the run early. */
+    apr_signal(SIGINT, output_results);
+#endif
+
     /* initialise lots of requests */
     for (i = 0; i < concurrency; i++) {
         con[i].socknum = i;
@@ -1736,7 +1749,7 @@ static void test(void)
     if (use_html)
         output_html_results();
     else
-        output_results();
+        output_results(0);
 }
 
 /* ------------------------------------------------------- */
@@ -1745,14 +1758,14 @@ static void test(void)
 static void copyright(void)
 {
     if (!use_html) {
-        printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision: 1.146 $> apache-2.0");
+        printf("This is ApacheBench, Version %s\n", AP_AB_BASEREVISION " <$Revision$>");
         printf("Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/\n");
         printf("Copyright 1997-2005 The Apache Software Foundation, http://www.apache.org/\n");
         printf("\n");
     }
     else {
         printf("<p>\n");
-        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i> apache-2.0<br>\n", AP_AB_BASEREVISION, "$Revision: 1.146 $");
+        printf(" This is ApacheBench, Version %s <i>&lt;%s&gt;</i><br>\n", AP_AB_BASEREVISION, "$Revision$");
         printf(" Copyright 1996 Adam Twiss, Zeus Technology Ltd, http://www.zeustech.net/<br>\n");
         printf(" Copyright 1997-2005 The Apache Software Foundation, http://www.apache.org/<br>\n");
         printf("</p>\n<p>\n");
