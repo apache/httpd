@@ -262,6 +262,7 @@ int percentile = 1;     /* Show percentile served */
 int confidence = 1;     /* Show confidence estimator and warnings */
 int tlimit = 0;         /* time limit in secs */
 int keepalive = 0;      /* try and do keepalive connections */
+int windowsize = 0;     /* we use the OS default window size */
 char servername[1024];  /* name that server reports */
 char *hostname;         /* host name from URL */
 char *host_field;       /* value of "Host:" header field */
@@ -1124,6 +1125,20 @@ static void start_connect(struct connection * c)
          != APR_SUCCESS) {
         apr_err("socket nonblock", rv);
     }
+
+    if (windowsize != 0) {
+        rv = apr_socket_opt_set(c->aprsock, APR_SO_SNDBUF, 
+                                windowsize);
+        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
+            apr_err("socket send buffer", rv);
+        }
+        rv = apr_socket_opt_set(c->aprsock, APR_SO_RCVBUF, 
+                                windowsize);
+        if (rv != APR_SUCCESS && rv != APR_ENOTIMPL) {
+            apr_err("socket receive buffer", rv);
+        }
+    }
+
     c->start = apr_time_now();
 #ifdef USE_SSL
     if (is_ssl) {
@@ -1756,6 +1771,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -n requests     Number of requests to perform\n");
     fprintf(stderr, "    -c concurrency  Number of multiple requests to make\n");
     fprintf(stderr, "    -t timelimit    Seconds to max. wait for responses\n");
+    fprintf(stderr, "    -b windowsize   Size of TCP send/receive buffer, in bytes\n");
     fprintf(stderr, "    -p postfile     File containing data to POST\n");
     fprintf(stderr, "    -T content-type Content-type header for POSTing\n");
     fprintf(stderr, "    -v verbosity    How much troubleshooting info to print\n");
@@ -1940,7 +1956,7 @@ int main(int argc, const char * const argv[])
 #endif
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:T:p:v:kVhwix:y:z:C:H:P:A:g:X:de:Sq"
+    while ((status = apr_getopt(opt, "n:c:t:b:T:p:v:kVhwix:y:z:C:H:P:A:g:X:de:Sq"
 #ifdef USE_SSL
             "Z:f:"
 #endif
@@ -1960,6 +1976,9 @@ int main(int argc, const char * const argv[])
                 break;
             case 'c':
                 concurrency = atoi(optarg);
+                break;
+            case 'b':
+                windowsize = atoi(optarg);
                 break;
             case 'i':
                 if (posting == 1)
