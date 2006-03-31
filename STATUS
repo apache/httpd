@@ -105,17 +105,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, jim, pquerna
 
-    * Fix instdso.sh install error with some sed implementations (AIX et al)
-        http://issues.apache.org/bugzilla/attachment.cgi?id=17816
-        (http://svn.apache.org/viewcvs?rev=389797&view=rev on trunk)
-      PR: 38108
-      +1: jorton, rpluem, pquerna
-
-    * mod_ssl: Fix shmcb possible SIGBUS in shmcb on SPARC et al with gcc >= 4
-        http://svn.apache.org/viewcvs?rev=382799&view=rev
-      PR: 38838
-      +1: jorton, rpluem, pquerna
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
