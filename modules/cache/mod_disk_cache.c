@@ -991,7 +991,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
                          h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
-            return APR_EGENERAL;
+            return rv;
         }
         rv = apr_file_write_full(dobj->tfd, str, length, &written);
         if (rv != APR_SUCCESS) {
@@ -1000,7 +1000,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
                          h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
-            return APR_EGENERAL;
+            return rv;
         }
         dobj->file_size += written;
         if (dobj->file_size > conf->maxfs) {
