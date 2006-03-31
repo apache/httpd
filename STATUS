@@ -92,11 +92,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       +1: rpluem, niq, jerenkrantz
       NOTE: this also supersedes previous fix to PR#37790
 
-    * Fix mis-shifted 32 bit scope, masked to 64 bits as a method, with
-      improvement (?) suggested by jorton;
-        URL: http://people.apache.org/~wrowe/fixldap_mask.patch
-      +1: wrowe, pquerna, jim, jorton
-
     * mod_ldap: Fix a race condition when creating the connection pool mutex
 	and make sure that memory is being allocated from the correct pools
 	when connections are being established. Enforce the GLOBAL_ONLY 

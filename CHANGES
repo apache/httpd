@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.1
 
+  *) Fix mis-shifted 32 bit scope, masked to 64 bits as a method.
+     [Will Rowe, Joe Orton]
+
   *) mod_proxy: Fix KeepAlives not being allowed and set to
        backend servers. PR38602. [Ruediger Pluem, Jim Jagielski]
 
