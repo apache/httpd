@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 	when connections are being established. Enforce the GLOBAL_ONLY 
 	parameter for all of the directives.
          http://people.apache.org/~bnicholes/util_ldap.c.patch
-      +1: bnicholes
+      +1: bnicholes, trawick (CH-CH-CH-CH-CHANGES)
     
     * mod_proxy_ajp: Remove the Flushing Bandaid from compile time
       to a more admin-friendly runtime setting.
