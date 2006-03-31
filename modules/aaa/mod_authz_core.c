@@ -482,27 +482,9 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
 
     const authz_provider *provider;
 
-    /* For now, if a provider isn't set, we'll be nice and use the file
-     * provider.
-     */
-    if (!current_provider) {
-        provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
-                                      AUTHZ_DEFAULT_PROVIDER, "0");
-
-        if (!provider || !provider->check_authorization) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                          "No default authz provider configured");
-            auth_result = AUTHZ_GENERAL_ERROR;
-            return auth_result;
-        }
-        apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE,
-                       AUTHZ_DEFAULT_PROVIDER);
-    }
-    else {
-        provider = current_provider->provider;
-        apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE,
-                       current_provider->provider_name);
-    }
+    provider = current_provider->provider;
+    apr_table_setn(r->notes, AUTHZ_PROVIDER_NAME_NOTE,
+                   current_provider->provider_name);
 
     /* check to make sure that the request method requires
      * authorization before calling the provider 
