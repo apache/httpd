@@ -97,6 +97,25 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         URL: http://people.apache.org/~wrowe/fixldap_mask.patch
       +1: wrowe, pquerna, jim, jorton
 
+    * mod_proxy_http: Fix PR38602 (Keep Alive not workwing with mod_proxy (New
+      socket created for every request proxied))
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs?rev=378032&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, pquerna
+
+    * Fix instdso.sh install error with some sed implementations (AIX et al)
+        http://issues.apache.org/bugzilla/attachment.cgi?id=17816
+        (http://svn.apache.org/viewcvs?rev=389797&view=rev on trunk)
+      PR: 38108
+      +1: jorton, rpluem, pquerna
+
+    * mod_ssl: Fix shmcb possible SIGBUS in shmcb on SPARC et al with gcc >= 4
+        http://svn.apache.org/viewcvs?rev=382799&view=rev
+      PR: 38838
+      +1: jorton, rpluem, pquerna
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
@@ -120,14 +139,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       the NOTABOVEROOT flag with an empty left hand value.
         http://svn.apache.org/viewcvs?rev=382147&view=rev
       +1: wrowe, bnicholes
-
-    * mod_proxy_http: Fix PR38602 (Keep Alive not workwing with mod_proxy (New
-      socket created for every request proxied))
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs?rev=378032&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, pquerna
 
     * mod_proxy: Fix PR38403 (Child-Thread uses 100%CPU usage, mod_proxy ?)
       Trunk version of patch:
@@ -163,17 +174,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~bnicholes/util_ldap.c.patch
       +1: bnicholes
     
-    * Fix instdso.sh install error with some sed implementations (AIX et al)
-        http://issues.apache.org/bugzilla/attachment.cgi?id=17816
-        (http://svn.apache.org/viewcvs?rev=389797&view=rev on trunk)
-      PR: 38108
-      +1: jorton, rpluem, pquerna
-
-    * mod_ssl: Fix shmcb possible SIGBUS in shmcb on SPARC et al with gcc >= 4
-        http://svn.apache.org/viewcvs?rev=382799&view=rev
-      PR: 38838
-      +1: jorton, rpluem, pquerna
-
     * mod_proxy_ajp: Remove the Flushing Bandaid from compile time
       to a more admin-friendly runtime setting.
          http://svn.apache.org/viewcvs?rev=384580&view=rev
