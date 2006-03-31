@@ -105,6 +105,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, jim, pquerna
 
+    * mod_ldap: Fix a race condition when creating the connection pool mutex
+	and make sure that memory is being allocated from the correct pools
+	when connections are being established. Enforce the GLOBAL_ONLY 
+	parameter for all of the directives.
+         http://people.apache.org/~bnicholes/util_ldap.c.patch
+      +1: bnicholes, trawick (CH-CH-CH-CH-CHANGES), jim
+    
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
@@ -156,13 +163,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=386821&view=rev
       +1: wrowe
 
-    * mod_ldap: Fix a race condition when creating the connection pool mutex
-	and make sure that memory is being allocated from the correct pools
-	when connections are being established. Enforce the GLOBAL_ONLY 
-	parameter for all of the directives.
-         http://people.apache.org/~bnicholes/util_ldap.c.patch
-      +1: bnicholes, trawick (CH-CH-CH-CH-CHANGES)
-    
     * mod_proxy_ajp: Remove the Flushing Bandaid from compile time
       to a more admin-friendly runtime setting.
          http://svn.apache.org/viewcvs?rev=384580&view=rev
