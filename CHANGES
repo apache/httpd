@@ -1,9 +1,7 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.56
 
-  *) keep the Content-Length header for a HEAD with no response body.
-     PR 18757 [Greg Ames]
-     
+    
   *) SECURITY: CVE-2005-3357 (cve.mitre.org)
      mod_ssl: Fix a possible crash during access control checks if a
      non-SSL request is processed for an SSL vhost (such as the
@@ -17,6 +15,9 @@ Changes with Apache 2.0.56
      ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
 
+  *) keep the Content-Length header for a HEAD with no response body.
+     PR 18757 [Greg Ames]
+ 
   *) Modify apr[util] .h detection to avoid breakage on VPATH builds
      using Solaris make (amoung others) and avoid breakage in ./buildconf
      when srclib/apr[-util] are symlinks rather than directories proper.
