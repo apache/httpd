@@ -83,7 +83,7 @@
    **
    ** Version 2.3
    **     SIGINT now triggers output_results().
-   **     Conributed by colm, March 30, 2006
+   **     Contributed by colm, March 30, 2006
    **/
 
 /* Note: this version string should start with \d+[\d\.]* and be a valid
