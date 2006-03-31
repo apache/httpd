@@ -112,9 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    *) mod_speling: Don't crash if r->filename is unset.
-       http://svn.apache.org/viewcvs.cgi?rev=385580&view=rev
-       +1: trawick, niq, colm
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
