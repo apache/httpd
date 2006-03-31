@@ -68,7 +68,7 @@ Changes with Apache 2.2.1
   *) Chunk filter: Fix chunk filter to create correct chunks in the case that
      a flush bucket is surrounded by data buckets. [Ruediger Pluem]
 
-  *) Fix syntax error in httpd.h with strict compilers.  PR 38740.
+  *) Fix syntax error in httpd.h with strict compilers.  PR 37840.
      [Per Olausson <pao darkheim.freeserve.co.uk>]
 
   *) Fix recursive ErrorDocument handling.  PR 36090. 
