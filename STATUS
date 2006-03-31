@@ -149,4 +149,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_disk_cache: Return correct error codes, instead of APR_EGENERAL.
          http://svn.apache.org/viewcvs?rev=390499&view=rev
-     +1: pquerna
+     +1: pquerna, colm
