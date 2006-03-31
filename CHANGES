@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.1
 
+  *) Fix instdso.sh "sed syntax error" installation issue on some
+     platforms.  PR 38108.  [Masaoki Kobayashi <masaoki techfirm.co.jp>]
+
   *) mod_ssl: Fix possible crashes in shmcb with gcc 4 on platforms
      requiring word-aligned pointers.  PR 38838.  [Joe Orton]
 
