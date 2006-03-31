@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.1
 
+  *) mod_ssl: Fix possible crashes in shmcb with gcc 4 on platforms
+     requiring word-aligned pointers.  PR 38838.  [Joe Orton]
+
   *) mod_proxy: If we get an error reading the upstream response,
      close the connection.  [Justin Erenkrantz, Roy T. Fielding,
      Jim Jagielski, Ruediger Pluem]
