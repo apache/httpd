@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.1
 
+  *) mod_proxy: Fix KeepAlives not being allowed and set to
+       backend servers. PR38602. [Ruediger Pluem, Jim Jagielski]
+
   *) Fix instdso.sh "sed syntax error" installation issue on some
      platforms.  PR 38108.  [Masaoki Kobayashi <masaoki techfirm.co.jp>]
 
