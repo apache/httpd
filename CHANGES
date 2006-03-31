@@ -20,9 +20,6 @@ Changes with Apache 2.3.0
   *) mod_ssl: Fix spurious hostname mismatch warning for valid
      wildcard certificates.  PR 37911.  [Nick Burch <nick torchbox.com>]
 
-  *) mod_proxy: Fix KeepAlives not being allowed and set to
-     backend servers. PR 38602. [Ruediger Pluem, Jim Jagielski]
-
   *) Correctly initialize mod_proxy workers, which use a
      combination of local and shared datasets. Adjust logging
      to better trace usage. PR 38403. [Jim Jagielski]
@@ -102,9 +99,12 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.1
 
+  *) mod_proxy: Fix KeepAlives not being allowed and set to
+     backend servers. PR 38602. [Ruediger Pluem, Jim Jagielski]
+
   *) mod_proxy: If we get an error reading the upstream response,
-     close the connection.
-     [Justin Erenkrantz, Roy T. Fielding, Jim Jagielski, Ruediger Pluem]
+     close the connection.  [Justin Erenkrantz, Roy T. Fielding,
+     Jim Jagielski, Ruediger Pluem]
 
   *) mod_proxy_ajp: Support common headers of the AJP protocol in responses.
      PR 38340. [Aleksey Pesternikov <apesternikov yahoo.com>]
