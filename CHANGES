@@ -14,6 +14,9 @@ Changes with Apache 2.2.1
      made to ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
 
+  *) mod_proxy_http: Send HTTP Keep-Alive Headers. PR 38524.
+     [Rüdiger Plüm, Joe Orton]
+
   *) mod_disk_cache: Return the correct error codes from bucket read 
      failures, instead of APR_EGENERAL.
      [Brian Akins <brian.akins turner.com>]
