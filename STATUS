@@ -112,6 +112,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    *) core httpd -V - display the APR built, and running.
+       http://svn.apache.org/viewcvs?rev=390573&view=rev
+       +1: wrowe, trawick, rpluem
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -169,10 +173,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        colm: Wouldn't it be a whole lot less cycles to use ISDIGIT?
        trawick: Sure, but that doesn't provide a key check.  We need 
           to convert to numeric to compare with r->status.
-
-    *) core httpd -V - display the APR built, and running.
-       http://svn.apache.org/viewcvs?rev=390573&view=rev
-       +1: wrowe, trawick
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
