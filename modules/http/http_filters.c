@@ -215,11 +215,12 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
             if (rv == APR_SUCCESS) {
                 /* We have to check the length of the brigade we got back.
-                 * We will not accept partial lines.
+                 * We will not accept partial or blank lines.
                  */
                 rv = apr_brigade_length(bb, 1, &brigade_length);
                 if (rv == APR_SUCCESS
-                    && brigade_length > f->r->server->limit_req_line) {
+                    && (!brigade_length ||
+                        brigade_length > f->r->server->limit_req_line)) {
                     rv = APR_ENOSPC;
                 }
                 if (rv == APR_SUCCESS) {
@@ -277,6 +278,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 char line[30];
                 apr_bucket_brigade *bb;
                 apr_size_t len = 30;
+                apr_status_t http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
 
                 bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
 
@@ -292,7 +294,14 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     if (rv == APR_SUCCESS) {
                         rv = apr_brigade_flatten(bb, line, &len);
                         if (rv == APR_SUCCESS) {
-                            ctx->remaining = get_chunk_size(line);
+                            /* Wait a sec, that's a blank line!  Oh no. */
+                            if (!len) {
+                                rv = APR_EGENERAL;
+                                http_error = HTTP_SERVICE_UNAVAILABLE;
+                            }
+                            else {
+                                ctx->remaining = get_chunk_size(line);
+                            }
                         }
                     }
                     apr_brigade_cleanup(bb);
@@ -300,16 +309,19 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
                 /* Detect chunksize error (such as overflow) */
                 if (rv != APR_SUCCESS || ctx->remaining < 0) {
+                    apr_status_t out_error;
+
                     ctx->remaining = 0; /* Reset it in case we have to
                                          * come back here later */
-                    e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE,
+                    e = ap_bucket_error_create(http_error,
                                                NULL, f->r->pool,
                                                f->c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(bb, e);
                     e = apr_bucket_eos_create(f->c->bucket_alloc);
                     APR_BRIGADE_INSERT_TAIL(bb, e);
                     ctx->eos_sent = 1;
-                    return ap_pass_brigade(f->r->output_filters, bb);
+                    out_error = ap_pass_brigade(f->r->output_filters, bb);
+                    return rv;
                 }
 
                 if (!ctx->remaining) {
