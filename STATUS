@@ -75,6 +75,19 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_disk_cache: Return correct error codes, instead of APR_EGENERAL.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs?rev=389697&view=rev
+         http://svn.apache.org/viewcvs?rev=390499&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+     +1: rpluem, pquerna, rooneg
+
+   * core httpd -V - display the APR built, and running.
+     http://svn.apache.org/viewcvs?rev=390573&view=rev
+     +1: wrowe, pquerna, rooneg
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
@@ -131,16 +144,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=384580&view=rev
          http://svn.apache.org/viewcvs?rev=390210&view=rev
       +1: jim, rpluem
-
-   * mod_disk_cache: Return correct error codes, instead of APR_EGENERAL.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs?rev=389697&view=rev
-         http://svn.apache.org/viewcvs?rev=390499&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-     +1: rpluem, pquerna, rooneg
-
-   * core httpd -V - display the APR built, and running.
-     http://svn.apache.org/viewcvs?rev=390573&view=rev
-     +1: wrowe, pquerna, rooneg
 
