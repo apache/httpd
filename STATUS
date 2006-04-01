@@ -83,15 +83,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, jim, pquerna
 
-    * mod_isapi: Trivial compiler emit fixes for const'ness - noticed on OS/X
-      Correct lvalue assignments (lvalue casts not allowed) - noticed on Sol.
-      Resolve use of SetLastError with apr_set_os_error() and axe MAKEFILE
-      for a literal value.  Permits mod_isapi to load and run on Unix.
-         http://svn.apache.org/viewcvs?rev=384731&view=rev
-         http://svn.apache.org/viewcvs?rev=386790&view=rev
-         http://svn.apache.org/viewcvs?rev=386821&view=rev
-      +1: wrowe, trawick, pquerna
-
     * mod_proxy_ajp: Remove the Flushing Bandaid from compile time
       to a more admin-friendly runtime setting.
          http://svn.apache.org/viewcvs?rev=384580&view=rev
