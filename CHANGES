@@ -14,14 +14,19 @@ Changes with Apache 2.2.1
      made to ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
 
+  *) mod_proxy_ajp: Flushing of the output after each AJP chunk is now
+     configurable at runtime via the 'flushpackets' and 'flushwait' worker
+     params. Minor MMN bump. [Jim Jagielski]
+
   *) mod_proxy: Fix incorrect usage of local and shared worker init.
      PR 38403. [Jim Jagielski]
 
   *) mod_isapi: Fix compiler errors on Unix platforms.
      [William Rowe]
 
-  *) mod_proxy_http: Send HTTP Keep-Alive Headers. PR 38524.
-     [Rüdiger Plüm, Joe Orton]
+  *) mod_proxy_http: Do send keep-alive header if the client sent
+     connection: keep-alive and do not close backend connection if the client
+     sent connection: close. PR 38524. [Ruediger Pluem, Joe Orton]
 
   *) mod_disk_cache: Return the correct error codes from bucket read 
      failures, instead of APR_EGENERAL.

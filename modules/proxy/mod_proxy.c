@@ -218,6 +218,26 @@ static const char *set_worker_param(apr_pool_t *p,
             }
         }
     }
+    else if (!strcasecmp(key, "flushpackets")) {
+        if (!strcasecmp(val, "on"))
+            worker->flush_packets = flush_on;
+        else if (!strcasecmp(val, "off"))
+            worker->flush_packets = flush_off;
+        else if (!strcasecmp(val, "auto"))
+            worker->flush_packets = flush_auto;
+        else
+            return "flushpackets must be on|off|auto";
+    }
+    else if (!strcasecmp(key, "flushwait")) {
+        ival = atoi(val);
+        if (ival > 1000 || ival < 0) {
+            return "flushwait must be <= 1000, or 0 for system default of 10 millseconds.";
+        }
+        if (ival == 0)
+            worker->flush_wait = PROXY_FLUSH_WAIT;
+        else
+            worker->flush_wait = ival * 1000;    /* change to microseconds */
+    }
     else {
         return "unknown Worker parameter";
     }
