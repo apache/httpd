@@ -75,14 +75,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * HTTP: If a connection aborts while waiting for a chunked line,
-      flag the connection as errored out.
-      http://svn.apache.org/viewcvs.cgi?rev=354630&view=rev
-      Message-ID: <4395A056.2070000@web.turner.com>
-      +1: jerenkrantz, jim, wrowe
-      -0: niq: Please explain why return value of ap_pass_brigade is
-               put into a variable and immediately discarded.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
