@@ -6,10 +6,6 @@ Changes with Apache 2.3.0
      configurable at runtime via the 'flushpackets' and 'flushwait' worker
      params.  [Jim Jagielski]
 
-  *) mod_proxy_http: Do send keep-alive header if the client sent
-     connection: keep-alive and do not close backend connection if the client
-     sent connection: close. PR 38524. [Ruediger Pluem, Joe Orton]
-
   *) Event MPM: Fill in the scoreboard's tid field. PR 38736.
      [Chris Darroch <chrisd pearsoncmg.com>]
 
@@ -63,9 +59,6 @@ Changes with Apache 2.3.0
      seconds to cache a document.
      [Brian Akins <brian.akins turner.com>, Ruediger Pluem]
 
-  *) If a connection is aborted while waiting for a chunked line, flag the
-     connection as errored out.  [Justin Erenkrantz]
-
   *) mod_authz_dbd: SQL authz with Login/Session support [Nick Kew]
 
   *) Fix typo in ProxyStatus syntax error message.
@@ -111,6 +104,19 @@ Changes with Apache 2.2.1
      in HTML to avoid potential cross-site scripting.  Change also
      made to ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
+
+  *) mod_proxy_http: Send HTTP Keep-Alive Headers. PR 38524.
+     [Rüdiger Plüm, Joe Orton]
+
+  *) mod_disk_cache: Return the correct error codes from bucket read
+     failures, instead of APR_EGENERAL.
+     [Brian Akins <brian.akins turner.com>]
+
+  *) Add APR/APR-Util Compiled and Runtime Version numbers to the
+     output of 'httpd -V'. [William Rowe]
+
+  *) http: If a connection is aborted while waiting for a chunked line,
+     flag the connection as errored out.  [Justin Erenkrantz]
 
   *) core: Reject invalid Expect header immediately. PR 38123.
      [Ruediger Pluem]
