@@ -115,4 +115,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       pquerna says: Why is this configuration for AJP polluting mod_proxy.h?
                     Shouldn't we be keeping the configuration of a Proxy Provider
                     separate from the main mod_proxy?
+      rpluem says:  Because this configuration option should be also used for
+                    HTTP and possibly other protocols in the future. Just
+                    did not have the time to do so for HTTP (which has frequent
+                    request / complains for this feature). See also
+                    http://mail-archives.apache.org/mod_mbox/httpd-dev/200603.mbox/%3c200603092321.k29NLIi05689@devsys.jaguNET.com%3e
 
