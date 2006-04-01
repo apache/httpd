@@ -2,10 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) mod_proxy_ajp: Flushing of the output after each AJP chunk is now
-     configurable at runtime via the 'flushpackets' and 'flushwait' worker
-     params.  [Jim Jagielski]
-
   *) Event MPM: Fill in the scoreboard's tid field. PR 38736.
      [Chris Darroch <chrisd pearsoncmg.com>]
 
@@ -15,10 +11,6 @@ Changes with Apache 2.3.0
 
   *) mod_ssl: Fix spurious hostname mismatch warning for valid
      wildcard certificates.  PR 37911.  [Nick Burch <nick torchbox.com>]
-
-  *) Correctly initialize mod_proxy workers, which use a
-     combination of local and shared datasets. Adjust logging
-     to better trace usage. PR 38403. [Jim Jagielski]
 
   *) Respect GracefulShutdownTimeout in the worker and event MPMs.
      [Chris Darroch <chrisd pearsoncmg.com>, Garrett Rooney]
@@ -104,6 +96,16 @@ Changes with Apache 2.2.1
      in HTML to avoid potential cross-site scripting.  Change also
      made to ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
+
+  *) mod_proxy_ajp: Flushing of the output after each AJP chunk is now
+     configurable at runtime via the 'flushpackets' and 'flushwait' worker
+     params. Minor MMN bump. [Jim Jagielski]
+
+  *) mod_proxy: Fix incorrect usage of local and shared worker init.
+     PR 38403. [Jim Jagielski]
+
+  *) mod_isapi: Fix compiler errors on Unix platforms.
+     [William Rowe]
 
   *) mod_proxy_http: Send HTTP Keep-Alive Headers. PR 38524.
      [R√ºdiger Pl√ºm, Joe Orton]
@@ -1099,12 +1101,102 @@ Changes with Apache 2.1.1
 
 Changes with Apache 2.0.56
 
+  *) SECURITY: CVE-2005-3357 (cve.mitre.org)
+     mod_ssl: Fix a possible crash during access control checks if a
+     non-SSL request is processed for an SSL vhost (such as the
+     "HTTP request received on SSL port" error message when an 400
+     ErrorDocument is configured, or if using "SSLEngine optional").
+     PR 37791.  [R√ºdiger Pl√ºm, Joe Orton]
+
+  *) SECURITY: CVE-2005-3352 (cve.mitre.org)
+     mod_imap: Escape untrusted referer header before outputting in HTML
+     to avoid potential cross-site scripting.  Change also made to
+     ap_escape_html so we escape quotes.  Reported by JPCERT.
+     [Mark Cox]
+
+  *) mod_speling: Stop crashing with certain non-file requests.∑∑
+     [Jeff Trawick]
+
+  *) keep the Content-Length header for a HEAD with no response body.
+     PR 18757 [Greg Ames]
+
+  *) Modify apr[util] .h detection to avoid breakage on VPATH builds
+     using Solaris make (amoung others) and avoid breakage in ./buildconf
+     when srclib/apr[-util] are symlinks rather than directories proper.
+     [William Rowe]
+
+  *) Avoid server-driven negotiation when a CGI script has emitted an∑
+     explicit "Status:" header. PR 38070.  [Nick Kew]
+
+  *) mod_log_config now logs all Set-Cookie headers if the %{Set-Cookie}o
+     format is used. PR 27787.  [Andr√© Malo]
+
+  *) mod_cgid: Refuse to work on Solaris 10 due to OS bugs.  PR 34264.
+     [Justin Erenkrantz]
+
+  *) mod_cache: Correctly handle responses with a 301 status. PR 37347.∑
+     [Paul Querna]
+
+  *) mod_proxy_http: Prevent data corruption of POST request bodies when
+     client accesses proxied resources with SSL. PR 37145.
+     [Ruediger Pluem, William Rowe]
+
+  *) Elimiated the NET_TIME filter, restructuring the timeout logic.
+     This provides a working mod_echo on all platforms, and ensures any
+     custom protocol module is at least given an initial timeout value
+     based on the <VirtualHost > context's Timeout directive.
+     [William Rowe]∑∑
+
+  *) mod_ssl: Correct issue where mod_ssl does not pick up the∑
+     ssl-unclean-shutdown setting when configured. PR 34452. [Joe Orton]
+
+  *) Document the ReceiveBufferSize change done in r157583 [Murray
+     Nesbitt <murray@cpan.org>]
+
+  *) mod_deflate: Merge the Vary header, instead of Setting it. Fixes
+     applications that send the Vary Header themselves. PR 37559.∑
+     [Paul Querna]
+
+  *) mod_dav: Fix a null pointer dereference in an error code path during the
+     handling of MKCOL. [Ghassan Misherghi <ghassanm ucdavis.edu>]
+
+  *) mod_mime_magic: Handle CRLF-format magic files so that it works with
+     the default installation on Windows.  [Jeff Trawick]
+
+  *) Write message to error log if AuthGroupFile cannot be opened.
+     PR 37566.  [R√ºdiger Pl√ºm]
+
+  *) Add ReceiveBufferSize directive to control the TCP receive buffer.
+     [Eric Covener <covener gmail.com>]
+
+  *) mod_cache: Fix 'Vary: *' behavior to be RFC compliant. PR 16125.
+     [Paul Querna]
+
+  *) Remove the base href tag from proxy_ftp, as it breaks relative
+     links for clients not using an Authorization header. [Graham Leggett,
+     Jon Snow <jsnow27 gatesec.net>]
+
+  *) http_request.c: Add missing va_end call. [Andr√© Malo]
+
+  *) Add httxt2dbm to support/ for creating RewriteMap DBM Files.
+     [Paul Querna]
+
+  *) support/check_forensic: Fix temp file usage
+     [Javier Fernandez-Sanguino Pen~a <jfs computer.org>]
+
   *) Chunk filter: Fix chunk filter to create correct chunks in the case that
      a flush bucket is surrounded by data buckets. [Ruediger Pluem]
 
   *) mod_cgi(d): Remove block on OPTIONS method so that scripts can
      respond to OPTIONS directly rather than via server default.
      [Roy Fielding] PR 15242
+
+  *) Added new module mod_version, which provides version dependent
+     configuration containers.  [Andr√© Malo]
+
+  *) Add core version query function (ap_get_server_revision) and
+     accompanying ap_version_t structure (minor MMN bump).
+     [Andr√© Malo]
 
 Changes with Apache 2.0.55
 
