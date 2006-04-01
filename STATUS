@@ -130,7 +130,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        mod_userdir specific hacks. See mod_vhost_ldap for an example
        third-party get_suexec_identity implementation.
          http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
-       +1: colm
+       +1: colm, trawick
 
     *) Backport 102870; PR 17217; stop linking OpenSSL to support/*
        binaries (especially when compiled --with-static-support (!))
@@ -145,7 +145,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=384731&view=rev
          http://svn.apache.org/viewcvs?rev=386790&view=rev
          http://svn.apache.org/viewcvs?rev=386821&view=rev
-       +1: wrowe
+       +1: wrowe, trawick
 
     *) mod_ldap: Brad's pool fixes to fix a race condition during
        first request as well as thread-safety issues between threads
@@ -167,10 +167,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        +1: trawick, niq
        -0: colm
        colm: Wouldn't it be a whole lot less cycles to use ISDIGIT?
+       trawick: Sure, but that doesn't provide a key check.  We need 
+          to convert to numeric to compare with r->status.
 
     *) core httpd -V - display the APR built, and running.
        http://svn.apache.org/viewcvs?rev=390573&view=rev
-       +1: wrowe
+       +1: wrowe, trawick
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
