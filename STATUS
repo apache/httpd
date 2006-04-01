@@ -168,6 +168,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        -0: colm
        colm: Wouldn't it be a whole lot less cycles to use ISDIGIT?
 
+    *) core httpd -V - display the APR built, and running.
+       http://svn.apache.org/viewcvs?rev=390573&view=rev
+       +1: wrowe
+
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
