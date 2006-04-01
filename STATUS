@@ -83,11 +83,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
      +1: rpluem, pquerna, rooneg
 
-   * core httpd -V - display the APR built, and running.
-     http://svn.apache.org/viewcvs?rev=390573&view=rev
-     +1: wrowe, pquerna, rooneg
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
