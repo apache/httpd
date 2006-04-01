@@ -14,6 +14,9 @@ Changes with Apache 2.2.1
      made to ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
 
+  *) mod_proxy: Fix incorrect usage of local and shared worker init.
+     PR 38403. [Jim Jagielski]
+
   *) mod_isapi: Fix compiler errors on Unix platforms.
      [William Rowe]
 

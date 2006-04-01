@@ -73,16 +73,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy: Fix PR38403 (Child-Thread uses 100%CPU usage, mod_proxy ?)
-      due to incorrect usage of local and shared worker inits and
-      information.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs?rev=377738&view=rev
-         http://svn.apache.org/viewcvs?rev=377780&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, pquerna
-
     * mod_proxy_ajp: Remove the Flushing Bandaid from compile time
       to a more admin-friendly runtime setting.
          http://svn.apache.org/viewcvs?rev=384580&view=rev
