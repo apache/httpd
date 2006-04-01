@@ -14,6 +14,10 @@ Changes with Apache 2.2.1
      made to ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
 
+  *) mod_disk_cache: Return the correct error codes from bucket read 
+     failures, instead of APR_EGENERAL.
+     [Brian Akins <brian.akins turner.com>]
+
   *) Add APR/APR-Util Compiled and Runtime Version numbers to the
      output of 'httpd -V'. [William Rowe]
 
