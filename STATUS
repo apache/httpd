@@ -146,9 +146,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=390499&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-     +1: rpluem, pquerna
+     +1: rpluem, pquerna, rooneg
 
    * core httpd -V - display the APR built, and running.
      http://svn.apache.org/viewcvs?rev=390573&view=rev
-     +1: wrowe, pquerna
+     +1: wrowe, pquerna, rooneg
 
