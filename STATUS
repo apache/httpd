@@ -73,6 +73,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_proxy_http: Fix PR38524 (mod_proxy(_http) does not send keep-alive
+      headers)
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs?rev=377053&view=rev
+         http://svn.apache.org/viewcvs?rev=377057&view=rev
+         http://svn.apache.org/viewcvs?rev=377525&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, pquerna
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
@@ -104,16 +115,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem, jim
-
-    * mod_proxy_http: Fix PR38524 (mod_proxy(_http) does not send keep-alive
-      headers)
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs?rev=377053&view=rev
-         http://svn.apache.org/viewcvs?rev=377057&view=rev
-         http://svn.apache.org/viewcvs?rev=377525&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, pquerna
 
     * mod_isapi: Trivial compiler emit fixes for const'ness - noticed on OS/X
       Correct lvalue assignments (lvalue casts not allowed) - noticed on Sol.
