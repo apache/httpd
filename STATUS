@@ -83,23 +83,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, jim, pquerna
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-
-    * mod_dbd: When threaded, create a private pool in child_init
-      so we're not using the process pool later.  Also improve
-      configuration defaults and merge function.
-      (this assumes Colm's windows-build fixes are also backported)
-      http://svn.apache.org/viewcvs.cgi?rev=348026&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=354400&view=rev
-      +1 niq, trawick
-
-    * Backport mod_authz_dbd (it's had some testing now)
-      http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
-      +1 niq
-      -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
-                     This can not be backported to 2.2.
-
     * mod_isapi: Trivial compiler emit fixes for const'ness - noticed on OS/X
       Correct lvalue assignments (lvalue casts not allowed) - noticed on Sol.
       Resolve use of SetLastError with apr_set_os_error() and axe MAKEFILE
@@ -123,4 +106,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                     did not have the time to do so for HTTP (which has frequent
                     request / complains for this feature). See also
                     http://mail-archives.apache.org/mod_mbox/httpd-dev/200603.mbox/%3c200603092321.k29NLIi05689@devsys.jaguNET.com%3e
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+
+    * mod_dbd: When threaded, create a private pool in child_init
+      so we're not using the process pool later.  Also improve
+      configuration defaults and merge function.
+      (this assumes Colm's windows-build fixes are also backported)
+      http://svn.apache.org/viewcvs.cgi?rev=348026&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=354400&view=rev
+      +1 niq, trawick
+
+    * Backport mod_authz_dbd (it's had some testing now)
+      http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
+      +1 niq
+      -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
+                     This can not be backported to 2.2.
 
