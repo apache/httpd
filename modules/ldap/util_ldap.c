@@ -438,10 +438,6 @@ static util_ldap_connection_t *
 
 #if APR_HAS_THREADS
     /* mutex lock this function */
-    if (!st->mutex) {
-        apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT,
-                                st->pool);
-    }
     apr_thread_mutex_lock(st->mutex);
 #endif
 
@@ -1199,7 +1195,7 @@ start_over:
 
     /* Grab the dn, copy it into the pool, and free it again */
     dn = ldap_get_dn(ldc->ldap, entry);
-    *binddn = apr_pstrdup(st->pool, dn);
+    *binddn = apr_pstrdup(r->pool, dn);
     ldap_memfree(dn);
 
     /*
@@ -1295,6 +1291,11 @@ static const char *util_ldap_set_cache_bytes(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     st->cache_bytes = atol(bytes);
 
@@ -1312,6 +1313,11 @@ static const char *util_ldap_set_cache_file(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     if (file) {
         st->cache_file = ap_server_root_relative(st->pool, file);
@@ -1333,6 +1339,11 @@ static const char *util_ldap_set_cache_ttl(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     st->search_cache_ttl = atol(ttl) * 1000000;
 
@@ -1349,7 +1360,11 @@ static const char *util_ldap_set_cache_entries(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
+    if (err != NULL) {
+        return err;
+    }
 
     st->search_cache_size = atol(size);
     if (st->search_cache_size < 0) {
@@ -1369,6 +1384,11 @@ static const char *util_ldap_set_opcache_ttl(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     st->compare_cache_ttl = atol(ttl) * 1000000;
 
@@ -1385,6 +1405,11 @@ static const char *util_ldap_set_opcache_entries(cmd_parms *cmd, void *dummy,
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     st->compare_cache_size = atol(size);
     if (st->compare_cache_size < 0) {
@@ -1681,6 +1706,11 @@ static const char *util_ldap_set_verify_srv_cert(cmd_parms *cmd,
     util_ldap_state_t *st =
     (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                               &ldap_module);
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+
+    if (err != NULL) {
+        return err;
+    }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: SSL verify server certificate - %s",
@@ -1726,7 +1756,11 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     util_ldap_state_t *st =
         (util_ldap_state_t *)apr_pcalloc(p, sizeof(util_ldap_state_t));
 
-    st->pool = p;
+    /* Create a pool for mod_ldap to use */
+    apr_pool_create(&st->pool, p);
+#if APR_HAS_THREADS
+    apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT, st->pool);
+#endif
 
     st->cache_bytes = 100000;
     st->search_cache_ttl = 600000000;
@@ -1752,21 +1786,41 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     util_ldap_state_t *base = (util_ldap_state_t *) basev;
     util_ldap_state_t *overrides = (util_ldap_state_t *) overridesv;
 
-    st->pool = p;
+    st->pool = overrides->pool;
+#if APR_HAS_THREADS
+    st->mutex = overrides->mutex;
+#endif
 
+    /* The cache settings can not be modified in a 
+        virtual host since all server use the same
+        shared memory cache. */
     st->cache_bytes = base->cache_bytes;
     st->search_cache_ttl = base->search_cache_ttl;
     st->search_cache_size = base->search_cache_size;
     st->compare_cache_ttl = base->compare_cache_ttl;
     st->compare_cache_size = base->compare_cache_size;
-    st->connections = base->connections;
-    st->ssl_supported = base->ssl_supported;
+
+    st->connections = NULL;
+    st->ssl_supported = 0;
     st->global_certs = apr_array_append(p, base->global_certs,
                                            overrides->global_certs);
     st->client_certs = apr_array_append(p, base->client_certs,
                                            overrides->client_certs);
     st->secure = (overrides->secure_set == 0) ? base->secure
                                               : overrides->secure;
+
+    /* These LDAP connection settings can not be overwritten in 
+        a virtual host. Once set in the base server, they must 
+        remain the same. None of the LDAP SDKs seem to be able
+        to handle setting the verify_svr_cert flag on a 
+        per-connection basis.  The OpenLDAP client appears to be
+        able to handle the connection timeout per-connection
+        but the Novell SDK cannot.  Allowing the timeout to
+        be set by each vhost is of little value so rather than
+        trying to make special expections for one LDAP SDK, GLOBAL_ONLY 
+        is being enforced on this setting as well. */
+    st->connectionTimeout = base->connectionTimeout;
+    st->verify_svr_cert = base->verify_svr_cert;
 
     return st;
 }
@@ -1814,7 +1868,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         /* If the cache file already exists then delete it.  Otherwise we are
          * going to run into problems creating the shared memory. */
         if (st->cache_file) {
-            char *lck_file = apr_pstrcat(st->pool, st->cache_file, ".lck",
+            char *lck_file = apr_pstrcat(ptemp, st->cache_file, ".lck",
                                          NULL);
             apr_file_remove(lck_file, ptemp);
         }
