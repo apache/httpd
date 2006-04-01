@@ -131,4 +131,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=384580&view=rev
          http://svn.apache.org/viewcvs?rev=390210&view=rev
       +1: jim, rpluem
+      -0: pquerna
+      pquerna says: Why is this configuration for AJP polluting mod_proxy.h?
+                    Shouldn't we be keeping the configuration of a Proxy Provider
+                    separate from the main mod_proxy?
 
