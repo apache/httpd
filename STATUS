@@ -83,6 +83,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, jim, pquerna
 
+    * mod_include:  APR_FILEPATH_NOTABOVEROOT was undefined with
+      a left-hand NULL or empty path.  The SECUREROOTPATH and 
+      NOTABSOLUTE tests are sufficient for this application.  
+      Adjust for this bug in earlier versions of APR that mishandled
+      the NOTABOVEROOT flag with an empty left hand value.
+        http://svn.apache.org/viewcvs?rev=382147&view=rev
+      +1: wrowe, bnicholes, pquerna
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -99,14 +106,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1 niq
       -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
                      This can not be backported to 2.2.
-
-    * mod_include:  APR_FILEPATH_NOTABOVEROOT was undefined with
-      a left-hand NULL or empty path.  The SECUREROOTPATH and 
-      NOTABSOLUTE tests are sufficient for this application.  
-      Adjust for this bug in earlier versions of APR that mishandled
-      the NOTABOVEROOT flag with an empty left hand value.
-        http://svn.apache.org/viewcvs?rev=382147&view=rev
-      +1: wrowe, bnicholes
 
     * mod_proxy: Fix PR38403 (Child-Thread uses 100%CPU usage, mod_proxy ?)
       Trunk version of patch:
