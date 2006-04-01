@@ -152,14 +152,66 @@ static void fill_in_header(fcgi_header *header,
 static apr_status_t send_data(proxy_conn_rec *conn,
                               struct iovec *vec,
                               int nvec,
-                              apr_size_t *len)
+                              apr_size_t *len,
+                              int blocking)
 {
-    apr_status_t rv = apr_socket_sendv(conn->sock, vec, nvec, len);
+    apr_status_t rv = APR_SUCCESS, arv;
+    apr_size_t written = 0, to_write = 0;
+    int i, offset;
+    apr_interval_time_t old_timeout;
+    apr_socket_t *s = conn->sock;
 
-    if (rv == APR_SUCCESS) {
-        conn->worker->s->transferred += *len;
+    if (!blocking) {
+        arv = apr_socket_timeout_get(s, &old_timeout);
+        if (arv != APR_SUCCESS) {
+            return arv;
+        }
+        arv = apr_socket_timeout_set(s, 0);
+        if (arv != APR_SUCCESS) {
+            return arv;
+        }
     }
 
+    for (i = 0; i < nvec; i++) {
+        to_write += vec[i].iov_len;
+    }
+
+    offset = 0;
+    while (to_write) {
+        apr_size_t n = 0;
+        rv = apr_socket_sendv(s, vec + offset, nvec - offset, &n);
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+        if (n > 0) {
+            written += n;
+            if (written >= to_write)
+                break;                 /* short circuit out */
+            for (i = offset; i < nvec; ) {
+                if (n >= vec[i].iov_len) {
+                    offset++;
+                    n -= vec[i++].iov_len;
+                } else {
+                    vec[i].iov_len -= n;
+                    vec[i].iov_base += n;
+                    break;
+                }
+            }
+        }
+        if (rv != APR_SUCCESS) {
+            break;
+        }
+    }
+
+    conn->worker->s->transferred += written;
+    *len = written;
+
+    if (!blocking) {
+        arv = apr_socket_timeout_set(s, old_timeout);
+        if ((arv != APR_SUCCESS) && (rv == APR_SUCCESS)) {
+            return arv;
+        }
+    }
     return rv;
 }
 
@@ -200,7 +252,7 @@ static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
     vec[1].iov_base = abrb;
     vec[1].iov_len = sizeof(abrb);
 
-    return send_data(conn, vec, 2, &len);
+    return send_data(conn, vec, 2, &len, 1);
 }
 
 static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r, 
@@ -335,7 +387,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     vec[1].iov_base = body;
     vec[1].iov_len = bodylen;
 
-    rv = send_data(conn, vec, 2, &len);
+    rv = send_data(conn, vec, 2, &len, 1);
     if (rv) {
         return rv;
     }
@@ -346,7 +398,7 @@ static apr_status_t send_environment(proxy_conn_rec *conn, request_rec *r,
     vec[0].iov_base = farray;
     vec[0].iov_len = sizeof(farray);
 
-    return send_data(conn, vec, 1, &len);
+    return send_data(conn, vec, 1, &len, 1);
 }
 
 enum {
@@ -579,10 +631,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             vec[1].iov_base = writebuf;
             vec[1].iov_len = writebuflen;
 
-            /* XXX This should be nonblocking, and if we don't write all
-             *     the data we need to keep track of that fact so we can
-             *     get to it next time through. */
-            rv = send_data(conn, vec, 2, &len);
+            rv = send_data(conn, vec, 2, &len, 0);
             if (rv != APR_SUCCESS) {
                 break;
             }
@@ -596,7 +645,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
                 vec[0].iov_base = farray;
                 vec[0].iov_len = sizeof(farray);
 
-                rv = send_data(conn, vec, 1, &len);
+                rv = send_data(conn, vec, 1, &len, 1);
             }
         }
 
