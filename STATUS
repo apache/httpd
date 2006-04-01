@@ -107,7 +107,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=384731&view=rev
          http://svn.apache.org/viewcvs?rev=386790&view=rev
          http://svn.apache.org/viewcvs?rev=386821&view=rev
-      +1: wrowe, trawick
+      +1: wrowe, trawick, pquerna
 
     * mod_proxy_ajp: Remove the Flushing Bandaid from compile time
       to a more admin-friendly runtime setting.
