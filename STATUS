@@ -90,6 +90,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                      This can not be backported to 2.2.
 
     * mod_proxy: Fix PR38403 (Child-Thread uses 100%CPU usage, mod_proxy ?)
+      due to incorrect usage of local and shared worker inits and
+      information.
       Trunk version of patch:
          http://svn.apache.org/viewcvs?rev=377738&view=rev
          http://svn.apache.org/viewcvs?rev=377780&view=rev
