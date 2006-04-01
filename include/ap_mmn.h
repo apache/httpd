@@ -107,6 +107,8 @@
  * 20050708.1 (2.1.7-dev) add proxy request_status hook (minor)
  * 20051006.0 (2.1.8-dev) NET_TIME filter eliminated
  * 20051115.0 (2.1.10-dev/2.2.0) add use_canonical_phys_port to core_dir_config
+ * 20051115.1 (2.2.1)  flush_packets and flush_wait members added to
+ *                         proxy_server (minor)
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
@@ -114,7 +116,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

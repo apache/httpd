@@ -301,8 +301,20 @@ struct proxy_worker {
 #if APR_HAS_THREADS
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating address cache */
 #endif
-    void            *context;   /* general purpose storage */
+    void                *context;   /* general purpose storage */
+    enum {
+         flush_off,
+         flush_on,
+         flush_auto
+    } flush_packets;           /* control AJP flushing */
+    int                 flush_wait;  /* poll wait time in microseconds if flush_auto */
 };
+
+/*
+ * Wait 10000 microseconds to find out if more data is currently
+ * available at the backend. Just an arbitrary choose.
+ */
+#define PROXY_FLUSH_WAIT 10000
 
 struct proxy_balancer {
     apr_array_header_t *workers; /* array of proxy_workers */
