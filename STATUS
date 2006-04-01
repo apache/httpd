@@ -73,6 +73,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_proxy: Fix PR38403 (Child-Thread uses 100%CPU usage, mod_proxy ?)
+      due to incorrect usage of local and shared worker inits and
+      information.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs?rev=377738&view=rev
+         http://svn.apache.org/viewcvs?rev=377780&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, pquerna
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
@@ -88,16 +99,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1 niq
       -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
                      This can not be backported to 2.2.
-
-    * mod_proxy: Fix PR38403 (Child-Thread uses 100%CPU usage, mod_proxy ?)
-      due to incorrect usage of local and shared worker inits and
-      information.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs?rev=377738&view=rev
-         http://svn.apache.org/viewcvs?rev=377780&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim
 
     * mod_isapi: Trivial compiler emit fixes for const'ness - noticed on OS/X
       Correct lvalue assignments (lvalue casts not allowed) - noticed on Sol.
