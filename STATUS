@@ -74,16 +74,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy_http: Disable persistent connections for SSL backends as we do
-      not handle them correctly, because we recreate backend->connection for
-      each request and thus try to initialize an already existing SSL
-      connection.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs?rev=379237&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1 rpluem, trawick, jim
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 

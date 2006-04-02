@@ -987,7 +987,7 @@ skip_body:
      * otherwise sent Connection: Keep-Alive.
      */
     if (!force10) {
-        if (p_conn->close) {
+        if (p_conn->close || p_conn->close_on_recycle) {
             buf = apr_pstrdup(p, "Connection: close" CRLF);
         }
         else {
@@ -1672,6 +1672,14 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
 
 
     backend->is_ssl = is_ssl;
+    /*
+     * TODO: Currently we cannot handle persistent SSL backend connections,
+     * because we recreate backend->connection for each request and thus
+     * try to initialize an already existing SSL connection. This does
+     * not work.
+     */
+    if (is_ssl)
+        backend->close_on_recycle = 1;
 
     /* Step One: Determine Who To Connect To */
     if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
