@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Default handler: Don't return output filter apr_status_t values.
+     PR 31759.  [Jeff Trawick, Ruediger Pluem, Joe Orton]
+
   *) Event MPM: Fill in the scoreboard's tid field. PR 38736.
      [Chris Darroch <chrisd pearsoncmg.com>]
 
