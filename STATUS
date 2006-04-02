@@ -98,5 +98,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=379237&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1 rpluem
+      +1 rpluem, trawick
 
