@@ -29,7 +29,7 @@
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Докуменатция к HTTP серверу Apache версии
+<title>Документация к HTTP серверу Apache версии
 &httpd.major;.&httpd.minor;</title>
 
 <category id="release"><title>О версии 2.0</title>
