@@ -3595,7 +3595,6 @@ static int default_handler(request_rec *r)
         e = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
-        return ap_pass_brigade(r->output_filters, bb);
         status = ap_pass_brigade(r->output_filters, bb);
         if (status == APR_SUCCESS
             || r->status != HTTP_OK
