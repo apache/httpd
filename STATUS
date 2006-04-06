@@ -174,7 +174,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        trawick: Sure, but that doesn't provide a key check.  We need 
           to convert to numeric to compare with r->status.
 
-    *) mod_proxy: Fix PR11971 by backporting r102320.
+    *) mod_proxy: Fix PR 11971 (HTTP proxy header "Via" with wrong hostname
+                  if ServerName not set or UseCanonicalName Off) by
+                  backporting r102320.
         Trunk version of patch:
           http://svn.apache.org/viewcvs?rev=102320&view=rev
         2.0.x version of patch:
