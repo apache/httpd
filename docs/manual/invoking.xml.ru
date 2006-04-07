@@ -21,7 +21,7 @@
 -->
 
 <!--***************************************************-->
-<!-- Translator: Ilia Soldis (soldis@tversu.ru)        -->
+<!-- Translator: Ilia Soldatenko (soldis@tversu.ru)    -->
 <!-- Reviewers:                                        -->
 <!--             Ivan Shvedov (ivan@tversu.ru)         -->
 <!--             Arthur Reznikov (art@altair.tversu.ru)-->

@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="KOI8-R" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
-<!-- English Revision: 99377:151405 (outdated) -->
+<!-- English Revision: 151405 -->
 
 <!--
- Copyright 2003-2004 The Apache Software Foundation
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@
 -->
 
 <!--***************************************************-->
-<!-- Translator: Ilia Soldis (rkai@tversu.ru)          -->
+<!-- Translator: Ilia Soldatenko (soldis@tversu.ru)    -->
 <!-- Reviewers:                                        -->
 <!--             Ivan Shvedov (ivan@tversu.ru)         -->
 <!--             Arthur Reznikov (art@altair.tversu.ru)-->
@@ -59,11 +60,11 @@
     клиента, обрабатываются <em>входным (input)</em> фильтром,
     в то время как данные, посылаемые сервером клиенту -
     <em>выходным (output)</em>. К одним и тем же данным можно
-    применять последовательно несколько фильтров, причем
+    применять последовательно несколько фильтров, причём
     порядок их следования может быть явно задан.</p>
 
-    <p>Фильтры используются самим серером Apache, для выполнения
-    функций обработки данных. В дополнение к этому, фильтры могут
+    <p>Фильтры используются самим серером Apache для выполнения
+    функций обработки данных. В дополнение к этому фильтры могут
     предоставляться модулями - в этом случае управление ими
     производится посредством соответствующих директив,
     указываемых в конфигурационном файле. К числу таких директив
@@ -72,7 +73,7 @@
     <directive module="core">SetOutputFilter</directive>,
     <directive module="mod_mime">AddInputFilter</directive>,
     <directive module="mod_mime">AddOutputFilter</directive>,
-    <directive module="mod_mime">RemoveInputFilter</directive>, and
+    <directive module="mod_mime">RemoveInputFilter</directive>, и
     <directive module="mod_mime">RemoveOutputFilter</directive>.</p>
 
     <p>В стандартный дистрибутив HTTP сервера Apache в настоящее время
@@ -87,7 +88,7 @@
       </dd>
     </dl>
 
-    <p>В дополнение к этому, модуль <module>mod_ext_filter</module>
+    <p>Модуль <module>mod_ext_filter</module>
      позволяет использовать внешние программы в качестве фильтров.</p>
   </section>
 </manualpage>

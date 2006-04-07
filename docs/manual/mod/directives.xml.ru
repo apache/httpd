@@ -1,10 +1,11 @@
 <?xml version='1.0' encoding='KOI8-R' ?>
 <!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
-<!-- English Revision: 96955:151405 (outdated) -->
+<!-- English Revision: 151405 -->
 
 <!--
- Copyright 2003-2004 The Apache Software Foundation
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@
 -->
 
 <!--***************************************************-->
-<!-- Translator: Ilia Soldis (rkai@tversu.ru)          -->
+<!-- Translator: Ilia Soldatenko (soldis@tversu.ru)    -->
 <!-- Reviewers:                                        -->
 <!--             Ivan Shvedov (ivan@tversu.ru)         -->
 <!--             Arthur Reznikov (art@altair.tversu.ru)-->
@@ -31,7 +32,7 @@
   <summary>
     <p>Здесь приводится список всех директив, которые доступны
     в стандартном дистрибутиве Apache. Для каждой директивы
-    дается краткое, но емкое описание, а смысл всех терминов,
+    даётся краткое описание, а смысл всех терминов,
     использованных при этом, можно найти в <a href="directive-dict.html"
     rel="Glossary">Глоссарии терминов</a>.
     </p>

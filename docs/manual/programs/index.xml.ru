@@ -1,10 +1,11 @@
 <?xml version='1.0' encoding='KOI8-R' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
-<!-- English Revision: 102620:161235 (outdated) -->
+<!-- English Revision: 161235 -->
 
 <!--
- Copyright 2003-2004 The Apache Software Foundation
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -20,7 +21,7 @@
 -->
 
 <!--***************************************************-->
-<!-- Translator: Ilia Soldis (rkai@tversu.ru)          -->
+<!-- Translator: Ilia Soldatenko (soldis@tversu.ru)    -->
 <!-- Reviewers:                                        -->
 <!--             Ivan Shvedov (ivan@tversu.ru)         -->
 <!--             Arthur Reznikov (art@altair.tversu.ru)-->
@@ -39,48 +40,48 @@
 <section id="index"><title>Указатель</title>
 
     <dl>
-      <dt><a href="httpd.html">httpd</a></dt>
+      <dt><program>httpd</program></dt>
 
       <dd>HTTP сервер Apache</dd>
 
-      <dt><a href="apachectl.html">apachectl</a></dt>
+      <dt><program>apachectl</program></dt>
 
       <dd>Интерфейс управления HTTP сервером Apache</dd>
 
-      <dt><a href="ab.html">ab</a></dt>
+      <dt><program>ab</program></dt>
 
       <dd>Утилита для тестирования HTTP сервера Apache</dd>
 
-      <dt><a href="apxs.html">apxs</a></dt>
+      <dt><program>apxs</program></dt>
 
       <dd>Утилита APache eXtenSion</dd>
 
-      <dt><a href="dbmmanage.html">dbmmanage</a></dt>
+      <dt><program>dbmmanage</program></dt>
 
       <dd>Создание и обновление файлов паролей пользователей в формате DBM,
       необходимых для базовой аутентификации (basic authentification)</dd>
 
-      <dt><a href="htdigest.html">htdigest</a></dt>
+      <dt><program>htdigest</program></dt>
 
       <dd>Создание и обновление файлов паролей пользователей для
       дайджестной аутентификации (digest authentification)</dd>
 
-      <dt><a href="htpasswd.html">htpasswd</a></dt>
+      <dt><program>htpasswd</program></dt>
 
       <dd>Создание и обновление файлов паролей пользователей
       для базовой аутентификации (basic authentification)</dd>
 
-      <dt><a href="logresolve.html">logresolve</a></dt>
+      <dt><program>logresolve</program></dt>
 
       <dd>Утилита для преобразования IP-адресов в соответствующие
       им имена хостов в лог-файлах Apache</dd>
 
-      <dt><a href="rotatelogs.html">rotatelogs</a></dt>
+      <dt><program>rotatelogs</program></dt>
 
       <dd>Утилита, позволяющая производить ротацию лог-файлов Apache без
       остановки сервера</dd>
 
-      <dt><a href="suexec.html">suexec</a></dt>
+      <dt><program>suexec</program></dt>
 
       <dd>Switch User For Exec - утилита, позволяющая выполнять CGI-скрипт от имени
       другого пользователя</dd>

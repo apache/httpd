@@ -20,7 +20,7 @@
 -->
 
 <!--***************************************************-->
-<!-- Translator: Ilia Soldis (rkai@tversu.ru)          -->
+<!-- Translator: Ilia Soldatenko (soldis@tversu.ru)    -->
 <!-- Reviewers:                                        -->
 <!--             Ivan Shvedov (ivan@tversu.ru)         -->
 <!--             Arthur Reznikov (art@altair.tversu.ru)-->
@@ -43,7 +43,7 @@
     <page href="invoking.html">Запуск Apache</page>
     <page href="stopping.html">Останов и перезапуск</page>
     <page href="mod/directives.html">Алфавитный указатель директив</page>
-    <page href="mod/quickreference.html">Краткое руководство по директивам</page>
+    <page href="mod/quickreference.html">Краткий справочник по директивам</page>
     <page href="mod/">Modules</page>
     <page href="mpm.html">Мульти-процессные модули (МП-модули)</page>
     <page href="filter.html">Фильтры</page>
