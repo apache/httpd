@@ -26,22 +26,21 @@
 <a href="./ko/upgrading.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/upgrading.html" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
   <p>Этот документ необходим для того, чтобы помочь пользователям
-  перейти к использованию сервера версии 2.0. Здесь вы найдете лишь
+  перейти к использованию сервера версии 2.0. Здесь вы найдёте лишь
   краткие замечания; более подробную информацию о нововведениях можно
   найти либо в документе <a href="new_features_2_0.html">Новые возможности</a>, либо в файле <code>src/CHANGES</code>.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Изменения в конфигурировании сборки сервера</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#compile-time">Изменения в конфигурировании процесса сборки сервера</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#run-time">Изменения в конфигурировании работы сервера</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#misc">Другие изменения</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#third-party">Модули третьих фирм</a></li>
-</ul></div>
+<li><img alt="" src="./images/down.gif" /> <a href="#third-party">Модули сторонних разработчиков</a></li>
+</ul><h3>См. также</h3><ul class="seealso"><li><a href="new_features_2_0.html">Обзор новых возможностей
+в Apache 2.0</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="compile-time" id="compile-time">Изменения в конфигурировании сборки сервера</a></h2>
+<h2><a name="compile-time" id="compile-time">Изменения в конфигурировании процесса сборки сервера</a></h2>
     
 
     <ul>
@@ -64,31 +63,32 @@
       <li>Многие из тех директив, которые обслуживались ядром сервера
       Apache 1.3, теперь перенесены в мульти - процессные модули. Если вы
       хотите, чтобы поведение сервера было наиболее приближено к поведению
-      Apache 1.3, то при сборке вы должны выбрать МП-модуль <a href="mod/prefork.html">prefork</a>. Другие МП-модули предоставляют
+      Apache 1.3, то при сборке вы должны выбрать МП-модуль
+      <code class="module"><a href="./mod/prefork.html">prefork</a></code>. Другие МП-модули предоставляют
       иные директивы, отвечающие за работу процессов сервера и обработку
       запросов.</li>
 
       <li><a href="mod/mod_proxy.html">Прокси модуль</a> был переписан,
       и теперь поддерживает спецификацию HTTP/1.1. Одним из наиболее
       важных изменений является то, что директивы, контролирующие работу
-      модуля, теперь располагаются в секции &lt;Proxy&gt;, а не в
+      модуля, теперь располагаются в секции <code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code>, а не в
       &lt;Directory proxy:&gt;, как это было ранее.</li>
 
-      <li>Обработка PATH_INFO (путевой информации, следующей за
+      <li>Обработка <code>PATH_INFO</code> (путевой информации, следующей за
       именем запрашиваемого документа) изменилась для некоторых модулей.
       Модули, которые раньше были написаны как обработчики (handler), а
       теперь выполняют роль фильтров, могут более не принимать запросы,
-      содержащие PATH_INFO. Такие фильтры, как <a href="mod/mod_include.html">INCLUDES</a> реализованы первыми в базовом
+      содержащие <code>PATH_INFO</code>. Такие фильтры, как <a href="mod/mod_include.html">INCLUDES</a> или <a href="http://www.php.net/">PHP</a> реализованы первыми в базовом
       обработчике, таким образом они не могут принимать запросы, содержащие
-      PATH_INFO. Вы можете использовать директиву <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>, чтобы заставить базовый
+      <code>PATH_INFO</code>. Вы можете использовать директиву <code class="directive"><a href="./mod/core.html#acceptpathinfo">AcceptPathInfo</a></code>, чтобы заставить базовый
       обработчик принимать подобные запросы, и таким образом восстановить
-      возможность использования PATH_INFO в документах, использующих включения
-      на стороне сервера (SSI).</li>
+      возможность использования <code>PATH_INFO</code> в документах,
+      использующих включения на стороне сервера (SSI).</li>
 
       <li>Директива <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code>
       теперь может принимать аргументы <code>on</code> и
       <code>off</code>. Уже существующие экземпляры директивы
-      <code>CacheNegotiatedDocs</code> должны быть заменены на
+      <code class="directive">CacheNegotiatedDocs</code> должны быть заменены на
       <code>CacheNegotiatedDocs on</code>.</li>
 
       <li>
@@ -122,7 +122,7 @@
       conf/srm.conf</code>. Для того чтобы быть уверенным в том, что
       Apache считывает конфигурационные файлы именно в том порядке,
       который был предусмотрен старыми директивами, надо поместить
-      директивы <code>Include</code> в конце файла httpd.conf, причем
+      директивы <code>Include</code> в конце файла httpd.conf, причём
       сперва ту, что включает <code>srm.conf</code>, а затем ту, что
       включает <code>access.conf</code>.</li>
 
@@ -134,7 +134,7 @@
       <li>В Apache 1.3 директива <code>Port</code>
       использовалась, кроме всего прочего, для того чтобы сервер
       мог формировать правильные ссылки на самого себя. В Apache 2.0 для
-      тех же целей служит новый синтаксис директивы <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>: он был изменен таким образом, что теперь
+      тех же целей служит новый синтаксис директивы <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>: он был изменён таким образом, что теперь
       имя хоста <em>и</em> номер порта можно указывать в одной этой директиве.</li>
 
       <li>Директива <code>ServerType</code> более не существует.
@@ -142,7 +142,7 @@
       выбора МП-модуля. В настоящее время нет такого МП-модуля,
       который мог бы запускаться посредством демона inetd.</li>
 
-      <li>Модули mod_log_agent и mod_log_referer, которые предоставляли
+      <li>Модули <code>mod_log_agent</code> и <code>mod_log_referer</code>, которые предоставляли
       такие директивы, как <code>AgentLog</code>, <code>RefererLog</code>
       и <code>RefererIgnore</code>, были убраны. Ведение журнала агентов
       пользователей (agent logs) и отправителей (referer logs) по-прежнему
@@ -156,6 +156,25 @@
 
       <li>Директива <code>FancyIndexing</code> была убрана. Ее функциональность
       теперь обеспечивается опцией <code>FancyIndexing</code> в директиве <code class="directive"><a href="./mod/mod_autoindex.html#indexoptions">IndexOptions</a></code></li>
+      
+      <li>Алгоритмы контентной негоциации (content-negotiation),
+      реализуемые модулем <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>,
+      стали более строгими в той части, где определяются файлы по умолчанию.
+      Теперь эти алгоритмы будут выбирать файлы только из списка
+      <em>доступных (negotiable)</em> файлов. Старое поведение может
+      быть восстановлено директивой <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiviewsMatch</a></code>.</li>
+
+      <li>(<em>начиная с версии 2.0.51</em>)
+      <p>Функциональность директивы <code>ErrorHeader</code> была
+      передана директиве <code class="directive"><a href="./mod/mod_headers.html#header">Header</a></code>,
+      потому что прежнее название директивы было некорректно.
+      Теперь необходимо писать</p>
+
+      <div class="example"><p><code>
+        Header always set foo bar
+      </code></p></div>
+
+      <p>чтобы получить желаемый результат.</p></li>
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -163,15 +182,11 @@
     
 
     <ul>
-      <li>Опция командной строки <code>httpd</code> <code> -S</code>,
-      позволявшая распечатывать конфигурацию виртуальных хостов, теперь заменена
-      опцией <code>-t -D DUMP_VHOSTS</code>.</li>
-
       <li>Модуль <code class="module"><a href="./mod/mod_auth_digest.html">mod_auth_digest</a></code>, который имел экспериментальный статус в
       Apache 1.3, теперь является стандартным модулем.</li>
 
       <li>Модуль <code>mod_mmap_static</code>, который имел экспериментальный статус в
-      Apache 1.3, заменен модулем <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>.</li>
+      Apache 1.3, заменён модулем <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>.</li>
 
       <li>Организация дистрибутива полностью изменена и теперь
       более не содержит независимого каталога <code>src</code>. Вместо этого
@@ -180,7 +195,7 @@
     </ul>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="third-party" id="third-party">Модули третьих фирм</a></h2>
+<h2><a name="third-party" id="third-party">Модули сторонних разработчиков</a></h2>
     
 
     <p>Значительные изменения были внесены в API для Apache 2.0.

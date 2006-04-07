@@ -25,8 +25,6 @@
 <a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/invoking.html" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>На Windows платформах Apache обычно работает как сервис Windows NT/2000/XP
     или как консольное приложение Windows 95/ME. Для получения более подробной
@@ -34,39 +32,38 @@
     <a href="platform/windows.xml#wincons">работу Apache под Windows в качестве консольного
     приложения</a>.</p>
 
-    <p>В Unix программа <a href="programs/httpd.html">httpd</a> представляет собой
-    демона, выполняющегося в фоновом режиме и обслуживающего поступающие запросы.
-    О том, каким образом можно запустить <code>httpd</code> и что в результате этого
+    <p>В Unix программа <code class="program"><a href="./programs/httpd.html">httpd</a></code> представляет собой
+    демон, выполняющийся в фоновом режиме и обслуживающий поступающие запросы.
+    О том, каким образом можно запустить <code class="program"><a href="./programs/httpd.html">httpd</a></code> и что в результате этого
     получится, и рассказывается в этом документе.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#startup">Что происходит в момент запуска Apache</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#errors">Ошибки, которые могут возникнуть во время запуска</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#boot">Запуск сервера вместе с запуском всей системы</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#info">Дополнительная информация</a></li>
-</ul><h3>См. также</h3><ul class="seealso"><li><a href="stopping.html">Останов и перезапуск</a></li><li><a href="programs/httpd.html">httpd</a></li><li><a href="programs/apachectl.html">apachectl</a></li></ul></div>
+</ul><h3>См. также</h3><ul class="seealso"><li><a href="stopping.html">Останов и перезапуск</a></li><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="startup" id="startup">Что происходит в момент запуска Apache</a></h2>
 
     <p>Если в директиве <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
     в конфигурационном файле указано значение 80 (задаваемое по умолчанию)
-    или любое другое значение порта меньшее 1024, то для запуска Apache,
+    или любое другое значение порта меньшее 1024, то для запуска Apache
     необходимо быть привилегированным пользователем, так как Apache придется
     подключаться к привилегированному порту. После того, как сервер запустился
-    и выполнил ряд подготовительных операций, таких как открытие своих log - файлов,
+    и выполнил ряд подготовительных операций, таких как открытие своих log-файлов,
     он порождает несколько <em>процессов потомков</em>, которые и будут выполнять
     всю работу по обработке запросов от клиентов. Основной процесс <code>httpd</code>
     выполняется с правами привилегированного пользователя, в то время как процессы
-    потомки имеют меньший приоритет. Все это контролируется <a href="mpm.html">МП -
-    модулем</a>, который компилируется вместе с сервером.</p>
+    потомки имеют меньший приоритет. Все это контролируется <a href="mpm.html">МП-модулем</a>, который компилируется вместе с сервером.</p>
 
-    <p>Для запуска демона <code>httpd</code> лучше всего использовать скрипт
-    <a href="programs/apachectl.html">apachectl</a>. Этот скрипт устанавливает некоторые
-    переменные окружения, необходимые для правильной работы сервера под некоторыми
-    операционными системами, а затем запускает исполняемый файл <code>httpd</code>.
-    Скрипт <code>apachectl</code> передаст серверу любую командную строку, так что,
+    <p>Для запуска демона <code class="program"><a href="./programs/httpd.html">httpd</a></code> лучше всего использовать скрипт
+    <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>. Этот скрипт устанавливает ряд
+    переменных окружения, необходимых для правильной работы сервера под некоторыми
+    операционными системами, а затем запускает исполняемый файл <code class="program"><a href="./programs/httpd.html">httpd</a></code>.
+    Скрипт <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> передаст серверу любую командную строку, так что
     при вызове можно указывать в его командной строке все необходимые для сервера опции.
-    Вы также можете вручную внести некоторые изменения в скрипт <code>apachectl</code>,
+    Вы также можете вручную внести некоторые изменения в скрипт <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>,
     в частности, изменив значение переменной <code>HTTPD</code> для запуска Apache
     из другого каталога, и указав опции, которые будут передаваться серверу <em>каждый раз</em>
     при его запуске.</p>
@@ -97,11 +94,11 @@
     <code>"Unable to bind to Port ..."</code>. Подобная ошибка возникает в двух случаях:</p>
 
     <ul>
-      <li>Если вы пытаетесь запустить сервер на привилегированном порту, будучи зарегестрированным
-      в системе, как обычный пользователь; или</li>
+      <li>Если вы пытаетесь запустить сервер на привилегированном порту, будучи зарегистрированным
+      в системе как обычный пользователь; или</li>
 
       <li>Если вы пытаетесь запусть сервер, когда в системе уже есть выполняющийся демон Apache
-      или другой web-сервер, слушающий тот же самый порт</li>
+      или другой web-сервер, слушающий тот же самый порт.</li>
     </ul>
 
     <p>Решение многих подобных проблем можно найти на странице
@@ -111,24 +108,24 @@
 <h2><a name="boot" id="boot">Запуск сервера вместе с запуском всей системы</a></h2>
 
     <p>Если вы хотите, чтобы сервер запускался автоматически после перезагрузки системы,
-    добавьте вызов скрипта <code>apachectl</code> в системные файлы, отвечающие за загрузку
+    добавьте вызов скрипта <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> в системные файлы, отвечающие за загрузку
     операционной среды (обычно это <code>rc.local</code> или файлы в каталоге <code>rc.N</code>).
     Это приведет к запуску Apache от имени привилегированного пользователя.
     Во избежание проблем с безопасностью системы, убедитесь, что сервер сконфигурирован правильно.</p>
 
-    <p>Скрипт <code>apachectl</code> разработан таким образом, что он может
+    <p>Скрипт <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> разработан таким образом, что он может
     действовать как стандартный init-скрипт системы SysV; он может принимать
     аргументы <code>start</code>, <code>restart</code>, и <code>stop</code>
-    и переводить их в соответствующие сигналы процессу <code>httpd</code>.
-    Поэтому чаще всего вам достаточно сделать ссылку на <code>apachectl</code>
+    и переводить их в соответствующие сигналы процессу <code class="program"><a href="./programs/httpd.html">httpd</a></code>.
+    Поэтому чаще всего вам достаточно сделать ссылку на <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>
     в запускном каталоге процесса init. Но прежде чем делать это, узнайте
     точные требования вашей системы.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="info" id="info">Дополнительная информация</a></h2>
 
-    <p>Дополнительную информацию по опциям командной строки <a href="programs/httpd.html">httpd</a>
-    и <a href="programs/apachectl.html">apachectl</a>, а также других
+    <p>Дополнительную информацию по опциям командной строки <code class="program"><a href="./programs/httpd.html">httpd</a></code>
+    и <code class="program"><a href="./programs/apachectl.html">apachectl</a></code>, а также других
     вспомогательных программ, вы можете найти на странице <a href="programs/">"Сервер
     и вспомогательные программы"</a>. Имеется также <a href="mod/directives.html">документация</a>
     на все модули, входящие в дистрибутив Apache, и все директивы, которые они предоставляют.</p>

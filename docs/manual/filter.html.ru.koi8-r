@@ -25,8 +25,6 @@
 <a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/filter.html" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>Данный документ описывает использование фильтров в Apache.</p>
   </div>
@@ -41,11 +39,11 @@
     клиента, обрабатываются <em>входным (input)</em> фильтром,
     в то время как данные, посылаемые сервером клиенту -
     <em>выходным (output)</em>. К одним и тем же данным можно
-    применять последовательно несколько фильтров, причем
+    применять последовательно несколько фильтров, причём
     порядок их следования может быть явно задан.</p>
 
-    <p>Фильтры используются самим серером Apache, для выполнения
-    функций обработки данных. В дополнение к этому, фильтры могут
+    <p>Фильтры используются самим серером Apache для выполнения
+    функций обработки данных. В дополнение к этому фильтры могут
     предоставляться модулями - в этом случае управление ими
     производится посредством соответствующих директив,
     указываемых в конфигурационном файле. К числу таких директив
@@ -54,7 +52,7 @@
     <code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code>,
     <code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>,
     <code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>,
-    <code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code>, and
+    <code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code>, и
     <code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code>.</p>
 
     <p>В стандартный дистрибутив HTTP сервера Apache в настоящее время
@@ -69,7 +67,7 @@
       </dd>
     </dl>
 
-    <p>В дополнение к этому, модуль <code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code>
+    <p>Модуль <code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code>
      позволяет использовать внешние программы в качестве фильтров.</p>
   </div></div>
 <div class="bottomlang">

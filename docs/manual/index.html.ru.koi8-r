@@ -5,7 +5,7 @@
               This file is generated from xml source: DO NOT EDIT
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
-<title>Докуменатция к HTTP серверу Apache версии
+<title>Документация к HTTP серверу Apache версии
 2.0 - HTTP сервер Apache</title>
 <link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
@@ -19,7 +19,7 @@
 <div class="up"><a href="http://httpd.apache.org/docs-project/"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP сервер</a> &gt; <a href="http://httpd.apache.org/docs/">Документация</a></div>
-<div id="page-content"><h1>Докуменатция к HTTP серверу Apache версии
+<div id="page-content"><h1>Документация к HTTP серверу Apache версии
 2.0</h1>
 <div class="toplang">
 <p><span>Доступные языки: </span><a href="./de/" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
@@ -41,7 +41,7 @@
 <li><a href="invoking.html">Запуск Apache</a></li>
 <li><a href="stopping.html">Останов и перезапуск</a></li>
 <li><a href="mod/directives.html">Алфавитный указатель директив</a></li>
-<li><a href="mod/quickreference.html">Краткое руководство по директивам</a></li>
+<li><a href="mod/quickreference.html">Краткий справочник по директивам</a></li>
 <li><a href="mod/">Modules</a></li>
 <li><a href="mpm.html">Мульти-процессные модули (МП-модули)</a></li>
 <li><a href="filter.html">Фильтры</a></li>

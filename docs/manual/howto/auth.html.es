@@ -23,6 +23,10 @@
 <a href="../ja/howto/auth.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/auth.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 
     <p>La autentificación es cualquier proceso mediante el cual se
     verifica que alguien es quien dice ser. La autorización es
