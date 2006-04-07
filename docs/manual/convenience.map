@@ -30,7 +30,7 @@ addoutputfilterbytype	mod/core.html#addoutputfilterbytype
 addtype	mod/mod_mime.html#addtype
 alias	mod/mod_alias.html#alias
 aliasmatch	mod/mod_alias.html#aliasmatch
-allow	mod/mod_authz_host.html#allow
+allow	mod/mod_access_compat.html#allow
 allowconnect	mod/mod_proxy.html#allowconnect
 allowencodedslashes	mod/core.html#allowencodedslashes
 allowoverride	mod/core.html#allowoverride
@@ -66,21 +66,15 @@ authldapgroupattribute	mod/mod_authnz_ldap.html#authldapgroupattribute
 authldapgroupattributeisdn	mod/mod_authnz_ldap.html#authldapgroupattributeisdn
 authldapremoteuserisdn	mod/mod_authnz_ldap.html#authldapremoteuserisdn
 authldapurl	mod/mod_authnz_ldap.html#authldapurl
-authname	mod/core.html#authname
-authnprovideralias	mod/mod_authn_alias.html#authnprovideralias
-authtype	mod/core.html#authtype
+authname	mod/mod_authn_core.html#authname
+authnprovideralias	mod/mod_authn_core.html#authnprovideralias
+authtype	mod/mod_authn_core.html#authtype
 authuserfile	mod/mod_authn_file.html#authuserfile
-authzdbdauthoritative	mod/mod_authz_dbd.html#authzdbdauthoritative
 authzdbdlogintoreferer	mod/mod_authz_dbd.html#authzdbdlogintoreferer
 authzdbdquery	mod/mod_authz_dbd.html#authzdbdquery
 authzdbdredirectquery	mod/mod_authz_dbd.html#authzdbdredirectquery
-authzdbmauthoritative	mod/mod_authz_dbm.html#authzdbmauthoritative
 authzdbmtype	mod/mod_authz_dbm.html#authzdbmtype
 authzdefaultauthoritative	mod/mod_authz_default.html#authzdefaultauthoritative
-authzgroupfileauthoritative	mod/mod_authz_groupfile.html#authzgroupfileauthoritative
-authzldapauthoritative	mod/mod_authnz_ldap.html#authzldapauthoritative
-authzownerauthoritative	mod/mod_authz_owner.html#authzownerauthoritative
-authzuserauthoritative	mod/mod_authz_user.html#authzuserauthoritative
 browsermatch	mod/mod_setenvif.html#browsermatch
 browsermatchnocase	mod/mod_setenvif.html#browsermatchnocase
 bufferedlogs	mod/mod_log_config.html#bufferedlogs
@@ -96,6 +90,7 @@ cacheignorenolastmod	mod/mod_cache.html#cacheignorenolastmod
 cachelastmodifiedfactor	mod/mod_cache.html#cachelastmodifiedfactor
 cachemaxexpire	mod/mod_cache.html#cachemaxexpire
 cachemaxfilesize	mod/mod_disk_cache.html#cachemaxfilesize
+cacheminexpire	mod/mod_cache.html#cacheminexpire
 cacheminfilesize	mod/mod_disk_cache.html#cacheminfilesize
 cachenegotiateddocs	mod/mod_negotiation.html#cachenegotiateddocs
 cacheroot	mod/mod_disk_cache.html#cacheroot
@@ -137,7 +132,7 @@ deflatecompressionlevel	mod/mod_deflate.html#deflatecompressionlevel
 deflatefilternote	mod/mod_deflate.html#deflatefilternote
 deflatememlevel	mod/mod_deflate.html#deflatememlevel
 deflatewindowsize	mod/mod_deflate.html#deflatewindowsize
-deny	mod/mod_authz_host.html#deny
+deny	mod/mod_access_compat.html#deny
 directory	mod/core.html#directory
 directoryindex	mod/mod_dir.html#directoryindex
 directorymatch	mod/core.html#directorymatch
@@ -253,7 +248,7 @@ numservers	mod/perchild.html#numservers
 nwssltrustedcerts	mod/mod_nw_ssl.html#nwssltrustedcerts
 nwsslupgradeable	mod/mod_nw_ssl.html#nwsslupgradeable
 options	mod/core.html#options
-order	mod/mod_authz_host.html#order
+order	mod/mod_access_compat.html#order
 passenv	mod/mod_env.html#passenv
 pidfile	mod/mpm_common.html#pidfile
 protocolecho	mod/mod_echo.html#protocolecho
@@ -282,6 +277,7 @@ redirect	mod/mod_alias.html#redirect
 redirectmatch	mod/mod_alias.html#redirectmatch
 redirectpermanent	mod/mod_alias.html#redirectpermanent
 redirecttemp	mod/mod_alias.html#redirecttemp
+reject	mod/mod_authz_core.html#reject
 removecharset	mod/mod_mime.html#removecharset
 removeencoding	mod/mod_mime.html#removeencoding
 removehandler	mod/mod_mime.html#removehandler
@@ -290,7 +286,7 @@ removelanguage	mod/mod_mime.html#removelanguage
 removeoutputfilter	mod/mod_mime.html#removeoutputfilter
 removetype	mod/mod_mime.html#removetype
 requestheader	mod/mod_headers.html#requestheader
-require	mod/core.html#require
+require	mod/mod_authz_core.html#require
 rewritebase	mod/mod_rewrite.html#rewritebase
 rewritecond	mod/mod_rewrite.html#rewritecond
 rewriteengine	mod/mod_rewrite.html#rewriteengine
@@ -303,7 +299,9 @@ rewriterule	mod/mod_rewrite.html#rewriterule
 rlimitcpu	mod/core.html#rlimitcpu
 rlimitmem	mod/core.html#rlimitmem
 rlimitnproc	mod/core.html#rlimitnproc
-satisfy	mod/core.html#satisfy
+satisfy	mod/mod_access_compat.html#satisfy
+satisfyall	mod/mod_authz_core.html#satisfyall
+satisfyone	mod/mod_authz_core.html#satisfyone
 scoreboardfile	mod/mpm_common.html#scoreboardfile
 script	mod/mod_actions.html#script
 scriptalias	mod/mod_alias.html#scriptalias
