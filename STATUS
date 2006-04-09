@@ -183,6 +183,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=18037
        +1: rpluem
 
+    *) Default handler: Don't return output filter apr_status_t values. PR 31759.
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=390922&view=rev
+          http://svn.apache.org/viewcvs?rev=391025&view=rev
+        2.0.x version of patch:
+          Trunk version works
+      +1: rpluem
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
