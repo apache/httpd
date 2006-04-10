@@ -116,6 +116,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs?rev=390573&view=rev
        +1: wrowe, trawick, rpluem
 
+    *) Default handler: Don't return output filter apr_status_t values. PR 31759.
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=390922&view=rev
+          http://svn.apache.org/viewcvs?rev=391025&view=rev
+        2.0.x version of patch:
+          Trunk version works
+      +1: rpluem, trawick, gregames
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -182,14 +190,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         2.0.x version of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=18037
        +1: rpluem
-
-    *) Default handler: Don't return output filter apr_status_t values. PR 31759.
-        Trunk version of patch:
-          http://svn.apache.org/viewcvs?rev=390922&view=rev
-          http://svn.apache.org/viewcvs?rev=391025&view=rev
-        2.0.x version of patch:
-          Trunk version works
-      +1: rpluem, trawick
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
