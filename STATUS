@@ -159,7 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          to 2.0)
        2.0 patch is at
          http://people.apache.org/~trawick/20_ldap_pool.patch
-       +1: trawick
+       +1: trawick, gregames (pls expand on apr_pool_create comment)
 
     *) mod_proxy: Fix PR 11971 (HTTP proxy header "Via" with wrong hostname
                   if ServerName not set or UseCanonicalName Off) by
