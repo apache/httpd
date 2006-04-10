@@ -91,14 +91,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
                      This can not be backported to 2.2.
 
-    * Default handler: Don't return output filter apr_status_t values. PR 31759.
-        Trunk version of patch:
-          http://svn.apache.org/viewcvs?rev=390922&view=rev
-          http://svn.apache.org/viewcvs?rev=391025&view=rev
-        2.2.x version of patch:
-          Trunk version works
-      +1: rpluem, trawick, jim
-
     * mod_proxy: Forward proxy requests created by mod_rewrite to the correct
                  backend server. PR 39253.
         Trunk version of patch:

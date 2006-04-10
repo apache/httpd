@@ -1,6 +1,8 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.2
 
+  *) Default handler: Don't return output filter apr_status_t values.
+     PR 31759.  [Jeff Trawick, Ruediger Pluem, Joe Orton]
 
 Changes with Apache 2.2.1
 
