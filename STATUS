@@ -124,6 +124,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: rpluem, trawick, gregames
 
+    *) Make sure we write a reasonable status line (e.g., if byterange
+       filter modifies status and custom status line is left
+       unmodified).
+       http://svn.apache.org/viewcvs.cgi?rev=385581&view=rev
+       2.0 patch is at
+         http://people.apache.org/~trawick/20_validate_status_line.patch
+       +1: trawick, niq, gregames
+       -0: colm
+       colm: Wouldn't it be a whole lot less cycles to use ISDIGIT?
+       trawick: Sure, but that doesn't provide a key check.  We need 
+          to convert to numeric to compare with r->status.
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -169,18 +181,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        2.0 patch is at
          http://people.apache.org/~trawick/20_ldap_pool.patch
        +1: trawick
-
-    *) Make sure we write a reasonable status line (e.g., if byterange
-       filter modifies status and custom status line is left
-       unmodified).
-       http://svn.apache.org/viewcvs.cgi?rev=385581&view=rev
-       2.0 patch is at
-         http://people.apache.org/~trawick/20_validate_status_line.patch
-       +1: trawick, niq
-       -0: colm
-       colm: Wouldn't it be a whole lot less cycles to use ISDIGIT?
-       trawick: Sure, but that doesn't provide a key check.  We need 
-          to convert to numeric to compare with r->status.
 
     *) mod_proxy: Fix PR 11971 (HTTP proxy header "Via" with wrong hostname
                   if ServerName not set or UseCanonicalName Off) by
