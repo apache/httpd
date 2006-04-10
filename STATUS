@@ -102,7 +102,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * htdbm: Warn when the user adds a plaintext password on a platform
       with crypt().  The server will assume that the format is crypt().
         Trunk version of patch:
-          http://svn.apache.org/viewcvs?rev=392945&view=rev
+          http://svn.apache.org/viewcvs?rev=392944&view=rev
         2.2.x version of patch:
           Trunk version works
       +1: trawick
