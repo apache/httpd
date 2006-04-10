@@ -1171,6 +1171,24 @@ static apr_status_t send_all_header_fields(header_struct *h,
 #endif
 }
 
+/* Confirm that the status line is well-formed and matches r->status.
+ * Otherwise, a filter may have negated the status line set by a
+ * handler.
+ * Zap r->status_line if bad.
+ */
+static void validate_status_line(request_rec *r)
+{
+    char *end;
+
+    if (r->status_line
+        && (strlen(r->status_line) <= 4
+            || apr_strtoi64(r->status_line, &end, 10) != r->status
+            || *end != ' '
+            || (end - 3) != r->status_line)) {
+        r->status_line = NULL;
+    }
+}
+
 /*
  * Determine the protocol to use for the response. Potentially downgrade
  * to HTTP/1.0 in some situations and/or turn off keepalives.
@@ -1184,6 +1202,8 @@ static void basic_http_header_check(request_rec *r,
         /* no such thing as a response protocol */
         return;
     }
+
+    validate_status_line(r);
 
     if (!r->status_line) {
         r->status_line = status_lines[ap_index_of_response(r->status)];

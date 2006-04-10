@@ -14,6 +14,11 @@ Changes with Apache 2.0.56
      ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
 
+  *) Ensure that the proper status line is written to the client, fixing
+     incorrect status lines caused by filters which modify r->status without 
+     resetting r->status_line, such as the built-in byterange filter.
+     [Jeff Trawick]
+
   *) Default handler: Don't return output filter apr_status_t values.
      PR 31759.  [Jeff Trawick, Ruediger Pluem, Joe Orton]
 

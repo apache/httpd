@@ -116,19 +116,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs?rev=390573&view=rev
        +1: wrowe, trawick, rpluem
 
-    *) Make sure we write a reasonable status line (e.g., if byterange
-       filter modifies status and custom status line is left
-       unmodified).
-       http://svn.apache.org/viewcvs.cgi?rev=385581&view=rev
-       2.0 patch is at
-         http://people.apache.org/~trawick/20_validate_status_line.patch
-       +1: trawick, niq, gregames
-       -0: colm
-       colm: Wouldn't it be a whole lot less cycles to use ISDIGIT?
-       trawick: Sure, but that doesn't provide a key check.  We need 
-          to convert to numeric to compare with r->status.
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
