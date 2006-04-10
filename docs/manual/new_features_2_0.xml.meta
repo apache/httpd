@@ -12,6 +12,6 @@
     <variant>ja</variant>
     <variant>ko</variant>
     <variant>pt-br</variant>
-    <variant outdated="yes">ru</variant>
+    <variant>ru</variant>
   </variants>
 </metafile>
