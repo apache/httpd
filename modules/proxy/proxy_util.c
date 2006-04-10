@@ -1870,11 +1870,11 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->hostname = apr_pstrdup(conn->pool, uri->hostname);
             conn->port = uri->port;
         }
+        if (conn->sock) {
+            apr_socket_close(conn->sock);
+            conn->sock = NULL;
+        }
         if (conn->connection) {
-            if (conn->sock) {
-                apr_socket_close(conn->sock);
-                conn->sock = NULL;
-            }
             apr_pool_cleanup_kill(conn->connection->pool, conn, connection_cleanup);
             conn->connection = NULL;
         }
