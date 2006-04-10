@@ -116,14 +116,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs?rev=390573&view=rev
        +1: wrowe, trawick, rpluem
 
-    *) Default handler: Don't return output filter apr_status_t values. PR 31759.
-        Trunk version of patch:
-          http://svn.apache.org/viewcvs?rev=390922&view=rev
-          http://svn.apache.org/viewcvs?rev=391025&view=rev
-        2.0.x version of patch:
-          Trunk version works
-      +1: rpluem, trawick, gregames
-
     *) Make sure we write a reasonable status line (e.g., if byterange
        filter modifies status and custom status line is left
        unmodified).

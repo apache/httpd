@@ -14,6 +14,9 @@ Changes with Apache 2.0.56
      ap_escape_html so we escape quotes.  Reported by JPCERT.
      [Mark Cox]
 
+  *) Default handler: Don't return output filter apr_status_t values.
+     PR 31759.  [Jeff Trawick, Ruediger Pluem, Joe Orton]
+
   *) mod_speling: Stop crashing with certain non-file requests.  
      [Jeff Trawick]
 
