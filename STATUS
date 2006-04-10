@@ -189,7 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs?rev=391025&view=rev
         2.0.x version of patch:
           Trunk version works
-      +1: rpluem
+      +1: rpluem, trawick
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
