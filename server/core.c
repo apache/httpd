@@ -3608,7 +3608,6 @@ static int default_handler(request_rec *r)
                           status);
             return HTTP_INTERNAL_SERVER_ERROR;
         }
-
     }
     else {              /* unusual method (not GET or POST) */
         if (r->method_number == M_INVALID) {
