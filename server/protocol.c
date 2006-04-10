@@ -518,11 +518,9 @@ AP_CORE_DECLARE(void) ap_parse_uri(request_rec *r, const char *uri)
             r->hostname = r->parsed_uri.hostname;
         }
 
-        if (r->parsed_uri.path == NULL)
-            r->parsed_uri.path = apr_pstrdup(r->pool, "/");
-
         r->args = r->parsed_uri.query;
-        r->uri = r->parsed_uri.path;
+        r->uri = r->parsed_uri.path ? r->parsed_uri.path
+                 : apr_pstrdup(r->pool, "/");
 
 #if defined(OS2) || defined(WIN32)
         /* Handle path translations for OS/2 and plug security hole.
