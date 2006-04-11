@@ -1758,7 +1758,8 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
         (util_ldap_state_t *)apr_pcalloc(p, sizeof(util_ldap_state_t));
 
     /* Create a per vhost pool for mod_ldap to use, serialized with 
-     * st->mutex (also one per vhost) 
+     * st->mutex (also one per vhost).  both are replicated by fork(),
+     * no shared memory managed by either.
      */
     apr_pool_create(&st->pool, p);
 #if APR_HAS_THREADS
