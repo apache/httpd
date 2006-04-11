@@ -394,9 +394,6 @@ LDAP_DECLARE(util_ldap_connection_t *)util_ldap_connection_find(request_rec *r, 
 
 #if APR_HAS_THREADS
     /* mutex lock this function */
-    if (!st->mutex) {
-        apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT, st->pool);
-    }
     apr_thread_mutex_lock(st->mutex);
 #endif
 
@@ -1387,7 +1384,13 @@ void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     util_ldap_state_t *st = 
         (util_ldap_state_t *)apr_pcalloc(p, sizeof(util_ldap_state_t));
 
-    st->pool = p;
+    /* Create a per vhost pool for mod_ldap to use, serialized with 
+     * st->mutex (also one per vhost) 
+     */
+    apr_pool_create(&st->pool, p);
+#if APR_HAS_THREADS
+    apr_thread_mutex_create(&st->mutex, APR_THREAD_MUTEX_DEFAULT, st->pool);
+#endif
 
     st->cache_bytes = 100000;
     st->search_cache_ttl = 600000000;
@@ -1444,7 +1447,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
         /* If the cache file already exists then delete it.  Otherwise we are
          * going to run into problems creating the shared memory. */
         if (st->cache_file) {
-            char *lck_file = apr_pstrcat (st->pool, st->cache_file, ".lck", NULL);
+            char *lck_file = apr_pstrcat (ptemp, st->cache_file, ".lck", NULL);
             apr_file_remove(st->cache_file, ptemp);
             apr_file_remove(lck_file, ptemp);
         }

@@ -150,21 +150,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=386821&view=rev
        +1: wrowe, trawick
 
-    *) mod_ldap: Brad's pool fixes to fix a race condition during
-       first request as well as thread-safety issues between threads
-       handling different vhosts at steady state
-       trunk revision:
-         http://svn.apache.org/viewcvs.cgi?view=rev&rev=386477
-         (there's some server config merge logic which does not apply
-         to 2.0)
-       2.0 patch is at
-         http://people.apache.org/~trawick/20_ldap_pool.patch
-       Add also Greg's apr_pool_create comment:
-         http://svn.apache.org/viewcvs?rev=393028&view=rev
-         (not gonna create a new 20_ldap_pool.patch to integrate
-         that comment; should be applied separately)
-       +1: trawick, gregames, bnicholes
-
     *) mod_proxy: Fix PR 11971 (HTTP proxy header "Via" with wrong hostname
                   if ServerName not set or UseCanonicalName Off) by
                   backporting r102320.
