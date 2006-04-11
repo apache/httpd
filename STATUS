@@ -163,7 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs?rev=393028&view=rev
          (not gonna create a new 20_ldap_pool.patch to integrate
          that comment; should be applied separately)
-       +1: trawick
+       +1: trawick, gregames
 
     *) mod_proxy: Fix PR 11971 (HTTP proxy header "Via" with wrong hostname
                   if ServerName not set or UseCanonicalName Off) by
