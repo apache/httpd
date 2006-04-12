@@ -112,9 +112,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    *) core httpd -V - display the APR built, and running.
-       http://svn.apache.org/viewcvs?rev=390573&view=rev
-       +1: wrowe, trawick, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -126,6 +123,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~colm/httpd-2.0-reverse-proxy-cookie.patch
         and is in production with Clients.
        +1: niq
+       +0: looks good, but there's no way to apply this without a minor bump
 
     *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
        the non-cgid side of the handler, where the full per-server/dir/etc
