@@ -48,6 +48,9 @@
 #include "apr_xlate.h"
 #endif /*APR_CHARSET_EBCDIC*/
 
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
 #if APR_HAVE_CRYPT_H
 #include <crypt.h>
 #endif
