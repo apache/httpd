@@ -308,6 +308,10 @@ static apr_status_t htdbm_make(htdbm_t *htdbm)
         case ALG_PLAIN:
             /* XXX this len limitation is not in sync with any HTTPd len. */
             apr_cpystrn(cpw,htdbm->userpass,sizeof(cpw));
+#if APR_HAVE_CRYPT_H
+            fprintf(stderr, "Warning: Plain text passwords aren't supported by the "
+                    "server on this platform!\n");
+#endif
         break;
 #if APR_HAVE_CRYPT_H
         case ALG_CRYPT:
