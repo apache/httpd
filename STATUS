@@ -131,6 +131,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        mod_userdir specific hacks. See mod_vhost_ldap for an example
        third-party get_suexec_identity implementation.
          http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
+       see also a verbose patch explanation at;
+         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=113813652015559
        +1: colm, trawick
 
     *) Backport 102870; PR 17217; stop linking OpenSSL to support/*
