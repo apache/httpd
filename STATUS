@@ -123,7 +123,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~colm/httpd-2.0-reverse-proxy-cookie.patch
         and is in production with Clients.
        +1: niq
-       +0: looks good, but there's no way to apply this without a minor bump
+       +0: wrowe; looks good, no way to apply this without a minor bump
 
     *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
        the non-cgid side of the handler, where the full per-server/dir/etc
