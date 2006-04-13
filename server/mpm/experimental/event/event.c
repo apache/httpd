@@ -1705,6 +1705,10 @@ static void perform_idle_server_maintenance(void)
 
         if (i >= ap_max_daemons_limit
             && totally_free_length == idle_spawn_rate)
+            /* short cut if all active processes have been examined and
+             * enough empty scoreboard slots have been found
+             */
+        
             break;
         ps = &ap_scoreboard_image->parent[i];
         for (j = 0; j < ap_threads_per_child; j++) {
@@ -1795,15 +1799,23 @@ static void perform_idle_server_maintenance(void)
     }
     else if (idle_thread_count < min_spare_threads) {
         /* terminate the free list */
-        if (free_length == 0) {
+        if (free_length == 0) { /* scoreboard is full, can't fork */
             /* only report this condition once */
             static int reported = 0;
 
             if (!reported) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
-                             ap_server_conf,
-                             "server reached MaxClients setting, consider"
-                             " raising the MaxClients setting");
+                if (active_thread_count >=
+                        ap_daemons_limit * ap_threads_per_child) {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+                                 ap_server_conf,
+                                 "server reached MaxClients setting, consider"
+                                 " raising the MaxClients setting");
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+                                 ap_server_conf,
+                                 "scoreboard is full, not at MaxClients");
+                }
                 reported = 1;
             }
             idle_spawn_rate = 1;
