@@ -198,9 +198,6 @@ static apr_status_t send_data(proxy_conn_rec *conn,
                 }
             }
         }
-        if (rv != APR_SUCCESS) {
-            break;
-        }
     }
 
     conn->worker->s->transferred += written;
