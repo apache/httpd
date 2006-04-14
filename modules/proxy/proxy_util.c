@@ -1512,7 +1512,18 @@ static apr_status_t connection_cleanup(void *theconn)
     if (!worker->cp)
         return APR_SUCCESS;
 
-    /* deterimine if the connection need to be closed */
+#if APR_HAS_THREADS
+    /* Sanity check: Did we already return the pooled connection? */
+    if (conn->inreslist) {
+        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, conn->pool,
+                      "proxy: Pooled connection 0x%pp for worker %s has been"
+                      " already returned to the connection pool.", conn,
+                      worker->name);
+        return APR_SUCCESS;
+    }
+#endif
+
+    /* determine if the connection need to be closed */
     if (conn->close_on_recycle || conn->close) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(conn->pool);
@@ -1522,6 +1533,7 @@ static apr_status_t connection_cleanup(void *theconn)
     }
 #if APR_HAS_THREADS
     if (worker->hmax && worker->cp->res) {
+        conn->inreslist = 1;
         apr_reslist_release(worker->cp->res, (void *)conn);
     }
     else
@@ -1552,6 +1564,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
 
     conn->pool   = ctx;
     conn->worker = worker;
+    conn->inreslist = 1;
     *resource = conn;
 
     return APR_SUCCESS;
@@ -1784,6 +1797,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     (*conn)->worker = worker;
     (*conn)->close  = 0;
     (*conn)->close_on_recycle = 0;
+    (*conn)->inreslist = 0;
 
     return OK;
 }

@@ -1230,7 +1230,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: error reading status line from remote "
                           "server %s", backend->hostname);
-            ap_proxy_http_cleanup(NULL, r, backend);
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                                  "Error reading from remote server");
         }
@@ -1251,7 +1250,6 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * if the status line was > 8192 bytes
              */
             else if ((buffer[5] != '1') || (len >= sizeof(buffer)-1)) {
-                ap_proxy_http_cleanup(NULL, r, backend);
                 return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                 apr_pstrcat(p, "Corrupt status line returned by remote "
                             "server: ", buffer, NULL));

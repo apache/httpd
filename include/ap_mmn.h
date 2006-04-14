@@ -119,6 +119,7 @@
  *                         cache_server_conf (minor)
  * 20060110.2 (2.3.0-dev)  flush_packets and flush_wait members added to
  *                         proxy_server (minor)
+ * 20060110.3 (2.3.0-dev)  added inreslist member to proxy_conn_rec (minor)
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -126,7 +127,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20060110
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 2                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 3                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy: Do not release connections from connection pool twice.
+     PR 38793. [Ruediger Pluem, matthias <mk-asf gigacodes.de>]
+
   *) core: Prevent reading uninitialized memory while reading a line of
      protocol input.  PR 39282. [Davi Arnaut <davi haxent.com.br>]
 
