@@ -1492,23 +1492,22 @@ static void perform_idle_server_maintenance(void)
     else if (idle_thread_count < min_spare_threads) {
         /* terminate the free list */
         if (free_length == 0) { /* scoreboard is full, can't fork */
-            /* only report this condition once */
-            static int reported = 0;
 
-            if (!reported) {
-                if (active_thread_count >= 
-                        ap_daemons_limit * ap_threads_per_child) { 
+            if (active_thread_count >= ap_daemons_limit * ap_threads_per_child) { 
+                static int reported = 0;
+                if (!reported) {
+                    /* only report this condition once */
                     ap_log_error(APLOG_MARK, APLOG_ERR, 0,
                                  ap_server_conf,
                                  "server reached MaxClients setting, consider"
                                  " raising the MaxClients setting");
-                }    
-                else {
-                    ap_log_error(APLOG_MARK, APLOG_ERR, 0,
-                                 ap_server_conf,
-                                 "scoreboard is full, not at MaxClients");
+                    reported = 1;
                 }
-                reported = 1;
+            }
+            else {
+                ap_log_error(APLOG_MARK, APLOG_ERR, 0,
+                             ap_server_conf,
+                             "scoreboard is full, not at MaxClients");
             }
             idle_spawn_rate = 1;
         }
