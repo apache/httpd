@@ -98,3 +98,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: trawick, colm
 
+    * Backport fix to PR#39321 (Segfault if bad URL is specified in ProxyPass)
+      http://svn.apache.org/viewcvs?rev=394390&view=rev
+      +1: niq
