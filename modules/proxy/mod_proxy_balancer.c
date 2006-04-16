@@ -88,6 +88,7 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
 
     for (i = 0; i < balancer->workers->nelts; i++) {
         ap_proxy_initialize_worker_share(conf, workers, s);
+        ap_proxy_initialize_worker(workers, s);
         ++workers;
     }
 
