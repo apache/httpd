@@ -1308,6 +1308,9 @@ PROXY_DECLARE(const char *) ap_proxy_add_worker(proxy_worker **worker,
     if (rv != APR_SUCCESS) {
         return "Unable to parse URL";
     }
+    if (!uri.hostname || !uri.scheme) {
+        return "URL must be absolute!";
+    }
 
     ap_str_tolower(uri.hostname);
     ap_str_tolower(uri.scheme);
