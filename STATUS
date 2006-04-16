@@ -74,6 +74,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * Backport fix to PR#39321 (Segfault if bad URL is specified in ProxyPass)
+      http://svn.apache.org/viewcvs?rev=394390&view=rev
+      +1: niq, rpluem, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
@@ -98,6 +102,3 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: trawick, colm
 
-    * Backport fix to PR#39321 (Segfault if bad URL is specified in ProxyPass)
-      http://svn.apache.org/viewcvs?rev=394390&view=rev
-      +1: niq, rpluem
