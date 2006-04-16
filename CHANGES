@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_balancer: Initialize members of a balancer correctly.
+     PR 38227. [James A. Robinson <jim.robinson stanford.edu>]
+
   *) mod_proxy: Do not release connections from connection pool twice.
      PR 38793. [Ruediger Pluem, matthias <mk-asf gigacodes.de>]
 
