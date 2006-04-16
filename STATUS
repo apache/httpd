@@ -106,8 +106,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-    * Awaiting next apr-util release to address licensing concerns.
-    
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
