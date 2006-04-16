@@ -19,7 +19,7 @@
 #include "apr_general.h" /* stringify */
 
 #define AP_SERVER_COPYRIGHT \
-    "Copyright 2001-2005 The Apache Software Foundation" \
+    "Copyright 2001-2006 The Apache Software Foundation" \
     " or its licensors, as applicable."
 
 /*
