@@ -108,6 +108,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_proxy_balancer: Initialize local data structures for workers of a
                           balancer. PR 38227, PR 38267.
         Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=394065&view=rev
           http://svn.apache.org/viewcvs?rev=394446&view=rev
         2.2.x version of patch:
           Trunk version works
