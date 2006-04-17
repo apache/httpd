@@ -98,3 +98,27 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: trawick, colm
 
+    * core: Prevent read of unitialized memory in ap_rgetline_core. PR 39282.
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=394070&view=rev
+        2.2.x version of patch:
+          Trunk version works
+      +1: rpluem
+
+    * mod_proxy_balancer: Initialize local data structures for workers of a
+                          balancer. PR 38227, PR 38267.
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=394446&view=rev
+        2.2.x version of patch:
+          Trunk version works
+      +1: rpluem
+
+    * mod_proxy: Do not release connections from connection pool twice as this
+                 can cause different threads to use the same connection at the
+                 same time. PR 38793.
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=394088&view=rev
+        2.2.x version of patch:
+          Trunk version works
+      +1: rpluem
+
