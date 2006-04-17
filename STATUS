@@ -157,6 +157,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=18037
        +1: rpluem
 
+    *) core: Prevent read of unitialized memory in ap_rgetline_core. PR 39282.
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=394070&view=rev
+        2.0.x version of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=18112
+      +1: rpluem
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
