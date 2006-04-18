@@ -128,4 +128,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs?rev=394965&view=rev
         2.2.x version of patch:
           Trunk version with changed offsets
-       +1: mjc
+       +1: mjc, trawick
