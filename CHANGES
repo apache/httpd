@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) HTML-escape the Expect error message.  Not classed as security as
+     an attacker has no way to influence the Expect header a victim will
+     send to a target site.  Reported by Thiago Zaninotti
+     <thiango nstalker.com>. [Mark Cox]
+
   *) mod_proxy_balancer: Initialize members of a balancer correctly.
      PR 38227. [James A. Robinson <jim.robinson stanford.edu>]
 
