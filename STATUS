@@ -123,3 +123,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: rpluem
 
+    * http_protocol: Fix escaping of Expect error message
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=394965&view=rev
+        2.2.x version of patch:
+          Trunk version with changed offsets
+       +1: mjc
