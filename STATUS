@@ -169,7 +169,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs?rev=394965&view=rev
         2.0.x version of patch:
           Trunk version with changed offsets
-      +1: mjc
+      +1: mjc, trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
