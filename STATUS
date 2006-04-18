@@ -104,6 +104,7 @@ CURRENT RELEASE NOTES:
       branches/2.2.x, and finally merge into branches/2.0.x, as applicable.
 
 
+tch is at                              
 RELEASE SHOWSTOPPERS:
 
 
@@ -169,7 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs?rev=394070&view=rev
         2.0.x version of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=18112
-      +1: rpluem
+      +1: rpluem, colm
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
