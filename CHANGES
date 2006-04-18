@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_deflate: Allow mod_deflate to handle internal redirects.
+     [ Brian J. France <list firehawksystems.com>] 
+
   *) HTML-escape the Expect error message.  Not classed as security as
      an attacker has no way to influence the Expect header a victim will
      send to a target site.  Reported by Thiago Zaninotti
