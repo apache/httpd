@@ -71,15 +71,24 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
     * http_protocol: Fix escaping of Expect error message
         Trunk version of patch:
           http://svn.apache.org/viewcvs?rev=394965&view=rev
         2.2.x version of patch:
           Trunk version with changed offsets
        +1: mjc, trawick, rpluem, jim
+
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
+    * htdbm: Fix crash in 64-bit mode on HP-UX caused by unexpected
+      placement of crypt() prototype (unistd.h).
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=393364&view=rev
+        2.2.x version of patch:
+          Trunk version works
+      +1: trawick, colm, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -97,14 +106,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1 niq
       -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
                      This can not be backported to 2.2.
-
-    * htdbm: Fix crash in 64-bit mode on HP-UX caused by unexpected
-      placement of crypt() prototype (unistd.h).
-        Trunk version of patch:
-          http://svn.apache.org/viewcvs?rev=393364&view=rev
-        2.2.x version of patch:
-          Trunk version works
-      +1: trawick, colm, jim
 
     * core: Prevent read of unitialized memory in ap_rgetline_core. PR 39282.
         Trunk version of patch:
