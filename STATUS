@@ -80,6 +80,11 @@ PROPOSED PATCHES FOR THIS RELEASE:
       http://people.redhat.com/mjc/20060411-expect-apache13.patch
       +1: mjc, trawick
 
+   *) core: Make "Include" directives work inside previously "Include"'d
+      files.
+      http://people.apache.org/~colm/include_directive-1.3.patch
+      +1: colm
+
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
    * backport fix for mod_log_config logging "0" for %b
