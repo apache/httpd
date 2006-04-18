@@ -132,3 +132,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: rpluem, jim
 
+    *) mod_deflate: handle internal redirects correctly
+         http://svn.apache.org/viewcvs?rev=395079&view=rev
+       +1: colm, wrowe  
