@@ -115,7 +115,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs?rev=394965&view=rev
         2.0.x version of patch:
           Trunk version with changed offsets
-      +1: mjc, trawick, rpluem
+      +1: mjc, trawick, rpluem, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -138,7 +138,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
        see also a verbose patch explanation at;
          http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=113813652015559
-       +1: colm, trawick
+       +1: colm, trawick, jim
 
     *) Backport 102870; PR 17217; stop linking OpenSSL to support/*
        binaries (especially when compiled --with-static-support (!))
@@ -162,7 +162,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs?rev=102320&view=rev
         2.0.x version of patch:
           http://issues.apache.org/bugzilla/attachment.cgi?id=18037
-       +1: rpluem
+       +1: rpluem, jim
 
     *) core: Prevent read of unitialized memory in ap_rgetline_core. PR 39282.
         Trunk version of patch:
