@@ -23,7 +23,8 @@ Consult the trunk/ for all new development and documentation efforts:
 
 Release history:
 
-    2.0.56  : in development
+    2.0.57  : in development
+    2.0.56  : unreleased
     2.0.55  : released October 16, 2005 as GA.
     2.0.54  : released April 17, 2005 as GA.
     2.0.53  : released February 7, 2005 as GA.
@@ -172,6 +173,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=18112
       +1: rpluem, colm
 
+    *) mod_deflate: handle internal redirects correctly
+          http://svn.apache.org/viewcvs?rev=395079&view=rev 
+       +1: colm, wrowe
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
