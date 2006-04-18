@@ -110,6 +110,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    *) http_protocol: Fix escaping of Expect error message
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=394965&view=rev
+        2.0.x version of patch:
+          Trunk version with changed offsets
+      +1: mjc, trawick, rpluem
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -164,12 +171,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=18112
       +1: rpluem
 
-    *) http_protocol: Fix escaping of Expect error message
-        Trunk version of patch:
-          http://svn.apache.org/viewcvs?rev=394965&view=rev
-        2.0.x version of patch:
-          Trunk version with changed offsets
-      +1: mjc, trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
