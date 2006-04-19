@@ -61,7 +61,15 @@ orig_prefix="$prefix"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime library ...${nl}"
 
-APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1)
+AC_ARG_WITH(included-apr,
+APACHE_HELP_STRING(--with-included-apr,Use bundled copies of APR/APR-Util))
+
+if test "x$with_included_apr" = "xyes"; then
+   apr_found=reconfig
+   apr_config="$srcdir/srclib/apr/apr-1-config"
+else 
+   APR_FIND_APR("$srcdir/srclib/apr", "./srclib/apr", 1, 1)
+fi
 
 if test "$apr_found" = "no"; then
   AC_MSG_ERROR([APR not found.  Please read the documentation.])
@@ -89,7 +97,12 @@ APR_CONFIG="$APR_BINDIR/apr-`echo ${APR_VERSION} | sed 's,\..*,,'`-config"
 
 echo $ac_n "${nl}Configuring Apache Portable Runtime Utility library...${nl}"
 
-APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 1, 1)
+if test "x$with_included_apr" = "xyes"; then
+   apu_found=reconfig
+   apu_config="${srcdir}/srclib/apr-util/apu-1-config"
+else 
+   APR_FIND_APU("$srcdir/srclib/apr-util", "./srclib/apr-util", 1, 1)
+fi
 
 if test "$apu_found" = "no"; then
   AC_MSG_ERROR([APR-util not found.  Please read the documentation.])
