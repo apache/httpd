@@ -111,16 +111,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
-       the non-cgid side of the handler, where the full per-server/dir/etc
-       configuration is available instead of using two mod_suexec and
-       mod_userdir specific hacks. See mod_vhost_ldap for an example
-       third-party get_suexec_identity implementation.
-         http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
-       see also a verbose patch explanation at;
-         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=113813652015559
-       +1: colm, trawick, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new

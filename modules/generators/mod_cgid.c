@@ -90,9 +90,19 @@ static pid_t daemon_pid;
 static int daemon_should_exit = 0;
 static server_rec *root_server = NULL;
 static apr_pool_t *root_pool = NULL;
+static ap_unix_identity_t empty_ugid = { (uid_t)-1, (gid_t)-1, -1 };
 
 /* Read and discard the data in the brigade produced by a CGI script */
 static void discard_script_output(apr_bucket_brigade *bb);
+
+/* This doer will only ever be called when we are sure that we have
+ * a valid ugid.
+ */
+static ap_unix_identity_t *cgid_suexec_id_doer(const request_rec *r)
+{
+     return (ap_unix_identity_t *)
+                         ap_get_module_config(r->request_config, &cgid_module);
+}
 
 /* KLUDGE --- for back-combatibility, we don't have to check ExecCGI
  * in ScriptAliased directories, which means we need to know if this 
@@ -156,15 +166,12 @@ typedef struct {
                             * process to be cleaned up
                             */
     int core_module_index;
-    int have_suexec;
-    int suexec_module_index;
-    suexec_config_t suexec_cfg;
     int env_count;
+    ap_unix_identity_t ugid;
     apr_size_t filename_len;
     apr_size_t argv0_len;
     apr_size_t uri_len;
     apr_size_t args_len;
-    apr_size_t mod_userdir_user_len;
     int loglevel; /* to stuff in server_rec */
 } cgid_req_t;
 
@@ -316,10 +323,9 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
                             cgid_req_t *req)
 { 
     int i; 
-    char *user;
     char **environ; 
-    core_dir_config *temp_core; 
-    void **dconf;
+    core_request_config *temp_core; 
+    void **rconf;
     apr_status_t stat;
 
     r->server = apr_pcalloc(r->pool, sizeof(server_rec)); 
@@ -336,17 +342,13 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
     }
 
     /* handle module indexes and such */
-    dconf = (void **) apr_pcalloc(r->pool, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
+    rconf = (void **) apr_pcalloc(r->pool, sizeof(void *) * (total_modules + DYNAMIC_MODULE_LIMIT));
 
-    temp_core = (core_dir_config *)apr_palloc(r->pool, sizeof(core_module)); 
-    dconf[req->core_module_index] = (void *)temp_core;
-
-    if (req->have_suexec) {
-        dconf[req->suexec_module_index] = &req->suexec_cfg;
-    }
-
-    r->per_dir_config = (ap_conf_vector_t *)dconf; 
-
+    temp_core = (core_request_config *)apr_palloc(r->pool, sizeof(core_module)); 
+    rconf[req->core_module_index] = (void *)temp_core;
+    r->request_config = (ap_conf_vector_t *)rconf; 
+    ap_set_module_config(r->request_config, &cgid_module, (void *)&req->ugid);
+    
     /* Read the filename, argv0, uri, and args */
     r->filename = apr_pcalloc(r->pool, req->filename_len + 1);
     *argv0 = apr_pcalloc(r->pool, req->argv0_len + 1);
@@ -378,19 +380,6 @@ static apr_status_t get_req(int fd, request_rec *r, char **argv0, char ***env,
         }
     }
     *env = environ;
-
-    /* basic notes table to avoid segfaults */
-    r->notes = apr_table_make(r->pool, 1);
-
-    /* mod_userdir requires the mod_userdir_user note */
-    if (req->mod_userdir_user_len) {
-        user = apr_pcalloc(r->pool, req->mod_userdir_user_len + 1); /* last byte is '\0' */
-        stat = sock_read(fd, user, req->mod_userdir_user_len);
-        if (stat != APR_SUCCESS) {
-            return stat;
-        }
-        apr_table_set(r->notes, "mod_userdir_user", (const char *)user);
-    }
 
 #if 0
 #ifdef RLIMIT_CPU 
@@ -434,22 +423,19 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
                              int req_type) 
 { 
     int i;
-    const char *user;
-    module *suexec_mod = ap_find_linked_module("mod_suexec.c");
     cgid_req_t req = {0};
-    suexec_config_t *suexec_cfg;
     apr_status_t stat;
+    ap_unix_identity_t * ugid = ap_run_get_suexec_identity(r);
+
+    if (ugid == NULL) {
+        req.ugid = empty_ugid;
+    } else {
+        memcpy(&req.ugid, ugid, sizeof(ap_unix_identity_t));
+    }
 
     req.req_type = req_type;
     req.conn_id = r->connection->id;
     req.core_module_index = core_module.module_index;
-    if (suexec_mod) {
-        req.have_suexec = 1;
-        req.suexec_module_index = suexec_mod->module_index;
-        suexec_cfg = ap_get_module_config(r->per_dir_config,
-                                          suexec_mod);
-        req.suexec_cfg = *suexec_cfg;
-    }
     for (req.env_count = 0; env[req.env_count]; req.env_count++) {
         continue; 
     }
@@ -457,10 +443,6 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
     req.argv0_len = strlen(argv0);
     req.uri_len = strlen(r->uri);
     req.args_len = r->args ? strlen(r->args) : 0;
-    user = (const char *)apr_table_get(r->notes, "mod_userdir_user");
-    if (user != NULL) {
-        req.mod_userdir_user_len = strlen(user);
-    }
     req.loglevel = r->server->loglevel;
 
     /* Write the request header */
@@ -489,13 +471,6 @@ static apr_status_t send_req(int fd, request_rec *r, char *argv0, char **env,
         }
             
         if ((stat = sock_write(fd, env[i], curlen)) != APR_SUCCESS) {
-            return stat;
-        }
-    }
-
-    /* send a minimal notes table */
-    if (user) {
-        if ((stat = sock_write(fd, user, req.mod_userdir_user_len)) != APR_SUCCESS) {
             return stat;
         }
     }
@@ -592,6 +567,11 @@ static int cgid_server(void *data)
                      sconf->sockname);
         /* just a warning; don't bail out */
     }
+
+    /* cgid should use its own suexec doer */
+    ap_hook_get_suexec_identity(cgid_suexec_id_doer, NULL, NULL,
+                                APR_HOOK_REALLY_FIRST);
+    apr_hook_sort_all();
 
     if ((sd = socket(AF_UNIX, SOCK_STREAM, 0)) < 0) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, main_server, 
@@ -738,10 +718,19 @@ static int cgid_server(void *data)
             */
             close(sd2);
 
-            rc = ap_os_create_privileged_process(r, procnew, argv0, argv, 
-                                                 (const char * const *)env, 
-                                                 procattr, ptrans);
-
+            if (memcmp(&empty_ugid, &cgid_req.ugid, sizeof(empty_ugid))) {
+                /* We have a valid identity, and can be sure that 
+                 * cgid_suexec_id_doer will return a valid ugid 
+                 */
+                rc = ap_os_create_privileged_process(r, procnew, argv0, argv,
+                                                     (const char * const *)env,
+                                                     procattr, ptrans);
+            } else {
+                rc = apr_proc_create(procnew, argv0, argv, 
+                                     (const char * const *)env, 
+                                     procattr, ptrans);
+            }
+                
             if (rc != APR_SUCCESS) {
                 /* Bad things happened. Everyone should have cleaned up.
                  * ap_log_rerror() won't work because the header table used by

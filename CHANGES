@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.57
 
+  *) mod_cgid: run the get_suexec_identity hook within the request-handler
+     instead of within cgid. PR 36410. [Colm MacCarthaigh] 
+
   *) core: Prevent read of unitialized memory in ap_rgetline_core. PR 39282.
      [Davi Arnaut <davi haxent.com.br>]
 
