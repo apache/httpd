@@ -1,5 +1,10 @@
 Changes with Apache 1.3.35
 
+  *) HTML-escape the Expect error message.  Not classed as security as
+     an attacker has no way to influence the Expect header a victim will
+     send to a target site.  Reported by Thiago Zaninotti 
+     <thiango nstalker.com>. [Mark Cox]
+
   *) SECURITY: CVE-2005-3352 (cve.mitre.org)
      mod_imap: Escape untrusted referer header before outputting in HTML
      to avoid potential cross-site scripting.  Change also made to

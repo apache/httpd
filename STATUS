@@ -51,12 +51,6 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
-   *) http_protocol: Fix escaping of Expect error message
-      http://svn.apache.org/viewcvs?rev=394965&view=rev
-      http://people.redhat.com/mjc/20060411-expect-apache13.patch
-      +1: mjc, trawick, wrowe
-
-
 PROPOSED PATCHES FOR THIS RELEASE:
 
    *) mod_rewrite on Win32: change the mutex mechanism for RewriteLog
