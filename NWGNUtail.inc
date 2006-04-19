@@ -21,7 +21,7 @@ NLM_THREAD_NAME = $(NLM_NAME) Thread
 endif
 
 ifndef NLM_COPYRIGHT
-NLM_COPYRIGHT = Copyright (c) 2000-2004 The Apache Software Foundation. All rights reserved.
+NLM_COPYRIGHT = Copyright (c) 2000-2006 The Apache Software Foundation. All rights reserved.
 endif
 
 #
