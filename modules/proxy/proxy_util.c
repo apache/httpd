@@ -1567,7 +1567,9 @@ static apr_status_t connection_constructor(void **resource, void *params,
 
     conn->pool   = ctx;
     conn->worker = worker;
+#if APR_HAS_THREADS
     conn->inreslist = 1;
+#endif
     *resource = conn;
 
     return APR_SUCCESS;
@@ -1800,7 +1802,9 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
     (*conn)->worker = worker;
     (*conn)->close  = 0;
     (*conn)->close_on_recycle = 0;
+#if APR_HAS_THREADS
     (*conn)->inreslist = 0;
+#endif
 
     return OK;
 }
