@@ -219,8 +219,8 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
 
     /*
      * Initialize last_char as otherwise a random value will be compared
-     * against APR_ASCII_LF at the end of the loop if bb only contains an
-     * EOS bucket.
+     * against APR_ASCII_LF at the end of the loop if bb only contains
+     * zero-length buckets.
      */
     if (last_char)
         *last_char = '\0';
