@@ -51,6 +51,11 @@ Release:
 
 RELEASE SHOWSTOPPERS:
 
+   *) http_protocol: Fix escaping of Expect error message
+      http://svn.apache.org/viewcvs?rev=394965&view=rev
+      http://people.redhat.com/mjc/20060411-expect-apache13.patch
+      +1: mjc, trawick, wrowe
+
 
 PROPOSED PATCHES FOR THIS RELEASE:
 
@@ -72,13 +77,8 @@ PROPOSED PATCHES FOR THIS RELEASE:
       jerenkrantz: Couldn't we copy the table and merge the values somehow?
                    This just seems like a lot of code to duplicate what we
                    have already.  *shrug*
-      +1: nd, jerenkrantz
+      +1: nd, jerenkrantz, wrowe (in principal)
       -1: jim (until we see the 1.3 version)
-
-   *) http_protocol: Fix escaping of Expect error message
-      http://svn.apache.org/viewcvs?rev=394965&view=rev
-      http://people.redhat.com/mjc/20060411-expect-apache13.patch
-      +1: mjc, trawick
 
    *) core: Make "Include" directives work inside previously "Include"'d
       files.
