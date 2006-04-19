@@ -2268,7 +2268,7 @@ static const char *get_canned_error_string(int status,
                            "request-header"
                            "\nfield could not be met by this server.</p>\n"
                            "<p>The client sent<pre>\n    Expect: ",
-                           apr_table_get(r->headers_in, "Expect"),
+                           ap_escape_html(r->pool, apr_table_get(r->headers_in, "Expect")),
                            "\n</pre>\n"
                            "but we only allow the 100-continue "
                            "expectation.</p>\n",
