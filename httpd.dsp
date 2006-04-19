@@ -44,7 +44,7 @@ RSC=rc.exe
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "SHARED_MODULE" /FD /c
 # ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /Fd"Release\httpd" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /i "./include" /i "./srclib/apr/include" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="httpd.exe" /d LONG_NAME="Apache HTTP Server" /d ICON_FILE="apache.ico"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -69,7 +69,7 @@ LINK32=link.exe
 # ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /Fd"Debug\httpd" /FD /c
 # SUBTRACT CPP /YX
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /i "./include" /i "./srclib/apr/include" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="httpd.exe" /d LONG_NAME="Apache HTTP Server" /d ICON_FILE="apache.ico"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -94,35 +94,6 @@ SOURCE=.\build\win32\httpd.rc
 # Begin Source File
 
 SOURCE=.\server\main.c
-# End Source File
-# Begin Source File
-
-SOURCE=.\build\win32\win32ver.awk
-
-!IF  "$(CFG)" == "httpd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=.\build\win32\win32ver.awk
-
-".\build\win32\httpd.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ./build/win32/win32ver.awk httpd.exe "Apache HTTP Server"  ./include/ap_release.h icon=apache.ico > .\build\win32\httpd.rc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "httpd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=.\build\win32\win32ver.awk
-
-".\build\win32\httpd.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ./build/win32/win32ver.awk httpd.exe "Apache HTTP Server"  ./include/ap_release.h icon=apache.ico > .\build\win32\httpd.rc
-
-# End Custom Build
-
-!ENDIF 
-
 # End Source File
 # End Target
 # End Project
