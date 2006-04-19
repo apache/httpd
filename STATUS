@@ -114,6 +114,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       comment misled my review!  Fix the comment and you have my +1
       for the fix.
       jim: agrees with niq.
+      rpluem: Does http://svn.apache.org/viewcvs?rev=395381&view=rev address
+              the concerns (BTW: Same text as colm used in the backport to 2.0.x
+              (r395197))?
+              jim, does your agreement with niq also include his +1 in the case
+              the comment is fixed?
 
     * mod_proxy_balancer: Initialize local data structures for workers of a
                           balancer. PR 38227, PR 38267.
