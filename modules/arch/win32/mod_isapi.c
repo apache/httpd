@@ -265,7 +265,7 @@ static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, isapi_loaded *isa)
      * reference to the .dll no matter what context (vhost,
      * location, etc) they apply to.
      */
-    isa->report_version = MAKELONG(0, 5); /* Revision 5.0 */
+    isa->report_version = 0x500; /* Revision 5.0 */
     isa->timeout = 300 * 1000000; /* microsecs, not used */
     
     rv = apr_dso_load(&isa->handle, isa->filename, p);
@@ -304,7 +304,7 @@ static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, isapi_loaded *isa)
     /* TerminateExtension() is an optional interface */
     rv = apr_dso_sym((void**)&isa->TerminateExtension, isa->handle,
                      "TerminateExtension");
-    SetLastError(0);
+    apr_set_os_error(0);
 
     /* Run GetExtensionVersion() */
     if (!(isa->GetExtensionVersion)(isa->isapi_version)) {
@@ -487,11 +487,12 @@ struct isapi_cid {
 
 int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid, 
                                        char         *variable_name,
-                                       void         *buf_data, 
+                                       void         *buf_ptr,
                                        apr_uint32_t *buf_size)
 {
     request_rec *r = cid->r;
     const char *result;
+    char *buf_data = (char*)buf_ptr;
     apr_uint32_t len;
 
     if (!strcmp(variable_name, "ALL_HTTP")) 
@@ -511,23 +512,23 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
   
         if (*buf_size < len + 1) {
             *buf_size = len + 1;
-            SetLastError(ERROR_INSUFFICIENT_BUFFER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INSUFFICIENT_BUFFER));
             return 0;
         }
     
         for (i = 0; i < arr->nelts; i++) {
             if (!strncmp(elts[i].key, "HTTP_", 5)) {
                 strcpy(buf_data, elts[i].key);
-                ((char*)buf_data) += strlen(elts[i].key);
-                *(((char*)buf_data)++) = ':';
+                buf_data += strlen(elts[i].key);
+                *(buf_data++) = ':';
                 strcpy(buf_data, elts[i].val);
-                ((char*)buf_data) += strlen(elts[i].val);
-                *(((char*)buf_data)++) = '\r';
-                *(((char*)buf_data)++) = '\n';
+                buf_data += strlen(elts[i].val);
+                *(buf_data++) = '\r';
+                *(buf_data++) = '\n';
             }
         }
 
-        *(((char*)buf_data)++) = '\0';
+        *(buf_data++) = '\0';
         *buf_size = len + 1;
         return 1;
     }
@@ -547,21 +548,21 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
   
         if (*buf_size < len + 1) {
             *buf_size = len + 1;
-            SetLastError(ERROR_INSUFFICIENT_BUFFER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INSUFFICIENT_BUFFER));
             return 0;
         }
     
         for (i = 0; i < arr->nelts; i++) {
             strcpy(buf_data, elts[i].key);
-            ((char*)buf_data) += strlen(elts[i].key);
-            *(((char*)buf_data)++) = ':';
-            *(((char*)buf_data)++) = ' ';
+            buf_data += strlen(elts[i].key);
+            *(buf_data++) = ':';
+            *(buf_data++) = ' ';
             strcpy(buf_data, elts[i].val);
-            ((char*)buf_data) += strlen(elts[i].val);
-            *(((char*)buf_data)++) = '\r';
-            *(((char*)buf_data)++) = '\n';
+            buf_data += strlen(elts[i].val);
+            *(buf_data++) = '\r';
+            *(buf_data++) = '\n';
         }
-        *(((char*)buf_data)++) = '\0';
+        *(buf_data++) = '\0';
         *buf_size = len + 1;
         return 1;
     }
@@ -573,7 +574,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
         len = strlen(result);
         if (*buf_size < len + 1) {
             *buf_size = len + 1;
-            SetLastError(ERROR_INSUFFICIENT_BUFFER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INSUFFICIENT_BUFFER));
             return 0;
         }
         strcpy(buf_data, result);
@@ -582,7 +583,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
     }
 
     /* Not Found */
-    SetLastError(ERROR_INVALID_INDEX);
+    apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_INDEX));
     return 0;
 }
 
@@ -606,7 +607,7 @@ int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
 
     *buf_size = read;
     if (res < 0) {
-        SetLastError(ERROR_READ_FAULT);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_READ_FAULT));
     }
     return (res >= 0);
 }
@@ -629,7 +630,7 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
 {
     int head_present = 1;
     int termarg;
-    char *termch;
+    const char *termch;
     apr_size_t ate = 0;
 
     if (!head || headlen == 0 || !*head) {
@@ -759,14 +760,15 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
     return ate;
 }
 
-int APR_THREAD_FUNC WriteClient(isapi_cid    *cid, 
-                                void         *buf_data, 
-                                apr_uint32_t *size_arg, 
+int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
+                                void         *buf_ptr,
+                                apr_uint32_t *size_arg,
                                 apr_uint32_t  flags)
 {
     request_rec *r = cid->r;
     conn_rec *c = r->connection;
     apr_uint32_t buf_size = *size_arg;
+    char *buf_data = (char*)buf_ptr;
     apr_bucket_brigade *bb;
     apr_bucket *b;
     apr_status_t rv;
@@ -777,14 +779,13 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
          * Parse them out, or die trying.
          */
         apr_ssize_t ate;
-        ate = send_response_header(cid, NULL, (char*)buf_data,
-                                   0, buf_size);
+        ate = send_response_header(cid, NULL, buf_data, 0, buf_size);
         if (ate < 0) {
-            SetLastError(ERROR_INVALID_PARAMETER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
 
-        (char*)buf_data += ate;
+        buf_data += ate;
         buf_size -= ate;
     }
 
@@ -813,12 +814,13 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
 
 int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid, 
                                           apr_uint32_t  HSE_code,
-                                          void         *buf_data, 
+                                          void         *buf_ptr,
                                           apr_uint32_t *buf_size,
                                           apr_uint32_t *data_type)
 {
     request_rec *r = cid->r;
     conn_rec *c = r->connection;
+    char *buf_data = (char*)buf_ptr;
     request_rec *subreq;
 
     switch (HSE_code) {
@@ -850,8 +852,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         apr_table_unset(r->headers_in, "Content-Length");
 
         /* AV fault per PR3598 - redirected path is lost! */
-        (char*)buf_data = apr_pstrdup(r->pool, (char*)buf_data);
-        ap_internal_redirect((char*)buf_data, r);
+        buf_data = apr_pstrdup(r->pool, (char*)buf_data);
+        ap_internal_redirect(buf_data, r);
         return 1;
 
     case HSE_REQ_SEND_RESPONSE_HEADER:
@@ -867,7 +869,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                                    (char*) data_type,
                                    statlen, headlen);
         if (ate < 0) {
-            SetLastError(ERROR_INVALID_PARAMETER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
         else if ((apr_size_t)ate < headlen) {
@@ -899,7 +901,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "HSE_REQ_DONE_WITH_SESSION is not supported: %s",
                           r->filename);
         }
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_MAP_URL_TO_PATH:
@@ -929,7 +931,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                            "ISAPI: ServerSupportFunction HSE_REQ_GET_SSPI_INFO "
                            "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
         
     case HSE_APPEND_LOG_PARAMETER:
@@ -964,7 +966,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                       "ISAPI: ServerSupportFunction HSE_REQ_IO_COMPLETION "
                       "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_TRANSMIT_FILE:
@@ -985,7 +987,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                          "ISAPI: ServerSupportFunction HSE_REQ_TRANSMIT_FILE "
                          "as HSE_IO_ASYNC is not supported: %s", r->filename);
-            SetLastError(ERROR_INVALID_PARAMETER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
         
@@ -1003,7 +1005,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         else {
             apr_finfo_t fi;
             if (apr_file_info_get(&fi, APR_FINFO_SIZE, fd) != APR_SUCCESS) {
-                SetLastError(ERROR_INVALID_PARAMETER);
+                apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
                 return 0;
             }
             fsize = fi.size - tf->Offset;
@@ -1034,7 +1036,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             if (ate < 0)
             {
                 apr_brigade_destroy(bb);
-                SetLastError(ERROR_INVALID_PARAMETER);
+                apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
                 return 0;
             }
         }
@@ -1117,7 +1119,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_REFRESH_ISAPI_ACL "
                           "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_IS_KEEP_CONN:
@@ -1133,7 +1135,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                             "ISAPI: asynchronous I/O not supported: %s", 
                             r->filename);
-            SetLastError(ERROR_INVALID_PARAMETER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
 
@@ -1166,7 +1168,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_GET_IMPERSONATION_TOKEN "
                           "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_MAP_URL_TO_PATH_EX:
@@ -1244,7 +1246,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "ISAPI: ServerSupportFunction HSE_REQ_ABORTIVE_CLOSE"
                           " is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_GET_CERT_INFO_EX:  /* Added in ISAPI 4.0 */
@@ -1253,7 +1255,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_GET_CERT_INFO_EX "
                           "is not supported: %s", r->filename);        
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_SEND_RESPONSE_HEADER_EX:  /* Added in ISAPI 4.0 */
@@ -1267,7 +1269,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                                                shi->cchStatus, 
                                                shi->cchHeader);
         if (ate < 0) {
-            SetLastError(ERROR_INVALID_PARAMETER);
+            apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
         else if ((apr_size_t)ate < shi->cchHeader) {
@@ -1292,7 +1294,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_CLOSE_CONNECTION "
                           "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     case HSE_REQ_IS_CONNECTED:  /* Added after ISAPI 4.0 */
@@ -1310,7 +1312,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_EXTENSION_TRIGGER "
                           "is not supported: %s", r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
     default:
@@ -1318,7 +1320,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "ISAPI: ServerSupportFunction (%d) not supported: "
                           "%s", HSE_code, r->filename);
-        SetLastError(ERROR_INVALID_PARAMETER);
+        apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
     }
 }
@@ -1453,7 +1455,7 @@ apr_status_t isapi_handler (request_rec *r)
 
         read = 0;
         while (read < cid->ecb->cbAvailable &&
-               ((res = ap_get_client_block(r, cid->ecb->lpbData + read,
+               ((res = ap_get_client_block(r, (char*)cid->ecb->lpbData + read,
                                         cid->ecb->cbAvailable - read)) > 0)) {
             read += res;
         }
