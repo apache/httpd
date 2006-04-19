@@ -1,4 +1,4 @@
-/* Copyright 2001-2005 The Apache Software Foundation or its licensors, as
+/* Copyright 2001-2006 The Apache Software Foundation or its licensors, as
  * applicable.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -124,7 +124,7 @@ BEGIN
       VALUE "FileDescription", "Apache HTTP Server Monitor\0"
       VALUE "FileVersion", AP_SERVER_BASEREVISION "\0"
       VALUE "InternalName", "ApacheMonitor.exe\0"
-      VALUE "LegalCopyright", "Copyright 2001-2004 The Apache Software Foundation\0"
+      VALUE "LegalCopyright", "Copyright 2001-2006 The Apache Software Foundation\0"
       VALUE "OriginalFilename", "ApacheMonitor.exe\0"
       VALUE "ProductName", "Apache HTTP Server\0"
       VALUE "ProductVersion", AP_SERVER_BASEREVISION "\0"
