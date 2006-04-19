@@ -144,6 +144,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=18037
        +1: rpluem, jim, niq
 
+    *) mod_isapi: Trivial compiler emit fixes for const'ness - noticed on OS/X
+       Correct lvalue assignments (lvalue casts not allowed) - noticed on Sol.
+       Resolve use of SetLastError with apr_set_os_error() and axe MAKEFILE
+       for a literal value.  Permits mod_isapi to load and run on Unix.
+         http://svn.apache.org/viewcvs?rev=384731&view=rev
+         http://svn.apache.org/viewcvs?rev=386790&view=rev
+         http://svn.apache.org/viewcvs?rev=386821&view=rev
+       +1: wrowe, trawick, colm
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -162,15 +170,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        and fix mod_ssl.so when compiled against .a openssl archives.
          http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
        +1: wrowe, colm
-
-    *) mod_isapi: Trivial compiler emit fixes for const'ness - noticed on OS/X
-       Correct lvalue assignments (lvalue casts not allowed) - noticed on Sol.
-       Resolve use of SetLastError with apr_set_os_error() and axe MAKEFILE
-       for a literal value.  Permits mod_isapi to load and run on Unix.
-         http://svn.apache.org/viewcvs?rev=384731&view=rev
-         http://svn.apache.org/viewcvs?rev=386790&view=rev
-         http://svn.apache.org/viewcvs?rev=386821&view=rev
-       +1: wrowe, trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
