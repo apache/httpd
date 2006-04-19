@@ -1,4 +1,4 @@
-/* Copyright 2001-2006 The Apache Software Foundation or its licensors, as
+/* Copyright 2001-2005 The Apache Software Foundation or its licensors, as
  * applicable.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,7 +19,7 @@
  *
  * Original code from auth_ldap module for Apache v1.3:
  * Copyright 1998, 1999 Enbridge Pipelines Inc.
- * Copyright 1999-2006 Dave Carrigan
+ * Copyright 1999-2001 Dave Carrigan
  */
 
 #include "httpd.h"
