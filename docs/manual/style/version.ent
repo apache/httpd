@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='UTF-8' ?>
 
 <!--
- Copyright 2005 The Apache Software Foundation or its licensors,
+ Copyright 2005-2006 The Apache Software Foundation or its licensors,
                      as applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,6 +19,6 @@
 
 <!ENTITY httpd.major "2">
 <!ENTITY httpd.minor "0">
-<!ENTITY httpd.patch "56">
+<!ENTITY httpd.patch "57">
 
 <!ENTITY httpd.docs "2.0">
