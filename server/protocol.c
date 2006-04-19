@@ -217,6 +217,14 @@ AP_DECLARE(apr_status_t) ap_rgetline_core(char **s, apr_size_t n,
     char *pos, *last_char = *s;
     int do_alloc = (*s == NULL), saw_eos = 0;
 
+    /*
+     * Initialize last_char as otherwise a random value will be compared
+     * against APR_ASCII_LF at the end of the loop if bb only contains 
+     * zero-length buckets.
+     */
+    if (last_char)
+        *last_char = '\0';
+
     for (;;) {
     apr_brigade_cleanup(bb);
     rv = ap_get_brigade(r->input_filters, bb, AP_MODE_GETLINE,

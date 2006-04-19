@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.57
 
+  *) core: Prevent read of unitialized memory in ap_rgetline_core. PR 39282.
+     [Davi Arnaut <davi haxent.com.br>]
+
   *) mod_proxy: Report the proxy server name correctly in the "Via:" header,
      when UseCanonicalName is Off. PR 11971. [Martin Kraemer]
 
