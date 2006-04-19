@@ -113,6 +113,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       containing only (one or more) zero-length buckets.  The existing
       comment misled my review!  Fix the comment and you have my +1
       for the fix.
+      jim: agrees with niq.
 
     * mod_proxy_balancer: Initialize local data structures for workers of a
                           balancer. PR 38227, PR 38267.
