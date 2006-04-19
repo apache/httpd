@@ -43,7 +43,7 @@ CTARGET=/build
 #	the build, since conditional dependencies aren't supported.
 #
 !IF EXIST("srclib\openssl")
-!IF "$(LONG)" == "Debug"
+!IF "$(LONG)" == "Debug" && EXIST("srclib\openssl\out32dll.dbg\openssl.exe")
 SSLBIN=out32dll.dbg
 !ELSE
 SSLBIN=out32dll
