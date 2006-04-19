@@ -90,13 +90,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: trawick, colm, jim
 
+    *) mod_deflate: handle internal redirects correctly
+         http://svn.apache.org/viewcvs?rev=395079&view=rev
+       +1: colm, wrowe, niq
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_dbd: When threaded, create a private pool in child_init
       so we're not using the process pool later.  Also improve
       configuration defaults and merge function.
-      (this assumes Colm's windows-build fixes are also backported)
       http://svn.apache.org/viewcvs.cgi?rev=348026&view=rev
       http://svn.apache.org/viewcvs.cgi?rev=354400&view=rev
       +1 niq, trawick
@@ -113,6 +116,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         2.2.x version of patch:
           Trunk version works
       +1: rpluem
+      niq: the new comment isn't accurate; it applies to any brigade
+      containing only (one or more) zero-length buckets.  The existing
+      comment misled my review!  Fix the comment and you have my +1
+      for the fix.
 
     * mod_proxy_balancer: Initialize local data structures for workers of a
                           balancer. PR 38227, PR 38267.
@@ -131,7 +138,3 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         2.2.x version of patch:
           Trunk version works
       +1: rpluem, jim
-
-    *) mod_deflate: handle internal redirects correctly
-         http://svn.apache.org/viewcvs?rev=395079&view=rev
-       +1: colm, wrowe  
