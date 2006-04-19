@@ -19,7 +19,7 @@
  *
  * Original code from auth_ldap module for Apache v1.3:
  * Copyright 1998, 1999 Enbridge Pipelines Inc.
- * Copyright 1999-2006 Dave Carrigan
+ * Copyright 1999-2001 Dave Carrigan
  */
 
 #include "httpd.h"
