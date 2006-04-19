@@ -1,4 +1,6 @@
                                                          -*- coding: utf-8 -*-
+Changes with Apache 2.0.58
+
 Changes with Apache 2.0.57
 
   *) mod_cgid: run the get_suexec_identity hook within the request-handler
