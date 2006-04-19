@@ -47,7 +47,7 @@ RSC=rc.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /fo"Release/mod_cgi.res" /i "../../include" /i "../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_cgi.so" /d LONG_NAME="cgi_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -73,7 +73,7 @@ LINK32=link.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /fo"Debug/mod_cgi.res" /i "../../include" /i "../../srclib/apr/include" /d "_DEBUG" /d BIN_NAME="mod_cgi.so" /d LONG_NAME="cgi_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -97,36 +97,7 @@ SOURCE=.\mod_cgi.h
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_cgi.rc
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\build\win32\win32ver.awk
-
-!IF  "$(CFG)" == "mod_cgi - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\mod_cgi.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_cgi.so "cgi_module for Apache" ../../include/ap_release.h > .\mod_cgi.rc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "mod_cgi - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\mod_cgi.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_cgi.so "cgi_module for Apache" ../../include/ap_release.h > .\mod_cgi.rc
-
-# End Custom Build
-
-!ENDIF 
-
+SOURCE=..\..\build\win32\httpd.rc
 # End Source File
 # End Target
 # End Project

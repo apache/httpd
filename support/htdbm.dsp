@@ -44,7 +44,7 @@ RSC=rc.exe
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /FD /c
 # ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "../srclib/apr/include" /I "../srclib/apr-util/include" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fd"Release/htdbm_src" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /fo"Release/htdbm.res" /i "../include" /i "../srclib/apr/include" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="htdbm.exe" /d LONG_NAME="Apache htdbm command line utility"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -68,7 +68,7 @@ LINK32=link.exe
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /FD /c
 # ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /Fd"Debug/htdbm_src" /FD /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /fo"Debug/htdbm.res" /i "../include" /i "../srclib/apr/include" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="htdbm.exe" /d LONG_NAME="Apache htdbm command line utility"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -88,36 +88,7 @@ SOURCE=.\htdbm.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\htdbm.rc
-# End Source File
-# Begin Source File
-
-SOURCE=..\build\win32\win32ver.awk
-
-!IF  "$(CFG)" == "htdbm - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\build\win32\win32ver.awk
-
-".\htdbm.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk htdbm.exe "htdbm Utility"  ../include/ap_release.h > .\htdbm.rc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "htdbm - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\build\win32\win32ver.awk
-
-".\htdbm.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk htdbm.exe "htdbm Utility"  ../include/ap_release.h > .\htdbm.rc
-
-# End Custom Build
-
-!ENDIF 
-
+SOURCE=..\build\win32\httpd.rc
 # End Source File
 # End Target
 # End Project

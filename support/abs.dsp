@@ -44,7 +44,7 @@ RSC=rc.exe
 # ADD BASE CPP /nologo /MD /W3 /O2 /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "SSL" /FD /c
 # ADD CPP /nologo /MD /W3 /O2 /Oy- /Zi /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" /I "../srclib/openssl/inc32" /D "NDEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "HAVE_OPENSSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /Fd"Release/abs_src" /FD /c
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /fo"Release/ab.res" /i "../include" /i "../srclib/apr/include" /d "NDEBUG" /d "APP_FILE" /d BIN_NAME="ab.exe" /d LONG_NAME="ApacheBench/SSL command line utility"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -68,7 +68,7 @@ LINK32=link.exe
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "SSL" /FD /c
 # ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../srclib/apr/include" /I "../srclib/apr-util/include" /I "../include" /I "../srclib/openssl/inc32" /D "_DEBUG" /D "WIN32" /D "_CONSOLE" /D "APR_DECLARE_STATIC" /D "APU_DECLARE_STATIC" /D "HAVE_OPENSSL" /D "WIN32_LEAN_AND_MEAN" /D "NO_IDEA" /D "NO_RC5" /D "NO_MDC2" /D "OPENSSL_NO_IDEA" /D "OPENSSL_NO_RC5" /D "OPENSSL_NO_MDC2" /Fd"Debug/abs_src" /FD /c
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /fo"Debug/ab.res" /i "../include" /i "../srclib/apr/include" /d "_DEBUG" /d "APP_FILE" /d BIN_NAME="ab.exe" /d LONG_NAME="ApacheBench/SSL command line utility"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -99,36 +99,7 @@ SOURCE=.\ab.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\abs.rc
-# End Source File
-# Begin Source File
-
-SOURCE=..\build\win32\win32ver.awk
-
-!IF  "$(CFG)" == "abs - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\build\win32\win32ver.awk
-
-".\abs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk ab.exe "ApacheBench/SSL Utility"  ../include/ap_release.h > .\abs.rc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "abs - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\build\win32\win32ver.awk
-
-".\abs.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../build/win32/win32ver.awk ab.exe "ApacheBench/SSL Utility"  ../include/ap_release.h > .\abs.rc
-
-# End Custom Build
-
-!ENDIF 
-
+SOURCE=..\build\win32\httpd.rc
 # End Source File
 # End Target
 # End Project

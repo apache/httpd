@@ -1,4 +1,5 @@
-/* Copyright 2001-2006 The Apache Software Foundation or its licensors, as applicable.
+/* Copyright 1999-2006 The Apache Software Foundation or its licensors, as
+ * applicable.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,8 +24,9 @@
 
 #include "apr_general.h" /* stringify */
 
-#define AP_SERVER_COPYRIGHT "Copyright 2001-2006 The Apache Software Foundation" \
-                            " or its licensors, as applicable."
+#define AP_SERVER_COPYRIGHT \
+  "Copyright 2001-2006 The Apache Software Foundation or its licensors, as " \
+  "applicable."
 
 /*
  * The below defines the base string of the Server: header. Additional
@@ -39,6 +41,7 @@
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 #define AP_SERVER_BASEVENDOR "Apache Software Foundation"
+#define AP_SERVER_BASEPROJECT "Apache HTTP Server"
 #define AP_SERVER_BASEPRODUCT "Apache"
 
 #define AP_SERVER_MAJORVERSION_NUMBER 2

@@ -47,7 +47,7 @@ RSC=rc.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /i "../../include" /I "../../srclib/apr/include" /d "NDEBUG"
+# ADD RSC /l 0x409 /i "../../include" /I "../../srclib/apr/include" /d "NDEBUG" /d "APP_FILE"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -73,7 +73,7 @@ LINK32=link.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /i "../../include" /I "../../srclib/apr/include" /d "_DEBUG"
+# ADD RSC /l 0x409 /i "../../include" /I "../../srclib/apr/include" /d "_DEBUG" /d "APP_FILE"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo

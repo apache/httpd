@@ -47,7 +47,7 @@ RSC=rc.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /fo"Release/mod_deflate.res" /i "../../include" /i "../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_deflate.so" /d LONG_NAME="deflate_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -73,7 +73,7 @@ LINK32=link.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /fo"Release/mod_deflate.res" /i "../../include" /i "../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_deflate.so" /d LONG_NAME="deflate_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -93,36 +93,7 @@ SOURCE=.\mod_ext_filter.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_ext_filter.rc
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\build\win32\win32ver.awk
-
-!IF  "$(CFG)" == "mod_ext_filter - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\mod_ext_filter.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_ext_filter.so "ext_filter_module for Apache" ../../include/ap_release.h > .\mod_ext_filter.rc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "mod_ext_filter - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\mod_ext_filter.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_ext_filter.so "ext_filter_module for Apache" ../../include/ap_release.h > .\mod_ext_filter.rc
-
-# End Custom Build
-
-!ENDIF 
-
+SOURCE=..\..\build\win32\httpd.rc
 # End Source File
 # End Target
 # End Project
