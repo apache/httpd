@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.57
 
+  *) mod_proxy: Report the proxy server name correctly in the "Via:" header,
+     when UseCanonicalName is Off. PR 11971. [Martin Kraemer]
+
   *) mod_isapi: Various trivial code-fixes to permit mod_isapi to load and
      run on Unix. [William Wrowe]
 
