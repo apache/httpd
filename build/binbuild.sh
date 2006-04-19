@@ -1,6 +1,6 @@
 #!/bin/sh
 # 	
-# Copyright 1999-2005 The Apache Software Foundation or its licensors, as
+# Copyright 1999-2006 The Apache Software Foundation or its licensors, as
 # applicable.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");

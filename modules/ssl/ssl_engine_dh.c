@@ -1,7 +1,7 @@
 #if 0
 =pod
 #endif
-/* Copyright 2001-2005 The Apache Software Foundation or its licensors, as
+/* Copyright 2001-2006 The Apache Software Foundation or its licensors, as
  * applicable.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");

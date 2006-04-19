@@ -4,7 +4,7 @@
 <!-- English Revision: 151405 -->
 
 <!--
- Copyright 2004-2005 The Apache Software Foundation or it licensors,
+ Copyright 2004-2006 The Apache Software Foundation or it licensors,
                      as applicable.
 
 
