@@ -74,7 +74,7 @@ PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "AP_DECLARE_EXPORT" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "PCRE_STATIC" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd_cl" /FD /c
+# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "PCRE_STATIC" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd_cl" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
