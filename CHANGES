@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.2
 
+  *) HTML-escape the Expect error message.  Not classed as security as
+     an attacker has no way to influence the Expect header a victim will
+     send to a target site.  Reported by Thiago Zaninotti
+     <thiango nstalker.com>. [Mark Cox]
+
   *) htdbm: Warn the user when adding a plaintext password on a platform
      where it wouldn't work with the server (i.e., anywhere that has
      crypt()).  [Jeff Trawick]
