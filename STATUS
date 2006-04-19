@@ -79,6 +79,10 @@ PROPOSED PATCHES FOR THIS RELEASE:
       http://people.apache.org/~colm/include_directive-1.3.patch
       +1: colm, wrowe
       -0: jim (do we *really* want those fprintfs?)
+        Colm says: The ap_process_include_config function is 
+        a direct copy of ap_process_resource_config(), warts
+        and all. That's where the fprintf's come from; it's
+        existing behaviour.
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
