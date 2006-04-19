@@ -12,7 +12,7 @@ functions.
 
 Written by: Philip Hazel <ph10@cam.ac.uk>
 
-           Copyright (c) 1997-2004 University of Cambridge
+           Copyright (c) 1997-2006 University of Cambridge
 
 -----------------------------------------------------------------------------
 Redistribution and use in source and binary forms, with or without
