@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='KOI8-R' ?>
 <!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ru.xsl"?>
-<!-- English Revision: 151405 -->
+<!-- English Revision: 395235 -->
 
 <!--
  Copyright 2002-2006 The Apache Software Foundation or its licensors, as

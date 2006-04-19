@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="KOI8-R" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ru.xsl"?>
-<!-- English Revision: 333057 -->
+<!-- English Revision: 395235 -->
 
 <!--
  Copyright 2003-2006 The Apache Software Foundation

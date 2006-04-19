@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 333057 -->
+<!-- English Revision: 395235 -->
 <!-- French translation by Vincent Deffontaines, review by alain B -->
 
 <!--
