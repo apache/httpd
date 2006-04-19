@@ -105,12 +105,7 @@ CURRENT RELEASE NOTES:
       branches/2.2.x, and finally merge into branches/2.0.x, as applicable.
 
 
-tch is at                              
 RELEASE SHOWSTOPPERS:
-
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
 
     *) http_protocol: Fix escaping of Expect error message
         Trunk version of patch:
@@ -118,6 +113,20 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         2.0.x version of patch:
           Trunk version with changed offsets
       +1: mjc, trawick, rpluem, jim
+
+
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
+    *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
+       the non-cgid side of the handler, where the full per-server/dir/etc
+       configuration is available instead of using two mod_suexec and
+       mod_userdir specific hacks. See mod_vhost_ldap for an example
+       third-party get_suexec_identity implementation.
+         http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
+       see also a verbose patch explanation at;
+         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=113813652015559
+       +1: colm, trawick, jim
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
@@ -130,17 +139,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~colm/httpd-2.0-reverse-proxy-cookie.patch
         and is in production with Clients.
        +1: niq
-       +0: wrowe; looks good, no way to apply this without a minor bump
-
-    *) mod_cgid: Fix PR 36410. Invoke the set_suexec_identity hook from
-       the non-cgid side of the handler, where the full per-server/dir/etc
-       configuration is available instead of using two mod_suexec and
-       mod_userdir specific hacks. See mod_vhost_ldap for an example
-       third-party get_suexec_identity implementation.
-         http://people.apache.org/~colm/2.0.x-suexec-cgid.patch
-       see also a verbose patch explanation at;
-         http://marc.theaimsgroup.com/?l=apache-httpd-dev&m=113813652015559
-       +1: colm, trawick, jim
+       +1: wrowe; looks good, no way to apply this without a minor bump
 
     *) Backport 102870; PR 17217; stop linking OpenSSL to support/*
        binaries (especially when compiled --with-static-support (!))
