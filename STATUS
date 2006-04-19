@@ -83,6 +83,11 @@ PROPOSED PATCHES FOR THIS RELEASE:
         a direct copy of ap_process_resource_config(), warts
         and all. That's where the fprintf's come from; it's
         existing behaviour.
+        Jim asks: but aren't we already getting that info when
+        we run ap_process_resource_config()? In other words, aren't
+        we just double printing the status info? (PS: No, I haven't
+        tried the patch yet, which, of course, would answer this
+        directly :) )
 
 RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
