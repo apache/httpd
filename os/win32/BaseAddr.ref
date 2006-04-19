@@ -25,7 +25,6 @@ mod_vhost_alias.so      0x6FDF0000    0x00010000
 mod_mime_magic.so       0x6FDE0000    0x00010000
 mod_dav.so              0x6FDC0000    0x00020000
 mod_dav_fs.so           0x6FDB0000    0x00010000
-mod_proxy.so            0x6FDA0000    0x00010000
 mod_proxy_connect.so    0x6FD90000    0x00010000
 mod_proxy_ftp.so        0x6FD80000    0x00010000
 mod_proxy_http.so       0x6FD70000    0x00010000
@@ -73,3 +72,4 @@ mod_dumpio.so           0x6FA50000    0x00010000
 mod_echo.so             0x6FA40000    0x00010000
 mod_authn_dbd.so        0x6FA30000    0x00010000
 mod_dbd.so              0x6FA20000    0x00010000
+mod_proxy.so            0x6FA00000    0x00020000
