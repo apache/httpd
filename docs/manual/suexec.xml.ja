@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:395231 (outdated) -->
+<!-- English Revision: 395231 -->
 
 <!--
- Copyright 2002-2006 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2006 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -449,7 +449,7 @@
     オプションで指定した正しいユーザで起動されていることを確認しますが、
     システム上でこのチェックが行なわれる前に、
     suEXEC が呼ぶシステムやライブラリが脆弱である可能性は残ります。対抗策として、
-    一般に良い習慣ともされいますが、
+    一般に良い習慣ともされていますが、
     ファイルシステムパーミッションを使って
     Apache の実行時のグループのみが suEXEC を実行できるように
     するのが良いでしょう。</p>
