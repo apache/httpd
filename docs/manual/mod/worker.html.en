@@ -122,7 +122,7 @@ uses</a></li>
     non-default values are specified for these directives, they 
     should appear before other <code class="module"><a href="../mod/worker.html">worker</a></code> directives.</p>
 
-    <p>In addition to a the set of active child processes, there may 
+    <p>In addition to the set of active child processes, there may 
     be additional child processes which are terminating but where at
     least one server thread is still handling an existing client
     connection.  Up to <code class="directive"><a href="../mod/mpm_common.html#maxclients">MaxClients</a></code> terminating processes 
