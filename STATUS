@@ -129,6 +129,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
        +1: wrowe, colm
 
+    * htdbm: Fix crash in 64-bit mode on HP-UX caused by unexpected
+      placement of crypt() prototype (unistd.h).
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=393364&view=rev
+        2.0.x version of patch:
+          Trunk version works
+      +1: trawick
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
