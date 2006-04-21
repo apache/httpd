@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.2
 
+  *) core: Prevent reading uninitialized memory while reading a line of
+     protocol input.  PR 39282. [Davi Arnaut <davi haxent.com.br>]
+
   *) mod_dbd: Update defaults, improve error reporting.
      [Chris Darroch <chrisd pearsoncmg com>, Nick Kew]
 

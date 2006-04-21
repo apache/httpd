@@ -107,23 +107,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: rpluem, jim, wrowe
 
-    * core: Prevent read of unitialized memory in ap_rgetline_core. PR 39282.
-        Trunk version of patch:
-          http://svn.apache.org/viewcvs?rev=394070&view=rev
-        2.2.x version of patch:
-          Trunk version works
-      +1: rpluem, trawick (with rev 295381), pquerna (with rev 295381)
-      niq: the new comment isn't accurate; it applies to any brigade
-      containing only (one or more) zero-length buckets.  The existing
-      comment misled my review!  Fix the comment and you have my +1
-      for the fix.
-      jim: agrees with niq.
-      rpluem: Does http://svn.apache.org/viewcvs?rev=395381&view=rev address
-              the concerns (BTW: Same text as colm used in the backport to 2.0.x
-              (r395197))?
-              jim, does your agreement with niq also include his +1 in the case
-              the comment is fixed?
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Backport mod_authz_dbd (it's had some testing now)
