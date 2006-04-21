@@ -83,10 +83,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: trawick, colm, jim
 
-    *) mod_deflate: handle internal redirects correctly
-         http://svn.apache.org/viewcvs?rev=395079&view=rev
-       +1: colm, wrowe, niq
-
     * mod_proxy: Do not release connections from connection pool twice as this
                  can cause different threads to use the same connection at the
                  same time. PR 38793.

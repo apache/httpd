@@ -240,7 +240,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         const char *encoding;
 
         /* only work on main request/no subrequests */
-        if (!ap_is_initial_req(r)) {
+        if (r->main != NULL) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
