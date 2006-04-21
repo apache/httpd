@@ -68,7 +68,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "_WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fd"Debug\dftables" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /D "_WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fd"Debug\dftables" /FD /c
+# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /D "_WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fd"Debug\dftables" /FD /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
