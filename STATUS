@@ -107,21 +107,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: rpluem, jim, wrowe
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-
-    * mod_dbd: When threaded, create a private pool in child_init
-      so we're not using the process pool later.  Also improve
-      configuration defaults and merge function.
-      http://svn.apache.org/viewcvs.cgi?rev=348026&view=rev
-      http://svn.apache.org/viewcvs.cgi?rev=354400&view=rev
-      +1 niq, trawick, pquerna
-
-    * Backport mod_authz_dbd (it's had some testing now)
-      http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
-      +1 niq
-      -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
-                     This can not be backported to 2.2.
-
     * core: Prevent read of unitialized memory in ap_rgetline_core. PR 39282.
         Trunk version of patch:
           http://svn.apache.org/viewcvs?rev=394070&view=rev
@@ -138,6 +123,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               (r395197))?
               jim, does your agreement with niq also include his +1 in the case
               the comment is fixed?
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+
+    * mod_dbd: When threaded, create a private pool in child_init
+      so we're not using the process pool later.  Also improve
+      configuration defaults and merge function.
+      http://svn.apache.org/viewcvs.cgi?rev=348026&view=rev
+      http://svn.apache.org/viewcvs.cgi?rev=354400&view=rev
+      +1 niq, trawick, pquerna
+
+    * Backport mod_authz_dbd (it's had some testing now)
+      http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
+      +1 niq
+      -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
+                     This can not be backported to 2.2.
 
     * arch win32: http://svn.apache.org/viewcvs?rev=395419&view=rev
       s|/GX |/EHsc | because they were always synonyms, and Visual Studio
