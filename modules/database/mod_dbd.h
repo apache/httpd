@@ -1,5 +1,4 @@
-/* Copyright 2003-5 WebThing Ltd
- * Copyright 2005 The Apache Software Foundation or its licensors, as
+/* Copyright 2003-6 The Apache Software Foundation or its licensors, as
  * applicable.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
@@ -17,7 +16,7 @@
 
 /**
  * @file  mod_dbd.h
- * @brief Database Acces Extension Module for Apache
+ * @brief Database Access Extension Module for Apache
  *
  * Overview of what this is and does:
  * http://www.apache.org/~niq/dbd.html
@@ -61,6 +60,7 @@ typedef struct {
     apr_dbd_t *handle;
     const apr_dbd_driver_t *driver;
     apr_hash_t *prepared;
+    apr_pool_t *pool;
 } ap_dbd_t;
 
 /* Export functions to access the database */
