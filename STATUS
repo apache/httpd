@@ -114,7 +114,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       configuration defaults and merge function.
       http://svn.apache.org/viewcvs.cgi?rev=348026&view=rev
       http://svn.apache.org/viewcvs.cgi?rev=354400&view=rev
-      +1 niq, trawick
+      +1 niq, trawick, pquerna
 
     * Backport mod_authz_dbd (it's had some testing now)
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
@@ -127,7 +127,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs?rev=394070&view=rev
         2.2.x version of patch:
           Trunk version works
-      +1: rpluem, trawick (with rev 295381)
+      +1: rpluem, trawick (with rev 295381), pquerna (with rev 295381)
       niq: the new comment isn't accurate; it applies to any brigade
       containing only (one or more) zero-length buckets.  The existing
       comment misled my review!  Fix the comment and you have my +1
