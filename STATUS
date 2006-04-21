@@ -139,10 +139,3 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
                      This can not be backported to 2.2.
 
-    * arch win32: http://svn.apache.org/viewcvs?rev=395419&view=rev
-      s|/GX |/EHsc | because they were always synonyms, and Visual Studio
-      2005 edition complains bitterly and loudly that /GX is deprecated.
-      Note that only -debug- compiles are even affected by the change,
-      and although the patch looks long, it's 4 characters per file, 1 line.
-      +1: wrowe, colm
-
