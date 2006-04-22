@@ -19,6 +19,9 @@ Changes with Apache 2.2.2
      send to a target site.  Reported by Thiago Zaninotti
      <thiango nstalker.com>. [Mark Cox]
 
+  *) htdbm: Fix crash processing -d option in 64-bit mode on HP-UX.
+     [Jeff Trawick]
+
   *) htdbm: Warn the user when adding a plaintext password on a platform
      where it wouldn't work with the server (i.e., anywhere that has
      crypt()).  [Jeff Trawick]
