@@ -75,15 +75,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy_balancer: Initialize local data structures for workers of a
-                          balancer. PR 38227, PR 38267.
-        Trunk version of patch:
-          http://svn.apache.org/viewcvs?rev=394065&view=rev
-          http://svn.apache.org/viewcvs?rev=394446&view=rev
-        2.2.x version of patch:
-          Trunk version works
-      +1: rpluem, jim, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Backport mod_authz_dbd (it's had some testing now)
