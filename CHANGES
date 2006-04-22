@@ -1,4 +1,6 @@
                                                         -*- coding: utf-8 -*-
+Changes with Apache 2.2.3
+
 Changes with Apache 2.2.2
 
   *) mod_deflate: work correctly in an internal redirect
