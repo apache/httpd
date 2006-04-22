@@ -1,4 +1,4 @@
-/* Copyright 2001-2006 The Apache Software Foundation or its licensors, as applicable.
+/* Copyright 2001-2005 The Apache Software Foundation or its licensors, as applicable.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
