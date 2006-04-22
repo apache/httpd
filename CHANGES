@@ -4,6 +4,9 @@ Changes with Apache 2.2.2
   *) mod_deflate: work correctly in an internal redirect
      [Brian J. France <list firehawksystems com>]
 
+  *) mod_proxy_balancer: Initialize members of a balancer correctly.
+     PR 38227. [James A. Robinson <jim.robinson stanford.edu>]
+
   *) mod_proxy: Do not release connections from connection pool twice.
      PR 38793. [Ruediger Pluem, matthias <mk-asf gigacodes.de>]
 
