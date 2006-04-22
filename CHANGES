@@ -5,26 +5,6 @@ Changes with Apache 2.3.0
   *) Add mod_proxy_fcgi, a FastCGI back end for mod_proxy.
      [Garrett Rooney, Jim Jagielski, Paul Querna]
 
-  *) mod_deflate: Allow mod_deflate to handle internal redirects.
-     [Brian J. France <list firehawksystems.com>] 
-
-  *) HTML-escape the Expect error message.  Not classed as security as
-     an attacker has no way to influence the Expect header a victim will
-     send to a target site.  Reported by Thiago Zaninotti
-     <thiango nstalker.com>. [Mark Cox]
-
-  *) mod_proxy_balancer: Initialize members of a balancer correctly.
-     PR 38227. [James A. Robinson <jim.robinson stanford.edu>]
-
-  *) mod_proxy: Do not release connections from connection pool twice.
-     PR 38793. [Ruediger Pluem, matthias <mk-asf gigacodes.de>]
-
-  *) core: Prevent reading uninitialized memory while reading a line of
-     protocol input.  PR 39282. [Davi Arnaut <davi haxent.com.br>]
-
-  *) htdbm: Fix crash processing -d option in 64-bit mode on HP-UX.
-     [Jeff Trawick]
-
   *) Event MPM: Fill in the scoreboard's tid field. PR 38736.
      [Chris Darroch <chrisd pearsoncmg.com>]
 
@@ -92,8 +72,6 @@ Changes with Apache 2.3.0
   *) Added new connection states for handler and write completion
      [Brian Pane]
 
-  *) New module: mod_authn_dbd [Nick Kew]
-
   *) mod_cgid: Refuse to work on Solaris 10 due to OS bugs.  PR 34264.
      [Justin Erenkrantz]
 
@@ -102,7 +80,37 @@ Changes with Apache 2.3.0
      access control, as in: SSLRequire "value" in OID("1.3.6.1.4.1.18060.1")
      [Martin Kraemer, David Reid]
 
+Changes with Apache 2.2.3
+
+
 Changes with Apache 2.2.2
+
+  *) mod_deflate: Allow mod_deflate to handle internal redirects.
+     [Brian J. France <list firehawksystems.com>]
+
+  *) mod_proxy_balancer: Initialize members of a balancer correctly.
+     PR 38227. [James A. Robinson <jim.robinson stanford.edu>]
+
+  *) mod_proxy: Do not release connections from connection pool twice.
+     PR 38793. [Ruediger Pluem, matthias <mk-asf gigacodes.de>]
+
+  *) core: Prevent reading uninitialized memory while reading a line of
+     protocol input.  PR 39282. [Davi Arnaut <davi haxent.com.br>]
+
+  *) mod_dbd: Update defaults, improve error reporting.
+     [Chris Darroch <chrisd pearsoncmg com>, Nick Kew]
+
+  *) mod_dbd: Create own pool and mutex to avoid problem use of
+     process pool in request processing.
+     [Chris Darroch <chrisd pearsoncmg com>]
+
+  *) HTML-escape the Expect error message.  Not classed as security as
+     an attacker has no way to influence the Expect header a victim will
+     send to a target site.  Reported by Thiago Zaninotti
+     <thiango nstalker.com>. [Mark Cox]
+
+  *) htdbm: Fix crash processing -d option in 64-bit mode on HP-UX.
+     [Jeff Trawick]
 
   *) htdbm: Warn the user when adding a plaintext password on a platform
      where it wouldn't work with the server (i.e., anywhere that has
@@ -231,6 +239,8 @@ Changes with Apache 2.2.0
      the path. [Jim Jagielski, Ruediger Pluem]
 
 Changes with Apache 2.1.9
+
+  *) Add mod_authn_dbd (SQL-based  authentication) [Nick Kew]
 
   *) mod_proxy_ajp: Do not spool the entire response from AJP backend before
      sending it up the filter chain. PR37100.  [Ruediger Pluem]
