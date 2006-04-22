@@ -144,16 +144,16 @@ int main(int argc, const char *argv[])
         exit_error(rv, "apr_socket_listen");
     }
 
+    rv = apr_proc_detach(APR_PROC_DETACH_DAEMONIZE);
+    if (rv) {
+        exit_error(rv, "apr_proc_detach");
+    }
+
     while (--num_to_start >= 0) {
         rv = apr_proc_fork(&proc, pool);
         if (rv == APR_INCHILD) {
             apr_os_file_t oft = 0;
             apr_os_sock_t oskt;
-
-            rv = apr_proc_detach(APR_PROC_DETACH_DAEMONIZE);
-            if (rv) {
-                exit_error(rv, "apr_proc_detach");
-            }
 
 #if defined(WIN32) || defined(OS2) || defined(NETWARE)
 #error "Please implement me."
