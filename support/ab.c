@@ -728,6 +728,13 @@ static void output_results(int sig)
     apr_interval_time_t timetakenusec;
     float timetaken;
 
+    /* If ab was interrupted, we are only interested in requests
+     * which occured.
+     */
+    if (sig) {
+        requests = done + bad;
+    }
+
     endtime = apr_time_now();
     timetakenusec = endtime - start;
     timetaken = ((float)apr_time_sec(timetakenusec)) +
