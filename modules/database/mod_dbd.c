@@ -192,6 +192,7 @@ static void *dbd_merge(apr_pool_t *pool, void *BASE, void *ADD) {
     cfg->exptime = (add->set&EXPTIME_SET) ? add->exptime : base->exptime;
 #endif
     cfg->set = add->set | base->set;
+    cfg->prepared = (add->prepared != NULL) ? add->prepared : base->prepared;
     return (void*) cfg;
 }
 /* A default nmin of >0 will help with generating meaningful
