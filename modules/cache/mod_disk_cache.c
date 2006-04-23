@@ -431,7 +431,7 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     }
     else if (format != DISK_FORMAT_VERSION) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "cache_disk: File '%s' has a version mismatch. File had version: %d.",
+                     "disk_cache: File '%s' has a version mismatch. File had version: %d.",
                      dobj->hdrsfile, format);
         return DECLINED;
     }
@@ -987,7 +987,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         rv = apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                         "cache_disk: Error when reading bucket for URL %s",
+                         "disk_cache: Error when reading bucket for URL %s",
                          h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
@@ -996,7 +996,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         rv = apr_file_write_full(dobj->tfd, str, length, &written);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                         "cache_disk: Error when writing cache file for URL %s",
+                         "disk_cache: Error when writing cache file for URL %s",
                          h->cache_obj->key);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
@@ -1005,7 +1005,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         dobj->file_size += written;
         if (dobj->file_size > conf->maxfs) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "cache_disk: URL %s failed the size check "
+                         "disk_cache: URL %s failed the size check "
                          "(%" APR_OFF_T_FMT ">%" APR_SIZE_T_FMT ")",
                          h->cache_obj->key, dobj->file_size, conf->maxfs);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
@@ -1029,7 +1029,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         }
         if (dobj->file_size < conf->minfs) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "cache_disk: URL %s failed the size check "
+                         "disk_cache: URL %s failed the size check "
                          "(%" APR_OFF_T_FMT "<%" APR_SIZE_T_FMT ")",
                          h->cache_obj->key, dobj->file_size, conf->minfs);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
