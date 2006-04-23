@@ -2770,9 +2770,12 @@ static const char *set_coredumpdir (cmd_parms *cmd, void *dummy, char *arg)
 
 static const char *include_config (cmd_parms *cmd, void *dummy, char *name)
 {
+    static cmd_parms parms;
     name = ap_server_root_relative(cmd->pool, name);
+
+    memcpy(&parms, cmd, sizeof(parms));
     
-    ap_process_resource_config(cmd->server, name, cmd->pool, cmd->temp_pool);
+    ap_process_include_config(cmd->server, name, cmd->pool, cmd->temp_pool, &parms);
 
     return NULL;
 }
