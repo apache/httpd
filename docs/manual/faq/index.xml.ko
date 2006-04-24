@@ -3,7 +3,7 @@
     <!ENTITY categories SYSTEM "categories.xml.ko">
 ]>
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 395235 -->
+<!-- English Revision: 396609 -->
 
 <!--
  Copyright 2004 The Apache Software Foundation

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.es.xsl"?>
-<!-- English Revision: 395235 -->
+<!-- English Revision: 396609 -->
 
 <!--
  Copyright 2004-2005 The Apache Software Foundation or its licensors, as
