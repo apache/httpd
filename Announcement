@@ -2,7 +2,7 @@
                    Apache HTTP Server 1.3.35 Released
 
    The Apache Software Foundation and The Apache HTTP Server Project are
-   pleased to announce the release of version 1.3.34 of the Apache HTTP
+   pleased to announce the release of version 1.3.35 of the Apache HTTP
    Server ("Apache").  This Announcement notes the significant changes
    in 1.3.35 as compared to 1.3.34.
 
@@ -22,7 +22,7 @@
    the 1.1.x and 1.2.x family, upgrade as soon as possible.  No further
    releases will be made in the 1.2.x family.
 
-   Apache 1.3.34 is available for download from:
+   Apache 1.3.35 is available for download from:
    
        http://httpd.apache.org/download.cgi
 
