@@ -1,0 +1,57 @@
+#
+# Extra rule sets for making shared module DLLs for Cygwin 1.x
+# 
+# On Cygwin OS the user needs to run twice "make" if shared modules have 
+# been requested using the --enable-shared=<module> configure flag.
+# This is because when we pass the module mod_foo.c we have no import 
+# library, usually src/libhttpd.dll to link against in this case. So the
+# two "make" runs do the following:
+#
+#   1st run: builds all static modules and links everything to the 
+#            shared core DLL, which is also the import library for any
+#            further shared modules, including the apxs tool mechanism.
+#
+#   2nd run: builds *only* the shared module DLLs specified by the 
+#            --enable-shared configure switch and of course updates
+#            the buildmark.o and hence httpd's build date.
+#
+# Any suggestions in getting this done in one step are highly welcome.
+# Stipe Tolj <tolj@wapme-systems.de>
+#
+
+# overwrite variables that are defined in previous makefile
+LD_SHLIB=$(CC)
+LDFLAGS_SHLIB=--shared
+
+define shared_dll
+  	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $*.dll $(<:%.c=%.o) $(LIBS_SHLIB) \
+        $(SRCDIR)/$(SHCORE_IMPLIB) $(LIBS1)
+endef
+
+%.def : %.c
+	touch $*.def
+
+%.lo : %.c
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $< && mv $*.o $*.lo
+
+%.dll : %.lo
+	@if [ -f "$(SRCDIR)/$(SHCORE_IMPLIB)" ]; then \
+        rm -f $(SRCDIR)/$(SHCORE_IMPLIB).$$; \
+        echo $(shared_dll); \
+		$(shared_dll); \
+	else \
+        if [ ! -f "$(SRCDIR)/$(SHCORE_IMPLIB).$$" ]; then \
+	      echo "+--------------------------------------------------------+"; \
+		  echo "| There is no shared core 'libhttpd.dll' available!      |"; \
+		  echo "|                                                        |"; \
+		  echo "| This is obviously your first 'make' run with configure |"; \
+		  echo "| flag SHARED_CORE enabled and shared modules.           |"; \
+		  echo "|                                                        |"; \
+		  echo "| You will have to re-run 'make' after this run builds   |"; \
+		  echo "| the required shared import library!                    |"; \
+		  echo "+--------------------------------------------------------+"; \
+		  sleep 10; \
+          touch $(SRCDIR)/$(SHCORE_IMPLIB).$$; \
+        fi; \
+	fi;
+

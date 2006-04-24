@@ -1,0 +1,114 @@
+# Microsoft Developer Studio Generated Dependency File, included by ap.mak
+
+.\ap_base64.c : \
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+.\ap_checkpass.c : \
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_md5.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\ap_sha1.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+.\ap_cpystrn.c : \
+	"..\include\ap.h"\
+	"..\include\ap_alloc.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\buff.h"\
+	"..\include\hsregex.h"\
+	"..\include\httpd.h"\
+	"..\include\util_uri.h"\
+	"..\os\win32\os.h"\
+	"..\os\win32\readdir.h"\
+	
+
+.\ap_fnmatch.c : \
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\fnmatch.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+.\ap_md5c.c : \
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
+	"..\include\ap_md5.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+.\ap_sha1.c : \
+	"..\include\ap.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\ap_sha1.h"\
+	"..\include\hsregex.h"\
+	"..\os\win32\os.h"\
+	
+
+.\ap_signal.c : \
+	"..\include\ap.h"\
+	"..\include\ap_alloc.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\buff.h"\
+	"..\include\hsregex.h"\
+	"..\include\httpd.h"\
+	"..\include\util_uri.h"\
+	"..\os\win32\os.h"\
+	"..\os\win32\readdir.h"\
+	
+
+.\ap_slack.c : \
+	"..\include\ap.h"\
+	"..\include\ap_alloc.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\buff.h"\
+	"..\include\hsregex.h"\
+	"..\include\http_log.h"\
+	"..\include\httpd.h"\
+	"..\include\util_uri.h"\
+	"..\os\win32\os.h"\
+	"..\os\win32\readdir.h"\
+	
+
+.\ap_snprintf.c : \
+	"..\include\ap.h"\
+	"..\include\ap_alloc.h"\
+	"..\include\ap_config.h"\
+	"..\include\ap_ctype.h"\
+	"..\include\ap_ebcdic.h"\
+	"..\include\ap_mmn.h"\
+	"..\include\buff.h"\
+	"..\include\hsregex.h"\
+	"..\include\httpd.h"\
+	"..\include\util_uri.h"\
+	"..\os\win32\os.h"\
+	"..\os\win32\readdir.h"\
+	

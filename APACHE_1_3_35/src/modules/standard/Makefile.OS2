@@ -1,0 +1,118 @@
+# Extra rules for making DLLs for OS/2
+
+define mkdll
+$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $* $(<:%.c=%.o) $(LIBS_SHLIB) $(LIBS1) $(<:%.o=%.def) && \
+emxbind -b -q -s -h0 -d$(<:%.o=%.def) $* && \
+rm $*
+endef
+
+
+%.def : %.c
+	echo "LIBRARY $* INITINSTANCE" > $@
+	echo "EXPORTS" >> $@
+	grep "^module .*=" $< | sed "s/module.* \(.*\) =.*/	\1/" >> $@
+
+access.dll: mod_access.o mod_access.def
+	$(mkdll)
+
+actions.dll: mod_actions.o mod_actions.def
+	$(mkdll)
+
+alias.dll: mod_alias.o mod_alias.def
+	$(mkdll)
+
+asis.dll: mod_asis.o mod_asis.def
+	$(mkdll)
+
+auth.dll: mod_auth.o mod_auth.def
+	$(mkdll)
+
+auth_ano.dll: mod_auth_anon.o mod_auth_anon.def
+	$(mkdll)
+
+auth_db.dll: mod_auth_db.o mod_auth_db.def
+	$(mkdll)
+
+auth_dbm.dll: mod_auth_dbm.o mod_auth_dbm.def
+	$(mkdll)
+
+autoinde.dll: mod_autoindex.o mod_autoindex.def
+	$(mkdll)
+
+cern_met.dll: mod_cern_meta.o mod_cern_meta.def
+	$(mkdll)
+
+cgi.dll: mod_cgi.o mod_cgi.def
+	$(mkdll)
+
+digest.dll: mod_digest.o mod_digest.def
+	$(mkdll)
+
+dir.dll: mod_dir.o mod_dir.def
+	$(mkdll)
+
+env.dll: mod_env.o mod_env.def
+	$(mkdll)
+
+expires.dll: mod_expires.o mod_expires.def
+	$(mkdll)
+
+headers.dll: mod_headers.o mod_headers.def
+	$(mkdll)
+
+imap.dll: mod_imap.o mod_imap.def
+	$(mkdll)
+
+include.dll: mod_include.o mod_include.def
+	$(mkdll)
+
+info.dll: mod_info.o mod_info.def
+	$(mkdll)
+
+log_agen.dll: mod_log_agent.o mod_log_agent.def
+	$(mkdll)
+
+log_conf.dll: mod_log_config.o mod_log_config.def
+	$(mkdll)
+
+log_fore.dll: mod_log_forensic.o mod_log_forensic.def
+	$(mkdll)
+
+log_refe.dll: mod_log_referer.o mod_log_referer.def
+	$(mkdll)
+
+mime.dll: mod_mime.o mod_mime.def
+	$(mkdll)
+
+mime_mag.dll: mod_mime_magic.o mod_mime_magic.def
+	$(mkdll)
+
+negotiat.dll: mod_negotiation.o mod_negotiation.def
+	$(mkdll)
+
+rewrite.dll: mod_rewrite.o mod_rewrite.def
+	$(mkdll)
+
+setenvif.dll: mod_setenvif.o mod_setenvif.def
+	$(mkdll)
+
+so.dll: mod_so.o mod_so.def
+	$(mkdll)
+
+speling.dll: mod_speling.o mod_speling.def
+	$(mkdll)
+
+status.dll: mod_status.o mod_status.def
+	$(mkdll)
+
+unique_i.dll: mod_unique_id.o mod_unique_id.def
+	$(mkdll)
+
+userdir.dll: mod_userdir.o mod_userdir.def
+	$(mkdll)
+
+usertrac.dll: mod_usertrack.o mod_usertrack.def
+	$(mkdll)
+
+vhost_al.dll: mod_vhost_alias.o mod_vhost_alias.def
+	$(mkdll)

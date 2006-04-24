@@ -1,0 +1,26 @@
+# Microsoft Developer Studio Generated Dependency File, included by sdbm.mak
+
+.\sdbm.c : \
+	".\sdbm.h"\
+	".\sdbm_pair.h"\
+	".\sdbm_tune.h"\
+	
+
+.\sdbm_hash.c : \
+	".\sdbm.h"\
+	
+
+.\sdbm_lock.c : \
+	"..\..\include\ap_config.h"\
+	"..\..\include\ap_ctype.h"\
+	"..\..\include\ap_mmn.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\os\win32\os.h"\
+	".\sdbm_tune.h"\
+	
+
+.\sdbm_pair.c : \
+	".\sdbm.h"\
+	".\sdbm_pair.h"\
+	".\sdbm_tune.h"\
+	

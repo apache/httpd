@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+    <title>Apache module mod_log_config</title>
+  </head>
+  <!-- English revision: 1.56 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080"
+  alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_log_config モジュール</h1>
+
+    <p>このモジュールはサーバへのリクエストを Common Log Format
+    やユーザに指定された書式を用いて
+    ログ収集する機能を提供します。</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+    <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>ソースファイル:</strong></a>
+    mod_log_config.c<br />
+    <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>モジュール識別子:</strong></a>
+    config_log_module<br />
+    <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.2 より前は
+    extension モジュールでした。</p>
+
+    <h2>概要</h2>
+
+    <p>
+    このモジュールはクライアントのリクエストを柔軟にログ収集する機能を
+    提供します。ログはカスタマイズ可能な書式で書かれ、ファイルに直接
+    書いたり、外部プログラムに渡したりすることができます。個々のリクエストを
+    特徴に応じてログに書いたり書かなかったりできるように、条件による
+    ログ収集も提供されています。</p>
+
+    <p>このモジュールは三つのディレクティブ提供します:
+    ログファイルを作成するための <code>TransferLog</code>,
+    新しい書式を 定義する <code>LogFormat</code>,
+    ログファイルと 書式を一度に定義する <code>CustomLog</code>
+    です。
+    各リクエストが複数回ログ収集されるようにするために
+    <code>TransferLog</code> ディレクティブと <code>CustomLog</code>
+    ディレクティブは複数回使用することができます。</p>
+
+    <p>参照: <a href="../logs.html">Apache
+    ログファイル</a>。</p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+    <li><a href="#cookielog">CookieLog</a></li>
+
+    <li><a href="#customlog">CustomLog</a></li>
+
+    <li><a href="#logformat">LogFormat</a></li>
+
+    <li><a href="#transferlog">TransferLog</a></li>
+    </ul>
+
+    <h2><a id="formats" name="formats">カスタムログ書式</a></h2>
+
+    <p><code>LogFormat</code> ディレクティブと <code>CustomLog</code>
+    ディレクティブの書式を指定する引数は文字列です。この文字列を使ってそれぞれの
+    リクエストがログファイルにログ収集されます。その文字列には
+    ログファイルにそのまま
+    書かれる文字列や、それぞれ改行とタブを現す C 言語
+    形式の制御文字 "\n" と "\t"
+    とを含めることができます。そのまま出力させたい引用符とバックスラッシュは
+    バックスラッシュでエスケープする必要があります。</p>
+
+    <p>リクエストの特徴そのものは "<code>%</code>"
+    ディレクティブを書式の文字列に書くことで
+    ログ収集されます。"%"
+    ディレクティブはログエントリ中では以下のような
+    値で置換されます:</p>
+
+<pre>
+%...a:          リモート IP アドレス
+%...A:          ローカル IP アドレス
+%...B:          HTTP ヘッダ以外の送られたバイト数
+%...b:          HTTP ヘッダ以外の送られたバイト数。CLF 書式。
+                すなわち、1 バイトも送られなかったときは 0 ではなく、'-' になる
+%...c:          応答が終了したときの接続ステータス。
+                'X' = 応答が終了する前に接続が異常終了
+                '+' = 応答が送られた後に接続を持続することが可能
+                '-' = 応答が送られた後に接続は切られる
+%...{FOOBAR}e:  環境変数 FOOBAR の内容
+%...f:          ファイル名
+%...h:          リモートホスト
+%...H           リクエストプロトコル
+%...{Foobar}i:  サーバに送られたリクエストの Foobar: ヘッダの内容
+%...l:          (もしあれば、identd からの) リモートログ名
+%...m           リクエストメソッド
+%...{Foobar}n:  他のモジュールからのメモ "Foobar" の内容
+%...{Foobar}o:  応答の Foobar: ヘッダの内容
+%...p:          リクエストを扱っているサーバの正式なポート
+%...P:          リクエストを扱った子プロセスのプロセス ID
+%...q           問い合せ文字列 (存在する場合は前に ? が追加される。そうでない
+                場合は空文字列)
+%...r:          リクエストの最初の行
+%...s:          ステータス。内部でリダイレクトされたリクエストは、元々の
+                リクエストのステータス --- 最後のステータスは %...&gt;s
+%...t:          時刻。CLF の時刻の書式 (標準の英語の書式)
+%...{format}t:  format で与えられた書式による時刻。format は strftime (3) の
+                書式である必要がある。(地域化されている可能性がある)
+%...T:          リクエストを扱うのにかかった時間、秒単位
+%...u:          リモートユーザ (auth によるもの。ステータス (%s) が 401 のときは
+                意味がない可能性がある)
+%...U:          リクエストされた URL パスで、クエリ文字列は含まない
+%...v:          リクエストを扱っているサーバの正式な ServerName
+%...V:          UseCanonicalName の設定によるサーバ名
+</pre>
+
+    <p>"..." は何もないか (<em>例えば</em>、<code>"%h %u %r %s %b"</code> のように)、
+    その項目を含めるかどうかの条件 (もし条件に合わなかったときは
+    その項目は "-" になります) にすることができます。条件の形式は
+    HTTP ステータスコードのリストで、前に "!" を付けることもできます。
+    ですから、"%400,501{User-agent}i" は 400 エラーと 501 エラー
+    (Bad Request と Not Implemented) のときのみ User-agent: をログ収集します。
+    "%!200,304,302{Referer}i" は普通のステータスを<strong>返さなかった</strong>
+    すべてのリクエストで Referer: をログ収集します。</p>
+
+    <p>1.3.25 より前のバージョンでは、<code>%...r</code>, <code>%...i</code>,
+    <code>%...o</code> の文字列は
+    エスケープされていなかったことに
+    注意してください。これは主に Common Log Format からの要求によるものです。
+    これは、クライアントがログに制御文字を挿入することができるということで、
+    生のログファイルを扱うときには非常に注意が必要でした。</p>
+
+    <p>セキュリティ上の理由により 1.3.25 より印字不可能な文字と
+    他の特別な文字は、ほとんど <code>\x<var>hh</var></code> という
+    文字列でエスケープされるようになりました。ここで、<var>hh</var> は
+    そのままのバイトの値の 16 進での値です。この規則の例外には、
+    バックスラッシュを使ってエスケープされる <code>"</code> と <code>\</code> と、
+    C 形式の表記法が使われる空白文字 (<code>\n</code>, <code>\t</code> など) が
+    あります。</p>
+
+    <p>よく使われるフォーマット文字列は:</p>
+
+    <dl>
+    <dt>Common Log Format (CLF)</dt>
+
+    <dd><code>"%h %l %u %t \"%r\" %&gt;s %b"</code></dd>
+
+    <dt>バーチャルホスト付き Common Log Format</dt>
+
+    <dd><code>"%v %h %l %u %t \"%r\" %&gt;s %b"</code></dd>
+
+    <dt>NCSA extended/combined ログ書式</dt>
+
+    <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
+    \"%{User-agent}i\""</code></dd>
+
+    <dt>Referer ログ書式</dt>
+
+    <dd><code>"%{Referer}i -&gt; %U"</code></dd>
+
+    <dt>Agent (ブラウザ) ログ書式</dt>
+
+    <dd><code>"%{User-agent}i"</code></dd>
+    </dl>
+
+    <p><code>%v</code> と <code>%p</code> にはそれぞれ、
+    リクエストを扱っているサーバの正規化された
+    <a href="core.html#servername">ServerName</a> と <a
+    href="core.html#port">Port</a> が使われるということに注意してください。
+    これは <a href="core.html#usecanonicalname">UseCanonicalName</a> の
+    設定に関わらず、常にそうなります。そうしないとどの
+    ホストが実際にリクエストを扱ったのかを知るために、
+    ログ解析プログラムがバーチャルホストのマッチングをとるアルゴリズム全体を
+    再実装しなければならなくなるからです。</p>
+
+    <h2>セキュリティに関して</h2>
+
+    <p>ログファイルが保存されているディレクトリがサーバを起動した以外のユーザで
+    書き込み可能なときにセキュリティの問題が発生する理由の詳細は<a
+    href="../misc/security_tips.html#serverroot">セキュリティのこつ</a>
+    を参照してください。</p>
+
+    <h2>互換性に関して</h2>
+
+    <ul>
+    <li>このモジュールは以前の Apache
+    のリリースで配布されていた mod_log_config
+    を基にして、複数のログを扱えるように更新されたものです。
+    設定可能なログの書式を使うために Apache をビルド
+    し直す必要はなくなりました。</li>
+
+    <li>このモジュールは <a
+    href="mod_usertrack.html">mod_usertrack</a> により
+    作られたユーザ追跡用の情報のログ収集を行なうために使われていた
+    <code>CookieLog</code>
+    ディレクティブも実装しています。<code>CookieLog</code>
+    ディレクティブの使用は非推奨で、
+    ユーザ追跡用の情報もログ収集するように設定した
+    <code>CustomLog</code> を使うことが推奨されています。</li>
+
+    <li>Apache 1.3.5 の時点で、このモジュールは <a
+    href="../env.html">環境変数</a>
+    の設定に基づいて条件付きロギングができるようになりました。すなわち、
+    リクエストがログ収集されるかどうかを任意の環境変数が定義されているか
+    どうかにより変更することができるということです。これは
+    ログファイルごとに設定可能です。</li>
+
+    <li>Apache 1.3.5 から、mod_log_config モジュールは <a
+    href="mod_log_referer.html">mod_log_referer</a> の
+    <code>RefererIgnore</code> 機能も含むようになりました。
+    <code>RefererIgnore</code> の効果は <a
+    href="mod_setenvif.html"><code>SetEnvIf</code></a>
+    ディレクティブと <code>CustomLog</code>
+    の条件付きの設定により達成できます。</li>
+    </ul>
+
+    <hr />
+    <h2><a id="cookielog" name="cookielog">CookieLog</a>
+    ディレクティブ</h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> CookieLog
+    <em>filename</em><br />
+    <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+    <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_cookies<br />
+    <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Apache 1.2
+    以降でのみ使用可能</p>
+
+    <p>CookieLog
+    ディレクティブはクッキーのロギングのためのファイル名を
+    設定します。filename は <a
+    href="core.html#serverroot">ServerRoot</a>
+    からの相対パスです。このディレクティブは <a
+    href="mod_cookies.html">mod_cookies</a> との互換性のためだけに
+    存在し、使用は推奨されていません。</p>
+
+    <hr />
+    <h2><a id="customlog" name="customlog">CustomLog</a> <a
+    id="customlog-conditional"
+    name="customlog-conditional">ディレクティブ</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> CustomLog
+    <em>file</em>|<em>pipe</em> <em>format</em>|<em>nickname</em>
+    [env=[!]<em>environment-variable</em>]<br />
+    <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+    <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+    <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> Nickname は Apache
+    1.3 以降でのみ使用可能。 条件付きロギングは 1.3.5
+    以降で使用可能。<br />
+    <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_log_config</p>
+
+    <p><code>CustomLog</code> ディレクティブはサーバへのリクエストを
+    ログ収集するために使われます。ログの書式が指定され、
+    環境変数を使ってロギングが条件に応じて行なわれるようにすることもできます。</p>
+
+    <p>ログが書かれる場所を指定する最初の引数は以下の二つの形式の値を
+    とることができます:</p>
+
+    <dl>
+    <dt><em>file</em></dt>
+
+    <dd><a href="core.html#serverroot">ServerRoot</a>
+    からの相対パスで表されるファイル名。</dd>
+
+    <dt><em>pipe</em></dt>
+
+    <dd>パイプ文字 "<code>|</code>" と、その後に標準入力からログの
+    情報を受けとるプログラムへのパスが続いたもの。
+    <strong>セキュリティ:</strong> もしプログラムが使用された場合、
+    httpd が起動されたユーザとして実行されます。これはサーバが
+    root によって起動された場合は root になります。プログラムが
+    安全であるように留意してください。</dd>
+    </dl>
+
+    <p>二つめの引数はログファイルに何が書かれるかを指定します。
+    前にある <a href="#logformat">LogFormat</a> ディレクティブにより
+    定義された <em>ニックネーム</em> か、<a href="#formats">ログの書式</a>
+    のところで説明されている、明示的な<em>フォーマット</em>文字列の
+    どちらかを指定することができます。</p>
+
+    <p>例えば、以下の二つのディレクティブ群は全く同じ効果をもたらします:</p>
+
+<pre>
+     # CustomLog with format nickname
+     LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common
+     CustomLog logs/access_log common
+
+     # CustomLog with explicit format string
+     CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
+</pre>
+
+    <p>三つ目の引数は省略可能で、サーバの環境にある変数があるかないかに
+    応じてリクエストをログ収集するかどうかを制御するために使うことができます。
+    指定された<a href="../env.html">環境変数</a>がリクエストに対して
+    設定されていた場合 ('<code>env=!<em>name</em></code>' 文が使われたときは
+    設定されていない場合)、リクエストがログ収集されます。</p>
+
+    <p>環境変数は <a href="mod_setenvif.html">mod_setenvif</a> モジュールと
+    <a href="mod_rewrite.html">mod_rewrite</a> モジュールの両方もしくは
+    片方を用いてリクエストごとに設定することができます。
+    例えば、サーバにあるすべての GIF 画像へのリクエストを別のログファイル
+    には記録したいけれど、メインログには記録したくない、というときは
+    以下のものを使うことができます:</p>
+
+<pre>
+    SetEnvIf Request_URI \.gif$ gif-image
+    CustomLog gif-requests.log common env=gif-image
+    CustomLog nongif-requests.log common env=!gif-image
+</pre>
+
+    <hr />
+    <h2><a id="logformat" name="logformat">LogFormat</a>
+    ディレクティブ</h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> LogFormat
+    <em>format</em>|<em>nickname</em> [<em>nickname</em>]<br />
+    <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> <code>LogFormat "%h
+    %l %u %t \"%r\" %&gt;s %b"</code><br />
+    <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+    <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+    <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>互換性:</strong></a> ニックネームは
+    Apache 1.3 以降でのみ使用可能<br />
+    <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_log_config</p>
+
+    <p>このディレクティブはアクセスログファイルの書式を指定します。</p>
+
+    <p><code>LogFormat</code> ディレクティブは二つの形式のどちらかを
+    とることができます。最初の形式では一つの引数のみが指定され、
+    続く <a href="#transferlog">TransferLog</a>
+    で指定されたログで使われるログの書式を設定します。この単独の引数では
+    上の<a href="#formats">カスタムログ書式</a>で説明されているように
+    <em>フォーマット</em>を明示的に指定することができます。
+    もしくは、下で説明されているように前に <code>LogFormat</code>
+    ディレクティブで定義されたログの書式を<em>ニックネーム</em>を使って
+    参照することもできます。</p>
+
+    <p><code>LogFormat</code> ディレクティブの二つめの形式は
+    <em>フォーマット</em>に<em>ニックネーム</em>を与えます。
+    フォーマット文字列全体を再び書くかわりに、
+    この<em>ニックネーム</em>を続きの <code>LogFormat</code> ディレクティブや
+    <a href="#customlog">CustomLog</a> ディレクティブで使うことができます。
+    ニックネームを定義する <samp>LogFormat</samp> ディレクティブは
+    <strong>他には何もしません</strong> -- すなわち、ニックネームを定義
+    するだけで、実際に書式を適用してデフォルトにするということは行ないません。
+    ですから、これは続く <a href="#transferlog">TransferLog</a>
+    ディレクティブには影響を与えません。</p>
+
+
+	<p>例:</p>
+
+	<code>LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common</code>
+
+    <hr />
+    <h2><a id="transferlog"
+    name="transferlog">TransferLog</a>ディレクティブ</h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> TransferLog
+    <em>file</em>|<em>pipe</em><br />
+    <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> none<br />
+    <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト<br />
+    <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+    <a href="directive-dict.html#Module"
+    rel="Help"><strong>モジュール:</strong></a> mod_log_config</p>
+
+    <p>このディレクティブは、ログ書式を直接指定できないことと、
+    条件付きロギングが無いことを除くと、<a
+    href="#customlog">CustomLog</a> と全く同じ引数と効果があります。
+    直接ログ書式を指定する代わりに、ログの書式はそこまでで一番最後に指定された
+    ニックネームを定義しない
+    <a href="#logformat">LogFormat</a> ディレクティブ
+    で定義されたものを使います。
+    もし他の書式が全く指定されていないときは Common Log Format
+    が使われます。</p>
+
+    <p>例:</p>
+
+<pre>
+   LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""
+   TransferLog logs/access_log
+</pre>
+
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

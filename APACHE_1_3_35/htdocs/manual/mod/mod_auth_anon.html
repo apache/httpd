@@ -1,0 +1,286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_auth_anon.c</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_auth_anon</h1>
+    This module allows "anonymous" user access to authenticated
+    areas. 
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_auth_anon.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    anon_auth_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.1 and later.</p>
+
+    <h2>Summary</h2>
+
+    <p>This module does access control in a manner similar to
+    anonymous-ftp sites; <em>i.e.</em> have a 'magic' user id
+    'anonymous' and the email address as a password. These email
+    addresses can be logged.</p>
+
+    <p>Combined with other (database) access control methods, this
+    allows for effective user tracking and customization according
+    to a user profile while still keeping the site open for
+    'unregistered' users. One advantage of using Auth-based user
+    tracking is that, unlike magic-cookies and funny URL
+    pre/postfixes, it is completely browser independent and it
+    allows users to share URLs.</p>
+
+    <h2><a id="Directives" name="Directives">Directives</a></h2>
+
+    <ul>
+      <li><a href="#anonymous">Anonymous</a></li>
+
+      <li><a href="#Authoritative">Anonymous_Authoritative</a></li>
+
+      <li><a href="#LogEmail">Anonymous_LogEmail</a></li>
+
+      <li><a href="#MustGiveEmail">Anonymous_MustGiveEmail</a></li>
+
+      <li><a href="#NoUserID">Anonymous_NoUserID</a></li>
+
+      <li><a href="#VerifyEmail">Anonymous_VerifyEmail</a></li>
+    </ul>
+
+    <h2><a id="Example" name="Example">Example</a></h2>
+    The example below (when combined with the Auth directives of a
+    htpasswd-file based (or GDM, mSQL <em>etc.</em>) base access
+    control system allows users in as 'guests' with the following
+    properties: 
+
+    <ul>
+      <li>It insists that the user enters a userId.
+      (<code>Anonymous_NoUserId</code>)</li>
+
+      <li>It insists that the user enters a password.
+      (<code>Anonymous_MustGiveEmail</code>)</li>
+
+      <li>The password entered must be a valid email address, ie.
+      contain at least one '@' and a '.'.
+      (<code>Anonymous_VerifyEmail</code>)</li>
+
+      <li>The userID must be one of <code>anonymous guest www test
+      welcome</code> and comparison is <strong>not</strong> case
+      sensitive.</li>
+
+      <li>And the Email addresses entered in the passwd field are
+      logged to the error log file
+      (<code>Anonymous_LogEmail</code>)</li>
+    </ul>
+
+    <p>Excerpt of httpd.conf:</p>
+
+    <blockquote>
+<pre>
+Anonymous_NoUserId      off
+Anonymous_MustGiveEmail on
+Anonymous_VerifyEmail    on
+Anonymous_LogEmail      on
+Anonymous        anonymous guest www test welcome
+
+AuthName                "Use 'anonymous' &amp; Email address for guest entry"
+AuthType                basic
+
+# An AuthUserFile/AuthDBUserFile/AuthDBMUserFile
+# directive must be specified, or use
+# Anonymous_Authoritative for public access.
+# In the .htaccess for the public directory, add:
+&lt;Files *&gt;
+Order Deny,Allow          
+Allow from all            
+
+Require valid-user        
+&lt;/Files&gt;
+</pre>
+    </blockquote>
+    <hr />
+
+    <h2><a id="anonymous" name="anonymous">Anonymous
+    directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Anonymous <em>user</em>
+    [<em>user</em>] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> none<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
+
+    <p>A list of one or more 'magic' userIDs which are allowed
+    access without password verification. The userIDs are space
+    separated. It is possible to use the ' and " quotes to allow a
+    space in a userID as well as the \ escape character.</p>
+
+    <p>Please note that the comparison is
+    <strong>case-IN-sensitive</strong>.<br />
+     I strongly suggest that the magic username
+    '<code>anonymous</code>' is always one of the allowed
+    userIDs.</p>
+
+    <p>Example:<br />
+     <code>Anonymous anonymous "Not Registered" 'I don\'t
+    know'</code></p>
+
+    <p>This would allow the user to enter without password
+    verification by using the userId's 'anonymous',
+    'AnonyMous','Not Registered' and 'I Don't Know'.</p>
+    <hr />
+
+    <h2><a id="Authoritative"
+    name="Authoritative">Anonymous_Authoritative directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Anonymous_Authoritative
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>Anonymous_Authoritative off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
+
+    <p>When set 'on', there is no fall-through to other
+    authorization methods. So if a userID does not match the values
+    specified in the <code>Anonymous</code> directive, access is
+    denied.</p>
+
+    <p>Be sure you know what you are doing when you decide to
+    switch it on. And remember that it is the linking order of the
+    modules (in the Configuration / Make file) which details the
+    order in which the Authorization modules are queried.</p>
+    <hr />
+
+    <h2><a id="LogEmail" name="LogEmail">Anonymous_LogEmail
+    directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Anonymous_LogEmail
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>Anonymous_LogEmail on</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
+
+    <p>When set 'on', the default, the 'password' entered (which
+    hopefully contains a sensible email address) is logged in the
+    error log. The message is logged at a level of <code>info</code>,
+    and so you must have <a href="core.html#loglevel">LogLevel</a> set
+    to at least <code>info</code> in order to see this message.</p>
+
+    <p>Log entries will look like the following example:</p>
+
+    <pre>
+[Fri Apr 26 14:49:50 2002] [info] [client 192.168.1.105] Anonymous: Passwd <user@example.com> Accepted
+</pre>
+
+    <hr />
+
+    <h2><a id="MustGiveEmail"
+    name="MustGiveEmail">Anonymous_MustGiveEmail directive</a></h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Anonymous_MustGiveEmail
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>Anonymous_MustGiveEmail on</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
+
+    <p>Specifies whether the user must specify an email address as
+    the password. This prohibits blank passwords.</p>
+    <hr />
+
+    <h2><a id="NoUserID" name="NoUserID">Anonymous_NoUserID
+    directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Anonymous_NoUserID
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>Anonymous_NoUserID off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
+
+    <p>When set 'on', users can leave the userID (and perhaps the
+    password field) empty. This can be very convenient for
+    MS-Explorer users who can just hit return or click directly on
+    the OK button; which seems a natural reaction.</p>
+    <hr />
+
+    <h2><a id="VerifyEmail"
+    name="VerifyEmail">Anonymous_VerifyEmail directive</a></h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Anonymous_VerifyEmail
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>Anonymous_VerifyEmail off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_auth_anon 
+
+    <p>When set 'on' the 'password' entered is checked for at least
+    one '@' and a '.' to encourage users to enter valid email
+    addresses (see the above <code>Auth_LogEmail</code>). 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

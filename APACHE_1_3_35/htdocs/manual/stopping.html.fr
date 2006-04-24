@@ -1,0 +1,251 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" /><!-- Traduction anglais 1.18 -->
+
+    <title>Arr&ecirc;t et red&eacute;marrage d'Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Arr&ecirc;t et red&eacute;marrage
+    d'Apache</h1>
+
+    <p>Ce document d&eacute;crit l'arr&ecirc;t et le
+    red&eacute;marrage d'Apache sur Unix et Cygwin seulement. Les
+    utilisateurs de Windows sont invit&eacute;s &agrave; lire le
+    paragraphe <a href="windows.html#signal">signaler &agrave;
+    Apache en cours d'ex&eacute;cution</a>.</p>
+
+    <p>Lorsque qu'Apache s'ex&eacute;cute, vous pouvez noter que
+    plusieurs processus <code>httpd</code> s'ex&eacute;cutent en
+    m&ecirc;me temps sur votre machine, mais vous ne devez envoyer
+    de signaux qu'&agrave; celui dont l'identifiant de processus
+    est celui contenu dans le fichier <a
+    href="mod/core.html#pidfile">PidFile</a>. Autrement dit, vous
+    ne devez jamais envoyer de signaux aux processus
+    <code>httpd</code> autres que le processus p&egrave;re. Il
+    existe trois signaux que vous pouvez envoyer au processus
+    p&egrave;re : <code>TERM</code>, <code>HUP</code>, et
+    <code>USR1</code>, dont la signification est d&eacute;crite ci
+    dessous.</p>
+
+    <p>Pour envoyer un signal au p&egrave;re vous pouvez utiliser
+    une commande comme</p>
+
+    <blockquote>
+<pre>
+    kill -TERM `cat /usr/local/apache/logs/httpd.pid`
+</pre>
+    </blockquote>
+    Vous pouvez lire l'effet de la commande
+    pr&eacute;c&eacute;dente en effectuant la commande 
+
+    <blockquote>
+<pre>
+    tail -f /usr/local/apache/logs/error_log
+</pre>
+    </blockquote>
+    Ces exemples devront &ecirc;tre modifi&eacute;s en fonction des
+    valeurs des directives <a
+    href="mod/core.html#serverroot">ServerRoot</a> et <a
+    href="mod/core.html#pidfile">PidFile</a>. 
+
+    <p>Avec Apache 1.3 est fourni un script <a
+    href="programs/apachectl.html">apachectl</a> qui peut
+    &ecirc;tre employ&eacute; pour d&eacute;marrer, arr&ecirc;ter
+    et relancer Apache. Il peut n&eacute;cessiter un peu
+    d'adaptation pour votre syst&egrave;me, pour cela lisez les
+    commentaires situ&eacute;s au d&eacute;but de ce script.</p>
+
+    <h3>Signal TERM : arr&ecirc;t imm&eacute;diat</h3>
+
+    <p>L'envoi du signal <code>TERM</code> demande au processus
+    p&egrave;re d'essayer de tuer tous ses processus fils. Il peut
+    s'&eacute;couler quelques secondes avant que tous les processus
+    fils ne soient tu&eacute;s. Le processus p&egrave;re se termine
+    ensuite. Les requ&ecirc;tes en cours sont termin&eacute;es et
+    plus aucune requ&ecirc;te n'est trait&eacute;e.</p>
+
+    <h3>Signal HUP : red&eacute;marrage imm&eacute;diat</h3>
+
+    <p>L'envoi du signal <code>HUP</code> demande au processus
+    p&egrave;re de tuer tous ses processus fils, comme le signal
+    <code>TERM</code>, mais le processus p&egrave;re ne se termine
+    pas. Il relit ses fichiers de configuration, et rouvre les
+    fichiers de trace. Il lance ensuite un nouvel ensemble de
+    processus fils et continue de traiter les requ&ecirc;tes.</p>
+
+    <p>Les utilisateurs du module <a
+    href="mod/mod_status.html">status</a> noteront que les
+    statistiques du serveur sont r&eacute;initialis&eacute;es
+    &agrave; z&eacute;ro apr&egrave;s l'envoi du signal
+    <code>HUP</code>.</p>
+
+    <p><strong>Note:</strong> si votre fichier de configuration
+    contient des erreurs lorsque vous demandez un
+    red&eacute;marrage, le processus p&egrave;re ne se relancera
+    pas mais se terminera avec une erreur. Voir plus bas pour une
+    m&eacute;thode permettant d'&eacute;viter ce
+    probl&egrave;me.</p>
+
+    <h3>Signal USR1 : red&eacute;marrage en douceur</h3>
+
+    <p><strong>Note:</strong> pour les versions inf&eacute;rieures
+    &agrave; 1.2b9 cette fonction est instable et ne doit pas
+    &ecirc;tre utilis&eacute;e.</p>
+
+    <p>Le signal <code>USR1</code> demande au processus p&egrave;re
+    de prier les processus de se terminer apr&egrave;s avoir
+    trait&eacute; leurs requ&ecirc;tes en cours (ou de se terminer
+    imm&eacute;diatement s'ils n'ont pas de traitement en cours).
+    Le processus p&egrave;re relit les fichiers de configuration et
+    rouvre les fichiers de trace. Au fur et &agrave; mesure que les
+    fils meurent, ils sont remplac&eacute;s par des processus fils
+    prenant en compte la nouvelle <em>g&eacute;n&eacute;ration</em>
+    de la configuration, et commencent aussit&ocirc;t &agrave;
+    traiter les nouvelles requ&ecirc;tes.</p>
+
+    <p>Cette fonction est con&ccedil;ue pour toujours respecter les
+    valeurs de <a href="mod/core.html#maxclients">MaxClients</a>,
+    <a href="mod/core.html#minspareservers">MinSpareServers</a>, et
+    <a href="mod/core.html#maxspareservers">MaxSpareServers</a>. De
+    plus, elle respecte la valeur de <a
+    href="mod/core.html#startservers">StartServers</a> de la
+    mani&egrave;re suivante : si apr&egrave;s une seconde, au moins
+    StartServers nouveaux processus fils n'ont pas
+    &eacute;t&eacute; cr&eacute;&eacute;s, alors elle en
+    cr&eacute;e suffisament pour combler le manque. Autrement dit,
+    la fonction essaie de maintenir &agrave; la fois le nombre de
+    processus fils appropri&eacute; pour traiter la charge actuelle
+    du serveur, et respecter vos souhaits concernant le
+    param&egrave;tre StartServers.</p>
+
+    <p>Les utilisateurs du module <a
+    href="mod/mod_status.html">status</a> noteront que les
+    statistiques du serveur <strong>ne sont pas</strong>
+    r&eacute;initialis&eacute;es &agrave; z&eacute;ro apr&egrave;s
+    l'envoi du signal <code>USR1</code>. La fonction est
+    &eacute;crite afin de minimiser le temps durant lequel le
+    serveur est incapable de traiter de nouvelles requ&ecirc;tes
+    (elle sont mises en attente par le syst&egrave;me
+    d'exploitation et donc ne sont pas perdues) tout en respectant
+    vos r&eacute;glages. Pour cela, Apache doit maintenir la
+    <em>table de comunication interprocessus</em> pour les
+    diff&eacute;rents processus fils et leur
+    g&eacute;n&eacute;ration.</p>
+
+    <p>Le module <a href="mod/mod_status.html">status</a> utilise
+    &eacute;galement un <code>G</code> pour marquer les fils
+    traitant les requ&ecirc;tes d&eacute;marr&eacute;es avant le
+    red&eacute;marrage en douceur.</p>
+
+    <p>Actuellement, il n'y a aucun moyen pour un script de
+    rotation des fichiers de trace qui utiliserait le signal
+    <code>USR1</code> de savoir de mani&egrave;re absolue que tous
+    les processus fils &eacute;crivant dans l'ancien fichier de
+    trace sont termin&eacute;s. Nous sugg&eacute;rons d'utiliser un
+    d&eacute;lai d'attente raisonnable apr&egrave;s l'envoi du
+    signal avant de faire quoi que ce soit avec l'ancien fichier de
+    trace. Si par exemple la majorit&eacute; de vos acc&egrave;s
+    sont trait&eacute;s en moins de dix minutes pour des
+    utilisateurs utilisant des liaisons &agrave; bas d&eacute;bit,
+    alors vous devrez attendre quinze minutes avant de faire
+    quelque chose avec l'ancien fichier de trace.</p>
+
+    <p><strong>Note:</strong> Si votre fichier de configuration
+    contient des erreurs au moment de r&eacute;initialiser le
+    processus p&egrave;re, ce dernier ne red&eacute;marrera pas et
+    se terminera avec une erreur. Dans le cas d'un
+    red&eacute;marrage en douceur, le processus p&egrave;re laisse
+    les fils continuer quand il se termine. Ce sont les processus
+    fils qui sont "termin&eacute;s en douceur" en traitant leurs
+    requ&ecirc;tes en cours. Ceci peut poser des probl&egrave;mes
+    si vous essayez de red&eacute;marrer le serveur -- il ne sera
+    pas capable de se connecter sur son port d'&eacute;coute. Afin
+    d'effectuer un red&eacute;marrage, vous pouvez v&eacute;rifier
+    la syntaxe du fichier de configuration en utilisant le
+    param&egrave;tre <code>-t</code> (cf. <a
+    href="programs/httpd.html">httpd</a>). Ceci n'est pas suffisant
+    pour garantir que le serveur red&eacute;marrera correctement.
+    Afin de v&eacute;rifier la s&eacute;mantique des fichiers de
+    configuration ainsi que leur syntaxe, vous pouvez essayer de
+    lancer <code>httpd</code> sous un compte utilisateur autre que
+    root. S'il n'y a pas d'erreur, il essaiera d'ouvrir ses ports
+    r&eacute;seau, mais &eacute;chouera, soit parce qu'il n'est pas
+    root, soit parce que le serveur existant est d&eacute;j&agrave;
+    connect&eacute; sur ces ports. S'il &eacute;choue pour une
+    autre raison, c'est qu'il existe une erreur dans les fichiers
+    de configuration et cette erreur doit &ecirc;tre
+    corrig&eacute;e avant de d&eacute;clencher une relance en
+    douceur.</p>
+
+    <h3>Annexe : signaux et conditions temporelles</h3>
+
+    <p>Avant la version 1.2b9 d'Apache il existait un certain
+    nombre de <em>conditions temporelles</em> concernant les
+    signaux de red&eacute;marrage et d'arr&ecirc;t. Une description
+    simple d'une condition temporelle est un probl&egrave;me
+    li&eacute; &agrave; l'ordre des traitements dans le temps,
+    comme quand quelque chose arrive au mauvais moment et ne se
+    comporte pas comme pr&eacute;vu. Pour les architectures
+    poss&eacute;dant les "bonnes" fonctionnalit&eacute;s, nous les
+    avons &eacute;limin&eacute;es autant que possible. Mais il doit
+    &ecirc;tre not&eacute; qu'il existe toujours des
+    probl&egrave;mes sur certaines architectures.</p>
+
+    <p>Les architectures utilisant un fichier sur disque <a
+    href="mod/core.html#scoreboardfile">ScoreBoardFile</a> pour la
+    communication interprocessus peuvent &eacute;ventuellement
+    corrompre ce fichier. Il en r&eacute;sulte le message d'erreur
+    "bind: Address already in use" (apr&egrave;s le signal
+    <code>HUP</code>) ou "long lost child came home!" (apr&egrave;s
+    le signal <code>USR1</code>). Le premier est une erreur fatale,
+    tandis que le deuxi&egrave;me a juste pour effet de perdre une
+    entr&eacute;e dans la table de communication interprocessus. Il
+    est donc envisageable d'utiliser le red&eacute;marrage en
+    douceur, avec d'occasionnels red&eacute;marrages
+    imm&eacute;diats. Ces probl&egrave;mes sont tr&egrave;s
+    difficiles &agrave; &eacute;viter, mais heureusement de
+    nombreuses architectures n'ont pas besoin d'utiliser un fichier
+    pour la communication interprocessus. Consulter la
+    documentation sur <a
+    href="mod/core.html#scoreboardfile">ScoreBoardFile</a> pour
+    savoir si votre architecture l'utilise.</p>
+
+    <p><code>NEXT</code> et <code>MACHTEN</code> (68k seulement)
+    pr&eacute;sentent quelques conditions temporelles qui peuvent
+    provoquer la perte d'un signal d'arr&ecirc;t ou de
+    red&eacute;marrage, mais ne devraient pas cr&eacute;er de
+    probl&egrave;me majeur.</p>
+
+    <p>Sur toutes les architectures, les processus fils
+    pr&eacute;sentent des conditions temporelles dans le cas du
+    traitement de la deuxi&egrave;me requ&ecirc;te, et des
+    suivantes, pour des connexions HTTP persistantes (KeepAlive).
+    Le processus peut se terminer apr&egrave;s avoir lu la
+    requ&ecirc;te mais avant d'avoir lu l'en-t&ecirc;te. Il existe
+    un correctif, mais celui ci a &eacute;t&eacute;
+    r&eacute;alis&eacute; trop tard pour &ecirc;tre
+    int&eacute;gr&eacute; dans la version 1.2. En th&eacute;orie,
+    ceci ne doit pas &ecirc;tre un probl&egrave;me car le client
+    utilisant la persistance des connexions doit &ecirc;tre capable
+    de traiter ce genre de cas, qui peut se produire soit &agrave;
+    cause des temps de latence du r&eacute;seau, soit &agrave;
+    cause des d&eacute;lais de r&eacute;ponse trop longs des
+    serveurs. En pratique, cela ne semble pas non plus affecter le
+    syst&egrave;me. Dans un test, le serveur &eacute;tait
+    red&eacute;marr&eacute; vingt fois par seconde et les clients
+    ont pu consulter le site sans obtenir de documents vides ou
+    d'images invalides.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,253 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Configuration Files</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Configuration Files</h1>
+
+    <ul>
+      <li><a href="#main">Main Configuration Files</a></li>
+
+      <li><a href="#syntax">Syntax of the Configuration
+      Files</a></li>
+
+      <li><a href="#modules">Modules</a></li>
+
+      <li><a href="#scope">Scope of Directives</a></li>
+
+      <li><a href="#htaccess">.htaccess Files</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="main" name="main">Main Configuration Files</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Related Modules</strong><br />
+         <br />
+         <a href="mod/mod_mime.html">mod_mime</a><br />
+         </td>
+
+        <td valign="top"><strong>Related Directives</strong><br />
+         <br />
+         <a
+        href="mod/core.html#accessconfig">AccessConfig</a><br />
+         <a
+        href="mod/core.html#ifdefine">&lt;IfDefine&gt;</a><br />
+         <a href="mod/core.html#include">Include</a><br />
+         <a
+        href="mod/core.html#resourceconfig">ResourceConfig</a><br />
+         <a
+        href="mod/mod_mime.html#typesconfig">TypesConfig</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Apache is configured by placing <a
+    href="mod/directives.html">directives</a> in plain text
+    configuration files. The main configuration file is usually
+    called <code>httpd.conf</code>. The location of this file is
+    set at compile-time, but may be overridden with the
+    <code>-f</code> command line flag. Some sites also have
+    <code>srm.conf</code> and <code>access.conf</code> files for <a
+    href="http://httpd.apache.org/info/three-config-files.html">historical
+    reasons</a>. In addition, other configuration files may be
+    added using the <code><a
+    href="mod/core.html#include">Include</a></code> directive. Any
+    directive may be placed in any of these configuration files.
+    Changes to the main configuration files are only recognized by
+    Apache when it is started or restarted.</p>
+
+    <p>New with Apache 1.3.13 is a feature where if any
+    configuration file is actually a directory, Apache will enter
+    that directory and parse any files (and subdirectories) found
+    there as configuration files. One possible use for this would
+    be to add VirtualHosts by creating small configuration files
+    for each host, and placing them in such a configuration
+    directory. Thus, you can add or remove VirtualHosts without
+    editing any files at all, simply adding or deleting them. This
+    makes automating such processes much easier.</p>
+
+    <p>The server also reads a file containing mime document types;
+    the filename is set by the <a
+    href="mod/mod_mime.html#typesconfig">TypesConfig</a> directive,
+    and is <code>mime.types</code> by default.</p>
+    <hr />
+
+    <h2><a id="syntax" name="syntax">Syntax of the Configuration
+    Files</a></h2>
+
+    <p>Apache configuration files contain one directive per line.
+    The back-slash "\" may be used as the last character on a line
+    to indicate that the directive continues onto the next line.
+    There must be no other characters or white space between the
+    back-slash and the end of the line.</p>
+
+    <p>Directives in the configuration files are case-insensitive,
+    but arguments to directives are often case sensitive. Lines
+    which begin with the hash character "#" are considered
+    comments, and are ignored. Comments may <strong>not</strong> be
+    included on a line after a configuration directive. Blank lines
+    and white space occurring before a directive are ignored, so
+    you may indent directives for clarity.</p>
+
+    <p>You can check your configuration files for syntax errors
+    without starting the server by using <code>apachectl
+    configtest</code> or the <code>-t</code> command line
+    option.</p>
+    <hr />
+
+    <h2><a id="modules" name="modules">Modules</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Related Modules</strong><br />
+         <br />
+         <a href="mod/mod_so.html">mod_so</a><br />
+         </td>
+
+        <td valign="top"><strong>Related Directives</strong><br />
+         <br />
+         <a href="mod/core.html#addmodule">AddModule</a><br />
+         <a
+        href="mod/core.html#clearmodulelist">ClearModuleList</a><br />
+         <a
+        href="mod/core.html#ifmodule">&lt;IfModule&gt;</a><br />
+         <a href="mod/mod_so.html#loadmodule">LoadModule</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Apache is a modular server. This implies that only the most
+    basic functionality is included in the core server. Extended
+    features are available through <a
+    href="mod/index-bytype.html">modules</a> which can be loaded
+    into Apache. By default, a <a
+    href="mod/module-dict.html#Status">base</a> set of modules is
+    included in the server at compile-time. If the server is
+    compiled to use <a href="dso.html">dynamically loaded</a>
+    modules, then modules can be compiled separately and added at
+    any time using the <a
+    href="mod/mod_so.html#loadmodule">LoadModule</a> directive.
+    Otherwise, Apache must be recompiled to add or remove modules.
+    Configuration directives may be included conditional on a
+    presence of a particular module by enclosing them in an <a
+    href="mod/core.html#ifmodule">&lt;IfModule&gt;</a> block.</p>
+
+    <p>To see which modules are currently compiled into the server,
+    you can use the <code>-l</code> command line option.</p>
+    <hr />
+
+    <h2><a id="scope" name="scope">Scope of Directives</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Related Directives</strong><br />
+         <br />
+         <a
+        href="mod/core.html#directory">&lt;Directory&gt;</a><br />
+         <a
+        href="mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a><br />
+         <a href="mod/core.html#files">&lt;Files&gt;</a><br />
+         <a
+        href="mod/core.html#filesmatch">&lt;FilesMatch&gt;</a><br />
+         <a
+        href="mod/core.html#location">&lt;Location&gt;</a><br />
+         <a
+        href="mod/core.html#locationmatch">&lt;LocationMatch&gt;</a><br />
+         <a
+        href="mod/core.html#virtualhost">&lt;VirtualHost&gt;</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Directives placed in the main configuration files apply to
+    the entire server. If you wish to change the configuration for
+    only a part of the server, you can scope your directives by
+    placing them in <code><a
+    href="mod/core.html#directory">&lt;Directory&gt;</a>, <a
+    href="mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a>,
+    <a href="mod/core.html#files">&lt;Files&gt;</a>, <a
+    href="mod/core.html#filesmatch">&lt;FilesMatch&gt;</a>, <a
+    href="mod/core.html#location">&lt;Location&gt;</a>,</code> and
+    <code><a
+    href="mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
+    sections. These sections limit the application of the
+    directives which they enclose to particular filesystem
+    locations or URLs. They can also be nested, allowing for very
+    fine grained configuration.</p>
+
+    <p>Apache has the capability to serve many different websites
+    simultaneously. This is called <a href="vhosts/">Virtual
+    Hosting</a>. Directives can also be scoped by placing them
+    inside <code><a
+    href="mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+    sections, so that they will only apply to requests for a
+    particular website.</p>
+
+    <p>Although most directives can be placed in any of these
+    sections, some directives do not make sense in some contexts.
+    For example, directives controlling process creation can only
+    be placed in the main server context. To find which directives
+    can be placed in which sections, check the <a
+    href="mod/directive-dict.html#Context">Context</a> of the
+    directive. For further information, we provide details on <a
+    href="sections.html">How Directory, Location and Files sections
+    work</a>.</p>
+    <hr />
+
+    <h2><a id="htaccess" name="htaccess">.htaccess Files</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Related Directives</strong><br />
+         <br />
+         <a
+        href="mod/core.html#accessfilename">AccessFileName</a><br />
+         <a
+        href="mod/core.html#allowoverride">AllowOverride</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Apache allows for decentralized management of configuration
+    via special files placed inside the web tree. The special files
+    are usually called <code>.htaccess</code>, but any name can be
+    specified in the <a
+    href="mod/core.html#accessfilename"><code>AccessFileName</code></a>
+    directive. Directives placed in <code>.htaccess</code> files
+    apply to the directory where you place the file, and all
+    sub-directories. The <code>.htaccess</code> files follow the
+    same syntax as the main configuration files. Since
+    <code>.htaccess</code> files are read on every request, changes
+    made in these files take immediate effect.</p>
+
+    <p>To find which directives can be placed in
+    <code>.htaccess</code> files, check the <a
+    href="mod/directive-dict.html#Context">Context</a> of the
+    directive. The server administrator further controls what
+    directives may be placed in <code>.htaccess</code> files by
+    configuring the <a
+    href="mod/core.html#allowoverride"><code>AllowOverride</code></a>
+    directive in the main configuration files.</p>
+
+    <p>For more information on <code>.htaccess</code> files, see
+    Ken Coar's tutorial on <a
+    href="http://apache-server.com/tutorials/ATusing-htaccess.html">
+    Using .htaccess Files with Apache</a>, or the <a
+    href="http://httpd.apache.org/docs/howto/htaccess.html">.htaccess
+    tutorial</a> in the Apache docs.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

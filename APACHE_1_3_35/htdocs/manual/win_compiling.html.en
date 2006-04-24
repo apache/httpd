@@ -1,0 +1,263 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Compiling Apache for Microsoft Windows</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Compiling Apache for Microsoft Windows</h1>
+
+    <p>There are many important points before you begin compiling
+    Apache. See <a href="windows.html">Using Apache with Microsoft
+    Windows</a> before you begin.</p>
+
+    <p>Compiling Apache requires Microsoft Visual C++ 5.0 or 6.0 to
+    be properly installed. It can be built with command-line tools,
+    or within the Visual Studio environment. Consult the VC++
+    manual to determine how to install them. Be especially aware
+    that the vcvars32.bat file from the Program
+    Files/DevStudio/VC/bin folder, and the setenv.bat file from the
+    Platform SDK, may be required to prepare the command-line tools
+    for command-line builds (e.g. using nmake). To install apache
+    with the Makefile.win or the InstallBin project in the Visual
+    Studio IDE, the awk utility is also required.  If you use Visual
+    Studio 7.0 (.net), loading Apache.dsw converts it to .msproj
+    format.  When changes are made to the project (.dsp) files, you 
+    must reconvert Apache.dsw all over again.</p>
+
+    <p>First, you should install awk.exe where it can be found in
+    the path and the DevStudio environment, if you plan to use the
+    IDE. There are many versions of awk available for Windows; the
+    easiest to install is available from Brian Kernighan's <a
+    href="http://cm.bell-labs.com/cm/cs/who/bwk/">http://cm.bell-labs.com/cm/cs/who/bwk/</a>
+    site. When downloading <a
+    href="http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe">http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe</a>
+    from this site, you must save it with the name awk.exe rather
+    than awk95.exe.</p>
+
+    <p>Note that Developer Studio IDE will only find awk.exe from
+    the <u>T</u>ools menu <u>O</u>ptions... Directories tab 
+    (the Projects - VC++ Directories pane in Developer Studio 7.0)
+    listing Executable file paths.  Add the path for awk.exe to this 
+    list, and your system PATH environment variable, as needed.</p>
+
+    <p>Then unpack the Apache distribution into an appropriate
+    directory. Open a command-line prompt, and change to the
+    <code>src</code> subdirectory of the Apache distribution.</p>
+
+    <p>The master Apache makefile instructions are contained in the
+    <code>Makefile.win</code> file. To compile Apache on Windows
+    NT, simply use one of the following commands:</p>
+
+    <ul>
+      <li><code>nmake /f Makefile.win _apacher</code> (release
+      build)</li>
+
+      <li><code>nmake /f Makefile.win _apached</code> (debug
+      build)</li>
+    </ul>
+
+    <p>These will both compile Apache. The latter will include
+    debugging information in the resulting files, making it easier
+    to find bugs and track down problems.</p>
+
+    <p>If you get an error such as "the name specified is not
+    recognized..." then you need to run vcvars32.bat first. Enter
+    the following command;</p>
+<pre>
+  "c:\Program Files\DevStudio\VC\Bin\VCVARS32.BAT"
+</pre>
+
+    <p>(you will need to adjust this command so it matches the
+    directory where your VC was installed.)</p>
+
+    <p>If you are a Visual C++ 5.0 user, and have installed a
+    recent Platform SDK, you may also need to enter the following
+    command (adjusted for the install directory of the Platform SDK
+    update);</p>
+<pre>
+  "c:\Program Files\Platform SDK\SETENV.BAT"
+</pre>
+
+    <p>Then try the nmake command again.</p>
+
+    <p><strong>Note</strong> that the Windows Platform SDK update
+    is required to enable all supported mod_isapi features. The SDK
+    files distributed with Microsoft Visual C++ 5.0 are out of
+    date. Without a recent update, Apache will issue warnings under
+    MSVC++ 5.0 that some mod_isapi features will be disabled. Look
+    for the update at <a
+    href="http://msdn.microsoft.com/platformsdk/">
+    http://msdn.microsoft.com/platformsdk/</a>.</p>
+
+    <p>Apache can also be compiled using VC++'s Visual Studio
+    development environment. To simplify this process, a Visual
+    Studio workspace, Apache.dsw, is provided in the
+    <code>src</code> folder. This workspace exposes the entire list
+    of working .dsp projects that are required for the complete
+    Apache binary release. It includes dependencies between the
+    projects to assure that they are built in the appropriate
+    order. InstallBin is the top-level project that will build all
+    other projects, and install the compiled files into their
+    proper locations.</p>
+
+    <p>These .dsp project files are distributed in Visual C++ 6.0
+    format. Visual C++ 5.0 (97) will recognize them with the single
+    exception of the /ZI flag, which corresponds to the VC 5.0 /Zi
+    flag for debugging symbols. To quickly prepare the .dsp files
+    for the Visual Studio 5.0 (97), you can use the perl scripts
+    distributed in the <code>src\helpers</code> folder:</p>
+<pre>
+  cd src\helpers
+  cvstodsp5.pl
+</pre>
+
+    <p>This command assumes you have a Perl interpreter installed
+    and registered for files of type .pl. The list of converted
+    .dsp project files will be displayed as they are converted. If
+    you contribute back a patch that offers revised project files,
+    please convert them back with the script dsp5tocvs.pl, which
+    puts the projects back to Visual Studio 6.0 format.</p>
+
+    <p>The core .dsp projects built by Apache.dsw and makefile.win
+    are:</p>
+
+    <ul>
+      <li><code>os\win32\ApacheOS.dsp</code></li>
+      <li><code>os\win32\Win9xConHook.dsp</code></li>
+      <li><code>regex\regex.dsp</code></li>
+      <li><code>ap\ap.dsp</code></li>
+      <li><code>lib\expat-lite\xmltok.dsp</code></li>
+      <li><code>lib\expat-lite\xmlparse.dsp <em>requires
+      xmltok</em></code></li>
+      <li><code>lib\sdbm.dsp</code></li>
+      <li><code>main\gen_uri_delims.dsp</code></li>
+      <li><code>main\gen_test_char.dsp</code></li>
+      <li><code>ApacheCore.dsp <em>requires all of the
+      above</em></code></li>
+      <li><code>Apache.dsp <em>requires ApacheCore</em></code></li>
+    </ul>
+
+    <p>In addition, the <code>os\win32</code> subdirectory contains
+    project files for the optional modules, all of which require
+    ApacheCore.</p>
+
+    <ul>
+      <li><code>os\win32\mod_auth_anon.dsp</code></li>
+      <li><code>os\win32\mod_auth_dbm.dsp <em>also requires
+      sdbm</em></code></li>
+      <li><code>os\win32\mod_auth_digest.dsp</code></li>
+      <li><code>os\win32\mod_cern_meta.dsp</code></li>
+      <li><code>os\win32\mod_digest.dsp</code></li>
+      <li><code>os\win32\mod_expires.dsp</code></li>
+      <li><code>os\win32\mod_headers.dsp</code></li>
+      <li><code>os\win32\mod_info.dsp</code></li>
+      <li><code>os\win32\mod_mime_magic.dsp</code></li>
+      <li><code>os\win32\mod_proxy.dsp</code></li>
+      <li><code>os\win32\mod_rewrite.dsp</code></li>
+      <li><code>os\win32\mod_speling.dsp</code></li>
+      <li><code>os\win32\mod_status.dsp</code></li>
+      <li><code>os\win32\mod_unique_id.dsp</code></li>
+      <li><code>os\win32\mod_usertrack.dsp</code></li>
+      <li><code>os\win32\mod_vhost_alias.dsp</code></li>
+    </ul>
+
+    <p>The <code>support\</code> folder contains project files for
+    additional programs that are not part of the Apache runtime,
+    but are used by the administrator to maintain password and log
+    files.</p>
+
+    <ul>
+      <li><code>support\htdigest.dsp</code></li>
+      <li><code>support\htpasswd.dsp</code></li>
+      <li><code>support\logresolve.dsp</code></li>
+      <li><code>support\rotatelogs.dsp</code></li>
+    </ul>
+
+    <p>Once Apache has been compiled, it needs to be installed in
+    its server root directory. The default is the
+    <code>\Apache</code> directory, on the current hard drive.</p>
+
+    <p>To install the files into the <code>c:\ServerRoot</code>
+    directory automatically, use one of the following nmake commands
+    (see above):</p>
+
+    <ul>
+      <li><code>nmake /f Makefile.win installr
+      INSTDIR=<em>c:\ServerRoot</em></code> (for release
+      build)</li>
+      <li><code>nmake /f Makefile.win installd
+      INSTDIR=<em>c:\ServerRoot</em></code> (for debug build)</li>
+    </ul>
+
+    <p>The <em>c:\ServerRoot</em> argument to INSTDIR gives the
+    installation directory (it can be omitted if Apache is to be
+    installed into <samp>\Apache</samp>).</p>
+
+    <p>This will install the following:</p>
+
+    <ul>
+      <li><code><em>c:\ServerRoot</em>\Apache.exe</code> - Apache
+      program</li>
+      <li><code><em>c:\ServerRoot</em>\ApacheCore.dll</code> -
+      Apache runtime [shared library]</li>
+      <li><code><em>c:\ServerRoot</em>\Win9xConHook.dll</code> -
+      Win9x console fixups [shared library]</li>
+      <li><code><em>c:\ServerRoot</em>\xmlparse.dll</code> - XML
+      parser [shared library]</li>
+      <li><code><em>c:\ServerRoot</em>\xmltok.dll</code> - XML
+      token engine [shared library]</li>
+      <li><code><em>c:\ServerRoot</em>\bin\*.exe</code> -
+      Administration programs</li>
+      <li><code><em>c:\ServerRoot</em>\cgi-bin</code> - Example CGI
+      scripts</li>
+      <li><code><em>c:\ServerRoot</em>\conf</code> - Configuration
+      files directory</li>
+      <li><code><em>c:\ServerRoot</em>\icons</code> - Icons for
+      FancyIndexing</li>
+      <li><code><em>c:\ServerRoot</em>\include\*.h</code> - Apache
+      header files</li>
+      <li><code><em>c:\ServerRoot</em>\htdocs</code> - Welcome
+      index.html pages</li>
+      <li><code><em>c:\ServerRoot</em>\htdocs\manual</code> -
+      Apache documentation</li>
+      <li><code><em>c:\ServerRoot</em>\lib</code> - Static library
+      files</li>
+      <li><code><em>c:\ServerRoot</em>\libexec</code> - Dynamic
+      link libraries</li>
+      <li><code><em>c:\ServerRoot</em>\logs</code> - Empty logging
+      directory</li>
+      <li><code><em>c:\ServerRoot</em>\modules\mod_*.dll</code> -
+      Loadable Apache modules</li>
+    </ul>
+
+    <p>If you do not have nmake, or wish to install in a different
+    directory, be sure to use a similar naming scheme.</p>
+
+    <p>To simplify the process, dependencies between all projects
+    are defined in the Microsoft Visual Studio workspace file:</p>
+<pre>
+   src/Apache.dsw
+</pre>
+
+    <p>This assures that lower-level sources are rebuilt from
+    within Visual Studio. The top level project is InstallBin,
+    which invokes Makefile.win to move the compiled executables and
+    dlls. You may personalize the INSTDIR= setting by changing the
+    Settings for InstallBin, Build command line entry under the
+    General tab. The default from within the InstallBin.dsp project
+    is one level up (..) from the src tree. Modify the InstallBin
+    settings and edit the INSTDIR=.. entry to the desired target
+    directory.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+
