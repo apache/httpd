@@ -26,9 +26,6 @@
 <a href="../es/mod/core.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="../ja/mod/core.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Ständig verfügbare Kernfunktionen des Apache HTTP
 Servers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Core</td></tr></table>
@@ -1191,7 +1188,7 @@ ETag verwendet werden</td></tr>
     und <code>Size</code> kann entweder ein <code>+</code> oder ein
     <code>-</code> vorangestellt werden, was die Änderung einer
     Vorgabe erlaubt, die von einem größeren Umfeld
-    geerbt wurde. Jedes Schlüselwort ohne ein solches Prefix
+    geerbt wurde. Jedes Schlüselwort ohne ein solches Präfix
     hebt die ererbte Einstellung sofort und vollständig auf.</p>
 
     <p>Wenn die Konfiguration für ein Verzeichnis
@@ -2434,6 +2431,13 @@ bestimmten Verzeichnis verfügbar sind</td></tr>
     zu den momentan gültigen Optionen hinzugefügt und jede Option
     mit vorangestelltem <code>-</code> wird aus den derzeit gültigen
     Optionen entfernt.</p>
+
+    <div class="warning"><h3>Warnung</h3>
+    <p>Die Verwendung von <code class="directive">Options</code>, bei der einzelne
+    Optionen mit <code>+</code> oder <code>-</code> und Optionen ohne diese
+    Präfixe vermischt werden, ist ungültig und führt
+    häufig zu unerwarteten Ergebnissen.</p>
+    </div>
 
     <p>So wird zum Beispiel ohne die Zeichen <code>+</code> und
     <code>-</code></p>
