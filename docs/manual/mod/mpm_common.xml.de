@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 328032:396609 (outdated) -->
+<!-- English Revision: 396609 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -675,8 +675,28 @@ entgegengenommenen Anfragen</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ReceiveBufferSize</name>
+<description>Gr&ouml;&szlig;e des TCP-Empfangspuffers</description>
+<syntax>ReceiveBufferSize <var>Bytes</var></syntax>
+<default>ReceiveBufferSize 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module><module>leader</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
+<module>threadpool</module><module>worker</module></modulelist>
+
+<usage>
+    <p>Der Server setzt die Gr&ouml;&szlig;e des TCP-Empfangspuffers auf die
+    angegebene Anzahl Bytes.</p>
+
+    <p>Wird der Wert auf <code>0</code> gesetzt, dann verwendet der Server
+    die Voreinstellung des Betriebssystems.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SendBufferSize</name>
-<description>Gr&ouml;&szlig;e des TCP-Puffers</description>
+<description>Gr&ouml;&szlig;e des TCP-Sendepuffers</description>
 <syntax>SendBufferSize <var>Bytes</var></syntax>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
@@ -686,7 +706,7 @@ entgegengenommenen Anfragen</description>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p>Der Server setzt die Gr&ouml;&szlig;e des TCP-Puffers auf die
+    <p>Der Server setzt die Gr&ouml;&szlig;e des TCP-Sendepuffers auf die
     angegebene Anzahl Bytes. Dies ist sehr hilfreich, um Voreinstellungen
     alter Standardbetriebssysteme f&uuml;r Hochgeschwindigkeitsverbindungen
     mit hoher Latenzzeit anzuheben (<em>d.h.</em> 100ms oder so, wie bei

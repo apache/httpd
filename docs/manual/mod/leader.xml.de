@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 151405:396609 (outdated) -->
+<!-- English Revision: 396609 -->
 
 <!--
  Copyright 2003-2004 The Apache Software Foundation
@@ -68,6 +68,8 @@
 <directivesynopsis location="mpm_common"><name>Listen</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>ListenBacklog</name>
+</directivesynopsis>
+<directivesynopsis location="mpm_common"><name>ReceiveBufferSize</name>
 </directivesynopsis>
 <directivesynopsis location="mpm_common"><name>SendBufferSize</name>
 </directivesynopsis>

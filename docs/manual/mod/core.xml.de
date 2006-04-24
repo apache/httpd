@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 328032:396609 (outdated) -->
+<!-- English Revision: 396609 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -1137,7 +1137,7 @@ ETag verwendet werden</description>
     und <code>Size</code> kann entweder ein <code>+</code> oder ein
     <code>-</code> vorangestellt werden, was die &Auml;nderung einer
     Vorgabe erlaubt, die von einem gr&ouml;&szlig;eren Umfeld
-    geerbt wurde. Jedes Schl&uuml;selwort ohne ein solches Prefix
+    geerbt wurde. Jedes Schl&uuml;selwort ohne ein solches Pr&auml;fix
     hebt die ererbte Einstellung sofort und vollst&auml;ndig auf.</p>
 
     <p>Wenn die Konfiguration f&uuml;r ein Verzeichnis
@@ -2401,6 +2401,13 @@ bestimmten Verzeichnis verf&uuml;gbar sind</description>
     zu den momentan g&uuml;ltigen Optionen hinzugef&uuml;gt und jede Option
     mit vorangestelltem <code>-</code> wird aus den derzeit g&uuml;ltigen
     Optionen entfernt.</p>
+
+    <note type="warning"><title>Warnung</title>
+    <p>Die Verwendung von <directive>Options</directive>, bei der einzelne
+    Optionen mit <code>+</code> oder <code>-</code> und Optionen ohne diese
+    Pr&auml;fixe vermischt werden, ist ung&uuml;ltig und f&uuml;hrt
+    h&auml;ufig zu unerwarteten Ergebnissen.</p>
+    </note>
 
     <p>So wird zum Beispiel ohne die Zeichen <code>+</code> und
     <code>-</code></p>
