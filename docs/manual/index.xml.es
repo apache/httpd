@@ -4,7 +4,7 @@
 <!-- English Revision: 395235 -->
 
 <!--
- Copyright 2004-2006 The Apache Software Foundation or its licensors, as
+ Copyright 2004-2005 The Apache Software Foundation or its licensors, as
  applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");

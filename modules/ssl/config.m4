@@ -1,4 +1,4 @@
-dnl  Copyright 2000-2006 The Apache Software Foundation or its licensors, as
+dnl  Copyright 2000-2005 The Apache Software Foundation or its licensors, as
 dnl  applicable.
 dnl  Licensed under the Apache License, Version 2.0 (the "License");
 dnl  you may not use this file except in compliance with the License.

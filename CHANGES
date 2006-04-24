@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.58
 
+  *) Legal: Restored original years in copyright notices.
+     [Colm MacCarthaigh]
+
 Changes with Apache 2.0.57
 
   *) mod_cgid: run the get_suexec_identity hook within the request-handler
