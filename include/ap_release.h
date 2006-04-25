@@ -40,6 +40,7 @@
  * Example: "Apache/1.1.0 MrWidget/0.1-alpha" 
  */
 #define AP_SERVER_BASEVENDOR "Apache Software Foundation"
+#define AP_SERVER_BASEPROJECT "Apache HTTP Server"
 #define AP_SERVER_BASEPRODUCT "Apache"
 
 #define AP_SERVER_MAJORVERSION_NUMBER 2
