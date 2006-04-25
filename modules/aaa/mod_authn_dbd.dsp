@@ -47,7 +47,7 @@ RSC=rc.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /fo"Release/mod_authn_dbd.res" /i "../../include" /i "../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_authn_dbd.so" /d LONG_NAME="authn_dbd_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -73,7 +73,7 @@ LINK32=link.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /o /win32 "NUL"
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /fo"Release/mod_authn_dbd.res" /i "../../include" /i "../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_authn_dbd.so" /d LONG_NAME="authn_dbd_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -97,36 +97,7 @@ SOURCE=.\mod_authn_dbd.c
 # End Source File
 # Begin Source File
 
-SOURCE=.\mod_authn_dbd.rc
-# End Source File
-# Begin Source File
-
-SOURCE=..\..\build\win32\win32ver.awk
-
-!IF  "$(CFG)" == "mod_authn_dbd - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\mod_authn_dbd.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_authn_dbd.so "auth_basic_module for Apache" ../../include/ap_release.h > .\mod_authn_dbd.rc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "mod_authn_dbd - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\mod_authn_dbd.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_authn_dbd.so "auth_basic_module for Apache" ../../include/ap_release.h > .\mod_authn_dbd.rc
-
-# End Custom Build
-
-!ENDIF 
-
+SOURCE=..\..\build\win32\httpd.rc
 # End Source File
 # End Target
 # End Project

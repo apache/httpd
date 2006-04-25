@@ -47,7 +47,7 @@ RSC=rc.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /d "NDEBUG"
+# ADD RSC /l 0x409 /fo"Release/mod_ldap.res" /i "../../include" /i "../../srclib/apr/include" /d "NDEBUG" /d BIN_NAME="mod_ldap.so" /d LONG_NAME="ldap_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -73,7 +73,7 @@ LINK32=link.exe
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /d "_DEBUG"
+# ADD RSC /l 0x409 /fo"Debug/mod_ldap.res" /i "../../include" /i "../../srclib/apr/include" /d "_DEBUG" /d BIN_NAME="mod_ldap.so" /d LONG_NAME="ldap_module for Apache"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -87,10 +87,6 @@ LINK32=link.exe
 
 # Name "mod_ldap - Win32 Release"
 # Name "mod_ldap - Win32 Debug"
-# Begin Source File
-
-SOURCE=.\mod_ldap.rc
-# End Source File
 # Begin Source File
 
 SOURCE=.\util_ldap.c
@@ -109,32 +105,7 @@ SOURCE=.\util_ldap_cache_mgr.c
 # End Source File
 # Begin Source File
 
-SOURCE=..\..\build\win32\win32ver.awk
-
-!IF  "$(CFG)" == "mod_ldap - Win32 Release"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\mod_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_ldap.so "LDAP Utility Module for Apache" ../../include/ap_release.h > .\mod_ldap.rc
-
-# End Custom Build
-
-!ELSEIF  "$(CFG)" == "mod_ldap - Win32 Debug"
-
-# PROP Ignore_Default_Tool 1
-# Begin Custom Build - Creating Version Resource
-InputPath=..\..\build\win32\win32ver.awk
-
-".\mod_ldap.rc" : $(SOURCE) "$(INTDIR)" "$(OUTDIR)"
-	awk -f ../../build/win32/win32ver.awk mod_ldap.so "LDAP Utility Module for Apache" ../../include/ap_release.h > .\mod_ldap.rc
-
-# End Custom Build
-
-!ENDIF 
-
+SOURCE=..\..\build\win32\httpd.rc
 # End Source File
 # End Target
 # End Project
