@@ -78,7 +78,7 @@ Changes with Apache 2.0.56
      client accesses proxied resources with SSL. PR 37145.
      [Ruediger Pluem, William Rowe]    
 
-  *) Elimiated the NET_TIME filter, restructuring the timeout logic.
+  *) Eliminated the NET_TIME filter, restructuring the timeout logic.
      This provides a working mod_echo on all platforms, and ensures any
      custom protocol module is at least given an initial timeout value
      based on the <VirtualHost > context's Timeout directive.
