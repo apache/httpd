@@ -300,6 +300,7 @@ rm -rf $RPM_BUILD_ROOT
 %{_sbindir}/htdbm
 %{_sbindir}/htdigest
 %{_sbindir}/htpasswd
+%{_sbindir}/httxt2dbm
 %{_sbindir}/logresolve
 %{_sbindir}/httpd
 %{_sbindir}/httpd.worker
