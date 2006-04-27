@@ -52,10 +52,10 @@ SSLBIN=out32dll
 _tryssl:
 !IF EXIST("modules\ssl\mod_ssl.mak")
 	cd modules\ssl
-	$(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 .\$(LONG)\mod_ssl.so
+	$(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd support
-	$(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 .\$(LONG)\abs.exe
+	$(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
 !ELSEIF EXIST("Apache.sln")
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_ssl
@@ -83,7 +83,7 @@ _tryssl:
 _tryzlib:
 !IF EXIST("modules\filters\mod_deflate.mak")
 	cd modules\filters
-	$(MAKE) $(MAKEOPT) -f mod_deflate.mak CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 .\$(LONG)\mod_deflate.so
+	$(MAKE) $(MAKEOPT) -f mod_deflate.mak CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 !ELSEIF EXIST("Apache.sln")
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_deflate
@@ -304,7 +304,7 @@ _build:
 	cd ..\..
 !IF EXIST("srclib\openssl")
 	cd modules\ssl
-	 $(MAKE) $(MAKEOPT) -f mod_ssl.mak         CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET) .\$(LONG)\mod_ssl.so
+	 $(MAKE) $(MAKEOPT) -f mod_ssl.mak         CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd support
 	 $(MAKE) $(MAKEOPT) -f abs.mak             CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
