@@ -94,5 +94,6 @@ SOURCE=.\mod_alias.c
 # Begin Source File
 
 SOURCE=..\..\build\win32\httpd.rc
+# End Source File
 # End Target
 # End Project
