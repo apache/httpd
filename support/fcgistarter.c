@@ -34,7 +34,7 @@ static const char *usage_message =
     "\n"
     "If an interface is not specified, any available will be used.\n";
 
-static void usage()
+static void usage(void)
 {
     fprintf(stderr, "%s", usage_message);
 
@@ -57,7 +57,6 @@ int main(int argc, const char *argv[])
 {
     apr_file_t *infd, *skwrapper;
     apr_sockaddr_t *skaddr;
-    apr_procattr_t *pattr;
     apr_getopt_t *gopt;
     apr_socket_t *skt;
     apr_pool_t *pool;
@@ -197,7 +196,7 @@ int main(int argc, const char *argv[])
              *     which means by the time it gets to the fastcgi process it
              *     is no longer fd 0, so it doesn't work.  Sigh. */
 
-            execl(command, NULL);
+            execl(command, command, NULL);
 #endif
         } else if (rv == APR_INPARENT) {
             if (num_to_start == 0) {
