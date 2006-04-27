@@ -27,7 +27,7 @@
 
 default: _apacher
 
-!IF ("$(CTARGET)" == "") && EXIST("Apache.sln")
+!IF ("$(CTARGET)" == "") && !EXIST("httpd.mak") && EXIST("Apache.sln")
 CTARGET=/build
 !ENDIF
 
