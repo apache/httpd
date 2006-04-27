@@ -47,7 +47,7 @@ RSC=rc.exe
 # ADD BASE MTL /nologo /D "NDEBUG" /win32
 # ADD MTL /nologo /D "NDEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC /l 0x409 /fo"Release/libhttpd.res" /i "./include" /i "./srclib/apr/include" /d "NDEBUG" /d BIN_NAME="libhttpd.dll" /d LONG_NAME="Apache HTTP Server Core"
+# ADD RSC /l 0x409 /fo"Release/libhttpd.res" /i "./include" /i "./srclib/apr/include" /d "NDEBUG" /d "BIN_NAME=libhttpd.dll" /d "LONG_NAME=Apache HTTP Server Core"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -78,7 +78,7 @@ PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include"
 # ADD BASE MTL /nologo /D "_DEBUG" /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC /l 0x409 /fo"Debug/libhttpd.res" /i "./include" /i "./srclib/apr/include" /d "_DEBUG" /d BIN_NAME="libhttpd.dll" /d LONG_NAME="Apache HTTP Server Core"
+# ADD RSC /l 0x409 /fo"Debug/libhttpd.res" /i "./include" /i "./srclib/apr/include" /d "_DEBUG" /d "BIN_NAME=libhttpd.dll" /d "LONG_NAME=Apache HTTP Server Core"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
