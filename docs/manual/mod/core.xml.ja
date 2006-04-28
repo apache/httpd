@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 290816 -->
+<!-- English Revision: 396056 -->
 
 <!--
- Copyright 2003-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2003-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -233,11 +233,13 @@
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 2.0.33 以降で使用可能</compatibility>
+<compatibility>Apache 2.0.33 以降で使用可能。ただし 2.1 以降で非推奨。</compatibility>
 
 <usage>
-    <p>このディレクティブは応答の <glossary>MIME-type</glossary> に応じて出力<a
-    href="../filter.html">フィルタ</a>を使用するようにします。</p>
+    <p>このディレクティブは応答の <glossary ref="mime-type">MIME タイプ</glossary> に応じて出力<a
+    href="../filter.html">フィルタ</a>を使用するようにします。
+    ただし下で説明される理由により、本ディレクティブは非推奨です。
+    同等の機能は <module>mod_filter</module> で利用できます。</p>
 
     <p>次の例は <module>mod_deflate</module> の <code>DEFLATE</code> フィルタを
     使っています。<code>text/html</code> と <code>text/plain</code> の
@@ -373,7 +375,7 @@
       <dt>FileInfo</dt>
 
       <dd>
-      ドキュメントタイプを制御するためのディレクティブの使用を許可する (<directive
+      ドキュメントタイプを制御するディレクティブ (<directive
       module="core">DefaultType</directive>, <directive
       module="core">ErrorDocument</directive>, <directive
       module="core">ForceType</directive>, <directive
@@ -382,7 +384,27 @@
       module="core">SetInputFilter</directive>, <directive
       module="core">SetOutputFilter</directive>, 
       <module>mod_mime</module> の Add* と Remove*
-      ディレクティブ<em>など</em>)。</dd>
+      ディレクティブ<em>など</em>)、
+      ドキュメントのメタデータを制御するディレクティブ (<directive
+      module="mod_headers">Header</directive>, <directive
+      module="mod_headers">RequestHeader</directive>, <directive
+      module="mod_setenvif">SetEnvIf</directive>, <directive
+      module="mod_setenvif">SetEnvIfNoCase</directive>, <directive
+      module="mod_setenvif">BrowserMatch</directive>, <directive
+      module="mod_usertrack">CookieExpires</directive>, <directive
+      module="mod_usertrack">CookieDomain</directive>, <directive
+      module="mod_usertrack">CookieStyle</directive>, <directive
+      module="mod_usertrack">CookieTracking</directive>, <directive
+      module="mod_usertrack">CookieName</directive>),
+      <module>mod_rewrite</module> のディレクティブ <directive
+      module="mod_rewrite">RewriteEngine</directive>, <directive
+      module="mod_rewrite">RewriteOptions</directive>, <directive
+      module="mod_rewrite">RewriteBase</directive>, <directive
+      module="mod_rewrite">RewriteCond</directive>, <directive
+      module="mod_rewrite">RewriteRule</directive>) と
+      <module>mod_actions</module> の
+      <directive module="mod_actions">Action</directive>
+      ディレクティブの使用を許可する。</dd>
 
       <dt>Indexes</dt>
 
@@ -482,16 +504,17 @@
 
 <usage>
     <p>このディレクティブは対象ディレクトリで利用するユーザー認証の種類を選びます。
-    ただ、現在のところは <code>Basic</code> と <code>Digest</code> しか
-    実装されていません。
+    使用できる認証方式は <code>Basic</code> (<module>mod_auth_basic</module> 
+    で実装) と <code>Digest</code> (<module>mod_auth_digest</module>
+    で実装) です。</p>
 
-    このディレクティブは <directive
-    module="core">AuthName</directive>ディレクティブや
-    <directive module="core">Require</directive> ディレクティブと、
-    <directive module="mod_authn_file">AuthUserFile</directive> や <directive
-    module="mod_authz_groupfile">AuthGroupFile</directive> などのディレクティブと
-    一緒に利用する必要があります。</p>
-</usage>
+    <p>認証を有効にするには、<directive module="core">AuthName</directive>
+    と <directive module="core">Require</directive> ディレクティブも
+    使う必要があります。それに加えて認証プロバイダモジュールの
+    <module>mod_authn_file</module> 等と、承認モジュール
+    <module>mod_authz_user</module> 等もサーバに組み込む必要があります。</p>
+</usage> 
+
 <seealso><a href="../howto/auth.html">認証、承認、アクセス制御</a></seealso>
 </directivesynopsis>
 
@@ -568,7 +591,8 @@
 <override>FileInfo</override>
 
 <usage>
-    <p>サーバは、MIME のタイプマップからは決定できない
+    <p>サーバは、<glossary ref="mime-type">MIME タイプ</glossary>
+    のマッピングでは決定できない
     ドキュメントの送信を要求されることがあります。</p>
 
     <p>サーバは、ドキュメントのコンテントタイプをクライアントに通知する必要が
@@ -886,6 +910,8 @@ module="core">Directory</directive></seealso>
     <li>Linux では、sendfile を用いると、
     IPv6 使用時に存在する特定ネットワークカードの TCP-checksum
     オフロードのバグを踏んでしまいます。</li>
+    <li>Itanium で動いている Linux で、sendfile は 2GB 以上の
+    ファイルを扱うことができないでしょう。</li>
     <li>ネットワークマウントされた <directive module="core">DocumentRoot</directive>
     (例えば NFS や SMB)
     では、カーネルは自身のキャッシュを使ってネットワークからのファイルを
@@ -2173,7 +2199,7 @@ module="core">Directory</directive></seealso>
     <p>IPV6 のアドレスは次の例のように角括弧で囲む必要があります:</p>
  
     <example>
-      NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080
+      NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
     </example>
 
     <p>すべてのインタフェースへのリクエストを受け取るようにするためには、
@@ -2352,9 +2378,11 @@ module="core">Directory</directive></seealso>
 <override>AuthConfig</override>
 
 <usage>
-    <p>このディレクティブは、どの認証済みのユーザがリソースに
-    アクセスすることができるかを指定します。
-    以下のような構文になります。</p>
+    <p>このディレクティブは、認証されたユーザがリソースに対して
+    アクセスできるかを制御します。
+    制限条件は承認モジュールで処理されます。
+    <module>mod_authz_user</module> と <module>mod_authz_groupfile</module>
+    で提供されている構文には、次のようなものもあります:</p>
 
     <dl>
       <dt><code>Require user <var>userid</var> [<var>userid</var>] ...</code></dt>
@@ -2369,6 +2397,11 @@ module="core">Directory</directive></seealso>
 
       <dd>全ての認証されたユーザに、ディレクトリへのアクセスを許可します。</dd>
     </dl>
+
+    <p>require オプションを実装している他の承認モジュールには、
+    <module>mod_authnz_ldap</module>,
+    <module>mod_authz_dbm</module>,
+    <module>mod_authz_owner</module> といったものがあります。</p>
 
     <p><directive>Require</directive> は、正しく動作するためには <directive
     module="core">AuthName</directive> 及び <directive module="core"
@@ -2397,7 +2430,38 @@ module="core">Directory</directive></seealso>
     <directive>Require</directive> を
     指定してください。</p>
 
+    <p><directive>Require</directive> を <directive
+    module="mod_authz_host">Allow</directive> ディレクティブや <directive
+    module="mod_authz_host">Deny</directive> ディレクティブと
+    組み合わせて使った場合、これらの制約の相互作用は <directive
+    module="core">Satisfy</directive> ディレクティブで制御されます。
+    </p>
+
+    <note><title>サブディレクトリで制御を解除する方法</title>
+    <p><directive module="core">Satisfy</directive> ディレクティブ
+    で、保護されたディレクトリのサブディレクトリ内でアクセス制御を
+    無効にする例は、下のようになります。
+    <module>mod_authz_host</module> によるアクセス制御も無効化されるので、
+    このテクニックは注意してご活用ください。</p>
+    <example>
+      &lt;Directory /path/to/protected/&gt;<br />
+        <indent>
+        Require user david<br />
+        </indent>
+      &lt;/Directory&gt;<br />
+      &lt;Directory /path/to/protected/unprotected&gt;<br />
+        <indent>
+        # All access controls and authentication are disabled<br />
+        # in this directory<br />
+        Satisfy Any<br />
+        Allow from all<br />
+        </indent>
+      &lt;/Directory&gt;<br />
+    </example>
+    </note>
+      
 </usage>
+<seealso><a href="../howto/auth.html">認証・承認・アクセス制御</a></seealso> 
 <seealso><directive module="core">Satisfy</directive></seealso>
 <seealso><module>mod_authz_host</module></seealso>
 </directivesynopsis>
@@ -2714,12 +2778,14 @@ module="core">Directory</directive></seealso>
     <p>自己参照 URL (例えば <module>mod_dir</module> モジュールによるものなど)
     が指定されたポートを使うか、クライアントのリクエストのポート番号を使うかを
     決定する設定は <directive module="core">UseCanonicalName</directive> 
+    ディレクティブと <directive module="core">UseCanonicalPhysicalPort</directive>
     ディレクティブを参照してください。</p>
 </usage>
 
 <seealso><a href="../dns-caveats.html">DNS と Apache に関する話</a></seealso>
 <seealso><a href="../vhosts/">Apache バーチャルホスト説明書</a></seealso>
 <seealso><directive module="core">UseCanonicalName</directive></seealso>
+<seealso><directive module="core">UseCanonicalPhysicalPort</directive></seealso>
 <seealso><directive module="core">NameVirtualHost</directive></seealso>
 <seealso><directive module="core">ServerAlias</directive></seealso>
 </directivesynopsis>
@@ -3084,6 +3150,53 @@ module="core">Directory</directive></seealso>
     <code>SERVER_NAME</code> を使って自己参照 URL を作成することしかしない
     場合は、どの設定を行なっても大丈夫なはずです。</p></note>
 </usage>
+<seealso><directive module="core">UseCanonicalPhysicalPort</directive></seealso>
+<seealso><directive module="core">ServerName</directive></seealso>
+<seealso><directive module="mpm_common">Listen</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>UseCanonicalPhysicalPort</name>
+<description>サーバの名前とポートの解決方法を設定する</description>
+<syntax>UseCanonicalPhysicalPort On|Off</syntax>
+<default>UseCanonicalPhysicalPort Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context></contextlist>
+
+<usage>
+    <p>Apache は様々な状況で <em>自己参照</em> URL つまりサーバが自分自身を指し示す
+    URL を生成する必要があります。
+    <directive module="core">UseCanonicalName</directive> ディレクティブの
+    設定によってサーバの別名を構成するようになりますが、
+    その際の別名に使うポートは
+    <code>UseCanonicalPhysicalPort On</code> という設定があれば、
+    実際のポート番号をポート番号として使う候補に入れてリクエストを
+    処理するようになります。<code>UseCanonicalPhysicalPort Off</code>
+    という設定であれば、実際のポート番号は使用せず、設定されている情報を
+    全て信じてポート番号を構成するようになります。</p>
+
+    <note><title>注</title>
+    <p>実際のポート番号が使われる順序は次のようになっています :<br /><br />
+     <code>UseCanonicalName On</code></p>
+     <ul>
+      <li><code>ServerName</code> で指定されているポート番号</li>
+      <li>実際のポート番号</li>
+      <li>デフォルトのポート番号</li>
+     </ul>
+     <code>UseCanonicalName Off | DNS</code>
+     <ul>
+      <li><code>Host:</code> ヘッダから抽出されたポート番号</li>
+      <li>実際のポート番号</li>
+      <li><code>ServerName</code> で指定されているポート番号</li>
+      <li>デフォルトのポート番号</li>
+     </ul>
+    
+    <p><code>UseCanonicalPhysicalPort Off</code> で、
+    実際のポート番号が上の順序から取り除かれます。</p>
+    </note>
+
+</usage>
+<seealso><directive module="core">UseCanonicalName</directive></seealso>
 <seealso><directive module="core">ServerName</directive></seealso>
 <seealso><directive module="mpm_common">Listen</directive></seealso>
 </directivesynopsis>
@@ -3137,7 +3250,7 @@ module="core">Directory</directive></seealso>
     角括弧で括って指定する必要があります。次は IPv6 の例です:</p>
 
     <example>
-      &lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
       <indent>
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
