@@ -4,8 +4,8 @@
 <!-- English Revision: 396056 -->
 
 <!--
- Copyright 2004-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2004-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -172,7 +172,7 @@
     すべてのキャッシュにある現在のドキュメントキャッシュは同時に期限が
     切れます。これは同じ URL に毎週常に置かれる報せのようなものには
     非常に有効です。<code>A</code> が使用された場合は、期限切れの
-    時間は各クライアントよって異なります。これはあまり変更されない
+    時間は各クライアントによって異なります。これはあまり変更されない
     画像ファイルなど、特に関連するドキュメント群がすべて同じ画像を
     参照するとき (<em>すなわち</em>画像が比較的短い期間内に繰り返し
     アクセスされるとき) に有効です。</p>
