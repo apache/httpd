@@ -16,6 +16,7 @@
 
 #include "mod_proxy.h"
 #include "fcgi_protocol.h"
+#include "util_script.h"
 
 module AP_MODULE_DECLARE_DATA proxy_fcgi_module;
 
@@ -240,6 +241,11 @@ static apr_status_t send_begin_request(proxy_conn_rec *conn, int request_id)
     brb.roleB1 = ((FCGI_RESPONDER >> 8) & 0xff);
     brb.roleB0 = ((FCGI_RESPONDER) & 0xff); 
     brb.flags = FCGI_KEEP_CONN;
+    brb.reserved[0] = 0;
+    brb.reserved[1] = 0;
+    brb.reserved[2] = 0;
+    brb.reserved[3] = 0;
+    brb.reserved[4] = 0;
 
     fcgi_header_to_array(&header, farray);
     fcgi_begin_request_body_to_array(&brb, abrb);
@@ -673,7 +679,7 @@ static apr_status_t dispatch(proxy_conn_rec *conn, request_rec *r,
             if (readbuflen != FCGI_HEADER_LEN) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                              "proxy: FCGI: Failed to read entire header "
-                             "got %d wanted %d", 
+                             "got %" APR_SIZE_T_FMT " wanted %d", 
                              readbuflen, FCGI_HEADER_LEN);
                 rv = APR_EINVAL;
                 break;
