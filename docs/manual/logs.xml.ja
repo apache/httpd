@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 165671:396056 (outdated) -->
+<!-- English Revision: 232343 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors, as
@@ -279,7 +279,7 @@
 	この情報は、リクエストが成功応答 (2 で始まるコード) であったか、
 	リダイレクション (3 で始まるコード) であったか、クライアントによる
 	エラー (4 で始まるコード) であったか、サーバのエラー (5 で始まるコード)
-	であったか、を現すので、非常に大切です。ステータスコードの
+	であったか、を表すので、非常に大切です。ステータスコードの
 	完全なリストは <a
 	href="http://www.w3.org/Protocols/rfc2616/rfc2616.txt">HTTP
 	規格</a> (RFC2616 第 10 節) にあります。</dd>
@@ -287,7 +287,7 @@
 	<dt><code>2326</code> (<code>%b</code>)</dt>
 
 	<dd>この最後のエントリはクライアントに送信されたオブジェクトの、
-	応答ヘッダを除いたサイズを現します。コンテントがクライアントに送られなかった
+	応答ヘッダを除いたサイズを表します。コンテントがクライアントに送られなかった
 	場合は、この値は "<code>-</code>" になります。コンテントが無い場合に
 	"<code>0</code>" をログ収集するには、<code>%b</code> ではなく
 	<code>%B</code> を使ってください。</dd>
@@ -371,7 +371,7 @@
     <p>クライアントのリクエストの特徴に基づいてアクセスログにエントリの
     一部をロギングしない方が便利なことがあります。これは <a
     href="env.html">環境変数</a> の補助により簡単に実現できます。まず、
-    リクエストが何らかの条件に合うということを現すために環境変数が
+    リクエストが何らかの条件に合うということを表すために環境変数が
     設定される必要があります。これは通常は <directive
     module="mod_setenvif">SetEnvIf</directive> により
     行なわれます。そして、<directive
@@ -452,7 +452,7 @@
     と呼ばれている理由です。)</p>
 
     <p>パイプ経由のログ用のプロセスは Apache httpd の親プロセスから起動され、
-    そのプロセスのユーザ ID を継承します。これは、これは、パイプ経由のログ用の
+    そのプロセスのユーザ ID を継承します。これは、パイプ経由のログ用の
     プログラムは普通 root として実行されることを意味します。
     ですから、プログラムを簡単で安全に保つことが非常に重要です。</p>
 
@@ -492,7 +492,7 @@
     すべてのログを同じアクセスログとエラーログにログ収集することができます。
     この手法では個々のバーチャルホストの統計を簡単にとることはできません。</p>
 
-    <p><directive module="mod_log_config">>CustomLog</directive> や
+    <p><directive module="mod_log_config">CustomLog</directive> や
     <directive module="mod_log_config">ErrorLog</directive> ディレクティブが
     <directive module="core" type="section">VirtualHost</directive> の中に
     置かれた場合は、そのバーチャル

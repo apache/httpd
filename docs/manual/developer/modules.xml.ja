@@ -4,8 +4,8 @@
 <!-- English Revision: 396056 -->
 
 <!--
- Copyright 2004-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2004-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -231,7 +231,7 @@ module MODULE_VAR_EXPORT <var>module_name</var>_module =
       <dd>(プロトコルの処理)</dd>
 
       <dt><code>ap_hook_child_init</code></dt>
-      <dd>(子プロセル起動直後)</dd>
+      <dd>(子プロセス起動直後)</dd>
 
       <dt><code>ap_hook_create_request</code></dt>
       <dd>(??)</dd>

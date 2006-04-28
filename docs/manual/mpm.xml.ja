@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 159149:396056 (outdated) -->
+<!-- English Revision: 159149 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors, as
@@ -39,7 +39,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
     Apache ではモジュール化された設計により幅広い環境に適応してきました。
     この設計のおかげで、管理者は
     コンパイル時または実行時にどのモジュールをロードするか選ぶことによって、
-    どの機能をサーバに取り込むか選択することがができます。</p>
+    どの機能をサーバに取り込むか選択することができます。</p>
 
     <p>Apache 2.0 では、
     このモジュール化された設計をサーバの基本機能にまで拡張しました。
