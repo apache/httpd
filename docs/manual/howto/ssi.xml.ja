@@ -4,8 +4,8 @@
 <!-- English Revision: 396056 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -260,7 +260,7 @@
 <title>標準のフッタを挿入する</title>
 
     <p>もし数ページを超えるページを持つサイトを管理しているならば、
-    全ページに対して変項を行なうことが本当に苦痛となり得ることが
+    全ページに対して変更を行なうことが本当に苦痛となり得ることが
     分かるでしょう。全てのページに渡ってある種の標準的な外観を
     維持しようとしているならば特にそうでしょう。</p>
 

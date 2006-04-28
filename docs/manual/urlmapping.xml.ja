@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:396056 (outdated) -->
+<!-- English Revision: 396056 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -107,13 +107,15 @@
     <code>http://www.example.com/docs/dir/file.html</code> には
     <code>/var/web/dir/file.html</code> が送信されます。
     <directive module="mod_alias">ScriptAlias</directive> も、
-    対象となっているパスが CGI スクリプトとして扱われるという追加の
+    対象となっているパスが <glossary ref="cgi">CGI</glossary>
+    スクリプトとして扱われるという追加の
     効果以外は同じように動作します。</p>
 
     <p>もっと柔軟な設定が必要な状況では、
     <directive module="mod_alias">AliasMatch</directive> ディレクティブや
     <directive module="mod_alias">ScriptAliasMatch</directive> ディレクティブ
-    を使って強力な正規表現に基づいたマッチと置換を行なうことができます。
+    を使って強力な<glossary ref="regex">正規表現</glossary>に基づいたマッチと
+    置換を行なうことができます。
     たとえば、</p>
 
 <example>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)

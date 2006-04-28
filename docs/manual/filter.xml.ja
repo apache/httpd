@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:396056 (outdated) -->
+<!-- English Revision: 396056 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -28,15 +28,21 @@
     <p>Apache でのフィルタの使い方について記述しています。</p>
   </summary>
 
-  <section id="filters">
-    <title>フィルタ</title>
+  <section id="intro">
+    <title>Apache 2 のフィルタ</title>
     <related>
       <modulelist>
+        <module>mod_filter</module>
         <module>mod_deflate</module>
         <module>mod_ext_filter</module>
         <module>mod_include</module>
+        <module>mod_charset_lite</module>
       </modulelist>
       <directivelist>
+        <directive module="mod_filter">FilterChain</directive>
+        <directive module="mod_filter">FilterDeclare</directive>
+        <directive module="mod_filter">FilterProtocol</directive>
+        <directive module="mod_filter">FilterProvider</directive>
         <directive module="mod_mime">AddInputFilter</directive>
         <directive module="mod_mime">AddOutputFilter</directive>
         <directive module="mod_mime">RemoveInputFilter</directive>
@@ -48,43 +54,100 @@
       </directivelist>
     </related>
 
-    <p><em>フィルタ</em> とは、サーバが送受信したデータに
-    適用される処理プロセスのことをいいます。クライアントからサーバに
-    送られたデータは <em>入力フィルタ</em> によって、サーバから
-    クライアントに送られるデータは<em>出力フィルタ</em>によって
-    処理されます。複数のフィルタを適用することができ、
-    その順番を厳密に指定することもできます。</p>
+<p>Apache 2.0 以降ではフィルタチェイン機能が使え、データが
+どこから来るかに関わらず、非常に柔軟で調整しやすい方法で
+入出力データを処理できます。
+入力データをプリプロセスしたり出力データをポストプロセスしたりできます。
+この処理は、これまでのリクエスト処理フェーズとは根本的に独立した
+処理になります。</p>
+<p class="figure">
+<img src="images/filter_arch.png" width="569" height="392" alt=
+"Filters can be chained, in a Data Axis orthogonal to request processing"
+/>
+</p>
+<p>Apache の標準的なディストリビューションでのフィルタ例は :</p>
+<ul>
+<li><module>mod_include</module> で、サーバサイドインクルード SSI を実装しています</li>
+<li><module>mod_ssl</module> で、SSL 暗号化 (https) を実装しています。</li>
+<li><module>mod_deflate</module> で、on-the-fly のデータ圧縮・展開機能を実装しています。</li>
+<li><module>mod_charset_lite</module> で、異なる文字セット間の変換を実装しています。</li>
+<li><module>mod_ext_filter</module> で、外部プログラムをフィルタとして実行します。</li>
+</ul>
+<p>チャンキングやバイトレンジ処理といった処理を行うために
+Apache は、内部的にいくつかのフィルタを使っています。</p>
 
-    <p>Apache 内部では、チャンク (データのぶつ切り) を行ったり、
-    バイト範囲の指定されたリクエストを扱ったりといった機能を
-    行う際に、フィルタが使われています。それに加えて、
-    実行時の設定ディレクティブで選択が可能なフィルタを
-    モジュールが提供できます。
-    データに適応されるフィルタのセットは、
+<p>様々なアプリケーションがサードパーティ製のフィルタモジュールとして
+実装されていて、<a
+href="http://modules.apache.org/">modules.apache.org</a>
+などから取得できます。たとえば :</p>
+
+<ul>
+<li>HTML や XML の処理と書き換え</li>
+<li>XSLT 変換と XIncludes</li>
+<li>XML 名前空間のサポート</li>
+<li>ファイルアップロード処理や HTML フォームのデコード</li>
+<li>画像処理</li>
+<li>PHP スクリプトなどのアプリケーションに対する保護機能</li>
+<li>テキストの検索置換・編集機能</li>
+</ul>
+</section>
+
+<section id="smart">
+<title>スマートフィルタ</title>
+<p class="figure">
+<img src="images/mod_filter_new.png" width="423" height="331"
+alt="Smart filtering applies different filter providers according to the state of request processing"/>
+</p>
+<p>Apache 2.1 移行に含まれる <module>mod_filter</module> では、
+実行時に動的にフィルタチェインを有効にできます。
+ですからたとえば、HTML を HTML フィルタで、JPEG 画像をそれとは
+全く別のフィルタで、書き換えるようなプロクシを設定することもできます。
+その上、そのプロクシはどのオリジンサーバがコンテンツを送信するか
+事前情報無しでいいように構成できます。
+これは、実行時に実際のコンテンツに応じて別々のフィルタプロバイダに
+ディスパッチするフィルタハーネスを使うことで実現されています。
+チェインの中に直接入れて無条件に適用したり、動的にプロバイダとして
+適用するようにしたりすることは、どんなフィルタでもできます。
+たとえば、</p>
+<ul>
+<li>HTML 処理フィルタはコンテントが text/html あるいは
+application/xhtml+xml の場合にのみ実行されます</li>
+<li>圧縮フィルタは圧縮可能な入力で、非圧縮状態のものに
+対してのみ実行されます</li>
+<li>文字セット変換フィルタはテキスト文書が
+希望の文字セットになっていない場合に挿入されます</li>
+</ul>
+</section>
+
+<section id="using">
+<title>フィルタの使い方</title>
+<p>フィルタの使い方には二つの方法があります: シンプルとダイナミック。
+一般的にはどちらかのみを使ったほうがよいでしょう。
+これらを組み合わせて使用すると、予期しない結果になるかもしれません。
+(とはいえ、シンプルな入力フィルタとシンプルあるいはダイナミックな
+出力フィルタを組み合わせることは自由に出来ます。)</p>
+<p>シンプルな方法は、入力フィルタのみを設定し、必要に応じて
+静的なフィルタチェインを出力フィルタとして設定する方法です。
+関連するディレクティブは、
     <directive module="core">SetInputFilter</directive>,
     <directive module="core">SetOutputFilter</directive>,
     <directive module="core">AddInputFilter</directive>,
     <directive module="core">AddOutputFilter</directive>,
     <directive module="mod_mime">RemoveInputFilter</directive>,
     <directive module="mod_mime">RemoveOutputFilter</directive>
-    ディレクティブで制御できます。</p>
+    になります。</p>
 
-    <p>現行の Apache HTTP サーバの配布では、
-    次のユーザ選択可能なフィルタが提供されています。</p>
+<p>ダイナミックな方法は、静的なものとフレキシブルなものを両方有効にする
+方法で、<module>mod_filter</module> のページで述べられています。
+関連するディレクティブは、
+    <directive module="mod_filter">FilterChain</directive>,
+    <directive module="mod_filter">FilterDeclare</directive>, 
+    <directive module="mod_filter">FilterProvider</directive>
+    になります。</p>
 
-    <dl>
-      <dt>INCLUDES</dt>
-      <dd><module>mod_include</module> で Server-Side Include をします。</dd>
-      <dt>DEFLATE</dt>
-      <dd><module>mod_deflate</module>
-      を使って、クライアントに送信する前に出力を圧縮します。</dd>
-    </dl>
+<p>ディレクティブ <directive module="core">AddOutputFilterByType</directive>
+はまだサポートされていますが、種々の問題をはらんでおり、非推奨です。
+ダイナミックな設定方法を代わりに使ってください。</p>
 
-    <p>また、<module>mod_ext_filter</module> モジュールで
-    外部プログラムをフィルタとして指定することができます。</p>
   </section>
 </manualpage>
-
-
-
-

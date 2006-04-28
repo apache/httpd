@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 159149 -->
+<!-- English Revision: 396056 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors, as
@@ -68,10 +68,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
       <module>worker</module> や <module>event</module> といったスレッド化された
       MPM を利用できる一方で、安定性や古いソフトウェアとの互換性を
       必要とするサイトでは <module>prefork</module>
-      が利用できます。また、
-      異なるホストを異なるユーザ ID で動作させる
-      (<module>perchild</module>) といった
-      特別な機能も提供できます。</li>
+      が利用できます。</li>
     </ul>
 
     <p>ユーザレベルでは、MPM は他の Apache 
