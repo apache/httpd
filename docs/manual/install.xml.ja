@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 350287:396056 (outdated) -->
+<!-- English Revision: 396056 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors, as
@@ -27,14 +27,14 @@
 <summary>
 
     <p>この文書で扱う範囲は、Unix や Unix に類似したシステムでの
-    Apache のコンパイルとインストールです。 Windows における
+    Apache HTTPd サーバのコンパイルとインストールです。 Windows における
     コンパイルとインストールに関しては「<a
     href="platform/windows.html">Microsoft
-    Windows で Apache を使う</a>」をご覧下さい。
+    Windows で Apache HTTPd を使う</a>」をご覧下さい。
     その他のプラットホームに関しては「<a 
     href="platform/">プラットホーム</a>」をご覧下さい。</p>
 
-    <p>Apache 2.0 では他の Open Source プロジェクトと同様、
+    <p>Apache HTTPd では他の Open Source プロジェクトと同様、
     ビルド環境構築に <code>libtool</code> と <code>autoconf</code>
     を使うようになっています。</p>
 
@@ -45,8 +45,8 @@
 </summary>
 
 <seealso><a href="programs/configure.html">ソースツリーの設定</a></seealso>
-<seealso><a href="invoking.html">Apacheの起動</a></seealso>
-<seealso><a href="stopping.html">Apacheの停止と再起動</a></seealso>
+<seealso><a href="invoking.html">Apache HTTPd の起動</a></seealso>
+<seealso><a href="stopping.html">Apache HTTPd の停止と再起動</a></seealso>
 
 <section id="overview"><title>概要 (せっかちな人向け)</title>
 
@@ -105,13 +105,13 @@
     置き換えてください。<em>PREFIX</em> を指定しなかった場合は、
     デフォルトの <code>/usr/local/apache2</code> になります。</p>
 
-    <p>Apache httpd のコンパイルとインストールに必要なものをはじめとして、
+    <p>Apache HTTP サーバのコンパイルとインストールに必要なものをはじめとして、
     コンパイルとインストールについては、次に詳しく記述されています。</p>
 </section>
 
 <section id="requirements"><title>必要なもの</title>
 
-    <p>Apache のビルドには次のものが必要です:</p>
+    <p>Apache HTTPd のビルドには次のものが必要です:</p>
 
     <dl>
       <dt>ディスクスペース</dt>
@@ -151,10 +151,10 @@
       明示的に指定すると良いでしょう。
       <program>configure</program> スクリプトで Perl 5 インタプリタが
       見つからない場合は、この影響を受けるサポートスクリプトが使えなくなります。
-      もちろん、Apache httpd のコンパイルとインストールは問題なく行えます。</dd>
+      もちろん、Apache HTTPd のコンパイルとインストールは問題なく行えます。</dd>
 
       <dt><a href="http://apr.apache.org">apr/apr-util &gt;= 1.2</a></dt>
-      <dd><code>apr</code> と <code>apr-util</code> は Apache httpd
+      <dd><code>apr</code> と <code>apr-util</code> は Apache HTTPd
       ソースリリースに同梱されていますし、どんな環境でもほぼ問題なく
       使えるはずです。ただし <code>apr</code> と <code>apr-util</code>
       のバージョン 1.0 や 1.1 がシステムの一部として既にインストールされている場合、
@@ -162,24 +162,25 @@
       httpd を隔離した環境でビルドする必要があります。
       バンドルされている <code>apr</code>/<code>apr-util</code> を使って
       アップグレードする場合は、これらを手動でインストールする必要があります :
-<example>
-# Build and install apr 1.2<br />
-cd srclib/apr<br/>
-./configure --prefix=/usr/local/apr-httpd/<br/>
-make<br/>
-make install<br />
-<br />
-# Build and install apr-util 1.2<br />
-cd ../apr-util<br />
-./configure --prefix=/usr/local/apr-util-httpd/ --with-apr=/usr/local/apr-httpd
-/<br />
-make<br/>
-make install<br />
-<br />
-# Configure httpd<br />
-cd ../../<br />
-./configure --with-apr=/usr/local/apr-httpd/ --with-apr-util=/usr/local/apr-util-httpd/<br />
-</example>
+      <example>
+        # Build and install apr 1.2<br />
+        cd srclib/apr<br/>
+        ./configure --prefix=/usr/local/apr-httpd/<br/>
+        make<br/>
+        make install<br />
+        <br />
+        # Build and install apr-util 1.2<br />
+        cd ../apr-util<br />
+        ./configure --prefix=/usr/local/apr-util-httpd/ 
+          --with-apr=/usr/local/apr-httpd/<br />
+        make<br/>
+        make install<br />
+        <br />
+        # Configure httpd<br />
+        cd ../../<br />
+        ./configure --with-apr=/usr/local/apr-httpd/ 
+          --with-apr-util=/usr/local/apr-util-httpd/
+      </example>
       </dd>
     </dl>
 </section>
@@ -190,7 +191,7 @@ cd ../../<br />
     href="http://httpd.apache.org/download.cgi">Apache HTTP
     サーバダウンロードサイト</a>からダウンロードできますし、
     同じ場所に幾つかのミラーサイトもリストしています。
-    UNIX に類似するシステムで Apache を使うユーザは、ソースを
+    UNIX に類似するシステムで Apache HTTPd を使うユーザは、ソースを
     ダウンロードしてビルドしたほうが良いでしょう。
     ビルドの手順（下記）は簡単ですし、そのおかげでニーズに
     見合ったカスタマイズを簡単にできます。
@@ -214,14 +215,14 @@ cd ../../<br />
 
 <section id="extract"><title>展開</title>
 
-    <p>Apache HTTPD の tarball
+    <p>Apache HTTPd の tarball
     からソースファイルを展開して取り出すとは、
     単なる圧縮の解除と tar の展開です:</p>
 
-<example>
-$ gzip -d httpd-<em>NN</em>.tar.gz<br />
-$ tar xvf httpd-<em>NN</em>.tar
-</example>
+    <example>
+      $ gzip -d httpd-<em>NN</em>.tar.gz<br />
+      $ tar xvf httpd-<em>NN</em>.tar
+    </example>
 
     <p>配布用のソースコードがある現在いるディレクトリの下に、
     新しいディレクトリが作られます。
@@ -232,12 +233,12 @@ $ tar xvf httpd-<em>NN</em>.tar
 <section id="configure"><title>ソースツリーを設定する</title>
 
     <p>次のステップは、あなたのプラットホームと
-    個人的な要求に合うように Apache
+    個人的な要求に合うように Apache HTTPd
     ソースツリーを設定することです。
     これは配布ディレクトリのルートディレクトリにある、
     <program>configure</program>
     スクリプトで行ないます。
-     (Apache ソースツリーの未リリース
+     (Apache HTTPd ソースツリーの未リリース
     版をダウンロードした開発者は、次のステップに進む前に
     <code>autoconf</code> と<code>libtool</code>
     をインストールして <code>buildconf</code>
@@ -249,17 +250,17 @@ $ tar xvf httpd-<em>NN</em>.tar
     デフォルトオプションを変更できるように、<program>configure</program>
     には様々な変数やコマンドラインオプションが用意されています。</p>
 
-    <p>最も重要なオプションは、Apache がこの後でインストールされる位置
-    <code>--prefix</code> です。Apache は、このインストール位置に
+    <p>最も重要なオプションは、Apache HTTPd がこの後でインストールされる位置
+    <code>--prefix</code> です。Apache HTTPd は、このインストール位置に
     おいて正常に動作するように設定しなければならないからです。
     さらに詳細なファイル位置の制御は追加の <a
     href="programs/configure.html#installationdirectories">設定オプション
     </a> でできます。</p>
 
     <p>この時点で、<a href="mod/">モジュール</a> を有効にしたり
-    無効にしたりすることで Apache 本体に含まれる <a 
+    無効にしたりすることで Apache HTTPd 本体に含まれる <a 
     href="programs/configure.html#optionalfeatures">機能</a>
-    を指定できます。Apache 本体にはデフォルトで、モジュールの <a 
+    を指定できます。Apache HTTPd 本体にはデフォルトで、モジュールの <a 
     href="mod/module-dict.html#Status">Base</a> セットが
     含まれます。その他のモジュールは 
     <code>--enable-<var>module</var></code> オプションで
@@ -290,12 +291,12 @@ $ tar xvf httpd-<em>NN</em>.tar
     <module>mod_speling</module> を後で DSO 
     メカニズムでロードするようにコンパイルしてみます:</p>
 
-<example>
+    <example>
       $ CC="pgcc" CFLAGS="-O2" \<br />
        ./configure --prefix=/sw/pkg/apache \<br />
        --enable-rewrite=shared \<br />
        --enable-speling=shared
-</example>
+    </example>
 
     <p><program>configure</program> を実行したら、システムの機能を
     テストしたり、後でサーバをコンパイルするために必要な Makefile
@@ -308,7 +309,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <section id="compile"><title>ビルド</title>
 
-    <p>これで Apache の様々なパーツをビルドすることができます。
+    <p>これで Apache HTTPd の様々なパーツをビルドすることができます。
     次のコマンドを単純に実行するだけです:</p>
 
 <example>$ make</example>
@@ -340,7 +341,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
 
-    <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
+    <p><a href="./">docs/manual/</a> の Apache HTTP サーバマニュアルをざっと見てください。
     または、<a
     href="http://httpd.apache.org/docs/&httpd.docs;/"
     >http://httpd.apache.org/docs/&httpd.docs;/</a>
@@ -363,7 +364,7 @@ $ tar xvf httpd-<em>NN</em>.tar
     サーバを再び<a href="stopping.html">停止</a>するには、
     次のコマンドを実行します:</p>
 
-<example>$ <em>PREFIX</em>/bin/apachectl -k stop</example>
+    <example>$ <em>PREFIX</em>/bin/apachectl -k stop</example>
 </section>
 <section id="upgrading"><title>アップグレード</title>
 

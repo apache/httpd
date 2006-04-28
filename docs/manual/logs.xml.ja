@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 232343 -->
+<!-- English Revision: 396056 -->
 
 <!--
  Copyright 2002-2005 The Apache Software Foundation or its licensors, as
@@ -531,10 +531,14 @@
 
     <related>
       <modulelist>
+        <module>mod_logio</module>
+        <module>mod_log_forensic</module>
         <module>mod_cgi</module>
         <module>mod_rewrite</module>
       </modulelist>
       <directivelist>
+        <directive module="mod_log_config">LogFormat</directive>
+        <directive module="mod_log_forensic">ForensicLog</directive>
         <directive module="mpm_common">PidFile</directive>
         <directive module="mod_rewrite">RewriteLog</directive>
         <directive module="mod_rewrite">RewriteLogLevel</directive>
@@ -543,6 +547,26 @@
         <directive module="mod_cgi">ScriptLogLength</directive>
       </directivelist>
     </related>
+
+    <section>
+      <title>実際に送受信したバイト数のログ</title>
+
+      <p><module>mod_logio</module> は、
+         ネットワーク上で実際に送受信した数をログする
+         二つのフィールド (%I と %O) を
+         <directive module="mod_log_config">LogFormat</directive> 
+         ディレクティブに追加します。</p>
+    </section>
+
+    <section>
+      <title>Forensic ログ</title>
+
+      <p><module>mod_log_forensic</module> はクライアントリクエストの
+         forensic ログを取ります。ログはリクエスト処理前と処理後に
+         行われますので、1 リクエストに対して 2 行のログが出力されます。
+         forensic ロガーはとても厳密でカスタマイズできません。
+         デバッグやセキュリティ用のツールとして有効かもしれません。</p>
+    </section>
 
     <section id="pidfile">
       <title>PID ファイル</title>
