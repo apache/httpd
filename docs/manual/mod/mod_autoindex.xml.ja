@@ -4,8 +4,8 @@
 <!-- English Revision: 396056 -->
 
 <!--
- Copyright 2002-2005 The Apache Software Foundation or its licensors,
-                     as applicable.
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
 
  Licensed under the Apache License, Version 2.0 (the "License");
  you may not use this file except in compliance with the License.
@@ -817,7 +817,7 @@ MIME タイプによって選択</description>
       ファイル一覧の変化を追跡することができるようになります。
       いくつかのオペレーティングシステムは、新規ファイルや
       移動ファイルは正しく追跡するけれども、
-      ディレクトリ中のファイルのサイズや日付は追跡ないということに
+      ディレクトリ中のファイルのサイズや日付は追跡しないということに
       注意してください。
       <strong>既に存在するファイルのサイズや日付のスタンプが変化しても、
       全ての Unix プラットホームでは、
