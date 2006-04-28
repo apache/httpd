@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 190982:396056 (outdated) -->
+<!-- English Revision: 290816 -->
 
 <!--
  Copyright 2003-2005 The Apache Software Foundation or its licensors,
@@ -236,7 +236,7 @@
 <compatibility>Apache 2.0.33 以降で使用可能</compatibility>
 
 <usage>
-    <p>このディレクティブは応答の MIME-type に応じて出力<a
+    <p>このディレクティブは応答の <glossary>MIME-type</glossary> に応じて出力<a
     href="../filter.html">フィルタ</a>を使用するようにします。</p>
 
     <p>次の例は <module>mod_deflate</module> の <code>DEFLATE</code> フィルタを
@@ -267,7 +267,7 @@
     <note type="warning"><title>注:</title>
       <p><directive>AddOutputFilterByType</directive> ディレクティブにより
       有効にしたフィルタは場合によっては、部分的もしくは完全に適用されないことが
-      あります。例えば、MIME タイプがが決定できないときには
+      あります。例えば、<glossary ref="mime-type">MIME タイプ</glossary> が決定できないときには
       <directive module="core">DefaultType</directive> の設定が同じだったとしても、
       <directive module="core">DefaultType</directive> 設定を使うようになります。</p>
       <p>しかし、確実にフィルタが適用されるようにしたいときは、リソースに
@@ -306,8 +306,6 @@
     <p><directive>AllowEncodedSlashes</directive> <code>On</code> による
     パス分離文字の使用は、<code>PATH_INFO</code> と合わせて
     使うときに一番役に立ちます。</p>
-    <p>Turning <directive>AllowEncodedSlashes</directive> <code>On</code> is
-    mostly useful when used in conjunction with <code>PATH_INFO</code>.</p>
 
     <note><title>注</title>
       <p>符号化されたスラッシュを許可することは、<em>復号</em>をすることを
@@ -331,7 +329,7 @@
 <usage>
     <p>サーバが (<directive
     module="core">AccessFileName</directive> によって指定された)
-    .htaccess ファイルを見つけた時、そのファイルの中で
+    <code>.htaccess</code> ファイルを見つけた時、そのファイルの中で
     宣言されたどのディレクティブがより前に定義された設定ディレクティブを
     上書きできるかを知る必要があります。</p>
 
@@ -345,7 +343,7 @@
     module="core">Files</directive> セクションでは無効です。
     </note>
 
-    <p>このディレクティブを None に設定すると、<a href="#accessfilename">.htaccess</a> ファイルは完全に
+    <p>このディレクティブを <code>None</code> に設定すると、<a href="#accessfilename">.htaccess</a> ファイルは完全に
     無視されます。
     この場合、サーバはファイルシステムの <code>.htaccess</code> ファイルを読むことを
     試みさえしません。</p>
@@ -501,7 +499,6 @@
 <name>CGIMapExtension</name>
 <description>CGI スクリプトのインタープリタの位置を調べるための手法</description>
 <syntax>CGIMapExtension <var>cgi-path</var> <var>.extension</var></syntax>
-<default>None</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
@@ -637,7 +634,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 </note>
 
     <p><code>~</code> という文字を
-    付加することで拡張正規表現を利用することもできます。
+    付加することで<glossary ref="regex">正規表現</glossary>を利用することもできます。
     例えば:</p>
 
 <example>
@@ -680,7 +677,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
       (<code>/home</code> ディレクトリに対して)。</li>
 
       <li><code>/home/.htaccess</code>, <code>/home/web/.htaccess</code>,
-      <code>/home/web/.htaccess</code> の順にそれらのファイル中の
+      <code>/home/web/dir/.htaccess</code> の順にそれらのファイル中の
        FileInfo ディレクティブが適用される。</li>
     </ul>
 
@@ -723,7 +720,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     href="../misc/security_tips.html">セキュリティに関するコツ</a>を
     参照してください。</strong></p>
 
-    <p>ディレクトリセクションは httpd.conf ファイル書きます。
+    <p>ディレクトリセクションは <code>httpd.conf</code> ファイル書きます。
     <directive type="section">Directory</directive>
     ディレクティブは入れ子にすることができず、
     <directive module="core" type="section">Limit</directive> や <directive
@@ -750,13 +747,14 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     ディレクティブと同様に、<directive type="section">DirectoryMatch</directive>
     と <code>&lt;/DirectoryMatch&gt;</code> は指定されたディレクトリと
     そのサブディレクトリにのみ適用されるディレクティブ群を囲います。
-    しかし、このディレクティブは引数として正規表現をとります。例えば:</p>
+    しかし、このディレクティブは引数として<glossary 
+    ref="regex">正規表現</glossary>をとります。例えば:</p>
 
     <example>
       &lt;DirectoryMatch "^/www/(.+/)?[0-9]{3}"&gt;
     </example>
 
-    <p>は /www/ 以下にある数字 3 文字のディレクトリにマッチします。</p>
+    <p>は <code>/www/</code> 以下にある数字 3 文字のディレクトリにマッチします。</p>
 
 </usage>
 <seealso>通常の <directive type="section">Directory</directive> と正規表現の指定が
@@ -868,7 +866,7 @@ module="core">Directory</directive></seealso>
 <compatibility>バージョン 2.0.44 以降で使用可能</compatibility>
 
 <usage>
-    <p>このディレクティブはクライアンにファイルの内容を送るときに
+    <p>このディレクティブはクライアントにファイルの内容を送るときに
     <program>httpd</program> がカーネルの
     sendfile サポートを使うかどうかを制御します。デフォルトでは、
     例えば静的なファイルの配送のように、リクエストの処理にファイルの
@@ -993,7 +991,7 @@ module="core">Directory</directive></seealso>
     <p>Microsoft Internet Explorer (MSIE) はデフォルトではサーバが生成したエラーメッセージが
     「小さすぎる」ときには無視をして自分自身の「やさしい」エラーメッセージで
     置換します。サイズのしきい値はエラーの種類によって異なりますが、
-    一般的にはエラーの文書を 512 バイトよりも多きくすると、MSIE は
+    一般的にはエラーの文書を 512 バイトよりも大きくすると、MSIE は
     サーバが生成したエラーを隠さずに表示します。詳しい情報は Microsoft
     Knowledge Base の記事 <a
     href="http://support.microsoft.com/default.aspx?scid=kb;en-us;Q294807">Q294807</a>
@@ -1156,7 +1154,7 @@ module="core">Directory</directive></seealso>
 
     <p><var>filename</var> 引数は、ファイル名かワイルドカード文字列
     で、ワイルドカードでは <code>?</code> は一つの文字、<code>*</code> は任意の文字列にマッチします。
-    <code>~</code> という文字を付加することで拡張正規表現を使うこともできます。
+    <code>~</code> という文字を付加することで<glossary ref="regex">正規表現</glossary>を使うこともできます。
     例えば、</p>
 
     <example>
@@ -1278,7 +1276,7 @@ module="core">Directory</directive></seealso>
     <code>Double</code>を指定した場合、2 重の逆引きを行ないます。
     つまり、逆引きの後に、その結果に対して正引きを行ないます。正引きの
     結果の IP アドレスの中にオリジナルのアドレスと一致するものがなければ
-    なりません。("tcpwrappers" の用語では PARANOID と呼ばれています。)</p>
+    なりません。("tcpwrappers" の用語では <code>PARANOID</code> と呼ばれています。)</p>
 
     <p><module>mod_authz_host</module> でホスト名によるアクセス
     制御を行なう場合には、
@@ -1717,17 +1715,17 @@ module="core">Directory</directive></seealso>
     デフォルト値は、定数 <code>DEFAULT_LIMIT_REQUEST_FIELDS</code>
     によりコンパイル時に定義されます (配布時には 100 と指定されています)。</p>
 
-    <p>LimitRequestBody ディレクティブは、
+    <p><directive>LimitRequestBody</directive> ディレクティブは、
     サーバ管理者が HTTP リクエスト中において許可するリクエストヘッダフィールド数を
     指定します。
     サーバはこの値には通常のクライアントからのリクエストに含まれるであろう
     フィールドの数より大きな値が必要とします。
     クライアントにより使われた要求ヘッダーフィールドの数が
     20 を超えることはほとんどありませんが、
-    これは種々のクライアントの実装よって変わり、
+    これは種々のクライアントの実装によって変わり、
     詳細なコンテントネゴシエーションをするためのブラウザの設定までにも
     影響されることがあります。
-    オプションの HTTP 拡張はリクエストヘッダフィールドを使って現される場合が
+    オプションの HTTP 拡張はリクエストヘッダフィールドを使って表される場合が
     多くあります。</p>
 
     <p>このディレクティブは、
@@ -1891,7 +1889,7 @@ module="core">Directory</directive></seealso>
     <p>URL にはワイルドカードを利用することができます。
     <code>?</code> は任意の一文字、<code>*</code> は任意の文字列にマッチします。 </p>
 
-    <p><code>~</code> という文字を追加することで、拡張正規表現を
+    <p><code>~</code> という文字を追加することで、<glossary ref="regex">正規表現</glossary>を
     利用することもできます。
     例えば:</p>
 
@@ -1969,7 +1967,8 @@ module="core">Directory</directive></seealso>
     <p><directive type="section">LocationMatch</directive> ディレクティブは、
     <directive type="section" module="core">Location</directive> と同じ様に
     URL により中に書かれたディレクティブの適用範囲を制限します。
-    但し、引数は普通の文字列ではなく、正規表現となります。例えば、</p>
+    但し、引数は普通の文字列ではなく、<glossary ref="regex">正規表現</glossary>となります。
+    例えば、</p>
 
     <example>
       &lt;LocationMatch "/(extra|special)/data"&gt;
@@ -2174,7 +2173,7 @@ module="core">Directory</directive></seealso>
     <p>IPV6 のアドレスは次の例のように角括弧で囲む必要があります:</p>
  
     <example>
-      NameVirtualHost [2001:db8::a00:20ff:fea7:ccea]:8080
+      NameVirtualHost [fe80::a00:20ff:fea7:ccea]:8080
     </example>
 
     <p>すべてのインタフェースへのリクエストを受け取るようにするためには、
@@ -2446,7 +2445,7 @@ module="core">Directory</directive></seealso>
 <override>All</override>
 
 <usage>
-    <p>一つか二つのパラメータををとります。
+    <p>一つか二つのパラメータをとります。
     最初のパラメータは全プロセスに対するリソースのソフトリミットを設定し、
     2 番目のパラメータは最大のリソースリミットを設定します。
     パラメータには数字か、オペレーティングシステムの最大となる
@@ -2807,7 +2806,7 @@ module="core">Directory</directive></seealso>
 
 <directivesynopsis>
 <name>ServerTokens</name>
-<description>Server HTTP 応答ヘッダを設定する</description>
+<description><code>Server</code> HTTP 応答ヘッダを設定する</description>
 <syntax>ServerTokens Major|Minor|Min[imal]|Prod[uctOnly]|OS|Full</syntax>
 <default>ServerTokens Full</default>
 <contextlist><context>server config</context></contextlist>
@@ -2901,6 +2900,11 @@ module="core">Directory</directive></seealso>
     <p><code>None</code> という値を設定することで、
     前の方の <directive>SetHandler</directive> で定義された設定を無効にすることが
     できます。</p>
+    <p><strong>注意:</strong>SetHandler はデフォルトのハンドラをオーバーライド
+    しますので、通常の挙動、たとえば、スラッシュ (/) で終わる URL が
+    リクエストされたときにディレクトリやインデックスファイルを返すよう取り扱う挙動は、
+    行われなくなります。
+    </p>
 
 </usage>
 
@@ -2990,6 +2994,36 @@ module="core">Directory</directive></seealso>
     コード中の変な場所にまだパケットを送る際にタイマをリセットしない
     場所があるかもしれないので、デフォルトをより小さい値にはしていません。</p>
 
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>TraceEnable</name>
+<description><code>TRACE</code> メソッドのリクエストに対する応答方法を決める
+</description>
+<syntax>TraceEnable <var>[on|off|extended]</var></syntax>
+<default>TraceEnable on</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>Apache 1.3.34, 2.0.55 以降</compatibility>
+
+<usage>
+    <p>コアサーバと <module>mod_proxy</module> 両方の <code>TRACE</code>
+    の挙動をオーバーライドします。デフォルトの <code>TraceEnable on</code>
+    は、リクエストボディを受け入れないような、RFC2616 に準拠した
+    <code>TRACE</code> リクエストを受け付けます。
+    <code>TraceEnale off</code> と設定すると、コアサーバと
+    <module>mod_proxy</module> は <code>405</code> (メソッド不許可)
+    エラーをクライアントに返します。</p>
+
+    <p>最後に、テストや調査目的などの限定用途として、使用に準拠しない
+    <code>TraceEnable extended</code> を使って、リクエストボディを
+    受け付けるように挙動を変更できます。(オリジンサーバとしての)
+    コアサーバでは、リクエストボディのサイズは 64k (
+    <code>Transfer-Encoding: chunked</code> が使われている場合は 
+    chunk ヘッダ用に +8k) に制限されます。
+    コアサーバは、フルヘッダと全ての chunk ヘッダをレスポンスの
+    ボディとして返却します。
+    proxy サーバとしては、リクエストボディのサイズは 64k に制限されません。</p>
 </usage>
 </directivesynopsis>
 
@@ -3103,7 +3137,7 @@ module="core">Directory</directive></seealso>
     角括弧で括って指定する必要があります。次は IPv6 の例です:</p>
 
     <example>
-      &lt;VirtualHost [2001:db8::a00:20ff:fea7:ccea]&gt;<br />
+      &lt;VirtualHost [fe80::a00:20ff:fea7:ccea]&gt;<br />
       <indent>
         ServerAdmin webmaster@host.example.com<br />
         DocumentRoot /www/docs/host.example.com<br />
@@ -3122,21 +3156,6 @@ module="core">Directory</directive></seealso>
     (OSがサポートしていれば) <code>ifconfig alias</code> コマンドにより
     達成できます)。</p>
 
-    <p><code>:port</code> といった形式で記述することにより、
-    マッチさせるポートを変更可能です。
-    この指定をしない場合には、主サーバ設定における
-    一番最後に <code><a href="#port">Port</a></code> で指定されたポートが
-    デフォルトとなります。
-    <code>:*</code> を指定することにより、
-    アドレス上の全てのポートにマッチします。(<code>_default_</code> のときは
-    これを使うことが推奨されています。)</p>
-
-    <p><strong>セキュリティに関して</strong>: 
-    サーバーを起動した以外のユーザがログファイルが保管されるディレクトリに
-    書き込み可能なときになぜセキュリティが破られる可能性があるかの詳細は
-    <a href="../misc/security_tips.html">セキュリティに関するコツ</a> を
-    参照してください。</p>
-    
     <note><title>注意点</title>
     <p><directive type="section">VirtualHost</directive> は Apache が Listen する
     IP アドレスには影響を与え<strong>ません</strong>。
@@ -3156,15 +3175,6 @@ module="core">Directory</directive></seealso>
     使わないことに注意してください。詳しくは <a
     href="../vhosts/name-based.html">ネームベースのバーチャルホスト</a> を
     参照してください。)</p>
-
-    <p><code>:port</code> といった形式で記述することにより、
-    マッチさせるポートを変更可能です。
-    この指定をしない場合には、主サーバ設定における
-    一番最後に <directive module="mpm_common">Listen</directive> で指定された
-    ポートがデフォルトとなります。
-    <code>:*</code> を指定することにより、
-    アドレス上の全てのポートにマッチします。(<code>_default_</code> のときは
-    これを使うことが推奨されています。)</p>
 
     <p><code>:port</code> といった形式で記述することにより、
     マッチさせるポートを変更可能です。
