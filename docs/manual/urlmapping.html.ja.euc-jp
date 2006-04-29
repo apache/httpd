@@ -22,8 +22,6 @@
 <a href="./ja/urlmapping.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/urlmapping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>この文書は Apache がリクエストの URL から送信するファイルの
     ファイルシステム上の位置を決定する方法を説明します。</p>
@@ -89,13 +87,15 @@
     <code>http://www.example.com/docs/dir/file.html</code> には
     <code>/var/web/dir/file.html</code> が送信されます。
     <code class="directive"><a href="./mod/mod_alias.html#scriptalias">ScriptAlias</a></code> も、
-    対象となっているパスが CGI スクリプトとして扱われるという追加の
+    対象となっているパスが <a class="glossarylink" href="./glossary.html#cgi" title="用語集を参照">CGI</a>
+    スクリプトとして扱われるという追加の
     効果以外は同じように動作します。</p>
 
     <p>もっと柔軟な設定が必要な状況では、
     <code class="directive"><a href="./mod/mod_alias.html#aliasmatch">AliasMatch</a></code> ディレクティブや
     <code class="directive"><a href="./mod/mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></code> ディレクティブ
-    を使って強力な正規表現に基づいたマッチと置換を行なうことができます。
+    を使って強力な<a class="glossarylink" href="./glossary.html#regex" title="用語集を参照">正規表現</a>に基づいたマッチと
+    置換を行なうことができます。
     たとえば、</p>
 
 <div class="example"><p><code>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
