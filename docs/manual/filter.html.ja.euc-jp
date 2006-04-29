@@ -10,7 +10,7 @@
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
-<body id="manual-page" class="no-sidebar"><div id="page-header">
+<body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">モジュール</a> | <a href="./mod/directives.html">ディレクティブ</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">用語</a> | <a href="./sitemap.html">サイトマップ</a></p>
 <p class="apache">Apache HTTP サーバ バージョン 2.2</p>
 <img alt="" src="./images/feather.gif" /></div>
@@ -24,51 +24,110 @@
 <a href="./ja/filter.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>Apache でのフィルタの使い方について記述しています。</p>
   </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#intro">Apache 2 のフィルタ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#smart">スマートフィルタ</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#using">フィルタの使い方</a></li>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="filters" id="filters">フィルタ</a></h2>
+<h2><a name="intro" id="intro">Apache 2 のフィルタ</a></h2>
     
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code></li><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprotocol">FilterProtocol</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
 
-    <p><em>フィルタ</em> とは、サーバが送受信したデータに
-    適用される処理プロセスのことをいいます。クライアントからサーバに
-    送られたデータは <em>入力フィルタ</em> によって、サーバから
-    クライアントに送られるデータは<em>出力フィルタ</em>によって
-    処理されます。複数のフィルタを適用することができ、
-    その順番を厳密に指定することもできます。</p>
+<p>Apache 2.0 以降ではフィルタチェイン機能が使え、データが
+どこから来るかに関わらず、非常に柔軟で調整しやすい方法で
+入出力データを処理できます。
+入力データをプリプロセスしたり出力データをポストプロセスしたりできます。
+この処理は、これまでのリクエスト処理フェーズとは根本的に独立した
+処理になります。</p>
+<p class="figure">
+<img src="images/filter_arch.png" width="569" height="392" alt="Filters can be chained, in a Data Axis orthogonal to request processing" />
+</p>
+<p>Apache の標準的なディストリビューションでのフィルタ例は :</p>
+<ul>
+<li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code> で、サーバサイドインクルード SSI を実装しています</li>
+<li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code> で、SSL 暗号化 (https) を実装しています。</li>
+<li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code> で、on-the-fly のデータ圧縮・展開機能を実装しています。</li>
+<li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code> で、異なる文字セット間の変換を実装しています。</li>
+<li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> で、外部プログラムをフィルタとして実行します。</li>
+</ul>
+<p>チャンキングやバイトレンジ処理といった処理を行うために
+Apache は、内部的にいくつかのフィルタを使っています。</p>
 
-    <p>Apache 内部では、チャンク (データのぶつ切り) を行ったり、
-    バイト範囲の指定されたリクエストを扱ったりといった機能を
-    行う際に、フィルタが使われています。それに加えて、
-    実行時の設定ディレクティブで選択が可能なフィルタを
-    モジュールが提供できます。
-    データに適応されるフィルタのセットは、
+<p>様々なアプリケーションがサードパーティ製のフィルタモジュールとして
+実装されていて、<a href="http://modules.apache.org/">modules.apache.org</a>
+などから取得できます。たとえば :</p>
+
+<ul>
+<li>HTML や XML の処理と書き換え</li>
+<li>XSLT 変換と XIncludes</li>
+<li>XML 名前空間のサポート</li>
+<li>ファイルアップロード処理や HTML フォームのデコード</li>
+<li>画像処理</li>
+<li>PHP スクリプトなどのアプリケーションに対する保護機能</li>
+<li>テキストの検索置換・編集機能</li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="smart" id="smart">スマートフィルタ</a></h2>
+
+<p class="figure">
+<img src="images/mod_filter_new.png" width="423" height="331" alt="Smart filtering applies different filter providers according to the state of request processing" />
+</p>
+<p>Apache 2.1 移行に含まれる <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code> では、
+実行時に動的にフィルタチェインを有効にできます。
+ですからたとえば、HTML を HTML フィルタで、JPEG 画像をそれとは
+全く別のフィルタで、書き換えるようなプロクシを設定することもできます。
+その上、そのプロクシはどのオリジンサーバがコンテンツを送信するか
+事前情報無しでいいように構成できます。
+これは、実行時に実際のコンテンツに応じて別々のフィルタプロバイダに
+ディスパッチするフィルタハーネスを使うことで実現されています。
+チェインの中に直接入れて無条件に適用したり、動的にプロバイダとして
+適用するようにしたりすることは、どんなフィルタでもできます。
+たとえば、</p>
+<ul>
+<li>HTML 処理フィルタはコンテントが text/html あるいは
+application/xhtml+xml の場合にのみ実行されます</li>
+<li>圧縮フィルタは圧縮可能な入力で、非圧縮状態のものに
+対してのみ実行されます</li>
+<li>文字セット変換フィルタはテキスト文書が
+希望の文字セットになっていない場合に挿入されます</li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="using" id="using">フィルタの使い方</a></h2>
+
+<p>フィルタの使い方には二つの方法があります: シンプルとダイナミック。
+一般的にはどちらかのみを使ったほうがよいでしょう。
+これらを組み合わせて使用すると、予期しない結果になるかもしれません。
+(とはいえ、シンプルな入力フィルタとシンプルあるいはダイナミックな
+出力フィルタを組み合わせることは自由に出来ます。)</p>
+<p>シンプルな方法は、入力フィルタのみを設定し、必要に応じて
+静的なフィルタチェインを出力フィルタとして設定する方法です。
+関連するディレクティブは、
     <code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code>,
     <code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code>,
     <code class="directive"><a href="./mod/core.html#addinputfilter">AddInputFilter</a></code>,
     <code class="directive"><a href="./mod/core.html#addoutputfilter">AddOutputFilter</a></code>,
     <code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code>,
     <code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code>
-    ディレクティブで制御できます。</p>
+    になります。</p>
 
-    <p>現行の Apache HTTP サーバの配布では、
-    次のユーザ選択可能なフィルタが提供されています。</p>
+<p>ダイナミックな方法は、静的なものとフレキシブルなものを両方有効にする
+方法で、<code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code> のページで述べられています。
+関連するディレクティブは、
+    <code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code>,
+    <code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code>, 
+    <code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code>
+    になります。</p>
 
-    <dl>
-      <dt>INCLUDES</dt>
-      <dd><code class="module"><a href="./mod/mod_include.html">mod_include</a></code> で Server-Side Include をします。</dd>
-      <dt>DEFLATE</dt>
-      <dd><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code>
-      を使って、クライアントに送信する前に出力を圧縮します。</dd>
-    </dl>
+<p>ディレクティブ <code class="directive"><a href="./mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code>
+はまだサポートされていますが、種々の問題をはらんでおり、非推奨です。
+ダイナミックな設定方法を代わりに使ってください。</p>
 
-    <p>また、<code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> モジュールで
-    外部プログラムをフィルタとして指定することができます。</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
