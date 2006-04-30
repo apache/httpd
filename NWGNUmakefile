@@ -385,11 +385,9 @@ installdev :: FORCE
 prebuild :: FORCE
 	$(MAKE) -C server -f NWGNUMakefile
 	$(MAKE) -C srclib/pcre -f NWGNUMakefile
-	$(MAKE) -C $(APU_WORK)/uri -f NWGNUMakefile
 	$(CHKNOT) $(PREBUILD_INST)\nul          mkdir $(PREBUILD_INST)
 	-copy $(AP_WORK)\server\$(OBJDIR)\*.nlm $(PREBUILD_INST)\*.*
 	-copy $(AP_WORK)\srclib\pcre\$(basename $(OBJDIR))\*.nlm $(PREBUILD_INST)\*.*
-	-copy $(APU_WORK)\uri\$(basename $(OBJDIR))\*.nlm $(PREBUILD_INST)\*.*
 
 
 #
