@@ -15,6 +15,7 @@
 #   Option      Default
 #   INSTDIR     \Apache2
 #   PORT        80
+#   SSLPORT     443
 #   SERVERNAME  localhost
 #
 # For example;
@@ -112,12 +113,18 @@ SERVERNAME=localhost
 !IF "$(PORT)" == ""
 PORT=80
 !ENDIF 
+!IF "$(SSLPORT)" == ""
+SSLPORT=443
+!ENDIF 
 
 !IF "$(LONG)" == ""
 !MESSAGE
 !MESSAGE INSTDIR    = $(INSTDIR)
 !MESSAGE SERVERNAME = $(SERVERNAME)
 !MESSAGE PORT       = $(PORT)
+!IF EXIST("srclib\openssl")
+!MESSAGE SSLPORT    = $(SSLPORT)
+!ENDIF
 !MESSAGE
 !MESSAGE To change these options use 'nmake -f Makefile.win [option=value]'
 !MESSAGE Example: nmake -f Makefile.win PORT=8080
@@ -645,7 +652,9 @@ BEGIN {
 	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
     }
     {
+	gsub( /443/, "$(PORT)" );
 	gsub( /@@ServerRoot@@/, serverroot );
+	gsub( /SSLMutex  file:@exp_runtimedir@\/ssl_mutex/, "SSLMutex default" );
 	gsub( /@exp_runtimedir@/, "logs" );
 	gsub( /@exp_htdocsdir@/, serverroot "/htdocs" );
 	gsub( /@exp_logfiledir@/, "logs" );
