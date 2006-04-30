@@ -652,8 +652,8 @@ BEGIN {
 	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
     }
     {
-	gsub( /443/, "$(PORT)" );
 	gsub( /@@ServerRoot@@/, serverroot );
+	gsub( /443/, "$(SSLPORT)" );
 	gsub( /SSLMutex  file:@exp_runtimedir@\/ssl_mutex/, "SSLMutex default" );
 	gsub( /@exp_runtimedir@/, "logs" );
 	gsub( /@exp_htdocsdir@/, serverroot "/htdocs" );
