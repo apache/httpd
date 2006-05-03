@@ -690,6 +690,14 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     /* Precompute how much storage we need to hold the headers */
     headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out,
                                               r->server);
+
+    /* If not set in headers_out, set Content-Type */
+    if (!apr_table_get(headers_out, "Content-Type")
+        && r->content_type) {
+        apr_table_setn(headers_out, "Content-Type",
+                       ap_make_content_type(r, r->content_type));
+    }
+
     headers_out = apr_table_overlay(r->pool, headers_out, r->err_headers_out);
 
     rc = serialize_table(&mobj->header_out, &mobj->num_header_out,
