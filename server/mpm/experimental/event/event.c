@@ -1730,7 +1730,7 @@ static void perform_idle_server_maintenance(void)
              */
             if (ps->pid != 0) { /* XXX just set all_dead_threads in outer
                                    for loop if no pid?  not much else matters */
-                if (status <= SERVER_READY && status != SERVER_DEAD &&
+                if (status <= SERVER_READY &&
                         !ps->quiescing && ps->generation == ap_my_generation) {
                     ++idle_thread_count;
                 }
