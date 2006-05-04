@@ -97,3 +97,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       the source and dest charsets are the same.
       http://svn.apache.org/viewcvs?rev=399668&view=rev
       +1 trawick
+
+    * mod_mem_cache: Add Content-Type to headers_out if not already set.
+      PR 39266.
+        Trunk version of patch:
+          http://svn.apache.org/viewcvs?rev=399388&view=rev
+        2.2.x version of patch:
+          Trunk version works
+      +1 rpluem
+
