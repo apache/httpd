@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_charset_lite: Bypass translation when the source and dest charsets
+     are the same.  [Jeff Trawick]
+
   *) mod_mem_cache: Set content type correctly when delivering data from
      cache. PR 39266. [Ruediger Pluem]
 
