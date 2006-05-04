@@ -88,3 +88,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR#39386
       http://svn.apache.org/viewcvs.cgi?rev=396310&view=rev
       +1 niq
+
+    * Remove odd DECLINED code from mod_charset_lite filter.
+      http://svn.apache.org/viewcvs?rev=399665&view=rev
+      +1 trawick
+
+    * mod_charset_lite: Don't go through the motions of translating if
+      the source and dest charsets are the same.
+      http://svn.apache.org/viewcvs?rev=399668&view=rev
+      +1 trawick
