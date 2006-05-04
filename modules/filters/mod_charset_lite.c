@@ -233,6 +233,8 @@ static int find_code_page(request_rec *r)
     if (!strncmp(r->filename, "gone:", 5)) return DECLINED;
     if (!strncmp(r->filename, "passthrough:", 12)) return DECLINED;
     if (!strncmp(r->filename, "forbidden:", 10)) return DECLINED;
+    /* no translation when server and network charsets are set to the same value */
+    if (!strcasecmp(dc->charset_source, dc->charset_default)) return DECLINED;
 
     mime_type = r->content_type ? r->content_type : ap_default_type(r);
 
