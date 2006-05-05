@@ -355,19 +355,6 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
 TODO ISSUES REMAINING IN MOD_SSL:
 
-    * In order to use a DSO version of mod_ssl we have to link with
-      -lssl and -lcrypto. A workaround is in place right now where the
-      entire EXTRA_LIBS macro is being appended to the objects list, but
-      this is a hack. We should either revamp the APACHE_CHECK_SSL_TOOLKIT
-      autoconf function or come up with some other autoconf checks to
-      search for libssl and libcrypto and properly add them to mod_ssl's
-      link flags.
-
-    * SSL renegotiations in combination with POST request
-
-    * Port or dispose all code inside #if 0...#endif blocks that remain
-      from the porting effort.
-
     * Do we need SSL_set_read_ahead()?
 
     * the ssl_expr api is NOT THREAD SAFE.  race conditions exist:
@@ -393,10 +380,6 @@ TODO ISSUES REMAINING IN MOD_SSL:
 
     * ssl_engine_pphrase.c needs to be reworked so it is generic enough
       to also decrypt proxy keys
-
-    * the shmcb code should just align its memory segment rather than
-      jumping through all the "safe" memcpy and memset hoops
-
 
 WISH LIST
     * mod_proxy: Ability to run SSL over proxy gateway connections,
