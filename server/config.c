@@ -1855,6 +1855,7 @@ AP_CORE_DECLARE(const char *) ap_init_virtual_host(apr_pool_t *p,
     s->process = main_server->process;
     s->server_admin = NULL;
     s->server_hostname = NULL;
+    s->server_scheme = NULL;
     s->error_fname = NULL;
     s->timeout = 0;
     s->keep_alive_timeout = 0;
@@ -1940,6 +1941,7 @@ static server_rec *init_server_config(process_rec *process, apr_pool_t *p)
     s->port = 0;
     s->server_admin = DEFAULT_ADMIN;
     s->server_hostname = NULL;
+    s->server_scheme = NULL;
     s->error_fname = DEFAULT_ERRORLOG;
     s->loglevel = DEFAULT_LOGLEVEL;
     s->limit_req_line = DEFAULT_LIMIT_REQUEST_LINE;

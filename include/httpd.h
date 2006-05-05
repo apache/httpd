@@ -1197,6 +1197,9 @@ struct server_rec {
     int limit_req_fieldsize;
     /** limit on number of request header fields  */
     int limit_req_fields; 
+
+    /** The server request scheme for redirect responses */
+    const char *server_scheme;
 };
 
 typedef struct core_output_filter_ctx {

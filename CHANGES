@@ -2,6 +2,15 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) core, mod_http: add optional 'scheme://' prefix to ServerName directive. 
+     For 'https', mod_http returns "https" for the ap_hook_http_scheme and
+     DEFAULT_HTTPS_PORT for ap_hook_default_port.  This fixes Redirect
+     responses to requests for directories without a trailing slash when
+     httpd runs behind a proxy or offload device that processes SSL.  It
+     also enables support for Subversion in that configuration.  This change is 
+     completely backwards compatible and passes the perl-framework.  Minor
+     mmn bump because I add a field to server_rec.  [Sander Temme]     
+
   *) mod_charset_lite: Bypass translation when the source and dest charsets
      are the same.  [Jeff Trawick]
 
@@ -139,7 +148,7 @@ Changes with Apache 2.2.1
      non-SSL request is processed for an SSL vhost (such as the
      "HTTP request received on SSL port" error message when an 400 
      ErrorDocument is configured, or if using "SSLEngine optional").
-     PR 37791.  [Rüdiger Plüm, Joe Orton]
+     PR 37791.  [RÃ¼diger PlÃ¼m, Joe Orton]
 
   *) SECURITY: CVE-2005-3352 (cve.mitre.org)
      mod_imagemap: Escape untrusted referer header before outputting
