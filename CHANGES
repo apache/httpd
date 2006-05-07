@@ -13,7 +13,7 @@ Changes with Apache 2.2.2
      PR 38793. [Ruediger Pluem, matthias <mk-asf gigacodes.de>]
 
   *) core: Prevent reading uninitialized memory while reading a line of
-     protocol input.  PR 39282. [Davi Arnaut <davi haxent.com.br>]
+     protocol input.  PR 39282. [Davi Arnaut <davi haxent com br>]
 
   *) mod_dbd: Update defaults, improve error reporting.
      [Chris Darroch <chrisd pearsoncmg com>, Nick Kew]

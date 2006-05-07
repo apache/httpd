@@ -76,6 +76,17 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * Remove odd DECLINED code from mod_charset_lite filter.
+      http://svn.apache.org/viewcvs?rev=399665&view=rev
+      +1 trawick, rpluem, niq
+      niq: This is right, but the underlying behaviour (refuse to
+      work in a proxy) is bad.  There's a TODO.
+
+    * mod_charset_lite: Don't go through the motions of translating if
+      the source and dest charsets are the same.
+      http://svn.apache.org/viewcvs?rev=399668&view=rev
+      +1 trawick, rpluem, niq
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Backport mod_authz_dbd (it's had some testing now)
@@ -88,15 +99,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR#39386
       http://svn.apache.org/viewcvs.cgi?rev=396310&view=rev
       +1 niq
-
-    * Remove odd DECLINED code from mod_charset_lite filter.
-      http://svn.apache.org/viewcvs?rev=399665&view=rev
-      +1 trawick, rpluem
-
-    * mod_charset_lite: Don't go through the motions of translating if
-      the source and dest charsets are the same.
-      http://svn.apache.org/viewcvs?rev=399668&view=rev
-      +1 trawick, rpluem
 
     * mod_mem_cache: Add Content-Type to headers_out if not already set.
       PR 39266.
