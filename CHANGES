@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Tidy up scoreboard [Chris Darroch <chrisd pearsoncmg.com> ]
+
   *) core, mod_http: add optional 'scheme://' prefix to ServerName directive. 
      For 'https', mod_http returns "https" for the ap_hook_http_scheme and
      DEFAULT_HTTPS_PORT for ap_hook_default_port.  This fixes Redirect
@@ -10,9 +12,6 @@ Changes with Apache 2.3.0
      also enables support for Subversion in that configuration.  This change is 
      completely backwards compatible and passes the perl-framework.  Minor
      mmn bump because I add a field to server_rec.  [Sander Temme]     
-
-  *) mod_charset_lite: Bypass translation when the source and dest charsets
-     are the same.  [Jeff Trawick]
 
   *) mod_mem_cache: Set content type correctly when delivering data from
      cache. PR 39266. [Ruediger Pluem]
