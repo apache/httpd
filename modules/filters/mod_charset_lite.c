@@ -232,6 +232,8 @@ static int find_code_page(request_rec *r)
     if (!strncmp(r->filename, "gone:", 5)) return DECLINED;
     if (!strncmp(r->filename, "passthrough:", 12)) return DECLINED;
     if (!strncmp(r->filename, "forbidden:", 10)) return DECLINED;
+    /* no translation when server and network charsets are set to the same value */
+    if (!strcasecmp(dc->charset_source, dc->charset_default)) return DECLINED;
 
     mime_type = r->content_type ? r->content_type : ap_default_type(r);
 
@@ -820,9 +822,6 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             ctx->noop = 1;
         }
     }
-
-    /* catch proxy requests */
-    if (f->r->proxyreq) return DECLINED;
 
     /* Opening the output translation (this used to be done in the fixup hook,
      * but that was too early: a subsequent type modification, e.g., by a
