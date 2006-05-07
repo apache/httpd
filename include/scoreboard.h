@@ -87,18 +87,8 @@ typedef enum {
     SB_SHARED = 2
 } ap_scoreboard_e;
 
-#define SB_WORKING  0  /* The server is busy and the child is useful. */
-#define SB_IDLE_DIE 1  /* The server is idle and the child is superfluous. */
-                       /*   The child should check for this and exit gracefully. */
-
 /* stuff which is worker specific */
-/***********************WARNING***************************************/
-/* These are things that are used by mod_status. Do not put anything */
-/*   in here that you cannot live without. This structure will not   */
-/*   be available if mod_status is not loaded.                       */
-/*********************************************************************/
 typedef struct worker_score worker_score;
-
 struct worker_score {
     int thread_num;
 #if APR_HAS_THREADS
@@ -142,7 +132,7 @@ typedef struct {
 
 /* stuff which the parent generally writes and the children rarely read */
 typedef struct process_score process_score;
-struct process_score{
+struct process_score {
     pid_t pid;
     ap_generation_t generation;	/* generation of this child */
     ap_scoreboard_e sb_type;
@@ -153,7 +143,7 @@ struct process_score{
 
 /* stuff which is lb specific */
 typedef struct lb_score lb_score;
-struct lb_score{
+struct lb_score {
     /* TODO: make a real stuct from this */
     unsigned char data[1024];
 };
