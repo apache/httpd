@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.3
 
+  *) mod_charset_lite: Bypass translation when the source and dest charsets
+     are the same. [Jeff Trawick]
+
 Changes with Apache 2.2.2
 
   *) mod_deflate: work correctly in an internal redirect
