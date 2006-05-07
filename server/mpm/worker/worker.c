@@ -353,7 +353,7 @@ static int volatile shutdown_pending;
 static int volatile restart_pending;
 static int volatile is_graceful;
 static volatile int child_fatal;
-ap_generation_t volatile ap_my_generation;
+ap_generation_t volatile ap_my_generation = 0;
 
 /*
  * ap_start_shutdown() and ap_start_restart(), below, are a first stab at
