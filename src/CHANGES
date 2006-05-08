@@ -1,5 +1,7 @@
 Changes with Apache 1.3.36
 
+  *) Reverted SVN rev #396294 due to unwanted regression.
+     (http://svn.apache.org/viewcvs?rev=396294&view=rev)
 
 Changes with Apache 1.3.35
 

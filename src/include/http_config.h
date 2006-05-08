@@ -330,8 +330,6 @@ CORE_EXPORT(int) ap_parse_htaccess(void **result, request_rec *r, int override,
 CORE_EXPORT(const char *) ap_init_virtual_host(pool *p, const char *hostname,
 				server_rec *main_server, server_rec **);
 CORE_EXPORT(void) ap_process_resource_config(server_rec *s, char *fname, pool *p, pool *ptemp);
-CORE_EXPORT(void) ap_process_include_config(server_rec *s, char *fname, pool *p, pool *ptemp,
-		                cmd_parms *parms);
 
 /* ap_check_cmd_context() definitions: */
 API_EXPORT(const char *) ap_check_cmd_context(cmd_parms *cmd, unsigned forbidden);
