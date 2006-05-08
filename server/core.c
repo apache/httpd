@@ -2236,7 +2236,6 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
 static const char *server_hostname_port(cmd_parms *cmd, void *dummy, const char *arg)
 {
     const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
-    core_server_config *conf;
     const char *portstr, *part;
     char *scheme;
     int port;
