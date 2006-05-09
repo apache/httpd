@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) Remove test/zb.c due to dubious licencing and duplication of support/ab.c 
-     [Thom May]
-
   *) Tidy up scoreboard [Chris Darroch <chrisd pearsoncmg.com> ]
 
   *) core, mod_http: add optional 'scheme://' prefix to ServerName directive. 
