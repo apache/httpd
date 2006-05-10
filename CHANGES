@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Add support for fcgi:// proxies to mod_rewrite.
+     [Markus Schiegl <ms schiegl.com>]
+
   *) Tidy up scoreboard [Chris Darroch <chrisd pearsoncmg.com> ]
 
   *) core, mod_http: add optional 'scheme://' prefix to ServerName directive. 

@@ -577,6 +577,9 @@ static unsigned is_absolute_uri(char *uri)
         if (!strncasecmp(uri, "tp://", 5)) {        /* ftp://    */
             return 6;
         }
+        if (!strncasecmp(uri, "cgi://", 6)) {       /* fcgi://   */
+            return 7;
+        }
         break;
 
     case 'g':
