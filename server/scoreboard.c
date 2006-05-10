@@ -182,7 +182,7 @@ static apr_status_t open_scoreboard(apr_pool_t *pconf)
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, NULL,
                      "Fatal error: unable to create global pool "
-                     "for use with by the scoreboard");
+                     "for use by the scoreboard");
         return rv;
     }
 
