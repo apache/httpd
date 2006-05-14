@@ -1,6 +1,9 @@
 Changes with Apache 1.3.36
 
   *) Reverted SVN rev #396294 due to unwanted regression.
+     The new feature introduced in 1.3.35 (Allow usage of the
+     "Include" configuration directive within previously "Include"d
+     files) has been removed in the meantime.
      (http://svn.apache.org/viewcvs?rev=396294&view=rev)
 
 Changes with Apache 1.3.35
