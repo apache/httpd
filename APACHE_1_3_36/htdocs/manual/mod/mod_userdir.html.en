@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_userdir</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_userdir</h1>
+
+    <p>This module provides for user-specific directories.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_userdir.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    userdir_module</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#userdir">UserDir</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="userdir" name="userdir">UserDir</a> directive</h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> UserDir
+    <em>directory-filename</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>UserDir
+    public_html</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_userdir<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> All forms except
+    the <code>UserDir public_html</code> form are only available in
+    Apache 1.1 or above. Use of the <samp>enabled</samp> keyword,
+    or <samp>disabled</samp> with a list of usernames, is only
+    available in Apache 1.3 and above. 
+
+    <p>The UserDir directive sets the real directory in a user's
+    home directory to use when a request for a document for a user
+    is received. <em>Directory-filename</em> is one of the
+    following:</p>
+
+    <ul>
+      <li>The name of a directory or a pattern such as those shown
+      below.</li>
+
+      <li>The keyword <samp>disabled</samp>. This turns off
+      <em>all</em> username-to-directory translations except those
+      explicitly named with the <samp>enabled</samp> keyword (see
+      below).</li>
+
+      <li>The keyword <samp>disabled</samp> followed by a
+      space-delimited list of usernames. Usernames that appear in
+      such a list will <em>never</em> have directory translation
+      performed, even if they appear in an <samp>enabled</samp>
+      clause.</li>
+
+      <li>The keyword <samp>enabled</samp> followed by a
+      space-delimited list of usernames. These usernames will have
+      directory translation performed even if a global disable is
+      in effect, but not if they also appear in a
+      <samp>disabled</samp> clause.</li>
+    </ul>
+
+    <p>If neither the <samp>enabled</samp> nor the
+    <samp>disabled</samp> keywords appear in the
+    <samp>Userdir</samp> directive, the argument is treated as a
+    filename pattern, and is used to turn the name into a directory
+    specification. A request for
+    <code>http://www.foo.com/~bob/one/two.html</code> will be
+    translated to:</p>
+<pre>
+UserDir public_html     -&gt; ~bob/public_html/one/two.html
+UserDir /usr/web        -&gt; /usr/web/bob/one/two.html
+UserDir /home/*/www     -&gt; /home/bob/www/one/two.html
+</pre>
+
+    <p>The following directives will send redirects to the
+    client:</p>
+<pre>
+UserDir http://www.foo.com/users -&gt; http://www.foo.com/users/bob/one/two.html
+UserDir http://www.foo.com/*/usr -&gt; http://www.foo.com/bob/usr/one/two.html
+UserDir http://www.foo.com/~*/   -&gt; http://www.foo.com/~bob/one/two.html
+</pre>
+
+    <blockquote>
+      <strong>Be careful when using this directive; for instance,
+      <samp>"UserDir&nbsp;./"</samp> would map
+      <samp>"/~root"</samp> to <samp>"/"</samp> - which is probably
+      undesirable. If you are running Apache 1.3 or above, it is
+      strongly recommended that your configuration include a
+      "<samp>UserDir&nbsp;disabled&nbsp;root</samp>" declaration.
+      See also the <a
+      href="core.html#directory">&lt;Directory&gt;</a> directive
+      and the <a href="../misc/security_tips.html">Security
+      Tips</a> page for more information.</strong>
+    </blockquote>
+
+<p>Additional examples:</p>
+
+<p>To allow a few users to have <code>UserDir</code> directories, but
+not anyone else, use the following:</p>
+
+<pre>
+UserDir disabled
+UserDir enabled user1 user2 user3
+</pre>
+
+<p>To allow most users to have <code>UserDir</code> directories, but
+deny this to a few, use the following:</p>
+
+<pre>
+UserDir enabled
+UserDir disabled user4 user5 user6
+</pre>
+
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

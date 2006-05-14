@@ -1,0 +1,32 @@
+; os/win32/BaseAddr.ref contains the central repository
+;                       of all module base addresses
+;                       to avoid relocation
+
+; WARNING: Update this file by reviewing the image size
+;          of the debug-generated dll files; release images
+;          should fit in the larger debug-sized reservations.
+;          Always allow some slack (if >C000, size at 20000)
+;          to allow for discrepancies between builds.
+
+; module name      base-address      max-size
+
+ApacheCore           0x6FF60000    0x000A0000
+xmlparse             0x6FF40000    0x00020000
+xmltok               0x6FF10000    0x00030000
+mod_auth_anon        0x6FEF0000    0x00010000
+mod_auth_digest      0x6FED0000    0x00020000
+mod_cern_meta        0x6FEC0000    0x00010000
+mod_digest           0x6FEB0000    0x00010000
+mod_expires          0x6FEA0000    0x00010000
+mod_headers          0x6FE90000    0x00010000
+mod_info             0x6FE80000    0x00010000
+mod_rewrite          0x6FE60000    0x00020000
+mod_speling          0x6FE50000    0x00010000
+mod_status           0x6FE40000    0x00010000
+mod_usertrack        0x6FE30000    0x00010000
+mod_proxy            0x6FE10000    0x00020000
+mod_auth_dbm         0x6FE00000    0x00010000
+mod_unique_id        0x6FDF0000    0x00010000
+mod_vhost_alias      0x6FDE0000    0x00010000
+mod_mime_magic       0x6FDD0000    0x00010000
+mod_log_forensic     0x6FDC0000    0x00010000

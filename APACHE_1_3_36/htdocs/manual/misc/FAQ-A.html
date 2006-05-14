@@ -1,0 +1,395 @@
+<!--#if expr="$FAQMASTER" -->
+<!--#set var="STANDALONE" value="" -->
+<!--#set var="INCLUDED" value="YES" -->
+<!--#if expr="$QUERY_STRING = TOC" -->
+<!--#set var="TOC" value="YES" -->
+<!--#set var="CONTENT" value="" -->
+<!--#else -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="YES" -->
+<!--#endif -->
+<!--#else -->
+<!--#set var="STANDALONE" value="YES" -->
+<!--#set var="INCLUDED" value="" -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="" -->
+<!--#endif -->
+<!--#if expr="$STANDALONE" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Frequently Asked Questions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Server Frequently Asked
+    Questions</h1>
+
+    <p>$Revision: 1.13 $ ($Date: 2002/12/23 02:12:13 $)</p>
+
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a
+    href="http://httpd.apache.org/docs/misc/FAQ.html"
+    rel="Help"><samp>http://httpd.apache.org/docs/misc/FAQ.html</samp></a>&gt;.</p>
+    <!-- Notes about changes:                                           -->
+    <!--  - If adding a relative link to another part of the            -->
+    <!--    documentation, *do* include the ".html" portion.  There's a -->
+    <!--    good chance that the user will be reading the documentation -->
+    <!--    on his own system, which may not be configured for          -->
+    <!--    multiviews.                                                 -->
+    <!--  - When adding items, make sure they're put in the right place -->
+    <!--    - verify that the numbering matches up.                     -->
+    <!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+    <!--    correctly in a reliable way when this is converted to text  -->
+    <!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+    <!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+    <!--    the horizontal and vertical indenting right.                -->
+    <!--  - Don't forget to include an HR tag after the last /P tag     -->
+    <!--    but before the /LI in an item.                              -->
+
+    <p>If you are reading a text-only version of this FAQ, you may
+    find numbers enclosed in brackets (such as "[12]"). These refer
+    to the list of reference URLs to be found at the end of the
+    document. These references do not appear, and are not needed,
+    for the hypertext version.</p>
+
+    <h2>The Questions</h2>
+
+    <ol type="A">
+      <!--#endif -->
+      <!--#if expr="$TOC || $STANDALONE" -->
+
+      <li value="1">
+        <strong>Background</strong> 
+
+        <ol>
+          <li><a href="#what">What is Apache?</a></li>
+
+          <li><a href="#why">How and why was Apache
+          created?</a></li>
+
+          <li><a href="#name">Why the name "Apache"?</a></li>
+
+          <li><a href="#compare">OK, so how does Apache compare to
+          other servers?</a></li>
+
+          <li><a href="#tested">How thoroughly tested is
+          Apache?</a></li>
+
+          <li><a href="#future">What are the future plans for
+          Apache?</a></li>
+
+          <li><a href="#support">Whom do I contact for
+          support?</a></li>
+
+          <li><a href="#more">Is there any more information on
+          Apache?</a></li>
+
+          <li><a href="#where">Where can I get Apache?</a></li>
+
+          <li><a href="#logo">May I use the Apache logo on my
+          product or Web site?</a></li>
+        </ol>
+      </li>
+      <!--#endif -->
+      <!--#if expr="$STANDALONE" -->
+    </ol>
+    <hr />
+
+    <h2>The Answers</h2>
+    <!--#endif -->
+    <!--#if expr="! $TOC" -->
+
+    <h3>A. Background</h3>
+
+    <ol>
+      <li>
+        <a id="what" name="what"><strong>What is
+        Apache?</strong></a> 
+
+        <p>The Apache httpd server</p>
+
+        <ul>
+          <li>is a powerful, flexible, HTTP/1.1 compliant web
+          server</li>
+
+          <li>implements the latest protocols, including HTTP/1.1
+          (RFC2616)</li>
+
+          <li>is highly configurable and extensible with
+          third-party modules</li>
+
+          <li>can be customised by writing 'modules' using the
+          Apache module API</li>
+
+          <li>provides full source code and comes with an
+          unrestrictive license</li>
+
+          <li>runs on Windows NT/9x, Netware 5.x and above, OS/2, and most
+          versions of Unix, as well as several other operating
+          systems</li>
+
+          <li>is actively being developed</li>
+
+          <li>encourages user feedback through new ideas, bug
+          reports and patches</li>
+
+          <li>
+            implements many frequently requested features,
+            including:<br />
+            <br />
+             
+
+            <dl>
+              <dt>DBM databases for authentication</dt>
+
+              <dd>allows you to easily set up password-protected
+              pages with enormous numbers of authorized users,
+              without bogging down the server.</dd>
+
+              <dt>Customized responses to errors and problems</dt>
+
+              <dd>Allows you to set up files, or even CGI scripts,
+              which are returned by the server in response to
+              errors and problems, e.g. setup a script to intercept
+              <strong>500 Server Error</strong>s and perform
+              on-the-fly diagnostics for both users and
+              yourself.</dd>
+
+              <dt>Multiple DirectoryIndex directives</dt>
+
+              <dd>Allows you to say <code>DirectoryIndex index.html
+              index.cgi</code>, which instructs the server to
+              either send back <code>index.html</code> or run
+              <code>index.cgi</code> when a directory URL is
+              requested, whichever it finds in the directory.</dd>
+
+              <dt>Unlimited flexible URL rewriting and
+              aliasing</dt>
+
+              <dd>Apache has no fixed limit on the numbers of
+              Aliases and Redirects which may be declared in the
+              config files. In addition, a powerful rewriting
+              engine can be used to solve most URL manipulation
+              problems.</dd>
+
+              <dt>Content negotiation</dt>
+
+              <dd>i.e. the ability to automatically serve clients
+              of varying sophistication and HTML level compliance,
+              with documents which offer the best representation of
+              information that the client is capable of
+              accepting.</dd>
+
+              <dt>Virtual Hosts</dt>
+
+              <dd>A much requested feature, sometimes known as
+              multi-homed servers. This allows the server to
+              distinguish between requests made to different IP
+              addresses or names (mapped to the same machine).
+              Apache also offers dynamically configurable
+              mass-virtual hosting.</dd>
+
+              <dt>Configurable Reliable Piped Logs</dt>
+
+              <dd>You can configure Apache to generate logs in the
+              format that you want. In addition, on most Unix
+              architectures, Apache can send log files to a pipe,
+              allowing for log rotation, hit filtering, real-time
+              splitting of multiple vhosts into separate logs, and
+              asynchronous DNS resolving on the fly.</dd>
+            </dl>
+          </li>
+        </ul>
+        <hr />
+      </li>
+
+      <li>
+        <a id="why" name="why"><strong>How and why was Apache
+        created?</strong></a> 
+
+        <p>The <a
+        href="http://httpd.apache.org/ABOUT_APACHE.html">About
+        Apache</a> document explains how the Apache project evolved
+        from its beginnings as an outgrowth of the NCSA httpd
+        project to its current status as one of the fastest, most
+        efficient, and most functional web servers in
+        existence.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="name" name="name"><strong>Why the name
+        "Apache"?</strong></a> 
+
+        <p>The name 'Apache' was chosen from respect for
+        the Native American Indian tribe of Apache (Ind&eacute;),
+        <a href="http://www.indians.org/welker/apache.htm">well-known
+        for their superior skills in warfare strategy and their
+        inexhaustible endurance</a>. For more information on the
+        Apache Nation, we suggest searching
+        <a href="http://www.google.com/search?q=Apache+Nation">Google</a>,
+        <a href="http://www.northernlight.com/nlquery.fcg?qr=Apache+Nation"
+          >Northernlight</a>, or
+        <a href="http://www.alltheweb.com/cgi-bin/asearch?query=Apache+Nation"
+          >AllTheWeb</a>.</p>
+
+        <p>Secondarily, and more popularly (though incorrectly) accepted,
+        it's a considered cute name which stuck. Apache is "<strong>A
+        PA</strong>t<strong>CH</strong>y server". It was based on
+        some existing code and a series of "patch files".</p>
+
+        <hr />
+      </li>
+
+      <li>
+        <a id="compare" name="compare"><strong>OK, so how does
+        Apache compare to other servers?</strong></a> 
+
+        <p>For an independent assessment, see <a
+        href="http://webcompare.internet.com/">Web
+        Compare</a>.</p>
+
+        <p>Apache has been shown to be substantially faster, more
+        stable, and more feature-full than many other web servers.
+        Although certain commercial servers have claimed to surpass
+        Apache's speed (it has not been demonstrated that any of
+        these "benchmarks" are a good way of measuring WWW server
+        speed at any rate), we feel that it is better to have a
+        mostly-fast free server than an extremely-fast server that
+        costs thousands of dollars. Apache is run on sites that get
+        millions of hits per day, and they have experienced no
+        performance difficulties.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="tested" name="tested"><strong>How thoroughly tested
+        is Apache?</strong></a> 
+
+        <p>Apache is run on over 6 million Internet servers (as of
+        February 2000). It has been tested thoroughly by both
+        developers and users. The Apache Group maintains rigorous
+        standards before releasing new versions of their server,
+        and our server runs without a hitch on over one half of all
+        WWW servers available on the Internet. When bugs do show
+        up, we release patches and new versions as soon as they are
+        available.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="future" name="future"><strong>What are the future
+        plans for Apache?</strong></a> 
+
+        <ul>
+          <li>to continue to be an "open source" no-charge-for-use
+          HTTP server,</li>
+
+          <li>to keep up with advances in HTTP protocol and web
+          developments in general,</li>
+
+          <li>to collect suggestions for fixes/improvements from
+          its users,</li>
+
+          <li>to respond to needs of large volume providers as well
+          as occasional users.</li>
+        </ul>
+        <hr />
+      </li>
+
+      <li>
+        <a id="support" name="support"><strong>Whom do I contact
+        for support?</strong></a> 
+
+        <p>There is no official support for Apache. None of the
+        developers want to be swamped by a flood of trivial
+        questions that can be resolved elsewhere. Bug reports and
+        suggestions should be sent <em>via</em> <a
+        href="http://httpd.apache.org/bug_report.html">the bug
+        report page</a>. Other questions should be directed to the
+        <a href="http://httpd.apache.org/userslist.html">Apache HTTP
+        Server Users List</a> or the
+        <a
+        href="news:comp.infosystems.www.servers.unix">comp.infosystems.www.servers.unix</a>
+        or <a
+        href="news:comp.infosystems.www.servers.ms-windows">comp.infosystems.www.servers.ms-windows</a>
+        newsgroup (as appropriate for the platform you use), where
+        some of the Apache team lurk, in the company of many other
+        httpd gurus who should be able to help.</p>
+
+        <p>Commercial support for Apache is, however, available
+        from a number of third parties.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="more" name="more"><strong>Is there any more
+        information available on Apache?</strong></a> 
+
+        <p>Indeed there is. See the main <a
+        href="http://httpd.apache.org/">Apache web site</a>. There
+        is also a regular electronic publication called <a
+        href="http://www.apacheweek.com/" rel="Help"><cite>Apache
+        Week</cite></a> available. Links to relevant <cite>Apache
+        Week</cite> articles are included below where appropriate.
+        There are also some <a
+        href="http://httpd.apache.org/info/apache_books.html">Apache-specific
+        books</a> available.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="where" name="where"><strong>Where can I get
+        Apache?</strong></a> 
+
+        <p>You can find out how to download the source for Apache
+        at the project's <a href="http://httpd.apache.org/">main
+        web page</a>.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="logo" name="logo"><b>May I use the Apache logo on my
+        product or Web site?</b></a> 
+
+        <p>You may <b>NOT</b> use any original artwork from the
+        Apache Software Foundation, nor make or use modified
+        versions of such artwork, except under the following
+        conditions:</p>
+
+        <ul>
+          <li>You may use the <a
+          href="http://www.apache.org/images/apache_pb.gif">'Powered by Apache'
+          graphic</a> on a Web site that is being served by the
+          Apache HTTP server software.</li>
+
+          <li>You may use the aforementioned 'Powered by Apache'
+          graphic or the <a
+          href="http://www.apache.org/images/asf_logo.gif">
+          Apache Software Foundation logo</a> in product
+          description and promotional material <b>IF and ONLY
+          IF</b> such use can in no way be interpreted as anything
+          other than an attribution. Using the Apache name and
+          artwork in a manner that implies endorsement of a product
+          or service is <b>strictly forbidden</b>.</li>
+        </ul>
+        <hr />
+      </li>
+    </ol>
+    <!--#endif -->
+    <!--#if expr="$STANDALONE" -->
+    <!-- Don't forget to add HR tags at the end of each list item.. -->
+    <!--#include virtual="footer.html" -->
+    <!--#endif -->
+  </body>
+</html>
+

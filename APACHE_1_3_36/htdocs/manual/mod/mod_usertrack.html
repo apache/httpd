@@ -1,0 +1,296 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_usertrack</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_usertrack</h1>
+
+    <p>This module uses cookies to provide for a
+    <em>clickstream</em> log of user activity on a site.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_usertrack.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    usertrack_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Known as
+    mod_cookies prior to Apache 1.3.</p>
+
+    <h2>Summary</h2>
+
+    <p>Previous releases of Apache have included a module which
+    generates a 'clickstream' log of user activity on a site using
+    cookies. This was called the "cookies" module, mod_cookies. In
+    Apache 1.2 and later this module has been renamed the "user
+    tracking" module, mod_usertrack. This module has been
+    simplified and new directives added.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#cookiedomain">CookieDomain</a></li>
+
+      <li><a href="#cookieexpires">CookieExpires</a></li>
+
+      <li><a href="#cookieformat">CookieFormat</a></li>
+
+      <li><a href="#cookiename">CookieName</a></li>
+
+      <li><a href="#cookieprefix">CookiePrefix</a></li>
+
+      <li><a href="#cookiestyle">CookieStyle</a></li>
+
+      <li><a href="#cookietracking">CookieTracking</a></li>
+    </ul>
+
+    <h2>Logging</h2>
+
+    <p>Previously, the cookies module (now the user tracking
+    module) did its own logging, using the <tt>CookieLog</tt>
+    directive. In this release, this module does no logging at all.
+    Instead, a configurable log format file should be used to log
+    user click-streams. This is possible because the logging module
+    now allows <a href="../multilogs.html">multiple log files</a>.
+    The cookie itself is logged by using the text
+    <tt>%{cookie}n</tt> in the log file format. For example:</p>
+<pre>
+CustomLog logs/clickstream "%{cookie}n %r %t"
+</pre>
+    For backward compatibility the configurable log module
+    implements the old <tt>CookieLog</tt> directive, but this
+    should be upgraded to the above <tt>CustomLog</tt> directive. 
+
+    <h2>2-digit or 4-digit dates for cookies?</h2>
+    (the following is from message
+    &lt;022701bda43d$9d32bbb0$1201a8c0@christian.office.sane.com&gt;
+    in the new-httpd archives) 
+<pre>
+From: "Christian Allen" &lt;christian@sane.com&gt;
+Subject: Re: Apache Y2K bug in mod_usertrack.c
+Date: Tue, 30 Jun 1998 11:41:56 -0400
+
+Did some work with cookies and dug up some info that might be useful.
+
+True, Netscape claims that the correct format NOW is four digit dates, and
+four digit dates do in fact work... for Netscape 4.x (Communicator), that
+is.  However, 3.x and below do NOT accept them.  It seems that Netscape
+originally had a 2-digit standard, and then with all of the Y2K hype and
+probably a few complaints, changed to a four digit date for Communicator.
+Fortunately, 4.x also understands the 2-digit format, and so the best way to
+ensure that your expiration date is legible to the client's browser is to
+use 2-digit dates.
+
+However, this does not limit expiration dates to the year 2000; if you use
+an expiration year of "13", for example, it is interpreted as 2013, NOT
+1913!  In fact, you can use an expiration year of up to "37", and it will be
+understood as "2037" by both MSIE and Netscape versions 3.x and up (not sure
+about versions previous to those).  Not sure why Netscape used that
+particular year as its cut-off point, but my guess is that it was in respect
+to UNIX's 2038 problem.  Netscape/MSIE 4.x seem to be able to understand
+2-digit years beyond that, at least until "50" for sure (I think they
+understand up until about "70", but not for sure).
+
+Summary:  Mozilla 3.x and up understands two digit dates up until "37"
+(2037).  Mozilla 4.x understands up until at least "50" (2050) in 2-digit
+form, but also understands 4-digit years, which can probably reach up until
+9999.  Your best bet for sending a long-life cookie is to send it for some
+time late in the year "37".
+</pre>
+    <hr />
+
+    <h2><a id="cookiedomain" name="cookiedomain">CookieDomain</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><b>Syntax:</b></a> CookieDomain <i>domain</i><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><b>Context:</b></a> server config, virtual host,
+    directory, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><b>Status:</b></a> optional<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><b>Module:</b></a> mod_usertrack <a
+    href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3.21
+    and later 
+
+    <p>This directive controls the setting of the domain to which
+    the tracking cookie applies. If not present, no domain is
+    included in the cookie header field.</p>
+
+    <p>The domain string <b>must</b> begin with a dot, and
+    <b>must</b> include at least one embedded dot. That is,
+    ".foo.com" is legal, but "foo.bar.com" and ".com" are not.</p>
+    <hr />
+
+    <h2><a id="cookieexpires"
+    name="cookieexpires">CookieExpires</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CookieExpires
+    <em>expiry-period</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> <b>1.3.20 and
+    earlier:</b> server config, virtual host; <b>1.3.21 and
+    later:</b> server config, virtual host, directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> optional<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_usertrack 
+
+    <p>When used, this directive sets an expiry time on the cookie
+    generated by the usertrack module. The <em>expiry-period</em>
+    can be given either as a number of seconds, or in the format
+    such as "2 weeks 3 days 7 hours". Valid denominations are:
+    years, months, weeks, hours, minutes and seconds. If the expiry
+    time is in any format other than one number indicating the
+    number of seconds, it must be enclosed by double quotes.</p>
+
+    <p>If this directive is not used, cookies last only for the
+    current browser session.</p>
+    <hr />
+
+    <h2><a id="cookieformat"
+    name="cookieformat">CookieFormat</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CookieFormat
+    <em>Normal | Compact</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual host, directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> optional<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_usertrack <a
+    href="directive-dict.html#Compatibility" 
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3.28
+    and later 
+
+    <p>When used, this directive determines whether the cookie
+    used for user tracking is created using the default ("normal")
+    format (eg: decimal values for items like the PID) or
+    using a more compact format (eg: hexidecimal values).</p>
+
+    <hr />
+
+    <h2><a id="cookiename" name="cookiename">CookieName</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CookieName
+    <em>token</em> <br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>Apache</em> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> optional<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_usertrack <br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3.7 and
+    later 
+
+    <p>This directive allows you to change the name of the cookie
+    this module uses for its tracking purposes. By default the
+    cookie is named "<code>Apache</code>".</p>
+
+    <p>You must specify a valid cookie name; results are
+    unpredictable if you use a name containing unusual characters.
+    Valid characters include A-Z, a-z, 0-9, "_", and "-".</p>
+    <hr />
+
+    <h2><a id="cookieprefix"
+    name="cookieprefix">CookiePrefix</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CookiePrefix
+    <em>"string"</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual host, directory,
+    .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> optional<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_usertrack <a
+    href="directive-dict.html#Compatibility" 
+    rel="Help"><strong>Compatibility:</strong></a> Apache 1.3.28
+    and later 
+
+    <p>When used, this directive allows for the <em>"string"</em>
+    to be prepended to the user tracking cookie. Care must be
+    taken not to prepend a string that would result in a bogus
+    cookie.</p>
+
+    <hr />
+
+    <h2><a id="cookiestyle" name="cookiestyle">CookieStyle</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><b>Syntax:</b></a> CookieStyle
+    <i>Netscape|Cookie|Cookie2|RFC2109|RFC2965</i><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><b>Context:</b></a> server config, virtual host,
+    directory, .htaccess<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><b>Status:</b></a> optional<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><b>Module:</b></a> mod_usertrack 
+
+    <p>This directive controls the format of the cookie header
+    field. The three formats allowed are:</p>
+
+    <ul>
+      <li><b>Netscape</b>, which is the original but now deprecated
+      syntax. This is the default, and the syntax Apache has
+      historically used.</li>
+
+      <li><b>Cookie</b> or <b>RFC2109</b>, which is the syntax that
+      superseded the Netscape syntax.</li>
+
+      <li><b>Cookie2</b> or <b>RFC2965</b>, which is the most
+      current cookie syntax.</li>
+    </ul>
+
+    <p>Not all clients can understand all of these formats. but you
+    should use the newest one that is generally acceptable to your
+    users' browsers.</p>
+    <hr />
+
+    <h2><a id="cookietracking"
+    name="cookietracking">CookieTracking</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CookieTracking
+    on|off<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> optional<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_usertrack 
+
+    <p>When the user track module is compiled in, and
+    "CookieTracking on" is set, Apache will start sending a
+    user-tracking cookie for all new requests. This directive can
+    be used to turn this behavior on or off on a per-server or
+    per-directory basis. By default, compiling mod_usertrack will
+    not activate cookies. <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

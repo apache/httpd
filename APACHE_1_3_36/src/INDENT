@@ -1,0 +1,140 @@
+This is the current status of running indent on the source code.
+If you are about to edit a file, mark it as RESERVED below with your name.
+If a file has already been indent'd, or doesn't need it, mark it as DONE.
+AND don't forget to run expand on the file after it has been indent'd.
+
+./main:				STATUS
+   alloc.c			DONE by Dean
+   alloc.h			DONE by Dean
+   buff.c			DONE by Dean
+   buff.h			DONE by Dean
+   conf.h			DONE by Dean
+   dummy.c			DONE by Dean
+   explain.c			DONE by Dean
+   explain.h			DONE by Dean
+   fnmatch.c			DONE by Dean
+   fnmatch.h			DONE by Dean
+   http_bprintf.c		DONE by Dean
+   http_conf_globals.h		DONE by Dean
+   http_config.c		DONE by Dean
+   http_config.h		DONE by Dean
+   http_core.c			RESERVED by Randy
+   http_core.h			RESERVED by Randy
+   http_log.c			RESERVED by Randy
+   http_log.h			RESERVED by Randy
+   http_main.c			DONE by Dean
+   http_main.h			DONE by Dean
+   http_protocol.c		DONE by Roy
+   http_protocol.h		DONE by Roy
+   http_request.c		DONE by Roy
+   http_request.h		DONE by Roy
+   httpd.h			DONE by Dean
+   md5.h			DONE by Dean
+   md5c.c			DONE by Dean
+   multithread.h		DONE by Dean
+   rfc1413.c			DONE by Dean
+   rfc1413.h			DONE by Dean
+   scoreboard.h			DONE by Dean
+   util.c			DONE by Randy
+   util_date.c			DONE by Randy
+   util_date.h			DONE by Randy
+   util_md5.c			DONE by Randy
+   util_md5.h			DONE by Randy
+   util_script.c		DONE by Randy
+   util_script.h		DONE by Randy
+   util_snprintf.c		DONE by Randy
+
+./modules/example:
+   mod_example.c		DONE by Ken
+
+./modules/proxy:
+   mod_proxy.c			DONE by Dean
+   mod_proxy.h			DONE by Dean
+   proxy_cache.c		DONE by Dean
+   proxy_connect.c		DONE by Dean
+   proxy_ftp.c			DONE by Dean
+   proxy_http.c			DONE by Dean
+   proxy_util.c			DONE by Dean
+
+./modules/standard:
+   mod_access.c			DONE by Dean
+   mod_actions.c		DONE by Dean
+   mod_alias.c			DONE by Dean
+   mod_asis.c			DONE by Dean
+   mod_auth.c			DONE by Dean
+   mod_auth_anon.c		DONE by Dean
+   mod_auth_db.c		DONE by Dean
+   mod_auth_dbm.c		DONE by Dean
+   mod_autoindex.c		DONE by Dean
+   mod_cern_meta.c		DONE by Dean
+   mod_cgi.c			DONE by Dean
+   mod_digest.c			DONE by Dean
+   mod_dir.c			DONE by Brian
+   mod_dld.c			DONE by Brian
+   mod_env.c			DONE by Brian
+   mod_expires.c		DONE by Brian
+   mod_headers.c		DONE by Brian
+   mod_imap.c			DONE by Brian
+   mod_include.c		DONE by Brian
+   mod_info.c			DONE by Ken
+   mod_log_agent.c		DONE by Brian
+   mod_log_config.c		DONE by Ken
+   mod_log_referer.c		DONE by Brian
+   mod_mime.c			DONE by Brian
+   mod_mime.h			DONE by Brian
+   mod_mime_magic.c		DONE by Brian
+   mod_negotiation.c		DONE by Ken
+   mod_rewrite.c                DONE by Roy & Ralf
+   mod_rewrite.h                DONE by Roy
+   mod_setenvif.c		DONE by Ken
+   mod_speling.c		DONE by Brian
+   mod_status.c			DONE by Dean
+   mod_unique_id.c		DONE by Brian
+   mod_userdir.c		DONE by Brian
+   mod_usertrack.c		DONE by Brian
+
+./os/unix:
+   os-inline.c
+   os.c
+   os.h
+
+./os/win32:
+   getopt.c
+   getopt.h
+   mod_dll.c
+   mod_isapi.c
+   modules.c
+   multithread.c
+   os.c
+   os.h
+   passwd.c
+   passwd.h
+   readdir.c
+   readdir.h
+   service.c
+   service.h
+   util_win32.c
+
+./regex:			(we are not doing this one, right?)
+   cclass.h			DONE
+   cname.h			DONE
+   debug.c			DONE
+   engine.c			DONE
+   main.c			DONE
+   regcomp.c			DONE
+   regerror.c			DONE
+   regex.h			DONE
+   regex2.h			DONE
+   regexec.c			DONE
+   regfree.c			DONE
+   split.c			DONE
+   utils.h			DONE
+
+./support:
+   cls.c			DONE by Randy
+   htdigest.c			DONE by Randy
+   htpasswd.c			DONE by Randy
+   logresolve.c			DONE by Randy
+   rotatelogs.c			DONE by Randy
+   suexec.c			DONE by Randy
+   suexec.h			DONE by Randy

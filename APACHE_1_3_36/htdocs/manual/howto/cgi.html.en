@@ -1,0 +1,551 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Tutorial: Dynamic Content with CGI</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Dynamic Content with CGI</h1>
+    <a id="__index__" name="__index__"></a> <!-- INDEX BEGIN -->
+     
+
+    <ul>
+      <li><a href="#dynamiccontentwithcgi">Dynamic Content with
+      CGI</a></li>
+
+      <li>
+        <a href="#configuringapachetopermitcgi">Configuring Apache
+        to permit CGI</a> 
+
+        <ul>
+          <li><a href="#scriptalias">ScriptAlias</a></li>
+
+          <li>
+            <a href="#cgioutsideofscriptaliasdirectories">CGI
+            outside of ScriptAlias directories</a> 
+
+            <ul>
+              <li><a
+              href="#explicitlyusingoptionstopermitcgiexecution">Explicitly
+              using Options to permit CGI execution</a></li>
+
+              <li><a href="#htaccessfiles">.htaccess files</a></li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="#writingacgiprogram">Writing a CGI program</a> 
+
+        <ul>
+          <li><a href="#yourfirstcgiprogram">Your first CGI
+          program</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="#butitsstillnotworking">But it's still not
+        working!</a> 
+
+        <ul>
+          <li><a href="#filepermissions">File permissions</a></li>
+
+          <li><a href="#pathinformation">Path information</a></li>
+
+          <li><a href="#syntaxerrors">Syntax errors</a></li>
+
+          <li><a href="#errorlogs">Error logs</a></li>
+        </ul>
+      </li>
+
+      <li>
+        <a href="#whatsgoingonbehindthescenes">What's going on
+        behind the scenes?</a> 
+
+        <ul>
+          <li><a href="#environmentvariables">Environment
+          variables</a></li>
+
+          <li><a href="#stdinandstdout">STDIN and STDOUT</a></li>
+        </ul>
+      </li>
+
+      <li><a href="#cgimoduleslibraries">CGI
+      modules/libraries</a></li>
+
+      <li><a href="#formoreinformation">For more
+      information</a></li>
+    </ul>
+    <!-- INDEX END -->
+    <hr />
+
+    <h2><a id="dynamiccontentwithcgi"
+    name="dynamiccontentwithcgi">Dynamic Content with CGI</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Related Modules</strong><br />
+         <br />
+         <a href="../mod/mod_alias.html">mod_alias</a><br />
+         <a href="../mod/mod_cgi.html">mod_cgi</a><br />
+         </td>
+
+        <td valign="top"><strong>Related Directives</strong><br />
+         <br />
+         <a
+        href="../mod/mod_mime.html#addhandler">AddHandler</a><br />
+         <a href="../mod/core.html#options">Options</a><br />
+         <a
+        href="../mod/mod_alias.html#scriptalias">ScriptAlias</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>The CGI (Common Gateway Interface) defines a way for a web
+    server to interact with external content-generating programs,
+    which are often referred to as CGI programs or CGI scripts. It
+    is the simplest, and most common, way to put dynamic content on
+    your web site. This document will be an introduction to setting
+    up CGI on your Apache web server, and getting started writing
+    CGI programs.</p>
+    <hr />
+
+    <h2><a id="configuringapachetopermitcgi"
+    name="configuringapachetopermitcgi">Configuring Apache to
+    permit CGI</a></h2>
+
+    <p>In order to get your CGI programs to work properly, you'll
+    need to have Apache configured to permit CGI execution. There
+    are several ways to do this.</p>
+
+    <h3><a id="scriptalias" name="scriptalias">ScriptAlias</a></h3>
+
+    <p>The <code>ScriptAlias</code> directive tells Apache that a
+    particular directory is set aside for CGI programs. Apache will
+    assume that every file in this directory is a CGI program, and
+    will attempt to execute it, when that particular resource is
+    requested by a client.</p>
+
+    <p>The <code>ScriptAlias</code> directive looks like:</p>
+<pre>
+        ScriptAlias /cgi-bin/ /usr/local/apache/cgi-bin/
+</pre>
+
+    <p>The example shown is from your default
+    <code>httpd.conf</code> configuration file, if you installed
+    Apache in the default location. The <code>ScriptAlias</code>
+    directive is much like the <code>Alias</code> directive, which
+    defines a URL prefix that is to mapped to a particular
+    directory. <code>Alias</code> and <code>ScriptAlias</code> are
+    usually used for directories that are outside of the
+    <code>DocumentRoot</code> directory. The difference between
+    <code>Alias</code> and <code>ScriptAlias</code> is that
+    <code>ScriptAlias</code> has the added meaning that everything
+    under that URL prefix will be considered a CGI program. So, the
+    example above tells Apache that any request for a resource
+    beginning with <code>/cgi-bin/</code> should be served from the
+    directory <code>/usr/local/apache/cgi-bin/</code>, and should
+    be treated as a CGI program.</p>
+
+    <p>For example, if the URL
+    <code>http://www.example.com/cgi-bin/test.pl</code> is
+    requested, Apache will attempt to execute the file
+    <code>/usr/local/apache/cgi-bin/test.pl</code> and return the
+    output. Of course, the file will have to exist, and be
+    executable, and return output in a particular way, or Apache
+    will return an error message.</p>
+
+    <h3><a id="cgioutsideofscriptaliasdirectories"
+    name="cgioutsideofscriptaliasdirectories">CGI outside of
+    ScriptAlias directories</a></h3>
+
+    <p>CGI programs are often restricted to
+    <code>ScriptAlias</code>'ed directories for security reasons.
+    In this way, administrators can tightly control who is allowed
+    to use CGI programs. However, if the proper security
+    precautions are taken, there is no reason why CGI programs
+    cannot be run from arbitrary directories. For example, you may
+    wish to let users have web content in their home directories
+    with the <code>UserDir</code> directive. If they want to have
+    their own CGI programs, but don't have access to the main
+    <code>cgi-bin</code> directory, they will need to be able to
+    run CGI programs elsewhere.</p>
+
+    <h3><a id="explicitlyusingoptionstopermitcgiexecution"
+    name="explicitlyusingoptionstopermitcgiexecution">Explicitly
+    using Options to permit CGI execution</a></h3>
+
+    <p>You could explicitly use the <code>Options</code> directive,
+    inside your main server configuration file, to specify that CGI
+    execution was permitted in a particular directory:</p>
+<pre>
+        &lt;Directory /usr/local/apache/htdocs/somedir&gt;
+                Options +ExecCGI
+        &lt;/Directory&gt;
+</pre>
+
+    <p>The above directive tells Apache to permit the execution of
+    CGI files. You will also need to tell the server what files are
+    CGI files. The following <code>AddHandler</code> directive
+    tells the server to treat all files with the <code>cgi</code>
+    or <code>pl</code> extension as CGI programs:</p>
+<pre>
+     AddHandler cgi-script cgi pl
+</pre>
+
+    <h3><a id="htaccessfiles" name="htaccessfiles">.htaccess
+    files</a></h3>
+
+    <p>A <code>.htaccess</code> file is a way to set configuration
+    directives on a per-directory basis. When Apache serves a
+    resource, it looks in the directory from which it is serving a
+    file for a file called <code>.htaccess</code>, and, if it finds
+    it, it will apply directives found therein.
+    <code>.htaccess</code> files can be permitted with the
+    <code>AllowOverride</code> directive, which specifies what
+    types of directives can appear in these files, or if they are
+    not allowed at all. To permit the directive we will need for
+    this purpose, the following configuration will be needed in
+    your main server configuration:</p>
+<pre>
+        AllowOverride Options
+</pre>
+
+    <p>In the <code>.htaccess</code> file, you'll need the
+    following directive:</p>
+<pre>
+        Options +ExecCGI
+</pre>
+
+    <p>which tells Apache that execution of CGI programs is
+    permitted in this directory.</p>
+    <hr />
+
+    <h2><a id="writingacgiprogram"
+    name="writingacgiprogram">Writing a CGI program</a></h2>
+
+    <p>There are two main differences between ``regular''
+    programming, and CGI programming.</p>
+
+    <p>First, all output from your CGI program must be preceded by
+    a MIME-type header. This is HTTP header that tells the client
+    what sort of content it is receiving. Most of the time, this
+    will look like:</p>
+<pre>
+        Content-type: text/html
+</pre>
+
+    <p>Secondly, your output needs to be in HTML, or some other
+    format that a browser will be able to display. Most of the
+    time, this will be HTML, but occasionally you might write a CGI
+    program that outputs a gif image, or other non-HTML
+    content.</p>
+
+    <p>Apart from those two things, writing a CGI program will look
+    a lot like any other program that you might write.</p>
+
+    <h3><a id="yourfirstcgiprogram" name="yourfirstcgiprogram">Your
+    first CGI program</a></h3>
+
+    <p>The following is an example CGI program that prints one line
+    to your browser. Type in the following, save it to a file
+    called <code>first.pl</code>, and put it in your
+    <code>cgi-bin</code> directory.</p>
+<pre>
+        #!/usr/bin/perl
+        print "Content-type: text/html\r\n\r\n";
+        print "Hello, World.";
+</pre>
+
+    <p>Even if you are not familiar with Perl, you should be able
+    to see what is happening here. The first line tells Apache (or
+    whatever shell you happen to be running under) that this
+    program can be executed by feeding the file to the interpreter
+    found at the location <code>/usr/bin/perl</code>. The second
+    line prints the content-type declaration we talked about,
+    followed by two carriage-return newline pairs. This puts a
+    blank line after the header, to indicate the end of the HTTP
+    headers, and the beginning of the body. The third line prints
+    the string ``Hello, World.'' And that's the end of it.</p>
+
+    <p>If you open your favorite browser and tell it to get the
+    address</p>
+<pre>
+        http://www.example.com/cgi-bin/first.pl
+</pre>
+
+    <p>or wherever you put your file, you will see the one line
+    <code>Hello, World.</code> appear in your browser window. It's
+    not very exciting, but once you get that working, you'll have a
+    good chance of getting just about anything working.</p>
+    <hr />
+
+    <h2><a id="butitsstillnotworking"
+    name="butitsstillnotworking">But it's still not
+    working!</a></h2>
+
+    <p>There are four basic things that you may see in your browser
+    when you try to access your CGI program from the web:</p>
+
+    <dl>
+      <dt>The output of your CGI program</dt>
+
+      <dd>Great! That means everything worked fine.<br />
+      <br />
+      </dd>
+
+      <dt>The source code of your CGI program or a "POST Method Not
+      Allowed" message</dt>
+
+      <dd>That means that you have not properly configured Apache
+      to process your CGI program. Reread the section on <a
+      href="#configuringapachetopermitcgi">configuring Apache</a>
+      and try to find what you missed.<br />
+      <br />
+      </dd>
+
+      <dt>A message starting with "Forbidden"</dt>
+
+      <dd>That means that there is a permissions problem. Check the
+      <a href="#errorlogs">Apache error log</a> and the section
+      below on <a href="#filepermissions">file
+      permissions</a>.<br />
+      <br />
+      </dd>
+
+      <dt>A message saying "Internal Server Error"</dt>
+
+      <dd>If you check the <a href="#errorlogs">Apache error
+      log</a>, you will probably find that it says "Premature end
+      of script headers", possibly along with an error message
+      generated by your CGI program. In this case, you will want to
+      check each of the below sections to see what might be
+      preventing your CGI program from emitting the proper HTTP
+      headers.</dd>
+    </dl>
+
+    <h3><a id="filepermissions" name="filepermissions">File
+    permissions</a></h3>
+
+    <p>Remember that the server does not run as you. That is, when
+    the server starts up, it is running with the permissions of an
+    unprivileged user - usually ``nobody'', or ``www'' - and so it
+    will need extra permissions to execute files that are owned by
+    you. Usually, the way to give a file sufficient permissions to
+    be executed by ``nobody'' is to give everyone execute
+    permission on the file:</p>
+<pre>
+        chmod a+x first.pl
+</pre>
+
+    <p>Also, if your program reads from, or writes to, any other
+    files, those files will need to have the correct permissions to
+    permit this.</p>
+
+    <p>The exception to this is when the server is configured to
+    use <a href="../suexec.html">suexec</a>. This program allows
+    CGI programs to be run under different user permissions,
+    depending on which virtual host or user home directory they are
+    located in. Suexec has very strict permission checking, and any
+    failure in that checking will result in your CGI programs
+    failing with an "Internal Server Error". In this case, you will
+    need to check the suexec log file to see what specific security
+    check is failing.</p>
+
+    <h3><a id="pathinformation" name="pathinformation">Path
+    information</a></h3>
+
+    <p>When you run a program from your command line, you have
+    certain information that is passed to the shell without you
+    thinking about it. For example, you have a path, which tells
+    the shell where it can look for files that you reference.</p>
+
+    <p>When a program runs through the web server as a CGI program,
+    it does not have that path. Any programs that you invoke in
+    your CGI program (like 'sendmail', for example) will need to be
+    specified by a full path, so that the shell can find them when
+    it attempts to execute your CGI program.</p>
+
+    <p>A common manifestation of this is the path to the script
+    interpreter (often <code>perl</code>) indicated in the first
+    line of your CGI program, which will look something like:</p>
+<pre>
+     #!/usr/bin/perl
+</pre>
+
+    <p>Make sure that this is in fact the path to the
+    interpreter.</p>
+
+    <h3><a id="syntaxerrors" name="syntaxerrors">Syntax
+    errors</a></h3>
+
+    <p>Most of the time when a CGI program fails, it's because of a
+    problem with the program itself. This is particularly true once
+    you get the hang of this CGI stuff, and no longer make the
+    above two mistakes. Always attempt to run your program from the
+    command line before you test if via a browser. This will
+    eliminate most of your problems.</p>
+
+    <h3><a id="errorlogs" name="errorlogs">Error logs</a></h3>
+
+    <p>The error logs are your friend. Anything that goes wrong
+    generates message in the error log. You should always look
+    there first. If the place where you are hosting your web site
+    does not permit you access to the error log, you should
+    probably host your site somewhere else. Learn to read the error
+    logs, and you'll find that almost all of your problems are
+    quickly identified, and quickly solved.</p>
+    <hr />
+
+    <h2><a id="whatsgoingonbehindthescenes"
+    name="whatsgoingonbehindthescenes">What's going on behind the
+    scenes?</a></h2>
+
+    <p>As you become more advanced in CGI programming, it will
+    become useful to understand more about what's happening behind
+    the scenes. Specifically, how the browser and server
+    communicate with one another. Because although it's all very
+    well to write a program that prints ``Hello, World.'', it's not
+    particularly useful.</p>
+
+    <h3><a id="environmentvariables"
+    name="environmentvariables">Environment variables</a></h3>
+
+    <p>Environment variables are values that float around you as
+    you use your computer. They are useful things like your path
+    (where the computer searches for a the actual file implementing
+    a command when you type it), your username, your terminal type,
+    and so on. For a full list of your normal, every day
+    environment variables, type <code>env</code> at a command
+    prompt.</p>
+
+    <p>During the CGI transaction, the server and the browser also
+    set environment variables, so that they can communicate with
+    one another. These are things like the browser type (Netscape,
+    IE, Lynx), the server type (Apache, IIS, WebSite), the name of
+    the CGI program that is being run, and so on.</p>
+
+    <p>These variables are available to the CGI programmer, and are
+    half of the story of the client-server communication. The
+    complete list of required variables is at <a
+    href="http://hoohoo.ncsa.uiuc.edu/cgi/env.html">http://hoohoo.ncsa.uiuc.edu/cgi/env.html</a></p>
+
+    <p>This simple Perl CGI program will display all of the
+    environment variables that are being passed around. Two similar
+    programs are included in the <code>cgi-bin</code> directory of
+    the Apache distribution. Note that some variables are required,
+    while others are optional, so you may see some variables listed
+    that were not in the official list. In addition, Apache
+    provides many different ways for you to <a
+    href="../env.html">add your own environment variables</a> to
+    the basic ones provided by default.</p>
+<pre>
+     #!/usr/bin/perl
+     print "Content-type: text/html\n\n";
+     foreach $key (keys %ENV) {
+          print "$key --&gt; $ENV{$key}&lt;br&gt;";
+     }
+</pre>
+
+    <h3><a id="stdinandstdout" name="stdinandstdout">STDIN and
+    STDOUT</a></h3>
+
+    <p>Other communication between the server and the client
+    happens over standard input (<code>STDIN</code>) and standard
+    output (<code>STDOUT</code>). In normal everyday context,
+    <code>STDIN</code> means the keyboard, or a file that a program
+    is given to act on, and <code>STDOUT</code> usually means the
+    console or screen.</p>
+
+    <p>When you <code>POST</code> a web form to a CGI program, the
+    data in that form is bundled up into a special format and gets
+    delivered to your CGI program over <code>STDIN</code>. The
+    program then can process that data as though it was coming in
+    from the keyboard, or from a file</p>
+
+    <p>The ``special format'' is very simple. A field name and its
+    value are joined together with an equals (=) sign, and pairs of
+    values are joined together with an ampersand (&amp;).
+    Inconvenient characters like spaces, ampersands, and equals
+    signs, are converted into their hex equivalent so that they
+    don't gum up the works. The whole data string might look
+    something like:</p>
+<pre>
+     name=Rich%20Bowen&amp;city=Lexington&amp;state=KY&amp;sidekick=Squirrel%20Monkey
+</pre>
+
+    <p>You'll sometimes also see this type of string appended to
+    the a URL. When that is done, the server puts that string into
+    the environment variable called <code>QUERY_STRING</code>.
+    That's called a <code>GET</code> request. Your HTML form
+    specifies whether a <code>GET</code> or a <code>POST</code> is
+    used to deliver the data, by setting the <code>METHOD</code>
+    attribute in the <code>FORM</code> tag.</p>
+
+    <p>Your program is then responsible for splitting that string
+    up into useful information. Fortunately, there are libraries
+    and modules available to help you process this data, as well as
+    handle other of the aspects of your CGI program.</p>
+    <hr />
+
+    <h2><a id="cgimoduleslibraries" name="cgimoduleslibraries">CGI
+    modules/libraries</a></h2>
+
+    <p>When you write CGI programs, you should consider using a
+    code library, or module, to do most of the grunt work for you.
+    This leads to fewer errors, and faster development.</p>
+
+    <p>If you're writing CGI programs in Perl, modules are
+    available on <a href="http://www.cpan.org/">CPAN</a>. The most
+    popular module for this purpose is CGI.pm. You might also
+    consider CGI::Lite, which implements a minimal set of
+    functionality, which is all you need in most programs.</p>
+
+    <p>If you're writing CGI programs in C, there are a variety of
+    options. One of these is the CGIC library, from <a
+    href="http://www.boutell.com/cgic/">http://www.boutell.com/cgic/</a></p>
+    <hr />
+
+    <h2><a id="formoreinformation" name="formoreinformation">For
+    more information</a></h2>
+
+    <p>There are a large number of CGI resources on the web. You
+    can discuss CGI problems with other users on the Usenet group
+    comp.infosystems.www.authoring.cgi. And the -servers mailing
+    list from the HTML Writers Guild is a great source of answers
+    to your questions. You can find out more at <a
+    href="http://www.hwg.org/lists/hwg-servers/">http://www.hwg.org/lists/hwg-servers/</a></p>
+
+    <p>And, of course, you should probably read the CGI
+    specification, which has all the details on the operation of
+    CGI programs. You can find the original version at the <a
+    href="http://hoohoo.ncsa.uiuc.edu/cgi/interface.html">NCSA</a>
+    and there is an updated draft at the <a
+    href="http://web.golux.com/coar/cgi/">Common Gateway Interface
+    RFC project</a>.</p>
+
+    <p>When you post a question about a CGI problem that you're
+    having, whether to a mailing list, or to a newsgroup, make sure
+    you provide enough information about what happened, what you
+    expected to happen, and how what actually happened was
+    different, what server you're running, what language your CGI
+    program was in, and, if possible, the offending code. This will
+    make finding your problem much simpler.</p>
+
+    <p>Note that questions about CGI problems should
+    <strong>never</strong> be posted to the Apache bug database
+    unless you are sure you have found a problem in the Apache
+    source code.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

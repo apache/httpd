@@ -1,0 +1,53 @@
+This is a basic test of the virtual host functionality.
+
+At present it *does not test*:
+
+- ServerPath
+- <VirtualHost> DNS lookups (specifically, multiple A records is interesting)
+
+It does test the basic gear that uses ip addresses and ports to decide what
+ip-vhost or set of name-vhosts are to be considered.  It tests _default_
+behaviour with both explicit and wildcard ports.  It tests the precedence
+behaviour -- i.e. earlier vhosts have higher precedence than later vhosts.
+It has a basic ServerAlias test.
+
+It also tests some error conditions.
+
+These tests are "white box" tests, i.e. I know how the code is written and
+I'm testing very specific cases within the code.  Black box tests would
+be nice too.
+
+To use:
+
+    perl -pi.orig -e "s#/home/dgaudet/ap/vhtest#`pwd`#" conf/*.conf
+    ./runtest /path/to/httpd
+
+Or to run a specific test:
+
+    ./runtest /path/to/httpd test3
+
+The output looks something like:
+
+127.0.0.1:8080       ''                   'vhost1'       : passed
+127.0.0.1:8080       'vhost1:8080'        'vhost1'       : passed
+127.0.0.1:8080       'vhost2:8080'        'vhost1'       : passed
+127.0.0.1:8081       ''                   'vhost2'       : passed
+127.0.0.1:8081       'vhost2:8081'        'vhost2'       : passed
+127.0.0.1:8081       'vhost1:8081'        'vhost2'       : passed
+127.0.0.2:8080       ''                   'vhost3'       : passed
+
+The first column is the ipaddr:port connected to.  The second column is
+the Host: header sent ('' means no Host: header sent).  The third column
+is the vhost expected.
+
+It probably only works on Linux because it uses the loopback interface for
+all tests -- and Linux lo0 responds to *all* addresses in 127/8 rather than
+just 127.0.0.1.  You'd probably have to add the following aliases to other
+boxes:
+
+    127.0.0.2
+    127.0.0.3
+    127.0.0.4
+    127.0.0.5
+
+Dean

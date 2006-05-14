@@ -1,0 +1,145 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--Traduction anglais 1.15 -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
+
+    <title>D&eacute;finir quelles adresses et quels ports Apache
+    utilise</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">D&eacute;finir quelles adresses et quels
+    ports Apache utilise</h1>
+    <hr />
+    Quand Apache d&eacute;marre, il se connecte &agrave; des ports
+    et adresses donn&eacute;s de la machine et attend les
+    requ&ecirc;tes. Par d&eacute;faut il &eacute;coute sur toutes
+    les adresses de la machines, et sur le port d&eacute;fini par
+    la directive <tt>Port</tt> du fichier de configuration.
+    Cependant, on peut lui indiquer d'&eacute;couter sur d'autres
+    ports, ou d'&eacute;couter &agrave; partir de certaines
+    adresses seulement, ou une combinaison de ces
+    param&egrave;tres. Ceci est g&eacute;n&eacute;ralement
+    combin&eacute; avec la fonction d'h&ocirc;te virtuel qui
+    d&eacute;finit comment r&eacute;pond aux diff&eacute;rentes
+    adresses IP, nom d'h&ocirc;te et de ports. 
+
+    <p>Il existe deux directives pour resteindre ou
+    sp&eacute;cifier sur quels adresses et ports Apache doit
+    &eacute;couter.</p>
+
+    <ul>
+      <li><a href="#bindaddress">BindAddress</a> est employ&eacute;
+      pour resteindre le serveur &agrave; n'&eacute;couter qu'une
+      seule adresse, et peut permettre plusieurs serveurs Apache
+      sur la m&ecirc;me machine d'&eacute;couter diff&eacute;rentes
+      adresses IP.</li>
+
+      <li><a href="#listen">Listen</a> peut &ecirc;tre
+      employ&eacute; pour permettre &agrave; un serveur Apache
+      d'&eacute;couter plusieurs adresses et ports.</li>
+    </ul>
+
+    <h3><a id="bindaddress" name="bindaddress">BindAddress</a></h3>
+    <a href="mod/directive-dict.html#Syntax"
+    rel="Help"><strong>Syntaxe :</strong></a> BindAddress <em>[ * |
+    IP-address | hostname ]</em><br />
+     <a href="mod/directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>BindAddress *</code><br />
+     <a href="mod/directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration du
+    serveur<br />
+     <a href="mod/directive-dict.html#Status"
+    rel="Help"><strong>Statut :</strong></a> base 
+
+    <p>Cette directive force le serveur &agrave; n'&eacute;couter
+    que d'une adresse sp&eacute;cifique. Si l'argument est *, le
+    serveur &eacute;coute sur toutes les adresses. Le port
+    d'&eacute;coute est d&eacute;fini par la directive
+    <tt>Port</tt> directive. Il ne doit y avoir qu'au plus une
+    seule directive <tt>BindAddress</tt>.</p>
+
+    <h3><a id="listen" name="listen">Listen</a></h3>
+    <a href="mod/directive-dict.html#Syntax"
+    rel="Help"><strong>Syntaxe :</strong></a> Listen <em>[ port |
+    IP-address:port ]</em><br />
+     <a href="mod/directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>aucun</code><br />
+     <a href="mod/directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration du
+    serveur<br />
+     <a href="mod/directive-dict.html#Status"
+    rel="Help"><strong>Statut :</strong></a> base 
+
+    <p><tt>Listen</tt> peut &ecirc;tre utilis&eacute; &agrave; la
+    place de <tt>BindAddress</tt> et <tt>Port</tt>. Il indique au
+    serveur d'accepter des requ&ecirc;tes venant d'un port
+    sp&eacute;cifique ou d'une combinaison d'adresse et de port. Si
+    le premier format est employ&eacute;, avec uniquement un
+    num&eacute;ro de port, le serveur &eacute;coute sur ce port,
+    &agrave; la place du port sp&eacute;cifi&eacute; dans la
+    directive <tt>Port</tt>, sur l'ensemble des interfaces
+    r&eacute;seau. Si une adresse est donn&eacute;e en plus du
+    port, le serveur n'&eacute;coutera que sur le port de
+    l'interface sp&eacute;cifi&eacute;e.</p>
+
+    <p>Plusieurs directives <tt>Listen</tt> peuvent &ecirc;tre
+    utilis&eacute;es pour sp&eacute;cifier un ensemble d'adresses
+    et de ports d'&eacute;coute. Le serveur r&eacute;pondra aux
+    requ&ecirc;tes provenant de n'importe quels de ces adresses et
+    ports.</p>
+
+    <p>Par exemple pour autoriser les requ&ecirc;tes sur les ports
+    80 et 8000, il suffit d'&eacute;crire :</p>
+<pre>
+   Listen 80
+   Listen 8000
+</pre>
+    Pour que le serveur acccepte des requ&ecirc;tes provenant de
+    deux adresses et ports sp&eacute;cifiques, &eacute;crivez : 
+<pre>
+   Listen 192.170.2.1:80
+   Listen 192.170.2.5:8000
+</pre>
+
+    <h2>Comment cela fonctionne avec les h&ocirc;tes virtuels</h2>
+    <tt>BindAddress</tt> et <tt>Listen</tt> n'impl&eacute;mentent
+    pas les h&ocirc;tes virtuels. Ils indiquent au serveur
+    principal sur quelles adresses et ports &eacute;couter. Si
+    aucune directive <tt>&lt;VirtualHost&gt;</tt> n'est
+    employ&eacute;e, le serveur se comportera de la m&ecirc;me
+    mani&egrave;re pour toutes les requ&ecirc;tes.
+    <tt>&lt;VirtualHost&gt;</tt> peut &ecirc;tre employ&eacute;
+    pour d&eacute;finir un comportement diff&eacute;rent pour un ou
+    plusieurs de ces ports et adresses. Pour impl&eacute;menter un
+    h&ocirc;te virtuel, le serveur doit conna&icirc;tre quels ports
+    et quelles adresses employer. Une section
+    <tt>&lt;VirtualHost&gt;</tt> doit &ecirc;tre
+    cr&eacute;&eacute;e pour une adresse et un port
+    sp&eacute;cifique afin de d&eacute;finir le comportement de cet
+    h&ocirc;te virtuel. Il faut noter que si un h&ocirc;te virtuel
+    est configur&eacute; pour une adresse ou un port sur lequel le
+    serveur n'&eacute;coute pas, il est inaccessible. 
+
+    <h2>Voir &eacute;galement</h2>
+    Voir &eacute;galement la documentation sur les <a
+    href="vhosts/">h&ocirc;tes virtuels</a>, la <a
+    href="mod/core.html#bindaddress">directive BindAddress</a>, la
+    <a href="mod/core.html#port">directive Port</a>, les <a
+    href="dns-caveats.html">questions sur le DNS</a> et la <a
+    href="mod/core.html#virtualhost">section
+    &lt;VirtualHost&gt;</a>. <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

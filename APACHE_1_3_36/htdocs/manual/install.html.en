@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Compiling and Installing Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080"
+  alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Compiling and Installing Apache 1.3</h1>
+
+    <ul>
+      <li><a href="#download">Downloading Apache</a></li>
+      <li><a href="#intro">Introduction</a></li>
+      <li><a href="#apaci">Installing the Apache 1.3 HTTP server with APACI</a></li>
+      <ul>
+          <li><a href="#requirements">System requirements</a></li>
+          <li><a href="#configure">Configuring the source tree</a></li>
+          <li><a href="#build">Building the package</a></li>
+          <li><a href="#installing">Installing the package</a></li>
+      </ul>
+      <li><a href="#traditional">Building and installing the traditional way</a></li>
+      <ul>
+            <li><a href="#trad_configure">Configuring the installation</a></li>
+            <li><a href="#trad_compile">Compiling Apache</a></li>
+            <li><a href="#trad_install">Installing Apache</a></li>
+      </ul>
+      <li><a href="#testing">Testing the package</a></li>
+      <li><a href="#time">Set your system time correctly</a></li>
+    </ul>
+
+    <p>This document covers compilation and installation of Apache on Unix
+    systems. For compiling and installation on other platforms, see</p>
+
+    <ul>
+      <li><a href="windows.html">Using Apache with Microsoft Windows</a></li>
+      <li><a href="cygwin.html">Using Apache with Cygwin</a></li>
+      <li><a href="netware.html">Using Apache with Novell Netware</a></li>
+      <li><a href="mpeix.html">Using Apache with HP MPE/iX</a></li>
+      <li><a href="unixware.html">Compiling Apache under UnixWare</a></li>
+      <li><a href="readme-tpf.html">Overview of the Apache TPF Port</a></li>
+    </ul>
+
+    <h2><a id="download" name="download">Downloading Apache</a></h2>
+
+    <p>You may download the latest version of Apache either directly from the
+    <a href="http://httpd.apache.org/download.cgi">Download Page</a>.</p>
+
+    <h2><a id="intro" name="intro">Introduction</a></h2>
+
+    <p>Like all good things, there are two ways to configure, compile, and
+    install Apache. You can go for the 3-minute installation process using
+    the APACI process described below; or, you can opt for the same mechanism
+    used in previous versions of Apache, as described in the file
+    'src/INSTALL'. Each mechanism has its benefits and drawbacks - APACI is
+    newer and a little more raw, but it gets you up and running the least
+    amount of time, whereas the "Configuration.tmpl" mechanism may be more
+    familiar and give you some more flexibility to the power user. We'd be
+    very interested in your comments and feedback regarding each
+    approach.</p>
+
+    <h2><a id="apaci" name="apaci">Installing the Apache 1.3 HTTP server with
+    APACI</a></h2>
+
+    <h3>Overview for the impatient</h3>
+<pre>
+     $ ./configure --prefix=PREFIX
+     $ make
+     $ make install
+     $ PREFIX/bin/apachectl start
+</pre>
+
+    <p><b>NOTE:</b> <code>PREFIX</code> is not the string "PREFIX". Instead
+    use the Unix filesystem path under which Apache should be installed. For
+    instance use "<code>/usr/local/apache</code>" for PREFIX above.</p>
+
+    <h3><a id="requirements" name="requirements">Requirements</a></h3>
+
+    <p>The following requirements exist for building Apache:</p>
+
+    <dl>
+      <dt><b>Disk Space:</b></dt>
+
+      <dd>Make sure you have approximately 12 MB of temporary free disk space
+      available. After installation Apache occupies approximately 3 MB of
+      disk space (the actual required disk space depends on the amount of
+      compiled in third party modules, etc).</dd>
+
+      <dt><b>ANSI-C Compiler:</b></dt>
+
+      <dd>Make sure you have an ANSI-C compiler installed. The GNU C compiler
+      (GCC) from the Free Software Foundation (FSF) is recommended (version
+      2.7.2 is fine). If you don't have GCC then at least make sure your
+      vendors compiler is ANSI compliant. You can find the homepage of GNU at
+      http://www.gnu.org/ and the GCC distribution under
+      http://www.gnu.org/order/ftp.html .</dd>
+
+      <dt><b>Perl 5 Interpreter [OPTIONAL]:</b></dt>
+
+      <dd>For some of the support scripts like `apxs' or `dbmmanage' (which
+      are written in Perl) the Perl 5 interpreter is required (versions 5.003
+      and 5.004 are fine). If no such interpreter is found by APACI's
+      `configure' script this is no harm. Of course, you still can build and
+      install Apache 1.3. Only those support scripts cannot be used. If you
+      have multiple Perl interpreters installed (perhaps a Perl 4 from the
+      vendor and a Perl 5 from your own), then it is recommended to use the
+      --with-perl option (see below) to make sure the correct one is selected
+      by APACI.</dd>
+
+      <dt><b>Dynamic Shared Object (DSO) support [OPTIONAL]:</b></dt>
+
+      <dd>
+        <p>To provide maximum flexibility Apache now is able to load modules
+        under runtime via the DSO mechanism by using the pragmatic
+        dlopen()/dlsym() system calls. These system calls are not available
+        under all operating systems therefore you cannot use the DSO
+        mechanism on all platforms. And Apache currently has only limited
+        built-in knowledge on how to compile shared objects because this is
+        heavily platform-dependent. The current state is this:</p>
+
+        <ul>
+          <li>
+            Out-of-the-box supported platforms are: 
+
+            <p>
+            <table border="0">
+              <tr>
+                <td>Linux</td>
+                <td>SunOS</td>
+                <td>UnixWare</td>
+                <td>Darwin/Mac OS</td>
+              </tr>
+              <tr>
+                <td>FreeBSD</td>
+                <td>Solaris</td>
+                <td>AIX</td>
+                <td>OpenStep/Mach</td>
+              </tr>
+              <tr>
+                <td>OpenBSD</td>
+                <td>IRIX</td>
+                <td>SCO</td>
+                <td>DYNIX/ptx</td>
+              </tr>
+              <tr>
+                <td>NetBSD</td>
+                <td>HPUX</td>
+                <td>ReliantUNIX</td>
+                <td>BSDI</td>
+              </tr>
+              <tr>
+                <td>Digital Unix</td>
+                <td>DGUX</td>
+              </tr>
+            </table>
+            </p>
+          </li>
+
+          <li>
+            Entirely unsupported platforms are: 
+
+            <p>Ultrix</p>
+          </li>
+        </ul>
+
+        <p>If your system is not on these lists but has the dlopen-style
+        interface, you either have to provide the appropriate compiler and
+        linker flags (see CFLAGS_SHLIB, LDFLAGS_SHLIB and
+        LDFLAGS_SHLIB_EXPORT below) manually or at least make sure a Perl 5
+        interpreter is installed from which Apache can guess the options.</p>
+
+        <p>For more in-depth information about DSO support in Apache 1.3
+        please read the document htdocs/manual/dso.html carefully. Especially
+        the section entitled "Advantages &amp; Disadvantages" because using
+        the DSO mechanism can have strange side-effects if you are not
+        careful. BE WARNED!</p>
+      </dd>
+    </dl>
+
+    <h3><a name="configure">Configuring the source tree</a></h3>
+
+    <p>The next step is to configure the Apache source tree for your
+    particular platform and personal requirements. The most important setup
+    here is the location prefix where Apache is to be installed later,
+    because Apache has to be configured for this location to work correctly.
+    But there are a lot of other options available for your pleasure.</p>
+
+    <p>For a short impression of what possibilities you have, here is a
+    typical example which compiles Apache for the installation tree
+    /sw/pkg/apache with a particular compiler and flags plus the two
+    additional modules mod_rewrite and mod_proxy for later loading through
+    the DSO mechanism:</p>
+<pre>
+     $ CC="pgcc" OPTIM="-O2" \
+       ./configure --prefix=/usr/local/apache \
+                   --enable-module=rewrite --enable-shared=rewrite \
+                   --enable-module=proxy   --enable-shared=proxy
+</pre>
+
+    <p>For a complete list of the available options, type the following
+    command:</p>
+  <p><code>./configure --help</code></p>
+
+ <p>See also the file <code>README.configure</code> for listings of
+ example configurations.</p>
+
+    <h3><a name="build">Building the package</a></h3>
+
+    <p>Now you can build the various parts which form the Apache package by
+    simply running the command</p>
+<pre>
+        $ make 
+</pre>
+
+    <p>Please be patient here, this takes approximately 2 minutes to complete
+    under a Pentium-166/FreeBSD-2.2 system, dependent on the amount of
+    modules you have enabled.</p>
+
+    <h3><a name="installing">Installing the package</a></h3>
+
+    <p>Now its time to install the package under the configured installation
+    <code>PREFIX</code> (see the <code>--prefix</code> option above):</p>
+<pre>
+        $ make install
+</pre>
+
+   <p>In the following examples, <code>PREFIX</code> is not the literal string
+       "PREFIX", but whatever argument you provided to
+       the<code>--prefix</code> option.</p>
+
+<!-- Building and installing Apache in the traditional way -->
+
+    <h2><a name="traditional">Building and installing Apache in the traditional way</a></h2>
+
+    Before the advent of APACI, there was just one way to build and
+    install Apache. While APACI gave a configuration interface which is
+    more familiar to some people, the older method gives a way to
+    configure the installation without typing a large number of
+    command-line options.
+
+    <h3><a name="trad_configure">Configuring the installation</a></h3>
+
+    Compiling Apache consists of three steps: First select which
+    Apache <strong>modules</strong> you want to include into the
+    server. Second create a configuration for your operating
+    system. Third compile the executable. 
+
+    <p>All configuration of Apache is performed in the
+    <code>src</code> directory of the Apache distribution. Change
+    into this directory.</p>
+
+    <ol>
+      <li>
+        Select modules to compile into Apache in the <code>Configuration</code>
+        file <code>src/Configuration.tmpl</code>. Uncomment lines
+        corresponding to those optional modules you wish to include
+        (among the AddModule lines at the bottom of the file), or
+        add new lines corresponding to additional modules you have
+        downloaded or written. (See <a
+        href="misc/API.html">API.html</a> for preliminary docs on
+        how to write Apache modules). Advanced users can comment
+        out some of the default modules if they are sure they will
+        not need them (be careful though, since many of the default
+        modules are vital for the correct operation and security of
+        the server). 
+
+        <p>You should also read the instructions in the
+        <code>Configuration</code> file to see if you need to set
+        any of the <code>Rule</code> lines.</p>
+      </li>
+
+      <li>
+        Configure Apache for your operating system. Normally you
+        can just run the <code>Configure</code> script as given
+        below. However if this fails or you have any special
+        requirements (<em>e.g.</em>, to include an additional
+        library required by an optional module) you might need to
+        edit one or more of the following options in the
+        <code>Configuration</code> file: <code>EXTRA_CFLAGS, LIBS,
+        LDFLAGS, INCLUDES</code>. 
+
+        <p>Run the <code>Configure</code> script:</p>
+
+        <blockquote>
+<pre>
+    % Configure
+    Using 'Configuration' as config file
+     + configured for &lt;whatever&gt; platform
+     + setting C compiler to &lt;whatever&gt; *
+     + setting C compiler optimization-level to &lt;whatever&gt; *
+     + Adding selected modules
+     + doing sanity check on compiler and options
+    Creating Makefile in support
+    Creating Makefile in main
+    Creating Makefile in os/unix
+    Creating Makefile in modules/standard
+  
+</pre>
+        </blockquote>
+        (*: Depending on Configuration and your system, Configure
+        might not print these lines. That's OK). 
+
+        <p>This generates a Makefile for use in stage 3. It also
+        creates a Makefile in the support directory, for
+        compilation of the optional support programs.</p>
+
+        <p>(If you want to maintain multiple configurations, you
+        can give an option to <code>Configure</code> to tell it to
+        read an alternative Configuration file, such as
+        <code>Configure -file Configuration.ai</code>).</p>
+      </li>
+
+<h3><a name="trad_compile">Compiling Apache</a></h3>
+
+      <li>Type <code>make</code>.</li>
+    </ol>
+    The modules we place in the Apache distribution are the ones we
+    have tested and are used regularly by various members of the
+    Apache development group. Additional modules contributed by
+    members or third parties with specific needs or functions are
+    available at &lt;<a
+    href="http://www.apache.org/dist/httpd/contrib/modules/">http://www.apache.org/dist/httpd/contrib/modules/</a>&gt;.
+    There are instructions on that page for linking these modules
+    into the core Apache code. 
+
+    <h3><a name="trad_install">Installing Apache</a></h3>
+    You will have a binary file called <code>httpd</code> in the
+    <code>src</code> directory. A binary distribution of Apache
+    will supply this file. 
+
+    <p>The next step is to install the program and configure it.
+    Apache is designed to be configured and run from the same set
+    of directories where it is compiled. If you want to run it from
+    somewhere else, make a directory and copy the
+    <code>conf</code>, <code>logs</code> and <code>icons</code>
+    directories into it. In either case you should read the <a
+    href="misc/security_tips.html#serverroot">security tips</a>
+    describing how to set the permissions on the server root
+    directory.</p>
+
+    <p>The next step is to edit the configuration files for the
+    server. This consists of setting up various
+    <strong>directives</strong> in up to three central
+    configuration files. By default, these files are located in the
+    <code>conf</code> directory and are called
+    <code>srm.conf</code>, <code>access.conf</code> and
+    <code>httpd.conf</code>. To help you get started there are same
+    files in the <code>conf</code> directory of the distribution,
+    called <code>srm.conf-dist</code>,
+    <code>access.conf-dist</code> and <code>httpd.conf-dist</code>.
+    Copy or rename these files to the names without the
+    <code>-dist</code>. Then edit each of the files. Read the
+    comments in each file carefully. Failure to setup these files
+    correctly could lead to your server not working or being
+    insecure. You should also have an additional file in the
+    <code>conf</code> directory called <code>mime.types</code>.
+    This file usually does not need editing.</p>
+
+    <p>First edit <code>httpd.conf</code>. This sets up general
+    attributes about the server: the port number, the user it runs
+    as, <em>etc.</em> Next edit the <code>srm.conf</code> file;
+    this sets up the root of the document tree, special functions
+    like server-parsed HTML or internal imagemap parsing,
+    <em>etc.</em> Finally, edit the <code>access.conf</code> file
+    to at least set the base cases of access.</p>
+
+    <p>In addition to these three files, the server behavior can be
+    configured on a directory-by-directory basis by using
+    <code>.htaccess</code> files in directories accessed by the
+    server.</p>
+
+    <h3>Compiling Support Programs</h3>
+    In addition to the main <code>httpd</code> server which is
+    compiled and configured as above, Apache includes a number of
+    support programs. These are not compiled by default. The
+    support programs are in the <code>support</code> directory of
+    the distribution. To compile the support programs, change into
+    this directory and type 
+<pre>
+    make
+</pre>
+
+    <h2><a name="testing">Testing the package</a></h2>
+
+    <p>Now you can fire up your Apache HTTP server by immediately running</p>
+<pre>
+        $ PREFIX/bin/apachectl start
+</pre>
+
+    <p>and then you should be able to request your first document via URL
+    http://localhost/ (when you built and installed Apache as root or at
+    least used the --without-confadjust option) or http://localhost:8080/
+    (when you built and installed Apache as a regular user). Then stop the
+    server again by running:</p>
+<pre>
+        $ PREFIX/bin/apachectl stop
+</pre>
+
+    <h2><a name="time">Set your system time properly!</a></h2>
+    Proper operation of a public web server requires accurate time
+    keeping, since elements of the HTTP protocol are expressed as
+    the time of day. So, it's time to investigate setting up NTP or
+    some other time synchronization system on your Unix box, or
+    the <code>net time</code> command on NT.
+
+   <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

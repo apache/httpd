@@ -1,0 +1,155 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>How Directory, Location and Files sections work</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">How Directory, Location and Files sections
+    work</h1>
+
+    <p>The sections <a
+    href="mod/core.html#directory"><code>&lt;Directory&gt;</code></a>,
+    <a
+    href="mod/core.html#location"><code>&lt;Location&gt;</code></a>
+    and <a
+    href="mod/core.html#files"><code>&lt;Files&gt;</code></a> can
+    contain directives which only apply to specified directories,
+    URLs or files respectively. Also htaccess files can be used
+    inside a directory to apply directives to that directory. This
+    document explains how these different sections differ and how
+    they relate to each other when Apache decides which directives
+    apply for a particular directory or request URL.</p>
+
+    <h2>Directives allowed in the sections</h2>
+
+    <p>Everything that is syntactically allowed in
+    <code>&lt;Directory&gt;</code> is also allowed in
+    <code>&lt;Location&gt;</code> (except a
+    sub-<code>&lt;Files&gt;</code> section). Semantically, however
+    some things, most notably <code>AllowOverride</code> and the
+    two options <code>FollowSymLinks</code> and
+    <code>SymLinksIfOwnerMatch</code>, make no sense in
+    <code>&lt;Location&gt;</code>,
+    <code>&lt;LocationMatch&gt;</code> or
+    <code>&lt;DirectoryMatch&gt;</code>. The same for
+    <code>&lt;Files&gt;</code> -- syntactically everything is fine,
+    but semantically some things are different.</p>
+
+    <h2>How the sections are merged</h2>
+
+    <p>The order of merging is:</p>
+
+    <ol>
+      <li><code>&lt;Directory&gt;</code> (except regular
+      expressions) and .htaccess done simultaneously (with
+      .htaccess, if allowed, overriding
+      <code>&lt;Directory&gt;</code>)</li>
+
+      <li><code>&lt;DirectoryMatch&gt;</code>, and
+      <code>&lt;Directory&gt;</code> with regular expressions</li>
+
+      <li><code>&lt;Files&gt;</code> and
+      <code>&lt;FilesMatch&gt;</code> done simultaneously</li>
+
+      <li><code>&lt;Location&gt;</code> and
+      <code>&lt;LocationMatch&gt;</code> done simultaneously</li>
+    </ol>
+
+    <p>Apart from <code>&lt;Directory&gt;</code>, each group is
+    processed in the order that they appear in the configuration
+    files. <code>&lt;Directory&gt;</code> (group 1 above) is
+    processed in the order shortest directory component to longest.
+    If multiple <code>&lt;Directory&gt;</code> sections apply to
+    the same directory they are processed in the configuration
+    file order. The configuration files are read in the order
+    httpd.conf, srm.conf and access.conf. Configurations included
+    via the <code>Include</code> directive will be treated as if
+    they were inside the including file at the location of the
+    <code>Include</code> directive.</p>
+
+    <p>Sections inside <code>&lt;VirtualHost&gt;</code> sections
+    are applied <em>after</em> the corresponding sections outside
+    the virtual host definition. This allows virtual hosts to
+    override the main server configuration. (Note: this only works
+    correctly from 1.2.2 and 1.3a2 onwards. Before those releases
+    sections inside virtual hosts were applied <em>before</em> the
+    main server).</p>
+
+    <p>Later sections override earlier ones.</p>
+
+    <h2>Notes about using sections</h2>
+
+    <p>The general guidelines are:</p>
+
+    <ul>
+      <li>If you are attempting to match objects at the filesystem
+      level then you must use <code>&lt;Directory&gt;</code> and/or
+      <code>&lt;Files&gt;</code>.</li>
+
+      <li>If you are attempting to match objects at the URL level
+      then you must use <code>&lt;Location&gt;</code></li>
+    </ul>
+
+    <p>But a notable exception is:</p>
+
+    <ul>
+      <li>proxy control is done via <code>&lt;Directory&gt;</code>.
+      This is a legacy mistake because the proxy existed prior to
+      <code>&lt;Location&gt;</code>. A future version of the config
+      language should probably switch this to
+      <code>&lt;Location&gt;</code>.</li>
+    </ul>
+
+    <p>Note about .htaccess parsing:</p>
+
+    <ul>
+      <li>Modifying .htaccess parsing during Location doesn't do
+      anything because .htaccess parsing has already occurred.</li>
+    </ul>
+
+    <p><code>&lt;Location&gt;</code> and symbolic links:</p>
+
+    <ul>
+      <li>It is not possible to use "<code>Options
+      FollowSymLinks</code>" or "<code>Options
+      SymLinksIfOwnerMatch</code>" inside a
+      <code>&lt;Location&gt;</code>,
+      <code>&lt;LocationMatch&gt;</code> or
+      <code>&lt;DirectoryMatch&gt;</code> section (the options are
+      simply ignored). Using the options in question is only
+      possible inside a <code>&lt;Directory&gt;</code> section (or
+      a <code>.htaccess</code> file).</li>
+    </ul>
+
+    <p><code>&lt;Files&gt;</code> and <code>Options</code>:</p>
+
+    <ul>
+      <li>Apache won't check for it, but using an
+      <code>Options</code> directive inside a
+      <code>&lt;Files&gt;</code> section has no effect.</li>
+    </ul>
+
+    <p>Another note:</p>
+
+    <ul>
+      <li>There is actually a
+      <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
+      sequence performed just before the name translation phase
+      (where <code>Aliases</code> and <code>DocumentRoots</code>
+      are used to map URLs to filenames). The results of this
+      sequence are completely thrown away after the translation has
+      completed.</li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

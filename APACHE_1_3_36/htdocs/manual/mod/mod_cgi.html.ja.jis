@@ -1,0 +1,219 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_cgi</title>
+
+  </head>
+  <!-- English revision: 1.25 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_cgi モジュール</h1>
+
+    <p>このモジュールは CGI スクリプトを実行する機能を提供します。</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>ソースファイル:</strong></a> mod_cgi.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>モジュール識別子:</strong></a> cgi_module
+    </p>
+
+    <h2>概要</h2>
+    <!-- XXX: Should have references to CGI definition/RFC -->
+    <p>Mime タイプが <code>application/x-httpd-cgi</code> 
+    であるか、ハンドラ <code>cgi-script</code> (Apache 1.1 以降)
+    が指定されているファイルは CGI スクリプトとして扱われ、
+    サーバにより実行され、その出力がクライアントに返されます。
+    ファイルは、<a href="mod_mime.html#addtype">AddType</a>
+    ディレクティブに指定された 拡張子を名前に含むか、
+    <a href="mod_alias.html#scriptalias">ScriptAlias</a>
+    ディレクトリに存在することによりこのタイプになります。
+    <a href="mod_alias.html#scriptalias">ScriptAlias</a>
+    ディレクトリになく、<code>AddType</code>
+    ディレクティブにより <code>application/x-httpd-cgi</code>
+    のタイプを持つファイルは、<code>Options ExecCGI</code>
+    が指定されていなければサーバにより実行されることはありません。
+    詳細は <a href="core.html#options"><code>Options</code></a>
+    ディレクティブを 参照してください。
+    </p>
+
+    <p>サーバが CGI スクリプトを実行するときには、
+    <code>DOCUMENT_ROOT</code>
+    と呼ばれる変数を環境に追加します。この変数は
+    <a href="core.html#documentroot">DocumentRoot</a>
+    の値を保持します。</p>
+
+    <p>Apache で CGI スクリプトを使用するためのイントロダクションは、
+    <a href="../howto/cgi.html">CGI による動的コンテンツ</a>
+    を参照してください。</p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#scriptlog">ScriptLog</a></li>
+
+      <li><a href="#scriptloglength">ScriptLogLength</a></li>
+
+      <li><a href="#scriptlogbuffer">ScriptLogBuffer</a></li>
+    </ul>
+
+    <p><a href="core.html#options">Options</a>, <a
+    href="mod_alias.html#scriptalias">ScriptAlias</a>, <a
+    href="mod_mime.html#addtype">AddType</a>, <a
+    href="mod_mime.html#addhandler">AddHandler</a>
+    も参照してください。</p>
+    <h2>CGI 環境変数</h2>
+    <p>サーバは <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
+    規格</a> で決められている CGI
+    環境変数を設定します。以下のものは、条件付きで設定されます。</p>
+
+    <dl>
+      <dt>REMOTE_HOST</dt>
+
+      <dd><a
+      href="core.html#hostnamelookups"><code>HostnameLookups</code></a>
+      が <code>on</code> (デフォルトでは off です)
+      で、アクセスしているホストのアドレスの DNS
+      の逆引きが実際にホスト名を見つけたときにのみ設定されます。</dd>
+
+      <dt>REMOTE_IDENT</dt>
+
+      <dd><a href="core.html#identitycheck">IdentityCheck</a>
+      が <code>on</code> に設定されていて、アクセスしているホストが
+      ident プロトコルをサポートしているときにのみ設定されます。
+      これは簡単に偽ることができ、クライアントとサーバの間に
+      プロキシがあればまったく役に立たないので、
+      この変数の値は信用できないということに注意してください。
+      </dd>
+
+      <dt>REMOTE_USER</dt>
+
+      <dd>CGI
+      スクリプトに認証が必要なときにのみ設定されます。</dd>
+    </dl>
+
+    <h2><a id="cgi_debug" name="cgi_debug">CGI のデバッグ</a></h2>
+    <p>CGI スクリプトのデバッグは、正しく動作していないスクリプトの出力
+    (標準出力とエラー)
+    を調べることができないために、難しい状態が続いていました。
+    これらの Apache 1.2 以降にある
+    ディレクティブはより詳細なエラーのログ収集を提供します。</p>
+
+    <h2>CGI ログファイルの書式</h2>
+    <p>設定されているときには、CGI エラーログは適切に動作しないすべての
+    CGI をログ収集します。それぞれの正しく動作しない CGI
+    スクリプトは 複数の行にわたる情報がログ収集されます。最初の
+    2 行は常に以下の書式です:</p>
+<pre>
+  %% [<em>time</em>] <em>request-line</em>
+  %% <em>HTTP-status</em> <em>CGI-script-filename</em>
+</pre>
+    <p>エラーが、CGI スクリプトが実行できないというものである場合は、
+    ログファイルはさらにもう 2 行書かれます:</p>
+<pre>
+  %%error
+  <em>error-message</em>
+</pre>
+    <p>そうではなく、エラーが正しくないヘッダ情報を返す結果である場合
+    (スクリプトのバグであることがよくあります)、
+    以下の情報がログ収集されます:</p>
+<pre>
+  %request
+  <em>All HTTP request headers received</em>
+  <em>POST or PUT entity (if any)</em>
+  %response
+  <em>All headers output by the CGI script</em>
+  %stdout
+  <em>CGI standard output</em>
+  %stderr
+  <em>CGI standard error</em>
+</pre>
+    <p>(スクリプトが標準出力や標準エラーに何も出力しなかった場合は、
+    %stdout や %stderr はありません)。</p>
+    <hr />
+
+    <h3><a id="scriptlog" name="scriptlog">ScriptLog</a>
+    ディレクティブ</h3>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ScriptLog
+    <em>filename</em><br />
+    <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> none<br />
+    <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル<br />
+    <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> mod_cgi 
+    <p><tt>ScriptLog</tt> ディレクティブは CGI スクリプトの
+    エラーログファイルを設定します。ScriptLog が設定されていないときは、
+    エラーログは作成されません。設定されているときは、CGI
+    のエラーはすべて引数として与えられているファイル名にログされます。
+    相対パスで指定されているときは、
+    サーバルートからの相対パスとして扱われます。</p>
+
+    <p>このログは子プロセスが実行されているユーザとしてオープンされます。
+    すなわち、<a href="core.html#user">User</a> ディレクティブで指定された
+    ユーザです。これは、スクリプトログが書かれるディレクトリがそのユーザで
+    書き込み可能か、スクリプトファイルが手動で作成され、そのユーザで
+    書き込み可能になっている必要があるということです。スクリプトログを
+    アクセスログなどのためのログディレクトリに書かれるようにしたときは、
+    そのディレクトリを子プロセスを実行しているユーザの権限で
+    書き込み可能には<strong>しない</strong>ようにしてください。</p>
+
+    <p>スクリプトのログ収集は CGI スクリプトを書くときの
+    デバッグ用の機能として意図されていて、通常のサーバで
+    常に使用されるようには意図されていないということに注意してください。
+    速度や効率は最適化されておらず、設計された以外の方法で使用されると
+    セキュリティの問題があるかもしれません。</p>
+    <hr />
+
+    <h3><a id="scriptloglength" name="scriptloglength">ScriptLogLength</a>
+    ディレクティブ</h3>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ScriptLogLength
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> 10385760<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> mod_cgi 
+    <p><tt>ScriptLogLength</tt> は CGI スクリプトのログファイル
+    の大きさを制限するために使用することができます。ログファイルは
+    CGI のエラー毎に大量の情報 (リクエストのすべてのヘッダ、
+    すべての出力)をログしますので、すぐに大きなファイルになります。
+    この大きさの制限がないことによる問題を防ぐために、
+    このディレクティブを使って CGI のログファイルの
+    最大のファイルサイズを設定することができます。
+    ファイルがこの大きさを超えた場合は、それ以上は書き込まれません。</p>
+    <hr />
+    <h3><a id="scriptlogbuffer"
+    name="scriptlogbuffer">ScriptLogBuffer</a></h3>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>構文:</strong></a> ScriptLogBuffer
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>デフォルト:</strong></a> 1024<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>ステータス:</strong></a> mod_cgi 
+    <p>大きな本体を受け取ったときにログファイルがすぐに大きくなりすぎる
+    問題を避けるために、ファイルにログ収集される PUT と POST
+    の本体の大きさは制限されています。デフォルトでは、1024
+    バイトまでがログ収集されますが、
+    このディレクティブはそれを変更することができます。 
+    </p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+
