@@ -78,6 +78,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
+    * Add optional 'scheme://' part to ServerName directive for cases
+      where httpd runs behind an external SSL processor and has to
+      learn from its configuration how to generate correct
+      self-referential URLs. 
+      Code: 
+      http://svn.apache.org/viewcvs.cgi?diff_format=h&rev=399947&view=rev
+      Documentation:
+      http://svn.apache.org/viewcvs.cgi?diff_format=h&view=rev&rev=406697
+      +1 sctemme
+
     * Backport mod_authz_dbd (it's had some testing now)
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
       +1 niq
