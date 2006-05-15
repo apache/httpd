@@ -2555,7 +2555,7 @@ to name-virtual hosts</description>
 <name>ServerName</name>
 <description>Hostname and port that the server uses to identify
 itself</description>
-<syntax>ServerName <var>fully-qualified-domain-name</var>[:<var>port</var>]</syntax>
+<syntax>ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>In version 2.0, this
@@ -2563,7 +2563,8 @@ itself</description>
      directive from version 1.3.</compatibility>
 
 <usage>
-    <p>The <directive>ServerName</directive> directive sets the hostname and
+    <p>The <directive>ServerName</directive> directive sets the
+    request scheme, hostname and
     port that the server uses to identify itself.  This is used when
     creating redirection URLs. For example, if the name of the
     machine hosting the web server is <code>simple.example.com</code>,
@@ -2578,11 +2579,10 @@ itself</description>
     <p>If no <directive>ServerName</directive> is specified, then the
     server attempts to deduce the hostname by performing a reverse
     lookup on the IP address. If no port is specified in the
-    <directive>ServerName</directive>, then the server will use the port
-    from the incoming
-    request. For optimal reliability and predictability, you should
-    specify an explicit hostname and port using the
-    <directive>ServerName</directive> directive.</p>
+    <directive>ServerName</directive>, then the server will use the
+    port from the incoming request. For optimal reliability and
+    predictability, you should specify an explicit hostname and port
+    using the <directive>ServerName</directive> directive.</p>
 
     <p>If you are using <a
     href="../vhosts/name-based.html">name-based virtual hosts</a>,
@@ -2591,13 +2591,24 @@ itself</description>
     section specifies what hostname must appear in the request's
     <code>Host:</code> header to match this virtual host.</p>
 
+
+    <p>Sometimes, the server runs behind a device that processes SSL,
+    such as a reverse proxy, load balancer or SSL offload
+    appliance. When this is the case, specify the
+    <code>https://</code> scheme and the port number to which the
+    clients connect in the <directive>ServerName</directive> directive
+    to make sure that the server generates the correct
+    self-referential URLs. 
+    </p>
+
     <p>See the description of the
     <directive module="core">UseCanonicalName</directive> and
     <directive module="core">UseCanonicalPhysicalPort</directive>directives for
-    settings which determine whether self-referential URL's (e.g., by the
+    settings which determine whether self-referential URLs (e.g., by the
     <module>mod_dir</module> module) will refer to the
     specified port, or to the port number given in the client's request.
     </p>
+
 </usage>
 
 <seealso><a href="../dns-caveats.html">Issues Regarding DNS and

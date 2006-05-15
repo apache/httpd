@@ -2567,7 +2567,7 @@ to name-virtual hosts</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Hostname and port that the server uses to identify
 itself</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerName <var>fully-qualified-domain-name</var>[:<var>port</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -2575,7 +2575,8 @@ itself</td></tr>
      directive supersedes the functionality of the <code class="directive">Port</code>
      directive from version 1.3.</td></tr>
 </table>
-    <p>The <code class="directive">ServerName</code> directive sets the hostname and
+    <p>The <code class="directive">ServerName</code> directive sets the
+    request scheme, hostname and
     port that the server uses to identify itself.  This is used when
     creating redirection URLs. For example, if the name of the
     machine hosting the web server is <code>simple.example.com</code>,
@@ -2590,11 +2591,10 @@ itself</td></tr>
     <p>If no <code class="directive">ServerName</code> is specified, then the
     server attempts to deduce the hostname by performing a reverse
     lookup on the IP address. If no port is specified in the
-    <code class="directive">ServerName</code>, then the server will use the port
-    from the incoming
-    request. For optimal reliability and predictability, you should
-    specify an explicit hostname and port using the
-    <code class="directive">ServerName</code> directive.</p>
+    <code class="directive">ServerName</code>, then the server will use the
+    port from the incoming request. For optimal reliability and
+    predictability, you should specify an explicit hostname and port
+    using the <code class="directive">ServerName</code> directive.</p>
 
     <p>If you are using <a href="../vhosts/name-based.html">name-based virtual hosts</a>,
     the <code class="directive">ServerName</code> inside a
@@ -2602,13 +2602,24 @@ itself</td></tr>
     section specifies what hostname must appear in the request's
     <code>Host:</code> header to match this virtual host.</p>
 
+
+    <p>Sometimes, the server runs behind a device that processes SSL,
+    such as a reverse proxy, load balancer or SSL offload
+    appliance. When this is the case, specify the
+    <code>https://</code> scheme and the port number to which the
+    clients connect in the <code class="directive">ServerName</code> directive
+    to make sure that the server generates the correct
+    self-referential URLs. 
+    </p>
+
     <p>See the description of the
     <code class="directive"><a href="#usecanonicalname">UseCanonicalName</a></code> and
     <code class="directive"><a href="#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></code>directives for
-    settings which determine whether self-referential URL's (e.g., by the
+    settings which determine whether self-referential URLs (e.g., by the
     <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> module) will refer to the
     specified port, or to the port number given in the client's request.
     </p>
+
 
 <h3>See also</h3>
 <ul>
