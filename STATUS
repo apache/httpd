@@ -86,7 +86,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs.cgi?diff_format=h&rev=399947&view=rev
       Documentation:
       http://svn.apache.org/viewcvs.cgi?diff_format=h&view=rev&rev=406697
-      +1 sctemme
+      +1 sctemme, rpluem
 
     * Backport mod_authz_dbd (it's had some testing now)
       http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
