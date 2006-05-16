@@ -40,6 +40,10 @@
 #include "ap_mpm.h"
 #include "mpm_common.h"
 
+#if APR_HAVE_UNISTD_H
+#include <unistd.h>
+#endif
+
 /* WARNING: Win32 binds http_main.c dynamically to the server. Please place
  *          extern functions and global data in another appropriate module.
  *
@@ -261,6 +265,17 @@ static void destroy_and_exit_process(process_rec *process,
     exit(process_exit_value);
 }
 
+#define OOM_MESSAGE "[crit] Memory allocation failed, " \
+    "aborting process." APR_EOL_STR
+
+/* APR callback invoked if allocation fails. */
+static int abort_on_oom(int retcode)
+{
+    write(STDERR_FILENO, OOM_MESSAGE, strlen(OOM_MESSAGE));
+    abort();
+    return retcode; /* unreachable, hopefully. */
+}
+
 static process_rec *create_process(int argc, const char * const *argv)
 {
     process_rec *process;
@@ -279,6 +294,7 @@ static process_rec *create_process(int argc, const char * const *argv)
         exit(1);
     }
 
+    apr_pool_abort_set(abort_on_oom, cntx);
     apr_pool_tag(cntx, "process");
     ap_open_stderr_log(cntx);
 
@@ -448,6 +464,10 @@ int main(int argc, const char * const argv[])
     pglobal = process->pool;
     pconf = process->pconf;
     ap_server_argv0 = process->short_name;
+
+    /* Set up the OOM callback in the global pool, so all pools should
+     * by default inherit it. */
+    apr_pool_abort_set(abort_on_oom, apr_pool_parent_get(process->pool));
 
 #if APR_CHARSET_EBCDIC
     if (ap_init_ebcdic(pglobal) != APR_SUCCESS) {
