@@ -364,8 +364,13 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         hostname = "_default_";
     }
 
-    /* Copy the scheme, ensuring that it is lower case. If the parsed uri
-     * contains no string or if this is not a proxy request.
+    /*
+     * Copy the scheme, ensuring that it is lower case. If the parsed uri
+     * contains no string or if this is not a proxy request get the http
+     * scheme for this request. As r->parsed_uri.scheme is not set if this
+     * is a reverse proxy request, it is ensured that the cases
+     * "no proxy request" and "reverse proxy request" are handled in the same
+     * manner (see above why this is needed).
      */
     if (r->proxyreq && r->parsed_uri.scheme) {
         /* Copy the scheme */
@@ -375,15 +380,18 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         }
     }
     else {
-        scheme = "http";
+        scheme = ap_http_scheme(r);
     }
 
-    /* If the content is locally generated, use the port-number of the
-     * current server. Otherwise. copy the URI's port-string (which may be a
-     * service name). If the URI contains no port-string, use apr-util's
-     * notion of the default port for that scheme - if available.
+    /*
+     * If this is a proxy request, but not a reverse proxy request (see comment
+     * above why these cases must be handled in the same manner), copy the
+     * URI's port-string (which may be a service name). If the URI contains
+     * no port-string, use apr-util's notion of the default port for that
+     * scheme - if available. Otherwise use the port-number of the current
+     * server.
      */
-    if(r->proxyreq) {
+    if(r->proxyreq && (r->proxyreq != PROXYREQ_REVERSE)) {
         if (r->parsed_uri.port_str) {
             port_str = apr_pcalloc(p, strlen(r->parsed_uri.port_str) + 2);
             port_str[0] = ':';
