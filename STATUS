@@ -107,3 +107,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1 rpluem
 
+    * mod_autoindex: Fix filename HTML-escaping for !FancyIndexing.
+       http://svn.apache.org/viewvc?view=rev&revision=407265
+    PR: 38910
+    +1: jorton
+
+    * configure: Add "--with-included-apr" flag to force use of
+    bundled version of APR/APR-util rather than any installed
+    versions found on the system (as preferred by find_ap?.m4).
+       http://svn.apache.org/viewcvs?rev=395211&view=rev
+    +1: jorton
+
