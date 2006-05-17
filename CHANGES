@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cache: Make caching of reverse SSL proxies possible again. PR 39593.
+     [Ruediger Pluem]
+
   *) Add support for fcgi:// proxies to mod_rewrite.
      [Markus Schiegl <ms schiegl.com>]
 
