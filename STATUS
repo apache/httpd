@@ -83,7 +83,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       learn from its configuration how to generate correct
       self-referential URLs. 
       Code: 
-      http://svn.apache.org/viewcvs.cgi?diff_format=h&rev=399947&view=rev
+      http://people.apache.org/~sctemme/servername_22x.patch
       Documentation:
       http://svn.apache.org/viewcvs.cgi?diff_format=h&view=rev&rev=406697
       +1 sctemme, rpluem
