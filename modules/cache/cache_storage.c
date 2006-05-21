@@ -320,8 +320,8 @@ int cache_select(request_rec *r)
 apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
                                         char**key)
 {
-    char *port_str, *scheme, *hn;
-    const char * hostname;
+    char *port_str, *hn, *lcs;
+    const char *hostname, *scheme;
     int i;
 
     /*
@@ -373,11 +373,13 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      * manner (see above why this is needed).
      */
     if (r->proxyreq && r->parsed_uri.scheme) {
-        /* Copy the scheme */
-        scheme = apr_pcalloc(p, strlen(r->parsed_uri.scheme) + 1);
+        /* Copy the scheme and lower-case it */
+        lcs = apr_pcalloc(p, strlen(r->parsed_uri.scheme) + 1);
         for (i = 0; r->parsed_uri.scheme[i]; i++) {
-            scheme[i] = apr_tolower(r->parsed_uri.scheme[i]);
+            lcs[i] = apr_tolower(r->parsed_uri.scheme[i]);
         }
+        /* const work-around */
+        scheme = lcs;
     }
     else {
         scheme = ap_http_scheme(r);
