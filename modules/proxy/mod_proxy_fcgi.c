@@ -863,7 +863,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     /* Step 1: Send FCGI_BEGIN_REQUEST */
     rv = send_begin_request(conn, request_id);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "proxy: FCGI: Failed Writing Request to %s:",
                      server_portstr);
         conn->close = 1;
@@ -873,7 +873,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     /* Step 2: Send Enviroment via FCGI_PARAMS */
     rv = send_environment(conn, r, request_id);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "proxy: FCGI: Failed writing Environment to %s:",
                      server_portstr);
         conn->close = 1;
@@ -883,7 +883,7 @@ static int fcgi_do_request(apr_pool_t *p, request_rec *r,
     /* Step 3: Read records from the back end server and handle them. */
     rv = dispatch(conn, r, request_id);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                      "proxy: FCGI: Error dispatching request to %s:",
                      server_portstr);
         conn->close = 1;
@@ -915,7 +915,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
 
     apr_uri_t *uri = apr_palloc(r->pool, sizeof(*uri));
 
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: FCGI: url: %s proxyname: %s proxyport: %d",
                  url, proxyname, proxyport);
 
@@ -996,4 +996,3 @@ module AP_MODULE_DECLARE_DATA proxy_fcgi_module = {
     NULL,                       /* command apr_table_t */
     register_hooks              /* register hooks */
 };
-
