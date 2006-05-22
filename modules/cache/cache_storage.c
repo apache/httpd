@@ -351,10 +351,8 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
     }
     else if(r->parsed_uri.hostname) {
         /* Copy the parsed uri hostname */
-        hn = apr_pcalloc(p, strlen(r->parsed_uri.hostname) + 1);
-        for (i = 0; r->parsed_uri.hostname[i]; i++) {
-            hn[i] = apr_tolower(r->parsed_uri.hostname[i]);
-        }
+        hn = apr_pstrdup(p, r->parsed_uri.hostname);
+        ap_str_tolower(hn);
         /* const work-around */
         hostname = hn;
     }
@@ -374,10 +372,8 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
      */
     if (r->proxyreq && r->parsed_uri.scheme) {
         /* Copy the scheme and lower-case it */
-        lcs = apr_pcalloc(p, strlen(r->parsed_uri.scheme) + 1);
-        for (i = 0; r->parsed_uri.scheme[i]; i++) {
-            lcs[i] = apr_tolower(r->parsed_uri.scheme[i]);
-        }
+        lcs = apr_pstrdup(p, r->parsed_uri.scheme);
+        ap_str_tolower(lcs);
         /* const work-around */
         scheme = lcs;
     }
