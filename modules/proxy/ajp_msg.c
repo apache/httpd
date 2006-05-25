@@ -278,7 +278,7 @@ apr_status_t ajp_msg_append_string_ex(ajp_msg_t *msg, const char *value,
     }
 
     len = strlen(value);
-    if ((msg->len + len + 2) > AJP_MSG_BUFFER_SZ) {
+    if ((msg->len + len + 3) > AJP_MSG_BUFFER_SZ) {
         return ajp_log_overflow(msg, "ajp_msg_append_cvt_string");
     }
 
