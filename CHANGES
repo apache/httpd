@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Worker and event MPMs: Remove improper scoreboard updates which were
+     performed in the event of a fork() failure.  [Chris Darroch]
+
   *) mod_cache: Make caching of reverse SSL proxies possible again. PR 39593.
      [Ruediger Pluem, Joe Orton]
 
