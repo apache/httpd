@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Worker MPM: On graceless shutdown or restart, send signals to
+     each worker thread to wake them up if they're polling on a
+     Keep-Alive connection.  PR 38737.  [Chris Darroch]
+
   *) Worker and event MPMs: Remove improper scoreboard updates which were
      performed in the event of a fork() failure.  [Chris Darroch]
 
@@ -11,7 +15,13 @@ Changes with Apache 2.3.0
   *) Add support for fcgi:// proxies to mod_rewrite.
      [Markus Schiegl <ms schiegl.com>]
 
-  *) Tidy up scoreboard [Chris Darroch <chrisd pearsoncmg.com> ]
+  *) Remove incorrect comments from scoreboard.h regarding conditional
+     loading of worker_score structure with mod_status, and remove unused
+     definitions relating to old life_status field.
+     [Chris Darroch <chrisd pearsoncmg.com>]
+
+  *) Remove allocation of memory for unused array of lb_score pointers
+     in ap_init_scoreboard().  [Chris Darroch <chrisd pearsoncmg.com>]
 
   *) core, mod_http: add optional 'scheme://' prefix to ServerName directive. 
      For 'https', mod_http returns "https" for the ap_hook_http_scheme and

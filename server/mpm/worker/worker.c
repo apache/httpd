@@ -213,6 +213,19 @@ static apr_proc_mutex_t *accept_mutex;
  */
 #define LISTENER_SIGNAL     SIGHUP
 
+/* The WORKER_SIGNAL signal will be sent from the main thread to the
+ * worker threads during an ungraceful restart or shutdown.
+ * This ensures that on systems (i.e., Linux) where closing the worker
+ * socket doesn't awake the worker thread when it is polling on the socket
+ * (especially in apr_wait_for_io_or_timeout() when handling
+ * Keep-Alive connections), close_worker_sockets() and join_workers()
+ * still function in timely manner and allow ungraceful shutdowns to
+ * proceed to completion.  Otherwise join_workers() doesn't return
+ * before the main process decides the child process is non-responsive
+ * and sends a SIGKILL.
+ */
+#define WORKER_SIGNAL       AP_SIG_GRACEFUL
+
 /* An array of socket descriptors in use by each thread used to
  * perform a non-graceful (forced) shutdown of the server. */
 static apr_socket_t **worker_sockets;
@@ -822,6 +835,11 @@ static void * APR_THREAD_FUNC worker_thread(apr_thread_t *thd, void * dummy)
     ap_scoreboard_image->servers[process_slot][thread_slot].generation = ap_my_generation;
     ap_update_child_status_from_indexes(process_slot, thread_slot, SERVER_STARTING, NULL);
 
+#ifdef HAVE_PTHREAD_KILL
+    unblock_signal(WORKER_SIGNAL);
+    apr_signal(WORKER_SIGNAL, dummy_signal_handler);
+#endif
+
     while (!workers_may_exit) {
         if (!is_idle) {
             rv = ap_queue_info_set_idle(worker_queue_info, last_ptrans);
@@ -1077,6 +1095,13 @@ static void join_workers(apr_thread_t *listener, apr_thread_t **threads)
 
     for (i = 0; i < ap_threads_per_child; i++) {
         if (threads[i]) { /* if we ever created this thread */
+#ifdef HAVE_PTHREAD_KILL
+            apr_os_thread_t *worker_os_thread;
+
+            apr_os_thread_get(&worker_os_thread, threads[i]);
+            pthread_kill(*worker_os_thread, WORKER_SIGNAL);
+#endif
+
             rv = apr_thread_join(&thread_rv, threads[i]);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
