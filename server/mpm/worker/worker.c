@@ -1285,11 +1285,12 @@ static int make_child(server_rec *s, int slot)
     if ((pid = fork()) == -1) {
         ap_log_error(APLOG_MARK, APLOG_ERR, errno, s,
                      "fork: Unable to fork new process");
-
-        /* fork didn't succeed. Fix the scoreboard or else
-         * it will say SERVER_STARTING forever and ever
+        /* fork didn't succeed.  There's no need to touch the scoreboard;
+         * if we were trying to replace a failed child process, then
+         * server_main_loop() marked its workers SERVER_DEAD, and if
+         * we were trying to replace a child process that exited normally,
+         * its worker_thread()s left SERVER_DEAD or SERVER_GRACEFUL behind.
          */
-        ap_update_child_status_from_indexes(slot, 0, SERVER_DEAD, NULL);
 
         /* In case system resources are maxxed out, we don't want
            Apache running away with the CPU trying to fork over and
