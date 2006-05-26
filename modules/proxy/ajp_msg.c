@@ -289,7 +289,7 @@ apr_status_t ajp_msg_append_string_ex(ajp_msg_t *msg, const char *value,
     memcpy(msg->buf + msg->len, value, len + 1); /* including \0 */
 
     if (convert)   /* convert from EBCDIC if needed */
-        ajp_xlate_to_ascii((char *)msg->buf + msg->len, len + 1);
+        ap_xlate_proto_to_ascii((char *)msg->buf + msg->len, len + 1);
 
     msg->len += len + 1;
 
