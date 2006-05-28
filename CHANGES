@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_disk_cache: Delete temporary files if they cannot be renamed to their
+     final name. [Davi Arnaut <davi haxent.com.br>]
+
   *) Worker MPM: On graceless shutdown or restart, send signals to
      each worker thread to wake them up if they're polling on a
      Keep-Alive connection.  PR 38737.  [Chris Darroch]
