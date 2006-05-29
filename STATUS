@@ -145,3 +145,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=18355
       +1: chrisd, trawick
 
+    * mod_filter: Don't try to insert a filter that doesn't exist
+      PR#39672
+      Trunk version: http://svn.apache.org/viewvc?view=rev&revision=410079
+      2.2.x (identical)
+      +1: niq
