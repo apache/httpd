@@ -160,7 +160,7 @@ yes) AC_PATH_PROG(PCRE_CONFIG, pcre-config, false) ;;
        PCRE_CONFIG=$with_pcre
      fi
 
-     if $PCRE_CONFIG --version >&/dev/null; then :; else
+     if $PCRE_CONFIG --version >/dev/null 2>&1; then :; else
        AC_MSG_ERROR([Did not find pcre-config script at $PCRE_CONFIG])
      fi
      ;;
