@@ -14,20 +14,6 @@
  * limitations under the License.
  */
 
-/* Originally contributed by Nick Kew <nick webthing.com>
- *
- * At the time of writing, this is designed primarily for use with
- * httpd 2.2, but is also back-compatible with 2.0.  It is likely
- * that the 2.0 and 2.2 versions may diverge in future, as additional
- * capabilities for 2.2 are added, including updates to util_filter.
- *
- * 21/9/04: Unifying data structures with util_filter.
- * From now on, until and unless we backport, mod_filter requires
- * util_filter.h from CVS or httpd-2.1+ to compile.
- * There's a minimal patch for httpd-2.0 users maintained by Nick
- * to compile mod_filter at http://www.apache.org/~niq/
- */
-
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 #include "apr_lib.h"
