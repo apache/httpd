@@ -755,6 +755,11 @@ static void filter_insert(request_rec *r)
 
     for (p = cfg->chain; p; p = p->next) {
         filter = apr_hash_get(cfg->live_filters, p->fname, APR_HASH_KEY_STRING);
+        if (filter == NULL) {
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                          "Unknown filter %s not added", p->fname);
+            continue;
+        }
         ap_add_output_filter_handle(filter, NULL, r, r->connection);
 #ifndef NO_PROTOCOL
         if (ranges && (filter->proto_flags
