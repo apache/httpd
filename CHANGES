@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cache: Do not overwrite the Content-Type in the cache, for
+     successfully revalidated cached objects. PR 39647. [Ruediger Pluem]
+
   *) mod_disk_cache: Delete temporary files if they cannot be renamed to their
      final name. [Davi Arnaut <davi haxent.com.br>]
 
