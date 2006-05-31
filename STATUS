@@ -124,13 +124,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs?rev=399388&view=rev
         2.2.x version of patch:
           Trunk version works
-      +1 rpluem, trawick
+      +1 rpluem, trawick, jim
 
     * configure: Add "--with-included-apr" flag to force use of
     bundled version of APR/APR-util rather than any installed
     versions found on the system (as preferred by find_ap?.m4).
        http://svn.apache.org/viewcvs?rev=395211&view=rev
-    +1: jorton
+    +1: jorton, jim
 
     * mod_cache: Make caching of reverse SSL proxies possible again.
       PR 39593.
@@ -140,7 +140,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewvc?rev=408729&view=rev
         2.2.x version of patch:
           Trunk version works
-      +1: rpluem
+      +1: rpluem, jim
 
     * Worker MPM: On graceless shutdown or restart, send signals to
       each worker thread to wake them up if they're polling on a
