@@ -152,6 +152,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
       join each worker thread seems to hang, and the parent ends up
       killing off the child with SIGKILL.  But at least it shuts down.
 
+        chrisd: Has this been fixed by the changes for PR 38737?
+
     * --enable-mods-shared="foo1 foo2" is busted on Darwin.  Pier
         posted a patch (Message-ID: <B8DBBE8D.575A%pier@betaversion.org>).
 
@@ -331,6 +333,8 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
 
     * Fix the worker MPM to use POD to kill child processes instead
       of ap_os_killpg, regardless of how they should die.
+
+        chrisd: Is this done, by any chance?  See r92598 and r93358.
 
     * Scoreboard structures could be changed in the future such that
       proper alignment is not maintained, leading to segfaults on 
