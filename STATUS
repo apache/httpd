@@ -76,11 +76,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_autoindex: Fix filename HTML-escaping for !FancyIndexing.
-       http://svn.apache.org/viewvc?view=rev&revision=407265
-    PR: 38910
-    +1: jorton, rpluem, trawick
-
     * Worker and event MPMs: Fix for missing code in handling of
       GracefulShutdownTimeout.  PR 38621.
         Trunk version of patch:
@@ -129,8 +124,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * configure: Add "--with-included-apr" flag to force use of
     bundled version of APR/APR-util rather than any installed
     versions found on the system (as preferred by find_ap?.m4).
-       http://svn.apache.org/viewcvs?rev=395211&view=rev
-    +1: jorton, jim
+       http://svn.apache.org/viewvc?rev=395211&view=rev
+       http://svn.apache.org/viewvc?rev=410828&view=rev
+      Merged version of both for 2.2.x:
+       http://people.apache.org/~jorton/ap_withinc.diff
+    +1: jorton
 
     * mod_cache: Make caching of reverse SSL proxies possible again.
       PR 39593.
