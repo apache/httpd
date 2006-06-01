@@ -90,14 +90,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.2.x (identical)
       +1: niq, trawick, rpluem
 
-    * mod_mem_cache: Add Content-Type to headers_out if not already set.
-      PR 39266.
-        Trunk version of patch:
-          http://svn.apache.org/viewcvs?rev=399388&view=rev
-        2.2.x version of patch:
-          Trunk version works
-      +1 rpluem, trawick, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Add optional 'scheme://' part to ServerName directive for cases
