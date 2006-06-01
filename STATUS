@@ -76,14 +76,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * Worker and event MPMs: Fix for missing code in handling of
-      GracefulShutdownTimeout.  PR 38621.
-        Trunk version of patch:
-          http://svn.apache.org/viewvc?view=rev&revision=377291
-        2.2.x version of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=18356
-      +1: chrisd, rpluem, trawick
-
     * mod_filter: Don't try to insert a filter that doesn't exist
       PR#39672
       Trunk version: http://svn.apache.org/viewvc?view=rev&revision=410079
