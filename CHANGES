@@ -38,9 +38,6 @@ Changes with Apache 2.3.0
      completely backwards compatible and passes the perl-framework.  Minor
      mmn bump because I add a field to server_rec.  [Sander Temme]     
 
-  *) mod_mem_cache: Set content type correctly when delivering data from
-     cache. PR 39266. [Ruediger Pluem]
-
   *) worker and event MPMs: fix excessive forking if fork() or child_init 
      take a long time.  PR 39275.
      [Greg Ames, Jeff Trawick, Chris Darroch <chrisd pearsoncmg.com> ]
@@ -57,9 +54,6 @@ Changes with Apache 2.3.0
 
   *) mod_ssl: Fix spurious hostname mismatch warning for valid
      wildcard certificates.  PR 37911.  [Nick Burch <nick torchbox.com>]
-
-  *) Respect GracefulShutdownTimeout in the worker and event MPMs.
-     [Chris Darroch <chrisd pearsoncmg.com>, Garrett Rooney]
 
   *) Authz: Add the new module mod_authn_core that will provide common
      authn directives such as 'AuthType', 'AuthName'.  Move the directives
@@ -125,6 +119,17 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.3
 
+  *) Respect GracefulShutdownTimeout in the worker and event MPMs.
+     [Chris Darroch, Garrett Rooney]
+
+  *) mod_mem_cache: Set content type correctly when delivering data from
+     cache. PR 39266. [Ruediger Pluem]
+
+  *) mod_autoindex: Fix filename escaping with FancyIndexing disabled.
+     PR 38910.  [Robby Griffin <rmg terc.edu>]
+
+  *) mod_charset_lite: Bypass translation when the source and dest charsets
+     are the same. [Jeff Trawick]
 
 Changes with Apache 2.2.2
 
