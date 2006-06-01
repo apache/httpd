@@ -13,6 +13,7 @@
 <Location /server-status>
     SetHandler server-status
     Require host .example.com
+    Allow from 127
 </Location>
 
 #
@@ -30,4 +31,5 @@
 <Location /server-info>
     SetHandler server-info
     Require host .example.com
+    Allow from 127
 </Location>
