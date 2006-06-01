@@ -128,7 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=410828&view=rev
       Merged version of both for 2.2.x:
        http://people.apache.org/~jorton/ap_withinc.diff
-    +1: jorton
+    +1: jorton, rpluem
 
     * mod_cache: Make caching of reverse SSL proxies possible again.
       PR 39593.
