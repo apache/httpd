@@ -488,8 +488,6 @@ _install:
 	-mkdir "$(INSTDIR)\cgi-bin"
 	-mkdir "$(INSTDIR)\conf"
 	-mkdir "$(INSTDIR)\conf\extra"
-	-mkdir "$(INSTDIR)\conf\original"
-	-mkdir "$(INSTDIR)\conf\original\extra"
 	-mkdir "$(INSTDIR)\error"
 	-mkdir "$(INSTDIR)\htdocs"
 	-mkdir "$(INSTDIR)\manual"
@@ -649,14 +647,17 @@ BEGIN {
 	copy $(LONG)\libhttpd.lib 			"$(INSTDIR)\lib" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.exp 	"$(INSTDIR)\lib" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.lib 	"$(INSTDIR)\lib" <.y
-	copy docs\conf\magic "$(INSTDIR)\conf\original\magic" <.y
-	if not exist "$(INSTDIR)\conf\magic" \
-	    copy "$(INSTDIR)\conf\original\magic" "$(INSTDIR)\conf\magic"
-	copy docs\conf\mime.types "$(INSTDIR)\conf\original\mime.types" <.y
-	if not exist "$(INSTDIR)\conf\mime.types" \
-	    copy "$(INSTDIR)\conf\original\mime.types" "$(INSTDIR)\conf\mime.types"
-	copy docs\conf\httpd-win.conf "$(INSTDIR)\conf\original\httpd.conf" <.y
-	-awk -f <<script.awk "docs/conf/httpd-win.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\original\httpd.conf"
+
+
+testconfig:
+	echo Y >.y
+	for %f in ( charset.conv magic mime.types ) do ( \
+	  copy docs\conf\%f "$(INSTDIR)\conf\%f.default" <.y && \
+	  if not exist "$(INSTDIR)\conf\%f" \
+	    copy "$(INSTDIR)\conf\%f.default" "$(INSTDIR)\conf\%f" \
+	)
+	copy docs\conf\httpd-win.conf "$(INSTDIR)\conf\httpd.conf.default" <.y
+	-awk -f <<script.awk "docs/conf/httpd-win.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\httpd.conf.default"
     BEGIN { 
 	serverroot = ARGV[2];
 	delete ARGV[2];
@@ -672,9 +673,10 @@ BEGIN {
     }
 <<
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
-	    copy "$(INSTDIR)\conf\original\httpd.conf" "$(INSTDIR)\conf\httpd.conf"
-	copy docs\conf\extra\httpd-autoindex.conf.in "$(INSTDIR)\conf\original\httpd-autoindex.conf" <.y
-	-awk -f <<script.awk "docs/conf/extra/httpd-autoindex.conf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\original\extra\httpd-autoindex.conf"
+	    copy "$(INSTDIR)\conf\httpd.conf.default" "$(INSTDIR)\conf\httpd.conf"
+	for %f in ( docs\conf\extra\*.in ) do ( \
+	  copy %f "$(INSTDIR)\conf\extra\%~na.default" <.y && \
+	  awk -f <<script.awk "docs/conf/extra/%~nf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\extra\%~nf.default" )
     BEGIN { 
 	serverroot = ARGV[2];
 	delete ARGV[2];
@@ -683,129 +685,31 @@ BEGIN {
 	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
     }
     {
-	gsub( /@exp_iconsdir@/, serverroot "/icons" );
-	print $$0;
-    }
-<<
-	if not exist "$(INSTDIR)\conf\extra\httpd-autoindex.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-autoindex.conf" "$(INSTDIR)\conf\extra\httpd-autoindex.conf"
-	copy docs\conf\extra\httpd-dav.conf.in "$(INSTDIR)\conf\original\httpd-dav.conf" <.y
-	-awk -f <<script.awk "docs/conf/extra/httpd-dav.conf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\original\extra\httpd-dav.conf"
-    BEGIN { 
-	serverroot = ARGV[2];
-	delete ARGV[2];
-	gsub( /\\/, "/", serverroot );
-	"cd" | getline root;
-	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
-    }
-    {
-	gsub( /@@ServerRoot@@/, serverroot );
-	print $$0;
-    }
-<<
-	if not exist "$(INSTDIR)\conf\extra\httpd-dav.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-dav.conf" "$(INSTDIR)\conf\extra\httpd-dav.conf"
-	copy docs\conf\extra\httpd-manual.conf.in "$(INSTDIR)\conf\original\httpd-manual.conf" <.y
-	-awk -f <<script.awk "docs/conf/extra/httpd-manual.conf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\original\extra\httpd-manual.conf"
-    BEGIN { 
-	serverroot = ARGV[2];
-	delete ARGV[2];
-	gsub( /\\/, "/", serverroot );
-	"cd" | getline root;
-	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
-    }
-    {
-	gsub( /@exp_manualdir@/, serverroot "/manual" );
-	print $$0;
-    }
-<<
-	if not exist "$(INSTDIR)\conf\extra\httpd-manual.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-manual.conf" "$(INSTDIR)\conf\extra\httpd-manual.conf"
-	copy docs\conf\extra\httpd-multilang-errordoc.conf.in "$(INSTDIR)\conf\original\httpd-multilang-errordoc.conf" <.y
-	-awk -f <<script.awk "docs/conf/extra/httpd-multilang-errordoc.conf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\original\extra\httpd-multilang-errordoc.conf"
-    BEGIN { 
-	serverroot = ARGV[2];
-	delete ARGV[2];
-	gsub( /\\/, "/", serverroot );
-	"cd" | getline root;
-	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
-    }
-    {
-	gsub( /@exp_errordir@/, serverroot "/error" );
-	print $$0;
-    }
-<<
-	if not exist "$(INSTDIR)\conf\extra\httpd-multilang-errordoc.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-multilang-errordoc.conf" "$(INSTDIR)\conf\extra\httpd-multilang-errordoc.conf"
-	copy docs\conf\extra\httpd-ssl.conf.in "$(INSTDIR)\conf\original\httpd-ssl.conf" <.y
-	-awk -f <<script.awk "docs/conf/extra/httpd-ssl.conf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\original\extra\httpd-ssl.conf"
-    BEGIN { 
-	serverroot = ARGV[2];
-	delete ARGV[2];
-	gsub( /\\/, "/", serverroot );
-	"cd" | getline root;
-	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
-    }
-    {
-	gsub( /@@ServerRoot@@/, serverroot );
-	gsub( /443/, "$(SSLPORT)" );
 	gsub( /SSLMutex  file:@exp_runtimedir@\/ssl_mutex/, "SSLMutex default" );
-	gsub( /@exp_runtimedir@/, "logs" );
-	gsub( /@exp_htdocsdir@/, serverroot "/htdocs" );
-	gsub( /@exp_logfiledir@/, "logs" );
-	gsub( /@exp_sysconfdir@/, "conf" );
-	gsub( /@exp_cgidir@/, serverroot "/cgi-bin" );
+	gsub( /@@ServerRoot@@/,   serverroot );
+	gsub( /@exp_cgidir@/,     serverroot "/cgi-bin" );
+	gsub( /@exp_sysconfdir@/, serverroot "/conf" );
+	gsub( /@exp_errordir@/,   serverroot "/error" );
+	gsub( /@exp_htdocsdir@/,  serverroot "/htdocs" );
+	gsub( /@exp_iconsdir@/,   serverroot "/icons" );
+	gsub( /@exp_logfiledir@/, serverroot "/logs" );
+	gsub( /@exp_runtimedir@/, serverroot "/logs" );
+	gsub( /@exp_manualdir@/,  serverroot "/manual" );
+	gsub( /@rel_runtimedir@/, "logs" );
+	gsub( /@rel_logfiledir@/, "logs" );
+	gsub( /\/home\/\*\/public_html/, "\"C:/Documents and Settings/*/My Documents/My Website\"" );
+	gsub( /UserDir public_html/, "UserDir \"My Documents/My Website\"" );
+	gsub( /@@ServerName@@/, "$(SERVERNAME)" );
+	gsub( /@@Port@@/, "$(PORT)" );
+	gsub( /443/, "$(SSLPORT)" );
 	print $$0;
     }
 <<
-	if not exist "$(INSTDIR)\conf\extra\httpd-ssl.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-ssl.conf" "$(INSTDIR)\conf\extra\httpd-ssl.conf"
-	copy docs\conf\extra\httpd-userdir.conf.in "$(INSTDIR)\conf\original\httpd-userdir.conf" <.y
-	-awk -f <<script.awk "docs/conf/extra/httpd-userdir.conf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\original\extra\httpd-userdir.conf"
-    BEGIN { 
-	serverroot = ARGV[2];
-	delete ARGV[2];
-	gsub( /\\/, "/", serverroot );
-	"cd" | getline root;
-	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
-    }
-    {
-	gsub( /public_html/, "\"My Documents/My Website\"" );
-	gsub( /\/home/, "C:/WinNT/profiles" ); 
-	print $$0;
-    }
-<<
-	if not exist "$(INSTDIR)\conf\extra\httpd-userdir.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-userdir.conf" "$(INSTDIR)\conf\extra\httpd-userdir.conf"
-	copy docs\conf\extra\httpd-mpm.conf.in "$(INSTDIR)\conf\original\httpd-mpm.conf" <.y
-	-awk -f <<script.awk "docs/conf/extra/httpd-mpm.conf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\original\extra\httpd-mpm.conf"
-    BEGIN { 
-	serverroot = ARGV[2];
-	delete ARGV[2];
-	gsub( /\\/, "/", serverroot );
-	"cd" | getline root;
-	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
-    }
-    {
-	gsub( /@rel_runtimedir@/, "logs/" );
-	gsub( /\/home/, "C:/WinNT/profiles" ); 
-	print $$0;
-    }
-<<
-	if not exist "$(INSTDIR)\conf\extra\httpd-mpm.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-mpm.conf" "$(INSTDIR)\conf\extra\httpd-mpm.conf"
-	copy docs\conf\extra\httpd-default.conf.in "$(INSTDIR)\conf\original\extra\httpd-default.conf" <.y
-	if not exist "$(INSTDIR)\conf\extra\httpd-default.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-default.conf" "$(INSTDIR)\conf\extra\httpd-default.conf"
-	copy docs\conf\extra\httpd-info.conf.in "$(INSTDIR)\conf\original\extra\httpd-info.conf" <.y
-	if not exist "$(INSTDIR)\conf\extra\httpd-info.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-info.conf" "$(INSTDIR)\conf\extra\httpd-info.conf"
-	copy docs\conf\extra\httpd-languages.conf.in "$(INSTDIR)\conf\original\extra\httpd-languages.conf" <.y
-	if not exist "$(INSTDIR)\conf\extra\httpd-languages.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-languages.conf" "$(INSTDIR)\conf\extra\httpd-languages.conf"
-	copy docs\conf\extra\httpd-vhosts.conf.in "$(INSTDIR)\conf\original\extra\httpd-vhosts.conf" <.y
-	if not exist "$(INSTDIR)\conf\extra\httpd-vhosts.conf" \
-	    copy "$(INSTDIR)\conf\original\extra\httpd-vhosts.conf" "$(INSTDIR)\conf\extra\httpd-vhosts.conf"
+	for %f in ( docs\conf\extra\*.in ) do ( \
+	  if not exist "$(INSTDIR)\conf\extra\%~nf" \
+	    copy "$(INSTDIR)\conf\extra\%~nf.default" "$(INSTDIR)\conf\extra\%~nf" \
+	)
+	copy "support\dbmmanage.in" "$(INSTDIR)\bin\dbmmanage.pl"
 	-awk -f <<script.awk "support/dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
     { if ( $$0 ~ /^BEGIN \{ @AnyDBM_File::/ ) {
 	  sub( /ISA = qw\(.*\)/, "ISA = qw(SDBM_File)" ); 
