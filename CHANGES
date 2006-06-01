@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.3
 
+  *) mod_autoindex: Fix filename escaping with FancyIndexing disabled.
+     PR 38910.  [Robby Griffin <rmg terc.edu>]
+
   *) mod_charset_lite: Bypass translation when the source and dest charsets
      are the same. [Jeff Trawick]
 
