@@ -405,6 +405,15 @@ start_over:
         return (LDAP_NO_SUCH_OBJECT == result) ? AUTH_USER_NOT_FOUND
 #ifdef LDAP_SECURITY_ERROR
                  : (LDAP_SECURITY_ERROR(result)) ? AUTH_DENIED
+#else
+				 : (LDAP_INAPPROPRIATE_AUTH == result) ? AUTH_DENIED
+				 : (LDAP_INVALID_CREDENTIALS == result) ? AUTH_DENIED
+#ifdef LDAP_INSUFFICIENT_ACCESS
+                 : (LDAP_INSUFFICIENT_ACCESS == result) ? AUTH_DENIED
+#endif
+#ifdef LDAP_INSUFFICIENT_RIGHTS
+				 : (LDAP_INSUFFICIENT_RIGHTS == result) ? AUTH_DENIED
+#endif
 #endif
                  : AUTH_GENERAL_ERROR;
     }
