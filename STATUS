@@ -141,3 +141,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: rpluem
 
+    * mod_authnz_ldap: Fix a problem with invalid auth error detection 
+       for LDAP client SDKs that don't support LDAP_SECURITY_ERROR 
+       macro. PR#39529
+       http://svn.apache.org/viewvc?view=rev&revision=411306
+       +1: bnicholes
+
