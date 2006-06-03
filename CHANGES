@@ -2,9 +2,13 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) mod_authnz_ldap: Fix a problem with invalid auth error detection for 
-     LDAP client SDKs that don't support LDAP_SECURITY_ERROR macro. PR#39529
-     [Ray Price <dohrayme yahoo.com>], [Josh Fenlason <jfenlason ptc.com>]
+  *) mod_cache: Convert age of cached object to seconds before comparing it to
+     age supplied by the request when checking whether to send a Warning
+     header for a stale response. PR 39713. [Owen Taylor <otaylor redhat.com>]
+
+  *) mod_authnz_ldap: Fix a problem with invalid auth error detection for
+     LDAP client SDKs that don't support LDAP_SECURITY_ERROR macro. PR 39529.
+     [Ray Price <dohrayme yahoo.com>, Josh Fenlason <jfenlason ptc.com>]
 
   *) mod_cache: Do not overwrite the Content-Type in the cache, for
      successfully revalidated cached objects. PR 39647. [Ruediger Pluem]
