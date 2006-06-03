@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_disk_cache: If possible, check if the size of an object to cache is
+     within the configured boundaries before actually saving data.
+     [Niklas Edmundsson <nikke acc.umu.se>]
+
   *) mod_cache: Convert all values to seconds before comparing them when
      checking whether to send a Warning header for a stale response.
      PR 39713. [Owen Taylor <otaylor redhat.com>]
