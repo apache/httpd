@@ -36,6 +36,9 @@
  * misspellings of URLs that users might have entered, namely by checking
  * capitalizations. If it finds a match, it sends a redirect.
  *
+ * Sep-1999 Hugo Haas <hugo@w3.org>
+ * o Added a CheckCaseOnly option to check only miscapitalized words.
+ *
  * 08-Aug-1997 <Martin.Kraemer@Mch.SNI.De>
  * o Upgraded module interface to apache_1.3a2-dev API (more NULL's in
  *   speling_module).
@@ -56,6 +59,7 @@ module AP_MODULE_DECLARE_DATA speling_module;
 
 typedef struct {
     int enabled;
+    int case_only;
 } spconfig;
 
 /*
@@ -72,6 +76,7 @@ static void *mkconfig(apr_pool_t *p)
     spconfig *cfg = apr_pcalloc(p, sizeof(spconfig));
 
     cfg->enabled = 0;
+    cfg->case_only = 0;
     return cfg;
 }
 
@@ -93,24 +98,17 @@ static void *create_mconfig_for_directory(apr_pool_t *p, char *dir)
 }
 
 /*
- * Handler for the CheckSpelling directive, which is FLAG.
- */
-static const char *set_speling(cmd_parms *cmd, void *mconfig, int arg)
-{
-    spconfig *cfg = (spconfig *) mconfig;
-
-    cfg->enabled = arg;
-    return NULL;
-}
-
-/*
  * Define the directives specific to this module.  This structure is referenced
  * later by the 'module' structure.
  */
 static const command_rec speling_cmds[] =
 {
-    AP_INIT_FLAG("CheckSpelling", set_speling, NULL, OR_OPTIONS,
+    AP_INIT_FLAG("CheckSpelling", ap_set_flag_slot,
+                  (void*)APR_OFFSETOF(spconfig, enabled), OR_OPTIONS,
                  "whether or not to fix miscapitalized/misspelled requests"),
+    AP_INIT_FLAG("CheckCaseOnly", ap_set_flag_slot,
+                  (void*)APR_OFFSETOF(spconfig, case_only), OR_OPTIONS, 
+                 "whether or not to fix only miscapitalized requests"),
     { NULL }
 };
 
@@ -310,7 +308,8 @@ static int check_speling(request_rec *r)
          * simple typing errors are checked next (like, e.g.,
          * missing/extra/transposed char)
          */
-        else if ((q = spdist(bad, dirent.name)) != SP_VERYDIFFERENT) {
+        else if ((cfg->case_only == 0)
+                 && ((q = spdist(bad, dirent.name)) != SP_VERYDIFFERENT)) {
             misspelled_file *sp_new;
 
             sp_new = (misspelled_file *) apr_array_push(candidates);
