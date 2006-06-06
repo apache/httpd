@@ -184,7 +184,7 @@
 
       <p>When content expires from the cache and is re-requested from the 
       backend or content provider, rather than pass on the original request,
-      Aoache will use a conditional request instead.</p>
+      Apache will use a conditional request instead.</p>
 
       <p>HTTP offers a number of headers which allow a client, or cache
       to discern between different versions of the same content. For
