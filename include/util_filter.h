@@ -274,7 +274,7 @@ struct ap_filter_t {
     request_rec *r;
 
     /** The conn_rec associated with the current filter.  This is analogous
-     *  to the request_rec, except that it is used for input filtering.
+     *  to the request_rec, except that it is used for connection filters.
      */
     conn_rec *c;
 };
