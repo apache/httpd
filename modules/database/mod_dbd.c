@@ -67,6 +67,8 @@ typedef enum { cmd_name, cmd_params, cmd_persist,
                cmd_min, cmd_keep, cmd_max, cmd_exp
 } cmd_parts;
 
+/* a default DBDriver value that'll generate meaningful error messages */
+static const char *const no_dbdriver = "[DBDriver unset]";
 
 #define ISINT(val) \
         for (p = val; *p; ++p)        \
@@ -182,7 +184,7 @@ static void *dbd_merge(apr_pool_t *pool, void *BASE, void *ADD) {
     svr_cfg *base = (svr_cfg*) BASE;
     svr_cfg *add = (svr_cfg*) ADD;
     svr_cfg *cfg = apr_pcalloc(pool, sizeof(svr_cfg));
-    cfg->name = strcmp(add->name, "") ? add->name : base->name;
+    cfg->name = (add->name != no_dbdriver) ? add->name : base->name;
     cfg->params = strcmp(add->params, "") ? add->params : base->params;
     cfg->persist = (add->persist == -1) ? base->persist : add->persist;
 #if APR_HAS_THREADS
@@ -205,7 +207,8 @@ static void *dbd_merge(apr_pool_t *pool, void *BASE, void *ADD) {
 static void *dbd_cfg(apr_pool_t *p, server_rec *x)
 {
     svr_cfg *svr = (svr_cfg*) apr_pcalloc(p, sizeof(svr_cfg));
-    svr->name = svr->params = ""; /* don't risk segfault on misconfiguration */
+    svr->params = ""; /* don't risk segfault on misconfiguration */
+    svr->name = no_dbdriver; /* to generate meaningful error messages */
     svr->persist = -1;
 #if APR_HAS_THREADS
     svr->nmin = DEFAULT_NMIN;
