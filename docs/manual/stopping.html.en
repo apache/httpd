@@ -140,16 +140,15 @@
     low bandwidth links then you could wait 15 minutes before doing
     anything with the old log.</p>
 
-    <div class="note">If your configuration file has errors
-    in it when you issue a restart then your parent will not
-    restart, it will exit with an error. In the case of graceful
-    restarts it will also leave children running when it exits.
-    (These are the children which are "gracefully exiting" by
-    handling their last request.) This will cause problems if you
-    attempt to restart the server -- it will not be able to bind to
-    its listening ports. Before doing a restart, you can check the
-    syntax of the configuration files with the <code>-t</code>
-    command line argument (see <code class="program"><a href="./programs/httpd.html">httpd</a></code>). This still will not
+    <div class="note">
+    <p>When you issue a restart, a syntax check is first run, to
+    ensure that there are no errors in the configuration files.
+    If your configuration file has errors in it, you will get an
+    error message about that syntax error, and the server will refuse to
+    restart. This avoids the situation where the server halts and then 
+    cannot restart, leaving you with a non-functioning server.</p>
+
+    <p>This still will not
     guarantee that the server will restart correctly. To check the
     semantics of the configuration files as well as the syntax, you
     can try starting <code class="program"><a href="./programs/httpd.html">httpd</a></code> as a non-root user. If there
@@ -157,7 +156,7 @@
     because it's not root (or because the currently running
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> already has those ports bound). If it fails
     for any other reason then it's probably a config file error and the error
-    should be fixed before issuing the graceful restart.</div>
+    should be fixed before issuing the graceful restart.</p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="hup" id="hup">Restart Now</a></h2>
@@ -176,9 +175,10 @@
     will notice that the server statistics are set to zero when a
     <code>HUP</code> is sent.</p>
 
-<div class="note">If your configuration file has errors in it when you issue a
-restart then your parent will not restart, it will exit with an
-error. See above for a method of avoiding this.</div>
+<div class="note">As with a graceful restart, a syntax check is run before the the
+restart is attempted. If your configuration file has errors in it, the
+restart will not be attempted, and you will receive notification of the
+syntax error(s).</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="gracefulstop" id="gracefulstop">Graceful Stop</a></h2>
