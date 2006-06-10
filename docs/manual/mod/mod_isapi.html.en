@@ -64,12 +64,12 @@
 
     <p>In the server configuration file, use
     the <code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code> directive to
-    associate ISAPI files with the <code>isapi-isa</code> handler, and map
+    associate ISAPI files with the <code>isapi-handler</code> handler, and map
     it to them with their file extensions. To enable any .dll file to be
     processed as an ISAPI extension, edit the httpd.conf file and add the
     following line:</p>
     <div class="example"><p><code>
-        AddHandler isapi-isa .dll
+        AddHandler isapi-handler.dll
     </code></p></div>
 
     <p>There is no capability within the Apache server to leave a
