@@ -287,6 +287,10 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <div class="example"><p><code>$ make install</code></p></div>
 
+    <p>This step will typically require root permissions, since
+    <em>PREFIX</em> is usually a directory with restricted write
+    permissions.</p>
+
     <p>If you are upgrading, the installation will not overwrite
     your configuration files or documents.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -299,7 +303,8 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>Have a look at the Apache manual under <a href="./">docs/manual/</a> or consult <a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a> for the most recent
+    <p>Have a look at the Apache manual under 
+    <code><em>PREFIX</em>/docs/manual/</code> or consult <a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a> for the most recent
     version of this manual and a complete reference of available <a href="mod/directives.html">configuration directives</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -310,8 +315,8 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k start</code></p></div>
 
-    <p>and then you should be able to request your first document
-    via URL <code>http://localhost/</code>. The web page you see is located
+    <p>You should then be able to request your first document
+    via the URL <code>http://localhost/</code>. The web page you see is located
     under the <code class="directive"><a href="./mod/core.html#documentroot">DocumentRoot</a></code>,
     which will usually be <code><em>PREFIX</em>/htdocs/</code>.
     Then <a href="stopping.html">stop</a> the server again by
@@ -366,6 +371,14 @@ $ tar xvf httpd-<em>NN</em>.tar
     using a different <code>--prefix</code> and a
     different port (by adjusting the <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> directive) to test for any
     incompatibilities before doing the final upgrade.</div>
+
+    <p>You can pass additional arguments to <code>config.nice</code>,
+    which will be appended to your original <code class="program"><a href="./programs/configure.html">configure</a></code>
+    options:</p>
+
+    <div class="example"><p><code>
+    $ ./config.nice --prefix=/home/test/apache --with-port=90
+    </code></p></div>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./de/install.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

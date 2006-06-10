@@ -291,6 +291,10 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <example>$ make install</example>
 
+    <p>This step will typically require root permissions, since
+    <em>PREFIX</em> is usually a directory with restricted write
+    permissions.</p>
+
     <p>If you are upgrading, the installation will not overwrite
     your configuration files or documents.</p>
 </section>
@@ -303,8 +307,8 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
 
-    <p>Have a look at the Apache manual under <a
-    href="./">docs/manual/</a> or consult <a
+    <p>Have a look at the Apache manual under 
+    <code><em>PREFIX</em>/docs/manual/</code> or consult <a
     href="http://httpd.apache.org/docs/&httpd.docs;/"
     >http://httpd.apache.org/docs/&httpd.docs;/</a> for the most recent
     version of this manual and a complete reference of available <a
@@ -318,8 +322,8 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <example>$ <em>PREFIX</em>/bin/apachectl -k start</example>
 
-    <p>and then you should be able to request your first document
-    via URL <code>http://localhost/</code>. The web page you see is located
+    <p>You should then be able to request your first document
+    via the URL <code>http://localhost/</code>. The web page you see is located
     under the <directive module="core">DocumentRoot</directive>,
     which will usually be <code><em>PREFIX</em>/htdocs/</code>.
     Then <a href="stopping.html">stop</a> the server again by
@@ -374,5 +378,13 @@ $ tar xvf httpd-<em>NN</em>.tar
     different port (by adjusting the <directive
     module="mpm_common">Listen</directive> directive) to test for any
     incompatibilities before doing the final upgrade.</note>
+
+    <p>You can pass additional arguments to <code>config.nice</code>,
+    which will be appended to your original <program>configure</program>
+    options:</p>
+
+    <example>
+    $ ./config.nice --prefix=/home/test/apache --with-port=90
+    </example>
 </section>
 </manualpage>
