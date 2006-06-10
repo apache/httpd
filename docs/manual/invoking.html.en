@@ -70,7 +70,7 @@
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary and any command-line arguments that you
     wish to be <em>always</em> present.</p>
 
-    <p>The first thing that <code>httpd</code> does when it is
+    <p>The first thing that <code class="program"><a href="./programs/httpd.html">httpd</a></code> does when it is
     invoked is to locate and read the <a href="configuring.html">configuration file</a>
     <code>httpd.conf</code>. The location of this file is set at
     compile-time, but it is possible to specify its location at run
