@@ -38,7 +38,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">Restart Now</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#gracefulstop">Graceful Stop</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#race">Appendix: signals and race conditions</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
+</ul><h3>See also</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="invoking.html">Starting</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
@@ -51,10 +51,11 @@
     but you should not send signals to any of them except the parent,
     whose pid is in the <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. That is to say you
     shouldn't ever need to send signals to any process except the
-    parent. There are three signals that you can send the parent:
+    parent. There are four signals that you can send the parent:
     <code><a href="#term">TERM</a></code>,
+    <code><a href="#graceful">USR1</a></code>,
     <code><a href="#hup">HUP</a></code>, and
-    <code><a href="#graceful">USR1</a></code>, which
+    <code><a href="#gracefulstop">WINCH</a></code>, which
     will be described in a moment.</p>
 
     <p>To send a signal to the parent you should issue a command
