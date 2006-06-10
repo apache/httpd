@@ -82,16 +82,22 @@
       <dd>Resolve hostnames for IP-addresses in Apache
       logfiles</dd>
 
+      <dt><a href="other.html#log_server_status">log_server_status</a></dt>
+
+      <dd>Periodically log the server's status</dd>
+
       <dt><code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code></dt>
 
       <dd>Rotate Apache logs without having to kill the server</dd>
+
+      <dt><a href="other.html#split-logfile">split-logfile</a></dt>
+
+      <dd>Split a multi-vhost logfile into per-host logfiles</dd>
 
       <dt><code class="program"><a href="../programs/suexec.html">suexec</a></code></dt>
 
       <dd>Switch User For Exec</dd>
 
-      <dt><a href="other.html">Other Programs</a></dt>
-      <dd>Support tools with no own manual page.</dd>
     </dl>
 </div></div>
 <div class="bottomlang">
