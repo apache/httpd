@@ -55,7 +55,7 @@
 <h2><a name="example" id="example">Example</a></h2>
     <p>The example below creates two different ldap authentication 
     provider aliases based on the ldap provider.  This allows
-    a single authenticated location can be serviced by multiple 
+    a single authenticated location to be serviced by multiple 
     ldap hosts:</p>
 
     <div class="example"><h3>Example</h3><p><code>
