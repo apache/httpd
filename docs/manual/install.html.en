@@ -287,7 +287,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <div class="example"><p><code>$ make install</code></p></div>
 
-    <p>This step will typically require root permissions, since
+    <p>This step will typically require root privileges, since
     <em>PREFIX</em> is usually a directory with restricted write
     permissions.</p>
 
