@@ -206,7 +206,7 @@ module from each group.</p>
     following directives, either placed in the file
     <code>/usr/local/apache/htdocs/secret/.htaccess</code>, or
     placed in <code>httpd.conf</code> inside a &lt;Directory
-    /usr/local/apache/apache/htdocs/secret&gt; section.</p>
+    /usr/local/apache/htdocs/secret&gt; section.</p>
 
     <div class="example"><p><code>
       AuthType Basic<br />
