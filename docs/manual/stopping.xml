@@ -228,43 +228,4 @@ syntax error(s).</note>
     logfiles at the same time may destroy each other's logfiles.</p></note>
 </section>
 
-
-<section id="race"><title>Appendix: signals and race conditions</title>
-
-    <p>Prior to Apache 1.2b9 there were several <em>race
-    conditions</em> involving the restart and die signals (a simply put, 
-    a race condition is a time-sensitive problem - if something happens 
-    at just the wrong time or things happen in the wrong order, 
-    undesired behaviour will result. If the same thing happens at the right 
-    time, all will be well). For those architectures that have the "right"
-    feature set we have eliminated as many as we can. But it should
-    be noted that race conditions do still exist on certain
-    architectures.</p>
-
-    <p>Architectures that use an on-disk <directive
-    module="mpm_common">ScoreBoardFile</directive> can potentially have 
-    their scoreboards corrupted. This can result in the "bind:
-    Address already in use" (after <code>HUP</code>) or "long lost
-    child came home!" (after <code>USR1</code>). The former is a fatal
-    error, while the latter just causes the server to lose a
-    scoreboard slot. So it may be advisable to use graceful
-    restarts, with an occasional hard restart. These problems are very
-    difficult to work around, but fortunately most architectures do
-    not require a scoreboard file. See the <directive
-    module="mpm_common">ScoreBoardFile</directive> documentation for
-    architecture which uses it.</p>
-
-    <p>All architectures have a small race condition in each child
-    involving the second and subsequent requests on a persistent
-    HTTP connection (KeepAlive). It may exit after reading the
-    request line but before reading any of the request headers.
-    There is a fix that was discovered too late to make 1.2. In
-    theory this isn't an issue because the KeepAlive client has to
-    expect these events because of network latencies and server
-    timeouts. In practice it doesn't seem to affect anything either
-    -- in a test case the server was restarted twenty times per
-    second and clients successfully browsed the site without
-    getting broken images or empty documents. </p>
-</section>
-
 </manualpage>

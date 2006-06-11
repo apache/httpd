@@ -37,7 +37,6 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#graceful">Graceful Restart</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">Restart Now</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#gracefulstop">Graceful Stop</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#race">Appendix: signals and race conditions</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="invoking.html">Starting</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -221,42 +220,6 @@ syntax error(s).</div>
     using <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> style piped logging. Multiple running
     instances of <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> attempting to rotate the same
     logfiles at the same time may destroy each other's logfiles.</p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="race" id="race">Appendix: signals and race conditions</a></h2>
-
-    <p>Prior to Apache 1.2b9 there were several <em>race
-    conditions</em> involving the restart and die signals (a simply put, 
-    a race condition is a time-sensitive problem - if something happens 
-    at just the wrong time or things happen in the wrong order, 
-    undesired behaviour will result. If the same thing happens at the right 
-    time, all will be well). For those architectures that have the "right"
-    feature set we have eliminated as many as we can. But it should
-    be noted that race conditions do still exist on certain
-    architectures.</p>
-
-    <p>Architectures that use an on-disk <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code> can potentially have 
-    their scoreboards corrupted. This can result in the "bind:
-    Address already in use" (after <code>HUP</code>) or "long lost
-    child came home!" (after <code>USR1</code>). The former is a fatal
-    error, while the latter just causes the server to lose a
-    scoreboard slot. So it may be advisable to use graceful
-    restarts, with an occasional hard restart. These problems are very
-    difficult to work around, but fortunately most architectures do
-    not require a scoreboard file. See the <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code> documentation for
-    architecture which uses it.</p>
-
-    <p>All architectures have a small race condition in each child
-    involving the second and subsequent requests on a persistent
-    HTTP connection (KeepAlive). It may exit after reading the
-    request line but before reading any of the request headers.
-    There is a fix that was discovered too late to make 1.2. In
-    theory this isn't an issue because the KeepAlive client has to
-    expect these events because of network latencies and server
-    timeouts. In practice it doesn't seem to affect anything either
-    -- in a test case the server was restarted twenty times per
-    second and clients successfully browsed the site without
-    getting broken images or empty documents. </p>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./de/stopping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
