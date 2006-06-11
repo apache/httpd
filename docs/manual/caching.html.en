@@ -297,7 +297,7 @@ Vary: negotiate,accept-language,accept-charset
 <h2><a name="security" id="security">Security Considerations</a></h2>
     
 
-    <h3>Authorisation, Access &amp; and Control</h3>
+    <h3>Authentication, Authorization and Access Control</h3>
       
 
       <p>Using <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> is very much like having a built
@@ -314,8 +314,8 @@ Vary: negotiate,accept-language,accept-charset
       from the cache as long as that content has not expired.</p>
 
       <p>If, for example, your configuration permits access to a resource by IP
-      address you should ensure that this content is not cached. You can do this by
-      using the <code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code>
+      address you should ensure that this content is not cached. You can do this
+      by using the <code class="directive"><a href="./mod/mod_cache.html#cachedisable">CacheDisable</a></code>
       directive, or <code class="module"><a href="./mod/mod_expires.html">mod_expires</a></code>. Left unchecked,
       <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> - very much like a reverse proxy - would cache
       the content when served and then serve it to any client, on any IP

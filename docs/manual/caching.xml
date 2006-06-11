@@ -319,7 +319,7 @@ Vary: negotiate,accept-language,accept-charset
     <title>Security Considerations</title>
 
     <section>
-      <title>Authorisation, Access &amp; and Control</title>
+      <title>Authentication, Authorization and Access Control</title>
 
       <p>Using <module>mod_cache</module> is very much like having a built
       in reverse-proxy. Requests will be served by the caching module unless
@@ -335,8 +335,8 @@ Vary: negotiate,accept-language,accept-charset
       from the cache as long as that content has not expired.</p>
 
       <p>If, for example, your configuration permits access to a resource by IP
-      address you should ensure that this content is not cached. You can do this by
-      using the <directive module="mod_cache">CacheDisable</directive>
+      address you should ensure that this content is not cached. You can do this
+      by using the <directive module="mod_cache">CacheDisable</directive>
       directive, or <module>mod_expires</module>. Left unchecked,
       <module>mod_cache</module> - very much like a reverse proxy - would cache
       the content when served and then serve it to any client, on any IP
