@@ -58,6 +58,8 @@
 
     <p>Content is stored in and retrieved from the cache using URI based keys. Content with
     access protection is not cached.</p>
+    <p>Further details, discussion, and examples, are provided in the
+    <a href="../caching.html">Caching Guide</a>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
@@ -77,6 +79,9 @@
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#related">Related Modules and Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">Sample Configuration</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="../caching.html">Caching Guide</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
