@@ -43,9 +43,9 @@
     files are simply served by the server, but certain file types
     are "handled" separately.</p>
 
-    <p>Apache 1.1 adds the ability to use handlers explicitly.
-    Based on either filename extensions or on location, handlers
-    can be specified without relation to file type. This is
+    <p>Handlers may also be configured explicitly,
+    based on either filename extensions or on location,
+    without relation to file type. This is
     advantageous both because it is a more elegant solution, and
     because it also allows for both a type <strong>and</strong> a
     handler to be associated with a file. (See also <a href="mod/mod_mime.html#multipleext">Files with Multiple
