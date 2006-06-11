@@ -59,7 +59,10 @@
 
     <p>Content is stored in and retrieved from the cache using URI based keys. Content with
     access protection is not cached.</p>
+    <p>Further details, discussion, and examples, are provided in the
+    <a href="../caching.html">Caching Guide</a>.</p>
 </summary>
+<seealso><a href="../caching.html">Caching Guide</a></seealso>
 
 <section id="related"><title>Related Modules and Directives</title>
     <related>
