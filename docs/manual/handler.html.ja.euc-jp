@@ -24,6 +24,8 @@
 <a href="./ja/handler.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 
     <p>Apache のハンドラの使用に関して記述しています。</p>
   </div>
