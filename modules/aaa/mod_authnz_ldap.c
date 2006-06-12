@@ -1253,7 +1253,7 @@ static const char *set_charset_config(cmd_parms *cmd, void *config, const char *
 static const command_rec authnz_ldap_cmds[] =
 {
     AP_INIT_TAKE12("AuthLDAPURL", mod_auth_ldap_parse_url, NULL, OR_AUTHCFG,
-                  "URL to define LDAP connection. This should be an RFC 2255 complaint\n"
+                  "URL to define LDAP connection. This should be an RFC 2255 compliant\n"
                   "URL of the form ldap://host[:port]/basedn[?attrib[?scope[?filter]]].\n"
                   "<ul>\n"
                   "<li>Host is the name of the LDAP server. Use a space separated list of hosts \n"
