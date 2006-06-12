@@ -770,8 +770,8 @@ from the web</description>
     <p>The <directive>DocumentRoot</directive> should be specified without
     a trailing slash.</p>
 </usage>
-<seealso><a href="../urlmapping.html">Mapping URLs to Filesystem
-Location</a></seealso>
+<seealso><a href="../urlmapping.html#documentroot">Mapping URLs to Filesystem
+Locations</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>

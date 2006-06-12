@@ -74,6 +74,12 @@
     make up the basic document tree which will be visible from the
     web.</p>
 
+    <p>For example, if <directive module="core">DocumentRoot</directive>
+    were set to <code>/var/www/html</code> then a request for
+    <code>http://www.example.com/fish/guppies.html</code> would result
+    in the file <code>/var/www/html/fish/guppies.html</code> being
+    served to the requesting client.</p>
+
     <p>Apache is also capable of <a href="vhosts/">Virtual
     Hosting</a>, where the server receives requests for more than one
     host. In this case, a different <directive
@@ -83,6 +89,11 @@
     be used to dynamically determine the appropriate place from which
     to serve content based on the requested IP address or
     hostname.</p>
+
+    <p>The <directive module="core">DocumentRoot</directive> directive
+    is set in your main server configuration file
+    (<code>httpd.conf</code>) and, possibly, once per additional <a
+    href="vhosts/">Virtual Host</a> you create.</p>
 </section>
 
 <section id="outside"><title>Files Outside the DocumentRoot</title>
