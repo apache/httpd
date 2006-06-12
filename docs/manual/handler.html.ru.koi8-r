@@ -24,6 +24,9 @@
 <a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/handler.html" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
+<div class="outofdate">Этот перевод может быть устаревшим. Смотрите
+            английскую версию для ознакомления со всеми последними изменениями
+            в документе.</div>
 
     <p>Этот документ описывает использование обработчиков (handlers) в Apache.</p>
   </div>
