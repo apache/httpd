@@ -1451,6 +1451,11 @@ static void read_connection(struct connection * c)
                     c->keepalive = 1;
                     c->length = atoi(cl + 16);
                 }
+                /* The response may not have a Content-Length header */
+                if (!cl) {
+                    c->keepalive = 1;
+                    c->length = 0; 
+                }	
             }
             c->bread += c->cbx - (s + l - c->cbuff) + r - tocopy;
             totalbread += c->bread;
