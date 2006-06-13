@@ -24,7 +24,7 @@
 
 <name>mod_auth_digest</name>
 <description>User authentication using MD5
-    Digest Authentication.</description>
+    Digest Authentication</description>
 <status>Experimental</status>
 <sourcefile>mod_auth_digest.c</sourcefile>
 <identifier>auth_digest_module</identifier>
@@ -42,12 +42,13 @@
 
 <section id="using"><title>Using Digest Authentication</title>
 
-    <p>Using MD5 Digest authentication is very simple. Simply set
-    up authentication normally, using <code>AuthType Digest</code> and
-    <directive module="mod_auth_digest">AuthDigestProvider</directive>
-    instead of the normal <code>AuthType Basic</code> and
+    <p>To use MD5 Digest authentication, simply 
+    change the normal <code>AuthType Basic</code> and
     <directive module="mod_auth_basic">AuthBasicProvider</directive>.
-    Then add a <directive module="mod_auth_digest"
+    to <code>AuthType Digest</code> and
+    <directive module="mod_auth_digest">AuthDigestProvider</directive>,
+    when setting up authentication, then add a 
+    <directive module="mod_auth_digest"
     >AuthDigestDomain</directive> directive containing at least the root
     URI(s) for this protection space.</p>
 
