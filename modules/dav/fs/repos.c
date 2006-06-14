@@ -980,11 +980,7 @@ static dav_error * dav_fs_deliver(const dav_resource *resource,
 
     bb = apr_brigade_create(pool, output->c->bucket_alloc);
 
-    /* ### this does not handle large files. but this is test code anyway */
-    bkt = apr_bucket_file_create(fd, 0,
-                                 (apr_size_t)resource->info->finfo.size,
-                                 pool, output->c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, bkt);
+    apr_brigade_insert_file(bb, fd, 0, resource->info->finfo.size, pool);
 
     bkt = apr_bucket_eos_create(output->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, bkt);

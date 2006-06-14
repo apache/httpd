@@ -1050,28 +1050,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         }
 
         sent += (apr_uint32_t)fsize;
-#if APR_HAS_LARGE_FILES
-        if (r->finfo.size > AP_MAX_SENDFILE) {
-            /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets,
-             * no greater than MAX(apr_size_t), and more granular than that
-             * in case the brigade code/filters attempt to read it directly.
-             */
-            b = apr_bucket_file_create(fd, tf->Offset, AP_MAX_SENDFILE,
-                                       r->pool, c->bucket_alloc);
-            while (fsize > AP_MAX_SENDFILE) {
-                apr_bucket *bc;
-                apr_bucket_copy(b, &bc);
-                APR_BRIGADE_INSERT_TAIL(bb, bc);
-                b->start += AP_MAX_SENDFILE;
-                fsize -= AP_MAX_SENDFILE;
-            }
-            b->length = (apr_size_t)fsize; /* Resize just the last bucket */
-        }
-        else
-#endif
-            b = apr_bucket_file_create(fd, tf->Offset, (apr_size_t)fsize,
-                                       r->pool, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
+        apr_brigade_insert_file(bb, fd, tf->Offset, fsize, r->pool);
 
         if (tf->pTail && tf->TailLength) {
             sent += tf->TailLength;
