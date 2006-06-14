@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_speling: Add directive to deal with case corrections only
+     and ignore other misspellings [Olivier Thereaux  <ot w3.org>]
+
   *) mod_disk_cache: If possible, check if the size of an object to cache is
      within the configured boundaries before actually saving data.
      [Niklas Edmundsson <nikke acc.umu.se>]
