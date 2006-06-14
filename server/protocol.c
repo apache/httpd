@@ -1346,12 +1346,11 @@ AP_DECLARE(apr_status_t) ap_send_fd(apr_file_t *fd, request_rec *r,
 {
     conn_rec *c = r->connection;
     apr_bucket_brigade *bb = NULL;
-    apr_bucket *b;
     apr_status_t rv;
 
     bb = apr_brigade_create(r->pool, c->bucket_alloc);
-    b = apr_bucket_file_create(fd, offset, len, r->pool, c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(bb, b);
+    
+    apr_brigade_insert_file(bb, fd, 0, len, r->pool);
 
     rv = ap_pass_brigade(r->output_filters, bb);
     if (rv != APR_SUCCESS) {

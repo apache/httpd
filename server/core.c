@@ -3581,35 +3581,13 @@ static int default_handler(request_rec *r)
                                ap_md5digest(r->pool, fd));
             }
 
-            /* For platforms where the size of the file may be larger than
-             * that which can be stored in a single bucket (where the
-             * length field is an apr_size_t), split it into several
-             * buckets: */
-            if (sizeof(apr_off_t) > sizeof(apr_size_t)
-                && r->finfo.size > AP_MAX_SENDFILE) {
-                apr_off_t fsize = r->finfo.size;
-                e = apr_bucket_file_create(fd, 0, AP_MAX_SENDFILE, r->pool,
-                                           c->bucket_alloc);
-                while (fsize > AP_MAX_SENDFILE) {
-                    apr_bucket *ce;
-                    apr_bucket_copy(e, &ce);
-                    APR_BRIGADE_INSERT_TAIL(bb, ce);
-                    e->start += AP_MAX_SENDFILE;
-                    fsize -= AP_MAX_SENDFILE;
-                }
-                e->length = (apr_size_t)fsize; /* Resize just the last bucket */
-            }
-            else {
-                e = apr_bucket_file_create(fd, 0, (apr_size_t)r->finfo.size,
-                                           r->pool, c->bucket_alloc);
-            }
+            e = apr_brigade_insert_file(bb, fd, 0, r->finfo.size, r->pool);
 
 #if APR_HAS_MMAP
             if (d->enable_mmap == ENABLE_MMAP_OFF) {
                 (void)apr_bucket_file_enable_mmap(e, 0);
             }
 #endif
-            APR_BRIGADE_INSERT_TAIL(bb, e);
         }
 
         e = apr_bucket_eos_create(c->bucket_alloc);

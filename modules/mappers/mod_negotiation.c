@@ -3043,10 +3043,9 @@ static int handle_map_file(request_rec *r)
             return res;
         }
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
-        e = apr_bucket_file_create(map, best->body,
-                                   (apr_size_t)best->bytes, r->pool,
-                                   c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, e);
+
+        apr_brigade_insert_file(bb, map, best->body, best->bytes, r->pool);
+
         e = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, e);
 
