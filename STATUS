@@ -82,6 +82,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       2.2.x (identical)
       +1: niq, trawick, rpluem
 
+    * Worker MPM: On graceless shutdown or restart, send signals to
+      each worker thread to wake them up if they're polling on a
+      Keep-Alive connection.  PR 38737.
+        Trunk version of patch:
+          http://svn.apache.org/viewvc?view=rev&revision=409715
+        2.2.x version of patch:
+          http://issues.apache.org/bugzilla/attachment.cgi?id=18355
+      +1: chrisd, trawick, niq
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Add optional 'scheme://' part to ServerName directive for cases
@@ -124,15 +133,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: rpluem, jim
 
-    * Worker MPM: On graceless shutdown or restart, send signals to
-      each worker thread to wake them up if they're polling on a
-      Keep-Alive connection.  PR 38737.
-        Trunk version of patch:
-          http://svn.apache.org/viewvc?view=rev&revision=409715
-        2.2.x version of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=18355
-      +1: chrisd, trawick
-
     * mod_cache: Do not overwrite the Content-Type in the cache, for
       successfully revalidated cached objects. PR 39647.
         Trunk version of patch:
@@ -147,3 +147,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=411306
        +1: bnicholes
 
+    * mod_speling: add option to do case-normalisation only
+      Patch submitted by Olivier Thereaux
+      http://svn.apache.org/viewvc?view=rev&revision=411849
+      http://svn.apache.org/viewvc?rev=414146&view=rev
+      +1: niq
