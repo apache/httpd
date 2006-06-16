@@ -96,3 +96,17 @@
 
     (That patch works with many recent levels of Apache 2+.)
 
+================
+  Solaris:
+
+    On Solaris, better performance may be achieved by using the Sun Studio
+    compiler instead of gcc.  As of version 11, it is now free (registration
+    required).  Download the compiler from:
+
+    http://developers.sun.com/prodtech/cc/downloads/index.jsp
+
+    If you use Sun Studio, the following compiler flags (CFLAGS) are
+    recommended:
+
+      -XO4 -xchip=generic
+
