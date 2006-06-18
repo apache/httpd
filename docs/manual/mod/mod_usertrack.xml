@@ -122,7 +122,21 @@ time late in the year "37".
 
     <p>The domain string <strong>must</strong> begin with a dot, and
     <strong>must</strong> include at least one embedded dot. That is,
-    ".foo.com" is legal, but "foo.bar.com" and ".com" are not.</p>
+    <code>.foo.com</code> is legal, but <code>foo.bar.com</code> and
+    <code>.com</code> are not.</p>
+
+    <note>Most browsers in use today will not allow cookies to be set
+    for a two-part top level domain, such as <code>.co.uk</code>,
+    although such a domain ostensibly fulfills the requirements
+    above.<br />
+
+    These domains are equivalent to top level domains such as
+    <code>.com</code>, and allowing such cookies may be a security
+    risk. Thus, if you are under a two-part top level domain, you
+    should still use your actual domain, as you would with any other top
+    level domain (for example, use <code>.foo.co.uk</code>).
+    </note>
+
 </usage>
 </directivesynopsis>
 
@@ -209,7 +223,8 @@ time late in the year "37".
 
     <p>Not all clients can understand all of these formats. but you
     should use the newest one that is generally acceptable to your
-    users' browsers.</p>
+    users' browsers. At the time of writing, most browsers only fully
+    support <code>CookieStyle Netscape</code>.</p>
 </usage>
 </directivesynopsis>
 
@@ -229,12 +244,13 @@ time late in the year "37".
 <override>FileInfo</override>
 
 <usage>
-    <p>When the user track module is compiled in, and
-    "CookieTracking on" is set, Apache will start sending a
+    <p>When <module>mod_usertrack</module> is loaded, and
+    <code>CookieTracking on</code> is set, Apache will send a
     user-tracking cookie for all new requests. This directive can
     be used to turn this behavior on or off on a per-server or
-    per-directory basis. By default, compiling mod_usertrack will
-    not activate cookies. </p>
+    per-directory basis. By default, enabling
+    <module>mod_usertrack</module> will <strong>not</strong>
+    activate cookies. </p>
 
 </usage>
 </directivesynopsis>
