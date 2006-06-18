@@ -142,7 +142,7 @@ available</td></tr>
     <p>Using <code>none</code> for an argument will disable any accept filters 
        for that protocol.  This is useful for protocols that require a server
        send data first, such as <code>nntp</code>:</p>
-    <div class="example"><p><code>AcceptFilter nttp none</code></p></div>
+    <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
 
 
 </div>
