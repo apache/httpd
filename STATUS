@@ -115,7 +115,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=410828&view=rev
       Merged version of both for 2.2.x:
        http://people.apache.org/~jorton/ap_withinc.diff
-    +1: jorton, rpluem
+    +1: jorton, rpluem, pquerna
 
     * mod_cache: Make caching of reverse SSL proxies possible again.
       PR 39593.
@@ -125,7 +125,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewvc?rev=408729&view=rev
         2.2.x version of patch:
           Trunk version works
-      +1: rpluem, jim
+      +1: rpluem, jim, pquerna
 
     * mod_cache: Do not overwrite the Content-Type in the cache, for
       successfully revalidated cached objects. PR 39647.
@@ -133,7 +133,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewvc?rev=410370&view=rev
         2.2.x version of patch:
           Trunk version works
-      +1: rpluem
+      +1: rpluem, pquerna
 
     * mod_authnz_ldap: Fix a problem with invalid auth error detection 
        for LDAP client SDKs that don't support LDAP_SECURITY_ERROR 
@@ -145,4 +145,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Patch submitted by Olivier Thereaux
       http://svn.apache.org/viewvc?view=rev&revision=411849
       http://svn.apache.org/viewvc?rev=414146&view=rev
-      +1: niq
+      +1: niq, pquerna
