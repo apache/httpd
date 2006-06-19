@@ -137,4 +137,24 @@ of Apache 1.3, it is part of the Apache distribution. Prior to Apache
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>CheckCaseOnly</name>
+<description>Limits the action of the speling module to case corrections</description>
+<syntax>CheckCaseOnly on|off</syntax>
+<default>CheckCaseOnly Off</default>
+<contextlist>
+<context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
+</contextlist>
+<override>Options</override>
+
+<usage>
+    <p>When set, this directive limits the action of the spelling correction to lower/upper case changes. 
+    Other potential corrections are not performed.</p>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
