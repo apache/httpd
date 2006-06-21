@@ -146,3 +146,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=411849
       http://svn.apache.org/viewvc?rev=414146&view=rev
       +1: niq, pquerna
+
+    * mod_deflate: don't choke on flush buckets in INFLATE filter
+      PR#39854
+      http://svn.apache.org/viewvc?rev=416165&view=rev
+      +1: niq
