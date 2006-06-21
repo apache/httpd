@@ -929,27 +929,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         }
 
         if (APR_BUCKET_IS_FLUSH(bkt)) {
-            apr_bucket *tmp_heap;
-            zRC = inflate(&(ctx->stream), Z_SYNC_FLUSH);
-            if (zRC != Z_OK) {
-                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Inflate error %d on flush", zRC);
-                inflateEnd(&ctx->stream);
-                return APR_EGENERAL;
-            }
-
-            ctx->stream.next_out = ctx->buffer;
-            len = c->bufferSize - ctx->stream.avail_out;
-
-            ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-            tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                             NULL, f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
-            ctx->stream.avail_out = c->bufferSize;
-
-            /* Move everything to the returning brigade. */
-            APR_BUCKET_REMOVE(bkt);
-            break;
+            continue;
         }
 
         /* read */
@@ -1088,6 +1068,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
     return rv ;
 }
 
+#define PROTO_FLAGS AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH
 static void register_hooks(apr_pool_t *p)
 {
     ap_register_output_filter(deflateFilterName, deflate_out_filter, NULL,
