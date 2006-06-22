@@ -1,6 +1,12 @@
-                                                        -*- coding: utf-8 -*-
+﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
+
+
+  *) New SSLLogLevelDebugDump [ None (default) | IO (not bytes) | Bytes ]
+     configures the I/O Dump of SSL traffic, when LogLevel is set to Debug.
+     The default is none as this is far greater debugging resolution than 
+     the typical administrator is prepared to untangle.  [William Rowe]
 
   *) mod_speling: Add directive to deal with case corrections only
      and ignore other misspellings [Olivier Thereaux  <ot w3.org>]
