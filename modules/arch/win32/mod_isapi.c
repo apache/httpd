@@ -853,7 +853,7 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
                             *size_arg, ERROR_WRITE_FAULT);
         }
     }
-    return (rv == OK);
+    return (rv == APR_SUCCESS);
 }
 
 int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
@@ -866,6 +866,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
     conn_rec *c = r->connection;
     char *buf_data = (char*)buf_ptr;
     request_rec *subreq;
+    apr_status_t rv;
 
     switch (HSE_code) {
     case HSE_REQ_SEND_URL_REDIRECT_RESP:
@@ -925,10 +926,10 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             APR_BRIGADE_INSERT_TAIL(bb, b);
             b = apr_bucket_flush_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
-            ap_pass_brigade(cid->r->output_filters, bb);
+            rv = ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
+            return (rv == APR_SUCCESS);
         }
-        return 1;
     }
 
     case HSE_REQ_DONE_WITH_SESSION:
@@ -1020,7 +1021,6 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         HSE_TF_INFO *tf = (HSE_TF_INFO*)buf_data;
         apr_uint32_t sent = 0;
         apr_ssize_t ate = 0;
-        apr_status_t rv;
         apr_bucket_brigade *bb;
         apr_bucket *b;
         apr_file_t *fd;
@@ -1105,7 +1105,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
 
         b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
-        ap_pass_brigade(r->output_filters, bb);
+        rv = ap_pass_brigade(r->output_filters, bb);
         cid->response_sent = 1;
 
         /* Use tf->pfnHseIO + tf->pContext, or if NULL, then use cid->fnIOComplete
@@ -1133,7 +1133,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                 }
             }
         }
-        return (rv == OK);
+        return (rv == APR_SUCCESS);
     }
 
     case HSE_REQ_REFRESH_ISAPI_ACL:
@@ -1305,10 +1305,10 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             APR_BRIGADE_INSERT_TAIL(bb, b);
             b = apr_bucket_flush_create(c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
-            ap_pass_brigade(cid->r->output_filters, bb);
+            rv = ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
         }
-        return 1;
+        return (rv == APR_SUCCESS);
     }
 
     case HSE_REQ_CLOSE_CONNECTION:  /* Added after ISAPI 4.0 */
@@ -1605,7 +1605,8 @@ apr_status_t isapi_handler (request_rec *r)
         rv = ap_pass_brigade(r->output_filters, bb);
         cid->response_sent = 1;
 
-        return OK;  /* NOT r->status or cid->r->status, even if it has changed. */
+        return (rv == APR_SUCCESS);
+        /* NOT r->status or cid->r->status, even if it has changed. */
     }
 
     /* As the client returned no error, and if we did not error out
