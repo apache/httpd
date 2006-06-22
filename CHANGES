@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_isapi: Ensure we walk through all the methods the developer may have
+     employed to report their HTTP status result code.
+     PR 16637, 30033.  [Matt Lewandowsky <matt iamcode.net>, William Rowe]
 
   *) New SSLLogLevelDebugDump [ None (default) | IO (not bytes) | Bytes ]
      configures the I/O Dump of SSL traffic, when LogLevel is set to Debug.
