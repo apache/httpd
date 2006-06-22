@@ -141,6 +141,18 @@ ap_set_module_config(c->conn_config, &ssl_module, val)
 #endif
 
 /**
+ * Define the per-server SSLLogLevel constants which provide
+ * finer-than-debug resolution to decide if logs are to be
+ * assulted with tens of thousands of characters per request.
+ */
+typedef enum {
+    SSL_LOG_UNSET  = UNSET,
+    SSL_LOG_NONE   = 0,
+    SSL_LOG_IO     = 6,
+    SSL_LOG_BYTES  = 7
+} ssl_log_level_e;
+
+/**
  * Support for MM library
  */
 #define SSL_MM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
@@ -244,7 +256,7 @@ typedef enum {
     SSL_PPTYPE_UNSET   = UNSET,
     SSL_PPTYPE_BUILTIN = 0,
     SSL_PPTYPE_FILTER  = 1,
-	SSL_PPTYPE_PIPE    = 2
+    SSL_PPTYPE_PIPE    = 2
 } ssl_pphrase_t;
 
 /**
@@ -284,7 +296,7 @@ typedef enum {
     SSL_ENABLED_UNSET    = UNSET,
     SSL_ENABLED_FALSE    = 0,
     SSL_ENABLED_TRUE     = 1,
-	SSL_ENABLED_OPTIONAL = 3
+    SSL_ENABLED_OPTIONAL = 3
 } ssl_enabled_t;
 
 /**
@@ -449,6 +461,7 @@ struct SSLSrvConfigRec {
     BOOL             cipher_server_pref;
     modssl_ctx_t    *server;
     modssl_ctx_t    *proxy;
+    ssl_log_level_e  ssl_log_level;
 };
 
 /**
@@ -513,6 +526,7 @@ const char  *ssl_cmd_SSLOptions(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLRequireSSL(cmd_parms *, void *);
 const char  *ssl_cmd_SSLRequire(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLUserName(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLLogLevelDebugDump(cmd_parms *, void *, const char *);
 
 const char  *ssl_cmd_SSLProxyEngine(cmd_parms *cmd, void *dcfg, int flag);
 const char  *ssl_cmd_SSLProxyProtocol(cmd_parms *, void *, const char *);

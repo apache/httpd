@@ -145,6 +145,9 @@ static const command_rec ssl_config_cmds[] = {
                 "Use the server's cipher ordering preference")
     SSL_CMD_ALL(UserName, TAKE1,
                 "Set user name to SSL variable value")
+    SSL_CMD_SRV(LogLevelDebugDump, TAKE1,
+                "Include I/O Dump when LogLevel is set to Debug "
+                "([ None (default) | IO (not bytes) | Bytes ])")
 
     /*
      * Proxy configuration for remote SSL connections

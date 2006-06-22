@@ -1655,6 +1655,8 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
 void ssl_io_filter_init(conn_rec *c, SSL *ssl)
 {
     ssl_filter_ctx_t *filter_ctx;
+    server_rec *s = c->base_server;
+    SSLSrvConfigRec *sc = mySrvConfig(s);
 
     filter_ctx = apr_palloc(c->pool, sizeof(ssl_filter_ctx_t));
 
@@ -1673,7 +1675,8 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
     apr_pool_cleanup_register(c->pool, (void*)filter_ctx,
                               ssl_io_filter_cleanup, apr_pool_cleanup_null);
 
-    if (c->base_server->loglevel >= APLOG_DEBUG) {
+    if ((s->loglevel >= APLOG_DEBUG)
+         && (sc->ssl_log_level >= SSL_LOG_IO)) {
         BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
         BIO_set_callback_arg(SSL_get_rbio(ssl), (void *)ssl);
     }
@@ -1776,12 +1779,14 @@ long ssl_io_data_cb(BIO *bio, int cmd,
     SSL *ssl;
     conn_rec *c;
     server_rec *s;
+    SSLSrvConfigRec *sc;
 
     if ((ssl = (SSL *)BIO_get_callback_arg(bio)) == NULL)
         return rc;
     if ((c = (conn_rec *)SSL_get_app_data(ssl)) == NULL)
         return rc;
     s = c->base_server;
+    sc = mySrvConfig(s);
 
     if (   cmd == (BIO_CB_WRITE|BIO_CB_RETURN)
         || cmd == (BIO_CB_READ |BIO_CB_RETURN) ) {
@@ -1793,7 +1798,7 @@ long ssl_io_data_cb(BIO *bio, int cmd,
                     rc, argi, (cmd == (BIO_CB_WRITE|BIO_CB_RETURN) ? "to" : "from"),
                     bio, argp,
                     (argp != NULL ? "(BIO dump follows)" : "(Oops, no memory buffer?)"));
-            if (argp != NULL)
+            if ((argp != NULL) && (sc->ssl_log_level >= SSL_LOG_BYTES))
                 ssl_io_data_dump(s, argp, rc);
         }
         else {
