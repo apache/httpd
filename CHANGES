@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_isapi: Handle "HTTP/1.1 200 OK" style status lines correctly, the
+     token parser worked while the resulting length was misinterpreted.
+     PR 29098 [Brock Bland <bbland serena.com>]
+
   *) mod_isapi: Return 0 (failure) for more of the various ap_pass_brigade
      attempts to stream the response at the client.  PR 30022 [William Rowe]
 
