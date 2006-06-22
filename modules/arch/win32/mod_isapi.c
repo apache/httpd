@@ -682,7 +682,7 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
              * or the http/x.x xxx message format
              */
             if (toklen && apr_isdigit(*stattok)) {
-                statlen -= toklen;
+                statlen = toklen;
                 stat = stattok;
             }
         }
