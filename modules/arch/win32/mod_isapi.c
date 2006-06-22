@@ -960,9 +960,10 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         len = apr_cpystrn(file, subreq->filename, *buf_size) - file;
 
 
-        /* IIS puts a trailing slash on directories, Apache doesn't */
+        /* IIS puts a trailing slash on directories, Apache may not */
         if (subreq->finfo.filetype == APR_DIR) {
-            if (len < *buf_size - 1) {
+            if ((len < *buf_size - 1) && (file[len - 1] != '/') 
+                                      && (file[len - 1] != '\\')) {
                 file[len++] = '\\';
                 file[len] = '\0';
             }
