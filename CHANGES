@@ -3,8 +3,7 @@ Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
   *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
-     support (although this needs a bit more elegance for cross platform
-     isapi handling.)  PR 15993  [William Rowe]
+     support.  Also corrects the slashes for Windows.  PR 15993  [William Rowe]
 
   *) mod_isapi: Handle "HTTP/1.1 200 OK" style status lines correctly, the
      token parser worked while the resulting length was misinterpreted.
