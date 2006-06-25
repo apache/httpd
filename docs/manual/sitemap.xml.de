@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.de.xsl"?>
-<!-- English Revision: 239681:395228 (outdated) -->
+<!-- English Revision: 395228 -->
 
 <!--
  Copyright 2002-2006 The Apache Software Foundation or its licensors,
@@ -26,12 +26,15 @@
 
 <summary>
 <p>Diese Seite verzeichnet die zur Zeit verf&#252;gbaren Dokumente der
-<a href="./">Dokumentation zum Apache HTTP Server Version 2.1</a>.</p>
+<a href="./">Dokumentation zum Apache HTTP Server Version
+&httpd.major;.&httpd.minor;</a>.</p>
 </summary>
 
 <category id="release">
 <title>Hinweise zur Version</title>
-<page href="upgrading.html">Upgrade von 1.3 auf 2.0</page>
+<page href="upgrading.html">Upgrade von 2.0 auf 2.2</page>
+<page href="new_features_2_4.html">Neue Funktionen in Version 2.4</page>
+<page href="new_features_2_2.html">Neue Funktionen in Version 2.2</page>
 <page href="new_features_2_0.html">Neue Funktionen in Version 2.0</page>
 <page href="license.html">Apache-Lizenz</page>
 </category>
