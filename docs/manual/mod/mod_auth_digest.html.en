@@ -25,7 +25,7 @@
 <a href="../ko/mod/mod_auth_digest.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>User authentication using MD5
-    Digest Authentication.</td></tr>
+    Digest Authentication</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>auth_digest_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_auth_digest.c</td></tr></table>
@@ -61,12 +61,13 @@
 <div class="section">
 <h2><a name="using" id="using">Using Digest Authentication</a></h2>
 
-    <p>Using MD5 Digest authentication is very simple. Simply set
-    up authentication normally, using <code>AuthType Digest</code> and
-    <code class="directive"><a href="#authdigestprovider">AuthDigestProvider</a></code>
-    instead of the normal <code>AuthType Basic</code> and
+    <p>To use MD5 Digest authentication, simply 
+    change the normal <code>AuthType Basic</code> and
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>.
-    Then add a <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> directive containing at least the root
+    to <code>AuthType Digest</code> and
+    <code class="directive"><a href="#authdigestprovider">AuthDigestProvider</a></code>,
+    when setting up authentication, then add a 
+    <code class="directive"><a href="#authdigestdomain">AuthDigestDomain</a></code> directive containing at least the root
     URI(s) for this protection space.</p>
 
     <p>Appropriate user (text) files can be created using the
