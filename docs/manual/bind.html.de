@@ -24,9 +24,6 @@
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Diese Übersetzung ist möglicherweise
-            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
-            die neuesten Änderungen.</div>
 
     <p>Konfiguration der vom Apache verwendeten Adressen und Ports.</p>
   </div>
@@ -45,11 +42,11 @@
     <p>Beim Start bindet sich der Apache an bestimmte Adressen und Ports
       der lokalen Maschine und wartet auf eingehende Anfragen.
       Standardmäßig lauscht er an allen Adressen des Systems.
-      Es muss ihm jedoch mitgeteilt werden, an bestimmten Ports zu lauschen
-      oder nur an ausgewählten Adressen, bzw. einer Kombination aus
-      beidem. Dies wird oft mit der Funktionalität virtueller Hosts
-      kombiniert, die bestimmt, wie der Apache auf verschiedene IP-Adressen,
-      Hostnamen und Ports reagiert.</p>
+      Es kann jeodch notwendig sein, ihm mit zuteilen, nur an bestimmten Ports
+      zu lauschen oder nur an ausgewählten Adressen, bzw. einer
+      Kombination aus beidem. Dies wird oft mit der Funktionalität
+      virtueller Hosts kombiniert, die bestimmt, wie der Apache auf
+      verschiedene IP-Adressen, Hostnamen und Ports reagiert.</p>
 
     <p>Die Direktive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
       weist den Server an, eingehende Anfragen nur an bestimmten Ports oder
@@ -62,16 +59,18 @@
       soll. Der Server wird dann auf Anfragen an jeder der abgehörten
       Adressen und Ports antworten.</p>
 
-    <p>Um beispielsweise den Server zu veranlassen, sowohl an Port 80, als
-      auch an Port 8000 Verbindungen zu akzeptieren, geben Sie an:</p>
+    <p>Um beispielsweise den Server zu veranlassen, auf allen
+    Netzwerkinterfaces sowohl an Port 80, als auch an Port 8000 Verbindungen
+    zu akzeptieren, geben Sie an:</p>
 
     <div class="example"><p><code>
       Listen 80<br />
       Listen 8000
     </code></p></div>
 
-    <p>Um den Server Verbindungen an zwei bestimmten
-      Netzwerkinterfaces und Ports zu akzeptieren zu lassen, geben Sie an:</p>
+    <p>Um den Server Verbindungen an Port 80 auf einem Netzwerkinterface
+    akzeptieren zu lassen und an Port 8080 auf einem anderen Interface, geben
+    Sie an:</p>
       
     <div class="example"><p><code>
       Listen 192.170.2.1:80<br />
@@ -92,8 +91,8 @@
     <p>Eine wachsende Anzahl von Plattformen implementiert IPv6. Die
       <a class="glossarylink" href="./glossary.html#apr" title="siehe Glossar">APR</a>
       unterstützt IPv6 auf den meisten dieser Plattformen und
-      ermöglicht dem Apache, IPv6-Sockets zu verwenden und Anfragen zu
-      behandeln, die über IPv6 gesendet wurden.</p>
+      ermöglicht dem Apache, IPv6-Sockets zu verwenden und über IPv6
+      gesendete Anfragen zu behandeln.</p>
 
     <p>Für Apache-Administratoren kommt erschwerend die Frage hinzu, ob
       IPv6-Sockets sowohl IPv4- als auch IPv6-Verbindungen
@@ -103,7 +102,7 @@
       verwendet, welche standardmäßig auf den meisten Plattformen
       erlaubt sind.  Unter FreeBSD, NetBSD und OpenBSD jedoch sind sie
       standardmäßig deaktiviert, um den Systemgrundsätzen dieser
-      Plattformen zu entsprechen. Doch selbst auf Systemen, wo dies
+      Plattformen zu entsprechen. Auf Systemen, wo dies
       standardmäßig dekativiert ist, kann dieses Verhalten mit einem
       speziellen <code class="program"><a href="./programs/configure.html">configure</a></code>-Parameter für den Apache
       geändert werden.</p>
@@ -141,20 +140,21 @@
 <h2><a name="virtualhost" id="virtualhost">Das Zusammenspiel mit virtuellen Hosts</a></h2>
     
 
-    <p><code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code> implementiert keine
-      virtuellen Hosts. Es teilt dem Hauptserver lediglich mit, an welchen
-      Adressen und Ports er zu lauschen hat. Werden keine <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Container
-      verwendet, verhält sich der Server bei allen angenommenen Anfragen
-      gleich.  <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Abschnitte können jedoch
-      dazu verwendet werden, ein unterschiedliches Verhalten für eine oder
-      mehrere Adressen und Ports festzulegen. Um einen virtuellen Host
-      einzurichten, muss dem Server zunächst mitgeteilt werden, an den
-      betreffenden Adressen und Ports zu lauschen. Dann sollte ein <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Abschnitt für
-      eine bestimmte Adresse und einen Port erstellt werden, um das Verhalten
-      dieses virtuellen Hosts festzulegen. Beachten Sie bitte, dass auf einen
-      <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> nicht
-      zugegriffen werden kann, wenn er für eine Adresse und einen Port
-      eingerichtet wurde, an dem der Server nicht lauscht.</p>
+    <p>Die Direktive <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+    implementiert keine virtuellen Hosts - sie teilt dem Hauptserver lediglich
+    mit, an welchen Adressen und Ports er zu lauschen hat. Werden keine
+    <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Container
+    verwendet, dann verhält sich der Server bei allen angenommenen
+    Anfragen gleich.  <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Abschnitte können jedoch dazu
+    verwendet werden, ein unterschiedliches Verhalten für eine oder
+    mehrere Adressen und Ports festzulegen. Um einen virtuellen Host
+    einzurichten, muss dem Server zunächst mitgeteilt werden, an den
+    betreffenden Adressen oder Ports zu lauschen. Dann sollte ein <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>-Abschnitt für
+    die angebene Adresse und den angegebenen Port erstellt werden, um das
+    Verhalten dieses virtuellen Hosts festzulegen. Beachten Sie bitte, dass
+    auf einen <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
+    nicht zugegriffen werden kann, wenn er für eine Adresse und einen
+    Port eingerichtet wurde, an dem der Server nicht lauscht.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Verfügbare Sprachen: </span><a href="./de/bind.html" title="Deutsch">&nbsp;de&nbsp;</a> |
