@@ -468,8 +468,8 @@ void ap_time_process_request(ap_sb_handle_t *sbh, int status)
 
 AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y)
 {
-    if (((x < 0) || (server_limit < x)) ||
-        ((y < 0) || (thread_limit < y))) {
+    if (((x < 0) || (x >= server_limit)) ||
+        ((y < 0) || (y >= thread_limit))) {
         return(NULL); /* Out of range */
     }
     return &ap_scoreboard_image->servers[x][y];
@@ -477,7 +477,7 @@ AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y)
 
 AP_DECLARE(process_score *) ap_get_scoreboard_process(int x)
 {
-    if ((x < 0) || (server_limit < x)) {
+    if ((x < 0) || (x >= server_limit)) {
         return(NULL); /* Out of range */
     }
     return &ap_scoreboard_image->parent[x];
