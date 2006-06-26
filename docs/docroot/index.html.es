@@ -1,7 +1,7 @@
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//ES">
 <HTML>
  <HEAD>
-  <TITLE>Pag&iacute;na para probar la instalaci&oacute;n de Apache</TITLE>
+  <TITLE>P&aacute;gina para probar la instalaci&oacute;n de Apache</TITLE>
  </HEAD>
 <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
  <BODY
@@ -15,14 +15,14 @@
    &iexcl;Funcion&oacute;!  &iexcl;El Servidor de Red Apache ha sido instalado en ese sitio!
   </H1>
   <P>
-  Si usted puede ver esta pag&iacute;na, entonces los due&ntilde;os de esta
-  maqu&iacute;na han instalado el Servidor de
-  Red Apache con ex&iacute;to.  Ahora deben a&ntilde;adir contenido a este directorio
-  y reemplazar esta pag&iacute;na, &oacute; apuntar este servidor al contenido real.
+  Si usted puede ver esta p&aacute;gina, entonces los due&ntilde;os de esta
+  m&aacute;quina han instalado el Servidor de
+  Red Apache con &eacute;xito.  Ahora deben a&ntilde;adir contenido a este directorio
+  y reemplazar esta p&aacute;gina, &oacute; apuntar este servidor al contenido real.
   </P>
   <HR>
   <BLOCKQUOTE>
-   Si usted esta leyendo esta pag&iacute;na y no es lo que esperaba, por favor
+   Si usted esta leyendo esta p&aacute;gina y no es lo que esperaba, por favor
    <STRONG>contacte el administrador de este sitio.</STRONG>
    (Trate de enviar correo electr&oacute;nico a <SAMP>&lt;Webmaster@<EM>domain</EM>&gt;</SAMP>.)
    Aunque este sitio esta utilizando el programa Apache es casi seguro
