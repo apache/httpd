@@ -1,0 +1,187 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision: 158972 $ -->
+
+<!--
+ Copyright 2002-2005 The Apache Software Foundation or its licensors, as
+ applicable.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="flags.xml.meta">
+<parentdocument href="./index.html"/>
+
+  <title>Apache mod_rewrite Flags</title>
+
+<summary>
+<p>This document discusses the flags which are available to the
+<directive module="mod_rewrite">RewriteRule</directive> directive,
+providing more detailed explanations and examples of each.</p>
+</summary>
+
+<seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
+<seealso><a href="rewrite_tech.html">Technical details</a></seealso>
+<seealso><a href="rewrite_guide.html">Practical solutions to common
+problems</a></seealso>
+<seealso><a href="rewrite_guide_advanced.html">Practical solutions to
+advanced problems</a></seealso>
+
+<section id="introduction"><title>Introduction</title>
+<p><directive module="mod_rewrite">RewriteRule</directive>s can have
+their behavior modified by one or more flags. Flags are included in
+square brackets at the end of the rule, and multiple flags are separated
+by commas.</p>
+<example>
+RewriteRule pattern target [Flag1,Flag2,Flag3]
+</example>
+
+<p>The flags all have a short form, such as <code>CO</code>, as well as
+a longer form, such as <code>cookie</code>. Some flags take one or more
+arguments. Flags are not case sensitive.</p>
+
+</section>
+
+<section id="flags"><title>The flags</title>
+
+<p>Each flag has a long and short form. While it is most common to use
+the short form, it is recommended that you familiarize yourself with the
+long form, so that you remember what each flag is supposed to do.</p>
+
+<p>Presented here are each of the available flags, along with an example
+of how you might use them.</p>
+
+<section id="flag_c"><title>C|chain</title>
+<p>The [C] or [chain] flag indicates that the <directive
+module="mod_rewrite">RewriteRule</directive> is chained to the next
+rule. That is, if the rule matches, then it is processed as usual and
+control moves on to the next rule. However, if it does not match, then
+the next rule, and any other ruls that are chained together, will be
+skipped.</p>
+
+</section>
+
+<section id="flag_co"><title>CO|cookie</title>
+<p>The [CO], or [cookie] flag, allows you to set a cookie when a
+particular <directive module="mod_rewrite">RewriteRule</directive>
+matches. The argument consists of three required fields and two optional
+fields.</p>
+<p>You must declare a name and value for the cookie to be set, and the
+domain for which you wish the cookie to be valid. You may optionally set
+the lifetime of the cookie, and the path for which it should be
+returned.</p>
+<p>By default, the lifetime of the cookie is the current browser
+session.</p>
+<p>By default, the path for which the cookie will be valid is "/" - that
+is, the entire website.</p>
+<p>Several examples are offered here:</p>
+
+<example>
+RewriteEngine On<br />
+RewriteRule ^/index.html - [CO=frontdoor=yes:.apache.org:1440:/]
+</example>
+
+<p>This rule doesn't rewrite the request (the "-" rewrite target tells
+mod_rewrite to pass the request through unchanged) but sets a cookie
+called 'frontdoor' to a value of 'yes'. The cookie is valid for any host
+in the <code>.apache.org</code> domain. It will be set to expire in 1440
+minutes (24 hours) and will be returned for all URIs.</p>
+
+</section>
+
+<section id="flag_e"><title>E|env</title>
+<p>With the [E], or [env] flag, you can set the value of an environment
+variable. Note that some variables may be set after the rule is run, and
+so setting them in the <directive
+module="mod_rewrite">RewriteRule</directive> won't work, since it will
+be changed afterwards.</p>
+
+<p>The following example sets an evironment variable called 'image' to a
+value of '1' if the requested URI is an image file. Then, that
+environment variable is used to exclude those requests from the access
+log.</p>
+
+<example>
+RewriteRule %{REQUEST_URI} \.(png|gif|jpg) - [E=image:1]<br />
+CustomLog logs/access_log combined env=!image
+</example>
+
+<p>Note that this same effect can be obtained using <directive
+module="mod_setenvif">SetEnvIf</directive>. This technique is offered as
+an example, not as a recommendation.</p>
+</section>
+
+<section id="flag_f"><title>F|forbidden</title>
+<p>Forbidden flag</p>
+</section>
+
+<section id="flag_g"><title>G|gone</title>
+<p>Gone flag</p>
+</section>
+
+<section id="flag_h"><title>H|handler</title>
+<p>Handler flag</p>
+</section>
+
+<section id="flag_l"><title>L|last</title>
+<p>Last flag</p>
+</section>
+
+<section id="flag_n"><title>N|next</title>
+<p>Next round flag</p>
+</section>
+
+<section id="flag_nc"><title>NC|nocase</title>
+<p>No case flag</p>
+</section>
+
+<section id="flag_ne"><title>NE|noescape</title>
+<p>No escape flag</p>
+</section>
+
+<section id="flag_ns"><title>NS|nosubreq</title>
+<p>No internal subrequest flag</p>
+</section>
+
+<section id="flag_p"><title>P|proxy</title>
+<p>Proxy flag</p>
+</section>
+
+<section id="flag_pt"><title>PT|passthrough</title>
+<p>Passthrough flag</p>
+</section>
+
+<section id="flag_pt"><title>PT|passthrough</title>
+<p>Passthrough flag</p>
+</section>
+
+<section id="flag_qsa"><title>QSA|qsappend</title>
+<p>Query String Append flag</p>
+</section>
+
+<section id="flag_r"><title>R|redirect</title>
+<p>Redirect flag</p>
+</section>
+
+<section id="flag_s"><title>S|skip</title>
+<p>Skip flag</p>
+</section>
+
+<section id="flag_t"><title>T|type</title>
+<p>Type flag</p>
+</section>
+
+</section>
+</manualpage>
+
