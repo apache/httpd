@@ -74,7 +74,7 @@ available</description>
     The core handler for normal files defaults to rejecting
     <code>PATH_INFO</code> requests. Handlers that serve scripts, such as <a
     href="mod_cgi.html">cgi-script</a> and <a
-    href="mod_isapi.html">isapi-isa</a>, generally accept
+    href="mod_isapi.html">isapi-handler</a>, generally accept
     <code>PATH_INFO</code> by default.</dd>
     </dl>
 

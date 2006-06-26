@@ -83,7 +83,7 @@ path a&#241;adida (trailing pathname information)</description>
     rechaza por defecto las peticiones de <code>PATH_INFO</code>. Los
     handlers que sirven scripts, como <a
     href="mod_cgi.html">cgi-script</a> e <a
-    href="mod_isapi.html">isapi-isa</a>, generalmente aceptan
+    href="mod_isapi.html">isapi-handler</a>, generalmente aceptan
     <code>PATH_INFO</code> por defecto.</dd>
     </dl>
 

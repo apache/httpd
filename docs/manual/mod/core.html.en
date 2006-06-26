@@ -142,7 +142,7 @@ available</td></tr>
     <dt><code>Default</code></dt><dd>The treatment of requests with
     trailing pathname information is determined by the <a href="../handler.html">handler</a> responsible for the request.
     The core handler for normal files defaults to rejecting
-    <code>PATH_INFO</code> requests. Handlers that serve scripts, such as <a href="mod_cgi.html">cgi-script</a> and <a href="mod_isapi.html">isapi-isa</a>, generally accept
+    <code>PATH_INFO</code> requests. Handlers that serve scripts, such as <a href="mod_cgi.html">cgi-script</a> and <a href="mod_isapi.html">isapi-handler</a>, generally accept
     <code>PATH_INFO</code> by default.</dd>
     </dl>
 
