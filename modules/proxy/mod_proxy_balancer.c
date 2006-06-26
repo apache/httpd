@@ -389,6 +389,14 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         *worker = runtime;
     }
 
+    /* Add balancer/worker info to env. */
+    apr_table_setn(r->subprocess_env,
+                   "BALANCER_NAME", (*balancer)->name);
+    apr_table_setn(r->subprocess_env,
+                   "BALANCER_WORKER_NAME", (*worker)->name);
+    apr_table_setn(r->subprocess_env,
+                   "BALANCER_WORKER_ROUTE", (*worker)->s->route);
+
     /* Rewrite the url from 'balancer://url'
      * to the 'worker_scheme://worker_hostname[:worker_port]/url'
      * This replaces the balancers fictional name with the
@@ -399,6 +407,12 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     if (route) {
         apr_table_setn(r->notes, "session-sticky", (*balancer)->sticky);
         apr_table_setn(r->notes, "session-route", route);
+
+        /* Add session info to env. */
+        apr_table_setn(r->subprocess_env,
+                       "BALANCER_SESSION_STICKY", (*balancer)->sticky);
+        apr_table_setn(r->subprocess_env,
+                       "BALANCER_SESSION_ROUTE", route);
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: BALANCER (%s) worker (%s) rewritten to %s",
