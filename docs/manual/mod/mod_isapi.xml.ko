@@ -45,11 +45,11 @@
 
     <p>서버설정파일에서 <directive
     module="mod_mime">AddHandler</directive> 지시어를 사용하여
-    ISAPI 파일 확장자와 <code>isapi-isa</code> 핸들러를 연결한다.
+    ISAPI 파일 확장자와 <code>isapi-handler</code> 핸들러를 연결한다.
     .dll 파일을 ISAPI extension으로 처리하려면 httpd.conf 파일에
     다음과 같이 추가한다.</p>
     <example>
-        AddHandler isapi-isa .dll
+        AddHandler isapi-handler .dll
     </example>
 
     <p>아파치 서버는 요청한 모듈을 메모리에 계속 둘 수 없다.
