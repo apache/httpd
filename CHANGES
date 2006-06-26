@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_balancer: Add information about the route, the sticky session
+     and the worker used during a request as environment variables. PR 39806.
+     [Brian <brectanu gmail.com>]
+
   *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
      support.  Also corrects the slashes for Windows.  PR 15993  [William Rowe]
 
