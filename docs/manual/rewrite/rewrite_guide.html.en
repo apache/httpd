@@ -50,15 +50,15 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#uservhosts">Virtual User Hosts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirecthome">Redirect Homedirs For Foreigners</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirectanchors">Redirecting Anchors</a></li>
-<li><img alt="" src="../images/down.gif" /> Time-Dependent Rewriting</li>
+<li><img alt="" src="../images/down.gif" /> <a href="#time">Time-Dependent Rewriting</a></li>
 <li><img alt="" src="../images/down.gif" /> Backward Compatibility for YYYY to XXXX migration</li>
 <li><img alt="" src="../images/down.gif" /> <a href="#content">Content Handling</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#access">Access Restriction</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#other">Other</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
 documentation</a></li><li><a href="rewrite_intro.html">mod_rewrite
-introduction</a></li><li><a href="rewrite_guide_advanced.html">Practical solutions to
-advanced problems</a></li><li><a href="rewrite_tech.html">Technical details</a></li></ul></div>
+introduction</a></li><li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - advanced 
+useful examples</a></li><li><a href="rewrite_tech.html">Technical details</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="canonicalurl" id="canonicalurl">Canonical URLs</a></h2>
@@ -418,7 +418,7 @@ RewriteRule   ^(/~.+)         http://www.somewhere.com/$1 [R,L]
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>Time-Dependent Rewriting</h2>
+<h2><a name="time" id="time">Time-Dependent Rewriting</a></h2>
 
       
 
@@ -587,7 +587,8 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
 
         <dd>
           <p>We just rewrite the URL to the CGI-script and force the
-          correct MIME-type so it gets really run as a CGI-script.
+          handler to be <strong>cgi-script</strong> so that it is
+          executed as a CGI program.
           This way a request to <code>/~quux/foo.html</code>
           internally leads to the invocation of
           <code>/~quux/foo.cgi</code>.</p>
@@ -595,7 +596,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
 <div class="example"><pre>
 RewriteEngine  on
 RewriteBase    /~quux/
-RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [T=<strong>application/x-httpd-cgi</strong>]
+RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<strong>cgi-script</strong>]
 </pre></div>
         </dd>
       </dl>

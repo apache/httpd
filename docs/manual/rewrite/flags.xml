@@ -33,10 +33,9 @@ providing more detailed explanations and examples of each.</p>
 
 <seealso><a href="../mod/mod_rewrite.html">Module documentation</a></seealso>
 <seealso><a href="rewrite_tech.html">Technical details</a></seealso>
-<seealso><a href="rewrite_guide.html">Practical solutions to common
-problems</a></seealso>
-<seealso><a href="rewrite_guide_advanced.html">Practical solutions to
-advanced problems</a></seealso>
+<seealso><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></seealso>
+<seealso><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide -
+advanced useful examples</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
 <p><directive module="mod_rewrite">RewriteRule</directive>s can have
@@ -67,7 +66,7 @@ of how you might use them.</p>
 module="mod_rewrite">RewriteRule</directive> is chained to the next
 rule. That is, if the rule matches, then it is processed as usual and
 control moves on to the next rule. However, if it does not match, then
-the next rule, and any other ruls that are chained together, will be
+the next rule, and any other rules that are chained together, will be
 skipped.</p>
 
 </section>
@@ -102,10 +101,10 @@ minutes (24 hours) and will be returned for all URIs.</p>
 
 <section id="flag_e"><title>E|env</title>
 <p>With the [E], or [env] flag, you can set the value of an environment
-variable. Note that some variables may be set after the rule is run, and
-so setting them in the <directive
-module="mod_rewrite">RewriteRule</directive> won't work, since it will
-be changed afterwards.</p>
+variable. Note that some environment variables may be set after the rule
+is run, thus unsetting what you have set. See <a href="../env.html">the
+Environment Variables document</a> for more details on how Environment
+variables work.</p>
 
 <p>The following example sets an evironment variable called 'image' to a
 value of '1' if the requested URI is an image file. Then, that

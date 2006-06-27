@@ -49,8 +49,8 @@
 documentation</a></seealso>
 <seealso><a href="rewrite_intro.html">mod_rewrite
 introduction</a></seealso>
-<seealso><a href="rewrite_guide_advanced.html">Practical solutions to
-advanced problems</a></seealso>
+<seealso><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - advanced 
+useful examples</a></seealso>
 <seealso><a href="rewrite_tech.html">Technical details</a></seealso>
 
 
@@ -413,7 +413,7 @@ RewriteRule   ^(/~.+)         http://www.somewhere.com/$1 [R,L]
 
     </section>
 
-    <section>
+    <section id="time">
 
       <title>Time-Dependent Rewriting</title>
 
@@ -582,7 +582,8 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
 
         <dd>
           <p>We just rewrite the URL to the CGI-script and force the
-          correct MIME-type so it gets really run as a CGI-script.
+          handler to be <strong>cgi-script</strong> so that it is
+          executed as a CGI program.
           This way a request to <code>/~quux/foo.html</code>
           internally leads to the invocation of
           <code>/~quux/foo.cgi</code>.</p>
@@ -590,7 +591,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
 <example><pre>
 RewriteEngine  on
 RewriteBase    /~quux/
-RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [T=<strong>application/x-httpd-cgi</strong>]
+RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<strong>cgi-script</strong>]
 </pre></example>
         </dd>
       </dl>
