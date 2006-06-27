@@ -219,18 +219,39 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
          */
         worker = find_route_worker(balancer, *route);
         if (worker && !PROXY_WORKER_IS_USABLE(worker)) {
-            /* We have a worker that is unusable.
-             * It can be in error or disabled, but in case
-             * it has a redirection set use that redirection worker.
-             * This enables to safely remove the member from the
-             * balancer. Of course you will need a some kind of
-             * session replication between those two remote.
+            /*
+             * If the worker is in error state run
+             * retry on that worker. It will be marked as
+             * operational if the retry timeout is elapsed.
+             * The worker might still be unusable, but we try
+             * anyway.
              */
-            if (*worker->s->redirect)
-                worker = find_route_worker(balancer, worker->s->redirect);
-            /* Check if the redirect worker is usable */
-            if (worker && !PROXY_WORKER_IS_USABLE(worker))
-                worker = NULL;
+            ap_proxy_retry_worker("BALANCER", worker, r->server);
+            if (!PROXY_WORKER_IS_USABLE(worker)) {
+                /*
+                 * We have a worker that is unusable.
+                 * It can be in error or disabled, but in case
+                 * it has a redirection set use that redirection worker.
+                 * This enables to safely remove the member from the
+                 * balancer. Of course you will need some kind of
+                 * session replication between those two remote.
+                 */
+                if (*worker->s->redirect)
+                    worker = find_route_worker(balancer, worker->s->redirect);
+                /* Check if the redirect worker is usable */
+                if (worker && !PROXY_WORKER_IS_USABLE(worker)) {
+                    /*
+                     * If the worker is in error state run
+                     * retry on that worker. It will be marked as
+                     * operational if the retry timeout is elapsed.
+                     * The worker might still be unusable, but we try
+                     * anyway.
+                     */
+                    ap_proxy_retry_worker("BALANCER", worker, r->server);
+                    if (!PROXY_WORKER_IS_USABLE(worker))
+                        worker = NULL;
+                }
+            }
         }
         return worker;
     }
