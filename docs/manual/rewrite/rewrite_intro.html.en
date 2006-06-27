@@ -37,8 +37,9 @@ but this doc should help the beginner get their feet wet.
 <li><img alt="" src="../images/down.gif" /> <a href="#htaccess">.htaccess files</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#EnvVar">Environment Variables</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
-documentation</a></li><li><a href="rewrite_tech.html">Technical details</a></li><li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li><li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide -
-advanced useful examples</a></li></ul></div>
+documentation</a></li><li><a href="rewrite_tech.html">Technical details</a></li><li><a href="rewrite_guide.html">Practical solutions to common
+problems</a></li><li><a href="rewrite_guide_advanced.html">Practical solutions to
+advanced problems</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
@@ -72,15 +73,46 @@ formulae, rather than magical incantations.</p>
 <h3><a name="regexvocab" id="regexvocab">Regex vocabulary</a></h3>
 
 <p>The following are the minimal building blocks you will need, in order
-to write regular expressions and <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s.</p>
+to write regular expressions and <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s. They certainly do not
+represent a complete regular expression vocabulary, but they are a good
+place to start, and should help you read basic regular expressions, as
+well as write your own.</p>
 
 <table>
 <tr>
 <th>Character</th>
 <th>Meaning</th>
+<th>Example</th>
 </tr>
 
-<tr><td><code>.</code></td><td>Matches any character</td></tr>
+<tr><td><code>.</code></td><td>Matches any
+character</td><td><code>c.t</code> will match <code>cat</code>,
+<code>cot</code>, <code>cut</code>, etc.</td></tr>
+<tr><td><code>+</code></td><td>Repeats the previous match one or more
+times</td><td><code>a+</code> matches <code>a</code>, <code>aa</code>, 
+<code>aaa</code>, etc</td></tr>
+<tr><td><code>*</code></td><td>Repeats the previous match zero or more
+times.</td><td><code>a*</code> matches all the same things
+<code>a+</code> matches, but will also match an empty string.</td></tr>
+<tr><td><code>?</code></td><td>Makes the match optional.</td><td /></tr>
+<tr><td><code>.</code></td><td>Matches any
+character</td><td><code>colou?r</code> will match <code>color</code> and
+<code>colour</code>.</td></tr>
+<tr><td><code>^</code></td><td>Called an anchor, matches the beginning
+of the string</td><td><code>^a</code> matches a string that begins with
+<code>a</code></td></tr>
+<tr><td><code>$</code></td><td>The other anchor, this matches the end of
+the string.</td><td><code>a$</code> matches a string that ends with
+<code>a</code>.</td></tr>
+<tr><td><code>( )</code></td><td>Groups several characters into a single
+unit, and captures a match for use in a backreference.</td><td><code>(ab)+</code> 
+matches <code>ababab</code> - that is, the <code>+</code> applies to the group.
+For more on backreferences see <a href="#InternalBackRefs">below</a>.</td></tr>
+<tr><td><code>[ ]</code></td><td>A character class - matches one of the
+characters</td><td><code>c[uoa]t</code> matches <code>cut</code>,
+<code>cot</code> or <code>cat</code>.</td></tr>
+<tr><td><code>!</code></td><td>Not</td><td>Negates a match - that is,
+ensures that it does not match.</td></tr>
 
 </table>
 
