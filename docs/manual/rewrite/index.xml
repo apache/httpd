@@ -38,7 +38,7 @@
       </blockquote>
 
       <blockquote>
-            <p>`` Despite the tons of examples and docs,
+            <p>``Despite the tons of examples and docs,
             mod_rewrite is voodoo. Damned cool voodoo, but still
             voodoo.''</p>
 
@@ -79,10 +79,9 @@
 documentation</a></seealso>
 <seealso><a href="rewrite_intro.html">Introduction</a></seealso>
 <seealso><a href="rewrite_tech.html">Technical details</a></seealso>
-<seealso><a href="rewrite_guide.html">Practical solutions to common
-problems</a></seealso>
-<seealso><a href="rewrite_guide_advanced.html">Practical solutions to
-advanced problems</a></seealso>
+<seealso><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></seealso>
+<seealso><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide -
+more useful examples</a></seealso>
 
 <section id="documentation"><title>Documentation</title>
 <ul>
@@ -90,10 +89,9 @@ advanced problems</a></seealso>
 documentation</a></li>
 <li><a href="rewrite_intro.html">Introduction</a></li>
 <li><a href="rewrite_tech.html">Technical details</a></li>
-<li><a href="rewrite_guide.html">Practical solutions to common
-problems</a></li>
-<li><a href="rewrite_guide_advanced.html">Practical solutions to
-advanced problems</a></li>
+<li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li>
+<li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide - more
+useful examples</a></li>
 <li><a href="../glossary.html">Glossary</a></li>
 </ul>
 </section>
