@@ -25,7 +25,7 @@ INSTALL_TARGETS = install-modules-$(INSTALL_DSO)
 
 include $(top_builddir)/build/rules.mk
 
-install-modules-yes:
+install-modules-yes: $(SHARED_TARGETS)
 	@$(MKINSTALLDIRS) $(DESTDIR)$(libexecdir)
 	@list='$(shared)'; for i in $$list; do \
 	  $(top_srcdir)/build/instdso.sh SH_LIBTOOL='$(SH_LIBTOOL)' $$i $(DESTDIR)$(libexecdir); \
