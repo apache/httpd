@@ -503,6 +503,7 @@
 
     <example><title>Example</title>
       SetEnvIf Cookie "language=(.+)" prefer-language=$1
+      Header append Vary cookie
     </example>
 </section>
 </section>
