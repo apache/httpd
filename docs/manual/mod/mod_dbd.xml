@@ -201,7 +201,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 
 <directivesynopsis>
 <name>DBDKeep</name>
-<description>Maximum sustainednumber of connections</description>
+<description>Maximum sustained number of connections</description>
 <syntax>DBDKeep <var>number</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
