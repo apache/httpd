@@ -116,12 +116,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewcvs.cgi?diff_format=h&view=rev&rev=406697
       +1 sctemme, rpluem
 
-    * Backport mod_authz_dbd (it's had some testing now)
-      http://svn.apache.org/viewcvs.cgi/httpd/httpd/trunk/modules/aaa/mod_authz_dbd.c
-      +1 niq
-      -1 bnicholes - The authorization refactoring that was done is for 2.3 and above.
-                     This can not be backported to 2.2.
-
     * Fix dbd merge_config function to support prepared statements
       PR#39386
       http://svn.apache.org/viewcvs.cgi?rev=396310&view=rev
