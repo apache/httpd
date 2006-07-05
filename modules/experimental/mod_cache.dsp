@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /machine:I386
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Release/mod_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_cache.so /opt:ref
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Release/mod_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_cache.so /opt:ref
 
 !ELSEIF  "$(CFG)" == "mod_cache - Win32 Debug"
 
@@ -68,8 +68,8 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "CACHE_DECLARE_EXPORT" /Fd"Debug\mod_cache_src" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /EHsc /Zi /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /FD /c
+# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /I "../../srclib/apr-util/include" /I "../../srclib/apr/include" /I "../../include" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "CACHE_DECLARE_EXPORT" /Fd"Debug\mod_cache_src" /FD /c
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
@@ -78,8 +78,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /machine:I386 /out:"Debug/mod_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_cache.so
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Debug/mod_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_cache.so
 
 !ENDIF 
 

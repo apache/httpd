@@ -49,9 +49,9 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\dftables.pdb" /machine:I386
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\dftables.pdb"
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\dftables.pdb" /machine:I386 /opt:ref
+# ADD LINK32 kernel32.lib /nologo /subsystem:console /pdb:"Release\dftables.pdb" /opt:ref
 # SUBTRACT LINK32 /pdb:none
 
 !ELSEIF  "$(CFG)" == "dftables - Win32 Debug"
@@ -67,17 +67,17 @@ LINK32=link.exe
 # PROP Intermediate_Dir "Debug"
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /MDd /W3 /GX /Zi /Od /D "_WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fd"Debug\dftables" /FD /c
-# ADD CPP /nologo /MDd /W3 /GX /Zi /Od /D "_WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fd"Debug\dftables" /FD /c
+# ADD BASE CPP /nologo /MDd /W3 /EHsc /Zi /Od /D "_WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fd"Debug\dftables" /FD /c
+# ADD CPP /nologo /MDd /W3 /EHsc /Zi /Od /D "_WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS" /Fd"Debug\dftables" /FD /c
 # ADD BASE RSC /l 0x809 /d "_DEBUG"
 # ADD RSC /l 0x809 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug\dftables.pdb" /debug /machine:I386 /pdbtype:sept
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug\dftables.pdb" /debug /pdbtype:sept
 # SUBTRACT BASE LINK32 /pdb:none
-# ADD LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug\dftables.pdb" /debug /machine:I386
+# ADD LINK32 kernel32.lib /nologo /subsystem:console /incremental:no /pdb:"Debug\dftables.pdb" /debug
 # SUBTRACT LINK32 /pdb:none
 
 !ENDIF 
