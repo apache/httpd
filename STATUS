@@ -104,8 +104,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           Trunk version works
       +1: rpluem, jim, pquerna
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-
     * Add optional 'scheme://' part to ServerName directive for cases
       where httpd runs behind an external SSL processor and has to
       learn from its configuration how to generate correct
@@ -114,7 +112,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~sctemme/servername_22x.patch
       Documentation:
       http://svn.apache.org/viewcvs.cgi?diff_format=h&view=rev&rev=406697
-      +1 sctemme, rpluem
+      +1 sctemme, rpluem, wrowe
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Fix dbd merge_config function to support prepared statements
       PR#39386
@@ -133,7 +133,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        for LDAP client SDKs that don't support LDAP_SECURITY_ERROR 
        macro. PR#39529
        http://svn.apache.org/viewvc?view=rev&revision=411306
-       +1: bnicholes
+       +1: bnicholes, wrowe
+         wrowe observes; CONST==result is a horrid style convention
 
     * mod_speling: add option to do case-normalisation only
       Patch submitted by Olivier Thereaux
@@ -145,3 +146,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR#39854
       http://svn.apache.org/viewvc?rev=416165&view=rev
       +1: niq
+      -0: wrowe - on quick glance the line 1091 change looks incomplete,
+          and I'm not convinced that we should ignore flush.  Has anyone
+          inquired of the proper mechanism or composed the appropriate
+          patch to finish an incomplete packet and resume encoding or
+          this entirely impossible in the current scheme of things?
