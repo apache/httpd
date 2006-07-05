@@ -116,6 +116,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
+    * mod_isapi: Simply backport the host of fixes for compilation on unix,
+      PR#'s 15993 29098 30022 16637 30033 28089
+      by pushing to trunk/ rev 416293 of modules/arch/win32/mod_isapi.[ch]
+      which compiles without changes.  Source + Binary posted at
+        http://people.apache.org/~wrowe/mod_isapi-416293.zip
+      +1 wrowe 
+
     * Fix dbd merge_config function to support prepared statements
       PR#39386
       http://svn.apache.org/viewcvs.cgi?rev=396310&view=rev
