@@ -158,3 +158,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           inquired of the proper mechanism or composed the appropriate
           patch to finish an incomplete packet and resume encoding or
           this entirely impossible in the current scheme of things?
+      rpluem: I discussed this with Justin at the ApacheCon and we discussed
+              ways how to fix this and take care about the flush buckets.
+              I am willing to propose patches, but due to personal time
+              constraints they will not show up before the second half of July.
+
