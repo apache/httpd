@@ -122,12 +122,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Patch is at
         http://people.apache.org/~colm/httpd-2.0-reverse-proxy-cookie.patch
         and is in production with Clients.
-       +1: niq
-       +1: wrowe; looks good, no way to apply this without a minor bump
+       +1: niq, wrowe
+         wrowe adds; looks good, no way to apply this without a minor bump
 
-    *) Backport 102870; PR 17217; stop linking OpenSSL to support/*
-       binaries (especially when compiled --with-static-support (!))
-       and fix mod_ssl.so when compiled against .a openssl archives.
+    *) Backport 102870; PR 17217; stop linking OpenSSL .so's to support/*
+       binaries (especially when compiled --with-static-support (!)) and
+       fix mod_ssl.so to compile against .a openssl archives.
          http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
        +1: wrowe, colm
 
@@ -137,7 +137,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs?rev=393364&view=rev
         2.0.x version of patch:
           Trunk version works
-      +1: trawick
+      +1: trawick, wrowe
+        wrowe adds; even if ineffective for some oddball machine, this
+                    patch is entirely harmless.
+
+    * mod_isapi: Simply backport the host of fixes for compilation on unix,
+      PR#'s 15993 29098 30022 16637 30033 28089
+      by pushing to trunk/ rev 416293 of modules/arch/win32/mod_isapi.[ch]
+      which compiles with the addition of [apr_]brigade_insert_file() as
+      cribbed from apr-util 1.x trunk.  Source + Binary posted at
+        http://people.apache.org/~wrowe/mod_isapi-416293.zip
+      +1 wrowe 
+
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
