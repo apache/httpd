@@ -972,7 +972,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_bucketeer"=.\modules\debug\mod_bucketeer.dsp - Package Owner=<4>
+Project: "mod_bucketeer"=.\modules\debugging\mod_bucketeer.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1209,7 +1209,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_dumpio"=.\modules\debug\mod_dumpio.dsp - Package Owner=<4>
+Project: "mod_dumpio"=.\modules\debugging\mod_dumpio.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

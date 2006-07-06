@@ -48,7 +48,7 @@ endif
 
 # Allow the experimental modules to be built if EXPERIMENTAL is defined
 ifdef DEBUG
-SUBDIRS += debug \
+SUBDIRS += debugging \
 	       $(EOLIST)
 endif
 
