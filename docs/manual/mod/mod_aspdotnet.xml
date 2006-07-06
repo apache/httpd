@@ -24,7 +24,7 @@
 <name>mod_aspdotnet</name> 
 <description>Provides an interface for ASP.NET content between Apache HTTP
 Server 2.0 and Microsoft's ASP.NET host.</description>
-<status>External, <a href="http://httpd.apache.org/mod_aspdotnet/">http://httpd.apache.org/mod_aspdotnet/</a></status>
+<status href="http://httpd.apache.org/mod_aspdotnet/">External</status>
 <sourcefile>mod_aspdotnet.cpp</sourcefile>
 <identifier>aspdotnet_module</identifier>
 <compatibility>Compatible only with httpd 2.0.44 and later.</compatibility>
