@@ -171,6 +171,14 @@
             <xsl:when test="../status='Core'">C</xsl:when>
             <xsl:when test="../status='Extension'">E</xsl:when>
             <xsl:when test="../status='Experimental'">X</xsl:when>
+            <xsl:when test="../status='External'">
+                <xsl:choose>
+                <xsl:when test="../status/@href">
+                    <a href="{../status/@href}">T</a>
+                </xsl:when>
+                <xsl:otherwise>T</xsl:otherwise>
+                </xsl:choose>
+            </xsl:when>
             </xsl:choose>
         </td>
     </tr>
