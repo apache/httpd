@@ -1405,34 +1405,38 @@ cannot use <code>$N</code> in the substitution string!
         </li>
       </ul>
 
-<div class="note"><h3>Note: Enabling rewrites in per-directory context</h3>
- To enable the rewrite engine
-          for per-directory configuration files you need to set
-          ``<code>RewriteEngine On</code>'' in these files
-          <strong>and</strong> ``<code>Options
-          FollowSymLinks</code>'' must be enabled. If your
-          administrator has disabled override of
-          <code>FollowSymLinks</code> for a user's directory, then
-          you cannot use the rewrite engine. This restriction is
-          required for security reasons.
-</div>
+<div class="note"><h3>Per-directory Rewrites</h3>
+ 
+<p>The rewrite engine may be used in <a href="../howto/htaccess.html">.htaccess</a> files.  To enable the
+rewrite engine for these files you need to set
+"<code>RewriteEngine On</code>" <strong>and</strong>
+"<code>Options FollowSymLinks</code>" must be enabled. If your
+administrator has disabled override of <code>FollowSymLinks</code> for
+a user's directory, then you cannot use the rewrite engine. This
+restriction is required for security reasons.</p>
 
-<div class="note"><h3>Note: Pattern matching in per-directory context</h3> 
-	Never forget that <em>Pattern</em> is
-applied to a complete URL in per-server configuration
-files. <strong>However, in per-directory configuration files, the
+<p>When using the rewrite engine in <code>.htaccess</code> files the
 per-directory prefix (which always is the same for a specific
 directory) is automatically <em>removed</em> for the pattern matching
 and automatically <em>added</em> after the substitution has been
-done.</strong> This feature is essential for many sorts of rewriting - 
-without this, you would always have to match the parent
-directory, which is not always possible.
+done. This feature is essential for many sorts of rewriting; without
+this, you would always have to match the parent directory, which is
+not always possible.  There is one exception: If a substitution string
+starts with <code>http://</code>, then the directory prefix will
+<strong>not</strong> be added, and an external redirect (or proxy
+throughput, if using flag <strong>P</strong>) is forced.  See the
+<code class="directive"><a href="#rewritebase">RewriteBase</a></code> directive for
+more information.</p>
 
-            <p>There is one exception: If a substitution string
-            starts with ``<code>http://</code>'', then the directory
-            prefix will <strong>not</strong> be added ,and an
-            external redirect (or proxy throughput, if using flag
-            <strong>P</strong>) is forced!</p>
+<p>The rewrite engine may also be used in <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections with the same
+prefix-matching rules as would be applied to <code>.htaccess</code>
+files.  It is usually simpler, however, to avoid the prefix substitution
+complication by putting the rewrite rules in the main server or
+virtual host context, rather than in a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section.</p>
+
+<p>Although rewrite rules are syntactically permitted in <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> sections, this
+should never be necessary and is unsupported.</p>
+
 </div>
 
 <div class="note"><h3>Note: Substitution of Absolute URLs</h3>

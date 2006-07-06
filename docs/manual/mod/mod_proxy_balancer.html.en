@@ -53,6 +53,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#scheduler">Load balancer scheduler algorithm</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requests">Request Counting Algorithm</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#traffic">Weighted Traffic Counting Algorithm</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#environment">Exported Environment Variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling Balancer Manager Support</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
@@ -272,6 +273,47 @@ candidate lbstatus -= total factor</code></pre></div>
     many requests, but it would process twice the I/O. Thus, the
     size of the request and response are applied to the weighting
     and selection algorithm.</p>
+
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="environment" id="environment">Exported Environment Variables</a></h2>
+    
+    <p>At present there are 5 environment variables exported:</p>
+    
+    
+    <dt><var><a name="balancer_session_sticky" id="balancer_session_sticky">BALANCER_SESSION_STICKY</a></var></dt>
+    <dd>
+    <p>This is assigned the <var>stickysession</var> value used in the current
+    request.  It is the cookie or parameter name used for sticky sessions</p>
+    </dd>
+
+    
+    <dt><var><a name="balancer_session_route" id="balancer_session_route">BALANCER_SESSION_ROUTE</a></var></dt>
+    <dd>
+    <p>This is assigned the <var>route</var> parsed from the current 
+    request.</p>
+    </dd>
+
+    
+    <dt><var><a name="balancer_name" id="balancer_name">BALANCER_NAME</a></var></dt>
+    <dd>
+    <p>This is assigned the name of the balancer used for the current 
+    request. The value is something like <code>balancer://foo</code>.</p>
+    </dd>
+
+    
+    <dt><var><a name="balancer_worker_name" id="balancer_worker_name">BALANCER_WORKER_NAME</a></var></dt>
+    <dd>
+    <p>This is assigned the name of the worker used for the current request.
+    The value is something like <code>http://hostA:1234</code>.</p>
+    </dd>
+
+    
+    <dt><var><a name="balancer_worker_route" id="balancer_worker_route">BALANCER_WORKER_ROUTE</a></var></dt>
+    <dd>
+    <p>This is assigned the <var>route</var> of the worker that will be 
+    used for the current request.</p>
+    </dd>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
