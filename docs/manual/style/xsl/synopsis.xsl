@@ -89,7 +89,16 @@
                         </a>
                     </th>
                     <td>
-                        <xsl:value-of select="status" />
+                        <xsl:choose>
+                        <xsl:when test="status = 'External' and status/@href">
+                            <a href="{status/@href}">
+                                <xsl:value-of select="status" />
+                            </a>
+                        </xsl:when>
+                        <xsl:otherwise>
+                            <xsl:value-of select="status" />
+                        </xsl:otherwise>
+                        </xsl:choose>
                     </td>
                 </tr>
 
