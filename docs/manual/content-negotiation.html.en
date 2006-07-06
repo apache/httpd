@@ -504,6 +504,7 @@ Negotiation</a></li>
 
     <div class="example"><h3>Example</h3><p><code>
       SetEnvIf Cookie "language=(.+)" prefer-language=$1
+      Header append Vary cookie
     </code></p></div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
