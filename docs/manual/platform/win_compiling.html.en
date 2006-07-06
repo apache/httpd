@@ -132,20 +132,24 @@
         <code>openssl</code>, obtained from <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>, in order to compile <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
         or the abs project (<code>ab.exe</code> with SSL support.) To prepare OpenSSL
         for both <code>release</code> and <code>debug</code> builds of Apache, and
-        disable the patent protected features in 0.9.7,  you might use the following
+        disable the patent protected features in OpenSSL,  you might use the following
         build commands:</p>
 
         <div class="example"><p><code>
           perl Configure VC-WIN32<br />
           perl util\mkfiles.pl &gt;MINFO<br />
-          perl util\mk1mf.pl dll no-asm no-mdc2 no-rc5 no-idea VC-WIN32 &gt;makefile<br />
+          perl util\mk1mf.pl dll no-asm no-mdc2 no-rc5 no-idea VC-WIN32 &gt;makefile.rel<br />
           perl util\mk1mf.pl dll debug no-asm no-mdc2 no-rc5 no-idea VC-WIN32 &gt;makefile.dbg<br />
           perl util\mkdef.pl 32 libeay no-asm no-mdc2 no-rc5 no-idea &gt;ms\libeay32.def<br />
           perl util\mkdef.pl 32 ssleay no-asm no-mdc2 no-rc5 no-idea &gt;ms\ssleay32.def<br />
-          nmake<br />
+          nmake -f makefile.rel<br />
           nmake -f makefile.dbg
         </code></p></div>
 
+         <p>Note; you can use the scripts in the <code>ms\</code> subdirectory, however,
+         it's rather tricky to force <code>ms\do_masm.bat</code>, for example, to perform
+         the patent encumberances as mentioned above.  Patches to add the $* argument list
+         to the appropriate .bat lines in these scripts aren't incorporated, thus far.</p>
       </li>
 
       <li>
@@ -153,8 +157,9 @@
         <p>Zlib must be installed into a <code>srclib</code> subdirectory named
         <code>zlib</code>, however those sources need not be compiled. The build system
         will compile the compression sources directly into the <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>
-        module. Zlib can be obtained from <a href="http://www.gzip.org/zlib/">http://www.gzip.org/zlib/</a> -- <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> is
-        confirmed to build correctly with version 1.1.4.</p>
+        module. Zlib can be obtained from <a href="http://www.zlib.net/">http://www.zlib.net/</a> -- <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> is confirmed to build 
+        correctly with version 1.1.4.  To use a later version of zlib, upgrade to
+        Apache HTTP Server release 2.2 or later.</p>
       </li>
 
     </ul>

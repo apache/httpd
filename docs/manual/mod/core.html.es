@@ -154,7 +154,7 @@ path añadida (trailing pathname information)</td></tr>
     information) está determinado por el <a href="../handler.html">handler</a> responsable de la
     petición.  El handler básico para ficheros normales
     rechaza por defecto las peticiones de <code>PATH_INFO</code>. Los
-    handlers que sirven scripts, como <a href="mod_cgi.html">cgi-script</a> e <a href="mod_isapi.html">isapi-isa</a>, generalmente aceptan
+    handlers que sirven scripts, como <a href="mod_cgi.html">cgi-script</a> e <a href="mod_isapi.html">isapi-handler</a>, generalmente aceptan
     <code>PATH_INFO</code> por defecto.</dd>
     </dl>
 

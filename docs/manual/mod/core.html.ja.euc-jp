@@ -138,7 +138,7 @@
     <dt><code>Default</code></dt><dd>続きのパス名情報の扱いはリクエストの
     <a href="../handler.html">ハンドラ</a>で決まります。
     普通のファイルのためのコアハンドラのデフォルトは <code>PATH_INFO</code> を拒否します。
-    <a href="mod_cgi.html">cgi-script</a> や <a href="mod_isapi.html">isapi-isa</a> のようにスクリプトを扱うハンドラは
+    <a href="mod_cgi.html">cgi-script</a> や <a href="mod_isapi.html">isapi-handler</a> のようにスクリプトを扱うハンドラは
     一般的にデフォルトで <code>PATH_INFO</code> を受け付けます。</dd>
     </dl>
 
