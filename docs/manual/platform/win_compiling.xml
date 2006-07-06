@@ -136,20 +136,24 @@
         >http://www.openssl.org/source/</a>, in order to compile <module>mod_ssl</module>
         or the abs project (<code>ab.exe</code> with SSL support.) To prepare OpenSSL
         for both <code>release</code> and <code>debug</code> builds of Apache, and
-        disable the patent protected features in 0.9.7,  you might use the following
+        disable the patent protected features in OpenSSL,  you might use the following
         build commands:</p>
 
         <example>
           perl Configure VC-WIN32<br />
           perl util\mkfiles.pl &gt;MINFO<br />
-          perl util\mk1mf.pl dll no-asm no-mdc2 no-rc5 no-idea VC-WIN32 &gt;makefile<br />
+          perl util\mk1mf.pl dll no-asm no-mdc2 no-rc5 no-idea VC-WIN32 &gt;makefile.rel<br />
           perl util\mk1mf.pl dll debug no-asm no-mdc2 no-rc5 no-idea VC-WIN32 &gt;makefile.dbg<br />
           perl util\mkdef.pl 32 libeay no-asm no-mdc2 no-rc5 no-idea &gt;ms\libeay32.def<br />
           perl util\mkdef.pl 32 ssleay no-asm no-mdc2 no-rc5 no-idea &gt;ms\ssleay32.def<br />
-          nmake<br />
+          nmake -f makefile.rel<br />
           nmake -f makefile.dbg
         </example>
 
+         <p>Note; you can use the scripts in the <code>ms\</code> subdirectory, however,
+         it's rather tricky to force <code>ms\do_masm.bat</code>, for example, to perform
+         the patent encumberances as mentioned above.  Patches to add the $* argument list
+         to the appropriate .bat lines in these scripts aren't incorporated, thus far.</p>
       </li>
 
       <li>
