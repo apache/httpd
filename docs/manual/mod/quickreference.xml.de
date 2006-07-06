@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.de.xsl"?>
-<!-- English Revision: 395228 -->
+<!-- English Revision: 419692 -->
 
 <!--
  Copyright 2002-2006 The Apache Software Foundation or its licensors,
@@ -56,6 +56,7 @@
       <tr><th>B</th><td>Basis</td></tr>
       <tr><th>E</th><td>Erweiterung</td></tr>
       <tr><th>X</th><td>experimentell</td></tr>
+      <tr><th>T</th><td>extern</td></tr>
     </table>
   </legend>
 </quickreference>
