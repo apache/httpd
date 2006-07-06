@@ -56,6 +56,7 @@
       <tr><th>B</th><td>Base</td></tr>
       <tr><th>E</th><td>Extension</td></tr>
       <tr><th>X</th><td>Experimental</td></tr>
+      <tr><th>T</th><td>External</td></tr>
     </table></td></tr>
 </table>
 <table class="qref">
@@ -135,9 +136,9 @@ error log</td></tr>
 formatted email address</td></tr>
 <tr class="odd"><td><a href="mod_aspdotnet.html#aspnet">AspNet [[<var>Files</var>] [<var>Directories</var>] 
                 [<var>Virtual</var>] [<var>Errors</var>]]
-              | [<var>All</var>] | [<var>None</var>]</a></td><td> None </td><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">Enables mod_aspdotnet to process ASP.NET content</td></tr>
-<tr><td><a href="mod_aspdotnet.html#aspnetmount">AspNetMount <var>URL-path</var> <var>directory-path</var></a></td><td></td><td>s</td><td /></tr><tr><td class="descr" colspan="4">Mounts a URI to a physical ASP.NET directory</td></tr>
-<tr class="odd"><td><a href="mod_aspdotnet.html#aspnetversion">AspNetVersion <var>versionstring</var></a></td><td></td><td>s</td><td /></tr><tr class="odd"><td class="descr" colspan="4">Force a specific .NET Framework version to be loaded</td></tr>
+              | [<var>All</var>] | [<var>None</var>]</a></td><td> None </td><td>svdh</td><td><a href="http://httpd.apache.org/mod_aspdotnet/">T</a></td></tr><tr class="odd"><td class="descr" colspan="4">Enables mod_aspdotnet to process ASP.NET content</td></tr>
+<tr><td><a href="mod_aspdotnet.html#aspnetmount">AspNetMount <var>URL-path</var> <var>directory-path</var></a></td><td></td><td>s</td><td><a href="http://httpd.apache.org/mod_aspdotnet/">T</a></td></tr><tr><td class="descr" colspan="4">Mounts a URI to a physical ASP.NET directory</td></tr>
+<tr class="odd"><td><a href="mod_aspdotnet.html#aspnetversion">AspNetVersion <var>versionstring</var></a></td><td></td><td>s</td><td><a href="http://httpd.apache.org/mod_aspdotnet/">T</a></td></tr><tr class="odd"><td class="descr" colspan="4">Force a specific .NET Framework version to be loaded</td></tr>
 <tr><td><a href="perchild.html#assignuserid">AssignUserID <var>user-id</var> <var>group-id</var></a></td><td></td><td>v</td><td>M</td></tr><tr><td class="descr" colspan="4">Tie a virtual host to a user and group ID</td></tr>
 <tr class="odd"><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets whether authorization and authentication are passed to
 lower level modules</td></tr>

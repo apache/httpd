@@ -25,7 +25,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Provides an interface for ASP.NET content between Apache HTTP
 Server 2.0 and Microsoft's ASP.NET host.</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>External, http://httpd.apache.org/mod_aspdotnet/</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td><a href="http://httpd.apache.org/mod_aspdotnet/">External</a></td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>aspdotnet_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_aspdotnet.cpp</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td>Compatible only with httpd 2.0.44 and later.</td></tr></table>
@@ -113,7 +113,7 @@ Alias /app-uri "C:/path/to/app"<br />
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AspNet None</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>External, http://httpd.apache.org/mod_aspdotnet/</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>External</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_aspdotnet</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Build 2004 and later</td></tr>
 </table>
@@ -183,7 +183,7 @@ Alias /app-uri "C:/path/to/app"<br />
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Mounts a URI to a physical ASP.NET directory</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AspNetMount <var>URL-path</var> <var>directory-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>External, http://httpd.apache.org/mod_aspdotnet/</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>External</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_aspdotnet</td></tr>
 </table>
 
@@ -201,7 +201,7 @@ Alias /app-uri "C:/path/to/app"<br />
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Force a specific .NET Framework version to be loaded</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AspNetVersion <var>versionstring</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>External, http://httpd.apache.org/mod_aspdotnet/</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>External</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_aspdotnet</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Build 2004 and later</td></tr>
 </table>
