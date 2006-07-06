@@ -54,6 +54,7 @@
       <tr><th>B</th><td>Base</td></tr>
       <tr><th>E</th><td>Extension</td></tr>
       <tr><th>X</th><td>Experimental</td></tr>
+      <tr><th>T</th><td>External</td></tr>
     </table>
   </legend>
 </quickreference>
