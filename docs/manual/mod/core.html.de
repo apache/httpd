@@ -149,7 +149,7 @@ Servers</td></tr>
     für gewöhnliche Dateien weist <code>PATH_INFO</code>-Zugriffe
     standardmäßig zurück. Handler, die Skripte bedienen,
     wie z.B. <a href="mod_cgi.html">cgi-script</a> und
-    <a href="mod_isapi.html">isapi-isa</a>, sind im Allgemeinen darauf
+    <a href="mod_isapi.html">isapi-handler</a>, sind im Allgemeinen darauf
     voreingestellt, <code>PATH_INFO</code> zu akzeptieren.</dd>
     </dl>
 

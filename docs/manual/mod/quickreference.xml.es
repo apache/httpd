@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.es.xsl"?>
-<!-- English Revision: 395228 -->
+<!-- English Revision: 395228:419692 (outdated) -->
 
 <!--
  Copyright 2004-2006 The Apache Software Foundation or its licensors,
