@@ -161,9 +161,10 @@
         <p>Zlib must be installed into a <code>srclib</code> subdirectory named
         <code>zlib</code>, however those sources need not be compiled. The build system
         will compile the compression sources directly into the <module>mod_deflate</module>
-        module. Zlib can be obtained from <a href="http://www.gzip.org/zlib/"
-        >http://www.gzip.org/zlib/</a> -- <module>mod_deflate</module> is
-        confirmed to build correctly with version 1.1.4.</p>
+        module. Zlib can be obtained from <a href="http://www.zlib.net/"
+        >http://www.zlib.net/</a> -- <module>mod_deflate</module> is confirmed to build 
+        correctly with version 1.1.4.  To use a later version of zlib, upgrade to
+        Apache HTTP Server release 2.2 or later.</p>
       </li>
 
     </ul>
