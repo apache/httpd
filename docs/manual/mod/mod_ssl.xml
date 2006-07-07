@@ -503,18 +503,16 @@ Within HTTP/1.1. At this time no web browsers support RFC 2817.</p>
 
 <directivesynopsis>
 <name>SSLProtocol</name>
-<description>Configure usable SSL protocol flavors</description>
+<description>Configure usable SSL protocol versions</description>
 <syntax>SSLProtocol [+|-]<em>protocol</em> ...</syntax>
 <default>SSLProtocol all</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<override>Options</override>
 
-<usage><!-- XXX Why does this have an override and not .htaccess context? -->
+<usage>
 <p>
-This directive can be used to control the SSL protocol flavors mod_ssl should
-use when establishing its server environment. Clients then can only connect
-with one of the provided protocols.</p>
+This directive can be used to control which versions of the SSL protocol 
+will be accepted in new connections.</p>
 <p>
 The available (case-insensitive) <em>protocol</em>s are:</p>
 <ul>
@@ -540,7 +538,7 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <li><code>All</code>
     <p>
     This is a shortcut for ``<code>+SSLv2 +SSLv3 +TLSv1</code>'' and a
-    convinient way for enabling all protocols except one when used in
+    convenient way for enabling all protocols except one when used in
     combination with the minus sign on a protocol as the example above 
     shows.</p></li>
 </ul>
