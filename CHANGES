@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) core: Add the filename of the configuration file to the warning message
+     about the useless use of AllowOverride. PR 39992.
+     [Darryl Miles <darryl darrylmiles.org>]
+
   *) mod_proxy_balancer: Retry worker chosen by route / redirect worker if
      it is in error state before sending "Service Temporarily Unavailable".
      PR 38962. [Christian Boitel <cboitel lfdj.com>]
