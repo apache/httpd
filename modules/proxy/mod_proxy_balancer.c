@@ -226,6 +226,34 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
         }
         worker++;
     }
+    /*
+     * Check for any hot-standbys, since we have no usable workers
+     */
+    worker = (proxy_worker *)balancer->workers->elts;
+    for (i = 0; i < balancer->workers->nelts; i++) {
+        if (*(worker->s->route) && (strcmp(worker->s->route, route) == 0) &&
+            PROXY_WORKER_IS_STANDBY(worker)) {
+            if (worker && PROXY_WORKER_IS_USABLE_STANDBY(worker)) {
+                return worker;
+            } else {
+                ap_proxy_retry_worker("BALANCER", worker, r->server);
+                if (PROXY_WORKER_IS_USABLE_STANDBY(worker)) {
+                        return worker;
+                } else {
+                    if (*worker->s->redirect) {
+                        proxy_worker *rworker = NULL;
+                        rworker = find_route_worker(balancer, worker->s->redirect, r);
+                        if (rworker && !PROXY_WORKER_IS_USABLE_STANDBY(rworker)) {
+                            ap_proxy_retry_worker("BALANCER", rworker, r->server);
+                        }
+                        if (rworker && PROXY_WORKER_IS_USABLE_STANDBY(rworker))
+                            return rworker;
+                    }
+                }
+            }
+        }
+        worker++;
+    }
     return NULL;
 }
 
@@ -690,14 +718,20 @@ static int balancer_handler(request_rec *r)
                 ap_rvputs(r, "<td>", worker->s->route, NULL);
                 ap_rvputs(r, "</td><td>", worker->s->redirect, NULL);
                 ap_rprintf(r, "</td><td>%d</td><td>", worker->s->lbfactor);
-                if (worker->s->status & PROXY_WORKER_DISABLED)
-                    ap_rputs("Dis", r);
-                else if (worker->s->status & PROXY_WORKER_IN_ERROR)
-                    ap_rputs("Err", r);
-                else if (worker->s->status & PROXY_WORKER_INITIALIZED)
+                if (PROXY_WORKER_IS_USABLE(worker))
                     ap_rputs("Ok", r);
-                else
-                    ap_rputs("-", r);
+                else {
+                    if (worker->s->status & PROXY_WORKER_DISABLED)
+                       ap_rputs("Dis ", r);
+                    if (worker->s->status & PROXY_WORKER_IN_ERROR)
+                       ap_rputs("Err ", r);
+                    if (worker->s->status & PROXY_WORKER_STOPPED)
+                       ap_rputs("Stop ", r);
+                    if (worker->s->status & PROXY_WORKER_HOT_STANDBY)
+                       ap_rputs("Stby ", r);
+                    if (!PROXY_WORKER_IS_INITIALIZED(worker))
+                        ap_rputs("-", r);
+                }
                 ap_rputs("</td></tr>\n", r);
 
                 ++worker;
@@ -876,6 +910,23 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
         worker++;
     }
 
+    if (!mycandidate) {
+        worker = (proxy_worker *)balancer->workers->elts;
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            if (PROXY_WORKER_IS_STANDBY(worker)) {
+                if (!PROXY_WORKER_IS_USABLE_STANDBY(worker))
+                    ap_proxy_retry_worker("BALANCER", worker, r->server);
+                if (PROXY_WORKER_IS_USABLE_STANDBY(worker)) {
+                    worker->s->lbstatus += worker->s->lbfactor;
+                    total_factor += worker->s->lbfactor;
+                    if (!mycandidate || worker->s->lbstatus > mycandidate->s->lbstatus)
+                        mycandidate = worker;
+                }
+            }
+            worker++;
+        }
+    }
+
     if (mycandidate) {
         mycandidate->s->lbstatus -= total_factor;
         mycandidate->s->elected++;
@@ -936,6 +987,25 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
             }
         }
         worker++;
+    }
+
+    if (!mycandidate) {
+        worker = (proxy_worker *)balancer->workers->elts;
+        for (i = 0; i < balancer->workers->nelts; i++) {
+            if (PROXY_WORKER_IS_STANDBY(worker)) {
+                if (!PROXY_WORKER_IS_USABLE_STANDBY(worker))
+                    ap_proxy_retry_worker("BALANCER", worker, r->server);
+                if (PROXY_WORKER_IS_USABLE_STANDBY(worker)) {
+                    mytraffic = (worker->s->transferred/worker->s->lbfactor) +
+                        (worker->s->read/worker->s->lbfactor);
+                    if (!mycandidate || mytraffic < curmin) {
+                        mycandidate = worker;
+                        curmin = mytraffic;
+                    }
+                }
+            }
+            worker++;
+        }
     }
 
     if (mycandidate) {
