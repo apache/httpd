@@ -910,18 +910,16 @@ SSLPassPhraseDialog exec:/usr/local/apache/sbin/pp-filter
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSLProtocol" id="SSLProtocol">SSLProtocol</a> <a name="sslprotocol" id="sslprotocol">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL protocol flavors</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure usable SSL protocol versions</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSLProtocol [+|-]<em>protocol</em> ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSLProtocol all</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
-<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>Options</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_ssl</td></tr>
 </table>
 <p>
-This directive can be used to control the SSL protocol flavors mod_ssl should
-use when establishing its server environment. Clients then can only connect
-with one of the provided protocols.</p>
+This directive can be used to control which versions of the SSL protocol 
+will be accepted in new connections.</p>
 <p>
 The available (case-insensitive) <em>protocol</em>s are:</p>
 <ul>
@@ -947,7 +945,7 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <li><code>All</code>
     <p>
     This is a shortcut for ``<code>+SSLv2 +SSLv3 +TLSv1</code>'' and a
-    convinient way for enabling all protocols except one when used in
+    convenient way for enabling all protocols except one when used in
     combination with the minus sign on a protocol as the example above 
     shows.</p></li>
 </ul>
