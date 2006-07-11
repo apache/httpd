@@ -176,13 +176,53 @@ static char *get_cookie_param(request_rec *r, const char *name)
 /* Find the worker that has the 'route' defined
  */
 static proxy_worker *find_route_worker(proxy_balancer *balancer,
-                                       const char *route)
+                                       const char *route, request_rec *r)
 {
     int i;
     proxy_worker *worker = (proxy_worker *)balancer->workers->elts;
     for (i = 0; i < balancer->workers->nelts; i++) {
         if (*(worker->s->route) && strcmp(worker->s->route, route) == 0) {
-            return worker;
+            if (worker && PROXY_WORKER_IS_USABLE(worker)) {
+                return worker;
+            } else {
+                /*
+                 * If the worker is in error state run
+                 * retry on that worker. It will be marked as
+                 * operational if the retry timeout is elapsed.
+                 * The worker might still be unusable, but we try
+                 * anyway.
+                 */
+                ap_proxy_retry_worker("BALANCER", worker, r->server);
+                if (PROXY_WORKER_IS_USABLE(worker)) {
+                        return worker;
+                } else {
+                    /*
+                     * We have a worker that is unusable.
+                     * It can be in error or disabled, but in case
+                     * it has a redirection set use that redirection worker.
+                     * This enables to safely remove the member from the
+                     * balancer. Of course you will need some kind of
+                     * session replication between those two remote.
+                     */
+                    if (*worker->s->redirect) {
+                        proxy_worker *rworker = NULL;
+                        rworker = find_route_worker(balancer, worker->s->redirect, r);
+                        /* Check if the redirect worker is usable */
+                        if (rworker && !PROXY_WORKER_IS_USABLE(rworker)) {
+                            /*
+                             * If the worker is in error state run
+                             * retry on that worker. It will be marked as
+                             * operational if the retry timeout is elapsed.
+                             * The worker might still be unusable, but we try
+                             * anyway.
+                             */
+                            ap_proxy_retry_worker("BALANCER", rworker, r->server);
+                        }
+                        if (rworker && PROXY_WORKER_IS_USABLE(rworker))
+                            return rworker;
+                    }
+                }
+            }
         }
         worker++;
     }
@@ -217,42 +257,7 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
         /* We have a route in path or in cookie
          * Find the worker that has this route defined.
          */
-        worker = find_route_worker(balancer, *route);
-        if (worker && !PROXY_WORKER_IS_USABLE(worker)) {
-            /*
-             * If the worker is in error state run
-             * retry on that worker. It will be marked as
-             * operational if the retry timeout is elapsed.
-             * The worker might still be unusable, but we try
-             * anyway.
-             */
-            ap_proxy_retry_worker("BALANCER", worker, r->server);
-            if (!PROXY_WORKER_IS_USABLE(worker)) {
-                /*
-                 * We have a worker that is unusable.
-                 * It can be in error or disabled, but in case
-                 * it has a redirection set use that redirection worker.
-                 * This enables to safely remove the member from the
-                 * balancer. Of course you will need some kind of
-                 * session replication between those two remote.
-                 */
-                if (*worker->s->redirect)
-                    worker = find_route_worker(balancer, worker->s->redirect);
-                /* Check if the redirect worker is usable */
-                if (worker && !PROXY_WORKER_IS_USABLE(worker)) {
-                    /*
-                     * If the worker is in error state run
-                     * retry on that worker. It will be marked as
-                     * operational if the retry timeout is elapsed.
-                     * The worker might still be unusable, but we try
-                     * anyway.
-                     */
-                    ap_proxy_retry_worker("BALANCER", worker, r->server);
-                    if (!PROXY_WORKER_IS_USABLE(worker))
-                        worker = NULL;
-                }
-            }
-        }
+        worker = find_route_worker(balancer, *route, r);
         return worker;
     }
     else
@@ -377,6 +382,9 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         for (i = 0; i < (*balancer)->workers->nelts; i++) {
             /* Take into calculation only the workers that are
              * not in error state or not disabled.
+             *
+             * TODO: Abstract the below, since this is dependent
+             *       on the LB implementation
              */
             if (PROXY_WORKER_IS_USABLE(workers)) {
                 workers->s->lbstatus += workers->s->lbfactor;
