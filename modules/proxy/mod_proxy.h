@@ -241,15 +241,34 @@ struct proxy_conn_pool {
     proxy_conn_rec *conn;   /* Single connection for prefork mpm's */
 };
 
-/* woker status flags */
+/* worker status flags */
 #define PROXY_WORKER_INITIALIZED    0x0001
 #define PROXY_WORKER_IGNORE_ERRORS  0x0002
 #define PROXY_WORKER_IN_SHUTDOWN    0x0010
 #define PROXY_WORKER_DISABLED       0x0020
 #define PROXY_WORKER_STOPPED        0x0040
 #define PROXY_WORKER_IN_ERROR       0x0080
+#define PROXY_WORKER_HOT_STANDBY    0x0100
 
-#define PROXY_WORKER_IS_USABLE(f)   (!((f)->s->status & 0x00F0))
+#define PROXY_WORKER_NOT_USABLE_BITMAP ( PROXY_WORKER_IN_SHUTDOWN | \
+PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
+
+#define PROXY_WORKER_IS_INITIALIZED(f)   ( (f)->s->status & \
+  PROXY_WORKER_INITIALIZED )
+
+#define PROXY_WORKER_IS_STANDBY(f)   ( (f)->s->status & \
+  PROXY_WORKER_HOT_STANDBY )
+
+#define PROXY_WORKER_IS_USABLE(f)   ( !((f)->s->status & \
+  (PROXY_WORKER_NOT_USABLE_BITMAP | PROXY_WORKER_HOT_STANDBY )) && \
+  PROXY_WORKER_IS_INITIALIZED(f) )
+
+#define PROXY_WORKER_IS_USABLE_STANDBY(f)   ( !((f)->s->status & \
+  PROXY_WORKER_NOT_USABLE_BITMAP) && PROXY_WORKER_IS_STANDBY(f) && \
+  PROXY_WORKER_IS_INITIALIZED(f) )
+
+#define PROXY_WORKER_IS_USABLE_DC(f)   ( !((f)->s->status & \
+  (PROXY_WORKER_NOT_USABLE_BITMAP)) && PROXY_WORKER_IS_INITIALIZED(f) )
 
 /* default worker retry timeout in seconds */
 #define PROXY_WORKER_DEFAULT_RETRY  60

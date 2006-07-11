@@ -1605,7 +1605,7 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
     void *score = NULL;
 #endif
 
-    if (worker->s && (worker->s->status & PROXY_WORKER_INITIALIZED)) {
+    if (worker->s && PROXY_WORKER_IS_INITIALIZED(worker)) {
         /* The worker share is already initialized */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
               "proxy: worker %s already initialized",
@@ -1639,7 +1639,7 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
      * recheck to see if we've already been here. Possible
      * if proxy is using scoreboard to hold shared stats
      */
-    if (worker->s->status & PROXY_WORKER_INITIALIZED) {
+    if (PROXY_WORKER_IS_INITIALIZED(worker)) {
         /* The worker share is already initialized */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
               "proxy: worker %s already initialized",
@@ -1667,7 +1667,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     int mpm_threads;
 #endif
 
-    if (worker->status & PROXY_WORKER_INITIALIZED) {
+    if (PROXY_WORKER_IS_INITIALIZED(worker)) {
         /* The worker is already initialized */
         return APR_SUCCESS;
     }
