@@ -1764,11 +1764,11 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 {
     apr_status_t rv;
 
-    if (!PROXY_WORKER_IS_USABLE(worker)) {
+    if (!PROXY_WORKER_IS_USABLE_DC(worker)) {
         /* Retry the worker */
         ap_proxy_retry_worker(proxy_function, worker, s);
 
-        if (!PROXY_WORKER_IS_USABLE(worker)) {
+        if (!PROXY_WORKER_IS_USABLE_DC(worker)) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                          "proxy: %s: disabled connection for (%s)",
                          proxy_function, worker->hostname);
@@ -2074,7 +2074,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
      * Altrough some connections may be alive
      * no further connections to the worker could be made
      */
-    if (!connected && PROXY_WORKER_IS_USABLE(worker) &&
+    if (!connected && PROXY_WORKER_IS_USABLE_DC(worker) &&
         !(worker->s->status & PROXY_WORKER_IGNORE_ERRORS)) {
         worker->s->status |= PROXY_WORKER_IN_ERROR;
         worker->s->error_time = apr_time_now();
