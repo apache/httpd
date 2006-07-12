@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_balancer: Workers can now be defined as "hot standby" which
+     will only be used if all other workers are unusable (eg: in
+     error or disabled). Also, the balancer-manager displays the election
+     count and I/O counts of all workers. [Jim Jagielski]
+
   *) core: Add the filename of the configuration file to the warning message
      about the useless use of AllowOverride. PR 39992.
      [Darryl Miles <darryl darrylmiles.org>]
