@@ -685,6 +685,7 @@ static int balancer_handler(request_rec *r)
                 "<th>Worker URL</th>"
                 "<th>Route</th><th>RouteRedir</th>"
                 "<th>Factor</th><th>Status</th>"
+                "<th>Elected</th><th>To</th><th>From</th>"
                 "</tr>\n", r);
 
             worker = (proxy_worker *)balancer->workers->elts;
@@ -710,7 +711,11 @@ static int balancer_handler(request_rec *r)
                     ap_rputs("Ok", r);
                 if (!PROXY_WORKER_IS_INITIALIZED(worker))
                     ap_rputs("-", r);
-                ap_rputs("</td></tr>\n", r);
+                ap_rputs("</td>", r);
+                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", worker->s->elected);
+                ap_rprintf(r, "<td>%" APR_OFF_T_FMT "</td>", worker->s->transferred);
+                ap_rprintf(r, "<td>%" APR_OFF_T_FMT "</td>", worker->s->read);
+                ap_rputs("</tr>\n", r);
 
                 ++worker;
             }
