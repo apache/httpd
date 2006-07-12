@@ -25,7 +25,7 @@ NLM_SCREEN_NAME = DEFAULT
 endif
 
 ifndef NLM_COPYRIGHT
-NLM_COPYRIGHT = Copyright 2000-2006 The Apache Software Foundation or its licensors as applicable.  Licensed under the Apache License Version 2.0.
+NLM_COPYRIGHT = Copyright 2006 The Apache Software Foundation. Licensed under the Apache License Version 2.0.
 endif
 
 #
