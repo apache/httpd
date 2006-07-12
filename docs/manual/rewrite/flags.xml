@@ -122,7 +122,21 @@ an example, not as a recommendation.</p>
 </section>
 
 <section id="flag_f"><title>F|forbidden</title>
-<p>Forbidden flag</p>
+<p>Using the [F] flag causes Apache to return a 403 Forbidden status
+code to the client. While the same behavior can be accomplished using
+the <directive module="mod_access">Deny</directive> directive, this 
+allows more flexibility in assigning a Forbidden status.</p>
+
+<p>The following rule will forbid <code>.exe</code> files from being
+downloaded from your server.</p>
+
+<example>
+RewriteRule \.exe - [F]
+</example>
+
+<p>This rule uses the "-" syntax for the rewrite target, which means
+that the requested URI is not modified.</p>
+
 </section>
 
 <section id="flag_g"><title>G|gone</title>
@@ -142,7 +156,19 @@ an example, not as a recommendation.</p>
 </section>
 
 <section id="flag_nc"><title>NC|nocase</title>
-<p>No case flag</p>
+<p>Use of the [NC] flag causes the <directive
+module="mod_rewrite">RewriteRule</directive> to be matched in a
+case-insensitive manner. That is, it doesn't care whether letters appear
+as upper-case or lower-case in the matched URI.</p>
+
+<p>In the example below, any request for an image file will be proxied
+to your dedicated image server. The match is case-insensitive, so that
+<code>.jpg</code> and <code>.JPG</code> files are both acceptable, for
+example.</p>
+
+<example>
+RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
+</example>
 </section>
 
 <section id="flag_ne"><title>NE|noescape</title>
@@ -174,7 +200,28 @@ an example, not as a recommendation.</p>
 </section>
 
 <section id="flag_s"><title>S|skip</title>
-<p>Skip flag</p>
+<p>The [S] flag is used to skip rules that you don't want to run. This
+can be thought of as a <code>goto</code> statement in your rewrite
+ruleset. In the following example, we only want to run the <directive
+module="mod_rewrite">RewriteRule</directive> if the requested URI
+doesn't correspond with an actual file.</p>
+
+<example>
+RewriteCond %{REQUEST_FILENAME} !-f<br />
+RewriteCond %{REQUEST_FILENAME} !-d<br />
+RewriteRule .? - [S=2]<br />
+<br />
+RewriteRule (.*\.gif) images.php?$1<br />
+RewriteRule (.*\.html) docs.php?$1
+</example>
+
+<p>This technique is useful because a <directive
+module="mod_rewrite">RewriteCond</directive> only applies to the
+<directive module="mod_rewrite">RewriteRule</directive> immediately
+following it. Thus, if you want to make a <code>RewriteCond</code> apply
+to several <code>RewriteRule</code>s, one possible technique is to
+negate those conditions and use a [Skip] flag.</p>
+
 </section>
 
 <section id="flag_t"><title>T|type</title>

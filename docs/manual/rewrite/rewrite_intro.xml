@@ -148,13 +148,28 @@ examples.
 </section>
 
 <section id="flags"><title>Rewrite Flags</title>
-<p>Discussion of the flags to RewriteRule, and when and why one might
-use them.</p>
+<p>The behavior of a <directive
+module="mod_rewrite">RewriteRule</directive> can be modified by the
+application of one more flags to the end of the rule. For example, the
+matching behavior of a rule can be made case-insensitive by the
+application of the <code>[NC]</code> flag:
+</p>
+<example>
+RewriteRule ^puppy.html smalldog.html [NC]
+</example>
+
+<p>For more details on the available flags, their meanings, and
+examples, see the <a href="flags.html">Rewrite Flags</a> document.</p>
+
 </section>
 
+
 <section id="rewritecond"><title>Rewrite conditions</title>
-<p>Discussion of RewriteCond, looping, and other related concepts.
+<p>The <directive module="mod_rewrite">RewriteCond</directive> directive
+allows a condition to be applied to a <directive
+module="mod_rewrite">RewriteRule</directive>.
 </p>
+
 </section>
 
 <section id="rewritemap"><title>Rewrite maps</title>
