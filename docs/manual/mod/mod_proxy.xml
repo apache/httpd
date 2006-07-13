@@ -1147,7 +1147,7 @@ header for proxied requests</description>
 <name>ProxyPassInterpolateEnv</name>
 <description>Enable Environment Variable interpolation in Reverse Proxy configurations</description>
 <syntax>ProxyPassInterpolateEnv On|Off</syntax>
-<default>ProxyErrorOverride Off</default>
+<default>ProxyPassInterpolateEnv Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 <context>Location</context>
