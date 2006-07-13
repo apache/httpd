@@ -410,6 +410,57 @@ static int proxy_detect(request_rec *r)
     return DECLINED;
 }
 
+static const char *proxy_interpolate(request_rec *r, const char *str)
+{
+    /* Interpolate an env str in a configuration string
+     * Syntax ${var} --> value_of(var)
+     * Method: replace one var, and recurse on remainder of string
+     * Nothing clever here, and crap like nested vars may do silly things
+     * but we'll at least avoid sending the unwary into a loop
+     */
+    const char *start;
+    const char *end;
+    const char *var;
+    const char *val;
+    const char *firstpart;
+    
+    start = ap_strstr(str, "${");
+    if (start == NULL) {
+        return str;
+    }
+    end = ap_strchr(start+2, '}');
+    if (end == NULL) {
+        return str;
+    }
+    /* OK, this is syntax we want to interpolate.  Is there such a var ? */
+    var = apr_pstrndup(r->pool, start+2, end-(start+2));
+    val = apr_table_get(r->subprocess_env, var);
+    firstpart = apr_pstrndup(r->pool, str, (start-str));
+
+    if (val == NULL) {
+        return apr_pstrcat(r->pool, firstpart,
+                           proxy_interpolate(r, end+1), NULL);
+    }
+    else {
+        return apr_pstrcat(r->pool, firstpart, val,
+                           proxy_interpolate(r, end+1), NULL);
+    }
+}
+static apr_array_header_t *proxy_vars(request_rec *r,
+                                      apr_array_header_t *hdr)
+{
+    int i;
+    apr_array_header_t *ret = apr_array_make(r->pool, hdr->nelts,
+                                             sizeof (struct proxy_alias));
+    struct proxy_alias *old = (struct proxy_alias *) hdr->elts;
+
+    for (i = 0; i < hdr->nelts; ++i) {
+        struct proxy_alias *newcopy = apr_array_push(ret);
+        newcopy->fake = proxy_interpolate(r, old[i].fake);
+        newcopy->real = proxy_interpolate(r, old[i].real);
+    }
+    return ret;
+}
 static int proxy_trans(request_rec *r)
 {
     void *sconf = r->server->module_config;
@@ -417,6 +468,10 @@ static int proxy_trans(request_rec *r)
     (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
     int i, len;
     struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
+    proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+                                                 &proxy_module);
+    const char *fake;
+    const char *real;
 
     if (r->proxyreq) {
         /* someone has already set up the proxy, it was possibly ourselves
@@ -431,14 +486,22 @@ static int proxy_trans(request_rec *r)
      */
 
     for (i = 0; i < conf->aliases->nelts; i++) {
-        len = alias_match(r->uri, ent[i].fake);
+        if (dconf->interpolate_env == 1) {
+            fake = proxy_interpolate(r, ent[i].fake);
+            real = proxy_interpolate(r, ent[i].real);
+        }
+        else {
+            fake = ent[i].fake;
+            real = ent[i].real;
+        }
+        len = alias_match(r->uri, fake);
 
        if (len > 0) {
-           if ((ent[i].real[0] == '!') && (ent[i].real[1] == 0)) {
+           if ((real[0] == '!') && (real[1] == 0)) {
                return DECLINED;
            }
 
-           r->filename = apr_pstrcat(r->pool, "proxy:", ent[i].real,
+           r->filename = apr_pstrcat(r->pool, "proxy:", real,
                                      r->uri + len, NULL);
            r->handler = "proxy-server";
            r->proxyreq = PROXYREQ_REVERSE;
@@ -506,6 +569,7 @@ static int proxy_map_location(request_rec *r)
 
     return OK;
 }
+
 /* -------------------------------------------------------------- */
 /* Fixup the filename */
 
@@ -516,12 +580,25 @@ static int proxy_fixup(request_rec *r)
 {
     char *url, *p;
     int access_status;
+    proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+                                                 &proxy_module);
 
     if (!r->proxyreq || !r->filename || strncmp(r->filename, "proxy:", 6) != 0)
         return DECLINED;
 
     /* XXX: Shouldn't we try this before we run the proxy_walk? */
     url = &r->filename[6];
+
+    if ((dconf->interpolate_env == 1) && (r->proxyreq == PROXYREQ_REVERSE)) {
+        /* create per-request copy of reverse proxy conf,
+         * and interpolate vars in it
+         */
+        proxy_req_conf *rconf = apr_palloc(r->pool, sizeof(proxy_req_conf));
+        ap_set_module_config(r->request_config, &proxy_module, rconf);
+        rconf->raliases = proxy_vars(r, dconf->raliases);
+        rconf->cookie_paths = proxy_vars(r, dconf->cookie_paths);
+        rconf->cookie_domains = proxy_vars(r, dconf->cookie_domains);
+    }
 
     /* canonicalise each specific scheme */
     if ((access_status = proxy_run_canon_handler(r, url))) {
@@ -905,6 +982,7 @@ static void *create_proxy_dir_config(apr_pool_t *p, char *dummy)
     new->cookie_domains = apr_array_make(p, 10, sizeof(struct proxy_alias));
     new->cookie_path_str = apr_strmatch_precompile(p, "path=", 0);
     new->cookie_domain_str = apr_strmatch_precompile(p, "domain=", 0);
+    new->interpolate_env = -1; /* unset */
 
     return (void *) new;
 }
@@ -927,6 +1005,8 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
         = apr_array_append(p, base->cookie_domains, add->cookie_domains);
     new->cookie_path_str = base->cookie_path_str;
     new->cookie_domain_str = base->cookie_domain_str;
+    new->interpolate_env = (add->interpolate_env == -1) ? base->interpolate_env
+                                                        : add->interpolate_env;
     return new;
 }
 
@@ -1052,7 +1132,7 @@ static const char *
 
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
-    /* Distinguish the balancer from woker */
+    /* Distinguish the balancer from worker */
     if (strncasecmp(r, "balancer:", 9) == 0) {
         proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
         if (!balancer) {
@@ -1672,6 +1752,9 @@ static const command_rec proxy_cmds[] =
      "a scheme, partial URL or '*' and a proxy server"),
     AP_INIT_TAKE2("ProxyRemoteMatch", add_proxy_regex, NULL, RSRC_CONF,
      "a regex pattern and a proxy server"),
+    AP_INIT_FLAG("ProxyPassInterpolateEnv", ap_set_flag_slot,
+        (void*)APR_OFFSETOF(proxy_dir_conf, interpolate_env),
+        RSRC_CONF|ACCESS_CONF, "Interpolate Env Vars in reverse Proxy") ,
     AP_INIT_RAW_ARGS("ProxyPass", add_pass, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL"),
     AP_INIT_TAKE12("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF|ACCESS_CONF,
@@ -1913,7 +1996,6 @@ static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_lb_workers = 0;
     return OK;
 }
-
 static void register_hooks(apr_pool_t *p)
 {
     /* fixup before mod_rewrite, so that the proxied url will not
