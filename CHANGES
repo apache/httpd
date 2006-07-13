@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy: Support environment variable interpolation in reverse
+     proxying directives [Nick Kew]
+
   *) mod_proxy_balancer: Workers can now be defined as "hot standby" which
      will only be used if all other workers are unusable (eg: in
      error or disabled). Also, the balancer-manager displays the election

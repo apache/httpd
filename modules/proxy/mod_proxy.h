@@ -206,7 +206,17 @@ typedef struct {
     apr_array_header_t* cookie_domains;
     const apr_strmatch_pattern* cookie_path_str;
     const apr_strmatch_pattern* cookie_domain_str;
+    int interpolate_env;
 } proxy_dir_conf;
+
+/* if we interpolate env vars per-request, we'll need a per-request
+ * copy of the reverse proxy config
+ */
+typedef struct {
+    apr_array_header_t *raliases;
+    apr_array_header_t* cookie_paths;
+    apr_array_header_t* cookie_domains;
+} proxy_req_conf;
 
 typedef struct {
     conn_rec     *connection;
