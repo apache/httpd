@@ -52,7 +52,7 @@
       </li>
 
       <li>
-        <p>Microsoft Visual C++ 5.0 or higher.</p>
+        <p>Microsoft Visual C++ (Microsoft Visual Studio) 5.0 or higher.</p>
         <p>Apache can be built using the command line tools, or from
         within the Visual Studio IDE Workbench.  The command line
         build requires the environment to reflect the <code>PATH</code>,
@@ -66,8 +66,8 @@
 
       <li>
         <p>The Windows Platform SDK.</p>
-        <p>Visual C++ 5.0 builds require an updated Microsoft Windows
-        Platform SDK to enable some Apache features. For command line
+        <p>Apache's APR and APR-util builds require an updated Microsoft
+        Windows Platform SDK, from 2003 or later. For command line
         builds, the Platform SDK environment is prepared by the
         <code>setenv</code> batch file:</p>
 
@@ -75,24 +75,18 @@
           "c:\Program Files\Platform SDK\setenv.bat"
         </example>
 
-        <p>The Platform SDK files distributed with Visual C++ 6.0 and
-        later are sufficient, so users of later version may skip
-        this requirement.</p>
-
-        <note>Note that the Windows Platform SDK update is required
-        to enable all supported <module>mod_isapi</module> features.
-        Without a recent update, Apache will issue warnings under
-        MSVC++ 5.0 that some <module>mod_isapi</module> features
-        will be disabled. Look for the update at <a
-        href="http://msdn.microsoft.com/downloads/sdks/platform/platform.asp"
-        >http://msdn.microsoft.com/downloads/sdks/platform/platform.asp</a>.</note>
+        <p>The Platform SDK files distributed with Visual C++ 5.0, 6.0 
+        and Visual Studio .NET (2000) are no longer sufficient.
+        Users of Visual Studio 2003 and later versions (of the full product,
+        not the 'express' flavor) and later versions may skip this 
+        requirement.</p>
       </li>
 
       <li>
         <p>The awk utility (awk, gawk or similar).</p>
         <p>To install Apache within the build system, several files are
-        modified using the <code>awk.exe</code> utility. awk was chosen since it
-        is a very small download (compared with Perl or WSH/VB) and
+        modified using the <code>awk.exe</code> utility. awk was chosen since
+        it is a very small download (compared with Perl or WSH/VB) and
         accomplishes the task of generating files. Brian Kernighan's
         <a href="http://cm.bell-labs.com/cm/cs/who/bwk/"
         >http://cm.bell-labs.com/cm/cs/who/bwk/</a>
@@ -109,12 +103,16 @@
         to this list, and your system <code>PATH</code> environment variable,
         as needed.</note>
 
-        <note>Also note that if you are using Cygwin (<a href="http://www.cygwin.com/"
-        >http://www.cygwin.com/</a>) the awk utility is named <code>gawk.exe</code> and
-        that the file <code>awk.exe</code> is really a symlink to the <code>gawk.exe</code>
-        file. The Windows command shell does not recognize symlinks, and because of that
-        building InstallBin will fail. A workaround is to delete <code>awk.exe</code> from
-        the cygwin installation and rename <code>gawk.exe</code> to <code>awk.exe</code>.</note>
+        <note>Also note that if you are using Cygwin tools
+        (<a href="http://www.cygwin.com/">http://www.cygwin.com/</a>) 
+        the awk utility is named <code>gawk.exe</code> and that the file 
+        <code>awk.exe</code> is really a symlink to the <code>gawk.exe</code>
+        file. The Windows command shell does not recognize symlinks, and 
+        because of that building InstallBin will fail. A workaround is 
+        to delete <code>awk.exe</code> from the cygwin installation and 
+        copy <code>gawk.exe</code> to <code>awk.exe</code>.  Also note the
+        cygwin/mingw ports of gawk 3.0.x were buggy, please upgrade to 3.1.x
+        before attempting to use any gawk port.</note>
       </li>
 
       <li>
