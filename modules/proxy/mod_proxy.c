@@ -424,11 +424,11 @@ static const char *proxy_interpolate(request_rec *r, const char *str)
     const char *val;
     const char *firstpart;
     
-    start = ap_strstr(str, "${");
+    start = ap_strstr_c(str, "${");
     if (start == NULL) {
         return str;
     }
-    end = ap_strchr(start+2, '}');
+    end = ap_strchr_c(start+2, '}');
     if (end == NULL) {
         return str;
     }
