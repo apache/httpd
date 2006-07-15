@@ -230,7 +230,7 @@
         APR_OPTIONAL_HOOK(ap,name,fn,pre,succ,order)
 
 #include "os.h"
-#if !defined(WIN32) && !defined(NETWARE)
+#if (!defined(WIN32) && !defined(NETWARE)) || defined(__MINGW32__)
 #include "ap_config_auto.h"
 #include "ap_config_layout.h"
 #endif
