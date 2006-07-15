@@ -39,6 +39,10 @@
 #include <malloc.h>
 #include "apr_atomic.h"
 
+#ifdef __MINGW32__
+#include <mswsock.h>
+#endif 
+
 /* shared with mpm_winnt.c */
 extern DWORD my_pid;
 
