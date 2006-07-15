@@ -45,7 +45,9 @@
 #define HAVE_UNC_PATHS
 #define CASE_BLIND_FILESYSTEM
 
+#ifndef __MINGW32__
 #define APACHE_MPM_DIR  "server/mpm/winnt" /* generated on unix */
+#endif
 
 #include <stddef.h>
 
