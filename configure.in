@@ -296,6 +296,7 @@ case $host in
   *mingw32*)
       APR_SETVAR(APACHE_MPM, [winnt])
       APR_ADDTO(CPPFLAGS, [-DAP_DECLARE_EXPORT])
+      APR_SETIFNULL(ac_cv_func_times, [no])
       ;;
   *aix*)
       aixver=`echo $host | sed 's/^[[^0-9]]*//' | sed 's/\.//g'`
