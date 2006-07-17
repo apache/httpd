@@ -214,6 +214,43 @@ typedef struct deflate_ctx_t
     apr_bucket_brigade *bb, *proc_bb;
 } deflate_ctx;
 
+static int flush_zlib_buffer(deflate_ctx *ctx, deflate_filter_config *c,
+                             struct apr_bucket_alloc_t *bucket_alloc,
+                             int flush)
+{
+    int zRC;
+    int done = 0;
+    unsigned int deflate_len;
+    apr_bucket *b;
+
+    for (;;) {
+         deflate_len = c->bufferSize - ctx->stream.avail_out;
+
+         if (deflate_len != 0) {
+             b = apr_bucket_heap_create((char *)ctx->buffer,
+                                        deflate_len, NULL,
+                                        bucket_alloc);
+             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
+             ctx->stream.next_out = ctx->buffer;
+             ctx->stream.avail_out = c->bufferSize;
+         }
+
+         if (done)
+             break;
+
+         zRC = deflate(&ctx->stream, flush);
+
+         if (deflate_len == 0 && zRC == Z_BUF_ERROR)
+             zRC = Z_OK;
+
+         done = (ctx->stream.avail_out != 0 || zRC == Z_STREAM_END);
+
+         if (zRC != Z_OK && zRC != Z_STREAM_END)
+             break;
+    }
+    return zRC;
+}
+
 static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
 {
@@ -400,43 +437,15 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         const char *data;
         apr_bucket *b;
         apr_size_t len;
-        int done = 0;
 
         e = APR_BRIGADE_FIRST(bb);
 
         if (APR_BUCKET_IS_EOS(e)) {
             char *buf;
-            unsigned int deflate_len;
 
             ctx->stream.avail_in = 0; /* should be zero already anyway */
-            for (;;) {
-                deflate_len = c->bufferSize - ctx->stream.avail_out;
-
-                if (deflate_len != 0) {
-                    b = apr_bucket_heap_create((char *)ctx->buffer,
-                                               deflate_len, NULL,
-                                               f->c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-                    ctx->stream.next_out = ctx->buffer;
-                    ctx->stream.avail_out = c->bufferSize;
-                }
-
-                if (done) {
-                    break;
-                }
-
-                zRC = deflate(&ctx->stream, Z_FINISH);
-
-                if (deflate_len == 0 && zRC == Z_BUF_ERROR) {
-                    zRC = Z_OK;
-                }
-
-                done = (ctx->stream.avail_out != 0 || zRC == Z_STREAM_END);
-
-                if (zRC != Z_OK && zRC != Z_STREAM_END) {
-                    break;
-                }
-            }
+            /* flush the remaining data from the zlib buffers */
+            flush_zlib_buffer(ctx, c, f->c->bucket_alloc, Z_FINISH);
 
             buf = apr_palloc(r->pool, 8);
             putLong((unsigned char *)&buf[0], ctx->crc);
@@ -488,28 +497,17 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
 
         if (APR_BUCKET_IS_FLUSH(e)) {
-            apr_bucket *bkt;
             apr_status_t rv;
 
-            apr_bucket_delete(e);
-
-            if (ctx->stream.avail_in > 0) {
-                zRC = deflate(&(ctx->stream), Z_SYNC_FLUSH);
-                if (zRC != Z_OK) {
-                    return APR_EGENERAL;
-                }
+            /* flush the remaining data from the zlib buffers */
+            zRC = flush_zlib_buffer(ctx, c, f->c->bucket_alloc, Z_SYNC_FLUSH);
+            if (zRC != Z_OK) {
+                return APR_EGENERAL;
             }
 
-            ctx->stream.next_out = ctx->buffer;
-            len = c->bufferSize - ctx->stream.avail_out;
-
-            b = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                       NULL, f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-            ctx->stream.avail_out = c->bufferSize;
-
-            bkt = apr_bucket_flush_create(f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(ctx->bb, bkt);
+            /* Remove flush bucket from old brigade anf insert into the new. */
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
             rv = ap_pass_brigade(f->next, ctx->bb);
             if (rv != APR_SUCCESS) {
                 return rv;
