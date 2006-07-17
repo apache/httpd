@@ -405,11 +405,16 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                            Z_DEFAULT_STRATEGY);
 
         if (zRC != Z_OK) {
-            f->ctx = NULL;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "unable to init Zlib: "
                           "deflateInit2 returned %d: URL %s",
                           zRC, r->uri);
+            /*
+             * Remove ourselves as it does not make sense to return:
+             * We are not able to init libz and pass data down the chain
+             * uncompressed.
+             */
+            ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
 
