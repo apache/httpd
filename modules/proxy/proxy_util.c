@@ -16,8 +16,8 @@
 
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
+#include "slotmem.h"
 #include "ap_mpm.h"
-#include "scoreboard.h"
 #include "apr_version.h"
 
 #if APR_HAVE_UNISTD_H
@@ -41,6 +41,8 @@ static int proxy_match_word(struct dirconn_entry *This, request_rec *r);
 APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req,
                                    (request_rec *r, request_rec *pr), (r, pr),
                                    OK, DECLINED)
+/* Storage for the comarea */
+static const slotmem_storage_method *storage = NULL;
 
 /* already called in the knowledge that the characters are hex digits */
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
@@ -1625,11 +1627,10 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
                                                      proxy_worker *worker,
                                                      server_rec *s)
 {
-#if PROXY_HAS_SCOREBOARD
-    lb_score *score = NULL;
-#else
     void *score = NULL;
-#endif
+    ap_slotmem_t *myscore;
+    apr_status_t rv;
+    apr_size_t item_size = sizeof(proxy_worker_stat);
 
     if (worker->s && PROXY_WORKER_IS_INITIALIZED(worker)) {
         /* The worker share is already initialized */
@@ -1638,22 +1639,24 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
               worker->name);
         return;
     }
-#if PROXY_HAS_SCOREBOARD
-        /* Get scoreboard slot */
-    if (ap_scoreboard_image) {
-        score = ap_get_scoreboard_lb(worker->id);
+    if (storage) {
+
+        rv = storage->ap_slotmem_create(&myscore, "proxy/comarea", item_size, ap_proxy_lb_workers(), conf->pool);
+        if (rv == APR_SUCCESS)
+            rv = storage->ap_slotmem_mem(myscore, worker->id, &score);
+        if (rv != APR_SUCCESS)
+            score = NULL;
         if (!score) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                  "proxy: ap_get_scoreboard_lb(%d) failed in child %" APR_PID_T_FMT " for worker %s",
+                  "proxy: ap_slotmem_mem(%d) failed in child %" APR_PID_T_FMT " for worker %s",
                   worker->id, getpid(), worker->name);
         }
         else {
              ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                  "proxy: grabbed scoreboard slot %d in child %" APR_PID_T_FMT " for worker %s",
+                  "proxy: grabbed slotmem slot %d in child %" APR_PID_T_FMT " for worker %s",
                   worker->id, getpid(), worker->name);
         }
     }
-#endif
     if (!score) {
         score = apr_pcalloc(conf->pool, sizeof(proxy_worker_stat));
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
@@ -2214,4 +2217,22 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
     APR_BRIGADE_INSERT_TAIL(brigade, e);
     e = apr_bucket_eos_create(c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(brigade, e);
+}
+
+/* Create shared area (comarea) called from mod_proxy post_config */
+PROXY_DECLARE(void) proxy_create_comarea(apr_pool_t *pconf)
+{
+    ap_slotmem_t *myscore;
+    apr_size_t item_size = sizeof(proxy_worker_stat);
+    if (storage)
+        storage->ap_slotmem_create(&myscore, "proxy/comarea", item_size, ap_proxy_lb_workers(), pconf);
+}
+/* get the storage provider for the shared area called from mod_proxy pre_config */
+PROXY_DECLARE(void) proxy_lookup_storage_provider()
+{
+    storage = ap_lookup_provider(SLOTMEM_STORAGE, "shared", "0");
+    if (!storage)
+        storage = ap_lookup_provider(SLOTMEM_STORAGE, "score", "0");
+    if (!storage)
+        storage = ap_lookup_provider(SLOTMEM_STORAGE, "plain", "0");
 }

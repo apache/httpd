@@ -17,6 +17,7 @@
 #define CORE_PRIVATE
 
 #include "mod_proxy.h"
+#include "slotmem.h"
 #include "mod_core.h"
 #include "apr_optional.h"
 #include "scoreboard.h"
@@ -1854,6 +1855,9 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_is_https = APR_RETRIEVE_OPTIONAL_FN(ssl_is_https);
     proxy_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
 
+    /* if we have a memory provider create the comarea here */
+    proxy_create_comarea(pconf);
+
     return OK;
 }
 
@@ -1994,6 +1998,9 @@ static int proxy_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                       APR_HOOK_MIDDLE);
     /* Reset workers count on gracefull restart */
     proxy_lb_workers = 0;
+
+    /* get a provider for the shared data storagge */
+    proxy_lookup_storage_provider();
     return OK;
 }
 static void register_hooks(apr_pool_t *p)
