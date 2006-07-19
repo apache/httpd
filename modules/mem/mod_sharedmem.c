@@ -155,7 +155,7 @@ static const slotmem_storage_method storage = {
 static int initialize_cleanup(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
     ap_slotmem_t *next = globallistmem;
-    while (next) {    next = globallistmem;
+    while (next) {
         next = next->next;
     }
     apr_pool_cleanup_register(p, &globallistmem, cleanup_slotmem, apr_pool_cleanup_null);
