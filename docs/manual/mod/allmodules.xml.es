@@ -6,7 +6,6 @@
   <modulefile>mod_actions.xml</modulefile>
   <modulefile>mod_alias.xml</modulefile>
   <modulefile>mod_asis.xml</modulefile>
-  <modulefile>mod_aspdotnet.xml</modulefile>
   <modulefile>mod_auth_basic.xml</modulefile>
   <modulefile>mod_auth_digest.xml</modulefile>
   <modulefile>mod_authn_anon.xml</modulefile>
