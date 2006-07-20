@@ -214,9 +214,9 @@ typedef struct deflate_ctx_t
     apr_bucket_brigade *bb, *proc_bb;
 } deflate_ctx;
 
-static int flush_zlib_buffer(deflate_ctx *ctx, deflate_filter_config *c,
+static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
                              struct apr_bucket_alloc_t *bucket_alloc,
-                             int flush)
+                             int (*libz_func)(z_streamp, int), int flush)
 {
     int zRC;
     int done = 0;
@@ -238,7 +238,7 @@ static int flush_zlib_buffer(deflate_ctx *ctx, deflate_filter_config *c,
          if (done)
              break;
 
-         zRC = deflate(&ctx->stream, flush);
+         zRC = libz_func(&ctx->stream, flush);
 
          if (deflate_len == 0 && zRC == Z_BUF_ERROR)
              zRC = Z_OK;
@@ -450,7 +450,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             ctx->stream.avail_in = 0; /* should be zero already anyway */
             /* flush the remaining data from the zlib buffers */
-            flush_zlib_buffer(ctx, c, f->c->bucket_alloc, Z_FINISH);
+            flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate, Z_FINISH);
 
             buf = apr_palloc(r->pool, 8);
             putLong((unsigned char *)&buf[0], ctx->crc);
@@ -505,7 +505,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             apr_status_t rv;
 
             /* flush the remaining data from the zlib buffers */
-            zRC = flush_zlib_buffer(ctx, c, f->c->bucket_alloc, Z_SYNC_FLUSH);
+            zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate,
+                                    Z_SYNC_FLUSH);
             if (zRC != Z_OK) {
                 /*
                  * Things screwed up. It is likely that we never return into
