@@ -524,17 +524,50 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 && (!r->path_info || !*r->path_info)))
         && (cache->dir_conf_tested == sec_ent)
         && (strcmp(entry_dir, cache->cached) == 0)) {
+        int familar = 0;
+
         /* Well this looks really familiar!  If our end-result (per_dir_result)
          * didn't change, we have absolutely nothing to do :)
          * Otherwise (as is the case with most dir_merged/file_merged requests)
          * we must merge our dir_conf_merged onto this new r->per_dir_config.
          */
         if (r->per_dir_config == cache->per_dir_result) {
-            return OK;
+            familar = 1;
         }
 
         if (r->per_dir_config == cache->dir_conf_merged) {
             r->per_dir_config = cache->per_dir_result;
+            familar = 1;
+        }
+
+        if (familar) {
+            apr_finfo_t thisinfo;
+            int res;
+            allow_options_t opts;
+            core_dir_config *this_dir;
+
+            this_dir = ap_get_module_config(r->per_dir_config, &core_module);
+            opts = this_dir->opts;
+            /*
+             * If Symlinks are allowed in general we do not need the following
+             * check.
+             */
+            if (!(opts & OPT_SYM_LINKS)) {
+                apr_stat(&thisinfo, r->filename,
+                         APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK,
+                         r->pool);
+                if (thisinfo.filetype == APR_LNK) {
+                    /* Is this a possibly acceptable symlink? */
+                    if ((res = resolve_symlink(r->filename, &thisinfo,
+                                               opts, r->pool)) != OK) {
+                        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                      "Symbolic link not allowed "
+                                      "or link target not accessible: %s",
+                                      r->filename);
+                        return r->status = res;
+                    }
+                }
+            }
             return OK;
         }
 

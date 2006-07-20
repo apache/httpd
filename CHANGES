@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) SECURITY:
+     core: Do not allow internal redirects like the DirectoryIndex of mod_dir
+     to circumvent the symbolic link checks imposed by FollowSymLinks and
+     SymLinksIfOwnerMatch. [Nick Kew, Ruediger Pluem, William Rowe]
+
   *) mod_proxy: Support environment variable interpolation in reverse
      proxying directives [Nick Kew]
 
