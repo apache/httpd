@@ -73,7 +73,7 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
                 *new = next;
                 return APR_SUCCESS;
             }
-            if (next->next)
+            if (!next->next)
                 break;
             next = next->next;
         }
@@ -84,7 +84,6 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     res->base =  apr_pcalloc(globalpool, item_size * item_num);
     if (!res->base)
         return APR_ENOSHMAVAIL;
-    memset(res->base, 0, item_size * item_num);
 
     /* For the chained slotmem stuff */
     res->name = apr_pstrdup(globalpool, fname);
@@ -102,13 +101,14 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
 static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void**mem)
 {
 
-    void *ptr = score->base + score->size * id;
+    void *ptr;
 
     if (!score)
         return APR_ENOSHMAVAIL;
     if (id<0 || id>score->num)
         return APR_ENOSHMAVAIL;
 
+    ptr = score->base + score->size * id;
     if (!ptr)
         return APR_ENOSHMAVAIL;
     *mem = ptr;

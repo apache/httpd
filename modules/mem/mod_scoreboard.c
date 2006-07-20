@@ -82,9 +82,6 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     res->size = item_size;
     res->num = item_num;
     *new = res;
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                "ap_slotmem_create: score %d", score);
-
     return APR_SUCCESS;
 }
 static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void**mem)
@@ -103,8 +100,6 @@ static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void**mem)
     if (!ptr)
         return APR_ENOSHMAVAIL;
     *mem = ptr;
-    ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                "ap_slotmem_mem: score %d", score);
     return APR_SUCCESS;
 }
 

@@ -90,7 +90,7 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
                 *new = next;
                 return APR_SUCCESS;
             }
-            if (next->next)
+            if (!next->next)
                 break;
             next = next->next;
         }
@@ -130,15 +130,14 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
 static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void**mem)
 {
 
-    void *ptr = score->base + score->size * id;
+    void *ptr;
 
     if (!score)
         return APR_ENOSHMAVAIL;
     if (id<0 || id>score->num)
         return APR_ENOSHMAVAIL;
-    if (apr_shm_size_get(score->shm) != score->size * score->num)
-        return APR_ENOSHMAVAIL;
 
+    ptr = score->base + score->size * id;
     if (!ptr)
         return APR_ENOSHMAVAIL;
     *mem = ptr;
@@ -154,10 +153,6 @@ static const slotmem_storage_method storage = {
 /* make sure the shared memory is cleaned */
 static int initialize_cleanup(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
-    ap_slotmem_t *next = globallistmem;
-    while (next) {
-        next = next->next;
-    }
     apr_pool_cleanup_register(p, &globallistmem, cleanup_slotmem, apr_pool_cleanup_null);
     return OK;
 }
