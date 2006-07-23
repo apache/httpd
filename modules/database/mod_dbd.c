@@ -67,6 +67,8 @@ typedef enum { cmd_name, cmd_params, cmd_persist,
                cmd_min, cmd_keep, cmd_max, cmd_exp
 } cmd_parts;
 
+static apr_hash_t *dbd_prepared_defns;
+
 /* a default DBDriver value that'll generate meaningful error messages */
 static const char *const no_dbdriver = "[DBDriver unset]";
 
@@ -144,12 +146,13 @@ static const char *dbd_param_flag(cmd_parms *cmd, void *cfg, int flag)
 DBD_DECLARE_NONSTD(void) ap_dbd_prepare(server_rec *s, const char *query,
                                         const char *label)
 {
-    svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
     dbd_prepared *prepared = apr_pcalloc(s->process->pool, sizeof(dbd_prepared));
     prepared->label = label;
     prepared->query = query;
-    prepared->next = svr->prepared;
-    svr->prepared = prepared;
+    prepared->next = apr_hash_get(dbd_prepared_defns, s->server_hostname,
+                                  APR_HASH_KEY_STRING);
+    apr_hash_set(dbd_prepared_defns, s->server_hostname, APR_HASH_KEY_STRING,
+                 prepared);
 }
 static const char *dbd_prepare(cmd_parms *cmd, void *cfg, const char *query,
                                const char *label)
@@ -299,8 +302,10 @@ static apr_status_t dbd_construct(void **db, void *params, apr_pool_t *pool)
     *db = rec;
     rv = dbd_prepared_init(rec->pool, svr, rec);
     if (rv != APR_SUCCESS) {
+        const char *errmsg = apr_dbd_error(rec->driver, rec->handle, rv);
         ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, rec->pool,
-                      "DBD: failed to initialise prepared SQL statements");
+                      "DBD: failed to initialise prepared SQL statements: %s",
+                      (errmsg ? errmsg : "[???]"));
     }
     return rv;
 }
@@ -602,6 +607,23 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
 }
 #endif
 
+static int dbd_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp)
+{
+   dbd_prepared_defns = apr_hash_make(ptemp);
+   return OK;
+}
+static int dbd_post_config(apr_pool_t *pconf, apr_pool_t *plog,
+                           apr_pool_t *ptemp, server_rec *s)
+{
+    svr_cfg *svr;
+    server_rec *sp;
+    for (sp = s; sp; sp = sp->next) {
+        svr = ap_get_module_config(sp->module_config, &dbd_module);
+        svr->prepared = apr_hash_get(dbd_prepared_defns, sp->server_hostname,
+                                     APR_HASH_KEY_STRING);
+    }
+    return OK;
+}
 static void dbd_hooks(apr_pool_t *pool)
 {
 #if APR_HAS_THREADS
@@ -613,6 +635,8 @@ static void dbd_hooks(apr_pool_t *pool)
     APR_REGISTER_OPTIONAL_FN(ap_dbd_cacquire);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_prepare);
     apr_dbd_init(pool);
+    ap_hook_pre_config(dbd_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_post_config(dbd_post_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA dbd_module = {
