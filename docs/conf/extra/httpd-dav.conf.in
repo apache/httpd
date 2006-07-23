@@ -2,7 +2,7 @@
 # Distributed authoring and versioning (WebDAV)
 #
 # Required modules: mod_dav, mod_dav_fs, mod_setenvif, mod_alias
-#                   mod_auth_digest, mod_authn_file
+#                   mod_auth_digest, mod_authn_file, mod_authz_user
 #
 
 # The following example gives DAV write access to a directory called
@@ -12,7 +12,7 @@
 # on the directory where the DavLockDB is placed and on any directory where
 # "Dav On" is specified.
 
-DavLockDB "@exp_runtimedir@/DavLock"
+DavLockDB "@@ServerRoot@@/DavLock"
 
 Alias /uploads "@@ServerRoot@@/uploads"
 
