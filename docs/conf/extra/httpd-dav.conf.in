@@ -12,7 +12,7 @@
 # on the directory where the DavLockDB is placed and on any directory where
 # "Dav On" is specified.
 
-DavLockDB "@@ServerRoot@@/DavLock"
+DavLockDB "@@ServerRoot@@/var/DavLock"
 
 Alias /uploads "@@ServerRoot@@/uploads"
 
