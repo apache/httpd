@@ -153,7 +153,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       (This was already committed to 2.2.x, and the reports persist.)
         http://issues.apache.org/bugzilla/show_bug.cgi?id=12355
       Patch; http://issues.apache.org/bugzilla/attachment.cgi?id=16495
-      +1: wrowe
+      +1: wrowe, rpluem
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
