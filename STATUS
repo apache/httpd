@@ -149,8 +149,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~wrowe/mod_isapi-416293.zip
       +1: wrowe 
 
-    * mod_ssl: Solve SSLVerifyClient in <Location >
-      (This was already committed to 2.2.x)
+    * mod_ssl: Solve POST incompatible w/ renegotiate HTTPS connection
+      (This was already committed to 2.2.x, and the reports persist.)
         http://issues.apache.org/bugzilla/show_bug.cgi?id=12355
       Patch; http://issues.apache.org/bugzilla/attachment.cgi?id=16495
       +1: wrowe
