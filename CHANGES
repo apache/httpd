@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.3
 
+  *) configure: Add "--with-included-apr" flag to force use of the
+     bundled version of APR at build time.  [Joe Orton]
+
   *) Respect GracefulShutdownTimeout in the worker and event MPMs.
      [Chris Darroch, Garrett Rooney]
 
