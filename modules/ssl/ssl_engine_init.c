@@ -654,8 +654,8 @@ static void ssl_init_ctx_pkcs7_cert_chain(server_rec *s,modssl_ctx_t *mctx)
     int n;
 
     if (!mctx->ssl_ctx->extra_certs)
-	for (n = 1; n < sk_X509_num(certs); ++n)
-	    SSL_CTX_add_extra_chain_cert(mctx->ssl_ctx, sk_X509_value(certs, n));
+        for (n = 1; n < sk_X509_num(certs); ++n)
+            SSL_CTX_add_extra_chain_cert(mctx->ssl_ctx, sk_X509_value(certs, n));
 }
 
 static void ssl_init_ctx_cert_chain(server_rec *s,
@@ -668,8 +668,8 @@ static void ssl_init_ctx_cert_chain(server_rec *s,
     const char *chain = mctx->cert_chain;
 
     if (mctx->pkcs7) {
-	ssl_init_ctx_pkcs7_cert_chain(s,mctx);
-	return;
+        ssl_init_ctx_pkcs7_cert_chain(s, mctx);
+        return;
     }
 
     /*
