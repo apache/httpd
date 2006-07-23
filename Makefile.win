@@ -679,7 +679,7 @@ _installconf:
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
 	    copy "$(INSTDIR)\conf\httpd.conf.default" "$(INSTDIR)\conf\httpd.conf"
 	for %f in ( docs\conf\extra\*.in ) do ( \
-	  copy %f "$(INSTDIR)\conf\extra\%~na.default" <.y && \
+	  copy %f "$(INSTDIR)\conf\extra\%~nf.default" <.y && \
 	  awk -f <<script.awk "docs/conf/extra/%~nf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\extra\%~nf.default" )
     BEGIN { 
 	serverroot = ARGV[2];
