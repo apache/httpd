@@ -157,4 +157,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * worker and event MPMs: fix excessive forking if fork() or child_init 
       take a long time.  PR 39275.
       http://svn.apache.org/viewvc?view=rev&revision=399099
-      +1: trawick, gregames
+      +1: trawick, gregames, pquerna
