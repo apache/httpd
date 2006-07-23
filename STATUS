@@ -85,15 +85,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           http://issues.apache.org/bugzilla/attachment.cgi?id=18355
       +1: chrisd, trawick, niq
 
-    * configure: Add "--with-included-apr" flag to force use of
-    bundled version of APR/APR-util rather than any installed
-    versions found on the system (as preferred by find_ap?.m4).
-       http://svn.apache.org/viewvc?rev=395211&view=rev
-       http://svn.apache.org/viewvc?rev=410828&view=rev
-      Merged version of both for 2.2.x:
-       http://people.apache.org/~jorton/ap_withinc.diff
-    +1: jorton, rpluem, pquerna
-
     * mod_cache: Make caching of reverse SSL proxies possible again.
       PR 39593.
         Trunk version of patch:
