@@ -115,6 +115,7 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->pphrase_dialog_type = SSL_PPTYPE_UNSET;
     mctx->pphrase_dialog_path = NULL;
 
+    mctx->pkcs7               = NULL;
     mctx->cert_chain          = NULL;
 
     mctx->crl_path            = NULL;
