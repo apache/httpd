@@ -472,8 +472,6 @@ _copybin:
 	copy support\win32\$(LONG)\ApacheMonitor.$(src_exe) 	"$(inst_exe)" <.y
 	copy support\win32\$(LONG)\wintty.$(src_exe) 		"$(inst_exe)" <.y
 
-_install: _installbase _installconf
-
 
 # First we create the tree and populate the README so that 
 # whatever happens, all licensing has already propagated.  
@@ -482,7 +480,7 @@ _install: _installbase _installconf
 # Then hit docs of various sorts, then includes and libs,
 # and finally do the .conf magic.
 #
-_installbase:
+_install:
 	echo Y >.y
 	echo A >.A
 	-mkdir "$(INSTDIR)"
@@ -651,9 +649,6 @@ BEGIN {
 	copy $(LONG)\libhttpd.lib 			"$(INSTDIR)\lib" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.exp 	"$(INSTDIR)\lib" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.lib 	"$(INSTDIR)\lib" <.y
-
-
-_installconf:
 	echo Y >.y
 	for %f in ( charset.conv magic mime.types ) do ( \
 	  copy docs\conf\%f "$(INSTDIR)\conf\%f.default" <.y && \
