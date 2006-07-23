@@ -442,6 +442,7 @@ typedef struct {
     const char   *pphrase_dialog_path;
 
     const char  *cert_chain;
+    const char  *pkcs7;
 
     /** certificate revocation list */
     const char  *crl_path;
@@ -510,6 +511,7 @@ const char  *ssl_cmd_SSLCipherSuite(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateKeyFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCertificateChainFile(cmd_parms *, void *, const char *);
+const char  *ssl_cmd_SSLPKCS7CertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCACertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCACertificateFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLCADNRequestPath(cmd_parms *, void *, const char *);
@@ -651,6 +653,9 @@ const char *ssl_asn1_keystr(int keytype);
 const char *ssl_asn1_table_keyfmt(apr_pool_t *p,
                                   const char *id,
                                   int keytype);
+
+STACK_OF(X509) *ssl_read_pkcs7(server_rec *s, const char *pkcs7);
+
 /**  Mutex Support  */
 int          ssl_mutex_init(server_rec *, apr_pool_t *);
 int          ssl_mutex_reinit(server_rec *, apr_pool_t *);
