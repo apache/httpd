@@ -112,8 +112,8 @@ static const command_rec ssl_config_cmds[] = {
                 "SSL Server CA Certificate Chain file "
                 "(`/path/to/file' - PEM encoded)")
     SSL_CMD_SRV(PKCS7CertificateFile, TAKE1,
-		"PKCS#7 file containing server certificate and chain"
-		" certificates (`/path/to/file' - PEM ecnoded)")
+                "PKCS#7 file containing server certificate and chain"
+                " certificates (`/path/to/file' - PEM ecnoded)")
     SSL_CMD_ALL(CACertificatePath, TAKE1,
                 "SSL CA Certificate path "
                 "(`/path/to/dir' - contains PEM encoded files)")
