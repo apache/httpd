@@ -524,7 +524,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 && (!r->path_info || !*r->path_info)))
         && (cache->dir_conf_tested == sec_ent)
         && (strcmp(entry_dir, cache->cached) == 0)) {
-        int familar = 0;
+        int familiar = 0;
 
         /* Well this looks really familiar!  If our end-result (per_dir_result)
          * didn't change, we have absolutely nothing to do :)
@@ -532,15 +532,15 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
          * we must merge our dir_conf_merged onto this new r->per_dir_config.
          */
         if (r->per_dir_config == cache->per_dir_result) {
-            familar = 1;
+            familiar = 1;
         }
 
         if (r->per_dir_config == cache->dir_conf_merged) {
             r->per_dir_config = cache->per_dir_result;
-            familar = 1;
+            familiar = 1;
         }
 
-        if (familar) {
+        if (familiar) {
             apr_finfo_t thisinfo;
             int res;
             allow_options_t opts;
