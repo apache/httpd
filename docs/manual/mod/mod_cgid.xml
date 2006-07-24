@@ -78,8 +78,7 @@
 the cgi daemon</description>
 <syntax>ScriptSock <var>file-path</var></syntax>
 <default>ScriptSock logs/cgisock</default>
-<contextlist><context>server config</context>
-<context>virtual host</context></contextlist>
+<contextlist><context>server config</context></contextlist>
 
 <usage>
     <p>This directive sets the filename prefix of the socket to use for
