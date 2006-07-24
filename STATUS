@@ -76,15 +76,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * Worker MPM: On graceless shutdown or restart, send signals to
-      each worker thread to wake them up if they're polling on a
-      Keep-Alive connection.  PR 38737.
-        Trunk version of patch:
-          http://svn.apache.org/viewvc?view=rev&revision=409715
-        2.2.x version of patch:
-          http://issues.apache.org/bugzilla/attachment.cgi?id=18355
-      +1: chrisd, trawick, niq
-
     * mod_cache: Make caching of reverse SSL proxies possible again.
       PR 39593.
         Trunk version of patch:
