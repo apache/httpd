@@ -134,7 +134,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_deflate: don't choke on flush buckets in INFLATE filter
       PR#39854
       http://svn.apache.org/viewvc?rev=416165&view=rev
-      +1: niq
+      +0: niq
+          (this patch is now superseded by rpluem/wrowe better patch)
       -0: wrowe - on quick glance the line 1091 change looks incomplete,
           and I'm not convinced that we should ignore flush.  Has anyone
           inquired of the proper mechanism or composed the appropriate
@@ -144,3 +145,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               ways how to fix this and take care about the flush buckets.
               I am willing to propose patches, but due to personal time
               constraints they will not show up before the second half of July.
+
+    * Fix virtualhost/per-directory configuration mismatch bug with
+      possible segfault at server startup.
+      http://mail-archives.apache.org/mod_mbox/httpd-dev/200607.mbox/<831327593.20060720023332%40engec.ru>
+      (+ long thread)
+      http://svn.apache.org/viewvc?view=rev&revision=424798
+      +1 niq
