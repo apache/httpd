@@ -70,10 +70,6 @@ Changes with Apache 2.3.0
   *) mod_disk_cache: Delete temporary files if they cannot be renamed to their
      final name. [Davi Arnaut <davi haxent.com.br>]
 
-  *) Worker MPM: On graceless shutdown or restart, send signals to
-     each worker thread to wake them up if they're polling on a
-     Keep-Alive connection.  PR 38737.  [Chris Darroch]
-
   *) Worker and event MPMs: Remove improper scoreboard updates which were
      performed in the event of a fork() failure.  [Chris Darroch]
 
@@ -99,10 +95,6 @@ Changes with Apache 2.3.0
      also enables support for Subversion in that configuration.  This change is 
      completely backwards compatible and passes the perl-framework.  Minor
      mmn bump because I add a field to server_rec.  [Sander Temme]     
-
-  *) worker and event MPMs: fix excessive forking if fork() or child_init 
-     take a long time.  PR 39275.
-     [Greg Ames, Jeff Trawick, Chris Darroch <chrisd pearsoncmg.com> ]
 
   *) Add mod_proxy_fcgi, a FastCGI back end for mod_proxy.
      [Garrett Rooney, Jim Jagielski, Paul Querna]
@@ -180,6 +172,14 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.3
+
+  *) Worker MPM: On graceless shutdown or restart, send signals to
+     each worker thread to wake them up if they're polling on a
+     Keep-Alive connection.  PR 38737.  [Chris Darroch]
+
+  *) worker and event MPMs: fix excessive forking if fork() or child_init 
+     take a long time.  PR 39275.
+     [Greg Ames, Jeff Trawick, Chris Darroch <chrisd pearsoncmg.com> ]
 
   *) Respect GracefulShutdownTimeout in the worker and event MPMs.
      [Chris Darroch, Garrett Rooney]
