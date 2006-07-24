@@ -191,6 +191,7 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
     char *provider_alias;
     char *provider_name;
     const char *errmsg;
+    const authn_provider *provider = NULL;
     ap_conf_vector_t *new_auth_config = ap_create_per_dir_config(cmd->pool);
     authn_alias_srv_conf *authcfg =
         (authn_alias_srv_conf *)ap_get_module_config(cmd->server->module_config,
@@ -222,6 +223,19 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
                            "> directive requires additional arguments", NULL);
     }
 
+    if (strcasecmp(provider_name, provider_alias) == 0) {
+        return apr_pstrcat(cmd->pool, 
+                           "The alias provider name must be different from the base provider name.", NULL);
+    }
+
+    /* Look up the alias provider to make sure that it hasn't already been registered. */
+    provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP, provider_alias, "0");
+    if (provider) {
+        return apr_pstrcat(cmd->pool, "The alias provider ", provider_alias,
+                           " has already be registered previously as either a base provider or an alias provider.", 
+                           NULL);
+    }
+
     /* walk the subsection configuration to get the per_dir config that we will
        merge just before the real provider is called. */
     cmd->override = OR_ALL|ACCESS_CONF;
@@ -229,7 +243,7 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
 
     if (!errmsg) {
         provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool, sizeof(provider_alias_rec));
-        const authn_provider *provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP, provider_name,"0");
+        provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP, provider_name, "0");
 
         /* Save off the new directory config along with the original provider name
            and function pointer data */
