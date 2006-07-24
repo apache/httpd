@@ -218,7 +218,7 @@ static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
                              struct apr_bucket_alloc_t *bucket_alloc,
                              int (*libz_func)(z_streamp, int), int flush)
 {
-    int zRC;
+    int zRC = Z_OK;
     int done = 0;
     unsigned int deflate_len;
     apr_bucket *b;
