@@ -212,6 +212,7 @@ typedef struct deflate_ctx_t
     unsigned char *buffer;
     unsigned long crc;
     apr_bucket_brigade *bb, *proc_bb;
+    int (*libz_end_func)(z_streamp);
 } deflate_ctx;
 
 static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
@@ -249,6 +250,15 @@ static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
              break;
     }
     return zRC;
+}
+
+static apr_status_t deflate_ctx_cleanup(void *data)
+{
+    deflate_ctx *ctx = (deflate_ctx *)data;
+
+    if (ctx)
+        ctx->libz_end_func(&ctx->stream);
+    return APR_SUCCESS;
 }
 
 static apr_status_t deflate_out_filter(ap_filter_t *f,
@@ -399,6 +409,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
         ctx->buffer = apr_palloc(r->pool, c->bufferSize);
+        ctx->libz_end_func = deflateEnd;
 
         zRC = deflateInit2(&ctx->stream, c->compressionlevel, Z_DEFLATED,
                            c->windowSize, c->memlevel,
@@ -417,6 +428,12 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
+        /*
+         * Register a cleanup function to ensure that we cleanup the internal
+         * libz resources.
+         */
+        apr_pool_cleanup_register(r->pool, ctx, deflate_ctx_cleanup,
+                                  apr_pool_cleanup_null);
 
         /* add immortal gzip header */
         e = apr_bucket_immortal_create(gzip_header, sizeof gzip_header,
@@ -490,6 +507,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
 
             deflateEnd(&ctx->stream);
+            /* No need for cleanup any longer */
+            apr_pool_cleanup_kill(r->pool, ctx, deflate_ctx_cleanup);
 
             /* Remove EOS from the old list, and insert into the new. */
             APR_BUCKET_REMOVE(e);
@@ -508,14 +527,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate,
                                     Z_SYNC_FLUSH);
             if (zRC != Z_OK) {
-                /*
-                 * Things screwed up. It is likely that we never return into
-                 * this filter, so clean libz's internal structures to avoid a
-                 * possible memory leak.
-                 */
-                deflateEnd(&ctx->stream);
-                /* Remove ourselves to ensure that we really NEVER come back */
-                ap_remove_output_filter(f);
                 return APR_EGENERAL;
             }
 
@@ -524,14 +535,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
             rv = ap_pass_brigade(f->next, ctx->bb);
             if (rv != APR_SUCCESS) {
-                /*
-                 * Things screwed up. It is likely that we never return into
-                 * this filter, so clean libz's internal structures to avoid a
-                 * possible memory leak.
-                 */
-                deflateEnd(&ctx->stream);
-                /* Remove ourselves to ensure that we really NEVER come back */
-                ap_remove_output_filter(f);
                 return rv;
             }
             continue;
@@ -563,14 +566,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 /* Send what we have right now to the next filter. */
                 rv = ap_pass_brigade(f->next, ctx->bb);
                 if (rv != APR_SUCCESS) {
-                    /*
-                     * Things screwed up. It is likely that we never return into
-                     * this filter, so clean libz's internal structures to avoid a
-                     * possible memory leak.
-                     */
-                    deflateEnd(&ctx->stream);
-                    /* Remove ourselves to ensure that we really NEVER come back */
-                    ap_remove_output_filter(f);
                     return rv;
                 }
             }
@@ -578,14 +573,6 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             zRC = deflate(&(ctx->stream), Z_NO_FLUSH);
 
             if (zRC != Z_OK) {
-                /*
-                 * Things screwed up. It is likely that we never return into
-                 * this filter, so clean libz's internal structures to avoid a
-                 * possible memory leak.
-                 */
-                deflateEnd(&ctx->stream);
-                /* Remove ourselves to ensure that we really NEVER come back */
-                ap_remove_output_filter(f);
                 return APR_EGENERAL;
             }
         }
