@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.3
 
+  *) Worker MPM: On graceless shutdown or restart, send signals to
+     each worker thread to wake them up if they're polling on a
+     Keep-Alive connection.  PR 38737.  [Chris Darroch]
+
   *) worker and event MPMs: fix excessive forking if fork() or child_init 
      take a long time.  PR 39275.
      [Greg Ames, Jeff Trawick, Chris Darroch <chrisd pearsoncmg.com> ]
