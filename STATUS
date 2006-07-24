@@ -76,16 +76,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_cache: Make caching of reverse SSL proxies possible again.
-      PR 39593.
-        Trunk version of patch:
-          http://svn.apache.org/viewvc?rev=407357&view=rev
-          http://svn.apache.org/viewvc?rev=408154&view=rev
-          http://svn.apache.org/viewvc?rev=408729&view=rev
-        2.2.x version of patch:
-          Trunk version works
-      +1: rpluem, jim, pquerna
-
     * Add optional 'scheme://' part to ServerName directive for cases
       where httpd runs behind an external SSL processor and has to
       learn from its configuration how to generate correct
