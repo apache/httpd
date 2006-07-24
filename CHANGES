@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.3
 
+  *) worker and event MPMs: fix excessive forking if fork() or child_init 
+     take a long time.  PR 39275.
+     [Greg Ames, Jeff Trawick, Chris Darroch <chrisd pearsoncmg.com> ]
+
   *) configure: Add "--with-included-apr" flag to force use of the
      bundled version of APR at build time.  [Joe Orton]
 
