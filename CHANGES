@@ -1,6 +1,14 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.3
 
+  *) Add optional 'scheme://' prefix to ServerName directive,
+     allowing correct determination of the canonical server URL
+     for use behind a proxy or offload device handling SSL; fixing
+     redirect generation in those cases. PR 33398. [Sander Temme]
+
+  *) Added server_scheme field to server_rec for above. Minor MMN bump.
+     [Sander Temme]
+
   *) mod_cache: Make caching of reverse SSL proxies possible again. PR 39593.
      [Ruediger Pluem, Joe Orton]
 

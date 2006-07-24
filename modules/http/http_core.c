@@ -99,11 +99,23 @@ static const command_rec http_cmds[] = {
 
 static const char *http_scheme(const request_rec *r)
 {
+    /* 
+     * The http module shouldn't return anything other than 
+     * "http" (the default) or "https".
+     */
+    if (r->server->server_scheme &&
+        (strcmp(r->server->server_scheme, "https") == 0))
+        return "https";
+    
     return "http";
 }
 
 static apr_port_t http_port(const request_rec *r)
 {
+    if (r->server->server_scheme &&
+        (strcmp(r->server->server_scheme, "https") == 0))
+        return DEFAULT_HTTPS_PORT;
+    
     return DEFAULT_HTTP_PORT;
 }
 
