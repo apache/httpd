@@ -76,16 +76,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * Add optional 'scheme://' part to ServerName directive for cases
-      where httpd runs behind an external SSL processor and has to
-      learn from its configuration how to generate correct
-      self-referential URLs. 
-      Code: 
-      http://people.apache.org/~sctemme/servername_22x.patch
-      Documentation:
-      http://svn.apache.org/viewcvs.cgi?diff_format=h&view=rev&rev=406697
-      +1 sctemme, rpluem, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_isapi: Simply backport the host of fixes for compilation on unix,
