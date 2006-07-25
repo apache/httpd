@@ -553,9 +553,22 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
              * check.
              */
             if (!(opts & OPT_SYM_LINKS)) {
-                apr_stat(&thisinfo, r->filename,
-                         APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK,
-                         r->pool);
+                rv = apr_stat(&thisinfo, r->filename,
+                              APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK,
+                              r->pool);
+                if (rv != APR_SUCCESS) {
+                    /*
+                     * This should never happen, because we did a stat on the
+                     * same file, resolving a possible symlink several lines
+                     * above. Therefore do not make a detailed analysis of rv
+                     * in this case for the reason of the failure, just bail out
+                     * with a HTTP_FORBIDDEN in case we hit a race condition
+                     * here.
+                     */
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                                  "access to %s failed", r->uri);
+                    return r->status = HTTP_FORBIDDEN;
+                }
                 if (thisinfo.filetype == APR_LNK) {
                     /* Is this a possibly acceptable symlink? */
                     if ((res = resolve_symlink(r->filename, &thisinfo,
