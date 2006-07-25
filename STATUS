@@ -136,10 +136,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://mail-archives.apache.org/mod_mbox/httpd-dev/200607.mbox/<831327593.20060720023332%40engec.ru>
       (+ long thread)
       http://svn.apache.org/viewvc?view=rev&revision=424798
-      +1 niq
+      +1 niq, rpluem
 
     * mod_authn_alias: Add a check to make sure that the base provider 
        and the alias names are different and also that the alias has 
        not been registered before. PR#40051
        http://issues.apache.org/bugzilla/attachment.cgi?id=18636
-       +1: bnicholes
+       +1: bnicholes, rpluem
