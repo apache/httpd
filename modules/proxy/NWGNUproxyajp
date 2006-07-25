@@ -171,6 +171,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/ajp_header.o \
 	$(OBJDIR)/ajp_msg.o \
 	$(OBJDIR)/ajp_link.o \
+	$(OBJDIR)/ajp_utils.o \
 	$(OBJDIR)/libprews.o \
 	$(EOLIST)
 

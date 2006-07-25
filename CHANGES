@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_ajp: Added cping/cpong support for the AJP protocol.
+     A new worker directive ping=timeout will cause CPING packet
+     to be send expecting CPONG packet within defined timeout.
+     In case the backend is too busy this will fail instead
+     sending the full header.  [Mladen Turk]
+
   *) mod_dbd: Fix dependence on virtualhost configuration in
      defining prepared statements (possible segfault at startup
      in user modules such as mod_authn_dbd).  [Nick Kew]
