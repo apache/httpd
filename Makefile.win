@@ -220,6 +220,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_dbd.mak         CFG="mod_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\aaa
+	 $(MAKE) $(MAKEOPT) -f mod_access_compat.mak  CFG="mod_access_compat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_basic.mak  CFG="mod_auth_basic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_digest.mak CFG="mod_auth_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_anon.mak  CFG="mod_authn_anon - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -387,6 +388,7 @@ _copybin:
 	copy srclib\apr\$(LONG)\libapr-1.$(src_dll) 		"$(inst_dll)" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.$(src_dll) 	"$(inst_dll)" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.$(src_dll) 	"$(inst_dll)" <.y
+	copy modules\aaa\$(LONG)\mod_access_compat.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_digest.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_anon.$(src_so) 	"$(inst_so)" <.y
@@ -674,7 +676,7 @@ BEGIN {
 	if not exist "$(INSTDIR)\conf\httpd.conf" \
 	    copy "$(INSTDIR)\conf\httpd.conf.default" "$(INSTDIR)\conf\httpd.conf"
 	for %f in ( docs\conf\extra\*.in ) do ( \
-	  copy %f "$(INSTDIR)\conf\extra\%~nf.default" <.y && \
+	  copy %f "$(INSTDIR)\conf\extra\%~na.default" <.y && \
 	  awk -f <<script.awk "docs/conf/extra/%~nf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\extra\%~nf.default" )
     BEGIN { 
 	serverroot = ARGV[2];
