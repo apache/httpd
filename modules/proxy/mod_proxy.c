@@ -244,6 +244,15 @@ static const char *set_worker_param(apr_pool_t *p,
         else
             worker->flush_wait = ival * 1000;    /* change to microseconds */
     }
+    else if (!strcasecmp(key, "ping")) {
+        /* Ping/Pong timeout in seconds.
+         */
+        ival = atoi(val);
+        if (ival < 1)
+            return "Ping/Pong timeout must be at least one second";
+        worker->ping_timeout = apr_time_from_sec(ival);
+        worker->ping_timeout_set = 1;
+    }
     else {
         return "unknown Worker parameter";
     }
@@ -423,7 +432,7 @@ static const char *proxy_interpolate(request_rec *r, const char *str)
     const char *var;
     const char *val;
     const char *firstpart;
-    
+
     start = ap_strstr_c(str, "${");
     if (start == NULL) {
         return str;
