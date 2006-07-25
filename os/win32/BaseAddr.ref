@@ -73,3 +73,4 @@ mod_echo.so             0x6FA40000    0x00010000
 mod_authn_dbd.so        0x6FA30000    0x00010000
 mod_dbd.so              0x6FA20000    0x00010000
 mod_proxy.so            0x6FA00000    0x00020000
+mod_access_compat.so    0x6F9F0000    0x00010000
