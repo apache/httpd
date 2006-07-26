@@ -97,12 +97,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        +1: bnicholes, wrowe, fielding
          wrowe observes; CONST==result is a horrid style convention
 
-    * mod_speling: add option to do case-normalisation only
-      Patch submitted by Olivier Thereaux
-      http://svn.apache.org/viewvc?view=rev&revision=411849
-      http://svn.apache.org/viewvc?rev=414146&view=rev
-      +1: niq, pquerna, fielding
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Bundled PCRE: backport r381783 from trunk
