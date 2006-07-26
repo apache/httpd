@@ -81,19 +81,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * Bundled PCRE: backport r381783 from trunk
       Fix brokenness on certain platforms when building with -DDEBUG.
       http://svn.apache.org/viewvc?view=rev&revision=381783
-      +1 sctemme
+      +1 sctemme, fielding
 
     * mod_isapi: Simply backport the host of fixes for compilation on unix,
       PR#'s 15993 29098 30022 16637 30033 28089
       by pushing to trunk/ rev 416293 of modules/arch/win32/mod_isapi.[ch]
       which compiles without changes.  Source + Binary posted at
         http://people.apache.org/~wrowe/mod_isapi-416293.zip
-      +1 wrowe 
+      +1 wrowe , fielding
 
     * Fix dbd merge_config function to support prepared statements
       PR#39386
       http://svn.apache.org/viewcvs.cgi?rev=396310&view=rev
-      +1 niq, rpluem
+      +1 niq, rpluem, fielding
 
     * mod_cache: Do not overwrite the Content-Type in the cache, for
       successfully revalidated cached objects. PR 39647.
@@ -101,20 +101,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewvc?rev=410370&view=rev
         2.2.x version of patch:
           Trunk version works
-      +1: rpluem, pquerna
+      +1: rpluem, pquerna, fielding
 
     * mod_authnz_ldap: Fix a problem with invalid auth error detection 
        for LDAP client SDKs that don't support LDAP_SECURITY_ERROR 
        macro. PR#39529
        http://svn.apache.org/viewvc?view=rev&revision=411306
-       +1: bnicholes, wrowe
+       +1: bnicholes, wrowe, fielding
          wrowe observes; CONST==result is a horrid style convention
 
     * mod_speling: add option to do case-normalisation only
       Patch submitted by Olivier Thereaux
       http://svn.apache.org/viewvc?view=rev&revision=411849
       http://svn.apache.org/viewvc?rev=414146&view=rev
-      +1: niq, pquerna
+      +1: niq, pquerna, fielding
 
     * mod_deflate: don't choke on flush buckets in INFLATE filter
       PR#39854
@@ -136,10 +136,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://mail-archives.apache.org/mod_mbox/httpd-dev/200607.mbox/<831327593.20060720023332%40engec.ru>
       (+ long thread)
       http://svn.apache.org/viewvc?view=rev&revision=424798
-      +1 niq, rpluem
+      +1 niq, rpluem, fielding
 
     * mod_authn_alias: Add a check to make sure that the base provider 
        and the alias names are different and also that the alias has 
        not been registered before. PR#40051
        http://issues.apache.org/bugzilla/attachment.cgi?id=18636
-       +1: bnicholes, rpluem
+       +1: bnicholes, rpluem, fielding
