@@ -57,8 +57,8 @@ AP_DECLARE(apr_status_t) (* slotmem)(ap_slotmem_t *s, ap_slotmem_callback_fn_t *
  * This would create shared memory, basically.
  * @param pointer to store the address of the scoreboard.
  * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
- * @param item_size size of each idem
- * @param item_num number of idem to create.
+ * @param item_size size of each item
+ * @param item_num number of item to create.
  * @param pool is pool used to create scoreboard
  * @return APR_SUCCESS if all went well
  */
@@ -69,8 +69,8 @@ AP_DECLARE(apr_status_t) (* ap_slotmem_create)(ap_slotmem_t **new, const char *n
  * This would attach to  shared memory, basically.
  * @param pointer to store the address of the scoreboard.
  * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
- * @param item_size size of each idem
- * @param item_num max number of idem.
+ * @param item_size size of each item
+ * @param item_num max number of item.
  * @param pool is pool to memory allocate.
  * @return APR_SUCCESS if all went well
  */
