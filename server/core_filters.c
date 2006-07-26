@@ -328,10 +328,12 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
                                        apr_size_t *cumulative_bytes_written,
                                        conn_rec *c);
 
+#if APR_HAS_SENDFILE
 static apr_status_t sendfile_nonblocking(apr_socket_t *s,
                                          apr_bucket_brigade *bb,
                                          apr_size_t *cumulative_bytes_written,
                                          conn_rec *c);
+#endif
 
 #define THRESHOLD_MIN_WRITE 4096
 #define THRESHOLD_MAX_BUFFER 65536
