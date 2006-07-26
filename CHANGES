@@ -51,9 +51,6 @@ Changes with Apache 2.3.0
      The default is none as this is far greater debugging resolution than 
      the typical administrator is prepared to untangle.  [William Rowe]
 
-  *) mod_speling: Add directive to deal with case corrections only
-     and ignore other misspellings [Olivier Thereaux  <ot w3.org>]
-
   *) mod_disk_cache: If possible, check if the size of an object to cache is
      within the configured boundaries before actually saving data.
      [Niklas Edmundsson <nikke acc.umu.se>]
@@ -66,17 +63,11 @@ Changes with Apache 2.3.0
      LDAP client SDKs that don't support LDAP_SECURITY_ERROR macro. PR 39529.
      [Ray Price <dohrayme yahoo.com>, Josh Fenlason <jfenlason ptc.com>]
 
-  *) mod_cache: Do not overwrite the Content-Type in the cache, for
-     successfully revalidated cached objects. PR 39647. [Ruediger Pluem]
-
   *) mod_disk_cache: Delete temporary files if they cannot be renamed to their
      final name. [Davi Arnaut <davi haxent.com.br>]
 
   *) Worker and event MPMs: Remove improper scoreboard updates which were
      performed in the event of a fork() failure.  [Chris Darroch]
-
-  *) mod_cache: Make caching of reverse SSL proxies possible again. PR 39593.
-     [Ruediger Pluem, Joe Orton]
 
   *) Add support for fcgi:// proxies to mod_rewrite.
      [Markus Schiegl <ms schiegl.com>]
@@ -88,15 +79,6 @@ Changes with Apache 2.3.0
 
   *) Remove allocation of memory for unused array of lb_score pointers
      in ap_init_scoreboard().  [Chris Darroch <chrisd pearsoncmg.com>]
-
-  *) core, mod_http: add optional 'scheme://' prefix to ServerName directive. 
-     For 'https', mod_http returns "https" for the ap_hook_http_scheme and
-     DEFAULT_HTTPS_PORT for ap_hook_default_port.  This fixes Redirect
-     responses to requests for directories without a trailing slash when
-     httpd runs behind a proxy or offload device that processes SSL.  It
-     also enables support for Subversion in that configuration.  This change is 
-     completely backwards compatible and passes the perl-framework.  Minor
-     mmn bump because I add a field to server_rec.  [Sander Temme]     
 
   *) Add mod_proxy_fcgi, a FastCGI back end for mod_proxy.
      [Garrett Rooney, Jim Jagielski, Paul Querna]
@@ -175,17 +157,37 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.3
 
+  *) mod_cache: Do not overwrite the Content-Type in the cache, for
+     successfully revalidated cached objects. PR 39647. [Ruediger Pluem]
+
+  *) mod_speling: Add directive to deal with case corrections only
+     and ignore other misspellings [Olivier Thereaux  <ot w3.org>]
+
   *) mod_dbd: Fix dependence on virtualhost configuration in
      defining prepared statements (possible segfault at startup
      in user modules such as mod_authn_dbd).  [Nick Kew]
+
+  *) Add optional 'scheme://' prefix to ServerName directive,
+     allowing correct determination of the canonical server URL
+     for use behind a proxy or offload device handling SSL; fixing
+     redirect generation in those cases. PR 33398. [Sander Temme]
+
+  *) Added server_scheme field to server_rec for above. Minor MMN bump.
+     [Sander Temme]
+
+  *) mod_cache: Make caching of reverse SSL proxies possible again. PR 39593.
+     [Ruediger Pluem, Joe Orton]
 
   *) Worker MPM: On graceless shutdown or restart, send signals to
      each worker thread to wake them up if they're polling on a
      Keep-Alive connection.  PR 38737.  [Chris Darroch]
 
-  *) worker and event MPMs: fix excessive forking if fork() or child_init 
+  *) worker and event MPMs: fix excessive forking if fork() or child_init
      take a long time.  PR 39275.
      [Greg Ames, Jeff Trawick, Chris Darroch <chrisd pearsoncmg.com> ]
+
+  *) configure: Add "--with-included-apr" flag to force use of the
+     bundled version of APR at build time.  [Joe Orton]
 
   *) Respect GracefulShutdownTimeout in the worker and event MPMs.
      [Chris Darroch, Garrett Rooney]
