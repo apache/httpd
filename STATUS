@@ -147,6 +147,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       which compiles with the addition of [apr_]brigade_insert_file() as
       cribbed from apr-util 1.x trunk.  Source + Binary posted at
         http://people.apache.org/~wrowe/mod_isapi-416293.zip
+      and delta posted at
+        http://people.apache.org/~wrowe/mod_isapi-416293-to-httpd-2.0.patch
       +1: wrowe 
 
     * mod_ssl: Solve POST incompatible w/ renegotiate HTTPS connection
