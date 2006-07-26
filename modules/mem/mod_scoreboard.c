@@ -87,7 +87,19 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
 
 static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)
 {
-    return(ap_slotmem_create(new, name, item_size, item_num, pool));
+    apr_size_t size;
+    int num;
+    apr_status_t rv;
+
+    size = sizeof(lb_score);
+    /* XXX: proxy_lb_workers only returns something valid after parsing the configuration */
+    num =  proxy_lb_workers();
+    rv = ap_slotmem_create(new, name, size, num, pool);
+    if (rv == APR_SUCCESS) {
+        *item_size = size;
+        *item_num = num;
+    }
+    return rv;
 }
 
 static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void**mem)
@@ -112,6 +124,7 @@ static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void**mem)
 static const slotmem_storage_method storage = {
     &ap_slotmem_do,
     &ap_slotmem_create,
+    &ap_slotmem_attach,
     &ap_slotmem_mem
 };
 
