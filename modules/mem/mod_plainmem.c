@@ -99,7 +99,7 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     return APR_SUCCESS;
 }
 
-static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)
+static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool)
 {
     void *slotmem = NULL;
     ap_slotmem_t *res;
