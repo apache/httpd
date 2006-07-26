@@ -82,14 +82,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://issues.apache.org/bugzilla/attachment.cgi?id=18636
        +1: bnicholes, rpluem, fielding
 
-    * mod_cache: Do not overwrite the Content-Type in the cache, for
-      successfully revalidated cached objects. PR 39647.
-        Trunk version of patch:
-          http://svn.apache.org/viewvc?rev=410370&view=rev
-        2.2.x version of patch:
-          Trunk version works
-      +1: rpluem, pquerna, fielding
-
     * mod_authnz_ldap: Fix a problem with invalid auth error detection 
        for LDAP client SDKs that don't support LDAP_SECURITY_ERROR 
        macro. PR#39529

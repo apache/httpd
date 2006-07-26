@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.3
 
+  *) mod_cache: Do not overwrite the Content-Type in the cache, for
+     successfully revalidated cached objects. PR 39647. [Ruediger Pluem]
+
   *) mod_speling: Add directive to deal with case corrections only
      and ignore other misspellings [Olivier Thereaux  <ot w3.org>]
 

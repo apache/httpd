@@ -118,6 +118,17 @@ CACHE_DECLARE(void) ap_cache_accept_headers(cache_handle_t *h, request_rec *r,
     if (v) {
         ap_set_content_type(r, v);
         apr_table_unset(h->resp_hdrs, "Content-Type");
+        /*
+         * Also unset possible Content-Type headers in r->headers_out and
+         * r->err_headers_out as they may be different to what we have received
+         * from the cache.
+         * Actually they are not needed as r->content_type set by
+         * ap_set_content_type above will be used in the store_headers functions
+         * of the storage providers as a fallback and the HTTP_HEADER filter
+         * does overwrite the Content-Type header with r->content_type anyway.
+         */
+        apr_table_unset(r->headers_out, "Content-Type");
+        apr_table_unset(r->err_headers_out, "Content-Type");
     }
 
     /* If the cache gave us a Last-Modified header, we can't just
