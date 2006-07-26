@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.3
 
+  *) mod_speling: Add directive to deal with case corrections only
+     and ignore other misspellings [Olivier Thereaux  <ot w3.org>]
+
   *) mod_dbd: Fix dependence on virtualhost configuration in
      defining prepared statements (possible segfault at startup
      in user modules such as mod_authn_dbd).  [Nick Kew]
