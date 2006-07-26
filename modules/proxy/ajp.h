@@ -458,6 +458,17 @@ apr_status_t ajp_parse_header(request_rec *r, proxy_dir_conf *conf,
 apr_status_t  ajp_parse_data(request_rec  *r, ajp_msg_t *msg,
                              apr_uint16_t *len, char **ptr);
 
+
+/** 
+ * Handle the CPING/CPONG messages
+ * @param sock      backend socket
+ * @param r         current request
+ * @param timeout   time window for receiving cpong reply
+ * @return          APR_SUCCESS or error
+ */
+apr_status_t ajp_handle_cping_cpong(apr_socket_t *sock,
+                                    request_rec *r,
+                                    apr_interval_time_t timeout);
 /** @} */
 
 #endif /* AJP_H */
