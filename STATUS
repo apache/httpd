@@ -103,6 +103,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Fix brokenness on certain platforms when building with -DDEBUG.
       http://svn.apache.org/viewvc?view=rev&revision=381783
       +1 sctemme, fielding
+      -1 niq: Why are we hacking a third-party package as bundled,
+              rather than upstream?  This has potential for chaos
+              for modules (and we have a history of PCRE trouble)
+              as well as a maintenance nightmare!
 
     * mod_isapi: Simply backport the host of fixes for compilation on unix,
       PR#'s 15993 29098 30022 16637 30033 28089
