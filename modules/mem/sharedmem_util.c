@@ -171,7 +171,7 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
                 *item_num = next->num;
                 return APR_SUCCESS;
             }
-            if (next->next)
+            if (!next->next)
                 break;
             next = next->next;
         }
