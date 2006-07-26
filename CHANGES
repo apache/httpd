@@ -59,10 +59,6 @@ Changes with Apache 2.3.0
      checking whether to send a Warning header for a stale response.
      PR 39713. [Owen Taylor <otaylor redhat.com>]
 
-  *) mod_authnz_ldap: Fix a problem with invalid auth error detection for
-     LDAP client SDKs that don't support LDAP_SECURITY_ERROR macro. PR 39529.
-     [Ray Price <dohrayme yahoo.com>, Josh Fenlason <jfenlason ptc.com>]
-
   *) mod_disk_cache: Delete temporary files if they cannot be renamed to their
      final name. [Davi Arnaut <davi haxent.com.br>]
 
@@ -156,6 +152,14 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.3
+
+  *) mod_authn_alias: Add a check to make sure that the base provider and the
+     alias names are different and also that the alias has not been registered
+     before. PR 40051. [Brad Nicholes]
+
+  *) mod_authnz_ldap: Fix a problem with invalid auth error detection for LDAP
+     client SDKs that don't support the LDAP_SECURITY_ERROR macro. PR 39529.
+     [Ray Price <dohrayme yahoo.com>, Josh Fenlason <jfenlason ptc.com>]
 
   *) mod_cache: Do not overwrite the Content-Type in the cache, for
      successfully revalidated cached objects. PR 39647. [Ruediger Pluem]
