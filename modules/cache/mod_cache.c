@@ -56,6 +56,8 @@ static int cache_url_handler(request_rec *r, int lookup)
     cache_request_rec *cache;
     cache_server_conf *conf;
     apr_bucket_brigade *out;
+    ap_filter_t *next;
+    ap_filter_rec_t *cache_out_handle;
 
     /* Delay initialization until we know we are handling a GET */
     if (r->method_number != M_GET) {
@@ -213,12 +215,29 @@ static int cache_url_handler(request_rec *r, int lookup)
      * or not.
      */
     if (r->main) {
-        ap_add_output_filter_handle(cache_out_subreq_filter_handle, NULL,
-                                    r, r->connection);
+        cache_out_handle = cache_out_subreq_filter_handle;
     }
     else {
-        ap_add_output_filter_handle(cache_out_filter_handle, NULL,
-                                    r, r->connection);
+        cache_out_handle = cache_out_filter_handle;
+    }
+    ap_add_output_filter_handle(cache_out_handle, NULL, r, r->connection);
+
+    /*
+     * Remove all filters that are before the cache_out filter. This ensures
+     * that we kick off the filter stack with our cache_out filter being the
+     * first in the chain. This make sense because we want to restore things
+     * in the same manner as we saved them.
+     * There may be filters before our cache_out filter, because
+     *
+     * 1. We call ap_set_content_type during cache_select. This causes
+     *    Content-Type specific filters to be added.
+     * 2. We call the insert_filter hook. This causes filters e.g. like
+     *    the ones set with SetOutputFilter to be added.
+     */
+    next = r->output_filters;
+    while (next && (next->frec != cache_out_handle)) {
+        ap_remove_output_filter(next);
+        next = next->next;
     }
 
     /* kick off the filter stack */
