@@ -65,6 +65,17 @@ AP_DECLARE(apr_status_t) (* slotmem)(ap_slotmem_t *s, ap_slotmem_callback_fn_t *
 AP_DECLARE(apr_status_t) (* ap_slotmem_create)(ap_slotmem_t **new, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool);
 
 /**
+ * attach to an existing slotmem.
+ * This would attach to  shared memory, basically.
+ * @param pointer to store the address of the scoreboard.
+ * @param name is a key used for debugging and in mod_status output or allow another process to share this space.
+ * @param item_size size of each idem
+ * @param item_num max number of idem.
+ * @param pool is pool to memory allocate.
+ * @return APR_SUCCESS if all went well
+ */
+AP_DECLARE(apr_status_t) (* ap_slotmem_attach)(ap_slotmem_t **new, const char *name, apr_size_t *item_size, int *item_num, apr_pool_t *pool);
+/**
  * get the memory associated with this worker slot.
  * @param s ap_slotmem_t to use.
  * @param item_id item to return for 0 to item_num
