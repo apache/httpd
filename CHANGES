@@ -8,10 +8,6 @@ Changes with Apache 2.3.0
      In case the backend is too busy this will fail instead
      sending the full header.  [Mladen Turk]
 
-  *) mod_dbd: Fix dependence on virtualhost configuration in
-     defining prepared statements (possible segfault at startup
-     in user modules such as mod_authn_dbd).  [Nick Kew]
-
   *) core: Do not allow internal redirects like the DirectoryIndex of mod_dir
      to circumvent the symbolic link checks imposed by FollowSymLinks and
      SymLinksIfOwnerMatch. [Nick Kew, Ruediger Pluem, William Rowe]
@@ -178,6 +174,10 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.3
+
+  *) mod_dbd: Fix dependence on virtualhost configuration in
+     defining prepared statements (possible segfault at startup
+     in user modules such as mod_authn_dbd).  [Nick Kew]
 
   *) Worker MPM: On graceless shutdown or restart, send signals to
      each worker thread to wake them up if they're polling on a
