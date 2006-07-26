@@ -93,6 +93,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       by pushing to trunk/ rev 416293 of modules/arch/win32/mod_isapi.[ch]
       which compiles without changes.  Source + Binary posted at
         http://people.apache.org/~wrowe/mod_isapi-416293.zip
+      and delta posted at
+        http://people.apache.org/~wrowe/mod_isapi-416293-to-httpd-2.2.patch
       +1 wrowe , fielding
 
     * mod_deflate: don't choke on flush buckets in INFLATE filter
