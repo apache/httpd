@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache HTTP Server: Notes about Compatibility with
+    NCSA's Server</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Compatibility Notes with NCSA's Server</h1>
+    <hr />
+    While Apache is for the most part a drop-in replacement for
+    NCSA's httpd, there are a couple gotcha's to watch out for.
+    These are mostly due to the fact that the parser for config and
+    access control files was rewritten from scratch, so certain
+    liberties the earlier servers took may not be available here.
+    These are all easily fixable. If you know of other problems
+    that belong here, <a
+    href="http://httpd.apache.org/bug_report.html">let us know.</a>
+    
+
+    <p>Please also check the <a
+    href="known_client_problems.html">known client problems</a>
+    page.</p>
+
+    <ol>
+      <li>As of Apache 1.3.1, methods named in a <a
+      href="../mod/core.html#limit"><samp>&lt;Limit&gt;</samp></a>
+      section <em>must</em> be listed in upper-case. Lower- or
+      mixed-case method names will result in a configuration
+      error.</li>
+
+      <li>The basic mod_auth <code>AuthGroupFile</code>-specified
+      group file format allows commas between user names - Apache
+      does not.</li>
+
+      <li>If you follow the NCSA guidelines for setting up access
+      restrictions based on client domain, you may well have added
+      entries for <code>AuthType, AuthName, AuthUserFile</code> or
+      <code>AuthGroupFile</code>. <strong>None</strong> of these
+      are needed (or appropriate) for restricting access based on
+      client domain. When Apache sees <code>AuthType</code> it
+      (reasonably) assumes you are using some authorization type
+      based on username and password. Please remove
+      <code>AuthType</code>, it's unnecessary even for NCSA.</li>
+
+      <li><code>OldScriptAlias</code> is no longer supported.</li>
+
+      <li><code>exec cgi=""</code> produces reasonable
+      <strong>malformed header</strong> responses when used to
+      invoke non-CGI scripts.<br />
+       The NCSA code ignores the missing header (bad idea).<br />
+       Solution: write CGI to the CGI spec and use
+      <code>include&nbsp;virtual</code>, or use <code>exec
+      cmd=""</code> instead.</li>
+
+      <li>Icons for FancyIndexing broken - well, no, they're not
+      broken, we've just upgraded the icons from flat .xbm files to
+      pretty and much smaller .gif files, courtesy of <a
+      href="mailto:kevinh@eit.com">Kevin Hughes</a> at <a
+      href="http://www.eit.com/">EIT</a>. If you are using the same
+      srm.conf from an old distribution, make sure you add the new
+      <a href="../mod/mod_autoindex.html#addicon">AddIcon</a>, <a
+      href="../mod/mod_autoindex.html#addiconbytype">AddIconByType</a>,
+      and <a
+      href="../mod/mod_autoindex.html#defaulticon">DefaultIcon</a>
+      directives.</li>
+
+      <li>Apache versions before 1.2b1 will ignore the last line of
+      configuration files if the last line does not have a trailing
+      newline. This affects configuration files (httpd.conf,
+      access.conf and srm.conf), and htpasswd and htgroup
+      files.</li>
+
+      <li>Apache does not permit commas delimiting the methods in
+      &lt;Limit&gt;.</li>
+
+      <li>Apache's <code>&lt;VirtualHost&gt;</code> treats all
+      addresses as "optional" (<em>i.e.</em>, the server should
+      continue booting if it can't resolve the address). Whereas in
+      NCSA the default is to fail booting unless an added
+      <code>optional</code> keyword is included.</li>
+
+      <li>Apache does not implement <code>OnDeny</code>; use <a
+      href="../mod/core.html#errordocument"><code>ErrorDocument</code></a>
+      instead.</li>
+
+      <li>Apache (as of 1.3) always performs the equivalent of
+      <code>HostnameLookups minimal</code>. <code>minimal</code> is
+      not an option to <a
+      href="../mod/core.html#hostnamelookups"><code>HostnameLookups</code></a>.</li>
+
+      <li>To embed spaces in directive arguments NCSA used a
+      backslash before the space. Apache treats backslashes as
+      normal characters. To embed spaces surround the argument with
+      double-quotes instead.</li>
+
+      <li>Apache does not implement the NCSA <code>referer</code>
+      directive. See <a
+      href="http://bugs.apache.org/index/full/968">PR#968</a> for a
+      few brief suggestions on alternative ways to implement the
+      same thing under Apache.</li>
+
+      <li>Apache does not allow ServerRoot settings inside a
+      VirtualHost container. There is only one global ServerRoot in
+      Apache; any desired changes in paths for virtual hosts need
+      to be made with the explicit directives, <em>e.g.</em>,
+      DocumentRoot, TransferLog, <em>etc.</em></li>
+
+      <li>The <code>AddType</code> directive cannot be used to set
+      the type of particular files. Instead, you can scope you
+      directives using &lt;Files&gt; blocks.</li>
+    </ol>
+    More to come when we notice them.... 
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

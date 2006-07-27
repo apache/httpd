@@ -1,0 +1,198 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Stopping and Restarting Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Stopping and Restarting Apache</h1>
+
+    <p>This document covers stopping and restarting Apache on Unix
+    and Cygwin only. Windows users should see <a
+    href="windows.html#signal">Signalling Apache when
+    running</a>.</p>
+
+    <p>You will notice many <code>httpd</code> executables running
+    on your system, but you should not send signals to any of them
+    except the parent, whose pid is in the <a
+    href="mod/core.html#pidfile">PidFile</a>. That is to say you
+    shouldn't ever need to send signals to any process except the
+    parent. There are three signals that you can send the parent:
+    <code>TERM</code>, <code>HUP</code>, and <code>USR1</code>,
+    which will be described in a moment.</p>
+
+    <p>To send a signal to the parent you should issue a command
+    such as:</p>
+
+    <blockquote>
+<pre>
+    kill -TERM `cat /usr/local/apache/logs/httpd.pid`
+</pre>
+    </blockquote>
+    You can read about its progress by issuing: 
+
+    <blockquote>
+<pre>
+    tail -f /usr/local/apache/logs/error_log
+</pre>
+    </blockquote>
+    Modify those examples to match your <a
+    href="mod/core.html#serverroot">ServerRoot</a> and <a
+    href="mod/core.html#pidfile">PidFile</a> settings. 
+
+    <p>As of Apache 1.3 we provide a script called <a
+    href="programs/apachectl.html">apachectl</a> which can be used
+    to start, stop, and restart Apache. It may need a little
+    customization for your system, see the comments at the top of
+    the script.</p>
+
+    <h3>TERM Signal: stop now</h3>
+
+    <p>Sending the <code>TERM</code> signal to the parent causes it
+    to immediately attempt to kill off all of its children. It may
+    take it several seconds to complete killing off its children.
+    Then the parent itself exits. Any requests in progress are
+    terminated, and no further requests are served.</p>
+
+    <h3>HUP Signal: restart now</h3>
+
+    <p>Sending the <code>HUP</code> signal to the parent causes it
+    to kill off its children like in <code>TERM</code> but the
+    parent doesn't exit. It re-reads its configuration files, and
+    re-opens any log files. Then it spawns a new set of children
+    and continues serving hits.</p>
+
+    <p>Users of the <a href="mod/mod_status.html">status module</a>
+    will notice that the server statistics are set to zero when a
+    <code>HUP</code> is sent.</p>
+
+    <p><strong>Note:</strong> If your configuration file has errors
+    in it when you issue a restart then your parent will not
+    restart, it will exit with an error. See below for a method of
+    avoiding this.</p>
+
+    <h3>USR1 Signal: graceful restart</h3>
+
+    <p><strong>Note:</strong> prior to release 1.2b9 this code is
+    quite unstable and shouldn't be used at all.</p>
+
+    <p>The <code>USR1</code> signal causes the parent process to
+    <em>advise</em> the children to exit after their current
+    request (or to exit immediately if they're not serving
+    anything). The parent re-reads its configuration files and
+    re-opens its log files. As each child dies off the parent
+    replaces it with a child from the new <em>generation</em> of
+    the configuration, which begins serving new requests
+    immediately.</p>
+
+    <p>This code is designed to always respect the <a
+    href="mod/core.html#maxclients">MaxClients</a>, <a
+    href="mod/core.html#minspareservers">MinSpareServers</a>, and
+    <a href="mod/core.html#maxspareservers">MaxSpareServers</a>
+    settings. Furthermore, it respects <a
+    href="mod/core.html#startservers">StartServers</a> in the
+    following manner: if after one second at least StartServers new
+    children have not been created, then create enough to pick up
+    the slack. This is to say that the code tries to maintain both
+    the number of children appropriate for the current load on the
+    server, and respect your wishes with the StartServers
+    parameter.</p>
+
+    <p>Users of the <a href="mod/mod_status.html">status module</a>
+    will notice that the server statistics are <strong>not</strong>
+    set to zero when a <code>USR1</code> is sent. The code was
+    written to both minimize the time in which the server is unable
+    to serve new requests (they will be queued up by the operating
+    system, so they're not lost in any event) and to respect your
+    tuning parameters. In order to do this it has to keep the
+    <em>scoreboard</em> used to keep track of all children across
+    generations.</p>
+
+    <p>The status module will also use a <code>G</code> to indicate
+    those children which are still serving requests started before
+    the graceful restart was given.</p>
+
+    <p>At present there is no way for a log rotation script using
+    <code>USR1</code> to know for certain that all children writing
+    the pre-restart log have finished. We suggest that you use a
+    suitable delay after sending the <code>USR1</code> signal
+    before you do anything with the old log. For example if most of
+    your hits take less than 10 minutes to complete for users on
+    low bandwidth links then you could wait 15 minutes before doing
+    anything with the old log.</p>
+
+    <p><strong>Note:</strong> If your configuration file has errors
+    in it when you issue a restart then your parent will not
+    restart, it will exit with an error. In the case of graceful
+    restarts it will also leave children running when it exits.
+    (These are the children which are "gracefully exiting" by
+    handling their last request.) This will cause problems if you
+    attempt to restart the server -- it will not be able to bind to
+    its listening ports. Before doing a restart, you can check the
+    syntax of the configuration files with the <code>-t</code>
+    command line argument (see <a
+    href="programs/httpd.html">httpd</a> ). This still will not
+    guarantee that the server will restart correctly. To check the
+    semantics of the configuration files as well as the syntax, you
+    can try starting httpd as a non-root user. If there are no
+    errors it will attempt to open its sockets and logs and fail
+    because it's not root (or because the currently running httpd
+    already has those ports bound). If it fails for any other
+    reason then it's probably a config file error and the error
+    should be fixed before issuing the graceful restart.</p>
+
+    <h3>Appendix: signals and race conditions</h3>
+
+    <p>Prior to Apache 1.2b9 there were several <em>race
+    conditions</em> involving the restart and die signals (a simple
+    description of race condition is: a time-sensitive problem, as
+    in if something happens at just the wrong time it won't behave
+    as expected). For those architectures that have the "right"
+    feature set we have eliminated as many as we can. But it should
+    be noted that there still do exist race conditions on certain
+    architectures.</p>
+
+    <p>Architectures that use an on disk <a
+    href="mod/core.html#scoreboardfile">ScoreBoardFile</a> have the
+    potential to corrupt their scoreboards. This can result in the
+    "bind: Address already in use" (after <code>HUP</code>) or
+    "long lost child came home!" (after <code>USR1</code>). The
+    former is a fatal error, while the latter just causes the
+    server to lose a scoreboard slot. So it might be advisable to
+    use graceful restarts, with an occasional hard restart. These
+    problems are very difficult to work around, but fortunately
+    most architectures do not require a scoreboard file. See the <a
+    href="mod/core.html#scoreboardfile">ScoreBoardFile</a>
+    documentation for a architecture uses it.</p>
+
+    <p><code>NEXT</code> and <code>MACHTEN</code> (68k only) have
+    small race conditions which can cause a restart/die signal to
+    be lost, but should not cause the server to do anything
+    otherwise problematic. 
+    <!-- they don't have sigaction, or we're not using it -djg -->
+    </p>
+
+    <p>All architectures have a small race condition in each child
+    involving the second and subsequent requests on a persistent
+    HTTP connection (KeepAlive). It may exit after reading the
+    request line but before reading any of the request headers.
+    There is a fix that was discovered too late to make 1.2. In
+    theory this isn't an issue because the KeepAlive client has to
+    expect these events because of network latencies and server
+    timeouts. In practice it doesn't seem to affect anything either
+    -- in a test case the server was restarted twenty times per
+    second and clients successfully browsed the site without
+    getting broken images or empty documents. 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

@@ -1,0 +1,325 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
+
+    <title>Compilation et installation d'Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Compilation et installation d'Apache
+    1.3</h1>
+
+    <p>Ce document d&eacute;crit la compilation et l'installation
+    d'Apache sur les syst&egrave;mes Unix, en employant la
+    compilation et l'installation manuelle. Si vous souhaitez
+    utiliser l'interface de configuration semblable &agrave;
+    autoconf, il est conseill&eacute; de lire plut&ocirc;t le
+    fichier INSTALL situ&eacute; dans la racine des fichiers
+    sources de la distribution d'Apache. Pour compiler et installer
+    Apache sur d'autres plates-formes, consultez</p>
+
+    <ul>
+      <li><a href="windows.html">Utilisation d'Apache sur Microsoft
+      Windows</a></li>
+
+      <li><a href="cygwin.html">Utilisation d'Apache sur
+      Cygwin</a></li>
+
+      <li><a href="netware.html">Utilisation d'Apache sur Novell
+      Netware</a></li>
+
+      <li><a href="mpeix.html">Utilisation d'Apache sur HP
+      MPE/iX</a></li>
+
+      <li><a href="unixware.html">Utilisation d'Apache sur
+      UnixWare</a></li>
+
+      <li><a href="readme-tpf.html">Aper&ccedil;u du portage
+      d'Apache sur TPF</a></li>
+    </ul>
+
+    <h2>T&eacute;l&eacute;chargement d'Apache</h2>
+    Les informations sur la derni&egrave;re version d'Apache se
+    trouvent sur le site web d'Apache &agrave; l'adresse <a
+    href="http://www.apache.org/">http://www.apache.org/</a>. Ce
+    site r&eacute;unit la version actuelle, les r&eacute;centes
+    versions beta, ainsi que la liste des sites miroirs web et ftp
+    anonymes. 
+
+    <p>Si vous avez t&eacute;l&eacute;charg&eacute; une
+    distribution compos&eacute;e des binaires, passez directement
+    &agrave; l'<a href="#installing">installation d'Apache</a>. Sinon
+    lisez la section suivante afin de savoir comment compiler le
+    serveur.</p>
+
+    <h2>Compilation d'Apache</h2>
+    La compilation d'Apache se compose de trois &eacute;tapes : la
+    s&eacute;lection des <strong>modules</strong> que vous
+    souhaitez inclure dans le serveur; la cr&eacute;ation de la
+    configuration pour votre syst&egrave;me d'exploitation; la
+    compilation les sources pour cr&eacute;er les
+    ex&eacute;cutables. 
+
+    <p>La configuration d'Apache s'effectue dans le
+    r&eacute;pertoire <code>src</code> de la distribution. Entrez
+    dans ce r&eacute;pertoire.</p>
+
+    <ol>
+      <li>
+        S&eacute;lection des modules &agrave; compiler dans Apache
+        d&eacute;finis dans le fichier <code>Configuration</code>.
+        D&eacute;commentez les lignes correspondant aux modules que
+        vous souhaitez inclure (parmi les lignes commen&ccedil;ant
+        par AddModule situ&eacute;es &agrave; la fin du fichier),
+        ou ajoutez de nouvelles lignes correspondant &agrave; des
+        modules additionnels que vous avez
+        t&eacute;l&eacute;charg&eacute;s ou &eacute;crits. (Voir <a
+        href="misc/API.html">API.html</a> comme documentation
+        pr&eacute;liminaire &agrave; l'&eacute;criture de modules
+        Apache). Les utilisateurs avertis peuvent commenter
+        certains des modules actifs par d&eacute;faut si ils sont
+        s&ucirc;rs qu'ils n'en ont pas besoin (il faut
+        n&eacute;anmoins faire attention, car la plupart des
+        modules actifs par d&eacute;faut sont vitaux au bon
+        fonctionnement et &agrave; la s&eacute;curit&eacute; du
+        serveur). 
+
+        <p>Vous pouvez &eacute;galement lire les instructions
+        contenues dans le fichier <code>Configuration</code> afin
+        de savoir si devez activer certaines lignes
+        commen&ccedil;ant par <code>Rule</code>.</p>
+      </li>
+
+      <li>
+        Cr&eacute;ation de la configuration pour votre
+        syst&egrave;me d'exploitation. Normalement vous n'avez
+        qu'&agrave; ex&eacute;cuter le script
+        <code>Configure</code> comme d&eacute;crit ci-dessous.
+        Cependant si le script &eacute;choue ou si vous avez des
+        besoins particuliers (par exemple inclure une librairie
+        n&eacute;cessaire &agrave; un module optionnel) vous devrez
+        modifier une ou plusieurs des options contenues dans le
+        fichier <code>Configuration</code> : <code>EXTRA_CFLAGS,
+        LIBS, LDFLAGS, INCLUDES</code>. 
+
+        <p>Lancement du script <code>Configure</code> :</p>
+
+        <blockquote>
+<pre>
+    % Configure
+    Using 'Configuration' as config file
+     + configured for &lt;whatever&gt; platform
+     + setting C compiler to &lt;whatever&gt; *
+     + setting C compiler optimization-level to &lt;whatever&gt; *
+     + Adding selected modules
+     + doing sanity check on compiler and options
+    Creating Makefile in support
+    Creating Makefile in main
+    Creating Makefile in os/unix
+    Creating Makefile in modules/standard
+  
+</pre>
+        </blockquote>
+        (*: selon le fichier Configuration et votre syst&egrave;me,
+        Configure peut ne pas afficher ces lignes). 
+
+        <p>Ceci cr&eacute;e un fichier Makefile qui sera
+        utilis&eacute; lors de l'&eacute;tape trois. Il cr&eacute;e
+        &eacute;galement un fichier Makefile dans le
+        r&eacute;pertoire <code>support</code>, pour compiler les
+        programmes optionnels d'assistance.</p>
+
+        <p>(Si vous souhaitez maintenir diff&eacute;rentes
+        configurations, <code>Configure</code> accepte une option
+        lui disant de lire un autre fichier de configuration, comme
+        : <code>Configure -file Configuration.ai</code>).</p>
+      </li>
+
+      <li>
+        Compilation des sources. Tapez : 
+<pre>
+make
+</pre>
+      </li>
+    </ol>
+    Les modules contenus dans la distribution Apache sont ceux que
+    nous avons test&eacute;s et qui ont &eacute;t&eacute;
+    utilis&eacute;s par plusieurs membres de l'&eacute;quipe de
+    d&eacute;veloppement d'Apache. Les modules additionnels
+    propos&eacute;s par les membres ou par d'autres contributeurs
+    correspondant &agrave; des besoins ou des fonctions
+    sp&eacute;cifiques sont disponibles &agrave; l'adresse &lt;<a
+    href="http://www.apache.org/dist/httpd/contrib/modules/">http://www.apache.org/dist/httpd/contrib/modules/</a>&gt;.
+    Des instructions sont fournies sur cette page pour lier ces
+    modules au noyau d'Apache. 
+
+    <h2><a id="installing" name="installing">Installation
+    d'Apache</a></h2>
+    Vous devez avoir un ex&eacute;cutable appel&eacute;
+    <code>httpd</code> dans le r&eacute;pertoire <code>src</code>.
+    Une distribution des binaires doit fournir ce fichier. 
+
+    <p>La prochaine &eacute;tape est d'installer le programme et de
+    le configurer. Apache est con&ccedil;u pour &ecirc;tre
+    configur&eacute; et lanc&eacute; &agrave; partir du m&ecirc;me
+    groupe de r&eacute;pertoires que celui o&ugrave; il a
+    &eacute;t&eacute; compil&eacute;. Si vous souhaitez le lancer
+    d'un autre emplacement, cr&eacute;er un r&eacute;pertoire et y
+    copier les r&eacute;pertoires <code>conf</code>,
+    <code>logs</code> et <code>icons</code>. Dans tous les cas
+    lisez le document <a
+    href="misc/security_tips.html#serverroot">trucs sur la
+    s&eacute;curit&eacute;</a> qui d&eacute;crit comment affecter
+    les droits sur le r&eacute;pertoire racine du serveur.</p>
+
+    <p>L'&eacute;tape suivante est la modification des fichiers de
+    configuration du serveur. Cela consiste &agrave; d&eacute;finir
+    diff&eacute;rentes <strong>directives</strong> dans les trois
+    fichiers centraux de configuration. Par d&eacute;faut ces
+    fichiers sont situ&eacute;s dans le r&eacute;pertoire
+    <code>conf</code> et s'appellent <code>srm.conf</code>,
+    <code>access.conf</code> et <code>httpd.conf</code>. Pour vous
+    aider, les m&ecirc;mes fichiers existent dans le
+    r&eacute;pertoire <code>conf</code> de la distribution et sont
+    appel&eacute;s <code>srm.conf-dist</code>,
+    <code>access.conf-dist</code> et <code>httpd.conf-dist</code>.
+    Copiez ou renommez ces fichiers en supprimant le
+    <code>-dist</code> pour le nouveau nom. Ensuite &eacute;ditez
+    chacun de ces fichiers. Lisez attentivement les commentaires de
+    chacun de ces fichiers. Une mauvaise configuration de ces
+    fichiers emp&ecirc;cherait votre serveur de d&eacute;marrer, ou
+    introduirait un probl&egrave;me de s&eacute;curit&eacute;. Vous
+    devez &eacute;galement trouver dans le r&eacute;pertoire
+    <code>conf</code> un fichier <code>mime.types</code>.
+    G&eacute;n&eacute;ralement, ce fichier n'a pas besoin
+    d'&ecirc;tre modifi&eacute;.</p>
+
+    <p>Premi&egrave;rement &eacute;ditez le fichier
+    <code>httpd.conf</code>. Celui ci fixe les param&egrave;tres
+    g&eacute;n&eacute;raux du serveur : le num&eacute;ro de port,
+    l'utilisateur qui l'ex&eacute;cute, etc. Ensuite &eacute;ditez
+    le fichier <code>srm.conf</code>. Ce fichier d&eacute;finit la
+    racine de l'arborescence des documents, les fonctions
+    sp&eacute;ciales telles que les pages HTML dynamiques,
+    l'analyse des imagemap, etc. Enfin, &eacute;ditez le fichier
+    <code>access.conf</code> pour au moins d&eacute;finir les
+    sch&eacute;mas d'acc&egrave;s de base.</p>
+
+    <p>En plus de ces trois fichiers, le comportement du serveur
+    peut &ecirc;tre configur&eacute; dans chaque r&eacute;pertoire
+    en utilisant les fichiers <code>.htaccess</code> pour les
+    r&eacute;pertoires acc&eacute;d&eacute;s par le serveur.</p>
+
+    <h3>D&eacute;finissez l'heure du syst&egrave;me correctement
+    !</h3>
+    Un bon fonctionnement d'un site web public n&eacute;cessite une
+    heure juste, car des &eacute;l&eacute;ments du protocole HTTP
+    sont exprim&eacute;s en termes de date et heure du jour. Il est
+    donc temps de chercher comment configurer NTP ou un autre
+    produit de synchronisation temporelle sur votre syst&egrave;me
+    UNIX, ou un &eacute;quivalent sous NT. 
+
+    <h3>D&eacute;marrage et arr&ecirc;t du serveur</h3>
+    Pour d&eacute;marrer le serveur, ex&eacute;cutez
+    <code>httpd</code>. Il cherchera le fichier
+    <code>httpd.conf</code> &agrave; l'emplacement
+    sp&eacute;cifi&eacute; lors de la compilation (par
+    d&eacute;faut <code>/usr/local/apache/conf/httpd.conf</code>).
+    Si ce fichier est situ&eacute; autre part, vous pouvez indiquer
+    son emplacement en utilisant l'option -f. Par exemple : 
+<pre>
+    /usr/local/apache/httpd -f /usr/local/apache/conf/httpd.conf
+</pre>
+    Si tout se passe bien, vous devez vous retrouver de nouveau sur
+    l'invite de commande. Ceci indique que le serveur est actif et
+    s'ex&eacute;cute. Si quelque chose se passe mal durant
+    l'initialisation du serveur, un message d'erreur s'affichera
+    &agrave; l'&eacute;cran. Si le serveur d&eacute;marre
+    correctement, vous pouvez utiliser votre navigateur, vous
+    connecter au serveur et lire la documentation. Si vous lancez
+    le navigateur &agrave; partir de la machine o&ugrave;
+    s'ex&eacute;cute le serveur et que vous utilisez le port par
+    d&eacute;faut 80, une URL valide &agrave; taper dans votre
+    navigateur est : 
+<pre>
+    http://localhost/
+</pre>
+
+    <p>Notez que lors du d&eacute;marrage du serveur un certain
+    nombre de processus <em>fils</em> sont cr&eacute;&eacute;s afin
+    de traiter les requ&ecirc;tes. Si vous d&eacute;marrez le
+    serveur en &eacute;tant root, le processus p&egrave;re
+    s'ex&eacute;cutera avec les droits de root, tandis que les
+    processus fils s'ex&eacute;cuteront avec les droits de
+    l'utilisateur d&eacute;fini dans le fichier httpd.conf.</p>
+
+    <p>Si au lancement de <code>httpd</code> celui ci indique qu'il
+    n'arrive pas &agrave; s'attacher &agrave; une adresse, cela
+    signifie soit qu'un autre processus s'ex&eacute;cute
+    d&eacute;j&agrave; en utilisant le num&eacute;ro de port
+    d&eacute;fini dans la configuration d'Apache, soit que vous
+    essayez de lancer httpd en tant qu'utilisateur normal et que
+    vous essayez d'utiliser un port inf&eacute;rieur &agrave; 1024
+    (comme le port 80 par exemple).</p>
+
+    <p>Si le serveur ne s'ex&eacute;cute pas, lisez le message
+    affich&eacute; quand vous lancez httpd. Vous devez
+    &eacute;galement v&eacute;rifier le fichier error_log pour plus
+    d'informations (dans la configuration par d&eacute;faut ce
+    fichier est situ&eacute; dans le fichier <code>error_log</code>
+    du r&eacute;pertoire <code>logs</code>).</p>
+
+    <p>Si vous voulez que votre serveur continue &agrave;
+    s'ex&eacute;cuter apr&egrave;s une relance du syst&egrave;me,
+    vous devez ajouter un appel &agrave; <code>httpd</code> dans
+    vos fichiers de d&eacute;marrage du syst&egrave;me (typiquement
+    <code>rc.local</code> ou un fichier dans un r&eacute;pertoire
+    <code>rc.<em>N</em></code>). Ceci lancera le serveur Apache
+    avec les droits de root. Avant de le faire, v&eacute;rifiez que
+    votre serveur est correctement configur&eacute; au niveau de la
+    s&eacute;curit&eacute; et des restrictions d'acc&egrave;s.</p>
+
+    <p>Pour arr&ecirc;ter Apache, envoyez au processus parent un
+    signal TERM. Le PID de ce processus est &eacute;crit dans le
+    fichier <code>httpd.pid</code> situ&eacute; dans le
+    r&eacute;pertoire <code>logs</code> (&agrave; moins qu'Apache
+    soit configur&eacute; autrement). N'essayez pas de supprimer
+    les processus fils car d'autres seront cr&eacute;&eacute;s par
+    le processus p&egrave;re. Une commande typique pour
+    arr&ecirc;ter le serveur est :</p>
+<pre>
+    kill -TERM `cat /usr/local/apache/logs/httpd.pid`
+</pre>
+
+    <p>Pour plus d'information sur les options de la ligne de
+    commande, sur les fichiers de configuration et les fichiers de
+    trace, voir <a href="invoking.html">D&eacute;marrage
+    d'Apache</a>. Pour un guide de r&eacute;f&eacute;rence de
+    toutes les directives Apache autoris&eacute;es par les modules
+    distribu&eacute;s, voir les <a
+    href="mod/directives.html">directives Apache</a> .</p>
+
+    <h2>Compilation des programmes d'assistance</h2>
+    En plus du serveur <code>httpd</code> qui est compil&eacute; et
+    configur&eacute; comme ci dessus, Apache inclut un certain
+    nombre de programmes d'assistance. Ceux ci ne sont pas
+    compil&eacute;s par d&eacute;faut. Les programmes d'assistance
+    sont situ&eacute;s dans le r&eacute;pertoire
+    <code>support</code> de la distribution. Pour les compiler,
+    allez dans ce r&eacute;pertoire et tapez : 
+<pre>
+    make
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

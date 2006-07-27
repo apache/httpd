@@ -1,0 +1,377 @@
+#!/bin/sh
+#
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# Simple OS/Platform guesser. Similar to config.guess but
+# much, much smaller. Since it was developed for use with
+# Apache, it follows under Apache's regular licensing
+# (see http://www.apache.org/docs/LICENSE)  with one specific
+# addition: Any changes or additions to this script should be
+# Emailed to the Apache group (apache@apache.org).
+#
+# Initially written by Jim Jagielski for the Apache configuration mechanism
+#
+# Be as similar to the output of config.guess/config.sub
+# as possible.
+
+# Handle TPF before the other operating systems
+# since it's compiled on non-TPF platforms.
+# This keeps GuessOS from returning incorrect
+# uname values for TPF:
+if [ "x$TPF" = "xYES" ]; then
+    echo "TPF"
+    exit 0	
+fi
+
+# First get uname entries that we use below
+
+MACHINE=`(uname -m) 2>/dev/null` || MACHINE="unknown"
+RELEASE=`(uname -r) 2>/dev/null` || RELEASE="unknown"
+SYSTEM=`(uname -s) 2>/dev/null`  || SYSTEM="unknown"
+VERSION=`(uname -v) 2>/dev/null` || VERSION="unknown"
+
+# Some HP machines have slashes.
+MACHINE=`echo ${MACHINE}|sed -e 's/\//_/'`
+
+# Now test for ISC and SCO, since it is has a braindamaged uname.
+#
+# We need to work around FreeBSD 1.1.5.1 
+XREL=`uname -X 2>/dev/null | grep "^Release" | awk '{print $3}'`
+if [ "x$XREL" != "x" ]; then
+    if [ -f /etc/kconfig ]; then
+	case "$XREL" in
+	    4.0|4.1)
+		    echo "${MACHINE}-whatever-isc4"; exit 0
+		;;
+	esac
+    else
+	case "$XREL" in
+	    3.2v4.2)
+		echo "whatever-whatever-sco3"; exit 0
+		;;
+	    3.2v5.0*)
+		echo "whatever-whatever-sco5"; exit 0
+		;;
+	    4.2MP)
+		if [ "x$VERSION" = "x2.1.1" ]; then
+		    echo "${MACHINE}-whatever-unixware211"; exit 0
+		elif [ "x$VERSION" = "x2.1.2" ]; then
+		    echo "${MACHINE}-whatever-unixware212"; exit 0
+		else
+		    echo "${MACHINE}-whatever-unixware2"; exit 0
+		fi
+		;;
+	    4.2)
+		echo "whatever-whatever-unixware1"; exit 0
+		;;
+	    5)
+	    	case "$VERSION" in
+		    7*)
+			echo "${MACHINE}-whatever-unixware7"; exit 0
+			;;
+		    8*)
+			echo "${MACHINE}-whatever-OpenUNIX"; exit 0
+			;;
+		esac
+		;;
+	esac
+    fi
+fi
+# Now we simply scan though... In most cases, the SYSTEM info is enough
+#
+case "${SYSTEM}:${RELEASE}:${VERSION}:${MACHINE}" in
+    MiNT:*)
+        echo "m68k-atari-mint"; exit 0
+	;;
+    A/UX:*)
+	echo "m68k-apple-aux3"; exit 0
+	;;
+
+    AIX:*)
+	echo "${MACHINE}-ibm-aix${VERSION}.${RELEASE}"; exit 0
+	;;
+
+    dgux:*)
+	echo "${MACHINE}-dg-dgux"; exit 0
+	;;
+
+    HI-UX:*)
+	echo "${MACHINE}-hi-hiux"; exit 0
+	;;
+
+    HP-UX:*)
+	HPUXVER=`echo ${RELEASE}|sed -e 's/[^.]*.[0B]*//'`
+	echo "${MACHINE}-hp-hpux${HPUXVER}"; exit 0
+	;;
+
+    IRIX:*)
+	if [ -f /usr/lib32/mips4/libm.so ]; then
+	    echo "${MACHINE}-sgi-irix32"; exit 0
+	else
+	    echo "${MACHINE}-sgi-irix"; exit 0
+	fi
+	;;
+
+    IRIX64:*)
+	echo "${MACHINE}-sgi-irix64"; exit 0
+	;;
+
+    Linux:2.0.*)
+    	echo "${MACHINE}-whatever-linux20"; exit 0
+	;;
+
+    Linux:[2-9].*)
+        # This handles linux 2.2 and above (2.4, ...)
+	# Don't worry if you don't really have a Linux-2.2
+	echo "${MACHINE}-whatever-linux22"; exit 0
+	;;
+
+    Linux:1.*)
+	echo "${MACHINE}-whatever-linux1"; exit 0
+	;;
+
+    GNU:*)
+	echo "${MACHINE}-GNU-GNU/Hurd"; exit 0
+	;;
+
+    LynxOS:*)
+	echo "${MACHINE}-lynx-lynxos"; exit 0
+	;;
+
+    BSD/386:*:*:*486*|BSD/OS:*:*:*:*486*)
+	echo "i486-whatever-bsdi"; exit 0
+	;;
+
+	BSD/386|BSD/OS:3.*)
+	echo "${MACHINE}-whatever-bsdi3"; exit 0
+	;;
+
+	BSD/386:*|BSD/OS:*)
+	echo "${MACHINE}-whatever-bsdi"; exit 0
+	;;
+
+    FreeBSD:*:*:*486*)
+	FREEBSDVERS=`echo ${RELEASE}|sed -e 's/[-(].*//'`
+	echo "i486-whatever-freebsd${FREEBSDVERS}"; exit 0
+	;;
+
+    FreeBSD:*)
+	FREEBSDVERS=`echo ${RELEASE}|sed -e 's/[-(].*//'`
+	echo "${MACHINE}-whatever-freebsd${FREEBSDVERS}"; exit 0
+	;;
+
+    NetBSD:*:*:*486*)
+	echo "i486-whatever-netbsd"; exit 0
+	;;
+
+    NetBSD:*)
+	echo "${MACHINE}-whatever-netbsd"; exit 0
+	;;
+
+    OpenBSD:*)
+	OPENBSDVERS=`echo ${RELEASE}|sed -e 's/[-(].*//'`
+	echo "${MACHINE}-whatever-openbsd${OPENBSDVERS}"; exit 0
+	;;
+
+    OSF1:*:*:*alpha*)
+	echo "${MACHINE}-dec-osf"; exit 0
+	;;
+
+	NONSTOP_KERNEL:*:*:*)
+	echo "${MACHINE}-tandem-oss"; exit 0; 
+	;;
+
+    QNX:*)
+	if [ "$VERSION" -gt 422 ]; then
+	    echo "${MACHINE}-qssl-qnx32"
+	else
+	    echo "${MACHINE}-qssl-qnx"
+	fi
+	exit 0
+	;;
+
+    Paragon*:*:*:*)
+	echo "i860-intel-osf1"; exit 0
+	;;
+
+    SunOS:5.*)
+	SOLVER=`echo ${RELEASE}|awk -F. '{
+	    if (NF < 3)
+		printf "2%s0\n",$2
+	    else
+	    	printf "2%s%s\n",$2,$3
+	}'`
+	echo "${MACHINE}-sun-solaris2.${SOLVER}"; exit 0
+	;;
+
+    SunOS:*)
+	echo "${MACHINE}-sun-sunos4"; exit 0
+	;;
+
+    UNIX_System_V:4.*:*)
+	echo "${MACHINE}-whatever-sysv4"; exit 0
+	;;
+
+    unix:3.0.9*:*:88k)
+	echo "${MACHINE}-encore-sysv4"; exit 0
+	;;
+
+    *:4*:R4*:m88k)
+	echo "${MACHINE}-whatever-sysv4"; exit 0
+	;;
+
+    UnixWare:5:99*:*)
+	# Gemini, beta release of next rev of unixware
+	echo "${MACHINE}-whatever-unixware212"; exit 0
+	;;
+
+    DYNIX/ptx:4*:*:i386)
+	PTXVER=`echo ${VERSION}|sed -e 's/[^.]//'`
+	echo "${MACHINE}-sequent-ptx${PTXVER}"; exit 0
+	;;
+
+    *:3.2.0:*:i386)
+	# uname on DYNIX/ptx below V4.0.0 is brain dead
+	PTXVER=`echo ${VERSION}|sed -e 's/[^.]//'`
+	echo "${MACHINE}-sequent-ptx${PTXVER}"; exit 0
+	;;
+
+    *:4.0:3.0:[345][0-9]?? | *:4.0:3.0:3[34]??[/,]* | library:*)
+	echo "x86-ncr-sysv4"; exit 0
+	;;
+
+    ULTRIX:*)
+	echo "${MACHINE}-unknown-ultrix"; exit 0
+	;;
+
+    SINIX-?:* | ReliantUNIX-?:*)
+	echo "${MACHINE}-siemens-sysv4"; exit 0
+	;;
+
+    POSIX*BS2000)
+	echo "${MACHINE}-siemens-sysv4"; exit 0
+	;;
+
+    machten:*)
+       echo "${MACHINE}-tenon-${SYSTEM}"; exit 0;
+       ;;
+
+    ConvexOS:*:11.*:*)
+	echo "${MACHINE}-v11-${SYSTEM}"; exit 0;
+	;;
+    
+    UNIX_SV:*:*:maxion)
+	echo "${MACHINE}-ccur-sysv4"; exit 0;
+	;;
+
+    PowerMAX_OS:*:*:Night_Hawk)
+        MACHINE=`uname -p`
+        echo "${MACHINE}-concurrent-powermax"; exit 0;
+        ;;
+    
+    UNIX_SV:*)
+	if [ -d /usr/nec ];then
+		echo "mips-nec-sysv4"; exit 0;
+	fi
+	;;
+
+    NonStop-UX:4.[02]*:[BC]*:*)
+	echo "${MACHINE}-tandem-sysv4"; exit 0;
+	;;
+
+    NonStop-UX:*:*:*)
+	echo "${MACHINE}-compaq-sysv4"; exit 0;
+	;;
+
+    Rhapsody:*:*:*)
+	case "${MACHINE}" in
+	    Power*) MACHINE=powerpc ;;
+	esac
+	echo "${MACHINE}-apple-rhapsody${RELEASE}"; exit 0
+	;;
+
+    Darwin:*:*:*)
+	MACHINE=`uname -p`
+	echo "${MACHINE}-apple-darwin${RELEASE}"; exit 0
+	;;
+
+    "RISC iX":*)
+	echo "arm-whatever-riscix"; exit 0;
+	;;
+
+    *:4.0:2:*)
+	echo "whatever-unisys-sysv4"; exit 0;
+	;;
+
+    *:*:dcosx:NILE*)
+	echo "pyramid-pyramid-svr4"; exit 0;
+	;;
+
+    *:*:*:"DRS 6000")
+        echo "drs6000-whatever-whatever"; exit 0;
+	;;
+    OS/390:*)
+        echo "${MACHINE}-IBM-OS390-${RELEASE}-${VERSION}"; exit 0;
+        ;;
+    CYGWIN*:*:*:*)
+	echo "${MACHINE}-whatever-cygwin"; exit 0
+	;;
+    atheos:*)
+	echo "${MACHINE}-whatever-atheos"; exit 0
+	;;
+esac
+
+#
+# Ugg. These are all we can determine by what we know about
+# the output of uname. Be more creative:
+#
+
+# Do the Apollo stuff first. Here, we just simply assume
+# that the existance of the /usr/apollo directory is proof
+# enough
+if [ -d /usr/apollo ]; then
+    echo "whatever-apollo-whatever"
+    exit 0
+fi
+
+# Now NeXT
+ISNEXT=`hostinfo 2>/dev/null`
+case "$ISNEXT" in
+    *NeXT*)
+#	echo "whatever-next-nextstep"; exit 0
+
+#	Swiped from a friendly uname clone for NEXT/OPEN Step.
+     	NEXTOSVER="`hostinfo | sed -n 's/.*NeXT Mach \([0-9\.]*\).*/\1/p'`"
+	if [ "$NEXTOSVER" -gt 3.3 ]
+     	then
+          NEXTOS="openstep"
+     	else
+          NEXTOS="nextstep"
+     	fi
+
+	NEXTREL="`hostinfo | sed -n 's/.*NeXT Mach \([0-9\.]*\).*/\1/p'`" 
+	NEXTARCH=`arch`
+	echo "${NEXTARCH}-next-${NEXTOS}${NEXTREL}" ; exit 0
+
+	;;
+esac
+
+# At this point we gone through all the one's
+# we know of: Punt
+
+echo "${MACHINE}-whatever-${SYSTEM},${RELEASE},${VERSION}" 
+exit 0
