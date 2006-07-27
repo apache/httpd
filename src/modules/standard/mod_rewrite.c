@@ -2736,7 +2736,7 @@ static char *escape_absolute_uri(ap_pool *p, char *uri, unsigned scheme)
             int c = 0;
 
             token[0] = cp = ap_pstrdup(p, cp);
-            while (*cp && c < 5) {
+            while (*cp && c < 4) {
                 if (*cp == '?') {
                     token[++c] = cp + 1;
                     *cp = '\0';
