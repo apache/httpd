@@ -7,6 +7,9 @@ Changes with Apache 2.2.3
      written out of bounds.  Reported by Mark Dowd of McAfee.
      [Mark Cox]
   
+  *) Win32: Minor fixes to build more cleanly under Visual Studio 2005
+     with command line builds.  [William Rowe]
+
   *) mod_authn_alias: Add a check to make sure that the base provider and the
      alias names are different and also that the alias has not been registered
      before. PR 40051. [Brad Nicholes]
