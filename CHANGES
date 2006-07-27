@@ -7,6 +7,9 @@ Changes with Apache 2.0.59
      written out of bounds.  Reported by Mark Dowd of McAfee.
      [Mark Cox]
 
+  *) Win32: Minor fixes to build more cleanly under Visual Studio 2005
+     from the command line build.  [William Rowe]
+
 Changes with Apache 2.0.58
 
   *) Legal: Restored original years in copyright notices.
