@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) SECURITY: CVE-2006-3747 (cve.mitre.org)
+     mod_rewrite: Fix an off-by-one security problem in the ldap scheme
+     handling.  For some RewriteRules this could lead to a pointer being
+     written out of bounds.  Reported by Mark Dowd of McAfee.
+     [Mark Cox]
+
   *) mod_cache: While serving a cached entity ensure that filters that have
      been applied to this cached entity before saving it to the cache are not
      applied again. PR 40090. [Ruediger Pluem]
