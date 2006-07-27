@@ -1,0 +1,574 @@
+<!--#if expr="$FAQMASTER" -->
+<!--#set var="STANDALONE" value="" -->
+<!--#set var="INCLUDED" value="YES" -->
+<!--#if expr="$QUERY_STRING = TOC" -->
+<!--#set var="TOC" value="YES" -->
+<!--#set var="CONTENT" value="" -->
+<!--#else -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="YES" -->
+<!--#endif -->
+<!--#else -->
+<!--#set var="STANDALONE" value="YES" -->
+<!--#set var="INCLUDED" value="" -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="" -->
+<!--#endif -->
+<!--#if expr="$STANDALONE" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Frequently Asked Questions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Server Frequently Asked
+    Questions</h1>
+
+    <p>$Revision: 1.11 $ ($Date: 2002/06/07 01:48:13 $)</p>
+
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a
+    href="http://httpd.apache.org/docs/misc/FAQ.html"
+    rel="Help"><samp>http://httpd.apache.org/docs/misc/FAQ.html</samp></a>&gt;.</p>
+    <!-- Notes about changes:                                           -->
+    <!--  - If adding a relative link to another part of the            -->
+    <!--    documentation, *do* include the ".html" portion.  There's a -->
+    <!--    good chance that the user will be reading the documentation -->
+    <!--    on his own system, which may not be configured for          -->
+    <!--    multiviews.                                                 -->
+    <!--  - When adding items, make sure they're put in the right place -->
+    <!--    - verify that the numbering matches up.                     -->
+    <!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+    <!--    correctly in a reliable way when this is converted to text  -->
+    <!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+    <!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+    <!--    the horizontal and vertical indenting right.                -->
+    <!--  - Don't forget to include an HR tag after the last /P tag     -->
+    <!--    but before the /LI in an item.                              -->
+
+    <p>If you are reading a text-only version of this FAQ, you may
+    find numbers enclosed in brackets (such as "[12]"). These refer
+    to the list of reference URLs to be found at the end of the
+    document. These references do not appear, and are not needed,
+    for the hypertext version.</p>
+
+    <h2>The Questions</h2>
+
+    <ol type="A">
+      <!--#endif -->
+      <!--#if expr="$TOC || $STANDALONE" -->
+
+      <li value="6">
+        <strong>Dynamic Content (CGI and SSI)</strong> 
+
+        <ol>
+          <li><a href="#CGIoutsideScriptAlias">How do I enable CGI
+          execution in directories other than the
+          ScriptAlias?</a></li>
+
+          <li><a href="#premature-script-headers">What does it mean
+          when my CGIs fail with "<samp>Premature end of script
+          headers</samp>"?</a></li>
+
+          <li><a href="#POSTnotallowed">Why do I keep getting
+          "Method Not Allowed" for form POST requests?</a></li>
+
+          <li><a href="#nph-scripts">How can I get my script's
+          output without Apache buffering it? Why doesn't my server
+          push work?</a></li>
+
+          <li><a href="#cgi-spec">Where can I find the "CGI
+          specification"?</a></li>
+
+          <li><a href="#fastcgi">Why isn't FastCGI included with
+          Apache any more?</a></li>
+
+          <li><a href="#ssi-part-i">How do I enable SSI (parsed
+          HTML)?</a></li>
+
+          <li><a href="#ssi-part-ii">Why don't my parsed files get
+          cached?</a></li>
+
+          <li><a href="#ssi-part-iii">How can I have my script
+          output parsed?</a></li>
+
+          <li><a href="#ssi-part-iv">SSIs don't work for
+          VirtualHosts and/or user home directories</a></li>
+
+          <li><a href="#errordocssi">How can I use
+          <code>ErrorDocument</code> and SSI to simplify customized
+          error messages?</a></li>
+
+          <li><a href="#remote-user-var">Why is the environment
+          variable <samp>REMOTE_USER</samp> not set?</a></li>
+
+          <li><a href="#user-cgi">How do I allow each of my user
+          directories to have a cgi-bin directory?</a></li>
+        </ol>
+      </li>
+      <!--#endif -->
+      <!--#if expr="$STANDALONE" -->
+    </ol>
+    <hr />
+
+    <h2>The Answers</h2>
+    <!--#endif -->
+    <!--#if expr="! $TOC" -->
+
+    <h3>F. Dynamic Content (CGI and SSI)</h3>
+
+    <ol>
+      <li>
+        <a id="CGIoutsideScriptAlias"
+        name="CGIoutsideScriptAlias"><strong>How do I enable CGI
+        execution in directories other than the
+        ScriptAlias?</strong></a> 
+
+        <p>Apache recognizes all files in a directory named as a <a
+        href="../mod/mod_alias.html#scriptalias"><samp>ScriptAlias</samp></a>
+        as being eligible for execution rather than processing as
+        normal documents. This applies regardless of the file name,
+        so scripts in a ScriptAlias directory don't need to be
+        named "<samp>*.cgi</samp>" or "<samp>*.pl</samp>" or
+        whatever. In other words, <em>all</em> files in a
+        ScriptAlias directory are scripts, as far as Apache is
+        concerned.</p>
+
+        <p>To persuade Apache to execute scripts in other
+        locations, such as in directories where normal documents
+        may also live, you must tell it how to recognize them - and
+        also that it's okay to execute them. For this, you need to
+        use something like the <a
+        href="../mod/mod_mime.html#addhandler"><samp>AddHandler</samp></a>
+        directive.</p>
+
+        <ol>
+          <li>
+            In an appropriate section of your server configuration
+            files, add a line such as 
+
+            <dl>
+              <dd><code>AddHandler cgi-script .cgi</code></dd>
+            </dl>
+
+            <p>The server will then recognize that all files in
+            that location (and its logical descendants) that end in
+            "<samp>.cgi</samp>" are script files, not
+            documents.</p>
+          </li>
+
+          <li>Make sure that the directory location is covered by
+          an <a
+          href="../mod/core.html#options"><samp>Options</samp></a>
+          declaration that includes the <samp>ExecCGI</samp>
+          option.</li>
+        </ol>
+
+        <p>In some situations, you might not want to actually allow
+        all files named "<samp>*.cgi</samp>" to be executable.
+        Perhaps all you want is to enable a particular file in a
+        normal directory to be executable. This can be
+        alternatively accomplished <em>via</em> <a
+        href="../mod/mod_rewrite.html"><samp>mod_rewrite</samp></a>
+        and the following steps:</p>
+
+        <ol>
+          <li>
+            Locally add to the corresponding <samp>.htaccess</samp>
+            file a ruleset similar to this one: 
+
+            <dl>
+              <dd><code>RewriteEngine on<br />
+               RewriteBase /~foo/bar/<br />
+               RewriteRule ^quux\.cgi$ -
+              [T=application/x-httpd-cgi]</code></dd>
+            </dl>
+          </li>
+
+          <li>Make sure that the directory location is covered by
+          an <a
+          href="../mod/core.html#options"><samp>Options</samp></a>
+          declaration that includes the <samp>ExecCGI</samp> and
+          <samp>FollowSymLinks</samp> option.</li>
+        </ol>
+        <hr />
+      </li>
+
+      <li>
+        <a id="premature-script-headers"
+        name="premature-script-headers"><strong>What does it mean
+        when my CGIs fail with "<samp>Premature end of script
+        headers</samp>"?</strong></a> 
+
+        <p>It means just what it says: the server was expecting a
+        complete set of HTTP headers (one or more followed by a
+        blank line), and didn't get them.</p>
+
+        <p>The most common cause of this problem is the script
+        dying before sending the complete set of headers, or
+        possibly any at all, to the server. To see if this is the
+        case, try running the script standalone from an interactive
+        session, rather than as a script under the server. If you
+        get error messages, this is almost certainly the cause of
+        the "premature end of script headers" message. Even if the
+        CGI runs fine from the command line, remember that the
+        environment and permissions may be different when running
+        under the web server. The CGI can only access resources
+        allowed for the <a
+        href="../mod/core.html#user"><code>User</code></a> and <a
+        href="../mod/core.html#group"><code>Group</code></a>
+        specified in your Apache configuration. In addition, the
+        environment will not be the same as the one provided on the
+        command line, but it can be adjusted using the directives
+        provided by <a href="../mod/mod_env.html">mod_env</a>.</p>
+
+        <p>The second most common cause of this (aside from people
+        not outputting the required headers at all) is a result of
+        an interaction with Perl's output buffering. To make Perl
+        flush its buffers after each output statement, insert the
+        following statements around the <code>print</code> or
+        <code>write</code> statements that send your HTTP
+        headers:</p>
+
+        <dl>
+          <dd><code>{<br />
+           &nbsp;local ($oldbar) = $|;<br />
+           &nbsp;$cfh = select (STDOUT);<br />
+           &nbsp;$| = 1;<br />
+           &nbsp;#<br />
+           &nbsp;# print your HTTP headers here<br />
+           &nbsp;#<br />
+           &nbsp;$| = $oldbar;<br />
+           &nbsp;select ($cfh);<br />
+           }</code></dd>
+        </dl>
+
+        <p>This is generally only necessary when you are calling
+        external programs from your script that send output to
+        stdout, or if there will be a long delay between the time
+        the headers are sent and the actual content starts being
+        emitted. To maximize performance, you should turn
+        buffer-flushing back <em>off</em> (with <code>$| = 0</code>
+        or the equivalent) after the statements that send the
+        headers, as displayed above.</p>
+
+        <p>If your script isn't written in Perl, do the equivalent
+        thing for whatever language you <em>are</em> using
+        (<em>e.g.</em>, for C, call <code>fflush()</code> after
+        writing the headers).</p>
+
+        <p>Another cause for the "premature end of script headers"
+        message are the RLimitCPU and RLimitMEM directives. You may
+        get the message if the CGI script was killed due to a
+        resource limit.</p>
+
+        <p>In addition, a configuration problem in <a
+        href="../suexec.html">suEXEC</a>, mod_perl, or another
+        third party module can often interfere with the execution
+        of your CGI and cause the "premature end of script headers"
+        message.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="POSTnotallowed" name="POSTnotallowed"><strong>Why do
+        I keep getting "Method Not Allowed" for form POST
+        requests?</strong></a> 
+
+        <p>This is almost always due to Apache not being configured
+        to treat the file you are trying to POST to as a CGI
+        script. You can not POST to a normal HTML file; the
+        operation has no meaning. See the FAQ entry on <a
+        href="#CGIoutsideScriptAlias">CGIs outside ScriptAliased
+        directories</a> for details on how to configure Apache to
+        treat the file in question as a CGI.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="nph-scripts" name="nph-scripts"><strong>How can I
+        get my script's output without Apache buffering it? Why
+        doesn't my server push work?</strong></a> 
+
+        <p>As of Apache 1.3, CGI scripts are essentially not
+        buffered. Every time your script does a "flush" to output
+        data, that data gets relayed on to the client. Some
+        scripting languages, for example Perl, have their own
+        buffering for output - this can be disabled by setting the
+        <code>$|</code> special variable to 1. Of course this does
+        increase the overall number of packets being transmitted,
+        which can result in a sense of slowness for the end
+        user.</p>
+
+        <p>Prior to 1.3, you needed to use "nph-" scripts to
+        accomplish non-buffering. Today, the only difference
+        between nph scripts and normal scripts is that nph scripts
+        require the full HTTP headers to be sent.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="cgi-spec" name="cgi-spec"><strong>Where can I find
+        the "CGI specification"?</strong></a> 
+
+        <p>The Common Gateway Interface (CGI) specification can be
+        found at the original NCSA site &lt; <a
+        href="http://hoohoo.ncsa.uiuc.edu/cgi/interface.html"><samp>
+        http://hoohoo.ncsa.uiuc.edu/cgi/interface.html</samp></a>&gt;.
+        This version hasn't been updated since 1995, and there have
+        been some efforts to update it.</p>
+
+        <p>A new draft is being worked on with the intent of making
+        it an informational RFC; you can find out more about this
+        project at &lt;<a
+        href="http://web.golux.com/coar/cgi/"><samp>http://web.golux.com/coar/cgi/</samp></a>&gt;.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="fastcgi" name="fastcgi"><strong>Why isn't FastCGI
+        included with Apache any more?</strong></a> 
+
+        <p>The simple answer is that it was becoming too difficult
+        to keep the version being included with Apache synchronized
+        with the master copy at the <a
+        href="http://www.fastcgi.com/">FastCGI web site</a>. When a
+        new version of Apache was released, the version of the
+        FastCGI module included with it would soon be out of
+        date.</p>
+
+        <p>You can still obtain the FastCGI module for Apache from
+        the master FastCGI web site.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="ssi-part-i" name="ssi-part-i"><strong>How do I
+        enable SSI (parsed HTML)?</strong></a> 
+
+        <p>SSI (an acronym for Server-Side Include) directives
+        allow static HTML documents to be enhanced at run-time
+        (<em>e.g.</em>, when delivered to a client by Apache). The
+        format of SSI directives is covered in the <a
+        href="../mod/mod_include.html">mod_include manual</a>;
+        suffice it to say that Apache supports not only SSI but
+        xSSI (eXtended SSI) directives.</p>
+
+        <p>Processing a document at run-time is called
+        <em>parsing</em> it; hence the term "parsed HTML" sometimes
+        used for documents that contain SSI instructions. Parsing
+        tends to be resource-consumptive compared to serving static
+        files, and is not enabled by default. It can also interfere
+        with the cachability of your documents, which can put a
+        further load on your server. (See the <a
+        href="#ssi-part-ii">next question</a> for more information
+        about this.)</p>
+
+        <p>To enable SSI processing, you need to</p>
+
+        <ul>
+          <li>Build your server with the <a
+          href="../mod/mod_include.html"><samp>mod_include</samp></a>
+          module. This is normally compiled in by default.</li>
+
+          <li>Make sure your server configuration files have an <a
+          href="../mod/core.html#options"><samp>Options</samp></a>
+          directive which permits <samp>Includes</samp>.</li>
+
+          <li>
+            Make sure that the directory where you want the SSI
+            documents to live is covered by the "server-parsed"
+            content handler, either explicitly or in some ancestral
+            location. That can be done with the following <a
+            href="../mod/mod_mime.html#addhandler"><samp>AddHandler</samp></a>
+            directive: 
+
+            <dl>
+              <dd><code>AddHandler server-parsed .shtml</code></dd>
+            </dl>
+
+            <p>This indicates that all files ending in ".shtml" in
+            that location (or its descendants) should be parsed.
+            Note that using ".html" will cause all normal HTML
+            files to be parsed, which may put an inordinate load on
+            your server.</p>
+          </li>
+        </ul>
+
+        <p>For additional information, see the <cite>Apache
+        Week</cite> article on <a
+        href="http://www.apacheweek.com/features/ssi"
+        rel="Help"><cite>Using Server Side Includes</cite></a>.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="ssi-part-ii" name="ssi-part-ii"><strong>Why don't my
+        parsed files get cached?</strong></a> 
+
+        <p>Since the server is performing run-time processing of
+        your SSI directives, which may change the content shipped
+        to the client, it can't know at the time it starts parsing
+        what the final size of the result will be, or whether the
+        parsed result will always be the same. This means that it
+        can't generate <samp>Content-Length</samp> or
+        <samp>Last-Modified</samp> headers. Caches commonly work by
+        comparing the <samp>Last-Modified</samp> of what's in the
+        cache with that being delivered by the server. Since the
+        server isn't sending that header for a parsed document,
+        whatever's doing the caching can't tell whether the
+        document has changed or not - and so fetches it again to be
+        on the safe side.</p>
+
+        <p>You can work around this in some cases by causing an
+        <samp>Expires</samp> header to be generated. (See the <a
+        href="../mod/mod_expires.html"
+        rel="Help"><samp>mod_expires</samp></a> documentation for
+        more details.) Another possibility is to use the <a
+        href="../mod/mod_include.html#xbithack"
+        rel="Help"><samp>XBitHack Full</samp></a> mechanism, which
+        tells Apache to send (under certain circumstances detailed
+        in the XBitHack directive description) a
+        <samp>Last-Modified</samp> header based upon the last
+        modification time of the file being parsed. Note that this
+        may actually be lying to the client if the parsed file
+        doesn't change but the SSI-inserted content does; if the
+        included content changes often, this can result in stale
+        copies being cached.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="ssi-part-iii" name="ssi-part-iii"><strong>How can I
+        have my script output parsed?</strong></a> 
+
+        <p>So you want to include SSI directives in the output from
+        your CGI script, but can't figure out how to do it? The
+        short answer is "you can't." This is potentially a security
+        liability and, more importantly, it can not be cleanly
+        implemented under the current server API. The best
+        workaround is for your script itself to do what the SSIs
+        would be doing. After all, it's generating the rest of the
+        content.</p>
+
+        <p>This is a feature The Apache Group hopes to add in the
+        next major release after 1.3.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="ssi-part-iv" name="ssi-part-iv"><strong>SSIs don't
+        work for VirtualHosts and/or user home
+        directories.</strong></a> 
+
+        <p>This is almost always due to having some setting in your
+        config file that sets "Options Includes" or some other
+        setting for your DocumentRoot but not for other
+        directories. If you set it inside a Directory section, then
+        that setting will only apply to that directory.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="errordocssi" name="errordocssi"><strong>How can I
+        use <code>ErrorDocument</code> and SSI to simplify
+        customized error messages?</strong></a> 
+
+        <p>Have a look at <a href="custom_errordocs.html">this
+        document</a>. It shows in example form how you can a
+        combination of XSSI and negotiation to tailor a set of
+        <code>ErrorDocument</code>s to your personal taste, and
+        returning different internationalized error responses based
+        on the client's native language.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="remote-user-var" name="remote-user-var"><strong>Why
+        is the environment variable <samp>REMOTE_USER</samp> not
+        set?</strong></a> 
+
+        <p>This variable is set and thus available in SSI or CGI
+        scripts <strong>if and only if</strong> the requested
+        document was protected by access authentication. For an
+        explanation on how to implement these restrictions, see <a
+        href="http://www.apacheweek.com/"><cite>Apache
+        Week</cite></a>'s articles on <a
+        href="http://www.apacheweek.com/features/userauth"><cite>Using
+        User Authentication</cite></a> or <a
+        href="http://www.apacheweek.com/features/dbmauth"><cite>DBM
+        User Authentication</cite></a>.</p>
+
+        <p>Hint: When using a CGI script to receive the data of a
+        HTML <samp>FORM</samp> notice that protecting the document
+        containing the <samp>FORM</samp> is not sufficient to
+        provide <samp>REMOTE_USER</samp> to the CGI script. You
+        have to protect the CGI script, too. Or alternatively only
+        the CGI script (then authentication happens only after
+        filling out the form).</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="user-cgi" name="user-cgi"><strong>How do I allow
+        each of my user directories to have a cgi-bin
+        directory?</strong></a> 
+
+        <p>Remember that CGI execution does not need to be
+        restricted only to cgi-bin directories. You can <a
+        href="#CGIoutsideScriptAlias">allow CGI script execution in
+        arbitrary parts of your filesystem</a>.</p>
+
+        <p>There are many ways to give each user directory a
+        cgi-bin directory such that anything requested as
+        <samp>http://example.com/~user/cgi-bin/program</samp> will
+        be executed as a CGI script. Two alternatives are:</p>
+
+        <ol>
+          <li>
+            Place the cgi-bin directory next to the public_html
+            directory: 
+
+            <dl>
+              <dd><code>ScriptAliasMatch ^/~([^/]*)/cgi-bin/(.*)
+              /home/$1/cgi-bin/$2</code></dd>
+            </dl>
+          </li>
+
+          <li>
+            Place the cgi-bin directory underneath the public_html
+            directory: 
+
+            <dl>
+              <dd><code>&lt;Directory
+              /home/*/public_html/cgi-bin&gt;<br />
+               &nbsp;&nbsp;&nbsp;&nbsp;Options ExecCGI<br />
+               &nbsp;&nbsp;&nbsp;&nbsp;SetHandler cgi-script<br />
+               &lt;/Directory&gt;</code></dd>
+            </dl>
+          </li>
+        </ol>
+        <p>If you are using suexec, the first technique will not work
+        because CGI scripts must be stored under the <code>public_html</code>
+        directory.</p>
+
+        <hr />
+      </li>
+    </ol>
+    <!--#endif -->
+    <!--#if expr="$STANDALONE" -->
+    <!-- Don't forget to add HR tags at the end of each list item.. -->
+    <!--#include virtual="footer.html" -->
+    <!--#endif -->
+  </body>
+</html>
+

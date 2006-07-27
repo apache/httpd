@@ -1,0 +1,594 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_include</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_include</h1>
+
+    <p>This module provides for documents with Server Side Includes
+    (SSI).</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_include.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    includes_module</p>
+
+    <h2>Summary</h2>
+
+    <p>This module provides a handler which will process files
+    before they are sent to the client. The processing is
+    controlled by specially formated SGML comments, referred to as
+    <em>elements</em>. These elements allow conditional text, the
+    inclusion other files or programs, as well as the setting and
+    printing of environment variables.</p>
+
+    <p>For an introduction to this topic, we also provide a <a
+    href="../howto/ssi.html">tutorial on Server Side
+    Includes</a>.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#xbithack">XBitHack</a></li>
+    </ul>
+
+    <p>See also: <a href="core.html#options">Options</a> and <a
+    href="mod_mime.html#addhandler">AddHandler</a>.</p>
+
+    <h2>Enabling Server-Side Includes</h2>
+    Any document with handler of "server-parsed" will be parsed by
+    this module, if the <code>Includes</code> option is set. If
+    documents containing server-side include directives are given
+    the extension .shtml, the following directives will make Apache
+    parse them and assign the resulting document the mime type of
+    <code>text/html</code>: 
+<pre>
+AddType text/html .shtml
+AddHandler server-parsed .shtml
+</pre>
+    The following directive must be given for the directories
+    containing the shtml files (typically in a
+    <code>&lt;Directory&gt;</code> section, but this directive is
+    also valid .htaccess files if <code>AllowOverride
+    Options</code> is set): 
+<pre>
+Options +Includes
+</pre>
+    Alternatively the <a href="#xbithack"><code>XBitHack</code></a>
+    directive can be used to parse normal (<code>text/html</code>)
+    files, based on file permissions. 
+
+    <p>For backwards compatibility, documents with mime type
+    <code>text/x-server-parsed-html</code> or
+    <code>text/x-server-parsed-html3</code> will also be parsed
+    (and the resulting output given the mime type
+    <code>text/html</code>).</p>
+
+    <h2>Basic Elements</h2>
+    The document is parsed as an HTML document, with special
+    commands embedded as SGML comments. A command has the syntax: 
+
+    <blockquote>
+      <code>&lt;!--#</code><em>element attribute=value
+      attribute=value ...</em> <code>--&gt;</code>
+    </blockquote>
+    The value will often be enclosed in double quotes; many
+    commands only allow a single attribute-value pair. Note that
+    the comment terminator (<samp>--&gt;</samp>) should be preceded
+    by whitespace to ensure that it isn't considered part of an SSI
+    token. Note that the leading <samp>&lt;!--#</samp> is <em>one</em>
+    token and may not contain any whitespaces.</p>
+
+    <p>The allowed elements are:</p>
+
+    <dl>
+      <dt><strong>config</strong></dt>
+
+      <dd>
+        This command controls various aspects of the parsing. The
+        valid attributes are: 
+
+        <dl>
+          <dt><strong>errmsg</strong></dt>
+
+          <dd>The value is a message that is sent back to the
+          client if an error occurs whilst parsing the
+          document.</dd>
+
+          <dt><strong>sizefmt</strong></dt>
+
+          <dd>The value sets the format to be used which displaying
+          the size of a file. Valid values are <code>bytes</code>
+          for a count in bytes, or <code>abbrev</code> for a count
+          in Kb or Mb as appropriate.</dd>
+
+          <dt><strong>timefmt</strong></dt>
+
+          <dd>The value is a string to be used by the
+          <code>strftime(3)</code> library routine when printing
+          dates.</dd>
+        </dl>
+      </dd>
+
+      <dt><strong><a id="echo" name="echo">echo</a></strong></dt>
+
+      <dd>
+        This command prints one of the <a href="#includevars">include
+        variables</a>, defined
+        below. If the variable is unset, it is printed as
+        <code>(none)</code>. Any dates printed are subject to the
+        currently configured <code>timefmt</code>. Attributes: 
+
+        <dl>
+          <dt><strong>var</strong></dt>
+
+          <dd>The value is the name of the variable to print.</dd>
+
+          <dt><strong>encoding</strong></dt>
+
+          <dd>Specifies how Apache should encode special characters
+          contained in the variable before outputting them. If set
+          to "none", no encoding will be done. If set to "url",
+          then URL encoding (also known as %-encoding; this is
+          appropriate for use within URLs in links, etc.) will be
+          performed. At the start of an <code>echo</code> element,
+          the default is set to "entity", resulting in entity
+          encoding (which is appropriate in the context of a
+          block-level HTML element, eg. a paragraph of text). This
+          can be changed by adding an <code>encoding</code>
+          attribute, which will remain in effect until the next
+          <code>encoding</code> attribute is encountered or the
+          element ends, whichever comes first. Note that the
+          <code>encoding</code> attribute must <em>precede</em> the
+          corresponding <code>var</code> attribute to be effective,
+          and that only special characters as defined in the
+          ISO-8859-1 character encoding will be encoded. This
+          encoding process may not have the desired result if a
+          different character encoding is in use. Apache 1.3.12 and
+          above; previous versions do no encoding.</dd>
+        </dl>
+      </dd>
+
+      <dt><strong>exec</strong></dt>
+
+      <dd>
+        The exec command executes a given shell command or CGI
+        script. The IncludesNOEXEC <a
+        href="core.html#options">Option</a> disables this command
+        completely. The valid attributes are: 
+
+        <dl>
+          <dt><strong>cgi</strong></dt>
+
+          <dd>
+            The value specifies a (%-encoded) URL relative path to
+            the CGI script. If the path does not begin with a (/),
+            then it is taken to be relative to the current
+            document. The document referenced by this path is
+            invoked as a CGI script, even if the server would not
+            normally recognize it as such. However, the directory
+            containing the script must be enabled for CGI scripts
+            (with <a
+            href="mod_alias.html#scriptalias">ScriptAlias</a> or
+            the ExecCGI <a href="core.html#options">Option</a>). 
+
+            <p>The CGI script is given the PATH_INFO and query
+            string (QUERY_STRING) of the original request from the
+            client; these cannot be specified in the URL path. The
+            include variables will be available to the script in
+            addition to the standard <a href="mod_cgi.html">CGI</a>
+            environment.</p>
+
+            <p>For example:</p>
+
+  <code>&lt;!--#exec cgi="/cgi-bin/example.cgi" --&gt;</code>
+
+            <p>If the script returns a Location: header instead of
+            output, then this will be translated into an HTML
+            anchor.</p>
+
+            <p>The <code><a href="#includevirtual">include
+            virtual</a></code> element should be
+            used in preference to <code>exec cgi</code>. In particular,
+            if you need to pass additional arguments to a CGI program,
+            using the query string, this cannot be done with <code>exec
+            cgi</code>, but can be done with <code>include
+            virtual</code>, as shown here:</p>
+
+  <code>&lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;</code>
+          </dd>
+
+          <dt><strong>cmd</strong></dt>
+
+          <dd>
+          <p>The server will execute the given string using
+          <code>/bin/sh</code>. The <a 
+          href="#includevars">include variables</a> are available
+          to the command, in addition to the usual set of CGI 
+          variables.</p>
+
+        <p>The use of <code><a href="#includevirtual">#include 
+        virtual</a></code> is almost always
+        prefered to using either <code>#exec cgi</code> or <code>#exec
+        cmd</code>. The former (<code>#include virtual</code>) used the
+        standard Apache sub-request mechanism to include files or
+        scripts. It is much better tested and maintained.</p>
+
+          <p>In addition, on some platforms, like Win32, and on unix
+          when using suexec, you cannot pass arguments to a command in 
+          an <code>exec</code> directive, or otherwise include spaces in
+          the command. Thus, while the following will work under a
+          non-suexec configuration on unix, it will not produce the
+          desired result under Win32, or when running suexec:</p>
+
+   <code>&lt;!--#exec cmd="perl /path/to/perlscript arg1 arg2" --&gt;</code>
+
+          </dd>
+        </dl>
+      </dd>
+
+      <dt><strong>fsize</strong></dt>
+
+      <dd>
+        This command prints the size of the specified file, subject
+        to the <code>sizefmt</code> format specification.
+        Attributes: 
+
+        <dl>
+          <dt><strong>file</strong></dt>
+
+          <dd>The value is a path relative to the directory
+          containing the current document being parsed.</dd>
+
+          <dt><strong>virtual</strong></dt>
+
+          <dd>The value is a (%-encoded) URL-path relative to the
+          current document being parsed. If it does not begin with
+          a slash (/) then it is taken to be relative to the
+          current document.</dd>
+        </dl>
+      </dd>
+
+      <dt><strong>flastmod</strong></dt>
+
+      <dd>This command prints the last modification date of the
+      specified file, subject to the <code>timefmt</code> format
+      specification. The attributes are the same as for the
+      <code>fsize</code> command.</dd>
+
+      <dt><strong>include</strong></dt>
+
+      <dd>
+        This command inserts the text of another document or file
+        into the parsed file. Any included file is subject to the
+        usual access control. If the directory containing the
+        parsed file has the <a href="core.html#options">Option</a>
+        IncludesNOEXEC set, and the including the document would
+        cause a program to be executed, then it will not be
+        included; this prevents the execution of CGI scripts.
+        Otherwise CGI scripts are invoked as normal using the
+        complete URL given in the command, including any query
+        string. 
+
+        <p>An attribute defines the location of the document; the
+        inclusion is done for each attribute given to the include
+        command. The valid attributes are:</p>
+
+        <dl>
+          <dt><strong>file</strong></dt>
+
+          <dd>The value is a path relative to the directory
+          containing the current document being parsed. It cannot
+          contain <code>../</code>, nor can it be an absolute path.
+          Therefore, you cannot include files that are outside of the
+          document root, or above the current document in the directory
+          structure.
+          The <code>virtual</code> attribute should always be used
+          in preference to this one.</dd>
+
+          <dt><strong><a name="includevirtual">virtual</a></strong></dt>
+
+         <dd>
+          <p>The value is a (%-encoded) URL relative to the
+          current document being parsed. The URL cannot contain a
+          scheme or hostname, only a path and an optional query
+          string. If it does not begin with a slash (/) then it is
+          taken to be relative to the current document.</p>
+
+          <p>A URL is constructed from the attribute, and the output the
+           server would return if the URL were accessed by the client
+           is included in the parsed output. Thus included files can
+           be nested.</p>
+
+           <p>If the specified URL is a CGI program, the program will
+           be executed and its output inserted in place of the directive
+           in the parsed file. You may include a query string in a CGI
+           url:</p>
+     
+     <code>&lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;</code>
+           
+           <p><code>include virtual</code> should be used in preference
+           to <code>exec cgi</code> to include the output of CGI
+           programs into an HTML document.
+          </dd>
+        </dl>
+      </dd>
+
+      <dt><strong>printenv</strong></dt>
+
+      <dd>
+      <p>This prints out a listing of all existing variables and
+      their values. Starting with Apache 1.3.12, special characters
+      are entity encoded (see the <a
+      href="#echo"><code>echo</code></a> element for details)
+      before being output. There are no attributes.</p>
+
+      <p>For example:</p>
+      
+      <p><code>&lt;!--#printenv --&gt;</code></p>
+
+      <p>The <strong>printenv</strong> element is available only in
+      Apache 1.2 and above.</p>
+    </dd>
+      <dt><strong>set</strong></dt>
+
+      <dd>
+        This sets the value of a variable. Attributes: 
+
+        <dl>
+          <dt><strong>var</strong></dt>
+
+          <dd>The name of the variable to set.</dd>
+
+          <dt><strong>value</strong></dt>
+
+          <dd>The value to give a variable.</dd>
+        </dl>
+        <p>
+        For example: <code>&lt;!--#set var="category" value="help"
+        --&gt;</code></p>
+
+      <p>The <strong>set</strong> element is available only in
+      Apache 1.2 and above.</p>
+      </dd>
+    </dl>
+
+    <h2><a name="includevars">Include Variables</a></h2>
+    In addition to the variables in the standard CGI environment,
+    these are available for the <code>echo</code> command, for
+    <code>if</code> and <code>elif</code>, and to any program
+    invoked by the document. 
+
+    <dl>
+      <dt>DATE_GMT</dt>
+
+      <dd>The current date in Greenwich Mean Time.</dd>
+
+      <dt>DATE_LOCAL</dt>
+
+      <dd>The current date in the local time zone.</dd>
+
+      <dt>DOCUMENT_NAME</dt>
+
+      <dd>The filename (excluding directories) of the document
+      requested by the user.</dd>
+
+      <dt>DOCUMENT_URI</dt>
+
+      <dd>The (%-decoded) URL path of the document requested by the
+      user. Note that in the case of nested include files, this is
+      <em>not</em> then URL for the current document.</dd>
+
+      <dt>LAST_MODIFIED</dt>
+
+      <dd>The last modification date of the document requested by
+      the user.</dd>
+
+      <dt>USER_NAME</dt>
+    
+      <dd>Contains the owner of the file which included it.</dd>
+
+    </dl>
+
+    <h2>Variable Substitution</h2>
+
+    <p>Variable substitution is done within quoted strings in most
+    cases where they may reasonably occur as an argument to an SSI
+    directive. This includes the <samp>config</samp>,
+    <samp>exec</samp>, <samp>flastmod</samp>, <samp>fsize</samp>,
+    <samp>include</samp>, and <samp>set</samp> directives, as well
+    as the arguments to conditional operators. You can insert a
+    literal dollar sign into the string using backslash
+    quoting:</p>
+<pre>
+    &lt;!--#if expr="$a = \$test" --&gt;
+</pre>
+
+    <p>If a variable reference needs to be substituted in the
+    middle of a character sequence that might otherwise be
+    considered a valid identifier in its own right, it can be
+    disambiguated by enclosing the reference in braces,
+    <em>&agrave; la</em> shell substitution:</p>
+<pre>
+    &lt;!--#set var="Zed" value="${REMOTE_HOST}_${REQUEST_METHOD}" --&gt;
+</pre>
+
+    <p>This will result in the <samp>Zed</samp> variable being set
+    to "<samp>X_Y</samp>" if <samp>REMOTE_HOST</samp> is
+    "<samp>X</samp>" and <samp>REQUEST_METHOD</samp> is
+    "<samp>Y</samp>".</p>
+
+    <p>EXAMPLE: the below example will print "in foo" if the
+    DOCUMENT_URI is /foo/file.html, "in bar" if it is
+    /bar/file.html and "in neither" otherwise:</p>
+<pre>
+    &lt;!--#if expr="\"$DOCUMENT_URI\" = \"/foo/file.html\"" --&gt;
+    in foo
+    &lt;!--#elif expr="\"$DOCUMENT_URI\" = \"/bar/file.html\"" --&gt;
+    in bar
+    &lt;!--#else --&gt;
+    in neither
+    &lt;!--#endif --&gt;
+</pre>
+
+    <h2><a id="flowctrl" name="flowctrl">Flow Control
+    Elements</a></h2>
+    These are available in Apache 1.2 and above. The basic flow
+    control elements are: 
+<pre>
+    &lt;!--#if expr="<em>test_condition</em>" --&gt;
+    &lt;!--#elif expr="<em>test_condition</em>" --&gt;
+    &lt;!--#else --&gt;
+    &lt;!--#endif --&gt;
+</pre>
+
+    <p>The <strong><code>if</code></strong> element works like an
+    if statement in a programming language. The test condition is
+    evaluated and if the result is true, then the text until the
+    next <strong><code>elif</code></strong>,
+    <strong><code>else</code></strong>. or
+    <strong><code>endif</code></strong> element is included in the
+    output stream.</p>
+
+    <p>The <strong><code>elif</code></strong> or
+    <strong><code>else</code></strong> statements are be used the
+    put text into the output stream if the original test_condition
+    was false. These elements are optional.</p>
+
+    <p>The <strong><code>endif</code></strong> element ends the
+    <strong><code>if</code></strong> element and is required.</p>
+
+    <p><em>test_condition</em> is one of the following:</p>
+
+    <dl>
+      <dt><em>string</em></dt>
+
+      <dd>true if <em>string</em> is not empty</dd>
+
+      <dt><em>string1</em> = <em>string2</em><br />
+       <em>string1</em> != <em>string2</em><br />
+       <em>string1</em> &lt; <em>string2</em><br />
+       <em>string1</em> &lt;= <em>string2</em><br />
+       <em>string1</em> &gt; <em>string2</em><br />
+       <em>string1</em> &gt;= <em>string2</em></dt>
+
+      <dd>Compare string1 with string 2. If string2 has the form
+      <em>/string/</em> then it is compared as a regular
+      expression. Regular expressions have the same syntax as those
+      found in the Unix <samp>egrep</samp> command.</dd>
+
+      <dt>( <em>test_condition</em> )</dt>
+
+      <dd>true if <em>test_condition</em> is true</dd>
+
+      <dt>! <em>test_condition</em></dt>
+
+      <dd>true if <em>test_condition</em> is false</dd>
+
+      <dt><em>test_condition1</em> &amp;&amp;
+      <em>test_condition2</em></dt>
+
+      <dd>true if both <em>test_condition1</em> and
+      <em>test_condition2</em> are true</dd>
+
+      <dt><em>test_condition1</em> || <em>test_condition2</em></dt>
+
+      <dd>true if either <em>test_condition1</em> or
+      <em>test_condition2</em> is true</dd>
+    </dl>
+
+    <p>"<em>=</em>" and "<em>!=</em>" bind more tightly than
+    "<em>&amp;&amp;</em>" and "<em>||</em>". "<em>!</em>" binds
+    most tightly. Thus, the following are equivalent:</p>
+<pre>
+    &lt;!--#if expr="$a = test1 &amp;&amp; $b = test2" --&gt;
+    &lt;!--#if expr="($a = test1) &amp;&amp; ($b = test2)" --&gt;
+</pre>
+
+    <p>Anything that's not recognized as a variable or an operator
+    is treated as a string. Strings can also be quoted:
+    <em>'string'</em>. Unquoted strings can't contain whitespace
+    (blanks and tabs) because it is used to separate tokens such as
+    variables. If multiple strings are found in a row, they are
+    concatenated using blanks. So,</p>
+<pre>
+     <em>string1    string2</em>  results in <em>string1 string2</em>
+    <em>'string1    string2'</em> results in <em>string1    string2</em>
+</pre>
+
+    <h2>Using Server Side Includes for ErrorDocuments</h2>
+    There is <a href="../misc/custom_errordocs.html">a document</a>
+    which describes how to use the features of mod_include to offer
+    internationalized customized server error documents. 
+    <hr />
+
+    <h2><a id="xbithack" name="xbithack">XBitHack</a>
+    directive</h2>
+
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> XBitHack
+    on|off|full<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>XBitHack
+    off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> Options<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_include 
+
+    <p>The XBitHack directives controls the parsing of ordinary
+    html documents. This directive only affects files associated
+    with the MIME type <code>text/html</code>. XBitHack can take on
+    the following values:</p>
+
+    <dl>
+      <dt>off</dt>
+
+      <dd>No special treatment of executable files.</dd>
+
+      <dt>on</dt>
+
+      <dd>Any file that has the user-execute bit set will be
+      treated as a server-parsed html document.</dd>
+
+      <dt>full</dt>
+
+      <dd>
+        As for <code>on</code> but also test the group-execute bit.
+        If it is set, then set the Last-modified date of the
+        returned file to be the last modified time of the file. If
+        it is not set, then no last-modified date is sent. Setting
+        this bit allows clients and proxies to cache the result of
+        the request. 
+
+        <p><strong>Note:</strong> you would not want to use this,
+        for example, when you <code>#include</code> a CGI that
+        produces different output on each hit (or potentially
+        depends on the hit).</p>
+      </dd>
+    </dl>
+
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

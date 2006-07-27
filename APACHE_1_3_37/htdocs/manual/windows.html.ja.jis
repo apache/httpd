@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Microsoft Windows での Apache の使用</title>
+
+  </head>
+  <!-- English revision: 1.58 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center"><a id="help" name="help">Microsoft Windows での Apache の使用</a></h1>
+
+    <p>この文書は、Microsoft Windows 上での Apache 1.3
+    のインストール、設定、実行方法を説明します。この文書の大部分は、
+    バイナリ配布から Windows にインストールしていると想定しています。
+    もし (開発の手助けやバグ追跡のため) Apache を自分でコンパイル
+    したい場合は、<a href="win_compiling.html">Microsoft Windows での
+    Apache のコンパイル</a> を見てください。
+    </p>
+
+    <p>もしバグを見つけたら、<a
+    href="http://httpd.apache.org/bug_report.html"
+    >バグ報告ページ</a>で報告してください。
+    そういった寄与は歓迎します。
+    コードまたは提案をバグ報告ページで報告するか、
+    new-httpd メーリングリストに参加してください。</p>
+
+    <p>バグ報告ページと new-httpd メーリングリストは、Apache
+    の設定や実行方法について質問するために用意しているわけでは
+    <em>ありません</em>。 バグ・レポートや要求を提出する前にまず、
+    この文書、<a href="misc/FAQ.html">よく出る質問</a>
+    のページ、その他関連する文書を参照してください。
+    それでもまだ疑問や問題があるなら、<a
+    href="news:comp.infosystems.www.servers.ms-windows"
+    >comp.infosystems.www.servers.ms-windows</a>
+    ニュースグループに投稿してください。多くの Apache ユーザがいて
+    Windows 上で Apache を使用するにあたっての新しい疑問、
+    わかりにくい疑問に対して返答をくれるでしょう。</p>
+
+    <p><a
+    href="http://groups.google.com/groups?hl=en&amp;lr=&amp;safe=off&amp;group=comp.infosystems.www.servers.ms-windows"
+    >groups.google.com のニュースグループのアーカイブ</a>により以前の問題を
+    簡単に閲覧できます。ニュースグループのアーカイブを検索すれば、
+    ほとんどの問題は既出で、誰かが回答しているのを見つけられるでしょう。
+    </p>
+
+    <p><strong>警告: NT 上での Apache は性能面でまだ最適化されていません。</strong>
+    現時点では Apache は Unix プラットフォームで最高の性能を発揮し、
+    最も信頼できます。時とともに NT での性能は改善されて、Windows
+    プラットフォーム上では来たるべきバージョン 2.0
+    において大きく進歩しています。ウェブサーバ性能の相対的なレビューを
+    している人に対しては、まだ、Solaris、FreeBSD、Linux などの Unix
+    プラットフォームでの Apache に対して比較するようにお願いしています。
+    </p>
+    <hr />
+
+    <ul>
+      <li><a href="#req">要件</a></li>
+
+      <li><a href="#down">Windows 用の Apache をダウンロードする</a></li>
+
+      <li><a href="#inst">Windows 用の Apache をインストールする
+      （バイナリインストール</a>）</li>
+
+      <li><a href="#run">Windows 用の Apache を実行する</a></li>
+
+      <li><a href="#test">Windows 用の Apache をテストする</a></li>
+
+      <li><a href="#use">Windows 用の Apache を設定する</a></li>
+
+      <li><a href="#cmdline">コンソールウィンドウで Apache
+      を実行する</a></li>
+
+      <li><a href="#signal">コンソールウィンドウで Apache
+      をコントロールする</a></li>
+
+      <li><a href="win_service.html">サービスとして Windows 用の
+      Apache を実行する</a></li>
+
+      <li><a href="win_service.html#signal">サービスとして Apache
+      をコントロールする</a></li>
+
+      <li><a href="win_compiling.html">Microsoft Windows 用の Apache
+      をコンパイルする</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="req" name="req">要件</a></h2>
+
+    <p>Apache 1.3 は、WindowsNT 4.0 と Windows 2000
+    で動くように設計されています。バイナリのインストーラは
+    インテル製のものなど x86 ファミリーのプロセッサでのみ動作します。
+    Apache は Windows 95 や 98 でも動作しますが、
+    これらはテストされていません。
+    すべての場合 TCP/IP ネットワークがインストールされていなければなりません。</p>
+
+    <p>NT 4.0 で実行する場合、サービスパック 3 または 6
+    のインストールを推奨します。サービスパック 4 には TCP/IP と WinSock
+    の問題があり、それはサービスパック 5 以降では解決されています。</p>
+
+
+    <p><strong>注: Apache 1.3.7 以降では &quot;Winsock2&quot;
+    が必要になります。</strong></p>
+
+    <p>Windows 95 で実行する場合、Apache を実行する前に &quot;Winsock2&quot;
+    アップグレードをインストールしなければなりません。
+    Windows 95 用の &quot;Winsock2&quot; は<a
+    href="http://www.microsoft.com/windows95/downloads/contents/WUAdminTools/S_WUNetworkingTools/W95Sockets2/Default.asp"
+    >ここ</a>か<a href="http://www.microsoft.com/windows95/downloads/"
+    >ここ</a>から入手可能です。ダイアルアップネットワーク 1.2 (MS DUN)
+    アップデートには全く不適当な Winsock2 が含まれているので Winsock2
+    アップデートは、Windows 95 ダイアルアップネットワークをインストール
+    した後に再インストールしなければならないことに注意してください。
+    Windows 98、NT (サービスパック 3 以降)、および 2000 のユーザは
+    Winsock2 が配布されているものに含まれているためここでは特にする
+    必要はありません。</p>
+
+    <h2><a id="down" name="down">Windows 用の Apache
+    のダウンロード</a></h2>
+
+    <p>Apache の最新のバージョンについての情報は、<a
+    href="http://httpd.apache.org/">http://httpd.apache.org/</a> の
+    Apache ウェブサーバのページで見つけられます。そこには、現在のリリース、
+    最新のアルファ、またはベータテストリリースとともにミラーウェブサイト、
+    anonymous FTP サイトの詳細がリストされます。</p>
+
+
+    <p>Windows 用の Apache のバイナリ配布は、ソースコードに興味があるなら
+    <code>apache_1_3_#-win32-src.msi</code> と名付けられたものを、
+    またはソースコードに対して何もするつもりがなく、
+    ダウンロードが早く済んだ方がいいと思うなら
+    <code>apache_1_3_#-win32-no_src.msi</code> をダウンロードしてください。
+    これらのファイルはそれぞれに完全な Apache ランタイムを含んでいます。
+    Apache ランタイム配布をインストールする前に Microsoft Installer
+    version 1.10 が PC にインストールされていなければなりません。Windows
+    2000 及び Windows Me では Microsoft Installer が標準で
+    サポートされていますが、他ではそれをダウンロードする必要があります。
+    さらなる情報はメインのダウンロードページ <a
+    href="http://httpd.apache.org/download.cgi"
+    >http://httpd.apache.org/download.cgi</a> に行ってください。
+    Microsoft Installer を見つける手順は Apache のバイナリ配布と同様、
+    <a href="http://www.apache.org/dyn/closer.cgi/httpd/binaries/win32/"
+    >ミラーサイトの win32 ダウンロードディレクトリ</a>に見つかります</p>
+
+    <p>ソースコードは <code>-src.msi</code> の配布または <a
+    href="http://www.apache.org/dyn/closer.cgi/httpd/"
+    >配布ディレクトリ</a> にある <code>.zip</code>
+    ファイルから入手可能です。もし Apache
+    を自分でコンパイルするつもりなら、<code>.msi</code> パッケージを
+    インストールする必要はまったくありません。<code>.zip</code>
+    ファイルは、MS-DOS の改行 (.tar.gz や .tar.Z で配布される unix
+    で使われる lf だけの改行の代わりに cr/lf の改行) が使われた
+    ソースコードだけが含まれます。
+    </p>
+
+    <p>また、ソースは<samp>.tar.gz</samp>, <samp>.tar.Z</samp>
+    のアーカイブからも入手できます。これらのファイルには、
+    Windows ユーザには扱いにくい unix lf 改行が含まれます。
+    そのアーカイブを使うためには少なくとも <samp>.mak</samp> と
+    <samp>.dsp</samp> を MSVC が解釈できるよう、DOS
+    改行に変換しなければなりません。頭痛の種を作らないためにも
+    <samp>.zip</samp> ファイルを選んでください。</p>
+
+    <p>注: Apache 1.3.17 より前では、InstallShield 2.0 の形式の
+    <samp>.exe</samp> ファイルが配布されました
+    [Windows Me や Windows 2000 で] InstallShield
+    パッケージを使えないユーザが増大したため、
+    バイナリ配布は簡単に利用できる Microsoft Installer の
+    <samp>.msi</samp> の形式で再パッケージされました</p>
+
+    <h2><a id="inst" name="inst">Windows 用の Apache
+    のインストール</a></h2>
+
+    <p>上でダウンロードした Apache <samp>.msi</samp> を実行してください。
+    すると以下の入力が要求されます</p>
+
+    <ul>
+      <li>すべてのユーザで Apache を実行させたい (サービスとしての
+      Apache のインストール) のか、または Start Apache
+      のショートカットを選ぶ等して、
+      必要なときにコンソールウィンドウから実行させたいのか。</li>
+
+      <li>サーバ名、ドメイン名、および管理者の E メールアカウント。</li>
+
+
+      <li>Apache をインストールするディレクトリ (デフォルトは
+      <code>C:\Program Files\Apache Group\Apache</code> ですが
+      これはどのディレクトリにでも変更できます)。</li>
+
+      <li>インストールタイプ。"Complete" オプションでは、
+      すべてがインストールされます。もし <samp>-src.msi</samp>
+      パッケージをダウンロードしたのならソースコードも含まれます。
+      ドキュメントやソースコードをインストール
+      したくない場合は "Custom" インストールを選んでください。</li>
+    </ul>
+
+    <p>インストールの間に、Apache はインストールディレクトリ中の
+    <samp>conf</samp> ディレクトリのファイルを設定します。しかし、
+    このディレクトリのファイルがどれか存在した場合は、それを上書き
+    <strong>しません</strong>。代わりに、対応したファイルが
+    <samp>.default.conf</samp> の拡張子を付けて保存されます。
+    つまり、例えば <samp>conf\httpd.conf</samp> が存在したなら、
+    それ自体は変更されないけれども、インストールされたであろうバージョンが
+    <samp>conf\httpd.default.conf</samp> として残されます。インストール後に、
+    <samp>.default.conf</samp> でどこが新しくなったのか、
+    手動でチェックすべきで、必要に応じて既存の設定ファイルを
+    更新してください。</p>
+
+    <p><samp>htdocs\index.html</samp>
+    ファイルも、すでに存在すれば上書きされません
+    (<samp>index.html.default</samp> ファイルとしてインストール
+    されることもありません)。
+    これは、既存の Apache への上書きインストールが安全なことを意味します
+    (しかし、インストールをする前に動いている既存のサーバは
+    止めなければなりません。
+    インストール完了後に新しいものを開始してください)。</p>
+
+    <p>Apache をインストールした後に、必要なら <samp>conf</samp>
+    ディレクトリ内の設定ファイルを編集してください。
+    これらのファイルはインストールの間に、
+    インストールされたディレクトリから Apache
+    が動作できるように設定され、ドキュメントはサブディレクトリ
+    <samp>htdocs</samp> のものがクライアントに送られます。
+    Apache を実際に使い始める前に、
+    設定されるべきオプションは他にも沢山ありますが、
+    すぐに使い始めたい場合は、
+    インストールされたままの状態でも動作するでしょう。</p>
+
+    <p>もし Apache をアンインストールすることになった場合、設定ファイルと
+    ログファイルは削除されません。設定ファイルや他のウェブファイルを
+    残したいと思わないならディレクトリツリー (デフォルトでは
+    "C:\Program Files\Apache Group") を自分で削除する必要があります。
+    httpd.conf ファイルは Apache を使う上で蓄積された成果であるので、
+    削除するためには労力を払う必要があります。
+    あなたの作った可能性がある他の全てのファイルにおいても同じことが
+    言えます。Apache が作ったログファイルも同様です。</p>
+
+    <h2><a id="run" name="run">Windows 用の Apache を実行する</a></h2>
+
+    <p>Apache を実行するには 2 つの方法があります</p>
+
+    <ul>
+      <li>「<a href="win_service.html">サービス</a>」として。
+      もしマシンブート時に Apache に、自動的に開始したい、
+      またログオフしても、Apache の動作は続けたいなら、
+      これが最善のオプションです。</li>
+
+      <li><a href="#cmdline">コンソールウィンドウ</a>から。
+      このコンソールウィンドウを閉じることにより Apache
+      サーバは終了されます。</li>
+    </ul>
+
+    <p><strong>Apache を Windows <a href="win_service.html"
+    >サービス</a>として開始しようとする前に、
+    以下の手順を完了させてください!</strong></p>
+
+    <p>コンソールウィンドウから Apache を実行するにはスタートメニューから、
+    "Start Apache as console app" オプションを選んでください (Apache
+    1.3.4 以前ではこのオプションは "Apache Server" と呼ばれていました)。
+    これによりコンソールウィンドウが開かれ、Apache はその中で実行されます。
+    ウィンドウは、Apache を止めるまで、アクティブであり続けます。Apache
+    を止めるには、スタートメニューから、"Shutdown Apache console app"
+    を選択するか (Apache 1.3.4 以前では使えません)、<a
+    href="#signal">コンソールウィンドウで Apache をコントロールする</a>
+    を参照して、コンソールウィンドウで Apache
+    をコントロールするコマンドを使ってください。</p>
+
+    <p>Apache 1.3.13 以降では、Ctrl+C または Ctrl+Break
+    を押しても、コンソールウィンドウの Apache を安全に
+    止められるようになりました。そして、バージョン 1.3.13 から、
+    Windows NT/2000 上で使う場合は、システムメニュー
+    (コンソールウィンドウの左上コーナーのアイコンをクリック)
+    から「閉じる」を選ぶか、右上コーナーの終了 (X)
+    ボタンをクリックすることにより Apache を停止させることもできます。
+    Apache バージョン 1.3.15 から、メニュー項目の「閉じる」や終了 (X)
+    ボタンは Windows 95/98 でも働きます。しかし、それより前のバージョンの
+    Apache サーバではきれいに終了しないのでそういった手段は
+    <em>採らないでください</em>。</p>
+
+    <h2><a id="test" name="test">Windows 用の Apache をテストする</a></h2>
+
+    <p>Apache の起動においてトラブルがあれば、問題を切り離すため、
+    以下の手順に従ってください。これは "Start Apache as a console app"
+    のショートカットをスタートメニューから選ぶことにより Apache
+    を起動したらすぐに (あるいは突然) コンソールウィンドウが閉じた、または
+    Apache をサービスとして開始するときにトラブルに遭った場合に
+    あてはまります。
+    </p>
+
+    <p>スタートメニュー - プログラム から「コマンドプロンプト」を実行してください。
+    Apache をインストールしたフォルダに移動し、apache
+    コマンドを入力してエラーメッセージを読んでください。
+    そして、設定ミスがないか、error.log ファイルを調べてください。
+    Apache をデフォルトでインストールした場合は、コマンドは以下の様になります。</p>
+<pre>
+  c:
+  cd "\program files\apache group\apache"
+  apache
+  <em>Apache が終了するのを待つか、Ctrl+C を入力</em> 
+  more &lt;logs\error.log
+</pre>
+
+    <p>error.log を確認することで、おそらく悪かったところを直し、
+    問題を解決してやり直すことができるでしょう。もし自力で
+    解決できなかった場合は、
+    この文書の冒頭の <a href="#help">補助のためのガイドライン</a>
+    や <a href="misc/FAQ.html#what2do">FAQ</a> に従ってください。
+    多くのユーザはたくさんの設定ダイアログよりも、
+    httpd.conf ファイルの方が管理や検査が簡単なことに気づくでしょう。</p>
+
+
+    <p>開始後は Apache は(設定ファイルで <samp>Port</samp>,
+    <samp>Listen</samp> または <samp>BindAddress</samp>
+    ディレクティブを変更していなければ)
+    (コンソールウィンドウでもサービスでも) 80 番ポートを Listen
+    して実行されます。ブラウザを起動し、この URL</p>
+<pre>
+  http://localhost/
+</pre>
+    <p>を入力してサーバに接続し、デフォルトページにアクセスしてください</p>
+
+    <p>これで welcome ページが返され、Apache
+    マニュアルへのリンクがあるはずです。もし何も起こらないか、
+    エラーだった場合は、<samp>logs</samp> ディレクトリ中の
+    <samp>error.log</samp> ファイルを見てください。もしホストがネットに
+    接続されていない場合は、この URL</p>
+<pre>
+  http://127.0.0.1/
+</pre>
+    <p>を使う必要があるかもしれません</p>
+
+    <p>いったん基本的なインストールで動作したら、<samp>conf</samp>
+    ディレクトリ中のファイルを編集して適切に設定してください。</p>
+
+    <p>Apache は同じポートを他の TCP/IP アプリケーションと共有することは
+    <em>出来ない</em> ので、まず特定のサービスを止めるかアンインストール
+    する必要があるかもしれません。これには他のウェブサーバや BlackIce
+    などのファイアウォール製品が (これらに限られませんが) 含まれます。
+    それらのサービスを使用せず Apache だけを起動させるか、
+    それらの製品と同じ TCP/IP ポートを listen しないように、Apache
+    または他の製品を再設定してください。どのポートが使用されているのか
+    を確認するには Windows の "netstat -an"
+    コマンドが便利かも知れません。</p>
+
+    <h2><a id="use" name="use">Windows 用の Apache を設定する</a></h2>
+
+    <p>Apache は <samp>conf</samp>
+    ディレクトリ中のファイルにより設定されます。これらは、Unix
+    バージョンの設定用ファイルと同じですが、Windows の Apache
+    はいくらか異なるディレクティブがあります。
+    有効なディレクティブを知るためには <a href="./">Apache
+    ドキュメント</a>を見てください。</p>
+
+
+    <p><code>httpd.conf</code> とそのディレクティブを読むことから
+    Apache サーバの設定をはじめてください。<code>access.conf</code>
+    と <code>srm.conf</code> は存在はしていますが、
+    現在ではほとんどの管理者に使われない古いファイルで、
+    その中にはディレクティブが全く書かれていないことが分かるでしょう。</p>
+
+    <p><code>httpd.conf</code> にはそれ自体にドキュメントがたくさん含まれていて、
+    Apache サーバを開始する時に推奨されるデフォルト設定のディレクティブが続いています。
+    設定ファイルを理解するにはそれらのコメントを読むことから始めて、
+    少し変更をしてはコンソールウィンドウから Apache
+    を開始し、変更を適用させてください。
+    間違えたときに最後に行った変更を元に戻すのはより簡単でしょう。
+    そうするうちにどの変更がサーバの不具合につながるのかという
+    知識が生まれます。
+    </p>
+
+    <p>Windows 用の Apache で異なる主な点は以下の通りです</p>
+
+    <ul>
+      <li>
+        Windows 用の Apache はマルチスレッドなので、Unix での Apache
+        のようにそれぞれの要求ごとに別個のプロセスを使いません。
+        代わりに、通常 Apache プロセスが二つだけ使われます。
+        親プロセスとリクエストを処理する子プロセスです。
+        子プロセスでは、それぞれのリクエストは別個のスレッドにより
+        処理されます。従って、「プロセス」
+        を管理するディレクティブが異なります:
+
+        <ul>
+          <li><a
+          href="mod/core.html#maxrequestsperchild"
+          >MaxRequestsPerChild</a> - Unix 用のディレクティブと同じように、
+          プロセスが消えるまでにどれくらいのリクエストを処理するのかを
+          コントロールします。ただし、Unix とは異なり一つのプロセスは
+          一つのリクエストだけの処理ではなく、すべての要求を同時に処理します。
+          従って、これを設定する場合は、非常に高い数を使うことが推奨されます。
+          推奨されたデフォルトの <code>MaxRequestsPerChild 0</code>
+          ではプロセスは消えません。</li>
+
+          <li><a
+          href="mod/core.html#threadsperchild">ThreadsPerChild</a> -
+          この新しいディレクティブは、いくつのスレッドを使うのかを
+          示します。これは、同時にサーバが処理できる接続の
+          最大数になります。大量のアクセスが有るのなら、
+          これを十分に高い数値に設定してください。推奨のデフォルトは
+          <code>ThreadsPerChild 50</code> です。
+          </li>
+        </ul>
+      </li>
+
+      <li>ディレクティブの引数のファイル名は Unix 形式でなく Windows
+      形式のファイル名を使われなければなりません。しかし、Apache
+      内部では Unix 形式の名前を使うので、バックスラッシュの代わりに
+      スラッシュを使わなければなりません。ドライブ名を使うこともできます。
+      省略した場合は、Apache の実行ファイルがあるドライブになります。
+      </li>
+
+      <li>
+        Windows 用の Apache はサーバを再コンパイルせずに実行時に
+        モジュールをロードすることが出来ます。Apache を普通にコンパイル
+        した場合は <code>modules</code> ディレクトリにある多くの
+        オプションのモジュールをインストールします。それらのモジュールや
+        他のモジュールを有効にするには、新しい <a
+        href="mod/mod_so.html#loadmodule">LoadModule</a>
+        ディレクティブを使わなければなりません。例えば、status
+        モジュールを有効にするには以下 (さらに、<code>httpd.conf</code> に
+        status を有効にするディレクティブが必要。詳細については <a
+        href="mod/mod_status.html">mod_status</a>
+        を参照) が必要です。
+<pre>
+    LoadModule status_module modules/mod_status.so
+</pre>
+
+        <p><a
+        href="mod/mod_so.html#creating"
+        >ロードできるモジュールの作成</a>についての情報もあります。
+        サードパーティーのモジュールの中には
+        古い形式の名前、ApacheModuleFoo.dll で配布されていることが
+        あることに注意してください。
+        LoadModule ディレクティブは常にサードパーティーのモジュール自身の
+        ドキュメントに従って設定してください。</p></li>
+
+      <li>Windows 用の Apache バージョン 1.3
+      系では同期的な呼び出しが実装されています。
+      このことは、バッファされていない結果が直ちにブラウザで見られないという
+      CGI 制作者にとっては大きな問題の原因になります。これは、Apache
+      の CGI に記述された動作ではなく、Windows への移植の副作用です。
+      Apache 2.0 では、望まれる非同期の動作を実装が行なわれていて、
+      NT/2000 での実装で、CGI が額面通りの動作が可能になることを
+      期待しています。</li>
+
+      <li>
+        <p>Apache は、Microsoft の IIS や他の Windows
+        サーバで使われるような ISAPI 拡張 (<em>すなわち</em>、
+        インターネットサーバアプリケーション) もロードできます。
+        <a href="mod/mod_isapi.html">詳しい情報もあります</a>。
+        Apache は ISAPI
+        フィルタはロード<em>できない</em>ことに注意してください。</p>
+      </li>
+
+      <li>CGI が動作する時に Apache がスクリプトのインタプリタを
+      判断する方法を <a href="mod/core.html#scriptinterpretersource"
+      >ScriptInterpreterSource</a> ディレクティブを使って設定できます。
+      </li>
+
+      <li>Windows では <code>.htaccess</code>
+      のような名前のファイルは管理しにくいことが多いので、
+      <a href="mod/core.html#accessfilename">AccessFilename</a>
+      ディレクティブを使ってこのファイル名を変更すると
+      便利かもしれません。</li>
+    </ul>
+
+    <h2><a id="cmdline" name="cmdline">コンソールウィンドウで Apache
+    を実行する</a></h2>
+
+    <p>スタートメニューアイコン及び NT サービスマネジャーは、
+    Apache を管理するための簡単なインタフェースを提供します。
+    しかし、コマンドラインからの方が簡単な場合もあります。</p>
+
+    <p>Apache で何かするときには設定ファイルをどのように見つけるのかを
+    知っていることが重要です。コマンドラインで設定ファイルを指定するには
+    二つの方法があります</p>
+
+    <ul>
+      <li>-f では特定の設定ファイルのパスを指定します</li>
+    </ul>
+
+<pre>
+    apache -f "c:\my server\conf\my.conf"
+</pre>
+<pre>
+    apache -f test\test.conf
+</pre>
+
+    <ul>
+      <li>-n は、インストールされた Apache
+      サービスの設定ファイルを指定します (Apache 1.3.7以降)</li>
+    </ul>
+<pre>
+    apache -n "service name"
+</pre>
+
+    <p>これらの場合、設定ファイルで適切なサーバルート
+     が設定されている必要があります。</p>
+
+    <p> -f や -n で設定ファイル名を指定しない場合は、Apache は通常
+    "conf/httpd.conf" というサーバに組み込まれた
+    ファイル名が使われます。Apache に -V スイッチを付けた場合、
+    SERVER_CONFIG_FILE と名付けられたこの値が表示されます。
+    Apache は、以下の順序で試してサーバルートを決定します
+    </p>
+
+    <ul>
+      <li>-C スイッチによる ServerRoot ディレクティブ</li>
+
+      <li>コマンドラインの -d スイッチ</li>
+
+      <li>現在の作業ディレクトリ</li>
+
+      <li>バイナリインストールした場合はレジストリのエントリ</li>
+
+      <li>サーバにコンパイルされているサーバルート</li>
+
+    </ul>
+
+    <p>サーバに組み込まれるサーバルートは、通常 "/apache"
+    になります。apache に -V スイッチを付けた場合は、HTTPD_ROOT
+    名付けられたこの値が表示されます。</p>
+
+    <p>スタートメニューからの場合は通常、Apache に引数が渡されないので
+    コンソールの Apache でもレジストリのエントリを使うことが
+    推奨される方法です。
+    </p>
+
+    <p>バイナリインストール中に、レジストリのキーがインストールされます。
+    例えば</p>
+<pre>
+  HKEY_LOCAL_MACHINE\Software\Apache Group\Apache\1.3.13\ServerRoot
+</pre>
+
+    <p>このキーはサーバに組み込まれていて、現在のバージョンに影響を
+    与えずに新しいバージョンをテストすることを可能にします。
+    もちろん、ファイルシステム上で古いバージョンの上に新しい
+    バージョンをインストールしないように注意しなければなりません。</p>
+
+    <p>もしバイナリインストールをしなかった場合は、Apache
+    はいくつかの筋書に沿って、欠落しているレジストリキーについての警告を発します。
+    この警告は、設定ファイルを見つけることが何らかの形で出来たなら
+    無視してかまいません。</p>
+
+    <p>このキーの値は <samp>conf</samp> ディレクトリのある
+    "ServerRoot" ディレクトリです。Apache は開始時に
+    <samp>httpd.conf</samp> ファイルをこのディレクトリから読みます。
+    上記のレジストリキーから得たディレクトリと異なるディレクトリが
+    このファイルの <samp>ServerRoot</samp> ディレクティブで指定された場合は、
+    Apache はレジストリキーを忘れて設定ファイルで指示されたディレクトリを
+    使います。もし Apache ディレクトリや設定ファイルを別の場所に
+    コピーする場合は <samp>httpd.conf</samp> の <samp>ServerRoot</samp>
+    を更新することが肝心です。
+    </p>
+
+    <p>コンソールアプリケーションとしてコマンドラインから Apache
+    を実行するには、以下のコマンドを使ってください</p>
+<pre>
+    apache 
+</pre>
+
+    <p>Apache が実行され、control-C
+    を使うことにより止められるまで動き続けます。</p>
+
+    <h2><a id="signal" name="signal">コンソールウィンドウの Apache
+    をコントロールします</a></h2>
+
+    <p>実行中の Apache を、別のコンソールウィンドウから
+    以下を実行することにより止めることができます</p>
+<pre>
+    apache -k shutdown
+</pre>
+
+    <p><strong>注: このオプションは Apache 1.3.3 以降でのみ有効です。
+    </strong></p>
+
+    <p>より以前のバージョンでは、サーバを止めるには、Apache
+    のコンソールウィンドウで control-C を使わなければなりません。</p>
+
+    <p>バージョン 1.3.3 から 1.3.12 まででは、Apache
+    のコンソールウィンドウで control-C を使う代わりにこれの方を
+    使うのが必要でした。それを使うと、Apache がその時点での
+    処理を終了してきれいに終了できることができたからです。
+    </p>
+
+    <p>バージョン 1.3.13 で、動作しているウィンドウで Control-C
+    を使っても Apache がきれいに終了するようになったので
+     -k shutdown の別名として -k stop を使ってかまいません。
+     早期のバージョンでは -k stop を解釈しません。</p>
+
+    <p>Apache を、再スタートさせることもできます。それにより設定ファイル
+    の再読込をします。経過中のどの処理も割込ませずに完了することが許されます。
+    Apache を再スタートするにはこれを実行してください
+    </p>
+<pre>
+    apache -k restart
+</pre>
+
+    <p><strong>注: このオプションは Apache 1.3.3 以降でのみ有効です。
+    早期のバージョンでは、Apache のコンソールウィンドウで Control-C
+    によりサーバを終了させ、それから Apache
+    コマンドによってサーバを再起動する必要があります。
+    </strong></p>
+
+    <p>他に、設定ファイルテストオプションという<em>非常に便利な</em>
+    機能があります。Apache
+    の設定ファイルをテストするにはこれを実行してください:</p>
+<pre>
+    apache -t
+</pre>
+
+    <p>Apache がまだ実行しているときに設定ファイルの変更をしたときに
+    特に便利です。変更を加え、"apache -t"
+    コマンドにより構文が正しいか確認してから "apache -k restart" により
+    Apache を再起動するということができます。Apache
+    は設定ファイルを読み直し、
+    割込みさせることなく処理を進めることが出来ます。
+    新しいリクエストは新しい設定に基づいて処理されます。
+    </p>
+
+    <p>注: Apache の Unix
+    バージョンに精通した人々には、これらのコマンドは
+    <code>kill -TERM <em>pid</em></code>
+    および <code>kill -USR1 <em>pid</em></code> と同等の機能を Windows
+    に提供する、と言った方がわかりやすいでしょう。
+    コマンドラインのオプションで使われる <code>-k</code>
+    は Unix における "kill" コマンドを連想させるものとして選ばれました。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
