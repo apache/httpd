@@ -1,6 +1,12 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.59
 
+  *) SECURITY: CVE-2006-3747 (cve.mitre.org)
+     mod_rewrite: Fix an off-by-one security problem in the ldap scheme
+     handling.  For some RewriteRules this could lead to a pointer being
+     written out of bounds.  Reported by Mark Dowd of McAfee.
+     [Mark Cox]
+
 Changes with Apache 2.0.58
 
   *) Legal: Restored original years in copyright notices.
