@@ -470,9 +470,10 @@ _install:
 	copy CHANGES 		"$(INSTDIR)\CHANGES.txt" <.y
 	copy INSTALL 		"$(INSTDIR)\INSTALL.txt" <.y
 	copy LICENSE 		"$(INSTDIR)\LICENSE.txt" <.y
+	copy NOTICE 		"$(INSTDIR)\NOTICE.txt" <.y
 	copy README 		"$(INSTDIR)\README.txt" <.y
 !IF EXIST("srclib\openssl")
-	type << >> "$(INSTDIR)\README.txt"
+	type << >> "$(INSTDIR)\NOTICE.txt"
 
   This binary distribution includes cryptographic software written by
   Eric Young (eay@cryptsoft.com), software written by Tim Hudson 
@@ -537,7 +538,7 @@ BEGIN {
 <<
 !ENDIF
 !IF EXIST("srclib\zlib")
-	type << >> "$(INSTDIR)\README.txt"
+	type << >> "$(INSTDIR)\NOTICE.txt"
 
   This binary distribution of mod_deflate.so includes zlib compression code
   <http://www.gzip.org/zlib/> written by Jean-loup Gailly (jloup@gzip.org)
