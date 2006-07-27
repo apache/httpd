@@ -1,2 +1,0 @@
-MODULE xmltok
-EXPORT @xmlparse.imp

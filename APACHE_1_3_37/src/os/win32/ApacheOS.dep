@@ -1,5 +1,0 @@
-# Microsoft Developer Studio Generated Dependency File, included by ApacheOS.mak
-
-.\os.c : \
-	".\os.h"\
-	

@@ -1,8 +1,0 @@
-#
-# This is the default file for the ResourceConfig directive in httpd.conf.
-# It is processed after httpd.conf but before access.conf.
-#
-# To avoid confusion, it is recommended that you put all of your
-# Apache server directives into the httpd.conf file and leave this
-# one essentially empty.
-#

@@ -1,5 +1,0 @@
-# Microsoft Developer Studio Generated Dependency File, included by Apache.mak
-
-.\os\win32\apache.rc : \
-	".\os\win32\apache.ico"\
-	
