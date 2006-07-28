@@ -3,7 +3,7 @@ DISTCLEAN_TARGETS = apxs apachectl dbmmanage log_server_status \
 
 CLEAN_TARGETS = suexec
 
-PROGRAMS = htpasswd htdigest rotatelogs logresolve ab checkgid htdbm htcacheclean httxt2dbm fcgistarter
+PROGRAMS = htpasswd htdigest rotatelogs logresolve ab checkgid htdbm htcacheclean httxt2dbm fcgistarter proxymonitor
 TARGETS  = $(PROGRAMS)
 
 PROGRAM_LDADD        = $(UTIL_LDFLAGS) $(PROGRAM_DEPENDENCIES) $(EXTRA_LIBS) $(AP_LIBS)
@@ -73,3 +73,17 @@ httxt2dbm: $(httxt2dbm_OBJECTS)
 fcgistarter_OBJECTS = fcgistarter.lo
 fcgistarter: $(fcgistarter_OBJECTS)
 	$(LINK) $(fcgistarter_LTFLAGS) $(fcgistarter_OBJECTS) $(PROGRAM_LDADD)
+
+#proxymonitor_OBJECTS = proxymonitor.lo ../modules/proxy/ajp_msg.lo ../modules/proxy/ajp_link.lo ../modules/proxy/health_checker_util.lo ../modules/mem/sharedmem_util.lo
+proxymonitor_OBJECTS = proxymonitor.lo ajp_msg.lo ajp_link.lo health_checker_util.lo sharedmem_util.lo
+ajp_msg.c: ../modules/proxy/ajp_msg.c
+	cp ../modules/proxy/ajp_msg.c .
+ajp_link.c: ../modules/proxy/ajp_link.c
+	cp ../modules/proxy/ajp_link.c .
+health_checker_util.c: ../modules/proxy/health_checker_util.c
+	cp ../modules/proxy/health_checker_util.c .
+sharedmem_util.c: ../modules/mem/sharedmem_util.c
+	cp ../modules/mem/sharedmem_util.c .
+
+proxymonitor: $(proxymonitor_OBJECTS)
+	$(LINK) $(proxymonitor_LTFLAGS) $(proxymonitor_OBJECTS) $(PROGRAM_LDADD)

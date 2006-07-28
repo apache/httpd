@@ -17,6 +17,7 @@
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
 #include "slotmem.h"
+#include "mod_proxy_health_checker.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
 
@@ -43,6 +44,8 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req,
                                    OK, DECLINED)
 /* Storage for the comarea */
 static const slotmem_storage_method *storage = NULL;
+/* Health checker handler */
+static const health_worker_method *checkstorage = NULL;
 
 /* already called in the knowledge that the characters are hex digits */
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
@@ -1639,6 +1642,13 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
               worker->name);
         return;
     }
+
+    /* Health checker handler: to create the correct size. */
+    if (checkstorage) {
+        item_size = checkstorage->getentrysize();
+    }
+
+    /* Use storage provider when a storage is existing */
     if (storage) {
 
         rv = storage->ap_slotmem_create(&myscore, "proxy/comarea", item_size, ap_proxy_lb_workers(), conf->pool);
@@ -2224,6 +2234,8 @@ PROXY_DECLARE(void) proxy_create_comarea(apr_pool_t *pconf)
 {
     ap_slotmem_t *myscore;
     apr_size_t item_size = sizeof(proxy_worker_stat);
+    if (checkstorage)
+        item_size = checkstorage->getentrysize();
     if (storage)
         storage->ap_slotmem_create(&myscore, "proxy/comarea", item_size, ap_proxy_lb_workers(), pconf);
 }
@@ -2235,4 +2247,13 @@ PROXY_DECLARE(void) proxy_lookup_storage_provider()
         storage = ap_lookup_provider(SLOTMEM_STORAGE, "score", "0");
     if (!storage)
         storage = ap_lookup_provider(SLOTMEM_STORAGE, "plain", "0");
+    checkstorage = ap_lookup_provider(PROXY_CKMETHOD, "default", "0");
+}
+
+/* Store the worker information in the comarea */
+PROXY_DECLARE(void) proxy_checkstorage_add_entry(proxy_worker *worker, char *balancer_name)
+{
+    if (checkstorage) {
+        checkstorage->add_entry(worker, balancer_name, worker->id);
+    }
 }

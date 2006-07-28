@@ -17,6 +17,7 @@ proxy_connect_objs="mod_proxy_connect.lo"
 proxy_ftp_objs="mod_proxy_ftp.lo"
 proxy_http_objs="mod_proxy_http.lo"
 proxy_fcgi_objs="mod_proxy_fcgi.lo"
+proxy_health_checker_objs="mod_proxy_health_checker.lo health_checker_util.lo"
 proxy_ajp_objs="mod_proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo"
 proxy_balancer_objs="mod_proxy_balancer.lo"
 
@@ -28,6 +29,7 @@ case "$host" in
     proxy_ftp_objs="$proxy_ftp_objs mod_proxy.la"
     proxy_http_objs="$proxy_http_objs mod_proxy.la"
     proxy_fcgi_objs="$proxy_fcgi_objs mod_proxy.la"
+    proxy_health_checker_objs="$proxy_health_checker_objs mod_proxy.la"
     proxy_ajp_objs="$proxy_ajp_objs mod_proxy.la"
     proxy_balancer_objs="$proxy_balancer_objs mod_proxy.la"
     ;;
@@ -37,6 +39,7 @@ APACHE_MODULE(proxy_connect, Apache proxy CONNECT module, $proxy_connect_objs, ,
 APACHE_MODULE(proxy_ftp, Apache proxy FTP module, $proxy_ftp_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_http, Apache proxy HTTP module, $proxy_http_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_fcgi, Apache proxy FastCGI module, $proxy_fcgi_objs, , $proxy_mods_enable)
+APACHE_MODULE(proxy_health_checker, Apache proxy health checker module, $proxy_health_checker_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_ajp, Apache proxy AJP module, $proxy_ajp_objs, , $proxy_mods_enable)
 APACHE_MODULE(proxy_balancer, Apache proxy BALANCER module, $proxy_balancer_objs, , $proxy_mods_enable)
 

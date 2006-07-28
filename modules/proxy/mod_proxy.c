@@ -1151,11 +1151,13 @@ static const char *
         }
     }
     else {
+        int adding = 0;
         proxy_worker *worker = ap_proxy_get_worker(cmd->temp_pool, conf, r);
         if (!worker) {
             const char *err = ap_proxy_add_worker(&worker, cmd->pool, conf, r);
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
+            adding = 1;
         } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                          "worker %s already used by another worker", worker->name);
@@ -1168,6 +1170,10 @@ static const char *
             if (err)
                 return apr_pstrcat(cmd->temp_pool, "ProxyPass ", err, NULL);
         }
+       
+        /* XXX: ProxyPass is not a good name look for Location? */
+        if (adding)
+            proxy_checkstorage_add_entry(worker, "ProxyPass");
     }
     return NULL;
 }
@@ -1516,7 +1522,8 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     apr_table_t *params = apr_table_make(cmd->pool, 5);
     const apr_array_header_t *arr;
     const apr_table_entry_t *elts;
-    int i;
+    int i; 
+    int adding = 0; 
 
     if (cmd->path)
         path = apr_pstrdup(cmd->pool, cmd->path);
@@ -1552,6 +1559,7 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
         const char *err;
         if ((err = ap_proxy_add_worker(&worker, cmd->pool, conf, name)) != NULL)
             return apr_pstrcat(cmd->temp_pool, "BalancerMember ", err, NULL);
+        adding = 1;
     } else {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
                          "worker %s already used by another worker", worker->name);
@@ -1577,6 +1585,9 @@ static const char *add_member(cmd_parms *cmd, void *dummy, const char *arg)
     }
     /* Add the worker to the load balancer */
     ap_proxy_add_worker_to_balancer(cmd->pool, balancer, worker);
+    /* XXX: Holy cow: The worker can belong to more that one balancer! */
+    if (adding)
+        proxy_checkstorage_add_entry(worker, balancer->name);
     return NULL;
 }
 
