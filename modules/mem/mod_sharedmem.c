@@ -28,6 +28,7 @@
 #include "http_log.h"
 
 #include  "slotmem.h"
+#include "sharedmem_util.h"
 
 /* make sure the shared memory is cleaned */
 static int initialize_cleanup(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
@@ -45,7 +46,7 @@ static int pre_config(apr_pool_t *p, apr_pool_t *plog,
 
 static void ap_sharedmem_register_hook(apr_pool_t *p)
 {
-    slotmem_storage_method *storage = sharedmem_getstorage();
+    const slotmem_storage_method *storage = sharedmem_getstorage();
     ap_register_provider(p, SLOTMEM_STORAGE, "shared", "0", storage);
     ap_hook_post_config(initialize_cleanup, NULL, NULL, APR_HOOK_LAST);
     ap_hook_pre_config(pre_config, NULL, NULL, APR_HOOK_MIDDLE);

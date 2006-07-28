@@ -29,9 +29,9 @@ typedef struct proxy_worker_conf proxy_worker_conf;
 /* allow health check method on workers in a non httpd process */
 struct health_worker_method {
     /* read the size of the entry: to create the shared area */
-    int (* getentrysize)();
+    int (* getentrysize)(void);
     /* copy the worker information in the shared area so the health-checker can extract the part it need */
-    apr_status_t (*add_entry)(proxy_worker *worker, char *balancer_name, int id);
+    apr_status_t (*add_entry)(proxy_worker *worker, const char *balancer_name, int id);
     /* XXX : Remove the entry */
     apr_status_t (*del_entry)(int id);
     /* read the health of the entry: for httpd */
@@ -39,7 +39,7 @@ struct health_worker_method {
     /* set the health of the entry: for the health-checker */
     apr_status_t (*set_health)(int id, int value);
     /* read the entry stored in the shared area */
-    apr_status_t (*get_entry)(proxy_worker **worker, char **balancer_name, apr_pool_t *pool);
+    apr_status_t (*get_entry)(int id, proxy_worker **worker, char **balancer_name, apr_pool_t *pool);
     /* read the conf part. */
     apr_status_t (*get_entryconf)(int id, proxy_worker_conf **worker, char **balancer_name, apr_pool_t *pool);
     /* check the back-end server health */
@@ -96,3 +96,10 @@ struct proxy_worker_conf {
     apr_time_t          time_checked;
 };
 
+/*
+ * Other routines.
+ */
+const health_worker_method *health_checker_get_storage();
+void health_checker_init_slotmem_storage(const slotmem_storage_method * storage);
+void health_checker_init_slotmem(ap_slotmem_t *score);
+const slotmem_storage_method * health_checker_get_slotmem_storage();

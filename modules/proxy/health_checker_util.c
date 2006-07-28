@@ -130,7 +130,7 @@ static int getentrysize()
     return sizeof(struct proxy_worker_conf);
 }
 /* copy the worker information in the shared area so the health-checker can extract the part it need */
-static apr_status_t add_entry(proxy_worker *worker, char *balancer_name, int id)
+static apr_status_t add_entry(proxy_worker *worker, const char *balancer_name, int id)
 {
     struct proxy_worker_conf *workerconf = NULL;
     apr_status_t rv;
@@ -216,6 +216,7 @@ static apr_status_t set_health(int id, int value)
 static apr_status_t get_entry(int id, proxy_worker **worker, char **balancer_name, apr_pool_t *pool)
 {
     struct proxy_worker_conf *workerconf = NULL;
+    char *ptr;
     apr_status_t rv;
 
     if (myscore == NULL)
@@ -227,7 +228,7 @@ static apr_status_t get_entry(int id, proxy_worker **worker, char **balancer_nam
     /* allocate the data */
     *worker = apr_pcalloc(pool, sizeof(proxy_worker));
     if (workerconf->balancer_name)
-        *balancer_name = apr_pcalloc(pool, strlen(workerconf->balancer_name));
+        *balancer_name = apr_pcalloc(pool, strlen(workerconf->balancer_name) + 1);
     else
         *balancer_name = NULL;
 
@@ -236,16 +237,31 @@ static apr_status_t get_entry(int id, proxy_worker **worker, char **balancer_nam
     // XXX: what to do (* worker)->s = workerconf;
     (* worker)->retry = workerconf->retry;
     (* worker)->lbfactor = workerconf->lbfactor;
-    if (workerconf->name)
-        strcpy((* worker)->name, workerconf->name);
-    if (workerconf->scheme)
-        strcpy((* worker)->scheme, workerconf->scheme);
-    if (workerconf->hostname)
-        strcpy((* worker)->hostname, workerconf->hostname);
-    if (workerconf->route)
-        strcpy((* worker)->route, workerconf->route);
-    if (workerconf->redirect)
-        strcpy((* worker)->redirect, workerconf->redirect);
+    if (workerconf->name) {
+        ptr = apr_pcalloc(pool, strlen(workerconf->name) + 1);
+        strcpy(ptr, workerconf->name);
+        (* worker)->name = ptr;
+    }
+    if (workerconf->scheme) {
+        ptr = apr_pcalloc(pool, strlen(workerconf->scheme) + 1);
+        strcpy(ptr, workerconf->scheme);
+        (* worker)->scheme = ptr;
+    }
+    if (workerconf->hostname) {
+        ptr = apr_pcalloc(pool, strlen(workerconf->hostname) + 1);
+        strcpy(ptr, workerconf->hostname);
+        (* worker)->hostname = ptr;
+    }
+    if (workerconf->route) {
+        ptr = apr_pcalloc(pool, strlen(workerconf->route) + 1);
+        strcpy(ptr, workerconf->route);
+        (* worker)->route = ptr;
+    }
+    if (workerconf->redirect) {
+        ptr = apr_pcalloc(pool, strlen(workerconf->redirect) + 1);
+        strcpy(ptr, workerconf->redirect);
+        (* worker)->redirect = ptr;
+    }
     (* worker)->status = workerconf->status;
     (* worker)->port = workerconf->port;
     (* worker)->min = workerconf->min;
@@ -272,7 +288,7 @@ static apr_status_t get_entryconf(int id, struct proxy_worker_conf **workerconf,
 
     if (myscore == NULL)
         return APR_ENOSHMAVAIL;
-    rv = checkstorage->ap_slotmem_mem(myscore, id, workerconf);
+    rv = checkstorage->ap_slotmem_mem(myscore, id, (void **) workerconf);
     if (rv != APR_SUCCESS)
         return rv;
     *balancer_name = (*workerconf)->balancer_name;
@@ -286,7 +302,7 @@ static apr_status_t check_entryhealth(int id, apr_pool_t *pool) {
 
     if (myscore == NULL)
         return APR_ENOSHMAVAIL;
-    rv = checkstorage->ap_slotmem_mem(myscore, id, &workerconf);
+    rv = checkstorage->ap_slotmem_mem(myscore, id, (void **) &workerconf);
     if (rv != APR_SUCCESS)
         return rv;
     /* If the error is not initialized to the worker to be removed keep it */
@@ -321,17 +337,17 @@ static const health_worker_method worker_storage = {
 };
 
 /* make the module usuable from outside */
-health_worker_method *health_checker_get_storage()
+const health_worker_method *health_checker_get_storage()
 {
     return(&worker_storage);
 }
 
 /* handle the slotmem storage */
-void health_checker_init_slotmem_storage(slotmem_storage_method * storage)
+void health_checker_init_slotmem_storage(const slotmem_storage_method * storage)
 {
     checkstorage = storage;
 }
-slotmem_storage_method * health_checker_get_slotmem_storage()
+const slotmem_storage_method * health_checker_get_slotmem_storage()
 {
     return(checkstorage);
 }

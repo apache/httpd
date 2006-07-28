@@ -20,6 +20,7 @@
 #define CORE_PRIVATE
 
 #include "apr.h"
+#include "apr_strings.h"
 #include "apr_pools.h"
 #include "apr_shm.h"
 
@@ -27,7 +28,8 @@
 #include "http_config.h"
 #include "http_log.h"
 
-#include  "slotmem.h"
+#include "slotmem.h"
+#include "sharedmem_util.h"
 
 /* The description of the slots to reuse the slotmem */
 struct sharedslotdesc {
@@ -230,7 +232,7 @@ static const slotmem_storage_method storage = {
 };
 
 /* make the storage usuable from outside */
-slotmem_storage_method *sharedmem_getstorage()
+const slotmem_storage_method *sharedmem_getstorage()
 {
     return(&storage);
 }

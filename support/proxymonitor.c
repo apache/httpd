@@ -36,8 +36,9 @@
 #include "mod_proxy.h"
 #include "ajp.h"
 
-#include "mod_proxy_health_checker.h"
 #include "slotmem.h"
+#include "sharedmem_util.h"
+#include "mod_proxy_health_checker.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -50,7 +51,7 @@ static int interrupted; /* flag: true if SIGINT or SIGTERM occurred */
 
 static apr_time_t now;  /* start time of this processing run */
 
-extern int AP_DECLARE_DATA ap_default_loglevel = APLOG_ERR;
+extern int AP_DECLARE_DATA ap_default_loglevel;
 
 static apr_file_t *errfile;   /* stderr file handle */
 static apr_file_t *outfile;   /* stdout file handle */
@@ -67,7 +68,7 @@ static apr_status_t init_healthck(apr_pool_t *pool, int *num)
 {
     apr_size_t size;
     apr_status_t rv;
-    slotmem_storage_method *checkstorage;
+    const slotmem_storage_method *checkstorage;
     ap_slotmem_t *myscore;
     
     sharedmem_initglobalpool(pool);

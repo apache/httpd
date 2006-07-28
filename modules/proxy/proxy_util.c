@@ -2251,7 +2251,7 @@ PROXY_DECLARE(void) proxy_lookup_storage_provider()
 }
 
 /* Store the worker information in the comarea */
-PROXY_DECLARE(void) proxy_checkstorage_add_entry(proxy_worker *worker, char *balancer_name)
+PROXY_DECLARE(void) proxy_checkstorage_add_entry(proxy_worker *worker, const char *balancer_name)
 {
     if (checkstorage) {
         checkstorage->add_entry(worker, balancer_name, worker->id);
