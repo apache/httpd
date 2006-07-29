@@ -34,7 +34,7 @@
 #include "ajp.h"
 
 static const slotmem_storage_method *checkstorage = NULL;
-static ap_slotmem_t *myscore=NULL;
+static ap_slotmem_t *myscore = NULL;
 
 /* Check a AJP back-end server.
  * Send a cing message and wait for the answer
@@ -71,23 +71,18 @@ static apr_status_t test_backend(char *scheme, char *hostname, int port, apr_poo
     apr_sockaddr_t *epsv_addr;
     apr_status_t rv;
 
-    if (!port) {
-        if (strcmp(scheme, "ajp") == 0)
-            port = 8009;
-        else if (strcmp(scheme, "http") == 0)
-            port = 80;
-        else
-            port = 443;
-    }
+    /* Note that AJP requires a new apr-util (29-07-2006) */
+    if (!port)
+        port  = (int) apr_uri_port_of_scheme(scheme);
     rv = apr_socket_create(&newsock, APR_INET, SOCK_STREAM, APR_PROTO_TCP, pool);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                     "apr_socket_create failed");
         return rv;
     }
     rv = apr_sockaddr_info_get(&epsv_addr, hostname, APR_INET, port, 0, pool);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
                      "apr_sockaddr_info_get failed");
         apr_socket_close(newsock);
         return rv;
@@ -95,26 +90,26 @@ static apr_status_t test_backend(char *scheme, char *hostname, int port, apr_poo
 
     rv = apr_socket_timeout_set(newsock, 10);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, NULL,
                     "apr_socket_timeout_set");
         apr_socket_close(newsock);
         return rv;
     }
     rv = apr_socket_connect(newsock, epsv_addr);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL,
                     "apr_socket_connect failed");
         apr_socket_close(newsock);
         return rv;
     }
 
     /* XXX: Something is needed for http/https */
-    if (strcmp(scheme, "ajp") == 0) {
+    if (strcasecmp(scheme, "ajp") == 0) {
         /* The connection is etablished send a ping and read the answer */
         apr_socket_timeout_set(newsock, 10000);
         rv = pingc_backend(newsock, pool);  
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, NULL,
                         "pingc_backend failed");
             apr_socket_close(newsock);
             return rv;
@@ -143,20 +138,20 @@ static apr_status_t add_entry(proxy_worker *worker, const char *balancer_name, i
     }
 
     if (balancer_name)
-        strcpy(workerconf->balancer_name, balancer_name);
+        strncpy(workerconf->balancer_name, balancer_name, sizeof(workerconf->balancer_name));
     workerconf->id = worker->id;
     workerconf->retry = worker->retry;
     workerconf->lbfactor = worker->lbfactor;
     if (worker->name)
-        strcpy(workerconf->name, worker->name);
+        strncpy(workerconf->name, worker->name, sizeof(workerconf->name));
     if (worker->scheme)
-        strcpy(workerconf->scheme, worker->scheme);
+        strncpy(workerconf->scheme, worker->scheme, sizeof(workerconf->scheme));
     if (worker->hostname)
-        strcpy(workerconf->hostname, worker->hostname);
+        strncpy(workerconf->hostname, worker->hostname, sizeof(workerconf->hostname));
     if (worker->route)
-        strcpy(workerconf->route, worker->route);
+        strncpy(workerconf->route, worker->route, sizeof(workerconf->route));
     if (worker->redirect)
-        strcpy(workerconf->redirect, worker->redirect);
+        strncpy(workerconf->redirect, worker->redirect, sizeof(workerconf->redirect));
     workerconf->status = worker->status;
     workerconf->port = worker->port;
     workerconf->min = worker->min;
@@ -227,8 +222,10 @@ static apr_status_t get_entry(int id, proxy_worker **worker, char **balancer_nam
 
     /* allocate the data */
     *worker = apr_pcalloc(pool, sizeof(proxy_worker));
-    if (workerconf->balancer_name)
+    if (workerconf->balancer_name) {
         *balancer_name = apr_pcalloc(pool, strlen(workerconf->balancer_name) + 1);
+        strcpy(*balancer_name, workerconf->balancer_name);
+    }
     else
         *balancer_name = NULL;
 
