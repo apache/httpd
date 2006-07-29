@@ -215,6 +215,8 @@ typedef struct deflate_ctx_t
     int (*libz_end_func)(z_streamp);
 } deflate_ctx;
 
+/* Number of validation bytes (CRC and length) after the compressed data */
+#define VALIDATION_SIZE 8
 /* Do not update ctx->crc, see comment in flush_libz_buffer */
 #define NO_UPDATE_CRC 0
 /* Do update ctx->crc, see comment in flush_libz_buffer */
@@ -485,11 +487,12 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate, Z_FINISH,
                               NO_UPDATE_CRC);
 
-            buf = apr_palloc(r->pool, 8);
+            buf = apr_palloc(r->pool, VALIDATION_SIZE);
             putLong((unsigned char *)&buf[0], ctx->crc);
             putLong((unsigned char *)&buf[4], ctx->stream.total_in);
 
-            b = apr_bucket_pool_create(buf, 8, r->pool, f->c->bucket_alloc);
+            b = apr_bucket_pool_create(buf, VALIDATION_SIZE, r->pool,
+                                       f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "Zlib: Compressed %ld to %ld : URL %s",
