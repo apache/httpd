@@ -299,13 +299,15 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
     int zRC;
-    deflate_filter_config *c = ap_get_module_config(r->server->module_config,
-                                                    &deflate_module);
+    deflate_filter_config *c;
 
     /* Do nothing if asked to filter nothing. */
     if (APR_BRIGADE_EMPTY(bb)) {
         return ap_pass_brigade(f->next, bb);
     }
+
+    c = ap_get_module_config(r->server->module_config,
+                             &deflate_module);
 
     /* If we don't have a context, we need to ensure that it is okay to send
      * the deflated content.  If we have a context, that means we've done
@@ -447,6 +449,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                            Z_DEFAULT_STRATEGY);
 
         if (zRC != Z_OK) {
+            deflateEnd(&ctx->stream);
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "unable to init Zlib: "
                           "deflateInit2 returned %d: URL %s",
