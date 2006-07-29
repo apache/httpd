@@ -74,6 +74,10 @@ static apr_status_t init_healthck(apr_pool_t *pool, int *num)
     sharedmem_initglobalpool(pool);
     checkstorage = sharedmem_getstorage();
     rv = checkstorage->ap_slotmem_attach(&myscore, "proxy/checker", &size, num, pool);
+    if (rv != APR_SUCCESS) {
+        apr_file_printf(errfile, "Can't attach to httpd memory error: %d\n", rv);
+        return rv;
+    }
 
     health_checker_init_slotmem_storage(checkstorage);
     health_checker_init_slotmem(myscore);
@@ -175,6 +179,10 @@ int process_sharedmem(apr_pool_t *pool, int num)
     for (n = 0; n < num; n++) {
 
         rv = worker_storage->get_entryconf(n, &worker, &balancer_name, pool);
+        if (rv != APR_SUCCESS) {
+            apr_file_printf(errfile, "Can't read entry %d\n", n);
+            return rv;
+        }
         if (worker->used == 0 || worker->used  == 2)
             continue;
         worker_storage->get_health(n, &status);
@@ -190,6 +198,7 @@ int process_sharedmem(apr_pool_t *pool, int num)
             worker_storage->set_health(n, HEALTH_OK);
         }
     }
+    return APR_SUCCESS;
 }
 
 /*
@@ -272,7 +281,8 @@ int main(int argc, const char * const argv[])
 
         if (instance_socket == NULL) {
             apr_pool_create(&instance_socket, pool);
-            init_healthck(instance_socket, &num);
+            status = init_healthck(instance_socket, &num);
+            return 1;
         }
 
         apr_pool_create(&instance, instance_socket);
