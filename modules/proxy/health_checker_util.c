@@ -132,7 +132,7 @@ static apr_status_t add_entry(proxy_worker *worker, const char *balancer_name, i
 
     if (myscore == NULL)
         return APR_ENOSHMAVAIL;
-    rv = checkstorage->ap_slotmem_mem(myscore, worker->id, (void *) &workerconf);
+    rv = checkstorage->ap_slotmem_mem(myscore, id, (void *) &workerconf);
     if (rv != APR_SUCCESS) {
         return rv;
     }
