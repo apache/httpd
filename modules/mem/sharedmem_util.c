@@ -88,9 +88,18 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     ap_slotmem_t *res;
     ap_slotmem_t *next = globallistmem;
     char *fname;
+    char *dir, *sep;
+    char *dname;
     apr_status_t rv;
 
     fname = ap_server_root_relative(pool, name);
+    dir = apr_pstrdup(pool, name);
+    sep = strrchr(dir, '/');
+    if (sep != NULL) {
+        *sep++ = '\0'; 
+        dname = ap_server_root_relative(pool, dir);
+        apr_dir_make(dname, APR_UREAD|APR_UWRITE|APR_UEXECUTE, pool);
+    }
 
     /* first try to attach to existing slotmem */
     if (next) {
