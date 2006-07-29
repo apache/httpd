@@ -258,8 +258,22 @@ static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
 
          zRC = libz_func(&ctx->stream, flush);
 
-         if (deflate_len == 0 && zRC == Z_BUF_ERROR)
+         /*
+          * We can ignore Z_BUF_ERROR because:
+          * When we call libz_func we can assume that
+          *
+          * - avail_in is zero (due to the surrounding code that calls
+          *   flush_libz_buffer)
+          * - avail_out is non zero due to our actions some lines above
+          *
+          * So the only reason for Z_BUF_ERROR is that the internal libz
+          * buffers are now empty and thus we called libz_func one time
+          * too often. This does not hurt. It simply says that we are done.
+          */
+         if (zRC == Z_BUF_ERROR) {
              zRC = Z_OK;
+             break;
+         }
 
          done = (ctx->stream.avail_out != 0 || zRC == Z_STREAM_END);
 
