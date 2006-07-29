@@ -101,10 +101,6 @@ char * ap_server_root_relative(apr_pool_t *p, const char *name)
     }
     return fname;
 }
-char * ap_strrchr(char *s, int c)
-{
-        return strrchr(s,c);
-}
 
 /*
  * called on SIGINT or SIGTERM
