@@ -282,7 +282,8 @@ int main(int argc, const char * const argv[])
         if (instance_socket == NULL) {
             apr_pool_create(&instance_socket, pool);
             status = init_healthck(instance_socket, &num);
-            return 1;
+            if (status != APR_SUCCESS)
+                return 1;
         }
 
         apr_pool_create(&instance, instance_socket);
