@@ -186,6 +186,7 @@ typedef struct {
         status_full
     } proxy_status;             /* Status display options */
     char proxy_status_set;
+    char *slotmem_loc;
     apr_pool_t *pool;           /* Pool used for allocating this struct */
 } proxy_server_conf;
 
@@ -446,7 +447,7 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, request_status,
 
 /* proxy_util.c */
 
-PROXY_DECLARE(void) proxy_create_comarea(apr_pool_t *pconf);
+PROXY_DECLARE(void) proxy_create_comarea(apr_pool_t *pconf, char *name);
 PROXY_DECLARE(void) proxy_checkstorage_add_workers(apr_pool_t *pconf, server_rec *s);
 PROXY_DECLARE(void) proxy_lookup_storage_provider();
 

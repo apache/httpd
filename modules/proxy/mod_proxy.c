@@ -933,6 +933,7 @@ static void * create_proxy_config(apr_pool_t *p, server_rec *s)
     ps->timeout_set = 0;
     ps->badopt = bad_error;
     ps->badopt_set = 0;
+    ps->slotmem_loc = NULL;
     ps->pool = p;
 
     return ps;
@@ -966,6 +967,7 @@ static void * merge_proxy_config(apr_pool_t *p, void *basev, void *overridesv)
     ps->timeout= (overrides->timeout_set == 0) ? base->timeout : overrides->timeout;
     ps->badopt = (overrides->badopt_set == 0) ? base->badopt : overrides->badopt;
     ps->proxy_status = (overrides->proxy_status_set == 0) ? base->proxy_status : overrides->proxy_status;
+    ps->slotmem_loc = (overrides->slotmem_loc == NULL) ? base->slotmem_loc : overrides->slotmem_loc;
     ps->pool = p;
     return ps;
 }
@@ -1646,6 +1648,16 @@ static const char *
     return NULL;
 }
 
+static const char *
+    set_slotmem_loc(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    server_rec *s = cmd->server;
+    proxy_server_conf *conf =
+        (proxy_server_conf *) ap_get_module_config(s->module_config, &proxy_module);
+    conf->slotmem_loc = apr_pstrdup(cmd->pool, arg);
+    return NULL;
+}
+
 static void ap_add_per_proxy_conf(server_rec *s, ap_conf_vector_t *dir_config)
 {
     proxy_server_conf *sconf = ap_get_module_config(s->module_config,
@@ -1795,6 +1807,8 @@ static const command_rec proxy_cmds[] =
      "Configure Status: proxy status to one of: on | off | full"),
     AP_INIT_RAW_ARGS("ProxySet", set_proxy_param, NULL, RSRC_CONF|ACCESS_CONF,
      "A balancer or worker name with list of params"),
+    AP_INIT_TAKE1("ProxySlotMemLoc", set_slotmem_loc, NULL, RSRC_CONF,
+     "Location of the shared area to store the workers information: file-path (default: anonymous"),
     {NULL}
 };
 
@@ -1849,6 +1863,8 @@ PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s,
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
+    proxy_server_conf *sconf = ap_get_module_config(s->module_config,
+                                                    &proxy_module);
 
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
@@ -1856,7 +1872,7 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
 
     /* if we have a memory provider create the comarea here */
-    proxy_create_comarea(pconf);
+    proxy_create_comarea(pconf, sconf->slotmem_loc);
 
     /* Also fill the comarea of the health-checker */
     proxy_checkstorage_add_workers(pconf, s);
