@@ -286,11 +286,7 @@ int main(int argc, const char * const argv[])
         if (repeat>0)
             repeat--;
         apr_pool_destroy(instance);
-        /* If something goes really wrong we should clean all */
-        if (0) {
-            apr_pool_destroy(instance_socket);
-            instance_socket = NULL;
-        }
+        /* If something goes really wrong we should clean all, via apr_pool_destroy(instance_socket) */
     }
     if (interrupted) {
         apr_file_printf(errfile, "Monitoring aborted due to user "
