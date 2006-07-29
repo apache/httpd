@@ -92,9 +92,7 @@ char * ap_server_root_relative(apr_pool_t *p, const char *name)
     /* XXX: apr_filepath_merge better ? */
     if (basedir && name[0] != '/') {
         fname = apr_pcalloc(p, strlen(basedir)+strlen(name)+1);
-        strcpy(fname, basedir);
-        strcat(fname, "/");
-        strcat(fname, name);
+        apr_pstrcat(fname, basedir, "/", name, NULL);
     } else {
         fname = apr_pstrdup(p, name);
     }
