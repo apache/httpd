@@ -446,8 +446,8 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, request_status,
 
 /* proxy_util.c */
 
-PROXY_DECLARE(void) proxy_checkstorage_add_entry(proxy_worker *worker, const char *balancer_name);
 PROXY_DECLARE(void) proxy_create_comarea(apr_pool_t *pconf);
+PROXY_DECLARE(void) proxy_checkstorage_add_workers(apr_pool_t *pconf, server_rec *s);
 PROXY_DECLARE(void) proxy_lookup_storage_provider();
 
 PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r);
