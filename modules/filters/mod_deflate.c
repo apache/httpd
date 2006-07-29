@@ -215,9 +215,15 @@ typedef struct deflate_ctx_t
     int (*libz_end_func)(z_streamp);
 } deflate_ctx;
 
+/* Do not update ctx->crc, see comment in flush_libz_buffer */
+#define NO_UPDATE_CRC 0
+/* Do update ctx->crc, see comment in flush_libz_buffer */
+#define UPDATE_CRC 1
+
 static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
                              struct apr_bucket_alloc_t *bucket_alloc,
-                             int (*libz_func)(z_streamp, int), int flush)
+                             int (*libz_func)(z_streamp, int), int flush,
+                             int crc)
 {
     int zRC = Z_OK;
     int done = 0;
@@ -228,6 +234,15 @@ static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
          deflate_len = c->bufferSize - ctx->stream.avail_out;
 
          if (deflate_len != 0) {
+             /*
+              * Do we need to update ctx->crc? Usually this is the case for
+              * inflate action where we need to do a crc on the output, whereas
+              * in the deflate case we need to do a crc on the input
+              */
+             if (crc) {
+                 ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer,
+                                  deflate_len);
+             }
              b = apr_bucket_heap_create((char *)ctx->buffer,
                                         deflate_len, NULL,
                                         bucket_alloc);
@@ -467,7 +482,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             ctx->stream.avail_in = 0; /* should be zero already anyway */
             /* flush the remaining data from the zlib buffers */
-            flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate, Z_FINISH);
+            flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate, Z_FINISH,
+                              NO_UPDATE_CRC);
 
             buf = apr_palloc(r->pool, 8);
             putLong((unsigned char *)&buf[0], ctx->crc);
@@ -525,7 +541,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             /* flush the remaining data from the zlib buffers */
             zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate,
-                                    Z_SYNC_FLUSH);
+                                    Z_SYNC_FLUSH, NO_UPDATE_CRC);
             if (zRC != Z_OK) {
                 return APR_EGENERAL;
             }
