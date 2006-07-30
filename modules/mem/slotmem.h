@@ -14,6 +14,7 @@
  * limitations under the License.
  */
 
+#ifndef SLOTMEM_H
 #define SLOTMEM_H
 
 /* Memory handler for a shared memory divided in slot.
@@ -27,6 +28,14 @@
  * @{
  */
 
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_pools.h"
+#include "apr_shm.h"
+
+#include "httpd.h"
+#include "http_config.h"
+#include "http_log.h"
 
 #define SLOTMEM_STORAGE "slotmem"
 
@@ -86,3 +95,5 @@ AP_DECLARE(apr_status_t) (* ap_slotmem_mem)(ap_slotmem_t *s, int item_id, void**
 };
 
 typedef struct slotmem_storage_method slotmem_storage_method;
+
+#endif /*SLOTMEM_H*/

@@ -74,6 +74,7 @@
 #include "util_filter.h"
 #include "util_ebcdic.h"
 #include "ap_provider.h"
+#include "slotmem.h"
 
 #if APR_HAVE_NETINET_IN_H
 #include <netinet/in.h>
@@ -447,7 +448,7 @@ APR_DECLARE_EXTERNAL_HOOK(proxy, PROXY, int, request_status,
 
 /* proxy_util.c */
 
-PROXY_DECLARE(void) proxy_create_comarea(apr_pool_t *pconf, char *name);
+PROXY_DECLARE(ap_slotmem_t *) proxy_create_comarea(apr_pool_t *pconf, server_rec *s);
 PROXY_DECLARE(void) proxy_checkstorage_add_workers(apr_pool_t *pconf, server_rec *s);
 PROXY_DECLARE(void) proxy_lookup_storage_provider();
 

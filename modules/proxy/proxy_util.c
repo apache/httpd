@@ -16,7 +16,6 @@
 
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
-#include "slotmem.h"
 #include "mod_proxy_health_checker.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
@@ -1633,7 +1632,6 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
     void *score = NULL;
     ap_slotmem_t *myscore;
     apr_status_t rv;
-    apr_size_t item_size = sizeof(proxy_worker_stat);
     proxy_server_conf *sconf = ap_get_module_config(s->module_config,
                                                     &proxy_module);
 
@@ -1645,16 +1643,11 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
         return;
     }
 
-    /* Health checker handler: to create the correct size. */
-    if (checkstorage) {
-        item_size = checkstorage->getentrysize();
-    }
-
     /* Use storage provider when a storage is existing */
     if (storage) {
+        myscore = proxy_create_comarea(conf->pool, s);
 
-        rv = storage->ap_slotmem_create(&myscore, sconf->slotmem_loc, item_size, ap_proxy_lb_workers(), conf->pool);
-        if (rv == APR_SUCCESS)
+        if (myscore)
             rv = storage->ap_slotmem_mem(myscore, worker->id, &score);
         if (rv != APR_SUCCESS)
             score = NULL;
@@ -2232,14 +2225,19 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
 }
 
 /* Create shared area (comarea) called from mod_proxy post_config */
-PROXY_DECLARE(void) proxy_create_comarea(apr_pool_t *pconf, char *name)
+PROXY_DECLARE(ap_slotmem_t *) proxy_create_comarea(apr_pool_t *pconf, server_rec *s)
 {
-    ap_slotmem_t *myscore;
-    apr_size_t item_size = sizeof(proxy_worker_stat);
-    if (checkstorage)
-        item_size = checkstorage->getentrysize();
-    if (storage)
-        storage->ap_slotmem_create(&myscore, name, item_size, ap_proxy_lb_workers(), pconf);
+    ap_slotmem_t *myscore = NULL;
+    proxy_server_conf *sconf = ap_get_module_config(s->module_config,
+                                                    &proxy_module);
+    char *slotmem_loc = sconf->slotmem_loc;
+
+    if (storage) {
+        if (!slotmem_loc)
+            slotmem_loc = apr_pstrcat(pconf, ":", proxy_module.name, NULL);
+        storage->ap_slotmem_create(&myscore, slotmem_loc, sizeof(proxy_worker_stat), ap_proxy_lb_workers(), pconf);
+    }
+    return(myscore);
 }
 /* get the storage provider for the shared area called from mod_proxy pre_config */
 PROXY_DECLARE(void) proxy_lookup_storage_provider()

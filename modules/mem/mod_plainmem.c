@@ -60,24 +60,30 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     void *slotmem = NULL;
     ap_slotmem_t *res;
     ap_slotmem_t *next = globallistmem;
-    char *fname;
+    const char *fname;
     apr_status_t rv;
 
-    fname = ap_server_root_relative(pool, name);
+    if (name) {
+        if (name[0] == ':')
+            fname = name;
+        else
+            fname = ap_server_root_relative(pool, name);
 
-    /* first try to attach to existing slotmem */
-    if (next) {
-        for (;;) {
-            if (strcmp(next->name, fname) == 0) {
-                /* we already have it */
-                *new = next;
-                return APR_SUCCESS;
+        /* first try to attach to existing slotmem */
+        if (next) {
+            for (;;) {
+                if (strcmp(next->name, fname) == 0) {
+                    /* we already have it */
+                    *new = next;
+                    return APR_SUCCESS;
+                }
+                if (!next->next)
+                    break;
+                next = next->next;
             }
-            if (!next->next)
-                break;
-            next = next->next;
         }
-    }
+    } else
+        fname = "anonymous";
 
     /* create the memory using the globalpool */
     res = (ap_slotmem_t *) apr_pcalloc(globalpool, sizeof(ap_slotmem_t));
@@ -104,10 +110,16 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     void *slotmem = NULL;
     ap_slotmem_t *res;
     ap_slotmem_t *next = globallistmem;
-    char *fname;
+    const char *fname;
     apr_status_t rv;
 
-    fname = ap_server_root_relative(pool, name);
+    if (name) {
+        if (name[0] == ':')
+            fname = name;
+        else
+            fname = ap_server_root_relative(pool, name);
+    } else
+        return APR_ENOSHMAVAIL;
 
     /* first try to attach to existing slotmem */
     if (next) {

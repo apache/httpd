@@ -17,7 +17,6 @@
 #define CORE_PRIVATE
 
 #include "mod_proxy.h"
-#include "slotmem.h"
 #include "mod_core.h"
 #include "apr_optional.h"
 #include "scoreboard.h"
@@ -1863,8 +1862,6 @@ PROXY_DECLARE(const char *) ap_proxy_ssl_val(apr_pool_t *p, server_rec *s,
 static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
-    proxy_server_conf *sconf = ap_get_module_config(s->module_config,
-                                                    &proxy_module);
 
     proxy_ssl_enable = APR_RETRIEVE_OPTIONAL_FN(ssl_proxy_enable);
     proxy_ssl_disable = APR_RETRIEVE_OPTIONAL_FN(ssl_engine_disable);
@@ -1872,7 +1869,7 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     proxy_ssl_val = APR_RETRIEVE_OPTIONAL_FN(ssl_var_lookup);
 
     /* if we have a memory provider create the comarea here */
-    proxy_create_comarea(pconf, sconf->slotmem_loc);
+    proxy_create_comarea(pconf, s);
 
     /* Also fill the comarea of the health-checker */
     proxy_checkstorage_add_workers(pconf, s);
