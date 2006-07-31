@@ -289,6 +289,8 @@ typedef struct {
     char            route[PROXY_WORKER_MAX_ROUTE_SIZ+1];
     char            redirect[PROXY_WORKER_MAX_ROUTE_SIZ+1];
     void            *context;   /* general purpose storage */
+    apr_size_t      busy;       /* busyness factor */
+    int             lbset;      /* load balancer cluster set */
 } proxy_worker_stat;
 
 /* Worker configuration */
@@ -309,31 +311,32 @@ struct proxy_worker {
     apr_interval_time_t ttl;    /* maximum amount of time in seconds a connection
                                  * may be available while exceeding the soft limit */
     apr_interval_time_t timeout; /* connection timeout */
-    char                timeout_set;
+    char            timeout_set;
     apr_interval_time_t acquire; /* acquire timeout when the maximum number of connections is exceeded */
-    char                acquire_set;
-    apr_size_t          recv_buffer_size;
-    char                recv_buffer_size_set;
-    apr_size_t          io_buffer_size;
-    char                io_buffer_size_set;
-    char                keepalive;
-    char                keepalive_set;
+    char            acquire_set;
+    apr_size_t      recv_buffer_size;
+    char            recv_buffer_size_set;
+    apr_size_t      io_buffer_size;
+    char            io_buffer_size_set;
+    char            keepalive;
+    char            keepalive_set;
     proxy_conn_pool     *cp;        /* Connection pool to use */
     proxy_worker_stat   *s;         /* Shared data */
-    void                *opaque;    /* per scheme worker data */
-    int                 is_address_reusable;
+    void            *opaque;    /* per scheme worker data */
+    int             is_address_reusable;
 #if APR_HAS_THREADS
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating address cache */
 #endif
-    void                *context;   /* general purpose storage */
+    void            *context;   /* general purpose storage */
     enum {
          flush_off,
          flush_on,
          flush_auto
     } flush_packets;           /* control AJP flushing */
-    int                 flush_wait;  /* poll wait time in microseconds if flush_auto */
+    int             flush_wait;  /* poll wait time in microseconds if flush_auto */
     apr_interval_time_t ping_timeout;
     char ping_timeout_set;
+    int             lbset;      /* load balancer cluster set */
 };
 
 /*
