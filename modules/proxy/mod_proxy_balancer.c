@@ -919,7 +919,7 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
             checked_standby = checking_standby++;
         }
         cur_lbset++;
-    } while (cur_lbset < max_lbset && !mycandidate);
+    } while (cur_lbset <= max_lbset && !mycandidate);
 
     if (mycandidate) {
         mycandidate->s->lbstatus -= total_factor;
@@ -999,7 +999,7 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
             checked_standby = checking_standby++;
         }
         cur_lbset++;
-    } while (cur_lbset < max_lbset && !mycandidate);
+    } while (cur_lbset <= max_lbset && !mycandidate);
 
     if (mycandidate) {
         mycandidate->s->elected++;
