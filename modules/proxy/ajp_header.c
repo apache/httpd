@@ -237,7 +237,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     ajp_msg_reset(msg);
 
     if (ajp_msg_append_uint8(msg, CMD_AJP13_FORWARD_REQUEST)     ||
-        ajp_msg_append_uint8(msg, method)                        ||
+        ajp_msg_append_uint8(msg, (apr_byte_t) method)           ||
         ajp_msg_append_string(msg, r->protocol)                  ||
         ajp_msg_append_string(msg, uri->path)                    ||
         ajp_msg_append_string(msg, r->connection->remote_ip)     ||
