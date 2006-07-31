@@ -1625,11 +1625,7 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
                                                      proxy_worker *worker,
                                                      server_rec *s)
 {
-#if PROXY_HAS_SCOREBOARD
     lb_score *score = NULL;
-#else
-    void *score = NULL;
-#endif
 
     if (worker->s && PROXY_WORKER_IS_INITIALIZED(worker)) {
         /* The worker share is already initialized */
@@ -1638,8 +1634,7 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
               worker->name);
         return;
     }
-#if PROXY_HAS_SCOREBOARD
-        /* Get scoreboard slot */
+    /* Get scoreboard slot */
     if (ap_scoreboard_image) {
         score = ap_get_scoreboard_lb(worker->id);
         if (!score) {
@@ -1653,7 +1648,6 @@ PROXY_DECLARE(void) ap_proxy_initialize_worker_share(proxy_server_conf *conf,
                   worker->id, getpid(), worker->name);
         }
     }
-#endif
     if (!score) {
         score = apr_pcalloc(conf->pool, sizeof(proxy_worker_stat));
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,

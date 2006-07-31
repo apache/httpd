@@ -717,13 +717,6 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
                                            apr_bucket_brigade *brigade);
 
-/* Scoreboard */
-#if MODULE_MAGIC_NUMBER_MAJOR > 20020903
-#define PROXY_HAS_SCOREBOARD 1
-#else
-#define PROXY_HAS_SCOREBOARD 0
-#endif
-
 #define PROXY_LBMETHOD "proxylbmethod"
 
 /* The number of dynamic workers that can be added when reconfiguring.
