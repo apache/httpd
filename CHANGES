@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_balancer: Workers can now be defined as part of
+     a balancer cluster "set" in which members of a lower-numbered set
+     are preferred over higher numbered ones. [Jim Jagielski]
+
   *) SECURITY: CVE-2006-3747 (cve.mitre.org)
      mod_rewrite: Fix an off-by-one security problem in the ldap scheme
      handling.  For some RewriteRules this could lead to a pointer being
