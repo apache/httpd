@@ -16,7 +16,6 @@
 
 /* Utility routines for Apache proxy */
 #include "mod_proxy.h"
-#include "mod_proxy_health_checker.h"
 #include "ap_mpm.h"
 #include "apr_version.h"
 

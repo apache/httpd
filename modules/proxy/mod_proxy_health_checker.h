@@ -25,6 +25,7 @@
 #define UNINITIALIZED  0
 
 typedef struct proxy_worker_conf proxy_worker_conf;
+typedef struct health_worker_method health_worker_method;
 
 /* allow health check method on workers in a non httpd process */
 struct health_worker_method {

@@ -128,7 +128,6 @@ typedef struct proxy_balancer  proxy_balancer;
 typedef struct proxy_worker    proxy_worker;
 typedef struct proxy_conn_pool proxy_conn_pool;
 typedef struct proxy_balancer_method proxy_balancer_method;
-typedef struct health_worker_method health_worker_method;
 
 typedef struct {
     apr_array_header_t *proxies;
