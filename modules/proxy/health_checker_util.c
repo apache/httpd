@@ -71,9 +71,14 @@ static apr_status_t test_backend(char *scheme, char *hostname, int port, apr_poo
     apr_sockaddr_t *epsv_addr;
     apr_status_t rv;
 
-    /* Note that AJP requires a new apr-util (29-07-2006) */
-    if (!port)
-        port  = (int) apr_uri_port_of_scheme(scheme);
+    /* AJP port will not be support by apr-util until AJP get registered at IANA */
+    if (!port) {
+        if (strcmp(scheme, "ajp") == 0)
+            port = 8009;
+        else
+            port = (int) apr_uri_port_of_scheme(scheme);
+    }
+
     rv = apr_socket_create(&newsock, APR_INET, SOCK_STREAM, APR_PROTO_TCP, pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, NULL,
