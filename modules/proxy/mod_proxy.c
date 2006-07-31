@@ -1871,9 +1871,6 @@ static int proxy_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     /* if we have a memory provider create the comarea here */
     proxy_create_comarea(pconf, s);
 
-    /* Also fill the comarea of the health-checker */
-    proxy_checkstorage_add_workers(pconf, s);
-
     return OK;
 }
 

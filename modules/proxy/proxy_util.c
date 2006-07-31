@@ -43,8 +43,6 @@ APR_IMPLEMENT_OPTIONAL_HOOK_RUN_ALL(proxy, PROXY, int, create_req,
                                    OK, DECLINED)
 /* Storage for the comarea */
 static const slotmem_storage_method *storage = NULL;
-/* Health checker handler */
-static const health_worker_method *checkstorage = NULL;
 
 /* already called in the knowledge that the characters are hex digits */
 PROXY_DECLARE(int) ap_proxy_hex2c(const char *x)
@@ -2247,50 +2245,4 @@ PROXY_DECLARE(void) proxy_lookup_storage_provider()
         storage = ap_lookup_provider(SLOTMEM_STORAGE, "score", "0");
     if (!storage)
         storage = ap_lookup_provider(SLOTMEM_STORAGE, "plain", "0");
-    checkstorage = ap_lookup_provider(PROXY_CKMETHOD, "default", "0");
-}
-
-/* Copy all the worker information in the comarea */
-PROXY_DECLARE(void) proxy_checkstorage_add_workers(apr_pool_t *pconf, server_rec *s)
-{
-    if (checkstorage) {
-        while (s) {
-            void *sconf = s->module_config;
-            proxy_server_conf *conf;
-            proxy_worker *worker;
-            proxy_balancer *balancer;
-            int i, j, k;
-
-            conf = (proxy_server_conf *)ap_get_module_config(sconf, &proxy_module);
-            worker = (proxy_worker *) conf->workers->elts;
-            for (i = 0; i < conf->workers->nelts; i++) {
-                const char *name = NULL;
-                /* find the balancer if any */
-                balancer = (proxy_balancer *)conf->balancers->elts;
-                for (j = 0; j< conf->balancers->nelts; j++) {
-                    proxy_worker *myworker = (proxy_worker *)balancer->workers->elts;
-                    for (k = 0; k < balancer->workers->nelts; k++) {
-                        if (myworker->id == worker->id) {
-                            name = balancer->name;
-                            break;
-                        }
-                        myworker++;
-                    }
-                    if (name)
-                        break;
-                }
-
-                if (!name) {
-                    /* No balancer */
-                    name = "None";
-                }
-                checkstorage->add_entry(worker, name, worker->id);
-                worker++;
-            }
-
-            /* XXX: Do we need something for reverse and forward */
-
-            s = s->next;
-        }
-    }
 }
