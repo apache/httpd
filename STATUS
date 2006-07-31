@@ -112,3 +112,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
               ways how to fix this and take care about the flush buckets.
               I am willing to propose patches, but due to personal time
               constraints they will not show up before the second half of July.
+
+    * PKCS#7: backport PCKS#7 patches from trunk.
+      +1 ben
