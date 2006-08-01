@@ -225,7 +225,7 @@ providers.</description>
 
 </directivesynopsis>
 
-<directivesynopsis type="section">
+<directivesynopsis>
 <name>AuthzMergeRules</name>
 <description>Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
 authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
