@@ -112,8 +112,8 @@ a resource</description>
 
 <directivesynopsis>
 <name>Reject</name>
-<description>Rejects which authenticated users can access
-a resource</description>
+<description>Rejects authenticated users or host based 
+requests from accessing a resource</description>
 <syntax>Reject <var>entity-name</var> [<var>entity-name</var>] ...</syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
@@ -122,10 +122,12 @@ a resource</description>
 <usage>
     <p>This directive is similar to the 
     <directive module="mod_authz_core">Require</directive> directive however
-    it rejects which authenticated users can access a resource.  The 
+    it rejects which authenticated users or host based requests from accessing a resource.  The 
     restrictions are processed by authorization modules.  See the 
     <directive module="mod_authz_core">Require</directive> directive for details 
-    about usage.</p>
+    about usage.  If found as part of the authorization rules, the reject directive
+    is definitive.  In other words, if the reject statements is satisfied, the entire request
+    is automatically rejected no matter what other require rules may exist.</p>
 </usage>
 
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
@@ -220,6 +222,31 @@ providers.</description>
 
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
     and Access Control</a></seealso> 
+
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>AuthzMergeRules</name>
+<description>Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
+authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
+Set to 'off' to disable merging. If set to 'off', only the authz rules defined in 
+the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</description>
+<syntax>AuthMergeRules on | off</syntax>
+<default>AuthMergeRules on</default>
+<contextlist><context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>By default all of the authorization rules within a &lt;Directory&gt;
+    &lt;Location&gt; hierarchy are merged together to form a single 
+    logical authorization operation.  If AuthzMergeRules is set to 'on', then
+    only the authorization rules that are contained with the current 
+    &lt;Directory&gt; or &lt;Location&gt; block are considered. This
+    allows the configuration to determine exactly how authorization will
+    be determine without having to take into consideration the 
+    authorization rules that may exist above it.</p>
+</usage>
 
 </directivesynopsis>
 
