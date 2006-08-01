@@ -66,22 +66,21 @@ char *basedir = NULL;
 /* XXX: hack to use a part of the mod_sharedmem and mod_proxy_health_checker */
 static apr_status_t init_healthck(apr_pool_t *pool, int *num)
 {
-    apr_size_t size;
     apr_status_t rv;
     const slotmem_storage_method *checkstorage;
-    ap_slotmem_t *myscore;
-    
+   
+    /* Initialise the providers */
     sharedmem_initglobalpool(pool);
+    worker_storage = health_checker_get_storage();
     checkstorage = sharedmem_getstorage();
-    rv = checkstorage->ap_slotmem_attach(&myscore, "proxy/checker", &size, num, pool);
+
+    worker_storage->set_slotmem_storage_method(checkstorage);
+    rv = worker_storage->attach_slotmem("proxy/checker", num, pool);
+
     if (rv != APR_SUCCESS) {
         apr_file_printf(errfile, "Can't attach to httpd memory error: %d\n", rv);
         return rv;
     }
-
-    health_checker_init_slotmem_storage(checkstorage);
-    health_checker_init_slotmem(myscore);
-    worker_storage = health_checker_get_storage();
 
     return rv;
 }

@@ -17,18 +17,20 @@
 static int healthck_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
                               apr_pool_t *ptemp)
 {
-    slotmem_storage_method *checkstorage;
+    const slotmem_storage_method *checkstorage;
     const health_worker_method *worker_storage;
     ap_slotmem_t *myscore;
     
-    checkstorage = ap_lookup_provider(SLOTMEM_STORAGE, "shared", "0");
-    if (checkstorage) {
-        health_checker_init_slotmem_storage(checkstorage);
-    }
     worker_storage = ap_lookup_provider(PROXY_CKMETHOD, "default", "0");
-    if (checkstorage && worker_storage) {
-        checkstorage->ap_slotmem_create(&myscore, "proxy/checker", worker_storage->getentrysize(), 128, pconf);
-        health_checker_init_slotmem(myscore);
+    if (worker_storage) {
+        checkstorage = ap_lookup_provider(SLOTMEM_STORAGE, "shared", "0");
+        if (checkstorage) {
+            worker_storage->set_slotmem_storage_method(checkstorage);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+                         "proxy: The health checker needs a shared memory slotmem provider");
+            return APR_EGENERAL;
+       }
     }
     return OK;
 }
@@ -40,6 +42,14 @@ static int healthck_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     worker_storage = ap_lookup_provider(PROXY_CKMETHOD, "default", "0");
     
     if (worker_storage) {
+        apr_status_t rv;
+        rv = worker_storage->create_slotmem("proxy/checker", ap_proxy_lb_workers(), pconf);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                        "proxy: BALANCER: The health checker can't create slotmem");
+            return APR_EGENERAL;
+        }
+
         while (s) {
             void *sconf = s->module_config;
             proxy_server_conf *conf;
@@ -56,7 +66,7 @@ static int healthck_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                 for (j = 0; j< conf->balancers->nelts; j++) {
                     proxy_worker *myworker = (proxy_worker *)balancer->workers->elts;
                     for (k = 0; k < balancer->workers->nelts; k++) {
-                        if (myworker->id == worker->id) {
+                        if (strcmp(myworker->name, worker->name) == 0) {
                             name = balancer->name;
                             break;
                         }
@@ -64,6 +74,7 @@ static int healthck_post_config(apr_pool_t *pconf, apr_pool_t *plog,
                     }
                     if (name)
                         break;
+                    balancer++;
                 }
 
                 if (!name) {

@@ -29,8 +29,12 @@ typedef struct health_worker_method health_worker_method;
 
 /* allow health check method on workers in a non httpd process */
 struct health_worker_method {
-    /* read the size of the entry: to create the shared area */
-    int (* getentrysize)(void);
+    /* set the slotmem_storage_method to use */
+    void (*set_slotmem_storage_method)(const slotmem_storage_method *slotmem_storage);
+    /* create the slotmem to store the shared information */
+    apr_status_t (*create_slotmem)(char *name, int item_num, apr_pool_t *pool);
+    /* attach to existing shared slotmem */
+    apr_status_t (*attach_slotmem)(char *name, int *item_num, apr_pool_t *pool);
     /* copy the worker information in the shared area so the health-checker can extract the part it need */
     apr_status_t (*add_entry)(proxy_worker *worker, const char *balancer_name, int id);
     /* XXX : Remove the entry */
@@ -101,6 +105,3 @@ struct proxy_worker_conf {
  * Other routines.
  */
 const health_worker_method *health_checker_get_storage();
-void health_checker_init_slotmem_storage(const slotmem_storage_method * storage);
-void health_checker_init_slotmem(ap_slotmem_t *score);
-const slotmem_storage_method * health_checker_get_slotmem_storage();

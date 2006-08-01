@@ -23,6 +23,8 @@
 #include "apr_version.h"
 #include "apr_hooks.h"
 
+#include "mod_proxy_health_checker.h"
+
 #if APR_HAVE_UNISTD_H
 #include <unistd.h> /* for getpid() */
 #endif
@@ -181,11 +183,19 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
     int i;
     int checking_standby = 0;
     int checked_standby = 0;
-    
     proxy_worker *worker;
+    const health_worker_method *worker_storage;
+    worker_storage = ap_lookup_provider(PROXY_CKMETHOD, "default", "0");
+    
     while (!checked_standby) {
         worker = (proxy_worker *)balancer->workers->elts;
         for (i = 0; i < balancer->workers->nelts; i++, worker++) {
+            if (worker_storage) {
+                int health;
+                worker_storage->get_health(worker->id, &health);
+                if (health != HEALTH_OK)
+                    continue;
+            }
             if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
                 continue;
             if (*(worker->s->route) && strcmp(worker->s->route, route) == 0) {
@@ -215,6 +225,12 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
                             proxy_worker *rworker = NULL;
                             rworker = find_route_worker(balancer, worker->s->redirect, r);
                             /* Check if the redirect worker is usable */
+                            if (rworker && worker_storage) {
+                                int health;
+                                worker_storage->get_health(worker->id, &health);
+                                if (health != HEALTH_OK)
+                                    continue;
+                            }
                             if (rworker && !PROXY_WORKER_IS_USABLE(rworker)) {
                                 /*
                                  * If the worker is in error state run

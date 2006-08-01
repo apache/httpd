@@ -124,6 +124,36 @@ static apr_status_t test_backend(char *scheme, char *hostname, int port, apr_poo
     return APR_SUCCESS;
 }
 
+/* set the storage to use */
+static void set_slotmem_storage_method(const slotmem_storage_method *storage)
+{
+    checkstorage = storage;
+}
+
+static apr_status_t create_slotmem(char *name, int item_num, apr_pool_t *pool)
+{
+    apr_status_t rv;
+    if (checkstorage == NULL)
+        return APR_EGENERAL;
+
+    rv = checkstorage->ap_slotmem_create(&myscore, name, sizeof(struct proxy_worker_conf), item_num, pool);
+    return rv;
+}
+
+static apr_status_t attach_slotmem(char *name, int *item_num, apr_pool_t *pool)
+{
+    apr_status_t rv;
+    apr_size_t item_size;
+    if (checkstorage == NULL)
+        return APR_EGENERAL;
+
+    rv = checkstorage->ap_slotmem_attach(&myscore, name, &item_size, item_num, pool);
+    if (rv != APR_SUCCESS)
+        return rv;
+    if (item_size != sizeof(struct proxy_worker_conf))
+        return APR_ENOSHMAVAIL;
+    return APR_SUCCESS;
+}
 /* read the size of the entry: to create the shared area */
 static int getentrysize()
 {
@@ -328,7 +358,9 @@ static apr_status_t check_poolhealth(proxy_worker *worker, int id, apr_pool_t *p
 
 /* The stuff we provide */
 static const health_worker_method worker_storage = {
-    &getentrysize,
+    &set_slotmem_storage_method,
+    &create_slotmem,
+    &attach_slotmem,
     &add_entry,
     &del_entry,
     &get_health,
@@ -342,24 +374,4 @@ static const health_worker_method worker_storage = {
 const health_worker_method *health_checker_get_storage()
 {
     return(&worker_storage);
-}
-
-/* handle the slotmem storage */
-void health_checker_init_slotmem_storage(const slotmem_storage_method * storage)
-{
-    checkstorage = storage;
-}
-const slotmem_storage_method * health_checker_get_slotmem_storage()
-{
-    return(checkstorage);
-}
-
-/* handle the slotmen itself */
-void health_checker_init_slotmem(ap_slotmem_t *score)
-{
-     myscore = score;
-}
-ap_slotmem_t *health_checker_get_slotmem()
-{
-    return(myscore);
 }
