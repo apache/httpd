@@ -90,6 +90,8 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     const char *fname;
     apr_status_t rv;
 
+    if (globalpool == NULL)
+        return APR_ENOSHMAVAIL;
     if (name) {
         if (name[0] == ':')
             fname = name;
@@ -173,6 +175,8 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     const char *fname;
     apr_status_t rv;
 
+    if (globalpool == NULL)
+        return APR_ENOSHMAVAIL;
     if (name) {
         if (name[0] == ':')
             fname = name;
