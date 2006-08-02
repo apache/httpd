@@ -937,7 +937,7 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
                                              r->server);
         if (status != OK) {
             if (backend) {
-                backend->close_on_recycle = 1;
+                backend->close = 1;
                 ap_proxy_release_connection(FCGI_SCHEME, backend, r->server);
             }
             return status;
@@ -946,12 +946,12 @@ static int proxy_fcgi_handler(request_rec *r, proxy_worker *worker,
 
     backend->is_ssl = 0;
 
-    /* XXX Setting close_on_recycle to 0 is a great way to end up with
+    /* XXX Setting close to 0 is a great way to end up with
      *     timeouts at this point, since we lack good ways to manage the
      *     back end fastcgi processes.  This should be revisited when we
      *     have a better story on that part of things. */
 
-    backend->close_on_recycle = 1;
+    backend->close = 1;
 
     /* Step One: Determine Who To Connect To */
     status = ap_proxy_determine_connection(p, r, conf, worker, backend,
