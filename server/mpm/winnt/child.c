@@ -1120,7 +1120,10 @@ void child_main(apr_pool_t *pconf)
     while (threads_created) {
         rv = wait_for_many_objects(threads_created, child_handles, (DWORD)(end_time - time(NULL)));
         if (rv != WAIT_TIMEOUT) {
-            rv = rv - WAIT_OBJECT_0;
+            if (rv >= WAIT_ABANDONED_0)
+                rv = rv - WAIT_ABANDONED_0;
+            else        
+                rv = rv - WAIT_OBJECT_0;
             ap_assert((rv >= 0) && (rv < threads_created));
             cleanup_thread(child_handles, &threads_created, rv);
             continue;
