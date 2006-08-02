@@ -240,7 +240,7 @@ the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</description
 <usage>
     <p>By default all of the authorization rules within a &lt;Directory&gt;
     &lt;Location&gt; hierarchy are merged together to form a single 
-    logical authorization operation.  If AuthzMergeRules is set to 'on', then
+    logical authorization operation.  If AuthzMergeRules is set to 'off', then
     only the authorization rules that are contained with the current 
     &lt;Directory&gt; or &lt;Location&gt; block are considered. This
     allows the configuration to determine exactly how authorization will
