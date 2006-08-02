@@ -966,7 +966,7 @@ skip_body:
      * otherwise sent Connection: Keep-Alive.
      */
     if (!force10) {
-        if (p_conn->close || p_conn->close_on_recycle) {
+        if (p_conn->close) {
             buf = apr_pstrdup(p, "Connection: close" CRLF);
         }
         else {
@@ -1656,7 +1656,7 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
      * not work.
      */
     if (is_ssl)
-        backend->close_on_recycle = 1;
+        backend->close = 1;
 
     /* Step One: Determine Who To Connect To */
     if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,

@@ -1553,7 +1553,7 @@ static apr_status_t connection_cleanup(void *theconn)
 #endif
 
     /* determine if the connection need to be closed */
-    if (conn->close_on_recycle || conn->close) {
+    if (conn->close) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(conn->pool);
         memset(conn, 0, sizeof(proxy_conn_rec));
@@ -1824,7 +1824,6 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
 
     (*conn)->worker = worker;
     (*conn)->close  = 0;
-    (*conn)->close_on_recycle = 0;
 #if APR_HAS_THREADS
     (*conn)->inreslist = 0;
 #endif

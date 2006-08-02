@@ -502,7 +502,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
                                              r->server);
         if (status != OK) {
             if (backend) {
-                backend->close_on_recycle = 1;
+                backend->close = 1;
                 ap_proxy_release_connection(scheme, backend, r->server);
             }
             return status;
@@ -510,7 +510,7 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
     }
 
     backend->is_ssl = 0;
-    backend->close_on_recycle = 0;
+    backend->close = 0;
 
     /* Step One: Determine Who To Connect To */
     status = ap_proxy_determine_connection(p, r, conf, worker, backend,

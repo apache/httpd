@@ -731,7 +731,7 @@ static
 apr_status_t proxy_ftp_cleanup(request_rec *r, proxy_conn_rec *backend)
 {
 
-    backend->close_on_recycle = 1;
+    backend->close = 1;
     ap_set_module_config(r->connection->conn_config, &proxy_ftp_module, NULL);
     ap_proxy_release_connection("FTP", backend, r->server);
 
@@ -940,7 +940,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
         status = ap_proxy_acquire_connection("FTP", &backend, worker, r->server);
         if (status != OK) {
             if (backend) {
-                backend->close_on_recycle = 1;
+                backend->close = 1;
                 ap_proxy_release_connection("FTP", backend, r->server);
             }
             return status;
