@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mpm_winnt: Fix return values from wait_for_many_objects.
+     The return value is index to the signaled thread in the
+     creted_threads array. We can not use WAIT_TIMEOUT because
+     his value is defined as 258, thus limiting the MaxThreads
+     to that value. [Mladen Turk]
+
   *) mod_proxy_balancer: Workers can now be defined as part of
      a balancer cluster "set" in which members of a lower-numbered set
      are preferred over higher numbered ones. [Jim Jagielski]

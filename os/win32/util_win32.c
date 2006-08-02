@@ -158,7 +158,7 @@ DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles,
                             DWORD dwSeconds)
 {
     time_t tStopTime;
-    DWORD dwRet = WAIT_TIMEOUT;
+    DWORD dwRet = WAIT_FAILED;
     DWORD dwIndex=0;
     BOOL bFirst = TRUE;
 
@@ -175,12 +175,20 @@ DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles,
                 min(MAXIMUM_WAIT_OBJECTS, nCount - (dwIndex * MAXIMUM_WAIT_OBJECTS)),
                 lpHandles + (dwIndex * MAXIMUM_WAIT_OBJECTS),
                 0, 0);
-
-            if (dwRet != WAIT_TIMEOUT) {
-              break;
+            if (dwRet == WAIT_FAILED) {
+                return dwRet;
             }
+            if (dwRet != WAIT_TIMEOUT) {
+                if (dwRet >= WAIT_ABANDONED_0)
+                    dwRet = dwRet - WAIT_ABANDONED_0;
+                else
+                    dwRet = dwRet - WAIT_OBJECT_0;
+                dwRet = dwRet + (dwIndex * MAXIMUM_WAIT_OBJECTS);
+                break;
+            }
+            dwRet = WAIT_FAILED;
         }
-    } while((time(NULL) < tStopTime) && (dwRet == WAIT_TIMEOUT));
+    } while((time(NULL) < tStopTime) && (dwRet == WAIT_FAILED));
 
     return dwRet;
 }
