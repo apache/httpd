@@ -40,13 +40,19 @@ static int healthck_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 {
     const health_worker_method *worker_storage;
     worker_storage = ap_lookup_provider(PROXY_CKMETHOD, "default", "0");
+    proxy_server_conf *sconf = ap_get_module_config(s->module_config,
+                                                    &proxy_module);
+    char *slotmem_loc = sconf->slotmem_loc;
     
     if (worker_storage) {
         apr_status_t rv;
-        rv = worker_storage->create_slotmem("proxy/checker", ap_proxy_lb_workers(), pconf);
+        if (!slotmem_loc)
+            slotmem_loc = apr_pstrcat(pconf, ":", proxy_module.name, NULL);
+
+        rv = worker_storage->create_slotmem(slotmem_loc, ap_proxy_lb_workers(), pconf);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                        "proxy: BALANCER: The health checker can't create slotmem");
+                        "proxy: HEALTHCHECK: The health checker can't create slotmem");
             return APR_EGENERAL;
         }
 
