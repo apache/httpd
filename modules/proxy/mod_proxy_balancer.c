@@ -876,8 +876,6 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
     int total_factor = 0;
     proxy_worker *worker;
     proxy_worker *mycandidate = NULL;
-    int checking_standby = 0;
-    int checked_standby = 0;
     int cur_lbset = 0;
     int max_lbset = 0;
     
@@ -887,6 +885,8 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
 
     /* First try to see if we have available candidate */
     do {
+        int checking_standby = 0;
+        int checked_standby = 0;
         while (!mycandidate && !checked_standby) {
             worker = (proxy_worker *)balancer->workers->elts;
             for (i = 0; i < balancer->workers->nelts; i++, worker++) {
@@ -953,8 +953,6 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
     apr_off_t mytraffic = 0;
     apr_off_t curmin = 0;
     proxy_worker *worker;
-    int checking_standby = 0;
-    int checked_standby = 0;
     proxy_worker *mycandidate = NULL;
     int cur_lbset = 0;
     int max_lbset = 0;
@@ -965,6 +963,8 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
 
     /* First try to see if we have available candidate */
     do {
+        int checking_standby = 0;
+        int checked_standby = 0;
         while (!mycandidate && !checked_standby) {
             worker = (proxy_worker *)balancer->workers->elts;
             for (i = 0; i < balancer->workers->nelts; i++, worker++) {
