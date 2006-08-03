@@ -202,6 +202,16 @@ int process_sharedmem(apr_pool_t *pool, int num)
     }
     return APR_SUCCESS;
 }
+/*
+ * When stopping write health = unknown
+ */
+void markunknown_sharedmem(apr_pool_t *pool, int num)
+{
+    int n;
+
+    for (n = 0; n < num; n++)
+        worker_storage->set_health(n, HEALTH_UNKNOWN);
+}
 
 /*
  * main
@@ -309,6 +319,8 @@ int main(int argc, const char * const argv[])
         apr_pool_destroy(instance);
         /* If something goes really wrong we should clean all, via apr_pool_destroy(instance_socket) */
     }
+    if (instance_socket != NULL)
+        markunknown_sharedmem(instance_socket, num);
     if (interrupted) {
         apr_file_printf(errfile, "Monitoring aborted due to user "
                                  "request." APR_EOL_STR);
