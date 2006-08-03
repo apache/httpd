@@ -62,6 +62,7 @@ static const char *shortname = "proxymonitor";
 static const health_worker_method *worker_storage;
 
 char *basedir = NULL;
+char *filename = NULL;
 
 /* XXX: hack to use a part of the mod_sharedmem and mod_proxy_health_checker */
 static apr_status_t init_healthck(apr_pool_t *pool, int *num)
@@ -75,7 +76,7 @@ static apr_status_t init_healthck(apr_pool_t *pool, int *num)
     checkstorage = sharedmem_getstorage();
 
     worker_storage->set_slotmem_storage_method(checkstorage);
-    rv = worker_storage->attach_slotmem("proxy/checker", num, pool);
+    rv = worker_storage->attach_slotmem(filename, num, pool);
 
     if (rv != APR_SUCCESS) {
         apr_file_printf(errfile, "Can't attach to httpd memory error: %d\n", rv);
@@ -132,9 +133,11 @@ static void usage(void)
 {
     apr_file_printf(errfile,
     "%s -- program for monitoring proxies of httpd."                         NL
-    "Usage: %s [-n] [-pPATH] [-dINTERVAL] [-rN]"                             NL
+    "Usage: %s [-nFILENAME] [-pPATH] [-dINTERVAL] [-rN]"                     NL
                                                                              NL
     "Options:"                                                               NL
+    "  -n   Specify FILENAME to use to locate shared slotmem."               NL
+                                                                             NL
     "  -d   Repeat checking every INTERVAL seconds."                         NL
                                                                              NL
     "  -r   Repeat checking N times."                                        NL
@@ -241,7 +244,7 @@ int main(int argc, const char * const argv[])
     apr_getopt_init(&o, pool, argc, argv);
 
     while (1) {
-        status = apr_getopt(o, "p:d:r:", &opt, &arg);
+        status = apr_getopt(o, "n:p:d:r:", &opt, &arg);
         if (status == APR_EOF) {
             break;
         }
@@ -266,12 +269,20 @@ int main(int argc, const char * const argv[])
                 }
                 basedir = apr_pstrdup(pool, arg);
                 break;
+            case 'n':
+                if (filename) {
+                    usage();
+                }
+                filename = apr_pstrdup(pool, arg);
+                break;
             default:
                 usage();
             } /* switch */
         } /* else */
     } /* while */
     if (basedir == NULL)
+        usage();
+    if (filename == NULL)
         usage();
 
     instance_socket = NULL;
