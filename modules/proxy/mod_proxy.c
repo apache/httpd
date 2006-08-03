@@ -1774,7 +1774,7 @@ static const char *proxysection(cmd_parms *cmd, void *mconfig, const char *arg)
             return apr_pstrcat(cmd->pool, thiscmd->name,
                                "> arguments are not supported for wildchar url.",
                                NULL);
-        if (!strchr(conf->p, ':'))
+        if (!ap_strchr_c(conf->p, ':'))
             return apr_pstrcat(cmd->pool, thiscmd->name,
                                "> arguments are not supported for non url.",
                                NULL);
