@@ -157,12 +157,12 @@ void CleanNullACL(void *sa)
 DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles,
                             DWORD dwSeconds)
 {
-    time_t tStopTime;
+    DWORD dwStopTime;
     DWORD dwRet = WAIT_FAILED;
-    DWORD dwIndex=0;
+    DWORD dwIndex = 0;
     BOOL bFirst = TRUE;
 
-    tStopTime = time(NULL) + dwSeconds;
+    dwStopTime = GetTickCount() + dwSeconds * 1000;
 
     do {
         if (!bFirst)
@@ -179,16 +179,19 @@ DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles,
                 return dwRet;
             }
             if (dwRet != WAIT_TIMEOUT) {
-                if (dwRet >= WAIT_ABANDONED_0)
-                    dwRet = dwRet - WAIT_ABANDONED_0;
-                else
-                    dwRet = dwRet - WAIT_OBJECT_0;
-                dwRet = dwRet + (dwIndex * MAXIMUM_WAIT_OBJECTS);
-                break;
+                if (dwRet >= WAIT_ABANDONED_0) {
+                    /* We just got the ownership of the object.
+                     * It does not mean that the object is signaled.
+                     */
+                }
+                else {
+                    dwRet = dwRet - WAIT_OBJECT_0 + (dwIndex * MAXIMUM_WAIT_OBJECTS);
+                    break;
+                }
             }
             dwRet = WAIT_FAILED;
         }
-    } while((time(NULL) < tStopTime) && (dwRet == WAIT_FAILED));
+    } while((GetTickCount() < dwStopTime) && (dwRet == WAIT_FAILED));
 
     return dwRet;
 }
