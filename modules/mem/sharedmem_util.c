@@ -110,6 +110,10 @@ void restore_slotmem(void *ptr, const char *name, apr_size_t item_size, int item
         if (apr_file_info_get(&fi, APR_FINFO_SIZE, fp) == APR_SUCCESS) {
             if (fi.size == nbytes) {
                 apr_file_read(fp, ptr, &nbytes);
+            } else {
+                apr_file_close(fp);
+                apr_file_remove(storename, pool);
+                return;
             }
         }
         apr_file_close(fp);
