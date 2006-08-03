@@ -96,7 +96,6 @@ struct proxy_worker_conf {
     int                 is_address_reusable;
     int                 flush_packets;
     int                 flush_wait;  /* poll wait time in microseconds if flush_auto */
-    int                 health;
     int                 used;  /* 1 : valid entry 2 : remove 0 : free slot */
     apr_time_t          time_checked;
 };

@@ -285,6 +285,7 @@ typedef struct {
     int             retries;    /* number of retries on this worker */
     int             lbstatus;   /* Current lbstatus */
     int             lbfactor;   /* dynamic lbfactor */
+    int             health;     /* result of the heathchecker */
     apr_off_t       transferred;/* Number of bytes transferred to remote */
     apr_off_t       read;       /* Number of bytes read from remote */
     apr_size_t      elected;    /* Number of times the worker was elected */

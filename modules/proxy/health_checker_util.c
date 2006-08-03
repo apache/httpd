@@ -204,7 +204,7 @@ static apr_status_t add_entry(proxy_worker *worker, const char *balancer_name, i
     workerconf->keepalive_set = worker->keepalive_set;
     workerconf->flush_packets = worker->flush_packets;
     workerconf->flush_wait = worker->flush_wait;
-    workerconf->health = 0;
+    workerconf->httpstatus.health = HEALTH_UNKNOWN;
     workerconf->used = 1;
     return APR_SUCCESS;
 }
@@ -224,7 +224,7 @@ static apr_status_t get_health(int id, int *health)
     rv = checkstorage->ap_slotmem_mem(myscore, id, (void *) &workerconf);
     if (rv != APR_SUCCESS)
         return rv;
-    *health = workerconf->health;
+    *health = workerconf->httpstatus.health;
     return APR_SUCCESS;
 }
 /* set the health of the entry: for the health-checker */
@@ -238,7 +238,7 @@ static apr_status_t set_health(int id, int value)
     rv = checkstorage->ap_slotmem_mem(myscore, id, (void *) &workerconf);
     if (rv != APR_SUCCESS)
         return rv;
-    workerconf->health = value;
+    workerconf->httpstatus.health = value;
     workerconf->time_checked = apr_time_now();
     return APR_SUCCESS;
 }
@@ -342,9 +342,9 @@ static apr_status_t check_entryhealth(int id, apr_pool_t *pool) {
         return APR_SUCCESS;
     rv = test_backend(workerconf->scheme, workerconf->hostname, workerconf->port, pool);
     if (rv != APR_SUCCESS)
-        workerconf->health = HEALTH_NO;
+        workerconf->httpstatus.health = HEALTH_NO;
     else
-        workerconf->health = HEALTH_OK;
+        workerconf->httpstatus.health = HEALTH_OK;
     workerconf->time_checked = apr_time_now();
     return rv;
 }
