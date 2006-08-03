@@ -43,6 +43,7 @@ struct ap_slotmem {
     void *base;
     apr_size_t size;
     int num;
+    apr_pool_t *globalpool;
     struct ap_slotmem *next;
 };
 
@@ -50,17 +51,86 @@ struct ap_slotmem {
 static struct ap_slotmem *globallistmem = NULL;
 static apr_pool_t *globalpool = NULL;
 
+/*
+ * Persiste the slotmem in a file
+ * slotmem name and file name.
+ * anonymous : $server_root/logs/anonymous.slotmem
+ * :module.c : $server_root/logs/module.c.slotmem
+ * abs_name  : $abs_name.slotmem
+ *
+ */
+static const char *store_filename(apr_pool_t *pool, const char *slotmemname)
+{
+    const char *storename;
+    const char *fname;
+    if (strcmp(slotmemname, "anonymous") == 0)
+        fname = ap_server_root_relative(pool, "logs/anonymous");
+    else if (slotmemname[0] == ':') {
+        const char *tmpname;
+        tmpname = apr_pstrcat(pool, "logs/", &slotmemname[1], NULL);
+        fname = ap_server_root_relative(pool, tmpname);
+        }
+    else
+        fname = slotmemname;
+    storename = apr_pstrcat(pool, fname , ".slotmem", NULL); 
+    return storename;
+}
+static void store_slotmem(ap_slotmem_t *slotmem)
+{
+    apr_file_t *fp;
+    apr_status_t rv;
+    apr_size_t nbytes;
+    const char *storename;
+
+    storename = store_filename(slotmem->globalpool, slotmem->name);
+
+    rv = apr_file_open(&fp, storename,  APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, slotmem->globalpool);
+    if (APR_STATUS_IS_EEXIST(rv)) {
+        apr_file_remove(storename, slotmem->globalpool);
+        rv = apr_file_open(&fp, storename,  APR_CREATE | APR_READ | APR_WRITE, APR_OS_DEFAULT, slotmem->globalpool);
+    }
+    if (rv != APR_SUCCESS) {
+        return;
+    }
+    nbytes = slotmem->size * slotmem->num;
+    apr_file_write(fp, slotmem->base, &nbytes);
+    apr_file_close(fp);
+}
+void restore_slotmem(void *ptr, const char *name, apr_size_t item_size, int item_num, apr_pool_t *pool)
+{
+    const char *storename;
+    apr_file_t *fp;
+    apr_size_t nbytes = item_size * item_num;
+    apr_status_t rv;
+
+    storename = store_filename(pool, name);
+    rv = apr_file_open(&fp, storename,  APR_READ | APR_WRITE, APR_OS_DEFAULT, pool);
+    if (rv == APR_SUCCESS) {
+        apr_finfo_t fi;
+        if (apr_file_info_get(&fi, APR_FINFO_SIZE, fp) == APR_SUCCESS) {
+            if (fi.size == nbytes) {
+                apr_file_read(fp, ptr, &nbytes);
+            }
+        }
+        apr_file_close(fp);
+    }
+}
+
 apr_status_t cleanup_slotmem(void *param)
 {
     ap_slotmem_t **mem = param;
     apr_status_t rv;
+    apr_pool_t *pool = NULL;
 
     if (*mem) {
         ap_slotmem_t *next = *mem;
+        pool = next->globalpool;
         while (next) {
+            store_slotmem(next);
             rv = apr_shm_destroy(next->shm);
             next = next->next;
         }
+        apr_pool_destroy(pool);        
     }
     return APR_SUCCESS;
 }
@@ -148,7 +218,7 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
         memcpy(ptr, &desc, sizeof(desc));
         ptr = ptr +  sizeof(desc);
         memset(ptr, 0, item_size * item_num);
-        
+        restore_slotmem(ptr, fname, item_size, item_num, pool);  
     }
 
     /* For the chained slotmem stuff */
@@ -156,6 +226,7 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     res->base = ptr;
     res->size = item_size;
     res->num = item_num;
+    res->globalpool = globalpool;
     res->next = NULL;
     if (globallistmem==NULL)
         globallistmem = res;
@@ -217,6 +288,7 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     res->base = ptr;
     res->size = desc.item_size;
     res->num = desc.item_num;
+    res->globalpool = globalpool;
     res->next = NULL;
     if (globallistmem==NULL)
         globallistmem = res;
