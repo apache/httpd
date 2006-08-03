@@ -180,10 +180,12 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
                                        const char *route, request_rec *r)
 {
     int i;
-    int checking_standby = 0;
-    int checked_standby = 0;
+    int checking_standby;
+    int checked_standby;
     
     proxy_worker *worker;
+
+    checking_standby = checked_standby = 0;
     while (!checked_standby) {
         worker = (proxy_worker *)balancer->workers->elts;
         for (i = 0; i < balancer->workers->nelts; i++, worker++) {
@@ -878,6 +880,8 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
     proxy_worker *mycandidate = NULL;
     int cur_lbset = 0;
     int max_lbset = 0;
+    int checking_standby;
+    int checked_standby;
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: Entering byrequests for BALANCER (%s)",
@@ -885,8 +889,7 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
 
     /* First try to see if we have available candidate */
     do {
-        int checking_standby = 0;
-        int checked_standby = 0;
+        checking_standby = checked_standby = 0;
         while (!mycandidate && !checked_standby) {
             worker = (proxy_worker *)balancer->workers->elts;
             for (i = 0; i < balancer->workers->nelts; i++, worker++) {
@@ -956,6 +959,8 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
     proxy_worker *mycandidate = NULL;
     int cur_lbset = 0;
     int max_lbset = 0;
+    int checking_standby;
+    int checked_standby;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: Entering bytraffic for BALANCER (%s)",
@@ -963,8 +968,7 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
 
     /* First try to see if we have available candidate */
     do {
-        int checking_standby = 0;
-        int checked_standby = 0;
+        checking_standby = checked_standby = 0;
         while (!mycandidate && !checked_standby) {
             worker = (proxy_worker *)balancer->workers->elts;
             for (i = 0; i < balancer->workers->nelts; i++, worker++) {
