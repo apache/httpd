@@ -71,7 +71,6 @@ typedef enum {
     AUTHZ_GRANTED,
     AUTHZ_GENERAL_ERROR,
     AUTHZ_NEUTRAL,
-    AUTHZ_REJECTED
 } authz_status;
 
 typedef enum {
