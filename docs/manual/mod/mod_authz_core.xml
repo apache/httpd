@@ -125,9 +125,7 @@ requests from accessing a resource</description>
     it rejects which authenticated users or host based requests from accessing a resource.  The 
     restrictions are processed by authorization modules.  See the 
     <directive module="mod_authz_core">Require</directive> directive for details 
-    about usage.  If found as part of the authorization rules, the reject directive
-    is definitive.  In other words, if the reject statements is satisfied, the entire request
-    is automatically rejected no matter what other require rules may exist.</p>
+    about usage.</p>
 </usage>
 
 <seealso><a href="../howto/auth.html">Authentication, Authorization,
