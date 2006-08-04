@@ -210,12 +210,15 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
         }
         ptr = ptr +  sizeof(desc);
     } else  {
-        if (name && name[0] != ':')
+        if (name && name[0] != ':') {
+            apr_shm_remove(fname, globalpool);
             rv = apr_shm_create(&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), fname, globalpool);
-        else
+        } else {
             rv = apr_shm_create(&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), NULL, globalpool);
-        if (rv != APR_SUCCESS)
+        }
+        if (rv != APR_SUCCESS) {
             return rv;
+        }
         ptr = apr_shm_baseaddr_get(res->shm);
         desc.item_size = item_size;
         desc.item_num = item_num;
