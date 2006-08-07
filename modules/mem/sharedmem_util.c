@@ -69,9 +69,10 @@ static const char *store_filename(apr_pool_t *pool, const char *slotmemname)
         const char *tmpname;
         tmpname = apr_pstrcat(pool, "logs/", &slotmemname[1], NULL);
         fname = ap_server_root_relative(pool, tmpname);
-        }
-    else
+    }
+    else {
         fname = slotmemname;
+    }
     storename = apr_pstrcat(pool, fname , ".slotmem", NULL); 
     return storename;
 }
@@ -110,7 +111,8 @@ void restore_slotmem(void *ptr, const char *name, apr_size_t item_size, int item
         if (apr_file_info_get(&fi, APR_FINFO_SIZE, fp) == APR_SUCCESS) {
             if (fi.size == nbytes) {
                 apr_file_read(fp, ptr, &nbytes);
-            } else {
+            }
+            else {
                 apr_file_close(fp);
                 apr_file_remove(storename, pool);
                 return;
@@ -144,8 +146,9 @@ static apr_status_t ap_slotmem_do(ap_slotmem_t *mem, ap_slotmem_callback_fn_t *f
     int i;
     void *ptr;
 
-    if (!mem)
+    if (!mem) {
         return APR_ENOSHMAVAIL;
+    }
 
     ptr = mem->base;
     for (i = 0; i < mem->num; i++) {
@@ -167,10 +170,12 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     if (globalpool == NULL)
         return APR_ENOSHMAVAIL;
     if (name) {
-        if (name[0] == ':')
+        if (name[0] == ':') {
             fname = name;
-        else
+        }
+        else {
             fname = ap_server_root_relative(pool, name);
+        }
 
         /* first try to attach to existing slotmem */
         if (next) {
@@ -180,20 +185,25 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
                     *new = next;
                     return APR_SUCCESS;
                 }
-                if (!next->next)
+                if (!next->next) {
                     break;
+                }
                 next = next->next;
             }
         }
-    } else
+    }
+    else {
         fname = "anonymous";
+    }
 
     /* first try to attach to existing shared memory */
     res = (ap_slotmem_t *) apr_pcalloc(globalpool, sizeof(ap_slotmem_t));
-    if (name && name[0] != ':')
+    if (name && name[0] != ':') {
         rv = apr_shm_attach(&res->shm, fname, globalpool);
-    else
+    }
+    else {
         rv = APR_EINVAL;
+    }
     if (rv == APR_SUCCESS) {
         /* check size */
         if (apr_shm_size_get(res->shm) != item_size * item_num + sizeof(struct sharedslotdesc)) {
@@ -209,11 +219,13 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
             return APR_EINVAL;
         }
         ptr = ptr +  sizeof(desc);
-    } else  {
+    }
+    else  {
         if (name && name[0] != ':') {
             apr_shm_remove(fname, globalpool);
             rv = apr_shm_create(&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), fname, globalpool);
-        } else {
+        }
+        else {
             rv = apr_shm_create(&res->shm, item_size * item_num + sizeof(struct sharedslotdesc), NULL, globalpool);
         }
         if (rv != APR_SUCCESS) {
@@ -235,10 +247,12 @@ static apr_status_t ap_slotmem_create(ap_slotmem_t **new, const char *name, apr_
     res->num = item_num;
     res->globalpool = globalpool;
     res->next = NULL;
-    if (globallistmem==NULL)
+    if (globallistmem==NULL) {
         globallistmem = res;
-    else
+    }
+    else {
         next->next = res;
+    }
 
     *new = res;
     return APR_SUCCESS;
@@ -253,15 +267,20 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     const char *fname;
     apr_status_t rv;
 
-    if (globalpool == NULL)
+    if (globalpool == NULL) {
         return APR_ENOSHMAVAIL;
+    }
     if (name) {
-        if (name[0] == ':')
+        if (name[0] == ':') {
             fname = name;
-        else
+        }
+        else {
             fname = ap_server_root_relative(pool, name);
-    } else
+        }
+    }
+    else {
         return APR_ENOSHMAVAIL;
+    }
 
     /* first try to attach to existing slotmem */
     if (next) {
@@ -282,8 +301,9 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     /* first try to attach to existing shared memory */
     res = (ap_slotmem_t *) apr_pcalloc(globalpool, sizeof(ap_slotmem_t));
     rv = apr_shm_attach(&res->shm, fname, globalpool);
-    if (rv != APR_SUCCESS)
+    if (rv != APR_SUCCESS) {
         return rv;
+    }
 
     /* Read the description of the slotmem */
     ptr = apr_shm_baseaddr_get(res->shm);
@@ -297,10 +317,12 @@ static apr_status_t ap_slotmem_attach(ap_slotmem_t **new, const char *name, apr_
     res->num = desc.item_num;
     res->globalpool = globalpool;
     res->next = NULL;
-    if (globallistmem==NULL)
+    if (globallistmem==NULL) {
         globallistmem = res;
-    else
+    }
+    else {
         next->next = res;
+    }
 
     *new = res;
     *item_size = desc.item_size;
@@ -312,14 +334,17 @@ static apr_status_t ap_slotmem_mem(ap_slotmem_t *score, int id, void**mem)
 
     void *ptr;
 
-    if (!score)
+    if (!score) {
         return APR_ENOSHMAVAIL;
-    if (id<0 || id>score->num)
+    }
+    if (id<0 || id>score->num) {
         return APR_ENOSHMAVAIL;
+    }
 
     ptr = score->base + score->size * id;
-    if (!ptr)
+    if (!ptr) {
         return APR_ENOSHMAVAIL;
+    }
     ptr = score->base + score->size * id;
     *mem = ptr;
     return APR_SUCCESS;
