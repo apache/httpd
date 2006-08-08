@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy: don't URLencode tilde in path component
+     [Stijn Hoop <stijn sandcat.nl>]
+
   *) mpm_winnt: Fix return values from wait_for_many_objects.
      The return value is index to the signaled thread in the
      creted_threads array. We can not use WAIT_TIMEOUT because
