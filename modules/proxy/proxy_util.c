@@ -330,7 +330,7 @@ PROXY_DECLARE(const char *)
         for (wk = 0; wk < 7; wk++) {
             if (strcmp(x, lwday[wk]) == 0) {
                 break;
-	    }
+            }
         }
         *q = ',';
         if (wk == 7) {
@@ -346,7 +346,7 @@ PROXY_DECLARE(const char *)
         }
         if (year < 70) {
             year += 2000;
-	}
+        }
         else {
             year += 1900;
         }
@@ -356,26 +356,26 @@ PROXY_DECLARE(const char *)
         if (x[3] != ' ' || x[7] != ' ' || x[10] != ' ' || x[13] != ':' ||
             x[16] != ':' || x[19] != ' ' || x[24] != '\0') {
             return x;
-	}
+        }
         if (sscanf(x, "%3s %3s %u %u:%u:%u %u", week, month, &mday, &hour,
                    &min, &sec, &year) != 7) {
             return x;
-	}
+        }
         for (wk = 0; wk < 7; wk++) {
             if (strcmp(week, apr_day_snames[wk]) == 0) {
                 break;
-	    }
-	}
+            }
+        }
         if (wk == 7) {
             return x;
-	}
+        }
     }
 
 /* check date */
     for (mon = 0; mon < 12; mon++) {
         if (strcmp(month, apr_month_snames[mon]) == 0) {
             break;
-	}
+        }
     }
     if (mon == 12) {
         return x;
@@ -472,25 +472,25 @@ PROXY_DECLARE(char *)ap_proxy_removestr(apr_pool_t *pool, const char *list, cons
             i = p - list;
             do {
                 p++;
-	    } while (apr_isspace(*p));
+            } while (apr_isspace(*p));
         }
         else {
             i = strlen(list);
-	}
+        }
 
         while (i > 0 && apr_isspace(list[i - 1])) {
             i--;
-	}
+        }
         if (i == len && strncasecmp(list, val, len) == 0) {
             /* do nothing */
         }
         else {
             if (new) {
                 new = apr_pstrcat(pool, new, ",", apr_pstrndup(pool, list, i), NULL);
-	    }
+            }
             else {
                 new = apr_pstrndup(pool, list, i);
-	    }
+            }
         }
         list = p;
     }
@@ -510,13 +510,13 @@ PROXY_DECLARE(int) ap_proxy_hex2sec(const char *x)
         j <<= 4;
         if (apr_isdigit(ch)) {
             j |= ch - '0';
-	}
+        }
         else if (apr_isupper(ch)) {
             j |= ch - ('A' - 10);
-	}
+        }
         else {
             j |= ch - ('a' - 10);
-	}
+        }
     }
     if (j == 0xffffffff) {
         return -1;      /* so that it works with 8-byte ints */
@@ -539,10 +539,10 @@ PROXY_DECLARE(void) ap_proxy_sec2hex(int t, char *y)
         j >>= 4;
         if (ch >= 10) {
             y[i] = ch + ('A' - 10);
-	}
+        }
         else {
             y[i] = ch + '0';
-	}
+        }
     }
     y[8] = '\0';
 }
@@ -627,17 +627,17 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
 
         if (*addr == '/' && quads > 0) {  /* netmask starts here. */
             break;
-	}
+        }
 
         if (!apr_isdigit(*addr)) {
             return 0;       /* no digit at start of quad */
-	}
+        }
 
         ip_addr[quads] = strtol(addr, &tmp, 0);
 
         if (tmp == addr) {  /* expected a digit, found something else */
             return 0;
-	}
+        }
 
         if (ip_addr[quads] < 0 || ip_addr[quads] > 255) {
             /* invalid octet */
@@ -648,7 +648,7 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
 
         if (*addr == '.' && quads != 3) {
             ++addr;     /* after the 4th quad, a dot would be illegal */
-	}
+        }
     }
 
     for (This->addr.s_addr = 0, i = 0; i < quads; ++i) {
@@ -664,13 +664,13 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
 
         if (tmp == addr) {   /* expected a digit, found something else */
             return 0;
-	}
+        }
 
         addr = tmp;
 
         if (bits < 0 || bits > 32) { /* netmask must be between 0 and 32 */
             return 0;
-	}
+        }
 
     }
     else {
@@ -681,12 +681,12 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
          */
         while (quads > 0 && ip_addr[quads - 1] == 0) {
             --quads;
-	}
+        }
 
         /* "IP Address should be given in dotted-quad form, optionally followed by a netmask (e.g., 192.168.111.0/24)"; */
         if (quads < 1) {
             return 0;
-	}
+        }
 
         /* every zero-byte counts as 8 zero-bits */
         bits = 8 * quads;
@@ -695,7 +695,7 @@ PROXY_DECLARE(int) ap_proxy_is_ipaddr(struct dirconn_entry *This, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
                          "Warning: NetMask not supplied with IP-Addr; guessing: %s/%ld",
                          inet_ntoa(This->addr), bits);
-	}
+        }
     }
 
     This->mask.s_addr = htonl(APR_INADDR_NONE << (32 - bits));
@@ -735,7 +735,7 @@ static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r)
     if (4 == sscanf(host, "%d.%d.%d.%d", &ip_addr[0], &ip_addr[1], &ip_addr[2], &ip_addr[3])) {
         for (addr.s_addr = 0, i = 0; i < 4; ++i) {
             addr.s_addr |= htonl(ip_addr[i] << (24 - 8 * i));
-	}
+        }
 
         if (This->addr.s_addr == (addr.s_addr & This->mask.s_addr)) {
 #if DEBUGGING
@@ -1264,7 +1264,7 @@ PROXY_DECLARE(proxy_balancer *) ap_proxy_get_balancer(apr_pool_t *p,
     for (i = 0; i < conf->balancers->nelts; i++) {
         if (strcasecmp(balancer->name, uri) == 0) {
             return balancer;
-	}
+        }
         balancer++;
     }
     return NULL;
@@ -1792,14 +1792,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         /* Set hard max to no more then mpm_threads */
         if (worker->hmax == 0 || worker->hmax > mpm_threads) {
             worker->hmax = mpm_threads;
-	}
+        }
         if (worker->smax == 0 || worker->smax > worker->hmax) {
             worker->smax = worker->hmax;
-	}
+        }
         /* Set min to be lower then smax */
         if (worker->min > worker->smax) {
             worker->min = worker->smax;
-	}
+        }
     }
     else {
         /* This will supress the apr_reslist creation */
@@ -1825,7 +1825,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
         /* Set the acquire timeout */
         if (rv == APR_SUCCESS && worker->acquire_set) {
             apr_reslist_timeout_set(worker->cp->res, worker->acquire);
-	}
+        }
 #endif
     }
     else
@@ -1864,7 +1864,7 @@ PROXY_DECLARE(int) ap_proxy_retry_worker(const char *proxy_function,
         }
         else {
             return DECLINED;
-	}
+        }
     }
     else {
         return OK;
@@ -1899,7 +1899,7 @@ PROXY_DECLARE(int) ap_proxy_acquire_connection(const char *proxy_function,
         /* create the new connection if the previous was destroyed */
         if (!worker->cp->conn) {
             connection_constructor((void **)conn, worker, worker->cp->pool);
-	}
+        }
         else {
             *conn = worker->cp->conn;
             worker->cp->conn = NULL;
@@ -2005,7 +2005,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->hostname = apr_pstrdup(conn->pool, proxyname);
             conn->port = proxyport;
         }
-	else {
+        else {
             conn->hostname = apr_pstrdup(conn->pool, uri->hostname);
             conn->port = uri->port;
         }
@@ -2058,7 +2058,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
         if (ap_is_default_port(server_port, r)) {
             strcpy(server_portstr,"");
         }
-	else {
+        else {
             apr_snprintf(server_portstr, server_portstr_size, ":%d",
                          server_port);
         }
