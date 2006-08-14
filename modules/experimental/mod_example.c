@@ -829,8 +829,31 @@ static int x_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
 }
 
 /*
- * This routine is called to perform any module-specific fixing of header
- * fields, et cetera.  It is invoked just before any content-handler.
+ * This routine is called after the server processes the configuration
+ * files.  At this point the module may review and adjust its configuration
+ * settings in relation to one another and report any problems.  On restart,
+ * this routine will be called twice, once in the startup process (which
+ * exits shortly after this phase) and once in the running server process.
+ *
+ * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
+ * server will still call any remaining modules with an handler for this
+ * phase.
+ */
+static int x_check_config(apr_pool_t *pconf, apr_pool_t *plog,
+                          apr_pool_t *ptemp, server_rec *s)
+{
+    /*
+     * Log the call and exit.
+     */
+    trace_add(NULL, NULL, NULL, "x_check_config()");
+    return OK;
+}
+
+/*
+ * This routine is called after the server finishes the configuration
+ * process.  At this point the module may review and adjust its configuration
+ * settings in relation to one another and report any problems.  On restart,
+ * this routine will be called only once, in the running server process.
  *
  * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
  * server will still call any remaining modules with an handler for this
@@ -1274,6 +1297,7 @@ static int x_logger(request_rec *r)
 static void x_register_hooks(apr_pool_t *p)
 {
     ap_hook_pre_config(x_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_config(x_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(x_post_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_open_logs(x_open_logs, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_child_init(x_child_init, NULL, NULL, APR_HOOK_MIDDLE);

@@ -985,6 +985,16 @@ AP_DECLARE_HOOK(int,pre_config,(apr_pool_t *pconf,apr_pool_t *plog,
                                 apr_pool_t *ptemp))
 
 /**
+ * Run the check_config function for each module
+ * @param pconf The config pool
+ * @param plog The logging streams pool
+ * @param ptemp The temporary pool
+ * @return OK or DECLINED on success anything else is a error
+ */
+AP_DECLARE_HOOK(int,check_config,(apr_pool_t *pconf, apr_pool_t *plog,
+                                  apr_pool_t *ptemp, server_rec *s))
+
+/**
  * Run the test_config function for each module; this hook is run
  * only if the server was invoked to test the configuration syntax.
  * @param pconf The config pool

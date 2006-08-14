@@ -96,9 +96,8 @@ static int ap_daemons_to_start=0;
 static int ap_daemons_min_free=0;
 static int ap_daemons_max_free=0;
 static int ap_daemons_limit=0;      /* MaxClients */
-static int server_limit = DEFAULT_SERVER_LIMIT;
+static int server_limit = 0;
 static int first_server_limit = 0;
-static int changed_limit_at_restart;
 static int mpm_state = AP_MPMQ_STARTING;
 static ap_pod_t *pod;
 
@@ -900,14 +899,6 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     ap_log_pid(pconf, ap_pid_fname);
 
-    first_server_limit = server_limit;
-    if (changed_limit_at_restart) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
-                     "WARNING: Attempt to change ServerLimit "
-                     "ignored during restart");
-        changed_limit_at_restart = 0;
-    }
-
     /* Initialize cross-process accept lock */
     ap_lock_fname = apr_psprintf(_pconf, "%s.%" APR_PID_T_FMT,
                                  ap_server_root_relative(_pconf, ap_lock_fname),
@@ -1245,20 +1236,31 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
  */
 static int prefork_open_logs(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp, server_rec *s)
 {
+    static int restart_num = 0;
+    int startup = 0;
+    int level_flags = 0;
     apr_status_t rv;
 
     pconf = p;
     ap_server_conf = s;
 
+    /* the reverse of pre_config, we want this only the first time around */
+    if (restart_num++ == 0) {
+        startup = 1;
+        level_flags |= APLOG_STARTUP;
+    }
+
     if ((num_listensocks = ap_setup_listeners(ap_server_conf)) < 1) {
-        ap_log_error(APLOG_MARK, APLOG_ALERT|APLOG_STARTUP, 0,
-                     NULL, "no listening sockets available, shutting down");
+        ap_log_error(APLOG_MARK, APLOG_ALERT | level_flags, 0,
+                     (startup ? NULL : s),
+                     "no listening sockets available, shutting down");
         return DONE;
     }
 
     if ((rv = ap_mpm_pod_open(pconf, &pod))) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT|APLOG_STARTUP, rv, NULL,
-                "Could not open pipe-of-death.");
+        ap_log_error(APLOG_MARK, APLOG_CRIT | level_flags, rv,
+                     (startup ? NULL : s),
+                     "could not open pipe-of-death");
         return DONE;
     }
     return OK;
@@ -1307,6 +1309,7 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     ap_daemons_to_start = DEFAULT_START_DAEMON;
     ap_daemons_min_free = DEFAULT_MIN_FREE_DAEMON;
     ap_daemons_max_free = DEFAULT_MAX_FREE_DAEMON;
+    server_limit = DEFAULT_SERVER_LIMIT;
     ap_daemons_limit = server_limit;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_lock_fname = DEFAULT_LOCKFILE;
@@ -1321,9 +1324,133 @@ static int prefork_pre_config(apr_pool_t *p, apr_pool_t *plog, apr_pool_t *ptemp
     return OK;
 }
 
+static int prefork_check_config(apr_pool_t *p, apr_pool_t *plog,
+                                apr_pool_t *ptemp, server_rec *s)
+{
+    static int restart_num = 0;
+    int startup = 0;
+    apr_status_t rv;
+
+    /* the reverse of pre_config, we want this only the first time around */
+    if (restart_num++ == 0) {
+        startup = 1;
+    }
+
+    if (server_limit > MAX_SERVER_LIMIT) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: ServerLimit of %d exceeds compile-time "
+                         "limit of", server_limit);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " %d servers, decreasing to %d.",
+                         MAX_SERVER_LIMIT, MAX_SERVER_LIMIT);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "ServerLimit of %d exceeds compile-time limit "
+                         "of %d, decreasing to match",
+                         server_limit, MAX_SERVER_LIMIT);
+        }
+        server_limit = MAX_SERVER_LIMIT;
+    }
+    else if (server_limit < 1) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: ServerLimit of %d not allowed, "
+                         "increasing to 1.", server_limit);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "ServerLimit of %d not allowed, increasing to 1",
+                         server_limit);
+        }
+        server_limit = 1;
+    }
+
+    /* you cannot change ServerLimit across a restart; ignore
+     * any such attempts
+     */
+    if (!first_server_limit) {
+        first_server_limit = server_limit;
+    }
+    else if (server_limit != first_server_limit) {
+        /* don't need a startup console version here */
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                     "changing ServerLimit to %d from original value of %d "
+                     "not allowed during restart",
+                     server_limit, first_server_limit);
+        server_limit = first_server_limit;
+    }
+
+    if (ap_daemons_limit > server_limit) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: MaxClients of %d exceeds ServerLimit "
+                         "value of", ap_daemons_limit);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " %d servers, decreasing MaxClients to %d.",
+                         server_limit, server_limit);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " To increase, please see the ServerLimit "
+                         "directive.");
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "MaxClients of %d exceeds ServerLimit value "
+                         "of %d, decreasing to match",
+                         ap_daemons_limit, server_limit);
+        }
+        ap_daemons_limit = server_limit;
+    }
+    else if (ap_daemons_limit < 1) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: MaxClients of %d not allowed, "
+                         "increasing to 1.", ap_daemons_limit);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "MaxClients of %d not allowed, increasing to 1",
+                         ap_daemons_limit);
+        }
+        ap_daemons_limit = 1;
+    }
+
+    /* ap_daemons_to_start > ap_daemons_limit checked in ap_mpm_run() */
+    if (ap_daemons_to_start < 0) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: StartServers of %d not allowed, "
+                         "increasing to 1.", ap_daemons_to_start);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "StartServers of %d not allowed, increasing to 1",
+                         ap_daemons_to_start);
+        }
+        ap_daemons_to_start = 1;
+    }
+
+    if (ap_daemons_min_free < 1) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: MinSpareServers of %d not allowed, "
+                         "increasing to 1", ap_daemons_min_free);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " to avoid almost certain server failure.");
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " Please read the documentation.");
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "MinSpareServers of %d not allowed, increasing to 1",
+                         ap_daemons_min_free);
+        }
+        ap_daemons_min_free = 1;
+    }
+
+    /* ap_daemons_max_free < ap_daemons_min_free + 1 checked in ap_mpm_run() */
+
+    return OK;
+}
+
 static void prefork_hooks(apr_pool_t *p)
 {
-    /* The prefork open_logs phase must run before the core's, or stderr
+    /* Our open_logs hook function must run before the core's, or stderr
      * will be redirected to a file, and the messages won't print to the
      * console.
      */
@@ -1333,11 +1460,12 @@ static void prefork_hooks(apr_pool_t *p)
     (void) set42sig();
 #endif
 
-    ap_hook_open_logs(prefork_open_logs, NULL, aszSucc, APR_HOOK_MIDDLE);
+    ap_hook_open_logs(prefork_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
     /* we need to set the MPM state before other pre-config hooks use MPM query
      * to retrieve it, so register as REALLY_FIRST
      */
     ap_hook_pre_config(prefork_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_check_config(prefork_check_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const char *set_daemons_to_start(cmd_parms *cmd, void *dummy, const char *arg)
@@ -1359,16 +1487,6 @@ static const char *set_min_free_servers(cmd_parms *cmd, void *dummy, const char 
     }
 
     ap_daemons_min_free = atoi(arg);
-    if (ap_daemons_min_free <= 0) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    "WARNING: detected MinSpareServers set to non-positive.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    "Resetting to 1 to avoid almost certain Apache failure.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    "Please read the documentation.");
-       ap_daemons_min_free = 1;
-    }
-
     return NULL;
 }
 
@@ -1391,62 +1509,17 @@ static const char *set_max_clients (cmd_parms *cmd, void *dummy, const char *arg
     }
 
     ap_daemons_limit = atoi(arg);
-    if (ap_daemons_limit > server_limit) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    "WARNING: MaxClients of %d exceeds ServerLimit value "
-                    "of %d servers,", ap_daemons_limit, server_limit);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    " lowering MaxClients to %d.  To increase, please "
-                    "see the ServerLimit", server_limit);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    " directive.");
-       ap_daemons_limit = server_limit;
-    }
-    else if (ap_daemons_limit < 1) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "WARNING: Require MaxClients > 0, setting to 1");
-        ap_daemons_limit = 1;
-    }
     return NULL;
 }
 
 static const char *set_server_limit (cmd_parms *cmd, void *dummy, const char *arg)
 {
-    int tmp_server_limit;
-
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    tmp_server_limit = atoi(arg);
-    /* you cannot change ServerLimit across a restart; ignore
-     * any such attempts
-     */
-    if (first_server_limit &&
-        tmp_server_limit != server_limit) {
-        /* how do we log a message?  the error log is a bit bucket at this
-         * point; we'll just have to set a flag so that ap_mpm_run()
-         * logs a warning later
-         */
-        changed_limit_at_restart = 1;
-        return NULL;
-    }
-    server_limit = tmp_server_limit;
-
-    if (server_limit > MAX_SERVER_LIMIT) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    "WARNING: ServerLimit of %d exceeds compile time limit "
-                    "of %d servers,", server_limit, MAX_SERVER_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    " lowering ServerLimit to %d.", MAX_SERVER_LIMIT);
-       server_limit = MAX_SERVER_LIMIT;
-    }
-    else if (server_limit < 1) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "WARNING: Require ServerLimit > 0, setting to 1");
-        server_limit = 1;
-    }
+    server_limit = atoi(arg);
     return NULL;
 }
 
