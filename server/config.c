@@ -67,6 +67,7 @@ AP_DECLARE_DATA ap_directive_t *ap_conftree = NULL;
 APR_HOOK_STRUCT(
            APR_HOOK_LINK(header_parser)
            APR_HOOK_LINK(pre_config)
+           APR_HOOK_LINK(check_config)
            APR_HOOK_LINK(post_config)
            APR_HOOK_LINK(open_logs)
            APR_HOOK_LINK(child_init)
@@ -83,6 +84,11 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, pre_config,
                           (apr_pool_t *pconf, apr_pool_t *plog,
                            apr_pool_t *ptemp),
                           (pconf, plog, ptemp), OK, DECLINED)
+
+AP_IMPLEMENT_HOOK_RUN_ALL(int, check_config,
+                          (apr_pool_t *pconf, apr_pool_t *plog,
+                           apr_pool_t *ptemp, server_rec *s),
+                          (pconf, plog, ptemp, s), OK, DECLINED)
 
 AP_IMPLEMENT_HOOK_VOID(test_config,
                        (apr_pool_t *pconf, server_rec *s),

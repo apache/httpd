@@ -1078,11 +1078,108 @@ static int beos_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *ptem
     return OK;
 }
 
+static int beos_check_config(apr_pool_t *pconf, apr_pool_t *plog,
+                             apr_pool_t *ptemp, server_rec *s)
+{
+    static int restart_num = 0;
+    int startup = 0;
+
+    /* the reverse of pre_config, we want this only the first time around */
+    if (restart_num++ == 0) {
+        startup = 1;
+    }
+
+    if (ap_thread_limit > HARD_THREAD_LIMIT) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: MaxClients of %d exceeds compile-time "
+                         "limit of", ap_thread_limit);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " %d servers, decreasing to %d.",
+                         HARD_THREAD_LIMIT, HARD_THREAD_LIMIT);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " To increase, please see the HARD_THREAD_LIMIT"
+                         "define in");
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " server/mpm/beos%s.", AP_MPM_HARD_LIMITS_FILE);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "MaxClients of %d exceeds compile-time limit "
+                         "of %d, decreasing to match",
+                         ap_thread_limit, HARD_THREAD_LIMIT);
+        }
+        ap_thread_limit = HARD_THREAD_LIMIT;
+    }
+    else if (ap_thread_limit < 1) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: MaxClients of %d not allowed, "
+                         "increasing to 1.", ap_thread_limit);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "MaxClients of %d not allowed, increasing to 1",
+                         ap_thread_limit);
+        }
+        ap_thread_limit = 1;
+    }
+
+    /* ap_threads_to_start > ap_thread_limit checked in ap_mpm_run() */
+    if (ap_threads_to_start < 0) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: StartThreads of %d not allowed, "
+                         "increasing to 1.", ap_threads_to_start);
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "StartThreads of %d not allowed, increasing to 1",
+                         ap_threads_to_start);
+        }
+        ap_threads_to_start = 1;
+    }
+
+    if (min_spare_threads < 1) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: MinSpareThreads of %d not allowed, "
+                         "increasing to 1", min_spare_threads);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " to avoid almost certain server failure.");
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " Please read the documentation.");
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "MinSpareThreads of %d not allowed, increasing to 1",
+                         min_spare_threads);
+        }
+        min_spare_threads = 1;
+    }
+
+    /* max_spare_threads < min_spare_threads checked in ap_mpm_run() */
+
+    if (ap_max_requests_per_thread < 0) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: MaxRequestsPerThread of %d not allowed, "
+                         "increasing to 0,", ap_max_requests_per_thread);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " but this may not be what you want.");
+        } else {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "MaxRequestsPerThread of %d not allowed, "
+                         "increasing to 0", ap_max_requests_per_thread);
+        }
+        ap_max_requests_per_thread = 0;
+    }
+
+    return OK;
+}
+
 static void beos_hooks(apr_pool_t *p)
 {
     one_process = 0;
 
     ap_hook_pre_config(beos_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_config(beos_check_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 static const char *set_threads_to_start(cmd_parms *cmd, void *dummy, const char *arg)
@@ -1093,11 +1190,6 @@ static const char *set_threads_to_start(cmd_parms *cmd, void *dummy, const char 
     }
 
     ap_threads_to_start = atoi(arg);
-    if (ap_threads_to_start < 0) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "StartThreads set to a value less than 0, reset to 1");
-        ap_threads_to_start = 1;
-    }
     return NULL;
 }
 
@@ -1109,16 +1201,6 @@ static const char *set_min_spare_threads(cmd_parms *cmd, void *dummy, const char
     }
 
     min_spare_threads = atoi(arg);
-    if (min_spare_threads <= 0) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    "WARNING: detected MinSpareThreads set to non-positive.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    "Resetting to 1 to avoid almost certain Apache failure.");
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    "Please read the documentation.");
-       min_spare_threads = 1;
-    }
-
     return NULL;
 }
 
@@ -1141,22 +1223,6 @@ static const char *set_threads_limit (cmd_parms *cmd, void *dummy, const char *a
     }
 
     ap_thread_limit = atoi(arg);
-    if (ap_thread_limit > HARD_THREAD_LIMIT) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    "WARNING: MaxClients of %d exceeds compile time limit "
-                    "of %d servers,", ap_thread_limit, HARD_THREAD_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    " lowering MaxClients to %d.  To increase, please "
-                    "see the", HARD_THREAD_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    " HARD_THREAD_LIMIT define in server/mpm/beos/mpm_default.h.");
-       ap_thread_limit = HARD_THREAD_LIMIT;
-    }
-    else if (ap_thread_limit < 1) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "WARNING: Require MaxClients > 0, setting to %d", HARD_THREAD_LIMIT);
-        ap_thread_limit = HARD_THREAD_LIMIT;
-    }
     return NULL;
 }
 
@@ -1168,13 +1234,6 @@ static const char *set_max_requests_per_thread (cmd_parms *cmd, void *dummy, con
     }
 
     ap_max_requests_per_thread = atoi(arg);
-    if (ap_max_requests_per_thread < 0) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "WARNING: MaxRequestsPerThread was set below 0"
-                     "reset to 0, but this may not be what you want.");
-        ap_max_requests_per_thread = 0;
-    }
-
     return NULL;
 }
 

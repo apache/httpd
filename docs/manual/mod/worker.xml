@@ -87,9 +87,7 @@ uses</a></seealso>
     <directive module="mpm_common">ThreadLimit</directive> is a hard
     limit of the number of server threads, and must be greater than
     or equal to the <directive 
-    module="mpm_common">ThreadsPerChild</directive> directive.  If 
-    non-default values are specified for these directives, they 
-    should appear before other <module>worker</module> directives.</p>
+    module="mpm_common">ThreadsPerChild</directive> directive.</p>
 
     <p>In addition to the set of active child processes, there may 
     be additional child processes which are terminating, but where at

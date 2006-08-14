@@ -62,9 +62,8 @@ DWORD my_pid;
 
 int ap_threads_per_child = 0;
 int use_acceptex = 1;
-static int thread_limit = DEFAULT_THREAD_LIMIT;
+static int thread_limit = 0;
 static int first_thread_limit = 0;
-static int changed_limit_at_restart;
 int winnt_mpm_state = AP_MPMQ_STARTING;
 
 /* ap_my_generation are used by the scoreboard code */
@@ -119,62 +118,16 @@ static const char *set_threads_per_child (cmd_parms *cmd, void *dummy, char *arg
     }
 
     ap_threads_per_child = atoi(arg);
-    if (ap_threads_per_child > thread_limit) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "WARNING: ThreadsPerChild of %d exceeds ThreadLimit "
-                     "value of %d threads,", ap_threads_per_child,
-                     thread_limit);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     " lowering ThreadsPerChild to %d. To increase, please"
-                     " see the", thread_limit);
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     " ThreadLimit directive.");
-        ap_threads_per_child = thread_limit;
-    }
-    else if (ap_threads_per_child < 1) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "WARNING: Require ThreadsPerChild > 0, setting to 1");
-        ap_threads_per_child = 1;
-    }
     return NULL;
 }
 static const char *set_thread_limit (cmd_parms *cmd, void *dummy, const char *arg)
 {
-    int tmp_thread_limit;
-
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    tmp_thread_limit = atoi(arg);
-    /* you cannot change ThreadLimit across a restart; ignore
-     * any such attempts
-     */
-    if (first_thread_limit &&
-        tmp_thread_limit != thread_limit) {
-        /* how do we log a message?  the error log is a bit bucket at this
-         * point; we'll just have to set a flag so that ap_mpm_run()
-         * logs a warning later
-         */
-        changed_limit_at_restart = 1;
-        return NULL;
-    }
-    thread_limit = tmp_thread_limit;
-
-    if (thread_limit > MAX_THREAD_LIMIT) {
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    "WARNING: ThreadLimit of %d exceeds compile time limit "
-                    "of %d threads,", thread_limit, MAX_THREAD_LIMIT);
-       ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                    " lowering ThreadLimit to %d.", MAX_THREAD_LIMIT);
-       thread_limit = MAX_THREAD_LIMIT;
-    }
-    else if (thread_limit < 1) {
-        ap_log_error(APLOG_MARK, APLOG_STARTUP, 0, NULL,
-                     "WARNING: Require ThreadLimit > 0, setting to 1");
-        thread_limit = 1;
-    }
+    thread_limit = atoi(arg);
     return NULL;
 }
 static const char *set_disable_acceptex(cmd_parms *cmd, void *dummy, char *arg)
@@ -1398,6 +1351,7 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
     }
 
     ap_listen_pre_config();
+    thread_limit = DEFAULT_THREAD_LIMIT;
     ap_threads_per_child = DEFAULT_THREADS_PER_CHILD;
     ap_pid_fname = DEFAULT_PIDLOG;
     ap_max_requests_per_child = DEFAULT_MAX_REQUESTS_PER_CHILD;
@@ -1411,6 +1365,100 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
     }
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
+
+    return OK;
+}
+
+static int winnt_check_config(apr_pool_t *pconf, apr_pool_t *plog,
+                              apr_pool_t *ptemp, server_rec* s)
+{
+    int is_parent;
+    static int restart_num = 0;
+    int startup = 0;
+
+    /* We want this only in the parent and only the first time around */
+    is_parent = (parent_pid == my_pid);
+    if (is_parent && restart_num++ == 0) {
+        startup = 1;
+    }
+
+    if (thread_limit > MAX_THREAD_LIMIT) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: ThreadLimit of %d exceeds compile-time "
+                         "limit of", thread_limit);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " %d threads, decreasing to %d.",
+                         MAX_THREAD_LIMIT, MAX_THREAD_LIMIT);
+        } else if (is_parent) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "ThreadLimit of %d exceeds compile-time limit "
+                         "of %d, decreasing to match",
+                         thread_limit, MAX_THREAD_LIMIT);
+        }
+        thread_limit = MAX_THREAD_LIMIT;
+    }
+    else if (thread_limit < 1) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: ThreadLimit of %d not allowed, "
+                         "increasing to 1.", thread_limit);
+        } else if (is_parent) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "ThreadLimit of %d not allowed, increasing to 1",
+                         thread_limit);
+        }
+        thread_limit = 1;
+    }
+
+    /* You cannot change ThreadLimit across a restart; ignore
+     * any such attempts.
+     */
+    if (!first_thread_limit) {
+        first_thread_limit = thread_limit;
+    }
+    else if (thread_limit != first_thread_limit) {
+        /* Don't need a startup console version here */
+        if (is_parent) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "changing ThreadLimit to %d from original value "
+                         "of %d not allowed during restart",
+                         thread_limit, first_thread_limit);
+        }
+        thread_limit = first_thread_limit;
+    }
+
+    if (ap_threads_per_child > thread_limit) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: ThreadsPerChild of %d exceeds ThreadLimit "
+                         "of", ap_threads_per_child);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " %d threads, decreasing to %d.",
+                         thread_limit, thread_limit);
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         " To increase, please see the ThreadLimit "
+                         "directive.");
+        } else if (is_parent) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "ThreadsPerChild of %d exceeds ThreadLimit "
+                         "of %d, decreasing to match",
+                         ap_threads_per_child, thread_limit);
+        }
+        ap_threads_per_child = thread_limit;
+    }
+    else if (ap_threads_per_child < 1) {
+        if (startup) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING | APLOG_STARTUP, 0, NULL,
+                         "WARNING: ThreadsPerChild of %d not allowed, "
+                         "increasing to 1.", ap_threads_per_child);
+        } else if (is_parent) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
+                         "ThreadsPerChild of %d not allowed, increasing to 1",
+                         ap_threads_per_child);
+        }
+        ap_threads_per_child = 1;
+    }
 
     return OK;
 }
@@ -1627,17 +1675,6 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 {
     static int restart = 0;            /* Default is "not a restart" */
 
-    if (!restart) {
-        first_thread_limit = thread_limit;
-    }
-
-    if (changed_limit_at_restart) {
-        ap_log_error(APLOG_MARK, APLOG_WARNING, APR_SUCCESS, ap_server_conf,
-                     "WARNING: Attempt to change ThreadLimit ignored "
-                     "during restart");
-        changed_limit_at_restart = 0;
-    }
-
     /* ### If non-graceful restarts are ever introduced - we need to rerun
      * the pre_mpm hook on subsequent non-graceful restarts.  But Win32
      * has only graceful style restarts - and we need this hook to act
@@ -1698,16 +1735,17 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s )
 
 static void winnt_hooks(apr_pool_t *p)
 {
-    /* The prefork open_logs phase must run before the core's, or stderr
+    /* Our open_logs hook function must run before the core's, or stderr
      * will be redirected to a file, and the messages won't print to the
      * console.
      */
     static const char *const aszSucc[] = {"core.c", NULL};
 
     ap_hook_pre_config(winnt_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_config(winnt_check_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(winnt_post_config, NULL, NULL, 0);
     ap_hook_child_init(winnt_child_init, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_open_logs(winnt_open_logs, NULL, aszSucc, APR_HOOK_MIDDLE);
+    ap_hook_open_logs(winnt_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
 }
 
 AP_MODULE_DECLARE_DATA module mpm_winnt_module = {

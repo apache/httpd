@@ -236,6 +236,7 @@ typedef struct
 
 static hook_lookup_t startup_hooks[] = {
     {"Pre-Config", ap_hook_get_pre_config},
+    {"Check Configuration", ap_hook_get_check_config},
     {"Test Configuration", ap_hook_get_test_config},
     {"Post Configuration", ap_hook_get_post_config},
     {"Open Logs", ap_hook_get_open_logs},
