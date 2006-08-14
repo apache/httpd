@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy: don't try to use dead backend connection (PR#37770)
+     [Olivier BOEL <ob dorrboel.com>]
+
   *) mod_proxy: don't URLencode tilde in path component
      [Stijn Hoop <stijn sandcat.nl>]
 
