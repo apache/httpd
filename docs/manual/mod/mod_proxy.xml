@@ -729,7 +729,7 @@ expressions</description>
       &lt;/Proxy&gt;
     </example>
 
-    
+
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
@@ -1188,7 +1188,7 @@ header for proxied requests</description>
 <default>ProxyPassInterpolateEnv Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
-<context>Location</context>
+<context>directory</context>
 </contextlist>
 <compatibility>Available in trunk only</compatibility>
 
