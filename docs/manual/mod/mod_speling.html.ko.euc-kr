@@ -25,6 +25,8 @@
 <a href="../ja/mod/mod_speling.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_speling.html" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">이 문서는 최신판 번역이 아닙니다.
+            최근에 변경된 내용은 영어 문서를 참고하세요.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>사용자가 대소문자를 잘못 사용하거나 맞춤법이 틀리는
 것을 한번까지 허용하여 잘못된 URL을 고치려고 시도한다</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Extension</td></tr>
