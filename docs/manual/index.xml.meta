@@ -2,8 +2,8 @@
 
 <metafile>
   <basename>index</basename>
-  <path>/</path>
-  <relpath>.</relpath>
+  <path>/./</path>
+  <relpath>..</relpath>
 
   <variants>
     <variant>de</variant>

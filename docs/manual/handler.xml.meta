@@ -2,8 +2,8 @@
 
 <metafile>
   <basename>handler</basename>
-  <path>/</path>
-  <relpath>.</relpath>
+  <path>/./</path>
+  <relpath>..</relpath>
 
   <variants>
     <variant>en</variant>

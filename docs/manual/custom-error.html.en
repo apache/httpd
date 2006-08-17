@@ -6,22 +6,22 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Custom Error Responses - Apache HTTP Server</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="./images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Custom Error Responses</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Custom Error Responses</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/custom-error.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/custom-error.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./custom-error.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/./custom-error.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../ja/./custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>Additional functionality allows webmasters to configure the response 
@@ -34,11 +34,11 @@
     then this response can be replaced with either some friendlier text or by 
     a redirection to another URL (local or external).</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#behavior">Behavior</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#configuration">Configuration</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#custom">Custom Error Responses and Redirects</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#behavior">Behavior</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#configuration">Configuration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#custom">Custom Error Responses and Redirects</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="behavior" id="behavior">Behavior</a></h2>
     
@@ -94,19 +94,19 @@
       new URL (assuming it's a cgi-script or a cgi-include). The
       other variables will exist only if they existed prior to
       the error/problem. <strong>None</strong> of these will be
-      set if your <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> is an 
+      set if your <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> is an 
       <em>external</em> redirect (anything starting with a 
       scheme name like <code>http:</code>, even if it refers to the same host 
       as the server).</p>
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="configuration" id="configuration">Configuration</a></h2>
     
 
-    <p>Use of <code class="directive"><a href="./mod/core.html#errordocument">ErrorDocument</a></code> is enabled 
+    <p>Use of <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> is enabled 
     for .htaccess files when the 
-    <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is set accordingly.</p>
+    <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> is set accordingly.</p>
 
     <p>Here are some examples...</p>
 
@@ -135,7 +135,7 @@
 
       <li>A local URL to redirect to.</li>
     </ol>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="custom" id="custom">Custom Error Responses and Redirects</a></h2>
     
@@ -194,11 +194,11 @@
     
   </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/custom-error.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/custom-error.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./ja/custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./custom-error.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/./custom-error.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../ja/./custom-error.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./custom-error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

@@ -6,21 +6,21 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Content Negotiation - Apache HTTP Server</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="./images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Content Negotiation</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Content Negotiation</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/content-negotiation.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ja/content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./content-negotiation.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/./content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
 
@@ -33,21 +33,21 @@
     incomplete negotiation information.</p>
 
     <p>Content negotiation is provided by the
-    <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> module, which is compiled in
+    <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> module, which is compiled in
     by default.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#about">About Content Negotiation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#negotiation">Negotiation in Apache</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#methods">The Negotiation Methods</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#better">Fiddling with Quality
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#about">About Content Negotiation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#negotiation">Negotiation in Apache</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#methods">The Negotiation Methods</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#better">Fiddling with Quality
     Values</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#extensions">Extensions to Transparent Content
+<li><img alt="" src="../images/down.gif" /> <a href="#extensions">Extensions to Transparent Content
 Negotiation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#naming">Note on hyperlinks and naming conventions</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#caching">Note on Caching</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#more">More Information</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#naming">Note on hyperlinks and naming conventions</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#caching">Note on Caching</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#more">More Information</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="about" id="about">About Content Negotiation</a></h2>
 
@@ -102,7 +102,7 @@ Negotiation</a></li>
     representations is termed a <strong>variant</strong>. The ways
     in which the variants for a negotiable resource vary are called
     the <strong>dimensions</strong> of negotiation.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="negotiation" id="negotiation">Negotiation in Apache</a></h2>
 
@@ -124,7 +124,7 @@ Negotiation</a></li>
 
     <p>A type map is a document which is associated with the handler
     named <code>type-map</code> (or, for backwards-compatibility with
-    older Apache configurations, the <a class="glossarylink" href="./glossary.html#mime-type" title="see glossary">MIME-type</a>
+    older Apache configurations, the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a>
     <code>application/x-type-map</code>). Note that to use this
     feature, you must have a handler set in the configuration that
     defines a file suffix as <code>type-map</code>; this is best done
@@ -196,9 +196,9 @@ Negotiation</a></li>
 <h3><a name="multiviews" id="multiviews">Multiviews</a></h3>
 
     <p><code>MultiViews</code> is a per-directory option, meaning it
-    can be set with an <code class="directive"><a href="./mod/core.html#options">Options</a></code>
-    directive within a <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> section in
-    <code>httpd.conf</code>, or (if <code class="directive"><a href="./mod/core.html#allowoverride">AllowOverride</a></code> is properly set) in
+    can be set with an <code class="directive"><a href="../mod/core.html#options">Options</a></code>
+    directive within a <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> or <code class="directive"><a href="../mod/core.html#files">&lt;Files&gt;</a></code> section in
+    <code>httpd.conf</code>, or (if <code class="directive"><a href="../mod/core.html#allowoverride">AllowOverride</a></code> is properly set) in
     <code>.htaccess</code> files. Note that <code>Options All</code>
     does not set <code>MultiViews</code>; you have to ask for it by
     name.</p>
@@ -214,7 +214,7 @@ Negotiation</a></li>
     then chooses the best match to the client's requirements.</p>
 
     <p><code>MultiViews</code> may also apply to searches for the file
-    named by the <code class="directive"><a href="./mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> directive, if the
+    named by the <code class="directive"><a href="../mod/mod_dir.html#directoryindex">DirectoryIndex</a></code> directive, if the
     server is trying to index a directory. If the configuration files
     specify</p>
 <div class="example"><p><code>DirectoryIndex index</code></p></div>
@@ -226,11 +226,11 @@ Negotiation</a></li>
     <p>If one of the files found when reading the directory does not
     have an extension recognized by <code>mod_mime</code> to designate
     its Charset, Content-Type, Language, or Encoding, then the result
-    depends on the setting of the <code class="directive"><a href="./mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code> directive.  This
+    depends on the setting of the <code class="directive"><a href="../mod/mod_mime.html#multiviewsmatch">MultiViewsMatch</a></code> directive.  This
     directive determines whether handlers, filters, and other
     extension types can participate in MultiViews negotiation.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="methods" id="methods">The Negotiation Methods</a></h2>
 
@@ -396,7 +396,7 @@ Negotiation</a></li>
       indicate the dimensions of variance.</li>
     </ol>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="better" id="better">Fiddling with Quality
     Values</a></h2>
@@ -464,10 +464,10 @@ Negotiation</a></li>
     these error messages, it is possible to configure Apache to ignore
     the <code>Accept-language</code> in these cases and provide a
     document that does not explicitly match the client's request.  The
-    <code class="directive"><a href="./mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
+    <code class="directive"><a href="../mod/mod_negotiation.html#forcelanguagepriority">ForceLanguagePriority</a></code>
     directive can be used to override one or both of these error
     messages and substitute the servers judgement in the form of the
-    <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
+    <code class="directive"><a href="../mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>
     directive.</p>
 
     <p>The server will also attempt to match language-subsets when no
@@ -482,7 +482,7 @@ Negotiation</a></li>
     English in general.  Unfortunately, many current clients have
     default configurations that resemble this.)  However, if no other
     language match is possible and the server is about to return a "No
-    Acceptable Variants" error or fallback to the <code class="directive"><a href="./mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>, the server
+    Acceptable Variants" error or fallback to the <code class="directive"><a href="../mod/mod_negotiation.html#languagepriority">LanguagePriority</a></code>, the server
     will ignore the subset specification and match <code>en-GB</code>
     against <code>en</code> documents.  Implicitly, Apache will add
     the parent language to the client's acceptable language list with
@@ -495,10 +495,10 @@ Negotiation</a></li>
 
     <p>In order to support advanced techniques (such as cookies or
     special URL-paths) to determine the user's preferred language,
-    since Apache 2.0.47 <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> recognizes
+    since Apache 2.0.47 <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> recognizes
     the <a href="env.html">environment variable</a>
     <code>prefer-language</code>. If it exists and contains an
-    appropriate language tag, <code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code> will
+    appropriate language tag, <code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code> will
     try to select a matching variant. If there's no such variant,
     the normal negotiation process applies.</p>
 
@@ -507,7 +507,7 @@ Negotiation</a></li>
       Header append Vary cookie
     </code></p></div>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="extensions" id="extensions">Extensions to Transparent Content
 Negotiation</a></h2> 
@@ -521,7 +521,7 @@ to use them as candidate variants whenever their encodings are
 acceptable according to the <code>Accept-Encoding</code> request
 header. The RVSA/1.0 implementation does not round computed quality
 factors to 5 decimal places before choosing the best variant.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="naming" id="naming">Note on hyperlinks and naming conventions</a></h2>
 
@@ -631,7 +631,7 @@ factors to 5 decimal places before choosing the best variant.</p>
     extension (including an encoding extension if there is one)
     must be on the right hand side of the MIME-type extension
     (<em>e.g.</em>, <code>foo.html.en</code>).</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="caching" id="caching">Note on Caching</a></h2>
 
@@ -647,7 +647,7 @@ factors to 5 decimal places before choosing the best variant.</p>
     responses.</p>
 
     <p>For requests which come from a HTTP/1.0 compliant client
-    (either a browser or a cache), the directive <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code> can be
+    (either a browser or a cache), the directive <code class="directive"><a href="../mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code> can be
     used to allow caching of responses which were subject to
     negotiation. This directive can be given in the server config or
     virtual host, and takes no arguments. It has no effect on requests
@@ -660,7 +660,7 @@ factors to 5 decimal places before choosing the best variant.</p>
     encourage a cache to use the local copy regardless of the
     negotiation dimensions, set the <code>force-no-vary</code> <a href="env.html#special">environment variable</a>.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="more" id="more">More Information</a></h2>
 
@@ -670,10 +670,10 @@ factors to 5 decimal places before choosing the best variant.</p>
     updated to include changes in Apache 2.0.</p>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/content-negotiation.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ja/content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./content-negotiation.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/./content-negotiation.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./content-negotiation.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

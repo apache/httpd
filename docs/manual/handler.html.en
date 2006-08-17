@@ -6,35 +6,35 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache's Handler Use - Apache HTTP Server</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="./images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Apache's Handler Use</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Apache's Handler Use</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/handler.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/handler.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./ja/handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./handler.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/./handler.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../ja/./handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>This document describes the use of Apache's Handlers.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#definition">What is a Handler</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#examples">Examples</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#programmer">Programmer's Note</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#definition">What is a Handler</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#programmer">Programmer's Note</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="definition" id="definition">What is a Handler</a></h2>
     
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="./mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="./mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="./mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_actions.html">mod_actions</a></code></li><li><code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code></li><li><code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code></li><li><code class="module"><a href="../mod/mod_info.html">mod_info</a></code></li><li><code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code></li><li><code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code></li><li><code class="module"><a href="../mod/mod_status.html">mod_status</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addhandler">AddHandler</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#removehandler">RemoveHandler</a></code></li><li><code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code></li></ul></td></tr></table>
 
 
     <p>A "handler" is an internal Apache representation of the
@@ -52,7 +52,7 @@
     Extensions</a>.)</p>
 
     <p>Handlers can either be built into the server or included in
-    a module, or they can be added with the <code class="directive"><a href="./mod/mod_actions.html#action">Action</a></code> directive. The
+    a module, or they can be added with the <code class="directive"><a href="../mod/mod_actions.html#action">Action</a></code> directive. The
     built-in handlers in the standard distribution are as
     follows:</p>
 
@@ -62,24 +62,24 @@
       default to handle static content. (core)</li>
 
       <li><strong>send-as-is</strong>: Send file with HTTP headers
-      as is. (<code class="module"><a href="./mod/mod_asis.html">mod_asis</a></code>)</li>
+      as is. (<code class="module"><a href="../mod/mod_asis.html">mod_asis</a></code>)</li>
 
       <li><strong>cgi-script</strong>: Treat the file as a CGI
-      script. (<code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code>)</li>
+      script. (<code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code>)</li>
 
       <li><strong>imap-file</strong>: Parse as an imagemap rule
-      file. (<code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code>)</li>
+      file. (<code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>)</li>
 
       <li><strong>server-info</strong>: Get the server's
-      configuration information. (<code class="module"><a href="./mod/mod_info.html">mod_info</a></code>)</li>
+      configuration information. (<code class="module"><a href="../mod/mod_info.html">mod_info</a></code>)</li>
 
       <li><strong>server-status</strong>: Get the server's status
-      report. (<code class="module"><a href="./mod/mod_status.html">mod_status</a></code>)</li>
+      report. (<code class="module"><a href="../mod/mod_status.html">mod_status</a></code>)</li>
 
       <li><strong>type-map</strong>: Parse as a type map file for
-      content negotiation. (<code class="module"><a href="./mod/mod_negotiation.html">mod_negotiation</a></code>)</li>
+      content negotiation. (<code class="module"><a href="../mod/mod_negotiation.html">mod_negotiation</a></code>)</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="examples" id="examples">Examples</a></h2>
     
@@ -119,7 +119,7 @@
       </code></p></div>
 
     
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="programmer" id="programmer">Programmer's Note</a></h2>
     
@@ -143,11 +143,11 @@
     as to not invade the media type name-space.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/handler.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/handler.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./ja/handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./handler.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/./handler.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../ja/./handler.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

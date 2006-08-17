@@ -73,6 +73,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxymatch">&lt;ProxyMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxymaxforwards">ProxyMaxForwards</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxypass">ProxyPass</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxypassinterpolateenv">ProxyPassInterpolateEnv</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxypassreverse">ProxyPassReverse</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></li>
@@ -741,71 +742,12 @@ through</td></tr>
     number of connections will be created on demand. Any connections above 
     <code>smax</code> are subject to a time to live or <code>ttl</code>.
     </td></tr>
-    <tr><td>ttl</td>
-        <td>-</td>
-        <td>Time To Live for the inactive connections above the
-        <code>smax</code> connections in seconds. Apache will close all
-        connections that has not been used inside that time period.
-    </td></tr>
-    <tr><td>timeout</td>
-        <td><code class="directive">Timeout</code></td>
-        <td>Connection timeout in seconds.
-        If not set the Apache will wait until the free connection
-        is available. This directive is used for limiting the number
-        of connections to the backend server together with <code>max</code>
-        parameter.
-    </td></tr>
     <tr><td>acquire</td>
         <td>-</td>
         <td>If set this will be the maximum time to wait for a free
     connection in the connection pool. If there are no free connections
     in the pool the Apache will return <code>SERVER_BUSY</code> status to
     the client.
-    </td></tr>
-    <tr><td>keepalive</td>
-        <td>Off</td>
-        <td>This parameter should be used when you have a firewall between your
-    Apache and the backend server, who tend to drop inactive connections.
-    This flag will tell the Operating System to send <code>KEEP_ALIVE</code>
-    messages on inactive connections (interval depends on global OS settings,
-    generally 120ms), and thus prevent the firewall to drop the connection.
-    To enable keepalive set this property value to <code>On</code>. 
-    </td></tr>
-    <tr><td>retry</td>
-        <td>60</td>
-        <td>Connection pool worker retry timeout in seconds.
-    If the connection pool worker to the backend server is in the error state,
-    Apache will not forward any requests to that server until the timeout
-    expires. This enables to shut down the backend server for maintenance,
-    and bring it back online later.
-    </td></tr>
-    <tr><td>loadfactor</td>
-        <td>1</td>
-        <td>Worker load factor. Used with BalancerMember.
-         It is a number between 1 and 100 and defines the normalized weighted
-         load applied to the worker.
-    </td></tr>
-    <tr><td>route</td>
-        <td>-</td>
-        <td>Route of the worker when used inside load balancer.
-        The route is a value appended to seesion id.
-    </td></tr>
-    <tr><td>redirect</td>
-        <td>-</td>
-        <td>Redirection Route of the worker. This value is usually
-        set dynamically to enable safe removal of the node from
-        the cluster. If set all requests without session id will be
-        redirected to the BalancerMember that has route parametar
-        equal as this value.
-    </td></tr>
-    <tr><td>status</td>
-        <td>-</td>
-        <td>Single letter value defining the initial status of
-        this worker: 'D' is disabled, 'S' is stopped and 'E' is
-        in an error state. Status can be set (which is the default)
-        by prepending with '+' or cleared by prepending with '-'.
-        Thus, a setting of 'S-E' sets this worker to Stopped and
-        clears the in-error flag.
     </td></tr>
     <tr><td>flushpackets</td>
         <td>off</td>
@@ -821,6 +763,85 @@ through</td></tr>
         <td>The time to wait for additional input, in milliseconds, before
         flushing the output brigade if 'flushpackets' is 'auto'.
     </td></tr>
+    <tr><td>keepalive</td>
+        <td>Off</td>
+        <td>This parameter should be used when you have a firewall between your
+    Apache and the backend server, who tend to drop inactive connections.
+    This flag will tell the Operating System to send <code>KEEP_ALIVE</code>
+    messages on inactive connections (interval depends on global OS settings,
+    generally 120ms), and thus prevent the firewall to drop the connection.
+    To enable keepalive set this property value to <code>On</code>. 
+    </td></tr>
+    <tr><td>lbset</td>
+        <td>0</td>
+        <td>Sets the load balancer cluster set that the worker is a member
+         of. The load balancer will try all members of a lower numbered
+         lbset before trying higher numbered ones.
+    </td></tr>
+    <tr><td>loadfactor</td>
+        <td>1</td>
+        <td>Worker load factor. Used with BalancerMember.
+         It is a number between 1 and 100 and defines the normalized weighted
+         load applied to the worker.
+    </td></tr>
+    <tr><td>ping</td>
+        <td>0</td>
+        <td>Ping property told webserver to send a <code>CPING</code>
+        request on ajp13 connection before forwarding to it a request.
+        The parameter is the delay in seconds to wait for the
+        <code>CPONG</code> reply.
+        This features has been added to avoid problem with hung and
+        busy Tomcat's and require ajp13 ping/pong support which has
+        been implemented on Tomcat 3.3.2+, 4.1.28+ and 5.0.13+.
+        It will inrease the network traffic during the normal operation
+        which could be an issue for you, but it will lower down the
+        traffic in case some of the cluster nodes are down or buys.
+        Currently this is in effect only for AJP.
+    </td></tr>
+    <tr><td>redirect</td>
+        <td>-</td>
+        <td>Redirection Route of the worker. This value is usually
+        set dynamically to enable safe removal of the node from
+        the cluster. If set all requests without session id will be
+        redirected to the BalancerMember that has route parametar
+        equal as this value.
+    </td></tr>
+    <tr><td>retry</td>
+        <td>60</td>
+        <td>Connection pool worker retry timeout in seconds.
+    If the connection pool worker to the backend server is in the error state,
+    Apache will not forward any requests to that server until the timeout
+    expires. This enables to shut down the backend server for maintenance,
+    and bring it back online later.
+    </td></tr>
+    <tr><td>route</td>
+        <td>-</td>
+        <td>Route of the worker when used inside load balancer.
+        The route is a value appended to seesion id.
+    </td></tr>
+    <tr><td>status</td>
+        <td>-</td>
+        <td>Single letter value defining the initial status of
+        this worker: 'D' is disabled, 'S' is stopped, 'H' is hot-standby
+        and 'E' is in an error state. Status can be set (which is the default)
+        by prepending with '+' or cleared by prepending with '-'.
+        Thus, a setting of 'S-E' sets this worker to Stopped and
+        clears the in-error flag.
+    </td></tr>
+    <tr><td>timeout</td>
+        <td><code class="directive">Timeout</code></td>
+        <td>Connection timeout in seconds.
+        If not set the Apache will wait until the free connection
+        is available. This directive is used for limiting the number
+        of connections to the backend server together with <code>max</code>
+        parameter.
+    </td></tr>
+    <tr><td>ttl</td>
+        <td>-</td>
+        <td>Time To Live for the inactive connections above the
+        <code>smax</code> connections in seconds. Apache will close all
+        connections that has not been used inside that time period.
+    </td></tr>
 
     </table>
 
@@ -828,24 +849,23 @@ through</td></tr>
     <code>balancer://</code> then a virtual worker that does not really
     communicate with the backend server will be created. Instead it is responsible
     for the management of several "real" workers. In that case the special set of
-    parameters can be add to this virtual worker.
+    parameters can be add to this virtual worker. See <code class="module"><a href="../mod/mod_proxy_balancer.html">mod_proxy_balancer</a></code>
+    for more information about how the balancer works.
     </p>
     <table>
     <tr><th>Parameter</th>
         <th>Default</th>
         <th>Description</th></tr>
     <tr><td>lbmethod</td>
-        <td>-</td>
+        <td>byrequests</td>
         <td>Balancer load-balance method. Select the load-balancing scheduler
         method to use. Either <code>byrequests</code>, to perform weighted
         request counting or <code>bytraffic</code>, to perform weighted
         traffic byte count balancing. Default is <code>byrequests</code>.
     </td></tr>
-    <tr><td>stickysession</td>
-        <td>-</td>
-        <td>Balancer sticky session name. The value is usually set to something
-        like <code>JSESSIONID</code> or <code>PHPSESSIONID</code>,
-        and it depends on the backend application server that support sessions.
+    <tr><td>maxattempts</td>
+        <td>1</td>
+        <td>Maximum number of failover attempts before giving up. 
     </td></tr>
     <tr><td>nofailover</td>
         <td>Off</td>
@@ -853,17 +873,20 @@ through</td></tr>
         error state or disabled. Set this value to On if backend servers do not
         support session replication.
     </td></tr>
+    <tr><td>stickysession</td>
+        <td>-</td>
+        <td>Balancer sticky session name. The value is usually set to something
+        like <code>JSESSIONID</code> or <code>PHPSESSIONID</code>,
+        and it depends on the backend application server that support sessions.
+    </td></tr>
     <tr><td>timeout</td>
         <td>0</td>
         <td>Balancer timeout in seconds. If set this will be the maximum time
         to wait for a free worker. Default is not to wait. 
     </td></tr>
-    <tr><td>maxattempts</td>
-        <td>1</td>
-        <td>Maximum number of failover attempts before giving up. 
-    </td></tr>
     
     </table>
+    <p>A sample balancer setup</p>
     <div class="example"><p><code>
       ProxyPass /special-area http://special.example.com/ smax=5 max=10<br />
       ProxyPass / balancer://mycluster/ stickysession=jsessionid nofailover=On<br />
@@ -876,13 +899,53 @@ through</td></tr>
       </span>
       &lt;/Proxy&gt;
     </code></p></div>
-    
+
+    <p>Setting up a hot-standby, that will only be used if no other
+     members are available</p>
+    <div class="example"><p><code>
+      ProxyPass / balancer://hotcluster/ <br />
+      &lt;Proxy balancer://hotcluster&gt;<br />
+      <span class="indent">
+        BalancerMember http://1.2.3.4:8009 loadfactor=1<br />
+        BalancerMember http://1.2.3.5:8009 loadfactor=2<br />
+        # The below is the hot standby<br />
+        BalancerMember http://1.2.3.6:8009 status=+H<br />
+        ProxySet lbmethod=bytraffic
+      </span>
+      &lt;/Proxy&gt;
+    </code></p></div>
+
+
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
     directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
 
     <p>If you require a more flexible reverse-proxy configuration, see the
     <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive with the
     <code>[P]</code> flag.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxyPassInterpolateEnv" id="ProxyPassInterpolateEnv">ProxyPassInterpolateEnv</a> <a name="proxypassinterpolateenv" id="proxypassinterpolateenv">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable Environment Variable interpolation in Reverse Proxy configurations</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassInterpolateEnv On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyPassInterpolateEnv Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in trunk only</td></tr>
+</table>
+    <p>This directive enables reverse proxies to be dynamically
+    configured using environment variables, which may be set by
+    another module such as <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.
+    It affects the <code class="directive">ProxyPass</code>,
+    <code class="directive">ProxyPassReverse</code>,
+    <code class="directive">ProxyPassReverseCookieDomain</code>, and
+    <code class="directive">ProxyPassReverseCookiePath</code> directives,
+    and causes them to substitute the value of an environment
+    variable <code>varname</code> for the string <code>${varname}</code>
+    in configuration directives.</p>
+    <p>Keep this turned off (for server performance) unless you need it!</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

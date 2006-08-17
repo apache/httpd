@@ -6,77 +6,77 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Dynamic Shared Object (DSO) Support - Apache HTTP Server</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="./images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Dynamic Shared Object (DSO) Support</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Dynamic Shared Object (DSO) Support</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/dso.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./dso.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/./dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>The Apache HTTP Server is a modular program where the
     administrator can choose the functionality to include in the
     server by selecting a set of modules. The modules can be
-    statically compiled into the <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary when the
+    statically compiled into the <code class="program"><a href="../programs/httpd.html">httpd</a></code> binary when the
     server is built. Alternatively, modules can be compiled as
     Dynamic Shared Objects (DSOs) that exist separately from the
-    main <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary file. DSO modules may be
+    main <code class="program"><a href="../programs/httpd.html">httpd</a></code> binary file. DSO modules may be
     compiled at the time the server is built, or they may be
     compiled and added at a later time using the Apache Extension
-    Tool (<code class="program"><a href="./programs/apxs.html">apxs</a></code>).</p>
+    Tool (<code class="program"><a href="../programs/apxs.html">apxs</a></code>).</p>
 
     <p>This document describes how to use DSO modules as well as
     the theory behind their use.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#implementation">Implementation</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#usage">Usage Summary</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#background">Background</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#advantages">Advantages and Disadvantages</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#implementation">Implementation</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#usage">Usage Summary</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#background">Background</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#advantages">Advantages and Disadvantages</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="implementation" id="implementation">Implementation</a></h2>
 
-<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_so.html">mod_so</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code></li></ul></td></tr></table>
 
     <p>The DSO support for loading individual Apache modules is based
-    on a module named <code class="module"><a href="./mod/mod_so.html">mod_so</a></code> which must be statically
+    on a module named <code class="module"><a href="../mod/mod_so.html">mod_so</a></code> which must be statically
     compiled into the Apache core. It is the only module besides
-    <code class="module"><a href="./mod/core.html">core</a></code> which cannot be put into a DSO
+    <code class="module"><a href="../mod/core.html">core</a></code> which cannot be put into a DSO
     itself. Practically all other distributed Apache modules can then
     be placed into a DSO by individually enabling the DSO build for
-    them via <code class="program"><a href="./programs/configure.html">configure</a></code>'s
+    them via <code class="program"><a href="../programs/configure.html">configure</a></code>'s
     <code>--enable-<em>module</em>=shared</code> option as discussed
     in the <a href="install.html">install documentation</a>. After a
     module is compiled into a DSO named <code>mod_foo.so</code> you
-    can use <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>'s <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code> command in your
+    can use <code class="module"><a href="../mod/mod_so.html">mod_so</a></code>'s <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> command in your
     <code>httpd.conf</code> file to load this module at server startup
     or restart.</p>
 
     <p>To simplify this creation of DSO files for Apache modules
     (especially for third-party modules) a new support program
-    named <code class="program"><a href="./programs/apxs.html">apxs</a></code> (<dfn>APache
+    named <code class="program"><a href="../programs/apxs.html">apxs</a></code> (<dfn>APache
     eXtenSion</dfn>) is available. It can be used to build DSO based
     modules <em>outside of</em> the Apache source tree. The idea is
-    simple: When installing Apache the <code class="program"><a href="./programs/configure.html">configure</a></code>'s
+    simple: When installing Apache the <code class="program"><a href="../programs/configure.html">configure</a></code>'s
     <code>make install</code> procedure installs the Apache C
     header files and puts the platform-dependent compiler and
-    linker flags for building DSO files into the <code class="program"><a href="./programs/apxs.html">apxs</a></code>
-    program. This way the user can use <code class="program"><a href="./programs/apxs.html">apxs</a></code> to compile
+    linker flags for building DSO files into the <code class="program"><a href="../programs/apxs.html">apxs</a></code>
+    program. This way the user can use <code class="program"><a href="../programs/apxs.html">apxs</a></code> to compile
     his Apache module sources without the Apache distribution
     source tree and without having to fiddle with the
     platform-dependent compiler and linker flags for DSO
     support.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="usage" id="usage">Usage Summary</a></h2>
 
@@ -123,7 +123,7 @@ $ make install
         Build and install a <em>third-party</em> Apache module, say
         <code>mod_foo.c</code>, into its own DSO
         <code>mod_foo.so</code> <em>outside of</em> the Apache
-        source tree using <code class="program"><a href="./programs/apxs.html">apxs</a></code>: 
+        source tree using <code class="program"><a href="../programs/apxs.html">apxs</a></code>: 
 
 <div class="example"><p><code>
 $ cd /path/to/3rdparty<br />
@@ -134,10 +134,10 @@ $ apxs -i -a -n foo mod_foo.la
     </ol>
 
     <p>In all cases, once the shared module is compiled, you must
-    use a <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
+    use a <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
     directive in <code>httpd.conf</code> to tell Apache to activate
     the module.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="background" id="background">Background</a></h2>
 
@@ -239,7 +239,7 @@ $ apxs -i -a -n foo mod_foo.la
     modules into the Apache core functionality. So, Apache is
     really predestined for using DSO to load its modules at
     run-time.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="advantages" id="advantages">Advantages and Disadvantages</a></h2>
 
@@ -249,9 +249,9 @@ $ apxs -i -a -n foo mod_foo.la
     <ul>
       <li>The server package is more flexible at run-time because
       the actual server process can be assembled at run-time via
-      <code class="directive"><a href="./mod/mod_so.html#loadmodule">LoadModule</a></code>
+      <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
       <code>httpd.conf</code> configuration commands instead of
-      <code class="program"><a href="./programs/configure.html">configure</a></code> options at build-time. For instance
+      <code class="program"><a href="../programs/configure.html">configure</a></code> options at build-time. For instance
       this way one is able to run different server instances
       (standard &amp; SSL version, minimalistic &amp; powered up
       version [mod_perl, PHP3], <em>etc.</em>) with only one Apache
@@ -265,7 +265,7 @@ $ apxs -i -a -n foo mod_foo.la
       <em>etc.</em></li>
 
       <li>Easier Apache module prototyping because with the
-      DSO/<code class="program"><a href="./programs/apxs.html">apxs</a></code> pair you can both work outside the
+      DSO/<code class="program"><a href="../programs/apxs.html">apxs</a></code> pair you can both work outside the
       Apache source tree and only need an <code>apxs -i</code>
       command followed by an <code>apachectl restart</code> to
       bring a new version of your currently developed module into
@@ -306,10 +306,10 @@ $ apxs -i -a -n foo mod_foo.la
 
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/dso.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./dso.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/./dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

@@ -6,21 +6,21 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Issues Regarding DNS and Apache - Apache HTTP Server</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="./images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Issues Regarding DNS and Apache</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Issues Regarding DNS and Apache</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/dns-caveats.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ja/dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./dns-caveats.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/./dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>This page could be summarized with the statement: don't
@@ -31,13 +31,13 @@
     or denial and theft of service attacks (including users able
     to steal hits from other users).</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#example">A Simple Example</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#denial">Denial of Service</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#main">The "main server" Address</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#tips">Tips to Avoid These Problems</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#appendix">Appendix: Future Directions</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#example">A Simple Example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#denial">Denial of Service</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#main">The "main server" Address</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#tips">Tips to Avoid These Problems</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#appendix">Appendix: Future Directions</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="example" id="example">A Simple Example</a></h2>
     
@@ -51,7 +51,7 @@
 
     <p>In order for Apache to function properly, it absolutely needs
     to have two pieces of information about each virtual host: the
-    <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code> and at least one
+    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> and at least one
     IP address that the server will bind and respond to. The above
     example does not include the IP address, so Apache must use DNS
     to find the address of <code>www.abc.dom</code>. If for some
@@ -90,7 +90,7 @@
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
     </code></p></div>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="denial" id="denial">Denial of Service</a></h2>
     
@@ -142,16 +142,16 @@
     this happens requires a more in-depth discussion of how Apache
     matches up incoming requests with the virtual host that will
     serve it. A rough document describing this <a href="vhosts/details.html">is available</a>.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="main" id="main">The "main server" Address</a></h2>
     
 
     <p>The addition of <a href="vhosts/name-based.html">name-based
     virtual host support</a> in Apache 1.1 requires Apache to know
-    the IP address(es) of the host that <code class="program"><a href="./programs/httpd.html">httpd</a></code>
+    the IP address(es) of the host that <code class="program"><a href="../programs/httpd.html">httpd</a></code>
     is running on. To get this address it uses either the global
-    <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>
+    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
     (if present) or calls the C function <code>gethostname</code>
     (which should return the same as typing "hostname" at the
     command prompt). Then it performs a DNS lookup on this address.
@@ -171,9 +171,9 @@
     with the <code>HOSTRESORDER</code> environment variable set to
     "local". This all depends on what OS and resolver libraries you
     are using. It also affects CGIs unless you use 
-    <code class="module"><a href="./mod/mod_env.html">mod_env</a></code> to control the environment. It's best 
+    <code class="module"><a href="../mod/mod_env.html">mod_env</a></code> to control the environment. It's best 
     to consult the man pages or FAQs for your OS.</p>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="tips" id="tips">Tips to Avoid These Problems</a></h2>
     
@@ -181,23 +181,23 @@
     <ul>
       <li>
         use IP addresses in 
-        <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code>
+        <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code>
       </li>
 
       <li>
         use IP addresses in 
-        <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>
+        <code class="directive"><a href="../mod/mpm_common.html#listen">Listen</a></code>
       </li>
 
       <li>
         ensure all virtual hosts have an explicit
-        <code class="directive"><a href="./mod/core.html#servername">ServerName</a></code>
+        <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code>
       </li>
 
       <li>create a <code>&lt;VirtualHost _default_:*&gt;</code>
       server that has no pages to serve</li>
     </ul>
-  </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="appendix" id="appendix">Appendix: Future Directions</a></h2>
     
@@ -234,10 +234,10 @@
     webservers.</p>
   </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/dns-caveats.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ja/dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./dns-caveats.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/./dns-caveats.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./dns-caveats.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

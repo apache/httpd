@@ -2,8 +2,8 @@
 
 <metafile>
   <basename>upgrading</basename>
-  <path>/</path>
-  <relpath>.</relpath>
+  <path>/./</path>
+  <relpath>..</relpath>
 
   <variants>
     <variant outdated="yes">de</variant>
