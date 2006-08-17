@@ -42,6 +42,7 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authzmergerules">AuthzMergeRules</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#reject">Reject</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#satisfyall">&lt;SatisfyAll&gt;</a></li>
@@ -50,10 +51,34 @@
 </div>
 
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzMergeRules" id="AuthzMergeRules">AuthzMergeRules</a> <a name="authzmergerules" id="authzmergerules">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
+authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
+Set to 'off' to disable merging. If set to 'off', only the authz rules defined in 
+the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthMergeRules on | off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthMergeRules on</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
+</table>
+    <p>By default all of the authorization rules within a &lt;Directory&gt;
+    &lt;Location&gt; hierarchy are merged together to form a single 
+    logical authorization operation.  If AuthzMergeRules is set to 'off', then
+    only the authorization rules that are contained with the current 
+    &lt;Directory&gt; or &lt;Location&gt; block are considered. This
+    allows the configuration to determine exactly how authorization will
+    be determine without having to take into consideration the 
+    authorization rules that may exist above it.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Reject" id="Reject">Reject</a> <a name="reject" id="reject">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Rejects which authenticated users can access
-a resource</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Rejects authenticated users or host based 
+requests from accessing a resource</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Reject <var>entity-name</var> [<var>entity-name</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -62,7 +87,7 @@ a resource</td></tr>
 </table>
     <p>This directive is similar to the 
     <code class="directive"><a href="#require">Require</a></code> directive however
-    it rejects which authenticated users can access a resource.  The 
+    it rejects which authenticated users or host based requests from accessing a resource.  The 
     restrictions are processed by authorization modules.  See the 
     <code class="directive"><a href="#require">Require</a></code> directive for details 
     about usage.</p>

@@ -118,9 +118,7 @@ uses</a></li>
     ThreadsPerChild</a></code> directive.  
     <code class="directive"><a href="../mod/mpm_common.html#threadlimit">ThreadLimit</a></code> is a hard
     limit of the number of server threads, and must be greater than
-    or equal to the <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> directive.  If 
-    non-default values are specified for these directives, they 
-    should appear before other <code class="module"><a href="../mod/worker.html">worker</a></code> directives.</p>
+    or equal to the <code class="directive"><a href="../mod/mpm_common.html#threadsperchild">ThreadsPerChild</a></code> directive.</p>
 
     <p>In addition to the set of active child processes, there may 
     be additional child processes which are terminating, but where at

@@ -6,36 +6,36 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Filters - Apache HTTP Server</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="./images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Filters</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Filters</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/filter.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/filter.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/filter.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./filter.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/./filter.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/./filter.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/./filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>This document describes the use of filters in Apache.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#intro">Filtering in Apache 2</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#smart">Smart Filtering</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#using">Using Filters</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">Filtering in Apache 2</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#smart">Smart Filtering</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#using">Using Filters</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intro" id="intro">Filtering in Apache 2</a></h2>
     
-    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code></li><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprotocol">FilterProtocol</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code></li><li><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_filter.html#filterchain">FilterChain</a></code></li><li><code class="directive"><a href="../mod/mod_filter.html#filterdeclare">FilterDeclare</a></code></li><li><code class="directive"><a href="../mod/mod_filter.html#filterprotocol">FilterProtocol</a></code></li><li><code class="directive"><a href="../mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="../mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="../mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
 
 <p>The Filter Chain is available in Apache 2.0 and higher,
 and enables applications to process incoming and outgoing data
@@ -48,11 +48,11 @@ independent of the traditional request processing phases.</p>
 </p>
 <p>Some examples of filtering in the standard Apache distribution are:</p>
 <ul>
-<li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code>, implements server-side includes.</li>
-<li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>, implements SSL encryption (https).</li>
-<li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code>, implements compression/decompression on the fly.</li>
-<li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code>, transcodes between different character sets.</li>
-<li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code>, runs an external program as a filter.</li>
+<li><code class="module"><a href="../mod/mod_include.html">mod_include</a></code>, implements server-side includes.</li>
+<li><code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, implements SSL encryption (https).</li>
+<li><code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>, implements compression/decompression on the fly.</li>
+<li><code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>, transcodes between different character sets.</li>
+<li><code class="module"><a href="../mod/mod_ext_filter.html">mod_ext_filter</a></code>, runs an external program as a filter.</li>
 </ul>
 <p>Apache also uses a number of filters internally to perform
 functions like chunking and byte-range handling.</p>
@@ -70,14 +70,14 @@ elsewhere.  A few of these are:</p>
 <li>Protection of vulnerable applications such as PHP scripts</li>
 <li>Text search-and-replace editing</li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="smart" id="smart">Smart Filtering</a></h2>
 
 <p class="figure">
 <img src="images/mod_filter_new.png" width="423" height="331" alt="Smart filtering applies different filter providers according to the state of request processing" />
 </p>
-<p><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>, included in Apache 2.1 and later,
+<p><code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code>, included in Apache 2.1 and later,
 enables the filter chain to be configured dynamically at run time.
 So for example you can set up a proxy to rewrite
 HTML with an HTML filter and JPEG images with a completely
@@ -95,7 +95,7 @@ compressible type and not already compressed</li>
 <li>A charset conversion filter will be inserted if a text
 document is not already in the desired charset</li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="using" id="using">Using Filters</a></h2>
 
@@ -106,32 +106,32 @@ can be mixed freely with either simple or dynamic Output filtering).</p>
 <p>The Simple Way is the only way to configure input filters, and is
 sufficient for output filters where you need a static filter chain.
 Relevant directives are
-    <code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code>,
-    <code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code>,
-    <code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>,
-    <code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>,
-    <code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code>, and
-    <code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code>.</p>
+    <code class="directive"><a href="../mod/core.html#setinputfilter">SetInputFilter</a></code>,
+    <code class="directive"><a href="../mod/core.html#setoutputfilter">SetOutputFilter</a></code>,
+    <code class="directive"><a href="../mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>,
+    <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>,
+    <code class="directive"><a href="../mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code>, and
+    <code class="directive"><a href="../mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code>.</p>
 
 <p>The Dynamic Way enables both static and flexible, dynamic configuration
-of output filters, as discussed in the <code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code> page.
+of output filters, as discussed in the <code class="module"><a href="../mod/mod_filter.html">mod_filter</a></code> page.
 Relevant directives are
-    <code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code>,
-    <code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code>, and
-    <code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code>.</p>
+    <code class="directive"><a href="../mod/mod_filter.html#filterchain">FilterChain</a></code>,
+    <code class="directive"><a href="../mod/mod_filter.html#filterdeclare">FilterDeclare</a></code>, and
+    <code class="directive"><a href="../mod/mod_filter.html#filterprovider">FilterProvider</a></code>.</p>
 
-<p>One further directive <code class="directive"><a href="./mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> is still supported,
+<p>One further directive <code class="directive"><a href="../mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> is still supported,
 but may be problematic and is now deprecated.  Use dynamic
 configuration instead.</p>
 
   </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/filter.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./es/filter.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="./fr/filter.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./filter.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../es/./filter.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="../fr/./filter.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
+<a href="../ja/./filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>

@@ -126,8 +126,8 @@ the <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</
 
 <dt><code>-L</code></dt>
 
-<dd>Output a list of directives together with expected arguments and
-places where the directive is valid.</dd>
+<dd>Output a list of directives provided by static modules, together with expected arguments and
+places where the directive is valid. Directives provided by shared modules are not listed.</dd>
 
 <dt><code>-M</code></dt>
 

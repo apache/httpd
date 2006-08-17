@@ -6,21 +6,21 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>suEXEC Support - Apache HTTP Server</title>
-<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="./images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="./images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>suEXEC Support</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>suEXEC Support</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="./en/suexec.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ja/suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./suexec.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/./suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>The <strong>suEXEC</strong> feature provides
@@ -39,18 +39,18 @@
     and the security issues they present, we highly recommend that
     you not consider using suEXEC.</p>
   </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#before">Before we begin</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#model">suEXEC Security Model</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#install">Configuring &amp; Installing
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#before">Before we begin</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#model">suEXEC Security Model</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#install">Configuring &amp; Installing
     suEXEC</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#enable">Enabling &amp; Disabling
+<li><img alt="" src="../images/down.gif" /> <a href="#enable">Enabling &amp; Disabling
     suEXEC</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#usage">Using suEXEC</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#debug">Debugging suEXEC</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#jabberwock">Beware the Jabberwock:
+<li><img alt="" src="../images/down.gif" /> <a href="#usage">Using suEXEC</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#debug">Debugging suEXEC</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#jabberwock">Beware the Jabberwock:
     Warnings &amp; Examples</a></li>
 </ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="before" id="before">Before we begin</a></h2>
 
@@ -98,7 +98,7 @@
     enough to use it.</p>
 
     <p>Still with us? Yes? Good. Let's move on!</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="model" id="model">suEXEC Security Model</a></h2>
 
@@ -348,7 +348,7 @@
     configuration, as well as what security risks can be avoided
     with a proper suEXEC setup, see the <a href="#jabberwock">"Beware the Jabberwock"</a> section of this
     document.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="install" id="install">Configuring &amp; Installing
     suEXEC</a></h2>
@@ -456,7 +456,7 @@
     <p><strong>Setting paranoid permissions</strong><br />
     Although the suEXEC wrapper will check to ensure that its
     caller is the correct user as specified with the
-    <code>--with-suexec-caller</code> <code class="program"><a href="./programs/configure.html">configure</a></code>
+    <code>--with-suexec-caller</code> <code class="program"><a href="../programs/configure.html">configure</a></code>
     option, there is
     always the possibility that a system or library call suEXEC uses
     before this check may be exploitable on your system. To counter
@@ -471,7 +471,7 @@
     Group webgroup<br />
 </code></p></div>
 
-    <p>and <code class="program"><a href="./programs/suexec.html">suexec</a></code> is installed at
+    <p>and <code class="program"><a href="../programs/suexec.html">suexec</a></code> is installed at
     "/usr/local/apache2/sbin/suexec", you should run:</p>
 
 <div class="example"><p><code>
@@ -481,13 +481,13 @@
 
     <p>This will ensure that only the group Apache runs as can even
     execute the suEXEC wrapper.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="enable" id="enable">Enabling &amp; Disabling
     suEXEC</a></h2>
 
     <p>Upon startup of Apache, it looks for the file
-    <code class="program"><a href="./programs/suexec.html">suexec</a></code> in the directory defined by the
+    <code class="program"><a href="../programs/suexec.html">suexec</a></code> in the directory defined by the
     <code>--sbindir</code> option (default is
     "/usr/local/apache/sbin/suexec"). If Apache finds a properly
     configured suEXEC wrapper, it will print the following message
@@ -506,33 +506,33 @@
     restart Apache. Restarting it with a simple HUP or USR1 signal
     will not be enough. </p>
      <p>If you want to disable suEXEC you should kill and restart
-    Apache after you have removed the <code class="program"><a href="./programs/suexec.html">suexec</a></code> file.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+    Apache after you have removed the <code class="program"><a href="../programs/suexec.html">suexec</a></code> file.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="usage" id="usage">Using suEXEC</a></h2>
 
     <p>Requests for CGI programs will call the suEXEC wrapper only if
-    they are for a virtual host containing a <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> directive or if
-    they are processed by <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code>.</p>
+    they are for a virtual host containing a <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> directive or if
+    they are processed by <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>.</p>
 
     <p><strong>Virtual Hosts:</strong><br /> One way to use the suEXEC
-    wrapper is through the <code class="directive"><a href="./mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> directive in
-    <code class="directive"><a href="./mod/core.html#virtualhost">VirtualHost</a></code> definitions.  By
+    wrapper is through the <code class="directive"><a href="../mod/mod_suexec.html#suexecusergroup">SuexecUserGroup</a></code> directive in
+    <code class="directive"><a href="../mod/core.html#virtualhost">VirtualHost</a></code> definitions.  By
     setting this directive to values different from the main server
     user ID, all requests for CGI resources will be executed as the
-    <em>User</em> and <em>Group</em> defined for that <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. If this
-    directive is not specified for a <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> then the main server userid
+    <em>User</em> and <em>Group</em> defined for that <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>. If this
+    directive is not specified for a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> then the main server userid
     is assumed.</p>
 
     <p><strong>User directories:</strong><br /> Requests that are
-     processed by <code class="module"><a href="./mod/mod_userdir.html">mod_userdir</a></code> will call the suEXEC
+     processed by <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code> will call the suEXEC
      wrapper to execute CGI programs under the userid of the requested
      user directory.  The only requirement needed for this feature to
      work is for CGI execution to be enabled for the user and that the
      script must meet the scrutiny of the <a href="#model">security
      checks</a> above.  See also the
      <code>--with-suexec-userdir</code> <a href="#install">compile
-     time option</a>.</p> </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+     time option</a>.</p> </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="debug" id="debug">Debugging suEXEC</a></h2>
 
@@ -542,7 +542,7 @@
     installed the wrapper properly, have a look at this log and the
     error_log for the server to see where you may have gone astray.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="jabberwock" id="jabberwock">Beware the Jabberwock:
     Warnings &amp; Examples</a></h2>
@@ -599,10 +599,10 @@
 
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="./en/suexec.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="./ja/suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="../en/./suexec.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/./suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/./suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
