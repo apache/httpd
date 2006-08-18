@@ -6,25 +6,25 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Sitemap - Apache HTTP Server</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page">
 <div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="../images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div>
 <div id="page-content"><div id="preamble"><h1>Sitemap</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../de/./sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
-<a href="../en/./sitemap.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/./sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../ja/./sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/./sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/sitemap.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
 <p>This page lists the currently available documents of the
@@ -32,21 +32,21 @@
 Documentation</a>.</p>
 </div>
 <div id="quickview"><ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#release">Release Notes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#using">Using the Apache HTTP Server</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#vhosts">Apache Virtual Host documentation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#faq">Apache Server Frequently Asked Questions</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#ssl">Apache SSL/TLS Encryption</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#howto">Guides, Tutorials, and HowTos</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#platform">Platform-specific Notes</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#programs">Apache HTTP Server and Supporting Programs</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#misc">Apache Miscellaneous Documentation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#modules">Apache modules</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#developer">Developer Documentation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#index">Glossary and Index</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#release">Release Notes</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#using">Using the Apache HTTP Server</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#vhosts">Apache Virtual Host documentation</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#faq">Apache Server Frequently Asked Questions</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#ssl">Apache SSL/TLS Encryption</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#howto">Guides, Tutorials, and HowTos</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#platform">Platform-specific Notes</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#programs">Apache HTTP Server and Supporting Programs</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#misc">Apache Miscellaneous Documentation</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#modules">Apache modules</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#developer">Developer Documentation</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#index">Glossary and Index</a></li>
 </ul>
 </div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="release" id="release">Release Notes</a></h2>
 <ul><li><a href="upgrading.html">Upgrading to 2.2 from 2.0</a></li>
 <li><a href="new_features_2_4.html">New features with Apache 2.4</a></li>
@@ -54,7 +54,7 @@ Documentation</a>.</p>
 <li><a href="new_features_2_0.html">New features with Apache 2.0</a></li>
 <li><a href="license.html">Apache License</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="using" id="using">Using the Apache HTTP Server</a></h2>
 <ul><li><a href="install.html">Compiling and Installing Apache</a></li>
 <li><a href="invoking.html">Starting Apache</a></li>
@@ -78,7 +78,7 @@ Documentation</a>.</p>
 <li><a href="misc/perf-tuning.html">Performance Hints</a></li>
 <li><a href="misc/rewriteguide.html">URL Rewriting Guide</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="vhosts" id="vhosts">Apache Virtual Host documentation</a></h2>
 <ul><li class="separate"><a href="vhosts/">Overview</a></li>
 <li><a href="vhosts/name-based.html">Name-based Virtual Hosts</a></li>
@@ -89,14 +89,14 @@ Documentation</a>.</p>
 <li><a href="vhosts/fd-limits.html">File descriptor limitations</a></li>
 <li><a href="dns-caveats.html">Issues Regarding DNS and Apache</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="faq" id="faq">Apache Server Frequently Asked Questions</a></h2>
 <ul><li><a href="faq/">Overview</a></li>
 <li><a href="faq/background.html">Background Information</a></li>
 <li><a href="faq/support.html">Support</a></li>
 <li><a href="faq/error.html">Error Messages</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="ssl" id="ssl">Apache SSL/TLS Encryption</a></h2>
 <ul><li class="separate"><a href="ssl/">Overview</a></li>
 <li><a href="ssl/ssl_intro.html">SSL/TLS Encryption: An Introduction</a></li>
@@ -104,7 +104,7 @@ Documentation</a>.</p>
 <li><a href="ssl/ssl_howto.html">SSL/TLS Encryption: How-To</a></li>
 <li><a href="ssl/ssl_faq.html">SSL/TLS Encryption: FAQ</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="howto" id="howto">Guides, Tutorials, and HowTos</a></h2>
 <ul><li class="separate"><a href="howto/">Overview</a></li>
 <li><a href="howto/auth.html">Authentication</a></li>
@@ -113,7 +113,7 @@ Documentation</a>.</p>
 <li><a href="howto/htaccess.html">.htaccess files</a></li>
 <li><a href="howto/public_html.html">Per-user web directories</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="platform" id="platform">Platform-specific Notes</a></h2>
 <ul><li class="separate"><a href="platform/">Overview</a></li>
 <li><a href="platform/windows.html">Using Apache with Microsoft
@@ -125,7 +125,7 @@ Microsoft Windows</a></li>
 Server on HPUX</a></li>
 <li><a href="platform/ebcdic.html">The Apache EBCDIC Port</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="programs" id="programs">Apache HTTP Server and Supporting Programs</a></h2>
 <ul><li class="separate"><a href="programs/">Overview</a></li>
 <li><a href="programs/httpd.html">Manual Page: httpd</a></li>
@@ -143,12 +143,12 @@ Server on HPUX</a></li>
 <li><a href="programs/suexec.html">Manual Page: suexec</a></li>
 <li><a href="programs/other.html">Other Programs</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="misc" id="misc">Apache Miscellaneous Documentation</a></h2>
 <ul><li class="separate"><a href="misc/">Overview</a></li>
 <li><a href="misc/relevant_standards.html">Relevant Standards</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="modules" id="modules">Apache modules</a></h2>
 <ul><li><a href="mod/module-dict.html">Definitions of terms used to describe Apache modules</a></li>
 <li><a href="mod/directive-dict.html">Definitions of terms used to describe Apache directives</a></li>
@@ -240,7 +240,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_version.html">Apache Module mod_version</a></li>
 <li><a href="mod/mod_vhost_alias.html">Apache Module mod_vhost_alias</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="developer" id="developer">Developer Documentation</a></h2>
 <ul><li class="separate"><a href="developer/">Overview</a></li>
 <li><a href="developer/API.html">Apache API notes</a></li>
@@ -251,7 +251,7 @@ Server on HPUX</a></li>
 <li><a href="developer/request.html">Request Processing in Apache 2.0</a></li>
 <li><a href="developer/filters.html">How Filters Work in Apache 2.0</a></li>
 </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section"><h2><a name="index" id="index">Glossary and Index</a></h2>
 <ul><li><a href="glossary.html">Glossary</a></li>
 <li><a href="mod/">Module index</a></li>
@@ -260,12 +260,12 @@ Server on HPUX</a></li>
 </ul>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../de/./sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
-<a href="../en/./sitemap.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/./sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../ja/./sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/./sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./de/sitemap.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/sitemap.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/sitemap.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./ja/sitemap.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/sitemap.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
 </body></html>
