@@ -135,74 +135,73 @@ server</td></tr>
 <tr><td><a href="mod_authn_anon.html#anonymous_nouserid">Anonymous_NoUserID On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">空 userID を許可するかを指定する</td></tr>
 <tr class="odd"><td><a href="mod_authn_anon.html#anonymous_verifyemail">Anonymous_VerifyEmail On|Off</a></td><td> Off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">パスワード欄が正しい形式の電子メールアドレスであることを
 調べるかどうかを設定する</td></tr>
-<tr><td><a href="mod_aspdotnet.html#aspnet">AspNet [[<var>Files</var>] [<var>Directories</var>] 
-                [<var>Virtual</var>] [<var>Errors</var>]]
-              | [<var>All</var>] | [<var>None</var>]</a></td><td> None </td><td>svdh</td><td><a href="http://httpd.apache.org/mod_aspdotnet/">T</a></td></tr><tr><td class="descr" colspan="4">Enables mod_aspdotnet to process ASP.NET content</td></tr>
-<tr class="odd"><td><a href="mod_aspdotnet.html#aspnetmount">AspNetMount <var>URL-path</var> <var>directory-path</var></a></td><td></td><td>s</td><td><a href="http://httpd.apache.org/mod_aspdotnet/">T</a></td></tr><tr class="odd"><td class="descr" colspan="4">Mounts a URI to a physical ASP.NET directory</td></tr>
-<tr><td><a href="mod_aspdotnet.html#aspnetversion">AspNetVersion <var>versionstring</var></a></td><td></td><td>s</td><td><a href="http://httpd.apache.org/mod_aspdotnet/">T</a></td></tr><tr><td class="descr" colspan="4">Force a specific .NET Framework version to be loaded</td></tr>
-<tr class="odd"><td><a href="perchild.html#assignuserid">AssignUserID <var>user-id</var> <var>group-id</var></a></td><td></td><td>v</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Tie a virtual host to a user and group ID</td></tr>
-<tr><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">認証と承認を、より低いレベルのモジュールに移行させるかを
+<tr><td><a href="perchild.html#assignuserid">AssignUserID <var>user-id</var> <var>group-id</var></a></td><td></td><td>v</td><td>M</td></tr><tr><td class="descr" colspan="4">Tie a virtual host to a user and group ID</td></tr>
+<tr class="odd"><td><a href="mod_auth_basic.html#authbasicauthoritative">AuthBasicAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">認証と承認を、より低いレベルのモジュールに移行させるかを
 設定します。</td></tr>
-<tr class="odd"><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider On|Off|<var>provider-name</var>
-[<var>provider-name</var>] ...</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">この位置に対する認証プロバイダを設定します。</td></tr>
-<tr><td><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">SQL query to look up a password for a user</td></tr>
-<tr class="odd"><td><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SQL query to look up a password hash for a user and realm.
+<tr><td><a href="mod_auth_basic.html#authbasicprovider">AuthBasicProvider On|Off|<var>provider-name</var>
+[<var>provider-name</var>] ...</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">この位置に対する認証プロバイダを設定します。</td></tr>
+<tr class="odd"><td><a href="mod_authn_dbd.html#authdbduserpwquery">AuthDBDUserPWQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">SQL query to look up a password for a user</td></tr>
+<tr><td><a href="mod_authn_dbd.html#authdbduserrealmquery">AuthDBDUserRealmQuery <var>query</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">SQL query to look up a password hash for a user and realm.
 </td></tr>
-<tr><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the name of the database file containing the list
+<tr class="odd"><td><a href="mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the name of the database file containing the list
 of user groups for authorization</td></tr>
-<tr class="odd"><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">パスワードを保存するために必要なデータベースファイルの種類を
+<tr><td><a href="mod_authn_dbm.html#authdbmtype">AuthDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">パスワードを保存するために必要なデータベースファイルの種類を
 設定する</td></tr>
-<tr><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">認証用のユーザとパスワードのリストを保持している
+<tr class="odd"><td><a href="mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">認証用のユーザとパスワードのリストを保持している
 データベースファイル名を設定する</td></tr>
-<tr class="odd"><td><a href="mod_authn_default.html#authdefaultauthoritative">AuthDefaultAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">次の低次レベルの認証モジュールに制御を渡すかどうかを
+<tr><td><a href="mod_authn_default.html#authdefaultauthoritative">AuthDefaultAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">次の低次レベルの認証モジュールに制御を渡すかどうかを
 設定します</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm MD5|MD5-sess</a></td><td> MD5 </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Selects the algorithm used to calculate the challenge and
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestalgorithm">AuthDigestAlgorithm MD5|MD5-sess</a></td><td> MD5 </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Selects the algorithm used to calculate the challenge and
 response hashes in digest authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">URIs that are in the same protection space for digest
+<tr><td><a href="mod_auth_digest.html#authdigestdomain">AuthDigestDomain <var>URI</var> [<var>URI</var>] ...</a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">URIs that are in the same protection space for digest
 authentication</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck On|Off</a></td><td> Off </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Enables or disables checking of the nonce-count sent by the
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnccheck">AuthDigestNcCheck On|Off</a></td><td> Off </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Enables or disables checking of the nonce-count sent by the
 server</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat <var>format</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Determines how the nonce is generated</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime <var>seconds</var></a></td><td> 300 </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">How long the server nonce is valid</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider <var>provider-name</var>
-[<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
-<tr><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop none|auth|auth-int [auth|auth-int]</a></td><td> auth </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Determines the quality-of-protection to use in digest
+<tr><td><a href="mod_auth_digest.html#authdigestnonceformat">AuthDigestNonceFormat <var>format</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Determines how the nonce is generated</td></tr>
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestnoncelifetime">AuthDigestNonceLifetime <var>seconds</var></a></td><td> 300 </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">How long the server nonce is valid</td></tr>
+<tr><td><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider <var>provider-name</var>
+[<var>provider-name</var>] ...</a></td><td> file </td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Sets the authentication provider(s) for this location</td></tr>
+<tr class="odd"><td><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop none|auth|auth-int [auth|auth-int]</a></td><td> auth </td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the quality-of-protection to use in digest
 authentication</td></tr>
-<tr class="odd"><td><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize <var>size</var></a></td><td> 1000 </td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">The amount of shared memory to allocate for keeping track
+<tr><td><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize <var>size</var></a></td><td> 1000 </td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">The amount of shared memory to allocate for keeping track
 of clients</td></tr>
-<tr><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">証認に使用するユーザグループの一覧が格納されている、
+<tr class="odd"><td><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">証認に使用するユーザグループの一覧が格納されている、
 テキストファイルの名前を設定する</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN <em>distinguished-name</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Optional DN to use in binding to the LDAP server</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword <em>password</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Password used in conjuction with the bind DN</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig <em>file-path</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Language to charset conversion configuration file</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the LDAP server to compare the DNs</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> Always </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">When will the module de-reference aliases</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribute</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">LDAP attributes used to check for group membership</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the DN of the client username when checking for
+<tr><td><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN <em>distinguished-name</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Optional DN to use in binding to the LDAP server</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword <em>password</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Password used in conjuction with the bind DN</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapcharsetconfig">AuthLDAPCharsetConfig <em>file-path</em></a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Language to charset conversion configuration file</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapcomparednonserver">AuthLDAPCompareDNOnServer on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the LDAP server to compare the DNs</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases never|searching|finding|always</a></td><td> Always </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">When will the module de-reference aliases</td></tr>
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute <em>attribute</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">LDAP attributes used to check for group membership</td></tr>
+<tr><td><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN on|off</a></td><td> on </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the DN of the client username when checking for
 group membership</td></tr>
-<tr><td><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
+<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN on|off</a></td><td> off </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Use the DN of the client username to set the REMOTE_USER
 environment variable</td></tr>
-<tr class="odd"><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></a></td><td></td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
-<tr><td><a href="core.html#authname">AuthName <var>auth-domain</var></a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">HTTP 認証の認可領域 (訳注: realm)</td></tr>
-<tr class="odd"><td><a href="mod_authn_core.html#authname">AuthName <var>auth-domain</var></a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Authorization realm for use in HTTP
+<tr><td><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl <em>url [NONE|SSL|TLS|STARTTLS]</em></a></td><td></td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">URL specifying the LDAP search parameters</td></tr>
+<tr class="odd"><td><a href="core.html#authname">AuthName <var>auth-domain</var></a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP 認証の認可領域 (訳注: realm)</td></tr>
+<tr><td><a href="mod_authn_core.html#authname">AuthName <var>auth-domain</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Authorization realm for use in HTTP
 authentication</td></tr>
-<tr><td><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
-... &lt;/AuthnProviderAlias&gt;</a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Enclose a group of directives that represent an
+<tr class="odd"><td><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
+... &lt;/AuthnProviderAlias&gt;</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of directives that represent an
 extension of a base authentication provider and referenced by
 the specified alias</td></tr>
-<tr class="odd"><td><a href="core.html#authtype">AuthType Basic|Digest</a></td><td></td><td>dh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">ユーザ認証の種類</td></tr>
-<tr><td><a href="mod_authn_core.html#authtype">AuthType Basic|Digest</a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">Type of user authentication</td></tr>
-<tr class="odd"><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">認証に使用するユーザとパスワードの一覧が格納されている、
+<tr><td><a href="core.html#authtype">AuthType Basic|Digest</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">ユーザ認証の種類</td></tr>
+<tr class="odd"><td><a href="mod_authn_core.html#authtype">AuthType Basic|Digest</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Type of user authentication</td></tr>
+<tr><td><a href="mod_authn_file.html#authuserfile">AuthUserFile <var>file-path</var></a></td><td></td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">認証に使用するユーザとパスワードの一覧が格納されている、
 テキストファイルの名前を設定する</td></tr>
-<tr><td><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer On|Off</a></td><td> Off </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines whether to redirect the Client to the Referring
+<tr class="odd"><td><a href="mod_authz_dbd.html#authzdbdlogintoreferer">AuthzDBDLoginToReferer On|Off</a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines whether to redirect the Client to the Referring
 page on successful login or logout if a <code>Referer</code> request
 header is present</td></tr>
-<tr class="odd"><td><a href="mod_authz_dbd.html#authzdbdquery">AuthzDBDQuery SQL-Query</a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specify the SQL Query for the required operation</td></tr>
-<tr><td><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery SQL-Query</a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify a query to look up a login page for the user</td></tr>
-<tr class="odd"><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the type of database file that is used to
+<tr><td><a href="mod_authz_dbd.html#authzdbdquery">AuthzDBDQuery SQL-Query</a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Specify the SQL Query for the required operation</td></tr>
+<tr class="odd"><td><a href="mod_authz_dbd.html#authzdbdredirectquery">AuthzDBDRedirectQuery SQL-Query</a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specify a query to look up a login page for the user</td></tr>
+<tr><td><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType default|SDBM|GDBM|NDBM|DB</a></td><td> default </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">Sets the type of database file that is used to
 store list of user groups</td></tr>
-<tr><td><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">承認が低位のモジュールに渡されるかどうかを設定する</td></tr>
-<tr class="odd"><td><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">承認が下位のモジュールに渡されるかどうかを設定する</td></tr>
+<tr class="odd"><td><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">承認が低位のモジュールに渡されるかどうかを設定する</td></tr>
+<tr><td><a href="mod_authz_groupfile.html#authzgroupfileauthoritative">AuthzGroupFileAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr><td class="descr" colspan="4">承認が下位のモジュールに渡されるかどうかを設定する</td></tr>
+<tr class="odd"><td><a href="mod_authz_core.html#authzmergerules">AuthMergeRules on | off</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Set to 'on' to allow the parent's &lt;Directory&gt; or &lt;Location&gt; 
+authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
+Set to 'off' to disable merging. If set to 'off', only the authz rules defined in 
+the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</td></tr>
 <tr><td><a href="mod_authz_owner.html#authzownerauthoritative">AuthzOwnerAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>E</td></tr><tr><td class="descr" colspan="4">承認が下位承認モジュールに渡されるかどうかを設定する</td></tr>
 <tr class="odd"><td><a href="mod_authz_user.html#authzuserauthoritative">AuthzUserAuthoritative On|Off</a></td><td> On </td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">承認が下位のモジュールに渡されるかどうかを設定する</td></tr>
 <tr><td><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
@@ -514,8 +513,8 @@ URL を調整する</td></tr>
 リダイレクトを送る</td></tr>
 <tr><td><a href="mod_alias.html#redirecttemp">RedirectTemp <var>URL-path</var> <var>URL</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">クライアントが違う URL を取得するように外部への一時的な
 リダイレクトを送る</td></tr>
-<tr class="odd"><td><a href="mod_authz_core.html#reject">Reject <var>entity-name</var> [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Rejects which authenticated users can access
-a resource</td></tr>
+<tr class="odd"><td><a href="mod_authz_core.html#reject">Reject <var>entity-name</var> [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Rejects authenticated users or host based 
+requests from accessing a resource</td></tr>
 <tr><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
 ...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべての文字セット
 を解除する</td></tr>

@@ -80,8 +80,6 @@ address)</dd>
     filesystem in the document tree and for URL redirection</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>Sends files that contain their own
 HTTP headers</dd>
-<dt><a href="mod_aspdotnet.html">mod_aspdotnet</a></dt><dd>Provides an interface for ASP.NET content between Apache HTTP
-Server 2.0 and Microsoft's ASP.NET host.</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>User authentication using MD5
     Digest Authentication</dd>

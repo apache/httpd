@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTPD" 8 "2005-08-26" "Apache HTTP Server" "httpd"
+.TH "HTTPD" 8 "2006-08-18" "Apache HTTP Server" "httpd"
 
 .SH NAME
 httpd \- Apache Hypertext Transfer Protocol Server
@@ -83,7 +83,7 @@ Output a short summary of available command line options\&.
 Output a list of modules compiled into the server\&. This will \fBnot\fR list dynamically loaded modules included using the LoadModule directive\&.  
 .TP
 -L
-Output a list of directives together with expected arguments and places where the directive is valid\&.  
+Output a list of directives provided by static modules, together with expected arguments and places where the directive is valid\&. Directives provided by shared modules are not listed\&.  
 .TP
 -M
 Dump a list of loaded Static and Shared Modules\&.  

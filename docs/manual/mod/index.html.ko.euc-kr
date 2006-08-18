@@ -72,8 +72,6 @@ address)</dd>
 <dt><a href="mod_alias.html">mod_alias</a></dt><dd>파일시스템의 다른 부분들을 문서 계층구조에 포함하고,
     URL 리다이렉션을 제공한다</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP 헤더를 포함한 파일을 보낸다</dd>
-<dt><a href="mod_aspdotnet.html">mod_aspdotnet</a></dt><dd>Provides an interface for ASP.NET content between Apache HTTP
-Server 2.0 and Microsoft's ASP.NET host.</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>MD5 Digest Authentication을 사용한 사용자인증.</dd>
 <dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>인증영역에 "익명(anonymous)" 사용자의 접근을
