@@ -151,6 +151,8 @@ DBD_DECLARE_NONSTD(void) ap_dbd_prepare(server_rec *s, const char *query,
     const char *key = s->server_hostname;
     if (key == NULL) {
         key = default_hostname;
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
+                     "DBD: ServerName should be set before declaring any prepared statements");
     }
     prepared->label = label;
     prepared->query = query;
