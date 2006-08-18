@@ -6,23 +6,23 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Stopping and Restarting - Apache HTTP Server</title>
-<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<link href="./style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="./images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="../images/feather.gif" /></div>
-<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<img alt="" src="./images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="./images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Stopping and Restarting</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="./">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Stopping and Restarting</h1>
 <div class="toplang">
-<p><span>Available Languages: </span><a href="../de/./stopping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
-<a href="../en/./stopping.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/./stopping.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../ja/./stopping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/./stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./de/stopping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/stopping.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/stopping.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./ja/stopping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>This document covers stopping and restarting Apache on
@@ -32,23 +32,23 @@
     Console Application</a> for information on how to control
     Apache on those platforms.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#term">Stop Now</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#graceful">Graceful Restart</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#hup">Restart Now</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#gracefulstop">Graceful Stop</a></li>
-</ul><h3>See also</h3><ul class="seealso"><li><code class="program"><a href="../programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="../programs/apachectl.html">apachectl</a></code></li><li><a href="invoking.html">Starting</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#term">Stop Now</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#graceful">Graceful Restart</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#hup">Restart Now</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#gracefulstop">Graceful Stop</a></li>
+</ul><h3>See also</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li><li><a href="invoking.html">Starting</a></li></ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
 
     <p>In order to stop or restart Apache, you must send a signal to
-    the running <code class="program"><a href="../programs/httpd.html">httpd</a></code> processes.  There are two ways to
+    the running <code class="program"><a href="./programs/httpd.html">httpd</a></code> processes.  There are two ways to
     send the signals.  First, you can use the unix <code>kill</code>
     command to directly send signals to the processes. You will
-    notice many <code class="program"><a href="../programs/httpd.html">httpd</a></code> executables running on your system,
+    notice many <code class="program"><a href="./programs/httpd.html">httpd</a></code> executables running on your system,
     but you should not send signals to any of them except the parent,
-    whose pid is in the <code class="directive"><a href="../mod/mpm_common.html#pidfile">PidFile</a></code>. That is to say you
+    whose pid is in the <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>. That is to say you
     shouldn't ever need to send signals to any process except the
     parent. There are four signals that you can send the parent:
     <code><a href="#term">TERM</a></code>,
@@ -62,20 +62,20 @@
 
 <div class="example"><p><code>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</code></p></div>
 
-    <p>The second method of signaling the <code class="program"><a href="../programs/httpd.html">httpd</a></code> processes
+    <p>The second method of signaling the <code class="program"><a href="./programs/httpd.html">httpd</a></code> processes
     is to use the <code>-k</code> command line options: <code>stop</code>,
     <code>restart</code>, <code>graceful</code> and <code>graceful-stop</code>,
-    as described below.  These are arguments to the <code class="program"><a href="../programs/httpd.html">httpd</a></code> binary, but we recommend that
-    you send them using the <code class="program"><a href="../programs/apachectl.html">apachectl</a></code> control script, which
-    will pass them through to <code class="program"><a href="../programs/httpd.html">httpd</a></code>.</p>
+    as described below.  These are arguments to the <code class="program"><a href="./programs/httpd.html">httpd</a></code> binary, but we recommend that
+    you send them using the <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> control script, which
+    will pass them through to <code class="program"><a href="./programs/httpd.html">httpd</a></code>.</p>
 
-    <p>After you have signaled <code class="program"><a href="../programs/httpd.html">httpd</a></code>, you can read about
+    <p>After you have signaled <code class="program"><a href="./programs/httpd.html">httpd</a></code>, you can read about
     its progress by issuing:</p>
 
 <div class="example"><p><code>tail -f /usr/local/apache2/logs/error_log</code></p></div>
 
-    <p>Modify those examples to match your <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> and <code class="directive"><a href="../mod/mpm_common.html#pidfile">PidFile</a></code> settings.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    <p>Modify those examples to match your <code class="directive"><a href="./mod/core.html#serverroot">ServerRoot</a></code> and <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> settings.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="term" id="term">Stop Now</a></h2>
 
@@ -88,7 +88,7 @@
     children. It may take it several seconds to complete killing off
     its children.  Then the parent itself exits. Any requests in
     progress are terminated, and no further requests are served.</p>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="graceful" id="graceful">Graceful Restart</a></h2>
 
@@ -108,15 +108,15 @@
     directive of the MPMs, so the number of processes and threads
     available to serve clients will be maintained at the appropriate
     values throughout the restart process.  Furthermore, it respects
-    <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> in the
-    following manner: if after one second at least <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> new children have not
+    <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> in the
+    following manner: if after one second at least <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> new children have not
     been created, then create enough to pick up the slack. Hence the
     code tries to maintain both the number of children appropriate for
     the current load on the server, and respect your wishes with the
-    <code class="directive"><a href="../mod/mpm_common.html#startservers">StartServers</a></code> 
+    <code class="directive"><a href="./mod/mpm_common.html#startservers">StartServers</a></code> 
     parameter.</p>
 
-    <p>Users of <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>
+    <p>Users of <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>
     will notice that the server statistics are <strong>not</strong>
     set to zero when a <code>USR1</code> is sent. The code was
     written to both minimize the time in which the server is unable
@@ -150,13 +150,13 @@
     <p>This still will not
     guarantee that the server will restart correctly. To check the
     semantics of the configuration files as well as the syntax, you
-    can try starting <code class="program"><a href="../programs/httpd.html">httpd</a></code> as a non-root user. If there
+    can try starting <code class="program"><a href="./programs/httpd.html">httpd</a></code> as a non-root user. If there
     are no errors it will attempt to open its sockets and logs and fail
     because it's not root (or because the currently running
-    <code class="program"><a href="../programs/httpd.html">httpd</a></code> already has those ports bound). If it fails
+    <code class="program"><a href="./programs/httpd.html">httpd</a></code> already has those ports bound). If it fails
     for any other reason then it's probably a config file error and the error
     should be fixed before issuing the graceful restart.</p></div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="hup" id="hup">Restart Now</a></h2>
 
@@ -170,7 +170,7 @@
     configuration files, and re-opens any log files. Then it spawns a
     new set of children and continues serving hits.</p>
 
-    <p>Users of <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>
+    <p>Users of <code class="module"><a href="./mod/mod_status.html">mod_status</a></code>
     will notice that the server statistics are set to zero when a
     <code>HUP</code> is sent.</p>
 
@@ -178,7 +178,7 @@
 restart is attempted. If your configuration file has errors in it, the
 restart will not be attempted, and you will receive notification of the
 syntax error(s).</div>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="gracefulstop" id="gracefulstop">Graceful Stop</a></h2>
 
@@ -189,45 +189,45 @@ syntax error(s).</div>
     <p>The <code>WINCH</code> or <code>graceful-stop</code> signal causes
     the parent process to <em>advise</em> the children to exit after
     their current request (or to exit immediately if they're not
-    serving anything). The parent will then remove its <code class="directive"><a href="../mod/mpm_common.html#pidfile">PidFile</a></code> and cease listening on
+    serving anything). The parent will then remove its <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> and cease listening on
     all ports. The parent will continue to run, and monitor children
     which are handling requests. Once all children have finalised
-    and exited or the timeout specified by the <code class="directive"><a href="../mod/mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></code> has been
+    and exited or the timeout specified by the <code class="directive"><a href="./mod/mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></code> has been
     reached, the parent will also exit.  If the timeout is reached,
     any remaining children will be sent the <code>TERM</code> signal
     to force them to exit.</p>
     
     <p>A <code>TERM</code> signal will immediately terminate the 
     parent process and all children when in the "graceful" state. However
-    as the <code class="directive"><a href="../mod/mpm_common.html#pidfile">PidFile</a></code> will
+    as the <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> will
     have been removed, you will not be able to use 
     <code>apachectl</code> or <code>httpd</code> to send this signal,</p>
 
     <div class="note"><p>The <code>graceful-stop</code> signal allows you to run multiple
-    identically configured instances of <code class="program"><a href="../programs/httpd.html">httpd</a></code> at the 
+    identically configured instances of <code class="program"><a href="./programs/httpd.html">httpd</a></code> at the 
     same time. This is a powerful feature when performing graceful 
     upgrades of Apache, however it can also cause deadlocks and race 
     conditions with some configurations.</p> 
 
     <p>Care has been taken to ensure that on-disk files
-    such as the <code class="directive"><a href="../mod/core.html#lockfile">Lockfile</a></code> and <code class="directive"><a href="../mod/mod_cgid.html#scriptsock">ScriptSock</a></code> files contain the server
+    such as the <code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> and <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> files contain the server
     PID, and should co-exist without problem. However, if a configuration
     directive, third-party module or persistent CGI utilises any other on-disk 
     lock or  state files; care should be taken to ensure that multiple running 
-    instances of <code class="program"><a href="../programs/httpd.html">httpd</a></code> do not clobber each others files.</p> 
+    instances of <code class="program"><a href="./programs/httpd.html">httpd</a></code> do not clobber each others files.</p> 
 
     <p>You should also be wary of other potential race conditions, such as
-    using <code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code> style piped logging. Multiple running
-    instances of <code class="program"><a href="../programs/rotatelogs.html">rotatelogs</a></code> attempting to rotate the same
+    using <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> style piped logging. Multiple running
+    instances of <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> attempting to rotate the same
     logfiles at the same time may destroy each other's logfiles.</p></div>
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span><a href="../de/./stopping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
-<a href="../en/./stopping.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/./stopping.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../ja/./stopping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/./stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<p><span>Available Languages: </span><a href="./de/stopping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
+<a href="./en/stopping.html" title="English">&nbsp;en&nbsp;</a> |
+<a href="./es/stopping.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
+<a href="./ja/stopping.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/stopping.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
 </body></html>
