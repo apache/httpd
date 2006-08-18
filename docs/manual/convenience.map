@@ -75,6 +75,7 @@ authzdbdquery	mod/mod_authz_dbd.html#authzdbdquery
 authzdbdredirectquery	mod/mod_authz_dbd.html#authzdbdredirectquery
 authzdbmtype	mod/mod_authz_dbm.html#authzdbmtype
 authzdefaultauthoritative	mod/mod_authz_default.html#authzdefaultauthoritative
+authzmergerules	mod/mod_authz_core.html#authzmergerules
 browsermatch	mod/mod_setenvif.html#browsermatch
 browsermatchnocase	mod/mod_setenvif.html#browsermatchnocase
 bufferedlogs	mod/mod_log_config.html#bufferedlogs
@@ -100,6 +101,7 @@ cgimapextension	mod/core.html#cgimapextension
 charsetdefault	mod/mod_charset_lite.html#charsetdefault
 charsetoptions	mod/mod_charset_lite.html#charsetoptions
 charsetsourceenc	mod/mod_charset_lite.html#charsetsourceenc
+checkcaseonly	mod/mod_speling.html#checkcaseonly
 checkspelling	mod/mod_speling.html#checkspelling
 childperuserid	mod/perchild.html#childperuserid
 contentdigest	mod/core.html#contentdigest
@@ -261,6 +263,7 @@ proxyiobuffersize	mod/mod_proxy.html#proxyiobuffersize
 proxymatch	mod/mod_proxy.html#proxymatch
 proxymaxforwards	mod/mod_proxy.html#proxymaxforwards
 proxypass	mod/mod_proxy.html#proxypass
+proxypassinterpolateenv	mod/mod_proxy.html#proxypassinterpolateenv
 proxypassreverse	mod/mod_proxy.html#proxypassreverse
 proxypassreversecookiedomain	mod/mod_proxy.html#proxypassreversecookiedomain
 proxypassreversecookiepath	mod/mod_proxy.html#proxypassreversecookiepath
