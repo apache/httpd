@@ -348,15 +348,15 @@ target as a CGI script</description>
     is essentially equivalent to:</p>
     <example>
       Alias /cgi-bin/ /web/cgi-bin/<br />
-      &lt;Directory /web/cgi-bin &gt;<br />
+      &lt;Location /cgi-bin &gt;<br />
       <indent>
       SetHandler cgi-script<br />
       Options +ExecCGI<br />
       </indent>
-      &lt;/Directory&gt;
+      &lt;/Location&gt;
     </example>
 
-    <note>It is safer to avoid placing CGI scripts under the
+    <note type="warning">It is safer to avoid placing CGI scripts under the
     <directive module="core">DocumentRoot</directive> in order to
     avoid accidentally revealing their source code if the
     configuration is ever changed.  The
@@ -367,8 +367,20 @@ target as a CGI script</description>
     <directive>ScriptAlias</directive>.  Instead, use <directive
     module="core" type="section">Directory</directive>, <directive
     module="core">SetHandler</directive>, and <directive
-    module="core">Options</directive> as shown in the second example
-    above.</note>
+    module="core">Options</directive> as in:
+    <example>
+      &lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;<br />
+      <indent>
+      SetHandler cgi-script<br />
+      Options ExecCGI<br />
+      </indent>
+      &lt;/Directory&gt;
+    </example>
+    This is necessary since multiple <var>URL-paths</var> can map
+    to the same filesystem location, potentially bypassing the
+    <directive>ScriptAlias</directive> and revealing the source code
+    of the CGI scripts if they are not restricted by a 
+    <directive module="core">Directory</directive> section.</note>
 
 </usage>
 <seealso><a href="../howto/cgi.html">CGI Tutorial</a></seealso>

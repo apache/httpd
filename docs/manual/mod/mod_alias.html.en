@@ -355,15 +355,15 @@ target as a CGI script</td></tr>
     is essentially equivalent to:</p>
     <div class="example"><p><code>
       Alias /cgi-bin/ /web/cgi-bin/<br />
-      &lt;Directory /web/cgi-bin &gt;<br />
+      &lt;Location /cgi-bin &gt;<br />
       <span class="indent">
       SetHandler cgi-script<br />
       Options +ExecCGI<br />
       </span>
-      &lt;/Directory&gt;
+      &lt;/Location&gt;
     </code></p></div>
 
-    <div class="note">It is safer to avoid placing CGI scripts under the
+    <div class="warning">It is safer to avoid placing CGI scripts under the
     <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code> in order to
     avoid accidentally revealing their source code if the
     configuration is ever changed.  The
@@ -371,8 +371,20 @@ target as a CGI script</td></tr>
     URL and designating CGI scripts at the same time.  If you do
     choose to place your CGI scripts in a directory already
     accessible from the web, do not use
-    <code class="directive">ScriptAlias</code>.  Instead, use <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, and <code class="directive"><a href="../mod/core.html#options">Options</a></code> as shown in the second example
-    above.</div>
+    <code class="directive">ScriptAlias</code>.  Instead, use <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>, <code class="directive"><a href="../mod/core.html#sethandler">SetHandler</a></code>, and <code class="directive"><a href="../mod/core.html#options">Options</a></code> as in:
+    <div class="example"><p><code>
+      &lt;Directory /usr/local/apache2/htdocs/cgi-bin &gt;<br />
+      <span class="indent">
+      SetHandler cgi-script<br />
+      Options ExecCGI<br />
+      </span>
+      &lt;/Directory&gt;
+    </code></p></div>
+    This is necessary since multiple <var>URL-paths</var> can map
+    to the same filesystem location, potentially bypassing the
+    <code class="directive">ScriptAlias</code> and revealing the source code
+    of the CGI scripts if they are not restricted by a 
+    <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> section.</div>
 
 
 <h3>See also</h3>
