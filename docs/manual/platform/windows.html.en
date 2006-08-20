@@ -227,6 +227,25 @@
       not backslashes. Drive letters can be used; if omitted, the drive
       with the Apache executable will be assumed.</p></li>
 
+      <li><p>While filenames are generally case-insensitive on
+      Windows, URLs are still treated internally as case-sensitive
+      before they are mapped to the filesystem.  For example, the
+      <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>,
+      <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, and <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> directives all use
+      case-sensitive arguments.  For this reason, it is particularly
+      important to use the <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> directive when attempting
+      to limit access to content in the filesystem, since this
+      directive applies to any content in a directory, regardless of
+      how it is accessed.  If you wish to assure that only lowercase
+      is used in URLs, you can use something like:</p>
+
+      <div class="example"><p><code>
+      RewriteEngine On<br />
+      RewriteMap lowercase int:tolower<br />
+      RewriteCond %{REQUEST_URI} [A-Z]<br />
+      RewriteRule (.*) ${lowercase:$1} [R,L]
+      </code></p></div></li>
+
       <li><p>Apache for Windows contains the ability to load modules at
       runtime, without recompiling the server. If Apache is compiled
       normally, it will install a number of optional modules in the
@@ -731,6 +750,6 @@
 <p><span>Available Languages: </span><a href="../en/platform/windows.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 1995-2005 The Apache Software Foundation or its licensors, as applicable.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
