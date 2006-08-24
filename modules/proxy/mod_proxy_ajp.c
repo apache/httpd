@@ -175,6 +175,8 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                 AJP13_MAX_SEND_BODY_SZ);
 
         if (status != APR_SUCCESS) {
+            /* We had a failure: Close connection to backend */
+            conn->close++;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: ap_get_brigade failed");
             apr_brigade_destroy(input_brigade);
