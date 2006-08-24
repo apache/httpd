@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_ajp: Close connection to backend if reading of request body
+     fails. PR 40310. [Ian Abel <ianabel mxtelecom.com>]
+
   *) All MPMs: Introduce a check_config phase between pre_config and
      open_logs, to allow modules to review interdependent configuration
      directive values and adjust them while messages can still be logged
@@ -9,7 +12,7 @@ Changes with Apache 2.3.0
      and format messages for both the console and the error log, as
      appropriate.  [Chris Darroch]
 
-  *) mod_proxy: don't try to use dead backend connection (PR#37770)
+  *) mod_proxy: Don't try to use dead backend connection. PR 37770.
      [Olivier BOEL <ob dorrboel.com>]
 
   *) mod_proxy: don't URLencode tilde in path component
@@ -46,7 +49,7 @@ Changes with Apache 2.3.0
      SymLinksIfOwnerMatch. [Nick Kew, Ruediger Pluem, William Rowe]
 
   *) mod_proxy: Support environment variable interpolation in reverse
-     proxying directives [Nick Kew]
+     proxying directives. [Nick Kew]
 
   *) mod_proxy_balancer: Workers can now be defined as "hot standby" which
      will only be used if all other workers are unusable (eg: in
@@ -66,7 +69,7 @@ Changes with Apache 2.3.0
      [Brian <brectanu gmail.com>]
 
   *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
-     support.  Also corrects the slashes for Windows.  PR 15993  [William Rowe]
+     support.  Also corrects the slashes for Windows.  PR 15993. [William Rowe]
 
   *) mod_isapi: Handle "HTTP/1.1 200 OK" style status lines correctly, the
      token parser worked while the resulting length was misinterpreted.
