@@ -86,10 +86,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~wrowe/mod_isapi-416293-to-httpd-2.2.patch
       +1 wrowe , fielding, jerenkrantz
 
-    * README.platforms: Add a note for Solaris compiler recommendations.
-      http://svn.apache.org/viewvc?rev=414921&view=rev
-      +1 jerenkrantz, rpluem, sctemme
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * Bundled PCRE: backport r381783 from trunk
