@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=417443
       2.2.x version of patch:
         Trunk version works
-      +1 rpluem, sctemme, jim
+      +1 rpluem, sctemme, jim, mturk
 
     * mod_proxy_ajp: Close connection to backend if reading of request body
       fails.
@@ -121,7 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=434483
       2.2.x version of patch:
         Trunk version works
-      +1 rpluem, sctemme, jim
+      +1 rpluem, sctemme, jim, mturk
 
     * mod_deflate: Rework inflate output and deflate output filter to fix
       several issues: Incorrect handling of flush buckets, potential memory
@@ -168,7 +168,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=421283
       2.2.x version of patch:
         Trunk version works
-      +1: jim
+      +1: jim, mturk
 
     * mod_proxy_balancer: balancer_manager to display additional
      worker info: number of times elected and i/o counts
@@ -176,7 +176,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=421287
       2.2.x version of patch:
         Trunk version works
-      +1: jim
+      +1: jim, mturk
 
     * mod_proxy_balancer: Add in load balancer cluster set capability
       (with docs)
@@ -188,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=432352 (partial doc)
       2.2.x version of patch:
         Trunk version works
-      +1: jim
+      +1: jim, mturk
 
     * mod_proxy: Add in support for ping/pong (heartbeat test) for
       the Proxy. Implement cping/cpong for AJP.
@@ -196,5 +196,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=425454
       2.2.x version of patch:
         Trunk version works
-      +1: 
+      +1: mturk
 
