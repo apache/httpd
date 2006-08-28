@@ -92,7 +92,7 @@
     <div class="example"><h3>Full Example</h3><p><code>
       DavLockDB /usr/local/apache2/var/DavLock<br />
       <br />
-       &lt;Location /foo&gt;<br />
+       &lt;Directory /usr/local/apache2/htdocs/foo&gt;<br />
        <span class="indent">
 	 Order Allow,Deny<br />
 	 Allow from all<br />
@@ -102,13 +102,13 @@
          AuthName DAV<br />
          AuthUserFile user.passwd<br />
          <br />
-         &lt;LimitExcept GET OPTIONS&gt;<br />
+         &lt;LimitExcept GET POST OPTIONS&gt;<br />
          <span class="indent">
            require user admin<br />
          </span>
          &lt;/LimitExcept&gt;<br />
        </span>
-       &lt;/Location&gt;<br />
+       &lt;/Directory&gt;<br />
     </code></p></div>
 
    <p><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> is a descendent of Greg Stein's <a href="http://www.webdav.org/mod_dav/">mod_dav for Apache 1.3</a>.  More

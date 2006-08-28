@@ -281,6 +281,7 @@ candidate lbstatus -= total factor</code></pre></div>
     <p>At present there are 5 environment variables exported:</p>
     
     
+    <dl>
     <dt><var><a name="balancer_session_sticky" id="balancer_session_sticky">BALANCER_SESSION_STICKY</a></var></dt>
     <dd>
     <p>This is assigned the <var>stickysession</var> value used in the current
@@ -314,6 +315,7 @@ candidate lbstatus -= total factor</code></pre></div>
     <p>This is assigned the <var>route</var> of the worker that will be 
     used for the current request.</p>
     </dd>
+    </dl>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
