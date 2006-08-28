@@ -100,21 +100,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    We're bundling PCRE for the duration of the 2.2.x series,
                    but we can re-evaluate for future major/minor revs.
 
-    * mod_deflate: don't choke on flush buckets in INFLATE filter
-      PR#39854
-      http://svn.apache.org/viewvc?rev=416165&view=rev
-      +0: niq
-          (this patch is now superseded by rpluem/wrowe better patch)
-      -0: wrowe - on quick glance the line 1091 change looks incomplete,
-          and I'm not convinced that we should ignore flush.  Has anyone
-          inquired of the proper mechanism or composed the appropriate
-          patch to finish an incomplete packet and resume encoding or
-          this entirely impossible in the current scheme of things?
-      rpluem: I discussed this with Justin at the ApacheCon and we discussed
-              ways how to fix this and take care about the flush buckets.
-              I am willing to propose patches, but due to personal time
-              constraints they will not show up before the second half of July.
-
     * PKCS#7: backport PCKS#7 patches from trunk.
       +1 ben
       jerenkrantz: What's the revision number to backport?
@@ -137,4 +122,43 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x version of patch:
         Trunk version works
       +1 rpluem, sctemme
+
+    * mod_deflate: Rework inflate output and deflate output filter to fix
+      several issues: Incorrect handling of flush buckets, potential memory
+      leaks, excessive memory usage in inflate output filter for large
+      compressed content
+        PR: 39854
+      Trunk version of patch:
+        Changes on deflate output filter:
+          http://svn.apache.org/viewvc?view=revrevision=422731
+          http://svn.apache.org/viewvc?view=revrevision=422736
+          http://svn.apache.org/viewvc?view=revrevision=422739
+          http://svn.apache.org/viewvc?view=revrevision=423940
+          http://svn.apache.org/viewvc?view=revrevision=424759
+          http://svn.apache.org/viewvc?view=revrevision=424950
+          http://svn.apache.org/viewvc?view=revrevision=425109
+          http://svn.apache.org/viewvc?view=revrevision=426790
+          http://svn.apache.org/viewvc?view=revrevision=426791
+          http://svn.apache.org/viewvc?view=revrevision=426793
+          http://svn.apache.org/viewvc?view=revrevision=426795
+
+        Changes on inflate output filter:
+          http://svn.apache.org/viewvc?view=revrevision=416165
+          http://svn.apache.org/viewvc?view=revrevision=426799
+
+        Changlog entry:
+          http://svn.apache.org/viewvc?view=revrevision=437668
+
+      2.2.x version of patch:
+        Trunk versions work. For convenience of review I merged the patches
+        for the deflate output filter and the inflate output filter:
+          Changes on deflate output filter:
+            Patch: http://people.apache.org/~rpluem/patches/mod_deflate_rework/deflate_output.diff
+            Merged subversion comments: http://people.apache.org/~rpluem/patches/mod_deflate_rework/deflate_output.log
+          Changes on inflate output filter:
+            Patch: http://people.apache.org/~rpluem/patches/mod_deflate_rework/inflate_output.diff
+            Merged subversion comments: http://people.apache.org/~rpluem/patches/mod_deflate_rework/inflate_output.log
+        The patch for the inflate output filter requires the patch for the
+        deflate output filter.
+      +1 rpluem
 
