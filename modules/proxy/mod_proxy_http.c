@@ -1372,7 +1372,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
          * ProxyPassReverse/etc from here to ap_proxy_read_headers
          */
 
-        if ((r->status == 401) && (conf->error_override != 0)) {
+        if ((r->status == 401) && (conf->error_override)) {
             const char *buf;
             const char *wa = "WWW-Authenticate";
             if ((buf = apr_table_get(r->headers_out, wa))) {
@@ -1431,7 +1431,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * if we are overriding the errors, we can't put the content
              * of the page into the brigade
              */
-            if (conf->error_override == 0 || ap_is_HTTP_SUCCESS(r->status)) {
+            if (!conf->error_override || ap_is_HTTP_SUCCESS(r->status)) {
                 /* read the body, pass it to the output filters */
                 apr_read_type_e mode = APR_NONBLOCK_READ;
                 int finish = FALSE;
