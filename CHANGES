@@ -1,7 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
-
+  *) mod_proxy_balancer: Retry worker chosen by route / redirect worker if
+     it is in error state before sending "Service Temporarily Unavailable".
+     PR 38962. [Christian Boitel <cboitel lfdj.com>]
 
 Changes with Apache 2.2.3
 
