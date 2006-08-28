@@ -187,10 +187,6 @@ RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
 <p>Passthrough flag</p>
 </section>
 
-<section id="flag_pt"><title>PT|passthrough</title>
-<p>Passthrough flag</p>
-</section>
-
 <section id="flag_qsa"><title>QSA|qsappend</title>
 <p>Query String Append flag</p>
 </section>
