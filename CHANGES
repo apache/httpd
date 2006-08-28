@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_deflate: Rework inflate output and deflate output filter to fix several
+     issues: Incorrect handling of flush buckets, potential memory leaks,
+     excessive memory usage in inflate output filter for large compressed
+     content. PR 39854. [Ruediger Pluem, Nick Kew, Justin Erenkrantz]
+
   *) mod_proxy_ajp: Close connection to backend if reading of request body
      fails. PR 40310. [Ian Abel <ianabel mxtelecom.com>]
 
