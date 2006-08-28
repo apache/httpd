@@ -130,24 +130,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         PR: 39854
       Trunk version of patch:
         Changes on deflate output filter:
-          http://svn.apache.org/viewvc?view=revrevision=422731
-          http://svn.apache.org/viewvc?view=revrevision=422736
-          http://svn.apache.org/viewvc?view=revrevision=422739
-          http://svn.apache.org/viewvc?view=revrevision=423940
-          http://svn.apache.org/viewvc?view=revrevision=424759
-          http://svn.apache.org/viewvc?view=revrevision=424950
-          http://svn.apache.org/viewvc?view=revrevision=425109
-          http://svn.apache.org/viewvc?view=revrevision=426790
-          http://svn.apache.org/viewvc?view=revrevision=426791
-          http://svn.apache.org/viewvc?view=revrevision=426793
-          http://svn.apache.org/viewvc?view=revrevision=426795
+          http://svn.apache.org/viewvc?view=rev&revision=422731
+          http://svn.apache.org/viewvc?view=rev&revision=422736
+          http://svn.apache.org/viewvc?view=rev&revision=422739
+          http://svn.apache.org/viewvc?view=rev&revision=423940
+          http://svn.apache.org/viewvc?view=rev&revision=424759
+          http://svn.apache.org/viewvc?view=rev&revision=424950
+          http://svn.apache.org/viewvc?view=rev&revision=425109
+          http://svn.apache.org/viewvc?view=rev&revision=426790
+          http://svn.apache.org/viewvc?view=rev&revision=426791
+          http://svn.apache.org/viewvc?view=rev&revision=426793
+          http://svn.apache.org/viewvc?view=rev&revision=426795
 
         Changes on inflate output filter:
-          http://svn.apache.org/viewvc?view=revrevision=416165
-          http://svn.apache.org/viewvc?view=revrevision=426799
+          http://svn.apache.org/viewvc?view=rev&revision=416165
+          http://svn.apache.org/viewvc?view=rev&revision=426799
 
         Changlog entry:
-          http://svn.apache.org/viewvc?view=revrevision=437668
+          http://svn.apache.org/viewvc?view=rev&revision=437668
 
       2.2.x version of patch:
         Trunk versions work. For convenience of review I merged the patches
