@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=417443
       2.2.x version of patch:
         Trunk version works
-      +1 rpluem, sctemme
+      +1 rpluem, sctemme, jim
 
     * mod_proxy_ajp: Close connection to backend if reading of request body
       fails.
@@ -121,7 +121,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=434483
       2.2.x version of patch:
         Trunk version works
-      +1 rpluem, sctemme
+      +1 rpluem, sctemme, jim
 
     * mod_deflate: Rework inflate output and deflate output filter to fix
       several issues: Incorrect handling of flush buckets, potential memory
