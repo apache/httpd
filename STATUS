@@ -188,3 +188,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~jim/patches/pingpong.txt
         (Note: your patch should auto-createmodules/proxy/ajp_utils.c)
       +1: mturk
+      -1: rpluem: Sorry for nitpicking, but the 2.2 version contains additional
+          code from http://svn.apache.org/viewvc?view=rev&revision=421686
+          (proxy_interpolatem, proxy_vars) which does not belong to the pingpong patch.
