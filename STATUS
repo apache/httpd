@@ -185,14 +185,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&revision=425454
       2.2.x version of patch:
-        Trunk version works
-      +1: mturk, jim
-      -1: rpluem: The patch does not apply cleanly to 2.2.x. The second part of
-                  the mod_proxy.c patch fails (which seems to be tabs vs. spaces).
-                  Furthermore the patch
-
-                    http://svn.apache.org/viewvc?view=rev&revision=425523
-
-                  misses so mod_proxy_ajp does not load any longer.
-                  Once these things are fixed I am +1.
-
+        < in process >
+      +1: mturk
