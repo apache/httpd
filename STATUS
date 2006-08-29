@@ -94,6 +94,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         Trunk version works
       +1: jim, mturk, rpluem
 
+    * mod_proxy_balancer: Add in Hot Standby worker functionality.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=420936
+        http://svn.apache.org/viewvc?view=rev&revision=420954
+        http://svn.apache.org/viewvc?view=rev&revision=420986
+        http://svn.apache.org/viewvc?view=rev&revision=421283
+      2.2.x version of patch:
+        http://people.apache.org/~jim/patches/hot-standby.txt
+      +1: jim, mturk, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
@@ -157,16 +167,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         The patch for the inflate output filter requires the patch for the
         deflate output filter.
       +1 rpluem
-
-    * mod_proxy_balancer: Add in Hot Standby worker functionality.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=420936
-        http://svn.apache.org/viewvc?view=rev&revision=420954
-        http://svn.apache.org/viewvc?view=rev&revision=420986
-        http://svn.apache.org/viewvc?view=rev&revision=421283
-      2.2.x version of patch:
-        http://people.apache.org/~jim/patches/hot-standby.txt
-      +1: jim, mturk
 
     * mod_proxy_balancer: Add in load balancer cluster set capability
       (with docs)
