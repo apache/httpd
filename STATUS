@@ -185,5 +185,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&revision=425454
       2.2.x version of patch:
-        < in process >
+        http://people.apache.org/~jim/patches/pingpong.txt
+        (Note: your patch should auto-createmodules/proxy/ajp_utils.c)
       +1: mturk
