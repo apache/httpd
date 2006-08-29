@@ -165,12 +165,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=420986
         http://svn.apache.org/viewvc?view=rev&revision=421283
       2.2.x version of patch:
-        http://people.apache.org/~rpluem/patches/foreign_patches/hot_standby_jim.diff
+        http://people.apache.org/~jim/patches/hot-standby.txt
       +1: jim, mturk
-      -0: rpluem: The patches above do not apply cleanly to 2.2.x. In fact the
-                  folllowing patches are missing and need to be applied first:
-                  For convenience of review I merged all for patches:
-                  Once this is fixed my -0 turns into a +1.
 
     * mod_proxy_balancer: Add in load balancer cluster set capability
       (with docs)
