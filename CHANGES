@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) mod_proxy_balancer: Workers can now be defined as "hot standby" which
+     will only be used if all other workers are unusable (eg: in
+     error or disabled). Also, the balancer-manager displays the election
+     count and I/O counts of all workers. [Jim Jagielski]
+
   *) mod_proxy_ajp: Close connection to backend if reading of request body
      fails. PR 40310. [Ian Abel <ianabel mxtelecom.com>]
 
