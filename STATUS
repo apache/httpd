@@ -86,14 +86,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~wrowe/mod_isapi-416293-to-httpd-2.2.patch
       +1 wrowe , fielding, jerenkrantz
 
-    * mod_proxy_balancer: balancer_manager to display additional
-     worker info: number of times elected and i/o counts
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=421287
-      2.2.x version of patch:
-        Trunk version works
-      +1: jim, mturk, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
