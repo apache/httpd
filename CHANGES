@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_ext_filter: Handle filter names which include capital letters.
+     PR 40323.  [Jeff Trawick]
+
   *) mod_deflate: Rework inflate output and deflate output filter to fix several
      issues: Incorrect handling of flush buckets, potential memory leaks,
      excessive memory usage in inflate output filter for large compressed
