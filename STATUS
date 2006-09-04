@@ -173,3 +173,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       -1: rpluem: Sorry for nitpicking, but the 2.2 version contains additional
           code from http://svn.apache.org/viewvc?view=rev&revision=421686
           (proxy_interpolatem, proxy_vars) which does not belong to the pingpong patch.
+
+    * mod_ext_filter: Handle filter names which include capital letters.
+     PR 40323.
+     Trunk patch, which applies:
+       http://svn.apache.org/viewvc?view=rev&revision=440028
+     +1: trawick
+ 
