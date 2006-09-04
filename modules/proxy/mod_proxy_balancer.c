@@ -129,9 +129,7 @@ static char *get_path_param(apr_pool_t *pool, char *url,
             ++path;
             if (strlen(path)) {
                 char *q;
-                path = apr_pstrdup(pool, path);
-                if ((q = strchr(path, '?')))
-                    *q = '\0';
+                path = apr_strtok(apr_pstrdup(pool, path), "?&", &q);
                 return path;
             }
         }
