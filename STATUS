@@ -178,5 +178,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 40323.
      Trunk patch, which applies:
        http://svn.apache.org/viewvc?view=rev&revision=440028
-     +1: trawick
+     +1: trawick, rpluem
  
