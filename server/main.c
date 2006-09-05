@@ -92,7 +92,7 @@ static void show_mpm_settings(void)
 
 static void show_compile_settings(void)
 {
-    printf("Server version: %s\n", ap_get_server_version());
+    printf("Server version: %s\n", ap_get_server_description());
     printf("Server built:   %s\n", ap_get_server_built());
     printf("Server's Module Magic Number: %u:%u\n",
            MODULE_MAGIC_NUMBER_MAJOR, MODULE_MAGIC_NUMBER_MINOR);
@@ -569,7 +569,7 @@ int main(int argc, const char * const argv[])
             break;
 
         case 'v':
-            printf("Server version: %s\n", ap_get_server_version());
+            printf("Server version: %s\n", ap_get_server_description());
             printf("Server built:   %s\n", ap_get_server_built());
             destroy_and_exit_process(process, 0);
 

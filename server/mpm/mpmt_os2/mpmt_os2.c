@@ -207,7 +207,7 @@ static char master_main()
     int listener_num, num_listeners, slot;
     ULONG rc;
 
-    printf("%s \n", ap_get_server_version());
+    printf("%s \n", ap_get_server_description());
     set_signals();
 
     if (ap_setup_listeners(ap_server_conf) < 1) {
@@ -270,7 +270,7 @@ static char master_main()
     ap_scoreboard_image->global->restart_time = apr_time_now();
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
                 "%s configured -- resuming normal operations",
-                ap_get_server_version());
+                ap_get_server_description());
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
                 "Server built: %s", ap_get_server_built());
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH

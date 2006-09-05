@@ -224,7 +224,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
                   "CONNECT %s HTTP/1.0" CRLF, r->uri);
         apr_socket_send(sock, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-                  "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+                  "Proxy-agent: %s" CRLF CRLF, ap_get_server_banner());
         apr_socket_send(sock, buffer, &nbytes);
     }
     else {
@@ -235,7 +235,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
         ap_xlate_proto_to_ascii(buffer, nbytes);
         apr_socket_send(client_socket, buffer, &nbytes);
         nbytes = apr_snprintf(buffer, sizeof(buffer),
-                  "Proxy-agent: %s" CRLF CRLF, ap_get_server_version());
+                  "Proxy-agent: %s" CRLF CRLF, ap_get_server_banner());
         ap_xlate_proto_to_ascii(buffer, nbytes);
         apr_socket_send(client_socket, buffer, &nbytes);
 #if 0
@@ -244,7 +244,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
          */
         r->status = HTTP_OK;
         r->header_only = 1;
-        apr_table_set(r->headers_out, "Proxy-agent: %s", ap_get_server_version());
+        apr_table_set(r->headers_out, "Proxy-agent: %s", ap_get_server_banner());
         ap_rflush(r);
 #endif
     }

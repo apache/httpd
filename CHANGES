@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) The full server version information is now included in the error log at
+     startup as well as server status reports, irrespective of the setting
+     of the ServerTokens directive.  Third-party modules must now use
+     ap_get_server_banner() or ap_get_server_description() in place of 
+     ap_get_server_version().  [Jeff Trawick]
+
   *) mod_proxy_balancer: Extract stickysession routing information contained as
      parameter in the URL correctly. PR 40400.
      [Ruediger Pluem, Tomokazu Harada <harada sysrdc.ns-sol.co.jp>]

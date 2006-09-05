@@ -192,7 +192,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
         if (strlen(var) > 12 && strcEQn(var, "SSL_VERSION_", 12))
             result = ssl_var_lookup_ssl_version(p, var+12);
         else if (strcEQ(var, "SERVER_SOFTWARE"))
-            result = ap_get_server_version();
+            result = ap_get_server_banner();
         else if (strcEQ(var, "API_VERSION")) {
             result = apr_itoa(p, MODULE_MAGIC_NUMBER);
             resdup = FALSE;
