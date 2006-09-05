@@ -397,7 +397,7 @@ static int status_handler(request_rec *r)
         ap_rputs("<h1>Apache Server Status for ", r);
         ap_rvputs(r, ap_get_server_name(r), "</h1>\n\n", NULL);
         ap_rvputs(r, "<dl><dt>Server Version: ",
-                  ap_get_server_version(), "</dt>\n", NULL);
+                  ap_get_server_description(), "</dt>\n", NULL);
         ap_rvputs(r, "<dt>Server Built: ",
                   ap_get_server_built(), "\n</dt></dl><hr /><dl>\n", NULL);
         ap_rvputs(r, "<dt>Current Time: ",

@@ -420,13 +420,24 @@ typedef struct {
 AP_DECLARE(void) ap_get_server_revision(ap_version_t *version);
 
 /**
- * Get the server version string
- * @return The server version string
+ * Get the server banner in a form suitable for sending over the
+ * network, with the level of information controlled by the
+ * ServerTokens directive.
+ * @return The server banner
  */
-AP_DECLARE(const char *) ap_get_server_version(void);
+AP_DECLARE(const char *) ap_get_server_banner(void);
 
 /**
- * Add a component to the version string
+ * Get the server description in a form suitable for local displays,
+ * status reports, or logging.  This includes the detailed server
+ * version and information about some modules.  It is not affected
+ * by the ServerTokens directive.
+ * @return The server description
+ */
+AP_DECLARE(const char *) ap_get_server_description(void);
+
+/**
+ * Add a component to the server description and banner strings
  * @param pconf The pool to allocate the component from
  * @param component The string to add
  */

@@ -723,7 +723,7 @@ static void display_settings ()
     request_count = 0;
 
     ClearScreen (getscreenhandle());
-    printf("%s \n", ap_get_server_version());
+    printf("%s \n", ap_get_server_description());
 
     for (i=0;i<SERVER_NUM_STATUS;i++) {
         status_array[i] = 0;
@@ -793,7 +793,7 @@ static void show_server_data()
     ap_listen_rec *lr;
     module **m;
 
-    printf("%s\n", ap_get_server_version());
+    printf("%s\n", ap_get_server_description());
     if (ap_my_addrspace && (ap_my_addrspace[0] != 'O') && (ap_my_addrspace[1] != 'S'))
         printf("   Running in address space %s\n", ap_my_addrspace);
 
@@ -899,7 +899,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
             "%s configured -- resuming normal operations",
-            ap_get_server_version());
+            ap_get_server_description());
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, ap_server_conf,
             "Server built: %s", ap_get_server_built());
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
@@ -1204,7 +1204,7 @@ static int CommandLineInterpreter(scr_t screenID, const char *commandLine)
             restart();
         }
         else if (!strnicmp("VERSION",&szcommandLine[iCommandLen],3)) {
-            printf("Server version: %s\n", ap_get_server_version());
+            printf("Server version: %s\n", ap_get_server_description());
             printf("Server built:   %s\n", ap_get_server_built());
         }
         else if (!strnicmp("MODULES",&szcommandLine[iCommandLen],3)) {

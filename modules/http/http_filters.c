@@ -735,11 +735,11 @@ static void basic_http_header(request_rec *r, apr_bucket_brigade *bb,
         if (server) {
             form_header_field(&h, "Server", server);
         } else {
-            form_header_field(&h, "Server", ap_get_server_version());
+            form_header_field(&h, "Server", ap_get_server_banner());
         }
     }
     else {
-        form_header_field(&h, "Server", ap_get_server_version());
+        form_header_field(&h, "Server", ap_get_server_banner());
     }
 
     /* unset so we don't send them again */
