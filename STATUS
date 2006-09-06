@@ -175,8 +175,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           (proxy_interpolatem, proxy_vars) which does not belong to the pingpong patch.
 
     * mod_ext_filter: Handle filter names which include capital letters.
-     PR 40323.
-     Trunk patch, which applies:
-       http://svn.apache.org/viewvc?view=rev&revision=440028
-     +1: trawick, rpluem
- 
+      PR 40323.
+      Trunk patch, which applies:
+        http://svn.apache.org/viewvc?view=rev&revision=440028
+      +1: trawick, rpluem
+
+    * full server version information in the error log at startup as well as server 
+      status reports, regardless of ServerTokens
+        http://people.apache.org/~trawick/banner-2.2.x-rev1.txt
+      +1: trawick
