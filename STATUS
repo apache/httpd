@@ -184,3 +184,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       status reports, regardless of ServerTokens
         http://people.apache.org/~trawick/banner-2.2.x-rev1.txt
       +1: trawick
+
+    * mod_proxy_balancer: Extract stickysession routing information contained as
+      parameter in the URL correctly.
+        PR: 40400
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&rev=440160
+      2.2.x version of patch:
+        Trunk version works
+      +1: rpluem
+
