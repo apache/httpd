@@ -182,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * full server version information in the error log at startup as well as server 
       status reports, regardless of ServerTokens
-        http://people.apache.org/~trawick/banner-2.2.x-rev1.txt
+        http://people.apache.org/~trawick/banner-2.2.x-rev2.txt
       +1: trawick
 
     * mod_proxy_balancer: Extract stickysession routing information contained as
