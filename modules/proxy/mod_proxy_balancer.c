@@ -93,6 +93,7 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
         /* Set to the original configuration */
         workers[i].s->lbstatus = workers[i].s->lbfactor =
           (workers[i].lbfactor ? workers[i].lbfactor : 1);
+        workers[i].s->lbset = workers[i].lbset;
     }
     /* Set default number of attempts to the number of
      * workers.
@@ -172,10 +173,12 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
                                        const char *route, request_rec *r)
 {
     int i;
-    int checking_standby = 0;
-    int checked_standby = 0;
+    int checking_standby;
+    int checked_standby;
     
     proxy_worker *worker;
+
+    checking_standby = checked_standby = 0;
     while (!checked_standby) {
         worker = (proxy_worker *)balancer->workers->elts;
         for (i = 0; i < balancer->workers->nelts; i++, worker++) {
@@ -601,6 +604,12 @@ static int balancer_handler(request_rec *r)
             else if (!strcasecmp(val, "Enable"))
                 wsel->s->status &= ~PROXY_WORKER_DISABLED;
         }
+        if ((val = apr_table_get(params, "ls"))) {
+            int ival = atoi(val);
+            if (ival >= 0 && ival <= 99) {
+                wsel->s->lbset = ival;
+             }
+        }
 
     }
     if (apr_table_get(params, "xml")) {
@@ -663,13 +672,13 @@ static int balancer_handler(request_rec *r)
             ap_rputs("\n\n<table border=\"0\" style=\"text-align: left;\"><tr>"
                 "<th>Worker URL</th>"
                 "<th>Route</th><th>RouteRedir</th>"
-                "<th>Factor</th><th>Status</th>"
+                "<th>Factor</th><th>Set</th><th>Status</th>"
                 "<th>Elected</th><th>To</th><th>From</th>"
                 "</tr>\n", r);
 
             worker = (proxy_worker *)balancer->workers->elts;
             for (n = 0; n < balancer->workers->nelts; n++) {
-
+                char fbuf[50];
                 ap_rvputs(r, "<tr>\n<td><a href=\"", r->uri, "?b=",
                           balancer->name + sizeof("balancer://") - 1, "&w=",
                           ap_escape_uri(r->pool, worker->name),
@@ -677,7 +686,8 @@ static int balancer_handler(request_rec *r)
                 ap_rvputs(r, worker->name, "</a></td>", NULL);
                 ap_rvputs(r, "<td>", worker->s->route, NULL);
                 ap_rvputs(r, "</td><td>", worker->s->redirect, NULL);
-                ap_rprintf(r, "</td><td>%d</td><td>", worker->s->lbfactor);
+                ap_rprintf(r, "</td><td>%d</td>", worker->s->lbfactor);
+                ap_rprintf(r, "<td>%d</td><td>", worker->s->lbset);
                 if (worker->s->status & PROXY_WORKER_DISABLED)
                    ap_rputs("Dis ", r);
                 if (worker->s->status & PROXY_WORKER_IN_ERROR)
@@ -691,10 +701,11 @@ static int balancer_handler(request_rec *r)
                 if (!PROXY_WORKER_IS_INITIALIZED(worker))
                     ap_rputs("-", r);
                 ap_rputs("</td>", r);
-                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td>", worker->s->elected);
-                ap_rprintf(r, "<td>%" APR_OFF_T_FMT "</td>", worker->s->transferred);
-                ap_rprintf(r, "<td>%" APR_OFF_T_FMT "</td>", worker->s->read);
-                ap_rputs("</tr>\n", r);
+                ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>", worker->s->elected);
+                ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
+                ap_rputs("</td><td>", r);
+                ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
+                ap_rputs("</td></tr>\n", r);
 
                 ++worker;
             }
@@ -708,20 +719,22 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, "<form method=\"GET\" action=\"", NULL);
             ap_rvputs(r, r->uri, "\">\n<dl>", NULL);
             ap_rputs("<table><tr><td>Load factor:</td><td><input name=\"lf\" type=text ", r);
-            ap_rprintf(r, "value=\"%d\"></td><tr>\n", wsel->s->lbfactor);
+            ap_rprintf(r, "value=\"%d\"></td></tr>\n", wsel->s->lbfactor);
+            ap_rputs("<tr><td>LB Set:</td><td><input name=\"ls\" type=text ", r);
+            ap_rprintf(r, "value=\"%d\"></td></tr>\n", wsel->s->lbset);
             ap_rputs("<tr><td>Route:</td><td><input name=\"wr\" type=text ", r);
             ap_rvputs(r, "value=\"", wsel->route, NULL);
-            ap_rputs("\"></td><tr>\n", r);
+            ap_rputs("\"></td></tr>\n", r);
             ap_rputs("<tr><td>Route Redirect:</td><td><input name=\"rr\" type=text ", r);
             ap_rvputs(r, "value=\"", wsel->redirect, NULL);
-            ap_rputs("\"></td><tr>\n", r);
+            ap_rputs("\"></td></tr>\n", r);
             ap_rputs("<tr><td>Status:</td><td>Disabled: <input name=\"dw\" value=\"Disable\" type=radio", r);
             if (wsel->s->status & PROXY_WORKER_DISABLED)
                 ap_rputs(" checked", r);
             ap_rputs("> | Enabled: <input name=\"dw\" value=\"Enable\" type=radio", r);
             if (!(wsel->s->status & PROXY_WORKER_DISABLED))
                 ap_rputs(" checked", r);
-            ap_rputs("></td><tr>\n", r);
+            ap_rputs("></td></tr>\n", r);
             ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
             ap_rvputs(r, "</table>\n<input type=hidden name=\"w\" ",  NULL);
             ap_rvputs(r, "value=\"", ap_escape_uri(r->pool, wsel->name), "\">\n", NULL);
@@ -844,39 +857,51 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
     int total_factor = 0;
     proxy_worker *worker;
     proxy_worker *mycandidate = NULL;
-    int checking_standby = 0;
-    int checked_standby = 0;
+    int cur_lbset = 0;
+    int max_lbset = 0;
+    int checking_standby;
+    int checked_standby;
     
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: Entering byrequests for BALANCER (%s)",
                  balancer->name);
 
     /* First try to see if we have available candidate */
-    while (!mycandidate && !checked_standby) {
-        worker = (proxy_worker *)balancer->workers->elts;
-        for (i = 0; i < balancer->workers->nelts; i++, worker++) {
-            if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
-                continue;
-            /* If the worker is in error state run
-             * retry on that worker. It will be marked as
-             * operational if the retry timeout is elapsed.
-             * The worker might still be unusable, but we try
-             * anyway.
-             */
-            if (!PROXY_WORKER_IS_USABLE(worker))
-                ap_proxy_retry_worker("BALANCER", worker, r->server);
-            /* Take into calculation only the workers that are
-             * not in error state or not disabled.
-             */
-            if (PROXY_WORKER_IS_USABLE(worker)) {
-                worker->s->lbstatus += worker->s->lbfactor;
-                total_factor += worker->s->lbfactor;
-                if (!mycandidate || worker->s->lbstatus > mycandidate->s->lbstatus)
-                    mycandidate = worker;
+    do {
+        checking_standby = checked_standby = 0;
+        while (!mycandidate && !checked_standby) {
+            worker = (proxy_worker *)balancer->workers->elts;
+            for (i = 0; i < balancer->workers->nelts; i++, worker++) {
+                if (!checking_standby) {    /* first time through */
+                    if (worker->s->lbset > max_lbset)
+                        max_lbset = worker->s->lbset;
+                }
+                if (worker->s->lbset > cur_lbset)
+                    continue;
+                if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
+                    continue;
+                /* If the worker is in error state run
+                 * retry on that worker. It will be marked as
+                 * operational if the retry timeout is elapsed.
+                 * The worker might still be unusable, but we try
+                 * anyway.
+                 */
+                if (!PROXY_WORKER_IS_USABLE(worker))
+                    ap_proxy_retry_worker("BALANCER", worker, r->server);
+                /* Take into calculation only the workers that are
+                 * not in error state or not disabled.
+                 */
+                if (PROXY_WORKER_IS_USABLE(worker)) {
+                    worker->s->lbstatus += worker->s->lbfactor;
+                    total_factor += worker->s->lbfactor;
+                    if (!mycandidate || worker->s->lbstatus > mycandidate->s->lbstatus)
+                        mycandidate = worker;
+                }
             }
+            checked_standby = checking_standby++;
         }
-        checked_standby = checking_standby++;
-    }
+        cur_lbset++;
+    } while (cur_lbset <= max_lbset && !mycandidate);
 
     if (mycandidate) {
         mycandidate->s->lbstatus -= total_factor;
@@ -910,42 +935,54 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
     apr_off_t mytraffic = 0;
     apr_off_t curmin = 0;
     proxy_worker *worker;
-    int checking_standby = 0;
-    int checked_standby = 0;
     proxy_worker *mycandidate = NULL;
+    int cur_lbset = 0;
+    int max_lbset = 0;
+    int checking_standby;
+    int checked_standby;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: Entering bytraffic for BALANCER (%s)",
                  balancer->name);
 
     /* First try to see if we have available candidate */
-    while (!mycandidate && !checked_standby) {
-        worker = (proxy_worker *)balancer->workers->elts;
-        for (i = 0; i < balancer->workers->nelts; i++, worker++) {
-            if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
-                continue;
-            /* If the worker is in error state run
-             * retry on that worker. It will be marked as
-             * operational if the retry timeout is elapsed.
-             * The worker might still be unusable, but we try
-             * anyway.
-             */
-            if (!PROXY_WORKER_IS_USABLE(worker))
-                ap_proxy_retry_worker("BALANCER", worker, r->server);
-            /* Take into calculation only the workers that are
-             * not in error state or not disabled.
-             */
-            if (PROXY_WORKER_IS_USABLE(worker)) {
-                mytraffic = (worker->s->transferred/worker->s->lbfactor) +
-                            (worker->s->read/worker->s->lbfactor);
-                if (!mycandidate || mytraffic < curmin) {
-                    mycandidate = worker;
-                    curmin = mytraffic;
+    do {
+        checking_standby = checked_standby = 0;
+        while (!mycandidate && !checked_standby) {
+            worker = (proxy_worker *)balancer->workers->elts;
+            for (i = 0; i < balancer->workers->nelts; i++, worker++) {
+                if (!checking_standby) {    /* first time through */
+                    if (worker->s->lbset > max_lbset)
+                        max_lbset = worker->s->lbset;
+                }
+                if (worker->s->lbset > cur_lbset)
+                    continue;
+                if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
+                    continue;
+                /* If the worker is in error state run
+                 * retry on that worker. It will be marked as
+                 * operational if the retry timeout is elapsed.
+                 * The worker might still be unusable, but we try
+                 * anyway.
+                 */
+                if (!PROXY_WORKER_IS_USABLE(worker))
+                    ap_proxy_retry_worker("BALANCER", worker, r->server);
+                /* Take into calculation only the workers that are
+                 * not in error state or not disabled.
+                 */
+                if (PROXY_WORKER_IS_USABLE(worker)) {
+                    mytraffic = (worker->s->transferred/worker->s->lbfactor) +
+                                (worker->s->read/worker->s->lbfactor);
+                    if (!mycandidate || mytraffic < curmin) {
+                        mycandidate = worker;
+                        curmin = mytraffic;
+                    }
                 }
             }
+            checked_standby = checking_standby++;
         }
-        checked_standby = checking_standby++;
-    }
+        cur_lbset++;
+    } while (cur_lbset <= max_lbset && !mycandidate);
 
     if (mycandidate) {
         mycandidate->s->elected++;
