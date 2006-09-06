@@ -578,6 +578,12 @@ expressions</description>
     generally 120ms), and thus prevent the firewall to drop the connection.
     To enable keepalive set this property value to <code>On</code>. 
     </td></tr>
+    <tr><td>lbset</td>
+        <td>0</td>
+        <td>Sets the load balancer cluster set that the worker is a member
+         of. The load balancer will try all members of a lower numbered
+         lbset before trying higher numbered ones.
+    </td></tr>
     <tr><td>loadfactor</td>
         <td>1</td>
         <td>Worker load factor. Used with BalancerMember.
@@ -608,7 +614,7 @@ expressions</description>
     <tr><td>status</td>
         <td>-</td>
         <td>Single letter value defining the initial status of
-        this worker: 'D' is disabled, 'S' is stopped
+        this worker: 'D' is disabled, 'S' is stopped, 'H' is hot-standby
         and 'E' is in an error state. Status can be set (which is the default)
         by prepending with '+' or cleared by prepending with '-'.
         Thus, a setting of 'S-E' sets this worker to Stopped and
@@ -685,6 +691,22 @@ expressions</description>
       </indent>
       &lt;/Proxy&gt;
     </example>
+
+    <p>Setting up a hot-standby, that will only be used if no other
+     members are available</p>
+    <example>
+      ProxyPass / balancer://hotcluster/ <br />
+      &lt;Proxy balancer://hotcluster&gt;<br />
+      <indent>
+        BalancerMember http://1.2.3.4:8009 loadfactor=1<br />
+        BalancerMember http://1.2.3.5:8009 loadfactor=2<br />
+        # The below is the hot standby<br />
+        BalancerMember http://1.2.3.6:8009 status=+H<br />
+        ProxySet lbmethod=bytraffic
+      </indent>
+      &lt;/Proxy&gt;
+    </example>
+
     
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local

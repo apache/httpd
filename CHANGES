@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) mod_proxy_balancer: Workers can now be defined as part of
+     a balancer cluster "set" in which members of a lower-numbered set
+     are preferred over higher numbered ones. [Jim Jagielski]
+
   *) mod_proxy_balancer: Workers can now be defined as "hot standby" which
      will only be used if all other workers are unusable (eg: in
      error or disabled). Also, the balancer-manager displays the election

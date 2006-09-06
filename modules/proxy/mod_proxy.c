@@ -244,6 +244,12 @@ static const char *set_worker_param(apr_pool_t *p,
         else
             worker->flush_wait = ival * 1000;    /* change to microseconds */
     }
+    else if (!strcasecmp(key, "lbset")) {
+        ival = atoi(val);
+        if (ival < 0 || ival > 99)
+            return "lbset must be between 0 and 99";
+        worker->lbset = ival;
+    }
     else {
         return "unknown Worker parameter";
     }
@@ -1800,7 +1806,7 @@ static int proxy_status_hook(request_rec *r, int flags)
         ap_rputs("\n\n<table border=\"0\"><tr>"
                  "<th>Sch</th><th>Host</th><th>Stat</th>"
                  "<th>Route</th><th>Redir</th>"
-                 "<th>F</th><th>Acc</th><th>Wr</th><th>Rd</th>"
+                 "<th>F</th><th>Set</th><th>Acc</th><th>Wr</th><th>Rd</th>"
                  "</tr>\n", r);
 
         worker = (proxy_worker *)balancer->workers->elts;
@@ -1819,7 +1825,8 @@ static int proxy_status_hook(request_rec *r, int flags)
             ap_rvputs(r, "</td><td>", worker->s->route, NULL);
             ap_rvputs(r, "</td><td>", worker->s->redirect, NULL);
             ap_rprintf(r, "</td><td>%d</td>", worker->s->lbfactor);
-            ap_rprintf(r, "<td>%d</td><td>", (int)(worker->s->elected));
+            ap_rprintf(r, "<td>%d</td>", worker->s->lbset);
+            ap_rprintf(r, "<td>%" APR_SIZE_T_FMT "</td><td>", worker->s->elected);
             ap_rputs(apr_strfsize(worker->s->transferred, fbuf), r);
             ap_rputs("</td><td>", r);
             ap_rputs(apr_strfsize(worker->s->read, fbuf), r);
