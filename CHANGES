@@ -39,10 +39,6 @@ Changes with Apache 2.3.0
      his value is defined as 258, thus limiting the MaxThreads
      to that value. [Mladen Turk]
 
-  *) mod_proxy_balancer: Workers can now be defined as part of
-     a balancer cluster "set" in which members of a lower-numbered set
-     are preferred over higher numbered ones. [Jim Jagielski]
-
   *) SECURITY: CVE-2006-3747 (cve.mitre.org)
      mod_rewrite: Fix an off-by-one security problem in the ldap scheme
      handling.  For some RewriteRules this could lead to a pointer being
@@ -65,11 +61,6 @@ Changes with Apache 2.3.0
 
   *) mod_proxy: Support environment variable interpolation in reverse
      proxying directives. [Nick Kew]
-
-  *) mod_proxy_balancer: Workers can now be defined as "hot standby" which
-     will only be used if all other workers are unusable (eg: in
-     error or disabled). Also, the balancer-manager displays the election
-     count and I/O counts of all workers. [Jim Jagielski]
 
   *) core: Add the filename of the configuration file to the warning message
      about the useless use of AllowOverride. PR 39992.
@@ -199,6 +190,15 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) mod_proxy_balancer: Workers can now be defined as part of
+     a balancer cluster "set" in which members of a lower-numbered set
+     are preferred over higher numbered ones. [Jim Jagielski]
+
+  *) mod_proxy_balancer: Workers can now be defined as "hot standby" which
+     will only be used if all other workers are unusable (eg: in
+     error or disabled). Also, the balancer-manager displays the election
+     count and I/O counts of all workers. [Jim Jagielski]
 
   *) mod_proxy_ajp: Close connection to backend if reading of request body
      fails. PR 40310. [Ian Abel <ianabel mxtelecom.com>]
