@@ -160,7 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=432352 (partial doc)
       2.2.x version of patch:
         http://people.apache.org/~jim/patches/lbset.patch (unified from above)
-      +1: jim, mturk
+      +1: jim, mturk, rpluem
 
     * mod_proxy: Add in support for ping/pong (heartbeat test) for
       the Proxy. Implement cping/cpong for AJP.
