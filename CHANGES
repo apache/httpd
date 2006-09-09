@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Allow htcacheclean, httxt2dbm, and fcgistarter to link apr/apr-util
+     statically like the older support programs.
+     [Eric Covener <covener gmail.com>]
+
   *) The full server version information is now included in the error log at
      startup as well as server status reports, irrespective of the setting
      of the ServerTokens directive.  Third-party modules must now use
