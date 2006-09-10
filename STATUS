@@ -182,3 +182,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk version works
       +1: rpluem
 
+    * Allow htcacheclean and httxt2dbm to link apr/apr-util statically
+      like the older support programs.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=441796
+      2.2.x version of patch:
+        http://mail-archives.apache.org/mod_mbox//httpd-dev/200609.mbox/%3c1404e5910609091218p84f4d2flc1000764b4966727@mail.gmail.com%3e
+      +1: trawick
+
