@@ -1124,11 +1124,20 @@ static const char *
         else {
             char *val = strchr(word, '=');
             if (!val) {
-                if (cmd->path)
-                    return "Invalid ProxyPass parameter.  Parameter must be "
-                           "in the form 'key=value'";
-                else
-                    return "ProxyPass can not have a path when defined in a location";
+                if (cmd->path) {
+                    if (*r == '/') {
+                        return "ProxyPass can not have a path when defined in "
+                               "a location.";
+                    }
+                    else {
+                        return "Invalid ProxyPass parameter. Parameter must "
+                               "be in the form 'key=value'.";
+                    }
+                }
+                else {
+                    return "Invalid ProxyPass parameter. Parameter must be "
+                           "in the form 'key=value'.";
+                }
             }
             else
                 *val++ = '\0';
