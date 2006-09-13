@@ -196,3 +196,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=442758
       +1: niq
 
+    * mod_proxy: Support variable interpolation in reverse proxy configuration
+      http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
+      http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
+      +1: niq
+
+    
