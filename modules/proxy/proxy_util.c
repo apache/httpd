@@ -1774,7 +1774,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     int mpm_threads;
 #endif
 
-    if (PROXY_WORKER_IS_INITIALIZED(worker)) {
+    if (worker->status & PROXY_WORKER_INITIALIZED) {
         /* The worker is already initialized */
         return APR_SUCCESS;
     }
