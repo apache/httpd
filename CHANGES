@@ -1,6 +1,12 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) The full server version information is now included in the error log at
+     startup as well as server status reports, irrespective of the setting
+     of the ServerTokens directive.  ap_get_server_version() is now 
+     deprecated, and is replaced by ap_get_server_banner() and 
+     ap_get_server_description().  [Jeff Trawick]
+
   *) mod_proxy_balancer: Workers can now be defined as part of
      a balancer cluster "set" in which members of a lower-numbered set
      are preferred over higher numbered ones. [Jim Jagielski]

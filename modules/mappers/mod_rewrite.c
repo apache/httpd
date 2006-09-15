@@ -2003,7 +2003,7 @@ static char *lookup_variable(char *var, rewrite_ctx *ctx)
 
             case 'S':
                 if (!strcmp(var, "SERVER_SOFTWARE")) {
-                    result = ap_get_server_version();
+                    result = ap_get_server_banner();
                 }
                 break;
             }
