@@ -204,5 +204,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=443503
       2.2.x version of patch:
         Trunk version works
-      +1: jim
+      +1: jim, rpluem
     
