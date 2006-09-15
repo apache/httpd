@@ -436,7 +436,7 @@ static void set_service_description(void)
 
     /* Time to fix up the description, upon each successful restart
      */
-    full_description = ap_get_server_version();
+    full_description = ap_get_server_description();
 
     if ((osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
           && (osver.dwMajorVersion > 4)

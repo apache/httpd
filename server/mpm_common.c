@@ -635,7 +635,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
      * requests in their logs.
      */
     srequest = apr_pstrcat(p, "GET / HTTP/1.0\r\nUser-Agent: ",
-                           ap_get_server_version(),
+                           ap_get_server_banner(),
                            " (internal dummy connection)\r\n\r\n", NULL);
 
     /* Since some operating systems support buffering of data or entire

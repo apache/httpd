@@ -2661,7 +2661,7 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
 
     if (conf->server_signature == srv_sig_withmail) {
         return apr_pstrcat(r->pool, prefix, "<address>",
-                           ap_get_server_version(),
+                           ap_get_server_banner(),
                            " Server at <a href=\"",
                            ap_is_url(r->server->server_admin) ? "" : "mailto:",
                            ap_escape_html(r->pool, r->server->server_admin),
@@ -2671,7 +2671,7 @@ AP_DECLARE(const char *) ap_psignature(const char *prefix, request_rec *r)
                            "</address>\n", NULL);
     }
 
-    return apr_pstrcat(r->pool, prefix, "<address>", ap_get_server_version(),
+    return apr_pstrcat(r->pool, prefix, "<address>", ap_get_server_banner(),
                        " Server at ",
                        ap_escape_html(r->pool, ap_get_server_name(r)),
                        " Port ", sport,
@@ -2699,8 +2699,9 @@ static const char *set_authname(cmd_parms *cmd, void *mconfig,
  * string.
  */
 
-static char *server_version = NULL;
-static int version_locked = 0;
+static char *server_banner = NULL;
+static int banner_locked = 0;
+static char *server_description = NULL;
 
 enum server_token_type {
     SrvTk_MAJOR,        /* eg: Apache/2 */
@@ -2712,11 +2713,12 @@ enum server_token_type {
 };
 static enum server_token_type ap_server_tokens = SrvTk_FULL;
 
-static apr_status_t reset_version(void *dummy)
+static apr_status_t reset_banner(void *dummy)
 {
-    version_locked = 0;
+    banner_locked = 0;
     ap_server_tokens = SrvTk_FULL;
-    server_version = NULL;
+    server_banner = NULL;
+    server_description = NULL;
     return APR_SUCCESS;
 }
 
@@ -2728,40 +2730,56 @@ AP_DECLARE(void) ap_get_server_revision(ap_version_t *version)
     version->add_string = AP_SERVER_ADD_STRING;
 }
 
+AP_DECLARE(const char *) ap_get_server_description(void)
+{
+    return server_description ? server_description :
+        AP_SERVER_BASEVERSION " (" PLATFORM ")";
+}
+
+AP_DECLARE(const char *) ap_get_server_banner(void)
+{
+    return server_banner ? server_banner : AP_SERVER_BASEVERSION;
+}
+
+/* ap_get_server_version() is deprecated.  ap_get_server_banner()
+ * provides the same semantics.
+ */
 AP_DECLARE(const char *) ap_get_server_version(void)
 {
-    return (server_version ? server_version : AP_SERVER_BASEVERSION);
+    return ap_get_server_banner();
 }
 
 AP_DECLARE(void) ap_add_version_component(apr_pool_t *pconf, const char *component)
 {
-    if (! version_locked) {
+    if (! banner_locked) {
         /*
          * If the version string is null, register our cleanup to reset the
          * pointer on pool destruction. We also know that, if NULL,
          * we are adding the original SERVER_BASEVERSION string.
          */
-        if (server_version == NULL) {
-            apr_pool_cleanup_register(pconf, NULL, reset_version,
+        if (server_banner == NULL) {
+            apr_pool_cleanup_register(pconf, NULL, reset_banner,
                                       apr_pool_cleanup_null);
-            server_version = apr_pstrdup(pconf, component);
+            server_banner = apr_pstrdup(pconf, component);
         }
         else {
             /*
              * Tack the given component identifier to the end of
              * the existing string.
              */
-            server_version = apr_pstrcat(pconf, server_version, " ",
-                                         component, NULL);
+            server_banner = apr_pstrcat(pconf, server_banner, " ",
+                                        component, NULL);
         }
     }
+    server_description = apr_pstrcat(pconf, server_description, " ",
+                                     component, NULL);
 }
 
 /*
- * This routine adds the real server base identity to the version string,
+ * This routine adds the real server base identity to the banner string,
  * and then locks out changes until the next reconfig.
  */
-static void ap_set_version(apr_pool_t *pconf)
+static void set_banner(apr_pool_t *pconf)
 {
     if (ap_server_tokens == SrvTk_PRODUCT_ONLY) {
         ap_add_version_component(pconf, AP_SERVER_BASEPRODUCT);
@@ -2780,12 +2798,13 @@ static void ap_set_version(apr_pool_t *pconf)
     }
 
     /*
-     * Lock the server_version string if we're not displaying
+     * Lock the server_banner string if we're not displaying
      * the full set of tokens
      */
     if (ap_server_tokens != SrvTk_FULL) {
-        version_locked++;
+        banner_locked++;
     }
+    server_description = AP_SERVER_BASEVERSION " (" PLATFORM ")";
 }
 
 static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
@@ -3756,7 +3775,7 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     logio_add_bytes_out = APR_RETRIEVE_OPTIONAL_FN(ap_logio_add_bytes_out);
     ident_lookup = APR_RETRIEVE_OPTIONAL_FN(ap_ident_lookup);
 
-    ap_set_version(pconf);
+    set_banner(pconf);
     ap_setup_make_content_type(pconf);
     return OK;
 }
