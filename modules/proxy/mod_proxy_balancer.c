@@ -267,6 +267,16 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
          * Find the worker that has this route defined.
          */
         worker = find_route_worker(balancer, *route, r);
+        if (worker && strcmp(*route, worker->s->route)) {
+            /*
+             * Notice that the route of the worker chosen is different from
+             * the route supplied by the client.
+             */
+            apr_table_setn(r->subprocess_env, "BALANCER_ROUTE_CHANGED", "1");
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                         "proxy: BALANCER: Route changed from %s to %s",
+                         *route, worker->s->route);
+        }
         return worker;
     }
     else
@@ -423,6 +433,17 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
                          (*balancer)->name);
 
             return HTTP_SERVICE_UNAVAILABLE;
+        }
+        if ((*balancer)->sticky && runtime) {
+            /*
+             * This balancer has sticky sessions and the client either has not
+             * supplied any routing information or all workers for this route
+             * including possible redirect and hotstandby workers are in error
+             * state, but we have found another working worker for this
+             * balancer where we can send the request. Thus notice that we have
+             * changed the route to the backend.
+             */
+            apr_table_setn(r->subprocess_env, "BALANCER_ROUTE_CHANGED", "1");
         }
         *worker = runtime;
     }
