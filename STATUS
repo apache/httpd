@@ -73,7 +73,15 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-
+   * proxy_util: Correctly check the worker status field (non-shared)
+     when initializing. Without this patch we introduce a nasty
+     regression from 2.2.3,
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=443503
+      2.2.x version of patch:
+        Trunk version works
+      +1: jim, rpluem
+    
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
@@ -198,11 +206,3 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
       +1: niq
 
-   * proxy_util: Correctly check the worker status field (non-shared)
-     when initializing.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=443503
-      2.2.x version of patch:
-        Trunk version works
-      +1: jim, rpluem
-    
