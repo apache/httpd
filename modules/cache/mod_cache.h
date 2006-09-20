@@ -312,27 +312,6 @@ apr_status_t cache_recall_entity_body(cache_handle_t *h, apr_pool_t *p, apr_buck
 
 /* hooks */
 
-/* Create a set of CACHE_DECLARE(type), CACHE_DECLARE_NONSTD(type) and 
- * CACHE_DECLARE_DATA with appropriate export and import tags for the platform
- */
-#if !defined(WIN32)
-#define CACHE_DECLARE(type)            type
-#define CACHE_DECLARE_NONSTD(type)     type
-#define CACHE_DECLARE_DATA
-#elif defined(CACHE_DECLARE_STATIC)
-#define CACHE_DECLARE(type)            type __stdcall
-#define CACHE_DECLARE_NONSTD(type)     type
-#define CACHE_DECLARE_DATA
-#elif defined(CACHE_DECLARE_EXPORT)
-#define CACHE_DECLARE(type)            __declspec(dllexport) type __stdcall
-#define CACHE_DECLARE_NONSTD(type)     __declspec(dllexport) type
-#define CACHE_DECLARE_DATA             __declspec(dllexport)
-#else
-#define CACHE_DECLARE(type)            __declspec(dllimport) type __stdcall
-#define CACHE_DECLARE_NONSTD(type)     __declspec(dllimport) type
-#define CACHE_DECLARE_DATA             __declspec(dllimport)
-#endif
-
 APR_DECLARE_OPTIONAL_FN(apr_status_t, 
                         ap_cache_generate_key, 
                         (request_rec *r, apr_pool_t*p, char**key ));
