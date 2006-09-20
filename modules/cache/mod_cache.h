@@ -88,8 +88,8 @@
 #define DEFAULT_CACHE_EXPIRE    MSEC_ONE_HR
 #define DEFAULT_CACHE_LMFACTOR  (0.1)
 
-/* Create a set of PROXY_DECLARE(type), PROXY_DECLARE_NONSTD(type) and 
- * PROXY_DECLARE_DATA with appropriate export and import tags for the platform
+/* Create a set of CACHE_DECLARE(type), CACHE_DECLARE_NONSTD(type) and 
+ * CACHE_DECLARE_DATA with appropriate export and import tags for the platform
  */
 #if !defined(WIN32)
 #define CACHE_DECLARE(type)            type
