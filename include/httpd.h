@@ -529,6 +529,8 @@ AP_DECLARE(const char *) ap_get_server_built(void);
 #define ap_is_HTTP_CLIENT_ERROR(x) (((x) >= 400)&&((x) < 500))
 /** is the status code a server error  */
 #define ap_is_HTTP_SERVER_ERROR(x) (((x) >= 500)&&((x) < 600))
+/** is the status code a (potentially) valid response code?  */
+#define ap_is_HTTP_VALID_RESPONSE(x) (((x) >= 100)&&((x) < 600))
 
 /** should the status code drop the connection */
 #define ap_status_drops_connection(x) \
