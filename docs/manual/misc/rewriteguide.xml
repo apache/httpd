@@ -81,7 +81,7 @@
     to fit in <code>.htaccess</code> context instead
     of per-server context. Always try to understand what a
     particular ruleset really does before you use it. It
-    avoid problems.</note>
+    avoids problems.</note>
 
   </section>
 
