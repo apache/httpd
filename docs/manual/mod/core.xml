@@ -1716,8 +1716,8 @@ will be accepted from the client</description>
 <name>LimitRequestFieldSize</name>
 <description>Limits the size of the HTTP request header allowed from the
 client</description>
-<syntax>LimitRequestFieldsize <var>bytes</var></syntax>
-<default>LimitRequestFieldsize 8190</default>
+<syntax>LimitRequestFieldSize <var>bytes</var></syntax>
+<default>LimitRequestFieldSize 8190</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
