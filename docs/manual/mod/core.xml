@@ -3061,7 +3061,7 @@ hostname or IP address</description>
       <li>The IP address of the virtual host;</li>
 
       <li>A fully qualified domain name for the IP address of the
-      virtual host;</li>
+      virtual host (not applicable to NameVirtualHosts);</li>
 
       <li>The character <code>*</code>, which is used only in combination with
       <code>NameVirtualHost *</code> to match all IP addresses; or</li>
