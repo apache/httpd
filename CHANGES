@@ -2,6 +2,15 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cache: From RFC3986 (section 6.2.3.) if a URI contains an
+     authority component and an empty path, the empty path is to be equivalent
+     to "/". It explicitly cites the following four URIs as equivalents:
+       http://example.com
+       http://example.com/
+       http://example.com:/
+       http://example.com:80/
+     [Davi Arnaut <davi haxent.com.br>]
+
   *) mod_cache: Don't cache requests with a expires date in the past;
      otherwise mod_cache will always try to cache the URL. This bug
      might lead to numerous rename() errors on win32 if the URL was
