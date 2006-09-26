@@ -213,3 +213,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x: http://people.apache.org/~minfrin/mod_disk_cache-lfsconfig-2.2.patch
       +1: minfrin
 
+    * mod_cache: Don't cache requests with a expires date in the past;
+      otherwise mod_cache will always try to cache the URL. This bug
+      might lead to numerous rename() errors on win32 if the URL was
+      previously cached.
+      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450055
+      +1: minfrin
+
