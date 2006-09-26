@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_disk_cache: Make sure that only positive integers are accepted
+     for the CacheMaxFileSize and CacheMinFileSize parameters in the
+     config file. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
+
   *) mod_proxy_balancer: Set the new environment variable BALANCER_ROUTE_CHANGED
      if a worker with a route different from the one supplied by the client
      had been chosen or if the client supplied no routing information for
