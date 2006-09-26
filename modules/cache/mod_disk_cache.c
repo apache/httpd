@@ -157,7 +157,16 @@ static apr_status_t file_cache_el_final(disk_cache_object_t *dobj,
     if (dobj->tfd) {
         apr_status_t rv;
 
-        apr_file_close(dobj->tfd);
+        rv = apr_file_close(dobj->tfd);
+        dobj->tfd = NULL;
+
+        if(rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                         "disk_cache: closing tempfile failed: %s",
+                         dobj->tempfile);
+            apr_file_remove(dobj->tempfile, r->pool);
+            return rv;
+        }
 
         /* This assumes that the tempfile is on the same file system
          * as the cache_root. If not, then we need a file copy/move
@@ -169,9 +178,8 @@ static apr_status_t file_cache_el_final(disk_cache_object_t *dobj,
                          "disk_cache: rename tempfile to datafile failed:"
                          " %s -> %s", dobj->tempfile, dobj->datafile);
             apr_file_remove(dobj->tempfile, r->pool);
+            return rv;
         }
-
-        dobj->tfd = NULL;
     }
 
     return APR_SUCCESS;
@@ -976,14 +984,132 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     return APR_SUCCESS;
 }
 
+
+static apr_status_t copy_body(apr_file_t *srcfd, apr_off_t srcoff, 
+                              apr_file_t *destfd, apr_off_t destoff, 
+                              apr_off_t len)
+{
+    apr_status_t rc;
+    apr_size_t size;
+    apr_finfo_t finfo;
+    apr_time_t starttime = apr_time_now();
+    char buf[CACHE_BUF_SIZE];
+
+    if(srcoff != 0) {
+        rc = apr_file_seek(srcfd, APR_SET, &srcoff);
+        if(rc != APR_SUCCESS) {
+            return rc;
+        }
+    }
+
+    if(destoff != 0) {
+        rc = apr_file_seek(destfd, APR_SET, &destoff);
+        if(rc != APR_SUCCESS) {
+            return rc;
+        }
+    }
+
+    /* Tried doing this with mmap, but sendfile on Linux got confused when
+       sending a file while it was being written to from an mmapped area.
+       The traditional way seems to be good enough, and less complex.
+     */
+    while(len > 0) {
+        size=MIN(len, CACHE_BUF_SIZE);
+
+        rc = apr_file_read_full (srcfd, buf, size, NULL);
+        if(rc != APR_SUCCESS) {
+            return rc;
+        }
+
+        rc = apr_file_write_full(destfd, buf, size, NULL);
+        if(rc != APR_SUCCESS) {
+            return rc;
+        }
+        len -= size;
+    }
+
+    /* Check if file has changed during copying. This is not 100% foolproof
+       due to NFS attribute caching when on NFS etc. */
+    /* FIXME: Can we assume that we're always copying an entire file? In that
+              case we can check if the current filesize matches the length
+              we think it is */
+    rc = apr_file_info_get(&finfo, APR_FINFO_MTIME, srcfd);
+    if(rc != APR_SUCCESS) {
+        return rc;
+    }
+    if(starttime < finfo.mtime) {
+        return APR_EGENERAL;
+    }
+
+    return APR_SUCCESS;
+}
+
+
+static apr_status_t replace_brigade_with_cache(cache_handle_t *h,
+                                               request_rec *r,
+                                               apr_bucket_brigade *bb)
+{
+    apr_status_t rv;
+    int flags;
+    apr_bucket *e;
+    core_dir_config *pdcfg = ap_get_module_config(r->per_dir_config,
+            &core_module);
+    disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
+
+    flags = APR_READ|APR_BINARY;
+#if APR_HAS_SENDFILE
+    flags |= ((pdcfg->enable_sendfile == ENABLE_SENDFILE_OFF)
+            ? 0 : APR_SENDFILE_ENABLED);
+#endif
+
+    rv = apr_file_open(&dobj->fd, dobj->datafile, flags, 0, r->pool);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                     "disk_cache: Error opening datafile %s for URL %s",
+                     dobj->datafile, dobj->name);
+        return rv;
+    }
+
+    /* First, empty the brigade */
+    e  = APR_BRIGADE_FIRST(bb);
+    while (e != APR_BRIGADE_SENTINEL(bb)) {
+        apr_bucket *d;
+        d = e;
+        e = APR_BUCKET_NEXT(e);
+        apr_bucket_delete(d);
+    }
+
+    /* Then, populate it with our cached instance */
+    rv = recall_body(h, r->pool, bb);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "disk_cache: Error serving URL %s from cache", dobj->name);
+        return rv;
+    }
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "disk_cache: Serving cached body for URL %s", dobj->name);
+
+    return APR_SUCCESS;
+}
+
+
 static apr_status_t store_body(cache_handle_t *h, request_rec *r,
                                apr_bucket_brigade *bb)
 {
     apr_bucket *e;
     apr_status_t rv;
+    int copy_file = FALSE;
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
+
+    if(r->no_cache) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "disk_cache: store_body called for URL %s even though"
+                     "no_cache is set", dobj->name);
+        file_cache_errorcleanup(dobj, r);
+        return APR_EGENERAL;
+    }
 
     /* We write to a temp file and then atomically rename the file over
      * in file_cache_el_final().
@@ -998,47 +1124,129 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         dobj->file_size = 0;
     }
 
-    for (e = APR_BRIGADE_FIRST(bb);
-         e != APR_BRIGADE_SENTINEL(bb);
-         e = APR_BUCKET_NEXT(e))
+    /* Check if this is a complete single sequential file, eligable for
+     * file copy.
+     */
+    if(dobj->file_size == 0 && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb)))
     {
-        const char *str;
-        apr_size_t length, written;
-        rv = apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                         "disk_cache: Error when reading bucket for URL %s",
-                         h->cache_obj->key);
-            /* Remove the intermediate cache file and return non-APR_SUCCESS */
-            file_cache_errorcleanup(dobj, r);
-            return rv;
+        apr_off_t begin = -1;
+        apr_off_t pos = -1;
+        apr_file_t *fd = NULL;
+        apr_bucket_file *a;
+
+        copy_file = TRUE;
+
+        for (e = APR_BRIGADE_FIRST(bb);
+                e != APR_BRIGADE_SENTINEL(bb);
+                e = APR_BUCKET_NEXT(e))
+        {
+            if(APR_BUCKET_IS_EOS(e)) {
+                break;
+            }
+            if(!APR_BUCKET_IS_FILE(e)) {
+                copy_file = FALSE;
+                break;
+            }
+
+            a = e->data;
+
+            if(begin < 0) {
+                begin = pos = e->start;
+                fd = a->fd;
+            }
+
+            if(fd != a->fd || pos != e->start) {
+                copy_file = FALSE;
+                break;
+            }
+
+            pos += e->length;
         }
-        rv = apr_file_write_full(dobj->tfd, str, length, &written);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                         "disk_cache: Error when writing cache file for URL %s",
-                         h->cache_obj->key);
-            /* Remove the intermediate cache file and return non-APR_SUCCESS */
-            file_cache_errorcleanup(dobj, r);
-            return rv;
-        }
-        dobj->file_size += written;
-        if (dobj->file_size > conf->maxfs) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "disk_cache: URL %s failed the size check "
-                         "(%" APR_OFF_T_FMT ">%" APR_OFF_T_FMT ")",
-                         h->cache_obj->key, dobj->file_size, conf->maxfs);
-            /* Remove the intermediate cache file and return non-APR_SUCCESS */
-            file_cache_errorcleanup(dobj, r);
-            return APR_EGENERAL;
+
+        if(copy_file) {
+            dobj->file_size = pos;
         }
     }
 
-    /* Was this the final bucket? If yes, close the temp file and perform
-     * sanity checks.
-     */
-    if (APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
-        if (r->connection->aborted || r->no_cache) {
+    if(copy_file) {
+        apr_bucket_file *a;
+
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                     "disk_cache: Copying body for URL %s, len %"
+                     APR_OFF_T_FMT, dobj->name, dobj->file_size);
+
+        e = APR_BRIGADE_FIRST(bb);
+        a = e->data;
+
+        rv = copy_body(a->fd, e->start, dobj->tfd, 0, 
+                       dobj->file_size);
+        if(rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "disk_cache: Copying body failed, "
+                         "URL %s", dobj->name);
+            file_cache_errorcleanup(dobj, r);
+            return rv;
+        }
+
+    }
+    else {
+        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                     "disk_cache: Caching body for URL %s", dobj->name);
+
+        for (e = APR_BRIGADE_FIRST(bb);
+                e != APR_BRIGADE_SENTINEL(bb);
+                e = APR_BUCKET_NEXT(e))
+        {   
+            const char *str;
+            apr_size_t length, written;
+
+            /* Ignore the non-data-buckets */
+            if(APR_BUCKET_IS_METADATA(e)) {
+                continue;
+            }
+
+            rv = apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                             "disk_cache: Error when reading bucket for URL %s",
+                             dobj->name);
+                file_cache_errorcleanup(dobj, r);
+                return rv;
+            }
+            rv = apr_file_write_full(dobj->fd, str, length, &written);
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                             "disk_cache: Error when writing cache file for "
+                             "URL %s", dobj->name);
+                file_cache_errorcleanup(dobj, r);
+                return rv;
+            }
+            dobj->file_size += written;
+            if (dobj->file_size > conf->maxfs) {
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                             "disk_cache: URL %s failed the size check "
+                             "(%" APR_OFF_T_FMT " > %" APR_OFF_T_FMT ")",
+                             dobj->name, dobj->file_size, conf->maxfs);
+                file_cache_errorcleanup(dobj, r);
+                return APR_EGENERAL;
+            }
+        }
+    }
+
+
+    /* Drop out here if this wasn't the end */
+    if (!APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
+        return APR_SUCCESS;
+    }
+
+    if(!copy_file) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "disk_cache: Done caching URL %s, len %" APR_OFF_T_FMT,
+                     dobj->name, dobj->file_size);
+
+        /* FIXME: Do we really need to check r->no_cache here since we checked
+           it in the beginning? */
+        if (r->no_cache || r->connection->aborted) {
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                          "disk_cache: Discarding body for URL %s "
                          "because connection has been aborted.",
@@ -1056,16 +1264,30 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
             file_cache_errorcleanup(dobj, r);
             return APR_EGENERAL;
         }
+    }
 
-        /* All checks were fine. Move tempfile to final destination */
-        /* Link to the perm file, and close the descriptor */
-        file_cache_el_final(dobj, r);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "disk_cache: Body for URL %s cached.",  dobj->name);
+    /* All checks were fine. Move tempfile to final destination */
+    /* Link to the perm file, and close the descriptor */
+    rv = file_cache_el_final(dobj, r);
+    if(rv != APR_SUCCESS) {
+        file_cache_errorcleanup(dobj, r);
+        return rv;
+    }
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "disk_cache: Body for URL %s cached.",  dobj->name);
+
+    /* Redirect to cachefile if we copied a plain file */
+    if(copy_file) {
+        rv = replace_brigade_with_cache(h, r, bb);
+        if(rv != APR_SUCCESS) {
+            return rv;
+        }
     }
 
     return APR_SUCCESS;
 }
+
 
 static void *create_config(apr_pool_t *p, server_rec *s)
 {

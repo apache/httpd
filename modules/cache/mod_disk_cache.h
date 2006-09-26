@@ -28,6 +28,8 @@
 #define CACHE_DATA_SUFFIX   ".data"
 #define CACHE_VDIR_SUFFIX   ".vary"
 
+#define CACHE_BUF_SIZE 65536
+
 #define AP_TEMPFILE_PREFIX "/"
 #define AP_TEMPFILE_BASE   "aptmp"
 #define AP_TEMPFILE_SUFFIX "XXXXXX"
