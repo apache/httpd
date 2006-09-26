@@ -985,7 +985,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 }
 
 
-static apr_status_t copy_body(apr_file_t *srcfd, apr_off_t srcoff, 
+static apr_status_t copy_body(apr_pool_t *p,
+                              apr_file_t *srcfd, apr_off_t srcoff, 
                               apr_file_t *destfd, apr_off_t destoff, 
                               apr_off_t len)
 {
@@ -993,7 +994,11 @@ static apr_status_t copy_body(apr_file_t *srcfd, apr_off_t srcoff,
     apr_size_t size;
     apr_finfo_t finfo;
     apr_time_t starttime = apr_time_now();
-    char buf[CACHE_BUF_SIZE];
+
+    char *buf = apr_palloc(p, CACHE_BUF_SIZE);
+    if (!buf) {
+        return APR_ENOMEM;
+    }
 
     if(srcoff != 0) {
         rc = apr_file_seek(srcfd, APR_SET, &srcoff);
@@ -1178,7 +1183,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         e = APR_BRIGADE_FIRST(bb);
         a = e->data;
 
-        rv = copy_body(a->fd, e->start, dobj->tfd, 0, 
+        rv = copy_body(r->pool, a->fd, e->start, dobj->tfd, 0, 
                        dobj->file_size);
         if(rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
