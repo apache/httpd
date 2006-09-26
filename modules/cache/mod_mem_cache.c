@@ -58,17 +58,11 @@ typedef enum {
     CACHE_TYPE_MMAP
 } cache_type_e;
 
-typedef struct {
-    char* hdr;
-    char* val;
-} cache_header_tbl_t;
-
 typedef struct mem_cache_object {
+    apr_pool_t *pool;
     cache_type_e type;
-    apr_ssize_t num_header_out;
-    apr_ssize_t num_req_hdrs;
-    cache_header_tbl_t *header_out;
-    cache_header_tbl_t *req_hdrs; /* for Vary negotiation */
+    apr_table_t *header_out;
+    apr_table_t *req_hdrs; /* for Vary negotiation */
     apr_size_t m_len;
     void *m;
     apr_os_file_t fd;
@@ -210,19 +204,6 @@ static void cleanup_cache_object(cache_object_t *obj)
 {
     mem_cache_object_t *mobj = obj->vobj;
 
-    /* TODO:
-     * We desperately need a more efficient way of allocating objects. We're
-     * making way too many malloc calls to create a fully populated
-     * cache object...
-     */
-
-    /* Cleanup the cache_object_t */
-    if (obj->key) {
-        free((void*)obj->key);
-    }
-
-    free(obj);
-
     /* Cleanup the mem_cache_object_t */
     if (mobj) {
         if (mobj->m) {
@@ -235,18 +216,9 @@ static void cleanup_cache_object(cache_object_t *obj)
             close(mobj->fd);
 #endif
         }
-        if (mobj->header_out) {
-            if (mobj->header_out[0].hdr)
-                free(mobj->header_out[0].hdr);
-            free(mobj->header_out);
-        }
-        if (mobj->req_hdrs) {
-            if (mobj->req_hdrs[0].hdr)
-                free(mobj->req_hdrs[0].hdr);
-            free(mobj->req_hdrs);
-        }
-        free(mobj);
     }
+
+    apr_pool_destroy(mobj->pool);
 }
 static apr_status_t decrement_refcount(void *arg)
 {
@@ -334,9 +306,10 @@ static void *create_cache_config(apr_pool_t *p, server_rec *s)
 static int create_entity(cache_handle_t *h, cache_type_e type_e,
                          request_rec *r, const char *key, apr_off_t len)
 {
+    apr_status_t rv;
+    apr_pool_t *pool;
     cache_object_t *obj, *tmp_obj;
     mem_cache_object_t *mobj;
-    apr_size_t key_len;
 
     if (len == -1) {
         /* Caching a streaming response. Assume the response is
@@ -370,25 +343,21 @@ static int create_entity(cache_handle_t *h, cache_type_e type_e,
         }
     }
 
+    rv = apr_pool_create(&pool, NULL);
+
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
+                     "mem_cache: Failed to create memory pool.");
+        return DECLINED;
+    }
+
     /* Allocate and initialize cache_object_t */
-    obj = calloc(1, sizeof(*obj));
-    if (!obj) {
-        return DECLINED;
-    }
-    key_len = strlen(key) + 1;
-    obj->key = malloc(key_len);
-    if (!obj->key) {
-        cleanup_cache_object(obj);
-        return DECLINED;
-    }
-    memcpy((void*)obj->key, key, key_len);
+    obj = apr_pcalloc(pool, sizeof(*obj));
+    obj->key = apr_pstrdup(pool, key);
 
     /* Allocate and init mem_cache_object_t */
-    mobj = calloc(1, sizeof(*mobj));
-    if (!mobj) {
-        cleanup_cache_object(obj);
-        return DECLINED;
-    }
+    mobj = apr_pcalloc(pool, sizeof(*mobj));
+    mobj->pool = pool;
 
     /* Finish initing the cache object */
     apr_atomic_set32(&obj->refcount, 1);
@@ -539,65 +508,7 @@ static int remove_entity(cache_handle_t *h)
 
     return OK;
 }
-static apr_status_t serialize_table(cache_header_tbl_t **obj,
-                                    apr_ssize_t *nelts,
-                                    apr_table_t *table)
-{
-    const apr_array_header_t *elts_arr = apr_table_elts(table);
-    apr_table_entry_t *elts = (apr_table_entry_t *) elts_arr->elts;
-    apr_ssize_t i;
-    apr_size_t len = 0;
-    apr_size_t idx = 0;
-    char *buf;
 
-    *nelts = elts_arr->nelts;
-    if (*nelts == 0 ) {
-        *obj=NULL;
-        return APR_SUCCESS;
-    }
-    *obj = malloc(sizeof(cache_header_tbl_t) * elts_arr->nelts);
-    if (NULL == *obj) {
-        return APR_ENOMEM;
-    }
-    for (i = 0; i < elts_arr->nelts; ++i) {
-        len += strlen(elts[i].key);
-        len += strlen(elts[i].val);
-        len += 2;  /* Extra space for NULL string terminator for key and val */
-    }
-
-    /* Transfer the headers into a contiguous memory block */
-    buf = malloc(len);
-    if (!buf) {
-        free(*obj);
-        *obj = NULL;
-        return APR_ENOMEM;
-    }
-
-    for (i = 0; i < *nelts; ++i) {
-        (*obj)[i].hdr = &buf[idx];
-        len = strlen(elts[i].key) + 1;              /* Include NULL terminator */
-        memcpy(&buf[idx], elts[i].key, len);
-        idx+=len;
-
-        (*obj)[i].val = &buf[idx];
-        len = strlen(elts[i].val) + 1;
-        memcpy(&buf[idx], elts[i].val, len);
-        idx+=len;
-    }
-    return APR_SUCCESS;
-}
-static int unserialize_table( cache_header_tbl_t *ctbl,
-                              int num_headers,
-                              apr_table_t *t )
-{
-    int i;
-
-    for (i = 0; i < num_headers; ++i) {
-        apr_table_addn(t, ctbl[i].hdr, ctbl[i].val);
-    }
-
-    return APR_SUCCESS;
-}
 /* Define request processing hook handlers */
 /* remove_url()
  * Notes:
@@ -630,17 +541,12 @@ static int remove_url(cache_handle_t *h, apr_pool_t *p)
 
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 {
-    int rc;
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
 
-    h->req_hdrs = apr_table_make(r->pool, mobj->num_req_hdrs);
-    h->resp_hdrs = apr_table_make(r->pool, mobj->num_header_out);
+    h->req_hdrs = apr_table_copy(r->pool, mobj->req_hdrs);
+    h->resp_hdrs = apr_table_copy(r->pool, mobj->header_out);
 
-    rc = unserialize_table(mobj->req_hdrs, mobj->num_req_hdrs, h->req_hdrs);
-    rc = unserialize_table(mobj->header_out, mobj->num_header_out,
-                           h->resp_hdrs);
-
-    return rc;
+    return OK;
 }
 
 static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb)
@@ -671,7 +577,6 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 {
     cache_object_t *obj = h->cache_obj;
     mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
-    int rc;
     apr_table_t *headers_out;
 
     /*
@@ -681,12 +586,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
      * - The original response headers (for returning with a cached response)
      * - The body of the message
      */
-    rc = serialize_table(&mobj->req_hdrs,
-                         &mobj->num_req_hdrs,
-                         r->headers_in);
-    if (rc != APR_SUCCESS) {
-        return rc;
-    }
+    mobj->req_hdrs = apr_table_copy(mobj->pool, r->headers_in);
 
     /* Precompute how much storage we need to hold the headers */
     headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out,
@@ -700,12 +600,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     }
 
     headers_out = apr_table_overlay(r->pool, headers_out, r->err_headers_out);
-
-    rc = serialize_table(&mobj->header_out, &mobj->num_header_out,
-                         headers_out);
-    if (rc != APR_SUCCESS) {
-        return rc;
-    }
+    mobj->header_out = apr_table_copy(mobj->pool, headers_out);
 
     /* Init the info struct */
     obj->info.status = info->status;
@@ -814,13 +709,10 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                 /* Caching a streamed response. Reallocate a buffer of the
                  * correct size and copy the streamed response into that
                  * buffer */
-                char *buf = malloc(obj->count);
-                if (!buf) {
+                mobj->m = realloc(mobj->m, obj->count);
+                if (!mobj->m) {
                     return APR_ENOMEM;
                 }
-                memcpy(buf, mobj->m, obj->count);
-                free(mobj->m);
-                mobj->m = buf;
 
                 /* Now comes the crufty part... there is no way to tell the
                  * cache that the size of the object has changed. We need

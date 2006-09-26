@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
+     by creating a root pool for object persistence across requests. This
+     also eliminates the need for custom serialization code.
+     [Davi Arnaut <davi haxent.com.br>]
+
   *) mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
      [Davi Arnaut <davi haxent.com.br>]
 
