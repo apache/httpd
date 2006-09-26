@@ -220,3 +220,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=450055
       +1: minfrin
 
+    * mod_cache: From RFC3986 (section 6.2.3.) if a URI contains an
+      authority component and an empty path, the empty path is to be equivalent
+      to "/". It explicitly cites the following four URIs as equivalents:
+        http://example.com
+        http://example.com/
+        http://example.com:/
+        http://example.com:80/
+      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450063
+      +1: minfrin
+
+
