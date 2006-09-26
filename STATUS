@@ -218,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       might lead to numerous rename() errors on win32 if the URL was
       previously cached.
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=450055
-      +1: minfrin
+      +1: minfrin, rpluem
 
     * mod_cache: From RFC3986 (section 6.2.3.) if a URI contains an
       authority component and an empty path, the empty path is to be equivalent
