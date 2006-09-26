@@ -334,14 +334,14 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
     if (len > conf->maxfs) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "disk_cache: URL %s failed the size check "
-                     "(%" APR_OFF_T_FMT " > %" APR_SIZE_T_FMT ")",
+                     "(%" APR_OFF_T_FMT " > %" APR_OFF_T_FMT ")",
                      key, len, conf->maxfs);
         return DECLINED;
     }
     if (len >= 0 && len < conf->minfs) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "disk_cache: URL %s failed the size check "
-                     "(%" APR_OFF_T_FMT " < %" APR_SIZE_T_FMT ")",
+                     "(%" APR_OFF_T_FMT " < %" APR_OFF_T_FMT ")",
                      key, len, conf->minfs);
         return DECLINED;
     }
@@ -1026,7 +1026,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         if (dobj->file_size > conf->maxfs) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "disk_cache: URL %s failed the size check "
-                         "(%" APR_OFF_T_FMT ">%" APR_SIZE_T_FMT ")",
+                         "(%" APR_OFF_T_FMT ">%" APR_OFF_T_FMT ")",
                          h->cache_obj->key, dobj->file_size, conf->maxfs);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
@@ -1050,7 +1050,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         if (dobj->file_size < conf->minfs) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "disk_cache: URL %s failed the size check "
-                         "(%" APR_OFF_T_FMT "<%" APR_SIZE_T_FMT ")",
+                         "(%" APR_OFF_T_FMT "<%" APR_OFF_T_FMT ")",
                          h->cache_obj->key, dobj->file_size, conf->minfs);
             /* Remove the intermediate cache file and return non-APR_SUCCESS */
             file_cache_errorcleanup(dobj, r);
@@ -1137,15 +1137,25 @@ static const char
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
-    conf->minfs = atoi(arg);
+
+    if (apr_strtoff(&conf->minfs, arg, NULL, 0) != APR_SUCCESS ||
+            conf->minfs < 0) 
+    {
+        return "CacheMinFileSize argument must be a non-negative integer representing the min size of a file to cache in bytes.";
+    }
     return NULL;
 }
+
 static const char
 *set_cache_maxfs(cmd_parms *parms, void *in_struct_ptr, const char *arg)
 {
     disk_cache_conf *conf = ap_get_module_config(parms->server->module_config,
                                                  &disk_cache_module);
-    conf->maxfs = atoi(arg);
+    if (apr_strtoff(&conf->maxfs, arg, NULL, 0) != APR_SUCCESS ||
+            conf->maxfs < 0) 
+    {
+        return "CacheMaxFileSize argument must be a non-negative integer representing the max size of a file to cache in bytes.";
+    }
     return NULL;
 }
 
