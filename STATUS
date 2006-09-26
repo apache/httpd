@@ -228,6 +228,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://example.com:/
         http://example.com:80/
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=450063
-      +1: minfrin
+      +1: minfrin, rpluem
 
 
