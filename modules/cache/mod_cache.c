@@ -445,6 +445,11 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* if a broken Expires header is present, don't cache it */
         reason = apr_pstrcat(p, "Broken expires header: ", exps, NULL);
     }
+    else if (exp != APR_DATE_BAD && exp < r->request_time)
+    {
+        /* if a Expires header is in the past, don't cache it */
+        reason = "Expires header already expired, not cacheable";
+    }
     else if (r->args && exps == NULL) {
         /* if query string present but no expiration time, don't cache it
          * (RFC 2616/13.9)
