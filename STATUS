@@ -234,3 +234,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=450070
       +1: minfrin
 
+    * mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
+      by creating a root pool for object persistence across requests. This
+      also eliminates the need for custom serialization code.
+      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450089
+      +1: minfrin
+
