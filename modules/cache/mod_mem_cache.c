@@ -225,7 +225,7 @@ static void cleanup_cache_object(cache_object_t *obj)
 
     /* Cleanup the mem_cache_object_t */
     if (mobj) {
-        if (mobj->type == CACHE_TYPE_HEAP && mobj->m) {
+        if (mobj->m) {
             free(mobj->m);
         }
         if (mobj->type == CACHE_TYPE_FILE && mobj->fd) {

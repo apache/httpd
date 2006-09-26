@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
+     [Davi Arnaut <davi haxent.com.br>]
+
   *) mod_cache: From RFC3986 (section 6.2.3.) if a URI contains an
      authority component and an empty path, the empty path is to be equivalent
      to "/". It explicitly cites the following four URIs as equivalents:
