@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cache: Eliminate a bogus error in the log when a filter returns
+     AP_FILTER_ERROR. [Niklas Edmundsson <nikke acc.umu.se>]
+
   *) mod_disk_cache: Make caching of large files possible on 32bit machines
      by determining whether the cached file should be copied on disk rather
      than loaded into RAM. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
