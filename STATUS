@@ -100,6 +100,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=440028
       +1: trawick, rpluem, jim
 
+    * core: Deal with the widespread use of apr_status_t return values
+      as HTTP status codes, as documented in PR#31759 (a bug shared by
+      the default handler, mod_cgi, mod_cgid, mod_proxy, and probably
+      others).
+      http://svn.apache.org/viewvc?view=rev&revision=448711
+      +1: niq, minfrin, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
@@ -239,11 +246,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       also eliminates the need for custom serialization code.
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=450089
       +1: minfrin
-
-    * core: Deal with the widespread use of apr_status_t return values
-      as HTTP status codes, as documented in PR#31759 (a bug shared by
-      the default handler, mod_cgi, mod_cgid, mod_proxy, and probably
-      others).
-      http://svn.apache.org/viewvc?view=rev&revision=448711
-      +1: niq, minfrin
 
