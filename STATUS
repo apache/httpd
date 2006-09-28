@@ -245,4 +245,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       the default handler, mod_cgi, mod_cgid, mod_proxy, and probably
       others).
       http://svn.apache.org/viewvc?view=rev&revision=448711
-      +1: niq
+      +1: niq, minfrin
+
