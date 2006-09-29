@@ -19,6 +19,27 @@
 #include "http_protocol.h"
 #include "scoreboard.h"
 
+static apr_status_t eor_bucket_cleanup(void *data)
+{
+    apr_bucket *b = (apr_bucket *)data;
+    request_rec *r = (request_rec *)b->data;
+
+    if (r != NULL) {
+        /*
+         * If eor_bucket_destroy is called after us, this prevents
+         * eor_bucket_destroy from trying to destroy the pool again.
+         */
+        b->data = NULL;
+        /* Update child status and log the transaction */
+        ap_update_child_status(r->connection->sbh, SERVER_BUSY_LOG, r);
+        ap_run_log_transaction(r);
+        if (ap_extended_status) {
+            ap_increment_counts(r->connection->sbh, r);
+        }
+    }
+    return APR_SUCCESS;
+}
+
 static apr_status_t eor_bucket_read(apr_bucket *b, const char **str,
                                     apr_size_t *len, apr_read_type_e block)
 {
@@ -45,18 +66,26 @@ AP_DECLARE(apr_bucket *) ap_bucket_eor_create(apr_bucket_alloc_t *list,
     APR_BUCKET_INIT(b);
     b->free = apr_bucket_free;
     b->list = list;
+    if (r) {
+        /*
+         * Register a cleanup for the request pool as the eor bucket could
+         * have been allocated from a different pool then the request pool
+         * e.g. the parent pool of the request pool. In this case
+         * eor_bucket_destroy might be called at a point of time when the
+         * request pool had been already destroyed.
+         */
+        apr_pool_cleanup_register(r->pool, (void *)b, eor_bucket_cleanup,
+                                  apr_pool_cleanup_null);
+    }
     return ap_bucket_eor_make(b, r);
 }
 
 static void eor_bucket_destroy(void *data)
 {
     request_rec *r = (request_rec *)data;
-    if (r != NULL) {
-        ap_update_child_status(r->connection->sbh, SERVER_BUSY_LOG, r);
-        ap_run_log_transaction(r);
-        if (ap_extended_status) {
-            ap_increment_counts(r->connection->sbh, r);
-        }
+
+    if (r) {
+        /* eor_bucket_cleanup will be called when the pool gets destroyed */
         apr_pool_destroy(r->pool);
     }
 }
