@@ -285,7 +285,7 @@ void ap_process_request(request_rec *r)
         b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_HEAD(bb, b);
         rv = ap_pass_brigade(c->output_filters, bb);
-        if (rv == APR_TIMEUP) {
+        if (APR_STATUS_IS_TIMEUP(rv)) {
             /*
              * Notice a timeout as an error message. This might be
              * valuable for detecting clients with broken network
