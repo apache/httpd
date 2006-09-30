@@ -1780,7 +1780,7 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     }
 
     /* Set default parameters */
-    if (!worker->retry) {
+    if (!worker->retry_set) {
         worker->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
     }
     /* By default address is reusable */

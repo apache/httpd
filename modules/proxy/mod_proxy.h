@@ -296,6 +296,7 @@ typedef struct {
 struct proxy_worker {
     int             id;         /* scoreboard id */
     apr_interval_time_t retry;  /* retry interval */
+    char            retry_set;
     int             lbfactor;   /* initial load balancing factor */
     const char      *name;
     const char      *scheme;    /* scheme to use ajp|http|https */
