@@ -358,6 +358,33 @@ static int rewrite_url(request_rec *r, proxy_worker *worker,
     return OK;
 }
 
+static void force_recovery(proxy_balancer *balancer, server_rec *s)
+{
+    int i;
+    int ok = 0;
+    proxy_worker *worker;
+
+    worker = (proxy_worker *)balancer->workers->elts;
+    for (i = 0; i < balancer->workers->nelts; i++, worker++) {
+        if (!(worker->s->status & PROXY_WORKER_IN_ERROR)) {
+            ok = 1;
+            break;    
+        }
+    }
+    if (!ok) {
+        /* If all workers are in error state force the recovery.
+         */
+        worker = (proxy_worker *)balancer->workers->elts;
+        for (i = 0; i < balancer->workers->nelts; i++, worker++) {
+            ++worker->s->retries;
+            worker->s->status &= ~PROXY_WORKER_IN_ERROR;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "proxy: BALANCER: (%s). Forcing recovery for worker (%s)",
+                         balancer->name, worker->hostname);
+        }
+    }
+}
+
 static int proxy_balancer_pre_request(proxy_worker **worker,
                                       proxy_balancer **balancer,
                                       request_rec *r,
@@ -378,17 +405,21 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         !(*balancer = ap_proxy_get_balancer(r->pool, conf, *url)))
         return DECLINED;
 
-    /* Step 2: find the session route */
-
-    runtime = find_session_route(*balancer, r, &route, url);
-    /* Lock the LoadBalancer
+    /* Step 2: Lock the LoadBalancer
      * XXX: perhaps we need the process lock here
      */
     if ((rv = PROXY_THREAD_LOCK(*balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                     "proxy: BALANCER: lock");
+                     "proxy: BALANCER: (%s). Lock",
+                     (*balancer)->name);
         return DECLINED;
     }
+
+    /* Step 3: force recovery */
+    force_recovery(*balancer, r->server);
+
+    /* Step 4: find the session route */
+    runtime = find_session_route(*balancer, r, &route, url);
     if (runtime) {
         int i, total_factor = 0;
         proxy_worker *workers;
