@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_mime_magic: Fix precedence problem in if statement. PR 40656.
+     [Larry Cipriani <lvc lucent.com>]
+
   *) mod_cache: Eliminate a bogus error in the log when a filter returns
      AP_FILTER_ERROR. [Niklas Edmundsson <nikke acc.umu.se>]
 
