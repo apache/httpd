@@ -2074,7 +2074,10 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     return OK;
 }
 
-#if defined(WIN32) || defined(LINUX)
+#if defined(WIN32) || defined(LINUX) || defined(SOLARIS2)
+/* Tested platforms on which the alternative is_connected
+ * method works.
+ */
 #define USE_ALTERNATE_IS_CONNECTED 1
 #else
 #define USE_ALTERNATE_IS_CONNECTED 0
@@ -2101,9 +2104,9 @@ static int is_socket_connected(apr_socket_t *socket)
     
     do {
         rc = select((int)sock + 1, &fd, NULL, NULL, &tv);
-#if defined(WIN32) || (defined(NETWARE) && defined(__NOVELL_LIBC__))
+#ifdef _MSC_VER
         errno = WSAGetLastError() - WSABASEERR;
-#endif        
+#endif
     } while (rc == -1 && errno == EINTR);
 
     if (rc == 0) {
@@ -2111,22 +2114,17 @@ static int is_socket_connected(apr_socket_t *socket)
         return 1;
     }
     else if (rc == 1) {
-#if defined(WIN32) || (defined(NETWARE) && defined(__NOVELL_LIBC__))
+#ifdef _MSC_VER
         u_long nr;
         if (ioctlsocket(sock, FIONREAD, &nr) == 0) {
-            if (WSAGetLastError() == 0)
-                errno = 0;
-            else
-                errno = WSAGetLastError() - WSABASEERR;
             return nr == 0 ? 0 : 1;
         }
-        errno = WSAGetLastError() - WSABASEERR;
 #else
         int nr;
         if (ioctl(sock, FIONREAD, (void*)&nr) == 0) {
             return nr == 0 ? 0 : 1;
         }
-#endif        
+#endif
     }
     return 0;
 }
