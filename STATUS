@@ -252,7 +252,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=452212
       2.2.x version of patch:
         Trunk version works
-      +1: rpluem
+      +1: rpluem, niq
 
     * mod_echo: Fix precedence problem.
         PR: 40658
@@ -260,5 +260,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=452213
       2.2.x version of patch:
         Trunk version works
-      +1: rpluem
+      +1: rpluem, niq
 
