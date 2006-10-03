@@ -262,3 +262,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=450089
       +1: minfrin
 
+    * core: Orphaned piped logger process after graceful restart
+        PR: 40651
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&rev=452431
+      2.2.x version of patch:
+        Trunk version works
+      +1: rpluem
+
