@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) mod_mime_magic: Fix precedence problem in if statement. PR 40656.
+     [Larry Cipriani <lvc lucent.com>]
+
   *) The full server version information is now included in the error log at
      startup as well as server status reports, irrespective of the setting
      of the ServerTokens directive.  ap_get_server_version() is now 
@@ -30,7 +33,7 @@ Changes with Apache 2.2.3
      handling.  For some RewriteRules this could lead to a pointer being
      written out of bounds.  Reported by Mark Dowd of McAfee.
      [Mark Cox]
-  
+
   *) Win32: Minor fixes to build more cleanly under Visual Studio 2005
      with command line builds.  [William Rowe]
 
