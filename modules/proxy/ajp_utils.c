@@ -24,7 +24,7 @@ apr_status_t ajp_handle_cping_cpong(apr_socket_t *sock,
                                     apr_interval_time_t timeout)
 {
     ajp_msg_t *msg;
-    apr_status_t rc;
+    apr_status_t rc, rv;
     apr_interval_time_t org;
     apr_byte_t result;
 
@@ -69,27 +69,28 @@ apr_status_t ajp_handle_cping_cpong(apr_socket_t *sock,
     ajp_msg_reuse(msg);
 
     /* Read CPONG reply */
-    rc = ajp_ilink_receive(sock, msg);
-    if (rc != APR_SUCCESS) {
+    rv = ajp_ilink_receive(sock, msg);
+    if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_handle_cping_cpong: ajp_ilink_receive failed");
-        return rc;
+        goto cleanup;
     }
 
-    rc = ajp_msg_get_uint8(msg, &result);
-    if (rc != APR_SUCCESS) {
+    rv = ajp_msg_get_uint8(msg, &result);
+    if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_handle_cping_cpong: invalid CPONG message");
-        return rc;
+        goto cleanup;
     }
     if (result != CMD_AJP13_CPONG) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_handle_cping_cpong: awaited CPONG, received %d ",
                result);
-        return APR_EGENERAL;
-
+        rv = APR_EGENERAL;
+        goto cleanup;
     }
 
+cleanup:
     /* Restore original socket timeout */
     rc = apr_socket_timeout_set(sock, org);
     if (rc != APR_SUCCESS) {
@@ -100,5 +101,5 @@ apr_status_t ajp_handle_cping_cpong(apr_socket_t *sock,
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "ajp_handle_cping_cpong: Done");
-    return APR_SUCCESS;
+    return rv;
 }
