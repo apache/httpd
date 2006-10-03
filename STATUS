@@ -73,15 +73,7 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-   * proxy_util: Correctly check the worker status field (non-shared)
-     when initializing. Without this patch we introduce a nasty
-     regression from 2.2.3,
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=443503
-      2.2.x version of patch:
-        Trunk version works
-      +1: jim, rpluem, trawick
-    
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
@@ -123,22 +115,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://example.com:80/
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=450063
       +1: minfrin, rpluem, jim
-
-    * mod_mime_magic: Fix precedence problem.
-        PR: 40656
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=452212
-      2.2.x version of patch:
-        Trunk version works
-      +1: rpluem, niq, trawick
-
-    * mod_echo: Fix precedence problem.
-        PR: 40658
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=452213
-      2.2.x version of patch:
-        Trunk version works
-      +1: rpluem, niq, trawick
 
     * mod_disk_cache: Make sure that only positive integers are accepted
       for the CacheMaxFileSize and CacheMinFileSize parameters in the
