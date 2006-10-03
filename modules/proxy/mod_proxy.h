@@ -219,7 +219,7 @@ typedef struct {
     apr_uint32_t flags;     /* Conection flags */
     int          close;     /* Close 'this' connection */
     int          close_on_recycle; /* Close the connection when returning to pool */
-    proxy_worker *worker;   /* Connection pool this connection belogns to */
+    proxy_worker *worker;   /* Connection pool this connection belongs to */
     void         *data;     /* per scheme connection data */
 #if APR_HAS_THREADS
     int          inreslist; /* connection in apr_reslist? */
