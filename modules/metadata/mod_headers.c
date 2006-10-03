@@ -89,7 +89,8 @@ typedef enum {
     hdr_set = 's',              /* set (replace old value) */
     hdr_append = 'm',           /* append (merge into any old value) */
     hdr_unset = 'u',            /* unset header */
-    hdr_echo = 'e'              /* echo headers from request to response */
+    hdr_echo = 'e',             /* echo headers from request to response */
+    hdr_edit = 'r'              /* change value by regexp */
 } hdr_actions;
 
 /*
@@ -119,6 +120,7 @@ typedef struct {
     apr_array_header_t *ta;   /* Array of format_tag structs */
     ap_regex_t *regex;
     const char *condition_var;
+    const char *subs;
 } header_entry;
 
 /* echo_do is used for Header echo to iterate through the request headers*/
@@ -348,6 +350,7 @@ static char *parse_format_string(apr_pool_t *p, header_entry *hdr, const char *s
 
     /* No string to parse with unset and echo commands */
     if (hdr->action == hdr_unset ||
+        hdr->action == hdr_edit ||
         hdr->action == hdr_echo) {
         return NULL;
     }
@@ -368,7 +371,8 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
                                                const char *action,
                                                const char *hdr,
                                                const char *value,
-                                               const char* envclause)
+                                               const char *subs,
+                                               const char *envclause)
 {
     headers_conf *dirconf = indirconf;
     const char *condition_var = NULL;
@@ -392,10 +396,29 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
         new->action = hdr_unset;
     else if (!strcasecmp(action, "echo"))
         new->action = hdr_echo;
+    else if (!strcasecmp(action, "edit"))
+        new->action = hdr_edit;
     else
-        return "first argument must be 'add', 'set', 'append', 'unset' or "
-               "'echo'.";
+        return "first argument must be 'add', 'set', 'append', 'unset', "
+               "'echo' or 'edit'.";
 
+    if (new->action == hdr_edit) {
+        if (subs == NULL) {
+            return "Header edit requires a match and a substitution";
+        }
+        new->regex = ap_pregcomp(cmd->pool, value, AP_REG_EXTENDED);
+        if (new->regex == NULL) {
+            return "Header edit regex could not be compiled";
+        }
+        new->subs = subs;
+    }
+    else {
+        /* there's no subs, so envclause is really that argument */
+        if (envclause != NULL) {
+            return "Too many arguments to directive";
+        }
+        envclause = subs;
+    }
     if (new->action == hdr_unset) {
         if (value) {
             if (envclause) {
@@ -465,6 +488,7 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     const char *hdr;
     const char *val;
     const char *envclause;
+    const char *subs;
 
     action = ap_getword_conf(cmd->pool, &args);
     if (cmd->info == &hdr_out) {
@@ -478,6 +502,7 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
     }
     hdr = ap_getword_conf(cmd->pool, &args);
     val = *args ? ap_getword_conf(cmd->pool, &args) : NULL;
+    subs = *args ? ap_getword_conf(cmd->pool, &args) : NULL;
     envclause = *args ? ap_getword_conf(cmd->pool, &args) : NULL;
 
     if (*args) {
@@ -485,7 +510,7 @@ static const char *header_cmd(cmd_parms *cmd, void *indirconf,
                            " has too many arguments", NULL);
     }
 
-    return header_inout_cmd(cmd, indirconf, action, hdr, val, envclause);
+    return header_inout_cmd(cmd, indirconf, action, hdr, val, subs, envclause);
 }
 
 /*
@@ -512,6 +537,26 @@ static char* process_tags(header_entry *hdr, request_rec *r)
     }
     return str ? str : "";
 }
+static const char *process_regexp(header_entry *hdr, const char *value,
+                                  apr_pool_t *pool)
+{
+    unsigned int nmatch = 10;
+    ap_regmatch_t pmatch[10];
+    const char *subs;
+    char *ret;
+    int diffsz;
+    if (ap_regexec(hdr->regex, value, nmatch, pmatch, 0)) {
+        /* no match, nothing to do */
+        return value;
+    }
+    subs = ap_pregsub(pool, hdr->subs, value, nmatch, pmatch);
+    diffsz = strlen(subs) - (pmatch[0].rm_eo - pmatch[0].rm_so);
+    ret = apr_palloc(pool, strlen(value) + 1 + diffsz);
+    memcpy(ret, value, pmatch[0].rm_so);
+    strcpy(ret + pmatch[0].rm_so, subs);
+    strcat(ret, value + pmatch[0].rm_eo);
+    return ret;
+}
 
 static int echo_header(echo_do *v, const char *key, const char *val)
 {
@@ -528,7 +573,9 @@ static int echo_header(echo_do *v, const char *key, const char *val)
 static void do_headers_fixup(request_rec *r, apr_table_t *headers,
                              apr_array_header_t *fixup, int early)
 {
+    echo_do v;
     int i;
+    const char *val;
 
     for (i = 0; i < fixup->nelts; ++i) {
         header_entry *hdr = &((header_entry *) (fixup->elts))[i];
@@ -568,14 +615,18 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
             apr_table_unset(headers, hdr->header);
             break;
         case hdr_echo:
-        {
-            echo_do v;
             v.r = r;
             v.hdr = hdr;
             apr_table_do((int (*) (void *, const char *, const char *))
                          echo_header, (void *) &v, r->headers_in, NULL);
             break;
-        }
+        case hdr_edit:
+            val = apr_table_get(headers, hdr->header);
+            if (val != NULL) {
+                apr_table_setn(headers, hdr->header,
+                               process_regexp(hdr, val, r->pool));
+            }
+            break;
         }
     }
 }

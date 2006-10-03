@@ -144,6 +144,15 @@ is available only in Apache 2.0</compatibility>
          MyHeader: D=3775428 t=991424704447256 mytext
        </example>
       </li>
+      <li>Enable DAV to work with Apache running HTTP through SSL hardware
+      (<a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml"
+      >problem description</a>) by replacing <var>https:</var> with
+      <var>http:</var> in the <var>Destination</var> header:
+      <example>
+        RequestHeader edit Destination ^https: http: early
+      </example>
+      </li>
+
     </ol>
 </section>
 
@@ -151,13 +160,13 @@ is available only in Apache 2.0</compatibility>
 <name>RequestHeader</name>
 <description>Configure HTTP request headers</description>
 <syntax>RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
+[<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>This directive can replace, merge or remove HTTP request
+    <p>This directive can replace, merge, change or remove HTTP request
     headers. The header is modified just before the content handler
     is run, allowing incoming headers to be modified. The action it
     performs is determined by the first argument. This can be one
@@ -186,18 +195,28 @@ is available only in Apache 2.0</compatibility>
     <dd>The request header of this name is removed, if it exists. If
     there are multiple headers of the same name, all will be removed.
     <var>value</var> must be omitted.</dd>
+
+    <dt><code>edit</code></dt>
+    <dd>If this request header exists, its value is transformed according
+    to a <glossary ref="regex">regular expression</glossary>
+    search-and-replace.  The <var>value</var> argument is a <glossary
+    ref="regex">regular expression</glossary>, and the <var>replacement</var>
+    is a replacement string, which may contain backreferences.</dd>
     </dl>
 
     <p>This argument is followed by a header name, which can
     include the final colon, but it is not required. Case is
     ignored. For <code>add</code>, <code>append</code> and
-    <code>set</code> a <var>value</var> is given as the third argument. If
+    <code>set</code> a <var>value</var> is given as the third argument. If a
     <var>value</var> contains spaces, it should be surrounded by double
     quotes. For unset, no <var>value</var> should be given.
     <var>value</var> may be a character string, a string containing format
     specifiers or a combination of both. The supported format specifiers
     are the same as for the <directive module="mod_headers">Header</directive>,
-    please have a look there for details.</p>
+    please have a look there for details.  For <code>edit</code> both
+    a <var>value</var> and a <var>replacement</var> are required, and are
+    a <glossary ref="regex">regular expression</glossary> and a
+    replacement string respectively.</p>
 
     <p>The <directive>RequestHeader</directive> directive may be followed by
     an additional argument, which may be used to specify conditions under
@@ -271,6 +290,13 @@ is available only in Apache 2.0</compatibility>
     response headers. <var>header</var> may be a 
     <glossary ref="regex">regular expression</glossary>.
     <var>value</var> must be omitted.</dd>
+
+    <dt><code>edit</code></dt>
+    <dd>If this request header exists, its value is transformed according
+    to a <glossary ref="regex">regular expression</glossary>
+    search-and-replace.  The <var>value</var> argument is a <glossary
+    ref="regex">regular expression</glossary>, and the <var>replacement</var>
+    is a replacement string, which may contain backreferences.</dd>
     </dl>
 
     <p>This argument is followed by a <var>header</var> name, which
@@ -321,6 +347,10 @@ is available only in Apache 2.0</compatibility>
       be enabled anyway for some other reason, <code>%e</code> will be
       more efficient than <code>%s</code>.</p>
     </note> 
+
+    <p>For <code>edit</code> there is both a <var>value</var> argument
+    which is a <glossary ref="regex">regular expression</glossary>,
+    and an additional <var>replacement</var> string.</p>
 
     <p>The <directive>Header</directive> directive may be followed by an
     an additional argument, which may be used to specify conditions under
