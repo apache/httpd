@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_headers: support regexp-based editing of HTTP headers [Nick Kew]
+
   *) mod_echo: Fix precedence problem in if statement. PR 40658.
      [Larry Cipriani <lvc lucent.com>]
 
