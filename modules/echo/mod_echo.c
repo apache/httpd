@@ -63,9 +63,9 @@ static int process_echo_connection(conn_rec *c)
         bb = apr_brigade_create(c->pool, c->bucket_alloc);
 
         /* Get a single line of input from the client */
-        if ((rv = ap_get_brigade(c->input_filters, bb, AP_MODE_GETLINE,
-                                 APR_BLOCK_READ, 0) != APR_SUCCESS ||
-             APR_BRIGADE_EMPTY(bb))) {
+        if (((rv = ap_get_brigade(c->input_filters, bb, AP_MODE_GETLINE,
+                                 APR_BLOCK_READ, 0)) != APR_SUCCESS) ||
+             APR_BRIGADE_EMPTY(bb)) {
             apr_brigade_destroy(bb);
             break;
         }
