@@ -8,12 +8,6 @@ Changes with Apache 2.3.0
 
   *) mod_headers: support regexp-based editing of HTTP headers [Nick Kew]
 
-  *) mod_echo: Fix precedence problem in if statement. PR 40658.
-     [Larry Cipriani <lvc lucent.com>]
-
-  *) mod_mime_magic: Fix precedence problem in if statement. PR 40656.
-     [Larry Cipriani <lvc lucent.com>]
-
   *) mod_cache: Eliminate a bogus error in the log when a filter returns
      AP_FILTER_ERROR. [Niklas Edmundsson <nikke acc.umu.se>]
 
@@ -245,6 +239,12 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) mod_echo: Fix precedence problem in if statement. PR 40658.
+     [Larry Cipriani <lvc lucent.com>]
+
+  *) mod_mime_magic: Fix precedence problem in if statement. PR 40656.
+     [Larry Cipriani <lvc lucent.com>]
 
   *) The full server version information is now included in the error log at
      startup as well as server status reports, irrespective of the setting
