@@ -2078,6 +2078,9 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
 /* Tested platforms on which the alternative is_connected
  * method works.
  */
+#ifndef _MSC_VER
+#include <sys/ioctl.h>
+#endif
 #define USE_ALTERNATE_IS_CONNECTED 1
 #else
 #define USE_ALTERNATE_IS_CONNECTED 0
