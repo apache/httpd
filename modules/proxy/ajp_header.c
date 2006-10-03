@@ -220,8 +220,8 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
 
     if ((method = sc_for_req_method_by_id(r->method_number)) == UNKNOWN_METHOD) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-               "ajp_marshal_into_msgb - No such method number %d",
-               r->method_number);
+               "ajp_marshal_into_msgb - No such method %s",
+               r->method);
         return AJP_EBAD_METHOD;
     }
 
