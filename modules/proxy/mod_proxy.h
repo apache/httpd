@@ -228,7 +228,7 @@ typedef struct {
     apr_sockaddr_t *addr;   /* Preparsed remote address info */
     apr_uint32_t flags;     /* Conection flags */
     int          close;     /* Close 'this' connection */
-    proxy_worker *worker;   /* Connection pool this connection belogns to */
+    proxy_worker *worker;   /* Connection pool this connection belongs to */
     void         *data;     /* per scheme connection data */
 #if APR_HAS_THREADS
     int          inreslist; /* connection in apr_reslist? */
