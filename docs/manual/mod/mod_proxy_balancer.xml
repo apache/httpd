@@ -273,10 +273,10 @@ candidate lbstatus -= total factor</code></pre>
 
 <section id="environment">
     <title>Exported Environment Variables</title>
-    <p>At present there are 5 environment variables exported:</p>
-    
-    <!-- ============= BALANCER_SESSION_STICKY =============== -->
+    <p>At present there are 6 environment variables exported:</p>
+
     <dl>
+    <!-- ============= BALANCER_SESSION_STICKY =============== -->
     <dt><var><a name="balancer_session_sticky" id="balancer_session_sticky">BALANCER_SESSION_STICKY</a></var></dt>
     <dd>
     <p>This is assigned the <var>stickysession</var> value used in the current
@@ -309,6 +309,16 @@ candidate lbstatus -= total factor</code></pre>
     <dd>
     <p>This is assigned the <var>route</var> of the worker that will be 
     used for the current request.</p>
+    </dd>
+
+    <!-- ============= BALANCER_ROUTE_CHANGED ================= -->
+    <dt><var><a name="balancer_route_changed" id="balancer_route_changed">BALANCER_ROUTE_CHANGED</a></var></dt>
+    <dd>
+    <p>This is set to 1 if the session route does not match the
+    worker route (BALANCER_SESSION_ROUTE != BALANCER_WORKER_ROUTE) or the
+    session does not yet have an established route.  This can be used to
+    determine when/if the client needs to be sent an updated route
+    when sticky sessions are used.</p>
     </dd>
     </dl>
 
