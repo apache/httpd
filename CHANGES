@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_disk_cache: NULL fd pointers when closing them, fix missing
+     close/flush, remove some unneccessary code duplication instead
+     of calling the right helper in replace_brigade_with_cache().
+     [Niklas Edmundsson <nikke acc.umu.se>]
+
   *) sendfile_nonblocking() takes the _brigade_ as an argument, gets 
      the first bucket from the brigade, finds it not to be a FILE
      bucket and barfs. The fix is to pass a bucket rather than a brigade.
