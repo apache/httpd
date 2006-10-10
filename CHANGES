@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_disk_cache: Do away with the write-to-file-then-move-in-place
+     mentality. [Niklas Edmundsson <nikke acc.umu.se>]
+
   *) mod_rewrite: support rewritemap by SQL query [Nick Kew]
 
   *) Fix issue which could cause piped loggers to be orphaned and never
