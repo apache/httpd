@@ -330,7 +330,7 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
 
 #if APR_HAS_SENDFILE
 static apr_status_t sendfile_nonblocking(apr_socket_t *s,
-                                         apr_bucket_brigade *bb,
+                                         apr_bucket *bucket,
                                          apr_size_t *cumulative_bytes_written,
                                          conn_rec *c);
 #endif
@@ -567,7 +567,7 @@ static apr_status_t send_brigade_nonblocking(apr_socket_t *s,
                         return rv;
                     }
                 }
-                rv = sendfile_nonblocking(s, bb, bytes_written, c);
+                rv = sendfile_nonblocking(s, bucket, bytes_written, c);
                 if (nvec > 0) {
                     (void)apr_socket_opt_set(s, APR_TCP_NOPUSH, 0);
                 }
@@ -730,21 +730,21 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
 #if APR_HAS_SENDFILE
 
 static apr_status_t sendfile_nonblocking(apr_socket_t *s,
-                                         apr_bucket_brigade *bb,
+                                         apr_bucket *bucket,
                                          apr_size_t *cumulative_bytes_written,
                                          conn_rec *c)
 {
     apr_status_t rv = APR_SUCCESS;
-    apr_bucket *bucket;
     apr_bucket_file *file_bucket;
     apr_file_t *fd;
     apr_size_t file_length;
     apr_off_t file_offset;
     apr_size_t bytes_written = 0;
 
-    bucket = APR_BRIGADE_FIRST(bb);
     if (!APR_BUCKET_IS_FILE(bucket)) {
-        /* XXX log a "this should never happen" message */
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, c->base_server,
+                     "core_filter: sendfile_nonblocking: "
+                     "this should never happen");
         return APR_EGENERAL;
     }
     file_bucket = (apr_bucket_file *)(bucket->data);
