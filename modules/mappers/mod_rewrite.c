@@ -1658,7 +1658,7 @@ static char *lookup_map(request_rec *r, char *name, char *key)
      * SQL map with cache
      */
     case MAPTYPE_DBD_CACHE:
-        value = get_cache_value(s->cachename, st.mtime, key, r->pool);
+        value = get_cache_value(s->cachename, 0, key, r->pool);
         if (!value) {
             rewritelog((r, 6, NULL,
                         "cache lookup FAILED, forcing new map lookup"));
@@ -1667,13 +1667,14 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             if (!value) {
                 rewritelog((r, 5, NULL, "SQL map lookup FAILED: map %s key=%s",
                             name, key));
+                set_cache_value(s->cachename, 0, key, "");
                 return NULL;
             }
 
             rewritelog((r, 5, NULL, "SQL map lookup OK: map %s key=%s, val=%s",
                         name, key, value));
 
-            set_cache_value(s->cachename, st.mtime, key, value);
+            set_cache_value(s->cachename, 0, key, value);
             return value;
         }
 
