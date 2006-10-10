@@ -4130,6 +4130,8 @@ static int pre_config(apr_pool_t *pconf,
         map_pfn_register("escape", rewrite_mapfunc_escape);
         map_pfn_register("unescape", rewrite_mapfunc_unescape);
     }
+    dbd_acquire = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_acquire);
+    dbd_prepare = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_prepare);
     return OK;
 }
 
@@ -4910,11 +4912,6 @@ static void ap_register_rewrite_mapfunc(char *name, rewrite_mapfunc_t *func)
     apr_hash_set(mapfunc_hash, name, strlen(name), (const void *)func);
 }
 
-static void optional_fns(void) {
-    dbd_acquire = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_acquire);
-    dbd_prepare = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_prepare);
-}
-
 static void register_hooks(apr_pool_t *p)
 {
     /* fixup after mod_proxy, so that the proxied url will not
@@ -4932,7 +4929,6 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(hook_fixup, aszPre, NULL, APR_HOOK_FIRST);
     ap_hook_fixups(hook_mimetype, NULL, NULL, APR_HOOK_LAST);
     ap_hook_translate_name(hook_uri2file, NULL, NULL, APR_HOOK_FIRST);
-    ap_hook_optional_fn_retrieve(optional_fns, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
     /* the main config structure */
