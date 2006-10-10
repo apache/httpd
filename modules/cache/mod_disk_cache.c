@@ -445,6 +445,7 @@ static apr_status_t open_header_timeout(cache_handle_t *h, request_rec *r,
     while(1) {
         if(dobj->hfd) {
             apr_file_close(dobj->hfd);
+            dobj->hfd = NULL;
         }
         rc = open_header(h, r, key, conf);
         if(rc != APR_SUCCESS && rc != CACHE_ENODATA) {
@@ -978,6 +979,7 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
     }
 
     apr_file_close(dobj->hfd);
+    dobj->hfd = NULL;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "disk_cache: Recalled headers for URL %s",  dobj->name);
@@ -1308,6 +1310,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
             rv = apr_file_open(&dobj->hfd, dobj->hdrsfile, 
                     APR_WRITE | APR_BINARY | APR_BUFFERED, 0, r->pool);
             if (rv != APR_SUCCESS) {
+                dobj->hfd = NULL;
                 return rv;
             }
         }
@@ -1338,6 +1341,19 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
     }
 
     rv = store_disk_header(dobj, r, info);
+    if(rv != APR_SUCCESS) {
+        return rv;
+    }
+
+    /* If the body size is unknown, the header file will be rewritten later
+       so we can't close it */
+    if(dobj->initial_size < 0) {
+        rv = apr_file_flush(dobj->hfd);
+    }
+    else {
+        rv = apr_file_close(dobj->hfd);
+        dobj->hfd = NULL;
+    }
     if(rv != APR_SUCCESS) {
         return rv;
     }
@@ -1418,23 +1434,20 @@ static apr_status_t replace_brigade_with_cache(cache_handle_t *h,
                                                apr_bucket_brigade *bb)
 {
     apr_status_t rv;
-    int flags;
     apr_bucket *e;
-    core_dir_config *pdcfg = ap_get_module_config(r->per_dir_config,
-            &core_module);
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
 
-    flags = APR_READ|APR_BINARY;
-#if APR_HAS_SENDFILE
-    flags |= ((pdcfg->enable_sendfile == ENABLE_SENDFILE_OFF)
-            ? 0 : APR_SENDFILE_ENABLED);
-#endif
-
-    rv = apr_file_open(&dobj->fd, dobj->datafile, flags, 0, r->pool);
+    if(dobj->fd) {
+        apr_file_close(dobj->fd);
+        dobj->fd = NULL;
+    }
+    rv = open_body_timeout(r, dobj->name, dobj);
     if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                     "disk_cache: Error opening datafile %s for URL %s",
-                     dobj->datafile, dobj->name);
+        if(rv != CACHE_EDECLINED) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "disk_cache: Error opening datafile %s for URL %s",
+                         dobj->datafile, dobj->name);
+        }
         return rv;
     }
 
@@ -1664,13 +1677,11 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
 
     /* All checks were fine, close output file */
     rv = apr_file_close(dobj->fd);
+    dobj->fd = NULL;
     if(rv != APR_SUCCESS) {
         file_cache_errorcleanup(dobj, r);
         return rv;
     }
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "disk_cache: Body for URL %s cached.",  dobj->name);
 
     /* Redirect to cachefile if we copied a plain file */
     if(copy_file) {
