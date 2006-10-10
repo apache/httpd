@@ -511,6 +511,26 @@ while (&lt;STDIN&gt;) {
             synchronization takes place.</li>
           </ol>
         </li>
+        <li>
+          <p><strong>SQL Query</strong><br />
+           MapType: <code>dbd</code> or <code>fastdbd</code>,
+           MapSource: An SQL SELECT statement that takes a single
+                      argument and returns a single value.</p>
+          <p>This uses <module>mod_dbd</module> to implement a rewritemap
+          by lookup in an SQL database.  There are two forms:
+          <code>fastdbd</code> caches database lookups internally,
+          <code>dbd</code> doesn't.  So <code>dbd</code> incurs a
+          performance penalty but responds immediately if the database
+          contents are updated, while <code>fastdbd</code> is more
+          efficient but won't re-read database contents until server
+          restart.</p>
+          <p>If a query returns more than one row, a random row from
+          the result set is used.</p>
+<example>
+<title>Example</title>
+RewriteMap myquery "fastdbd:SELECT destination FROM rewrite WHERE source = %s"
+</example>
+        </li>
       </ul>
       <p>The <directive>RewriteMap</directive> directive can occur more than
       once. For each mapping-function use one

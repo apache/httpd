@@ -54,6 +54,8 @@
 #include "apr_signal.h"
 #include "apr_global_mutex.h"
 #include "apr_dbm.h"
+#include "apr_dbd.h"
+#include "mod_dbd.h"
 
 #if APR_HAS_THREADS
 #include "apr_thread_mutex.h"
@@ -97,6 +99,9 @@
 #ifdef AP_NEED_SET_MUTEX_PERMS
 #include "unixd.h"
 #endif
+
+static ap_dbd_t *(*dbd_acquire)(request_rec*) = NULL;
+static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
 
 /*
  * in order to improve performance on running production systems, you
@@ -159,6 +164,8 @@
 #define MAPTYPE_PRG                 1<<2
 #define MAPTYPE_INT                 1<<3
 #define MAPTYPE_RND                 1<<4
+#define MAPTYPE_DBD                 1<<5
+#define MAPTYPE_DBD_CACHE           1<<6
 
 #define ENGINE_DISABLED             1<<0
 #define ENGINE_ENABLED              1<<1
@@ -225,6 +232,7 @@ typedef struct {
     char *(*func)(request_rec *,   /* function pointer for internal maps  */
                   char *);
     char **argv;                   /* argv of the external rewrite map    */
+    const char *dbdq;              /* SQL SELECT statement for rewritemap */
 } rewritemap_entry;
 
 /* special pattern types for RewriteCond */
@@ -1318,6 +1326,51 @@ static char *lookup_map_dbmfile(request_rec *r, const char *file,
 
     return value;
 }
+static char *lookup_map_dbd(request_rec *r, char *key, const char *label)
+{
+    apr_status_t rv;
+    apr_dbd_prepared_t *stmt;
+    apr_dbd_results_t *res = NULL;
+    apr_dbd_row_t *row = NULL;
+    const char *ret = NULL;
+    int n = 0;
+    ap_dbd_t *db = dbd_acquire(r);
+
+    stmt = apr_hash_get(db->prepared, label, APR_HASH_KEY_STRING);
+
+    rv = apr_dbd_pvselect(db->driver, r->pool, db->handle, &res,
+                          stmt, 0, key, NULL);
+    if (rv != 0) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "rewritemap: error querying for %s", key);
+    }
+    while (rv = apr_dbd_get_row(db->driver, r->pool, res, &row, -1), rv == 0) {
+        ++n;
+        if (ret == NULL) {
+            ret = apr_dbd_get_entry(db->driver, row, 0);
+        }
+        else {
+            /* randomise crudely amongst multiple results */
+            if ((double)rand() < (double)RAND_MAX/(double)n) {
+                ret = apr_dbd_get_entry(db->driver, row, 0);
+            }
+        }
+    }
+    if (rv != -1) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "rewritemap: error looking up %s", key);
+    }
+    switch (n) {
+    case 0:
+        return NULL;
+    case 1:
+        return apr_pstrdup(r->pool, ret);
+    default:
+        /* what's a fair rewritelog level for this? */
+        rewritelog((r, 3, NULL, "Multiple values found for %s", key));
+        return apr_pstrdup(r->pool, ret);
+    }
+}
 
 static char *lookup_map_program(request_rec *r, apr_file_t *fpin,
                                 apr_file_t *fpout, char *key)
@@ -1585,6 +1638,49 @@ static char *lookup_map(request_rec *r, char *name, char *key)
                     name, key, value));
         return *value ? value : NULL;
 
+    /*
+     * SQL map without cache
+     */
+    case MAPTYPE_DBD:
+        value = lookup_map_dbd(r, key, s->dbdq);
+        if (!value) {
+            rewritelog((r, 5, NULL, "SQL map lookup FAILED: map %s key=%s",
+                        name, key));
+            return NULL;
+        }
+
+        rewritelog((r, 5, NULL, "SQL map lookup OK: map %s key=%s, val=%s",
+                   name, key, value));
+
+        return value;
+
+    /*
+     * SQL map with cache
+     */
+    case MAPTYPE_DBD_CACHE:
+        value = get_cache_value(s->cachename, st.mtime, key, r->pool);
+        if (!value) {
+            rewritelog((r, 6, NULL,
+                        "cache lookup FAILED, forcing new map lookup"));
+
+            value = lookup_map_dbd(r, key, s->dbdq);
+            if (!value) {
+                rewritelog((r, 5, NULL, "SQL map lookup FAILED: map %s key=%s",
+                            name, key));
+                return NULL;
+            }
+
+            rewritelog((r, 5, NULL, "SQL map lookup OK: map %s key=%s, val=%s",
+                        name, key, value));
+
+            set_cache_value(s->cachename, st.mtime, key, value);
+            return value;
+        }
+
+        rewritelog((r, 5, NULL, "cache lookup OK: map=%s[SQL] key=%s, val=%s",
+                    name, key, value));
+        return *value ? value : NULL;
+        
     /*
      * Program file map
      */
@@ -2870,6 +2966,24 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
             return apr_pstrcat(cmd->pool, "RewriteMap: dbm type ",
                                newmap->dbmtype, " is invalid", NULL);
         }
+    }
+    else if ((strncasecmp(a2, "dbd:", 4) == 0)
+             || (strncasecmp(a2, "fastdbd:", 8) == 0)) {
+        if (dbd_prepare == NULL) {
+            return "RewriteMap types dbd and fastdbd require mod_dbd!";
+        }
+        if ((a2[0] == 'd') || (a2[0] == 'D')) {
+            newmap->type = MAPTYPE_DBD;
+            fname = a2+4;
+        }
+        else {
+            newmap->type = MAPTYPE_DBD_CACHE;
+            fname = a2+8;
+            newmap->cachename = apr_psprintf(cmd->pool, "%pp:%s",
+                                             (void *)cmd->server, a1);
+        }
+        newmap->dbdq = a1;
+        dbd_prepare(cmd->server, fname, newmap->dbdq);
     }
     else if (strncasecmp(a2, "prg:", 4) == 0) {
         apr_tokenize_to_argv(a2 + 4, &newmap->argv, cmd->pool);
@@ -4796,6 +4910,11 @@ static void ap_register_rewrite_mapfunc(char *name, rewrite_mapfunc_t *func)
     apr_hash_set(mapfunc_hash, name, strlen(name), (const void *)func);
 }
 
+static void optional_fns(void) {
+    dbd_acquire = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_acquire);
+    dbd_prepare = APR_RETRIEVE_OPTIONAL_FN(ap_dbd_prepare);
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     /* fixup after mod_proxy, so that the proxied url will not
@@ -4813,6 +4932,7 @@ static void register_hooks(apr_pool_t *p)
     ap_hook_fixups(hook_fixup, aszPre, NULL, APR_HOOK_FIRST);
     ap_hook_fixups(hook_mimetype, NULL, NULL, APR_HOOK_LAST);
     ap_hook_translate_name(hook_uri2file, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_optional_fn_retrieve(optional_fns, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
     /* the main config structure */
