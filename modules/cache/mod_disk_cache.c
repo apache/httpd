@@ -65,6 +65,237 @@ static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
                                apr_file_t *file);
 
 /*
+ * Modified file bucket implementation to be able to deliver files
+ * while caching.
+ */
+
+/* Derived from apr_buckets_file.c */
+
+#define BUCKET_IS_DISKCACHE(e)        ((e)->type == &bucket_type_diskcache)
+APU_DECLARE_DATA const apr_bucket_type_t bucket_type_diskcache;
+
+static void diskcache_bucket_destroy(void *data)
+{
+    diskcache_bucket_data *f = data;
+
+    if (apr_bucket_shared_destroy(f)) {
+        /* no need to close files here; it will get
+         * done automatically when the pool gets cleaned up */
+        apr_bucket_free(f);
+    }
+}
+
+
+/* The idea here is to convert diskcache buckets to regular file buckets
+   as data becomes available */
+/* FIXME: Maybe we should care about the block argument, right now we're
+          always blocking */
+static apr_status_t diskcache_bucket_read(apr_bucket *e, const char **str,
+                                          apr_size_t *len, 
+                                          apr_read_type_e block)
+{
+    diskcache_bucket_data *a = e->data;
+    apr_file_t *f = a->fd;
+    apr_bucket *b = NULL;
+    char *buf;
+    apr_status_t rv;
+    apr_finfo_t finfo;
+    apr_size_t filelength = e->length; /* bytes remaining in file past offset */
+    apr_off_t fileoffset = e->start;
+    apr_off_t fileend;
+    apr_size_t available;
+#if APR_HAS_THREADS && !APR_HAS_XTHREAD_FILES
+    apr_int32_t flags;
+#endif
+
+#if APR_HAS_THREADS && !APR_HAS_XTHREAD_FILES
+    if ((flags = apr_file_flags_get(f)) & APR_XTHREAD) {
+        /* this file descriptor is shared across multiple threads and
+         * this OS doesn't support that natively, so as a workaround
+         * we must reopen the file into a->readpool */
+        const char *fname;
+        apr_file_name_get(&fname, f);
+
+        rv = apr_file_open(&f, fname, (flags & ~APR_XTHREAD), 0, a->readpool);
+        if (rv != APR_SUCCESS)
+            return rv;
+
+        a->fd = f;
+    }
+#endif
+
+    /* in case we die prematurely */
+    *str = NULL;
+    *len = 0;
+
+    while(1) {
+        /* Figure out how big the file is right now, sit here until
+           it's grown enough or we get bored */
+        fileend = 0;
+        rv = apr_file_seek(f, APR_END, &fileend);
+        if(rv != APR_SUCCESS) {
+            return rv;
+        }
+
+        if(fileend >= fileoffset + MIN(filelength, CACHE_BUF_SIZE)) {
+            break;
+        }
+
+        rv = apr_file_info_get(&finfo, APR_FINFO_MTIME, f);
+        if(rv != APR_SUCCESS ||
+                finfo.mtime < (apr_time_now() - a->updtimeout) ) 
+        {
+            return APR_EGENERAL;
+        }
+        apr_sleep(CACHE_LOOP_SLEEP);
+    }
+
+    /* Convert this bucket to a zero-length heap bucket so we won't be called
+       again */
+    buf = apr_bucket_alloc(0, e->list);
+    apr_bucket_heap_make(e, buf, 0, apr_bucket_free);
+
+    /* Wrap as much as possible into a regular file bucket */
+    available = MIN(filelength, fileend-fileoffset);
+    b = apr_bucket_file_create(f, fileoffset, available, a->readpool, e->list);
+    APR_BUCKET_INSERT_AFTER(e, b);
+
+    /* Put any remains in yet another bucket */
+    if(available < filelength) {
+        e=b;
+        /* for efficiency, we can just build a new apr_bucket struct
+         * to wrap around the existing bucket */
+        b = apr_bucket_alloc(sizeof(*b), e->list);
+        b->start  = fileoffset + available;
+        b->length = filelength - available;
+        b->data   = a;
+        b->type   = &bucket_type_diskcache;
+        b->free   = apr_bucket_free;
+        b->list   = e->list;
+        APR_BUCKET_INSERT_AFTER(e, b);
+    }
+    else {
+        diskcache_bucket_destroy(a);
+    }
+
+    *str = buf;
+    return APR_SUCCESS;
+}
+
+static apr_bucket * diskcache_bucket_make(apr_bucket *b,
+                                                apr_file_t *fd,
+                                                apr_off_t offset,
+                                                apr_size_t len, 
+                                                apr_interval_time_t timeout,
+                                                apr_pool_t *p)
+{
+    diskcache_bucket_data *f;
+
+    f = apr_bucket_alloc(sizeof(*f), b->list);
+    f->fd = fd;
+    f->readpool = p;
+    f->updtimeout = timeout;
+
+    b = apr_bucket_shared_make(b, f, offset, len);
+    b->type = &bucket_type_diskcache;
+
+    return b;
+}
+
+static apr_bucket * diskcache_bucket_create(apr_file_t *fd,
+                                                  apr_off_t offset,
+                                                  apr_size_t len, 
+                                                  apr_interval_time_t timeout,
+                                                  apr_pool_t *p,
+                                                  apr_bucket_alloc_t *list)
+{
+    apr_bucket *b = apr_bucket_alloc(sizeof(*b), list);
+
+    APR_BUCKET_INIT(b);
+    b->free = apr_bucket_free;
+    b->list = list;
+    return diskcache_bucket_make(b, fd, offset, len, timeout, p);
+}
+
+
+/* FIXME: This is probably only correct for the first case, that seems
+   to be the one that occurs all the time... */
+static apr_status_t diskcache_bucket_setaside(apr_bucket *data, 
+                                              apr_pool_t *reqpool)
+{
+    diskcache_bucket_data *a = data->data;
+    apr_file_t *fd = NULL;
+    apr_file_t *f = a->fd;
+    apr_pool_t *curpool = apr_file_pool_get(f);
+
+    if (apr_pool_is_ancestor(curpool, reqpool)) {
+        return APR_SUCCESS;
+    }
+
+    if (!apr_pool_is_ancestor(a->readpool, reqpool)) {
+        /* FIXME: Figure out what needs to be done here */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+                "disk_cache: diskcache_bucket_setaside: FIXME1");
+        a->readpool = reqpool;
+    }
+
+    /* FIXME: Figure out what needs to be done here */
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, NULL,
+            "disk_cache: diskcache_bucket_setaside: FIXME2");
+
+    apr_file_setaside(&fd, f, reqpool);
+    a->fd = fd;
+    return APR_SUCCESS;
+}
+
+APU_DECLARE_DATA const apr_bucket_type_t bucket_type_diskcache = {
+    "DISKCACHE", 5, APR_BUCKET_DATA,
+    diskcache_bucket_destroy,
+    diskcache_bucket_read,
+    diskcache_bucket_setaside,
+    apr_bucket_shared_split,
+    apr_bucket_shared_copy
+};
+
+/* From apr_brigade.c */
+
+/* A "safe" maximum bucket size, 1Gb */
+#define MAX_BUCKET_SIZE (0x40000000)
+
+static apr_bucket * diskcache_brigade_insert(apr_bucket_brigade *bb,
+                                                   apr_file_t *f, apr_off_t
+                                                   start, apr_off_t length,
+                                                   apr_interval_time_t timeout,
+                                                   apr_pool_t *p)
+{
+    apr_bucket *e;
+
+    if (length < MAX_BUCKET_SIZE) {
+        e = diskcache_bucket_create(f, start, (apr_size_t)length, timeout, p, 
+                bb->bucket_alloc);
+    }
+    else {
+        /* Several buckets are needed. */        
+        e = diskcache_bucket_create(f, start, MAX_BUCKET_SIZE, timeout, p, 
+                bb->bucket_alloc);
+
+        while (length > MAX_BUCKET_SIZE) {
+            apr_bucket *ce;
+            apr_bucket_copy(e, &ce);
+            APR_BRIGADE_INSERT_TAIL(bb, ce);
+            e->start += MAX_BUCKET_SIZE;
+            length -= MAX_BUCKET_SIZE;
+        }
+        e->length = (apr_size_t)length; /* Resize just the last bucket */
+    }
+
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+    return e;
+}
+
+/* --------------------------------------------------------------- */
+
+/*
  * Local static functions
  */
 
@@ -543,7 +774,7 @@ static apr_status_t open_body_timeout(request_rec *r, const char *key,
                 return CACHE_EDECLINED;
             }
         }
-        if(dobj->file_size == dobj->initial_size) {
+        if(dobj->file_size > 0) {
             break;
         }
         apr_sleep(CACHE_LOOP_SLEEP);
@@ -991,7 +1222,25 @@ static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_bri
     apr_bucket *e;
     disk_cache_object_t *dobj = (disk_cache_object_t*) h->cache_obj->vobj;
 
-    apr_brigade_insert_file(bb, dobj->fd, 0, dobj->file_size, p);
+    /* Insert as much as possible as regular file (ie. sendfile():able) */
+    if(dobj->file_size > 0) {
+        if(apr_brigade_insert_file(bb, dobj->fd, 0, 
+                                   dobj->file_size, p) == NULL) 
+        {
+            return APR_ENOMEM;
+        }
+    }
+
+    /* Insert any remainder as read-while-caching bucket */
+    if(dobj->file_size < dobj->initial_size) {
+        if(diskcache_brigade_insert(bb, dobj->fd, dobj->file_size, 
+                                    dobj->initial_size - dobj->file_size,
+                                    dobj->updtimeout, p
+                    ) == NULL) 
+        {
+            return APR_ENOMEM;
+        }
+    }
 
     e = apr_bucket_eos_create(bb->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
@@ -1044,7 +1293,6 @@ static apr_status_t open_new_file(request_rec *r, const char *filename,
         rv = apr_file_open(fd, filename, flags, 
                 APR_FPROT_UREAD | APR_FPROT_UWRITE, r->pool);
 
-        /* FIXME: Debug */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "disk_cache: open_new_file: Opening %s", filename);
 
@@ -1484,6 +1732,8 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
 
+    dobj->store_body_called++;
+
     if(r->no_cache) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "disk_cache: store_body called for URL %s even though"
@@ -1497,23 +1747,31 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
         return APR_SUCCESS;
     }
 
-    if(dobj->skipstore) {
-        /* Someone else beat us to storing this object */
-        /* FIXME: Read-while-caching here */
-        return APR_SUCCESS;
-    }
-
-    if(!dobj->fd) {
+    if(!dobj->skipstore && dobj->fd == NULL) {
         rv = open_new_file(r, dobj->datafile, &(dobj->fd), conf);
         if(rv == CACHE_EEXIST) {
             /* Someone else beat us to storing this */
-            /* FIXME: Read-while-caching here later on */
-            return APR_SUCCESS;
+            dobj->skipstore = TRUE;
         }
         else if(rv != APR_SUCCESS) {
             return rv;
         }
-        dobj->file_size = 0;
+        else {
+            dobj->file_size = 0;
+        }
+    }
+
+    if(dobj->skipstore) {
+        /* Someone else beat us to storing this object */
+        if(dobj->store_body_called == 1 &&
+                dobj->initial_size > 0 &&
+                APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb)) )
+        {   
+            /* Yay, we can replace the body with the cached instance */
+            return replace_brigade_with_cache(h, r, bb);
+        }
+
+        return APR_SUCCESS;
     }
 
     /* Check if this is a complete single sequential file, eligable for
