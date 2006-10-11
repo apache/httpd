@@ -84,7 +84,8 @@ typedef struct disk_cache_object {
 
     apr_interval_time_t updtimeout; /* Cache update timeout */
 
-    int skipstore;           /* Set if we should skip storing stuff */
+    int skipstore;              /* Set if we should skip storing stuff */
+    int store_body_called;      /* Number of times store_body() has executed */
 } disk_cache_object_t;
 
 
@@ -112,6 +113,20 @@ typedef struct {
 #define CACHE_ENODATA (APR_OS_START_USERERR+1)
 #define CACHE_EDECLINED (APR_OS_START_USERERR+2)
 #define CACHE_EEXIST (APR_OS_START_USERERR+3)
+
+
+typedef struct diskcache_bucket_data diskcache_bucket_data;
+struct diskcache_bucket_data {
+    /* Number of buckets using this memory */
+    apr_bucket_refcount  refcount;
+    apr_file_t  *fd;
+    /* The pool into which any needed structures should
+     *  be created while reading from this file bucket */
+    apr_pool_t *readpool;
+    /* Cache update timeout */
+    apr_interval_time_t updtimeout;
+
+};
 
 
 #endif /*MOD_DISK_CACHE_H*/

@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_disk_cache: Implement read-while-caching.
+     [Niklas Edmundsson <nikke acc.umu.se>]
+
   *) mod_disk_cache: NULL fd pointers when closing them, fix missing
      close/flush, remove some unneccessary code duplication instead
      of calling the right helper in replace_brigade_with_cache().
