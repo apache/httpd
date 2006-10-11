@@ -200,15 +200,25 @@ module MODULE_VAR_EXPORT <var>module_name</var>_module =
       far...</p>
 
       <dl>
+        <dt><code>ap_hook_pre_config</code></dt>
+        <dd>do any setup required prior to processing configuration
+        directives</dd>
+
+        <dt><code>ap_hook_check_config</code></dt>
+        <dd>review configuration directive interdependencies</dd>
+
+        <dt><code>ap_hook_test_config</code></dt>
+        <dd>executes only with <code>-t</code> option</dd>
+
+        <dt><code>ap_hook_open_logs</code></dt>
+        <dd>open any specified logs</dd>
+
         <dt><code>ap_hook_post_config</code></dt>
         <dd>this is where the old <code>_init</code> routines get
         registered</dd>
 
         <dt><code>ap_hook_http_method</code></dt>
         <dd>retrieve the http method from a request. (legacy)</dd>
-
-        <dt><code>ap_hook_open_logs</code></dt>
-        <dd>open any specified logs</dd>
 
         <dt><code>ap_hook_auth_checker</code></dt>
         <dd>check if the resource requires authorization</dd>
