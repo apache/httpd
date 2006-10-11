@@ -39,8 +39,13 @@
 
   <section id="module">
     <title>Module Enhancements</title>
-    <!-- <dl>
-    </dl> -->
+    <dl>
+      <dt><module>mod_headers</module></dt>
+
+      <dd>Using the new <code>edit</code> argument, header values may
+          be edited using a regular expression search-and-replace
+          operation.</dd>
+    </dl>
 
   </section>
 
