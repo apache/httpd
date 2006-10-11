@@ -52,7 +52,19 @@
 
   <section id="developer">
     <title>Module Developer Changes</title>
-    <!-- <dl>
-    </dl> -->
+    <dl>
+      <dt>Check Configuration Hook Added</dt>
+
+      <dd>A new hook, <code>check_config</code>, has been added which runs
+          between the <code>pre_config</code> and <code>open_logs</code>
+          hooks.  It also runs before the <code>test_config</code> hook
+          when the <code>-t</code> option is passed to
+          <program>httpd</program>.  The <code>check_config</code> hook
+          allows modules to review interdependent configuration directive
+          values and adjust them while messages can still be logged to the
+          console.  The user can thus be alerted to misconfiguration problems
+          before the core <code>open_logs</code> hook function redirects
+          console output to the error log.</dd>
+    </dl>
   </section>
 </manualpage>
