@@ -65,6 +65,18 @@ static int uri_meets_conditions(apr_uri_t filter, int pathlen, apr_uri_t url)
         }
     }
 
+    /* For HTTP caching purposes, an empty (NULL) path is equivalent to
+     * a single "/" path. RFCs 3986/2396
+     */
+    if (!url.path) {
+        if (*filter.path == '/' && pathlen == 1) {
+            return 1;
+        }
+        else {
+            return 0;
+        }
+    }
+
     /* Url has met all of the filter conditions so far, determine
      * if the paths match.
      */
