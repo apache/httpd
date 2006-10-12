@@ -88,9 +88,6 @@ Changes with Apache 2.3.0
      parameter in the URL correctly. PR 40400.
      [Ruediger Pluem, Tomokazu Harada <harada sysrdc.ns-sol.co.jp>]
 
-  *) mod_ext_filter: Handle filter names which include capital letters.
-     PR 40323.  [Jeff Trawick]
-
   *) mod_deflate: Rework inflate output and deflate output filter to fix several
      issues: Incorrect handling of flush buckets, potential memory leaks,
      excessive memory usage in inflate output filter for large compressed
@@ -253,6 +250,9 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.4
 
+  *) mod_ext_filter: Handle filter names which include capital letters.
+     PR 40323.  [Jeff Trawick]
+  
   *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
      support.  Also corrects the slashes for Windows.  PR 15993. [William Rowe]
 
