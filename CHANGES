@@ -50,24 +50,6 @@ Changes with Apache 2.3.0
   *) mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
      [Davi Arnaut <davi haxent.com.br>]
 
-  *) mod_cache: From RFC3986 (section 6.2.3.) if a URI contains an
-     authority component and an empty path, the empty path is to be equivalent
-     to "/". It explicitly cites the following four URIs as equivalents:
-       http://example.com
-       http://example.com/
-       http://example.com:/
-       http://example.com:80/
-     [Davi Arnaut <davi haxent.com.br>]
-
-  *) mod_cache: Don't cache requests with a expires date in the past;
-     otherwise mod_cache will always try to cache the URL. This bug
-     might lead to numerous rename() errors on win32 if the URL was
-     previously cached. [Davi Arnaut <davi haxent.com.br>]
-
-  *) mod_disk_cache: Make sure that only positive integers are accepted
-     for the CacheMaxFileSize and CacheMinFileSize parameters in the
-     config file. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
-
   *) mod_proxy_balancer: Set the new environment variable BALANCER_ROUTE_CHANGED
      if a worker with a route different from the one supplied by the client
      had been chosen or if the client supplied no routing information for
@@ -249,6 +231,24 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) mod_cache: From RFC3986 (section 6.2.3.) if a URI contains an
+     authority component and an empty path, the empty path is to be equivalent
+     to "/". It explicitly cites the following four URIs as equivalents:
+       http://example.com
+       http://example.com/
+       http://example.com:/
+       http://example.com:80/
+     [Davi Arnaut <davi haxent.com.br>]
+
+  *) mod_cache: Don't cache requests with a expires date in the past;
+     otherwise mod_cache will always try to cache the URL. This bug
+     might lead to numerous rename() errors on win32 if the URL was
+     previously cached. [Davi Arnaut <davi haxent.com.br>]
+
+  *) mod_disk_cache: Make sure that only positive integers are accepted
+     for the CacheMaxFileSize and CacheMinFileSize parameters in the
+     config file. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
 
   *) core: Deal with the widespread use of apr_status_t return values
      as HTTP status codes, as documented in PR#31759 (a bug shared by
