@@ -146,20 +146,6 @@ Changes with Apache 2.3.0
      and the worker used during a request as environment variables. PR 39806.
      [Brian <brectanu gmail.com>]
 
-  *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
-     support.  Also corrects the slashes for Windows.  PR 15993. [William Rowe]
-
-  *) mod_isapi: Handle "HTTP/1.1 200 OK" style status lines correctly, the
-     token parser worked while the resulting length was misinterpreted.
-     PR 29098 [Brock Bland <bbland serena.com>]
-
-  *) mod_isapi: Return 0 (failure) for more of the various ap_pass_brigade
-     attempts to stream the response at the client.  PR 30022 [William Rowe]
-
-  *) mod_isapi: Ensure we walk through all the methods the developer may have
-     employed to report their HTTP status result code.
-     PR 16637 30033 28089  [Matt Lewandowsky <matt iamcode.net>, William Rowe]
-
   *) New SSLLogLevelDebugDump [ None (default) | IO (not bytes) | Bytes ]
      configures the I/O Dump of SSL traffic, when LogLevel is set to Debug.
      The default is none as this is far greater debugging resolution than 
@@ -266,6 +252,20 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
+     support.  Also corrects the slashes for Windows.  PR 15993. [William Rowe]
+
+  *) mod_isapi: Handle "HTTP/1.1 200 OK" style status lines correctly, the
+     token parser worked while the resulting length was misinterpreted.
+     PR 29098 [Brock Bland <bbland serena.com>]
+
+  *) mod_isapi: Return 0 (failure) for more of the various ap_pass_brigade
+     attempts to stream the response at the client.  PR 30022 [William Rowe]
+
+  *) mod_isapi: Ensure we walk through all the methods the developer may have
+     employed to report their HTTP status result code.
+     PR 16637 30033 28089  [Matt Lewandowsky <matt iamcode.net>, William Rowe]
 
   *) mod_echo: Fix precedence problem in if statement. PR 40658.
      [Larry Cipriani <lvc lucent.com>]
