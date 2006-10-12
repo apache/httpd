@@ -1728,8 +1728,8 @@ will be accepted from the client</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limits the size of the HTTP request header allowed from the
 client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LimitRequestFieldsize <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LimitRequestFieldsize 8190</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LimitRequestFieldSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LimitRequestFieldSize 8190</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
@@ -3092,7 +3092,7 @@ hostname or IP address</td></tr>
       <li>The IP address of the virtual host;</li>
 
       <li>A fully qualified domain name for the IP address of the
-      virtual host;</li>
+      virtual host (not recommended);</li>
 
       <li>The character <code>*</code>, which is used only in combination with
       <code>NameVirtualHost *</code> to match all IP addresses; or</li>

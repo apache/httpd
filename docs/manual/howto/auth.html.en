@@ -308,8 +308,8 @@ person in</a></h2>
     <div class="example"><p><code>
       AuthType Basic<br />
       AuthName "By Invitation Only"<br />
-      # Optional line:
-      AuthBasicProvider file
+      # Optional line:<br />
+      AuthBasicProvider file<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       AuthGroupFile /usr/local/apache/passwd/groups<br />
       Require group GroupName
@@ -378,7 +378,8 @@ person in</a></h2>
     AuthType Basic<br />
     AuthBasicProvider dbm<br />
     AuthDBMUserFile /www/passwords/passwd.dbm<br />
-    Require valid-user
+    Require valid-user<br />
+    &lt;/Directory&gt;
     </code></p></div>
 
     <p>Other options are available. Consult the
