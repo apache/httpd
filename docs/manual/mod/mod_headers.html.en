@@ -156,13 +156,21 @@ is available only in Apache 2.0</td></tr></table>
          MyHeader: D=3775428 t=991424704447256 mytext
        </code></p></div>
       </li>
+      <li>Enable DAV to work with Apache running HTTP through SSL hardware
+      (<a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">problem description</a>) by replacing <var>https:</var> with
+      <var>http:</var> in the <var>Destination</var> header:
+      <div class="example"><p><code>
+        RequestHeader edit Destination ^https: http: early
+      </code></p></div>
+      </li>
+
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] set|append|add|unset|echo
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] set|append|add|unset|echo|edit
 <var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
@@ -212,6 +220,12 @@ is available only in Apache 2.0</td></tr></table>
     response headers. <var>header</var> may be a 
     <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.
     <var>value</var> must be omitted.</dd>
+
+    <dt><code>edit</code></dt>
+    <dd>If this request header exists, its value is transformed according
+    to a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
+    search-and-replace.  The <var>value</var> argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, and the <var>replacement</var>
+    is a replacement string, which may contain backreferences.</dd>
     </dl>
 
     <p>This argument is followed by a <var>header</var> name, which
@@ -256,6 +270,10 @@ is available only in Apache 2.0</td></tr></table>
       more efficient than <code>%s</code>.</p>
     </div> 
 
+    <p>For <code>edit</code> there is both a <var>value</var> argument
+    which is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>,
+    and an additional <var>replacement</var> string.</p>
+
     <p>The <code class="directive">Header</code> directive may be followed by an
     an additional argument, which may be used to specify conditions under
     which the action will be taken, or may be the keyword <code>early</code>
@@ -278,14 +296,14 @@ is available only in Apache 2.0</td></tr></table>
 <div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader set|append|add|unset <var>header</var>
-[<var>value</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader set|append|add|unset|edit <var>header</var>
+[<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_headers</td></tr>
 </table>
-    <p>This directive can replace, merge or remove HTTP request
+    <p>This directive can replace, merge, change or remove HTTP request
     headers. The header is modified just before the content handler
     is run, allowing incoming headers to be modified. The action it
     performs is determined by the first argument. This can be one
@@ -314,18 +332,27 @@ is available only in Apache 2.0</td></tr></table>
     <dd>The request header of this name is removed, if it exists. If
     there are multiple headers of the same name, all will be removed.
     <var>value</var> must be omitted.</dd>
+
+    <dt><code>edit</code></dt>
+    <dd>If this request header exists, its value is transformed according
+    to a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>
+    search-and-replace.  The <var>value</var> argument is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>, and the <var>replacement</var>
+    is a replacement string, which may contain backreferences.</dd>
     </dl>
 
     <p>This argument is followed by a header name, which can
     include the final colon, but it is not required. Case is
     ignored. For <code>add</code>, <code>append</code> and
-    <code>set</code> a <var>value</var> is given as the third argument. If
+    <code>set</code> a <var>value</var> is given as the third argument. If a
     <var>value</var> contains spaces, it should be surrounded by double
     quotes. For unset, no <var>value</var> should be given.
     <var>value</var> may be a character string, a string containing format
     specifiers or a combination of both. The supported format specifiers
     are the same as for the <code class="directive"><a href="#header">Header</a></code>,
-    please have a look there for details.</p>
+    please have a look there for details.  For <code>edit</code> both
+    a <var>value</var> and a <var>replacement</var> are required, and are
+    a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a> and a
+    replacement string respectively.</p>
 
     <p>The <code class="directive">RequestHeader</code> directive may be followed by
     an additional argument, which may be used to specify conditions under

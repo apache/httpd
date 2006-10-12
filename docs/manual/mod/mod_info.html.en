@@ -45,7 +45,7 @@ configuration</td></tr>
 
     <p>You may wish to use <code class="module"><a href="../mod/mod_access.html">mod_access</a></code> inside the
     <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>
-    directive to limite access to your server configuration
+    directive to limit access to your server configuration
     information:</p>
 
     <div class="example"><p><code>

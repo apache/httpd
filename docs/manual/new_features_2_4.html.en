@@ -40,7 +40,13 @@
 <div class="section">
 <h2><a name="module" id="module">Module Enhancements</a></h2>
     
-    
+    <dl>
+      <dt><code class="module"><a href="./mod/mod_headers.html">mod_headers</a></code></dt>
+
+      <dd>Using the new <code>edit</code> argument, header values may
+          be edited using a regular expression search-and-replace
+          operation.</dd>
+    </dl>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -51,7 +57,20 @@
 <div class="section">
 <h2><a name="developer" id="developer">Module Developer Changes</a></h2>
     
-    
+    <dl>
+      <dt>Check Configuration Hook Added</dt>
+
+      <dd>A new hook, <code>check_config</code>, has been added which runs
+          between the <code>pre_config</code> and <code>open_logs</code>
+          hooks.  It also runs before the <code>test_config</code> hook
+          when the <code>-t</code> option is passed to
+          <code class="program"><a href="./programs/httpd.html">httpd</a></code>.  The <code>check_config</code> hook
+          allows modules to review interdependent configuration directive
+          values and adjust them while messages can still be logged to the
+          console.  The user can thus be alerted to misconfiguration problems
+          before the core <code>open_logs</code> hook function redirects
+          console output to the error log.</dd>
+    </dl>
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/new_features_2_4.html" title="English">&nbsp;en&nbsp;</a></p>
