@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) mod_ext_filter: Handle filter names which include capital letters.
+     PR 40323.  [Jeff Trawick]
+
   *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
      support.  Also corrects the slashes for Windows.  PR 15993. [William Rowe]
 

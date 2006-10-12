@@ -206,6 +206,7 @@ static const char *define_filter(cmd_parms *cmd, void *dummy, const char *args)
                                              &ext_filter_module);
     const char *token;
     const char *name;
+    char *normalized_name;
     ef_filter_t *filter;
 
     name = ap_getword_white(cmd->pool, &args);
@@ -213,7 +214,16 @@ static const char *define_filter(cmd_parms *cmd, void *dummy, const char *args)
         return "Filter name not found";
     }
 
-    if (apr_hash_get(conf->h, name, APR_HASH_KEY_STRING)) {
+    /* During request processing, we find information about the filter
+     * by looking up the filter name provided by core server in our
+     * hash table.  But the core server has normalized the filter
+     * name by converting it to lower case.  Thus, when adding the
+     * filter to our hash table we have to use lower case as well.
+     */
+    normalized_name = apr_pstrdup(cmd->pool, name);
+    ap_str_tolower(normalized_name);
+
+    if (apr_hash_get(conf->h, normalized_name, APR_HASH_KEY_STRING)) {
         return apr_psprintf(cmd->pool, "ExtFilter %s is already defined",
                             name);
     }
@@ -222,7 +232,7 @@ static const char *define_filter(cmd_parms *cmd, void *dummy, const char *args)
     filter->name = name;
     filter->mode = OUTPUT_FILTER;
     filter->ftype = AP_FTYPE_RESOURCE;
-    apr_hash_set(conf->h, name, APR_HASH_KEY_STRING, filter);
+    apr_hash_set(conf->h, normalized_name, APR_HASH_KEY_STRING, filter);
 
     while (*args) {
         while (apr_isspace(*args)) {
