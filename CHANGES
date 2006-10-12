@@ -250,6 +250,11 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.4
 
+  *) core: Deal with the widespread use of apr_status_t return values
+     as HTTP status codes, as documented in PR#31759 (a bug shared by
+     the default handler, mod_cgi, mod_cgid, mod_proxy, and probably
+     others). [Jeff Trawick, Ruediger Pluem, Joe Orton]
+
   *) mod_ext_filter: Handle filter names which include capital letters.
      PR 40323.  [Jeff Trawick]
   
