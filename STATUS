@@ -77,22 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_cache: From RFC3986 (section 6.2.3.) if a URI contains an
-      authority component and an empty path, the empty path is to be equivalent
-      to "/". It explicitly cites the following four URIs as equivalents:
-        http://example.com
-        http://example.com/
-        http://example.com:/
-        http://example.com:80/
-      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450063
-      +1: minfrin, rpluem, jim
-
-    * mod_disk_cache: Make sure that only positive integers are accepted
-      for the CacheMaxFileSize and CacheMinFileSize parameters in the
-      config file. PR39380
-      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450042
-      2.2.x: http://people.apache.org/~minfrin/mod_disk_cache-lfsconfig-2.2.patch
-      +1: minfrin, jim, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 

@@ -88,8 +88,8 @@ typedef struct {
     apr_size_t cache_root_len;
     int dirlevels;               /* Number of levels of subdirectories */
     int dirlength;               /* Length of subdirectory names */
-    apr_size_t minfs;            /* minumum file size for cached files */
-    apr_size_t maxfs;            /* maximum file size for cached files */
+    apr_off_t minfs;             /* minimum file size for cached files */
+    apr_off_t maxfs;             /* maximum file size for cached files */
 } disk_cache_conf;
 
 #endif /*MOD_DISK_CACHE_H*/
