@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) mod_disk_cache: Make sure that only positive integers are accepted
+     for the CacheMaxFileSize and CacheMinFileSize parameters in the
+     config file. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
+
   *) mod_cache: From RFC3986 (section 6.2.3.) if a URI contains an
      authority component and an empty path, the empty path is to be equivalent
      to "/". It explicitly cites the following four URIs as equivalents:
