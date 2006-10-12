@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_authnz_ldap: Add an AuthLDAPRemoteUserAttribute directive. If
+     set, REMOTE_USER will be set to this attribute, rather than the
+     username supplied by the user. Useful for example when you want users
+     to log in using an email address, but need to supply a userid instead
+     to the backend. [Graham Leggett]
+
   *) Allow mod_dumpio to log at other than DEBUG levels via
      the new DumpIOLogLevel directive. [Jim Jagielski]
 

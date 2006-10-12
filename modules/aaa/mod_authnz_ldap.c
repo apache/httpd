@@ -62,6 +62,7 @@ typedef struct {
     char *bindpw;                   /* Password to bind to server (can be NULL) */
 
     int user_is_dn;                 /* If true, connection->user is DN instead of userid */
+    char *remote_user_attribute;    /* If set, connection->user is this attribute instead of userid */
     int compare_dn_on_server;       /* If true, will use server to do DN compare */
 
     int have_ldap_url;              /* Set if we have found an LDAP url */
@@ -295,6 +296,7 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
     sec->secure = -1;   /*Initialize to unset*/
 
     sec->user_is_dn = 0;
+    sec->remote_user_attribute = NULL;
     sec->compare_dn_on_server = 0;
 
     return sec;
@@ -329,6 +331,7 @@ static authn_status authn_ldap_check_password(request_rec *r, const char *user,
 
     util_ldap_connection_t *ldc = NULL;
     int result = 0;
+    int remote_user_attribute_set = 0;
     const char *dn = NULL;
 
     authn_ldap_request_t *req =
@@ -439,8 +442,26 @@ start_over:
                 j++;
             }
             apr_table_setn(e, str, vals[i]);
+
+            /* handle remote_user_attribute, if set */
+            if (sec->remote_user_attribute && 
+                !strcmp(sec->remote_user_attribute, sec->attributes[i])) {
+                r->user = (char *)apr_pstrdup(r->pool, vals[i]);
+                remote_user_attribute_set = 1;
+            }
             i++;
         }
+    }
+
+    /* sanity check */
+    if (sec->remote_user_attribute && !remote_user_attribute_set) {
+        ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                  "[%" APR_PID_T_FMT "] auth_ldap authenticate: "
+                  "REMOTE_USER was to be set with attribute '%s', "
+                  "but this attribute was not requested for in the "
+                  "LDAP query for the user. REMOTE_USER will fall "
+                  "back to username or DN as appropriate.", getpid(),
+                  sec->remote_user_attribute);
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
@@ -1289,6 +1310,13 @@ static const command_rec authnz_ldap_cmds[] =
                  "Set to 'on' to set the REMOTE_USER environment variable to be the full "
                  "DN of the remote user. By default, this is set to off, meaning that "
                  "the REMOTE_USER variable will contain whatever value the remote user sent."),
+
+    AP_INIT_TAKE1("AuthLDAPRemoteUserAttribute", ap_set_string_slot,
+                 (void *)APR_OFFSETOF(authn_ldap_config_t, 
+                                      remote_user_attribute), OR_AUTHCFG,
+                 "Override the user supplied username and place the "
+                 "contents of this attribute in the REMOTE_USER "
+                 "environment variable."),
 
     AP_INIT_FLAG("AuthLDAPCompareDNOnServer", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(authn_ldap_config_t, compare_dn_on_server), OR_AUTHCFG,
