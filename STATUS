@@ -77,15 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_isapi: Simply backport the host of fixes for compilation on unix,
-      PR#'s 15993 29098 30022 16637 30033 28089
-      by pushing to trunk/ rev 416293 of modules/arch/win32/mod_isapi.[ch]
-      which compiles without changes.  Source + Binary posted at
-        http://people.apache.org/~wrowe/mod_isapi-416293.zip
-      and delta posted at
-        http://people.apache.org/~wrowe/mod_isapi-416293-to-httpd-2.2.patch
-      +1 wrowe , fielding, jerenkrantz
-
     * mod_ext_filter: Handle filter names which include capital letters.
       PR 40323.
       Trunk patch, which applies:
