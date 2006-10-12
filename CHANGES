@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Allow mod_dumpio to log at other than DEBUG levels via
+     the new DumpIOLogLevel directive. [Jim Jagielski]
+
   *) mod_disk_cache: Implement read-while-caching.
      [Niklas Edmundsson <nikke acc.umu.se>]
 
