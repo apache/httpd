@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy_fcgi: Added win32 build. [Mladen Turk]
+
   *) mod_authnz_ldap: Add an AuthLDAPRemoteUserAttribute directive. If
      set, REMOTE_USER will be set to this attribute, rather than the
      username supplied by the user. Useful for example when you want users
