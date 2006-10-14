@@ -46,6 +46,11 @@ locale and used as the default tables by PCRE. Now that pcre_maketables is
 a function visible to the outside world, we make use of its code from here in
 order to be consistent. */
 
+#if defined(_MSC_VER) && _MSC_VER >= 1400
+#define _CRT_SECURE_NO_DEPRECATE
+#pragma warning(disable: 4996)
+#endif
+
 #include <ctype.h>
 #include <stdio.h>
 #include <string.h>
