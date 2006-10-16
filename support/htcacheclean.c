@@ -34,6 +34,7 @@
 #include "apr_getopt.h"
 #include "apr_ring.h"
 #include "apr_date.h"
+#include "apr_buckets.h"
 #include "../modules/cache/mod_disk_cache.h"
 
 #if APR_HAVE_UNISTD_H
