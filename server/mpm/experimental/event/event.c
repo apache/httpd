@@ -216,7 +216,7 @@ static ap_pod_t *pod;
 
 server_rec *ap_server_conf;
 
-/* The worker MPM respects a couple of runtime flags that can aid
+/* The event MPM respects a couple of runtime flags that can aid
  * in debugging. Setting the -DNO_DETACH flag will prevent the root process
  * from detaching from its controlling terminal. Additionally, setting
  * the -DONE_PROCESS flag (which implies -DNO_DETACH) will get you the
@@ -2130,8 +2130,8 @@ int ap_mpm_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
 /* This really should be a post_config hook, but the error log is already
  * redirected by that point, so we need to do this in the open_logs phase.
  */
-static int worker_open_logs(apr_pool_t * p, apr_pool_t * plog,
-                            apr_pool_t * ptemp, server_rec * s)
+static int event_open_logs(apr_pool_t * p, apr_pool_t * plog,
+                           apr_pool_t * ptemp, server_rec * s)
 {
     static int restart_num = 0;
     int startup = 0;
@@ -2165,8 +2165,8 @@ static int worker_open_logs(apr_pool_t * p, apr_pool_t * plog,
     return OK;
 }
 
-static int worker_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
-                             apr_pool_t * ptemp)
+static int event_pre_config(apr_pool_t * pconf, apr_pool_t * plog,
+                            apr_pool_t * ptemp)
 {
     static int restart_num = 0;
     int no_detach, debug, foreground;
@@ -2480,11 +2480,11 @@ static void event_hooks(apr_pool_t * p)
     static const char *const aszSucc[] = { "core.c", NULL };
     one_process = 0;
 
-    ap_hook_open_logs(worker_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
+    ap_hook_open_logs(event_open_logs, NULL, aszSucc, APR_HOOK_REALLY_FIRST);
     /* we need to set the MPM state before other pre-config hooks use MPM query
      * to retrieve it, so register as REALLY_FIRST
      */
-    ap_hook_pre_config(worker_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_pre_config(event_pre_config, NULL, NULL, APR_HOOK_REALLY_FIRST);
     ap_hook_check_config(event_check_config, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
