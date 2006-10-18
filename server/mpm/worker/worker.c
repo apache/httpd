@@ -590,7 +590,7 @@ static void dummy_signal_handler(int sig)
      */
 }
 
-static void *listener_thread(apr_thread_t *thd, void * dummy)
+static void * APR_THREAD_FUNC listener_thread(apr_thread_t *thd, void * dummy)
 {
     proc_info * ti = dummy;
     int process_slot = ti->pid;
