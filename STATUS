@@ -220,4 +220,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x version of patch:
         Trunk version works
       +1:
-     
+
+   * mod_dumpio: Allow logging at other LogLevels via DumpIOLogLevel
+     directive.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=463291
+      2.2.x version of patch:
+        http://people.apache.org/~jim/patches/dumpio-patch.txt
+      +1: jim
