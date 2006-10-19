@@ -214,4 +214,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk: http://svn.apache.org/viewvc?view=rev&rev=463427
       +1: minfrin
 
-
+   * mod_proxy_balancer: Implement new environment variable BALANCER_ROUTE_CHANGED
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=446929
+      2.2.x version of patch:
+        Trunk version works
+      +1:
+     
