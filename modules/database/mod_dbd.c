@@ -68,7 +68,6 @@ typedef enum { cmd_name, cmd_params, cmd_persist,
 } cmd_parts;
 
 static apr_hash_t *dbd_prepared_defns;
-static const char *const default_hostname = "*";
 
 /* a default DBDriver value that'll generate meaningful error messages */
 static const char *const no_dbdriver = "[DBDriver unset]";
@@ -148,12 +147,7 @@ DBD_DECLARE_NONSTD(void) ap_dbd_prepare(server_rec *s, const char *query,
                                         const char *label)
 {
     dbd_prepared *prepared = apr_pcalloc(s->process->pool, sizeof(dbd_prepared));
-    const char *key = s->server_hostname;
-    if (key == NULL) {
-        key = default_hostname;
-        ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, s,
-                     "DBD: ServerName should be set before declaring any prepared statements");
-    }
+    const char *key = apr_psprintf(s->process->pool, "%pp", s);
     prepared->label = label;
     prepared->query = query;
     prepared->next = apr_hash_get(dbd_prepared_defns, key, APR_HASH_KEY_STRING);
@@ -623,10 +617,7 @@ static int dbd_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     svr_cfg *svr;
     server_rec *sp;
     for (sp = s; sp; sp = sp->next) {
-        const char *key = s->server_hostname;
-        if (key == NULL) {
-            key = default_hostname;
-        }
+        const char *key = apr_psprintf(s->process->pool, "%pp", s);
         svr = ap_get_module_config(sp->module_config, &dbd_module);
         svr->prepared = apr_hash_get(dbd_prepared_defns, key,
                                      APR_HASH_KEY_STRING);

@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_dbd: Key the storage of prepared statements on the hex string
+     value of server_rec, rather than the server name, as the server name
+     may change (eg when the server name is set) at any time, causing
+     weird behaviour in modules dependent on mod_dbd. [Graham Leggett]
+
   *) mod_proxy_fcgi: Added win32 build. [Mladen Turk]
 
   *) mod_authnz_ldap: Add an AuthLDAPRemoteUserAttribute directive. If
