@@ -433,7 +433,7 @@ start_over:
         apr_table_t *e = r->subprocess_env;
         int i = 0;
         while (sec->attributes[i]) {
-            char *str = apr_pstrcat(r->pool, "AUTHENTICATE_", sec->attributes[i], NULL);
+            char *str = apr_pstrcat(r->pool, AUTHN_PREFIX, sec->attributes[i], NULL);
             int j = 13;
             while (str[j]) {
                 if (str[j] >= 'a' && str[j] <= 'z') {

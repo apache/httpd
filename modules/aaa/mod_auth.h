@@ -44,6 +44,8 @@ extern "C" {
 #define AUTHZ_PROVIDER_NAME_NOTE "authz_provider_name"
 #define AUTHZ_ACCESS_PASSED_NOTE "authz_access_passed"
 
+#define AUTHN_PREFIX "AUTHENTICATE_"
+
 /** all of the requirements must be met */
 #define SATISFY_ALL 0
 /**  any of the requirements must be met */
