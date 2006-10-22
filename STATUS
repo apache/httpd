@@ -225,3 +225,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x version of patch:
         http://people.apache.org/~jim/patches/dumpio-patch.txt
       +1: jim
+
+   * mod_dbd: Key the storage of prepared statements on the hex string
+     value of server_rec, rather than the server name, as the server name
+     may change (eg when the server name is set) at any time, causing
+     weird behaviour in modules dependent on mod_dbd.
+     Trunk: http://svn.apache.org/viewvc?view=rev&revision=466641
+     +1: minfrin
+
+   * mod_authn_dbd: Export any additional columns queried in the SQL select
+     into the environment with the name AUTHENTICATE_<COLUMN>. This brings
+     mod_authn_dbd behaviour in line with mod_authnz_ldap.
+     Trunk: http://svn.apache.org/viewvc?view=rev&revision=466865
+     +1: minfrin
+
