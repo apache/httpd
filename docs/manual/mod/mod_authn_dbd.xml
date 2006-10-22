@@ -111,7 +111,10 @@ DBDExptime 60</code>
     <example>
     AuthDBDUserPWQuery "SELECT password FROM authn WHERE username = %s"
     </example>
-
+    <p>If httpd was built against apr v1.3.0 or higher, any additional
+    columns specified in the select statement will be inserted into
+    the environment with the name <code>AUTHENTICATE_&lt;COLUMN&gt;</code>.
+    </p>
 </usage>
 </directivesynopsis>
 
@@ -133,6 +136,10 @@ DBDExptime 60</code>
     AuthDBDUserRealmQuery "SELECT password FROM authn
                               WHERE username = %s AND realm = %s"
     </example>
+    <p>If httpd was built against apr v1.3.0 or higher, any additional
+    columns specified in the select statement will be inserted into
+    the environment with the name <code>AUTHENTICATE_&lt;COLUMN&gt;</code>.
+    </p>
 
 </usage>
 </directivesynopsis>
