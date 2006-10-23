@@ -133,13 +133,23 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     int rv = 0;
     apr_int32_t conn_poll_fd;
     apr_pollfd_t *conn_poll;
+    proxy_server_conf *psf =
+    ap_get_module_config(r->server->module_config, &proxy_module);
+    apr_size_t maxsize = AP_IOBUFSIZE;
+
+    if (psf->io_buffer_size_set)
+       maxsize = psf->io_buffer_size;
+    if (maxsize > 65536)
+       maxsize = 65536;
+    if (maxsize%1024)
+        maxize = ((maxsize/1024) + 1 ) * 1024;
 
     /*
      * Send the AJP request to the remote server
      */
 
     /* send request headers */
-    status = ajp_send_header(conn->sock, r, uri);
+    status = ajp_send_header(conn->sock, r, maxsize, uri);
     if (status != APR_SUCCESS) {
         conn->close++;
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
@@ -153,6 +163,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     }
 
     /* allocate an AJP message to store the data of the buckets */
+    bufsiz = maxsize;
     status = ajp_alloc_data_msg(r->pool, &buff, &bufsiz, &msg);
     if (status != APR_SUCCESS) {
         /* We had a failure: Close connection to backend */
@@ -225,7 +236,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     /* read the response */
     conn->data = NULL;
-    status = ajp_read_header(conn->sock, r,
+    status = ajp_read_header(conn->sock, r, maxsize,
                              (ajp_msg_t **)&(conn->data));
     if (status != APR_SUCCESS) {
         /* We had a failure: Close connection to backend */
@@ -251,7 +262,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     conn_poll->desc_type = APR_POLL_SOCKET;
     conn_poll->desc.s = conn->sock;
 
-    bufsiz = AJP13_MAX_SEND_BODY_SZ;
+    bufsiz = maxsize;
     while (isok) {
         switch (result) {
             case CMD_AJP13_GET_BODY_CHUNK:
@@ -273,7 +284,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                                          "ap_get_brigade failed");
                             break;
                         }
-                        bufsiz = AJP13_MAX_SEND_BODY_SZ;
+                        bufsiz = maxsize;
                         status = apr_brigade_flatten(input_brigade, buff,
                                                      &bufsiz);
                         apr_brigade_cleanup(input_brigade);
@@ -379,7 +390,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
             break;
 
         /* read the response */
-        status = ajp_read_header(conn->sock, r,
+        status = ajp_read_header(conn->sock, r, maxsize,
                                  (ajp_msg_t **)&(conn->data));
         if (status != APR_SUCCESS) {
             isok = 0;

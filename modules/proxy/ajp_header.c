@@ -574,12 +574,13 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
  */
 apr_status_t ajp_send_header(apr_socket_t *sock,
                              request_rec *r,
+                             apr_size_t buffsize,
                              apr_uri_t *uri)
 {
     ajp_msg_t *msg;
     apr_status_t rc;
 
-    rc = ajp_msg_create(r->pool, &msg);
+    rc = ajp_msg_create(r->pool, buffsize, &msg);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_send_header: ajp_msg_create failed");
@@ -608,6 +609,7 @@ apr_status_t ajp_send_header(apr_socket_t *sock,
  */
 apr_status_t ajp_read_header(apr_socket_t *sock,
                              request_rec  *r,
+                             apr_size_t buffsize,
                              ajp_msg_t **msg)
 {
     apr_byte_t result;
@@ -622,7 +624,7 @@ apr_status_t ajp_read_header(apr_socket_t *sock,
         }
     }
     else {
-        rc = ajp_msg_create(r->pool, msg);
+        rc = ajp_msg_create(r->pool, buffsize, msg);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                    "ajp_read_header: ajp_msg_create failed");
@@ -725,11 +727,11 @@ apr_status_t  ajp_alloc_data_msg(apr_pool_t *pool, char **ptr, apr_size_t *len,
 {
     apr_status_t rc;
 
-    if ((rc = ajp_msg_create(pool, msg)) != APR_SUCCESS)
+    if ((rc = ajp_msg_create(pool, *len, msg)) != APR_SUCCESS)
         return rc;
     ajp_msg_reset(*msg);
     *ptr = (char *)&((*msg)->buf[6]);
-    *len = AJP_MSG_BUFFER_SZ-6;
+    *len =  *len - 6;
 
     return APR_SUCCESS;
 }
