@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Fix address-in-use startup failure caused by corruption of the list of 
+     listen sockets in some configurations with multiple generic Listen 
+     directives.  [Jeff Trawick]
+
   *) mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
      mod_authn_dbd behaviour in line with mod_authnz_ldap. [Graham Leggett]
