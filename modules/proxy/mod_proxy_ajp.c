@@ -142,7 +142,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     if (maxsize > 65536)
        maxsize = 65536;
     if (maxsize%1024)
-        maxize = ((maxsize/1024) + 1 ) * 1024;
+        maxsize = ((maxsize/1024) + 1 ) * 1024;
 
     /*
      * Send the AJP request to the remote server
