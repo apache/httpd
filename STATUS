@@ -239,3 +239,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk: http://svn.apache.org/viewvc?view=rev&revision=466865
      +1: minfrin
 
+   * Fix address-in-use startup failure caused by corruption of the list of
+     listen sockets in some configurations with multiple generic Listen
+     directives.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=467034
+     2.2.x version of patch:
+       Trunk version works
+     +1: trawick
+
