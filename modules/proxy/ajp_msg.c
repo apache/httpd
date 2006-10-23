@@ -44,7 +44,7 @@ char * ajp_msg_dump(apr_pool_t *pool, ajp_msg_t *msg, char *err)
     apr_snprintf(rv, bl,
                  "ajp_msg_dump(): %s pos=%" APR_SIZE_T_FMT
                  " len=%" APR_SIZE_T_FMT " max=%d\n",
-                 err, msg->pos, msg->len, AJP_MSG_BUFFER_SZ);
+                 err, msg->pos, msg->len, msg->max_size);
     bl -= strlen(rv);
     p = rv + strlen(rv);
     for (i = 0; i < len; i += 16) {
@@ -109,11 +109,11 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
     msglen  = ((head[2] & 0xff) << 8);
     msglen += (head[3] & 0xFF);
 
-    if (msglen > AJP_MSG_BUFFER_SZ) {
+    if (msglen > msg->max_size) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                      "ajp_check_msg_header() incoming message is "
                      "too big %" APR_SIZE_T_FMT ", max is %d",
-                     msglen, AJP_MSG_BUFFER_SZ);
+                     msglen, msg->max_size);
         return AJP_ETOBIG;
     }
 
@@ -147,10 +147,13 @@ apr_status_t ajp_msg_reset(ajp_msg_t *msg)
 apr_status_t ajp_msg_reuse(ajp_msg_t *msg)
 {
     apr_byte_t *buf;
+    apr_size_t max_size;
 
     buf = msg->buf;
+    max_size = msg->max_size;
     memset(msg, 0, sizeof(ajp_msg_t));
     msg->buf = buf;
+    msg->max_size = max_size;
     msg->header_len = AJP_HEADER_LEN;
     ajp_msg_reset(msg);
     return APR_SUCCESS;
@@ -201,7 +204,7 @@ apr_status_t ajp_msg_append_uint32(ajp_msg_t *msg, apr_uint32_t value)
 {
     apr_size_t len = msg->len;
 
-    if ((len + 4) > AJP_MSG_BUFFER_SZ) {
+    if ((len + 4) > msg->max_size) {
         return ajp_log_overflow(msg, "ajp_msg_append_uint32");
     }
 
@@ -226,7 +229,7 @@ apr_status_t ajp_msg_append_uint16(ajp_msg_t *msg, apr_uint16_t value)
 {
     apr_size_t len = msg->len;
 
-    if ((len + 2) > AJP_MSG_BUFFER_SZ) {
+    if ((len + 2) > msg->max_size) {
         return ajp_log_overflow(msg, "ajp_msg_append_uint16");
     }
 
@@ -249,7 +252,7 @@ apr_status_t ajp_msg_append_uint8(ajp_msg_t *msg, apr_byte_t value)
 {
     apr_size_t len = msg->len;
 
-    if ((len + 1) > AJP_MSG_BUFFER_SZ) {
+    if ((len + 1) > msg->max_size) {
         return ajp_log_overflow(msg, "ajp_msg_append_uint8");
     }
 
@@ -278,7 +281,7 @@ apr_status_t ajp_msg_append_string_ex(ajp_msg_t *msg, const char *value,
     }
 
     len = strlen(value);
-    if ((msg->len + len + 3) > AJP_MSG_BUFFER_SZ) {
+    if ((msg->len + len + 3) > msg->max_size) {
         return ajp_log_overflow(msg, "ajp_msg_append_cvt_string");
     }
 
@@ -311,7 +314,7 @@ apr_status_t ajp_msg_append_bytes(ajp_msg_t *msg, const apr_byte_t *value,
         return APR_SUCCESS; /* Shouldn't we indicate an error ? */
     }
 
-    if ((msg->len + valuelen) > AJP_MSG_BUFFER_SZ) {
+    if ((msg->len + valuelen) > msg->max_size) {
         return ajp_log_overflow(msg, "ajp_msg_append_bytes");
     }
 
@@ -445,7 +448,7 @@ apr_status_t ajp_msg_get_string(ajp_msg_t *msg, const char **rvalue)
     status = ajp_msg_get_uint16(msg, &size);
     start = msg->pos;
 
-    if ((status != APR_SUCCESS) || (size + start > AJP_MSG_BUFFER_SZ)) {
+    if ((status != APR_SUCCESS) || (size + start > msg->max_size)) {
         return ajp_log_overflow(msg, "ajp_msg_get_string");
     }
 
@@ -476,7 +479,7 @@ apr_status_t ajp_msg_get_bytes(ajp_msg_t *msg, apr_byte_t **rvalue,
     /* save the current position */
     start = msg->pos;
 
-    if ((status != APR_SUCCESS) || (size + start > AJP_MSG_BUFFER_SZ)) {
+    if ((status != APR_SUCCESS) || (size + start > msg->max_size)) {
         return ajp_log_overflow(msg, "ajp_msg_get_bytes");
     }
     msg->pos += (apr_size_t)size;   /* only bytes, no trailer */
@@ -492,10 +495,11 @@ apr_status_t ajp_msg_get_bytes(ajp_msg_t *msg, apr_byte_t **rvalue,
  * Create an AJP Message from pool
  *
  * @param pool      memory pool to allocate AJP message from
+ * @param size      size of the buffer to create
  * @param rmsg      Pointer to newly created AJP message
  * @return          APR_SUCCESS or error
  */
-apr_status_t ajp_msg_create(apr_pool_t *pool, ajp_msg_t **rmsg)
+apr_status_t ajp_msg_create(apr_pool_t *pool, apr_size_t size, ajp_msg_t **rmsg)
 {
     ajp_msg_t *msg = (ajp_msg_t *)apr_pcalloc(pool, sizeof(ajp_msg_t));
 
@@ -507,7 +511,7 @@ apr_status_t ajp_msg_create(apr_pool_t *pool, ajp_msg_t **rmsg)
 
     msg->server_side = 0;
 
-    msg->buf = (apr_byte_t *)apr_palloc(pool, AJP_MSG_BUFFER_SZ);
+    msg->buf = (apr_byte_t *)apr_palloc(pool, size);
 
     /* XXX: This should never happen
      * In case if the OS cannont allocate 8K of data
@@ -523,6 +527,7 @@ apr_status_t ajp_msg_create(apr_pool_t *pool, ajp_msg_t **rmsg)
 
     msg->len = 0;
     msg->header_len = AJP_HEADER_LEN;
+    msg->max_size = size;
     *rmsg = msg;
 
     return APR_SUCCESS;
@@ -543,11 +548,11 @@ apr_status_t ajp_msg_copy(ajp_msg_t *smsg, ajp_msg_t *dmsg)
         return AJP_EINVAL;
     }
 
-    if (smsg->len > AJP_MSG_BUFFER_SZ) {
+    if (smsg->len > smsg->max_size) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                      "ajp_msg_copy(): destination buffer too "
                      "small %" APR_SIZE_T_FMT ", max size is %d",
-                     smsg->len, AJP_MSG_BUFFER_SZ);
+                     smsg->len, smsg->max_size);
         return  AJP_ETOSMALL;
     }
 

@@ -118,6 +118,8 @@ struct ajp_msg
     apr_size_t  len;
     /** The current read position */ 
     apr_size_t  pos;
+    /** The size of the buffer */
+    apr_size_t max_size;
     /** Flag indicating the origing of the message */ 
     int         server_side;
 };
@@ -322,10 +324,11 @@ apr_status_t ajp_msg_get_bytes(ajp_msg_t *msg, apr_byte_t **rvalue,
  * Create an AJP Message from pool
  *
  * @param pool      memory pool to allocate AJP message from
+ * @param size      size of the buffer to create
  * @param rmsg      Pointer to newly created AJP message
  * @return          APR_SUCCESS or error
  */
-apr_status_t ajp_msg_create(apr_pool_t *pool, ajp_msg_t **rmsg);
+apr_status_t ajp_msg_create(apr_pool_t *pool, apr_size_t size, ajp_msg_t **rmsg);
 
 /**
  * Recopy an AJP Message to another
@@ -392,21 +395,25 @@ apr_status_t ajp_ilink_receive(apr_socket_t *sock, ajp_msg_t *msg);
  * Build the ajp header message and send it
  * @param sock      backend socket
  * @param r         current request
+ * @param buffsize  max size of the AJP packet.
  * @uri uri         requested uri
  * @return          APR_SUCCESS or error
  */
 apr_status_t ajp_send_header(apr_socket_t *sock, request_rec *r,
+                             apr_size_t buffsize,
                              apr_uri_t *uri);
 
 /**
  * Read the ajp message and return the type of the message.
  * @param sock      backend socket
  * @param r         current request
+ * @param buffsize  size of the buffer.
  * @param msg       returned AJP message
  * @return          APR_SUCCESS or error
  */
 apr_status_t ajp_read_header(apr_socket_t *sock,
                              request_rec  *r,
+                             apr_size_t buffsize,
                              ajp_msg_t **msg);
 
 /**
