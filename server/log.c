@@ -354,10 +354,8 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
 int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
                  apr_pool_t *ptemp, server_rec *s_main)
 {
-    apr_status_t rc = APR_SUCCESS;
     server_rec *virt, *q;
     int replace_stderr;
-    apr_file_t *errfile = NULL;
 
     apr_pool_cleanup_register(p, NULL, clear_handle_list,
                               apr_pool_cleanup_null);
@@ -367,13 +365,13 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
 
     replace_stderr = 1;
     if (s_main->error_log) {
-        /* replace stderr with this new log */
+        apr_status_t rv;
+        
+        /* Replace existing stderr with new log. */
         apr_file_flush(s_main->error_log);
-        if ((rc = apr_file_open_stderr(&errfile, p)) == APR_SUCCESS) {
-            rc = apr_file_dup2(errfile, s_main->error_log, p);
-        }
-        if (rc != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rc, s_main,
+        rv = apr_file_dup2(stderr_log, s_main->error_log, p);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s_main,
                          "unable to replace stderr with error_log");
         }
         else {

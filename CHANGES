@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Fix issue which could cause error messages to be written to access logs
+     on Win32.  PR 40476.  [Tom Donovan <Tom.Donovan acm.org>]
+
   *) The LockFile directive, which specifies the location of
      the accept() mutex lockfile, is depreciated. Instead, the
      AcceptMutex directive now takes an optional lockfile
