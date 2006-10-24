@@ -399,7 +399,7 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
      *  2) The brigade contains a flush bucket: Do a blocking write
      *     of everything up that point.
      *
-     *  3) The request is in CONN_STATE_HANLDER state, and the brigade
+     *  3) The request is in CONN_STATE_HANDLER state, and the brigade
      *     contains at least THRESHOLD_MAX_BUFFER bytes in non-file
      *     buckets: Do blocking writes until the amount of data in the
      *     buffer is less than THRESHOLD_MAX_BUFFER.  (The point of this
