@@ -135,14 +135,15 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     apr_pollfd_t *conn_poll;
     proxy_server_conf *psf =
     ap_get_module_config(r->server->module_config, &proxy_module);
-    apr_size_t maxsize = AP_IOBUFSIZE;
+    apr_size_t maxsize = AJP_MSG_BUFFER_SZ;
 
     if (psf->io_buffer_size_set)
        maxsize = psf->io_buffer_size;
-    if (maxsize > 65536)
-       maxsize = 65536;
-    if (maxsize%1024)
-        maxsize = ((maxsize/1024) + 1 ) * 1024;
+    if (maxsize > AJP_MAX_BUFFER_SZ)
+       maxsize = AJP_MAX_BUFFER_SZ;
+    else if (maxsize < AJP_MSG_BUFFER_SZ)
+       maxsize = AJP_MSG_BUFFER_SZ;
+    maxsize = APR_ALIGN(maxsize, 1024);
 
     /*
      * Send the AJP request to the remote server
@@ -183,7 +184,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     } else {
         status = ap_get_brigade(r->input_filters, input_brigade,
                                 AP_MODE_READBYTES, APR_BLOCK_READ,
-                                AJP13_MAX_SEND_BODY_SZ);
+                                maxsize - AJP_HEADER_SZ);
 
         if (status != APR_SUCCESS) {
             /* We had a failure: Close connection to backend */
@@ -277,7 +278,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                         status = ap_get_brigade(r->input_filters, input_brigade,
                                                 AP_MODE_READBYTES,
                                                 APR_BLOCK_READ,
-                                                AJP13_MAX_SEND_BODY_SZ);
+                                                maxsize - AJP_HEADER_SZ);
                         if (status != APR_SUCCESS) {
                             ap_log_error(APLOG_MARK, APLOG_DEBUG, status,
                                          r->server,
