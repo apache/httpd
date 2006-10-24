@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) The LockFile directive, which specifies the location of
+     the accept() mutex lockfile, is depreciated. Instead, the
+     AcceptMutex directive now takes an optional lockfile
+     location parameter, ala SSLMutex. [Jim Jagielski]
+
   *) Fix address-in-use startup failure caused by corruption of the list of 
      listen sockets in some configurations with multiple generic Listen 
      directives.  [Jeff Trawick]

@@ -491,9 +491,6 @@ typedef struct {
 /**  API glue structures  */
 extern module AP_MODULE_DECLARE_DATA ssl_module;
 
-/** "global" stuff */
-extern const char ssl_valid_ssl_mutex_string[];
-
 /**  configuration handling   */
 SSLModConfigRec *ssl_config_global_create(server_rec *);
 void         ssl_config_global_fix(SSLModConfigRec *);

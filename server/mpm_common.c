@@ -44,6 +44,7 @@
 #include "ap_mpm.h"
 #include "ap_listen.h"
 #include "mpm_default.h"
+#include "util_mutex.h"
 
 #ifdef AP_MPM_WANT_SET_SCOREBOARD
 #include "scoreboard.h"
@@ -810,72 +811,41 @@ const char * ap_mpm_set_graceful_shutdown(cmd_parms *cmd, void *dummy,
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 apr_lockmech_e ap_accept_lock_mech = APR_LOCK_DEFAULT;
 
-const char ap_valid_accept_mutex_string[] =
-    "Valid accept mutexes for this platform and MPM are: default"
-#if APR_HAS_FLOCK_SERIALIZE
-    ", flock"
-#endif
-#if APR_HAS_FCNTL_SERIALIZE
-    ", fcntl"
-#endif
-#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
-    ", sysvsem"
-#endif
-#if APR_HAS_POSIXSEM_SERIALIZE
-    ", posixsem"
-#endif
-#if APR_HAS_PROC_PTHREAD_SERIALIZE
-    ", pthread"
-#endif
-    ".";
-
 AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
                                                      void *dummy,
                                                      const char *arg)
 {
+    apr_status_t rv;
+    const char *lockfile;
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
     if (err != NULL) {
         return err;
     }
 
-    if (!strcasecmp(arg, "default")) {
-        ap_accept_lock_mech = APR_LOCK_DEFAULT;
+    rv = ap_parse_mutex(arg, cmd->server->process->pool,
+                        &ap_accept_lock_mech, &lockfile);
+
+    if ((rv == APR_ENOTIMPL) || (rv == APR_ENOLOCK)) {
+        return apr_pstrcat(cmd->pool, "Invalid AcceptMutex argument ", arg,
+                           " (", ap_available_mutexes_string, ")", NULL);
+    } else if (rv == APR_BADARG) {
+            return apr_pstrcat(cmd->pool, "Invalid AcceptMutex filepath ",
+                               arg, NULL);
     }
-#if APR_HAS_FLOCK_SERIALIZE
-    else if (!strcasecmp(arg, "flock")) {
-        ap_accept_lock_mech = APR_LOCK_FLOCK;
-    }
-#endif
-#if APR_HAS_FCNTL_SERIALIZE
-    else if (!strcasecmp(arg, "fcntl")) {
-        ap_accept_lock_mech = APR_LOCK_FCNTL;
-    }
-#endif
 
     /* perchild can't use SysV sems because the permissions on the accept
      * mutex can't be set to allow all processes to use the mutex and
      * at the same time keep all users from being able to dink with the
      * mutex
      */
-#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
-    else if (!strcasecmp(arg, "sysvsem")) {
-        ap_accept_lock_mech = APR_LOCK_SYSVSEM;
+#if defined(PERCHILD_MPM)
+    if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
+        return apr_pstrcat(cmd->pool, "Invalid AcceptMutex argument ", arg,
+                           " (", ap_available_mutexes_string, ")", NULL);
     }
 #endif
-#if APR_HAS_POSIXSEM_SERIALIZE
-    else if (!strcasecmp(arg, "posixsem")) {
-        ap_accept_lock_mech = APR_LOCK_POSIXSEM;
-    }
-#endif
-#if APR_HAS_PROC_PTHREAD_SERIALIZE
-    else if (!strcasecmp(arg, "pthread")) {
-        ap_accept_lock_mech = APR_LOCK_PROC_PTHREAD;
-    }
-#endif
-    else {
-        return apr_pstrcat(cmd->pool, arg, " is an invalid mutex mechanism; ",
-                           ap_valid_accept_mutex_string, NULL);
-    }
+    if (lockfile && !ap_lock_fname)
+        ap_lock_fname = lockfile;
     return NULL;
 }
 

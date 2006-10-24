@@ -42,6 +42,7 @@
 #include "apr_buckets.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
+#include "util_mutex.h"
 #include "mpm.h"
 #include "mpm_common.h"
 #include "scoreboard.h"
@@ -3322,7 +3323,7 @@ AP_INIT_TAKE1("ScoreBoardFile", ap_mpm_set_scoreboard, NULL, RSRC_CONF,
 #endif
 #ifdef AP_MPM_WANT_SET_LOCKFILE
 AP_INIT_TAKE1("LockFile",  ap_mpm_set_lockfile, NULL, RSRC_CONF,
-              "The lockfile used when Apache needs to lock the accept() call"),
+              "The lockfile used when Apache needs to lock the accept() call (depreciated)"),
 #endif
 #ifdef AP_MPM_WANT_SET_MAX_REQUESTS
 AP_INIT_TAKE1("MaxRequestsPerChild", ap_mpm_set_max_requests, NULL, RSRC_CONF,
@@ -3334,7 +3335,7 @@ AP_INIT_TAKE1("CoreDumpDirectory", ap_mpm_set_coredumpdir, NULL, RSRC_CONF,
 #endif
 #ifdef AP_MPM_WANT_SET_ACCEPT_LOCK_MECH
 AP_INIT_TAKE1("AcceptMutex", ap_mpm_set_accept_lock_mech, NULL, RSRC_CONF,
-              ap_valid_accept_mutex_string),
+              ap_available_mutexes_string),
 #endif
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
 AP_INIT_TAKE1("MaxMemFree", ap_mpm_set_max_mem_free, NULL, RSRC_CONF,

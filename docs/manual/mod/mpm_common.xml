@@ -40,7 +40,8 @@ accepting requests on network sockets</description>
 
 <usage>
     <p>The <directive>AcceptMutex</directive> directives sets the
-    method that Apache uses to serialize multiple children accepting
+    method (and lockfile location if appropriate) that Apache uses to
+    serialize multiple children accepting
     requests on network sockets. Prior to Apache 2.0, the method was
     selectable only at compile time. The optimal method to use is
     highly architecture and platform dependent. For further details,
@@ -55,25 +56,42 @@ accepting requests on network sockets</description>
     listing the available methods.</p>
 
     <dl>
-      <dt><code>flock</code></dt>
+      <dt><code>flock&lt;<i>:/path/to/lockfile</i>&gt;</code></dt>
       <dd>uses the <code>flock(2)</code> system call to lock the
-      file defined by the <directive module="mpm_common"
-      >LockFile</directive> directive.</dd>
+      file defined by the optional <i>/path/to/lockfile</i>
+      parameter. One can also use the <directive module="mpm_common"
+      >LockFile</directive> directive to specify the lockfile,
+      although this is depreciated.</dd>
 
-      <dt><code>fcntl</code></dt>
+      <dt><code>fcntl&lt;<i>:/path/to/lockfile</i>&gt;</code></dt>
       <dd>uses the <code>fcntl(2)</code> system call to lock the
-      file defined by the <directive module="mpm_common"
-      >LockFile</directive> directive.</dd>
+      file defined by the optional <i>/path/to/lockfile</i>
+      parameter. One can also use the <directive module="mpm_common"
+      >LockFile</directive> directive to specify the lockfile,
+      although this is depreciated.</dd>
+
+      <dt><code>file&lt;<i>:/path/to/lockfile</i>&gt;</code></dt>
+      <dd>This directive tells the SSL Module to pick the "best" file locking
+      implementation available to it, choosing between <code>fcntl</code> and
+      <code>flock</code>, in that order. It is only available when the underlying
+      platform and <glossary>APR</glossary> supports at least one of the 2.</dd>
 
       <dt><code>posixsem</code></dt>
       <dd>uses POSIX compatible semaphores to implement the mutex.</dd>
+
+      <dt><code>sysvsem</code></dt>
+      <dd>uses SySV-style semaphores to implement the mutex.</dd>
+
+      <dt><code>sem</code></dt>
+      <dd>This directive tells the SSL Module to pick the "best" semaphore
+      implementation available to it, choosing between Posix and SystemV IPC,
+      in that order. It is only available when the underlying platform and
+      <glossary>APR</glossary> supports at least one of the 2.</dd>
 
       <dt><code>pthread</code></dt>
       <dd>uses POSIX mutexes as implemented by the POSIX Threads
       (PThreads) specification.</dd>
 
-      <dt><code>sysvsem</code></dt>
-      <dd>uses SySV-style semaphores to implement the mutex.</dd>
     </dl>
 
     <p>If you want to find out the compile time chosen default
@@ -386,7 +404,7 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
 
 <directivesynopsis>
 <name>LockFile</name>
-<description>Location of the accept serialization lock file</description>
+<description>Location of the accept serialization lock file <b>(depreciated)</b></description>
 <syntax>LockFile <var>filename</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
@@ -412,6 +430,13 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
       creating a lockfile with the same name as the one the server will try
       to create.</p>
     </note>
+    <note type="warning"><title>Depreciated</title>
+      <p>This directive is depreciated. It is strongly suggested that
+      you use <directive module="mpm_common">AcceptMutex</directive> to
+      specify both the mutex locking implementation as well as
+      the lockfile location.</p>
+    </note>
+
 </usage>
 <seealso><directive module="mpm_common">AcceptMutex</directive></seealso>
 </directivesynopsis>

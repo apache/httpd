@@ -124,6 +124,9 @@
  * 20060905.0 (2.3.0-dev)  Replaced ap_get_server_version() with
  *                         ap_get_server_banner() and ap_get_server_description()
  * 20060905.1 (2.3.0-dev)  Enable retry=0 for the worker (minor)
+ * 20060905.2 (2.3.0-dev)  Added ap_all_available_mutexes_string,
+ *                         ap_available_mutexes_string and
+ *                         ap_parse_mutex()
  *
  */
 
