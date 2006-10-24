@@ -71,7 +71,7 @@ accepting requests on network sockets</description>
       although this is depreciated.</dd>
 
       <dt><code>file&lt;<i>:/path/to/lockfile</i>&gt;</code></dt>
-      <dd>This directive tells the SSL Module to pick the "best" file locking
+      <dd>This directive tells Apache to pick the "best" file locking
       implementation available to it, choosing between <code>fcntl</code> and
       <code>flock</code>, in that order. It is only available when the underlying
       platform and <glossary>APR</glossary> supports at least one of the 2.</dd>
@@ -83,7 +83,7 @@ accepting requests on network sockets</description>
       <dd>uses SySV-style semaphores to implement the mutex.</dd>
 
       <dt><code>sem</code></dt>
-      <dd>This directive tells the SSL Module to pick the "best" semaphore
+      <dd>This directive tells Apache to pick the "best" semaphore
       implementation available to it, choosing between Posix and SystemV IPC,
       in that order. It is only available when the underlying platform and
       <glossary>APR</glossary> supports at least one of the 2.</dd>
