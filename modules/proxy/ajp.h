@@ -118,10 +118,10 @@ struct ajp_msg
     apr_size_t  len;
     /** The current read position */ 
     apr_size_t  pos;
-    /** The size of the buffer */
-    apr_size_t max_size;
     /** Flag indicating the origing of the message */ 
     int         server_side;
+    /** The size of the buffer */
+    apr_size_t max_size;
 };
 
 /**
