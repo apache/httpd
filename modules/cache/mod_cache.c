@@ -338,7 +338,7 @@ static int do_store_body(cache_request_rec *cache,
     rv2 = APR_SUCCESS;
     if (conf->maxbucketsize > 0) {
         e = APR_BRIGADE_FIRST(in);
-        while (e != APR_BRIGADE_SENTINEL(in)) {   
+        while (APR_SUCCESS == rv && e != APR_BRIGADE_SENTINEL(in)) {
     
             /* if necessary, split the brigade and send what we have so far */
             if (APR_SUCCESS == apr_bucket_split(e, conf->maxbucketsize)) {
