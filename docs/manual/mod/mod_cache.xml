@@ -347,6 +347,44 @@ LastModified date.</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CacheMaxBucketSize</name>
+<description>This tuneable value specifies the maximum bucket size in bytes 
+that the cache modules can be expected to process in one go.
+</description>
+<syntax>CacheMaxBucketSize <var>integer</var></syntax>
+<default>CacheMaxBucketSize 16777216</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+<p>When caching large objects, such as disk images or video files, the
+cache modules may be expected to process a large bucket of the response
+in one go. This could lead to an out of memory condition, or could result
+in very slow response times to the client, as the large object is stored
+to disk.</p>
+
+<p>This will typically happen when an attempt is made to improve
+performance of an archive of large files stored on a slow disk, by
+caching often accessed files to a fast disk. To prevent this problem,
+large objects are split up before being processed into buckets of a
+maximum size set by this parameter.</p>
+
+<p>When the cache is used in front of a forward or reverse proxy, bucket
+sizes will typically be determined by the underlying network, and this
+option will have little or no effect.</p>
+
+<p>Setting this option to a low value will result in more buckets being
+processed by the server, which may lead to increased memory usage.
+Setting this option too high may cause an out of memory condition, or
+may cause long pauses during download as the large buckets are written
+to the cache disk.</p>
+
+<p>The default of 16MB should be sufficient for most applications.</p>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CacheIgnoreHeaders</name>
 <description>Do not store the given HTTP header(s) in the cache.
 </description>
