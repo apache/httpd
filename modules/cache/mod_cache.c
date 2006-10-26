@@ -300,92 +300,6 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
 
 /*
- * CACHE_SAVE - Do Store Body
- * 
- * Run the store body hook, and pass the brigade further up the stack.
- *  
- * We need a sanity check at this point. Buckets (specifically file
- * buckets) can be of extremely large size, greater for example than
- * available memory. Buckets may also take an extremely long time to
- * be processed by the store_body() hook, long enough for a client
- * request to time out before seeing any data.
- * 
- * To simplify the code in each provider, and to prevent a provider from
- * having to care whether it might try load a huge bucket into memory
- * or have to save a huge bucket to disk at once, we split buckets in
- * the brigade into manageable chunks, and deal with each chunk one at a
- * time.
- * 
- * Where possible inside the provider, the split brigade will be replaced
- * by a file bucket from the cache. As file buckets are sent to the network
- * using non blocking writes and setaside / queued if the network client is
- * too slow, a slow network client will not hold up the writing to the cache.
- */
-
-static int do_store_body(cache_request_rec *cache,
-                         ap_filter_t *f,
-                         apr_bucket_brigade *in) {
-    apr_bucket *e;
-    apr_bucket_brigade *bb;
-    apr_status_t rv, rv2;
-    cache_server_conf *conf;
-    
-    conf = (cache_server_conf *) ap_get_module_config(f->r->server->module_config,
-                                                      &cache_module);
-
-    /* try split any buckets larger than threshold */
-    rv = APR_SUCCESS; /* successful unless found otherwise */
-    rv2 = APR_SUCCESS;
-    if (conf->maxbucketsize > 0) {
-        e = APR_BRIGADE_FIRST(in);
-        while (APR_SUCCESS == rv && e != APR_BRIGADE_SENTINEL(in)) {
-    
-            /* if necessary, split the brigade and send what we have so far */
-            if (APR_SUCCESS == apr_bucket_split(e, conf->maxbucketsize)) {
-                e = APR_BUCKET_NEXT(e);
-                bb = in;
-                in = apr_brigade_split(bb, e);
-    
-                /* if store body fails, don't try store body again */
-                if (APR_SUCCESS == rv) {
-                    rv = cache->provider->store_body(cache->handle, f->r, bb);
-                }
-                
-                /* try write split brigade to the filter stack and network */
-                if (APR_SUCCESS == rv2) {
-                    rv2 = ap_pass_brigade(f->next, bb);
-                }
-                apr_brigade_destroy(bb);
-            }
-            else {
-                e = APR_BUCKET_NEXT(e);
-            }
-        }
-    }
-
-    /* send whatever is left over to the cache */
-    if (APR_SUCCESS == rv) {
-        rv = cache->provider->store_body(cache->handle, f->r, in);
-    }
-
-    /* log any store body error we may have found */
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, f->r->server,
-                     "cache: store_body failed");
-        ap_remove_output_filter(f);
-    }
-
-    /* did our attempt to write to the network fail? */
-    if (APR_SUCCESS != rv2) {
-        return rv2;
-    }
-
-    return ap_pass_brigade(f->next, in);
-
-}
-
-
-/*
  * CACHE_SAVE filter
  * ---------------
  *
@@ -907,7 +821,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return ap_pass_brigade(f->next, bb);
     }
 
-    /* Otherwise, if store_headers() failed on a fresh entry, bail out cleanly */
     if(rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
                      "cache: store_headers failed");
@@ -916,9 +829,14 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return ap_pass_brigade(f->next, in);
     }
 
-    /* It's now time to store the body of the request in the cache (finally!). */
-    return do_store_body(cache, f, in);
+    rv = cache->provider->store_body(cache->handle, r, in);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                     "cache: store_body failed");
+        ap_remove_output_filter(f);
+    }
 
+    return ap_pass_brigade(f->next, in);
 }
 
 /*
@@ -1002,8 +920,6 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     /* array of headers that should not be stored in cache */
     ps->ignore_headers = apr_array_make(p, 10, sizeof(char *));
     ps->ignore_headers_set = CACHE_IGNORE_HEADERS_UNSET;
-    ps->maxbucketsize = CACHE_MAX_BUCKET_SIZE;
-    ps->maxbucketsize_set = 0;
     return ps;
 }
 
@@ -1050,7 +966,6 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->ignore_headers_set == CACHE_IGNORE_HEADERS_UNSET)
         ? base->ignore_headers
         : overrides->ignore_headers;
-    ps->maxbucketsize = (overrides->maxbucketsize_set == 0) ? base->maxbucketsize : overrides->maxbucketsize;
     return ps;
 }
 static const char *set_cache_ignore_no_last_mod(cmd_parms *parms, void *dummy,
@@ -1242,23 +1157,6 @@ static const char *set_cache_factor(cmd_parms *parms, void *dummy,
     return NULL;
 }
 
-static const char
-*set_cache_maxbucketsize(cmd_parms *parms, void *in_struct_ptr, const char *arg)
-{
-    cache_server_conf *conf = ap_get_module_config(parms->server->module_config,
-                                                 &cache_module);
-    apr_off_t size;
-
-    if (apr_strtoff(&size, arg, NULL, 0) != APR_SUCCESS ||
-            size < 0) 
-    {
-        return "CacheMaxBucketSize argument must be a non-negative integer in bytes. Set to 0 to disable.";
-    }
-    conf->maxbucketsize = (apr_size_t)size;
-    conf->maxbucketsize_set = 1;
-    return NULL;
-}
-
 static int cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
@@ -1313,11 +1211,6 @@ static const command_rec cache_cmds[] =
     AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF,
                   "The factor used to estimate Expires date from "
                   "LastModified date"),
-    AP_INIT_TAKE1("CacheMaxBucketSize", set_cache_maxbucketsize, NULL, RSRC_CONF,
-                  "A tuneable safety threshold to stop the cache trying to process "
-                  "whole responses larger than RAM, or to to slow storage "
-                  "in one go. Specified as bytes, defaults to 16MB. Set to zero "
-                  "to disable."),
     {NULL}
 };
 
