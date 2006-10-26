@@ -248,11 +248,3 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version works
      +1: trawick
 
-   * mod_cache: Fix an out of memory condition that occurs when the
-     cache tries to save huge files (greater than RAM). Buckets bigger
-     than a tuneable threshold are split into smaller buckets before
-     being passed to mod_disk_cache, etc. PR 39380
-     Trunk: http://svn.apache.org/viewvc?view=rev&revision=467655
-            http://svn.apache.org/viewvc?view=rev&revision=467684
-     +1: minfrin
-
