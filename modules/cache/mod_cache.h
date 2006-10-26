@@ -154,10 +154,6 @@ typedef struct {
     /* Minimum time to keep cached files in msecs */
     apr_time_t minex;
     int minex_set;
-    /* max size of buckets to process in one go, default 16MB */
-    #define CACHE_MAX_BUCKET_SIZE AP_MAX_SENDFILE
-    apr_size_t maxbucketsize;
-    int maxbucketsize_set;
 } cache_server_conf;
 
 /* cache info information */

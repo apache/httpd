@@ -2,11 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) mod_cache: Fix an out of memory condition that occurs when the
-     cache tries to save huge files (greater than RAM). Buckets bigger
-     than a tuneable threshold are split into smaller buckets before
-     being passed to mod_disk_cache, etc. PR 39380 [Graham Leggett]
-
   *) Fix issue which could cause error messages to be written to access logs
      on Win32.  PR 40476.  [Tom Donovan <Tom.Donovan acm.org>]
 
