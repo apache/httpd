@@ -41,6 +41,7 @@
 #include "util_filter.h"
 /*#include "util_ldap.h"*/
 #include "util_md5.h"
+#include "util_mutex.h"
 #include "util_script.h"
 #include "util_time.h"
 #include "util_xml.h"

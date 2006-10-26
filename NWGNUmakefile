@@ -244,6 +244,7 @@ FILES_nlm_objs = \
 	$(OBJDIR)/util_debug.o \
 	$(OBJDIR)/util_filter.o \
 	$(OBJDIR)/util_md5.o \
+	$(OBJDIR)/util_mutex.o \
 	$(OBJDIR)/util_nw.o \
 	$(OBJDIR)/util_pcre.o \
 	$(OBJDIR)/util_script.o \
