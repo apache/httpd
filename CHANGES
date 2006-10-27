@@ -2,6 +2,15 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cache: Pass the output filter stack through the store_body()
+     hook, giving each cache backend the ability to make a better
+     decision as to how it will allocate the tasks of writing to the
+     cache and writing to the network. Previously the write to the
+     cache task needed to be complete before the same brigade was
+     written to the network, and this caused timing and memory issues
+     on large cached files. This fix replaces the previous fix for this
+     PR below. PR39380 [Graham Leggett]
+
   *) Fix issue which could cause error messages to be written to access logs
      on Win32.  PR 40476.  [Tom Donovan <Tom.Donovan acm.org>]
 

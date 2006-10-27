@@ -58,7 +58,7 @@ module AP_MODULE_DECLARE_DATA disk_cache_module;
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
 static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info *i);
-static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
+static apr_status_t store_body(cache_handle_t *h, ap_filter_t *f, apr_bucket_brigade *b);
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r);
 static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 static apr_status_t read_array(request_rec *r, apr_array_header_t* arr,
@@ -527,6 +527,7 @@ static int create_entity(cache_handle_t *h, request_rec *r, const char *key, apr
     dobj->initial_size = len;
     dobj->file_size = -1;
     dobj->updtimeout = conf->updtimeout;
+    dobj->frv = APR_SUCCESS;
 
     return OK;
 }
@@ -716,8 +717,6 @@ static apr_status_t open_body_timeout(request_rec *r, const char *key,
                                       disk_cache_object_t *dobj)
 {
     apr_off_t off;
-    core_dir_config *pdconf = ap_get_module_config(r->per_dir_config,
-                                                   &core_module);
     apr_time_t starttime = apr_time_now();
     int flags;
     apr_status_t rc;
@@ -834,6 +833,13 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     if(rc != APR_SUCCESS) {
         return DECLINED;
     }
+
+    /* TODO: We have the ability to serve partially cached requests,
+     * however in order to avoid some sticky what if conditions
+     * should the content turn out to be too large to be cached,
+     * we must only allow partial cache serving if the cached
+     * entry has a content length known in advance.
+     */
 
     info->status = dobj->disk_info.status;
     info->date = dobj->disk_info.date;
@@ -1286,8 +1292,14 @@ static apr_status_t store_table(apr_file_t *fd, apr_table_t *table)
 static apr_status_t open_new_file(request_rec *r, const char *filename,
                                   apr_file_t **fd, disk_cache_conf *conf)
 {
-    int flags = APR_CREATE | APR_WRITE | APR_BINARY | APR_BUFFERED | APR_EXCL;
+    int flags;
     apr_status_t rv;
+
+    flags = APR_CREATE | APR_WRITE | APR_READ | APR_BINARY | APR_BUFFERED | APR_EXCL | APR_TRUNCATE;
+#if APR_HAS_SENDFILE
+    flags |= ((pdconf->enable_sendfile == ENABLE_SENDFILE_OFF)
+             ? 0 : APR_SENDFILE_ENABLED);
+#endif  
 
     while(1) {
         rv = apr_file_open(fd, filename, flags, 
@@ -1611,150 +1623,50 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r,
     return APR_SUCCESS;
 }
 
-
-static apr_status_t copy_body(apr_pool_t *p,
-                              apr_file_t *srcfd, apr_off_t srcoff, 
-                              apr_file_t *destfd, apr_off_t destoff, 
-                              apr_off_t len)
+/**
+ * Store the body of the response in the disk cache.
+ * 
+ * As the data is written to the cache, it is also written to
+ * the filter provided. On network write failure, the full body
+ * will still be cached.
+ */
+static apr_status_t store_body(cache_handle_t *h, ap_filter_t *f, apr_bucket_brigade *bb)
 {
-    apr_status_t rc;
-    apr_size_t size;
-    apr_finfo_t finfo;
-    apr_time_t starttime = apr_time_now();
-
-    char *buf = apr_palloc(p, CACHE_BUF_SIZE);
-    if (!buf) {
-        return APR_ENOMEM;
-    }
-
-    if(srcoff != 0) {
-        rc = apr_file_seek(srcfd, APR_SET, &srcoff);
-        if(rc != APR_SUCCESS) {
-            return rc;
-        }
-    }
-
-    if(destoff != 0) {
-        rc = apr_file_seek(destfd, APR_SET, &destoff);
-        if(rc != APR_SUCCESS) {
-            return rc;
-        }
-    }
-
-    /* Tried doing this with mmap, but sendfile on Linux got confused when
-       sending a file while it was being written to from an mmapped area.
-       The traditional way seems to be good enough, and less complex.
-     */
-    while(len > 0) {
-        size=MIN(len, CACHE_BUF_SIZE);
-
-        rc = apr_file_read_full (srcfd, buf, size, NULL);
-        if(rc != APR_SUCCESS) {
-            return rc;
-        }
-
-        rc = apr_file_write_full(destfd, buf, size, NULL);
-        if(rc != APR_SUCCESS) {
-            return rc;
-        }
-        len -= size;
-    }
-
-    /* Check if file has changed during copying. This is not 100% foolproof
-       due to NFS attribute caching when on NFS etc. */
-    /* FIXME: Can we assume that we're always copying an entire file? In that
-              case we can check if the current filesize matches the length
-              we think it is */
-    rc = apr_file_info_get(&finfo, APR_FINFO_MTIME, srcfd);
-    if(rc != APR_SUCCESS) {
-        return rc;
-    }
-    if(starttime < finfo.mtime) {
-        return APR_EGENERAL;
-    }
-
-    return APR_SUCCESS;
-}
-
-
-static apr_status_t replace_brigade_with_cache(cache_handle_t *h,
-                                               request_rec *r,
-                                               apr_bucket_brigade *bb)
-{
+    apr_bucket *e, *b;
+    request_rec *r = f->r;
     apr_status_t rv;
-    apr_bucket *e;
-    disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
-
-    if(dobj->fd) {
-        apr_file_close(dobj->fd);
-        dobj->fd = NULL;
-    }
-    rv = open_body_timeout(r, dobj->name, dobj);
-    if (rv != APR_SUCCESS) {
-        if(rv != CACHE_EDECLINED) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                         "disk_cache: Error opening datafile %s for URL %s",
-                         dobj->datafile, dobj->name);
-        }
-        return rv;
-    }
-
-    /* First, empty the brigade */
-    e  = APR_BRIGADE_FIRST(bb);
-    while (e != APR_BRIGADE_SENTINEL(bb)) {
-        apr_bucket *d;
-        d = e;
-        e = APR_BUCKET_NEXT(e);
-        apr_bucket_delete(d);
-    }
-
-    /* Then, populate it with our cached instance */
-    rv = recall_body(h, r->pool, bb);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                     "disk_cache: Error serving URL %s from cache", dobj->name);
-        return rv;
-    }
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                 "disk_cache: Serving cached body for URL %s", dobj->name);
-
-    return APR_SUCCESS;
-}
-
-
-static apr_status_t store_body(cache_handle_t *h, request_rec *r,
-                               apr_bucket_brigade *bb)
-{
-    apr_bucket *e;
-    apr_status_t rv;
-    int copy_file = FALSE;
     disk_cache_object_t *dobj = (disk_cache_object_t *) h->cache_obj->vobj;
     disk_cache_conf *conf = ap_get_module_config(r->server->module_config,
                                                  &disk_cache_module);
 
     dobj->store_body_called++;
-
+    
     if(r->no_cache) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "disk_cache: store_body called for URL %s even though"
                      "no_cache is set", dobj->name);
         file_cache_errorcleanup(dobj, r);
-        return APR_EGENERAL;
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, bb);
     }
 
     if(dobj->initial_size == 0) {
         /* Don't waste a body cachefile on a 0 length body */
-        return APR_SUCCESS;
+        return ap_pass_brigade(f->next, bb);
     }
 
     if(!dobj->skipstore && dobj->fd == NULL) {
         rv = open_new_file(r, dobj->datafile, &(dobj->fd), conf);
-        if(rv == CACHE_EEXIST) {
+        if (rv == CACHE_EEXIST) {
             /* Someone else beat us to storing this */
             dobj->skipstore = TRUE;
         }
-        else if(rv != APR_SUCCESS) {
-            return rv;
+        else if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                         "disk_cache: store_body tried to open cached file "
+                         "for URL %s and this failed", dobj->name);
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, bb);
         }
         else {
             dobj->file_size = 0;
@@ -1762,194 +1674,227 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r,
     }
 
     if(dobj->skipstore) {
-        /* Someone else beat us to storing this object */
-        if(dobj->store_body_called == 1 &&
-                dobj->initial_size > 0 &&
-                APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb)) )
-        {   
-            /* Yay, we can replace the body with the cached instance */
-            return replace_brigade_with_cache(h, r, bb);
-        }
-
-        return APR_SUCCESS;
+        /* Someone else beat us to storing this object.
+         * We are too late to take advantage of this storage :( */
+        ap_remove_output_filter(f);
+        return ap_pass_brigade(f->next, bb);
     }
 
-    /* Check if this is a complete single sequential file, eligable for
-     * file copy.
-     */
-    if(dobj->file_size == 0 && APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb)))
-    {
-        apr_off_t begin = -1;
-        apr_off_t pos = -1;
-        apr_file_t *fd = NULL;
-        apr_bucket_file *a;
-
-        copy_file = TRUE;
-
-        for (e = APR_BRIGADE_FIRST(bb);
-                e != APR_BRIGADE_SENTINEL(bb);
-                e = APR_BUCKET_NEXT(e))
-        {
-            if(APR_BUCKET_IS_EOS(e)) {
-                break;
-            }
-            if(!APR_BUCKET_IS_FILE(e)) {
-                copy_file = FALSE;
-                break;
-            }
-
-            a = e->data;
-
-            if(begin < 0) {
-                begin = pos = e->start;
-                fd = a->fd;
-            }
-
-            if(fd != a->fd || pos != e->start) {
-                copy_file = FALSE;
-                break;
-            }
-
-            pos += e->length;
-        }
-
-        if(copy_file) {
-            dobj->file_size = pos;
-        }
-    }
-
-    if(copy_file) {
-        apr_bucket_file *a;
-
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                     "disk_cache: Copying body for URL %s, len %"
-                     APR_OFF_T_FMT, dobj->name, dobj->file_size);
-
-        e = APR_BRIGADE_FIRST(bb);
-        a = e->data;
-
-        rv = copy_body(r->pool, a->fd, e->start, dobj->fd, 0, 
-                       dobj->file_size);
-        if(rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                         "disk_cache: Copying body failed, "
-                         "URL %s", dobj->name);
-            file_cache_errorcleanup(dobj, r);
-            return rv;
-        }
-
+    /* set up our temporary brigade */
+    if (!dobj->tmpbb) {
+        dobj->tmpbb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     }
     else {
-        ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                     "disk_cache: Caching body for URL %s", dobj->name);
+        apr_brigade_cleanup(dobj->tmpbb);
+    }
 
-        for (e = APR_BRIGADE_FIRST(bb);
-                e != APR_BRIGADE_SENTINEL(bb);
-                e = APR_BUCKET_NEXT(e))
-        {   
-            const char *str;
-            apr_size_t length, written;
+    /* start caching the brigade */
+    ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
+                 "disk_cache: Caching body for URL %s", dobj->name);
 
-            /* Ignore the non-data-buckets */
-            if(APR_BUCKET_IS_METADATA(e)) {
-                continue;
-            }
+    e = APR_BRIGADE_FIRST(bb);
+    while (e != APR_BRIGADE_SENTINEL(bb)) {
 
+        const char *str;
+        apr_size_t length, written;
+        apr_off_t offset = 0;
+
+        /* try write all data buckets to the cache, except for metadata buckets */
+        if(!APR_BUCKET_IS_METADATA(e)) {
+
+            /* read in a bucket fragment */
             rv = apr_bucket_read(e, &str, &length, APR_BLOCK_READ);
             if (rv != APR_SUCCESS) {
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                             "disk_cache: Error when reading bucket for URL %s",
+                             "disk_cache: Error when reading bucket for URL %s, aborting request",
                              dobj->name);
                 file_cache_errorcleanup(dobj, r);
+                /* not being able to read the bucket is fatal,
+                 * return this up the filter stack
+                 */
                 return rv;
             }
+
+            /* try write the bucket fragment to the cache */
+            apr_file_seek(dobj->fd, APR_END, &offset);
             rv = apr_file_write_full(dobj->fd, str, length, &written);
-            if (rv != APR_SUCCESS) {
+            offset = - (apr_off_t)written;
+            apr_file_seek(dobj->fd, APR_END, &offset);
+
+            /* if the cache write was successful, swap the original bucket
+             * with a file bucket pointing to the same data in the cache.
+             * 
+             * This is done because:
+             * 
+             * - The ap_core_output_filter can take advantage of its ability
+             * to do non blocking writes on file buckets.
+             * 
+             * - We are prevented from the need to read the original bucket
+             * a second time inside ap_core_output_filter, which could be
+             * expensive or memory consuming.
+             * 
+             * - The cache, in theory, should be faster than the backend,
+             * otherwise there would be little point in caching in the first
+             * place.
+             */
+            if (APR_SUCCESS == rv) {
+
+                /* remove and destroy the original bucket from the brigade */
+                b = e;
+                e = APR_BUCKET_NEXT(e);
+                APR_BUCKET_REMOVE(b);
+                apr_bucket_destroy(b);
+
+                /* Is our network connection still alive?
+                 * If not, we must continue caching the file, so keep looping.
+                 * We will return the error at the end when caching is done.
+                 */
+                if (APR_SUCCESS == dobj->frv) {
+
+                    /* insert a file bucket pointing to the cache into out temporary brigade */
+                    if (diskcache_brigade_insert(dobj->tmpbb, dobj->fd, dobj->file_size, 
+                                                 written,
+                                                 dobj->updtimeout, r->pool) == NULL) {
+                       return APR_ENOMEM;
+                    }
+
+                    /* TODO: If we are not able to guarantee that
+                     * apr_core_output_filter() will not block on our
+                     * file buckets, then the check for whether the
+                     * socket will block must go here.
+                     */
+    
+                    /* send our new brigade to the network */
+                    dobj->frv = ap_pass_brigade(f->next, dobj->tmpbb);
+    
+                }
+
+                /* update the write counter, and sanity check the size */
+                dobj->file_size += written;
+                if (dobj->file_size > conf->maxfs) {
+                    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                                 "disk_cache: URL %s failed the size check "
+                                 "(%" APR_OFF_T_FMT " > %" APR_OFF_T_FMT ")",
+                                 dobj->name, dobj->file_size, conf->maxfs);
+                    file_cache_errorcleanup(dobj, r);
+                    ap_remove_output_filter(f);
+                    return ap_pass_brigade(f->next, bb);
+                }
+
+            }
+
+            /*
+             * If the cache write failed, continue to loop and pass data to
+             * the network. Remove the cache filter from the output filters
+             * so we don't inadvertently try to cache write again, leaving
+             * a hole in the cached data.
+             */
+            else {
+
+                /* mark the write as having failed */
                 ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                              "disk_cache: Error when writing cache file for "
                              "URL %s", dobj->name);
+                             
+                /* step away gracefully */
                 file_cache_errorcleanup(dobj, r);
-                return rv;
+                ap_remove_output_filter(f);
+
+                /* write the rest of the brigade to the network, and leave */
+                return ap_pass_brigade(f->next, bb);
+
             }
-            dobj->file_size += written;
-            if (dobj->file_size > conf->maxfs) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                             "disk_cache: URL %s failed the size check "
-                             "(%" APR_OFF_T_FMT " > %" APR_OFF_T_FMT ")",
-                             dobj->name, dobj->file_size, conf->maxfs);
-                file_cache_errorcleanup(dobj, r);
-                return APR_EGENERAL;
-            }
+
+
         }
+
+        /* write metadata buckets direct to the output filter */
+        else {
+
+            /* move the metadata bucket to our temporary brigade */
+            b = e;
+            e = APR_BUCKET_NEXT(e);
+            APR_BUCKET_REMOVE(b);
+            APR_BRIGADE_INSERT_HEAD(dobj->tmpbb, b);
+
+            /* Is our network connection still alive?
+             * If not, we must continue looping, but stop writing to the network.
+             */
+            if (APR_SUCCESS == dobj->frv) {
+    
+                /* TODO: If we are not able to guarantee that
+                 * apr_core_output_filter() will not block on our
+                 * file buckets, then the check for whether the
+                 * socket will block must go here.
+                 */
+    
+                /* send our new brigade to the network */
+                dobj->frv = ap_pass_brigade(f->next, dobj->tmpbb);
+    
+            }
+
+        }
+
+        apr_brigade_cleanup(dobj->tmpbb);
+
     }
 
-
+    
     /* Drop out here if this wasn't the end */
     if (!APR_BUCKET_IS_EOS(APR_BRIGADE_LAST(bb))) {
         return APR_SUCCESS;
     }
 
-    if(!copy_file) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "disk_cache: Done caching URL %s, len %" APR_OFF_T_FMT,
-                     dobj->name, dobj->file_size);
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "disk_cache: Done caching URL %s, len %" APR_OFF_T_FMT,
+                 dobj->name, dobj->file_size);
 
-        /* FIXME: Do we really need to check r->no_cache here since we checked
-           it in the beginning? */
-        if (r->no_cache || r->connection->aborted) {
-            ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
-                         "disk_cache: Discarding body for URL %s "
-                         "because connection has been aborted.",
-                         h->cache_obj->key);
-            /* Remove the intermediate cache file and return non-APR_SUCCESS */
+    if (APR_SUCCESS != dobj->frv) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, dobj->frv, r->server,
+                     "disk_cache: An error occurred while writing to the "
+                     "network for URL %s.",
+                     h->cache_obj->key);
+    }
+
+    if (dobj->file_size < conf->minfs) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "disk_cache: URL %s failed the size check "
+                     "(%" APR_OFF_T_FMT "<%" APR_OFF_T_FMT ")",
+                     h->cache_obj->key, dobj->file_size, conf->minfs);
+        /* Remove the intermediate cache file and return filter status */
+        file_cache_errorcleanup(dobj, r);
+        return dobj->frv;
+    }
+    if (dobj->initial_size < 0) {
+        /* Update header information now that we know the size */
+        dobj->initial_size = dobj->file_size;
+        rv = store_headers(h, r, &(h->cache_obj->info));
+        if (rv != APR_SUCCESS) {
             file_cache_errorcleanup(dobj, r);
-            return APR_EGENERAL;
+            return dobj->frv;
         }
-        if (dobj->file_size < conf->minfs) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "disk_cache: URL %s failed the size check "
-                         "(%" APR_OFF_T_FMT "<%" APR_OFF_T_FMT ")",
-                         h->cache_obj->key, dobj->file_size, conf->minfs);
-            /* Remove the intermediate cache file and return non-APR_SUCCESS */
-            file_cache_errorcleanup(dobj, r);
-            return APR_EGENERAL;
-        }
-        if(dobj->initial_size < 0) {
-            /* Update header information now that we know the size */
-            dobj->initial_size = dobj->file_size;
-            rv = store_headers(h, r, &(h->cache_obj->info));
-            if(rv != APR_SUCCESS) {
-                file_cache_errorcleanup(dobj, r);
-                return rv;
-            }
-        }
-        else if(dobj->initial_size != dobj->file_size) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                         "disk_cache: URL %s - body size mismatch: suggested %"
-                         APR_OFF_T_FMT "  bodysize %" APR_OFF_T_FMT ")",
-                         dobj->name, dobj->initial_size, dobj->file_size);
-            file_cache_errorcleanup(dobj, r);
-            return APR_EGENERAL;
-        }
+    }
+    else if (dobj->initial_size != dobj->file_size) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "disk_cache: URL %s - body size mismatch: suggested %"
+                     APR_OFF_T_FMT "  bodysize %" APR_OFF_T_FMT ")",
+                     dobj->name, dobj->initial_size, dobj->file_size);
+        file_cache_errorcleanup(dobj, r);
+        return dobj->frv;
     }
 
     /* All checks were fine, close output file */
     rv = apr_file_close(dobj->fd);
     dobj->fd = NULL;
-    if(rv != APR_SUCCESS) {
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "disk_cache: While trying to close the cache file for "
+                     "URL %s, the close failed", dobj->name);
         file_cache_errorcleanup(dobj, r);
-        return rv;
+        return dobj->frv;
     }
 
-    /* Redirect to cachefile if we copied a plain file */
-    if(copy_file) {
-        rv = replace_brigade_with_cache(h, r, bb);
-        if(rv != APR_SUCCESS) {
-            return rv;
-        }
-    }
-
-    return APR_SUCCESS;
+    return dobj->frv;
 }
 
 

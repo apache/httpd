@@ -86,6 +86,8 @@ typedef struct disk_cache_object {
 
     int skipstore;              /* Set if we should skip storing stuff */
     int store_body_called;      /* Number of times store_body() has executed */
+    apr_bucket_brigade *tmpbb;  /* Temporary bucket brigade. */
+    apr_status_t frv;           /* Last known status of network write */
 } disk_cache_object_t;
 
 

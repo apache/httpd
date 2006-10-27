@@ -366,13 +366,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* pass the brigades into the cache, then pass them
          * up the filter stack
          */
-        rv = cache->provider->store_body(cache->handle, r, in);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
-                         "cache: Cache provider's store_body failed!");
-            ap_remove_output_filter(f);
-        }
-        return ap_pass_brigade(f->next, in);
+        return cache->provider->store_body(cache->handle, f, in);
     }
 
     /*
@@ -829,14 +823,8 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         return ap_pass_brigade(f->next, in);
     }
 
-    rv = cache->provider->store_body(cache->handle, r, in);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
-                     "cache: store_body failed");
-        ap_remove_output_filter(f);
-    }
+    return cache->provider->store_body(cache->handle, f, in);
 
-    return ap_pass_brigade(f->next, in);
 }
 
 /*

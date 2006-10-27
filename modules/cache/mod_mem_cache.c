@@ -71,6 +71,7 @@ typedef struct mem_cache_object {
     long total_refs;          /**< total number of references this entry has had */
 
     apr_uint32_t pos;   /**< the position of this entry in the cache */
+    apr_status_t frv;   /* last known status of writing to the output filter */
 
 } mem_cache_object_t;
 
@@ -101,7 +102,7 @@ static mem_cache_conf *sconf;
 /* Forward declarations */
 static int remove_entity(cache_handle_t *h);
 static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info *i);
-static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
+static apr_status_t store_body(cache_handle_t *h, ap_filter_t *f, apr_bucket_brigade *b);
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r);
 static apr_status_t recall_body(cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb);
 
@@ -620,9 +621,10 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     return APR_SUCCESS;
 }
 
-static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b)
+static apr_status_t store_body(cache_handle_t *h, ap_filter_t *f, apr_bucket_brigade *b)
 {
     apr_status_t rv;
+    request_rec *r = f->r;
     cache_object_t *obj = h->cache_obj;
     cache_object_t *tobj = NULL;
     mem_cache_object_t *mobj = (mem_cache_object_t*) obj->vobj;
@@ -667,7 +669,9 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             rv = apr_file_open(&tmpfile, name, mobj->flags,
                                APR_OS_DEFAULT, r->pool);
             if (rv != APR_SUCCESS) {
-                return rv;
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "mem_cache: Failed to open file '%s' while attempting to cache the file descriptor.", name);
+                return ap_pass_brigade(f->next, b);
             }
             apr_file_inherit_unset(tmpfile);
             apr_os_file_get(&(mobj->fd), tmpfile);
@@ -676,7 +680,7 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
             ap_log_error(APLOG_MARK, APLOG_INFO, 0, r->server,
                          "mem_cache: Cached file: %s with key: %s", name, obj->key);
             obj->complete = 1;
-            return APR_SUCCESS;
+            return ap_pass_brigade(f->next, b);
         }
 
         /* Content not suitable for fd caching. Cache in-memory instead. */
@@ -690,7 +694,12 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
     if (mobj->m == NULL) {
         mobj->m = malloc(mobj->m_len);
         if (mobj->m == NULL) {
-            return APR_ENOMEM;
+            /* we didn't have space to cache it, fall back gracefully */
+            cleanup_cache_object(obj);
+            ap_remove_output_filter(f);
+            ap_log_error(APLOG_MARK, APLOG_ERR, APR_ENOMEM, r->server,
+                         "mem_cache: Could not store body - not enough memory.");
+            return ap_pass_brigade(f->next, b);
         }
         obj->count = 0;
     }
@@ -711,7 +720,12 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
                  * buffer */
                 mobj->m = realloc(mobj->m, obj->count);
                 if (!mobj->m) {
-                    return APR_ENOMEM;
+                    /* we didn't have space to cache it, fall back gracefully */
+                    cleanup_cache_object(obj);
+                    ap_remove_output_filter(f);
+                    ap_log_error(APLOG_MARK, APLOG_ERR, APR_ENOMEM, r->server,
+                                 "mem_cache: Could not store next bit of body - not enough memory.");
+                    return ap_pass_brigade(f->next, b);
                 }
 
                 /* Now comes the crufty part... there is no way to tell the
@@ -767,26 +781,36 @@ static apr_status_t store_body(cache_handle_t *h, request_rec *r, apr_bucket_bri
         }
         rv = apr_bucket_read(e, &s, &len, eblock);
         if (rv != APR_SUCCESS) {
+            cleanup_cache_object(obj);
+            /* not being able to read the bucket is fatal,
+             * return this up the filter stack
+             */
             return rv;
         }
         if (len) {
             /* Check for buffer overflow */
-           if ((obj->count + len) > mobj->m_len) {
-               return APR_ENOMEM;
-           }
-           else {
+            if ((obj->count + len) > mobj->m_len) {
+                /* we didn't have space to cache it, fall back gracefully */
+                cleanup_cache_object(obj);
+                ap_remove_output_filter(f);
+                ap_log_error(APLOG_MARK, APLOG_ERR, APR_ENOMEM, r->server,
+                             "mem_cache: Could not store body - buffer overflow.");
+                return ap_pass_brigade(f->next, b);
+            }
+            else {
                memcpy(cur, s, len);
                cur+=len;
                obj->count+=len;
-           }
+            }
         }
         /* This should not fail, but if it does, we are in BIG trouble
          * cause we just stomped all over the heap.
          */
         AP_DEBUG_ASSERT(obj->count <= mobj->m_len);
     }
-    return APR_SUCCESS;
+    return ap_pass_brigade(f->next, b);
 }
+
 /**
  * Configuration and start-up
  */
