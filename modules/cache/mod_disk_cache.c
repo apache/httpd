@@ -720,6 +720,10 @@ static apr_status_t open_body_timeout(request_rec *r, const char *key,
     apr_time_t starttime = apr_time_now();
     int flags;
     apr_status_t rc;
+#if APR_HAS_SENDFILE
+    core_dir_config *pdconf = ap_get_module_config(r->per_dir_config,
+                                                   &core_module);
+#endif  
 
     flags = APR_READ|APR_BINARY|APR_BUFFERED;
 #if APR_HAS_SENDFILE
