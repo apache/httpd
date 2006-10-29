@@ -56,21 +56,21 @@ accepting requests on network sockets</description>
     listing the available methods.</p>
 
     <dl>
-      <dt><code>flock&lt;<i>:/path/to/lockfile</i>&gt;</code></dt>
+      <dt><code>flock&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
       <dd>uses the <code>flock(2)</code> system call to lock the
-      file defined by the optional <i>/path/to/lockfile</i>
+      file defined by the optional <var>/path/to/lockfile</var>
       parameter. One can also use the <directive module="mpm_common"
       >LockFile</directive> directive to specify the lockfile,
       although this is depreciated.</dd>
 
-      <dt><code>fcntl&lt;<i>:/path/to/lockfile</i>&gt;</code></dt>
+      <dt><code>fcntl&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
       <dd>uses the <code>fcntl(2)</code> system call to lock the
-      file defined by the optional <i>/path/to/lockfile</i>
+      file defined by the optional <var>/path/to/lockfile</var>
       parameter. One can also use the <directive module="mpm_common"
       >LockFile</directive> directive to specify the lockfile,
       although this is depreciated.</dd>
 
-      <dt><code>file&lt;<i>:/path/to/lockfile</i>&gt;</code></dt>
+      <dt><code>file&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
       <dd>This directive tells Apache to pick the "best" file locking
       implementation available to it, choosing between <code>fcntl</code> and
       <code>flock</code>, in that order. It is only available when the underlying
@@ -404,7 +404,7 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
 
 <directivesynopsis>
 <name>LockFile</name>
-<description>Location of the accept serialization lock file <b>(depreciated)</b></description>
+<description>Location of the accept serialization lock file <em>(depreciated)</em></description>
 <syntax>LockFile <var>filename</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
