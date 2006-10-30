@@ -252,3 +252,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version works
      +1: trawick
 
+   * mod_headers: support regexp-based manipulation
+     http://svn.apache.org/viewvc?view=rev&revision=452330
+     +1: niq
