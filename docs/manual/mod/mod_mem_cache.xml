@@ -102,7 +102,7 @@ cache</description>
 <description>The minimum size (in bytes) of a document to be allowed in the
 cache</description>
 <syntax>MCacheMinObjectSize <var>bytes</var></syntax>
-<default>MCacheMinObjectSize 0</default>
+<default>MCacheMinObjectSize 1</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>

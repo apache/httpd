@@ -93,7 +93,7 @@ typedef struct {
 static mem_cache_conf *sconf;
 
 #define DEFAULT_MAX_CACHE_SIZE 100*1024
-#define DEFAULT_MIN_CACHE_OBJECT_SIZE 0
+#define DEFAULT_MIN_CACHE_OBJECT_SIZE 1
 #define DEFAULT_MAX_CACHE_OBJECT_SIZE 10000
 #define DEFAULT_MAX_OBJECT_CNT 1009
 #define DEFAULT_MAX_STREAMING_BUFFER_SIZE 100000
@@ -888,9 +888,12 @@ static const char
     apr_size_t val;
 
     if (sscanf(arg, "%" APR_SIZE_T_FMT, &val) != 1) {
-        return "MCacheMinObjectSize value must be an integer (bytes)";
+        return "MCacheMinObjectSize value must be an positive integer (bytes)";
     }
-    sconf->min_cache_object_size = val;
+    if (val > 0)
+       sconf->min_cache_object_size = val;
+    else
+       return  "MCacheMinObjectSize value must be an positive integer (bytes)";
     return NULL;
 }
 static const char
