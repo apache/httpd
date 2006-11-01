@@ -255,5 +255,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy: Don't try to use dead backend connection in proxy
      http://svn.apache.org/viewvc?view=rev&revision=431339
      PR#37770.  Patch by Olivier Boel
-    +1: niq
+    +1: niq, rpluem
     +1/emeritus: jwooley (in a comment today on PR#37770)
