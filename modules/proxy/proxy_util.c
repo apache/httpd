@@ -1032,7 +1032,10 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
                 *eos = 1;
             }
             else {
-                if (APR_SUCCESS != apr_bucket_read(e, (const char **)&response, &len, APR_BLOCK_READ)) {
+                if (APR_SUCCESS != (rv = apr_bucket_read(e,
+                                                         (const char **)&response,
+                                                         &len,
+                                                         APR_BLOCK_READ))) {
                     return rv;
                 }
                 /*

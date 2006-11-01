@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy: Add a missing assignment in an error checking code path.
+     PR 40865. [Andrew Rucker Jones <arjones simultan.dyndns.org>]
+
   *) mod_mem_cache: Increase the minimum and default value for
      MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does not
      make sense and leads to a division by zero.  PR 40576.
