@@ -211,12 +211,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk: http://svn.apache.org/viewvc?view=rev&rev=463427
       +1: minfrin
 
-   * mod_proxy_balancer: Implement new environment variable BALANCER_ROUTE_CHANGED
-      Trunk version of patch:
+   * mod_proxy_balancer: Implement new environment variables
+                         BALANCER_NAME
+                         BALANCER_WORKER_NAME
+                         BALANCER_WORKER_ROUTE
+                         BALANCER_SESSION_STICKY
+                         BALANCER_SESSION_ROUTE
+                         BALANCER_ROUTE_CHANGED
+      Trunk versions of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=417238 (including docs)
+        http://svn.apache.org/viewvc?view=rev&revision=437773 (docs)
         http://svn.apache.org/viewvc?view=rev&revision=446929
+        http://svn.apache.org/viewvc?view=rev&revision=453630 (docs)
       2.2.x version of patch:
         Trunk version works
-      +1:
+      +1: rpluem
 
    * mod_dumpio: Allow logging at other LogLevels via DumpIOLogLevel
      directive.
