@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x version of patch:
         http://people.apache.org/~jim/patches/pingpong2.txt
         (Note: your patch should auto-createmodules/proxy/ajp_utils.c)
-      +1: jim
+      +1: jim, mturk
 
     * mod_proxy_balancer: Extract stickysession routing information contained as
       parameter in the URL correctly.
@@ -158,7 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=440160
       2.2.x version of patch:
         Trunk version works
-      +1: rpluem, jim
+      +1: rpluem, jim, mturk
 
     * Allow htcacheclean and httxt2dbm to link apr/apr-util statically
       like the older support programs.
@@ -225,7 +225,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=453630 (docs)
       2.2.x version of patch:
         Trunk version works
-      +1: rpluem
+      +1: rpluem, mturk
 
    * mod_dumpio: Allow logging at other LogLevels via DumpIOLogLevel
      directive.
@@ -264,5 +264,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   * mod_proxy: Don't try to use dead backend connection in proxy
      http://svn.apache.org/viewvc?view=rev&revision=431339
      PR#37770.  Patch by Olivier Boel
-    +1: niq, rpluem
+    +1: niq, rpluem, mturk
     +1/emeritus: jwooley (in a comment today on PR#37770)
