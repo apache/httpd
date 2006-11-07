@@ -106,10 +106,6 @@ Changes with Apache 2.3.0
      now use ap_get_server_banner() or ap_get_server_description().
      [Jeff Trawick]
 
-  *) mod_proxy_balancer: Extract stickysession routing information contained as
-     parameter in the URL correctly. PR 40400.
-     [Ruediger Pluem, Tomokazu Harada <harada sysrdc.ns-sol.co.jp>]
-
   *) mod_deflate: Rework inflate output and deflate output filter to fix several
      issues: Incorrect handling of flush buckets, potential memory leaks,
      excessive memory usage in inflate output filter for large compressed
@@ -121,9 +117,6 @@ Changes with Apache 2.3.0
      to the console.  Handle relevant MPM directives during this phase
      and format messages for both the console and the error log, as
      appropriate.  [Chris Darroch]
-
-  *) mod_proxy: Don't try to use dead backend connection. PR 37770.
-     [Olivier BOEL <ob dorrboel.com>]
 
   *) mod_proxy: don't URLencode tilde in path component
      [Stijn Hoop <stijn sandcat.nl>]
@@ -271,6 +264,13 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) mod_proxy: Don't try to use dead backend connection. PR 37770.
+     [Olivier BOEL <ob dorrboel.com>]
+
+  *) mod_proxy_balancer: Extract stickysession routing information contained as
+     parameter in the URL correctly. PR 40400.
+     [Ruediger Pluem, Tomokazu Harada <harada sysrdc.ns-sol.co.jp>]
 
   *) mod_cache: From RFC3986 (section 6.2.3.) if a URI contains an
      authority component and an empty path, the empty path is to be equivalent
