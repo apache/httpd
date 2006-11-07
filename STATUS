@@ -77,15 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy_balancer: Extract stickysession routing information contained as
-      parameter in the URL correctly.
-        PR: 40400
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=440160
-      2.2.x version of patch:
-        Trunk version works
-      +1: rpluem, jim, mturk
-
   * mod_proxy: Don't try to use dead backend connection in proxy
      http://svn.apache.org/viewvc?view=rev&revision=431339
      PR#37770.  Patch by Olivier Boel
