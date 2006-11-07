@@ -260,6 +260,16 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
          * Find the worker that has this route defined.
          */
         worker = find_route_worker(balancer, *route, r);
+        if (worker && strcmp(*route, worker->s->route)) {
+            /*
+             * Notice that the route of the worker chosen is different from
+             * the route supplied by the client.
+             */
+            apr_table_setn(r->subprocess_env, "BALANCER_ROUTE_CHANGED", "1");
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                         "proxy: BALANCER: Route changed from %s to %s",
+                         *route, worker->s->route);
+        }
         return worker;
     }
     else
@@ -417,8 +427,27 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
 
             return HTTP_SERVICE_UNAVAILABLE;
         }
+        if ((*balancer)->sticky && runtime) {
+            /*
+             * This balancer has sticky sessions and the client either has not
+             * supplied any routing information or all workers for this route
+             * including possible redirect and hotstandby workers are in error
+             * state, but we have found another working worker for this
+             * balancer where we can send the request. Thus notice that we have
+             * changed the route to the backend.
+             */
+            apr_table_setn(r->subprocess_env, "BALANCER_ROUTE_CHANGED", "1");
+        }
         *worker = runtime;
     }
+
+    /* Add balancer/worker info to env. */
+    apr_table_setn(r->subprocess_env,
+                   "BALANCER_NAME", (*balancer)->name);
+    apr_table_setn(r->subprocess_env,
+                   "BALANCER_WORKER_NAME", (*worker)->name);
+    apr_table_setn(r->subprocess_env,
+                   "BALANCER_WORKER_ROUTE", (*worker)->s->route);
 
     /* Rewrite the url from 'balancer://url'
      * to the 'worker_scheme://worker_hostname[:worker_port]/url'
@@ -430,6 +459,12 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     if (route) {
         apr_table_setn(r->notes, "session-sticky", (*balancer)->sticky);
         apr_table_setn(r->notes, "session-route", route);
+
+        /* Add session info to env. */
+        apr_table_setn(r->subprocess_env,
+                       "BALANCER_SESSION_STICKY", (*balancer)->sticky);
+        apr_table_setn(r->subprocess_env,
+                       "BALANCER_SESSION_ROUTE", route);
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy: BALANCER (%s) worker (%s) rewritten to %s",
