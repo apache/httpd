@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) mod_proxy: Don't try to use dead backend connection. PR 37770.
+     [Olivier BOEL <ob dorrboel.com>] 
+
   *) mod_proxy_balancer: Extract stickysession routing information contained as
      parameter in the URL correctly. PR 40400.
      [Ruediger Pluem, Tomokazu Harada <harada sysrdc.ns-sol.co.jp>]
