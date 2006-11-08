@@ -235,3 +235,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=452330
      +1: niq, chrisd
 
+   * mod_ldap: Better detection and clean up of ldap connection
+     that have been terminated by the ldap server.
+     http://svn.apache.org/viewvc?view=rev&revision=472633
+     +1: bnicholes
+
