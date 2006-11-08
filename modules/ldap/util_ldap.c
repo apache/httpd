@@ -199,6 +199,117 @@ static apr_status_t uldap_connection_cleanup(void *param)
     return APR_SUCCESS;
 }
 
+static int uldap_connection_init(request_rec *r,
+                                          util_ldap_connection_t *ldc )
+{
+    int rc = 0;
+    int version  = LDAP_VERSION3;
+    apr_ldap_err_t *result = NULL;
+    struct timeval timeOut = {10,0};    /* 10 second connection timeout */
+    util_ldap_state_t *st =
+        (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
+        &ldap_module);
+
+    /* Since the host will include a port if the default port is not used,
+     * always specify the default ports for the port parameter.  This will
+     * allow a host string that contains multiple hosts the ability to mix
+     * some hosts with ports and some without. All hosts which do not
+     * specify a port will use the default port.
+     */
+    apr_ldap_init(ldc->pool, &(ldc->ldap),
+                  ldc->host,
+                  APR_LDAP_SSL == ldc->secure ? LDAPS_PORT : LDAP_PORT,
+                  APR_LDAP_NONE,
+                  &(result));
+
+
+    if (result != NULL && result->rc) {
+        ldc->reason = result->reason;
+    }
+
+    if (NULL == ldc->ldap)
+    {
+        ldc->bound = 0;
+        if (NULL == ldc->reason) {
+            ldc->reason = "LDAP: ldap initialization failed";
+        }
+        else {
+            ldc->reason = result->reason;
+        }
+        return(result->rc);
+    }
+
+    /* always default to LDAP V3 */
+    ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION, &version);
+
+    /* set client certificates */
+    if (!apr_is_empty_array(ldc->client_certs)) {
+        apr_ldap_set_option(ldc->pool, ldc->ldap, APR_LDAP_OPT_TLS_CERT,
+                            ldc->client_certs, &(result));
+        if (LDAP_SUCCESS != result->rc) {
+            uldap_connection_unbind( ldc );
+            ldc->reason = result->reason;
+            return(result->rc);
+        }
+    }
+
+    /* switch on SSL/TLS */
+    if (APR_LDAP_NONE != ldc->secure) {
+        apr_ldap_set_option(ldc->pool, ldc->ldap,
+                            APR_LDAP_OPT_TLS, &ldc->secure, &(result));
+        if (LDAP_SUCCESS != result->rc) {
+            uldap_connection_unbind( ldc );
+            ldc->reason = result->reason;
+            return(result->rc);
+        }
+    }
+
+    /* Set the alias dereferencing option */
+    ldap_set_option(ldc->ldap, LDAP_OPT_DEREF, &(ldc->deref));
+
+/*XXX All of the #ifdef's need to be removed once apr-util 1.2 is released */
+#ifdef APR_LDAP_OPT_VERIFY_CERT
+    apr_ldap_set_option(ldc->pool, ldc->ldap,
+                        APR_LDAP_OPT_VERIFY_CERT, &(st->verify_svr_cert), &(result));
+#else
+#if defined(LDAPSSL_VERIFY_SERVER)
+    if (st->verify_svr_cert) {
+        result->rc = ldapssl_set_verify_mode(LDAPSSL_VERIFY_SERVER);
+    }
+    else {
+        result->rc = ldapssl_set_verify_mode(LDAPSSL_VERIFY_NONE);
+    }
+#elif defined(LDAP_OPT_X_TLS_REQUIRE_CERT)
+    /* This is not a per-connection setting so just pass NULL for the
+       Ldap connection handle */
+    if (st->verify_svr_cert) {
+        int i = LDAP_OPT_X_TLS_DEMAND;
+        result->rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
+    }
+    else {
+        int i = LDAP_OPT_X_TLS_NEVER;
+        result->rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
+    }
+#endif
+#endif
+
+#ifdef LDAP_OPT_NETWORK_TIMEOUT
+    if (st->connectionTimeout > 0) {
+        timeOut.tv_sec = st->connectionTimeout;
+    }
+
+    if (st->connectionTimeout >= 0) {
+        rc = apr_ldap_set_option(ldc->pool, ldc->ldap, LDAP_OPT_NETWORK_TIMEOUT,
+                                 (void *)&timeOut, &(result));
+        if (APR_SUCCESS != rc) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                             "LDAP: Could not set the connection timeout");
+        }
+    }
+#endif
+
+    return(rc);
+}
 
 /*
  * Connect to the LDAP server and binds. Does not connect if already
@@ -211,12 +322,6 @@ static int uldap_connection_open(request_rec *r,
 {
     int rc = 0;
     int failures = 0;
-    int version  = LDAP_VERSION3;
-    apr_ldap_err_t *result = NULL;
-    struct timeval timeOut = {10,0};    /* 10 second connection timeout */
-    util_ldap_state_t *st =
-        (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
-        &ldap_module);
 
     /* sanity check for NULL */
     if (!ldc) {
@@ -235,109 +340,11 @@ static int uldap_connection_open(request_rec *r,
     */
     if (NULL == ldc->ldap)
     {
-        /* Since the host will include a port if the default port is not used,
-         * always specify the default ports for the port parameter.  This will
-         * allow a host string that contains multiple hosts the ability to mix
-         * some hosts with ports and some without. All hosts which do not
-         * specify a port will use the default port.
-         */
-        apr_ldap_init(ldc->pool, &(ldc->ldap),
-                      ldc->host,
-                      APR_LDAP_SSL == ldc->secure ? LDAPS_PORT : LDAP_PORT,
-                      APR_LDAP_NONE,
-                      &(result));
-
-
-        if (result != NULL && result->rc) {
-            ldc->reason = result->reason;
-        }
-
-        if (NULL == ldc->ldap)
-        {
-            ldc->bound = 0;
-            if (NULL == ldc->reason) {
-                ldc->reason = "LDAP: ldap initialization failed";
-            }
-            else {
-                ldc->reason = result->reason;
-            }
-            return(result->rc);
-        }
-
-        /* always default to LDAP V3 */
-        ldap_set_option(ldc->ldap, LDAP_OPT_PROTOCOL_VERSION, &version);
-
-        /* set client certificates */
-        if (!apr_is_empty_array(ldc->client_certs)) {
-            apr_ldap_set_option(ldc->pool, ldc->ldap, APR_LDAP_OPT_TLS_CERT,
-                                ldc->client_certs, &(result));
-            if (LDAP_SUCCESS != result->rc) {
-                ldap_unbind_s(ldc->ldap);
-                ldc->ldap = NULL;
-                ldc->bound = 0;
-                ldc->reason = result->reason;
-                return(result->rc);
-            }
-        }
-
-        /* switch on SSL/TLS */
-        if (APR_LDAP_NONE != ldc->secure) {
-            apr_ldap_set_option(ldc->pool, ldc->ldap,
-                                APR_LDAP_OPT_TLS, &ldc->secure, &(result));
-            if (LDAP_SUCCESS != result->rc) {
-                ldap_unbind_s(ldc->ldap);
-                ldc->ldap = NULL;
-                ldc->bound = 0;
-                ldc->reason = result->reason;
-                return(result->rc);
-            }
-        }
-
-        /* Set the alias dereferencing option */
-        ldap_set_option(ldc->ldap, LDAP_OPT_DEREF, &(ldc->deref));
-
-/*XXX All of the #ifdef's need to be removed once apr-util 1.2 is released */
-#ifdef APR_LDAP_OPT_VERIFY_CERT
-        apr_ldap_set_option(ldc->pool, ldc->ldap,
-                            APR_LDAP_OPT_VERIFY_CERT, &(st->verify_svr_cert), &(result));
-#else
-#if defined(LDAPSSL_VERIFY_SERVER)
-        if (st->verify_svr_cert) {
-            result->rc = ldapssl_set_verify_mode(LDAPSSL_VERIFY_SERVER);
-        }
-        else {
-            result->rc = ldapssl_set_verify_mode(LDAPSSL_VERIFY_NONE);
-        }
-#elif defined(LDAP_OPT_X_TLS_REQUIRE_CERT)
-                /* This is not a per-connection setting so just pass NULL for the
-                   Ldap connection handle */
-        if (st->verify_svr_cert) {
-                        int i = LDAP_OPT_X_TLS_DEMAND;
-                        result->rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
-        }
-        else {
-                        int i = LDAP_OPT_X_TLS_NEVER;
-                        result->rc = ldap_set_option(NULL, LDAP_OPT_X_TLS_REQUIRE_CERT, &i);
-        }
-#endif
-#endif
-
-#ifdef LDAP_OPT_NETWORK_TIMEOUT
-        if (st->connectionTimeout > 0) {
-            timeOut.tv_sec = st->connectionTimeout;
-        }
-
-        if (st->connectionTimeout >= 0) {
-            rc = apr_ldap_set_option(ldc->pool, ldc->ldap, LDAP_OPT_NETWORK_TIMEOUT,
-                                     (void *)&timeOut, &(result));
-            if (APR_SUCCESS != rc) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
-                                 "LDAP: Could not set the connection timeout");
-            }
-        }
-#endif
-
-
+       rc = uldap_connection_init( r, ldc );
+       if (LDAP_SUCCESS != rc)
+       {
+           return rc;
+       }
     }
 
 
@@ -356,16 +363,22 @@ static int uldap_connection_open(request_rec *r,
                                 (char *)ldc->bindpw);
         if (LDAP_SERVER_DOWN != rc) {
             break;
-        }
+        } else if (failures == 5) {
+           /* attempt to init the connection once again */
+           uldap_connection_unbind( ldc );
+           rc = uldap_connection_init( r, ldc );
+           if (LDAP_SUCCESS != rc)
+           {
+               break;
+           }
+       }
     }
 
     /* free the handle if there was an error
     */
     if (LDAP_SUCCESS != rc)
     {
-        ldap_unbind_s(ldc->ldap);
-        ldc->ldap = NULL;
-        ldc->bound = 0;
+       uldap_connection_unbind(ldc);
         ldc->reason = "LDAP: ldap_simple_bind_s() failed";
     }
     else {
