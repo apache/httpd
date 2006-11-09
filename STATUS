@@ -241,3 +241,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=472633
      +1: bnicholes
 
+   * core: Allow AcceptMutex to accept pathname arguments ala SSLMutex,
+     and, as a result, semi-depreciate Lockfile.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=467326
+       http://svn.apache.org/viewvc?view=rev&revision=468049
+     2.2.x version of patch:
+       Trunk version works (requires handling of CHANGES and ap_mmn.h
+       conflict though)
+     +1: jim
