@@ -2538,7 +2538,8 @@ to name-virtual hosts</description>
 <usage>
     <p>The <directive>ServerAlias</directive> directive sets the
     alternate names for a host, for use with <a
-    href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
+	    href="../vhosts/name-based.html">name-based virtual hosts</a>. The
+    <directive>ServerAlias</directive> may include wildcards, if appropriate.</p>
 
     <example>
       &lt;VirtualHost *&gt;<br />

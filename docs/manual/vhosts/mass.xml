@@ -241,6 +241,17 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
 &lt;/VirtualHost&gt;
 </example>
 
+<note>
+	<title>Note</title>
+	<p>If the first VirtualHost block does <em>not</em> include a
+	<directive module="core">ServerName</directive> directive, the reverse
+	DNS of the relevant IP will be used instead. 
+	If this is not the server name you
+	wish to use, a bogus entry (<code>ServerName
+	none.example.com</code>) can be added to get around this
+	behaviour.</p>
+</note>	
+
 </section>
 
 <section id="ipbased"><title>More Efficient IP-Based Virtual Hosting</title>
