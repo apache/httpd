@@ -2547,7 +2547,8 @@ to name-virtual hosts</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
 </table>
     <p>The <code class="directive">ServerAlias</code> directive sets the
-    alternate names for a host, for use with <a href="../vhosts/name-based.html">name-based virtual hosts</a>.</p>
+    alternate names for a host, for use with <a href="../vhosts/name-based.html">name-based virtual hosts</a>. The
+    <code class="directive">ServerAlias</code> may include wildcards, if appropriate.</p>
 
     <div class="example"><p><code>
       &lt;VirtualHost *&gt;<br />
