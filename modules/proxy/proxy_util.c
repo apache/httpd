@@ -2000,7 +2000,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      *
      * TODO: Handle this much better...
      */
-    if (!conn->hostname || !worker->is_address_reusable ||   
+    if (!conn->hostname || !worker->is_address_reusable ||
          (r->connection->keepalives &&
          (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE) &&
          (strcasecmp(conn->hostname, uri->hostname) != 0) ) ) {
@@ -2077,6 +2077,47 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     return OK;
 }
 
+#define USE_ALTERNATE_IS_CONNECTED 1
+
+#if USE_ALTERNATE_IS_CONNECTED
+static int is_socket_connected(apr_socket_t *socket)
+{
+    apr_pollfd_t pfds[1];
+    apr_status_t status;
+    apr_int32_t  nfds;
+
+    pfds[0].reqevents = APR_POLLIN;
+    pfds[0].desc_type = APR_POLL_SOCKET;
+    pfds[0].desc.s = socket;
+
+    do {
+        status = apr_poll(&pfds[0], 1, &nfds, 0);
+    } while (APR_STATUS_IS_EINTR(status));
+
+    if (status == APR_SUCCESS && nfds == 1 &&
+        pfds[0].rtnevents == APR_POLLIN) {
+        apr_sockaddr_t unused;
+        apr_size_t len = 1;
+        char buf[1];
+        /* The socket might be closed in which case
+         * the poll will return POLLIN.
+         * If there is no data available the socket
+         * is closed.
+         */
+        status = apr_socket_recvfrom(&unused, socket, MSG_PEEK,
+                                     &buf[0], &len);
+        if (status == APR_SUCCESS && len)
+            return 1;
+        else
+            return 0;
+    }
+    else if (APR_STATUS_IS_EAGAIN(status)) {
+        return 1;
+    }
+    return 0;
+
+}
+#else
 static int is_socket_connected(apr_socket_t *sock)
 
 {
@@ -2100,6 +2141,7 @@ static int is_socket_connected(apr_socket_t *sock)
         return 1;
     }
 }
+#endif /* USE_ALTERNATE_IS_CONNECTED */
 
 PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
                                             proxy_conn_rec *conn,
@@ -2121,6 +2163,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         if (!(connected = is_socket_connected(conn->sock))) {
             apr_socket_close(conn->sock);
             conn->sock = NULL;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                         "proxy: %s: backend socket is disconnected.",
+                         proxy_function);
         }
     }
     while (backend_addr && !connected) {
