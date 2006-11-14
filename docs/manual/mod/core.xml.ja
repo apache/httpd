@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 421100:425051 (outdated) -->
+<!-- English Revision: 425051 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -2742,7 +2742,7 @@ module="core">Directory</directive></seealso>
 <directivesynopsis>
 <name>ServerName</name>
 <description>サーバが自分自身を示すときに使うホスト名とポート</description>
-<syntax>ServerName <var>fully-qualified-domain-name</var>[:<var>port</var>]</syntax>
+<syntax>ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 <compatibility>このディレクティブはバージョン 2.0 ではバージョン 1.3 の
@@ -2750,7 +2750,7 @@ module="core">Directory</directive></seealso>
 
 <usage>
     <p><directive>ServerName</directive> ディレクティブは、
-    サーバが自分自身を示すホスト名とポートを設定します。
+    サーバが自分自身を示すリクエストスキームとホスト名とポートを設定します。
     これは、リダイレクトする URL を生成する際に利用されます。
     例えば、ウェブサーバを動かしているマシンは <code>simple.example.com</code>
     で、DNS のエイリアス <code>www.example.com</code> もあるときに、
@@ -2774,6 +2774,13 @@ module="core">Directory</directive></seealso>
     >VirtualHost</directive> セクション内の
     <directive>ServerName</directive> はこのバーチャルホストにマッチするために
     何がリクエストの Host: ヘッダに現れる必要があるのかを指定します。</p>
+
+    <p>リバースプロキシやロードバランサやSSL負荷軽減装置のような、
+    SSLを処理するマシンの後ろでサーバを動かす場合は、
+    サーバが正しい自己参照 URLを確実に生成するように、
+    <code>https://</code> スキームとクライアントが接続するポート番号を、
+    <directive>ServerName</directive> ディレクティブに指定してください。
+    </p>
 
     <p>自己参照 URL (例えば <module>mod_dir</module> モジュールによるものなど)
     が指定されたポートを使うか、クライアントのリクエストのポート番号を使うかを
