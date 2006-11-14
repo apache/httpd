@@ -160,7 +160,7 @@ extension of a base authentication provider and referenced by
 the specified alias</description>
 <syntax>&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
 ... &lt;/AuthnProviderAlias&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
 </contextlist>
 
 <usage>
