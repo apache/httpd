@@ -77,7 +77,7 @@
          AuthType Basic<br />
          AuthName LDAP_Protected_Place<br />
          AuthzLDAPAuthoritative off<br />
-         require valid-user<br />
+         Require valid-user<br />
       </indent>
       &lt;/Directory&gt;<br />
     </example>
@@ -90,7 +90,7 @@ extension of a base authentication provider and referenced by
 the specified alias</description>
 <syntax>&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
 ... &lt;/AuthnProviderAlias&gt;</syntax>
-<contextlist><context>server config</context><context>virtual host</context>
+<contextlist><context>server config</context>
 </contextlist>
 
 <usage>
