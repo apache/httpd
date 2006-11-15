@@ -96,7 +96,7 @@ for HTTP Basic authentication.</description>
       <li><a href="#examples">Examples</a></li>
       <li><a href="#usingtls">Using TLS</a></li>
       <li><a href="#usingssl">Using SSL</a></li>
-
+      <li><a href="#activedirectory">Using Active Directory</a></li>
       <li>
         <a href="#frontpage">Using Microsoft FrontPage with
         <module>mod_authnz_ldap</module></a> 
@@ -551,6 +551,44 @@ require valid-user
     <p>To specify a secure LDAP server, use <em>ldaps://</em> in the
     <directive module="mod_authnz_ldap">AuthLDAPURL</directive>
     directive, instead of <em>ldap://</em>.</p>
+</section>
+
+<section id="activedirectory"><title>Using Active Directory</title>
+
+    <p>An Active Directory installation may support multiple domains at the
+    same time. To distinguish users between domains, an identifier called
+    a User Principle Name (UPN) can be added to a user's entry in the
+    directory. This UPN usually takes the form of the user's account
+    name, followed by the domain components of the particular domain,
+    for example <em>somebody@nz.somedomain.com</em>.</p>
+
+    <p>You may wish to configure the <module>mod_authnz_ldap</module>
+    module to authenticate users present in any of the domains making up
+    the Active Directory forest. In this way both
+    <em>somebody@nz.somedomain.com</em> and <em>someone@au.somedomain.com</em>
+    can be authenticated using the same query at the same time.</p>
+
+    <p>To make this practical, Active Directory supports the concept of
+    a Global Catalog. This Global Catalog is a read only copy of selected
+    attributes of all the Active Directory servers within the Active
+    Directory forest. Querying the Global Catalog allows all the domains
+    to be queried in a single query, without the query spanning servers
+    over potentially slow links.</p>
+
+    <p>If enabled, the Global Catalog is an independent directory server
+    that runs on port 3268 (3269 for SSL). To search for a user, do a
+    subtree search for the attribute <em>userPrincipalName</em>, with
+    an empty search root, like so:</p>
+
+<example><pre>
+AuthLDAPBindDN <em>apache@somedomain.com</em>
+AuthLDAPBindPassword <em>password</em>
+AuthLDAPURL <em>ldap://10.0.0.1:3268/>userPrincipalName?sub</em>
+</pre></example>
+
+    <p>Users will need to enter their User Principal Name as a login, in
+    the form <em>somebody@nz.somedomain.com</em>.</p>
+
 </section>
 
 <section id="frontpage"><title>Using Microsoft
