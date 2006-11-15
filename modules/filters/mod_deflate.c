@@ -1001,6 +1001,12 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         e = APR_BRIGADE_FIRST(bb);
 
         if (APR_BUCKET_IS_EOS(e)) {
+            /*
+             * We are really done now. Ensure that we never return here, even
+             * if a second EOS bucket falls down the chain. Thus remove
+             * ourselves.
+             */
+            ap_remove_output_filter(f);
             ctx->stream.avail_in = 0; /* should be zero already anyway */
             /*
              * Flush the remaining data from the zlib buffers. It is correct
