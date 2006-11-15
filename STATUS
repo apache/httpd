@@ -223,7 +223,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      may change (eg when the server name is set) at any time, causing
      weird behaviour in modules dependent on mod_dbd.
      Trunk: http://svn.apache.org/viewvc?view=rev&revision=466641
-     +1: minfrin
+     niq: This is actually cumulative with R432562, R432560, 424798
+          which were not yet backported.  They fix a nasty bug,
+          and minfrin's fix is better than mine.
+     Cumulative patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/database/mod_dbd.c?r1=466641&r2=420983&pathrev=466641
+     +1: minfrin, niq
 
    * mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
