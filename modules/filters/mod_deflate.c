@@ -1144,6 +1144,14 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                               "Zlib: %d bytes of garbage at the end of "
                               "compressed stream.", ctx->stream.avail_in);
             }
+            /*
+             * There is nothing worth consuming for zlib left, because it is
+             * either garbage data or the data has been copied to the
+             * validation buffer (processing validation data is no business for
+             * zlib). So set ctx->stream.avail_in to zero to indicate this to
+             * the following while loop.
+             */
+            ctx->stream.avail_in = 0;
         }
 
         zRC = Z_OK;
