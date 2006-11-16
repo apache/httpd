@@ -1196,6 +1196,10 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                                                      VALIDATION_SIZE);
                 if (ctx->stream.avail_in > VALIDATION_SIZE) {
                     ctx->validation_buffer_length = VALIDATION_SIZE;
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                                  "Zlib: %d bytes of garbage at the end of "
+                                  "compressed stream.",
+                                  ctx->stream.avail_in - VALIDATION_SIZE);
                 } else if (ctx->stream.avail_in > 0) {
                            ctx->validation_buffer_length = ctx->stream.avail_in;
                 }
