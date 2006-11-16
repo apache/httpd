@@ -919,8 +919,9 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
-        /* Let's see what our current Content-Encoding is.
-         * If gzip is present, don't gzip again.  (We could, but let's not.)
+        /*
+         * Let's see what our current Content-Encoding is.
+         * Only inflate if gzip is present.
          */
         encoding = apr_table_get(r->headers_out, "Content-Encoding");
         if (encoding) {
@@ -1007,7 +1008,8 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
              * ourselves.
              */
             ap_remove_output_filter(f);
-            ctx->stream.avail_in = 0; /* should be zero already anyway */
+            /* should be zero already anyway */
+            ctx->stream.avail_in = 0;
             /*
              * Flush the remaining data from the zlib buffers. It is correct
              * to use Z_SYNC_FLUSH in this case and not Z_FINISH as in the
