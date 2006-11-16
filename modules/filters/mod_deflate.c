@@ -1144,20 +1144,24 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                 copy_size = VALIDATION_SIZE - ctx->validation_buffer_length;
                 if (copy_size > ctx->stream.avail_in)
                     copy_size = ctx->stream.avail_in;
-                memcpy(ctx->validation_buffer, ctx->stream.next_in, copy_size);
-            } else {
+                memcpy(ctx->validation_buffer + ctx->validation_buffer_length,
+                       ctx->stream.next_in, copy_size);
+                /* Saved copy_size bytes */
+                ctx->stream.avail_in -= copy_size;
+            }
+            if (ctx->stream.avail_in) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "Zlib: %d bytes of garbage at the end of "
                               "compressed stream.", ctx->stream.avail_in);
+                /*
+                 * There is nothing worth consuming for zlib left, because it is
+                 * either garbage data or the data has been copied to the
+                 * validation buffer (processing validation data is no business
+                 * for zlib). So set ctx->stream.avail_in to zero to indicate
+                 * this to the following while loop.
+                 */
+                ctx->stream.avail_in = 0;
             }
-            /*
-             * There is nothing worth consuming for zlib left, because it is
-             * either garbage data or the data has been copied to the
-             * validation buffer (processing validation data is no business for
-             * zlib). So set ctx->stream.avail_in to zero to indicate this to
-             * the following while loop.
-             */
-            ctx->stream.avail_in = 0;
         }
 
         zRC = Z_OK;
