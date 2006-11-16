@@ -2959,7 +2959,7 @@ server</description>
 certain events before failing a request</description>
 <syntax>TimeOut <var>seconds</var></syntax>
 <default>TimeOut 300</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p>The <directive>TimeOut</directive> directive currently defines
