@@ -133,6 +133,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Changes on inflate output filter:
           http://svn.apache.org/viewvc?view=rev&revision=416165
           http://svn.apache.org/viewvc?view=rev&revision=426799
+          http://svn.apache.org/viewvc?view=rev&revision=475403
+          http://svn.apache.org/viewvc?view=rev&revision=475406
+          http://svn.apache.org/viewvc?view=rev&revision=475915
+          http://svn.apache.org/viewvc?view=rev&revision=475920
+          http://svn.apache.org/viewvc?view=rev&revision=475922
+          http://svn.apache.org/viewvc?view=rev&revision=476600
 
         Changlog entry:
           http://svn.apache.org/viewvc?view=rev&revision=437668
@@ -148,8 +154,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             Merged subversion comments: http://people.apache.org/~rpluem/patches/mod_deflate_rework/inflate_output.log
         The patch for the inflate output filter requires the patch for the
         deflate output filter.
-      +1 niq, rpluem (with additional fixes in
-              R475403,475406,475915,475920,475922,476600)
+      +1 rpluem, niq
 
     * mod_proxy: Add in support for ping/pong (heartbeat test) for
       the Proxy. Implement cping/cpong for AJP.
