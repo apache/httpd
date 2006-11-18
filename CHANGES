@@ -30,8 +30,8 @@ Changes with Apache 2.3.0
      AcceptMutex directive now takes an optional lockfile
      location parameter, ala SSLMutex. [Jim Jagielski]
 
-  *) Fix address-in-use startup failure caused by corruption of the list of 
-     listen sockets in some configurations with multiple generic Listen 
+  *) Fix address-in-use startup failure caused by corruption of the list of
+     listen sockets in some configurations with multiple generic Listen
      directives.  [Jeff Trawick]
 
   *) mod_authn_dbd: Export any additional columns queried in the SQL select
@@ -73,7 +73,7 @@ Changes with Apache 2.3.0
   *) mod_rewrite: support rewritemap by SQL query [Nick Kew]
 
   *) Fix issue which could cause piped loggers to be orphaned and never
-     terminate after a graceful restart.  PR 40651.  [Joe Orton, 
+     terminate after a graceful restart.  PR 40651.  [Joe Orton,
      Ruediger Pluem]
 
   *) mod_headers: support regexp-based editing of HTTP headers [Nick Kew]
@@ -124,12 +124,6 @@ Changes with Apache 2.3.0
      creted_threads array. We can not use WAIT_TIMEOUT because
      his value is defined as 258, thus limiting the MaxThreads
      to that value. [Mladen Turk]
-
-  *) SECURITY: CVE-2006-3747 (cve.mitre.org)
-     mod_rewrite: Fix an off-by-one security problem in the ldap scheme
-     handling.  For some RewriteRules this could lead to a pointer being
-     written out of bounds.  Reported by Mark Dowd of McAfee.
-     [Mark Cox]
 
   *) mod_cache: While serving a cached entity ensure that filters that have
      been applied to this cached entity before saving it to the cache are not
@@ -344,6 +338,12 @@ Changes with Apache 2.2.4
      PR 38962. [Christian Boitel <cboitel lfdj.com>]
 
 Changes with Apache 2.2.3
+
+  *) SECURITY: CVE-2006-3747 (cve.mitre.org)
+     mod_rewrite: Fix an off-by-one security problem in the ldap scheme
+     handling.  For some RewriteRules this could lead to a pointer being
+     written out of bounds.  Reported by Mark Dowd of McAfee.
+     [Mark Cox]
 
   *) mod_authn_alias: Add a check to make sure that the base provider and the
      alias names are different and also that the alias has not been registered
