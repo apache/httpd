@@ -148,8 +148,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             Merged subversion comments: http://people.apache.org/~rpluem/patches/mod_deflate_rework/inflate_output.log
         The patch for the inflate output filter requires the patch for the
         deflate output filter.
-      +1 rpluem
-      +1 niq (with additional fixes in
+      +1 niq, rpluem (with additional fixes in
               R475403,475406,475915,475920,475922,476600)
 
     * mod_proxy: Add in support for ping/pong (heartbeat test) for
