@@ -1150,6 +1150,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                        ctx->stream.next_in, copy_size);
                 /* Saved copy_size bytes */
                 ctx->stream.avail_in -= copy_size;
+                ctx->validation_buffer_length += copy_size;
             }
             if (ctx->stream.avail_in) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
