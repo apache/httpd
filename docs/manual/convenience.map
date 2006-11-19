@@ -64,6 +64,7 @@ authldapcomparednonserver	mod/mod_authnz_ldap.html#authldapcomparednonserver
 authldapdereferencealiases	mod/mod_authnz_ldap.html#authldapdereferencealiases
 authldapgroupattribute	mod/mod_authnz_ldap.html#authldapgroupattribute
 authldapgroupattributeisdn	mod/mod_authnz_ldap.html#authldapgroupattributeisdn
+authldapremoteuserattribute	mod/mod_authnz_ldap.html#authldapremoteuserattribute
 authldapremoteuserisdn	mod/mod_authnz_ldap.html#authldapremoteuserisdn
 authldapurl	mod/mod_authnz_ldap.html#authldapurl
 authname	mod/mod_authn_core.html#authname
@@ -141,6 +142,7 @@ directorymatch	mod/core.html#directorymatch
 directoryslash	mod/mod_dir.html#directoryslash
 documentroot	mod/core.html#documentroot
 dumpioinput	mod/mod_dumpio.html#dumpioinput
+dumpiologlevel	mod/mod_dumpio.html#dumpiologlevel
 dumpiooutput	mod/mod_dumpio.html#dumpiooutput
 enableexceptionhook	mod/mpm_common.html#enableexceptionhook
 enablemmap	mod/core.html#enablemmap
