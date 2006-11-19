@@ -2778,7 +2778,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <div class="directive-section"><h2><a name="ServerName" id="ServerName">ServerName</a> <a name="servername" id="servername">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバが自分自身を示すときに使うホスト名とポート</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerName <var>fully-qualified-domain-name</var>[:<var>port</var>]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
@@ -2786,7 +2786,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     <code class="directive">Port</code> ディレクティブの機能も含みます。</td></tr>
 </table>
     <p><code class="directive">ServerName</code> ディレクティブは、
-    サーバが自分自身を示すホスト名とポートを設定します。
+    サーバが自分自身を示すリクエストスキームとホスト名とポートを設定します。
     これは、リダイレクトする URL を生成する際に利用されます。
     例えば、ウェブサーバを動かしているマシンは <code>simple.example.com</code>
     で、DNS のエイリアス <code>www.example.com</code> もあるときに、
@@ -2809,6 +2809,13 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     を利用している場合、<code class="directive"><a href="#virtualhost">&lt;VirtualHost&gt;</a></code> セクション内の
     <code class="directive">ServerName</code> はこのバーチャルホストにマッチするために
     何がリクエストの Host: ヘッダに現れる必要があるのかを指定します。</p>
+
+    <p>リバースプロキシやロードバランサやSSL負荷軽減装置のような、
+    SSLを処理するマシンの後ろでサーバを動かす場合は、
+    サーバが正しい自己参照 URLを確実に生成するように、
+    <code>https://</code> スキームとクライアントが接続するポート番号を、
+    <code class="directive">ServerName</code> ディレクティブに指定してください。
+    </p>
 
     <p>自己参照 URL (例えば <code class="module"><a href="../mod/mod_dir.html">mod_dir</a></code> モジュールによるものなど)
     が指定されたポートを使うか、クライアントのリクエストのポート番号を使うかを

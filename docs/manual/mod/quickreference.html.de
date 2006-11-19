@@ -182,7 +182,7 @@ environment variable</td></tr>
 <tr><td><a href="core.html#authname">AuthName <var>auth-Bereich</var></a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Autorisierungsbereich zur Verwendung in der
 HTTP-Authentisierung</td></tr>
 <tr class="odd"><td><a href="mod_authn_alias.html#authnprovideralias">&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
-... &lt;/AuthnProviderAlias&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of directives that represent an
+... &lt;/AuthnProviderAlias&gt;</a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enclose a group of directives that represent an
 extension of a base authentication provider and referenced by
 the specified alias</td></tr>
 <tr><td><a href="core.html#authtype">AuthType Basic|Digest</a></td><td></td><td>dh</td><td>C</td></tr><tr><td class="descr" colspan="4">Art der Authentisierung</td></tr>
