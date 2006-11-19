@@ -101,6 +101,7 @@
 <li><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li>
 <li><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
+<li><a href="mod_authnz_ldap.html#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute</a></li>
 <li><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
 <li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></li>
 <li><a href="mod_authn_core.html#authname">AuthName</a></li>
@@ -178,6 +179,7 @@
 <li><a href="mod_dir.html#directoryslash">DirectorySlash</a></li>
 <li><a href="core.html#documentroot">DocumentRoot</a></li>
 <li><a href="mod_dumpio.html#dumpioinput">DumpIOInput</a></li>
+<li><a href="mod_dumpio.html#dumpiologlevel">DumpIOLogLevel</a></li>
 <li><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput</a></li>
 <li><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook</a></li>
 <li><a href="core.html#enablemmap">EnableMMAP</a></li>

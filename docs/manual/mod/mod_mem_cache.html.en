@@ -151,7 +151,7 @@ before declaring the response uncacheable</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The minimum size (in bytes) of a document to be allowed in the
 cache</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>MCacheMinObjectSize <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MCacheMinObjectSize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>MCacheMinObjectSize 1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_mem_cache</td></tr>
