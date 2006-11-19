@@ -293,8 +293,8 @@ person in</a></h2>
     <div class="example"><p><code>
       AuthType Basic<br />
       AuthName "By Invitation Only"<br />
-      # Optional line:
-      AuthBasicProvider file
+      # Optional line:<br />
+      AuthBasicProvider file<br />
       AuthUserFile /usr/local/apache/passwd/passwords<br />
       AuthGroupFile /usr/local/apache/passwd/groups<br />
       Require group GroupName

@@ -86,7 +86,7 @@
          AuthType Basic<br />
          AuthName LDAP_Protected_Place<br />
          AuthzLDAPAuthoritative off<br />
-         require valid-user<br />
+         Require valid-user<br />
       </span>
       &lt;/Directory&gt;<br />
     </code></p></div>
@@ -99,7 +99,7 @@ extension of a base authentication provider and referenced by
 the specified alias</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;AuthnProviderAlias <var>baseProvider Alias</var>&gt;
 ... &lt;/AuthnProviderAlias&gt;</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authn_alias</td></tr>
 </table>
