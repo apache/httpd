@@ -142,16 +142,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         wrowe adds; even if ineffective for some oddball machine, this
                     patch is entirely harmless.
 
-    * mod_isapi: Simply backport the host of fixes for compilation on unix,
-      PR#'s 15993 29098 30022 16637 30033 28089
-      by pushing to trunk/ rev 416293 of modules/arch/win32/mod_isapi.[ch]
-      which compiles with the addition of [apr_]brigade_insert_file() as
-      cribbed from apr-util 1.x trunk.  Source + Binary posted at
-        http://people.apache.org/~wrowe/mod_isapi-416293.zip
-      and delta posted at
-        http://people.apache.org/~wrowe/mod_isapi-416293-to-httpd-2.0.patch
-      +1: wrowe 
-
     * mod_ssl: Solve POST incompatible w/ renegotiate HTTPS connection
       (This was already committed to 2.2.x, and the reports persist.)
         http://issues.apache.org/bugzilla/show_bug.cgi?id=12355

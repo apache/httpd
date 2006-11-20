@@ -77,13 +77,13 @@ typedef struct isapi_dir_conf {
 
 typedef struct isapi_loaded isapi_loaded;
 
-apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r, 
+apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
                           const char *fpath, isapi_loaded** isa);
 
 static void *create_isapi_dir_config(apr_pool_t *p, char *dummy)
 {
     isapi_dir_conf *dir = apr_palloc(p, sizeof(isapi_dir_conf));
-    
+
     dir->read_ahead_buflen = ISAPI_UNDEF;
     dir->log_unsupported   = ISAPI_UNDEF;
     dir->log_to_errlog     = ISAPI_UNDEF;
@@ -98,7 +98,7 @@ static void *merge_isapi_dir_configs(apr_pool_t *p, void *base_, void *add_)
     isapi_dir_conf *base = (isapi_dir_conf *) base_;
     isapi_dir_conf *add = (isapi_dir_conf *) add_;
     isapi_dir_conf *dir = apr_palloc(p, sizeof(isapi_dir_conf));
-    
+
     dir->read_ahead_buflen = (add->read_ahead_buflen == ISAPI_UNDEF)
                                 ? base->read_ahead_buflen
                                  : add->read_ahead_buflen;
@@ -114,11 +114,11 @@ static void *merge_isapi_dir_configs(apr_pool_t *p, void *base_, void *add_)
     dir->fake_async        = (add->fake_async == ISAPI_UNDEF)
                                 ? base->fake_async
                                  : add->fake_async;
-    
+
     return dir;
 }
 
-static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy, 
+static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
                                        const char *filename)
 {
     isapi_loaded *isa;
@@ -136,28 +136,28 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
      */
     fspec = ap_server_root_relative(cmd->pool, filename);
     if (!fspec) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, APR_EBADPATH, cmd->server,
-	             "ISAPI: invalid module path, skipping %s", filename);
-	return NULL;
+        ap_log_error(APLOG_MARK, APLOG_WARNING, APR_EBADPATH, cmd->server,
+                     "ISAPI: invalid module path, skipping %s", filename);
+        return NULL;
     }
-    if ((rv = apr_stat(&tmp, fspec, APR_FINFO_TYPE, 
-                      cmd->temp_pool)) != APR_SUCCESS) { 
-	ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server,
-	    "ISAPI: unable to stat, skipping %s", fspec);
-	return NULL;
+    if ((rv = apr_stat(&tmp, fspec, APR_FINFO_TYPE,
+                      cmd->temp_pool)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server,
+            "ISAPI: unable to stat, skipping %s", fspec);
+        return NULL;
     }
     if (tmp.filetype != APR_REG) {
-	ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
-	    "ISAPI: not a regular file, skipping %s", fspec);
-	return NULL;
+        ap_log_error(APLOG_MARK, APLOG_WARNING, 0, cmd->server,
+            "ISAPI: not a regular file, skipping %s", fspec);
+        return NULL;
     }
 
     /* Load the extention as cached (with null request_rec) */
-    rv = isapi_lookup(cmd->pool, cmd->server, NULL, fspec, &isa); 
+    rv = isapi_lookup(cmd->pool, cmd->server, NULL, fspec, &isa);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, cmd->server,
                      "ISAPI: unable to cache, skipping %s", fspec);
-	return NULL;
+        return NULL;
     }
 
     return NULL;
@@ -165,26 +165,26 @@ static const char *isapi_cmd_cachefile(cmd_parms *cmd, void *dummy,
 
 static const command_rec isapi_cmds[] = {
     AP_INIT_TAKE1("ISAPIReadAheadBuffer", ap_set_int_slot,
-        (void *)APR_OFFSETOF(isapi_dir_conf, read_ahead_buflen), 
+        (void *)APR_OFFSETOF(isapi_dir_conf, read_ahead_buflen),
         OR_FILEINFO, "Maximum client request body to initially pass to the"
                      " ISAPI handler (default: 49152)"),
     AP_INIT_FLAG("ISAPILogNotSupported", ap_set_flag_slot,
-        (void *)APR_OFFSETOF(isapi_dir_conf, log_unsupported), 
+        (void *)APR_OFFSETOF(isapi_dir_conf, log_unsupported),
         OR_FILEINFO, "Log requests not supported by the ISAPI server"
                      " on or off (default: off)"),
     AP_INIT_FLAG("ISAPIAppendLogToErrors", ap_set_flag_slot,
-        (void *)APR_OFFSETOF(isapi_dir_conf, log_to_errlog), 
+        (void *)APR_OFFSETOF(isapi_dir_conf, log_to_errlog),
         OR_FILEINFO, "Send all Append Log requests to the error log"
                      " on or off (default: off)"),
     AP_INIT_FLAG("ISAPIAppendLogToQuery", ap_set_flag_slot,
-        (void *)APR_OFFSETOF(isapi_dir_conf, log_to_query), 
+        (void *)APR_OFFSETOF(isapi_dir_conf, log_to_query),
         OR_FILEINFO, "Append Log requests are concatinated to the query args"
                      " on or off (default: on)"),
     AP_INIT_FLAG("ISAPIFakeAsync", ap_set_flag_slot,
-        (void *)APR_OFFSETOF(isapi_dir_conf, fake_async), 
+        (void *)APR_OFFSETOF(isapi_dir_conf, fake_async),
         OR_FILEINFO, "Fake Asynchronous support for isapi callbacks"
                      " on or off [Experimental] (default: off)"),
-    AP_INIT_ITERATE("ISAPICacheFile", isapi_cmd_cachefile, NULL, 
+    AP_INIT_ITERATE("ISAPICacheFile", isapi_cmd_cachefile, NULL,
         RSRC_CONF, "Cache the specified ISAPI extension in-process"),
     {NULL}
 };
@@ -222,7 +222,7 @@ static apr_status_t isapi_unload(isapi_loaded *isa, int force)
     /* All done with the DLL... get rid of it...
      *
      * If optionally cached, and we weren't asked to force the unload,
-     * pass HSE_TERM_ADVISORY_UNLOAD, and if it returns 1, unload, 
+     * pass HSE_TERM_ADVISORY_UNLOAD, and if it returns 1, unload,
      * otherwise, leave it alone (it didn't choose to cooperate.)
      */
     if (!isa->handle) {
@@ -245,7 +245,7 @@ static apr_status_t cleanup_isapi(void *isa_)
 {
     isapi_loaded* isa = (isapi_loaded*) isa_;
 
-    /* We must force the module to unload, we are about 
+    /* We must force the module to unload, we are about
      * to lose the isapi structure's allocation entirely.
      */
     return isapi_unload(isa, 1);
@@ -261,13 +261,13 @@ static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, isapi_loaded *isa)
      * assure a given isapi can be fooled into behaving well.
      *
      * The tricky bit, they aren't really a per-dir sort of
-     * config, they will always be constant across every 
+     * config, they will always be constant across every
      * reference to the .dll no matter what context (vhost,
      * location, etc) they apply to.
      */
     isa->report_version = 0x500; /* Revision 5.0 */
     isa->timeout = 300 * 1000000; /* microsecs, not used */
-    
+
     rv = apr_dso_load(&isa->handle, isa->filename, p);
     if (rv)
     {
@@ -310,20 +310,20 @@ static apr_status_t isapi_load(apr_pool_t *p, server_rec *s, isapi_loaded *isa)
     if (!(isa->GetExtensionVersion)(isa->isapi_version)) {
         apr_status_t rv = apr_get_os_error();
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
-                     "ISAPI: failed call to GetExtensionVersion() in %s", 
+                     "ISAPI: failed call to GetExtensionVersion() in %s",
                      isa->filename);
         apr_dso_unload(isa->handle);
         isa->handle = NULL;
         return rv;
     }
 
-    apr_pool_cleanup_register(p, isa, cleanup_isapi, 
+    apr_pool_cleanup_register(p, isa, cleanup_isapi,
                               apr_pool_cleanup_null);
 
     return APR_SUCCESS;
 }
 
-apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r, 
+apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
                           const char *fpath, isapi_loaded** isa)
 {
     apr_status_t rv;
@@ -338,7 +338,7 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
     if (*isa) {
 
         /* If we find this lock exists, use a set-aside copy of gainlock
-         * to avoid race conditions on NULLing the in_progress variable 
+         * to avoid race conditions on NULLing the in_progress variable
          * when the load has completed.  Release the global isapi hash
          * lock so other requests can proceed, then rdlock for completion
          * of loading our desired dll or wrlock if we would like to retry
@@ -355,10 +355,10 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
             return rv;
         }
 
-            
+
         if ((*isa)->last_load_rv == APR_SUCCESS) {
             apr_thread_mutex_unlock(loaded.lock);
-            if ((rv = apr_thread_rwlock_rdlock(gainlock)) 
+            if ((rv = apr_thread_rwlock_rdlock(gainlock))
                     != APR_SUCCESS) {
                 return rv;
             }
@@ -368,7 +368,7 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
         }
 
         if (apr_time_now() > (*isa)->last_load_time + ISAPI_RETRY) {
-        
+
             /* Remember last_load_time before releasing the global
              * hash lock to avoid colliding with another thread
              * that hit this exception at the same time as our
@@ -378,13 +378,13 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
             apr_time_t check_time = (*isa)->last_load_time;
             apr_thread_mutex_unlock(loaded.lock);
 
-            if ((rv = apr_thread_rwlock_wrlock(gainlock)) 
+            if ((rv = apr_thread_rwlock_wrlock(gainlock))
                     != APR_SUCCESS) {
                 return rv;
             }
 
             /* If last_load_time is unchanged, we still own this
-             * retry, otherwise presume another thread provided 
+             * retry, otherwise presume another thread provided
              * our retry (for good or ill).  Relock the global
              * hash for updating last_load_ vars, so their update
              * is always atomic to the global lock.
@@ -416,7 +416,7 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
     }
 
     /* If the module was not found, it's time to create a hash key entry
-     * before releasing the hash lock to avoid multiple threads from 
+     * before releasing the hash lock to avoid multiple threads from
      * loading the same module.
      */
     key = apr_pstrdup(loaded.pool, fpath);
@@ -437,8 +437,8 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
     }
 
     apr_hash_set(loaded.hash, key, APR_HASH_KEY_STRING, *isa);
-    
-    /* Now attempt to load the isapi on our own time, 
+
+    /* Now attempt to load the isapi on our own time,
      * allow other isapi processing to resume.
      */
     apr_thread_mutex_unlock(loaded.lock);
@@ -457,7 +457,7 @@ apr_status_t isapi_lookup(apr_pool_t *p, server_rec *s, request_rec *r,
     }
     else if (!r && (rv != APR_SUCCESS)) {
         /* We must leave a rwlock around for requests to retry
-         * loading this dll after timeup... since we were in 
+         * loading this dll after timeup... since we were in
          * the setup code we had avoided creating this lock.
          */
         apr_thread_rwlock_create(&(*isa)->in_progress, loaded.pool);
@@ -485,7 +485,7 @@ struct isapi_cid {
     apr_thread_mutex_t      *completed;
 };
 
-int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid, 
+int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
                                        char         *variable_name,
                                        void         *buf_ptr,
                                        apr_uint32_t *buf_size)
@@ -495,10 +495,10 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
     char *buf_data = (char*)buf_ptr;
     apr_uint32_t len;
 
-    if (!strcmp(variable_name, "ALL_HTTP")) 
+    if (!strcmp(variable_name, "ALL_HTTP"))
     {
-        /* crlf delimited, colon split, comma separated and 
-         * null terminated list of HTTP_ vars 
+        /* crlf delimited, colon split, comma separated and
+         * null terminated list of HTTP_ vars
          */
         const apr_array_header_t *arr = apr_table_elts(r->subprocess_env);
         const apr_table_entry_t *elts = (const apr_table_entry_t *)arr->elts;
@@ -509,13 +509,13 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
                 len += strlen(elts[i].key) + strlen(elts[i].val) + 3;
             }
         }
-  
+
         if (*buf_size < len + 1) {
             *buf_size = len + 1;
             apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INSUFFICIENT_BUFFER));
             return 0;
         }
-    
+
         for (i = 0; i < arr->nelts; i++) {
             if (!strncmp(elts[i].key, "HTTP_", 5)) {
                 strcpy(buf_data, elts[i].key);
@@ -532,10 +532,10 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
         *buf_size = len + 1;
         return 1;
     }
-    
-    if (!strcmp(variable_name, "ALL_RAW")) 
+
+    if (!strcmp(variable_name, "ALL_RAW"))
     {
-        /* crlf delimited, colon split, comma separated and 
+        /* crlf delimited, colon split, comma separated and
          * null terminated list of the raw request header
          */
         const apr_array_header_t *arr = apr_table_elts(r->headers_in);
@@ -545,13 +545,13 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
         for (len = 0, i = 0; i < arr->nelts; i++) {
             len += strlen(elts[i].key) + strlen(elts[i].val) + 4;
         }
-  
+
         if (*buf_size < len + 1) {
             *buf_size = len + 1;
             apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INSUFFICIENT_BUFFER));
             return 0;
         }
-    
+
         for (i = 0; i < arr->nelts; i++) {
             strcpy(buf_data, elts[i].key);
             buf_data += strlen(elts[i].key);
@@ -566,7 +566,7 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
         *buf_size = len + 1;
         return 1;
     }
-    
+
     /* Not a special case */
     result = apr_table_get(r->subprocess_env, variable_name);
 
@@ -587,8 +587,8 @@ int APR_THREAD_FUNC GetServerVariable (isapi_cid    *cid,
     return 0;
 }
 
-int APR_THREAD_FUNC ReadClient(isapi_cid    *cid, 
-                               void         *buf_data, 
+int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
+                               void         *buf_data,
                                apr_uint32_t *buf_size)
 {
     request_rec *r = cid->r;
@@ -612,7 +612,7 @@ int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
     return (res >= 0);
 }
 
-/* Common code invoked for both HSE_REQ_SEND_RESPONSE_HEADER and 
+/* Common code invoked for both HSE_REQ_SEND_RESPONSE_HEADER and
  * the newer HSE_REQ_SEND_RESPONSE_HEADER_EX ServerSupportFunction(s)
  * as well as other functions that write responses and presume that
  * the support functions above are optional.
@@ -622,14 +622,16 @@ int APR_THREAD_FUNC ReadClient(isapi_cid    *cid,
  * get a proper count of bytes consumed.  The argument passed to stat
  * isn't counted as the head bytes are.
  */
-static apr_ssize_t send_response_header(isapi_cid *cid, 
+static apr_ssize_t send_response_header(isapi_cid *cid,
                                         const char *stat,
-                                        const char *head, 
+                                        const char *head,
                                         apr_size_t statlen,
                                         apr_size_t headlen)
 {
     int head_present = 1;
     int termarg;
+    int res;
+    int old_status;
     const char *termch;
     apr_size_t ate = 0;
 
@@ -676,11 +678,11 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
             while (toklen && apr_isspace(*stattok)) {
                 ++stattok; --toklen;
             }
-            /* Now decide if we follow the xxx message 
-             * or the http/x.x xxx message format 
+            /* Now decide if we follow the xxx message
+             * or the http/x.x xxx message format
              */
             if (toklen && apr_isdigit(*stattok)) {
-                statlen -= toklen;
+                statlen = toklen;
                 stat = stattok;
             }
         }
@@ -702,48 +704,90 @@ static apr_ssize_t send_response_header(isapi_cid *cid,
             head = apr_pstrndup(cid->r->pool, head, headlen);
         }
     }
- 
-    /* Seems IIS does not enforce the requirement for \r\n termination 
-     * on HSE_REQ_SEND_RESPONSE_HEADER, but we won't panic... 
+
+    /* Seems IIS does not enforce the requirement for \r\n termination
+     * on HSE_REQ_SEND_RESPONSE_HEADER, but we won't panic...
      * ap_scan_script_header_err_strs handles this aspect for us.
      *
-     * Parse them out, or die trying 
+     * Parse them out, or die trying
      */
+    old_status = cid->r->status;
+
     if (stat) {
-        cid->r->status = ap_scan_script_header_err_strs(cid->r, NULL, 
-                                        &termch, &termarg, stat, head, NULL);
+        res = ap_scan_script_header_err_strs(cid->r, NULL, &termch, &termarg,
+                stat, head, NULL);
+    }
+    else {
+        res = ap_scan_script_header_err_strs(cid->r, NULL, &termch, &termarg,
+                head, NULL);
+    }
+
+    /* Set our status. */
+    if (res) {
+        /* This is an immediate error result from the parser
+         */
+        cid->r->status = res;
+        cid->r->status_line = ap_get_status_line(cid->r->status);
+        cid->ecb->dwHttpStatusCode = cid->r->status;
+    }
+    else if (cid->r->status) {
+        /* We have a status in r->status, so let's just use it.
+         * This is likely to be the Status: parsed above, and
+         * may also be a delayed error result from the parser.
+         * If it was filled in, status_line should also have
+         * been filled in.
+         */
+        cid->ecb->dwHttpStatusCode = cid->r->status;
+    }
+    else if (cid->ecb->dwHttpStatusCode
+              && cid->ecb->dwHttpStatusCode != HTTP_OK) {
+        /* Now we fall back on dwHttpStatusCode if it appears
+         * ap_scan_script_header fell back on the default code.
+         * Any other results set dwHttpStatusCode to the decoded
+         * status value.
+         */
+        cid->r->status = cid->ecb->dwHttpStatusCode;
+        cid->r->status_line = ap_get_status_line(cid->r->status);
+    }
+    else if (old_status) {
+        /* Well... either there is no dwHttpStatusCode or it's HTTP_OK.
+         * In any case, we don't have a good status to return yet...
+         * Perhaps the one we came in with will be better. Let's use it,
+         * if we were given one (note this is a pendantic case, it would
+         * normally be covered above unless the scan script code unset
+         * the r->status). Should there be a check here as to whether
+         * we are setting a valid response code?
+         */
+        cid->r->status = old_status;
+        cid->r->status_line = ap_get_status_line(cid->r->status);
         cid->ecb->dwHttpStatusCode = cid->r->status;
     }
     else {
-        cid->r->status = ap_scan_script_header_err_strs(cid->r, NULL, 
-                                        &termch, &termarg, head, NULL);
-        if (cid->ecb->dwHttpStatusCode && cid->r->status == HTTP_OK
-                && cid->ecb->dwHttpStatusCode != HTTP_OK) {
-            /* We tried every way to Sunday to get the status...
-             * so now we fall back on dwHttpStatusCode if it appears
-             * ap_scan_script_header fell back on the default code.
-             * Any other results set dwHttpStatusCode to the decoded 
-             * status value.
-             */
-            cid->r->status = cid->ecb->dwHttpStatusCode;
-            cid->r->status_line = ap_get_status_line(cid->r->status);
-        }
-        else {
-            cid->ecb->dwHttpStatusCode = cid->r->status;
-        }
+        /* None of dwHttpStatusCode, the parser's r->status nor the 
+         * old value of r->status were helpful, and nothing was decoded
+         * from Status: string passed to us.  Let's just say HTTP_OK 
+         * and get the data out, this was the isapi dev's oversight.
+         */
+        cid->r->status = HTTP_OK;
+        cid->r->status_line = ap_get_status_line(cid->r->status);
+        cid->ecb->dwHttpStatusCode = cid->r->status;
+        ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, cid->r,
+                "ISAPI: Could not determine HTTP response code; using %d",
+                cid->r->status);
     }
+
     if (cid->r->status == HTTP_INTERNAL_SERVER_ERROR) {
         return -1;
     }
 
-    /* If only Status was passed, we consumed nothing 
+    /* If only Status was passed, we consumed nothing
      */
     if (!head_present)
         return 0;
 
     cid->headers_set = 1;
 
-    /* If all went well, tell the caller we consumed the headers complete 
+    /* If all went well, tell the caller we consumed the headers complete
      */
     if (!termch)
         return(ate + headlen);
@@ -801,18 +845,52 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
 
     if ((flags & HSE_IO_ASYNC) && cid->completion) {
         if (rv == OK) {
-            cid->completion(cid->ecb, cid->completion_arg, 
+            cid->completion(cid->ecb, cid->completion_arg,
                             *size_arg, ERROR_SUCCESS);
         }
         else {
-            cid->completion(cid->ecb, cid->completion_arg, 
+            cid->completion(cid->ecb, cid->completion_arg,
                             *size_arg, ERROR_WRITE_FAULT);
         }
     }
-    return (rv == OK);
+    return (rv == APR_SUCCESS);
 }
 
-int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid, 
+/* A "safe" maximum bucket size, 1Gb */
+#define MAX_BUCKET_SIZE (0x40000000)
+
+apr_bucket *brigade_insert_file(apr_bucket_brigade *bb,
+                                apr_file_t *f,
+                                apr_off_t start,
+                                apr_off_t length,
+                                apr_pool_t *p)
+{
+    apr_bucket *e;
+
+    if (sizeof(apr_off_t) == sizeof(apr_size_t) || length < MAX_BUCKET_SIZE) {
+        e = apr_bucket_file_create(f, start, (apr_size_t)length, p, 
+                                   bb->bucket_alloc);
+    }
+    else {
+        /* Several buckets are needed. */        
+        e = apr_bucket_file_create(f, start, MAX_BUCKET_SIZE, p, 
+                                   bb->bucket_alloc);
+
+        while (length > MAX_BUCKET_SIZE) {
+            apr_bucket *ce;
+            apr_bucket_copy(e, &ce);
+            APR_BRIGADE_INSERT_TAIL(bb, ce);
+            e->start += MAX_BUCKET_SIZE;
+            length -= MAX_BUCKET_SIZE;
+        }
+        e->length = (apr_size_t)length; /* Resize just the last bucket */
+    }
+    
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+    return e;
+}
+
+int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                                           apr_uint32_t  HSE_code,
                                           void         *buf_ptr,
                                           apr_uint32_t *buf_size,
@@ -822,6 +900,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
     conn_rec *c = r->connection;
     char *buf_data = (char*)buf_ptr;
     request_rec *subreq;
+    apr_status_t rv;
 
     switch (HSE_code) {
     case HSE_REQ_SEND_URL_REDIRECT_RESP:
@@ -876,15 +955,15 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             apr_bucket_brigade *bb;
             apr_bucket *b;
             bb = apr_brigade_create(cid->r->pool, c->bucket_alloc);
-	    b = apr_bucket_transient_create((char*) data_type + ate, 
+            b = apr_bucket_transient_create((char*) data_type + ate,
                                            headlen - ate, c->bucket_alloc);
-	    APR_BRIGADE_INSERT_TAIL(bb, b);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
             b = apr_bucket_flush_create(c->bucket_alloc);
-	    APR_BRIGADE_INSERT_TAIL(bb, b);
-	    ap_pass_brigade(cid->r->output_filters, bb);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
+            rv = ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
+            return (rv == APR_SUCCESS);
         }
-        return 1;
     }
 
     case HSE_REQ_DONE_WITH_SESSION:
@@ -909,20 +988,33 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         /* Map a URL to a filename */
         char *file = (char *)buf_data;
         apr_uint32_t len;
-        subreq = ap_sub_req_lookup_uri(apr_pstrndup(r->pool, file, *buf_size),
-                                       r, NULL);
+        subreq = ap_sub_req_lookup_uri(
+                     apr_pstrndup(cid->r->pool, file, *buf_size), r, NULL);
 
-        len = apr_cpystrn(file, subreq->filename, *buf_size) - file;
-
-
-        /* IIS puts a trailing slash on directories, Apache doesn't */
-        if (subreq->finfo.filetype == APR_DIR) {
-            if (len < *buf_size - 1) {
-                file[len++] = '\\';
-                file[len] = '\0';
-            }
+        if (!subreq->filename) {
+            ap_destroy_sub_req(subreq);
+            return 0;
         }
-        *buf_size = len;
+
+        len = (apr_uint32_t)strlen(r->filename);
+
+        if ((subreq->finfo.filetype == APR_DIR)
+              && (!subreq->path_info)
+              && (file[len - 1] != '/'))
+            file = apr_pstrcat(cid->r->pool, subreq->filename, "/", NULL);
+        else
+            file = apr_pstrcat(cid->r->pool, subreq->filename, 
+                                              subreq->path_info, NULL);
+
+        ap_destroy_sub_req(subreq);
+
+#ifdef WIN32
+        /* We need to make this a real Windows path name */
+        apr_filepath_merge(&file, "", file, APR_FILEPATH_NATIVE, r->pool);
+#endif
+
+        *buf_size = apr_cpystrn(buf_data, file, *buf_size) - buf_data;
+
         return 1;
     }
 
@@ -933,7 +1025,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                            "is not supported: %s", r->filename);
         apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
-        
+
     case HSE_APPEND_LOG_PARAMETER:
         /* Log buf_data, of buf_size bytes, in the URI Query (cs-uri-query) field
          */
@@ -949,10 +1041,10 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                           "ISAPI: %s: %s", cid->r->filename,
                           (char*) buf_data);
         return 1;
-        
+
     case HSE_REQ_IO_COMPLETION:
-        /* Emulates a completion port...  Record callback address and 
-         * user defined arg, we will call this after any async request 
+        /* Emulates a completion port...  Record callback address and
+         * user defined arg, we will call this after any async request
          * (e.g. transmitfile) as if the request executed async.
          * Per MS docs... HSE_REQ_IO_COMPLETION replaces any prior call
          * to HSE_REQ_IO_COMPLETION, and buf_data may be set to NULL.
@@ -976,7 +1068,6 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         HSE_TF_INFO *tf = (HSE_TF_INFO*)buf_data;
         apr_uint32_t sent = 0;
         apr_ssize_t ate = 0;
-        apr_status_t rv;
         apr_bucket_brigade *bb;
         apr_bucket *b;
         apr_file_t *fd;
@@ -990,12 +1081,12 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
         }
-        
+
         /* Presume the handle was opened with the CORRECT semantics
-         * for TransmitFile 
+         * for TransmitFile
          */
-        if ((rv = apr_os_file_put(&fd, &tf->hFile, 
-                                  APR_READ | APR_XTHREAD, r->pool)) 
+        if ((rv = apr_os_file_put(&fd, &tf->hFile,
+                                  APR_READ | APR_XTHREAD, r->pool))
                 != APR_SUCCESS) {
             return 0;
         }
@@ -1010,7 +1101,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             }
             fsize = fi.size - tf->Offset;
         }
-        
+
         /* apr_dupfile_oshandle (&fd, tf->hFile, r->pool); */
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
@@ -1024,12 +1115,12 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
          * (handled after this case).
          */
         if ((tf->dwFlags & HSE_IO_SEND_HEADERS) && tf->pszStatusCode) {
-            ate = send_response_header(cid, tf->pszStatusCode,  
+            ate = send_response_header(cid, tf->pszStatusCode,
                                             (char*)tf->pHead,
                                             strlen(tf->pszStatusCode),
                                             tf->HeadLength);
         }
-        else if (!cid->headers_set && tf->pHead && tf->HeadLength 
+        else if (!cid->headers_set && tf->pHead && tf->HeadLength
                                    && *(char*)tf->pHead) {
             ate = send_response_header(cid, NULL, (char*)tf->pHead,
                                             0, tf->HeadLength);
@@ -1042,7 +1133,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         }
 
         if (tf->pHead && (apr_size_t)ate < tf->HeadLength) {
-            b = apr_bucket_transient_create((char*)tf->pHead + ate, 
+            b = apr_bucket_transient_create((char*)tf->pHead + ate,
                                             tf->HeadLength - ate,
                                             c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
@@ -1050,39 +1141,18 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         }
 
         sent += (apr_uint32_t)fsize;
-#if APR_HAS_LARGE_FILES
-        if (r->finfo.size > AP_MAX_SENDFILE) {
-            /* APR_HAS_LARGE_FILES issue; must split into mutiple buckets,
-             * no greater than MAX(apr_size_t), and more granular than that
-             * in case the brigade code/filters attempt to read it directly.
-             */
-            b = apr_bucket_file_create(fd, tf->Offset, AP_MAX_SENDFILE, 
-                                       r->pool, c->bucket_alloc);
-            while (fsize > AP_MAX_SENDFILE) {
-                apr_bucket *bc;
-                apr_bucket_copy(b, &bc);
-                APR_BRIGADE_INSERT_TAIL(bb, bc);
-                b->start += AP_MAX_SENDFILE;
-                fsize -= AP_MAX_SENDFILE;
-            }
-            b->length = (apr_size_t)fsize; /* Resize just the last bucket */
-        }
-        else
-#endif
-            b = apr_bucket_file_create(fd, tf->Offset, (apr_size_t)fsize, 
-                                       r->pool, c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
-        
+        brigade_insert_file(bb, fd, tf->Offset, fsize, r->pool);
+
         if (tf->pTail && tf->TailLength) {
             sent += tf->TailLength;
-            b = apr_bucket_transient_create((char*)tf->pTail, 
+            b = apr_bucket_transient_create((char*)tf->pTail,
                                             tf->TailLength, c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(bb, b);
         }
-        
+
         b = apr_bucket_flush_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
-        ap_pass_brigade(r->output_filters, bb);
+        rv = ap_pass_brigade(r->output_filters, bb);
         cid->response_sent = 1;
 
         /* Use tf->pfnHseIO + tf->pContext, or if NULL, then use cid->fnIOComplete
@@ -1091,26 +1161,26 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         if (tf->dwFlags & HSE_IO_ASYNC) {
             if (tf->pfnHseIO) {
                 if (rv == OK) {
-                    tf->pfnHseIO(cid->ecb, tf->pContext, 
+                    tf->pfnHseIO(cid->ecb, tf->pContext,
                                  ERROR_SUCCESS, sent);
                 }
                 else {
-                    tf->pfnHseIO(cid->ecb, tf->pContext, 
+                    tf->pfnHseIO(cid->ecb, tf->pContext,
                                  ERROR_WRITE_FAULT, sent);
                 }
             }
             else if (cid->completion) {
                 if (rv == OK) {
-                    cid->completion(cid->ecb, cid->completion_arg, 
+                    cid->completion(cid->ecb, cid->completion_arg,
                                     sent, ERROR_SUCCESS);
                 }
                 else {
-                    cid->completion(cid->ecb, cid->completion_arg, 
+                    cid->completion(cid->ecb, cid->completion_arg,
                                     sent, ERROR_WRITE_FAULT);
                 }
             }
         }
-        return (rv == OK);
+        return (rv == APR_SUCCESS);
     }
 
     case HSE_REQ_REFRESH_ISAPI_ACL:
@@ -1131,9 +1201,9 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         apr_uint32_t read = 0;
         int res;
         if (!cid->dconf.fake_async) {
-            if (cid->dconf.log_unsupported) 
+            if (cid->dconf.log_unsupported)
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
-                            "ISAPI: asynchronous I/O not supported: %s", 
+                            "ISAPI: asynchronous I/O not supported: %s",
                             r->filename);
             apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
             return 0;
@@ -1151,11 +1221,11 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
 
         if ((*data_type & HSE_IO_ASYNC) && cid->completion) {
             if (res >= 0) {
-                cid->completion(cid->ecb, cid->completion_arg, 
+                cid->completion(cid->ecb, cid->completion_arg,
                                 read, ERROR_SUCCESS);
             }
             else {
-                cid->completion(cid->ecb, cid->completion_arg, 
+                cid->completion(cid->ecb, cid->completion_arg,
                                 read, ERROR_READ_FAULT);
             }
         }
@@ -1178,8 +1248,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         char* test_uri = apr_pstrndup(r->pool, (char *)buf_data, *buf_size);
 
         subreq = ap_sub_req_lookup_uri(test_uri, r, NULL);
-        info->cchMatchingURL = strlen(test_uri);        
-        info->cchMatchingPath = apr_cpystrn(info->lpszPath, subreq->filename, 
+        info->cchMatchingURL = strlen(test_uri);
+        info->cchMatchingPath = apr_cpystrn(info->lpszPath, subreq->filename,
                                       sizeof(info->lpszPath)) - info->lpszPath;
 
         /* Mapping started with assuming both strings matched.
@@ -1187,8 +1257,8 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
          * terminating slashes for directory matches.
          */
         if (subreq->path_info && *subreq->path_info) {
-            apr_cpystrn(info->lpszPath + info->cchMatchingPath, 
-                        subreq->path_info, 
+            apr_cpystrn(info->lpszPath + info->cchMatchingPath,
+                        subreq->path_info,
                         sizeof(info->lpszPath) - info->cchMatchingPath);
             info->cchMatchingURL -= strlen(subreq->path_info);
             if (subreq->finfo.filetype == APR_DIR
@@ -1208,18 +1278,18 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         /* If the matched isn't a file, roll match back to the prior slash */
         if (subreq->finfo.filetype == APR_NOFILE) {
             while (info->cchMatchingPath && info->cchMatchingURL) {
-                if (info->lpszPath[info->cchMatchingPath - 1] == '/') 
+                if (info->lpszPath[info->cchMatchingPath - 1] == '/')
                     break;
                 --info->cchMatchingPath;
                 --info->cchMatchingURL;
             }
         }
-        
+
         /* Paths returned with back slashes */
         for (test_uri = info->lpszPath; *test_uri; ++test_uri)
             if (*test_uri == '/')
                 *test_uri = '\\';
-        
+
         /* is a combination of:
          * HSE_URL_FLAGS_READ         0x001 Allow read
          * HSE_URL_FLAGS_WRITE        0x002 Allow write
@@ -1234,7 +1304,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
          *
          * XxX: As everywhere, EXEC flags could use some work...
          *      and this could go further with more flags, as desired.
-         */ 
+         */
         info->dwFlags = (subreq->finfo.protection & APR_UREAD    ? 0x001 : 0)
                       | (subreq->finfo.protection & APR_UWRITE   ? 0x002 : 0)
                       | (subreq->finfo.protection & APR_UEXECUTE ? 0x204 : 0);
@@ -1254,7 +1324,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                           "ISAPI: ServerSupportFunction "
                           "HSE_REQ_GET_CERT_INFO_EX "
-                          "is not supported: %s", r->filename);        
+                          "is not supported: %s", r->filename);
         apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
         return 0;
 
@@ -1264,9 +1334,9 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
 
         /*  Ignore shi->fKeepConn - we don't want the advise
          */
-        apr_ssize_t ate = send_response_header(cid, shi->pszStatus, 
+        apr_ssize_t ate = send_response_header(cid, shi->pszStatus,
                                                shi->pszHeader,
-                                               shi->cchStatus, 
+                                               shi->cchStatus,
                                                shi->cchHeader);
         if (ate < 0) {
             apr_set_os_error(APR_FROM_OS_ERROR(ERROR_INVALID_PARAMETER));
@@ -1276,16 +1346,16 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             apr_bucket_brigade *bb;
             apr_bucket *b;
             bb = apr_brigade_create(cid->r->pool, c->bucket_alloc);
-	    b = apr_bucket_transient_create(shi->pszHeader + ate, 
+            b = apr_bucket_transient_create(shi->pszHeader + ate,
                                             shi->cchHeader - ate,
                                             c->bucket_alloc);
-	    APR_BRIGADE_INSERT_TAIL(bb, b);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
             b = apr_bucket_flush_create(c->bucket_alloc);
-	    APR_BRIGADE_INSERT_TAIL(bb, b);
-	    ap_pass_brigade(cid->r->output_filters, bb);
+            APR_BRIGADE_INSERT_TAIL(bb, b);
+            rv = ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
         }
-        return 1;
+        return (rv == APR_SUCCESS);
     }
 
     case HSE_REQ_CLOSE_CONNECTION:  /* Added after ISAPI 4.0 */
@@ -1341,14 +1411,14 @@ apr_status_t isapi_handler (request_rec *r)
     const char *val;
     apr_uint32_t read;
     int res;
-    
-    if(strcmp(r->handler, "isapi-isa") 
+
+    if(strcmp(r->handler, "isapi-isa")
         && strcmp(r->handler, "isapi-handler")) {
         /* Hang on to the isapi-isa for compatibility with older docs
          * (wtf did '-isa' mean in the first place?) but introduce
          * a newer and clearer "isapi-handler" name.
          */
-        return DECLINED;    
+        return DECLINED;
     }
     dconf = ap_get_module_config(r->per_dir_config, &isapi_module);
     e = r->subprocess_env;
@@ -1372,7 +1442,7 @@ apr_status_t isapi_handler (request_rec *r)
         return HTTP_NOT_FOUND;
     }
 
-    if (isapi_lookup(r->pool, r->server, r, r->filename, &isa) 
+    if (isapi_lookup(r->pool, r->server, r, r->filename, &isa)
            != APR_SUCCESS) {
         return HTTP_INTERNAL_SERVER_ERROR;
     }
@@ -1390,7 +1460,7 @@ apr_status_t isapi_handler (request_rec *r)
      * NULL or zero out most fields.
      */
     cid = apr_pcalloc(r->pool, sizeof(isapi_cid));
-    
+
     /* Fixup defaults for dconf */
     cid->dconf.read_ahead_buflen = (dconf->read_ahead_buflen == ISAPI_UNDEF)
                                      ? 49152 : dconf->read_ahead_buflen;
@@ -1408,7 +1478,7 @@ apr_status_t isapi_handler (request_rec *r)
     cid->isa = isa;
     cid->r = r;
     r->status = 0;
-    
+
     cid->ecb->cbSize = sizeof(EXTENSION_CONTROL_BLOCK);
     cid->ecb->dwVersion = isa->report_version;
     cid->ecb->dwHttpStatusCode = 0;
@@ -1420,7 +1490,7 @@ apr_status_t isapi_handler (request_rec *r)
     cid->ecb->lpszPathInfo = (char*) apr_table_get(e, "PATH_INFO");
     cid->ecb->lpszPathTranslated = (char*) apr_table_get(e, "PATH_TRANSLATED");
     cid->ecb->lpszContentType = (char*) apr_table_get(e, "CONTENT_TYPE");
-    
+
     /* Set up the callbacks */
     cid->ecb->GetServerVariable = GetServerVariable;
     cid->ecb->WriteClient = WriteClient;
@@ -1493,8 +1563,8 @@ apr_status_t isapi_handler (request_rec *r)
      * unlocked the mutex.
      */
     if (cid->dconf.fake_async) {
-        rv = apr_thread_mutex_create(&cid->completed, 
-                                     APR_THREAD_MUTEX_UNNESTED, 
+        rv = apr_thread_mutex_create(&cid->completed,
+                                     APR_THREAD_MUTEX_UNNESTED,
                                      r->pool);
         if (cid->completed && (rv == APR_SUCCESS)) {
             rv = apr_thread_mutex_lock(cid->completed);
@@ -1551,14 +1621,14 @@ apr_status_t isapi_handler (request_rec *r)
             }
             break;
 
-        case HSE_STATUS_ERROR:    
+        case HSE_STATUS_ERROR:
             /* end response if we have yet to do so.
              */
             r->status = HTTP_INTERNAL_SERVER_ERROR;
             break;
 
         default:
-            /* TODO: log unrecognized retval for debugging 
+            /* TODO: log unrecognized retval for debugging
              */
              ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
                            "ISAPI: return code %d from HttpExtensionProc() "
@@ -1582,9 +1652,10 @@ apr_status_t isapi_handler (request_rec *r)
         rv = ap_pass_brigade(r->output_filters, bb);
         cid->response_sent = 1;
 
-        return OK;  /* NOT r->status or cid->r->status, even if it has changed. */
+        return (rv == APR_SUCCESS);
+        /* NOT r->status or cid->r->status, even if it has changed. */
     }
-    
+
     /* As the client returned no error, and if we did not error out
      * ourselves, trust dwHttpStatusCode to say something relevant.
      */
@@ -1608,13 +1679,13 @@ static int isapi_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
 {
     apr_status_t rv;
 
-    apr_pool_sub_make(&loaded.pool, pconf, NULL);
+    apr_pool_create_ex(&loaded.pool, pconf, NULL, NULL);
     if (!loaded.pool) {
-	ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, NULL,
-	             "ISAPI: could not create the isapi cache pool");
+        ap_log_error(APLOG_MARK, APLOG_ERR, APR_EGENERAL, NULL,
+                     "ISAPI: could not create the isapi cache pool");
         return APR_EGENERAL;
     }
-    
+
     loaded.hash = apr_hash_make(loaded.pool);
     if (!loaded.hash) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
@@ -1622,7 +1693,7 @@ static int isapi_pre_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
         return APR_EGENERAL;
     }
 
-    rv = apr_thread_mutex_create(&loaded.lock, APR_THREAD_MUTEX_DEFAULT, 
+    rv = apr_thread_mutex_create(&loaded.lock, APR_THREAD_MUTEX_DEFAULT,
                                  loaded.pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, rv, 0, NULL,
