@@ -1454,7 +1454,6 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
 
 struct modssl_buffer_ctx {
     apr_bucket_brigade *bb;
-    apr_pool_t *pool;
 };
 
 int ssl_io_buffer_fill(request_rec *r)
@@ -1469,8 +1468,7 @@ int ssl_io_buffer_fill(request_rec *r)
      * containing a setaside pool and a brigade which constrain the
      * lifetime of the buffered data. */
     ctx = apr_palloc(r->pool, sizeof *ctx);
-    apr_pool_create(&ctx->pool, r->pool);
-    ctx->bb = apr_brigade_create(ctx->pool, c->bucket_alloc);
+    ctx->bb = apr_brigade_create(r->pool, c->bucket_alloc);
 
     /* ... and a temporary brigade. */
     tempb = apr_brigade_create(r->pool, c->bucket_alloc);
@@ -1515,7 +1513,7 @@ int ssl_io_buffer_fill(request_rec *r)
                 total += len;
             }
 
-            rv = apr_bucket_setaside(e, ctx->pool);
+            rv = apr_bucket_setaside(e, r->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                               "could not setaside bucket for SSL buffer");
