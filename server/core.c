@@ -3323,7 +3323,7 @@ AP_INIT_TAKE1("ScoreBoardFile", ap_mpm_set_scoreboard, NULL, RSRC_CONF,
 #endif
 #ifdef AP_MPM_WANT_SET_LOCKFILE
 AP_INIT_TAKE1("LockFile",  ap_mpm_set_lockfile, NULL, RSRC_CONF,
-              "The lockfile used when Apache needs to lock the accept() call (depreciated)"),
+              "The lockfile used when Apache needs to lock the accept() call (deprecated)"),
 #endif
 #ifdef AP_MPM_WANT_SET_MAX_REQUESTS
 AP_INIT_TAKE1("MaxRequestsPerChild", ap_mpm_set_max_requests, NULL, RSRC_CONF,

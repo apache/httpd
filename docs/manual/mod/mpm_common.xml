@@ -61,14 +61,14 @@ accepting requests on network sockets</description>
       file defined by the optional <var>/path/to/lockfile</var>
       parameter. One can also use the <directive module="mpm_common"
       >LockFile</directive> directive to specify the lockfile,
-      although this is depreciated.</dd>
+      although this is deprecated.</dd>
 
       <dt><code>fcntl&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
       <dd>uses the <code>fcntl(2)</code> system call to lock the
       file defined by the optional <var>/path/to/lockfile</var>
       parameter. One can also use the <directive module="mpm_common"
       >LockFile</directive> directive to specify the lockfile,
-      although this is depreciated.</dd>
+      although this is deprecated.</dd>
 
       <dt><code>file&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
       <dd>This directive tells Apache to pick the "best" file locking
@@ -404,7 +404,7 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
 
 <directivesynopsis>
 <name>LockFile</name>
-<description>Location of the accept serialization lock file <em>(depreciated)</em></description>
+<description>Location of the accept serialization lock file <em>(deprecated)</em></description>
 <syntax>LockFile <var>filename</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
@@ -430,8 +430,8 @@ The <var>protocol</var> argument was added in 2.1.5</compatibility>
       creating a lockfile with the same name as the one the server will try
       to create.</p>
     </note>
-    <note type="warning"><title>Depreciated</title>
-      <p>This directive is depreciated. It is strongly suggested that
+    <note type="warning"><title>Deprecated</title>
+      <p>This directive is deprecated. It is strongly suggested that
       you use <directive module="mpm_common">AcceptMutex</directive> to
       specify both the mutex locking implementation as well as
       the lockfile location.</p>
