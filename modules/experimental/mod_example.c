@@ -267,6 +267,11 @@ static x_cfg *our_dconfig(const request_rec *r)
     return (x_cfg *) ap_get_module_config(r->per_dir_config, &example_module);
 }
 
+/* 
+ * The following utility routines are not used in the module. Don't 
+ * compile them so -Wall doesn't complain about functions that are 
+ * defined but not used. 
+ */
 #if 0
 /*
  * Locate our server configuration record for the specified server.
@@ -283,7 +288,7 @@ static x_cfg *our_rconfig(const request_rec *r)
 {
     return (x_cfg *) ap_get_module_config(r->request_config, &example_module);
 }
-#endif
+#endif /* if 0 */
 
 /*
  * Likewise for our configuration record for a connection.
@@ -475,184 +480,6 @@ static const char *cmd_example(cmd_parms *cmd, void *mconfig)
     return NULL;
 }
 
-/*--------------------------------------------------------------------------*/
-/*                                                                          */
-/* Now we declare our content handlers, which are invoked when the server   */
-/* encounters a document which our module is supposed to have a chance to   */
-/* see.  (See mod_mime's SetHandler and AddHandler directives, and the      */
-/* mod_info and mod_status examples, for more details.)                     */
-/*                                                                          */
-/* Since content handlers are dumping data directly into the connection     */
-/* (using the r*() routines, such as rputs() and rprintf()) without         */
-/* intervention by other parts of the server, they need to make             */
-/* sure any accumulated HTTP headers are sent first.  This is done by       */
-/* calling send_http_header().  Otherwise, no header will be sent at all,   */
-/* and the output sent to the client will actually be HTTP-uncompliant.     */
-/*--------------------------------------------------------------------------*/
-/*
- * Sample content handler.  All this does is display the call list that has
- * been built up so far.
- *
- * The return value instructs the caller concerning what happened and what to
- * do next:
- *  OK ("we did our thing")
- *  DECLINED ("this isn't something with which we want to get involved")
- *  HTTP_mumble ("an error status should be reported")
- */
-static int x_handler(request_rec *r)
-{
-    x_cfg *dcfg;
-
-    if (strcmp(r->handler, "example-handler")) {
-        return DECLINED;
-    }
-
-    dcfg = our_dconfig(r);
-    trace_add(r->server, r, dcfg, "x_handler()");
-    /*
-     * We're about to start sending content, so we need to force the HTTP
-     * headers to be sent at this point.  Otherwise, no headers will be sent
-     * at all.  We can set any we like first, of course.  **NOTE** Here's
-     * where you set the "Content-type" header, and you do so by putting it in
-     * r->content_type, *not* r->headers_out("Content-type").  If you don't
-     * set it, it will be filled in with the server's default type (typically
-     * "text/plain").  You *must* also ensure that r->content_type is lower
-     * case.
-     *
-     * We also need to start a timer so the server can know if the connexion
-     * is broken.
-     */
-    ap_set_content_type(r, "text/html");
-    /*
-     * If we're only supposed to send header information (HEAD request), we're
-     * already there.
-     */
-    if (r->header_only) {
-        return OK;
-    }
-
-    /*
-     * Now send our actual output.  Since we tagged this as being
-     * "text/html", we need to embed any HTML.
-     */
-    ap_rputs(DOCTYPE_HTML_3_2, r);
-    ap_rputs("<HTML>\n", r);
-    ap_rputs(" <HEAD>\n", r);
-    ap_rputs("  <TITLE>mod_example Module Content-Handler Output\n", r);
-    ap_rputs("  </TITLE>\n", r);
-    ap_rputs(" </HEAD>\n", r);
-    ap_rputs(" <BODY>\n", r);
-    ap_rputs("  <H1><SAMP>mod_example</SAMP> Module Content-Handler Output\n", r);
-    ap_rputs("  </H1>\n", r);
-    ap_rputs("  <P>\n", r);
-    ap_rprintf(r, "  Apache HTTP Server version: \"%s\"\n",
-            ap_get_server_banner());
-    ap_rputs("  <BR>\n", r);
-    ap_rprintf(r, "  Server built: \"%s\"\n", ap_get_server_built());
-    ap_rputs("  </P>\n", r);;
-    ap_rputs("  <P>\n", r);
-    ap_rputs("  The format for the callback trace is:\n", r);
-    ap_rputs("  </P>\n", r);
-    ap_rputs("  <DL>\n", r);
-    ap_rputs("   <DT><EM>n</EM>.<SAMP>&lt;routine-name&gt;", r);
-    ap_rputs("(&lt;routine-data&gt;)</SAMP>\n", r);
-    ap_rputs("   </DT>\n", r);
-    ap_rputs("   <DD><SAMP>[&lt;applies-to&gt;]</SAMP>\n", r);
-    ap_rputs("   </DD>\n", r);
-    ap_rputs("  </DL>\n", r);
-    ap_rputs("  <P>\n", r);
-    ap_rputs("  The <SAMP>&lt;routine-data&gt;</SAMP> is supplied by\n", r);
-    ap_rputs("  the routine when it requests the trace,\n", r);
-    ap_rputs("  and the <SAMP>&lt;applies-to&gt;</SAMP> is extracted\n", r);
-    ap_rputs("  from the configuration record at the time of the trace.\n", r);
-    ap_rputs("  <STRONG>SVR()</STRONG> indicates a server environment\n", r);
-    ap_rputs("  (blank means the main or default server, otherwise it's\n", r);
-    ap_rputs("  the name of the VirtualHost); <STRONG>DIR()</STRONG>\n", r);
-    ap_rputs("  indicates a location in the URL or filesystem\n", r);
-    ap_rputs("  namespace.\n", r);
-    ap_rputs("  </P>\n", r);
-    ap_rprintf(r, "  <H2>Static callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
-            trace);
-    ap_rputs("  <H2>Request-specific callbacks so far:</H2>\n", r);
-    ap_rprintf(r, "  <OL>\n%s  </OL>\n", apr_table_get(r->notes, TRACE_NOTE));
-    ap_rputs("  <H2>Environment for <EM>this</EM> call:</H2>\n", r);
-    ap_rputs("  <UL>\n", r);
-    ap_rprintf(r, "   <LI>Applies-to: <SAMP>%s</SAMP>\n   </LI>\n", dcfg->loc);
-    ap_rprintf(r, "   <LI>\"Example\" directive declared here: %s\n   </LI>\n",
-            (dcfg->local ? "YES" : "NO"));
-    ap_rprintf(r, "   <LI>\"Example\" inherited: %s\n   </LI>\n",
-            (dcfg->congenital ? "YES" : "NO"));
-    ap_rputs("  </UL>\n", r);
-    ap_rputs(" </BODY>\n", r);
-    ap_rputs("</HTML>\n", r);
-    /*
-     * We're all done, so cancel the timeout we set.  Since this is probably
-     * the end of the request we *could* assume this would be done during
-     * post-processing - but it's possible that another handler might be
-     * called and inherit our outstanding timer.  Not good; to each its own.
-     */
-    /*
-     * We did what we wanted to do, so tell the rest of the server we
-     * succeeded.
-     */
-    return OK;
-}
-
-/*--------------------------------------------------------------------------*/
-/*                                                                          */
-/* Now let's declare routines for each of the callback phase in order.      */
-/* (That's the order in which they're listed in the callback list, *not     */
-/* the order in which the server calls them!  See the command_rec           */
-/* declaration near the bottom of this file.)  Note that these may be       */
-/* called for situations that don't relate primarily to our function - in   */
-/* other words, the fixup handler shouldn't assume that the request has     */
-/* to do with "example" stuff.                                              */
-/*                                                                          */
-/* With the exception of the content handler, all of our routines will be   */
-/* called for each request, unless an earlier handler from another module   */
-/* aborted the sequence.                                                    */
-/*                                                                          */
-/* Handlers that are declared as "int" can return the following:            */
-/*                                                                          */
-/*  OK          Handler accepted the request and did its thing with it.     */
-/*  DECLINED    Handler took no action.                                     */
-/*  HTTP_mumble Handler looked at request and found it wanting.             */
-/*                                                                          */
-/* What the server does after calling a module handler depends upon the     */
-/* handler's return value.  In all cases, if the handler returns            */
-/* DECLINED, the server will continue to the next module with an handler    */
-/* for the current phase.  However, if the handler return a non-OK,         */
-/* non-DECLINED status, the server aborts the request right there.  If      */
-/* the handler returns OK, the server's next action is phase-specific;      */
-/* see the individual handler comments below for details.                   */
-/*                                                                          */
-/*--------------------------------------------------------------------------*/
-/*
- * This function is called during server initialisation.  Any information
- * that needs to be recorded must be in static cells, since there's no
- * configuration record.
- *
- * There is no return value.
- */
-
-/*
- * This function is called when an heavy-weight process (such as a child) is
- * being run down or destroyed.  As with the child initialisation function,
- * any information that needs to be recorded must be in static cells, since
- * there's no configuration record.
- *
- * There is no return value.
- */
-
-/*
- * This function is called during server initialisation when an heavy-weight
- * process (such as a child) is being initialised.  As with the
- * module initialisation function, any information that needs to be recorded
- * must be in static cells, since there's no configuration record.
- *
- * There is no return value.
- */
-
 /*
  * This function gets called to create a per-directory configuration
  * record.  This will be called for the "default" server environment, and for
@@ -813,6 +640,63 @@ static void *x_merge_server_config(apr_pool_t *p, void *server1_conf,
     return (void *) merged_config;
 }
 
+
+/*--------------------------------------------------------------------------*/
+/*                                                                          */
+/* Now let's declare routines for each of the callback phase in order.      */
+/* (That's the order in which they're listed in the callback list, *not     */
+/* the order in which the server calls them!  See the command_rec           */
+/* declaration near the bottom of this file.)  Note that these may be       */
+/* called for situations that don't relate primarily to our function - in   */
+/* other words, the fixup handler shouldn't assume that the request has     */
+/* to do with "example" stuff.                                              */
+/*                                                                          */
+/* With the exception of the content handler, all of our routines will be   */
+/* called for each request, unless an earlier handler from another module   */
+/* aborted the sequence.                                                    */
+/*                                                                          */
+/* Handlers that are declared as "int" can return the following:            */
+/*                                                                          */
+/*  OK          Handler accepted the request and did its thing with it.     */
+/*  DECLINED    Handler took no action.                                     */
+/*  HTTP_mumble Handler looked at request and found it wanting.             */
+/*                                                                          */
+/* What the server does after calling a module handler depends upon the     */
+/* handler's return value.  In all cases, if the handler returns            */
+/* DECLINED, the server will continue to the next module with an handler    */
+/* for the current phase.  However, if the handler return a non-OK,         */
+/* non-DECLINED status, the server aborts the request right there.  If      */
+/* the handler returns OK, the server's next action is phase-specific;      */
+/* see the individual handler comments below for details.                   */
+/*                                                                          */
+/*--------------------------------------------------------------------------*/
+/*
+ * This function is called during server initialisation.  Any information
+ * that needs to be recorded must be in static cells, since there's no
+ * configuration record.
+ *
+ * There is no return value.
+ */
+
+/*
+ * This function is called when an heavy-weight process (such as a child) is
+ * being run down or destroyed.  As with the child initialisation function,
+ * any information that needs to be recorded must be in static cells, since
+ * there's no configuration record.
+ *
+ * There is no return value.
+ */
+
+/*
+ * This function is called during server initialisation when an heavy-weight
+ * process (such as a child) is being initialised.  As with the
+ * module initialisation function, any information that needs to be recorded
+ * must be in static cells, since there's no configuration record.
+ *
+ * There is no return value.
+ */
+
+
 /*
  * This routine is called before the server processes the configuration
  * files.  There is no return value.
@@ -951,7 +835,6 @@ static void x_child_init(apr_pool_t *p, server_rec *s)
  * server will still call any remaining modules with an handler for this
  * phase.
  */
-#if 0
 static const char *x_http_scheme(const request_rec *r)
 {
     x_cfg *cfg;
@@ -961,7 +844,7 @@ static const char *x_http_scheme(const request_rec *r)
      * Log the call and exit.
      */
     trace_add(r->server, NULL, cfg, "x_http_scheme()");
-    return "example";
+    return NULL;
 }
 
 /*
@@ -980,9 +863,8 @@ static apr_port_t x_default_port(const request_rec *r)
      * Log the call and exit.
      */
     trace_add(r->server, NULL, cfg, "x_default_port()");
-    return 80;
+    return 0;
 }
-#endif /*0*/
 
 /*
  * XXX: This routine is called XXX
@@ -1000,6 +882,129 @@ static void x_insert_filter(request_rec *r)
      * Log the call and exit.
      */
     trace_add(r->server, NULL, cfg, "x_insert_filter()");
+}
+
+/*--------------------------------------------------------------------------*/
+/*                                                                          */
+/* Now we declare our content handlers, which are invoked when the server   */
+/* encounters a document which our module is supposed to have a chance to   */
+/* see.  (See mod_mime's SetHandler and AddHandler directives, and the      */
+/* mod_info and mod_status examples, for more details.)                     */
+/*                                                                          */
+/* Since content handlers are dumping data directly into the connection     */
+/* (using the r*() routines, such as rputs() and rprintf()) without         */
+/* intervention by other parts of the server, they need to make             */
+/* sure any accumulated HTTP headers are sent first.  This is done by       */
+/* calling send_http_header().  Otherwise, no header will be sent at all,   */
+/* and the output sent to the client will actually be HTTP-uncompliant.     */
+/*--------------------------------------------------------------------------*/
+/*
+ * Sample content handler.  All this does is display the call list that has
+ * been built up so far.
+ *
+ * The return value instructs the caller concerning what happened and what to
+ * do next:
+ *  OK ("we did our thing")
+ *  DECLINED ("this isn't something with which we want to get involved")
+ *  HTTP_mumble ("an error status should be reported")
+ */
+static int x_handler(request_rec *r)
+{
+    x_cfg *dcfg;
+
+    if (strcmp(r->handler, "example-handler")) {
+        return DECLINED;
+    }
+
+    dcfg = our_dconfig(r);
+    trace_add(r->server, r, dcfg, "x_handler()");
+    /*
+     * We're about to start sending content, so we need to force the HTTP
+     * headers to be sent at this point.  Otherwise, no headers will be sent
+     * at all.  We can set any we like first, of course.  **NOTE** Here's
+     * where you set the "Content-type" header, and you do so by putting it in
+     * r->content_type, *not* r->headers_out("Content-type").  If you don't
+     * set it, it will be filled in with the server's default type (typically
+     * "text/plain").  You *must* also ensure that r->content_type is lower
+     * case.
+     *
+     * We also need to start a timer so the server can know if the connexion
+     * is broken.
+     */
+    ap_set_content_type(r, "text/html");
+    /*
+     * If we're only supposed to send header information (HEAD request), we're
+     * already there.
+     */
+    if (r->header_only) {
+        return OK;
+    }
+
+    /*
+     * Now send our actual output.  Since we tagged this as being
+     * "text/html", we need to embed any HTML.
+     */
+    ap_rputs(DOCTYPE_HTML_3_2, r);
+    ap_rputs("<HTML>\n", r);
+    ap_rputs(" <HEAD>\n", r);
+    ap_rputs("  <TITLE>mod_example Module Content-Handler Output\n", r);
+    ap_rputs("  </TITLE>\n", r);
+    ap_rputs(" </HEAD>\n", r);
+    ap_rputs(" <BODY>\n", r);
+    ap_rputs("  <H1><SAMP>mod_example</SAMP> Module Content-Handler Output\n", r);
+    ap_rputs("  </H1>\n", r);
+    ap_rputs("  <P>\n", r);
+    ap_rprintf(r, "  Apache HTTP Server version: \"%s\"\n",
+            ap_get_server_banner());
+    ap_rputs("  <BR>\n", r);
+    ap_rprintf(r, "  Server built: \"%s\"\n", ap_get_server_built());
+    ap_rputs("  </P>\n", r);;
+    ap_rputs("  <P>\n", r);
+    ap_rputs("  The format for the callback trace is:\n", r);
+    ap_rputs("  </P>\n", r);
+    ap_rputs("  <DL>\n", r);
+    ap_rputs("   <DT><EM>n</EM>.<SAMP>&lt;routine-name&gt;", r);
+    ap_rputs("(&lt;routine-data&gt;)</SAMP>\n", r);
+    ap_rputs("   </DT>\n", r);
+    ap_rputs("   <DD><SAMP>[&lt;applies-to&gt;]</SAMP>\n", r);
+    ap_rputs("   </DD>\n", r);
+    ap_rputs("  </DL>\n", r);
+    ap_rputs("  <P>\n", r);
+    ap_rputs("  The <SAMP>&lt;routine-data&gt;</SAMP> is supplied by\n", r);
+    ap_rputs("  the routine when it requests the trace,\n", r);
+    ap_rputs("  and the <SAMP>&lt;applies-to&gt;</SAMP> is extracted\n", r);
+    ap_rputs("  from the configuration record at the time of the trace.\n", r);
+    ap_rputs("  <STRONG>SVR()</STRONG> indicates a server environment\n", r);
+    ap_rputs("  (blank means the main or default server, otherwise it's\n", r);
+    ap_rputs("  the name of the VirtualHost); <STRONG>DIR()</STRONG>\n", r);
+    ap_rputs("  indicates a location in the URL or filesystem\n", r);
+    ap_rputs("  namespace.\n", r);
+    ap_rputs("  </P>\n", r);
+    ap_rprintf(r, "  <H2>Static callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
+            trace);
+    ap_rputs("  <H2>Request-specific callbacks so far:</H2>\n", r);
+    ap_rprintf(r, "  <OL>\n%s  </OL>\n", apr_table_get(r->notes, TRACE_NOTE));
+    ap_rputs("  <H2>Environment for <EM>this</EM> call:</H2>\n", r);
+    ap_rputs("  <UL>\n", r);
+    ap_rprintf(r, "   <LI>Applies-to: <SAMP>%s</SAMP>\n   </LI>\n", dcfg->loc);
+    ap_rprintf(r, "   <LI>\"Example\" directive declared here: %s\n   </LI>\n",
+            (dcfg->local ? "YES" : "NO"));
+    ap_rprintf(r, "   <LI>\"Example\" inherited: %s\n   </LI>\n",
+            (dcfg->congenital ? "YES" : "NO"));
+    ap_rputs("  </UL>\n", r);
+    ap_rputs(" </BODY>\n", r);
+    ap_rputs("</HTML>\n", r);
+    /*
+     * We're all done, so cancel the timeout we set.  Since this is probably
+     * the end of the request we *could* assume this would be done during
+     * post-processing - but it's possible that another handler might be
+     * called and inherit our outstanding timer.  Not good; to each its own.
+     */
+    /*
+     * We did what we wanted to do, so tell the rest of the server we
+     * succeeded.
+     */
+    return OK;
 }
 
 /*
@@ -1325,10 +1330,8 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_post_read_request(x_post_read_request, NULL, NULL,
                               APR_HOOK_MIDDLE);
     ap_hook_log_transaction(x_logger, NULL, NULL, APR_HOOK_MIDDLE);
-#if 0
     ap_hook_http_scheme(x_http_scheme, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
-#endif
     ap_hook_translate_name(x_translate_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_map_to_storage(x_map_to_storage_handler, NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_header_parser(x_header_parser_handler, NULL, NULL, APR_HOOK_MIDDLE);
@@ -1338,6 +1341,9 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_access_checker(x_access_checker, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_auth_checker(x_auth_checker, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_filter(x_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
+#if 0    
+    ap_hook_insert_error_filter(x_insert_error_filter, NULL, NULL, APR_HOOK_MIDDLE);
+#endif
 }
 
 /*--------------------------------------------------------------------------*/
