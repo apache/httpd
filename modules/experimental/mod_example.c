@@ -44,6 +44,8 @@
 #include "http_request.h"
 #include "util_script.h"
 #include "http_connection.h"
+#include "unixd.h"
+#include "scoreboard.h"
 
 #include "apr_strings.h"
 
@@ -439,7 +441,9 @@ static void trace_add(server_rec *s, request_rec *r, x_cfg *mconfig,
      * these co-routines are called for every single request, and the impact
      * on the size (and readability) of the error_log is considerable.
      */
+#ifndef EXAMPLE_LOG_EACH 
 #define EXAMPLE_LOG_EACH 0
+#endif
     if (EXAMPLE_LOG_EACH && (s != NULL)) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_example: %s", note);
     }
@@ -641,61 +645,39 @@ static void *x_merge_server_config(apr_pool_t *p, void *server1_conf,
 }
 
 
-/*--------------------------------------------------------------------------*/
-/*                                                                          */
-/* Now let's declare routines for each of the callback phase in order.      */
-/* (That's the order in which they're listed in the callback list, *not     */
-/* the order in which the server calls them!  See the command_rec           */
-/* declaration near the bottom of this file.)  Note that these may be       */
-/* called for situations that don't relate primarily to our function - in   */
-/* other words, the fixup handler shouldn't assume that the request has     */
-/* to do with "example" stuff.                                              */
-/*                                                                          */
-/* With the exception of the content handler, all of our routines will be   */
-/* called for each request, unless an earlier handler from another module   */
-/* aborted the sequence.                                                    */
-/*                                                                          */
-/* Handlers that are declared as "int" can return the following:            */
-/*                                                                          */
-/*  OK          Handler accepted the request and did its thing with it.     */
-/*  DECLINED    Handler took no action.                                     */
-/*  HTTP_mumble Handler looked at request and found it wanting.             */
-/*                                                                          */
-/* What the server does after calling a module handler depends upon the     */
-/* handler's return value.  In all cases, if the handler returns            */
-/* DECLINED, the server will continue to the next module with an handler    */
-/* for the current phase.  However, if the handler return a non-OK,         */
-/* non-DECLINED status, the server aborts the request right there.  If      */
-/* the handler returns OK, the server's next action is phase-specific;      */
-/* see the individual handler comments below for details.                   */
-/*                                                                          */
-/*--------------------------------------------------------------------------*/
-/*
- * This function is called during server initialisation.  Any information
- * that needs to be recorded must be in static cells, since there's no
- * configuration record.
- *
- * There is no return value.
- */
-
-/*
- * This function is called when an heavy-weight process (such as a child) is
- * being run down or destroyed.  As with the child initialisation function,
- * any information that needs to be recorded must be in static cells, since
- * there's no configuration record.
- *
- * There is no return value.
- */
-
-/*
- * This function is called during server initialisation when an heavy-weight
- * process (such as a child) is being initialised.  As with the
- * module initialisation function, any information that needs to be recorded
- * must be in static cells, since there's no configuration record.
- *
- * There is no return value.
- */
-
+/*--------------------------------------------------------------------------*
+ *                                                                          *
+ * Now let's declare routines for each of the callback hooks in order.      *
+ * (That's the order in which they're listed in the callback list, *not     *
+ * the order in which the server calls them!  See the command_rec           *
+ * declaration near the bottom of this file.)  Note that these may be       *
+ * called for situations that don't relate primarily to our function - in   *
+ * other words, the fixup handler shouldn't assume that the request has     *
+ * to do with "example" stuff.                                              *
+ *                                                                          *
+ * With the exception of the content handler, all of our routines will be   *
+ * called for each request, unless an earlier handler from another module   *
+ * aborted the sequence.                                                    *
+ *                                                                          *
+ * There are three types of hooks (see include/ap_config.h):                *
+ *                                                                          *
+ * VOID      : No return code, run all handlers declared by any module      *
+ * RUN_FIRST : Run all handlers until one returns something other           *
+ *             than DECLINED. Hook runner result is result of last callback *
+ * RUN_ALL   : Run all handlers until one returns something other than OK   *
+ *             or DECLINED. The hook runner returns that other value. If    *
+ *             all hooks run, the hook runner returns OK.                   *
+ *                                                                          *
+ * Handlers that are declared as "int" can return the following:            *
+ *                                                                          *
+ *  OK          Handler accepted the request and did its thing with it.     *
+ *  DECLINED    Handler took no action.                                     *
+ *  HTTP_mumble Handler looked at request and found it wanting.             *
+ *                                                                          *
+ * Handlers that are not declared as int return a valid pointer, or NULL if *
+ * they DECLINE to handle their phase for that specific request.            *
+ * Exceptions, if any, are noted with each routine.                         *
+ *--------------------------------------------------------------------------*/
 
 /*
  * This routine is called before the server processes the configuration
@@ -1022,7 +1004,7 @@ static int x_quick_handler(request_rec *r, int lookup_uri)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_quick_handler()");
+    trace_add(r->server, r, cfg, "x_quick_handler()");
     return DECLINED;
 }
 
@@ -1282,6 +1264,106 @@ static int x_logger(request_rec *r)
     return DECLINED;
 }
 
+/* 
+ * This routine is called to insert a previously defined error filter into 
+ * the filter chain as the request is being processed. 
+ * 
+ * For the purpose of this example, we don't have a filter to insert, 
+ * so just add to the trace and exit. 
+ * 
+ * There is no return code. 
+ */
+static void x_insert_error_filter(request_rec *r)
+{
+    x_cfg *cfg;
+    
+    cfg = our_dconfig(r);
+    trace_add(r->server, r, cfg, "x_insert_error_filter()");
+}
+
+/*
+ * This routine is called to find out under which user id to run suexec
+ * Unless our module runs CGI programs, there is no reason for us to 
+ * mess with this information. 
+ * 
+ * The return value is a pointer to an ap_unix_identity_t or NULL. If we 
+ * return a non-NULL pointer, no further callbacks in the chain for this
+ * hook will be called. 
+ */
+static ap_unix_identity_t *x_get_suexec_identity(const request_rec *r) 
+{
+    x_cfg *cfg;
+    cfg = our_dconfig(r);
+    trace_add(r->server, (request_rec *) r, cfg, "x_get_suexec_identity()");
+    
+    return NULL;
+}
+
+/*
+ * This routine is called to create a connection. This hook is implemented
+ * by the Apache core: there is no known reason a module should override 
+ * it. 
+ * 
+ * This is a RUN_FIRST hook. 
+ * 
+ * Return NULL to decline, a valid conn_rec pointer to accept. 
+ */
+static conn_rec *x_create_connection(apr_pool_t *p, server_rec *server, 
+                                     apr_socket_t *csd, long conn_id, 
+                                     void *sbh, apr_bucket_alloc_t *alloc) 
+{
+    trace_add(server, NULL, NULL, "x_create_connection()");
+    return NULL; 
+}
+
+/*
+ * This hook is defined in server/core.c, but it is not actually called 
+ * or documented. 
+ * 
+ * This is a RUN_ALL hook: all routines in the chain will be called. If 
+ * one of the routines on the chain returns OK, the hook run will return OK. 
+ * Otherwise the result will be DECLINED. 
+ */
+static int x_get_mgmt_items(apr_pool_t *p, const char *val, apr_hash_t *ht)
+{
+    /* We have nothing to do here but trace the call, and no context
+     * in which to trace it.
+     */
+    trace_add(NULL, NULL, NULL, "x_check_config()");
+    return DECLINED;
+}
+
+/*
+ * This routine gets called shortly after the request_rec structure
+ * is created. It provides the opportunity to manipulae the request 
+ * at a very early stage. 
+ *
+ * This is a RUN_ALL hook. The return value can be OK, DECLINED or 
+ * HTTP_mumble.
+ */
+static int x_create_request(request_rec *r)
+{
+    /* We have a request_rec, but it is not filled in enough
+     * to give us a usable configuration. So, add trace with 
+     * NULL pointers. 
+     */
+    trace_add(NULL, NULL, NULL, "x_create_request()");
+    return DECLINED;
+}
+
+/*
+ * This routine gets called during the startup of the MPM. 
+ * No known existing module implements this hook. 
+ * 
+ * This is a RUN_ALL hook. The return value can be OK, DECLINED or
+ * HTTP_mumble. 
+ */
+static int x_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
+{
+    trace_add(NULL, NULL, NULL, "x_pre_mpm()");
+    return DECLINED;
+}
+
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
 /* Which functions are responsible for which hooks in the server.           */
@@ -1341,9 +1423,12 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_access_checker(x_access_checker, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_auth_checker(x_auth_checker, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_filter(x_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
-#if 0    
     ap_hook_insert_error_filter(x_insert_error_filter, NULL, NULL, APR_HOOK_MIDDLE);
-#endif
+    ap_hook_get_suexec_identity(x_get_suexec_identity, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_create_connection(x_create_connection, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_get_mgmt_items(x_get_mgmt_items, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_create_request(x_create_request, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_pre_mpm(x_pre_mpm, NULL, NULL, APR_HOOK_MIDDLE);
 }
 
 /*--------------------------------------------------------------------------*/
