@@ -86,7 +86,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Create flush bucket in that case. This feature has been added
      to the recent Tomcat versions without breaking the AJP protocol.
      Trunk:http://svn.apache.org/viewvc?view=rev&revision=468941
-     +1: mturk
+     +1: mturk, rpluem
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
       Trunk version of patch:
@@ -154,7 +154,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             Merged subversion comments: http://people.apache.org/~rpluem/patches/mod_deflate_rework/inflate_output.log
         The patch for the inflate output filter requires the patch for the
         deflate output filter.
-      +1 rpluem, niq
+      +1: rpluem, niq
 
     * mod_proxy: Add in support for ping/pong (heartbeat test) for
       the Proxy. Implement cping/cpong for AJP.
@@ -164,6 +164,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~jim/patches/pingpong2.txt
         (Note: your patch should auto-createmodules/proxy/ajp_utils.c)
       +1: jim, mturk
+          rpluem says: I would like to see the following revisions included
+                       in this proposal as they fix some bugs of r425454:
+
+                       http://svn.apache.org/viewvc?view=rev&revision=425559
+                       http://svn.apache.org/viewvc?view=rev&revision=425690
+                       http://svn.apache.org/viewvc?view=rev&revision=452549
 
     * Allow htcacheclean and httxt2dbm to link apr/apr-util statically
       like the older support programs.
