@@ -13,7 +13,7 @@
   vlink="#000080" alink="#FF0000">
     <!--#include virtual="header.html" -->
 
-    <h1 align="CENTER">Module mod_access</h1>
+    <h1 align="center">Module mod_access</h1>
 
     <p>This module provides access control based on client
     hostname, IP address, or other characteristics of the client
@@ -91,7 +91,7 @@
 
     <p>The <code>Allow</code> directive affects which hosts can
     access an area of the server. Access can be controlled by
-    hostname, IP Address, IP Address range, or by other
+    hostname, IP address, IP address range, or other
     characteristics of the client request captured in environment
     variables.</p>
 
@@ -233,42 +233,76 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
      <a href="directive-dict.html#Module"
     rel="Help"><strong>Module:</strong></a> mod_access</p>
 
-    <p>The <code>Order</code> directive controls the default access
-    state and the order in which <a href="#allow">Allow</a> and <a
-    href="#deny">Deny</a> directives are evaluated.
-    <em>Ordering</em> is one of</p>
+    <p>The <code>Order</code> directive, along with the
+    <code>Allow</code> and <code>Deny</code> directives, controls a
+    three-pass access control system. The first pass processes either
+    all <code>Allow</code> or all <code>Deny</code> directives, as
+    specified by the <code>Order</code> directive. The second pass
+    parses the rest of the directives (<code>Deny</code> or
+    <code>Allow</code>). The third pass applies to all requests which do
+    not match either of the first two.</p>
+
+    <p>Note that all <code>Allow</code> and <code>Deny</code> directives
+    are processed, unlike a typical firewall, where only the first match
+    is used. The last match is effective (also unlike a typical
+    firewall). Additionally, the order in which lines appear in the
+    configuration files is not significant -- all <code>Allow</code>
+    lines are processed as one group, all <code>Deny</code> lines are
+    considered as another, and the default state is considered by
+    itself.</p>
+
+    <p><em>Ordering</em> is one of:</p>
 
     <dl>
-      <dt>Deny,Allow</dt>
+      <dt><code>Deny,Allow</code></dt>
 
-      <dd>The <code>Deny</code> directives are evaluated before the
-      <code>Allow</code> directives. Access is allowed by default.
-      Any client which does not match a <code>Deny</code> directive
-      or does match an <code>Allow</code> directive will be allowed
-      access to the server.</dd>
+      <dd>First, all <code>Allow</code> directives are evaluated; at
+      least one must match, or the request is rejected. Next, all
+      <code>Deny</code> directives are evaluated. If any matches, the
+      request is rejected. Last, any requests which do not match an
+      <code>Allow</code> or a <code>Deny</code> directive are denied by
+      default.</dd>
 
-      <dt>Allow,Deny</dt>
+      <dt><code>Allow,Deny</code></dt>
 
-      <dd>The <code>Allow</code> directives are evaluated before
-      the <code>Deny</code> directives. Access is denied by
-      default. Any client which does not match an
-      <code>Allow</code> directive or does match a
-      <code>Deny</code> directive will be denied access to the
-      server.</dd>
+      <dd>First, all <code>Deny</code> directives are evaluated; if any
+      match, the request is denied <strong>unless</strong> it also
+      matches an <code>Allow</code> directive. Any requests which do not
+      match any <code>Allow</code> or <code>Deny</code> directives are
+      permitted.</dd>
 
-      <dt>Mutual-failure</dt>
+      <dt><code>Mutual-failure</code></dt>
 
-      <dd>Only those hosts which appear on the <code>Allow</code>
-      list and do not appear on the <code>Deny</code> list are
-      granted access. This ordering has the same effect as
-      <code>Order Allow,Deny</code> and is deprecated in favor of
-      that configuration.</dd>
+      <dd>This order has the same effect as <code>Order
+      Allow,Deny</code> and is deprecated in its favor.</dd>
     </dl>
 
     <p>Keywords may only be separated by a comma; no whitespace is
-    allowed between them. Note that in all cases every
-    <code>Allow</code> and <code>Deny</code> statement is
-    evaluated.</p>
+    allowed between them.</p>
+
+    <table border="1">
+        <tr>
+            <th>Allow,Deny match</th>
+            <th>Allow,Deny result</th>
+            <th>Deny,Allow result</th>
+        </tr><tr>
+            <th>Match Allow only</th>
+            <td>Request allowed</td>
+            <td>Request allowed</td>
+        </tr><tr>
+            <th>Match Deny only</th>
+            <td>Request denied</td>
+            <td>Request denied</td>
+        </tr><tr>
+            <th>No match</th>
+            <td>Default to second directive (Denied)</td>
+            <td>Default to second directive (Allowed)</td>
+        </tr><tr>
+            <th>Match both Allow &amp; Deny</th>
+            <td>Final match controls: request Denied</td>
+            <td>Final match controls: request Allowed</td>
+        </tr>
+    </table>
 
     <p>In the following example, all hosts in the apache.org domain
     are allowed access; all other hosts are denied access.</p>
@@ -300,8 +334,8 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     the <code>Allow from apache.org</code> will be evaluated last
     and will override the <code>Deny from foo.apache.org</code>.
     All hosts not in the <code>apache.org</code> domain will also
-    be allowed access because the default state will change to
-    <em>allow</em>.</p>
+    be allowed access because the default state will be
+    <em>Allow</em>.</p>
 
     <p>The presence of an <code>Order</code> directive can affect
     access to a part of the server even in the absence of
@@ -316,8 +350,8 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     </blockquote>
 
     <p>will deny all access to the <code>/www</code> directory
-    because the default access state will be set to
-    <em>deny</em>.</p>
+    because the default access state is set to
+    <em>Deny</em>.</p>
 
     <p>The <code>Order</code> directive controls the order of
     access directive processing only within each phase of the
