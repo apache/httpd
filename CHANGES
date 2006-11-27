@@ -1,6 +1,13 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+   * mod_proxy: Add explicit flushing feature.
+     When Servlet container sends AJP body message with size 0,
+     this means that Servlet container has asked for an explicit flush.
+     Create flush bucket in that case. This feature has been added
+     to the recent Tomcat versions without breaking the AJP protocol.
+     [Mladen Turk]
+
   *) mod_proxy_balancer: Set the new environment variable BALANCER_ROUTE_CHANGED
      if a worker with a route different from the one supplied by the client
      had been chosen or if the client supplied no routing information for
