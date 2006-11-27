@@ -80,7 +80,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
-   * mod_proxy: Add explicit fushing feature.
+   * mod_proxy: Add explicit flushing feature.
      When Servlet container sends AJP body message with size 0,
      this means that Servlet container has asked for an explicit flush.
      Create flush bucket in that case. This feature has been added
