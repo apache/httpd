@@ -454,7 +454,7 @@ person in</title>
         has been brought forward into authorization as well. What this means is 
         that the <directive module="mod_authz_core">Require</directive> directive 
         not only specifies which authorization methods should be used, it also 
-        specifies the order in which they are called. Multiple autorization 
+        specifies the order in which they are called. Multiple authorization 
         methods are called in the same order in which the 
         <directive module="mod_authz_core">Require</directive> directives appear 
         in the configuration.</p>
