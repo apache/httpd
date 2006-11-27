@@ -674,9 +674,10 @@ static void *x_merge_server_config(apr_pool_t *p, void *server1_conf,
  *  DECLINED    Handler took no action.                                     *
  *  HTTP_mumble Handler looked at request and found it wanting.             *
  *                                                                          *
- * Handlers that are not declared as int return a valid pointer, or NULL if *
- * they DECLINE to handle their phase for that specific request.            *
- * Exceptions, if any, are noted with each routine.                         *
+ * See include/httpd.h for a list of HTTP_mumble status codes.  Handlers    *
+ * that are not declared as int return a valid pointer, or NULL if they     *
+ * DECLINE to handle their phase for that specific request.  Exceptions, if *
+ * any, are noted with each routine.                                        *
  *--------------------------------------------------------------------------*/
 
 /*
@@ -711,7 +712,7 @@ static int x_check_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_add(NULL, NULL, NULL, "x_check_config()");
+    trace_add(s, NULL, NULL, "x_check_config()");
     return OK;
 }
 
@@ -720,6 +721,8 @@ static int x_check_config(apr_pool_t *pconf, apr_pool_t *plog,
  * It executes only once, in the startup process, after the check_config
  * phase and just before the process exits.  At this point the module
  * may output any information useful in configuration testing.
+ *
+ * This is a VOID hook: all defined handlers get called. 
  */
 static void x_test_config(apr_pool_t *pconf, server_rec *s)
 {
@@ -728,6 +731,8 @@ static void x_test_config(apr_pool_t *pconf, server_rec *s)
     apr_file_open_stderr(&out, pconf);
 
     apr_file_printf(out, "Example module configuration test routine\n");
+    
+    trace_add(s, NULL, NULL, "x_test_config()");
 }
 
 /*
@@ -764,7 +769,7 @@ static int x_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_add(NULL, NULL, NULL, "x_post_config()");
+    trace_add(s, NULL, NULL, "x_post_config()");
     return OK;
 }
 
@@ -789,6 +794,8 @@ static apr_status_t x_child_exit(void *data)
 
 /*
  * All our process initialiser does is add its trace to the log.
+ *
+ * This is a VOID hook: all defined handlers get called. 
  */
 static void x_child_init(apr_pool_t *p, server_rec *s)
 {
@@ -811,11 +818,17 @@ static void x_child_init(apr_pool_t *p, server_rec *s)
 }
 
 /*
- * XXX: This routine is called XXX
+ * The hook runner for ap_hook_http_scheme is aliased to ap_http_scheme(), 
+ * a routine that the core and other modules call when they need to know 
+ * the URL scheme for the request.  For instance, mod_ssl returns "https"
+ * if the server_rec associated with the request has SSL enabled. 
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
- * server will still call any remaining modules with an handler for this
- * phase.
+ * This hook was named 'ap_hook_http_method' in httpd 2.0. 
+ *
+ * This is a RUN_FIRST hook: the first handler to return a non NULL 
+ * value aborts the handler chain.  The http_core module inserts a 
+ * fallback handler (with APR_HOOK_REALLY_LAST preference) that returns
+ * "http". 
  */
 static const char *x_http_scheme(const request_rec *r)
 {
@@ -825,16 +838,23 @@ static const char *x_http_scheme(const request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_http_scheme()");
+    trace_add(r->server, (request_rec *) r, cfg, "x_http_scheme()");
+    
+    /* We have no claims to make about the request scheme */
     return NULL;
 }
 
 /*
- * XXX: This routine is called XXX
+ * The runner for this hook is aliased to ap_default_port(), which the
+ * core and other modules call when they need to know the default port
+ * for a particular server.  This is used for instance to omit the 
+ * port number from a Redirect response Location header URL if the port
+ * number is equal to the default port for the service (like 80 for http). 
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
- * server will still call any remaining modules with an handler for this
- * phase.
+ * This is a RUN_FIRST hook: the first handler to return a non-zero 
+ * value is the last one executed.  The http_core module inserts a 
+ * fallback handler (with APR_HOOK_REALLY_LAST order specifier) that
+ * returns 80. 
  */
 static apr_port_t x_default_port(const request_rec *r)
 {
@@ -844,16 +864,18 @@ static apr_port_t x_default_port(const request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_default_port()");
+    trace_add(r->server, (request_rec *) r, cfg, "x_default_port()");
     return 0;
 }
 
 /*
- * XXX: This routine is called XXX
+ * This routine is called just before the handler gets invoked. It allows
+ * a module to insert a previously defined filter into the filter chain. 
+ * 
+ * No filter has been defined by this module, so we just log the call
+ * and exit. 
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
- * server will still call any remaining modules with an handler for this
- * phase.
+ * This is a VOID hook: all defined handlers get called. 
  */
 static void x_insert_filter(request_rec *r)
 {
@@ -863,7 +885,24 @@ static void x_insert_filter(request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_insert_filter()");
+    trace_add(r->server, r, cfg, "x_insert_filter()");
+}
+
+/* 
+ * This routine is called to insert a previously defined error filter into 
+ * the filter chain as the request is being processed. 
+ * 
+ * For the purpose of this example, we don't have a filter to insert, 
+ * so just add to the trace and exit. 
+ * 
+ * This is a VOID hook: all defined handlers get called. 
+ */
+static void x_insert_error_filter(request_rec *r)
+{
+    x_cfg *cfg;
+    
+    cfg = our_dconfig(r);
+    trace_add(r->server, r, cfg, "x_insert_error_filter()");
 }
 
 /*--------------------------------------------------------------------------*/
@@ -883,35 +922,40 @@ static void x_insert_filter(request_rec *r)
 /*
  * Sample content handler.  All this does is display the call list that has
  * been built up so far.
+ * 
+ * This routine gets called for every request, unless another handler earlier
+ * in the callback chain has already handled the request. It is up to us to 
+ * test the request_rec->handler field and see whether we are meant to handle 
+ * this request. 
  *
- * The return value instructs the caller concerning what happened and what to
- * do next:
- *  OK ("we did our thing")
- *  DECLINED ("this isn't something with which we want to get involved")
- *  HTTP_mumble ("an error status should be reported")
+ * The content handler gets to write directly to the client using calls like 
+ * ap_rputs() and ap_rprintf()
+ *
+ * This is a RUN_FIRST hook. 
  */
 static int x_handler(request_rec *r)
 {
     x_cfg *dcfg;
+    int result;
+    char *note;
 
+    dcfg = our_dconfig(r);
+    /* 
+     * Add our trace to the log, and whether we get to write 
+     * content for this request. 
+     */
+    note = apr_pstrcat(r->pool, "x_handler(), handler is \"", 
+                      r->handler, "\"", NULL);
+    trace_add(r->server, r, dcfg, note);
+
+    /* If it's not for us, get out as soon as possible. */
     if (strcmp(r->handler, "example-handler")) {
         return DECLINED;
     }
 
-    dcfg = our_dconfig(r);
-    trace_add(r->server, r, dcfg, "x_handler()");
     /*
-     * We're about to start sending content, so we need to force the HTTP
-     * headers to be sent at this point.  Otherwise, no headers will be sent
-     * at all.  We can set any we like first, of course.  **NOTE** Here's
-     * where you set the "Content-type" header, and you do so by putting it in
-     * r->content_type, *not* r->headers_out("Content-type").  If you don't
-     * set it, it will be filled in with the server's default type (typically
-     * "text/plain").  You *must* also ensure that r->content_type is lower
-     * case.
-     *
-     * We also need to start a timer so the server can know if the connexion
-     * is broken.
+     * Set the Content-type header. Note that we do not actually have to send 
+     * the headers: this is done by the http core. 
      */
     ap_set_content_type(r, "text/html");
     /*
@@ -990,11 +1034,17 @@ static int x_handler(request_rec *r)
 }
 
 /*
- * XXX: This routine is called XXX
+ * The quick_handler hook presents modules with a very powerful opportunity to 
+ * serve their content in a very early request phase.  Note that this handler 
+ * can not serve any requests from the file system because hooks like 
+ * map_to_storage have not run.  The quick_handler hook also runs before any 
+ * authentication and access control. 
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
- * server will still call any remaining modules with an handler for this
- * phase.
+ * This hook is used by mod_cache to serve cached content.  
+ *
+ * This is a RUN_FIRST hook. Return OK if you have served the request, DECLINED 
+ * if you want processing to continue, or a HTTP_* error code to stop processing 
+ * the request. 
  */
 static int x_quick_handler(request_rec *r, int lookup_uri)
 {
@@ -1015,21 +1065,19 @@ static int x_quick_handler(request_rec *r, int lookup_uri)
  * as soon as possible. The core server uses this phase to setup the
  * connection record based on the type of connection that is being used.
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
- * server will still call any remaining modules with an handler for this
- * phase.
+ * This is a RUN_ALL hook.
  */
 static int x_pre_connection(conn_rec *c, void *csd)
 {
     x_cfg *cfg;
 
     cfg = our_cconfig(c);
-#if 0
+
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, NULL, cfg, "x_pre_connection()");
-#endif
+    trace_add(NULL, NULL, cfg, "x_pre_connection()");
+
     return OK;
 }
 
@@ -1039,11 +1087,15 @@ static int x_pre_connection(conn_rec *c, void *csd)
  * some other protocol.  Both echo and POP3 modules are available as
  * examples.
  *
- * The return VALUE is OK, DECLINED, or HTTP_mumble.  If we return OK, no
- * further modules are called for this phase.
+ * This is a RUN_FIRST hook.
  */
 static int x_process_connection(conn_rec *c)
 {
+    x_cfg *cfg;
+    cfg = our_cconfig(c);
+    
+    trace_add(NULL, NULL, cfg, "x_process_connection()");
+    
     return DECLINED;
 }
 
@@ -1052,8 +1104,7 @@ static int x_process_connection(conn_rec *c)
  * phases have been processed.  This allows us to make decisions based upon
  * the input header fields.
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
- * further modules are called for this phase.
+ * This is a RUN_ALL hook.
  */
 static int x_post_read_request(request_rec *r)
 {
@@ -1073,10 +1124,9 @@ static int x_post_read_request(request_rec *r)
  * actual filename.  If we don't do anything special, the server's default
  * rules (Alias directives and the like) will continue to be followed.
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
- * further modules are called for this phase.
+ * This is a RUN_FIRST hook.
  */
-static int x_translate_handler(request_rec *r)
+static int x_translate_name(request_rec *r)
 {
 
     x_cfg *cfg;
@@ -1086,7 +1136,7 @@ static int x_translate_handler(request_rec *r)
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add(r->server, r, cfg, "x_translate_handler()");
+    trace_add(r->server, r, cfg, "x_translate_name()");
     return DECLINED;
 }
 
@@ -1095,10 +1145,9 @@ static int x_translate_handler(request_rec *r)
  * overriding default core behavior, including skipping mapping for
  * requests that are not file based.
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
- * further modules are called for this phase.
+ * This is a RUN_FIRST hook.
  */
-static int x_map_to_storage_handler(request_rec *r)
+static int x_map_to_storage(request_rec *r)
 {
 
     x_cfg *cfg;
@@ -1108,7 +1157,7 @@ static int x_map_to_storage_handler(request_rec *r)
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add(r->server, r, cfg, "x_map_to_storage_handler()");
+    trace_add(r->server, r, cfg, "x_map_to_storage()");
     return DECLINED;
 }
 
@@ -1120,11 +1169,9 @@ static int x_map_to_storage_handler(request_rec *r)
  * to the filename. For example this phase can be used to block evil
  * clients, while little resources were wasted on these.
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK,
- * the server will still call any remaining modules with an handler
- * for this phase.
+ * This is a RUN_ALL hook. 
  */
-static int x_header_parser_handler(request_rec *r)
+static int x_header_parser(request_rec *r)
 {
 
     x_cfg *cfg;
@@ -1134,7 +1181,7 @@ static int x_header_parser_handler(request_rec *r)
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add(r->server, r, cfg, "header_parser_handler()");
+    trace_add(r->server, r, cfg, "x_header_parser()");
     return DECLINED;
 }
 
@@ -1144,9 +1191,8 @@ static int x_header_parser_handler(request_rec *r)
  * the request (such as looking up the user in a database and verifying that
  * the [encrypted] password sent matches the one in the database).
  *
- * The return value is OK, DECLINED, or some HTTP_mumble error (typically
- * HTTP_UNAUTHORIZED).  If we return OK, no other modules are given a chance
- * at the request during this phase.
+ * This is a RUN_FIRST hook. The return value is OK, DECLINED, or some 
+ * HTTP_mumble error (typically HTTP_UNAUTHORIZED).  
  */
 static int x_check_user_id(request_rec *r)
 {
@@ -1165,8 +1211,8 @@ static int x_check_user_id(request_rec *r)
  * This routine is called to check to see if the resource being requested
  * requires authorisation.
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
- * other modules are called during this phase.
+ * This is a RUN_FIRST hook. The return value is OK, DECLINED, or HTTP_mumble.  
+ * If we return OK, no other modules are called during this phase.
  *
  * If *all* modules return DECLINED, the request is aborted with a server
  * error.
@@ -1189,10 +1235,8 @@ static int x_auth_checker(request_rec *r)
  * This routine is called to check for any module-specific restrictions placed
  * upon the requested resource.  (See the mod_access module for an example.)
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  All modules with an
- * handler for this phase are called regardless of whether their predecessors
- * return OK or DECLINED.  The first one to return any other status, however,
- * will abort the sequence (and the request) as usual.
+ * This is a RUN_ALL hook. The first handler to return a status other than OK
+ * or DECLINED (for instance, HTTP_FORBIDDEN) aborts the callback chain. 
  */
 static int x_access_checker(request_rec *r)
 {
@@ -1209,8 +1253,7 @@ static int x_access_checker(request_rec *r)
  * information bits, like Content-type (via r->content_type), language, et
  * cetera.
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, no
- * further modules are given a chance at the request for this phase.
+ * This is a RUN_FIRST hook.
  */
 static int x_type_checker(request_rec *r)
 {
@@ -1230,11 +1273,9 @@ static int x_type_checker(request_rec *r)
  * This routine is called to perform any module-specific fixing of header
  * fields, et cetera.  It is invoked just before any content-handler.
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, the
- * server will still call any remaining modules with an handler for this
- * phase.
+ * This is a RUN_ALL HOOK.
  */
-static int x_fixer_upper(request_rec *r)
+static int x_fixups(request_rec *r)
 {
 
     x_cfg *cfg;
@@ -1243,7 +1284,7 @@ static int x_fixer_upper(request_rec *r)
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, r, cfg, "x_fixer_upper()");
+    trace_add(r->server, r, cfg, "x_fixups()");
     return OK;
 }
 
@@ -1251,34 +1292,16 @@ static int x_fixer_upper(request_rec *r)
  * This routine is called to perform any module-specific logging activities
  * over and above the normal server things.
  *
- * The return value is OK, DECLINED, or HTTP_mumble.  If we return OK, any
- * remaining modules with an handler for this phase will still be called.
+ * This is a RUN_ALL hook. 
  */
-static int x_logger(request_rec *r)
+static int x_log_transaction(request_rec *r)
 {
 
     x_cfg *cfg;
 
     cfg = our_dconfig(r);
-    trace_add(r->server, r, cfg, "x_logger()");
+    trace_add(r->server, r, cfg, "x_log_transaction()");
     return DECLINED;
-}
-
-/* 
- * This routine is called to insert a previously defined error filter into 
- * the filter chain as the request is being processed. 
- * 
- * For the purpose of this example, we don't have a filter to insert, 
- * so just add to the trace and exit. 
- * 
- * There is no return code. 
- */
-static void x_insert_error_filter(request_rec *r)
-{
-    x_cfg *cfg;
-    
-    cfg = our_dconfig(r);
-    trace_add(r->server, r, cfg, "x_insert_error_filter()");
 }
 
 /*
@@ -1286,9 +1309,8 @@ static void x_insert_error_filter(request_rec *r)
  * Unless our module runs CGI programs, there is no reason for us to 
  * mess with this information. 
  * 
- * The return value is a pointer to an ap_unix_identity_t or NULL. If we 
- * return a non-NULL pointer, no further callbacks in the chain for this
- * hook will be called. 
+ * This is a RUN_FIRST hook. The return value is a pointer to an 
+ * ap_unix_identity_t or NULL. 
  */
 static ap_unix_identity_t *x_get_suexec_identity(const request_rec *r) 
 {
@@ -1320,9 +1342,7 @@ static conn_rec *x_create_connection(apr_pool_t *p, server_rec *server,
  * This hook is defined in server/core.c, but it is not actually called 
  * or documented. 
  * 
- * This is a RUN_ALL hook: all routines in the chain will be called. If 
- * one of the routines on the chain returns OK, the hook run will return OK. 
- * Otherwise the result will be DECLINED. 
+ * This is a RUN_ALL hook. 
  */
 static int x_get_mgmt_items(apr_pool_t *p, const char *val, apr_hash_t *ht)
 {
@@ -1338,8 +1358,7 @@ static int x_get_mgmt_items(apr_pool_t *p, const char *val, apr_hash_t *ht)
  * is created. It provides the opportunity to manipulae the request 
  * at a very early stage. 
  *
- * This is a RUN_ALL hook. The return value can be OK, DECLINED or 
- * HTTP_mumble.
+ * This is a RUN_ALL hook. 
  */
 static int x_create_request(request_rec *r)
 {
@@ -1355,12 +1374,29 @@ static int x_create_request(request_rec *r)
  * This routine gets called during the startup of the MPM. 
  * No known existing module implements this hook. 
  * 
- * This is a RUN_ALL hook. The return value can be OK, DECLINED or
- * HTTP_mumble. 
+ * This is a RUN_ALL hook. 
  */
 static int x_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
     trace_add(NULL, NULL, NULL, "x_pre_mpm()");
+    return DECLINED;
+}
+
+/*
+ * This hook gets run periodically by a maintenance function inside
+ * the MPM. Its exact purpose is unknown and undocumented at this time. 
+ * 
+ * This is a RUN_ALL hook. 
+ */
+static int x_monitor(apr_pool_t *p)
+{
+    apr_file_t *out = NULL;
+
+    apr_file_open_stderr(&out, p);
+
+    apr_file_printf(out, "Example module monitor hook handler\n");
+
+    trace_add(NULL, NULL, NULL, "x_monitor()");
     return DECLINED;
 }
 
@@ -1411,14 +1447,14 @@ static void x_register_hooks(apr_pool_t *p)
     /* [1] post read_request handling */
     ap_hook_post_read_request(x_post_read_request, NULL, NULL,
                               APR_HOOK_MIDDLE);
-    ap_hook_log_transaction(x_logger, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_log_transaction(x_log_transaction, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_http_scheme(x_http_scheme, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_default_port(x_default_port, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_translate_name(x_translate_handler, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_map_to_storage(x_map_to_storage_handler, NULL,NULL, APR_HOOK_MIDDLE);
-    ap_hook_header_parser(x_header_parser_handler, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_translate_name(x_translate_name, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_map_to_storage(x_map_to_storage, NULL,NULL, APR_HOOK_MIDDLE);
+    ap_hook_header_parser(x_header_parser, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_check_user_id(x_check_user_id, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_fixups(x_fixer_upper, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_fixups(x_fixups, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_type_checker(x_type_checker, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_access_checker(x_access_checker, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_auth_checker(x_auth_checker, NULL, NULL, APR_HOOK_MIDDLE);
@@ -1429,6 +1465,7 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_get_mgmt_items(x_get_mgmt_items, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_create_request(x_create_request, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_pre_mpm(x_pre_mpm, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_monitor(x_monitor, NULL, NULL, APR_HOOK_MIDDLE); 
 }
 
 /*--------------------------------------------------------------------------*/
