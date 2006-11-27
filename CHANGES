@@ -17,6 +17,12 @@ Changes with Apache 2.2.4
      parameter in the URL correctly. PR 40400.
      [Ruediger Pluem, Tomokazu Harada <harada sysrdc.ns-sol.co.jp>]
 
+  *) mod_proxy_ajp: Added cping/cpong support for the AJP protocol.
+     A new worker directive ping=timeout will cause CPING packet
+     to be send expecting CPONG packet within defined timeout.  
+     In case the backend is too busy this will fail instead
+     sending the full header.  [Mladen Turk]
+
   *) mod_disk_cache: Make sure that only positive integers are accepted
      for the CacheMaxFileSize and CacheMinFileSize parameters in the
      config file. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]

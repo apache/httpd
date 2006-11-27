@@ -250,6 +250,15 @@ static const char *set_worker_param(apr_pool_t *p,
             return "lbset must be between 0 and 99";
         worker->lbset = ival;
     }
+    else if (!strcasecmp(key, "ping")) {
+        /* Ping/Pong timeout in seconds.
+         */
+        ival = atoi(val);
+        if (ival < 1)
+            return "Ping/Pong timeout must be at least one second";
+        worker->ping_timeout = apr_time_from_sec(ival);
+        worker->ping_timeout_set = 1;
+    }
     else {
         return "unknown Worker parameter";
     }

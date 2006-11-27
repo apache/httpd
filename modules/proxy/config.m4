@@ -16,7 +16,7 @@ APACHE_MODULE(proxy, Apache proxy module, $proxy_objs, , $proxy_mods_enable)
 proxy_connect_objs="mod_proxy_connect.lo"
 proxy_ftp_objs="mod_proxy_ftp.lo"
 proxy_http_objs="mod_proxy_http.lo"
-proxy_ajp_objs="mod_proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo"
+proxy_ajp_objs="mod_proxy_ajp.lo ajp_header.lo ajp_link.lo ajp_msg.lo ajp_utils.lo"
 proxy_balancer_objs="mod_proxy_balancer.lo"
 
 case "$host" in
