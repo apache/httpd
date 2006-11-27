@@ -86,7 +86,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Create flush bucket in that case. This feature has been added
      to the recent Tomcat versions without breaking the AJP protocol.
      Trunk:http://svn.apache.org/viewvc?view=rev&revision=468941
-     +1: mturk, rpluem
+     +1: mturk, rpluem, jfclere
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
       Trunk version of patch:
