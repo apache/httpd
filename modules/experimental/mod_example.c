@@ -44,7 +44,9 @@
 #include "http_request.h"
 #include "util_script.h"
 #include "http_connection.h"
+#ifdef HAVE_UNIX_SUEXEC
 #include "unixd.h"
+#endif
 #include "scoreboard.h"
 
 #include "apr_strings.h"
@@ -1314,6 +1316,8 @@ static int x_log_transaction(request_rec *r)
     return DECLINED;
 }
 
+#ifdef HAVE_UNIX_SUEXEC
+
 /*
  * This routine is called to find out under which user id to run suexec
  * Unless our module runs CGI programs, there is no reason for us to 
@@ -1330,6 +1334,7 @@ static ap_unix_identity_t *x_get_suexec_identity(const request_rec *r)
     
     return NULL;
 }
+#endif
 
 /*
  * This routine is called to create a connection. This hook is implemented
@@ -1464,7 +1469,9 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_auth_checker(x_auth_checker, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_filter(x_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_error_filter(x_insert_error_filter, NULL, NULL, APR_HOOK_MIDDLE);
+#ifdef HAVE_UNIX_SUEXEC
     ap_hook_get_suexec_identity(x_get_suexec_identity, NULL, NULL, APR_HOOK_MIDDLE);
+#endif
     ap_hook_create_connection(x_create_connection, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_get_mgmt_items(x_get_mgmt_items, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_create_request(x_create_request, NULL, NULL, APR_HOOK_MIDDLE);
