@@ -387,6 +387,28 @@ static void trace_add(server_rec *s, request_rec *r, x_cfg *mconfig,
         x_subpool = p;
         trace_copy = trace;
     }
+
+    /*
+     * You *could* change the following if you wanted to see the calling
+     * sequence reported in the server's error_log, but beware - almost all of
+     * these co-routines are called for every single request, and the impact
+     * on the size (and readability) of the error_log is considerable.
+     */
+#ifndef EXAMPLE_LOG_EACH 
+#define EXAMPLE_LOG_EACH 0
+#endif
+    if (EXAMPLE_LOG_EACH) {
+        if (s != NULL) {
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_example: %s", 
+                         note);
+        } else {
+            apr_file_t *out = NULL;
+            apr_file_open_stderr(&out, p);
+            apr_file_printf(out, "mod_example traced in non-loggable "
+                            "context: %s\n", note);
+        }
+    }
+    
     /*
      * If we weren't passed a configuration record, we can't figure out to
      * what location this call applies.  This only happens for co-routines
@@ -434,18 +456,6 @@ static void trace_add(server_rec *s, request_rec *r, x_cfg *mconfig,
     }
     else {
         trace = trace_copy;
-    }
-    /*
-     * You *could* change the following if you wanted to see the calling
-     * sequence reported in the server's error_log, but beware - almost all of
-     * these co-routines are called for every single request, and the impact
-     * on the size (and readability) of the error_log is considerable.
-     */
-#ifndef EXAMPLE_LOG_EACH 
-#define EXAMPLE_LOG_EACH 0
-#endif
-    if (EXAMPLE_LOG_EACH && (s != NULL)) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_example: %s", note);
     }
 }
 
@@ -1390,12 +1400,6 @@ static int x_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
  */
 static int x_monitor(apr_pool_t *p)
 {
-    apr_file_t *out = NULL;
-
-    apr_file_open_stderr(&out, p);
-
-    apr_file_printf(out, "Example module monitor hook handler\n");
-
     trace_add(NULL, NULL, NULL, "x_monitor()");
     return DECLINED;
 }
