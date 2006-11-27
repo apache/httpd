@@ -325,6 +325,8 @@ struct proxy_worker {
     } flush_packets;           /* control AJP flushing */
     int             flush_wait;  /* poll wait time in microseconds if flush_auto */
     int             lbset;      /* load balancer cluster set */
+    apr_interval_time_t ping_timeout;
+    char ping_timeout_set;
 };
 
 /*

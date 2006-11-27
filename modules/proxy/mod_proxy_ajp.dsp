@@ -126,6 +126,10 @@ SOURCE=.\ajp_link.c
 
 SOURCE=.\ajp_msg.c
 # End Source File
+# Begin Source File
+
+SOURCE=.\ajp_utils.c
+# End Source File
 # End Group
 # Begin Source File
 
