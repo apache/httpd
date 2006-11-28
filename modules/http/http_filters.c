@@ -64,7 +64,8 @@ typedef struct http_filter_ctx {
     enum {
         BODY_NONE,
         BODY_LENGTH,
-        BODY_CHUNK
+        BODY_CHUNK,
+        BODY_CHUNK_PART
     } state;
     int eos_sent;
 } http_ctx_t;
@@ -211,7 +212,13 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
 
             rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
-                                APR_BLOCK_READ, 0);
+                                block, 0);
+
+            /* for timeout */
+            if (block == APR_NONBLOCK_READ &&
+                rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb)) {
+                return APR_EAGAIN;
+            }
 
             if (rv == APR_SUCCESS) {
                 /* We have to check the length of the brigade we got back.
@@ -273,7 +280,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             APR_BRIGADE_INSERT_TAIL(b, e);
             ctx->eos_sent = 1;
             return APR_SUCCESS;
-        case BODY_CHUNK:
+        case BODY_CHUNK: case BODY_CHUNK_PART:
             {
                 char line[30];
                 apr_bucket_brigade *bb;
@@ -283,14 +290,25 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
 
                 /* We need to read the CRLF after the chunk.  */
-                rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
-                                    APR_BLOCK_READ, 0);
-                apr_brigade_cleanup(bb);
+                if (ctx->state == BODY_CHUNK) {
+                    rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
+                                        block, 0);
+                    apr_brigade_cleanup(bb);
+                } else {
+                    rv = APR_SUCCESS;
+                }
 
                 if (rv == APR_SUCCESS) {
                     /* Read the real chunk line. */
                     rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
-                                        APR_BLOCK_READ, 0);
+                                        block, 0);
+                    /* Test timeout */
+                    if (block == APR_NONBLOCK_READ &&
+                        rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb)) {
+                        ctx->state = BODY_CHUNK_PART;
+                        return APR_EAGAIN;
+                    }
+                    ctx->state = BODY_CHUNK;
                     if (rv == APR_SUCCESS) {
                         rv = apr_brigade_flatten(bb, line, &len);
                         if (rv == APR_SUCCESS) {
