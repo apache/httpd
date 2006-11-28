@@ -81,7 +81,7 @@ server</description>
 
     <p>The <directive>Allow</directive> directive affects which hosts can
     access an area of the server. Access can be controlled by
-    hostname, IP Address, IP Address range, or by other
+    hostname, IP address, IP address range, or by other
     characteristics of the client request captured in environment
     variables.</p>
 
@@ -228,47 +228,86 @@ evaluated.</description>
 
 <usage>
 
-    <p>The <directive>Order</directive> directive controls the default
-    access state and the order in which <directive
-    module="mod_access">Allow</directive> and <directive
-    module="mod_access">Deny</directive> directives are evaluated.
-    <var>Ordering</var> is one of</p>
+    <p>The <directive>Order</directive> directive, along with the
+    <directive module="mod_access">Allow</directive> and <directive
+    module="mod_access">Deny</directive> directives, controls a
+    three-pass access control system. The first pass processes either
+    all <directive module="mod_access">Allow</directive> or all
+    <directive module="mod_access">Deny</directive> directives, as
+    specified by the <directive>Order</directive> directive. The second
+    pass parses the rest of the directives (<directive
+    module="mod_access">Deny</directive> or <directive
+    module="mod_access">Allow</directive>). The third pass applies to
+    all requests which do not match either of the first two.</p>
+
+    <p>Note that all <directive module="mod_access">Allow</directive>
+    and <directive module="mod_access">Deny</directive> directives are
+    processed, unlike a typical firewall, where only the first match is
+    used. The last match is effective (also unlike a typical firewall).
+    Additionally, the order in which lines appear in the configuration
+    files is not significant -- all <directive
+    module="mod_access">Allow</directive> lines are processed as one
+    group, all <directive module="mod_access">Deny</directive> lines are
+    considered as another, and the default state is considered by
+    itself.</p>
+
+    <p><em>Ordering</em> is one of:</p>
 
     <dl>
       <dt><code>Deny,Allow</code></dt>
 
-      <dd>The <directive module="mod_access">Deny</directive> directives
-      are evaluated before the <directive
-      module="mod_access">Allow</directive> directives. Access is
-      allowed by default.  Any client which does not match a
-      <directive module="mod_access">Deny</directive> directive or does
-      match an <directive module="mod_access">Allow</directive>
-      directive will be allowed access to the server.</dd>
+      <dd>First, all <directive module="mod_access">Allow</directive>
+      directives are evaluated; at least one must match, or the request
+      is rejected. Next, all <directive
+      module="mod_access">Deny</directive> directives are evaluated. If
+      any matches, the request is rejected. Last, any requests which do
+      not match an <directive module="mod_access">Allow</directive> or a
+      <directive module="mod_access">Deny</directive> directive are
+      denied by default.</dd>
 
       <dt><code>Allow,Deny</code></dt>
 
-      <dd>The <directive module="mod_access">Allow</directive>
-      directives are evaluated before the <directive
-      module="mod_access">Deny</directive> directives. Access is denied
-      by default. Any client which does not match an <directive
-      module="mod_access">Allow</directive> directive or does match a
-      <directive module="mod_access">Deny</directive> directive will be
-      denied access to the server.</dd>
+      <dd>First, all <directive module="mod_access">Deny</directive>
+      directives are evaluated; if any match, the request is denied
+      <strong>unless</strong> it also matches an <directive
+      module="mod_access">Allow</directive> directive. Any requests
+      which do not match any <directive
+      module="mod_access">Allow</directive> or <directive
+      module="mod_access">Deny</directive> directives are
+      permitted.</dd>
 
       <dt><code>Mutual-failure</code></dt>
 
-      <dd>Only those hosts which appear on the <directive
-      module="mod_access">Allow</directive> list and do not appear on
-      the <directive module="mod_access">Deny</directive> list are
-      granted access. This ordering has the same effect as <code>Order
-      Allow,Deny</code> and is deprecated in favor of that
-      configuration.</dd>
+      <dd>This order has the same effect as <code>Order
+      Allow,Deny</code> and is deprecated in its favor.</dd>
     </dl>
 
-    <p>Keywords may only be separated by a comma; <em>no whitespace</em> is
-    allowed between them. Note that in all cases every <directive
-    module="mod_access">Allow</directive> and <directive
-    module="mod_access">Deny</directive> statement is evaluated.</p>
+    <p>Keywords may only be separated by a comma; <em>no whitespace</em>
+    is allowed between them.</p>
+
+    <table border="1">
+      <tr>
+        <th>Match</th>
+        <th>Allow,Deny result</th>
+        <th>Deny,Allow result</th>
+      </tr><tr>
+        <th>Match Allow only</th>
+        <td>Request allowed</td>
+        <td>Request allowed</td>
+      </tr><tr>
+        <th>Match Deny only</th>
+        <td>Request denied</td>
+        <td>Request denied</td>
+      </tr><tr>
+        <th>No match</th>
+        <td>Default to second directive: Denied</td>
+        <td>Default to second directive: Allowed</td>
+      </tr><tr>
+        <th>Match both Allow &amp; Deny</th>
+        <td>Final match controls: Denied</td>
+        <td>Final match controls: Allowed</td>
+      </tr>
+    </table>
 
     <p>In the following example, all hosts in the apache.org domain
     are allowed access; all other hosts are denied access.</p>
@@ -280,10 +319,10 @@ evaluated.</description>
     </example>
 
     <p>In the next example, all hosts in the apache.org domain are
-    allowed access, except for the hosts which are in the
-    foo.apache.org subdomain, who are denied access. All hosts not
-    in the apache.org domain are denied access because the default
-    state is to deny access to the server.</p>
+    allowed access, except for the hosts which are in the foo.apache.org
+    subdomain, who are denied access. All hosts not in the apache.org
+    domain are denied access because the default state is to <directive
+    module="mod_access">Deny</directive> access to the server.</p>
 
     <example>
       Order Allow,Deny<br />
@@ -291,21 +330,21 @@ evaluated.</description>
       Deny from foo.apache.org
     </example>
 
-    <p>On the other hand, if the <directive>Order</directive> in the last
-    example is changed to <code>Deny,Allow</code>, all hosts will
-    be allowed access. This happens because, regardless of the
-    actual ordering of the directives in the configuration file,
-    the <code>Allow from apache.org</code> will be evaluated last
-    and will override the <code>Deny from foo.apache.org</code>.
-    All hosts not in the <code>apache.org</code> domain will also
-    be allowed access because the default state will change to
-    <var>allow</var>.</p>
+    <p>On the other hand, if the <directive>Order</directive> in the
+    last example is changed to <code>Deny,Allow</code>, all hosts will
+    be allowed access. This happens because, regardless of the actual
+    ordering of the directives in the configuration file, the
+    <code>Allow from apache.org</code> will be evaluated last and will
+    override the <code>Deny from foo.apache.org</code>. All hosts not in
+    the <code>apache.org</code> domain will also be allowed access
+    because the default state is <directive
+    module="mod_access">Allow</directive>.</p>
 
-    <p>The presence of an <directive>Order</directive> directive can affect
-    access to a part of the server even in the absence of accompanying
-    <directive module="mod_access">Allow</directive> and <directive
-    module="mod_access">Deny</directive> directives because of its effect
-    on the default access state.  For example,</p>
+    <p>The presence of an <directive>Order</directive> directive can
+    affect access to a part of the server even in the absence of
+    accompanying <directive module="mod_access">Allow</directive> and
+    <directive module="mod_access">Deny</directive> directives because
+    of its effect on the default access state.  For example,</p>
 
     <example>
       &lt;Directory /www&gt;<br />
@@ -315,23 +354,23 @@ evaluated.</description>
       &lt;/Directory&gt;
     </example>
 
-    <p>will deny all access to the <code>/www</code> directory
-    because the default access state will be set to
-    <var>deny</var>.</p>
+    <p>will <directive module="mod_access">Deny</directive> all access
+    to the <code>/www</code> directory because the default access state
+    is set to <directive module="mod_access">Deny</directive>.</p>
 
-    <p>The <directive>Order</directive> directive controls the order of access
-    directive processing only within each phase of the server's
+    <p>The <directive>Order</directive> directive controls the order of
+    access directive processing only within each phase of the server's
     configuration processing. This implies, for example, that an
     <directive module="mod_access">Allow</directive> or <directive
     module="mod_access">Deny</directive> directive occurring in a
-    <directive module="core" type="section">Location</directive> section will
-    always be evaluated after an <directive
+    <directive module="core" type="section">Location</directive> section
+    will always be evaluated after an <directive
     module="mod_access">Allow</directive> or <directive
     module="mod_access">Deny</directive> directive occurring in a
-    <directive module="core" type="section">Directory</directive> section or
-    <code>.htaccess</code> file, regardless of the setting of the
-    <directive>Order</directive> directive. For details on the merging
-    of configuration sections, see the documentation on <a
+    <directive module="core" type="section">Directory</directive>
+    section or <code>.htaccess</code> file, regardless of the setting of
+    the <directive>Order</directive> directive. For details on the
+    merging of configuration sections, see the documentation on <a
     href="../sections.html">How Directory, Location and Files sections
     work</a>.</p>
 </usage>
