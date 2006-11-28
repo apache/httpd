@@ -282,7 +282,7 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
 
     <table border="1">
         <tr>
-            <th>Allow,Deny match</th>
+            <th>Match</th>
             <th>Allow,Deny result</th>
             <th>Deny,Allow result</th>
         </tr><tr>
@@ -295,12 +295,12 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
             <td>Request denied</td>
         </tr><tr>
             <th>No match</th>
-            <td>Default to second directive (Denied)</td>
-            <td>Default to second directive (Allowed)</td>
+            <td>Default to second directive: Denied</td>
+            <td>Default to second directive: Allowed</td>
         </tr><tr>
             <th>Match both Allow &amp; Deny</th>
-            <td>Final match controls: request Denied</td>
-            <td>Final match controls: request Allowed</td>
+            <td>Final match controls: Denied</td>
+            <td>Final match controls: Allowed</td>
         </tr>
     </table>
 
@@ -318,7 +318,7 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     allowed access, except for the hosts which are in the
     foo.apache.org subdomain, who are denied access. All hosts not
     in the apache.org domain are denied access because the default
-    state is to deny access to the server.</p>
+    state is to <code>Deny</code> access to the server.</p>
 
     <blockquote>
       <code>Order Allow,Deny<br />
@@ -334,8 +334,8 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     the <code>Allow from apache.org</code> will be evaluated last
     and will override the <code>Deny from foo.apache.org</code>.
     All hosts not in the <code>apache.org</code> domain will also
-    be allowed access because the default state will be
-    <em>Allow</em>.</p>
+    be allowed access because the default state is
+    <code>Allow</code>.</p>
 
     <p>The presence of an <code>Order</code> directive can affect
     access to a part of the server even in the absence of
@@ -349,9 +349,9 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
        &lt;/Directory&gt;</code>
     </blockquote>
 
-    <p>will deny all access to the <code>/www</code> directory
+    <p>will Deny all access to the <code>/www</code> directory
     because the default access state is set to
-    <em>Deny</em>.</p>
+    <code>Deny</code>.</p>
 
     <p>The <code>Order</code> directive controls the order of
     access directive processing only within each phase of the
