@@ -524,7 +524,18 @@ static apr_status_t dbd_release(void *REQ)
 DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
 {
     svr_cfg *svr;
-    dbd_pool_rec *req = ap_get_module_config(r->request_config, &dbd_module);
+    dbd_pool_rec *req;
+
+    while (!ap_is_initial_req(r)) {
+        if (r->prev) {
+            r = r->prev;
+        }
+        else if (r->main) {
+            r = r->main;
+        }
+    }
+
+    req = ap_get_module_config(r->request_config, &dbd_module);
     if (!req) {
         req = apr_palloc(r->pool, sizeof(dbd_pool_rec));
         req->conn = ap_dbd_open(r->pool, r->server);
@@ -571,7 +582,18 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
 DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
 {
     svr_cfg *svr;
-    ap_dbd_t *ret = ap_get_module_config(r->request_config, &dbd_module);
+    ap_dbd_t *ret;
+
+    while (!ap_is_initial_req(r)) {
+        if (r->prev) {
+            r = r->prev;
+        }
+        else if (r->main) {
+            r = r->main;
+        }
+    }
+
+    ret = ap_get_module_config(r->request_config, &dbd_module);
     if (!ret) {
         svr = ap_get_module_config(r->server->module_config, &dbd_module);
         ret = ap_dbd_open(r->pool, r->server);
