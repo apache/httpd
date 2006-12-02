@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_dbd: Stash DBD connections in request_config of initial request
+     only, or else sub-requests and internal redirections may cause
+     entire DBD pool to be stashed in a single HTTP request.  [Chris Darroch]
+
   *) mod_cache: Correctly cache objects whose URL query string has been
      modified by mod_rewrite. PR 40805. [Ruediger Pluem]
 
