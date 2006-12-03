@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy: Ensure that at least scheme://hostname[:port] matches between
+     worker and URL when searching for the best fitting worker for a given URL.
+     PR 40910. [Ruediger Pluem]
+
   *) mod_cache: Remove expired content from cache that cannot be revalidated.
      PR 30370. [Ruediger Pluem]
 
