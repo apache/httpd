@@ -1324,6 +1324,7 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
     proxy_worker *max_worker = NULL;
     int max_match = 0;
     int url_length;
+    int min_match;
     int worker_name_length;
     const char *c;
     char *url_copy;
@@ -1349,20 +1350,25 @@ PROXY_DECLARE(proxy_worker *) ap_proxy_get_worker(apr_pool_t *p,
         pathstart = url_copy + (c - url);
         *pathstart = '\0';
         ap_str_tolower(url_copy);
+        min_match = strlen(url_copy);
         *pathstart = '/';
     }
     else {
         ap_str_tolower(url_copy);
+        min_match = strlen(url_copy);
     }
 
     worker = (proxy_worker *)conf->workers->elts;
 
     /*
      * Do a "longest match" on the worker name to find the worker that
-     * fits best to the URL.
+     * fits best to the URL, but keep in mind that we must have at least
+     * a minimum matching of length min_match such that
+     * scheme://hostname[:port] matches between worker and url.
      */
     for (i = 0; i < conf->workers->nelts; i++) {
         if ( ((worker_name_length = strlen(worker->name)) <= url_length)
+           && (worker_name_length >= min_match)
            && (worker_name_length > max_match)
            && (strncmp(url_copy, worker->name, worker_name_length) == 0) ) {
             max_worker = worker;
