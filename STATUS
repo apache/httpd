@@ -189,7 +189,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=452431
       2.2.x version of patch:
         Trunk version works
-      +1: rpluem
+      +1: rpluem, trawick
 
     * mod_authnz_ldap: Add an AuthLDAPRemoteUserAttribute directive. If
       set, REMOTE_USER will be set to this attribute, rather than the
@@ -255,3 +255,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version works (requires handling of CHANGES and ap_mmn.h
        conflict though)
      +1: jim
+
+   * rotatelogs: Produce useful error messages for open() failures.
+     PR 39487
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=478135
+     2.2.x version of patch:
+       Trunk version works.
+     +1: trawick
+
