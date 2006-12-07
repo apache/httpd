@@ -32,7 +32,7 @@
 #define SERVICE_APACHE_RESTART 128
 
 #ifndef AP_DEFAULT_SERVICE_NAME
-#define AP_DEFAULT_SERVICE_NAME "Apache2"
+#define AP_DEFAULT_SERVICE_NAME "Apache2.2"
 #endif
 
 #define SERVICECONFIG9X "Software\\Microsoft\\Windows\\CurrentVersion\\RunServices"
