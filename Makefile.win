@@ -13,7 +13,7 @@
 # The following install defaults may be customized;
 #
 #   Option      Default
-#   INSTDIR     \Apache2
+#   INSTDIR     \Apache23
 #   PORT        80
 #   SSLPORT     443
 #   SERVERNAME  localhost
@@ -105,7 +105,7 @@ _tryzlib:
 !ENDIF
 
 !IF "$(INSTDIR)" == ""
-INSTDIR=\Apache2
+INSTDIR=\Apache2x
 !ENDIF
 !IF "$(SERVERNAME)" == ""
 SERVERNAME=localhost
