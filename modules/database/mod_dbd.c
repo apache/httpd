@@ -25,6 +25,7 @@
 #include "http_protocol.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "http_request.h"
 #include "apr_reslist.h"
 #include "apr_strings.h"
 #include "apr_dbd.h"
