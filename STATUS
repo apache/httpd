@@ -298,6 +298,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch:
        http://svn.apache.org/viewvc?view=rev&revision=481509
      2.2.x version of patch:
-       Trunk vresion works
-     +1: chrisd
+       Trunk version works
+     +1: chrisd, niq
 
