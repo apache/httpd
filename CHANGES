@@ -1,6 +1,8 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) mod_headers: support regexp-based editing of HTTP headers [Nick Kew]
+
    * mod_proxy: Add explicit flushing feature.
      When Servlet container sends AJP body message with size 0,
      this means that Servlet container has asked for an explicit flush.
