@@ -964,6 +964,11 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             cid->response_sent = 1;
             return (rv == APR_SUCCESS);
         }
+        /* Deliberately hold off sending 'just the headers' to begin to
+         * accumulate the body and speed up the overall response, or at
+         * least wait for the end the session.
+         */
+        return 1;
     }
 
     case HSE_REQ_DONE_WITH_SESSION:
@@ -1354,8 +1359,13 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             APR_BRIGADE_INSERT_TAIL(bb, b);
             rv = ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
+            return (rv == APR_SUCCESS);
         }
-        return (rv == APR_SUCCESS);
+        /* Deliberately hold off sending 'just the headers' to begin to
+         * accumulate the body and speed up the overall response, or at
+         * least wait for the end the session.
+         */
+        return 1;
     }
 
     case HSE_REQ_CLOSE_CONNECTION:  /* Added after ISAPI 4.0 */
