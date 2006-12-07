@@ -152,6 +152,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: rpluem, niq
       wrowe notes: I can't vote on this, nor can most; if you mean to propose
       backporting trunk/ to branches/2.2 for mod_deflate, I'd back that.
+      rpluem: I am slightly confused now. What do you propose exactly?
+              Take the existing mod_deflate.c from trunk and move it over
+              to branches/2.2? This would be exactly the same as applying my
+              patches as mod_deflate.c of branches/2.2 will be the same as
+              mod_deflate.c of the trunk (r483597) after applying the patches.
 
     * Allow htcacheclean and httxt2dbm to link apr/apr-util statically
       like the older support programs.
