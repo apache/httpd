@@ -255,12 +255,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version works
      +1: trawick, jim, wrowe
 
-   * mod_headers: support regexp-based manipulation
-     http://svn.apache.org/viewvc?view=rev&revision=452330
-     +1: niq, chrisd, wrowe
-     chrisd: Note that the docs need to be back-ported, and
-             new_features_2_4.xml revised too.
-
    * mod_ldap: Better detection and clean up of ldap connection
      that have been terminated by the ldap server.
      http://svn.apache.org/viewvc?view=rev&revision=472633
