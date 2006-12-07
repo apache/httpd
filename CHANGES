@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) core: Do not replace a Date header set by a proxied backend server.
+     PR 40232. [Ruediger Pluem]
+
   *) mod_proxy: Ensure that at least scheme://hostname[:port] matches between
      worker and URL when searching for the best fitting worker for a given URL.
      PR 40910. [Ruediger Pluem]
