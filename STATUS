@@ -255,4 +255,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        Trunk version works
      +1: chrisd, niq
+     rpluem says: Please add r483630
+                  (http://svn.apache.org/viewvc?view=rev&rev=483630) to this
+                  proposal as it fixes a compiler warning. Once this is added
+                  to the proposal I am +1.
 
