@@ -96,14 +96,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      wrowe adds; keeping the old idents for backporting would have
                  made this alot easier for review - mind \x09's please.
 
-    * mod_authnz_ldap: Add an AuthLDAPRemoteUserAttribute directive. If
-      set, REMOTE_USER will be set to this attribute, rather than the
-      username supplied by the user. Useful for example when you want users
-      to log in using an email address, but need to supply a userid instead
-      to the backend.
-      Trunk: http://svn.apache.org/viewvc?view=rev&rev=463427
-      +1: minfrini, wrowe, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
