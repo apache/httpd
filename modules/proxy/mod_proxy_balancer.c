@@ -287,9 +287,13 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
                                       request_rec *r)
 {
     proxy_worker *candidate = NULL;
+    apr_status_t rv;
 
-    if (PROXY_THREAD_LOCK(balancer) != APR_SUCCESS)
+    if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+        "proxy: BALANCER: (%s). Lock failed for find_best_worker()", balancer->name);
         return NULL;
+    }
 
     candidate = (*balancer->lbmethod->finder)(balancer, r);
 
@@ -413,7 +417,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
      */
     if ((rv = PROXY_THREAD_LOCK(*balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-                     "proxy: BALANCER: (%s). Lock",
+                     "proxy: BALANCER: (%s). Lock failed for pre_request",
                      (*balancer)->name);
         return DECLINED;
     }
@@ -523,7 +527,8 @@ static int proxy_balancer_post_request(proxy_worker *worker,
 
     if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
-            "proxy: BALANCER: lock");
+            "proxy: BALANCER: (%s). Lock failed for post_request",
+            balancer->name);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     /* TODO: calculate the bytes transferred
