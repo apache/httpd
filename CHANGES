@@ -82,10 +82,6 @@ Changes with Apache 2.3.0
 
   *) mod_rewrite: support rewritemap by SQL query [Nick Kew]
 
-  *) Fix issue which could cause piped loggers to be orphaned and never
-     terminate after a graceful restart.  PR 40651.  [Joe Orton,
-     Ruediger Pluem]
-
   *) mod_headers: support regexp-based editing of HTTP headers [Nick Kew]
 
   *) mod_cache: Eliminate a bogus error in the log when a filter returns
@@ -262,6 +258,10 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) Fix issue which could cause piped loggers to be orphaned and never
+     terminate after a graceful restart.  PR 40651.  [Joe Orton,
+     Ruediger Pluem]
 
   *) Fix address-in-use startup failure caused by corruption of the list of
      listen sockets in some configurations with multiple generic Listen
