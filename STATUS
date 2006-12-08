@@ -103,8 +103,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       also eliminates the need for custom serialization code.
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=450089
       +1: minfrin, wrowe
-      -1: jim: Trunk version no longer cleanly applies w/o conflicts.
-               Need 2.2 version of patch.
+      2.2.x version of patch:
+        http://people.apache.org/~jim/patches/mod_mem_cache-apr-patch.txt
+      +1: jim: 2.2 patch to address trunk patch conflicts
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
       Trunk version of patch:
