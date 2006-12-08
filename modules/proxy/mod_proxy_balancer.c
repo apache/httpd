@@ -293,6 +293,9 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
 
     candidate = (*balancer->lbmethod->finder)(balancer, r);
 
+    if (candidate)
+        candidate->s->elected++;
+
 /*
         PROXY_THREAD_UNLOCK(balancer);
         return NULL;
@@ -976,7 +979,6 @@ static proxy_worker *find_best_byrequests(proxy_balancer *balancer,
 
     if (mycandidate) {
         mycandidate->s->lbstatus -= total_factor;
-        mycandidate->s->elected++;
     }
 
     return mycandidate;
@@ -1054,10 +1056,6 @@ static proxy_worker *find_best_bytraffic(proxy_balancer *balancer,
         }
         cur_lbset++;
     } while (cur_lbset <= max_lbset && !mycandidate);
-
-    if (mycandidate) {
-        mycandidate->s->elected++;
-    }
 
     return mycandidate;
 }
