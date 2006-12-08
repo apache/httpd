@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
+     by creating a root pool for object persistence across requests. This
+     also eliminates the need for custom serialization code.
+     [Davi Arnaut <davi haxent.com.br>]
+
   *) mod_authnz_ldap: Add an AuthLDAPRemoteUserAttribute directive. If
      set, REMOTE_USER will be set to this attribute, rather than the
      username supplied by the user. Useful for example when you want users
