@@ -55,12 +55,6 @@ Changes with Apache 2.3.0
 
   *) mod_proxy_fcgi: Added win32 build. [Mladen Turk]
 
-  *) mod_authnz_ldap: Add an AuthLDAPRemoteUserAttribute directive. If
-     set, REMOTE_USER will be set to this attribute, rather than the
-     username supplied by the user. Useful for example when you want users
-     to log in using an email address, but need to supply a userid instead
-     to the backend. [Graham Leggett]
-
   *) Allow mod_dumpio to log at other than DEBUG levels via
      the new DumpIOLogLevel directive. [Jim Jagielski]
 
@@ -87,11 +81,6 @@ Changes with Apache 2.3.0
   *) mod_disk_cache: Make caching of large files possible on 32bit machines
      by determining whether the cached file should be copied on disk rather
      than loaded into RAM. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
-
-  *) mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
-     by creating a root pool for object persistence across requests. This
-     also eliminates the need for custom serialization code.
-     [Davi Arnaut <davi haxent.com.br>]
 
   *) mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
      [Davi Arnaut <davi haxent.com.br>]
@@ -255,6 +244,17 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
+     by creating a root pool for object persistence across requests. This
+     also eliminates the need for custom serialization code.
+     [Davi Arnaut <davi haxent.com.br>]
+
+  *) mod_authnz_ldap: Add an AuthLDAPRemoteUserAttribute directive. If
+     set, REMOTE_USER will be set to this attribute, rather than the
+     username supplied by the user. Useful for example when you want users
+     to log in using an email address, but need to supply a userid instead
+     to the backend. [Graham Leggett]
 
   *) mod_cgi and mod_cgid: Don't use apr_status_t error return
      from input filters as HTTP return value from the handler.
