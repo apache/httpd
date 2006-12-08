@@ -90,14 +90,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=450089
       +1: minfrin, jim, wrowe
 
-    * core: Orphaned piped logger process after graceful restart
-        PR: 40651
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=452431
-      2.2.x version of patch:
-        Trunk version works
-      +1: rpluem, trawick, wrowe
-
    * mod_dbd: Key the storage of prepared statements on the hex string
      value of server_rec, rather than the server name, as the server name
      may change (eg when the server name is set) at any time, causing
