@@ -78,12 +78,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
-      by creating a root pool for object persistence across requests. This
-      also eliminates the need for custom serialization code.
-      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450089
-      +1: minfrin, jim, wrowe
-
    * mod_dbd: Key the storage of prepared statements on the hex string
      value of server_rec, rather than the server name, as the server name
      may change (eg when the server name is set) at any time, causing
@@ -103,6 +97,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
                  made this alot easier for review - mind \x09's please.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+
+    * mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
+      by creating a root pool for object persistence across requests. This
+      also eliminates the need for custom serialization code.
+      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450089
+      +1: minfrin, wrowe
+      -1: jim: Trunk version no longer cleanly applies w/o conflicts.
+               Need 2.2 version of patch.
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
       Trunk version of patch:
