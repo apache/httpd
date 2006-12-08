@@ -44,10 +44,6 @@ Changes with Apache 2.3.0
      AcceptMutex directive now takes an optional lockfile
      location parameter, ala SSLMutex. [Jim Jagielski]
 
-  *) Fix address-in-use startup failure caused by corruption of the list of
-     listen sockets in some configurations with multiple generic Listen
-     directives.  [Jeff Trawick]
-
   *) mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
      mod_authn_dbd behaviour in line with mod_authnz_ldap. [Graham Leggett]
@@ -266,6 +262,10 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) Fix address-in-use startup failure caused by corruption of the list of
+     listen sockets in some configurations with multiple generic Listen
+     directives.  [Jeff Trawick]
 
   *) mod_proxy_balancer: Set the new environment variable BALANCER_ROUTE_CHANGED
      if a worker with a route different from the one supplied by the client
