@@ -249,6 +249,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1/-.9: wrowe
      wrowe notes: Adding to ease migration to 2.4 - good.  Deprecating 
                   any directive in a .even released branch, bad.
+     jim notes: it's more an enhancement to AcceptMutex than a
+                depreciation of LockFile... no regressions are
+                introduced.
 
    * rotatelogs: Produce useful error messages for open() failures.
      PR 39487
