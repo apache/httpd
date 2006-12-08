@@ -2049,7 +2049,10 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                     conn->port, 0,
                                     worker->cp->pool);
         conn->addr = worker->cp->addr;
-        PROXY_THREAD_UNLOCK(worker);
+        if ((err = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
+                         "proxy: unlock");
+        }
     }
     else {
         conn->addr = worker->cp->addr;

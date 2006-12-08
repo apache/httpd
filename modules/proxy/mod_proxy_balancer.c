@@ -305,7 +305,10 @@ static proxy_worker *find_best_worker(proxy_balancer *balancer,
         return NULL;
 */
 
-    PROXY_THREAD_UNLOCK(balancer);
+    if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+        "proxy: BALANCER: (%s). Unlock failed for find_best_worker()", balancer->name);
+    }
 
     if (candidate == NULL) {
         /* All the workers are in error state or disabled.
@@ -458,11 +461,19 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: BALANCER: (%s). All workers are in error state for route (%s)",
                      (*balancer)->name, route);
-        PROXY_THREAD_UNLOCK(*balancer);
+        if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                         "proxy: BALANCER: (%s). Unlock failed for pre_request",
+                         (*balancer)->name);
+        }
         return HTTP_SERVICE_UNAVAILABLE;
     }
 
-    PROXY_THREAD_UNLOCK(*balancer);
+    if ((rv = PROXY_THREAD_UNLOCK(*balancer)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+                     "proxy: BALANCER: (%s). Unlock failed for pre_request",
+                     (*balancer)->name);
+    }
     if (!*worker) {
         runtime = find_best_worker(*balancer, r);
         if (!runtime) {
@@ -535,7 +546,11 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     /* TODO: placeholder for post_request actions
      */
 
-    PROXY_THREAD_UNLOCK(balancer);
+    if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
+            "proxy: BALANCER: (%s). Unlock failed for post_request",
+            balancer->name);
+    }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy_balancer_post_request for (%s)", balancer->name);
 
