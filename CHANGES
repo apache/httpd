@@ -84,9 +84,6 @@ Changes with Apache 2.3.0
 
   *) mod_headers: support regexp-based editing of HTTP headers [Nick Kew]
 
-  *) mod_cache: Eliminate a bogus error in the log when a filter returns
-     AP_FILTER_ERROR. [Niklas Edmundsson <nikke acc.umu.se>]
-
   *) mod_disk_cache: Make caching of large files possible on 32bit machines
      by determining whether the cached file should be copied on disk rather
      than loaded into RAM. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
@@ -258,6 +255,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) mod_cache: Eliminate a bogus error in the log when a filter returns
+     AP_FILTER_ERROR. [Niklas Edmundsson <nikke acc.umu.se>]
 
   *) Fix issue which could cause piped loggers to be orphaned and never
      terminate after a graceful restart.  PR 40651.  [Joe Orton,
