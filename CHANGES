@@ -76,8 +76,6 @@ Changes with Apache 2.3.0
 
   *) mod_rewrite: support rewritemap by SQL query [Nick Kew]
 
-  *) mod_headers: support regexp-based editing of HTTP headers [Nick Kew]
-
   *) mod_disk_cache: Make caching of large files possible on 32bit machines
      by determining whether the cached file should be copied on disk rather
      than loaded into RAM. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
@@ -248,22 +246,29 @@ Changes with Apache 2.2.4
      set, REMOTE_USER will be set to this attribute, rather than the
      username supplied by the user. Useful for example when you want users
      to log in using an email address, but need to supply a userid instead
-     to the backend. [Graham Leggett]
+     to the backend.  [Graham Leggett]
 
   *) mod_cgi and mod_cgid: Don't use apr_status_t error return
      from input filters as HTTP return value from the handler.
-     PR#31579.
+     PR 31579.  [Nick Kew]
 
   *) mod_cache: Eliminate a bogus error in the log when a filter returns
-     AP_FILTER_ERROR. [Niklas Edmundsson <nikke acc.umu.se>]
+     AP_FILTER_ERROR.  [Niklas Edmundsson <nikke acc.umu.se>]
 
-  *) Fix issue which could cause piped loggers to be orphaned and never
-     terminate after a graceful restart.  PR 40651.  [Joe Orton,
-     Ruediger Pluem]
+  *) core: Fix issue which could cause piped loggers to be orphaned and never
+     terminate after a graceful restart.  PR 40651.  [Joe Orton, Ruediger Pluem]
 
-  *) Fix address-in-use startup failure caused by corruption of the list of
+  *) core: Fix address-in-use startup failure caused by corruption of the list of
      listen sockets in some configurations with multiple generic Listen
      directives.  [Jeff Trawick]
+
+  *) mod_headers: Support regexp-based editing of HTTP headers.  [Nick Kew]
+
+  *) mod_proxy: Add explicit flushing feature. When Servlet container sends AJP
+     body message with size 0, this means that Servlet container has asked for
+     an explicit flush. Create flush bucket in that case. This feature has been
+     added to the recent Tomcat versions without breaking the AJP protocol.
+     [Mladen Turk]
 
   *) mod_proxy_balancer: Set the new environment variable BALANCER_ROUTE_CHANGED
      if a worker with a route different from the one supplied by the client
@@ -299,33 +304,33 @@ Changes with Apache 2.2.4
   *) mod_cache: Don't cache requests with a expires date in the past;
      otherwise mod_cache will always try to cache the URL. This bug
      might lead to numerous rename() errors on win32 if the URL was
-     previously cached. [Davi Arnaut <davi haxent.com.br>]
+     previously cached.  [Davi Arnaut <davi haxent.com.br>]
 
   *) mod_disk_cache: Make sure that only positive integers are accepted
      for the CacheMaxFileSize and CacheMinFileSize parameters in the
-     config file. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
+     config file. PR39380.  [Niklas Edmundsson <nikke acc.umu.se>]
 
   *) core: Deal with the widespread use of apr_status_t return values
      as HTTP status codes, as documented in PR#31759 (a bug shared by
      the default handler, mod_cgi, mod_cgid, mod_proxy, and probably
-     others). [Jeff Trawick, Ruediger Pluem, Joe Orton]
+     others). PR31759.  [Jeff Trawick, Ruediger Pluem, Joe Orton]
 
   *) mod_ext_filter: Handle filter names which include capital letters.
      PR 40323.  [Jeff Trawick]
-  
+
   *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
-     support.  Also corrects the slashes for Windows.  PR 15993. [William Rowe]
+     support.  Also corrects the slashes for Windows.  PR 15993.  [William Rowe]
 
   *) mod_isapi: Handle "HTTP/1.1 200 OK" style status lines correctly, the
      token parser worked while the resulting length was misinterpreted.
-     PR 29098 [Brock Bland <bbland serena.com>]
+     PR 29098.  [Brock Bland <bbland serena.com>]
 
   *) mod_isapi: Return 0 (failure) for more of the various ap_pass_brigade
-     attempts to stream the response at the client.  PR 30022 [William Rowe]
+     attempts to stream the response at the client.  PR 30022.  [William Rowe]
 
   *) mod_isapi: Ensure we walk through all the methods the developer may have
      employed to report their HTTP status result code.
-     PR 16637 30033 28089  [Matt Lewandowsky <matt iamcode.net>, William Rowe]
+     PR 16637 30033 28089.  [Matt Lewandowsky <matt iamcode.net>, William Rowe]
 
   *) mod_echo: Fix precedence problem in if statement. PR 40658.
      [Larry Cipriani <lvc lucent.com>]
@@ -341,19 +346,19 @@ Changes with Apache 2.2.4
 
   *) mod_proxy_balancer: Workers can now be defined as part of
      a balancer cluster "set" in which members of a lower-numbered set
-     are preferred over higher numbered ones. [Jim Jagielski]
+     are preferred over higher numbered ones.  [Jim Jagielski]
 
   *) mod_proxy_balancer: Workers can now be defined as "hot standby" which
      will only be used if all other workers are unusable (eg: in
      error or disabled). Also, the balancer-manager displays the election
-     count and I/O counts of all workers. [Jim Jagielski]
+     count and I/O counts of all workers.  [Jim Jagielski]
 
   *) mod_proxy_ajp: Close connection to backend if reading of request body
-     fails. PR 40310. [Ian Abel <ianabel mxtelecom.com>]
+     fails. PR 40310.  [Ian Abel <ianabel mxtelecom.com>]
 
   *) mod_proxy_balancer: Retry worker chosen by route / redirect worker if
      it is in error state before sending "Service Temporarily Unavailable".
-     PR 38962. [Christian Boitel <cboitel lfdj.com>]
+     PR 38962.  [Christian Boitel <cboitel lfdj.com>]
 
 Changes with Apache 2.2.3
 
