@@ -28,7 +28,7 @@ Changes with Apache 2.2.4
 
   *) mod_headers: Support regexp-based editing of HTTP headers.  [Nick Kew]
 
-   * mod_proxy: Add explicit flushing feature. When Servlet container sends AJP
+  *) mod_proxy: Add explicit flushing feature. When Servlet container sends AJP
      body message with size 0, this means that Servlet container has asked for
      an explicit flush. Create flush bucket in that case. This feature has been
      added to the recent Tomcat versions without breaking the AJP protocol.
