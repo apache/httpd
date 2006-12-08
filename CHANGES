@@ -256,6 +256,10 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.4
 
+  *) mod_cgi and mod_cgid: Don't use apr_status_t error return
+     from input filters as HTTP return value from the handler.
+     PR#31579.
+
   *) mod_cache: Eliminate a bogus error in the log when a filter returns
      AP_FILTER_ERROR. [Niklas Edmundsson <nikke acc.umu.se>]
 
