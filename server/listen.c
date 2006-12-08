@@ -415,6 +415,9 @@ static int open_listeners(apr_pool_t *pool)
 
                 /* Remove the current listener from the list */
                 previous->next = lr->next;
+                lr = previous; /* maintain current value of previous after
+                                * post-loop expression is evaluated
+                                */
                 continue;
             }
 #endif
