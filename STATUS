@@ -78,6 +78,53 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_cgi and mod_cgid: Don't use apr_status_t error return
+      from input filters as HTTP return value from the handler.
+      PR#31579.
+      Trunk: http://svn.apache.org/viewvc?view=rev&revision=442758
+      +1: niq, bnicholes, wrowe
+
+    * mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
+      by creating a root pool for object persistence across requests. This
+      also eliminates the need for custom serialization code.
+      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450089
+      +1: minfrin, jim, wrowe
+
+    * core: Orphaned piped logger process after graceful restart
+        PR: 40651
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&rev=452431
+      2.2.x version of patch:
+        Trunk version works
+      +1: rpluem, trawick, wrowe
+
+   * Fix address-in-use startup failure caused by corruption of the list of
+     listen sockets in some configurations with multiple generic Listen
+     directives.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=467034
+     2.2.x version of patch:
+       Trunk version works
+     +1: trawick, jim, wrowe
+
+   * mod_dbd: Key the storage of prepared statements on the hex string
+     value of server_rec, rather than the server name, as the server name
+     may change (eg when the server name is set) at any time, causing
+     weird behaviour in modules dependent on mod_dbd.
+     Trunk: http://svn.apache.org/viewvc?view=rev&revision=466641
+     niq: This is actually cumulative with R432562, R432560, 424798
+          which were not yet backported.  They fix a nasty bug,
+          and minfrin's fix is better than mine.
+     Cumulative patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/database/mod_dbd.c?r1=466641&r2=420983&pathrev=466641
+     +1: minfrin, niq, wrowe
+
+   * mod_ldap: Better detection and clean up of ldap connection
+     that have been terminated by the ldap server.
+     http://svn.apache.org/viewvc?view=rev&revision=472633
+     +1: bnicholes, jim, wrowe
+     wrowe adds; keeping the old idents for backporting would have
+                 made this alot easier for review - mind \x09's please.
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
@@ -166,12 +213,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://mail-archives.apache.org/mod_mbox//httpd-dev/200609.mbox/%3c1404e5910609091218p84f4d2flc1000764b4966727@mail.gmail.com%3e
       +1: trawick, wrowe
 
-    * mod_cgi and mod_cgid: Don't use apr_status_t error return
-      from input filters as HTTP return value from the handler.
-      PR#31579.
-      Trunk: http://svn.apache.org/viewvc?view=rev&revision=442758
-      +1: niq, bnicholes, wrowe
-
     * mod_proxy: Support variable interpolation in reverse proxy configuration
       http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
       http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
@@ -187,24 +228,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: minfrin, jim, wrowe
         wrowe asks; should ptr mobj->m be nulled out for safety's sake?
 
-    * mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
-      by creating a root pool for object persistence across requests. This
-      also eliminates the need for custom serialization code.
-      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450089
-      +1: minfrin, jim, wrowe
-
     * mod_cache: Eliminate a bogus error in the log when a filter returns
       AP_FILTER_ERROR.
       Trunk: http://svn.apache.org/viewvc?view=rev&rev=450453
       +1: minfrin, wrowe
-
-    * core: Orphaned piped logger process after graceful restart
-        PR: 40651
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=452431
-      2.2.x version of patch:
-        Trunk version works
-      +1: rpluem, trawick, wrowe
 
     * mod_authnz_ldap: Add an AuthLDAPRemoteUserAttribute directive. If
       set, REMOTE_USER will be set to this attribute, rather than the
@@ -224,17 +251,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       wrowe asks: isn't it time to make LogLevel directive parsing
                   reusable in the ap_config api?
 
-   * mod_dbd: Key the storage of prepared statements on the hex string
-     value of server_rec, rather than the server name, as the server name
-     may change (eg when the server name is set) at any time, causing
-     weird behaviour in modules dependent on mod_dbd.
-     Trunk: http://svn.apache.org/viewvc?view=rev&revision=466641
-     niq: This is actually cumulative with R432562, R432560, 424798
-          which were not yet backported.  They fix a nasty bug,
-          and minfrin's fix is better than mine.
-     Cumulative patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/database/mod_dbd.c?r1=466641&r2=420983&pathrev=466641
-     +1: minfrin, niq, wrowe
-
    * mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
      mod_authn_dbd behaviour in line with mod_authnz_ldap.
@@ -245,22 +261,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           you need to document how it affects the module's directives.
           I'll +1 it when that's done.
      wrowe: ditto's - good concept.
-
-   * Fix address-in-use startup failure caused by corruption of the list of
-     listen sockets in some configurations with multiple generic Listen
-     directives.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=467034
-     2.2.x version of patch:
-       Trunk version works
-     +1: trawick, jim, wrowe
-
-   * mod_ldap: Better detection and clean up of ldap connection
-     that have been terminated by the ldap server.
-     http://svn.apache.org/viewvc?view=rev&revision=472633
-     +1: bnicholes, jim, wrowe
-     wrowe adds; keeping the old idents for backporting would have
-                 made this alot easier for review - mind \x09's please.
 
    * core: Allow AcceptMutex to accept pathname arguments ala SSLMutex,
      and, as a result, semi-depreciate Lockfile.
