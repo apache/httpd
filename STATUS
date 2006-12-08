@@ -96,8 +96,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      wrowe adds; keeping the old idents for backporting would have
                  made this alot easier for review - mind \x09's please.
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-
     * mod_mem_cache: Convert mod_mem_cache to use APR memory pool functions
       by creating a root pool for object persistence across requests. This
       also eliminates the need for custom serialization code.
@@ -106,6 +104,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x version of patch:
         http://people.apache.org/~jim/patches/mod_mem_cache-apr-patch.txt
       +1: jim: 2.2 patch to address trunk patch conflicts
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
       Trunk version of patch:
