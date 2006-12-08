@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) Fix issue which could cause piped loggers to be orphaned and never
+     terminate after a graceful restart.  PR 40651.  [Joe Orton,
+     Ruediger Pluem]
+
   *) Fix address-in-use startup failure caused by corruption of the list of
      listen sockets in some configurations with multiple generic Listen
      directives.  [Jeff Trawick]
