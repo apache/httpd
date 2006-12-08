@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) Fix address-in-use startup failure caused by corruption of the list of
+     listen sockets in some configurations with multiple generic Listen
+     directives.  [Jeff Trawick]
+
   *) mod_headers: support regexp-based editing of HTTP headers [Nick Kew]
 
    * mod_proxy: Add explicit flushing feature.
