@@ -88,6 +88,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           and minfrin's fix is better than mine.
      Cumulative patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/database/mod_dbd.c?r1=466641&r2=420983&pathrev=466641
      +1: minfrin, niq, wrowe
+     jim asks: Are the +1's on the Cumulative patch?
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
