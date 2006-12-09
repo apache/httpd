@@ -288,5 +288,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        For r484787, see: http://people.apache.org/~jim/patches/lock.txt
        otherwise, trunk version works.
-     +1: jim
+     +1: jim, rpluem
 
