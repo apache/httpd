@@ -4,8 +4,8 @@ Changes with Apache 2.2.4
   *) mod_dbd: share per-request database handles across subrequests
      and internal redirects [Chris Darroch]
 
-  *) mod_dbd: key connection pools correctly to virtual hosts
-     [Graham Leggett, Nick Kew]
+  *) mod_dbd: key connection pools to virtual hosts correctly even when 
+     ServerName is unset/unavailable [Graham Leggett]
 
   *) Better detection and clean up of ldap connection that has been
      terminated by the ldap server.  PR 40878.
