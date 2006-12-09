@@ -1966,6 +1966,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
 {
     int server_port;
     apr_status_t err = APR_SUCCESS;
+    apr_status_t uerr = APR_SUCCESS;
 
     /*
      * Break up the URL to determine the host to connect to
@@ -2049,8 +2050,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
                                     conn->port, 0,
                                     worker->cp->pool);
         conn->addr = worker->cp->addr;
-        if ((err = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_ERR, err, r->server,
+        if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, uerr, r->server,
                          "proxy: unlock");
         }
     }
