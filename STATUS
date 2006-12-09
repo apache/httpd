@@ -78,18 +78,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_dbd: Key the storage of prepared statements on the hex string
-     value of server_rec, rather than the server name, as the server name
-     may change (eg when the server name is set) at any time, causing
-     weird behaviour in modules dependent on mod_dbd.
-     Trunk: http://svn.apache.org/viewvc?view=rev&revision=466641
-     niq: This is actually cumulative with R432562, R432560, 424798
-          which were not yet backported.  They fix a nasty bug,
-          and minfrin's fix is better than mine.
-     Cumulative patch: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/database/mod_dbd.c?r1=466641&r2=420983&pathrev=466641
-     +1: minfrin, niq, wrowe
-     jim asks: Are the +1's on the Cumulative patch?
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
@@ -240,19 +228,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      wrowe notes: 26 bytes is absurdly posix-unix and english specific,
                   don't you think?  grow the error text pad to a sane
                   width before backporting, please.
-
-   * mod_dbd: Stash DBD connections in request_config of initial request
-     only, or else sub-requests and internal redirections may cause
-     entire DBD pool to be stashed in a single HTTP request.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=481509
-     2.2.x version of patch:
-       Trunk version works
-     +1: chrisd, niq
-     rpluem says: Please add r483630
-                  (http://svn.apache.org/viewvc?view=rev&rev=483630) to this
-                  proposal as it fixes a compiler warning. Once this is added
-                  to the proposal I am +1.
 
    * mod_proxy_balancer: Have the find_best_worker() function
     increment the elected counter, rather than requiring each
