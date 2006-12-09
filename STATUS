@@ -254,3 +254,33 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   proposal as it fixes a compiler warning. Once this is added
                   to the proposal I am +1.
 
+   * mod_proxy_balancer: Have the find_best_worker() function
+    increment the elected counter, rather than requiring each
+    ind lb method to do it, isolating what each lb method
+    needs to do.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=484783
+     2.2.x version of patch:
+       Trunk version works.
+     +1: jim
+
+   * mod_proxy_balancer: Remove unnecessary lock/unlock for
+     the post_request hook. We are actually doing nothing here.
+     But keep the code (but macroed out) for future usage.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=484789
+       http://svn.apache.org/viewvc?view=rev&revision=484794
+     2.2.x version of patch:
+       Trunk version works.
+     +1: jim
+
+   * mod_proxy: Log unlock errors (as we do with locking errors).
+     Add additional clarification on where the error occurred.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=484792
+       http://svn.apache.org/viewvc?view=rev&revision=484787
+       http://svn.apache.org/viewvc?view=rev&revision=484978
+     2.2.x version of patch:
+       Trunk version works.
+     +1: jim
+
