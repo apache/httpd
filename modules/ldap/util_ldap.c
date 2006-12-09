@@ -200,7 +200,7 @@ static apr_status_t uldap_connection_cleanup(void *param)
 }
 
 static int uldap_connection_init(request_rec *r,
-                                          util_ldap_connection_t *ldc )
+                                 util_ldap_connection_t *ldc )
 {
     int rc = 0;
     int version  = LDAP_VERSION3;
