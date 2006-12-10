@@ -361,6 +361,15 @@ static apr_status_t dbd_setup_init(apr_pool_t *pool, server_rec *s)
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
     apr_status_t rv;
 
+    /* dbd_setup in 2.2.3 and under was causing spurious error messages
+     * when dbd isn't configured.  We can stop that with a quick check here
+     * together with a similar check in ap_dbd_open (where being
+     * unconfigured is a genuine error that must be reported).
+     */
+    if (svr->name == no_dbdriver) {
+        return APR_SUCCESS;
+    }
+
     if (!svr->persist) {
         return APR_SUCCESS;
     }
@@ -442,6 +451,12 @@ DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
     apr_status_t rv = APR_SUCCESS;
     const char *errmsg;
 
+    /* If nothing is configured, we shouldn't be here */
+    if (svr->name == no_dbdriver) {
+        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool, "DBD: not configured");
+        return NULL;
+    }
+
     if (!svr->persist) {
         /* Return a once-only connection */
         rv = dbd_construct(&rec, svr, s->process->pool);
@@ -479,6 +494,12 @@ DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
     const char *errmsg;
     void *rec = NULL;
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
+
+    /* If nothing is configured, we shouldn't be here */
+    if (svr->name == no_dbdriver) {
+        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool, "DBD: not configured");
+        return NULL;
+    }
 
     if (!svr->persist) {
         /* Return a once-only connection */
