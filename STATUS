@@ -266,4 +266,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_dbd: Don't try to set up a connection pool (and emit bogus
               error messages) when DBD isn't configured.
      http://svn.apache.org/viewvc?view=rev&revision=485311
-     +1: niq
+     +1: niq, rpluem
