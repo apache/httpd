@@ -212,7 +212,7 @@ int main (int argc, const char * const argv[])
             rv = apr_file_open(&nLogFD, buf2, APR_WRITE | APR_CREATE | APR_APPEND,
                                APR_OS_DEFAULT, pool);
             if (rv != APR_SUCCESS) {
-                char error[26];
+                char error[120];
 
                 apr_strerror(rv, error, sizeof error);
 
