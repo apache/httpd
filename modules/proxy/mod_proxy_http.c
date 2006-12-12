@@ -333,7 +333,10 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
 
     if (old_cl_val) {
         add_cl(p, bucket_alloc, header_brigade, old_cl_val);
-        cl_val = atol(old_cl_val);
+        if (APR_SUCCESS != (status = apr_strtoff(&cl_val, old_cl_val, NULL,
+                                                 0))) {
+            return status;
+        }
     }
     terminate_headers(bucket_alloc, header_brigade);
 
