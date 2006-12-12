@@ -78,6 +78,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+
+   * mod_dbd: Don't try to set up a connection pool (and emit bogus
+              error messages) when DBD isn't configured.
+     http://svn.apache.org/viewvc?view=rev&revision=485311
+     +1: niq, rpluem, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
@@ -262,8 +268,3 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        For r484787, see: http://people.apache.org/~jim/patches/lock.txt
        otherwise, trunk version works.
      +1: jim, rpluem
-
-   * mod_dbd: Don't try to set up a connection pool (and emit bogus
-              error messages) when DBD isn't configured.
-     http://svn.apache.org/viewvc?view=rev&revision=485311
-     +1: niq, rpluem, jim
