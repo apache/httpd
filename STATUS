@@ -82,6 +82,8 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
+      Note - this is required to avoid hangups of socket #64, #128
+      as Microsoft set aside 64 reserved values.
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&revision=428029
       2.2.x version of patch:
@@ -150,14 +152,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             Merged subversion comments: http://people.apache.org/~rpluem/patches/mod_deflate_rework/inflate_output.log
         The patch for the inflate output filter requires the patch for the
         deflate output filter.
+        Alternately, substitute mod_deflate.c of trunk (at r483597) which maps
+        to the same result as the net patches.
       +1: rpluem, niq
-      wrowe notes: I can't vote on this, nor can most; if you mean to propose
-      backporting trunk/ to branches/2.2 for mod_deflate, I'd back that.
-      rpluem: I am slightly confused now. What do you propose exactly?
-              Take the existing mod_deflate.c from trunk and move it over
-              to branches/2.2? This would be exactly the same as applying my
-              patches as mod_deflate.c of branches/2.2 will be the same as
-              mod_deflate.c of the trunk (r483597) after applying the patches.
 
     * Allow htcacheclean and httxt2dbm to link apr/apr-util statically
       like the older support programs.
@@ -211,13 +208,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        Trunk version works (requires handling of CHANGES and ap_mmn.h
        conflict though)
-     +1: jim
-     +1/-.9: wrowe
+     +1: jim, wrowe
      wrowe notes: Adding to ease migration to 2.4 - good.  Deprecating 
                   any directive in a .even released branch, bad.
      jim notes: it's more an enhancement to AcceptMutex than a
                 depreciation of LockFile... no regressions are
                 introduced.
+     wrowe adds: Isn't it time for SSL/FTP/JK/FTP who all need the very
+                 same syntax to benefit from one generic implementation
+                 (in httpd, not apr, since it's config syntax specific).
 
    * rotatelogs: Produce useful error messages for open() failures.
      PR 39487
@@ -226,7 +225,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=485828
      2.2.x version of patch:
        Trunk version works.
-     +1: trawick, jim
+     +1: trawick, jim, wrowe
 
    * mod_proxy_balancer: Have the find_best_worker() function
     increment the elected counter, rather than requiring each
