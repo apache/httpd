@@ -78,6 +78,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
+      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450070
+      +1: minfrin, jim, wrowe
+        wrowe asks; should ptr mobj->m be nulled out for safety's sake?
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
@@ -172,11 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
            ProxyPassSubstitute or similarly named directives would seem to
            make more sense, permit direct Reverse'als when appropriate and
            restrict the Substitutions to be parsed only when required.
-
-    * mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
-      Trunk: http://svn.apache.org/viewvc?view=rev&revision=450070
-      +1: minfrin, jim, wrowe
-        wrowe asks; should ptr mobj->m be nulled out for safety's sake?
 
    * mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
