@@ -95,7 +95,7 @@ later.</compatibility>
 <syntax>DumpIOLogLevel <var>level</var></syntax>
 <default>DumpIOLogLevel debug</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>DumpIOLogLevel is only available in Apache 2.3.x and 
+<compatibility>DumpIOLogLevel is only available in Apache 2.2.4 and 
 later.</compatibility>
 
 <usage>
