@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) rotatelogs: Improve error message for open failures.  PR 39487.
+     [Joe Orton]
+
   *) mod_dbd: share per-request database handles across subrequests
      and internal redirects [Chris Darroch]
 
