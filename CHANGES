@@ -81,9 +81,6 @@ Changes with Apache 2.3.0
      by determining whether the cached file should be copied on disk rather
      than loaded into RAM. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
 
-  *) mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
-     [Davi Arnaut <davi haxent.com.br>]
-
   *) mod_proxy: Print the correct error message for erroneous configured
      ProxyPass directives. PR 40439. [serai lans-tv.com]
 
@@ -237,6 +234,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
+     [Davi Arnaut <davi haxent.com.br>]
 
   *) Allow mod_dumpio to log at other than DEBUG levels via
      the new DumpIOLogLevel directive. [Jim Jagielski]
