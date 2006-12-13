@@ -241,6 +241,9 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.4
 
+  *) rotatelogs: Improve error message for open failures.  PR 39487.
+     [Joe Orton]
+
   *) Better detection and clean up of ldap connection that has been
      terminated by the ldap server.  PR 40878.
      [Rob Baily <rbaily servicebench com>]
