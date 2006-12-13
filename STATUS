@@ -89,15 +89,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       wrowe asks: isn't it time to make LogLevel directive parsing
                   reusable in the ap_config api?
 
-   * rotatelogs: Produce useful error messages for open() failures.
-     PR 39487
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=478135
-       http://svn.apache.org/viewvc?view=rev&revision=485828
-     2.2.x version of patch:
-       Trunk version works.
-     +1: trawick, jim, wrowe
-
    * mod_proxy_balancer: Have the find_best_worker() function
     increment the elected counter, rather than requiring each
     ind lb method to do it, isolating what each lb method
