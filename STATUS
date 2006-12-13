@@ -78,17 +78,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_dumpio: Allow logging at other LogLevels via DumpIOLogLevel
-     directive.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=463291
-      2.2.x version of patch:
-        http://people.apache.org/~jim/patches/dumpio-patch.txt
-      +1: jim, wrowe, trawick (remember to tweak the "2.3.x" string in
-          mod_dumpio.xml)
-      wrowe asks: isn't it time to make LogLevel directive parsing
-                  reusable in the ap_config api?
-
    * mod_proxy_balancer: Have the find_best_worker() function
     increment the elected counter, rather than requiring each
     ind lb method to do it, isolating what each lb method
