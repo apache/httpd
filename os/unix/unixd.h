@@ -41,7 +41,7 @@
 
 #include <pwd.h>
 #include <grp.h>
-#ifdef APR_HAVE_SYS_TYPES_H
+#if APR_HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
 #ifdef HAVE_SYS_IPC_H
