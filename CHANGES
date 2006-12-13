@@ -59,9 +59,6 @@ Changes with Apache 2.3.0
 
   *) mod_proxy_fcgi: Added win32 build. [Mladen Turk]
 
-  *) Allow mod_dumpio to log at other than DEBUG levels via
-     the new DumpIOLogLevel directive. [Jim Jagielski]
-
   *) mod_disk_cache: Implement read-while-caching.
      [Niklas Edmundsson <nikke acc.umu.se>]
 
@@ -240,6 +237,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) Allow mod_dumpio to log at other than DEBUG levels via
+     the new DumpIOLogLevel directive. [Jim Jagielski]
 
   *) rotatelogs: Improve error message for open failures.  PR 39487.
      [Joe Orton]
