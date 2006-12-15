@@ -78,10 +78,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_filter: PR#39420, make matching on resp=Content-Type case-insensitive.
-    http://svn.apache.org/viewvc?view=rev&revision=486455
-    +1: niq, trawick, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
