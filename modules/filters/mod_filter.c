@@ -638,7 +638,7 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *args)
     }
 
     if (   (provider->dispatch == RESPONSE_HEADERS)
-        && !strcmp(str, "content-type")) {
+        && !strcasecmp(str, "content-type")) {
         provider->dispatch = CONTENT_TYPE;
     }
     provider->value = str;
