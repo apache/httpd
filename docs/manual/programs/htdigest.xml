@@ -66,4 +66,9 @@
     </dl>
 </section>
 
+<section id="security"><title>Security Considerations</title>
+    <p>This program is not safe as a setuid executable. Do <em>not</em> make it
+    setuid.</p>
+</section>
+
 </manualpage>
