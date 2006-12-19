@@ -95,11 +95,6 @@ Changes with Apache 2.3.0
      now use ap_get_server_banner() or ap_get_server_description().
      [Jeff Trawick]
 
-  *) mod_deflate: Rework inflate output and deflate output filter to fix several
-     issues: Incorrect handling of flush buckets, potential memory leaks,
-     excessive memory usage in inflate output filter for large compressed
-     content. PR 39854. [Ruediger Pluem, Nick Kew, Justin Erenkrantz]
-
   *) All MPMs: Introduce a check_config phase between pre_config and
      open_logs, to allow modules to review interdependent configuration
      directive values and adjust them while messages can still be logged
@@ -237,6 +232,11 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) mod_deflate: Rework inflate output and deflate output filter to fix several
+     issues: Incorrect handling of flush buckets, potential memory leaks,
+     excessive memory usage in inflate output filter for large compressed
+     content. PR 39854. [Ruediger Pluem, Nick Kew, Justin Erenkrantz]
 
   *) mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
      [Davi Arnaut <davi haxent.com.br>]
