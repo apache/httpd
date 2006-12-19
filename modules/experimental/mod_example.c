@@ -323,6 +323,29 @@ static void setup_module_cells(void)
 }
 
 /*
+ * You *could* change the following if you wanted to see the calling
+ * sequence reported in the server's error_log, but beware - almost all of
+ * these co-routines are called for every single request, and the impact
+ * on the size (and readability) of the error_log is considerable.
+ */
+#ifndef EXAMPLE_LOG_EACH 
+#define EXAMPLE_LOG_EACH 0
+#endif
+
+static void example_log_each(apr_pool_t *p, server_rec *s, const char *note)
+{
+    if (s != NULL) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_example: %s", 
+                     note);
+    } else {
+        apr_file_t *out = NULL;
+        apr_file_open_stderr(&out, p);
+        apr_file_printf(out, "mod_example traced in non-loggable "
+                        "context: %s\n", note);
+    }
+}
+
+/*
  * This routine is used to add a trace of a callback to the list.  We're
  * passed the server record (if available), the request record (if available),
  * a pointer to our private configuration record (if available) for the
@@ -390,27 +413,10 @@ static void trace_add(server_rec *s, request_rec *r, x_cfg *mconfig,
         trace_copy = trace;
     }
 
-    /*
-     * You *could* change the following if you wanted to see the calling
-     * sequence reported in the server's error_log, but beware - almost all of
-     * these co-routines are called for every single request, and the impact
-     * on the size (and readability) of the error_log is considerable.
-     */
-#ifndef EXAMPLE_LOG_EACH 
-#define EXAMPLE_LOG_EACH 0
+#ifdef EXAMPLE_LOG_EACH 
+    example_log_each(p, s, note);
 #endif
-    if (EXAMPLE_LOG_EACH) {
-        if (s != NULL) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "mod_example: %s", 
-                         note);
-        } else {
-            apr_file_t *out = NULL;
-            apr_file_open_stderr(&out, p);
-            apr_file_printf(out, "mod_example traced in non-loggable "
-                            "context: %s\n", note);
-        }
-    }
-    
+
     /*
      * If we weren't passed a configuration record, we can't figure out to
      * what location this call applies.  This only happens for co-routines
@@ -459,6 +465,44 @@ static void trace_add(server_rec *s, request_rec *r, x_cfg *mconfig,
     else {
         trace = trace_copy;
     }
+}
+
+
+/*
+ * This utility route traces the hooks called as a request is handled. 
+ * It takes the current request as argument 
+ */
+ 
+static void trace_request(const request_rec *r, const char *note)
+{
+    const char *trace_copy, *sofar;
+    char *addon, *where;
+    x_cfg *cfg;
+    
+#ifdef EXAMPLE_LOG_EACH
+    example_log_each(r->pool, r->server, note);
+#endif
+
+    if ((sofar = apr_table_get(r->notes, TRACE_NOTE)) == NULL) {
+        sofar = "";
+    }
+    
+    cfg = our_dconfig(r);
+    
+    where = (cfg != NULL) ? cfg->loc : "nowhere";
+    where = (where != NULL) ? where : "";
+    
+    addon = apr_pstrcat(r->pool, 
+                        "   <li>\n"
+                        "    <dl>\n"
+                        "     <dt><samp>", note, "</samp></dt>\n"
+                        "     <dd><samp>[", where, "]</samp></dd>\n"
+                        "    </dl>\n"
+                        "   </li>\n",
+                        NULL);
+
+    trace_copy = apr_pstrcat(r->pool, sofar, addon, NULL);
+    apr_table_set(r->notes, TRACE_NOTE, trace_copy);
 }
 
 /*--------------------------------------------------------------------------*/
@@ -512,6 +556,7 @@ static void *x_create_dir_config(apr_pool_t *p, char *dirspec)
 {
     x_cfg *cfg;
     char *dname = dirspec;
+    char *note;
 
     /*
      * Allocate the space for our record from the pool supplied.
@@ -529,7 +574,8 @@ static void *x_create_dir_config(apr_pool_t *p, char *dirspec)
      */
     dname = (dname != NULL) ? dname : "";
     cfg->loc = apr_pstrcat(p, "DIR(", dname, ")", NULL);
-    trace_add(NULL, NULL, cfg, "x_create_dir_config()");
+    note = apr_psprintf(p, "x_create_dir_config(p == 0x%x, dirspec == %s)", p, dirspec);
+    trace_add(NULL, NULL, cfg, note);
     return (void *) cfg;
 }
 
@@ -580,8 +626,9 @@ static void *x_merge_dir_config(apr_pool_t *p, void *parent_conf,
      * Now just record our being called in the trace list.  Include the
      * locations we were asked to merge.
      */
-    note = apr_pstrcat(p, "x_merge_dir_config(\"", pconf->loc, "\",\"",
-                   nconf->loc, "\")", NULL);
+    note = apr_psprintf(p, "x_merge_dir_config(p == 0x%x, parent_conf == " 
+                        "0x%x, newloc_conf == 0x%x)", p, parent_conf,
+                        newloc_conf);
     trace_add(NULL, NULL, merged_config, note);
     return (void *) merged_config;
 }
@@ -844,14 +891,11 @@ static void x_child_init(apr_pool_t *p, server_rec *s)
  */
 static const char *x_http_scheme(const request_rec *r)
 {
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, (request_rec *) r, cfg, "x_http_scheme()");
-    
+    trace_request(r, "x_http_scheme()");
+
     /* We have no claims to make about the request scheme */
     return NULL;
 }
@@ -870,13 +914,10 @@ static const char *x_http_scheme(const request_rec *r)
  */
 static apr_port_t x_default_port(const request_rec *r)
 {
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, (request_rec *) r, cfg, "x_default_port()");
+    trace_request(r, "x_default_port()");
     return 0;
 }
 
@@ -891,13 +932,10 @@ static apr_port_t x_default_port(const request_rec *r)
  */
 static void x_insert_filter(request_rec *r)
 {
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, r, cfg, "x_insert_filter()");
+    trace_request(r, "x_insert_filter()"); 
 }
 
 /* 
@@ -911,10 +949,7 @@ static void x_insert_filter(request_rec *r)
  */
 static void x_insert_error_filter(request_rec *r)
 {
-    x_cfg *cfg;
-    
-    cfg = our_dconfig(r);
-    trace_add(r->server, r, cfg, "x_insert_error_filter()");
+    trace_request(r, "x_insert_error_filter()");
 }
 
 /*--------------------------------------------------------------------------*/
@@ -958,7 +993,7 @@ static int x_handler(request_rec *r)
      */
     note = apr_pstrcat(r->pool, "x_handler(), handler is \"", 
                       r->handler, "\"", NULL);
-    trace_add(r->server, r, dcfg, note);
+    trace_request(r, note);
 
     /* If it's not for us, get out as soon as possible. */
     if (strcmp(r->handler, "example-handler")) {
@@ -1054,19 +1089,16 @@ static int x_handler(request_rec *r)
  *
  * This hook is used by mod_cache to serve cached content.  
  *
- * This is a RUN_FIRST hook. Return OK if you have served the request, DECLINED 
- * if you want processing to continue, or a HTTP_* error code to stop processing 
- * the request. 
+ * This is a RUN_FIRST hook. Return OK if you have served the request, 
+ * DECLINED if you want processing to continue, or a HTTP_* error code to stop 
+ * processing the request. 
  */
 static int x_quick_handler(request_rec *r, int lookup_uri)
 {
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, r, cfg, "x_quick_handler()");
+    trace_request(r, "x_quick_handler()");
     return DECLINED;
 }
 
@@ -1120,14 +1152,11 @@ static int x_process_connection(conn_rec *c)
  */
 static int x_post_read_request(request_rec *r)
 {
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add(r->server, r, cfg, "x_post_read_request()");
+    trace_request(r, "x_post_read_request()");
     return DECLINED;
 }
 
@@ -1141,14 +1170,11 @@ static int x_post_read_request(request_rec *r)
 static int x_translate_name(request_rec *r)
 {
 
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add(r->server, r, cfg, "x_translate_name()");
+    trace_request(r, "x_translate_name()");
     return DECLINED;
 }
 
@@ -1161,15 +1187,11 @@ static int x_translate_name(request_rec *r)
  */
 static int x_map_to_storage(request_rec *r)
 {
-
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add(r->server, r, cfg, "x_map_to_storage()");
+    trace_request(r, "x_map_to_storage()");
     return DECLINED;
 }
 
@@ -1185,15 +1207,11 @@ static int x_map_to_storage(request_rec *r)
  */
 static int x_header_parser(request_rec *r)
 {
-
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * We don't actually *do* anything here, except note the fact that we were
      * called.
      */
-    trace_add(r->server, r, cfg, "x_header_parser()");
+    trace_request(r, "x_header_parser()");
     return DECLINED;
 }
 
@@ -1208,14 +1226,10 @@ static int x_header_parser(request_rec *r)
  */
 static int x_check_user_id(request_rec *r)
 {
-
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * Don't do anything except log the call.
      */
-    trace_add(r->server, r, cfg, "x_check_user_id()");
+    trace_request(r, "x_check_user_id()");
     return DECLINED;
 }
 
@@ -1223,23 +1237,20 @@ static int x_check_user_id(request_rec *r)
  * This routine is called to check to see if the resource being requested
  * requires authorisation.
  *
- * This is a RUN_FIRST hook. The return value is OK, DECLINED, or HTTP_mumble.  
- * If we return OK, no other modules are called during this phase.
+ * This is a RUN_FIRST hook. The return value is OK, DECLINED, or 
+ * HTTP_mumble.  If we return OK, no other modules are called during this 
+ * phase.
  *
  * If *all* modules return DECLINED, the request is aborted with a server
  * error.
  */
 static int x_auth_checker(request_rec *r)
 {
-
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * Log the call and return OK, or access will be denied (even though we
      * didn't actually do anything).
      */
-    trace_add(r->server, r, cfg, "x_auth_checker()");
+    trace_request(r, "x_auth_checker()");
     return DECLINED;
 }
 
@@ -1252,11 +1263,7 @@ static int x_auth_checker(request_rec *r)
  */
 static int x_access_checker(request_rec *r)
 {
-
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
-    trace_add(r->server, r, cfg, "x_access_checker()");
+    trace_request(r, "x_access_checker()");
     return DECLINED;
 }
 
@@ -1269,15 +1276,11 @@ static int x_access_checker(request_rec *r)
  */
 static int x_type_checker(request_rec *r)
 {
-
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * Log the call, but don't do anything else - and report truthfully that
      * we didn't do anything.
      */
-    trace_add(r->server, r, cfg, "x_type_checker()");
+    trace_request(r, "x_type_checker()");
     return DECLINED;
 }
 
@@ -1289,15 +1292,11 @@ static int x_type_checker(request_rec *r)
  */
 static int x_fixups(request_rec *r)
 {
-
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
     /*
      * Log the call and exit.
      */
-    trace_add(r->server, r, cfg, "x_fixups()");
-    return OK;
+    trace_request(r, "x_fixups()");
+    return DECLINED;
 }
 
 /*
@@ -1308,11 +1307,7 @@ static int x_fixups(request_rec *r)
  */
 static int x_log_transaction(request_rec *r)
 {
-
-    x_cfg *cfg;
-
-    cfg = our_dconfig(r);
-    trace_add(r->server, r, cfg, "x_log_transaction()");
+    trace_request(r, "x_log_transaction()");
     return DECLINED;
 }
 
@@ -1328,10 +1323,7 @@ static int x_log_transaction(request_rec *r)
  */
 static ap_unix_identity_t *x_get_suexec_identity(const request_rec *r) 
 {
-    x_cfg *cfg;
-    cfg = our_dconfig(r);
-    trace_add(r->server, (request_rec *) r, cfg, "x_get_suexec_identity()");
-    
+    trace_request(r, "x_get_suexec_identity()");
     return NULL;
 }
 #endif
