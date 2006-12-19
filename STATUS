@@ -86,16 +86,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://mail-archives.apache.org/mod_mbox//httpd-dev/200609.mbox/%3c1404e5910609091218p84f4d2flc1000764b4966727@mail.gmail.com%3e
       +1: trawick, wrowe, jerenkrantz
 
-   * mod_proxy: Log unlock errors (as we do with locking errors).
-     Add additional clarification on where the error occurred.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=484792
-       http://svn.apache.org/viewvc?view=rev&revision=484787
-       http://svn.apache.org/viewvc?view=rev&revision=484978
-     2.2.x version of patch:
-       For r484787, see: http://people.apache.org/~jim/patches/lock.txt
-       otherwise, trunk version works.
-     +1: jim, rpluem, wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
