@@ -78,53 +78,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_deflate: Rework inflate output and deflate output filter to fix
-      several issues: Incorrect handling of flush buckets, potential memory
-      leaks, excessive memory usage in inflate output filter for large
-      compressed content
-        PR: 39854
-      Trunk version of patch:
-        Changes on deflate output filter:
-          http://svn.apache.org/viewvc?view=rev&revision=422731
-          http://svn.apache.org/viewvc?view=rev&revision=422736
-          http://svn.apache.org/viewvc?view=rev&revision=422739
-          http://svn.apache.org/viewvc?view=rev&revision=423940
-          http://svn.apache.org/viewvc?view=rev&revision=424759
-          http://svn.apache.org/viewvc?view=rev&revision=424950
-          http://svn.apache.org/viewvc?view=rev&revision=425109
-          http://svn.apache.org/viewvc?view=rev&revision=426790
-          http://svn.apache.org/viewvc?view=rev&revision=426791
-          http://svn.apache.org/viewvc?view=rev&revision=426793
-          http://svn.apache.org/viewvc?view=rev&revision=426795
-
-        Changes on inflate output filter:
-          http://svn.apache.org/viewvc?view=rev&revision=416165
-          http://svn.apache.org/viewvc?view=rev&revision=426799
-          http://svn.apache.org/viewvc?view=rev&revision=475403
-          http://svn.apache.org/viewvc?view=rev&revision=475406
-          http://svn.apache.org/viewvc?view=rev&revision=475915
-          http://svn.apache.org/viewvc?view=rev&revision=475920
-          http://svn.apache.org/viewvc?view=rev&revision=475922
-          http://svn.apache.org/viewvc?view=rev&revision=476600
-
-        Changlog entry:
-          http://svn.apache.org/viewvc?view=rev&revision=437668
-
-      2.2.x version of patch:
-        Trunk versions work. For convenience of review I merged the patches
-        for the deflate output filter and the inflate output filter:
-          Changes on deflate output filter:
-            Patch: http://people.apache.org/~rpluem/patches/mod_deflate_rework/deflate_output.diff
-            Merged subversion comments: http://people.apache.org/~rpluem/patches/mod_deflate_rework/deflate_output.log
-          Changes on inflate output filter:
-            Patch: http://people.apache.org/~rpluem/patches/mod_deflate_rework/inflate_output.diff
-            Merged subversion comments: http://people.apache.org/~rpluem/patches/mod_deflate_rework/inflate_output.log
-        The patch for the inflate output filter requires the patch for the
-        deflate output filter.
-        Alternately, substitute mod_deflate.c of trunk (at r483597) which maps
-        to the same result as the net patches.
-      +1: rpluem, niq, jerenkrantz, wrowe
-
     * Allow htcacheclean and httxt2dbm to link apr/apr-util statically
       like the older support programs.
       Trunk version of patch:
