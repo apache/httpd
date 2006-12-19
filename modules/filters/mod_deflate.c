@@ -212,7 +212,87 @@ typedef struct deflate_ctx_t
     unsigned char *buffer;
     unsigned long crc;
     apr_bucket_brigade *bb, *proc_bb;
+    int (*libz_end_func)(z_streamp);
+    unsigned char *validation_buffer;
+    apr_size_t validation_buffer_length;
 } deflate_ctx;
+
+/* Number of validation bytes (CRC and length) after the compressed data */
+#define VALIDATION_SIZE 8
+/* Do not update ctx->crc, see comment in flush_libz_buffer */
+#define NO_UPDATE_CRC 0
+/* Do update ctx->crc, see comment in flush_libz_buffer */
+#define UPDATE_CRC 1
+
+static int flush_libz_buffer(deflate_ctx *ctx, deflate_filter_config *c,
+                             struct apr_bucket_alloc_t *bucket_alloc,
+                             int (*libz_func)(z_streamp, int), int flush,
+                             int crc)
+{
+    int zRC = Z_OK;
+    int done = 0;
+    unsigned int deflate_len;
+    apr_bucket *b;
+
+    for (;;) {
+         deflate_len = c->bufferSize - ctx->stream.avail_out;
+
+         if (deflate_len != 0) {
+             /*
+              * Do we need to update ctx->crc? Usually this is the case for
+              * inflate action where we need to do a crc on the output, whereas
+              * in the deflate case we need to do a crc on the input
+              */
+             if (crc) {
+                 ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer,
+                                  deflate_len);
+             }
+             b = apr_bucket_heap_create((char *)ctx->buffer,
+                                        deflate_len, NULL,
+                                        bucket_alloc);
+             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
+             ctx->stream.next_out = ctx->buffer;
+             ctx->stream.avail_out = c->bufferSize;
+         }
+
+         if (done)
+             break;
+
+         zRC = libz_func(&ctx->stream, flush);
+
+         /*
+          * We can ignore Z_BUF_ERROR because:
+          * When we call libz_func we can assume that
+          *
+          * - avail_in is zero (due to the surrounding code that calls
+          *   flush_libz_buffer)
+          * - avail_out is non zero due to our actions some lines above
+          *
+          * So the only reason for Z_BUF_ERROR is that the internal libz
+          * buffers are now empty and thus we called libz_func one time
+          * too often. This does not hurt. It simply says that we are done.
+          */
+         if (zRC == Z_BUF_ERROR) {
+             zRC = Z_OK;
+             break;
+         }
+
+         done = (ctx->stream.avail_out != 0 || zRC == Z_STREAM_END);
+
+         if (zRC != Z_OK && zRC != Z_STREAM_END)
+             break;
+    }
+    return zRC;
+}
+
+static apr_status_t deflate_ctx_cleanup(void *data)
+{
+    deflate_ctx *ctx = (deflate_ctx *)data;
+
+    if (ctx)
+        ctx->libz_end_func(&ctx->stream);
+    return APR_SUCCESS;
+}
 
 static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
@@ -221,13 +301,15 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
     int zRC;
-    deflate_filter_config *c = ap_get_module_config(r->server->module_config,
-                                                    &deflate_module);
+    deflate_filter_config *c;
 
     /* Do nothing if asked to filter nothing. */
     if (APR_BRIGADE_EMPTY(bb)) {
-        return APR_SUCCESS;
+        return ap_pass_brigade(f->next, bb);
     }
+
+    c = ap_get_module_config(r->server->module_config,
+                             &deflate_module);
 
     /* If we don't have a context, we need to ensure that it is okay to send
      * the deflated content.  If we have a context, that means we've done
@@ -362,19 +444,32 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         ctx = f->ctx = apr_pcalloc(r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
         ctx->buffer = apr_palloc(r->pool, c->bufferSize);
+        ctx->libz_end_func = deflateEnd;
 
         zRC = deflateInit2(&ctx->stream, c->compressionlevel, Z_DEFLATED,
                            c->windowSize, c->memlevel,
                            Z_DEFAULT_STRATEGY);
 
         if (zRC != Z_OK) {
-            f->ctx = NULL;
+            deflateEnd(&ctx->stream);
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "unable to init Zlib: "
                           "deflateInit2 returned %d: URL %s",
                           zRC, r->uri);
+            /*
+             * Remove ourselves as it does not make sense to return:
+             * We are not able to init libz and pass data down the chain
+             * uncompressed.
+             */
+            ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
+        /*
+         * Register a cleanup function to ensure that we cleanup the internal
+         * libz resources.
+         */
+        apr_pool_cleanup_register(r->pool, ctx, deflate_ctx_cleanup,
+                                  apr_pool_cleanup_null);
 
         /* add immortal gzip header */
         e = apr_bucket_immortal_create(gzip_header, sizeof gzip_header,
@@ -400,49 +495,23 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         const char *data;
         apr_bucket *b;
         apr_size_t len;
-        int done = 0;
 
         e = APR_BRIGADE_FIRST(bb);
 
         if (APR_BUCKET_IS_EOS(e)) {
             char *buf;
-            unsigned int deflate_len;
 
             ctx->stream.avail_in = 0; /* should be zero already anyway */
-            for (;;) {
-                deflate_len = c->bufferSize - ctx->stream.avail_out;
+            /* flush the remaining data from the zlib buffers */
+            flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate, Z_FINISH,
+                              NO_UPDATE_CRC);
 
-                if (deflate_len != 0) {
-                    b = apr_bucket_heap_create((char *)ctx->buffer,
-                                               deflate_len, NULL,
-                                               f->c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-                    ctx->stream.next_out = ctx->buffer;
-                    ctx->stream.avail_out = c->bufferSize;
-                }
-
-                if (done) {
-                    break;
-                }
-
-                zRC = deflate(&ctx->stream, Z_FINISH);
-
-                if (deflate_len == 0 && zRC == Z_BUF_ERROR) {
-                    zRC = Z_OK;
-                }
-
-                done = (ctx->stream.avail_out != 0 || zRC == Z_STREAM_END);
-
-                if (zRC != Z_OK && zRC != Z_STREAM_END) {
-                    break;
-                }
-            }
-
-            buf = apr_palloc(r->pool, 8);
+            buf = apr_palloc(r->pool, VALIDATION_SIZE);
             putLong((unsigned char *)&buf[0], ctx->crc);
             putLong((unsigned char *)&buf[4], ctx->stream.total_in);
 
-            b = apr_bucket_pool_create(buf, 8, r->pool, f->c->bucket_alloc);
+            b = apr_bucket_pool_create(buf, VALIDATION_SIZE, r->pool,
+                                       f->c->bucket_alloc);
             APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "Zlib: Compressed %ld to %ld : URL %s",
@@ -476,6 +545,8 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             }
 
             deflateEnd(&ctx->stream);
+            /* No need for cleanup any longer */
+            apr_pool_cleanup_kill(r->pool, ctx, deflate_ctx_cleanup);
 
             /* Remove EOS from the old list, and insert into the new. */
             APR_BUCKET_REMOVE(e);
@@ -488,28 +559,18 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
 
         if (APR_BUCKET_IS_FLUSH(e)) {
-            apr_bucket *bkt;
             apr_status_t rv;
 
-            apr_bucket_delete(e);
-
-            if (ctx->stream.avail_in > 0) {
-                zRC = deflate(&(ctx->stream), Z_SYNC_FLUSH);
-                if (zRC != Z_OK) {
-                    return APR_EGENERAL;
-                }
+            /* flush the remaining data from the zlib buffers */
+            zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, deflate,
+                                    Z_SYNC_FLUSH, NO_UPDATE_CRC);
+            if (zRC != Z_OK) {
+                return APR_EGENERAL;
             }
 
-            ctx->stream.next_out = ctx->buffer;
-            len = c->bufferSize - ctx->stream.avail_out;
-
-            b = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                       NULL, f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
-            ctx->stream.avail_out = c->bufferSize;
-
-            bkt = apr_bucket_flush_create(f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(ctx->bb, bkt);
+            /* Remove flush bucket from old brigade anf insert into the new. */
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
             rv = ap_pass_brigade(f->next, ctx->bb);
             if (rv != APR_SUCCESS) {
                 return rv;
@@ -549,8 +610,9 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
 
             zRC = deflate(&(ctx->stream), Z_NO_FLUSH);
 
-            if (zRC != Z_OK)
+            if (zRC != Z_OK) {
                 return APR_EGENERAL;
+            }
         }
 
         apr_bucket_delete(e);
@@ -831,8 +893,8 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 {
     int zlib_method;
     int zlib_flags;
-    int deflate_init = 1;
-    apr_bucket *bkt;
+    int inflate_init = 1;
+    apr_bucket *e;
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
     int zRC;
@@ -841,7 +903,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
     /* Do nothing if asked to filter nothing. */
     if (APR_BRIGADE_EMPTY(bb)) {
-        return APR_SUCCESS;
+        return ap_pass_brigade(f->next, bb);
     }
 
     c = ap_get_module_config(r->server->module_config, &deflate_module);
@@ -857,8 +919,9 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
-        /* Let's see what our current Content-Encoding is.
-         * If gzip is present, don't gzip again.  (We could, but let's not.)
+        /*
+         * Let's see what our current Content-Encoding is.
+         * Only inflate if gzip is present.
          */
         encoding = apr_table_get(r->headers_out, "Content-Encoding");
         if (encoding) {
@@ -890,9 +953,11 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
 
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
-        ctx->proc_bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
+        ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
         ctx->buffer = apr_palloc(r->pool, c->bufferSize);
-
+        ctx->libz_end_func = inflateEnd;
+        ctx->validation_buffer = NULL;
+        ctx->validation_buffer_length = 0;
 
         zRC = inflateInit2(&ctx->stream, c->windowSize);
 
@@ -903,60 +968,124 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
                           "unable to init Zlib: "
                           "inflateInit2 returned %d: URL %s",
                           zRC, r->uri);
+            /*
+             * Remove ourselves as it does not make sense to return:
+             * We are not able to init libz and pass data down the chain
+             * compressed.
+             */
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
 
-        /* initialize deflate output buffer */
+        /*
+         * Register a cleanup function to ensure that we cleanup the internal
+         * libz resources.
+         */
+        apr_pool_cleanup_register(r->pool, ctx, deflate_ctx_cleanup,
+                                  apr_pool_cleanup_null);
+
+        apr_table_unset(r->headers_out, "Content-Length");
+
+        /* initialize inflate output buffer */
         ctx->stream.next_out = ctx->buffer;
         ctx->stream.avail_out = c->bufferSize;
 
-        deflate_init = 0;
+        inflate_init = 0;
     }
 
-    for (bkt = APR_BRIGADE_FIRST(bb);
-         bkt != APR_BRIGADE_SENTINEL(bb);
-         bkt = APR_BUCKET_NEXT(bkt))
+    while (!APR_BRIGADE_EMPTY(bb))
     {
         const char *data;
+        apr_bucket *b;
         apr_size_t len;
 
-        /* If we actually see the EOS, that means we screwed up! */
-        /* no it doesn't - not in a HEAD or 204/304 */
-        if (APR_BUCKET_IS_EOS(bkt)) {
-            inflateEnd(&ctx->stream);
-            return ap_pass_brigade(f->next, bb);
-        }
+        e = APR_BRIGADE_FIRST(bb);
 
-        if (APR_BUCKET_IS_FLUSH(bkt)) {
-            apr_bucket *tmp_heap;
-            zRC = inflate(&(ctx->stream), Z_SYNC_FLUSH);
-            if (zRC != Z_OK) {
+        if (APR_BUCKET_IS_EOS(e)) {
+            /*
+             * We are really done now. Ensure that we never return here, even
+             * if a second EOS bucket falls down the chain. Thus remove
+             * ourselves.
+             */
+            ap_remove_output_filter(f);
+            /* should be zero already anyway */
+            ctx->stream.avail_in = 0;
+            /*
+             * Flush the remaining data from the zlib buffers. It is correct
+             * to use Z_SYNC_FLUSH in this case and not Z_FINISH as in the
+             * deflate case. In the inflate case Z_FINISH requires to have a
+             * large enough output buffer to put ALL data in otherwise it
+             * fails, whereas in the deflate case you can empty a filled output
+             * buffer and call it again until no more output can be created.
+             */
+            flush_libz_buffer(ctx, c, f->c->bucket_alloc, inflate, Z_SYNC_FLUSH,
+                              UPDATE_CRC);
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "Zlib: Inflated %ld to %ld : URL %s",
+                          ctx->stream.total_in, ctx->stream.total_out, r->uri);
+
+            if (ctx->validation_buffer_length == VALIDATION_SIZE) {
+                unsigned long compCRC, compLen;
+                compCRC = getLong(ctx->validation_buffer);
+                if (ctx->crc != compCRC) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                  "Zlib: Checksum of inflated stream invalid");
+                    return APR_EGENERAL;
+                }
+                ctx->validation_buffer += VALIDATION_SIZE / 2;
+                compLen = getLong(ctx->validation_buffer);
+                if (ctx->stream.total_out != compLen) {
+                    ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                                  "Zlib: Length of inflated stream invalid");
+                    return APR_EGENERAL;
+                }
+            }
+            else {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                              "Inflate error %d on flush", zRC);
-                inflateEnd(&ctx->stream);
+                              "Zlib: Validation bytes not present");
                 return APR_EGENERAL;
             }
 
-            ctx->stream.next_out = ctx->buffer;
-            len = c->bufferSize - ctx->stream.avail_out;
+            inflateEnd(&ctx->stream);
+            /* No need for cleanup any longer */
+            apr_pool_cleanup_kill(r->pool, ctx, deflate_ctx_cleanup);
 
-            ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-            tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                             NULL, f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
-            ctx->stream.avail_out = c->bufferSize;
+            /* Remove EOS from the old list, and insert into the new. */
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
 
-            /* Move everything to the returning brigade. */
-            APR_BUCKET_REMOVE(bkt);
-            break;
+            /*
+             * Okay, we've seen the EOS.
+             * Time to pass it along down the chain.
+             */
+            return ap_pass_brigade(f->next, ctx->bb);
+        }
+
+        if (APR_BUCKET_IS_FLUSH(e)) {
+            apr_status_t rv;
+
+            /* flush the remaining data from the zlib buffers */
+            zRC = flush_libz_buffer(ctx, c, f->c->bucket_alloc, inflate,
+                                    Z_SYNC_FLUSH, UPDATE_CRC);
+            if (zRC != Z_OK) {
+                return APR_EGENERAL;
+            }
+
+            /* Remove flush bucket from old brigade anf insert into the new. */
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
+            rv = ap_pass_brigade(f->next, ctx->bb);
+            if (rv != APR_SUCCESS) {
+                return rv;
+            }
+            continue;
         }
 
         /* read */
-        apr_bucket_read(bkt, &data, &len, APR_BLOCK_READ);
+        apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
 
         /* first bucket contains zlib header */
-        if (!deflate_init++) {
+        if (!inflate_init++) {
             if (len < 10) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Insufficient data for inflate");
@@ -1010,84 +1139,92 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         ctx->stream.next_in = (unsigned char *)data;
         ctx->stream.avail_in = len;
 
+        if (ctx->validation_buffer) {
+            if (ctx->validation_buffer_length < VALIDATION_SIZE) {
+                apr_size_t copy_size;
+
+                copy_size = VALIDATION_SIZE - ctx->validation_buffer_length;
+                if (copy_size > ctx->stream.avail_in)
+                    copy_size = ctx->stream.avail_in;
+                memcpy(ctx->validation_buffer + ctx->validation_buffer_length,
+                       ctx->stream.next_in, copy_size);
+                /* Saved copy_size bytes */
+                ctx->stream.avail_in -= copy_size;
+                ctx->validation_buffer_length += copy_size;
+            }
+            if (ctx->stream.avail_in) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "Zlib: %d bytes of garbage at the end of "
+                              "compressed stream.", ctx->stream.avail_in);
+                /*
+                 * There is nothing worth consuming for zlib left, because it is
+                 * either garbage data or the data has been copied to the
+                 * validation buffer (processing validation data is no business
+                 * for zlib). So set ctx->stream.avail_in to zero to indicate
+                 * this to the following while loop.
+                 */
+                ctx->stream.avail_in = 0;
+            }
+        }
+
         zRC = Z_OK;
 
         while (ctx->stream.avail_in != 0) {
             if (ctx->stream.avail_out == 0) {
-                apr_bucket *tmp_heap;
+
                 ctx->stream.next_out = ctx->buffer;
                 len = c->bufferSize - ctx->stream.avail_out;
 
                 ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-                tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                                  NULL, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
+                b = apr_bucket_heap_create((char *)ctx->buffer, len,
+                                           NULL, f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(ctx->bb, b);
                 ctx->stream.avail_out = c->bufferSize;
+                /* Send what we have right now to the next filter. */
+                rv = ap_pass_brigade(f->next, ctx->bb);
+                if (rv != APR_SUCCESS) {
+                    return rv;
+                }
             }
 
             zRC = inflate(&ctx->stream, Z_NO_FLUSH);
 
             if (zRC == Z_STREAM_END) {
+                /*
+                 * We have inflated all data. Now try to capture the
+                 * validation bytes. We may not have them all available
+                 * right now, but capture what is there.
+                 */
+                ctx->validation_buffer = apr_pcalloc(f->r->pool,
+                                                     VALIDATION_SIZE);
+                if (ctx->stream.avail_in > VALIDATION_SIZE) {
+                    ctx->validation_buffer_length = VALIDATION_SIZE;
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                                  "Zlib: %d bytes of garbage at the end of "
+                                  "compressed stream.",
+                                  ctx->stream.avail_in - VALIDATION_SIZE);
+                } else if (ctx->stream.avail_in > 0) {
+                           ctx->validation_buffer_length = ctx->stream.avail_in;
+                }
+                if (ctx->validation_buffer_length)
+                    memcpy(ctx->validation_buffer, ctx->stream.next_in,
+                           ctx->validation_buffer_length);
                 break;
             }
 
             if (zRC != Z_OK) {
-                    inflateEnd(&ctx->stream);
-                    return APR_EGENERAL;
-            }
-        }
-        if (zRC == Z_STREAM_END) {
-            apr_bucket *tmp_heap, *eos;
-
-            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                          "Zlib: Inflated %ld to %ld : URL %s",
-                          ctx->stream.total_in, ctx->stream.total_out,
-                          r->uri);
-
-            len = c->bufferSize - ctx->stream.avail_out;
-
-            ctx->crc = crc32(ctx->crc, (const Bytef *)ctx->buffer, len);
-            tmp_heap = apr_bucket_heap_create((char *)ctx->buffer, len,
-                                              NULL, f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, tmp_heap);
-            ctx->stream.avail_out = c->bufferSize;
-
-            /* Is the remaining 8 bytes already in the avail stream? */
-            if (ctx->stream.avail_in >= 8) {
-                unsigned long compCRC, compLen;
-                compCRC = getLong(ctx->stream.next_in);
-                if (ctx->crc != compCRC) {
-                    inflateEnd(&ctx->stream);
-                    return APR_EGENERAL;
-                }
-                ctx->stream.next_in += 4;
-                compLen = getLong(ctx->stream.next_in);
-                if (ctx->stream.total_out != compLen) {
-                    inflateEnd(&ctx->stream);
-                    return APR_EGENERAL;
-                }
-            }
-            else {
-                /* FIXME: We need to grab the 8 verification bytes
-                 * from the wire! */
-                inflateEnd(&ctx->stream);
                 return APR_EGENERAL;
             }
-
-            inflateEnd(&ctx->stream);
-
-            eos = apr_bucket_eos_create(f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(ctx->proc_bb, eos);
-            break;
         }
 
+        apr_bucket_delete(e);
     }
 
-    rv = ap_pass_brigade(f->next, ctx->proc_bb);
-    apr_brigade_cleanup(ctx->proc_bb);
-    return rv ;
+    apr_brigade_cleanup(bb);
+    return APR_SUCCESS;
 }
 
+#define PROTO_FLAGS AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH
 static void register_hooks(apr_pool_t *p)
 {
     ap_register_output_filter(deflateFilterName, deflate_out_filter, NULL,

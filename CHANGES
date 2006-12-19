@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.4
 
+  *) mod_deflate: Rework inflate output and deflate output filter to fix several
+     issues: Incorrect handling of flush buckets, potential memory leaks,
+     excessive memory usage in inflate output filter for large compressed
+     content. PR 39854. [Ruediger Pluem, Nick Kew, Justin Erenkrantz]
+
   *) mod_mem_cache: Memory leak fix: Unconditionally free the buffer.
      [Davi Arnaut <davi haxent.com.br>]
 
