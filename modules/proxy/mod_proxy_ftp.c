@@ -763,6 +763,7 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
     apr_status_t rv;
     conn_rec *origin, *data = NULL;
     apr_status_t err = APR_SUCCESS;
+    apr_status_t uerr = APR_SUCCESS;
     apr_bucket_brigade *bb = apr_brigade_create(p, c->bucket_alloc);
     char *buf, *connectname;
     apr_port_t connectport;
@@ -916,7 +917,10 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
                                     address_pool);
     if (worker->is_address_reusable && !worker->cp->addr) {
         worker->cp->addr = connect_addr;
-        PROXY_THREAD_UNLOCK(worker);
+        if ((uerr = PROXY_THREAD_UNLOCK(worker)) != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, uerr, r->server,
+                         "proxy: FTP: unlock");
+        }
     }
     /*
      * get all the possible IP addresses for the destname and loop through
