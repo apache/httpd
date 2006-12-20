@@ -86,13 +86,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://mail-archives.apache.org/mod_mbox//httpd-dev/200609.mbox/%3c1404e5910609091218p84f4d2flc1000764b4966727@mail.gmail.com%3e
       +1: trawick, wrowe, jerenkrantz
 
-    * core: PR#37680
-      Fix NONBLOCK status of listening sockets on restart/graceful
-      http://svn.apache.org/viewvc?view=rev&revision=487901
-      +1: niq, wrowe, rpluem
-          wrowe adds; if use_nonblock was called multi_listeners
-          I woulda +1'ed this on my first readthrough.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
