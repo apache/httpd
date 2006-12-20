@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) core: Fix NONBLOCK status of listening sockets on restart/graceful
-     [Darius Davis <darius-abz free-range.com.au>]
-
   *) mod_proxy_http: Handle request bodies larger than 2 GB by converting
      the Content-Length header of the request correctly. PR 40883.
      [Ruediger Pluem, toadie <toadie643 gmail.com>]
@@ -232,6 +229,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) core: Fix NONBLOCK status of listening sockets on restart/graceful
+     PR 37680.  [Darius Davis <darius-abz free-range.com.au>]
 
   *) mod_deflate: Rework inflate output and deflate output filter to fix several
      issues: Incorrect handling of flush buckets, potential memory leaks,
