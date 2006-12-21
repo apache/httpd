@@ -97,7 +97,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk version works
         http://people.apache.org/~wrowe/mpm_winnt_waits.patch
         is easier to read (-U8)
-      +1: mturk, wrowe
+      +1: mturk
+      wrowe notes: WAIT_ABANDONED isn't the actual signal, it should
+        simply loop immediate.  This aspect needs to be revisited,
+        as Roy notes, a patch should have the necessary effect with
+        the minimum lines of code - there's alot of redecorating that's
+        going on in this patch to no net effect.
 
     * Bundled PCRE: backport r381783 from trunk
       Fix brokenness on certain platforms when building with -DDEBUG.
