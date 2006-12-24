@@ -90,6 +90,9 @@ Package=<4>
     Project_Dep_Name mod_authn_dbm
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_authn_core
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_authn_default
     End Project Dependency
     Begin Project Dependency
@@ -740,6 +743,30 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_authn_anon"=.\modules\aaa\mod_authn_anon.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_authn_core"=.\modules\aaa\mod_authn_core.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
