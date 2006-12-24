@@ -563,12 +563,10 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
     conn_rec *c;
     listener_poll_type *pt;
     long conn_id = ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
-    int csd;
     int rc;
     ap_sb_handle_t *sbh;
 
     ap_create_sb_handle(&sbh, p, my_child_num, my_thread_num);
-    apr_os_sock_get(&csd, sock);
 
     if (cs == NULL) {           /* This is a new connection */
 

@@ -532,11 +532,9 @@ static void process_socket(apr_pool_t *p, apr_socket_t *sock, int my_child_num,
 {
     conn_rec *current_conn;
     long conn_id = ID_FROM_CHILD_THREAD(my_child_num, my_thread_num);
-    int csd;
     ap_sb_handle_t *sbh;
 
     ap_create_sb_handle(&sbh, p, my_child_num, my_thread_num);
-    apr_os_sock_get(&csd, sock);
 
     current_conn = ap_run_create_connection(p, ap_server_conf, sock,
                                             conn_id, sbh, bucket_alloc);
