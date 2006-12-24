@@ -56,8 +56,10 @@ extern "C" {
 APR_DECLARE_OPTIONAL_FN(int, ap_satisfies, (request_rec *r));
 
 /* If your module uses ap_satisfies then you MUST add the line
- * below to your module for it to work correctly.
-extern APR_OPTIONAL_FN_TYPE(ap_satisfies) *ap_satisfies;
+ * below to your module for it to work correctly:
+ * APR_OPTIONAL_FN_TYPE(ap_satisfies) *ap_satisfies;
+ * and retrieve the optional function in the optional_fn_retrieve hook.
+ * (See mod_authz_core.c for an example)
  */
 
 typedef enum {
