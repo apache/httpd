@@ -5,6 +5,8 @@ logresolve_LTFLAGS=""
 htdbm_LTFLAGS=""
 ab_LTFLAGS=""
 checkgid_LTFLAGS=""
+htcacheclean_LTFLAGS=""
+httxt2dbm_LTFLAGS=""
 
 AC_ARG_ENABLE(static-support,APACHE_HELP_STRING(--enable-static-support,Build a statically linked version of the support binaries),[
 if test "$enableval" = "yes" ; then
@@ -15,6 +17,8 @@ if test "$enableval" = "yes" ; then
   APR_ADDTO(htdbm_LTFLAGS, [-static])
   APR_ADDTO(ab_LTFLAGS, [-static])
   APR_ADDTO(checkgid_LTFLAGS, [-static])
+  APR_ADDTO(htcacheclean_LTFLAGS, [-static])
+  APR_ADDTO(httxt2dbm_LTFLAGS, [-static])
 fi
 ])
 
@@ -80,6 +84,24 @@ else
 fi
 ])
 APACHE_SUBST(checkgid_LTFLAGS)
+
+AC_ARG_ENABLE(static-htcacheclean,APACHE_HELP_STRING(--enable-static-htcacheclean,Build a statically linked version of htcacheclean),[
+if test "$enableval" = "yes" ; then
+  APR_ADDTO(htcacheclean_LTFLAGS, [-static])
+else
+  APR_REMOVEFROM(htcacheclean_LTFLAGS, [-static])
+fi
+])
+APACHE_SUBST(htcacheclean_LTFLAGS)
+
+AC_ARG_ENABLE(static-httxt2dbm,APACHE_HELP_STRING(--enable-static-httxt2dbm,Build a statically linked version of httxt2dbm),[
+if test "$enableval" = "yes" ; then
+  APR_ADDTO(httxt2dbm_LTFLAGS, [-static])
+else
+  APR_REMOVEFROM(httxt2dbm, [-static])
+fi
+])
+APACHE_SUBST(httxt2dbm_LTFLAGS)
 
 case $host in
     *aix*)
