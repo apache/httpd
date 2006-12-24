@@ -84,10 +84,6 @@ Changes with Apache 2.3.0
   *) mod_proxy: Print the correct error message for erroneous configured
      ProxyPass directives. PR 40439. [serai lans-tv.com]
 
-  *) Allow htcacheclean, httxt2dbm, and fcgistarter to link apr/apr-util
-     statically like the older support programs.
-     [Eric Covener <covener gmail.com>]
-
   *) ap_get_server_version() has been removed.  Third-party modules must 
      now use ap_get_server_banner() or ap_get_server_description().
      [Jeff Trawick]
@@ -229,6 +225,10 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.4
+
+  *) Allow htcacheclean, httxt2dbm, and fcgistarter to link apr/apr-util
+     statically like the older support programs.
+     [Eric Covener <covener gmail.com>]
 
   *) core: Fix NONBLOCK status of listening sockets on restart/graceful
      PR 37680.  [Darius Davis <darius-abz free-range.com.au>]
