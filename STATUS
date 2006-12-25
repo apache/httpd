@@ -189,3 +189,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version works
      +1: rpluem
 
+   * mod_alias: Accept path components (URL part) in Redirects
+       PR: 35314
+     http://svn.apache.org/viewvc?rev=490142&view=rev
+     +1: niq
+
