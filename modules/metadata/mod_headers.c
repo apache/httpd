@@ -305,8 +305,8 @@ static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
     }
     s++; /* skip the % */
 
-    /* Pass through %% as % */
-    if (*s == '%') {
+    /* Pass through %% or % at end of string as % */
+    if ((*s == '%') || (*s == '\0')) {
         tag->func = constant_item;
         tag->arg = "%";
         *sa = ++s;
