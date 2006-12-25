@@ -204,7 +204,10 @@ static const char *add_redirect_internal(cmd_parms *cmd,
     if (ap_is_HTTP_REDIRECT(status)) {
         if (!url)
             return "URL to redirect to is missing";
-        if (!use_regex && !ap_is_url(url))
+        /* PR#35314: we can allow path components here;
+         * they get correctly resolved to full URLs.
+         */
+        if (!use_regex && !ap_is_url(url) && (url[0] != '/'))
             return "Redirect to non-URL";
     }
     else {
