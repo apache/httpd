@@ -194,3 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?rev=490142&view=rev
      +1: niq
 
+   * mod_headers: Allow % at the end of a Header value
+       PR: 36609
+     http://svn.apache.org/viewvc?rev=490156&view=rev
+     +1: niq
