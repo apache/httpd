@@ -566,7 +566,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                      * here.
                      */
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                                  "access to %s failed", r->uri);
+                                  "access to %s failed; stat of '%s' failed.",
+                                  r->uri, r->filename);
                     return r->status = HTTP_FORBIDDEN;
                 }
                 if (thisinfo.filetype == APR_LNK) {
