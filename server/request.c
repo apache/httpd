@@ -556,7 +556,14 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
                 rv = apr_stat(&thisinfo, r->filename,
                               APR_FINFO_MIN | APR_FINFO_NAME | APR_FINFO_LINK,
                               r->pool);
-                if (rv != APR_SUCCESS) {
+                /*
+                 * APR_INCOMPLETE is as fine as result as APR_SUCCESS as we
+                 * have added APR_FINFO_NAME to the wanted parameter of
+                 * apr_stat above. On Unix platforms this means that apr_stat
+                 * is always going to return APR_INCOMPLETE in the case that
+                 * the call to the native stat / lstat did not fail.
+                 */
+                if ((rv != APR_INCOMPLETE) && (rv != APR_SUCCESS)) {
                     /*
                      * This should never happen, because we did a stat on the
                      * same file, resolving a possible symlink several lines
