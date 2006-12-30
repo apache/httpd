@@ -467,6 +467,50 @@ static void trace_add(server_rec *s, request_rec *r, x_cfg *mconfig,
     }
 }
 
+/* 
+ * This utility routine traces the hooks called when the server starts up. 
+ * It leaves a trace in a global variable, so it should not be called from 
+ * a hook handler that runs in a multi-threaded situation. 
+ */
+
+static void trace_startup(apr_pool_t *p, server_rec *s, x_cfg *mconfig, 
+                          const char *note)
+{
+    const char *sofar;
+    char *where, *addon;
+
+#ifdef EXAMPLE_LOG_EACH 
+    example_log_each(p, s, note);
+#endif
+
+    /*
+     * If we weren't passed a configuration record, we can't figure out to
+     * what location this call applies.  This only happens for co-routines
+     * that don't operate in a particular directory or server context.  If we
+     * got a valid record, extract the location (directory or server) to which
+     * it applies.
+     */
+    where = (mconfig != NULL) ? mconfig->loc : "nowhere";
+    where = (where != NULL) ? where : "";
+
+    addon = apr_pstrcat(p,
+                        "   <li>\n"
+                        "    <dl>\n"
+                        "     <dt><samp>", note, "</samp></dt>\n"
+                        "     <dd><samp>[", where, "]</samp></dd>\n"
+                        "    </dl>\n"
+                        "   </li>\n",
+                        NULL);
+
+    /* 
+     * Make sure that we start with a valid string, even if we have never been 
+     * called.  
+     */
+    sofar = (trace == NULL) ? "" : trace;
+    
+    trace = apr_pstrcat(p, sofar, addon, NULL);
+}
+
 
 /*
  * This utility route traces the hooks called as a request is handled. 
@@ -536,7 +580,7 @@ static const char *cmd_example(cmd_parms *cmd, void *mconfig)
      * "Example Wuz Here"
      */
     cfg->local = 1;
-    trace_add(cmd->server, NULL, cfg, "cmd_example()");
+    trace_startup(cmd->pool, cmd->server, cfg, "cmd_example()");
     return NULL;
 }
 
@@ -574,8 +618,9 @@ static void *x_create_dir_config(apr_pool_t *p, char *dirspec)
      */
     dname = (dname != NULL) ? dname : "";
     cfg->loc = apr_pstrcat(p, "DIR(", dname, ")", NULL);
-    note = apr_psprintf(p, "x_create_dir_config(p == 0x%x, dirspec == %s)", p, dirspec);
-    trace_add(NULL, NULL, cfg, note);
+    note = apr_psprintf(p, "x_create_dir_config(p == 0x%x, dirspec == %s)", 
+                        p, dirspec);
+    trace_startup(p, NULL, cfg, note);
     return (void *) cfg;
 }
 
@@ -629,7 +674,7 @@ static void *x_merge_dir_config(apr_pool_t *p, void *parent_conf,
     note = apr_psprintf(p, "x_merge_dir_config(p == 0x%x, parent_conf == " 
                         "0x%x, newloc_conf == 0x%x)", p, parent_conf,
                         newloc_conf);
-    trace_add(NULL, NULL, merged_config, note);
+    trace_startup(p, NULL, merged_config, note);
     return (void *) merged_config;
 }
 
@@ -659,7 +704,7 @@ static void *x_create_server_config(apr_pool_t *p, server_rec *s)
      */
     sname = (sname != NULL) ? sname : "";
     cfg->loc = apr_pstrcat(p, "SVR(", sname, ")", NULL);
-    trace_add(s, NULL, cfg, "x_create_server_config()");
+    trace_startup(p, s, cfg, "x_create_server_config()");
     return (void *) cfg;
 }
 
@@ -699,7 +744,7 @@ static void *x_merge_server_config(apr_pool_t *p, void *server1_conf,
      */
     note = apr_pstrcat(p, "x_merge_server_config(\"", s1conf->loc, "\",\"",
                    s2conf->loc, "\")", NULL);
-    trace_add(NULL, NULL, merged_config, note);
+    trace_startup(p, NULL, merged_config, note);
     return (void *) merged_config;
 }
 
@@ -749,7 +794,7 @@ static int x_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_add(NULL, NULL, NULL, "x_pre_config()");
+    trace_startup(ptemp, NULL, NULL, "x_pre_config()");
 
     return OK;
 }
@@ -771,7 +816,7 @@ static int x_check_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_add(s, NULL, NULL, "x_check_config()");
+    trace_startup(ptemp, s, NULL, "x_check_config()");
     return OK;
 }
 
@@ -791,7 +836,7 @@ static void x_test_config(apr_pool_t *pconf, server_rec *s)
 
     apr_file_printf(out, "Example module configuration test routine\n");
     
-    trace_add(s, NULL, NULL, "x_test_config()");
+    trace_startup(pconf, s, NULL, "x_test_config()");
 }
 
 /*
@@ -808,7 +853,7 @@ static int x_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_add(s, NULL, NULL, "x_open_logs()");
+    trace_startup(ptemp, s, NULL, "x_open_logs()");
     return OK;
 }
 
@@ -828,7 +873,7 @@ static int x_post_config(apr_pool_t *pconf, apr_pool_t *plog,
     /*
      * Log the call and exit.
      */
-    trace_add(s, NULL, NULL, "x_post_config()");
+    trace_startup(ptemp, s, NULL, "x_post_config()");
     return OK;
 }
 
@@ -847,7 +892,7 @@ static apr_status_t x_child_exit(void *data)
      */
     sname = (sname != NULL) ? sname : "";
     note = apr_pstrcat(s->process->pool, "x_child_exit(", sname, ")", NULL);
-    trace_add(s, NULL, NULL, note);
+    trace_startup(s->process->pool, s, NULL, note);
     return APR_SUCCESS;
 }
 
@@ -871,7 +916,7 @@ static void x_child_init(apr_pool_t *p, server_rec *s)
      */
     sname = (sname != NULL) ? sname : "";
     note = apr_pstrcat(p, "x_child_init(", sname, ")", NULL);
-    trace_add(s, NULL, NULL, note);
+    trace_startup(p, s, NULL, note);
 
     apr_pool_cleanup_register(p, s, x_child_exit, x_child_exit);
 }
