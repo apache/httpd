@@ -96,7 +96,7 @@ typedef struct disk_cache_object {
  */
 /* TODO: Make defaults OS specific */
 #define CACHEFILE_LEN 20        /* must be less than HASH_LEN/2 */
-#define DEFAULT_DIRLEVELS 3
+#define DEFAULT_DIRLEVELS 2
 #define DEFAULT_DIRLENGTH 2
 #define DEFAULT_MIN_FILE_SIZE 1
 #define DEFAULT_MAX_FILE_SIZE 1000000
