@@ -20,15 +20,20 @@
  * http://apache.webthing.com/database/
  */
 
-#include <ctype.h>
+#include "apr_reslist.h"
+#include "apr_strings.h"
+#include "apr_hash.h"
+#include "apr_lib.h"
+#include "apr_dbd.h"
+
+#define APR_WANT_MEMFUNC
+#define APR_WANT_STRFUNC
+#include "apr_want.h"
 
 #include "http_protocol.h"
 #include "http_config.h"
 #include "http_log.h"
 #include "http_request.h"
-#include "apr_reslist.h"
-#include "apr_strings.h"
-#include "apr_dbd.h"
 #include "mod_dbd.h"
 
 extern module AP_MODULE_DECLARE_DATA dbd_module;
@@ -49,6 +54,7 @@ struct dbd_prepared {
 };
 
 typedef struct {
+    server_rec *server;
     const char *name;
     const char *params;
     int persist;
@@ -61,10 +67,10 @@ typedef struct {
     int nkeep;
     int nmax;
     int exptime;
+    int set;
 #else
     ap_dbd_t *rec;
 #endif
-    unsigned int set;
 } svr_cfg;
 
 typedef enum { cmd_name, cmd_params, cmd_persist,
@@ -88,6 +94,7 @@ static void *create_dbd_config(apr_pool_t *pool, server_rec *s)
 {
     svr_cfg *svr = apr_pcalloc(pool, sizeof(svr_cfg));
 
+    svr->server = s;
     svr->name = no_dbdriver; /* to generate meaningful error messages */
     svr->params = ""; /* don't risk segfault on misconfiguration */
     svr->persist = -1;
@@ -107,24 +114,23 @@ static void *merge_dbd_config(apr_pool_t *pool, void *basev, void *addv)
     svr_cfg *add = (svr_cfg*) addv;
     svr_cfg *svr = apr_pcalloc(pool, sizeof(svr_cfg));
 
+    svr->server = add->server;
     svr->name = (add->name != no_dbdriver) ? add->name : base->name;
     svr->params = strcmp(add->params, "") ? add->params : base->params;
-    svr->persist = (add->persist == -1) ? base->persist : add->persist;
+    svr->persist = (add->persist != -1) ? add->persist : base->persist;
 #if APR_HAS_THREADS
     svr->nmin = (add->set&NMIN_SET) ? add->nmin : base->nmin;
     svr->nkeep = (add->set&NKEEP_SET) ? add->nkeep : base->nkeep;
     svr->nmax = (add->set&NMAX_SET) ? add->nmax : base->nmax;
     svr->exptime = (add->set&EXPTIME_SET) ? add->exptime : base->exptime;
 #endif
-    svr->set = add->set | base->set;
-    svr->prepared = (add->prepared != NULL) ? add->prepared : base->prepared;
 
     return svr;
 }
 
 #define ISINT(val) \
         for (p = val; *p; ++p)        \
-                if (!isdigit(*p))        \
+                if (!apr_isdigit(*p))        \
                         return "Argument must be numeric!"
 
 static const char *dbd_param(cmd_parms *cmd, void *dconf, const char *val)
@@ -258,7 +264,7 @@ static int dbd_post_config(apr_pool_t *pconf, apr_pool_t *plog,
 
     for (sp = s; sp; sp = sp->next) {
         svr_cfg *svr = ap_get_module_config(sp->module_config, &dbd_module);
-        const char *key = apr_psprintf(s->process->pool, "%pp", s);
+        const char *key = apr_psprintf(ptemp, "%pp", s);
 
         svr->prepared = apr_hash_get(dbd_prepared_defns, key,
                                      APR_HASH_KEY_STRING);
@@ -321,8 +327,9 @@ static apr_status_t dbd_construct(void **data_ptr,
     /* this pool is mostly so dbd_close can destroy the prepared stmts */
     rv = apr_pool_create(&rec->pool, pool);
     if (rv != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, pool,
-                      "DBD: Failed to create memory pool");
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, svr->server,
+                     "DBD: Failed to create memory pool");
+        return rv;
     }
 
     /* The driver is loaded at config time now, so this just checks a hash.
@@ -334,24 +341,25 @@ static apr_status_t dbd_construct(void **data_ptr,
     if (rv != APR_SUCCESS) {
         switch (rv) {
         case APR_ENOTIMPL:
-            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, rec->pool,
-                          "DBD: driver for %s not available", svr->name);
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, svr->server,
+                         "DBD: driver for %s not available", svr->name);
             break;
         case APR_EDSOOPEN:
-            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, rec->pool,
-                          "DBD: can't find driver for %s", svr->name);
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, svr->server,
+                         "DBD: can't find driver for %s", svr->name);
             break;
         case APR_ESYMNOTFOUND:
-            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, rec->pool,
-                          "DBD: driver for %s is invalid or corrupted",
-                          svr->name);
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, svr->server,
+                         "DBD: driver for %s is invalid or corrupted",
+                         svr->name);
             break;
         default:
-            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, rec->pool,
-                          "DBD: mod_dbd not compatible with APR in get_driver");
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, svr->server,
+                         "DBD: mod_dbd not compatible with APR in get_driver");
             break;
         }
 
+        apr_pool_destroy(rec->pool);
         return rv;
     }
 
@@ -359,33 +367,39 @@ static apr_status_t dbd_construct(void **data_ptr,
     if (rv != APR_SUCCESS) {
         switch (rv) {
         case APR_EGENERAL:
-            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, rec->pool,
-                          "DBD: Can't connect to %s", svr->name);
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, svr->server,
+                         "DBD: Can't connect to %s", svr->name);
             break;
         default:
-            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, rec->pool,
-                          "DBD: mod_dbd not compatible with APR in open");
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, svr->server,
+                         "DBD: mod_dbd not compatible with APR in open");
             break;
         }
 
+        apr_pool_destroy(rec->pool);
+        return rv;
+    }
+
+    rv = dbd_prepared_init(rec->pool, svr, rec);
+    if (rv != APR_SUCCESS) {
+        const char *errmsg = apr_dbd_error(rec->driver, rec->handle, rv);
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, svr->server,
+                     "DBD: failed to prepare SQL statements: %s",
+                     (errmsg ? errmsg : "[???]"));
+
+        apr_dbd_close(rec->driver, rec->handle);
+        apr_pool_destroy(rec->pool);
         return rv;
     }
 
     *data_ptr = rec;
 
-    rv = dbd_prepared_init(rec->pool, svr, rec);
-    if (rv != APR_SUCCESS) {
-        const char *errmsg = apr_dbd_error(rec->driver, rec->handle, rv);
-        ap_log_perror(APLOG_MARK, APLOG_ERR, rv, rec->pool,
-                      "DBD: failed to prepare SQL statements: %s",
-                      (errmsg ? errmsg : "[???]"));
-    }
-
-    return rv;
+    return APR_SUCCESS;
 }
 
 #if APR_HAS_THREADS
-static apr_status_t dbd_setup(apr_pool_t *pool, svr_cfg *svr)
+static apr_status_t dbd_setup(apr_pool_t *pool, server_rec *s,
+                              svr_cfg *svr)
 {
     apr_status_t rv;
 
@@ -397,8 +411,8 @@ static apr_status_t dbd_setup(apr_pool_t *pool, svr_cfg *svr)
      */
     rv = apr_pool_create(&svr->pool, pool);
     if (rv != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, pool,
-                      "DBD: Failed to create reslist memory pool");
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                     "DBD: Failed to create reslist memory pool");
         return rv;
     }
 
@@ -407,19 +421,14 @@ static apr_status_t dbd_setup(apr_pool_t *pool, svr_cfg *svr)
                             apr_time_from_sec(svr->exptime),
                             dbd_construct, dbd_destruct, svr,
                             svr->pool);
-    if (rv == APR_SUCCESS) {
-        apr_pool_cleanup_register(svr->pool, svr->reslist,
-                                  (apr_status_t (*)(void*)) apr_reslist_destroy,
-                                  apr_pool_cleanup_null);
-    }
-    else {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, rv, svr->pool,
-                      "DBD: failed to initialise");
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     "DBD: failed to initialise");
         apr_pool_destroy(svr->pool);
-        svr->pool = NULL;
+        return rv;
     }
 
-    return rv;
+    return APR_SUCCESS;
 }
 
 static apr_status_t dbd_setup_init(apr_pool_t *pool, server_rec *s)
@@ -440,7 +449,7 @@ static apr_status_t dbd_setup_init(apr_pool_t *pool, server_rec *s)
         return APR_SUCCESS;
     }
 
-    rv = dbd_setup(pool, svr);
+    rv = dbd_setup(pool, s, svr);
     if (rv == APR_SUCCESS) {
         return rv;
     }
@@ -451,16 +460,16 @@ static apr_status_t dbd_setup_init(apr_pool_t *pool, server_rec *s)
     rv = apr_thread_mutex_create(&svr->mutex,
                                  APR_THREAD_MUTEX_DEFAULT, pool);
     if (rv != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_CRIT, rv, pool,
-                      "DBD: Failed to create thread mutex");
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                     "DBD: Failed to create thread mutex");
     }
 
     return rv;
 }
 
-static apr_status_t dbd_setup_lock(apr_pool_t *pool, server_rec *s)
+static apr_status_t dbd_setup_lock(apr_pool_t *pool, server_rec *s,
+                                   svr_cfg *svr)
 {
-    svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
     apr_status_t rv = APR_SUCCESS, rv2;
 
     /* several threads could be here at the same time, all trying to
@@ -473,19 +482,19 @@ static apr_status_t dbd_setup_lock(apr_pool_t *pool, server_rec *s)
 
     rv2 = apr_thread_mutex_lock(svr->mutex);
     if (rv2 != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, rv2, pool,
-                      "DBD: Failed to acquire thread mutex");
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv2, s,
+                     "DBD: Failed to acquire thread mutex");
         return rv2;
     }
 
     if (!svr->reslist) {
-        rv = dbd_setup(s->process->pool, svr);
+        rv = dbd_setup(s->process->pool, s, svr);
     }
 
     rv2 = apr_thread_mutex_unlock(svr->mutex);
     if (rv2 != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, rv2, pool,
-                      "DBD: Failed to release thread mutex");
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv2, s,
+                     "DBD: Failed to release thread mutex");
         if (rv == APR_SUCCESS) {
             rv = rv2;
         }
@@ -513,102 +522,91 @@ DBD_DECLARE_NONSTD(void) ap_dbd_close(server_rec *s, ap_dbd_t *rec)
 #endif
 }
 
-#define arec ((ap_dbd_t*)rec)
+static apr_status_t dbd_check(apr_pool_t *pool, server_rec *s, ap_dbd_t *rec)
+{
+    svr_cfg *svr;
+    apr_status_t rv = apr_dbd_check_conn(rec->driver, pool, rec->handle);
+    const char *errmsg;
 
-#if APR_HAS_THREADS
+    if ((rv == APR_SUCCESS) || (rv == APR_ENOTIMPL)) {
+        return APR_SUCCESS;
+    }
+
+    errmsg = apr_dbd_error(rec->driver, rec->handle, rv);
+    if (!errmsg) {
+        errmsg = "(unknown)";
+    }
+
+    svr = ap_get_module_config(s->module_config, &dbd_module);
+    ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                 "DBD [%s] Error: %s", svr->name, errmsg);
+    return rv;
+}
+
 DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
 {
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
-    void *rec = NULL;
-    apr_status_t rv = APR_SUCCESS;
-    const char *errmsg;
+    ap_dbd_t *rec = NULL;
+#if APR_HAS_THREADS
+    apr_status_t rv;
+#endif
 
     /* If nothing is configured, we shouldn't be here */
     if (svr->name == no_dbdriver) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool, "DBD: not configured");
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "DBD: not configured");
         return NULL;
     }
 
     if (!svr->persist) {
         /* Return a once-only connection */
-        rv = dbd_construct(&rec, svr, s->process->pool);
-        return (rv == APR_SUCCESS) ? arec : NULL;
+        dbd_construct((void**) &rec, svr, s->process->pool);
+        return rec;
     }
 
+#if APR_HAS_THREADS
     if (!svr->reslist) {
-        if (dbd_setup_lock(pool, s) != APR_SUCCESS) {
+        if (dbd_setup_lock(pool, s, svr) != APR_SUCCESS) {
             return NULL;
         }
     }
 
-    rv = apr_reslist_acquire(svr->reslist, &rec);
+    rv = apr_reslist_acquire(svr->reslist, (void**) &rec);
     if (rv != APR_SUCCESS) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, rv, pool,
-                      "Failed to acquire DBD connection from pool!");
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                     "Failed to acquire DBD connection from pool!");
         return NULL;
     }
 
-    rv = apr_dbd_check_conn(arec->driver, pool, arec->handle);
-    if ((rv != APR_SUCCESS) && (rv != APR_ENOTIMPL)) {
-        errmsg = apr_dbd_error(arec->driver, arec->handle, rv);
-        if (!errmsg) {
-            errmsg = "(unknown)";
-        }
-        ap_log_perror(APLOG_MARK, APLOG_ERR, rv, pool,
-                      "DBD [%s] Error: %s", svr->name, errmsg );
+    if (dbd_check(pool, s, rec) != APR_SUCCESS) {
         apr_reslist_invalidate(svr->reslist, rec);
         return NULL;
     }
-    return arec;
-}
 #else
-DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
-{
-    svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
-    void *rec = NULL;
-    apr_status_t rv = APR_SUCCESS;
-    const char *errmsg;
-
-    /* If nothing is configured, we shouldn't be here */
-    if (svr->name == no_dbdriver) {
-        ap_log_perror(APLOG_MARK, APLOG_ERR, 0, pool, "DBD: not configured");
-        return NULL;
-    }
-
-    if (!svr->persist) {
-        /* Return a once-only connection */
-        rv = dbd_construct(&rec, svr, s->process->pool);
-        return (rv == APR_SUCCESS) ? arec : NULL;
-    }
-
     /* If we have a persistent connection and it's good, we'll use it;
      * since this is non-threaded, we can update without a mutex
      */
-    if (svr->rec) {
-        rv = apr_dbd_check_conn(svr->rec->driver, pool, svr->rec->handle);
-        if ((rv != APR_SUCCESS) && (rv != APR_ENOTIMPL)) {
-            errmsg = apr_dbd_error(arec->driver, arec->handle, rv);
-            if (!errmsg) {
-                errmsg = "(unknown)";
-            }
-            ap_log_perror(APLOG_MARK, APLOG_ERR, rv, pool,
-                          "DBD [%s] Error: %s", svr->name, errmsg);
-            svr->rec = NULL;
+    rec = svr->rec;
+    if (rec) { 
+        if (dbd_check(pool, s, rec) != APR_SUCCESS) {
+            apr_pool_cleanup_run(s->process->pool, rec, dbd_close);
+            rec = NULL;
         }
     }
 
     /* We don't have a connection right now, so we'll open one */
-    if (!svr->rec) {
-        if (dbd_construct(&rec, svr, s->process->pool) == APR_SUCCESS) {
-            svr->rec = arec ;
-            apr_pool_cleanup_register(s->process->pool, svr->rec,
+    if (!rec) {
+        dbd_construct((void**) &rec, svr, s->process->pool);
+        svr->rec = rec;
+
+        if (rec) {
+            apr_pool_cleanup_register(s->process->pool, rec,
                                       dbd_close, apr_pool_cleanup_null);
         }
     }
-
-    return svr->rec;
-}
 #endif
+
+    return rec;
+}
 
 #if APR_HAS_THREADS
 typedef struct {
@@ -710,7 +708,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
             ap_set_module_config(r->request_config, &dbd_module, rec);
             /* if persist then ap_dbd_open registered cleanup on proc pool */
             if (!svr->persist) {
-                apr_pool_cleanup_register(r->pool, svr->rec, dbd_close,
+                apr_pool_cleanup_register(r->pool, rec, dbd_close,
                                           apr_pool_cleanup_null);
             }
         }
@@ -732,7 +730,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
             ap_set_module_config(c->conn_config, &dbd_module, rec);
             /* if persist then ap_dbd_open registered cleanup on proc pool */
             if (!svr->persist) {
-                apr_pool_cleanup_register(c->pool, svr->rec, dbd_close,
+                apr_pool_cleanup_register(c->pool, rec, dbd_close,
                                           apr_pool_cleanup_null);
             }
         }
