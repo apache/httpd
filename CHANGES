@@ -2,6 +2,13 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_dbd: Handle error conditions in dbd_construct() properly.
+     Simplify ap_dbd_open() and use correct arguments to apr_dbd_error()
+     when non-threaded.  Register correct cleanup data in non-threaded
+     ap_dbd_acquire() and ap_dbd_cacquire().  Clean up configuration data
+     and merge function.  Use ap_log_error() wherever possible.
+     [Chris Darroch, Nick Kew]
+
   *) mod_proxy_http: Handle request bodies larger than 2 GB by converting
      the Content-Length header of the request correctly. PR 40883.
      [Ruediger Pluem, toadie <toadie643 gmail.com>]
