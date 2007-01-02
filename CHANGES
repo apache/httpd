@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) netware MPM: Destroy pmain pool when exiting ap_mpm_run() so that
+     cleanups registered in modules' child_init hooks are performed.
+     [Chris Darroch]
+
   *) mod_dbd: Handle error conditions in dbd_construct() properly.
      Simplify ap_dbd_open() and use correct arguments to apr_dbd_error()
      when non-threaded.  Register correct cleanup data in non-threaded
