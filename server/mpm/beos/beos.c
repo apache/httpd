@@ -102,6 +102,7 @@ static int mpm_state = AP_MPMQ_STARTING;
 apr_thread_mutex_t *accept_mutex = NULL;
 
 static apr_pool_t *pconf;    /* Pool for config stuff */
+static apr_pool_t *pmain;    /* Pool for httpd child stuff */
 
 static int server_pid;
 
@@ -144,6 +145,14 @@ static void clean_child_exit(int code, int slot)
                                                (request_rec*)NULL);
     ap_scoreboard_image->servers[0][slot].tid = 0;
     exit_thread(code);
+}
+
+/* proper cleanup when returning from ap_mpm_run() */
+static void mpm_main_cleanup(void)
+{
+    if (pmain) {
+        apr_pool_destroy(pmain);
+    }
 }
 
 
@@ -898,6 +907,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
 
     set_signals();
 
+    apr_pool_create(&pmain, pconf);
+    ap_run_child_init(pmain, ap_server_conf);
+
     /* Sanity checks to avoid thrashing... */
     if (max_spare_threads < min_spare_threads )
         max_spare_threads = min_spare_threads;
@@ -972,6 +984,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
     }
 
     if (one_process) {
+        mpm_main_cleanup();
         return 1;
     }
 
@@ -995,6 +1008,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                          "caught SIGTERM, shutting down");
         }
 
+        mpm_main_cleanup();
         return 1;
     }
 
@@ -1020,6 +1034,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
      */
     apr_thread_mutex_destroy(accept_mutex);
 
+    mpm_main_cleanup();
     return 0;
 }
 

@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) beos MPM: Create pmain pool and run modules' child_init hooks when
+     entering ap_mpm_run(), then destroy pmain when exiting ap_mpm_run().
+     [Chris Darroch]
+
   *) netware MPM: Destroy pmain pool when exiting ap_mpm_run() so that
      cleanups registered in modules' child_init hooks are performed.
      [Chris Darroch]
