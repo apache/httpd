@@ -212,3 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=492333
      +1: wrowe
 
+   * mod_isapi: Simple fix to correctly parse if request is https.
+       Submitted by: Matt Eaton <asf divinehawk.com>
+     Patch applies to 2.2 and 2.0 as-is:
+     http://svn.apache.org/viewvc?view=rev&revision=492341
