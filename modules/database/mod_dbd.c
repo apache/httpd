@@ -128,14 +128,18 @@ static void *merge_dbd_config(apr_pool_t *pool, void *basev, void *addv)
     return svr;
 }
 
-#define ISINT(val) \
-        for (p = val; *p; ++p)        \
-                if (!apr_isdigit(*p))        \
-                        return "Argument must be numeric!"
+#define ISINT(val) do {                                                 \
+        const char *p;                                                  \
+                                                                        \
+        for (p = val; *p; ++p) {                                        \
+            if (!apr_isdigit(*p)) {                                     \
+                return "Argument must be numeric!";                     \
+            }                                                           \
+        }                                                               \
+    } while (0)
 
 static const char *dbd_param(cmd_parms *cmd, void *dconf, const char *val)
 {
-    const char *p;
     const apr_dbd_driver_t *driver = NULL;
     svr_cfg *svr = ap_get_module_config(cmd->server->module_config,
                                         &dbd_module);
@@ -559,7 +563,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
 
     if (!svr->persist) {
         /* Return a once-only connection */
-        dbd_construct((void**) &rec, svr, s->process->pool);
+        dbd_construct((void*) &rec, svr, s->process->pool);
         return rec;
     }
 
@@ -570,7 +574,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
         }
     }
 
-    rv = apr_reslist_acquire(svr->reslist, (void**) &rec);
+    rv = apr_reslist_acquire(svr->reslist, (void*) &rec);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "Failed to acquire DBD connection from pool!");
@@ -595,7 +599,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
 
     /* We don't have a connection right now, so we'll open one */
     if (!rec) {
-        dbd_construct((void**) &rec, svr, s->process->pool);
+        dbd_construct((void*) &rec, svr, s->process->pool);
         svr->rec = rec;
 
         if (rec) {
