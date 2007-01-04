@@ -345,127 +345,6 @@ static void example_log_each(apr_pool_t *p, server_rec *s, const char *note)
     }
 }
 
-/*
- * This routine is used to add a trace of a callback to the list.  We're
- * passed the server record (if available), the request record (if available),
- * a pointer to our private configuration record (if available) for the
- * environment to which the callback is supposed to apply, and some text.  We
- * turn this into a textual representation and add it to the tail of the list.
- * The list can be displayed by the x_handler() routine.
- *
- * If the call occurs within a request context (i.e., we're passed a request
- * record), we put the trace into the request apr_pool_t and attach it to the
- * request via the notes mechanism.  Otherwise, the trace gets added
- * to the static (non-request-specific) list.
- *
- * Note that the r->notes table is only for storing strings; if you need to
- * maintain per-request data of any other type, you need to use another
- * mechanism.
- */
-
-#define TRACE_NOTE "example-trace"
-
-static void trace_add(server_rec *s, request_rec *r, x_cfg *mconfig,
-                      const char *note)
-{
-    const char *sofar;
-    char *addon;
-    char *where;
-    apr_pool_t *p;
-    const char *trace_copy;
-
-    /*
-     * Make sure our pools and tables are set up - we need 'em.
-     */
-    setup_module_cells();
-    /*
-     * Now, if we're in request-context, we use the request pool.
-     */
-    if (r != NULL) {
-        p = r->pool;
-        if ((trace_copy = apr_table_get(r->notes, TRACE_NOTE)) == NULL) {
-            trace_copy = "";
-        }
-    }
-    else {
-        /*
-         * We're not in request context, so the trace gets attached to our
-         * module-wide pool.  We do the create/destroy every time we're called
-         * in non-request context; this avoids leaking memory in some of
-         * the subsequent calls that allocate memory only once (such as the
-         * key formation below).
-         *
-         * Make a new sub-pool and copy any existing trace to it.  Point the
-         * trace cell at the copied value.
-         */
-        apr_pool_create(&p, x_pool);
-        if (trace != NULL) {
-            trace = apr_pstrdup(p, trace);
-        }
-        /*
-         * Now, if we have a sub-pool from before, nuke it and replace with
-         * the one we just allocated.
-         */
-        if (x_subpool != NULL) {
-            apr_pool_destroy(x_subpool);
-        }
-        x_subpool = p;
-        trace_copy = trace;
-    }
-
-#ifdef EXAMPLE_LOG_EACH 
-    example_log_each(p, s, note);
-#endif
-
-    /*
-     * If we weren't passed a configuration record, we can't figure out to
-     * what location this call applies.  This only happens for co-routines
-     * that don't operate in a particular directory or server context.  If we
-     * got a valid record, extract the location (directory or server) to which
-     * it applies.
-     */
-    where = (mconfig != NULL) ? mconfig->loc : "nowhere";
-    where = (where != NULL) ? where : "";
-    /*
-     * Now, if we're not in request context, see if we've been called with
-     * this particular combination before.  The apr_table_t is allocated in the
-     * module's private pool, which doesn't get destroyed.
-     */
-    if (r == NULL) {
-        char *key;
-
-        key = apr_pstrcat(p, note, ":", where, NULL);
-        if (apr_table_get(static_calls_made, key) != NULL) {
-            /*
-             * Been here, done this.
-             */
-            return;
-        }
-        else {
-            /*
-             * First time for this combination of routine and environment -
-             * log it so we don't do it again.
-             */
-            apr_table_set(static_calls_made, key, "been here");
-        }
-    }
-    addon = apr_pstrcat(p,
-                        "   <li>\n"
-                        "    <dl>\n"
-                        "     <dt><samp>", note, "</samp></dt>\n"
-                        "     <dd><samp>[", where, "]</samp></dd>\n"
-                        "    </dl>\n"
-                        "   </li>\n",
-                        NULL);
-    sofar = (trace_copy == NULL) ? "" : trace_copy;
-    trace_copy = apr_pstrcat(p, sofar, addon, NULL);
-    if (r != NULL) {
-        apr_table_set(r->notes, TRACE_NOTE, trace_copy);
-    }
-    else {
-        trace = trace_copy;
-    }
-}
 
 /* 
  * This utility routine traces the hooks called when the server starts up. 
@@ -479,7 +358,7 @@ static void trace_startup(apr_pool_t *p, server_rec *s, x_cfg *mconfig,
     const char *sofar;
     char *where, *addon;
 
-#ifdef EXAMPLE_LOG_EACH 
+#if EXAMPLE_LOG_EACH 
     example_log_each(p, s, note);
 #endif
 
@@ -516,6 +395,7 @@ static void trace_startup(apr_pool_t *p, server_rec *s, x_cfg *mconfig,
  * This utility route traces the hooks called as a request is handled. 
  * It takes the current request as argument 
  */
+#define TRACE_NOTE "example-trace"
  
 static void trace_request(const request_rec *r, const char *note)
 {
@@ -523,7 +403,7 @@ static void trace_request(const request_rec *r, const char *note)
     char *addon, *where;
     x_cfg *cfg;
     
-#ifdef EXAMPLE_LOG_EACH
+#if EXAMPLE_LOG_EACH
     example_log_each(r->pool, r->server, note);
 #endif
 
@@ -548,6 +428,80 @@ static void trace_request(const request_rec *r, const char *note)
     trace_copy = apr_pstrcat(r->pool, sofar, addon, NULL);
     apr_table_set(r->notes, TRACE_NOTE, trace_copy);
 }
+
+/*
+ * This utility routine traces the hooks called while processing a 
+ * Connection. Its trace is kept in the pool notes of the pool associated 
+ * with the Connection.
+ */
+
+/* 
+ * Key to get and set the userdata.  We should be able to get away
+ * with a constant key, since in prefork mode the process will have
+ * the connection and its pool to itself entirely, and in
+ * multi-threaded mode each connection will have its own pool.
+ */
+#define CONN_NOTE "example-connection"
+
+static void trace_connection(conn_rec *c, const char *note) 
+{
+    const char *trace_copy, *sofar;
+    char *addon, *where;
+    void *data;
+    x_cfg *cfg;
+
+#if EXAMPLE_LOG_EACH
+    example_log_each(c->pool, c->base_server, note);
+#endif
+
+    cfg = our_cconfig(c);
+
+    where = (cfg != NULL) ? cfg->loc : "nowhere";
+    where = (where != NULL) ? where : "";
+    
+    addon = apr_pstrcat(c->pool, 
+                        "   <li>\n"
+                        "    <dl>\n"
+                        "     <dt><samp>", note, "</samp></dt>\n"
+                        "     <dd><samp>[", where, "]</samp></dd>\n"
+                        "    </dl>\n"
+                        "   </li>\n",
+                        NULL);
+
+    /* Find existing notes and copy */
+    apr_pool_userdata_get(&data, CONN_NOTE, c->pool);
+    sofar = (data == NULL) ? "" : (const char *) data;
+
+    /* Tack addon onto copy */
+    trace_copy = apr_pstrcat(c->pool, sofar, addon, NULL);
+
+    /* 
+     * Stash copy back into pool notes.  This call has a cleanup
+     * parameter, but we're not using it because the string has been
+     * allocated from that same pool.  There is also an unused return
+     * value: we have nowhere to communicate any error that might
+     * occur, and will have to check for the existence of this data on
+     * the other end.
+     */
+    apr_pool_userdata_set((const void *) trace_copy, CONN_NOTE, 
+                          NULL, c->pool);
+}
+
+static void trace_nocontext(apr_pool_t *p, const char *file, int line, 
+                            const char *note)
+{
+    /* 
+     * Since we have no request or connection to trace, or any idea
+     * from where this routine was called, there's really not much we
+     * can do.  If we are not logging everything by way of the
+     * EXAMPLE_LOG_EACH constant, do nothing in this routine.
+     */
+
+#ifdef EXAMPLE_LOG_EACH
+    ap_log_perror(file, line, APLOG_NOTICE, 0, p, note);
+#endif
+}
+
 
 /*--------------------------------------------------------------------------*/
 /* We prototyped the various syntax for command handlers (routines that     */
@@ -1029,7 +983,9 @@ static int x_handler(request_rec *r)
 {
     x_cfg *dcfg;
     int result;
-    char *note;
+    char *note, *conn_trace; 
+    void *conn_data;
+    apr_status_t status;
 
     dcfg = our_dconfig(r);
     /* 
@@ -1098,8 +1054,19 @@ static int x_handler(request_rec *r)
     ap_rputs("  indicates a location in the URL or filesystem\n", r);
     ap_rputs("  namespace.\n", r);
     ap_rputs("  </P>\n", r);
-    ap_rprintf(r, "  <H2>Static callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
+    ap_rprintf(r, "  <H2>Startup callbacks so far:</H2>\n  <OL>\n%s  </OL>\n",
             trace);
+    ap_rputs("  <H2>Connection-specific callbacks so far:</H2>\n", r);
+
+    status =  apr_pool_userdata_get(&conn_data, CONN_NOTE, 
+                                    r->connection->pool);
+    if ((status == APR_SUCCESS) && conn_data) {
+        ap_rprintf(r, "  <OL>\n%s  </OL>\n", (char *) conn_data);
+    } else {
+        ap_rputs("  <P>No connection-specific callback information was "
+                 "retrieved.</P>\n", r);
+    }
+
     ap_rputs("  <H2>Request-specific callbacks so far:</H2>\n", r);
     ap_rprintf(r, "  <OL>\n%s  </OL>\n", apr_table_get(r->notes, TRACE_NOTE));
     ap_rputs("  <H2>Environment for <EM>this</EM> call:</H2>\n", r);
@@ -1159,13 +1126,16 @@ static int x_quick_handler(request_rec *r, int lookup_uri)
 static int x_pre_connection(conn_rec *c, void *csd)
 {
     x_cfg *cfg;
+    char *note; 
 
     cfg = our_cconfig(c);
 
     /*
      * Log the call and exit.
      */
-    trace_add(NULL, NULL, cfg, "x_pre_connection()");
+    note = apr_psprintf(c->pool, "x_pre_connection(c = %x, p = %x)", 
+                        c, c->pool);
+    trace_connection(c, note);
 
     return OK;
 }
@@ -1183,7 +1153,7 @@ static int x_process_connection(conn_rec *c)
     x_cfg *cfg;
     cfg = our_cconfig(c);
     
-    trace_add(NULL, NULL, cfg, "x_process_connection()");
+    trace_connection(c, "x_process_connection()");
     
     return DECLINED;
 }
@@ -1386,7 +1356,7 @@ static conn_rec *x_create_connection(apr_pool_t *p, server_rec *server,
                                      apr_socket_t *csd, long conn_id, 
                                      void *sbh, apr_bucket_alloc_t *alloc) 
 {
-    trace_add(server, NULL, NULL, "x_create_connection()");
+    trace_nocontext(p, __FILE__, __LINE__, "x_create_connection()");
     return NULL; 
 }
 
@@ -1401,7 +1371,7 @@ static int x_get_mgmt_items(apr_pool_t *p, const char *val, apr_hash_t *ht)
     /* We have nothing to do here but trace the call, and no context
      * in which to trace it.
      */
-    trace_add(NULL, NULL, NULL, "x_check_config()");
+    trace_nocontext(p, __FILE__, __LINE__, "x_check_config()");
     return DECLINED;
 }
 
@@ -1414,11 +1384,11 @@ static int x_get_mgmt_items(apr_pool_t *p, const char *val, apr_hash_t *ht)
  */
 static int x_create_request(request_rec *r)
 {
-    /* We have a request_rec, but it is not filled in enough
-     * to give us a usable configuration. So, add trace with 
-     * NULL pointers. 
+    /* 
+     * We have a request_rec, but it is not filled in enough to give
+     * us a usable configuration. So, add a trace without context.
      */
-    trace_add(NULL, NULL, NULL, "x_create_request()");
+    trace_nocontext( r->pool, __FILE__, __LINE__, "x_create_request()");
     return DECLINED;
 }
 
@@ -1430,7 +1400,7 @@ static int x_create_request(request_rec *r)
  */
 static int x_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
 {
-    trace_add(NULL, NULL, NULL, "x_pre_mpm()");
+    trace_nocontext(p, __FILE__, __LINE__, "x_pre_mpm()");
     return DECLINED;
 }
 
@@ -1442,7 +1412,7 @@ static int x_pre_mpm(apr_pool_t *p, ap_scoreboard_e sb_type)
  */
 static int x_monitor(apr_pool_t *p)
 {
-    trace_add(NULL, NULL, NULL, "x_monitor()");
+    trace_nocontext(p, __FILE__, __LINE__, "x_monitor()");
     return DECLINED;
 }
 
