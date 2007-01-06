@@ -241,6 +241,9 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.4
 
+  *) mod_isapi: Correctly present SERVER_PORT_SECURE.
+     PR: 40573.  [Matt Eaton <asf divinehawk.com>]
+
   *) Allow htcacheclean, httxt2dbm, and fcgistarter to link apr/apr-util
      statically like the older support programs.
      [Eric Covener <covener gmail.com>]
@@ -287,8 +290,8 @@ Changes with Apache 2.2.4
   *) core: Fix issue which could cause piped loggers to be orphaned and never
      terminate after a graceful restart.  PR 40651.  [Joe Orton, Ruediger Pluem]
 
-  *) core: Fix address-in-use startup failure caused by corruption of the list of
-     listen sockets in some configurations with multiple generic Listen
+  *) core: Fix address-in-use startup failure caused by corruption of the list
+     of listen sockets in some configurations with multiple generic Listen
      directives.  [Jeff Trawick]
 
   *) mod_headers: Support regexp-based editing of HTTP headers.  [Nick Kew]
@@ -348,14 +351,16 @@ Changes with Apache 2.2.4
      PR 40323.  [Jeff Trawick]
 
   *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
-     support.  Also corrects the slashes for Windows.  PR 15993.  [William Rowe]
+     support.  Also corrects the slashes for Windows.
+     PR 15993.  [William Rowe]
 
   *) mod_isapi: Handle "HTTP/1.1 200 OK" style status lines correctly, the
      token parser worked while the resulting length was misinterpreted.
      PR 29098.  [Brock Bland <bbland serena.com>]
 
   *) mod_isapi: Return 0 (failure) for more of the various ap_pass_brigade
-     attempts to stream the response at the client.  PR 30022.  [William Rowe]
+     attempts to stream the response at the client.  Log these as well.
+     PR 30022, 40470.  [William Rowe, Matt Eaton <asf divinehawk.com>]
 
   *) mod_isapi: Ensure we walk through all the methods the developer may have
      employed to report their HTTP status result code.
