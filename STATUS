@@ -109,6 +109,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                    but we can re-evaluate for future major/minor revs.
       wrowe: nak niq, ack je; this is a silly debate, fix, push fixes upstream
              and adopt a newer PCRE at trunk/.
+      niq: see http://mail-archives.apache.org/mod_mbox/httpd-dev/200611.mbox/raw/%3c20061108180201.6ad45937@grimnir%3e/
 
     * PKCS#7: backport PCKS#7 patches from trunk.
       +1 ben
