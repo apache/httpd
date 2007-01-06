@@ -1487,7 +1487,7 @@ apr_status_t isapi_handler (request_rec *r)
     ap_add_common_vars(r);
     ap_add_cgi_vars(r);
     apr_table_setn(e, "UNMAPPED_REMOTE_USER", "REMOTE_USER");
-    if ((val = apr_table_get(e, "HTTPS")) && strcmp(val, "on"))
+    if ((val = apr_table_get(e, "HTTPS")) && (strcmp(val, "on") == 0))
         apr_table_setn(e, "SERVER_PORT_SECURE", "1");
     else
         apr_table_setn(e, "SERVER_PORT_SECURE", "0");

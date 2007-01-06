@@ -1,7 +1,23 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.60
 
+  *) mod_isapi: Correctly present SERVER_PORT_SECURE.
+     PR: 40573.  [Matt Eaton <asf divinehawk.com>]
 
+  *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
+     support.  Also corrects the slashes for Windows.  PR 15993. [William Rowe]
+
+  *) mod_isapi: Handle "HTTP/1.1 200 OK" style status lines correctly, the
+     token parser worked while the resulting length was misinterpreted.
+     PR 29098.  [Brock Bland <bbland serena.com>]
+
+  *) mod_isapi: Return 0 (failure) for more of the various ap_pass_brigade
+     attempts to stream the response at the client.  Log these as well.
+     PR 30022, 40470.  [William Rowe, Matt Eaton <asf divinehawk.com>]
+
+  *) mod_isapi: Ensure we walk through all the methods the developer may have
+     employed to report their HTTP status result code.
+     PR 16637 30033 28089.  [Matt Lewandowsky <matt iamcode.net>, William Rowe]
 
 Changes with Apache 2.0.59
 
