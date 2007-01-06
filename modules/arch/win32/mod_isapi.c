@@ -815,7 +815,7 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
     char *buf_data = (char*)buf_ptr;
     apr_bucket_brigade *bb;
     apr_bucket *b;
-    apr_status_t rv;
+    apr_status_t rv = APR_SUCCESS;
 
     if (!cid->headers_set) {
         /* It appears that the foxisapi module and other clients
@@ -841,10 +841,14 @@ int APR_THREAD_FUNC WriteClient(isapi_cid    *cid,
         APR_BRIGADE_INSERT_TAIL(bb, b);
         rv = ap_pass_brigade(r->output_filters, bb);
         cid->response_sent = 1;
+        if (rv != APR_SUCCESS)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                          "ISAPI: WriteClient ap_pass_brigade "
+                          "failed: %s", r->filename);
     }
 
     if ((flags & HSE_IO_ASYNC) && cid->completion) {
-        if (rv == OK) {
+        if (rv == APR_SUCCESS) {
             cid->completion(cid->ecb, cid->completion_arg,
                             *size_arg, ERROR_SUCCESS);
         }
@@ -962,6 +966,11 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             APR_BRIGADE_INSERT_TAIL(bb, b);
             rv = ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
+            if (rv != APR_SUCCESS)
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                              "ISAPI: ServerSupport function "
+                              "HSE_REQ_SEND_RESPONSE_HEADER "
+                              "ap_pass_brigade failed: %s", r->filename);
             return (rv == APR_SUCCESS);
         }
         /* Deliberately hold off sending 'just the headers' to begin to
@@ -1159,13 +1168,18 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         APR_BRIGADE_INSERT_TAIL(bb, b);
         rv = ap_pass_brigade(r->output_filters, bb);
         cid->response_sent = 1;
+        if (rv != APR_SUCCESS)
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                          "ISAPI: ServerSupport function "
+                          "HSE_REQ_TRANSMIT_FILE "
+                          "ap_pass_brigade failed: %s", r->filename);
 
         /* Use tf->pfnHseIO + tf->pContext, or if NULL, then use cid->fnIOComplete
          * pass pContect to the HseIO callback.
          */
         if (tf->dwFlags & HSE_IO_ASYNC) {
             if (tf->pfnHseIO) {
-                if (rv == OK) {
+                if (rv == APR_SUCCESS) {
                     tf->pfnHseIO(cid->ecb, tf->pContext,
                                  ERROR_SUCCESS, sent);
                 }
@@ -1175,7 +1189,7 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
                 }
             }
             else if (cid->completion) {
-                if (rv == OK) {
+                if (rv == APR_SUCCESS) {
                     cid->completion(cid->ecb, cid->completion_arg,
                                     sent, ERROR_SUCCESS);
                 }
@@ -1225,6 +1239,14 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
         }
 
         if ((*data_type & HSE_IO_ASYNC) && cid->completion) {
+            /* XXX: Many authors issue their next HSE_REQ_ASYNC_READ_CLIENT
+             * within the completion logic.  An example is MS's own PSDK
+             * sample web/iis/extensions/io/ASyncRead.  This potentially
+             * leads to stack exhaustion.  To refactor, the notification 
+             * logic needs to move to isapi_handler() - differentiating
+             * the cid->completed event with a new flag to indicate 
+             * an async-notice versus the async request completed.
+             */
             if (res >= 0) {
                 cid->completion(cid->ecb, cid->completion_arg,
                                 read, ERROR_SUCCESS);
@@ -1359,6 +1381,11 @@ int APR_THREAD_FUNC ServerSupportFunction(isapi_cid    *cid,
             APR_BRIGADE_INSERT_TAIL(bb, b);
             rv = ap_pass_brigade(cid->r->output_filters, bb);
             cid->response_sent = 1;
+            if (rv != APR_SUCCESS)
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                              "ISAPI: ServerSupport function "
+                              "HSE_REQ_SEND_RESPONSE_HEADER_EX "
+                              "ap_pass_brigade failed: %s", r->filename);
             return (rv == APR_SUCCESS);
         }
         /* Deliberately hold off sending 'just the headers' to begin to
@@ -1634,21 +1661,23 @@ apr_status_t isapi_handler (request_rec *r)
         case HSE_STATUS_ERROR:
             /* end response if we have yet to do so.
              */
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, apr_get_os_error(), r,
+                          "ISAPI: HSE_STATUS_ERROR result from "
+                          "HttpExtensionProc(): %s", r->filename);
             r->status = HTTP_INTERNAL_SERVER_ERROR;
             break;
 
         default:
-            /* TODO: log unrecognized retval for debugging
-             */
-             ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
-                           "ISAPI: return code %d from HttpExtensionProc() "
-                           "was not not recognized", rv);
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, apr_get_os_error(), r,
+                          "ISAPI: unrecognized result code %d "
+                          "from HttpExtensionProc(): %s ", 
+                          rv, r->filename);
             r->status = HTTP_INTERNAL_SERVER_ERROR;
             break;
     }
 
     /* Flush the response now, including headers-only responses */
-    if (cid->headers_set) {
+    if (cid->headers_set || cid->response_sent) {
         conn_rec *c = r->connection;
         apr_bucket_brigade *bb;
         apr_bucket *b;
@@ -1657,13 +1686,16 @@ apr_status_t isapi_handler (request_rec *r)
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
         b = apr_bucket_eos_create(c->bucket_alloc);
         APR_BRIGADE_INSERT_TAIL(bb, b);
-        b = apr_bucket_flush_create(c->bucket_alloc);
-        APR_BRIGADE_INSERT_TAIL(bb, b);
         rv = ap_pass_brigade(r->output_filters, bb);
         cid->response_sent = 1;
 
-        return (rv == APR_SUCCESS);
-        /* NOT r->status or cid->r->status, even if it has changed. */
+        if (rv != APR_SUCCESS) {
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                          "ISAPI: ap_pass_brigade failed to "
+                          "complete the response: %s ", r->filename);
+        }
+
+        return OK; /* NOT r->status, even if it has changed. */
     }
 
     /* As the client returned no error, and if we did not error out
@@ -1673,8 +1705,8 @@ apr_status_t isapi_handler (request_rec *r)
         r->status = cid->ecb->dwHttpStatusCode;
     }
 
-    /* For all missing-response situations simply return the status.
-     * and let the core deal respond to the client.
+    /* For all missing-response situations simply return the status,
+     * and let the core respond to the client.
      */
     return r->status;
 }
