@@ -91,11 +91,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~wrowe/mpm_winnt_waits.patch
         is easier to read (-U8)
       +1: mturk
-      wrowe notes: WAIT_ABANDONED isn't the actual signal, it should
-        simply loop immediate.  This aspect needs to be revisited,
-        as Roy notes, a patch should have the necessary effect with
-        the minimum lines of code - there's alot of redecorating that's
-        going on in this patch to no net effect.
+      wrowe notes: a patch should have the necessary effect with the
+        minimum lines of code - there's alot of redecorating that's
+        going on in this patch to no net effect.  The WAIT_TIMEOUT
+        result value seems to be ignored in the revised code?
 
     * Bundled PCRE: backport r381783 from trunk
       Fix brokenness on certain platforms when building with -DDEBUG.
