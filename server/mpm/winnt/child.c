@@ -602,9 +602,12 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                 context->accept_socket = INVALID_SOCKET;
                 if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                                 "Child %d: Encountered too many errors accepting client connections. "
-                                 "Possible causes: dynamic address renewal, or incompatible VPN or firewall software. "
-                                 "Try using the Win32DisableAcceptEx directive.", my_pid);
+                                 "Child %d: Encountered too many AcceptEx "
+                                 "faults accepting client connections. "
+                                 "Possible causes: dynamic address renewal, "
+                                 "or incompatible VPN or firewall software. "
+                                 "Try the directive Win32DisableAcceptEx.",
+                                 my_pid);
                     err_count = 0;
                 }
                 continue;
@@ -614,9 +617,11 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                 ++err_count;
                 if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
-                                 "Child %d: Encountered too many errors accepting client connections. "
+                                 "Child %d: Encountered too many AcceptEx "
+                                 "faults accepting client connections. "
                                  "Possible causes: Unknown. "
-                                 "Try using the Win32DisableAcceptEx directive.", my_pid);
+                                 "Try the directive Win32DisableAcceptEx.",
+                                 my_pid);
                     err_count = 0;
                 }
                 closesocket(context->accept_socket);
