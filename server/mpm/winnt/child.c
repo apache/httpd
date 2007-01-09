@@ -127,15 +127,16 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
                 static int reported = 0;
                 if (!reported) {
                     ap_log_error(APLOG_MARK, APLOG_WARNING, 0, ap_server_conf,
-                                 "Server ran out of threads to serve requests. Consider "
-                                 "raising the ThreadsPerChild setting");
+                                 "Server ran out of threads to serve "
+                                 "requests. Consider raising the "
+                                 "ThreadsPerChild setting");
                     reported = 1;
                 }
 
                 /* Wait for a worker to free a context. Once per second, give
                  * the caller a chance to check for shutdown. If the wait
-                 * succeeds, get the context off the queue. It must be available,
-                 * since there's only one consumer.
+                 * succeeds, get the context off the queue. It must be
+                 * available, since there's only one consumer.
                  */
                 rv = WaitForSingleObject(qwait_event, 1000);
                 if (rv == WAIT_OBJECT_0)
@@ -144,20 +145,25 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
                     return NULL;
             } else {
                 /* Allocate another context.
-                 * Note:
-                 * Multiple failures in the next two steps will cause the pchild pool
-                 * to 'leak' storage. I don't think this is worth fixing...
+                 * Note: Multiple failures in the next two steps will cause
+                 * the pchild pool to 'leak' storage. I don't think this
+                 * is worth fixing...
                  */
                 apr_allocator_t *allocator;
 
                 apr_thread_mutex_lock(child_lock);
-                context = (PCOMP_CONTEXT) apr_pcalloc(pchild, sizeof(COMP_CONTEXT));
+                context = (PCOMP_CONTEXT)apr_pcalloc(pchild,
+                                                     sizeof(COMP_CONTEXT));
 
-                context->Overlapped.hEvent = CreateEvent(NULL, TRUE, FALSE, NULL);
+
+                context->Overlapped.hEvent = CreateEvent(NULL, TRUE,
+                                                         FALSE, NULL);
                 if (context->Overlapped.hEvent == NULL) {
                     /* Hopefully this is a temporary condition ... */
-                    ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_os_error(), ap_server_conf,
-                                 "mpm_get_completion_context: CreateEvent failed.");
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_os_error(),
+                                 ap_server_conf,
+                                 "mpm_get_completion_context: "
+                                 "CreateEvent failed.");
 
                     apr_thread_mutex_unlock(child_lock);
                     return NULL;
@@ -166,10 +172,12 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
                 /* Create the tranaction pool */
                 apr_allocator_create(&allocator);
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
-                rv = apr_pool_create_ex(&context->ptrans, pchild, NULL, allocator);
+                rv = apr_pool_create_ex(&context->ptrans, pchild, NULL, 
+                                        allocator);
                 if (rv != APR_SUCCESS) {
-                    ap_log_error(APLOG_MARK,APLOG_WARNING, rv, ap_server_conf,
-                                 "mpm_get_completion_context: Failed to create the transaction pool.");
+                    ap_log_error(APLOG_MARK, APLOG_WARNING, rv, ap_server_conf,
+                                 "mpm_get_completion_context: Failed "
+                                 "to create the transaction pool.");
                     CloseHandle(context->Overlapped.hEvent);
 
                     apr_thread_mutex_unlock(child_lock);
@@ -353,7 +361,8 @@ static unsigned int __stdcall win9x_accept(void * dummy)
             apr_os_sock_get(&nsd, lr->sd);
             FD_SET(nsd, &listenfds);
             ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
-                         "Child %d: Listening on port %d.", my_pid, lr->bind_addr->port);
+                         "Child %d: Listening on port %d.", my_pid, 
+                         lr->bind_addr->port);
         }
     }
 
@@ -367,7 +376,8 @@ static unsigned int __stdcall win9x_accept(void * dummy)
         /* First parameter of select() is ignored on Windows */
         rc = select(0, &main_fds, NULL, NULL, &tv);
 
-        if (rc == 0 || (rc == SOCKET_ERROR && APR_STATUS_IS_EINTR(apr_get_netos_error()))) {
+        if (rc == 0 || ((rc == SOCKET_ERROR)
+                         && APR_STATUS_IS_EINTR(apr_get_netos_error()))) {
             count_select_errors = 0;    /* reset count of errors */
             continue;
         }
@@ -376,13 +386,16 @@ static unsigned int __stdcall win9x_accept(void * dummy)
              * select errors. This count is used to ensure we don't go into
              * a busy loop of continuous errors.
              */
-            ap_log_error(APLOG_MARK, APLOG_INFO, apr_get_netos_error(), ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_INFO, apr_get_netos_error(), 
+                         ap_server_conf,
                          "select failed with error %d", apr_get_netos_error());
             count_select_errors++;
             if (count_select_errors > MAX_SELECT_ERRORS) {
                 shutdown_in_progress = 1;
-                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), ap_server_conf,
-                             "Too many errors in select loop. Child process exiting.");
+                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), 
+                             ap_server_conf,
+                             "Too many errors in select loop. "
+                             "Child process exiting.");
                 break;
             }
         } else {
@@ -402,8 +415,8 @@ static unsigned int __stdcall win9x_accept(void * dummy)
 
         if (csd < 0) {
             if (APR_STATUS_IS_ECONNABORTED(apr_get_netos_error())) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), ap_server_conf,
-                            "accept: (client socket)");
+                ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), 
+                             ap_server_conf, "accept: (client socket)");
             }
         }
         else {
@@ -450,16 +463,16 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         context->sa_server = apr_palloc(context->ptrans, len);
         if (getsockname(context->accept_socket,
                         context->sa_server, &len)== SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
-                         "getsockname failed");
+            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
+                         ap_server_conf, "getsockname failed");
             continue;
         }
         len = salen;
         context->sa_client = apr_palloc(context->ptrans, len);
         if ((getpeername(context->accept_socket,
                          context->sa_client, &len)) == SOCKET_ERROR) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
-                         "getpeername failed");
+            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
+                         ap_server_conf, "getpeername failed");
             memset(&context->sa_client, '\0', sizeof(context->sa_client));
         }
         sockinfo.os_sock = &context->accept_socket;
@@ -506,14 +519,17 @@ static unsigned int __stdcall winnt_accept(void *lr_)
 
 #if APR_HAVE_IPV6
     if (getsockname(nlsd, (struct sockaddr *)&ss_listen, &namelen) == SOCKET_ERROR) {
-        ap_log_error(APLOG_MARK,APLOG_ERR, apr_get_netos_error(), ap_server_conf,
-                    "winnt_accept: getsockname error on listening socket, is IPv6 available?");
+        ap_log_error(APLOG_MARK, APLOG_ERR, apr_get_netos_error(), 
+                     ap_server_conf,
+                     "winnt_accept: getsockname error on listening socket, "
+                     "is IPv6 available?");
         return 1;
    }
 #endif
 
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, ap_server_conf,
-                 "Child %d: Starting thread to listen on port %d.", my_pid, lr->bind_addr->port);
+                 "Child %d: Starting thread to listen on port %d.", 
+                 my_pid, lr->bind_addr->port);
     while (!shutdown_in_progress) {
         if (!context) {
             context = mpm_get_completion_context();
@@ -527,17 +543,20 @@ static unsigned int __stdcall winnt_accept(void *lr_)
         /* Create and initialize the accept socket */
 #if APR_HAVE_IPV6
         if (context->accept_socket == INVALID_SOCKET) {
-            context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, IPPROTO_TCP);
+            context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, 
+                                            IPPROTO_TCP);
             context->socket_family = ss_listen.ss_family;
         }
         else if (context->socket_family != ss_listen.ss_family) {
             closesocket(context->accept_socket);
-            context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, IPPROTO_TCP);
+            context->accept_socket = socket(ss_listen.ss_family, SOCK_STREAM, 
+                                            IPPROTO_TCP);
             context->socket_family = ss_listen.ss_family;
         }
 
         if (context->accept_socket == INVALID_SOCKET) {
-            ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
+                         ap_server_conf,
                          "winnt_accept: Failed to allocate an accept socket. "
                          "Temporary resource constraint? Try again.");
             Sleep(100);
@@ -548,9 +567,11 @@ static unsigned int __stdcall winnt_accept(void *lr_)
             context->accept_socket = socket(AF_INET, SOCK_STREAM, IPPROTO_TCP);
             if (context->accept_socket == INVALID_SOCKET) {
                 /* Another temporary condition? */
-                ap_log_error(APLOG_MARK,APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
-                             "winnt_accept: Failed to allocate an accept socket. "
-                             "Temporary resource constraint? Try again.");
+                ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), 
+                             ap_server_conf,
+                             "winnt_accept: Failed to allocate an accept "
+                             "socket. Temporary resource constraint? "
+                             "Retrying.");
                 Sleep(100);
                 continue;
             }
@@ -592,7 +613,7 @@ static unsigned int __stdcall winnt_accept(void *lr_)
                      (rv != APR_FROM_OS_ERROR(WSA_IO_PENDING))) {
                 ++err_count;
                 if (err_count > MAX_ACCEPTEX_ERR_COUNT) {
-                    ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
+                    ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                                  "Child %d: Encountered too many errors accepting client connections. "
                                  "Possible causes: Unknown. "
                                  "Try using the Win32DisableAcceptEx directive.", my_pid);
@@ -644,7 +665,8 @@ static unsigned int __stdcall winnt_accept(void *lr_)
         if (setsockopt(context->accept_socket, SOL_SOCKET,
                        SO_UPDATE_ACCEPT_CONTEXT, (char *)&nlsd,
                        sizeof(nlsd))) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(), ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_WARNING, apr_get_netos_error(),
+                         ap_server_conf,
                          "setsockopt(SO_UPDATE_ACCEPT_CONTEXT) failed.");
             /* Not a failure condition. Keep running. */
         }
@@ -670,7 +692,8 @@ static unsigned int __stdcall winnt_accept(void *lr_)
          * the ThreadDispatchIOCP. This function could be replaced by
          * mpm_post_completion_context(), but why do an extra function call...
          */
-        PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_CONNECTION_ACCEPTED,
+        PostQueuedCompletionStatus(ThreadDispatchIOCP, 0,
+                                   IOCP_CONNECTION_ACCEPTED,
                                    &context->Overlapped);
         context = NULL;
     }
@@ -703,12 +726,13 @@ static PCOMP_CONTEXT winnt_get_connection(PCOMP_CONTEXT context)
             apr_atomic_dec32(&g_blocked_threads);
             return NULL;
         }
-        rc = GetQueuedCompletionStatus(ThreadDispatchIOCP, &BytesRead, &CompKey,
-                                       &pol, INFINITE);
+        rc = GetQueuedCompletionStatus(ThreadDispatchIOCP, &BytesRead,
+                                       &CompKey, &pol, INFINITE);
         if (!rc) {
             rc = apr_get_os_error();
-            ap_log_error(APLOG_MARK,APLOG_DEBUG, rc, ap_server_conf,
-                             "Child %d: GetQueuedComplationStatus returned %d", my_pid, rc);
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, rc, ap_server_conf,
+                         "Child %d: GetQueuedComplationStatus returned %d",
+                         my_pid, rc);
             continue;
         }
 
@@ -807,7 +831,8 @@ static unsigned int __stdcall worker_main(void *thread_num_val)
 }
 
 
-static void cleanup_thread(HANDLE *handles, int *thread_cnt, int thread_to_clean)
+static void cleanup_thread(HANDLE *handles, int *thread_cnt, 
+                           int thread_to_clean)
 {
     int i;
 
@@ -886,7 +911,8 @@ void child_main(apr_pool_t *pconf)
     max_requests_per_child_event = CreateEvent(NULL, TRUE, FALSE, NULL);
     if (!max_requests_per_child_event) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                     "Child %d: Failed to create a max_requests event.", my_pid);
+                     "Child %d: Failed to create a max_requests event.", 
+                     my_pid);
         exit(APEXIT_CHILDINIT);
     }
     child_events[0] = exit_event;
@@ -903,11 +929,12 @@ void child_main(apr_pool_t *pconf)
      */
     status = apr_proc_mutex_lock(start_mutex);
     if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK,APLOG_ERR, status, ap_server_conf,
-                     "Child %d: Failed to acquire the start_mutex. Process will exit.", my_pid);
+        ap_log_error(APLOG_MARK, APLOG_ERR, status, ap_server_conf,
+                     "Child %d: Failed to acquire the start_mutex. "
+                     "Process will exit.", my_pid);
         exit(APEXIT_CHILDINIT);
     }
-    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Child %d: Acquired the start mutex.", my_pid);
 
     /*
@@ -917,13 +944,12 @@ void child_main(apr_pool_t *pconf)
     if (use_acceptex) {
         /* Create the worker thread dispatch IOCP */
         ThreadDispatchIOCP = CreateIoCompletionPort(INVALID_HANDLE_VALUE,
-                                                    NULL,
-                                                    0,
-                                                    0); /* CONCURRENT ACTIVE THREADS */
+                                                    NULL, 0, 0); 
         apr_thread_mutex_create(&qlock, APR_THREAD_MUTEX_DEFAULT, pchild);
         qwait_event = CreateEvent(NULL, TRUE, FALSE, NULL);
         if (!qwait_event) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), 
+                         ap_server_conf,
                          "Child %d: Failed to create a qwait event.", my_pid);
             exit(APEXIT_CHILDINIT);
         }
@@ -932,9 +958,11 @@ void child_main(apr_pool_t *pconf)
     /*
      * Create the pool of worker threads
      */
-    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                 "Child %d: Starting %d worker threads.", my_pid, ap_threads_per_child);
-    child_handles = (HANDLE) apr_pcalloc(pchild, ap_threads_per_child * sizeof(HANDLE));
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+                 "Child %d: Starting %d worker threads.",
+                 my_pid, ap_threads_per_child);
+    child_handles = (HANDLE) apr_pcalloc(pchild, ap_threads_per_child
+                                                  * sizeof(HANDLE));
     apr_thread_mutex_create(&child_lock, APR_THREAD_MUTEX_DEFAULT, pchild);
 
     while (1) {
@@ -945,19 +973,23 @@ void child_main(apr_pool_t *pconf)
                 continue;
             }
             ap_update_child_status_from_indexes(0, i, SERVER_STARTING, NULL);
-            child_handles[i] = (HANDLE) _beginthreadex(NULL, (unsigned)ap_thread_stacksize,
-                                                       worker_main, (void *) i, 0, &tid);
+            child_handles[i] = (HANDLE) _beginthreadex(
+                                            NULL, (unsigned)ap_thread_stacksize,
+                                            worker_main, (void *) i, 0, &tid);
             if (child_handles[i] == 0) {
-                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                             "Child %d: _beginthreadex failed. Unable to create all worker threads. "
-                             "Created %d of the %d threads requested with the ThreadsPerChild configuration directive.",
+                ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
+                             ap_server_conf,
+                             "Child %d: _beginthreadex failed. Unable to "
+                             "create all worker threads. Created %d of the %d "
+                             "threads requested with the ThreadsPerChild "
+                             "configuration directive.",
                              my_pid, threads_created, ap_threads_per_child);
                 ap_signal_parent(SIGNAL_PARENT_SHUTDOWN);
                 goto shutdown;
             }
             threads_created++;
-            /* Save the score board index in ht keyed to the thread handle. We need this
-             * when cleaning up threads down below...
+            /* Save the score board index in ht keyed to the thread handle. 
+             * We need this when cleaning up threads down below...
              */
             apr_thread_mutex_lock(child_lock);
             score_idx = apr_pcalloc(pchild, sizeof(int));
@@ -978,7 +1010,8 @@ void child_main(apr_pool_t *pconf)
         if (WaitForSingleObject(exit_event, 0) != WAIT_TIMEOUT) {
             break;
         }
-        /* wait for previous generation to clean up an entry in the scoreboard */
+        /* wait for previous generation to clean up an entry in the scoreboard
+         */
         apr_sleep(1 * APR_USEC_PER_SEC);
     }
 
@@ -1008,10 +1041,10 @@ void child_main(apr_pool_t *pconf)
      */
     while (1) {
 #if !APR_HAS_OTHER_CHILD
-        rv = WaitForMultipleObjects(2, (HANDLE *) child_events, FALSE, INFINITE);
+        rv = WaitForMultipleObjects(2, (HANDLE *)child_events, FALSE, INFINITE);
         cld = rv - WAIT_OBJECT_0;
 #else
-        rv = WaitForMultipleObjects(2, (HANDLE *) child_events, FALSE, 1000);
+        rv = WaitForMultipleObjects(2, (HANDLE *)child_events, FALSE, 1000);
         cld = rv - WAIT_OBJECT_0;
         if (rv == WAIT_TIMEOUT) {
             apr_proc_other_child_refresh_all(APR_OC_REASON_RUNNING);
@@ -1020,14 +1053,17 @@ void child_main(apr_pool_t *pconf)
 #endif
             if (rv == WAIT_FAILED) {
             /* Something serious is wrong */
-            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(), ap_server_conf,
-                         "Child %d: WAIT_FAILED -- shutting down server", my_pid);
+            ap_log_error(APLOG_MARK, APLOG_CRIT, apr_get_os_error(),
+                         ap_server_conf,
+                         "Child %d: WAIT_FAILED -- shutting down server", 
+                         my_pid);
             break;
         }
         else if (cld == 0) {
             /* Exit event was signaled */
             ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                         "Child %d: Exit event signaled. Child process is ending.", my_pid);
+                         "Child %d: Exit event signaled. Child process is "
+                         "ending.", my_pid);
             break;
         }
         else {
@@ -1079,11 +1115,11 @@ void child_main(apr_pool_t *pconf)
      */
     rv = apr_proc_mutex_unlock(start_mutex);
     if (rv == APR_SUCCESS) {
-        ap_log_error(APLOG_MARK,APLOG_NOTICE, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, rv, ap_server_conf,
                      "Child %d: Released the start mutex", my_pid);
     }
     else {
-        ap_log_error(APLOG_MARK,APLOG_ERR, rv, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
                      "Child %d: Failure releasing the start mutex", my_pid);
     }
 
@@ -1094,12 +1130,15 @@ void child_main(apr_pool_t *pconf)
         }
     }
     else { /* Windows NT/2000 */
-        /* Post worker threads blocked on the ThreadDispatch IOCompletion port */
+        /* Post worker threads blocked on the ThreadDispatch IOCompletion port
+         */
         while (g_blocked_threads > 0) {
-            ap_log_error(APLOG_MARK,APLOG_INFO, APR_SUCCESS, ap_server_conf,
-                         "Child %d: %d threads blocked on the completion port", my_pid, g_blocked_threads);
+            ap_log_error(APLOG_MARK, APLOG_INFO, APR_SUCCESS, ap_server_conf,
+                         "Child %d: %d threads blocked on the completion port",
+                         my_pid, g_blocked_threads);
             for (i=g_blocked_threads; i > 0; i--) {
-                PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, IOCP_SHUTDOWN, NULL);
+                PostQueuedCompletionStatus(ThreadDispatchIOCP, 0, 
+                                           IOCP_SHUTDOWN, NULL);
             }
             Sleep(1000);
         }
@@ -1114,11 +1153,13 @@ void child_main(apr_pool_t *pconf)
     }
 
     /* Give busy worker threads a chance to service their connections */
-    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
-                 "Child %d: Waiting for %d worker threads to exit.", my_pid, threads_created);
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+                 "Child %d: Waiting for %d worker threads to exit.", 
+                 my_pid, threads_created);
     end_time = time(NULL) + 180;
     while (threads_created) {
-        rv = wait_for_many_objects(threads_created, child_handles, (DWORD)(end_time - time(NULL)));
+        rv = wait_for_many_objects(threads_created, child_handles,
+                                   (DWORD)(end_time - time(NULL)));
         if (rv != WAIT_FAILED) {
             ap_assert((rv >= 0) && (rv < threads_created));
             cleanup_thread(child_handles, &threads_created, rv);
@@ -1129,7 +1170,7 @@ void child_main(apr_pool_t *pconf)
 
     /* Kill remaining threads off the hard way */
     if (threads_created) {
-        ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+        ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                      "Child %d: Terminating %d threads that failed to exit.",
                      my_pid, threads_created);
     }
@@ -1141,7 +1182,7 @@ void child_main(apr_pool_t *pconf)
         score_idx = apr_hash_get(ht, &child_handles[i], sizeof(HANDLE));
         ap_update_child_status_from_indexes(0, *score_idx, SERVER_DEAD, NULL);
     }
-    ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
+    ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Child %d: All worker threads have exited.", my_pid);
 
     CloseHandle(allowed_globals.jobsemaphore);
