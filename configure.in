@@ -540,7 +540,9 @@ if test "$enable_so" = "yes"; then
       HTTPD_LDFLAGS="$HTTPD_LDFLAGS --main=$abs_srcdir/server/main.o --core-dll=$abs_srcdir/apachecore.dll"
       SH_LDFLAGS="$SH_LDFLAGS --core-dll=$abs_srcdir/apachecore.dll"
   esac
+  MOD_SO_ENABLED=yes
 fi
+AC_SUBST(MOD_SO_ENABLED)
 
 APACHE_SUBST(PRE_SHARED_CMDS)
 APACHE_SUBST(POST_SHARED_CMDS)
