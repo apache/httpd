@@ -187,28 +187,11 @@ if (@opt_S) {
 ##
 ##  Initial shared object support check
 ##
-my $httpd = get_vars("sbindir") . "/" . get_vars("progname");
-$httpd = eval qq("$httpd");
-$httpd = eval qq("$httpd");
-my $envvars = get_vars("sbindir") . "/envvars";
-$envvars = eval qq("$envvars");
-$envvars = eval qq("$envvars");
-
-#allow apxs to be run from the source tree, before installation
-if ($0 =~ m:support/apxs$:) {
-    ($httpd = $0) =~ s:support/apxs$::;
-}
-
-unless (-x "$httpd") {
-	error("$httpd not found or not executable");
-	exit 1;
-}
-
-unless (grep /mod_so/, `. $envvars && $httpd -l`) {
+unless ("@MOD_SO_ENABLED@" eq "yes") {
     error("Sorry, no shared object support for Apache");
     error("available under your platform. Make sure");
     error("the Apache module mod_so is compiled into");
-    error("your server binary `$httpd'.");
+    error("the server binary.");
     exit 1;
 }
 
