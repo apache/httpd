@@ -51,6 +51,12 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console
 # ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /debug /opt:ref
+# Begin Special Build Tool
+TargetPath=.\Release\rotatelogs.exe
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "rotatelogs - Win32 Debug"
 
@@ -75,6 +81,12 @@ BSC32=bscmake.exe
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /incremental:no /debug
 # ADD LINK32 kernel32.lib advapi32.lib wsock32.lib ws2_32.lib /nologo /subsystem:console /incremental:no /debug
+# Begin Special Build Tool
+TargetPath=.\Debug\rotatelogs.exe
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+# End Special Build Tool
 
 !ENDIF 
 

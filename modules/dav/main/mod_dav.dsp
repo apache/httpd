@@ -52,8 +52,14 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /out:"Release/mod_dav.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav.so
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Release/mod_dav.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav.so /opt:ref
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /out:".\Release\mod_dav.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav.so
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_dav.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav.so /opt:ref
+# Begin Special Build Tool
+TargetPath=.\Release\mod_dav.so
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "mod_dav - Win32 Debug"
 
@@ -78,8 +84,14 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Debug/mod_dav.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav.so
-# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Debug/mod_dav.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav.so
+# ADD BASE LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_dav.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav.so
+# ADD LINK32 kernel32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_dav.so" /base:@..\..\..\os\win32\BaseAddr.ref,mod_dav.so
+# Begin Special Build Tool
+TargetPath=.\Debug\mod_dav.so
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+# End Special Build Tool
 
 !ENDIF 
 
