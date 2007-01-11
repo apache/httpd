@@ -96,21 +96,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         going on in this patch to no net effect.  The WAIT_TIMEOUT
         result value seems to be ignored in the revised code?
 
-    * Bundled PCRE: backport r381783 from trunk
-      Fix brokenness on certain platforms when building with -DDEBUG.
-      http://svn.apache.org/viewvc?view=rev&revision=381783
-      +1 sctemme, fielding, pquerna, jerenkrantz
-      -1 niq: Why are we hacking a third-party package as bundled,
-              rather than upstream?  This has potential for chaos
-              for modules (and we have a history of PCRE trouble)
-              as well as a maintenance nightmare!
-      jerenkrantz: I don't believe that's a valid reason to block this.
-                   We're bundling PCRE for the duration of the 2.2.x series,
-                   but we can re-evaluate for future major/minor revs.
-      wrowe: nak niq, ack je; this is a silly debate, fix, push fixes upstream
-             and adopt a newer PCRE at trunk/.
-      niq: see http://mail-archives.apache.org/mod_mbox/httpd-dev/200611.mbox/raw/%3c20061108180201.6ad45937@grimnir%3e/
-
     * PKCS#7: backport PCKS#7 patches from trunk.
       +1 ben
       jerenkrantz: What's the revision number to backport?
