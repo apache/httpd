@@ -55,9 +55,12 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll
 # ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "Release\buildmark.obj" /nologo /subsystem:windows /dll /debug /base:@"os\win32\BaseAddr.ref",libhttpd.dll /opt:ref
 # Begin Special Build Tool
+TargetPath=.\Release\libhttpd.dll
 SOURCE="$(InputPath)"
 PreLink_Desc=Compiling buildmark
 PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "PCRE_STATIC" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c server\buildmark.c /Fo"Release\buildmark.obj"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
 # End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "libhttpd - Win32 Debug"
@@ -86,9 +89,12 @@ LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib /nologo /subsystem:windows /dll /incremental:no /debug
 # ADD LINK32 kernel32.lib user32.lib advapi32.lib ws2_32.lib mswsock.lib "Debug\buildmark.obj" /nologo /subsystem:windows /dll /incremental:no /debug /base:@"os\win32\BaseAddr.ref",libhttpd.dll
 # Begin Special Build Tool
+TargetPath=.\Debug\libhttpd.dll
 SOURCE="$(InputPath)"
 PreLink_Desc=Compiling buildmark
 PreLink_Cmds=cl.exe /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "PCRE_STATIC" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c server\buildmark.c /Fo"Debug\buildmark.obj"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
 # End Special Build Tool
 
 !ENDIF 
