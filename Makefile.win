@@ -75,7 +75,7 @@ _tryssl:
 	@echo mod_ssl and ab/ssl will not build unless openssl is installed
 	@echo in srclib\openssl.  They must be precompiled using the 
 	@echo ms/ntdll.mak file, see srclib\openssl\INSTALL.W32.  The most
-	@echo recent version confirmed to build with mod_ssl and ab is 0.9.6h.
+	@echo recent version confirmed to build with mod_ssl and ab is 0.9.8d.
 	@echo Available from http://www.openssl.org/
 !ENDIF
 
@@ -473,6 +473,7 @@ _install:
 	copy NOTICE 		"$(INSTDIR)\NOTICE.txt" <.y
 	copy README 		"$(INSTDIR)\README.txt" <.y
 !IF EXIST("srclib\openssl")
+	copy srclib\openssl\apps\openssl.cnf "$(INSTDIR)\conf\openssl.cnf" <.y
 	type << >> "$(INSTDIR)\NOTICE.txt"
 
   This binary distribution includes cryptographic software written by
@@ -510,12 +511,16 @@ BEGIN {
 
  Apache HTTP Server 2.0 Limited OpenSSL Distribution
 
- This binary installation of OpenSSL is a limited distribution of the documents
- OPENSSL-LICENSE.txt, OPENSSL-NEWS.txt and OPENSSL-README.txt, and the binaries
+ This binary installation of OpenSSL is a limited distribution of the
+ files derived from the OpenSSL project:
 
-   libeay32.dll
-   ssleay32.dll
-   openssl.exe
+   OPENSSL-LICENSE.txt
+   OPENSSL-NEWS.txt
+   OPENSSL-README.txt
+   conf\openssl.cnf
+   bin\libeay32.dll
+   bin\ssleay32.dll
+   bin\openssl.exe
 
  These are the minimal libraries and tools required to use mod_ssl as 
  distributed with Apache HTTP Server version 2.0.  No library link files, 
