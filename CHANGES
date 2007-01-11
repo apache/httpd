@@ -1,7 +1,9 @@
-                                                        -*- coding: utf-8 -*-
+﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
-
+  *) Win32: Makefile.win will now build with MS VC 8 (Visual Studio 2005)
+     including embedding the .manifest information into each binary.
+     [William Rowe]
 
 Changes with Apache 2.2.4
 
