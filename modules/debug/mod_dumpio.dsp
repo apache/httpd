@@ -52,8 +52,14 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /out:"Release/mod_dumpio.so" /base:@..\..\os\win32\BaseAddr.ref,mod_dumpio.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Release/mod_dumpio.so" /base:@..\..\os\win32\BaseAddr.ref,mod_dumpio.so /opt:ref
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /out:".\Release\mod_dumpio.so" /base:@..\..\os\win32\BaseAddr.ref,mod_dumpio.so
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_dumpio.so" /base:@..\..\os\win32\BaseAddr.ref,mod_dumpio.so /opt:ref
+# Begin Special Build Tool
+TargetPath=.\Release\mod_dumpio.so
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "mod_dumpio - Win32 Debug"
 
@@ -78,8 +84,14 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Debug/mod_dumpio.so" /base:@..\..\os\win32\BaseAddr.ref,mod_dumpio.so
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Debug/mod_dumpio.so" /base:@..\..\os\win32\BaseAddr.ref,mod_dumpio.so
+# ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_dumpio.so" /base:@..\..\os\win32\BaseAddr.ref,mod_dumpio.so
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_dumpio.so" /base:@..\..\os\win32\BaseAddr.ref,mod_dumpio.so
+# Begin Special Build Tool
+TargetPath=.\Debug\mod_dumpio.so
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+# End Special Build Tool
 
 !ENDIF 
 
