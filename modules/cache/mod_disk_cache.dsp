@@ -53,7 +53,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Release/mod_disk_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_disk_cache.so /opt:ref
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_disk_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_disk_cache.so /opt:ref
+# Begin Special Build Tool
+TargetPath=.\Release\mod_disk_cache.so
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+# End Special Build Tool
 
 !ELSEIF  "$(CFG)" == "mod_disk_cache - Win32 Debug"
 
@@ -79,7 +85,13 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug
-# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:"Debug/mod_disk_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_disk_cache.so
+# ADD LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_disk_cache.so" /base:@..\..\os\win32\BaseAddr.ref,mod_disk_cache.so
+# Begin Special Build Tool
+TargetPath=.\Debug\mod_disk_cache.so
+SOURCE="$(InputPath)"
+PostBuild_Desc=Embed .manifest
+PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
+# End Special Build Tool
 
 !ENDIF 
 
