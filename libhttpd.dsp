@@ -58,7 +58,7 @@ LINK32=link.exe
 TargetPath=.\Release\libhttpd.dll
 SOURCE="$(InputPath)"
 PreLink_Desc=Compiling buildmark
-PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "PCRE_STATIC" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c server\buildmark.c /Fo"Release\buildmark.obj"
+PreLink_Cmds=cl.exe /nologo /MD /W3 /O2 /Oy- /Zi /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "PCRE_STATIC" /D "AP_DECLARE_EXPORT" /Fd"Release\libhttpd" /FD /c server\buildmark.c /Fo"Release\buildmark.obj"
 PostBuild_Desc=Embed .manifest
 PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
 # End Special Build Tool
@@ -92,7 +92,7 @@ LINK32=link.exe
 TargetPath=.\Debug\libhttpd.dll
 SOURCE="$(InputPath)"
 PreLink_Desc=Compiling buildmark
-PreLink_Cmds=cl.exe /nologo /MDd /W3 /GX /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "PCRE_STATIC" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c server\buildmark.c /Fo"Debug\buildmark.obj"
+PreLink_Cmds=cl.exe /nologo /MDd /W3 /EHsc /Zi /Od /I "./include" /I "./srclib/apr/include" /I "./srclib/apr-util/include" /I "./srclib/pcre" /D "_DEBUG" /D "WIN32" /D "_WINDOWS" /D "PCRE_STATIC" /D "AP_DECLARE_EXPORT" /Fd"Debug\libhttpd" /FD /c server\buildmark.c /Fo"Debug\buildmark.obj"
 PostBuild_Desc=Embed .manifest
 PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).manifest -outputresource:$(TargetPath);2
 # End Special Build Tool
