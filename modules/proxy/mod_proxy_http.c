@@ -309,6 +309,11 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
                                    5, bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
+    if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
+        e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(bb, e);
+    }
+
     /* Now we have headers-only, or the chunk EOS mark; flush it */
     status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
     return status;
@@ -352,6 +357,11 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
             /* We can't pass this EOS to the output_filters. */
             e = APR_BRIGADE_LAST(input_brigade);
             apr_bucket_delete(e);
+
+            if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
+                e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(input_brigade, e);
+            }
         }
 
         /* C-L < bytes streamed?!?
@@ -546,6 +556,10 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
     APR_BRIGADE_CONCAT(header_brigade, body_brigade);
     if (tmpfile) {
         apr_brigade_insert_file(header_brigade, tmpfile, 0, fsize, p);
+    }
+    if (apr_table_get(r->subprocess_env, "proxy-sendextracrlf")) {
+        e = apr_bucket_immortal_create(ASCII_CRLF, 2, bucket_alloc);
+        APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
     /* This is all a single brigade, pass with flush flagged */
     status = pass_brigade(bucket_alloc, r, p_conn, origin, header_brigade, 1);
