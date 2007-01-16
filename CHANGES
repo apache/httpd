@@ -2,6 +2,14 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_dbd: Create memory sub-pools for each DB connection and close
+     DB connections in a pool cleanup function.  Ensure prepared statements
+     are destroyed before DB connection is closed.  When using reslists,
+     prevent segfaults when child processes exit, and stop memory leakage
+     of ap_dbd_t structures.  Avoid use of global s->process->pool, which
+     isn't destroyed by exiting child processes in most multi-process MPMs.
+     PR 39985.  [Chris Darroch, Nick Kew]
+
   *) apxs: Eliminate run-time check for mod_so.  PR 40653.
      [David M. Lee <dmlee crossroads.com>]
 

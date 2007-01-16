@@ -59,10 +59,11 @@ typedef struct {
     const char *params;
     int persist;
     dbd_prepared *prepared;
+    apr_pool_t *pool;
 #if APR_HAS_THREADS
     apr_thread_mutex_t *mutex;
-    apr_pool_t *pool;
     apr_reslist_t *reslist;
+    int destroyed;
     int nmin;
     int nkeep;
     int nmax;
@@ -303,17 +304,22 @@ static apr_status_t dbd_prepared_init(apr_pool_t *pool, svr_cfg *svr,
 static apr_status_t dbd_close(void *data)
 {
     ap_dbd_t *rec = data;
-    apr_status_t rv = apr_dbd_close(rec->driver, rec->handle);
 
-    apr_pool_destroy(rec->pool);
-
-    return rv;
+    return apr_dbd_close(rec->driver, rec->handle);
 }
 
 #if APR_HAS_THREADS
 static apr_status_t dbd_destruct(void *data, void *params, apr_pool_t *pool)
 {
-    return dbd_close(data);
+    svr_cfg *svr = params;
+
+    if (!svr->destroyed) {
+        ap_dbd_t *rec = data;
+
+        apr_pool_destroy(rec->pool);
+    }
+
+    return APR_SUCCESS;
 }
 #endif
 
@@ -325,16 +331,20 @@ static apr_status_t dbd_construct(void **data_ptr,
                                   void *params, apr_pool_t *pool)
 {
     svr_cfg *svr = params;
-    ap_dbd_t *rec = apr_pcalloc(pool, sizeof(ap_dbd_t));
+    apr_pool_t *rec_pool, *prepared_pool;
+    ap_dbd_t *rec;
     apr_status_t rv;
 
-    /* this pool is mostly so dbd_close can destroy the prepared stmts */
-    rv = apr_pool_create(&rec->pool, pool);
+    rv = apr_pool_create(&rec_pool, pool);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, svr->server,
                      "DBD: Failed to create memory pool");
         return rv;
     }
+
+    rec = apr_pcalloc(rec_pool, sizeof(ap_dbd_t));
+
+    rec->pool = rec_pool;
 
     /* The driver is loaded at config time now, so this just checks a hash.
      * If that changes, the driver DSO could be registered to unload against
@@ -384,14 +394,28 @@ static apr_status_t dbd_construct(void **data_ptr,
         return rv;
     }
 
-    rv = dbd_prepared_init(rec->pool, svr, rec);
+    apr_pool_cleanup_register(rec->pool, rec, dbd_close,
+                              apr_pool_cleanup_null);
+
+    /* we use a sub-pool for the prepared statements for each connection so
+     * that they will be cleaned up first, before the connection is closed
+     */
+    rv = apr_pool_create(&prepared_pool, rec->pool);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, svr->server,
+                     "DBD: Failed to create memory pool");
+
+        apr_pool_destroy(rec->pool);
+        return rv;
+    }
+
+    rv = dbd_prepared_init(prepared_pool, svr, rec);
     if (rv != APR_SUCCESS) {
         const char *errmsg = apr_dbd_error(rec->driver, rec->handle, rv);
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, svr->server,
                      "DBD: failed to prepare SQL statements: %s",
                      (errmsg ? errmsg : "[???]"));
 
-        apr_dbd_close(rec->driver, rec->handle);
         apr_pool_destroy(rec->pool);
         return rv;
     }
@@ -402,24 +426,37 @@ static apr_status_t dbd_construct(void **data_ptr,
 }
 
 #if APR_HAS_THREADS
-static apr_status_t dbd_setup(apr_pool_t *pool, server_rec *s,
-                              svr_cfg *svr)
+static apr_status_t dbd_destroy(void *data)
+{
+    svr_cfg *svr = data;
+
+    svr->destroyed = 1;
+
+    return APR_SUCCESS;
+}
+
+static apr_status_t dbd_setup(server_rec *s, svr_cfg *svr)
 {
     apr_status_t rv;
 
-    /* create a pool just for the reslist from a process-lifetime pool;
-     * that pool (s->process->pool in the dbd_setup_lock case,
-     * whatever was passed to ap_run_child_init in the dbd_setup_init case)
-     * will be shared with other threads doing other non-mod_dbd things
-     * so we can't use it for the reslist directly
+    /* We create the reslist using a sub-pool of the pool passed to our
+     * child_init hook.  No other threads can be here because we're
+     * either in the child_init phase or dbd_setup_lock() acquired our mutex.
+     * No other threads will use this sub-pool after this, except via
+     * reslist calls, which have an internal mutex.
+     *
+     * We need to short-circuit the cleanup registered internally by
+     * apr_reslist_create().  We do this by registering dbd_destroy()
+     * as a cleanup afterwards, so that it will run before the reslist's
+     * internal cleanup.
+     *
+     * If we didn't do this, then we could free memory twice when the pool
+     * was destroyed.  When apr_pool_destroy() runs, it first destroys all
+     * all the per-connection sub-pools created in dbd_construct(), and
+     * then it runs the reslist's cleanup.  The cleanup calls dbd_destruct()
+     * on each resource, which would then attempt to destroy the sub-pools
+     * a second time.
      */
-    rv = apr_pool_create(&svr->pool, pool);
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
-                     "DBD: Failed to create reslist memory pool");
-        return rv;
-    }
-
     rv = apr_reslist_create(&svr->reslist,
                             svr->nmin, svr->nkeep, svr->nmax,
                             apr_time_from_sec(svr->exptime),
@@ -428,12 +465,15 @@ static apr_status_t dbd_setup(apr_pool_t *pool, server_rec *s,
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "DBD: failed to initialise");
-        apr_pool_destroy(svr->pool);
         return rv;
     }
 
+    apr_pool_cleanup_register(svr->pool, svr, dbd_destroy,
+                              apr_pool_cleanup_null);
+
     return APR_SUCCESS;
 }
+#endif
 
 static apr_status_t dbd_setup_init(apr_pool_t *pool, server_rec *s)
 {
@@ -453,7 +493,15 @@ static apr_status_t dbd_setup_init(apr_pool_t *pool, server_rec *s)
         return APR_SUCCESS;
     }
 
-    rv = dbd_setup(pool, s, svr);
+    rv = apr_pool_create(&svr->pool, pool);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
+                     "DBD: Failed to create reslist cleanup memory pool");
+        return rv;
+    }
+
+#if APR_HAS_THREADS
+    rv = dbd_setup(s, svr);
     if (rv == APR_SUCCESS) {
         return rv;
     }
@@ -467,12 +515,13 @@ static apr_status_t dbd_setup_init(apr_pool_t *pool, server_rec *s)
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "DBD: Failed to create thread mutex");
     }
+#endif
 
     return rv;
 }
 
-static apr_status_t dbd_setup_lock(apr_pool_t *pool, server_rec *s,
-                                   svr_cfg *svr)
+#if APR_HAS_THREADS
+static apr_status_t dbd_setup_lock(server_rec *s, svr_cfg *svr)
 {
     apr_status_t rv = APR_SUCCESS, rv2;
 
@@ -492,7 +541,7 @@ static apr_status_t dbd_setup_lock(apr_pool_t *pool, server_rec *s,
     }
 
     if (!svr->reslist) {
-        rv = dbd_setup(s->process->pool, s, svr);
+        rv = dbd_setup(s, svr);
     }
 
     rv2 = apr_thread_mutex_unlock(svr->mutex);
@@ -517,7 +566,7 @@ DBD_DECLARE_NONSTD(void) ap_dbd_close(server_rec *s, ap_dbd_t *rec)
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
 
     if (!svr->persist) {
-        dbd_close((void*) rec);
+        apr_pool_destroy(rec->pool);
     }
 #if APR_HAS_THREADS
     else {
@@ -563,13 +612,13 @@ DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
 
     if (!svr->persist) {
         /* Return a once-only connection */
-        dbd_construct((void*) &rec, svr, s->process->pool);
+        dbd_construct((void*) &rec, svr, pool);
         return rec;
     }
 
 #if APR_HAS_THREADS
     if (!svr->reslist) {
-        if (dbd_setup_lock(pool, s, svr) != APR_SUCCESS) {
+        if (dbd_setup_lock(s, svr) != APR_SUCCESS) {
             return NULL;
         }
     }
@@ -592,20 +641,15 @@ DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
     rec = svr->rec;
     if (rec) { 
         if (dbd_check(pool, s, rec) != APR_SUCCESS) {
-            apr_pool_cleanup_run(s->process->pool, rec, dbd_close);
+            apr_pool_destroy(rec->pool);
             rec = NULL;
         }
     }
 
     /* We don't have a connection right now, so we'll open one */
     if (!rec) {
-        dbd_construct((void*) &rec, svr, s->process->pool);
+        dbd_construct((void*) &rec, svr, svr->pool);
         svr->rec = rec;
-
-        if (rec) {
-            apr_pool_cleanup_register(s->process->pool, rec,
-                                      dbd_close, apr_pool_cleanup_null);
-        }
     }
 #endif
 
@@ -652,10 +696,6 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
                 apr_pool_cleanup_register(r->pool, acq, dbd_release,
                                           apr_pool_cleanup_null);
             }
-            else {
-                apr_pool_cleanup_register(r->pool, acq->rec, dbd_close,
-                                          apr_pool_cleanup_null);
-            }
         }
     }
 
@@ -677,10 +717,6 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
             if (svr->persist) {
                 acq->reslist = svr->reslist;
                 apr_pool_cleanup_register(c->pool, acq, dbd_release,
-                                          apr_pool_cleanup_null);
-            }
-            else {
-                apr_pool_cleanup_register(c->pool, acq->rec, dbd_close,
                                           apr_pool_cleanup_null);
             }
         }
@@ -706,15 +742,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
     if (!rec) {
         rec = ap_dbd_open(r->pool, r->server);
         if (rec) {
-            svr_cfg *svr = ap_get_module_config(r->server->module_config,
-                                                &dbd_module);
-
             ap_set_module_config(r->request_config, &dbd_module, rec);
-            /* if persist then ap_dbd_open registered cleanup on proc pool */
-            if (!svr->persist) {
-                apr_pool_cleanup_register(r->pool, rec, dbd_close,
-                                          apr_pool_cleanup_null);
-            }
         }
     }
 
@@ -728,15 +756,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
     if (!rec) {
         rec = ap_dbd_open(c->pool, c->base_server);
         if (rec) {
-            svr_cfg *svr = ap_get_module_config(c->base_server->module_config,
-                                                &dbd_module);
-
             ap_set_module_config(c->conn_config, &dbd_module, rec);
-            /* if persist then ap_dbd_open registered cleanup on proc pool */
-            if (!svr->persist) {
-                apr_pool_cleanup_register(c->pool, rec, dbd_close,
-                                          apr_pool_cleanup_null);
-            }
         }
     }
 
@@ -748,9 +768,7 @@ static void dbd_hooks(apr_pool_t *pool)
 {
     ap_hook_pre_config(dbd_pre_config, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_post_config(dbd_post_config, NULL, NULL, APR_HOOK_MIDDLE);
-#if APR_HAS_THREADS
     ap_hook_child_init((void*)dbd_setup_init, NULL, NULL, APR_HOOK_MIDDLE);
-#endif
 
     APR_REGISTER_OPTIONAL_FN(ap_dbd_prepare);
     APR_REGISTER_OPTIONAL_FN(ap_dbd_open);
