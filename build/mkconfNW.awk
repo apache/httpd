@@ -33,6 +33,8 @@ BEGIN {
     B["errordir"] = A["ServerRoot"]"/"A["errordir"]
     B["proxycachedir"] = A["ServerRoot"]"/"A["proxycachedir"]
     B["cgidir"] = A["ServerRoot"]"/"A["cgidir"]
+    B["logfiledir"] = A["logfiledir"]
+    B["sysconfdir"] = A["sysconfdir"]
     B["listen_stmt_1"] = "Listen "A["Port"]
     B["listen_stmt_2"] = ""
 }
@@ -86,6 +88,10 @@ BEGIN {
     next
 }
 
+match ($0,/SSLMutex  file:@exp_runtimedir@\/ssl_mutex/) {
+    sub(/SSLMutex  file:@exp_runtimedir@\/ssl_mutex/, "SSLMutex default")
+}
+
 match ($0,/@@.*@@/) {
     s=substr($0,RSTART+2,RLENGTH-4)
     sub(/@@.*@@/,A[s],$0)
@@ -113,7 +119,7 @@ match ($0,/@nonssl_.*@/) {
 
 END {
     if (SSL) {
-       print
+       print ""
        print "#"
        print "# SecureListen: Allows you to securely bind Apache to specific IP addresses "
        print "# and/or ports."
