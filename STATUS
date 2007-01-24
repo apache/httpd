@@ -183,6 +183,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        PR: 36609
      http://svn.apache.org/viewvc?rev=490156&view=rev
      +1: niq
+         rpluem says: +1 as long as
+                      http://svn.apache.org/viewvc?rev=499567&view=rev
+                      is added.
 
    * mod_proxy_http: Handle request bodies larger than 2 GB by converting
      the Content-Length header of the request correctly.
