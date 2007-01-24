@@ -309,7 +309,9 @@ static char *parse_format_tag(apr_pool_t *p, format_tag *tag, const char **sa)
     if ((*s == '%') || (*s == '\0')) {
         tag->func = constant_item;
         tag->arg = "%";
-        *sa = ++s;
+        if (*s)
+            s++;
+        *sa = s;
         return NULL;
     }
 
