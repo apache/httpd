@@ -1209,7 +1209,7 @@ apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf)
 #endif /* SIGILL */
 #ifdef SIGFPE
     apr_signal(SIGFPE, sig_coredump);
-#endif /* SIGILL */
+#endif /* SIGFPE */
 
 #endif /* NO_USE_SIGACTION */
 
