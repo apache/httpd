@@ -190,3 +190,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        PR 40883
      http://svn.apache.org/viewvc?view=rev&revision=486320
      +1: trawick, rpluem
+
+   * Unix MPMs: Catch SIGFPE so that exception hooks and CoreDumpDirectory
+     can work after that terminating signal.
+     http://svn.apache.org/viewvc?view=rev&revision=500881
+     +1: trawick
