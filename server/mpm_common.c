@@ -1217,6 +1217,10 @@ apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf)
     if (sigaction(SIGILL, &sa, NULL) < 0)
         ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, "sigaction(SIGILL)");
 #endif
+#ifdef SIGFPE
+    if (sigaction(SIGFPE, &sa, NULL) < 0)
+        ap_log_error(APLOG_MARK, APLOG_WARNING, errno, s, "sigaction(SIGFPE)");
+#endif
 
 #else /* NO_USE_SIGACTION */
 
@@ -1233,6 +1237,9 @@ apr_status_t ap_fatal_signal_setup(server_rec *s, apr_pool_t *in_pconf)
 #ifdef SIGILL
     apr_signal(SIGILL, sig_coredump);
 #endif /* SIGILL */
+#ifdef SIGFPE
+    apr_signal(SIGFPE, sig_coredump);
+#endif /* SIGFPE */
 
 #endif /* NO_USE_SIGACTION */
 

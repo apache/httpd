@@ -1,6 +1,10 @@
 ﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
+  *) Unix MPMs: Catch SIGFPE so that exception hooks and CoreDumpDirectory
+     can work after that terminating signal.
+     [Eric Covener <covener gmail.com>]
+
   *) Win32: Makefile.win will now build with MS VC 8 (Visual Studio 2005)
      including embedding the .manifest information into each binary.
      [William Rowe]
