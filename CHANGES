@@ -2,10 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) Unix MPMs: Catch SIGFPE so that exception hooks and CoreDumpDirectory
-     can work after that terminating signal.
-     [Eric Covener <covener gmail.com>]
-
   *) mod_dbd: Create memory sub-pools for each DB connection and close
      DB connections in a pool cleanup function.  Ensure prepared statements
      are destroyed before DB connection is closed.  When using reslists,
@@ -255,6 +251,10 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.5
+
+  *) Unix MPMs: Catch SIGFPE so that exception hooks and CoreDumpDirectory
+     can work after that terminating signal.
+     [Eric Covener <covener gmail.com>]
 
   *) Win32: Makefile.win will now build with MS VC 8 (Visual Studio 2005)
      including embedding the .manifest information into each binary.
