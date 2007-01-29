@@ -139,6 +139,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      wrowe adds: Isn't it time for SSL/FTP/JK/FTP who all need the very
                  same syntax to benefit from one generic implementation
                  (in httpd, not apr, since it's config syntax specific).
+     -0: jorton: this is a nice cleanup but adds little/no value for 
+      2.2 users; save it for 2.4.  also: misses Win32 .dsp update?
+      spells "deprecate" incorrectly throughout.
 
    * mod_proxy_balancer: Remove unnecessary lock/unlock for
      the post_request hook. We are actually doing nothing here.
@@ -195,5 +198,5 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      can work after that terminating signal.
      http://svn.apache.org/viewvc?view=rev&revision=500881
      http://svn.apache.org/viewvc?view=rev&revision=500897
-     +1: trawick, rpluem
+     +1: trawick, rpluem, jorton
 
