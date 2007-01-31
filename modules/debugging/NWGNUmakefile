@@ -231,7 +231,7 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\*.nlm $(INSTALL)\Apache2\modules\*.*
+	copy $(OBJDIR)\*.nlm $(INSTALL)\$(BASEDIR)\modules\*.*
 
 #
 # Any specialized rules here
