@@ -75,6 +75,7 @@ my $opt_A = 0;
 my $opt_q = 0;
 my $opt_h = 0;
 my $opt_p = 0;
+my $opt_v = 0;
 
 #   this subroutine is derived from Perl's getopts.pl with the enhancement of
 #   the "+" metacharacter at the format string to allow a list to be built by
@@ -142,7 +143,7 @@ sub Getopts {
 
 sub usage {
     print STDERR "Usage: apxs -g [-S <var>=<val>] -n <modname>\n";
-    print STDERR "       apxs -q [-S <var>=<val>] <query> ...\n";
+    print STDERR "       apxs -q [-v] [-S <var>=<val>] [<query> ...]\n";
     print STDERR "       apxs -c [-S <var>=<val>] [-o <dsofile>] [-D <name>[=<value>]]\n";
     print STDERR "               [-I <incdir>] [-L <libdir>] [-l <libname>] [-Wc,<flags>]\n";
     print STDERR "               [-Wl,<flags>] [-p] <files> ...\n";
@@ -153,9 +154,9 @@ sub usage {
 
 #   option handling
 my $rc;
-($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+W+S+eiaAp", @ARGV);
+($rc, @ARGV) = &Getopts("qn:gco:I+D+L+l+W+S+eiaApv", @ARGV);
 &usage if ($rc == 0);
-&usage if ($#ARGV == -1 and not $opt_g);
+&usage if ($#ARGV == -1 and not $opt_g and not $opt_q);
 &usage if (not $opt_q and not ($opt_g and $opt_n) and not $opt_i and not $opt_c and not $opt_e);
 
 #   argument handling
@@ -303,8 +304,35 @@ if ($opt_q) {
     ##
     ##  QUERY INFORMATION 
     ##
-    my $result = get_vars(@args);
-    print "$result\n";
+    my $result;
+    if ($#args >= 0) { 
+        $result = get_vars(@args);
+        print "$result\n";
+    } else {
+        # -q without var name prints all variables and their values
+        
+        # Additional -v pretty-prints output
+        if ($opt_v) {
+            # Variable names in alphabetic order
+            my @vars = sort {uc($a) cmp uc($b)} keys %config_vars;
+            
+            # Make the left column as wide as the longest variable name
+            my $width = 0;
+            foreach (@vars) {
+                my $l = length $_; 
+                $width = $l unless ($l <= $width);
+            }
+    
+            foreach (@vars) {
+                printf "%-${width}s = %s\n", $_, $config_vars{$_};
+            }
+        } else {
+            # Unprettified name=value list
+            foreach (keys %config_vars) {
+                print "$_=$config_vars{$_}\n";
+            }
+        }
+    }
 }
 
 my $apr_config = get_vars("APR_CONFIG");
