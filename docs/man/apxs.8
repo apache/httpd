@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "APXS" 8 "2004-10-01" "Apache HTTP Server" "apxs"
+.TH "APXS" 8 "2007-02-01" "Apache HTTP Server" "apxs"
 
 .SH NAME
 apxs \- APache eXtenSion tool
@@ -30,7 +30,7 @@ apxs \- APache eXtenSion tool
 \fBapxs\fR -\fBg\fR [ -\fBS\fR \fIname\fR=\fIvalue\fR ] -\fBn\fR \fImodname\fR
  
 .PP
-\fBapxs\fR -\fBq\fR [ -\fBS\fR \fIname\fR=\fIvalue\fR ] \fIquery\fR \&.\&.\&.
+\fBapxs\fR -\fBq\fR [ -\fBv\fR ] [ -\fBS\fR \fIname\fR=\fIvalue\fR ] \fIquery\fR \&.\&.\&.
  
 .PP
 \fBapxs\fR -\fBc\fR [ -\fBS\fR \fIname\fR=\fIvalue\fR ] [ -\fBo\fR \fIdsofile\fR ] [ -\fBI\fR \fIincdir\fR ] [ -\fBD\fR \fIname\fR=\fIvalue\fR ] [ -\fBL\fR \fIlibdir\fR ] [ -\fBl\fR \fIlibname\fR ] [ -\fBWc,\fR\fIcompiler-flags\fR ] [ -\fBWl,\fR\fIlinker-flags\fR ] \fIfiles\fR \&.\&.\&.
@@ -96,7 +96,7 @@ This explicitly sets the module name for the -i (install) and -g (template gener
  
 .TP
 -q
-Performs a query for apxs's knowledge about certain settings\&. The \fIquery\fR parameters can be one or more of the following strings: CC, CFLAGS, CFLAGS_SHLIB, INCLUDEDIR, LD_SHLIB, LDFLAGS_SHLIB, LIBEXECDIR, LIBS_SHLIB, SBINDIR, SYSCONFDIR, TARGET\&. .PP Use this for manually determining settings\&. For instance use INC=-I`apxs -q INCLUDEDIR` .PP inside your own Makefiles if you need manual access to Apache's C header files\&.  
+Performs a query for variables and environment settings used to build httpd\&. When invoked without \fIquery\fR parameters, it prints all known variables and their values\&. The optional -v parameter formats the list output\&. .PP Use this to manually determine settings used to build the httpd that will load your module\&. For instance use INC=-I`apxs -q INCLUDEDIR` .PP inside your own Makefiles if you need manual access to Apache's C header files\&.  
   
 .SS "Configuration Options"
  

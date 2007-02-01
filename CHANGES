@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) apxs: Enhance -q flag to print all known variables and their values
+     when invoked without variable name(s). 
+     [William Rowe, Sander Temme]
+
   *) mod_dbd: Create memory sub-pools for each DB connection and close
      DB connections in a pool cleanup function.  Ensure prepared statements
      are destroyed before DB connection is closed.  When using reslists,
