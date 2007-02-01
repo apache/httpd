@@ -61,15 +61,6 @@ Changes with Apache 2.3.0
      make sense and leads to a division by zero.  PR 40576.
      [Xuekun Hu <xuekun.hu gmail.com>]
 
-  *) mod_cache: Pass the output filter stack through the store_body()
-     hook, giving each cache backend the ability to make a better
-     decision as to how it will allocate the tasks of writing to the
-     cache and writing to the network. Previously the write to the
-     cache task needed to be complete before the same brigade was
-     written to the network, and this caused timing and memory issues
-     on large cached files. This fix replaces the previous fix for this
-     PR below. PR39380 [Graham Leggett]
-
   *) Fix issue which could cause error messages to be written to access logs
      on Win32.  PR 40476.  [Tom Donovan <Tom.Donovan acm.org>]
 
@@ -89,27 +80,12 @@ Changes with Apache 2.3.0
 
   *) mod_proxy_fcgi: Added win32 build. [Mladen Turk]
 
-  *) mod_disk_cache: Implement read-while-caching.
-     [Niklas Edmundsson <nikke acc.umu.se>]
-
-  *) mod_disk_cache: NULL fd pointers when closing them, fix missing
-     close/flush, remove some unneccessary code duplication instead
-     of calling the right helper in replace_brigade_with_cache().
-     [Niklas Edmundsson <nikke acc.umu.se>]
-
   *) sendfile_nonblocking() takes the _brigade_ as an argument, gets 
      the first bucket from the brigade, finds it not to be a FILE
      bucket and barfs. The fix is to pass a bucket rather than a brigade.
      [Niklas Edmundsson <nikke acc.umu.se>]
 
-  *) mod_disk_cache: Do away with the write-to-file-then-move-in-place
-     mentality. [Niklas Edmundsson <nikke acc.umu.se>]
-
   *) mod_rewrite: support rewritemap by SQL query [Nick Kew]
-
-  *) mod_disk_cache: Make caching of large files possible on 32bit machines
-     by determining whether the cached file should be copied on disk rather
-     than loaded into RAM. PR39380 [Niklas Edmundsson <nikke acc.umu.se>]
 
   *) mod_proxy: Print the correct error message for erroneous configured
      ProxyPass directives. PR 40439. [serai lans-tv.com]
