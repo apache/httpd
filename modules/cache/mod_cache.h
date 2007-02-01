@@ -210,7 +210,7 @@ struct cache_handle {
 typedef struct {
     int (*remove_entity) (cache_handle_t *h);
     apr_status_t (*store_headers)(cache_handle_t *h, request_rec *r, cache_info *i);
-    apr_status_t (*store_body)(cache_handle_t *h, ap_filter_t *f, apr_bucket_brigade *b);
+    apr_status_t (*store_body)(cache_handle_t *h, request_rec *r, apr_bucket_brigade *b);
     apr_status_t (*recall_headers) (cache_handle_t *h, request_rec *r);
     apr_status_t (*recall_body) (cache_handle_t *h, apr_pool_t *p, apr_bucket_brigade *bb); 
     int (*create_entity) (cache_handle_t *h, request_rec *r,
