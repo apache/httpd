@@ -626,6 +626,7 @@ static int cgid_server(void *data)
         apr_file_t *inout;
         cgid_req_t cgid_req;
         apr_status_t stat;
+        void *key;
 
         apr_pool_clear(ptrans);
 
@@ -718,6 +719,8 @@ static int cgid_server(void *data)
              */
             ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
                          "couldn't set child process attributes: %s", r->filename);
+
+            procnew->pid = 0; /* no process to clean up */
         }
         else {
             apr_pool_userdata_set(r, ERRFN_USERDATA_KEY, apr_pool_cleanup_null, ptrans);
@@ -754,31 +757,35 @@ static int cgid_server(void *data)
                 ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
                              "couldn't create child process: %d: %s", rc,
                              apr_filepath_name_get(r->filename));
-            }
-            else {
-                /* We don't want to leak storage for the key, so only allocate
-                 * a key if the key doesn't exist yet in the hash; there are
-                 * only a limited number of possible keys (one for each
-                 * possible thread in the server), so we can allocate a copy
-                 * of the key the first time a thread has a cgid request.
-                 * Note that apr_hash_set() only uses the storage passed in
-                 * for the key if it is adding the key to the hash for the
-                 * first time; new key storage isn't needed for replacing the
-                 * existing value of a key.
-                 */
-                void *key;
 
-                if (apr_hash_get(script_hash, &cgid_req.conn_id, sizeof(cgid_req.conn_id))) {
-                    key = &cgid_req.conn_id;
-                }
-                else {
-                    key = apr_pcalloc(pcgi, sizeof(cgid_req.conn_id));
-                    memcpy(key, &cgid_req.conn_id, sizeof(cgid_req.conn_id));
-                }
-                apr_hash_set(script_hash, key, sizeof(cgid_req.conn_id),
-                             (void *)((long)procnew->pid));
+                procnew->pid = 0; /* no process to clean up */
             }
         }
+
+        /* If the script process was created, remember the pid for
+         * later cleanup.  If the script process wasn't created, clear
+         * out any prior pid with the same key.
+         *
+         * We don't want to leak storage for the key, so only allocate
+         * a key if the key doesn't exist yet in the hash; there are
+         * only a limited number of possible keys (one for each
+         * possible thread in the server), so we can allocate a copy
+         * of the key the first time a thread has a cgid request.
+         * Note that apr_hash_set() only uses the storage passed in
+         * for the key if it is adding the key to the hash for the
+         * first time; new key storage isn't needed for replacing the
+         * existing value of a key.
+         */
+
+        if (apr_hash_get(script_hash, &cgid_req.conn_id, sizeof(cgid_req.conn_id))) {
+            key = &cgid_req.conn_id;
+        }
+        else {
+            key = apr_pcalloc(pcgi, sizeof(cgid_req.conn_id));
+            memcpy(key, &cgid_req.conn_id, sizeof(cgid_req.conn_id));
+        }
+        apr_hash_set(script_hash, key, sizeof(cgid_req.conn_id),
+                     (void *)((long)procnew->pid));
     }
     return -1;
 }
