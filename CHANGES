@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) core: Fix broken chunk filtering that causes all non blocking reads to be
+     converted into blocking reads.  PR 41056. [Jean-Frederic Clere, Jim Jagielski]
+
   *) apxs: Enhance -q flag to print all known variables and their values
      when invoked without variable name(s). 
      [William Rowe, Sander Temme]
