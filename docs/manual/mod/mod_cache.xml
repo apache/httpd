@@ -312,6 +312,31 @@ header.</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>CacheIgnoreQueryString</name>
+<description>Ignore query string when caching</description>
+<syntax>CacheIgnoreQueryString On|Off</syntax>
+<default>CacheIgnoreQueryString Off</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>Ordinarily, requests with query string parameters are cached separately
+    for each unique query string. This is according to RFC 2616/13.9 done only
+    if an expiration time is specified. The 
+    <directive>CacheIgnoreQueryString</directive> directive tells the cache to
+    cache requests even if no expiration time is specified, and to reply with 
+    a cached reply even if the query string differs. From a caching point of
+    view the request is treated as if having no query string when this 
+    directive is enabled.</p>
+
+    <example>
+      CacheIgnoreQueryString On
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>CacheLastModifiedFactor</name>
 <description>The factor used to compute an expiry date based on the
 LastModified date.</description>

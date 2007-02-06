@@ -452,7 +452,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* if a Expires header is in the past, don't cache it */
         reason = "Expires header already expired, not cacheable";
     }
-    else if (r->parsed_uri.query && exps == NULL) {
+    else if (!conf->ignorequerystring && r->parsed_uri.query && exps == NULL) {
         /* if query string present but no expiration time, don't cache it
          * (RFC 2616/13.9)
          */
@@ -920,6 +920,9 @@ static void * create_cache_config(apr_pool_t *p, server_rec *s)
     /* array of headers that should not be stored in cache */
     ps->ignore_headers = apr_array_make(p, 10, sizeof(char *));
     ps->ignore_headers_set = CACHE_IGNORE_HEADERS_UNSET;
+    /* flag indicating that query-string should be ignored when caching */
+    ps->ignorequerystring = 0;
+    ps->ignorequerystring_set = 0;
     return ps;
 }
 
@@ -966,6 +969,10 @@ static void * merge_cache_config(apr_pool_t *p, void *basev, void *overridesv)
         (overrides->ignore_headers_set == CACHE_IGNORE_HEADERS_UNSET)
         ? base->ignore_headers
         : overrides->ignore_headers;
+    ps->ignorequerystring =
+        (overrides->ignorequerystring_set == 0)
+        ? base->ignorequerystring
+        : overrides->ignorequerystring;
     return ps;
 }
 static const char *set_cache_ignore_no_last_mod(cmd_parms *parms, void *dummy,
@@ -1157,6 +1164,19 @@ static const char *set_cache_factor(cmd_parms *parms, void *dummy,
     return NULL;
 }
 
+static const char *set_cache_ignore_querystring(cmd_parms *parms, void *dummy,
+                                                int flag)
+{
+    cache_server_conf *conf;
+
+    conf =
+        (cache_server_conf *)ap_get_module_config(parms->server->module_config,
+                                                  &cache_module);
+    conf->ignorequerystring = flag;
+    conf->ignorequerystring_set = 1;
+    return NULL;
+}
+
 static int cache_post_config(apr_pool_t *p, apr_pool_t *plog,
                              apr_pool_t *ptemp, server_rec *s)
 {
@@ -1208,6 +1228,9 @@ static const command_rec cache_cmds[] =
     AP_INIT_ITERATE("CacheIgnoreHeaders", add_ignore_header, NULL, RSRC_CONF,
                     "A space separated list of headers that should not be "
                     "stored by the cache"),
+    AP_INIT_FLAG("CacheIgnoreQueryString", set_cache_ignore_querystring,
+                 NULL, RSRC_CONF,
+                 "Ignore query-string when caching"),
     AP_INIT_TAKE1("CacheLastModifiedFactor", set_cache_factor, NULL, RSRC_CONF,
                   "The factor used to estimate Expires date from "
                   "LastModified date"),

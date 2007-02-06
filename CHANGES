@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cache: Add CacheIgnoreQueryString directive.  PR 41484.
+     [Fredrik Widlund <fredrik.widlund qbrick.com>]
+
   *) mod_dbd: Introduce configuration groups to allow inheritance by virtual
      hosts of database configurations from the main server.  Determine the
      minimal set of distinct configurations and share connection pools
