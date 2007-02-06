@@ -154,6 +154,9 @@ typedef struct {
     /* Minimum time to keep cached files in msecs */
     apr_time_t minex;
     int minex_set;
+    /** ignore query-string when caching */
+    int ignorequerystring;
+    int ignorequerystring_set;
 } cache_server_conf;
 
 /* cache info information */

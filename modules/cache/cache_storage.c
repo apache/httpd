@@ -345,9 +345,17 @@ int cache_select(request_rec *r)
 apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
                                         char**key)
 {
+    cache_server_conf *conf;
     char *port_str, *hn, *lcs;
     const char *hostname, *scheme;
     int i;
+
+    /*
+     * Get the module configuration. We need this for the CacheIgnoreQueryString
+     * option below.
+     */
+    conf = (cache_server_conf *) ap_get_module_config(r->server->module_config,
+                                                      &cache_module);
 
     /*
      * Use the canonical name to improve cache hit rate, but only if this is
@@ -439,9 +447,15 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         port_str = apr_psprintf(p, ":%u", ap_get_server_port(r));
     }
 
-    /* Key format is a URI */
-    *key = apr_pstrcat(p, scheme, "://", hostname, port_str,
-                       r->parsed_uri.path, "?", r->parsed_uri.query, NULL);
+    /* Key format is a URI, optionally without the query-string */
+    if (conf->ignorequerystring) {
+        *key = apr_pstrcat(p, scheme, "://", hostname, port_str,
+                           r->parsed_uri.path, "?", NULL);
+    }
+    else {
+        *key = apr_pstrcat(p, scheme, "://", hostname, port_str,
+                           r->parsed_uri.path, "?", r->parsed_uri.query, NULL);
+    }
 
     return APR_SUCCESS;
 }
