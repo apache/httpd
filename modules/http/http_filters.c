@@ -295,6 +295,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
                                         block, 0);
                     apr_brigade_cleanup(bb);
+                    if (block == APR_NONBLOCK_READ &&
+                        (APR_STATUS_IS_EAGAIN(rv))) {
+                        return APR_EAGAIN;
+                    }
                 } else {
                     rv = APR_SUCCESS;
                 }
