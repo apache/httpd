@@ -46,7 +46,7 @@
  * 20010726   (2.0.22-dev) more big API changes
  * 20010808   (2.0.23-dev) dir d_is_absolute bit introduced, bucket changes, etc
  * 20010825   (2.0.25-dev) removed d_is_absolute, introduced map_to_storage hook
- * 20011002   (2.0.26-dev) removed 1.3-depreciated request_rec.content_language
+ * 20011002   (2.0.26-dev) removed 1.3-deprecated request_rec.content_language
  * 20011127   (2.0.29-dev) bump for postconfig hook change, and removal of
  *                         socket from connection record
  * 20011212   (2.0.30-dev) bump for new used_path_info member of request_rec

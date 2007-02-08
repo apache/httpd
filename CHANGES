@@ -77,7 +77,7 @@ Changes with Apache 2.3.0
      on Win32.  PR 40476.  [Tom Donovan <Tom.Donovan acm.org>]
 
   *) The LockFile directive, which specifies the location of
-     the accept() mutex lockfile, is depreciated. Instead, the
+     the accept() mutex lockfile, is deprecated. Instead, the
      AcceptMutex directive now takes an optional lockfile
      location parameter, ala SSLMutex. [Jim Jagielski]
 
@@ -5357,7 +5357,7 @@ Changes with Apache 2.0.26
      and add commonly used audio/x-mpegurl for m3u extensions.        
      [Heiko Recktenwald <uzs106 uni-bonn.de>, Lars Eilebrecht]
 
-  *) Eliminate the depreciated r->content_language, in favor of the array
+  *) Eliminate the deprecated r->content_language, in favor of the array
      r->content_languages introduced many years ago.  Module authors must
      substantially overhaul their modules, so this needs to be upgraded
      if the module still relied on backwards-brokeness.  [William Rowe]
