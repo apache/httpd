@@ -246,8 +246,14 @@ for HTTP Basic authentication.</td></tr>
       <li>otherwise, deny or decline access</li>
     </ul>
 
-    <p>Other <code class="directive"><a href="../mod/core.html#require">Require</a></code> values may also be 
-    used which may require loading additional authorization modules.</p>
+    <p>Other <code class="directive"><a href="../mod/core.html#require">Require</a></code> values may also
+    be used which may require loading additional authorization modules.
+    Note that if you use a <code class="directive"><a href="../mod/core.html#require">Require</a></code>
+    value from another authorization module, you will need to ensure that
+    <code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code>
+    is set to <code>off</code> to allow the authorization phase to fall
+    back to the module providing the alternate
+    <code class="directive"><a href="../mod/core.html#require">Require</a></code> value.</p>
 
     <ul>
         <li>Grant access if there is a <a href="#requser"><code>require
