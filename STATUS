@@ -122,27 +122,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           I'll +1 it when that's done.
      wrowe: ditto's - good concept.
 
-   * core: Allow AcceptMutex to accept pathname arguments ala SSLMutex,
-     and, as a result, semi-depreciate Lockfile.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=467326
-       http://svn.apache.org/viewvc?view=rev&revision=468049
-     2.2.x version of patch:
-       Trunk version works (requires handling of CHANGES and ap_mmn.h
-       conflict though)
-     +1: jim, wrowe
-     wrowe notes: Adding to ease migration to 2.4 - good.  Deprecating 
-                  any directive in a .even released branch, bad.
-     jim notes: it's more an enhancement to AcceptMutex than a
-                depreciation of LockFile... no regressions are
-                introduced.
-     wrowe adds: Isn't it time for SSL/FTP/JK/FTP who all need the very
-                 same syntax to benefit from one generic implementation
-                 (in httpd, not apr, since it's config syntax specific).
-     -0: jorton: this is a nice cleanup but adds little/no value for 
-      2.2 users; save it for 2.4.  also: misses Win32 .dsp update?
-      spells "deprecate" incorrectly throughout.
-
    * mod_proxy_balancer: Remove unnecessary lock/unlock for
      the post_request hook. We are actually doing nothing here.
      But keep the code (but macroed out) for future usage.
