@@ -87,7 +87,7 @@ later.</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dumpio</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>DumpIOLogLevel is only available in Apache 2.3.x and 
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>DumpIOLogLevel is only available in Apache 2.2.4 and 
 later.</td></tr>
 </table>
     <p>Enable dumping of all output at a specific <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> level.</p>
