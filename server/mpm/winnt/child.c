@@ -169,7 +169,7 @@ PCOMP_CONTEXT mpm_get_completion_context(void)
                     return NULL;
                 }
 
-                /* Create the tranaction pool */
+                /* Create the transaction pool */
                 apr_allocator_create(&allocator);
                 apr_allocator_max_free_set(allocator, ap_max_mem_free);
                 rv = apr_pool_create_ex(&context->ptrans, pchild, NULL, 
