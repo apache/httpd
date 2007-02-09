@@ -15,7 +15,7 @@
 
 BEGIN {
     
-    A["ServerRoot"] = "SYS:/APACHE2"
+    A["ServerRoot"] = "SYS:/"BDIR
     A["Port"] = "80"
     A["cgidir"] = "cgi-bin"
     A["logfiledir"] = "logs"
