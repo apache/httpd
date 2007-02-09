@@ -205,6 +205,10 @@ INSTALL = $(AP_WORK)\Dist
 INSTDIRS = $(AP_WORK)\Dist
 endif
 
+ifndef BASEDIR
+BASEDIR = Apache2
+endif
+
 # Add support for building IPV6 alongside
 ifneq "$(IPV6)" ""
 DEFINES += -DNW_BUILD_IPV6
@@ -226,21 +230,21 @@ endif
 
 INSTDEVDIRS := \
     $(INSTDIRS) \
-	$(INSTALL)\Apache2\include \
-	$(INSTALL)\Apache2\lib \
+	$(INSTALL)\$(BASEDIR)\include \
+	$(INSTALL)\$(BASEDIR)\lib \
 
 INSTDIRS += \
-	$(INSTALL)\Apache2 \
-	$(INSTALL)\Apache2\bin \
-	$(INSTALL)\Apache2\cgi-bin \
-	$(INSTALL)\Apache2\conf \
-	$(INSTALL)\Apache2\error \
-	$(INSTALL)\Apache2\htdocs \
-	$(INSTALL)\Apache2\icons \
-	$(INSTALL)\Apache2\logs \
-	$(INSTALL)\Apache2\man \
-	$(INSTALL)\Apache2\manual \
-	$(INSTALL)\Apache2\modules \
+	$(INSTALL)\$(BASEDIR) \
+	$(INSTALL)\$(BASEDIR)\bin \
+	$(INSTALL)\$(BASEDIR)\cgi-bin \
+	$(INSTALL)\$(BASEDIR)\conf \
+	$(INSTALL)\$(BASEDIR)\error \
+	$(INSTALL)\$(BASEDIR)\htdocs \
+	$(INSTALL)\$(BASEDIR)\icons \
+	$(INSTALL)\$(BASEDIR)\logs \
+	$(INSTALL)\$(BASEDIR)\man \
+	$(INSTALL)\$(BASEDIR)\manual \
+	$(INSTALL)\$(BASEDIR)\modules \
 
 #
 # Declare Command and tool macros here
