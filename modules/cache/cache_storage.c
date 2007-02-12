@@ -346,9 +346,29 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
                                         char**key)
 {
     cache_server_conf *conf;
+    cache_request_rec *cache;
     char *port_str, *hn, *lcs;
     const char *hostname, *scheme;
     int i;
+
+    cache = (cache_request_rec *) ap_get_module_config(r->request_config,
+                                                       &cache_module);
+    if (!cache) {
+        /* This should never happen */
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "cache: No cache request information available for key"
+                     " generation");
+        *key = "";
+        return APR_EGENERAL;
+    }
+    if (cache->key) {
+        /*
+         * We have been here before during the processing of this request.
+         * So return the key we already have.
+         */
+        *key = apr_pstrdup(p, cache->key);
+        return APR_SUCCESS;
+    }
 
     /*
      * Get the module configuration. We need this for the CacheIgnoreQueryString
@@ -456,6 +476,16 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
         *key = apr_pstrcat(p, scheme, "://", hostname, port_str,
                            r->parsed_uri.path, "?", r->parsed_uri.query, NULL);
     }
+
+    /*
+     * Store the key in the request_config for the cache as r->parsed_uri
+     * might have changed in the time from our first visit here triggered by the
+     * quick handler and our possible second visit triggered by the CACHE_SAVE
+     * filter (e.g. r->parsed_uri got unescaped). In this case we would save the
+     * resource in the cache under a key where it is never found by the quick
+     * handler during following requests.
+     */
+    cache->key = apr_pstrdup(r->pool, *key);
 
     return APR_SUCCESS;
 }

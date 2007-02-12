@@ -249,6 +249,9 @@ typedef struct {
     apr_time_t lastmod;                 /* last-modified time */
     cache_info *info;                   /* current cache info */
     ap_filter_t *remove_url_filter;     /* Enable us to remove the filter */
+    char *key;                          /* The cache key created for this
+                                         * request
+                                         */
 } cache_request_rec;
 
 
