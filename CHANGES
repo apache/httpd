@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cache: Use the same cache key throughout the whole request processing
+     to handle escaped URLs correctly.  PR 41475. [Ruediger Pluem]
+
   *) mod_cache: Add CacheIgnoreQueryString directive.  PR 41484.
      [Fredrik Widlund <fredrik.widlund qbrick.com>]
 
