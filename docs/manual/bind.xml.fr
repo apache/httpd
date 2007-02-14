@@ -84,8 +84,8 @@
         adresses + ports, sp&#233;cifiez :</p>
 
         <example>
-            Listen 192.170.2.1:80<br />
-            Listen 192.170.2.5:8000
+            Listen 192.0.2.1:80<br />
+            Listen 192.0.2.5:8000
         </example>
 
         <p>Les adresses IPv6 sont accept&#233;es, pourvu qu'elles soient sp&#233;cifi&#233;es 
@@ -143,7 +143,7 @@
 
         <example>
             Listen 0.0.0.0:80<br />
-            Listen 192.170.2.1:80
+            Listen 192.0.2.1:80
         </example>
 
         <p>Pour qu'Apache manipule les connexions IPv4 et IPv6 sur des interfaces

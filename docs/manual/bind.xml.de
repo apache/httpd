@@ -82,8 +82,8 @@
     Sie an:</p>
       
     <example>
-      Listen 192.170.2.1:80<br />
-      Listen 192.170.2.5:8000
+      Listen 192.0.2.1:80<br />
+      Listen 192.0.2.5:8000
     </example>
 
     <p>IPv6-Adressen m&uuml;ssen wie im folgenden Beispiel in eckigen
@@ -136,7 +136,7 @@
 
     <example>
       Listen 0.0.0.0:80<br />
-      Listen 192.170.2.1:80
+      Listen 192.0.2.1:80
     </example>
 
     <p>Wenn Sie m&ouml;chten, dass der Apache IPv4- und IPv6-Verbindungen an

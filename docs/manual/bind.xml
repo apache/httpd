@@ -80,8 +80,8 @@
        and port 8080 on another, use</p>
 
     <example>
-      Listen 192.170.2.1:80<br />
-      Listen 192.170.2.5:8000
+      Listen 192.0.2.1:80<br />
+      Listen 192.0.2.5:8000
     </example>
 
     <p>IPv6 addresses must be enclosed in square brackets, as in the
@@ -128,7 +128,7 @@
 
     <example>
       Listen 0.0.0.0:80<br />
-      Listen 192.170.2.1:80
+      Listen 192.0.2.1:80
     </example>
 
     <p>If your platform supports it and you want Apache to handle IPv4 and 
