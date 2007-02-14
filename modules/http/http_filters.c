@@ -857,7 +857,7 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     if (conf->trace_enable == AP_TRACE_DISABLE) {
         apr_table_setn(r->notes, "error-notes",
                       "TRACE denied by server configuration");
-        return HTTP_FORBIDDEN;
+        return HTTP_METHOD_NOT_ALLOWED;
     }
 
     if (conf->trace_enable == AP_TRACE_EXTENDED)
