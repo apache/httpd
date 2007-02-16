@@ -12,7 +12,7 @@ Changes with Apache 2.3.0
      hosts of database configurations from the main server.  Determine the
      minimal set of distinct configurations and share connection pools
      whenever possible.  Allow virtual hosts to override inherited SQL
-     statements.  [Chris Darroch]
+     statements.  PR 41302.  [Chris Darroch]
 
   *) core: Fix broken chunk filtering that causes all non blocking reads to be
      converted into blocking reads.  PR 41056. [Jean-Frederic Clere, Jim Jagielski]
