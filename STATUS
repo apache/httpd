@@ -117,7 +117,7 @@ RELEASE SHOWSTOPPERS:
          http://svn.apache.org/viewvc?view=rev&revision=507516
       2.0 version:
          http://people.apache.org/~jim/patches/httpd-2.0-proxy.patch
-      +1: jim
+      +1: jim, minfrin
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
