@@ -113,8 +113,10 @@ RELEASE SHOWSTOPPERS:
     * mod_proxy: ProxyTimeout (and others) ignored due to not merging
       the *_set params.
       PR# 11540
-      http://svn.apache.org/viewvc?view=rev&revision=507516
-      (Note: includes some not applicable to 2.0.x)
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=507516
+      2.0 version:
+         http://people.apache.org/~jim/patches/httpd-2.0-proxy.patch
       +1: jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
