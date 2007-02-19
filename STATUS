@@ -177,3 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=486320
      +1: trawick, rpluem
 
+   * mod_ldap: Fix the search limit parameter to ldap_search_ext_s()
+     http://svn.apache.org/viewvc?view=rev&rev=509237
+     +1: trawick
