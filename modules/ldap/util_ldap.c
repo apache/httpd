@@ -52,6 +52,9 @@
 #define LDAP_CA_TYPE_BASE64             2
 #define LDAP_CA_TYPE_CERT7_DB           3
 
+#ifndef LDAP_NO_LIMIT
+#define LDAP_NO_LIMIT -1
+#endif
 
 module AP_MODULE_DECLARE_DATA ldap_module;
 
@@ -657,7 +660,7 @@ start_over:
     /* search for reqdn */
     if ((result = ldap_search_ext_s(ldc->ldap, (char *)reqdn, LDAP_SCOPE_BASE,
                                     "(objectclass=*)", NULL, 1,
-                                    NULL, NULL, NULL, -1, &res))
+                                    NULL, NULL, NULL, LDAP_NO_LIMIT, &res))
             == LDAP_SERVER_DOWN)
     {
         ldc->reason = "DN Comparison ldap_search_ext_s() "
@@ -935,7 +938,7 @@ start_over:
     if ((result = ldap_search_ext_s(ldc->ldap,
                                     (char *)basedn, scope,
                                     (char *)filter, attrs, 0,
-                                    NULL, NULL, NULL, -1, &res))
+                                    NULL, NULL, NULL, LDAP_NO_LIMIT, &res))
             == LDAP_SERVER_DOWN)
     {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
@@ -1175,7 +1178,7 @@ start_over:
     if ((result = ldap_search_ext_s(ldc->ldap,
                                     (char *)basedn, scope,
                                     (char *)filter, attrs, 0,
-                                    NULL, NULL, NULL, -1, &res))
+                                    NULL, NULL, NULL, LDAP_NO_LIMIT, &res))
             == LDAP_SERVER_DOWN)
     {
         ldc->reason = "ldap_search_ext_s() for user failed with server down";
