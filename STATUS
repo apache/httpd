@@ -170,7 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      the Content-Length header of the request correctly.
        PR: 40883
      http://svn.apache.org/viewvc?view=rev&revision=486320
-     +1: trawick, rpluem
+     +1: trawick, rpluem, jim
 
    * mod_ldap: Fix the search limit parameter to ldap_search_ext_s()
      http://svn.apache.org/viewvc?view=rev&rev=509237
