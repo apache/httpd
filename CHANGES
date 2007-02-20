@@ -251,6 +251,9 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.5
 
+  *) mod_proxy: Fix some proxy setting inheritance problems (eg:
+     ProxyTimeout). PR 11540. [Stuart Children <stuart terminus.co.uk>]
+
   *) Unix MPMs: Catch SIGFPE so that exception hooks and CoreDumpDirectory
      can work after that terminating signal.
      [Eric Covener <covener gmail.com>]
