@@ -180,3 +180,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ldap: Fix the search limit parameter to ldap_search_ext_s()
      http://svn.apache.org/viewvc?view=rev&rev=509237
      +1: trawick
+     -0: bnicholes - The patch as it stands, could cause unpredictible
+          behavior across SDKs depending on whether or not the SDK
+	  has defined LDAP_NO_LIMIT. The behavior of the ldap_search_ext_s()
+	  call can be different if the sizelimit parameter is 0 vs -1.
+	  At the very least, the patch needs to be revised so that the
+	  behavior is common across all SDKs.
