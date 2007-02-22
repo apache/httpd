@@ -43,7 +43,7 @@ char * ajp_msg_dump(apr_pool_t *pool, ajp_msg_t *msg, char *err)
     rv = apr_palloc(pool, bl);
     apr_snprintf(rv, bl,
                  "ajp_msg_dump(): %s pos=%" APR_SIZE_T_FMT
-                 " len=%" APR_SIZE_T_FMT " max=%d\n",
+                 " len=%" APR_SIZE_T_FMT " max=%" APR_SIZE_T_FMT "\n",
                  err, msg->pos, msg->len, msg->max_size);
     bl -= strlen(rv);
     p = rv + strlen(rv);
@@ -112,7 +112,7 @@ apr_status_t ajp_msg_check_header(ajp_msg_t *msg, apr_size_t *len)
     if (msglen > msg->max_size) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                      "ajp_check_msg_header() incoming message is "
-                     "too big %" APR_SIZE_T_FMT ", max is %d",
+                     "too big %" APR_SIZE_T_FMT ", max is %" APR_SIZE_T_FMT,
                      msglen, msg->max_size);
         return AJP_ETOBIG;
     }
@@ -551,7 +551,7 @@ apr_status_t ajp_msg_copy(ajp_msg_t *smsg, ajp_msg_t *dmsg)
     if (smsg->len > smsg->max_size) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
                      "ajp_msg_copy(): destination buffer too "
-                     "small %" APR_SIZE_T_FMT ", max size is %d",
+                     "small %" APR_SIZE_T_FMT ", max size is %" APR_SIZE_T_FMT,
                      smsg->len, smsg->max_size);
         return  AJP_ETOSMALL;
     }
