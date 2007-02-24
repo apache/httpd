@@ -1684,7 +1684,8 @@ SSLHonorCipherOrder on
 <syntax>SSLCryptoDevice <em>engine</em></syntax>
 <default>SSLCryptoDevice builtin</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>Available if mod_ssl is built using <code>-DSSL_ENGINE_EXPERIMENTAL</code></compatibility>
+<compatibility>Available in Apache 2.1 and later, if using -engine flavor of OpenSSL 
+               0.9.6, or OpenSSL 0.9.7 or later</compatibility>
 
 <usage>
 <p>
