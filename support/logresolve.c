@@ -237,7 +237,7 @@ int main(int argc, const char * const argv[])
         if (status != APR_SUCCESS) {
             /* Not an IP address */
                 withname++;
-            *space = ' ';
+            if (space) *space = ' ';
             apr_file_puts(line, outfile);
             continue;
         }
