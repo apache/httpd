@@ -90,13 +90,13 @@ accepting requests on network sockets</td></tr>
       <dd>uses the <code>flock(2)</code> system call to lock the
       file defined by the optional <var>/path/to/lockfile</var>
       parameter. One can also use the <code class="directive"><a href="#lockfile">LockFile</a></code> directive to specify the lockfile,
-      although this is depreciated.</dd>
+      although this is deprecated.</dd>
 
       <dt><code>fcntl&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
       <dd>uses the <code>fcntl(2)</code> system call to lock the
       file defined by the optional <var>/path/to/lockfile</var>
       parameter. One can also use the <code class="directive"><a href="#lockfile">LockFile</a></code> directive to specify the lockfile,
-      although this is depreciated.</dd>
+      although this is deprecated.</dd>
 
       <dt><code>file&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
       <dd>This directive tells Apache to pick the "best" file locking
@@ -371,7 +371,7 @@ The <var>protocol</var> argument was added in 2.1.5</td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LockFile" id="LockFile">LockFile</a> <a name="lockfile" id="lockfile">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the accept serialization lock file <em>(depreciated)</em></td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the accept serialization lock file <em>(deprecated)</em></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LockFile <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LockFile logs/accept.lock</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
@@ -394,8 +394,8 @@ The <var>protocol</var> argument was added in 2.1.5</td></tr>
       creating a lockfile with the same name as the one the server will try
       to create.</p>
     </div>
-    <div class="warning"><h3>Depreciated</h3>
-      <p>This directive is depreciated. It is strongly suggested that
+    <div class="warning"><h3>Deprecated</h3>
+      <p>This directive is deprecated. It is strongly suggested that
       you use <code class="directive"><a href="#acceptmutex">AcceptMutex</a></code> to
       specify both the mutex locking implementation as well as
       the lockfile location.</p>
