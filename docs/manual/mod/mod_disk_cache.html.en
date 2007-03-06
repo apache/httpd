@@ -67,16 +67,19 @@
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
 </table>
     <p>The <code class="directive">CacheDirLength</code> directive sets the number
-    of characters for each subdirectory name in the cache hierarchy.</p>
+    of characters for each subdirectory name in the cache hierarchy. It can
+    be used in conjunction with <code class="directive">CacheDirLevels</code> to
+    determine the approximate structure of your cache hierarchy.</p>
+    <p>A high value for <code class="directive">CacheDirLength</code> combined
+    with a low value for <code class="directive">CacheDirLevels</code> will result in
+    a relatively flat hierarchy, with a large number of subdirectories at each
+    level.</p>
 
     <div class="note">
       <p>The result of <code class="directive"><a href="#cachedirlevels">CacheDirLevels</a></code>* <code class="directive">CacheDirLength</code>
       must not be higher than 20.</p>
     </div>
 
-    <div class="example"><p><code>
-      CacheDirLength  4
-    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -85,7 +88,7 @@
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The number of levels of subdirectories in the
 cache.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>CacheDirLevels <var>levels</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheDirLevels 3</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>CacheDirLevels 2</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_disk_cache</td></tr>
@@ -93,6 +96,10 @@ cache.</td></tr>
     <p>The <code class="directive">CacheDirLevels</code> directive sets the number
     of subdirectory levels in the cache. Cached data will be saved this
     many directory levels below the <code class="directive"><a href="#cacheroot">CacheRoot</a></code> directory.</p>
+    <p>A high value for <code class="directive">CacheDirLevels</code> combined
+    with a low value for <code class="directive">CacheDirLength</code> will result in
+    a relatively deep hierarchy, with a small number of subdirectories at each
+    level.</p>
 
     <div class="note">
       <p>The result of <code class="directive">CacheDirLevels</code>*
@@ -100,9 +107,6 @@ cache.</td></tr>
       not be higher than 20.</p>
     </div>
 
-    <div class="example"><p><code>
-      CacheDirLevels  5
-    </code></p></div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
