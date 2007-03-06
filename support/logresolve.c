@@ -228,7 +228,7 @@ int main(int argc, const char * const argv[])
         hostname = (char *) apr_hash_get(cache, line, APR_HASH_KEY_STRING);
         if (hostname) {
             apr_file_printf(outfile, "%s %s", hostname, space + 1);
-                cachehits++;
+            cachehits++;
             continue;
         }
 
@@ -236,7 +236,7 @@ int main(int argc, const char * const argv[])
         status = apr_sockaddr_info_get(&ip, line, APR_UNSPEC ,0, 0, pool);
         if (status != APR_SUCCESS) {
             /* Not an IP address */
-                withname++;
+            withname++;
             if (space) *space = ' ';
             apr_file_puts(line, outfile);
             continue;
@@ -246,7 +246,7 @@ int main(int argc, const char * const argv[])
          * "parsed as an IP address". It does not mean we actually resolved
          * the IP address into a hostname.
          */
-            resolves++;
+        resolves++;
 
         /* From here on our we cache each result, even if it was not
          * succesful
