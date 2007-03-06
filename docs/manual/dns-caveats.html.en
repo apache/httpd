@@ -61,11 +61,11 @@
     to this virtual host (prior to Apache version 1.2 the server
     would not even boot).</p>
 
-    <p>Suppose that <code>www.abc.dom</code> has address 10.0.0.1.
+    <p>Suppose that <code>www.abc.dom</code> has address 192.0.2.1.
     Then consider this configuration snippet:</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost 10.0.0.1&gt; <br />
+      &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
@@ -84,7 +84,7 @@
     <p>Here is a snippet that avoids both of these problems:</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost 10.0.0.1&gt; <br />
+      &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerName www.abc.dom <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
@@ -124,18 +124,18 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>Suppose that you've assigned 10.0.0.1 to
-    <code>www.abc.dom</code> and 10.0.0.2 to
+    <p>Suppose that you've assigned 192.0.2.1 to
+    <code>www.abc.dom</code> and 192.0.2.2 to
     <code>www.def.dom</code>. Furthermore, suppose that
     <code>def.dom</code> has control of their own DNS. With this
     config you have put <code>def.dom</code> into a position where
     they can steal all traffic destined to <code>abc.dom</code>. To
     do so, all they have to do is set <code>www.def.dom</code> to
-    10.0.0.1. Since they control their own DNS you can't stop them
+    192.0.2.1. Since they control their own DNS you can't stop them
     from pointing the <code>www.def.dom</code> record wherever they
     wish.</p>
 
-    <p>Requests coming in to 10.0.0.1 (including all those where
+    <p>Requests coming in to 192.0.2.1 (including all those where
     users typed in URLs of the form
     <code>http://www.abc.dom/whatever</code>) will all be served by
     the <code>def.dom</code> virtual host. To better understand why
