@@ -458,9 +458,33 @@ expressions</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>BalancerMember</name>
+<description>Add a member to a load balancing group</description>
+<syntax>BalancerMember <var>url</var> [<var
+		>key=value [key=value ...]]</var></syntax>
+<contextlist><context>directory</context>
+</contextlist>
+<compatibility>BalancerMember is only available in Apache 2.2.0
+	and later.</compatibility>
+<usage>
+    <p>This directive adds a member to a load balancing group. It must be used
+    within a <directive module="mod_proxy">&lt;Proxy <var
+    >balancer://</var>...&gt;</directive> container directive, and can take any
+    of the parameters available to 
+    <directive module="mod_proxy">ProxyPass</directive> directives.</p>
+    <p>One additional parameter is available only to <directive
+    module="mod_proxy">BalancerMember</directive> directives:
+    <var>loadfactor</var>. This is the member load factor - a number between 1 
+    (default) and 100, which defines the weighted load to be applied to the 
+    member in question.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ProxyPass</name>
 <description>Maps remote servers into the local server URL-space</description>
-<syntax>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var> <var>key=value</var> ...]]</syntax>
+<syntax>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
+	<var>[key=value</var> ...]]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -591,12 +615,6 @@ expressions</description>
         <td>Sets the load balancer cluster set that the worker is a member
          of. The load balancer will try all members of a lower numbered
          lbset before trying higher numbered ones.
-    </td></tr>
-    <tr><td>loadfactor</td>
-        <td>1</td>
-        <td>Worker load factor. Used with BalancerMember.
-         It is a number between 1 and 100 and defines the normalized weighted
-         load applied to the worker.
     </td></tr>
     <tr><td>ping</td>
         <td>0</td>

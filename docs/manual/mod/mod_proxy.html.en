@@ -63,6 +63,7 @@
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#allowconnect">AllowCONNECT</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#balancermember">BalancerMember</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#noproxy">NoProxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">&lt;Proxy&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxybadheader">ProxyBadHeader</a></li>
@@ -309,6 +310,27 @@ proxy</td></tr>
     <p>Note that you'll need to have <code class="module"><a href="../mod/mod_proxy_connect.html">mod_proxy_connect</a></code> present
     in the server in order to get the support for the <code>CONNECT</code> at
     all.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="BalancerMember" id="BalancerMember">BalancerMember</a> <a name="balancermember" id="balancermember">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Add a member to a load balancing group</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>BalancerMember <var>url</var> [<var>key=value [key=value ...]]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerMember is only available in Apache 2.2.0
+	and later.</td></tr>
+</table>
+    <p>This directive adds a member to a load balancing group. It must be used
+    within a <code class="directive"><a href="#&lt;proxy balancer://...&gt;">&lt;Proxy balancer://...&gt;</a></code> container directive, and can take any
+    of the parameters available to 
+    <code class="directive"><a href="#proxypass">ProxyPass</a></code> directives.</p>
+    <p>One additional parameter is available only to <code class="directive"><a href="#balancermember">BalancerMember</a></code> directives:
+    <var>loadfactor</var>. This is the member load factor - a number between 1 
+    (default) and 100, which defines the weighted load to be applied to the 
+    member in question.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -648,7 +670,8 @@ through</td></tr>
 <div class="directive-section"><h2><a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a name="proxypass" id="proxypass">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps remote servers into the local server URL-space</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var> <var>key=value</var> ...]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
+	<var>[key=value</var> ...]]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -777,12 +800,6 @@ through</td></tr>
         <td>Sets the load balancer cluster set that the worker is a member
          of. The load balancer will try all members of a lower numbered
          lbset before trying higher numbered ones.
-    </td></tr>
-    <tr><td>loadfactor</td>
-        <td>1</td>
-        <td>Worker load factor. Used with BalancerMember.
-         It is a number between 1 and 100 and defines the normalized weighted
-         load applied to the worker.
     </td></tr>
     <tr><td>ping</td>
         <td>0</td>
