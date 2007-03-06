@@ -259,12 +259,12 @@ int main(int argc, const char * const argv[])
         status = apr_getnameinfo(&hostname, ip, 0) != APR_SUCCESS;
         if (status || hostname == NULL) {
             /* Could not perform a reverse lookup */
-            *space = ' ';
+            if (space) *space = ' ';
             apr_file_puts(line, outfile);
             noreverse++;
 
             /* Add to cache */
-            *space = '\0';
+            if (space) *space = '\0';
             apr_hash_set(cache, line, APR_HASH_KEY_STRING,
                          apr_pstrdup(pool, line));
             continue;
@@ -280,12 +280,12 @@ int main(int argc, const char * const argv[])
             if (status == APR_SUCCESS ||
                 memcmp(ipdouble->ipaddr_ptr, ip->ipaddr_ptr, ip->ipaddr_len)) {
                 /* Double-lookup failed  */
-                *space = ' ';
+                if (space) *space = ' ';
                 apr_file_puts(line, outfile);
                 doublefailed++;
 
                 /* Add to cache */
-                *space = '\0';
+                if (space) *space = '\0';
                 apr_hash_set(cache, line, APR_HASH_KEY_STRING,
                              apr_pstrdup(pool, line));
                 continue;
