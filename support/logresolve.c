@@ -227,7 +227,7 @@ int main(int argc, const char * const argv[])
         /* See if we have it in our cache */
         hostname = (char *) apr_hash_get(cache, line, APR_HASH_KEY_STRING);
         if (hostname) {
-            apr_file_printf(outfile, hostname);
+            apr_file_printf(outfile, "%s", hostname);
             if (space) 
                 apr_file_printf(outfile, " %s", space + 1);
             cachehits++;
