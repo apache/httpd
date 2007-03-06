@@ -6,10 +6,10 @@
   <relpath>.</relpath>
 
   <variants>
-    <variant htmlonly="yes">de</variant>
+    <variant outdated="yes">de</variant>
     <variant>en</variant>
-    <variant htmlonly="yes">fr</variant>
-    <variant htmlonly="yes">ja</variant>
-    <variant htmlonly="yes">ko</variant>
+    <variant outdated="yes">fr</variant>
+    <variant outdated="yes">ja</variant>
+    <variant outdated="yes">ko</variant>
   </variants>
 </metafile>
