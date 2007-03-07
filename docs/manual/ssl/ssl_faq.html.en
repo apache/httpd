@@ -49,7 +49,6 @@ author.</p>
 <h2><a name="about" id="about">About The Module</a></h2>
 <ul>
 <li><a href="#history">What is the history of mod_ssl?</a></li>
-<li><a href="#y2k">mod_ssl and Year 2000?</a></li>
 <li><a href="#wassenaar">mod_ssl and Wassenaar Arrangement?</a></li>
 </ul>
 
