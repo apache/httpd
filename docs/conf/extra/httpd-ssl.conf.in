@@ -58,14 +58,14 @@ SSLPassPhraseDialog  builtin
 #   Inter-Process Session Cache:
 #   Configure the SSL Session Cache: First the mechanism 
 #   to use and second the expiring timeout (in seconds).
-#SSLSessionCache         dbm:@exp_runtimedir@/ssl_scache
-SSLSessionCache        shmcb:@exp_runtimedir@/ssl_scache(512000)
+#SSLSessionCache         "dbm:@exp_runtimedir@/ssl_scache"
+SSLSessionCache        "shmcb:@exp_runtimedir@/ssl_scache(512000)"
 SSLSessionCacheTimeout  300
 
 #   Semaphore:
 #   Configure the path to the mutual exclusion semaphore the
 #   SSL engine uses internally for inter-process synchronization. 
-SSLMutex  file:@exp_runtimedir@/ssl_mutex
+SSLMutex  "file:@exp_runtimedir@/ssl_mutex"
 
 ##
 ## SSL Virtual Host Context
@@ -77,8 +77,8 @@ SSLMutex  file:@exp_runtimedir@/ssl_mutex
 DocumentRoot "@exp_htdocsdir@"
 ServerName www.example.com:443
 ServerAdmin you@example.com
-ErrorLog @exp_logfiledir@/error_log
-TransferLog @exp_logfiledir@/access_log
+ErrorLog "@exp_logfiledir@/error_log"
+TransferLog "@exp_logfiledir@/access_log"
 
 #   SSL Engine Switch:
 #   Enable/Disable SSL for this virtual host.
@@ -96,16 +96,16 @@ SSLCipherSuite ALL:!ADH:!EXPORT56:RC4+RSA:+HIGH:+MEDIUM:+LOW:+SSLv2:+EXP:+eNULL
 #   in mind that if you have both an RSA and a DSA certificate you
 #   can configure both in parallel (to also allow the use of DSA
 #   ciphers, etc.)
-SSLCertificateFile @exp_sysconfdir@/server.crt
-#SSLCertificateFile @exp_sysconfdir@/server-dsa.crt
+SSLCertificateFile "@exp_sysconfdir@/server.crt"
+#SSLCertificateFile "@exp_sysconfdir@/server-dsa.crt"
 
 #   Server Private Key:
 #   If the key is not combined with the certificate, use this
 #   directive to point at the key file.  Keep in mind that if
 #   you've both a RSA and a DSA private key you can configure
 #   both in parallel (to also allow the use of DSA ciphers, etc.)
-SSLCertificateKeyFile @exp_sysconfdir@/server.key
-#SSLCertificateKeyFile @exp_sysconfdir@/server-dsa.key
+SSLCertificateKeyFile "@exp_sysconfdir@/server.key"
+#SSLCertificateKeyFile "@exp_sysconfdir@/server-dsa.key"
 
 #   Server Certificate Chain:
 #   Point SSLCertificateChainFile at a file containing the
@@ -114,7 +114,7 @@ SSLCertificateKeyFile @exp_sysconfdir@/server.key
 #   the referenced file can be the same as SSLCertificateFile
 #   when the CA certificates are directly appended to the server
 #   certificate for convenience.
-#SSLCertificateChainFile @exp_sysconfdir@/server-ca.crt
+#SSLCertificateChainFile "@exp_sysconfdir@/server-ca.crt"
 
 #   Certificate Authority (CA):
 #   Set the CA certificate verification path where to find CA
@@ -123,8 +123,8 @@ SSLCertificateKeyFile @exp_sysconfdir@/server.key
 #   Note: Inside SSLCACertificatePath you need hash symlinks
 #         to point to the certificate files. Use the provided
 #         Makefile to update the hash symlinks after changes.
-#SSLCACertificatePath @exp_sysconfdir@/ssl.crt
-#SSLCACertificateFile @exp_sysconfdir@/ssl.crt/ca-bundle.crt
+#SSLCACertificatePath "@exp_sysconfdir@/ssl.crt"
+#SSLCACertificateFile "@exp_sysconfdir@/ssl.crt/ca-bundle.crt"
 
 #   Certificate Revocation Lists (CRL):
 #   Set the CA revocation path where to find CA CRLs for client
@@ -133,8 +133,8 @@ SSLCertificateKeyFile @exp_sysconfdir@/server.key
 #   Note: Inside SSLCARevocationPath you need hash symlinks
 #         to point to the certificate files. Use the provided
 #         Makefile to update the hash symlinks after changes.
-#SSLCARevocationPath @exp_sysconfdir@/ssl.crl
-#SSLCARevocationFile @exp_sysconfdir@/ssl.crl/ca-bundle.crl
+#SSLCARevocationPath "@exp_sysconfdir@/ssl.crl"
+#SSLCARevocationFile "@exp_sysconfdir@/ssl.crl/ca-bundle.crl"
 
 #   Client Authentication (Type):
 #   Client certificate verification type and depth.  Types are
@@ -225,7 +225,7 @@ BrowserMatch ".*MSIE.*" \
 #   Per-Server Logging:
 #   The home of a custom SSL log file. Use this when you want a
 #   compact non-error SSL logfile on a virtual host basis.
-CustomLog @exp_logfiledir@/ssl_request_log \
+CustomLog "@exp_logfiledir@/ssl_request_log" \
           "%t %h %{SSL_PROTOCOL}x %{SSL_CIPHER}x \"%r\" %b"
 
 </VirtualHost>                                  
