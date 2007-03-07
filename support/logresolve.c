@@ -205,6 +205,8 @@ int main(int argc, const char * const argv[])
     cache = apr_hash_make(pool);
 
     while (apr_file_gets(line, 2048, infile) == APR_SUCCESS) {
+        char dummy[] = " " APR_EOL_STR;
+
         if (line[0] == '\0') {
             continue;
         }
@@ -223,13 +225,14 @@ int main(int argc, const char * const argv[])
         if ((space = strchr(line, ' ')) != NULL) {
             *space = '\0';
         }
+        else {
+            space = dummy;
+        }
 
         /* See if we have it in our cache */
         hostname = (char *) apr_hash_get(cache, line, APR_HASH_KEY_STRING);
         if (hostname) {
-            apr_file_printf(outfile, "%s", hostname);
-            if (space) 
-                apr_file_printf(outfile, " %s", space + 1);
+            apr_file_printf(outfile, "%s %s", hostname, space + 1);
             cachehits++;
             continue;
         }
@@ -239,7 +242,7 @@ int main(int argc, const char * const argv[])
         if (status != APR_SUCCESS) {
             /* Not an IP address */
             withname++;
-            if (space) *space = ' ';
+            *space = ' ';
             apr_file_puts(line, outfile);
             continue;
         }
@@ -259,12 +262,12 @@ int main(int argc, const char * const argv[])
         status = apr_getnameinfo(&hostname, ip, 0) != APR_SUCCESS;
         if (status || hostname == NULL) {
             /* Could not perform a reverse lookup */
-            if (space) *space = ' ';
+            *space = ' ';
             apr_file_puts(line, outfile);
             noreverse++;
 
             /* Add to cache */
-            if (space) *space = '\0';
+            *space = '\0';
             apr_hash_set(cache, line, APR_HASH_KEY_STRING,
                          apr_pstrdup(pool, line));
             continue;
@@ -280,12 +283,12 @@ int main(int argc, const char * const argv[])
             if (status == APR_SUCCESS ||
                 memcmp(ipdouble->ipaddr_ptr, ip->ipaddr_ptr, ip->ipaddr_len)) {
                 /* Double-lookup failed  */
-                if (space) *space = ' ';
+                *space = ' ';
                 apr_file_puts(line, outfile);
                 doublefailed++;
 
                 /* Add to cache */
-                if (space) *space = '\0';
+                *space = '\0';
                 apr_hash_set(cache, line, APR_HASH_KEY_STRING,
                              apr_pstrdup(pool, line));
                 continue;
