@@ -258,6 +258,7 @@ struct data {
 /* --------------------- GLOBALS ---------------------------- */
 
 int verbosity = 0;      /* no verbosity by default */
+int recverrok = 0;      /* ok to proceed after socket receive errors */
 int posting = 0;        /* GET by default */
 int requests = 1;       /* Number of requests to make */
 int heartbeatres = 100; /* How often do we say we're alive */
@@ -317,7 +318,7 @@ BIO *bio_out,*bio_err;
 #endif
 
 /* store error cases */
-int err_length = 0, err_conn = 0, err_except = 0;
+int err_length = 0, err_conn = 0, err_recv = 0, err_except = 0;
 int err_response = 0;
 
 apr_time_t start, endtime;
@@ -760,8 +761,8 @@ static void output_results(int sig)
     printf("Complete requests:      %ld\n", done);
     printf("Failed requests:        %ld\n", bad);
     if (bad)
-        printf("   (Connect: %d, Length: %d, Exceptions: %d)\n",
-            err_conn, err_length, err_except);
+        printf("   (Connect: %d, Receive: %d, Length: %d, Exceptions: %d)\n",
+            err_conn, err_recv, err_length, err_except);
     printf("Write errors:           %ld\n", epipe);
     if (err_response)
         printf("Non-2xx responses:      %d\n", err_response);
@@ -1329,10 +1330,18 @@ static void read_connection(struct connection * c)
         }
         /* catch legitimate fatal apr_socket_recv errors */
         else if (status != APR_SUCCESS) {
-            err_except++; /* XXX: is this the right error counter? */
-            /* XXX: Should errors here be fatal, or should we allow a
-             * certain number of them before completely failing? -aaron */
-            apr_err("apr_socket_recv", status);
+            err_recv++;
+            if (recverrok) {
+                bad++;
+                close_connection(c);
+                if (verbosity >= 1) {
+                    char buf[120];
+                    fprintf(stderr,"%s: %s (%d)\n", "apr_socket_recv", apr_strerror(status, buf, sizeof buf), status);
+                }
+                return;
+            } else {
+                apr_err("apr_socket_recv", status);
+            }
         }
     }
 
@@ -1819,6 +1828,7 @@ static void usage(const char *progname)
     fprintf(stderr, "    -S              Do not show confidence estimators and warnings.\n");
     fprintf(stderr, "    -g filename     Output collected data to gnuplot format file.\n");
     fprintf(stderr, "    -e filename     Output CSV file with percentages served\n");
+    fprintf(stderr, "    -r              Don't exit on socket receive errors.\n");
     fprintf(stderr, "    -h              Display usage information (this message)\n");
 #ifdef USE_SSL
     fprintf(stderr, "    -Z ciphersuite  Specify SSL/TLS cipher suite (See openssl ciphers)\n");
@@ -1981,7 +1991,7 @@ int main(int argc, const char * const argv[])
 #endif
 
     apr_getopt_init(&opt, cntxt, argc, argv);
-    while ((status = apr_getopt(opt, "n:c:t:b:T:p:v:kVhwix:y:z:C:H:P:A:g:X:de:Sq"
+    while ((status = apr_getopt(opt, "n:c:t:b:T:p:v:rkVhwix:y:z:C:H:P:A:g:X:de:Sq"
 #ifdef USE_SSL
             "Z:f:"
 #endif
@@ -2031,6 +2041,9 @@ int main(int argc, const char * const argv[])
                 else if (postdata) {
                     exit(r);
                 }
+                break;
+            case 'r':
+                recverrok = 1;
                 break;
             case 'v':
                 verbosity = atoi(optarg);
