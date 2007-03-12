@@ -28,16 +28,16 @@
 #include "http_protocol.h"   /* For index_of_response().  Grump. */
 #include "http_request.h"
 
-/* Generate the human-readable hex representation of an unsigned long
- * (basically a faster version of 'sprintf("%lx")')
+/* Generate the human-readable hex representation of an apr_uint64_t
+ * (basically a faster version of 'sprintf("%llx")')
  */
 #define HEX_DIGITS "0123456789abcdef"
-static char *etag_ulong_to_hex(char *next, unsigned long u)
+static char *etag_uint64_to_hex(char *next, apr_uint64_t u)
 {
     int printing = 0;
     int shift = sizeof(unsigned long) * 8 - 4;
     do {
-        unsigned long next_digit = ((u >> shift) & (unsigned long)0xf);
+        unsigned short next_digit = ((u >> shift) & (apr_uint64_t)0xf);
         if (next_digit) {
             *next++ = HEX_DIGITS[next_digit];
             printing = 1;
@@ -47,12 +47,12 @@ static char *etag_ulong_to_hex(char *next, unsigned long u)
         }
         shift -= 4;
     } while (shift);
-    *next++ = HEX_DIGITS[u & (unsigned long)0xf];
+    *next++ = HEX_DIGITS[u & (apr_uint64_t)0xf];
     return next;
 }
 
 #define ETAG_WEAK "W/"
-#define CHARS_PER_UNSIGNED_LONG (sizeof(unsigned long) * 2)
+#define CHARS_PER_UINT64 (sizeof(apr_uint64_t) * 2)
 /*
  * Construct an entity tag (ETag) from resource information.  If it's a real
  * file, build in some of the file characteristics.  If the modification time
@@ -115,7 +115,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
          * FileETag keywords.
          */
         etag = apr_palloc(r->pool, weak_len + sizeof("\"--\"") +
-                          3 * CHARS_PER_UNSIGNED_LONG + 1);
+                          3 * CHARS_PER_UINT64 + 1);
         next = etag;
         if (weak) {
             while (*weak) {
@@ -125,21 +125,21 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
         *next++ = '"';
         bits_added = 0;
         if (etag_bits & ETAG_INODE) {
-            next = etag_ulong_to_hex(next, (unsigned long)r->finfo.inode);
+            next = etag_uint64_to_hex(next, r->finfo.inode);
             bits_added |= ETAG_INODE;
         }
         if (etag_bits & ETAG_SIZE) {
             if (bits_added != 0) {
                 *next++ = '-';
             }
-            next = etag_ulong_to_hex(next, (unsigned long)r->finfo.size);
+            next = etag_uint64_to_hex(next, r->finfo.size);
             bits_added |= ETAG_SIZE;
         }
         if (etag_bits & ETAG_MTIME) {
             if (bits_added != 0) {
                 *next++ = '-';
             }
-            next = etag_ulong_to_hex(next, (unsigned long)r->mtime);
+            next = etag_uint64_to_hex(next, r->mtime);
         }
         *next++ = '"';
         *next = '\0';
@@ -149,7 +149,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
          * Not a file document, so just use the mtime: [W/]"mtime"
          */
         etag = apr_palloc(r->pool, weak_len + sizeof("\"\"") +
-                          CHARS_PER_UNSIGNED_LONG + 1);
+                          CHARS_PER_UINT64 + 1);
         next = etag;
         if (weak) {
             while (*weak) {
@@ -157,7 +157,7 @@ AP_DECLARE(char *) ap_make_etag(request_rec *r, int force_weak)
             }
         }
         *next++ = '"';
-        next = etag_ulong_to_hex(next, (unsigned long)r->mtime);
+        next = etag_uint64_to_hex(next, r->mtime);
         *next++ = '"';
         *next = '\0';
     }
