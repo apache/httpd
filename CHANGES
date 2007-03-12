@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) core: Change etag generation to produce identical results on 
+     32-bit and 64-bit platforms.  PR 40064.  [Joe Orton]
+
   *) ab: Add -r option to continue after socket receive errors. 
      [Filip Hanik <devlist hanik.com>]
 
