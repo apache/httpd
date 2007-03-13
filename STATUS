@@ -143,7 +143,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=476625
      2.2.x version of patch:
        Trunk version works
-     +1: rpluem
+     +1: rpluem, jim
 
    * mod_cache: While serving a cached entity ensure that filters that have
      been applied to this cached entity before saving it to the cache are not
@@ -158,7 +158,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_alias: Accept path components (URL part) in Redirects
        PR: 35314
      http://svn.apache.org/viewvc?rev=490142&view=rev
-     +1: niq
+     +1: niq, jim
 
    * mod_headers: Allow % at the end of a Header value
        PR: 36609
