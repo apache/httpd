@@ -161,7 +161,8 @@ XDCDATA         =
 # submakefile is added, the extra reference to example.nlm should be removed.
 TARGET_nlm = \
 	$(OBJDIR)/example.nlm \
-	$(OBJDIR)/example.nlm \
+	$(OBJDIR)/case_flt.nlm \
+	$(OBJDIR)/case_flt_in.nlm \
 	$(EOLIST)
 	
 #
