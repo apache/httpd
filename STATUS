@@ -170,4 +170,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        ldap_search_ext_s and replace it with an APR_ defined 
        value that is set according to the LDAP SDK being used.
      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ldap/util_ldap.c?r1=484985&r2=517788
-     +1: bnicholes
+     +1: bnicholes, rpluem
