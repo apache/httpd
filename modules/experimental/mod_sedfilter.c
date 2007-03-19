@@ -277,6 +277,7 @@ static apr_status_t sed_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_status_t rv;
 
     sed_module_ctx *ctx = f->ctx;
+    
     /*
      * First time around? Create the saved bb that we used for each pass
      * through. Note that we can also get here when we explicitly clear ctx,
@@ -287,6 +288,12 @@ static apr_status_t sed_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         ctx->ctxbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
         apr_table_unset(f->r->headers_out, "Content-Length");
     }
+
+    /*
+     * Shortcircuit processing
+     */
+    if (APR_BRIGADE_EMPTY(bb))
+        return APR_SUCCESS;
 
     /*
      * Everything to be passed to the next filter goes in
@@ -323,8 +330,10 @@ static apr_status_t sed_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     while ((b = APR_BRIGADE_FIRST(bb)) && (b != APR_BRIGADE_SENTINEL(bb))) {
         apr_brigade_length(passbb, 0, &blen);
         if ((blen != -1) && (blen > AP_MIN_BYTES_TO_WRITE)) {
-            ap_pass_brigade(f->next, passbb);
+            rv = ap_pass_brigade(f->next, passbb);
             apr_brigade_cleanup(passbb);
+            if (rv != APR_SUCCESS)
+                return rv;
         }
         if (APR_BUCKET_IS_EOS(b)) {
             /*
@@ -342,6 +351,7 @@ static apr_status_t sed_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             apr_brigade_cleanup(ctx->ctxbb);
             APR_BUCKET_REMOVE(b);
             APR_BRIGADE_INSERT_TAIL(passbb, b);
+            break;
         }
         else if (APR_BUCKET_IS_METADATA(b)) {
             APR_BUCKET_REMOVE(b);
