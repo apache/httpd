@@ -107,8 +107,13 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
         for (b = APR_BRIGADE_FIRST(mybb);
              b != APR_BRIGADE_SENTINEL(mybb);
              b = APR_BUCKET_NEXT(b)) {
-            if (APR_BUCKET_IS_METADATA(b))
+            if (APR_BUCKET_IS_METADATA(b)) {
+                /*
+                 * we should NEVER see this, because we should never
+                 * be passed any, but "handle" it just in case.
+                 */
                 continue;
+            }
             if (apr_bucket_read(b, &buff, &bytes, APR_BLOCK_READ) == APR_SUCCESS) {
                 s1 = NULL;
                 if (script->pattern) {
