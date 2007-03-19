@@ -170,7 +170,9 @@
     href="#state">state structure</a>.</p>
 
     <note type="warning"><p>It is generally never advisable to use
-    <code>apr_brigade_destroy</code> to "destroy" a brigade.  The
+    <code>apr_brigade_destroy</code> to "destroy" a brigade unless
+    you know for certain that the brigade will never be used
+    again, even then, it should be used rarely.  The
     memory used by the brigade structure will not be released by
     calling this function (since it comes from a pool), but the
     associated pool cleanup is unregistered.  Using
