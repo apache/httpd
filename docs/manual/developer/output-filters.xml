@@ -52,7 +52,7 @@
 
     <p>A filter can tell whether a bucket represents either data or
     metadata using the <code>APR_BUCKET_IS_METADATA</code> macro.
-    Generally, all metadata buckets should be passed up the filter
+    Generally, all metadata buckets should be passed down the filter
     chain by an output filter.  Filters may transform, delete, and
     insert data buckets as appropriate.</p>
 
@@ -65,14 +65,14 @@
     applicable) down the filter chain immediately.</p>
 
     <note type="hint"><code>FLUSH</code> buckets are sent when the
-    content generator (or a downstream filter) knows that there may be
+    content generator (or an upstream filter) knows that there may be
     a delay before more content can be sent.  By passing
-    <code>FLUSH</code> buckets up the filter chain immediately,
+    <code>FLUSH</code> buckets down the filter chain immediately,
     filters ensure that the client is not kept waiting for pending
     data longer than necessary.</note>
 
-    <p>Filters can create <code>FLUSH</code> buckets and pass these up
-    the filter chain if desired.  Generating <code>FLUSH</code>
+    <p>Filters can create <code>FLUSH</code> buckets and pass these
+    down the filter chain if desired.  Generating <code>FLUSH</code>
     buckets unnecessarily, or too frequently, can harm network
     utilisation since it may force large numbers of small packets to
     be sent, rather than a small number of larger packets.  The
@@ -94,9 +94,9 @@
     <title>Filter invocation</title>
     
     <p>For any given request, an output filter might be invoked only
-    once and be given a single brigade representing the entire response.
+    once and be given a single brigade representing the entire response.  
     It is also possible that the number of times a filter is invoked
-    for single response is proportional to the size of the content
+    for a single response is proportional to the size of the content
     being filtered, with the filter being passed a brigade containing
     a single bucket each time.  Filters must operate correctly in
     either case.</p>
@@ -112,7 +112,7 @@
     the brigade.  Any buckets in the brigade after an EOS should be
     ignored.</p>
 
-    <p>An output filter should never pass an empty brigade up the
+    <p>An output filter should never pass an empty brigade down the
     filter chain.  But, for good defensive programming, filters should
     be prepared to accept an empty brigade, and do nothing.</p>
 
@@ -169,15 +169,18 @@
     first invocation per request, and store that brigade in its <a
     href="#state">state structure</a>.</p>
 
-    <note type="warning">It is generally never advisable to use
+    <note type="warning"><p>It is generally never advisable to use
     <code>apr_brigade_destroy</code> to "destroy" a brigade.  The
     memory used by the brigade structure will not be released by
     calling this function (since it comes from a pool), but the
     associated pool cleanup is unregistered.  Using
     <code>apr_brigade_destroy</code> can in fact cause memory leaks;
-    if a "destroyed" brigade contains still contains buckets when its
+    if a "destroyed" brigade contains buckets when its 
     containing pool is destroyed, those buckets will <em>not</em> be
-    immediately destroyed.</note>
+    immediately destroyed.</p>
+    
+    <p>In general, filters should use <code>apr_brigade_cleanup</code>
+    in preference to <code>apr_brigade_destroy</code>.</p></note>
 
   </section>
 
@@ -193,9 +196,9 @@
       <li>The amount of data represented by the bucket may or may not
       have a determinate length; for a bucket which represents data of
       indeterminate length, the <code>->length</code> field is set to
-      the value <code>(apr_size_t)-1</code>.  The <code>PIPE</code>
-      bucket type is an example of a bucket type has an indeterminate
-      length; it represents the output from a pipe, .</li>
+      the value <code>(apr_size_t)-1</code>.  For example, buckets of
+      the <code>PIPE</code> bucket type have an indeterminate length;
+      they represent the output from a pipe.</li>
 
       <li>The data represented by a bucket may or may not be mapped
       into memory.  The <code>FILE</code> bucket type, for example,
@@ -255,7 +258,7 @@ return ap_pass_brigade(bb);</pre></example>
     <code>apr_bucket_read</code> call morphed a <code>FILE</code>
     bucket into a <code>HEAP</code> bucket.</p>
 
-    <p>In contrast, the implementation below will use consume a fixed
+    <p>In contrast, the implementation below will consume a fixed
     amount of memory to filter any brigade; a temporary brigade is
     needed and must be allocated only once per response, see the <a
     href="#state">Maintaining state</a> section.</p>
@@ -272,8 +275,8 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
    /* Remove bucket e from bb. */
    APR_BUCKET_REMOVE(e);
    /* Insert it into  temporary brigade. */
-   APR_BRIGADE_INSERT_HEAD(tmpbb);
-   /* Pass brigade upstream. */
+   APR_BRIGADE_INSERT_HEAD(tmpbb, e);
+   /* Pass brigade downstream. */
    rv = ap_pass_brigade(f->next, tmpbb);
    if (rv) ...;
    apr_brigade_cleanup(tmpbb);
@@ -334,17 +337,33 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     <code>apr_bucket_setaside</code> function.</p>
 
     <p>Alternatively, the <code>ap_save_brigade</code> function can be
-    used, which will create a new brigade containing buckets with a
-    lifetime as long as the given pool argument.  This function must
-    be used with great care, however: on return it guarantees that all
-    the buckets in the returned brigade will represent data mapped
-    into memory.  If given an input brigade containing, for example, a
-    PIPE bucket, <code>ap_save_brigade</code> will consume an
-    arbitrary amount of memory to store the entire output of the
-    pipe.</p>
+    used, which will move all the buckets into a separate brigade
+    containing buckets with a lifetime as long as the given pool
+    argument.  This function must be used with care, taking into
+    account the following points:
+
+    <ol>
+      <li>On return, <code>ap_save_brigade</code> guarantees that all
+      the buckets in the returned brigade will represent data mapped
+      into memory.  If given an input brigade containing, for example,
+      a <code>PIPE</code> bucket, <code>ap_save_brigade</code> will
+      consume an arbitrary amount of memory to store the entire output
+      of the pipe.</li>
+
+      <li>When <code>ap_save_brigade</code> reads from buckets which
+      cannot be setaside, it will always perform blocking reads,
+      removing the opportunity to use <a href="#nonblock">Non-blocking
+      bucket reads</a>.</li>
+
+      <li>If <code>ap_save_brigade</code> is used without passing a
+      non-NULL "<code>saveto</code>" (destination) brigade parameter,
+      the function will create a new brigade, which may cause memory
+      use to be proportional to content size as described in the <a
+      href="#brigade">Brigade structure</a> section.</li>
+    </ol></p>
 
     <note type="warning">Filters must ensure that any buffered data is
-    processed and passed up the filter chain during the last
+    processed and passed down the filter chain during the last
     invocation for a given response (a brigade containing an EOS
     bucket).  Otherwise such data will be lost.</note>
 
@@ -359,9 +378,9 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     from the data source.  A good filter will first attempt to read
     from every data bucket using a non-blocking read; if that fails
     with <code>APR_EAGAIN</code>, then send a <code>FLUSH</code>
-    bucket up the filter chain, and retry using a blocking read.</p>
+    bucket down the filter chain, and retry using a blocking read.</p>
     
-    <p>This mode of operation ensure that any filters further up the
+    <p>This mode of operation ensure that any filters further down the
     filter chain will flush any buffered buckets if a slow content
     source is being used.</p>
 
@@ -382,7 +401,7 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
     rv = apr_bucket_read(e, &amp;data, &amp;length, mode);
     if (rv == APR_EAGAIN &amp;&amp; mode == APR_NONBLOCK_READ) {
-        /* Pass up a brigade containing a flush bucket: */
+        /* Pass down a brigade containing a flush bucket: */
         APR_BRIGADE_INSERT_TAIL(tmpbb, apr_bucket_flush_create(...));
         rv = ap_pass_brigade(f->next, tmpbb);
         apr_brigade_cleanup(tmpbb);
@@ -409,29 +428,28 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
     follow:</p>
 
     <ol>
-      <li>Output filters should not pass empty brigades up the filter
+      <li>Output filters should not pass empty brigades down the filter
       chain, but should be tolerant of being passed empty
       brigades.</li>
 
-      <li>Output filters must pass all metadata buckets up the filter
+      <li>Output filters must pass all metadata buckets down the filter
       chain; <code>FLUSH</code> buckets should be respected by passing
-      any pending or buffered buckets up the filter chain.</li>
+      any pending or buffered buckets down the filter chain.</li>
 
       <li>Output filters should ignore any buckets following an
       <code>EOS</code> bucket.</li>
 
-      <li>Output filters which read all the buckets in a brigade must
-      process a fixed number of buckets (or amount of data) at a time,
-      to ensure that memory consumption is not proportional to the
-      size of the content being filtered.</li>
+      <li>Output filters must process a fixed amount of data at a
+      time, to ensure that memory consumption is not proportional to
+      the size of the content being filtered.</li>
       
       <li>Output filters should be agnostic with respect to bucket
       types, and must be able to process buckets of unfamiliar
       type.</li>
 
       <li>After calling <code>ap_pass_brigade</code> to pass a brigade
-      up the filter chain, output filters should call
-      <code>apr_brigade_clear</code> to ensure the brigade is empty
+      down the filter chain, output filters should call
+      <code>apr_brigade_cleanup</code> to ensure the brigade is empty
       before reusing that brigade structure; output filters should
       never use <code>apr_brigade_destroy</code> to "destroy"
       brigades.</li>
@@ -441,13 +459,13 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
 
       <li>Output filters must not ignore the return value of
       <code>ap_pass_brigade</code>, and must return appropriate errors
-      back down the filter chain.</li>
+      back up the filter chain.</li>
 
       <li>Output filters must only create a fixed number of bucket
       brigades for each response, rather than one per invocation.</li>
 
       <li>Output filters should first attempt non-blocking reads from
-      each data bucket, and send a <code>FLUSH</code> bucket up the
+      each data bucket, and send a <code>FLUSH</code> bucket down the
       filter chain if the read blocks, before retrying with a blocking
       read.</li>
 
