@@ -342,6 +342,14 @@ static apr_status_t sed_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             APR_BRIGADE_INSERT_TAIL(passbb, b);
             break;
         }
+        else if (APR_BUCKET_IS_FLUSH(b)) {
+            APR_BUCKET_REMOVE(b);
+            APR_BRIGADE_INSERT_TAIL(passbb, b);
+            rv = ap_pass_brigade(f->next, passbb);
+            apr_brigade_cleanup(passbb);
+            if (rv != APR_SUCCESS)
+                return rv;
+        }
         else if (APR_BUCKET_IS_METADATA(b)) {
             APR_BUCKET_REMOVE(b);
             APR_BRIGADE_INSERT_TAIL(passbb, b);
