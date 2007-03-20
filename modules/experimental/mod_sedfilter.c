@@ -72,6 +72,24 @@ static void *merge_sed_dcfg(apr_pool_t *p, void *basev, void *overv)
                                       base->sed_scripts);
     return a;
 }
+#define SEDSCAT(s1, s2, pool, buff, blen, repl) do { \
+    if (!s1) {                                       \
+        s1 = apr_pstrmemdup(pool, buff, blen);       \
+    }                                                \
+    else {                                           \
+        s2 = apr_pstrmemdup(pool, buff, blen);       \
+        s1 = apr_pstrcat(pool, s1, s2, NULL);        \
+    }                                                \
+    s1 = apr_pstrcat(pool, s1, repl, NULL);          \
+} while (0)
+
+#define SEDRMPATBCKT(b, offset, tmp_b, patlen) do {  \
+    apr_bucket_split(b, offset);                     \
+    tmp_b = APR_BUCKET_NEXT(b);                      \
+    apr_bucket_split(tmp_b, patlen);                 \
+    b = APR_BUCKET_NEXT(tmp_b);                      \
+    apr_bucket_delete(tmp_b);                        \
+} while (0)
 
 static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
 {
@@ -129,29 +147,22 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                              * are constanting allocing space and copying
                              * strings.
                              */
-                            if (!s1) {
-                                s1 = apr_pstrmemdup(f->r->pool, buff, len);
-                            }
-                            else {
-                                s2 = apr_pstrmemdup(f->r->pool, buff, len);
-                                s1 = apr_pstrcat(f->r->pool, s1, s2, NULL);
-                            }
-                            s1 = apr_pstrcat(f->r->pool, s1, script->replacement, NULL);
+                            SEDSCAT(s1, s2, f->r->pool, buff, len, script->replacement);
                         }
                         else {
-                            /* and split off the stuff before */
-                            apr_bucket_split(b, len);
-                            tmp_b = APR_BUCKET_NEXT(b);
-                            /* now isolate the pattern and delete it */
-                            apr_bucket_split(tmp_b, script->patlen);
-                            b = APR_BUCKET_NEXT(tmp_b);
-                            apr_bucket_delete(tmp_b);
                             /*
-                             * as above, create a bucket that contains the
-                             * replacement and insert it
+                             * We now split off the stuff before the regex as its
+                             * own bucket, then isolate the pattern and delete it.
                              */
-                            tmp_b = apr_bucket_pool_create(script->replacement, script->replen,
-                                f->r->pool, f->r->connection->bucket_alloc);
+                            SEDRMPATBCKT(b, len, tmp_b, script->patlen);
+                            /*
+                             * Finally, we create a bucket that contains the
+                             * replacement...
+                             */
+                            tmp_b = apr_bucket_pool_create(script->replacement,
+                                      script->replen, f->r->pool,
+                                      f->r->connection->bucket_alloc);
+                            /* ... and insert it */
                             APR_BUCKET_INSERT_BEFORE(b, tmp_b);
                         }
                         /* now we need to adjust buff for all these changes */
@@ -197,32 +208,14 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                         repl = ap_pregsub(f->r->pool, script->replacement, p,
                                           AP_MAX_REG_MATCH, regm);
                         if (script->flatten) {
-                            if (!s1)
-                                s1 = apr_pstrmemdup(f->r->pool, p, regm[0].rm_so);
-                            else {
-                                s2 = apr_pstrmemdup(f->r->pool, p, regm[0].rm_so);
-                                s1 = apr_pstrcat(f->r->pool, s1, s2, NULL);
-                            }
-                            s1 = apr_pstrcat(f->r->pool, s1, repl, NULL);
+                            SEDSCAT(s1, s2, f->r->pool, p, regm[0].rm_so, repl);
                         }
                         else {
-                            /* now split off the stuff before the regex */
-                            apr_bucket_split(b, regm[0].rm_so);
-                            tmp_b = APR_BUCKET_NEXT(b);
-                            /* and after */
-                            apr_bucket_split(tmp_b, regm[0].rm_eo - regm[0].rm_so);
-                            b = APR_BUCKET_NEXT(tmp_b);
-                            /*
-                             * now that the regex string is isolated into one
-                             * bucket, delete it
-                             */
-                            apr_bucket_delete(tmp_b);
-                            /*
-                             * now create a bucket that is just our
-                             * replacement
-                             */
-                            tmp_b = apr_bucket_pool_create(repl, strlen(repl), f->r->pool,
-                                            f->r->connection->bucket_alloc);
+                            len = (apr_size_t) (regm[0].rm_eo - regm[0].rm_so);
+                            SEDRMPATBCKT(b, regm[0].rm_so, tmp_b, len);
+                            tmp_b = apr_bucket_pool_create(repl, strlen(repl),
+                                      f->r->pool,
+                                      f->r->connection->bucket_alloc);
                             APR_BUCKET_INSERT_BEFORE(b, tmp_b);
                         }
                         /*
@@ -232,10 +225,6 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                         p += regm[0].rm_eo;
                     }
                     if (script->flatten && s1) {
-                        /*
-                         * we've finished looking at the bucket, so remove the
-                         * old one and add in our new one
-                         */
                         s1 = apr_pstrcat(f->r->pool, s1, p, NULL);
                         tmp_b = apr_bucket_pool_create(s1, strlen(s1),
                                 f->r->pool, f->r->connection->bucket_alloc);
