@@ -276,12 +276,12 @@ RewriteRule   ^/~(.+)  http://<strong>newserver</strong>/~$1  [R,L]
 <div class="example"><pre>
 RewriteEngine on
 
-#   first try to find it in custom/...
+#   first try to find it in dir1/...
 #   ...and if found stop and be happy:
 RewriteCond         /your/docroot/<strong>dir1</strong>/%{REQUEST_FILENAME}  -f
 RewriteRule  ^(.+)  /your/docroot/<strong>dir1</strong>/$1  [L]
 
-#   second try to find it in pub/...
+#   second try to find it in dir2/...
 #   ...and if found stop and be happy:
 RewriteCond         /your/docroot/<strong>dir2</strong>/%{REQUEST_FILENAME}  -f
 RewriteRule  ^(.+)  /your/docroot/<strong>dir2</strong>/$1  [L]
