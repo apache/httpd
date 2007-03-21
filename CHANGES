@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_so: Solve dev's confusion by reporting expected/seen module
+     magic signatures when failing with a 'garbled' message, and solve
+     user's confusion by pointing out 'perhaps compiled for a different
+     version of apache?'.  [William Rowe]
+
   *) mod_ssl: Version reporting update; displays 'compiled against'
      Apache and build-time SSL Library versions at loglevel [info],
      while reporting the run-time SSL Library version in the server
