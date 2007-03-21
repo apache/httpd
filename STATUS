@@ -117,7 +117,7 @@ RELEASE SHOWSTOPPERS:
          http://svn.apache.org/viewvc?view=rev&revision=507516
       2.0 version:
          http://people.apache.org/~jim/patches/httpd-2.0-proxy.patch
-      +1: jim, minfrin
+      +1: jim, minfrin, wrowe
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
@@ -165,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * proxy_http.c: Overlay existing cookies with proxied
       ones, ala httpd-2.2 and trunk.
       Patch: http://people.apache.org/~jim/patches/cookie-overlay.patch
-      +1: jim
+      +1: jim, wrowe
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
