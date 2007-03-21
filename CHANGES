@@ -2,6 +2,13 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_ssl: Version reporting update; displays 'compiled against'
+     Apache and build-time SSL Library versions at loglevel [info],
+     while reporting the run-time SSL Library version in the server
+     info tags.  Helps to identify a mod_ssl built against one flavor
+     of OpenSSL but running against another (also adds SSL-C version
+     number reporting.)  [William Rowe]
+
   *) core: Change etag generation to produce identical results on 
      32-bit and 64-bit platforms.  PR 40064.  [Joe Orton]
 
