@@ -94,6 +94,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         minimum lines of code - there's alot of redecorating that's
         going on in this patch to no net effect.  The WAIT_TIMEOUT
         result value seems to be ignored in the revised code?
+      mturk notes: WAIT_TIMEOUT is replaced by WAIT_FAILED with
+        the accompanied patch in mpm\winnt\child.c.
 
     * PKCS#7: backport PCKS#7 patches from trunk.
       +1 ben
@@ -129,7 +131,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=484794
      2.2.x version of patch:
        Trunk version works.
-     +1: jim
+     +1: jim, mturk
      +0: rpluem: Shouldn't we remove this code on 2.2.x? Keeping seems to be ok
          for me on trunk, but on a stable branch?
          jim says: the reason why we keep it is in case we
