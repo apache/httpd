@@ -635,7 +635,7 @@ static void ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algke
 
 static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
 {
-    static char interface[] = "mod_ssl/" MOD_SSL_VERSION;
+    static const char interface[] = "mod_ssl/" MOD_SSL_VERSION;
     static char library_interface[] = SSL_LIBRARY_TEXT;
     static char *library = NULL;
     char *result;
