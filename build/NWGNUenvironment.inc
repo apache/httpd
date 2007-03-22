@@ -229,7 +229,7 @@ endif
 endif
 
 INSTDEVDIRS := \
-    $(INSTDIRS) \
+	$(INSTDIRS) \
 	$(INSTALL)\$(BASEDIR)\include \
 	$(INSTALL)\$(BASEDIR)\lib \
 
@@ -256,21 +256,20 @@ OS = Windows_NT
 endif
 
 ifeq "$(OS)" "Windows_NT"
-CMD=cmd /C
-CHK=cmd /C if exist
-CHKNOT=cmd /C if not exist
+CMD = cmd /C
 DEL = del /F
-DELTREE = cmd /C rd /s/q
-WINNT=1
+DELTREE = rd /s/q
+WINNT = 1
 XCOPYSW = /E
 else
-CMD=command /C
-CHK=command /C if exist
-CHKNOT=command /C if not exist
+CMD = command /C
 DEL = del
 DELTREE = deltree /y
 XCOPYSW = /E /Y
 endif
+
+CHK = $(CMD) if exist
+CHKNOT = $(CMD) if not exist
 
 
 #
