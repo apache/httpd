@@ -58,7 +58,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "noopt"
@@ -72,7 +72,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "release"
@@ -94,10 +94,10 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= authzdbd
+NLM_NAME	= authzdbd
 
 #
-# This is used by the link '-desc ' directive. 
+# This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
 NLM_DESCRIPTION	= Apache $(VERSION_STR) DBD Database Authorization Module
@@ -109,10 +109,10 @@ NLM_DESCRIPTION	= Apache $(VERSION_STR) DBD Database Authorization Module
 NLM_THREAD_NAME	= AuthzDBD Module
 
 #
-# If this is specified, it will override VERSION value in 
+# If this is specified, it will override VERSION value in
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
-NLM_VERSION		=
+NLM_VERSION	=
 
 #
 # If this is specified, it will override the default of 64K
@@ -138,14 +138,14 @@ NLM_CHECK_SYM	=
 #
 # If these are specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		=  AUTOUNLOAD, PSEUDOPREEMPTION
+NLM_FLAGS	= AUTOUNLOAD, PSEUDOPREEMPTION
 
 #
-# If this is specified it will be linked in with the XDCData option in the def 
+# If this is specified it will be linked in with the XDCData option in the def
 # file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
 # by setting APACHE_UNIPROC in the environment
 #
-XDCDATA         = 
+XDCDATA		=
 
 #
 # If there is an NLM target, put it here
@@ -173,7 +173,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-   	libcpre.o \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -189,7 +189,7 @@ FILES_nlm_modules = \
 # If the nlm has a msg file, put it's path here
 #
 FILE_nlm_msg =
- 
+
 #
 # If the nlm has a hlp file put it's path here
 #
@@ -208,20 +208,20 @@ FILES_nlm_Ximports = \
 	@$(NWOS)/httpd.imp \
 	@libc.imp \
 	$(EOLIST)
- 
-#   
+
+#
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
 	authz_dbd_module \
 	$(EOLIST)
-	
-#   
+
+#
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
 FILES_lib_objs = \
-		$(EOLIST)
+	$(EOLIST)
 
 #
 # implement targets and dependancies (leave this section alone)
@@ -232,7 +232,7 @@ libs :: $(OBJDIR) $(TARGET_lib)
 nlms :: libs $(TARGET_nlm)
 
 #
-# Updated this target to create necessary directories and copy files to the 
+# Updated this target to create necessary directories and copy files to the
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
@@ -247,4 +247,5 @@ install :: nlms FORCE
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
+
 

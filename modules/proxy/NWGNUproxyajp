@@ -29,7 +29,6 @@ XINCDIRS	+= \
 # These flags will come after CFLAGS
 #
 XCFLAGS		+= \
-			-relax_pointers \
 			$(EOLIST)
 
 #
@@ -95,7 +94,7 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= proxyajp
+NLM_NAME	= proxyajp
 
 #
 # This is used by the link '-desc ' directive. 
@@ -271,4 +270,5 @@ vpath %.c ../arch/netware
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
+
 

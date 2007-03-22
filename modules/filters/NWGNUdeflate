@@ -104,7 +104,7 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= deflate
+NLM_NAME	= deflate
 
 #
 # This is used by the link '-desc ' directive.
@@ -276,6 +276,5 @@ vpath %.c $(ZLIBSDK)
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
-
 
 
