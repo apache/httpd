@@ -170,7 +170,11 @@ static const char *dbd_param(cmd_parms *cmd, void *dconf, const char *val)
             return apr_psprintf(cmd->pool, "DBD: No driver for %s", cfg->name);
         case APR_EDSOOPEN:
             return apr_psprintf(cmd->pool,
+#ifdef NETWARE
+                                "DBD: Can't load driver file dbd%s.nlm",
+#else
                                 "DBD: Can't load driver file apr_dbd_%s.so",
+#endif
                                 cfg->name);
         case APR_ESYMNOTFOUND:
             return apr_psprintf(cmd->pool,
