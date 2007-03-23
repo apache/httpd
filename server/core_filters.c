@@ -352,6 +352,12 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
     apr_bucket *bucket, *next;
     apr_size_t bytes_in_brigade, non_file_bytes_in_brigade;
 
+    /* Fail quickly if the connection has already been aborted. */
+    if (c->aborted) {
+        apr_brigade_cleanup(new_bb);
+        return APR_ECONNABORTED;
+    }
+
     if (ctx == NULL) {
         apr_status_t rv;
         ctx = apr_pcalloc(c->pool, sizeof(*ctx));
