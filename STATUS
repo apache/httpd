@@ -77,6 +77,26 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ldap: Remove the hardcoded size limit parameter for 
+       ldap_search_ext_s and replace it with an APR_ defined 
+       value that is set according to the LDAP SDK being used.
+     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ldap/util_ldap.c?r1=484985&r2=517788
+     +1: bnicholes, rpluem, jim
+
+   * mod_proxy_balancer: Remove unnecessary lock/unlock for
+     the post_request hook. We are actually doing nothing here.
+     But keep the code (but macroed out) for future usage.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=484789
+       http://svn.apache.org/viewvc?view=rev&revision=484794
+     2.2.x version of patch:
+       Trunk version works.
+     +1: jim, mturk, rpluem
+         rpluem says: Shouldn't we remove this code on 2.2.x? Keeping seems to
+         be ok for me on trunk, but on a stable branch?
+         jim says: the reason why we keep it is in case we
+         ever start using it. So we keep the framework in
+         that case. Make trunk backports easier.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -123,21 +143,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           I'll +1 it when that's done.
      wrowe: ditto's - good concept.
 
-   * mod_proxy_balancer: Remove unnecessary lock/unlock for
-     the post_request hook. We are actually doing nothing here.
-     But keep the code (but macroed out) for future usage.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=484789
-       http://svn.apache.org/viewvc?view=rev&revision=484794
-     2.2.x version of patch:
-       Trunk version works.
-     +1: jim, mturk
-     +0: rpluem: Shouldn't we remove this code on 2.2.x? Keeping seems to be ok
-         for me on trunk, but on a stable branch?
-         jim says: the reason why we keep it is in case we
-         ever start using it. So we keep the framework in
-         that case. Make trunk backports easier.
-
    * mod_cache: Correctly cache objects whose URL query string has been
      modified by mod_rewrite.
         PR: 40805
@@ -168,13 +173,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?rev=499567&view=rev
      +1: niq, rpluem
 
-   * mod_ldap: Remove the hardcoded size limit parameter for 
-       ldap_search_ext_s and replace it with an APR_ defined 
-       value that is set according to the LDAP SDK being used.
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ldap/util_ldap.c?r1=484985&r2=517788
-     +1: bnicholes, rpluem, jim
-
    * server/request.c: fix uninitialised config var
      PR: 41829
      http://svn.apache.org/viewvc?rev=522011&view=rev
      +1: niq
+     rpluem says: Please also add
+                  http://svn.apache.org/viewvc?view=rev&rev=522084
+                  to remove the tab. Otherwise +1.
