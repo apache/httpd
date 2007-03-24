@@ -631,6 +631,7 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         opts.add = this_dir->opts_add;
         opts.remove = this_dir->opts_remove;
         opts.override = this_dir->override;
+	opts.override_opts = this_dir->override_opts;
 
         /* Set aside path_info to merge back onto path_info later.
          * If r->filename is a directory, we must remerge the path_info,
