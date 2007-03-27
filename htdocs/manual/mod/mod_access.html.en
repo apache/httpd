@@ -254,7 +254,7 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
     <p><em>Ordering</em> is one of:</p>
 
     <dl>
-      <dt><code>Deny,Allow</code></dt>
+      <dt><code>Allow,Deny</code></dt>
 
       <dd>First, all <code>Allow</code> directives are evaluated; at
       least one must match, or the request is rejected. Next, all
@@ -263,7 +263,7 @@ SetEnvIf User-Agent ^KnockKnock/2\.0 let_me_in
       <code>Allow</code> or a <code>Deny</code> directive are denied by
       default.</dd>
 
-      <dt><code>Allow,Deny</code></dt>
+      <dt><code>Deny,Allow</code></dt>
 
       <dd>First, all <code>Deny</code> directives are evaluated; if any
       match, the request is denied <strong>unless</strong> it also
