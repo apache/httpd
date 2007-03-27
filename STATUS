@@ -100,6 +100,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
+    * mod_proxy_ajp: Fix wrong retry when sending the response failed.
+      PR 40310 (The old fix wasn't ok).
+      Trunk version of patch:
+      http://svn.apache.org/viewvc?view=rev&revision=518938
+      (It also works for httpd-2.2.x).
+      +1: jfclere
+
     * mpm_winnt: Fix return values from wait_for_many_objects.
       Note - this is required to avoid hangups of socket #64, #128
       as Microsoft set aside 64 reserved values.
