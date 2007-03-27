@@ -252,7 +252,7 @@ evaluated.</description>
     <p><em>Ordering</em> is one of:</p>
 
     <dl>
-      <dt><code>Deny,Allow</code></dt>
+      <dt><code>Allow,Deny</code></dt>
 
       <dd>First, all <directive
       module="mod_authz_host">Allow</directive> directives are
@@ -264,7 +264,7 @@ evaluated.</description>
       module="mod_authz_host">Deny</directive> directive are denied by
       default.</dd>
 
-      <dt><code>Allow,Deny</code></dt>
+      <dt><code>Deny,Allow</code></dt>
 
       <dd>First, all <directive module="mod_authz_host">Deny</directive>
       directives are evaluated; if any match, the request is denied
