@@ -175,7 +175,7 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         apr_cpystrn(cpw,pw,sizeof(cpw));
         break;
 
-#if !(defined(WIN32) || defined(NETWARE))
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
     case ALG_CRYPT:
     default:
         (void) srand((int) time((time_t *) NULL));
@@ -435,7 +435,7 @@ int main(int argc, const char * const argv[])
     check_args(pool, argc, argv, &alg, &mask, &user, &pwfilename, &password);
 
 
-#if defined(WIN32) || defined(NETWARE)
+#if defined(WIN32) || defined(TPF) || defined(NETWARE)
     if (alg == ALG_CRYPT) {
         alg = ALG_APMD5;
         apr_file_printf(errfile, "Automatically using MD5 format." NL);
