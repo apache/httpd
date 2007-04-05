@@ -127,6 +127,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     identify exactly what the proposed changes are!  Add all new
     proposals to the end of this list. ]
 
+    * mod_ssl: Move thread locking upcall initialization before
+      hardware library initialization, so hardware library can use
+      these upcalls when run in a threaded MPM. Fixes PR 20951. 
+
+      http://people.apache.org/~sctemme/2.0.x-ssl_engine_init.c.patch
+      
+      +1: sctemme
+
     *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
         http://people.apache.org/~colm/httpd-2.0-reverse-proxy-cookie.patch
