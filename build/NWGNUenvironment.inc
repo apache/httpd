@@ -111,10 +111,10 @@ endif
 #
 
 # MetroWerks NLM tools
-CC		= mwccnlm
-CPP		= mwccnlm
+CC	= mwccnlm
+CPP	= mwccnlm
 LINK	= mwldnlm
-LIB		= mwldnlm -type library -w nocmdline
+LIB	= mwldnlm -type library -w nocmdline
 
 ifdef IPV6
 ifndef USE_STDSOCKETS
@@ -132,12 +132,18 @@ ifneq "$(ZLIBSDK)" ""
 INCDIRS := $(INCDIRS);$(ZLIBSDK)
 endif
 
-DEFINES		= -DNETWARE 
+DEFINES	= -DNETWARE 
 ifndef USE_STDSOCKETS
-DEFINES += -DUSE_WINSOCK
+DEFINES	+= -DUSE_WINSOCK
 endif
 ifndef DEBUG
-DEFINES += -DNDEBUG
+DEFINES	+= -DNDEBUG
+endif
+
+ifdef USE_STDSOCKETS
+VERSION_SKT = (BSDSOCK)
+else
+VERSION_SKT = (WINSOCK)
 endif
 
 #
