@@ -744,7 +744,7 @@ static void output_results(int sig)
     printf("\n\n");
     printf("Server Software:        %s\n", servername);
     printf("Server Hostname:        %s\n", hostname);
-    printf("Server Port:            %hd\n", port);
+    printf("Server Port:            %hu\n", port);
 #ifdef USE_SSL
     if (is_ssl && ssl_info) {
         printf("SSL/TLS Protocol:       %s\n", ssl_info);
@@ -1007,7 +1007,7 @@ static void output_html_results(void)
        "<td colspan=2 %s>%s</td></tr>\n",
        trstring, tdstring, tdstring, hostname);
     printf("<tr %s><th colspan=2 %s>Server Port:</th>"
-       "<td colspan=2 %s>%hd</td></tr>\n",
+       "<td colspan=2 %s>%hu</td></tr>\n",
        trstring, tdstring, tdstring, port);
     printf("<tr %s><th colspan=2 %s>Document Path:</th>"
        "<td colspan=2 %s>%s</td></tr>\n",
