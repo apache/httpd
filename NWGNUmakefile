@@ -120,11 +120,6 @@ NLM_NAME	= Apache2
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-ifdef USE_STDSOCKETS
-VERSION_SKT = (BSDSOCK)
-else
-VERSION_SKT = (WINSOCK)
-endif
 NLM_DESCRIPTION	= Apache Web Server $(VERSION_STR) $(VERSION_SKT)
 
 #
