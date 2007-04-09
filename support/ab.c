@@ -290,6 +290,11 @@ char url[1024];
 char * fullurl, * colonhost;
 int isproxy = 0;
 apr_interval_time_t aprtimeout = apr_time_from_sec(30); /* timeout value */
+
+/* overrides for ab-generated common headers */
+int opt_host = 0;       /* was an optional "Host:" header specified? */
+int opt_useragent = 0;  /* was an optional "User-Agent:" header specified? */
+int opt_accept = 0;     /* was an optional "Accept:" header specified? */
  /*
   * XXX - this is now a per read/write transact type of value
   */
@@ -1556,37 +1561,54 @@ static void test(void)
         apr_err("apr_pollset_create failed", status);
     }
 
+    /* add default headers if necessary */
+    if (!opt_host) {
+        /* Host: header not overridden, add default value to hdrs */
+        hdrs = apr_pstrcat(cntxt, hdrs, "Host: ", host_field, colonhost, "\r\n", NULL);
+    }
+    else {
+        /* Header overridden, no need to add, as it is already in hdrs */
+    }
+
+    if (!opt_useragent) {
+        /* User-Agent: header not overridden, add default value to hdrs */
+        hdrs = apr_pstrcat(cntxt, hdrs, "User-Agent: ApacheBench/", AP_AB_BASEREVISION, "\r\n", NULL);
+    }
+    else {
+        /* Header overridden, no need to add, as it is already in hdrs */
+    }
+
+    if (!opt_accept) {
+        /* Accept: header not overridden, add default value to hdrs */
+        hdrs = apr_pstrcat(cntxt, hdrs, "Accept: */*\r\n", NULL);
+    }
+    else {
+        /* Header overridden, no need to add, as it is already in hdrs */
+    }
+
     /* setup request */
     if (posting <= 0) {
         snprintf_res = apr_snprintf(request, sizeof(_request),
             "%s %s HTTP/1.0\r\n"
-            "User-Agent: ApacheBench/%s\r\n"
             "%s" "%s" "%s"
-            "Host: %s%s\r\n"
-            "Accept: */*\r\n"
             "%s" "\r\n",
             (posting == 0) ? "GET" : "HEAD",
             (isproxy) ? fullurl : path,
-            AP_AB_BASEREVISION,
             keepalive ? "Connection: Keep-Alive\r\n" : "",
-            cookie, auth, host_field, colonhost, hdrs);
+            cookie, auth, hdrs);
     }
     else {
         snprintf_res = apr_snprintf(request,  sizeof(_request),
             "POST %s HTTP/1.0\r\n"
-            "User-Agent: ApacheBench/%s\r\n"
             "%s" "%s" "%s"
-            "Host: %s%s\r\n"
-            "Accept: */*\r\n"
             "Content-length: %" APR_SIZE_T_FMT "\r\n"
             "Content-type: %s\r\n"
             "%s"
             "\r\n",
             (isproxy) ? fullurl : path,
-            AP_AB_BASEREVISION,
             keepalive ? "Connection: Keep-Alive\r\n" : "",
             cookie, auth,
-            host_field, colonhost, postlen,
+            postlen,
             (content_type[0]) ? content_type : "text/plain", hdrs);
     }
     if (snprintf_res >= sizeof(_request)) {
@@ -2092,6 +2114,16 @@ int main(int argc, const char * const argv[])
                 break;
             case 'H':
                 hdrs = apr_pstrcat(cntxt, hdrs, optarg, "\r\n", NULL);
+                /*
+                 * allow override of some of the common headers that ab adds
+                 */
+                if (strncasecmp(optarg, "Host:", 5) == 0) {
+                    opt_host = 1;
+                } else if (strncasecmp(optarg, "Accept:", 7) == 0) {
+                    opt_accept = 1;
+                } else if (strncasecmp(optarg, "User-Agent:", 11) == 0) {
+                    opt_useragent = 1;
+                }
                 break;
             case 'w':
                 use_html = 1;
