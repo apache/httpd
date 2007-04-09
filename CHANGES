@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) htdbm: Enable crypt support on platforms with crypt() but not
+     <crypt.h>, such as z/OS. [David Jones <oscaremma gmail.com>]
+
   *) mod_ssl: initialize thread locks before initializing the hardware
      acceleration library, so the latter can make use of the former. 
      PR 20951. [adunn at ncipher.com, reviewed by Sander Temme]
