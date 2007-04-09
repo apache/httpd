@@ -208,3 +208,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: Please also add
                   http://svn.apache.org/viewvc?view=rev&rev=522084
                   to remove the tab. Otherwise +1.
+
+   * support/htdbm.c: Enable crypt() support on platforms with crypt() but not
+     <crypt.h>, such as z/OS.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=526892
+     2.2.x version of patch:
+       Trunk version works
+     +1: trawick
