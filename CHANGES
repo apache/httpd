@@ -76,10 +76,6 @@ Changes with Apache 2.3.0
      and merge function.  Use ap_log_error() wherever possible.
      [Chris Darroch, Nick Kew]
 
-  *) mod_proxy_http: Handle request bodies larger than 2 GB by converting
-     the Content-Length header of the request correctly. PR 40883.
-     [Ruediger Pluem, toadie <toadie643 gmail.com>]
-
   *) core: Do not replace a Date header set by a proxied backend server.
      PR 40232. [Ruediger Pluem]
 
@@ -275,6 +271,13 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.5
+
+  *) core: Correct a regression since 2.0.x in the handling of AllowOverride 
+     Options.  PR 41829.  [Torsten Förtsch <torsten.foertsch gmx.net>]
+
+  *) mod_proxy_http: Handle request bodies larger than 2 GB by converting
+     the Content-Length header of the request correctly. PR 40883.
+     [Ruediger Pluem, toadie <toadie643 gmail.com>]
 
   *) mod_proxy: Fix some proxy setting inheritance problems (eg:
      ProxyTimeout). PR 11540. [Stuart Children <stuart terminus.co.uk>]
