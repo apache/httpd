@@ -201,14 +201,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?rev=499567&view=rev
      +1: niq, rpluem
 
-   * server/request.c: fix uninitialised config var
-     PR: 41829
-     http://svn.apache.org/viewvc?rev=522011&view=rev
-     +1: niq
-     rpluem says: Please also add
-                  http://svn.apache.org/viewvc?view=rev&rev=522084
-                  to remove the tab. Otherwise +1.
-
    * support/htdbm.c: Enable crypt() support on platforms with crypt() but not
      <crypt.h>, such as z/OS.
      Trunk version of patch:

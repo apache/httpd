@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
+  *) core: Correct a regression since 2.0.x in the handling of AllowOverride 
+     Options.  PR 41829.  [Torsten Förtsch <torsten.foertsch gmx.net>]
+
   *) mod_proxy_http: Handle request bodies larger than 2 GB by converting
      the Content-Length header of the request correctly. PR 40883.
      [Ruediger Pluem, toadie <toadie643 gmail.com>]
