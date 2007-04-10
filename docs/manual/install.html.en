@@ -242,7 +242,8 @@ $ tar xvf httpd-<em>NN</em>.tar
     location of your compiler, libraries, or header files.  This is
     done by passing either environment variables or command line
     options to <code class="program"><a href="./programs/configure.html">configure</a></code>.  For more information, see the
-    <code class="program"><a href="./programs/configure.html">configure</a></code> manual page.</p>
+    <code class="program"><a href="./programs/configure.html">configure</a></code> manual page. Or invoke
+    <code class="program"><a href="./programs/configure.html">configure</a></code> using the <code>--help</code> option.</p>
 
     <p>For a short impression of what possibilities you have, here
     is a typical example which compiles Apache for the installation
