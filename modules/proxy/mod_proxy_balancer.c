@@ -497,6 +497,8 @@ static int proxy_balancer_post_request(proxy_worker *worker,
                                        request_rec *r,
                                        proxy_server_conf *conf)
 {
+
+#if 0
     apr_status_t rv;
 
     if ((rv = PROXY_THREAD_LOCK(balancer)) != APR_SUCCESS) {
@@ -505,12 +507,7 @@ static int proxy_balancer_post_request(proxy_worker *worker,
             balancer->name);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    /* TODO: calculate the bytes transferred
-     * This will enable to elect the worker that has
-     * the lowest load.
-     * The bytes transferred depends on the protocol
-     * used, so each protocol handler should keep the
-     * track on that.
+    /* TODO: placeholder for post_request actions
      */
 
     if ((rv = PROXY_THREAD_UNLOCK(balancer)) != APR_SUCCESS) {
@@ -520,6 +517,8 @@ static int proxy_balancer_post_request(proxy_worker *worker,
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "proxy_balancer_post_request for (%s)", balancer->name);
+
+#endif
 
     return OK;
 }
