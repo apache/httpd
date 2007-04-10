@@ -77,20 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_balancer: Remove unnecessary lock/unlock for
-     the post_request hook. We are actually doing nothing here.
-     But keep the code (but macroed out) for future usage.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=484789
-       http://svn.apache.org/viewvc?view=rev&revision=484794
-     2.2.x version of patch:
-       Trunk version works.
-     +1: jim, mturk, rpluem
-         rpluem says: Shouldn't we remove this code on 2.2.x? Keeping seems to
-         be ok for me on trunk, but on a stable branch?
-         jim says: the reason why we keep it is in case we
-         ever start using it. So we keep the framework in
-         that case. Make trunk backports easier.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
