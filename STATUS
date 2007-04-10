@@ -77,12 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ldap: Remove the hardcoded size limit parameter for 
-       ldap_search_ext_s and replace it with an APR_ defined 
-       value that is set according to the LDAP SDK being used.
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ldap/util_ldap.c?r1=484985&r2=517788
-     +1: bnicholes, rpluem, jim
-
    * mod_proxy_balancer: Remove unnecessary lock/unlock for
      the post_request hook. We are actually doing nothing here.
      But keep the code (but macroed out) for future usage.

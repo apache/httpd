@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
+   * mod_ldap: Remove the hardcoded size limit parameter for
+     ldap_search_ext_s and replace it with an APR_ defined
+     value that is set according to the LDAP SDK being used.
+     [David Jones <oscaremma gmail com>]
+
   *) core: Correct a regression since 2.0.x in the handling of AllowOverride 
      Options.  PR 41829.  [Torsten Förtsch <torsten.foertsch gmx.net>]
 
