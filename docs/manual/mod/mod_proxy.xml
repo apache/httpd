@@ -1196,6 +1196,9 @@ header for proxied requests</description>
     the error code and act accordingly (default behavior would display
     the error page of the proxied server, turning this on shows the SSI
     Error message).</p>
+
+    <p>This directive does not affect the processing of informational (1xx),
+    normal success (2xx), or redirect (3xx) responses.</p>
 </usage>
 </directivesynopsis>
 
