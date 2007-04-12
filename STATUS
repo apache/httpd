@@ -196,4 +196,4 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=527969
      2.2.x version of patch:
        Trunk version works
-     +1: trawick
+     +1: trawick, rpluem
