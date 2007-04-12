@@ -1448,7 +1448,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * if we are overriding the errors, we can't put the content
              * of the page into the brigade
              */
-            if (!conf->error_override || ap_is_HTTP_SUCCESS(r->status)) {
+            if (!conf->error_override || !ap_is_HTTP_ERROR(r->status)) {
                 /* read the body, pass it to the output filters */
                 apr_read_type_e mode = APR_NONBLOCK_READ;
                 int finish = FALSE;
@@ -1557,7 +1557,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
 
     if (conf->error_override) {
         /* the code above this checks for 'OK' which is what the hook expects */
-        if (ap_is_HTTP_SUCCESS(r->status))
+        if (!ap_is_HTTP_ERROR(r->status))
             return OK;
         else {
             /* clear r->status for override error, otherwise ErrorDocument
