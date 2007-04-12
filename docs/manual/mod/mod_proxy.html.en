@@ -611,6 +611,9 @@ proxied</td></tr>
     the error page of the proxied server, turning this on shows the SSI
     Error message).</p>
 
+    <p>This directive does not affect the processing of informational (1xx),
+    normal success (2xx), or redirect (3xx) responses.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxyIOBufferSize" id="ProxyIOBufferSize">ProxyIOBufferSize</a> <a name="proxyiobuffersize" id="proxyiobuffersize">Directive</a></h2>
