@@ -746,8 +746,9 @@ static int authorize_user(request_rec *r)
                 if (!note || (ap_satisfies(r) != SATISFY_ANY) || (note[0] == 'N')) {
                     if (r->ap_auth_type == NULL) {
                         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                      "client denied by server configuration: %s",
-                                      r->filename); 
+                                      "client denied by server configuration: %s%s",
+                                      r->filename ? "" : "uri ",
+                                      r->filename ? r->filename : r->uri);
                         return_code = HTTP_FORBIDDEN;
                     }
                     else {
