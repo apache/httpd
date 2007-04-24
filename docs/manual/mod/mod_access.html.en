@@ -86,7 +86,7 @@ server</td></tr>
 
     <p>The <code class="directive">Allow</code> directive affects which hosts can
     access an area of the server. Access can be controlled by
-    hostname, IP Address, IP Address range, or by other
+    hostname, IP address, IP address range, or by other
     characteristics of the client request captured in environment
     variables.</p>
 
@@ -229,39 +229,78 @@ evaluated.</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_access</td></tr>
 </table>
 
-    <p>The <code class="directive">Order</code> directive controls the default
-    access state and the order in which <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> directives are evaluated.
-    <var>Ordering</var> is one of</p>
+    <p>The <code class="directive">Order</code> directive, along with the
+    <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> directives, controls a
+    three-pass access control system. The first pass processes either
+    all <code class="directive"><a href="#allow">Allow</a></code> or all
+    <code class="directive"><a href="#deny">Deny</a></code> directives, as
+    specified by the <code class="directive">Order</code> directive. The second
+    pass parses the rest of the directives (<code class="directive"><a href="#deny">Deny</a></code> or <code class="directive"><a href="#allow">Allow</a></code>). The third pass applies to
+    all requests which do not match either of the first two.</p>
+
+    <p>Note that all <code class="directive"><a href="#allow">Allow</a></code>
+    and <code class="directive"><a href="#deny">Deny</a></code> directives are
+    processed, unlike a typical firewall, where only the first match is
+    used. The last match is effective (also unlike a typical firewall).
+    Additionally, the order in which lines appear in the configuration
+    files is not significant -- all <code class="directive"><a href="#allow">Allow</a></code> lines are processed as one
+    group, all <code class="directive"><a href="#deny">Deny</a></code> lines are
+    considered as another, and the default state is considered by
+    itself.</p>
+
+    <p><em>Ordering</em> is one of:</p>
 
     <dl>
       <dt><code>Deny,Allow</code></dt>
 
-      <dd>The <code class="directive"><a href="#deny">Deny</a></code> directives
-      are evaluated before the <code class="directive"><a href="#allow">Allow</a></code> directives. Access is
-      allowed by default.  Any client which does not match a
-      <code class="directive"><a href="#deny">Deny</a></code> directive or does
-      match an <code class="directive"><a href="#allow">Allow</a></code>
-      directive will be allowed access to the server.</dd>
+      <dd>First, all <code class="directive"><a href="#allow">Allow</a></code>
+      directives are evaluated; at least one must match, or the request
+      is rejected. Next, all <code class="directive"><a href="#deny">Deny</a></code> directives are evaluated. If
+      any matches, the request is rejected. Last, any requests which do
+      not match an <code class="directive"><a href="#allow">Allow</a></code> or a
+      <code class="directive"><a href="#deny">Deny</a></code> directive are
+      denied by default.</dd>
 
       <dt><code>Allow,Deny</code></dt>
 
-      <dd>The <code class="directive"><a href="#allow">Allow</a></code>
-      directives are evaluated before the <code class="directive"><a href="#deny">Deny</a></code> directives. Access is denied
-      by default. Any client which does not match an <code class="directive"><a href="#allow">Allow</a></code> directive or does match a
-      <code class="directive"><a href="#deny">Deny</a></code> directive will be
-      denied access to the server.</dd>
+      <dd>First, all <code class="directive"><a href="#deny">Deny</a></code>
+      directives are evaluated; if any match, the request is denied
+      <strong>unless</strong> it also matches an <code class="directive"><a href="#allow">Allow</a></code> directive. Any requests
+      which do not match any <code class="directive"><a href="#allow">Allow</a></code> or <code class="directive"><a href="#deny">Deny</a></code> directives are
+      permitted.</dd>
 
       <dt><code>Mutual-failure</code></dt>
 
-      <dd>Only those hosts which appear on the <code class="directive"><a href="#allow">Allow</a></code> list and do not appear on
-      the <code class="directive"><a href="#deny">Deny</a></code> list are
-      granted access. This ordering has the same effect as <code>Order
-      Allow,Deny</code> and is deprecated in favor of that
-      configuration.</dd>
+      <dd>This order has the same effect as <code>Order
+      Allow,Deny</code> and is deprecated in its favor.</dd>
     </dl>
 
-    <p>Keywords may only be separated by a comma; <em>no whitespace</em> is
-    allowed between them. Note that in all cases every <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> statement is evaluated.</p>
+    <p>Keywords may only be separated by a comma; <em>no whitespace</em>
+    is allowed between them.</p>
+
+    <table class="bordered">
+      <tr>
+        <th>Match</th>
+        <th>Allow,Deny result</th>
+        <th>Deny,Allow result</th>
+      </tr><tr>
+        <th>Match Allow only</th>
+        <td>Request allowed</td>
+        <td>Request allowed</td>
+      </tr><tr>
+        <th>Match Deny only</th>
+        <td>Request denied</td>
+        <td>Request denied</td>
+      </tr><tr>
+        <th>No match</th>
+        <td>Default to second directive: Denied</td>
+        <td>Default to second directive: Allowed</td>
+      </tr><tr>
+        <th>Match both Allow &amp; Deny</th>
+        <td>Final match controls: Denied</td>
+        <td>Final match controls: Allowed</td>
+      </tr>
+    </table>
 
     <p>In the following example, all hosts in the apache.org domain
     are allowed access; all other hosts are denied access.</p>
@@ -273,10 +312,9 @@ evaluated.</td></tr>
     </code></p></div>
 
     <p>In the next example, all hosts in the apache.org domain are
-    allowed access, except for the hosts which are in the
-    foo.apache.org subdomain, who are denied access. All hosts not
-    in the apache.org domain are denied access because the default
-    state is to deny access to the server.</p>
+    allowed access, except for the hosts which are in the foo.apache.org
+    subdomain, who are denied access. All hosts not in the apache.org
+    domain are denied access because the default state is to <code class="directive"><a href="#deny">Deny</a></code> access to the server.</p>
 
     <div class="example"><p><code>
       Order Allow,Deny<br />
@@ -284,20 +322,20 @@ evaluated.</td></tr>
       Deny from foo.apache.org
     </code></p></div>
 
-    <p>On the other hand, if the <code class="directive">Order</code> in the last
-    example is changed to <code>Deny,Allow</code>, all hosts will
-    be allowed access. This happens because, regardless of the
-    actual ordering of the directives in the configuration file,
-    the <code>Allow from apache.org</code> will be evaluated last
-    and will override the <code>Deny from foo.apache.org</code>.
-    All hosts not in the <code>apache.org</code> domain will also
-    be allowed access because the default state will change to
-    <var>allow</var>.</p>
+    <p>On the other hand, if the <code class="directive">Order</code> in the
+    last example is changed to <code>Deny,Allow</code>, all hosts will
+    be allowed access. This happens because, regardless of the actual
+    ordering of the directives in the configuration file, the
+    <code>Allow from apache.org</code> will be evaluated last and will
+    override the <code>Deny from foo.apache.org</code>. All hosts not in
+    the <code>apache.org</code> domain will also be allowed access
+    because the default state is <code class="directive"><a href="#allow">Allow</a></code>.</p>
 
-    <p>The presence of an <code class="directive">Order</code> directive can affect
-    access to a part of the server even in the absence of accompanying
-    <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="#deny">Deny</a></code> directives because of its effect
-    on the default access state.  For example,</p>
+    <p>The presence of an <code class="directive">Order</code> directive can
+    affect access to a part of the server even in the absence of
+    accompanying <code class="directive"><a href="#allow">Allow</a></code> and
+    <code class="directive"><a href="#deny">Deny</a></code> directives because
+    of its effect on the default access state.  For example,</p>
 
     <div class="example"><p><code>
       &lt;Directory /www&gt;<br />
@@ -307,20 +345,20 @@ evaluated.</td></tr>
       &lt;/Directory&gt;
     </code></p></div>
 
-    <p>will deny all access to the <code>/www</code> directory
-    because the default access state will be set to
-    <var>deny</var>.</p>
+    <p>will <code class="directive"><a href="#deny">Deny</a></code> all access
+    to the <code>/www</code> directory because the default access state
+    is set to <code class="directive"><a href="#deny">Deny</a></code>.</p>
 
-    <p>The <code class="directive">Order</code> directive controls the order of access
-    directive processing only within each phase of the server's
+    <p>The <code class="directive">Order</code> directive controls the order of
+    access directive processing only within each phase of the server's
     configuration processing. This implies, for example, that an
     <code class="directive"><a href="#allow">Allow</a></code> or <code class="directive"><a href="#deny">Deny</a></code> directive occurring in a
-    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section will
-    always be evaluated after an <code class="directive"><a href="#allow">Allow</a></code> or <code class="directive"><a href="#deny">Deny</a></code> directive occurring in a
-    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section or
-    <code>.htaccess</code> file, regardless of the setting of the
-    <code class="directive">Order</code> directive. For details on the merging
-    of configuration sections, see the documentation on <a href="../sections.html">How Directory, Location and Files sections
+    <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section
+    will always be evaluated after an <code class="directive"><a href="#allow">Allow</a></code> or <code class="directive"><a href="#deny">Deny</a></code> directive occurring in a
+    <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
+    section or <code>.htaccess</code> file, regardless of the setting of
+    the <code class="directive">Order</code> directive. For details on the
+    merging of configuration sections, see the documentation on <a href="../sections.html">How Directory, Location and Files sections
     work</a>.</p>
 
 </div>
