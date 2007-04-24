@@ -114,7 +114,8 @@
 <li><a href="mod_authz_core.html#authzmergerules">AuthzMergeRules</a></li>
 <li><a href="mod_authz_owner.html#authzownerauthoritative">AuthzOwnerAuthoritative</a></li>
 <li><a href="mod_authz_user.html#authzuserauthoritative">AuthzUserAuthoritative</a></li>
-<li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
+<li><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember</a></li>
+<li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire</a></li>
 <li><a href="mod_disk_cache.html#cachedirlength">CacheDirLength</a></li>

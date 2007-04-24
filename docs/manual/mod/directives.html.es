@@ -114,7 +114,8 @@
 <li><a href="mod_authz_dbm.html#authzdbmtype">AuthzDBMType</a></li>
 <li><a href="mod_authz_default.html#authzdefaultauthoritative">AuthzDefaultAuthoritative</a></li>
 <li><a href="mod_authz_core.html#authzmergerules">AuthzMergeRules</a></li>
-<li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
+<li><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember</a></li>
+<li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
 <li><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire</a></li>
@@ -126,6 +127,7 @@
 <li><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
+<li><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString</a></li>
 <li><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire</a></li>
 <li><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></li>
