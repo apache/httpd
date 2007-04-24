@@ -210,7 +210,7 @@ install-man:
 	  $(RSYNC) --exclude .svn -rlpt --numeric-ids $(top_srcdir)/docs/manual/ $(DESTDIR)$(manualdir)/; \
 	else \
 	  cd $(top_srcdir)/docs/manual && cp -rp * $(DESTDIR)$(manualdir); \
-	  cd $(DESTDIR)$(manualdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null; \
+	  cd $(DESTDIR)$(manualdir) && find . -name ".svn" -type d -print | xargs rm -rf 2>/dev/null || true; \
 	fi
 
 install-suexec:
