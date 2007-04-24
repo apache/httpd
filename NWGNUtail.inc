@@ -194,12 +194,9 @@ $(OBJDIR)\$(NLM_NAME)_link.opt : $($(NLM_NAME)_LINKOPT_DEPENDS)
 	@echo Generating $@
 	@echo -warnings off >> $@
 	@echo -zerobss >> $@
-	@echo -desc "$(NLM_DESCRIPTION)" >> $@
 	@echo -o $(OBJDIR)\$(NLM_NAME).nlm >> $@
 ifneq "$(FILE_nlm_copyright)" ""
 	@-type $(FILE_nlm_copyright) >> $@
-else
-	@echo -copy "$(NLM_COPYRIGHT)" >> $@
 endif
 ifeq "$(RELEASE)" "debug"
 	@echo -screenname "$(NLM_NAME) Screen" >> $@
@@ -210,19 +207,17 @@ ifeq "$(RELEASE)" "debug"
 else	
 	@echo -screenname "Apache for NetWare" >> $@ 
 endif	
-ifneq "$(NLM_VERSION)" ""
-	@echo -nlmversion=$(NLM_VERSION) >> $@ 
-else
-	@echo -nlmversion=$(VERSION) >> $@
-endif
 	@echo -l $(NWOS) >> $@
 	@echo -l $(AP)\$(OBJDIR) >> $@
 	@echo -l $(REGEX)\$(OBJDIR) >> $@
 	@echo -l $(STDMOD)\$(OBJDIR) >> $@
 	@echo -l $(NWOS)\$(OBJDIR) >> $@
-#	@echo -l $(METROWERKS)\Novell Support\Metrowerks Support\Libraries\Runtime >> $@
+#	@echo -l "$(METROWERKS)\Novell Support\Metrowerks Support\Libraries\Runtime" >> $@
 	@echo -l $(NWSDKDIR)\imports >> $@
 	@echo -l $(LDAPSDK)\Netware\clib\imports >> $@
+ifneq "$(strip $(XLFLAGS))" ""
+	@echo $(strip $(XLFLAGS)) >> $@
+endif
 	@echo -nodefaults >> $@
 	@echo -map $(OBJDIR)\$(NLM_NAME).map>> $@
 	@echo -threadname "$(NLM_THREAD_NAME)" >> $@
@@ -247,6 +242,15 @@ ifneq "$(FILES_nlm_libs)" ""
 	@echo $(foreach libfile, $(notdir $(strip $(FILES_nlm_libs))),-l$(subst /,\,$(libfile))) >> $@
 endif
 	@echo -commandfile $(OBJDIR)\$(NLM_NAME)_link.def >> $@
+	@echo Description "$(NLM_DESCRIPTION)" >> $(OBJDIR)\$(NLM_NAME)_link.def
+ifeq "$(FILE_nlm_copyright)" ""
+	@echo Copyright "$(NLM_COPYRIGHT)" >> $(OBJDIR)\$(NLM_NAME)_link.def
+endif
+ifneq "$(NLM_VERSION)" ""
+	@echo Version $(NLM_VERSION) >> $(OBJDIR)\$(NLM_NAME)_link.def 
+else
+	@echo Version $(VERSION) >> $(OBJDIR)\$(NLM_NAME)_link.def
+endif
 ifneq "$(FILE_nlm_msg)" ""
 	@echo Messages $(FILE_nlm_msg) >> $(OBJDIR)\$(NLM_NAME)_link.def
 endif
@@ -262,12 +266,9 @@ endif
 ifneq "$(FILES_nlm_exports)" ""
 	@echo Export $(foreach export,$(subst $(SPACE),$(COMMA),$(strip $(FILES_nlm_exports))),$(subst /,\,$(export))) >> $(OBJDIR)\$(NLM_NAME)_link.def
 endif	
-ifneq "$(strip $(XLFLAGS))" ""
-	@echo $(strip $(XLFLAGS)) >> $(OBJDIR)\$(NLM_NAME)_link.def
+ifneq "$(XDCDATA)" ""
+	@echo XDCData $(XDCDATA) >> $(OBJDIR)\$(NLM_NAME)_link.def
 endif
-#ifndef XDCFOUND
-#	@echo XDCData $(NWOS)\apache.xdc >> $(OBJDIR)\$(NLM_NAME)_link.def
-#endif
 
 else # more than one target so look for individual makefiles.
 

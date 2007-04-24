@@ -39,10 +39,8 @@ XLFLAGS		+= \
 			$(EOLIST)
 
 ifdef MULTIPROC
-XLFLAGS		+= \
-		XDCData $(NWOS)\apache.xdc \
-		$(EOLIST)
-endif			
+XDCDATA		= $(NWOS)\apache.xdc
+endif
 
 #
 # These values will be appended to the correct variables based on the value of
