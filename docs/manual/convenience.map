@@ -77,6 +77,7 @@ authzdbdredirectquery	mod/mod_authz_dbd.html#authzdbdredirectquery
 authzdbmtype	mod/mod_authz_dbm.html#authzdbmtype
 authzdefaultauthoritative	mod/mod_authz_default.html#authzdefaultauthoritative
 authzmergerules	mod/mod_authz_core.html#authzmergerules
+balancermember	mod/mod_proxy.html#balancermember
 browsermatch	mod/mod_setenvif.html#browsermatch
 browsermatchnocase	mod/mod_setenvif.html#browsermatchnocase
 bufferedlogs	mod/mod_log_config.html#bufferedlogs
@@ -89,6 +90,7 @@ cachefile	mod/mod_file_cache.html#cachefile
 cacheignorecachecontrol	mod/mod_cache.html#cacheignorecachecontrol
 cacheignoreheaders	mod/mod_cache.html#cacheignoreheaders
 cacheignorenolastmod	mod/mod_cache.html#cacheignorenolastmod
+cacheignorequerystring	mod/mod_cache.html#cacheignorequerystring
 cachelastmodifiedfactor	mod/mod_cache.html#cachelastmodifiedfactor
 cachemaxexpire	mod/mod_cache.html#cachemaxexpire
 cachemaxfilesize	mod/mod_disk_cache.html#cachemaxfilesize

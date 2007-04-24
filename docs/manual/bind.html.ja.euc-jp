@@ -75,8 +75,8 @@
     </p>
 
     <div class="example"><p><code>
-      Listen 192.170.2.1:80<br />
-      Listen 192.170.2.5:8000
+      Listen 192.0.2.1:80<br />
+      Listen 192.0.2.5:8000
     </code></p></div>
 
     <p>とします。
@@ -125,7 +125,7 @@
 
     <div class="example"><p><code>
       Listen 0.0.0.0:80<br />
-      Listen 192.170.2.1:80
+      Listen 192.0.2.1:80
     </code></p></div>
 
     <p>条件を満たすプラットホームで、Apache が

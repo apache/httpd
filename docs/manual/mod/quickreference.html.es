@@ -207,26 +207,28 @@ modules</td></tr>
 authz rules to be merged into the current &lt;Directory&gt; or &lt;Location&gt;.  
 Set to 'off' to disable merging. If set to 'off', only the authz rules defined in 
 the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</td></tr>
-<tr class="odd"><td><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
-[[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets environment variables conditional on HTTP User-Agent
+<tr class="odd"><td><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember <var>url</var> [<var>key=value [key=value ...]]</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Add a member to a load balancing group</td></tr>
+<tr><td><a href="mod_setenvif.html#browsermatch">BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
+[[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables conditional on HTTP User-Agent
 </td></tr>
-<tr><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
-    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">Sets environment variables conditional on User-Agent without
+<tr class="odd"><td><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
+    [[!]<em>env-variable</em>[=<em>value</em>]] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Sets environment variables conditional on User-Agent without
 respect to case</td></tr>
-<tr class="odd"><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Buffer log entries in memory before writing to disk</td></tr>
-<tr><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
-<tr class="odd"><td><a href="mod_disk_cache.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
-<tr><td><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 3 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The number of levels of subdirectories in the
+<tr><td><a href="mod_log_config.html#bufferedlogs">BufferedLogs On|Off</a></td><td> Off </td><td>s</td><td>B</td></tr><tr><td class="descr" colspan="4">Buffer log entries in memory before writing to disk</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire <var>seconds</var></a></td><td> 3600 (one hour) </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The default duration to cache a document when no expiry date is specified.</td></tr>
+<tr><td><a href="mod_disk_cache.html#cachedirlength">CacheDirLength <var>length</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The number of characters in subdirectory names</td></tr>
+<tr class="odd"><td><a href="mod_disk_cache.html#cachedirlevels">CacheDirLevels <var>levels</var></a></td><td> 2 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The number of levels of subdirectories in the
 cache.</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
-<tr><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
+<tr><td><a href="mod_cache.html#cachedisable">CacheDisable <var> url-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Disable caching of specified URLs</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheenable">CacheEnable <var>cache_type</var> <var>url-string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable caching of specified URLs using a specified storage
 manager</td></tr>
-<tr class="odd"><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
-<tr><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore request to not serve cached content to client</td></tr>
-<tr class="odd"><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Do not store the given HTTP header(s) in the cache.
+<tr><td><a href="mod_file_cache.html#cachefile">CacheFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Cache a list of file handles at startup time</td></tr>
+<tr class="odd"><td><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore request to not serve cached content to client</td></tr>
+<tr><td><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</a></td><td> None </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Do not store the given HTTP header(s) in the cache.
 </td></tr>
-<tr><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore the fact that a response has no Last Modified
+<tr class="odd"><td><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Ignore the fact that a response has no Last Modified
 header.</td></tr>
+<tr><td><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString On|Off</a></td><td> Off </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Ignore query string when caching</td></tr>
 <tr class="odd"><td><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor <var>float</var></a></td><td> 0.1 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The factor used to compute an expiry date based on the
 LastModified date.</td></tr>
 <tr><td><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire <var>seconds</var></a></td><td> 86400 (one day) </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum time in seconds to cache a document</td></tr>
@@ -446,7 +448,7 @@ URLs</td></tr>
 <tr><td><a href="core.html#locationmatch">&lt;LocationMatch
     <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">Applies the enclosed directives only to regular-expression
 matching URLs</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#lockfile">LockFile <var>filename</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the accept serialization lock file <em>(depreciated)</em></td></tr>
+<tr class="odd"><td><a href="mpm_common.html#lockfile">LockFile <var>filename</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the accept serialization lock file <em>(deprecated)</em></td></tr>
 <tr><td><a href="mod_log_config.html#logformat">LogFormat <var>format</var>|<var>nickname</var>
 [<var>nickname</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">Describes a format for use in a log file</td></tr>
 <tr class="odd"><td><a href="core.html#loglevel">LogLevel <var>level</var></a></td><td> warn </td><td>sv</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the verbosity of the ErrorLog</td></tr>
@@ -523,7 +525,8 @@ proxied</td></tr>
 proxied resources</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards <var>number</var></a></td><td> 10 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Maximium number of proxies that a request can be forwarded
 through</td></tr>
-<tr><td><a href="mod_proxy.html#proxypass">ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var> <var>key=value</var> ...]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Maps remote servers into the local server URL-space</td></tr>
+<tr><td><a href="mod_proxy.html#proxypass">ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
+	<var>[key=value</var> ...]]</a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Maps remote servers into the local server URL-space</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxypassinterpolateenv">ProxyPassInterpolateEnv On|Off</a></td><td> Off </td><td>svd</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable Environment Variable interpolation in Reverse Proxy configurations</td></tr>
 <tr><td><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse [<var>path</var>] <var>url</var></a></td><td></td><td>svd</td><td>E</td></tr><tr><td class="descr" colspan="4">Adjusts the URL in HTTP response headers sent from a reverse
 proxied server</td></tr>

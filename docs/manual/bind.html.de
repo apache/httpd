@@ -24,6 +24,9 @@
 <a href="./ja/bind.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/bind.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Diese Übersetzung ist möglicherweise
+            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
+            die neuesten Änderungen.</div>
 
     <p>Konfiguration der vom Apache verwendeten Adressen und Ports.</p>
   </div>
@@ -73,8 +76,8 @@
     Sie an:</p>
       
     <div class="example"><p><code>
-      Listen 192.170.2.1:80<br />
-      Listen 192.170.2.5:8000
+      Listen 192.0.2.1:80<br />
+      Listen 192.0.2.5:8000
     </code></p></div>
 
     <p>IPv6-Adressen müssen wie im folgenden Beispiel in eckigen
@@ -125,7 +128,7 @@
 
     <div class="example"><p><code>
       Listen 0.0.0.0:80<br />
-      Listen 192.170.2.1:80
+      Listen 192.0.2.1:80
     </code></p></div>
 
     <p>Wenn Sie möchten, dass der Apache IPv4- und IPv6-Verbindungen an

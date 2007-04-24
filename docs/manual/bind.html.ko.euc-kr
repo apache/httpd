@@ -68,8 +68,8 @@
     하려면,</p>
 
     <div class="example"><p><code>
-      Listen 192.170.2.1:80<br />
-      Listen 192.170.2.5:8000
+      Listen 192.0.2.1:80<br />
+      Listen 192.0.2.5:8000
     </code></p></div>
 
     <p>IPv6 주소는 다음과 같이 대괄호로 묶어야 한다:</p>
@@ -111,7 +111,7 @@
 
     <div class="example"><p><code>
       Listen 0.0.0.0:80<br />
-      Listen 192.170.2.1:80
+      Listen 192.0.2.1:80
     </code></p></div>
 
     <p>플래폼에서 지원하며 아파치가 서로 다른 소켓으로 IPv4

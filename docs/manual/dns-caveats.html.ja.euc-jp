@@ -63,11 +63,11 @@
     そして、そのバーチャルホストに対するヒットには応答がなされません
     (Apache 1.2 以前では起動すらしません)。</p>
 
-    <p><code>www.abc.dom</code> のアドレスが 10.0.0.1
+    <p><code>www.abc.dom</code> のアドレスが 192.0.2.1
     だとします。では、次の設定について考えてみましょう。</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost 10.0.0.1&gt; <br />
+      &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
@@ -86,7 +86,7 @@
     <p>次の例は上記の問題を解決しています。</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost 10.0.0.1&gt; <br />
+      &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerName www.abc.dom <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
@@ -121,18 +121,18 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>10.0.0.1 を <code>www.abc.dom</code> に、
-    10.0.0.2 を <code>www.def.dom</code> に割り当てているとします。
+    <p>192.0.2.1 を <code>www.abc.dom</code> に、
+    192.0.2.2 を <code>www.def.dom</code> に割り当てているとします。
     また、<code>def.dom</code> は顧客自身の DNS
     の制御下にあるとします。この設定で、<code>abc.dom</code>
     に向けられたトラフィック全てを奪うことができる位置に
     <code>def.dom</code> を設置できています。後は単に 
-    <code>www.def.dom</code> が 10.0.0.1 を参照するように
+    <code>www.def.dom</code> が 192.0.2.1 を参照するように
     設定するだけです。DNS は顧客側の DNS でコントロールされているので、
     <code>www.def.dom</code> レコードが好きな場所を指すように
     設定できてしまうのを止めさせることができません。</p>
 
-    <p>10.0.0.1 に対するリクエスト
+    <p>192.0.2.1 に対するリクエスト
     (<code>http://www.abc.dom/whatever</code> 形式の URL 
     を入力したユーザからのもの全てを含みます) 
     は、<code>def.dom</code> バーチャルホストで応答されます。
