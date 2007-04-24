@@ -324,8 +324,8 @@ proxy</td></tr>
 	and later.</td></tr>
 </table>
     <p>This directive adds a member to a load balancing group. It must be used
-    within a <code class="directive"><a href="#&lt;proxy balancer://...&gt;">&lt;Proxy balancer://...&gt;</a></code> container directive, and can take any
-    of the parameters available to 
+    within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
+    directive, and can take any of the parameters available to
     <code class="directive"><a href="#proxypass">ProxyPass</a></code> directives.</p>
     <p>One additional parameter is available only to <code class="directive"><a href="#balancermember">BalancerMember</a></code> directives:
     <var>loadfactor</var>. This is the member load factor - a number between 1 

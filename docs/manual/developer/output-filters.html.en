@@ -87,7 +87,8 @@
     covers a case where filters are encouraged to generate
     <code>FLUSH</code> buckets.</p>
 
-    <div class="example"><h3>Example bucket brigade</h3><pre>HEAP FLUSH FILE EOS</pre></div>
+    <div class="example"><h3>Example bucket brigade</h3><p><code>
+    HEAP FLUSH FILE EOS</code></p></div>
 
     <p>This shows a bucket brigade which may be passed to a filter; it
     contains two metadata buckets (<code>FLUSH</code> and
@@ -122,12 +123,18 @@
     filter chain.  But, for good defensive programming, filters should
     be prepared to accept an empty brigade, and do nothing.</p>
 
-    <div class="example"><h3>How to handle an empty brigade</h3><pre>apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
-{
-    if (APR_BRIGADE_EMPTY(bb)) {
-        return APR_SUCCESS;
-    }
-    ....</pre></div>
+    <div class="example"><h3>How to handle an empty brigade</h3><p><code>
+    apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
+    {<br />
+    <span class="indent">
+        if (APR_BRIGADE_EMPTY(bb)) {<br />
+        <span class="indent">
+            return APR_SUCCESS;<br />
+        </span>
+        }<br />
+        ....<br />
+    </span>
+    </code></p></div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -145,7 +152,7 @@
 
     <p>There are a variety of functions and macros for traversing and
     manipulating bucket brigades; see the <a href="http://apr.apache.org/docs/apr-util/trunk/group___a_p_r___util___bucket___brigades.html">apr_bucket.h</a>
-    header for complete coverage.  Commonly used macros include:
+    header for complete coverage.  Commonly used macros include:</p>
 
     <dl>
       <dt><code>APR_BRIGADE_FIRST(bb)</code></dt>
@@ -160,7 +167,7 @@
       <dt><code>APR_BUCKET_PREV(e)</code></dt>
       <dd>gives the bucket before bucket e</dd>
 
-    </dl></p>
+    </dl>
 
     <p>The <code>apr_bucket_brigade</code> structure itself is
     allocated out of a pool, so if a filter creates a new brigade, it
@@ -194,7 +201,7 @@
 
     <p>When dealing with non-metadata buckets, it is important to
     understand that the "<code>apr_bucket *</code>" object is an
-    abstract <em>representation</em> of data:
+    abstract <em>representation</em> of data:</p>
 
     <ol>
       <li>The amount of data represented by the bucket may or may not
@@ -209,7 +216,7 @@
       represents data stored in a file on disk.</li>
     </ol>
 
-    Filters read the data from a bucket using the
+    <p>Filters read the data from a bucket using the
     <code>apr_bucket_read</code> function.  When this function is
     invoked, the bucket may <em>morph</em> into a different bucket
     type, and may also insert a new bucket into the bucket brigade.
@@ -220,7 +227,7 @@
     single <code>FILE</code> bucket representing an entire file, 24
     kilobytes in size:</p>
 
-    <div class="example"><pre>FILE(0K-24K)</pre></div>
+    <div class="example"><p><code>FILE(0K-24K)</code></p></div>
 
     <p>When this bucket is read, it will read a block of data from the
     file, morph into a <code>HEAP</code> bucket to represent that
@@ -229,7 +236,7 @@
     after the <code>apr_bucket_read</code> call, the brigade looks
     like:</p>
 
-    <div class="example"><pre>HEAP(8K) FILE(8K-24K)</pre></div>
+    <div class="example"><p><code>HEAP(8K) FILE(8K-24K)</code></p></div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -242,20 +249,24 @@
     loop is critical to producing a well-behaved output filter.</p>
 
     <p>Taking an example which loops through the entire brigade as
-    follows:
+    follows:</p>
 
-    <div class="example"><h3>Bad output filter -- do not imitate!</h3><pre>apr_bucket *e = APR_BRIGADE_FIRST(bb);
-const char *data;
-apr_size_t len;
+    <div class="example"><h3>Bad output filter -- do not imitate!</h3><p><code>
+    apr_bucket *e = APR_BRIGADE_FIRST(bb);<br />
+const char *data;<br />
+apr_size_t len;<br />
+<br />
+while (e != APR_BRIGADE_SENTINEL(bb)) {<br />
+<span class="indent">
+    apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);<br />
+    e = APR_BUCKET_NEXT(e);<br />
+</span>
+}<br />
+<br />
+return ap_pass_brigade(bb);
+    </code></p></div>
 
-while (e != APR_BRIGADE_SENTINEL(bb)) {
-   apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
-   e = APR_BUCKET_NEXT(e);
-}
-
-return ap_pass_brigade(bb);</pre></div>
-
-    The above implementation would consume memory proportional to
+    <p>The above implementation would consume memory proportional to
     content size.  If passed a <code>FILE</code> bucket, for example,
     the entire file contents would be read into memory as each
     <code>apr_bucket_read</code> call morphed a <code>FILE</code>
@@ -265,22 +276,26 @@ return ap_pass_brigade(bb);</pre></div>
     amount of memory to filter any brigade; a temporary brigade is
     needed and must be allocated only once per response, see the <a href="#state">Maintaining state</a> section.</p>
 
-    <div class="example"><h3>Better output filter</h3><pre>apr_bucket *e;
-const char *data;
-apr_size_t len;
-
-while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
-   rv = apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);
-   if (rv) ...;
-   /* Remove bucket e from bb. */
-   APR_BUCKET_REMOVE(e);
-   /* Insert it into  temporary brigade. */
-   APR_BRIGADE_INSERT_HEAD(tmpbb, e);
-   /* Pass brigade downstream. */
-   rv = ap_pass_brigade(f-&gt;next, tmpbb);
-   if (rv) ...;
-   apr_brigade_cleanup(tmpbb);
-}</pre></div>
+    <div class="example"><h3>Better output filter</h3><p><code>
+apr_bucket *e;<br />
+const char *data;<br />
+apr_size_t len;<br />
+<br />
+while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {<br />
+<span class="indent">
+   rv = apr_bucket_read(e, &amp;data, &amp;length, APR_BLOCK_READ);<br />
+   if (rv) ...;<br />
+   /* Remove bucket e from bb. */<br />
+   APR_BUCKET_REMOVE(e);<br />
+   /* Insert it into  temporary brigade. */<br />
+   APR_BRIGADE_INSERT_HEAD(tmpbb, e);<br />
+   /* Pass brigade downstream. */<br />
+   rv = ap_pass_brigade(f-&gt;next, tmpbb);<br />
+   if (rv) ...;<br />
+   apr_brigade_cleanup(tmpbb);<br />
+</span>
+}
+    </code></p></div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -294,26 +309,35 @@ while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
     temporary brigade in such a structure, to avoid having to allocate
     a new brigade per invocation as described in the <a href="#brigade">Brigade structure</a> section.</p>
     
-  <div class="example"><h3>Example code to maintain filter state</h3><pre>struct dummy_state {
-   apr_bucket_brigade *tmpbb;
-   int filter_state;
-   ....
-};
+  <div class="example"><h3>Example code to maintain filter state</h3><p><code>
+struct dummy_state {<br />
+<span class="indent">
+   apr_bucket_brigade *tmpbb;<br />
+   int filter_state;<br />
+   ....<br />
+</span>
+};<br />
+<br />
+apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
+{<br />
+<span class="indent">
+    struct dummy_state *state;<br />
+<br />
+    state = f-&gt;ctx;<br />
+    if (state == NULL) {<br />
+    <span class="indent">
+       /* First invocation for this response: initialise state structure.
+        */<br />
+       f-&gt;ctx = state = apr_palloc(sizeof *state, f-&gt;r-&gt;pool);<br />
+<br />
+       state-&gt;tmpbb = apr_brigade_create(f-&gt;r-&gt;pool, f-&gt;c-&gt;bucket_alloc);<br />
+       state-&gt;filter_state = ...;<br />
+    </span>
+    }<br />
+    ...
+</span>
+    </code></p></div>
 
-apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
-{
-    struct dummy_state *state;
-
-    state = f-&gt;ctx;
-    if (state == NULL) {
-       /* First invocation for this response: initialise state structure. */
-       f-&gt;ctx = state = apr_palloc(sizeof *state, f-&gt;r-&gt;pool);
-       
-       state-&gt;tmpbb = apr_brigade_create(f-&gt;r-&gt;pool, f-&gt;c-&gt;bucket_alloc);
-       state-&gt;filter_state = ...;
-    }
-    ...</pre></div>
-    
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="buffer" id="buffer">Buffering buckets</a></h2>
@@ -337,7 +361,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     used, which will move all the buckets into a separate brigade
     containing buckets with a lifetime as long as the given pool
     argument.  This function must be used with care, taking into
-    account the following points:
+    account the following points:</p>
 
     <ol>
       <li>On return, <code>ap_save_brigade</code> guarantees that all
@@ -356,7 +380,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
       non-NULL "<code>saveto</code>" (destination) brigade parameter,
       the function will create a new brigade, which may cause memory
       use to be proportional to content size as described in the <a href="#brigade">Brigade structure</a> section.</li>
-    </ol></p>
+    </ol>
 
     <div class="warning">Filters must ensure that any buffered data is
     processed and passed down the filter chain during the last
@@ -386,31 +410,40 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     script; reading from such a bucket will block when waiting for the
     CGI script to produce more output.</p>
 
-    <div class="example"><h3>Example code using non-blocking bucket reads</h3><pre>apr_bucket *e;
-apr_read_type_e mode = APR_NONBLOCK_READ;
-
-while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {
-    apr_status_t rv;
-
-    rv = apr_bucket_read(e, &amp;data, &amp;length, mode);
-    if (rv == APR_EAGAIN &amp;&amp; mode == APR_NONBLOCK_READ) {
-        /* Pass down a brigade containing a flush bucket: */
-        APR_BRIGADE_INSERT_TAIL(tmpbb, apr_bucket_flush_create(...));
-        rv = ap_pass_brigade(f-&gt;next, tmpbb);
-        apr_brigade_cleanup(tmpbb);
-        if (rv != APR_SUCCESS) return rv;
-
-        /* Retry, using a blocking read. */
-        mode = APR_BLOCK_READ;
-        continue;
-    } else if (rv != APR_SUCCESS) { 
-        /* handle errors */
-    }
-
-    /* Next time, try a non-blocking read first. */
-    mode = APR_NONBLOCK_READ;
-    ...
-}</pre></div>
+    <div class="example"><h3>Example code using non-blocking bucket reads</h3><p><code>
+      
+apr_bucket *e;<br />
+apr_read_type_e mode = APR_NONBLOCK_READ;<br />
+<br />
+while ((e = APR_BRIGADE_FIRST(bb)) != APR_BRIGADE_SENTINEL(bb)) {<br />
+<span class="indent">
+    apr_status_t rv;<br />
+<br />
+    rv = apr_bucket_read(e, &amp;data, &amp;length, mode);<br />
+    if (rv == APR_EAGAIN &amp;&amp; mode == APR_NONBLOCK_READ) {<br />
+    <span class="indent">
+        /* Pass down a brigade containing a flush bucket: */<br />
+        APR_BRIGADE_INSERT_TAIL(tmpbb, apr_bucket_flush_create(...));<br />
+        rv = ap_pass_brigade(f-&gt;next, tmpbb);<br />
+        apr_brigade_cleanup(tmpbb);<br />
+        if (rv != APR_SUCCESS) return rv;<br />
+<br />
+        /* Retry, using a blocking read. */<br />
+        mode = APR_BLOCK_READ;<br />
+        continue;<br />
+    </span>
+    } else if (rv != APR_SUCCESS) {<br />
+    <span class="indent">
+        /* handle errors */<br />
+    </span>
+    }<br />
+<br />
+    /* Next time, try a non-blocking read first. */<br />
+    mode = APR_NONBLOCK_READ;<br />
+    ...<br />
+</span>
+}
+    </code></p></div>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
