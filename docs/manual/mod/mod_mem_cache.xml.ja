@@ -1,0 +1,217 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 421174 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_mem_cache.xml.meta">
+
+<name>mod_mem_cache</name>
+<description>URI をキーにしたコンテンツのキャッシュ</description>
+<status>Experimental</status>
+<sourcefile>mod_mem_cache.c</sourcefile>
+<identifier>mem_cache_module</identifier>
+
+<summary>
+    <note type="warning">
+      これは実験的なモジュールです。文書もまだ開発中です...
+    </note>
+
+    <p>このモジュールは <module>mod_cache</module> を<em>必要とします</em>。
+    これは <module>mod_cache</module> のサポートモジュールとして
+    動作し、メモリを使用したストレージ管理機構を提供します。
+    <module>mod_mem_cache</module> は二つのモードのどちらかで動作するように
+    設定できます: ファイル記述子のキャッシュかヒープ中のオブジェクトの
+    キャッシュです。ローカルで生成されたコンテンツに対してキャッシュするときや、
+    <module>mod_proxy</module> を使って <directive 
+    module="mod_proxy">ProxyPass</directive> (つまり<dfn>リバースプロキシ</dfn
+    >向け) に設定したときのバックエンドサーバのコンテンツに対して
+    キャッシュをするときに、たいへん効果的です。</p>
+
+    <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
+    アクセス保護のかけられているコンテンツはキャッシュされません。</p>
+</summary>
+<seealso><module>mod_cache</module></seealso>
+<seealso><module>mod_disk_cache</module></seealso>
+
+<directivesynopsis>
+<name>MCacheSize</name>
+<description>キャッシュに使われるメモリの最大量をキロバイト単位で指定</description>
+<syntax>MCacheSize <var>KBytes</var></syntax>
+<default>MCacheSize 100</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>MCacheSize</directive> ディレクティブはキャッシュに
+    使われるメモリの大きさをキロバイト (1024 バイト単位) で設定します。
+    新しいオブジェクトをキャッシュに挿入することになり、オブジェクトの
+    サイズが残りのメモリより大きい場合は、その新しいオブジェクトの挿入が
+    可能になるまで、古いオブジェクトが削除されていきます。
+    オブジェクトは <directive
+    module="mod_mem_cache">MCacheRemovalAlgorithm</directive>
+    で指定したアルゴリズムに従って削除されます。</p>
+
+    <example><title>例</title>
+      MCacheSize 700000
+    </example>
+
+    <note><title>注</title>
+      <p><directive>MCacheSize</directive> の値は <directive module="mod_mem_cache"
+      >MCacheMaxObjectSize</directive> ディレクティブで指定した値より
+      大きくなければなりません。</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheMaxObjectCount</name>
+<description>キャッシュに保管されるオブジェクトの最大数</description>
+<syntax>MCacheMaxObjectCount <var>value</var></syntax>
+<default>MCacheMaxObjectCount 1009</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>MCacheMaxObjectCount</directive> ディレクティブは
+    キャッシュされるオブジェクトの最大数を指定します。
+    この値はハッシュテーブルを作成するときに使われます。
+    新しいオブジェクトを挿入するときに、オブジェクトの最大数に
+    達してしまっているとき、新しいオブジェクトをキャッシュできるように、
+    オブジェクトを一つ消去します。オブジェクトは
+    <directive
+    module="mod_mem_cache">MCacheRemovalAlgorithm</directive>
+    で指定されたアルゴリズムに従って削除されます。</p>
+
+    <example><title>例</title>
+      MCacheMaxObjectCount 13001
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheMinObjectSize</name>
+<description>キャッシュに保管されるドキュメントの最小サイズ (バイト)</description>
+<syntax>MCacheMinObjectSize <var>bytes</var></syntax>
+<default>MCacheMinObjectSize 0</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>MCacheMinObjectSize</directive> ディレクティブは、ドキュメントを
+    キャッシュするかどうかを判定する、最小のサイズをバイト数で設定します。</p>
+
+    <example><title>例</title>
+      MCacheMinObjectSize 10000
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheMaxObjectSize</name>
+<description>キャッシュに保管できるドキュメントの最大サイズ (バイト)</description>
+<syntax>MCacheMaxObjectSize <var>bytes</var></syntax>
+<default>MCacheMaxObjectSize 10000</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>MCacheMaxObjectSize</directive> はドキュメントを
+    キャッシュするかどうかを判定する、最大のサイズをバイト数で設定します。</p>
+
+    <example><title>例</title>
+      MCacheMaxObjectSize 6400000
+    </example>
+
+    <note><title>注</title>
+      <p><directive>MCacheMaxObjectSize</directive> の値は <directive
+      module="mod_mem_cache">MCacheMinObjectSize</directive>
+      で指定した値よりも大きくなければなりません。</p>
+    </note>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheRemovalAlgorithm</name>
+<description>キャッシュから削除するドキュメントを選ぶためのアルゴリズム</description>
+<syntax>MCacheRemovalAlgorithm LRU|GDSF</syntax>
+<default>MCacheRemovalAlgorithm GDSF</default>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p><directive>MCacheRemovalAlgorithm</directive> ディレクティブは、
+    キャッシュから削除するドキュメントを選択するためのアルゴリズムを
+    指定します。選択肢は二つあります:</p>
+
+    <dl>
+      <dt><code>LRU</code> (Least Recently Used)</dt>
+      <dd><code>LRU</code> 一番長くアクセスされていないドキュメントを削除します。
+      </dd>
+
+      <dt><code>GDSF</code> (GreadyDual-Size)</dt>
+      <dd><code>GDSF</code> はキャッシュミスのコストとドキュメントのサイズをもとに、
+      ドキュメントのキャッシュに対して優先度をつけます。
+      優先度の一番低いドキュメントが最初に削除されます。</dd>
+    </dl>
+
+    <example><title>例</title>
+      MCacheRemovalAlgorithm GDSF<br />
+      MCacheRemovalAlgorithm LRU
+    </example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>MCacheMaxStreamingBuffer</name>
+<description>ストリームされている応答をキャッシュ不能と決定するまでに
+メモリにバッファする最大量</description>
+<syntax>MCacheMaxStreamingBuffer <var>size_in_bytes</var></syntax>
+<default>MCacheMaxStreamingBuffer of 100000 か MCacheMaxObjectSize の少い方</default>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+    <p><directive>MCacheMaxStreamingBuffer</directive> ディレクティブは、
+    サイズが大きすぎてキャッシュできないと判断するまでの、
+    ストリーム応答のバッファのための最大バイト数を指定します。
+    ストリーム応答とは、コンテンツの全体がすぐには得られず、
+    <code>Content-Length</code> がわからない応答を指します。
+    ストリーム応答を行なうようなものにはプロキシされた応答や、
+    CGI スクリプトの出力などがあります。デフォルトではストリームの応答は
+    <code>Content-Length</code> がない限りキャッシュ<em>されません</em>。
+    このような動作になっている理由は、結局キャッシュに収まりきらないと
+    判断することになってしまうような、サイズの大きな応答のバッファリングに、
+    大量のメモリが消費されるのを避けるためです。
+    <directive>MCacheMaxStreamingBuffer</directive> ディレクティブを使うと、
+    <code>Content-Length</code> を含まない応答に対して指定された最大量まで
+    バッファするようにできます。バッファを使い切ると、バッファ中の
+    コンテンツは捨てられ、キャッシュ動作を中止します。</p>
+
+    <note><title>注:</title>
+      <p><directive>MCacheMaxStreamingBuffer</directive> に非零の値を
+      使っても、クライアントへの応答の転送に特に遅延は発生しません。
+      <module>mod_mem_cache</module> はストリームコンテンツの断片を
+      バッファにコピーした後、即座に、その部分をクライアントへの配送の
+      次段の出力フィルタに送ります。</p>
+    </note>
+
+    <example>
+      # Enable caching of streamed responses up to 64KB:<br />
+      MCacheMaxStreamingBuffer 65536
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
