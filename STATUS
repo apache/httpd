@@ -90,7 +90,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       svn diff -r516175:HEAD http://svn.apache.org/repos/asf/httpd/httpd/trunk/support/ab.c
       applies to 2.2.x branch with offsets. 
       
-      +1: sctemme
+      +1: sctemme, rpluem
 
     * mod_ssl: Move thread locking upcall initialization before
       hardware library initialization, so hardware library can use
@@ -99,7 +99,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ssl/ssl_engine_init.c?r1=520701&r2=525709&view=patch
       
-      +1: sctemme
+      +1: sctemme, rpluem
 
     * mod_proxy_ajp: Fix wrong retry when sending the response failed.
       PR 40310 (The old fix wasn't ok).
@@ -187,7 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=526892
      2.2.x version of patch:
        Trunk version works
-     +1: trawick
+     +1: trawick, rpluem
 
    * HTTP proxy ProxyErrorOverride: Leave 1xx and 3xx responses alone.  Only
      processing of error responses (4xx, 5xx) will be altered.  PR
