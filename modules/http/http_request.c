@@ -193,11 +193,10 @@ AP_DECLARE(void) ap_die(int type, request_rec *r)
 
 static void check_pipeline(conn_rec *c)
 {
-    /* ### is zero correct? that means "read one line" */
     if (c->keepalive != AP_CONN_CLOSE) {
         apr_bucket_brigade *bb = apr_brigade_create(c->pool, c->bucket_alloc);
-        if (ap_get_brigade(c->input_filters, bb, AP_MODE_EATCRLF,
-                       APR_NONBLOCK_READ, 0) != APR_SUCCESS) {
+        if (ap_get_brigade(c->input_filters, bb, AP_MODE_SPECULATIVE,
+                       APR_NONBLOCK_READ, 1) != APR_SUCCESS) {
             c->data_in_input_filters = 0;  /* we got APR_EOF or an error */
         }
         else {
