@@ -416,28 +416,28 @@ attribute_value := (string)
   <h3>Attributes</h3>
     <p>The attributes prefixed with a <code>?</code>
     (e.g. <code>?context</code>) are all optional.  For each, there is a
-    single byte code to indicate the type of attribute, and then a string to
-    give its value.  They can be sent in any order (thogh the C code always
-    sends them in the order listed below).  A special terminating code is
-    sent to signal the end of the list of optional attributes. The list of
+    single byte code to indicate the type of attribute, and then its value
+    (string or integer).  They can be sent in any order (though the C code
+    always sends them in the order listed below).  A special terminating code
+    is sent to signal the end of the list of optional attributes. The list of
     byte codes is:</p>
     <table>
-      <tr><td>Information</td><td>Code Value</td><td>Note</td></tr>
-      <tr><td>?context</td><td>0x01</td><td>Not currently implemented
+      <tr><td>Information</td><td>Code Value</td><td>Type Of Value</td><td>Note</td></tr>
+      <tr><td>?context</td><td>0x01</td><td>-</td><td>Not currently implemented
       </td></tr>
-      <tr><td>?servlet_path</td><td>0x02</td><td>Not currently implemented
+      <tr><td>?servlet_path</td><td>0x02</td><td>-</td><td>Not currently implemented
       </td></tr>
-      <tr><td>?remote_user</td><td>0x03</td><td /></tr>
-      <tr><td>?auth_type</td><td>0x04</td><td /></tr>
-      <tr><td>?query_string</td><td>0x05</td><td /></tr>
-      <tr><td>?jvm_route</td><td>0x06</td><td /></tr>
-      <tr><td>?ssl_cert</td><td>0x07</td><td /></tr>
-      <tr><td>?ssl_cipher</td><td>0x08</td><td /></tr>
-      <tr><td>?ssl_session</td><td>0x09</td><td /></tr>
-      <tr><td>?req_attribute</td><td>0x0A</td><td>Name (the name of the
+      <tr><td>?remote_user</td><td>0x03</td><td>String</td><td /></tr>
+      <tr><td>?auth_type</td><td>0x04</td><td>String</td><td /></tr>
+      <tr><td>?query_string</td><td>0x05</td><td>String</td><td /></tr>
+      <tr><td>?jvm_route</td><td>0x06</td><td>String</td><td /></tr>
+      <tr><td>?ssl_cert</td><td>0x07</td><td>String</td><td /></tr>
+      <tr><td>?ssl_cipher</td><td>0x08</td><td>String</td><td /></tr>
+      <tr><td>?ssl_session</td><td>0x09</td><td>String</td><td /></tr>
+      <tr><td>?req_attribute</td><td>0x0A</td><td>String</td><td>Name (the name of the
       attribute follows)</td></tr>
-      <tr><td>?ssl_key_size</td><td>0x0B</td><td /></tr>
-      <tr><td>are_done</td><td>0xFF</td><td>request_terminator</td></tr>
+      <tr><td>?ssl_key_size</td><td>0x0B</td><td>Integer</td><td /></tr>
+      <tr><td>are_done</td><td>0xFF</td><td>-</td><td>request_terminator</td></tr>
     </table>
     <p>The <code>context</code> and <code>servlet_path</code> are not
     currently set by the C code, and most of the Java code completely ignores
