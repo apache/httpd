@@ -77,15 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_ssl: Move thread locking upcall initialization before
-      hardware library initialization, so hardware library can use
-      these upcalls when run in a threaded MPM. Fixes PR 20951. 
-      Trunk version of patch applies: 
-
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ssl/ssl_engine_init.c?r1=520701&r2=525709&view=patch
-      
-      +1: sctemme, rpluem, jim
-
    * support/htdbm.c: Enable crypt() support on platforms with crypt() but not
      <crypt.h>, such as z/OS.
      Trunk version of patch:
