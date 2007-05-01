@@ -160,6 +160,8 @@ application/vnd.fujixerox.ddd
 application/vnd.fujixerox.docuworks
 application/vnd.fujixerox.docuworks.binder
 application/vnd.fut-misnet
+application/vnd.google-earth.kml+xml    kml
+application/vnd.google-earth.kmz        kmz
 application/vnd.grafeq
 application/vnd.groove-account
 application/vnd.groove-help
