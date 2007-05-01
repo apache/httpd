@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
+  *) mod_ssl: Move thread locking upcall initialization before
+     hardware library initialization, so hardware library can use
+     these upcalls when run in a threaded MPM. PR 20951.
+     [Sander Temme]
+
   *) ab.c: Correct behavior of HTTP request headers sent by ab
      in presence of -H command-line overrides. PR 31268, 26554.
      [Arvind Srinivasan <arvind.srinivasan  sun.com>]
