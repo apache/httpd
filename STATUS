@@ -130,6 +130,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_ssl: Move thread locking upcall initialization before
       hardware library initialization, so hardware library can use
       these upcalls when run in a threaded MPM. Fixes PR 20951. 
+      [adunn at ncipher.com]
 
       http://people.apache.org/~sctemme/2.0.x-ssl_engine_init.c.patch
       
@@ -162,7 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       (This was already committed to 2.2.x, and the reports persist.)
         http://issues.apache.org/bugzilla/show_bug.cgi?id=12355
       Patch; http://issues.apache.org/bugzilla/attachment.cgi?id=16495
-      +1: wrowe, rpluem
+      +1: wrowe, rpluem, sctemme
 
     * mod_cgi and mod_cgid: Don't use apr_status_t error return
       from input filters as HTTP return value from the handler.
