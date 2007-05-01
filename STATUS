@@ -77,19 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-    * ab: Two minor fixes for PRs
-      * 42070: sign mismatch in format string causes high server listening port
-        numbers to be reported incorrectly. Subversion r526584
-      * 31268 and 26554: Allow -H command-line switch to override default 
-        values for Accept:, Host: and User-Agent: request headers. 
-        Subversion r526872
-      
-      svn diff -r516175:HEAD http://svn.apache.org/repos/asf/httpd/httpd/trunk/support/ab.c
-      applies to 2.2.x branch with offsets. 
-      
-      +1: sctemme, rpluem, jim
-
     * mod_ssl: Move thread locking upcall initialization before
       hardware library initialization, so hardware library can use
       these upcalls when run in a threaded MPM. Fixes PR 20951. 
