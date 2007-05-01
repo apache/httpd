@@ -1,7 +1,15 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
-   * mod_ldap: Remove the hardcoded size limit parameter for
+  *) ab.c: Correct behavior of HTTP request headers sent by ab
+     in presence of -H command-line overrides. PR 31268, 26554.
+     [Arvind Srinivasan <arvind.srinivasan  sun.com>]
+
+  *) ab.c: The apr_port_t type is unsigned, but ab was using a
+     signed format code in its reports. PR 42070.
+     [Takashi Sato <serai  lans-tv.com>]
+
+  *) mod_ldap: Remove the hardcoded size limit parameter for
      ldap_search_ext_s and replace it with an APR_ defined
      value that is set according to the LDAP SDK being used.
      [David Jones <oscaremma gmail com>]
