@@ -197,3 +197,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        Trunk version works
      +1: trawick, rpluem
+
+   * mod_cache: Correctly cache and recall entities whose request URL's
+     are url-escaped.
+        PR: 41475
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=506621
+     2.2.x version of patch:
+       Trunk version works
+     +1: rpluem
+
