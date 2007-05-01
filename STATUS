@@ -77,14 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * support/htdbm.c: Enable crypt() support on platforms with crypt() but not
-     <crypt.h>, such as z/OS.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=526892
-     2.2.x version of patch:
-       Trunk version works
-     +1: trawick, rpluem, jim
-
    * HTTP proxy ProxyErrorOverride: Leave 1xx and 3xx responses alone.  Only
      processing of error responses (4xx, 5xx) will be altered.  PR
      39245.
