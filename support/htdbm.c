@@ -69,7 +69,7 @@
 #define ALG_APMD5 1
 #define ALG_APSHA 2
 
-#if APR_HAVE_CRYPT_H
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
 #define ALG_CRYPT 3
 #endif
 
@@ -311,12 +311,12 @@ static apr_status_t htdbm_make(htdbm_t *htdbm)
         case ALG_PLAIN:
             /* XXX this len limitation is not in sync with any HTTPd len. */
             apr_cpystrn(cpw,htdbm->userpass,sizeof(cpw));
-#if APR_HAVE_CRYPT_H
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
             fprintf(stderr, "Warning: Plain text passwords aren't supported by the "
                     "server on this platform!\n");
 #endif
         break;
-#if APR_HAVE_CRYPT_H
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
         case ALG_CRYPT:
             (void) srand((int) time((time_t *) NULL));
             to64(&salt[0], rand(), 8);
@@ -347,7 +347,7 @@ static apr_status_t htdbm_valid_username(htdbm_t *htdbm)
 static void htdbm_usage(void)
 {
 
-#if APR_HAVE_CRYPT_H
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
 #define CRYPT_OPTION "d"
 #else
 #define CRYPT_OPTION ""
@@ -367,7 +367,7 @@ static void htdbm_usage(void)
     fprintf(stderr, "   -c   Create a new database.\n");
     fprintf(stderr, "   -n   Don't update database; display results on stdout.\n");
     fprintf(stderr, "   -m   Force MD5 encryption of the password (default).\n");
-#if APR_HAVE_CRYPT_H
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
     fprintf(stderr, "   -d   Force CRYPT encryption of the password (now deprecated).\n");
 #endif
     fprintf(stderr, "   -p   Do not encrypt the password (plaintext).\n");
@@ -474,7 +474,7 @@ int main(int argc, const char * const argv[])
             case 's':
                 h->alg = ALG_APSHA;
                 break;
-#if APR_HAVE_CRYPT_H
+#if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
             case 'd':
                 h->alg = ALG_CRYPT;
                 break;

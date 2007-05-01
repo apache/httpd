@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
+  *) htdbm: Enable crypt support on platforms with crypt() but not
+     <crypt.h>, such as z/OS. [David Jones <oscaremma gmail.com>]
+
   *) mod_ssl: Move thread locking upcall initialization before
      hardware library initialization, so hardware library can use
      these upcalls when run in a threaded MPM. PR 20951.
