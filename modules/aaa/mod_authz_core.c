@@ -711,8 +711,6 @@ static authz_status check_provider_list (request_rec *r, authz_provider_list *cu
     return auth_result;
 }
 
-APR_OPTIONAL_FN_TYPE(ap_satisfies) *ap_satisfies;
-
 static int authorize_user(request_rec *r)
 {
     authz_core_dir_conf *conf = ap_get_module_config(r->per_dir_config,
@@ -805,17 +803,11 @@ static int authz_some_auth_required(request_rec *r)
     return req_authz;
 }
 
-static void ImportAuthzCoreOptFn(void)
-{
-    ap_satisfies = APR_RETRIEVE_OPTIONAL_FN(ap_satisfies);
-}
-
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(authz_some_auth_required);
 
     ap_hook_auth_checker(authorize_user, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_optional_fn_retrieve(ImportAuthzCoreOptFn,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA authz_core_module =
