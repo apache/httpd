@@ -645,7 +645,8 @@ AP_DECLARE(int) ap_allow_overrides(request_rec *r)
 }
 
 /*
- * Optional function coming from mod_ident, used for looking up ident user
+ * Optional function coming from mod_authn_core, used for 
+ * retrieving the type of autorization
  */
 static APR_OPTIONAL_FN_TYPE(authn_ap_auth_type) *authn_ap_auth_type;
 
@@ -658,7 +659,8 @@ AP_DECLARE(const char *) ap_auth_type(request_rec *r)
 }
 
 /*
- * Optional function coming from mod_ident, used for looking up ident user
+ * Optional function coming from mod_authn_core, used for 
+ * retrieving the authorization realm
  */
 static APR_OPTIONAL_FN_TYPE(authn_ap_auth_name) *authn_ap_auth_name;
 
@@ -668,6 +670,20 @@ AP_DECLARE(const char *) ap_auth_name(request_rec *r)
         return authn_ap_auth_name(r);
     }
     return NULL;
+}
+
+/*
+ * Optional function coming from mod_access_compat, used to determine how
+   access control interacts with authentication/authorization
+ */
+static APR_OPTIONAL_FN_TYPE(access_compat_ap_satisfies) *access_compat_ap_satisfies;
+
+AP_DECLARE(int) ap_satisfies(request_rec *r)
+{
+    if (access_compat_ap_satisfies) {
+        return access_compat_ap_satisfies(r);
+    }
+    return SATISFY_NOSPEC;
 }
 
 AP_DECLARE(const char *) ap_default_type(request_rec *r)
@@ -3646,6 +3662,7 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
     authz_ap_some_auth_required = APR_RETRIEVE_OPTIONAL_FN(authz_some_auth_required);
     authn_ap_auth_type = APR_RETRIEVE_OPTIONAL_FN(authn_ap_auth_type);
     authn_ap_auth_name = APR_RETRIEVE_OPTIONAL_FN(authn_ap_auth_name);
+    access_compat_ap_satisfies = APR_RETRIEVE_OPTIONAL_FN(access_compat_ap_satisfies);
 
     set_banner(pconf);
     ap_setup_make_content_type(pconf);

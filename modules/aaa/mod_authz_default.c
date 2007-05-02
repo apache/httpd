@@ -52,8 +52,6 @@ static const command_rec authz_default_cmds[] =
 
 module AP_MODULE_DECLARE_DATA authz_default_module;
 
-static APR_OPTIONAL_FN_TYPE(ap_satisfies) *ap_satisfies;
-
 static int check_user_access(request_rec *r)
 {
     authz_default_config_rec *conf = ap_get_module_config(r->per_dir_config,
@@ -89,15 +87,9 @@ static int check_user_access(request_rec *r)
     return HTTP_UNAUTHORIZED;
 }
 
-static void ImportAuthzDefOptFn(void)
-{
-    ap_satisfies = APR_RETRIEVE_OPTIONAL_FN(ap_satisfies);
-}
-
 static void register_hooks(apr_pool_t *p)
 {
     ap_hook_auth_checker(check_user_access,NULL,NULL,APR_HOOK_LAST);
-    ap_hook_optional_fn_retrieve(ImportAuthzDefOptFn,NULL,NULL,APR_HOOK_MIDDLE);
 }
 
 module AP_MODULE_DECLARE_DATA authz_default_module =

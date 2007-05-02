@@ -114,6 +114,13 @@ extern "C" {
 
 /** @} // get_remote_host */
 
+/** all of the requirements must be met */
+#define SATISFY_ALL 0
+/**  any of the requirements must be met */
+#define SATISFY_ANY 1
+/** There are no applicable satisfy lines */
+#define SATISFY_NOSPEC 2
+
 /** Make sure we don't write less than 8000 bytes at any one time.
  */
 #define AP_MIN_BYTES_TO_WRITE  8000
@@ -286,6 +293,18 @@ AP_DECLARE(const char *) ap_auth_type(request_rec *r);
  * @return The current authorization realm
  */
 AP_DECLARE(const char *) ap_auth_name(request_rec *r);     
+
+/**
+ * How the requires lines must be met.
+ * @param r The current request
+ * @return How the requirements must be met.  One of:
+ * <pre>
+ *      SATISFY_ANY    -- any of the requirements must be met.
+ *      SATISFY_ALL    -- all of the requirements must be met.
+ *      SATISFY_NOSPEC -- There are no applicable satisfy lines
+ * </pre>
+ */
+AP_DECLARE(int) ap_satisfies(request_rec *r);
 
 #ifdef CORE_PRIVATE
 
@@ -649,12 +668,19 @@ APR_DECLARE_OPTIONAL_FN(const char *, ap_ident_lookup,
 
 /* ----------------------------------------------------------------------
  *
- * authorization values with mod_authz_host
+ * authorization values with mod_authz_core
  */
 
 APR_DECLARE_OPTIONAL_FN(int, authz_some_auth_required, (request_rec *r));
 APR_DECLARE_OPTIONAL_FN(const char *, authn_ap_auth_type, (request_rec *r));
 APR_DECLARE_OPTIONAL_FN(const char *, authn_ap_auth_name, (request_rec *r));
+
+/* ----------------------------------------------------------------------
+ *
+ * authorization values with mod_access_compat
+ */
+
+APR_DECLARE_OPTIONAL_FN(int, access_compat_ap_satisfies, (request_rec *r));
 
 /* ---------------------------------------------------------------------- */
 

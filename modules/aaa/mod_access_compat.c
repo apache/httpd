@@ -98,10 +98,6 @@ static const char *order(cmd_parms *cmd, void *dv, const char *arg)
     access_compat_dir_conf *d = (access_compat_dir_conf *) dv;
     int i, o;
 
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server,
-                  "The 'Order' directive has been deprecated. "
-                  "Consider using '<SatisfyAll><SatisfyOne>' directives."); 
-
     if (!strcasecmp(arg, "allow,deny"))
         o = ALLOW_THEN_DENY;
     else if (!strcasecmp(arg, "deny,allow"))
@@ -123,10 +119,6 @@ static const char *satisfy(cmd_parms *cmd, void *dv, const char *arg)
     access_compat_dir_conf *d = (access_compat_dir_conf *) dv;
     int satisfy = SATISFY_NOSPEC;
     int i;
-
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server,
-                  "The 'Satisfy' directive has been deprecated. "
-                  "Consider using '<SatisfyAll><SatisfyOne>' directives."); 
 
     if (!strcasecmp(arg, "all")) {
         satisfy = SATISFY_ALL;
@@ -156,10 +148,6 @@ static const char *allow_cmd(cmd_parms *cmd, void *dv, const char *from,
     char *s;
     char msgbuf[120];
     apr_status_t rv;
-
-    ap_log_error(APLOG_MARK, APLOG_INFO, 0, cmd->server,
-                  "The 'Allow/Deny' directives have been deprecated. "
-                  "Consider using one of the host providers in mod_authz_host.");   
 
     if (strcasecmp(from, "from"))
         return "allow and deny must be followed by 'from'";
@@ -307,7 +295,7 @@ static int find_allowdeny(request_rec *r, apr_array_header_t *a, int method)
     return 0;
 }
 
-static int ap_satisfies(request_rec *r)
+static int access_compat_ap_satisfies(request_rec *r)
 {
     access_compat_dir_conf *conf = (access_compat_dir_conf *)
         ap_get_module_config(r->per_dir_config, &access_compat_module);
@@ -354,9 +342,9 @@ static int check_dir_access(request_rec *r)
     }
     else {
         apr_table_setn(r->notes, AUTHZ_ACCESS_PASSED_NOTE, "N");
-        /* If Satisfy is Any and authorization is required, then 
+        /* If Satisfy is not Any and authorization is required, then 
            defer to the authorization stage */
-        if ((ap_satisfies(r) == SATISFY_ANY) && ap_some_auth_required(r)) {
+        if ((access_compat_ap_satisfies(r) != SATISFY_ANY) && ap_some_auth_required(r)) {
             ret = OK;
         }
     }
@@ -373,7 +361,7 @@ static int check_dir_access(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    APR_REGISTER_OPTIONAL_FN(ap_satisfies);
+    APR_REGISTER_OPTIONAL_FN(access_compat_ap_satisfies);
 
     /* This can be access checker since we don't require r->user to be set. */
     ap_hook_access_checker(check_dir_access,NULL,NULL,APR_HOOK_MIDDLE);
