@@ -30,6 +30,10 @@
 #include "httpd.h"
 #include "http_config.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct ap_listen_rec ap_listen_rec;
 typedef apr_status_t (*accept_function)(void **csd, ap_listen_rec *lr, apr_pool_t *ptrans);
 
@@ -114,6 +118,10 @@ AP_INIT_TAKE1("SendBufferSize", ap_set_send_buffer_size, NULL, RSRC_CONF, \
   "Send buffer size in bytes"), \
 AP_INIT_TAKE1("ReceiveBufferSize", ap_set_receive_buffer_size, NULL, \
               RSRC_CONF, "Receive buffer size in bytes")
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 /** @} */
