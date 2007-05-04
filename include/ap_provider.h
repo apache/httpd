@@ -28,6 +28,10 @@
 
 #include "ap_config.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct {
     const char *provider_name;
 } ap_list_provider_names_t;
@@ -73,6 +77,10 @@ AP_DECLARE(void *) ap_lookup_provider(const char *provider_group,
 AP_DECLARE(apr_array_header_t *) ap_list_provider_names(apr_pool_t *pool,
                                               const char *provider_group,
                                               const char *provider_version);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 /** @} */
