@@ -2089,7 +2089,11 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
 
 #define USE_ALTERNATE_IS_CONNECTED 1
 
-#if USE_ALTERNATE_IS_CONNECTED
+#if !defined(APR_MSG_PEEK) && defined(MSG_PEEK)
+#define APR_MSG_PEEK MSG_PEEK
+#endif
+
+#if USE_ALTERNATE_IS_CONNECTED && defined(APR_MSG_PEEK)
 static int is_socket_connected(apr_socket_t *socket)
 {
     apr_pollfd_t pfds[1];
@@ -2114,7 +2118,7 @@ static int is_socket_connected(apr_socket_t *socket)
          * If there is no data available the socket
          * is closed.
          */
-        status = apr_socket_recvfrom(&unused, socket, MSG_PEEK,
+        status = apr_socket_recvfrom(&unused, socket, APR_MSG_PEEK,
                                      &buf[0], &len);
         if (status == APR_SUCCESS && len)
             return 1;
