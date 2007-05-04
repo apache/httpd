@@ -170,8 +170,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rpluem
 
    * proxy_util.c: Add alternate is_socket_connected() function
-     which uses APR calls. (Note: MSG_PEEK needs to be investigated)
+     which uses APR calls.
      Trunk version of patch:
        http://svn.apache.org/viewvc?view=rev&rev=473278
+       http://svn.apache.org/viewvc?view=rev&rev=535354
      2.2.x version of patch:
-       Trunk version works (see note above)
+       Trunk version works
