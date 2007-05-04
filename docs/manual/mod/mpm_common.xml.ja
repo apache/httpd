@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 190982:421100 (outdated) -->
+<!-- English Revision: 421100 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -35,8 +35,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>AcceptMutex default|<var>method</var></syntax>
 <default>AcceptMutex default</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist>
+<module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -108,9 +108,9 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>CoreDumpDirectory <var>directory</var></syntax>
 <default>$B%G%U%)%k%H$N@_Dj$O@bL@J8$rFI$s$G$/$@$5$$(B</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>beos</module>
+<module>mpm_winnt</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>Apache $B$,%3%"%@%s%W$9$kA0$K0\F0$r;n$_$k%G%#%l%/%H%j$r@)8f$7$^$9!#(B
@@ -137,8 +137,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>EnableExceptionHook On|Off</syntax>
 <default>EnableExceptionHook Off</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module>
+<modulelist>
+<module>prefork</module>
 <module>worker</module></modulelist>
 <compatibility>2.0.49 $B0J9_(B</compatibility>
 
@@ -157,14 +157,34 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 </directivesynopsis>
 
 <directivesynopsis>
+<name>GracefulShutdownTimeout</name>
+<description>$B2:$d$+$JDd;_$r$+$1$?8e!"=*N;$9$k$^$GBT$D;~4V(B</description>
+<syntax>GracefulShutDownTimeout <var>seconds</var></syntax>
+<default>GracefulShutDownTimeout 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>prefork</module><module>worker</module>
+<module>event</module></modulelist>
+<compatibility>2.2 $B0J9_(B</compatibility>
+
+<usage>
+    <p><directive>GracefulShutdownTimeout</directive> $B$K$O(B
+    $B%5!<%P!<$,(B "graceful-stop" $B%7%0%J%k$r<u$1<h$C$F$+$i8=:_$N(B
+    $B%j%/%(%9%H$N=hM}$r:GBg$G2?IC4VB3$1$k$+$r;XDj$7$^$9!#(B</p>
+
+    <p>$B$3$NCM$r%<%m$K@_Dj$9$k$H!"=hM}Cf$H$7$F;D$C$F$$$k%j%/%(%9%H$,(B
+    $BA4$F40N;$9$k$^$G%5!<%P!<$O=*N;$7$^$;$s!#(B</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>Group</name>
 <description>$B%j%/%(%9%H$K1~Ez$9$k:]$K=jB0$9$k%0%k!<%W(B</description>
 <syntax>Group <var>unix-group</var></syntax>
 <default>Group #-1</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>beos</module>
+<module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
 <compatibility>Apache 2.0 $B0J9_$G!"%0%m!<%P%k@_Dj$G$N$_M-8z$G$9!#(B</compatibility>
 
 <usage>
@@ -181,7 +201,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
       <dd>$B%0%k!<%W$rL>A0$G;2>H$7$^$9(B</dd>
 
       <dt><code>#</code> $B$KB3$$$F%0%k!<%WHV9f(B</dt>
-      <dd>$B%0%k!<%W$r$rHV9f$G;2>H$7$^$9!#(B</dd>
+      <dd>$B%0%k!<%W$rHV9f$G;2>H$7$^$9!#(B</dd>
     </dl>
 
     <example><title>$BNc(B</title>
@@ -221,10 +241,10 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>PidFile <var>filename</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_winnt</module><module>mpmt_os2</module>
-<module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p><directive>PidFile</directive> $B%G%#%l%/%F%#%V$G!"(B
@@ -263,10 +283,10 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <description>$B%5!<%P$,(B listen $B$9$k(BIP $B%"%I%l%9$H%]!<%HHV9f(B</description>
 <syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<module>mpmt_os2</module>
+<module>prefork</module><module>worker</module>
 <module>event</module>
 </modulelist>
 <compatibility>Apache 2.0 $B$+$iI,?\%G%#%l%/%F%#%V!#(B<var>protocol</var>
@@ -315,7 +335,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $BNc$($P<!$NNc$N$h$&$K$G$9!#(B</p>
 
     <example>
-       Listen [2001:db8::a00:20ff:fea7:ccea]:80
+      Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </example>
 
     <p><var>protocol</var> $B%*%W%7%g%s0z?t$ODL>o$N@_Dj$G$OI,MW$"$j$^$;$s!#(B
@@ -351,10 +371,10 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>ListenBacklog <var>backlog</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>$BJ]N1>uBV$N%3%M%/%7%g%s$N%-%e!<$N:GBgD9$G$9!#(B
@@ -378,8 +398,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>LockFile <var>filename</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist>
+<module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -412,8 +432,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>MaxClients <var>number</var></syntax>
 <default>$B>\:Y$O;HMQK!$r$4Mw2<$5$$!#(B</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>beos</module>
+<module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -456,9 +476,9 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>MaxMemFree <var>KBytes</var></syntax>
 <default>MaxMemFree 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>prefork</module>
-<module>threadpool</module><module>worker</module><module>mpm_winnt</module></modulelist>
+<module>worker</module><module>mpm_winnt</module></modulelist>
 
 <usage>
     <p><directive>MaxMemFree</directive> $B%G%#%l%/%F%#%V$O(B
@@ -474,10 +494,10 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>MaxRequestsPerChild <var>number</var></syntax>
 <default>MaxRequestsPerChild 10000</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_netware</module>
+<modulelist><module>mpm_netware</module>
 <module>mpm_winnt</module><module>mpmt_os2</module>
-<module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p><directive>MaxRequestsPerChild</directive> $B%G%#%l%/%F%#%V$O!"(B
@@ -518,23 +538,16 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>MaxSpareThreads <var>number</var></syntax>
 <default>$B>\:Y$O;HMQK!$r$4Mw2<$5$$!#(B</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpmt_os2</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
+<module>worker</module>
 </modulelist>
 
 <usage>
     <p>$B%"%$%I%k$J%9%l%C%I$N:GBg?t$G$9!#0[$J$k(B MPM $B$G$O$=$l$>$l!"(B
     $B$3$N%G%#%l%/%F%#%V$O0[$J$k<h$j07$o$lJ}$r$5$l$^$9!#(B</p>
 
-    <p><module>perchild</module> $B$G$O!"(B
-    $B%G%U%)%k%H$O(B <code>MaxSpareThreads 10</code> $B$G$9!#(B
-    $B$3$N(B MPM $B$O%"%$%I%k%9%l%C%I?t$r!"$=$l$>$l$N;R%W%m%;%9$4$H$K4F;k$7$^$9!#(B
-    $B;R%W%m%;%9$K%"%$%I%k%9%l%C%I$,B?$9$.$k>l9g$O!"(B
-    $B%5!<%P$O$=$N;R%W%m%;%9$K4^$^$l$k%9%l%C%I$r=*N;$7;O$a$^$9!#(B</p>
-
-    <p><module>worker</module>, <module>leader</module>,
-    <module>threadpool</module> $B$G$O!"(B
+    <p><module>worker</module> $B$G$O!"(B
     $B%G%U%)%k%H$O(B <code>MaxSpareThreads 250</code> $B$G$9!#(B
     $B$3$N(B MPM $B$O%"%$%I%k%9%l%C%I?t$r%5!<%PA4BN$G4F;k$7$^$9!#(B
     $B%5!<%P$G%"%$%I%k%9%l%C%I?t$,B?$9$.$k>l9g$O!"(B
@@ -555,16 +568,12 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
       <p><directive>MaxSpareThreads</directive> $B$N<h$kCM$K$O@)8B$,$"$j$^$9!#(B
       Apache $B$O<!$N5,B'$K=>$C$F<+F0E*$KJd@5$7$^$9!#(B</p>
       <ul>
-        <li><module>perchild</module> $B$G$O!"(B
-        <directive>MaxSpareThreads</directive> $B$,(B
-        <directive module="mpm_common">ThreadLimit</directive>
-        $B$HEy$7$$$+$=$l0J2<$G$"$kI,MW$,$"$j$^$9!#(B</li>
 
         <li><module>mpm_netware</module> $B$O(B
         <directive module="mpm_common">MinSpareThreads</directive>
         $B$h$j$bBg$-$$I,MW$,$"$j$^$9!#(B</li>
 
-        <li><module>leader</module>, <module>threadpool</module>, 
+        <li>
         <module>worker</module> $B$G$O!"(B
         <directive module="mpm_common">MinSpareThreads</directive> $B$H(B
         <directive module="mpm_common">ThreadsPerChild</directive>
@@ -583,9 +592,9 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>MinSpareThreads <var>number</var></syntax>
 <default>$B>\:Y$O;HMQJ}K!$r$4Mw2<$5$$!#(B</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpmt_os2</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
+<module>worker</module>
 </modulelist>
 
 <usage>
@@ -593,18 +602,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $B0[$J$k(B MPM $B$G$O$=$l$>$l!"(B
     $B$3$N%G%#%l%/%F%#%V$O0[$J$k<h$j07$o$lJ}$r$7$^$9!#(B</p>
 
-    <p><module>perchild</module> $B$G$O!"(B
-    $B%G%U%)%k%H$O(B <code>MinSpareThreads 5</code> $B$G!"(B
-    $B%"%$%I%k%9%l%C%I?t$r;R%W%m%;%9Kh$K4F;k$7$^$9!#(B
-    $B$b$7;R%W%m%;%9$K==J,$J?t$N%9%l%C%I$,$J$1$l$P!"(B
-    $B%5!<%P$O$=$N;R%W%m%;%9$K?7$7$$%9%l%C%I$r:n$j;O$a$^$9!#(B
-    $B$G$9$+$i!"(B<directive module="perchild">NumServers</directive>
-    $B$r(B <code>10</code> $B$K!"(B<directive>MinSpareThreads</directive> $B$r(B
-    <code>5</code> $B$K$7$?>l9g$O!":G>.$G$b(B 50 $B$N%"%$%I%k%9%l%C%I$,(B
-    $B%7%9%F%`>e$K$"$k$3$H$K$J$j$^$9!#(B</p>
-
-    <p><module>worker</module>, <module>leader</module>,
-    <module>threadpool</module> $B$G$O!"(B
+    <p><module>worker</module> $B$G$O!"(B
     $B%G%U%)%k%H$O(B <code>MinSpareThreads 75</code> $B$G!"(B
     $B%"%$%I%k%9%l%C%I?t$r%5!<%PA4BN$G4F;k$7$^$9!#(B
     $B$b$7%5!<%P$K==J,$J?t$N%"%$%I%k%9%l%C%I$,$J$1$l$P!"(B
@@ -632,9 +630,9 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>ScoreBoardFile <var>file-path</var></syntax>
 <default>ScoreBoardFile logs/apache_status</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
-<module>mpm_winnt</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>beos</module>
+<module>mpm_winnt</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>Apache $B$O?F%W%m%;%9$H;R%W%m%;%94V$NDL?.$K%9%3%"%\!<%I$rMQ$$$^$9!#(B
@@ -662,18 +660,36 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ReceiveBufferSize</name>
+<description>TCP $B<u?.%P%C%U%!%5%$%:(B</description>
+<syntax>ReceiveBufferSize <var>bytes</var></syntax>
+<default>ReceiveBufferSize 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
+
+<usage>
+    <p>$B%5!<%P$O(B TCP $B<u?.%P%C%U%!%5%$%:$r;XDj$5$l$?%P%$%H?t$K@_Dj$7$^$9!#(B</p>
+
+    <p><code>0</code>$B$K$7$?>l9g!"(BOS $B$N%G%U%)%k%HCM$,;HMQ$5$l$^$9!#(B</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SendBufferSize</name>
 <description>TCP $B%P%C%U%!%5%$%:(B</description>
 <syntax>SendBufferSize <var>bytes</var></syntax>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>beos</module><module>leader</module>
+<modulelist><module>beos</module>
 <module>mpm_netware</module><module>mpm_winnt</module>
-<module>mpmt_os2</module><module>perchild</module><module>prefork</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
 
 <usage>
-    <p>$B%5!<%P$O(B TCP $B%P%C%U%!%5%$%:$r;XDj$5$l$?%P%$%H?t$K@_Dj$7$^$9!#(B
+    <p>$B%5!<%P$O(B TCP $BAw?.%P%C%U%!%5%$%:$r;XDj$5$l$?%P%$%H?t$K@_Dj$7$^$9!#(B
     $B9bB.$G9b%l%$%F%s%7$J4D6-$G(B
     (<em>$BNc(B</em> 100ms $BDxEY!"BgN&2#CG9bB.DL?.O)$J$I(B)
     $B8E$$0lHLE*$J(B OS $B$N%G%U%)%k%HCM$rA}$d$9$N$KHs>o$KJXMx$G$9!#(B</p>
@@ -688,8 +704,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>ServerLimit <var>number</var></syntax>
 <default>$B>\:Y$O;HMQK!$r;2>H(B</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist>
+<module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -722,8 +738,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $B4uK>$N(B <directive module="mpm_common">MaxClients</directive>
     $B?t$H$/$i$Y$F!"I,MW0J>e$KBg$-$JCM$r;XDj$9$k$3$H$OHr$1$F$/$@$5$$!#(B</p>
 
-    <p><module>worker</module>, <module>leader</module>, 
-    <module>threadpool</module> MPM $B$G$O!"(B
+    <p><module>worker</module> MPM $B$G$O!"(B
     <directive module="mpm_common">MaxClients</directive> $B$H(B
     <directive module="mpm_common">ThreadsPerChild</directive>
     $B$N@_Dj$G(B 16 $B%5!<%P%W%m%;%9(B ($B%G%U%)%k%H(B) 
@@ -732,10 +747,6 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     <directive module="mpm_common">ThreadsPerChild</directive>
     $B$H$/$i$Y$F!"I,MW$H$J$k%5!<%P%W%m%;%9?t0J>e$KBg$-$JCM$r(B
     $B@_Dj$9$k$3$H$OHr$1$F$/$@$5$$!#(B</p>
-
-    <p><module>perchild</module> MPM $B$G$O!"(B
-    <directive module="perchild">NumServers</directive> $B$r(B 8 ($B%G%U%)%k%H(B)
-    $B$h$m$$$bBg$-$JCM$K@_Dj$9$kI,MW$,$"$k$H$-$K$N$_;HMQ$7$F$/$@$5$$!#(B</p>
 
     <note><title>$BCm0U(B</title>
       <p><code>ServerLimit 20000</code> $B$H$$$&@)8BIU$-$G%3%s%Q%$%k$5$l$F$$$^$9(B
@@ -753,8 +764,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>StartServers <var>number</var></syntax>
 <default>$B>\:Y$O;HMQJ}K!$r;2>H(B</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpmt_os2</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist><module>mpmt_os2</module>
+<module>prefork</module><module>worker</module>
 </modulelist>
 
 <usage>
@@ -764,7 +775,6 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $BDL>o$O$3$NCM$rD4@0$9$kM}M3$O$"$^$j$J$$$G$7$g$&!#(B</p>
 
     <p>$B%G%U%)%k%HCM$O(B MPM $B$4$H$K0[$J$j$^$9!#(B
-    <module>leader</module>, <module>threadpool</module>, 
     <module>worker</module> $B$O(B <code>StartServers 3</code> $B$G$9!#(B
     <module>prefork</module> $B$O(B <code>5</code> $B$G!"(B
     <module>mpmt_os2</module> $B$O(B <code>2</code> $B$G$9!#(B</p>
@@ -778,16 +788,12 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <default>$B>\:Y$O;HMQJ}K!$r;2>H(B</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>mpm_netware</module>
-<module>perchild</module></modulelist>
+</modulelist>
 
 <usage>
     <p>$B5/F0;~$K@8@.$5$l$k%9%l%C%I$N?t$G$9!#(B
     $B%9%l%C%I?t$OIi2Y$K1~$8$FF0E*$K@)8f$5$l$^$9$N$G!"(B
     $BDL>o$O$3$NCM$rD4@0$9$kM}M3$O$"$^$j$J$$$G$7$g$&!#(B</p>
-
-    <p><module>perchild</module> $B$G$N%G%U%)%k%H$O(B
-    <code>StartThreads 5</code> $B$G!"$3$N%G%#%l%/%F%#%V$O5/F0;~$K(B
-    $B%W%m%;%9Kh$N%9%l%C%I?t$rDI@W$7$^$9!#(B</p>
 
     <p><module>mpm_netware</module> $B$G$N%G%U%)%k%H$O(B
     <code>StartThreads 50</code> $B$G!"(B
@@ -807,8 +813,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>ThreadLimit <var>number</var></syntax>
 <default>$B>\:Y$O;HMQJ}K!$r;2>H(B</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_winnt</module>
-<module>perchild</module><module>threadpool</module><module>worker</module>
+<modulelist><module>mpm_winnt</module>
+<module>worker</module>
 </modulelist>
 <compatibility>Apache 2.0.41 $B$H$=$l0J9_$N(B <module>mpm_winnt</module> 
 $B$GMxMQ2DG=(B</compatibility>
@@ -857,8 +863,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>ThreadsPerChild <var>number</var></syntax>
 <default>$B>\:Y$O;HMQJ}K!$r;2>H(B</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_winnt</module>
-<module>threadpool</module><module>worker</module></modulelist>
+<modulelist><module>mpm_winnt</module>
+<module>worker</module></modulelist>
 
 <usage>
     <p>$B$3$N%G%#%l%/%F%#%V$O!"$=$l$>$l$N;R%W%m%;%9$G@8@.$5$l$k(B
@@ -885,9 +891,9 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>ThreadStackSize <var>size</var></syntax>
 <default>NetWare $B$G$O(B 65536$B!#B>$N(B OS $B$G$O0c$C$?CM(B</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>mpm_netware</module>
-<module>mpm_winnt</module><module>perchild</module>
-<module>threadpool</module><module>worker</module>
+<modulelist><module>mpm_netware</module>
+<module>mpm_winnt</module>
+<module>worker</module>
 </modulelist>
 <compatibility>2.1 $B0J9_(B</compatibility>
 
@@ -930,8 +936,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <syntax>User <var>unix-userid</var></syntax>
 <default>User #-1</default>
 <contextlist><context>server config</context></contextlist>
-<modulelist><module>leader</module><module>perchild</module>
-<module>prefork</module><module>threadpool</module><module>worker</module>
+<modulelist>
+<module>prefork</module><module>worker</module>
 </modulelist>
 <compatibility>Apache 2.0 $B0J9_$G!"%0%m!<%P%k@_Dj$G$N$_M-8z$G$9!#(B
 </compatibility>
@@ -973,14 +979,6 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
       module="mpm_common">Group</directive>) $B$r(B <code>root</code> $B$K(B
       $B@_Dj$7$J$$$G$/$@$5$$!#(B</p>
     </note>
-
-    <p><module>perchild</module> MPM $B$G$O!"0[$J$k%f!<%6(B ID
-    $B$GJ#?t$N%P!<%A%c%k%[%9%H$rF0$+$9$3$H$rL\E*$H$7$F$$$^$9$,!"(B
-    <directive>User</directive> $B$O!"<g%5!<%P$N%f!<%6(B ID 
-    $B$H!"(B<directive module="perchild">AssignUserID</directive>
-    $B%G%#%l%/%F%#%V$r;}$?$J$$(B <directive type="section"
-    module="core">VirtualHost</directive> $B%;%/%7%g%s$X$N(B
-    $B%U%)!<%k%P%C%/$H$rDj5A$9$k$3$H$K$J$j$^$9!#(B</p>
 
     <p>$BFC5-;v9`(B: $B$3$N%G%#%l%/%F%#%V$r(B
     <directive module="core" type="section">VirtualHost</directive>
