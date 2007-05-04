@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 190982:478131 (outdated) -->
+<!-- English Revision: 478131 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -32,8 +32,8 @@
 <description>$BJ#?t$N;R%W%m%;%9$,%M%C%H%o!<%/%=%1%C%H$G%j%/%(%9%H$r(B
 accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$?$a$K(B
 $B;H$&J}K!(B</description>
-<syntax>AcceptMutex default|<var>method</var></syntax>
-<default>AcceptMutex default</default>
+<syntax>AcceptMutex Default|<var>method</var></syntax>
+<default>AcceptMutex Default</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>leader</module><module>perchild</module>
 <module>prefork</module><module>threadpool</module><module>worker</module>
@@ -42,7 +42,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <usage>
     <p><directive>AcceptMutex</directive> $B%G%#%l%/%F%#%V$O!"(B
     $B%M%C%H%o!<%/%=%1%C%H$N%j%/%(%9%H$r(B accept $B$7$h$&$H$7$F$$$kJ#?t$N;R%W%m%;%9$r(B
-    Apache $B$,D>Ns2=$9$k$?$a$K;H$&J}K!$r@_Dj$7$^$9!#(B
+    Apache $B$,D>Ns2=$9$k$?$a$K;H$&J}K!(B($B$HI,MW$J$i%m%C%/%U%!%$%k$N>l=j(B)$B$r@_Dj$7$^$9!#(B
     Apache 2.0 $B0JA0$O!"$3$N%a%=%C%I$O%3%s%Q%$%k;~$K$N$_A*Br$G$-$^$7$?!#(B
     $B:GE,$JJ}K!$O!"%"!<%-%F%/%A%c$d%W%i%C%H%[!<%`$KBg$-$/0MB8$7$^$9!#(B
     $B>\:Y$K4X$7$F$O!"(B<a 
@@ -59,25 +59,44 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
     $B%(%i!<%m%0$K=PNO$5$l$^$9!#(B</p>
 
     <dl>
-      <dt><code>flock</code></dt>
-      <dd><directive module="mpm_common">LockFile</directive>
-      $B%G%#%l%/%F%#%V$GDj5A$7$?%U%!%$%k$N%m%C%/$K!"(B
-      <code>flock(2)</code> $B%7%9%F%`%3!<%k$r;H$$$^$9!#(B</dd>
+      <dt><code>flock&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
+      <dd>$B%*%W%7%g%s$N(B <var>/path/to/lockfile</var>
+      $B%Q%i%a!<%?$GDj5A$7$?%U%!%$%k$N%m%C%/$K!"(B
+      <code>flock(2)</code> $B%7%9%F%`%3!<%k$r;H$$$^$9!#(B
+      $B%m%C%/%U%!%$%k$N;XDj$K$O(B <directive module="mpm_common">LockFile</directive> 
+      $B%G%#%l%/%F%#%V$r;H$&$3$H$b=PMh$^$9(B($BHs?d>)$G$9(B)$B!#(B</dd>
 
-      <dt><code>fcntl</code></dt>
-      <dd><directive module="mpm_common">LockFile</directive>
-      $B%G%#%l%/%F%#%V$GDj5A$7$?%U%!%$%k$N%m%C%/$K!"(B
-      <code>fcntl(2)</code> $B%7%9%F%`%3!<%k$r;H$$$^$9!#(B</dd>
+      <dt><code>fcntl&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
+      <dd>$B%*%W%7%g%s$N(B <var>/path/to/lockfile</var>
+      $B%Q%i%a!<%?$GDj5A$7$?%U%!%$%k$N%m%C%/$K!"(B
+      <code>fcntl(2)</code> $B%7%9%F%`%3!<%k$r;H$$$^$9!#(B
+      $B%m%C%/%U%!%$%k$N;XDj$K$O(B <directive module="mpm_common">LockFile</directive> 
+      $B%G%#%l%/%F%#%V$r;H$&$3$H$b=PMh$^$9(B($BHs?d>)$G$9(B)$B!#(B</dd>
+
+      <dt><code>file&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
+      <dd>$B;HMQ$G$-$k%U%!%$%k%m%C%/%k!<%A%s$NCf$G:GE,$J$b$N$r;H$$$^$9!#(B
+      $B6qBNE*$K$O!"(B<code>fcntl</code> $B$,;HMQ2DG=$J>l9g$O$=$l$r;H$$!"$=$&$G$J$$>l9g$O(B
+      <code>flock</code> $B$r;n$7$^$9!#(B
+      $B$3$N@_Dj$O%W%i%C%H%[!<%`$H(B <glossary>APR</glossary> $B$,Fs$D$N$&$A>/$J$/$H$b(B
+      $B0l$D$r%5%]!<%H$7$F$$$k>l9g$N$_;HMQ2DG=$G$9!#(B</dd>
 
       <dt><code>posixsem</code></dt>
       <dd>$BGSB>=hM}$N<BAu$K(B POSIX $B8_49%;%^%U%)$r;HMQ$7$^$9(B</dd>
+
+      <dt><code>sysvsem</code></dt>
+      <dd>$BGSB>=hM}$N<BAu$K(B SySV $B7A<0$N%;%^%U%)$r;H$$$^$9!#(B</dd>
+
+      <dt><code>sem</code></dt>
+      <dd>$B;HMQ$G$-$k%;%^%U%)%k!<%A%s$NCf$G:GE,$J$b$N$r;H$$$^$9!#(B
+      $B6qBNE*$K$O!"(BPosix $B8_49%;%^%U%)$,;HMQ2DG=$J>l9g$O$=$l$r;H$$!"$=$&$G$J$$>l9g$O(B
+      SystemV IPC $B7A<0$N%;%^%U%)$r;n$7$^$9!#(B
+      $B$3$N@_Dj$O%W%i%C%H%[!<%`$H(B <glossary>APR</glossary> $B$,Fs$D$N$&$A>/$J$/$H$b(B
+      $B0l$D$r%5%]!<%H$7$F$$$k>l9g$N$_;HMQ2DG=$G$9!#(B</dd>
 
       <dt><code>pthread</code></dt>
       <dd>POSIX Threads (PThreads) $B5,3J$G<BAu$5$l$F$$$k(B
       POSIX $BGSB>=hM}$r;H$$$^$9!#(B</dd>
 
-      <dt><code>sysvsem</code></dt>
-      <dd>$BGSB>=hM}$N<BAu$K(B SySV $B7A<0$N%;%^%U%)$r;H$$$^$9!#(B</dd>
     </dl>
 
     <p>$B%3%s%Q%$%k;~$K%7%9%F%`$N%G%U%)%k%H$KA*$P$l$?$b$N$,2?$+$r8+$?$$>l9g$O!"(B
@@ -157,6 +176,26 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 </directivesynopsis>
 
 <directivesynopsis>
+<name>GracefulShutdownTimeout</name>
+<description>$B2:$d$+$JDd;_$r$+$1$?8e!"=*N;$9$k$^$GBT$D;~4V(B</description>
+<syntax>GracefulShutDownTimeout <var>seconds</var></syntax>
+<default>GracefulShutDownTimeout 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>prefork</module><module>worker</module>
+<module>event</module></modulelist>
+<compatibility>2.2 $B0J9_(B</compatibility>
+
+<usage>
+    <p><directive>GracefulShutdownTimeout</directive> $B$K$O(B
+    $B%5!<%P!<$,(B "graceful-stop" $B%7%0%J%k$r<u$1<h$C$F$+$i8=:_$N(B
+    $B%j%/%(%9%H$N=hM}$r:GBg$G2?IC4VB3$1$k$+$r;XDj$7$^$9!#(B</p>
+
+    <p>$B$3$NCM$r%<%m$K@_Dj$9$k$H!"=hM}Cf$H$7$F;D$C$F$$$k%j%/%(%9%H$,(B
+    $BA4$F40N;$9$k$^$G%5!<%P!<$O=*N;$7$^$;$s!#(B</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>Group</name>
 <description>$B%j%/%(%9%H$K1~Ez$9$k:]$K=jB0$9$k%0%k!<%W(B</description>
 <syntax>Group <var>unix-group</var></syntax>
@@ -181,7 +220,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
       <dd>$B%0%k!<%W$rL>A0$G;2>H$7$^$9(B</dd>
 
       <dt><code>#</code> $B$KB3$$$F%0%k!<%WHV9f(B</dt>
-      <dd>$B%0%k!<%W$r$rHV9f$G;2>H$7$^$9!#(B</dd>
+      <dd>$B%0%k!<%W$rHV9f$G;2>H$7$^$9!#(B</dd>
     </dl>
 
     <example><title>$BNc(B</title>
@@ -374,7 +413,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
 <directivesynopsis>
 <name>LockFile</name>
-<description>$B<uIU$rD>Ns2=$9$k$?$a$N%m%C%/%U%!%$%k$N0LCV(B</description>
+<description>$B<uIU$rD>Ns2=$9$k$?$a$N%m%C%/%U%!%$%k$N0LCV(B<em>($BHs?d>)(B)</em></description>
 <syntax>LockFile <var>filename</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
@@ -401,6 +440,12 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
       $B%m%C%/%U%!%$%k$N:n@.<+BN$rK832$9$k$3$H$K$h$C$F!"(B
       $BC/$G$b%5!<%S%95qH]%"%?%C%/$r0z$-5/$3$9$3$H$,$G$-$k$+$i$G$9!#(B</p>
     </note>
+    <note type="warning"><title>$BHs?d>)(B</title>
+      <p>$B$3$N%G%#%l%/%F%#%V$OHs?d>)$G$9!#(B <directive 
+      module="mpm_common">AcceptMutex</directive>
+      $B%G%#%l%/%F%#%V$GGSB>=hM}$NJ}K!$N;XDj$H$H$b$K%m%C%/%U%!%$%k$N>l=j$b;XDj$7$F$/$@$5$$!#(B</p>
+    </note>
+
 </usage>
 <seealso><directive module="mpm_common">AcceptMutex</directive></seealso>
 </directivesynopsis>
@@ -662,6 +707,24 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ReceiveBufferSize</name>
+<description>TCP $B<u?.%P%C%U%!%5%$%:(B</description>
+<syntax>ReceiveBufferSize <var>bytes</var></syntax>
+<default>ReceiveBufferSize 0</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>beos</module>
+<module>mpm_netware</module><module>mpm_winnt</module>
+<module>mpmt_os2</module><module>prefork</module>
+<module>worker</module></modulelist>
+
+<usage>
+    <p>$B%5!<%P$O(B TCP $B<u?.%P%C%U%!%5%$%:$r;XDj$5$l$?%P%$%H?t$K@_Dj$7$^$9!#(B</p>
+
+    <p><code>0</code>$B$K$7$?>l9g!"(BOS $B$N%G%U%)%k%HCM$,;HMQ$5$l$^$9!#(B</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>SendBufferSize</name>
 <description>TCP $B%P%C%U%!%5%$%:(B</description>
 <syntax>SendBufferSize <var>bytes</var></syntax>
@@ -673,7 +736,7 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p>$B%5!<%P$O(B TCP $B%P%C%U%!%5%$%:$r;XDj$5$l$?%P%$%H?t$K@_Dj$7$^$9!#(B
+    <p>$B%5!<%P$O(B TCP $BAw?.%P%C%U%!%5%$%:$r;XDj$5$l$?%P%$%H?t$K@_Dj$7$^$9!#(B
     $B9bB.$G9b%l%$%F%s%7$J4D6-$G(B
     (<em>$BNc(B</em> 100ms $BDxEY!"BgN&2#CG9bB.DL?.O)$J$I(B)
     $B8E$$0lHLE*$J(B OS $B$N%G%U%)%k%HCM$rA}$d$9$N$KHs>o$KJXMx$G$9!#(B</p>
