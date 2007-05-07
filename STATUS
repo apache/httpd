@@ -136,11 +136,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=442758
       +1: niq, wrowe, rpluem
 
-    * proxy_http.c: Overlay existing cookies with proxied
-      ones, ala httpd-2.2 and trunk.
-      Patch: http://people.apache.org/~jim/patches/cookie-overlay.patch
-      +1: jim, wrowe, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new

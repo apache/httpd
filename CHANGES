@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.60
 
+  *) proxy_http.c: Overlay existing cookies with proxied ones, ala
+     httpd-2.2. [Jim Jagielski]
+
   *) mod_proxy: ProxyTimeout (and others) ignored due to not merging
      the *_set params. PR 11540. [Jim Jagielski]
 

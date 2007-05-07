@@ -1282,6 +1282,12 @@ skip_body:
     return APR_SUCCESS;
 }
 
+static int addit_dammit(void *v, const char *key, const char *val)
+{
+    apr_table_addn(v, key, val);
+    return 1;
+}
+
 static
 apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             proxy_http_conn_t *p_conn,
@@ -1296,6 +1302,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     char keepchar;
     request_rec *rp;
     apr_bucket *e;
+    apr_table_t *save_table;
     int len, backasswards;
     int received_continue = 1; /* flag to indicate if we should
                                 * loop over response parsing logic
@@ -1372,6 +1379,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             /* N.B. for HTTP/1.0 clients, we have to fold line-wrapped headers*/
             /* Also, take care with headers with multiple occurences. */
 
+            /* First, tuck away all already existing cookies */
+            save_table = apr_table_make(r->pool, 2);
+            apr_table_do(addit_dammit, save_table, r->headers_out,
+                         "Set-Cookie", NULL);
+
             r->headers_out = ap_proxy_read_headers(r, rp, buffer,
                                                    sizeof(buffer), origin);
             if (r->headers_out == NULL) {
@@ -1389,6 +1401,18 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 r->status = HTTP_BAD_GATEWAY;
                 r->status_line = "bad gateway";
                 return r->status;
+            }
+
+            /* Now, add in the just read cookies */
+            apr_table_do(addit_dammit, save_table, r->headers_out,
+                         "Set-Cookie", NULL);
+
+            /* and now load 'em all in */
+            if (!apr_is_empty_table(save_table)) {
+                apr_table_unset(r->headers_out, "Set-Cookie");
+                r->headers_out = apr_table_overlay(r->pool,
+                                                   r->headers_out,
+                                                   save_table);
             }
 
             /* can't have both Content-Length and Transfer-Encoding */
