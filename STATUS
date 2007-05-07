@@ -114,16 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * htdbm: Fix crash in 64-bit mode on HP-UX caused by unexpected
-      placement of crypt() prototype (unistd.h).
-        Trunk version of patch:
-          http://svn.apache.org/viewcvs?rev=393364&view=rev
-        2.0.x version of patch:
-          Trunk version works
-      +1: trawick, wrowe, rpluem
-        wrowe adds; even if ineffective for some oddball machine, this
-                    patch is entirely harmless.
-
     * mod_ssl: Solve POST incompatible w/ renegotiate HTTPS connection
       (This was already committed to 2.2.x, and the reports persist.)
         http://issues.apache.org/bugzilla/show_bug.cgi?id=12355

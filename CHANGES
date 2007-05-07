@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.60
 
+  *) htdbm: Fix crash processing -d option in 64-bit mode on HP-UX.
+     [Jeff Trawick]
+
   *) proxy_http.c: Overlay existing cookies with proxied ones, ala
      httpd-2.2. [Jim Jagielski]
 
