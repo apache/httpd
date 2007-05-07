@@ -1,8 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.60
 
+  *) mod_proxy: ProxyTimeout (and others) ignored due to not merging
+     the *_set params. PR 11540. [Jim Jagielski]
+
   *) mod_isapi: Correctly present SERVER_PORT_SECURE.
-     PR: 40573.  [Matt Eaton <asf divinehawk.com>]
+     PR 40573.  [Matt Eaton <asf divinehawk.com>]
 
   *) mod_isapi: Avoid double trailing slashes in HSE_REQ_MAP_URL_TO_PATH
      support.  Also corrects the slashes for Windows.  PR 15993. [William Rowe]
