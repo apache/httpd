@@ -133,8 +133,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       [adunn at ncipher.com]
 
       http://people.apache.org/~sctemme/2.0.x-ssl_engine_init.c.patch
-      
-      +1: sctemme
+
+      +1: sctemme, rpluem
 
     *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
@@ -155,7 +155,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://svn.apache.org/viewcvs?rev=393364&view=rev
         2.0.x version of patch:
           Trunk version works
-      +1: trawick, wrowe
+      +1: trawick, wrowe, rpluem
         wrowe adds; even if ineffective for some oddball machine, this
                     patch is entirely harmless.
 
@@ -169,12 +169,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       from input filters as HTTP return value from the handler.
       PR#31579.
       Trunk: http://svn.apache.org/viewvc?view=rev&revision=442758
-      +1: niq, wrowe
+      +1: niq, wrowe, rpluem
 
     * proxy_http.c: Overlay existing cookies with proxied
       ones, ala httpd-2.2 and trunk.
       Patch: http://people.apache.org/~jim/patches/cookie-overlay.patch
-      +1: jim, wrowe
+      +1: jim, wrowe, rpluem
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
