@@ -180,3 +180,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version works
      +1: rpluem
 
+   * mod_cache: Add CacheIgnoreQueryString directive to cache requests with
+     a query string even if no expiration time is specified.
+        PR: 41484
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=504183
+     2.2.x version of patch:
+       Trunk version works
+     +1: rpluem
+
