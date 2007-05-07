@@ -77,6 +77,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_cache: Correctly cache objects whose URL query string has been
+     modified by mod_rewrite.
+        PR: 40805
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=476625
+     2.2.x version of patch:
+       Trunk version works
+     +1: rpluem, jim, sctemme
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -132,15 +141,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           you need to document how it affects the module's directives.
           I'll +1 it when that's done.
      wrowe: ditto's - good concept.
-
-   * mod_cache: Correctly cache objects whose URL query string has been
-     modified by mod_rewrite.
-        PR: 40805
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=476625
-     2.2.x version of patch:
-       Trunk version works
-     +1: rpluem, jim, sctemme
 
    * mod_cache: While serving a cached entity ensure that filters that have
      been applied to this cached entity before saving it to the cache are not
