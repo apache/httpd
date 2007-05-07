@@ -83,9 +83,6 @@ Changes with Apache 2.3.0
      only, or else sub-requests and internal redirections may cause
      entire DBD pool to be stashed in a single HTTP request.  [Chris Darroch]
 
-  *) mod_cache: Correctly cache objects whose URL query string has been
-     modified by mod_rewrite. PR 40805. [Ruediger Pluem]
-
   *) mod_proxy: Add a missing assignment in an error checking code path.
      PR 40865. [Andrew Rucker Jones <arjones simultan.dyndns.org>]
 
@@ -264,6 +261,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.5
+
+  *) mod_cache: Correctly cache objects whose URL query string has been
+     modified by mod_rewrite. PR 40805. [Ruediger Pluem]
 
   *) HTTP proxy ProxyErrorOverride: Leave 1xx and 3xx responses alone.  Only
      processing of error responses (4xx, 5xx) will be altered.  PR 39245.
