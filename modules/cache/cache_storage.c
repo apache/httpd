@@ -427,7 +427,7 @@ apr_status_t cache_generate_key_default(request_rec *r, apr_pool_t* p,
 
     /* Key format is a URI */
     *key = apr_pstrcat(p, scheme, "://", hostname, port_str,
-                       r->parsed_uri.path, "?", r->args, NULL);
+                       r->parsed_uri.path, "?", r->parsed_uri.query, NULL);
 
     return APR_SUCCESS;
 }
