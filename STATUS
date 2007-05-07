@@ -122,33 +122,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ please place SVN revisions from trunk here, so it is easy to
-    identify exactly what the proposed changes are!  Add all new
-    proposals to the end of this list. ]
-
-    * mod_ssl: Move thread locking upcall initialization before
-      hardware library initialization, so hardware library can use
-      these upcalls when run in a threaded MPM. Fixes PR 20951. 
-      [adunn at ncipher.com]
-
-      http://people.apache.org/~sctemme/2.0.x-ssl_engine_init.c.patch
-
-      +1: sctemme, rpluem
-
-    *) Reverse Proxy fixes: <Location> bug and Cookie support
-        Patch is at
-        http://people.apache.org/~colm/httpd-2.0-reverse-proxy-cookie.patch
-        and is in production with Clients.
-       +1: niq, wrowe
-         wrowe adds; looks good, no way to apply this without a minor bump
-
-    *) Backport 102870; PR 17217; stop linking OpenSSL .so's to support/*
-       binaries (especially when compiled --with-static-support (!)) and
-       fix mod_ssl.so to compile against .a openssl archives.
-         http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
-       +1: wrowe, colm
-
     * htdbm: Fix crash in 64-bit mode on HP-UX caused by unexpected
       placement of crypt() prototype (unistd.h).
         Trunk version of patch:
@@ -175,6 +148,33 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       ones, ala httpd-2.2 and trunk.
       Patch: http://people.apache.org/~jim/patches/cookie-overlay.patch
       +1: jim, wrowe, rpluem
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ please place SVN revisions from trunk here, so it is easy to
+    identify exactly what the proposed changes are!  Add all new
+    proposals to the end of this list. ]
+
+    * mod_ssl: Move thread locking upcall initialization before
+      hardware library initialization, so hardware library can use
+      these upcalls when run in a threaded MPM. Fixes PR 20951. 
+      [adunn at ncipher.com]
+
+      http://people.apache.org/~sctemme/2.0.x-ssl_engine_init.c.patch
+
+      +1: sctemme, rpluem
+
+    *) Reverse Proxy fixes: <Location> bug and Cookie support
+        Patch is at
+        http://people.apache.org/~colm/httpd-2.0-reverse-proxy-cookie.patch
+        and is in production with Clients.
+       +1: niq, wrowe
+         wrowe adds; looks good, no way to apply this without a minor bump
+
+    *) Backport 102870; PR 17217; stop linking OpenSSL .so's to support/*
+       binaries (especially when compiled --with-static-support (!)) and
+       fix mod_ssl.so to compile against .a openssl archives.
+         http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
+       +1: wrowe, colm
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
