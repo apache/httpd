@@ -1347,7 +1347,9 @@ static int cgid_handler(request_rec *r)
                             APR_BLOCK_READ, HUGE_STRING_LEN);
        
         if (rv != APR_SUCCESS) {
-            return rv;
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                          "Error reading request entity data");
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
  
         APR_BRIGADE_FOREACH(bucket, bb) {
