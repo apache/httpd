@@ -77,16 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_cache: Correctly cache objects whose URL query string has been
-     modified by mod_rewrite.
-        PR: 40805
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=476625
-     2.2.x version of patch:
-       Trunk version works
-     +1: rpluem, jim, sctemme
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_proxy_ajp: Fix wrong retry when sending the response failed.
