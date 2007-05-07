@@ -77,6 +77,30 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+<<<<<<< .mine
+   * mod_cache: Correctly cache objects whose URL query string has been
+     modified by mod_rewrite.
+        PR: 40805
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=476625
+     2.2.x version of patch:
+       Trunk version works
+     +1: rpluem, jim, wrowe
+
+=======
+>>>>>>> .r536001
+   * mod_headers: Allow % at the end of a Header value
+       PR: 36609
+     http://svn.apache.org/viewvc?rev=490156&view=rev
+     http://svn.apache.org/viewvc?rev=499567&view=rev
+     +1: niq, rpluem, wrowe
+
+   * mod_alias: Accept path components (URL part) in Redirects
+       PR: 35314
+     http://svn.apache.org/viewvc?rev=490142&view=rev
+     +1: niq, jim, wrowe
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_proxy_ajp: Fix wrong retry when sending the response failed.
@@ -106,21 +130,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       mturk notes: WAIT_TIMEOUT is replaced by WAIT_FAILED with
         the accompanied patch in mpm\winnt\child.c.
 
-    * PKCS#7: backport PCKS#7 patches from trunk.
-      +1 ben
-      jerenkrantz: What's the revision number to backport?
-      wrowe asks: ditto jerenkrantz
-
-    * mod_proxy: Support variable interpolation in reverse proxy configuration
-      http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
-      http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
-      +1: niq, mturk
-      -.9: wrowe notes; modifying the existing syntax seems inappropriate, new
-           ProxyPassSubstitute or similarly named directives would seem to
-           make more sense, permit direct Reverse'als when appropriate and
-           restrict the Substitutions to be parsed only when required.
-
    * mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
      mod_authn_dbd behaviour in line with mod_authnz_ldap.
@@ -140,18 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=425787&view=rev
      2.2.x version of patch:
        Trunk version works
-     +1: rpluem
-
-   * mod_alias: Accept path components (URL part) in Redirects
-       PR: 35314
-     http://svn.apache.org/viewvc?rev=490142&view=rev
-     +1: niq, jim
-
-   * mod_headers: Allow % at the end of a Header value
-       PR: 36609
-     http://svn.apache.org/viewvc?rev=490156&view=rev
-     http://svn.apache.org/viewvc?rev=499567&view=rev
-     +1: niq, rpluem
+     +1: rpluem, wrowe
 
    * mod_cache: Correctly cache and recall entities whose request URL's
      are url-escaped.
@@ -161,6 +159,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        Trunk version works
      +1: rpluem
+         wrowe asks - is there a disambiguation problem here?  The items
+         in the cache should either entirely be escaped or unescaped.
+         Can't violate the applicable canonicalization.  However, if this
+         simply allows escaped entities that are unambiguously their
+         non-path, special values, (e.g. '/' vs %2F the character)
+         then I'm strongly +1.
 
    * proxy_util.c: Add alternate is_socket_connected() function
      which uses APR calls.
@@ -178,7 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=535169
      2.2.x version of patch:
        Trunk version works
-     +1: rpluem
+     +1: rpluem, wrowe
 
    * mod_cache: Add CacheIgnoreQueryString directive to cache requests with
      a query string even if no expiration time is specified.
@@ -188,4 +192,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        Trunk version works
      +1: rpluem
+
+
+PATCHES/ISSUES THAT ARE STALLED
+
+    * PKCS#7: backport PCKS#7 patches from trunk.
+      +1 ben
+      jerenkrantz: What's the revision number to backport?
+      wrowe asks: ditto jerenkrantz
+
+    * mod_proxy: Support variable interpolation in reverse proxy configuration
+      http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
+      http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
+      +1: niq, mturk
+      -1: wrowe notes; modifying the existing syntax makes collaboration 
+          impossible by an admin team - unexpected side effects and the rest.
+          ProxyPassEnv* or ProxyPassSubstitute* directives that add this
+          behavior on a pattern-by-pattern basis would win my -1 to a +1,
+          and solve the performance hits noted by niq on an 80/20 basis.
 
