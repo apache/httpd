@@ -166,6 +166,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          simply allows escaped entities that are unambiguously their
          non-path, special values, (e.g. '/' vs %2F the character)
          then I'm strongly +1.
+         rpluem says: Sorry for the confusing title. This is more about
+         the fact that the URL of the request is subject to several
+         transformations that are applied *after* the quick handler phase
+         (unescaping, possibly mod_rewrite, etc.).
+         As we use the URL to calculate the cache key this can lead to situations
+         where we save an entity to the cache under a different key in the
+         CACHE_SAVE filter then the key we use to request the entity from the
+         cache during the quick handler phase. If there are still questions
+         we should continue the discussion on the list.
 
    * core: Add extern "C" linkage to several headers to make it easier to use
      them in C++ code.
