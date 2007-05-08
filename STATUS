@@ -105,6 +105,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       (It also works for httpd-2.2.x).
       +1: jfclere, rpluem, wrowe
 
+   * proxy_util.c: Add alternate is_socket_connected() function
+     which uses APR calls.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&rev=473278
+       http://svn.apache.org/viewvc?view=rev&rev=535354
+     2.2.x version of patch:
+       Trunk version works
+     +1: rpluem, mturk, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -164,15 +172,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          simply allows escaped entities that are unambiguously their
          non-path, special values, (e.g. '/' vs %2F the character)
          then I'm strongly +1.
-
-   * proxy_util.c: Add alternate is_socket_connected() function
-     which uses APR calls.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&rev=473278
-       http://svn.apache.org/viewvc?view=rev&rev=535354
-     2.2.x version of patch:
-       Trunk version works
-     +1: rpluem, mturk, jim
 
    * core: Add extern "C" linkage to several headers to make it easier to use
      them in C++ code.
