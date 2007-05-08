@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.60
 
+  *) mod_ssl: Support limited buffering of request bodies to allow 
+     per-location renegotiation to proceed.  PR 12355.  [Joe Orton]
+
   *) mod_cgi, mod_cgid: Don't return apr_status_t error value
      from input filter chain. PR 31759 (mutated). [Jo Rhett,
      Nick Kew]

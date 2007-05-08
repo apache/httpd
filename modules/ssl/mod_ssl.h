@@ -682,6 +682,10 @@ void         ssl_io_filter_init(conn_rec *, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
 long         ssl_io_data_cb(BIO *, int, MODSSL_BIO_CB_ARG_TYPE *, int, long, long);
 
+/* ssl_io_buffer_fill fills the setaside buffering of the HTTP request
+  * to allow an SSL renegotiation to take place. */
+int          ssl_io_buffer_fill(request_rec *r);
+
 /*  PRNG  */
 int          ssl_rand_seed(server_rec *, apr_pool_t *, ssl_rsctx_t, char *);
 

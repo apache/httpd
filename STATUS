@@ -114,12 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_ssl: Solve POST incompatible w/ renegotiate HTTPS connection
-      (This was already committed to 2.2.x, and the reports persist.)
-        http://issues.apache.org/bugzilla/show_bug.cgi?id=12355
-      Patch; http://issues.apache.org/bugzilla/attachment.cgi?id=16495
-      +1: wrowe, rpluem, sctemme
-
     * mod_ssl: Move thread locking upcall initialization before
       hardware library initialization, so hardware library can use
       these upcalls when run in a threaded MPM. Fixes PR 20951. 
