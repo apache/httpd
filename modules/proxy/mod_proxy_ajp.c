@@ -271,6 +271,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                             ap_log_error(APLOG_MARK, APLOG_DEBUG, status,
                                          r->server,
                                          "ap_get_brigade failed");
+                            isok = 0;
                             break;
                         }
                         bufsiz = AJP13_MAX_SEND_BODY_SZ;
@@ -281,6 +282,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                             ap_log_error(APLOG_MARK, APLOG_DEBUG, status,
                                          r->server,
                                          "apr_brigade_flatten failed");
+                            isok = 0;
                             break;
                         }
                     }
@@ -291,6 +293,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                     if (status != APR_SUCCESS) {
                         ap_log_error(APLOG_MARK, APLOG_DEBUG, status, r->server,
                                      "ajp_send_data_msg failed");
+                        isok = 0;
                         break;
                     }
                     conn->worker->s->transferred += bufsiz;
@@ -358,7 +361,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 if (ap_pass_brigade(r->output_filters,
                                     output_brigade) != APR_SUCCESS) {
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                                  "proxy: error processing body");
+                                  "proxy: error processing end");
                     isok = 0;
                 }
                 /* XXX: what about flush here? See mod_jk */
@@ -406,11 +409,11 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
      */
     apr_brigade_cleanup(output_brigade);
 
-    if (status != APR_SUCCESS) {
+    if (! isok) {
         /* We had a failure: Close connection to backend */
         conn->close++;
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
-                     "proxy: send body failed to %pI (%s)",
+                     "proxy: dialog to %pI (%s) failed",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
         /*
