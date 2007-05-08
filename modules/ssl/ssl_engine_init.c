@@ -232,6 +232,10 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 
     }
 
+#if APR_HAS_THREADS
+    ssl_util_thread_setup(p);
+#endif
+
     /*
      * SSL external crypto device ("engine") support
      */
@@ -240,10 +244,6 @@ int ssl_init_Module(apr_pool_t *p, apr_pool_t *plog,
 #endif
 
     ssl_init_SSLLibrary(base_server);
-
-#if APR_HAS_THREADS
-    ssl_util_thread_setup(p);
-#endif
 
     /*
      * Seed the Pseudo Random Number Generator (PRNG)

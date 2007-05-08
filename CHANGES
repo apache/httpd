@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.60
 
+  *) mod_ssl: initialize thread locks before initializing the hardware
+     acceleration library, so the latter can make use of the former. 
+     PR 20951. [<adunn ncipher.com>]
+
   *) mod_ssl: Support limited buffering of request bodies to allow 
      per-location renegotiation to proceed.  PR 12355.  [Joe Orton]
 

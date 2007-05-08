@@ -114,12 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_ssl: Move thread locking upcall initialization before
-      hardware library initialization, so hardware library can use
-      these upcalls when run in a threaded MPM. Fixes PR 20951. 
-      [adunn at ncipher.com]
-      http://people.apache.org/~sctemme/2.0.x-ssl_engine_init.c.patch
-      +1: sctemme, rpluem, wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
