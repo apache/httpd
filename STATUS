@@ -201,7 +201,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         perhaps this is not an Apache module DSO, or was compiled 
         for a different Apache version?
      http://svn.apache.org/viewvc?view=rev&rev=520733
-     +1: wrowe
+     +1: wrowe, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
