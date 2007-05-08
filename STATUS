@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&rev=535354
      2.2.x version of patch:
        Trunk version works
-     +1: rpluem
+     +1: rpluem, mturk
 
    * core: Add extern "C" linkage to several headers to make it easier to use
      them in C++ code.
