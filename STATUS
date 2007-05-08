@@ -97,7 +97,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?rev=490142&view=rev
      +1: niq, jim, wrowe
 
-
     * mod_proxy_ajp: Fix wrong retry when sending the response failed.
       PR 40310 (The old fixes weren't ok).
       Trunk version of patch:
@@ -105,6 +104,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=534031
       (It also works for httpd-2.2.x).
       +1: jfclere, rpluem, wrowe
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
