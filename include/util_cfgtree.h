@@ -28,6 +28,10 @@
 
 #include "ap_config.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 typedef struct ap_directive_t ap_directive_t;
 
 /**
@@ -82,6 +86,10 @@ AP_DECLARE_DATA extern ap_directive_t *ap_conftree;
  */
 ap_directive_t *ap_add_node(ap_directive_t **parent, ap_directive_t *current, 
                             ap_directive_t *toadd, int child);
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 /** @} */

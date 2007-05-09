@@ -69,6 +69,10 @@
 #define LDAP_DECLARE_DATA             __declspec(dllimport)
 #endif
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
  * LDAP Connections
  */
@@ -323,6 +327,8 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st);
  * @deffunc char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st)
  */
 char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st);
-
+#ifdef __cplusplus
+}
+#endif
 #endif /* APR_HAS_LDAP */
 #endif /* UTIL_LDAP_H */

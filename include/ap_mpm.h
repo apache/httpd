@@ -28,6 +28,10 @@
 
 #include "apr_thread_proc.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 /*
     The MPM, "multi-processing model" provides an abstraction of the
     interface with the OS for distributing incoming connections to
@@ -178,6 +182,10 @@ typedef struct ap_exception_info_t {
 
 AP_DECLARE_HOOK(int,fatal_exception,(ap_exception_info_t *ei))
 #endif /*AP_ENABLE_EXCEPTION_HOOK*/
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
 /** @} */
