@@ -185,10 +185,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version works
      +1: rpluem
 
-   * mod_dbd: initialise prepared statements in all vhosts
+   * mod_dbd: initialise resources and prepared statements in all vhosts
      PR: 42327
      Trunk: N/A due to other changes (r503931 et al)
-     Patch: http://issues.apache.org/bugzilla/show_bug.cgi?id=42327#c5
+     Patch by bojan: http://issues.apache.org/bugzilla/attachment.cgi?id=20161
      +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
