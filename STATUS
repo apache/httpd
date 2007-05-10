@@ -186,10 +186,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: rpluem
 
    * mod_dbd: initialise resources and prepared statements in all vhosts
-     PR: 42327
+     PRs: 42327, 41302
      Trunk: N/A due to other changes (r503931 et al)
      Patch by bojan: http://issues.apache.org/bugzilla/attachment.cgi?id=20161
      +1: niq
+     -1: chrisd: I think r503931 is actually the right thing to backport here,
+         which admittedly probably requires backporting r491729, r491884,
+         r492394 (trivial), and r496831 first.  While more complex than a
+         quick patch, I think the explanation in the fourth section of this
+         post explains why there's no simple fix for the virtual-host
+         inheritance issues:
+
+         http://marc.info/?l=apache-httpd-dev&m=116742014418304&w=2
+
+         Doing this work would also let us close at least three PRs.
+         PR 42327 seems like a duplicate of 41302 (both would be closed
+         by r503931), and r496831 would close PR 39985 as well.
 
    * mod_proxy: Print the correct error message for erroneous configured
      ProxyPass directives
