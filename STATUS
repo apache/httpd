@@ -191,6 +191,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Patch by bojan: http://issues.apache.org/bugzilla/attachment.cgi?id=20161
      +1: niq
 
+   * mod_proxy: Print the correct error message for erroneous configured
+     ProxyPass directives
+        PR: 40439
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=441947
+     2.2.x version of patch:
+       Trunk version works
+     +1: rpluem
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
