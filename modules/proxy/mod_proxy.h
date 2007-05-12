@@ -109,6 +109,7 @@ struct proxy_remote {
 struct proxy_alias {
     const char  *real;
     const char  *fake;
+    ap_regex_t  *regex;
 };
 
 struct dirconn_entry {
