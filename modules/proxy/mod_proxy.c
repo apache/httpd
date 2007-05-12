@@ -488,6 +488,8 @@ static int proxy_trans(request_rec *r)
                                                  &proxy_module);
     const char *fake;
     const char *real;
+    ap_regmatch_t regm[AP_MAX_REG_MATCH];
+    char *found = NULL;
 
     if (r->proxyreq) {
         /* someone has already set up the proxy, it was possibly ourselves
@@ -510,19 +512,34 @@ static int proxy_trans(request_rec *r)
             fake = ent[i].fake;
             real = ent[i].real;
         }
-        len = alias_match(r->uri, fake);
+        if (ent[i].regex) {
+            if (!ap_regexec(ent[i].regex, r->uri, AP_MAX_REG_MATCH, regm, 0)) {
+                if ((real[0] == '!') && (real[1] == '\0')) {
+                    return DECLINED;
+                }
+                found = apr_pstrcat(r->pool, "proxy:", real,
+                                    r->uri, NULL);
+            }
+        }
+        else {
+            len = alias_match(r->uri, fake);
 
-       if (len > 0) {
-           if ((real[0] == '!') && (real[1] == 0)) {
-               return DECLINED;
-           }
+            if (len != 0) {
+                if ((real[0] == '!') && (real[1] == '\0')) {
+                    return DECLINED;
+                }
 
-           r->filename = apr_pstrcat(r->pool, "proxy:", real,
+                found = apr_pstrcat(r->pool, "proxy:", real,
                                      r->uri + len, NULL);
-           r->handler = "proxy-server";
-           r->proxyreq = PROXYREQ_REVERSE;
-           return OK;
-       }
+
+            }
+        }
+        if (found) {
+                r->filename = found;
+                r->handler = "proxy-server";
+                r->proxyreq = PROXYREQ_REVERSE;
+                return OK;
+        }
     }
     return DECLINED;
 }
@@ -1125,11 +1142,17 @@ static const char *
     const apr_array_header_t *arr;
     const apr_table_entry_t *elts;
     int i;
+    int use_regex = 0;
 
     while (*arg) {
         word = ap_getword_conf(cmd->pool, &arg);
-        if (!f)
+        if (!f) {
+            if (!strcmp(word, "~")) {
+                use_regex = 1;
+                continue;
+            }
             f = word;
+        }
         else if (!r)
             r = word;
         else {
@@ -1162,6 +1185,15 @@ static const char *
     new = apr_array_push(conf->aliases);
     new->fake = apr_pstrdup(cmd->pool, f);
     new->real = apr_pstrdup(cmd->pool, r);
+    if (use_regex) {
+        new->regex = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
+        if (new->regex == NULL)
+            return "Regular expression could not be compiled.";
+    }
+    else {
+        new->regex = NULL;
+    }
+
     if (r[0] == '!' && r[1] == '\0')
         return NULL;
 
