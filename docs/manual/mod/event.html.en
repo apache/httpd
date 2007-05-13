@@ -77,7 +77,6 @@ MPM</td></tr>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#how-it-works">How it Works</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#requirements">Requirements</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#issues">Issues</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="worker.html">The worker MPM</a></li>
@@ -131,11 +130,6 @@ MPM</td></tr>
       with support for EPoll.</li>
 
     </ul>
-</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="section">
-<h2><a name="issues" id="issues">Issues</a></h2>
-    <p>At present, this MPM is incompatible with <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>, and
-    other input filters.</p>
 </div>
 </div>
 <div class="bottomlang">
