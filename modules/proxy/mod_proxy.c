@@ -517,8 +517,28 @@ static int proxy_trans(request_rec *r)
                 if ((real[0] == '!') && (real[1] == '\0')) {
                     return DECLINED;
                 }
-                found = apr_pstrcat(r->pool, "proxy:", real,
-                                    r->uri, NULL);
+                found = ap_pregsub(r->pool, real, r->uri, AP_MAX_REG_MATCH,
+                                   regm);
+                /* Note: The strcmp() below catches cases where there
+                 * was no regex substitution. This is so cases like:
+                 *
+                 *    ProxyPassMatch \.gif balancer://foo
+                 *
+                 * will work "as expected". The upshot is that the 2
+                 * directives below act the exact same way (ie: $1 is implied):
+                 *
+                 *    ProxyPassMatch ^(/.*\.gif)$ balancer://foo
+                 *    ProxyPassMatch ^(/.*\.gif)$ balancer://foo$1
+                 *
+                 * which may be confusing.
+                 */
+                if (found && strcmp(found, real)) {
+                    found = apr_pstrcat(r->pool, "proxy:", found, NULL);
+                }
+                else {
+                    found = apr_pstrcat(r->pool, "proxy:", real, r->uri,
+                                        NULL);
+                }
             }
         }
         else {
@@ -530,15 +550,15 @@ static int proxy_trans(request_rec *r)
                 }
 
                 found = apr_pstrcat(r->pool, "proxy:", real,
-                                     r->uri + len, NULL);
+                                    r->uri + len, NULL);
 
             }
         }
         if (found) {
-                r->filename = found;
-                r->handler = "proxy-server";
-                r->proxyreq = PROXYREQ_REVERSE;
-                return OK;
+            r->filename = found;
+            r->handler = "proxy-server";
+            r->proxyreq = PROXYREQ_REVERSE;
+            return OK;
         }
     }
     return DECLINED;
@@ -1129,7 +1149,7 @@ static const char *
 }
 
 static const char *
-    add_pass(cmd_parms *cmd, void *dummy, const char *arg)
+    add_pass(cmd_parms *cmd, void *dummy, const char *arg, int is_regex)
 {
     server_rec *s = cmd->server;
     proxy_server_conf *conf =
@@ -1142,12 +1162,15 @@ static const char *
     const apr_array_header_t *arr;
     const apr_table_entry_t *elts;
     int i;
-    int use_regex = 0;
+    int use_regex = is_regex;
 
     while (*arg) {
         word = ap_getword_conf(cmd->pool, &arg);
         if (!f) {
             if (!strcmp(word, "~")) {
+                if (is_regex) {
+                    return "ProxyPassMatch invalid syntax ('~' usage).";
+                }
                 use_regex = 1;
                 continue;
             }
@@ -1160,16 +1183,16 @@ static const char *
             if (!val) {
                 if (cmd->path) {
                     if (*r == '/') {
-                        return "ProxyPass can not have a path when defined in "
+                        return "ProxyPass|ProxyPassMatch can not have a path when defined in "
                                "a location.";
                     }
                     else {
-                        return "Invalid ProxyPass parameter. Parameter must "
+                        return "Invalid ProxyPass|ProxyPassMatch parameter. Parameter must "
                                "be in the form 'key=value'.";
                     }
                 }
                 else {
-                    return "Invalid ProxyPass parameter. Parameter must be "
+                    return "Invalid ProxyPass|ProxyPassMatch parameter. Parameter must be "
                            "in the form 'key=value'.";
                 }
             }
@@ -1180,7 +1203,7 @@ static const char *
     };
 
     if (r == NULL)
-        return "ProxyPass needs a path when not defined in a location";
+        return "ProxyPass|ProxyPassMatch needs a path when not defined in a location";
 
     new = apr_array_push(conf->aliases);
     new->fake = apr_pstrdup(cmd->pool, f);
@@ -1237,6 +1260,19 @@ static const char *
     }
     return NULL;
 }
+
+static const char *
+    add_pass_noregex(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    return add_pass(cmd, dummy, arg, 0);
+}
+
+static const char *
+    add_pass_regex(cmd_parms *cmd, void *dummy, const char *arg)
+{
+    return add_pass(cmd, dummy, arg, 1);
+}
+
 
 static const char *
     add_pass_reverse(cmd_parms *cmd, void *dconf, const char *f, const char *r)
@@ -1900,7 +1936,9 @@ static const command_rec proxy_cmds[] =
     AP_INIT_FLAG("ProxyPassInterpolateEnv", ap_set_flag_slot,
         (void*)APR_OFFSETOF(proxy_dir_conf, interpolate_env),
         RSRC_CONF|ACCESS_CONF, "Interpolate Env Vars in reverse Proxy") ,
-    AP_INIT_RAW_ARGS("ProxyPass", add_pass, NULL, RSRC_CONF|ACCESS_CONF,
+    AP_INIT_RAW_ARGS("ProxyPass", add_pass_noregex, NULL, RSRC_CONF|ACCESS_CONF,
+     "a virtual path and a URL"),
+    AP_INIT_RAW_ARGS("ProxyPassMatch", add_pass_regex, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL"),
     AP_INIT_TAKE12("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL for reverse proxy behaviour"),
