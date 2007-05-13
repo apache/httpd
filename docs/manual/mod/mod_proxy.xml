@@ -759,6 +759,38 @@ expressions</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ProxyPassMatch</name>
+<description>Maps remote servers into the local server URL-space using regular expressions</description>
+<syntax>ProxyPassMatch [<var>regex</var>] !|<var>url</var> [<var>key=value</var>
+	<var>[key=value</var> ...]]</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context>
+</contextlist>
+
+<usage>
+    <p>This directive is equivalent to <directive module="mod_proxy">ProxyPass</directive>,
+       but makes use of regular expressions, instead of simple prefix matching. The
+       supplied regular expression is matched against the <var>url</var>, and if it
+       matches, the server will substitute any parenthesized matches into the given
+       string and use it as a new <var>url</var>.</p>
+
+    <p>Suppose the local server has address <code>http://example.com/</code>;
+    then</p>
+
+    <example>
+      ProxyPassMatch ^(/.*\.gif)$ http://backend.example.com$1
+    </example>
+
+    <p>will cause a local request for
+    <code>http://example.com/mirror/foo/bar.gif</code> to be internally converted
+    into a proxy request to <code>http://backend.example.com/foo/bar.gif</code>.</p>
+
+    <p>The <code>!</code> directive is useful in situations where you don't want
+    to reverse-proxy a subdirectory.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ProxyPassReverse</name>
 <description>Adjusts the URL in HTTP response headers sent from a reverse
 proxied server</description>
