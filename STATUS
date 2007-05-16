@@ -298,6 +298,7 @@ PATCHES/ISSUES THAT ARE STALLED
       +1 ben
       jerenkrantz: What's the revision number to backport?
       wrowe asks: ditto jerenkrantz
+      sctemme: svn blame suggests r424707
 
     * mod_proxy: Support variable interpolation in reverse proxy configuration
       http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
