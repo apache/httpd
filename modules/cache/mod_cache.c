@@ -701,19 +701,42 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
     }
 
     /* if no expiry date then
-     *   if lastmod
+     *   if Cache-Control: max-age
+     *      expiry date = date + max-age
+     *   else if lastmod
      *      expiry date = date + min((date - lastmod) * factor, maxexpire)
      *   else
      *      expire date = date + defaultexpire
      */
     if (exp == APR_DATE_BAD) {
         char expire_hdr[APR_RFC822_DATE_LEN];
+        char *max_age_val;
 
-        /* if lastmod == date then you get 0*conf->factor which results in
-         *   an expiration time of now. This causes some problems with
-         *   freshness calculations, so we choose the else path...
-         */
-        if ((lastmod != APR_DATE_BAD) && (lastmod < date)) {
+        if (ap_cache_liststr(r->pool, cc_out, "max-age", &max_age_val) &&
+            max_age_val != NULL) {
+            apr_int64_t x;
+
+            errno = 0;
+            x = apr_atoi64(max_age_val);
+            if (errno) {
+                x = conf->defex;
+            }
+            else {
+                x = x * MSEC_ONE_SEC;
+            }
+            if (x < conf->minex) {
+                x = conf->minex;
+            }
+            if (x > conf->maxex) {
+                x = conf->maxex;
+            }
+            exp = date + x;
+        }
+        else if ((lastmod != APR_DATE_BAD) && (lastmod < date)) {
+            /* if lastmod == date then you get 0*conf->factor which results in
+             * an expiration time of now. This causes some problems with
+             * freshness calculations, so we choose the else path...
+             */
             apr_time_t x = (apr_time_t) ((date - lastmod) * conf->factor);
 
             if (x < conf->minex) {
