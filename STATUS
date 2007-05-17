@@ -105,16 +105,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&rev=520733
      +1: wrowe, rpluem, niq
 
-   * mod_cache: While serving a cached entity ensure that filters that have
-     been applied to this cached entity before saving it to the cache are not
-     applied again.
-        PR: 40090
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=425787&view=rev
-     2.2.x version of patch:
-       Trunk version works
-     +1: rpluem, wrowe, jerenkrantz
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * ApacheMonitor: Fix Windows Vista detection.
