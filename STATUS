@@ -105,30 +105,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&rev=520733
      +1: wrowe, rpluem, niq
 
-   * mod_cache: Correctly cache and recall entities whose request URL's
-     are url-escaped.
-        PR: 41475
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=506621
-     2.2.x version of patch:
-       Trunk version works
-     +1: rpluem, jerenkrantz, jim
-         wrowe asks - is there a disambiguation problem here?  The items
-         in the cache should either entirely be escaped or unescaped.
-         Can't violate the applicable canonicalization.  However, if this
-         simply allows escaped entities that are unambiguously their
-         non-path, special values, (e.g. '/' vs %2F the character)
-         then I'm strongly +1.
-         rpluem says: Sorry for the confusing title. This is more about
-         the fact that the URL of the request is subject to several
-         transformations that are applied *after* the quick handler phase
-         (unescaping, possibly mod_rewrite, etc.).
-         As we use the URL to calculate the cache key this can lead to situations
-         where we save an entity to the cache under a different key in the
-         CACHE_SAVE filter then the key we use to request the entity from the
-         cache during the quick handler phase. If there are still questions
-         we should continue the discussion on the list.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * ApacheMonitor: Fix Windows Vista detection.
