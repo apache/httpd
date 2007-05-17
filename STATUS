@@ -149,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=506621
      2.2.x version of patch:
        Trunk version works
-     +1: rpluem, jerenkrantz
+     +1: rpluem, jerenkrantz, jim
          wrowe asks - is there a disambiguation problem here?  The items
          in the cache should either entirely be escaped or unescaped.
          Can't violate the applicable canonicalization.  However, if this
@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=504183
      2.2.x version of patch:
        Trunk version works
-     +1: rpluem, jerenkrantz
+     +1: rpluem, jerenkrantz, jim
 
    * mod_dbd: initialise resources and prepared statements in all vhosts
      PRs: 42327, 41302
