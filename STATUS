@@ -290,6 +290,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: jerenkrantz
      rpluem asks: Why not backporting the adjusted error message :-)?
                   Otherwise +1.
+     jerenkrantz: As I replied, I don't care either way.  I was just trying to
+                  minimize the delta against 2.2.x.
+
+   * mod_disk_cache: Allow Vary'd content to be refreshed properly.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=538992
+       http://svn.apache.org/viewvc?view=rev&revision=538997
+     2.2.x version of patch:
+       (Applies cleanly)
+     +1: jerenkrantz
 
 PATCHES/ISSUES THAT ARE STALLED
 
