@@ -150,6 +150,9 @@ typedef struct {
     #define CACHE_IGNORE_HEADERS_SET   1
     #define CACHE_IGNORE_HEADERS_UNSET 0
     int ignore_headers_set;
+    /** ignore query-string when caching */
+    int ignorequerystring;
+    int ignorequerystring_set;
 } cache_server_conf;
 
 /* cache info information */
