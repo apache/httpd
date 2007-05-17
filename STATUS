@@ -105,6 +105,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&rev=520733
      +1: wrowe, rpluem, niq
 
+   * mod_disk_cache: Allow Vary'd content to be refreshed properly.
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=538992
+       http://svn.apache.org/viewvc?view=rev&revision=538997
+       http://svn.apache.org/viewvc?view=rev&revision=539054
+     2.2.x version of patch:
+       (Applies cleanly)
+     +1: jerenkrantz, fielding, rpluem
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * ApacheMonitor: Fix Windows Vista detection.
@@ -259,15 +268,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   Otherwise +1.
      jerenkrantz: As I replied, I don't care either way.  I was just trying to
                   minimize the delta against 2.2.x.
-
-   * mod_disk_cache: Allow Vary'd content to be refreshed properly.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=538992
-       http://svn.apache.org/viewvc?view=rev&revision=538997
-       http://svn.apache.org/viewvc?view=rev&revision=539054
-     2.2.x version of patch:
-       (Applies cleanly)
-     +1: jerenkrantz, fielding
+     rpluem     : Now that CacheIgnoreQueryString has been backported r538807
+                  applies cleanly to 2.2.x. So I assume it is ok to use
+                  r538807 instead of max-age-2.2.x.patch.
 
    * mod_cache: Let Cache-Control max-age set the expiration date.
      Trunk version of patch:
