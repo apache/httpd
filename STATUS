@@ -133,12 +133,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~wrowe/mpm_winnt_waits.patch
         is easier to read (-U8)
       +1: mturk
+      +0: fielding (patch is okay, underlying code is crap)
       wrowe notes: a patch should have the necessary effect with the
         minimum lines of code - there's alot of redecorating that's
         going on in this patch to no net effect.  The WAIT_TIMEOUT
         result value seems to be ignored in the revised code?
       mturk notes: WAIT_TIMEOUT is replaced by WAIT_FAILED with
         the accompanied patch in mpm\winnt\child.c.
+      fielding notes: the routine is brain-dead -- one cannot replicate
+        a wait for many objects by iterating through multiple waits with
+        a one second sleep in between loops.  That's insane.
+        The right ways to do that are explained in the MSDN article
+        <http://msdn2.microsoft.com/en-us/library/ms687025.aspx>
+        In any case, it should be checking nCount <= MAXIMUM_WAIT_OBJECTS
+        first and use the simple wait in that case.
 
    * mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
