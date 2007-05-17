@@ -287,7 +287,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~jerenkrantz/max-age-2.2.x.patch
        (Trivially conflicts with CacheIgnoreQueryString above.)
-     +1: jerenkrantz
+     +1: jerenkrantz, fielding
      rpluem asks: Why not backporting the adjusted error message :-)?
                   Otherwise +1.
      jerenkrantz: As I replied, I don't care either way.  I was just trying to
@@ -300,7 +300,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=539054
      2.2.x version of patch:
        (Applies cleanly)
-     +1: jerenkrantz
+     +1: jerenkrantz, fielding
 
    * mod_cache: Let Cache-Control max-age set the expiration date.
      Trunk version of patch:
@@ -308,7 +308,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~jerenkrantz/max-age-expire-2.2.x.patch
        (No ->minex in 2.2.x)
-     +1: jerenkrantz
+     +1: jerenkrantz, fielding
 
 PATCHES/ISSUES THAT ARE STALLED
 
