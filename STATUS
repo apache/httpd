@@ -297,6 +297,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Trunk version of patch:
        http://svn.apache.org/viewvc?view=rev&revision=538992
        http://svn.apache.org/viewvc?view=rev&revision=538997
+       http://svn.apache.org/viewvc?view=rev&revision=539054
      2.2.x version of patch:
        (Applies cleanly)
      +1: jerenkrantz
