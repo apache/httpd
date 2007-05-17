@@ -298,6 +298,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~jerenkrantz/max-age-2.2.x.patch
        (Trivially conflicts with CacheIgnoreQueryString above.)
      +1: jerenkrantz
+     rpluem asks: Why not backporting the adjusted error message :-)?
+                  Otherwise +1.
 
 PATCHES/ISSUES THAT ARE STALLED
 
