@@ -33,12 +33,6 @@ Changes with Apache 2.3.0
      for SDKs that define LDAP_NO_LIMIT to something other than -1.
      [David Jones <oscaremma gmail.com>]
 
-  *) mod_cache: Use the same cache key throughout the whole request processing
-     to handle escaped URLs correctly.  PR 41475. [Ruediger Pluem]
-
-  *) mod_cache: Add CacheIgnoreQueryString directive.  PR 41484.
-     [Fredrik Widlund <fredrik.widlund qbrick.com>]
-
   *) mod_dbd: Introduce configuration groups to allow inheritance by virtual
      hosts of database configurations from the main server.  Determine the
      minimal set of distinct configurations and share connection pools
@@ -266,6 +260,12 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.5
+
+  *) mod_cache: Use the same cache key throughout the whole request processing
+     to handle escaped URLs correctly.  PR 41475. [Ruediger Pluem]
+
+  *) mod_cache: Add CacheIgnoreQueryString directive.  PR 41484.
+     [Fredrik Widlund <fredrik.widlund qbrick.com>]
 
   *) mod_cache: While serving a cached entity ensure that filters that have
      been applied to this cached entity before saving it to the cache are not
