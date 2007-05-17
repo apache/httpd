@@ -129,15 +129,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          cache during the quick handler phase. If there are still questions
          we should continue the discussion on the list.
 
-   * mod_cache: Add CacheIgnoreQueryString directive to cache requests with
-     a query string even if no expiration time is specified.
-        PR: 41484
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=504183
-     2.2.x version of patch:
-       Trunk version works
-     +1: rpluem, jerenkrantz, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * ApacheMonitor: Fix Windows Vista detection.
