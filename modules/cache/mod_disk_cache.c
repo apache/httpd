@@ -841,6 +841,15 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
             apr_array_header_t* varray;
             apr_uint32_t format = VARY_FORMAT_VERSION;
 
+            /* If we were initially opened as a vary format, rollback
+             * that internal state for the moment so we can recreate the
+             * vary format hints in the appropriate directory.
+             */
+            if (dobj->prefix) {
+                dobj->hdrsfile = dobj->prefix;
+                dobj->prefix = NULL;
+            }
+
             mkdir_structure(conf, dobj->hdrsfile, r->pool);
 
             rv = apr_file_mktemp(&dobj->tfd, dobj->tempfile,
