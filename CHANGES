@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_disk_cache: Allow Vary'd responses to be refreshed properly.
+     [Justin Erenkrantz]
+
   *) mod_cache: Allow caching of requests with query arguments when
      Cache-Control max-age is explicitly specified.  [Justin Erenkrantz]
 

@@ -903,8 +903,6 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
         return rv;
     }
 
-    dobj->name = h->cache_obj->key;
-
     disk_info.format = DISK_FORMAT_VERSION;
     disk_info.date = info->date;
     disk_info.expire = info->expire;
