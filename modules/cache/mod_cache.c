@@ -318,7 +318,6 @@ static int cache_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 {
     int rv = !OK;
-    int date_in_errhdr = 0;
     request_rec *r = f->r;
     cache_request_rec *cache;
     cache_server_conf *conf;
@@ -653,10 +652,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     /* Read the date. Generate one if one is not supplied */
     dates = apr_table_get(r->err_headers_out, "Date");
-    if (dates != NULL) {
-        date_in_errhdr = 1;
-    }
-    else {
+    if (dates == NULL) {
         dates = apr_table_get(r->headers_out, "Date");
     }
     if (dates != NULL) {
@@ -668,25 +664,10 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
 
     now = apr_time_now();
     if (info->date == APR_DATE_BAD) {  /* No, or bad date */
-        char *dates;
         /* no date header (or bad header)! */
-        /* add one; N.B. use the time _now_ rather than when we were checking
-         * the cache
-         */
-        if (date_in_errhdr == 1) {
-            apr_table_unset(r->err_headers_out, "Date");
-        }
-        date = now;
-        dates = apr_pcalloc(r->pool, MAX_STRING_LEN);
-        apr_rfc822_date(dates, now);
-        apr_table_set(r->headers_out, "Date", dates);
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
-                     "cache: Added date header");
-        info->date = date;
+        info->date = now;
     }
-    else {
-        date = info->date;
-    }
+    date = info->date;
 
     /* set response_time for HTTP/1.1 age calculations */
     info->response_time = now;
@@ -714,7 +695,6 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
      *      expire date = date + defaultexpire
      */
     if (exp == APR_DATE_BAD) {
-        char expire_hdr[APR_RFC822_DATE_LEN];
         char *max_age_val;
 
         if (ap_cache_liststr(r->pool, cc_out, "max-age", &max_age_val) &&
@@ -751,13 +731,9 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
                 x = conf->maxex;
             }
             exp = date + x;
-            apr_rfc822_date(expire_hdr, exp);
-            apr_table_set(r->headers_out, "Expires", expire_hdr);
         }
         else {
             exp = date + conf->defex;
-            apr_rfc822_date(expire_hdr, exp);
-            apr_table_set(r->headers_out, "Expires", expire_hdr);
         }
     }
     info->expire = exp;
