@@ -452,11 +452,12 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         /* if a Expires header is in the past, don't cache it */
         reason = "Expires header already expired, not cacheable";
     }
-    else if (!conf->ignorequerystring && r->parsed_uri.query && exps == NULL) {
-        /* if query string present but no expiration time, don't cache it
-         * (RFC 2616/13.9)
+    else if (!conf->ignorequerystring && r->parsed_uri.query && exps == NULL &&
+             !ap_cache_liststr(NULL, cc_out, "max-age", NULL)) {
+        /* if a query string is present but no explicit expiration time,
+         * don't cache it (RFC 2616/13.9 & 13.2.1)
          */
-        reason = "Query string present but no expires header";
+        reason = "Query string present but no explicit expiration time";
     }
     else if (r->status == HTTP_NOT_MODIFIED &&
              !cache->handle && !cache->stale_handle) {
