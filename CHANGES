@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
+  *) mod_alias: Accept path components (URL part) in Redirects.  PR 35314.
+     [Nick Kew]
+
   *) mod_headers: Allow % at the end of a Header value.  PR 36609.
      [Nick Kew, Ruediger Pluem]
 
