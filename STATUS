@@ -77,14 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy_ajp: Fix wrong retry when sending the response failed.
-      PR 40310 (The old fixes weren't ok).
-      Trunk version of patch:
-      http://svn.apache.org/viewvc?view=rev&revision=518938
-      http://svn.apache.org/viewvc?view=rev&revision=534031
-      (It also works for httpd-2.2.x).
-      +1: jfclere, rpluem, wrowe
-      jerenkrantz says: Does not apply cleanly to 2.2.x.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -227,6 +219,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-4groups-2.2.x.patch
      +1: chrisd
+
+    * mod_proxy_ajp: Fix wrong retry when sending the response failed.
+      PR 40310 (The old fixes weren't ok).
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=518938
+        http://svn.apache.org/viewvc?view=rev&revision=534031
+      2.2.x version of patch:
+        http://people.apache.org/~rpluem/patches/40310.diff
+      +1: rpluem
+      jerenkrantz says: Does not apply cleanly to 2.2.x.
+      rpluem answers: svn merge did not notice this / resolved this, but you are
+                      correct. There is a conflict because r467014 is not
+                      backported to 2.2.x so far. So I reset the votes and add a
+                      version of the patch that applies cleanly to 2.2.x.
 
 PATCHES/ISSUES THAT ARE STALLED
 
