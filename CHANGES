@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) mod_cache: Let Cache-Control max-age set the expiration of the cached
-     representation if Expires is not set.  [Justin Erenkrantz]
-
   *) mod_so: Solve dev's confusion by reporting expected/seen module
      magic signatures when failing with a 'garbled' message, and solve
      user's confusion by pointing out 'perhaps compiled for a different
@@ -251,6 +248,9 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.5
+
+  *) mod_cache: Let Cache-Control max-age set the expiration of the cached
+     representation if Expires is not set.  [Justin Erenkrantz]
 
   *) mod_disk_cache: Allow Vary'd responses to be refreshed properly.
      [Justin Erenkrantz]
