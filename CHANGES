@@ -5,12 +5,6 @@ Changes with Apache 2.3.0
   *) mod_cache: Let Cache-Control max-age set the expiration of the cached
      representation if Expires is not set.  [Justin Erenkrantz]
 
-  *) mod_disk_cache: Allow Vary'd responses to be refreshed properly.
-     [Justin Erenkrantz]
-
-  *) mod_cache: Allow caching of requests with query arguments when
-     Cache-Control max-age is explicitly specified.  [Justin Erenkrantz]
-
   *) mod_so: Solve dev's confusion by reporting expected/seen module
      magic signatures when failing with a 'garbled' message, and solve
      user's confusion by pointing out 'perhaps compiled for a different
@@ -119,9 +113,6 @@ Changes with Apache 2.3.0
      [Niklas Edmundsson <nikke acc.umu.se>]
 
   *) mod_rewrite: support rewritemap by SQL query [Nick Kew]
-
-  *) mod_proxy: Print the correct error message for erroneous configured
-     ProxyPass directives. PR 40439. [serai lans-tv.com]
 
   *) ap_get_server_version() has been removed.  Third-party modules must 
      now use ap_get_server_banner() or ap_get_server_description().
@@ -260,6 +251,24 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.5
+
+  *) mod_disk_cache: Allow Vary'd responses to be refreshed properly.
+     [Justin Erenkrantz]
+
+  *) mod_cache: Allow caching of requests with query arguments when
+     Cache-Control max-age is explicitly specified.  [Justin Erenkrantz]
+
+  *) mod_proxy: Print the correct error message for erroneous configured
+     ProxyPass directives. PR 40439. [serai lans-tv.com]
+
+  *) mod_so: Provide more helpful LoadModule feedback when an error occurs.
+     [William Rowe]
+
+  *) mod_alias: Accept path components (URL part) in Redirects.  PR 35314.
+     [Nick Kew]
+
+  *) mod_headers: Allow % at the end of a Header value.  PR 36609.
+     [Nick Kew, Ruediger Pluem]
 
   *) mod_cache: Use the same cache key throughout the whole request processing
      to handle escaped URLs correctly.  PR 41475. [Ruediger Pluem]
