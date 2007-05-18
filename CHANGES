@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
+  *) mod_headers: Allow % at the end of a Header value.  PR 36609.
+     [Nick Kew, Ruediger Pluem]
+
   *) mod_cache: Use the same cache key throughout the whole request processing
      to handle escaped URLs correctly.  PR 41475. [Ruediger Pluem]
 
