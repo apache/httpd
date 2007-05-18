@@ -77,17 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_headers: Allow % at the end of a Header value
-       PR: 36609
-     http://svn.apache.org/viewvc?rev=490156&view=rev
-     http://svn.apache.org/viewvc?rev=499567&view=rev
-     +1: niq, rpluem, wrowe
-
-   * mod_alias: Accept path components (URL part) in Redirects
-       PR: 35314
-     http://svn.apache.org/viewvc?rev=490142&view=rev
-     +1: niq, jim, wrowe
-
     * mod_proxy_ajp: Fix wrong retry when sending the response failed.
       PR 40310 (The old fixes weren't ok).
       Trunk version of patch:
@@ -95,47 +84,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=534031
       (It also works for httpd-2.2.x).
       +1: jfclere, rpluem, wrowe
-
-   * mod_so: Backport 520733; more helpful LoadModule feedback, so it reads;
-        Syntax error in -C/-c directive:
-        API module structure 'ftp_module' in file /.../modules/mod_ftp.so 
-        is garbled - expected signature 41503232 but saw 41503230 -
-        perhaps this is not an Apache module DSO, or was compiled 
-        for a different Apache version?
-     http://svn.apache.org/viewvc?view=rev&rev=520733
-     +1: wrowe, rpluem, niq
-
-   * mod_disk_cache: Allow Vary'd content to be refreshed properly.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=538992
-       http://svn.apache.org/viewvc?view=rev&revision=538997
-       http://svn.apache.org/viewvc?view=rev&revision=539054
-     2.2.x version of patch:
-       (Applies cleanly)
-     +1: jerenkrantz, fielding, rpluem
-
-   * mod_proxy: Print the correct error message for erroneous configured
-     ProxyPass directives
-        PR: 40439
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=441947
-     2.2.x version of patch:
-       Trunk version works
-     +1: rpluem, jim, jerenkrantz
-
-   * mod_cache: Allow query string requests with max-age to be cached.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=538807
-     2.2.x version of patch:
-       Trunk version works
-     +1: jerenkrantz, fielding, rpluem
-     rpluem asks: Why not backporting the adjusted error message :-)?
-                  Otherwise +1.
-     jerenkrantz: As I replied, I don't care either way.  I was just trying to
-                  minimize the delta against 2.2.x.
-     rpluem     : Now that CacheIgnoreQueryString has been backported r538807
-                  applies cleanly to 2.2.x. So I assume it is ok to use
-                  r538807 instead of max-age-2.2.x.patch.
+      jerenkrantz says: Does not apply cleanly to 2.2.x.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
