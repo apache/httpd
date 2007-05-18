@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_cache: Do not set Date or Expires when they are missing from
+     the original response or are invalid.  [Justin Erenkrantz]
+
   *) mod_cache: Correctly handle HEAD requests on expired cache content.
      PR 41230.  [Niklas Edmundsson]
 
