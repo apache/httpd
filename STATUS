@@ -86,14 +86,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       +1: jfclere, rpluem, wrowe
       jerenkrantz says: Does not apply cleanly to 2.2.x.
 
-   * mod_cache: Let Cache-Control max-age set the expiration date.
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=539063
-     2.2.x version of patch:
-       http://people.apache.org/~jerenkrantz/max-age-expire-2.2.x.patch
-       (No ->minex in 2.2.x)
-     +1: jerenkrantz, fielding, striker
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * ApacheMonitor: Fix Windows Vista detection.
