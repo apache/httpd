@@ -706,7 +706,10 @@ static apr_status_t dbd_check(apr_pool_t *pool, server_rec *s, ap_dbd_t *rec)
         return APR_SUCCESS;
     }
 
-    errmsg = apr_dbd_error(rec->driver, rec->handle, rv);
+    /* we don't have a driver-specific error code, so we'll just pass
+     * a "success" value and rely on the driver to ignore it
+     */
+    errmsg = apr_dbd_error(rec->driver, rec->handle, 0);
     if (!errmsg) {
         errmsg = "(unknown)";
     }
