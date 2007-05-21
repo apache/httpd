@@ -227,7 +227,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=534031
       2.2.x version of patch:
         http://people.apache.org/~rpluem/patches/40310.diff
-      +1: rpluem
+      +1: rpluem, jfclere
       jerenkrantz says: Does not apply cleanly to 2.2.x.
       rpluem answers: svn merge did not notice this / resolved this, but you are
                       correct. There is a conflict because r467014 is not
