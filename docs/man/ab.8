@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "AB" 8 "2004-11-14" "Apache HTTP Server" "ab"
+.TH "AB" 8 "2007-05-22" "Apache HTTP Server" "ab"
 
 .SH NAME
 ab \- Apache HTTP server benchmarking tool
@@ -74,7 +74,7 @@ Enable the HTTP KeepAlive feature, \fIi\&.e\&.\fR, perform multiple requests wit
 Number of requests to perform for the benchmarking session\&. The default is to just perform a single request which usually leads to non-representative benchmarking results\&.  
 .TP
 -p \fIPOST-file\fR
-File containing data to POST\&.  
+File containing data to POST\&. Remember to also set -T\&.  
 .TP
 -P \fIproxy-auth-username\fR:\fIpassword\fR
 Supply BASIC Authentication credentials to a proxy en-route\&. The username and password are separated by a single : and sent on the wire base64 encoded\&. The string is sent regardless of whether the proxy needs it (\fIi\&.e\&.\fR, has sent an 407 proxy authentication needed)\&.  
@@ -92,7 +92,7 @@ Do not display the median and standard deviation values, nor display the warning
 Maximum number of seconds to spend for benchmarking\&. This implies a -n 50000 internally\&. Use this to benchmark the server within a fixed total amount of time\&. Per default there is no timelimit\&.  
 .TP
 -T \fIcontent-type\fR
-Content-type header to use for POST data\&.  
+Content-type header to use for POST data, eg\&. application/x-www-form-urlencoded\&. Default: text/plain\&.  
 .TP
 -v \fIverbosity\fR
 Set verbosity level - 4 and above prints information on headers, 3 and above prints response codes (404, 200, etc\&.), 2 and above prints warnings and info\&.  
