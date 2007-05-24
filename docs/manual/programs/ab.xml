@@ -118,7 +118,7 @@
     non-representative benchmarking results.</dd>
 
     <dt><code>-p <var>POST-file</var></code></dt>
-    <dd>File containing data to POST.</dd>
+    <dd>File containing data to POST.  Remember to also set <code>-T</code>.</dd>
 
     <dt><code>-P <var>proxy-auth-username</var>:<var>password</var></code></dt>
     <dd>Supply BASIC Authentication credentials to a proxy en-route. The
@@ -150,7 +150,9 @@
     fixed total amount of time. Per default there is no timelimit.</dd>
 
     <dt><code>-T <var>content-type</var></code></dt>
-    <dd>Content-type header to use for POST data.</dd>
+    <dd>Content-type header to use for POST data, eg.
+    <code>application/x-www-form-urlencoded</code>.  
+    Default: <code>text/plain</code>.</dd>
 
     <dt><code>-v <var>verbosity</var></code></dt>
     <dd>Set verbosity level - <code>4</code> and above prints information on
