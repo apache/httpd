@@ -494,6 +494,12 @@ type</description>
       AddType image/gif .gif
     </example>
 
+    <p>Or, to specify multiple file extensions in one directive:</p>
+
+    <example><title>Example</title>
+      AddType image/jpeg jpeg jpg jpe
+    </example>
+
     <note>
       It is recommended that new MIME types be added using the
       <directive>AddType</directive> directive rather than changing the 
