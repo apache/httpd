@@ -507,6 +507,12 @@ type</td></tr>
       AddType image/gif .gif
     </code></p></div>
 
+    <p>Or, to specify multiple file extensions in one directive:</p>
+
+    <div class="example"><h3>Example</h3><p><code>
+      AddType image/jpeg jpeg jpg jpe
+    </code></p></div>
+
     <div class="note">
       It is recommended that new MIME types be added using the
       <code class="directive">AddType</code> directive rather than changing the 
