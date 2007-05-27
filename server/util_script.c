@@ -580,6 +580,9 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
         else if (!strcasecmp(w, "Transfer-Encoding")) {
             apr_table_set(r->headers_out, w, l);
         }
+        else if (!strcasecmp(w, "ETag")) {
+            apr_table_set(r->headers_out, w, l);
+        }
         /*
          * If the script gave us a Last-Modified header, we can't just
          * pass it on blindly because of restrictions on future values.
