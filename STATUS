@@ -261,7 +261,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_cgi: Reverse the regression documented in PR 39710
       (ErrorDocuments are *badly* broken).
       Paul's patch reverses the change that introduced the bug.
+      Rudiger's patch deals with mod_cache failure
       http://svn.apache.org/viewvc?view=rev&revision=541926
+      http://svn.apache.org/viewvc?view=rev&revision=541990
       +1: niq
       
 
