@@ -2829,6 +2829,7 @@ static void reclaim_child_processes(int terminate)
 	    waitret = waitpid(pid, &status, WNOHANG);
 	    if (waitret == pid || waitret == -1) {
 		ap_scoreboard_image->parent[i].pid = 0;
+                unset_pid_table(pid);
 		continue;
 	    }
 	    ++not_dead_yet;
@@ -5173,6 +5174,7 @@ static void perform_idle_server_maintenance(void)
                     pid = ps->pid;
                     if (in_pid_table(pid)) {
                         kill(pid, SIG_TIMEOUT_KILL);
+                        unset_pid_table(pid);
                     }
                     else {
                         ap_log_error(APLOG_MARK, APLOG_NOERRNO|APLOG_ERR, server_conf,
