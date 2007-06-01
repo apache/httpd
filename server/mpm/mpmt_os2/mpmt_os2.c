@@ -281,6 +281,7 @@ static char master_main()
 #endif
     if (one_process) {
         ap_scoreboard_image->parent[0].pid = getpid();
+        ap_set_pid_table(getpid());
         ap_mpm_child_main(pconf);
         return FALSE;
     }
@@ -313,6 +314,7 @@ static char master_main()
             if (slot < HARD_SERVER_LIMIT) {
                 ap_scoreboard_image->parent[slot].pid = 0;
                 ap_scoreboard_image->parent[slot].quiescing = 0;
+                ap_unset_pid_table(child_pid);
 
                 if (proc_rc.codeTerminate == TC_EXIT) {
                     /* Child terminated normally, check its exit code and
@@ -330,7 +332,12 @@ static char master_main()
 
     /* Signal children to shut down, either gracefully or immediately */
     for (slot=0; slot<HARD_SERVER_LIMIT; slot++) {
-      kill(ap_scoreboard_image->parent[slot].pid, is_graceful ? SIGHUP : SIGTERM);
+        PID pid;
+
+        pid = ap_scoreboard_image->parent[n].pid;
+        if (ap_in_pid_table(pid)) {
+            kill(pid, is_graceful ? SIGHUP : SIGTERM);
+        }
     }
 
     DosFreeMem(parent_info);
@@ -364,6 +371,7 @@ static void spawn_child(int slot)
     }
 
     ap_scoreboard_image->parent[slot].pid = proc_rc.codeTerminate;
+    ap_set_pid_table(proc_rc.codeTerminate);
 }
 
 
