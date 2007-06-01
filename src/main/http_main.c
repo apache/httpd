@@ -382,8 +382,9 @@ API_VAR_EXPORT int ap_change_shmem_uid = 0;
 /*
  * Check the pid table to see if the actual pid exists
  */
+
 static int in_pid_table(int pid) {
-    char apid[64];
+    char apid[64];      /* WAY generous! */
     const char *spid;
     snprintf(apid, sizeof(apid), "%d", pid);
     spid = ap_table_get(pid_table, apid);
@@ -2934,7 +2935,7 @@ int reap_children(ap_wait_t *status)
                     ap_update_child_status(n, SERVER_DEAD, NULL);
                     /* just mark it as having a successful exit status */
                     bzero((char *) status, sizeof(ap_wait_t));
-                    unset_pid_table(pid);
+                    unset_pid_table(pid);       /* to be safe */
                     return(pid);
                 }
             }
