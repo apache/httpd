@@ -337,6 +337,7 @@ static char master_main()
         pid = ap_scoreboard_image->parent[n].pid;
         if (ap_in_pid_table(pid)) {
             kill(pid, is_graceful ? SIGHUP : SIGTERM);
+            ap_unset_pid_table(pid);
         }
     }
 
