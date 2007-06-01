@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) SECURITY: CVE-2007-1862 (cve.mitre.org)
+     mod_mem_cache: Copy headers into longer lived storage; header names and 
+     values could previously point to cleaned up storage
+     PR 41551 [Davi Arnaut <davi haxent.com.br>]
+
   *) mod_cache: Do not set Date or Expires when they are missing from
      the original response or are invalid.  [Justin Erenkrantz]
 
