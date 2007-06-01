@@ -1643,6 +1643,7 @@ static int make_child(server_rec * s, int slot)
     /* else */
     ap_scoreboard_image->parent[slot].quiescing = 0;
     ap_scoreboard_image->parent[slot].pid = pid;
+    ap_set_pid_table(pid);
     return 0;
 }
 
@@ -2062,10 +2063,13 @@ int ap_mpm_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
             active_children = 0;
             for (index = 0; index < ap_daemons_limit; ++index) {
                 if (MPM_CHILD_PID(index) != 0) {
-                    if (kill(MPM_CHILD_PID(index), 0) == 0) {
+                    if (ap_in_pid_table(MPM_CHILD_PID(index))) {
+                        if (kill(MPM_CHILD_PID(index), 0) == 0) {
                             active_children = 1;
+                            ap_unset_pid_table(MPM_CHILD_PID(index));
                             /* Having just one child is enough to stay around */
                             break;
+                        }
                     }
                 }
             }

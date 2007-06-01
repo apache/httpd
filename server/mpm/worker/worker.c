@@ -1360,6 +1360,8 @@ static int make_child(server_rec *s, int slot)
     }
     ap_scoreboard_image->parent[slot].quiescing = 0;
     ap_scoreboard_image->parent[slot].pid = pid;
+    ap_set_pid_table(pid);
+
     return 0;
 }
 
@@ -1600,6 +1602,7 @@ static void server_main_loop(int remaining_children_to_start)
                                                         (request_rec *) NULL);
 
                 ap_scoreboard_image->parent[child_slot].pid = 0;
+                ap_unset_pid_table(pid);
                 ap_scoreboard_image->parent[child_slot].quiescing = 0;
                 if (processed_status == APEXIT_CHILDSICK) {
                     /* resource shortage, minimize the fork rate */
@@ -1816,10 +1819,12 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             active_children = 0;
             for (index = 0; index < ap_daemons_limit; ++index) {
                 if (MPM_CHILD_PID(index) != 0) {
-                    if (kill(MPM_CHILD_PID(index), 0) == 0) {
+                    if (ap_in_pid_table(MPM_CHILD_PID(index))) {
+                        if (kill(MPM_CHILD_PID(index), 0) == 0) {
                             active_children = 1;
                             /* Having just one child is enough to stay around */
                             break;
+                        }
                     }
                 }
             }

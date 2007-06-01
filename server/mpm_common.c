@@ -87,6 +87,41 @@ typedef struct extra_process_t {
 
 static extra_process_t *extras;
 
+/*
+ * Parent process local storage of child pids
+ */
+apr_table_t *ap_pid_table;
+
+/*
+ * Check the pid table to see if the actual pid exists
+ */
+int ap_in_pid_table(pid_t pid) {
+    char apid[64];
+    const char *spid;
+    snprintf(apid, sizeof(apid), "%" APR_PID_T_FMT, pid);
+    spid = apr_table_get(ap_pid_table, apid);
+    if (spid && spid[0] == '1' && spid[1] == '\0')
+        return 1;
+    else {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, ap_server_conf,
+                     "child process %" APR_PID_T_FMT
+                     " does not exist in local pid table", pid);
+        return 0;
+    }
+}
+
+void ap_set_pid_table(pid_t pid) {
+    char apid[64];
+    snprintf(apid, sizeof(apid), "%" APR_PID_T_FMT, pid);
+    apr_table_set(ap_pid_table, apid, "1");
+}
+
+void ap_unset_pid_table(pid_t pid) {
+    char apid[64];
+    snprintf(apid, sizeof(apid), "%" APR_PID_T_FMT, pid);
+    apr_table_unset(ap_pid_table, apid);
+}
+
 void ap_register_extra_mpm_process(pid_t pid)
 {
     extra_process_t *p = (extra_process_t *)malloc(sizeof(extra_process_t));
@@ -128,6 +163,9 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     apr_status_t waitret;
 
     proc.pid = pid;
+    if (!ap_in_pid_table(pid)) {
+        return 0;
+    }
     waitret = apr_proc_wait(&proc, NULL, NULL, APR_NOWAIT);
     if (waitret != APR_CHILD_NOTDONE) {
         return 1;

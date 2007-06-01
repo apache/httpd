@@ -49,7 +49,10 @@
 #define AP_MPM_DISABLE_NAGLE_ACCEPTED_SOCK
 
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->parent[i].pid)
-#define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
+#define MPM_NOTE_CHILD_KILLED(i) do {         \
+        ap_unset_pid_table(MPM_CHILD_PID(i)); \
+        MPM_CHILD_PID(i) = 0;                 \
+    } while(0) 
 #define MPM_ACCEPT_FUNC unixd_accept
 
 extern int ap_threads_per_child;
