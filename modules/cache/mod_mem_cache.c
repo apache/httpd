@@ -539,12 +539,28 @@ static int remove_url(cache_handle_t *h, apr_pool_t *p)
     return OK;
 }
 
+static apr_table_t *deep_table_copy(apr_pool_t *p, const apr_table_t *table)
+{
+    const apr_array_header_t *array = apr_table_elts(table);
+    apr_table_entry_t *elts = (apr_table_entry_t *) array->elts;
+    apr_table_t *copy = apr_table_make(p, array->nelts);
+    int i;
+
+    for (i = 0; i < array->nelts; i++) {
+        if (elts[i].key) {  
+            apr_table_add(copy, elts[i].key, elts[i].val);
+        }
+    }
+
+    return copy;
+}
+
 static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 {
     mem_cache_object_t *mobj = (mem_cache_object_t*) h->cache_obj->vobj;
 
-    h->req_hdrs = apr_table_copy(r->pool, mobj->req_hdrs);
-    h->resp_hdrs = apr_table_copy(r->pool, mobj->header_out);
+    h->req_hdrs = deep_table_copy(r->pool, mobj->req_hdrs);
+    h->resp_hdrs = deep_table_copy(r->pool, mobj->header_out);
 
     return OK;
 }
@@ -586,7 +602,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
      * - The original response headers (for returning with a cached response)
      * - The body of the message
      */
-    mobj->req_hdrs = apr_table_copy(mobj->pool, r->headers_in);
+    mobj->req_hdrs = deep_table_copy(mobj->pool, r->headers_in);
 
     /* Precompute how much storage we need to hold the headers */
     headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out,
@@ -600,7 +616,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     }
 
     headers_out = apr_table_overlay(r->pool, headers_out, r->err_headers_out);
-    mobj->header_out = apr_table_copy(mobj->pool, headers_out);
+    mobj->header_out = deep_table_copy(mobj->pool, headers_out);
 
     /* Init the info struct */
     obj->info.status = info->status;
