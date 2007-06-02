@@ -149,6 +149,7 @@ int ap_unregister_extra_mpm_process(pid_t pid)
             extras = cur->next;
         }
         free(cur);
+        ap_unset_pid_table(pid);
         return 1; /* found */
     }
     else {
