@@ -2066,7 +2066,6 @@ int ap_mpm_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
                     if (ap_in_pid_table(MPM_CHILD_PID(index))) {
                         if (kill(MPM_CHILD_PID(index), 0) == 0) {
                             active_children = 1;
-                            ap_unset_pid_table(MPM_CHILD_PID(index));
                             /* Having just one child is enough to stay around */
                             break;
                         }
