@@ -308,13 +308,13 @@ static char master_main()
         rc = DosWaitChild(DCWA_PROCESSTREE, DCWW_NOWAIT, &proc_rc, &child_pid, 0);
 
         if (rc == 0) {
+            ap_unset_pid_table(child_pid);
             /* A child has terminated, remove its scoreboard entry & terminate if necessary */
             for (slot=0; ap_scoreboard_image->parent[slot].pid != child_pid && slot < HARD_SERVER_LIMIT; slot++);
 
             if (slot < HARD_SERVER_LIMIT) {
                 ap_scoreboard_image->parent[slot].pid = 0;
                 ap_scoreboard_image->parent[slot].quiescing = 0;
-                ap_unset_pid_table(child_pid);
 
                 if (proc_rc.codeTerminate == TC_EXIT) {
                     /* Child terminated normally, check its exit code and
