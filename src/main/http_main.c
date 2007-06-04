@@ -386,7 +386,7 @@ API_VAR_EXPORT int ap_change_shmem_uid = 0;
 static int in_pid_table(int pid) {
     char apid[64];      /* WAY generous! */
     const char *spid;
-    snprintf(apid, sizeof(apid), "%d", pid);
+    ap_snprintf(apid, sizeof(apid), "%d", pid);
     spid = ap_table_get(pid_table, apid);
     if (spid && spid[0] == '1' && spid[1] == '\0')
         return 1;
@@ -396,13 +396,13 @@ static int in_pid_table(int pid) {
 
 static void set_pid_table(int pid) {
     char apid[64];
-    snprintf(apid, sizeof(apid), "%d", pid);
+    ap_snprintf(apid, sizeof(apid), "%d", pid);
     ap_table_set(pid_table, apid, "1");
 }
 
 static void unset_pid_table(int pid) {
     char apid[64];
-    snprintf(apid, sizeof(apid), "%d", pid);
+    ap_snprintf(apid, sizeof(apid), "%d", pid);
     ap_table_unset(pid_table, apid);
 }
 
