@@ -5450,6 +5450,7 @@ static void standalone_main(int argc, char **argv)
             }
 #endif
 	    if (pid >= 0) {
+		unset_pid_table(pid);
 		process_child_status(pid, status);
 		/* non-fatal death... note that it's gone in the scoreboard. */
 		ap_sync_scoreboard_image();
@@ -5458,7 +5459,6 @@ static void standalone_main(int argc, char **argv)
 		if (child_slot >= 0) {
 		    (void) ap_update_child_status(child_slot, SERVER_DEAD,
 					       (request_rec *) NULL);
-		    unset_pid_table(pid);
 		    if (remaining_children_to_start
 			&& child_slot < ap_daemons_limit) {
 			/* we're still doing a 1-for-1 replacement of dead
