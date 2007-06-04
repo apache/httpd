@@ -98,7 +98,7 @@ apr_table_t *ap_pid_table;
 int ap_in_pid_table(pid_t pid) {
     char apid[64];
     const char *spid;
-    snprintf(apid, sizeof(apid), "%" APR_PID_T_FMT, pid);
+    apr_snprintf(apid, sizeof(apid), "%" APR_PID_T_FMT, pid);
     spid = apr_table_get(ap_pid_table, apid);
     if (spid && spid[0] == '1' && spid[1] == '\0')
         return 1;
@@ -112,13 +112,13 @@ int ap_in_pid_table(pid_t pid) {
 
 void ap_set_pid_table(pid_t pid) {
     char apid[64];
-    snprintf(apid, sizeof(apid), "%" APR_PID_T_FMT, pid);
+    apr_snprintf(apid, sizeof(apid), "%" APR_PID_T_FMT, pid);
     apr_table_set(ap_pid_table, apid, "1");
 }
 
 void ap_unset_pid_table(pid_t pid) {
     char apid[64];
-    snprintf(apid, sizeof(apid), "%" APR_PID_T_FMT, pid);
+    apr_snprintf(apid, sizeof(apid), "%" APR_PID_T_FMT, pid);
     apr_table_unset(ap_pid_table, apid);
 }
 
