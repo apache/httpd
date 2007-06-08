@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_ssl: Add support for caching SSL Sessions in memcached. [Paul Querna]
+
   *) SECURITY: CVE-2007-1862 (cve.mitre.org)
      mod_mem_cache: Copy headers into longer lived storage; header names and 
      values could previously point to cleaned up storage

@@ -59,6 +59,10 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
     else if (mc->nSessionCacheMode == SSL_SCMODE_DC)
         ssl_scache_dc_init(s, p);
 #endif
+#ifdef HAVE_SSL_CACHE_MEMCACHE
+    else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
+        ssl_scache_mc_init(s, p);
+#endif
     else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB) {
         void *data;
         const char *userdata_key = "ssl_scache_init";
@@ -85,6 +89,10 @@ void ssl_scache_kill(server_rec *s)
     else if (mc->nSessionCacheMode == SSL_SCMODE_DC)
         ssl_scache_dc_kill(s);
 #endif
+#ifdef HAVE_SSL_CACHE_MEMCACHE
+    else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
+        ssl_scache_mc_kill(s);
+#endif
     return;
 }
 
@@ -100,6 +108,10 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SSL_SE
 #ifdef HAVE_DISTCACHE
     else if (mc->nSessionCacheMode == SSL_SCMODE_DC)
         rv = ssl_scache_dc_store(s, id, idlen, expiry, sess);
+#endif
+#ifdef HAVE_SSL_CACHE_MEMCACHE
+    else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
+        rv = ssl_scache_mc_store(s, id, idlen, expiry, sess);
 #endif
     return rv;
 }
@@ -117,6 +129,10 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen)
     else if (mc->nSessionCacheMode == SSL_SCMODE_DC)
         sess = ssl_scache_dc_retrieve(s, id, idlen);
 #endif
+#ifdef HAVE_SSL_CACHE_MEMCACHE
+    else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
+        sess = ssl_scache_mc_retrieve(s, id, idlen);
+#endif
     return sess;
 }
 
@@ -131,6 +147,10 @@ void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen)
 #ifdef HAVE_DISTCACHE
     else if (mc->nSessionCacheMode == SSL_SCMODE_DC)
         ssl_scache_dc_remove(s, id, idlen);
+#endif
+#ifdef HAVE_SSL_CACHE_MEMCACHE
+    else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
+        ssl_scache_mc_remove(s, id, idlen);
 #endif
     return;
 }
@@ -161,6 +181,10 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
 #ifdef HAVE_DISTCACHE
     else if (sc->mc->nSessionCacheMode == SSL_SCMODE_DC)
         ssl_scache_dc_status(r, flags, r->pool);
+#endif
+#ifdef HAVE_SSL_CACHE_MEMCACHE
+    else if (sc->mc->nSessionCacheMode == SSL_SCMODE_MC)
+        ssl_scache_mc_status(r, flags, r->pool);
 #endif
 
     ap_rputs("</td></tr>\n", r);

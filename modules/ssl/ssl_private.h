@@ -175,6 +175,7 @@ typedef enum {
 #endif
 #endif
 
+
 /**
  * Define the certificate algorithm types
  */
@@ -277,6 +278,7 @@ typedef enum {
     SSL_SCMODE_DBM   = 1,
     SSL_SCMODE_SHMCB = 3,
     SSL_SCMODE_DC    = 4,
+    SSL_SCMODE_MC    = 5,
     SSL_SCMODE_NONE_NOT_NULL = 5
 } ssl_scmode_t;
 
@@ -598,6 +600,15 @@ BOOL         ssl_scache_dc_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION
 SSL_SESSION *ssl_scache_dc_retrieve(server_rec *, UCHAR *, int);
 void         ssl_scache_dc_remove(server_rec *, UCHAR *, int);
 void         ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool);
+
+#ifdef HAVE_SSL_CACHE_MEMCACHE
+void         ssl_scache_mc_init(server_rec *, apr_pool_t *);
+void         ssl_scache_mc_kill(server_rec *);
+BOOL         ssl_scache_mc_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
+SSL_SESSION *ssl_scache_mc_retrieve(server_rec *, UCHAR *, int);
+void         ssl_scache_mc_remove(server_rec *, UCHAR *, int);
+void         ssl_scache_mc_status(request_rec *r, int flags, apr_pool_t *pool);
+#endif
 
 /** Proxy Support */
 int ssl_proxy_enable(conn_rec *c);
