@@ -1670,7 +1670,7 @@ SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *ssl,
     /*
      * Try to retrieve the SSL_SESSION from the inter-process cache
      */
-    session = ssl_scache_retrieve(s, id, idlen);
+    session = ssl_scache_retrieve(s, id, idlen, conn->pool);
 
     ssl_session_log(s, "GET", id, idlen,
                     session ? "FOUND" : "MISSED",

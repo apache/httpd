@@ -201,7 +201,8 @@ BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
     return TRUE;
 }
 
-SSL_SESSION *ssl_scache_mc_retrieve(server_rec *s, UCHAR *id, int idlen)
+SSL_SESSION *ssl_scache_mc_retrieve(server_rec *s, UCHAR *id, int idlen,
+                                    apr_pool_t *p)
 {
     SSL_SESSION *pSession;
     MODSSL_D2I_SSL_SESSION_CONST unsigned char *pder;
@@ -219,7 +220,7 @@ SSL_SESSION *ssl_scache_mc_retrieve(server_rec *s, UCHAR *id, int idlen)
         return NULL;
     }
 
-    rv = apr_memcache_getp(memctxt,  mc->pPool, strkey,
+    rv = apr_memcache_getp(memctxt,  p, strkey,
                            (char**)&pder, &der_len, NULL);
 
     if (rv == APR_NOTFOUND) {
