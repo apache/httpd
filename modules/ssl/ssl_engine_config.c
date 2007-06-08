@@ -1044,7 +1044,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
                                arg+9, NULL);
         }
 #else
-        return "SSLSessionCache: distcache support disabled";
+        return "SSLSessionCache: memcache support disabled";
 #endif
     }
     else {
