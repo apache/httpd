@@ -102,7 +102,9 @@ void ssl_scache_dbm_kill(server_rec *s)
     return;
 }
 
-BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SSL_SESSION *sess)
+BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
+                          time_t expiry, SSL_SESSION *sess,
+                          apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_dbm_t *dbm;
@@ -159,7 +161,7 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SS
     /* and store it to the DBM file */
     ssl_mutex_on(s);
     if ((rv = apr_dbm_open(&dbm, mc->szSessionCacheDataFile,
-            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
+            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "Cannot open SSLSessionCache DBM file `%s' for writing "
                      "(store)",
@@ -189,7 +191,8 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SS
     return TRUE;
 }
 
-SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
+SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen,
+                                     apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_dbm_t *dbm;
@@ -215,7 +218,7 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
      */
     ssl_mutex_on(s);
     if ((rc = apr_dbm_open(&dbm, mc->szSessionCacheDataFile,
-            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
+            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rc, s,
                      "Cannot open SSLSessionCache DBM file `%s' for reading "
                      "(fetch)",
@@ -254,7 +257,7 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
     /* make sure the stuff is still not expired */
     now = time(NULL);
     if (expiry <= now) {
-        ssl_scache_dbm_remove(s, id, idlen);
+        ssl_scache_dbm_remove(s, id, idlen, p);
         return NULL;
     }
 
@@ -264,7 +267,8 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen)
     return sess;
 }
 
-void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen)
+void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen,
+                           apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_dbm_t *dbm;
@@ -278,7 +282,7 @@ void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen)
     /* and delete it from the DBM file */
     ssl_mutex_on(s);
     if ((rv = apr_dbm_open(&dbm, mc->szSessionCacheDataFile,
-            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, mc->pPool)) != APR_SUCCESS) {
+            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, p)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "Cannot open SSLSessionCache DBM file `%s' for writing "
                      "(delete)",

@@ -575,17 +575,22 @@ void         ssl_callback_LogTracingState(MODSSL_INFO_CB_ARG_TYPE, int, int);
 void         ssl_scache_init(server_rec *, apr_pool_t *);
 void         ssl_scache_status_register(apr_pool_t *p);
 void         ssl_scache_kill(server_rec *);
-BOOL         ssl_scache_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
+BOOL         ssl_scache_store(server_rec *, UCHAR *, int,
+                              time_t, SSL_SESSION *, apr_pool_t *);
 SSL_SESSION *ssl_scache_retrieve(server_rec *, UCHAR *, int, apr_pool_t *);
-void         ssl_scache_remove(server_rec *, UCHAR *, int);
+void         ssl_scache_remove(server_rec *, UCHAR *, int,
+                               apr_pool_t *);
 
 char        *ssl_scache_id2sz(UCHAR *, int);
 void         ssl_scache_dbm_init(server_rec *, apr_pool_t *);
 void         ssl_scache_dbm_kill(server_rec *);
-BOOL         ssl_scache_dbm_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
-SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *, UCHAR *, int);
-void         ssl_scache_dbm_remove(server_rec *, UCHAR *, int);
-void         ssl_scache_dbm_status(request_rec *r, int flags, apr_pool_t *pool);
+BOOL         ssl_scache_dbm_store(server_rec *, UCHAR *, int,
+                                  time_t, SSL_SESSION *, apr_pool_t *);
+SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *, UCHAR *, int,
+                                     apr_pool_t *);
+void         ssl_scache_dbm_remove(server_rec *, UCHAR *, int,
+                                   apr_pool_t *);
+void         ssl_scache_dbm_status(request_rec *r, int flags, apr_pool_t *);
 
 void         ssl_scache_shmcb_init(server_rec *, apr_pool_t *);
 void         ssl_scache_shmcb_kill(server_rec *);

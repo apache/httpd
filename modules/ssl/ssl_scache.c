@@ -96,13 +96,15 @@ void ssl_scache_kill(server_rec *s)
     return;
 }
 
-BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SSL_SESSION *sess)
+BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
+                      time_t expiry, SSL_SESSION *sess,
+                      apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     BOOL rv = FALSE;
 
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
-        rv = ssl_scache_dbm_store(s, id, idlen, expiry, sess);
+        rv = ssl_scache_dbm_store(s, id, idlen, expiry, sess, p);
     else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
         rv = ssl_scache_shmcb_store(s, id, idlen, expiry, sess);
 #ifdef HAVE_DISTCACHE
@@ -123,7 +125,7 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
     SSL_SESSION *sess = NULL;
 
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
-        sess = ssl_scache_dbm_retrieve(s, id, idlen);
+        sess = ssl_scache_dbm_retrieve(s, id, idlen, p);
     else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
         sess = ssl_scache_shmcb_retrieve(s, id, idlen);
 #ifdef HAVE_DISTCACHE
@@ -137,12 +139,13 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
     return sess;
 }
 
-void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen)
+void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen,
+                       apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
 
     if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
-        ssl_scache_dbm_remove(s, id, idlen);
+        ssl_scache_dbm_remove(s, id, idlen, p);
     else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
         ssl_scache_shmcb_remove(s, id, idlen);
 #ifdef HAVE_DISTCACHE

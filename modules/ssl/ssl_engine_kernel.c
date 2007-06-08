@@ -1638,7 +1638,7 @@ int ssl_callback_NewSessionCacheEntry(SSL *ssl, SSL_SESSION *session)
 
     timeout += modssl_session_get_time(session);
 
-    rc = ssl_scache_store(s, id, idlen, timeout, session);
+    rc = ssl_scache_store(s, id, idlen, timeout, session, conn->pool);
 
     ssl_session_log(s, "SET", id, idlen,
                     rc == TRUE ? "OK" : "BAD",
@@ -1716,7 +1716,8 @@ void ssl_callback_DelSessionCacheEntry(SSL_CTX *ctx,
     id = SSL_SESSION_get_session_id(session);
     idlen = SSL_SESSION_get_session_id_length(session);
 
-    ssl_scache_remove(s, id, idlen);
+    /* TODO: Do we need a temp pool here, or are we always shutting down? */
+    ssl_scache_remove(s, id, idlen, sc->mc->pPool);
 
     ssl_session_log(s, "REM", id, idlen,
                     "OK", "dead", 0);
