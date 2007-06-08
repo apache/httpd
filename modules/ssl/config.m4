@@ -86,6 +86,56 @@ ap_ssltk_dc="no"])
   fi
 ])
 
+
+
+AC_DEFUN([CHECK_SSL_MEMCACHE], [
+  AC_MSG_CHECKING(for ssl session caching in memcache)
+  ap_ssltk_mc="no"
+  tmp_nomessage=""
+  tmp_forced="no"
+  AC_ARG_ENABLE(ssl-memcache,
+    APACHE_HELP_STRING(--enable-ssl-memcache,Select memcache support in mod_ssl),
+    ap_ssltk_mc="$enableval"
+    tmp_nomessage=""
+    tmp_forced="yes"
+    if test "x$ap_ssltk_mc" = "x"; then
+      ap_ssltk_mc="yes"
+      dnl our "error"s become "tests revealed that..."
+      tmp_forced="no"
+    fi
+    if test "$ap_ssltk_mc" != "yes" -a "$ap_ssltk_mc" != "no"; then
+      tmp_nomessage="--enable-ssl-cache-memcache had illegal syntax - disabling"
+      ap_ssltk_mc="no"
+    fi)
+  if test "$tmp_forced" = "no"; then
+    AC_MSG_RESULT($ap_ssltk_mc (default))
+  else
+    AC_MSG_RESULT($ap_ssltk_mc (specified))
+  fi
+  if test "$tmp_forced" = "yes" -a "x$ap_ssltk_mc" = "xno" -a "x$tmp_nomessage" != "x"; then
+    AC_MSG_ERROR(ssl memcache support failed: $tmp_nomessage)
+  fi
+  if test "$ap_ssltk_mc" = "yes"; then
+    save_cpp=$CPPFLAGS
+    CPPFLAGS="$CPPFLAGS -I$APR_INCLUDEDIR -I$APU_INCLUDEDIR"
+    AC_CHECK_HEADER(
+      [apr_memcache.h],
+      [],
+      [tmp_nomessage="can't include apr_memcache headers"
+      ap_ssltk_mc="no"])
+
+    CPPFLAGS=$save_cpp
+
+    if test "$tmp_forced" = "yes" -a "x$ap_ssltk_mc" = "xno"; then
+      AC_MSG_ERROR(ssl memcache support failed: $tmp_nomessage)
+    fi
+  fi
+  if test "$ap_ssltk_mc" = "yes"; then
+      AC_DEFINE(HAVE_SSL_CACHE_MEMCACHE, 1, [Define if ssl-memcache support is enabled])
+  fi
+])
+
+
 dnl #  start of module specific part
 APACHE_MODPATH_INIT(ssl)
 
@@ -110,6 +160,7 @@ ssl_scache.lo dnl
 ssl_scache_dbm.lo dnl
 ssl_scache_shmcb.lo dnl
 ssl_scache_dc.lo dnl
+ssl_scache_memcache.lo dnl
 ssl_util.lo dnl
 ssl_util_ssl.lo dnl
 "
@@ -118,6 +169,7 @@ APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
     APACHE_CHECK_SSL_TOOLKIT
     APR_SETVAR(MOD_SSL_LDADD, [\$(SSL_LIBS)])
     CHECK_DISTCACHE
+    CHECK_SSL_MEMCACHE
     if test "x$enable_ssl" = "xshared"; then
        # The only symbol which needs to be exported is the module
        # structure, so ask libtool to hide everything else:

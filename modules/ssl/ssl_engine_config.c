@@ -1034,6 +1034,19 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
         return "SSLSessionCache: distcache support disabled";
 #endif
     }
+    else if ((arglen > 3) && strcEQn(arg, "memcache:", 9)) {
+#ifdef HAVE_SSL_CACHE_MEMCACHE
+        mc->nSessionCacheMode      = SSL_SCMODE_MC;
+        mc->szSessionCacheDataFile = apr_pstrdup(mc->pPool, arg+9);
+        if (!mc->szSessionCacheDataFile) {
+            return apr_pstrcat(cmd->pool,
+                               "SSLSessionCache: Invalid memcache config: ",
+                               arg+9, NULL);
+        }
+#else
+        return "SSLSessionCache: distcache support disabled";
+#endif
+    }
     else {
         return "SSLSessionCache: Invalid argument";
     }
