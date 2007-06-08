@@ -189,10 +189,6 @@ BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
         return FALSE;
     }
 
-    timeout -= time(NULL);
-
-    timeout = apr_time_sec(timeout);
-
     rv = apr_memcache_set(memctxt, strkey, (char*)ucp, nData, timeout, 0);
 
     if (rv != APR_SUCCESS) {
