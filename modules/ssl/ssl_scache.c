@@ -116,7 +116,8 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen, time_t expiry, SSL_SE
     return rv;
 }
 
-SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen)
+SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
+                                 apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     SSL_SESSION *sess = NULL;
@@ -131,7 +132,7 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen)
 #endif
 #ifdef HAVE_SSL_CACHE_MEMCACHE
     else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
-        sess = ssl_scache_mc_retrieve(s, id, idlen);
+        sess = ssl_scache_mc_retrieve(s, id, idlen, p);
 #endif
     return sess;
 }
