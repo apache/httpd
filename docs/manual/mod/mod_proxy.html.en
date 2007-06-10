@@ -752,7 +752,7 @@ through</td></tr>
         <th>Description</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>Minumum number of connections that will always
+        <td>Minimum number of connections that will always
             be open to the backend server.</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
