@@ -54,6 +54,17 @@
     need to have Apache configured to permit CGI execution. There
     are several ways to do this.</p>
 
+    <div class="warning">Note: If Apache has been built with shared module
+    support you need to ensure that the module is loaded; in your
+    <code>httpd.conf</code> you need to make sure the
+    <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code>
+    directive has not been commented out.  A correctly configured directive
+    may look like this:
+
+    <div class="example"><p><code>
+      LoadModule cgi_module modules/mod_cgi.so
+    </code></p></div></div>
+
     <h3><a name="scriptalias" id="scriptalias">ScriptAlias</a></h3>
       
 
