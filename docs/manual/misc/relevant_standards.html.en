@@ -82,6 +82,13 @@
 
       <dd>A Uniform Resource Identifier (URI) is a compact string of
       characters for identifying an abstract or physical resource.</dd>
+
+      <dt><a href="http://www.rfc-editor.org/rfc/rfc4346.txt">RFC 4346</a>
+      (Standards Track)</dt>
+
+      <dd>The TLS protocol provides communcations security over the
+      Internet.  It provides encryption, and is designed to prevent
+      eavesdropping, tampering, and message forgery.</dd>
     </dl>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
