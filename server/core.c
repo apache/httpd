@@ -1093,6 +1093,26 @@ static const char *set_access_name(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
+
+static const char *set_define(cmd_parms *cmd, void *dummy,
+                                   const char *optarg)
+{
+    char **newv;
+    void *sconf = cmd->server->module_config;
+    core_server_config *conf = ap_get_module_config(sconf, &core_module);
+
+    const char *err = ap_check_cmd_context(cmd,
+                                           GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+
+    newv = (char **)apr_array_push(ap_server_config_defines);
+    *newv = apr_pstrdup(cmd->pool, optarg);
+
+    return NULL;
+}
+
 #ifdef GPROF
 static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, const char *arg)
 {
@@ -3189,6 +3209,8 @@ AP_INIT_TAKE1("AddDefaultCharset", set_add_default_charset, NULL, OR_FILEINFO,
   "The name of the default charset to add to any Content-Type without one or 'Off' to disable"),
 AP_INIT_TAKE1("AcceptPathInfo", set_accept_path_info, NULL, OR_FILEINFO,
   "Set to on or off for PATH_INFO to be accepted by handlers, or default for the per-handler preference"),
+AP_INIT_TAKE1("Define", set_define, NULL, RSRC_CONF,
+              "Define the existance of a variable.  Same as passing -D to the command line."),
 
 /* Old resource config file commands */
 
