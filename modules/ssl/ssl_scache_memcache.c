@@ -189,7 +189,7 @@ BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
         return FALSE;
     }
 
-    rv = apr_memcache_set(memctxt, strkey, (char*)ucp, nData, timeout, 0);
+    rv = apr_memcache_set(memctxt, strkey, (char*)ucaData, nData, timeout, 0);
 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
