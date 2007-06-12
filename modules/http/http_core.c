@@ -119,11 +119,17 @@ static apr_port_t http_port(const request_rec *r)
     return DEFAULT_HTTP_PORT;
 }
 
+static int ap_process_http_connection(conn_rec *c);
+
 static int ap_process_http_async_connection(conn_rec *c)
 {
     request_rec *r;
     conn_state_t *cs = c->cs;
 
+    if (c->clogging_input_filters) {
+        return ap_process_http_connection(c);
+    }
+    
     AP_DEBUG_ASSERT(cs->state == CONN_STATE_READ_REQUEST_LINE);
 
     while (cs->state == CONN_STATE_READ_REQUEST_LINE) {

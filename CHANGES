@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) Event MPM: Add support for running under mod_ssl, by reverting to the
+     Worker MPM behaviors, when run under an input filter that buffers
+     its own data. [Paul Querna]
+
   *) mod_ssl: Add support for caching SSL Sessions in memcached. [Paul Querna]
 
   *) SECURITY: CVE-2007-1862 (cve.mitre.org)

@@ -3803,6 +3803,7 @@ static conn_rec *core_create_conn(apr_pool_t *ptrans, server_rec *server,
     c->cs->c = c;
     c->cs->p = ptrans;
     c->cs->bucket_alloc = alloc;
+    c->clogging_input_filters = 0;
 
     return c;
 }
