@@ -1081,7 +1081,7 @@ struct conn_rec {
     int data_in_input_filters;
     /** Is there data pending in the output filters? */
     int data_in_output_filters;
-    
+
     /** Are there any filters that clogg/buffer the input stream, breaking
      *  the event mpm.
      */
