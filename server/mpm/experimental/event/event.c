@@ -620,6 +620,16 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         pt = cs->pfd.client_data;
     }
 
+    if (c->clogging_input_filters && !c->aborted) {
+        /* Since we have an input filter which 'cloggs' the input stream,
+         * like mod_ssl, lets just do the normal read from input filters,
+         * like the Worker MPM does.
+         */
+        ap_run_process_connection(c);
+        ap_lingering_close(c);
+        return 0;
+    }
+
 read_request:
     if (cs->state == CONN_STATE_READ_REQUEST_LINE) {
         if (!c->aborted) {
