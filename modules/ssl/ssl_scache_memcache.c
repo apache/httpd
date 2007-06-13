@@ -52,6 +52,24 @@ static apr_memcache_t *memctxt;
 
 #define MC_KEY_LEN 254
 
+#ifndef MC_DEFAULT_SERVER_PORT
+#define MC_DEFAULT_SERVER_PORT 11211
+#endif
+
+
+#ifndef MC_DEFAULT_SERVER_MIN
+#define MC_DEFAULT_SERVER_MIN 0
+#endif
+
+#ifndef MC_DEFAULT_SERVER_SMAX
+#define MC_DEFAULT_SERVER_SMAX 1
+#endif
+
+#ifndef MC_DEFAULT_SERVER_TTL
+#define MC_DEFAULT_SERVER_TTL 600
+#endif
+
+
 void ssl_scache_mc_init(server_rec *s, apr_pool_t *p)
 {
     apr_status_t rv;
@@ -109,16 +127,15 @@ void ssl_scache_mc_init(server_rec *s, apr_pool_t *p)
         }
 
         if (port == 0) {
-            port = 11211; /* default port */
+            port = MC_DEFAULT_SERVER_PORT;
         }
 
-        /* Should Max Conns be (thread_limit / nservers) ? */
         rv = apr_memcache_server_create(p,
                                         host_str, port,
-                                        0,
-                                        1,
-                                        thread_limit, 
-                                        600,
+                                        MC_DEFAULT_SERVER_MIN,
+                                        MC_DEFAULT_SERVER_SMAX,
+                                        thread_limit,
+                                        MC_DEFAULT_SERVER_TTL,
                                         &st);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
