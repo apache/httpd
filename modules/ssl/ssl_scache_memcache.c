@@ -168,13 +168,16 @@ static char *mc_session_id2sz(unsigned char *id, int idlen,
 {
     char *cp;
     int n;
- 
+    int maxlen = (strsize - MC_TAG_LEN)/2;
+
     cp = apr_cpystrn(str, MC_TAG, MC_TAG_LEN);
-    for (n = 0; n < idlen && n < (MC_KEY_LEN - MC_TAG_LEN); n++) {
-        apr_snprintf(cp, strsize - (cp-str), "%02X", id[n]);
+    for (n = 0; n < idlen && n < maxlen; n++) {
+        apr_snprintf(cp, 2, "%02X", id[n]);
         cp += 2;
     }
+
     *cp = '\0';
+
     return str;
 }
 
