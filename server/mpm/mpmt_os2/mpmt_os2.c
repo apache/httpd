@@ -281,6 +281,7 @@ static char master_main()
 #endif
     if (one_process) {
         ap_scoreboard_image->parent[0].pid = getpid();
+        ap_set_pid_table(getpid());
         ap_mpm_child_main(pconf);
         return FALSE;
     }
@@ -307,6 +308,7 @@ static char master_main()
         rc = DosWaitChild(DCWA_PROCESSTREE, DCWW_NOWAIT, &proc_rc, &child_pid, 0);
 
         if (rc == 0) {
+            ap_unset_pid_table(child_pid);
             /* A child has terminated, remove its scoreboard entry & terminate if necessary */
             for (slot=0; ap_scoreboard_image->parent[slot].pid != child_pid && slot < HARD_SERVER_LIMIT; slot++);
 
@@ -330,7 +332,13 @@ static char master_main()
 
     /* Signal children to shut down, either gracefully or immediately */
     for (slot=0; slot<HARD_SERVER_LIMIT; slot++) {
-      kill(ap_scoreboard_image->parent[slot].pid, is_graceful ? SIGHUP : SIGTERM);
+        PID pid;
+
+        pid = ap_scoreboard_image->parent[n].pid;
+        if (ap_in_pid_table(pid)) {
+            kill(pid, is_graceful ? SIGHUP : SIGTERM);
+            ap_unset_pid_table(pid);
+        }
     }
 
     DosFreeMem(parent_info);
@@ -364,6 +372,7 @@ static void spawn_child(int slot)
     }
 
     ap_scoreboard_image->parent[slot].pid = proc_rc.codeTerminate;
+    ap_set_pid_table(proc_rc.codeTerminate);
 }
 
 

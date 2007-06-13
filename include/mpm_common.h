@@ -350,6 +350,14 @@ extern const char *ap_mpm_set_exception_hook(cmd_parms *cmd, void *dummy,
                                              const char *arg);
 #endif
 
+/*
+ * The parent process pid table
+ */
+extern apr_table_t *ap_pid_table;
+int ap_in_pid_table(pid_t pid);
+void ap_set_pid_table(pid_t pid);
+void ap_unset_pid_table(pid_t pid);
+
 AP_DECLARE_HOOK(int,monitor,(apr_pool_t *p))
 
 #ifdef __cplusplus

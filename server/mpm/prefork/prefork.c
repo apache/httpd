@@ -306,13 +306,18 @@ int reap_children(int *exitcode, apr_exit_why_e *status)
     int n, pid;
 
     for (n = 0; n < ap_max_daemons_limit; ++n) {
-        if (ap_scoreboard_image->servers[n][0].status != SERVER_DEAD &&
-                kill((pid = ap_scoreboard_image->parent[n].pid), 0) == -1) {
-            ap_update_child_status_from_indexes(n, 0, SERVER_DEAD, NULL);
-            /* just mark it as having a successful exit status */
-            *status = APR_PROC_EXIT;
-            *exitcode = 0;
-            return(pid);
+        pid = ap_scoreboard_image->parent[n].pid;
+        if (ap_scoreboard_image->servers[n][0].status != SERVER_DEAD) {
+            if (ap_in_pid_table(pid)) {
+                if (kill(pid, 0) == -1) {
+                    ap_update_child_status_from_indexes(n, 0, SERVER_DEAD, NULL);
+                    /* just mark it as having a successful exit status */
+                    *status = APR_PROC_EXIT;
+                    *exitcode = 0;
+                    ap_unset_pid_table(pid);
+                    return(pid);
+                }
+            }
         }
     }
     return 0;
@@ -737,6 +742,7 @@ static int make_child(server_rec *s, int slot)
     }
 
     ap_scoreboard_image->parent[slot].pid = pid;
+    ap_set_pid_table(pid);
 
     return 0;
 }
@@ -1127,8 +1133,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         for (index = 0; index < ap_daemons_limit; ++index) {
             if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
                 /* Ask each child to close its listeners. */
-                kill(MPM_CHILD_PID(index), AP_SIG_GRACEFUL);
-                active_children++;
+                if (ap_in_pid_table(MPM_CHILD_PID(index))) {
+                    kill(MPM_CHILD_PID(index), AP_SIG_GRACEFUL);
+                    active_children++;
+                }
             }
         }
 
@@ -1166,10 +1174,12 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             active_children = 0;
             for (index = 0; index < ap_daemons_limit; ++index) {
                 if (MPM_CHILD_PID(index) != 0) {
-                    if (kill(MPM_CHILD_PID(index), 0) == 0) {
+                    if (ap_in_pid_table(MPM_CHILD_PID(index))) {
+                        if (kill(MPM_CHILD_PID(index), 0) == 0) {
                             active_children = 1;
                             /* Having just one child is enough to stay around */
                             break;
+                        }
                     }
                 }
             }
@@ -1222,7 +1232,9 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                  * piped loggers, etc. They almost certainly won't handle
                  * it gracefully.
                  */
-                kill(ap_scoreboard_image->parent[index].pid, AP_SIG_GRACEFUL);
+                if (ap_in_pid_table(MPM_CHILD_PID(index))) {
+                    kill(MPM_CHILD_PID(index), AP_SIG_GRACEFUL);
+                }
             }
         }
     }
