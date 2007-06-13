@@ -303,14 +303,19 @@ int reap_children(int *exitcode, apr_exit_why_e *status)
     int n, pid;
 
     for (n = 0; n < ap_max_daemons_limit; ++n) {
-	if (ap_scoreboard_image->servers[n][0].status != SERVER_DEAD &&
-		kill((pid = ap_scoreboard_image->parent[n].pid), 0) == -1) {
-	    ap_update_child_status_from_indexes(n, 0, SERVER_DEAD, NULL);
-	    /* just mark it as having a successful exit status */
-            *status = APR_PROC_EXIT;
-            *exitcode = 0;
-	    return(pid);
-	}
+        pid = ap_scoreboard_image->parent[n].pid;
+        if (ap_scoreboard_image->servers[n][0].status != SERVER_DEAD) {
+            if (ap_in_pid_table(pid)) {
+                if (kill(pid, 0) == -1) {
+                    ap_update_child_status_from_indexes(n, 0, SERVER_DEAD, NULL);
+                    /* just mark it as having a successful exit status */
+                    *status = APR_PROC_EXIT;
+                    *exitcode = 0;
+                    ap_unset_pid_table(pid);
+                    return(pid);
+                }
+            }
+        }
     }
     return 0;
 }
@@ -705,6 +710,7 @@ static int make_child(server_rec *s, int slot)
     }
 
     ap_scoreboard_image->parent[slot].pid = pid;
+    ap_set_pid_table(pid);
 
     return 0;
 }

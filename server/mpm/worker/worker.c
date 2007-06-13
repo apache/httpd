@@ -1297,6 +1297,8 @@ static int make_child(server_rec *s, int slot)
     }
     ap_scoreboard_image->parent[slot].quiescing = 0;
     ap_scoreboard_image->parent[slot].pid = pid;
+    ap_set_pid_table(pid);
+
     return 0;
 }
 
@@ -1527,6 +1529,7 @@ static void server_main_loop(int remaining_children_to_start)
                                                         (request_rec *) NULL);
                 
                 ap_scoreboard_image->parent[child_slot].pid = 0;
+                ap_unset_pid_table(pid.pid);
                 ap_scoreboard_image->parent[child_slot].quiescing = 0;
                 if (processed_status == APEXIT_CHILDSICK) {
                     /* resource shortage, minimize the fork rate */

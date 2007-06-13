@@ -22,7 +22,10 @@
 
 #define MPM_NAME "Beos"
 #define MPM_CHILD_PID(i) (ap_scoreboard_image->servers[0][i].tid)
-#define MPM_NOTE_CHILD_KILLED(i) (MPM_CHILD_PID(i) = 0)
+#define MPM_NOTE_CHILD_KILLED(i) do {         \
+        ap_unset_pid_table(MPM_CHILD_PID(i)); \
+        MPM_CHILD_PID(i) = 0;                 \
+    } while(0) 
 
 #define AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
 #define AP_MPM_WANT_WAIT_OR_TIMEOUT

@@ -261,6 +261,14 @@ const char *ap_mpm_set_scoreboard(cmd_parms *cmd, void *dummy,
 #endif
 
 /*
+ * The parent process pid table
+ */
+extern apr_table_t *ap_pid_table;
+int ap_in_pid_table(pid_t pid);
+void ap_set_pid_table(pid_t pid);
+void ap_unset_pid_table(pid_t pid); 
+
+/*
  * The directory that the server changes directory to dump core.
  */
 #ifdef AP_MPM_WANT_SET_COREDUMPDIR
