@@ -35,6 +35,7 @@
 #include "ap_mpm.h"
 
 #include "mpm.h"
+#include "mpm_common.h"
 #include "scoreboard.h"
 
 AP_DECLARE_DATA scoreboard *ap_scoreboard_image = NULL;
@@ -363,7 +364,8 @@ int find_child_by_pid(apr_proc_t *pid)
     ap_mpm_query(AP_MPMQ_MAX_DAEMONS, &max_daemons_limit);
 
     for (i = 0; i < max_daemons_limit; ++i) {
-        if (ap_scoreboard_image->parent[i].pid == pid->pid) {
+        if (ap_scoreboard_image->parent[i].pid == pid->pid &&
+            ap_in_pid_table(pid->pid)) {
             return i;
         }
     }
