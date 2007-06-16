@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mpm: Add a parent process local table of child process PIDs, and
+     use that to ensure we are sending signals to just our child
+     processes by checking the scoreboard PID entries to our local
+     copy. [Jim Jagielski]
+
   *) Event MPM: Add support for running under mod_ssl, by reverting to the
      Worker MPM behaviors, when run under an input filter that buffers
      its own data. [Paul Querna]

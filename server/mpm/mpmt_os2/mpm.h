@@ -30,6 +30,7 @@
 #include "httpd.h"
 #include "mpm_default.h"
 #include "scoreboard.h"
+#include "mpm_common.h"
 
 #define MPM_NAME "MPMT_OS2"
 
