@@ -240,7 +240,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=539620
       2.2.x version of patch:
         (trunk applies cleanly)
-      +1: jerenkrantz
+      +1: jerenkrantz, rpluem
 
     * mod_cache: Do not set Date or Expires when missing/invalid.
       Trunk version of patch:
@@ -283,7 +283,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=535617
       2.2.x version of patch:
         http://people.apache.org/~mjc/cve-2007-1863-2.2.patch
-      +1: mjc
+      +1: mjc, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
