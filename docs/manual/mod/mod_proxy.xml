@@ -584,6 +584,20 @@ expressions</description>
          of. The load balancer will try all members of a lower numbered
          lbset before trying higher numbered ones.
     </td></tr>
+    <tr><td>ping</td>
+        <td>0</td>
+        <td>Ping property told webserver to send a <code>CPING</code>
+        request on ajp13 connection before forwarding to it a request.
+        The parameter is the delay in seconds to wait for the
+        <code>CPONG</code> reply.
+        This features has been added to avoid problem with hung and
+        busy Tomcat's and require ajp13 ping/pong support which has
+        been implemented on Tomcat 3.3.2+, 4.1.28+ and 5.0.13+.
+        It will inrease the network traffic during the normal operation
+        which could be an issue for you, but it will lower down the
+        traffic in case some of the cluster nodes are down or buys.
+        Currently this is in effect only for AJP.
+    </td></tr>
     <tr><td>loadfactor</td>
         <td>1</td>
         <td>Worker load factor. Used with BalancerMember.
@@ -838,6 +852,23 @@ proxy</description>
     <p>Note that you'll need to have <module>mod_proxy_connect</module> present
     in the server in order to get the support for the <code>CONNECT</code> at
     all.</p>
+</usage>
+</directivesynopsis>
+<directivesynopsis>
+
+<name>BalancerMember</name>
+<description>Add a member to a load balancing group</description>
+<syntax>BalancerMember <var>url</var> [<var
+                >key=value [key=value ...]]</var></syntax>
+<contextlist><context>directory</context>
+</contextlist>
+<compatibility>BalancerMember is only available in Apache 2.2.0
+        and later.</compatibility>
+<usage>
+    <p>This directive adds a member to a load balancing group. It must be used
+    within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
+    directive, and can take any of the parameters available to
+    <directive module="mod_proxy">ProxyPass</directive> directives.</p>
 </usage>
 </directivesynopsis>
 
