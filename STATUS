@@ -308,7 +308,7 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
         http://svn.apache.org/viewvc?view=rev&rev=535617
       2.0.x version of patch:
         http://people.apache.org/~mjc/cve-2007-1863-2.0.patch
-      +1: mjc
+      +1: mjc, rpluem
 
 CURRENT VOTES:
 
