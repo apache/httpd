@@ -276,6 +276,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~covener/2.2.x-mod_memcache-poolmgmt.diff
       +1: covener
 
+    * SECURITY: CVE-2007-1863 (cve.mitre.org)
+      mod_cache: Prevent segfault from Cache-Control headers with no
+      values
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&rev=535617
+      2.2.x version of patch:
+        http://people.apache.org/~mjc/cve-2007-1863-2.2.patch
+      +1: mjc
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
