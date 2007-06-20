@@ -18,9 +18,38 @@ document dump_table
     Print the key/value pairs in a table.
 end
 
+define dump_string_hash
+    set $h = $arg0->array
+    set $n = $arg0->max
+    set $i = 0
+    while $i < $n
+        set $ent = $h[$i]       
+        while $ent != (void *)0L
+            printf "'%s' => '%p'\n", $ent->key, $ent->val
+            set $ent = $ent->next
+        end
+	set $i = $i + 1
+    end
+end
+document dump_string_hash
+    Print the entries in a hash table indexed by strings
+end
 
-define rh
-	run -f /home/dgaudet/ap2/conf/mpm.conf
+define dump_string_shash
+    set $h = $arg0->array
+    set $n = $arg0->max
+    set $i = 0
+    while $i < $n
+        set $ent = $h[$i]       
+        while $ent != (void *)0L
+            printf "'%s' => '%s'\n", $ent->key, $ent->val
+            set $ent = $ent->next
+        end
+	set $i = $i + 1
+    end
+end
+document dump_string_shash
+    Print the entries in a hash table indexed by strings with string values
 end
 
 define ro
@@ -275,3 +304,30 @@ end
 document dump_servers
     Print server_rec list info
 end
+
+define dump_allocator
+    printf "Allocator current_free_index = %d, max_free_index = %d\n", \
+            ($arg0)->current_free_index, ($arg0)->max_free_index
+    printf "Allocator free list:\n"
+    set $i = 0
+    set $max =(sizeof $arg0->free)/(sizeof $arg0->free[0])
+    while $i < $max
+        set $node = $arg0->free[$i]
+        if $node != 0
+            printf " #%2d: ", $i
+            while $node != 0
+                printf "%d, ", $node->endp - $node->first_avail
+                set $node = $node->next
+            end
+            printf "ends.\n"
+        end
+        set $i = $i + 1
+    end
+end
+document dump_allocator
+    Print status of an allocator and its freelists.
+end
+
+# Set sane defaults for common signals:
+handle SIGPIPE noprint pass nostop
+handle SIGUSR1 print pass nostop
