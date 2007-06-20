@@ -1098,8 +1098,6 @@ static const char *set_define(cmd_parms *cmd, void *dummy,
                                    const char *optarg)
 {
     char **newv;
-    void *sconf = cmd->server->module_config;
-    core_server_config *conf = ap_get_module_config(sconf, &core_module);
 
     const char *err = ap_check_cmd_context(cmd,
                                            GLOBAL_ONLY);
