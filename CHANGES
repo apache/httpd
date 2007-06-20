@@ -308,8 +308,9 @@ Changes with Apache 2.2.5
   *) mod_cache: Correctly cache objects whose URL query string has been
      modified by mod_rewrite. PR 40805. [Ruediger Pluem]
 
-  *) HTTP proxy ProxyErrorOverride: Leave 1xx and 3xx responses alone.  Only
-     processing of error responses (4xx, 5xx) will be altered.  PR 39245.
+  *) mod_proxy_http: Change handling of ProxyErrorOverride such that
+     3xx responses are no longer over-ridden (handling of 4xx and 5xx
+     responses is unchanged).  PR 39245.
      [Jeff Trawick, Bart van der Schans <schans hippo.nl>]
 
   *) htdbm: Enable crypt support on platforms with crypt() but not
