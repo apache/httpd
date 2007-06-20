@@ -399,7 +399,7 @@ apr_status_t dummy_filter(ap_filter_t *f, apr_bucket_brigade *bb)<br />
     with <code>APR_EAGAIN</code>, then send a <code>FLUSH</code>
     bucket down the filter chain, and retry using a blocking read.</p>
     
-    <p>This mode of operation ensure that any filters further down the
+    <p>This mode of operation ensures that any filters further down the
     filter chain will flush any buffered buckets if a slow content
     source is being used.</p>
 
