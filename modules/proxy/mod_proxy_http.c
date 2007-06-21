@@ -1184,6 +1184,28 @@ static int addit_dammit(void *v, const char *key, const char *val)
 }
 
 static
+apr_status_t ap_proxygetline(char *s, int n, request_rec *r,
+                             int fold, int *writen)
+{
+    char *tmp_s = s;
+    apr_status_t rv;
+    apr_size_t len;
+    apr_bucket_brigade *tmp_bb;
+
+    tmp_bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    rv = ap_rgetline(&tmp_s, n, &len, r, fold, tmp_bb);
+    apr_brigade_destroy(tmp_bb);
+
+    if (rv == APR_SUCCESS) {
+        *writen = (int) len;
+    } else {
+        *writen = -1;
+    }
+
+    return rv;
+}
+
+static
 apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             proxy_conn_rec *backend,
                                             conn_rec *origin,
@@ -1215,15 +1237,17 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      */
     rp->proxyreq = PROXYREQ_RESPONSE;
     do {
+        apr_status_t rc;
+
         apr_brigade_cleanup(bb);
 
-        len = ap_getline(buffer, sizeof(buffer), rp, 0);
+        rc = ap_proxygetline(buffer, sizeof(buffer), rp, 0, &len);
         if (len == 0) {
             /* handle one potential stray CRLF */
-            len = ap_getline(buffer, sizeof(buffer), rp, 0);
+            rc = ap_proxygetline(buffer, sizeof(buffer), rp, 0, &len);
         }
         if (len <= 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                           "proxy: error reading status line from remote "
                           "server %s", backend->hostname);
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
