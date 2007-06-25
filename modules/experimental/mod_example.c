@@ -25,14 +25,38 @@
  * this module, but which may have counterparts in *real* modules, are
  * prefixed with 'x_' instead of 'example_'.
  *
- * IMPORTANT NOTE
- * ==============
+ * To use mod_example, configure the Apache build with --enable-example and 
+ * compile.  Set up a <Location> block in your configuration file like so: 
+ * 
+ * <Location /example>
+ *    SetHandler example-handler
+ * </Location> 
+ * 
+ * When you look at that location on your server, you will see a backtrace of 
+ * the callbacks that have been invoked up to that point.  See the ErrorLog for 
+ * more information on code paths that  touch mod_example. 
  *
- * Some of the code in this module has problems.
- * Before using it to base your work on, see
+ * IMPORTANT NOTES
+ * ===============
+ * 
+ * Do NOT use this module on a production server. It attaches itself to every
+ * phase of the server runtime operations including startup, shutdown and
+ * request processing, and produces copious amounts of logging data.  This will 
+ * negatively affect server performance. 
+ * 
+ * Do NOT use mod_example as the basis for your own code.  This module
+ * implements every callback hook offered by the Apache core, and your
+ * module will almost certainly not have to implement this much.  If you
+ * want a simple module skeleton to start development, use apxs -g. 
+ * 
+ * XXX TO DO XXX
+ * =============
  *
- * http://issues.apache.org/bugzilla/show_bug.cgi?id=29709
- * http://issues.apache.org/bugzilla/show_bug.cgi?id=32051
+ * * Enable HTML backtrace entries for more callbacks that are not directly 
+ *   associated with a request
+ * * Make sure every callback that posts an HTML backtrace entry does so in the *   right category, so nothing gets overwritten
+ * * Implement some logic to show what happens in the parent, and what in the 
+ *   child(ren)
  */
 
 #include "httpd.h"
@@ -94,24 +118,10 @@ typedef struct x_cfg {
 } x_cfg;
 
 /*
- * Let's set up a module-local static cell to point to the accreting callback
- * trace.  As each API callback is made to us, we'll tack on the particulars
- * to whatever we've already recorded.  To avoid massive memory bloat as
- * directories are walked again and again, we record the routine/environment
- * the first time (non-request context only), and ignore subsequent calls for
- * the same routine/environment.
+ * String pointer to hold the startup trace. No harm working with a global until 
+ * the server is (may be) multi-threaded. 
  */
 static const char *trace = NULL;
-static apr_table_t *static_calls_made = NULL;
-
-/*
- * To avoid leaking memory from pools other than the per-request one, we
- * allocate a module-private pool, and then use a sub-pool of that which gets
- * freed each time we modify the trace.  That way previous layers of trace
- * data don't get lost.
- */
-static apr_pool_t *x_pool = NULL;
-static apr_pool_t *x_subpool = NULL;
 
 /*
  * Declare ourselves so the configuration routines can find and know us.
@@ -300,26 +310,6 @@ static x_cfg *our_rconfig(const request_rec *r)
 static x_cfg *our_cconfig(const conn_rec *c)
 {
     return (x_cfg *) ap_get_module_config(c->conn_config, &example_module);
-}
-
-/*
- * This routine sets up some module-wide cells if they haven't been already.
- */
-static void setup_module_cells(void)
-{
-    /*
-     * If we haven't already allocated our module-private pool, do so now.
-     */
-    if (x_pool == NULL) {
-        apr_pool_create(&x_pool, NULL);
-    };
-    /*
-     * Likewise for the table of routine/environment pairs we visit outside of
-     * request context.
-     */
-    if (static_calls_made == NULL) {
-        static_calls_made = apr_table_make(x_pool, 16);
-    };
 }
 
 /*
@@ -860,10 +850,6 @@ static void x_child_init(apr_pool_t *p, server_rec *s)
     char *note;
     char *sname = s->server_hostname;
 
-    /*
-     * Set up any module cells that ought to be initialised.
-     */
-    setup_module_cells();
     /*
      * The arbitrary text we add to our trace entry indicates for which server
      * we're being called.
