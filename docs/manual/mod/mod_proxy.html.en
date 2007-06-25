@@ -829,7 +829,7 @@ through</td></tr>
     <tr><td>route</td>
         <td>-</td>
         <td>Route of the worker when used inside load balancer.
-        The route is a value appended to seesion id.
+        The route is a value appended to session id.
     </td></tr>
     <tr><td>status</td>
         <td>-</td>
