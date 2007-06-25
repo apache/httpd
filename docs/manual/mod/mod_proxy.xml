@@ -709,6 +709,9 @@ expressions</description>
         <td>Balancer sticky session name. The value is usually set to something
         like <code>JSESSIONID</code> or <code>PHPSESSIONID</code>,
         and it depends on the backend application server that support sessions.
+        If the backend application server uses different name for cookies
+        and url encoded id (like servlet containers) use | to to separate them.
+        The first part is for the cookie the second for the path.
     </td></tr>
     <tr><td>timeout</td>
         <td>0</td>
@@ -720,7 +723,7 @@ expressions</description>
     <p>A sample balancer setup</p>
     <example>
       ProxyPass /special-area http://special.example.com/ smax=5 max=10<br />
-      ProxyPass / balancer://mycluster/ stickysession=jsessionid nofailover=On<br />
+      ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
       &lt;Proxy balancer://mycluster&gt;<br />
       <indent>
         BalancerMember http://1.2.3.4:8009<br />
