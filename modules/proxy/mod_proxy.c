@@ -275,11 +275,16 @@ static const char *set_balancer_param(proxy_server_conf *conf,
 
     int ival;
     if (!strcasecmp(key, "stickysession")) {
+        char *path;
         /* Balancer sticky session name.
          * Set to something like JSESSIONID or
          * PHPSESSIONID, etc..,
          */
-        balancer->sticky = apr_pstrdup(p, val);
+        balancer->sticky = balancer->sticky_path = apr_pstrdup(p, val);
+        if ((path = strchr(balancer->sticky, '|'))) {
+            *path++ = '\0';
+            balancer->sticky_path = path;
+        }
     }
     else if (!strcasecmp(key, "nofailover")) {
         /* If set to 'on' the session will break

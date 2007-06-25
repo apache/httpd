@@ -365,6 +365,7 @@ struct proxy_balancer {
     apr_thread_mutex_t  *mutex;  /* Thread lock for updating lb params */
 #endif
     void            *context;   /* general purpose storage */
+    const char      *sticky_path;  /* URL sticky session identifier */
 };
 
 struct proxy_balancer_method {
