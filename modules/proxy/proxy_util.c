@@ -2167,6 +2167,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     int loglevel;
     apr_sockaddr_t *backend_addr = conn->addr;
     apr_socket_t *newsock;
+    void *sconf = s->module_config;
+    proxy_server_conf *conf =
+        (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     if (conn->sock) {
         /*
@@ -2214,6 +2217,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         /* Set a timeout on the socket */
         if (worker->timeout_set == 1) {
             apr_socket_timeout_set(newsock, worker->timeout);
+        }
+        else if (conf->timeout_set == 1) {
+            apr_socket_timeout_set(newsock, conf->timeout);
         }
         else {
              apr_socket_timeout_set(newsock, s->timeout);
