@@ -161,8 +161,8 @@ and 6am, you can do this using <module>mod_rewrite</module>.</p>
 
 <example>
 RewriteEngine On<br />
-RewriteCond %{TIME_HOUR} &gt; 20 [OR]<br />
-RewriteCond %{TIME_HOUR} &lt; 07<br />
+RewriteCond %{TIME_HOUR} &gt;20 [OR]<br />
+RewriteCond %{TIME_HOUR} &lt;07<br />
 RewriteRule ^/fridge - [F]
 </example>
 
