@@ -35,6 +35,7 @@ BEGIN {
     B["cgidir"] = A["ServerRoot"]"/"A["cgidir"]
     B["logfiledir"] = A["logfiledir"]
     B["sysconfdir"] = A["sysconfdir"]
+    B["runtimedir"] = A["runtimedir"]
     B["listen_stmt_1"] = "Listen "A["Port"]
     B["listen_stmt_2"] = ""
 }
@@ -85,12 +86,23 @@ BEGIN {
     print "#LoadModule version_module modules/modversion.nlm"
     print "#LoadModule userdir_module modules/userdir.nlm"
     print "#LoadModule vhost_alias_module modules/vhost.nlm"
+    if (MODSSL) {
+       print "#LoadModule ssl_module modules/mod_ssl.nlm"
+    }
     print ""
     next
 }
 
-match ($0,/SSLMutex  file:@exp_runtimedir@\/ssl_mutex/) {
-    sub(/SSLMutex  file:@exp_runtimedir@\/ssl_mutex/, "SSLMutex default")
+match ($0,/^#SSLSessionCache +"dbm:/) {
+    sub(/^#/, "")
+}
+
+match ($0,/^SSLSessionCache +"shmcb:/) {
+    sub(/^SSLSessionCache/, "#SSLSessionCache")
+}
+
+match ($0,/^SSLMutex +"file:@exp_runtimedir@\/ssl_mutex"/) {
+    sub(/"file:@exp_runtimedir@\/ssl_mutex"/, "default")
 }
 
 match ($0,/@@.*@@/) {
@@ -119,7 +131,7 @@ match ($0,/@nonssl_.*@/) {
 
 
 END {
-    if (SSL) {
+    if (NWSSL) {
        print ""
        print "#"
        print "# SecureListen: Allows you to securely bind Apache to specific IP addresses "
