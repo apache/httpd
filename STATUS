@@ -220,6 +220,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-4groups-2.2.x.patch
      +1: chrisd
 
+    * mod_dbd: added proper error message for NetWare
+      http://svn.apache.org/viewvc?view=rev&revision=521230
+      +1: fuankg
+
     * mod_proxy_ajp: Fix wrong retry when sending the response failed.
       PR 40310 (The old fixes weren't ok).
       Trunk version of patch:
@@ -296,6 +300,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x version of patch:
         http://people.apache.org/~mjc/cve-2007-1863-2.2.patch
       +1: mjc, rpluem
+
+    * netware build system: various changes
+      fixes to generated conf files
+        http://svn.apache.org/viewvc?view=rev&revision=551196
+        http://svn.apache.org/viewvc?view=rev&revision=551253
+      removed obsolete stuff
+        http://svn.apache.org/viewvc?view=rev&revision=521309
+        http://svn.apache.org/viewvc?view=rev&revision=521264
+        http://svn.apache.org/viewvc?view=rev&revision=521344
+      moved socket build stuff
+        http://svn.apache.org/viewvc?view=rev&revision=526617
+      moved linker options
+        http://svn.apache.org/viewvc?view=rev&revision=526616
+      enabled setting awk tool
+        http://svn.apache.org/viewvc?view=rev&revision=551251
+      added openssl files to installation directory
+        http://svn.apache.org/viewvc?view=rev&revision=551275
+      +1: fuankg
 
 PATCHES/ISSUES THAT ARE STALLED
 
