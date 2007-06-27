@@ -116,6 +116,9 @@ CPP	= mwccnlm
 LINK	= mwldnlm
 LIB	= mwldnlm -type library -w nocmdline
 
+# Setup build tools
+AWK	= awk
+
 ifdef IPV6
 ifndef USE_STDSOCKETS
 USE_STDSOCKETS=1

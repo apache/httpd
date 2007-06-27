@@ -84,7 +84,7 @@ endif
 
 $(AP_WORK)\build\NWGNUversion.inc : $(AP_WORK)\include\ap_release.h $(AP_WORK)\build\nw_ver.awk
 	@echo Generating $(subst /,\,$@)
-	awk -f $(AP_WORK)\build\nw_ver.awk $(AP_WORK)\include\ap_release.h > $(AP_WORK)\build\NWGNUversion.inc
+	$(AWK) -f $(AP_WORK)\build\nw_ver.awk $(AP_WORK)\include\ap_release.h > $(AP_WORK)\build\NWGNUversion.inc
 
 -include $(AP_WORK)\build\NWGNUversion.inc
 

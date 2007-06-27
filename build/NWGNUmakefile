@@ -24,7 +24,7 @@ nlms :: $(NWOS)/httpd.imp
 
 $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
 	@echo Generating $(subst /,\,$@)
-	awk -f make_nw_export.awk nw_export.i | sort >$(NWOS)/httpd.imp
+	$(AWK) -f make_nw_export.awk nw_export.i | sort >$(NWOS)/httpd.imp
     
 nw_export.i : nw_export.inc $(FILES_prebuild_headers) cc.opt
 	@echo Generating $(subst /,\,$@)
