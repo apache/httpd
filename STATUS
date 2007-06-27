@@ -258,6 +258,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~jim/patches/ppmatch.txt
       +1:
 
+    * mod_proxy: Arrange the timeout handling.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=550514
+        http://svn.apache.org/viewvc?view=rev&revision=546128
+      +1: jfclere
+
+    * mod_proxy: Improve traces in ap_proxy_http_process_response()
+      to investigate PR37770.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&rev=549420
+      +1: jfclere
+
     * mod_cgi: Reverse the regression documented in PR 39710
       (ErrorDocuments are *badly* broken).
       Paul's patch reverses the change that introduced the bug.
