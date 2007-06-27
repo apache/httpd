@@ -649,33 +649,10 @@ static int balancer_handler(request_rec *r)
         }
     }
     /* First set the params */
-    if (bsel) {
-        const char *val;
-        if ((val = apr_table_get(params, "ss"))) {
-            if (strlen(val))
-                bsel->sticky = apr_pstrdup(conf->pool, val);
-            else
-                bsel->sticky = NULL;
-        }
-        if ((val = apr_table_get(params, "tm"))) {
-            int ival = atoi(val);
-            if (ival >= 0)
-                bsel->timeout = apr_time_from_sec(ival);
-        }
-        if ((val = apr_table_get(params, "fa"))) {
-            int ival = atoi(val);
-            if (ival >= 0)
-                bsel->max_attempts = ival;
-            bsel->max_attempts_set = 1;
-        }
-        if ((val = apr_table_get(params, "lm"))) {
-            proxy_balancer_method *provider;
-            provider = ap_lookup_provider(PROXY_LBMETHOD, val, "0");
-            if (provider) {
-                bsel->lbmethod = provider;
-            }
-        }
-    }
+    /*
+     * Note that it is not possible set the proxy_balancer because it is not
+     * in shared memory.
+     */
     if (wsel) {
         const char *val;
         if ((val = apr_table_get(params, "lf"))) {
@@ -755,14 +732,11 @@ static int balancer_handler(request_rec *r)
         for (i = 0; i < conf->balancers->nelts; i++) {
 
             ap_rputs("<hr />\n<h3>LoadBalancer Status for ", r);
-            ap_rvputs(r, "<a href=\"", r->uri, "?b=",
-                      balancer->name + sizeof("balancer://") - 1,
-                      "\">", NULL);
-            ap_rvputs(r, balancer->name, "</a></h3>\n\n", NULL);
+            ap_rvputs(r, balancer->name, "</h3>\n\n", NULL);
             ap_rputs("\n\n<table border=\"0\" style=\"text-align: left;\"><tr>"
                 "<th>StickySession</th><th>Timeout</th><th>FailoverAttempts</th><th>Method</th>"
                 "</tr>\n<tr>", r);
-            ap_rvputs(r, "<td>", balancer->sticky, NULL);
+            ap_rvputs(r, "<td>", balancer->sticky, " | ", balancer->sticky_path, NULL);
             ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
                 apr_time_sec(balancer->timeout));
             ap_rprintf(r, "<td>%d</td>\n", balancer->max_attempts);
@@ -839,41 +813,6 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, "</table>\n<input type=hidden name=\"w\" ",  NULL);
             ap_rvputs(r, "value=\"", ap_escape_uri(r->pool, wsel->name), "\">\n", NULL);
             ap_rvputs(r, "<input type=hidden name=\"b\" ", NULL);
-            ap_rvputs(r, "value=\"", bsel->name + sizeof("balancer://") - 1,
-                      "\">\n</form>\n", NULL);
-            ap_rputs("<hr />\n", r);
-        }
-        else if (bsel) {
-            ap_rputs("<h3>Edit balancer settings for ", r);
-            ap_rvputs(r, bsel->name, "</h3>\n", NULL);
-            ap_rvputs(r, "<form method=\"GET\" action=\"", NULL);
-            ap_rvputs(r, r->uri, "\">\n<dl>", NULL);
-            ap_rputs("<table><tr><td>StickySession Identifier:</td><td><input name=\"ss\" type=text ", r);
-            if (bsel->sticky)
-                ap_rvputs(r, "value=\"", bsel->sticky, "\"", NULL);
-            ap_rputs("></td><tr>\n<tr><td>Timeout:</td><td><input name=\"tm\" type=text ", r);
-            ap_rprintf(r, "value=\"%" APR_TIME_T_FMT "\"></td></tr>\n",
-                       apr_time_sec(bsel->timeout));
-            ap_rputs("<tr><td>Failover Attempts:</td><td><input name=\"fa\" type=text ", r);
-            ap_rprintf(r, "value=\"%d\"></td></tr>\n",
-                       bsel->max_attempts);
-            ap_rputs("<tr><td>LB Method:</td><td><select name=\"lm\">", r);
-            {
-                apr_array_header_t *methods;
-                ap_list_provider_names_t *method;
-                int i;
-                methods = ap_list_provider_names(r->pool, PROXY_LBMETHOD, "0");
-                method = (ap_list_provider_names_t *)methods->elts;
-                for (i = 0; i < methods->nelts; i++) {
-                    ap_rprintf(r, "<option value=\"%s\" %s>%s</option>", method->provider_name,
-                       (!strcasecmp(bsel->lbmethod->name, method->provider_name)) ? "selected" : "",
-                       method->provider_name);
-                    method++;
-                }
-            }
-            ap_rputs("</select></td></tr>\n", r);
-            ap_rputs("<tr><td colspan=2><input type=submit value=\"Submit\"></td></tr>\n", r);
-            ap_rvputs(r, "</table>\n<input type=hidden name=\"b\" ", NULL);
             ap_rvputs(r, "value=\"", bsel->name + sizeof("balancer://") - 1,
                       "\">\n</form>\n", NULL);
             ap_rputs("<hr />\n", r);
