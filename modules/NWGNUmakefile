@@ -27,7 +27,7 @@ SUBDIRS += ldap \
 endif
 
 # If OSSLSDK has been defined then build the mod_ssl module
-ifndef USE_STDSOCKETS
+ifdef WITH_MOD_SSL
 ifneq "$(OSSLSDK)" ""
 SUBDIRS += ssl \
 	$(EOLIST)
