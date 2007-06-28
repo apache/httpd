@@ -317,6 +317,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=551251
       added openssl files to installation directory
         http://svn.apache.org/viewvc?view=rev&revision=551275
+      enabled ports settable for install
+        http://svn.apache.org/viewvc?view=rev&revision=551424
       +1: fuankg
 
 PATCHES/ISSUES THAT ARE STALLED
