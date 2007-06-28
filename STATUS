@@ -265,7 +265,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~jim/patches/ppmatch.txt
       +1:
 
-    * mod_proxy: Arrange the timeout handling.
+    * mod_proxy: Arrange the timeout handling. Related to PR11540.
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&revision=550514
         http://svn.apache.org/viewvc?view=rev&revision=546128
