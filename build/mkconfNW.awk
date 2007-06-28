@@ -16,7 +16,8 @@
 BEGIN {
     
     A["ServerRoot"] = "SYS:/"BDIR
-    A["Port"] = "80"
+    A["Port"] = PORT
+    A["SSLPort"] = SSLPORT
     A["cgidir"] = "cgi-bin"
     A["logfiledir"] = "logs"
     A["htdocsdir"] = "htdocs"
@@ -93,6 +94,10 @@ BEGIN {
     next
 }
 
+match ($0,/443/) {
+    sub(/443/, SSLPORT)
+}
+
 match ($0,/^#SSLSessionCache +"dbm:/) {
     sub(/^#/, "")
 }
@@ -131,7 +136,7 @@ match ($0,/@nonssl_.*@/) {
 
 
 END {
-    if (NWSSL) {
+    if (!BSDSKT) {
        print ""
        print "#"
        print "# SecureListen: Allows you to securely bind Apache to specific IP addresses "
@@ -140,7 +145,7 @@ END {
        print "# Change this to SecureListen on specific IP addresses as shown below to "
        print "# prevent Apache from glomming onto all bound IP addresses (0.0.0.0)"
        print "#"
-       print "#SecureListen 443 \"SSL CertificateDNS\""
+       print "#SecureListen "SSLPORT" \"SSL CertificateDNS\""
        print ""
     }
 }
