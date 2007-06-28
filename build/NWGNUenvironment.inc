@@ -218,6 +218,14 @@ ifndef BASEDIR
 BASEDIR = Apache2
 endif
 
+ifndef PORT
+PORT = 80
+endif
+
+ifndef SSLPORT
+SSLPORT = 443
+endif
+
 # Add support for building IPV6 alongside
 ifneq "$(IPV6)" ""
 DEFINES += -DNW_BUILD_IPV6
