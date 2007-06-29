@@ -348,7 +348,7 @@ apr_status_t ap_mpm_safe_kill(pid_t pid, int sig)
         return APR_EINVAL;
     }
 #else
-    int pg;
+    pid_t pg;
 
     /* Ensure pid sanity. */
     if (pid < 1) {
