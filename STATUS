@@ -161,6 +161,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=549159
       +1: jorton
 
+    * SECURITY: CVE-2007-1863
+      mod_cache fix for handling Cache-Control attributes
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&rev=535617
+      2.0.x version of patch:
+        http://people.apache.org/~mjc/cve-2007-1863-2.0.patch
+      +1: jorton
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
