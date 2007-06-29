@@ -293,16 +293,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=543515
       2.2.x version of patch:
         http://people.apache.org/~covener/2.2.x-mod_memcache-poolmgmt.diff
-      +1: covener
-
-    * SECURITY: CVE-2007-1863 (cve.mitre.org)
-      mod_cache: Prevent segfault from Cache-Control headers with no
-      values
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=535617
-      2.2.x version of patch:
-        http://people.apache.org/~mjc/cve-2007-1863-2.2.patch
-      +1: mjc, rpluem, jorton
+      +1: covener, jorton
 
     * netware build system: various changes
       fixes to generated conf files
