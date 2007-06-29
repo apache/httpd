@@ -320,7 +320,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=551889
       patch against 2.2.x:
         http://people.apache.org/~jorton/httpd-2.2.x-CVE-2007-3304.patch
-      +1: jorton
+      +1: jorton, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
