@@ -280,8 +280,9 @@ static const char *set_balancer_param(proxy_server_conf *conf,
          * Set to something like JSESSIONID or
          * PHPSESSIONID, etc..,
          */
-        balancer->sticky = balancer->sticky_path = apr_pstrdup(p, val);
-        if ((path = strchr(balancer->sticky, '|'))) {
+        path = apr_pstrdup(p, val);
+        balancer->sticky = balancer->sticky_path = path;
+        if ((path = strchr(path, '|'))) {
             *path++ = '\0';
             balancer->sticky_path = path;
         }
