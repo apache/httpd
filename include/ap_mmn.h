@@ -129,6 +129,7 @@
  *                         ap_parse_mutex()
  * 20060905.3 (2.3.0-dev)  Added conn_rec::clogging_input_filters.
  * 20060905.4 (2.3.0-dev)  Added proxy_balancer::sticky_path.
+ * 20060905.5 (2.3.0-dev)  Added ap_mpm_safe_kill()
  *
  */
 
@@ -137,7 +138,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20060905
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 4                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 5                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

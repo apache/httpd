@@ -2070,12 +2070,10 @@ int ap_mpm_run(apr_pool_t * _pconf, apr_pool_t * plog, server_rec * s)
 
             active_children = 0;
             for (index = 0; index < ap_daemons_limit; ++index) {
-                if (MPM_CHILD_PID(index) != 0) {
-                    if (kill(MPM_CHILD_PID(index), 0) == 0) {
-                            active_children = 1;
-                            /* Having just one child is enough to stay around */
-                            break;
-                    }
+                if (ap_mpm_safe_kill(MPM_CHILD_PID(index), 0) == APR_SUCCESS) {
+                    active_children = 1;
+                    /* Having just one child is enough to stay around */
+                    break;
                 }
             }
         } while (!shutdown_pending && active_children &&

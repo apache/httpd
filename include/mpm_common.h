@@ -145,6 +145,19 @@ int ap_unregister_extra_mpm_process(pid_t pid);
 #endif
 
 /**
+ * Safely signal an MPM child process, if the process is in the
+ * current process group.  Otherwise fail.
+ * @param pid the process id of a child process to signal
+ * @param sig the signal number to send
+ * @return APR_SUCCESS if signal is sent, otherwise an error as per kill(3);
+ * APR_EINVAL is returned if passed either an invalid (< 1) pid, or if
+ * the pid is not in the current process group
+ */
+#ifdef AP_MPM_WANT_RECLAIM_CHILD_PROCESSES
+apr_status_t ap_mpm_safe_kill(pid_t pid, int sig);
+#endif
+
+/**
  * Determine if any child process has died.  If no child process died, then
  * this process sleeps for the amount of time specified by the MPM defined
  * macro SCOREBOARD_MAINTENANCE_INTERVAL.
