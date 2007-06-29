@@ -151,7 +151,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=521230
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-1tidy-2.2.x.patch
-     +1: chrisd
+     +1: chrisd, fuankg
 
    * mod_dbd: Handle error conditions in dbd_construct() properly.
      Simplify ap_dbd_open() and use correct arguments to apr_dbd_error()
@@ -219,13 +219,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-4groups-2.2.x.patch
      +1: chrisd
-
-    * mod_dbd: added proper error message for NetWare
-      http://svn.apache.org/viewvc?view=rev&revision=521230
-      +1: fuankg
-      chrisd: This is included in the 2.2.x version of the "1tidy"
-              patch above.  If that is backported as proposed, then this
-              revision does not need to be backported on its own.
 
     * mod_proxy_ajp: Fix wrong retry when sending the response failed.
       PR 40310 (The old fixes weren't ok).
@@ -318,7 +311,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * SECURITY: CVE-2006-5752
       mod_status XSS fix for broken browsers:
         http://svn.apache.org/viewvc?view=rev&rev=549159
-      +1: jorton
+      +1: jorton, fuankg
 
     * SECURITY: CVE-2007-3304
       scoreboard pid protection fixes
