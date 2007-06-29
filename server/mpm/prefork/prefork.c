@@ -295,34 +295,6 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
     return APR_ENOTIMPL;
 }
 
-#if defined(NEED_WAITPID)
-/*
-   Systems without a real waitpid sometimes lose a child's exit while waiting
-   for another.  Search through the scoreboard for missing children.
- */
-int reap_children(int *exitcode, apr_exit_why_e *status)
-{
-    int n, pid;
-
-    for (n = 0; n < ap_max_daemons_limit; ++n) {
-        pid = ap_scoreboard_image->parent[n].pid;
-        if (ap_scoreboard_image->servers[n][0].status != SERVER_DEAD) {
-            if (ap_in_pid_table(pid)) {
-                if (kill(pid, 0) == -1) {
-                    ap_update_child_status_from_indexes(n, 0, SERVER_DEAD, NULL);
-                    /* just mark it as having a successful exit status */
-                    *status = APR_PROC_EXIT;
-                    *exitcode = 0;
-                    ap_unset_pid_table(pid);
-                    return(pid);
-                }
-            }
-        }
-    }
-    return 0;
-}
-#endif
-
 /*****************************************************************
  * Connection structures and accounting...
  */

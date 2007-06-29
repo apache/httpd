@@ -376,12 +376,6 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
         return;
     }
 
-#ifdef NEED_WAITPID
-    if ((ret = reap_children(exitcode, status)) > 0) {
-        return;
-    }
-#endif
-
     apr_sleep(SCOREBOARD_MAINTENANCE_INTERVAL);
     ret->pid = -1;
     return;
