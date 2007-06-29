@@ -257,7 +257,7 @@ static int fsmagic(request_rec *r, const char *fn);
 #define L_MAIL    8   /* Electronic mail */
 #define L_NEWS    9   /* Usenet Netnews */
 
-static char *types[] =
+static const char *types[] =
 {
     "text/html",             /* HTML */
     "text/plain",            /* "c program text", */
@@ -273,8 +273,8 @@ static char *types[] =
     0
 };
 
-static struct names {
-    char *name;
+static const struct names {
+    const char *name;
     short type;
 } names[] = {
 
@@ -443,7 +443,7 @@ static struct names {
  */
 
 typedef struct magic_rsl_s {
-    char *str;                  /* string, possibly a fragment */
+    const char *str;                  /* string, possibly a fragment */
     struct magic_rsl_s *next;   /* pointer to next fragment */
 } magic_rsl;
 
@@ -540,7 +540,7 @@ static magic_req_rec *magic_set_config(request_rec *r)
 
 /* add a string to the result string list for this request */
 /* it is the responsibility of the caller to allocate "str" */
-static int magic_rsl_add(request_rec *r, char *str)
+static int magic_rsl_add(request_rec *r, const char *str)
 {
     magic_req_rec *req_dat = (magic_req_rec *)
                     ap_get_module_config(r->request_config, &mime_magic_module);
@@ -577,7 +577,7 @@ static int magic_rsl_add(request_rec *r, char *str)
 }
 
 /* RSL hook for puts-type functions */
-static int magic_rsl_puts(request_rec *r, char *str)
+static int magic_rsl_puts(request_rec *r, const char *str)
 {
     return magic_rsl_add(r, str);
 }
@@ -1979,7 +1979,7 @@ static int ascmagic(request_rec *r, unsigned char *buf, apr_size_t nbytes)
     unsigned char *s;
     char nbuf[HOWMANY + 1];  /* one extra for terminating '\0' */
     char *token;
-    register struct names *p;
+    const struct names *p;
     int small_nbytes;
     char *strtok_state;
 
