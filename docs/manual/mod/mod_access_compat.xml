@@ -54,7 +54,7 @@ have been deprecated by the new authz refactoring.  Please see
 
     <p>Both host-based access restrictions and password-based
     authentication may be implemented simultaneously. In that case,
-    the <directive module="core">Satisfy</directive> directive is used
+    the <directive module="mod_access_compat">Satisfy</directive> directive is used
     to determine how the two sets of restrictions interact.</p>
 
     <note type="warning"><title>Note</title>
