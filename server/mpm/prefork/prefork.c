@@ -714,7 +714,6 @@ static int make_child(server_rec *s, int slot)
     }
 
     ap_scoreboard_image->parent[slot].pid = pid;
-    ap_set_pid_table(pid);
 
     return 0;
 }
@@ -1097,10 +1096,8 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         for (index = 0; index < ap_daemons_limit; ++index) {
             if (ap_scoreboard_image->servers[index][0].status != SERVER_DEAD) {
                 /* Ask each child to close its listeners. */
-                if (ap_in_pid_table(MPM_CHILD_PID(index))) {
-                    kill(MPM_CHILD_PID(index), AP_SIG_GRACEFUL);
-                    active_children++;
-                }
+                kill(MPM_CHILD_PID(index), AP_SIG_GRACEFUL);
+                active_children++;
             }
         }
 
@@ -1138,12 +1135,10 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             active_children = 0;
             for (index = 0; index < ap_daemons_limit; ++index) {
                 if (MPM_CHILD_PID(index) != 0) {
-                    if (ap_in_pid_table(MPM_CHILD_PID(index))) {
-                        if (kill(MPM_CHILD_PID(index), 0) == 0) {
+                    if (kill(MPM_CHILD_PID(index), 0) == 0) {
                             active_children = 1;
                             /* Having just one child is enough to stay around */
                             break;
-                        }
                     }
                 }
             }
@@ -1196,9 +1191,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
                  * piped loggers, etc. They almost certainly won't handle
                  * it gracefully.
                  */
-                if (ap_in_pid_table(MPM_CHILD_PID(index))) {
-                    kill(MPM_CHILD_PID(index), AP_SIG_GRACEFUL);
-                }
+                kill(ap_scoreboard_image->parent[index].pid, AP_SIG_GRACEFUL);
             }
         }
     }
