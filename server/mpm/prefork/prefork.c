@@ -513,7 +513,10 @@ static void child_main(int child_num_arg)
 
     bucket_alloc = apr_bucket_alloc_create(pchild);
 
-    while (!die_now) {
+    /* die_now is set when AP_SIG_GRACEFUL is received in the child;
+     * shutdown_pending is set when SIGTERM is received when running
+     * in single process mode.  */
+    while (!die_now && !shutdown_pending) {
         conn_rec *current_conn;
         void *csd;
 
