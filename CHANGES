@@ -7,12 +7,6 @@ Changes with Apache 2.3.0
      server-status page and ExtendedStatus enabled, for browsers which
      perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
 
-  *) SECURITY: CVE-2007-3304 (cve.mitre.org)
-     Add a parent process local table of child process PIDs, and
-     use that to ensure we are sending signals to just our child
-     processes by checking the scoreboard PID entries to our local
-     copy. [Jim Jagielski]
-
   *) Event MPM: Add support for running under mod_ssl, by reverting to the
      Worker MPM behaviors, when run under an input filter that buffers
      its own data. [Paul Querna]
