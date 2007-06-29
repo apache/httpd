@@ -154,7 +154,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=551843
       patch for 2.0.x:
         http://people.apache.org/~jorton/httpd-2.0.x-CVE-2007-3304.patch
-      +1: jorton
+      +1: jorton, jim
 
     * SECURITY: CVE-2006-5752
       mod_status XSS fix for broken browsers:
