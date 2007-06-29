@@ -243,7 +243,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     age = ap_cache_current_age(info, age_c, r->request_time);
 
     /* extract s-maxage */
-    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "s-maxage", &val)) {
+    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "s-maxage", &val)
+        && val != NULL) {
         smaxage = apr_atoi64(val);
     }
     else {
@@ -252,7 +253,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
 
     /* extract max-age from request */
     if (!conf->ignorecachecontrol
-        && cc_req && ap_cache_liststr(r->pool, cc_req, "max-age", &val)) {
+        && cc_req && ap_cache_liststr(r->pool, cc_req, "max-age", &val)
+        && val != NULL) {
         maxage_req = apr_atoi64(val);
     }
     else {
@@ -260,7 +262,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     }
 
     /* extract max-age from response */
-    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "max-age", &val)) {
+    if (cc_cresp && ap_cache_liststr(r->pool, cc_cresp, "max-age", &val)
+        && val != NULL) {
         maxage_cresp = apr_atoi64(val);
     }
     else {
@@ -282,7 +285,20 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
 
     /* extract max-stale */
     if (cc_req && ap_cache_liststr(r->pool, cc_req, "max-stale", &val)) {
-        maxstale = apr_atoi64(val);
+        if(val != NULL) {
+            maxstale = apr_atoi64(val);
+        }
+        else {
+            /*
+             * If no value is assigned to max-stale, then the client is willing
+             * to accept a stale response of any age (RFC2616 14.9.3). We will
+             * set it to one year in this case as this situation is somewhat
+             * similar to a "never expires" Expires header (RFC2616 14.21)
+             * which is set to a date one year from the time the response is
+             * sent in this case.
+             */
+            maxstale = APR_INT64_C(86400*365);
+        }
     }
     else {
         maxstale = 0;
@@ -290,7 +306,8 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
 
     /* extract min-fresh */
     if (!conf->ignorecachecontrol
-        && cc_req && ap_cache_liststr(r->pool, cc_req, "min-fresh", &val)) {
+        && cc_req && ap_cache_liststr(r->pool, cc_req, "min-fresh", &val)
+        && val != NULL) {
         minfresh = apr_atoi64(val);
     }
     else {
@@ -418,6 +435,9 @@ CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
                             *val = apr_pstrmemdup(p, val_start,
                                                   next - val_start);
                         }
+                    }
+                    else {
+                        *val = NULL;
                     }
                 }
                 return 1;
