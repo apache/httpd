@@ -326,7 +326,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * SECURITY: CVE-2006-5752
       mod_status XSS fix for broken browsers:
-       http://svn.apache.org/viewvc?view=rev&rev=549159
+        http://svn.apache.org/viewvc?view=rev&rev=549159
+      +1: jorton
+
+    * SECURITY: CVE-2007-3304
+      scoreboard pid protection fixes
+      trunk commits:
+        http://svn.apache.org/viewvc?view=rev&rev=551843,
+        http://svn.apache.org/viewvc?view=rev&rev=551889
+      patch against 2.2.x:
+        http://people.apache.org/~jorton/httpd-2.2.x-CVE-2007-3304.patch
       +1: jorton
 
 PATCHES/ISSUES THAT ARE STALLED
