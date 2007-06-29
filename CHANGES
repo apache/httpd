@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) SECURITY: CVE-2007-3304 (cve.mitre.org)
+     prefork, worker, event MPMs: Ensure that the parent process cannot
+     be forced to kill processes outside its process group.  [Joe Orton]
+
   *) SECURITY: CVE-2006-5752 (cve.mitre.org)
      mod_status: Fix a possible XSS attack against a site with a public
      server-status page and ExtendedStatus enabled, for browsers which
