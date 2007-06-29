@@ -302,7 +302,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=535617
       2.2.x version of patch:
         http://people.apache.org/~mjc/cve-2007-1863-2.2.patch
-      +1: mjc, rpluem
+      +1: mjc, rpluem, jorton
 
     * netware build system: various changes
       fixes to generated conf files
@@ -323,6 +323,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       enabled ports settable for install
         http://svn.apache.org/viewvc?view=rev&revision=551424
       +1: fuankg
+
+    * SECURITY: CVE-2006-5752
+      mod_status XSS fix for broken browsers:
+       http://svn.apache.org/viewvc?view=rev&rev=535617
+      +1: jorton
 
 PATCHES/ISSUES THAT ARE STALLED
 
