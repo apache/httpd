@@ -807,17 +807,17 @@ through</td></tr>
     </td></tr>
     <tr><td>ping</td>
         <td>0</td>
-        <td>Ping property told webserver to send a <code>CPING</code>
-        request on ajp13 connection before forwarding to it a request.
+        <td>Ping property tells webserver to send a <code>CPING</code>
+        request on ajp13 connection before forwarding a request.
         The parameter is the delay in seconds to wait for the
         <code>CPONG</code> reply.
         This features has been added to avoid problem with hung and
         busy Tomcat's and require ajp13 ping/pong support which has
         been implemented on Tomcat 3.3.2+, 4.1.28+ and 5.0.13+.
-        It will inrease the network traffic during the normal operation
-        which could be an issue for you, but it will lower down the
-        traffic in case some of the cluster nodes are down or buys.
-        Currently this is in effect only for AJP.
+        This will increase the network traffic during the normal operation
+        which could be an issue, but it will lower the
+        traffic in case some of the cluster nodes are down or busy.
+        Currently this has an effect only for AJP.
     </td></tr>
     <tr><td>redirect</td>
         <td>-</td>
