@@ -111,10 +111,13 @@ endif
 #
 
 # MetroWerks NLM tools
-CC		= mwccnlm
-CPP		= mwccnlm
+CC	= mwccnlm
+CPP	= mwccnlm
 LINK	= mwldnlm
-LIB		= mwldnlm -type library -w nocmdline
+LIB	= mwldnlm -type library -w nocmdline
+
+# Setup build tools
+AWK	= awk
 
 ifdef IPV6
 ifndef USE_STDSOCKETS
@@ -132,12 +135,18 @@ ifneq "$(ZLIBSDK)" ""
 INCDIRS := $(INCDIRS);$(ZLIBSDK)
 endif
 
-DEFINES		= -DNETWARE 
+DEFINES	= -DNETWARE 
 ifndef USE_STDSOCKETS
-DEFINES += -DUSE_WINSOCK
+DEFINES	+= -DUSE_WINSOCK
 endif
 ifndef DEBUG
-DEFINES += -DNDEBUG
+DEFINES	+= -DNDEBUG
+endif
+
+ifdef USE_STDSOCKETS
+VERSION_SKT = (BSDSOCK)
+else
+VERSION_SKT = (WINSOCK)
 endif
 
 #
@@ -209,6 +218,14 @@ ifndef BASEDIR
 BASEDIR = Apache2
 endif
 
+ifndef PORT
+PORT = 80
+endif
+
+ifndef SSLPORT
+SSLPORT = 443
+endif
+
 # Add support for building IPV6 alongside
 ifneq "$(IPV6)" ""
 DEFINES += -DNW_BUILD_IPV6
@@ -229,7 +246,7 @@ endif
 endif
 
 INSTDEVDIRS := \
-    $(INSTDIRS) \
+	$(INSTDIRS) \
 	$(INSTALL)\$(BASEDIR)\include \
 	$(INSTALL)\$(BASEDIR)\lib \
 
@@ -256,21 +273,20 @@ OS = Windows_NT
 endif
 
 ifeq "$(OS)" "Windows_NT"
-CMD=cmd /C
-CHK=cmd /C if exist
-CHKNOT=cmd /C if not exist
+CMD = cmd /C
 DEL = del /F
-DELTREE = cmd /C rd /s/q
-WINNT=1
+DELTREE = rd /s/q
+WINNT = 1
 XCOPYSW = /E
 else
-CMD=command /C
-CHK=command /C if exist
-CHKNOT=command /C if not exist
+CMD = command /C
 DEL = del
 DELTREE = deltree /y
 XCOPYSW = /E /Y
 endif
+
+CHK = $(CMD) if exist
+CHKNOT = $(CMD) if not exist
 
 
 #
