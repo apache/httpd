@@ -196,7 +196,7 @@ typedef enum
 typedef struct
 {
     poll_type_e type;
-    int status;        /*XXX what is this for?  0 and 1 don't make it clear */
+    int bypass_push;
     void *baton;
 } listener_poll_type;
 
@@ -584,7 +584,7 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         cs->pfd.reqevents = APR_POLLIN;
         cs->pfd.desc.s = sock;
         pt->type = PT_CSD;
-        pt->status = 1;
+        pt->bypass_push = 1;
         pt->baton = cs;
         cs->pfd.client_data = pt;
         APR_RING_ELEM_INIT(cs, timeout_list);
@@ -665,7 +665,7 @@ read_request:
             apr_thread_mutex_lock(timeout_mutex);
             APR_RING_INSERT_TAIL(&timeout_head, cs, conn_state_t, timeout_list);
             apr_thread_mutex_unlock(timeout_mutex);
-            pt->status = 0;
+            pt->bypass_push = 0;
             cs->pfd.reqevents = APR_POLLOUT | APR_POLLHUP | APR_POLLERR;
             rc = apr_pollset_add(event_pollset, &cs->pfd);
             return 1;
@@ -707,7 +707,7 @@ read_request:
         APR_RING_INSERT_TAIL(&keepalive_timeout_head, cs, conn_state_t, timeout_list);
         apr_thread_mutex_unlock(timeout_mutex);
 
-        pt->status = 0;
+        pt->bypass_push = 0;
         /* Add work to pollset. */
         cs->pfd.reqevents = APR_POLLIN;
         rc = apr_pollset_add(event_pollset, &cs->pfd);
@@ -817,11 +817,11 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
     conn_state_t *cs = (conn_state_t *) pt->baton;
     apr_status_t rc;
 
-    if (pt->status == 1) {
-        return 0;
+    if (pt->bypass_push) {
+        return APR_SUCCESS;
     }
 
-    pt->status = 1;
+    pt->bypass_push = 1;
 
     rc = apr_pollset_remove(pollset, pfd);
 
@@ -848,7 +848,7 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
         ap_push_pool(worker_queue_info, cs->p);
     }
 
-    return APR_SUCCESS;
+    return rc;
 }
 
 /* get_worker:
