@@ -7,7 +7,7 @@ SUBDIRS = \
 	build \
 	support \
 	modules \
-	$(EOLIST) 
+	$(EOLIST)
 
 #
 # Get the 'head' of the build environment.  This includes default targets and
@@ -77,7 +77,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "noopt"
@@ -91,7 +91,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "release"
@@ -113,17 +113,12 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= Apache2
+NLM_NAME	= Apache2
 
 #
-# This is used by the link '-desc ' directive. 
+# This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-ifdef USE_STDSOCKETS
-VERSION_SKT = (BSDSOCK)
-else
-VERSION_SKT = (WINSOCK)
-endif
 NLM_DESCRIPTION	= Apache Web Server $(VERSION_STR) $(VERSION_SKT)
 
 #
@@ -140,16 +135,16 @@ NLM_SCREEN_NAME = Apache $(VERSION_STR) for NetWare
 
 
 #
-# If this is specified, it will override VERSION value in 
+# If this is specified, it will override VERSION value in
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
-NLM_VERSION		=
+NLM_VERSION	=
 
 #
 # If this is specified, it will override the default of 64K
 #
 NLM_STACK_SIZE	= 65536
- 
+
 
 #
 # If this is specified it will be used by the link '-entry' directive
@@ -169,14 +164,14 @@ NLM_CHECK_SYM	= _LibCCheckUnload
 #
 # If these are specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		=  PSEUDOPREEMPTION
+NLM_FLAGS	= PSEUDOPREEMPTION
 
 #
-# If this is specified it will be linked in with the XDCData option in the def 
+# If this is specified it will be linked in with the XDCData option in the def
 # file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
 # by setting APACHE_UNIPROC in the environment
 #
-XDCDATA         = 
+XDCDATA		=
 
 #
 # If there is an NLM target, put it here
@@ -249,7 +244,7 @@ FILES_nlm_objs = \
 # Build in mod_nw_ssl if Winsock is being used
 ifndef USE_STDSOCKETS
 FILES_nlm_objs += $(OBJDIR)/mod_nw_ssl.o \
-	       $(EOLIST)
+	$(EOLIST)
 endif
 
 #
@@ -257,7 +252,7 @@ endif
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-   	libcpre.o \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -273,7 +268,7 @@ FILES_nlm_modules = \
 # If the nlm has a msg file, put it's path here
 #
 FILE_nlm_msg =
- 
+
 #
 # If the nlm has a hlp file put it's path here
 #
@@ -297,22 +292,22 @@ FILES_nlm_Ximports = \
 # Don't link with Winsock if standard sockets are being used
 ifndef USE_STDSOCKETS
 FILES_nlm_Ximports += @ws2nlm.imp \
-	       $(EOLIST)
+	$(EOLIST)
 endif
- 
-#   
+
+#
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
 	@$(NWOS)/httpd.imp \
 	$(EOLIST)
-	
-#   
+
+#
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
 FILES_lib_objs = \
-		$(EOLIST)
+	$(EOLIST)
 
 #
 # implement targets and dependancies (leave this section alone)
@@ -323,7 +318,7 @@ libs :: $(OBJDIR) $(TARGET_lib)
 nlms :: libs $(TARGET_nlm)
 
 #
-# Updated this target to create necessary directories and copy files to the 
+# Updated this target to create necessary directories and copy files to the
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
@@ -335,38 +330,29 @@ install :: nlms FORCE
 	-copy CHANGES                   $(INSTALL)\$(BASEDIR)\*.*
 	-copy support\dbmmanage.in      $(INSTALL)\$(BASEDIR)\bin\dbmmanage.pl
 	-copy support\logresolve.pl.in  $(INSTALL)\$(BASEDIR)\bin\logresolve.pl
-ifdef USE_STDSOCKETS	
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\httpd.conf.in >$(INSTALL)\$(BASEDIR)\conf\httpd.conf
-else
-	-awk -v BDIR=$(BASEDIR) -v SSL=1 -f build\mkconfnw.awk docs\conf\httpd.conf.in >$(INSTALL)\$(BASEDIR)\conf\httpd.conf
-endif	
+	-$(AWK) -v BDIR=$(BASEDIR) -v PORT=$(PORT) -v SSLPORT=$(SSLPORT) -v MODSSL=$(WITH_MOD_SSL) -v BSDSKT=$(USE_STDSOCKETS) -f build\mkconfnw.awk docs\conf\httpd.conf.in >$(INSTALL)\$(BASEDIR)\conf\httpd.conf
 	$(CHKNOT) $(INSTALL)\$(BASEDIR)\conf\extra\nul mkdir $(INSTALL)\$(BASEDIR)\conf\extra
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-autoindex.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-autoindex.conf
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-dav.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-dav.conf
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-default.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-default.conf
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-info.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-info.conf
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-languages.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-languages.conf
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-manual.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-manual.conf
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-mpm.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-mpm.conf
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-multilang-errordoc.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-multilang-errordoc.conf
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-ssl.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-ssl.conf
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-userdir.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-userdir.conf
-	-awk -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-vhosts.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-vhosts.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-autoindex.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-autoindex.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-dav.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-dav.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-default.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-default.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-info.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-info.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-languages.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-languages.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-manual.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-manual.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-mpm.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-mpm.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-multilang-errordoc.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-multilang-errordoc.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -f build\mkconfnw.awk docs\conf\extra\httpd-userdir.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-userdir.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -v PORT=$(PORT) -f build\mkconfnw.awk docs\conf\extra\httpd-vhosts.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-vhosts.conf
+	-$(AWK) -v BDIR=$(BASEDIR) -v SSLPORT=$(SSLPORT) -f build\mkconfnw.awk docs\conf\extra\httpd-ssl.conf.in >$(INSTALL)\$(BASEDIR)\conf\extra\httpd-ssl.conf
 	-copy docs\conf\magic           $(INSTALL)\$(BASEDIR)\conf\magic
 	-copy docs\conf\mime.types      $(INSTALL)\$(BASEDIR)\conf\mime.types
 	-copy docs\conf\charset.conv    $(INSTALL)\$(BASEDIR)\conf\charset.conv
 	-copy docs\cgi-examples\printenv $(INSTALL)\$(BASEDIR)\cgi-bin\printenv.pl
-	@echo rem copying the docs directories > xc.bat
-	@echo xcopy docs\error $(INSTALL)\$(BASEDIR)\error $(XCOPYSW) >> xc.bat
-	@echo xcopy docs\docroot $(INSTALL)\$(BASEDIR)\htdocs $(XCOPYSW) >> xc.bat
-	@echo xcopy docs\icons $(INSTALL)\$(BASEDIR)\icons $(XCOPYSW) >> xc.bat
-	@echo xcopy docs\man $(INSTALL)\$(BASEDIR)\man $(XCOPYSW) >> xc.bat
-	@echo xcopy docs\manual $(INSTALL)\$(BASEDIR)\manual $(XCOPYSW) >> xc.bat
-	$(CMD) xc.bat
-	$(DEL) xc.bat
+	@xcopy $(XCOPYSW) docs\error $(INSTALL)\$(BASEDIR)\error
+	@xcopy $(XCOPYSW) docs\docroot $(INSTALL)\$(BASEDIR)\htdocs
+	@xcopy $(XCOPYSW) docs\icons $(INSTALL)\$(BASEDIR)\icons
+	@xcopy $(XCOPYSW) docs\man $(INSTALL)\$(BASEDIR)\man
+	@xcopy $(XCOPYSW) docs\manual $(INSTALL)\$(BASEDIR)\manual
 
-
-    
 installdev :: FORCE
 	-copy $(subst /,\,$(AP_WORK))\include\*.h           $(INSTALL)\$(BASEDIR)\include\*.*
 	-copy $(subst /,\,$(AP_WORK))\os\netware\*.h        $(INSTALL)\$(BASEDIR)\include\*.*
@@ -375,14 +361,13 @@ installdev :: FORCE
 	-copy $(subst /,\,$(APRUTIL))\include\*.h           $(INSTALL)\$(BASEDIR)\include\*.*
 	-copy $(subst /,\,$(APR))\*.imp                     $(INSTALL)\$(BASEDIR)\lib\*.*
 	-copy $(subst /,\,$(NWOS))\*.xdc                    $(INSTALL)\$(BASEDIR)\lib\*.*
-    
+
 prebuild :: FORCE
 	$(MAKE) -C server -f NWGNUMakefile
 	$(MAKE) -C srclib/pcre -f NWGNUMakefile
 	$(CHKNOT) $(PREBUILD_INST)\nul          mkdir $(PREBUILD_INST)
 	-copy $(AP_WORK)\server\$(OBJDIR)\*.nlm $(PREBUILD_INST)\*.*
 	-copy $(AP_WORK)\srclib\pcre\$(basename $(OBJDIR))\*.nlm $(PREBUILD_INST)\*.*
-
 
 #
 # Any specialized rules here
@@ -398,4 +383,5 @@ vpath %.c os/netware:server/mpm/netware:srclib/pcre
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
+
 

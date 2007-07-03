@@ -16,7 +16,8 @@
 BEGIN {
     
     A["ServerRoot"] = "SYS:/"BDIR
-    A["Port"] = "80"
+    A["Port"] = PORT
+    A["SSLPort"] = SSLPORT
     A["cgidir"] = "cgi-bin"
     A["logfiledir"] = "logs"
     A["htdocsdir"] = "htdocs"
@@ -35,6 +36,7 @@ BEGIN {
     B["cgidir"] = A["ServerRoot"]"/"A["cgidir"]
     B["logfiledir"] = A["logfiledir"]
     B["sysconfdir"] = A["sysconfdir"]
+    B["runtimedir"] = A["runtimedir"]
     B["listen_stmt_1"] = "Listen "A["Port"]
     B["listen_stmt_2"] = ""
 }
@@ -44,13 +46,17 @@ BEGIN {
     print "#LoadModule auth_basic_module modules/authbasc.nlm"
     print "#LoadModule auth_digest_module modules/authdigt.nlm"
     print "#LoadModule authn_anon_module modules/authnano.nlm"
+    print "#LoadModule authn_dbd_module modules/authndbd.nlm"
     print "#LoadModule authn_dbm_module modules/authndbm.nlm"
     print "#LoadModule authn_default_module modules/authndef.nlm"
     print "#LoadModule authn_file_module modules/authnfil.nlm"
+    print "#LoadModule authz_dbd_module modules/authzdbd.nlm"
     print "#LoadModule authz_dbm_module modules/authzdbm.nlm"
     print "#LoadModule authz_default_module modules/authzdef.nlm"
     print "#LoadModule authz_groupfile_module modules/authzgrp.nlm"
     print "#LoadModule authz_user_module modules/authzusr.nlm"
+    print "#LoadModule authnz_ldap_module modules/authnzldap.nlm"
+    print "#LoadModule ldap_module modules/utilldap.nlm"
     print "#LoadModule asis_module modules/mod_asis.nlm"
     print "LoadModule autoindex_module modules/autoindex.nlm"
     print "#LoadModule cern_meta_module modules/cernmeta.nlm"
@@ -80,12 +86,27 @@ BEGIN {
     print "#LoadModule version_module modules/modversion.nlm"
     print "#LoadModule userdir_module modules/userdir.nlm"
     print "#LoadModule vhost_alias_module modules/vhost.nlm"
+    if (MODSSL) {
+       print "#LoadModule ssl_module modules/mod_ssl.nlm"
+    }
     print ""
     next
 }
 
-match ($0,/SSLMutex  file:@exp_runtimedir@\/ssl_mutex/) {
-    sub(/SSLMutex  file:@exp_runtimedir@\/ssl_mutex/, "SSLMutex default")
+match ($0,/443/) {
+    sub(/443/, SSLPORT)
+}
+
+match ($0,/^#SSLSessionCache +"dbm:/) {
+    sub(/^#/, "")
+}
+
+match ($0,/^SSLSessionCache +"shmcb:/) {
+    sub(/^SSLSessionCache/, "#SSLSessionCache")
+}
+
+match ($0,/^SSLMutex +"file:@exp_runtimedir@\/ssl_mutex"/) {
+    sub(/"file:@exp_runtimedir@\/ssl_mutex"/, "default")
 }
 
 match ($0,/@@.*@@/) {
@@ -114,7 +135,7 @@ match ($0,/@nonssl_.*@/) {
 
 
 END {
-    if (SSL) {
+    if (!BSDSKT) {
        print ""
        print "#"
        print "# SecureListen: Allows you to securely bind Apache to specific IP addresses "
@@ -123,6 +144,7 @@ END {
        print "# Change this to SecureListen on specific IP addresses as shown below to "
        print "# prevent Apache from glomming onto all bound IP addresses (0.0.0.0)"
        print "#"
-       print "#SecureListen 443 \"SSL CertificateDNS\""
+       print "#SecureListen "SSLPORT" \"SSL CertificateDNS\""
+       print ""
     }
 }
