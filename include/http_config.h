@@ -56,7 +56,7 @@ enum cmd_how {
 				 * (e.g., AddIcon)
 				 */
     FLAG,			/**< One of 'On' or 'Off' */
-    NO_ARGS,			/**< No args at all, e.g. </Directory> */
+    NO_ARGS,			/**< No args at all, e.g. &lt;/Directory&gt; */
     TAKE12,			/**< one or two arguments */
     TAKE3,			/**< three arguments only */
     TAKE23,			/**< two or three arguments */
@@ -208,8 +208,7 @@ struct command_struct {
     void *cmd_data;		
     /** What overrides need to be allowed to enable this command. */
     int req_override;
-    /** What the command expects as arguments 
-     *  @defvar cmd_how args_how*/
+    /** What the command expects as arguments */
     enum cmd_how args_how;
 
     /** 'usage' message, in case of syntax errors */
@@ -225,19 +224,19 @@ struct command_struct {
  * @{
  */
 #define OR_NONE 0             /**< *.conf is not available anywhere in this override */
-#define OR_LIMIT 1	     /**< *.conf inside <Directory> or <Location>
+#define OR_LIMIT 1	     /**< *.conf inside &lt;Directory&gt; or &lt;Location&gt;
 				and .htaccess when AllowOverride Limit */
 #define OR_OPTIONS 2         /**< *.conf anywhere
                                 and .htaccess when AllowOverride Options */
 #define OR_FILEINFO 4        /**< *.conf anywhere
 				and .htaccess when AllowOverride FileInfo */
-#define OR_AUTHCFG 8         /**< *.conf inside <Directory> or <Location>
+#define OR_AUTHCFG 8         /**< *.conf inside &lt;Directory&gt; or &lt;Location&gt;
 				and .htaccess when AllowOverride AuthConfig */
 #define OR_INDEXES 16        /**< *.conf anywhere
 				and .htaccess when AllowOverride Indexes */
 #define OR_UNSET 32          /**< unset a directive (in Allow) */
-#define ACCESS_CONF 64       /**< *.conf inside <Directory> or <Location> */
-#define RSRC_CONF 128	     /**< *.conf outside <Directory> or <Location> */
+#define ACCESS_CONF 64       /**< *.conf inside &lt;Directory&gt; or &lt;Location&gt; */
+#define RSRC_CONF 128	     /**< *.conf outside &lt;Directory&gt; or &lt;Location&gt; */
 #define EXEC_ON_READ 256     /**< force directive to execute a command 
                 which would modify the configuration (like including another
                 file, or IFModule */
@@ -275,7 +274,7 @@ struct cmd_parms_struct {
     void *info;
     /** Which allow-override bits are set */
     int override;
-    /** Which methods are <Limit>ed */
+    /** Which methods are &lt;Limit&gt;ed */
     apr_int64_t limited;
     /** methods which are limited */
     apr_array_header_t *limited_xmethods;
@@ -295,8 +294,8 @@ struct cmd_parms_struct {
     /** Server_rec being configured for */
     server_rec *server;
     /** If configuring for a directory, pathname of that directory.  
-     *  NOPE!  That's what it meant previous to the existance of <Files>, 
-     * <Location> and regex matching.  Now the only usefulness that can be 
+     *  NOPE!  That's what it meant previous to the existance of &lt;Files&gt;, 
+     * &lt;Location&gt; and regex matching.  Now the only usefulness that can be 
      * derived from this field is whether a command is being called in a 
      * server context (path == NULL) or being called in a dir context 
      * (path != NULL).  */
@@ -336,7 +335,7 @@ struct module_struct {
     void *dynamic_load_handle;
 
     /** A pointer to the next module in the list
-     *  @defvar module_struct *next */
+     *  @var module_struct *next */
     struct module_struct *next;
 
     /** Magic Cookie to identify a module structure;  It's mainly 
@@ -492,7 +491,7 @@ AP_DECLARE_NONSTD(const char *) ap_set_int_slot(cmd_parms *cmd,
 
 /**
  * Return true if the specified method is limited by being listed in
- * a <Limit> container, or by *not* being listed in a <LimiteExcept>
+ * a &lt;Limit&gt; container, or by *not* being listed in a &lt;LimitExcept&gt;
  * container.
  *
  * @param   method  Pointer to a string specifying the method to check.
@@ -647,7 +646,7 @@ AP_DECLARE(int) ap_cfg_getc(ap_configfile_t *cfp);
 AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp);
 
 /**
- * Read all data between the current <foo> and the matching </foo>.  All
+ * Read all data between the current &lt;foo&gt; and the matching &lt;/foo&gt;.  All
  * of this data is forgotten immediately.  
  * @param cmd The cmd_parms to pass to the directives inside the container
  * @param directive The directive name to read until
@@ -656,7 +655,7 @@ AP_DECLARE(int) ap_cfg_closefile(ap_configfile_t *cfp);
 AP_DECLARE(const char *) ap_soak_end_container(cmd_parms *cmd, char *directive);
 
 /**
- * Read all data between the current <foo> and the matching </foo> and build
+ * Read all data between the current &lt;foo&gt; and the matching &lt;/foo&gt; and build
  * a config tree from it
  * @param p pool to allocate from
  * @param temp_pool Temporary pool to allocate from
@@ -710,14 +709,14 @@ AP_DECLARE(const char *) ap_walk_config(ap_directive_t *conftree,
 AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd, 
                                               unsigned forbidden);
 
-#define  NOT_IN_VIRTUALHOST     0x01 /**< Forbidden in <Virtualhost> */
-#define  NOT_IN_LIMIT           0x02 /**< Forbidden in <Limit> */
-#define  NOT_IN_DIRECTORY       0x04 /**< Forbidden in <Directory> */
-#define  NOT_IN_LOCATION        0x08 /**< Forbidden in <Location> */
-#define  NOT_IN_FILES           0x10 /**< Forbidden in <Files> */
-/** Forbidden in <Directory>/<Location>/<Files>*/
+#define  NOT_IN_VIRTUALHOST     0x01 /**< Forbidden in &lt;VirtualHost&gt; */
+#define  NOT_IN_LIMIT           0x02 /**< Forbidden in &lt;Limit&gt; */
+#define  NOT_IN_DIRECTORY       0x04 /**< Forbidden in &lt;Directory&gt; */
+#define  NOT_IN_LOCATION        0x08 /**< Forbidden in &lt;Location&gt; */
+#define  NOT_IN_FILES           0x10 /**< Forbidden in &lt;Files&gt; */
+/** Forbidden in &lt;Directory&gt;/&lt;Location&gt;/&lt;Files&gt;*/
 #define  NOT_IN_DIR_LOC_FILE    (NOT_IN_DIRECTORY|NOT_IN_LOCATION|NOT_IN_FILES) 
-/** Forbidden in <VirtualHost>/<Limit>/<Directory>/<Location>/<Files> */
+/** Forbidden in &lt;VirtualHost&gt;/&lt;Limit&gt;/&lt;Directory&gt;/&lt;Location&gt;/&lt;Files&gt; */
 #define  GLOBAL_ONLY            (NOT_IN_VIRTUALHOST|NOT_IN_LIMIT|NOT_IN_DIR_LOC_FILE) 
 
 /** @} */
@@ -861,7 +860,7 @@ AP_CORE_DECLARE(ap_conf_vector_t*) ap_merge_per_dir_configs(apr_pool_t *p,
  */
 AP_CORE_DECLARE(ap_conf_vector_t*) ap_create_conn_config(apr_pool_t *p);
 
-/* For http_core.c... (<Directory> command and virtual hosts) */
+/* For http_core.c... (&lt;Directory&gt; command and virtual hosts) */
 
 /**
  * parse an htaccess file

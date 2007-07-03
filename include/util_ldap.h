@@ -154,7 +154,7 @@ typedef struct util_ldap_state_t {
  *      connect if already connected (ldc->ldap != NULL). Does not bind
  *      if already bound.
  * @return If successful LDAP_SUCCESS is returned.
- * @deffunc int util_ldap_connection_open(request_rec *r,
+ * @fn int util_ldap_connection_open(request_rec *r,
  *                                        util_ldap_connection_t *ldc)
  */
 APR_DECLARE_OPTIONAL_FN(int,uldap_connection_open,(request_rec *r, 
@@ -167,7 +167,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_connection_open,(request_rec *r,
  * @tip This function unbinds from the LDAP server, and clears ldc->ldap.
  *      It is possible to rebind to this server again using the same ldc
  *      structure, using apr_ldap_open_connection().
- * @deffunc util_ldap_close_connection(util_ldap_connection_t *ldc)
+ * @fn util_ldap_close_connection(util_ldap_connection_t *ldc)
  */
 APR_DECLARE_OPTIONAL_FN(void,uldap_connection_close,(util_ldap_connection_t *ldc));
 
@@ -178,7 +178,7 @@ APR_DECLARE_OPTIONAL_FN(void,uldap_connection_close,(util_ldap_connection_t *ldc
  * @tip This function unbinds the LDAP connection, and disconnects from
  *      the server. It is used during error conditions, to bring the LDAP
  *      connection back to a known state.
- * @deffunc apr_status_t util_ldap_connection_unbind(util_ldap_connection_t *ldc)
+ * @fn apr_status_t util_ldap_connection_unbind(util_ldap_connection_t *ldc)
  */
 APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_unbind,(void *param));
 
@@ -188,7 +188,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_unbind,(void *param));
  *            that was connected.
  * @tip This function is registered with the pool cleanup to close down the
  *      LDAP connections when the server is finished with them.
- * @deffunc apr_status_t util_ldap_connection_cleanup(util_ldap_connection_t *ldc)
+ * @fn apr_status_t util_ldap_connection_cleanup(util_ldap_connection_t *ldc)
  */
 APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_cleanup,(void *param));
 
@@ -205,7 +205,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_cleanup,(void *param));
  *      lock that particular connection, so that another thread does not try and
  *      use this connection while it is busy. Once you are finished with a connection,
  *      apr_ldap_connection_close() must be called to release this connection.
- * @deffunc util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *host, int port,
+ * @fn util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *host, int port,
  *                                                           const char *binddn, const char *bindpw, deref_options deref,
  *                                                           int netscapessl, int starttls)
  */
@@ -227,7 +227,7 @@ APR_DECLARE_OPTIONAL_FN(util_ldap_connection_t *,uldap_connection_find,(request_
  * @tip Two DNs can be equal and still fail a string comparison. Eg "dc=example,dc=com"
  *      and "dc=example, dc=com". Use the compare_dn_on_server unless there are serious
  *      performance issues.
- * @deffunc int util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
+ * @fn int util_ldap_cache_comparedn(request_rec *r, util_ldap_connection_t *ldc,
  *                                        const char *url, const char *dn, const char *reqdn,
  *                                        int compare_dn_on_server)
  */
@@ -245,7 +245,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_comparedn,(request_rec *r, util_ldap_con
  * @param value The value of the attribute we are trying to compare for. 
  * @tip Use this function to determine whether an attribute/value pair exists within an
  *      object. Typically this would be used to determine LDAP group membership.
- * @deffunc int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
+ * @fn int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
  *                                      const char *url, const char *dn, const char *attrib, const char *value)
  */
 APR_DECLARE_OPTIONAL_FN(int,uldap_cache_compare,(request_rec *r, util_ldap_connection_t *ldc,
@@ -266,7 +266,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_compare,(request_rec *r, util_ldap_conne
  * @param retvals The values corresponding to the attributes requested in the attrs array.
  * @tip The filter supplied will be searched for. If a single entry is returned, an attempt
  *      is made to bind as that user. If this bind succeeds, the user is not validated.
- * @deffunc int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
+ * @fn int util_ldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
  *                                          char *url, const char *basedn, int scope, char **attrs,
  *                                          char *filter, char *bindpw, char **binddn, char ***retvals)
  */
@@ -288,7 +288,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_checkuserid,(request_rec *r, util_ldap_c
  * @param retvals The values corresponding to the attributes requested in the attrs array.
  * @tip The filter supplied will be searched for. If a single entry is returned, an attempt
  *      is made to bind as that user. If this bind succeeds, the user is not validated.
- * @deffunc int util_ldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
+ * @fn int util_ldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
  *                                          char *url, const char *basedn, int scope, char **attrs,
  *                                          char *filter, char **binddn, char ***retvals)
  */
@@ -298,7 +298,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_getuserdn,(request_rec *r, util_ldap_con
 
 /**
  * Checks if SSL support is available in mod_ldap
- * @deffunc int util_ldap_ssl_supported(request_rec *r)
+ * @fn int util_ldap_ssl_supported(request_rec *r)
  */
 APR_DECLARE_OPTIONAL_FN(int,uldap_ssl_supported,(request_rec *r));
 
@@ -310,7 +310,7 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_ssl_supported,(request_rec *r));
  * @param reqsize The size of the shared memory segement to request. A size
  *                of zero requests the max size possible from
  *                apr_shmem_init()
- * @deffunc void util_ldap_cache_init(apr_pool_t *p, util_ldap_state_t *st)
+ * @fn void util_ldap_cache_init(apr_pool_t *p, util_ldap_state_t *st)
  * @return The status code returned is the status code of the
  *         apr_smmem_init() call. Regardless of the status, the cache
  *         will be set up at least for in-process or in-thread operation.
@@ -324,7 +324,7 @@ apr_status_t util_ldap_cache_init(apr_pool_t *pool, util_ldap_state_t *st);
  * @param The pool to allocate the returned string from
  * @tip This function returns a string allocated from the provided pool that describes
  *      various stats about the cache.
- * @deffunc char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st)
+ * @fn char *util_ald_cache_display(apr_pool_t *pool, util_ldap_state_t *st)
  */
 char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st);
 #ifdef __cplusplus

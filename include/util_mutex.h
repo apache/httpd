@@ -43,7 +43,7 @@ AP_DECLARE_DATA extern const char ap_all_available_mutexes_string[];
  * @param mutexmech The APR mutex locking mechanism
  * @param mutexfile The lockfile to use as required
  * @return APR status code
- * @deffunc apr_status_t ap_parse_mutex(const char *arg, apr_pool_t *pool,
+ * @fn apr_status_t ap_parse_mutex(const char *arg, apr_pool_t *pool,
                                         apr_lockmech_e *mutexmech,
                                         const char **mutexfile)
  */

@@ -156,7 +156,7 @@
  * </pre>
  * @param major The major module magic number
  * @param minor The minor module magic number
- * @deffunc AP_MODULE_MAGIC_AT_LEAST(int major, int minor)
+ * @fn AP_MODULE_MAGIC_AT_LEAST(int major, int minor)
  */
 #define AP_MODULE_MAGIC_AT_LEAST(major,minor)		\
     ((major) < MODULE_MAGIC_NUMBER_MAJOR 		\
