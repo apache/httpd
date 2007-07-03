@@ -39,7 +39,7 @@ extern "C" {
  * @param r The current request
  * @param pdoc The XML post data
  * @return HTTP status code
- * @deffunc int ap_xml_parse_input(request_rec *r, apr_xml_doc **pdoc)
+ * @fn int ap_xml_parse_input(request_rec *r, apr_xml_doc **pdoc)
  */
 AP_DECLARE(int) ap_xml_parse_input(request_rec *r, apr_xml_doc **pdoc);
 

@@ -86,7 +86,7 @@ extern "C" {
  * @param plog the log pool, reset after the config file is read
  * @param server_conf the global server config.
  * @return 1 for shutdown 0 otherwise.
- * @deffunc int ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf)
+ * @fn int ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf)
  */
 AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf);
 
@@ -94,7 +94,7 @@ AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *serv
  * predicate indicating if a graceful stop has been requested ...
  * used by the connection loop 
  * @return 1 if a graceful stop has been requested, 0 otherwise
- * @deffunc int ap_graceful_stop_signalled(*void)
+ * @fn int ap_graceful_stop_signalled(*void)
  */
 AP_DECLARE(int) ap_graceful_stop_signalled(void);
 
@@ -156,7 +156,7 @@ AP_DECLARE(apr_status_t) ap_os_create_privileged_process(
  * @param query_code One of APM_MPMQ_*
  * @param result A location to place the result of the query
  * @return APR_SUCCESS or APR_ENOTIMPL
- * @deffunc int ap_mpm_query(int query_code, int *result)
+ * @fn int ap_mpm_query(int query_code, int *result)
  */
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result);
 

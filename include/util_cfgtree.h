@@ -39,9 +39,9 @@ typedef struct ap_directive_t ap_directive_t;
  *
  * The config tree only stores
  * the directives that will be active in the running server.  Directives
- * that contain other directions, such as <Directory ...> cause a sub-level
+ * that contain other directions, such as &lt;Directory ...&gt; cause a sub-level
  * to be created, where the included directives are stored.  The closing
- * directive (</Directory>) is not stored in the tree.
+ * directive (&lt;/Directory&gt;) is not stored in the tree.
  */
 struct ap_directive_t {
     /** The current directive */
@@ -49,14 +49,11 @@ struct ap_directive_t {
     /** The arguments for the current directive, stored as a space 
      *  separated list */
     const char *args;
-    /** The next directive node in the tree
-     *  @defvar ap_directive_t *next */
+    /** The next directive node in the tree */
     struct ap_directive_t *next;
-    /** The first child node of this directive 
-     *  @defvar ap_directive_t *first_child */
+    /** The first child node of this directive */
     struct ap_directive_t *first_child;
-    /** The parent node of this directive 
-     *  @defvar ap_directive_t *parent */
+    /** The parent node of this directive */
     struct ap_directive_t *parent;
 
     /** directive's module can store add'l data here */
@@ -71,7 +68,7 @@ struct ap_directive_t {
 
 /**
  * The root of the configuration tree
- * @defvar ap_directive_t *conftree
+ * @var ap_directive_t *conftree
  */
 AP_DECLARE_DATA extern ap_directive_t *ap_conftree;
 
