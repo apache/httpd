@@ -227,7 +227,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=534031
       2.2.x version of patch:
         http://people.apache.org/~rpluem/patches/40310.diff
-      +1: rpluem, jfclere
+      +1: rpluem, jfclere, jim
       jerenkrantz says: Does not apply cleanly to 2.2.x.
       rpluem answers: svn merge did not notice this / resolved this, but you are
                       correct. There is a conflict because r467014 is not
@@ -240,14 +240,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=539620
       2.2.x version of patch:
         (trunk applies cleanly)
-      +1: jerenkrantz, rpluem
+      +1: jerenkrantz, rpluem, jim
 
     * mod_cache: Do not set Date or Expires when missing/invalid.
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&revision=539621
       2.2.x version of patch:
         (trunk applies cleanly)
-      +1: jerenkrantz, rpluem
+      +1: jerenkrantz, rpluem, jim
 
     * mod_proxy: Add in ProxyPassMatch directive, that allows
      ProxyPass to take a regex.
@@ -262,7 +262,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&revision=550514
         http://svn.apache.org/viewvc?view=rev&revision=546128
-      +1: jfclere
+      +1: jfclere, jim
 
     * mod_proxy: Improve traces in ap_proxy_http_process_response()
       to investigate PR37770.
@@ -276,7 +276,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Rudiger's patch deals with mod_cache failure
       http://svn.apache.org/viewvc?view=rev&revision=541926
       http://svn.apache.org/viewvc?view=rev&revision=541990
-      +1: niq, rpluem
+      +1: niq, rpluem, jim
 
     * SECURITY: CVE-2007-1862 (cve.mitre.org)
       mod_mem_cache: Copy headers into longer lived storage; header names and
