@@ -77,6 +77,43 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_proxy_ajp: Fix wrong retry when sending the response failed.
+      PR 40310 (The old fixes weren't ok).
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=518938
+        http://svn.apache.org/viewvc?view=rev&revision=534031
+      2.2.x version of patch:
+        http://people.apache.org/~rpluem/patches/40310.diff
+      +1: rpluem, jfclere, jim
+      jerenkrantz says: Does not apply cleanly to 2.2.x.
+      rpluem answers: svn merge did not notice this / resolved this, but you are
+                      correct. There is a conflict because r467014 is not
+                      backported to 2.2.x so far. So I reset the votes and add a
+                      version of the patch that applies cleanly to 2.2.x.
+
+    * mod_cache: Correctly handle HEAD requests on expired cache content.
+      PR 41230
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=539620
+      2.2.x version of patch:
+        (trunk applies cleanly)
+      +1: jerenkrantz, rpluem, jim
+
+    * mod_cache: Do not set Date or Expires when missing/invalid.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=539621
+      2.2.x version of patch:
+        (trunk applies cleanly)
+      +1: jerenkrantz, rpluem, jim
+
+    * mod_cgi: Reverse the regression documented in PR 39710
+      (ErrorDocuments are *badly* broken).
+      Paul's patch reverses the change that introduced the bug.
+      Rudiger's patch deals with mod_cache failure
+      http://svn.apache.org/viewvc?view=rev&revision=541926
+      http://svn.apache.org/viewvc?view=rev&revision=541990
+      +1: niq, rpluem, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -220,35 +257,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-4groups-2.2.x.patch
      +1: chrisd
 
-    * mod_proxy_ajp: Fix wrong retry when sending the response failed.
-      PR 40310 (The old fixes weren't ok).
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=518938
-        http://svn.apache.org/viewvc?view=rev&revision=534031
-      2.2.x version of patch:
-        http://people.apache.org/~rpluem/patches/40310.diff
-      +1: rpluem, jfclere, jim
-      jerenkrantz says: Does not apply cleanly to 2.2.x.
-      rpluem answers: svn merge did not notice this / resolved this, but you are
-                      correct. There is a conflict because r467014 is not
-                      backported to 2.2.x so far. So I reset the votes and add a
-                      version of the patch that applies cleanly to 2.2.x.
-
-    * mod_cache: Correctly handle HEAD requests on expired cache content.
-      PR 41230
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=539620
-      2.2.x version of patch:
-        (trunk applies cleanly)
-      +1: jerenkrantz, rpluem, jim
-
-    * mod_cache: Do not set Date or Expires when missing/invalid.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=539621
-      2.2.x version of patch:
-        (trunk applies cleanly)
-      +1: jerenkrantz, rpluem, jim
-
     * mod_proxy: Add in ProxyPassMatch directive, that allows
      ProxyPass to take a regex.
       Trunk version of patch:
@@ -269,14 +277,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&rev=549420
       +1: jfclere
-
-    * mod_cgi: Reverse the regression documented in PR 39710
-      (ErrorDocuments are *badly* broken).
-      Paul's patch reverses the change that introduced the bug.
-      Rudiger's patch deals with mod_cache failure
-      http://svn.apache.org/viewvc?view=rev&revision=541926
-      http://svn.apache.org/viewvc?view=rev&revision=541990
-      +1: niq, rpluem, jim
 
     * SECURITY: CVE-2007-1862 (cve.mitre.org)
       mod_mem_cache: Copy headers into longer lived storage; header names and
