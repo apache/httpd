@@ -1,6 +1,9 @@
 Changes with Apache 1.3.38
 
-
+  *) SECURITY: CVE-2007-3304 (cve.mitre.org)
+     Ensure that the parent process cannot be forced to kill non-child
+     processes by checking scoreboard PID data with parent process
+     privately stored PID data. [Jim Jagielski]
 
 Changes with Apache 1.3.37
 
