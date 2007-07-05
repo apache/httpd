@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
+  *) mod_cache: Correctly handle HEAD requests on expired cache content.
+     PR 41230.  [Niklas Edmundsson]
+
   *) SECURITY: CVE-2007-1863 (cve.mitre.org)
      mod_cache: Prevent a segmentation fault if attributes are listed in a 
      Cache-Control header without any value. 

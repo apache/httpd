@@ -77,14 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_cache: Correctly handle HEAD requests on expired cache content.
-      PR 41230
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=539620
-      2.2.x version of patch:
-        (trunk applies cleanly)
-      +1: jerenkrantz, rpluem, jim
-
     * mod_cache: Do not set Date or Expires when missing/invalid.
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&revision=539621
