@@ -77,13 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_cache: Do not set Date or Expires when missing/invalid.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=539621
-      2.2.x version of patch:
-        (trunk applies cleanly)
-      +1: jerenkrantz, rpluem, jim
-
     * mod_cgi: Reverse the regression documented in PR 39710
       (ErrorDocuments are *badly* broken).
       Paul's patch reverses the change that introduced the bug.
