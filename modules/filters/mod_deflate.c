@@ -44,6 +44,7 @@
 #include "http_request.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "http_protocol.h"
 
 #include "zlib.h"
 
@@ -576,6 +577,11 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
                 return rv;
             }
             continue;
+        }
+
+        if (AP_BUCKET_IS_ERROR(e)) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, bb);
         }
 
         /* read */
