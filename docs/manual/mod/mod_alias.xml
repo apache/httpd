@@ -107,7 +107,7 @@ ignored.</p>
     <directive module="core">DocumentRoot</directive>. URLs with a
     (%-decoded) path beginning with <var>url-path</var> will be mapped
     to local files beginning with <var>directory-path</var>.  The 
-    <var>url-path</var> is case-sensitive, even on case-insenitive 
+    <var>url-path</var> is case-sensitive, even on case-insensitive 
     file systems.</p>
 
     <example><title>Example:</title>
