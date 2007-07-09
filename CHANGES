@@ -1,16 +1,16 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.5
 
-  *) mod_cache: Do not set Date or Expires when they are missing from
-     the original response or are invalid.  [Justin Erenkrantz]
-
-  *) mod_cache: Correctly handle HEAD requests on expired cache content.
-     PR 41230.  [Niklas Edmundsson]
-
   *) SECURITY: CVE-2007-1863 (cve.mitre.org)
      mod_cache: Prevent a segmentation fault if attributes are listed in a 
      Cache-Control header without any value. 
      [Niklas Edmundsson <nikke acc.umu.se>]
+
+  *) mod_cache: Do not set Date or Expires when they are missing from
+     the original response or are invalid.  [Justin Erenkrantz]
+
+  *) mod_cache: Correctly handle HEAD requests on expired cache content.
+     PR 41230.  [Niklas Edmundsson <nikke acc.umu.se>]
 
   *) mod_cache: Let Cache-Control max-age set the expiration of the cached
      representation if Expires is not set.  [Justin Erenkrantz]
@@ -22,40 +22,40 @@ Changes with Apache 2.2.5
      [Justin Erenkrantz]
 
   *) mod_proxy: Print the correct error message for erroneous configured
-     ProxyPass directives. PR 40439. [serai lans-tv.com]
+     ProxyPass directives. PR 40439.  [Takashi Sato <serai lans-tv.com>]
 
   *) mod_so: Provide more helpful LoadModule feedback when an error occurs.
      [William Rowe]
 
-  *) mod_alias: Accept path components (URL part) in Redirects.  PR 35314.
+  *) mod_alias: Accept path components (URL part) in Redirects. PR 35314.
      [Nick Kew]
 
-  *) mod_headers: Allow % at the end of a Header value.  PR 36609.
+  *) mod_headers: Allow % at the end of a Header value. PR 36609.
      [Nick Kew, Ruediger Pluem]
 
   *) mod_cache: Use the same cache key throughout the whole request processing
-     to handle escaped URLs correctly.  PR 41475. [Ruediger Pluem]
+     to handle escaped URLs correctly.  PR 41475.  [Ruediger Pluem]
 
-  *) mod_cache: Add CacheIgnoreQueryString directive.  PR 41484.
+  *) mod_cache: Add CacheIgnoreQueryString directive. PR 41484.
      [Fredrik Widlund <fredrik.widlund qbrick.com>]
 
   *) mod_cache: While serving a cached entity ensure that filters that have
      been applied to this cached entity before saving it to the cache are not
-     applied again. PR 40090. [Ruediger Pluem]
+     applied again. PR 40090.  [Ruediger Pluem]
 
   *) mod_cache: Correctly cache objects whose URL query string has been
-     modified by mod_rewrite. PR 40805. [Ruediger Pluem]
+     modified by mod_rewrite. PR 40805.  [Ruediger Pluem]
 
   *) HTTP proxy ProxyErrorOverride: Leave 1xx and 3xx responses alone.  Only
-     processing of error responses (4xx, 5xx) will be altered.  PR 39245.
+     processing of error responses (4xx, 5xx) will be altered. PR 39245.
      [Jeff Trawick, Bart van der Schans <schans hippo.nl>]
 
   *) htdbm: Enable crypt support on platforms with crypt() but not
-     <crypt.h>, such as z/OS. [David Jones <oscaremma gmail.com>]
+     <crypt.h>, such as z/OS.  [David Jones <oscaremma gmail.com>]
 
   *) mod_ssl: initialize thread locks before initializing the hardware
-     acceleration library, so the latter can make use of the former. 
-     PR 20951. [adunn at ncipher.com]
+     acceleration library, so the latter can make use of the former.
+     PR 20951.  [<adunn at ncipher.com>]
 
   *) ab.c: Correct behavior of HTTP request headers sent by ab
      in presence of -H command-line overrides. PR 31268, 26554.
@@ -71,18 +71,18 @@ Changes with Apache 2.2.5
      [David Jones <oscaremma gmail com>]
 
   *) core: Correct a regression since 2.0.x in the handling of AllowOverride 
-     Options.  PR 41829.  [Torsten Förtsch <torsten.foertsch gmx.net>]
+     Options. PR 41829.  [Torsten Förtsch <torsten.foertsch gmx.net>]
 
   *) mod_proxy_http: Handle request bodies larger than 2 GB by converting
      the Content-Length header of the request correctly. PR 40883.
      [Ruediger Pluem, toadie <toadie643 gmail.com>]
 
   *) mod_proxy: Fix some proxy setting inheritance problems (eg:
-     ProxyTimeout). PR 11540. [Stuart Children <stuart terminus.co.uk>]
+     ProxyTimeout). PR 11540.  [Stuart Children <stuart terminus.co.uk>]
 
   *) Unix MPMs: Catch SIGFPE so that exception hooks and CoreDumpDirectory
      can work after that terminating signal.
-     [Eric Covener <covener gmail.com>]
+     [Eric Covener]
 
   *) Win32: Makefile.win will now build with MS VC 8 (Visual Studio 2005)
      including embedding the .manifest information into each binary.
