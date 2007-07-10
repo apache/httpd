@@ -162,7 +162,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           perhaps this is not an Apache module DSO, or was compiled 
           for a different Apache version?
        http://svn.apache.org/viewvc?view=rev&rev=520733
-       +1: wrowe
+       +1: wrowe, sctemme
 
     * SECURITY: CVE-2006-5752
       mod_status XSS fix for broken browsers:
