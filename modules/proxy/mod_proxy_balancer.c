@@ -241,6 +241,7 @@ static proxy_worker *find_route_worker(proxy_balancer *balancer,
 static proxy_worker *find_session_route(proxy_balancer *balancer,
                                         request_rec *r,
                                         char **route,
+                                        const char **sticky_used,
                                         char **url)
 {
     proxy_worker *worker = NULL;
@@ -253,13 +254,16 @@ static proxy_worker *find_session_route(proxy_balancer *balancer,
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "proxy: BALANCER: Found value %s for "
                      "stickysession %s", *route, balancer->sticky_path);
+        *sticky_used =  balancer->sticky_path;
     }
     else {
         *route = get_cookie_param(r, balancer->sticky);
-        if (*route)
+        if (*route) {
+            *sticky_used =  balancer->sticky;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "proxy: BALANCER: Found value %s for "
                          "stickysession %s", *route, balancer->sticky);
+        }
     }
     /*
      * If we found a value for sticksession, find the first '.' within.
@@ -410,6 +414,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     int access_status;
     proxy_worker *runtime;
     char *route = NULL;
+    const char *sticky = NULL;
     apr_status_t rv;
 
     *worker = NULL;
@@ -436,7 +441,7 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     force_recovery(*balancer, r->server);
 
     /* Step 4: find the session route */
-    runtime = find_session_route(*balancer, r, &route, url);
+    runtime = find_session_route(*balancer, r, &route, &sticky, url);
     if (runtime) {
         int i, total_factor = 0;
         proxy_worker *workers;
@@ -520,12 +525,12 @@ static int proxy_balancer_pre_request(proxy_worker **worker,
     access_status = rewrite_url(r, *worker, url);
     /* Add the session route to request notes if present */
     if (route) {
-        apr_table_setn(r->notes, "session-sticky", (*balancer)->sticky);
+        apr_table_setn(r->notes, "session-sticky", sticky);
         apr_table_setn(r->notes, "session-route", route);
 
         /* Add session info to env. */
         apr_table_setn(r->subprocess_env,
-                       "BALANCER_SESSION_STICKY", (*balancer)->sticky);
+                       "BALANCER_SESSION_STICKY", sticky);
         apr_table_setn(r->subprocess_env,
                        "BALANCER_SESSION_ROUTE", route);
     }
