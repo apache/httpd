@@ -114,6 +114,24 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    *) SECURITY: CVE-2007-1863 (cve.mitre.org)
+      mod_cache: Prevent segfault from Cache-Control headers with no
+      values
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&rev=535617
+      2.0.x version of patch:
+        http://people.apache.org/~mjc/cve-2007-1863-2.0.patch
+      +1: mjc, rpluem, jorton
+
+    * SECURITY: CVE-2007-3304
+      scoreboard pid protection fixes -- the only fix for 2.0.x is
+      to ensure a valid positive pid is passed to apr_proc_wait(); 
+      the MPMs do not kill children directly as in 2.2.x.
+      trunk commit:
+        http://svn.apache.org/viewvc?view=rev&rev=551843
+      patch for 2.0.x:
+        http://people.apache.org/~jorton/httpd-2.0.x-CVE-2007-3304.patch
+      +1: jorton, jim, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -146,28 +164,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&rev=520733
        +1: wrowe
 
-    * SECURITY: CVE-2007-3304
-      scoreboard pid protection fixes -- the only fix for 2.0.x is
-      to ensure a valid positive pid is passed to apr_proc_wait(); 
-      the MPMs do not kill children directly as in 2.2.x.
-      trunk commit:
-        http://svn.apache.org/viewvc?view=rev&rev=551843
-      patch for 2.0.x:
-        http://people.apache.org/~jorton/httpd-2.0.x-CVE-2007-3304.patch
-      +1: jorton, jim
-
     * SECURITY: CVE-2006-5752
       mod_status XSS fix for broken browsers:
         http://svn.apache.org/viewvc?view=rev&rev=549159
-      +1: jorton
-
-    * SECURITY: CVE-2007-1863
-      mod_cache fix for handling Cache-Control attributes
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=535617
-      2.0.x version of patch:
-        http://people.apache.org/~mjc/cve-2007-1863-2.0.patch
-      +1: jorton
+      +1: jorton, rpluem
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
@@ -323,15 +323,6 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
              looking at the headers.  For that matter, why are subreq's even
              propogating POST or other non-GET types?  It seems that almost
              any subreq should be handled as a GET in 2.0.
-
-    *) SECURITY: CVE-2007-1863 (cve.mitre.org)
-      mod_cache: Prevent segfault from Cache-Control headers with no
-      values
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=535617
-      2.0.x version of patch:
-        http://people.apache.org/~mjc/cve-2007-1863-2.0.patch
-      +1: mjc, rpluem
 
 CURRENT VOTES:
 
