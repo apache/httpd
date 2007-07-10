@@ -265,7 +265,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=537599
       2.2.x version of patch:
         http://people.apache.org/~jim/patches/ppmatch.txt
-      +1: jim
+      +1: jim, jfclere
 
     * mod_proxy: Improve traces in ap_proxy_http_process_response()
       to investigate PR37770.
