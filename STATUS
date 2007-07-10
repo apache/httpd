@@ -293,6 +293,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=551424
       +1: fuankg
 
+    * mod_proxy: Allow to use different values for sessionid
+      in url encoded id and cookies. (PR 41897)
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&rev=550519
+        http://svn.apache.org/viewvc?view=rev&rev=551099
+        http://svn.apache.org/viewvc?view=rev&rev=551126
+        http://svn.apache.org/viewvc?view=rev&rev=551935
+        http://svn.apache.org/viewvc?view=rev&rev=554892
+      2.2.x version of patch:
+        http://issues.apache.org/bugzilla/attachment.cgi?id=20480
+      +1: jfclere
 
 PATCHES/ISSUES THAT ARE STALLED
 
