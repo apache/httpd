@@ -133,7 +133,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~jorton/httpd-2.0.x-CVE-2007-3304.patch
       +1: jorton, jim, rpluem
 
-    *) Backport 520733; more helpful LoadModule feedback, so it reads;
+    * Backport 520733; more helpful LoadModule feedback, so it reads;
           Syntax error in -C/-c directive:
           API module structure 'ftp_module' in file /.../modules/mod_ftp.so 
           is garbled - expected signature 41503230 but saw 41503232 -
@@ -141,6 +141,11 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
           for a different Apache version?
        http://svn.apache.org/viewvc?view=rev&rev=520733
        +1: wrowe, sctemme, rpluem
+
+    * SECURITY: CVE-2006-5752
+      mod_status XSS fix for broken browsers:
+        http://svn.apache.org/viewvc?view=rev&rev=549159
+      +1: jorton, rpluem, sctemme
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -150,6 +155,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * ApacheMonitor: Fix Windows Vista detection.
       http://svn.apache.org/viewvc?view=rev&revision=536052      
       +1: mturk
+      sctemme: as wrowe notes in 2.2 STATUS, it would make sense to
+      make this future-resilient.
       
     *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
@@ -163,11 +170,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        fix mod_ssl.so to compile against .a openssl archives.
          http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
        +1: wrowe, colm
-
-    * SECURITY: CVE-2006-5752
-      mod_status XSS fix for broken browsers:
-        http://svn.apache.org/viewvc?view=rev&rev=549159
-      +1: jorton, rpluem
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
