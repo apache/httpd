@@ -95,6 +95,7 @@ APR_ADDTO(LDFLAGS, `$apr_config --ldflags`)
 SHLIBPATH_VAR=`$apr_config --shlib-path-var`
 APR_BINDIR=`$apr_config --bindir`
 APR_INCLUDEDIR=`$apr_config --includedir`
+APR_INCLUDES=`$apr_config --includes`
 APR_VERSION=`$apr_config --version`
 APR_CONFIG="$APR_BINDIR/apr-`echo ${APR_VERSION} | sed 's,\..*,,'`-config"
 
@@ -136,6 +137,7 @@ fi
 APR_ADDTO(LDFLAGS, `$apu_config --ldflags`)
 APU_BINDIR=`$apu_config --bindir`
 APU_INCLUDEDIR=`$apu_config --includedir`
+APU_INCLUDES=`$apu_config --includes`
 APU_VERSION=`$apu_config --version`
 APU_CONFIG="$APU_BINDIR/apu-`echo ${APU_VERSION} | sed 's,\..*,,'`-config"
 

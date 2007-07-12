@@ -117,7 +117,7 @@ AC_DEFUN([CHECK_SSL_MEMCACHE], [
   fi
   if test "$ap_ssltk_mc" = "yes"; then
     save_cpp=$CPPFLAGS
-    CPPFLAGS="$CPPFLAGS -I$APR_INCLUDEDIR -I$APU_INCLUDEDIR"
+    CPPFLAGS="$CPPFLAGS -I$APR_INCLUDES -I$APU_INCLUDES"
     AC_CHECK_HEADER(
       [apr_memcache.h],
       [],
