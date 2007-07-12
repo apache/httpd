@@ -448,7 +448,7 @@ static util_ldap_connection_t *
             uldap_connection_find(request_rec *r,
                                   const char *host, int port,
                                   const char *binddn, const char *bindpw,
-                                  deref_options deref, int secure)
+                                  int deref, int secure)
 {
     struct util_ldap_connection_t *l, *p; /* To traverse the linked list */
     int secureflag = secure;
