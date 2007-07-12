@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.60
 
+  *) SECURITY: CVE-2006-5752 (cve.mitre.org)
+     mod_status: Fix a possible XSS attack against a site with a public
+     server-status page and ExtendedStatus enabled, for browsers which
+     perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
+
   *) mod_ssl: initialize thread locks before initializing the hardware
      acceleration library, so the latter can make use of the former. 
      PR 20951. [<adunn ncipher.com>]
