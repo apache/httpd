@@ -105,17 +105,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=546128
       +1: jfclere, jim, rpluem
 
-    * SECURITY: CVE-2007-1862 (cve.mitre.org)
-      mod_mem_cache: Copy headers into longer lived storage; header names and
-      values could previously point to cleaned up storage
-      PR 41551
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=543515
-      2.2.x version of patch:
-        http://people.apache.org/~covener/2.2.x-mod_memcache-poolmgmt.diff
-      +1: covener, jorton, rpluem
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * ApacheMonitor: Fix Windows Vista detection.
