@@ -45,13 +45,6 @@
 #include "unixd.h"
 #endif
 
-    /* defines for certificate file types
-    */
-#define LDAP_CA_TYPE_UNKNOWN            0
-#define LDAP_CA_TYPE_DER                1
-#define LDAP_CA_TYPE_BASE64             2
-#define LDAP_CA_TYPE_CERT7_DB           3
-
 /* Default define for ldap functions that need a SIZELIMIT but
  * do not have the define
  * XXX This should be removed once a supporting #define is 
