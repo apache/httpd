@@ -305,6 +305,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://issues.apache.org/bugzilla/attachment.cgi?id=20480
       +1: jfclere
 
+    * mod_ldap: Change an enumeration to an int where data
+      is passed back into the LDAP SDK by reference
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&rev=555470
+      2.2.x version of patch:
+        http://people.apache.org/~covener/2.2.x-deref_aliases.diff
+      +1: covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
