@@ -765,7 +765,7 @@ require group <em>mygroupfile</em>
 <name>AuthLDAPDereferenceAliases</name>
 <description>When will the module de-reference aliases</description>
 <syntax>AuthLDAPDereferenceAliases never|searching|finding|always</syntax>
-<default>AuthLDAPDereferenceAliases Always</default>
+<default>AuthLDAPDereferenceAliases always</default>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
