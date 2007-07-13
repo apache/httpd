@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
+ 
+  *) mod_deflate: don't try to process metadata buckets as data.  what should
+     have been a 413 error was logged as a 500 and a blank screen appeared
+     at the browser.
+     [Greg Ames, Ruediger Pluem]
 
   *) SECURITY: CVE-2007-3304 (cve.mitre.org)
      prefork, worker, event MPMs: Ensure that the parent process cannot
