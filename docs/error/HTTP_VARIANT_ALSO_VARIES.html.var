@@ -88,7 +88,7 @@ Body:----------it--
 --><!--#include virtual="include/top.html" -->
 
     Non &egrave; possibile accedere all'entit&agrave;
-    richiesta perch&eacute; &grave; essa stessa
+    richiesta perch&eacute; &egrave; essa stessa
     una risorsa negoziabile.
 
 <!--#include virtual="include/bottom.html" -->
