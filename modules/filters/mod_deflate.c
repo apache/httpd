@@ -44,7 +44,6 @@
 #include "http_request.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
-#include "http_protocol.h"
 
 #include "zlib.h"
 
