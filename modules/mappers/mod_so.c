@@ -270,9 +270,12 @@ static const char *load_module(cmd_parms *cmd, void *dummy,
      * 
      */
     if (modp->magic != MODULE_MAGIC_COOKIE) {
-        return apr_pstrcat(cmd->pool, "API module structure `", modname,
-                          "' in file ", szModuleFile, " is garbled -"
-                          " perhaps this is not an Apache module DSO?", NULL);
+        return apr_psprintf(cmd->pool, "API module structure '%s' in file %s "
+                            "is garbled - expected signature %08lx but saw "
+                            "%08lx - perhaps this is not an Apache module DSO, "
+                            "or was compiled for a different Apache version?",
+                            modname, szModuleFile, 
+                            MODULE_MAGIC_COOKIE, modp->magic);
     }
 
     /* 

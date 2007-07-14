@@ -6,6 +6,11 @@ Changes with Apache 2.0.60
      server-status page and ExtendedStatus enabled, for browsers which
      perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
 
+  *) mod_so: Solve dev's confusion by reporting expected/seen module
+     magic signatures when failing with a 'garbled' message, and solve
+     user's confusion by pointing out 'perhaps compiled for a different
+     version of apache?'.  [William Rowe]
+
   *) mod_ssl: initialize thread locks before initializing the hardware
      acceleration library, so the latter can make use of the former. 
      PR 20951. [<adunn ncipher.com>]
