@@ -6,6 +6,11 @@ Changes with Apache 2.0.60
      server-status page and ExtendedStatus enabled, for browsers which
      perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
 
+  *) SECURITY: CVE-2007-3304 (cve.mitre.org)
+     scoreboard pid protection fixes -- the only fix for 2.0.x is
+     to ensure a valid positive pid is passed to apr_proc_wait(); 
+     the MPMs do not kill children directly as in 2.2.x.
+
   *) mod_so: Solve dev's confusion by reporting expected/seen module
      magic signatures when failing with a 'garbled' message, and solve
      user's confusion by pointing out 'perhaps compiled for a different

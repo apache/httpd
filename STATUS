@@ -123,16 +123,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~mjc/cve-2007-1863-2.0.patch
       +1: mjc, rpluem, jorton
 
-    * SECURITY: CVE-2007-3304
-      scoreboard pid protection fixes -- the only fix for 2.0.x is
-      to ensure a valid positive pid is passed to apr_proc_wait(); 
-      the MPMs do not kill children directly as in 2.2.x.
-      trunk commit:
-        http://svn.apache.org/viewvc?view=rev&rev=551843
-      patch for 2.0.x:
-        http://people.apache.org/~jorton/httpd-2.0.x-CVE-2007-3304.patch
-      +1: jorton, jim, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
