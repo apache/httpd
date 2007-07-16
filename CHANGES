@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.60
 
+  *) SECURITY: CVE-2007-1863 (cve.mitre.org)
+     mod_cache: Prevent segmentation fault if a Cache-Control header has
+     no value.  [Niklas Edmundsson <nikke acc.umu.se>]
+
   *) SECURITY: CVE-2006-5752 (cve.mitre.org)
      mod_status: Fix a possible XSS attack against a site with a public
      server-status page and ExtendedStatus enabled, for browsers which
