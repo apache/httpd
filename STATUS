@@ -114,14 +114,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * SECURITY: CVE-2007-1863 (cve.mitre.org)
-      mod_cache: Prevent segfault from Cache-Control headers with no
-      values
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=535617
-      2.0.x version of patch:
-        http://people.apache.org/~mjc/cve-2007-1863-2.0.patch
-      +1: mjc, rpluem, jorton
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
