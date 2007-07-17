@@ -77,14 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy: Add in ProxyPassMatch directive, that allows
-     ProxyPass to take a regex.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=537429
-        http://svn.apache.org/viewvc?view=rev&revision=537599
-      2.2.x version of patch:
-        http://people.apache.org/~jim/patches/ppmatch.txt
-      +1: jim, jfclere, mturk
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     
