@@ -926,14 +926,30 @@ static int cgi_handler(request_rec *r)
         if ((ret = ap_scan_script_header_err_brigade(r, bb, sbuf))) {
             ret = log_script(r, conf, ret, dbuf, sbuf, bb, script_err);
 
-            /* Set our status. */
-            r->status = ret;
-
-            /* Pass EOS bucket down the filter chain. */
-            apr_brigade_cleanup(bb);
-            b = apr_bucket_eos_create(c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(bb, b);
-            ap_pass_brigade(r->output_filters, bb);
+            /*
+             * ret could be HTTP_NOT_MODIFIED in the case that the CGI script
+             * does not set an explicit status and ap_meets_conditions, which
+             * is called by ap_scan_script_header_err_brigade, detects that
+             * the conditions of the requests are met and the response is
+             * not modified.
+             * In this case set r->status and return OK in order to prevent
+             * running through the error processing stack as this would
+             * break with mod_cache, if the conditions had been set by
+             * mod_cache itself to validate a stale entity.
+             * BTW: We circumvent the error processing stack anyway if the
+             * CGI script set an explicit status code (whatever it is) and
+             * the only possible values for ret here are:
+             *
+             * HTTP_NOT_MODIFIED          (set by ap_meets_conditions)
+             * HTTP_PRECONDITION_FAILED   (set by ap_meets_conditions)
+             * HTTP_INTERNAL_SERVER_ERROR (if something went wrong during the
+             * processing of the response of the CGI script, e.g broken headers
+             * or a crashed CGI process).
+             */
+            if (ret == HTTP_NOT_MODIFIED) {
+                r->status = ret;
+                return OK;
+            }
 
             return ret;
         }
