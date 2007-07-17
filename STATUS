@@ -254,13 +254,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=537599
       2.2.x version of patch:
         http://people.apache.org/~jim/patches/ppmatch.txt
-      +1: jim, jfclere
+      +1: jim, jfclere, mturk
 
     * mod_proxy: Improve traces in ap_proxy_http_process_response()
       to investigate PR37770.
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&rev=549420
-      +1: jfclere
+      +1: jfclere, mturk
 
     * netware build system: various changes
       fixes to generated conf files
@@ -292,7 +292,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=554892
       2.2.x version of patch:
         http://issues.apache.org/bugzilla/attachment.cgi?id=20480
-      +1: jfclere
+      +1: jfclere, mturk
 
     * mod_ldap: Change an enumeration to an int where data
       is passed back into the LDAP SDK by reference
