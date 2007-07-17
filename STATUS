@@ -113,6 +113,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       wrowe notes post today to list, can we please test for >= VISTA
       so this doesn't break again upon the release of longhorn server
       or 'nextgen' windows?
+      mturk notes: No, because we cannot be sure that any further version
+      will not break either the service or GUI api, in which case we
+      would need a separate code depending on the post VISTA versions.
  
     * mpm_winnt: Fix return values from wait_for_many_objects.
       Note - this is required to avoid hangups of socket #64, #128
