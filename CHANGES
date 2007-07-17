@@ -21,6 +21,9 @@ Changes with Apache 2.2.5
      values could previously point to cleaned up storage.  PR 41551.
      [Davi Arnaut <davi haxent.com.br>]
 
+  *) mod_proxy: Added ProxyPassMatch directive, which is similar
+     to ProxyPass but takes a regex local path prefix. [Jim Jagielski]
+
   *) mod_cache: Do not set Date or Expires when they are missing from
      the original response or are invalid.  [Justin Erenkrantz]
 
