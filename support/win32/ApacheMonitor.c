@@ -280,10 +280,7 @@ BOOL GetSystemOSVersion(LPDWORD dwVersion)
     switch (osvi.dwPlatformId)
     {
     case VER_PLATFORM_WIN32_NT:
-        if (osvi.dwMajorVersion <= 4) {
-            *dwVersion = OS_VERSION_WINNT;
-        }
-        else if (osvi.dwMajorVersion == 5) {
+        if (osvi.dwMajorVersion == 5) {
             if (osvi.dwMinorVersion == 1)
                 *dwVersion = OS_VERSION_WINXP;
             else
@@ -292,9 +289,8 @@ BOOL GetSystemOSVersion(LPDWORD dwVersion)
         else if (osvi.dwMajorVersion == 6) {
             *dwVersion = OS_VERSION_VISTA;
         }
-        else {
-            return FALSE;
-        }
+        else
+            *dwVersion = OS_VERSION_WINNT;            
         break;
 
     case VER_PLATFORM_WIN32_WINDOWS:
