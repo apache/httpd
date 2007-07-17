@@ -270,7 +270,7 @@ static int status_handler(request_rec *r)
     if (r->method_number != M_GET)
         return DECLINED;
 
-    ap_set_content_type(r, "text/html");
+    ap_set_content_type(r, "text/html; charset=ISO-8859-1");
 
     /*
      * Simple table-driven form data set parser that lets you alter the header
@@ -299,7 +299,7 @@ static int status_handler(request_rec *r)
                     no_table_report = 1;
                     break;
                 case STAT_OPT_AUTO:
-                    ap_set_content_type(r, "text/plain");
+                    ap_set_content_type(r, "text/plain; charset=ISO-8859-1");
                     short_report = 1;
                     break;
                 }
@@ -673,7 +673,8 @@ static int status_handler(request_rec *r)
                                ap_escape_html(r->pool,
                                               ws_record->client),
                                ap_escape_html(r->pool,
-                                              ws_record->request),
+                                              ap_escape_logitem(r->pool,
+                                                                ws_record->request)),
                                ap_escape_html(r->pool,
                                               ws_record->vhost));
                 }
@@ -763,7 +764,8 @@ static int status_handler(request_rec *r)
                                    ap_escape_html(r->pool,
                                                   ws_record->vhost),
                                    ap_escape_html(r->pool,
-                                                  ws_record->request));
+                                                  ap_escape_logitem(r->pool, 
+                                                                    ws_record->request)));
                 } /* no_table_report */
             } /* for (j...) */
         } /* for (i...) */

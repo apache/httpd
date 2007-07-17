@@ -11,6 +11,11 @@ Changes with Apache 2.2.5
      be forced to kill processes outside its process group. 
      [Joe Orton, Jim Jagielski]
 
+  *) SECURITY: CVE-2006-5752 (cve.mitre.org)
+     mod_status: Fix a possible XSS attack against a site with a public
+     server-status page and ExtendedStatus enabled, for browsers which
+     perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
+
   *) mod_cache: Do not set Date or Expires when they are missing from
      the original response or are invalid.  [Justin Erenkrantz]
 
