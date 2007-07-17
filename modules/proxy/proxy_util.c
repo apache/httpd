@@ -2036,6 +2036,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     int loglevel;
     apr_sockaddr_t *backend_addr = conn->addr;
     apr_socket_t *newsock;
+    void *sconf = s->module_config;
+    proxy_server_conf *conf =
+        (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     if (conn->sock) {
         /*
@@ -2083,6 +2086,9 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         /* Set a timeout on the socket */
         if (worker->timeout_set == 1) {
             apr_socket_timeout_set(newsock, worker->timeout);
+        }
+        else if (conf->timeout_set == 1) {
+            apr_socket_timeout_set(newsock, conf->timeout);
         }
         else {
              apr_socket_timeout_set(newsock, s->timeout);
@@ -2147,6 +2153,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
 {
     apr_sockaddr_t *backend_addr = conn->addr;
     int rc;
+    apr_interval_time_t current_timeout;
 
     /*
      * The socket is now open, create a new backend server connection
@@ -2196,6 +2203,12 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                  "proxy: %s: connection complete to %pI (%s)",
                  proxy_function, backend_addr, conn->hostname);
 
+    /*
+     * save the timout of the socket because core_pre_connection
+     * will set it to base_server->timeout
+     * (core TimeOut directive).
+     */
+    apr_socket_timeout_get(conn->sock, &current_timeout);
     /* set up the connection filters */
     rc = ap_run_pre_connection(conn->connection, conn->sock);
     if (rc != OK && rc != DONE) {
@@ -2205,6 +2218,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                      proxy_function, rc);
         return rc;
     }
+    apr_socket_timeout_set(conn->sock, current_timeout);
 
     return OK;
 }
