@@ -113,6 +113,8 @@
  * 20051115.3 (2.2.3)  Added server_scheme member to server_rec (minor)
  * 20051115.4 (2.2.4)  Added ap_get_server_banner() and
  *                         ap_get_server_description() (minor)
+ * 20051115.5 (2.2.5)  Added ap_mpm_safe_kill() (minor)
+ *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503232UL /* "AP22" */
@@ -120,7 +122,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 4                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 5                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

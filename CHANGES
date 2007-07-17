@@ -6,6 +6,11 @@ Changes with Apache 2.2.5
      Cache-Control header without any value. 
      [Niklas Edmundsson <nikke acc.umu.se>]
 
+  *) SECURITY: CVE-2007-3304 (cve.mitre.org)
+     prefork, worker, event MPMs: Ensure that the parent process cannot
+     be forced to kill processes outside its process group. 
+     [Joe Orton, Jim Jagielski]
+
   *) mod_cache: Do not set Date or Expires when they are missing from
      the original response or are invalid.  [Justin Erenkrantz]
 
