@@ -122,9 +122,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * ApacheMonitor: Fix Windows Vista detection.
       http://svn.apache.org/viewvc?view=rev&revision=536052      
+      http://svn.apache.org/viewvc?view=rev&revision=556879
+      http://svn.apache.org/viewvc?view=rev&revision=557188
       +1: mturk
       sctemme: as wrowe notes in 2.2 STATUS, it would make sense to
       make this future-resilient.
+      mturk: Updated proposal with generis OS detection
       
     *) Reverse Proxy fixes: <Location> bug and Cookie support
         Patch is at
