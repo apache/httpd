@@ -273,7 +273,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&rev=555470
       2.2.x version of patch:
         http://people.apache.org/~covener/2.2.x-deref_aliases.diff
-      +1: covener
+      +1: covener,rederpj
 
     * mod_proxy_ajp: Add support of ProxyIOBufferSize.
       Trunk version of patch:
