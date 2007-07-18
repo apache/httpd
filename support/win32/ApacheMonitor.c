@@ -49,8 +49,7 @@
 #define OS_VERSION_WIN9X    1
 #define OS_VERSION_WINNT    2
 #define OS_VERSION_WIN2K    3
-#define OS_VERSION_WINXP    4
-#define OS_VERSION_VISTA    5
+
 /* Should be enough */
 #define MAX_APACHE_SERVICES 128
 #define MAX_APACHE_COMPUTERS 32
@@ -280,15 +279,8 @@ BOOL GetSystemOSVersion(LPDWORD dwVersion)
     switch (osvi.dwPlatformId)
     {
     case VER_PLATFORM_WIN32_NT:
-        if (osvi.dwMajorVersion == 5) {
-            if (osvi.dwMinorVersion == 1)
-                *dwVersion = OS_VERSION_WINXP;
-            else
-                *dwVersion = OS_VERSION_WIN2K;
-        }
-        else if (osvi.dwMajorVersion == 6) {
-            *dwVersion = OS_VERSION_VISTA;
-        }
+        if (osvi.dwMajorVersion >= 5)
+            *dwVersion = OS_VERSION_WIN2K;
         else
             *dwVersion = OS_VERSION_WINNT;            
         break;
