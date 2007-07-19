@@ -57,7 +57,7 @@ typedef struct {
     char **attributes;              /* Array of all the attributes to return */
     int scope;                      /* Scope of the search */
     char *filter;                   /* Filter to further limit the search  */
-    int deref;                      /* how to handle alias dereferening */
+    deref_options deref;            /* how to handle alias dereferening */
     char *binddn;                   /* DN to bind to server (can be NULL) */
     char *bindpw;                   /* Password to bind to server (can be NULL) */
 
