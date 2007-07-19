@@ -203,7 +203,7 @@ static apr_status_t uldap_connection_cleanup(void *param)
 static int uldap_connection_init(request_rec *r,
                                  util_ldap_connection_t *ldc )
 {
-    int rc = 0;
+    int rc = 0, ldap_option = 0;
     int version  = LDAP_VERSION3;
     apr_ldap_err_t *result = NULL;
     struct timeval timeOut = {10,0};    /* 10 second connection timeout */
@@ -266,7 +266,8 @@ static int uldap_connection_init(request_rec *r,
     }
 
     /* Set the alias dereferencing option */
-    ldap_set_option(ldc->ldap, LDAP_OPT_DEREF, &(ldc->deref));
+    ldap_option = ldc->deref;
+    ldap_set_option(ldc->ldap, LDAP_OPT_DEREF, &ldap_option);
 
 /*XXX All of the #ifdef's need to be removed once apr-util 1.2 is released */
 #ifdef APR_LDAP_OPT_VERIFY_CERT
