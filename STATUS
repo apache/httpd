@@ -274,6 +274,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x version of patch:
         http://people.apache.org/~covener/2.2.x-deref_aliases.diff
       +1: covener,rederpj
+      -1: rpluem says: This patch cannot be backported as it would change
+          the ABI of a public API IMHO. This would require a major
+          bump and patches that require a major bump cannot be backported
 
     * mod_proxy_ajp: Add support of ProxyIOBufferSize.
       Trunk version of patch:
