@@ -96,7 +96,7 @@ typedef struct util_ldap_connection_t {
 
     const char *host;                   /* Name of the LDAP server (or space separated list) */
     int port;                           /* Port of the LDAP server */
-    int deref;                          /* how to handle alias dereferening */
+    deref_options deref;                /* how to handle alias dereferening */
 
     const char *binddn;                 /* DN to bind to server (can be NULL) */
     const char *bindpw;                 /* Password to bind to server (can be NULL) */
@@ -206,11 +206,11 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_cleanup,(void *param));
  *      use this connection while it is busy. Once you are finished with a connection,
  *      apr_ldap_connection_close() must be called to release this connection.
  * @fn util_ldap_connection_t *util_ldap_connection_find(request_rec *r, const char *host, int port,
- *                                                           const char *binddn, const char *bindpw, int deref,
+ *                                                           const char *binddn, const char *bindpw, deref_options deref,
  *                                                           int netscapessl, int starttls)
  */
 APR_DECLARE_OPTIONAL_FN(util_ldap_connection_t *,uldap_connection_find,(request_rec *r, const char *host, int port,
-                                                  const char *binddn, const char *bindpw, int deref,
+                                                  const char *binddn, const char *bindpw, deref_options deref,
                                                   int secure));
 
 /**
