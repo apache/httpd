@@ -273,20 +273,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=551424
       +1: fuankg
 
-    * mod_ldap: Change an enumeration to an int where data
+    * mod_ldap: Copy an enumeration to an int where data
       is passed back into the LDAP SDK by reference
       Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=555470
-      2.2.x version of patch:
-        http://people.apache.org/~covener/2.2.x-deref_aliases.diff
-      +1: covener,rederpj
-      -1: rpluem says: This patch cannot be backported as it would change
-          the ABI of a public API IMHO. This would require a major
-          bump and patches that require a major bump cannot be backported
-      
-          Covener says: How about this alternative to avoid sending
-          the possibly-short enum into the LDAP SDK?
-          http://people.apache.org/~covener/2.2.x-deref_aliases-safe.diff
+        http://svn.apache.org/viewvc?view=rev&rev=557778
+      +1: covener, rpluem
 
     * mod_proxy_ajp: Add support of ProxyIOBufferSize.
       Trunk version of patch:
