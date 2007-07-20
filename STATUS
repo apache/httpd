@@ -253,24 +253,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        check for a buffer overflow a few lines later is not correct any more
        (now an error (APR_ENOSPC) is returned instead).
 
-    * netware build system: various changes
-      fixes to generated conf files
-        http://svn.apache.org/viewvc?view=rev&revision=551196
-        http://svn.apache.org/viewvc?view=rev&revision=551253
+    * netware build system:
       removed obsolete stuff
-        http://svn.apache.org/viewvc?view=rev&revision=521309
         http://svn.apache.org/viewvc?view=rev&revision=521264
-        http://svn.apache.org/viewvc?view=rev&revision=521344
-      moved socket build stuff
-        http://svn.apache.org/viewvc?view=rev&revision=526617
-      moved linker options
-        http://svn.apache.org/viewvc?view=rev&revision=526616
-      enabled setting awk tool
-        http://svn.apache.org/viewvc?view=rev&revision=551251
-      added openssl files to installation directory
-        http://svn.apache.org/viewvc?view=rev&revision=551275
-      enabled ports settable for install
-        http://svn.apache.org/viewvc?view=rev&revision=551424
       +1: fuankg
 
     * mod_proxy_ajp: Add support of ProxyIOBufferSize.
