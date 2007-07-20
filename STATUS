@@ -264,7 +264,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=467257
       2.2.x version of patch:
         http://people.apache.org/~jfclere/patches/ProxyIOBufferSize.1.patch
-      +1: jfclere
+      +1: jfclere, mturk
 
     * support/htcacheclean.c:	Trivial cleanups
       PR: 38699 - Christophe JAILLET
