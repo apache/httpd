@@ -892,7 +892,7 @@ worker_pop:
         bucket_alloc = apr_bucket_alloc_create(ptrans);
         process_socket(ptrans, csd, process_slot, thread_slot, bucket_alloc);
         worker_sockets[thread_slot] = NULL;
-        requests_this_child--; /* FIXME: should be synchronized - aaron */
+        requests_this_child--; 
         apr_pool_clear(ptrans);
         last_ptrans = ptrans;
     }
