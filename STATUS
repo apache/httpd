@@ -280,6 +280,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       -1: rpluem says: This creates a bug. Please add
           http://svn.apache.org/viewvc?view=rev&rev=558133
           to the proposal and you have my +1.
+       niq: agrees with rpluem, and points to my post to dev@httpd
+       from this morning.  This trivial cleanup is r557837+r558133.
 
 PATCHES/ISSUES THAT ARE STALLED
 
