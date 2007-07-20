@@ -85,13 +85,7 @@ CACHE_DECLARE(void) cache_free(cache_cache_t *c)
 
 CACHE_DECLARE(void*) cache_find(cache_cache_t* c, const char *key)
 {
-    void *e;
-
-    e = cache_hash_get(c->ht, key, CACHE_HASH_KEY_STRING);
-    if (!e)
-        return NULL;
-
-    return e;
+    return cache_hash_get(c->ht, key, CACHE_HASH_KEY_STRING);
 }
 
 CACHE_DECLARE(void) cache_update(cache_cache_t* c, void *entry)

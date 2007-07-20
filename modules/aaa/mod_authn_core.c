@@ -88,8 +88,7 @@ static void *merge_authn_core_dir_config(apr_pool_t *a, void *basev, void *newv)
     /* Create this conf by duplicating the base, replacing elements
     * (or creating copies for merging) where new-> values exist.
     */
-    conf = (authn_core_dir_conf *)apr_palloc(a, sizeof(authn_core_dir_conf));
-    memcpy(conf, base, sizeof(authn_core_dir_conf));
+    conf = (authn_core_dir_conf *)apr_pmemdup(a, base, sizeof(authn_core_dir_conf));
 
     if (new->ap_auth_type) {
         conf->ap_auth_type = new->ap_auth_type;

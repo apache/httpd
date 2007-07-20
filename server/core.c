@@ -223,8 +223,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     /* Create this conf by duplicating the base, replacing elements
      * (or creating copies for merging) where new-> values exist.
      */
-    conf = (core_dir_config *)apr_palloc(a, sizeof(core_dir_config));
-    memcpy(conf, base, sizeof(core_dir_config));
+    conf = (core_dir_config *)apr_pmemdup(a, base, sizeof(core_dir_config));
 
     conf->d = new->d;
     conf->d_is_fnmatch = new->d_is_fnmatch;
@@ -270,10 +269,9 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     else if (new->response_code_strings != NULL) {
         /* If we merge, the merge-result must have it's own array
          */
-        conf->response_code_strings = apr_palloc(a,
+        conf->response_code_strings = apr_pmemdup(a,
+            base->response_code_strings,
             sizeof(*conf->response_code_strings) * RESPONSE_CODES);
-        memcpy(conf->response_code_strings, base->response_code_strings,
-               sizeof(*conf->response_code_strings) * RESPONSE_CODES);
 
         for (i = 0; i < RESPONSE_CODES; ++i) {
             if (new->response_code_strings[i] != NULL) {
@@ -471,8 +469,7 @@ static void *merge_core_server_configs(apr_pool_t *p, void *basev, void *virtv)
     core_server_config *virt = (core_server_config *)virtv;
     core_server_config *conf;
 
-    conf = (core_server_config *)apr_palloc(p, sizeof(core_server_config));
-    memcpy(conf, virt, sizeof(core_server_config));
+    conf = (core_server_config *)apr_pmemdup(p, virt, sizeof(core_server_config));
 
     if (!conf->access_name) {
         conf->access_name = base->access_name;
