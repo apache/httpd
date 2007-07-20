@@ -24,6 +24,9 @@ Changes with Apache 2.2.5
   *) mod_cgi, mod_cgid: Fix use of CGI scripts as ErrorDocuments.
      PR 39710.  [Paul Querna, Ruediger Pluem]
 
+  *) mod_proxy: Allow to use different values for sessionid
+     in url encoded id and cookies. PR 41897. [Jean-Frederic Clere]
+
   *) mod_proxy: Fix the 503 returned when session route does
      not match any of the balancer members. [Mladen Turk]
 
