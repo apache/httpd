@@ -267,37 +267,44 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * support/htcacheclean.c:	Trivial cleanups
       PR: 38699 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
-      +1: niq
+      +1: niq, trawick
 
     * multiple files,	Trivial cleanups
       PR: 39518 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
       +1: niq
+      -1: trawick (please tell me I'm confused)
+        See http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/aaa/mod_authz_core.c?r1=557837&r2=557836&pathrev=557837
+        Previously we copied base to conf and now we copy new to conf;
+        that fixes an old bug or creates a new bug; since this is
+        labeled "Trivial cleanups" and not "Fix merge bug" I'd have to 
+        guess the latter is the case.
 
     * mod_cache:	Trivial cleanups
       PR: 42005 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
-      +1: niq
+      +1: niq, trawick
 
     * server/request.c:	Trivial cleanups
       PR: 42006 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
-      +1: niq
+      +1: niq, trawick
 
     * Worker and Event MPMs: Trivial cleanups
       PR: 42007 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
-      +1: niq
+      +1: niq, trawick
 
     * mod_usertrack: Trivial cleanups
       PR: 42008 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
       +1: niq
+      trawick: I don't see mod_usertrack in that revision.
 
     * server/util.c, modules/mappers/mod_rewrite.c: Trivial cleanups
       PR: 42009 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
-      +1: niq
+      +1: niq, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
