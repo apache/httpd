@@ -277,6 +277,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR: 42009 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
       +1: niq, trawick
+      -1: rpluem says: This creates a bug. Please add
+          http://svn.apache.org/viewvc?view=rev&rev=558133
+          to the proposal and you have my +1.
 
 PATCHES/ISSUES THAT ARE STALLED
 
