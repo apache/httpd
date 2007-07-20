@@ -2075,7 +2075,7 @@ AP_DECLARE(void) ap_content_type_tolower(char *str)
         *semi = '\0';
     }
 
-    ap_str_tolower(*str);
+    ap_str_tolower(str);
 
     if (semi) {
         *semi = ';';
