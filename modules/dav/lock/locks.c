@@ -603,8 +603,7 @@ static dav_error * dav_generic_load_lock_record(dav_lockdb *lockdb,
             offset += sizeof(dp->f);
 
             /* Copy the lock token. */
-            dp->locktoken = apr_palloc(p, sizeof(*dp->locktoken));
-            memcpy(dp->locktoken, val.dptr + offset, sizeof(*dp->locktoken));
+            dp->locktoken = apr_pmemdup(p, val.dptr + offset, sizeof(*dp->locktoken));
             offset += sizeof(*dp->locktoken);
 
             /* Do we have an owner field? */
@@ -639,16 +638,14 @@ static dav_error * dav_generic_load_lock_record(dav_lockdb *lockdb,
             /* Create and fill a dav_lock_indirect structure */
 
             ip = apr_pcalloc(p, sizeof(*ip));
-            ip->locktoken = apr_palloc(p, sizeof(*ip->locktoken));
-            memcpy(ip->locktoken, val.dptr + offset, sizeof(*ip->locktoken));
+            ip->locktoken = apr_pmemdup(p, val.dptr + offset, sizeof(*ip->locktoken));
             offset += sizeof(*ip->locktoken);
             memcpy(&ip->timeout, val.dptr + offset, sizeof(ip->timeout));
             offset += sizeof(ip->timeout);
             /* length of datum */
             ip->key.dsize = *((int *) (val.dptr + offset));
             offset += sizeof(ip->key.dsize);
-            ip->key.dptr = apr_palloc(p, ip->key.dsize);
-            memcpy(ip->key.dptr, val.dptr + offset, ip->key.dsize);
+            ip->key.dptr = apr_pmemdup(p, val.dptr + offset, ip->key.dsize);
             offset += ip->key.dsize;
 
             if (!dav_generic_lock_expired(ip->timeout)) {

@@ -600,8 +600,7 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
             dp = apr_pcalloc(p, sizeof(*dp));
             memcpy(dp, val.dptr + offset, sizeof(dp->f));
             offset += sizeof(dp->f);
-            dp->locktoken = apr_palloc(p, sizeof(*dp->locktoken));
-            memcpy(dp->locktoken, val.dptr + offset, sizeof(*dp->locktoken));
+            dp->locktoken = apr_pmemdup(p, val.dptr + offset, sizeof(*dp->locktoken));
             offset += sizeof(*dp->locktoken);
             if (*(val.dptr + offset) == '\0') {
                 ++offset;
@@ -648,15 +647,13 @@ static dav_error * dav_fs_load_lock_record(dav_lockdb *lockdb, apr_datum_t key,
             /* Create and fill a dav_lock_indirect structure */
 
             ip = apr_pcalloc(p, sizeof(*ip));
-            ip->locktoken = apr_palloc(p, sizeof(*ip->locktoken));
-            memcpy(ip->locktoken, val.dptr + offset, sizeof(*ip->locktoken));
+            ip->locktoken = apr_pmemdup(p, val.dptr + offset, sizeof(*ip->locktoken));
             offset += sizeof(*ip->locktoken);
             memcpy(&ip->timeout, val.dptr + offset, sizeof(ip->timeout));
             offset += sizeof(ip->timeout);
             memcpy(&ip->key.dsize, val.dptr + offset, sizeof(ip->key.dsize)); /* length of datum */
             offset += sizeof(ip->key.dsize);
-            ip->key.dptr = apr_palloc(p, ip->key.dsize);
-            memcpy(ip->key.dptr, val.dptr + offset, ip->key.dsize);
+            ip->key.dptr = apr_pmemdup(p, val.dptr + offset, ip->key.dsize);
             offset += ip->key.dsize;
 
             if (!dav_fs_lock_expired(ip->timeout)) {

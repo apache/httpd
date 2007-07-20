@@ -474,9 +474,7 @@ static int process_dir(char *path, apr_pool_t *pool)
                             e->dtime = d->dtime;
                             e->hsize = d->hsize;
                             e->dsize = d->dsize;
-                            e->basename = apr_palloc(pool,
-                                                     strlen(d->basename) + 1);
-                            strcpy(e->basename, d->basename);
+                            e->basename = apr_pstrdup(pool, d->basename);
                             break;
                         }
                         else {

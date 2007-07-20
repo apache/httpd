@@ -1764,9 +1764,9 @@ AP_DECLARE(request_rec *) ap_sub_req_lookup_dirent(const apr_finfo_t *dirent,
         /* ap_make_full_path overallocated the buffers
          * by one character to help us out here.
          */
-        strcpy(rnew->filename + strlen(rnew->filename), "/");
+        strcat(rnew->filename, "/");
         if (!rnew->path_info || !*rnew->path_info) {
-            strcpy(rnew->uri  + strlen(rnew->uri ), "/");
+            strcat(rnew->uri, "/");
         }
     }
 

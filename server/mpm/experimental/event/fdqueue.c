@@ -65,8 +65,7 @@ apr_status_t ap_queue_info_create(fd_queue_info_t ** queue_info,
     apr_status_t rv;
     fd_queue_info_t *qi;
 
-    qi = apr_palloc(pool, sizeof(*qi));
-    memset(qi, 0, sizeof(*qi));
+    qi = apr_pcalloc(pool, sizeof(*qi));
 
     rv = apr_thread_mutex_create(&qi->idlers_mutex, APR_THREAD_MUTEX_DEFAULT,
                                  pool);
