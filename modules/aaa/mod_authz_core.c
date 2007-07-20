@@ -132,7 +132,7 @@ static void *merge_authz_core_dir_config(apr_pool_t *a, void *basev, void *newv)
     /* Create this conf by duplicating the base, replacing elements
     * (or creating copies for merging) where new-> values exist.
     */
-    conf = (authz_core_dir_conf *)apr_pmemdup(a, new, sizeof(authz_core_dir_conf));
+    conf = (authz_core_dir_conf *)apr_pmemdup(a, base, sizeof(authz_core_dir_conf));
 
     /* Wipe out the providers and rejects lists so that 
         they can be recreated by the merge process. */
