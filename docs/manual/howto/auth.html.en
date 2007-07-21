@@ -364,6 +364,7 @@ person in</a></h2>
     AuthBasicProvider dbm<br />
     AuthDBMUserFile /www/passwords/passwd.dbm<br />
     Require valid-user
+    &lt;/Directory&gt;
     </code></p></div>
 
     <p>Other options are available. Consult the
