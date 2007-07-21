@@ -401,6 +401,7 @@ person in</title>
     AuthUserFile /usr/local/apache/passwd/passwords<br />
     AuthLDAPURL ldap://ldaphost/o=yourorg<br />
     Require valid-user
+    &lt;/Directory&gt;
     </example>
 
     <p>In this example the file provider will attempt to authenticate
@@ -426,6 +427,7 @@ person in</title>
     AuthGroupFile /usr/local/apache/passwd/groups<br />
     Require group GroupName<br />
     Require ldap-group cn=mygroup,o=yourorg
+    &lt;/Directory&gt;
     </example>
 
     <p>To take authorization a little further, the directives
