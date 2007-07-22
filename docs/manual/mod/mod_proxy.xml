@@ -88,7 +88,7 @@
 
       <p>The forward proxy is activated using the <directive
       module="mod_proxy">ProxyRequests</directive> directive.  Because
-      forward proxys allow clients to access arbitrary sites through
+      forward proxies allow clients to access arbitrary sites through
       your server and to hide their true origin, it is essential that
       you <a href="#access">secure your server</a> so that only
       authorized clients can access the proxy before activating a

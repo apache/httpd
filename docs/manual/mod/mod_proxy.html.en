@@ -126,7 +126,7 @@
       by <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code>) to reduce network usage.</p>
 
       <p>The forward proxy is activated using the <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive.  Because
-      forward proxys allow clients to access arbitrary sites through
+      forward proxies allow clients to access arbitrary sites through
       your server and to hide their true origin, it is essential that
       you <a href="#access">secure your server</a> so that only
       authorized clients can access the proxy before activating a
