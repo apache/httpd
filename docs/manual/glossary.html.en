@@ -402,8 +402,7 @@
       Layer Security</a> <a name="tls" id="tls">(TLS)</a></dt>
   <dd>The successor protocol to SSL, created by the Internet Engineering Task
     Force (IETF) for general communication authentication and encryption over
-    TCP/IP networks. TLS version 1 and is nearly identical with SSL version
-    3.<br />
+    TCP/IP networks. TLS version 1 is nearly identical with SSL version 3.<br />
     See: <a href="ssl/">SSL/TLS Encryption</a>
   </dd>
 
