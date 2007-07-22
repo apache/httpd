@@ -109,6 +109,10 @@
       old default behavior, place the directive <code>UserDir
       public_html</code> in your config file.</li>
 
+      <li>The directive <directive>AuthDigestFile</directive>
+      from <module>mod_auth_digest</module> has been merged with
+      <directive module="mod_authn_file">AuthUserFile</directive>
+      and is now part of <module>mod_authn_file</module>.</li>
     </ul>
   </section>
 
