@@ -283,6 +283,28 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        niq: agrees with rpluem, and points to my post to dev@httpd
        from this morning.  This trivial cleanup is r557837+r558133.
 
+    * mod_proxy: Enable ProxySet inside <Proxy> section to create balancer or
+      worker if they were not already created. This allows to have ProxySet
+      directive before BalancerMember directives inside Proxy section.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=427920&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
+    * mod_proxy: Allow optional name=value options within <Proxy section line.
+      Additional arguments are allowed only for 'standard' url's, meaning that
+      the wildchar urls will return error like before. This allow to specify
+      the worker/balancer parameters on the definition line, without the need
+      for extra ProxySet options.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=427928&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=428291&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
