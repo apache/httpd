@@ -7,6 +7,6 @@
 
   <variants>
     <variant>en</variant>
-    <variant>ja</variant>
+    <variant outdated="yes">ja</variant>
   </variants>
 </metafile>
