@@ -1063,11 +1063,10 @@ later</td></tr>
 
       <p><a id="patterns" name="patterns"><em>Pattern</em></a> is
       a perl compatible <a id="regexp" name="regexp">regular
-      expression</a>, which is applied to the current URL.
-      ``Current'' means the value of the URL when this rule is
-      applied. This may not be the originally requested URL,
-      which may already have matched a previous rule, and have been
-      altered.</p>
+      expression</a>. On the first RewriteRule it is applied to the
+      <a href="./directive-dict.html#Syntax">URL-path</a> of the request;
+      subsequent patterns are applied to the output of the last matched
+      RewriteRule.</p>
 
       <p>Some hints on the syntax of <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular 
       expressions</a>:</p>
@@ -1475,13 +1474,16 @@ should never be necessary and is unsupported.</p>
           <strong>R</strong>-flag.</p>
 </div>
 
-<div class="note"><h3>Note: Query String</h3>
-      <p>The <em>Pattern</em> will not be matched against the query string.
-      To do this, you must use a <code class="directive"><a href="#rewritecond">RewriteCond</a></code> with the
-      <code>%{QUERY_STRING}</code> variable. You can, however, create
-      URLs in the substitution string, containing a query string
-      part. Simply use a question mark inside the substitution string, to
-      indicate that the following text should be re-injected into the
+<div class="note"><h3>What is matched?</h3>
+      <p>The <em>Pattern</em> will initially be matched against the part of the
+      URL after the hostname and port, and before the query string. If you wish
+      to match against the hostname, port, or query string, use a
+      <code class="directive"><a href="#rewritecond">RewriteCond</a></code> with the
+      <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
+      <code>%{QUERY_STRING}</code> variables respectively.</p>
+      <p>You can, however, create URLs in the substitution string containing a
+      query string part. Simply use a question mark inside the substitution
+      string, to indicate that the following text should be re-injected into the
       query string. When you want to erase an existing query string,
       end the substitution string with just a question mark. To
       combine new and old query strings, use the
