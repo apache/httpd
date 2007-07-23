@@ -236,7 +236,7 @@
       header is now available under the <code>ap_</code> namespace
       from <code>ap_regex.h</code>.  Calls to <code>regcomp</code>, 
       <code>regexec</code> and so on can be replaced by calls to
-      <code>ap_regcomp</code>, <code>ap_regcomp</code>.</dd>
+      <code>ap_regcomp</code>, <code>ap_regexec</code>.</dd>
 
       <dt>DBD Framework (SQL Database API)</dt>
 

@@ -95,8 +95,8 @@
 
       <dt><code>--srcdir=<var>DIR</var></code></dt>
       <dd>Defines directory <var>DIR</var> to be the source file directory.
-        Default is the directory, where configure is located, or the parent
-        directory <code>..</code>.</dd>
+        Default is the directory where <code>configure</code> is located, or
+        the parent directory.</dd>
 
       <dt><code>--silent</code></dt>
       <dd>Same as <code>--quiet</code></dd>
@@ -151,7 +151,7 @@
     
       <p>For better control of the installation directories, use the options
         below. Please note that the directory defaults are set by
-        <code>autoconf</code> and be overwritten by the corresponding layout
+        <code>autoconf</code> and are overwritten by the corresponding layout
         setting.</p>
 
       <dl>
@@ -739,7 +739,7 @@
       </dl>
     </section>
 
-    <!-- options not known are passed to packasges?
+    <!-- options not known are passed to packages?
     are there other important options for packages? -->
 
     <section id="packageopt"><title>Specific packages</title>
@@ -752,7 +752,7 @@
           have to tell <code>configure</code> the path to the
           <code>apr-config</code> script. You may set the absolute path and name
           or the directory to the installed APR. <code>apr-config</code> must
-          exists within this directory or the subdirectory
+          exist within this directory or the subdirectory
           <code>bin</code>.</dd>
         
         <dt><code>--with-apr-util=<var>DIR</var>|<var>FILE</var></code></dt>
