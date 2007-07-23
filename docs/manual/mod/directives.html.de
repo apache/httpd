@@ -111,7 +111,8 @@
 <li><a href="mod_authnz_ldap.html#authzldapauthoritative">AuthzLDAPAuthoritative</a></li>
 <li><a href="mod_authz_owner.html#authzownerauthoritative">AuthzOwnerAuthoritative</a></li>
 <li><a href="mod_authz_user.html#authzuserauthoritative">AuthzUserAuthoritative</a></li>
-<li><a href="mod_setenvif.html#browsermatch" id="B" name="B">BrowserMatch</a></li>
+<li><a href="mod_proxy.html#balancermember" id="B" name="B">BalancerMember</a></li>
+<li><a href="mod_setenvif.html#browsermatch">BrowserMatch</a></li>
 <li><a href="mod_setenvif.html#browsermatchnocase">BrowserMatchNoCase</a></li>
 <li><a href="mod_log_config.html#bufferedlogs">BufferedLogs</a></li>
 <li><a href="mod_cache.html#cachedefaultexpire" id="C" name="C">CacheDefaultExpire</a></li>
@@ -123,6 +124,7 @@
 <li><a href="mod_cache.html#cacheignorecachecontrol">CacheIgnoreCacheControl</a></li>
 <li><a href="mod_cache.html#cacheignoreheaders">CacheIgnoreHeaders</a></li>
 <li><a href="mod_cache.html#cacheignorenolastmod">CacheIgnoreNoLastMod</a></li>
+<li><a href="mod_cache.html#cacheignorequerystring">CacheIgnoreQueryString</a></li>
 <li><a href="mod_cache.html#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
 <li><a href="mod_cache.html#cachemaxexpire">CacheMaxExpire</a></li>
 <li><a href="mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></li>
@@ -294,6 +296,7 @@
 <li><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></li>
 <li><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards</a></li>
 <li><a href="mod_proxy.html#proxypass">ProxyPass</a></li>
+<li><a href="mod_proxy.html#proxypassmatch">ProxyPassMatch</a></li>
 <li><a href="mod_proxy.html#proxypassreverse">ProxyPassReverse</a></li>
 <li><a href="mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></li>
 <li><a href="mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></li>
