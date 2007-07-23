@@ -1858,7 +1858,7 @@ URLs</description>
 
     <p>The URL may use wildcards. In a wild-card string, <code>?</code> matches
     any single character, and <code>*</code> matches any sequences of
-    characters.</p>
+    characters. Neither wilcard character matches a / in the URL-path.</p>
 
     <p><glossary ref="regex">Regular expressions</glossary>
     can also be used, with the addition of the
