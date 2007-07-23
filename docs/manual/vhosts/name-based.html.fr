@@ -24,6 +24,8 @@
 <a href="../ja/vhosts/name-based.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/vhosts/name-based.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Verifiez la version
+            Anglaise pour les changements récents.</div>
 
     <p>Ce document décrit quand et comment utiliser des serveurs 
     virtuels par nom.</p>

@@ -268,6 +268,7 @@ proxymatch	mod/mod_proxy.html#proxymatch
 proxymaxforwards	mod/mod_proxy.html#proxymaxforwards
 proxypass	mod/mod_proxy.html#proxypass
 proxypassinterpolateenv	mod/mod_proxy.html#proxypassinterpolateenv
+proxypassmatch	mod/mod_proxy.html#proxypassmatch
 proxypassreverse	mod/mod_proxy.html#proxypassreverse
 proxypassreversecookiedomain	mod/mod_proxy.html#proxypassreversecookiedomain
 proxypassreversecookiepath	mod/mod_proxy.html#proxypassreversecookiepath
