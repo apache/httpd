@@ -297,7 +297,7 @@ Vary: negotiate,accept-language,accept-charset
 <h2><a name="security" id="security">Security Considerations</a></h2>
     
 
-    <h3>Authentication, Authorization and Access Control</h3>
+    <h3>Authorization and Access Control</h3>
       
 
       <p>Using <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> is very much like having a built

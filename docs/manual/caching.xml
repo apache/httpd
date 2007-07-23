@@ -319,7 +319,7 @@ Vary: negotiate,accept-language,accept-charset
     <title>Security Considerations</title>
 
     <section>
-      <title>Authentication, Authorization and Access Control</title>
+      <title>Authorization and Access Control</title>
 
       <p>Using <module>mod_cache</module> is very much like having a built
       in reverse-proxy. Requests will be served by the caching module unless
