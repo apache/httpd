@@ -26,8 +26,6 @@
 <a href="../en/mod/mpm_common.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/mpm_common.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>二つ以上のマルチプロセッシングモジュール (MPM)
 で実装されているディレクティブのコレクション</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>MPM</td></tr></table>
@@ -37,6 +35,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#group">Group</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listen">Listen</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#listenbacklog">ListenBackLog</a></li>
@@ -47,6 +46,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#maxsparethreads">MaxSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#minsparethreads">MinSpareThreads</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#pidfile">PidFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#receivebuffersize">ReceiveBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#scoreboardfile">ScoreBoardFile</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sendbuffersize">SendBufferSize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serverlimit">ServerLimit</a></li>
@@ -65,15 +65,15 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>複数の子プロセスがネットワークソケットでリクエストを
 accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
 使う方法</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AcceptMutex default|<var>method</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AcceptMutex default</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AcceptMutex Default|<var>method</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AcceptMutex Default</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
     <p><code class="directive">AcceptMutex</code> ディレクティブは、
     ネットワークソケットのリクエストを accept しようとしている複数の子プロセスを
-    Apache が直列化するために使う方法を設定します。
+    Apache が直列化するために使う方法(と必要ならロックファイルの場所)を設定します。
     Apache 2.0 以前は、このメソッドはコンパイル時にのみ選択できました。
     最適な方法は、アーキテクチャやプラットホームに大きく依存します。
     詳細に関しては、<a href="../misc/perf-tuning.html">性能のチューニング</a>
@@ -89,25 +89,44 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
     エラーログに出力されます。</p>
 
     <dl>
-      <dt><code>flock</code></dt>
-      <dd><code class="directive"><a href="#lockfile">LockFile</a></code>
-      ディレクティブで定義したファイルのロックに、
-      <code>flock(2)</code> システムコールを使います。</dd>
+      <dt><code>flock&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
+      <dd>オプションの <var>/path/to/lockfile</var>
+      パラメータで定義したファイルのロックに、
+      <code>flock(2)</code> システムコールを使います。
+      ロックファイルの指定には <code class="directive"><a href="#lockfile">LockFile</a></code> 
+      ディレクティブを使うことも出来ます(非推奨です)。</dd>
 
-      <dt><code>fcntl</code></dt>
-      <dd><code class="directive"><a href="#lockfile">LockFile</a></code>
-      ディレクティブで定義したファイルのロックに、
-      <code>fcntl(2)</code> システムコールを使います。</dd>
+      <dt><code>fcntl&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
+      <dd>オプションの <var>/path/to/lockfile</var>
+      パラメータで定義したファイルのロックに、
+      <code>fcntl(2)</code> システムコールを使います。
+      ロックファイルの指定には <code class="directive"><a href="#lockfile">LockFile</a></code> 
+      ディレクティブを使うことも出来ます(非推奨です)。</dd>
+
+      <dt><code>file&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
+      <dd>使用できるファイルロックルーチンの中で最適なものを使います。
+      具体的には、<code>fcntl</code> が使用可能な場合はそれを使い、そうでない場合は
+      <code>flock</code> を試します。
+      この設定はプラットホームと <a class="glossarylink" href="../glossary.html#apr" title="用語集を参照">APR</a> が二つのうち少なくとも
+      一つをサポートしている場合のみ使用可能です。</dd>
 
       <dt><code>posixsem</code></dt>
       <dd>排他処理の実装に POSIX 互換セマフォを使用します</dd>
+
+      <dt><code>sysvsem</code></dt>
+      <dd>排他処理の実装に SySV 形式のセマフォを使います。</dd>
+
+      <dt><code>sem</code></dt>
+      <dd>使用できるセマフォルーチンの中で最適なものを使います。
+      具体的には、Posix 互換セマフォが使用可能な場合はそれを使い、そうでない場合は
+      SystemV IPC 形式のセマフォを試します。
+      この設定はプラットホームと <a class="glossarylink" href="../glossary.html#apr" title="用語集を参照">APR</a> が二つのうち少なくとも
+      一つをサポートしている場合のみ使用可能です。</dd>
 
       <dt><code>pthread</code></dt>
       <dd>POSIX Threads (PThreads) 規格で実装されている
       POSIX 排他処理を使います。</dd>
 
-      <dt><code>sysvsem</code></dt>
-      <dd>排他処理の実装に SySV 形式のセマフォを使います。</dd>
     </dl>
 
     <p>コンパイル時にシステムのデフォルトに選ばれたものが何かを見たい場合は、
@@ -181,6 +200,25 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="GracefulShutdownTimeout" id="GracefulShutdownTimeout">GracefulShutdownTimeout</a> <a name="gracefulshutdowntimeout" id="gracefulshutdowntimeout">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>穏やかな停止をかけた後、終了するまで待つ時間</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>GracefulShutDownTimeout <var>seconds</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>GracefulShutDownTimeout 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code>, <code class="module"><a href="../mod/event.html">event</a></code></td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.2 以降</td></tr>
+</table>
+    <p><code class="directive">GracefulShutdownTimeout</code> には
+    サーバーが "graceful-stop" シグナルを受け取ってから現在の
+    リクエストの処理を最大で何秒間続けるかを指定します。</p>
+
+    <p>この値をゼロに設定すると、処理中として残っているリクエストが
+    全て完了するまでサーバーは終了しません。</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Group" id="Group">Group</a> <a name="group" id="group">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>リクエストに応答する際に所属するグループ</td></tr>
@@ -204,7 +242,7 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
       <dd>グループを名前で参照します</dd>
 
       <dt><code>#</code> に続いてグループ番号</dt>
-      <dd>グループをを番号で参照します。</dd>
+      <dd>グループを番号で参照します。</dd>
     </dl>
 
     <div class="example"><h3>例</h3><p><code>
@@ -346,7 +384,7 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="LockFile" id="LockFile">LockFile</a> <a name="lockfile" id="lockfile">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>受付を直列化するためのロックファイルの位置</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>受付を直列化するためのロックファイルの位置<em>(非推奨)</em></td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LockFile <var>filename</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>LockFile logs/accept.lock</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
@@ -371,6 +409,11 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
       ロックファイルの作成自体を妨害することによって、
       誰でもサービス拒否アタックを引き起こすことができるからです。</p>
     </div>
+    <div class="warning"><h3>非推奨</h3>
+      <p>このディレクティブは非推奨です。 <code class="directive"><a href="#acceptmutex">AcceptMutex</a></code>
+      ディレクティブで排他処理の方法の指定とともにロックファイルの場所も指定してください。</p>
+    </div>
+
 
 <h3>参照</h3>
 <ul>
@@ -631,6 +674,21 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ReceiveBufferSize" id="ReceiveBufferSize">ReceiveBufferSize</a> <a name="receivebuffersize" id="receivebuffersize">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>TCP 受信バッファサイズ</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ReceiveBufferSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ReceiveBufferSize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table>
+    <p>サーバは TCP 受信バッファサイズを指定されたバイト数に設定します。</p>
+
+    <p><code>0</code>にした場合、OS のデフォルト値が使用されます。</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ScoreBoardFile" id="ScoreBoardFile">ScoreBoardFile</a> <a name="scoreboardfile" id="scoreboardfile">ディレクティブ</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>子プロセスと連携するためのデータを保存する
@@ -677,7 +735,7 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>MPM</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td><code class="module"><a href="../mod/beos.html">beos</a></code>, <code class="module"><a href="../mod/leader.html">leader</a></code>, <code class="module"><a href="../mod/mpm_netware.html">mpm_netware</a></code>, <code class="module"><a href="../mod/mpm_winnt.html">mpm_winnt</a></code>, <code class="module"><a href="../mod/mpmt_os2.html">mpmt_os2</a></code>, <code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/threadpool.html">threadpool</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
 </table>
-    <p>サーバは TCP バッファサイズを指定されたバイト数に設定します。
+    <p>サーバは TCP 送信バッファサイズを指定されたバイト数に設定します。
     高速で高レイテンシな環境で
     (<em>例</em> 100ms 程度、大陸横断高速通信路など)
     古い一般的な OS のデフォルト値を増やすのに非常に便利です。</p>
