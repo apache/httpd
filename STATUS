@@ -256,22 +256,22 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * support/htcacheclean.c:	Trivial cleanups
       PR: 38699 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
-      +1: niq, trawick
+      +1: niq, trawick, rpluem
 
     * mod_cache:	Trivial cleanups
       PR: 42005 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
-      +1: niq, trawick
+      +1: niq, trawick, rpluem
 
     * server/request.c:	Trivial cleanups
       PR: 42006 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
-      +1: niq, trawick
+      +1: niq, trawicki, rpluem
 
     * Worker and Event MPMs: Trivial cleanups
       PR: 42007 - Christophe JAILLET
       http://svn.apache.org/viewvc?view=rev&revision=557837
-      +1: niq, trawick
+      +1: niq, trawick, rpluem
 
     * server/util.c, modules/mappers/mod_rewrite.c: Trivial cleanups
       PR: 42009 - Christophe JAILLET
@@ -282,6 +282,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           to the proposal and you have my +1.
        niq: agrees with rpluem, and points to my post to dev@httpd
        from this morning.  This trivial cleanup is r557837+r558133.
+
+    * multiple files,	Trivial cleanups
+      PR: 39518 - Christophe JAILLET
+      http://svn.apache.org/viewvc?view=rev&revision=557837
+      http://svn.apache.org/viewvc?view=rev&revision=557972
+      +1: rpluem
 
     * mod_proxy: Enable ProxySet inside <Proxy> section to create balancer or
       worker if they were not already created. This allows to have ProxySet
