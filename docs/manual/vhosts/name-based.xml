@@ -107,9 +107,9 @@
     module="core">VirtualHost</directive> block for
     each different host that you would like to serve. The argument to the
     <directive type="section" module="core">VirtualHost</directive> directive
-    should be the same as the argument to the <directive
-    module="core">NameVirtualHost</directive> directive (ie, an IP address,
-    or <code>*</code> for all addresses).  Inside each <directive type="section"	
+    must match a defined <directive
+    module="core">NameVirtualHost</directive> directive. (In this usual case,
+    this will be "*:80").  Inside each <directive type="section"	
     module="core">VirtualHost</directive> block, you will need at minimum a
     <directive module="core">ServerName</directive> directive to designate
     which host is served and a <directive module="core">DocumentRoot</directive>

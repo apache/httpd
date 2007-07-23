@@ -90,8 +90,8 @@
     <p>The next step is to create a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> block for
     each different host that you would like to serve. The argument to the
     <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> directive
-    should be the same as the argument to the <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> directive (ie, an IP address,
-    or <code>*</code> for all addresses).  Inside each <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> block, you will need at minimum a
+    must match a defined <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> directive. (In this usual case,
+    this will be "*:80").  Inside each <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> block, you will need at minimum a
     <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directive to designate
     which host is served and a <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
     directive to show where in the filesystem the content for that host
