@@ -123,9 +123,7 @@
     <p>where the action can be,</p>
 
     <ol>
-      <li>Text to be displayed. Prefix the text with a quote
-      ("). Whatever follows the quote is displayed. <em>Note:
-      the (") prefix isn't displayed.</em></li>
+      <li>Text to be displayed. Wrap the text with quotes (").</li>
 
       <li>An external URL to redirect to.</li>
 
