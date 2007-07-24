@@ -105,6 +105,10 @@ later.</compatibility>
     <example><title>Example</title>
       DumpIOLogLevel notice
     </example>
+    
+    <note><title>Compatibility</title>Prior to 2.2.4 <module>mod_dumpio</module>
+    would only dump to the log when <directive
+    module="core">LogLevel</directive> was set to <code>debug</code></note>
 </usage>
 
 </directivesynopsis>
