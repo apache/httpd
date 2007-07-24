@@ -56,6 +56,8 @@
     <p>To enable the module, it should be compiled and
     loaded in to your running Apache configuration. Logging
     can then be enabled or disabled via the below directives.</p>
+    
+    <p>In order for dumping to work <code class="directive"><a href="../mod/core.html#loglevel">LogLevel</a></code> must be set to <code>debug</code>.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DumpIOInput" id="DumpIOInput">DumpIOInput</a> <a name="dumpioinput" id="dumpioinput">Directive</a></h2>

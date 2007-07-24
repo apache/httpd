@@ -46,6 +46,9 @@
     <p>To enable the module, it should be compiled and
     loaded in to your running Apache configuration. Logging
     can then be enabled or disabled via the below directives.</p>
+    
+    <p>In order for dumping to work <directive
+    module="core">LogLevel</directive> must be set to <code>debug</code>.</p>
 </section>
 
 <directivesynopsis>
