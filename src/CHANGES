@@ -1,5 +1,10 @@
 Changes with Apache 1.3.38
 
+  *) SECURITY: CVE-2006-5752 (cve.mitre.org)
+     mod_status: Fix a possible XSS attack against a site with a public
+     server-status page and ExtendedStatus enabled, for browsers which
+     perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
+
   *) SECURITY: CVE-2007-3304 (cve.mitre.org)
      Ensure that the parent process cannot be forced to kill non-child
      processes by checking scoreboard PID data with parent process
