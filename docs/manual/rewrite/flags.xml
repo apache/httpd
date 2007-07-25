@@ -234,7 +234,8 @@ RewriteRule IMG - [T=image/gif]
 </example>
 
 <p>Please note that this is a trivial example, and could be better done
-using &lt;FilesMatch&gt; instead. Always consider the alternate
+using <directive type="section" module="core">FilesMatch</directive>
+instead. Always consider the alternate
 solutions to a problem before resorting to rewrite, which will
 invariably be a less efficient solution than the alternatives.</p>
 </section>
