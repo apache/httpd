@@ -105,7 +105,7 @@ environment variable is used to exclude those requests from the access
 log.</p>
 
 <div class="example"><p><code>
-RewriteRule %{REQUEST_URI} \.(png|gif|jpg) - [E=image:1]<br />
+RewriteRule \.(png|gif|jpg) - [E=image:1]<br />
 CustomLog logs/access_log combined env=!image
 </code></p></div>
 
