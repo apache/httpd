@@ -222,7 +222,8 @@ RewriteRule IMG - [T=image/gif]
 </code></p></div>
 
 <p>Please note that this is a trivial example, and could be better done
-using &lt;FilesMatch&gt; instead. Always consider the alternate
+using <code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>
+instead. Always consider the alternate
 solutions to a problem before resorting to rewrite, which will
 invariably be a less efficient solution than the alternatives.</p>
 
