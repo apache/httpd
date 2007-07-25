@@ -262,6 +262,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=557837
       http://svn.apache.org/viewvc?view=rev&revision=557972
       +1: rpluem
+      niq: this isn't a straight backport (which is why I dropped it).
+      +1 for core, modules/dav and modules/ssl
+      Not Applicable to modules/aaa
 
     * mod_proxy: Enable ProxySet inside <Proxy> section to create balancer or
       worker if they were not already created. This allows to have ProxySet
