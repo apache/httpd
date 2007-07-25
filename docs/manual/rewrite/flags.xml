@@ -221,7 +221,22 @@ negate those conditions and use a [Skip] flag.</p>
 </section>
 
 <section id="flag_t"><title>T|type</title>
-<p>Type flag</p>
+<p>Sets the MIME type with which the resulting response will be
+sent. This has the same effect as the <directive
+module="mod_mime">AddType</directive> directive.</p>
+
+<p>For example, you might use the following technique to serve Perl
+source code as plain text, if requested in a particular way:</p>
+
+<example>
+# Files with 'IMG' in the name are gif images.
+RewriteRule IMG - [T=image/gif]
+</example>
+
+<p>Please note that this is a trivial example, and could be better done
+using &lt;FilesMatch&gt; instead. Always consider the alternate
+solutions to a problem before resorting to rewrite, which will
+invariably be a less efficient solution than the alternatives.</p>
 </section>
 
 </section>
