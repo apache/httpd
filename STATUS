@@ -159,6 +159,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-1tidy-2.2.x.patch
      +1: chrisd, fuankg
+     +1: niq (to chris's mod_dbd updates collectively)
 
    * mod_dbd: Handle error conditions in dbd_construct() properly.
      Simplify ap_dbd_open() and use correct arguments to apr_dbd_error()
@@ -172,6 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-2misc-2.2.x.patch
      +1: chrisd
+     +1: niq (to chris's mod_dbd updates collectively)
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
      entering ap_mpm_run(), then destroy pmain when exiting ap_mpm_run().
@@ -209,6 +211,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-3pools-2.2.x.patch
      +1: chrisd
+     +1: niq (to chris's mod_dbd updates collectively)
 
    * mod_dbd: Introduce configuration groups to allow inheritance by virtual
      hosts of database configurations from the main server.  Determine the
@@ -226,6 +229,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-4groups-2.2.x.patch
      +1: chrisd
+     +1: niq (to chris's mod_dbd updates collectively)
 
     * mod_proxy: Improve traces in ap_proxy_http_process_response()
       to investigate PR37770.
