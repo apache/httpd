@@ -635,8 +635,8 @@
       httpd.exe -V
     </example>
 
-    <p>Apache will then try to determine its <directive module="core">
-    ServerRoot</directive> by trying the following, in this order:</p>
+    <p>Apache will then try to determine its <directive module="core"
+    >ServerRoot</directive> by trying the following, in this order:</p>
 
     <ol>
       <li>A <directive module="core">ServerRoot</directive> directive
