@@ -200,18 +200,24 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                 match = 0;
             }
         }
-        else if (!provider->match.string) {
-            match = 0;
-        }
+        /* we can't check for NULL in provider as that kills integer 0
+	 * so we have to test each string/regexp case in the switch
+	 */
         else {
-            /* Now we have no nulls, so we can do string and regexp matching */
             switch (provider->match_type) {
             case STRING_MATCH:
-                if (strcasecmp(str, provider->match.string)) {
+                if (!provider->match.string) {
+                    match = 0;
+                }
+		else if (strcasecmp(str, provider->match.string)) {
                     match = 0;
                 }
                 break;
             case STRING_CONTAINS:
+                if (!provider->match.string) {
+                    match = 0;
+                    break;
+                }
                 str1 = apr_pstrdup(r->pool, str);
                 ap_str_tolower(str1);
                 if (!strstr(str1, provider->match.string)) {
@@ -219,9 +225,12 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                 }
                 break;
             case REGEX_MATCH:
-                if (ap_regexec(provider->match.regex, str, 0, NULL, 0)
-                    == AP_REG_NOMATCH) {
-                match = 0;
+                if (!provider->match.string) {
+                    match = 0;
+                }
+		else if (ap_regexec(provider->match.regex, str, 0, NULL, 0)
+                         == AP_REG_NOMATCH) {
+                    match = 0;
                 }
                 break;
             case INT_EQ:
@@ -229,23 +238,26 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                     match = 0;
                 }
                 break;
+            /* Integer comparisons should be [var] OP [match]
+             * We need to set match = 0 if the condition fails
+             */
             case INT_LT:
-                if (atoi(str) < provider->match.number) {
+                if (atoi(str) >= provider->match.number) {
                     match = 0;
                 }
                 break;
             case INT_LE:
-                if (atoi(str) <= provider->match.number) {
-                    match = 0;
-                }
-                break;
-            case INT_GT:
                 if (atoi(str) > provider->match.number) {
                     match = 0;
                 }
                 break;
+            case INT_GT:
+                if (atoi(str) <= provider->match.number) {
+                    match = 0;
+                }
+                break;
             case INT_GE:
-                if (atoi(str) >= provider->match.number) {
+                if (atoi(str) < provider->match.number) {
                     match = 0;
                 }
                 break;
