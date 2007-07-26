@@ -2625,6 +2625,7 @@ later</compatibility>
 
     <example>
       Require valid-user<br />
+      Order allow,deny<br />
       Allow from 192.168.1<br />
       Satisfy Any
     </example>
