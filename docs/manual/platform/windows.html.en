@@ -19,7 +19,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Using Apache with Microsoft Windows</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/platform/windows.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a></p>
 </div>
 
 
@@ -319,7 +319,7 @@
     the command prompt at the Apache <code>bin</code> subdirectory:</p>
 
     <div class="example"><p><code>
-      apache -k install
+      httpd -k install
     </code></p></div>
 
     <p>If you need to specify the name of the service you want to
@@ -328,14 +328,14 @@
     computer.</p>
 
     <div class="example"><p><code>
-      apache -k install -n "MyServiceName"
+      httpd -k install -n "MyServiceName"
     </code></p></div>
 
     <p>If you need to have specifically named configuration files for
     different services, you must use this:</p>
 
     <div class="example"><p><code>
-      apache -k install -n "MyServiceName" -f "c:\files\my.conf"
+      httpd -k install -n "MyServiceName" -f "c:\files\my.conf"
     </code></p></div>
 
     <p>If you use the first command without any special parameters except
@@ -346,13 +346,13 @@
     <p>Removing an Apache service is easy. Just use:</p>
 
     <div class="example"><p><code>
-      apache -k uninstall
+      httpd -k uninstall
     </code></p></div>
 
     <p>The specific Apache service to be uninstalled can be specified by using:</p>
 
     <div class="example"><p><code>
-      apache -k uninstall -n "MyServiceName"
+      httpd -k uninstall -n "MyServiceName"
     </code></p></div>
 
     <p>Normal starting, restarting and shutting down of an Apache
@@ -363,34 +363,34 @@
     service's configuration file by using:</p>
 
     <div class="example"><p><code>
-      apache -n "MyServiceName" -t
+      httpd -n "MyServiceName" -t
     </code></p></div>
 
     <p>You can control an Apache service by its command line switches,
     too. To start an installed Apache service you'll use this:</p>
 
     <div class="example"><p><code>
-      apache -k start
+      httpd -k start
     </code></p></div>
 
     <p>To stop an Apache service via the command line switches, use
     this:</p>
 
     <div class="example"><p><code>
-      apache -k stop
+      httpd -k stop
     </code></p></div>
 
     <p>or</p>
 
     <div class="example"><p><code>
-      apache -k shutdown
+      httpd -k shutdown
     </code></p></div>
 
     <p>You can also restart a running service and force it to reread
     its configuration file by using:</p>
 
     <div class="example"><p><code>
-      apache -k restart
+      httpd -k restart
     </code></p></div>
 
     <p>By default, all Apache services are registered to run as the
@@ -482,7 +482,7 @@
       in the background. If you run the command</p>
 
       <div class="example"><p><code>
-        apache -n "MyServiceName" -k start
+        httpd -n "MyServiceName" -k start
       </code></p></div>
 
       <p>via a shortcut on your desktop, for example, then if the
@@ -530,7 +530,7 @@
     use the following command:</p>
 
     <div class="example"><p><code>
-      apache
+      httpd
     </code></p></div>
 
     <p>Apache will execute, and will remain running until it is stopped
@@ -551,7 +551,7 @@
     window and entering:</p>
 
     <div class="example"><p><code>
-      apache -k shutdown
+      httpd -k shutdown
     </code></p></div>
 
     <p>This should be preferred over pressing Control-C because this
@@ -562,7 +562,7 @@
     complete without interruption. To restart Apache, use:</p>
 
     <div class="example"><p><code>
-      apache -k restart
+      httpd -k restart
     </code></p></div>
 
     <div class="note">Note for people familiar with the Unix version of Apache:
@@ -582,7 +582,7 @@
     <div class="example"><p><code>
       c: <br />
       cd "\Program Files\Apache Group\Apache2\bin" <br />
-      apache
+      httpd
     </code></p></div>
 
     <p>Then wait for Apache to stop, or press Control-C. Then enter the
@@ -602,20 +602,20 @@
       a particular configuration file:</p>
 
       <div class="example"><p><code>
-        apache -f "c:\my server files\anotherconfig.conf"
+        httpd -f "c:\my server files\anotherconfig.conf"
       </code></p></div>
 
       <p>or</p>
 
       <div class="example"><p><code>
-        apache -f files\anotherconfig.conf
+        httpd -f files\anotherconfig.conf
       </code></p></div></li>
 
       <li><p><code>-n</code> specifies the installed Apache service
       whose configuration file is to be used:</p>
 
       <div class="example"><p><code>
-        apache -n "MyServiceName"
+        httpd -n "MyServiceName"
       </code></p></div>
       </li>
     </ul>
@@ -632,7 +632,7 @@
     invoking Apache with the <code>-V</code> switch, like this:</p>
 
     <div class="example"><p><code>
-      apache -V
+      httpd.exe -V
     </code></p></div>
 
     <p>Apache will then try to determine its <code class="directive"><a href="../mod/core.html#&#10;    serverroot">
@@ -748,7 +748,7 @@
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/platform/windows.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/platform/windows.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
