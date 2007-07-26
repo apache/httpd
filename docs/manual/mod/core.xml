@@ -2678,6 +2678,12 @@ later</compatibility>
     registry keys cannot be found, Apache falls back to the behavior of the
     <code>Script</code> option.</p>
 
+    <p>For example, the registry setting to have a script with the .pl extension
+    processed via perl would be:</p>
+
+    <example><code>HKEY_CLASSES_ROOT\.pl\Shell\ExecCGI\Command\(Default) => C:\Perl\bin\perl.exe -wT</code></example>
+
+
     <note type="warning"><title>Security</title>
     <p>Be careful when using <code>ScriptInterpreterSource
     Registry</code> with <directive
