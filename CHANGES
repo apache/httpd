@@ -1,6 +1,12 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
+
+  *) mod_filter: fix integer comparisons in dispatch rules
+     PR 41835 [Nick Kew]
+
+  *) mod_filter: fix merging of ! and = in FilterChain
+     PR 42186 [Issac Goldstand <margol beamartyr.net>]
  
   *) mod_deflate: don't try to process metadata buckets as data.  what should
      have been a 413 error was logged as a 500 and a blank screen appeared
