@@ -319,7 +319,7 @@
     the command prompt at the Apache <code>bin</code> subdirectory:</p>
 
     <example>
-      apache -k install
+      httpd -k install
     </example>
 
     <p>If you need to specify the name of the service you want to
@@ -328,14 +328,14 @@
     computer.</p>
 
     <example>
-      apache -k install -n "MyServiceName"
+      httpd -k install -n "MyServiceName"
     </example>
 
     <p>If you need to have specifically named configuration files for
     different services, you must use this:</p>
 
     <example>
-      apache -k install -n "MyServiceName" -f "c:\files\my.conf"
+      httpd -k install -n "MyServiceName" -f "c:\files\my.conf"
     </example>
 
     <p>If you use the first command without any special parameters except
@@ -346,13 +346,13 @@
     <p>Removing an Apache service is easy. Just use:</p>
 
     <example>
-      apache -k uninstall
+      httpd -k uninstall
     </example>
 
     <p>The specific Apache service to be uninstalled can be specified by using:</p>
 
     <example>
-      apache -k uninstall -n "MyServiceName"
+      httpd -k uninstall -n "MyServiceName"
     </example>
 
     <p>Normal starting, restarting and shutting down of an Apache
@@ -363,34 +363,34 @@
     service's configuration file by using:</p>
 
     <example>
-      apache -n "MyServiceName" -t
+      httpd -n "MyServiceName" -t
     </example>
 
     <p>You can control an Apache service by its command line switches,
     too. To start an installed Apache service you'll use this:</p>
 
     <example>
-      apache -k start
+      httpd -k start
     </example>
 
     <p>To stop an Apache service via the command line switches, use
     this:</p>
 
     <example>
-      apache -k stop
+      httpd -k stop
     </example>
 
     <p>or</p>
 
     <example>
-      apache -k shutdown
+      httpd -k shutdown
     </example>
 
     <p>You can also restart a running service and force it to reread
     its configuration file by using:</p>
 
     <example>
-      apache -k restart
+      httpd -k restart
     </example>
 
     <p>By default, all Apache services are registered to run as the
@@ -482,7 +482,7 @@
       in the background. If you run the command</p>
 
       <example>
-        apache -n "MyServiceName" -k start
+        httpd -n "MyServiceName" -k start
       </example>
 
       <p>via a shortcut on your desktop, for example, then if the
@@ -530,7 +530,7 @@
     use the following command:</p>
 
     <example>
-      apache
+      httpd
     </example>
 
     <p>Apache will execute, and will remain running until it is stopped
@@ -551,7 +551,7 @@
     window and entering:</p>
 
     <example>
-      apache -k shutdown
+      httpd -k shutdown
     </example>
 
     <p>This should be preferred over pressing Control-C because this
@@ -562,7 +562,7 @@
     complete without interruption. To restart Apache, use:</p>
 
     <example>
-      apache -k restart
+      httpd -k restart
     </example>
 
     <note>Note for people familiar with the Unix version of Apache:
@@ -582,7 +582,7 @@
     <example>
       c: <br />
       cd "\Program Files\Apache Group\Apache2\bin" <br />
-      apache
+      httpd
     </example>
 
     <p>Then wait for Apache to stop, or press Control-C. Then enter the
@@ -602,20 +602,20 @@
       a particular configuration file:</p>
 
       <example>
-        apache -f "c:\my server files\anotherconfig.conf"
+        httpd -f "c:\my server files\anotherconfig.conf"
       </example>
 
       <p>or</p>
 
       <example>
-        apache -f files\anotherconfig.conf
+        httpd -f files\anotherconfig.conf
       </example></li>
 
       <li><p><code>-n</code> specifies the installed Apache service
       whose configuration file is to be used:</p>
 
       <example>
-        apache -n "MyServiceName"
+        httpd -n "MyServiceName"
       </example>
       </li>
     </ul>
@@ -632,7 +632,7 @@
     invoking Apache with the <code>-V</code> switch, like this:</p>
 
     <example>
-      apache -V
+      httpd.exe -V
     </example>
 
     <p>Apache will then try to determine its <directive module="core">
