@@ -756,7 +756,8 @@ later.</compatibility>
 
 <usage>   
     <p>The <directive>RemoveInputFilter</directive> directive removes any
-    input filter associations for files with the given extensions.
+    input <a href="../filter.html">filter</a> associations for files with
+    the given extensions.
     This allows <code>.htaccess</code> files in subdirectories to
     undo any associations inherited from parent directories or the
     server config files.</p>
@@ -806,7 +807,8 @@ later.</compatibility>
 
 <usage>    
     <p>The <directive>RemoveOutputFilter</directive> directive removes any
-    output filter associations for files with the given extensions.
+    output <a href="../filter.html">filter</a> associations for files with
+    the given extensions.
     This allows <code>.htaccess</code> files in subdirectories to
     undo any associations inherited from parent directories or the
     server config files.</p>
