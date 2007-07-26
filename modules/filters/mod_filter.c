@@ -201,23 +201,16 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
             }
         }
         /* we can't check for NULL in provider as that kills integer 0
-	 * so we have to test each string/regexp case in the switch
-	 */
+         * so we have to test each string/regexp case in the switch
+         */
         else {
             switch (provider->match_type) {
             case STRING_MATCH:
-                if (!provider->match.string) {
-                    match = 0;
-                }
-		else if (strcasecmp(str, provider->match.string)) {
+                if (strcasecmp(str, provider->match.string)) {
                     match = 0;
                 }
                 break;
             case STRING_CONTAINS:
-                if (!provider->match.string) {
-                    match = 0;
-                    break;
-                }
                 str1 = apr_pstrdup(r->pool, str);
                 ap_str_tolower(str1);
                 if (!strstr(str1, provider->match.string)) {
@@ -225,11 +218,8 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
                 }
                 break;
             case REGEX_MATCH:
-                if (!provider->match.string) {
-                    match = 0;
-                }
-		else if (ap_regexec(provider->match.regex, str, 0, NULL, 0)
-                         == AP_REG_NOMATCH) {
+                if (ap_regexec(provider->match.regex, str, 0, NULL, 0)
+                    == AP_REG_NOMATCH) {
                     match = 0;
                 }
                 break;
@@ -601,6 +591,9 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *args)
                                                          match,
                                                          rxend-match),
                                             flags);
+        if (provider->match.regex == NULL) {
+            return "Bad regexp";
+        }
         break;
     case '*':
         provider->match_type = DEFINED;
