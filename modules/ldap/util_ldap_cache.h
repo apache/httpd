@@ -97,6 +97,14 @@ typedef struct util_url_node_t {
 } util_url_node_t;
 
 /*
+ * When a group is found, subgroups are stored in the group's cache entry.
+ */
+typedef struct util_compare_subgroup_t {
+    const char **subgroupDNs;
+    int len;
+} util_compare_subgroup_t;
+
+/*
  * We cache every successful search and bind operation, using the username 
  * as the key. Each node in the cache contains the returned DN, plus the 
  * password used to bind.
@@ -121,6 +129,8 @@ typedef struct util_compare_node_t {
     const char *value;
     apr_time_t lastcompare;
     int result;
+    int sgl_processed;      /* 0 if no sgl processing yet. 1 if sgl has been processed (even if SGL is NULL). Saves repeat work on leaves. */
+    struct util_compare_subgroup_t *subgroupList;
 } util_compare_node_t;
 
 /*
@@ -169,6 +179,8 @@ void util_ldap_dn_compare_node_display(request_rec *r, util_ald_cache_t *cache, 
 void util_ald_free(util_ald_cache_t *cache, const void *ptr);
 void *util_ald_alloc(util_ald_cache_t *cache, unsigned long size);
 const char *util_ald_strdup(util_ald_cache_t *cache, const char *s);
+util_compare_subgroup_t *util_ald_sgl_dup(util_ald_cache_t *cache, util_compare_subgroup_t *sgl);
+void util_ald_sgl_free(util_ald_cache_t *cache, util_compare_subgroup_t **sgl);
 
 /* Cache managing function */
 unsigned long util_ald_hash_string(int nstr, ...);

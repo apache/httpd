@@ -67,9 +67,14 @@ typedef struct {
 
     int have_ldap_url;              /* Set if we have found an LDAP url */
 
-    apr_array_header_t *groupattr;  /* List of Group attributes */
+    apr_array_header_t *groupattr;  /* List of Group attributes identifying user members. Default:"member uniqueMember" */
     int group_attrib_is_dn;         /* If true, the group attribute is the DN, otherwise,
                                         it's the exact string passed by the HTTP client */
+    apr_array_header_t *subgroupattrs; /* List of attributes used to find subgroup references
+                                          within a group directory entry. Default:"member uniqueMember" */
+    char **sgAttributes;            /* Array of strings constructed (post-config) from subgroupattrs. Last entry is NULL. */
+    apr_array_header_t *subgroupclasses; /* List of object classes of sub-groups. Default:"groupOfNames groupOfUniqueNames" */
+    int maxNestingDepth;            /* Maximum recursive nesting depth permitted during subgroup processing. Default: 10 */
 
     int secure;                     /* True if SSL connections are requested */
 } authn_ldap_config_t;
@@ -82,16 +87,13 @@ typedef struct {
 /* maximum group elements supported */
 #define GROUPATTR_MAX_ELTS 10
 
-struct mod_auth_ldap_groupattr_entry_t {
-    char *name;
-};
-
 module AP_MODULE_DECLARE_DATA authnz_ldap_module;
 
 static APR_OPTIONAL_FN_TYPE(uldap_connection_close) *util_ldap_connection_close;
 static APR_OPTIONAL_FN_TYPE(uldap_connection_find) *util_ldap_connection_find;
 static APR_OPTIONAL_FN_TYPE(uldap_cache_comparedn) *util_ldap_cache_comparedn;
 static APR_OPTIONAL_FN_TYPE(uldap_cache_compare) *util_ldap_cache_compare;
+static APR_OPTIONAL_FN_TYPE(uldap_cache_check_subgroups) *util_ldap_cache_check_subgroups;
 static APR_OPTIONAL_FN_TYPE(uldap_cache_checkuserid) *util_ldap_cache_checkuserid;
 static APR_OPTIONAL_FN_TYPE(uldap_cache_getuserdn) *util_ldap_cache_getuserdn;
 static APR_OPTIONAL_FN_TYPE(uldap_ssl_supported) *util_ldap_ssl_supported;
@@ -285,6 +287,10 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
 */
     sec->groupattr = apr_array_make(p, GROUPATTR_MAX_ELTS,
                                     sizeof(struct mod_auth_ldap_groupattr_entry_t));
+    sec->subgroupattrs = apr_array_make(p, GROUPATTR_MAX_ELTS,
+                                    sizeof(struct mod_auth_ldap_groupattr_entry_t));
+    sec->subgroupclasses = apr_array_make(p, GROUPATTR_MAX_ELTS,
+                                    sizeof(struct mod_auth_ldap_groupattr_entry_t));
 
     sec->have_ldap_url = 0;
     sec->url = "";
@@ -294,6 +300,8 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
     sec->deref = always;
     sec->group_attrib_is_dn = 1;
     sec->secure = -1;   /*Initialize to unset*/
+    sec->maxNestingDepth = 10;
+    sec->sgAttributes = NULL;
 
     sec->user_is_dn = 0;
     sec->remote_user_attribute = NULL;
@@ -648,7 +656,43 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         grp = apr_array_push(sec->groupattr);
         grp->name = "member";
         grp = apr_array_push(sec->groupattr);
-        grp->name = "uniquemember";
+        grp->name = "uniqueMember";
+#if APR_HAS_THREADS
+        apr_thread_mutex_unlock(sec->lock);
+#endif
+    }
+
+    /*
+     * If there are no elements in the sub group attribute array, the default
+     * should be member and uniquemember; populate the array now.
+     */
+    if (sec->subgroupattrs->nelts == 0) {
+        struct mod_auth_ldap_groupattr_entry_t *grp;
+#if APR_HAS_THREADS
+        apr_thread_mutex_lock(sec->lock);
+#endif
+        grp = apr_array_push(sec->subgroupattrs);
+        grp->name = "member";
+        grp = apr_array_push(sec->subgroupattrs);
+        grp->name = "uniqueMember";
+#if APR_HAS_THREADS
+        apr_thread_mutex_unlock(sec->lock);
+#endif
+    }
+
+    /*
+     * If there are no elements in the sub group classes array, the default
+     * should be groupOfNames and groupOfUniqueNames; populate the array now.
+     */
+    if (sec->subgroupclasses->nelts == 0) {
+        struct mod_auth_ldap_groupattr_entry_t *grp;
+#if APR_HAS_THREADS
+        apr_thread_mutex_lock(sec->lock);
+#endif
+        grp = apr_array_push(sec->subgroupclasses);
+        grp->name = "groupOfNames";
+        grp = apr_array_push(sec->subgroupclasses);
+        grp->name = "groupOfUniqueNames";
 #if APR_HAS_THREADS
         apr_thread_mutex_unlock(sec->lock);
 #endif
@@ -733,6 +777,45 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                               "authorization successful (attribute %s) [%s][%s]",
                               getpid(), ent[i].name, ldc->reason, ldap_err2string(result));
                 return AUTHZ_GRANTED;
+            }
+            case LDAP_COMPARE_FALSE: {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                               "[%" APR_PID_T_FMT "] auth_ldap authorise: require group \"%s\": "
+                               "failed [%s][%d - %s], checking sub-groups",
+                               getpid(), t, ldc->reason, result, ldap_err2string(result));
+
+                if(sec->sgAttributes == NULL) {
+                    struct mod_auth_ldap_groupattr_entry_t *sg_ent = (struct mod_auth_ldap_groupattr_entry_t *) sec->subgroupattrs->elts;
+                    char **sg_attrs;
+                    int sga_index;
+
+                    /* Allocate a null-terminated array of attribute strings. */
+                    sg_attrs = apr_pcalloc(sec->pool, (sec->subgroupattrs->nelts+1) * sizeof(char *));
+                    for(sga_index = 0; sga_index < sec->subgroupattrs->nelts; sga_index++) {
+                        sg_attrs[sga_index] = apr_pstrdup(sec->pool, sg_ent[sga_index].name);
+                    }
+                    sg_attrs[sec->subgroupattrs->nelts] = NULL;
+                    sec->sgAttributes = sg_attrs;
+                }
+
+                result = util_ldap_cache_check_subgroups(r, ldc, sec->url, t, ent[i].name,
+                                                         sec->group_attrib_is_dn ? req->dn : req->user,
+                                                         sec->sgAttributes, sec->subgroupclasses,
+                                                         0, sec->maxNestingDepth);
+                if(result == LDAP_COMPARE_TRUE) {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                                   "[%" APR_PID_T_FMT "] auth_ldap authorise: require group (sub-group): "
+                                   "authorisation successful (attribute %s) [%s][%d - %s]",
+                                   getpid(), ent[i].name, ldc->reason, result, ldap_err2string(result));
+                     return OK;
+                }
+                else {
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                                   "[%" APR_PID_T_FMT "] auth_ldap authorise: require group (sub-group) \"%s\": "
+                                   "authorisation failed [%s][%d - %s]",
+                                   getpid(), t, ldc->reason, result, ldap_err2string(result));
+                }
+                break;
             }
             default: {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
@@ -1249,6 +1332,47 @@ static const char *mod_auth_ldap_set_deref(cmd_parms *cmd, void *config, const c
     return NULL;
 }
 
+static const char *mod_auth_ldap_add_subgroup_attribute(cmd_parms *cmd, void *config, const char *arg)
+{
+    struct mod_auth_ldap_groupattr_entry_t *new;
+
+    authn_ldap_config_t *sec = config;
+
+    if (sec->subgroupattrs->nelts > GROUPATTR_MAX_ELTS)
+        return "Too many AuthLDAPSubGroupAttribute values";
+
+    new = apr_array_push(sec->subgroupattrs);
+    new->name = apr_pstrdup(cmd->pool, arg);
+
+    return NULL;
+}
+
+static const char *mod_auth_ldap_add_subgroup_class(cmd_parms *cmd, void *config, const char *arg)
+{
+    struct mod_auth_ldap_groupattr_entry_t *new;
+
+    authn_ldap_config_t *sec = config;
+
+    if (sec->subgroupclasses->nelts > GROUPATTR_MAX_ELTS)
+        return "Too many AuthLDAPSubGroupClass values";
+
+    new = apr_array_push(sec->subgroupclasses);
+    new->name = apr_pstrdup(cmd->pool, arg);
+
+    return NULL;
+}
+
+static const char *mod_auth_ldap_set_subgroup_maxdepth(cmd_parms *cmd,
+                                                       void *config,
+                                                       const char *max_depth)
+{
+    authn_ldap_config_t *sec = config;
+
+    sec->maxNestingDepth = atol(max_depth);
+
+    return NULL;
+}
+
 static const char *mod_auth_ldap_add_group_attribute(cmd_parms *cmd, void *config, const char *arg)
 {
     struct mod_auth_ldap_groupattr_entry_t *new;
@@ -1312,8 +1436,7 @@ static const command_rec authnz_ldap_cmds[] =
                  "the REMOTE_USER variable will contain whatever value the remote user sent."),
 
     AP_INIT_TAKE1("AuthLDAPRemoteUserAttribute", ap_set_string_slot,
-                 (void *)APR_OFFSETOF(authn_ldap_config_t, 
-                                      remote_user_attribute), OR_AUTHCFG,
+                 (void *)APR_OFFSETOF(authn_ldap_config_t, remote_user_attribute), OR_AUTHCFG,
                  "Override the user supplied username and place the "
                  "contents of this attribute in the REMOTE_USER "
                  "environment variable."),
@@ -1325,9 +1448,20 @@ static const command_rec authnz_ldap_cmds[] =
                  "(at the expense of possible false matches). See the documentation for "
                  "a complete description of this option."),
 
+    AP_INIT_ITERATE("AuthLDAPSubGroupAttribute", mod_auth_ldap_add_subgroup_attribute, NULL, OR_AUTHCFG,
+                    "Attribute labels used to define sub-group (or nested group) membership in groups - "
+                    "defaults to member and uniqueMember (one per directive)"),
+
+    AP_INIT_ITERATE("AuthLDAPSubGroupClass", mod_auth_ldap_add_subgroup_class, NULL, OR_AUTHCFG,
+                     "LDAP objectClass values used to identify sub-group instances - "
+                     "defaults to groupOfNames and groupOfUniqueNames (one per directive)"),
+
+    AP_INIT_TAKE1("AuthLDAPMaxSubGroupDepth", mod_auth_ldap_set_subgroup_maxdepth, NULL, OR_AUTHCFG,
+                      "Maximum subgroup nesting depth to be evaluated - defaults to 10 (top-level group = 0)"),
+
     AP_INIT_ITERATE("AuthLDAPGroupAttribute", mod_auth_ldap_add_group_attribute, NULL, OR_AUTHCFG,
-                    "A list of attributes used to define group membership - defaults to "
-                    "member and uniquemember"),
+                    "A list of attribute labels used to identify the user members of groups - defaults to "
+                    "member and uniquemember (one per directive)"),
 
     AP_INIT_FLAG("AuthLDAPGroupAttributeIsDN", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(authn_ldap_config_t, group_attrib_is_dn), OR_AUTHCFG,
@@ -1336,7 +1470,7 @@ static const command_rec authnz_ldap_cmds[] =
                  "provided by the client directly. Defaults to 'on'."),
 
     AP_INIT_TAKE1("AuthLDAPDereferenceAliases", mod_auth_ldap_set_deref, NULL, OR_AUTHCFG,
-                  "Determines how aliases are handled during a search. Can bo one of the"
+                  "Determines how aliases are handled during a search. Can be one of the"
                   "values \"never\", \"searching\", \"finding\", or \"always\". "
                   "Defaults to always."),
 
@@ -1468,6 +1602,7 @@ static void ImportULDAPOptFn(void)
     util_ldap_cache_checkuserid = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_checkuserid);
     util_ldap_cache_getuserdn   = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_getuserdn);
     util_ldap_ssl_supported     = APR_RETRIEVE_OPTIONAL_FN(uldap_ssl_supported);
+    util_ldap_cache_check_subgroups = APR_RETRIEVE_OPTIONAL_FN(uldap_cache_check_subgroups);
 }
 
 static void register_hooks(apr_pool_t *p)

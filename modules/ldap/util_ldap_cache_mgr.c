@@ -126,7 +126,8 @@ const char *util_ald_strdup(util_ald_cache_t *cache, const char *s)
         else {
             return NULL;
         }
-    } else {
+    }
+    else {
         /* Cache shm is not used */
         return strdup(s);
     }
@@ -135,6 +136,44 @@ const char *util_ald_strdup(util_ald_cache_t *cache, const char *s)
 #endif
 }
 
+/*
+ * Duplicate a subgroupList from one compare entry to another.
+ * Returns: ptr to a new copy of the subgroupList or NULL if allocation failed.
+ */
+util_compare_subgroup_t *util_ald_sgl_dup(util_ald_cache_t *cache, util_compare_subgroup_t *sgl_in)
+{
+    int i = 0;
+    util_compare_subgroup_t *sgl_out = NULL;
+
+    if (!sgl_in) return NULL;
+
+    sgl_out = (util_compare_subgroup_t *) util_ald_alloc(cache, sizeof(util_compare_subgroup_t));
+    sgl_out->subgroupDNs = util_ald_alloc(cache, sizeof(char *) * sgl_in->len);
+    sgl_out->len = sgl_in->len;
+
+    for (i = 0; i < sgl_in->len; i++) {
+        fprintf(stderr, "sgl_dup: Adding %s to sgl\n", sgl_in->subgroupDNs[i]); fflush(stderr);
+        sgl_out->subgroupDNs[i] = util_ald_strdup(cache, sgl_in->subgroupDNs[i]);
+    }
+
+    return sgl_out;
+}
+
+/*
+ * Delete an entire subgroupList.
+ */
+void util_ald_sgl_free(util_ald_cache_t *cache, util_compare_subgroup_t **sgl)
+{
+    int i = 0;
+    if (sgl == NULL || *sgl == NULL) {
+        return;
+    }
+
+    for (i = 0; i < (*sgl)->len; i++) {
+        util_ald_free(cache, (*sgl)->subgroupDNs[i]);
+    }
+    util_ald_free(cache, *sgl);
+}
 
 /*
  * Computes the hash on a set of strings. The first argument is the number
@@ -365,9 +404,10 @@ void *util_ald_cache_fetch(util_ald_cache_t *cache, void *payload)
     cache->fetches++;
 
     hashval = (*cache->hash)(payload) % cache->size;
+
     for (p = cache->nodes[hashval];
          p && !(*cache->compare)(p->payload, payload);
-    p = p->next) ;
+         p = p->next) ;
 
     if (p != NULL) {
         cache->hits++;
@@ -676,6 +716,8 @@ char *util_ald_cache_display(request_rec *r, util_ldap_state_t *st)
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Value</b></font></td>"
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Last Compare</b></font></td>"
                              "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Result</b></font></td>"
+                             "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>Sub-groups?</b></font></td>"
+                             "<td><font size='-1' face='Arial,Helvetica' color='#ffffff'><b>S-G Checked?</b></font></td>"
                              "</tr>\n", r
                             );
                     if (n) {
