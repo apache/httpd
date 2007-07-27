@@ -274,6 +274,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem
+      -0.9: niq - This (ProxySet) needs documenting. 
+            Reviewing it 'blind' lacks appeal.
 
     * mod_proxy: Allow optional name=value options within <Proxy section line.
       Additional arguments are allowed only for 'standard' url's, meaning that
