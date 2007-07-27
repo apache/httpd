@@ -144,6 +144,10 @@ typedef struct util_ldap_state_t {
 
 } util_ldap_state_t;
 
+/* Used to store arrays of attribute labels/values. */
+struct mod_auth_ldap_groupattr_entry_t {
+    char *name;
+};
 
 /**
  * Open a connection to an LDAP server
@@ -244,12 +248,43 @@ APR_DECLARE_OPTIONAL_FN(int,uldap_cache_comparedn,(request_rec *r, util_ldap_con
  * @param attrib The attribute within the object we are comparing for.
  * @param value The value of the attribute we are trying to compare for. 
  * @tip Use this function to determine whether an attribute/value pair exists within an
- *      object. Typically this would be used to determine LDAP group membership.
+ *      object. Typically this would be used to determine LDAP top-level group
+ *      membership.
  * @fn int util_ldap_cache_compare(request_rec *r, util_ldap_connection_t *ldc,
  *                                      const char *url, const char *dn, const char *attrib, const char *value)
  */
 APR_DECLARE_OPTIONAL_FN(int,uldap_cache_compare,(request_rec *r, util_ldap_connection_t *ldc,
                             const char *url, const char *dn, const char *attrib, const char *value));
+
+/**
+ * An LDAP function that checks if the specified user is a member of a subgroup.
+ * @param r The request record
+ * @param ldc The LDAP connection being used.
+ * @param url The URL of the LDAP connection - used for deciding which cache to use.
+ * @param dn The DN of the object in which we find subgroups to search within.
+ * @param attrib The attribute within group objects that identify users.
+ * @param value The user attribute value we are trying to compare for.
+ * @param subgroupAttrs The attributes within group objects that identify subgroups.
+ *                      Array of strings.
+ * @param subgroupclasses The objectClass values used to identify groups (and
+ *                      subgroups). apr_array_header_t *.
+ * @param cur_subgroup_depth Current recursive depth during subgroup processing.
+ * @param max_subgroup_depth Maximum depth of recursion allowed during subgroup
+ *                           processing.
+ * @tip Use this function to determine whether an attribute/value pair exists within a
+ *      starting group object or one of its nested subgroups. Typically this would be
+ *      used to determine LDAP nested group membership.
+ * @deffunc int util_ldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t
+ *                                      *ldc, const char *url, const char *dn,
+ *                                      const char *attrib, const char value,
+ *                                      char **subgroupAttrs, apr_array_header_t
+ *                                      *subgroupclasses, int cur_subgroup_depth, int
+ *                                      max_subgroup_depth )
+ */
+APR_DECLARE_OPTIONAL_FN(int,uldap_cache_check_subgroups,(request_rec *r, util_ldap_connection_t *ldc,
+                                       const char *url, const char *dn, const char *attrib, const char *value,
+                                       char **subgroupAttrs, apr_array_header_t *subgroupclasses,
+                                       int cur_subgroup_depth, int max_subgroup_depth));
 
 /**
  * Checks a username/password combination by binding to the LDAP server

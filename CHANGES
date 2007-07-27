@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
+     to authorize an authenticated user via a "require ldap-group X" directive
+     where the user is not in group X, but is in a subgroup contained in X.
+     PR 42891 [Paul J. Reder]
+
   *) mod_filter: fix integer comparisons in dispatch rules
      PR 41835 [Nick Kew]
 
