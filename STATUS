@@ -314,6 +314,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mime.types: Add registered Apple installer type
       PR: 40379
+      Comment: if "pkg" or "dist" is overloaded in the context of
+      "extension"s, this may need to be reviewed.  Anyone?
       http://svn.apache.org/viewvc?view=rev&revision=560533
       +1: niq
 
