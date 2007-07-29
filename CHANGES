@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_deflate: fix protocol handling in deflate input filter
+     PR 23287 [Nick Kew]
+
   *) mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
      to authorize an authenticated user via a "require ldap-group X" directive
      where the user is not in group X, but is in a subgroup contained in X.
