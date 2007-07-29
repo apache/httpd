@@ -298,7 +298,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR: 41835
       http://svn.apache.org/viewvc?view=rev&revision=559837
       http://svn.apache.org/viewvc?view=rev&revision=559999
-      +1: niq
+      +1: niq, rpluem
 
     * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
       to authorize an authenticated user via a "require ldap-group X" directive
@@ -310,7 +310,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mime.types: Use registered types for Javascript/ECMAscript (RFC4329)
       PR: 40299
       http://svn.apache.org/viewvc?view=rev&revision=560533
-      +1: niq
+      +1: niq, rpluem
 
     * mime.types: Add registered Apple installer type
       PR: 40379
