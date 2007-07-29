@@ -674,42 +674,37 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
          */
         encoding = apr_table_get(r->headers_in, "Content-Encoding");
         if (encoding && *encoding) {
-            const char *tmp = encoding;
 
             /* check the usual/simple case first */
             if (!strcasecmp(encoding, "gzip")) {
                 found = 1;
                 apr_table_unset(r->headers_in, "Content-Encoding");
             }
-            else {
-                token = ap_get_token(r->pool, &tmp, 0);
-                while (token && token[0]) {
-                    if (!strcasecmp(token, "gzip")) {
-                        char *new_encoding = apr_pstrdup(r->pool, encoding);
-                        char *ptr = ap_strstr(new_encoding, token);
-                        size_t sz = 5*sizeof(char);
-                        if (ptr == new_encoding) {
-                            /* remove "gzip:" at start */
-                            memmove(ptr, ptr+sz, sz);
+            else if (ap_strchr_c(encoding, ':') != NULL) {
+                /* If the outermost encoding isn't gzip, there's nowt
+                 * we can do.  So only check the last non-identity token
+                 */
+                char *new_encoding = apr_pstrdup(r->pool, encoding);
+                for(;;) {
+                    token = ap_strrchr(new_encoding, ':');
+                    if (!token) {        /* gzip:identity or other:identity */
+                        if (!strcasecmp(new_encoding, "gzip")) {
+                            apr_table_unset(r->headers_in, "Content-Encoding");
+                            found = 1;
                         }
-                        else {
-                            /* remove ":gzip" as found */
-                            memmove(ptr-sizeof(char), ptr+4*sizeof(char), sz);
-                        }
-                        /* Silly edge-case: if there's more than one "gzip"
-                         * token, this is a maybe-bug, as we remove exactly
-                         * one gzip token.  But it's not really our bug:
-                         * two gzips should mean it's double-gzipped,
-                         * shouldn't it?  Insert this filter twice!
-                         */
+                        break; /* seen all tokens */
+                    }
+                    if (!strcasecmp(token+sizeof(char), "gzip")) {
+                        *token = '\0';
                         apr_table_setn(r->headers_in, "Content-Encoding",
                                        new_encoding);
                         found = 1;
-                        break;
                     }
-                    /* Otherwise, skip token */
-                    tmp++;
-                    token = ap_get_token(r->pool, &tmp, 0);
+                    else if (!strcasecmp(token+sizeof(char), "identity")) {
+                        *token = '\0';
+                        continue; /* strip the token and find the next one */
+                    }
+                    break; /* found a non-identity token */
                 }
             }
         }
