@@ -665,22 +665,52 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             return ap_get_brigade(f->next, bb, mode, block, readbytes);
         }
 
-        /* Let's see what our current Content-Encoding is.
-         * If gzip is present, don't gzip again.  (We could, but let's not.)
+        /* Check whether request body is gzipped.
+         *
+         * If it is, we're transforming the contents, invalidating
+         * some request headers including Content-Encoding.
+         *
+         * If not, we just remove ourself.
          */
         encoding = apr_table_get(r->headers_in, "Content-Encoding");
-        if (encoding) {
+        if (encoding && *encoding) {
             const char *tmp = encoding;
 
-            token = ap_get_token(r->pool, &tmp, 0);
-            while (token && token[0]) {
-                if (!strcasecmp(token, "gzip")) {
-                    found = 1;
-                    break;
-                }
-                /* Otherwise, skip token */
-                tmp++;
+            /* check the usual/simple case first */
+            if (!strcasecmp(encoding, "gzip")) {
+                found = 1;
+                apr_table_unset(r->headers_in, "Content-Encoding");
+            }
+            else {
                 token = ap_get_token(r->pool, &tmp, 0);
+                while (token && token[0]) {
+                    if (!strcasecmp(token, "gzip")) {
+                        char *new_encoding = apr_pstrdup(r->pool, encoding);
+                        char *ptr = ap_strstr(new_encoding, token);
+                        size_t sz = 5*sizeof(char);
+                        if (ptr == new_encoding) {
+                            /* remove "gzip:" at start */
+                            memmove(ptr, ptr+sz, sz);
+                        }
+                        else {
+                            /* remove ":gzip" as found */
+                            memmove(ptr-sizeof(char), ptr+4*sizeof(char), sz);
+                        }
+                        /* Silly edge-case: if there's more than one "gzip"
+                         * token, this is a maybe-bug, as we remove exactly
+                         * one gzip token.  But it's not really our bug:
+                         * two gzips should mean it's double-gzipped,
+                         * shouldn't it?  Insert this filter twice!
+                         */
+                        apr_table_setn(r->headers_in, "Content-Encoding",
+                                       new_encoding);
+                        found = 1;
+                        break;
+                    }
+                    /* Otherwise, skip token */
+                    tmp++;
+                    token = ap_get_token(r->pool, &tmp, 0);
+                }
             }
         }
 
@@ -688,6 +718,9 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             ap_remove_input_filter(f);
             return ap_get_brigade(f->next, bb, mode, block, readbytes);
         }
+        apr_table_unset(r->headers_in, "Content-Length");
+        apr_table_unset(r->headers_in, "Content-MD5");
+        apr_table_unset(r->headers_in, "Content-Range");
 
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
