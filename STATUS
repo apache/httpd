@@ -321,8 +321,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_deflate: fix protocol handling in input filter
       PR: 23287
-      r560689 and 560811
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=556113&r2=560811
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=556113&r2=560941
       +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
