@@ -677,7 +677,8 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         if (encoding && *encoding) {
 
             /* check the usual/simple case first */
-            if (!strcasecmp(encoding, "gzip")) {
+            if (!strcasecmp(encoding, "gzip")
+                || !strcasecmp(encoding, "x-gzip")) {
                 found = 1;
                 apr_table_unset(r->headers_in, "Content-Encoding");
             }
