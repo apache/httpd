@@ -37,6 +37,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "apr_lib.h"
 #include "apr_strings.h"
 #include "apr_general.h"
 #include "util_filter.h"
@@ -680,27 +681,31 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
                 found = 1;
                 apr_table_unset(r->headers_in, "Content-Encoding");
             }
-            else if (ap_strchr_c(encoding, ':') != NULL) {
+            else if (ap_strchr_c(encoding, ',') != NULL) {
                 /* If the outermost encoding isn't gzip, there's nowt
                  * we can do.  So only check the last non-identity token
                  */
                 char *new_encoding = apr_pstrdup(r->pool, encoding);
+                char *ptr;
                 for(;;) {
-                    token = ap_strrchr(new_encoding, ':');
+                    token = ap_strrchr(new_encoding, ',');
                     if (!token) {        /* gzip:identity or other:identity */
-                        if (!strcasecmp(new_encoding, "gzip")) {
+                        if (!strcasecmp(new_encoding, "gzip")
+                            || !strcasecmp(new_encoding, "x-gzip")) {
                             apr_table_unset(r->headers_in, "Content-Encoding");
                             found = 1;
                         }
                         break; /* seen all tokens */
                     }
-                    if (!strcasecmp(token+sizeof(char), "gzip")) {
+                    for (ptr=token+1; apr_isspace(*ptr); ++ptr);
+                    if (!strcasecmp(ptr, "gzip")
+                        || !strcasecmp(ptr, "x-gzip")) {
                         *token = '\0';
                         apr_table_setn(r->headers_in, "Content-Encoding",
                                        new_encoding);
                         found = 1;
                     }
-                    else if (!strcasecmp(token+sizeof(char), "identity")) {
+                    else if (!strcasecmp(ptr, "identity")) {
                         *token = '\0';
                         continue; /* strip the token and find the next one */
                     }
