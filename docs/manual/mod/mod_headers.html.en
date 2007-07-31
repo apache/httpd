@@ -29,9 +29,7 @@
 headers</td></tr>
 <tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>headers_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_headers.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">Compatibility:</a></th><td><code class="directive"><a href="#requestheader">RequestHeader</a></code>
-is available only in Apache 2.0</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_headers.c</td></tr></table>
 <h3>Summary</h3>
 
     <p>This module provides directives to control and modify HTTP
