@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "HTTPD" 8 "2006-08-18" "Apache HTTP Server" "httpd"
+.TH "HTTPD" 8 "2007-07-31" "Apache HTTP Server" "httpd"
 
 .SH NAME
 httpd \- Apache Hypertext Transfer Protocol Server
@@ -65,7 +65,7 @@ Process the configuration \fIdirective\fR before reading config files\&.
 Process the configuration \fIdirective\fR after reading config files\&.  
 .TP
 -D \fIparameter\fR
-Sets a configuration \fIparameter \fRwhich can be used with <IfDefine> sections in the configuration files to conditionally skip or process commands at server startup and restart\&.  
+Sets a configuration \fIparameter \fRwhich can be used with <IfDefine> sections in the configuration files to conditionally skip or process commands at server startup and restart\&. Also can be used to set certain less-common startup parameters including -DNO_DETACH (prevent the parent from forking) and -DFOREGROUND (prevent the parent from calling setsid() et al)\&.  
 .TP
 -e \fIlevel\fR
 Sets the LogLevel to \fIlevel\fR during server startup\&. This is useful for temporarily increasing the verbosity of the error messages to find problems during startup\&.  
