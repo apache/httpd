@@ -96,6 +96,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#intranet">Intranet Proxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#envsettings">Protocol Adjustments</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">Request Bodys</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#x-headers">Reverse Proxy Request Headers</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
@@ -286,7 +287,37 @@
     <code>proxy-sendchunked</code> minimizes resource usage by using
     chunked encoding.</p>
 
-    </div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="x-headers" id="x-headers">Reverse Proxy Request Headers</a></h2>
+
+    <p>When acting in a reverse-proxy mode (using the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive, for example),
+    <code class="module"><a href="../mod/mod_proxy_http.html">mod_proxy_http</a></code> adds several request headers in
+    order to pass information to the origin server. These headers
+    are:</p>
+
+    <dl>
+      <dt><code>X-Forwarded-For</code></dt>
+      <dd>The IP address of the client.</dd>
+      <dt><code>X-Forwarded-Host</code></dt>
+      <dd>The original host requested by the client in the <code>Host</code> 
+       HTTP request ehader.</dd>
+      <dt><code>X-Forwarded-Server</code></dt>
+      <dd>The hostname of the proxy server.</dd>
+    </dl>
+
+    <p>Be careful when using these headers on the origin server, since
+    they will contain more than one (comma-separated) value if the
+    original request already contained one of these headers. For
+    example, you can use <code>%{X-Forwarded-For}i</code> in the log
+    format string of the origin server to log the original clients IP
+    address, but you may get more than one address if the request
+    passes through several proxies.</p>
+
+    <p>See also the <code class="directive"><a href="#proxypreservehost">ProxyPreserveHost</a></code> and <code class="directive"><a href="#proxyvia">ProxyVia</a></code> directives, which control
+    other request headers.</p>
+
+   </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AllowCONNECT" id="AllowCONNECT">AllowCONNECT</a> <a name="allowconnect" id="allowconnect">Directive</a></h2>
 <table class="directive">
