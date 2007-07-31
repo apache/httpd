@@ -95,6 +95,20 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 
 </section>
 
+<section id="vhosts"><title>Rewriting in Virtual Hosts</title>
+
+     <p>By default, <module>mod_rewrite</module> configuration
+     settings from the main server context are not inherited by
+     virtual hosts. To make the main server settings apply to virtual
+     hosts, you must place the following directives in each <directive
+     module="core" type="section">VirtualHost</directive> section:</p>
+
+     <example>
+     RewriteEngine On<br />
+     RewriteOptions inherit
+     </example>
+</section>
+
 <section id="Solutions"><title>Practical Solutions</title>
 
     <p>For numerous examples of common, and not-so-common, uses for
@@ -126,10 +140,10 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
       commenting out all the <directive
       module="mod_rewrite">RewriteRule</directive> directives!</p>
 
-      <p>Note that, by default, rewrite configurations are not
-      inherited. This means that you need to have a
+      <p>Note that rewrite configurations are not
+      inherited by virtual hosts. This means that you need to have a
       <code>RewriteEngine on</code> directive for each virtual host
-      in which you wish to use it.</p>
+      in which you wish to use rewrite rules.</p>
 </usage>
 
 </directivesynopsis>
