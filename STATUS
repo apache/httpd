@@ -324,6 +324,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=556113&r2=560941
       +1: niq
 
+    * mod_deflate: don't try to compress/decompress metadata buckets
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?view=diff&r1=556113&r2=476600
+      +1: gregames
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
