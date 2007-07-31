@@ -262,6 +262,40 @@
 
     </section> <!-- /request-bodies -->
 
+    <section id="x-headers"><title>Reverse Proxy Request Headers</title>
+
+    <p>When acting in a reverse-proxy mode (using the <directive
+    module="mod_proxy">ProxyPass</directive> directive, for example),
+    <module>mod_proxy_http</module> adds several request headers in
+    order to pass information to the origin server. These headers
+    are:</p>
+
+    <dl>
+      <dt><code>X-Forwarded-For</code></dt>
+      <dd>The IP address of the client.</dd>
+      <dt><code>X-Forwarded-Host</code></dt>
+      <dd>The original host requested by the client in the <code>Host</code> 
+       HTTP request ehader.</dd>
+      <dt><code>X-Forwarded-Server</code></dt>
+      <dd>The hostname of the proxy server.</dd>
+    </dl>
+
+    <p>Be careful when using these headers on the origin server, since
+    they will contain more than one (comma-separated) value if the
+    original request already contained one of these headers. For
+    example, you can use <code>%{X-Forwarded-For}i</code> in the log
+    format string of the origin server to log the original clients IP
+    address, but you may get more than one address if the request
+    passes through several proxies.</p>
+
+    <p>See also the <directive
+    module="mod_proxy">ProxyPreserveHost</directive> and <directive
+    module="mod_proxy">ProxyVia</directive> directives, which control
+    other request headers.</p>
+
+   </section> <!--/x-headers -->
+
+
 <directivesynopsis type="section">
 <name>Proxy</name>
 <description>Container for directives applied to proxied resources</description>
