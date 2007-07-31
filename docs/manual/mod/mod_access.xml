@@ -254,7 +254,7 @@ evaluated.</description>
     <p><em>Ordering</em> is one of:</p>
 
     <dl>
-      <dt><code>Deny,Allow</code></dt>
+      <dt><code>Allow,Deny</code></dt>
 
       <dd>First, all <directive module="mod_access">Allow</directive>
       directives are evaluated; at least one must match, or the request
@@ -265,7 +265,7 @@ evaluated.</description>
       <directive module="mod_access">Deny</directive> directive are
       denied by default.</dd>
 
-      <dt><code>Allow,Deny</code></dt>
+      <dt><code>Deny,Allow</code></dt>
 
       <dd>First, all <directive module="mod_access">Deny</directive>
       directives are evaluated; if any match, the request is denied

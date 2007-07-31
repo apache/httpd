@@ -251,7 +251,7 @@ evaluated.</td></tr>
     <p><em>Ordering</em> is one of:</p>
 
     <dl>
-      <dt><code>Deny,Allow</code></dt>
+      <dt><code>Allow,Deny</code></dt>
 
       <dd>First, all <code class="directive"><a href="#allow">Allow</a></code>
       directives are evaluated; at least one must match, or the request
@@ -261,7 +261,7 @@ evaluated.</td></tr>
       <code class="directive"><a href="#deny">Deny</a></code> directive are
       denied by default.</dd>
 
-      <dt><code>Allow,Deny</code></dt>
+      <dt><code>Deny,Allow</code></dt>
 
       <dd>First, all <code class="directive"><a href="#deny">Deny</a></code>
       directives are evaluated; if any match, the request is denied
