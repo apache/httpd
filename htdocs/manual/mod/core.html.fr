@@ -1372,7 +1372,7 @@
     &lt;FilesMatch&gt;</a></h2>
     <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
     :</strong></a> &lt;FilesMatch <em>regex</em>&gt; ...
-    &lt;/Files&gt;<br />
+    &lt;/FilesMatch&gt;<br />
      <a href="directive-dict.html#Context"
     rel="Help"><strong>Contexte :</strong></a> configuration
     serveur, h&ocirc;tes virtuels, .htaccess<br />
