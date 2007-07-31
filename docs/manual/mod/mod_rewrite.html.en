@@ -1378,6 +1378,10 @@ cannot use <code>$N</code> in the substitution string!
           URL-to-filename translators</strong>. The typical example
           is the use of <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> and
           <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.</p>
+
+          <p>The <code>PT</code> flag implies the <code>L</code> flag:
+          rewriting will be stopped in order to pass the request to
+          the next phase of processing.</p>
         </li>
 
         <li>'<strong><code>qsappend|QSA</code></strong>'
