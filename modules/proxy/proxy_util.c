@@ -306,85 +306,37 @@ PROXY_DECLARE(char *)
     return NULL;
 }
 
-static const char * const lwday[7] =
-{"Sunday", "Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"};
-
 /*
  * If the date is a valid RFC 850 date or asctime() date, then it
- * is converted to the RFC 1123 format, otherwise it is not modified.
- * This routine is not very fast at doing conversions, as it uses
- * sscanf and sprintf. However, if the date is already correctly
- * formatted, then it exits very quickly.
+ * is converted to the RFC 1123 format.
  */
 PROXY_DECLARE(const char *)
-     ap_proxy_date_canon(apr_pool_t *p, const char *x1)
+     ap_proxy_date_canon(apr_pool_t *p, const char *date)
 {
-    char *x = apr_pstrdup(p, x1);
-    int wk, mday, year, hour, min, sec, mon;
-    char *q, month[4], zone[4], week[4];
-
-    q = strchr(x, ',');
-    /* check for RFC 850 date */
-    if (q != NULL && q - x > 3 && q[1] == ' ') {
-        *q = '\0';
-        for (wk = 0; wk < 7; wk++) {
-            if (strcmp(x, lwday[wk]) == 0) {
-                break;
-            }
-        }
-        *q = ',';
-        if (wk == 7) {
-            return x;       /* not a valid date */
-        }
-        if (q[4] != '-' || q[8] != '-' || q[11] != ' ' || q[14] != ':' ||
-            q[17] != ':' || strcmp(&q[20], " GMT") != 0) {
-            return x;
-        }
-        if (sscanf(q + 2, "%u-%3s-%u %u:%u:%u %3s", &mday, month, &year,
-               &hour, &min, &sec, zone) != 7) {
-            return x;
-        }
-        if (year < 70) {
-            year += 2000;
-        }
-        else {
-            year += 1900;
-        }
-    }
-    else {
-/* check for acstime() date */
-        if (x[3] != ' ' || x[7] != ' ' || x[10] != ' ' || x[13] != ':' ||
-            x[16] != ':' || x[19] != ' ' || x[24] != '\0') {
-            return x;
-        }
-        if (sscanf(x, "%3s %3s %u %u:%u:%u %u", week, month, &mday, &hour,
-                   &min, &sec, &year) != 7) {
-            return x;
-        }
-        for (wk = 0; wk < 7; wk++) {
-            if (strcmp(week, apr_day_snames[wk]) == 0) {
-                break;
-            }
-        }
-        if (wk == 7) {
-            return x;
-        }
+    apr_status_t rv;
+    apr_time_exp_t tm;
+    apr_size_t retsize;
+    char* ndate;
+    static const char format[] = "%a, %d %b %Y %H:%M:%S GMT";
+    apr_time_t time = apr_date_parse_http(date);
+    if (!time) {
+        return date;
     }
 
-/* check date */
-    for (mon = 0; mon < 12; mon++) {
-        if (strcmp(month, apr_month_snames[mon]) == 0) {
-            break;
-        }
-    }
-    if (mon == 12) {
-        return x;
+    rv = apr_time_exp_gmt(&tm, time);
+
+    if (rv != APR_SUCCESS) {
+        return date;
     }
 
-    q = apr_palloc(p, 30);
-    apr_snprintf(q, 30, "%s, %.2d %s %d %.2d:%.2d:%.2d GMT", apr_day_snames[wk],
-                 mday, apr_month_snames[mon], year, hour, min, sec);
-    return q;
+    ndate = apr_palloc(p, APR_RFC822_DATE_LEN);
+    rv = apr_strftime(ndate, &retsize, APR_RFC822_DATE_LEN, format, &tm);
+
+    if (rv != APR_SUCCESS || !retsize) {
+        return date;
+    }
+
+    return ndate;
 }
 
 PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)

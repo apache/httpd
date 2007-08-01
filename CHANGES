@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_proxy: fix buffer overflow issue
+     PR 41144 [Davi Arnaut, Nick Kew]
+
   *) mod_deflate: fix protocol handling in deflate input filter
      PR 23287 [Nick Kew]
 
