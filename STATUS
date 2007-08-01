@@ -331,6 +331,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           most of the logic in an static function which can be used by the
           inflate_out_filter and the deflate_in_filter.
 
+    * mod_proxy: fix buffer overflow in date parsing
+      PR: 41144
+      http://svn.apache.org/viewvc?view=rev&revision=561616
+      +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
