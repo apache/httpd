@@ -301,7 +301,7 @@
       <dd>The IP address of the client.</dd>
       <dt><code>X-Forwarded-Host</code></dt>
       <dd>The original host requested by the client in the <code>Host</code> 
-       HTTP request ehader.</dd>
+       HTTP request header.</dd>
       <dt><code>X-Forwarded-Server</code></dt>
       <dd>The hostname of the proxy server.</dd>
     </dl>
