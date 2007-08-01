@@ -1316,15 +1316,17 @@ cannot use <code>$N</code> in the substitution string!
         ``<code>cgi-script</code>''.</li>
 
         <li>'<strong><code>last|L</code></strong>'
-        (<strong>l</strong>ast rule)<br />
-        Stop the rewriting process here and don't apply any more
-        rewrite rules. This corresponds to the Perl
-        <code>last</code> command or the <code>break</code> command
-        in C. Use this flag to prevent the currently
-        rewritten URL from being rewritten further by following
-        rules. For example, use it to rewrite the root-path URL
-        ('<code>/</code>') to a real one, <em>e.g.</em>,
-        '<code>/e/www/</code>'.</li>
+        (<strong>l</strong>ast rule)<br /> Stop the rewriting process
+        here and don't apply any more rewrite rules. This corresponds
+        to the Perl <code>last</code> command or the
+        <code>break</code> command in C. Use this flag to prevent the
+        currently rewritten URL from being rewritten further by
+        following rules. Remember, however, that if the
+        <code class="directive">RewriteRule</code> generates an internal
+        redirect (which frequently occurs when rewriting in a
+        per-directory context), this will reinject the request and
+        will cause processing to be repeated starting from the first
+        <code class="directive">RewriteRule</code>.</li>
 
         <li>'<strong><code>next|N</code></strong>'
         (<strong>n</strong>ext round)<br />
