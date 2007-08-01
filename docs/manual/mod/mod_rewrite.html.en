@@ -120,7 +120,7 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 
      <div class="example"><p><code>
      RewriteEngine On<br />
-     RewriteOptions inherit
+     RewriteOptions Inherit
      </code></p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

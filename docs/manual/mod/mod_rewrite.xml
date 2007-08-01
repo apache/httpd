@@ -105,7 +105,7 @@ SCRIPT_URI=http://en1.engelschall.com/u/rse/
 
      <example>
      RewriteEngine On<br />
-     RewriteOptions inherit
+     RewriteOptions Inherit
      </example>
 </section>
 
