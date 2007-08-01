@@ -619,19 +619,15 @@ www5   IN  A       1.2.3.6
               <p>Then you additionally add the following entry:</p>
 
 <div class="example"><pre>
-www    IN  CNAME   www0.foo.com.
-       IN  CNAME   www1.foo.com.
-       IN  CNAME   www2.foo.com.
-       IN  CNAME   www3.foo.com.
-       IN  CNAME   www4.foo.com.
-       IN  CNAME   www5.foo.com.
-       IN  CNAME   www6.foo.com.
+www   IN  A       1.2.3.1
+www   IN  A       1.2.3.2
+www   IN  A       1.2.3.3
+www   IN  A       1.2.3.4
+www   IN  A       1.2.3.5
 </pre></div>
 
-              <p>Notice that this seems wrong, but is actually an
-              intended feature of <code>BIND</code> and can be used
-              in this way. However, now when <code>www.foo.com</code> gets
-              resolved, <code>BIND</code> gives out <code>www0-www6</code>
+              <p>Now when <code>www.foo.com</code> gets
+              resolved, <code>BIND</code> gives out <code>www0-www5</code>
               - but in a slightly permutated/rotated order every time.
               This way the clients are spread over the various
               servers. But notice that this not a perfect load
