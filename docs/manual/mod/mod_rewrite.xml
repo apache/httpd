@@ -1075,11 +1075,10 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 <name>RewriteRule</name>
 <description>Defines rules for the rewriting engine</description>
 <syntax>RewriteRule
-      <em>Pattern</em> <em>Substitution</em></syntax>
+      <em>Pattern</em> <em>Substitution</em> [<em>flags</em>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>The cookie-flag is available in Apache 2.0.40 and later.</compatibility>
 
 <usage>
       <p>The <directive>RewriteRule</directive> directive is the real
@@ -1094,6 +1093,17 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       <a href="./directive-dict.html#Syntax">URL-path</a> of the request;
       subsequent patterns are applied to the output of the last matched
       RewriteRule.</p>
+
+<note><title>What is matched?</title>
+      <p>The <em>Pattern</em> will initially be matched against the part of the
+      URL after the hostname and port, and before the query string. If you wish
+      to match against the hostname, port, or query string, use a
+      <directive module="mod_rewrite">RewriteCond</directive> with the
+      <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
+      <code>%{QUERY_STRING}</code> variables respectively.</p>
+</note>
+
+
 
       <p>Some hints on the syntax of <glossary ref="regex">regular 
       expressions</glossary>:</p>
@@ -1127,7 +1137,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 
       <p>For more information about regular expressions, have a look at the
       perl regular expression manpage ("<a
-      href="http://www.perldoc.com/perl5.6.1/pod/perlre.html">perldoc
+      href="http://www.perldoc.com/perlre.html">perldoc
       perlre</a>"). If you are interested in more detailed
       information about regular expressions and their variants
       (POSIX regex etc.) the following book is dedicated to this topic:</p>
@@ -1155,10 +1165,56 @@ contents for the groups. Thus, if negated patterns are used, you
 cannot use <code>$N</code> in the substitution string!
 </note>
 
-      <p>The <a id="rhs" name="rhs"><em>substitution</em></a> of a
-      rewrite rule is the string which is substituted for (or
-      replaces) the original URL which <em>Pattern</em>
-      matched. In addition to plain text, it can include</p>
+      <p>The <a id="rhs" name="rhs"><em>Substitution</em></a> of a
+      rewrite rule is the string that replaces the original URL-path that
+      was matched by <em>Pattern</em>.  The <em>Substitution</em> may
+      be a:</p>
+
+      <dl>
+
+        <dt>file-system path</dt>
+
+        <dd>Designates the location on the file-system of the resource
+        to be delivered to the client.</dd>
+
+        <dt>URL-path</dt> 
+
+        <dd>A <directive
+        module="core">DocumentRoot</directive>-relative path to the
+        resource to be served. Note that <module>mod_rewrite</module>
+        tries to guess whether you have specified a file-system path
+        or a URL-path by checking to see if the first segement of the
+        path exists at the root of the file-system. For example, if
+        you specify a <em>Substitution</em> string of
+        <code>/www/file.html</code>, then this will be treated as a
+        URL-path <em>unless</em> a directory named <code>www</code>
+        exists at the root or your file-system, in which case it will
+        be treated as a file-system path. If you wish other
+        URL-mapping directives (such as <directive
+        module="mod_alias">Alias</directive>) to be applied to the
+        resulting URL-path, use the <code>[PT]</code> flag as
+        described below.</dd>
+
+        <dt>Absolute URL</dt>
+
+        <dd>If an absolute URL is specified,
+        <module>mod_rewrite</module> checks to see whether the
+        hostname matches the current host. If it does, the scheme and
+        hostname are stripped out and the resulting path is treated as
+        a URL-path. Otherwise, an external redirect is performed for
+        the given URL. To force an external redirect back to the
+        current host, see the <code>[R]</code> flag below.</dd>
+
+        <dt><code>-</code> (dash)</dt>
+
+        <dd>A dash indicates that no substitution should be performed
+        (the existing path is passed through untouched). This is used
+        when a flag (see below) needs to be applied without changing
+        the path.</dd>
+
+      </dl>
+
+      <p>In addition to plain text, the <em>Substition</em> string can include</p>
 
       <ol>
         <li>back-references (<code>$N</code>) to the RewriteRule
@@ -1173,6 +1229,7 @@ cannot use <code>$N</code> in the substitution string!
         <li><a href="#mapfunc">mapping-function</a> calls
         (<code>${mapname:key|default}</code>)</li>
       </ol>
+
       <p>Back-references are identifiers of the form 
 	      <code>$</code><strong>N</strong>
       (<strong>N</strong>=0..9), which will be replaced
@@ -1192,21 +1249,24 @@ cannot use <code>$N</code> in the substitution string!
       or it is explicitly terminated by a
       <code><strong>L</strong></code> flag.</p>
 
-      <p>There is a special substitution string named
-      '<code>-</code>' which means: <strong>NO
-      substitution</strong>! This is useful in providing
-      rewriting rules which <strong>only</strong> match
-      URLs but do not substitute anything for them. It is commonly used 
-      in conjunction with the <strong>C</strong> (chain) flag, in order 
-      to apply more than one pattern before substitution occurs.</p>
+     <note><title>Modifying the Query String</title>
+      <p>By default, the query string is passed through unchanged. You
+      can, however, create URLs in the substitution string containing
+      a query string part. Simply use a question mark inside the
+      substitution string to indicate that the following text should
+      be re-injected into the query string. When you want to erase an
+      existing query string, end the substitution string with just a
+      question mark. To combine new and old query strings, use the
+      <code>[QSA]</code> flag.</p> 
+     </note>
 
 
       <p>Additionally you can set special <a name="rewriteflags"
-      id="rewriteflags">flags</a> for <em>Substitution</em> by 
+      id="rewriteflags">actions</a> to be performed by 
       appending <strong><code>[</code><em>flags</em><code>]</code></strong>
       as the third argument to the <code>RewriteRule</code>
-      directive. <em>Flags</em> is a comma-separated list of any of the
-      following flags: </p>
+      directive. <em>Flags</em> is a comma-separated list, surround by square 
+      brackets, of any of the following flags: </p>
 
       <ul>
         <li>'<strong><code>chain|C</code></strong>'
@@ -1496,39 +1556,6 @@ module="core">Directory</directive> section.</p>
 type="section" module="core">Location</directive> sections, this
 should never be necessary and is unsupported.</p>
 
-</note>
-
-<note><title>Note: Substitution of Absolute URLs</title>
-          <p>
-          When you prefix a substitution field with
-	  <code>http://thishost[:thisport]</code>, <module
-	  >mod_rewrite</module> will automatically strip that
-          out. This auto-reduction on URLs with an implicit 
-          external redirect is most useful in
-          combination with a mapping-function which generates the
-	  hostname part.</p>
-
-          <p><strong>Remember:</strong> An unconditional external
-          redirect to your own server will not work with the prefix
-          <code>http://thishost</code> because of this feature. To
-          achieve such a self-redirect, you have to use the
-          <strong>R</strong>-flag.</p>
-</note>
-
-<note><title>What is matched?</title>
-      <p>The <em>Pattern</em> will initially be matched against the part of the
-      URL after the hostname and port, and before the query string. If you wish
-      to match against the hostname, port, or query string, use a
-      <directive module="mod_rewrite">RewriteCond</directive> with the
-      <code>%{HTTP_HOST}</code>, <code>%{SERVER_PORT}</code>, or
-      <code>%{QUERY_STRING}</code> variables respectively.</p>
-      <p>You can, however, create URLs in the substitution string containing a
-      query string part. Simply use a question mark inside the substitution
-      string, to indicate that the following text should be re-injected into the
-      query string. When you want to erase an existing query string,
-      end the substitution string with just a question mark. To
-      combine new and old query strings, use the
-      <code>[QSA]</code> flag.</p>
 </note>
 
      <p>Here are all possible substitution combinations and their
