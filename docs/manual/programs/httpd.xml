@@ -105,8 +105,11 @@ files.</dd>
 
 <dd>Sets a configuration <var>parameter </var>which can be used with
 <directive type="section" module="core">IfDefine</directive> sections
-in the configuration files to conditionally skip or process
-commands at server startup and restart.</dd>
+in the configuration files to conditionally skip or process commands
+at server startup and restart. Also can be used to set certain
+less-common startup parameters including <code>-DNO_DETACH</code>
+(prevent the parent from forking) and <code>-DFOREGROUND</code>
+(prevent the parent from calling <code>setsid()</code> et al).</dd>
 
 <dt><code>-e <var>level</var></code></dt>
 
