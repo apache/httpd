@@ -1472,12 +1472,12 @@ cannot use <code>$N</code> in the substitution string!
          <li>'<strong><code>redirect|R</code>
           [=<em>code</em>]</strong>' (force <a id="redirect"
           name="redirect"><strong>r</strong>edirect</a>)<br />
-          Prefix <em>Substitution</em> with
+          <p>Prefix <em>Substitution</em> with
           <code>http://thishost[:thisport]/</code> (which makes the
           new URL a URI) to force a external redirection. If no
           <em>code</em> is given, a HTTP response of 302 (MOVED
           TEMPORARILY) will be returned. If you want to use other response
-          codes in the range 300-400, simply specify the appropriate number
+          codes, simply specify the appropriate number
           or use one of the following symbolic names:
           <code>temp</code> (default), <code>permanent</code>,
           <code>seeother</code>. Use this for rules to
@@ -1492,7 +1492,12 @@ cannot use <code>$N</code> in the substitution string!
           <code>http://thishost[:thisport]/</code> to the URL, and rewriting
 	  will continue. Usually, you will want to stop rewriting at this point,
 	  and redirect immediately. To stop rewriting, you should add 
-	  the 'L' flag.
+	  the 'L' flag.</p>
+          <p>While this is typically used for redirects, any valid status
+          code can be given here. If the status code is outside the redirect
+          range (300-399), then the <em>Substitution</em> string is dropped
+          and rewriting is stopped as if the <code>L</code> flag was
+          used.</p>
         </li>
 
         <li>'<strong><code>skip|S</code></strong>=<em>num</em>'
