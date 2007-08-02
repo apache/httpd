@@ -2,8 +2,14 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *  mime.types: add Registered Javascript/ECMAScript MIME types (RFC4329)
+     PR 40299 [Dave Hodder <dmh dmh.org.uk>]
+
+  *  mime.types: add registered Apple installer type
+     PR 40379 [Peter Bierman <pmb+apache apple.com>]
+   
   *) mod_proxy: fix buffer overflow issue
-     PR 41144 [Davi Arnaut, Nick Kew]
+     PR 41144 [Davi Arnaut]
 
   *) mod_deflate: fix protocol handling in deflate input filter
      PR 23287 [Nick Kew]
