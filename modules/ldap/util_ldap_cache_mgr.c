@@ -152,7 +152,6 @@ util_compare_subgroup_t *util_ald_sgl_dup(util_ald_cache_t *cache, util_compare_
     sgl_out->len = sgl_in->len;
 
     for (i = 0; i < sgl_in->len; i++) {
-        fprintf(stderr, "sgl_dup: Adding %s to sgl\n", sgl_in->subgroupDNs[i]); fflush(stderr);
         sgl_out->subgroupDNs[i] = util_ald_strdup(cache, sgl_in->subgroupDNs[i]);
     }
 
