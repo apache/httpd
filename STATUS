@@ -310,6 +310,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       where the user is not in group X, but is in a subgroup contained in X.
       PR: 42891
       http://svn.apache.org/viewvc?view=rev&revision=560373
+      http://svn.apache.org/viewvc?view=rev&revision=562165
       A version of the patch specific to the 2.2 branch (i.e. the patch that
       would be used for backport) can be found at:
       http://people.apache.org/~rederpj/NestedGroups_2.2.xBranch.diff 
