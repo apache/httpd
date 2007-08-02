@@ -1,4 +1,4 @@
-<?xml version="1.0"?>
+﻿<?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
@@ -519,21 +519,20 @@ The available (case-insensitive) <em>protocol</em>s are:</p>
 <li><code>SSLv2</code>
     <p>
     This is the Secure Sockets Layer (SSL) protocol, version 2.0. It is the
-    original SSL protocol as designed by Netscape Corporation.</p></li>
+    original SSL protocol as designed by Netscape Corporation.  Though it's
+    use has been deprecated, because of weaknesses in the security of the protocol.</p></li>
 
 <li><code>SSLv3</code>
     <p>
-    This is the Secure Sockets Layer (SSL) protocol, version 3.0. It is the
-    successor to SSLv2 and the currently (as of February 1999) de-facto
-    standardized SSL protocol from Netscape Corporation. It's supported by
+    This is the Secure Sockets Layer (SSL) protocol, version 3.0, from the Netscape Corportaion. 
+    It is the successor to SSLv2 and the predecessor to TLSv1. It's supported by
     almost all popular browsers.</p></li>
 
 <li><code>TLSv1</code>
     <p>
     This is the Transport Layer Security (TLS) protocol, version 1.0. It is the
-    successor to SSLv3 and currently (as of February 1999) still under
-    construction by the Internet Engineering Task Force (IETF). It's still
-    not supported by any popular browsers.</p></li>
+    successor to SSLv3 and is defined in <a href="http://www.ietf.org/rfc/rfc2246.txt">RFC2246</a>. 
+    Which has been obsoleted by <a href="http://www.ietf.org/rfc/rfc4346.txt">RFC4346</a>.</p></li>
 
 <li><code>All</code>
     <p>
