@@ -860,11 +860,7 @@ start_over:
 }
 
 /*
- * Does a recursive lookup operation to try to find a user within (cached) nested
- * groups. It accepts a cache that it will use to lookup previous compare attempts.
- * We cache two kinds of compares (require group compares) and (require user
- * compares). Each compare has a different cache node: require group includes the DN;
- * require user does not because the require user cache is owned by the
+ * Does a recursive lookup operation to try to find a user within (cached) nested groups.
  *
  * DON'T CALL THIS UNLESS YOU CALLED uldap_cache_compare FIRST!!!!!
  */
