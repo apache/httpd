@@ -473,6 +473,7 @@ AJP13_SEND_BODY_CHUNK :=
   prefix_code   3
   chunk_length  (integer)
   chunk        *(byte)
+  chunk_terminator (byte) Ox00
 
 
 AJP13_SEND_HEADERS :=
