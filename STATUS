@@ -77,9 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_deflate: don't try to compress/decompress metadata buckets
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?view=diff&r1=556113&r2=476600
-      +1: gregames, trawick, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 

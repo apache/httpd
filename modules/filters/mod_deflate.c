@@ -578,6 +578,16 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             continue;
         }
 
+        if (APR_BUCKET_IS_METADATA(e)) {
+            /*
+             * Remove meta data bucket from old brigade and insert into the
+             * new.
+             */
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
+            continue;
+        }
+
         /* read */
         apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
 
@@ -1078,6 +1088,16 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             if (rv != APR_SUCCESS) {
                 return rv;
             }
+            continue;
+        }
+
+        if (APR_BUCKET_IS_METADATA(e)) {
+            /*
+             * Remove meta data bucket from old brigade and insert into the
+             * new.
+             */
+            APR_BUCKET_REMOVE(e);
+            APR_BRIGADE_INSERT_TAIL(ctx->bb, e);
             continue;
         }
 
