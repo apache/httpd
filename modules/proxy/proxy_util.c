@@ -314,25 +314,16 @@ PROXY_DECLARE(const char *)
      ap_proxy_date_canon(apr_pool_t *p, const char *date)
 {
     apr_status_t rv;
-    apr_time_exp_t tm;
-    apr_size_t retsize;
     char* ndate;
-    static const char format[] = "%a, %d %b %Y %H:%M:%S GMT";
+
     apr_time_t time = apr_date_parse_http(date);
     if (!time) {
         return date;
     }
 
-    rv = apr_time_exp_gmt(&tm, time);
-
-    if (rv != APR_SUCCESS) {
-        return date;
-    }
-
     ndate = apr_palloc(p, APR_RFC822_DATE_LEN);
-    rv = apr_strftime(ndate, &retsize, APR_RFC822_DATE_LEN, format, &tm);
-
-    if (rv != APR_SUCCESS || !retsize) {
+    rv = apr_rfc822_date(ndate, time);
+    if (rv != APR_SUCCESS) {
         return date;
     }
 
