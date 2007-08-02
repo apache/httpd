@@ -343,6 +343,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       CVE-2007-3847
       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/proxy/proxy_util.c?r1=550514&r2=562069
       +1: niq
+      rpluem says: This does not apply cleanly to 2.2.x because of the style
+      fixes done in r429875
+      (http://svn.apache.org/viewvc?view=rev&revision=429875).
 
 PATCHES/ISSUES THAT ARE STALLED
 
