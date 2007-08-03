@@ -688,12 +688,20 @@ static const char *filter_chain(cmd_parms *cmd, void *CFG, const char *arg)
         break;
 
     case '!':        /* Empty the chain */
-        cfg->chain = NULL;
+                     /** IG: Add a NULL provider to the beginning so that 
+                      *  we can ensure that we'll empty everything before 
+                      *  this when doing config merges later */
+        p = apr_pcalloc(cmd->pool, sizeof(mod_filter_chain));
+        p->fname = NULL;
+        cfg->chain = p;
         break;
 
     case '=':        /* initialise chain with this arg */
+                     /** IG: Prepend a NULL provider to the beginning as above */
         p = apr_pcalloc(cmd->pool, sizeof(mod_filter_chain));
-        p->fname = arg+1;
+        p->fname = NULL;
+        p->next = apr_pcalloc(cmd->pool, sizeof(mod_filter_chain));
+        p->next->fname = arg+1;
         cfg->chain = p;
         break;
 
@@ -738,6 +746,14 @@ static void filter_insert(request_rec *r)
     mod_filter_ctx *ctx = apr_pcalloc(r->pool, sizeof(mod_filter_ctx));
     ap_set_module_config(r->request_config, &filter_module, ctx);
 #endif
+
+    /** IG: Now that we've merged to the final config, go one last time
+     *  through the chain, and prune out the NULL filters */
+
+    for (p = cfg->chain; p; p = p->next) {
+        if (p->fname == NULL) 
+            cfg->chain = p->next;
+    }
 
     for (p = cfg->chain; p; p = p->next) {
         filter = apr_hash_get(cfg->live_filters, p->fname, APR_HASH_KEY_STRING);
@@ -788,7 +804,10 @@ static void *filter_merge(apr_pool_t *pool, void *BASE, void *ADD)
     if (base->chain && add->chain) {
         for (p = base->chain; p; p = p->next) {
             newlink = apr_pmemdup(pool, p, sizeof(mod_filter_chain));
-            if (savelink) {
+            if (newlink->fname == NULL) {
+                conf->chain = savelink = newlink;
+            }
+            else if (savelink) {
                 savelink->next = newlink;
                 savelink = newlink;
             }
@@ -799,8 +818,17 @@ static void *filter_merge(apr_pool_t *pool, void *BASE, void *ADD)
 
         for (p = add->chain; p; p = p->next) {
             newlink = apr_pmemdup(pool, p, sizeof(mod_filter_chain));
-            savelink->next = newlink;
-            savelink = newlink;
+            /** Filter out merged chain resets */
+            if (newlink->fname == NULL) {
+                conf->chain = savelink = newlink;
+            }
+            else if (savelink) {
+                savelink->next = newlink;
+                savelink = newlink;
+            }
+            else {
+                conf->chain = savelink = newlink;
+            }
         }
     }
     else if (add->chain) {
