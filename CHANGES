@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
-  *) mime.types: add Registered Javascript/ECMAScript MIME types (RFC4329)
-     PR 40299 [Dave Hodder <dmh dmh.org.uk>]
-
   *) mime.types: add registered Apple installer type
      PR 40379 [Peter Bierman <pmb+apache apple.com>]
    
@@ -19,12 +16,6 @@ Changes with Apache 2.3.0
      where the user is not in group X, but is in a subgroup contained in X.
      PR 42891 [Paul J. Reder]
 
-  *) mod_filter: fix integer comparisons in dispatch rules
-     PR 41835 [Nick Kew]
-
-  *) mod_filter: fix merging of ! and = in FilterChain
-     PR 42186 [Issac Goldstand <margol beamartyr.net>]
- 
   *) mod_deflate: don't try to process metadata buckets as data.  what should
      have been a 413 error was logged as a 500 and a blank screen appeared
      at the browser.
@@ -306,6 +297,15 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.5
 
+  *) mime.types: add Registered Javascript/ECMAScript MIME types (RFC4329)
+     PR 40299 [Dave Hodder <dmh dmh.org.uk>]
+
+  *) mod_filter: fix integer comparisons in dispatch rules
+     PR 41835 [Nick Kew]
+
+  *) mod_filter: fix merging of ! and = in FilterChain
+     PR 42186 [Issac Goldstand <margol beamartyr.net>]
+ 
   *) mod_cache: Let Cache-Control max-age set the expiration of the cached
      representation if Expires is not set.  [Justin Erenkrantz]
 
