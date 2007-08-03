@@ -194,6 +194,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mpm_child_init-netware-2.2.x.patch
      +0: chrisd (abstaining; unable to test)
+     +1: bnicholes - I don't know of any problems that this specifically addresses, but it seems like
+                     the right thing to do.
 
    * mod_dbd: Create memory sub-pools for each DB connection and close
      DB connections in a pool cleanup function.  Ensure prepared statements
@@ -247,7 +249,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * netware build system:
       removed obsolete stuff
         http://svn.apache.org/viewvc?view=rev&revision=521264
-      +1: fuankg
+      +1: fuankg, bnicholes
 
     * mod_proxy_ajp: Add support of ProxyIOBufferSize.
       Trunk version of patch:
@@ -301,6 +303,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       would be used for backport) can be found at:
       http://people.apache.org/~rederpj/NestedGroups_2.2.xBranch.diff 
       +1: rederpj
+      -0: bnicholes - Unless this is considered to be a significant deficiency in the
+                       authnz_ldap 2.2 functionality, I would rather see this as new
+		       functionality going forward in 2.4 rather than backported to
+		       2.2. We need new functionality to push us forward rather than
+		       give us an excuse to stay where we are.
 
     * mime.types: Add registered Apple installer type
       PR: 40379
