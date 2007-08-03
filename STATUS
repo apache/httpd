@@ -312,12 +312,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_deflate: fix protocol handling in input filter
       PR: 23287
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=556113&r2=560941
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=556113&r2=562507
       +1: niq
       +0: rpluem says: The inflate_out_filter has a similar problem (see PR 42993).
           IMHO it makes sense to fix both in one blow as we should be able to move
           most of the logic in an static function which can be used by the
           inflate_out_filter and the deflate_in_filter.
+      niq says: Fixed in r562507 as suggested by rpluem, but see the
+          caveat in the commit.
 
     * mod_proxy: fix buffer overread in date parsing
       PR: 41144
