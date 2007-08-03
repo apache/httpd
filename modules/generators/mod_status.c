@@ -429,14 +429,13 @@ static int status_handler(request_rec *r)
 #endif
 
             ap_rprintf(r, "Uptime: %ld\n", (long) (up_time));
-            if (up_time > 0)
+            if (up_time > 0) {
                 ap_rprintf(r, "ReqPerSec: %g\n",
                            (float) count / (float) up_time);
 
-            if (up_time > 0)
                 ap_rprintf(r, "BytesPerSec: %g\n",
                            KBYTE * (float) kbcount / (float) up_time);
-
+            }
             if (count > 0)
                 ap_rprintf(r, "BytesPerReq: %g\n",
                            KBYTE * (float) kbcount / (float) count);
@@ -456,11 +455,10 @@ static int status_handler(request_rec *r)
                            (tu + ts + tcu + tcs) / tick / up_time * 100.);
 #endif
 
-            if (up_time > 0)
+            if (up_time > 0) {
                 ap_rprintf(r, "<dt>%.3g requests/sec - ",
                            (float) count / (float) up_time);
 
-            if (up_time > 0) {
                 format_byte_out(r, (unsigned long)(KBYTE * (float) kbcount
                                                    / (float) up_time));
                 ap_rputs("/second - ", r);
