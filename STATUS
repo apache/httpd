@@ -297,16 +297,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR: 42186 - patch by Issac Goldstand
       http://svn.apache.org/viewvc?view=rev&revision=559804
       http://svn.apache.org/viewvc?view=rev&revision=559840 (CHANGES)
-      +1: niq, rpluem
+      +1: niq, rpluem, jim
 
     * mod_filter: fix integer comparisons
       PR: 41835
       http://svn.apache.org/viewvc?view=rev&revision=559837
       http://svn.apache.org/viewvc?view=rev&revision=559840 (CHANGES)
       http://svn.apache.org/viewvc?view=rev&revision=559999
-      +1: niq, rpluem
-      -0: jim: Could we get a CHANGES entry, since it's PR related?
-      niq: jim - see r559840 for CHANGES entry
+      +1: niq, rpluem, jim
 
     * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
       to authorize an authenticated user via a "require ldap-group X" directive
@@ -323,8 +321,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR: 40299
       http://svn.apache.org/viewvc?view=rev&revision=560533
       http://svn.apache.org/viewvc?view=rev&revision=562236
-      +1: niq, rpluem
-      -0: jim: Could we get a CHANGES entry, since it's PR related?
+      +1: niq, rpluem, jim
 
     * mime.types: Add registered Apple installer type
       PR: 40379
