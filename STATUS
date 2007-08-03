@@ -308,6 +308,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 		       functionality going forward in 2.4 rather than backported to
 		       2.2. We need new functionality to push us forward rather than
 		       give us an excuse to stay where we are.
+      rederpj says: I'm working on a project based on Apache 2.2.x which needs this code
+          and I would much prefer to use official Apache code than end up using a private
+          patch. It isn't possible in the short term for us to move to trunk. It just
+          happened that code I had written to add this function lined up with PR 42891.
+          I was going to submit it and work to get it backported either way.
 
     * mime.types: Add registered Apple installer type
       PR: 40379
