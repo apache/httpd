@@ -24,6 +24,7 @@ application/cybercash
 application/dca-rft
 application/dec-dx
 application/dvcs
+application/ecmascript		es
 application/edi-consent
 application/edifact
 application/edi-x12
@@ -40,6 +41,7 @@ application/index.vnd
 application/iotp
 application/ipp
 application/isup
+application/javascript		js
 application/mac-binhex40	hqx
 application/mac-compactpro	cpt
 application/macwriteii
@@ -106,6 +108,7 @@ application/vnd.aether.imp
 application/vnd.amiga.ami
 application/vnd.anser-web-certificate-issue-initiation
 application/vnd.anser-web-funds-transfer-initiation
+application/vnd.apple.installer+xml	dist distz pkg mpkg
 application/vnd.audiograph
 application/vnd.blueice.multipass
 application/vnd.bmi
@@ -356,7 +359,6 @@ application/x-futuresplash	spl
 application/x-gtar		gtar
 application/x-gzip
 application/x-hdf		hdf
-application/x-javascript	js
 application/x-koan		skp skd skt skm
 application/x-latex		latex
 application/x-netcdf		nc cdf
