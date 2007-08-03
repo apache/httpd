@@ -77,13 +77,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_filter: fix integer comparisons
-      PR: 41835
-      http://svn.apache.org/viewvc?view=rev&revision=559837
-      http://svn.apache.org/viewvc?view=rev&revision=559840 (CHANGES)
-      http://svn.apache.org/viewvc?view=rev&revision=559999
-      +1: niq, rpluem, jim
-
     * mime.types: Use registered types for Javascript/ECMAscript (RFC4329)
       PR: 40299
       http://svn.apache.org/viewvc?view=rev&revision=560533
