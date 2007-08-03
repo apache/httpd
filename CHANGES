@@ -21,6 +21,12 @@ Changes with Apache 2.2.5
      values could previously point to cleaned up storage.  PR 41551.
      [Davi Arnaut <davi haxent.com.br>]
 
+  *) mod_filter: fix integer comparisons in dispatch rules
+     PR 41835 [Nick Kew]
+
+  *) mod_filter: fix merging of ! and = in FilterChain
+     PR 42186 [Issac Goldstand <margol beamartyr.net>]
+
   *) mod_deflate: don't try to process metadata buckets as data.  what should
      have been a 413 error was logged as a 500 and a blank screen appeared
      at the browser.
