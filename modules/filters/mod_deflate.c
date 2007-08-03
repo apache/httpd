@@ -83,6 +83,57 @@ static const char deflate_magic[2] = { '\037', '\213' };
 #define DEFAULT_MEMLEVEL 9
 #define DEFAULT_BUFFERSIZE 8096
 
+
+/* Check whether a request is gzipped, so we can un-gzip it.
+ * If a request has multiple encodings, we need the gzip
+ * to be the outermost non-identity encoding.
+ */
+static int check_gzip(apr_pool_t *pool, apr_table_t *hdrs)
+{
+    int found = 0;
+    const char *encoding = apr_table_get(hdrs, "Content-Encoding");
+    if (encoding && *encoding) {
+
+        /* check the usual/simple case first */
+        if (!strcasecmp(encoding, "gzip")
+            || !strcasecmp(encoding, "x-gzip")) {
+            found = 1;
+            apr_table_unset(hdrs, "Content-Encoding");
+        }
+        else if (ap_strchr_c(encoding, ',') != NULL) {
+            /* If the outermost encoding isn't gzip, there's nowt
+             * we can do.  So only check the last non-identity token
+             */
+            char *new_encoding = apr_pstrdup(pool, encoding);
+            char *ptr;
+            for(;;) {
+                char *token = ap_strrchr(new_encoding, ',');
+                if (!token) {        /* gzip:identity or other:identity */
+                    if (!strcasecmp(new_encoding, "gzip")
+                        || !strcasecmp(new_encoding, "x-gzip")) {
+                        apr_table_unset(hdrs, "Content-Encoding");
+                        found = 1;
+                    }
+                    break; /* seen all tokens */
+                }
+                for (ptr=token+1; apr_isspace(*ptr); ++ptr);
+                if (!strcasecmp(ptr, "gzip")
+                    || !strcasecmp(ptr, "x-gzip")) {
+                    *token = '\0';
+                    apr_table_setn(hdrs, "Content-Encoding", new_encoding);
+                    found = 1;
+                }
+                else if (!ptr[0] || !strcasecmp(ptr, "identity")) {
+                    *token = '\0';
+                    continue; /* strip the token and find the next one */
+                }
+                break; /* found a non-identity token */
+            }
+        }
+    }
+    return found;
+}
+
 /* Outputs a long in LSB order to the given file
  * only the bottom 4 bits are required for the deflate file format.
  */
@@ -655,9 +706,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
     c = ap_get_module_config(r->server->module_config, &deflate_module);
 
     if (!ctx) {
-        int found = 0;
-        char *token, deflate_hdr[10];
-        const char *encoding;
+        char deflate_hdr[10];
         apr_size_t len;
 
         /* only work on main request/no subrequests */
@@ -673,49 +722,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
          *
          * If not, we just remove ourself.
          */
-        encoding = apr_table_get(r->headers_in, "Content-Encoding");
-        if (encoding && *encoding) {
-
-            /* check the usual/simple case first */
-            if (!strcasecmp(encoding, "gzip")
-                || !strcasecmp(encoding, "x-gzip")) {
-                found = 1;
-                apr_table_unset(r->headers_in, "Content-Encoding");
-            }
-            else if (ap_strchr_c(encoding, ',') != NULL) {
-                /* If the outermost encoding isn't gzip, there's nowt
-                 * we can do.  So only check the last non-identity token
-                 */
-                char *new_encoding = apr_pstrdup(r->pool, encoding);
-                char *ptr;
-                for(;;) {
-                    token = ap_strrchr(new_encoding, ',');
-                    if (!token) {        /* gzip:identity or other:identity */
-                        if (!strcasecmp(new_encoding, "gzip")
-                            || !strcasecmp(new_encoding, "x-gzip")) {
-                            apr_table_unset(r->headers_in, "Content-Encoding");
-                            found = 1;
-                        }
-                        break; /* seen all tokens */
-                    }
-                    for (ptr=token+1; apr_isspace(*ptr); ++ptr);
-                    if (!strcasecmp(ptr, "gzip")
-                        || !strcasecmp(ptr, "x-gzip")) {
-                        *token = '\0';
-                        apr_table_setn(r->headers_in, "Content-Encoding",
-                                       new_encoding);
-                        found = 1;
-                    }
-                    else if (!strcasecmp(ptr, "identity")) {
-                        *token = '\0';
-                        continue; /* strip the token and find the next one */
-                    }
-                    break; /* found a non-identity token */
-                }
-            }
-        }
-
-        if (found == 0) {
+        if (check_gzip(r->pool, r->headers_in) == 0) {
             ap_remove_input_filter(f);
             return ap_get_brigade(f->next, bb, mode, block, readbytes);
         }
@@ -953,9 +960,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
     c = ap_get_module_config(r->server->module_config, &deflate_module);
 
     if (!ctx) {
-        int found = 0;
-        char *token;
-        const char *encoding;
 
         /* only work on main request/no subrequests */
         if (!ap_is_initial_req(r)) {
@@ -965,29 +969,12 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 
         /*
          * Let's see what our current Content-Encoding is.
-         * Only inflate if gzip is present.
+         * Only inflate if gzipped.
          */
-        encoding = apr_table_get(r->headers_out, "Content-Encoding");
-        if (encoding) {
-            const char *tmp = encoding;
-
-            token = ap_get_token(r->pool, &tmp, 0);
-            while (token && token[0]) {
-                if (!strcasecmp(token, "gzip")) {
-                    found = 1;
-                    break;
-                }
-                /* Otherwise, skip token */
-                tmp++;
-                token = ap_get_token(r->pool, &tmp, 0);
-            }
-        }
-
-        if (found == 0) {
+        if (check_gzip(r->pool, r->headers_out) == 0) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
-        apr_table_unset(r->headers_out, "Content-Encoding");
 
         /* No need to inflate HEAD or 204/304 */
         if (APR_BUCKET_IS_EOS(APR_BRIGADE_FIRST(bb))) {
@@ -995,6 +982,10 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
+	/* these are unlikely to be set anyway, but ... */
+        apr_table_unset(r->headers_out, "Content-Length");
+        apr_table_unset(r->headers_out, "Content-MD5");
+        apr_table_unset(r->headers_out, "Content-Range");
 
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
