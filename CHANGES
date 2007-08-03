@@ -21,6 +21,9 @@ Changes with Apache 2.2.5
      values could previously point to cleaned up storage.  PR 41551.
      [Davi Arnaut <davi haxent.com.br>]
 
+  *  mime.types: add Registered Javascript/ECMAScript MIME types (RFC4329)
+     PR 40299 [Dave Hodder <dmh dmh.org.uk>]
+
   *) mod_filter: fix integer comparisons in dispatch rules
      PR 41835 [Nick Kew]
 
