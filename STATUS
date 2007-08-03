@@ -255,10 +255,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=467257
       2.2.x version of patch:
         http://people.apache.org/~jfclere/patches/ProxyIOBufferSize.1.patch
-      +1: jfclere, mturk
-      -0: jim: When user selects an out-of-range size, there should be
-          some sort of error warning about the "hidden" adjustment.
-          If this added, then +1.
+      +1: jfclere, mturk, jim
 
     * multiple files,	Trivial cleanups
       PR: 39518 - Christophe JAILLET
