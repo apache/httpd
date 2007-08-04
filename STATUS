@@ -313,6 +313,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           patch. It isn't possible in the short term for us to move to trunk. It just
           happened that code I had written to add this function lined up with PR 42891.
           I was going to submit it and work to get it backported either way.
+      rpluem says: I am still missing a minor bump due to the changes done
+      in util_ldap.h. This is an extension of a public API.
 
     * mime.types: Add registered Apple installer type
       PR: 40379
@@ -332,6 +334,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           inflate_out_filter and the deflate_in_filter.
       niq says: Fixed in r562507 as suggested by rpluem, but see the
           caveat in the commit.
+      rpluem says: See my posting from today (04/08) regarding this patch. I
+      guess we still need some discussion on the list.
 
     * mod_proxy: fix buffer overread in date parsing
       PR: 41144
@@ -339,9 +343,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk: http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/proxy/proxy_util.c?r1=550514&r2=562069
       2.2.x: http://people.apache.org/~niq/proxy-util-22x.patch
       +1: niq
-      rpluem says: This does not apply cleanly to 2.2.x because of the style
-      fixes done in r429875
-      (http://svn.apache.org/viewvc?view=rev&revision=429875).
+      rpluem says: Only one minor style nit: There is a tab before
+      ap_proxy_date_canon. Otherwise +1 on the patch.
 
 PATCHES/ISSUES THAT ARE STALLED
 
