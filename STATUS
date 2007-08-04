@@ -316,6 +316,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           I was going to submit it and work to get it backported either way.
       rpluem says: I am still missing a minor bump due to the changes done
       in util_ldap.h. This is an extension of a public API.
+      trawick says: The new directives should be documented in trunk,
+          so that docs are available for backport at the same time.
 
     * mime.types: Add registered Apple installer type
       PR: 40379
