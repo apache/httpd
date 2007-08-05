@@ -389,7 +389,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
         conf->etag_add =
             (conf->etag_add & (~ new->etag_remove)) | new->etag_add;
         conf->etag_remove =
-            (conf->opts_remove & (~ new->etag_add)) | new->etag_remove;
+            (conf->etag_remove & (~ new->etag_add)) | new->etag_remove;
         conf->etag_bits =
             (conf->etag_bits & (~ conf->etag_remove)) | conf->etag_add;
     }
