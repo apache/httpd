@@ -134,25 +134,65 @@ downloaded from your server.</p>
 RewriteRule \.exe - [F]
 </example>
 
-<p>This rule uses the "-" syntax for the rewrite target, which means
+<p>This example uses the "-" syntax for the rewrite target, which means
 that the requested URI is not modified.</p>
 
 </section>
 
 <section id="flag_g"><title>G|gone</title>
-<p>Gone flag</p>
+<p>The [G] flag forces Apache to return a 410 Gone status with the
+response. This indicates that a resource used to be available, but is no
+longer available.</p>
 </section>
 
 <section id="flag_h"><title>H|handler</title>
-<p>Handler flag</p>
+<p>Forces the resulting request to be handled with the specified
+handler. For example, one might use this to force all files without a
+file extension to be parsed by the php handler:</p>
+
+<example>
+RewriteRule !\. - [H=application/x-httpd-php .php]
+</example>
+
+<p>
+The regular expression above - <code>!\.</code> - will match any request
+that does not contain the literal <code>.</code> character.
+</p>
 </section>
 
 <section id="flag_l"><title>L|last</title>
-<p>Last flag</p>
+<p>The [L] flag causes <module>mod_rewrite</module> to stop processing
+the rule set. In most contexts, this means that if the rule matches, no
+further rules will be processed.</p>
+
+<p>If you are using <directive
+module="mod_rewrite">RewriteRule</directive> in either
+<code>.htaccess</code> files or in 
+<directive type="section" module="core">Directory</directive> sections,
+it is important to have some understanding of how the rules are
+processed.  The simplified form of this is that once the rules have been
+processed, the rewritten request is handed back to the URL parsing
+engine to do what it may with it. It is possible that as the rewritten
+request is handled, the <code>.htaccess</code> file or 
+<directive type="section" module="core">Directory</directive> section
+may be encountered again, and thus the ruleset may be run again from the
+start. Most commonly this will happen if one of the rules causes a
+redirect - either internal or external - causing the request process to
+start over.</p>
+
+<p>It is therefore important, if you are using <directive
+module="mod_rewrite">RewriteRule</directive> directives in one of these
+context that you take explicit steps to avoid rules looping, and not
+count solely on the [L] flag to terminate execution of a series of
+rules.</p>
 </section>
 
 <section id="flag_n"><title>N|next</title>
-<p>Next round flag</p>
+<p>
+The [N] flag causes the ruleset to start over again from the top. Use
+with extreme caution, as it may result in loop.
+</p>
+
 </section>
 
 <section id="flag_nc"><title>NC|nocase</title>
