@@ -726,9 +726,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             ap_remove_input_filter(f);
             return ap_get_brigade(f->next, bb, mode, block, readbytes);
         }
-        apr_table_unset(r->headers_in, "Content-Length");
-        apr_table_unset(r->headers_in, "Content-MD5");
-        apr_table_unset(r->headers_in, "Content-Range");
 
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
@@ -739,6 +736,10 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
         if (rv != APR_SUCCESS) {
             return rv;
         }
+
+        apr_table_unset(r->headers_in, "Content-Length");
+        apr_table_unset(r->headers_in, "Content-MD5");
+        apr_table_unset(r->headers_in, "Content-Range");
 
         len = 10;
         rv = apr_brigade_flatten(ctx->bb, deflate_hdr, &len);
