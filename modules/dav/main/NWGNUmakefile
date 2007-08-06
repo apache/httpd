@@ -65,7 +65,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "noopt"
@@ -79,7 +79,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "release"
@@ -101,7 +101,7 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		= mod_DAV
+NLM_NAME	= mod_DAV
 
 #
 # This is used by the link '-desc ' directive. 
@@ -119,7 +119,7 @@ NLM_THREAD_NAME	= mod_DAV
 # If this is specified, it will override VERSION value in 
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
-NLM_VERSION		= 
+NLM_VERSION	= 
 
 #
 # If this is specified, it will override the default of 64K
@@ -145,7 +145,7 @@ NLM_CHECK_SYM	=
 #
 # If this is specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		= AUTOUNLOAD, PSEUDOPREEMPTION
+NLM_FLAGS	= AUTOUNLOAD, PSEUDOPREEMPTION
  
 #
 # If this is specified it will be linked in with the XDCData option in the def 
@@ -190,7 +190,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-   	libcpre.o \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -233,13 +233,13 @@ FILES_nlm_exports = \
 	dav_module \
 	@dav.imp \
 	$(EOLIST)
-	
+
 #   
 # These are the OBJ files needed to create the LIB target above.
 # Paths must all use the '/' character
 #
 FILES_lib_objs = \
-		$(EOLIST)
+	$(EOLIST)
 
 #
 # implement targets and dependancies (leave this section alone)
@@ -268,4 +268,3 @@ install :: nlms FORCE
 include $(AP_WORK)\build\NWGNUtail.inc
 
 
-	
