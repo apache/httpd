@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
   [Remove entries to the current 2.0 and 2.2 section below, when backported]
 
+  *) mod_deflate: fix content_encoding detection in inflate_out filter
+     when it's not in response headers table.
+     PR 42993 [Nick Kew]
+
   *) mod_proxy: Improve network performance by setting APR_TCP_NODELAY
      (disable Nagle algorithm) on sockets if implemented.
      PR 42871 [Christian BOITEL <christian_boitel yahoo.fr>, Jim Jagielski]
