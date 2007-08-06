@@ -1000,10 +1000,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
-	/* these are unlikely to be set anyway, but ... */
-        apr_table_unset(r->headers_out, "Content-Length");
-        apr_table_unset(r->headers_out, "Content-MD5");
-
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
         ctx->buffer = apr_palloc(r->pool, c->bufferSize);
@@ -1036,7 +1032,9 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         apr_pool_cleanup_register(r->pool, ctx, deflate_ctx_cleanup,
                                   apr_pool_cleanup_null);
 
+        /* these are unlikely to be set anyway, but ... */
         apr_table_unset(r->headers_out, "Content-Length");
+        apr_table_unset(r->headers_out, "Content-MD5");
 
         /* initialize inflate output buffer */
         ctx->stream.next_out = ctx->buffer;
