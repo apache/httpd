@@ -340,6 +340,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       rpluem says: See my posting from today (04/08) regarding this patch. I
       guess we still need some discussion on the list.
 
+    * mod_deflate: don't try to operate on a Content-Range
+      trunk: http://svn.apache.org/viewvc?view=rev&revision=563154
+      2.2.x: trunk will work once PR: 23287 patch is applied.
+      +1: niq
+
     * mod_proxy: fix buffer overread in date parsing
       PR: 41144
       CVE-2007-3847
