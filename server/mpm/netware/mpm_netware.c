@@ -191,6 +191,14 @@ static void clean_child_exit(int code, int worker_num, apr_pool_t *ptrans,
     NXThreadExit((void*)&code);
 }
 
+/* proper cleanup when returning from ap_mpm_run() */
+static void mpm_main_cleanup(void)
+{
+    if (pmain) {
+        apr_pool_destroy(pmain);
+    }
+}
+
 AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 {
     switch(query_code){
@@ -934,6 +942,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
             apr_thread_yield();
         }
 
+        mpm_main_cleanup();
         return 1;
     }
     else {  /* the only other way out is a restart */
@@ -956,6 +965,7 @@ int ap_mpm_run(apr_pool_t *_pconf, apr_pool_t *plog, server_rec *s)
         printf ("\nRestarting...\n");
     }
 
+    mpm_main_cleanup();
     return 0;
 }
 
