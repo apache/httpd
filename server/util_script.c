@@ -468,17 +468,17 @@ AP_DECLARE(int) ap_scan_script_header_err_core(request_rec *r, char *buffer,
         if (w[0] == '\0') {
             int cond_status = OK;
 
-	    /* PR#38070: This fails because it gets confused when a
-	     * CGI Status header overrides ap_meets_conditions.
-	     * 
-	     * We can fix that by dropping ap_meets_conditions when
-	     * Status has been set.  Since this is the only place
-	     * cgi_status gets used, let's test it explicitly.
-	     *
-	     * The alternative would be to ignore CGI Status when
-	     * ap_meets_conditions returns anything interesting.
-	     * That would be safer wrt HTTP, but would break CGI.
-	     */
+            /* PR#38070: This fails because it gets confused when a
+             * CGI Status header overrides ap_meets_conditions.
+             * 
+             * We can fix that by dropping ap_meets_conditions when
+             * Status has been set.  Since this is the only place
+             * cgi_status gets used, let's test it explicitly.
+             *
+             * The alternative would be to ignore CGI Status when
+             * ap_meets_conditions returns anything interesting.
+             * That would be safer wrt HTTP, but would break CGI.
+             */
             if ((cgi_status == HTTP_UNSET) && (r->method_number == M_GET)) {
                 cond_status = ap_meets_conditions(r);
             }
