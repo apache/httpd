@@ -37,19 +37,19 @@ endif
 #If the mod_edir directory exists then build the mod_edir module
 ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
 SUBDIRS += mod_edir \
-	       $(EOLIST)
+	$(EOLIST)
 endif
 
 # Allow the experimental modules to be built if EXPERIMENTAL is defined
 ifdef EXPERIMENTAL
 SUBDIRS += experimental \
-	       $(EOLIST)
+	$(EOLIST)
 endif
 
-# Allow the experimental modules to be built if EXPERIMENTAL is defined
+# Allow the debug modules to be built if DEBUG is defined
 ifdef DEBUG
 SUBDIRS += debug \
-	       $(EOLIST)
+	$(EOLIST)
 endif
 
 
@@ -72,4 +72,5 @@ endif
 # installation area
 #
 install :: nlms FORCE
-	
+
+

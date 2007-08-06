@@ -59,7 +59,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "noopt"
@@ -73,7 +73,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "release"
@@ -95,7 +95,7 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME		=
+NLM_NAME	=
 
 #
 # This is used by the link '-desc ' directive.
@@ -113,7 +113,7 @@ NLM_THREAD_NAME	=
 # If this is specified, it will override VERSION value in
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
-NLM_VERSION		=
+NLM_VERSION	=
 
 #
 # If this is specified, it will override the default of 64K
@@ -139,14 +139,14 @@ NLM_CHECK_SYM	=
 #
 # If these are specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		=
+NLM_FLAGS	=
 
 #
 # If this is specified it will be linked in with the XDCData option in the def
 # file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
 # by setting APACHE_UNIPROC in the environment
 #
-XDCDATA         =
+XDCDATA		=
 
 #
 # If there is an NLM target, put it here
@@ -156,12 +156,12 @@ TARGET_nlm = \
 	$(OBJDIR)/charsetl.nlm \
 	$(OBJDIR)/mod_filter.nlm \
 	$(EOLIST)
-	
+
 # If the zlib libraries source exists then build the mod_deflate module
 ifneq "$(ZLIBSDK)" ""
 ifeq "$(wildcard $(ZLIBSDK))" "$(ZLIBSDK)"
 TARGET_nlm += $(OBJDIR)/deflate.nlm \
-	       $(EOLIST)
+	$(EOLIST)
 endif
 endif
 
@@ -224,7 +224,7 @@ FILES_nlm_exports = \
 # Paths must all use the '/' character
 #
 FILES_lib_objs = \
-		$(EOLIST)
+	$(EOLIST)
 
 #
 # implement targets and dependancies (leave this section alone)
@@ -251,4 +251,5 @@ install :: nlms FORCE
 #
 
 include $(AP_WORK)\build\NWGNUtail.inc
+
 
