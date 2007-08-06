@@ -3,6 +3,7 @@
 #
 
 SUBDIRS = \
+	$(APR_WORK)\build \
 	$(EOLIST) 
 
 #
