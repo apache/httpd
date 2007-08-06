@@ -542,6 +542,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             apr_table_mergen(r->headers_out, "Content-Encoding", "gzip");
         }
         apr_table_unset(r->headers_out, "Content-Length");
+        apr_table_unset(r->headers_out, "Content-MD5");
 
         /* initialize deflate output buffer */
         ctx->stream.next_out = ctx->buffer;
