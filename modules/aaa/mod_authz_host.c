@@ -45,7 +45,7 @@
 #endif
 
 typedef struct {
-	int dummy;  /* just here to stop compiler warnings for now. */
+        int dummy;  /* just here to stop compiler warnings for now. */
 } authz_host_dir_conf;
 
 module AP_MODULE_DECLARE_DATA authz_host_module;
