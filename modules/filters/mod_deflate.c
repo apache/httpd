@@ -88,10 +88,18 @@ static const char deflate_magic[2] = { '\037', '\213' };
  * If a request has multiple encodings, we need the gzip
  * to be the outermost non-identity encoding.
  */
-static int check_gzip(apr_pool_t *pool, apr_table_t *hdrs)
+static int check_gzip(apr_pool_t *pool, apr_table_t *hdrs,
+                      apr_table_t *hdrs2, const char *enc_in)
 {
     int found = 0;
     const char *encoding = apr_table_get(hdrs, "Content-Encoding");
+
+    if (!encoding && (hdrs2 != NULL)) {
+        encoding = apr_table_get(hdrs2, "Content-Encoding");
+    }
+    if (!encoding) {
+        encoding = enc_in;
+    }
     if (encoding && *encoding) {
 
         /* check the usual/simple case first */
@@ -735,7 +743,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
          *
          * If not, we just remove ourself.
          */
-        if (check_gzip(r->pool, r->headers_in) == 0) {
+        if (check_gzip(r->pool, r->headers_in, NULL, NULL) == 0) {
             ap_remove_input_filter(f);
             return ap_get_brigade(f->next, bb, mode, block, readbytes);
         }
@@ -990,7 +998,8 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
          * Let's see what our current Content-Encoding is.
          * Only inflate if gzipped.
          */
-        if (check_gzip(r->pool, r->headers_out) == 0) {
+        if (check_gzip(r->pool, r->headers_out, r->err_headers_out,
+                       r->content_encoding) == 0) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
