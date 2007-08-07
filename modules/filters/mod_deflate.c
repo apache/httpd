@@ -387,6 +387,12 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
+        /* We can't operate on Content-Ranges */
+        if (apr_table_get(r->headers_out, "Content-Range") != NULL) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, bb);
+        }
+
         /* Some browsers might have problems with content types
          * other than text/html, so set gzip-only-text/html
          * (with browsermatch) for them
@@ -536,6 +542,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
             apr_table_mergen(r->headers_out, "Content-Encoding", "gzip");
         }
         apr_table_unset(r->headers_out, "Content-Length");
+        apr_table_unset(r->headers_out, "Content-MD5");
 
         /* initialize deflate output buffer */
         ctx->stream.next_out = ctx->buffer;
@@ -715,6 +722,12 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
             return ap_get_brigade(f->next, bb, mode, block, readbytes);
         }
 
+        /* We can't operate on Content-Ranges */
+        if (apr_table_get(r->headers_in, "Content-Range") != NULL) {
+            ap_remove_input_filter(f);
+            return ap_get_brigade(f->next, bb, mode, block, readbytes);
+        }
+
         /* Check whether request body is gzipped.
          *
          * If it is, we're transforming the contents, invalidating
@@ -739,7 +752,6 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
 
         apr_table_unset(r->headers_in, "Content-Length");
         apr_table_unset(r->headers_in, "Content-MD5");
-        apr_table_unset(r->headers_in, "Content-Range");
 
         len = 10;
         rv = apr_brigade_flatten(ctx->bb, deflate_hdr, &len);
@@ -968,6 +980,12 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             return ap_pass_brigade(f->next, bb);
         }
 
+        /* We can't operate on Content-Ranges */
+        if (apr_table_get(r->headers_out, "Content-Range") != NULL) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, bb);
+        }
+
         /*
          * Let's see what our current Content-Encoding is.
          * Only inflate if gzipped.
@@ -982,11 +1000,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
-
-	/* these are unlikely to be set anyway, but ... */
-        apr_table_unset(r->headers_out, "Content-Length");
-        apr_table_unset(r->headers_out, "Content-MD5");
-        apr_table_unset(r->headers_out, "Content-Range");
 
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->bb = apr_brigade_create(r->pool, f->c->bucket_alloc);
@@ -1020,7 +1033,9 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         apr_pool_cleanup_register(r->pool, ctx, deflate_ctx_cleanup,
                                   apr_pool_cleanup_null);
 
+        /* these are unlikely to be set anyway, but ... */
         apr_table_unset(r->headers_out, "Content-Length");
+        apr_table_unset(r->headers_out, "Content-MD5");
 
         /* initialize inflate output buffer */
         ctx->stream.next_out = ctx->buffer;
