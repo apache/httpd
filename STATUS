@@ -261,10 +261,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=427920&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, jim
       -0.5: niq - This (ProxySet) needs documenting. 
             Reviewing it 'blind' lacks appeal.
-      -0: jim: Agree with niq. It's time to document this directive.
 
     * mod_proxy: Allow optional name=value options within <Proxy section line.
       Additional arguments are allowed only for 'standard' url's, meaning that
@@ -276,7 +275,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=428291&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, jim
 
     * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
       to authorize an authenticated user via a "require ldap-group X" directive
