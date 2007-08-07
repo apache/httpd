@@ -514,6 +514,38 @@ expressions</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>ProxySet</name>
+<description>Set various Proxy balancer or member parameters</description>
+<syntax>ProxySet <var>url</var> <var>key=value [key=value ...]</var></syntax>
+<contextlist><context>directory</context>
+</contextlist>
+<compatibility>ProxySet is only available in Apache 2.2.0
+	and later.</compatibility>
+<usage>
+    <p>This directive is used as an alternate method of setting any of the
+    parameters available to Proxy balancers and members normally done via the
+    <directive module="mod_proxy">ProxyPass</directive> directive. If used
+    within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
+    directive, the <var>url</var> argument is not required.</p>
+
+    <example>
+      &lt;Proxy balancer://hotcluster&gt;<br />
+      <indent>
+        BalancerMember http://www2.example.com:8009 loadfactor=1<br />
+        BalancerMember http://www3.example.com:8009 loadfactor=2<br />
+        ProxySet lbmethod=bytraffic<br />
+      </indent>
+      &lt;/Proxy&gt;
+    </example>
+
+    <example>
+        ProxySet balancer://foo lbmethod=bytraffic timeout=15
+    </example>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ProxyPass</name>
 <description>Maps remote servers into the local server URL-space</description>
 <syntax>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
