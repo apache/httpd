@@ -318,9 +318,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mod_deflate: don't try to operate on a Content-Range
       trunk: http://svn.apache.org/viewvc?view=rev&revision=563154
+             http://svn.apache.org/viewvc?view=rev&revision=563229
+             http://svn.apache.org/viewvc?view=rev&revision=563230
       2.2.x: trunk will work once PR: 23287 patch is applied.
-      +1: niq
-      rpluem says: If you add r563229 and r563230 I am +1.
+      +1: niq, rpluem
+
+    * mod_deflate: fix content_encoding detection from different
+      sources in inflate_out filter.
+      PR: 42993
+      trunk: http://svn.apache.org/viewvc?view=rev&revision=563317
+      2.2.x: trunk will work after previous patches are applied.
 
     * mod_core: Avoid that relative changes to Options change the settings for
       FileETag. This does NOT address the remaining issues with relative
