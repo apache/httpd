@@ -78,18 +78,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_core: Avoid that relative changes to Options change the settings for
-      FileETag. This does NOT address the remaining issues with relative
-      settings and FileETag mentioned in PR 42027, but at least it isolates the
-      problem to them. Hence there is no CHANGES entry yet. Fixing the other
-      issues needs some time and thought. Currently these issues can be worked
-      around with absolute settings.
-      PR: 42027
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=562860&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, niq, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
