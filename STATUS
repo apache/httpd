@@ -78,6 +78,30 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_deflate: fix protocol handling in input filter
+      PR: 23287
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=556113&r2=563133
+      +1: niq, rpluem, jim
+
+    * mod_deflate: don't try to operate on a Content-Range
+      trunk: http://svn.apache.org/viewvc?view=rev&revision=563154
+             http://svn.apache.org/viewvc?view=rev&revision=563229
+             http://svn.apache.org/viewvc?view=rev&revision=563230
+      2.2.x: trunk will work once PR: 23287 patch is applied.
+      +1: niq, rpluem, jim
+
+    * mod_core: Avoid that relative changes to Options change the settings for
+      FileETag. This does NOT address the remaining issues with relative
+      settings and FileETag mentioned in PR 42027, but at least it isolates the
+      problem to them. Hence there is no CHANGES entry yet. Fixing the other
+      issues needs some time and thought. Currently these issues can be worked
+      around with absolute settings.
+      PR: 42027
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=562860&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, niq, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -311,37 +335,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=562236
       +1: niq
 
-    * mod_deflate: fix protocol handling in input filter
-      PR: 23287
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=556113&r2=563133
-      +1: niq, rpluem, jim
-
-    * mod_deflate: don't try to operate on a Content-Range
-      trunk: http://svn.apache.org/viewvc?view=rev&revision=563154
-             http://svn.apache.org/viewvc?view=rev&revision=563229
-             http://svn.apache.org/viewvc?view=rev&revision=563230
-      2.2.x: trunk will work once PR: 23287 patch is applied.
-      +1: niq, rpluem, jim
-
     * mod_deflate: fix content_encoding detection from different
       sources in inflate_out filter.
       PR: 42993
       trunk: http://svn.apache.org/viewvc?view=rev&revision=563317
       2.2.x: trunk will work after previous patches are applied.
       +1: niq
-
-    * mod_core: Avoid that relative changes to Options change the settings for
-      FileETag. This does NOT address the remaining issues with relative
-      settings and FileETag mentioned in PR 42027, but at least it isolates the
-      problem to them. Hence there is no CHANGES entry yet. Fixing the other
-      issues needs some time and thought. Currently these issues can be worked
-      around with absolute settings.
-      PR: 42027
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=562860&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, niq, jim
 
 
 PATCHES/ISSUES THAT ARE STALLED
