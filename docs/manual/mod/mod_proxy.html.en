@@ -84,6 +84,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyremote">ProxyRemote</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyremotematch">ProxyRemoteMatch</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyrequests">ProxyRequests</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxyset">ProxySet</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxytimeout">ProxyTimeout</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxyvia">ProxyVia</a></li>
 </ul>
@@ -1248,6 +1249,39 @@ expressions</td></tr>
       <p>Do not enable proxying with <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> until you have <a href="#access">secured your server</a>.  Open proxy servers are dangerous
       both to your network and to the Internet at large.</p>
     </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ProxySet" id="ProxySet">ProxySet</a> <a name="proxyset" id="proxyset">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Set various Proxy balancer or member parameters</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxySet <var>url</var> <var>key=value [key=value ...]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ProxySet is only available in Apache 2.2.0
+	and later.</td></tr>
+</table>
+    <p>This directive is used as an alternate method of setting any of the
+    parameters available to Proxy balancers and members normally done via the
+    <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive. If used
+    within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
+    directive, the <var>url</var> argument is not required.</p>
+
+    <div class="example"><p><code>
+      &lt;Proxy balancer://hotcluster&gt;<br />
+      <span class="indent">
+        BalancerMember http://www2.example.com:8009 loadfactor=1<br />
+        BalancerMember http://www3.example.com:8009 loadfactor=2<br />
+        ProxySet lbmethod=bytraffic<br />
+      </span>
+      &lt;/Proxy&gt;
+    </code></p></div>
+
+    <div class="example"><p><code>
+        ProxySet balancer://foo lbmethod=bytraffic timeout=15
+    </code></p></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
