@@ -95,6 +95,11 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t * queue_info,
     ap_push_pool(queue_info, pool_to_recycle);
 
     /* Atomically increment the count of idle workers */
+    /*
+     * TODO: The atomics expect unsigned whereas we're using signed.
+     *       Need to double check that they work as expected or else
+     *       rework how we determine blocked.
+     */
     prev_idlers = apr_atomic_inc32((apr_uint32_t *)&(queue_info->idlers));
 
     /* If other threads are waiting on a worker, wake one up */
@@ -124,6 +129,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info)
     int prev_idlers;
 
     /* Atomically decrement the idle worker count, saving the old value */
+    /* See TODO in ap_queue_info_set_idle() */
     prev_idlers = apr_atomic_add32((apr_uint32_t *)&(queue_info->idlers), -1);
 
     /* Block if there weren't any idle workers */
@@ -131,6 +137,7 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t * queue_info)
         rv = apr_thread_mutex_lock(queue_info->idlers_mutex);
         if (rv != APR_SUCCESS) {
             AP_DEBUG_ASSERT(0);
+            /* See TODO in ap_queue_info_set_idle() */
             apr_atomic_inc32((apr_uint32_t *)&(queue_info->idlers));    /* back out dec */
             return rv;
         }
