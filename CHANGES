@@ -16,12 +16,6 @@ Changes with Apache 2.3.0
   *) mime.types: add registered Apple installer type
      PR 40379 [Peter Bierman <pmb+apache apple.com>]
    
-  *) mod_proxy: fix buffer overflow issue
-     PR 41144 [Davi Arnaut]
-
-  *) mod_deflate: fix protocol handling in deflate input filter
-     PR 23287 [Nick Kew]
-
   *) mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
      to authorize an authenticated user via a "require ldap-group X" directive
      where the user is not in group X, but is in a subgroup contained in X.
@@ -307,6 +301,12 @@ Changes with Apache 2.3.0
      [Martin Kraemer, David Reid]
 
 Changes with Apache 2.2.5
+
+  *) mod_deflate: fix protocol handling in deflate input filter
+     PR 23287 [Nick Kew]
+
+  *) mod_proxy: fix buffer overflow issue
+     PR 41144 [Davi Arnaut]
 
   *) mime.types: add Registered Javascript/ECMAScript MIME types (RFC4329)
      PR 40299 [Dave Hodder <dmh dmh.org.uk>]
