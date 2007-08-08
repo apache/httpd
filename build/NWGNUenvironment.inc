@@ -119,6 +119,9 @@ LIB	= mwldnlm -type library -w nocmdline
 # Setup build tools
 AWK	= awk
 
+# Define minimum APR version to check for
+APR_WANTED = 1003000
+
 ifdef IPV6
 ifndef USE_STDSOCKETS
 USE_STDSOCKETS=1
