@@ -21,7 +21,7 @@ FILES_prebuild_headers = \
 	$(PCRE)/pcre.h \
 	$(EOLIST) 
     
-nlms :: $(NWOS)/httpd.imp
+nlms :: chkapr $(NWOS)/httpd.imp
 
 $(NWOS)/httpd.imp : make_nw_export.awk nw_export.i
 	@echo Generating $(subst /,\,$@)
@@ -51,6 +51,13 @@ cc.opt : NWGNUmakefile $(AP_WORK)\build\NWGNUenvironment.inc $(AP_WORK)\build\NW
 $(PCRE)/%.h: $(subst /,\,$(PCRE))\%.hw
 	@echo Creating $(subst /,\,$@)
 	copy $< $(subst /,\,$(PCRE))\$(@F)
+
+#
+# Check for minimum APR version
+#
+chkapr: $(APR)\build\nw_ver.awk $(APR)\include\apr_version.h
+	@echo Checking for APR version...
+	@$(AWK) -v WANTED=$(APR_WANTED) -f $^
 
 #
 # You can use this target if all that is needed is to copy files to the
