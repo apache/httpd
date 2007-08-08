@@ -1513,7 +1513,7 @@ static const char*
         psf->proxy_status = status_full;
     else {
         return "ProxyStatus must be one of: "
-            "off | on | block";
+            "off | on | full";
     }
 
     psf->proxy_status_set = 1;
