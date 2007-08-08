@@ -315,6 +315,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR: 42993
       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=563230&r2=563803
       +1: niq
+      
+    * httxt2dbm.exe: add to the Windows build
+      PR: 42549
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/support/httxt2dbm.dsp?view=log&pathrev=563636
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/Apache.dsw?view=diff&r1=563635&r2=563636&pathrev=563636
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/Makefile.win?view=diff&r1=563940&r2=563941&pathrev=563941
+      +1: ake
 
 
 PATCHES/ISSUES THAT ARE STALLED
