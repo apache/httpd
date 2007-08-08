@@ -314,7 +314,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       sources in inflate_out filter.
       PR: 42993
       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=563230&r2=563803
-      +1: niq
+      +1: niq, rpluem
       
     * httxt2dbm.exe: add to the Windows build
       PR: 42549
