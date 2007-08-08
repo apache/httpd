@@ -1328,4 +1328,25 @@ header for proxied requests</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>ProxyStatus</name>
+<description>Show Proxy LoadBalancer status in mod_status</description>
+<syntax>ProxyStatus Off|On|Full</syntax>
+<default>ProxyStatus Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in version 2.2 and later</compatibility>
+
+<usage>
+    <p>This directive determines whether or not proxy
+    loadbalancer status data is displayed via the<module>mod_status</module>
+    server-status page.</p>
+    <note><title>Note</title>
+      <p><strong>Full</strong> is synonymous with <strong>On</strong></p>
+    </note>
+
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
