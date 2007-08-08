@@ -324,6 +324,7 @@ _build:
 	cd support
 	 $(MAKE) $(MAKEOPT) -f ab.mak              CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htcacheclean.mak    CFG="htcacheclean - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f httxt2dbm.mak       CFG="httxt2dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htdbm.mak           CFG="htdbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htdigest.mak        CFG="htdigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htpasswd.mak        CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -472,6 +473,7 @@ _copybin:
 	copy support\$(LONG)\ab.$(src_exe) 				"$(inst_exe)" <.y
 !ENDIF
 	copy support\$(LONG)\htcacheclean.$(src_exe)		"$(inst_exe)" <.y
+	copy support\$(LONG)\httxt2dbm.$(src_exe)		"$(inst_exe)" <.y
 	copy support\$(LONG)\htdbm.$(src_exe) 			"$(inst_exe)" <.y
 	copy support\$(LONG)\htdigest.$(src_exe) 		"$(inst_exe)" <.y
 	copy support\$(LONG)\htpasswd.$(src_exe) 		"$(inst_exe)" <.y
