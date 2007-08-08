@@ -1340,7 +1340,7 @@ header for proxied requests</description>
 
 <usage>
     <p>This directive determines whether or not proxy
-    loadbalancer status data is displayed via the<module>mod_status</module>
+    loadbalancer status data is displayed via the <module>mod_status</module>
     server-status page.</p>
     <note><title>Note</title>
       <p><strong>Full</strong> is synonymous with <strong>On</strong></p>

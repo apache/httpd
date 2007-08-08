@@ -1297,7 +1297,7 @@ expressions</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in version 2.2 and later</td></tr>
 </table>
     <p>This directive determines whether or not proxy
-    loadbalancer status data is displayed via the<code class="module"><a href="../mod/mod_status.html">mod_status</a></code>
+    loadbalancer status data is displayed via the <code class="module"><a href="../mod/mod_status.html">mod_status</a></code>
     server-status page.</p>
     <div class="note"><h3>Note</h3>
       <p><strong>Full</strong> is synonymous with <strong>On</strong></p>
