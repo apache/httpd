@@ -27,14 +27,16 @@ BEGIN {
     else if (match ($0, /^#define AP_SERVER_PATCHLEVEL_NUMBER/)) {
       ver_patch = $3;
     }
-    else if (match ($0, /^#define AP_SERVER_ADD_STRING /)) {
-        ver_str_release = substr($3, 2, length($3) - 2);
+    else if (match ($0, /^#define AP_SERVER_DEVBUILD_BOOLEAN/)) {
+      ver_devbuild = $3;
     }
   }
-  ver = ver_major "," ver_minor "," ver_patch;
-  ver_str = ver_major "." ver_minor "." ver_patch ver_str_release;
+  ver_nlm = ver_major "," ver_minor "," ver_patch;
+  ver_str = ver_major "." ver_minor "." ver_patch (ver_devbuild ? "-dev" : "");
 
-  print "VERSION = " ver "";
+  print "VERSION = " ver_nlm "";
   print "VERSION_STR = " ver_str "";
 
 }
+
+
