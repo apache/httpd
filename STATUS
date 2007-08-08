@@ -313,8 +313,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_deflate: fix content_encoding detection from different
       sources in inflate_out filter.
       PR: 42993
-      trunk: http://svn.apache.org/viewvc?view=rev&revision=563317
-      2.2.x: trunk will work after previous patches are applied.
+      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=563230&r2=563803
       +1: niq
 
 
