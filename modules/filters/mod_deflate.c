@@ -88,17 +88,20 @@ static const char deflate_magic[2] = { '\037', '\213' };
  * If a request has multiple encodings, we need the gzip
  * to be the outermost non-identity encoding.
  */
-static int check_gzip(apr_pool_t *pool, apr_table_t *hdrs,
-                      apr_table_t *hdrs2, const char *enc_in)
+static int check_gzip(request_rec *r, apr_table_t *hdrs1, apr_table_t *hdrs2)
 {
     int found = 0;
+    apr_table_t *hdrs = hdrs1;
     const char *encoding = apr_table_get(hdrs, "Content-Encoding");
 
     if (!encoding && (hdrs2 != NULL)) {
+        /* the output filter has two tables and a content_encoding to check */
         encoding = apr_table_get(hdrs2, "Content-Encoding");
-    }
-    if (!encoding) {
-        encoding = enc_in;
+        hdrs = hdrs2;
+        if (!encoding) {
+            encoding = r->content_encoding;
+            hdrs = NULL;
+        }
     }
     if (encoding && *encoding) {
 
@@ -106,21 +109,31 @@ static int check_gzip(apr_pool_t *pool, apr_table_t *hdrs,
         if (!strcasecmp(encoding, "gzip")
             || !strcasecmp(encoding, "x-gzip")) {
             found = 1;
-            apr_table_unset(hdrs, "Content-Encoding");
+            if (hdrs) {
+                apr_table_unset(hdrs, "Content-Encoding");
+            }
+            else {
+                r->content_encoding = NULL;
+            }
         }
         else if (ap_strchr_c(encoding, ',') != NULL) {
             /* If the outermost encoding isn't gzip, there's nowt
              * we can do.  So only check the last non-identity token
              */
-            char *new_encoding = apr_pstrdup(pool, encoding);
+            char *new_encoding = apr_pstrdup(r->pool, encoding);
             char *ptr;
             for(;;) {
                 char *token = ap_strrchr(new_encoding, ',');
                 if (!token) {        /* gzip:identity or other:identity */
                     if (!strcasecmp(new_encoding, "gzip")
                         || !strcasecmp(new_encoding, "x-gzip")) {
-                        apr_table_unset(hdrs, "Content-Encoding");
                         found = 1;
+                        if (hdrs) {
+                            apr_table_unset(hdrs, "Content-Encoding");
+                        }
+                        else {
+                            r->content_encoding = NULL;
+                        }
                     }
                     break; /* seen all tokens */
                 }
@@ -128,7 +141,12 @@ static int check_gzip(apr_pool_t *pool, apr_table_t *hdrs,
                 if (!strcasecmp(ptr, "gzip")
                     || !strcasecmp(ptr, "x-gzip")) {
                     *token = '\0';
-                    apr_table_setn(hdrs, "Content-Encoding", new_encoding);
+                    if (hdrs) {
+                        apr_table_setn(hdrs, "Content-Encoding", new_encoding);
+                    }
+                    else {
+                        r->content_encoding = new_encoding;
+                    }
                     found = 1;
                 }
                 else if (!ptr[0] || !strcasecmp(ptr, "identity")) {
@@ -743,7 +761,7 @@ static apr_status_t deflate_in_filter(ap_filter_t *f,
          *
          * If not, we just remove ourself.
          */
-        if (check_gzip(r->pool, r->headers_in, NULL, NULL) == 0) {
+        if (check_gzip(r, r->headers_in, NULL) == 0) {
             ap_remove_input_filter(f);
             return ap_get_brigade(f->next, bb, mode, block, readbytes);
         }
@@ -998,8 +1016,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
          * Let's see what our current Content-Encoding is.
          * Only inflate if gzipped.
          */
-        if (check_gzip(r->pool, r->headers_out, r->err_headers_out,
-                       r->content_encoding) == 0) {
+        if (check_gzip(r, r->headers_out, r->err_headers_out) == 0) {
             ap_remove_output_filter(f);
             return ap_pass_brigade(f->next, bb);
         }
