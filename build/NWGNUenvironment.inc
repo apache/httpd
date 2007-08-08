@@ -215,7 +215,7 @@ INSTDIRS = $(AP_WORK)\Dist
 endif
 
 ifndef BASEDIR
-BASEDIR = Apache2
+BASEDIR = Apache22
 endif
 
 ifndef PORT
