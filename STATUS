@@ -78,11 +78,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_deflate: fix content_encoding detection from different
-      sources in inflate_out filter.
-      PR: 42993
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=563230&r2=563803
-      +1: niq, rpluem, jim
       
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
