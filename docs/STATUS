@@ -12,13 +12,12 @@ Decisions pending
 Things That Need Fixing
 =======================
 
-- Windows platform docs are in desperate need of rewrites/updates for 2.0.
+- Windows platform docs are in desperate need of rewrites/updates for 2.x.
     - Bill Rowe and Bill Stoddard are good contacts for tech questions.
     - "using apache" has been done, "compiling apache" is still open
     - hints on uninstalling apache (exit monitor, close directories,
       registry entries etc) (PR 10154)
     - FAQ: UTF-8 config and URL encoding for non-ascii characters.
-    - FAQ: AcceptEx failed / virusscanner, firewall fun
 
 - New Auth system
     - Much clean-up and enhancement of aaa howto
@@ -36,13 +35,8 @@ Things That Need Fixing
         -D ONE_PROCESS
               one-process-mode == no threads, i.e. only one
               process handling the requests in a single loop?
-        -D NO_DETACH (not in every MPM avail.)
-              no daemon, but detached from terminal?
-        -D FOREGROUND (not in every MPM avail.)
-              ?
 
 - Individual docs will need some cleanup. 
-     - misc/perf-tuning.html - needs major rewrite for 2.0
      - misc/rewriteguide.html - needs cleaning in 1.3 and 2.0
      - platform/ebcdic.xml - needs major rework for 2.0
 
@@ -60,16 +54,12 @@ Things That Need Fixing
 Documentation improvements
 ==========================
 
-* htdbm documentation has been added and just needs peer review (plus
-  translations).
-
 * Missing documentation for the support program checkgid
 
 * New user docs: Directory Handling (mod_dir/mod_autoindex/etc)
+  (draft available in wiki)
 
 * Enhancements to the DTD/XSL:
-  - <glossary> tag that links to the glossary and uses some special 
-    style in the css.
   - New index: directives by context, including listing which directives
     are available for each AllowOverride setting.
   - New index: backout modules by type (aaa, mappers, loggers etc.)
@@ -89,24 +79,8 @@ Documentation improvements
   - More content and better organisation
   - mod_dav ressources are owned by the httpd
 
-* Making site-specific enhancements easier, including a documented
-  and robust way for 3P module docco to be added -- and have it
-  survive a server docco upgrade
-
-  - This could be something a simple and hackish as a manual/extra/
-    directory (a la the 1.3 src/modules/extra/ directory) and a
-    script in the support directory that scans the files there and
-    updates the manual indices.  (We do something like that now for
-    httpd.conf file with apxs [LoadModule, etc.].)
-
 * Provide example solutions for the mapping of encodings, especially
   for .gz etc. (also in regard to our default configuration)
-
-* Several features in Apache require write-access to the filesystem.
-    Examples: CacheRoot, DavLockDB, ScriptLog
-    We should treat the things consistently in the docs, and perhaps
-    suggest the use of directory like /usr/local/apache2/var/ that is
-    httpd-writable.
 
 * Change the name 'Apache' to 'Apache HTTP Server' or 'http'.
 
