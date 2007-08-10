@@ -1,0 +1,314 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache HTTP Server Version 1.3 Documentation</title>
+  </head>
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <div align="center">
+      <table cellspacing="0" cellpadding="0" border="0"
+      width="600">
+        <tr>
+          <td align="center"><img src="images/apache_header.gif"
+          width="600" height="62" border="0"
+          alt="[Apache Documentation]" /></td>
+        </tr>
+
+        <tr>
+          <td align="center" bgcolor="#4f4f4f">
+            <table cellspacing="1" cellpadding="4" border="0"
+            width="100%">
+              <tr>
+                <td align="center" bgcolor="#bebebe"><a
+                href="misc/FAQ.html"><strong>FAQ</strong></a> </td>
+
+		<td align="center" bgcolor="#bebebe"><a
+		href="sitemap.html"><strong>SiteMap</strong></a></td>
+
+                <td align="center" bgcolor="#bebebe"><a
+                href="mod/directives.html"><strong>Directives</strong></a>
+                </td>
+
+                <td align="center" bgcolor="#bebebe"><a
+                href="mod/"><strong>Modules</strong></a> </td>
+
+                <td align="center" bgcolor="#bebebe"><a
+                href="http://search.apache.org/"><strong>Search</strong></a>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td>&nbsp;</td>
+        </tr>
+
+        <tr>
+          <td align="center" height="30">
+            <h3>Apache HTTP Server Version 1.3</h3>
+            <p><small><em>Is this the version you want?  For more recent
+            versions, check our <a href="/docs/">documentation 
+            index</a>.</em></small></p>
+          </td>
+        </tr>
+      </table>
+    </div>
+
+    <div align="center">
+      <table cellspacing="0" cellpadding="0" border="0"
+      width="600">
+        <tr>
+          <td align="center">
+            <form method="post" action="http://search.apache.org/">
+              <input type="hidden" name="what" value="docs1" />
+              <input type="text" name="query" size="20" />
+              <input type="submit" value="Search" />
+            </form>
+          </td>
+        </tr>
+      </table>
+
+      <table cellspacing="0" cellpadding="0" border="0"
+      width="600">
+        <tr>
+          <td align="center" valign="top">
+            <table border="0" cellpadding="4" cellspacing="0"
+            bgcolor="#ffffff" width="280">
+              <tr>
+                <td align="center" bgcolor="#e9e9e9">
+                <strong>Release Notes</strong> </td>
+              </tr>
+
+              <tr>
+                <td><a href="new_features_1_3.html">New Features in
+                Version 1.3</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="upgrading_to_1_3.html">Upgrading to
+                Version 1.3</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="LICENSE">Apache License</a> </td>
+              </tr>
+            </table>
+
+            <table border="0" cellpadding="4" cellspacing="0"
+            bgcolor="#ffffff" width="280">
+              <tr>
+                <td align="center" bgcolor="#e9e9e9">
+                <strong>Reference Manual</strong> </td>
+              </tr>
+
+              <tr>
+                <td><a href="install.html">Compiling and
+                Installing</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="invoking.html">Starting</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="stopping.html">Stopping or
+                Restarting</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="mod/directives.html">Run-time
+                Configuration Directives</a> </td>
+              </tr>
+
+              <tr>
+                <td>Modules: <a href="mod/index-bytype.html">By
+                Type</a> or <a
+                href="mod/index.html">Alphabetical</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="programs/">Server and Supporting
+                Programs</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="dso.html">Dynamic Shared Object (DSO)
+                Support</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="misc/API.html">The Apache API</a>
+                </td>
+              </tr>
+            </table>
+
+            <table border="0" cellpadding="4" cellspacing="0"
+            bgcolor="#ffffff" width="280">
+              <tr>
+                <td align="center" bgcolor="#e9e9e9">
+                <strong>Platform Specific Notes</strong> </td>
+              </tr>
+
+              <tr>
+                <td><a href="windows.html">Microsoft Windows</a> |
+                <a href="cygwin.html">Cygwin</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="netware.html">Novell Netware</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td><a href="mpeix.html">HP MPE/iX</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="unixware.html">UnixWare</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="readme-tpf.html">TPF</a> </td>
+              </tr>
+            </table>
+          </td>
+
+          <td align="center" valign="top" bgcolor="#cccccc">
+            <table border="0" cellpadding="0" cellspacing="0"
+            bgcolor="#cccccc">
+              <tr>
+                <td align="center"><img src="images/pixel.gif"
+                width="1" height="1" border="0" alt="." /></td>
+              </tr>
+            </table>
+          </td>
+
+          <td align="center" valign="top">
+            <table border="0" cellpadding="4" cellspacing="0"
+            bgcolor="#ffffff" width="280">
+              <tr>
+                <td align="center" bgcolor="#e9e9e9"><strong>Using
+                the Apache HTTP Server</strong> </td>
+              </tr>
+
+              <tr>
+                <td><a href="howto/auth.html">Authentication,
+                Authorization, and Access Control</a></td>
+              </tr>
+
+              <tr>
+                <td><a href="howto/cgi.html">CGI: Dynamic Content with
+                CGI</a> </td>
+              </tr>
+
+               <tr>
+                <td><a href="configuring.html">Configuration
+                Files</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="content-negotiation.html">Content
+                negotiation</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="env.html">Environment Variables</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td><a href="misc/perf-tuning.html">General
+                Performance hints</a> </td>
+              </tr>
+
+               <tr>
+                <td><a href="handler.html">Handlers</a> </td>
+              </tr>
+
+               <tr>
+                <td><a href="logs.html">Log Files</a> </td>
+              </tr>
+
+             <tr>
+                <td><a href="misc/security_tips.html">Security
+                tips</a> </td>
+              </tr>
+
+               <tr>
+                <td><a href="howto/ssi.html">Server Side
+                Includes</a> </td>
+              </tr>
+
+               <tr>
+                <td><a href="server-wide.html">Server-Wide
+                Configuration</a> </td>
+              </tr>
+
+             <tr>
+                <td><a href="suexec.html">suexec: Using SetUserID Execution
+                for CGI</a> </td>
+              </tr>
+
+               <tr>
+                <td><a href="urlmapping.html">URL Mapping: Mapping 
+                URLs to the Filesystem</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="misc/rewriteguide.html">URL Rewriting
+                Guide</a> </td>
+              </tr>
+
+               <tr>
+                <td><a href="vhosts/index.html">Virtual Hosts</a>
+                </td>
+              </tr>
+
+           </table>
+
+            <table border="0" cellpadding="4" cellspacing="0"
+            bgcolor="#ffffff" width="280">
+              <tr>
+                <td align="center" bgcolor="#e9e9e9"><strong>Other
+                Topics</strong> </td>
+              </tr>
+
+              <tr>
+                <td><a href="misc/FAQ.html">Frequently Asked
+                Questions</a> </td>
+              </tr>
+
+              <tr>
+                <td><a href="sitemap.html">SiteMap</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td><a href="misc/tutorials.html">Tutorials</a>
+                </td>
+              </tr>
+
+              <tr>
+                <td><a href="misc/">Other Notes</a> </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+      </table>
+      <br />
+      <br />
+    </div>
+
+    <p align="center">Maintained by the <a
+    href="http://httpd.apache.org/docs-project/">Apache HTTP Server
+    Documentation Project</a>.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

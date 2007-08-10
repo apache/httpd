@@ -1,0 +1,134 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache extra features</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Overview of new features</h1>
+
+    <h2>New Features with Apache 1.0</h2>
+
+    <p>New features with this release, as extensions of the Apache
+    functionality (see also more detailed <code>CHANGES</code>
+    file) in the source directory. Because the core code has
+    changed so significantly, there are certain liberties that
+    earlier versions of Apache (and the NCSA daemon) took that
+    Apache 1.0 is pickier about - please check the <a
+    href="misc/compat_notes.html">compatibility notes</a> if you
+    have any problems.</p>
+
+    <ul>
+      <li>
+        API for server extensions --- see below for a brief sermon
+        on philosophy, or see <a
+        href="misc/API.html">src/API.html</a> for an actual
+        overview. Most server functionality (including includes,
+        CGI, and most forms of access control) are actually
+        implemented as API-conformant modules; you can also do
+        other neat stuff (we've included a sample module, for
+        instance, which one of us is using to track click-trails
+        using the <a
+        href="http://home.netscape.com/newsref/std/cookie_spec.html">
+        Netscape cookie mechanism</a>, for visitors who come in
+        through Netscape clients). <a
+        href="mod/mod_dld.html">Modules</a> can also be loaded
+        dynamically using GNU DLD. 
+
+        <p>The API is not yet quite stable (see src/TODO for some
+        possible changes), but anything done now will be easily
+        adapted for future versions --- after all, we have more
+        modules to adapt than you do.</p>
+      </li>
+
+      <li><a href="process-model.html">New Process Model - much
+      less forking, no fixed number of children.</a> We found that
+      many people were using values for "MaxServers" either too
+      high or too low, and were hanging themselves on it. The model
+      we adopted is still based on long-lived minimal-forking
+      processes, but instead of specifying one number of persistent
+      processes, the web-master specifies a maximum and minimum
+      number of processes to be "spare" - every couple of seconds
+      the parent checks the actual number of spare servers and
+      adjusts accordingly. This should keep the number of servers
+      concurrently running relatively low while still ensuring
+      minimal forking.</li>
+
+      <li><a href="vhosts/">&lt;VirtualHost&gt; (the configuration
+      directive for multiple-homed servers)</a> is more general
+      now. Just about any srm.conf or httpd.conf command can go in
+      a &lt;Virtualhost&gt; section, with the following specific
+      exceptions: ServerType, UserId, GroupId, StartServers,
+      MaxRequestsPerChild, BindAddress, PidFile, TypesConfig,
+      ServerRoot.</li>
+
+      <li><a href="content-negotiation.html">Support for content
+      negotiation of languages through MultiViews</a> (*.fr, *.de,
+      *.en suffixes), via the new AddLanguage and LanguagePriority
+      commands (code written by Florent Guillaume,
+      guillaum@clipper.ens.fr).</li>
+
+      <li>Significant internal cleanups and rearrangements. The two
+      externally visible consequences of this are that just about
+      all of the unchecked fixed limits are gone, and that the
+      server is somewhat pickier about config file syntax (noting
+      and complaining about extraneous command arguments or other
+      stuff at the end of command lines).</li>
+
+      <li>XBITHACK is a run-time option, and can be selectively
+      enabled per directory --- the -DXBITHACK compile-time option
+      just changes the default. The command which configures it is
+      "XBitHack", which is allowed everywhere "Options" is; this
+      takes an argument --- "XBitHack Off" turns it off; "XBitHack
+      On" gets you the NCSA -DXBITHACK behavior; and "XBitHack
+      Full" gets you the Apache GXBIT stuff on top of that.
+      (-DXBITHACK makes "Full" the default; otherwise, it defaults
+      "Off").</li>
+
+      <li>TransferLog can specify a program which gets the log
+      entries piped to it, a la 'TransferLog "|
+      /var/www/my-perl-script -arg valu"' --- this should give the
+      same SIGTERM/pause/SIGKILL treatment to the logging process
+      on server restarts that a CGI script gets on an aborted
+      request. NB the server is counting on the logging process to
+      work, and will probably hang or worse if it dies.</li>
+
+      <li><a href="mod/mod_log_config.html">Configurable logging
+      module</a> --- this is a replacement for the standard
+      plane-jane Common Log Format code, which supports a LogFormat
+      directive which allows you to control the formatting of
+      entries in the TransferLog, and add some new items if you
+      like (in particular, Referer and User-Agent).
+      EXPERIMENTAL.</li>
+    </ul>
+    <hr />
+
+    <h2>Other features of Apache</h2>
+
+    <ul>
+      <li><a href="mod/mod_dld.html">Dynamically loading modules
+      using GNU DLD</a></li>
+
+      <li><a href="mod/mod_imap.html">Imagemap Module</a></li>
+
+      <li><a href="mod/mod_dir.html#directoryindex">Multiple
+      DirectoryIndex filenames</a></li>
+
+      <li><a href="mod/mod_asis.html">"Send as is" file
+      types</a></li>
+
+      <li><a href="mod/mod_include.html#xbithack">XBITHACK last
+      modified</a></li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

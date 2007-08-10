@@ -1,0 +1,167 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_headers</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_headers</h1>
+
+    <p>This module provides for the customization of HTTP response
+    headers.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_headers.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    headers_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.2 and later.</p>
+
+    <h2>Summary</h2>
+    This module provides a directive to control the sending of HTTP
+    headers. Headers can be merged, replaced or removed. 
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#header">Header</a></li>
+      <li><a href="#errorheader">ErrorHeader</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="header" name="header">Header</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Header set|append|add
+    <em>header</em> <em>value</em><br />
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Header unset
+    <em>header</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, access.conf, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_headers 
+
+    <p>This directive can replace, merge or remove HTTP response
+    headers during 1xx and 2xx series replies. For 3xx, 4xx and 5xx
+    use the ErrorHeader directive.
+    </p>
+     <p>
+     The action it performs is determined by the first
+    argument. This can be one of the following values:</p>
+
+    <ul>
+      <li><strong>set</strong><br />
+       The response header is set, replacing any previous header
+      with this name</li>
+
+      <li><strong>append</strong><br />
+       The response header is appended to any existing header of
+      the same name. When a new value is merged onto an existing
+      header it is separated from the existing header with a comma.
+      This is the HTTP standard way of giving a header multiple
+      values.</li>
+
+      <li><strong>add</strong><br />
+       The response header is added to the existing set of headers,
+      even if this header already exists. This can result in two
+      (or more) headers having the same name. This can lead to
+      unforeseen consequences, and in general "append" should be
+      used instead.</li>
+
+      <li><strong>unset</strong><br />
+       The response header of this name is removed, if it exists.
+      If there are multiple headers of the same name, all will be
+      removed.</li>
+    </ul>
+    This argument is followed by a header name, which can include
+    the final colon, but it is not required. Case is ignored. For
+    add, append and set a value is given as the third argument. If
+    this value contains spaces, it should be surrounded by double
+    quotes. For unset, no value should be given. 
+
+    <h3>Order of Processing</h3>
+    The Header directive can occur almost anywhere within the
+    server configuration. It is valid in the main server config and
+    virtual host sections, inside &lt;Directory&gt;,
+    &lt;Location&gt; and &lt;Files&gt; sections, and within
+    .htaccess files. 
+
+    <p>The Header directives are processed in the following
+    order:</p>
+
+    <ol>
+      <li>main server</li>
+
+      <li>virtual host</li>
+
+      <li>&lt;Directory&gt; sections and .htaccess</li>
+
+      <li>&lt;Location&gt;</li>
+
+      <li>&lt;Files&gt;</li>
+    </ol>
+    Order is important. These two headers have a different effect
+    if reversed: 
+<pre>
+Header append Author "John P. Doe"
+Header unset Author
+</pre>
+    This way round, the Author header is not set. If reversed, the
+    Author header is set to "John P. Doe". 
+
+    <p>The Header directives are processed just before the response
+    is sent by its handler. These means that some headers that are
+    added just before the response is sent cannot be unset or
+    overridden. This includes headers such as "Date" and
+    "Server".</p>
+
+    <h2><a id="errorheader" name="errorheader">ErrorHeader</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ErrorHeader set|append|add
+    <em>header</em> <em>value</em><br />
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ErrorHeader unset
+    <em>header</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, access.conf, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_headers 
+
+    <p>This directive can replace, merge or remove HTTP response
+    headers on all replies including errors, redirects, and successful
+    responses.  To add headers only on sucessful (status 2xx) responses,
+    use the Header directive.
+    </p>
+    <p>This directive is identical to the <a href="#header">Header</a> 
+    directive in all other respects. Consult this directive for
+    more information on the syntax.
+    </P>
+
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

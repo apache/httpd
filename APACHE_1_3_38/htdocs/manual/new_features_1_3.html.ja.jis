@@ -1,0 +1,890 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>New features with Apache 1.3</title>
+
+  </head>
+  <!-- English revision: 1.91 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache 1.3 の新機能の概要</h1>
+
+    <p>今回のリリースでの新しい特徴として、Apache
+    の機能性の拡張についてここでは説明します。
+    コア部分のコードが大きく変わりましたので、初期のバージョンの Apache
+    (および NCSA httpd) が受け付けたものでも、新しい Apache
+    では受けつけないものがあります。なんらかの問題がある場合には
+    <a href="misc/compat_notes.html">互換性に関して</a>
+    でチェックしてください。</p>
+
+    <p>Apache 1.2 からのアップグレードは<a href="upgrading_to_1_3.html"
+    >「アップグレードに関して」</a>を読むと良いでしょう。</p>
+
+    <p>拡張: <a href="#core">コア</a> | <a
+    href="#performance">パフォーマンス</a> | <a
+    href="#config">設定</a> | <a href="#mod">モジュール</a> |
+    <a href="#api">API</a> | <a href="#misc">その他</a></p>
+    <hr />
+
+    <h2><a id="core" name="core">コアの拡張:</a></h2>
+
+    <dl>
+      <dt><strong><a href="dso.html">Dynamic Shared Object (DSO)
+      のサポート</a></strong></dt>
+
+      <dd>実行時にApache のモジュールをロードすることが可能になりました。
+      これにより、モジュールは必要なときだけサーバのメモリ領域に
+      読みこまれることになり、Apache
+      全体のメモリの使用をかなり減らすことになります。DSO は現在
+      FreeBSD, OpenBSD, NetBSD, Linux, Solaris, SunOS, Digital UNIX,
+      IRIX, HP/UX, UnixWare, NetWare, AIX, ReliantUnix, 純粋な SVR4
+      プラットフォームでサポートされています。</dd>
+
+      <dt><strong><a href="windows.html">Windows NT/95 のサポート</a
+      ></strong></dt>
+
+      <dd>Apache は Windows NT と Windows 2000 をサポートするようになりました。
+      Windows 95, 98, ME でも Apache は動作するかもしれませんが、
+      これらのコンシューマ製品の環境での使用は推奨していません。
+      そして、その使用についての状態は、実験的なものとしたままです。
+      Windows 上で動作している 1.3.15 より前のすべてのバージョンの
+      Apache は、ベータ版品質のリリースだと考えてください。</dd>
+
+      <dt><strong><a href="cygwin.html">Cygwin
+      のサポート</a></strong></dt>
+ 
+      <dd>Apache は Windows NT と Windows 2000 上の Cygwin
+      をサポートするようになりました。安定性や信頼性の面から、
+      <a href="windows.html">Windows</a> 自体と併せて Cygwin
+      のバージョンを考慮すべきです。</dd>
+
+      <dt><strong><a href="netware.html">NetWare 5.x
+      のサポート</a></strong></dt>
+
+      <dd>Apache は NetWare 5.x
+      をサポートするようになりました。</dd>
+
+      <dt><strong><a href="sourcereorg.html"
+      >ソースの再構成</a></strong></dt>
+
+      <dd>Apache のソースファイルは再構成されました。Apache
+      のユーザにとって主要な変更点は <code>Configuration</code>
+      における "Module" 行が "AddModule" で置き換わり、
+      構文が少し変わったことです。モジュールの作者にとっては、
+      ユーザがモジュールを容易に追加できるようにするための変更が
+      いくつかなされています。</dd>
+
+      <dt><strong>信頼性のあるパイプされたログ</strong></dt>
+
+      <dd>ほとんどすべての Unix アーキテクチャで Apache
+      は「信頼性のある」パイプされたログを <a
+      href="mod/mod_log_config.html">mod_log_config</a> で実装しています。
+      ここで、信頼性のあるとは、ログを収集している子プロセスが
+      何らかの理由で死んだときに、Apache はサーバ全体を再起動することなく、
+      そこから回復してログ用プロセスを再起動することができるという意味です。
+      更に、ログを収集している子プロセスが "詰まって" しまい、
+      パイプを十分な回数読んでいないときも Apache はそれを再起動します。
+      これで、ログのローテーションやヒットの選別をしたり、複数の vhost
+      (訳注: バーチャルホスト) のログを別々にリアルタイムで分けたり、
+      その場での非同期の DNS 解決をしたりする機会ができます。</dd>
+    </dl>
+    <hr />
+
+    <h2><a id="performance" name="performance">性能の改善</a></h2>
+
+
+    <ul>
+      <li>IP に基づいたバーチャルホストはハッシュテーブルを用いて調べられます。</li>
+
+      <li>&lt;Directory&gt; 解析の速度向上。</li>
+
+      <li>静的なリクエストに対するクリティカルパスのシステムコール
+      数が減りました。これは通常すべてのリクエストで役立ちます。
+      (よくチューンされた設定において、1.2 では静的なリクエストでシステムコールが
+      45 あったのに対して、1.3 では 22 です)。</li>
+
+      <li>スループット向上のために<a 
+      href="mod/mod_proxy.html#proxyreceivebuffersize">
+      <code>ProxyReceiveBufferSize</code></a> ディレクティブは、
+      <code>mod_proxy</code> からの外部接続に対して、
+      より大きなネットワークバッファを与えます。</li>
+
+      <li>複数の書き込みを一つのシステムコールですませるために低レベル
+      I/O のルーチンでは (使用可能であれば) <code>writev</code>
+      を使うようになっています。このルーチンではメモリのバッファへの
+      コピーもできるだけ避けています。その結果、大きなファイルの転送に使われる
+      CPU 時間が少なくなります。</li>
+
+      <li>静的なリクエストは <code>mmap</code> を用いて処理されます。
+      これで、バイトはカーネルによりディスクのバッファからネットワークの
+      バッファへ直接コピーされるだけになります。プログラムは、
+      バイトのあちこちへのコピーをしません。(使用可能かつテスト
+      されているときのみ。) それは CPU 時間を減少させてしまいます。</li>
+
+      <li>負荷が急激に増加したとき、サーバは速く子プロセスを起動して、
+      素早く適応します。</li>
+
+      <li>モジュールをディスパッチするコードは API
+      の特定の部分を実装しないモジュールを繰り返しスキップ
+      するのを避けるよう最適化されています。(デフォルトのモジュール
+      を組合せたサーバのプロファイルでは、このスキップで CPU 時間の
+      5% を使用していました。)</li>
+
+      <li>Unix のスコアボードの管理コードを再構成しました。
+      これにより、多くの場合で子プロセスの数を数える時間が短くなりました。
+      以前は各ヒットに対してスキャンが実行されていましたが、今は 1
+      秒に 1 回実行されます。多くの子プロセスのある負荷の高いサーバでは、
+      その違いが顕著だと思います。</li>
+
+      <li>新しいシリアライズの方法を選択したことで Linux と IRIX
+      での性能が改善されました。</li>
+
+      <li><code><a
+      href="mod/mod_log_config.html">mod_log_config</a></code> はコンパイル時に
+      バッファへ書き込みをするように設定できるようになりました。</li>
+
+      <li><code>strncpy()</code> を結果全体を 0 で埋める必要のない
+      <code>ap_cpystrn()</code> で置き換えました。これは
+      <code>mod_include</code> の速度に劇的な効果があります。
+      </li>
+
+      <li>内部の "table" API (キー/値 の文字列の対を保持するのに使われています)
+      への追加により、多くの状況で最大 20% の性能の改善をもたらすように
+      なりました。</li>
+    </ul>
+
+    <p>詳しい情報は<a href="misc/perf-tuning.html"
+    >性能についての新しいドキュメント</a> を参照してください。</p>
+    <hr />
+
+    <h2><a id="config" name="config">設定の拡張</a></h2>
+
+
+    <dl>
+      <dt><strong>サーバの設定ファイルの一元化</strong></dt>
+
+      <dd><em>(Apache 1.3.4)</em> 三つのサーバ設定ファイル
+      (<samp>httpd.conf</samp>, <samp>srm.conf</samp>, 
+      <samp>access.conf</samp>) が <samp>httpd.conf</samp>
+      ファイル一つにまとめられました。<samp>srm.conf</samp> と
+      <samp>access.conf</samp> ファイルは、ウェブマスターが
+      <samp>httpd.conf</samp> を見るようコメントがあるだけで、
+      後は空になっています。
+      更に、まとめられた <samp>httpd.conf</samp> ファイルでは、
+      ディレクティブ
+      がより直感的で意味のある順番になるように再構成されました。</dd>
+
+      <dt><strong>設定ファイルでの継続した行</strong></dt>
+
+      <dd>設定ファイルにおけるディレクティブの行は Unix
+      の継続行を扱う通常の方法、すなわち '\'
+      をその行の空白以外の最後の文字として置くことで、
+      次の行をつなぐ形式を用いて、
+      複数の行に分けることができるようになりました。</dd>
+
+      <dt><strong>Apache Autoconf-style Interface
+      (APACI)</strong></dt>
+
+      <dd>Apache 1.3 になるまでは、 Apache
+      パッケージ全部を展開したらすぐに、ビルドしてインストール
+      するようなバッチ的手順は提供されていませんでした。
+      しかし、トップディレクトリにある <code>configure</code>
+      スクリプトと、それに対応するトップディレクトリの
+      <code>Makefile.tmpl</code> ファイルで、それが実現されました。
+      この目的は、GNU の Autoconf 形式のフロントエンドを提供することです。
+      そして、これまでの <code>src/Configure</code> 関連要素のバッチ処理と、
+      GNU 流のディレクトリ構成でのパッケージインストールの両方が可能になります。
+      古い設定方法で可能だったものオプションすべてに加えて、Apache
+      を柔軟にカスタマイズするためのたくさんの新しいオプションが
+      使用可能です。<br />
+       <strong>注意:</strong> デフォルトのインストールの構成は Apache
+      1.3.4 で変更されました。詳細については <code>README.configure</code>
+      と <code>INSTALL</code> ファイルを参照してください。</dd>
+
+      <dt><strong>APache eXtenSion (APXS)
+      サポートツール</strong></dt>
+
+      <dd>Apache は実行時に dynamic shared object (DSO) ファイルから
+      モジュールをロードすることを完全にサポートするようになりました。
+      そこで、DSO に基づいたモジュールを Apache のソースとは別の場所で
+      ビルド、インストール、アクティブ化を行なう新しいサポートツール 
+      <code>apxs</code> が作成されました。これにより、プラットフォーム
+      に依存した DSO ビルド用のコマンドはユーザから完全に隠され、Apache
+      のソースツリーの外でモジュールをビルドすることが容易になっています。
+      これを達成するために、APACI は Apache の C のヘッダファイルを
+      <code>apxs</code> と一緒にインストールします。</dd>
+
+      <dt><a href="install.html#installing"><strong>Apache
+      のデフォルトディレクトリパスを <code>/usr/local/apache/</code>
+      へ変更</strong></a><br />
+      </dt>
+
+      <dd>Apache のデフォルトの ServerRoot ディレクトリが、NCSA 互換の
+      <code>/usr/local/etc/httpd/</code>から
+      <code>/usr/local/apache/</code> に変更されました。
+      これはデフォルトの設定 (とドキュメント) の変更だけです。もちろん、
+      Apache を起動するときに <a href="invoking.html">-d
+      <em>ServerRoot</em> と -f <em>httpd.conf</em></a>
+      を指定することで変更することができます。</dd>
+
+      <dt><strong>HTTP/1.1
+      形式のバーチャルホストの改善</strong></dt>
+
+      <dd><a
+      href="mod/core.html#namevirtualhost"><code>NameVirtualHost</code></a>
+      という新しいディレクティブを使用して IP アドレス:ポート
+      の対を指定することで、HTTP/1.1 形式のバーチャルホストを実現します。
+      これはクライアントからの <code>Host:</code> ヘッダに基づく
+      バーチャルホストです。以前はこのアドレスは暗黙のうちにマシンの
+      "メインアドレス" と同じにしていましたが、これは数多くの問題を引き起こし、
+      また機能も十分ではありませんでした。設定の詳細についは
+      <a href="vhosts/">「Apache バーチャルホストドキュメント」</a>
+      を参照してください。</dd>
+
+      <dt><strong><code>Include</code> ディレクティブ</strong></dt>
+
+      <dd>設定ファイルのパースの途中で <a
+      href="mod/core.html#include"><code>Include</code></a>
+      ディレクティブに出会うと、
+      直ちに他の設定ファイルをその場所に挿入します。</dd>
+
+      <dt><strong>バーチャルホストの設定のデバッグのための -S
+      コマンドラインオプション</strong></dt>
+
+      <dd>コマンドラインオプション <code>-S</code> を付けて Apache
+      を起動すると、<code>VirtualHost</code>
+      をどのようにパースしたかという情報を表示します。
+      これはバーチャルホストの設定をデバッグしようとする場合に便利です。
+      </dd>
+
+      <dt><strong>HTTP メッソドの制御</strong></dt>
+
+      <dd><a href="mod/core.html#limitexcept">&lt;LimitExcept&gt;
+      と &lt;/LimitExcept&gt;</a> はアクセス制御命令のグループを囲み、
+      引数として指定していない HTTP
+      アクセスメソッドについてそのアクセス制御命令が適用されます。
+      すなわち、これは &lt;Limit&gt; セクションの逆で、
+      標準のメソッドと非標準ないしは認識できない
+      メソッドの両方を制御するために使うことができます。</dd>
+    </dl>
+    <hr />
+
+    <h3><a id="mod" name="mod">モジュールの拡張</a></h3>
+
+    <dl>
+      <dt><a href="mod/mod_negotiation.html"><strong>mod_negotiation
+      の改善</strong></a><br />
+      </dt>
+
+      <dd>オプショナルのコンテントネゴシエーション (MultiViews)
+      モジュールが Apache 1.3.4 で全体的に修正され、最新の HTTP/1.1
+      改訂版と実験的に RFC 2295 と RFC 2296 の Transparent Content
+      Negotiation 機能が追加されました。
+      </dd>
+
+      <dt><a href="mod/mod_speling.html"><strong>NEW -
+      綴り修正モジュール (訳注: mod_speling)</strong></a><br />
+      </dt>
+
+      <dd>このオプショナルなモジュールは、サーバから要求された
+      ドキュメントのパス名でしばしば見られる綴りや大文字小文字の
+      間違いを修正します。</dd>
+
+      <dt><a href="mod/mod_setenvif.html"><strong>NEW -
+      条件付き環境変数の設定 (訳注: mod_setenvif)</strong></a><br />
+      </dt>
+
+      <dd><a
+      href="mod/mod_setenvif.html#setenvif"><code>SetEnvIf</code></a>
+      ディレクティブと <a href="mod/mod_setenvif.html#setenvifnocase">
+      <code>SetEnvIfNoCase</code></a> ディレクティブが追加されました。
+      これにより、リクエストの属性に応じてサーバと CGI
+      の環境変数を設定することができます。</dd>
+
+      <dt><strong><a href="mod/mod_mime_magic.html">NEW - "Magic"
+      MIME タイプ (訳注: mod-mime_magic)</a></strong></dt>
+
+      <dd>オプショナルな <code>mod_mime_magic</code> が追加されました。
+      このモジュールは、"マジックナンバー" やファイルの内容から
+      得られる情報を使用して、対象となるコンテンツの属性を調べます。
+      この情報は、ファイルの拡張子からそのファイルのメディアタイプを
+      決定できない場合に使用されます。</dd>
+
+      <dt><strong><a href="mod/mod_unique_id.html">NEW -
+      一意に識別可能な ID (訳注: mod_unique_id)</a></strong></dt>
+
+      <dd><a href="mod/mod_unique_id.html">mod_unique_id</a>
+      mod_unique_id を組み込むことで、あるヒットと他のヒットとを区別する
+      ユニークな識別子を生成するようになります (ここでの 「ユニークな」
+      にはいくつか制限があります。) その識別子は、環境変数
+      <code>UNIQUE_ID</code> として参照することができます。</dd>
+
+      <dt><strong>mod_proxy の拡張:</strong></dt>
+
+      <dd>
+        <ul>
+          <li>ftp proxy のログインでのより簡単かつ安全な認証:接続先の
+          ftp サーバが要求しているのに、URL として ftp にユーザ名と
+          パスワードが指定されていない場合、Apache は "[401] Authorization
+          Required" ステータスを返すようになりました。このステータスコードを
+          クライアントが受け取ると、通常は「ユーザ名とパスワードを入力
+          してください」というダイアログを表示し、そこで入力された
+          ユーザ認証を用いたリクエストが再び行なわれます。こうすることで、
+          リクエスト URL に認証情報を含ませて指定する方法 (古い proxy
+          サーバでは平文でログに記録されてしまう可能性があります)
+          よりも若干安全になっています。</li>
+
+          <li>新規の <samp>AllowCONNECT</samp> ディレクティブにより、proxy
+          CONNECT メソッドが接続可能なポートが指定できるようになりました。
+          これにより、Apache 1.3.2 以前ではエラーメッセージが返されていた
+          https://some.server:8443/ について proxy
+          することができるようになります。</li>
+
+          <li>RFC2068 で指定されている HTTP/1.1 の "Via:" ヘッダを
+          サポートするようになりました。新規の <a
+          href="mod/mod_proxy.html#proxyvia"><code>ProxyVia</code></a>
+          ディレクティブで "Via:" のサポートのオン/オフを切り替えることができます。
+          また、プライバシー上の理由から、外に出て行くヘッダから "Via:"
+          を削るようにすることができます。</li>
+
+          <li>HTTP/1.1 で規定されている "Max-Forwards:" TRACE
+          ヘッダをサポートするようになりました。それにより、(他の proxy
+          サーバでもサポートしていれば) プロキシーの連鎖をたどって
+          リクエストのパスをトレースすることができます。</li>
+
+          <li><a href="mod/mod_proxy.html#noproxy"><code>NoProxy</code></a>
+          ディレクティブと <a href="mod/mod_proxy.html#proxydomain"><code
+          >ProxyDomain</code></a>ディレクティブが追加されました。
+          イントラネットでの利用に便利です。</li>
+
+
+          <li><code><a href="mod/mod_proxy.html#proxypassreverse"
+          >ProxyPassReverse</a></code> ディレクティブ命令が新規に追加されました。
+          これにより、HTTP のリダイレクトレスポンスにおける <tt>Location:</tt>
+          ヘッダ中の URL を調整することができます。</li>
+
+          <li>FTP サーバのディレクトリツリーでの移動が、より簡単になりました。</li>
+        </ul>
+      </dd>
+
+      <dt><a href="mod/mod_include.html#flowctrl"><strong><code
+      >mod_include</code>の文字列比較の拡張</strong></a><br />
+      </dt>
+
+
+      <dd>文字列に基づいた server-side include (SSI) のフロー制御
+      ディレクティブに未満 (&lt;)、以下 (&lt;=)、より大きい (&gt;)、
+      以上 (&gt;=) が含められました。以前は等しいか等しくないかの
+      比較しかできませんでした。</dd>
+
+
+      <dt><strong>ServerRoot からの相対パスでの auth ファイル名指定</strong></dt>
+
+      <dd>様々な認証モジュールの auth ファイル名の指定は、
+      フルパスで無い場合は ServerRoot からの相対パスとして
+      扱われるようになりました。</dd>
+
+
+      <dt><a href="mod/mod_autoindex.html"><strong
+      >ディレクトリのインデックスの拡張:(訳注: mod_autoindex)</strong></a></dt>
+
+      <dd>
+        <ul>
+          <li><strong>コードの分割:</strong> <code>mod_dir</code>
+          モジュールが、ディレクトリのインデックスファイルを扱う <a
+          href="mod/mod_dir.html">mod_dir</a> と、
+          ディレクトリ内のファイル一覧を作成する <a
+          href="mod/mod_autoindex.html">mod_autoindex</a>
+          の二つに分割されました。これにより、クリティカルなサーバから
+          インデックスの機能を外すことができます。</li>
+
+          <li><strong>ソート可能:</strong> カラムのタイトルを
+          クリックするとそのカラム値によるリストのソートを行ないます。
+          この機能は <a href="mod/mod_autoindex.html#indexoptions"
+          >IndexOptions</a> の <code>SuppressColumnSorting</code>
+          キーワードで無効にできます。
+          </li>
+
+          <li>README.html ファイルに HTML のヘッダが記述されている場合は、
+          <a href="mod/mod_autoindex.html#indexoptions:suppresshtmlpreamble"
+          ><code><strong>SuppressHTMLPreamble</strong></code></a>
+          を使うことができます。
+          </li>
+
+          <li>The <a href="mod/mod_autoindex.html#indexoptions"
+          ><code><strong>IndexOptions</strong></code></a>
+          ディレクティブは、キーワード引数に対して
+          インクリメンタルプレフィックスを使用できるようになりました
+          (<a href="mod/core.html#options">Options</a> ディレクティブと同様に、
+          機能に対するキーワードの機能の追加を +/- で指定します)。
+          これにより、同じディレクトリに適用される複数の IndexOptions
+          ディレクティブを一つにまとめることができます。</li>
+
+          <li><a href="mod/mod_autoindex.html#indexoptions:iconheight"
+          ><strong><code>IconHeight</code></strong></a> と <a
+          href="mod/mod_autoindex.html#indexoptions:iconwidth"
+          ><strong><code>IconWidth</code></strong></a>
+          でディレクトリの一覧表示での <code>&lt;IMG&gt;</code>
+          タグの height 属性と width 属性を設定できます。
+          </li>
+
+          <li><a href="mod/mod_autoindex.html#indexoptions">IndexOptions</a>
+          ディレクティブに新規に追加された <a
+          href="mod/mod_autoindex.html#indexoptions:namewidth"
+          ><strong><code>NameWidth</code></strong></a> キーワードで、<a
+          href="mod/mod_autoindex.html#indexoptions:fancyindexing"
+          >"凝った" ディレクトリ内容一覧</a> の桁数を設定できます。
+          アスタリスク `*' に設定すると、名前 (訳注: Name の部分) 
+          の幅は自動的に調整されます。</li>
+
+          <li><a href="mod/mod_autoindex.html#fancyindexing"
+          ><samp>FancyIndexing</samp></a> ディレクティブは設定済みの
+          <samp>IndexOptions</samp>
+          ディレクティブの効果を置き換えてしまうことなく、正しく
+          <a href="mod/mod_autoindex.html#indexoptions:fancyindexing"
+          ><samp>IndexOptions&nbsp;FancyIndexing</samp></a>
+          と同じ効果になるようになりました。</li>
+
+          <li>1.3.15 からは、IndexOptions に <a
+          href="mod/mod_autoindex.html#indexoptions:trackmodified"><samp>TrackModified</samp
+          ></a> ディレクティブが含まれている場合は、サーバはディレクトリの
+          リクエストを受けたときに、キャッシュを制御する ETag と LastModified
+          を付けて返します。そのリクエストが変更されていないとクライアント
+          が判断したときには、サーバはその一覧を生成する必要がありません。
+          これにより、性能が向上します。この機能は実験的なものなので、
+          デフォルトでは使用可能にはなっていません。</li>
+        </ul>
+      </dd>
+
+      <dt><strong>CGI スクリプトの出力のバッファリングの減少</strong></dt>
+
+      <dd>以前のバージョンの Apache では、CGI スクリプトからの出力は、
+      サーバが内部的にバッファをしていて、バッファが一杯になるか CGI
+      スクリプトが終了するまではクライアントに送られませんでした。
+      Apache 1.3 では、クライアントへのデータのバッファは、
+      バッファ中に何かがあって、サーバがスクリプトからのさらなる出力を
+      待っているときにいつでもフラッシュされます。これにより、CGI
+      スクリプトは長い処理操作の間に部分的なステータス報告が可能になります。
+      </dd>
+
+      <dt><strong><a href="mod/mod_alias.html"><code>Alias</code>
+      と <code>Redirect</code> での正規表現のサポート</a></strong>
+      </dt>
+
+      <dd>新規の <a
+      href="mod/mod_alias.html#aliasmatch"><code>AliasMatch</code></a>,
+      <a
+      href="mod/mod_alias.html#scriptaliasmatch"><code>ScriptAliasMatch</code></a>,
+      と <a
+      href="mod/mod_alias.html#redirectmatch"><code>RedirectMatch</code></a>
+      ディレクティブで、正規表現でのパターンマッチを指定できるようになりました。
+      更に、新規の <a
+      href="mod/core.html#directorymatch"><code>&lt;DirectoryMatch&gt;</code></a>,
+      <a
+      href="mod/core.html#locationmatch"><code>&lt;LocationMatch&gt;</code></a>,
+      <a
+      href="mod/core.html#filesmatch"><code>&lt;FilesMatch&gt;</code></a>
+      セクションにより、
+      正規表現を用いたセクション指定ができる新しい構文が提供されます。</dd>
+
+      <dt><strong><a
+      href="mod/mod_info.html">mod_info</a> への <a
+      href="mod/mod_info.html#addmoduleinfo"><code>AddModuleInfo</code></a>
+      ディレクティブの追加</strong></dt>
+
+      <dd>指定されたモジュールについて、表示させる追加情報を指定できるように
+      なりました。</dd>
+
+      <dt><strong><code>TransferLog</code> が無い場合のログ収集の抑制</strong>
+      </dt>
+
+      <dd><a href="mod/mod_log_config.html#transferlog"
+      ><code>TransferLog</code></a> ディレクティブが無い場合はログは
+      収集されません。これは他のログ用モジュールとの共用をサポートします。
+      </dd>
+
+      <dt><strong>ログの書式に名前を付ける機能</strong></dt>
+
+      <dd><a
+      href="mod/mod_log_config.html#logformat"><code>LogFormat</code></a>
+      ディレクティブが拡張され、特定のログフォーマットにニックネームを
+      付けることを可能になりました。毎回ログフォーマットの文字列を書く代わりに、
+      このニックネームを他の <code>LogFormat</code> ディレクティブの指定や
+      <a href="mod/mod_log_config.html#customlog"
+      ><code>CustomLog</code></a> ディレクティブの指定で使うことができます。
+      </dd>
+
+      <dt><strong>条件付きログ収集</strong></dt>
+
+      <dd><a href="mod/mod_log_config.html#customlog-conditional"
+      >mod_log_config</a> が環境変数に基づいたログ収集をサポート
+      するようになりました。mod_log_referer と mod_log_agent
+      は使用しないことが推奨されています。</dd>
+
+      <dt><strong>mod_cern_meta
+      をディレクトリ毎に設定可能</strong></dt>
+
+      <dd><a href="mod/mod_cern_meta.html">mod_cern_meta</a>
+      をディレクトリ毎に設定することができるようになりました。</dd>
+
+      <dt><strong><a href="mod/mod_rewrite.html#rewritemap"
+      ><code>RewriteMap</code></a>ディレクティブの新しいマップタイプ</strong>
+      </dt>
+
+      <dd>mod_rewrite の <code>RewriteMap</code>
+      ディレクティブに新しいマップ型 `Randomized Plain Text' と
+      `Internal Function' が追加されました。これらのマップ型は
+      二つの機能を提供します: 一つは、書き換え用マップで参照される
+      値から対応する値をランダムに選択することができるようになりました
+      (Reverse Proxy において、バックエンドのサーバを選ぶ場合に便利です)。
+      もう一つは、URL の一部を大文字か小文字のどちらかに変換することが
+      できるようになりました (mod_rewrite を用いて大規模な
+      バーチャルホスティングを行なう場合に便利です)。</dd>
+
+      <dt><strong>CIDR と Netmask によるアクセス制御</strong></dt>
+
+      <dd><a href="mod/mod_access.html">mod_access</a>
+      ディレクティブは CIDR (Classless Inter-Domain Routing)
+      形式のプレフィックスの指定と、IP のアクセスリストの制御を
+      より細かく設定できるネットマスクをサポートするようになりました。</dd>
+    </dl>
+    <hr />
+
+    <h3><a id="api" name="api">API の追加と変更</a></h3>
+
+    <p>モジュール作者とコードハッカー向け情報:</p>
+
+    <dl>
+      <dt><strong><code>child_init</code></strong></dt>
+
+      <dd>"heavy-weight process" につき1回呼ばれる Apache API
+      の新規フェーズです。この後でリクエストの処理を行ないます。
+      これをすることで、モジュールがプロセス毎に行なう必要のあることを
+      すべて設定することができます。
+      たとえば、データベースへの接続があります。</dd>
+
+      <dt><strong><code>child_exit</code></strong></dt>
+
+      <dd>"heavy-weight process" につき1回呼ばれる新規のフェーズで、
+      プロセスの終了時に呼ばれます。致命的な状況では
+      (たとえばセグメンテーションフォールトや kill -9 された場合)
+      呼ばれないことに注意してください。<code>child_init</code> 関数と
+      <code>child_exit</code> 関数は、子プロセスの生存期間と (Apache
+      が回復できる見込みのない完全に致命的なイベントを除いて)
+      同じ生存期間を持つプールを渡されます。対照的に、モジュールの
+      <code>init</code> 関数は親プロセスが終了したり再起動したりすると
+      消滅するプールを渡されます。</dd>
+
+      <dt><strong><code>child_terminate</code></strong></dt>
+
+      <dd>現在のリクエストを終了した後に子プロセスが終了すべきであることを
+      示すために子プロセスで使われます。</dd>
+
+      <dt><strong><code>register_other_child</code></strong></dt>
+
+      <dd><code>http_main.h</code> を参照してください。
+      これは親プロセスで使用し、監視する子プロセスを登録します。
+      親プロセスは与えられたコールバック関数に状態を報告します。
+      この関数を使用すると、モジュールが生成する子プロセスは、
+      httpd の他の子プロセスと共に監視されるようになります。</dd>
+
+      <dt><strong><code>piped_log</code></strong></dt>
+
+      <dd><code>http_log.h</code> を参照してください。この API
+      は、パイプされたログを実装するための共通のコードを提供します。
+      特に、アーキテクチャがサポートしている場合は (<em>つまり</em>
+      現時点では Unix)、信頼性のあるパイプされたログを実装しています。</dd>
+
+      <dt><strong>スコアボードの形式変更</strong></dt>
+
+      <dd>スコアボードの形式はかなり変更されました。
+      普通スコアボードは "private" なインターフェースだとされているので、
+      ここでは紹介するにとどめておきます。</dd>
+
+      <dt><strong><code>set_last_modified</code>
+      を三つに分割</strong></dt>
+
+      <dd>古い <code>set_last_modified</code> 関数は、
+      <code>Last-Modified</code> ヘッダや、<code>Etag</code> ヘッダの設定、
+      (If-Modified-Since のような ) 条件付きリクエストの処理など、
+      複数の仕事をしていました。これらの機能は三つの関数、
+      <code>set_last_modified</code>, <code>set_etag</code>,
+      <code>meets_conditions</code> に分割されました。
+      <code>meets_conditions</code> 関数の処理を簡単にするために
+      <code>requrest_rec</code> 構造体に <code>mtime</code>
+      がフィールドが追加されました。</dd>
+
+      <dt><strong>エラーログ収集用の新規関数:
+      <code>ap_log_error</code></strong></dt>
+
+      <dd>ログ収集用の古い関数はすべて非推奨となっています。
+      これらの関数を <code>ap_log_error</code>
+      という単独の関数で置き換えようとしています。
+      これはまだ作業中です。</dd>
+
+      <dt><strong>設定解析のための
+      <code>set_file_slot</code></strong></dt>
+
+      <dd><code>set_file_slot</code> ルーチンは、
+      絶対パスになっていないパスの前に ServerRoot
+      を追加するための標準ルーチンを提供します。</dd>
+
+      <dt><strong><code>post_read_request</code>
+      モジュール API</strong></dt>
+
+      <dd>このリクエストフェーズはリクエスト (ヘッダ)
+      を読み込んだ直後や、内部リダイレクトを作成した直後に起こります。
+      その後の段階に影響する環境変数を設定するために一番役に立ちます。
+      </dd>
+
+      <dt><strong><code>psocket</code> と
+      <code>popendir</code></strong></dt>
+
+      <dd>socket の生成において、競合状態が起こらないようにリソースの
+      トラッキングをする <code>psocket</code> 関数と <code>pclosesocket</code>
+      関数が用意されました。同様に、<code>popendir</code> 関数と
+      <code>pclosedir</code> 関数はディレクトリの読み込みを保護します。</dd>
+
+      <dt><strong><code>is_initial_req</code></strong></dt>
+
+      <dd>リクエストが初期リクエスト (<em>すなわち</em>、
+      クライアントから来るもの)であるかどうかを判定します。</dd>
+
+      <dt><strong><code>kill_only_once</code></strong></dt>
+
+      <dd><code>ap_spawn_child</code> 関数のオプションで、
+      Apache が子プロセスを積極的に kill しようとすることを抑制します。
+      </dd>
+
+      <dt><strong><code>alloc デバッグ用コード</code></strong></dt>
+
+      <dd><code>ALLOC_DEBUG</code>
+      を定義すると原始的なメモリデバッガが提供されます。
+      これを使う場合、生存中のサーバに与える影響が少なく済みます。
+      それは、割り当てられてるメモリおよび解放されるメモリのバイト数をすべて
+      0xa5 に設定します。<code>ALLOC_USE_MALLOC</code> を定義すると、
+      alloc コードがそれぞれのオブジェクトに対して <code>malloc()</code>
+      と <code>free()</code> を使うようになります。これはずっとコストが高く、
+      Electric Fence や Purify のようなツールを使ってテストをするときにのみ
+      使われるべきものです。詳細は <code>main/alloc.c</code> を参照してください。</dd>
+
+      <dt><strong><code>ap_cpystrn</code></strong></dt>
+
+      <dd>新しい <code>strncpy</code> のようなものですが、バッファ全体を
+      0 で満たす必要が無いために <code>strncpy</code>
+      よりずっと速い点で若干違います。</dd>
+
+      <dt><strong><code>table_addn</code>, <code>table_setn</code>,
+      <code>table_mergen</code></strong></dt>
+
+      <dd>これらの新しい関数は、引数に対して <code>pstrdup</code>
+      を呼び<strong>ません</strong>。これは大きな速度向上をもたらします。
+      コードがそれらを適切に使用していることを確かめるためのデバッグの
+      サポートもあります。詳しい情報は <code>src/CHANGES</code>
+      を参照してください。</dd>
+
+      <dt><strong><code>construct_url</code></strong></dt>
+
+      <dd>この関数のプロトタイプが <code>server_rec *</code> から
+      <code>request_rec *</code> を引数として取るように変わりました。
+      </dd>
+
+      <dt><strong><code>get_server_name</code>,
+      <code>get_server_port</code></strong></dt>
+
+      <dd>リクエストに対応するサーバ名とポート番号を取得する際に
+      <a href="mod/core.html#usecanonicalname">UseCanonicalName</a>
+      ディレクティブを扱うためのラッパーです。
+      </dd>
+
+      <dt><strong><code>ap_bspawn_child</code> と
+      <code>ap_call_exec</code> のプロトタイプの変更</strong></dt>
+
+      <dd>Win32 で子プロセスが正しく動作するように、
+      <code>spawn</code> 関数 (<code>ap_bspawn_child</code>
+      に渡される) と <code>ap_call_exec</code> 関数に
+      <code>child_info *</code> を追加しました。
+      また、<code>spawn_child_err</code> を単に
+      <code>ap_spawn_child</code> で置き換え、
+      <code>spawn_child_err_buff</code> を単に
+      <code>ap_bspawn_child</code> で置き換えることで、
+      関数名を少し整理しました。</dd>
+
+      <dt><strong><code>ap_add_version_component()</code></strong>
+      </dt>
+
+      <dd>この API 関数は <code>Server:</code>
+      ヘッダに出力されるサーバトークンを、
+      モジュール自身が追加できるようにします。以前の 1.3beta
+      バージョンではコンパイル時に <code>#define</code> された
+      <code>SERVER_SUBVERSION</code> を定義してこの機能を実現していました。
+      トークンが実際に表示されるかどうかは新しい <code>SeverTokens</code>
+      ディレクティブで制御されます。</dd>
+    </dl>
+    <hr />
+
+    <h3><a name="misc" id="misc">その他の拡張</a></h3>
+
+    <dl>
+      <dt><strong><a href="ebcdic.html">BS2000/OSD を実行している
+      EBCDIC メインフレームマシンへの移植</a></strong></dt>
+
+      <dd>(訳注: メインフレームマシンへの移植の ) 手始めとして、
+      このバージョンの Apache では、EBCDIC 文字セットを
+      ネイティブコードセットとして使用するメインフレームマシンへの
+      移植のベータ版が付いています (IBM/390 互換のプロセッサー上で
+      BS2000/OSD オペレーティングシステムを実行している SIEMENS
+      のメインフレームファミリーです。このメインフレームの OS
+      は、最近では SVR4 ライクの POSIX のサブシステムの機能があります)。</dd>
+
+      <dt><strong><a
+      href="mod/core.html#accessfilename"><code>AccessFileName</code>
+      の拡張</a></strong></dt>
+
+      <dd><code>AccessFileName</code> ディレクティブは、複数のファイル名を
+      受け付けるようになりました。これにより、NFS を用いて複数の Apache
+      サーバでページを提供しているサーバでの設定に応じたアクセスを設定
+      できるようになります。(訳注: NFS を用いて、同じコンテンツ空間を複数の
+      サーバで共有していると、それらのサーバの AccessFileName が同じとは限りません。
+      共有しているコンテンツに対するアクセス制御は同じ設定を使いたいときに、
+      この機能が役に立ちます)。</dd>
+
+      <dt><strong><code>HostnameLookups</code> のデフォルトを "Off" に変更</strong></dt>
+
+      <dd><a
+      href="mod/core.html#hostnamelookups"><code>HostnameLookups</code></a>
+      ディレクティブはデフォルトで "Off" になりました。明示的に on
+      にしない限り、サーバは IP アドレスの名前解決を行なわないということです。
+      この変更はインターネットにおいてを不必要な DNS トラフィックを
+      発生させないために行なわれました。</dd>
+
+      <dt><strong>DNS の二重逆引きの強制機能</strong></dt>
+
+      <dd><a
+      href="mod/core.html#hostnamelookups"><code>HostnameLookups</code></a>
+      ディレクティブは DNS の二重逆引きをサポートするようになりました。
+      (tcp_wrapper の用語では <em>PARANOID</em> として知られているものです)。
+      IP アドレスに対して逆引きを行ない、さらに正引きして得られる IP
+      アドレスのリストに元の IP アドレスが含まれていれば、
+      二重逆引きのテストを通過します。HostnameLookup の設定に関わらず、
+      <a href="mod/mod_access.html">mod_access</a> アクセス制御の設定で DNS
+      名を使用している場合、すべての名前が DNS の二重逆引きテストに合格する
+      ことを<strong>要求</strong>します。(以前のバージョンの Apache では、DNS
+      の二重逆引きを可能にするためにコンパイル時のスイッチが必要でした。)</dd>
+
+      <dt><strong>LogLevel と syslog のサポート</strong></dt>
+
+      <dd>Apache は<a
+      href="mod/core.html#loglevel">エラーのログ収集レベルを設定</a>
+      できる機能が追加されました。また、<a href="mod/core.html#errorlog">syslogd(8)
+      によるエラーのログ収集</a>をサポートするようになりました。</dd>
+
+      <dt><strong>標準入力/標準出力/標準エラー出力からの切離し</strong></dt>
+
+      <dd>Apache は、ブート時に標準入力/標準出力/標準エラー出力を
+      切り離すようになりました。標準エラー出力は、設定ファイルの
+      読み込みに成功するまで切り離しません。ですから、設定ファイルの
+      エラーは目にすることになるでしょう。これにより、rsh や crontab
+      で Apache を起動しやすくなっているはずです。</dd>
+
+      <dt><a name="y2k" id="y2k"><strong>2000 年問題の改善</strong></a></dt>
+
+      <dd><a
+      href="mod/mod_include.html"><code>mod_include</code></a>
+      で使われるデフォルトの <code>timefmt</code>
+      文字列が、以前使われていた 2 桁ではなく 4 桁を使うように
+      修正されました。<a href="mod/mod_autoindex.html"
+      ><code>mod_autoindex</code></a> モジュールも FancyIndex
+      されたディレクトリ一覧表示に 4 桁の年を表示するように修正されました。
+      </dd>
+
+      <dt><strong>共通のルーチンを独立したライブラリに分離</strong></dt>
+
+      <dd>オペレーティングシステムによるライブラリのルーチンの違いを
+      補完したり置き換えたりする関数やルーチンが、Apache
+      プロジェクトのために数多く開発されています。ほとんどのものは
+      Apache サーバ自身でのみで使用されていますが、中には
+      <code>htdigest</code>
+      のようなサポート用アプリケーションで参照されているものもあります。
+      そして、そのルーチンはサーバにのみ組込まれているために、
+      このような別アプリケーションはビルドに失敗します。これらのルーチンを
+      別のサブディレクトリで別のライブラリに移動しました。これにより、
+      サーバだけでなく他のアプリケーションからも使えるようになりました。
+      <code>src/ap/</code> サブディレクトリを参照してください。
+      </dd>
+
+      <dt><strong>新しい <code><a
+      href="mod/core.html#serversignature">ServerSignature</a></code>
+      ディレクティブ</strong></dt>
+
+      <dd>このディレクティブはサーバが作成したページ (エラードキュメント、
+      FTP のディレクトリ内容一覧、mod_info の出力 <em>など</em>)
+      にサーバのバージョンとバーチャルホスト名を含む行をオプションで追加します。
+      これにより、特に pxory の連鎖 (イントラネットの環境ではよくあります)
+      があるときに、どのサーバがエラーメッセージを出したのかをユーザが
+      簡単に知ることができるようになります。</dd>
+
+      <dt><strong>新しい <code><a href="mod/core.html#usecanonicalname"
+      >UseCanonicalName</a></code> ディレクティブ</strong>
+      </dt>
+
+      <dd>このディレクティブは、Apache がどのように自分自身を参照する
+      URL を作成するかを制御します。以前の Apache では、<a
+      href="mod/core.html#servername"> ServerName</a> ディレクティブと <a
+      href="mod/core.html#port">Port</a> ディレクティブを常に指定することで
+      "正規化された" サーバの名を生成していました。<code>UseCanonicalName
+      off</code> で、クライアントから提供されたホスト名とポート番号がある場合、
+      Apache はそれを使用するようになります。</dd>
+
+      <dt><strong><code>SERVER_VERSION</code> の定義の抽象化と
+      サーバのビルド日時の追加</strong> </dt>
+
+      <dd>以前のバージョンでは、<code>SERVER_VERSION</code>
+      で定義された値を通じて、モジュールは Apache
+      サーバのバージョンを参照することができました。
+      コアサーバとモジュールが違う時にコンパイルされた場合でも
+      この値の一貫性を保つために、この情報はコア API ルーチン
+      <code>ap_get_server_version()</code>
+      で得ることができるようになりました。<code>SERVER_VERSION</code>
+      シンボルの仕様は非推奨です。
+      また、<code>ap_get_server_built()</code> はコアサーバがリンクされた
+      時刻を表す文字列を返します。</dd>
+ 
+      <dt><a href="mod/core.html#servertokens"><strong>サーバの ID
+      にオペレーティングシステムを含める</strong></a><br />
+      </dt>
+
+
+      <dd>新しいディレクティブ <code>ServerTokens</code> により、
+      クライアントに送り返される <code>Server</code>
+      レスポンスヘッダフィールドの値をウェブマスターが
+      変更できるようになりました。<code>ServerTokens</code>
+      ディレクティブでは、サーバが動作しているオペレーティングシステムの
+      種類についての詳しすぎない程度の情報を、モジュール情報と同様にサーバ
+      ID に含めるかどうかを制御します。Apache 1.3 では、
+      この追加の情報がデフォルトで含まれるようになっています。
+      <br />
+      <br />
+      </dd>
+
+      <dt><strong>Netscape 形式の SHA1
+      で暗号化されたパスワードのサポート</strong><br />
+      </dt>
+
+      <dd>(Apache に組込まれている MD5 や、OS 固有の crypt(3)
+      関数と異なり) パスワードが SHA1 で暗号化されるような BasicAuth
+      パスワード方式の移行や統合を促進するため、<code>{SHA1}</code>
+      が前に付いているパスワードは Base64 で符号化された SHA1
+      パスワードとして解釈されます。さらなる情報や Netscape の
+      ldap/ldif エントリを変換するためのユーティリティーは、
+      support/SHA1 にあります。</dd>
+    </dl>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

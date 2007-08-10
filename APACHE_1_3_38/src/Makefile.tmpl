@@ -1,0 +1,134 @@
+
+CFLAGS=$(OPTIM) $(CFLAGS1) $(EXTRA_CFLAGS)
+LIBS=$(EXTRA_LIBS) $(LIBS1)
+INCLUDES=$(INCLUDES1) $(INCLUDES0) $(EXTRA_INCLUDES)
+LDFLAGS=$(LDFLAGS1) $(EXTRA_LDFLAGS)
+
+OBJS= \
+  modules.o \
+  $(MODULES) \
+  main/libmain.a \
+  $(OSDIR)/libos.a \
+  ap/libap.a
+
+.c.o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
+
+# Used to generate import library for OS/2
+.SUFFIXES: .def
+.def.a:
+	emximp -o $@ $<
+
+all: @@Configuration@@ $(TARGET)
+
+@@Configuration@@: Configuration.tmpl
+	@echo "++ File '@@Configuration@@' older than 'Configuration.tmpl',"
+	@echo "++ or still doesn't exist. Please consider copying 'Configuration.tmpl'"
+	@echo "++ to '@@Configuration@@', editing and rerunning 'Configure'."
+	@echo "++ If not, you will at least have to touch '@@Configuration@@'."
+	@false
+
+$(TARGET): $(EXTRA_DEPS) $(SUBTARGET)
+
+target_static: subdirs modules.o
+	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
+	$(CC) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
+	      -o $(TARGET) buildmark.o $(OBJS) $(REGLIB) $(EXPATLIB) $(LIBS)
+
+target_compile_only: subdirs modules.o
+	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
+
+target_shared: $(SHCORE_IMPLIB) $(SHARED_CORE_EP) lib$(TARGET).$(SHLIB_SUFFIX_NAME)
+	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
+	      -o $(TARGET) -DSHARED_CORE_BOOTSTRAP main/http_main.c \
+	      ap/libap.a $(LIBS) $(SHCORE_IMPLIB)
+
+lib$(TARGET).ep: lib$(TARGET).$(SHLIB_SUFFIX_NAME)
+	$(CC) $(INCLUDES) $(CFLAGS) $(LDFLAGS) $(LDFLAGS_SHLIB_EXPORT) \
+	      -o lib$(TARGET).ep -DSHARED_CORE_TIESTATIC main/http_main.c \
+		  -L. -l$(TARGET) $(LIBS)
+
+lib$(TARGET).$(SHLIB_SUFFIX_NAME): subdirs modules.o
+	$(CC) -c $(INCLUDES) $(CFLAGS) buildmark.c
+	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o lib$(TARGET).$(SHLIB_SUFFIX_NAME) buildmark.o $(OBJS) $(REGLIB) $(EXPATLIB) $(LD_SHCORE_DEF) $(LD_SHCORE_LIBS)
+	@if [ ".$(SHLIB_SUFFIX_LIST)" != . ]; then \
+		rm -f lib$(TARGET).$(SHLIB_SUFFIX_NAME).*; \
+		for suffix in $(SHLIB_SUFFIX_LIST) ""; do \
+			[ ".$$suffix" = . ] && continue; \
+		    echo "ln lib$(TARGET).$(SHLIB_SUFFIX_NAME) lib$(TARGET).$(SHLIB_SUFFIX_NAME).$$suffix"; \
+		    ln lib$(TARGET).$(SHLIB_SUFFIX_NAME) lib$(TARGET).$(SHLIB_SUFFIX_NAME).$$suffix; \
+		done; \
+	fi
+
+subdirs:
+	@for i in $(SUBDIRS); do \
+		echo "===> $(SDP)$$i"; \
+		case ".$(OS)" in \
+		  .OS390 | .TPF) ( cd $$i && $(MAKE) SDP='$(SDP)' OPTIM='$(OPTIM)') || exit 1;; \
+		              *) ( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' OPTIM='$(OPTIM)') || exit 1;; \
+		esac; \
+		echo "<=== $(SDP)$$i"; \
+	done
+
+support: support-dir
+
+support-dir:
+	@echo "===> $(SDP)support"; \
+	cd support; $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' OPTIM='$(OPTIM)' || exit 1; \
+	echo "<=== $(SDP)support"
+
+clean:
+	-rm -f $(TARGET) lib$(TARGET).* *.o
+	@for i in $(SUBDIRS); do \
+		echo "===> $(SDP)$$i"; \
+		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' OPTIM='$(OPTIM)' $@ ) || exit 1; \
+		echo "<=== $(SDP)$$i"; \
+	done
+
+distclean:
+	-rm -f $(TARGET) lib$(TARGET).* *.o
+	@for i in $(SUBDIRS); do \
+		echo "===> $(SDP)$$i"; \
+		( cd $$i && $(MAKE) $(MFLAGS_STATIC) SDP='$(SDP)' $@ ) || exit 1; \
+		echo "<=== $(SDP)$$i"; \
+	done
+	-rm -f include/ap_config_auto.h
+	-rm -f modules.c
+	-rm -f modules/Makefile
+	-rm -f regex/Makefile
+	-rm -f lib/Makefile
+	-rm -f Makefile.config
+	-rm -f Makefile
+
+install:
+	@echo "++ Sorry, no installation procedure available at this level."
+	@echo "++ Go to the parent directory for an 'install' target."
+
+# We really don't expect end users to use this rule.  It works only with
+# gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
+# using it.
+depend:
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
+	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
+	for i in $(SUBDIRS); do \
+	    ( cd $$i && $(MAKE) CC='$(CC)' AUX_CFLAGS='$(CFLAGS)' RANLIB='$(RANLIB)' OPTIM='$(OPTIM)' depend ) || exit 1; \
+	done
+
+#Dependencies
+
+$(OBJS): Makefile subdirs
+
+# DO NOT REMOVE
+buildmark.o: buildmark.c include/ap_config.h include/ap_mmn.h \
+ include/ap_config_auto.h $(OSDIR)/os.h include/ap_ctype.h \
+ include/hsregex.h include/httpd.h include/ap_alloc.h include/buff.h \
+ include/ap.h include/util_uri.h
+modules.o: modules.c include/httpd.h include/ap_config.h \
+ include/ap_mmn.h include/ap_config_auto.h $(OSDIR)/os.h \
+ include/ap_ctype.h include/hsregex.h include/ap_alloc.h include/buff.h \
+ include/ap.h include/util_uri.h include/http_config.h
