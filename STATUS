@@ -78,14 +78,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy_ajp: Add support of ProxyIOBufferSize.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=467014
-        http://svn.apache.org/viewvc?view=rev&revision=467257
-        http://svn.apache.org/viewvc?view=rev&revision=510522
-      2.2.x version of patch:
-        http://people.apache.org/~jim/patches/ProxyIOBufferSize.2.patch
-      +1: jim, mturk, fuankg
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
