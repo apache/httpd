@@ -78,19 +78,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * ApacheMonitor: Fix Windows Vista detection.
-      http://svn.apache.org/viewvc?view=rev&revision=536052
-      http://svn.apache.org/viewvc?view=rev&revision=556879
-      http://svn.apache.org/viewvc?view=rev&revision=557188      
-      +1: mturk, jim (by inspection), sctemme (ditto)
-      wrowe notes post today to list, can we please test for >= VISTA
-      so this doesn't break again upon the release of longhorn server
-      or 'nextgen' windows?
-      mturk notes: Simplified OS detection so any NT version will work
-      sctemme notes: we're effectively voting on
-      svn diff -r536051:557188 \
-          http://svn.apache.org/repos/asf/httpd/httpd/trunk/support/win32/ApacheMonitor.c
-
     * mod_proxy_ajp: Add support of ProxyIOBufferSize.
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&rev=467014
