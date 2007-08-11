@@ -220,6 +220,7 @@ endif
 ifndef BASEDIR
 BASEDIR = Apache23
 endif
+export BASEDIR
 
 ifndef PORT
 PORT = 80
