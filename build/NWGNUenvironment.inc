@@ -219,8 +219,8 @@ endif
 
 ifndef BASEDIR
 BASEDIR = Apache23
-endif
 export BASEDIR
+endif
 
 ifndef PORT
 PORT = 80
