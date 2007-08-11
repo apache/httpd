@@ -216,6 +216,7 @@ endif
 
 ifndef BASEDIR
 BASEDIR = Apache22
+export BASEDIR
 endif
 
 ifndef PORT
