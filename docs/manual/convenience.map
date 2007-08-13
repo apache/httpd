@@ -277,6 +277,8 @@ proxyreceivebuffersize	mod/mod_proxy.html#proxyreceivebuffersize
 proxyremote	mod/mod_proxy.html#proxyremote
 proxyremotematch	mod/mod_proxy.html#proxyremotematch
 proxyrequests	mod/mod_proxy.html#proxyrequests
+proxyset	mod/mod_proxy.html#proxyset
+proxystatus	mod/mod_proxy.html#proxystatus
 proxytimeout	mod/mod_proxy.html#proxytimeout
 proxyvia	mod/mod_proxy.html#proxyvia
 readmename	mod/mod_autoindex.html#readmename
