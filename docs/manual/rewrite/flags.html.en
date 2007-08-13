@@ -81,7 +81,7 @@ is, the entire website.</p>
 
 <div class="example"><p><code>
 RewriteEngine On<br />
-RewriteRule ^/index.html - [CO=frontdoor=yes:.apache.org:1440:/]
+RewriteRule ^/index.html - [CO=frontdoor:yes:.apache.org:1440:/]
 </code></p></div>
 
 <p>This rule doesn't rewrite the request (the "-" rewrite target tells
@@ -143,7 +143,7 @@ handler. For example, one might use this to force all files without a
 file extension to be parsed by the php handler:</p>
 
 <div class="example"><p><code>
-RewriteRule !\. - [H=application/x-httpd-php .php]
+RewriteRule !\. - [H=application/x-httpd-php]
 </code></p></div>
 
 <p>
@@ -182,6 +182,10 @@ rules.</p>
 The [N] flag causes the ruleset to start over again from the top. Use
 with extreme caution, as it may result in loop.
 </p>
+<p>
+The [Next] flag could be used, for example, if you wished to replace a
+certain string or letter repeatedly in a request.
+</p>
 
 
 
@@ -201,7 +205,21 @@ RewriteRule (.*\.(jpg|gif|png))$ http://images.example.com$1 [P,NC]
 
 
 <h3><a name="flag_ne" id="flag_ne">NE|noescape</a></h3>
-<p>No escape flag</p>
+<p>By default, special characters, such as <code>&amp;</code> and
+<code>?</code>, for example, will be converted to their hexcode
+equivalent. Using the [NE] flag prevents that from happening.
+</p>
+
+<div class="example"><p><code>
+RewriteRule ^/anchor/(.+) /bigpage.html#$1 [NE,R]
+</code></p></div>
+
+<p>
+The above example will redirect <code>/anchor/xyz</code> to
+<code>/bigpage.html#xyz</code>. Omitting the [NE] will result in the #
+being converted to its hexcode equivalent, <code>%23</code>.
+</p>
+
 
 
 <h3><a name="flag_ns" id="flag_ns">NS|nosubreq</a></h3>
