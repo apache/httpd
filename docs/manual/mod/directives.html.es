@@ -314,6 +314,8 @@
 <li><a href="mod_proxy.html#proxyremote">ProxyRemote</a></li>
 <li><a href="mod_proxy.html#proxyremotematch">ProxyRemoteMatch</a></li>
 <li><a href="mod_proxy.html#proxyrequests">ProxyRequests</a></li>
+<li><a href="mod_proxy.html#proxyset">ProxySet</a></li>
+<li><a href="mod_proxy.html#proxystatus">ProxyStatus</a></li>
 <li><a href="mod_proxy.html#proxytimeout">ProxyTimeout</a></li>
 <li><a href="mod_proxy.html#proxyvia">ProxyVia</a></li>
 <li><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName</a></li>
