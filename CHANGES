@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) mod_negotiation: preserve Query String in resolving a type map
+     PR 33112 [Jørgen Thomsen <apache jth.net>, Nick Kew]
+
   *) mod_deflate: fix content_encoding detection in inflate_out filter
      when it's not in response headers table.
      PR 42993 [Nick Kew]
