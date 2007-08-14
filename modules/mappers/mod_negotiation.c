@@ -2971,6 +2971,7 @@ static int handle_map_file(request_rec *r)
     var_rec *best;
     int res;
     char *udir;
+    const char *new_req;
 
     if(strcmp(r->handler,MAP_FILE_MAGIC_TYPE) && strcmp(r->handler,"type-map"))
         return DECLINED;
@@ -3061,8 +3062,21 @@ static int handle_map_file(request_rec *r)
     }
     udir = ap_make_dirstr_parent(r->pool, r->uri);
     udir = ap_escape_uri(r->pool, udir);
-    ap_internal_redirect(apr_pstrcat(r->pool, udir, best->file_name,
-                                     r->path_info, NULL), r);
+    if (r->args) {
+        if (r->path_info) {
+            new_req = apr_pstrcat(r->pool, udir, best->file_name,
+                                  r->path_info, "?", r->args, NULL);
+        }
+        else {
+            new_req = apr_pstrcat(r->pool, udir, best->file_name,
+                                  "?", r->args, NULL);
+        }
+    }
+    else {
+        new_req = apr_pstrcat(r->pool, udir, best->file_name,
+                              r->path_info, NULL);
+    }
+    ap_internal_redirect(new_req, r);
     return OK;
 }
 
