@@ -810,6 +810,7 @@ expressions</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
+<compatibility>available in Apache 2.2.5 and later</compatibility>
 
 <usage>
     <p>This directive is equivalent to <directive module="mod_proxy">ProxyPass</directive>,
