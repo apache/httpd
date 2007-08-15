@@ -10,7 +10,7 @@
 <link href="./style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
 <link href="./style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
 <link href="./images/favicon.ico" rel="shortcut icon" /></head>
-<body id="manual-page" class="no-sidebar"><div id="page-header">
+<body id="manual-page"><div id="page-header">
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p>
 <p class="apache">Serveur Apache HTTP Version 2.3</p>
 <img alt="" src="./images/feather.gif" /></div>
@@ -24,53 +24,117 @@
 <a href="./ja/filter.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">Cette traduction peut être périmée. Verifiez la version
-            Anglaise pour les changements récents.</div>
 
-    <p>Ce document explique le fonctionnement des filtres avec Apache.</p>
+    <p>Ce document décrit l'utilisation des filtres avec Apache.</p>
   </div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#intro">Le filtrage avec Apache 2</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#smart">Filtrage intelligent</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#using">Utilisation des filtres</a></li>
+</ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="filters" id="filters">Filtres</a></h2>
+<h2><a name="intro" id="intro">Le filtrage avec Apache 2</a></h2>
     
-    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>Modules Apparentés</th><th>Directives Apparentées</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code></li><li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code></li><li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code></li><li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code></li><li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprotocol">FilterProtocol</a></code></li><li><code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilterdefine">ExtFilterDefine</a></code></li><li><code class="directive"><a href="./mod/mod_ext_filter.html#extfilteroptions">ExtFilterOptions</a></code></li><li><code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code></li><li><code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code></li></ul></td></tr></table>
 
-    <p>On appelle <em>filtre</em> un processus qui s'applique aux données reçues
-    ou envoyées par le serveur. Les <em>filtres en entrée ("input filters")</em>
-    servent à filtrer les données envoyées par les clients au serveur, tandis
-    que les <em>filtres en sortie ("output filters")</em> travaillent sur les
-    données envoyées par le serveur à un client. Il est possible d'appliquer
-    plusieurs filtres à un flux de données, et l'ordre de ces filtres peux être
-    spécifiée de façon explicite.</p>
-    
-    <p>Apache utilise des filtres en interne pour par exemple gérer les "grosses" requêtes
-    (chunked) ou les requêtes partielles (NDT : "byte-range" : requêtes sur seulement une
-    partie d'un fichier spécifiée par un pointeur de départ, et de fin). 
-    Certains modules permettent en plus d'utiliser des filtres
-    en utilisant des directives de configuration. Les filtres sont utilisables
-    au moyen des directives
+<p>La chaîne de filtrage est disponible depuis la version 2.0 d'Apache,
+et permet aux applications de traiter les données en entrée et en sortie
+d'une manière hautement flexible et configurable, quelle que soit la
+provenance de ces données.  Il est possible de pré-traiter les données
+en entrée, et post-traiter les données en sortie, comme souhaité.
+Ces traitements sont tout à fait indépendants des traditionnelles phases
+de traitement des requêtes.</p>
+<p class="figure">
+<img src="images/filter_arch.png" width="569" height="392" alt="les filtres peuvent s'enchaîner, perpendiculairement au traitement des requêtes" />
+</p>
+<p>Voici quelques exemples de filtrage avec la distribution standard d'Apache:</p>
+<ul>
+<li><code class="module"><a href="./mod/mod_include.html">mod_include</a></code>, implémente les inclusions côté serveur.</li>
+<li><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code>, implémente le cryptage SSL (https).</li>
+<li><code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code>, implémente la compression/décompression
+à la volée.</li>
+<li><code class="module"><a href="./mod/mod_charset_lite.html">mod_charset_lite</a></code>, transcodage entre différents
+jeux de caractères.</li>
+<li><code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code>, utilisation d'un programme externe
+comme filtre.</li>
+</ul>
+<p>Apache utilise aussi plusieurs filtres en interne pour accomplir des tâches
+comme le découpage des grosses requêtes (chunking) et la gestion des
+requêtes portant sur une partie d'un fichier (byte-range).</p>
+
+<p>Un grand choix d'applications sont implémentées par des modules de filtrage
+tiers disponibles à <a href="http://modules.apache.org/">modules.apache.org</a> entre autres.
+En voici quelques exemples :</p>
+
+<ul>
+<li>Traitement et réécriture HTML et XML</li>
+<li>Transformations XSLT et inclusions XML (XIncludes)</li>
+<li>Support de l'espace de nommage XML</li>
+<li>Gestion du chargement de fichier et décodage des formulaires HTML</li>
+<li>Traitement d'image</li>
+<li>Protection des applications vulnérables comme les scripts PHP</li>
+<li>Edition de texte par Chercher/Remplacer</li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="smart" id="smart">Filtrage intelligent</a></h2>
+
+<p class="figure">
+<img src="images/mod_filter_new.png" width="423" height="331" alt="Le filtrage intelligent applique différents fournisseurs de filtrage en fonction de l'état du traitement de la requête" />
+</p>
+<p><code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>, inclus dans les version 2.1 et supérieures
+d'Apache, permet de configurer la chaîne de filtrage dynamiquement
+à l'exécution.
+Ainsi par exemple, vous pouvez définir un proxy pour réécrire du code HTML
+avec un filtre HTML et traiter des images JPEG avec un filtre totalement
+séparé, bien que le proxy ne possède aucune information préliminaire
+sur ce que le serveur à l'origine des données à filtrer va envoyer.
+Ceci fonctionne grâce à l'utilisation d'un gestionnaire de filtre,
+qui distribue les tâches à différents fournisseurs de filtrage en fonction
+du contenu réel à filtrer à l'exécution.  Tout filtre peut se voir soit
+inséré directement dans la chaîne et lancé inconditionnellement, soit
+utilisé comme un fournisseur de filtrage et inséré dynamiquement.
+Par exemple,</p>
+<ul>
+<li>un filtre de traitement HTML sera lancé uniquement si le contenu est
+de type text/html ou application/xhtml+xml</li>
+<li>Un filtre de compression sera lancé uniquement si les données en entrée
+sont de type compressible et non déjà compressées</li>
+<li>Un filtre de conversion de jeux de caractères ne sera inséré que si
+le document texte n'est pas déjà dans le jeu de caractères voulu</li>
+</ul>
+</div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="using" id="using">Utilisation des filtres</a></h2>
+
+<p>Il y a deux manières d'utiliser le filtrage : Simple et Dynamique.
+En général, vous utiliserez l'une ou l'autre méthode; le mélange des deux
+peut avoir des conséquences inattendues (bien que le filtrage simple en entrée
+puisse être associé sans problème avec le filtrage simple ou dynamique
+en sortie).</p>
+<p>La méthode Simple est la seule permettant de configurer les filtres
+en entrée, et suffit pour les filtres en sortie pour lesquels vous avez besoin
+d'une chaîne de filtres statique.
+Les directives correspondantes sont
     <code class="directive"><a href="./mod/core.html#setinputfilter">SetInputFilter</a></code>,
     <code class="directive"><a href="./mod/core.html#setoutputfilter">SetOutputFilter</a></code>,
     <code class="directive"><a href="./mod/mod_mime.html#addinputfilter">AddInputFilter</a></code>,
     <code class="directive"><a href="./mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code>,
-    <code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code> et
-    <code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code>
-    .</p>
+    <code class="directive"><a href="./mod/mod_mime.html#removeinputfilter">RemoveInputFilter</a></code>, et
+    <code class="directive"><a href="./mod/mod_mime.html#removeoutputfilter">RemoveOutputFilter</a></code>.</p>
 
-    <p>Les filtres listés ci-dessous sont fournis dans la distribution d'Apache, et
-    peuvent être utilisés par tout administrateur.</p>
+<p>La méthode Dynamique permet une configuration dynamique des filtres en
+sortie à la fois statique et flexible, comme discuté dans la page
+<code class="module"><a href="./mod/mod_filter.html">mod_filter</a></code>.
+Les directives correspondantes sont
+    <code class="directive"><a href="./mod/mod_filter.html#filterchain">FilterChain</a></code>,
+    <code class="directive"><a href="./mod/mod_filter.html#filterdeclare">FilterDeclare</a></code>, et
+    <code class="directive"><a href="./mod/mod_filter.html#filterprovider">FilterProvider</a></code>.</p>
 
-    <dl>
-      <dt>INCLUDES</dt>
-      <dd>Le module <code class="module"><a href="./mod/mod_include.html">mod_include</a></code> travaille au moyen de
-      "Server-Side Includes"</dd>
-      <dt>DEFLATE</dt>
-      <dd>Le module <code class="module"><a href="./mod/mod_deflate.html">mod_deflate</a></code> compresse les données avant leur envoi au 
-      client (filtre en sortie).</dd>
-    </dl>
+<p>Une autre directive <code class="directive"><a href="./mod/core.html#addoutputfilterbytype">AddOutputFilterByType</a></code> est encore supportée,
+mais peut poser des problèmes et est maintenant obsolète. Utilisez la
+configuration dynamique à la place.</p>
 
-    <p>En outre, le module <code class="module"><a href="./mod/mod_ext_filter.html">mod_ext_filter</a></code> permet d'utiliser des
-    programes externes à Apache en tant que filtres.</p>
   </div></div>
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/filter.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
