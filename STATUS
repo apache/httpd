@@ -298,6 +298,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc/httpd/httpd/trunk/Makefile.win?view=diff&r1=563940&r2=563941&pathrev=563941
       +1: ake
 
+    * mod_negotiation: Preserve Query String when resolving a type map
+      PR: 33112
+      http://svn.apache.org/viewvc?view=rev&revision=565671
+      +1: niq
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
