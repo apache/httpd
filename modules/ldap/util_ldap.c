@@ -2111,6 +2111,7 @@ static void *util_ldap_merge_config(apr_pool_t *p, void *basev,
     st->search_cache_size = base->search_cache_size;
     st->compare_cache_ttl = base->compare_cache_ttl;
     st->compare_cache_size = base->compare_cache_size;
+    st->util_ldap_cache_lock = base->util_ldap_cache_lock; 
 
     st->connections = NULL;
     st->ssl_supported = 0;
