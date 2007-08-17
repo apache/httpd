@@ -19,7 +19,7 @@
 <a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Platform Specific Notes</a></div><div id="page-content"><div id="preamble"><h1>Compiling Apache for Microsoft Windows</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/platform/win_compiling.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a></p>
 </div>
 
 
@@ -45,43 +45,54 @@
     <ul>
       <li>
         <p>Disk Space</p>
-        <p>Make sure you have at least 50 MB of free disk space
+        <p>Make sure you have at least 180 MB of free disk space
         available. After installation Apache requires approximately
-        10 MB of disk space, plus space for log and cache files,
+        70 MB of disk space, plus space for log and cache files,
         which can grow rapidly. The actual disk space requirements
         will vary considerably based on your chosen configuration and
-        any third-party modules or libraries.</p>
+        any third-party modules or libraries, especially when OpenSSL
+        is also built.  Because many files are text and very easily
+        compressed, NTFS filesystem compression cuts these requirements
+        in half.</p>
       </li>
 
       <li>
-        <p>Microsoft Visual C++ (Microsoft Visual Studio) 5.0 or higher.</p>
+        <p>Microsoft Visual C++ (Microsoft Visual Studio) 6.0 or higher.</p>
+
         <p>Apache can be built using the command line tools, or from
         within the Visual Studio IDE Workbench.  The command line
         build requires the environment to reflect the <code>PATH</code>,
         <code>INCLUDE</code>, <code>LIB</code> and other variables
-        that can be configured with the <code>vcvars32</code> batch file:</p>
+        that can be configured with the <code>vcvars32.bat</code> file:</p>
 
         <div class="example"><p><code>
-          "c:\Program Files\DevStudio\VC\Bin\vcvars32.bat"
+          "c:\Program Files\Microsoft Visual Studio\VC98\Bin\VCVARS32"
         </code></p></div>
       </li>
 
       <li>
-        <p>The Windows Platform SDK.</p>
-        <p>Apache's APR and APR-util builds require an updated Microsoft
-        Windows Platform SDK, from 2003 or later. For command line
-        builds, the Platform SDK environment is prepared by the
-        <code>setenv</code> batch file:</p>
+        <p>The Windows Platform SDK for Visual C 6.0 (97) or 7.0 (.NET)</p>
 
+        <p>Apache's APR and APR-util builds require an updated Microsoft
+        Windows Platform SDK, from Feb 2003 or later, included in the
+        Visual C++ 7.1 (Studio 2003) and later.  For command line builds with 
+        Visual C++ 6.0 or 7.0, the Platform SDK environment is prepared by 
+        the <code>setenv.bat</code> file:</p>
         <div class="example"><p><code>
           "c:\Program Files\Platform SDK\setenv.bat"
         </code></p></div>
 
-        <p>The Platform SDK files distributed with Visual C++ 5.0, 6.0 
-        and Visual Studio .NET (2000) are no longer sufficient.
-        Users of Visual Studio 2003 and later versions (of the full product,
-        not the 'express' flavor) and later versions may skip this 
-        requirement.</p>
+        <p>The Platform SDK files distributed with Visual C++ 6.0 and
+        Visual Studio .NET (2000) are no longer sufficient and cause many
+        compilation warnings and linkage errors.  Users of Visual C++ 8.0
+        (Studio 2003) and later versions (of the full product, not the 
+        'Visual Studio Express' flavor) may skip this requirement.</p>
+
+        <p>If using the GUI, either start msdev or devenv with the /setenv
+        flag (after invoking setenv.bat), or ensure the paths are correct
+        under the Tools -&gt; Options -&gt; (Projects -&gt;) Directories 
+        menu option.  The Platform SDK installer will generally help you
+        configure this.</p>
       </li>
 
       <li>
@@ -89,30 +100,49 @@
         <p>To install Apache within the build system, several files are
         modified using the <code>awk.exe</code> utility. awk was chosen since
         it is a very small download (compared with Perl or WSH/VB) and
-        accomplishes the task of generating files. Brian Kernighan's
+        accomplishes the task of modifying configuration files upon
+        installation.  Brian Kernighan's
         <a href="http://cm.bell-labs.com/cm/cs/who/bwk/">http://cm.bell-labs.com/cm/cs/who/bwk/</a>
         site has a compiled native Win32 binary,
         <a href="http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe">http://cm.bell-labs.com/cm/cs/who/bwk/awk95.exe</a> which
         you must save with the name <code>awk.exe</code> rather than
         <code>awk95.exe</code>.</p>
 
-        <div class="note">Note that Developer Studio IDE will only find
-        <code>awk.exe</code> from the Tools menu Options... Directories
-        tab (the Projects - VC++ Directories pane in Developer Studio 7.0)
-        listing Executable file paths. Add the path for <code>awk.exe</code>
-        to this list, and your system <code>PATH</code> environment variable,
-        as needed.</div>
+        <div class="note">If awk.exe is not found, Makefile.win's install target
+        will not perform substitutions in the installed .conf files.
+        The installed .conf files must then be modified by hand for
+        this situation.</div>
+
+        <p>Note that Developer Studio IDE will only find
+        <code>awk.exe</code> from the Executable path specified in the menu 
+        option Tools -&gt; Options -&gt; (Projects -&gt;) Directories.
+        Add the path for <code>awk.exe</code> to this list, and your 
+        system <code>PATH</code> environment variable, as needed.</p>
 
         <div class="note">Also note that if you are using Cygwin tools
         (<a href="http://www.cygwin.com/">http://www.cygwin.com/</a>) 
         the awk utility is named <code>gawk.exe</code> and that the file 
         <code>awk.exe</code> is really a symlink to the <code>gawk.exe</code>
         file. The Windows command shell does not recognize symlinks, and 
-        because of that building InstallBin will fail. A workaround is 
+        because of this building InstallBin will fail. A workaround is 
         to delete <code>awk.exe</code> from the cygwin installation and 
         copy <code>gawk.exe</code> to <code>awk.exe</code>.  Also note the
         cygwin/mingw ports of gawk 3.0.x were buggy, please upgrade to 3.1.x
         before attempting to use any gawk port.</div>
+      </li>
+
+      <li>
+        <p>[Optional] zlib library (for <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>)</p>
+        <p>Zlib must be installed into a <code>srclib</code> subdirectory named
+        <code>zlib</code>.  This must be built in-place.  Zlib can be obtained 
+        from <a href="http://www.zlib.net/">http://www.zlib.net/</a> -- the
+        <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> is confirmed to work correctly with 
+        version 1.2.3.</p>
+
+        <div class="example"><p><code>
+          nmake -f win32\Makefile.msc<br />
+          nmake -f win32\Makefile.msc test
+        </code></p></div>
       </li>
 
       <li>
@@ -129,42 +159,27 @@
         provided by the OpenSSL project. <strong>Consult your own legal
         counsel, you are responsible for your own actions.</strong></p>
 
-        <p>OpenSSL must be installed into a <code>srclib</code> subdirectory named
-        <code>openssl</code>, obtained from <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>, in order to compile <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
-        or the abs project (<code>ab.exe</code> with SSL support.) To prepare OpenSSL
-        for both <code>release</code> and <code>debug</code> builds of Apache, and
-        disable the patent protected features in OpenSSL,  you might use the following
-        build commands:</p>
+        <p>OpenSSL must be installed into a <code>srclib</code> subdirectory 
+        named <code>openssl</code>, obtained from 
+        <a href="http://www.openssl.org/source/">http://www.openssl.org/source/</a>, in order to compile 
+        <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code> or the abs project (<code>ab.exe</code> 
+        enabled with SSL support.) To prepare OpenSSL for both 
+        <code>release</code> and <code>debug</code> builds of Apache, and
+        disable the patent protected features in OpenSSL,  you might use 
+        the following build commands:</p>
 
         <div class="example"><p><code>
-          perl Configure VC-WIN32<br />
-          perl util\mkfiles.pl &gt;MINFO<br />
-          perl util\mk1mf.pl dll no-asm no-mdc2 no-rc5 no-idea VC-WIN32 &gt;makefile.rel<br />
-          perl util\mk1mf.pl dll debug no-asm no-mdc2 no-rc5 no-idea VC-WIN32 &gt;makefile.dbg<br />
-          perl util\mkdef.pl 32 libeay no-asm no-mdc2 no-rc5 no-idea &gt;ms\libeay32.def<br />
-          perl util\mkdef.pl 32 ssleay no-asm no-mdc2 no-rc5 no-idea &gt;ms\ssleay32.def<br />
-          nmake -f makefile.rel<br />
-          nmake -f makefile.dbg
+          perl Configure no-mdc2 no-rc5 no-idea enable-zlib VC-WIN32 -Ipath/to/srclib/zlib<br />
+          ms\do_masm.bat<br />
+          nmake -f ms\ntdll.mak
         </code></p></div>
 
-        <p>Note; you can use the scripts in the <code>ms\</code> subdirectory, however,
-        it's rather tricky to force <code>ms\do_masm.bat</code>, for example, to perform
-        the patent encumberances as mentioned above.  Patches to add the $* argument list
-        to the appropriate .bat lines in these scripts aren't incorporated, thus far.</p>
-      </li>
-
-      <li>
-        <p>[Optional] zlib library (for <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>)</p>
-        <p>Zlib must be installed into a <code>srclib</code> subdirectory named
-        <code>zlib</code>.  This must be built in-place.  Zlib can be obtained 
-        from <a href="http://www.zlib.net/">http://www.zlib.net/</a> -- the
-        <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code> is confirmed to work correctly with 
-        version 1.2.3.</p>
-
-        <div class="example"><p><code>
-          nmake -f win32\Makefile.msc<br />
-          nmake -f win32\Makefile.msc test
-        </code></p></div>
+        <p>Note: It is not advisable to use zlib-dynamic, as that could
+        pose a thread race condition.  If building zlib on win32, be sure
+        to adjust the resulting ms\ntdll.mak file to link to the full
+        path of srclib\zlib\zdll.lib rather than zlib1.lib (that error in
+        configuration of OpenSSL through 0.9.8d and earlier reflects older 
+        zlib 1.1 versions.)</p>
       </li>
 
     </ul>
@@ -190,9 +205,9 @@ nmake /f Makefile.win _apacher
 nmake /f Makefile.win _apached
     </pre></div>
 
-    <p>Either command will compile Apache. The latter will include
-    debugging information in the resulting files, making it easier
-    to find bugs and track down problems.</p>
+    <p>Either command will compile Apache. The latter will disable
+    optimization of the resulting files, making it easier to single
+    step the code to find bugs and track down problems.</p>
 
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -226,27 +241,41 @@ nmake /f Makefile.win _apached
     <code>.dsp</code> files change! This is really trivial, just open
     <code>Apache.dsw</code> in the VC++ 7.0 IDE once again.</p>
 
+    <div class="note">There is a flaw in the .vcproj conversion of .dsp through 
+    Visual Studio 2005 SP1; devenv.exe will mis-parse the /D flag for RC 
+    flags containing long quoted /D'efines containing spaces.  The command:
+    <div class="example"><p><code>
+      perl srclib\apr\build\cvtdsp.pl -2005
+    </code></p></div>
+    will convert the /D flags for RC flags to use an alternate, parseable
+    syntax; unfortunately this syntax isn't supported by Visual Studio 97
+    or it's exported .mak files.  These /D flags are used to pass the long
+    description of the mod_apachemodule.so files to their .rc resource
+    version-identifier compilations, and replace the use of awk for generating
+    .rc files formerly used for Apache 2.0.</div>
+
     <p>Visual C++ 7.0 (.net) users should also use the Build
     menu, Configuration Manager dialog to uncheck both the <code>Debug</code>
     and <code>Release</code> Solution modules abs, <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>
     and <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.
     These modules are built by invoking <code>nmake</code> or the IDE directly
-    with the <code>BinBuild</code> target to build those modules explicitly,
-    only if the <code>srclib</code> directories <code>openssl</code>
-    and/or <code>zlib</code> exist.</p>
+    with the <code>BinBuild</code> target to build those modules conditionally
+    if the <code>srclib</code> directories <code>openssl</code> and/or
+    <code>zlib</code> exist.</p>
 
     <p>Exported <code>.mak</code> files pose a greater hassle, but they are
     required for Visual C++ 5.0 users to build <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>,
     abs (<code class="program"><a href="../programs/ab.html">ab</a></code> with SSL support) and/or
-    <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.
-    VC++ 7.0 (.net) users also benefit, <code>nmake</code> builds
-    are faster than <code>binenv</code> builds.
-    Build the entire project from within the VC++ 5.0 or 6.0 IDE,
-    then use the Project Menu Export for all makefiles.
-    You must build the projects first in order to create all dynamic
-    auto-generated targets, so that dependencies can be parsed
-    correctly. Run the following command to fix the paths so they
-    will build anywhere:</p>
+    <code class="module"><a href="../mod/mod_deflate.html">mod_deflate</a></code>.  VC++ 7.0 (Visual Studio .NET) users 
+    also benefit, <code>nmake</code> builds were faster than 
+    <code>binenv</code> builds until the parallel compilation features
+    introduced in Visual Studio 2005.  Build the entire project from within 
+    the VC++ 5.0 or 6.0 IDE, preferably with mod_deflate, mod_ssl and abs,
+    then use the Project Menu Export for all makefiles (preferably, with 
+    dependencies.)  You must build the projects first in order to create 
+    all dynamic auto-generated targets, so that dependencies can be parsed
+    correctly. Run the following command to fix the paths so they will build 
+    anywhere:</p>
 
     <div class="example"><p><code>
       perl srclib\apr\build\fixwin32mak.pl
@@ -412,24 +441,25 @@ nmake /f Makefile.win installd INSTDIR=<em>dir</em>
       build provides all of the dependent files required to build proper
       dependency trees for correct build behavior.</div>
 
-      <p>In order to create distribution <code>.mak</code> files, always review
-      the generated <code>.mak</code> (or <code>.dep</code>) dependencies for
-      Platform SDK or other garbage includes. The <code>DevStudio\SharedIDE\bin\</code>
-      (VC5) or <code>DevStudio\Common\MSDev98\bin\</code> (VC6) directory contains
-      the <code>sysincl.dat</code> file, which must list all exceptions. Update this
-      file (including both forward and backslashed paths, such as both
-      <code>sys/time.h</code> and <code>sys\time.h</code>) to include such dependencies.
-      Including local-install paths in a distributed <code>.mak</code> file will
-      cause the build to fail completely. And don't forget to run
-      <code>srclib/apr/build/fixwin32mak.pl</code> in order to fix absolute
-      paths within the <code>.mak</code> files.</p>
+      <p>In order to create distribution <code>.mak</code> files, always 
+      review the generated <code>.mak</code> (or <code>.dep</code>) 
+      dependencies for Platform SDK or other garbage, machine specific
+      includes.  The <code>DevStudio\SharedIDE\bin\</code> (VC5) or 
+      <code>DevStudio\Common\MSDev98\bin\</code> (VC6) directory contains
+      the <code>sysincl.dat</code> file, which must list all exceptions. 
+      Update this file (including both forward and backslashed paths, such 
+      as both <code>sys/time.h</code> and <code>sys\time.h</code>) to ignore 
+      such dependencies.  Including local-install paths in a distributed 
+      <code>.mak</code> file will cause the build to fail completely. And 
+      don't forget to run <code>srclib/apr/build/fixwin32mak.pl</code> in 
+      order to fix absolute paths within the <code>.mak</code> files.</p>
 
     
 
   </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/platform/win_compiling.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+<a href="../ko/platform/win_compiling.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
