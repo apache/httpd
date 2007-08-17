@@ -305,7 +305,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  
     * mod_ldap: Copy cache lock into per-server config
       http://svn.apache.org/viewvc?view=rev&revision=567091
-      +1: covener
+      +1: covener, trawick (iff CHANGES is modified to mention the 
+          severe problem symptoms caused by not grabbing mutex)
 
 
 PATCHES/ISSUES THAT ARE STALLED
