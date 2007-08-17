@@ -45,7 +45,7 @@
         <p>Disk Space</p>
         <p>Make sure you have at least 180 MB of free disk space
         available. After installation Apache requires approximately
-        60 MB of disk space, plus space for log and cache files,
+        70 MB of disk space, plus space for log and cache files,
         which can grow rapidly. The actual disk space requirements
         will vary considerably based on your chosen configuration and
         any third-party modules or libraries, especially when OpenSSL
@@ -90,7 +90,7 @@
         flag (after invoking setenv.bat), or ensure the paths are correct
         under the Tools -&gt; Options -&gt; (Projects -&gt;) Directories 
         menu option.  The Platform SDK installer will generally help you
-        configure this.
+        configure this.</p>
       </li>
 
       <li>
