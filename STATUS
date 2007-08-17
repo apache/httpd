@@ -302,6 +302,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR: 33112
       http://svn.apache.org/viewvc?view=rev&revision=565671
       +1: niq
+ 
+    * mod_ldap: Copy cache lock into per-server config
+      http://svn.apache.org/viewvc?view=rev&revision=567091
+      +1: covener
 
 
 PATCHES/ISSUES THAT ARE STALLED
