@@ -21,8 +21,8 @@
 <p><span>Available Languages: </span><a href="../de/mod/directives.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
 <a href="../en/mod/directives.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a> |
 <a href="../ru/mod/directives.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
 
@@ -335,108 +335,4 @@
 <li><a href="mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></li>
 <li><a href="mod_rewrite.html#rewritemap">RewriteMap</a></li>
 <li><a href="mod_rewrite.html#rewriteoptions">RewriteOptions</a></li>
-<li><a href="mod_rewrite.html#rewriterule">RewriteRule</a></li>
-<li><a href="core.html#rlimitcpu">RLimitCPU</a></li>
-<li><a href="core.html#rlimitmem">RLimitMEM</a></li>
-<li><a href="core.html#rlimitnproc">RLimitNPROC</a></li>
-<li><a href="core.html#satisfy" id="S" name="S">Satisfy</a></li>
-<li><a href="mpm_common.html#scoreboardfile">ScoreBoardFile</a></li>
-<li><a href="mod_actions.html#script">Script</a></li>
-<li><a href="mod_alias.html#scriptalias">ScriptAlias</a></li>
-<li><a href="mod_alias.html#scriptaliasmatch">ScriptAliasMatch</a></li>
-<li><a href="core.html#scriptinterpretersource">ScriptInterpreterSource</a></li>
-<li><a href="mod_cgi.html#scriptlog">ScriptLog</a></li>
-<li><a href="mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></li>
-<li><a href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
-<li><a href="mod_cgid.html#scriptsock">ScriptSock</a></li>
-<li><a href="mod_nw_ssl.html#securelisten">SecureListen</a></li>
-<li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
-<li><a href="core.html#serveradmin">ServerAdmin</a></li>
-<li><a href="core.html#serveralias">ServerAlias</a></li>
-<li><a href="mpm_common.html#serverlimit">ServerLimit</a></li>
-<li><a href="core.html#servername">ServerName</a></li>
-<li><a href="core.html#serverpath">ServerPath</a></li>
-<li><a href="core.html#serverroot">ServerRoot</a></li>
-<li><a href="core.html#serversignature">ServerSignature</a></li>
-<li><a href="core.html#servertokens">ServerTokens</a></li>
-<li><a href="mod_env.html#setenv">SetEnv</a></li>
-<li><a href="mod_setenvif.html#setenvif">SetEnvIf</a></li>
-<li><a href="mod_setenvif.html#setenvifnocase">SetEnvIfNoCase</a></li>
-<li><a href="core.html#sethandler">SetHandler</a></li>
-<li><a href="core.html#setinputfilter">SetInputFilter</a></li>
-<li><a href="core.html#setoutputfilter">SetOutputFilter</a></li>
-<li><a href="mod_include.html#ssiendtag">SSIEndTag</a></li>
-<li><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></li>
-<li><a href="mod_include.html#ssistarttag">SSIStartTag</a></li>
-<li><a href="mod_include.html#ssitimeformat">SSITimeFormat</a></li>
-<li><a href="mod_include.html#ssiundefinedecho">SSIUndefinedEcho</a></li>
-<li><a href="mod_ssl.html#sslcacertificatefile">SSLCACertificateFile</a></li>
-<li><a href="mod_ssl.html#sslcacertificatepath">SSLCACertificatePath</a></li>
-<li><a href="mod_ssl.html#sslcadnrequestfile">SSLCADNRequestFile</a></li>
-<li><a href="mod_ssl.html#sslcadnrequestpath">SSLCADNRequestPath</a></li>
-<li><a href="mod_ssl.html#sslcarevocationfile">SSLCARevocationFile</a></li>
-<li><a href="mod_ssl.html#sslcarevocationpath">SSLCARevocationPath</a></li>
-<li><a href="mod_ssl.html#sslcertificatechainfile">SSLCertificateChainFile</a></li>
-<li><a href="mod_ssl.html#sslcertificatefile">SSLCertificateFile</a></li>
-<li><a href="mod_ssl.html#sslcertificatekeyfile">SSLCertificateKeyFile</a></li>
-<li><a href="mod_ssl.html#sslciphersuite">SSLCipherSuite</a></li>
-<li><a href="mod_ssl.html#sslcryptodevice">SSLCryptoDevice</a></li>
-<li><a href="mod_ssl.html#sslengine">SSLEngine</a></li>
-<li><a href="mod_ssl.html#sslhonorcipherorder">SSLHonorCipherOrder</a></li>
-<li><a href="mod_ssl.html#sslmutex">SSLMutex</a></li>
-<li><a href="mod_ssl.html#ssloptions">SSLOptions</a></li>
-<li><a href="mod_ssl.html#sslpassphrasedialog">SSLPassPhraseDialog</a></li>
-<li><a href="mod_ssl.html#sslprotocol">SSLProtocol</a></li>
-<li><a href="mod_ssl.html#sslproxycacertificatefile">SSLProxyCACertificateFile</a></li>
-<li><a href="mod_ssl.html#sslproxycacertificatepath">SSLProxyCACertificatePath</a></li>
-<li><a href="mod_ssl.html#sslproxycarevocationfile">SSLProxyCARevocationFile</a></li>
-<li><a href="mod_ssl.html#sslproxycarevocationpath">SSLProxyCARevocationPath</a></li>
-<li><a href="mod_ssl.html#sslproxyciphersuite">SSLProxyCipherSuite</a></li>
-<li><a href="mod_ssl.html#sslproxyengine">SSLProxyEngine</a></li>
-<li><a href="mod_ssl.html#sslproxymachinecertificatefile">SSLProxyMachineCertificateFile</a></li>
-<li><a href="mod_ssl.html#sslproxymachinecertificatepath">SSLProxyMachineCertificatePath</a></li>
-<li><a href="mod_ssl.html#sslproxyprotocol">SSLProxyProtocol</a></li>
-<li><a href="mod_ssl.html#sslproxyverify">SSLProxyVerify</a></li>
-<li><a href="mod_ssl.html#sslproxyverifydepth">SSLProxyVerifyDepth</a></li>
-<li><a href="mod_ssl.html#sslrandomseed">SSLRandomSeed</a></li>
-<li><a href="mod_ssl.html#sslrequire">SSLRequire</a></li>
-<li><a href="mod_ssl.html#sslrequiressl">SSLRequireSSL</a></li>
-<li><a href="mod_ssl.html#sslsessioncache">SSLSessionCache</a></li>
-<li><a href="mod_ssl.html#sslsessioncachetimeout">SSLSessionCacheTimeout</a></li>
-<li><a href="mod_ssl.html#sslusername">SSLUserName</a></li>
-<li><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient</a></li>
-<li><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></li>
-<li><a href="mpm_common.html#startservers">StartServers</a></li>
-<li><a href="mpm_common.html#startthreads">StartThreads</a></li>
-<li><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup</a></li>
-<li><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit</a></li>
-<li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
-<li><a href="mpm_common.html#threadstacksize">ThreadStackSize</a></li>
-<li><a href="core.html#timeout">TimeOut</a></li>
-<li><a href="core.html#traceenable">TraceEnable</a></li>
-<li><a href="mod_log_config.html#transferlog">TransferLog</a></li>
-<li><a href="mod_mime.html#typesconfig">TypesConfig</a></li>
-<li><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv</a></li>
-<li><a href="core.html#usecanonicalname">UseCanonicalName</a></li>
-<li><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort</a></li>
-<li><a href="mpm_common.html#user">User</a></li>
-<li><a href="mod_userdir.html#userdir">UserDir</a></li>
-<li><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot</a></li>
-<li><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP</a></li>
-<li><a href="core.html#virtualhost">&lt;VirtualHost&gt;</a></li>
-<li><a href="mod_vhost_alias.html#virtualscriptalias">VirtualScriptAlias</a></li>
-<li><a href="mod_vhost_alias.html#virtualscriptaliasip">VirtualScriptAliasIP</a></li>
-<li><a href="mpm_winnt.html#win32disableacceptex" id="W" name="W">Win32DisableAcceptEx</a></li>
-<li><a href="mod_include.html#xbithack" id="X" name="X">XBitHack</a></li>
-</ul></div>
-<div class="bottomlang">
-<p><span>Available Languages: </span><a href="../de/mod/directives.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |
-<a href="../en/mod/directives.html" title="English">&nbsp;en&nbsp;</a> |
-<a href="../es/mod/directives.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
-<a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="../ru/mod/directives.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
-</div><div id="footer">
-<p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
-</body></html>
+<li><a href="mod_rewrite.html#rewriterule">RewriteRule<
