@@ -307,6 +307,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=567091
       +1: covener, trawick (iff CHANGES is modified to mention the 
           severe problem symptoms caused by not grabbing mutex)
+      rpluem says: Dito to trawick: +1 iff CHANGES is modified accordingly.
 
 
 PATCHES/ISSUES THAT ARE STALLED
