@@ -20,7 +20,7 @@
 <div class="toplang">
 <p><span>Available Languages: </span><a href="./en/new_features_2_2.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/new_features_2_2.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
 
@@ -258,7 +258,7 @@
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./en/new_features_2_2.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/new_features_2_2.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>

@@ -71,7 +71,7 @@
       </li>
 
       <li>
-        <p>The Windows Platform SDK for Visual C 6.0 (97) or 7.0 (.NET)</p>
+        <p>The Windows Platform SDK for Visual C++ 6.0 (97) or 7.0 (.NET)</p>
 
         <p>Apache's APR and APR-util builds require an updated Microsoft
         Windows Platform SDK, from Feb 2003 or later, included in the
@@ -84,7 +84,7 @@
 
         <p>The Platform SDK files distributed with Visual C++ 6.0 and
         Visual Studio .NET (2000) are no longer sufficient and cause many
-        compilation warnings and linkage errors.  Users of Visual C++ 8.0
+        compilation warnings and linkage errors.  Users of Visual C++ 7.1
         (Studio 2003) and later versions (of the full product, not the 
         'Visual Studio Express' flavor) may skip this requirement.</p>
 
