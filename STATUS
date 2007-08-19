@@ -78,6 +78,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_ldap: Copy cache lock into per-server config
+      http://svn.apache.org/viewvc?view=rev&revision=567091
+      +1: covener, trawick (iff CHANGES is modified to mention the 
+          severe problem symptoms caused by not grabbing mutex)
+      rpluem says: Dito to trawick: +1 iff CHANGES is modified accordingly.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -303,11 +308,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=565671
       +1: niq
  
-    * mod_ldap: Copy cache lock into per-server config
-      http://svn.apache.org/viewvc?view=rev&revision=567091
-      +1: covener, trawick (iff CHANGES is modified to mention the 
-          severe problem symptoms caused by not grabbing mutex)
-      rpluem says: Dito to trawick: +1 iff CHANGES is modified accordingly.
 
 
 PATCHES/ISSUES THAT ARE STALLED
