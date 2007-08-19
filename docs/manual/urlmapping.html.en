@@ -221,7 +221,7 @@ directive rewrites redirects originating at
 <code>internal.example.com</code> so that they target the appropriate
 directory on the local server.  Similarly, the
 <code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code>
-and <code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiedomain">ProxyPassReverseCookieDomain</a></code>
+and <code class="directive"><a href="./mod/mod_proxy.html#proxypassreversecookiepath">ProxyPassReverseCookiePath</a></code>
 rewrite cookies set by the backend server.</p>
 <p>It is important to note, however, that
 links inside the documents will not be rewritten.  So any absolute
