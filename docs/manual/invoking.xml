@@ -84,9 +84,7 @@
     immediately. This indicates that the server is up and running.
     You can then use your browser to connect to the server and view
     the test page in the <directive
-    module="core">DocumentRoot</directive> directory
-    and the local copy of the documentation linked from that
-    page.</p>
+    module="core">DocumentRoot</directive> directory.</p>
 </section>
 
 <section id="errors"><title>Errors During Start-up</title>
