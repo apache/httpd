@@ -1,8 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
-  *) mod_ldap: Copy cache lock into per-server config
-     [Eric Covener]
+  *) mod_ldap: Avoid possible crashes, hangs, and busy loops due to
+     improper merging of the cache lock in vhost config
+     PR 43164 [Eric Covener]
 
   *) mod_negotiation: preserve Query String in resolving a type map
      PR 33112 [Jørgen Thomsen <apache jth.net>, Nick Kew]
