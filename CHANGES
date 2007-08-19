@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_ldap: Avoid possible crashes, hangs, and busy loops due to
+     improper merging of the cache lock in vhost config
+     PR 43164 [Eric Covener]
 
 Changes with Apache 2.2.5
 
