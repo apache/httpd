@@ -1076,6 +1076,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
             cs->state = CONN_STATE_LINGER;
 
             APR_RING_REMOVE(cs, timeout_list);
+            apr_thread_mutex_unlock(timeout_mutex);
 
             rc = push2worker(&cs->pfd, event_pollset);
 
@@ -1088,6 +1089,7 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
                  */
             }
             have_idle_worker = 0;
+            apr_thread_mutex_lock(timeout_mutex);
             cs = APR_RING_FIRST(&keepalive_timeout_head);
         }
 
@@ -1099,11 +1101,14 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
 
             cs->state = CONN_STATE_LINGER;
             APR_RING_REMOVE(cs, timeout_list);
+            apr_thread_mutex_unlock(timeout_mutex);
+
             rc = push2worker(&cs->pfd, event_pollset);
             if (rc != APR_SUCCESS) {
                 return NULL;
             }
             have_idle_worker = 0;
+            apr_thread_mutex_lock(timeout_mutex);
             cs = APR_RING_FIRST(&timeout_head);
         }
 
