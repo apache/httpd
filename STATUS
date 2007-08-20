@@ -217,14 +217,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       to investigate PR37770.
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&rev=549420
-      +1: jfclere, mturk
-      -0.5: rpluem says: As said in
-       http://mail-archives.apache.org/mod_mbox/httpd-dev/200706.mbox/%3c46828E5A.50606@apache.org%3e
-       I would prefer creating the brigade used in ap_proxygetline outside of
-       the loop and pass it to ap_proxygetline for each call. Only do an
-       apr_brigade_cleanup inside of ap_proxygetline then. Furthermore the
-       check for a buffer overflow a few lines later is not correct any more
-       (now an error (APR_ENOSPC) is returned instead).
+        http://svn.apache.org/viewvc?view=rev&rev=561778
+      +1: jfclere
 
     * multiple files,	Trivial cleanups
       PR: 39518 - Christophe JAILLET
