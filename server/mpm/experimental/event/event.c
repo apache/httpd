@@ -831,7 +831,7 @@ static apr_status_t push2worker(const apr_pollfd_t * pfd,
      * therefore, we can accept _SUCCESS or _NOTFOUND,
      * and we still want to keep going
      */
-    if (rc != APR_SUCCESS && rc != APR_NOTFOUND) {
+    if (rc != APR_SUCCESS && !APR_STATUS_IS_NOTFOUND(rc)) {
         cs->state = CONN_STATE_LINGER;
     }
 
