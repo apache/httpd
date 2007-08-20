@@ -218,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&rev=549420
         http://svn.apache.org/viewvc?view=rev&rev=561778
-      +1: jfclere
+      +1: jfclere, rpluem
 
     * multiple files,	Trivial cleanups
       PR: 39518 - Christophe JAILLET
