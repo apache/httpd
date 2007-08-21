@@ -153,13 +153,41 @@ headers</description>
           RequestHeader edit Destination ^https: http: early
         </example>
       </li>
+
+      <li>
+        Set the same header value under multiple non-exclusive conditions,
+        but do not duplicate the value in the final header.
+        If all of the following conditions applied to a request (i.e.,
+        if the <code>CGI</code>, <code>NO_CACHE</code> and
+        <code>NO_STORE</code> environment variables all existed for the
+        request):
+
+        <example>
+          Header merge Cache-Control no-cache env=CGI<br />
+          Header merge Cache-Control no-cache env=NO_CACHE<br />
+          Header merge Cache-Control no-store env=NO_STORE
+        </example>
+
+        <p>then the response would contain the following header:</p>
+
+        <example>
+          Cache-Control: no-cache, no-store
+        </example>
+
+        <p>If <code>append</code> was used instead of <code>merge</code>,
+        then the response would contain the following header:</p>
+
+        <example>
+          Cache-Control: no-cache, no-cache, no-store
+        </example>
+      </li>
     </ol>
 </section>
 
 <directivesynopsis>
 <name>RequestHeader</name>
 <description>Configure HTTP request headers</description>
-<syntax>RequestHeader set|append|add|unset|edit <var>header</var>
+<syntax>RequestHeader set|append|merge|add|unset|edit <var>header</var>
 [<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -184,12 +212,22 @@ headers</description>
     is the HTTP standard way of giving a header multiple
     values.</dd>
 
+    <dt><code>merge</code></dt>
+    <dd>The response header is appended to any existing header of
+    the same name, unless the value to be appended already appears in the
+    existing header's comma-delimited list of values.  When a new value is
+    merged onto an existing header it is separated from the existing header
+    with a comma.  This is the HTTP standard way of giving a header multiple
+    values.  Values are compared in a case sensitive manner, and after
+    all format specifiers have been processed.  Values in double quotes
+    are considered different from otherwise identical unquoted values.</dd>
+
     <dt><code>add</code></dt>
     <dd>The request header is added to the existing set of headers,
     even if this header already exists. This can result in two
     (or more) headers having the same name. This can lead to
-    unforeseen consequences, and in general <code>set</code> or
-    <code>append</code> should be used instead.</dd>
+    unforeseen consequences, and in general <code>set</code>,
+    <code>append</code> or <code>merge</code> should be used instead.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The request header of this name is removed, if it exists. If
@@ -206,7 +244,7 @@ headers</description>
 
     <p>This argument is followed by a header name, which can
     include the final colon, but it is not required. Case is
-    ignored. For <code>set</code>, <code>append</code> and
+    ignored. For <code>set</code>, <code>append</code>, <code>merge</code> and
     <code>add</code> a <var>value</var> is given as the third argument. If a
     <var>value</var> contains spaces, it should be surrounded by double
     quotes. For <code>unset</code>, no <var>value</var> should be given.
@@ -240,7 +278,7 @@ headers</description>
 <directivesynopsis>
 <name>Header</name>
 <description>Configure HTTP response headers</description>
-<syntax>Header [<var>condition</var>] set|append|add|unset|echo|edit
+<syntax>Header [<var>condition</var>] set|append|merge|add|unset|echo|edit
 <var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
@@ -273,12 +311,22 @@ headers</description>
     header it is separated from the existing header with a comma.
     This is the HTTP standard way of giving a header multiple values.</dd>
 
+    <dt><code>merge</code></dt>
+    <dd>The response header is appended to any existing header of
+    the same name, unless the value to be appended already appears in the
+    header's comma-delimited list of values.  When a new value is merged onto
+    an existing header it is separated from the existing header with a comma.
+    This is the HTTP standard way of giving a header multiple values.
+    Values are compared in a case sensitive manner, and after
+    all format specifiers have been processed.  Values in double quotes
+    are considered different from otherwise identical unquoted values.</dd>
+
     <dt><code>add</code></dt>
     <dd>The response header is added to the existing set of headers,
     even if this header already exists. This can result in two
     (or more) headers having the same name. This can lead to
-    unforeseen consequences, and in general <code>set</code> or
-    <code>append</code> should be used instead.</dd>
+    unforeseen consequences, and in general <code>set</code>,
+    <code>append</code> or <code>merge</code> should be used instead.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.
@@ -301,14 +349,15 @@ headers</description>
 
     <p>This argument is followed by a <var>header</var> name, which
     can include the final colon, but it is not required. Case is
-    ignored for <code>set</code>, <code>append</code>, <code>add</code>,
-    <code>unset</code>, and <code>edit</code>.
+    ignored for <code>set</code>, <code>append</code>, <code>merge</code>,
+    <code>add</code>, <code>unset</code> and <code>edit</code>.
     The <var>header</var> name for <code>echo</code>
     is case sensitive and may be a <glossary ref="regex">regular
     expression</glossary>.</p>
 
-    <p>For <code>set</code>, <code>append</code> and <code>add</code> a
-    <var>value</var> is specified as the third argument. If <var>value</var>
+    <p>For <code>set</code>, <code>append</code>, <code>merge</code> and
+    <code>add</code> a <var>value</var> is specified as the third argument.
+    If <var>value</var>
     contains spaces, it should be surrounded by double quotes.
     <var>value</var> may be a character string, a string containing format
     specifiers or a combination of both. The following format specifiers
