@@ -109,7 +109,7 @@ headers</td></tr>
         bottlenecks between the client and the server.
 
         <div class="example"><p><code>
-          Header add MyHeader "%D %t"
+          Header set MyHeader "%D %t"
         </code></p></div>
 
         <p>results in this header being added to the response:</p>
@@ -123,7 +123,7 @@ headers</td></tr>
         Say hello to Joe
 
         <div class="example"><p><code>
-          Header add MyHeader "Hello Joe. It took %D microseconds \<br />
+          Header set MyHeader "Hello Joe. It took %D microseconds \<br />
           for Apache to serve this request."
         </code></p></div>
 
@@ -137,38 +137,69 @@ headers</td></tr>
 
       <li>
         Conditionally send <code>MyHeader</code> on the response if and
-        only if header "MyRequestHeader" is present on the request. This
-        is useful for constructing headers in response to some client
+        only if header <code>MyRequestHeader</code> is present on the request.
+        This is useful for constructing headers in response to some client
         stimulus. Note that this example requires the services of the
         <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> module.
 
         <div class="example"><p><code>
-          SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
-          Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader<br />
-       </code></p></div>
+          SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader<br />
+          Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
+        </code></p></div>
 
-       <p>If the header <code>MyRequestHeader: value</code> is present on
-       the HTTP request, the response will contain the following header:</p>
+        <p>If the header <code>MyRequestHeader: myvalue</code> is present on
+        the HTTP request, the response will contain the following header:</p>
 
-       <div class="example"><p><code>
-         MyHeader: D=3775428 t=991424704447256 mytext
-       </code></p></div>
-      </li>
-      <li>Enable DAV to work with Apache running HTTP through SSL hardware
-      (<a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">problem description</a>) by replacing <var>https:</var> with
-      <var>http:</var> in the <var>Destination</var> header:
-      <div class="example"><p><code>
-        RequestHeader edit Destination ^https: http: early
-      </code></p></div>
+        <div class="example"><p><code>
+          MyHeader: D=3775428 t=991424704447256 mytext
+        </code></p></div>
       </li>
 
+      <li>
+        Enable DAV to work with Apache running HTTP through SSL hardware
+        (<a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">problem
+        description</a>) by replacing <var>https:</var> with
+        <var>http:</var> in the <var>Destination</var> header:
+
+        <div class="example"><p><code>
+          RequestHeader edit Destination ^https: http: early
+        </code></p></div>
+      </li>
+
+      <li>
+        Set the same header value under multiple non-exclusive conditions,
+        but do not duplicate the value in the final header.
+        If all of the following conditions applied to a request (i.e.,
+        if the <code>CGI</code>, <code>NO_CACHE</code> and
+        <code>NO_STORE</code> environment variables all existed for the
+        request):
+
+        <div class="example"><p><code>
+          Header merge Cache-Control no-cache env=CGI<br />
+          Header merge Cache-Control no-cache env=NO_CACHE<br />
+          Header merge Cache-Control no-store env=NO_STORE
+        </code></p></div>
+
+        <p>then the response would contain the following header:</p>
+
+        <div class="example"><p><code>
+          Cache-Control: no-cache, no-store
+        </code></p></div>
+
+        <p>If <code>append</code> was used instead of <code>merge</code>,
+        then the response would contain the following header:</p>
+
+        <div class="example"><p><code>
+          Cache-Control: no-cache, no-cache, no-store
+        </code></p></div>
+      </li>
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Header" id="Header">Header</a> <a name="header" id="header">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP response headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] set|append|add|unset|echo|edit
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Header [<var>condition</var>] set|append|merge|add|unset|echo|edit
 <var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
@@ -201,12 +232,22 @@ headers</td></tr>
     header it is separated from the existing header with a comma.
     This is the HTTP standard way of giving a header multiple values.</dd>
 
+    <dt><code>merge</code></dt>
+    <dd>The response header is appended to any existing header of
+    the same name, unless the value to be appended already appears in the
+    header's comma-delimited list of values.  When a new value is merged onto
+    an existing header it is separated from the existing header with a comma.
+    This is the HTTP standard way of giving a header multiple values.
+    Values are compared in a case sensitive manner, and after
+    all format specifiers have been processed.  Values in double quotes
+    are considered different from otherwise identical unquoted values.</dd>
+
     <dt><code>add</code></dt>
     <dd>The response header is added to the existing set of headers,
     even if this header already exists. This can result in two
     (or more) headers having the same name. This can lead to
-    unforeseen consequences, and in general "append" should be
-    used instead.</dd>
+    unforeseen consequences, and in general <code>set</code>,
+    <code>append</code> or <code>merge</code> should be used instead.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.
@@ -215,7 +256,7 @@ headers</td></tr>
 
     <dt><code>echo</code></dt>
     <dd>Request headers with this name are echoed back in the
-    response headers. <var>header</var> may be a 
+    response headers. <var>header</var> may be a
     <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.
     <var>value</var> must be omitted.</dd>
 
@@ -228,14 +269,16 @@ headers</td></tr>
 
     <p>This argument is followed by a <var>header</var> name, which
     can include the final colon, but it is not required. Case is
-    ignored for <code>set</code>, <code>append</code>, <code>add</code>
-    and <code>unset</code>. The <var>header</var> name for <code>echo</code>
-    is case sensitive and may be a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular 
+    ignored for <code>set</code>, <code>append</code>, <code>merge</code>,
+    <code>add</code>, <code>unset</code> and <code>edit</code>.
+    The <var>header</var> name for <code>echo</code>
+    is case sensitive and may be a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
     expression</a>.</p>
 
-    <p>For <code>add</code>, <code>append</code> and <code>set</code> a
-    <var>value</var> is specified as the third argument. If <var>value</var>
-    contains spaces, it should be surrounded by doublequotes.
+    <p>For <code>set</code>, <code>append</code>, <code>merge</code> and
+    <code>add</code> a <var>value</var> is specified as the third argument.
+    If <var>value</var>
+    contains spaces, it should be surrounded by double quotes.
     <var>value</var> may be a character string, a string containing format
     specifiers or a combination of both. The following format specifiers
     are supported in <var>value</var>:</p>
@@ -266,7 +309,7 @@ headers</td></tr>
       +StdEnvVars</code>.  If <code>SSLOptions +StdEnvVars</code> must
       be enabled anyway for some other reason, <code>%e</code> will be
       more efficient than <code>%s</code>.</p>
-    </div> 
+    </div>
 
     <p>For <code>edit</code> there is both a <var>value</var> argument
     which is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>,
@@ -294,7 +337,7 @@ headers</td></tr>
 <div class="directive-section"><h2><a name="RequestHeader" id="RequestHeader">RequestHeader</a> <a name="requestheader" id="requestheader">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Configure HTTP request headers</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader set|append|add|unset|edit <var>header</var>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>RequestHeader set|append|merge|add|unset|edit <var>header</var>
 [<var>value</var>] [<var>replacement</var>] [early|env=[!]<var>variable</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
@@ -319,12 +362,22 @@ headers</td></tr>
     is the HTTP standard way of giving a header multiple
     values.</dd>
 
+    <dt><code>merge</code></dt>
+    <dd>The response header is appended to any existing header of
+    the same name, unless the value to be appended already appears in the
+    existing header's comma-delimited list of values.  When a new value is
+    merged onto an existing header it is separated from the existing header
+    with a comma.  This is the HTTP standard way of giving a header multiple
+    values.  Values are compared in a case sensitive manner, and after
+    all format specifiers have been processed.  Values in double quotes
+    are considered different from otherwise identical unquoted values.</dd>
+
     <dt><code>add</code></dt>
     <dd>The request header is added to the existing set of headers,
     even if this header already exists. This can result in two
     (or more) headers having the same name. This can lead to
-    unforeseen consequences, and in general <code>append</code> should be
-    used instead.</dd>
+    unforeseen consequences, and in general <code>set</code>,
+    <code>append</code> or <code>merge</code> should be used instead.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The request header of this name is removed, if it exists. If
@@ -340,10 +393,10 @@ headers</td></tr>
 
     <p>This argument is followed by a header name, which can
     include the final colon, but it is not required. Case is
-    ignored. For <code>add</code>, <code>append</code> and
-    <code>set</code> a <var>value</var> is given as the third argument. If a
+    ignored. For <code>set</code>, <code>append</code>, <code>merge</code> and
+    <code>add</code> a <var>value</var> is given as the third argument. If a
     <var>value</var> contains spaces, it should be surrounded by double
-    quotes. For unset, no <var>value</var> should be given.
+    quotes. For <code>unset</code>, no <var>value</var> should be given.
     <var>value</var> may be a character string, a string containing format
     specifiers or a combination of both. The supported format specifiers
     are the same as for the <code class="directive"><a href="#header">Header</a></code>,
