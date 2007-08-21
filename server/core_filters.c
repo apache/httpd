@@ -354,7 +354,9 @@ apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *new_bb)
 
     /* Fail quickly if the connection has already been aborted. */
     if (c->aborted) {
-        apr_brigade_cleanup(new_bb);
+        if (new_bb != NULL) {
+            apr_brigade_cleanup(new_bb);
+        }
         return APR_ECONNABORTED;
     }
 
