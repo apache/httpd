@@ -879,37 +879,12 @@ RewriteRule ^/(.*) http://${servers:dynamic}/$1 [P,L]
           fast lookups. The <em>type</em> can be sdbm, gdbm, ndbm, or
           db depending on <a href="../install.html#dbm">compile-time
           settings</a>.  If the <em>type</em> is omitted, the
-          compile-time default will be chosen. You can create such a
-          file with any DBM tool or with the following Perl
-          script.  Be sure to adjust it to create the appropriate
-          type of DBM.  The example creates an NDBM file.</p>
+          compile-time default will be chosen.</p>
 
-<div class="example"><pre>
-#!/path/to/bin/perl
-##
-##  txt2dbm -- convert txt map to dbm format
-##
-
-use NDBM_File;
-use Fcntl;
-
-($txtmap, $dbmmap) = @ARGV;
-
-open(TXT, "&lt;$txtmap") or die "Couldn't open $txtmap!\n";
-tie (%DB, 'NDBM_File', $dbmmap,O_RDWR|O_TRUNC|O_CREAT, 0644)
-  or die "Couldn't create $dbmmap!\n";
-
-while (&lt;TXT&gt;) {
-  next if (/^\s*#/ or /^\s*$/);
-  $DB{$1} = $2 if (/^\s*(\S+)\s+(\S+)/);
-}
-
-untie %DB;
-close(TXT);
-</pre></div>
+          <p>To create a dbm file from a source text file, use the <a href="../programs/httxt2dbm.html">httxt2dbm</a> utility.</p>
 
 <div class="example"><p><code>
-$ txt2dbm map.txt map.db
+$ httxt2dbm -i mapfile.txt -o mapfile.map
 </code></p></div>
         </li>
 
