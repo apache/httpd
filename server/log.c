@@ -250,18 +250,20 @@ static int log_child(apr_pool_t *p, const char *progname,
                                       APR_NO_PIPE,
                                       APR_NO_PIPE)) == APR_SUCCESS)
         && ((rc = apr_procattr_error_check_set(procattr, 1)) == APR_SUCCESS)
-        && ((rc = apr_procattr_child_errfn_set(procattr, log_child_errfn)) == APR_SUCCESS)
-        && (!dummy_stderr 
-            || ((rc = apr_file_open_stdout(&errfile, p)) == APR_SUCCESS
-                && (rc = apr_procattr_child_err_set(procattr, 
-                                                    errfile, 
-                                                    errfile)) == APR_SUCCESS))) {
+        && ((rc = apr_procattr_child_errfn_set(procattr, log_child_errfn)) 
+                == APR_SUCCESS)) {
         char **args;
         const char *pname;
 
         apr_tokenize_to_argv(progname, &args, p);
         pname = apr_pstrdup(p, args[0]);
         procnew = (apr_proc_t *)apr_pcalloc(p, sizeof(*procnew));
+
+        if (dummy_stderr) {
+            if ((rc = apr_file_open_stdout(&errfile, p)) == APR_SUCCESS)
+                rc = apr_procattr_child_err_set(procattr, errfile, NULL);
+        }
+
         rc = apr_proc_create(procnew, pname, (const char * const *)args,
                              NULL, procattr, p);
 
@@ -271,13 +273,6 @@ static int log_child(apr_pool_t *p, const char *progname,
             /* read handle to pipe not kept open, so no need to call
              * close_handle_in_child()
              */
-        }
-
-        /* apr_procattr_child_err_set dups errfile twice: close the
-         * remaining "parent-side" copy (apr_proc_create closes the
-         * other). */
-        if (dummy_stderr) {
-            apr_file_close(procnew->err);
         }
     }
 
