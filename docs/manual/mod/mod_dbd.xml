@@ -155,12 +155,12 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <directivesynopsis>
 <name>DBDPersist</name>
 <description>Whether to use persistent connections</description>
-<syntax>DBDPersist 0|1</syntax>
+<syntax>DBDPersist On|Off</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>If set to 0, persistent and pooled connections are disabled.
+    <p>If set to Off, persistent and pooled connections are disabled.
     A new database connection is opened when requested by a client,
     and closed immediately on release.  This option is for debugging
     and low-usage servers.</p>
