@@ -1,5 +1,14 @@
-                                                        -*- coding: utf-8 -*-
+﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
+
+  *) mpm_winnt: Prevent the parent-child pipe from leaking into other
+     spawned processes, and ensure we have a /Device/null handle for
+     stdout when running as-a-service.  [William Rowe]
+
+  *) log core: fix the new piped logger case where we couldn't connect 
+     the replacement stderr logger's stderr to the NULL stdout stream.  
+     Continue in this case, since the previous alternative of no error 
+     logging at all (/dev/null) is far worse. [William Rowe]
 
   *) mod_ldap: Avoid possible crashes, hangs, and busy loops due to
      improper merging of the cache lock in vhost config
