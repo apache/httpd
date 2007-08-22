@@ -65,7 +65,6 @@ int use_acceptex = 1;
 static int thread_limit = 0;
 static int first_thread_limit = 0;
 int winnt_mpm_state = AP_MPMQ_STARTING;
-
 /* ap_my_generation are used by the scoreboard code */
 ap_generation_t volatile ap_my_generation=0;
 
@@ -86,6 +85,12 @@ void child_main(apr_pool_t *pconf);
 extern apr_proc_mutex_t *start_mutex;
 extern HANDLE exit_event;
 
+/* Only one of these, the pipe from our parent, ment only for
+ * one child worker's consumption (not to be inherited!)
+ * XXX: decorate this name for the trunk branch, was left simplified
+ *      only to make the 2.2 patch trivial to read.
+ */
+static HANDLE pipe;
 
 /* Stub functions until this MPM supports the connection status API */
 
@@ -283,7 +288,6 @@ void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
                              apr_proc_mutex_t **child_start_mutex,
                              apr_shm_t **scoreboard_shm)
 {
-    HANDLE pipe;
     HANDLE hScore;
     HANDLE ready_event;
     HANDLE os_start;
@@ -291,7 +295,9 @@ void get_handles_from_parent(server_rec *s, HANDLE *child_exit_event,
     void *sb_shared;
     apr_status_t rv;
 
-    pipe = GetStdHandle(STD_INPUT_HANDLE);
+    /* *** We now do this was back in winnt_rewrite_args
+     * pipe = GetStdHandle(STD_INPUT_HANDLE);
+     */
     if (!ReadFile(pipe, &ready_event, sizeof(HANDLE),
                   &BytesRead, (LPOVERLAPPED) NULL)
         || (BytesRead != sizeof(HANDLE))) {
@@ -446,7 +452,6 @@ static int send_handles_to_child(apr_pool_t *p,
 void get_listeners_from_parent(server_rec *s)
 {
     WSAPROTOCOL_INFO WSAProtocolInfo;
-    HANDLE pipe;
     ap_listen_rec *lr;
     DWORD BytesRead;
     int lcnt = 0;
@@ -463,9 +468,10 @@ void get_listeners_from_parent(server_rec *s)
 
     /* Open the pipe to the parent process to receive the inherited socket
      * data. The sockets have been set to listening in the parent process.
+     *
+     * *** We now do this was back in winnt_rewrite_args
+     * pipe = GetStdHandle(STD_INPUT_HANDLE);
      */
-    pipe = GetStdHandle(STD_INPUT_HANDLE);
-
     for (lr = ap_listeners; lr; lr = lr->next, ++lcnt) {
         if (!ReadFile(pipe, &WSAProtocolInfo, sizeof(WSAPROTOCOL_INFO),
                       &BytesRead, (LPOVERLAPPED) NULL)) {
@@ -571,8 +577,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     apr_status_t rv;
     apr_pool_t *ptemp;
     apr_procattr_t *attr;
-    apr_file_t *child_out;
-    apr_file_t *child_err;
     apr_proc_t new_child;
     HANDLE hExitEvent;
     HANDLE waitlist[2];  /* see waitlist_e */
@@ -625,36 +629,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
                         "Parent: Unable to create child stdin pipe.");
         apr_pool_destroy(ptemp);
         return -1;
-    }
-
-    /* Open a null handle to soak info from the child */
-    if (((rv = apr_file_open(&child_out, "NUL", APR_READ | APR_WRITE,
-                             APR_OS_DEFAULT, ptemp)) != APR_SUCCESS)
-        || ((rv = apr_procattr_child_out_set(attr, child_out, NULL))
-                != APR_SUCCESS)) {
-        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                        "Parent: Unable to connect child stdout to NUL.");
-        apr_pool_destroy(ptemp);
-        return -1;
-    }
-
-    /* Connect the child's initial stderr to our main server error log
-     * or share our own stderr handle.
-     */
-    if (ap_server_conf->error_log) {
-        child_err = ap_server_conf->error_log;
-    }
-    else {
-        rv = apr_file_open_stderr(&child_err, ptemp);
-    }
-    if (rv == APR_SUCCESS) {
-        if ((rv = apr_procattr_child_err_set(attr, child_err, NULL))
-                != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_CRIT, rv, ap_server_conf,
-                            "Parent: Unable to connect child stderr.");
-            apr_pool_destroy(ptemp);
-            return -1;
-        }
     }
 
     /* Create the child_ready_event */
@@ -754,6 +728,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         CloseHandle(new_child.hproc);
         return -1;
     }
+
+    apr_file_close(new_child.in);
 
     *child_exit_event = hExitEvent;
     *child_proc = new_child.hproc;
@@ -1058,12 +1034,45 @@ void winnt_rewrite_args(process_rec *process)
     pid = getenv("AP_PARENT_PID");
     if (pid)
     {
+        HANDLE filehand, newhand;
+        HANDLE hproc = GetCurrentProcess();
+
         /* This is the child */
         my_pid = GetCurrentProcessId();
         parent_pid = (DWORD) atol(pid);
 
         /* Prevent holding open the (nonexistant) console */
         ap_real_exit_code = 0;
+
+        /* The parent gave us stdin, we need to remember this
+         * handle, and no longer inherit it at our children
+         * (we can't slurp it up now, we just aren't ready yet).
+         */
+        pipe = GetStdHandle(STD_INPUT_HANDLE);
+
+        if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) {
+            /* This doesn't work for 9x, but it's cleaner. */
+            SetHandleInformation(pipe, HANDLE_FLAG_INHERIT, 0);
+        }
+        else if (DuplicateHandle(hproc, pipe,
+                                 hproc, &filehand, 0, FALSE,
+                                 DUPLICATE_SAME_ACCESS)) {
+            CloseHandle(pipe);
+            pipe = filehand;
+        }
+
+        /* The parent gave us stdout of the NUL device,
+         * and expects us to suck up stdin of all of our
+         * shared handles and data from the parent.
+         * Don't infect child processes with our stdin
+         * handle, use another handle to NUL!
+         */
+        if ((filehand = GetStdHandle(STD_OUTPUT_HANDLE))
+            && DuplicateHandle(hproc, filehand, 
+                               hproc, &newhand, 0,
+                               TRUE, DUPLICATE_SAME_ACCESS)) {
+            SetStdHandle(STD_INPUT_HANDLE, newhand);
+        }
 
         /* The parent is responsible for providing the
          * COMPLETE ARGUMENTS REQUIRED to the child.
@@ -1211,6 +1220,8 @@ void winnt_rewrite_args(process_rec *process)
          */
         if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT)
         {
+            apr_file_t *nullfile;
+
             if (!errout) {
                 mpm_nt_eventlog_stderr_open(service_name, process->pool);
             }
@@ -1218,6 +1229,30 @@ void winnt_rewrite_args(process_rec *process)
                                                             process->pool);
             if (service_to_start_success == APR_SUCCESS) {
                 service_set = APR_SUCCESS;
+            }
+
+            /* Open a null handle to soak stdout in this process.
+             * Windows service processes are missing any file handle
+             * usable for stdin/out/err.  This was the cause of later 
+             * trouble with invocations of apr_file_open_stdout()
+             */
+            if ((rv = apr_file_open(&nullfile, "NUL",
+                                    APR_READ | APR_WRITE, APR_OS_DEFAULT,
+                                    process->pool)) == APR_SUCCESS) {
+                HANDLE hproc = GetCurrentProcess();
+                HANDLE nullstdout = NULL;
+                HANDLE nullhandle;
+
+                /* Duplicate the handle to be inherited by children */
+                if ((apr_os_file_get(&nullhandle, nullfile) == APR_SUCCESS)
+                    && DuplicateHandle(hproc, nullhandle,
+                                       hproc, &nullstdout,
+                                       0, TRUE, DUPLICATE_SAME_ACCESS)) {
+                    SetStdHandle(STD_OUTPUT_HANDLE, nullstdout);
+                }
+
+                /* Close the original handle, we used the duplicate */
+                apr_file_close(nullfile);
             }
         }
     }
@@ -1651,6 +1686,9 @@ static void winnt_child_init(apr_pool_t *pchild, struct server_rec *s)
 
         /* Set up the listeners */
         get_listeners_from_parent(s);
+
+        /* Done reading from the parent, close that channel */
+        CloseHandle(pipe);
 
         ap_my_generation = ap_scoreboard_image->global->running_generation;
     }
