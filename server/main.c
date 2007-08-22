@@ -37,6 +37,7 @@
 #include "http_vhost.h"
 #include "apr_uri.h"
 #include "util_ebcdic.h"
+#include "util_time.h"
 #include "ap_mpm.h"
 #include "mpm_common.h"
 
@@ -276,20 +277,29 @@ static int abort_on_oom(int retcode)
     return retcode; /* unreachable, hopefully. */
 }
 
-static process_rec *create_process(int argc, const char * const *argv)
+static process_rec *init_process(int *argc, const char * const * *argv)
 {
     process_rec *process;
     apr_pool_t *cntx;
     apr_status_t stat;
+    const char *failed = "apr_app_initialize()";
+    stat = apr_app_initialize(argc, argv, NULL);
+    if (stat == APR_SUCCESS) {
+        failed = "apr_pool_create()";
+        stat = apr_pool_create(&cntx, NULL);
+    }
 
-    stat = apr_pool_create(&cntx, NULL);
     if (stat != APR_SUCCESS) {
-        /* XXX From the time that we took away the NULL pool->malloc mapping
-         *     we have been unable to log here without segfaulting.
+        /* For all intents and purposes, this is impossibly unlikely,
+         * but APR doesn't exist yet, we can't use it for reporting
+         * these earliest two failures;
          */
-        ap_log_error(APLOG_MARK, APLOG_ERR, stat, NULL,
-                     "apr_pool_create() failed to create "
-                     "initial context");
+        char ctimebuff[APR_CTIME_LEN + 1];
+        apr_ctime(ctimebuff, apr_time_now());
+        ctimebuff[APR_CTIME_LEN] = '\0';
+        fprintf(stderr, "[%s] [crit] (%d) %s: %s failed "
+                        "to initial context, exiting", 
+                        ctimebuff, stat, (*argv)[0], failed);
         apr_terminate();
         exit(1);
     }
@@ -298,14 +308,19 @@ static process_rec *create_process(int argc, const char * const *argv)
     apr_pool_tag(cntx, "process");
     ap_open_stderr_log(cntx);
 
+    /* Now we have initialized apr and our logger, no more
+     * exceptional error reporting required for the lifetime
+     * of this server process.
+     */
+
     process = apr_palloc(cntx, sizeof(process_rec));
     process->pool = cntx;
 
     apr_pool_create(&process->pconf, process->pool);
     apr_pool_tag(process->pconf, "pconf");
-    process->argc = argc;
-    process->argv = argv;
-    process->short_name = apr_filepath_name_get(argv[0]);
+    process->argc = *argc;
+    process->argv = *argv;
+    process->short_name = apr_filepath_name_get((*argv)[0]);
     return process;
 }
 
@@ -447,7 +462,8 @@ int main(int argc, const char * const argv[])
     server_rec *server_conf;
     apr_pool_t *pglobal;
     apr_pool_t *pconf;
-    apr_pool_t *plog; /* Pool of log streams, reset _after_ each read of conf */
+    apr_pool_t *plog; /* Pool of log streams, created after each read of conf */
+    apr_pool_t *old_plog; /* Pool of log streams to be destroyed this round */
     apr_pool_t *ptemp; /* Pool for temporary config stuff, reset often */
     apr_pool_t *pcommands; /* Pool for -D, -C and -c switches */
     apr_getopt_t *opt;
@@ -458,9 +474,7 @@ int main(int argc, const char * const argv[])
 
     AP_MONCONTROL(0); /* turn off profiling of startup */
 
-    apr_app_initialize(&argc, &argv, NULL);
-
-    process = create_process(argc, argv);
+    process = init_process(&argc, &argv);
     pglobal = process->pool;
     pconf = process->pconf;
     ap_server_argv0 = process->short_name;
@@ -672,13 +686,16 @@ int main(int argc, const char * const argv[])
         destroy_and_exit_process(process, 1);
     }
 
-    apr_pool_clear(plog);
-
+    old_plog = plog;
+    apr_pool_tag(old_plog, "old_plog");
+    apr_pool_create(&plog, pglobal);
+    apr_pool_tag(plog, "plog");
     if ( ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
                      0, NULL, "Unable to open logs");
         destroy_and_exit_process(process, 1);
     }
+    apr_pool_destroy(old_plog);
 
     if ( ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR, 0,
@@ -729,12 +746,16 @@ int main(int argc, const char * const argv[])
             destroy_and_exit_process(process, 1);
         }
 
-        apr_pool_clear(plog);
+        old_plog = plog;
+        apr_pool_tag(old_plog, "old_plog");
+        apr_pool_create(&plog, pglobal);
+        apr_pool_tag(plog, "plog");
         if (ap_run_open_logs(pconf, plog, ptemp, server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,
                          0, NULL, "Unable to open logs");
             destroy_and_exit_process(process, 1);
         }
+        apr_pool_clear(old_plog);
 
         if (ap_run_post_config(pconf, plog, ptemp, server_conf) != OK) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP |APLOG_ERR,

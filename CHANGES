@@ -1,6 +1,10 @@
 ﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) main core: Emit errors during the initial apr_app_initialize()
+     or apr_pool_create() (when apr-based error reporting is not ready).
+     [William Rowe]
+
   *) mpm_winnt: Prevent the parent-child pipe from leaking into other
      spawned processes, and ensure we have a /Device/null handle for
      stdout when running as-a-service.  [William Rowe]
