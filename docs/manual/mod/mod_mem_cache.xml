@@ -41,6 +41,10 @@
 
     <p>Content is stored in and retrieved from the cache using URI based
     keys. Content with access protection is not cached.</p>
+    
+    <note><title>Note</title>In most cases <module>mod_disk_cache</module>
+    should be the preferred choice. This is explained further in the <a
+    href="../caching.html#inmemory">Caching Guide</a>.</note>
 </summary>
 <seealso><module>mod_cache</module></seealso>
 <seealso><module>mod_disk_cache</module></seealso>
