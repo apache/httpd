@@ -314,7 +314,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * main core: Emit errors during the initial apr_app_initialize()
       or apr_pool_create() (when apr-based error reporting is not ready).
-        http://svn.apache.org/viewvc?view=rev&revision=568762
+        http://svn.apache.org/viewvc?view=rev&revision=568779
         +1: wrowe
 
 
