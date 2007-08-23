@@ -886,7 +886,7 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
 
     if ((rv == APR_ENOTIMPL) || (rv == APR_ENOLOCK)) {
         return apr_pstrcat(cmd->pool, "Invalid AcceptMutex argument ", arg,
-                           " (", ap_available_mutexes_string, ")", NULL);
+                           " (" AP_AVAILABLE_MUTEXES_STRING ")", NULL);
     } else if (rv == APR_BADARG) {
             return apr_pstrcat(cmd->pool, "Invalid AcceptMutex filepath ",
                                arg, NULL);
@@ -900,7 +900,7 @@ AP_DECLARE(const char *) ap_mpm_set_accept_lock_mech(cmd_parms *cmd,
 #if defined(PERCHILD_MPM)
     if (ap_accept_lock_mech == APR_LOCK_SYSVSEM) {
         return apr_pstrcat(cmd->pool, "Invalid AcceptMutex argument ", arg,
-                           " (", ap_available_mutexes_string, ")", NULL);
+                           " (" AP_AVAILABLE_MUTEXES_STRING ")", NULL);
     }
 #endif
     if (lockfile && !ap_lock_fname)

@@ -35,57 +35,6 @@
 #include "http_config.h"
 #include "util_mutex.h"
 
-const char AP_DECLARE_DATA ap_all_available_mutexes_string[] =
-    "Mutex mechanisms are: `none', `default'"
-#if APR_HAS_FLOCK_SERIALIZE
-    ", `flock:/path/to/file'"
-#endif
-#if APR_HAS_FCNTL_SERIALIZE
-    ", `fcntl:/path/to/file'"
-#endif
-#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
-    ", `sysvsem'"
-#endif
-#if APR_HAS_POSIXSEM_SERIALIZE
-    ", `posixsem'"
-#endif
-#if APR_HAS_PROC_PTHREAD_SERIALIZE
-    ", `pthread'"
-#endif
-#if APR_HAS_FLOCK_SERIALIZE || APR_HAS_FCNTL_SERIALIZE
-    ", `file:/path/to/file'"
-#endif
-#if (APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)) || APR_HAS_POSIXSEM_SERIALIZE
-    ", `sem'"
-#endif
-    " ";
-
-const char AP_DECLARE_DATA ap_available_mutexes_string[] =
-    "Mutex mechanisms are: `default'"
-#if APR_HAS_FLOCK_SERIALIZE
-    ", `flock:/path/to/file'"
-#endif
-#if APR_HAS_FCNTL_SERIALIZE
-    ", `fcntl:/path/to/file'"
-#endif
-#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
-    ", `sysvsem'"
-#endif
-#if APR_HAS_POSIXSEM_SERIALIZE
-    ", `posixsem'"
-#endif
-#if APR_HAS_PROC_PTHREAD_SERIALIZE
-    ", `pthread'"
-#endif
-#if APR_HAS_FLOCK_SERIALIZE || APR_HAS_FCNTL_SERIALIZE
-    ", `file:/path/to/file'"
-#endif
-#if (APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)) || APR_HAS_POSIXSEM_SERIALIZE
-    ", `sem'"
-#endif
-    " ";
-
-
 AP_DECLARE(apr_status_t) ap_parse_mutex(const char *arg, apr_pool_t *pool,
                                         apr_lockmech_e *mutexmech,
                                         const char **mutexfile)

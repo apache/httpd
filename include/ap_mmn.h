@@ -130,15 +130,17 @@
  * 20060905.3 (2.3.0-dev)  Added conn_rec::clogging_input_filters.
  * 20060905.4 (2.3.0-dev)  Added proxy_balancer::sticky_path.
  * 20060905.5 (2.3.0-dev)  Added ap_mpm_safe_kill()
+ * 20070823.0 (2.3.0-dev)  Removed ap_all_available_mutexes_string,
+ *                         ap_available_mutexes_string for macros
  *
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20060905
+#define MODULE_MAGIC_NUMBER_MAJOR 20080823
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

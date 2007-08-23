@@ -52,7 +52,7 @@ static const command_rec ssl_config_cmds[] = {
     /*
      * Global (main-server) context configuration directives
      */
-    SSL_CMD_SRV(Mutex, TAKE1, ap_all_available_mutexes_string)
+    SSL_CMD_SRV(Mutex, TAKE1, AP_ALL_AVAILABLE_MUTEXES_STRING)
     SSL_CMD_SRV(PassPhraseDialog, TAKE1,
                 "SSL dialog mechanism for the pass phrase query "
                 "(`builtin', `|/path/to/pipe_program`, "
