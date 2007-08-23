@@ -358,7 +358,7 @@ const char *ssl_cmd_SSLMutex(cmd_parms *cmd,
         return NULL;
     } else if (rv == APR_ENOTIMPL) {
         return apr_pstrcat(cmd->pool, "Invalid SSLMutex argument ", arg_,
-                           " (", ap_all_available_mutexes_string, ")", NULL);
+                           " (" AP_ALL_AVAILABLE_MUTEXES_STRING ")", NULL);
     } else if (rv == APR_BADARG) {
             return apr_pstrcat(cmd->pool, "Invalid SSLMutex filepath ",
                                arg_, NULL);

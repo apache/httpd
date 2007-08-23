@@ -29,12 +29,59 @@
 #include "httpd.h"
 #include "apr_global_mutex.h"
 
+#if APR_HAS_FLOCK_SERIALIZE
+# define AP_LIST_FLOCK_SERIALIZE ", 'flock:/path/to/file'"
+#else
+# define AP_LIST_FLOCK_SERIALIZE
+#endif
+#if APR_HAS_FCNTL_SERIALIZE
+# define AP_LIST_FCNTL_SERIALIZE ", 'fcntl:/path/to/file'"
+#else
+# define AP_LIST_FCNTL_SERIALIZE
+#endif
+#if APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)
+# define AP_LIST_SYSVSEM_SERIALIZE ", 'sysvsem'"
+#else
+# define AP_LIST_SYSVSEM_SERIALIZE
+#endif
+#if APR_HAS_POSIXSEM_SERIALIZE
+# define AP_LIST_POSIXSEM_SERIALIZE ", 'posixsem'"
+#else
+# define AP_LIST_POSIXSEM_SERIALIZE
+#endif
+#if APR_HAS_PROC_PTHREAD_SERIALIZE
+# define AP_LIST_PTHREAD_SERIALIZE ", 'pthread'"
+#else
+# define AP_LIST_PTHREAD_SERIALIZE
+#endif
+#if APR_HAS_FLOCK_SERIALIZE || APR_HAS_FCNTL_SERIALIZE
+# define AP_LIST_FILE_SERIALIZE ", 'file:/path/to/file'"
+#else
+# define AP_LIST_FILE_SERIALIZE
+#endif
+#if (APR_HAS_SYSVSEM_SERIALIZE && !defined(PERCHILD_MPM)) || APR_HAS_POSIXSEM_SERIALIZE
+# define AP_LIST_SEM_SERIALIZE ", 'sem'"
+#else
+# define AP_LIST_SEM_SERIALIZE
+#endif
+
+#define AP_ALL_AVAILABLE_MUTEXES_STRING                  \
+    "Mutex mechanisms are: 'none', 'default'"            \
+    AP_LIST_FLOCK_SERIALIZE   AP_LIST_FCNTL_SERIALIZE    \
+    AP_LIST_FILE_SERIALIZE    AP_LIST_PTHREAD_SERIALIZE  \
+    AP_LIST_SYSVSEM_SERIALIZE AP_LIST_POSIXSEM_SERIALIZE \
+    AP_LIST_SEM_SERIALIZE
+
+#define AP_AVAILABLE_MUTEXES_STRING                      \
+    "Mutex mechanisms are: 'default'"                    \
+    AP_LIST_FLOCK_SERIALIZE   AP_LIST_FCNTL_SERIALIZE    \
+    AP_LIST_FILE_SERIALIZE    AP_LIST_PTHREAD_SERIALIZE  \
+    AP_LIST_SYSVSEM_SERIALIZE AP_LIST_POSIXSEM_SERIALIZE \
+    AP_LIST_SEM_SERIALIZE
+
 #ifdef __cplusplus
 extern "C" {
 #endif
-
-extern const char AP_DECLARE_DATA ap_available_mutexes_string[];
-extern const char AP_DECLARE_DATA ap_all_available_mutexes_string[];
 
 /**
  * Get Mutex config data and parse it
