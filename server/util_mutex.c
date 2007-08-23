@@ -35,7 +35,7 @@
 #include "http_config.h"
 #include "util_mutex.h"
 
-AP_DECLARE_DATA const char ap_all_available_mutexes_string[] =
+const char AP_DECLARE_DATA ap_all_available_mutexes_string[] =
     "Mutex mechanisms are: `none', `default'"
 #if APR_HAS_FLOCK_SERIALIZE
     ", `flock:/path/to/file'"
@@ -60,7 +60,7 @@ AP_DECLARE_DATA const char ap_all_available_mutexes_string[] =
 #endif
     " ";
 
-AP_DECLARE_DATA const char ap_available_mutexes_string[] =
+const char AP_DECLARE_DATA ap_available_mutexes_string[] =
     "Mutex mechanisms are: `default'"
 #if APR_HAS_FLOCK_SERIALIZE
     ", `flock:/path/to/file'"
