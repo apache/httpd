@@ -293,6 +293,11 @@ static process_rec *init_process(int *argc, const char * const * *argv)
         /* For all intents and purposes, this is impossibly unlikely,
          * but APR doesn't exist yet, we can't use it for reporting
          * these earliest two failures;
+         *
+         * XXX: Note the apr_ctime() and apr_time_now() calls.  These
+         * work, today, against an uninitialized APR, but in the future
+         * (if they relied on global pools or mutexes, for example) then
+         * the datestamp logic will need to be replaced.
          */
         char ctimebuff[APR_CTIME_LEN + 1];
         apr_ctime(ctimebuff, apr_time_now());
