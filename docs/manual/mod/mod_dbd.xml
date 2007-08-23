@@ -168,6 +168,10 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     <p>The default is to enable a pool of persistent connections
     (or a single LAMP-style persistent connection in the case of a
     non-threaded server), and should almost always be used in operation.</p>
+
+    <p>Prior to version 2.2.2, this directive accepted only the values
+    <code>0</code> and <code>1</code> instead of <code>Off</code> and
+    <code>On</code>, respectively.</p>
 </usage>
 </directivesynopsis>
 
