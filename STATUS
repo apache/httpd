@@ -307,7 +307,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       the replacement stderr logger's stderr to the NULL stdout stream.  
       Continue in this case, since the previous alternative of no error 
       logging at all (/dev/null) is far worse. [William Rowe]
-        http://svn.apache.org/viewvc?view=rev&revision=566326
+        http://svn.apache.org/viewvc?view=rev&revision=568326
       disambiguate an error message to diagnose future error reports
         http://svn.apache.org/viewvc?view=rev&revision=568322
         +1: wrowe
@@ -316,7 +316,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       or apr_pool_create() (when apr-based error reporting is not ready).
         http://svn.apache.org/viewvc?view=rev&revision=568779
         +1: wrowe
-
 
 
 PATCHES/ISSUES THAT ARE STALLED
