@@ -2214,6 +2214,9 @@ directory</description>
       <p>Note also, that this option <strong>gets ignored</strong> if set
       inside a <directive type="section" module="core">Location</directive>
       section.</p>
+      <p>Omitting this option should not be considered a security restriction,
+      since symlink testing is subject to race conditions that make it
+      circumventable.</p>
       </note></dd>
 
       <dt><code>Includes</code></dt>
@@ -2254,9 +2257,12 @@ directory</description>
       target file or directory is owned by the same user id as the
       link.
 
-      <note><title>Note</title> This option gets ignored if
+      <note><title>Note</title> <p>This option gets ignored if
       set inside a <directive module="core"
-      type="section">Location</directive> section.</note>
+      type="section">Location</directive> section.</p>
+      <p>This option should not be considered a security restriction,
+      since symlink testing is subject to race conditions that make it
+      circumventable.</p></note>
       </dd>
     </dl>
 
