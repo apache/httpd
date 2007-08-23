@@ -321,6 +321,8 @@ Changes with Apache 2.3.0
 
 Changes with Apache 2.2.5
 
+  *) ApacheMonitor: Fix Windows Vista detection. [Mladen Turk]
+
   *) mod_deflate: fix protocol handling in deflate input filter
      PR 23287 [Nick Kew]
 
