@@ -2217,6 +2217,9 @@ directory</td></tr>
       <p>Note also, that this option <strong>gets ignored</strong> if set
       inside a <code class="directive"><a href="#location">&lt;Location&gt;</a></code>
       section.</p>
+      <p>Omitting this option should not be considered a security restriction,
+      since symlink testing is subject to race conditions that make it
+      circumventable.</p>
       </div></dd>
 
       <dt><code>Includes</code></dt>
@@ -2257,8 +2260,11 @@ directory</td></tr>
       target file or directory is owned by the same user id as the
       link.
 
-      <div class="note"><h3>Note</h3> This option gets ignored if
-      set inside a <code class="directive"><a href="#location">&lt;Location&gt;</a></code> section.</div>
+      <div class="note"><h3>Note</h3> <p>This option gets ignored if
+      set inside a <code class="directive"><a href="#location">&lt;Location&gt;</a></code> section.</p>
+      <p>This option should not be considered a security restriction,
+      since symlink testing is subject to race conditions that make it
+      circumventable.</p></div>
       </dd>
     </dl>
 
