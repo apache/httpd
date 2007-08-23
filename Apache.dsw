@@ -63,6 +63,9 @@ Package=<4>
     Project_Dep_Name libapriconv_ces_modules
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_access_compat
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_actions
     End Project Dependency
     Begin Project Dependency
@@ -84,13 +87,13 @@ Package=<4>
     Project_Dep_Name mod_authn_anon
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_authn_core
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_authn_dbd
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authn_dbm
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_authn_core
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authn_default
@@ -102,10 +105,10 @@ Package=<4>
     Project_Dep_Name mod_authnz_ldap
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_authz_dbm
+    Project_Dep_Name mod_authz_core
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_authz_core
+    Project_Dep_Name mod_authz_dbm
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authz_default
@@ -177,13 +180,13 @@ Package=<4>
     Project_Dep_Name mod_isapi
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_logio
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name mod_log_config
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_log_forensic
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_logio
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_mem_cache
@@ -196,6 +199,24 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_negotiation
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_ajp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_balancer
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_connect
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_fcgi
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_ftp
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_proxy_http
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_rewrite
@@ -225,22 +246,10 @@ Package=<4>
     Project_Dep_Name mod_vhost_alias
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_proxy_connect
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_proxy_ftp
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_proxy_http
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name ab
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name htcacheclean
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name httxt2dbm
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name htdbm
@@ -252,6 +261,9 @@ Package=<4>
     Project_Dep_Name htpasswd
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name httxt2dbm
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name logresolve
     End Project Dependency
     Begin Project Dependency
@@ -259,15 +271,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name wintty
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_proxy_ajp
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_proxy_balancer
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_proxy_fcgi
     End Project Dependency
 }}}
 
@@ -739,30 +742,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authnz_ldap"=.\modules\aaa\mod_authnz_ldap.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_ldap
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "mod_authn_anon"=.\modules\aaa\mod_authn_anon.dsp - Package Owner=<4>
 
 Package=<5>
@@ -910,7 +889,31 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authz_dbm"=.\modules\aaa\mod_authz_dbm.dsp - Package Owner=<4>
+Project: "mod_authnz_ldap"=.\modules\aaa\mod_authnz_ldap.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_ldap
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_authz_core"=.\modules\aaa\mod_authz_core.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -934,7 +937,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authz_core"=.\modules\aaa\mod_authz_core.dsp - Package Owner=<4>
+Project: "mod_authz_dbm"=.\modules\aaa\mod_authz_dbm.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
