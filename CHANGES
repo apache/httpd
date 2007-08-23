@@ -1,6 +1,7 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.0.61
 
+  *) ApacheMonitor: Fix Windows Vista detection. [Mladen Turk]
 
 Changes with Apache 2.0.60
 
