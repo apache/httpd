@@ -641,7 +641,7 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
                                     break;
                     }
 
-                    if (new_val_len == (val - tok_start)
+                    if (new_val_len == (apr_size_t)(val - tok_start)
                         && !strncmp(tok_start, new_val, new_val_len)) {
                         tok_found = 1;
                         break;
