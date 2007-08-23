@@ -20,6 +20,7 @@
 #include "apr_general.h"
 #include "apr_lib.h"
 #include "apr_md5.h"
+#include "apr_time.h"
 #include "apr_version.h"
 #include "apu_version.h"
 
@@ -276,20 +277,29 @@ static int abort_on_oom(int retcode)
     return retcode; /* unreachable, hopefully. */
 }
 
-static process_rec *create_process(int argc, const char * const *argv)
+static process_rec *init_process(int *argc, const char * const * *argv)
 {
     process_rec *process;
     apr_pool_t *cntx;
     apr_status_t stat;
+    const char *failed = "apr_app_initialize()";
+    stat = apr_app_initialize(argc, argv, NULL);
+    if (stat == APR_SUCCESS) {
+        failed = "apr_pool_create()";
+        stat = apr_pool_create(&cntx, NULL);
+    }
 
-    stat = apr_pool_create(&cntx, NULL);
     if (stat != APR_SUCCESS) {
-        /* XXX From the time that we took away the NULL pool->malloc mapping
-         *     we have been unable to log here without segfaulting.
+        /* For all intents and purposes, this is impossibly unlikely,
+         * but APR doesn't exist yet, we can't use it for reporting
+         * these earliest two failures;
          */
-        ap_log_error(APLOG_MARK, APLOG_ERR, stat, NULL,
-                     "apr_pool_create() failed to create "
-                     "initial context");
+        char ctimebuff[APR_CTIME_LEN + 1];
+        apr_ctime(ctimebuff, apr_time_now());
+        ctimebuff[APR_CTIME_LEN] = '\0';
+        fprintf(stderr, "[%s] [crit] (%d) %s: %s failed "
+                        "to initial context, exiting", 
+                        ctimebuff, stat, (*argv)[0], failed);
         apr_terminate();
         exit(1);
     }
@@ -298,14 +308,19 @@ static process_rec *create_process(int argc, const char * const *argv)
     apr_pool_tag(cntx, "process");
     ap_open_stderr_log(cntx);
 
+    /* Now we have initialized apr and our logger, no more
+     * exceptional error reporting required for the lifetime
+     * of this server process.
+     */
+
     process = apr_palloc(cntx, sizeof(process_rec));
     process->pool = cntx;
 
     apr_pool_create(&process->pconf, process->pool);
     apr_pool_tag(process->pconf, "pconf");
-    process->argc = argc;
-    process->argv = argv;
-    process->short_name = apr_filepath_name_get(argv[0]);
+    process->argc = *argc;
+    process->argv = *argv;
+    process->short_name = apr_filepath_name_get((*argv)[0]);
     return process;
 }
 
@@ -458,9 +473,7 @@ int main(int argc, const char * const argv[])
 
     AP_MONCONTROL(0); /* turn off profiling of startup */
 
-    apr_app_initialize(&argc, &argv, NULL);
-
-    process = create_process(argc, argv);
+    process = init_process(&argc, &argv);
     pglobal = process->pool;
     pconf = process->pconf;
     ap_server_argv0 = process->short_name;
