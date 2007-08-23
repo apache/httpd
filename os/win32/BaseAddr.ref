@@ -76,3 +76,4 @@ mod_proxy.so            0x6FA00000    0x00020000
 mod_access_compat.so    0x6F9F0000    0x00010000
 mod_authz_core.so       0x6F9E0000    0x00010000
 mod_proxy_fcgi.so       0x6F9D0000    0x00010000
+mod_authn_core.so       0x6F9C0000    0x00010000
