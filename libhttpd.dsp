@@ -508,6 +508,14 @@ SOURCE=.\include\util_md5.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\server\util_mutex.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\include\util_mutex.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\server\util_pcre.c
 # End Source File
 # Begin Source File
