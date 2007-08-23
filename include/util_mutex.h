@@ -33,8 +33,8 @@
 extern "C" {
 #endif
 
-AP_DECLARE_DATA extern const char ap_available_mutexes_string[];
-AP_DECLARE_DATA extern const char ap_all_available_mutexes_string[];
+extern const char AP_DECLARE_DATA ap_available_mutexes_string[];
+extern const char AP_DECLARE_DATA ap_all_available_mutexes_string[];
 
 /**
  * Get Mutex config data and parse it
