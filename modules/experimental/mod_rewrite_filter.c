@@ -35,41 +35,41 @@ static const char rewrite_filter_name[] = "REWRITE";
 
 module AP_MODULE_DECLARE_DATA rewrite_filter_module;
 
-typedef struct {
+typedef struct rf_pattern_t {
     const apr_strmatch_pattern *pattern;
     const ap_regex_t *regexp;
     const char *replacement;
     apr_size_t replen;
     apr_size_t patlen;
     int flatten;
-} sed_script;
+} rf_pattern_t;
 
 typedef struct {
-    apr_array_header_t *sed_scripts;
-} sed_module_dcfg;
+    apr_array_header_t *patterns;
+} rf_module_dir_conf;
 
 typedef struct {
     apr_bucket_brigade *ctxbb;
-} sed_module_ctx;
+} rewrite_filter_module_ctx;
 
-static void *create_sed_dcfg(apr_pool_t *p, char *d)
+static void *create_rewrite_filter_dcfg(apr_pool_t *p, char *d)
 {
-    sed_module_dcfg *dcfg =
-    (sed_module_dcfg *) apr_pcalloc(p, sizeof(sed_module_dcfg));
+    rf_module_dir_conf *dcfg =
+    (rf_module_dir_conf *) apr_pcalloc(p, sizeof(rf_module_dir_conf));
 
-    dcfg->sed_scripts = apr_array_make(p, 10, sizeof(sed_script));
+    dcfg->patterns = apr_array_make(p, 10, sizeof(rf_pattern_t));
     return dcfg;
 }
 
-static void *merge_sed_dcfg(apr_pool_t *p, void *basev, void *overv)
+static void *merge_rewrite_filter_dcfg(apr_pool_t *p, void *basev, void *overv)
 {
-    sed_module_dcfg *a =
-    (sed_module_dcfg *) apr_pcalloc(p, sizeof(sed_module_dcfg));
-    sed_module_dcfg *base = (sed_module_dcfg *) basev;
-    sed_module_dcfg *over = (sed_module_dcfg *) overv;
+    rf_module_dir_conf *a =
+    (rf_module_dir_conf *) apr_pcalloc(p, sizeof(rf_module_dir_conf));
+    rf_module_dir_conf *base = (rf_module_dir_conf *) basev;
+    rf_module_dir_conf *over = (rf_module_dir_conf *) overv;
 
-    a->sed_scripts = apr_array_append(p, over->sed_scripts,
-                                      base->sed_scripts);
+    a->patterns = apr_array_append(p, over->patterns,
+                                                  base->patterns);
     return a;
 }
 #define SEDSCAT(s1, s2, pool, buff, blen, repl) do { \
@@ -109,19 +109,19 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
     apr_bucket_brigade *mybb;
     apr_pool_t *tpool;
 
-    sed_module_dcfg *cfg =
-    (sed_module_dcfg *) ap_get_module_config(f->r->per_dir_config,
+    rf_module_dir_conf *cfg =
+    (rf_module_dir_conf *) ap_get_module_config(f->r->per_dir_config,
                                              &rewrite_filter_module);
-    sed_script *script;
+    rf_pattern_t *script;
 
     mybb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(mybb, inb);
     
-    script = (sed_script *) cfg->sed_scripts->elts;
+    script = (rf_pattern_t *) cfg->patterns->elts;
     apr_pool_create(&tpool, f->r->pool);
     scratch = NULL;
     fbytes = 0;
-    for (i = 0; i < cfg->sed_scripts->nelts; i++) {
+    for (i = 0; i < cfg->patterns->nelts; i++) {
         for (b = APR_BRIGADE_FIRST(mybb);
              b != APR_BRIGADE_SENTINEL(mybb);
              b = APR_BUCKET_NEXT(b)) {
@@ -132,10 +132,12 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                  */
                 continue;
             }
-            if (apr_bucket_read(b, &buff, &bytes, APR_BLOCK_READ) == APR_SUCCESS) {
+            if (apr_bucket_read(b, &buff, &bytes, APR_BLOCK_READ)
+                    == APR_SUCCESS) {
                 s1 = NULL;
                 if (script->pattern) {
-                    while ((repl = apr_strmatch(script->pattern, buff, bytes))) {
+                    while ((repl = apr_strmatch(script->pattern, buff, bytes)))
+                    {
                         /* get offset into buff for pattern */
                         len = (apr_size_t) (repl - buff);
                         if (script->flatten) {
@@ -147,12 +149,14 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                              * are constanting allocing space and copying
                              * strings.
                              */
-                            SEDSCAT(s1, s2, f->r->pool, buff, len, script->replacement);
+                            SEDSCAT(s1, s2, f->r->pool, buff, len,
+                                    script->replacement);
                         }
                         else {
                             /*
-                             * We now split off the stuff before the regex as its
-                             * own bucket, then isolate the pattern and delete it.
+                             * We now split off the stuff before the regex
+                             * as its own bucket, then isolate the pattern
+                             * and delete it.
                              */
                             SEDRMPATBCKT(b, len, tmp_b, script->patlen);
                             /*
@@ -203,7 +207,8 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                     p = scratch;
                     memcpy(p, buff, bytes);
                     p[bytes] = '\0';
-                    while (!ap_regexec(script->regexp, p, AP_MAX_REG_MATCH, regm, 0)) {
+                    while (!ap_regexec(script->regexp, p,
+                                       AP_MAX_REG_MATCH, regm, 0)) {
                         /* first, grab the replacement string */
                         repl = ap_pregsub(f->r->pool, script->replacement, p,
                                           AP_MAX_REG_MATCH, regm);
@@ -249,7 +254,7 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
     return mybb;
 }
 
-static apr_status_t sed_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+static apr_status_t rewrite_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_size_t bytes;
     apr_size_t len;
@@ -265,7 +270,7 @@ static apr_status_t sed_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_bucket_brigade *tmp_ctxbb = NULL;
     apr_status_t rv;
 
-    sed_module_ctx *ctx = f->ctx;
+    rewrite_filter_module_ctx *ctx = f->ctx;
     
     /*
      * First time around? Create the saved bb that we used for each pass
@@ -331,9 +336,10 @@ static apr_status_t sed_filter(ap_filter_t *f, apr_bucket_brigade *bb)
              * to the end of what we'll be passing.
              */
             if (!APR_BRIGADE_EMPTY(ctx->ctxbb)) {
-                rv = apr_brigade_pflatten(ctx->ctxbb, &bflat, &fbytes, f->r->pool);
+                rv = apr_brigade_pflatten(ctx->ctxbb, &bflat, 
+                                          &fbytes, f->r->pool);
                 tmp_b = apr_bucket_pool_create(bflat, fbytes, f->r->pool,
-                                            f->r->connection->bucket_alloc);
+                                               f->r->connection->bucket_alloc);
                 pattbb = do_pattmatch(f, tmp_b);
                 APR_BRIGADE_CONCAT(passbb, pattbb);
             }
@@ -386,15 +392,16 @@ static apr_status_t sed_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                         /*
                          * Hey, we found a newline! Don't forget the old
                          * stuff that needs to be added to the front. So we
-                         * add the split bucket to the end, flatten the whole bb,
-                         * morph the whole shebang into a bucket which is
+                         * add the split bucket to the end, flatten the whole
+                         * bb, morph the whole shebang into a bucket which is
                          * then added to the tail of the newline bb.
                          */
                         if (!APR_BRIGADE_EMPTY(ctx->ctxbb)) {
                             APR_BRIGADE_INSERT_TAIL(ctx->ctxbb, b);
-                            rv = apr_brigade_pflatten(ctx->ctxbb, &bflat, &fbytes,
-                                                      f->r->pool);
-                            b = apr_bucket_pool_create(bflat, fbytes, f->r->pool,
+                            rv = apr_brigade_pflatten(ctx->ctxbb, &bflat,
+                                                      &fbytes, f->r->pool);
+                            b = apr_bucket_pool_create(bflat, fbytes, 
+                                                       f->r->pool,
                                             f->r->connection->bucket_alloc);
                             apr_brigade_cleanup(ctx->ctxbb);
                         }
@@ -428,7 +435,7 @@ static apr_status_t sed_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     return rv;
 }
 
-static const char *set_sed_script(cmd_parms *cmd, void *cfg,
+static const char *set_pattern(cmd_parms *cmd, void *cfg,
                                        const char *line)
 {
     char *from = NULL;
@@ -436,14 +443,14 @@ static const char *set_sed_script(cmd_parms *cmd, void *cfg,
     char *flags = NULL;
     char *ourline;
     char delim;
-    sed_script *nscript;
+    rf_pattern_t *nscript;
     int is_pattern = 0;
     int ignore_case = 0;
     int flatten = 0;
     ap_regex_t *r = NULL;
 
     if (apr_tolower(*line) != 's') {
-        return "Bad Sed format";
+        return "Bad Rewrite format, must be an s/// pattern";
     }
     ourline = apr_pstrdup(cmd->pool, line);
     delim = *++ourline;
@@ -465,7 +472,7 @@ static const char *set_sed_script(cmd_parms *cmd, void *cfg,
     }
 
     if (!delim || !from || !to) {
-        return "Bad Sed format: cannot parse";
+        return "Bad Rewrite format, must be a complete s/// pattern";
     }
 
     while (*flags) {
@@ -477,7 +484,7 @@ static const char *set_sed_script(cmd_parms *cmd, void *cfg,
         else if (delim == 'f')
             flatten = 1;
         else
-            return "Bad Sed format: bad flag";
+            return "Bad Rewrite flag, only s///[inf] are supported";
         flags++;
     }
 
@@ -486,9 +493,9 @@ static const char *set_sed_script(cmd_parms *cmd, void *cfg,
         r = ap_pregcomp(cmd->pool, from, AP_REG_EXTENDED |
                         (ignore_case ? AP_REG_ICASE : 0));
         if (!r)
-            return "Could not compile Sed regex";
+            return "Rewrite could not compile regex";
     }
-    nscript = apr_array_push(((sed_module_dcfg *) cfg)->sed_scripts);
+    nscript = apr_array_push(((rf_module_dir_conf *) cfg)->patterns);
     /* init the new entries */
     nscript->pattern = NULL;
     nscript->regexp = NULL;
@@ -497,7 +504,8 @@ static const char *set_sed_script(cmd_parms *cmd, void *cfg,
 
     if (is_pattern) {
         nscript->patlen = strlen(from);
-        nscript->pattern = apr_strmatch_precompile(cmd->pool, from, !ignore_case);
+        nscript->pattern = apr_strmatch_precompile(cmd->pool, from, 
+                                                   !ignore_case);
     }
     else {
         nscript->regexp = r;
@@ -513,22 +521,22 @@ static const char *set_sed_script(cmd_parms *cmd, void *cfg,
 #define PROTO_FLAGS AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH
 static void register_hooks(apr_pool_t *pool)
 {
-    ap_register_output_filter(rewrite_filter_name, sed_filter, NULL,
+    ap_register_output_filter(rewrite_filter_name, rewrite_filter, NULL,
                               AP_FTYPE_RESOURCE);
 }
 
-static const command_rec sed_filter_cmds[] = {
-    AP_INIT_TAKE1("Sed", set_sed_script, NULL, OR_ALL,
-                  "Define the sed script (s/foo/bar/)"),
+static const command_rec rewrite_filter_cmds[] = {
+    AP_INIT_TAKE1("RewriteFilter", set_pattern, NULL, OR_ALL,
+                  "Define the rewrite filter pattern (s/foo/bar/[inf])"),
     {NULL}
 };
 
 module AP_MODULE_DECLARE_DATA rewrite_filter_module = {
     STANDARD20_MODULE_STUFF,
-    create_sed_dcfg,            /* dir config creater */
-    merge_sed_dcfg,             /* dir merger --- default is to override */
+    create_rewrite_filter_dcfg, /* dir config creater */
+    merge_rewrite_filter_dcfg,  /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    sed_filter_cmds,            /* command table */
+    rewrite_filter_cmds,        /* command table */
     register_hooks              /* register hooks */
 };
