@@ -72,4 +72,11 @@ mod_dumpio.so           0x6FA50000    0x00010000
 mod_echo.so             0x6FA40000    0x00010000
 mod_authn_dbd.so        0x6FA30000    0x00010000
 mod_dbd.so              0x6FA20000    0x00010000
-mod_proxy.so            0x6FA00000    0x00010000
+mod_proxy.so            0x6FA00000    0x00020000
+mod_authn_alias.so      0x6F9F0000    0x00010000
+mod_authz_owner.so      0x6F9E0000    0x00010000
+mod_example.so          0x6F9D0000    0x00010000
+mod_case_filter.so      0x6F9C0000    0x00010000
+mod_case_filter_in.so   0x6F9B0000    0x00010000
+mod_filter.so           0x6F9A0000    0x00010000
+mod_dav_lock.so         0x6F990000    0x00010000
