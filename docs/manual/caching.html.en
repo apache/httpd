@@ -564,14 +564,14 @@ CacheDirLength 1</pre></div>
       
 
       <p>To store items in the cache, <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> creates
-      a 22 character hash of the url being requested. Thie hash incorporates
+      a 22 character hash of the URL being requested. This hash incorporates
       the hostname, protocol, port, path and any CGI arguments to the URL,
       to ensure that multiple URLs do not collide.</p>
 
       <p>Each character may be any one of 64-different characters, which mean
       that overall there are 22^64 possible hashes. For example, a URL might
       be hashed to <code>xyTGxSMO2b68mBCykqkp1w</code>. This hash is used
-      as a prefix for the naming of the files specific to that url within
+      as a prefix for the naming of the files specific to that URL within
       the cache, however first it is split up into directories as per
       the <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code> and
       <code class="directive"><a href="./mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code> 
@@ -602,15 +602,15 @@ CacheDirLength 1</pre></div>
       With the setting of "2" used in the above example, a grand
       total of 4096 subdirectories can ultimately be created. With
       1 million files cached, this works out at roughly 245 cached 
-      urls per directory.</p>
+      URLs per directory.</p>
 
-      <p>Each url uses at least two files in the cache-store. Typically
+      <p>Each URL uses at least two files in the cache-store. Typically
       there is a ".header" file, which includes meta-information about 
-      the url, such as when it is due to expire and a ".data" file
+      the URL, such as when it is due to expire and a ".data" file
       which is a verbatim copy of the content to be served.</p>
 
       <p>In the case of a content negotiated via the "Vary" header, a
-      ".vary" directory will be created for the url in question. This 
+      ".vary" directory will be created for the URL in question. This 
       directory will have multiple ".data" files corresponding to the
       differently negotiated content.</p>
     
