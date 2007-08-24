@@ -54,6 +54,9 @@ Package=<4>
     Project_Dep_Name BuildAll
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_bucketeer
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_case_filter
     End Project Dependency
     Begin Project Dependency
@@ -100,9 +103,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_asis
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_access_compat
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_auth_basic
@@ -157,9 +157,6 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_autoindex
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name mod_bucketeer
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_cern_meta
