@@ -104,7 +104,7 @@ by other LDAP modules</td></tr>
         Allow from yourdomain.example.com<br />
         AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
         AuthzLDAPAuthoritative off<br />
-        require valid-user<br />
+        Require valid-user<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -232,7 +232,7 @@ by other LDAP modules</td></tr>
         Allow from yourdomain.example.com<br />
         AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
         AuthzLDAPAuthoritative off<br />
-        require valid-user<br />
+        Require valid-user<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -252,7 +252,7 @@ by other LDAP modules</td></tr>
         Allow from yourdomain.example.com<br />
         AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one TLS<br />
         AuthzLDAPAuthoritative off<br />
-        require valid-user<br />
+        Require valid-user<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -304,7 +304,7 @@ by other LDAP modules</td></tr>
                 LDAPTrustedClientCert CERT_NICKNAME &lt;nickname&gt; [password]<br />
                 AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
                 AuthzLDAPAuthoritative off<br />
-                require valid-user<br />
+                Require valid-user<br />
             </span>
             &lt;/Location&gt;
         </code></p></div>
@@ -371,7 +371,7 @@ by other LDAP modules</td></tr>
                 LDAPTrustedClientCert KEY_BASE64 /certs/key1.pem<br />
                 AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
                 AuthzLDAPAuthoritative off<br />
-                require valid-user<br />
+                Require valid-user<br />
             </span>
             &lt;/Location&gt;
         </code></p></div>
