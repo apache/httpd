@@ -139,6 +139,8 @@ static const TRANS priorities[] = {
     {NULL,      -1},
 };
 
+static apr_pool_t *stderr_pool = NULL;
+
 static apr_file_t *stderr_log = NULL;
 
 /* track pipe handles to close in child process */
@@ -151,7 +153,7 @@ static read_handle_t *read_handles;
 
 /* clear_handle_list() is called when plog is cleared; at that
  * point we need to forget about our old list of pipe read
- * handles
+ * handles.  We let the plog cleanups close the actual pipes.
  */
 static apr_status_t clear_handle_list(void *v)
 {
@@ -205,12 +207,33 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
                      ap_server_argv0, fname);
         return rc;
     }
-    if ((rc = apr_file_open_stderr(&stderr_log, p)) == APR_SUCCESS) {
+    if (!stderr_pool) {
+        /* This is safe provided we revert it when we are finished.
+         * We don't manager the callers pool!
+         */
+        stderr_pool = p;
+    }
+    if ((rc = apr_file_open_stderr(&stderr_log, stderr_pool)) 
+            == APR_SUCCESS) {
         apr_file_flush(stderr_log);
-        if ((rc = apr_file_dup2(stderr_log, stderr_file, p)) == APR_SUCCESS) {
+        if ((rc = apr_file_dup2(stderr_log, stderr_file, stderr_pool)) 
+                == APR_SUCCESS) {
             apr_file_close(stderr_file);
+            /*
+             * You might ponder why stderr_pool should survive?
+             * The trouble is, stderr_pool may have s_main->error_log,
+             * so we aren't in a position to destory stderr_pool until
+             * the next recycle.  There's also an apparent bug which 
+             * is not; if some folk decided to call this function before 
+             * the core open error logs hook, this pool won't survive.
+             * Neither does the stderr logger, so this isn't a problem.
+             */
         }
     }
+    /* Revert, see above */
+    if (stderr_pool == p)
+        stderr_pool = NULL;
+
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rc, NULL,
                      "unable to replace stderr with error log file");
@@ -349,12 +372,33 @@ static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
 int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
                  apr_pool_t *ptemp, server_rec *s_main)
 {
+    apr_pool_t *stderr_p;
     server_rec *virt, *q;
     int replace_stderr;
 
+
+    /* Register to throw away the read_handles list when we
+     * cleanup plog.  Upon fork() for the apache children,
+     * this read_handles list is closed so only the parent
+     * can relaunch a lost log child.  These read handles 
+     * are always closed on exec.
+     * We won't care what happens to our stderr log child 
+     * between log phases, so we don't mind losing stderr's 
+     * read_handle a little bit early.
+     */
     apr_pool_cleanup_register(p, NULL, clear_handle_list,
                               apr_pool_cleanup_null);
-    if (open_error_log(s_main, 1, p) != OK) {
+
+    /* HERE we need a stdout log that outlives plog.
+     * We *presume* the parent of plog is a process 
+     * or global pool which spans server restarts.
+     * Create our stderr_pool as a child of the plog's
+     * parent pool.
+     */
+    apr_pool_create(&stderr_p, apr_pool_parent_get(p));
+    apr_pool_tag(stderr_p, "stderr_pool");
+    
+    if (open_error_log(s_main, 1, stderr_p) != OK) {
         return DONE;
     }
 
@@ -364,12 +408,18 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
         
         /* Replace existing stderr with new log. */
         apr_file_flush(s_main->error_log);
-        rv = apr_file_dup2(stderr_log, s_main->error_log, p);
+        rv = apr_file_dup2(stderr_log, s_main->error_log, stderr_p);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s_main,
                          "unable to replace stderr with error_log");
         }
         else {
+            /* We are done with stderr_pool, close it, killing
+             * the previous generation's stderr logger
+             */
+            if (stderr_pool)
+                apr_pool_destroy(stderr_pool);
+            stderr_pool = stderr_p;
             replace_stderr = 0;
         }
     }
