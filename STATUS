@@ -290,12 +290,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=565671
       +1: niq
  
-    * mpm_winnt: Prevent the parent-child pipe from leaking into other
-      spawned processes, and ensure we have a /Device/null handle for
-      stdout when running as-a-service.  [William Rowe]
-        http://svn.apache.org/viewvc?view=rev&revision=568446
-        +1: wrowe
-
     * log core: fix the new piped logger case where we couldn't connect 
       the replacement stderr logger's stderr to the NULL stdout stream.  
       Continue in this case, since the previous alternative of no error 
