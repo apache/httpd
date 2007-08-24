@@ -15,7 +15,7 @@
  */
 
 /*
- * mod_sedfilter.c: Perform sed-like rewriting on the fly
+ * mod_rewrite_filter.c: Perform content rewriting on the fly
  */
 
 #include "httpd.h"
@@ -31,9 +31,9 @@
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
-static const char sedFilterName[] = "SEDFILTER";
+static const char rewrite_filter_name[] = "REWRITE";
 
-module AP_MODULE_DECLARE_DATA sedfilter_module;
+module AP_MODULE_DECLARE_DATA rewrite_filter_module;
 
 typedef struct {
     const apr_strmatch_pattern *pattern;
@@ -111,7 +111,7 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
 
     sed_module_dcfg *cfg =
     (sed_module_dcfg *) ap_get_module_config(f->r->per_dir_config,
-                                             &sedfilter_module);
+                                             &rewrite_filter_module);
     sed_script *script;
 
     mybb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
@@ -513,7 +513,7 @@ static const char *set_sed_script(cmd_parms *cmd, void *cfg,
 #define PROTO_FLAGS AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH
 static void register_hooks(apr_pool_t *pool)
 {
-    ap_register_output_filter(sedFilterName, sed_filter, NULL,
+    ap_register_output_filter(rewrite_filter_name, sed_filter, NULL,
                               AP_FTYPE_RESOURCE);
 }
 
@@ -523,7 +523,7 @@ static const command_rec sed_filter_cmds[] = {
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA sedfilter_module = {
+module AP_MODULE_DECLARE_DATA rewrite_filter_module = {
     STANDARD20_MODULE_STUFF,
     create_sed_dcfg,            /* dir config creater */
     merge_sed_dcfg,             /* dir merger --- default is to override */
