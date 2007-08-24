@@ -72,6 +72,7 @@
 #include "unixd.h"
 #endif
 #include "scoreboard.h"
+#include "mpm_common.h"
 
 #include "apr_strings.h"
 
