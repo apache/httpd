@@ -108,6 +108,9 @@ Package=<4>
     Project_Dep_Name mod_authz_core
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_authz_dbd
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_authz_dbm
     End Project Dependency
     Begin Project Dependency
@@ -118,6 +121,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authz_host
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_authz_owner
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_authz_user
@@ -937,6 +943,33 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_authz_dbd"=.\modules\aaa\mod_authz_dbd.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dbd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_authz_dbm"=.\modules\aaa\mod_authz_dbm.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1034,6 +1067,30 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_authz_user"=.\modules\aaa\mod_authz_user.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_auth_basic
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_authz_owner"=.\modules\aaa\mod_authz_owner.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
