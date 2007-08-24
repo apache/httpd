@@ -220,7 +220,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_dbd.mak         CFG="mod_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\aaa
-	 $(MAKE) $(MAKEOPT) -f mod_access_compat.mak  CFG="mod_access_compat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_access_compat.mak CFG="mod_access_compat - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_basic.mak  CFG="mod_auth_basic - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_auth_digest.mak CFG="mod_auth_digest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_anon.mak  CFG="mod_authn_anon - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -229,13 +229,15 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_authn_dbm.mak   CFG="mod_authn_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_default.mak CFG="mod_authn_default - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authn_file.mak  CFG="mod_authn_file - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_authz_dbm.mak   CFG="mod_authz_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_authnz_ldap.mak CFG="mod_authnz_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_core.mak  CFG="mod_authz_core - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_authz_dbd.mak   CFG="mod_authz_dbd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_authz_dbm.mak   CFG="mod_authz_dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_default.mak CFG="mod_authz_default - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_groupfile.mak CFG="mod_authz_groupfile - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_host.mak  CFG="mod_authz_host - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_authz_owner.mak CFG="mod_authz_owner - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_authz_user.mak  CFG="mod_authz_user - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f mod_authnz_ldap.mak CFG="mod_authnz_ldap - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\arch\win32
 	 $(MAKE) $(MAKEOPT) -f mod_isapi.mak       CFG="mod_isapi - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -252,17 +254,29 @@ _build:
 	cd modules\dav\fs
 	 $(MAKE) $(MAKEOPT) -f mod_dav_fs.mak      CFG="mod_dav_fs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..\..
+	cd modules\dav\lock
+	 $(MAKE) $(MAKEOPT) -f mod_dav_lock.mak    CFG="mod_dav_lock - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	cd ..\..\..
 	cd modules\debugging
+!IFDEF ALL
 	 $(MAKE) $(MAKEOPT) -f mod_bucketeer.mak   CFG="mod_bucketeer - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+!ENDIF
 	 $(MAKE) $(MAKEOPT) -f mod_dumpio.mak      CFG="mod_dumpio - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\experimental
+!IFDEF ALL
+	 $(MAKE) $(MAKEOPT) -f mod_case_filter.mak CFG="mod_case_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_case_filter_in.mak CFG="mod_case_filter_in - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_example.mak     CFG="mod_example - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+!ENDIF
+	 $(MAKE) $(MAKEOPT) -f mod_rewrite_filter.mak CFG="mod_rewrite_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\filters
 	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !IF EXIST("srclib\zlib")
 	 $(MAKE) $(MAKEOPT) -f mod_deflate.mak     CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !ENDIF
+	 $(MAKE) $(MAKEOPT) -f mod_filter.mak      CFG="mod_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
@@ -365,8 +379,13 @@ _cleand:
 
 _build:
 	@echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
+!IFDEF ALL
+	@msdev Apache.dsw /USEENV /MAKE \
+		"BuildAll - Win32 $(LONG)" $(CTARGET)
+!ELSE
 	@msdev Apache.dsw /USEENV /MAKE \
 		"BuildBin - Win32 $(LONG)" $(CTARGET)
+!ENDIF
 !IF "$(CTARGET)" == "/CLEAN"
 	@cd srclib\apr-iconv
 	@$(MAKE) $(MAKEOPT) -f build\modules.mk.win clean \
@@ -401,11 +420,14 @@ _copybin:
 	copy modules\aaa\$(LONG)\mod_authn_dbm.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_default.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_file.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authz_core.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authz_dbd.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_dbm.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_core.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_default.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_groupfile.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_host.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authz_owner.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_user.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authnz_ldap.$(src_so)	"$(inst_so)" <.y
 	copy modules\arch\win32\$(LONG)\mod_isapi.$(src_so) 	"$(inst_so)" <.y
@@ -415,9 +437,18 @@ _copybin:
 	copy modules\cache\$(LONG)\mod_disk_cache.$(src_so)	"$(inst_so)" <.y
 	copy modules\database\$(LONG)\mod_dbd.$(src_so)		"$(inst_so)" <.y
 	copy modules\dav\fs\$(LONG)\mod_dav_fs.$(src_so) 	"$(inst_so)" <.y
+	copy modules\dav\lock\$(LONG)\mod_dav_lock.$(src_so) 	"$(inst_so)" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.$(src_so)		"$(inst_so)" <.y
+!IFDEF ALL
 	copy modules\debugging\$(LONG)\mod_bucketeer.$(src_so)	"$(inst_so)" <.y
+!ENDIF
 	copy modules\debugging\$(LONG)\mod_dumpio.$(src_so)	"$(inst_so)" <.y
+!IFDEF ALL
+	copy modules\experimental\$(LONG)\mod_case_filter.$(src_so)	"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_case_filter_in.$(src_so)	"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_example.$(src_so)		"$(inst_so)" <.y
+!ENDIF
+	copy modules\experimental\$(LONG)\mod_rewrite_filter.$(src_so)	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib")
 	copy modules\filters\$(LONG)\mod_deflate.$(src_so) 	"$(inst_so)" <.y
@@ -425,6 +456,7 @@ _copybin:
 	copy srclib\zlib\zlib1.$(src_dll)		 	"$(inst_dll)" <.y
 !ENDIF
 !ENDIF
+	copy modules\filters\$(LONG)\mod_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_ext_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_include.$(src_so) 	"$(inst_so)" <.y
 	copy modules\generators\$(LONG)\mod_asis.$(src_so) 	"$(inst_so)" <.y
