@@ -1,6 +1,10 @@
 ﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) log core: ensure we use a special pool for stderr logging, so that
+     the stderr channel remains valid from the time plog is destroyed,
+     until the time the open_logs hook is called again.  [William Rowe]
+
   *) main core: Emit errors during the initial apr_app_initialize()
      or apr_pool_create() (when apr-based error reporting is not ready).
      [William Rowe]
