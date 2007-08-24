@@ -81,15 +81,15 @@ for HTTP Basic authentication.</description>
       </li>
 
       <li>
-        <a href="#requiredirectives">The require Directives</a> 
+        <a href="#requiredirectives">The Require Directives</a> 
 
         <ul>
-          <li><a href="#reqvaliduser">require valid-user</a></li>
-          <li><a href="#requser">require ldap-user</a></li>
-          <li><a href="#reqgroup">require ldap-group</a></li>
-          <li><a href="#reqdn">require ldap-dn</a></li>
-          <li><a href="#reqattribute">require ldap-attribute</a></li>
-          <li><a href="#reqfilter">require ldap-filter</a></li>
+          <li><a href="#reqvaliduser">Require valid-user</a></li>
+          <li><a href="#requser">Require ldap-user</a></li>
+          <li><a href="#reqgroup">Require ldap-group</a></li>
+          <li><a href="#reqdn">Require ldap-dn</a></li>
+          <li><a href="#reqattribute">Require ldap-attribute</a></li>
+          <li><a href="#reqfilter">Require ldap-filter</a></li>
         </ul>
       </li>
 
@@ -200,26 +200,26 @@ for HTTP Basic authentication.</description>
 
     <ul>
       <li>Grant access if there is a <a
-      href="#reqgroup"><code>require ldap-user</code></a> directive, and the
+      href="#reqgroup"><code>Require ldap-user</code></a> directive, and the
       username in the directive matches the username passed by the
       client.</li>
 
-      <li>Grant access if there is a <a href="#reqdn"><code>require
+      <li>Grant access if there is a <a href="#reqdn"><code>Require
       ldap-dn</code></a> directive, and the DN in the directive matches
       the DN fetched from the LDAP directory.</li>
 
       <li>Grant access if there is a <a
-      href="#reqgroup"><code>require ldap-group</code></a> directive, and
+      href="#reqgroup"><code>Require ldap-group</code></a> directive, and
       the DN fetched from the LDAP directory (or the username
       passed by the client) occurs in the LDAP group.</li>
 
       <li>Grant access if there is a <a href="#reqattribute">
-      <code>require ldap-attribute</code></a> 
+      <code>Require ldap-attribute</code></a> 
       directive, and the attribute fetched from the LDAP directory
       matches the given value.</li> 
 
       <li>Grant access if there is a <a href="#reqfilter">
-      <code>require ldap-filter</code></a> 
+      <code>Require ldap-filter</code></a> 
       directive, and the search filter successfully finds a single user
       object that matches the dn of the authenticated user.</li> 
 
@@ -236,12 +236,12 @@ for HTTP Basic authentication.</description>
     <directive module="core">Require</directive> value.</p>
 
     <ul>
-        <li>Grant access if there is a <a href="#requser"><code>require
+        <li>Grant access if there is a <a href="#requser"><code>Require
         valid-user</code></a> directive. (requires 
         <module>mod_authz_user</module>)</li>
 
         <li>Grant access if there is a <a
-        href="#reqgroup"><code>require group</code></a> directive, and
+        href="#reqgroup"><code>Require group</code></a> directive, and
         <module>mod_authz_groupfile</module> has been loaded with the 
         <directive module="mod_authz_groupfile">AuthGroupFile</directive> 
         directive set.</li>
@@ -259,7 +259,7 @@ for HTTP Basic authentication.</description>
         <td><directive module="mod_authnz_ldap">AuthLDAPURL</directive> </td>
 
         <td>The attribute specified in the
-        URL is used in compare operations for the <code>require
+        URL is used in compare operations for the <code>Require
         ldap-user</code> operation.</td>
       </tr>
 
@@ -268,7 +268,7 @@ for HTTP Basic authentication.</description>
         module="mod_authnz_ldap">AuthLDAPCompareDNOnServer</directive></td>
 
         <td>Determines the behavior of the
-        <code>require ldap-dn</code> directive.</td>
+        <code>Require ldap-dn</code> directive.</td>
       </tr>
 
       <tr>
@@ -276,7 +276,7 @@ for HTTP Basic authentication.</description>
         module="mod_authnz_ldap">AuthLDAPGroupAttribute</directive></td>
 
         <td>Determines the attribute to
-        use for comparisons in the <code>require ldap-group</code>
+        use for comparisons in the <code>Require ldap-group</code>
         directive.</td>
       </tr>
 
@@ -286,13 +286,13 @@ for HTTP Basic authentication.</description>
 
         <td>Specifies whether to use the
         user DN or the username when doing comparisons for the
-        <code>require ldap-group</code> directive.</td>
+        <code>Require ldap-group</code> directive.</td>
       </tr>
     </table>
 </section>
 </section>
 
-<section id="requiredirectives"><title>The require Directives</title>
+<section id="requiredirectives"><title>The Require Directives</title>
 
     <p>Apache's <directive module="core">Require</directive>
     directives are used during the authorization phase to ensure that
@@ -302,7 +302,7 @@ for HTTP Basic authentication.</description>
     <code>ldap-filter</code>.  Other authorization types may also be 
     used but may require that additional authorization modules be loaded.</p>
 
-<section id="reqvaliduser"><title>require valid-user</title>
+<section id="reqvaliduser"><title>Require valid-user</title>
 
     <p>If this directive exists, <module>mod_authnz_ldap</module> grants
     access to any user that has successfully authenticated during the
@@ -310,43 +310,43 @@ for HTTP Basic authentication.</description>
     loaded.</p>
 </section>
 
-<section id="requser"><title>require ldap-user</title>
+<section id="requser"><title>Require ldap-user</title>
 
-    <p>The <code>require ldap-user</code> directive specifies what
+    <p>The <code>Require ldap-user</code> directive specifies what
     usernames can access the resource. Once
     <module>mod_authnz_ldap</module> has retrieved a unique DN from the
     directory, it does an LDAP compare operation using the username
-    specified in the <code>require ldap-user</code> to see if that username
+    specified in the <code>Require ldap-user</code> to see if that username
     is part of the just-fetched LDAP entry.  Multiple users can be
     granted access by putting multiple usernames on the line,
     separated with spaces. If a username has a space in it, then it
     must be surrounded with double quotes. Multiple users can also be
-    granted access by using multiple <code>require ldap-user</code>
+    granted access by using multiple <code>Require ldap-user</code>
     directives, with one user per line. For example, with a <directive
     module="mod_authnz_ldap">AuthLDAPURL</directive> of
     <code>ldap://ldap/o=Airius?cn</code> (i.e., <code>cn</code> is
-    used for searches), the following require directives could be used
+    used for searches), the following Require directives could be used
     to restrict access:</p>
 <example>
-require ldap-user "Barbara Jenson"<br />
-require ldap-user "Fred User"<br />
-require ldap-user "Joe Manager"<br />
+Require ldap-user "Barbara Jenson"<br />
+Require ldap-user "Fred User"<br />
+Require ldap-user "Joe Manager"<br />
 </example>
 
     <p>Because of the way that <module>mod_authnz_ldap</module> handles this
     directive, Barbara Jenson could sign on as <em>Barbara
     Jenson</em>, <em>Babs Jenson</em> or any other <code>cn</code> that
-    she has in her LDAP entry. Only the single <code>require
+    she has in her LDAP entry. Only the single <code>Require
     ldap-user</code> line is needed to support all values of the attribute
     in the user's entry.</p>
 
     <p>If the <code>uid</code> attribute was used instead of the
     <code>cn</code> attribute in the URL above, the above three lines
     could be condensed to</p>
-<example>require ldap-user bjenson fuser jmanager</example>
+<example>Require ldap-user bjenson fuser jmanager</example>
 </section>
 
-<section id="reqgroup"><title>require ldap-group</title>
+<section id="reqgroup"><title>Require ldap-group</title>
 
     <p>This directive specifies an LDAP group whose members are
     allowed access. It takes the distinguished name of the LDAP
@@ -362,7 +362,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
 
     <p>The following directive would grant access to both Fred and
     Barbara:</p>
-<example>require ldap-group cn=Administrators, o=Airius</example>
+<example>Require ldap-group cn=Administrators, o=Airius</example>
 
     <p>Behavior of this directive is modified by the <directive
     module="mod_authnz_ldap">AuthLDAPGroupAttribute</directive> and
@@ -371,28 +371,28 @@ uniqueMember: cn=Fred User, o=Airius<br />
     directives.</p>
 </section>
 
-<section id="reqdn"><title>require ldap-dn</title>
+<section id="reqdn"><title>Require ldap-dn</title>
 
-    <p>The <code>require ldap-dn</code> directive allows the administrator
+    <p>The <code>Require ldap-dn</code> directive allows the administrator
     to grant access based on distinguished names. It specifies a DN
     that must match for access to be granted. If the distinguished
     name that was retrieved from the directory server matches the
-    distinguished name in the <code>require ldap-dn</code>, then
+    distinguished name in the <code>Require ldap-dn</code>, then
     authorization is granted. Note: do not surround the distinguished
     name with quotes.</p>
 
     <p>The following directive would grant access to a specific
     DN:</p>
-<example>require ldap-dn cn=Barbara Jenson, o=Airius</example>
+<example>Require ldap-dn cn=Barbara Jenson, o=Airius</example>
 
     <p>Behavior of this directive is modified by the <directive
     module="mod_authnz_ldap">AuthLDAPCompareDNOnServer</directive>
     directive.</p>
 </section>
 
-<section id="reqattribute"><title>require ldap-attribute</title>
+<section id="reqattribute"><title>Require ldap-attribute</title>
 
-    <p>The <code>require ldap-attribute</code> directive allows the
+    <p>The <code>Require ldap-attribute</code> directive allows the
     administrator to grant access based on attributes of the authenticated
     user in the LDAP directory.  If the attribute in the directory
     matches the value given in the configuration, access is granted.</p>
@@ -400,11 +400,11 @@ uniqueMember: cn=Fred User, o=Airius<br />
     <p>The following directive would grant access to anyone with
     the attribute employeeType = active</p>
 
-    <example>require ldap-attribute employeeType=active</example>
+    <example>Require ldap-attribute employeeType=active</example>
 
     <p>Multiple attribute/value pairs can be specified on the same line
     separated by spaces or they can be specified in multiple 
-    <code>require ldap-attribute</code> directives. The effect of listing 
+    <code>Require ldap-attribute</code> directives. The effect of listing 
     multiple attribute/values pairs is an OR operation. Access will be 
     granted if any of the listed attribute values match the value of the 
     corresponding attribute in the user object. If the value of the 
@@ -413,13 +413,13 @@ uniqueMember: cn=Fred User, o=Airius<br />
     <p>The following directive would grant access to anyone with
     the city attribute equal to "San Jose" or status equal to "Active"</p>
 
-    <example>require ldap-attribute city="San Jose" status=active</example>
+    <example>Require ldap-attribute city="San Jose" status=active</example>
 
 </section>
 
-<section id="reqfilter"><title>require ldap-filter</title>
+<section id="reqfilter"><title>Require ldap-filter</title>
 
-    <p>The <code>require ldap-filter</code> directive allows the
+    <p>The <code>Require ldap-filter</code> directive allows the
     administrator to grant access based on a complex LDAP search filter.
     If the dn returned by the filter search matches the authenticated user
     dn, access is granted.</p>
@@ -427,10 +427,10 @@ uniqueMember: cn=Fred User, o=Airius<br />
     <p>The following directive would grant access to anyone having a cell phone
     and is in the marketing department</p>
 
-    <example>require ldap-filter &amp;(cell=*)(department=marketing)</example>
+    <example>Require ldap-filter &amp;(cell=*)(department=marketing)</example>
 
-    <p>The difference between the <code>require ldap-filter</code> directive and the 
-    <code>require ldap-attribute</code> directive is that <code>ldap-filter</code> 
+    <p>The difference between the <code>Require ldap-filter</code> directive and the 
+    <code>Require ldap-attribute</code> directive is that <code>ldap-filter</code> 
     performs a search operation on the LDAP directory using the specified search 
     filter rather than a simple attribute comparison. If a simple attribute 
     comparison is all that is required, the comparison operation performed by 
@@ -449,7 +449,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
         using their UID for searches. 
 <example>
 AuthLDAPURL ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)<br />
-require valid-user
+Require valid-user
 </example>
       </li>
 
@@ -458,7 +458,7 @@ require valid-user
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server. 
 <example>AuthLDAPURL ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius<br />
-require valid-user
+Require valid-user
 </example>
       </li>
 
@@ -473,7 +473,7 @@ require valid-user
         directory, such as <code>uid</code>. 
 <example>
 AuthLDAPURL ldap://ldap.airius.com/ou=People, o=Airius?cn<br />
-require valid-user
+Require valid-user
 </example>
       </li>
 
@@ -482,7 +482,7 @@ require valid-user
         users must authenticate using their UID. 
 <example>
 AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid<br />
-require ldap-group cn=Administrators, o=Airius
+Require ldap-group cn=Administrators, o=Airius
 </example>
       </li>
 
@@ -494,7 +494,7 @@ require ldap-group cn=Administrators, o=Airius
         alphanumeric pagers: 
 <example>
 AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)<br />
-require valid-user
+Require valid-user
 </example>
       </li>
 
@@ -510,7 +510,7 @@ require valid-user
         resource:</p>
 <example>
 AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
-require valid-user
+Require valid-user
 </example>
 
         <p>This last may look confusing at first, so it helps to
@@ -616,14 +616,14 @@ AuthLDAPURL <em>ldap://10.0.0.1:3268/>userPrincipalName?sub</em>
 <example><pre>
 AuthLDAPURL            "the url"
 AuthGroupFile <em>mygroupfile</em>
-require group <em>mygroupfile</em>
+Require group <em>mygroupfile</em>
 </pre></example>
 
 <section id="howitworks"><title>How It Works</title>
 
-    <p>FrontPage restricts access to a web by adding the <code>require
+    <p>FrontPage restricts access to a web by adding the <code>Require
     valid-user</code> directive to the <code>.htaccess</code>
-    files. The <code>require valid-user</code> directive will succeed for
+    files. The <code>Require valid-user</code> directive will succeed for
     any user who is valid <em>as far as LDAP is
     concerned</em>. This means that anybody who has an entry in
     the LDAP directory is considered a valid user, whereas FrontPage
@@ -751,7 +751,7 @@ require group <em>mygroupfile</em>
     server to compare the DNs. This is the only foolproof way to
     compare DNs.  <module>mod_authnz_ldap</module> will search the
     directory for the DN specified with the <a
-    href="#reqdn"><code>require dn</code></a> directive, then,
+    href="#reqdn"><code>Require dn</code></a> directive, then,
     retrieve the DN and compare it with the DN retrieved from the user
     entry. If this directive is not set,
     <module>mod_authnz_ldap</module> simply does a string comparison. It
