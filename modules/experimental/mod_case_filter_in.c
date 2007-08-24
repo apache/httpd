@@ -90,7 +90,7 @@ static apr_status_t CaseFilterInFilter(ap_filter_t *f,
         const char *data;
         apr_size_t len;
         char *buf;
-        int n;
+        apr_size_t n;
 
         /* It is tempting to do this...
          * APR_BUCKET_REMOVE(pB);
