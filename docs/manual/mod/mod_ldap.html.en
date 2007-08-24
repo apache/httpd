@@ -97,7 +97,7 @@ by other LDAP modules</td></tr>
         AuthLDAPEnabled on<br />
         AuthLDAPURL ldap://127.0.0.1/dc=example,dc=com?uid?one<br />
         AuthLDAPAuthoritative on<br />
-        require valid-user<br />
+        Require valid-user<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
@@ -227,7 +227,7 @@ by other LDAP modules</td></tr>
         AuthLDAPEnabled on<br />
         AuthLDAPURL ldaps://127.0.0.1/dc=example,dc=com?uid?one<br />
         AuthLDAPAuthoritative on<br />
-        require valid-user<br />
+        Require valid-user<br />
       </span>
       &lt;/Location&gt;
     </code></p></div>
