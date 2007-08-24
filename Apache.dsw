@@ -453,24 +453,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "httxt2dbm"=.\support\httxt2dbm.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name apr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name aprutil
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "htdbm"=.\support\htdbm.dsp - Package Owner=<4>
 
 Package=<5>
@@ -508,6 +490,24 @@ Package=<4>
 ###############################################################################
 
 Project: "htpasswd"=.\support\htpasswd.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name apr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name aprutil
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "httxt2dbm"=.\support\httxt2dbm.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1099,7 +1099,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authz_user"=.\modules\aaa\mod_authz_user.dsp - Package Owner=<4>
+Project: "mod_authz_owner"=.\modules\aaa\mod_authz_owner.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1123,7 +1123,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_authz_owner"=.\modules\aaa\mod_authz_owner.dsp - Package Owner=<4>
+Project: "mod_authz_user"=.\modules\aaa\mod_authz_user.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
