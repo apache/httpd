@@ -171,6 +171,9 @@ Package=<4>
     Project_Dep_Name mod_dav_fs
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_dav_lock
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_dir
     End Project Dependency
     Begin Project Dependency
@@ -190,6 +193,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_file_cache
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_filter
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_headers
@@ -1354,6 +1360,30 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_dav_lock"=.\modules\dav\lock\mod_dav_lock.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_dav
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_dbd"=.\modules\database\mod_dbd.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1568,6 +1598,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_file_cache"=.\modules\cache\mod_file_cache.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_filter"=.\modules\filters\mod_filter.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
