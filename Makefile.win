@@ -18,6 +18,8 @@
 #   SSLPORT     443
 #   SERVERNAME  localhost
 #
+#   ALL         (unset)     Includes additional modules for build testing
+#
 # For example;
 #
 #   nmake -f Makefile.win PORT=80 INSTDIR="d:\Program Files\Apache" installr
@@ -263,6 +265,11 @@ _build:
 !ENDIF
 	 $(MAKE) $(MAKEOPT) -f mod_dumpio.mak      CFG="mod_dumpio - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
+	cd modules\echo
+!IFDEF ALL
+	 $(MAKE) $(MAKEOPT) -f mod_echo.mak        CFG="mod_echo - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+!ENDIF
+	cd ..\..
 	cd modules\experimental
 !IFDEF ALL
 	 $(MAKE) $(MAKEOPT) -f mod_case_filter.mak CFG="mod_case_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -276,8 +283,8 @@ _build:
 !IF EXIST("srclib\zlib")
 	 $(MAKE) $(MAKEOPT) -f mod_deflate.mak     CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !ENDIF
-	 $(MAKE) $(MAKEOPT) -f mod_filter.mak      CFG="mod_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_filter.mak      CFG="mod_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\generators
@@ -338,10 +345,10 @@ _build:
 	cd support
 	 $(MAKE) $(MAKEOPT) -f ab.mak              CFG="ab - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htcacheclean.mak    CFG="htcacheclean - Win32 $(LONG)" RECURSE=0 $(CTARGET)
-	 $(MAKE) $(MAKEOPT) -f httxt2dbm.mak       CFG="httxt2dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htdbm.mak           CFG="htdbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htdigest.mak        CFG="htdigest - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f htpasswd.mak        CFG="htpasswd - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f httxt2dbm.mak       CFG="httxt2dbm - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f logresolve.mak      CFG="logresolve - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f rotatelogs.mak      CFG="rotatelogs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
@@ -360,7 +367,11 @@ _cleand:
 
 _build:
 	echo Building Win32 $(LONG) targets ($(SHORT) suffixes)
+!IFDEF ALL
+	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project BuildAll
+!ELSE
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project BuildBin
+!ENDIF
 !IF EXIST("srclib\openssl")
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_ssl
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project abs
@@ -420,6 +431,7 @@ _copybin:
 	copy modules\aaa\$(LONG)\mod_authn_dbm.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_default.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_file.$(src_so) 	"$(inst_so)" <.y
+	copy modules\aaa\$(LONG)\mod_authnz_ldap.$(src_so)	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_core.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_dbd.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_dbm.$(src_so) 	"$(inst_so)" <.y
@@ -429,7 +441,6 @@ _copybin:
 	copy modules\aaa\$(LONG)\mod_authz_host.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_owner.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authz_user.$(src_so) 	"$(inst_so)" <.y
-	copy modules\aaa\$(LONG)\mod_authnz_ldap.$(src_so)	"$(inst_so)" <.y
 	copy modules\arch\win32\$(LONG)\mod_isapi.$(src_so) 	"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_cache.$(src_so)		"$(inst_so)" <.y
 	copy modules\cache\$(LONG)\mod_file_cache.$(src_so) 	"$(inst_so)" <.y
@@ -444,6 +455,7 @@ _copybin:
 !ENDIF
 	copy modules\debugging\$(LONG)\mod_dumpio.$(src_so)	"$(inst_so)" <.y
 !IFDEF ALL
+	copy modules\echo\$(LONG)\mod_echo.$(src_so)		"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\mod_case_filter.$(src_so)	"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\mod_case_filter_in.$(src_so)	"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\mod_example.$(src_so)		"$(inst_so)" <.y
@@ -456,8 +468,8 @@ _copybin:
 	copy srclib\zlib\zlib1.$(src_dll)		 	"$(inst_dll)" <.y
 !ENDIF
 !ENDIF
-	copy modules\filters\$(LONG)\mod_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_ext_filter.$(src_so) 	"$(inst_so)" <.y
+	copy modules\filters\$(LONG)\mod_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_include.$(src_so) 	"$(inst_so)" <.y
 	copy modules\generators\$(LONG)\mod_asis.$(src_so) 	"$(inst_so)" <.y
 	copy modules\generators\$(LONG)\mod_autoindex.$(src_so) "$(inst_so)" <.y
@@ -505,10 +517,10 @@ _copybin:
 	copy support\$(LONG)\ab.$(src_exe) 				"$(inst_exe)" <.y
 !ENDIF
 	copy support\$(LONG)\htcacheclean.$(src_exe)		"$(inst_exe)" <.y
-	copy support\$(LONG)\httxt2dbm.$(src_exe)		"$(inst_exe)" <.y
 	copy support\$(LONG)\htdbm.$(src_exe) 			"$(inst_exe)" <.y
 	copy support\$(LONG)\htdigest.$(src_exe) 		"$(inst_exe)" <.y
 	copy support\$(LONG)\htpasswd.$(src_exe) 		"$(inst_exe)" <.y
+	copy support\$(LONG)\httxt2dbm.$(src_exe)		"$(inst_exe)" <.y
 	copy support\$(LONG)\logresolve.$(src_exe) 		"$(inst_exe)" <.y
 	copy support\$(LONG)\rotatelogs.$(src_exe) 		"$(inst_exe)" <.y
 	copy support\win32\$(LONG)\ApacheMonitor.$(src_exe) 	"$(inst_exe)" <.y

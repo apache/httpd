@@ -51,7 +51,7 @@ Package=<5>
 Package=<4>
 {{{
     Begin Project Dependency
-    Project_Dep_Name BuildAll
+    Project_Dep_Name BuildBin
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_bucketeer
