@@ -291,7 +291,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_case_filter_in.mak CFG="mod_case_filter_in - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_example.mak     CFG="mod_example - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 !ENDIF
-	 $(MAKE) $(MAKEOPT) -f mod_rewrite_filter.mak CFG="mod_rewrite_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_substitute.mak CFG="mod_substitute - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\filters
 	 $(MAKE) $(MAKEOPT) -f mod_charset_lite.mak CFG="mod_charset_lite - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -475,7 +475,7 @@ _copybin:
 	copy modules\experimental\$(LONG)\mod_case_filter_in.$(src_so)	"$(inst_so)" <.y
 	copy modules\experimental\$(LONG)\mod_example.$(src_so)		"$(inst_so)" <.y
 !ENDIF
-	copy modules\experimental\$(LONG)\mod_rewrite_filter.$(src_so)	"$(inst_so)" <.y
+	copy modules\experimental\$(LONG)\mod_substitute.$(src_so)	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib")
 	copy modules\filters\$(LONG)\mod_deflate.$(src_so) 	"$(inst_so)" <.y

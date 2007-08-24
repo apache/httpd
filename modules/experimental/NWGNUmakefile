@@ -163,7 +163,7 @@ TARGET_nlm = \
 	$(OBJDIR)/example.nlm \
 	$(OBJDIR)/case_flt.nlm \
 	$(OBJDIR)/case_flt_in.nlm \
-	$(OBJDIR)/rewrite_flt.nlm \
+	$(OBJDIR)/substitute.nlm \
 	$(EOLIST)
 
 #

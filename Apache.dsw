@@ -258,9 +258,6 @@ Package=<4>
     Project_Dep_Name mod_rewrite
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name mod_rewrite_filter
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name mod_setenvif
     End Project Dependency
     Begin Project Dependency
@@ -268,6 +265,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_status
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_substitute
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_unique_id
@@ -2123,27 +2123,6 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_rewrite_filter"=.\modules\experimental\mod_rewrite_filter.dsp - Package Owner=<4>
-
-Package=<5>
-{{{
-}}}
-
-Package=<4>
-{{{
-    Begin Project Dependency
-    Project_Dep_Name libapr
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libaprutil
-    End Project Dependency
-    Begin Project Dependency
-    Project_Dep_Name libhttpd
-    End Project Dependency
-}}}
-
-###############################################################################
-
 Project: "mod_setenvif"=.\modules\metadata\mod_setenvif.dsp - Package Owner=<4>
 
 Package=<5>
@@ -2208,6 +2187,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_status"=.\modules\generators\mod_status.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_substitute"=.\modules\experimental\mod_substitute.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
