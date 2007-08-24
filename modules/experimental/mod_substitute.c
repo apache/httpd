@@ -15,7 +15,7 @@
  */
 
 /*
- * mod_rewrite_filter.c: Perform content rewriting on the fly
+ * mod_substitute.c: Perform content rewriting on the fly
  */
 
 #include "httpd.h"
@@ -31,42 +31,42 @@
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
-static const char rewrite_filter_name[] = "REWRITE";
+static const char substitute_filter_name[] = "SUBSTITUTE";
 
-module AP_MODULE_DECLARE_DATA rewrite_filter_module;
+module AP_MODULE_DECLARE_DATA substitute_module;
 
-typedef struct rf_pattern_t {
+typedef struct subst_pattern_t {
     const apr_strmatch_pattern *pattern;
     const ap_regex_t *regexp;
     const char *replacement;
     apr_size_t replen;
     apr_size_t patlen;
     int flatten;
-} rf_pattern_t;
+} subst_pattern_t;
 
 typedef struct {
     apr_array_header_t *patterns;
-} rf_module_dir_conf;
+} subst_dir_conf;
 
 typedef struct {
     apr_bucket_brigade *ctxbb;
-} rewrite_filter_module_ctx;
+} substitute_module_ctx;
 
-static void *create_rewrite_filter_dcfg(apr_pool_t *p, char *d)
+static void *create_substitute_dcfg(apr_pool_t *p, char *d)
 {
-    rf_module_dir_conf *dcfg =
-    (rf_module_dir_conf *) apr_pcalloc(p, sizeof(rf_module_dir_conf));
+    subst_dir_conf *dcfg =
+    (subst_dir_conf *) apr_pcalloc(p, sizeof(subst_dir_conf));
 
-    dcfg->patterns = apr_array_make(p, 10, sizeof(rf_pattern_t));
+    dcfg->patterns = apr_array_make(p, 10, sizeof(subst_pattern_t));
     return dcfg;
 }
 
-static void *merge_rewrite_filter_dcfg(apr_pool_t *p, void *basev, void *overv)
+static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
 {
-    rf_module_dir_conf *a =
-    (rf_module_dir_conf *) apr_pcalloc(p, sizeof(rf_module_dir_conf));
-    rf_module_dir_conf *base = (rf_module_dir_conf *) basev;
-    rf_module_dir_conf *over = (rf_module_dir_conf *) overv;
+    subst_dir_conf *a =
+    (subst_dir_conf *) apr_pcalloc(p, sizeof(subst_dir_conf));
+    subst_dir_conf *base = (subst_dir_conf *) basev;
+    subst_dir_conf *over = (subst_dir_conf *) overv;
 
     a->patterns = apr_array_append(p, over->patterns,
                                                   base->patterns);
@@ -109,15 +109,15 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
     apr_bucket_brigade *mybb;
     apr_pool_t *tpool;
 
-    rf_module_dir_conf *cfg =
-    (rf_module_dir_conf *) ap_get_module_config(f->r->per_dir_config,
-                                             &rewrite_filter_module);
-    rf_pattern_t *script;
+    subst_dir_conf *cfg =
+    (subst_dir_conf *) ap_get_module_config(f->r->per_dir_config,
+                                             &substitute_module);
+    subst_pattern_t *script;
 
     mybb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(mybb, inb);
     
-    script = (rf_pattern_t *) cfg->patterns->elts;
+    script = (subst_pattern_t *) cfg->patterns->elts;
     apr_pool_create(&tpool, f->r->pool);
     scratch = NULL;
     fbytes = 0;
@@ -254,7 +254,7 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
     return mybb;
 }
 
-static apr_status_t rewrite_filter(ap_filter_t *f, apr_bucket_brigade *bb)
+static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 {
     apr_size_t bytes;
     apr_size_t len;
@@ -270,7 +270,7 @@ static apr_status_t rewrite_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_bucket_brigade *tmp_ctxbb = NULL;
     apr_status_t rv;
 
-    rewrite_filter_module_ctx *ctx = f->ctx;
+    substitute_module_ctx *ctx = f->ctx;
     
     /*
      * First time around? Create the saved bb that we used for each pass
@@ -435,15 +435,14 @@ static apr_status_t rewrite_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     return rv;
 }
 
-static const char *set_pattern(cmd_parms *cmd, void *cfg,
-                                       const char *line)
+static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
 {
     char *from = NULL;
     char *to = NULL;
     char *flags = NULL;
     char *ourline;
     char delim;
-    rf_pattern_t *nscript;
+    subst_pattern_t *nscript;
     int is_pattern = 0;
     int ignore_case = 0;
     int flatten = 0;
@@ -495,7 +494,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg,
         if (!r)
             return "Rewrite could not compile regex";
     }
-    nscript = apr_array_push(((rf_module_dir_conf *) cfg)->patterns);
+    nscript = apr_array_push(((subst_dir_conf *) cfg)->patterns);
     /* init the new entries */
     nscript->pattern = NULL;
     nscript->regexp = NULL;
@@ -521,22 +520,22 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg,
 #define PROTO_FLAGS AP_FILTER_PROTO_CHANGE|AP_FILTER_PROTO_CHANGE_LENGTH
 static void register_hooks(apr_pool_t *pool)
 {
-    ap_register_output_filter(rewrite_filter_name, rewrite_filter, NULL,
-                              AP_FTYPE_RESOURCE);
+    ap_register_output_filter(substitute_filter_name, substitute_filter,
+                              NULL, AP_FTYPE_RESOURCE);
 }
 
-static const command_rec rewrite_filter_cmds[] = {
-    AP_INIT_TAKE1("RewriteFilter", set_pattern, NULL, OR_ALL,
-                  "Define the rewrite filter pattern (s/foo/bar/[inf])"),
+static const command_rec substitute_cmds[] = {
+    AP_INIT_TAKE1("Substitute", set_pattern, NULL, OR_ALL,
+                  "Pattern to filter the response content (s/foo/bar/[inf])"),
     {NULL}
 };
 
-module AP_MODULE_DECLARE_DATA rewrite_filter_module = {
+module AP_MODULE_DECLARE_DATA substitute_module = {
     STANDARD20_MODULE_STUFF,
-    create_rewrite_filter_dcfg, /* dir config creater */
-    merge_rewrite_filter_dcfg,  /* dir merger --- default is to override */
+    create_substitute_dcfg,     /* dir config creater */
+    merge_substitute_dcfg,      /* dir merger --- default is to override */
     NULL,                       /* server config */
     NULL,                       /* merge server config */
-    rewrite_filter_cmds,        /* command table */
+    substitute_cmds,            /* command table */
     register_hooks              /* register hooks */
 };

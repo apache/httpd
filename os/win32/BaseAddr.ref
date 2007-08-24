@@ -82,6 +82,6 @@ mod_authz_owner.so      0x6F9A0000    0x00010000
 mod_example.so          0x6F990000    0x00010000
 mod_case_filter.so      0x6F980000    0x00010000
 mod_case_filter_in.so   0x6F970000    0x00010000
-mod_rewrite_filter.so   0x6F960000    0x00010000
+mod_substitute.so       0x6F960000    0x00010000
 mod_filter.so           0x6F950000    0x00010000
 mod_dav_lock.so         0x6F940000    0x00010000
