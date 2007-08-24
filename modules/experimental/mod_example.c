@@ -969,8 +969,7 @@ static void x_insert_error_filter(request_rec *r)
 static int x_handler(request_rec *r)
 {
     x_cfg *dcfg;
-    int result;
-    char *note, *conn_trace; 
+    char *note; 
     void *conn_data;
     apr_status_t status;
 
