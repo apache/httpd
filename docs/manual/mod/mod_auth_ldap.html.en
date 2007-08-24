@@ -71,7 +71,7 @@ for HTTP Basic authentication.</td></tr>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#contents">Contents</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#operation">Operation</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The require Directives</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usingtls">Using TLS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usingssl">Using SSL</a></li>
@@ -99,14 +99,14 @@ for HTTP Basic authentication.</td></tr>
       </li>
 
       <li>
-        <a href="#requiredirectives">The require Directives</a> 
+        <a href="#requiredirectives">The Require Directives</a> 
 
         <ul>
-          <li><a href="#reqvaliduser">require valid-user</a></li>
-          <li><a href="#requser">require user</a></li>
-          <li><a href="#reqgroup">require group</a></li>
-          <li><a href="#reqdn">require dn</a></li>
-          <li><a href="#reqattribute">require ldap-attribute</a></li>
+          <li><a href="#reqvaliduser">Require valid-user</a></li>
+          <li><a href="#requser">Require user</a></li>
+          <li><a href="#reqgroup">Require group</a></li>
+          <li><a href="#reqdn">Require dn</a></li>
+          <li><a href="#reqattribute">Require ldap-attribute</a></li>
         </ul>
       </li>
 
@@ -206,23 +206,23 @@ for HTTP Basic authentication.</td></tr>
     directives to determine if the credentials are acceptable:</p>
 
     <ul>
-      <li>Grant access if there is a <a href="#requser"><code>require
+      <li>Grant access if there is a <a href="#requser"><code>Require
       valid-user</code></a> directive.</li>
 
-      <li>Grant access if there is a <a href="#reqgroup"><code>require user</code></a> directive, and the
+      <li>Grant access if there is a <a href="#reqgroup"><code>Require user</code></a> directive, and the
       username in the directive matches the username passed by the
       client.</li>
 
-      <li>Grant access if there is a <a href="#reqdn"><code>require
+      <li>Grant access if there is a <a href="#reqdn"><code>Require
       dn</code></a> directive, and the DN in the directive matches
       the DN fetched from the LDAP directory.</li>
 
-      <li>Grant access if there is a <a href="#reqgroup"><code>require group</code></a> directive, and
+      <li>Grant access if there is a <a href="#reqgroup"><code>Require group</code></a> directive, and
       the DN fetched from the LDAP directory (or the username
       passed by the client) occurs in the LDAP group.</li>
 
       <li>Grant access if there is a <a href="#reqattribute">
-      <code>require ldap-attribute</code></a> 
+      <code>Require ldap-attribute</code></a> 
       directive, and the attribute fetched from the LDAP directory
       matches the given value.</li> 
 
@@ -238,7 +238,7 @@ for HTTP Basic authentication.</td></tr>
         <td><code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> </td>
 
         <td>The attribute specified in the
-        URL is used in compare operations for the <code>require
+        URL is used in compare operations for the <code>Require
         user</code> operation.</td>
       </tr>
 
@@ -246,14 +246,14 @@ for HTTP Basic authentication.</td></tr>
         <td><code class="directive"><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></code></td>
 
         <td>Determines the behavior of the
-        <code>require dn</code> directive.</td>
+        <code>Require dn</code> directive.</td>
       </tr>
 
       <tr>
         <td><code class="directive"><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></code></td>
 
         <td>Determines the attribute to
-        use for comparisons in the <code>require group</code>
+        use for comparisons in the <code>Require group</code>
         directive.</td>
       </tr>
 
@@ -262,19 +262,19 @@ for HTTP Basic authentication.</td></tr>
 
         <td>Specifies whether to use the
         user DN or the username when doing comparisons for the
-        <code>require group</code> directive.</td>
+        <code>Require group</code> directive.</td>
       </tr>
     </table>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">The require Directives</a></h2>
+<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a></h2>
 
     <p>Apache's <code class="directive"><a href="../mod/core.html#require">Require</a></code>
     directives are used during the authorization phase to ensure that
     a user is allowed to access a resource.</p>
 
-<h3><a name="reqvaliduser" id="reqvaliduser">require
+<h3><a name="reqvaliduser" id="reqvaliduser">Require
     valid-user</a></h3>
 
     <p>If this directive exists, <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> grants
@@ -282,42 +282,42 @@ for HTTP Basic authentication.</td></tr>
     search/bind phase.</p>
 
 
-<h3><a name="requser" id="requser">require user</a></h3>
+<h3><a name="requser" id="requser">Require user</a></h3>
 
-    <p>The <code>require user</code> directive specifies what
+    <p>The <code>Require user</code> directive specifies what
     usernames can access the resource. Once
     <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> has retrieved a unique DN from the
     directory, it does an LDAP compare operation using the username
-    specified in the <code>require user</code> to see if that username
+    specified in the <code>Require user</code> to see if that username
     is part of the just-fetched LDAP entry.  Multiple users can be
     granted access by putting multiple usernames on the line,
     separated with spaces. If a username has a space in it, then it
     must be surrounded with double quotes. Multiple users can also be
-    granted access by using multiple <code>require user</code>
+    granted access by using multiple <code>Require user</code>
     directives, with one user per line. For example, with a <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code> of
     <code>ldap://ldap/o=Airius?cn</code> (i.e., <code>cn</code> is
-    used for searches), the following require directives could be used
+    used for searches), the following Require directives could be used
     to restrict access:</p>
 <div class="example"><p><code>
-require user "Barbara Jenson"<br />
-require user "Fred User"<br />
-require user "Joe Manager"<br />
+Require user "Barbara Jenson"<br />
+Require user "Fred User"<br />
+Require user "Joe Manager"<br />
 </code></p></div>
 
     <p>Because of the way that <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> handles this
     directive, Barbara Jenson could sign on as <em>Barbara
     Jenson</em>, <em>Babs Jenson</em> or any other <code>cn</code> that
-    she has in her LDAP entry. Only the single <code>require
+    she has in her LDAP entry. Only the single <code>Require
     user</code> line is needed to support all values of the attribute
     in the user's entry.</p>
 
     <p>If the <code>uid</code> attribute was used instead of the
     <code>cn</code> attribute in the URL above, the above three lines
     could be condensed to</p>
-<div class="example"><p><code>require user bjenson fuser jmanager</code></p></div>
+<div class="example"><p><code>Require user bjenson fuser jmanager</code></p></div>
 
 
-<h3><a name="reqgroup" id="reqgroup">require group</a></h3>
+<h3><a name="reqgroup" id="reqgroup">Require group</a></h3>
 
     <p>This directive specifies an LDAP group whose members are
     allowed access. It takes the distinguished name of the LDAP
@@ -333,34 +333,34 @@ uniqueMember: cn=Fred User, o=Airius<br />
 
     <p>The following directive would grant access to both Fred and
     Barbara:</p>
-<div class="example"><p><code>require group cn=Administrators, o=Airius</code></p></div>
+<div class="example"><p><code>Require group cn=Administrators, o=Airius</code></p></div>
 
     <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></code> and
     <code class="directive"><a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></code>
     directives.</p>
 
 
-<h3><a name="reqdn" id="reqdn">require dn</a></h3>
+<h3><a name="reqdn" id="reqdn">Require dn</a></h3>
 
-    <p>The <code>require dn</code> directive allows the administrator
+    <p>The <code>Require dn</code> directive allows the administrator
     to grant access based on distinguished names. It specifies a DN
     that must match for access to be granted. If the distinguished
     name that was retrieved from the directory server matches the
-    distinguished name in the <code>require dn</code>, then
+    distinguished name in the <code>Require dn</code>, then
     authorization is granted. Note: do not surround the distinguished
     name with quotes.</p>
 
     <p>The following directive would grant access to a specific
     DN:</p>
-<div class="example"><p><code>require dn cn=Barbara Jenson, o=Airius</code></p></div>
+<div class="example"><p><code>Require dn cn=Barbara Jenson, o=Airius</code></p></div>
 
     <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapcomparednonserver">AuthLDAPCompareDNOnServer</a></code>
     directive.</p>
 
 
-<h3><a name="reqattribute" id="reqattribute">require ldap-attribute</a></h3>
+<h3><a name="reqattribute" id="reqattribute">Require ldap-attribute</a></h3>
 
-    <p>The <code>require ldap-attribute</code> directive allows the
+    <p>The <code>Require ldap-attribute</code> directive allows the
     administrator to grant access based on attributes of the authenticated
     user in the LDAP directory.  If the attribute in the directory
     matches the value given in the configuration, access is granted.</p>
@@ -368,11 +368,11 @@ uniqueMember: cn=Fred User, o=Airius<br />
     <p>The following directive would grant access to anyone with
     the attribute employeeType = active</p>
 
-    <div class="example"><p><code>require ldap-attribute employeeType=active</code></p></div>
+    <div class="example"><p><code>Require ldap-attribute employeeType=active</code></p></div>
 
     <p>Multiple attribute/value pairs can be specified on the same line
     separated by spaces or they can be specified in multiple 
-    <code>require ldap-attribute</code> directives. The effect of listing 
+    <code>Require ldap-attribute</code> directives. The effect of listing 
     multiple attribute/values pairs is an OR operation. Access will be 
     granted if any of the listed attribute values match the value of a 
     corresponding attribute in the user object. If the value of the 
@@ -381,7 +381,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
     <p>The following directive would grant access to anyone with
     the city attribute equal to "San Jose" or status equal to "Active"</p>
 
-    <div class="example"><p><code>require ldap-attribute city="San Jose" status=active</code></p></div>
+    <div class="example"><p><code>Require ldap-attribute city="San Jose" status=active</code></p></div>
 
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -395,7 +395,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
 
 <div class="example"><p><code>
  AuthLDAPURL ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)<br />
- require valid-user
+ Require valid-user
 </code></p></div>
       </li>
 
@@ -404,7 +404,7 @@ uniqueMember: cn=Fred User, o=Airius<br />
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server. 
 <div class="example"><p><code>AuthLDAPURL ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius<br />
-require valid-user
+Require valid-user
 </code></p></div>
       </li>
 
@@ -419,7 +419,7 @@ require valid-user
         directory, such as <code>uid</code>. 
 <div class="example"><p><code>
 AuthLDAPURL ldap://ldap.airius.com/ou=People, o=Airius?cn<br />
-require valid-user
+Require valid-user
 </code></p></div>
       </li>
 
@@ -428,7 +428,7 @@ require valid-user
         users must authenticate using their UID. 
 <div class="example"><p><code>
 AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid<br />
-require group cn=Administrators, o=Airius
+Require group cn=Administrators, o=Airius
 </code></p></div>
       </li>
 
@@ -440,7 +440,7 @@ require group cn=Administrators, o=Airius
         alphanumeric pagers: 
 <div class="example"><p><code>
 AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(qpagePagerID=*)<br />
-require valid-user
+Require valid-user
 </code></p></div>
       </li>
 
@@ -456,7 +456,7 @@ require valid-user
         resource:</p>
 <div class="example"><p><code>
 AuthLDAPURL ldap://ldap.airius.com/o=Airius?uid??(|(qpagePagerID=*)(uid=jmanager))<br />
-require valid-user
+Require valid-user
 </code></p></div>
 
         <p>This last may look confusing at first, so it helps to
@@ -526,17 +526,17 @@ AuthLDAPFrontPageHack  on
 
 <h3><a name="howitworks" id="howitworks">How It Works</a></h3>
 
-    <p>FrontPage restricts access to a web by adding the <code>require
+    <p>FrontPage restricts access to a web by adding the <code>Require
     valid-user</code> directive to the <code>.htaccess</code>
     files. If <code class="directive"><a href="#authldapfrontpagehack">AuthLDAPFrontPageHack</a></code> is not
-    on, the <code>require valid-user</code> directive will succeed for
+    on, the <code>Require valid-user</code> directive will succeed for
     any user who is valid <em>as far as LDAP is
     concerned</em>. This means that anybody who has an entry in
     the LDAP directory is considered a valid user, whereas FrontPage
     considers only those people in the local user file to be
     valid. The purpose of the hack is to force Apache to consult the
     local user file (which is managed by FrontPage) - instead of LDAP
-    - when handling the <code>require valid-user</code> directive.</p>
+    - when handling the <code>Require valid-user</code> directive.</p>
 
     <p>Once directives have been added as specified above,
     FrontPage users will be able to perform all management
@@ -669,7 +669,7 @@ authenticating the user if this one fails</td></tr>
     <p>When set, <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> will use the LDAP
     server to compare the DNs. This is the only foolproof way to
     compare DNs.  <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> will search the
-    directory for the DN specified with the <a href="#reqdn"><code>require dn</code></a> directive, then,
+    directory for the DN specified with the <a href="#reqdn"><code>Require dn</code></a> directive, then,
     retrieve the DN and compare it with the DN retrieved from the user
     entry. If this directive is not set,
     <code class="module"><a href="../mod/mod_auth_ldap.html">mod_auth_ldap</a></code> simply does a string comparison. It
