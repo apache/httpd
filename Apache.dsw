@@ -42,6 +42,33 @@ Package=<4>
 
 ###############################################################################
 
+Project: "BuildAll"=.\BuildAll.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name BuildAll
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_case_filter
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_case_filter_in
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_echo
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_example
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "BuildBin"=.\BuildBin.dsp - Package Owner=<4>
 
 Package=<5>
@@ -226,6 +253,9 @@ Package=<4>
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_rewrite
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name mod_rewrite_filter
     End Project Dependency
     Begin Project Dependency
     Project_Dep_Name mod_setenvif
@@ -1177,6 +1207,48 @@ Package=<4>
 
 ###############################################################################
 
+Project: "mod_case_filter"=.\modules\experimental\mod_case_filter.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_case_filter_in"=.\modules\experimental\mod_case_filter_in.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
 Project: "mod_cern_meta"=.\modules\metadata\mod_cern_meta.dsp - Package Owner=<4>
 
 Package=<5>
@@ -1415,6 +1487,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_env"=.\modules\metadata\mod_env.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_example"=.\modules\experimental\mod_example.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
@@ -1962,6 +2055,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_rewrite"=.\modules\mappers\mod_rewrite.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_rewrite_filter"=.\modules\experimental\mod_rewrite_filter.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
