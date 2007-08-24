@@ -1,6 +1,10 @@
 ﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) main core: Emit errors during the initial apr_app_initialize()
+     or apr_pool_create() (when apr-based error reporting is not ready).
+     [William Rowe]
+
   *) log core: fix the new piped logger case where we couldn't connect 
      the replacement stderr logger's stderr to the NULL stdout stream.  
      Continue in this case, since the previous alternative of no error 
