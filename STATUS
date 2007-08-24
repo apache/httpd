@@ -290,17 +290,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=565671
       +1: niq
  
-    * log core: fix the new piped logger case where we couldn't connect 
-      the replacement stderr logger's stderr to the NULL stdout stream.  
-      Continue in this case, since the previous alternative of no error 
-      logging at all (/dev/null) is far worse. [William Rowe]
-        http://svn.apache.org/viewvc?view=rev&revision=568326
-      disambiguate an error message to diagnose future error reports
-        http://svn.apache.org/viewvc?view=rev&revision=568322
-        +1: wrowe
-            rpluem says: +1 once r568446 is backported.
-            jim: Agrees with rpluem.
-
     * main core: Emit errors during the initial apr_app_initialize()
       or apr_pool_create() (when apr-based error reporting is not ready).
         http://svn.apache.org/viewvc?view=rev&revision=568779
