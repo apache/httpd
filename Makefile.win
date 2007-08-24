@@ -13,7 +13,7 @@
 # The following install defaults may be customized;
 #
 #   Option      Default
-#   INSTDIR     \Apache23
+#   INSTDIR     /Apache23
 #   PORT        80
 #   SSLPORT     443
 #   SERVERNAME  localhost
@@ -28,9 +28,24 @@
 # so the server root should be given in forward slashes (quoted),
 # preferably with the drive designation!
 
+!IF EXIST("httpd.vcproj") && ([devenv /help > NUL 2>&1] == 0) \
+    && !defined(USEMAK) && !defined(USEDSW)
+USESLN=1
+USEMAK=0
+USEDSW=0
+!ELSEIF EXIST("httpd.mak") && !defined(USEDSW)
+USESLN=0
+USEMAK=1
+USEDSW=0
+!ELSE
+USESLN=0
+USEMAK=0
+USEDSW=1
+!ENDIF
+
 default: _apacher
 
-!IF ("$(CTARGET)" == "") && !EXIST("httpd.mak") && EXIST("Apache.sln")
+!IF ("$(CTARGET)" == "") && ($(USESLN) == 1)
 CTARGET=/build
 !ENDIF
 
@@ -53,14 +68,14 @@ SSLBIN=out32dll
 !ENDIF
 
 _tryssl:
-!IF EXIST("modules\ssl\mod_ssl.mak")
+!IF $(USEMAK) == 1
 	cd modules\ssl
 	$(MAKE) $(MAKEOPT) -f mod_ssl.mak CFG="mod_ssl - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd support
 	$(MAKE) $(MAKEOPT) -f abs.mak CFG="abs - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..
-!ELSEIF EXIST("Apache.sln")
+!ELSEIF $(USESLN) == 1
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_ssl
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project abs
 !ELSE
@@ -84,11 +99,11 @@ _tryssl:
 !IF EXIST("srclib\zlib")
 
 _tryzlib:
-!IF EXIST("modules\filters\mod_deflate.mak")
+!IF $(USEMAK) == 1
 	cd modules\filters
 	$(MAKE) $(MAKEOPT) -f mod_deflate.mak CFG="mod_deflate - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
-!ELSEIF EXIST("Apache.sln")
+!ELSEIF $(USESLN) == 1
 	devenv Apache.sln /useenv $(CTARGET) $(LONG) /project mod_deflate
 !ELSE
 	@msdev Apache.dsw /USEENV /MAKE \
@@ -169,7 +184,7 @@ clean:	_cleanr _cleand
 y
 <<
 
-!IF EXIST("httpd.mak")
+!IF $(USEMAK) == 1
 
 _cleanr:
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET=CLEAN _build
@@ -357,7 +372,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f wintty.mak          CFG="wintty - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 
-!ELSEIF EXIST("Apache.sln")
+!ELSEIF $(USESLN) == 1
 
 _cleanr:  
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=R LONG=Release CTARGET="/clean" _build
