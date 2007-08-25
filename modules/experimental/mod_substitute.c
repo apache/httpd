@@ -449,7 +449,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
     ap_regex_t *r = NULL;
 
     if (apr_tolower(*line) != 's') {
-        return "Bad Rewrite format, must be an s/// pattern";
+        return "Bad Substitute format, must be an s/// pattern";
     }
     ourline = apr_pstrdup(cmd->pool, line);
     delim = *++ourline;
@@ -471,7 +471,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
     }
 
     if (!delim || !from || !to) {
-        return "Bad Rewrite format, must be a complete s/// pattern";
+        return "Bad Substitute format, must be a complete s/// pattern";
     }
 
     while (*flags) {
@@ -483,7 +483,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
         else if (delim == 'f')
             flatten = 1;
         else
-            return "Bad Rewrite flag, only s///[inf] are supported";
+            return "Bad Substitute flag, only s///[inf] are supported";
         flags++;
     }
 
@@ -492,7 +492,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
         r = ap_pregcomp(cmd->pool, from, AP_REG_EXTENDED |
                         (ignore_case ? AP_REG_ICASE : 0));
         if (!r)
-            return "Rewrite could not compile regex";
+            return "Substitute could not compile regex";
     }
     nscript = apr_array_push(((subst_dir_conf *) cfg)->patterns);
     /* init the new entries */
