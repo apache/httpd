@@ -163,7 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          (relevant portions only)
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-2misc-2.2.x.patch
-     +1: chrisd
+     +1: chrisd, fuankg
      +1: niq (to chris's mod_dbd updates collectively)
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
@@ -192,7 +192,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=496831
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-3pools-2.2.x.patch
-     +1: chrisd
+     +1: chrisd, fuankg
      +1: niq (to chris's mod_dbd updates collectively)
 
    * mod_dbd: Introduce configuration groups to allow inheritance by virtual
@@ -210,7 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=503931
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-4groups-2.2.x.patch
-     +1: chrisd
+     +1: chrisd, fuankg
      +1: niq (to chris's mod_dbd updates collectively)
 
     * mod_proxy: Improve traces in ap_proxy_http_process_response()
