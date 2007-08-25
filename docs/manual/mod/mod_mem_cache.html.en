@@ -39,6 +39,9 @@
 
     <p>Content is stored in and retrieved from the cache using URI based
     keys. Content with access protection is not cached.</p>
+    
+    <div class="note"><h3>Note</h3>In most cases <code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code>
+    should be the preferred choice. This is explained further in the <a href="../caching.html#inmemory">Caching Guide</a>.</div>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
