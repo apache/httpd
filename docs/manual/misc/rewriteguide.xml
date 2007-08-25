@@ -1766,7 +1766,6 @@ RewriteCond   ${vhost:%1}  ^(/.*)$
 #   5. finally we can map the URL to its docroot location
 #      and remember the virtual host for logging puposes
 RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
-    :
 </pre></example>
         </dd>
       </dl>
