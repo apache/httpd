@@ -1,6 +1,31 @@
 ﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_dbd: Introduce configuration groups to allow inheritance by virtual
+     hosts of database configurations from the main server.  Determine the
+     minimal set of distinct configurations and share connection pools
+     whenever possible.  Allow virtual hosts to override inherited SQL
+     statements.  PR 41302.  [Chris Darroch]
+
+  *) mod_dbd: Create memory sub-pools for each DB connection and close
+     DB connections in a pool cleanup function.  Ensure prepared statements
+     are destroyed before DB connection is closed.  When using reslists,
+     prevent segfaults when child processes exit, and stop memory leakage
+     of ap_dbd_t structures.  Avoid use of global s->process->pool, which
+     isn't destroyed by exiting child processes in most multi-process MPMs.
+     PR 39985.  [Chris Darroch, Nick Kew]
+
+  *) mod_dbd: Handle error conditions in dbd_construct() properly.
+     Simplify ap_dbd_open() and use correct arguments to apr_dbd_error()
+     when non-threaded.  Register correct cleanup data in non-threaded
+     ap_dbd_acquire() and ap_dbd_cacquire().  Clean up configuration data
+     and merge function.  Use ap_log_error() wherever possible.
+     [Chris Darroch, Nick Kew]
+
+  *) mod_dbd: Stash DBD connections in request_config of initial request
+     only, or else sub-requests and internal redirections may cause
+     entire DBD pool to be stashed in a single HTTP request.  [Chris Darroch]
+
   *) main core: Emit errors during the initial apr_app_initialize()
      or apr_pool_create() (when apr-based error reporting is not ready).
      [William Rowe]
