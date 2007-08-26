@@ -293,7 +293,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_expires: Don't crash on bad configuration data
       PR: 43213
       http://svn.apache.org/viewvc?view=rev&revision=569622
-      +1: niq
+      +1: niq, rpluem
  
 
 PATCHES/ISSUES THAT ARE STALLED
