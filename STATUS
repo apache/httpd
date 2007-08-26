@@ -122,51 +122,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           I'll +1 it when that's done.
      wrowe: ditto's - good concept.
 
-   * mod_dbd: initialise resources and prepared statements in all vhosts
-     PRs: 42327, 41302
-     Trunk: N/A due to other changes (r503931 et al)
-     Patch by bojan: http://issues.apache.org/bugzilla/attachment.cgi?id=20161
-     +1: niq
-     -1: chrisd: I think r503931 is actually the right thing to backport here,
-         which admittedly probably requires backporting r491729, r491884,
-         r492394 (trivial), and r496831 first.  While more complex than a
-         quick patch, I think the explanation in the fourth section of this
-         post explains why there's no simple fix for the virtual-host
-         inheritance issues:
-
-         http://marc.info/?l=apache-httpd-dev&m=116742014418304&w=2
-
-         Doing this work would also let us close at least three PRs.
-         PR 42327 seems like a duplicate of 41302 (both would be closed
-         by r503931), and r496831 would close PR 39985 as well.
-
-   * mod_dbd: Rename functions and variables for consistency, and move
-     some functions around for readability, prior to making
-     functional changes for PRs 39985, 41302, and other issues.
-     Trunk version of patches:
-       http://svn.apache.org/viewvc?view=rev&revision=491729
-       http://svn.apache.org/viewvc?view=rev&revision=492394
-         (relevant portions only)
-       http://svn.apache.org/viewvc?view=rev&revision=521230
-     2.2.x version of patch:
-       http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-1tidy-2.2.x.patch
-     +1: chrisd, fuankg
-     +1: niq (to chris's mod_dbd updates collectively)
-
-   * mod_dbd: Handle error conditions in dbd_construct() properly.
-     Simplify ap_dbd_open() and use correct arguments to apr_dbd_error()
-     when non-threaded.  Register correct cleanup data in non-threaded
-     ap_dbd_acquire() and ap_dbd_cacquire().  Clean up configuration data
-     and merge function.  Use ap_log_error() wherever possible.
-     Trunk version of patches:
-       http://svn.apache.org/viewvc?view=rev&revision=491884
-       http://svn.apache.org/viewvc?view=rev&revision=492394
-         (relevant portions only)
-     2.2.x version of patch:
-       http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-2misc-2.2.x.patch
-     +1: chrisd, fuankg
-     +1: niq (to chris's mod_dbd updates collectively)
-
    * beos MPM: Create pmain pool and run modules' child_init hooks when
      entering ap_mpm_run(), then destroy pmain when exiting ap_mpm_run().
      Otherwise modules' child_init hooks appear to never be executed.
@@ -177,42 +132,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mpm_child_init-beos-2.2.x.patch
      +0: chrisd (abstaining; unable to test)
-
-   * mod_dbd: Create memory sub-pools for each DB connection and close
-     DB connections in a pool cleanup function.  Ensure prepared statements
-     are destroyed before DB connection is closed.  When using reslists,
-     prevent segfaults when child processes exit, and stop memory leakage
-     of ap_dbd_t structures.  Avoid use of global s->process->pool, which
-     isn't destroyed by exiting child processes in most multi-process MPMs.
-     See also the third section of:
-       http://marc.info/?l=apache-httpd-dev&m=116742014418304&w=2
-     and the eventual solution as described in the comments in the
-     dbd_setup() function.
-       PR: 39985
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=496831
-     2.2.x version of patch:
-       http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-3pools-2.2.x.patch
-     +1: chrisd, fuankg
-     +1: niq (to chris's mod_dbd updates collectively)
-
-   * mod_dbd: Introduce configuration groups to allow inheritance by virtual
-     hosts of database configurations from the main server.  Determine the
-     minimal set of distinct configurations and share connection pools
-     whenever possible.  Allow virtual hosts to override inherited SQL
-     statements.  See also the fourth section of:
-       http://marc.info/?l=apache-httpd-dev&m=116742014418304&w=2
-     and the eventual solution as implemented in the dbd_post_config()
-     function.  Obviates r424798, r432560, r432562, and r466641.
-     Could be improved by the addition of <DBDGroup> configuration
-     sections.  (Any takers?  :-)
-       PR: 41302
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=503931
-     2.2.x version of patch:
-       http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mod_dbd-4groups-2.2.x.patch
-     +1: chrisd, fuankg
-     +1: niq (to chris's mod_dbd updates collectively)
 
     * mod_proxy: Improve traces in ap_proxy_http_process_response()
       to investigate PR37770.
