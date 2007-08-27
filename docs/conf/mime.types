@@ -328,7 +328,7 @@ application/vnd.kde.kword
 application/vnd.kenameaapp
 application/vnd.kidspiration
 application/vnd.kinar
-application/vnd.koan
+application/vnd.koan		skp skd skt skm
 application/vnd.liberty-request+xml
 application/vnd.llamagraphics.life-balance.desktop
 application/vnd.llamagraphics.life-balance.exchange+xml
@@ -600,6 +600,7 @@ application/wordperfect5.1
 application/wsdl+xml
 application/wspolicy+xml
 application/x-bcpio		bcpio
+application/x-bittorrent	torrent
 application/x-cdlink		vcd
 application/x-chess-pgn		pgn
 application/x-compress
@@ -611,23 +612,19 @@ application/x-futuresplash	spl
 application/x-gtar		gtar
 application/x-gzip
 application/x-hdf		hdf
-application/x-koan		skp skd skt skm
 application/x-latex		latex
 application/x-netcdf		nc cdf
 application/x-sh		sh
 application/x-shar		shar
 application/x-shockwave-flash	swf
 application/x-stuffit		sit
+application/x-stuffitx		sitx
 application/x-sv4cpio		sv4cpio
 application/x-sv4crc		sv4crc
 application/x-tar		tar
 application/x-tcl		tcl
 application/x-tex		tex
 application/x-texinfo		texinfo texi
-application/x-troff		t tr roff
-application/x-troff-man		man
-application/x-troff-me		me
-application/x-troff-ms		ms
 application/x-ustar		ustar
 application/x-wais-source	src
 application/x400-bp
@@ -746,7 +743,6 @@ audio/vnd.rhetorex.32kadpcm
 audio/vnd.sealedmedia.softseal.mpeg
 audio/vnd.vmx.cvsd
 audio/x-aiff			aif aiff aifc
-audio/x-alaw-basic
 audio/x-mpegurl			m3u
 audio/x-pn-realaudio		ram ra
 audio/x-pn-realaudio-plugin
@@ -860,7 +856,7 @@ text/rtx
 text/sgml			sgml sgm
 text/t140
 text/tab-separated-values	tsv
-text/troff
+text/troff			t tr roff man me ms
 text/uri-list
 text/vnd.abc
 text/vnd.curl
