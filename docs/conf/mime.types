@@ -36,7 +36,7 @@ application/dialog-info+xml
 application/dicom
 application/dns
 application/dvcs
-application/ecmascript		es
+application/ecmascript		ecma
 application/edi-consent
 application/edi-x12
 application/edifact
@@ -178,7 +178,7 @@ application/vnd.amiga.ami
 application/vnd.anser-web-certificate-issue-initiation
 application/vnd.anser-web-funds-transfer-initiation
 application/vnd.antix.game-component
-application/vnd.apple.installer+xml	dist distz pkg mpkg
+application/vnd.apple.installer+xml	mpkg
 application/vnd.audiograph
 application/vnd.autopackage
 application/vnd.avistar+xml
@@ -376,7 +376,7 @@ application/vnd.ms-asf
 application/vnd.ms-cab-compressed
 application/vnd.ms-excel	xls
 application/vnd.ms-fontobject
-application/vnd.ms-htmlhelp
+application/vnd.ms-htmlhelp	chm
 application/vnd.ms-ims
 application/vnd.ms-lrm
 application/vnd.ms-playready.initiator+xml
@@ -643,6 +643,7 @@ application/xml-external-parsed-entity
 application/xmpp+xml
 application/xop+xml
 application/xslt+xml		xslt
+application/xspf+xml		xspf
 application/xv+xml
 application/zip			zip
 audio/32kadpcm
@@ -765,7 +766,7 @@ image/naplps
 image/png			png
 image/prs.btif
 image/prs.pti
-image/svg+xml			svg
+image/svg+xml			svg svgz
 image/t38
 image/tiff			tiff tif
 image/tiff-fx
