@@ -1,6 +1,9 @@
 ﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_expires: don't crash on bad configuration data
+     PR 43213 [Julien Perez <julien.perez epsylonia.net>]
+
   *) mod_dbd: Introduce configuration groups to allow inheritance by virtual
      hosts of database configurations from the main server.  Determine the
      minimal set of distinct configurations and share connection pools

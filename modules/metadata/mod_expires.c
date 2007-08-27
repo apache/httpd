@@ -321,6 +321,9 @@ static const char *set_expiresbytype(cmd_parms *cmd, void *in_dir_config,
     const char *check;
 
     check = ap_strrchr_c(mime, '/');
+    if (check == NULL) {
+        return "Invalid mimetype: should contain a slash";
+    }
     if ((strlen(++check) == 1) && (*check == '*')) {
         dir_config->wildcards = 1;
     }
