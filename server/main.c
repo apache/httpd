@@ -268,6 +268,7 @@ static process_rec *init_process(int *argc, const char * const * *argv)
     apr_pool_t *cntx;
     apr_status_t stat;
     const char *failed = "apr_app_initialize()";
+
     stat = apr_app_initialize(argc, argv, NULL);
     if (stat == APR_SUCCESS) {
         failed = "apr_pool_create()";
@@ -279,11 +280,10 @@ static process_rec *init_process(int *argc, const char * const * *argv)
          * but APR doesn't exist yet, we can't use it for reporting
          * these earliest two failures;
          */
-        char ctimebuff[APR_CTIME_LEN + 1];
+        char ctimebuff[APR_CTIME_LEN];
         apr_ctime(ctimebuff, apr_time_now());
-        ctimebuff[APR_CTIME_LEN] = '\0';
         fprintf(stderr, "[%s] [crit] (%d) %s: %s failed "
-                        "to initial context, exiting", 
+                        "to initial context, exiting\n", 
                         ctimebuff, stat, (*argv)[0], failed);
         apr_terminate();
         exit(1);
