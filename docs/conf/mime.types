@@ -599,6 +599,7 @@ application/wita
 application/wordperfect5.1
 application/wsdl+xml
 application/wspolicy+xml
+application/x-ace-compressed	ace
 application/x-bcpio		bcpio
 application/x-bittorrent	torrent
 application/x-cdlink		vcd
@@ -614,6 +615,7 @@ application/x-gzip
 application/x-hdf		hdf
 application/x-latex		latex
 application/x-netcdf		nc cdf
+application/x-rar-compressed	rar
 application/x-sh		sh
 application/x-shar		shar
 application/x-shockwave-flash	swf
