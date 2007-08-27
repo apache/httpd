@@ -1,6 +1,11 @@
 ﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) mime.types: Many updates to sync with IANA registry and common
+     unregistered types that the owners refuse to register.  Admins
+     are encouraged to update their installed mime.types file.
+     PR: 35550, 37798, 39317, 31483 [Roy T. Fielding]
+
   *) log core: ensure we use a special pool for stderr logging, so that
      the stderr channel remains valid from the time plog is destroyed,
      until the time the open_logs hook is called again.  [William Rowe]
