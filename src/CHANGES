@@ -1,5 +1,9 @@
 Changes with Apache 1.3.39
 
+  *) mime.types: Many updates to sync with IANA registry and common
+     unregistered types that the owners refuse to register.  Admins
+     are encouraged to update their installed mime.types file.
+     PR: 35550, 37798, 39317, 31483 [Roy T. Fielding]
 
 Changes with Apache 1.3.38
 
