@@ -157,10 +157,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem, jim
-      -0.5: niq - This (ProxySet) needs documenting. 
-            Reviewing it 'blind' lacks appeal.
-            jim: ProxySet is now documented... Nick can you
-            review your vote?
 
     * mod_proxy: Allow optional name=value options within <Proxy section line.
       Additional arguments are allowed only for 'standard' url's, meaning that
@@ -212,11 +208,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=565671
       +1: niq
 
-    * mod_expires: Don't crash on bad configuration data
-      PR: 43213
-      http://svn.apache.org/viewvc?view=rev&revision=569622
-      +1: niq, rpluem, jim
- 
     * log core: ensure we use a special pool for stderr logging, so that
       the stderr channel remains valid from the time plog is destroyed,
       until the time the open_logs hook is called again.  [William Rowe]
