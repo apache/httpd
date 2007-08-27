@@ -79,7 +79,7 @@ void util_ldap_url_node_free(util_ald_cache_t *cache, void *n)
 void util_ldap_url_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
 {
     util_url_node_t *node = n;
-    char date_str[APR_CTIME_LEN+1];
+    char date_str[APR_CTIME_LEN];
     const char *type_str;
     util_ald_cache_t *cache_node;
     int x;
@@ -218,7 +218,7 @@ void util_ldap_search_node_free(util_ald_cache_t *cache, void *n)
 void util_ldap_search_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
 {
     util_search_node_t *node = n;
-    char date_str[APR_CTIME_LEN+1];
+    char date_str[APR_CTIME_LEN];
 
     apr_ctime(date_str, node->lastbind);
 
@@ -288,7 +288,7 @@ void util_ldap_compare_node_free(util_ald_cache_t *cache, void *n)
 void util_ldap_compare_node_display(request_rec *r, util_ald_cache_t *cache, void *n)
 {
     util_compare_node_t *node = n;
-    char date_str[APR_CTIME_LEN+1];
+    char date_str[APR_CTIME_LEN];
     char *cmp_result;
     char *sub_groups_val;
     char *sub_groups_checked;
