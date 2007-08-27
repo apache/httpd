@@ -232,7 +232,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=520701
       Backported to 2.2;
         http://people.apache.org/~wrowe/r520701-backport-2.2.patch
-      +1: wrowe
+      +1: wrowe, rpluem
 
 
 PATCHES/ISSUES THAT ARE STALLED
