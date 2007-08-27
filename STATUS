@@ -166,14 +166,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       adjusted for 2.0 including both patches;
         http://people.apache.org/~wrowe/r568779-backport-2.0-r2.patch
         +1: wrowe
-        rpluem says: What is the reason for the patch to Makefile.in in your
-        proposal? Besides I think
-        sed 's#i^LIBTOOL = \(.*\)#LIBTOOL = $(SHELL) $(installbuilddir)/libtool $(LTFLAGS)#'
-        is wrong (Note the i before ^).
-      and prior to r569934;
-        +1: rpluem
       r568779-backport-2.0-r2.patch without the Makefile.in:
-        +1: trawick, jim
+        +1: trawick, jim, rpluem
 
     * log core: ensure we use a special pool for stderr logging, so that
       the stderr channel remains valid from the time plog is destroyed,
