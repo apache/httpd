@@ -171,6 +171,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         is wrong (Note the i before ^).
       and prior to r569934;
         +1: rpluem
+      r568779-backport-2.0-r2.patch without the Makefile.in:
+        +1: trawick
 
     * log core: ensure we use a special pool for stderr logging, so that
       the stderr channel remains valid from the time plog is destroyed,
