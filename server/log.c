@@ -217,7 +217,7 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
     }
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rc, NULL,
-                     "unable to replace stderr with error_log");
+                     "unable to replace stderr with error log file");
     }
     return rc;
 }
@@ -229,6 +229,11 @@ static void log_child_errfn(apr_pool_t *pool, apr_status_t err,
                  "%s", description);
 }
 
+/* Create a child process running PROGNAME with a pipe connected to
+ * the childs stdin.  The write-end of the pipe will be placed in
+ * *FPIN on successful return.  If dummy_stderr is non-zero, the
+ * stderr for the child will be the same as the stdout of the parent.
+ * Otherwise the child will inherit the stderr from the parent. */
 static int log_child(apr_pool_t *p, const char *progname,
                      apr_file_t **fpin, int dummy_stderr)
 {
@@ -276,6 +281,8 @@ static int log_child(apr_pool_t *p, const char *progname,
     return rc;
 }
 
+/* Open the error log for the given server_rec.  If IS_MAIN is
+ * non-zero, s is the main server. */
 static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
 {
     const char *fname;
