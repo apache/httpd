@@ -1,6 +1,13 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_ssl: Version reporting update; displays 'compiled against'
+     Apache and build-time SSL Library versions at loglevel [info],
+     while reporting the run-time SSL Library version in the server
+     info tags.  Helps to identify a mod_ssl built against one flavor
+     of OpenSSL but running against another (also adds SSL-C version
+     number reporting.)  [William Rowe]
+
   *) mime.types: Many updates to sync with IANA registry and common
      unregistered types that the owners refuse to register.  Admins
      are encouraged to update their installed mime.types file.
