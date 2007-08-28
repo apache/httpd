@@ -133,14 +133,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
        +1: wrowe, colm
 
-    * mpm_winnt: Prevent the parent-child pipe from leaking into other
-      spawned processes, and ensure we have a /Device/null handle for
-      stdout when running as-a-service.  [William Rowe]
-        http://svn.apache.org/viewvc?view=rev&revision=568446
-      adjusted for 2.0;
-        http://people.apache.org/~wrowe/r568446-backport-2.0.patch
-        +1: wrowe
-
     * log core: Fix issue which could cause piped loggers to be orphaned 
       and never terminate after a graceful restart. PR 40651. [Joe Orton, 
       Ruediger Pluem]
