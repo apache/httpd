@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.61
 
+  *) main core: Emit errors during the initial apr_app_initialize()
+     or apr_pool_create() (when apr-based error reporting is not ready).
+     [William Rowe, Jeff Trawick]
+
   *) log core: Fix issue which could cause piped loggers to be orphaned 
      and never terminate after a graceful restart. PR 40651. [Joe Orton, 
      Ruediger Pluem]
