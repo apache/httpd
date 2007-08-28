@@ -478,8 +478,8 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
                 d_cfg->desc_adjust = K_NOADJUST;
             }
         }
-        else if (!strncasecmp(w, "ContentType=", 12)) {
-            d_cfg->ctype = apr_pstrdup(cmd->pool, &w[12]);
+        else if (!strncasecmp(w, "Type=", 5)) {
+            d_cfg->ctype = apr_pstrdup(cmd->pool, &w[5]);
         }
         else if (!strncasecmp(w, "Charset=", 8)) {
             d_cfg->charset = apr_pstrdup(cmd->pool, &w[8]);

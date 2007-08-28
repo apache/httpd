@@ -541,17 +541,17 @@ indexing</description>
       </example>
       </dd>
       
-      <dt><a name="indexoptions.contenttype"
-               id="indexoptions.contenttype"
-      >ContentType=<var>MIME content-type</var></a> (<em>Apache 2.0.61 and
+      <dt><a name="indexoptions.type"
+               id="indexoptions.type"
+      >Type=<var>MIME content-type</var></a> (<em>Apache 2.0.61 and
       later</em>)</dt>
 
-      <dd>The <code>ContentType</code> keyword allows you to
+      <dd>The <code>Type</code> keyword allows you to
       specify the MIME content-type of the generated page. The default
       is <var>text/html</var>.
 
       <example><title>Example:</title>
-        IndexOptions ContentType=text/plain
+        IndexOptions Type=text/plain
       </example>
       </dd>
       
