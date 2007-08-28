@@ -230,7 +230,7 @@ static void log_child_errfn(apr_pool_t *pool, apr_status_t err,
 }
 
 static int log_child(apr_pool_t *p, const char *progname,
-                     apr_file_t **fpin)
+                     apr_file_t **fpin, int dummy_stderr)
 {
     /* Child process code for 'ErrorLog "|..."';
      * may want a common framework for this, since I expect it will
@@ -239,6 +239,7 @@ static int log_child(apr_pool_t *p, const char *progname,
     apr_status_t rc;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
+    apr_file_t *errfile;
 
     if (((rc = apr_procattr_create(&procattr, p)) == APR_SUCCESS)
         && ((rc = apr_procattr_io_set(procattr,
@@ -246,13 +247,20 @@ static int log_child(apr_pool_t *p, const char *progname,
                                       APR_NO_PIPE,
                                       APR_NO_PIPE)) == APR_SUCCESS)
         && ((rc = apr_procattr_error_check_set(procattr, 1)) == APR_SUCCESS)
-        && ((rc = apr_procattr_child_errfn_set(procattr, log_child_errfn)) == APR_SUCCESS)) {
+        && ((rc = apr_procattr_child_errfn_set(procattr, log_child_errfn))
+                == APR_SUCCESS)) {
         char **args;
         const char *pname;
 
         apr_tokenize_to_argv(progname, &args, p);
         pname = apr_pstrdup(p, args[0]);
         procnew = (apr_proc_t *)apr_pcalloc(p, sizeof(*procnew));
+
+        if (dummy_stderr) {
+            if ((rc = apr_file_open_stdout(&errfile, p)) == APR_SUCCESS)
+                rc = apr_procattr_child_err_set(procattr, errfile, NULL);
+        }
+
         rc = apr_proc_create(procnew, pname, (const char * const *)args,
                              NULL, procattr, p);
 
@@ -268,7 +276,7 @@ static int log_child(apr_pool_t *p, const char *progname,
     return rc;
 }
 
-static int open_error_log(server_rec *s, apr_pool_t *p)
+static int open_error_log(server_rec *s, int is_main, apr_pool_t *p)
 {
     const char *fname;
     int rc;
@@ -276,8 +284,11 @@ static int open_error_log(server_rec *s, apr_pool_t *p)
     if (*s->error_fname == '|') {
         apr_file_t *dummy = NULL;
 
-        /* This starts a new process... */
-        rc = log_child (p, s->error_fname + 1, &dummy);
+        /* Spawn a new child logger.  If this is the main server_rec,
+         * the new child must use a dummy stderr since the current
+         * stderr might be a pipe to the old logger.  Otherwise, the
+         * child inherits the parents stderr. */
+        rc = log_child(p, s->error_fname + 1, &dummy, is_main);
         if (rc != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                          "Couldn't start ErrorLog process");
@@ -340,7 +351,7 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
 
     apr_pool_cleanup_register(p, NULL, clear_handle_list,
                               apr_pool_cleanup_null);
-    if (open_error_log(s_main, p) != OK) {
+    if (open_error_log(s_main, 1, p) != OK) {
         return DONE;
     }
 
@@ -379,7 +390,7 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
             }
 
             if (q == virt) {
-                if (open_error_log(virt, p) != OK) {
+                if (open_error_log(virt, 0, p) != OK) {
                     return DONE;
                 }
             }
@@ -949,7 +960,7 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     apr_file_t *dummy = NULL;
     int rc;
 
-    rc = log_child(p, program, &dummy);
+    rc = log_child(p, program, &dummy, 0);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_STARTUP, rc, NULL,
                      "Couldn't start piped log process");
