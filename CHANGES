@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_negotiation: preserve Query String in resolving a type map
+     PR 33112 [Jørgen Thomsen <apache jth.net>, Nick Kew]
+
   *) mod_ssl: Version reporting update; displays 'compiled against'
      Apache and build-time SSL Library versions at loglevel [info],
      while reporting the run-time SSL Library version in the server
