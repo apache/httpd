@@ -156,7 +156,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       is an absolute path (as in a VPATH build), just log the basename.
       [Joe Orton]
         http://svn.apache.org/viewvc?view=rev&revision=105258
-      +1: wrowe (who can't stand this bug)
+      +1: wrowe (who can't stand this bug), trawick
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
