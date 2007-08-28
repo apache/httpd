@@ -855,7 +855,7 @@ static const command_rec filter_cmds[] = {
     AP_INIT_ITERATE("FilterChain", filter_chain, NULL, OR_OPTIONS,
         "list of filter names with optional [+-=!@]"),
     AP_INIT_TAKE2("FilterTrace", filter_debug, NULL, RSRC_CONF | ACCESS_CONF,
-        "Debug level"),
+        "filter-name, debug-level"),
 #ifndef NO_PROTOCOL
     AP_INIT_TAKE23("FilterProtocol", filter_protocol, NULL, OR_OPTIONS,
         "filter-name [provider-name] protocol-args"),
