@@ -223,6 +223,10 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     (or a single LAMP-style persistent connection in the case of a
     non-threaded server), and should almost always be used in operation.</p>
 
+    <p>Prior to version 2.2.2, this directive accepted only the values
+    <code>0</code> and <code>1</code> instead of <code>Off</code> and
+    <code>On</code>, respectively.</p>
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="DBDPrepareSQL" id="DBDPrepareSQL">DBDPrepareSQL</a> <a name="dbdpreparesql" id="dbdpreparesql">Directive</a></h2>
