@@ -138,6 +138,8 @@ typedef struct autoindex_config_struct {
     apr_array_header_t *hdr_list;
     apr_array_header_t *rdme_list;
 
+    char *ctype;
+    char *charset;
 } autoindex_config_rec;
 
 static char c_by_encoding, c_by_type, c_by_path;
@@ -476,6 +478,12 @@ static const char *add_opts(cmd_parms *cmd, void *d, int argc, char *const argv[
                 d_cfg->desc_adjust = K_NOADJUST;
             }
         }
+        else if (!strncasecmp(w, "ContentType=", 12)) {
+            d_cfg->ctype = apr_pstrdup(cmd->pool, &w[12]);
+        }
+        else if (!strncasecmp(w, "Charset=", 8)) {
+            d_cfg->charset = apr_pstrdup(cmd->pool, &w[8]);
+        }
         else {
             return "Invalid directory indexing option";
         }
@@ -619,6 +627,9 @@ static void *merge_autoindex_configs(apr_pool_t *p, void *basev, void *addv)
                                           : base->style_sheet;
     new->icon_height = add->icon_height ? add->icon_height : base->icon_height;
     new->icon_width = add->icon_width ? add->icon_width : base->icon_width;
+
+    new->ctype = add->ctype ? add->ctype : base->ctype;
+    new->charset = add->charset ? add->charset : base->charset;
 
     new->alt_list = apr_array_append(p, add->alt_list, base->alt_list);
     new->ign_list = apr_array_append(p, add->ign_list, base->ign_list);
@@ -1971,6 +1982,8 @@ static int index_directory(request_rec *r,
     char *colargs;
     char *fullpath;
     apr_size_t dirpathlen;
+    char *ctype = "text/html";
+    char *charset;
 
     if ((status = apr_dir_open(&thedir, name, r->pool)) != APR_SUCCESS) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, status, r,
@@ -1978,11 +1991,27 @@ static int index_directory(request_rec *r,
         return HTTP_FORBIDDEN;
     }
 
+    if (autoindex_conf->ctype) {
+        ctype = autoindex_conf->ctype;
+    }
+    if (autoindex_conf->charset) {
+        charset = autoindex_conf->charset;
+    }
+    else {
 #if APR_HAS_UNICODE_FS
-    ap_set_content_type(r, "text/html;charset=utf-8");
+        charset = "UTF-8";
 #else
-    ap_set_content_type(r, "text/html");
+        charset = "ISO-8859-1";
 #endif
+    }
+    if (*charset) {
+        ap_set_content_type(r, apr_pstrcat(r->pool, ctype, ";charset=",
+                            charset, NULL));
+    }
+    else {
+        ap_set_content_type(r, ctype);
+    }
+
     if (autoindex_opts & TRACK_MODIFIED) {
         ap_update_mtime(r, r->finfo.mtime);
         ap_set_last_modified(r);
