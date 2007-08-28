@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) mod_autoindex: Add in ContentType and Charset options to
+     IndexOptions directive. This allows the admin to explicitly
+     set the content-type and charset of the generated page.
+     [Jim Jagielski]
+
   *) mime.types: Many updates to sync with IANA registry and common
      unregistered types that the owners refuse to register.  Admins
      are encouraged to update their installed mime.types file.
