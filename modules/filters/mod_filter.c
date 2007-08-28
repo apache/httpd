@@ -848,14 +848,14 @@ static void *filter_merge(apr_pool_t *pool, void *BASE, void *ADD)
 
 static const command_rec filter_cmds[] = {
     AP_INIT_TAKE12("FilterDeclare", filter_declare, NULL, OR_OPTIONS,
-        "filter-name [, filter-type]"),
+        "filter-name [filter-type]"),
     /** we don't have a TAKE4, so we have to use RAW_ARGS */
     AP_INIT_RAW_ARGS("FilterProvider", filter_provider, NULL, OR_OPTIONS,
-        "filter-name, provider-name, dispatch--criterion, dispatch-match"),
+        "filter-name provider-name dispatch-criterion dispatch-match"),
     AP_INIT_ITERATE("FilterChain", filter_chain, NULL, OR_OPTIONS,
         "list of filter names with optional [+-=!@]"),
     AP_INIT_TAKE2("FilterTrace", filter_debug, NULL, RSRC_CONF | ACCESS_CONF,
-        "filter-name, debug-level"),
+        "filter-name debug-level"),
 #ifndef NO_PROTOCOL
     AP_INIT_TAKE23("FilterProtocol", filter_protocol, NULL, OR_OPTIONS,
         "filter-name [provider-name] protocol-args"),
