@@ -191,7 +191,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     * mod_negotiation: Preserve Query String when resolving a type map
       PR: 33112
       http://svn.apache.org/viewvc?view=rev&revision=565671
-      +1: niq, wrowe
+      +1: niq, wrowe, rpluem
 
     * log core: ensure we use a special pool for stderr logging, so that
       the stderr channel remains valid from the time plog is destroyed,
@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=569535
       Backported to 2.2;
         http://people.apache.org/~wrowe/r569535-backport-2.2-r2.patch
-      +1: wrowe, jim
+      +1: wrowe, jim, rpluem
 
 
 PATCHES/ISSUES THAT ARE STALLED
