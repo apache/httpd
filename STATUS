@@ -79,13 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy: Improve traces in ap_proxy_http_process_response()
-      to investigate PR37770.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&rev=549420
-        http://svn.apache.org/viewvc?view=rev&rev=561778
-      +1: jfclere, rpluem, jim
-
     * mod_ssl: Version reporting update; displays 'compiled against'
       Apache and build-time SSL Library versions at loglevel [info],
       while reporting the run-time SSL Library version in the server

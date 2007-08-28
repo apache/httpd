@@ -1191,6 +1191,28 @@ static int addit_dammit(void *v, const char *key, const char *val)
 }
 
 static
+apr_status_t ap_proxygetline(apr_bucket_brigade *bb, char *s, int n, request_rec *r,
+                             int fold, int *writen)
+{
+    char *tmp_s = s;
+    apr_status_t rv;
+    apr_size_t len;
+
+    rv = ap_rgetline(&tmp_s, n, &len, r, fold, bb);
+    apr_brigade_cleanup(bb);
+
+    if (rv == APR_SUCCESS) {
+        *writen = (int) len;
+    } else if (rv == APR_ENOSPC) {
+        *writen = n;
+    } else {
+        *writen = -1;
+    }
+
+    return rv;
+}
+
+static
 apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                                             proxy_conn_rec *backend,
                                             conn_rec *origin,
@@ -1202,7 +1224,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     char keepchar;
     request_rec *rp;
     apr_bucket *e;
-    apr_bucket_brigade *bb;
+    apr_bucket_brigade *bb, *tmp_bb;
     int len, backasswards;
     int interim_response; /* non-zero whilst interim 1xx responses
                            * are being read. */
@@ -1221,16 +1243,19 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
      * response.
      */
     rp->proxyreq = PROXYREQ_RESPONSE;
+    tmp_bb = apr_brigade_create(p, c->bucket_alloc);
     do {
+        apr_status_t rc;
+
         apr_brigade_cleanup(bb);
 
-        len = ap_getline(buffer, sizeof(buffer), rp, 0);
+        rc = ap_proxygetline(tmp_bb, buffer, sizeof(buffer), rp, 0, &len);
         if (len == 0) {
             /* handle one potential stray CRLF */
-            len = ap_getline(buffer, sizeof(buffer), rp, 0);
+            rc = ap_proxygetline(tmp_bb, buffer, sizeof(buffer), rp, 0, &len);
         }
         if (len <= 0) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                           "proxy: error reading status line from remote "
                           "server %s", backend->hostname);
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
