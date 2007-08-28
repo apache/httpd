@@ -3,12 +3,11 @@ Public Domain Icons
      These icons were originally made for Mosaic for X and have been
      included in the NCSA httpd and Apache server distributions in the
      past. They are in the public domain and may be freely included in any
-     application. The originals were done by Kevin Hughes 
-     (kevinh@kevcom.com).
+     application. The originals were done by Kevin Hughes (kevinh@kevcom.com).
+     Andy Polyakov tuned the icon colors and added a few new images.
 
-     Many thanks to Andy Polyakov for tuning the icon colors and adding a
-     few new images. If you'd like to contribute additions or ideas to
-     this set, please let me know.
+     If you'd like to contribute additions to this set, contact the httpd
+     documentation project <http://httpd.apache.org/docs-project/>.
 
      Almost all of these icons are 20x22 pixels in size.  There are
      alternative icons in the "small" directory that are 16x16 in size,
@@ -58,7 +57,7 @@ Please feel free to tweak and rename the icons as you like.
      c.gif
           This might represent C source code.
 
-     comp.blue.gif, comp.red.gif
+     comp.blue.gif, comp.gray.gif
           These little computer icons can stand for telnet or FTP
           sessions.
 
@@ -71,6 +70,12 @@ Please feel free to tweak and rename the icons as you like.
      down.gif, up.gif, left.gif, right.gif
           These can be used to scroll up, down, left and right in a
           listing or may be used to denote items in an outline.
+
+     dir.gif
+          Identical to folder.gif below.
+
+     diskimg.gif
+          This can represent floppy disk storage.
 
      dvi.gif
           This can represent DVI files.
@@ -121,8 +126,8 @@ Please feel free to tweak and rename the icons as you like.
      portal.gif
           This might be a link to an online service or a 3D world.
 
-     ps.gif, quill.gif
-          These may represent PostScript files.
+     pdf.gif, ps.gif, quill.gif
+          These may represent PDF and PostScript files.
 
      screw1.gif, screw2.gif
           These may represent CAD or engineering data and formats.
@@ -139,6 +144,9 @@ Please feel free to tweak and rename the icons as you like.
           These can represent 3D worlds or rendering applications and
           formats.
 
+     tar.gif
+          This can represent TAR archive files.
+
      tex.gif
           This can represent TeX files.
 
@@ -151,7 +159,7 @@ Please feel free to tweak and rename the icons as you like.
      unknown.gif
           This may represent a file of an unknown type.
 
-     uuencoded.gif
+     uu.gif, uuencoded.gif
           This can stand for uuencoded data.
 
      world1.gif, world2.gif
