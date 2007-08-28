@@ -525,6 +525,36 @@ indexing</description>
     of</p>
 
     <dl>
+      <dt><a name="indexoptions.charset"
+               id="indexoptions.charset"
+      >Charset=<var>character-set</var></a> (<em>Apache 2.0.61 and
+      later</em>)</dt>
+
+      <dd>The <code>Charset</code> keyword allows you to
+      specify the character set of the generated page. The
+      default is either <var>ISO-8859-1</var> or <var>UTF-8</var>,
+      depending on whether the underlying file system is unicode
+      or not.
+
+      <example><title>Example:</title>
+        IndexOptions Charset=UTF-8
+      </example>
+      </dd>
+      
+      <dt><a name="indexoptions.contenttype"
+               id="indexoptions.contenttype"
+      >ContentType=<var>MIME content-type</var></a> (<em>Apache 2.0.61 and
+      later</em>)</dt>
+
+      <dd>The <code>ContentType</code> keyword allows you to
+      specify the MIME content-type of the generated page. The default
+      is <var>text/html</var>.
+
+      <example><title>Example:</title>
+        IndexOptions ContentType=text/plain
+      </example>
+      </dd>
+      
       <dt><a name="indexoptions.descriptionwidth"
                id="indexoptions.descriptionwidth"
       >DescriptionWidth=[<var>n</var> | *]</a> (<em>Apache 2.0.23 and
