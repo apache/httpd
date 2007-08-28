@@ -1,4 +1,4 @@
-﻿                                                        -*- coding: utf-8 -*-
+                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
   *) mime.types: Many updates to sync with IANA registry and common
@@ -12,7 +12,7 @@ Changes with Apache 2.3.0
 
   *) main core: Emit errors during the initial apr_app_initialize()
      or apr_pool_create() (when apr-based error reporting is not ready).
-     [William Rowe]
+     [William Rowe, Jeff Trawick]
 
   *) mpm_winnt: Prevent the parent-child pipe from leaking into other
      spawned processes, and ensure we have a /Device/null handle for
