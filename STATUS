@@ -115,16 +115,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    *) mod_autoindex: Add in Type and Charset options to IndexOptions
-       to allow admin to set content-type and charset of generated
-       page.
-       Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=570532
-         http://svn.apache.org/viewvc?view=rev&revision=570535
-         http://svn.apache.org/viewvc?view=rev&revision=570558
-       2.0.x version of patch:
-         Trunk version works with fuzz (minus CHANGES conflicts)
-       +1: jim, wrowe, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
