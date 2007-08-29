@@ -206,14 +206,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=429875
          http://svn.apache.org/viewvc?view=rev&revision=429890
        2.2.x version:
-         http://people.apache.org/~niq/proxy-util.patch
-       +1: niq
+         http://people.apache.org/~niq/proxy_util.patch
+       +1: niq, rpluem
+       rpluem says: Better merge this proposal with the one
+       below and explain it as is a prerequisite for it.
+       Anyway I am +1 on both.
 
     *) proxy_util.c: Don't URLencode tilde in path component
        PR 38448
        http://svn.apache.org/viewvc?view=rev&revision=429879
-       +1: niq
-         
+       +1: niq, rpluem
+
 
 PATCHES/ISSUES THAT ARE STALLED
 
