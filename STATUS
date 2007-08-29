@@ -188,6 +188,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trawick says: The new directives should be documented in trunk,
           so that docs are available for backport at the same time.
 
+    *) mod_autoindex: Add in Type and Charset options to IndexOptions
+       to allow admin to set content-type and charset of generated
+       page.
+       Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=570532
+         http://svn.apache.org/viewvc?view=rev&revision=570535
+         http://svn.apache.org/viewvc?view=rev&revision=570538
+       2.2.x version of patch:
+         Trunk version works (minus CHANGES conflicts)
+       +1: jim
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
