@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=570558
        2.0.x version of patch:
          Trunk version works with fuzz (minus CHANGES conflicts)
-       +1: jim
+       +1: jim, wrowe
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
