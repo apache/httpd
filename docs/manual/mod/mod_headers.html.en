@@ -111,7 +111,7 @@ is available only in Apache 2.0</td></tr></table>
         bottlenecks between the client and the server.
 
         <div class="example"><p><code>
-          Header add MyHeader "%D %t"
+          Header set MyHeader "%D %t"
         </code></p></div>
 
         <p>results in this header being added to the response:</p>
@@ -125,7 +125,7 @@ is available only in Apache 2.0</td></tr></table>
         Say hello to Joe
 
         <div class="example"><p><code>
-          Header add MyHeader "Hello Joe. It took %D microseconds \<br />
+          Header set MyHeader "Hello Joe. It took %D microseconds \<br />
           for Apache to serve this request."
         </code></p></div>
 
@@ -139,31 +139,34 @@ is available only in Apache 2.0</td></tr></table>
 
       <li>
         Conditionally send <code>MyHeader</code> on the response if and
-        only if header "MyRequestHeader" is present on the request. This
-        is useful for constructing headers in response to some client
+        only if header <code>MyRequestHeader</code> is present on the request.
+        This is useful for constructing headers in response to some client
         stimulus. Note that this example requires the services of the
         <code class="module"><a href="../mod/mod_setenvif.html">mod_setenvif</a></code> module.
 
         <div class="example"><p><code>
-          SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
-          Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader<br />
-       </code></p></div>
+          SetEnvIf MyRequestHeader myvalue HAVE_MyRequestHeader<br />
+          Header set MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
+        </code></p></div>
 
-       <p>If the header <code>MyRequestHeader: value</code> is present on
-       the HTTP request, the response will contain the following header:</p>
+        <p>If the header <code>MyRequestHeader: myvalue</code> is present on
+        the HTTP request, the response will contain the following header:</p>
 
-       <div class="example"><p><code>
-         MyHeader: D=3775428 t=991424704447256 mytext
-       </code></p></div>
-      </li>
-      <li>Enable DAV to work with Apache running HTTP through SSL hardware
-      (<a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">problem description</a>) by replacing <var>https:</var> with
-      <var>http:</var> in the <var>Destination</var> header:
-      <div class="example"><p><code>
-        RequestHeader edit Destination ^https: http: early
-      </code></p></div>
+        <div class="example"><p><code>
+          MyHeader: D=3775428 t=991424704447256 mytext
+        </code></p></div>
       </li>
 
+      <li>
+        Enable DAV to work with Apache running HTTP through SSL hardware
+        (<a href="http://svn.haxx.se/users/archive-2006-03/0549.shtml">problem
+        description</a>) by replacing <var>https:</var> with
+        <var>http:</var> in the <var>Destination</var> header:
+
+        <div class="example"><p><code>
+          RequestHeader edit Destination ^https: http: early
+        </code></p></div>
+      </li>
     </ol>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -207,8 +210,8 @@ is available only in Apache 2.0</td></tr></table>
     <dd>The response header is added to the existing set of headers,
     even if this header already exists. This can result in two
     (or more) headers having the same name. This can lead to
-    unforeseen consequences, and in general "append" should be
-    used instead.</dd>
+    unforeseen consequences, and in general <code>set</code> or
+    <code>append</code> should be used instead.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The response header of this name is removed, if it exists.
@@ -217,7 +220,7 @@ is available only in Apache 2.0</td></tr></table>
 
     <dt><code>echo</code></dt>
     <dd>Request headers with this name are echoed back in the
-    response headers. <var>header</var> may be a 
+    response headers. <var>header</var> may be a
     <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>.
     <var>value</var> must be omitted.</dd>
 
@@ -230,14 +233,15 @@ is available only in Apache 2.0</td></tr></table>
 
     <p>This argument is followed by a <var>header</var> name, which
     can include the final colon, but it is not required. Case is
-    ignored for <code>set</code>, <code>append</code>, <code>add</code>
-    and <code>unset</code>. The <var>header</var> name for <code>echo</code>
-    is case sensitive and may be a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular 
+    ignored for <code>set</code>, <code>append</code>, <code>add</code>,
+    <code>unset</code>, and <code>edit</code>.
+    The <var>header</var> name for <code>echo</code>
+    is case sensitive and may be a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
     expression</a>.</p>
 
-    <p>For <code>add</code>, <code>append</code> and <code>set</code> a
+    <p>For <code>set</code>, <code>append</code> and <code>add</code> a
     <var>value</var> is specified as the third argument. If <var>value</var>
-    contains spaces, it should be surrounded by doublequotes.
+    contains spaces, it should be surrounded by double quotes.
     <var>value</var> may be a character string, a string containing format
     specifiers or a combination of both. The following format specifiers
     are supported in <var>value</var>:</p>
@@ -268,7 +272,7 @@ is available only in Apache 2.0</td></tr></table>
       +StdEnvVars</code>.  If <code>SSLOptions +StdEnvVars</code> must
       be enabled anyway for some other reason, <code>%e</code> will be
       more efficient than <code>%s</code>.</p>
-    </div> 
+    </div>
 
     <p>For <code>edit</code> there is both a <var>value</var> argument
     which is a <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular expression</a>,
@@ -325,8 +329,8 @@ is available only in Apache 2.0</td></tr></table>
     <dd>The request header is added to the existing set of headers,
     even if this header already exists. This can result in two
     (or more) headers having the same name. This can lead to
-    unforeseen consequences, and in general <code>append</code> should be
-    used instead.</dd>
+    unforeseen consequences, and in general <code>set</code> or
+    <code>append</code> should be used instead.</dd>
 
     <dt><code>unset</code></dt>
     <dd>The request header of this name is removed, if it exists. If
@@ -342,10 +346,10 @@ is available only in Apache 2.0</td></tr></table>
 
     <p>This argument is followed by a header name, which can
     include the final colon, but it is not required. Case is
-    ignored. For <code>add</code>, <code>append</code> and
-    <code>set</code> a <var>value</var> is given as the third argument. If a
+    ignored. For <code>set</code>, <code>append</code> and
+    <code>add</code> a <var>value</var> is given as the third argument. If a
     <var>value</var> contains spaces, it should be surrounded by double
-    quotes. For unset, no <var>value</var> should be given.
+    quotes. For <code>unset</code>, no <var>value</var> should be given.
     <var>value</var> may be a character string, a string containing format
     specifiers or a combination of both. The supported format specifiers
     are the same as for the <code class="directive"><a href="#header">Header</a></code>,
