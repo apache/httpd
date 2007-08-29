@@ -201,6 +201,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version works (minus CHANGES conflicts)
        +1: jim, wrowe
 
+    *) proxy_util.c: Backport cleanups (no functional change)
+       Trunk:
+         http://svn.apache.org/viewvc?view=rev&revision=429875
+         http://svn.apache.org/viewvc?view=rev&revision=429890
+       2.2.x version:
+         http://people.apache.org/~niq/proxy-util.patch
+       +1: niq
+
+    *) proxy_util.c: Don't URLencode tilde in path component
+       PR 38448
+       http://svn.apache.org/viewvc?view=rev&revision=429879
+       +1: niq
+         
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
