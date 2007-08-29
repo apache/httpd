@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_autoindex: Add in Type and Charset options to IndexOptions
+     directive. This allows the admin to explicitly set the 
+     content-type and charset of the generated page.
+     [Jim Jagielski]
+
   *) log core: ensure we use a special pool for stderr logging, so that
      the stderr channel remains valid from the time plog is destroyed,
      until the time the open_logs hook is called again.  [William Rowe]
