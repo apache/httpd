@@ -80,17 +80,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-    *) mod_autoindex: Add in Type and Charset options to IndexOptions
-       to allow admin to set content-type and charset of generated
-       page.
-       Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=570532
-         http://svn.apache.org/viewvc?view=rev&revision=570535
-         http://svn.apache.org/viewvc?view=rev&revision=570558
-       2.2.x version of patch:
-         Trunk version works (minus CHANGES conflicts)
-       +1: jim, wrowe, rpluem
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
