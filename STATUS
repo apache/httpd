@@ -110,6 +110,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         so a one second simplification is acceptable compromise.
         The sole purpose of the patch is to allow the clean shutdown
         when the MaxClients is higher then 257. 
+      wrowe: conditional +1 if you rename the assanine function name
+        so no one confuses it for its implied purpose.
 
    * mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
@@ -198,6 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        2.2.x version of patch:
          Trunk version works (minus CHANGES conflicts)
        +1: jim
+        wrowe???  570538 isn't related
 
 PATCHES/ISSUES THAT ARE STALLED
 
