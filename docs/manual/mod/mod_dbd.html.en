@@ -209,12 +209,12 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <div class="directive-section"><h2><a name="DBDPersist" id="DBDPersist">DBDPersist</a> <a name="dbdpersist" id="dbdpersist">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Whether to use persistent connections</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDPersist 0|1</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>DBDPersist On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_dbd</td></tr>
 </table>
-    <p>If set to 0, persistent and pooled connections are disabled.
+    <p>If set to Off, persistent and pooled connections are disabled.
     A new database connection is opened when requested by a client,
     and closed immediately on release.  This option is for debugging
     and low-usage servers.</p>
@@ -222,6 +222,10 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     <p>The default is to enable a pool of persistent connections
     (or a single LAMP-style persistent connection in the case of a
     non-threaded server), and should almost always be used in operation.</p>
+
+    <p>Prior to version 2.2.2, this directive accepted only the values
+    <code>0</code> and <code>1</code> instead of <code>Off</code> and
+    <code>On</code>, respectively.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
