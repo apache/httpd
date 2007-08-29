@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=570558
        2.2.x version of patch:
          Trunk version works (minus CHANGES conflicts)
-       +1: jim, wrowe
+       +1: jim, wrowe, rpluem
 
     *) proxy_util.c: Backport cleanups (no functional change)
        Trunk:
