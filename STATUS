@@ -196,11 +196,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch:
          http://svn.apache.org/viewvc?view=rev&revision=570532
          http://svn.apache.org/viewvc?view=rev&revision=570535
-         http://svn.apache.org/viewvc?view=rev&revision=570538
+         http://svn.apache.org/viewvc?view=rev&revision=570558
        2.2.x version of patch:
          Trunk version works (minus CHANGES conflicts)
        +1: jim
-        wrowe???  570538 isn't related
 
 PATCHES/ISSUES THAT ARE STALLED
 
