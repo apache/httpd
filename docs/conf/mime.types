@@ -785,7 +785,7 @@ image/vnd.fst
 image/vnd.fujixerox.edmics-mmr
 image/vnd.fujixerox.edmics-rlc
 image/vnd.globalgraphics.pgb
-image/vnd.microsoft.icon
+image/vnd.microsoft.icon	ico
 image/vnd.mix
 image/vnd.ms-modi
 image/vnd.net-fpx
@@ -796,7 +796,7 @@ image/vnd.svf
 image/vnd.wap.wbmp		wbmp
 image/vnd.xiff
 image/x-cmu-raster		ras
-image/x-icon			ico
+image/x-icon
 image/x-portable-anymap		pnm
 image/x-portable-bitmap		pbm
 image/x-portable-graymap	pgm
