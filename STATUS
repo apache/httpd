@@ -82,52 +82,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
-    * mod_dumpio.c: EBCDIC patch for correct dumping
-      Without this patch, the network data in dumpio's output are
-      worthless, because ASCII chars are interpreted as EBCDIC
-      (leaving almost no 'printable' chars over), plus the
-      actual logging module retranslates control chars once again
-      (incorrectly because they already were ascii)
-      "from ebcdic to ascii", so that even the escped chars are
-      useless for the user.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=571109&view=rev
-
-    * proxy/ajp_header.c: incorrect substring checks for header fields
-      The method of parsing the header line tokens is flakey:
-      it uses memcmp() to check, e.g., whether the header token is
-      "Accept-Charset:", by uppercasing the token name (-> "ACCEPT-CHARSET"),
-      then compares the initial "ACCEPT-" prefix, and then tests:
-        if (memcmp(p, "CHARSET", 7) == 0) return SC_ACCEPT_CHARSET;
-      but does not verify that the end of the token has been reached.
-      Thus, a header
-        Accept-CharsetXXX-Blah: utf-8
-      would be mistaken for an "Accept-Charset: utf-8".
-      Same goes for a couple of other header names.
-      The patch replaces the memcmp by a strcmp to check for the trailing
-      NIL character, too.
-      Message-ID: <20070830105540.GA67279@deejai2.mch.fsc.net>
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=571219&view=rev
-
-    * proxy/ajp_header.c: case sensitive comparison of literal "Content-Type"
-      IMO, and to be on the defensive side, I would replace
-        if (memcmp(stringname, "Content-Type", 12) == 0) {
-      by
-        if (strcasecmp(stringname, "Content-Type") == 0) {
-      as well. (that was not handled in the patch above)
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=571232&view=rev
-
-    * proxy/ajp_header.c: EBCDIC: backport of rev. 357022, fixing the AJP protocol.
-      An EBCDIC decimal string prefix was incorrectly
-      converted "again" to EBCDIC.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=357022&view=rev
-      Was already committed as Rev. 571209
-        http://svn.apache.org/viewvc?rev=571209&view=rev
-      
-
     * mpm_winnt: Fix return values from wait_for_many_objects.
       Note - this is required to avoid hangups of socket #64, #128
       as Microsoft set aside 64 reserved values.
@@ -241,6 +195,54 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=429879
        +1: niq, rpluem
 
+    * mod_dumpio.c: EBCDIC patch for correct dumping
+      Without this patch, the network data in dumpio's output are
+      worthless, because ASCII chars are interpreted as EBCDIC
+      (leaving almost no 'printable' chars over), plus the
+      actual logging module retranslates control chars once again
+      (incorrectly because they already were ascii)
+      "from ebcdic to ascii", so that even the escped chars are
+      useless for the user.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=571109&view=rev
+      +1: jim
+
+    * proxy/ajp_header.c: incorrect substring checks for header fields
+      The method of parsing the header line tokens is flakey:
+      it uses memcmp() to check, e.g., whether the header token is
+      "Accept-Charset:", by uppercasing the token name (-> "ACCEPT-CHARSET"),
+      then compares the initial "ACCEPT-" prefix, and then tests:
+        if (memcmp(p, "CHARSET", 7) == 0) return SC_ACCEPT_CHARSET;
+      but does not verify that the end of the token has been reached.
+      Thus, a header
+        Accept-CharsetXXX-Blah: utf-8
+      would be mistaken for an "Accept-Charset: utf-8".
+      Same goes for a couple of other header names.
+      The patch replaces the memcmp by a strcmp to check for the trailing
+      NIL character, too.
+      Message-ID: <20070830105540.GA67279@deejai2.mch.fsc.net>
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=571219&view=rev
+      +1: jim
+
+    * proxy/ajp_header.c: case sensitive comparison of literal "Content-Type"
+      IMO, and to be on the defensive side, I would replace
+        if (memcmp(stringname, "Content-Type", 12) == 0) {
+      by
+        if (strcasecmp(stringname, "Content-Type") == 0) {
+      as well. (that was not handled in the patch above)
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=571232&view=rev
+      +1: jim
+
+    * proxy/ajp_header.c: EBCDIC: backport of rev. 357022, fixing the AJP protocol.
+      An EBCDIC decimal string prefix was incorrectly
+      converted "again" to EBCDIC.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=357022&view=rev
+      Was already committed as Rev. 571209
+        http://svn.apache.org/viewvc?rev=571209&view=rev
+      +1: jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
