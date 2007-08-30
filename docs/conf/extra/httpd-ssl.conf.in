@@ -43,12 +43,6 @@ Listen 443
 ##  the main server and all SSL-enabled virtual hosts.
 ##
 
-#
-#   Some MIME-types for downloading Certificates and CRLs
-#
-AddType application/x-x509-ca-cert .crt
-AddType application/x-pkcs7-crl    .crl
-
 #   Pass Phrase Dialog:
 #   Configure the pass phrase gathering process.
 #   The filtering dialog program (`builtin' is a internal
