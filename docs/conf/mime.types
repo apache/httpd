@@ -934,7 +934,7 @@ video/vnd.sealed.mpeg4
 video/vnd.sealed.swf
 video/vnd.sealedmedia.softseal.mov
 video/vnd.vivo
-video/x-ms-asf			asf asx nsc
+video/x-ms-asf			asf asx
 video/x-ms-wm			wm
 video/x-ms-wmv			wmv
 video/x-ms-wmx			wmx
