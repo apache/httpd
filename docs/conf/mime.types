@@ -86,7 +86,7 @@ application/mp4
 application/mpeg4-generic
 application/mpeg4-iod
 application/mpeg4-iod-xmt
-application/msword		doc
+application/msword		doc dot
 application/mxf
 application/nasdata
 application/news-message-id
@@ -94,7 +94,7 @@ application/news-transmission
 application/nss
 application/ocsp-request
 application/ocsp-response
-application/octet-stream	bin dms lha lzh exe class so dll dmg
+application/octet-stream	bin dms lha lzh class so dmg
 application/oda			oda
 application/oebps-package+xml
 application/ogg			ogg
@@ -103,13 +103,14 @@ application/pdf			pdf
 application/pgp-encrypted
 application/pgp-keys
 application/pgp-signature
+application/pics-rules		prf
 application/pidf+xml
 application/pidfxml
-application/pkcs10
-application/pkcs7-mime
-application/pkcs7-signature
-application/pkix-cert
-application/pkix-crl
+application/pkcs10		p10
+application/pkcs7-mime		p7m p7c
+application/pkcs7-signature	p7s
+application/pkix-cert		cer
+application/pkix-crl		crl
 application/pkix-pkipath
 application/pkixcmp
 application/pls+xml
@@ -128,16 +129,16 @@ application/resource-lists+xml
 application/riscos
 application/rlmi+xml
 application/rls-services+xml
-application/rtf
+application/rtf			rtf
 application/rtx
 application/samlassertion+xml
 application/samlmetadata+xml
 application/sbml+xml
 application/sdp
 application/set-payment
-application/set-payment-initiation
+application/set-payment-initiation		setpay
 application/set-registration
-application/set-registration-initiation
+application/set-registration-initiation		setreg
 application/sgml
 application/sgml-open-catalog
 application/shf+xml
@@ -374,20 +375,20 @@ application/vnd.mozilla.xul+xml	xul
 application/vnd.ms-artgalry
 application/vnd.ms-asf
 application/vnd.ms-cab-compressed
-application/vnd.ms-excel	xls
+application/vnd.ms-excel	xls xlm xla xlc xlt xlw
 application/vnd.ms-fontobject
 application/vnd.ms-htmlhelp	chm
 application/vnd.ms-ims
 application/vnd.ms-lrm
 application/vnd.ms-playready.initiator+xml
-application/vnd.ms-powerpoint	ppt
-application/vnd.ms-project
+application/vnd.ms-powerpoint				ppt pps pot
+application/vnd.ms-project				mpp
 application/vnd.ms-tnef
 application/vnd.ms-wmdrm.lic-chlg-req
 application/vnd.ms-wmdrm.lic-resp
 application/vnd.ms-wmdrm.meter-chlg-req
 application/vnd.ms-wmdrm.meter-resp
-application/vnd.ms-works
+application/vnd.ms-works				wps wks wcm wdb
 application/vnd.ms-wpl
 application/vnd.ms-xpsdocument
 application/vnd.mseq
@@ -595,6 +596,7 @@ application/voicexml+xml	vxml
 application/watcherinfo+xml
 application/whoispp-query
 application/whoispp-response
+application/winhlp		hlp
 application/wita
 application/wordperfect5.1
 application/wsdl+xml
@@ -616,7 +618,21 @@ application/x-hdf		hdf
 application/x-latex		latex
 application/x-ms-wmd		wmd
 application/x-ms-wmz		wmz
+application/x-msaccess		mdb
+application/x-mscardfile	crd
+application/x-msclip		clp
+application/x-msdownload	exe dll
+application/x-msmediaview	mvb m13 m14
+application/x-msmetafile	wmf
+application/x-msmoney		mny
+application/x-mspublisher	pub
+application/x-msschedule	scd
+application/x-msterminal	trm
+application/x-mswrite		wri
 application/x-netcdf		nc cdf
+application/x-pkcs12			p12 pfx
+application/x-pkcs7-certificates	p7b spc
+application/x-pkcs7-certreqresp		p7r
 application/x-rar-compressed	rar
 application/x-sh		sh
 application/x-shar		shar
@@ -631,6 +647,7 @@ application/x-tex		tex
 application/x-texinfo		texinfo texi
 application/x-ustar		ustar
 application/x-wais-source	src
+application/x-x509-ca-cert	der crt
 application/x400-bp
 application/xcap-att+xml
 application/xcap-caps+xml
@@ -696,7 +713,7 @@ audio/l20
 audio/l24
 audio/l8
 audio/lpc
-audio/midi			mid midi kar
+audio/midi			mid midi kar rmi
 audio/mobile-xmf
 audio/mp4
 audio/mp4a-latm
@@ -747,6 +764,7 @@ audio/vnd.qcelp
 audio/vnd.rhetorex.32kadpcm
 audio/vnd.sealedmedia.softseal.mpeg
 audio/vnd.vmx.cvsd
+audio/wav			wav
 audio/x-aiff			aif aiff aifc
 audio/x-mpegurl			m3u
 audio/x-ms-wax			wax
@@ -796,6 +814,7 @@ image/vnd.svf
 image/vnd.wap.wbmp		wbmp
 image/vnd.xiff
 image/x-cmu-raster		ras
+image/x-cmx			cmx
 image/x-icon
 image/x-portable-anymap		pnm
 image/x-portable-bitmap		pbm
@@ -849,7 +868,7 @@ text/csv
 text/directory
 text/dns
 text/enriched
-text/html			html htm
+text/html			html htm stm
 text/parityfec
 text/plain			asc txt
 text/prs.fallenstein.rst
@@ -857,7 +876,7 @@ text/prs.lines.tag
 text/red
 text/rfc822-headers
 text/richtext			rtx
-text/rtf			rtf
+text/rtf
 text/rtp-enc-aescm128
 text/rtx
 text/sgml			sgml sgm
