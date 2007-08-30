@@ -82,7 +82,7 @@ application/mbms-user-service-description+xml
 application/mbox		mbox
 application/mediaservercontrol+xml
 application/mikey
-application/mp4
+application/mp4			mp4s
 application/mpeg4-generic
 application/mpeg4-iod
 application/mpeg4-iod-xmt
@@ -720,7 +720,7 @@ audio/l8
 audio/lpc
 audio/midi			mid midi kar rmi
 audio/mobile-xmf
-audio/mp4
+audio/mp4			mp4a
 audio/mp4a-latm
 audio/mpa
 audio/mpa-robust
@@ -946,7 +946,7 @@ video/mj2
 video/mp1s
 video/mp2p
 video/mp2t
-video/mp4
+video/mp4			mp4 mp4v mpg4
 video/mp4v-es
 video/mpeg			mpeg mpg mpe m1v m2v
 video/mpeg4-generic
