@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.61
 
+  *) log core: ensure we use a special pool for stderr logging, so that
+     the stderr channel remains valid from the time plog is destroyed,
+     until the time the open_logs hook is called again.  [William Rowe]
+
   *) mod_ssl: Version reporting update; displays 'compiled against'
      Apache and build-time SSL Library versions at loglevel [info],
      while reporting the run-time SSL Library version in the server
