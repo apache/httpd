@@ -204,8 +204,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       "from ebcdic to ascii", so that even the escped chars are
       useless for the user.
       Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=571109&view=rev
-      +1: martin,jim
+        http://svn.apache.org/viewvc?rev=570753&view=rev
+      +1: martin,jim,rpluem
 
     * proxy/ajp_header.c: incorrect substring checks for header fields
       The method of parsing the header line tokens is flakey:
@@ -223,7 +223,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Message-ID: <20070830105540.GA67279@deejai2.mch.fsc.net>
       Trunk version of patch:
         http://svn.apache.org/viewvc?rev=571219&view=rev
-      +1: jim
+      +1: jim, rpluem
       +1: martin, with the exception of the "Content-Type" patch
           which has been superseded with the patch following below
 	  (http://svn.apache.org/viewvc?rev=571232&view=rev).
@@ -236,7 +236,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       as well. (that was not handled in the patch above)
       Trunk version of patch:
         http://svn.apache.org/viewvc?rev=571232&view=rev
-      +1: jim,martin
+      +1: jim,martin,rpluem
 
     * proxy/ajp_header.c: EBCDIC: backport of rev. 357022, fixing the AJP protocol.
       An EBCDIC decimal string prefix was incorrectly
@@ -245,7 +245,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=357022&view=rev
       Had already been committed as Rev. 571209 (but was reverted again)
         http://svn.apache.org/viewvc?rev=571209&view=rev
-      +1: martin,jim
+      +1: martin,jim,rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
