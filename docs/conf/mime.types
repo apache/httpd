@@ -420,22 +420,22 @@ application/vnd.nokia.radio-presets
 application/vnd.novadigm.edm
 application/vnd.novadigm.edx
 application/vnd.novadigm.ext
-application/vnd.oasis.opendocument.chart
-application/vnd.oasis.opendocument.chart-template
-application/vnd.oasis.opendocument.formula
-application/vnd.oasis.opendocument.formula-template
-application/vnd.oasis.opendocument.graphics
-application/vnd.oasis.opendocument.graphics-template
-application/vnd.oasis.opendocument.image
-application/vnd.oasis.opendocument.image-template
-application/vnd.oasis.opendocument.presentation
-application/vnd.oasis.opendocument.presentation-template
-application/vnd.oasis.opendocument.spreadsheet
-application/vnd.oasis.opendocument.spreadsheet-template
-application/vnd.oasis.opendocument.text
-application/vnd.oasis.opendocument.text-master
-application/vnd.oasis.opendocument.text-template
-application/vnd.oasis.opendocument.text-web
+application/vnd.oasis.opendocument.chart			odc
+application/vnd.oasis.opendocument.chart-template		otc
+application/vnd.oasis.opendocument.formula			odf
+application/vnd.oasis.opendocument.formula-template		otf
+application/vnd.oasis.opendocument.graphics			odg
+application/vnd.oasis.opendocument.graphics-template		otg
+application/vnd.oasis.opendocument.image			odi
+application/vnd.oasis.opendocument.image-template		oti
+application/vnd.oasis.opendocument.presentation			odp
+application/vnd.oasis.opendocument.presentation-template	otp
+application/vnd.oasis.opendocument.spreadsheet			ods
+application/vnd.oasis.opendocument.spreadsheet-template		ots
+application/vnd.oasis.opendocument.text				odt
+application/vnd.oasis.opendocument.text-master			otm
+application/vnd.oasis.opendocument.text-template		ott
+application/vnd.oasis.opendocument.text-web			oth
 application/vnd.obn
 application/vnd.olpc-sugar
 application/vnd.oma-scws-config
