@@ -211,7 +211,7 @@ application/vnd.cups-postscript
 application/vnd.cups-ppd
 application/vnd.cups-raster
 application/vnd.cups-raw
-application/vnd.curl
+application/vnd.curl			curl
 application/vnd.cybank
 application/vnd.data-vision.rdz
 application/vnd.denovo.fcselayout-link
