@@ -1592,7 +1592,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             int status = r->status;
             r->status = HTTP_OK;
             /* Discard body, if one is expected */
-            if ((status != HTTP_NO_CONTENT) && /* not 204 */
+            if (!r->header_only && /* not HEAD request */
+                (status != HTTP_NO_CONTENT) && /* not 204 */
                 (status != HTTP_NOT_MODIFIED)) { /* not 304 */
                ap_discard_request_body(rp);
            }
