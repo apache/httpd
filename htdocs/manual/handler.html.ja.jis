@@ -145,7 +145,7 @@
 
 
     <p>ハンドラの機能を実装するために、利用すると便利かもしれないものが
-    <a href="misc/api.html">Apache API</a> に追加されました。
+    <a href="misc/API.html">Apache API</a> に追加されました。
     詳しく言うと、<code>request_rec</code>
     構造体に新しいレコードが追加されたということです。</p>
 <pre>
