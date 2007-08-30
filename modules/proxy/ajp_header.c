@@ -558,7 +558,7 @@ static apr_status_t ajp_unmarshal_response(ajp_msg_t *msg,
         apr_table_add(r->headers_out, stringname, value);
 
         /* Content-type needs an additional handling */
-        if (strncasecmp(stringname, "Content-Type", 12) == 0) {
+        if (strcasecmp(stringname, "Content-Type") == 0) {
              /* add corresponding filter */
             ap_set_content_type(r, apr_pstrdup(r->pool, value));
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
