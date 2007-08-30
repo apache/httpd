@@ -220,6 +220,12 @@ static const char *set_worker_param(apr_pool_t *p,
                 else
                     worker->status &= ~PROXY_WORKER_HOT_STANDBY;
             }
+	    else if (*v == 'I' || *v == 'i') {
+	    	if (mode)
+		    worker->status |= PROXY_WORKER_IGNORE_ERRORS;
+		else
+		    worker->status &= ~PROXY_WORKER_IGNORE_ERRORS;
+	    }
             else {
                 return "Unknown status parameter option";
             }
