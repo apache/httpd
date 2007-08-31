@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_dumpio: Fix for correct dumping of traffic on EBCDIC hosts
+     Data had been incorrectly converted twice, resulting in
+     garbled log output. [Martin Kraemer]
+
   *) mod_autoindex: Add in Type and Charset options to IndexOptions
      directive. This allows the admin to explicitly set the 
      content-type and charset of the generated page.
