@@ -208,7 +208,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        This change is not required for trunk because of the authz-provider model
      2.2.x version of patch:
       http://people.apache.org/~covener/2.2.x-authnz_ldap-decline.diff  
-     +1: covener, niq
+     +1: covener, niq, bnicholes
 
    * mod_proxy_connect: Fix potential proxy segfault
      PR 40756
