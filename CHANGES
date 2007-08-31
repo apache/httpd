@@ -1,6 +1,12 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) proxy/ajp_header.c: Fixed header token string comparisons
+     Matching of header tokens failed to include the trailing NIL byte
+     and could misinterpret a longer header token for a shorter.
+     Additionally, a "Content-Type" comparison was made case insensitive.
+     [Martin Kraemer]
+
   *) proxy/ajp_header.c: Backport of an AJP protocol fix for EBCDIC
      On EBCDIC machines, the status_line string was incorrectly converted
      twice. [Jean-Frederic Clere, Martin Kraemer] (based on rev. 357022)
