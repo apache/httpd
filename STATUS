@@ -226,14 +226,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=571232&view=rev
       +1: jim,martin,rpluem
 
-    * proxy/ajp_header.c: EBCDIC: backport of rev. 357022, fixing the AJP protocol.
-      An EBCDIC decimal string prefix was incorrectly
-      converted "again" to EBCDIC.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=357022&view=rev
-      Had already been committed as Rev. 571209 (but was reverted again)
-        http://svn.apache.org/viewvc?rev=571209&view=rev
-      +1: martin,jim,rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
