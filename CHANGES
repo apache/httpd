@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 
+  *) mod_proxy_connect: avoid segfault on DNS lookup failure.
+     PR 40756 [Trevin Beattie <tbeattie boingo.com>]
+
   *) mod_proxy: enable Ignore Errors option on ProxyPass Status.
      PR 43167 [Francisco Gimeno <kikov kikov.org>
 
