@@ -1605,6 +1605,7 @@ static const char *
     proxy_balancer *balancer = NULL;
     proxy_worker *worker = NULL;
     const char *err;
+    int in_proxy_section = 0;
 
     if (cmd->directive->parent &&
         strncasecmp(cmd->directive->parent->directive,
@@ -1616,6 +1617,7 @@ static const char *
         name = ap_getword_conf(cmd->temp_pool, &pargs);
         if ((word = ap_strchr(name, '>')))
             *word = '\0';
+        in_proxy_section = 1;
     }
     else {
         /* Standard set directive with worker/balancer
@@ -1627,15 +1629,32 @@ static const char *
     if (strncasecmp(name, "balancer:", 9) == 0) {
         balancer = ap_proxy_get_balancer(cmd->pool, conf, name);
         if (!balancer) {
-            return apr_pstrcat(cmd->temp_pool, "ProxySet can not find '",
-                               name, "' Balancer.", NULL);
+            if (in_proxy_section) {
+                err = ap_proxy_add_balancer(&balancer,
+                                            cmd->pool,
+                                            conf, name);
+                if (err)
+                    return apr_pstrcat(cmd->temp_pool, "ProxySet ",
+                                       err, NULL);
+            }
+            else
+                return apr_pstrcat(cmd->temp_pool, "ProxySet can not find '",
+                                   name, "' Balancer.", NULL);
         }
     }
     else {
         worker = ap_proxy_get_worker(cmd->temp_pool, conf, name);
         if (!worker) {
-            return apr_pstrcat(cmd->temp_pool, "ProxySet can not find '",
-                               name, "' Worker.", NULL);
+            if (in_proxy_section) {
+                err = ap_proxy_add_worker(&worker, cmd->pool,
+                                          conf, name);
+                if (err)
+                    return apr_pstrcat(cmd->temp_pool, "ProxySet ",
+                                       err, NULL);
+            }
+            else
+                return apr_pstrcat(cmd->temp_pool, "ProxySet can not find '",
+                                   name, "' Worker.", NULL);
         }
     }
 
