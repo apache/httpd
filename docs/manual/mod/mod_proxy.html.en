@@ -876,9 +876,10 @@ through</td></tr>
     <tr><td>status</td>
         <td>-</td>
         <td>Single letter value defining the initial status of
-        this worker: 'D' is disabled, 'S' is stopped, 'H' is hot-standby
-        and 'E' is in an error state. Status can be set (which is the default)
-        by prepending with '+' or cleared by prepending with '-'.
+        this worker: 'D' is disabled, 'S' is stopped, 'I' is ignore-errors,
+	'H' is hot-standby and 'E' is in an error state. Status 
+	can be set (which is the default) by prepending with '+' or 
+        cleared by prepending with '-'.
         Thus, a setting of 'S-E' sets this worker to Stopped and
         clears the in-error flag.
     </td></tr>
