@@ -1,6 +1,12 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_authnz_ldap: Don't return HTTP_UNAUTHORIZED during authorization when
+     LDAP authentication is configured but we haven't seen any 
+     'Require ldap-*' directives, allowing authorization to be passed to lower 
+     level modules (e.g. Require valid-user) 
+     PR 43281 [Eric Covener]
+     
   *) mod_proxy: don't URLencode tilde in path component
      PR 38448 [Stijn Hoop <stijn sandcat.nl>]
 
