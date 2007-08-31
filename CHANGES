@@ -12,40 +12,6 @@ Changes with Apache 2.3.0
      responding.
      PR 41644 [Stuart Children <stuart terminus.co.uk>]
 
-  *) mod_autoindex: Add in Type and Charset options to
-     IndexOptions directive. This allows the admin to explicitly
-     set the content-type and charset of the generated page.
-     [Jim Jagielski]
-
-  *) mime.types: Many updates to sync with IANA registry and common
-     unregistered types that the owners refuse to register.  Admins
-     are encouraged to update their installed mime.types file.
-     PR: 35550, 37798, 39317, 31483 [Roy T. Fielding]
-
-  *) log core: ensure we use a special pool for stderr logging, so that
-     the stderr channel remains valid from the time plog is destroyed,
-     until the time the open_logs hook is called again.  [William Rowe]
-
-  *) main core: Emit errors during the initial apr_app_initialize()
-     or apr_pool_create() (when apr-based error reporting is not ready).
-     [William Rowe, Jeff Trawick]
-
-  *) mpm_winnt: Prevent the parent-child pipe from leaking into other
-     spawned processes, and ensure we have a /Device/null handle for
-     stdout when running as-a-service.  [William Rowe]
-
-  *) log core: fix the new piped logger case where we couldn't connect 
-     the replacement stderr logger's stderr to the NULL stdout stream.  
-     Continue in this case, since the previous alternative of no error 
-     logging at all (/dev/null) is far worse. [William Rowe]
-
-  *) mod_ldap: Avoid possible crashes, hangs, and busy loops due to
-     improper merging of the cache lock in vhost config
-     PR 43164 [Eric Covener]
-
-  *) mod_negotiation: preserve Query String in resolving a type map
-     PR 33112 [Jørgen Thomsen <apache jth.net>, Nick Kew]
-
   *) mod_deflate: fix content_encoding detection in inflate_out filter
      when it's not in response headers table.
      PR 42993 [Nick Kew]
@@ -65,39 +31,14 @@ Changes with Apache 2.3.0
      where the user is not in group X, but is in a subgroup contained in X.
      PR 42891 [Paul J. Reder]
 
-  *) mod_deflate: don't try to process metadata buckets as data.  what should
-     have been a 413 error was logged as a 500 and a blank screen appeared
-     at the browser.
-     [Greg Ames, Ruediger Pluem]
-
-  *) SECURITY: CVE-2007-3304 (cve.mitre.org)
-     prefork, worker, event MPMs: Ensure that the parent process cannot
-     be forced to kill processes outside its process group.  [Joe Orton]
-
-  *) SECURITY: CVE-2006-5752 (cve.mitre.org)
-     mod_status: Fix a possible XSS attack against a site with a public
-     server-status page and ExtendedStatus enabled, for browsers which
-     perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
-
   *) Event MPM: Add support for running under mod_ssl, by reverting to the
      Worker MPM behaviors, when run under an input filter that buffers
      its own data. [Paul Querna]
 
   *) mod_ssl: Add support for caching SSL Sessions in memcached. [Paul Querna]
 
-  *) SECURITY: CVE-2007-1862 (cve.mitre.org)
-     mod_mem_cache: Copy headers into longer lived storage; header names and 
-     values could previously point to cleaned up storage
-     PR 41551 [Davi Arnaut <davi haxent.com.br>]
-
-  *) mod_cache: Do not set Date or Expires when they are missing from
-     the original response or are invalid.  [Justin Erenkrantz]
-
   *) mod_cache: Correctly handle HEAD requests on expired cache content.
      PR 41230.  [Niklas Edmundsson]
-
-  *) mod_proxy: Added ProxyPassMatch directive, which is similar
-     to ProxyPass but takes a regex local path prefix. [Jim Jagielski]
 
   *) mod_so: Solve dev's confusion by reporting expected/seen module
      magic signatures when failing with a 'garbled' message, and solve
@@ -107,13 +48,6 @@ Changes with Apache 2.3.0
   *) mod_substitute: Added a new experimental output filter, which
      performs inline response content pattern matching (including
      regex) and substitution.  [Jim Jagielski]
-
-  *) mod_ssl: Version reporting update; displays 'compiled against'
-     Apache and build-time SSL Library versions at loglevel [info],
-     while reporting the run-time SSL Library version in the server
-     info tags.  Helps to identify a mod_ssl built against one flavor
-     of OpenSSL but running against another (also adds SSL-C version
-     number reporting.)  [William Rowe]
 
   *) core: Change etag generation to produce identical results on 
      32-bit and 64-bit platforms.  PR 40064.  [Joe Orton]
@@ -138,14 +72,6 @@ Changes with Apache 2.3.0
      when invoked without variable name(s). 
      [William Rowe, Sander Temme]
 
-  *) mod_dbd: Create memory sub-pools for each DB connection and close
-     DB connections in a pool cleanup function.  Ensure prepared statements
-     are destroyed before DB connection is closed.  When using reslists,
-     prevent segfaults when child processes exit, and stop memory leakage
-     of ap_dbd_t structures.  Avoid use of global s->process->pool, which
-     isn't destroyed by exiting child processes in most multi-process MPMs.
-     PR 39985.  [Chris Darroch, Nick Kew]
-
   *) apxs: Eliminate run-time check for mod_so.  PR 40653.
      [David M. Lee <dmlee crossroads.com>]
 
@@ -156,13 +82,6 @@ Changes with Apache 2.3.0
   *) netware MPM: Destroy pmain pool when exiting ap_mpm_run() so that
      cleanups registered in modules' child_init hooks are performed.
      [Chris Darroch]
-
-  *) mod_dbd: Handle error conditions in dbd_construct() properly.
-     Simplify ap_dbd_open() and use correct arguments to apr_dbd_error()
-     when non-threaded.  Register correct cleanup data in non-threaded
-     ap_dbd_acquire() and ap_dbd_cacquire().  Clean up configuration data
-     and merge function.  Use ap_log_error() wherever possible.
-     [Chris Darroch, Nick Kew]
 
   *) core: Do not replace a Date header set by a proxied backend server.
      PR 40232. [Ruediger Pluem]
