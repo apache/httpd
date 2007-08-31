@@ -162,7 +162,7 @@ PROXY_DECLARE(char *)ap_proxy_canonenc(apr_pool_t *p, const char *x, int len,
  * it only permits ; / ? : @ = & as reserved chars.)
  */
     if (t == enc_path) {
-        allowed = "$-_.+!*'(),;:@&=";
+        allowed = "~$-_.+!*'(),;:@&=";
     }
     else if (t == enc_search) {
         allowed = "$-_.!*'(),;:@&=";

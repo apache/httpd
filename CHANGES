@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_proxy: don't URLencode tilde in path component
+     PR 38448 [Stijn Hoop <stijn sandcat.nl>]
+
   *) proxy/ajp_header.c: Fixed header token string comparisons
      Matching of header tokens failed to include the trailing NIL byte
      and could misinterpret a longer header token for a shorter.
