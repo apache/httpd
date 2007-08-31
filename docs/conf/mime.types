@@ -29,7 +29,7 @@ application/cpl+xml
 application/csta+xml
 application/cstadata+xml
 application/cybercash
-application/davmount+xml
+application/davmount+xml	davmount
 application/dca-rft
 application/dec-dx
 application/dialog-info+xml
