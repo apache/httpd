@@ -20,7 +20,7 @@ application/auth-policy+xml
 application/batch-smtp
 application/beep+xml
 application/cals-1840
-application/ccxml+xml
+application/ccxml+xml		ccxml
 application/cellml+xml
 application/cnrp+xml
 application/commonground
@@ -60,14 +60,14 @@ application/iotp
 application/ipp
 application/isup
 application/javascript		js
-application/json
+application/json		json
 application/kpml-request+xml
 application/kpml-response+xml
 application/mac-binhex40	hqx
 application/mac-compactpro	cpt
 application/macwriteii
 application/marc		mrc
-application/mathematica
+application/mathematica		ma nb mb
 application/mathml+xml		mathml
 application/mbms-associated-procedure-description+xml
 application/mbms-deregister+xml
@@ -80,14 +80,14 @@ application/mbms-register+xml
 application/mbms-register-response+xml
 application/mbms-user-service-description+xml
 application/mbox		mbox
-application/mediaservercontrol+xml
+application/mediaservercontrol+xml	mscml
 application/mikey
 application/mp4			mp4s
 application/mpeg4-generic
 application/mpeg4-iod
 application/mpeg4-iod-xmt
 application/msword		doc dot
-application/mxf
+application/mxf			mxf
 application/nasdata
 application/news-message-id
 application/news-transmission
@@ -102,18 +102,17 @@ application/parityfec
 application/pdf			pdf
 application/pgp-encrypted	pgp
 application/pgp-keys
-application/pgp-signature
+application/pgp-signature	asc sig
 application/pics-rules		prf
 application/pidf+xml
-application/pidfxml
 application/pkcs10		p10
 application/pkcs7-mime		p7m p7c
 application/pkcs7-signature	p7s
 application/pkix-cert		cer
 application/pkix-crl		crl
-application/pkix-pkipath
+application/pkix-pkipath	pkipath
 application/pkixcmp		pki
-application/pls+xml
+application/pls+xml		pls
 application/poc-settings+xml
 application/postscript		ai eps ps
 application/prs.alvestrand.titrax-sheet
@@ -122,19 +121,20 @@ application/prs.nprend
 application/prs.plucker
 application/qsig
 application/rdf+xml		rdf
-application/reginfo+xml
-application/relax-ng-compact-syntax
+application/reginfo+xml		rif
+application/relax-ng-compact-syntax		rnc
 application/remote-printing
-application/resource-lists+xml
+application/resource-lists+xml	rl
 application/riscos
 application/rlmi+xml
-application/rls-services+xml
+application/rls-services+xml	rs
+application/rsd+xml		rsd
 application/rss+xml		rss
 application/rtf			rtf
 application/rtx
 application/samlassertion+xml
 application/samlmetadata+xml
-application/sbml+xml
+application/sbml+xml		sbml
 application/sdp			sdp
 application/set-payment
 application/set-payment-initiation		setpay
@@ -142,7 +142,7 @@ application/set-registration
 application/set-registration-initiation		setreg
 application/sgml
 application/sgml-open-catalog
-application/shf+xml
+application/shf+xml		shf
 application/sieve
 application/simple-filter+xml
 application/simple-message-summary
@@ -155,72 +155,72 @@ application/soap+xml
 application/spirits-event+xml
 application/srgs		gram
 application/srgs+xml		grxml
-application/ssml+xml
+application/ssml+xml		ssml
 application/timestamp-query
 application/timestamp-reply
 application/tve-trigger
 application/vemmi
 application/vividence.scriptfile
 application/vnd.3gpp.bsf+xml
-application/vnd.3gpp.pic-bw-large
-application/vnd.3gpp.pic-bw-small
-application/vnd.3gpp.pic-bw-var
+application/vnd.3gpp.pic-bw-large	plb
+application/vnd.3gpp.pic-bw-small	psb
+application/vnd.3gpp.pic-bw-var		pvb
 application/vnd.3gpp.sms
 application/vnd.3gpp2.bcmcsinfo+xml
 application/vnd.3gpp2.sms
-application/vnd.3m.post-it-notes
-application/vnd.accpac.simply.aso
-application/vnd.accpac.simply.imp
-application/vnd.acucobol
-application/vnd.acucorp
-application/vnd.adobe.xdp+xml
-application/vnd.adobe.xfdf
+application/vnd.3m.post-it-notes	pwn
+application/vnd.accpac.simply.aso	aso
+application/vnd.accpac.simply.imp	imp
+application/vnd.acucobol		acu
+application/vnd.acucorp			atc acutc
+application/vnd.adobe.xdp+xml		xdp
+application/vnd.adobe.xfdf		xfdf
 application/vnd.aether.imp
-application/vnd.amiga.ami
+application/vnd.amiga.ami		ami
 application/vnd.anser-web-certificate-issue-initiation	cii
 application/vnd.anser-web-funds-transfer-initiation	fti
-application/vnd.antix.game-component
+application/vnd.antix.game-component	atx
 application/vnd.apple.installer+xml	mpkg
-application/vnd.audiograph
+application/vnd.audiograph		aep
 application/vnd.autopackage
 application/vnd.avistar+xml
-application/vnd.blueice.multipass
+application/vnd.blueice.multipass	mpm
 application/vnd.bmi			bmi
-application/vnd.businessobjects
+application/vnd.businessobjects		rep
 application/vnd.cab-jscript
 application/vnd.canon-cpdl
 application/vnd.canon-lips
 application/vnd.cendio.thinlinc.clientconf
-application/vnd.chemdraw+xml
-application/vnd.chipnuts.karaoke-mmd
-application/vnd.cinderella
+application/vnd.chemdraw+xml		cdxml
+application/vnd.chipnuts.karaoke-mmd	mmd
+application/vnd.cinderella		cdy
 application/vnd.cirpack.isdn-ext
 application/vnd.claymore		cla
-application/vnd.clonk.c4group
+application/vnd.clonk.c4group		c4g c4d c4f c4p c4u
 application/vnd.commerce-battelle
 application/vnd.commonspace		csp cst
-application/vnd.contact.cmsg
+application/vnd.contact.cmsg		cdbcmsg
 application/vnd.cosmocaller		cmc
-application/vnd.crick.clicker
-application/vnd.crick.clicker.keyboard
-application/vnd.crick.clicker.palette
-application/vnd.crick.clicker.template
-application/vnd.crick.clicker.wordbank
-application/vnd.criticaltools.wbs+xml
-application/vnd.ctc-posml
+application/vnd.crick.clicker		clkx
+application/vnd.crick.clicker.keyboard	clkk
+application/vnd.crick.clicker.palette	clkp
+application/vnd.crick.clicker.template	clkt
+application/vnd.crick.clicker.wordbank	clkw
+application/vnd.criticaltools.wbs+xml	wbs
+application/vnd.ctc-posml		pml
 application/vnd.cups-pdf
 application/vnd.cups-postscript
-application/vnd.cups-ppd
+application/vnd.cups-ppd		ppd
 application/vnd.cups-raster
 application/vnd.cups-raw
 application/vnd.curl			curl
 application/vnd.cybank
-application/vnd.data-vision.rdz
-application/vnd.denovo.fcselayout-link
+application/vnd.data-vision.rdz		rdz
+application/vnd.denovo.fcselayout-link	fe_launch
 application/vnd.dna			dna
-application/vnd.dolby.mlp
+application/vnd.dolby.mlp		mlp
 application/vnd.dpgraph			dpg
-application/vnd.dreamfactory
+application/vnd.dreamfactory		dfac
 application/vnd.dvb.esgcontainer
 application/vnd.dvb.ipdcesgaccess
 application/vnd.dxr
@@ -232,25 +232,25 @@ application/vnd.ecowin.series
 application/vnd.ecowin.seriesrequest
 application/vnd.ecowin.seriesupdate
 application/vnd.enliven			nml
-application/vnd.epson.esf
-application/vnd.epson.msf
-application/vnd.epson.quickanime
-application/vnd.epson.salt
-application/vnd.epson.ssf
+application/vnd.epson.esf		esf
+application/vnd.epson.msf		msf
+application/vnd.epson.quickanime	qam
+application/vnd.epson.salt		slt
+application/vnd.epson.ssf		ssf
 application/vnd.ericsson.quickcall
-application/vnd.eszigno3+xml
+application/vnd.eszigno3+xml		es3 et3
 application/vnd.eudora.data
-application/vnd.ezpix-album
-application/vnd.ezpix-package
+application/vnd.ezpix-album		ez2
+application/vnd.ezpix-package		ez3
 application/vnd.fdf			fdf
 application/vnd.ffsns
 application/vnd.fints
-application/vnd.flographit
-application/vnd.fluxtime.clip
+application/vnd.flographit		gph
+application/vnd.fluxtime.clip		ftc
 application/vnd.framemaker		fm frame maker
 application/vnd.frogans.fnc		fnc
 application/vnd.frogans.ltf		ltf
-application/vnd.fsc.weblaunch
+application/vnd.fsc.weblaunch		fsc
 application/vnd.fujitsu.oasys		oas
 application/vnd.fujitsu.oasys2		oa2
 application/vnd.fujitsu.oasys3		oa3
@@ -259,55 +259,54 @@ application/vnd.fujitsu.oasysprs	bh2
 application/vnd.fujixerox.art-ex
 application/vnd.fujixerox.art4
 application/vnd.fujixerox.hbpl
-application/vnd.fujixerox.ddd
-application/vnd.fujixerox.docuworks
-application/vnd.fujixerox.docuworks.binder
+application/vnd.fujixerox.ddd		ddd
+application/vnd.fujixerox.docuworks	xdw
+application/vnd.fujixerox.docuworks.binder	xbd
 application/vnd.fut-misnet
-application/vnd.fuzzysheet
-application/vnd.genomatix.tuxedo
+application/vnd.fuzzysheet		fzs
+application/vnd.genomatix.tuxedo	txd
 application/vnd.google-earth.kml+xml    kml
 application/vnd.google-earth.kmz        kmz
 application/vnd.grafeq			gqf gqs
 application/vnd.gridmp
 application/vnd.groove-account		gac
-application/vnd.groove-help
+application/vnd.groove-help		ghf
 application/vnd.groove-identity-message	gim
 application/vnd.groove-injector		grv
 application/vnd.groove-tool-message	gtm
 application/vnd.groove-tool-template	tpl
 application/vnd.groove-vcard		vcg
-application/vnd.handheld-entertainment+xml
-application/vnd.hbci
+application/vnd.handheld-entertainment+xml	zmm
+application/vnd.hbci			hbci
 application/vnd.hcl-bireports
-application/vnd.hhe.lesson-player
+application/vnd.hhe.lesson-player	les
 application/vnd.hp-hpgl			hpgl
 application/vnd.hp-hpid			hpid
 application/vnd.hp-hps			hps
-application/vnd.hp-jlyt			jlyt
+application/vnd.hp-jlyt			jlt
 application/vnd.hp-pcl			pcl
 application/vnd.hp-pclxl		pclxl
 application/vnd.httphone
-application/vnd.hzn-3d-crossword
+application/vnd.hzn-3d-crossword	x3d
 application/vnd.ibm.afplinedata
 application/vnd.ibm.electronic-media
 application/vnd.ibm.minipay		mpy
-application/vnd.ibm.modcap		listafp list3820
-application/vnd.ibm.rights-management
-application/vnd.ibm.secure-container
-application/vnd.igloader
-application/vnd.immervision-ivp
-application/vnd.immervision-ivu
+application/vnd.ibm.modcap		afp listafp list3820
+application/vnd.ibm.rights-management	irm
+application/vnd.ibm.secure-container	sc
+application/vnd.igloader		igl
+application/vnd.immervision-ivp		ivp
+application/vnd.immervision-ivu		ivu
 application/vnd.informedcontrol.rms+xml
-application/vnd.informix-visionary
-application/vnd.intercon.formnet
+application/vnd.intercon.formnet	xpw xpx
 application/vnd.intertrust.digibox
 application/vnd.intertrust.nncp
-application/vnd.intu.qbo
-application/vnd.intu.qfx
-application/vnd.ipunplugged.rcprofile
-application/vnd.irepository.package+xml
-application/vnd.is-xpr
-application/vnd.jam
+application/vnd.intu.qbo		qbo
+application/vnd.intu.qfx		qfx
+application/vnd.ipunplugged.rcprofile	rcprofile
+application/vnd.irepository.package+xml	irp
+application/vnd.is-xpr			xpr
+application/vnd.jam			jam
 application/vnd.japannet-directory-service
 application/vnd.japannet-jpnstore-wakeup
 application/vnd.japannet-payment-wakeup
@@ -316,55 +315,55 @@ application/vnd.japannet-registration-wakeup
 application/vnd.japannet-setstore-wakeup
 application/vnd.japannet-verification
 application/vnd.japannet-verification-wakeup
-application/vnd.jcp.javame.midlet-rms
-application/vnd.jisp
-application/vnd.kahootz
-application/vnd.kde.karbon
-application/vnd.kde.kchart
-application/vnd.kde.kformula
-application/vnd.kde.kivio
-application/vnd.kde.kontour
-application/vnd.kde.kpresenter
-application/vnd.kde.kspread
-application/vnd.kde.kword
-application/vnd.kenameaapp
-application/vnd.kidspiration
-application/vnd.kinar
+application/vnd.jcp.javame.midlet-rms	rms
+application/vnd.jisp			jisp
+application/vnd.kahootz			ktz ktr
+application/vnd.kde.karbon		karbon
+application/vnd.kde.kchart		chrt
+application/vnd.kde.kformula		kfo
+application/vnd.kde.kivio		flw
+application/vnd.kde.kontour		kon
+application/vnd.kde.kpresenter		kpr kpt
+application/vnd.kde.kspread		ksp
+application/vnd.kde.kword		kwd kwt
+application/vnd.kenameaapp		htke
+application/vnd.kidspiration		kia
+application/vnd.kinar		kne knp
 application/vnd.koan		skp skd skt skm
 application/vnd.liberty-request+xml
-application/vnd.llamagraphics.life-balance.desktop
-application/vnd.llamagraphics.life-balance.exchange+xml
+application/vnd.llamagraphics.life-balance.desktop	lbd
+application/vnd.llamagraphics.life-balance.exchange+xml	lbe
 application/vnd.lotus-1-2-3			123
-application/vnd.lotus-approach
+application/vnd.lotus-approach			apr
 application/vnd.lotus-freelance			pre
 application/vnd.lotus-notes			nsf
 application/vnd.lotus-organizer			org
-application/vnd.lotus-screencam
+application/vnd.lotus-screencam			scm
 application/vnd.lotus-wordpro			lwp
-application/vnd.macports.portpkg
+application/vnd.macports.portpkg		portpkg
 application/vnd.marlin.drm.actiontoken+xml
 application/vnd.marlin.drm.conftoken+xml
 application/vnd.marlin.drm.mdcf
 application/vnd.mcd				mcd
-application/vnd.medcalcdata
+application/vnd.medcalcdata			mc1
 application/vnd.mediastation.cdkey		cdkey
 application/vnd.meridian-slingshot
-application/vnd.mfer
-application/vnd.mfmp
-application/vnd.micrografx.flo
-application/vnd.micrografx.igx
-application/vnd.mif		mif
+application/vnd.mfer				mwf
+application/vnd.mfmp				mfm
+application/vnd.micrografx.flo			flo
+application/vnd.micrografx.igx			igx
+application/vnd.mif				mif
 application/vnd.minisoft-hp3000-save
 application/vnd.mitsubishi.misty-guard.trustweb
-application/vnd.mobius.daf
+application/vnd.mobius.daf			daf
 application/vnd.mobius.dis			dis
-application/vnd.mobius.mbk
-application/vnd.mobius.mqy
-application/vnd.mobius.msl
+application/vnd.mobius.mbk			mbk
+application/vnd.mobius.mqy			mqy
+application/vnd.mobius.msl			msl
 application/vnd.mobius.plc			plc
-application/vnd.mobius.txf
-application/vnd.mophun.application
-application/vnd.mophun.certificate
+application/vnd.mobius.txf			txf
+application/vnd.mophun.application		mpn
+application/vnd.mophun.certificate		mpc
 application/vnd.motorola.flexsuite
 application/vnd.motorola.flexsuite.adsi
 application/vnd.motorola.flexsuite.fis
@@ -373,14 +372,14 @@ application/vnd.motorola.flexsuite.kmr
 application/vnd.motorola.flexsuite.ttc
 application/vnd.motorola.flexsuite.wem
 application/vnd.mozilla.xul+xml	xul
-application/vnd.ms-artgalry
-application/vnd.ms-asf
-application/vnd.ms-cab-compressed
+application/vnd.ms-artgalry			cil
+application/vnd.ms-asf				asf
+application/vnd.ms-cab-compressed		cab
 application/vnd.ms-excel	xls xlm xla xlc xlt xlw
-application/vnd.ms-fontobject
-application/vnd.ms-htmlhelp	chm
-application/vnd.ms-ims
-application/vnd.ms-lrm
+application/vnd.ms-fontobject			eot
+application/vnd.ms-htmlhelp			chm
+application/vnd.ms-ims				ims
+application/vnd.ms-lrm				lrm
 application/vnd.ms-playready.initiator+xml
 application/vnd.ms-powerpoint				ppt pps pot
 application/vnd.ms-project				mpp mpt
@@ -390,16 +389,16 @@ application/vnd.ms-wmdrm.lic-resp
 application/vnd.ms-wmdrm.meter-chlg-req
 application/vnd.ms-wmdrm.meter-resp
 application/vnd.ms-works				wps wks wcm wdb
-application/vnd.ms-wpl
-application/vnd.ms-xpsdocument
-application/vnd.mseq
+application/vnd.ms-wpl					wpl
+application/vnd.ms-xpsdocument				xps
+application/vnd.mseq					mseq
 application/vnd.msign
 application/vnd.music-niff
-application/vnd.musician
+application/vnd.musician				mus
 application/vnd.ncd.control
 application/vnd.nervana
 application/vnd.netfpx
-application/vnd.neurolanguage.nlu
+application/vnd.neurolanguage.nlu			nlu
 application/vnd.noblenet-directory			nnd
 application/vnd.noblenet-sealer				nns
 application/vnd.noblenet-web				nnw
@@ -412,16 +411,16 @@ application/vnd.nokia.landmark+wbxml
 application/vnd.nokia.landmark+xml
 application/vnd.nokia.landmarkcollection+xml
 application/vnd.nokia.n-gage.ac+xml
-application/vnd.nokia.n-gage.data
-application/vnd.nokia.n-gage.symbian.install
+application/vnd.nokia.n-gage.data			ngdat
+application/vnd.nokia.n-gage.symbian.install		n-gage
 application/vnd.nokia.ncd
 application/vnd.nokia.pcd+wbxml
 application/vnd.nokia.pcd+xml
-application/vnd.nokia.radio-preset
-application/vnd.nokia.radio-presets
-application/vnd.novadigm.edm
-application/vnd.novadigm.edx
-application/vnd.novadigm.ext					ext
+application/vnd.nokia.radio-preset			rpst
+application/vnd.nokia.radio-presets			rpss
+application/vnd.novadigm.edm				edm
+application/vnd.novadigm.edx				edx
+application/vnd.novadigm.ext				ext
 application/vnd.oasis.opendocument.chart			odc
 application/vnd.oasis.opendocument.chart-template		otc
 application/vnd.oasis.opendocument.formula			odf
@@ -439,7 +438,7 @@ application/vnd.oasis.opendocument.text-master			otm
 application/vnd.oasis.opendocument.text-template		ott
 application/vnd.oasis.opendocument.text-web			oth
 application/vnd.obn
-application/vnd.olpc-sugar
+application/vnd.olpc-sugar					xo
 application/vnd.oma-scws-config
 application/vnd.oma-scws-http-request
 application/vnd.oma-scws-http-response
@@ -453,7 +452,7 @@ application/vnd.oma.bcast.sgdu
 application/vnd.oma.bcast.simple-symbol-container
 application/vnd.oma.bcast.smartcard-trigger+xml
 application/vnd.oma.bcast.sprov+xml
-application/vnd.oma.dd2+xml
+application/vnd.oma.dd2+xml					dd2
 application/vnd.oma.drm.risd+xml
 application/vnd.oma.group-usage-list+xml
 application/vnd.oma.poc.groups+xml
@@ -462,18 +461,18 @@ application/vnd.omads-email+xml
 application/vnd.omads-file+xml
 application/vnd.omads-folder+xml
 application/vnd.omaloc-supl-init
-application/vnd.openofficeorg.extension
+application/vnd.openofficeorg.extension				oxt
 application/vnd.osa.netdeploy
-application/vnd.osgi.dp
+application/vnd.osgi.dp						dp
 application/vnd.otps.ct-kip+xml
-application/vnd.palm
+application/vnd.palm					prc pdb pqa oprc
 application/vnd.paos.xml
-application/vnd.pg.format
-application/vnd.pg.osasli
+application/vnd.pg.format				str
+application/vnd.pg.osasli				ei6
 application/vnd.piaccess.application-licence
-application/vnd.picsel
+application/vnd.picsel					efif
 application/vnd.poc.group-advertisement+xml
-application/vnd.pocketlearn
+application/vnd.pocketlearn			plf
 application/vnd.powerbuilder6			pbd
 application/vnd.powerbuilder6-s
 application/vnd.powerbuilder7
@@ -482,15 +481,15 @@ application/vnd.powerbuilder75
 application/vnd.powerbuilder75-s
 application/vnd.preminet
 application/vnd.previewsystems.box		box
-application/vnd.proteus.magazine
-application/vnd.publishare-delta-tree
-application/vnd.pvi.ptid1
+application/vnd.proteus.magazine		mgz
+application/vnd.publishare-delta-tree		qps
+application/vnd.pvi.ptid1			ptid
 application/vnd.pwg-multiplexed
 application/vnd.pwg-xhtml-print+xml
 application/vnd.qualcomm.brew-app-res
-application/vnd.quark.quarkxpress
+application/vnd.quark.quarkxpress		qxd qxt qwd qwt qxl qxb
 application/vnd.rapid
-application/vnd.recordare.musicxml
+application/vnd.recordare.musicxml		mxl
 application/vnd.recordare.musicxml+xml
 application/vnd.renlearn.rlprint
 application/vnd.rn-realmedia	rm
@@ -508,42 +507,42 @@ application/vnd.sealed.tiff
 application/vnd.sealed.xls
 application/vnd.sealedmedia.softseal.html
 application/vnd.sealedmedia.softseal.pdf
-application/vnd.seemail
-application/vnd.sema
-application/vnd.semd
-application/vnd.semf
+application/vnd.seemail				see
+application/vnd.sema				sema
+application/vnd.semd				semd
+application/vnd.semf				semf
 application/vnd.shana.informed.formdata		ifm
 application/vnd.shana.informed.formtemplate	itp
 application/vnd.shana.informed.interchange	iif
 application/vnd.shana.informed.package		ipk
-application/vnd.simtech-mindmapper
-application/vnd.smaf
-application/vnd.solent.sdkm+xml
-application/vnd.spotfire.dxp
-application/vnd.spotfire.sfs
+application/vnd.simtech-mindmapper		twd twds
+application/vnd.smaf				mmf
+application/vnd.solent.sdkm+xml			sdkm sdkd
+application/vnd.spotfire.dxp			dxp
+application/vnd.spotfire.sfs			sfs
 application/vnd.sss-cod
 application/vnd.sss-dtf
 application/vnd.sss-ntf
 application/vnd.street-stream
 application/vnd.sun.wadl+xml
-application/vnd.sus-calendar
-application/vnd.svd
+application/vnd.sus-calendar			sus susp
+application/vnd.svd				svd
 application/vnd.swiftview-ics
-application/vnd.syncml+xml
-application/vnd.syncml.dm+wbxml
-application/vnd.syncml.dm+xml
+application/vnd.syncml+xml			xsm
+application/vnd.syncml.dm+wbxml			bdm
+application/vnd.syncml.dm+xml			xdm
 application/vnd.syncml.ds.notification
-application/vnd.tao.intent-module-archive
-application/vnd.tmobile-livetv
-application/vnd.trid.tpt
-application/vnd.triscape.mxs
+application/vnd.tao.intent-module-archive	tao
+application/vnd.tmobile-livetv			tmo
+application/vnd.trid.tpt			tpt
+application/vnd.triscape.mxs			mxs
 application/vnd.trueapp				tra
 application/vnd.truedoc
-application/vnd.ufdl
-application/vnd.uiq.theme
-application/vnd.umajin
-application/vnd.unity
-application/vnd.uoml+xml
+application/vnd.ufdl				ufd ufdl
+application/vnd.uiq.theme			utz
+application/vnd.umajin				umj
+application/vnd.unity				unityweb
+application/vnd.uoml+xml			uoml
 application/vnd.uplanet.alert
 application/vnd.uplanet.alert-wbxml
 application/vnd.uplanet.bearer-choice
@@ -557,42 +556,42 @@ application/vnd.uplanet.list-wbxml
 application/vnd.uplanet.listcmd
 application/vnd.uplanet.listcmd-wbxml
 application/vnd.uplanet.signal
-application/vnd.vcx
+application/vnd.vcx				vcx
 application/vnd.vd-study
 application/vnd.vectorworks
 application/vnd.vidsoft.vidconference
 application/vnd.visio		vsd vst vss vsw
-application/vnd.visionary
+application/vnd.visionary	vis
 application/vnd.vividence.scriptfile
-application/vnd.vsf
+application/vnd.vsf		vsf
 application/vnd.wap.sic
 application/vnd.wap.slc
 application/vnd.wap.wbxml	wbxml
 application/vnd.wap.wmlc	wmlc
 application/vnd.wap.wmlscriptc	wmlsc
-application/vnd.webturbo
+application/vnd.webturbo	wtb
 application/vnd.wfa.wsc
 application/vnd.wordperfect	wpd
-application/vnd.wqd
+application/vnd.wqd		wqd
 application/vnd.wrq-hp3000-labelled
 application/vnd.wt.stf		stf
 application/vnd.wv.csp+wbxml
 application/vnd.wv.csp+xml
 application/vnd.wv.ssp+xml
-application/vnd.xara
-application/vnd.xfdl
+application/vnd.xara		xar
+application/vnd.xfdl		xfdl
 application/vnd.xmpie.cpkg
 application/vnd.xmpie.dpkg
 application/vnd.xmpie.plan
 application/vnd.xmpie.ppkg
 application/vnd.xmpie.xlim
-application/vnd.yamaha.hv-dic
-application/vnd.yamaha.hv-script
-application/vnd.yamaha.hv-voice
-application/vnd.yamaha.smaf-audio
-application/vnd.yamaha.smaf-phrase
+application/vnd.yamaha.hv-dic			hvd
+application/vnd.yamaha.hv-script		hvs
+application/vnd.yamaha.hv-voice			hvp
+application/vnd.yamaha.smaf-audio		saf
+application/vnd.yamaha.smaf-phrase		spf
 application/vnd.yellowriver-custom-menu		cmp
-application/vnd.zzazz.deck+xml
+application/vnd.zzazz.deck+xml			zaz
 application/voicexml+xml	vxml
 application/watcherinfo+xml
 application/whoispp-query
@@ -600,8 +599,8 @@ application/whoispp-response
 application/winhlp		hlp
 application/wita
 application/wordperfect5.1
-application/wsdl+xml
-application/wspolicy+xml
+application/wsdl+xml		wsdl
+application/wspolicy+xml	wspolicy
 application/x-ace-compressed	ace
 application/x-bcpio		bcpio
 application/x-bittorrent	torrent
@@ -659,16 +658,16 @@ application/xcap-caps+xml
 application/xcap-el+xml
 application/xcap-error+xml
 application/xcap-ns+xml
-application/xenc+xml
+application/xenc+xml		xenc
 application/xhtml+xml		xhtml xht
 application/xml			xml xsl
 application/xml-dtd		dtd
 application/xml-external-parsed-entity
 application/xmpp+xml
-application/xop+xml
+application/xop+xml		xop
 application/xslt+xml		xslt
 application/xspf+xml		xspf
-application/xv+xml
+application/xv+xml		mxml xhvml xvml xvm
 application/zip			zip
 audio/32kadpcm
 audio/3gpp
@@ -802,7 +801,7 @@ image/svg+xml			svg svgz
 image/t38
 image/tiff			tiff tif
 image/tiff-fx
-image/vnd.adobe.photoshop
+image/vnd.adobe.photoshop	psd
 image/vnd.cns.inf2
 image/vnd.djvu			djvu djv
 image/vnd.dwg			dwg
@@ -815,14 +814,14 @@ image/vnd.fujixerox.edmics-rlc	rlc
 image/vnd.globalgraphics.pgb
 image/vnd.microsoft.icon	ico
 image/vnd.mix
-image/vnd.ms-modi
+image/vnd.ms-modi		mdi
 image/vnd.net-fpx		npx
 image/vnd.sealed.png
 image/vnd.sealedmedia.softseal.gif
 image/vnd.sealedmedia.softseal.jpg
 image/vnd.svf
 image/vnd.wap.wbmp		wbmp
-image/vnd.xiff
+image/vnd.xiff			xif
 image/x-cmu-raster		ras
 image/x-cmx			cmx
 image/x-icon
@@ -876,13 +875,13 @@ multipart/signed
 multipart/voice-message
 text/calendar			ics ifb
 text/css			css
-text/csv
+text/csv			csv
 text/directory
 text/dns
 text/enriched
 text/html			html htm
 text/parityfec
-text/plain			txt text asc conf def list log
+text/plain			txt text conf def list log in
 text/prs.fallenstein.rst
 text/prs.lines.tag		dsc
 text/red
@@ -910,15 +909,14 @@ text/vnd.latex-z
 text/vnd.motorola.reflex
 text/vnd.ms-mediapackage
 text/vnd.net2phone.commcenter.command
-text/vnd.sun.j2me.app-descriptor
+text/vnd.sun.j2me.app-descriptor	jad
 text/vnd.trolltech.linguist
 text/vnd.wap.si
 text/vnd.wap.sl
 text/vnd.wap.wml		wml
 text/vnd.wap.wmlscript		wmls
-text/x-asm			s
+text/x-asm			s asm
 text/x-c			c cc cxx cpp h hh dic
-text/x-emacs-lisp 		el
 text/x-fortran  		f for f77 f90
 text/x-pascal			p pas
 text/x-java-source		java
@@ -928,21 +926,21 @@ text/x-vcalendar		vcs
 text/x-vcard			vcf
 text/xml
 text/xml-external-parsed-entity
-video/3gpp
+video/3gpp			3gp
 video/3gpp-tt
-video/3gpp2
+video/3gpp2			3g2
 video/bmpeg
 video/bt656
 video/celb
 video/dv
-video/h261
-video/h263
+video/h261			h261
+video/h263			h263
 video/h263-1998
 video/h263-2000
-video/h264
-video/jpeg
-video/jpm
-video/mj2
+video/h264			h264
+video/jpeg			jpgv
+video/jpm			jpm jpgm
+video/mj2			mj2 mjp2
 video/mp1s
 video/mp2p
 video/mp2t
