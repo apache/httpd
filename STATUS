@@ -195,18 +195,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=429879
        +1: niq, rpluem
 
-    * mod_dumpio.c: EBCDIC patch for correct dumping
-      Without this patch, the network data in dumpio's output are
-      worthless, because ASCII chars are interpreted as EBCDIC
-      (leaving almost no 'printable' chars over), plus the
-      actual logging module retranslates control chars once again
-      (incorrectly because they already were ascii)
-      "from ebcdic to ascii", so that even the escped chars are
-      useless for the user.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=570753&view=rev
-      +1: martin,jim,rpluem
-
     * proxy/ajp_header.c: incorrect substring checks for header fields
       The method of parsing the header line tokens is flakey:
       it uses memcmp() to check, e.g., whether the header token is
