@@ -512,6 +512,7 @@ static int authz_ldap_check_user_access(request_rec *r)
     const char *t;
     char *w, *value;
     int method_restricted = 0;
+    int required_ldap = 0;
 
     char filtbuf[FILTER_LENGTH];
     const char *dn = NULL;
@@ -615,6 +616,7 @@ static int authz_ldap_check_user_access(request_rec *r)
         w = ap_getword_white(r->pool, &t);
 
         if (strcmp(w, "ldap-user") == 0) {
+            required_ldap = 1;
             if (req->dn == NULL || strlen(req->dn) == 0) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "[%" APR_PID_T_FMT "] auth_ldap authorise: "
@@ -664,6 +666,7 @@ static int authz_ldap_check_user_access(request_rec *r)
             }
         }
         else if (strcmp(w, "ldap-dn") == 0) {
+            required_ldap = 1;
             if (req->dn == NULL || strlen(req->dn) == 0) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "[%" APR_PID_T_FMT "] auth_ldap authorise: "
@@ -691,6 +694,7 @@ static int authz_ldap_check_user_access(request_rec *r)
         else if (strcmp(w, "ldap-group") == 0) {
             struct mod_auth_ldap_groupattr_entry_t *ent = (struct mod_auth_ldap_groupattr_entry_t *) sec->groupattr->elts;
             int i;
+            required_ldap = 1;
 
             if (sec->group_attrib_is_dn) {
                 if (req->dn == NULL || strlen(req->dn) == 0) {
@@ -740,6 +744,7 @@ static int authz_ldap_check_user_access(request_rec *r)
             }
         }
         else if (strcmp(w, "ldap-attribute") == 0) {
+            required_ldap = 1;
             if (req->dn == NULL || strlen(req->dn) == 0) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "[%" APR_PID_T_FMT "] auth_ldap authorise: "
@@ -775,6 +780,7 @@ static int authz_ldap_check_user_access(request_rec *r)
             }
         }
         else if (strcmp(w, "ldap-filter") == 0) {
+            required_ldap = 1;
             if (req->dn == NULL || strlen(req->dn) == 0) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "[%" APR_PID_T_FMT "] auth_ldap authorise: "
@@ -838,7 +844,7 @@ static int authz_ldap_check_user_access(request_rec *r)
         return OK;
     }
 
-    if (!sec->auth_authoritative) {
+    if (!required_ldap || !sec->auth_authoritative) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "[%" APR_PID_T_FMT "] auth_ldap authorise: declining to authorise", getpid());
         return DECLINED;
