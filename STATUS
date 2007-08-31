@@ -200,6 +200,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: martin
 
 
+   * mod_authnz_ldap: When no Require ldap-* are present, return DECLINED in the
+     auth_checker hook instead of HTTP_UNAUTHORIZED. 
+     This makes authnz_ldap behave in the same fashion as authz_user, authz_dbm, 
+     authz_owner, and authz_groupfile. 
+     Trunk version of patch
+       This change is not required for trunk because of the authz-provider model
+     2.2.x version of patch:
+      http://people.apache.org/~covener/2.2.x-authnz_ldap-decline.diff  
+     +1: covener
+           
+     
 PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
