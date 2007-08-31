@@ -193,7 +193,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     *) proxy_util.c: Don't URLencode tilde in path component
        PR 38448
        http://svn.apache.org/viewvc?view=rev&revision=429879
-       +1: niq, rpluem
+       +1: niq, rpluem, martin
+
+   * ssl/ssl_engine_io.c: Fix SSL Protocol hexdumps for EBCDIC systems
+     A conversion is required for mod_ssl to display the SSL protocol correctly
+     on EBCDIC machines. Backport of rev. 349906
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=349906 from 2005-11-30
+     2.2.x version of patch:
+       http://people.apache.org/~martin/ssl_engine_io.c.349906.patch
+     +1: martin
 
 
 PATCHES/ISSUES THAT ARE STALLED
