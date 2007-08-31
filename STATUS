@@ -79,19 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy: Allow optional name=value options within <Proxy section line.
-      Additional arguments are allowed only for 'standard' url's, meaning that
-      the wildchar urls will return error like before. This allow to specify
-      the worker/balancer parameters on the definition line, without the need
-      for extra ProxySet options.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=427928&view=rev
-         http://svn.apache.org/viewcvs.cgi?rev=428291&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, niq
-
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
