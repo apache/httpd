@@ -113,8 +113,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     /* we break the URL into host, port, uri */
     if (APR_SUCCESS != apr_uri_parse_hostinfo(p, url, &uri)) {
-    return ap_proxyerror(r, HTTP_BAD_REQUEST,
-                 apr_pstrcat(p, "URI cannot be parsed: ", url, NULL));
+        return ap_proxyerror(r, HTTP_BAD_REQUEST, apr_pstrcat(p,
+                             "URI cannot be parsed: ", url, NULL));
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
@@ -145,24 +145,24 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
  
     /* check if ProxyBlock directive on this host */
     if (OK != ap_proxy_checkproxyblock(r, conf, uri_addr)) {
-    return ap_proxyerror(r, HTTP_FORBIDDEN,
-                 "Connect to remote machine blocked");
+        return ap_proxyerror(r, HTTP_FORBIDDEN,
+                             "Connect to remote machine blocked");
     }
 
     /* Check if it is an allowed port */
     if (conf->allowed_connect_ports->nelts == 0) {
     /* Default setting if not overridden by AllowCONNECT */
-    switch (uri.port) {
-        case APR_URI_HTTPS_DEFAULT_PORT:
-        case APR_URI_SNEWS_DEFAULT_PORT:
-        break;
-        default:
+        switch (uri.port) {
+            case APR_URI_HTTPS_DEFAULT_PORT:
+            case APR_URI_SNEWS_DEFAULT_PORT:
+                break;
+            default:
                 /* XXX can we call ap_proxyerror() here to get a nice log message? */
-        return HTTP_FORBIDDEN;
-    }
+                return HTTP_FORBIDDEN;
+        }
     } else if(!allowed_port(conf, uri.port)) {
         /* XXX can we call ap_proxyerror() here to get a nice log message? */
-    return HTTP_FORBIDDEN;
+        return HTTP_FORBIDDEN;
     }
 
     /*
@@ -175,7 +175,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * until we get a successful connection
      */
     if (APR_SUCCESS != err) {
-    return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
+        return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
                              "DNS lookup failure for: ",
                              connectname, NULL));
     }
@@ -266,9 +266,8 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
 /*    r->sent_bodyct = 1;*/
 
-    if ((rv = apr_pollset_create(&pollset, 2, r->pool, 0)) != APR_SUCCESS)
-    {
-    apr_socket_close(sock);
+    if ((rv = apr_pollset_create(&pollset, 2, r->pool, 0)) != APR_SUCCESS) {
+        apr_socket_close(sock);
         ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
             "proxy: CONNECT: error apr_pollset_create()");
         return HTTP_INTERNAL_SERVER_ERROR;
@@ -288,7 +287,7 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     while (1) { /* Infinite loop until error (one side closes the connection) */
         if ((rv = apr_pollset_poll(pollset, -1, &pollcnt, &signalled)) != APR_SUCCESS) {
-        apr_socket_close(sock);
+            apr_socket_close(sock);
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r, "proxy: CONNECT: error apr_poll()");
             return HTTP_INTERNAL_SERVER_ERROR;
         }
