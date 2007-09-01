@@ -2,16 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) mod_proxy_connect: avoid segfault on DNS lookup failure.
-     PR 40756 [Trevin Beattie <tbeattie boingo.com>]
-
-  *) mod_proxy: enable Ignore Errors option on ProxyPass Status.
-     PR 43167 [Francisco Gimeno <kikov kikov.org>
-
-  *) mod_proxy_http: Don't try to read body of a HEAD request before
-     responding.
-     PR 41644 [Stuart Children <stuart terminus.co.uk>]
-
   *) mod_deflate: fix content_encoding detection in inflate_out filter
      when it's not in response headers table.
      PR 42993 [Nick Kew]
