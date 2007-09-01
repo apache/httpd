@@ -79,15 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * ssl/ssl_engine_io.c: Fix SSL Protocol hexdumps for EBCDIC systems
-     A conversion is required for mod_ssl to display the SSL protocol correctly
-     on EBCDIC machines. Backport of rev. 349906
-     Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=349906 from 2005-11-30
-     2.2.x version of patch:
-       http://people.apache.org/~martin/ssl_engine_io.c.349906.patch
-     +1: martin, rpluem, jim
-
    * mod_proxy_http: Don't wait for response body in a HEAD request
      PR 41644
      http://svn.apache.org/viewvc?view=rev&revision=571002
