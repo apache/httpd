@@ -96,6 +96,9 @@ typedef struct {
 
     /* pointer to internal (non-public) data, don't touch */
     struct ssi_internal_ctx *intern;
+
+    /* is using the access tests allowed? */
+    int         accessenable;
 } include_ctx_t;
 
 typedef apr_status_t (include_handler_fn_t)(include_ctx_t *, ap_filter_t *,
