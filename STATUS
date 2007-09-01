@@ -79,6 +79,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * proxy_util: don't return unset error code
+     PR 40865
+     http://svn.apache.org/viewvc?view=rev&revision=470076
+     +1: niq, rpluem, fielding
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -177,11 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=571869
      http://svn.apache.org/viewvc?view=rev&revision=571879
      +1: jim
-
-   * proxy_util: don't return unset error code
-     PR 40865
-     http://svn.apache.org/viewvc?view=rev&revision=470076
-     +1: niq, rpluem
 
    * mod_include: Add an "if" directive syntax to test whether an URL
      is accessible, and if so, conditionally display content. This
