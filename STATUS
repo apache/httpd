@@ -79,11 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_http: Don't wait for response body in a HEAD request
-     PR 41644
-     http://svn.apache.org/viewvc?view=rev&revision=571002
-     +1: niq, rpluem, jim
-
    * mod_proxy: Add ProxyPass status option to ignore errors
      PR 43167
      http://svn.apache.org/viewvc?view=rev&revision=571338
