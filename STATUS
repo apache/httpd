@@ -174,7 +174,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 40756
      http://svn.apache.org/viewvc?view=rev&revision=571414
      http://svn.apache.org/viewvc?view=rev&revision=571863
-     +1: niq, rpluem
+     +1: niq
+     rpluem says: Please add r571869 to replace the tabs with spaces.
+                  I am still +1 on the patch.
 
    * proxy_util: don't return unset error code
      PR 40865
