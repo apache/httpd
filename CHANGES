@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_proxy_http: Don't try to read body of a HEAD request before
+     responding.  PR 41644 [Stuart Children <stuart terminus.co.uk>]
+
   *) mod_authnz_ldap: Don't return HTTP_UNAUTHORIZED during authorization when
      LDAP authentication is configured but we haven't seen any 
      'Require ldap-*' directives, allowing authorization to be passed to lower 
