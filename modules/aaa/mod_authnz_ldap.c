@@ -30,6 +30,7 @@
 #include "apr_xlate.h"
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "apr_lib.h"
 
 #if APR_HAVE_UNISTD_H
 /* for getpid() */
@@ -442,11 +443,9 @@ start_over:
         int i = 0;
         while (sec->attributes[i]) {
             char *str = apr_pstrcat(r->pool, AUTHN_PREFIX, sec->attributes[i], NULL);
-            int j = 13;
+            int j = sizeof(AUTHN_PREFIX)-1; /* string length of "AUTHENTICATE_", excluding the trailing NIL */
             while (str[j]) {
-                if (str[j] >= 'a' && str[j] <= 'z') {
-                    str[j] = str[j] - ('a' - 'A');
-                }
+                str[j] = apr_toupper(str[j]);
                 j++;
             }
             apr_table_setn(e, str, vals[i]);
