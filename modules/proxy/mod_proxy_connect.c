@@ -122,6 +122,11 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     /* do a DNS lookup for the destination host */
     err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port, 0, p);
+    if (APR_SUCCESS != err) {
+	return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
+			     "DNS lookup failure for: ",
+			     uri.hostname, NULL));
+    }
 
     /* are we connecting directly, or via a proxy? */
     if (proxyname) {
@@ -136,12 +141,6 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
          "proxy: CONNECT: connecting to remote proxy %s on port %d", connectname, connectport);
-
-    if (APR_SUCCESS != err) {
-	return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
-			     "DNS lookup failure for: ",
-			     uri.hostname, NULL));
-    }
  
     /* check if ProxyBlock directive on this host */
     if (OK != ap_proxy_checkproxyblock(r, conf, uri_addr)) {
