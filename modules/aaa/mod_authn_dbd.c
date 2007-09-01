@@ -138,7 +138,7 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
                 char *str = apr_pstrcat(r->pool, AUTHN_PREFIX,
                                         name,
                                         NULL);
-                int j = 13;
+                int j = sizeof(AUTHN_PREFIX)-1; /* string length of "AUTHENTICATE_", excluding the trailing NIL */
                 while (str[j]) {
                     if (!apr_isalnum(str[j])) {
                         str[j] = '_';
@@ -222,7 +222,7 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
                 char *str = apr_pstrcat(r->pool, AUTHN_PREFIX,
                                         name,
                                         NULL);
-                int j = 13;
+                int j = sizeof(AUTHN_PREFIX)-1; /* string length of "AUTHENTICATE_", excluding the trailing NIL */
                 while (str[j]) {
                     if (!apr_isalnum(str[j])) {
                         str[j] = '_';

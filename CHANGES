@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_authnz_ldap, mod_authn_dbd: Tidy up the code to expose authn
+     parameters to the environment. Improve portability to
+     EBCDIC machines by using apr_toupper(). [Martin Kraemer]
+
   *) mod_deflate: fix content_encoding detection in inflate_out filter
      when it's not in response headers table.
      PR 42993 [Nick Kew]
