@@ -79,10 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Add ProxyPass status option to ignore errors
-     PR 43167
-     http://svn.apache.org/viewvc?view=rev&revision=571338
-     +1: niq, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
