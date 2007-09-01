@@ -96,6 +96,7 @@ for HTTP Basic authentication.</description>
       <li><a href="#examples">Examples</a></li>
       <li><a href="#usingtls">Using TLS</a></li>
       <li><a href="#usingssl">Using SSL</a></li>
+      <li><a href="#exposed">Exposing Login Information</a></li>
       <li><a href="#activedirectory">Using Active Directory</a></li>
       <li>
         <a href="#frontpage">Using Microsoft FrontPage with
@@ -557,6 +558,22 @@ Require valid-user
     <p>To specify a secure LDAP server, use <em>ldaps://</em> in the
     <directive module="mod_authnz_ldap">AuthLDAPURL</directive>
     directive, instead of <em>ldap://</em>.</p>
+</section>
+
+<section id="exposed"><title>Exposing Login Information</title>
+
+    <p>Whenever a query is made to the LDAP server, all LDAP attributes
+    returned by the query are placed in the environment, using environment
+    variables with the prefix "AUTHENTICATE_".</p>
+
+    <p>If an LDAP query for example returned the username, common name
+    and telephone number of a user, a CGI program will have access to
+    this information without the need to make a second independent LDAP
+    query to gather this additional information.</p>
+
+    <p>This has the potential to dramatically simplify the coding and
+    configuration required in some web applications.</p>
+
 </section>
 
 <section id="activedirectory"><title>Using Active Directory</title>
