@@ -175,14 +175,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       trawick says: The new directives should be documented in trunk,
           so that docs are available for backport at the same time.
 
-   * mod_proxy_connect: Fix potential proxy segfault
-     PR 40756
-     http://svn.apache.org/viewvc?view=rev&revision=571414
-     http://svn.apache.org/viewvc?view=rev&revision=571863
-     http://svn.apache.org/viewvc?view=rev&revision=571869
-     http://svn.apache.org/viewvc?view=rev&revision=571879
-     +1: jim
-
    * mod_include: Add an "if" directive syntax to test whether an URL
      is accessible, and if so, conditionally display content. This
      allows a webmaster to hide a link to a private page when the user
