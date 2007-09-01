@@ -117,12 +117,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
      mod_authn_dbd behaviour in line with mod_authnz_ldap.
      Trunk: http://svn.apache.org/viewvc?view=rev&revision=466865
+            http://svn.apache.org/viewvc?view=rev&revision=571798
+            http://svn.apache.org/viewvc?view=rev&revision=571804
      +1: minfrin
-     niq: This wants a little tidying.  Use of 13 as a magic number (for a
-          strlen of something defined elsewhere) is nasty.  More importantly
-          you need to document how it affects the module's directives.
-          I'll +1 it when that's done.
-     wrowe: ditto's - good concept.
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
      entering ap_mpm_run(), then destroy pmain when exiting ap_mpm_run().
