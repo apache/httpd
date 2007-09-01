@@ -106,7 +106,6 @@ the prefix "AUTHENTICATE_".
 and telephone number of a user, a CGI program will have access to
 this information without the need to make a second independent database
 query to gather this additional information.</p>
-</p>
 <p>This has the potential to dramatically simplify the coding and
 configuration required in some web applications.
 </p>
