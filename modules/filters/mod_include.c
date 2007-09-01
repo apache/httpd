@@ -80,7 +80,8 @@ typedef enum {
     TOKEN_GE,
     TOKEN_LE,
     TOKEN_GT,
-    TOKEN_LT
+    TOKEN_LT,
+    TOKEN_ACCESS
 } token_type_t;
 
 typedef struct {
@@ -114,6 +115,7 @@ typedef struct {
     const char *default_time_fmt;
     const char *undefined_echo;
     xbithack_t  xbithack;
+    const int accessenable;
 } include_dir_config;
 
 typedef struct {
@@ -941,7 +943,7 @@ static APR_INLINE int re_check(include_ctx_t *ctx, const char *string,
     return rc;
 }
 
-static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token)
+static int get_ptoken(include_ctx_t *ctx, const char **parse, token_t *token, token_t *previous)
 {
     const char *p;
     apr_size_t shift;
@@ -990,6 +992,10 @@ static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token)
         unmatched = '\'';
         break;
     case '/':
+        /* if last token was ACCESS, this token is STRING */
+        if (previous != NULL && TOKEN_ACCESS == previous->type) {
+            break;
+        }
         TYPE_TOKEN(token, TOKEN_RE);
         unmatched = '/';
         break;
@@ -1023,6 +1029,13 @@ static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token)
         }
         TYPE_TOKEN(token, TOKEN_LT);
         return 0;
+    case '-':
+        if (**parse == 'A' && (ctx->accessenable)) {
+            TYPE_TOKEN(token, TOKEN_ACCESS);
+            ++*parse;
+            return 0;
+        }
+        break;
     }
 
     /* It's a string or regex token
@@ -1079,11 +1092,11 @@ static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token)
     }
 
     if (unmatched) {
-        token->value = apr_pstrdup(pool, "");
+        token->value = apr_pstrdup(ctx->dpool, "");
     }
     else {
         apr_size_t len = p - token->value - shift;
-        char *c = apr_palloc(pool, len + 1);
+        char *c = apr_palloc(ctx->dpool, len + 1);
 
         p = token->value;
         token->value = c;
@@ -1111,6 +1124,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
 {
     parse_node_t *new, *root = NULL, *current = NULL;
     request_rec *r = ctx->intern->r;
+    request_rec *rr = NULL;
     const char *error = "Invalid expression \"%s\" in file %s";
     const char *parse = expr;
     int was_unmatched = 0;
@@ -1130,7 +1144,8 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
          */
         CREATE_NODE(ctx, new);
 
-        was_unmatched = get_ptoken(ctx->dpool, &parse, &new->token);
+        was_unmatched = get_ptoken(ctx, &parse, &new->token,
+                         (current != NULL ? &current->token : NULL));
         if (!parse) {
             break;
         }
@@ -1142,6 +1157,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             switch (new->token.type) {
             case TOKEN_STRING:
             case TOKEN_NOT:
+            case TOKEN_ACCESS:
             case TOKEN_LBRACE:
                 root = current = new;
                 continue;
@@ -1276,6 +1292,7 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             break;
 
         case TOKEN_NOT:
+        case TOKEN_ACCESS:
         case TOKEN_LBRACE:
             switch (current->token.type) {
             case TOKEN_STRING:
@@ -1460,6 +1477,34 @@ static int parse_expr(include_ctx_t *ctx, const char *expr, int *was_error)
             if (current->token.type == TOKEN_NOT) {
                 current->value = !current->value;
             }
+            break;
+
+        case TOKEN_ACCESS:
+            if (current->left || !current->right ||
+                (current->right->token.type != TOKEN_STRING &&
+                 current->right->token.type != TOKEN_RE)) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                            "Invalid expression \"%s\" in file %s: Token '-A' must be followed by a URI string.",
+                            expr, r->filename);
+                *was_error = 1;
+                return 0;
+            }
+            current->right->token.value =
+                ap_ssi_parse_string(ctx, current->right->token.value, NULL, 0,
+                                    SSI_EXPAND_DROP_NAME);
+            rr = ap_sub_req_lookup_uri(current->right->token.value, r, NULL);
+            /* 400 and higher are considered access denied */
+            if (rr->status < HTTP_BAD_REQUEST) {
+                current->value = 1;
+            }
+            else {
+                current->value = 0;
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rr->status, r, 
+                              "mod_include: The tested "
+                              "subrequest -A \"%s\" returned an error code.",
+                              current->right->token.value);
+            }
+            ap_destroy_sub_req(rr);
             break;
 
         case TOKEN_RE:
@@ -3526,6 +3571,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         if (ap_allow_options(r) & OPT_INCNOEXEC) {
             ctx->flags |= SSI_FLAG_NO_EXEC;
         }
+        ctx->accessenable = conf->accessenable;
 
         ctx->if_nesting_level = 0;
         intern->re = NULL;
@@ -3808,6 +3854,9 @@ static const command_rec includes_cmds[] =
                   "SSI End String Tag"),
     AP_INIT_TAKE1("SSIUndefinedEcho", set_undefined_echo, NULL, OR_ALL,
                   "String to be displayed if an echoed variable is undefined"),
+    AP_INIT_FLAG("SSIAccessEnable", ap_set_flag_slot,
+                  (void *)APR_OFFSETOF(include_dir_config, accessenable),
+                  OR_LIMIT, "Whether testing access is enabled. Limited to 'on' or 'off'"),
     {NULL}
 };
 

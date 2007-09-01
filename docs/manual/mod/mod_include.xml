@@ -501,6 +501,25 @@
       <dt><code><var>string</var></code></dt>
       <dd>true if <var>string</var> is not empty</dd>
 
+      <dt><code><var>-A string</var></code></dt>
+      <dd><p>true if the URL represented by the string is accessible by
+      configuration, false otherwise. This test only has an effect if
+      <directive>SSIEnableAccess</directive> is on. This is useful
+      where content on a page is to be hidden from users who are not
+      authorized to view the URL, such as a link to that URL. Note
+      that the URL is only tested for whether access would be granted,
+      not whether the URL exists.</p>
+
+      <example><title>Example</title>
+        &lt;!--#if expr="-A /private" --&gt;<br />
+        <indent>
+          Click &lt;a href="/private"&gt;here&lt;/a&gt; to access private
+          information.<br />
+        </indent>
+        &lt;!--#endif --&gt;
+      </example>
+      </dd>
+
       <dt><code><var>string1</var> = <var>string2</var><br />
       <var>string1</var> == <var>string2</var><br />
       <var>string1</var> != <var>string2</var></code></dt>
@@ -745,6 +764,34 @@ displayed</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>SSIEnableAccess</name>
+<description>Enable the -A flag during conditional flow control processing.</description>
+<syntax>SSIEnableAccess on|off</syntax>
+<default>SSIEnableAccess off</default>
+<contextlist><context>directory</context><context>location</context></contextlist>
+
+<usage>
+    <p>The <directive>SSIEnableAccess</directive> directive controls whether
+    the -A test is enabled during conditional flow control processing.
+    <directive>SSIEnableAccess</directive> can take on the following values:</p>
+
+    <dl>
+
+      <dt><code>off</code></dt>
+      <dd>&lt;!--#if expr="-A /foo"--&gt; will be interpreted as a series
+      of string and regular expression tokens, the -A has no special
+      meaning.</dd>
+
+      <dt><code>on</code></dt>
+      <dd>&lt;!--#if expr="-A /foo"--&gt; will evaluate to false if the
+      URL /foo is inaccessible by configuration, or true otherwise.</dd>
+
+    </dl>
+
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>XBitHack</name>
 <description>Parse SSI directives in files with the execute bit
 set</description>
@@ -785,7 +832,7 @@ set</description>
       </dd>
     </dl>
 
-    </usage>
+</usage>
 </directivesynopsis>
 
 </modulesynopsis>
