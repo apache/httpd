@@ -523,10 +523,14 @@ expressions</description>
 	and later.</compatibility>
 <usage>
     <p>This directive is used as an alternate method of setting any of the
-    parameters available to Proxy balancers and members normally done via the
+    parameters available to Proxy balancers and workers normally done via the
     <directive module="mod_proxy">ProxyPass</directive> directive. If used
-    within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
-    directive, the <var>url</var> argument is not required.</p>
+    within a <code>&lt;Proxy <var>balancer url|worker url</var>&gt;</code>
+    container directive, the <var>url</var> argument is not required. As a side
+    effect the respective balancer or worker gets created. This can be useful
+    when doing reverse proxying via a
+    <directive module="mod_rewrite">RewriteRule</directive> instead of a
+    <directive module="mod_proxy">ProxyPass</directive> directive.</p>
 
     <example>
       &lt;Proxy balancer://hotcluster&gt;<br />
@@ -539,8 +543,26 @@ expressions</description>
     </example>
 
     <example>
+      &lt;Proxy http://backend&gt;<br />
+      <indent>
+        ProxySet keepalive=On<br />
+      </indent>
+      &lt;/Proxy&gt;
+    </example>
+
+    <example>
         ProxySet balancer://foo lbmethod=bytraffic timeout=15
     </example>
+
+    <example>
+        ProxySet ajp://backend:7001 timeout=15
+    </example>
+
+   <note type="warning"><title>Warning</title>
+      <p>Keep in mind that the same parameter key can have a different meaning
+      depending whether it is applied to a balancer or a worker as shown by the two
+      examples above regarding timeout.</p>
+   </note>
 
 </usage>
 </directivesynopsis>
