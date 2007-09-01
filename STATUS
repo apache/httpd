@@ -174,12 +174,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 40756
      http://svn.apache.org/viewvc?view=rev&revision=571414
      http://svn.apache.org/viewvc?view=rev&revision=571863
-     +1: niq
+     +1: niq, rpluem
 
    * proxy_util: don't return unset error code
      PR 40865
      http://svn.apache.org/viewvc?view=rev&revision=470076
-     +1: niq
+     +1: niq, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
