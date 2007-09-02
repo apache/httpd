@@ -182,6 +182,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      allows a webmaster to hide a link to a private page when the user
      has no access to that page.
      http://svn.apache.org/viewvc?view=rev&revision=571872
+     http://svn.apache.org/viewvc?view=rev&revision=571927
+     http://svn.apache.org/viewvc?view=rev&revision=572136
      +1: minfrin
      rpluem says: Without r571927 the documentation for mod_authn_dbd fails
                   to build.
