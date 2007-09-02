@@ -11,10 +11,6 @@ Changes with Apache 2.3.0
      parameters to the environment. Improve portability to
      EBCDIC machines by using apr_toupper(). [Martin Kraemer]
 
-  *) mod_deflate: fix content_encoding detection in inflate_out filter
-     when it's not in response headers table.
-     PR 42993 [Nick Kew]
-
   *) mod_proxy: Improve network performance by setting APR_TCP_NODELAY
      (disable Nagle algorithm) on sockets if implemented.
      PR 42871 [Christian BOITEL <christian_boitel yahoo.fr>, Jim Jagielski]
@@ -35,14 +31,6 @@ Changes with Apache 2.3.0
      its own data. [Paul Querna]
 
   *) mod_ssl: Add support for caching SSL Sessions in memcached. [Paul Querna]
-
-  *) mod_cache: Correctly handle HEAD requests on expired cache content.
-     PR 41230.  [Niklas Edmundsson]
-
-  *) mod_so: Solve dev's confusion by reporting expected/seen module
-     magic signatures when failing with a 'garbled' message, and solve
-     user's confusion by pointing out 'perhaps compiled for a different
-     version of apache?'.  [William Rowe]
 
   *) mod_substitute: Added a new experimental output filter, which
      performs inline response content pattern matching (including
