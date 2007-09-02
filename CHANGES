@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_http: accept proxy-sendchunked/proxy-sendchunks as synonymous.
+     PR 43183 [Brian Rectanus <Brian.Rectanus breach.com>, Vincent Bray]
+
   *) mod_include: Add an "if" directive syntax to test whether an URL
      is accessible, and if so, conditionally display content. This
      allows a webmaster to hide a link to a private page when the user
