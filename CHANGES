@@ -24,7 +24,7 @@ Changes with Apache 2.3.0
 
   *) mime.types: add registered Apple installer type
      PR 40379 [Peter Bierman <pmb+apache apple.com>]
-   
+
   *) mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
      to authorize an authenticated user via a "require ldap-group X" directive
      where the user is not in group X, but is in a subgroup contained in X.
@@ -95,9 +95,6 @@ Changes with Apache 2.3.0
   *) mod_dbd: Stash DBD connections in request_config of initial request
      only, or else sub-requests and internal redirections may cause
      entire DBD pool to be stashed in a single HTTP request.  [Chris Darroch]
-
-  *) mod_proxy: Add a missing assignment in an error checking code path.
-     PR 40865. [Andrew Rucker Jones <arjones simultan.dyndns.org>]
 
   *) mod_mem_cache: Increase the minimum and default value for
      MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does not
