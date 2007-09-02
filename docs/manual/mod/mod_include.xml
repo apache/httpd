@@ -768,7 +768,7 @@ displayed</description>
 <description>Enable the -A flag during conditional flow control processing.</description>
 <syntax>SSIEnableAccess on|off</syntax>
 <default>SSIEnableAccess off</default>
-<contextlist><context>directory</context><context>location</context></contextlist>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
 
 <usage>
     <p>The <directive>SSIEnableAccess</directive> directive controls whether
