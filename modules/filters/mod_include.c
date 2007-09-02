@@ -192,6 +192,8 @@ struct ssi_internal_ctx {
     const char   *undefined_echo;
     apr_size_t    undefined_echo_len;
 
+    int         accessenable;    /* is using the access tests allowed? */
+
 #ifdef DEBUG_INCLUDE
     struct {
         ap_filter_t *f;
@@ -1030,7 +1032,7 @@ static int get_ptoken(include_ctx_t *ctx, const char **parse, token_t *token, to
         TYPE_TOKEN(token, TOKEN_LT);
         return 0;
     case '-':
-        if (**parse == 'A' && (ctx->accessenable)) {
+        if (**parse == 'A' && (ctx->intern->accessenable)) {
             TYPE_TOKEN(token, TOKEN_ACCESS);
             ++*parse;
             return 0;
@@ -3571,7 +3573,7 @@ static apr_status_t includes_filter(ap_filter_t *f, apr_bucket_brigade *b)
         if (ap_allow_options(r) & OPT_INCNOEXEC) {
             ctx->flags |= SSI_FLAG_NO_EXEC;
         }
-        ctx->accessenable = conf->accessenable;
+        intern->accessenable = conf->accessenable;
 
         ctx->if_nesting_level = 0;
         intern->re = NULL;
