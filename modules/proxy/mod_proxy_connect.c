@@ -113,8 +113,9 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
 
     /* we break the URL into host, port, uri */
     if (APR_SUCCESS != apr_uri_parse_hostinfo(p, url, &uri)) {
-        return ap_proxyerror(r, HTTP_BAD_REQUEST, apr_pstrcat(p,
-                             "URI cannot be parsed: ", url, NULL));
+        return ap_proxyerror(r, HTTP_BAD_REQUEST,
+                             apr_pstrcat(p, "URI cannot be parsed: ", url,
+                                         NULL));
     }
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
@@ -124,9 +125,9 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
     err = apr_sockaddr_info_get(&uri_addr, uri.hostname, APR_UNSPEC, uri.port,
                                 0, p);
     if (APR_SUCCESS != err) {
-       return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
-                            "DNS lookup failure for: ",
-                            uri.hostname, NULL));
+        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             apr_pstrcat(p, "DNS lookup failure for: ",
+                                         uri.hostname, NULL));
     }
 
     /* are we connecting directly, or via a proxy? */
