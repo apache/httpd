@@ -565,6 +565,21 @@ server cannot determine a type in any other way</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>Define</name>
+<description>Define the existence of a variable</description>
+<syntax>Define <var>parameter-name</var></syntax>
+<contextlist><context>server config</context></contextlist>
+
+<usage>
+    <p>Equivalent to passing the <code>-D</code> argument to <a
+    href="../programs/httpd.html">httpd</a>.</p>
+    <p>This directive can be used to toggle the use of <directive module="core"
+    type="section">IfDefine</directive> sections without needing to alter
+    <code>-D</code> arguments in any startup scripts.</p>
+</usage>
+</directivesynopsis>
+
 <directivesynopsis type="section">
 <name>Directory</name>
 <description>Enclose a group of directives that apply only to the
@@ -1305,9 +1320,10 @@ if a test is true at startup</description>
     the test, and only processes the directives if
     <var>parameter-name</var> is <strong>not</strong> defined.</p>
 
-    <p>The <var>parameter-name</var> argument is a define as given on
-    the <program>httpd</program> command line via <code>-D<var>parameter-</var>
-    </code>, at the time the server was started.</p>
+    <p>The <var>parameter-name</var> argument is a define as given on the
+    <program>httpd</program> command line via <code>-D<var>parameter</var>
+    </code> at the time the server was started or by the <directive
+    module="core">Define</directive> directive.</p>
 
     <p><directive type="section">IfDefine</directive> sections are
     nest-able, which can be used to implement simple
