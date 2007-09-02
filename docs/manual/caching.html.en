@@ -569,7 +569,7 @@ CacheDirLength 1</pre></div>
       to ensure that multiple URLs do not collide.</p>
 
       <p>Each character may be any one of 64-different characters, which mean
-      that overall there are 22^64 possible hashes. For example, a URL might
+      that overall there are 64^22 possible hashes. For example, a URL might
       be hashed to <code>xyTGxSMO2b68mBCykqkp1w</code>. This hash is used
       as a prefix for the naming of the files specific to that URL within
       the cache, however first it is split up into directories as per
