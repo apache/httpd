@@ -41,6 +41,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#cgimapextension">CGIMapExtension</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#contentdigest">ContentDigest</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#defaulttype">DefaultType</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#define">Define</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directory">&lt;Directory&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#documentroot">DocumentRoot</a></li>
@@ -594,6 +595,20 @@ server cannot determine a type in any other way</td></tr>
     provides the default mime-type. All other mime-type definitions,
     including filename extensions, that might identify the media type
     will override this default.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Define" id="Define">Define</a> <a name="define" id="define">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Define the existence of a variable</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Define <var>parameter-name</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>Equivalent to passing the <code>-D</code> argument to <a href="../programs/httpd.html">httpd</a>.</p>
+    <p>This directive can be used to toggle the use of <code class="directive"><a href="#ifdefine">&lt;IfDefine&gt;</a></code> sections without needing to alter
+    <code>-D</code> arguments in any startup scripts.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1328,9 +1343,9 @@ if a test is true at startup</td></tr>
     the test, and only processes the directives if
     <var>parameter-name</var> is <strong>not</strong> defined.</p>
 
-    <p>The <var>parameter-name</var> argument is a define as given on
-    the <code class="program"><a href="../programs/httpd.html">httpd</a></code> command line via <code>-D<var>parameter-</var>
-    </code>, at the time the server was started.</p>
+    <p>The <var>parameter-name</var> argument is a define as given on the
+    <code class="program"><a href="../programs/httpd.html">httpd</a></code> command line via <code>-D<var>parameter</var>
+    </code> at the time the server was started or by the <code class="directive"><a href="#define">Define</a></code> directive.</p>
 
     <p><code class="directive">&lt;IfDefine&gt;</code> sections are
     nest-able, which can be used to implement simple
