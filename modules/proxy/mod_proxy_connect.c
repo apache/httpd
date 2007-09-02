@@ -176,9 +176,9 @@ static int proxy_connect_handler(request_rec *r, proxy_worker *worker,
      * until we get a successful connection
      */
     if (APR_SUCCESS != err) {
-        return ap_proxyerror(r, HTTP_BAD_GATEWAY, apr_pstrcat(p,
-                             "DNS lookup failure for: ",
-                             connectname, NULL));
+        return ap_proxyerror(r, HTTP_BAD_GATEWAY,
+                             apr_pstrcat(p, "DNS lookup failure for: ",
+                                         connectname, NULL));
     }
 
     /*
