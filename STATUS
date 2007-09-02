@@ -79,11 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * proxy_util: don't return unset error code
-     PR 40865
-     http://svn.apache.org/viewvc?view=rev&revision=470076
-     +1: niq, rpluem, fielding
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 

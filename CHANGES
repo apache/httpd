@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_proxy: Add a missing assignment in an error checking code path.
+     PR 40865. [Andrew Rucker Jones <arjones simultan.dyndns.org>]
+
   *) mod_proxy_connect: avoid segfault on DNS lookup failure.
      PR 40756 [Trevin Beattie <tbeattie boingo.com>]
 
@@ -15,7 +18,7 @@ Changes with Apache 2.2.6
      'Require ldap-*' directives, allowing authorization to be passed to lower 
      level modules (e.g. Require valid-user) 
      PR 43281 [Eric Covener]
-     
+
   *) mod_proxy: don't URLencode tilde in path component
      PR 38448 [Stijn Hoop <stijn sandcat.nl>]
 
