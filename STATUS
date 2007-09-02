@@ -179,6 +179,65 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: Without r571927 the documentation for mod_authn_dbd fails
                   to build.
 
+    * mod_proxy: Improve network performance by setting APR_TCP_NODELAY
+     (disable Nagle algorithm) on sockets if implemented. PR 42871.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=562510&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
+    * core: Do not replace a Date header set by a proxied backend server.
+      PR 40232.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=483633&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
+    * mod_proxy: Ensure that at least scheme://hostname[:port] matches
+      between worker and URL when trying to find the worker that fits best to
+      the given URL. PR 40910.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=481901&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
+    * mod_cache: Remove expired content from cache that cannot be revalidated.
+      PR 30370.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=481886&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
+    * mod_mem_cache: Increase the minimum and default value for
+      MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does
+      not make sense and leads to a signal Floating point exception (8)
+      (division by zero) in memcache_gdsf_algorithm. PR 40576.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=469895&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
+    * mod_ssl: Fix spurious hostname-mismatch warning for valid wildcard certs.
+      PR 37911.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=378487&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
+    * mod_info: mod_info outputs invalid XHTML 1.0 Transitional.
+      PR 42847.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=562503&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
