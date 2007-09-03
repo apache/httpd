@@ -79,8 +79,124 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_proxy: Improve network performance by setting APR_TCP_NODELAY
+     (disable Nagle algorithm) on sockets if implemented. PR 42871.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=562510&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, fielding
+
+    * mod_proxy: Ensure that at least scheme://hostname[:port] matches
+      between worker and URL when trying to find the worker that fits best to
+      the given URL. PR 40910.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=481901&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, fielding
+
+   * mod_proxy_http: make proxy-sendchunked work as documented.
+     PR 43183
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=572000&view=rev
+      2.2 version: noodl's patch at
+         http://issues.apache.org/bugzilla/attachment.cgi?id=20699
+     +1: niq, rpluem, fielding
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+
+   * mod_authn_dbd: Export any additional columns queried in the SQL select
+     into the environment with the name AUTHENTICATE_<COLUMN>. This brings
+     mod_authn_dbd behaviour in line with mod_authnz_ldap.
+     Trunk: http://svn.apache.org/viewvc?view=rev&revision=466865
+            http://svn.apache.org/viewvc?view=rev&revision=571798
+            http://svn.apache.org/viewvc?view=rev&revision=571804
+     +1: minfrin
+     rpluem says: r466865 has a conflict in modules/aaa/mod_auth.h
+                  r571804 has a conflict in docs/manual/mod/mod_authnz_ldap.xml
+                  Without r571838 the documentation for mod_authn_dbd fails
+                  to build.
+
+    * multiple files,	Trivial cleanups
+      PR: 39518 - Christophe JAILLET
+      http://svn.apache.org/viewvc?view=rev&revision=557837
+      http://svn.apache.org/viewvc?view=rev&revision=557972
+      +1: rpluem
+      niq: this isn't a straight backport (which is why I dropped it).
+      +1 for core, modules/dav, modules/filters, and modules/ssl
+      Not Applicable to modules/aaa
+
+   * mod_include: Add an "if" directive syntax to test whether an URL
+     is accessible, and if so, conditionally display content. This
+     allows a webmaster to hide a link to a private page when the user
+     has no access to that page.
+     http://svn.apache.org/viewvc?view=rev&revision=571872
+     http://svn.apache.org/viewvc?view=rev&revision=571927
+     http://svn.apache.org/viewvc?view=rev&revision=572136
+     +1: minfrin
+
+    * mod_cache: Remove expired content from cache that cannot be revalidated.
+      PR 30370.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=481886&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, fielding
+
+    * mod_mem_cache: Increase the minimum and default value for
+      MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does
+      not make sense and leads to a signal Floating point exception (8)
+      (division by zero) in memcache_gdsf_algorithm. PR 40576.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=469895&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, fielding
+
+    * mod_ssl: Fix spurious hostname-mismatch warning for valid wildcard certs.
+      PR 37911.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=378487&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, fielding
+
+    * mod_info: mod_info outputs invalid XHTML 1.0 Transitional.
+      PR 42847.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=562503&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, fielding
+
+PATCHES/ISSUES THAT ARE STALLED
+
+    * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
+      to authorize an authenticated user via a "require ldap-group X" directive
+      where the user is not in group X, but is in a subgroup contained in X.
+      PR: 42891
+      http://svn.apache.org/viewvc?view=rev&revision=560373
+      http://svn.apache.org/viewvc?view=rev&revision=562165
+      A version of the patch specific to the 2.2 branch (i.e. the patch that
+      would be used for backport) can be found at:
+      http://people.apache.org/~rederpj/NestedGroups_2.2.xBranch.diff 
+      +1: rederpj
+      -0: bnicholes - Unless this is considered to be a significant deficiency in the
+                       authnz_ldap 2.2 functionality, I would rather see this as new
+		       functionality going forward in 2.4 rather than backported to
+		       2.2. We need new functionality to push us forward rather than
+		       give us an excuse to stay where we are.
+      rederpj says: I'm working on a project based on Apache 2.2.x which needs this code
+          and I would much prefer to use official Apache code than end up using a private
+          patch. It isn't possible in the short term for us to move to trunk. It just
+          happened that code I had written to add this function lined up with PR 42891.
+          I was going to submit it and work to get it backported either way.
+      rpluem says: I am still missing a minor bump due to the changes done
+      in util_ldap.h. This is an extension of a public API.
+      trawick says: The new directives should be documented in trunk,
+          so that docs are available for backport at the same time.
 
     * mpm_winnt: Fix return values from wait_for_many_objects.
       Note - this is required to avoid hangups of socket #64, #128
@@ -113,18 +229,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       wrowe: conditional +1 if you rename the assanine function name
         so no one confuses it for its implied purpose.
 
-   * mod_authn_dbd: Export any additional columns queried in the SQL select
-     into the environment with the name AUTHENTICATE_<COLUMN>. This brings
-     mod_authn_dbd behaviour in line with mod_authnz_ldap.
-     Trunk: http://svn.apache.org/viewvc?view=rev&revision=466865
-            http://svn.apache.org/viewvc?view=rev&revision=571798
-            http://svn.apache.org/viewvc?view=rev&revision=571804
-     +1: minfrin
-     rpluem says: r466865 has a conflict in modules/aaa/mod_auth.h
-                  r571804 has a conflict in docs/manual/mod/mod_authnz_ldap.xml
-                  Without r571838 the documentation for mod_authn_dbd fails
-                  to build.
-
    * beos MPM: Create pmain pool and run modules' child_init hooks when
      entering ap_mpm_run(), then destroy pmain when exiting ap_mpm_run().
      Otherwise modules' child_init hooks appear to never be executed.
@@ -135,110 +239,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x version of patch:
        http://people.apache.org/~chrisd/patches/mod_dbd_pools_groups/mpm_child_init-beos-2.2.x.patch
      +0: chrisd (abstaining; unable to test)
-
-    * multiple files,	Trivial cleanups
-      PR: 39518 - Christophe JAILLET
-      http://svn.apache.org/viewvc?view=rev&revision=557837
-      http://svn.apache.org/viewvc?view=rev&revision=557972
-      +1: rpluem
-      niq: this isn't a straight backport (which is why I dropped it).
-      +1 for core, modules/dav, modules/filters, and modules/ssl
-      Not Applicable to modules/aaa
-
-    * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
-      to authorize an authenticated user via a "require ldap-group X" directive
-      where the user is not in group X, but is in a subgroup contained in X.
-      PR: 42891
-      http://svn.apache.org/viewvc?view=rev&revision=560373
-      http://svn.apache.org/viewvc?view=rev&revision=562165
-      A version of the patch specific to the 2.2 branch (i.e. the patch that
-      would be used for backport) can be found at:
-      http://people.apache.org/~rederpj/NestedGroups_2.2.xBranch.diff 
-      +1: rederpj
-      -0: bnicholes - Unless this is considered to be a significant deficiency in the
-                       authnz_ldap 2.2 functionality, I would rather see this as new
-		       functionality going forward in 2.4 rather than backported to
-		       2.2. We need new functionality to push us forward rather than
-		       give us an excuse to stay where we are.
-      rederpj says: I'm working on a project based on Apache 2.2.x which needs this code
-          and I would much prefer to use official Apache code than end up using a private
-          patch. It isn't possible in the short term for us to move to trunk. It just
-          happened that code I had written to add this function lined up with PR 42891.
-          I was going to submit it and work to get it backported either way.
-      rpluem says: I am still missing a minor bump due to the changes done
-      in util_ldap.h. This is an extension of a public API.
-      trawick says: The new directives should be documented in trunk,
-          so that docs are available for backport at the same time.
-
-   * mod_include: Add an "if" directive syntax to test whether an URL
-     is accessible, and if so, conditionally display content. This
-     allows a webmaster to hide a link to a private page when the user
-     has no access to that page.
-     http://svn.apache.org/viewvc?view=rev&revision=571872
-     http://svn.apache.org/viewvc?view=rev&revision=571927
-     http://svn.apache.org/viewvc?view=rev&revision=572136
-     +1: minfrin
-
-    * mod_proxy: Improve network performance by setting APR_TCP_NODELAY
-     (disable Nagle algorithm) on sockets if implemented. PR 42871.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=562510&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim
-
-    * mod_proxy: Ensure that at least scheme://hostname[:port] matches
-      between worker and URL when trying to find the worker that fits best to
-      the given URL. PR 40910.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=481901&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim
-
-    * mod_cache: Remove expired content from cache that cannot be revalidated.
-      PR 30370.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=481886&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem
-
-    * mod_mem_cache: Increase the minimum and default value for
-      MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does
-      not make sense and leads to a signal Floating point exception (8)
-      (division by zero) in memcache_gdsf_algorithm. PR 40576.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=469895&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem
-
-    * mod_ssl: Fix spurious hostname-mismatch warning for valid wildcard certs.
-      PR 37911.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=378487&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem
-
-    * mod_info: mod_info outputs invalid XHTML 1.0 Transitional.
-      PR 42847.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=562503&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem
-
-   * mod_proxy_http: make proxy-sendchunked work as documented.
-     PR 43183
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=572000&view=rev
-      2.2 version: noodl's patch at
-         http://issues.apache.org/bugzilla/attachment.cgi?id=20699
-     +1: niq, rpluem
-
-PATCHES/ISSUES THAT ARE STALLED
 
     * PKCS#7: backport PCKS#7 patches from trunk.
       +1 ben
