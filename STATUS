@@ -141,7 +141,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=572000&view=rev
       2.0 version: noodl's patch at
          http://issues.apache.org/bugzilla/attachment.cgi?id=20700
-      +1: niq
+      +1: niq, rpluem
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
