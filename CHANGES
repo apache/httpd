@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) mod_proxy_http: accept proxy-sendchunked/proxy-sendchunks as synonymous.
-     PR 43183 [Brian Rectanus <Brian.Rectanus breach.com>, Vincent Bray]
-
   *) mod_include: Add an "if" directive syntax to test whether an URL
      is accessible, and if so, conditionally display content. This
      allows a webmaster to hide a link to a private page when the user
@@ -13,10 +10,6 @@ Changes with Apache 2.3.0
   *) mod_authnz_ldap, mod_authn_dbd: Tidy up the code to expose authn
      parameters to the environment. Improve portability to
      EBCDIC machines by using apr_toupper(). [Martin Kraemer]
-
-  *) mod_proxy: Improve network performance by setting APR_TCP_NODELAY
-     (disable Nagle algorithm) on sockets if implemented.
-     PR 42871 [Christian BOITEL <christian_boitel yahoo.fr>, Jim Jagielski]
 
   *) mod_info: mod_info outputs invalid XHTML 1.0 transitional.
      PR 42847 [Rici Lake <rici ricilake.net>]
@@ -72,13 +65,6 @@ Changes with Apache 2.3.0
   *) netware MPM: Destroy pmain pool when exiting ap_mpm_run() so that
      cleanups registered in modules' child_init hooks are performed.
      [Chris Darroch]
-
-  *) core: Do not replace a Date header set by a proxied backend server.
-     PR 40232. [Ruediger Pluem]
-
-  *) mod_proxy: Ensure that at least scheme://hostname[:port] matches between
-     worker and URL when searching for the best fitting worker for a given URL.
-     PR 40910. [Ruediger Pluem]
 
   *) mod_cache: Remove expired content from cache that cannot be revalidated.
      PR 30370. [Ruediger Pluem]
