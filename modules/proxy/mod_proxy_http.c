@@ -954,7 +954,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     else if (old_te_val) {
         if (force10
              || (apr_table_get(r->subprocess_env, "proxy-sendcl")
-                  && !apr_table_get(r->subprocess_env, "proxy-sendchunks"))) {
+                  && !apr_table_get(r->subprocess_env, "proxy-sendchunks")
+                  && !apr_table_get(r->subprocess_env, "proxy-sendchunked"))) {
             rb_method = RB_SPOOL_CL;
         }
         else {
@@ -966,7 +967,8 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
             rb_method = RB_STREAM_CL;
         }
         else if (!force10
-                  && apr_table_get(r->subprocess_env, "proxy-sendchunks")
+                  && (apr_table_get(r->subprocess_env, "proxy-sendchunks")
+                      || apr_table_get(r->subprocess_env, "proxy-sendchunked"))
                   && !apr_table_get(r->subprocess_env, "proxy-sendcl")) {
             rb_method = RB_STREAM_CHUNKED;
         }
