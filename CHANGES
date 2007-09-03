@@ -1,15 +1,19 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_proxy: Ensure that at least scheme://hostname[:port] matches between
+     worker and URL when searching for the best fitting worker for a given URL.
+     PR 40910 [Ruediger Pluem]
+
   *) mod_proxy: Improve network performance by setting APR_TCP_NODELAY
      (disable Nagle algorithm) on sockets if implemented.
      PR 42871 [Christian BOITEL <christian_boitel yahoo.fr>, Jim Jagielski]
 
   *) core: Do not replace a Date header set by a proxied backend server.
-     PR 40232. [Ruediger Pluem]
+     PR 40232 [Ruediger Pluem]
 
   *) mod_proxy: Add a missing assignment in an error checking code path.
-     PR 40865. [Andrew Rucker Jones <arjones simultan.dyndns.org>]
+     PR 40865 [Andrew Rucker Jones <arjones simultan.dyndns.org>]
 
   *) mod_proxy_connect: avoid segfault on DNS lookup failure.
      PR 40756 [Trevin Beattie <tbeattie boingo.com>]
