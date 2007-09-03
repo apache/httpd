@@ -185,8 +185,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=571927
      http://svn.apache.org/viewvc?view=rev&revision=572136
      +1: minfrin
-     rpluem says: Without r571927 the documentation for mod_authn_dbd fails
-                  to build.
 
     * mod_proxy: Improve network performance by setting APR_TCP_NODELAY
      (disable Nagle algorithm) on sockets if implemented. PR 42871.
