@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) core: Do not replace a Date header set by a proxied backend server.
+     PR 40232. [Ruediger Pluem]
+
   *) mod_proxy: Add a missing assignment in an error checking code path.
      PR 40865. [Andrew Rucker Jones <arjones simultan.dyndns.org>]
 
