@@ -194,15 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=481901&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
-      jim says: +1 if the CHANGES entry is more clear. The issue
-                is that there is a minumum matchable length that we
-                need to verify, but the CHANGES entry doesn't quite
-                "read" right. Heck, I'm even +1 if CHANGES stays the
-                way it is, but it would be nice to somehow figure out
-                a more clear way of stating the fix. :)
-      rpluem says: I am happy to adjust the CHANGES entry but currently
-                   I have no better idea to state what the fix does.
+      +1: rpluem, jim
 
     * mod_cache: Remove expired content from cache that cannot be revalidated.
       PR 30370.
