@@ -79,13 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * core: Do not replace a Date header set by a proxied backend server.
-      PR 40232.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=483633&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
