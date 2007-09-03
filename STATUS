@@ -79,14 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy: Improve network performance by setting APR_TCP_NODELAY
-     (disable Nagle algorithm) on sockets if implemented. PR 42871.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=562510&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, fielding
-
     * mod_proxy: Ensure that at least scheme://hostname[:port] matches
       between worker and URL when trying to find the worker that fits best to
       the given URL. PR 40910.
