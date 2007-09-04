@@ -116,6 +116,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   *) mod_proxy_http: make proxy-sendchunked work as documented.
+      PR 43183
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=572000&view=rev
+      2.0 version: noodl's patch at
+         http://issues.apache.org/bugzilla/attachment.cgi?id=20700
+      +1: niq, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -134,14 +141,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        fix mod_ssl.so to compile against .a openssl archives.
          http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
        +1: wrowe, colm
-
-   *) mod_proxy_http: make proxy-sendchunked work as documented.
-      PR 43183
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=572000&view=rev
-      2.0 version: noodl's patch at
-         http://issues.apache.org/bugzilla/attachment.cgi?id=20700
-      +1: niq, rpluem
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
