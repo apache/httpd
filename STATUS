@@ -80,14 +80,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-    * mod_cache: Remove expired content from cache that cannot be revalidated.
-      PR 30370.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=481886&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, fielding, jim
-
     * mod_mem_cache: Increase the minimum and default value for
       MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does
       not make sense and leads to a signal Floating point exception (8)
