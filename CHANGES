@@ -1,6 +1,25 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.61
 
+  *) SECURITY: CVE-2007-3847 (cve.mitre.org)
+     mod_proxy: Prevent reading past the end of a buffer when parsing
+     date-related headers.  PR 41144.
+     [Davi Arnaut, Nick Kew]
+
+  *) SECURITY: CVE-2007-1863 (cve.mitre.org)
+     mod_cache: Prevent segmentation fault if a Cache-Control header has
+     no value.  [Niklas Edmundsson <nikke acc.umu.se>]
+
+  *) SECURITY: CVE-2006-5752 (cve.mitre.org)
+     mod_status: Fix a possible XSS attack against a site with a public
+     server-status page and ExtendedStatus enabled, for browsers which
+     perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
+
+  *) SECURITY: CVE-2007-3304 (cve.mitre.org)
+     prefork, worker MPMs: Ensure that the parent process cannot
+     be forced to kill processes outside its process group. 
+     [Joe Orton, Jim Jagielski]
+
   *) log core: ensure we use a special pool for stderr logging, so that
      the stderr channel remains valid from the time plog is destroyed,
      until the time the open_logs hook is called again.  [William Rowe]
@@ -35,27 +54,6 @@ Changes with Apache 2.0.61
      stdout when running as-a-service.  [William Rowe]
 
   *) ApacheMonitor: Fix Windows Vista detection. [Mladen Turk]
-
-Changes with Apache 2.0.60
-
-  *) SECURITY: CVE-2007-3847 (cve.mitre.org)
-     mod_proxy: Prevent reading past the end of a buffer when parsing
-     date-related headers.  PR 41144.
-     [Davi Arnaut, Nick Kew]
-
-  *) SECURITY: CVE-2007-1863 (cve.mitre.org)
-     mod_cache: Prevent segmentation fault if a Cache-Control header has
-     no value.  [Niklas Edmundsson <nikke acc.umu.se>]
-
-  *) SECURITY: CVE-2006-5752 (cve.mitre.org)
-     mod_status: Fix a possible XSS attack against a site with a public
-     server-status page and ExtendedStatus enabled, for browsers which
-     perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
-
-  *) SECURITY: CVE-2007-3304 (cve.mitre.org)
-     prefork, worker MPMs: Ensure that the parent process cannot
-     be forced to kill processes outside its process group. 
-     [Joe Orton, Jim Jagielski]
 
   *) mod_so: Solve dev's confusion by reporting expected/seen module
      magic signatures when failing with a 'garbled' message, and solve
@@ -99,6 +97,8 @@ Changes with Apache 2.0.60
   *) mod_isapi: Ensure we walk through all the methods the developer may have
      employed to report their HTTP status result code.
      PR 16637 30033 28089.  [Matt Lewandowsky <matt iamcode.net>, William Rowe]
+
+There was no 2.0.60
 
 Changes with Apache 2.0.59
 
