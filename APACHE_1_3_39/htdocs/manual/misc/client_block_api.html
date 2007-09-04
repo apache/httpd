@@ -1,0 +1,87 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Reading Client Input in Apache 1.2</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Reading Client Input in Apache 1.2</h1>
+    <hr />
+
+    <p>Apache 1.1 and earlier let modules handle POST and PUT
+    requests by themselves. The module would, on its own, determine
+    whether the request had an entity, how many bytes it was, and
+    then called a function (<code>read_client_block</code>) to get
+    the data.</p>
+
+    <p>However, HTTP/1.1 requires several things of POST and PUT
+    request handlers that did not fit into this module, and all
+    existing modules have to be rewritten. The API calls for
+    handling this have been further abstracted, so that future HTTP
+    protocol changes can be accomplished while remaining
+    backwards-compatible.</p>
+    <hr />
+
+    <h3>The New API Functions</h3>
+<pre>
+   int ap_setup_client_block (request_rec *, int read_policy);
+   int ap_should_client_block (request_rec *);
+   long ap_get_client_block (request_rec *, char *buffer, int buffer_size);
+</pre>
+
+    <ol>
+      <li>
+        Call <code>ap_setup_client_block()</code> near the
+        beginning of the request handler. This will set up all the
+        necessary properties, and will return either OK, or an
+        error code. If the latter, the module should return that
+        error code. The second parameter selects the policy to
+        apply if the request message indicates a body, and how a
+        chunked transfer-coding should be interpreted. Choose one
+        of 
+<pre>
+    REQUEST_NO_BODY          Send 413 error if message has any body
+    REQUEST_CHUNKED_ERROR    Send 411 error if body without Content-Length
+    REQUEST_CHUNKED_DECHUNK  If chunked, remove the chunks for me.
+    REQUEST_CHUNKED_PASS     Pass the chunks to me without removal.
+</pre>
+        In order to use the last two options, the caller MUST
+        provide a buffer large enough to hold a chunk-size line,
+        including any extensions.
+      </li>
+
+      <li>When you are ready to possibly accept input, call
+      <code>ap_should_client_block()</code>. This will tell the
+      module whether or not to read input. If it is 0, the module
+      should assume that the input is of a non-entity type
+      (<em>e.g.</em>, a GET request). A nonzero response indicates
+      that the module should proceed (to step 3). This step also
+      sends a 100 Continue response to HTTP/1.1 clients, so should
+      not be called until the module is
+      <strong>*definitely*</strong> ready to read content.
+      (otherwise, the point of the 100 response is defeated). Never
+      call this function more than once.</li>
+
+      <li>Finally, call <code>ap_get_client_block</code> in a loop.
+      Pass it a buffer and its size. It will put data into the
+      buffer (not necessarily the full buffer, in the case of
+      chunked inputs), and return the length of the input block.
+      When it is done reading, it will return 0 if EOF, or -1 if
+      there was an error.</li>
+    </ol>
+
+    <p>As an example, please look at the code in
+    <code>mod_cgi.c</code>. This is properly written to the new API
+    guidelines.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,385 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_alias</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_alias</h1>
+
+    <p>This module provides for mapping different parts of the host
+    filesystem in the document tree, and for URL redirection.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_alias.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    alias_module</p>
+
+    <h2>Summary</h2>
+
+    <p>The directives contained in this module allow for
+    manipulation and control of URLs as requests arrive at the
+    server. The <code>Alias</code> and <code>ScriptAlias</code>
+    directives are used to map between URLs and filesystem paths.
+    This allows for content which is not directly under the <a
+    href="core.html#documentroot"><code>DocumentRoot</code></a> to
+    be served as part of the web document tree. The
+    <code>ScriptAlias</code> directive has the additional effect of
+    marking the target directory as containing only CGI
+    scripts.</p>
+
+    <p>The <code>Redirect</code> directives are used to instruct
+    clients to make a new request with a different URL. They are
+    often used when a resource has moved to a new location.</p>
+
+    <p>A more powerful and flexible set of directives for
+    manipulating URLs is contained in the <a
+    href="mod_rewrite.html"><code>mod_rewrite</code></a>
+    module.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#alias">Alias</a></li>
+
+      <li><a href="#aliasmatch">AliasMatch</a></li>
+
+      <li><a href="#redirect">Redirect</a></li>
+
+      <li><a href="#redirectmatch">RedirectMatch</a></li>
+
+      <li><a href="#redirecttemp">RedirectTemp</a></li>
+
+      <li><a href="#redirectperm">RedirectPermanent</a></li>
+
+      <li><a href="#scriptalias">ScriptAlias</a></li>
+
+      <li><a href="#scriptaliasmatch">ScriptAliasMatch</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="alias" name="alias">Alias directive</a></h2>
+
+    <p>
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Alias <em>URL-path
+    file-path</em>|<em>directory-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_alias</p>
+
+    <p>The Alias directive allows documents to be stored in the
+    local filesystem other than under the <a
+    href="core.html#documentroot">DocumentRoot</a>. URLs with a
+    (%-decoded) path beginning with <em>url-path</em> will be
+    mapped to local files beginning with
+    <em>directory-filename</em>.</p>
+
+    <p>Example:</p>
+
+    <blockquote>
+      <code>Alias /image /ftp/pub/image</code>
+    </blockquote>
+
+    <p>A request for http://myserver/image/foo.gif would cause the
+    server to return the file /ftp/pub/image/foo.gif.</p>
+
+    <p>Note that if you include a trailing / on the
+    <em>url-path</em> then the server will require a trailing / in
+    order to expand the alias. That is, if you use <code>Alias
+    /icons/ /usr/local/apache/icons/</code> then the url
+    <code>/icons</code> will not be aliased.</p>
+
+    <p>Note that you may need to specify additional <a
+    href="core.html#directory"><code>&lt;Directory&gt;</code></a>
+    sections which cover the <em>destination</em> of aliases.
+    Aliasing occurs before <code>&lt;Directory&gt;</code> sections
+    are checked, so only the destination of aliases are affected.
+    (Note however <a
+    href="core.html#location"><code>&lt;Location&gt;</code></a>
+    sections are run through once before aliases are performed, so
+    they will apply.)</p>
+
+    <p>See also <a href="#scriptalias">ScriptAlias</a>.</p>
+    <hr />
+
+    <h2><a id="aliasmatch" name="aliasmatch">AliasMatch</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AliasMatch <em>regex
+    file-path</em>|<em>directory-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.3 and later</p>
+
+    <p>This directive is equivalent to <a href="#alias">Alias</a>,
+    but makes use of standard regular expressions, instead of
+    simple prefix matching. The supplied regular expression is
+    matched against the URL-path, and if it matches, the server
+    will substitute any parenthesized matches into the given string
+    and use it as a filename. For example, to activate the
+    <code>/icons</code> directory, one might use:</p>
+<pre>
+    AliasMatch ^/icons(.*) /usr/local/apache/icons$1
+</pre>
+    <hr />
+
+    <h2><a id="redirect" name="redirect">Redirect
+    directive</a></h2>
+
+    <p>
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Redirect
+    [<em>status</em>] <em>URL-path URL</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> The directory
+    and .htaccess context's are only available in versions 1.1 and
+    later. The <em>status</em> argument is only available in Apache
+    1.2 or later.</p>
+
+    <p>The Redirect directive maps an old URL into a new one. The
+    new URL is returned to the client which attempts to fetch it
+    again with the new address. <em>URL-path</em> a (%-decoded)
+    path; any requests for documents beginning with this path will
+    be returned a redirect error to a new (%-encoded) URL beginning
+    with <em>URL</em>.</p>
+
+    <p>Example:</p>
+
+    <blockquote>
+      <code>Redirect /service http://foo2.bar.com/service</code>
+    </blockquote>
+
+    <p>If the client requests http://myserver/service/foo.txt, it
+    will be told to access http://foo2.bar.com/service/foo.txt
+    instead.</p>
+
+    <p><strong>Note:</strong> Redirect directives take precedence
+    over Alias and ScriptAlias directives, irrespective of their
+    ordering in the configuration file. Also, <em>URL-path</em>
+    must be a fully qualified URL, not a relative path, even when used
+    with .htaccess files or inside of &lt;Directory&gt;
+    sections.</p>
+
+    <p>If no <em>status</em> argument is given, the redirect will
+    be "temporary" (HTTP status 302). This indicates to the client
+    that the resource has moved temporarily. The <em>status</em>
+    argument can be used to return other HTTP status codes:</p>
+
+    <dl>
+      <dt>permanent</dt>
+
+      <dd>Returns a permanent redirect status (301) indicating that
+      the resource has moved permanently.</dd>
+
+      <dt>temp</dt>
+
+      <dd>Returns a temporary redirect status (302). This is the
+      default.</dd>
+
+      <dt>seeother</dt>
+
+      <dd>Returns a "See Other" status (303) indicating that the
+      resource has been replaced.</dd>
+
+      <dt>gone</dt>
+
+      <dd>Returns a "Gone" status (410) indicating that the
+      resource has been permanently removed. When this status is
+      used the <em>url</em> argument should be omitted.</dd>
+    </dl>
+
+    <p>Other status codes can be returned by giving the numeric
+    status code as the value of <em>status</em>. If the status is
+    between 300 and 399, the <em>url</em> argument must be present,
+    otherwise it must be omitted. Note that the status must be
+    known to the Apache code (see the function
+    <code>send_error_response</code> in http_protocol.c).</p>
+
+    <p>Example:</p>
+
+    <pre>
+    Redirect permanent /one http://example.com/two<br />
+    Redirect 303 /two http://example.com/other
+    </pre>
+    <hr />
+
+    <h2><a id="redirectmatch"
+    name="redirectmatch">RedirectMatch</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RedirectMatch
+    [<em>status</em>] <em>regex URL</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.3 and later</p>
+
+    <p>This directive is equivalent to <a
+    href="#redirect">Redirect</a>, but makes use of standard
+    regular expressions, instead of simple prefix matching. The
+    supplied regular expression is matched against the URL-path,
+    and if it matches, the server will substitute any parenthesized
+    matches into the given string and use it as a filename. For
+    example, to redirect all GIF files to like-named JPEG files on
+    another server, one might use:</p>
+<pre>
+    RedirectMatch (.*)\.gif$ http://www.anotherserver.com$1.jpg
+</pre>
+    <hr />
+
+    <h2><a id="redirecttemp" name="redirecttemp">RedirectTemp
+    directive</a></h2>
+
+    <p>
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RedirectTemp
+    <em>URL-path URL</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> This directive
+    is only available in Apache 1.2 and later</p>
+
+    <p>This directive makes the client know that the Redirect is
+    only temporary (status 302). Exactly equivalent to
+    <code>Redirect temp</code>.</p>
+    <hr />
+
+    <h2><a id="redirectperm" name="redirectperm">RedirectPermanent
+    directive</a></h2>
+
+    <p>
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> RedirectPermanent
+    <em>URL-path URL</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> This directive
+    is only available in Apache 1.2 and later</p>
+
+    <p>This directive makes the client know that the Redirect is
+    permanent (status 301). Exactly equivalent to <code>Redirect
+    permanent</code>.</p>
+    <hr />
+
+    <h2><a id="scriptalias" name="scriptalias">ScriptAlias
+    directive</a></h2>
+
+    <p>
+     <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ScriptAlias
+    <em>URL-path file-path</em>|<em>directory-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_alias</p>
+
+    <p>The ScriptAlias directive has the same behavior as the <a
+    href="#alias">Alias</a> directive, except that in addition it
+    marks the target directory as containing CGI scripts that will be
+    processed by <a href="mod_cgi.html">mod_cgi</a>'s cgi-script
+    handler. URLs with a (%-decoded) path beginning with
+    <em>URL-path</em> will be mapped to scripts beginning with the
+    second argument which is a full pathname in the local
+    filesystem.</p>
+
+    <p>Example:</p>
+
+    <blockquote>
+      <code>ScriptAlias /cgi-bin/ /web/cgi-bin/</code>
+    </blockquote>
+
+    <p>A request for http://myserver/cgi-bin/foo would cause the
+    server to run the script /web/cgi-bin/foo.</p>
+    <hr />
+
+    <h2><a id="scriptaliasmatch"
+    name="scriptaliasmatch">ScriptAliasMatch</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ScriptAliasMatch
+    <em>regex file-path</em>|<em>directory-path</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_alias<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.3 and later</p>
+
+    <p>This directive is equivalent to <a
+    href="#scriptalias">ScriptAlias</a>, but makes use of standard
+    regular expressions, instead of simple prefix matching. The
+    supplied regular expression is matched against the URL-path,
+    and if it matches, the server will substitute any parenthesized
+    matches into the given string and use it as a filename. For
+    example, to activate the standard <code>/cgi-bin</code>, one
+    might use:</p>
+<pre>
+    ScriptAliasMatch ^/cgi-bin(.*) /usr/local/apache/cgi-bin$1
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,90 @@
+# Licensed to the Apache Software Foundation (ASF) under one or more
+# contributor license agreements.  See the NOTICE file distributed with
+# this work for additional information regarding copyright ownership.
+# The ASF licenses this file to You under the Apache License, Version 2.0
+# (the "License"); you may not use this file except in compliance with
+# the License.  You may obtain a copy of the License at
+#
+#     http://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+#
+#
+# Our config tool sucks... if this script decides to modify the
+# LIBS variable it won't be used by any of the other TestCompiles.
+# So unless we protect ourselves with the found_dbm variable
+# we'd end up having to do the work twice... and we'd end up putting
+# two -ldbm -ldbm into the LIBS variable.
+
+if [ "x$found_dbm" = "x" ]; then
+    if ./helpers/TestCompile func dbm_open; then
+	found_dbm=1
+    else
+	found_dbm=0
+	case "$PLAT" in
+	    *-linux*)
+		# many systems don't have -ldbm
+		DBM_LIB=""
+		if ./helpers/TestCompile lib ndbm dbm_open; then
+		    DBM_LIB="-lndbm"
+		    if ./helpers/TestCompile lib db1 dbm_open; then
+			# Red Hat needs this; ndbm.h lives in db1
+			CFLAGS="$CFLAGS -I/usr/include/db1"
+		    fi
+		elif ./helpers/TestCompile lib db1 dbm_open; then
+		    # For Red Hat 7, if not handled by the ndbm case above
+		    DBM_LIB="-ldb1"
+		    CFLAGS="$CFLAGS -I/usr/include/db1"
+                elif ./helpers/TestCompile lib gdbm dbm_open; then
+                    DBM_LIB="-lgdbm"
+                    CFLAGS="$CFLAGS -I/usr/include/gdbm"
+		elif ./helpers/TestCompile lib dbm dbm_open; then
+		    DBM_LIB="-ldbm"
+		fi
+		if [ "x$DBM_LIB" != "x" ]; then
+		    LIBS="$LIBS $DBM_LIB"
+		    found_dbm=1
+		fi
+		;;
+        *-cygwin*)
+        # we use the shared DLL version of gdbm if available
+        DBM_LIB=""
+        if ./helpers/TestCompile lib gdbm dbm_open; then
+            DBM_LIB="-lgdbm"
+            LIBS="$LIBS $DBM_LIB"
+            found_dbm=1
+        fi
+        ;;
+	    *)
+		if [ "x$DBM_LIB" != "x" ]; then
+		    oldLIBS="$LIBS"
+		    LIBS="$LIBS $DBM_LIB"
+		    if ./helpers/TestCompile func dbm_open; then
+			found_dbm=1
+		    else
+			found_dbm=0
+			LIBS="$oldLIBS"
+		    fi
+		else
+		    for dblib in dbm ndbm db
+		    do
+			DBM_LIB=""
+			if ./helpers/TestCompile lib $dblib dbm_open; then
+			    DBM_LIB="-l${dblib}"
+			    LIBS="$LIBS $DBM_LIB"
+			    found_dbm=1
+			    break
+			fi
+		    done
+		fi
+		;;
+	esac
+	if [ "x$found_dbm" = "x1" ]; then
+	    echo " + using $DBM_LIB for DBM support"
+	fi
+    fi
+fi

@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_mmap_static</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_mmap_static</h1>
+
+    <p>This module provides mmap()ing of a statically configured
+    list of frequently requested but not changed files.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_mmap_static.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    mmap_static_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.3 and later.</p>
+
+    <h2>Summary</h2>
+
+    <p>This is an <strong>experimental</strong> module and should
+    be used with care. You can easily create a broken site using
+    this module, read this document carefully.
+    <code>mod_mmap_static</code> maps a list of statically
+    configured files (via <code>MMapFile</code> directives in the
+    main server configuration) into memory through the system call
+    <code>mmap()</code>. This system call is available on most
+    modern Unix derivates, but not on all. There are sometimes
+    system-specific limits on the size and number of files that can
+    be mmap()d, experimentation is probably the easiest way to find
+    out.</p>
+
+    <p>This mmap()ing is done once at server start or restart,
+    only. So whenever one of the mapped files changes on the
+    filesystem you <em>have</em> to restart the server by at least
+    sending it a HUP or USR1 signal (see the <a
+    href="../stopping.html">Stopping and Restarting</a>
+    documentation). To reiterate that point: if the files are
+    modified <em>in place</em> without restarting the server you
+    may end up serving requests that are completely bogus. You
+    should update files by unlinking the old copy and putting a new
+    copy in place. Most tools such as <code>rdist</code> and
+    <code>mv</code> do this. The reason why this modules doesn't
+    take care of changes to the files is that this check would need
+    an extra <code>stat()</code> every time which is a waste and
+    against the intent of I/O reduction.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#mmapfile">MMapFile</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="mmapfile" name="mmapfile">MMapFile</a>
+    directive</h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> MMapFile
+    <em>filename</em> [<em>filename</em>] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server-config<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Experimental<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_mmap_static<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Only available
+    in Apache 1.3 or later</p>
+
+    <p>The <code>MMapFile</code> directive maps one or more files
+    (given as whitespace separated arguments) into memory at server
+    startup time. They are automatically unmapped on a server
+    shutdown. When the files have changed on the filesystem at
+    least a HUP or USR1 signal should be send to the server to
+    re-mmap them.</p>
+
+    <p>Be careful with the <em>filename</em> arguments: They have
+    to literally match the filesystem path Apache's URL-to-filename
+    translation handlers create. We cannot compare inodes or other
+    stuff to match paths through symbolic links <em>etc.</em>
+    because that again would cost extra <code>stat()</code> system
+    calls which is not acceptable. This module may or may not work
+    with filenames rewritten by <code>mod_alias</code> or
+    <code>mod_rewrite</code>... it is an experiment after all.</p>
+
+    <p>Notice: You cannot use this for speeding up CGI programs or
+    other files which are served by special content handlers. It
+    can only be used for regular files which are usually served by
+    the Apache core content handler.</p>
+    Example: 
+<pre>
+  MMapFile /usr/local/apache/htdocs/index.html
+ 
+</pre>
+
+    <p><strong>Note</strong>: don't bother asking for a for a
+    <code>MMapDir</code> directive which recursively maps all the
+    files in a directory. Use Unix the way it was meant to be used.
+    For example, see the <a href="core.html#include">Include</a>
+    directive, and consider this command:</p>
+<pre>
+  find /www/htdocs -type f -print \
+  | sed -e 's/.*/mmapfile &amp;/' &gt; /www/conf/mmap.conf
+ 
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

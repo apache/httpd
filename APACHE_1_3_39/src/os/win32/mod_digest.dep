@@ -1,0 +1,22 @@
+# Microsoft Developer Studio Generated Dependency File, included by mod_digest.mak
+
+..\..\modules\standard\mod_digest.c : \
+	"..\..\include\ap.h"\
+	"..\..\include\ap_alloc.h"\
+	"..\..\include\ap_config.h"\
+	"..\..\include\ap_ctype.h"\
+	"..\..\include\ap_ebcdic.h"\
+	"..\..\include\ap_md5.h"\
+	"..\..\include\ap_mmn.h"\
+	"..\..\include\buff.h"\
+	"..\..\include\hsregex.h"\
+	"..\..\include\http_config.h"\
+	"..\..\include\http_core.h"\
+	"..\..\include\http_log.h"\
+	"..\..\include\http_protocol.h"\
+	"..\..\include\httpd.h"\
+	"..\..\include\util_md5.h"\
+	"..\..\include\util_uri.h"\
+	".\os.h"\
+	".\readdir.h"\
+	

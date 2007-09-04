@@ -1,0 +1,140 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Hints on Running a High-Performance Web Server</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Hints on Running a High-Performance Web
+    Server</h1>
+    Running Apache on a heavily loaded web server, one often
+    encounters problems related to the machine and OS
+    configuration. "Heavy" is relative, of course - but if you are
+    seeing more than a couple hits per second on a sustained basis
+    you should consult the pointers on this page. In general the
+    suggestions involve how to tune your kernel for the heavier TCP
+    load, hardware/software conflicts that arise, <em>etc.</em> 
+
+    <ul>
+      <li><a href="#AUX">A/UX (Apple's UNIX)</a></li>
+
+      <li><a href="#BSD">BSD-based (BSDI, FreeBSD, etc)</a></li>
+
+      <li><a href="#DEC">Digital UNIX</a></li>
+
+      <li><a href="perf-hp.html">HPUX</a></li>
+
+      <li><a href="#irix">IRIX</a></li>
+
+      <li><a href="#Linux">Linux</a></li>
+
+      <li><a href="#Solaris">Solaris</a></li>
+
+      <li><a href="#SunOS">SunOS 4.x</a></li>
+
+      <li><a href="#SVR4">SVR4</a></li>
+    </ul>
+    <hr />
+
+    <h3><a id="AUX" name="AUX">A/UX (Apple's UNIX)</a></h3>
+    If you are running Apache on A/UX, a page that gives some
+    helpful performance hints (concerning the <em>listen()</em>
+    queue and using virtual hosts) <a
+    href="http://www.jaguNET.com/apache.html">can be found here</a>
+    
+    <hr />
+
+    <h3><a id="BSD" name="BSD">BSD-based (BSDI, FreeBSD,
+    etc)</a></h3>
+    <a href="perf-bsd44.html#initial">Quick</a> and <a
+    href="perf-bsd44.html#detail">detailed</a> performance tuning
+    hints for BSD-derived systems. <a
+    href="perf-bsd44.html#accf">Accept filtering</a> on FreeBSD. 
+    <hr />
+
+    <h3><a id="DEC" name="DEC">Digital UNIX</a></h3>
+
+    <ul>
+      <li><a
+      href="http://www.sean.de/Solaris/tune.html">
+      Solaris 2.x - tuning your TCP/IP stack</a> contains some good
+      technical information about tuning various Solaris TCP/IP
+      parameters.</li>
+    </ul>
+    <hr />
+
+    <h3><a id="SunOS" name="SunOS">SunOS 4.x</a></h3>
+    More information on tuning SOMAXCONN on SunOS can be found at
+    <a
+    href="http://www.islandnet.com/~mark/somaxconn.html">http://www.islandnet.com/~mark/somaxconn.html</a>.
+    
+    <hr />
+
+    <h3><a id="SVR4" name="SVR4">SVR4</a></h3>
+    Some SVR4 versions waste three system calls on every
+    <samp>gettimeofday()</samp> call. Depending on the syntactic
+    form of the <samp>TZ</samp> environment variable, these systems
+    have several different algorithms to determine the local time
+    zone (presumably <em>compatible</em> with something). The
+    following example uses the central european time zone to
+    demonstrate this: 
+
+    <dl>
+      <dt><strong>TZ=:MET</strong></dt>
+
+      <dd>
+        This form delegates the knowledge of the time zone
+        information to an external compiled zoneinfo file (&agrave;
+        la BSD).<br />
+         <strong>Caveat:</strong> Each time the gettimeofday()
+        function is called, the external zone info is read in again
+        (at least on some SVR4 systems). That results in three
+        wasted system calls with every apache request served. 
+<pre>
+     open("/usr/lib/locale/TZ/MET", O_RDONLY) = 3
+     read(3, "\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 7944) = 778
+     close(3)                                = 0
+</pre>
+      </dd>
+
+      <dt>
+      <strong>TZ=MET-1MDT,M3.5.0/02:00:00,M10.5.0/03:00:00</strong></dt>
+
+      <dd>This syntax form (&agrave; la SYSV) contains all the
+      knowledge about time zone beginning and ending times in its
+      external representation. It has to be parsed each time it is
+      evaluated, resulting in a slight computing overhead, but it
+      requires no system call. Though the table lookup &agrave; la
+      BSD is the more sophisticated technical solution, the bad
+      SVR4 implementation makes this the preferred syntax on
+      systems which otherwise access the external zone info file
+      repeatedly.</dd>
+    </dl>
+    You should use the <samp>truss</samp> utility on a
+    single-process apache server (started with the <samp>-X</samp>
+    debugging switch) to determine whether your system can profit
+    from the second form of the <samp>TZ</samp> environment
+    variable. If it does, you could integrate the setting of the
+    preferred <samp>TZ</samp> syntax into the httpd startup script,
+    which is usually simply a copy of (or symbolic link to) the
+    <samp>apachectl</samp> utility script, or into the system's
+    <samp>/etc/TIMEZONE</samp> script. 
+    <hr />
+
+    <h3>More welcome!</h3>
+    If you have tips to contribute, please submit them to
+    the <a href="http://bugs.apache.org/">Apache Bug
+    Database</a>.
+
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

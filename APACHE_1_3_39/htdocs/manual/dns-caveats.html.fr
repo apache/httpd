@@ -1,0 +1,269 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--Traduction anglais 1.4 -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
+
+    <title>Apache et le DNS</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache et le DNS</h1>
+
+    <p>Cette page aurait pu &ecirc;tre r&eacute;sum&eacute;e par la
+    phrase : <i>ne demandez pas &agrave; Apache d'utiliser le DNS
+    pour la lecture des fichiers de configuration</i>. Si Apache
+    doit utiliser le DNS pour r&eacute;cup&eacute;rer ses fichiers
+    de configuration, alors votre serveur peut &ecirc;tre sujet
+    &agrave; des probl&egrave;mes de fiabilit&eacute; (il peut tout
+    simplement ne pas d&eacute;marrer), ou s'ouvrir &agrave; des
+    attaques et des vols d'information (y compris des utilisateurs
+    qui pourraient "voler" des hits d'autres utilisateurs).</p>
+
+    <h3>Un exemple simple</h3>
+    Consid&eacute;rez ce court extrait de code de configuration : 
+
+    <blockquote>
+<pre>
+    &lt;VirtualHost www.abc.dom&gt;
+    ServerAdmin webgirl@abc.dom
+    DocumentRoot /www/abc
+    &lt;/VirtualHost&gt;
+</pre>
+    </blockquote>
+
+    <p>Pour qu'Apache fonctionne correctement, il a absolument
+    besoin d'au moins deux informations pour chaque h&ocirc;te
+    virtuel : le <a
+    href="mod/core.html#servername"><code>ServerName</code></a> et
+    au moins une adresse IP &agrave; laquelle ce serveur doit
+    r&eacute;pondre. Cet exemple ne fait pas appara&icirc;tre
+    d'adresse IP ; Apache doit donc utiliser le DNS pour trouver
+    l'adresse correspondant &agrave; <code>www.abc.dom</code>. Si
+    pour telle ou telle raison, le service de noms de domaines
+    n'est pas accessible au moment ou le serveur interpr&egrave;te
+    ses fichiers de configuration, alors cet h&ocirc;te virtuel
+    <b>ne pourra pas &ecirc;tre configur&eacute;</b>. Il ne pourra
+    donc pas r&eacute;pondre aux requ&ecirc;tes &eacute;mises vers
+    cet h&ocirc;te virtuel (les versions d'Apache
+    ant&eacute;rieures &agrave; la 1.2 n'auraient m&ecirc;me pas pu
+    d&eacute;marrer).</p>
+
+    <p>Supposons que le doamine <code>www.abc.dom</code> ait pour
+    adresse 10.0.0.1. Consid&eacute;rez alors ce nouvel extrait de
+    code de configuration :</p>
+
+    <blockquote>
+<pre>
+    &lt;VirtualHost 10.0.0.1&gt;
+    ServerAdmin webgirl@abc.dom
+    DocumentRoot /www/abc
+    &lt;/VirtualHost&gt;
+</pre>
+    </blockquote>
+
+    <p>Apache doit alors effectuer une r&eacute;solution DNS
+    inverse pour trouver le nom <code>ServerName</code> pour cet
+    h&ocirc;te virtuel. Si cette r&eacute;solution &eacute;choue,
+    alors il devra partiellement d&eacute;sactiver cet h&ocirc;te
+    virtuel (les versions d'Apache ant&eacute;rieures &agrave; la
+    1.2 n'auraient m&ecirc;me pas d&eacute;marr&eacute;). Si
+    l'h&ocirc;te virtuel est bas&eacute; sur un nom de domaine
+    alors il sera totalement inhib&eacute;, si par contre il se
+    base sur une adresse IP, alors il tournera probablement.
+    Cependant, si Apache devait g&eacute;n&eacute;rer une URL
+    compl&egrave;te pour ce serveur, incluant le nom de domaine,
+    l'URL produite ne pourrait &ecirc;tre correctement
+    constitu&eacute;e.</p>
+
+    <p>Voici un extrait qui &eacute;limine ces deux
+    probl&egrave;mes.</p>
+
+    <blockquote>
+<pre>
+    &lt;VirtualHost 10.0.0.1&gt;
+    ServerName www.abc.dom
+    ServerAdmin webgirl@abc.dom
+    DocumentRoot /www/abc
+    &lt;/VirtualHost&gt;
+</pre>
+    </blockquote>
+
+    <h3>Refus de service</h3>
+
+    <p>Il existe (au moins) deux situations o&ugrave; Apache refuse
+    de fournir le service. Si vous ex&eacute;cutez une version
+    ant&eacute;rieure &agrave; la version 1.2 d'Apache, votre
+    serveur ne d&eacute;marrera m&ecirc;me pas si l'une des deux
+    r&eacute;solutions DNS mentionn&eacute;es ci-avant
+    &eacute;choue pour au moins un h&ocirc;te virtuel. Dans
+    certains cas, cette r&eacute;solution peut ne m&ecirc;me pas
+    &ecirc;tre sous votre contr&ocirc;le. Par exemple, si
+    <code>abc.dom</code> est l'un de vos clients, lequel
+    contr&ocirc;le son propre serveur DNS, ce dernier peut forcer
+    votre serveur Apache (en version ant&eacute;rieure &agrave;
+    1.2) &agrave; s'arr&ecirc;ter au d&eacute;marrage en supprimant
+    simplement l'enregistrement du nom
+    <code>www.abc.dom</code>.</p>
+
+    <p>Une autre situation est beaucoup plus pernicieuse.
+    Consid&eacute;rez cet extrait de code de configuration :</p>
+
+    <blockquote>
+<pre>
+    &lt;VirtualHost www.abc.dom&gt;
+    ServerAdmin webgirl@abc.dom
+    DocumentRoot /www/abc
+    &lt;/VirtualHost&gt;
+</pre>
+    </blockquote>
+
+    <blockquote>
+<pre>
+    &lt;VirtualHost www.def.dom&gt;
+    ServerAdmin webguy@def.dom
+    DocumentRoot /www/def
+    &lt;/VirtualHost&gt;
+</pre>
+    </blockquote>
+
+    <p>Supposez que vous avez assign&eacute; 10.0.0.1 au domaine
+    <code>www.abc.dom</code> et 10.0.0.2 au domaine
+    <code>www.def.dom</code>. De plus, supposez que
+    <code>def.com</code> contr&ocirc;le son propre service DNS.
+    Avec la pr&eacute;c&eacute;dente configuration, vous permettez
+    &agrave; <code>def.com</code> de "voler" tout le trafic
+    destin&eacute; &agrave; <code>abc.com</code>. Tout ce qu'ils
+    auraient &agrave; faire pour y parvenir est d'assigner
+    <code>www.def.dom</code> &agrave; l'adresse 10.0.0.1. Dans la
+    mesure o&ugrave; ils contr&ocirc;lent leur propre DNS, vous ne
+    pouvez les emp&ecirc;cher de pi&eacute;ger leur enregistrement
+    de <code>www.def.com</code>.</p>
+
+    <p>Les requ&ecirc;tes arrivant pour 10.0.0.1 (y compris toutes
+    celles o&ugrave; les utilisateurs auront tap&eacute; une URL de
+    la forme <code>http://www.abc.dom/qqchose</code>) seront toutes
+    servies par l'h&ocirc;te virtuel <code>def.com</code>. Mieux
+    comprendre comment cela est possible demande une discussion
+    plus d&eacute;taill&eacute;e sur la mani&egrave;re dont Apache
+    traite des requ&ecirc;tes arrivant pour des h&ocirc;tes
+    virtuels. Un premier document descrivant ceci est <a
+    href="vhosts/details.html">disponible</a>.</p>
+
+    <h3>L'adresse du "serveur principal"</h3>
+
+    <p>L'addition du <a href="vhosts/name-based.html">support
+    d'h&ocirc;tes virtuels bas&eacute;s sur les noms</a> dans
+    Apache 1.1 n&eacute;cessite qu'Apache connaisse les adresses IP
+    de l'h&ocirc;te sur lequel est ex&eacute;cut&eacute; httpd.
+    Pour obtenir cette adresse, il utilise soit le
+    <code>ServerName</code> global (si d&eacute;fini) ou appelle la
+    fonction C <code>gethostname</code> (qui renvoie une
+    information similaire &agrave; celle donn&eacute;e par la
+    commande interactive "hostname"). Puis il proc&egrave;de
+    &agrave; une r&eacute;solution DNS pour cette adresse.
+    Jusqu'&agrave; pr&eacute;sent, il n'y a aucun moyen
+    d'&eacute;viter cette r&eacute;solution.</p>
+
+    <p>Si vous craignez que cette r&eacute;solution &eacute;choue
+    parceque votre serveur DNS est arr&ecirc;t&eacute;, alors vous
+    popuvez ajouter le nom d'h&ocirc;te dans le fichier
+    <code>/etc/hosts</code> (o&ugrave; il devrait normalement
+    d&eacute;j&agrave; figurer, ne serait-ce que pour assurer un
+    d&eacute;marrage correct de la machine). Vous devrez en outre
+    vous assurer que votre machine est configur&eacute;e pour
+    exploiter le fichier <code>/etc/hosts</code> en cas
+    d'&eacute;chec d'une r&eacute;solution dynamique. Suivant l'OS
+    que vous utilisez, ceci peut &ecirc;tre fait en &eacute;ditant
+    le code <code>/etc/resolv.conf</code>, ou peut &ecirc;tre
+    <code>/etc/nsswitch.conf</code>.</p>
+
+    <p>Si votre machine n'a pas de r&eacute;solution DNS &agrave;
+    effectuer pour toute autre raison (par exemple parce qu'elle
+    est isol&eacute;e), alors vous pourrez n&eacute;anmoins faire
+    tourner Apache en initialisant la variable d'environnement
+    <code>HOSTRESORDER</code> &agrave; "local". Tout ceci
+    d&eacute;pend de l'OS et des librairies de r&eacute;solveur que
+    vous utilisez. Les CGI sont &eacute;galement affect&eacute;s
+    sauf si vous utilisez la fonctionnalit&eacute; <a
+    href="mod/mod_env.html"><code>mod_env</code></a> pour
+    contr&ocirc;ler l'environnement. Il est prudent de consulter
+    les pages de manuel ou les FAQ sp&eacute;cifiques &agrave;
+    votre OS.</p>
+
+    <h3><a id="tips" name="tips">Astuces pour &eacute;viter ces
+    probl&egrave;mes</a></h3>
+
+    <ul>
+      <li>utilisez des adresses IP dans les sections
+      <code>&lt;VirtualHost&gt;</code></li>
+
+      <li>utilisez des adresses IP dans la clause
+      <code>Listen</code></li>
+
+      <li>utilisez des adresses IP dans la clause
+      <code>BindAddress</code></li>
+
+      <li>assurez vous que tous les h&ocirc;tes virtuels on un
+      <code>ServerName</code></li>
+
+      <li>cr&eacute;ez un serveur <code>&lt;VirtualHost
+      _default_:*&gt;</code> qui ne sert aucune page.</li>
+    </ul>
+
+    <h3>Annexe: Directions futures</h3>
+
+    <p>Cette situation vis-&agrave;-vis du DNS est largement
+    insatisfaisante. Pour Apache 1.2, nous avons travaill&eacute;
+    pour que le serveur puisse continuer &agrave; d&eacute;marrer
+    dans le cas de l'&eacute;chec d'une r&eacute;solution DNS, mais
+    il est possible que nous puissions en faire plus. Toute
+    &eacute;criture n&eacute;cessitant l'usage d'adresses IP
+    explicites dans le fichier de configuration n'est pas
+    souhaitable dans le contexte Internet actuel o&ugrave; la <a
+    href="http://www.ietf.org/html.charters/pier-charter.html">rotation
+    d'adresses</a> est une n&eacute;cessit&eacute;.</p>
+
+    <p>Une parade au vol de service serait d'effectuer une
+    r&eacute;solution DNS inverse sur l'adresse IP renvoy&eacute;e
+    par la r&eacute;solution directe, et comparer les deux noms. En
+    cas de non concordance, cet h&ocirc;te virtuel serait
+    d&eacute;sactiv&eacute;. Ceci impliquerait que la
+    r&eacute;solution DNS inverse soit correctement
+    configur&eacute;e (ce qui reste assez connu des administrateurs
+    du fait de l'usage commun de la r&eacute;solution inverse
+    double par les serveurs FTP et les transposeurs TCP).</p>
+
+    <p>Dans tous les cas, il ne semble pas possible de garantir la
+    fiabilit&eacute; du d&eacute;marrage d'un serveur web
+    g&eacute;rant des h&ocirc;tes virtuels lorsque la
+    r&eacute;solution DNS a &eacute;chou&eacute;, sauf si la
+    d&eacute;finition de ces h&ocirc;tes utilise des adresses IP
+    explicites. Une solution partielle consistant &agrave; ignorer
+    certaines portions du fichier de configuration serait encore
+    pire que ne pas d&eacute;marrer du tout, dans certains cas
+    d'exploitation.</p>
+
+    <p>Par l'extension de l'usage de HTTP/1.1, les navigateurs et
+    proxies fournissent de plus en plus souvent l'en-t&ecirc;te
+    <code>Host</code>, et il deviendra possible d'&eacute;viter
+    totalement la d&eacute;finition d'h&ocirc;tes virtuels
+    bas&eacute;s sur des adresses IP. Dans ce cas, un serveur Web
+    n'aura plus de r&eacute;solution DNS &agrave; effectuer pendant
+    la configuration. Mais &agrave; la date de Mars 1997, ces
+    fonctionnalit&eacute;s n'ont pas &eacute;t&eacute; suffisament
+    largement d&eacute;ploy&eacute;es pour pouvoir &ecirc;tre
+    exploit&eacute;es par des serveurs en situation critique. 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

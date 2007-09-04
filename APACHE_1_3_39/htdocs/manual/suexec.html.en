@@ -1,0 +1,608 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache suEXEC Support</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache suEXEC Support</h1>
+
+    <ol>
+      <li><big><strong>CONTENTS</strong></big></li>
+
+      <li><a href="#what">What is suEXEC?</a></li>
+
+      <li><a href="#before">Before we begin.</a></li>
+
+      <li><a href="#model">suEXEC Security Model.</a></li>
+
+      <li><a href="#install">Configuring &amp; Installing
+      suEXEC</a></li>
+
+      <li><a href="#enable">Enabling &amp; Disabling
+      suEXEC</a></li>
+
+      <li><a href="#usage">Using suEXEC</a></li>
+
+      <li><a href="#debug">Debugging suEXEC</a></li>
+
+      <li><a href="#jabberwock">Beware the Jabberwock: Warnings
+      &amp; Examples</a></li>
+    </ol>
+
+    <h3><a id="what" name="what">What is suEXEC?</a></h3>
+
+    <p align="LEFT">The <strong>suEXEC</strong> feature --
+    introduced in Apache 1.2 -- provides Apache users the ability
+    to run <strong>CGI</strong> and <strong>SSI</strong> programs
+    under user IDs different from the user ID of the calling
+    web-server. Normally, when a CGI or SSI program executes, it
+    runs as the same user who is running the web server.</p>
+
+    <p align="LEFT">Used properly, this feature can reduce
+    considerably the security risks involved with allowing users to
+    develop and run private CGI or SSI programs. However, if suEXEC
+    is improperly configured, it can cause any number of problems
+    and possibly create new holes in your computer's security. If
+    you aren't familiar with managing setuid root programs and the
+    security issues they present, we highly recommend that you not
+    consider using suEXEC.</p>
+
+    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    CONTENTS</a></strong></p>
+
+    <h3><a id="before" name="before">Before we begin.</a></h3>
+
+    <p align="LEFT">Before jumping head-first into this document,
+    you should be aware of the assumptions made on the part of the
+    Apache Group and this document.</p>
+
+    <p align="LEFT">First, it is assumed that you are using a UNIX
+    derivate operating system that is capable of
+    <strong>setuid</strong> and <strong>setgid</strong> operations.
+    All command examples are given in this regard. Other platforms,
+    if they are capable of supporting suEXEC, may differ in their
+    configuration.</p>
+
+    <p align="LEFT">Second, it is assumed you are familiar with
+    some basic concepts of your computer's security and its
+    administration. This involves an understanding of
+    <strong>setuid/setgid</strong> operations and the various
+    effects they may have on your system and its level of
+    security.</p>
+
+    <p align="LEFT">Third, it is assumed that you are using an
+    <strong>unmodified</strong> version of suEXEC code. All code
+    for suEXEC has been carefully scrutinized and tested by the
+    developers as well as numerous beta testers. Every precaution
+    has been taken to ensure a simple yet solidly safe base of
+    code. Altering this code can cause unexpected problems and new
+    security risks. It is <strong>highly</strong> recommended that
+    you do not alter the suEXEC code unless you are well versed in 
+    the particulars of security programming and are willing to share
+    your work with the Apache Group for consideration.</p>
+
+    <p align="LEFT">Fourth, and last, it has been the decision of
+    the Apache Group to <strong>NOT</strong> make suEXEC part of
+    the default installation of Apache. To this end, suEXEC
+    configuration requires careful attention to details from the
+    administrator. After due consideration has been given to the
+    various settings for suEXEC, the administrator may install
+    suEXEC through normal installation methods. The values for
+    these settings need to be carefully determined and specified by
+    the administrator to properly maintain system security during
+    the use of suEXEC functionality. It is through this detailed
+    process that the Apache Group hopes to limit suEXEC
+    installation only to those who are careful and determined
+    enough to use it.</p>
+
+    <p align="LEFT">Still with us? Yes? Good. Let's move on!</p>
+
+    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    CONTENTS</a></strong></p>
+
+    <h3><a id="model" name="model">suEXEC Security Model</a></h3>
+
+    <p align="LEFT">Before we begin configuring and installing
+    suEXEC, we will first discuss the security model you are about
+    to implement. By doing so, you may better understand what
+    exactly is going on inside suEXEC and what precautions are
+    taken to ensure your system's security.</p>
+
+    <p align="LEFT"><strong>suEXEC</strong> is based on a setuid
+    "wrapper" program that is called by the main Apache web server.
+    This wrapper is called when an HTTP request is made for a CGI
+    or SSI program that the administrator has designated to run as
+    a userid other than that of the main server. When such a
+    request is made, Apache provides the suEXEC wrapper with the
+    program's name and the user and group IDs under which the
+    program is to execute.</p>
+
+    <p align="LEFT">The wrapper then employs the following process
+    to determine success or failure -- if any one of these
+    conditions fail, the program logs the failure and exits with an
+    error, otherwise it will continue:</p>
+
+    <ol>
+      <li>
+        <strong>Was the wrapper called with the proper number of
+        arguments?</strong> 
+
+        <blockquote>
+          The wrapper will only execute if it is given the proper
+          number of arguments. The proper argument format is known
+          to the Apache web server. If the wrapper is not receiving
+          the proper number of arguments, it is either being
+          hacked, or there is something wrong with the suEXEC
+          portion of your Apache binary.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the user executing this wrapper a valid user of
+        this system?</strong> 
+
+        <blockquote>
+          This is to ensure that the user executing the wrapper is
+          truly a user of the system.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is this valid user allowed to run the
+        wrapper?</strong> 
+
+        <blockquote>
+          Is this user the user allowed to run this wrapper? Only
+          one user (the Apache user) is allowed to execute this
+          program.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Does the target program have an unsafe hierarchical
+        reference?</strong> 
+
+        <blockquote>
+          Does the target program contain a leading '/' or have a
+          '..' backreference? These are not allowed; the target
+          program must reside within the Apache webspace.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the target user name valid?</strong> 
+
+        <blockquote>
+          Does the target user exist?
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the target group name valid?</strong> 
+
+        <blockquote>
+          Does the target group exist?
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the target user <em>NOT</em> superuser?</strong>
+        
+
+        <blockquote>
+          Presently, suEXEC does not allow 'root' to execute
+          CGI/SSI programs.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the target userid <em>ABOVE</em> the minimum ID
+        number?</strong> 
+
+        <blockquote>
+          The minimum user ID number is specified during
+          configuration. This allows you to set the lowest possible
+          userid that will be allowed to execute CGI/SSI programs.
+          This is useful to block out "system" accounts.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the target group <em>NOT</em> the superuser
+        group?</strong> 
+
+        <blockquote>
+          Presently, suEXEC does not allow the 'root' group to
+          execute CGI/SSI programs.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the target groupid <em>ABOVE</em> the minimum ID
+        number?</strong> 
+
+        <blockquote>
+          The minimum group ID number is specified during
+          configuration. This allows you to set the lowest possible
+          groupid that will be allowed to execute CGI/SSI programs.
+          This is useful to block out "system" groups.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Can the wrapper successfully become the target user
+        and group?</strong> 
+
+        <blockquote>
+          Here is where the program becomes the target user and
+          group via setuid and setgid calls. The group access list
+          is also initialized with all of the groups of which the
+          user is a member.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Does the directory in which the program resides
+        exist?</strong> 
+
+        <blockquote>
+          If it doesn't exist, it can't very well contain files.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the directory within the Apache
+        webspace?</strong> 
+
+        <blockquote>
+          If the request is for a regular portion of the server, is
+          the requested directory within the server's document
+          root? If the request is for a UserDir, is the requested
+          directory within the user's document root?
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the directory <em>NOT</em> writable by anyone
+        else?</strong> 
+
+        <blockquote>
+          We don't want to open up the directory to others; only
+          the owner user may be able to alter this directories
+          contents.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Does the target program exist?</strong> 
+
+        <blockquote>
+          If it doesn't exists, it can't very well be executed.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the target program <em>NOT</em> writable by
+        anyone else?</strong> 
+
+        <blockquote>
+          We don't want to give anyone other than the owner the
+          ability to change the program.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the target program <em>NOT</em> setuid or
+        setgid?</strong> 
+
+        <blockquote>
+          We do not want to execute programs that will then change
+          our UID/GID again.
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Is the target user/group the same as the program's
+        user/group?</strong> 
+
+        <blockquote>
+          Is the user the owner of the file?
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Can we successfully clean the process environment
+        to ensure safe operations?</strong> 
+
+        <blockquote>
+          suEXEC cleans the process' environment by establishing a
+          safe execution PATH (defined during configuration), as
+          well as only passing through those variables whose names
+          are listed in the safe environment list (also created
+          during configuration).
+        </blockquote>
+      </li>
+
+      <li>
+        <strong>Can we successfully become the target program and
+        execute?</strong> 
+
+        <blockquote>
+          Here is where suEXEC ends and the target program begins.
+        </blockquote>
+      </li>
+    </ol>
+
+    <p align="LEFT">This is the standard operation of the
+    suEXEC wrapper's security model. It is somewhat stringent and
+    can impose new limitations and guidelines for CGI/SSI design,
+    but it was developed carefully step-by-step with security in
+    mind.</p>
+
+    <p align="LEFT">For more information as to how this security
+    model can limit your possibilities in regards to server
+    configuration, as well as what security risks can be avoided
+    with a proper suEXEC setup, see the <a
+    href="#jabberwock">"Beware the Jabberwock"</a> section of this
+    document.</p>
+
+    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    CONTENTS</a></strong></p>
+
+    <h3><a id="install" name="install">Configuring &amp; Installing
+    suEXEC</a></h3>
+
+    <p align="LEFT">Here's where we begin the fun. If you use
+    Apache 1.2 or prefer to configure Apache 1.3 with the
+    "<code>src/Configure</code>" script you have to edit the suEXEC
+    header file and install the binary in its proper location
+    manually. This procedure is described in an <a
+    href="suexec_1_2.html">extra document</a>. The following
+    sections describe the configuration and installation for Apache
+    1.3 with the AutoConf-style interface (APACI).</p>
+
+    <p align="LEFT"><strong>APACI's suEXEC configuration
+    options</strong><br />
+    </p>
+
+    <dl>
+      <dt><code>--enable-suexec</code></dt>
+
+      <dd>This option enables the suEXEC feature which is never
+      installed or activated by default. At least one
+      --suexec-xxxxx option has to be provided together with the
+      --enable-suexec option to let APACI accept your request for
+      using the suEXEC feature.</dd>
+
+      <dt><code>--suexec-caller=<em>UID</em></code></dt>
+
+      <dd>The <a href="mod/core.html#user">username</a> under which
+      Apache normally runs. This is the only user allowed to
+      execute this program.</dd>
+
+      <dt><code>--suexec-docroot=<em>DIR</em></code></dt>
+
+      <dd>Define as the DocumentRoot set for Apache. This will be
+      the only hierarchy (aside from UserDirs) that can be used for
+      suEXEC behavior. The default directory is the --datadir value
+      with the suffix "/htdocs", <em>e.g.</em> if you configure
+      with "<code>--datadir=/home/apache</code>" the directory
+      "/home/apache/htdocs" is used as document root for the suEXEC
+      wrapper.</dd>
+
+      <dt><code>--suexec-logfile=<em>FILE</em></code></dt>
+
+      <dd>This defines the filename to which all suEXEC
+      transactions and errors are logged (useful for auditing and
+      debugging purposes). By default the logfile is named
+      "suexec_log" and located in your standard logfile directory
+      (--logfiledir).</dd>
+
+      <dt><code>--suexec-userdir=<em>DIR</em></code></dt>
+
+      <dd>Define to be the subdirectory under users' home
+      directories where suEXEC access should be allowed. All
+      executables under this directory will be executable by suEXEC
+      as the user so they should be "safe" programs. If you are
+      using a "simple" UserDir directive (ie. one without a "*" in
+      it) this should be set to the same value. suEXEC will not
+      work properly in cases where the UserDir directive points to
+      a location that is not the same as the user's home directory
+      as referenced in the passwd file. Default value is
+      "public_html".<br />
+       If you have virtual hosts with a different UserDir for each,
+      you will need to define them to all reside in one parent
+      directory; then name that parent directory here. <strong>If
+      this is not defined properly, "~userdir" cgi requests will
+      not work!</strong></dd>
+
+      <dt><code>--suexec-uidmin=<em>UID</em></code></dt>
+
+      <dd>Define this as the lowest UID allowed to be a target user
+      for suEXEC. For most systems, 500 or 100 is common. Default
+      value is 100.</dd>
+
+      <dt><code>--suexec-gidmin=<em>GID</em></code></dt>
+
+      <dd>Define this as the lowest GID allowed to be a target
+      group for suEXEC. For most systems, 100 is common and
+      therefore used as default value.</dd>
+
+      <dt><code>--suexec-safepath=<em>PATH</em></code></dt>
+
+      <dd>Define a safe PATH environment to pass to CGI
+      executables. Default value is
+      "/usr/local/bin:/usr/bin:/bin".</dd>
+    </dl>
+
+    <p align="LEFT"><strong>Checking your suEXEC
+    setup</strong><br />
+     Before you compile and install the suEXEC wrapper you can
+    check the configuration with the --layout option.<br />
+     Example output:</p>
+<pre>
+    suEXEC setup:
+            suexec binary: /usr/local/apache/sbin/suexec
+            document root: /usr/local/apache/share/htdocs
+           userdir suffix: public_html
+                  logfile: /usr/local/apache/var/log/suexec_log
+                safe path: /usr/local/bin:/usr/bin:/bin
+                caller ID: www
+          minimum user ID: 100
+         minimum group ID: 100
+</pre>
+
+    <p align="LEFT"><strong>Compiling and installing the suEXEC
+    wrapper</strong><br />
+     If you have enabled the suEXEC feature with the
+    --enable-suexec option the suexec binary (together with Apache
+    itself) is automatically built if you execute the command
+    "make".<br />
+     After all components have been built you can execute the
+    command "make install" to install them. The binary image
+    "suexec" is installed in the directory defined by the --sbindir
+    option. Default location is
+    "/usr/local/apache/sbin/suexec".<br />
+     Please note that you need <strong><em>root
+    privileges</em></strong> for the installation step. In order
+    for the wrapper to set the user ID, it must be installed as
+    owner <code><em>root</em></code> and must have the setuserid
+    execution bit set for file modes.</p>
+
+    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    CONTENTS</a></strong></p>
+
+    <h3><a id="enable" name="enable">Enabling &amp; Disabling
+    suEXEC</a></h3>
+
+    <p align="LEFT">Upon startup of Apache, it looks for the file
+    "suexec" in the "sbin" directory (default is
+    "/usr/local/apache/sbin/suexec"). If Apache finds a properly
+    configured suEXEC wrapper, it will print the following message
+    to the error log:</p>
+<pre>
+    [notice] suEXEC mechanism enabled (wrapper: <em>/path/to/suexec</em>)
+</pre>
+
+    <p>If you don't see this message at server startup, the server
+    is most likely not finding the wrapper program where it expects
+    it, or the executable is not installed <em>setuid
+    root</em>.<br />
+     If you want to enable the suEXEC mechanism for the first time
+    and an Apache server is already running you must kill and
+    restart Apache. Restarting it with a simple HUP or USR1 signal
+    will not be enough.<br />
+     If you want to disable suEXEC you should kill and restart
+    Apache after you have removed the "suexec" file.</p>
+
+    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    CONTENTS</a></strong></p>
+
+    <h3><a id="usage" name="usage">Using suEXEC</a></h3>
+
+    <p align="LEFT"><strong>Virtual Hosts:</strong><br />
+     One way to use the suEXEC wrapper is through the <a
+    href="mod/core.html#user">User</a> and <a
+    href="mod/core.html#group">Group</a> directives in <a
+    href="mod/core.html#virtualhost">VirtualHost</a> definitions.
+    By setting these directives to values different from the main
+    server user ID, all requests for CGI resources will be executed
+    as the <em>User</em> and <em>Group</em> defined for that
+    <code>&lt;VirtualHost&gt;</code>. If only one or neither of
+    these directives are specified for a
+    <code>&lt;VirtualHost&gt;</code> then the main server userid is
+    assumed.</p>
+
+    <p><strong>User directories:</strong><br />
+     The suEXEC wrapper can also be used to execute CGI programs as
+    the user to which the request is being directed. This is
+    accomplished by using the "<strong><code>~</code></strong>"
+    character prefixing the user ID for whom execution is desired.
+    The only requirement needed for this feature to work is for CGI
+    execution to be enabled for the user and that the script must
+    meet the scrutiny of the <a href="#model">security checks</a>
+    above.</p>
+
+    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    CONTENTS</a></strong></p>
+
+    <h3><a id="debug" name="debug">Debugging suEXEC</a></h3>
+
+    <p align="LEFT">The suEXEC wrapper will write log information
+    to the file defined with the --suexec-logfile option as
+    indicated above. If you feel you have configured and installed
+    the wrapper properly, have a look at this log and the error_log
+    for the server to see where you may have gone astray.</p>
+
+    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    CONTENTS</a></strong></p>
+
+    <h3><a id="jabberwock" name="jabberwock">Beware the Jabberwock:
+    Warnings &amp; Examples</a></h3>
+
+    <p align="LEFT"><strong>NOTE!</strong> This section may not be
+    complete. For the latest revision of this section of the
+    documentation, see the Apache Group's <a
+    href="http://httpd.apache.org/docs/suexec.html">Online
+    Documentation</a> version.</p>
+
+    <p align="LEFT">There are a few points of interest regarding
+    the wrapper that can cause limitations on server setup. Please
+    review these before submitting any "bugs" regarding suEXEC.</p>
+
+    <ul>
+      <li><strong>suEXEC Points Of Interest</strong></li>
+
+      <li>
+        Hierarchy limitations 
+
+        <blockquote>
+          For security and efficiency reasons, all suexec requests
+          must remain within either a top-level document root for
+          virtual host requests, or one top-level personal document
+          root for userdir requests. For example, if you have four
+          VirtualHosts configured, you would need to structure all
+          of your VHosts' document roots off of one main Apache
+          document hierarchy to take advantage of suEXEC for
+          VirtualHosts. (Example forthcoming.)
+        </blockquote>
+      </li>
+
+      <li>
+        suEXEC's PATH environment variable 
+
+        <blockquote>
+          This can be a dangerous thing to change. Make certain
+          every path you include in this define is a
+          <strong>trusted</strong> directory. You don't want to
+          open people up to having someone from across the world
+          running a trojan horse on them.
+        </blockquote>
+      </li>
+
+      <li>
+        Altering the suEXEC code 
+
+        <blockquote>
+          Again, this can cause <strong>Big Trouble</strong> if you
+          try this without knowing what you are doing. Stay away
+          from it if at all possible.
+        </blockquote>
+      </li>
+    </ul>
+
+    <p align="CENTER"><strong><a href="suexec.html">BACK TO
+    CONTENTS</a></strong></p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

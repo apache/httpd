@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Página de teste da instalação do Apache Web Server</title>
+<!-- original translation for portuguese by Hugo Ramos, ramos@pop3r.com, Sat Jan 29 05:30:00 GMT 2000 -->
+ </head>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <body
+  bgcolor="#FFFFFF"
+  text="#000000"
+  link="#0000FF"
+  vlink="#000080"
+  alink="#FF0000"
+ >
+
+
+<p> Se est&aacute; a ver esta p&aacute;gina significa que a instala&ccedil;&atilde;o 
+  do <a href="http://www.apache.org/foundation/preFAQ.html">Apache Web Server</a> foi efectuada 
+  com sucesso. Pode agora adicionar conte&uacute;do a esta directoria e substituir 
+  esta p&aacute;gina. 
+<p><hr width="50%" size="8">
+
+<h2 align="CENTER">Est&aacute; a ver esta p&aacute;gina em vez do website que 
+  esperava?</h2>
+
+<p> Esta p&aacute;gina est&aacute; neste momento activa porque o administrador 
+  deste site alterou a configura&ccedil;&atilde;o do web server. Por favor <strong>contacte 
+  a pessoa respons&aacute;vel pela manuten&ccedil;&atilde;o deste servidor.</strong> 
+  A Funda&ccedil;&atilde;o Apache Software (Apache Software Foundation), apesar 
+  de ter produzido o web server que o administrador deste site est&aacute; a usar, 
+  n&atilde;o tem qualquer tipo de responsabilidade pela manuten&ccedil;&atilde;o 
+  deste nem pode ajudar a resolver problemas de configura&ccedil;&atilde;o. 
+<p><hr width="50%" size="8">
+
+
+<p> A <a href="manual/index.html">documenta&ccedil;&atilde;o</a> foi inclu&iacute;da 
+  juntamente com esta distribui&ccedil;&atilde;o. 
+<p> A imagem abaixo pode ser usada livremente em qualquer site presente num servidor 
+  com o Apache Web Server instalado. Obrigado por usar o Apache Web Server! 
+<div align="CENTER"><img src="apache_pb.gif" alt=""></div>
+</body>
+</html>
