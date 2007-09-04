@@ -80,16 +80,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-    * mod_mem_cache: Increase the minimum and default value for
-      MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does
-      not make sense and leads to a signal Floating point exception (8)
-      (division by zero) in memcache_gdsf_algorithm. PR 40576.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=469895&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, fielding, jim
-
     * mod_ssl: Fix spurious hostname-mismatch warning for valid wildcard certs.
       PR 37911.
       Trunk version of patch:

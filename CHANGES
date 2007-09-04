@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_mem_cache: Increase the minimum and default value for
+     MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does not
+     make sense and leads to a division by zero.  PR 40576.
+     [Xuekun Hu <xuekun.hu gmail.com>]
+
   *) mod_cache: Remove expired content from cache that cannot be revalidated.
      PR 30370. [Ruediger Pluem]
 
