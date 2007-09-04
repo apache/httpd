@@ -170,7 +170,7 @@
       <p>HTTP offers a number of headers which allow a client, or cache
       to discern between different versions of the same content. For
       example if a resource was served with an "Etag:" header, it is
-      possible to make a conditional request with an "If-Match:" 
+      possible to make a conditional request with an "If-None-Match:" 
       header. If a resource was served with a "Last-Modified:" header
       it is possible to make a conditional request with an 
       "If-Modified-Since:" header, and so on.</p>
