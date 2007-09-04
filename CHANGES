@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_ssl: Fix spurious hostname mismatch warning for valid
+     wildcard certificates.  PR 37911.  [Nick Burch <nick torchbox.com>]
+
   *) mod_mem_cache: Increase the minimum and default value for
      MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does not
      make sense and leads to a division by zero.  PR 40576.
