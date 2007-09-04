@@ -80,38 +80,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-
-   * mod_authn_dbd: Export any additional columns queried in the SQL select
-     into the environment with the name AUTHENTICATE_<COLUMN>. This brings
-     mod_authn_dbd behaviour in line with mod_authnz_ldap.
-     Trunk: http://svn.apache.org/viewvc?view=rev&revision=466865
-            http://svn.apache.org/viewvc?view=rev&revision=571798
-            http://svn.apache.org/viewvc?view=rev&revision=571804
-     +1: minfrin
-     rpluem says: r466865 has a conflict in modules/aaa/mod_auth.h
-                  r571804 has a conflict in docs/manual/mod/mod_authnz_ldap.xml
-                  Without r571838 the documentation for mod_authn_dbd fails
-                  to build.
-
-    * multiple files,	Trivial cleanups
-      PR: 39518 - Christophe JAILLET
-      http://svn.apache.org/viewvc?view=rev&revision=557837
-      http://svn.apache.org/viewvc?view=rev&revision=557972
-      +1: rpluem
-      niq: this isn't a straight backport (which is why I dropped it).
-      +1 for core, modules/dav, modules/filters, and modules/ssl
-      Not Applicable to modules/aaa
-
-   * mod_include: Add an "if" directive syntax to test whether an URL
-     is accessible, and if so, conditionally display content. This
-     allows a webmaster to hide a link to a private page when the user
-     has no access to that page.
-     http://svn.apache.org/viewvc?view=rev&revision=571872
-     http://svn.apache.org/viewvc?view=rev&revision=571927
-     http://svn.apache.org/viewvc?view=rev&revision=572136
-     +1: minfrin
-
     * mod_cache: Remove expired content from cache that cannot be revalidated.
       PR 30370.
       Trunk version of patch:
@@ -145,6 +113,39 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem, fielding, jim
+
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+
+   * mod_authn_dbd: Export any additional columns queried in the SQL select
+     into the environment with the name AUTHENTICATE_<COLUMN>. This brings
+     mod_authn_dbd behaviour in line with mod_authnz_ldap.
+     Trunk: http://svn.apache.org/viewvc?view=rev&revision=466865
+            http://svn.apache.org/viewvc?view=rev&revision=571798
+            http://svn.apache.org/viewvc?view=rev&revision=571804
+     +1: minfrin
+     rpluem says: r466865 has a conflict in modules/aaa/mod_auth.h
+                  r571804 has a conflict in docs/manual/mod/mod_authnz_ldap.xml
+                  Without r571838 the documentation for mod_authn_dbd fails
+                  to build.
+
+    * multiple files,	Trivial cleanups
+      PR: 39518 - Christophe JAILLET
+      http://svn.apache.org/viewvc?view=rev&revision=557837
+      http://svn.apache.org/viewvc?view=rev&revision=557972
+      +1: rpluem
+      niq: this isn't a straight backport (which is why I dropped it).
+      +1 for core, modules/dav, modules/filters, and modules/ssl
+      Not Applicable to modules/aaa
+
+   * mod_include: Add an "if" directive syntax to test whether an URL
+     is accessible, and if so, conditionally display content. This
+     allows a webmaster to hide a link to a private page when the user
+     has no access to that page.
+     http://svn.apache.org/viewvc?view=rev&revision=571872
+     http://svn.apache.org/viewvc?view=rev&revision=571927
+     http://svn.apache.org/viewvc?view=rev&revision=572136
+     +1: minfrin
 
 PATCHES/ISSUES THAT ARE STALLED
 
