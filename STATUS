@@ -118,7 +118,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=481886&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, fielding
+      +1: rpluem, fielding, jim
 
     * mod_mem_cache: Increase the minimum and default value for
       MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does
@@ -128,7 +128,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=469895&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, fielding
+      +1: rpluem, fielding, jim
 
     * mod_ssl: Fix spurious hostname-mismatch warning for valid wildcard certs.
       PR 37911.
@@ -136,7 +136,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=378487&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, fielding
+      +1: rpluem, fielding, jim
 
     * mod_info: mod_info outputs invalid XHTML 1.0 Transitional.
       PR 42847.
@@ -144,7 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=562503&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, fielding
+      +1: rpluem, fielding, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
