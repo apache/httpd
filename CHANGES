@@ -20,6 +20,9 @@ Changes with Apache 2.0.61
      be forced to kill processes outside its process group. 
      [Joe Orton, Jim Jagielski]
 
+  *) mod_proxy_http: accept proxy-sendchunked/proxy-sendchunks as synonymous.
+     PR 43183 [Brian Rectanus <Brian.Rectanus breach.com>, Vincent Bray]
+
   *) log core: ensure we use a special pool for stderr logging, so that
      the stderr channel remains valid from the time plog is destroyed,
      until the time the open_logs hook is called again.  [William Rowe]
