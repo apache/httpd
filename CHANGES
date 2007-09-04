@@ -11,12 +11,6 @@ Changes with Apache 2.3.0
      parameters to the environment. Improve portability to
      EBCDIC machines by using apr_toupper(). [Martin Kraemer]
 
-  *) mod_info: mod_info outputs invalid XHTML 1.0 transitional.
-     PR 42847 [Rici Lake <rici ricilake.net>]
-
-  *) mime.types: add registered Apple installer type
-     PR 40379 [Peter Bierman <pmb+apache apple.com>]
-
   *) mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
      to authorize an authenticated user via a "require ldap-group X" directive
      where the user is not in group X, but is in a subgroup contained in X.
@@ -66,17 +60,9 @@ Changes with Apache 2.3.0
      cleanups registered in modules' child_init hooks are performed.
      [Chris Darroch]
 
-  *) mod_cache: Remove expired content from cache that cannot be revalidated.
-     PR 30370. [Ruediger Pluem]
-
   *) mod_dbd: Stash DBD connections in request_config of initial request
      only, or else sub-requests and internal redirections may cause
      entire DBD pool to be stashed in a single HTTP request.  [Chris Darroch]
-
-  *) mod_mem_cache: Increase the minimum and default value for
-     MCacheMinObjectSize from 0 to 1, as a MCacheMinObjectSize of 0 does not
-     make sense and leads to a division by zero.  PR 40576.
-     [Xuekun Hu <xuekun.hu gmail.com>]
 
   *) Fix issue which could cause error messages to be written to access logs
      on Win32.  PR 40476.  [Tom Donovan <Tom.Donovan acm.org>]
@@ -174,9 +160,6 @@ Changes with Apache 2.3.0
   *) mod_charset_lite: Remove Content-Length when output filter can 
      invalidate it.  Warn when input filter can invalidate it.
      [Jeff Trawick]
-
-  *) mod_ssl: Fix spurious hostname mismatch warning for valid
-     wildcard certificates.  PR 37911.  [Nick Burch <nick torchbox.com>]
 
   *) Authz: Add the new module mod_authn_core that will provide common
      authn directives such as 'AuthType', 'AuthName'.  Move the directives
