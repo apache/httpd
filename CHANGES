@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_info: mod_info outputs invalid XHTML 1.0 transitional.
+     PR 42847 [Rici Lake <rici ricilake.net>]
+
   *) mod_ssl: Fix spurious hostname mismatch warning for valid
      wildcard certificates.  PR 37911.  [Nick Burch <nick torchbox.com>]
 

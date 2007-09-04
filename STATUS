@@ -80,15 +80,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
 
-    * mod_info: mod_info outputs invalid XHTML 1.0 Transitional.
-      PR 42847.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=562503&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, fielding, jim
-
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_authn_dbd: Export any additional columns queried in the SQL select
