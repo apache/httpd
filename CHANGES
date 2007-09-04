@@ -1,6 +1,31 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) SECURITY: CVE-2007-3847 (cve.mitre.org)
+     mod_proxy: Prevent reading past the end of a buffer when parsing
+     date-related headers.  PR 41144.
+     [Davi Arnaut, Nick Kew]
+
+  *) SECURITY: CVE-2007-1863 (cve.mitre.org)
+     mod_cache: Prevent a segmentation fault if attributes are listed in a 
+     Cache-Control header without any value. 
+     [Niklas Edmundsson <nikke acc.umu.se>]
+
+  *) SECURITY: CVE-2007-3304 (cve.mitre.org)
+     prefork, worker, event MPMs: Ensure that the parent process cannot
+     be forced to kill processes outside its process group. 
+     [Joe Orton, Jim Jagielski]
+
+  *) SECURITY: CVE-2006-5752 (cve.mitre.org)
+     mod_status: Fix a possible XSS attack against a site with a public
+     server-status page and ExtendedStatus enabled, for browsers which
+     perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
+
+  *) SECURITY: CVE-2007-1862 (cve.mitre.org)
+     mod_mem_cache: Copy headers into longer lived storage; header names and
+     values could previously point to cleaned up storage.  PR 41551.
+     [Davi Arnaut <davi haxent.com.br>]
+
   *) mod_info: mod_info outputs invalid XHTML 1.0 transitional.
      PR 42847 [Rici Lake <rici ricilake.net>]
 
@@ -66,8 +91,9 @@ Changes with Apache 2.2.6
 
   *) mod_autoindex: Add in Type and Charset options to IndexOptions
      directive. This allows the admin to explicitly set the 
-     content-type and charset of the generated page.
-     [Jim Jagielski]
+     content-type and charset of the generated page and is therefore
+     a viable workaround for buggy browsers affected by CVE-2007-4465
+     (cve.mitre.org). [Jim Jagielski]
 
   *) log core: ensure we use a special pool for stderr logging, so that
      the stderr channel remains valid from the time plog is destroyed,
@@ -132,33 +158,6 @@ Changes with Apache 2.2.6
   *) mod_ldap: Avoid possible crashes, hangs, and busy loops due to
      improper merging of the cache lock in vhost config
      PR 43164 [Eric Covener]
-
-Changes with Apache 2.2.5
-
-  *) SECURITY: CVE-2007-3847 (cve.mitre.org)
-     mod_proxy: Prevent reading past the end of a buffer when parsing
-     date-related headers.  PR 41144.
-     [Davi Arnaut, Nick Kew]
-
-  *) SECURITY: CVE-2007-1863 (cve.mitre.org)
-     mod_cache: Prevent a segmentation fault if attributes are listed in a 
-     Cache-Control header without any value. 
-     [Niklas Edmundsson <nikke acc.umu.se>]
-
-  *) SECURITY: CVE-2007-3304 (cve.mitre.org)
-     prefork, worker, event MPMs: Ensure that the parent process cannot
-     be forced to kill processes outside its process group. 
-     [Joe Orton, Jim Jagielski]
-
-  *) SECURITY: CVE-2006-5752 (cve.mitre.org)
-     mod_status: Fix a possible XSS attack against a site with a public
-     server-status page and ExtendedStatus enabled, for browsers which
-     perform charset "detection".  Reported by Stefan Esser.  [Joe Orton]
-
-  *) SECURITY: CVE-2007-1862 (cve.mitre.org)
-     mod_mem_cache: Copy headers into longer lived storage; header names and
-     values could previously point to cleaned up storage.  PR 41551.
-     [Davi Arnaut <davi haxent.com.br>]
 
   *) ApacheMonitor: Fix Windows Vista detection. [Mladen Turk]
 
@@ -272,6 +271,8 @@ Changes with Apache 2.2.5
   *) Win32: Makefile.win will now build with MS VC 8 (Visual Studio 2005)
      including embedding the .manifest information into each binary.
      [William Rowe]
+
+There was no Apache 2.2.5
 
 Changes with Apache 2.2.4
 
