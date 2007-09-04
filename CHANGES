@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.6
 
+  *) mod_cache: Remove expired content from cache that cannot be revalidated.
+     PR 30370. [Ruediger Pluem]
+
   *) mod_proxy_http: accept proxy-sendchunked/proxy-sendchunks as synonymous.
      PR 43183 [Brian Rectanus <Brian.Rectanus breach.com>, Vincent Bray]
 
