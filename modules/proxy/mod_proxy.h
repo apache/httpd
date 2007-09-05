@@ -263,14 +263,16 @@ struct proxy_conn_pool {
 #define PROXY_WORKER_NOT_USABLE_BITMAP ( PROXY_WORKER_IN_SHUTDOWN | \
 PROXY_WORKER_DISABLED | PROXY_WORKER_STOPPED | PROXY_WORKER_IN_ERROR )
 
-#define PROXY_WORKER_IS_INITIALIZED(f)   ( (f)->s->status & \
-  PROXY_WORKER_INITIALIZED )
+/* NOTE: these check the shared status */
+#define PROXY_WORKER_IS_INITIALIZED(f)   ( (f)->s && \
+  ( (f)->s->status &  PROXY_WORKER_INITIALIZED ) )
 
-#define PROXY_WORKER_IS_STANDBY(f)   ( (f)->s->status & \
-  PROXY_WORKER_HOT_STANDBY )
+#define PROXY_WORKER_IS_STANDBY(f)   ( (f)->s && \
+  ( (f)->s->status &  PROXY_WORKER_HOT_STANDBY ) )
 
-#define PROXY_WORKER_IS_USABLE(f)   ( !((f)->s->status & \
-  (PROXY_WORKER_NOT_USABLE_BITMAP)) && PROXY_WORKER_IS_INITIALIZED(f) )
+#define PROXY_WORKER_IS_USABLE(f)   ( (f)->s && \
+  ( !( (f)->s->status & PROXY_WORKER_NOT_USABLE_BITMAP) ) && \
+  PROXY_WORKER_IS_INITIALIZED(f) )
 
 /* default worker retry timeout in seconds */
 #define PROXY_WORKER_DEFAULT_RETRY  60
