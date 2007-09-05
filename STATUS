@@ -82,6 +82,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
+    * mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean 
+      shutdown of the server when the MaxClients is higher then 257,
+      in a more responsive manner.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=573103
+        http://svn.apache.org/viewvc?view=rev&revision=573105
+      2.2.x version of patch:
+        http://people.apache.org/~wrowe/mpm_winnt_shutdown-2.2.patch
+
    * mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
      mod_authn_dbd behaviour in line with mod_authnz_ldap.
@@ -138,37 +147,6 @@ PATCHES/ISSUES THAT ARE STALLED
       in util_ldap.h. This is an extension of a public API.
       trawick says: The new directives should be documented in trunk,
           so that docs are available for backport at the same time.
-
-    * mpm_winnt: Fix return values from wait_for_many_objects.
-      Note - this is required to avoid hangups of socket #64, #128
-      as Microsoft set aside 64 reserved values.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=428029
-      2.2.x version of patch:
-        Trunk version works
-        http://people.apache.org/~wrowe/mpm_winnt_waits.patch
-        is easier to read (-U8)
-      +1: mturk
-      +0: fielding (patch is okay, underlying code is crap)
-      wrowe notes: a patch should have the necessary effect with the
-        minimum lines of code - there's alot of redecorating that's
-        going on in this patch to no net effect.  The WAIT_TIMEOUT
-        result value seems to be ignored in the revised code?
-      mturk notes: WAIT_TIMEOUT is replaced by WAIT_FAILED with
-        the accompanied patch in mpm\winnt\child.c.
-      fielding notes: the routine is brain-dead -- one cannot replicate
-        a wait for many objects by iterating through multiple waits with
-        a one second sleep in between loops.  That's insane.
-        The right ways to do that are explained in the MSDN article
-        <http://msdn2.microsoft.com/en-us/library/ms687025.aspx>
-        In any case, it should be checking nCount <= MAXIMUM_WAIT_OBJECTS
-        first and use the simple wait in that case.
-      mturk notes: We are interested in that only during shutdown
-        so a one second simplification is acceptable compromise.
-        The sole purpose of the patch is to allow the clean shutdown
-        when the MaxClients is higher then 257. 
-      wrowe: conditional +1 if you rename the assanine function name
-        so no one confuses it for its implied purpose.
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
      entering ap_mpm_run(), then destroy pmain when exiting ap_mpm_run().
