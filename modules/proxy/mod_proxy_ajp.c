@@ -475,6 +475,10 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
 
     apr_brigade_destroy(output_brigade);
 
+    if (apr_table_get(r->subprocess_env, "proxy-nokeepalive")) {
+        conn->close++;
+    }
+
     return rv;
 }
 
