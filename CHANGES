@@ -38,9 +38,10 @@ Changes with Apache 2.0.61
      number reporting.)  [William Rowe]
 
   *) mod_autoindex: Add in Type and Charset options to IndexOptions
-     directive. This allows the admin to explicitly set the
-     content-type and charset of the generated page.
-     [Jim Jagielski]
+     directive. This allows the admin to explicitly set the 
+     content-type and charset of the generated page and is therefore
+     a viable workaround for buggy browsers affected by CVE-2007-4465
+     (cve.mitre.org). [Jim Jagielski]
 
   *) main core: Emit errors during the initial apr_app_initialize()
      or apr_pool_create() (when apr-based error reporting is not ready).
