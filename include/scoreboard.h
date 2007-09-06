@@ -40,6 +40,9 @@ extern "C" {
 #include "apr_shm.h"
 #include "apr_optional.h"
 
+/* for lb_score */
+#include "../modules/proxy/mod_proxy.h"
+
 /* Scoreboard file, if there is one */
 #ifndef DEFAULT_SCOREBOARD
 #define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
@@ -142,11 +145,7 @@ struct process_score {
 };
 
 /* stuff which is lb specific */
-typedef struct lb_score lb_score;
-struct lb_score {
-    /* TODO: make a real stuct from this */
-    unsigned char data[1024];
-};
+typedef struct proxy_worker_stat lb_score;
 
 /* Scoreboard is now in 'local' memory, since it isn't updated once created,
  * even in forked architectures.  Child created-processes (non-fork) will
