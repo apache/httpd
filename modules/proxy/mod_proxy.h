@@ -730,16 +730,9 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
  * If this limit is reached you must stop and restart the server.
  */
 #define PROXY_DYNAMIC_BALANCER_LIMIT    16
-/**
- * Calculate number of maximum number of workers in scoreboard.
- * @return  number of workers to allocate in the scoreboard
- */
-int ap_proxy_lb_workers(void);
 
 /* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;
-
-extern int PROXY_DECLARE_DATA proxy_lb_workers;
 
 #endif /*MOD_PROXY_H*/
 /** @} */

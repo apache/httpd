@@ -37,6 +37,27 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 #define MAX(x,y) ((x) >= (y) ? (x) : (y))
 #endif
 
+/* Global balancer counter */
+extern int PROXY_DECLARE_DATA proxy_lb_workers;
+static int lb_workers_limit = 0;
+
+/**
+ * Calculate number of maximum number of workers in scoreboard.
+ * @return  number of workers to allocate in the scoreboard
+ */
+static int ap_proxy_lb_workers(void)
+{
+    /*
+     * Since we can't resize the scoreboard when reconfiguring, we
+     * have to impose a limit on the number of workers, we are
+     * able to reconfigure to.
+     */
+    if (!lb_workers_limit)
+        lb_workers_limit = proxy_lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
+    return lb_workers_limit;
+}
+
+
 /*
  * A Web proxy module. Stages:
  *

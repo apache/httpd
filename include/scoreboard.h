@@ -45,6 +45,9 @@ extern "C" {
 #define DEFAULT_SCOREBOARD "logs/apache_runtime_status"
 #endif
 
+/* for proxy_worker_stat */
+#include "../modules/proxy/mod_proxy.h"
+
 /* Scoreboard info on a process is, for now, kept very brief --- 
  * just status value and pid (the latter so that the caretaker process
  * can properly update the scoreboard when a process dies).  We may want
@@ -142,11 +145,7 @@ struct process_score {
 };
 
 /* stuff which is lb specific */
-typedef struct lb_score lb_score;
-struct lb_score {
-    /* TODO: sync this with proxy_worker_stat */
-    unsigned char data[256];
-};
+typedef proxy_worker_stat lb_score;
 
 /* Scoreboard is now in 'local' memory, since it isn't updated once created,
  * even in forked architectures.  Child created-processes (non-fork) will
