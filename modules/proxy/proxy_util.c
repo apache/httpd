@@ -31,7 +31,6 @@
 
 /* Global balancer counter */
 int PROXY_DECLARE_DATA proxy_lb_workers = 0;
-static int lb_workers_limit = 0;
 
 static int proxy_match_ipaddr(struct dirconn_entry *This, request_rec *r);
 static int proxy_match_domainname(struct dirconn_entry *This, request_rec *r);
@@ -2309,18 +2308,6 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     apr_socket_timeout_set(conn->sock, current_timeout);
 
     return OK;
-}
-
-int ap_proxy_lb_workers(void)
-{
-    /*
-     * Since we can't resize the scoreboard when reconfiguring, we
-     * have to impose a limit on the number of workers, we are
-     * able to reconfigure to.
-     */
-    if (!lb_workers_limit)
-    lb_workers_limit = proxy_lb_workers + PROXY_DYNAMIC_BALANCER_LIMIT;
-    return lb_workers_limit;
 }
 
 PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
