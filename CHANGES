@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy: check ProxyBlock for all blocked addresses
+     PR 36987 [Timo Viipuri <timo.viipuri f-secure.com>]
+
   *) mod_proxy: Don't lose bytes when a response line arrives in small chunks.
      PR 40894 [Andrew Rucker Jones <arjones simultan.dyndns.org>]
 
