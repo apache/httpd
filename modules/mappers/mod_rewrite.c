@@ -150,6 +150,7 @@ static void (*dbd_prepare)(server_rec*, const char*, const char*) = NULL;
 #define RULEFLAG_NOESCAPE           1<<11
 #define RULEFLAG_NOSUB              1<<12
 #define RULEFLAG_STATUS             1<<13
+#define RULEFLAG_ESCAPEBACKREF      1<<14
 
 /* return code of the rewrite rule
  * the result may be escaped - or not
@@ -384,6 +385,7 @@ static apr_global_mutex_t *rewrite_log_lock = NULL;
 /* Optional functions imported from mod_ssl when loaded: */
 static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *rewrite_ssl_lookup = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *rewrite_is_https = NULL;
+static char *escape_uri(apr_pool_t *p, const char *path);
 
 /*
  * +-------------------------------------------------------+
@@ -633,6 +635,46 @@ static unsigned is_absolute_uri(char *uri)
     }
 
     return 0;
+}
+
+static const char c2x_table[] = "0123456789abcdef";
+
+static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
+                                     unsigned char *where)
+{
+#if APR_CHARSET_EBCDIC
+    what = apr_xlate_conv_byte(ap_hdrs_to_ascii, (unsigned char)what);
+#endif /*APR_CHARSET_EBCDIC*/
+    *where++ = prefix;
+    *where++ = c2x_table[what >> 4];
+    *where++ = c2x_table[what & 0xf];
+    return where;
+}
+
+/*
+ * Escapes a uri in a similar way as php's urlencode does.
+ * Based on ap_os_escape_path in server/util.c
+ */
+static char *escape_uri(apr_pool_t *p, const char *path) {
+    char *copy = apr_palloc(p, 3 * strlen(path) + 3);
+    const unsigned char *s = (const unsigned char *)path;
+    unsigned char *d = (unsigned char *)copy;
+    unsigned c;
+
+    while ((c = *s)) {
+        if (apr_isalnum(c) || c == '_') {
+            *d++ = c;
+        }
+        else if (c == ' ') {
+            *d++ = '+';
+        }
+        else {
+            d = c2x(c, '%', d);
+        }
+        ++s;
+    }
+    *d = '\0';
+    return copy;
 }
 
 /*
@@ -2183,7 +2225,7 @@ static APR_INLINE char *find_char_in_curlies(char *s, int c)
  * are interpreted by a later expansion, producing results that
  * were not intended by the administrator.
  */
-static char *do_expand(char *input, rewrite_ctx *ctx)
+static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry)
 {
     result_list *result, *current;
     result_list sresult[SMALL_EXPANSION];
@@ -2295,10 +2337,10 @@ static char *do_expand(char *input, rewrite_ctx *ctx)
                     }
 
                     /* reuse of key variable as result */
-                    key = lookup_map(ctx->r, map, do_expand(key, ctx));
+                    key = lookup_map(ctx->r, map, do_expand(key, ctx, entry));
 
                     if (!key && dflt && *dflt) {
-                        key = do_expand(dflt, ctx);
+                        key = do_expand(dflt, ctx, entry);
                     }
 
                     if (key) {
@@ -2322,9 +2364,23 @@ static char *do_expand(char *input, rewrite_ctx *ctx)
             if (bri->source && n < AP_MAX_REG_MATCH
                 && bri->regmatch[n].rm_eo > bri->regmatch[n].rm_so) {
                 span = bri->regmatch[n].rm_eo - bri->regmatch[n].rm_so;
+                if (entry && (entry->flags & RULEFLAG_ESCAPEBACKREF)) {
+                    /* escape the backreference */
+                    char *tmp2, *tmp;
+                    tmp = apr_palloc(pool, span + 1);
+                    strncpy(tmp, bri->source + bri->regmatch[n].rm_so, span);
+                    tmp[span] = '\0';
+                    tmp2 = escape_uri(pool, tmp);
+                    rewritelog((ctx->r, 5, ctx->perdir, "escaping backreference '%s' to '%s'",
+                            tmp, tmp2));
 
-                current->len = span;
-                current->string = bri->source + bri->regmatch[n].rm_so;
+                    current->len = span = strlen(tmp2);
+                    current->string = tmp2;
+                } else {
+                    current->len = span;
+                    current->string = bri->source + bri->regmatch[n].rm_so;
+                }
+                
                 outlen += span;
             }
 
@@ -2384,7 +2440,7 @@ static void do_expand_env(data_item *env, rewrite_ctx *ctx)
     char *name, *val;
 
     while (env) {
-        name = do_expand(env->data, ctx);
+        name = do_expand(env->data, ctx, NULL);
         if ((val = ap_strchr(name, ':')) != NULL) {
             *val++ = '\0';
 
@@ -2473,7 +2529,7 @@ static void add_cookie(request_rec *r, char *s)
 static void do_expand_cookie(data_item *cookie, rewrite_ctx *ctx)
 {
     while (cookie) {
-        add_cookie(ctx->r, do_expand(cookie->data, ctx));
+        add_cookie(ctx->r, do_expand(cookie->data, ctx, NULL));
         cookie = cookie->next;
     }
 
@@ -3271,6 +3327,15 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
     int error = 0;
 
     switch (*key++) {
+    case 'b':
+    case 'B':
+        if (!*key || !strcasecmp(key, "ackrefescaping")) {
+            cfg->flags |= RULEFLAG_ESCAPEBACKREF;
+        } 
+        else {
+            ++error;
+        }
+        break;
     case 'c':
     case 'C':
         if (!*key || !strcasecmp(key, "hain")) {           /* chain */
@@ -3472,7 +3537,6 @@ static const char *cmd_rewriterule_setflag(apr_pool_t *p, void *_cfg,
             ++error;
         }
         break;
-
     default:
         ++error;
         break;
@@ -3608,7 +3672,7 @@ static APR_INLINE int compare_lexicography(char *a, char *b)
  */
 static int apply_rewrite_cond(rewritecond_entry *p, rewrite_ctx *ctx)
 {
-    char *input = do_expand(p->input, ctx);
+    char *input = do_expand(p->input, ctx, NULL);
     apr_finfo_t sb;
     request_rec *rsub, *r = ctx->r;
     ap_regmatch_t regmatch[AP_MAX_REG_MATCH];
@@ -3731,7 +3795,7 @@ static APR_INLINE void force_type_handler(rewriterule_entry *p,
     char *expanded;
 
     if (p->forced_mimetype) {
-        expanded = do_expand(p->forced_mimetype, ctx);
+        expanded = do_expand(p->forced_mimetype, ctx, p);
 
         if (*expanded) {
             ap_str_tolower(expanded);
@@ -3745,7 +3809,7 @@ static APR_INLINE void force_type_handler(rewriterule_entry *p,
     }
 
     if (p->forced_handler) {
-        expanded = do_expand(p->forced_handler, ctx);
+        expanded = do_expand(p->forced_handler, ctx, p);
 
         if (*expanded) {
             ap_str_tolower(expanded);
@@ -3877,7 +3941,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
 
     /* expand the result */
     if (!(p->flags & RULEFLAG_NOSUB)) {
-        newuri = do_expand(p->output, ctx);
+        newuri = do_expand(p->output, ctx, p);
         rewritelog((r, 2, ctx->perdir, "rewrite '%s' -> '%s'", ctx->uri,
                     newuri));
     }
@@ -3924,6 +3988,7 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
      * ourself).
      */
     if (p->flags & RULEFLAG_PROXY) {
+	/* PR#39746: Escaping things here gets repeated in mod_proxy */
         fully_qualify_uri(r);
 
         rewritelog((r, 2, ctx->perdir, "forcing proxy-throughput with %s",
