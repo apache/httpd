@@ -627,7 +627,11 @@ person in</a></h2>
     contain some more information about how this all works.
     The directive <code class="directive"><a href="../mod/mod_authn_core.html#&lt;authnprovideralias&gt;">&lt;AuthnProviderAlias&gt;</a></code> 
     can also help in simplifying certain authentication configurations.</p>
-
+    
+    <p>The various ciphers supported by Apache for authentication data are
+    explained in <a href="../misc/password_encryptions.html">Password
+    Encryptions</a>.</p>
+    
     <p>And you may want to look at the <a href="access.html">Access
     Control</a> howto, which discusses a number of related topics.</p>
 
