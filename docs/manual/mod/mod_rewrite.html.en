@@ -1227,6 +1227,21 @@ cannot use <code>$N</code> in the substitution string!
       brackets, of any of the following flags: </p>
 
       <dl>
+        <dt>'<code>B</code>' (escape backreferences)</dt>
+        <dd><p>Apache has to unescape URLs before mapping them,
+        so backreferences will be unescaped at the time they are applied.
+        Using the B flag, non-alphanumeric characters in backreferences
+        will be escaped.  For example, consider the rule:</p>
+        <pre><code> RewriteRule RewriteRule ^(.*)$   index.php?show=$1 </code></pre>
+        <p>This will map <code>/C++</code> to <code>index.php?show=C++</code>.
+        But it will also map <code>/C%2b%2b</code> to
+        <code>index.php?show=C++</code>, because the <code>%2b</code>
+        has been unescaped.  With the B flag, it will instead map to
+        <code>index.php?show=&gt;/C%2b%2b</code>.</p>
+        <p>This escaping is particularly necessary in a proxy situation,
+        when the backend may break if presented with an unescaped URL.</p>
+        </dd>
+
         <dt>'<code>chain|C</code>'
         (chained with next rule)</dt><dd>
          This flag chains the current rule with the next rule
@@ -1240,8 +1255,7 @@ cannot use <code>$N</code> in the substitution string!
         when you let an external redirect happen (where the
         ``<code>.www</code>'' part should not occur!).</dd>
 
-        <dt>
-		'<code>cookie|CO=</code><em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>]]'
+        <dt>'<code>cookie|CO=</code><em>NAME</em>:<em>VAL</em>:<em>domain</em>[:<em>lifetime</em>[:<em>path</em>]]'
         (set cookie)</dt><dd>
         This sets a cookie in the client's browser.  The cookie's name
         is specified by <em>NAME</em> and the value is
