@@ -994,12 +994,14 @@ PROXY_DECLARE(apr_status_t) ap_proxy_string_read(conn_rec *c, apr_bucket_brigade
                     len = (bufflen-1)-(pos-buff);
                 }
                 if (len > 0) {
-                    pos = apr_cpystrn(pos, response, len);
+                    memcpy(pos, response, len);
+                    pos += len;
                 }
             }
             APR_BUCKET_REMOVE(e);
             apr_bucket_destroy(e);
         }
+        *pos = '\0';
     }
 
     return APR_SUCCESS;
