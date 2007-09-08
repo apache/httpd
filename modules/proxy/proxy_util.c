@@ -906,6 +906,7 @@ PROXY_DECLARE(int) ap_proxy_checkproxyblock(request_rec *r, proxy_server_conf *c
             return HTTP_FORBIDDEN;
         }
         while (conf_addr) {
+            uri_addr = src_uri_addr;
             while (uri_addr) {
                 char *conf_ip;
                 char *uri_ip;
