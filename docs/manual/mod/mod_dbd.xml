@@ -38,6 +38,8 @@
     for both threaded and non-threaded MPMs.</p>
 </summary>
 
+<seealso><a href="../misc/password_encryptions.html">Password Formats</a></seealso>
+
 <section id="pooling"><title>Connection Pooling</title>
     <p>This module manages database connections, in a manner
     optimised for the platform.  On non-threaded platforms,
