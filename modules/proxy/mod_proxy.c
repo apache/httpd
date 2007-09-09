@@ -38,7 +38,6 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 #endif
 
 /* Global balancer counter */
-extern int PROXY_DECLARE_DATA proxy_lb_workers;
 static int lb_workers_limit = 0;
 
 /**
