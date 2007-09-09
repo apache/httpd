@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_ftp: Don't segfault on bad line in FTP listing
+     PR 40733 [Ulf Harnhammar <metaur telia.com>]
+
   *) mod_proxy_ajp: Differentiate within AJP between GET and HEAD
      requests. PR 43060 [Jim Jagielski]
 
