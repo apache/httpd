@@ -748,19 +748,22 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
              || !strcasecmp(headers_in[counter].key, "Trailer")
              || !strcasecmp(headers_in[counter].key, "Upgrade")
 
-            /* XXX: @@@ FIXME: "Proxy-Authorization" should *only* be
-             * suppressed if THIS server requested the authentication,
-             * not when a frontend proxy requested it!
-             *
-             * The solution to this problem is probably to strip out
-             * the Proxy-Authorisation header in the authorisation
-             * code itself, not here. This saves us having to signal
-             * somehow whether this request was authenticated or not.
-             */
-             || !strcasecmp(headers_in[counter].key,"Proxy-Authorization")
-             || !strcasecmp(headers_in[counter].key,"Proxy-Authenticate")) {
+             ) {
             continue;
         }
+	/* Do we want to strip Proxy-Authorization ?
+	 * If we haven't used it, then NO
+	 * If we have used it then MAYBE: RFC2616 says we MAY propagate it.
+	 * So let's make it configurable by env.
+	 */
+        if (!strcasecmp(headers_in[counter].key,"Proxy-Authorization")) {
+            if (r->user != NULL) { /* we've authenticated */
+                if (!apr_table_get(r->subprocess_env, "Proxy-Chain-Auth")) {
+                    continue;
+                }
+	    }
+	}
+
 
         /* Skip Transfer-Encoding and Content-Length for now.
          */

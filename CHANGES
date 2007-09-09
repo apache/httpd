@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_http: Propagate Proxy-Authorization header correctly.
+     PR 25947 [Nick Kew]
+
   *) mod_proxy: escape error-notes correctly
      PR 40952 [Thijs Kinkhorst <thijs debian.org>]
 
