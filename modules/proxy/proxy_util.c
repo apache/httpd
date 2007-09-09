@@ -494,7 +494,7 @@ PROXY_DECLARE(int) ap_proxyerror(request_rec *r, int statuscode, const char *mes
     apr_table_setn(r->notes, "error-notes",
     apr_pstrcat(r->pool,
         "The proxy server could not handle the request "
-        "<em><a href=\"", ap_escape_uri(r->pool, r->uri),
+        "<em><a href=\"", ap_escape_html(r->pool, r->uri),
         "\">", ap_escape_html(r->pool, r->method),
         "&nbsp;",
         ap_escape_html(r->pool, r->uri), "</a></em>.<p>\n"
