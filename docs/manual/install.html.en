@@ -169,9 +169,21 @@
       <code>apr</code> or <code>apr-util</code>, versions 1.0 or 1.1,
       are installed on your system, you must either upgrade your
       <code>apr</code>/<code>apr-util</code> installations to
-      1.2, or have httpd use seperate builds. To use the bundled 
-      <code>apr</code>/<code>apr-util</code> sources for this
-      purpose you must install them manually:
+      1.2, force the use of the bundled libraries or have httpd use 
+      separate builds. To use the bundled 
+      <code>apr</code>/<code>apr-util</code> sources specify the 
+      <code>--with-included-apr</code> option to configure:
+      
+      <div class="note"><h3>Note</h3>
+        The --with-included-apr option was added in version 2.2.3
+      </div>
+      <div class="example"><p><code>
+        # Force the use of the bundled apr/apr-util<br />
+        ./configure --with-included-apr<br />
+      </code></p></div>
+      
+      To build Apache HTTPd against a manually installed 
+      <code>apr</code>/<code>apr-util</code>:
       <div class="example"><p><code>
         # Build and install apr 1.2<br />
         cd srclib/apr<br />
