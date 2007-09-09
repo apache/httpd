@@ -61,7 +61,7 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int,pre_mpm,
                           (p, sb_type),OK,DECLINED)
 
 static APR_OPTIONAL_FN_TYPE(ap_proxy_lb_workers)
-                                *proxy_lb_workers;
+                                *pfn_proxy_lb_workers;
 
 struct ap_sb_handle_t {
     int child_num;
@@ -94,10 +94,10 @@ AP_DECLARE(int) ap_calc_scoreboard_size(void)
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_DAEMONS, &server_limit);
 
-    if (!proxy_lb_workers)
-        proxy_lb_workers = APR_RETRIEVE_OPTIONAL_FN(ap_proxy_lb_workers);
-    if (proxy_lb_workers)
-        lb_limit = proxy_lb_workers();
+    if (!pfn_proxy_lb_workers)
+        pfn_proxy_lb_workers = APR_RETRIEVE_OPTIONAL_FN(ap_proxy_lb_workers);
+    if (pfn_proxy_lb_workers)
+        lb_limit = pfn_proxy_lb_workers();
     else
         lb_limit = 0;
 

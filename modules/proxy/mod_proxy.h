@@ -734,5 +734,7 @@ PROXY_DECLARE(void) ap_proxy_backend_broke(request_rec *r,
 /* For proxy_util */
 extern module PROXY_DECLARE_DATA proxy_module;
 
+extern int PROXY_DECLARE_DATA proxy_lb_workers;
+
 #endif /*MOD_PROXY_H*/
 /** @} */
