@@ -3920,7 +3920,6 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
                        && c->flags & CONDFLAG_ORNEXT) {
                     c = &conds[++i];
                 }
-                continue;
             }
         }
         else if (!rc) {
