@@ -144,7 +144,6 @@ struct process_score {
 /* stuff which is lb specific */
 typedef struct lb_score lb_score;
 struct lb_score {
-    /* TODO: make a real stuct from this */
     unsigned char data[1024];
 };
 
