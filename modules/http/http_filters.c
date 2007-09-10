@@ -186,7 +186,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
          * Only valid on chunked and C-L bodies where the C-L is > 0. */
         if ((ctx->state == BODY_CHUNK ||
             (ctx->state == BODY_LENGTH && ctx->remaining > 0)) &&
-            f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1)) {
+            f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1) &&
+            !(f->r->eos_sent || f->r->bytes_sent)) {
             char *tmp;
             apr_bucket_brigade *bb;
 
