@@ -82,6 +82,18 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
+    * Event MPM: Add clogging_input_filters to the conn_rec, enabling mod_ssl
+      to revert to the Worker MPM IO behavoirs, rather than just hanging, when 
+      using the Event MPM. (minor MMN bump)
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=546328
+        http://svn.apache.org/viewvc?view=rev&revision=546650
+        http://svn.apache.org/viewvc?view=rev&revision=546715
+      2.2.x version of patch:
+        http://people.apache.org/~pquerna/eventmpm-ssl-input-2.2.x.patch
+    +1: pquerna
+
+
     * Event MPM: Rework locking of the timeout_mutex, to never hold it while
       calling blocking operations on the worker queue.
       Trunk version of patch:
