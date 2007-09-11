@@ -1070,13 +1070,19 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         cs = APR_RING_FIRST(&keepalive_timeout_head);
         timeout_time = time_now + TIMEOUT_FUDGE_FACTOR;
         while (!APR_RING_EMPTY(&keepalive_timeout_head, conn_state_t, timeout_list)
-               && cs->expiration_time < timeout_time
-               && get_worker(&have_idle_worker)) {
+               && cs->expiration_time < timeout_time) {
 
             cs->state = CONN_STATE_LINGER;
 
             APR_RING_REMOVE(cs, timeout_list);
             apr_thread_mutex_unlock(timeout_mutex);
+
+            if (!get_worker(&have_idle_worker)) {
+                apr_thread_mutex_lock(timeout_mutex);
+                APR_RING_INSERT_HEAD(&keepalive_timeout_head, cs,
+                                     conn_state_t, timeout_list);
+                break;
+            }
 
             rc = push2worker(&cs->pfd, event_pollset);
 
@@ -1096,12 +1102,18 @@ static void * APR_THREAD_FUNC listener_thread(apr_thread_t * thd, void *dummy)
         /* Step 2: write completion timeouts */
         cs = APR_RING_FIRST(&timeout_head);
         while (!APR_RING_EMPTY(&timeout_head, conn_state_t, timeout_list)
-               && cs->expiration_time < timeout_time
-               && get_worker(&have_idle_worker)) {
+               && cs->expiration_time < timeout_time) {
 
             cs->state = CONN_STATE_LINGER;
             APR_RING_REMOVE(cs, timeout_list);
             apr_thread_mutex_unlock(timeout_mutex);
+
+            if (!get_worker(&have_idle_worker)) {
+                apr_thread_mutex_lock(timeout_mutex);
+                APR_RING_INSERT_HEAD(&timeout_head, cs,
+                                     conn_state_t, timeout_list);
+                break;
+            }
 
             rc = push2worker(&cs->pfd, event_pollset);
             if (rc != APR_SUCCESS) {
