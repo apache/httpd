@@ -37,6 +37,6 @@
     directive. Alternatively <code>require valid-user</code> can be used to
     grant access to all successfully authenticated users.</p>
 </summary>
-<seealso><directive module="core">Require</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
 
 </modulesynopsis>

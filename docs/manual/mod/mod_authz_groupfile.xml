@@ -36,7 +36,7 @@
     provided by <module>mod_authz_dbm</module>.</p>
 </summary>
 
-<seealso><directive module="core">Require</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
 
 <directivesynopsis>
 <name>AuthGroupFile</name>

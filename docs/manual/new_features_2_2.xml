@@ -133,7 +133,7 @@
           <code>mod_auth_ldap</code> module to the 2.2 <code>Authn/Authz</code> 
           framework.  New features include using LDAP attribute values and 
           complicated search filters in the 
-          <directive module="core">Require</directive> directive.</dd>
+          <directive module="mod_authz_core">Require</directive> directive.</dd>
 
       <dt><module>mod_info</module></dt>
       <dd>Added a new <code>?config</code> argument which will show

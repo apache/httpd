@@ -40,7 +40,7 @@ module from each group.</p>
 
 <ul>
   <li>Authentication type (see the 
-      <directive module="core">AuthType</directive> directive)
+      <directive module="mod_authn_core">AuthType</directive> directive)
     <ul>
       <li><module>mod_auth_basic</module></li>
       <li><module>mod_auth_digest</module></li>
@@ -60,7 +60,7 @@ module from each group.</p>
     </ul>
   </li>
   <li>Authorization (see the 
-      <directive module="core">Require</directive> directive)
+      <directive module="mod_authz_core">Require</directive> directive)
     <ul>
       <li><module>mod_authnz_ldap</module></li>
       <li><module>mod_authz_dbm</module></li>
@@ -209,7 +209,7 @@ module from each group.</p>
     </example>
 
     <p>Let's examine each of those directives individually. The <directive
-    module="core">AuthType</directive> directive selects
+    module="mod_authn_core">AuthType</directive> directive selects
     that method that is used to authenticate the user. The most
     common method is <code>Basic</code>, and this is the method
     implemented by <module>mod_auth_basic</module>. It is important to be aware,
@@ -221,7 +221,7 @@ module from each group.</p>
     >mod_auth_digest</module> and is much more secure. Most recent
     browsers support Digest authentication.</p>
 
-    <p>The <directive module="core">AuthName</directive> directive sets
+    <p>The <directive module="mod_authn_core">AuthName</directive> directive sets
     the <dfn>Realm</dfn> to be used in the authentication. The realm serves
     two major functions. First, the client often presents this information to
     the user as part of the password dialog box. Second, it is used by the
@@ -260,11 +260,11 @@ module from each group.</p>
     href="http://modules.apache.org/">Apache Modules
     Database</a>.</p>
 
-    <p>Finally, the <directive module="core">Require</directive>
+    <p>Finally, the <directive module="mod_authz_core">Require</directive>
     directive provides the authorization part of the process by
     setting the user that is allowed to access this region of the
     server. In the next section, we discuss various ways to use the
-    <directive module="core">Require</directive> directive.</p>
+    <directive module="mod_authz_core">Require</directive> directive.</p>
 </section>
 
 <section id="lettingmorethanonepersonin"><title>Letting more than one

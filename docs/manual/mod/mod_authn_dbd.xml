@@ -46,8 +46,8 @@
     with the <code>dbd</code> value.</p>
 </summary>
 
-<seealso><directive module="core">AuthName</directive></seealso>
-<seealso><directive module="core">AuthType</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthName</directive></seealso>
+<seealso><directive module="mod_authn_core">AuthType</directive></seealso>
 <seealso>
   <directive module="mod_auth_basic">AuthBasicProvider</directive>
 </seealso>
