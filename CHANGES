@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_proxy_ftp: Don't segfault on bad line in FTP listing
+     PR 40733 [Ulf Harnhammar <metaur telia.com>]
+
   *) mod_proxy: escape error-notes correctly
      PR 40952 [Thijs Kinkhorst <thijs debian.org>]
 
