@@ -49,7 +49,7 @@ static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
 static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c);
 static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
-static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
+static char *ssl_var_lookup_ssl_version(apr_pool_t *pp, apr_pool_t *p, char *var);
 static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
 
 static int ssl_is_https(conn_rec *c)
@@ -190,7 +190,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      */
     if (result == NULL) {
         if (strlen(var) > 12 && strcEQn(var, "SSL_VERSION_", 12))
-            result = ssl_var_lookup_ssl_version(p, var+12);
+            result = ssl_var_lookup_ssl_version(s->process->pool, p, var+12);
         else if (strcEQ(var, "SERVER_SOFTWARE"))
             result = ap_get_server_banner();
         else if (strcEQ(var, "API_VERSION")) {
@@ -262,7 +262,8 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
 
     ssl = sslconn->ssl;
     if (strlen(var) > 8 && strcEQn(var, "VERSION_", 8)) {
-        result = ssl_var_lookup_ssl_version(p, var+8);
+        result = ssl_var_lookup_ssl_version(c->base_server->process->pool,
+                                            p, var+8);
     }
     else if (ssl != NULL && strcEQ(var, "PROTOCOL")) {
         result = (char *)SSL_get_version(ssl);
@@ -633,7 +634,7 @@ static void ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algke
     return;
 }
 
-static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
+static char *ssl_var_lookup_ssl_version(apr_pool_t *pp, apr_pool_t *p, char *var)
 {
     static const char interface[] = "mod_ssl/" MOD_SSL_VERSION;
     static char library_interface[] = SSL_LIBRARY_TEXT;
@@ -642,7 +643,7 @@ static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
   
     if (!library) {
         char *cp, *cp2;
-        library = apr_pstrdup(p, SSL_LIBRARY_DYNTEXT);
+        library = apr_pstrdup(pp, SSL_LIBRARY_DYNTEXT);
         if ((cp = strchr(library, ' ')) != NULL) {
             *cp = '/';
             if ((cp2 = strchr(cp, ' ')) != NULL)
