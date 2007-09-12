@@ -70,7 +70,7 @@ struct ap_sb_handle_t {
     int thread_num;
 };
 
-static int server_limit, thread_limit, lb_limit, worker_size;
+static int server_limit, thread_limit, lb_limit, lb_size;
 static apr_size_t scoreboard_size;
 
 /*
@@ -106,15 +106,15 @@ AP_DECLARE(int) ap_calc_scoreboard_size(void)
     if (!pfn_proxy_lb_worker_size)
         pfn_proxy_lb_worker_size = APR_RETRIEVE_OPTIONAL_FN(ap_proxy_lb_worker_size);
     if (pfn_proxy_lb_worker_size)
-        worker_size = pfn_proxy_lb_worker_size();
+        lb_size = pfn_proxy_lb_worker_size();
     else
-        worker_size = sizeof(lb_score);
+        lb_size = sizeof(lb_score);
 
     scoreboard_size = sizeof(global_score);
     scoreboard_size += sizeof(process_score) * server_limit;
     scoreboard_size += sizeof(worker_score) * server_limit * thread_limit;
-    if (lb_limit && worker_size)
-        scoreboard_size += worker_size * lb_limit;
+    if (lb_limit && lb_size)
+        scoreboard_size += lb_size * lb_limit;
 
     return scoreboard_size;
 }
@@ -138,9 +138,9 @@ void ap_init_scoreboard(void *shared_score)
         ap_scoreboard_image->servers[i] = (worker_score *)more_storage;
         more_storage += thread_limit * sizeof(worker_score);
     }
-    if (lb_limit && worker_size) {
+    if (lb_limit && lb_size) {
         ap_scoreboard_image->balancers = (void *)more_storage;
-        more_storage += lb_limit * worker_size;
+        more_storage += lb_limit * lb_size;
     }
     ap_assert(more_storage == (char*)shared_score + scoreboard_size);
     ap_scoreboard_image->global->server_limit = server_limit;
@@ -290,9 +290,9 @@ int ap_create_scoreboard(apr_pool_t *p, ap_scoreboard_e sb_type)
                    sizeof(worker_score) * thread_limit);
         }
         /* Clean up the lb workers data */
-        if (lb_limit && worker_size) {
+        if (lb_limit && lb_size) {
             memset(ap_scoreboard_image->balancers, 0,
-                   worker_size * lb_limit);
+                   lb_size * lb_limit);
         }
         return OK;
     }
@@ -499,10 +499,9 @@ AP_DECLARE(global_score *) ap_get_scoreboard_global()
 
 AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int lb_num)
 {
-    char *ptr;
-    if (((lb_num < 0) || (lb_limit < lb_num)) || (worker_size==0)) {
+    if ( (lb_num < 0) || (lb_limit < lb_num) || (lb_size==0) ) {
         return(NULL); /* Out of range */
     }
-    ptr = (char *) ap_scoreboard_image->balancers + lb_num*worker_size;
-    return (lb_score *) ptr;
+    return (lb_score *) ( ((char *) ap_scoreboard_image->balancers) +
+                          (lb_num*lb_size) );
 }
