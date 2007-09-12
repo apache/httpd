@@ -1,6 +1,8 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_proxy: Don't lose bytes when a response line arrives in small chunks.
+     PR 40894 [Andrew Rucker Jones <arjones simultan.dyndns.org>]
 
 Changes with Apache 2.2.6
 

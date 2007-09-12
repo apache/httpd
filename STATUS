@@ -99,11 +99,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=573911
       +1: niq, rpluem, jim
 
-    * mod_proxy: Don't lose bytes when a response line arrives in small chunks.
-      PR 40894
-      http://svn.apache.org/viewvc?view=rev&revision=573903
-      +1: niq, rpluem, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean 
