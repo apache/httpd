@@ -139,7 +139,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=574462
       2.2.x version of patch:
         http://people.apache.org/~pquerna/event-mpm-deadlock.patch
-    +1: 
+    +1: pquerna
 
     * mod_proxy_balancer: Do not reset lbstatus, lbfactor and lbset if the
       shared proxy_worker_stat structure for a worker is already initialized
