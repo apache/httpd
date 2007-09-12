@@ -37,6 +37,17 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 #define MAX(x,y) ((x) >= (y) ? (x) : (y))
 #endif
 
+/* Global balancer counter */
+static int lb_workers_limit = 0;
+
+/* return the sizeof of one lb_worker in scoreboard. */
+static int ap_proxy_lb_worker_size(void)
+{
+    return sizeof(proxy_worker_stat);
+}
+
+
+
 /*
  * A Web proxy module. Stages:
  *
@@ -2216,6 +2227,7 @@ static void register_hooks(apr_pool_t *p)
     static const char *const aszPred[] = { "mpm_winnt.c", NULL};
 
     APR_REGISTER_OPTIONAL_FN(ap_proxy_lb_workers);
+    APR_REGISTER_OPTIONAL_FN(ap_proxy_lb_worker_size);
     /* handler */
     ap_hook_handler(proxy_handler, NULL, NULL, APR_HOOK_FIRST);
     /* filename-to-URI translation */
