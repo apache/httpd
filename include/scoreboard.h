@@ -205,6 +205,12 @@ AP_DECLARE_HOOK(int, pre_mpm, (apr_pool_t *p, ap_scoreboard_e sb_type))
   */  
 APR_DECLARE_OPTIONAL_FN(int, ap_proxy_lb_workers,
                         (void));
+/**
+  * proxy load balancer
+  * @return the size of lb_workers.
+  */  
+APR_DECLARE_OPTIONAL_FN(int, ap_proxy_lb_worker_size,
+                        (void));
 
 /* for time_process_request() in http_main.c */
 #define START_PREQUEST 1
