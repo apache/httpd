@@ -69,7 +69,7 @@
       "MultiViews"</a> resources.</p>
     </note>
 </summary>
-<seealso><directive module="core">Require</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
 
 <section id="examples"><title>Configuration Examples</title>
 

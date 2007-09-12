@@ -37,7 +37,7 @@
        <module>mod_authn_dbd</module>.</p>
 </summary>
 
-<seealso><directive module="core">Require</directive></seealso>
+<seealso><directive module="mod_authz_core">Require</directive></seealso>
 <seealso><directive module="mod_dbd">DBDriver</directive></seealso>
 <seealso><directive module="mod_dbd">DBDParams</directive></seealso>
 
@@ -49,7 +49,7 @@ Specifically, we can maintain a logged in/logged out status in
 the database, and control the status via designated URLs (subject
 of course to users supplying the necessary credentials).</p>
 <p>This works by defining two special
-<directive module="core">Require</directive> types:
+<directive module="mod_authz_core">Require</directive> types:
 <code>Require dbd-login</code> and <code>Require dbd-logout</code>.
 For usage details, see the configuration example below.</p>
 </section>
@@ -124,7 +124,7 @@ DBDExptime 300
 <usage>
     <p>The <directive>AuthzDBDQuery</directive> specifies an SQL
     query to run.  The purpose of the query depends on the
-    <directive module="core">Require</directive> directive in
+    <directive module="mod_authz_core">Require</directive> directive in
     effect.</p>
     <ul>
     <li>With <code>Require dbd-group</code>, it specifies a query
