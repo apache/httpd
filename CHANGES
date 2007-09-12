@@ -5,26 +5,11 @@ Changes with Apache 2.3.0
   *) mod_rewrite: Add the novary flag to RewriteCond.
      [Ruediger Pluem]
 
-  *) Don't send spurious "100 Continue" response lines.
-     PR 38014 [Basant Kumar Kukreja <basant.kukreja sun.com>]
-
-  *) mod_proxy_ftp: Don't segfault on bad line in FTP listing
-     PR 40733 [Ulf Harnhammar <metaur telia.com>]
-
   *) mod_proxy_ajp: Differentiate within AJP between GET and HEAD
      requests. PR 43060 [Jim Jagielski]
 
   *) mod_proxy_http: Propagate Proxy-Authorization header correctly.
      PR 25947 [Nick Kew]
-
-  *) mod_proxy: escape error-notes correctly
-     PR 40952 [Thijs Kinkhorst <thijs debian.org>]
-
-  *) mod_proxy: check ProxyBlock for all blocked addresses
-     PR 36987 [Timo Viipuri <timo.viipuri f-secure.com>]
-
-  *) mod_proxy: Don't lose bytes when a response line arrives in small chunks.
-     PR 40894 [Andrew Rucker Jones <arjones simultan.dyndns.org>]
 
   *) mod_rewrite: Add option to suppress URL unescaping
      PR 34602 [Guenther Gsenger <guenther.gsenger gmail.com>]
