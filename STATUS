@@ -79,6 +79,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * Event MPM: Rework locking of the timeout_mutex, to never hold it while
+      calling blocking operations on the worker queue.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=567852
+        http://svn.apache.org/viewvc?view=rev&revision=574462
+      2.2.x version of patch:
+        http://people.apache.org/~pquerna/event-mpm-deadlock.patch
+    +1: pquerna, jim, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -130,15 +138,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=546715
       2.2.x version of patch:
         http://people.apache.org/~pquerna/eventmpm-ssl-input-2.2.x.patch
-    +1: pquerna, jim
-
-    * Event MPM: Rework locking of the timeout_mutex, to never hold it while
-      calling blocking operations on the worker queue.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=567852
-        http://svn.apache.org/viewvc?view=rev&revision=574462
-      2.2.x version of patch:
-        http://people.apache.org/~pquerna/event-mpm-deadlock.patch
     +1: pquerna, jim
 
     * mod_proxy_balancer: Do not reset lbstatus, lbfactor and lbset if the
