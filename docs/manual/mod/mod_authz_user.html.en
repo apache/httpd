@@ -44,7 +44,7 @@
             directives.</p>
 <h3>See also</h3>
 <ul class="seealso">
-<li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 </ul></div>
 
 </div>

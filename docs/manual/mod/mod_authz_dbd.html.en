@@ -49,7 +49,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#example">Configuration Example</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
-<li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code></li>
 <li><code class="directive"><a href="../mod/mod_dbd.html#dbdriver">DBDriver</a></code></li>
 <li><code class="directive"><a href="../mod/mod_dbd.html#dbdparams">DBDParams</a></code></li>
 </ul></div>
@@ -63,7 +63,7 @@ Specifically, we can maintain a logged in/logged out status in
 the database, and control the status via designated URLs (subject
 of course to users supplying the necessary credentials).</p>
 <p>This works by defining two special
-<code class="directive"><a href="../mod/core.html#require">Require</a></code> types:
+<code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> types:
 <code>Require dbd-login</code> and <code>Require dbd-logout</code>.
 For usage details, see the configuration example below.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -158,7 +158,7 @@ header is present</td></tr>
 </table>
     <p>The <code class="directive">AuthzDBDQuery</code> specifies an SQL
     query to run.  The purpose of the query depends on the
-    <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive in
+    <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive in
     effect.</p>
     <ul>
     <li>With <code>Require dbd-group</code>, it specifies a query

@@ -56,8 +56,8 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#exposed">Exposing Login Information</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
-<li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li>
-<li><code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code></li>
+<li><code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code></li>
 <li>
   <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code>
 </li>

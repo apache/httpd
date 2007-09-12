@@ -50,7 +50,7 @@ module from each group.</p>
 
 <ul>
   <li>Authentication type (see the 
-      <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> directive)
+      <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> directive)
     <ul>
       <li><code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code></li>
       <li><code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code></li>
@@ -70,7 +70,7 @@ module from each group.</p>
     </ul>
   </li>
   <li>Authorization (see the 
-      <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive)
+      <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive)
     <ul>
       <li><code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></li>
       <li><code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code></li>
@@ -217,7 +217,7 @@ module from each group.</p>
       Require user rbowen
     </code></p></div>
 
-    <p>Let's examine each of those directives individually. The <code class="directive"><a href="../mod/core.html#authtype">AuthType</a></code> directive selects
+    <p>Let's examine each of those directives individually. The <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code> directive selects
     that method that is used to authenticate the user. The most
     common method is <code>Basic</code>, and this is the method
     implemented by <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>. It is important to be aware,
@@ -228,7 +228,7 @@ module from each group.</p>
     <code>AuthType Digest</code>. This method is implemented by <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> and is much more secure. Most recent
     browsers support Digest authentication.</p>
 
-    <p>The <code class="directive"><a href="../mod/core.html#authname">AuthName</a></code> directive sets
+    <p>The <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code> directive sets
     the <dfn>Realm</dfn> to be used in the authentication. The realm serves
     two major functions. First, the client often presents this information to
     the user as part of the password dialog box. Second, it is used by the
@@ -263,11 +263,11 @@ module from each group.</p>
     party modules in the <a href="http://modules.apache.org/">Apache Modules
     Database</a>.</p>
 
-    <p>Finally, the <code class="directive"><a href="../mod/core.html#require">Require</a></code>
+    <p>Finally, the <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directive provides the authorization part of the process by
     setting the user that is allowed to access this region of the
     server. In the next section, we discuss various ways to use the
-    <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive.</p>
+    <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="lettingmorethanonepersonin" id="lettingmorethanonepersonin">Letting more than one
