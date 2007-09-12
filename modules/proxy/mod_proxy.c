@@ -37,9 +37,6 @@ APR_DECLARE_OPTIONAL_FN(char *, ssl_var_lookup,
 #define MAX(x,y) ((x) >= (y) ? (x) : (y))
 #endif
 
-/* Global balancer counter */
-static int lb_workers_limit = 0;
-
 /* return the sizeof of one lb_worker in scoreboard. */
 static int ap_proxy_lb_worker_size(void)
 {
