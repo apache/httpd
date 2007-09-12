@@ -151,7 +151,7 @@ for HTTP Basic authentication.</td></tr>
     authentication provider can be enabled through the 
     <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> directive 
     using the <code>ldap</code> value. The authz_ldap handler extends the 
-    <code class="directive"><a href="../mod/core.html#require">Require</a></code> directive's authorization types
+    <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> directive's authorization types
     by adding <code>ldap-user</code>, <code>ldap-dn</code> and <code>ldap-group</code> 
     values.</p>
 
@@ -219,7 +219,7 @@ for HTTP Basic authentication.</td></tr>
     <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> to do a compare operation on the
     LDAP server. This is why this phase is often referred to as the
     compare phase. <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> accepts the
-    following <code class="directive"><a href="../mod/core.html#require">Require</a></code>
+    following <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directives to determine if the credentials are acceptable:</p>
 
     <ul>
@@ -248,14 +248,14 @@ for HTTP Basic authentication.</td></tr>
       <li>otherwise, deny or decline access</li>
     </ul>
 
-    <p>Other <code class="directive"><a href="../mod/core.html#require">Require</a></code> values may also
+    <p>Other <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> values may also
     be used which may require loading additional authorization modules.
-    Note that if you use a <code class="directive"><a href="../mod/core.html#require">Require</a></code>
+    Note that if you use a <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     value from another authorization module, you will need to ensure that
     <code class="directive"><a href="#authzldapauthoritative">AuthzLDAPAuthoritative</a></code>
     is set to <code>off</code> to allow the authorization phase to fall
     back to the module providing the alternate
-    <code class="directive"><a href="../mod/core.html#require">Require</a></code> value.</p>
+    <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> value.</p>
 
     <ul>
         <li>Grant access if there is a <a href="#requser"><code>Require
@@ -312,7 +312,7 @@ for HTTP Basic authentication.</td></tr>
 <div class="section">
 <h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a></h2>
 
-    <p>Apache's <code class="directive"><a href="../mod/core.html#require">Require</a></code>
+    <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>
     directives are used during the authorization phase to ensure that
     a user is allowed to access a resource.  mod_authnz_ldap extends the 
     authorization types with <code>ldap-user</code>, <code>ldap-dn</code>, 

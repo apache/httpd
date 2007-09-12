@@ -436,7 +436,15 @@ Result:
 	value of a header sent in the HTTP request.
         Example: <code>%{HTTP:Proxy-Connection}</code> is
         the value of the HTTP header
-        ``<code>Proxy-Connection:</code>''.</li>
+        ``<code>Proxy-Connection:</code>''.
+        <p>If a HTTP header is used in a condition this header is added to
+        the Vary header of the response in case the condition evaluates to
+        to true for the request. It is <strong>not</strong> added if the
+        condition evaluates to false for the request. Adding the HTTP header
+        to the Vary header of the response is needed for proper caching.</p>
+        <p>It has to be kept in mind that conditions follow a short circuit
+        logic in the case of the '<strong><code>ornext|OR</code></strong>' flag
+        so that certain conditions might not be evaluated at all.</p></li>
 
         <li>
         <code>%{LA-U:variable}</code> can be used for look-aheads which perform
@@ -593,6 +601,16 @@ RewriteRule ...some special stuff for any of these hosts...
 
           Without this flag you would have to write the condition/rule
           pair three times.
+        </li>
+
+        <li>'<strong><code>novary|NV</code></strong>'
+        (<strong>n</strong>o <strong>v</strong>ary)<br />
+        If a HTTP header is used in the condition, this flag prevents
+        this header from being added to the Vary header of the response. <br />
+        Using this flag might break proper caching of the response if
+        the representation of this response varies on the value of this header.
+        So this flag should be only used if the meaning of the Vary header
+        is well understood.
         </li>
       </ul>
       </li>

@@ -449,8 +449,8 @@ be passed through</td></tr>
       Allow use of the authorization directives (<code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>,
       <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>,
       <code class="directive"><a href="../mod/mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></code>,
-      <code class="directive"><a href="#authname">AuthName</a></code>,
-      <code class="directive"><a href="#authtype">AuthType</a></code>, <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>, <code class="directive"><a href="#require">Require</a></code>, <em>etc.</em>).</dd>
+      <code class="directive"><a href="../mod/mod_authn_core.html#authname">AuthName</a></code>,
+      <code class="directive"><a href="../mod/mod_authn_core.html#authtype">AuthType</a></code>, <code class="directive"><a href="../mod/mod_authn_file.html#authuserfile">AuthUserFile</a></code>, <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code>, <em>etc.</em>).</dd>
 
       <dt>FileInfo</dt>
 
