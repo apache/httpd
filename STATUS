@@ -89,11 +89,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=574100
       +1: niq, rpluem, jim
 
-    * mod_proxy: escape error-notes correctly
-      PR 40952
-      http://svn.apache.org/viewvc?view=rev&revision=573939
-      +1: niq, rpluem, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
     * mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean 
