@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) Don't send spurious "100 Continue" response lines.
+     PR 38014 [Basant Kumar Kukreja <basant.kukreja sun.com>]
+
   *) mod_proxy_ftp: Don't segfault on bad line in FTP listing
      PR 40733 [Ulf Harnhammar <metaur telia.com>]
 
