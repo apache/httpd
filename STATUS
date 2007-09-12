@@ -79,15 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * core:  Don't send spurious "100 Continue" response lines.
-      PR 38014
-      http://svn.apache.org/viewvc?view=rev&revision=574240
-      +1: niq, rpluem, jim
-
-    * mod_proxy_ftp: Don't segfault on bad line in FTP listing
-      PR 40733
-      http://svn.apache.org/viewvc?view=rev&revision=574100
-      +1: niq, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
