@@ -116,13 +116,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_ssl: Resolve storage of process-lifespan version strings for OpenSSL,
-      while using request-lifespan copies for manipulation
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=574884&view=rev
-      Backport version for 2.0.x of patch:
-         http://people.apache.org/~wrowe/ssl_version_pool_fix-2.0.patch
-      +1: wrowe, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
