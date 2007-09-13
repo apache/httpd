@@ -116,7 +116,7 @@
     file <code>welcome.html.fr</code> maps onto content type
     <code>text/html</code> and language French then the file
     <code>welcome.fr.html</code> will map onto exactly the same
-    information.  If more than one extension is given which maps onto
+    information.  If more than one extension is given that maps onto
     the same type of meta-information, then the one to the right will
     be used, except for languages and content encodings. For example,
     if <code>.gif</code> maps to the <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a>
@@ -133,7 +133,7 @@
 
     <p>Care should be taken when a file with multiple extensions
     gets associated with both a <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME-type</a> and a handler. This will
-    usually result in the request being by the module associated
+    usually result in the request being handled by the module associated
     with the handler. For example, if the <code>.imap</code>
     extension is mapped to the handler <code>imap-file</code> (from
     <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code>) and the <code>.html</code> extension is
@@ -143,6 +143,22 @@
     When it is processed, the <code>imap-file</code> handler will be used,
     and so it will be treated as a <code class="module"><a href="../mod/mod_imagemap.html">mod_imagemap</a></code> imagemap
     file.</p>
+
+    <p>If you would prefer only the last dot-separated part of the
+    filename to be mapped to a particular piece of meta-data, then do
+    not use the <code>Add*</code> directives. For example, if you wish
+    to have the file <code>foo.html.cgi</code> processed as a CGI
+    script, but not the file <code>bar.cgi.html</code>, then instead
+    of using <code>AddHandler cgi-script .cgi</code>, use</p>
+
+    <div class="example"><h3>Configure handler based on final extension only</h3><p><code>
+    &lt;FilesMatch \.cgi$&gt;
+    <span class="indent">
+      SetHandler cgi-script
+    </span>
+    &lt;/FilesMatch&gt;
+    </code></p></div>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="contentencoding" id="contentencoding">Content encoding</a></h2>
@@ -262,8 +278,11 @@ charset</td></tr>
     where the server returns one from several documents based on
     the client's charset preference.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
-    be specified with or without a leading dot.</p>
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
+
 
 <h3>See also</h3>
 <ul>
@@ -314,8 +333,10 @@ type</td></tr>
     recent encodings, such as <code>deflate</code> should be
     specified without the <code>x-</code>.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
-    be specified with or without a leading dot.</p>
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -344,8 +365,10 @@ handler</td></tr>
     <p>Once that has been put into your httpd.conf file, any file containing
     the <code>.cgi</code> extension will be treated as a CGI program.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
-    be specified with or without a leading dot.</p>
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
 
 <h3>See also</h3>
 <ul>
@@ -374,11 +397,15 @@ later.</td></tr>
     directive. This mapping is merged over any already in force, overriding
     any mappings that already exist for the same <var>extension</var>.</p>
 
-    <p>If more than one filter is specified, they must be separated
+    <p>If more than one <var>filter</var> is specified, they must be separated
     by semicolons in the order in which they should process the
-    content. Both the filter and <var>extension</var> arguments are
-    case-insensitive, and the extension may be specified with or
-    without a leading dot.</p>
+    content. The <var>filter</var> is case-insensitive.</p>
+
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
+
 
 <h3>See also</h3>
 <ul>
@@ -433,8 +460,10 @@ language</td></tr>
     <p>documents with the extension <code>.en</code> would be treated as
     being <code>en-us</code>.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
-    be specified with or without a leading dot.</p>
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
 
 <h3>See also</h3>
 <ul>
@@ -472,9 +501,12 @@ later.</td></tr>
 
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
-    content. Both the <var>filter</var> and <var>extension</var> arguments
-    are case-insensitive, and the extension may be specified with or
-    without a leading dot.</p>
+    content. The <var>filter</var> argument is case-insensitive.</p>
+
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
 
 <h3>See also</h3>
 <ul>
@@ -513,8 +545,10 @@ type</td></tr>
       <code class="directive"><a href="#typesconfig">TypesConfig</a></code> file.
     </div>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
-    be specified with or without a leading dot.</p>
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
 
 <h3>See also</h3>
 <ul>
@@ -673,7 +707,7 @@ later.</td></tr>
     undo any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
     <div class="example"><h3>Example</h3><p><code>
@@ -720,7 +754,7 @@ extensions</td></tr>
       if both occur within the same directory configuration.</p>
     </div>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
 </div>
@@ -754,7 +788,7 @@ extensions</td></tr>
     the <code>/foo/bar</code> directory to being treated as normal
     files, rather than as candidates for parsing (see the <code class="module"><a href="../mod/mod_include.html">mod_include</a></code> module).</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
 </div>
@@ -779,7 +813,7 @@ later.</td></tr>
     undo any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
 <h3>See also</h3>
@@ -808,7 +842,7 @@ later.</td></tr>
     any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
 </div>
@@ -833,7 +867,7 @@ later.</td></tr>
     undo any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
     <div class="example"><h3>Example</h3><p><code>
@@ -879,7 +913,7 @@ extensions</td></tr>
       latter if both occur within the same directory configuration.</p>
     </div>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
 </div>
