@@ -81,6 +81,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
     * mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean 
       shutdown of the server when the MaxClients is higher then 257,
