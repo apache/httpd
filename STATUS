@@ -79,6 +79,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_ssl: Resolve storage of process-lifespan version strings for OpenSSL,
+      while using request-lifespan copies for manipulation
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=574884&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, wrowe, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
@@ -164,14 +171,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem, jim
-
-    * mod_ssl: Resolve storage of process-lifespan version strings for OpenSSL,
-      while using request-lifespan copies for manipulation
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=574884&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
