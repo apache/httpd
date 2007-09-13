@@ -104,7 +104,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     file <code>welcome.html.fr</code> maps onto content type
     <code>text/html</code> and language French then the file
     <code>welcome.fr.html</code> will map onto exactly the same
-    information.  If more than one extension is given which maps onto
+    information.  If more than one extension is given that maps onto
     the same type of meta-information, then the one to the right will
     be used, except for languages and content encodings. For example,
     if <code>.gif</code> maps to the <glossary>MIME-type</glossary>
@@ -122,7 +122,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
     <p>Care should be taken when a file with multiple extensions
     gets associated with both a <glossary>MIME-type</glossary> and a handler. This will
-    usually result in the request being by the module associated
+    usually result in the request being handled by the module associated
     with the handler. For example, if the <code>.imap</code>
     extension is mapped to the handler <code>imap-file</code> (from
     <module>mod_imagemap</module>) and the <code>.html</code> extension is
@@ -132,6 +132,22 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
     When it is processed, the <code>imap-file</code> handler will be used,
     and so it will be treated as a <module>mod_imagemap</module> imagemap
     file.</p>
+
+    <p>If you would prefer only the last dot-separated part of the
+    filename to be mapped to a particular piece of meta-data, then do
+    not use the <code>Add*</code> directives. For example, if you wish
+    to have the file <code>foo.html.cgi</code> processed as a CGI
+    script, but not the file <code>bar.cgi.html</code>, then instead
+    of using <code>AddHandler cgi-script .cgi</code>, use</p>
+
+    <example><title>Configure handler based on final extension only</title>
+    &lt;FilesMatch \.cgi$&gt;
+    <indent>
+      SetHandler cgi-script
+    </indent>
+    &lt;/FilesMatch&gt;
+    </example>
+
 </section>
 
 <section id="contentencoding"><title>Content encoding</title>
@@ -260,8 +276,12 @@ charset</description>
     where the server returns one from several documents based on
     the client's charset preference.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
-    be specified with or without a leading dot.</p>
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a
+    href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
+
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 <seealso><directive module="core">AddDefaultCharset</directive></seealso>
@@ -309,8 +329,11 @@ type</description>
     recent encodings, such as <code>deflate</code> should be
     specified without the <code>x-</code>.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
-    be specified with or without a leading dot.</p>
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a
+    href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
 </usage>
 </directivesynopsis>
 
@@ -339,8 +362,11 @@ handler</description>
     <p>Once that has been put into your httpd.conf file, any file containing
     the <code>.cgi</code> extension will be treated as a CGI program.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
-    be specified with or without a leading dot.</p>
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a
+    href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
 </usage>
 <seealso><directive module="core">SetHandler</directive></seealso>
 </directivesynopsis>
@@ -366,11 +392,16 @@ later.</compatibility>
     directive. This mapping is merged over any already in force, overriding
     any mappings that already exist for the same <var>extension</var>.</p>
 
-    <p>If more than one filter is specified, they must be separated
+    <p>If more than one <var>filter</var> is specified, they must be separated
     by semicolons in the order in which they should process the
-    content. Both the filter and <var>extension</var> arguments are
-    case-insensitive, and the extension may be specified with or
-    without a leading dot.</p>
+    content. The <var>filter</var> is case-insensitive.</p>
+
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a
+    href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
+
 </usage>
 <seealso><directive module="mod_mime">RemoveInputFilter</directive></seealso>
 <seealso><directive module="core">SetInputFilter</directive></seealso>
@@ -422,8 +453,11 @@ language</description>
     <p>documents with the extension <code>.en</code> would be treated as
     being <code>en-us</code>.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
-    be specified with or without a leading dot.</p>
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a
+    href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
@@ -461,9 +495,13 @@ later.</compatibility>
 
     <p>If more than one filter is specified, they must be separated
     by semicolons in the order in which they should process the
-    content. Both the <var>filter</var> and <var>extension</var> arguments
-    are case-insensitive, and the extension may be specified with or
-    without a leading dot.</p>
+    content. The <var>filter</var> argument is case-insensitive.</p>
+
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a
+    href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
 </usage>
 <seealso><directive module="mod_mime">RemoveOutputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
@@ -506,8 +544,11 @@ type</description>
       <directive module="mod_mime">TypesConfig</directive> file.
     </note>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
-    be specified with or without a leading dot.</p>
+    <p>The <var>extension</var> argument is case-insensitive and can
+    be specified with or without a leading dot. Filenames may have <a
+    href="#multipleext">multiple extensions</a> and the
+    <var>extension</var> argument will be compared against each of
+    them.</p>
 </usage>
 <seealso><directive module="core">DefaultType</directive></seealso>
 <seealso><directive module="core">ForceType</directive></seealso>
@@ -655,7 +696,7 @@ later.</compatibility>
     undo any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
     <example><title>Example</title>
@@ -702,7 +743,7 @@ extensions</description>
       if both occur within the same directory configuration.</p>
     </note>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 </usage>
 </directivesynopsis>
@@ -737,7 +778,7 @@ extensions</description>
     files, rather than as candidates for parsing (see the <module
     >mod_include</module> module).</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 </usage>
 </directivesynopsis>
@@ -762,7 +803,7 @@ later.</compatibility>
     undo any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 </usage>
 <seealso><directive module="mod_mime">AddInputFilter</directive></seealso>
@@ -788,7 +829,7 @@ later.</compatibility>
     any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 </usage>
 </directivesynopsis>
@@ -813,7 +854,7 @@ later.</compatibility>
     undo any associations inherited from parent directories or the
     server config files.</p>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 
     <example><title>Example</title>
@@ -857,7 +898,7 @@ extensions</description>
       latter if both occur within the same directory configuration.</p>
     </note>
 
-    <p>The <var>extension</var> argument is case-insensitive, and can
+    <p>The <var>extension</var> argument is case-insensitive and can
     be specified with or without a leading dot.</p>
 </usage>
 </directivesynopsis>
