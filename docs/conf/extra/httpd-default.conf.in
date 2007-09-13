@@ -62,7 +62,7 @@ ServerTokens Full
 # Set to "EMail" to also include a mailto: link to the ServerAdmin.
 # Set to one of:  On | Off | EMail
 #
-ServerSignature On
+ServerSignature Off
 
 #
 # HostnameLookups: Log the names of clients or just their IP addresses
