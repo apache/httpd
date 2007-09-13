@@ -135,7 +135,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=574884&view=rev
       Backport version for 2.0.x of patch:
          http://people.apache.org/~wrowe/ssl_version_pool_fix-2.0.patch
-      +1: wrowe
+      +1: wrowe, rpluem
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
