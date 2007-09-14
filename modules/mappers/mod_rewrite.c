@@ -575,6 +575,7 @@ static unsigned is_absolute_uri(char *uri)
         if (!strncasecmp(uri, "jp://", 5)) {        /* ajp://    */
           return 6;
         }
+        break;
 
     case 'b':
     case 'B':
