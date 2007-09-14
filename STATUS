@@ -79,6 +79,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_proxy_balancer: Do not reset lbstatus, lbfactor and lbset if the
+      shared proxy_worker_stat structure for a worker is already initialized
+      by the same or another process.
+        Trunk version of patch:
+          http://svn.apache.org/viewvc?view=rev&revision=572937
+          http://svn.apache.org/viewvc?view=rev&revision=574485
+          http://svn.apache.org/viewvc?view=rev&revision=574486
+        2.2.x version of patch:
+          Trunk works.
+      +1: rpluem, jim, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -133,17 +143,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~pquerna/eventmpm-ssl-input-2.2.x.patch
     +1: pquerna, jim
 
-    * mod_proxy_balancer: Do not reset lbstatus, lbfactor and lbset if the
-      shared proxy_worker_stat structure for a worker is already initialized
-      by the same or another process.
-        Trunk version of patch:
-          http://svn.apache.org/viewvc?view=rev&revision=572937
-          http://svn.apache.org/viewvc?view=rev&revision=574485
-          http://svn.apache.org/viewvc?view=rev&revision=574486
-        2.2.x version of patch:
-          Trunk works.
-      +1: rpluem, jim
-
     * mod_proxy_http: Propagate Proxy-Authorization header correctly.
       PR 25947
       http://svn.apache.org/viewvc?view=rev&revision=574021
@@ -189,7 +188,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=421252
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: jim:
+      +1: jim, niq
 
     * mod_proxy: Enable retry=0 for the worker.
       Trunk version of patch:
@@ -197,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=451582
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: jim
+      +1: jim, niq
 
     * filters|proxy: Return METHOD_NOT_ALLOWED, not FORBIDDEN, to a TRACE
       request when TraceEnable is Off.  This agrees with our documentation,
@@ -206,7 +205,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=507526
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: jim:
+      +1: jim, niq
 
     * mod_proxy: Protect macros from NULL refs.
       Trunk version of patch:
@@ -214,6 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: jim
+      -1: niq: this duplicates part of an accepted backport above
 
 PATCHES/ISSUES THAT ARE STALLED
 
