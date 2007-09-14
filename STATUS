@@ -166,6 +166,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, jim
 
+    * mod_rewrite: Also set the Vary header if a rewrite condition is true and
+      uses a HTTP header, but all remaining rewrite conditions are skipped due
+      to the [OR] flag.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=574201&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
+    * mod_rewrite: Add the novary flag to RewriteCond in order to prevent
+      the appending of HTTP headers used in a rewrite condition to the Vary
+      header of the response.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=574684&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
