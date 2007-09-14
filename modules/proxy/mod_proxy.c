@@ -1146,7 +1146,7 @@ static const char *
 
     arr = apr_table_elts(params);
     elts = (const apr_table_entry_t *)arr->elts;
-    /* Distinguish the balancer from woker */
+    /* Distinguish the balancer from worker */
     if (strncasecmp(r, "balancer:", 9) == 0) {
         proxy_balancer *balancer = ap_proxy_get_balancer(cmd->pool, conf, r);
         if (!balancer) {
