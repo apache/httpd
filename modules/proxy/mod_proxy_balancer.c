@@ -87,14 +87,14 @@ static int init_balancer_members(proxy_server_conf *conf, server_rec *s,
 {
     int i;
     proxy_worker *workers;
-    int worker_is_initialized;
-    proxy_worker_stat *slot;
 
     workers = (proxy_worker *)balancer->workers->elts;
 
     for (i = 0; i < balancer->workers->nelts; i++) {
+        int worker_is_initialized;
         worker_is_initialized = PROXY_WORKER_IS_INITIALIZED(workers);
         if (!worker_is_initialized) {
+            proxy_worker_stat *slot;
             /*
              * If the worker is not initialized check whether its scoreboard
              * slot is already initialized.
