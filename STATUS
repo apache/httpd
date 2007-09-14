@@ -79,16 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy_balancer: Do not reset lbstatus, lbfactor and lbset if the
-      shared proxy_worker_stat structure for a worker is already initialized
-      by the same or another process.
-        Trunk version of patch:
-          http://svn.apache.org/viewvc?view=rev&revision=572937
-          http://svn.apache.org/viewvc?view=rev&revision=574485
-          http://svn.apache.org/viewvc?view=rev&revision=574486
-        2.2.x version of patch:
-          Trunk works.
-      +1: rpluem, jim, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
