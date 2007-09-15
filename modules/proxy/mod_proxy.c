@@ -952,7 +952,7 @@ static int proxy_handler(request_rec *r)
                     "If you are using a DSO version of mod_proxy, make sure "
                     "the proxy submodules are included in the configuration "
                     "using LoadModule.", r->uri);
-        access_status = HTTP_FORBIDDEN;
+        access_status = HTTP_INTERNAL_SERVER_ERROR;
         goto cleanup;
     }
 cleanup:
