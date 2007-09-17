@@ -178,10 +178,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=451575
          http://svn.apache.org/viewvc?view=rev&revision=451582
       Backport version for 2.2.x of patch:
-         Trunk version of patch works
+         Trunk version of patch works but requires
+           http://people.apache.org/~jim/patches/retry_set-mmn.patch
+         in addition for MMN bump.
       +1: jim, niq
-      rpluem says: +1 in general, but I am missing a minor bump since we change
-      the proxy_worker struct.
 
     * mod_proxy: return 500 not 403 when protocol module is not available
       http://svn.apache.org/viewvc?view=rev&revision=575996
