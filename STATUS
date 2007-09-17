@@ -79,13 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy: Issue a warning when the same worker name is reused.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=421252
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: jim, niq, rpluem
-
     * filters|proxy: Return METHOD_NOT_ALLOWED, not FORBIDDEN, to a TRACE
       request when TraceEnable is Off.  This agrees with our documentation,
       and with our Allow: header in response to OPTIONS.
