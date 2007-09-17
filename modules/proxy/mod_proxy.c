@@ -708,7 +708,7 @@ static int proxy_handler(request_rec *r)
             apr_table_setn(r->notes, "verbose-error-to", "*");
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "proxy: TRACE forbidden by server configuration");
-            return HTTP_FORBIDDEN;
+            return HTTP_METHOD_NOT_ALLOWED;
         }
 
         /* Can't test ap_should_client_block, we aren't ready to send
