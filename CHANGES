@@ -5,9 +5,6 @@ Changes with Apache 2.3.0
   *) mod_rewrite: Add the novary flag to RewriteCond.
      [Ruediger Pluem]
 
-  *) mod_proxy_ajp: Differentiate within AJP between GET and HEAD
-     requests. PR 43060 [Jim Jagielski]
-
   *) mod_proxy_http: Propagate Proxy-Authorization header correctly.
      PR 25947 [Nick Kew]
 
