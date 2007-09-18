@@ -85,9 +85,10 @@ static const char *set_worker_param(apr_pool_t *p,
          * in error state, it will be retried after that timeout.
          */
         ival = atoi(val);
-        if (ival < 1)
-            return "Retry must be at least one second";
+        if (ival < 0)
+            return "Retry must be a positive value";
         worker->retry = apr_time_from_sec(ival);
+        worker->retry_set = 1;
     }
     else if (!strcasecmp(key, "ttl")) {
         /* Time in seconds that will destroy all the connections
