@@ -1251,11 +1251,11 @@ cannot use <code>$N</code> in the substitution string!
         Using the B flag, non-alphanumeric characters in backreferences
         will be escaped.  For example, consider the rule:</p>
         <pre><code> RewriteRule RewriteRule ^(.*)$   index.php?show=$1 </code></pre>
-        <p>This will map <code>/C++</code> to <code>index.php?show=C++</code>.
+        <p>This will map <code>/C++</code> to <code>index.php?show=/C++</code>.
         But it will also map <code>/C%2b%2b</code> to
-        <code>index.php?show=C++</code>, because the <code>%2b</code>
+        <code>index.php?show=/C++</code>, because the <code>%2b</code>
         has been unescaped.  With the B flag, it will instead map to
-        <code>index.php?show=&gt;/C%2b%2b</code>.</p>
+        <code>index.php?show=/C%2b%2b</code>.</p>
         <p>This escaping is particularly necessary in a proxy situation,
         when the backend may break if presented with an unescaped URL.</p>
         </dd>
