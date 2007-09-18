@@ -162,13 +162,19 @@ static const unsigned char sc_for_req_method_table[] = {
     0                       /* M_INVALID */
 };
 
-static int sc_for_req_method_by_id(int method_id)
+static int sc_for_req_method_by_id(request_rec *r)
 {
-    if (method_id < 0 || method_id > M_INVALID)
+    int method_id = r->method_number;
+    if (method_id < 0 || method_id > M_INVALID) {
         return UNKNOWN_METHOD;
-    else
+    }
+    else if (r->header_only) {
+        return SC_M_HEAD;
+    }
+    else {
         return sc_for_req_method_table[method_id] ?
                sc_for_req_method_table[method_id] : UNKNOWN_METHOD;
+    }
 }
 
 /*
@@ -218,7 +224,7 @@ static apr_status_t ajp_marshal_into_msgb(ajp_msg_t *msg,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "Into ajp_marshal_into_msgb");
 
-    if ((method = sc_for_req_method_by_id(r->method_number)) == UNKNOWN_METHOD) {
+    if ((method = sc_for_req_method_by_id(r)) == UNKNOWN_METHOD) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_marshal_into_msgb - No such method %s",
                r->method);

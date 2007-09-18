@@ -79,13 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy_ajp: Differentiate within AJP between GET and HEAD requests.
-      PR 43060
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=574024&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
