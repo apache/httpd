@@ -64,9 +64,9 @@ performance</description>
       <li>The current hosts and requests being processed (*)</li>
     </ul>
 
-    <p>A compile-time option must be used to display the details
-    marked "(*)" as the instrumentation required for obtaining
-    these statistics does not exist within standard Apache.</p>
+    <p>The lines marked "(*)" are only available if 
+    <directive module="mod_status">ExtendedStatus</directive> 
+    is <code>On</code>.</p>
 </summary>
 
 <section id="enable">
