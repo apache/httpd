@@ -114,6 +114,7 @@
  * 20051115.4 (2.2.4)  Added ap_get_server_banner() and
  *                         ap_get_server_description() (minor)
  * 20051115.5 (2.2.5)  Added ap_mpm_safe_kill() (minor)
+ * 20051115.6 (2.2.7)  Added retry_set to proxy_worker (minor)
  *
  */
 
@@ -122,7 +123,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 6                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
