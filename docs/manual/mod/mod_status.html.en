@@ -65,9 +65,9 @@ performance</td></tr>
       <li>The current hosts and requests being processed (*)</li>
     </ul>
 
-    <p>A compile-time option must be used to display the details
-    marked "(*)" as the instrumentation required for obtaining
-    these statistics does not exist within standard Apache.</p>
+    <p>The lines marked "(*)" are only available if 
+    <code class="directive"><a href="#extendedstatus">ExtendedStatus</a></code> 
+    is <code>On</code>.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
