@@ -731,12 +731,13 @@ expressions</description>
     If the connection pool worker to the backend server is in the error state,
     Apache will not forward any requests to that server until the timeout
     expires. This enables to shut down the backend server for maintenance,
-    and bring it back online later.
+    and bring it back online later. A value of 0 means always retry workers
+    in an error state with no timeout.
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
         <td>Route of the worker when used inside load balancer.
-        The route is a value appended to seesion id.
+        The route is a value appended to session id.
     </td></tr>
     <tr><td>status</td>
         <td>-</td>
