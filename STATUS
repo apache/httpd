@@ -89,6 +89,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          in addition for MMN bump.
       +1: jim, niq, rpluem
 
+    * mod_proxy_ajp: Differentiate within AJP between GET and HEAD requests.
+      PR 43060
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=574024&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, niq
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -156,14 +164,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +0: rpluem says: As per discussion on dev@ this should be optimized
       further in trunk first before backporting.
 
-    * mod_proxy_ajp: Differentiate within AJP between GET and HEAD requests.
-      PR 43060
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=574024&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim
-
     * mod_rewrite: Also set the Vary header if a rewrite condition is true and
       uses a HTTP header, but all remaining rewrite conditions are skipped due
       to the [OR] flag.
@@ -171,7 +171,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=574201&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, niq
 
     * mod_rewrite: Add the novary flag to RewriteCond in order to prevent
       the appending of HTTP headers used in a rewrite condition to the Vary
