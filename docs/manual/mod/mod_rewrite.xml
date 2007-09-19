@@ -1536,7 +1536,7 @@ cannot use <code>$N</code> in the substitution string!
 <p> When the substitution string begins with a string
 resembling "/~user" (via explicit text or backreferences), mod_rewrite performs
 home directory expansion independent of the presence or configuration 
-of <module>mod_userdir</module></p>
+of <module>mod_userdir</module>.</p>
 
 <p> This expansion does not occur when the <em>PT</em>
 flag is used on the <directive module="mod_rewrite">RewriteRule</directive>
