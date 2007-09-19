@@ -1512,6 +1512,17 @@ cannot use <code>$N</code> in the substitution string!
 
       </ul>
 
+<note><title>Home directory expansion</title>
+<p> When the substitution string begins with a string
+resembling "/~user" (via explicit text or backreferences), mod_rewrite performs
+home directory expansion independent of the presence or configuration
+of <module>mod_userdir</module>.</p>
+
+<p> This expansion does not occur when the <em>PT</em>
+flag is used on the <directive module="mod_rewrite">RewriteRule</directive>
+directive.</p>
+</note>
+
 <note><title>Note: Enabling rewrites in per-directory context</title>
  To enable the rewriting engine
           for per-directory configuration files, you need to set
