@@ -53,7 +53,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /out:".\Release\mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
-# ADD LINK32 kernel32.lib zlib.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_deflate.so" /libpath:"../../srclib/zlib" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so /opt:ref
+# ADD LINK32 kernel32.lib zdll.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Release\mod_deflate.so" /libpath:"../../srclib/zlib" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so /opt:ref
 # Begin Special Build Tool
 TargetPath=.\Release\mod_deflate.so
 SOURCE="$(InputPath)"
@@ -85,7 +85,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_deflate.so" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
-# ADD LINK32 kernel32.lib zlib.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_deflate.so" /libpath:"../../srclib/zlib" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
+# ADD LINK32 kernel32.lib zdll.lib /nologo /subsystem:windows /dll /incremental:no /debug /out:".\Debug\mod_deflate.so" /libpath:"../../srclib/zlib" /base:@..\..\os\win32\BaseAddr.ref,mod_deflate.so
 # Begin Special Build Tool
 TargetPath=.\Debug\mod_deflate.so
 SOURCE="$(InputPath)"
