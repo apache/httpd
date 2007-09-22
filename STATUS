@@ -79,10 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-    * mod_proxy: return 500 not 403 when protocol module is not available
-      http://svn.apache.org/viewvc?view=rev&revision=575996
-      +1: niq, rpluem, clere
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
