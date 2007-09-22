@@ -1605,7 +1605,11 @@ static int unescape_url(char *url, const char *forbid, const char *reserved)
 AP_DECLARE(int) ap_unescape_url(char *url)
 {
     /* Traditional */
+#ifdef CASE_BLIND_FILESYSTEM
+    return unescape_url(url, "/\\", NULL);
+#else
     return unescape_url(url, "/", NULL);
+#endif
 }
 AP_DECLARE(int) ap_unescape_url_keep2f(char *url)
 {
