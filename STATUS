@@ -79,6 +79,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_proxy_http: Propagate Proxy-Authorization header correctly.
+      PR 25947
+      http://svn.apache.org/viewvc?view=rev&revision=574021
+      +1: niq, jfclere.
+      rpluem says: +1 in general, but please remove the tabs from your
+      patch and in trunk.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -133,13 +139,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x version of patch:
         http://people.apache.org/~pquerna/eventmpm-ssl-input-2.2.x.patch
     +1: pquerna, jim
-
-    * mod_proxy_http: Propagate Proxy-Authorization header correctly.
-      PR 25947
-      http://svn.apache.org/viewvc?view=rev&revision=574021
-      +1: niq, jfclere.
-      rpluem says: +1 in general, but please remove the tabs from your
-      patch and in trunk.
 
     * mod_rewrite: Add option to suppress URL unescaping
       PR 34602
