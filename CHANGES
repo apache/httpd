@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_proxy_http: Propagate Proxy-Authorization header correctly.
+     PR 25947 [Nick Kew]
+
   *) mod_proxy_ajp: Differentiate within AJP between GET and HEAD
      requests. PR 43060 [Jim Jagielski]
 
@@ -343,7 +346,7 @@ Changes with Apache 2.2.4
 
   *) mod_cgi and mod_cgid: Don't use apr_status_t error return
      from input filters as HTTP return value from the handler.
-     PR 31579.  [Nick Kew]
+     PR 31759.  [Nick Kew]
 
   *) mod_cache: Eliminate a bogus error in the log when a filter returns
      AP_FILTER_ERROR.  [Niklas Edmundsson <nikke acc.umu.se>]
