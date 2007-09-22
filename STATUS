@@ -158,6 +158,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem
 
+   * mpm_common: Use OPTIONS * instead of GET / for dummy_connection.
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=517233
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: jim
+   
 
 PATCHES/ISSUES THAT ARE STALLED
 
