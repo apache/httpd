@@ -1542,54 +1542,15 @@ static char x2c(const char *what)
 }
 
 /*
- * Unescapes a URL.
+ * Unescapes a URL, leaving reserved characters intact.
  * Returns 0 on success, non-zero on error
  * Failure is due to
  *   bad % escape       returns HTTP_BAD_REQUEST
  *
- *   decoding %00 -> \0  (the null character)
- *   decoding %2f -> /   (a special character)
- *                      returns HTTP_NOT_FOUND
+ *   decoding %00 or a forbidden character returns HTTP_NOT_FOUND
  */
-AP_DECLARE(int) ap_unescape_url(char *url)
-{
-    register int badesc, badpath;
-    char *x, *y;
 
-    badesc = 0;
-    badpath = 0;
-    /* Initial scan for first '%'. Don't bother writing values before
-     * seeing a '%' */
-    y = strchr(url, '%');
-    if (y == NULL) {
-        return OK;
-    }
-    for (x = y; *y; ++x, ++y) {
-        if (*y != '%')
-            *x = *y;
-        else {
-            if (!apr_isxdigit(*(y + 1)) || !apr_isxdigit(*(y + 2))) {
-                badesc = 1;
-                *x = '%';
-            }
-            else {
-                *x = x2c(y + 1);
-                y += 2;
-                if (IS_SLASH(*x) || *x == '\0')
-                    badpath = 1;
-            }
-        }
-    }
-    *x = '\0';
-    if (badesc)
-        return HTTP_BAD_REQUEST;
-    else if (badpath)
-        return HTTP_NOT_FOUND;
-    else
-        return OK;
-}
-
-AP_DECLARE(int) ap_unescape_url_keep2f(char *url)
+static int unescape_url(char *url, const char *forbid, const char *reserved)
 {
     register int badesc, badpath;
     char *x, *y;
@@ -1614,8 +1575,14 @@ AP_DECLARE(int) ap_unescape_url_keep2f(char *url)
             else {
                 char decoded;
                 decoded = x2c(y + 1);
-                if (decoded == '\0') {
+                if ((decoded == '\0')
+                    || (forbid && ap_strchr_c(forbid, decoded))) {
                     badpath = 1;
+                }
+                else if (reserved && ap_strchr_c(reserved, decoded)) {
+                    *x++ = *y++;
+                    *x++ = *y++;
+                    *x = *y;
                 }
                 else {
                     *x = decoded;
@@ -1635,6 +1602,32 @@ AP_DECLARE(int) ap_unescape_url_keep2f(char *url)
         return OK;
     }
 }
+AP_DECLARE(int) ap_unescape_url(char *url)
+{
+    /* Traditional */
+    return unescape_url(url, "/", NULL);
+}
+AP_DECLARE(int) ap_unescape_url_keep2f(char *url)
+{
+    /* AllowEncodedSlashes (corrected) */
+    return unescape_url(url, NULL, "/");
+}
+#ifdef NEW_APIS
+/* IFDEF these out until they've been thought through.
+ * Just a germ of an API extension for now
+ */
+AP_DECLARE(int) ap_unescape_url_proxy(char *url)
+{
+    /* leave RFC1738 reserved characters intact, * so proxied URLs
+     * don't get mangled.  Where does that leave encoded '&' ?
+     */
+    return unescape_url(url, NULL, "/;?");
+}
+AP_DECLARE(int) ap_unescape_url_reserved(char *url, const char *reserved)
+{
+    return unescape_url(url, NULL, reserved);
+}
+#endif
 
 AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
                                        apr_port_t port, const request_rec *r)
