@@ -79,7 +79,7 @@
 
 <section id="usage"><title>사용법 요약</title>
 
-    <p>Apache 2.0의 DSO 기능에 대한 짧고 간략한 요약이다:</p>
+    <p>Apache 2.2의 DSO 기능에 대한 짧고 간략한 요약이다:</p>
 
     <ol>
       <li>
