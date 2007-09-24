@@ -275,18 +275,13 @@ typedef struct {
     apr_array_header_t *conditions;
 } log_format_item;
 
-static char *format_integer(apr_pool_t *p, int i)
-{
-    return apr_itoa(p, i);
-}
-
 static char *pfmt(apr_pool_t *p, int i)
 {
     if (i <= 0) {
         return "-";
     }
     else {
-        return format_integer(p, i);
+        return apr_itoa(p, i);
     }
 }
 
