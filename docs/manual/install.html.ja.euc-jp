@@ -25,6 +25,8 @@
 <a href="./ja/install.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 
 
     <p>この文書で扱う範囲は、Unix や Unix に類似したシステムでの
