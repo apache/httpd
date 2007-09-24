@@ -77,7 +77,7 @@
 <div class="section">
 <h2><a name="usage" id="usage">사용법 요약</a></h2>
 
-    <p>Apache 2.0의 DSO 기능에 대한 짧고 간략한 요약이다:</p>
+    <p>Apache 2.2의 DSO 기능에 대한 짧고 간략한 요약이다:</p>
 
     <ol>
       <li>
