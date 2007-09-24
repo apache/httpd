@@ -3157,6 +3157,12 @@ hostname or IP address</description>
     to match all ports on that address. (This is recommended when used
     with <code>_default_</code>.)</p>
 
+    <p>A <directive module="core">ServerName</directive> should be
+    specified inside each <directive
+    type="section">VirtualHost</directive> block. If it is absent, the
+    <directive module="core">ServerName</directive> from the "main"
+    server configuration will be inherited.</p>
+
     <note type="warning"><title>Security</title>
     <p>See the <a href="../misc/security_tips.html">security tips</a>
     document for details on why your security could be compromised if the
