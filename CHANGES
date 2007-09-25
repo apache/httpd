@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_proxy_balancer: Do not reset lbstatus, lbfactor and lbset when
+     starting a new child.
+     PR 39907 [Vinicius Petrucci <vpetrucci gmail.com>, Ruediger Pluem]
+
   *) mod_proxy_http: Propagate Proxy-Authorization header correctly.
      PR 25947 [Nick Kew]
 
