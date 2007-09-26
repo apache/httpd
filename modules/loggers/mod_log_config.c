@@ -658,10 +658,10 @@ static const char *log_server_name(request_rec *r, char *a)
 
 static const char *log_pid_tid(request_rec *r, char *a)
 {
-    if (*a == '\0' || !strcmp(a, "pid")) {
+    if (*a == '\0' || !strcasecmp(a, "pid")) {
         return ap_append_pid(r->pool, "", "");
     }
-    else if (!strcmp(a, "tid") || !strcmp(a, "hextid")) {
+    else if (!strcasecmp(a, "tid") || !strcasecmp(a, "hextid")) {
 #if APR_HAS_THREADS
         apr_os_thread_t tid = apr_os_thread_current();
 #else
