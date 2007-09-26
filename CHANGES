@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_ajp: Ignore any ajp13 flush packets received before
+     we send the response headers. See Tomcat PR 43478.
+     [Jim Jagielski]
+
   *) core: reinstate location walk to fix config for subrequests
      PR 41960 [Jose Kahan <jose w3.org>]
 
