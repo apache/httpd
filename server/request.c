@@ -152,14 +152,10 @@ AP_DECLARE(int) ap_process_request_internal(request_rec *r)
         return access_status;
     }
 
-    /* Excluding file-specific requests with no 'true' URI...
+    /* Rerun the location walk, which overrides any map_to_storage config.
      */
-    if (!file_req) {
-        /* Rerun the location walk, which overrides any map_to_storage config.
-         */
-        if ((access_status = ap_location_walk(r))) {
-            return access_status;
-        }
+    if ((access_status = ap_location_walk(r))) {
+        return access_status;
     }
 
     /* Only on the main request! */

@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: reinstate location walk to fix config for subrequests
+     PR 41960 [Jose Kahan <jose w3.org>]
+
   *) mod_log_config: Add format options for %p so that the actual local
      or remote port can be logged.  PR 43415.  [Adam Hasselbalch Hansen 
      <ahh@one.com>, Ruediger Pluem, Jeff Trawick]
