@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_proxy_ajp: Ignore any ajp13 flush packets received before
+     we send the response headers. See Tomcat PR 43478.
+     [Jim Jagielski]
+
   *) mod_proxy_balancer: Do not reset lbstatus, lbfactor and lbset when
      starting a new child.
      PR 39907 [Vinicius Petrucci <vpetrucci gmail.com>, Ruediger Pluem]

@@ -79,13 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_ajp: Ignore any ajp13 flush packets that we may
-     receive before we send headers.
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=579707
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works (minus CHANGES conflict)
-      +1: jim, rpluem, jfclere
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
