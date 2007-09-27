@@ -952,6 +952,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     apr_bucket_brigade *b2;
     header_struct h;
     header_filter_ctx *ctx = f->ctx;
+    const char *ctype;
 
     AP_DEBUG_ASSERT(!r->main);
 
@@ -1027,8 +1028,10 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
         apr_table_unset(r->headers_out, "Content-Length");
     }
 
-    apr_table_setn(r->headers_out, "Content-Type",
-                   ap_make_content_type(r, r->content_type));
+    ctype = ap_make_content_type(r, r->content_type);
+    if (strcasecmp(ctype, NO_CONTENT_TYPE)) {
+        apr_table_setn(r->headers_out, "Content-Type", ctype);
+    }
 
     if (r->content_encoding) {
         apr_table_setn(r->headers_out, "Content-Encoding",
