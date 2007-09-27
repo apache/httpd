@@ -233,6 +233,14 @@ extern "C" {
 #define DEFAULT_CONTENT_TYPE "text/plain"
 #endif
 
+/**
+ * NO_CONTENT_TYPE is an alternative DefaultType value that suppresses
+ * setting any default type when there's no information (e.g. a proxy).
+ */
+#ifndef NO_CONTENT_TYPE
+#define NO_CONTENT_TYPE "none"
+#endif
+
 /** The name of the MIME types file */
 #ifndef AP_TYPES_CONFIG_FILE
 #define AP_TYPES_CONFIG_FILE "conf/mime.types"

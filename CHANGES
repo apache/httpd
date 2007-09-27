@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) HTTP protocol: Add "DefaultType none" option.
+     PR 13986 and PR 16139 [Nick Kew]
+
   *) mod_proxy_ajp: Ignore any ajp13 flush packets received before
      we send the response headers. See Tomcat PR 43478.
      [Jim Jagielski]
