@@ -1388,8 +1388,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 if (server_name == r->hostname)
                     server_name = r->server->server_hostname;
                 /* create a "Via:" response header entry and merge it */
-                apr_table_mergen(r->headers_out, "Via",
-                                 (conf->viaopt == via_full)
+                apr_table_addn(r->headers_out, "Via",
+                               (conf->viaopt == via_full)
                                      ? apr_psprintf(p, "%d.%d %s%s (%s)",
                                            HTTP_VERSION_MAJOR(r->proto_num),
                                            HTTP_VERSION_MINOR(r->proto_num),

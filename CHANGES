@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_http: add Via header correctly (if enabled) to
+     response, even where other Via headers exist.
+     PR 19439 [Nick Kew]
+
   *) mod_proxy_http: strip hop-by-hop response headers
      PR 43455 [Nick Kew]
 
