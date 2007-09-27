@@ -149,6 +149,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem, niq
+      +0: jim: I'm curious that if this would result in some
+               "regressions" for some users who either depend on
+               the old behavior or have worked around it...
 
     * mod_rewrite: Add the novary flag to RewriteCond in order to prevent
       the appending of HTTP headers used in a rewrite condition to the Vary
