@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_http: strip hop-by-hop response headers
+     PR 43455 [Nick Kew]
+
   *) HTTP protocol: Add "DefaultType none" option.
      PR 13986 and PR 16139 [Nick Kew]
 
