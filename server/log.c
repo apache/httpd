@@ -421,6 +421,16 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
                 apr_pool_destroy(stderr_pool);
             stderr_pool = stderr_p;
             replace_stderr = 0;
+            /*
+             * Now that we have dup'ed s_main->error_log to stderr_log
+             * close it and set s_main->error_log to stderr_log. This avoids
+             * this fd being inherited by the next piped logger who would
+             * keep open the writing end of the pipe that this one uses
+             * as stdin. This in turn would prevent the piped logger from
+             * exiting.
+             */
+             apr_file_close(s_main->error_log);
+             s_main->error_log = stderr_log;
         }
     }
     /* note that stderr may still need to be replaced with something
