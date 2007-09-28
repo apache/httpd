@@ -98,29 +98,37 @@ static int proxy_http_canon(request_rec *r, char *url)
 }
 
 /* Clear all connection-based headers from the incoming headers table */
-static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
+typedef struct foo {
+    apr_pool_t *pool;
+    apr_table_t *table;
+} foo;
+static int clear_conn_headers(void *data, const char *key, const char *val)
 {
+    apr_table_t *headers = ((foo*)data)->table;
+    apr_pool_t *pool = ((foo*)data)->pool;
     const char *name;
-    char *next = apr_pstrdup(p, apr_table_get(headers, "Connection"));
-
-    apr_table_unset(headers, "Proxy-Connection");
-    if (!next)
-        return;
-
+    char *next = apr_pstrdup(pool, val);
     while (*next) {
         name = next;
         while (*next && !apr_isspace(*next) && (*next != ',')) {
             ++next;
         }
         while (*next && (apr_isspace(*next) || (*next == ','))) {
-            *next = '\0';
-            ++next;
+            *next++ = '\0';
         }
         apr_table_unset(headers, name);
     }
+    return 1;
+}
+static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
+{
+    foo x;
+    x.pool = p;
+    x.table = headers;
+    apr_table_unset(headers, "Proxy-Connection");
+    apr_table_do(clear_conn_headers, &x, headers, "Connection", NULL);
     apr_table_unset(headers, "Connection");
 }
-
 static void add_te_chunked(apr_pool_t *p,
                            apr_bucket_alloc_t *bucket_alloc,
                            apr_bucket_brigade *header_brigade)
