@@ -534,7 +534,7 @@ headers</description>
 <name>DefaultType</name>
 <description>MIME content-type that will be sent if the
 server cannot determine a type in any other way</description>
-<syntax>DefaultType <var>MIME-type</var></syntax>
+<syntax>DefaultType <var>MIME-type|none</var></syntax>
 <default>DefaultType text/plain</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -556,6 +556,17 @@ server cannot determine a type in any other way</description>
 
     <p>would be appropriate for a directory which contained many GIF
     images with filenames missing the <code>.gif</code> extension.</p>
+
+    <p>Sometimes it may be better to omit the MIME type altogether if it
+    cannot be determined by the server.  This can be accomplished using</p>
+    <example>
+      DefaultType None
+    </example>
+    <p>DefaultType None is only available in httpd-2.2.7 and later.</p>
+
+    <p>This can be suppressed by setting <code>DefaultType None</code>.
+    With this setting, Apache will omit <em>any</em> Content-Type
+    header if it not able to determine the correct MIME type.</p>
 
     <p>Note that unlike <directive
     module="core">ForceType</directive>, this directive only
