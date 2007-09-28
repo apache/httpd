@@ -21,6 +21,7 @@
 #include "mpm_winnt.h"
 #include "apr_strings.h"
 #include "apr_lib.h"
+#include "apr_portable.h"
 #include "ap_regkey.h"
 
 static char  *display_name  = NULL;
@@ -138,7 +139,8 @@ void mpm_nt_eventlog_stderr_open(char *argv0, apr_pool_t *p)
     HANDLE hPipeWrite = NULL;
     HANDLE hDup = NULL;
     DWORD  threadid;
-    int    fd;
+    apr_file_t *eventlog_file;
+    apr_file_t *stderr_file;
 
     display_name = argv0;
 
@@ -159,27 +161,11 @@ void mpm_nt_eventlog_stderr_open(char *argv0, apr_pool_t *p)
 
     WaitForSingleObject(stderr_ready, INFINITE);
 
-    /* Flush stderr and unset its buffer, then commit and replace stderr.
-     * This is typically a noop for Win2K/XP since services with NULL std
-     * handles [but valid FILE *'s, oddly enough], but is required
-     * for NT 4.0 and to use this code outside of services.
-     */
-    fflush(stderr);
-    setvbuf(stderr, NULL, _IONBF, 0);
-    _commit(2 /* stderr */);
-    fd = _open_osfhandle((long) hPipeWrite,
-                         _O_WRONLY | _O_BINARY);
-    _dup2(fd, 2);
-    _close(fd);
-    _setmode(2, _O_BINARY);
-
-    /* hPipeWrite was _close()'ed above, and _dup2()'ed
-     * to fd 2 creating a new, inherited Win32 handle.
-     * Recover that real handle from fd 2.
-     */
-    hPipeWrite = (HANDLE)_get_osfhandle(2);
-
-    SetStdHandle(STD_ERROR_HANDLE, hPipeWrite);
+    if ((apr_file_open_stderr(&stderr_file, p) 
+             == APR_SUCCESS)
+     && (apr_os_file_put(&eventlog_file, &hPipeWrite, APR_WRITE, p)
+             == APR_SUCCESS))
+        apr_file_dup2(stderr_file, eventlog_file, p);
 
     /* The code above _will_ corrupt the StdHandle...
      * and we must do so anyways.  We set this up only
