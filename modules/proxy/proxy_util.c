@@ -2078,7 +2078,7 @@ static int is_socket_connected(apr_socket_t *socket)
         else
             return 0;
     }
-    else if (APR_STATUS_IS_EAGAIN(status)) {
+    else if (APR_STATUS_IS_EAGAIN(status) || APR_STATUS_IS_TIMEUP(status)) {
         return 1;
     }
     return 0;

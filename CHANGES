@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) proxy: Fix persistent backend connections
+     PR 43472 [Ruediger Pluem]
+
   *) mod_proxy_http: Correctly parse all Connection headers in proxy.
      PR 43509 [Nick Kew]
 
