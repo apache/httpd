@@ -1238,7 +1238,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     apr_table_t *save_table;
     int backend_broke = 0;
     static const char *hop_by_hop_hdrs[] =
-        {"Keep-Alive", "Proxy-Authenticate", "TE", "Trailers", "Upgrade", NULL};
+        {"Keep-Alive", "Proxy-Authenticate", "TE", "Trailer", "Upgrade", NULL};
     int i;
 
     bb = apr_brigade_create(p, c->bucket_alloc);
