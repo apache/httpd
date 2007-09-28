@@ -112,6 +112,24 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
+   * core log.c: Authored and Reviewed by both rplume and wrowe within 
+     the same 10 minutes, share only a single apr_file_t/fd between the
+     stderr and server_main->error_log to prevent any lingering write 
+     handles from hanging around in unexpected ways.
+        http://svn.apache.org/viewvc?view=rev&revision=580431
+      PR 43491, solution validated by reporter
+      +1: wrowe, rpluem
+
+   * mpm_winnt: Correct the approach to std file handles by simplifying
+     the approach and taking better advantage of apr's now-proper support.
+        http://svn.apache.org/viewvc?view=rev&revision=580433
+      Backported to 2.0 branch including the core log.c patch ;
+        http://people.apache.org/~wrowe/httpd-2.0-logging.patch
+      See the corresponding patch to apr for 1.2.12 (applies to 0.9)
+        http://people.apache.org/~wrowe/apr-1.2-win32-nohandle.patch
+      Validated by Randy Kobes and Tom Donovan
+      +1: wrowe
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
