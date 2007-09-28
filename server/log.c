@@ -421,6 +421,12 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *p /* plog */,
                 apr_pool_destroy(stderr_pool);
             stderr_pool = stderr_p;
             replace_stderr = 0;
+
+            /* We are safer having only a single apr_file_t reference 
+             * to the new main error logging stream
+             */
+            apr_file_close(s_main->error_log);
+            s_main->error_log = stderr_log;
         }
     }
     /* note that stderr may still need to be replaced with something
