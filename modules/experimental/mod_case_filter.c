@@ -91,7 +91,16 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
         APR_BRIGADE_INSERT_TAIL(pbbOut,pbktOut);
         }
 
-    /* XXX: is there any advantage to passing a brigade for each bucket? */
+    /* Q: is there any advantage to passing a brigade for each bucket? 
+     * A: obviously, it can cut down server resource consumption, if this
+     * experimental module was fed a file of 4MB, it would be using 8MB for
+     * the 'read' buckets and the 'write' buckets.
+     *
+     * Note it is more efficient to consume (destroy) each bucket as it's
+     * processed above than to do a single cleanup down here.  In any case,
+     * don't let our caller pass the same buckets to us, twice;
+     */
+    ap_briade_cleanup(pbbIn);
     return ap_pass_brigade(f->next,pbbOut);
     }
 
