@@ -100,7 +100,7 @@ static apr_status_t CaseFilterOutFilter(ap_filter_t *f,
      * processed above than to do a single cleanup down here.  In any case,
      * don't let our caller pass the same buckets to us, twice;
      */
-    ap_brigade_cleanup(pbbIn);
+    apr_brigade_cleanup(pbbIn);
     return ap_pass_brigade(f->next,pbbOut);
     }
 
