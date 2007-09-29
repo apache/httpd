@@ -187,6 +187,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Validated by Randy Kobes and Tom Donovan
       +1: wrowe
 
+   * mod_proxy: Fix persistent backend connections.
+     PR 43472
+     Trunk version of patch:
+        http://svn.apache.org/viewcvs.cgi?rev=580466&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
