@@ -168,6 +168,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: jim, rpluem
+      -1: niq: Due to PR#43519, this will generate 403s and lots of
+               new pollution in the error log!
 
    * core log.c: Authored and Reviewed by both rplume and wrowe within 
      the same 10 minutes, share only a single apr_file_t/fd between the
