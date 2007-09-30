@@ -101,7 +101,72 @@ static int proxy_http_canon(request_rec *r, char *url)
 typedef struct foo {
     apr_pool_t *pool;
     apr_table_t *table;
+    apr_time_t time;
 } foo;
+static ap_regex_t *warn_rx;
+static int clean_warning_headers(void *data, const char *key, const char *val)
+{
+    apr_table_t *headers = ((foo*)data)->table;
+    apr_pool_t *pool = ((foo*)data)->pool;
+    char *warning;
+    char *date;
+    apr_time_t warn_time;
+    const int nmatch = 3;
+    ap_regmatch_t pmatch[3];
+
+    if (headers == NULL) {
+        ((foo*)data)->table = headers = apr_table_make(pool, 2);
+    }
+/*
+ * Parse this, suckers!
+ *
+ *    Warning    = "Warning" ":" 1#warning-value
+ *
+ *    warning-value = warn-code SP warn-agent SP warn-text
+ *                                             [SP warn-date]
+ *
+ *    warn-code  = 3DIGIT
+ *    warn-agent = ( host [ ":" port ] ) | pseudonym
+ *                    ; the name or pseudonym of the server adding
+ *                    ; the Warning header, for use in debugging
+ *    warn-text  = quoted-string
+ *    warn-date  = <"> HTTP-date <">
+ *
+ * Buggrit, use a bloomin' regexp!
+ * (\d{3}\s+\S+\s+\".*?\"(\s+\"(.*?)\")?)  --> whole in $1, date in $3
+ */
+    while (!ap_regexec(warn_rx, val, nmatch, pmatch, 0)) {
+        warning = apr_pstrndup(pool, val+pmatch[0].rm_so,
+                               pmatch[0].rm_eo - pmatch[0].rm_so);
+        warn_time = 0;
+        if (pmatch[2].rm_eo > pmatch[2].rm_so) {
+            /* OK, we have a date here */
+            date = apr_pstrndup(pool, val+pmatch[2].rm_so,
+                                pmatch[2].rm_eo - pmatch[2].rm_so);
+            warn_time = apr_date_parse_http(date);
+        }
+        if (!warn_time || (warn_time == ((foo*)data)->time)) {
+            apr_table_addn(headers, key, warning);
+        }
+        val += pmatch[0].rm_eo;
+    }
+    return 1;
+}
+static apr_table_t *ap_proxy_clean_warnings(apr_pool_t *p, apr_table_t *headers)
+{
+   foo x;
+   x.pool = p;
+   x.table = NULL;
+   x.time = apr_date_parse_http(apr_table_get(headers, "Date"));
+   apr_table_do(clean_warning_headers, &x, headers, "Warning", NULL);
+   if (x.table != NULL) {
+       apr_table_unset(headers, "Warning");
+       return apr_table_overlay(p, headers, x.table);
+   }
+   else {
+        return headers;
+   }
+}
 static int clear_conn_headers(void *data, const char *key, const char *val)
 {
     apr_table_t *headers = ((foo*)data)->table;
@@ -1384,6 +1449,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             for (i=0; hop_by_hop_hdrs[i]; ++i) {
                 apr_table_unset(r->headers_out, hop_by_hop_hdrs[i]);
             }
+            /* Delete warnings with wrong date */
+            r->headers_out = ap_proxy_clean_warnings(p, r->headers_out);
 
             /* handle Via header in response */
             if (conf->viaopt != via_off && conf->viaopt != via_block) {
@@ -1766,11 +1833,17 @@ cleanup:
     }
     return status;
 }
-
+static apr_status_t warn_rx_free(void *p)
+{
+    ap_pregfree((apr_pool_t*)p, warn_rx);
+    return APR_SUCCESS;
+}
 static void ap_proxy_http_register_hook(apr_pool_t *p)
 {
     proxy_hook_scheme_handler(proxy_http_handler, NULL, NULL, APR_HOOK_FIRST);
     proxy_hook_canon_handler(proxy_http_canon, NULL, NULL, APR_HOOK_FIRST);
+    warn_rx = ap_pregcomp(p, "[0-9]{3}[ \t]+[^ \t]+[ \t]+\"[^\"]*\"([ \t]+\"([^\"]+)\")?", 0);
+    apr_pool_cleanup_register(p, p, warn_rx_free, NULL);
 }
 
 module AP_MODULE_DECLARE_DATA proxy_http_module = {
