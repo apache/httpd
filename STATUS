@@ -202,41 +202,46 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * scoreboard: improve error message on apr_shm_create failure
      PR 40037
      http://svn.apache.org/viewvc?view=rev&revision=578620
-     +1: niq
+     +1: niq, rpluem
 
    * HTTP protocol: Add "DefaultType none" option.
      PR 13986 and PR 16139
      http://svn.apache.org/viewvc?view=rev&revision=579991 (code)
      http://svn.apache.org/viewvc?view=rev&revision=580502 (docs)
-     +1: niq
+     +1: niq, rpluem
+     rpluem says: IMHO the DefaultType documentation is now somewhat confusing
+     (e.g. the server must add, but sometimes is better not to) and should be
+     rewritten.
      
    * mod_proxy_http: strip hop-by-hop response headers
      PR 43455
      http://svn.apache.org/viewvc?view=rev&revision=580044
      http://svn.apache.org/viewvc?view=rev&revision=580465
-     +1: niq
+     +1: niq, rpluem
 
    * mod_proxy_http: add Via header correctly (if enabled) to
      response, even where other Via headers exist.
      PR 19439
      http://svn.apache.org/viewvc?view=rev&revision=580060
-     +1: niq
+     +1: niq, rpluem
 
    * mod_proxy_http: Correctly parse all Connection headers in proxy.
      PR 43509
      http://svn.apache.org/viewvc?view=rev&revision=580457
      +1: niq
+     +0: rpluem says: Please give struct foo a meaningful name first.
 
    * mod_deflate: initialise inflate-out filter correctly when the
      first brigade contains no data buckets.
      PR 43512
      http://svn.apache.org/viewvc?view=rev&revision=580598
-     +1: niq, wrowe
+     +1: niq, wrowe, rpluem
 
    * mod_proxy_http: Remove Warning headers with wrong date
      PR 16138
      http://svn.apache.org/viewvc?view=rev&revision=580782
      +1: niq
+     +0: rpluem says: Please give struct foo a meaningful name first.
 
 PATCHES/ISSUES THAT ARE STALLED
 
