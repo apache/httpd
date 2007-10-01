@@ -79,6 +79,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_deflate: initialise inflate-out filter correctly when the
+     first brigade contains no data buckets.
+     PR 43512
+     http://svn.apache.org/viewvc?view=rev&revision=580598
+     +1: niq, wrowe, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -230,12 +235,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=580457
      +1: niq
      +0: rpluem says: Please give struct foo a meaningful name first.
-
-   * mod_deflate: initialise inflate-out filter correctly when the
-     first brigade contains no data buckets.
-     PR 43512
-     http://svn.apache.org/viewvc?view=rev&revision=580598
-     +1: niq, wrowe, rpluem
 
    * mod_proxy_http: Remove Warning headers with wrong date
      PR 16138
