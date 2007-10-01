@@ -240,6 +240,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -0: jim says: Agree with rpluem. Actually, I'd veto this patch
                    based simply on that naming if I could.
 
+   * mod_authz_host: Accept OPTIONS * without reference to filesystem
+     PR 43519
+     Trunk: n/a (LATER)
+     2.2.x: http://issues.apache.org/bugzilla/attachment.cgi?id=20902
+     +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
