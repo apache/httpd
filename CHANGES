@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_deflate: initialise inflate-out filter correctly when the
+     first brigade contains no data buckets.
+     PR 43512 [Nick Kew]
+
   *) mod_proxy_ajp: Ignore any ajp13 flush packets received before
      we send the response headers. See Tomcat PR 43478.
      [Jim Jagielski]
