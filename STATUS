@@ -229,12 +229,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=580457
      +1: niq
      +0: rpluem says: Please give struct foo a meaningful name first.
+     -0: jim says: Agree with rpluem. Actually, I'd veto this patch
+                   based simply on that naming if I could.
 
    * mod_proxy_http: Remove Warning headers with wrong date
      PR 16138
      http://svn.apache.org/viewvc?view=rev&revision=580782
      +1: niq
      +0: rpluem says: Please give struct foo a meaningful name first.
+     -0: jim says: Agree with rpluem. Actually, I'd veto this patch
+                   based simply on that naming if I could.
 
 PATCHES/ISSUES THAT ARE STALLED
 
