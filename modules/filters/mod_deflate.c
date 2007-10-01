@@ -293,6 +293,7 @@ typedef struct deflate_ctx_t
     int (*libz_end_func)(z_streamp);
     unsigned char *validation_buffer;
     apr_size_t validation_buffer_length;
+    int inflate_init;
 } deflate_ctx;
 
 /* Number of validation bytes (CRC and length) after the compressed data */
@@ -983,7 +984,6 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
 {
     int zlib_method;
     int zlib_flags;
-    int inflate_init = 1;
     apr_bucket *e;
     request_rec *r = f->r;
     deflate_ctx *ctx = f->ctx;
@@ -1067,7 +1067,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         ctx->stream.next_out = ctx->buffer;
         ctx->stream.avail_out = c->bufferSize;
 
-        inflate_init = 0;
+        ctx->inflate_init = 0;
     }
 
     while (!APR_BRIGADE_EMPTY(bb))
@@ -1172,7 +1172,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         apr_bucket_read(e, &data, &len, APR_BLOCK_READ);
 
         /* first bucket contains zlib header */
-        if (!inflate_init++) {
+        if (!ctx->inflate_init++) {
             if (len < 10) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                               "Insufficient data for inflate");
