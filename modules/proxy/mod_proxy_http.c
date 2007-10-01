@@ -98,16 +98,16 @@ static int proxy_http_canon(request_rec *r, char *url)
 }
 
 /* Clear all connection-based headers from the incoming headers table */
-typedef struct foo {
+typedef struct header_dptr {
     apr_pool_t *pool;
     apr_table_t *table;
     apr_time_t time;
-} foo;
+} header_dptr;
 static ap_regex_t *warn_rx;
 static int clean_warning_headers(void *data, const char *key, const char *val)
 {
-    apr_table_t *headers = ((foo*)data)->table;
-    apr_pool_t *pool = ((foo*)data)->pool;
+    apr_table_t *headers = ((header_dptr*)data)->table;
+    apr_pool_t *pool = ((header_dptr*)data)->pool;
     char *warning;
     char *date;
     apr_time_t warn_time;
@@ -115,7 +115,7 @@ static int clean_warning_headers(void *data, const char *key, const char *val)
     ap_regmatch_t pmatch[3];
 
     if (headers == NULL) {
-        ((foo*)data)->table = headers = apr_table_make(pool, 2);
+        ((header_dptr*)data)->table = headers = apr_table_make(pool, 2);
     }
 /*
  * Parse this, suckers!
@@ -145,7 +145,7 @@ static int clean_warning_headers(void *data, const char *key, const char *val)
                                 pmatch[2].rm_eo - pmatch[2].rm_so);
             warn_time = apr_date_parse_http(date);
         }
-        if (!warn_time || (warn_time == ((foo*)data)->time)) {
+        if (!warn_time || (warn_time == ((header_dptr*)data)->time)) {
             apr_table_addn(headers, key, warning);
         }
         val += pmatch[0].rm_eo;
@@ -154,7 +154,7 @@ static int clean_warning_headers(void *data, const char *key, const char *val)
 }
 static apr_table_t *ap_proxy_clean_warnings(apr_pool_t *p, apr_table_t *headers)
 {
-   foo x;
+   header_dptr x;
    x.pool = p;
    x.table = NULL;
    x.time = apr_date_parse_http(apr_table_get(headers, "Date"));
@@ -169,8 +169,8 @@ static apr_table_t *ap_proxy_clean_warnings(apr_pool_t *p, apr_table_t *headers)
 }
 static int clear_conn_headers(void *data, const char *key, const char *val)
 {
-    apr_table_t *headers = ((foo*)data)->table;
-    apr_pool_t *pool = ((foo*)data)->pool;
+    apr_table_t *headers = ((header_dptr*)data)->table;
+    apr_pool_t *pool = ((header_dptr*)data)->pool;
     const char *name;
     char *next = apr_pstrdup(pool, val);
     while (*next) {
@@ -187,7 +187,7 @@ static int clear_conn_headers(void *data, const char *key, const char *val)
 }
 static void ap_proxy_clear_connection(apr_pool_t *p, apr_table_t *headers)
 {
-    foo x;
+    header_dptr x;
     x.pool = p;
     x.table = headers;
     apr_table_unset(headers, "Proxy-Connection");
