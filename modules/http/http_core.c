@@ -237,7 +237,7 @@ static int http_create_request(request_rec *r)
 static int http_send_options(request_rec *r)
 {
     if ((r->method_number == M_OPTIONS) && r->uri && (r->uri[0] == '*')) {
-        return OK;           /* Send HTTP pong, without Allow header */
+        return DONE;           /* Send HTTP pong, without Allow header */
     }
     return DECLINED;
 }
