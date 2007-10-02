@@ -236,21 +236,11 @@ static int http_create_request(request_rec *r)
 
 static int http_send_options(request_rec *r)
 {
-    int rv;
-    if ((r->method_number != M_OPTIONS) || !r->uri || strcmp(r->uri, "*")) {
-        return DECLINED;
+    if ((r->method_number == M_OPTIONS) && r->uri && (r->uri[0] == '*')) {
+        return OK;           /* Send HTTP pong, without Allow header */
     }
-
-    ap_allow_standard_methods(r, MERGE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
-    rv = ap_send_http_options(r);
-
-    if (rv == OK) {
-        rv = DONE;
-    }
-
-    return rv;
+    return DECLINED;
 }
-
 
 static void register_hooks(apr_pool_t *p)
 {
