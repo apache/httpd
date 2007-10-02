@@ -372,7 +372,28 @@ static apr_status_t deflate_ctx_cleanup(void *data)
         ctx->libz_end_func(&ctx->stream);
     return APR_SUCCESS;
 }
-
+/* PR 39727: we're screwing up our clients if we leave a strong ETag
+ * header while transforming content.  A minimal fix that makes us
+ * protocol-compliant is to make it a weak ETag.  Whether we can
+ * use this ourselves (e.g. in mod_cache) is a different issue.
+ *
+ * Henrik Nordstrom suggests instead appending ";gzip", commenting:
+ *   "This should allows for easy bidirectional mapping, simplifying most
+ *   conditionals as no transformation of the entity body is needed to find
+ *   the etag, and the simple format makes it easier to trace should any
+ *   misunderstandings occur."
+ *
+ * We might consider such a strategy in future if we implement support
+ * for such a scheme.
+ */
+static void deflate_check_etag(request_rec *r)
+{
+    const char *etag = apr_table_get(r->headers_out, "ETag");
+    if (etag && (((etag[0] != 'W') && (etag[0] !='w')) || (etag[1] != '/'))) {
+        apr_table_set(r->headers_out, "ETag",
+                      apr_pstrcat(r->pool, "W/", etag, NULL));
+    }
+}
 static apr_status_t deflate_out_filter(ap_filter_t *f,
                                        apr_bucket_brigade *bb)
 {
@@ -570,6 +591,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
         apr_table_unset(r->headers_out, "Content-Length");
         apr_table_unset(r->headers_out, "Content-MD5");
+        deflate_check_etag(r);
 
         /* initialize deflate output buffer */
         ctx->stream.next_out = ctx->buffer;
@@ -1062,6 +1084,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         /* these are unlikely to be set anyway, but ... */
         apr_table_unset(r->headers_out, "Content-Length");
         apr_table_unset(r->headers_out, "Content-MD5");
+        deflate_check_etag(r);
 
         /* initialize inflate output buffer */
         ctx->stream.next_out = ctx->buffer;
