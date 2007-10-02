@@ -234,6 +234,24 @@ static int http_create_request(request_rec *r)
     return OK;
 }
 
+static int http_send_options(request_rec *r)
+{
+    int rv;
+    if ((r->method_number != M_OPTIONS) || !r->uri || strcmp(r->uri, "*")) {
+        return DECLINED;
+    }
+
+    ap_allow_standard_methods(r, MERGE_ALLOW, M_GET, M_OPTIONS, M_POST, -1);
+    rv = ap_send_http_options(r);
+
+    if (rv == OK) {
+        rv = DONE;
+    }
+
+    return rv;
+}
+
+
 static void register_hooks(apr_pool_t *p)
 {
     /**
@@ -252,6 +270,7 @@ static void register_hooks(apr_pool_t *p)
     }
 
     ap_hook_map_to_storage(ap_send_http_trace,NULL,NULL,APR_HOOK_MIDDLE);
+    ap_hook_map_to_storage(http_send_options,NULL,NULL,APR_HOOK_MIDDLE);
     ap_hook_http_scheme(http_scheme,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_default_port(http_port,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_create_request(http_create_request, NULL, NULL, APR_HOOK_REALLY_LAST);
