@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_deflate: Don't leave a strong ETag in place while transforming
+     the entity.
+     PR 39727 [Nick Kew]
+
   *) mod_proxy: Don't by default violate RFC2616 by setting
      Max-Forwards when the client didn't send it to us.
      Leave that as a configuration option.
