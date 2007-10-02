@@ -1087,20 +1087,29 @@ connections</description>
 <description>Maximium number of proxies that a request can be forwarded
 through</description>
 <syntax>ProxyMaxForwards <var>number</var></syntax>
-<default>ProxyMaxForwards 10</default>
+<default>ProxyMaxForwards -1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Available in Apache 2.0 and later</compatibility>
+<compatibility>Available in Apache 2.0 and later;
+	default behaviour changed in 2.2.7/2.3</compatibility>
 
 <usage>
     <p>The <directive>ProxyMaxForwards</directive> directive specifies the
     maximum number of proxies through which a request may pass, if there's no
-    <code>Max-Forwards</code> header supplied with the request. This is
-    set to prevent infinite proxy loops, or a DoS attack.</p>
+    <code>Max-Forwards</code> header supplied with the request. This may
+    be set to prevent infinite proxy loops, or a DoS attack.</p>
 
     <example><title>Example</title>
       ProxyMaxForwards 15
     </example>
+
+    <p>Note that setting <directive>ProxyMaxForwards</directive> is a
+    violation of the HTTP/1.1 protocol (RFC2616), which forbids a Proxy
+    setting <code>Max-Forwards</code> if the Client didn't set it.
+    Earlier Apache versions would always set it.  A negative
+    <directive>ProxyMaxForwards</directive> value, including the
+    default -1, gives you protocol-compliant behaviour, but may
+    leave you open to loops.</p>
 </usage>
 </directivesynopsis>
 
