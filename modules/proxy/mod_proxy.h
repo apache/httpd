@@ -94,7 +94,10 @@ enum enctype {
 #endif /*APR_CHARSET_EBCDIC*/
 
 /* default Max-Forwards header setting */
-#define DEFAULT_MAX_FORWARDS    10
+/* Set this to -1, which complies with RFC2616 by not setting
+ * max-forwards if the client didn't send it to us.
+ */
+#define DEFAULT_MAX_FORWARDS    -1
 
 /* static information about a remote proxy */
 struct proxy_remote {

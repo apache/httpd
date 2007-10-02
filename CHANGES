@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy: Don't by default violate RFC2616 by setting
+     Max-Forwards when the client didn't send it to us.
+     Leave that as a configuration option.
+     PR 16137 [Nick Kew]
+
   *) mod_proxy_http: Remove Warning headers with wrong date
      PR 16138 [Nick Kew]
 
