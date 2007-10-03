@@ -181,7 +181,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mpm_winnt: Correct the approach to std file handles by simplifying
      the approach and taking better advantage of apr's now-proper support.
         http://svn.apache.org/viewvc?view=rev&revision=580433
-      See the corresponding patch to apr for 1.2.12
+      See the corresponding patch to apr for 1.2.12 (already committed,
+      under dispute by Joe Orton, see dev@apr for relevant discussion);
         http://people.apache.org/~wrowe/apr-1.2-win32-nohandle.patch
       and be sure to catch the core log.c patch as well
         http://svn.apache.org/viewvc?view=rev&revision=580437
