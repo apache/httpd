@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_ext_filter: Prevent a hang on Windows when the filter
+     input data is pipelined. 
+     PR 29901 [Eric Covener]
+
   *) mod_deflate: Don't leave a strong ETag in place while transforming
      the entity.
      PR 39727 [Nick Kew]

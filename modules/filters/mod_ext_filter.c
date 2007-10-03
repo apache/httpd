@@ -485,6 +485,14 @@ static apr_status_t init_ext_filter_process(ap_filter_t *f)
         return rc;
     }
 
+    rc = apr_file_pipe_timeout_set(ctx->proc->out, 0);
+    if (rc != APR_SUCCESS) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, f->r,
+                      "couldn't set child stdin pipe timeout to 0 for filter %s ",
+                      ctx->filter->name);
+        return rc;
+    }
+
     apr_pool_note_subprocess(ctx->p, ctx->proc, APR_KILL_AFTER_TIMEOUT);
 
     /* We don't want the handle to the child's stdin inherited by any
