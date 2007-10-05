@@ -687,20 +687,29 @@ proxied resources</td></tr>
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maximium number of proxies that a request can be forwarded
 through</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyMaxForwards <var>number</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyMaxForwards 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>ProxyMaxForwards -1</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0 and later</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.0 and later;
+	default behaviour changed in 2.2.7/2.3</td></tr>
 </table>
     <p>The <code class="directive">ProxyMaxForwards</code> directive specifies the
     maximum number of proxies through which a request may pass, if there's no
-    <code>Max-Forwards</code> header supplied with the request. This is
-    set to prevent infinite proxy loops, or a DoS attack.</p>
+    <code>Max-Forwards</code> header supplied with the request. This may
+    be set to prevent infinite proxy loops, or a DoS attack.</p>
 
     <div class="example"><h3>Example</h3><p><code>
       ProxyMaxForwards 15
     </code></p></div>
+
+    <p>Note that setting <code class="directive">ProxyMaxForwards</code> is a
+    violation of the HTTP/1.1 protocol (RFC2616), which forbids a Proxy
+    setting <code>Max-Forwards</code> if the Client didn't set it.
+    Earlier Apache versions would always set it.  A negative
+    <code class="directive">ProxyMaxForwards</code> value, including the
+    default -1, gives you protocol-compliant behaviour, but may
+    leave you open to loops.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>

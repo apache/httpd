@@ -364,11 +364,10 @@ person in</a></h2>
     problems, you may wish to store your passwords somewhere else, such
     as in a database.</p>
 
-    <p><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> and <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code>
-    are two modules which make this possible. Rather than selecting
-    <code class="directive"><a href="../mod/mod_auth_basic.html#authbasicsource">AuthBasicSource</a></code> file,
-    instead you can choose <code>dbm</code> or <code>dbd</code> as your
-    storage format.</p>
+    <p><code class="module"><a href="../mod/mod_authn_dbm.html">mod_authn_dbm</a></code> and <code class="module"><a href="../mod/mod_authn_dbd.html">mod_authn_dbd</a></code> are two
+    modules which make this possible. Rather than selecting <code><code class="directive"><a href="../mod/mod_auth_basic.html#authbasicprovider">AuthBasicProvider</a></code> file</code>, instead
+    you can choose <code>dbm</code> or <code>dbd</code> as your storage
+    format.</p>
 
     <p>To select a dbd file rather than a text file, for example:</p>
 
