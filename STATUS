@@ -185,6 +185,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      Not in or needed at trunk/, as apr 1.3.0 has the proper fix.
        http://people.apache.org/~wrowe/httpd-2.0-2.2-procattr-bugfix-log.c.patch
      +1: wrowe
+     rpluem says: Is this really the correct thing to do on UNIX? I am not sure
+     if all dup2 implementation notice that both fd's are the same. Otherwise
+     they close stdout/stderr first and dup a then closed fd in stdout/stderr,
+     leaving us without stdout/stderr in the child.
 
    * mod_proxy: Fix persistent backend connections.
      PR 43472
