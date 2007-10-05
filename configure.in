@@ -346,8 +346,8 @@ AC_MINIX
 # Ensure that satisfactory versions of apr and apr-util are 
 # found if external copies are configured.
 if test "${apr_found}" = "yes"; then
-  # Require APR 1.2.x otherwise fail
-  APACHE_CHECK_APxVER([apr], 1, 2)
+  # Require APR 1.3.x otherwise fail
+  APACHE_CHECK_APxVER([apr], 1, 3)
 fi
 
 if test "${apu_found}" = "yes"; then
