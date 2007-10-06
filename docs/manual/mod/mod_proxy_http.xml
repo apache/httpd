@@ -52,4 +52,45 @@
 <seealso><module>mod_proxy</module></seealso>
 <seealso><module>mod_proxy_connect</module></seealso>
 
+<section id="env"><title>Environment Variables</title>
+    <p>In addition to the configuration directives that control the
+    behaviour of <module>mod_proxy</module>, there are a number of
+    <dfn>environment variables</dfn> that control the HTTP protocol
+    provider:</p>
+    <dl>
+        <dt>proxy-sendextracrlf</dt>
+        <dd>Causes proxy to send an extra CR-LF newline on the end of a
+        request.  This is a workaround for a bug in some servers.</dd>
+        <dt>force-proxy-request-1.0</dt>
+        <dd>Forces the proxy to send requests to the backend as HTTP/1.0
+        and disables HTTP/1.1 features.</dd>
+        <dt>proxy-nokeepalive</dt>
+        <dd>Forces the proxy to close the backend connection after
+        each request.</dd>
+        <dt>Proxy-Chain-Auth</dt>
+        <dd>If the proxy requires authentication, it will read and
+        consume the proxy authentication credentials sent by the client.
+        With <var>Proxy-Chain-Auth</var> it will <em>also</em> forward
+        the credentials to the next proxy in the chain.  This may
+        be necessary if you have a chain of proxies that share
+        authentication information.  <strong>Security Warning:</strong>
+        Do not set this unless you know you need it, as it forwards
+        sensitive information!</dd>
+        <dt>proxy-sendcl</dt>
+        <dd>HTTP/1.0 required all HTTP requests that include a body
+        (e.g. POST requests) to include a <var>Content-Length</var>
+        header.  This environment variable forces the Apache proxy to
+        send this header to the backend server, regardless of what the
+        Client sent to the proxy.  It ensures compatibility when
+        proxying for an HTTP/1.0 or unknown backend.  However, it
+        may require the entire request to be buffered by the proxy,
+        so it becomes very inefficient for large requests.</dd>
+        <dt>proxy-sendchunks or proxy-sendchunked</dt>
+        <dd>This is the opposite of <var>proxy-sendcl</var>.  It allows
+        request bodies to be sent to the backend using chunked transfer
+        encoding.  This allows the request to be efficiently streamed,
+        but requires that the backend server supports HTTP/1.1.</dd>
+    </dl>
+</section>
+
 </modulesynopsis>
