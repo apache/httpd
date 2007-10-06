@@ -186,6 +186,9 @@
       critical because clients can only contact the hosts that you
       have specifically configured.</p>
 
+      <p><strong>See Also</strong> the <a href="mod_proxy_http.html#env"
+      >Proxy-Chain-Auth</a> environment variable.</p>
+
     </section> <!-- /access -->
 
     <section id="startup"><title>Slow Startup</title>
