@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) scoreboard: improve error message on apr_shm_create failure
+     PR 40037 [Nick Kew]
+
   *) proxy: Fix persistent backend connections.
      PR 43472 [Ruediger Pluem]
 
