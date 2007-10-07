@@ -692,8 +692,10 @@ static int proxy_handler(request_rec *r)
         /* set configured max-forwards */
         maxfwd = conf->maxfwd;
     }
-    apr_table_set(r->headers_in, "Max-Forwards",
-                  apr_psprintf(r->pool, "%ld", (maxfwd > 0) ? maxfwd : 0));
+    if (maxfwd > 0) {
+        apr_table_set(r->headers_in, "Max-Forwards",
+                      apr_psprintf(r->pool, "%ld", (maxfwd > 0) ? maxfwd : 0));
+    }
 
     if (r->method_number == M_TRACE) {
         core_server_config *coreconf = (core_server_config *)
@@ -1440,9 +1442,6 @@ static const char *
     proxy_server_conf *psf =
     ap_get_module_config(parms->server->module_config, &proxy_module);
     long s = atol(arg);
-    if (s < 0) {
-        return "ProxyMaxForwards must be greater or equal to zero..";
-    }
 
     psf->maxfwd = s;
     psf->maxfwd_set = 1;

@@ -79,15 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Don't by default violate RFC2616 by setting
-     Max-Forwards when the client didn't send it to us.
-     PR 16137
-     http://svn.apache.org/viewvc?view=rev&revision=581117 (code)
-     http://svn.apache.org/viewvc?view=rev&revision=581253 (docs)
-     +1: niq, rpluem, trawick (who assumes that the "/2.3" in "default
-         behaviour changed in 2.2.7/2.3" will be stripped from trunk 
-         and 2.2.x as part of the backport operation)
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
