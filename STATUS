@@ -243,9 +243,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_http: Remove Warning headers with wrong date
      PR 16138
      http://svn.apache.org/viewvc?view=rev&revision=580782
-     +1: niq
-     -1: rpluem says: Patch does not apply cleanly even if r580457 is
-     ported back first.
+     +1: niq, rpluem
      niq: changed the name.  Resisted temptation to use "pooltabletime".
      rpluem says: Revision of name change is r581030.
 
