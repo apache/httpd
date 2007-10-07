@@ -132,6 +132,7 @@
  * 20060905.5 (2.3.0-dev)  Added ap_mpm_safe_kill()
  * 20070823.0 (2.3.0-dev)  Removed ap_all_available_mutexes_string,
  *                         ap_available_mutexes_string for macros
+ * 20070823.1 (2.3.0-dev)  add ap_send_interim_response()
  *
  */
 
@@ -140,7 +141,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20070823
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
