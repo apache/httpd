@@ -79,14 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Fix persistent backend connections.
-     PR 43472
-     Trunk version of patch:
-        http://svn.apache.org/viewcvs.cgi?rev=580466&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: rpluem, niq, trawick
-
    * scoreboard: improve error message on apr_shm_create failure
      PR 40037
      http://svn.apache.org/viewvc?view=rev&revision=578620
