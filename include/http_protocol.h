@@ -664,6 +664,12 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew, const request_rec *r
  * @param sub_r Subrequest that is now compete
  */
 AP_DECLARE(void) ap_finalize_sub_req_protocol(request_rec *sub_r);
+
+/**
+ * Send an interim (HTTP 1xx) response immediately.
+ * @param r The request
+ */
+AP_DECLARE(void) ap_send_interim_response(request_rec *r);
                                                                                 
 #ifdef __cplusplus
 }
