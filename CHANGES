@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_proxy: Don't by default violate RFC2616 by setting
+     Max-Forwards when the client didn't send it to us.
+     Leave that as a configuration option.
+     PR 16137 [Nick Kew]
+
   *) scoreboard: improve error message on apr_shm_create failure
      PR 40037 [Nick Kew]
 
