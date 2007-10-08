@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_http: Check but don't escape/unescape forward-proxied URLs
+     PR 42592 [Nick Kew]
+
+  *) mpm winnt: fix null pointer dereference
+     PR 42572 [Davi Arnaut]
+
   *) http_core: OPTIONS * no longer maps to local storage or URI
      space. PR 43519 [Jim Jagielski]
 
