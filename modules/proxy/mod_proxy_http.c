@@ -36,6 +36,9 @@ static int proxy_http_canon(request_rec *r, char *url)
     const char *err;
     const char *scheme;
     apr_port_t port, def_port;
+    const char *p;
+    const char *allowed = "~$-_.+!*'(),;:@&=/"; /* allowed+reserved from
+                                                   ap_proxy_canonenc */
 
     /* ap_port_of_scheme() */
     if (strncasecmp(url, "http:", 5) == 0) {
@@ -80,7 +83,30 @@ static int proxy_http_canon(request_rec *r, char *url)
         search = r->args;
 
     /* process path */
-    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0, r->proxyreq);
+    /* In a reverse proxy, our URL has been processed, so canonicalise
+     * In a forward proxy, we have and MUST NOT MANGLE the original,
+     * so just check it for disallowed chars.
+     */
+    switch (r->proxyreq) {
+    default: /* wtf are we doing here? */
+    case PROXYREQ_REVERSE:
+        path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0, r->proxyreq);
+        break;
+    case PROXYREQ_PROXY:
+        for (p = url; *p; ++p) {
+            if (!apr_isalnum(*p) && !strchr(allowed, *p)) {
+                if (*p == '%' && apr_isxdigit(p[1]) && apr_isxdigit(p[2])) {
+                    p += 2; /* an encoded char */
+                }
+                else {
+                    return HTTP_BAD_REQUEST; /* reject bad char in URL */
+                }
+            }
+        }
+        path = url;
+        break;
+    }
+
     if (path == NULL)
         return HTTP_BAD_REQUEST;
 
