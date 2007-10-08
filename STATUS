@@ -152,6 +152,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +0: jim: I'm curious that if this would result in some
                "regressions" for some users who either depend on
                the old behavior or have worked around it...
+          rpluem answers: If r574684 is backported (see below) these users can
+          fix it without workarounds and a clear and promised behaviour.
+          Relying on the above is relying on a buggy iundocumented behaviour,
+          but yes I do this sometimes by myself :-).
 
     * mod_rewrite: Add the novary flag to RewriteCond in order to prevent
       the appending of HTTP headers used in a rewrite condition to the Vary
