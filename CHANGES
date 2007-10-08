@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_proxy_http: strip hop-by-hop response headers
+     PR 43455 [Nick Kew]
+
   *) mod_proxy: Don't by default violate RFC2616 by setting
      Max-Forwards when the client didn't send it to us.
      Leave that as a configuration option.
