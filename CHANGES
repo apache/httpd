@@ -18,17 +18,8 @@ Changes with Apache 2.3.0
      the entity.
      PR 39727 [Nick Kew]
 
-  *) mod_proxy: Don't by default violate RFC2616 by setting
-     Max-Forwards when the client didn't send it to us.
-     Leave that as a configuration option.
-     PR 16137 [Nick Kew]
-
   *) mod_proxy_http: Remove Warning headers with wrong date
      PR 16138 [Nick Kew]
-
-  *) mod_deflate: initialise inflate-out filter correctly when the
-     first brigade contains no data buckets.
-     PR 43512 [Nick Kew]
 
   *) proxy: Fix persistent backend connections
      PR 43472 [Ruediger Pluem]
@@ -53,14 +44,8 @@ Changes with Apache 2.3.0
      or remote port can be logged.  PR 43415.  [Adam Hasselbalch Hansen 
      <ahh@one.com>, Ruediger Pluem, Jeff Trawick]
 
-  *) scoreboard: improve error message on apr_shm_create failure
-     PR 40037 [Nick Kew]
-
   *) mod_rewrite: Add the novary flag to RewriteCond.
      [Ruediger Pluem]
-
-  *) mod_proxy_http: Propagate Proxy-Authorization header correctly.
-     PR 25947 [Nick Kew]
 
   *) mod_rewrite: Add option to suppress URL unescaping
      PR 34602 [Guenther Gsenger <guenther.gsenger gmail.com>]
