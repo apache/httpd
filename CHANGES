@@ -21,9 +21,6 @@ Changes with Apache 2.3.0
   *) mod_proxy_http: Remove Warning headers with wrong date
      PR 16138 [Nick Kew]
 
-  *) proxy: Fix persistent backend connections
-     PR 43472 [Ruediger Pluem]
-
   *) mod_proxy_http: Correctly parse all Connection headers in proxy.
      PR 43509 [Nick Kew]
 
