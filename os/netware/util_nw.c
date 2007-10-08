@@ -18,7 +18,7 @@
 #include "http_log.h"
 
 #include <netware.h>
-#include <nks\netware.h>
+#include <nks/netware.h>
 
 int nlmUnloadSignaled(int wait);
 event_handle_t eh;
