@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) http_core: OPTIONS * no longer maps to local storage or URI
+     space. PR 43519 [Jim Jagielski]
+
   *) mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx)
      responses from the backend according to RFC2616.  But make it
      configurable in case something breaks on it.
