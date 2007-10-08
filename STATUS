@@ -79,6 +79,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * core log.c: Authored and Reviewed by both rplume and wrowe within 
+     the same 10 minutes, share only a single apr_file_t/fd between the
+     stderr and server_main->error_log to prevent any lingering write 
+     handles from hanging around in unexpected ways.
+        http://svn.apache.org/viewvc?view=rev&revision=580437
+      PR 43491, solution validated by reporter
+      +1: wrowe, rpluem, jim
+
+   * mod_proxy_http: strip hop-by-hop response headers
+     PR 43455
+     http://svn.apache.org/viewvc?view=rev&revision=580044
+     http://svn.apache.org/viewvc?view=rev&revision=580465
+     +1: niq, rpluem, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -170,14 +184,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       niq says: -1 while we have PR#43519; +1 contingent on a fix
       to that being backported.
 
-   * core log.c: Authored and Reviewed by both rplume and wrowe within 
-     the same 10 minutes, share only a single apr_file_t/fd between the
-     stderr and server_main->error_log to prevent any lingering write 
-     handles from hanging around in unexpected ways.
-        http://svn.apache.org/viewvc?view=rev&revision=580437
-      PR 43491, solution validated by reporter
-      +1: wrowe, rpluem, jim
-
    * core log.c: Work around possible solutions rejected by apr for
      the old implementation of apr_proc_create(), and explicitly pass
      the output and error channels to all log processes created.
@@ -199,12 +205,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      (e.g. the server must add, but sometimes is better not to) and should be
      rewritten.
      
-   * mod_proxy_http: strip hop-by-hop response headers
-     PR 43455
-     http://svn.apache.org/viewvc?view=rev&revision=580044
-     http://svn.apache.org/viewvc?view=rev&revision=580465
-     +1: niq, rpluem, jim
-
    * mod_proxy_http: add Via header correctly (if enabled) to
      response, even where other Via headers exist.
      PR 19439
