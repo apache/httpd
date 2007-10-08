@@ -220,7 +220,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      URI space. PR 43519.
      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_core.c?r1=581358&r2=581389
      http://svn.apache.org/viewvc?view=rev&revision=582795
-     +1: jim
+     +1: jim, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
