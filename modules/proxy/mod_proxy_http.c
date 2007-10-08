@@ -1235,6 +1235,9 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     int pread_len = 0;
     apr_table_t *save_table;
     int backend_broke = 0;
+    static const char *hop_by_hop_hdrs[] =
+        {"Keep-Alive", "Proxy-Authenticate", "TE", "Trailer", "Upgrade", NULL};
+    int i;
 
     bb = apr_brigade_create(p, c->bucket_alloc);
 
@@ -1374,6 +1377,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 ap_set_content_type(r, apr_pstrdup(p, buf));
             }
             ap_proxy_pre_http_request(origin,rp);
+
+            /* Clear hop-by-hop headers */
+            for (i=0; hop_by_hop_hdrs[i]; ++i) {
+                apr_table_unset(r->headers_out, hop_by_hop_hdrs[i]);
+            }
 
             /* handle Via header in response */
             if (conf->viaopt != via_off && conf->viaopt != via_block) {
