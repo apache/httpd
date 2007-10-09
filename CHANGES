@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) http_core: OPTIONS * no longer maps to local storage or URI
+     space. PR 43519 [Jim Jagielski]
+
   *) mod_proxy_http: strip hop-by-hop response headers
      PR 43455 [Nick Kew]
 
