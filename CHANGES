@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_proxy_http: add Via header correctly (if enabled) to
+     response, even where other Via headers exist.
+     PR 19439 [Nick Kew]
+
   *) http_core: OPTIONS * no longer maps to local storage or URI
      space. PR 43519 [Jim Jagielski]
 
