@@ -17,6 +17,7 @@
 /* HTTP routines for Apache proxy */
 
 #include "mod_proxy.h"
+#include "ap_regex.h"
 
 module AP_MODULE_DECLARE_DATA proxy_http_module;
 
