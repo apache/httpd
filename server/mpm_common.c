@@ -699,7 +699,7 @@ static apr_status_t dummy_connection(ap_pod_t *pod)
      * adminstrators can track down the cause of the odd-looking
      * requests in their logs.
      */
-    srequest = apr_pstrcat(p, "GET / HTTP/1.0\r\nUser-Agent: ",
+    srequest = apr_pstrcat(p, "OPTIONS * HTTP/1.0\r\nUser-Agent: ",
                            ap_get_server_banner(),
                            " (internal dummy connection)\r\n\r\n", NULL);
 
