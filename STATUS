@@ -170,6 +170,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           fix it without workarounds and a clear and promised behaviour.
           Relying on the above is relying on a buggy iundocumented behaviour,
           but yes I do this sometimes by myself :-).
+      +1: jim: iff r574684 is also backported
 
     * mod_rewrite: Add the novary flag to RewriteCond in order to prevent
       the appending of HTTP headers used in a rewrite condition to the Vary
@@ -178,7 +179,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=574684&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem
+      +1: rpluem, jim
 
    * core log.c: Work around possible solutions rejected by apr for
      the old implementation of apr_proc_create(), and explicitly pass
@@ -205,7 +206,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      response, even where other Via headers exist.
      PR 19439
      http://svn.apache.org/viewvc?view=rev&revision=580060
-     +1: niq, rpluem
+     +1: niq, rpluem, jim
 
    * mod_proxy_http: Correctly parse all Connection headers in proxy.
      PR 43509
@@ -217,6 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -1: jim. r580457 and r581030 conflict. Likely because of
               r580782
      niq: separate 2.2.x patch fixes jim's objection
+     +1: jim
 
    * mod_proxy_http: Remove Warning headers with wrong date
      PR 16138
@@ -228,6 +230,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -1: jim nasty conflict with r580457... backports should be
          self contained
      niq: separate 2.2.x patch fixes jim's objection
+     +1: jim
 
    * mpm_winnt: Fix null pointer dereference
      PR 42572
