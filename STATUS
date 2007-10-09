@@ -79,6 +79,20 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * http_core: OPTIONS * no longer tries to map to local storage or
+     URI space. PR 43519.
+     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_core.c?r1=581358&r2=581389
+     http://svn.apache.org/viewvc?view=rev&revision=582795
+     +1: jim, rpluem, niq
+
+   * mpm_common: Use OPTIONS * instead of GET / for dummy_connection.
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=517233
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: jim, rpluem
+      niq says: -1 while we have PR#43519; +1 contingent on a fix
+      to that being backported.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -166,15 +180,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem
 
-   * mpm_common: Use OPTIONS * instead of GET / for dummy_connection.
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=517233
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: jim, rpluem
-      niq says: -1 while we have PR#43519; +1 contingent on a fix
-      to that being backported.
-
    * core log.c: Work around possible solutions rejected by apr for
      the old implementation of apr_proc_create(), and explicitly pass
      the output and error channels to all log processes created.
@@ -220,11 +225,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -1: jim nasty conflict with r580457... backports should be
          self contained
 
-   * http_core: OPTIONS * no longer tries to map to local storage or
-     URI space. PR 43519.
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_core.c?r1=581358&r2=581389
-     http://svn.apache.org/viewvc?view=rev&revision=582795
-     +1: jim, rpluem
+   * mpm_winnt: Fix null pointer dereference
+     PR 42572
+     http://svn.apache.org/viewvc/httpd/httpd/trunk/server/mpm/winnt/child.c?r1=505027&r2=563489
+     +1: niq (this is clear enough to vote 'blind')
+
+   * mod_proxy_http: Don't mangle proxied URLs
+     PR 42592
+     http://svn.apache.org/viewvc?view=rev&revision=583002
+     +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
