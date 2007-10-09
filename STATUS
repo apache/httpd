@@ -79,12 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_http: add Via header correctly (if enabled) to
-     response, even where other Via headers exist.
-     PR 19439
-     http://svn.apache.org/viewvc?view=rev&revision=580060
-     +1: niq, rpluem, jim
-
    * mod_proxy_http: Correctly parse all Connection headers in proxy.
      PR 43509
      trunk: http://svn.apache.org/viewvc?view=rev&revision=580457
