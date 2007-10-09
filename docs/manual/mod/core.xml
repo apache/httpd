@@ -294,7 +294,6 @@ content-type is <code>text/plain</code> or <code>text/html</code></description>
       <directive module="core">ForceType</directive>. Setting the
       content type within a (non-nph) CGI script is also safe.</p>
 
-      <p>The by-type output filters are never applied on proxy requests.</p>
     </note>
 </usage>
 
