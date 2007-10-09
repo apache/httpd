@@ -209,21 +209,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * mod_proxy_http: Correctly parse all Connection headers in proxy.
      PR 43509
-     http://svn.apache.org/viewvc?view=rev&revision=580457
+     trunk: http://svn.apache.org/viewvc?view=rev&revision=580457
+     2.2.x: http://people.apache.org/~niq/43509.patch
      +1: niq, rpluem
      niq: changed the name.  Resisted temptation to use "pooltabletime".
      rpluem says: Revision of name change is r581030.
      -1: jim. r580457 and r581030 conflict. Likely because of
               r580782
+     niq: separate 2.2.x patch fixes jim's objection
 
    * mod_proxy_http: Remove Warning headers with wrong date
      PR 16138
-     http://svn.apache.org/viewvc?view=rev&revision=580782
+     trunk: http://svn.apache.org/viewvc?view=rev&revision=580782
+     2.2.x: http://people.apache.org/~niq/16138.patch
      +1: niq, rpluem
      niq: changed the name.  Resisted temptation to use "pooltabletime".
      rpluem says: Revision of name change is r581030.
      -1: jim nasty conflict with r580457... backports should be
          self contained
+     niq: separate 2.2.x patch fixes jim's objection
 
    * mpm_winnt: Fix null pointer dereference
      PR 42572
