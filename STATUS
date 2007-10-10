@@ -197,9 +197,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=583002
      +1: niq
 
+   * core: backport ap_send_interim_response API
+     http://svn.apache.org/viewvc?view=rev&revision=582630
+     http://svn.apache.org/viewvc?view=rev&revision=582652
+     +1: niq
+
    * mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx) responses
      PR 16518
      http://svn.apache.org/viewvc?view=rev&revision=582631
+     +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
