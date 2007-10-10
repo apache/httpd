@@ -135,7 +135,7 @@ match ($0,/@nonssl_.*@/) {
 
 
 END {
-    if (!BSDSKT) {
+    if ((ARGV[1] ~ /httpd.conf.in/) && !BSDSKT) { 
        print ""
        print "#"
        print "# SecureListen: Allows you to securely bind Apache to specific IP addresses "
