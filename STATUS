@@ -150,6 +150,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        +1: wrowe, colm
        -1: jim (does not cleanly backport)
 
+    *) Backport 327179; PR 31226; allow ap_add_output_filters_by_type to handle
+       proxied requests.  Basic tests by jorton and [rpluem] show that this works, 
+       nobody can actually remember why this limitation was introduced at all 
+       (r94028) and the mailing list archives also gave no hint.
+         http://svn.apache.org/viewvc?view=rev&revision=327179
+                 
+       +0: covener
+             do we need to make people opt-in for this behavior to 
+             backport it to 2.0.x? What mechanism?
+
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
     *) mod_headers: Support {...}s tag for SSL variable lookup.
