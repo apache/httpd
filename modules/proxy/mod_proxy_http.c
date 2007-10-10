@@ -37,9 +37,6 @@ static int proxy_http_canon(request_rec *r, char *url)
     const char *err;
     const char *scheme;
     apr_port_t port, def_port;
-    const char *p;
-    const char *allowed = "~$-_.+!*'(),;:@&=/"; /* allowed+reserved from
-                                                   ap_proxy_canonenc */
 
     /* ap_port_of_scheme() */
     if (strncasecmp(url, "http:", 5) == 0) {
@@ -94,15 +91,8 @@ static int proxy_http_canon(request_rec *r, char *url)
         path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0, r->proxyreq);
         break;
     case PROXYREQ_PROXY:
-        for (p = url; *p; ++p) {
-            if (!apr_isalnum(*p) && !strchr(allowed, *p)) {
-                if (*p == '%' && apr_isxdigit(p[1]) && apr_isxdigit(p[2])) {
-                    p += 2; /* an encoded char */
-                }
-                else {
-                    return HTTP_BAD_REQUEST; /* reject bad char in URL */
-                }
-            }
+        if (ap_proxy_isvalidenc(url, NULL) != APR_SUCCESS) {
+            return HTTP_BAD_REQUEST;
         }
         path = url;
         break;
