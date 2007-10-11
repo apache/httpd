@@ -190,7 +190,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mpm_winnt: Fix null pointer dereference
      PR 42572
      http://svn.apache.org/viewvc/httpd/httpd/trunk/server/mpm/winnt/child.c?r1=505027&r2=563489
-     +1: niq (this is clear enough to vote 'blind')
+     +1: niq (this is clear enough to vote 'blind'), rpluem
 
    * mod_proxy_http: Don't mangle proxied URLs
      PR 42592
@@ -200,18 +200,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * core: backport ap_send_interim_response API
      http://svn.apache.org/viewvc?view=rev&revision=582630
      http://svn.apache.org/viewvc?view=rev&revision=582652
-     +1: niq
+     +1: niq, rpluem
 
    * mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx) responses
      PR 16518
      http://svn.apache.org/viewvc?view=rev&revision=582631
      +1: niq
+     rpluem says: There is a conflict with the documentation (I don't know why).
+     Once fixed I am +1.
 
     * modules/proxy/mod_proxy_http.c (ap_proxy_http_register_hook): Fix
       apr_pool_cleanup_register() invocation added in r583202, which was
       causing every apr_proc_create() call to segfault.
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&revision=583813
+     +1: rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
