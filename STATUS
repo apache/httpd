@@ -200,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * core: backport ap_send_interim_response API
      http://svn.apache.org/viewvc?view=rev&revision=582630
      http://svn.apache.org/viewvc?view=rev&revision=582652
-     +1: niq, rpluem
+     +1: niq
 
    * mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx) responses
      PR 16518
