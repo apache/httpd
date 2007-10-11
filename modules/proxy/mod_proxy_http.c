@@ -91,9 +91,6 @@ static int proxy_http_canon(request_rec *r, char *url)
         path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0, r->proxyreq);
         break;
     case PROXYREQ_PROXY:
-        if (ap_proxy_isvalidenc(url, NULL) != APR_SUCCESS) {
-            return HTTP_BAD_REQUEST;
-        }
         path = url;
         break;
     }
