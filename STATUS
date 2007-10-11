@@ -207,6 +207,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=582631
      +1: niq
 
+    * modules/proxy/mod_proxy_http.c (ap_proxy_http_register_hook): Fix
+      apr_pool_cleanup_register() invocation added in r583202, which was
+      causing every apr_proc_create() call to segfault.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=583813
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
