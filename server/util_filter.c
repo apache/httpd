@@ -582,12 +582,11 @@ AP_DECLARE_NONSTD(apr_status_t) ap_filter_flush(apr_bucket_brigade *bb,
 
     rv = ap_pass_brigade(f, bb);
 
-    /* apr_brigade_write et all require that the flush callback
-     * ensures the brigade is empty upon return; otherwise the brigade
-     * may be left with a transient bucket whose contents have fallen
-     * out of scope.  Call cleanup here unconditionally, to avoid the
-     * issue even in error cases where some filter fails and leaves a
-     * non-empty brigade. */
+    /* Before invocation of the flush callback, apr_brigade_write et
+     * al may place transient buckets in the brigade, which will fall
+     * out of scope after returning.  Empty the brigade here, to avoid
+     * issues with leaving such buckets in the brigade if some filter
+     * fails and leaves a non-empty brigade. */
     apr_brigade_cleanup(bb);
 
     return rv;
