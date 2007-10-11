@@ -133,7 +133,6 @@
  * 20070823.0 (2.3.0-dev)  Removed ap_all_available_mutexes_string,
  *                         ap_available_mutexes_string for macros
  * 20070823.1 (2.3.0-dev)  add ap_send_interim_response()
- * 20070823.2 (2.3.0-dev)  add ap_proxy_isvalidenc()
  *
  */
 

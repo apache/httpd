@@ -135,33 +135,6 @@ PROXY_DECLARE(void) ap_proxy_c2hex(int ch, char *x)
 }
 
 /*
- * Confirm that a URL-encoded string only contains
- * valid encoding, valid chars are passed in allowed.
- * If allowed is NULL, we use useful default.
- */
-PROXY_DECLARE(apr_status_t)ap_proxy_isvalidenc(const char *url,
-                                               const char *allowed)
-
-{
-    if (!allowed) {
-        allowed = "~$-_.+!*'(),;:@&=/"; /* allowed+reserved from
-                                           ap_proxy_canonenc */
-    }
-
-    for ( ; *url; ++url) {
-        if (!apr_isalnum(*url) && !ap_strchr_c(allowed, *url)) {
-            if (*url == '%' && apr_isxdigit(url[1]) && apr_isxdigit(url[2])) {
-                url += 2; /* an encoded char */
-            }
-            else {
-                return APR_EGENERAL; /* reject bad char in URL */
-            }
-        }
-    }
-    return APR_SUCCESS;
-}
-
-/*
  * canonicalise a URL-encoded string
  */
 
