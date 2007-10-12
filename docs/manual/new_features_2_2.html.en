@@ -110,9 +110,6 @@
       <dd><p><code class="module"><a href="./mod/mod_dbd.html">mod_dbd</a></code>, together with the apr_dbd framework,
           brings direct SQL support to modules that need it.  Supports
           connection pooling in threaded MPMs.</p>
-	  <p><strong>Windows Users</strong> please note that this is not
-	  yet included in the standard windows build.  If you try to use
-	  it on the Windows platform, please let us know how you get on.</p>
 	  </dd>
 
     </dl>
