@@ -220,6 +220,8 @@
       critical because clients can only contact the hosts that you
       have specifically configured.</p>
 
+      <p><strong>See Also</strong> the <a href="mod_proxy_http.html#env">Proxy-Chain-Auth</a> environment variable.</p>
+
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="startup" id="startup">Slow Startup</a></h2>
