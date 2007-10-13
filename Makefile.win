@@ -24,7 +24,7 @@
 #
 #   nmake -f Makefile.win PORT=80 INSTDIR="d:\Program Files\Apache" installr
 #
-# Be aware that certain awk's will not accept backslahed names,
+# Be aware that certain awk's will not accept backslashed names,
 # so the server root should be given in forward slashes (quoted),
 # preferably with the drive designation!
 
