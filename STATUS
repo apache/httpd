@@ -215,6 +215,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      I'm OK with that if others feel happier that way.  The function
      declaration presumably remains in http_protocol.h, so no API change.
 
+   * mod_proxy_http: Document environment variables used by this module
+     http://svn.apache.org/viewvc?view=rev&revision=582476
+     +1: niq
+     
    * mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx) responses
      PR 16518
      http://svn.apache.org/viewvc?view=rev&revision=582631
@@ -225,6 +229,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      in r582631, or is there something else that needs reconciling?
      rpluem says: Yes, there is a conflict in backporting the mod_proxy_http.xml
      changes of r582631.
+     niq says: Aha, it's r582476.  Adding proposal for that above this one.
 
 PATCHES/ISSUES THAT ARE STALLED
 
