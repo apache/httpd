@@ -187,6 +187,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: IMHO the DefaultType documentation is now somewhat confusing
      (e.g. the server must add, but sometimes is better not to) and should be
      rewritten.
+     jim says: Is rpluem's concern addressed?
      
    * mpm_winnt: Fix null pointer dereference
      PR 42572
