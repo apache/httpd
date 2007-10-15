@@ -1187,7 +1187,10 @@ void child_main(apr_pool_t *pconf)
         CloseHandle(child_handles[i]);
         /* Reset the scoreboard entry for the thread we just whacked */
         score_idx = apr_hash_get(ht, &child_handles[i], sizeof(HANDLE));
-        ap_update_child_status_from_indexes(0, *score_idx, SERVER_DEAD, NULL);
+        if (score_idx) {
+            ap_update_child_status_from_indexes(0, *score_idx,
+                                                SERVER_DEAD, NULL);
+        }
     }
     ap_log_error(APLOG_MARK,APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Child %d: All worker threads have exited.", my_pid);

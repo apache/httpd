@@ -182,11 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      niq says: Yes, when we add r584842 to the proposal.
      rpluem says: Yes.
      
-   * mpm_winnt: Fix null pointer dereference
-     PR 42572
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/server/mpm/winnt/child.c?r1=505027&r2=563489
-     +1: niq (this is clear enough to vote 'blind'), rpluem
-
    * mod_proxy_http: Don't mangle proxied URLs
      PR 42592
      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/proxy/mod_proxy_http.c?r1=582655&r2=583803&pathrev=583803
