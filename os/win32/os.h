@@ -87,9 +87,6 @@ FARPROC ap_load_dll_func(ap_dlltoken_e fnLib, char* fnName, int ordinal);
 PSECURITY_ATTRIBUTES GetNullACL();
 void CleanNullACL(void *sa);
 
-DWORD wait_for_many_objects(DWORD nCount, CONST HANDLE *lpHandles, 
-                            DWORD dwSeconds);
-
 int set_listeners_noninheritable(apr_pool_t *p);
 
 

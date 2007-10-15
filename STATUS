@@ -83,16 +83,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-    * mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean 
-      shutdown of the server when the MaxClients is higher then 257,
-      in a more responsive manner.
-      Trunk version of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=573103
-        http://svn.apache.org/viewvc?view=rev&revision=573105
-      2.2.x version of patch:
-        http://people.apache.org/~wrowe/mpm_winnt_shutdown-2.2.patch
-      +1: wrowe, mturk
-
    * mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
      mod_authn_dbd behaviour in line with mod_authnz_ldap.

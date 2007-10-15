@@ -1,5 +1,9 @@
-                                                        -*- coding: utf-8 -*-
+﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
+
+  *) mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean 
+     shutdown of the server when the MaxClients is higher then 257,
+     in a more responsive manner [Mladen Turk, William Rowe]
 
   *) mod_proxy_http: Remove Warning headers with wrong date
      PR 16138 [Nick Kew]
