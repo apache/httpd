@@ -203,14 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx) responses
      PR 16518
      http://svn.apache.org/viewvc?view=rev&revision=582631
-     +1: niq
-     rpluem says: There is a conflict with the documentation (I don't know why).
-     Once fixed I am +1.
-     niq says: Do you mean my addition to the documentation included
-     in r582631, or is there something else that needs reconciling?
-     rpluem says: Yes, there is a conflict in backporting the mod_proxy_http.xml
-     changes of r582631.
-     niq says: Aha, it's r582476. Fixed.
+     +1: niq, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
