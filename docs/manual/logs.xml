@@ -72,8 +72,8 @@
     what went wrong and how to fix it.</p>
 
     <p>The error log is usually written to a file (typically
-    <code>error_log</code> on unix systems and
-    <code>error.log</code> on Windows and OS/2). On unix systems it
+    <code>error_log</code> on Unix systems and
+    <code>error.log</code> on Windows and OS/2). On Unix systems it
     is also possible to have the server send errors to
     <code>syslog</code> or <a href="#piped">pipe them to a
     program</a>.</p>
@@ -90,11 +90,11 @@
     </example>
 
     <p>The first item in the log entry is the date and time of the
-    message. The second entry lists the severity of the error being
+    message. The second item lists the severity of the error being
     reported. The <directive module="core">LogLevel</directive>
     directive is used to control the types of errors that are sent
     to the error log by restricting the severity level. The third
-    entry gives the IP address of the client that generated the
+    item gives the IP address of the client that generated the
     error. Beyond that is the message itself, which in this case
     indicates that the server has been configured to deny the
     client access. The server reports the file-system path (as
@@ -109,14 +109,14 @@
     <p>It is not possible to customize the error log by adding or
     removing information. However, error log entries dealing with
     particular requests have corresponding entries in the <a
-    href="#accesslog">access log</a>. For instance, the above example
+    href="#accesslog">access log</a>. For example, the above example
     entry corresponds to an access log entry with status code 403.
     Since it is possible to customize the access log, you can
     obtain more information about error conditions using that log
     file.</p>
 
     <p>During testing, it is often useful to continuously monitor
-    the error log for any problems. On unix systems, you can
+    the error log for any problems. On Unix systems, you can
     accomplish this using:</p>
 
     <example>
@@ -237,7 +237,7 @@
         <dd>The "hyphen" in the output indicates that the requested
         piece of information is not available. In this case, the
         information that is not available is the RFC 1413 identity of
-        the client determined by <code>identd</code> on the client's
+        the client determined by <code>identd</code> on the clients
         machine. This information is highly unreliable and should
         almost never be used except on tightly controlled internal
         networks. Apache httpd will not even attempt to determine
