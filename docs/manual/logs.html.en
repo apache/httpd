@@ -239,7 +239,7 @@
         code for the request (see below) is 401, then this value
         should not be trusted because the user is not yet
         authenticated. If the document is not password protected,
-        this entry will be "<code>-</code>" just like the previous
+        this part will be "<code>-</code>" just like the previous
         one.</dd>
 
         <dt><code>[10/Oct/2000:13:55:36 -0700]</code>
@@ -292,7 +292,7 @@
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
 
-        <dd>The last entry indicates the size of the object returned
+        <dd>The last part indicates the size of the object returned
         to the client, not including the response headers. If no
         content was returned to the client, this value will be
         "<code>-</code>". To log "<code>0</code>" for no content, use
@@ -540,7 +540,7 @@
 
     <table class="related"><tr><th>Related Modules</th><th>Related Directives</th></tr><tr><td><ul><li><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code></li><li><code class="module"><a href="./mod/mod_log_forensic.html">mod_log_forensic</a></code></li><li><code class="module"><a href="./mod/mod_cgi.html">mod_cgi</a></code></li><li><code class="module"><a href="./mod/mod_rewrite.html">mod_rewrite</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/mod_log_config.html#logformat">LogFormat</a></code></li><li><code class="directive"><a href="./mod/mod_log_forensic.html#forensiclog">ForensicLog</a></code></li><li><code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewritelog">RewriteLog</a></code></li><li><code class="directive"><a href="./mod/mod_rewrite.html#rewriteloglevel">RewriteLogLevel</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlog">ScriptLog</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptlogbuffer">ScriptLogBuffer</a></code></li><li><code class="directive"><a href="./mod/mod_cgi.html#scriptloglength">ScriptLogLength</a></code></li></ul></td></tr></table>
 
-    <h3>Logging actual bytes sent and recieved</h3>
+    <h3>Logging actual bytes sent and received</h3>
       
 
       <p><code class="module"><a href="./mod/mod_logio.html">mod_logio</a></code> adds in two additional
