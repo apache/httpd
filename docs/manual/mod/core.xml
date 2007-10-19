@@ -73,7 +73,7 @@ available</description>
     <p>Using <code>none</code> for an argument will disable any accept filters 
        for that protocol.  This is useful for protocols that require a server
        send data first, such as <code>nntp</code>:</p>
-    <example>AcceptFilter nttp none</example>
+    <example>AcceptFilter nntp none</example>
 
 </usage>
 </directivesynopsis>
