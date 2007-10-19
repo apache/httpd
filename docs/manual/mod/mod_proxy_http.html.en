@@ -68,7 +68,7 @@
     <dl>
         <dt>proxy-sendextracrlf</dt>
         <dd>Causes proxy to send an extra CR-LF newline on the end of a
-        request.  This is a workaround for a bug in some servers.</dd>
+        request.  This is a workaround for a bug in some browsers.</dd>
         <dt>force-proxy-request-1.0</dt>
         <dd>Forces the proxy to send requests to the backend as HTTP/1.0
         and disables HTTP/1.1 features.</dd>

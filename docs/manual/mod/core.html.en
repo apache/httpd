@@ -579,8 +579,9 @@ server cannot determine a type in any other way</td></tr>
     <p>There will be times when the server is asked to provide a
     document whose type cannot be determined by its <a class="glossarylink" href="../glossary.html#mime-type" title="see glossary">MIME types</a> mappings.</p>
 
-    <p>The server must inform the client of the content-type of the
-    document, so in the event of an unknown type it uses the
+    <p>The server SHOULD inform the client of the content-type of the
+    document.  If the server is unable to determine this by normal
+    means, it will set it to the configured
     <code>DefaultType</code>. For example:</p>
 
     <div class="example"><p><code>
@@ -590,16 +591,14 @@ server cannot determine a type in any other way</td></tr>
     <p>would be appropriate for a directory which contained many GIF
     images with filenames missing the <code>.gif</code> extension.</p>
 
-    <p>Sometimes it may be better to omit the MIME type altogether if it
-    cannot be determined by the server.  This can be accomplished using</p>
+    <p>In cases where it can neither be determined by the server nor
+    the administrator (e.g. a proxy), it is preferable to omit the MIME
+    type altogether rather than provide information that may be false.
+    This can be accomplished using</p>
     <div class="example"><p><code>
       DefaultType None
     </code></p></div>
     <p>DefaultType None is only available in httpd-2.2.7 and later.</p>
-
-    <p>This can be suppressed by setting <code>DefaultType None</code>.
-    With this setting, Apache will omit <em>any</em> Content-Type
-    header if it not able to determine the correct MIME type.</p>
 
     <p>Note that unlike <code class="directive"><a href="#forcetype">ForceType</a></code>, this directive only
     provides the default mime-type. All other mime-type definitions,
