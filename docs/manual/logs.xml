@@ -254,7 +254,7 @@
         code for the request (see below) is 401, then this value
         should not be trusted because the user is not yet
         authenticated. If the document is not password protected,
-        this entry will be "<code>-</code>" just like the previous
+        this part will be "<code>-</code>" just like the previous
         one.</dd>
 
         <dt><code>[10/Oct/2000:13:55:36 -0700]</code>
@@ -308,7 +308,7 @@
 
         <dt><code>2326</code> (<code>%b</code>)</dt>
 
-        <dd>The last entry indicates the size of the object returned
+        <dd>The last part indicates the size of the object returned
         to the client, not including the response headers. If no
         content was returned to the client, this value will be
         "<code>-</code>". To log "<code>0</code>" for no content, use
