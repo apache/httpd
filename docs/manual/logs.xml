@@ -585,7 +585,7 @@
     </related>
 
     <section>
-      <title>Logging actual bytes sent and recieved</title>
+      <title>Logging actual bytes sent and received</title>
 
       <p><module>mod_logio</module> adds in two additional
          <directive module="mod_log_config">LogFormat</directive> fields
