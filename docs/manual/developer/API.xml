@@ -829,7 +829,7 @@ void *request_config;   /* Notes on *this* request */</pre>
     </section>
 
     <section><title>Other sorts of resources -- cleanup functions</title>
-      <p>More text goes here. Describe the the cleanup primitives in terms of
+      <p>More text goes here. Describe the cleanup primitives in terms of
       which the file stuff is implemented; also, <code>spawn_process</code>.</p>
 
       <p>Pool cleanups live until <code>clear_pool()</code> is called:
