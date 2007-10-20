@@ -175,7 +175,7 @@
     will notice that the server statistics are set to zero when a
     <code>HUP</code> is sent.</p>
 
-<div class="note">As with a graceful restart, a syntax check is run before the the
+<div class="note">As with a graceful restart, a syntax check is run before the
 restart is attempted. If your configuration file has errors in it, the
 restart will not be attempted, and you will receive notification of the
 syntax error(s).</div>

@@ -22,7 +22,7 @@
 </div>
 
     <p>Apache 2.0 uses <a href="http://www.doxygen.org/">Doxygen</a> to
-    document the APIs and global variables in the the code. This will explain
+    document the APIs and global variables in the code. This will explain
     the basics of how to document using Doxygen.</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
