@@ -36,6 +36,7 @@
 
 <seealso><program>httpd</program></seealso>
 <seealso><program>apachectl</program></seealso>
+<seealso><a href="invoking.html">Starting</a></seealso>
 
 <section id="introduction"><title>Introduction</title>
 
