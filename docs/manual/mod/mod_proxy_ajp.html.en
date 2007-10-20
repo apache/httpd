@@ -507,7 +507,7 @@ AJP13_GET_BODY_CHUNK :=
     <p>The status code and message are the usual HTTP things
     (e.g. <code>200</code> and <code>OK</code>). The response header names are
     encoded the same way the request header names are. See header_encoding above
-    for details about how the the codes are distinguished from the strings.<br />
+    for details about how the codes are distinguished from the strings.<br />
     The codes for common headers are:</p>
     <table>
       <tr><td>Name</td><td>Code value</td></tr>

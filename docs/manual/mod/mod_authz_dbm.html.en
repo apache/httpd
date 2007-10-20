@@ -122,7 +122,7 @@ modules</td></tr>
     directive explicitly to <code>Off</code> allows group authorization
     to be passed on to lower level modules (as defined in the
     <code>modules.c</code> file) if there is no group found
-    for the the supplied userID. If there are any groups
+    for the supplied userID. If there are any groups
     specified, the usual checks will be applied and a failure will
     give an Authentication Required reply.</p>
 
