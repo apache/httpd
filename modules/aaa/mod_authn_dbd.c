@@ -148,8 +148,8 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
                     }
                     j++;
                 }
-                apr_table_setn(r->subprocess_env, str,
-                               apr_dbd_get_entry(dbd->driver, row, i));
+                apr_table_set(r->subprocess_env, str,
+                              apr_dbd_get_entry(dbd->driver, row, i));
                 i++;
             }
 #endif
@@ -232,8 +232,8 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
                     }
                     j++;
                 }
-                apr_table_setn(r->subprocess_env, str,
-                               apr_dbd_get_entry(dbd->driver, row, i));
+                apr_table_set(r->subprocess_env, str,
+                              apr_dbd_get_entry(dbd->driver, row, i));
                 i++;
             }
 #endif
