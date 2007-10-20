@@ -94,6 +94,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   r571804 has a conflict in docs/manual/mod/mod_authnz_ldap.xml
                   Without r571838 the documentation for mod_authn_dbd fails
                   to build.
+     niq says: +1 if we reconcile the conflicts and add r586765
 
     * multiple files,	Trivial cleanups
       PR: 39518 - Christophe JAILLET
