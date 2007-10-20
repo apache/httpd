@@ -142,7 +142,7 @@
     <title>Third Party Modules</title>
 
    <p>Many third-party modules designed for version 2.0 will work
-   unchanged with the the Apache HTTP Server version 2.2.  But all
+   unchanged with the Apache HTTP Server version 2.2.  But all
    modules must be recompiled before being loaded.</p>
 
   </section>
