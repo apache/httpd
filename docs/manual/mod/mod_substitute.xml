@@ -1,0 +1,90 @@
+<?xml version="1.0"?>
+<!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
+<!-- $LastChangedRevision$ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<modulesynopsis metafile="mod_substitute.xml.meta">
+
+<name>mod_substitute</name>
+<description>Perform search and replace operations on response bodies</description>
+<status>Experimental</status>
+<sourcefile>mod_substitute.c</sourcefile>
+<identifier>substitute_module</identifier>
+
+<summary>
+    <p><module>mod_substitute</module> provides a mechanism to perform
+    both regular expression and fixed string substitutions on
+    response bodies.</p>
+    <p>This is an <strong>experimental</strong> module and should
+    be used with care.</p>
+</summary>
+
+<directivesynopsis>
+<name>Substitute</name>
+<description>Pattern to filter the response content</description>
+<syntax>Substitute <var>s/pattern/substitution/[inf]</var></syntax>
+<contextlist><context>directory</context>
+<context>.htaccess</context></contextlist>
+<override>FileInfo</override>
+
+<usage>
+    <p>The <directive>Substitute</directive> directive specifies a
+    search and replace pattern to apply to the response body.</p>
+    
+    <p>The meaning of the pattern can be modified by using any
+    combination of these flags:</p>
+    
+    <dl>
+        <dt><code>i</code></dt>
+        <dd>Perform a case-insensitive match.</dd>
+        <dt><code>n</code></dt>
+        <dd>By default the pattern is treated as a regular expression.
+        Using the <code>n</code> flag forces the pattern to be treated
+        as a fixed string.</dd>
+        <dt><code>f</code></dt>
+        <dd>The <code>f</code> flag causes mod_substitute to flatten the
+        result of a substitution allowing for later substitutions to
+        take place on the boundary of this one.</dd>
+    </dl>
+    
+    <example><title>Example</title>
+        &lt;Location /&gt;
+        <indent>
+            AddOutputFilterByType SUBSTITUTE text/html<br />
+            Substitute s/foo/bar/ni<br />
+        </indent>
+        &lt;/Location&gt;
+    </example>
+    
+    <p>If either the pattern or the substitution contain a slash
+    character then an alternative delimiter should be used:</p>
+    
+    <example><title>Example of using an alternate delimiter</title>
+        &lt;Location /&gt;
+        <indent>
+            AddOutputFilterByType SUBSTITUTE text/html<br />
+            Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
+        </indent>
+        &lt;/Location&gt;
+    </example>
+</usage>
+</directivesynopsis>
+
+</modulesynopsis>
