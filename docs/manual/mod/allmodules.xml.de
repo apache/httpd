@@ -71,6 +71,7 @@
   <modulefile>mod_speling.xml</modulefile>
   <modulefile>mod_ssl.xml</modulefile>
   <modulefile>mod_status.xml</modulefile>
+  <modulefile>mod_substitute.xml</modulefile>
   <modulefile>mod_suexec.xml</modulefile>
   <modulefile>mod_unique_id.xml</modulefile>
   <modulefile>mod_userdir.xml</modulefile>

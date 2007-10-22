@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_substitute - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_substitute</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_substitute.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Perform search and replace operations on response bodies</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>substitute_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_substitute.c</td></tr></table>
+<h3>Summary</h3>
+
+    <p><code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> provides a mechanism to perform
+    both regular expression and fixed string substitutions on
+    response bodies.</p>
+    <p>This is an <strong>experimental</strong> module and should
+    be used with care.</p>
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#substitute">Substitute</a></li>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="Substitute" id="Substitute">Substitute</a> <a name="substitute" id="substitute">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pattern to filter the response content</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Substitute <var>s/pattern/substitution/[inf]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_substitute</td></tr>
+</table>
+    <p>The <code class="directive">Substitute</code> directive specifies a
+    search and replace pattern to apply to the response body.</p>
+    
+    <p>The meaning of the pattern can be modified by using any
+    combination of these flags:</p>
+    
+    <dl>
+        <dt><code>i</code></dt>
+        <dd>Perform a case-insensitive match.</dd>
+        <dt><code>n</code></dt>
+        <dd>By default the pattern is treated as a regular expression.
+        Using the <code>n</code> flag forces the pattern to be treated
+        as a fixed string.</dd>
+        <dt><code>f</code></dt>
+        <dd>The <code>f</code> flag causes mod_substitute to flatten the
+        result of a substitution allowing for later substitutions to
+        take place on the boundary of this one.</dd>
+    </dl>
+    
+    <div class="example"><h3>Example</h3><p><code>
+        &lt;Location /&gt;
+        <span class="indent">
+            AddOutputFilterByType SUBSTITUTE text/html<br />
+            Substitute s/foo/bar/ni<br />
+        </span>
+        &lt;/Location&gt;
+    </code></p></div>
+    
+    <p>If either the pattern or the substitution contain a slash
+    character then an alternative delimiter should be used:</p>
+    
+    <div class="example"><h3>Example of using an alternate delimiter</h3><p><code>
+        &lt;Location /&gt;
+        <span class="indent">
+            AddOutputFilterByType SUBSTITUTE text/html<br />
+            Substitute "s|&lt;BR */?&gt;|&lt;br /&gt;|i"
+        </span>
+        &lt;/Location&gt;
+    </code></p></div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_substitute.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2007 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
