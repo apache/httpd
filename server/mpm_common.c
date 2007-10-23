@@ -565,7 +565,8 @@ AP_DECLARE(apr_status_t) ap_mpm_pod_open(apr_pool_t *p, ap_pod_t **pod)
     apr_status_t rv;
 
     *pod = apr_palloc(p, sizeof(**pod));
-    rv = apr_file_pipe_create(&((*pod)->pod_in), &((*pod)->pod_out), p);
+    rv = apr_file_pipe_create_ex(&((*pod)->pod_in), &((*pod)->pod_out),
+                                 APR_WRITE_BLOCK, p);
     if (rv != APR_SUCCESS) {
         return rv;
     }
