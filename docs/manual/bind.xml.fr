@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English Revision: 103425:507346 (outdated) -->
+<!-- English Revision: 103425:587444 (outdated) -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
