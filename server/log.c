@@ -1000,8 +1000,9 @@ AP_DECLARE(piped_log *) ap_open_piped_log(apr_pool_t *p, const char *program)
     pl->p = p;
     pl->program = apr_pstrdup(p, program);
     pl->pid = NULL;
-    if (apr_file_pipe_create(&ap_piped_log_read_fd(pl),
-                             &ap_piped_log_write_fd(pl), p) != APR_SUCCESS) {
+    if (apr_file_pipe_create_ex(&ap_piped_log_read_fd(pl),
+                                &ap_piped_log_write_fd(pl),
+                                APR_FULL_BLOCK, p) != APR_SUCCESS) {
         return NULL;
     }
     apr_pool_cleanup_register(p, pl, piped_log_cleanup,
