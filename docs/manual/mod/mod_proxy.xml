@@ -374,7 +374,7 @@ response</description>
 <default>ProxyBadHeader IsError</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>available in Apache 2.0.44 and later</compatibility>
+<compatibility>Available in Apache 2.0.44 and later</compatibility>
 
 <usage>
     <p>The <directive>ProxyBadHeader</directive> directive determines the
