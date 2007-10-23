@@ -348,7 +348,7 @@ response</description>
 <default>ProxyBadHeader IsError</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>available in Apache 2.0.44 and later</compatibility>
+<compatibility>Available in Apache 2.0.44 and later</compatibility>
 
 <usage>
     <p>The <directive>ProxyBadHeader</directive> directive determines the
@@ -501,7 +501,7 @@ expressions</description>
 		>key=value [key=value ...]]</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>BalancerMember is only available in Apache 2.2.0
+<compatibility>BalancerMember is only available in Apache 2.2
 	and later.</compatibility>
 <usage>
     <p>This directive adds a member to a load balancing group. It must be used
@@ -522,7 +522,7 @@ expressions</description>
 <syntax>ProxySet <var>url</var> <var>key=value [key=value ...]</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
-<compatibility>ProxySet is only available in Apache 2.2.0
+<compatibility>ProxySet is only available in Apache 2.2
 	and later.</compatibility>
 <usage>
     <p>This directive is used as an alternate method of setting any of the
