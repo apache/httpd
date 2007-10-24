@@ -4,8 +4,7 @@ Changes with Apache 2.3.0
 
   *) core; scoreboard: ap_get_scoreboard_worker(sbh) now takes the sbh member
      from the connection rec, ap_get_scoreboard_worker(proc, thread) will now
-     provide the unusual legacy lookup.  Also cleans up PR 31127 range checks.
-     [William Rowe, Christian von Roques <roques mti.ag>]
+     provide the unusual legacy lookup.  [William Rowe]
 
   *) mod_proxy_http: Check but don't escape/unescape forward-proxied URLs
      PR 42592 [Nick Kew]
