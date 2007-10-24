@@ -152,7 +152,7 @@ static int process_echo_connection(conn_rec *c)
         if (((rv = ap_get_brigade(c->input_filters, bb, AP_MODE_GETLINE,
                                   APR_BLOCK_READ, 0)) != APR_SUCCESS)) {
             apr_brigade_destroy(bb);
-            if (!APR_STATUS_IS_EOF(rv))
+            if (!APR_STATUS_IS_EOF(rv) && ! APR_STATUS_IS_TIMEUP(rv))
                 ap_log_error(APLOG_MARK, APLOG_INFO, rv, c->base_server,
                              "ProtocolEcho: Failure reading from %s",
                              c->remote_ip);
