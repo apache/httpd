@@ -319,7 +319,7 @@ static int status_handler(request_rec *r)
         for (j = 0; j < thread_limit; ++j) {
             int indx = (i * thread_limit) + j;
 
-            ws_record = ap_get_scoreboard_worker(i, j);
+            ws_record = ap_get_scoreboard_worker_from_indexes(i, j);
             res = ws_record->status;
             stat_buffer[indx] = status_flags[res];
 
@@ -558,7 +558,7 @@ static int status_handler(request_rec *r)
 
         for (i = 0; i < server_limit; ++i) {
             for (j = 0; j < thread_limit; ++j) {
-                ws_record = ap_get_scoreboard_worker(i, j);
+                ws_record = ap_get_scoreboard_worker_from_indexes(i, j);
 
                 if (ws_record->access_count == 0 &&
                     (ws_record->status == SERVER_READY ||
