@@ -178,7 +178,9 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num, int thread_nu
                                                     int status, request_rec *r);
 void ap_time_process_request(ap_sb_handle_t *sbh, int status);
 
-AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y);
+AP_DECLARE(worker_score *) ap_get_scoreboard_worker(ap_sb_handle_t *sbh);
+AP_DECLARE(worker_score *) ap_get_scoreboard_worker_from_indexes(int child_num,
+                                                                int thread_num);
 AP_DECLARE(process_score *) ap_get_scoreboard_process(int x);
 AP_DECLARE(global_score *) ap_get_scoreboard_global(void);
 AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int lb_num);

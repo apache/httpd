@@ -475,13 +475,19 @@ void ap_time_process_request(ap_sb_handle_t *sbh, int status)
     }
 }
 
-AP_DECLARE(worker_score *) ap_get_scoreboard_worker(int x, int y)
+AP_DECLARE(worker_score *) ap_get_scoreboard_worker_from_indexes(int x, int y)
 {
-    if (((x < 0) || (x >= server_limit)) ||
-        ((y < 0) || (y >= thread_limit))) {
+    if (((x < 0) || (x > server_limit)) ||
+        ((y < 0) || (y > thread_limit))) {
         return(NULL); /* Out of range */
     }
     return &ap_scoreboard_image->servers[x][y];
+}
+
+AP_DECLARE(worker_score *) ap_get_scoreboard_worker(ap_sb_handle_t *sbh)
+{
+    return ap_get_scoreboard_worker_from_indexes(sbh->child_num,
+                                                 sbh->thread_num);
 }
 
 AP_DECLARE(process_score *) ap_get_scoreboard_process(int x)
