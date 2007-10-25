@@ -362,7 +362,7 @@ scoreboard *ap_scoreboard_image = NULL;
 /*
  * Parent process local storage of child pids
  */
-static table *pid_table;
+static int pid_table[HARD_SERVER_LIMIT];
 
 /*
  * Pieces for managing the contents of the Server response header
@@ -384,26 +384,34 @@ API_VAR_EXPORT int ap_change_shmem_uid = 0;
  */
 
 static int in_pid_table(int pid) {
-    char apid[64];      /* WAY generous! */
-    const char *spid;
-    ap_snprintf(apid, sizeof(apid), "%d", pid);
-    spid = ap_table_get(pid_table, apid);
-    if (spid && spid[0] == '1' && spid[1] == '\0')
-        return 1;
-    else
-        return 0;
+    int i;
+    for (i = 0; i < HARD_SERVER_LIMIT; i++) {
+        if (pid_table[i] == pid) {
+            return 1;
+        }
+    }
+    return 0;
 }
 
 static void set_pid_table(int pid) {
-    char apid[64];
-    ap_snprintf(apid, sizeof(apid), "%d", pid);
-    ap_table_set(pid_table, apid, "1");
+    int i;
+    for (i = 0; i < HARD_SERVER_LIMIT; i++) {
+        if (pid_table[i] == 0) {
+            pid_table[i] = pid;
+            break;
+        }
+    }
+    /* NOTE: Error detection?? */
 }
 
 static void unset_pid_table(int pid) {
-    char apid[64];
-    ap_snprintf(apid, sizeof(apid), "%d", pid);
-    ap_table_unset(pid_table, apid);
+    int i;
+    for (i = 0; i < HARD_SERVER_LIMIT; i++) {
+        if (pid_table[i] == pid) {
+            pid_table[i] = 0;
+            break;
+        }
+    }
 }
 
 /*
@@ -4370,6 +4378,7 @@ static void show_compile_settings(void)
  */
 static void common_init(void)
 {
+    int i;
     INIT_SIGLIST()
 #ifdef AUX3
     (void) set42sig();
@@ -4395,7 +4404,10 @@ static void common_init(void)
     ap_server_pre_read_config  = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_post_read_config = ap_make_array(pcommands, 1, sizeof(char *));
     ap_server_config_defines   = ap_make_array(pcommands, 1, sizeof(char *));
-    pid_table                  = ap_make_table(pglobal, HARD_SERVER_LIMIT);
+    /* overkill since static */
+    for (i = 0; i < HARD_SERVER_LIMIT; i++) {
+        pid_table[i] = 0;
+    }
 }
 
 #ifndef MULTITHREAD
