@@ -109,10 +109,12 @@ struct proxy_remote {
     int use_regex;          /* simple boolean. True if we have a regex pattern */
 };
 
+#define PROXYPASS_NOCANON 0x01
 struct proxy_alias {
     const char  *real;
     const char  *fake;
     ap_regex_t  *regex;
+    unsigned int flags;
 };
 
 struct dirconn_entry {
