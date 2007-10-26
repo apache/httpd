@@ -1532,7 +1532,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                          "proxy: HTTP: received interim %d response",
                          r->status);
             if (!policy || !strcasecmp(policy, "RFC")) {
-                ap_send_interim_response(r);
+                ap_send_interim_response(r, 1);
             }
             /* FIXME: refine this to be able to specify per-response-status
              * policies and maybe also add option to bail out with 502
