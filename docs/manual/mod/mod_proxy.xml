@@ -574,7 +574,7 @@ expressions</description>
 <name>ProxyPass</name>
 <description>Maps remote servers into the local server URL-space</description>
 <syntax>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
-	<var>[key=value</var> ...]]</syntax>
+	<var>[key=value</var> ...]] [nocanon]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -842,6 +842,13 @@ expressions</description>
       &lt;/Proxy&gt;
     </example>
 
+    <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
+    But this may be incompatible with some backends, particularly those
+    that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
+    keyword suppresses this, and passes the URL path "raw" to the
+    backend.  Note that may affect the security of your backend, as it
+    removes the normal limited protection against URL-based attacks
+    provided by the proxy.</p>
 
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
