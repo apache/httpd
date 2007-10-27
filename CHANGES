@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Core: fix possible crash at startup in case of nonexistent DocumentRoot.
+     PR 39722 [Adrian Buckley <adrian.buckley ntlworld.com>]
+
   *) mod_proxy: add "nocanon" keyword to ProxyPass, to suppress
      URI-canonicalisation in a reverse proxy.
      PR 41798 [Nick Kew]

@@ -1164,6 +1164,9 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
 
     /* Make it absolute, relative to ServerRoot */
     arg = ap_server_root_relative(cmd->pool, arg);
+    if (arg == NULL) {
+        return "DocumentRoot must be a directory";
+    }
 
     /* TODO: ap_configtestonly && ap_docrootcheck && */
     if (apr_filepath_merge((char**)&conf->ap_document_root, NULL, arg,
