@@ -110,6 +110,7 @@ struct proxy_remote {
 };
 
 #define PROXYPASS_NOCANON 0x01
+#define PROXYPASS_INTERPOLATE 0x02
 struct proxy_alias {
     const char  *real;
     const char  *fake;
