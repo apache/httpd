@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 420990 -->
+<!-- LastChangedRevision English document : 583231 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2007062301 $ -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- $LastChangedRevision: 2007101301 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -123,11 +124,6 @@
       	apr_dbd, fournit le support SQL direct aux modules
 	qui en ont besoin.  Supporte la mise en commun des connexions
           dans les modules MPM thread&eacute;s.</p>
-	  <p><strong>Utilisateurs Windows</strong> : veuillez noter que ce
-	  support n'est pas encore inclus dans l'impl&eacute;mentation Windows
-	  standard.  Si vous l'utilisez sur la plate-forme
-	  Windows, merci de nous faire savoir comment vous vous y
-	  prenez.</p>
 	  </dd>
 
     </dl>
@@ -239,10 +235,10 @@
       que si l'utilisateur passe le param&egrave;tre <code>-t</code> &agrave;
       <program>httpd</program>.</dd>
 
-      <dt>D&eacute;finition de la taille de la pile pour les modules MPM thread&eacute;s</dt>
+      <dt>D&eacute;finition de la taille de la pile pour les modules MPM en processus l&eacute;gers</dt>
 
       <dd>Une nouvelle directive a &eacute;t&eacute; ajout&eacute;e, <code>ThreadStackSize</code>
-     afin de d&eacute;finir la taille de la pile pour tous les modules MPM thread&eacute;s.
+     afin de d&eacute;finir la taille de la pile pour tous les modules MPM en processus l&eacute;gers (modules thread&eacute;s).
      Ceci s'av&egrave;re n&eacute;cessaire pour certains modules tiers sur des plateformes
      dont la taille de la pile des threads par d&eacute;faut est
      trop petite.</dd>
@@ -271,7 +267,7 @@
       est maintenant disponible dans l'espace de nommage <code>ap_</code>
       depuis <code>ap_regex.h</code>.  Les appels &agrave; <code>regcomp</code>,
       <code>regexec</code>, etc... peuvent &ecirc;tre remplac&eacute;s par des appels &agrave;
-      <code>ap_regcomp</code>, <code>ap_regcomp</code>.</dd>
+      <code>ap_regcomp</code>, <code>ap_regexec</code>.</dd>
 
       <dt>Cadre d'application DBD (API pour base de donn&eacute;es SQL)</dt>
 

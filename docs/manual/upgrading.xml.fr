@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- LastChangedRevision English document : 586771 -->
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!-- $LastChangedRevision: 2007102101 $ -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="upgrading.xml.meta">
+
+<title>Mise &agrave; jour vers 2.2 depuis 2.0</title>
+
+<summary>
+  <p>Afin d'assister les utilisateurs lors de leurs op&eacute;rations de mise &agrave;
+  jour, nous maintenons un document
+  qui comporte des informations critiques &agrave; l'attention des personnes qui
+  utilisent d&eacute;j&agrave; Apache. Ces informations ne sont que de br&egrave;ves notes, et vous
+  devriez trouver plus d'informations dans le document <a
+  href="new_features_2_2.html">Nouvelles fonctionnalit&eacute;s</a>, ou dans
+  le fichier <code>src/CHANGES</code>.</p>
+
+  <p>Ce document ne d&eacute;crit que les modifications intervenues entre les versions
+  2.0 et 2.2. Si vous effectuez une mise &agrave; jour depuis la version 1.3, vous
+  devez aussi consulter le
+  <a href="http://httpd.apache.org/docs/2.0/upgrading.html">document de mise
+  &agrave; jour de 1.3 vers 2.0.</a></p>
+
+</summary>
+<seealso><a href="new_features_2_2.html">Vue d'ensemble des nouvelles
+fonctionnalit&eacute;s de Apache 2.2</a></seealso>
+
+  <section id="compile-time">
+    <title>Modifications de la configuration au moment de la compilation</title>
+
+    <p>Le processus de compilation est tr&egrave;s similaire &agrave; celui de la
+    version 2.0. Dans certains cas, vous pourrez m&ecirc;me utiliser
+    votre ancienne ligne de commande
+    <code>configure</code> (que vous trouverez dans le fichier
+    <code>build/config.nice</code> &agrave; la racine du r&eacute;pertoire des sources de
+    votre serveur). Les changements qui devront &ecirc;tre le plus souvent effectu&eacute;s
+    concerneront des noms de modules, et en particulier les modules g&eacute;rant
+    l'authentification et les autorisations.
+    Quelques exemples de modifications :</p>
+
+    <ul>
+      <li>mod_imap a &eacute;t&eacute; renomm&eacute; en <module>mod_imagemap</module></li>
+      <li>mod_auth a &eacute;t&eacute; scind&eacute; en quatre modules :
+      <module>mod_auth_basic</module>,
+          <module>mod_authn_file</module>, <module>mod_authz_user</module>, et
+          <module>mod_authz_groupfile</module></li>
+      <li>mod_access a &eacute;t&eacute; renomm&eacute; en <module>mod_authz_host</module></li>
+      <li>mod_auth_ldap a &eacute;t&eacute; renomm&eacute; en <module>mod_authnz_ldap</module></li>
+      <li>La version requise pour l'API APR est la 1.0.</li>
+      <li>La version de la biblioth&egrave;que PCRE int&eacute;gr&eacute;e est la 5.0</li>
+    </ul>
+
+  </section>
+
+  <section id="run-time">
+    <title>Modifications de la configuration &agrave; l'ex&eacute;cution</title>
+
+    <p>Vos fichiers de configuration et scripts de d&eacute;marrage de la version 2.0
+    existante peuvent en g&eacute;n&eacute;ral &ecirc;tre utilis&eacute;s sans modification avec la
+    version 2.2. Quelques petits ajustements peuvent cependant &ecirc;tre n&eacute;cessaires
+    dans le cas de configurations particuli&egrave;res comme d&eacute;crit plus bas.
+    En outre, si des modules standards sont charg&eacute;s dynamiquement &agrave; l'aide de
+    la directive <directive module="mod_so">LoadModule</directive>,
+    vous devez v&eacute;rifier les changements de noms de modules mentionn&eacute;s
+    plus haut.</p>
+
+    <p>Si vous choisissez d'utiliser le nouveau fichier de configuration par
+    d&eacute;faut de la
+    version 2.2, vous vous apercevrez qu'il a &eacute;t&eacute; consid&eacute;rablement simplifi&eacute;
+    et ne conserve que les points les plus essentiels de la configuration.
+    Plusieurs exemples de configurations utilisant des fonctionnalit&eacute;s plus
+    avanc&eacute;es sont disponibles dans le r&eacute;pertoire
+      <code>conf/extra/</code> de l'installation du serveur. Les fichiers de
+      configuration par d&eacute;faut se trouvent dans le r&eacute;pertoire
+      <code>conf/original</code>.</p>
+
+    <p>Quelques changements dans la configuration &agrave; l'ex&eacute;cution que vous
+    pouvez noter :</p>
+
+    <ul>
+      <li>L'option <code>startssl</code> du programme
+      <program>apachectl</program> n'est plus disponible. Pour activer le
+      support SSL, vous devez &eacute;diter <code>httpd.conf</code> de fa&ccedil;on &agrave;
+      inclure les directives du module <module>mod_ssl</module>
+      correspondantes, puis utiliser la commande <code>apachectl start</code>
+      pour d&eacute;marrer le serveur. Vous trouverez un exemple de configuration
+      permettant d'activer le module <module>mod_ssl</module> dans le fichier
+      <code>conf/extra/httpd-ssl.conf</code>.</li>
+
+      <li>La directive <directive
+      module="core">UseCanonicalName</directive> est maintenant d&eacute;finie par
+      d&eacute;faut &agrave; <code>Off</code>. Si cette directive
+      n'&eacute;tait pas pr&eacute;sente dans votre
+      ancien fichier de configuration, vous pouvez ajouter
+      <code>UseCanonicalName On</code> dans le nouveau pour garder inchang&eacute;
+      l'ancien comportement.</li>
+
+      <li>Le module <module>mod_userdir</module> ne sera appliqu&eacute; sur les
+      requ&ecirc;tes que si une directive <directive
+      module="mod_userdir">UserDir</directive> sp&eacute;cifiant un nom de r&eacute;pertoire
+      se trouve dans le fichier de configuration. Pour garder l'ancien
+      comportement par d&eacute;faut inchang&eacute;, placer la directive <code>UserDir
+      public_html</code> dans votre fichier de configuration.</li>
+
+      <li>La directive <directive>AuthDigestFile</directive>
+      du module <module>mod_auth_digest</module> a &eacute;t&eacute; fusionn&eacute;e avec la
+      directive <directive module="mod_authn_file">AuthUserFile</directive>
+      et appartient maintenant au module <module>mod_authn_file</module>.</li>
+    </ul>
+  </section>
+
+  <section id="misc">
+    <title>Changements divers</title>
+
+    <ul>
+      <li>Le module <module>mod_cache</module>, qui &eacute;tait
+      exp&eacute;rimental dans Apache 2.0, est d&eacute;sormais un module standard.</li>
+
+      <li>Le module <module>mod_disk_cache</module>, qui &eacute;tait
+      exp&eacute;rimental dans Apache 2.0, est d&eacute;sormais un module standard.</li>
+
+      <li>Le module <module>mod_mem_cache</module>, qui &eacute;tait
+      exp&eacute;rimental dans Apache 2.0, est d&eacute;sormais un module standard.</li>
+
+      <li>Le module <module>mod_charset_lite</module>, qui &eacute;tait
+      exp&eacute;rimental dans Apache 2.0, est d&eacute;sormais un module standard.</li>
+
+      <li>Le module <module>mod_dumpio</module>, qui &eacute;tait
+      exp&eacute;rimental dans Apache 2.0, est d&eacute;sormais un module standard.</li>
+
+    </ul>
+  </section>
+
+  <section id="third-party">
+    <title>Modules tiers</title>
+
+   <p>De nombreux modules tiers con&ccedil;us pour la version 2.0 fonctionneront sans
+   changement avec le serveur HTTP Apache version 2.2. Mais tous ces modules
+   doivent &ecirc;tre recompil&eacute;s avant de pouvoir &ecirc;tre charg&eacute;s.</p>
+
+  </section>
+</manualpage>
