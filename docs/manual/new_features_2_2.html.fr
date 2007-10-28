@@ -20,7 +20,7 @@
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/new_features_2_2.html" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div>
 
@@ -125,11 +125,6 @@
       	apr_dbd, fournit le support SQL direct aux modules
 	qui en ont besoin.  Supporte la mise en commun des connexions
           dans les modules MPM threadés.</p>
-	  <p><strong>Utilisateurs Windows</strong> : veuillez noter que ce
-	  support n'est pas encore inclus dans l'implémentation Windows
-	  standard.  Si vous l'utilisez sur la plate-forme
-	  Windows, merci de nous faire savoir comment vous vous y
-	  prenez.</p>
 	  </dd>
 
     </dl>
@@ -240,10 +235,10 @@
       que si l'utilisateur passe le paramètre <code>-t</code> à
       <code class="program"><a href="./programs/httpd.html">httpd</a></code>.</dd>
 
-      <dt>Définition de la taille de la pile pour les modules MPM threadés</dt>
+      <dt>Définition de la taille de la pile pour les modules MPM en processus légers</dt>
 
       <dd>Une nouvelle directive a été ajoutée, <code>ThreadStackSize</code>
-     afin de définir la taille de la pile pour tous les modules MPM threadés.
+     afin de définir la taille de la pile pour tous les modules MPM en processus légers (modules threadés).
      Ceci s'avère nécessaire pour certains modules tiers sur des plateformes
      dont la taille de la pile des threads par défaut est
      trop petite.</dd>
@@ -272,7 +267,7 @@
       est maintenant disponible dans l'espace de nommage <code>ap_</code>
       depuis <code>ap_regex.h</code>.  Les appels à <code>regcomp</code>,
       <code>regexec</code>, etc... peuvent être remplacés par des appels à
-      <code>ap_regcomp</code>, <code>ap_regcomp</code>.</dd>
+      <code>ap_regcomp</code>, <code>ap_regexec</code>.</dd>
 
       <dt>Cadre d'application DBD (API pour base de données SQL)</dt>
 
@@ -297,7 +292,7 @@
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/new_features_2_2.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/new_features_2_2.html" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ko/new_features_2_2.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a> |
 <a href="./pt-br/new_features_2_2.html" hreflang="pt-br" rel="alternate" title="Português (Brasil)">&nbsp;pt-br&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2007 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
