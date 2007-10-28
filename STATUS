@@ -209,9 +209,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * Core: Fix possible crash at startup in case of nonexistent DocumentRoot.
      PR 39722
      http://svn.apache.org/viewvc?view=rev&revision=589177
-     +1: niq
-     rpluem says: Guess you proposed the wrong revison number for backport :-).
-     niq: oops, the perils of copy-then-modify:-(  Fixed.
+     +1: niq, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
