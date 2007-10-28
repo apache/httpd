@@ -129,10 +129,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR 34602
       http://svn.apache.org/viewvc?view=rev&revision=573831
       http://svn.apache.org/viewvc?view=rev&revision=589343
-      +1: niq
-      +0: rpluem says: As per discussion on dev@ this should be optimized
-      further in trunk first before backporting.
-      niq says: Done in r589343
+      +1: niq, rpluem
 
     * mod_rewrite: Also set the Vary header if a rewrite condition is true and
       uses a HTTP header, but all remaining rewrite conditions are skipped due
@@ -213,6 +210,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 39722
      http://svn.apache.org/viewvc?view=rev&revision=582631
      +1: niq
+     rpluem says: Guess you proposed the wrong revison number for backport :-).
 
 PATCHES/ISSUES THAT ARE STALLED
 
