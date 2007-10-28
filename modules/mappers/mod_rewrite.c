@@ -386,7 +386,6 @@ static apr_global_mutex_t *rewrite_log_lock = NULL;
 /* Optional functions imported from mod_ssl when loaded: */
 static APR_OPTIONAL_FN_TYPE(ssl_var_lookup) *rewrite_ssl_lookup = NULL;
 static APR_OPTIONAL_FN_TYPE(ssl_is_https) *rewrite_is_https = NULL;
-static char *escape_uri(apr_pool_t *p, const char *path);
 
 /*
  * +-------------------------------------------------------+
@@ -637,46 +636,6 @@ static unsigned is_absolute_uri(char *uri)
     }
 
     return 0;
-}
-
-static const char c2x_table[] = "0123456789abcdef";
-
-static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
-                                     unsigned char *where)
-{
-#if APR_CHARSET_EBCDIC
-    what = apr_xlate_conv_byte(ap_hdrs_to_ascii, (unsigned char)what);
-#endif /*APR_CHARSET_EBCDIC*/
-    *where++ = prefix;
-    *where++ = c2x_table[what >> 4];
-    *where++ = c2x_table[what & 0xf];
-    return where;
-}
-
-/*
- * Escapes a uri in a similar way as php's urlencode does.
- * Based on ap_os_escape_path in server/util.c
- */
-static char *escape_uri(apr_pool_t *p, const char *path) {
-    char *copy = apr_palloc(p, 3 * strlen(path) + 3);
-    const unsigned char *s = (const unsigned char *)path;
-    unsigned char *d = (unsigned char *)copy;
-    unsigned c;
-
-    while ((c = *s)) {
-        if (apr_isalnum(c) || c == '_') {
-            *d++ = c;
-        }
-        else if (c == ' ') {
-            *d++ = '+';
-        }
-        else {
-            d = c2x(c, '%', d);
-        }
-        ++s;
-    }
-    *d = '\0';
-    return copy;
 }
 
 /*
@@ -2369,16 +2328,15 @@ static char *do_expand(char *input, rewrite_ctx *ctx, rewriterule_entry *entry)
                 if (entry && (entry->flags & RULEFLAG_ESCAPEBACKREF)) {
                     /* escape the backreference */
                     char *tmp2, *tmp;
-                    tmp = apr_palloc(pool, span + 1);
-                    strncpy(tmp, bri->source + bri->regmatch[n].rm_so, span);
-                    tmp[span] = '\0';
-                    tmp2 = escape_uri(pool, tmp);
+                    tmp = apr_pstrndup(pool, bri->source + bri->regmatch[n].rm_so, span);
+                    tmp2 = ap_escape_path_segment(pool, tmp);
                     rewritelog((ctx->r, 5, ctx->perdir, "escaping backreference '%s' to '%s'",
                             tmp, tmp2));
 
                     current->len = span = strlen(tmp2);
                     current->string = tmp2;
-                } else {
+                }
+                else {
                     current->len = span;
                     current->string = bri->source + bri->regmatch[n].rm_so;
                 }
