@@ -492,8 +492,10 @@ static apr_array_header_t *proxy_vars(request_rec *r,
 
     for (i = 0; i < hdr->nelts; ++i) {
         struct proxy_alias *newcopy = apr_array_push(ret);
-        newcopy->fake = proxy_interpolate(r, old[i].fake);
-        newcopy->real = proxy_interpolate(r, old[i].real);
+        newcopy->fake = (old[i].flags & PROXYPASS_INTERPOLATE)
+                        ? proxy_interpolate(r, old[i].fake) : old[i].fake;
+        newcopy->real = (old[i].flags & PROXYPASS_INTERPOLATE)
+                        ? proxy_interpolate(r, old[i].real) : old[i].real;
     }
     return ret;
 }
@@ -526,9 +528,10 @@ static int proxy_trans(request_rec *r)
      */
 
     for (i = 0; i < conf->aliases->nelts; i++) {
-	unsigned int nocanon = ent[i].flags & PROXYPASS_NOCANON;
+        unsigned int nocanon = ent[i].flags & PROXYPASS_NOCANON;
         const char *use_uri = nocanon ? r->unparsed_uri : r->uri;
-        if (dconf->interpolate_env == 1) {
+        if ((dconf->interpolate_env == 1)
+            && (ent[i].flags & PROXYPASS_INTERPOLATE)) {
             fake = proxy_interpolate(r, ent[i].fake);
             real = proxy_interpolate(r, ent[i].real);
         }
@@ -545,7 +548,7 @@ static int proxy_trans(request_rec *r)
                 if (nocanon && ap_regexec(ent[i].regex, r->unparsed_uri,
                                           AP_MAX_REG_MATCH, reg1, 0)) {
                     mismatch = 1;
-		    use_uri = r->uri;
+                    use_uri = r->uri;
                 }
                 found = ap_pregsub(r->pool, real, use_uri, AP_MAX_REG_MATCH,
                                    (use_uri == r->uri) ? regm : reg1);
@@ -581,7 +584,7 @@ static int proxy_trans(request_rec *r)
                 if (nocanon
                     && len != alias_match(r->unparsed_uri, ent[i].fake)) {
                     mismatch = 1;
-		    use_uri = r->uri;
+                    use_uri = r->uri;
                 }
                 found = apr_pstrcat(r->pool, "proxy:", real,
                                     use_uri + len, NULL);
@@ -1230,6 +1233,9 @@ static const char *
         else if (!strcasecmp(word,"nocanon")) {
             flags |= PROXYPASS_NOCANON;
         }
+        else if (!strcasecmp(word,"interpolate")) {
+            flags |= PROXYPASS_INTERPOLATE;
+        }
         else {
             char *val = strchr(word, '=');
             if (!val) {
@@ -1327,31 +1333,41 @@ static const char *
 }
 
 
-static const char *
-    add_pass_reverse(cmd_parms *cmd, void *dconf, const char *f, const char *r)
+static const char * add_pass_reverse(cmd_parms *cmd, void *dconf, const char *f,
+                                     const char *r, const char *i)
 {
     proxy_dir_conf *conf = dconf;
     struct proxy_alias *new;
+    const char *fake;
+    const char *real;
+    const char *interp;
 
-    if (r!=NULL && cmd->path == NULL ) {
-        new = apr_array_push(conf->raliases);
-        new->fake = f;
-        new->real = r;
-    } else if (r==NULL && cmd->path != NULL) {
-        new = apr_array_push(conf->raliases);
-        new->fake = cmd->path;
-        new->real = f;
-    } else {
-        if ( r == NULL)
+    if (cmd->path == NULL) {
+        fake = f;
+        real = r;
+        interp = i;
+        if (r == NULL || !strcasecmp(r, "interpolate")) {
             return "ProxyPassReverse needs a path when not defined in a location";
-        else
-            return "ProxyPassReverse can not have a path when defined in a location";
+        }
     }
+    else {
+        fake = cmd->path;
+        real = f;
+        if (r && strcasecmp(r, "interpolate")) {
+            return "ProxyPassReverse can not have a path when defined in a location";
+        }
+        interp = r;
+    }
+
+    new = apr_array_push(conf->raliases);
+    new->fake = fake;
+    new->real = real;
+    new->flags = interp ? PROXYPASS_INTERPOLATE : 0;
 
     return NULL;
 }
-static const char*
-    cookie_path(cmd_parms *cmd, void *dconf, const char *f, const char *r)
+static const char* cookie_path(cmd_parms *cmd, void *dconf, const char *f,
+                               const char *r, const char *interp)
 {
     proxy_dir_conf *conf = dconf;
     struct proxy_alias *new;
@@ -1359,11 +1375,12 @@ static const char*
     new = apr_array_push(conf->cookie_paths);
     new->fake = f;
     new->real = r;
+    new->flags = interp ? PROXYPASS_INTERPOLATE : 0;
 
     return NULL;
 }
-static const char*
-    cookie_domain(cmd_parms *cmd, void *dconf, const char *f, const char *r)
+static const char* cookie_domain(cmd_parms *cmd, void *dconf, const char *f,
+                                 const char *r, const char *interp)
 {
     proxy_dir_conf *conf = dconf;
     struct proxy_alias *new;
@@ -1371,7 +1388,7 @@ static const char*
     new = apr_array_push(conf->cookie_domains);
     new->fake = f;
     new->real = r;
-
+    new->flags = interp ? PROXYPASS_INTERPOLATE : 0;
     return NULL;
 }
 
@@ -1990,11 +2007,11 @@ static const command_rec proxy_cmds[] =
      "a virtual path and a URL"),
     AP_INIT_RAW_ARGS("ProxyPassMatch", add_pass_regex, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL"),
-    AP_INIT_TAKE12("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF|ACCESS_CONF,
+    AP_INIT_TAKE123("ProxyPassReverse", add_pass_reverse, NULL, RSRC_CONF|ACCESS_CONF,
      "a virtual path and a URL for reverse proxy behaviour"),
-    AP_INIT_TAKE2("ProxyPassReverseCookiePath", cookie_path, NULL,
+    AP_INIT_TAKE23("ProxyPassReverseCookiePath", cookie_path, NULL,
        RSRC_CONF|ACCESS_CONF, "Path rewrite rule for proxying cookies"),
-    AP_INIT_TAKE2("ProxyPassReverseCookieDomain", cookie_domain, NULL,
+    AP_INIT_TAKE23("ProxyPassReverseCookieDomain", cookie_domain, NULL,
        RSRC_CONF|ACCESS_CONF, "Domain rewrite rule for proxying cookies"),
     AP_INIT_ITERATE("ProxyBlock", set_proxy_exclude, NULL, RSRC_CONF,
      "A list of names, hosts or domains to which the proxy will not connect"),

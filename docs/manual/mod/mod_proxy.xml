@@ -574,7 +574,7 @@ expressions</description>
 <name>ProxyPass</name>
 <description>Maps remote servers into the local server URL-space</description>
 <syntax>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
-	<var>[key=value</var> ...]] [nocanon]</syntax>
+	<var>[key=value</var> ...]] [nocanon] [interpolate]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -850,6 +850,14 @@ expressions</description>
     removes the normal limited protection against URL-based attacks
     provided by the proxy.</p>
 
+    <p>The optional <var>interpolate</var> keyword, in combination with
+    <directive>ProxyPassInterpolateEnv</directive> causes the ProxyPass
+    to interpolate environment variables, using the syntax
+    <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
+    environment variables will not exist when this interpolation happens,
+    so you may still have to resort to <module>mod_rewrite</module>
+    for complex rules.</p>
+
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
@@ -897,7 +905,8 @@ expressions</description>
 <name>ProxyPassReverse</name>
 <description>Adjusts the URL in HTTP response headers sent from a reverse
 proxied server</description>
-<syntax>ProxyPassReverse [<var>path</var>] <var>url</var></syntax>
+<syntax>ProxyPassReverse [<var>path</var>] <var>url</var>
+[<var>interpolate</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -950,6 +959,11 @@ proxied server</description>
     because it doesn't depend on a corresponding <directive module="mod_proxy"
     >ProxyPass</directive> directive.</p>
 
+    <p>The optional <var>interpolate</var> keyword, used together with
+    <directive>ProxyPassInterpolateEnv</directive>, enables interpolation
+    of environment variables specified using the format <var>${VARNAME}</var>.
+    </p>
+
     <p>When used inside a <directive type="section" module="core"
     >Location</directive> section, the first argument is omitted and the local
     directory is obtained from the <directive type="section" module="core"
@@ -961,7 +975,8 @@ proxied server</description>
 <name>ProxyPassReverseCookieDomain</name>
 <description>Adjusts the Domain string in Set-Cookie headers from a reverse-
 proxied server</description>
-<syntax>ProxyPassReverseCookieDomain <var>internal-domain</var> <var>public-domain</var></syntax>
+<syntax>ProxyPassReverseCookieDomain <var>internal-domain</var>
+<var>public-domain</var> [<var>interpolate</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -976,7 +991,8 @@ string in <code>Set-Cookie</code> headers.</p>
 <name>ProxyPassReverseCookiePath</name>
 <description>Adjusts the Path string in Set-Cookie headers from a reverse-
 proxied server</description>
-<syntax>ProxyPassReverseCookiePath <var>internal-path</var> <var>public-path</var></syntax>
+<syntax>ProxyPassReverseCookiePath <var>internal-path</var>
+<var>public-path</var> [<var>interpolate</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -1357,7 +1373,11 @@ header for proxied requests</description>
 <compatibility>Available in trunk only</compatibility>
 
 <usage>
-    <p>This directive enables reverse proxies to be dynamically
+    <p>This directive, together with the <var>interpolate</var> argument to
+    <directive>ProxyPass</directive>, <directive>ProxyPassReverse</directive>,
+    <directive>ProxyPassReverseCookieDomain</directive> and
+    <directive>ProxyPassReverseCookiePath</directive>
+    enables reverse proxies to be dynamically
     configured using environment variables, which may be set by
     another module such as <module>mod_rewrite</module>.
     It affects the <directive>ProxyPass</directive>,
