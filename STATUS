@@ -185,12 +185,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_proxy_http: Don't mangle proxied URLs
      PR 42592
      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/proxy/mod_proxy_http.c?r1=582655&r2=583803&pathrev=583803
-     +1: niq
-     -1: jim: As per Roy, (forward) proxies should not check
-              the URI. See r583466 and r583803.
-     niq: updated proposal to address Roy & Jim's points.
-     rpluem: The first hunk of your patch fails (the include) because it is
-     already there. Remove this and I am +1.
+     2.2.x patch: http://people.apache.org/~niq/42592.patch
+     +1: niq, rpluem
 
    * core: backport ap_send_interim_response API
      http://svn.apache.org/viewvc?view=rev&revision=582630
@@ -210,6 +206,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 39722
      http://svn.apache.org/viewvc?view=rev&revision=589177
      +1: niq, rpluem
+
+   * mod_proxy: add "nocanon" option to ProxyPass, to suppress
+     canonicalisation of reverse-proxied URLs.
+     PR 41798
+     trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=588791
+     2.2.x:
+        mod_proxy.c patch at http://people.apache.org/~niq/41798.patch
+        mod_proxy_http.c patch: trunk works after applying PR#42592 patch
+        Other files: trunk patch works.
+     +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
