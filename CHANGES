@@ -1,5 +1,8 @@
-﻿                                                        -*- coding: utf-8 -*-
+                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
+
+  *) mod_rewrite: Add option to suppress URL unescaping
+     PR 34602 [Guenther Gsenger <guenther.gsenger gmail.com>]
 
   *) mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean 
      shutdown of the server when the MaxClients is higher then 257,
