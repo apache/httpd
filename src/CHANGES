@@ -1,7 +1,10 @@
 Changes with Apache 1.3.40
 
   *) More efficient implementation of the CVE-2007-3304 PID table
-     patch. [Jim Jagielski, Jeff Trawick]
+     patch. This fixes issues with excessive memory usage by the
+     parent process if long-running and with a high number of child
+     process forks during that timeframe. Also fixes bogus "Bad pid"
+     errors. [Jim Jagielski, Jeff Trawick]
 
 Changes with Apache 1.3.39
 
