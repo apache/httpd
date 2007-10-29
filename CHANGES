@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) Core: fix possible crash at startup in case of nonexistent DocumentRoot.
-     PR 39722 [Adrian Buckley <adrian.buckley ntlworld.com>]
-
   *) mod_proxy: add "nocanon" keyword to ProxyPass, to suppress
      URI-canonicalisation in a reverse proxy.
      PR 41798 [Nick Kew]
@@ -28,9 +25,6 @@ Changes with Apache 2.3.0
      the entity.
      PR 39727 [Nick Kew]
 
-  *) HTTP protocol: Add "DefaultType none" option.
-     PR 13986 and PR 16139 [Nick Kew]
-
   *) core: reinstate location walk to fix config for subrequests
      PR 41960 [Jose Kahan <jose w3.org>]
 
@@ -40,9 +34,6 @@ Changes with Apache 2.3.0
 
   *) mod_rewrite: Add the novary flag to RewriteCond.
      [Ruediger Pluem]
-
-  *) mod_rewrite: Add option to suppress URL unescaping
-     PR 34602 [Guenther Gsenger <guenther.gsenger gmail.com>]
 
   *) mod_include: Add an "if" directive syntax to test whether an URL
      is accessible, and if so, conditionally display content. This
