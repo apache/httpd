@@ -129,7 +129,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       PR 34602
       http://svn.apache.org/viewvc?view=rev&revision=573831
       http://svn.apache.org/viewvc?view=rev&revision=589343
-      +1: niq, rpluem
+      +1: niq, rpluem, jim
 
     * mod_rewrite: Also set the Vary header if a rewrite condition is true and
       uses a HTTP header, but all remaining rewrite conditions are skipped due
@@ -174,19 +174,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=579991 (code)
      http://svn.apache.org/viewvc?view=rev&revision=580502 (docs)
      http://svn.apache.org/viewvc?view=rev&revision=584842 (docs)
-     +1: niq, rpluem
-     rpluem says: IMHO the DefaultType documentation is now somewhat confusing
-     (e.g. the server must add, but sometimes is better not to) and should be
-     rewritten.
-     jim says: Is rpluem's concern addressed?
-     niq says: Yes, when we add r584842 to the proposal.
-     rpluem says: Yes.
+     +1: niq, rpluem, jim
      
    * mod_proxy_http: Don't mangle proxied URLs
      PR 42592
      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/proxy/mod_proxy_http.c?r1=582655&r2=583803&pathrev=583803
      2.2.x patch: http://people.apache.org/~niq/42592.patch
      +1: niq, rpluem
+     -1: jim: Comment is wrong if not bundled with "nocanon" option
 
    * core: backport ap_send_interim_response API
      http://svn.apache.org/viewvc?view=rev&revision=582630
@@ -205,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * Core: Fix possible crash at startup in case of nonexistent DocumentRoot.
      PR 39722
      http://svn.apache.org/viewvc?view=rev&revision=589177
-     +1: niq, rpluem
+     +1: niq, rpluem, jim
 
    * mod_proxy: add "nocanon" option to ProxyPass, to suppress
      canonicalisation of reverse-proxied URLs.
@@ -217,6 +212,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         mod_proxy_http.c patch: trunk works after applying PR#42592 patch
         Other files: trunk patch works.
      +1: niq
+     -1: jim: patch should be self-contained. If a mix and match of
+              files, then please create a distinct 2.2 patch.
 
 PATCHES/ISSUES THAT ARE STALLED
 
