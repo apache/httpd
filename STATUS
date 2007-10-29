@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=571872
      http://svn.apache.org/viewvc?view=rev&revision=571927
      http://svn.apache.org/viewvc?view=rev&revision=572136
-     +1: minfrin
+     +1: minfrin, jim
 
     * Event MPM: Add clogging_input_filters to the conn_rec, enabling mod_ssl
       to revert to the Worker MPM IO behavoirs, rather than just hanging, when 
@@ -172,6 +172,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      niq: On the contrary, comment is accurate without the noncanon option.
           The comment changes in r588791, precisely because "nocanon"
           affects it.
+     jim: The comment says 'so just check it for disallowed chars' which,
+          at least from what I can see regarding the patch applied to
+          2.2, we do not do.
 
    * core: backport ap_send_interim_response API
      http://svn.apache.org/viewvc?view=rev&revision=582630
@@ -204,6 +207,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           update in a separate 2.2 patch?  The complexity here is that
           mod_proxy_http.c relies on 42592, and a separate fix to
           that would invalidate the (very simple) patch to 42592.
+    jim: The issue is that the above "use trunk but use these external
+         patch" makes the backport hard to apply and test. Instead
+         of being able to just merge in r588791, you must just use
+         those that apply "cleanly" and handle mod_proxy.c as a
+         special case. This seems ripe for a specific 2.2 patch. Yes,
+         CHANGES always conflicts, but it is a documentation question,
+         not a code one. 
 
    * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
      ap_vrprintf(). PR 43310
