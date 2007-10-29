@@ -226,6 +226,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      niq: Doesn't allocating 2^n+1 bytes risk being horribly inefficient?
           Would it make sense to reduce AP_IOBUFSIZE to 8091 so buf doesn't
           go one over a big boundary?
+     jim: The issue is that we allocate an array of AP_IOBUFSIZE
+          but go beyond that (note we send the end to curpos+AP_IOBUFSIZE)
+          so it's not just reducing AP_IOBUFSIZE since then we would
+          hit the bug at 8191 boundary instead of the 8192 one.
+          The actual PR suggests simply removing the setting of '\0'
+          which looks good, but there are loads of places in the related
+          code where we use AP_IOBUFSIZE, so it seemed safer to me to
+          simply allocate an extra byte. Note that other sections of
+          code do this by setting the endpos to one less to "save"
+          space for the NUL, but they don't have related sections
+          which assume a set size; this does (AP_IOBUFSIZE).
 
 PATCHES/ISSUES THAT ARE STALLED
 
