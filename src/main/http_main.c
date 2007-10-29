@@ -2661,6 +2661,7 @@ API_EXPORT(int) ap_update_child_status(int child_num, int status, request_rec *r
 	    if (status == SERVER_DEAD) {
 		ss->my_access_count = 0L;
 		ss->my_bytes_served = 0L;
+                ap_scoreboard_image->parent[child_num].pid = 0;
 	    }
 	    ss->conn_count = (unsigned short) 0;
 	    ss->conn_bytes = (unsigned long) 0;
