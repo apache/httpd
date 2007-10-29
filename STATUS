@@ -205,6 +205,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           mod_proxy_http.c relies on 42592, and a separate fix to
           that would invalidate the (very simple) patch to 42592.
 
+   * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
+     ap_vrprintf(). PR 43310
+     trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=589461
+     2.2.x:
+        Trunk version of patch works
+     +1: jim
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
