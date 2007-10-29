@@ -175,6 +175,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      jim: The comment says 'so just check it for disallowed chars' which,
           at least from what I can see regarding the patch applied to
           2.2, we do not do.
+     niq: Oh, I see.  You prefer an all-in-one patch for both?
 
    * core: backport ap_send_interim_response API
      http://svn.apache.org/viewvc?view=rev&revision=582630
@@ -222,6 +223,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x:
         Trunk version of patch works
      +1: jim, rpluem
+     niq: Doesn't allocating 2^n+1 bytes risk being horribly inefficient?
+          Would it make sense to reduce AP_IOBUFSIZE to 8091 so buf doesn't
+          go one over a big boundary?
 
 PATCHES/ISSUES THAT ARE STALLED
 
