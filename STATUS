@@ -79,6 +79,23 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+    * mod_rewrite: Add option to suppress URL unescaping
+      PR 34602
+      http://svn.apache.org/viewvc?view=rev&revision=573831
+      http://svn.apache.org/viewvc?view=rev&revision=589343
+      +1: niq, rpluem, jim
+
+   * HTTP protocol: Add "DefaultType none" option.
+     PR 13986 and PR 16139
+     http://svn.apache.org/viewvc?view=rev&revision=579991 (code)
+     http://svn.apache.org/viewvc?view=rev&revision=580502 (docs)
+     http://svn.apache.org/viewvc?view=rev&revision=584842 (docs)
+     +1: niq, rpluem, jim
+     
+   * Core: Fix possible crash at startup in case of nonexistent DocumentRoot.
+     PR 39722
+     http://svn.apache.org/viewvc?view=rev&revision=589177
+     +1: niq, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -125,12 +142,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~pquerna/eventmpm-ssl-input-2.2.x.patch
     +1: pquerna, jim
 
-    * mod_rewrite: Add option to suppress URL unescaping
-      PR 34602
-      http://svn.apache.org/viewvc?view=rev&revision=573831
-      http://svn.apache.org/viewvc?view=rev&revision=589343
-      +1: niq, rpluem, jim
-
     * mod_rewrite: Also set the Vary header if a rewrite condition is true and
       uses a HTTP header, but all remaining rewrite conditions are skipped due
       to the [OR] flag.
@@ -169,13 +180,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      they close stdout/stderr first and dup a then closed fd in stdout/stderr,
      leaving us without stdout/stderr in the child.
 
-   * HTTP protocol: Add "DefaultType none" option.
-     PR 13986 and PR 16139
-     http://svn.apache.org/viewvc?view=rev&revision=579991 (code)
-     http://svn.apache.org/viewvc?view=rev&revision=580502 (docs)
-     http://svn.apache.org/viewvc?view=rev&revision=584842 (docs)
-     +1: niq, rpluem, jim
-     
    * mod_proxy_http: Don't mangle proxied URLs
      PR 42592
      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/proxy/mod_proxy_http.c?r1=582655&r2=583803&pathrev=583803
@@ -196,11 +200,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 16518
      http://svn.apache.org/viewvc?view=rev&revision=582631
      +1: niq, rpluem
-
-   * Core: Fix possible crash at startup in case of nonexistent DocumentRoot.
-     PR 39722
-     http://svn.apache.org/viewvc?view=rev&revision=589177
-     +1: niq, rpluem, jim
 
    * mod_proxy: add "nocanon" option to ProxyPass, to suppress
      canonicalisation of reverse-proxied URLs.
