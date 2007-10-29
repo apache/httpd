@@ -79,10 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * Core: Fix possible crash at startup in case of nonexistent DocumentRoot.
-     PR 39722
-     http://svn.apache.org/viewvc?view=rev&revision=589177
-     +1: niq, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

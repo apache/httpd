@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) Core: fix possible crash at startup in case of nonexistent DocumentRoot.
+     PR 39722 [Adrian Buckley <adrian.buckley ntlworld.com>]
+
   *) HTTP protocol: Add "DefaultType none" option.
      PR 13986 and PR 16139 [Nick Kew]
 
