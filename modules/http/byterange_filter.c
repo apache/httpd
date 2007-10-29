@@ -193,12 +193,21 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_byterange_filter(ap_filter_t *f,
                                            "byteranges; boundary=",
                                            ctx->boundary, NULL));
 
-        ctx->bound_head = apr_pstrcat(r->pool,
-                                      CRLF "--", ctx->boundary,
-                                      CRLF "Content-type: ",
-                                      orig_ct,
-                                      CRLF "Content-range: bytes ",
-                                      NULL);
+        if (strcasecmp(orig_ct, NO_CONTENT_TYPE)) {
+            ctx->bound_head = apr_pstrcat(r->pool,
+                                          CRLF "--", ctx->boundary,
+                                          CRLF "Content-type: ",
+                                          orig_ct,
+                                          CRLF "Content-range: bytes ",
+                                          NULL);
+        }
+        else {
+            /* if we have no type for the content, do our best */
+            ctx->bound_head = apr_pstrcat(r->pool,
+                                          CRLF "--", ctx->boundary,
+                                          CRLF "Content-range: bytes ",
+                                          NULL);
+        }
         ap_xlate_proto_to_ascii(ctx->bound_head, strlen(ctx->bound_head));
     }
 
