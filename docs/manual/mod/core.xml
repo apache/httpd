@@ -596,7 +596,7 @@ headers</description>
 <name>DefaultType</name>
 <description>MIME content-type that will be sent if the
 server cannot determine a type in any other way</description>
-<syntax>DefaultType <var>MIME-type</var></syntax>
+<syntax>DefaultType <var>MIME-type|none</var></syntax>
 <default>DefaultType text/plain</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -608,8 +608,9 @@ server cannot determine a type in any other way</description>
     document whose type cannot be determined by its <glossary
     ref="mime-type">MIME types</glossary> mappings.</p>
 
-    <p>The server must inform the client of the content-type of the
-    document, so in the event of an unknown type it uses the
+    <p>The server SHOULD inform the client of the content-type of the
+    document.  If the server is unable to determine this by normal
+    means, it will set it to the configured
     <code>DefaultType</code>. For example:</p>
 
     <example>
@@ -618,6 +619,15 @@ server cannot determine a type in any other way</description>
 
     <p>would be appropriate for a directory which contained many GIF
     images with filenames missing the <code>.gif</code> extension.</p>
+
+    <p>In cases where it can neither be determined by the server nor
+    the administrator (e.g. a proxy), it is preferable to omit the MIME
+    type altogether rather than provide information that may be false.
+    This can be accomplished using</p>
+    <example>
+      DefaultType None
+    </example>
+    <p>DefaultType None is only available in httpd-2.2.7 and later.</p>
 
     <p>Note that unlike <directive
     module="core">ForceType</directive>, this directive only
