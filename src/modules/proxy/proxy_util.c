@@ -282,7 +282,8 @@ const char *
         *q = ',';
         if (wk == 7)
             return x;           /* not a valid date */
-        if (q[4] != '-' || q[8] != '-' || q[11] != ' ' || q[14] != ':' ||
+        if (strlen(q) != 24 ||
+            q[4] != '-' || q[8] != '-' || q[11] != ' ' || q[14] != ':' ||
             q[17] != ':' || strcmp(&q[20], " GMT") != 0)
             return x;
         if (sscanf(q + 2, "%u-%3s-%u %u:%u:%u %3s", &mday, month, &year,
@@ -294,8 +295,9 @@ const char *
             year += 1900;
     }
     else {
-/* check for acstime() date */
-        if (x[3] != ' ' || x[7] != ' ' || x[10] != ' ' || x[13] != ':' ||
+/* check for asctime() date */
+        if (strlen(x) != 24 ||
+            x[3] != ' ' || x[7] != ' ' || x[10] != ' ' || x[13] != ':' ||
             x[16] != ':' || x[19] != ' ' || x[24] != '\0')
             return x;
         if (sscanf(x, "%3s %3s %u %u:%u:%u %u", week, month, &mday, &hour,

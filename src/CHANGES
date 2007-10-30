@@ -1,5 +1,12 @@
 Changes with Apache 1.3.40
 
+  *) SECURITY: CVE-2007-3847 (cve.mitre.org)
+     mod_proxy: Prevent reading past the end of a buffer when parsing
+     date-related headers.  PR 41144.
+     With Apache 1.3, the denial of service vulnerability applies only 
+     to the Windows and NetWare platforms.
+     [Jeff Trawick]
+
   *) More efficient implementation of the CVE-2007-3304 PID table
      patch. This fixes issues with excessive memory usage by the
      parent process if long-running and with a high number of child
