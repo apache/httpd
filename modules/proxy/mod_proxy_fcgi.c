@@ -194,7 +194,7 @@ static apr_status_t send_data(proxy_conn_rec *conn,
                     n -= vec[i++].iov_len;
                 } else {
                     vec[i].iov_len -= n;
-                    vec[i].iov_base += n;
+                    vec[i].iov_base = (char *) vec[i].iov_base + n;
                     break;
                 }
             }

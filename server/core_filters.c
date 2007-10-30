@@ -712,7 +712,7 @@ static apr_status_t writev_nonblocking(apr_socket_t *s,
                     APR_BUCKET_REMOVE(bucket);
                     apr_bucket_destroy(bucket);
                     vec[i].iov_len -= n;
-                    vec[i].iov_base += n;
+                    vec[i].iov_base = (char *) vec[i].iov_base + n;
                     break;
                 }
             }
