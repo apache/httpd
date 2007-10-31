@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_status: Add SeeRequestTail directive, which determines if
+     ExtendedStatus displays the 1st 63 characters of the request
+     or the last 63. Useful for those requests with large string
+     lengths and which only vary with the last several characters.
+     [Jim Jagielski]
+
   *) mod_proxy: add "nocanon" keyword to ProxyPass, to suppress
      URI-canonicalisation in a reverse proxy.
      PR 41798 [Nick Kew]

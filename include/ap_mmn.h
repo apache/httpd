@@ -136,6 +136,7 @@
  * 20071023.0 (2.3.0-dev)  add ap_get_scoreboard(sbh) split from the less
  *                         conventional ap_get_scoreboard(proc, thread)
  * 20071023.1 (2.3.0-dev)  Add flags field to struct proxy_alias
+ * 20071023.2 (2.3.0-dev)  Add ap_mod_status_reqtail
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -143,7 +144,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20071023
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 2                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
