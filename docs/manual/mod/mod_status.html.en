@@ -72,6 +72,7 @@ performance</td></tr>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#extendedstatus">ExtendedStatus</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#seerequesttail">SeeRequestTail</a></li>
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
@@ -149,6 +150,29 @@ later.</td></tr>
     enabled or disabled on a virtualhost-by-virtualhost basis.
     The collection of extended status information can slow down
     the server.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SeeRequestTail" id="SeeRequestTail">SeeRequestTail</a> <a name="seerequesttail" id="seerequesttail">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Determine if mod_status displays the first 63 characters
+of a request or the last 63, assuming the request itself is greater than
+63 chars.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SeeRequestTail On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SeeRequestTail Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_status</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SeeRequestTail is only available in Apache 2.3.x and 
+later.</td></tr>
+</table>
+    <p>mod_status with ExtendedStatus On displays the actual request being
+    handled. For historical purposes, only 63 characters of the request
+    are actually stored for display purposes. This directive
+    controls whether the 1st 63 characters are stored (the previous
+    behavior and the default) or if the last 63 characters are. This
+    is only applicable, of course, if the length of the request is
+    64 characters or greater.</p>
 
 </div>
 </div>

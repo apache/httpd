@@ -719,7 +719,7 @@ through</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps remote servers into the local server URL-space</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
-	<var>[key=value</var> ...]]</code></td></tr>
+	<var>[key=value</var> ...]] [nocanon] [interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -985,6 +985,21 @@ through</td></tr>
       &lt;/Proxy&gt;
     </code></p></div>
 
+    <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
+    But this may be incompatible with some backends, particularly those
+    that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
+    keyword suppresses this, and passes the URL path "raw" to the
+    backend.  Note that may affect the security of your backend, as it
+    removes the normal limited protection against URL-based attacks
+    provided by the proxy.</p>
+
+    <p>The optional <var>interpolate</var> keyword, in combination with
+    <code class="directive">ProxyPassInterpolateEnv</code> causes the ProxyPass
+    to interpolate environment variables, using the syntax
+    <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
+    environment variables will not exist when this interpolation happens,
+    so you may still have to resort to <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
+    for complex rules.</p>
 
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
     directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
@@ -1005,7 +1020,11 @@ through</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in trunk only</td></tr>
 </table>
-    <p>This directive enables reverse proxies to be dynamically
+    <p>This directive, together with the <var>interpolate</var> argument to
+    <code class="directive">ProxyPass</code>, <code class="directive">ProxyPassReverse</code>,
+    <code class="directive">ProxyPassReverseCookieDomain</code> and
+    <code class="directive">ProxyPassReverseCookiePath</code>
+    enables reverse proxies to be dynamically
     configured using environment variables, which may be set by
     another module such as <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>.
     It affects the <code class="directive">ProxyPass</code>,
@@ -1054,7 +1073,8 @@ through</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the URL in HTTP response headers sent from a reverse
 proxied server</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverse [<var>path</var>] <var>url</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverse [<var>path</var>] <var>url</var>
+[<var>interpolate</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -1103,6 +1123,11 @@ proxied server</td></tr>
     (<code>RewriteRule ...  [P]</code>) from <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     because it doesn't depend on a corresponding <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
 
+    <p>The optional <var>interpolate</var> keyword, used together with
+    <code class="directive">ProxyPassInterpolateEnv</code>, enables interpolation
+    of environment variables specified using the format <var>${VARNAME}</var>.
+    </p>
+
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
     directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
 
@@ -1112,7 +1137,8 @@ proxied server</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the Domain string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverseCookieDomain <var>internal-domain</var> <var>public-domain</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverseCookieDomain <var>internal-domain</var>
+<var>public-domain</var> [<var>interpolate</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -1128,7 +1154,8 @@ string in <code>Set-Cookie</code> headers.</p>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Adjusts the Path string in Set-Cookie headers from a reverse-
 proxied server</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverseCookiePath <var>internal-path</var> <var>public-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPassReverseCookiePath <var>internal-path</var>
+<var>public-path</var> [<var>interpolate</var>]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
