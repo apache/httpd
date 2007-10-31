@@ -140,5 +140,29 @@ later.</compatibility>
 </usage>
 
 </directivesynopsis>
+<directivesynopsis>
+
+<name>SeeRequestTail</name>
+<description>Determine if mod_status displays the first 63 characters
+of a request or the last 63, assuming the request itself is greater than
+63 chars.</description>
+<syntax>SeeRequestTail On|Off</syntax>
+<default>SeeRequestTail Off</default>
+<contextlist><context>server config</context></contextlist>
+<compatibility>SeeRequestTail is only available in Apache 2.3.x and 
+later.</compatibility>
+
+<usage>
+    <p>mod_status with ExtendedStatus On displays the actual request being
+    handled. For historical purposes, only 63 characters of the request
+    are actually stored for display purposes. This directive
+    controls whether the 1st 63 characters are stored (the previous
+    behavior and the default) or if the last 63 characters are. This
+    is only applicable, of course, if the length of the request is
+    64 characters or greater.</p>
+</usage>
+
+</directivesynopsis>
+
 </modulesynopsis>
 

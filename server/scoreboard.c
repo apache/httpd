@@ -40,6 +40,7 @@
 AP_DECLARE_DATA scoreboard *ap_scoreboard_image = NULL;
 AP_DECLARE_DATA const char *ap_scoreboard_fname = NULL;
 AP_DECLARE_DATA int ap_extended_status = 0;
+AP_DECLARE_DATA int ap_mod_status_reqtail = 0;
 
 #if APR_HAS_SHARED_MEMORY
 
@@ -388,6 +389,42 @@ AP_DECLARE(void) ap_create_sb_handle(ap_sb_handle_t **new_sbh, apr_pool_t *p,
     (*new_sbh)->thread_num = thread_num;
 }
 
+static void copy_request(char *rbuf, apr_size_t rbuflen, request_rec *r)
+{
+    char *p;
+
+    if (r->the_request == NULL) {
+        apr_cpystrn(rbuf, "NULL", rbuflen);
+        return; /* short circuit below */
+    }
+
+    if (r->parsed_uri.password == NULL) {
+        p = r->the_request;
+    }
+    else {
+        /* Don't reveal the password in the server-status view */
+        p = apr_pstrcat(r->pool, r->method, " ",
+                        apr_uri_unparse(r->pool, &r->parsed_uri,
+                        APR_URI_UNP_OMITPASSWORD),
+                        r->assbackwards ? NULL : " ", r->protocol, NULL);
+    }
+
+    /* now figure out if we copy over the 1st rbuflen chars or the last */
+    if (!ap_mod_status_reqtail) {
+        apr_cpystrn(rbuf, p, rbuflen);
+    }
+    else {
+        apr_size_t slen = strlen(p);
+        if (slen < rbuflen) {
+            /* it all fits anyway */
+            apr_cpystrn(rbuf, p, rbuflen);
+        }
+        else {
+            apr_cpystrn(rbuf, p+(slen-rbuflen+1), rbuflen);
+        }
+    }
+}
+
 AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
                                                     int thread_num,
                                                     int status,
@@ -430,18 +467,7 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
             conn_rec *c = r->connection;
             apr_cpystrn(ws->client, ap_get_remote_host(c, r->per_dir_config,
                         REMOTE_NOLOOKUP, NULL), sizeof(ws->client));
-            if (r->the_request == NULL) {
-                apr_cpystrn(ws->request, "NULL", sizeof(ws->request));
-            } else if (r->parsed_uri.password == NULL) {
-                apr_cpystrn(ws->request, r->the_request, sizeof(ws->request));
-            } else {
-                /* Don't reveal the password in the server-status view */
-                apr_cpystrn(ws->request, apr_pstrcat(r->pool, r->method, " ",
-                            apr_uri_unparse(r->pool, &r->parsed_uri,
-                            APR_URI_UNP_OMITPASSWORD),
-                            r->assbackwards ? NULL : " ", r->protocol, NULL),
-                            sizeof(ws->request));
-            }
+            copy_request(ws->request, sizeof(ws->request), r);
             apr_cpystrn(ws->vhost, r->server->server_hostname,
                         sizeof(ws->vhost));
         }
