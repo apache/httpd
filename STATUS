@@ -124,6 +124,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x version of patch:
         http://people.apache.org/~pquerna/eventmpm-ssl-input-2.2.x.patch
     +1: pquerna, jim
+    rpluem says: Your 2.2.x version also contains r360257. Why?
+                 It seems to be that r360257 is part of the write completion
+                 on trunk which is not part of 2.2.x.
 
     * mod_rewrite: Also set the Vary header if a rewrite condition is true and
       uses a HTTP header, but all remaining rewrite conditions are skipped due
@@ -169,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~niq/42592.patch
      2.2.x composite patch: this together with PR41798 patch
         http://people.apache.org/~niq/41798+42592.patch
-     +1: niq, rpluem
+     +1: niq
      -1: jim: Comment is wrong if not bundled with "nocanon" option
      niq: On the contrary, comment is accurate without the noncanon option.
           The comment changes in r588791, precisely because "nocanon"
@@ -178,6 +181,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           at least from what I can see regarding the patch applied to
           2.2, we do not do.
      niq: Oh, I see.  You prefer an all-in-one patch for both?
+     rpluem says: Please add a minor bump for the changes to mod_proxy.h.
+                  Then I am +1.
 
    * core: backport ap_send_interim_response API
      http://svn.apache.org/viewvc?view=rev&revision=582630
@@ -219,6 +224,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          special case. This seems ripe for a specific 2.2 patch. Yes,
          CHANGES always conflicts, but it is a documentation question,
          not a code one. 
+     rpluem says: Please add a minor bump for the changes to mod_proxy.h.
+                  Then I am +1.
 
    * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
      ap_vrprintf(). PR 43310
