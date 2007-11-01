@@ -167,6 +167,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 42592
      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/proxy/mod_proxy_http.c?r1=582655&r2=583803&pathrev=583803
      2.2.x patch: http://people.apache.org/~niq/42592.patch
+     2.2.x composite patch: this together with PR41798 patch
+        http://people.apache.org/~niq/41798+42592.patch
      +1: niq, rpluem
      -1: jim: Comment is wrong if not bundled with "nocanon" option
      niq: On the contrary, comment is accurate without the noncanon option.
@@ -201,6 +203,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         mod_proxy.c patch at http://people.apache.org/~niq/41798.patch
         mod_proxy_http.c patch: trunk works after applying PR#42592 patch
         Other files: trunk patch works.
+     2.2.x composite patch: this together with PR42592 patch
+        http://people.apache.org/~niq/41798+42592.patch
      +1: niq
      -1: jim: patch should be self-contained. If a mix and match of
               files, then please create a distinct 2.2 patch.
