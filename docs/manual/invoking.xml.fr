@@ -53,7 +53,7 @@
     permettre d'&ecirc;tre associ&eacute; &agrave; ce port privil&eacute;gi&eacute;. Lorsque le serveur est
     d&eacute;marr&eacute;, apr&egrave;s avoir effectu&eacute; quelques op&eacute;rations pr&eacute;liminaires
     comme ouvrir ses fichiers de log, il lance plusieurs processus
-    <em>enfants</em> qui ont pour rôle d'&eacute;couter et de r&eacute;pondre aux
+    <em>enfants</em> qui ont pour r&ocirc;le d'&eacute;couter et de r&eacute;pondre aux
     requ&ecirc;tes des clients. Le processus <code>httpd</code> principal
     continue &agrave; s'ex&eacute;cuter sous l'utilisateur root, tandis que les processus
     enfants s'ex&eacute;cutent sous un utilisateur aux privil&egrave;ges restreints.
