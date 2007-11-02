@@ -249,6 +249,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           space for the NUL, but they don't have related sections
           which assume a set size; this does (AP_IOBUFSIZE).
 
+   * EBCDIC fix to mod_authnz_ldap AUTHENTICATE_foo variables
+     trunk:
+       http://svn.apache.org/viewvc?view=rev&revision=571798
+     2.2.x patch:
+         Unrelated changes which either don't apply or rely on 
+         a definition in mod_auth.h have been omitted.
+       http://people.apache.org/~trawick/ldap_toupper.txt
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
