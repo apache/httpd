@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_ldap: Give callers a reference to data copied into the request
+     pool instead of references directly into the cache
+     PR 43786 [Eric Covener]
+    
   *) mod_ldap: Stop passing a reference to pconf around for
      (limited) use during request processing, avoiding possible 
      memory corruption and crashes.  [Eric Covener]
