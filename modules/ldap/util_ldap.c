@@ -1208,8 +1208,16 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                      && (strcmp(search_nodep->bindpw, bindpw) == 0))
             {
                 /* ...and entry is valid */
-                *binddn = search_nodep->dn;
-                *retvals = search_nodep->vals;
+                *binddn = apr_pstrdup(r->pool, search_nodep->dn);
+                if (attrs) {
+                    int i = 0, k = 0;
+                    while (attrs[k++]);
+                    *retvals = apr_pcalloc(r->pool, sizeof(char *) * k);
+                    while (search_nodep->vals[i]) {
+                        *retvals[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
+                        i++;
+                    }
+                }
                 LDAP_CACHE_UNLOCK();
                 ldc->reason = "Authentication successful (cached)";
                 return LDAP_SUCCESS;
@@ -1448,8 +1456,16 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
             }
             else {
                 /* ...and entry is valid */
-                *binddn = search_nodep->dn;
-                *retvals = search_nodep->vals;
+                *binddn = apr_pstrdup(r->pool, search_nodep->dn);
+                if (attrs) {
+                    int i = 0, k = 0;
+                    while (attrs[k++]);
+                    *retvals = apr_pcalloc(r->pool, sizeof(char *) * k);
+                    while (search_nodep->vals[i]) {
+                        *retvals[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
+                        i++;
+                    }
+                }
                 LDAP_CACHE_UNLOCK();
                 ldc->reason = "Search successful (cached)";
                 return LDAP_SUCCESS;
