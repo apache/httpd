@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+﻿<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
@@ -695,6 +695,12 @@
           <p>will compile most modules and build them as DSO modules.
             <!-- See <a href="../install/enabledmodules.html">Overview of
               enabled modules</a> for further information. --></p>
+	  <p><em><strong>Caveat: </strong></em><code> --enable-mods-shared=all </code> does not
+		actually build all modules. To build all modules then, one might use:
+	<example>./configure \ <br />
+		--with-ldap \ <br />
+		--enable-mods-shared="all ssl ldap cache proxy authn_alias mem_cache file_cache authnz_ldap charset_lite dav_lock disk_cache" </example>
+	  </p>
         </dd>
                     
         <dt><code>--enable-modules=<var>MODULE-LIST</var></code></dt>
