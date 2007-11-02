@@ -49,7 +49,7 @@ static char *ssl_var_lookup_ssl_cert_PEM(apr_pool_t *p, X509 *xs);
 static char *ssl_var_lookup_ssl_cert_verify(apr_pool_t *p, conn_rec *c);
 static char *ssl_var_lookup_ssl_cipher(apr_pool_t *p, conn_rec *c, char *var);
 static void  ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algkeysize);
-static char *ssl_var_lookup_ssl_version(apr_pool_t *pp, apr_pool_t *p, char *var);
+static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var);
 static char *ssl_var_lookup_ssl_compress_meth(SSL *ssl);
 
 static int ssl_is_https(conn_rec *c)
@@ -58,12 +58,32 @@ static int ssl_is_https(conn_rec *c)
     return sslconn && sslconn->ssl;
 }
 
-void ssl_var_register(void)
+static const char var_interface[] = "mod_ssl/" MOD_SSL_VERSION;
+static char var_library_interface[] = SSL_LIBRARY_TEXT;
+static char *var_library = NULL;
+
+void ssl_var_register(apr_pool_t *p)
 {
+    char *cp, *cp2;
+
     APR_REGISTER_OPTIONAL_FN(ssl_is_https);
     APR_REGISTER_OPTIONAL_FN(ssl_var_lookup);
     APR_REGISTER_OPTIONAL_FN(ssl_ext_list);
-    return;
+
+    /* Perform once-per-process library version determination: */
+    var_library = apr_pstrdup(p, SSL_LIBRARY_DYNTEXT);
+    
+    if ((cp = strchr(var_library, ' ')) != NULL) {
+        *cp = '/';
+        if ((cp2 = strchr(cp, ' ')) != NULL)
+            *cp2 = NUL;
+    }
+
+    if ((cp = strchr(var_library_interface, ' ')) != NULL) {
+        *cp = '/';
+        if ((cp2 = strchr(cp, ' ')) != NULL)
+            *cp2 = NUL;
+    }
 }
 
 /* This function must remain safe to use for a non-SSL connection. */
@@ -190,7 +210,7 @@ char *ssl_var_lookup(apr_pool_t *p, server_rec *s, conn_rec *c, request_rec *r, 
      */
     if (result == NULL) {
         if (strlen(var) > 12 && strcEQn(var, "SSL_VERSION_", 12))
-            result = ssl_var_lookup_ssl_version(s->process->pool, p, var+12);
+            result = ssl_var_lookup_ssl_version(p, var+12);
         else if (strcEQ(var, "SERVER_SOFTWARE"))
             result = ap_get_server_banner();
         else if (strcEQ(var, "API_VERSION")) {
@@ -262,8 +282,7 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
 
     ssl = sslconn->ssl;
     if (strlen(var) > 8 && strcEQn(var, "VERSION_", 8)) {
-        result = ssl_var_lookup_ssl_version(c->base_server->process->pool,
-                                            p, var+8);
+        result = ssl_var_lookup_ssl_version(p, var+8);
     }
     else if (ssl != NULL && strcEQ(var, "PROTOCOL")) {
         result = (char *)SSL_get_version(ssl);
@@ -634,41 +653,18 @@ static void ssl_var_lookup_ssl_cipher_bits(SSL *ssl, int *usekeysize, int *algke
     return;
 }
 
-static char *ssl_var_lookup_ssl_version(apr_pool_t *pp, apr_pool_t *p, char *var)
+static char *ssl_var_lookup_ssl_version(apr_pool_t *p, char *var)
 {
-    static const char interface[] = "mod_ssl/" MOD_SSL_VERSION;
-    static char library_interface[] = SSL_LIBRARY_TEXT;
-    static char *library = NULL;
-    char *result;
-  
-    if (!library) {
-        char *cp, *cp2;
-        library = apr_pstrdup(pp, SSL_LIBRARY_DYNTEXT);
-        if ((cp = strchr(library, ' ')) != NULL) {
-            *cp = '/';
-            if ((cp2 = strchr(cp, ' ')) != NULL)
-                *cp2 = NUL;
-        }
-        if ((cp = strchr(library_interface, ' ')) != NULL) {
-            *cp = '/';
-            if ((cp2 = strchr(cp, ' ')) != NULL)
-                *cp2 = NUL;
-        }
-    }
-
     if (strEQ(var, "INTERFACE")) {
-        result = apr_pstrdup(p, interface);
+        return apr_pstrdup(p, var_interface);
     }
     else if (strEQ(var, "LIBRARY_INTERFACE")) {
-        result = apr_pstrdup(p, library_interface);
+        return apr_pstrdup(p, var_library_interface);
     }
     else if (strEQ(var, "LIBRARY")) {
-        result = apr_pstrdup(p, library);
+        return apr_pstrdup(p, var_library);
     }
-    else {
-        result = NULL;
-    }
-    return result;
+    return NULL;
 }
   
 
