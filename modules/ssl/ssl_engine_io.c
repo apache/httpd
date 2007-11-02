@@ -1539,14 +1539,25 @@ int ssl_io_buffer_fill(request_rec *r)
 
     apr_brigade_destroy(tempb);
 
-    /* Insert the filter which will supply the buffered data. */
+    /* After consuming all protocol-level input, remove all protocol-level
+     * filters.  It should strictly only be necessary to remove filters
+     * at exactly ftype == AP_FTYPE_PROTOCOL, since this filter will 
+     * precede all > AP_FTYPE_PROTOCOL anyway. */
+    while (r->proto_input_filters->frec->ftype < AP_FTYPE_CONNECTION) {
+        ap_remove_input_filter(r->proto_input_filters);
+    }
+
+    /* Insert the filter which will supply the buffered content. */
     ap_add_input_filter(ssl_io_buffer, ctx, r, c);
 
     return 0;
 }
 
 /* This input filter supplies the buffered request body to the caller
- * from the brigade stored in f->ctx. */
+ * from the brigade stored in f->ctx.  Note that the placement of this
+ * filter in the filter stack is important; it must be the first
+ * r->proto_input_filter; lower-typed filters will not be preserved
+ * across internal redirects (see PR 43738).  */
 static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
                                          apr_bucket_brigade *bb,
                                          ap_input_mode_t mode,
@@ -1563,6 +1574,19 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
 
     if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE) {
         return APR_ENOTIMPL;
+    }
+
+    if (APR_BRIGADE_EMPTY(ctx->bb)) {
+        /* Suprisingly (and perhaps, wrongly), the request body can be
+         * pulled from the input filter stack more than once; a
+         * handler may read it, and ap_discard_request_body() will
+         * attempt to do so again after *every* request.  So input
+         * filters must be prepared to give up an EOS if invoked after
+         * initially reading the request. The HTTP_IN filter does this
+         * with its ->eos_sent flag. */
+
+        APR_BRIGADE_INSERT_TAIL(bb, apr_bucket_eos_create(f->c->bucket_alloc));
+        return APR_SUCCESS;
     }
 
     if (mode == AP_MODE_READBYTES) {
@@ -1619,8 +1643,9 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
         }
 
         ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, f->c,
-                      "buffered SSL brigade now exhausted; removing filter");
-        ap_remove_input_filter(f);
+                      "buffered SSL brigade exhausted");
+        /* Note that the filter must *not* be removed here; it may be
+         * invoked again, see comment above. */
     }
 
     return APR_SUCCESS;
@@ -1695,7 +1720,7 @@ void ssl_io_filter_register(apr_pool_t *p)
     ap_register_input_filter  (ssl_io_filter, ssl_io_filter_input,  NULL, AP_FTYPE_CONNECTION + 5);
     ap_register_output_filter (ssl_io_filter, ssl_io_filter_output, NULL, AP_FTYPE_CONNECTION + 5);
 
-    ap_register_input_filter  (ssl_io_buffer, ssl_io_filter_buffer, NULL, AP_FTYPE_PROTOCOL - 1);
+    ap_register_input_filter  (ssl_io_buffer, ssl_io_filter_buffer, NULL, AP_FTYPE_PROTOCOL);
 
     return;
 }
