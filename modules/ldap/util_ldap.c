@@ -217,7 +217,7 @@ static int uldap_connection_init(request_rec *r,
      * some hosts with ports and some without. All hosts which do not
      * specify a port will use the default port.
      */
-    apr_ldap_init(ldc->pool, &(ldc->ldap),
+    apr_ldap_init(r->pool, &(ldc->ldap),
                   ldc->host,
                   APR_LDAP_SSL == ldc->secure ? LDAPS_PORT : LDAP_PORT,
                   APR_LDAP_NONE,
@@ -245,7 +245,7 @@ static int uldap_connection_init(request_rec *r,
 
     /* set client certificates */
     if (!apr_is_empty_array(ldc->client_certs)) {
-        apr_ldap_set_option(ldc->pool, ldc->ldap, APR_LDAP_OPT_TLS_CERT,
+        apr_ldap_set_option(r->pool, ldc->ldap, APR_LDAP_OPT_TLS_CERT,
                             ldc->client_certs, &(result));
         if (LDAP_SUCCESS != result->rc) {
             uldap_connection_unbind( ldc );
@@ -256,7 +256,7 @@ static int uldap_connection_init(request_rec *r,
 
     /* switch on SSL/TLS */
     if (APR_LDAP_NONE != ldc->secure) {
-        apr_ldap_set_option(ldc->pool, ldc->ldap,
+        apr_ldap_set_option(r->pool, ldc->ldap,
                             APR_LDAP_OPT_TLS, &ldc->secure, &(result));
         if (LDAP_SUCCESS != result->rc) {
             uldap_connection_unbind( ldc );
@@ -271,7 +271,7 @@ static int uldap_connection_init(request_rec *r,
 
 /*XXX All of the #ifdef's need to be removed once apr-util 1.2 is released */
 #ifdef APR_LDAP_OPT_VERIFY_CERT
-    apr_ldap_set_option(ldc->pool, ldc->ldap,
+    apr_ldap_set_option(r->pool, ldc->ldap,
                         APR_LDAP_OPT_VERIFY_CERT, &(st->verify_svr_cert), &(result));
 #else
 #if defined(LDAPSSL_VERIFY_SERVER)
@@ -301,7 +301,7 @@ static int uldap_connection_init(request_rec *r,
     }
 
     if (st->connectionTimeout >= 0) {
-        rc = apr_ldap_set_option(ldc->pool, ldc->ldap, LDAP_OPT_NETWORK_TIMEOUT,
+        rc = apr_ldap_set_option(r->pool, ldc->ldap, LDAP_OPT_NETWORK_TIMEOUT,
                                  (void *)&timeOut, &(result));
         if (APR_SUCCESS != rc) {
             ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
@@ -533,11 +533,19 @@ static util_ldap_connection_t *
          */
         /* create the details to the pool in st */
         l = apr_pcalloc(st->pool, sizeof(util_ldap_connection_t));
+        if (apr_pool_create(&l->pool, st->pool) != APR_SUCCESS) { 
+            ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
+                          "util_ldap: Failed to create memory pool");
+#if APR_HAS_THREADS
+            apr_thread_mutex_unlock(st->mutex);
+#endif
+            return NULL;
+    
+        }
 #if APR_HAS_THREADS
         apr_thread_mutex_create(&l->lock, APR_THREAD_MUTEX_DEFAULT, st->pool);
         apr_thread_mutex_lock(l->lock);
 #endif
-        l->pool = st->pool;
         l->bound = 0;
         l->host = apr_pstrdup(st->pool, host);
         l->port = port;
@@ -2278,7 +2286,7 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                       0,
                       &(result_err));
     if (APR_SUCCESS == rc) {
-        rc = apr_ldap_set_option(p, NULL, APR_LDAP_OPT_TLS_CERT,
+        rc = apr_ldap_set_option(ptemp, NULL, APR_LDAP_OPT_TLS_CERT,
                                  (void *)st->global_certs, &(result_err));
     }
 
