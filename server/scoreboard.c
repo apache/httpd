@@ -483,7 +483,7 @@ AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status,
                                                status, r);
 }
 
-void ap_time_process_request(ap_sb_handle_t *sbh, int status)
+AP_DECLARE(void) ap_time_process_request(ap_sb_handle_t *sbh, int status)
 {
     worker_score *ws;
 
