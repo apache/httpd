@@ -759,8 +759,7 @@ int ssl_hook_Access(request_rec *r)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "access to %s failed, reason: %s",
                           r->filename,
-                          "SSL requirement expression not fulfilled "
-                          "(see SSL logfile for more details)");
+                          "SSL requirement expression not fulfilled");
 
             /* remember forbidden access for strict require option */
             apr_table_setn(r->notes, "ssl-access-forbidden", "1");
