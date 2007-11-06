@@ -620,7 +620,7 @@ int ssl_proxy_enable(conn_rec *c);
 int ssl_engine_disable(conn_rec *c);
 
 /**  I/O  */
-void         ssl_io_filter_init(conn_rec *, SSL *);
+void         ssl_io_filter_init(conn_rec *, request_rec *r, SSL *);
 void         ssl_io_filter_register(apr_pool_t *);
 long         ssl_io_data_cb(BIO *, int, MODSSL_BIO_CB_ARG_TYPE *, int, long, long);
 
@@ -642,7 +642,7 @@ BOOL         ssl_util_path_check(ssl_pathcheck_t, const char *, apr_pool_t *);
 ssl_algo_t   ssl_util_algotypeof(X509 *, EVP_PKEY *); 
 char        *ssl_util_algotypestr(ssl_algo_t);
 void         ssl_util_thread_setup(apr_pool_t *);
-int          ssl_init_ssl_connection(conn_rec *c);
+int          ssl_init_ssl_connection(conn_rec *c, request_rec *r);
 
 /**  Pass Phrase Support  */
 void         ssl_pphrase_Handle(server_rec *, apr_pool_t *);

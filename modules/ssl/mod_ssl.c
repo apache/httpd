@@ -318,7 +318,7 @@ int ssl_engine_disable(conn_rec *c)
     return 1;
 }
 
-int ssl_init_ssl_connection(conn_rec *c)
+int ssl_init_ssl_connection(conn_rec *c, request_rec *r)
 {
     SSLSrvConfigRec *sc = mySrvConfig(c->base_server);
     SSL *ssl;
@@ -381,7 +381,7 @@ int ssl_init_ssl_connection(conn_rec *c)
 
     SSL_set_verify_result(ssl, X509_V_OK);
 
-    ssl_io_filter_init(c, ssl);
+    ssl_io_filter_init(c, r, ssl);
 
     return APR_SUCCESS;
 }
@@ -442,18 +442,9 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
                   "Connection to child %ld established "
                   "(server %s)", c->id, sc->vhost_id);
 
-    return ssl_init_ssl_connection(c);
+    return ssl_init_ssl_connection(c, NULL);
 }
 
-
-static void ssl_hook_Insert_Filter(request_rec *r)
-{
-    SSLSrvConfigRec *sc = mySrvConfig(r->server);
-
-    if (sc->enabled == SSL_ENABLED_OPTIONAL) {
-        ap_add_output_filter("UPGRADE_FILTER", NULL, r, r->connection);
-    }
-}
 
 /*
  *  the module registration phase
@@ -479,8 +470,6 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_access_checker(ssl_hook_Access,        NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_auth_checker  (ssl_hook_Auth,          NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_post_read_request(ssl_hook_ReadReq, pre_prr,NULL, APR_HOOK_MIDDLE);
-    ap_hook_insert_filter (ssl_hook_Insert_Filter, NULL,NULL, APR_HOOK_MIDDLE);
-/*    ap_hook_handler       (ssl_hook_Upgrade,       NULL,NULL, APR_HOOK_MIDDLE); */
 
     ssl_var_register(p);
 

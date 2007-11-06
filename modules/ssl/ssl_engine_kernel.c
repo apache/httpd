@@ -32,14 +32,83 @@
 
 static void ssl_configure_env(request_rec *r, SSLConnRec *sslconn);
 
+#define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
+#define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
+#define CONNECTION_HEADER "Connection: Upgrade"
+
+/* Perform an upgrade-to-TLS for the given request, per RFC 2817. */
+static apr_status_t upgrade_connection(request_rec *r)
+{
+    struct conn_rec *conn = r->connection;
+    apr_bucket_brigade *bb;
+    SSLConnRec *sslconn;
+    apr_status_t rv;
+    SSL *ssl;
+
+    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r, 
+                  "upgrading connection to TLS");
+
+    bb = apr_brigade_create(r->pool, conn->bucket_alloc);
+
+    rv = ap_fputstrs(conn->output_filters, bb, SWITCH_STATUS_LINE, CRLF,
+                     UPGRADE_HEADER, CRLF, CONNECTION_HEADER, CRLF, CRLF, NULL);
+    if (rv == APR_SUCCESS) {
+        APR_BRIGADE_INSERT_TAIL(bb,
+                                apr_bucket_flush_create(conn->bucket_alloc));
+        rv = ap_pass_brigade(conn->output_filters, bb);
+    }
+
+    if (rv) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "failed to send 101 interim response for connection "
+                      "upgrade");
+        return rv;
+    }
+
+    ssl_init_ssl_connection(conn, r);
+    
+    sslconn = myConnConfig(conn);
+    ssl = sslconn->ssl;
+    
+    /* XXX: Should replace SSL_set_state with SSL_renegotiate(ssl);
+     * However, this causes failures in perl-framework currently,
+     * perhaps pre-test if we have already negotiated?
+     */
+    SSL_set_accept_state(ssl);
+    SSL_do_handshake(ssl);
+
+    if (SSL_get_state(ssl) != SSL_ST_OK) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "TLS upgrade handshake failed: not accepted by client!?");
+        
+        return APR_ECONNABORTED;
+    }
+
+    return APR_SUCCESS;
+}
+
 /*
  *  Post Read Request Handler
  */
 int ssl_hook_ReadReq(request_rec *r)
 {
-    SSLConnRec *sslconn = myConnConfig(r->connection);
+    SSLSrvConfigRec *sc = mySrvConfig(r->server);
+    SSLConnRec *sslconn;
+    const char *upgrade;
     SSL *ssl;
+    
+    /* Perform TLS upgrade here if "SSLEngine optional" is configured,
+     * SSL is not already set up for this connection, and the client
+     * has sent a suitable Upgrade header. */
+    if (sc->enabled == SSL_ENABLED_OPTIONAL && !myConnConfig(r->connection)
+        && (upgrade = apr_table_get(r->headers_in, "Upgrade")) != NULL
+        && strcmp(ap_getword(r->pool, &upgrade, ','), "TLS/1.0") == 0) {
+        if (upgrade_connection(r)) {
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+    }
 
+    sslconn = myConnConfig(r->connection);
     if (!sslconn) {
         return DECLINED;
     }

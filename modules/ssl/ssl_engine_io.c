@@ -1170,85 +1170,6 @@ static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
     return APR_SUCCESS;
 }
 
-#define SWITCH_STATUS_LINE "HTTP/1.1 101 Switching Protocols"
-#define UPGRADE_HEADER "Upgrade: TLS/1.0, HTTP/1.1"
-#define CONNECTION_HEADER "Connection: Upgrade"
-
-static apr_status_t ssl_io_filter_Upgrade(ap_filter_t *f,
-                                          apr_bucket_brigade *bb)
-{
-    const char *upgrade;
-    apr_bucket_brigade *upgradebb;
-    request_rec *r = f->r;
-    SSLConnRec *sslconn;
-    apr_status_t rv;
-    apr_bucket *b;
-    SSL *ssl;
-
-    /* Just remove the filter, if it doesn't work the first time, it won't
-     * work at all for this request.
-     */
-    ap_remove_output_filter(f);
-
-    /* No need to ensure that this is a server with optional SSL, the filter
-     * is only inserted if that is true.
-     */
-
-    upgrade = apr_table_get(r->headers_in, "Upgrade");
-    if (upgrade == NULL
-        || strcmp(ap_getword(r->pool, &upgrade, ','), "TLS/1.0")) {
-        /* "Upgrade: TLS/1.0, ..." header not found, don't do Upgrade */
-        return ap_pass_brigade(f->next, bb);
-    }
-
-    apr_table_unset(r->headers_out, "Upgrade");
-
-    /* Send the interim 101 response. */
-    upgradebb = apr_brigade_create(r->pool, f->c->bucket_alloc);
-
-    ap_fputstrs(f->next, upgradebb, SWITCH_STATUS_LINE, CRLF,
-                UPGRADE_HEADER, CRLF, CONNECTION_HEADER, CRLF, CRLF, NULL);
-
-    b = apr_bucket_flush_create(f->c->bucket_alloc);
-    APR_BRIGADE_INSERT_TAIL(upgradebb, b);
-
-    rv = ap_pass_brigade(f->next, upgradebb);
-    if (rv) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
-                      "could not send interim 101 Upgrade response");
-        return AP_FILTER_ERROR;
-    }
-
-    ssl_init_ssl_connection(f->c);
-
-    ap_log_rerror(APLOG_MARK, APLOG_INFO, 0, r,
-                  "Awaiting re-negotiation handshake");
-
-    sslconn = myConnConfig(f->c);
-    ssl = sslconn->ssl;
-
-    /* XXX: Should replace SSL_set_state with SSL_renegotiate(ssl);
-     * However, this causes failures in perl-framework currently,
-     * perhaps pre-test if we have already negotiated?
-     */
-    SSL_set_accept_state(ssl);
-    SSL_do_handshake(ssl);
-
-    if (SSL_get_state(ssl) != SSL_ST_OK) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
-                      "TLS Upgrade handshake failed: "
-                      "Not accepted by client!?");
-
-        return AP_FILTER_ERROR;
-    }
-
-    /* Now that we have initialized the ssl connection which added the ssl_io_filter,
-       pass the brigade off to the connection based output filters so that the
-       request can complete encrypted */
-    return ap_pass_brigade(f->c->output_filters, bb);
-
-}
-
 static apr_status_t ssl_io_filter_input(ap_filter_t *f,
                                         apr_bucket_brigade *bb,
                                         ap_input_mode_t mode,
@@ -1651,14 +1572,20 @@ static apr_status_t ssl_io_filter_buffer(ap_filter_t *f,
     return APR_SUCCESS;
 }
 
+/* The request_rec pointer is passed in here only to ensure that the
+ * filter chain is modified correctly when doing a TLS upgrade.  It
+ * must *not* be used otherwise. */
 static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
-                                    SSL *ssl)
+                                    request_rec *r, SSL *ssl)
 {
     bio_filter_in_ctx_t *inctx;
 
     inctx = apr_palloc(c->pool, sizeof(*inctx));
 
-    filter_ctx->pInputFilter = ap_add_input_filter(ssl_io_filter, inctx, NULL, c);
+    filter_ctx->pInputFilter = ap_add_input_filter(ssl_io_filter, inctx, r, c);
+    /* Immediately forget the request_rec pointer stored in the
+     * filter; it will go out of scope. */
+    filter_ctx->pInputFilter->r = NULL;
 
     filter_ctx->pbioRead = BIO_new(&bio_filter_in_method);
     filter_ctx->pbioRead->ptr = (void *)inctx;
@@ -1675,7 +1602,10 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
     inctx->filter_ctx = filter_ctx;
 }
 
-void ssl_io_filter_init(conn_rec *c, SSL *ssl)
+/* The request_rec pointer is passed in here only to ensure that the
+ * filter chain is modified correctly when doing a TLS upgrade.  It
+ * must *not* be used otherwise. */
+void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
 {
     ssl_filter_ctx_t *filter_ctx;
     server_rec *s = c->base_server;
@@ -1685,7 +1615,10 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
 
     filter_ctx->nobuffer        = 0;
     filter_ctx->pOutputFilter   = ap_add_output_filter(ssl_io_filter,
-                                                   filter_ctx, NULL, c);
+                                                       filter_ctx, r, c);
+    /* Immediately forget the request_rec pointer stored in the
+     * filter; it will go out of scope. */
+    filter_ctx->pOutputFilter->r = NULL;
 
     filter_ctx->pbioWrite       = BIO_new(&bio_filter_out_method);
     filter_ctx->pbioWrite->ptr  = (void *)bio_filter_out_ctx_new(filter_ctx, c);
@@ -1693,7 +1626,7 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
     /* We insert a clogging input filter. Let the core know. */
     c->clogging_input_filters = 1;
 
-    ssl_io_input_add_filter(filter_ctx, c, ssl);
+    ssl_io_input_add_filter(filter_ctx, c, r, ssl);
 
     SSL_set_bio(ssl, filter_ctx->pbioRead, filter_ctx->pbioWrite);
     filter_ctx->pssl            = ssl;
@@ -1712,11 +1645,6 @@ void ssl_io_filter_init(conn_rec *c, SSL *ssl)
 
 void ssl_io_filter_register(apr_pool_t *p)
 {
-    /* This filter MUST be after the HTTP_HEADER filter, but it also must be
-     * a resource-level filter so it has the request_rec.
-     */
-    ap_register_output_filter ("UPGRADE_FILTER", ssl_io_filter_Upgrade, NULL, AP_FTYPE_PROTOCOL + 5);
-
     ap_register_input_filter  (ssl_io_filter, ssl_io_filter_input,  NULL, AP_FTYPE_CONNECTION + 5);
     ap_register_output_filter (ssl_io_filter, ssl_io_filter_output, NULL, AP_FTYPE_CONNECTION + 5);
 
