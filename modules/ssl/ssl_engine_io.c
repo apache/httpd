@@ -1017,7 +1017,10 @@ static apr_status_t ssl_io_filter_cleanup(void *data)
  * Adv. if conn_rec * can be accepted is we can hook this function using the
  * ap_hook_process_connection hook.
  */
-static int ssl_io_filter_connect(ssl_filter_ctx_t *filter_ctx)
+
+/* Perform the SSL handshake (whether in client or server mode), if
+ * necessary, for the given connection. */
+static int ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
 {
     conn_rec *c         = (conn_rec *)SSL_get_app_data(filter_ctx->pssl);
     SSLConnRec *sslconn = myConnConfig(c);
@@ -1205,12 +1208,12 @@ static apr_status_t ssl_io_filter_input(ap_filter_t *f,
     inctx->mode = mode;
     inctx->block = block;
 
-    /* XXX: we could actually move ssl_io_filter_connect to an
+    /* XXX: we could actually move ssl_io_filter_handshake to an
      * ap_hook_process_connection but would still need to call it for
      * AP_MODE_INIT for protocols that may upgrade the connection
      * rather than have SSLEngine On configured.
      */
-    if ((status = ssl_io_filter_connect(inctx->filter_ctx)) != APR_SUCCESS) {
+    if ((status = ssl_io_filter_handshake(inctx->filter_ctx)) != APR_SUCCESS) {
         return ssl_io_filter_error(f, bb, status);
     }
 
@@ -1281,7 +1284,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
     inctx->mode = AP_MODE_READBYTES;
     inctx->block = APR_BLOCK_READ;
 
-    if ((status = ssl_io_filter_connect(filter_ctx)) != APR_SUCCESS) {
+    if ((status = ssl_io_filter_handshake(filter_ctx)) != APR_SUCCESS) {
         return ssl_io_filter_error(f, bb, status);
     }
 
