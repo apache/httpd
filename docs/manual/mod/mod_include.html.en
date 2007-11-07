@@ -357,14 +357,22 @@
       <p>If the specified URL is a CGI program, the program will be
       executed and its output inserted in place of the directive in the
       parsed file. You may include a query string in a CGI url:</p>
-     
+ 
       <div class="example"><p><code>
         &lt;!--#include virtual="/cgi-bin/example.cgi?argument=value" --&gt;
       </code></p></div>
-           
+ 
       <p><code>include virtual</code> should be used in preference
       to <code>exec cgi</code> to include the output of CGI programs
       into an HTML document.</p>
+
+      <p>If the <code class="directive"><a href="../mod/core.html#keptbodysize">KeptBodySize</a></code>
+      directive is correctly configured and valid for this included
+      file, attempts to POST requests to the enclosing HTML document
+      will be passed through to subrequests as POST requests as well.
+      Without the directive, all subrequests are processed as GET
+      requests.</p>
+
       </dd>
       </dl>
      
