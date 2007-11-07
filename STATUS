@@ -257,6 +257,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          a definition in mod_auth.h have been omitted.
        http://people.apache.org/~trawick/ldap_toupper.txt
      +1: trawick
+     -1: niq - this is part of another backport proposal above.
+         Doesn't apply to mod_authn_dbd without the other backport.
 
    * mod_charset_lite: Don't crash when the request has no associated
      filename.
@@ -264,7 +266,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=592694&view=rev
      2.2.x patch:
        trunk patch works
-     +1: trawick
+     +1: trawick, niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
