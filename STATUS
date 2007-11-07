@@ -331,7 +331,7 @@ PATCHES/ISSUES THAT ARE STALLED
          Doesn't apply to mod_authn_dbd without the other backport.
      trawick: niq is of course correct; this simple EBCDIC fix is
        tied up in a conflict-ridden proposal above for mod_authn_dbd
-       which also references r571790.  If nobody is able to unravel that
+       which also references r571798.  If nobody is able to unravel that
        backport and provide a good patch for review, I'll activate this
        proposal and deactivate the other, and when somebody has the time to
        offer a consolidated patch they can easily omit the several lines
