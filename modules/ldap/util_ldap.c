@@ -171,9 +171,8 @@ static apr_status_t uldap_connection_unbind(void *param)
 
 
 /*
- * Clean up an LDAP connection by unbinding and unlocking the connection.
- * This function is registered with the pool cleanup function - causing
- * the LDAP connections to be shut down cleanly on graceful restart.
+ * Clean up an LDAP connection by unbinding and unlocking the connection,
+ * causing it to be returned to the list of free connections
  */
 static apr_status_t uldap_connection_cleanup(void *param)
 {
@@ -562,11 +561,6 @@ static util_ldap_connection_t *
 
         /* save away a copy of the client cert list that is presently valid */
         l->client_certs = apr_array_copy_hdr(l->pool, st->client_certs);
-
-        /* add the cleanup to the pool */
-        apr_pool_cleanup_register(l->pool, l,
-                                  uldap_connection_cleanup,
-                                  apr_pool_cleanup_null);
 
         if (p) {
             p->next = l;
