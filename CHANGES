@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: Add the option to keep aside a request body up to a certain
+     size that would otherwise be discarded, to be consumed by filters
+     such as mod_include. When enabled for a directory, POST requests
+     to shtml files can be passed through to embedded scripts as POST
+     requests, rather being downgraded to GET requests. [Graham Leggett]
+
   *) mod_charset_lite: Don't crash when the request has no associated
      filename.  [Jeff Trawick]
 

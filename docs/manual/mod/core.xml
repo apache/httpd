@@ -1504,6 +1504,63 @@ the server configuration files</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>KeptBodySize</name>
+<description>Keep the request body instead of discarding it up to
+the specified maximum size, for potential use by filters such as
+mod_include.</description>
+<syntax>KeptBodySize <var>maximum size in bytes</var></syntax>
+<default>KeptBodySize 0</default>
+<contextlist><context>directory</context>
+</contextlist>
+
+<usage>
+    <p>Under normal circumstances, request handlers such as the
+    default handler for static files will discard the request body
+    when it is not needed by the request handler. As a result,
+    filters such as mod_include are limited to making <code>GET</code> requests
+    only when including other URLs as subrequests, even if the
+    original request was a <code>POST</code> request, as the discarded
+    request body is no longer available once filter processing is
+    taking place.</p>
+
+    <p>When this directive has a value greater than zero, request
+    handlers that would otherwise discard request bodies will
+    instead set the request body aside for use by filters up to
+    the maximum size specified. In the case of the mod_include
+    filter, an attempt to <code>POST</code> a request to the static
+    shtml file will cause any subrequests to be <code>POST</code>
+    requests, instead of <code>GET</code> requests as before.</p>
+
+    <p>This feature makes it possible to break up complex web pages and
+    web applications into small individual components, and combine
+    the components and the surrounding web page structure together
+    using <module>mod_include</module>. The components can take the
+    form of CGI programs, scripted languages, or URLs reverse proxied
+    into the URL space from another server using
+    <module>mod_proxy</module>.</p>
+
+    <p><strong>Note:</strong> Each request set aside has to be set
+    aside in temporary RAM until the request is complete. As a result,
+    care should be taken to ensure sufficient RAM is available on the
+    server to support the intended load. Use of this directive
+    should be limited to where needed on targeted parts of your
+    URL space, and with the lowest possible value that is still big
+    enough to hold a request body.</p>
+
+    <p>If the request size sent by the client exceeds the maximum
+    size allocated by this directive, the server will return
+    <code>413 Request Entity Too Large</code>.</p>
+
+    <p>Handlers such as <module>mod_cgi</module> that consume request
+    bodies for their own purposes rather than discard them do not take
+    this directive into account.</p>
+
+</usage>
+
+<seealso><a href="mod_include.html">mod_include</a> documentation</seealso>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>KeepAliveTimeout</name>
 <description>Amount of time the server will wait for subsequent
 requests on a persistent connection</description>

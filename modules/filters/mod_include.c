@@ -1712,7 +1712,12 @@ static apr_status_t handle_include(include_ctx_t *ctx, ap_filter_t *f,
             }
         }
         else {
-            rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
+            if (r->kept_body) {
+                rr = ap_sub_req_method_uri(r->method, parsed_string, r, f->next);
+            }
+            else {
+                rr = ap_sub_req_lookup_uri(parsed_string, r, f->next);
+            }
         }
 
         if (!error_fmt && rr->status != HTTP_OK) {

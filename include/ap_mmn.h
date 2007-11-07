@@ -139,14 +139,15 @@
  * 20071023.2 (2.3.0-dev)  Add ap_mod_status_reqtail
  * 20071023.3 (2.3.0-dev)  Declare ap_time_process_request() as part of the
  *                         public scoreboard API.
+ * 20071108.1 (2.3.0-dev)  Add the optional kept_body brigade to request_rec
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20071023
+#define MODULE_MAGIC_NUMBER_MAJOR 20071108
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 3                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
