@@ -258,6 +258,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~trawick/ldap_toupper.txt
      +1: trawick
 
+   * mod_charset_lite: Don't crash when the request has no associated
+     filename.
+     trunk:
+       http://svn.apache.org/viewvc?rev=592694&view=rev
+     2.2.x patch:
+       trunk patch works
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
     * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
