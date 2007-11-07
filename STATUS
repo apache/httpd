@@ -79,6 +79,15 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_charset_lite: Don't crash when the request has no associated
+     filename.
+     trunk:
+       http://svn.apache.org/viewvc?rev=592694&view=rev
+     2.2.x patch:
+       trunk patch works
+     +1: trawick, niq, rpluem
+
+PATCHES/ISSUES THAT ARE STALLED
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -248,14 +257,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           code do this by setting the endpos to one less to "save"
           space for the NUL, but they don't have related sections
           which assume a set size; this does (AP_IOBUFSIZE).
-
-   * mod_charset_lite: Don't crash when the request has no associated
-     filename.
-     trunk:
-       http://svn.apache.org/viewvc?rev=592694&view=rev
-     2.2.x patch:
-       trunk patch works
-     +1: trawick, niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
