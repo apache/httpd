@@ -988,6 +988,9 @@ struct request_rec {
     /** A flag to determine if the eos bucket has been sent yet */
     int eos_sent;
 
+    /** The optional kept body of the request. */
+    apr_bucket_brigade *kept_body;
+
 /* Things placed at the end of the record to avoid breaking binary
  * compatibility.  It would be nice to remember to reorder the entire
  * record to improve 64bit alignment the next time we need to break
