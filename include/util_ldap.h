@@ -190,8 +190,7 @@ APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_unbind,(void *param));
  * Cleanup a connection to an LDAP server
  * @param ldc A structure containing the expanded details of the server
  *            that was connected.
- * @tip This function is registered with the pool cleanup to close down the
- *      LDAP connections when the server is finished with them.
+ * @tip The connection is unlocked and returned to the list of free connections
  * @fn apr_status_t util_ldap_connection_cleanup(util_ldap_connection_t *ldc)
  */
 APR_DECLARE_OPTIONAL_FN(apr_status_t,uldap_connection_cleanup,(void *param));
