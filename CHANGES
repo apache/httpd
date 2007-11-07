@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_charset_lite: Don't crash when the request has no associated
+     filename.  [Jeff Trawick]
+
   *) mod_ssl: Fix TLS upgrade (RFC 2817) support.  PR 41231.  [Joe Orton]
 
   *) scoreboard: Correctly declare ap_time_process_request.

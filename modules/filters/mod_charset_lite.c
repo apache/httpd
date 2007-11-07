@@ -206,7 +206,9 @@ static int find_code_page(request_rec *r)
         ap_log_rerror(APLOG_MARK,APLOG_DEBUG, 0, r,
                       "uri: %s file: %s method: %d "
                       "imt: %s flags: %s%s%s %s->%s",
-                      r->uri, r->filename, r->method_number,
+                      r->uri,
+                      r->filename ? r->filename : "(none)",
+                      r->method_number,
                       r->content_type ? r->content_type : "(unknown)",
                       r->main     ? "S" : "",    /* S if subrequest */
                       r->prev     ? "R" : "",    /* R if redirect */
@@ -229,10 +231,13 @@ static int find_code_page(request_rec *r)
     /* catch proxy requests */
     if (r->proxyreq) return DECLINED;
     /* mod_rewrite indicators */
-    if (!strncmp(r->filename, "redirect:", 9)) return DECLINED;
-    if (!strncmp(r->filename, "gone:", 5)) return DECLINED;
-    if (!strncmp(r->filename, "passthrough:", 12)) return DECLINED;
-    if (!strncmp(r->filename, "forbidden:", 10)) return DECLINED;
+    if (r->filename
+        && (!strncmp(r->filename, "redirect:", 9)
+            || !strncmp(r->filename, "gone:", 5)
+            || !strncmp(r->filename, "passthrough:", 12)
+            || !strncmp(r->filename, "forbidden:", 10))) {
+        return DECLINED;
+    }
     /* no translation when server and network charsets are set to the same value */
     if (!strcasecmp(dc->charset_source, dc->charset_default)) return DECLINED;
 
