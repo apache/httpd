@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_charset_lite: Don't crash when the request has no associated
+     filename.  [Jeff Trawick]
+
   *) Core: fix possible crash at startup in case of nonexistent DocumentRoot.
      PR 39722 [Adrian Buckley <adrian.buckley ntlworld.com>]
 
