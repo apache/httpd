@@ -8,9 +8,6 @@ Changes with Apache 2.3.0
      to shtml files can be passed through to embedded scripts as POST
      requests, rather being downgraded to GET requests. [Graham Leggett]
 
-  *) mod_charset_lite: Don't crash when the request has no associated
-     filename.  [Jeff Trawick]
-
   *) mod_ssl: Fix TLS upgrade (RFC 2817) support.  PR 41231.  [Joe Orton]
 
   *) scoreboard: Correctly declare ap_time_process_request.
