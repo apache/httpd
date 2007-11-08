@@ -171,8 +171,7 @@ static apr_status_t uldap_connection_unbind(void *param)
 
 
 /*
- * Clean up an LDAP connection by unbinding and unlocking the connection,
- * causing it to be returned to the list of free connections
+ * Clean up an LDAP connection by unbinding and unlocking the connection.
  */
 static apr_status_t uldap_connection_cleanup(void *param)
 {
