@@ -250,31 +250,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
 PATCHES/ISSUES THAT ARE STALLED
 
-    * mod_ldap, mod_authnzldap: Add support for nested groups (i.e. the ability
-      to authorize an authenticated user via a "require ldap-group X" directive
-      where the user is not in group X, but is in a subgroup contained in X.
-      PR: 42891
-      http://svn.apache.org/viewvc?view=rev&revision=560373
-      http://svn.apache.org/viewvc?view=rev&revision=562165
-      A version of the patch specific to the 2.2 branch (i.e. the patch that
-      would be used for backport) can be found at:
-      http://people.apache.org/~rederpj/NestedGroups_2.2.xBranch.diff 
-      +1: rederpj
-      -0: bnicholes - Unless this is considered to be a significant deficiency in the
-                       authnz_ldap 2.2 functionality, I would rather see this as new
-		       functionality going forward in 2.4 rather than backported to
-		       2.2. We need new functionality to push us forward rather than
-		       give us an excuse to stay where we are.
-      rederpj says: I'm working on a project based on Apache 2.2.x which needs this code
-          and I would much prefer to use official Apache code than end up using a private
-          patch. It isn't possible in the short term for us to move to trunk. It just
-          happened that code I had written to add this function lined up with PR 42891.
-          I was going to submit it and work to get it backported either way.
-      rpluem says: I am still missing a minor bump due to the changes done
-      in util_ldap.h. This is an extension of a public API.
-      trawick says: The new directives should be documented in trunk,
-          so that docs are available for backport at the same time.
-
    * beos MPM: Create pmain pool and run modules' child_init hooks when
      entering ap_mpm_run(), then destroy pmain when exiting ap_mpm_run().
      Otherwise modules' child_init hooks appear to never be executed.
