@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_autoindex: Generate valid XHTML output by adding the xhtml
+     namespace. PR 43649 [Jose Kahan <jose w3.org>]
+
   *) core: Add the option to keep aside a request body up to a certain
      size that would otherwise be discarded, to be consumed by filters
      such as mod_include. When enabled for a directory, POST requests
