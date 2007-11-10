@@ -248,6 +248,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           space for the NUL, but they don't have related sections
           which assume a set size; this does (AP_IOBUFSIZE).
 
+   * mod_charset_lite: Remove Content-Length when output filter can 
+     invalidate it.  Warn when input filter can invalidate it.
+     trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=380232
+     2.2.x:
+        Trunk version of patch works
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
