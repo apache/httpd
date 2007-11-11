@@ -1060,15 +1060,21 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     if (!ctx->ran) {  /* filter never ran before */
         chk_filter_chain(f);
         ctx->ran = 1;
-        if (!ctx->noop && !ctx->is_sb) {
-            /* We're not converting between two single-byte charsets, so note
-             * that some handlers can't deal with it.
-             * It doesn't help to unset Content-Length in the input header
-             * table since in all likelihood the handler has already seen it.
+        if (!ctx->noop && !ctx->is_sb
+            && apr_table_get(f->r->headers_in, "Content-Length")) {
+            /* A Content-Length header is present, but it won't be valid after
+             * conversion because we're not converting between two single-byte
+             * charsets.  This will affect most CGI scripts and may affect
+             * some modules.
+             * Content-Length can't be unset here because that would break
+             * being able to read the request body.
+             * Processing of chunked request bodies is not impacted by this
+             * filter since the the length was not declared anyway.
              */
             if (dc->debug >= DBGLVL_PMC) {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
-                              "Request body length may change, breaking some requests");
+                              "Request body length may change, resulting in "
+                              "misprocessing by some modules or scripts");
             }
         }
     }
