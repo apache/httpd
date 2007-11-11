@@ -252,8 +252,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      invalidate it.  Warn when input filter can invalidate it.
      trunk:
         http://svn.apache.org/viewvc?view=rev&revision=380232
+        http://svn.apache.org/viewvc?view=rev&revision=593890
      2.2.x:
-        Trunk version of patch works
+        Trunk patches work when applied in succession, but a consolidated
+        patch is at 
+        http://people.apache.org/~trawick/sb-charset-consolidated.txt
      +1: trawick
 
     * mod_autoindex: Generate valid XHTML output by adding the xhtml namespace.
