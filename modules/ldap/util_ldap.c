@@ -1207,7 +1207,7 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                     while (attrs[k++]);
                     *retvals = apr_pcalloc(r->pool, sizeof(char *) * k);
                     while (search_nodep->vals[i]) {
-                        *retvals[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
+                        (*retvals)[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
                         i++;
                     }
                 }
@@ -1455,7 +1455,7 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
                     while (attrs[k++]);
                     *retvals = apr_pcalloc(r->pool, sizeof(char *) * k);
                     while (search_nodep->vals[i]) {
-                        *retvals[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
+                        (*retvals)[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
                         i++;
                     }
                 }
