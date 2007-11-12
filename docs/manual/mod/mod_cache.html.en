@@ -338,6 +338,7 @@ header.</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_cache</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available since 2.2.6</td></tr>
 </table>
     <p>Ordinarily, requests with query string parameters are cached separately
     for each unique query string. This is according to RFC 2616/13.9 done only
