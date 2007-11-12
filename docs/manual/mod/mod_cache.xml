@@ -298,7 +298,7 @@ header.</description>
 <default>CacheIgnoreQueryString Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-
+<compatibility>Available in Apache 2.2.6 and later</compatibility>
 <usage>
     <p>Ordinarily, requests with query string parameters are cached separately
     for each unique query string. This is according to RFC 2616/13.9 done only
