@@ -182,6 +182,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      niq: Oh, I see.  You prefer an all-in-one patch for both?
      rpluem says: Please add a minor bump for the changes to mod_proxy.h.
                   Then I am +1.
+     niq says: done
 
    * core: backport ap_send_interim_response API
      http://svn.apache.org/viewvc?view=rev&revision=582630
@@ -225,6 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          not a code one. 
      rpluem says: Please add a minor bump for the changes to mod_proxy.h.
                   Then I am +1.
+     niq says: done
 
    * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
      ap_vrprintf(). PR 43310
@@ -257,7 +259,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk patches work when applied in succession, but a consolidated
         patch is at 
         http://people.apache.org/~trawick/sb-charset-consolidated.txt
-     +1: trawick
+     +1: trawick, niq
 
     * mod_autoindex: Generate valid XHTML output by adding the xhtml namespace.
       Trunk version of patch:
@@ -265,6 +267,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
       +1: rpluem,
+
+    * mod_authz_groupfile: don't risk crash if r->user isn't set.
+      PR 42995
+      Trunk: n/a
+      2.2.x patch: http://people.apache.org/~niq/42995.patch
+      +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
