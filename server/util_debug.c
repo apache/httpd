@@ -113,7 +113,7 @@ AP_DECLARE(void *) ap_get_module_config(const ap_conf_vector_t *cv,
  *        usually r->per_dir_config or s->module_config
  * @param m The module to set the data for.
  * @param val The module-specific data to set
- * @deffunc void ap_set_module_config(ap_conf_vector_t *cv, const module *m, void *val)
+ * @fn void ap_set_module_config(ap_conf_vector_t *cv, const module *m, void *val)
  */
 #if defined(ap_set_module_config)
 #undef ap_set_module_config
