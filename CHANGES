@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_serf: New module for Reverse Proxying. [Paul Querna]
+
   *) mod_autoindex: Generate valid XHTML output by adding the xhtml
      namespace. PR 43649 [Jose Kahan <jose w3.org>]
 
