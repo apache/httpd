@@ -79,6 +79,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_authz_groupfile: don't risk crash if r->user isn't set.
+     PR 42995
+     Trunk: n/a
+     2.2.x patch: http://people.apache.org/~niq/42995.patch
+     +1: niq, covener, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -273,13 +279,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=593816&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
-
-    * mod_authz_groupfile: don't risk crash if r->user isn't set.
-      PR 42995
-      Trunk: n/a
-      2.2.x patch: http://people.apache.org/~niq/42995.patch
-      +1: niq, covener
+      +1: rpluem, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
