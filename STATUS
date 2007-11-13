@@ -79,12 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_authz_groupfile: don't risk crash if r->user isn't set.
-     PR 42995
-     Trunk: n/a
-     2.2.x patch: http://people.apache.org/~niq/42995.patch
-     +1: niq, covener, trawick
-
    * mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
      mod_authn_dbd behaviour in line with mod_authnz_ldap.
