@@ -79,24 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_authn_dbd: Export any additional columns queried in the SQL select
-     into the environment with the name AUTHENTICATE_<COLUMN>. This brings
-     mod_authn_dbd behaviour in line with mod_authnz_ldap.
-     This also includes an EBCDIC fix in mod_authnz_ldap.c.
-     Trunk: http://svn.apache.org/viewvc?view=rev&revision=466865
-            http://svn.apache.org/viewvc?view=rev&revision=571798
-            http://svn.apache.org/viewvc?view=rev&revision=571804
-            http://svn.apache.org/viewvc?view=rev&revision=571838
-            http://svn.apache.org/viewvc?view=rev&revision=586765
-     2.2.x: http://people.apache.org/~trawick/dbd-consolidated.txt
-     +1: trawick, covener, niq
-     Old commentary before 571838 and 586765 were added and conflicts
-     were resolved:
-     +1: minfrin
-     rpluem says: r466865 has a conflict in modules/aaa/mod_auth.h
-                  r571804 has a conflict in docs/manual/mod/mod_authnz_ldap.xml
-                  Without r571838 the documentation for mod_authn_dbd fails
-                  to build.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
