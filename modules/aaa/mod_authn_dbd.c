@@ -18,11 +18,13 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "apr_lib.h"
 #include "apr_dbd.h"
 #include "mod_dbd.h"
 #include "apr_strings.h"
 #include "mod_auth.h"
 #include "apr_md5.h"
+#include "apu_version.h"
 
 module AP_MODULE_DECLARE_DATA authn_dbd_module;
 
@@ -101,13 +103,13 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
     }
 
     if (conf->user == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "No DBD Authn configured!");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "No AuthDBDUserPWQuery has been specified.");
         return AUTH_GENERAL_ERROR;
     }
 
     statement = apr_hash_get(dbd->prepared, conf->user, APR_HASH_KEY_STRING);
     if (statement == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "No DBD Authn configured!");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "A prepared statement could not be found for AuthDBDUserPWQuery, key '%s'.", conf->user);
         return AUTH_GENERAL_ERROR;
     }
     if (apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle, &res, statement,
@@ -126,6 +128,33 @@ static authn_status authn_dbd_password(request_rec *r, const char *user,
         }
         if (dbd_password == NULL) {
             dbd_password = apr_dbd_get_entry(dbd->driver, row, 0);
+
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 3)
+            /* add the rest of the columns to the environment */
+            int i = 1;
+            const char *name;
+            for (name = apr_dbd_get_name(dbd->driver, res, i);
+                 name != NULL;
+                 name = apr_dbd_get_name(dbd->driver, res, i)) {
+
+                char *str = apr_pstrcat(r->pool, AUTHN_PREFIX,
+                                        name,
+                                        NULL);
+                int j = sizeof(AUTHN_PREFIX)-1; /* string length of "AUTHENTICATE_", excluding the trailing NIL */
+                while (str[j]) {
+                    if (!apr_isalnum(str[j])) {
+                        str[j] = '_';
+                    }
+                    else {
+                        str[j] = apr_toupper(str[j]);
+                    }
+                    j++;
+                }
+                apr_table_set(r->subprocess_env, str,
+                              apr_dbd_get_entry(dbd->driver, row, i));
+                i++;
+            }
+#endif
         }
         /* we can't break out here or row won't get cleaned up */
     }
@@ -160,12 +189,12 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
         return AUTH_GENERAL_ERROR;
     }
     if (conf->realm == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "No DBD Authn configured!");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "No AuthDBDUserRealmQuery has been specified.");
         return AUTH_GENERAL_ERROR;
     }
     statement = apr_hash_get(dbd->prepared, conf->realm, APR_HASH_KEY_STRING);
     if (statement == NULL) {
-        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "No DBD Authn configured!");
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "A prepared statement could not be found for AuthDBDUserRealmQuery, key '%s'.", conf->realm);
         return AUTH_GENERAL_ERROR;
     }
     if (apr_dbd_pvselect(dbd->driver, r->pool, dbd->handle, &res, statement,
@@ -184,6 +213,33 @@ static authn_status authn_dbd_realm(request_rec *r, const char *user,
         }
         if (dbd_hash == NULL) {
             dbd_hash = apr_dbd_get_entry(dbd->driver, row, 0);
+
+#if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 3)
+            /* add the rest of the columns to the environment */
+            int i = 1;
+            const char *name;
+            for (name = apr_dbd_get_name(dbd->driver, res, i);
+                 name != NULL;
+                 name = apr_dbd_get_name(dbd->driver, res, i)) {
+
+                char *str = apr_pstrcat(r->pool, AUTHN_PREFIX,
+                                        name,
+                                        NULL);
+                int j = sizeof(AUTHN_PREFIX)-1; /* string length of "AUTHENTICATE_", excluding the trailing NIL */
+                while (str[j]) {
+                    if (!apr_isalnum(str[j])) {
+                        str[j] = '_';
+                    }
+                    else {
+                        str[j] = apr_toupper(str[j]);
+                    }
+                    j++;
+                }
+                apr_table_set(r->subprocess_env, str,
+                              apr_dbd_get_entry(dbd->driver, row, i));
+                i++;
+            }
+#endif
         }
         /* we can't break out here or row won't get cleaned up */
     }

@@ -40,6 +40,8 @@ extern "C" {
 #define AUTHZ_GROUP_NOTE "authz_group_note"
 #define AUTHN_PROVIDER_NAME_NOTE "authn_provider_name"
 
+#define AUTHN_PREFIX "AUTHENTICATE_"
+
 typedef enum {
     AUTH_DENIED,
     AUTH_GRANTED,
