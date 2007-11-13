@@ -85,7 +85,7 @@ char *ap_response_code_string(request_rec *r, int error_index);
  * @warning Modules should be very careful about using this, and should
  *          the default behavior.  Much of the HTTP/1.1 implementation
  *          correctness depends on the full headers.
- * @deffunc void ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
+ * @fn void ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb)
  */
 AP_DECLARE(void) ap_basic_http_header(request_rec *r, apr_bucket_brigade *bb);
  
