@@ -85,9 +85,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      2.2.x patch: http://people.apache.org/~niq/42995.patch
      +1: niq, covener, trawick
 
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
    * mod_authn_dbd: Export any additional columns queried in the SQL select
      into the environment with the name AUTHENTICATE_<COLUMN>. This brings
      mod_authn_dbd behaviour in line with mod_authnz_ldap.
@@ -98,7 +95,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
             http://svn.apache.org/viewvc?view=rev&revision=571838
             http://svn.apache.org/viewvc?view=rev&revision=586765
      2.2.x: http://people.apache.org/~trawick/dbd-consolidated.txt
-     +1: trawick, covener
+     +1: trawick, covener, niq
      Old commentary before 571838 and 586765 were added and conflicts
      were resolved:
      +1: minfrin
@@ -106,7 +103,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   r571804 has a conflict in docs/manual/mod/mod_authnz_ldap.xml
                   Without r571838 the documentation for mod_authn_dbd fails
                   to build.
-     niq says: +1 if we reconcile the conflicts and add r586765
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
     * multiple files,	Trivial cleanups
       PR: 39518 - Christophe JAILLET
