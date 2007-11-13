@@ -173,6 +173,11 @@ static int check_user_access(request_rec *r)
         return DECLINED; /* XXX change from legacy */
     }
 
+    /* If there's no user, it's a misconfiguration */
+    if (!user) {
+        return HTTP_INTERNAL_SERVER_ERROR;
+    }
+
     reqs = (require_line *)reqs_arr->elts;
 
     for (x = 0; x < reqs_arr->nelts; x++) {
