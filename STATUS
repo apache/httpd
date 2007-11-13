@@ -311,21 +311,3 @@ PATCHES/ISSUES THAT ARE STALLED
           behavior on a pattern-by-pattern basis would win my -1 to a +1,
           and solve the performance hits noted by niq on an 80/20 basis.
 
-   * EBCDIC fix to mod_authnz_ldap AUTHENTICATE_foo variables
-     trunk:
-       http://svn.apache.org/viewvc?view=rev&revision=571798
-     2.2.x patch:
-         Unrelated changes which either don't apply or rely on 
-         a definition in mod_auth.h have been omitted.
-       http://people.apache.org/~trawick/ldap_toupper.txt
-     +1: trawick
-     -1: niq - this is part of another backport proposal above.
-         Doesn't apply to mod_authn_dbd without the other backport.
-     trawick: niq is of course correct; this simple EBCDIC fix is
-       tied up in a conflict-ridden proposal above for mod_authn_dbd
-       which also references r571798.  If nobody is able to unravel that
-       backport and provide a good patch for review, I'll activate this
-       proposal and deactivate the other, and when somebody has the time to
-       offer a consolidated patch they can easily omit the several lines
-       that correct the EBDIC problem so that the two separate issues
-       can finally be addressed separately.
