@@ -61,7 +61,7 @@ follows is understood, rather than just copied blindly.
 Regular Expression</a> vocabulary. In this document, we do not attempt
 to provide a detailed reference to regular expressions. For that, we
 recommend the <a href="http://pcre.org/pcre.txt">PCRE man pages</a>, the
-<a href="http://www.perldoc.com/perl5.8.0/pod/perlre.html">Perl regular
+<a href="http://perldoc.perl.org/perlre.html">Perl regular
 expression man page</a>, and <a href="http://www.oreilly.com/catalog/regex2/index.html">Mastering
 Regular Expressions, by Jeffrey Friedl</a>.</p>
 
