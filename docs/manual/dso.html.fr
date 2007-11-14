@@ -24,6 +24,8 @@
 <a href="./ja/dso.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/dso.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Cette traduction peut être périmée. Consultez la version
+            Anglaise pour les changements récents.</div>
 
     <p>Le serveur HTTP Apache est un programme modulaire permettant à
     l'administrateur de choisir les fonctionnalités qu'il souhaite 
