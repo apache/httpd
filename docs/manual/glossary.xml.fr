@@ -4,7 +4,6 @@
 <!-- LastChangedRevision English document : 421100 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- $LastChangedRevision: 2007072201 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -23,6 +22,7 @@
  limitations under the License.
 -->
 
+
 <manualpage metafile="glossary.xml.meta">
 
   <title>Glossaire</title>
@@ -35,6 +35,7 @@
 
 <section id="definitions"><title>D&eacute;finitions</title>
 
+<dl>
 <dt><a name="algorithm" id="algorithm">Algorithme</a></dt>
 
     <dd>Une formule sans ambiguit&eacute; ou un jeu de r&egrave;gles destin&eacute;es &agrave;
@@ -133,7 +134,6 @@
       pour d&eacute;crire les directives d'Apache</a>
     </dd>
 
-<dl>
     <dt><a name="accesscontrol" id="accesscontrol">Contrôle d'acc&egrave;s
     (Access Control)</a></dt>
     <dd>La restriction d'acc&egrave;s &agrave; des zones du r&eacute;seau. Habituellement
@@ -558,11 +558,9 @@ Localisation de Ressource Uniformis&eacute;e
      <dt><a name="x.509" id="x.509">X.509</a></dt>
   <dd>Une norme de certificat d'authentification recommand&eacute;e par l'International
     Telecommunication Union (ITU-T) et utilis&eacute;e pour
-    l'authentification SSL/TLS.<br
-    /> Voir : <a href="ssl/">chiffrement SSL/TLS</a>
+    l'authentification SSL/TLS.<br /> Voir :
+    <a href="ssl/">chiffrement SSL/TLS</a>
   </dd>
 </dl>
 </section>
 </manualpage>
-
-
