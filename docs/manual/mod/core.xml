@@ -1504,6 +1504,28 @@ the server configuration files</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>KeepAliveTimeout</name>
+<description>Amount of time the server will wait for subsequent
+requests on a persistent connection</description>
+<syntax>KeepAliveTimeout <var>seconds</var></syntax>
+<default>KeepAliveTimeout 5</default>
+<contextlist><context>server config</context><context>virtual host</context>
+</contextlist>
+
+<usage>
+    <p>The number of seconds Apache will wait for a subsequent
+    request before closing the connection. Once a request has been
+    received, the timeout value specified by the
+    <directive module="core">Timeout</directive> directive applies.</p>
+
+    <p>Setting <directive>KeepAliveTimeout</directive> to a high value
+    may cause performance problems in heavily loaded servers. The
+    higher the timeout, the more server processes will be kept
+    occupied waiting on connections with idle clients.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>KeptBodySize</name>
 <description>Keep the request body instead of discarding it up to
 the specified maximum size, for potential use by filters such as
@@ -1558,28 +1580,6 @@ mod_include.</description>
 </usage>
 
 <seealso><a href="mod_include.html">mod_include</a> documentation</seealso>
-</directivesynopsis>
-
-<directivesynopsis>
-<name>KeepAliveTimeout</name>
-<description>Amount of time the server will wait for subsequent
-requests on a persistent connection</description>
-<syntax>KeepAliveTimeout <var>seconds</var></syntax>
-<default>KeepAliveTimeout 5</default>
-<contextlist><context>server config</context><context>virtual host</context>
-</contextlist>
-
-<usage>
-    <p>The number of seconds Apache will wait for a subsequent
-    request before closing the connection. Once a request has been
-    received, the timeout value specified by the
-    <directive module="core">Timeout</directive> directive applies.</p>
-
-    <p>Setting <directive>KeepAliveTimeout</directive> to a high value
-    may cause performance problems in heavily loaded servers. The
-    higher the timeout, the more server processes will be kept
-    occupied waiting on connections with idle clients.</p>
-</usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">
