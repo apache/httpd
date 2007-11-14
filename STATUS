@@ -259,14 +259,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ldap: Remove pconf usage on request processing threads, create a 
      subpool of the per-vhost LDAP pool instead of copying a reference to it.
          http://svn.apache.org/viewvc?view=rev&revision=591488 
-     +1: covener
+     +1: covener, rpluem
 
    * mod_ldap: Don't return references into shared memory to the caller, 
      as these may expire at any time because callers don't hold
      a cache lock
          http://svn.apache.org/viewvc?view=rev&revision=591499
          http://svn.apache.org/viewvc?view=rev&revision=593919 
-     +1: covener
+     +1: covener, rpluem
 
    * mod_ldap: Axe a cleanup that has never run because it's tied to pconf
      in the child, clarify the @tip in the cleanup function.
