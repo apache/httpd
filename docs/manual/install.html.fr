@@ -173,10 +173,23 @@
       <code>apr</code> ou <code>apr-util</code>, versions 1.0 ou 1.1,
       sont installés sur votre système, vous devez soit mettre à jour vos
       installations <code>apr</code>/<code>apr-util</code> vers la version
-      1.2, soit faire en sorte que httpd utilise des constructions séparées.
-      Pour utiliser les sources incluses
-      <code>apr</code>/<code>apr-util</code> de cette manière, vous devez
-      les installer manuellement :
+      1.2, forcer l'utilisation des bibliothèques intégrées,
+      soit faire en sorte que httpd utilise des constructions séparées.
+      Pour utiliser les sources de
+      <code>apr</code>/<code>apr-util</code> incluses, utilisez l'option
+      <code>--with-included-apr</code> du script configure :
+
+      <div class="note"><h3>Note</h3>
+        L'option --with-included-apr est disponible à partir
+	de la version 2.2.3
+      </div>
+      <div class="example"><p><code>
+        # Forcer l'utilisation des sources de apr/apr-util intégrées<br />
+        ./configure --with-included-apr<br />
+      </code></p></div>
+
+      Pour construire Apache HTTPd suite  à une installation manuelle de
+      <code>apr</code>/<code>apr-util</code> :
 
       <div class="example"><p><code>
         # Construction et installation apr 1.2<br />

@@ -78,6 +78,7 @@ for HTTP Basic authentication.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Examples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usingtls">Using TLS</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#usingssl">Using SSL</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#exposed">Exposing Login Information</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#frontpage">Using Microsoft
     FrontPage with mod_authnz_ldap</a></li>
 </ul><h3>See also</h3>
@@ -120,7 +121,7 @@ for HTTP Basic authentication.</td></tr>
       <li><a href="#examples">Examples</a></li>
       <li><a href="#usingtls">Using TLS</a></li>
       <li><a href="#usingssl">Using SSL</a></li>
-
+      <li><a href="#exposed">Exposing Login Information</a></li>
       <li>
         <a href="#frontpage">Using Microsoft FrontPage with
         <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code></a> 
@@ -565,6 +566,22 @@ Require valid-user
     <p>To specify a secure LDAP server, use <em>ldaps://</em> in the
     <code class="directive"><a href="#authldapurl">AuthLDAPURL</a></code>
     directive, instead of <em>ldap://</em>.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="exposed" id="exposed">Exposing Login Information</a></h2>
+
+    <p>Whenever a query is made to the LDAP server, all LDAP attributes
+    returned by the query are placed in the environment, using environment
+    variables with the prefix "AUTHENTICATE_".</p>
+
+    <p>If an LDAP query for example returned the username, common name
+    and telephone number of a user, a CGI program will have access to
+    this information without the need to make a second independent LDAP
+    query to gather this additional information.</p>
+
+    <p>This has the potential to dramatically simplify the coding and
+    configuration required in some web applications.</p>
+
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="frontpage" id="frontpage">Using Microsoft

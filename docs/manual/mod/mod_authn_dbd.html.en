@@ -53,6 +53,7 @@
 <h3>Topics</h3>
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#example">Configuration Example</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#exposed">Exposing Login Information</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><code class="directive"><a href="../mod/core.html#authname">AuthName</a></code></li>
@@ -103,6 +104,22 @@ DBDExptime 60</code>
     <code>AuthDBDUserPWQuery "select password from authn where username = %s"
 &lt;/Directory&gt;</code>
 </pre></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="exposed" id="exposed">Exposing Login Information</a></h2>
+
+<p>
+Whenever a query is made to the database server, all columns returned by
+the query are placed in the environment, using environment variables with
+the prefix "AUTHENTICATE_".
+</p>
+<p>If a database query for example returned the username, full name
+and telephone number of a user, a CGI program will have access to
+this information without the need to make a second independent database
+query to gather this additional information.</p>
+<p>This has the potential to dramatically simplify the coding and
+configuration required in some web applications.
+</p>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthDBDUserPWQuery" id="AuthDBDUserPWQuery">AuthDBDUserPWQuery</a> <a name="authdbduserpwquery" id="authdbduserpwquery">Directive</a></h2>
@@ -121,7 +138,10 @@ DBDExptime 60</code>
     <div class="example"><p><code>
     AuthDBDUserPWQuery "SELECT password FROM authn WHERE username = %s"
     </code></p></div>
-
+    <p>If httpd was built against apr v1.3.0 or higher, any additional
+    columns specified in the select statement will be inserted into
+    the environment with the name <code>AUTHENTICATE_&lt;COLUMN&gt;</code>.
+    </p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -143,6 +163,10 @@ DBDExptime 60</code>
     AuthDBDUserRealmQuery "SELECT password FROM authn
                               WHERE username = %s AND realm = %s"
     </code></p></div>
+    <p>If httpd was built against apr v1.3.0 or higher, any additional
+    columns specified in the select statement will be inserted into
+    the environment with the name <code>AUTHENTICATE_&lt;COLUMN&gt;</code>.
+    </p>
 
 
 </div>
