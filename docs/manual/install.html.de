@@ -25,6 +25,9 @@
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
+<div class="outofdate">Diese Übersetzung ist möglicherweise
+            nicht mehr aktuell. Bitte prüfen Sie die englische Version auf
+            die neuesten Änderungen.</div>
 
     <p>Dieses Dokument umfaßt nur die Kompilierung und Installation des
     Apache HTTP Servers auf Unix und Unix-ähnlichen Systemen. Für die

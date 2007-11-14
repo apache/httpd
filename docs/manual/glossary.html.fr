@@ -22,7 +22,7 @@
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./fr/glossary.html" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 
     <p>Ce glossaire définit la terminologie courante relative à Apache en
@@ -543,7 +543,7 @@ Localisation de Ressource Uniformisée
 <a href="./en/glossary.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/glossary.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./fr/glossary.html" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a></p>
+<a href="./ko/glossary.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2007 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossaire</a> | <a href="./sitemap.html">Plan du site</a></p></div>
