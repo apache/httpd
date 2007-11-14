@@ -48,6 +48,7 @@
 #include "util_charset.h"
 #include "util_ebcdic.h"
 #include "util_time.h"
+#include "ap_mpm.h"
 
 #include "mod_core.h"
 
@@ -187,6 +188,7 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
      *       or they're a buggy twit coming through a HTTP/1.1 proxy
      *   and    the client is requesting an HTTP/1.0-style keep-alive
      *       or the client claims to be HTTP/1.1 compliant (perhaps a proxy);
+     *   and this MPM process is not already exiting
      *   THEN we can be persistent, which requires more headers be output.
      *
      * Note that the condition evaluation order is extremely important.
@@ -212,7 +214,8 @@ AP_DECLARE(int) ap_set_keepalive(request_rec *r)
         && (!apr_table_get(r->subprocess_env, "nokeepalive")
             || apr_table_get(r->headers_in, "Via"))
         && ((ka_sent = ap_find_token(r->pool, conn, "keep-alive"))
-            || (r->proto_num >= HTTP_VERSION(1,1)))) {
+            || (r->proto_num >= HTTP_VERSION(1,1)))
+        && !ap_graceful_stop_signalled()) {
         int left = r->server->keep_alive_max - r->connection->keepalives;
 
         r->connection->keepalive = AP_CONN_KEEPALIVE;
