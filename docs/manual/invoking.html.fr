@@ -53,7 +53,7 @@
     permettre d'être associé à ce port privilégié. Lorsque le serveur est
     démarré, après avoir effectué quelques opérations préliminaires
     comme ouvrir ses fichiers de log, il lance plusieurs processus
-    <em>enfants</em> qui ont pour rÃ´le d'écouter et de répondre aux
+    <em>enfants</em> qui ont pour rôle d'écouter et de répondre aux
     requêtes des clients. Le processus <code>httpd</code> principal
     continue à s'exécuter sous l'utilisateur root, tandis que les processus
     enfants s'exécutent sous un utilisateur aux privilèges restreints.
