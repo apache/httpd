@@ -1129,7 +1129,7 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 
       <p>For more information about regular expressions, have a look at the
       perl regular expression manpage ("<a
-      href="http://www.perldoc.com/perlre.html">perldoc
+      href="http://perldoc.perl.org/perlre.html">perldoc
       perlre</a>"). If you are interested in more detailed
       information about regular expressions and their variants
       (POSIX regex etc.) the following book is dedicated to this topic:</p>
