@@ -689,14 +689,18 @@
           </code></p></div>
           <p>will compile most modules and build them as DSO modules.
             </p>
-	  <p><em><strong>Caveat: </strong></em><code> --enable-mods-shared=all </code> does not
-		actually build all modules. To build all modules then, one might use:
-	<div class="example"><p><code>./configure \ <br />
-		--with-ldap \ <br />
-		--enable-mods-shared="all ssl ldap cache proxy authn_alias mem_cache file_cache authnz_ldap charset_lite dav_lock disk_cache" </code></p></div>
-	  </p>
+          <p><strong>Caveat:</strong>
+          <code>--enable-mods-shared=all</code> does not actually build all
+          modules. To build all modules then, one might use:</p>
+          <div class="example"><p><code>
+            ./configure \<br />
+            <span class="indent">
+                --with-ldap \<br />
+                --enable-mods-shared="all ssl ldap cache proxy authn_alias mem_cache file_cache authnz_ldap charset_lite dav_lock disk_cache"
+            </span>
+          </code></p></div>
         </dd>
-                    
+
         <dt><code>--enable-modules=<var>MODULE-LIST</var></code></dt>
         <dd>This option behaves similar to <code>--enable-mods-shared</code>, 
           but will link the given modules statically. This mean, these modules
