@@ -14,14 +14,12 @@
  * limitations under the License.
  */
 
-/* Round Robin lbmethod module for Apache proxy */
+/* Round Robin lbmethod EXAMPLE module for Apache proxy */
 
 /* NOTE: This is designed simply to provide some info on how to create
          extra lbmethods via sub-modules... This code is ugly
          and needs work to actually do round-robin "right"
          but that is left as an exercise for the reader */
-
-#define CORE_PRIVATE
 
 #include "mod_proxy.h"
 #include "scoreboard.h"
@@ -70,26 +68,25 @@ static proxy_worker *find_best_roundrobin(proxy_balancer *balancer,
                  "proxy: roundrobin index: %d (%d)",
                  ctx->index, (int)getpid());
 
-    do {
-        checking_standby = checked_standby = 0;
-        while (!mycandidate && !checked_standby) {
-            worker = (proxy_worker *)balancer->workers->elts;
+    checking_standby = checked_standby = 0;
+    while (!mycandidate && !checked_standby) {
+        worker = (proxy_worker *)balancer->workers->elts;
 
-            for (i = 0; i < balancer->workers->nelts; i++, worker++) {
-                if (i < ctx->index)
-                    continue;
-                if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
-                    continue;
-                if (!PROXY_WORKER_IS_USABLE(worker))
-                    ap_proxy_retry_worker("BALANCER", worker, r->server);
-                if (PROXY_WORKER_IS_USABLE(worker)) {
-                    mycandidate = worker;
-                    break;
-                }
+        for (i = 0; i < balancer->workers->nelts; i++, worker++) {
+            if (i < ctx->index)
+                continue;
+            if ( (checking_standby ? !PROXY_WORKER_IS_STANDBY(worker) : PROXY_WORKER_IS_STANDBY(worker)) )
+                continue;
+            if (!PROXY_WORKER_IS_USABLE(worker))
+                ap_proxy_retry_worker("BALANCER", worker, r->server);
+            if (PROXY_WORKER_IS_USABLE(worker)) {
+                mycandidate = worker;
+                break;
             }
-            checked_standby = checking_standby++;
         }
-    } while (!mycandidate);
+        checked_standby = checking_standby++;
+    }
+
 
     ctx->index += 1;
     if (ctx->index >= balancer->workers->nelts) {
