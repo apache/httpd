@@ -276,7 +276,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk patch has a simple conflict due to name change of
         a optional function variable, refreshed patch:
         http://people.apache.org/~davi/ssl_engine_var_safe.patch
-     +1: davi
+     +1: davii, rpluem
+     rpluem says: I am +1 for the patch itself, but please add a CHANGES
+     entry for it as it fixes a PR.
 
 PATCHES/ISSUES THAT ARE STALLED
 
