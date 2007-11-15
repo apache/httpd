@@ -155,6 +155,9 @@ by other LDAP modules</description>
       the results of comparisons done between distinguished
       names.</p>
 
+      <p>Note that, when group membership is being checked, any sub-group
+      comparison results are cached to speed future sub-group comparisons.</p>
+
       <p>The behavior of both of these caches is controlled with
       the <directive module="mod_ldap">LDAPOpCacheEntries</directive>
       and <directive module="mod_ldap">LDAPOpCacheTTL</directive>
