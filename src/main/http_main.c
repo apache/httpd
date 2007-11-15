@@ -2661,7 +2661,6 @@ API_EXPORT(int) ap_update_child_status(int child_num, int status, request_rec *r
 	    if (status == SERVER_DEAD) {
 		ss->my_access_count = 0L;
 		ss->my_bytes_served = 0L;
-                ap_scoreboard_image->parent[child_num].pid = 0;
 	    }
 	    ss->conn_count = (unsigned short) 0;
 	    ss->conn_bytes = (unsigned long) 0;
@@ -2689,7 +2688,10 @@ API_EXPORT(int) ap_update_child_status(int child_num, int status, request_rec *r
 	    ss->vhostrec =  r->server;
 	}
     }
-    if (status == SERVER_STARTING && r == NULL) {
+    if (status == SERVER_DEAD) {
+        ap_scoreboard_image->parent[child_num].pid = 0;
+    }
+    else if (status == SERVER_STARTING && r == NULL) {
 	/* clean up the slot's vhostrec pointer (maybe re-used)
 	 * and mark the slot as belonging to a new generation.
 	 */
