@@ -272,6 +272,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      a local static variable. PR 43865.
          http://svn.apache.org/viewvc?view=rev&revision=591384
      +1: davi
+     -1: rpluem says: There are two conflicts when merging ssl_engine_vars.c.
+         One is caused by r289444 and the other one is unknown.
 
 PATCHES/ISSUES THAT ARE STALLED
 
