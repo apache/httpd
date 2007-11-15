@@ -268,12 +268,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=593919 
      +1: covener, rpluem
 
-   * mod_ldap: Axe a cleanup that has never run because it's tied to pconf
-     in the child, clarify the @tip in the cleanup function.
-         http://svn.apache.org/viewvc?view=rev&revision=592764
-         http://svn.apache.org/viewvc?view=rev&revision=593283
-     +1: covener
-
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
