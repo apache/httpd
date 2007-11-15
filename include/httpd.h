@@ -1096,6 +1096,11 @@ struct conn_rec {
     conn_state_t *cs;
     /** Is there data pending in the input filters? */ 
     int data_in_input_filters;
+    
+    /** Are there any filters that clogg/buffer the input stream, breaking
+     *  the event mpm.
+     */
+    int clogging_input_filters;
 };
 
 /** 

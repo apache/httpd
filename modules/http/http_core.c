@@ -42,6 +42,8 @@ AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_outerror_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_byterange_filter_handle;
 
+static int ap_process_http_connection(conn_rec *c);
+
 static const char *set_keep_alive_timeout(cmd_parms *cmd, void *dummy,
                                           const char *arg)
 {
@@ -124,6 +126,10 @@ static int ap_process_http_async_connection(conn_rec *c)
     request_rec *r;
     conn_state_t *cs = c->cs;
 
+    if (c->clogging_input_filters) {
+        return ap_process_http_connection(c);
+    }
+    
     AP_DEBUG_ASSERT(cs->state == CONN_STATE_READ_REQUEST_LINE);
 
     while (cs->state == CONN_STATE_READ_REQUEST_LINE) {

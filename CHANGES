@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) Event MPM: Add support for running under mod_ssl, by reverting to the
+     Worker MPM behaviors, when run under an input filter that buffers
+     its own data. [Paul Querna]
+
   *) mod_charset_lite: Don't crash when the request has no associated
      filename.  [Jeff Trawick]
 
@@ -1657,7 +1661,6 @@ Changes with Apache 2.1.1
 
   *) Rewrite of aaa modules to an authn/authz model.
      [Dirk-Willem van Gulik, Justin Erenkrantz]
-
 
   [Apache 2.1.0-dev includes those bug fixes and changes with the
    Apache 2.0.xx tree as documented, and except as noted, below.]
