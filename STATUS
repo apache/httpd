@@ -245,14 +245,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_ldap: Remove pconf usage on request processing threads, create a 
      subpool of the per-vhost LDAP pool instead of copying a reference to it.
          http://svn.apache.org/viewvc?view=rev&revision=591488 
-     +1: covener, rpluem
+     +1: covener, rpluem. rederpj
 
    * mod_ldap: Don't return references into shared memory to the caller, 
      as these may expire at any time because callers don't hold
      a cache lock
          http://svn.apache.org/viewvc?view=rev&revision=591499
          http://svn.apache.org/viewvc?view=rev&revision=593919 
-     +1: covener, rpluem
+     +1: covener, rpluem, rederpj
+     rederpj: Though it should never be a problem (famous last words), should
+              there be some sort of verification of i vs. k? (since you
+              allocate based on k and copy based on i)
 
    * mod_ssl: Don't use the pconf pool for allocating memory pointed by
      a local static variable. PR 43865.
