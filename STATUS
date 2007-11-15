@@ -268,6 +268,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=593919 
      +1: covener, rpluem
 
+   * mod_ssl: Don't use the pconf pool for allocating memory pointed by
+     a local static variable. PR 43865.
+         http://svn.apache.org/viewvc?view=rev&revision=591384
+     +1: davi
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
