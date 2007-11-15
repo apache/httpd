@@ -623,6 +623,15 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
         c->sbh = sbh;
     }
 
+    if (c->clogging_input_filters && !c->aborted) {
+        /* Since we have an input filter which 'cloggs' the input stream,
+         * like mod_ssl, lets just do the normal read from input filters,
+         * like the Worker MPM does.
+         */
+        ap_run_process_connection(c);
+        cs->state = CONN_STATE_LINGER;
+    }
+
     if (cs->state == CONN_STATE_READ_REQUEST_LINE) {
         if (!c->aborted) {
             ap_run_process_connection(c);
@@ -639,7 +648,6 @@ static int process_socket(apr_pool_t * p, apr_socket_t * sock,
 
     if (cs->state == CONN_STATE_LINGER) {
         ap_lingering_close(c);
-        apr_bucket_alloc_destroy(cs->bucket_alloc);
         apr_pool_clear(p);
         ap_push_pool(worker_queue_info, p);
         return 1;
