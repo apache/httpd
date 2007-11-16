@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: Handle unrecognised transfer-encodings.
+     PR 43882 [Nick Kew]
+
   *) core: Avoid some unexpected connection closes by telling the client
      that the connection is not persistent if the MPM process handling
      the request is already exiting when the response header is built.
