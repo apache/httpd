@@ -79,18 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ldap: Don't return references into shared memory to the caller, 
-     as these may expire at any time because callers don't hold
-     a cache lock
-         http://svn.apache.org/viewvc?view=rev&revision=591499
-         http://svn.apache.org/viewvc?view=rev&revision=593919 
-     +1: covener, rpluem, rederpj
-     rederpj: Though it should never be a problem (famous last words), should
-              there be some sort of verification of i vs. k? (since you
-              allocate based on k and copy based on i)
-     covener: attrs/vals are defined as being the same length and null terminated,
-              we just need to count the length of one to allocate the other
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
