@@ -116,7 +116,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         if (tenc) {
             /* RFC2616 allows qualifiers, so use strncasecmp */
-            if (!strncasecmp(tenc, "chunked", 7)) {
+            if (!strncasecmp(tenc, "chunked", 7) && !ap_strchr_c(tenc, ',')) {
                 ctx->state = BODY_CHUNK;
             }
             else {
