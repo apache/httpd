@@ -26,10 +26,6 @@ Changes with Apache 2.3.0
   *) scoreboard: Correctly declare ap_time_process_request.
      PR 43789 [Tom Donovan <Tom.Donovan acm.org>]
 
-  *) mod_ldap: Give callers a reference to data copied into the request
-     pool instead of references directly into the cache
-     PR 43786 [Eric Covener]
-
   *) mod_status: Add SeeRequestTail directive, which determines if
      ExtendedStatus displays the 1st 63 characters of the request
      or the last 63. Useful for those requests with large string
