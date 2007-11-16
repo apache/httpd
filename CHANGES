@@ -27,10 +27,6 @@ Changes with Apache 2.3.0
      pool instead of references directly into the cache
      PR 43786 [Eric Covener]
 
-  *) mod_ldap: Stop passing a reference to pconf around for
-     (limited) use during request processing, avoiding possible 
-     memory corruption and crashes.  [Eric Covener]
-
   *) mod_status: Add SeeRequestTail directive, which determines if
      ExtendedStatus displays the 1st 63 characters of the request
      or the last 63. Useful for those requests with large string
