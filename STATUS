@@ -79,6 +79,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_ldap: Remove pconf usage on request processing threads, create a 
+     subpool of the per-vhost LDAP pool instead of copying a reference to it.
+         http://svn.apache.org/viewvc?view=rev&revision=591488 
+     +1: covener, rpluem, rederpj
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -242,11 +246,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, trawick
 
-   * mod_ldap: Remove pconf usage on request processing threads, create a 
-     subpool of the per-vhost LDAP pool instead of copying a reference to it.
-         http://svn.apache.org/viewvc?view=rev&revision=591488 
-     +1: covener, rpluem. rederpj
-
    * mod_ldap: Don't return references into shared memory to the caller, 
      as these may expire at any time because callers don't hold
      a cache lock
@@ -268,6 +267,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: davii, rpluem
      rpluem says: I am +1 for the patch itself, but please add a CHANGES
      entry for it as it fixes a PR.
+
+   * core: Avoid some unexpected connection closes by telling the client
+     that the connection is not persistent if the MPM process handling
+     the request is already exiting when the response header is built.
+     trunk: http://svn.apache.org/viewvc?view=rev&revision=594839
+     2.2.x: trunk patch applies
+     +1: trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
