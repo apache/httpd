@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_ldap: Stop passing a reference to pconf around for
+     (limited) use during request processing, avoiding possible 
+     memory corruption and crashes.  [Eric Covener]
+
   *) Event MPM: Add support for running under mod_ssl, by reverting to the
      Worker MPM behaviors, when run under an input filter that buffers
      its own data. [Paul Querna]
