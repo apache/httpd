@@ -241,19 +241,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem, trawick
 
-
-   * mod_ssl: Don't use the pconf pool for allocating memory pointed by
-     a local static variable. PR 43865.
-     trunk:
-         http://svn.apache.org/viewvc?view=rev&revision=591384
-     2.2.x:
-        Trunk patch has a simple conflict due to name change of
-        a optional function variable, refreshed patch:
-        http://people.apache.org/~davi/ssl_engine_var_safe.patch
-     +1: davii, rpluem
-     rpluem says: I am +1 for the patch itself, but please add a CHANGES
-     entry for it as it fixes a PR.
-
    * core: Avoid some unexpected connection closes by telling the client
      that the connection is not persistent if the MPM process handling
      the request is already exiting when the response header is built.
