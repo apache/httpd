@@ -228,7 +228,10 @@ static int find_code_page(request_rec *r)
     }
 
     /* catch proxy requests */
-    if (r->proxyreq) return DECLINED;
+    if (r->proxyreq) {
+        return DECLINED;
+    }
+
     /* mod_rewrite indicators */
     if (r->filename
         && (!strncmp(r->filename, "redirect:", 9)
@@ -237,8 +240,11 @@ static int find_code_page(request_rec *r)
             || !strncmp(r->filename, "forbidden:", 10))) {
         return DECLINED;
     }
+
     /* no translation when server and network charsets are set to the same value */
-    if (!strcasecmp(dc->charset_source, dc->charset_default)) return DECLINED;
+    if (!strcasecmp(dc->charset_source, dc->charset_default)) {
+        return DECLINED;
+    }
 
     /* Get storage for the request data and the output filter context.
      * We rarely need the input filter context, so allocate that separately.
@@ -778,8 +784,7 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
 
     /* Check the mime type to see if translation should be performed.
      */
-    if (!ctx->noop && ctx->xlate == NULL)
-    {
+    if (!ctx->noop && ctx->xlate == NULL) {
         const char *mime_type = f->r->content_type ? f->r->content_type : ap_default_type(f->r);
 
         if (strncasecmp(mime_type, "text/", 5) == 0 ||
@@ -796,12 +801,12 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
          * translated properly: mod_autoindex output, mod_status output,
          * mod_info output, hard-coded error documents, etc.
          */
-        strcmp(mime_type, DIR_MAGIC_TYPE) == 0 ||
+            strcmp(mime_type, DIR_MAGIC_TYPE) == 0 ||
 #endif
-        strncasecmp(mime_type, "message/", 8) == 0) {
+            strncasecmp(mime_type, "message/", 8) == 0) {
 
             rv = apr_xlate_open(&ctx->xlate,
-                        dc->charset_default, dc->charset_source, f->r->pool);
+                                dc->charset_default, dc->charset_source, f->r->pool);
             if (rv != APR_SUCCESS) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, f->r,
                               "can't open translation %s->%s",
@@ -815,20 +820,21 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
             }
         }
         else {
-                ctx->noop = 1;
-                if (dc->debug >= DBGLVL_GORY)
-                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
-                                  "mime type is %s; no translation selected",
-                                  mime_type);
+            ctx->noop = 1;
+            if (dc->debug >= DBGLVL_GORY) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+                              "mime type is %s; no translation selected",
+                              mime_type);
             }
+        }
     }
 
     if (dc->debug >= DBGLVL_GORY) {
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
-                     "xlate_out_filter() - "
-                     "charset_source: %s charset_default: %s",
-                     dc && dc->charset_source ? dc->charset_source : "(none)",
-                     dc && dc->charset_default ? dc->charset_default : "(none)");
+                      "xlate_out_filter() - "
+                      "charset_source: %s charset_default: %s",
+                      dc && dc->charset_source ? dc->charset_source : "(none)",
+                      dc && dc->charset_default ? dc->charset_default : "(none)");
     }
 
     if (!ctx->ran) {  /* filter never ran before */
