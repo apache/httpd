@@ -275,6 +275,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x: trunk patch applies
      +1: trawick
 
+   * mod_charset_lite cleanups to remove long-abandoned logic and fix
+     some minor style problems
+     trunk:
+       http://svn.apache.org/viewvc?rev=595646&view=rev
+       http://svn.apache.org/viewvc?rev=595648&view=rev
+     2.2.x: trunk patch applies
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
