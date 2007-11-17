@@ -115,11 +115,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         lenp = apr_table_get(f->r->headers_in, "Content-Length");
 
         if (tenc) {
-            /* RFC2616 allows qualifiers, so use strncasecmp */
-            if (!strncasecmp(tenc, "chunked", 7) && !ap_strchr_c(tenc, ',')) {
+            if (!strcasecmp(tenc, "chunked")) {
                 ctx->state = BODY_CHUNK;
             }
-            else {
+	    /* test lenp, because it gives another case we can handle */
+            else if (!lenp) {
                 /* Something that isn't in HTTP, unless some future
                  * edition defines new transfer ecodings, is unsupported.
                  */
