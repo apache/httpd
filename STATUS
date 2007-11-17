@@ -246,7 +246,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      the request is already exiting when the response header is built.
      trunk: http://svn.apache.org/viewvc?view=rev&revision=594839
      2.2.x: trunk patch applies
-     +1: trawick
+     +1: trawick, rpluem
 
    * mod_charset_lite cleanups to remove long-abandoned logic and fix
      some minor style problems
@@ -254,7 +254,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=595646&view=rev
        http://svn.apache.org/viewvc?rev=595648&view=rev
      2.2.x: trunk patch applies
-     +1: trawick
+     +1: trawick, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
