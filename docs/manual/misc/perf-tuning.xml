@@ -467,7 +467,7 @@
         <title>Modules</title>
 
         <p>Since memory usage is such an important consideration in
-        performance, you should attempt to eliminate modules that youare
+        performance, you should attempt to eliminate modules that you are
         not actually using. If you have built the modules as <a
         href="../dso.html">DSOs</a>, eliminating modules is a simple
         matter of commenting out the associated <directive
