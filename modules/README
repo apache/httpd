@@ -18,6 +18,10 @@ dav/
 
 echo/
 
+examples/
+  This directory contains some sample code that should help you on your
+  way to develop your own Apache modules.  
+
 experimental/
   In this directory we've placed some modules which we think
   provide some pretty interesting functionality, but which

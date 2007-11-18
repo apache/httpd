@@ -25,16 +25,17 @@
  * this module, but which may have counterparts in *real* modules, are
  * prefixed with 'x_' instead of 'example_'.
  *
- * To use mod_example, configure the Apache build with --enable-example and 
- * compile.  Set up a <Location> block in your configuration file like so: 
+ * To use mod_example_hooks, configure the Apache build with
+ * --enable-example and compile.  Set up a <Location> block in your
+ * configuration file like so: 
  * 
  * <Location /example>
- *    SetHandler example-handler
+ *    SetHandler example-hooks-handler
  * </Location> 
  * 
  * When you look at that location on your server, you will see a backtrace of 
  * the callbacks that have been invoked up to that point.  See the ErrorLog for 
- * more information on code paths that  touch mod_example. 
+ * more information on code paths that  touch mod_example_hooks. 
  *
  * IMPORTANT NOTES
  * ===============
@@ -44,7 +45,7 @@
  * request processing, and produces copious amounts of logging data.  This will 
  * negatively affect server performance. 
  * 
- * Do NOT use mod_example as the basis for your own code.  This module
+ * Do NOT use mod_example_hooks as the basis for your own code.  This module
  * implements every callback hook offered by the Apache core, and your
  * module will almost certainly not have to implement this much.  If you
  * want a simple module skeleton to start development, use apxs -g. 
@@ -128,7 +129,7 @@ static const char *trace = NULL;
  * Declare ourselves so the configuration routines can find and know us.
  * We'll fill it in at the end of the module.
  */
-module AP_MODULE_DECLARE_DATA example_module;
+module AP_MODULE_DECLARE_DATA example_hooks_module;
 
 /*--------------------------------------------------------------------------*/
 /*                                                                          */
@@ -279,7 +280,7 @@ module AP_MODULE_DECLARE_DATA example_module;
  */
 static x_cfg *our_dconfig(const request_rec *r)
 {
-    return (x_cfg *) ap_get_module_config(r->per_dir_config, &example_module);
+    return (x_cfg *) ap_get_module_config(r->per_dir_config, &example_hooks_module);
 }
 
 /* 
@@ -293,7 +294,7 @@ static x_cfg *our_dconfig(const request_rec *r)
  */
 static x_cfg *our_sconfig(const server_rec *s)
 {
-    return (x_cfg *) ap_get_module_config(s->module_config, &example_module);
+    return (x_cfg *) ap_get_module_config(s->module_config, &example_hooks_module);
 }
 
 /*
@@ -301,7 +302,7 @@ static x_cfg *our_sconfig(const server_rec *s)
  */
 static x_cfg *our_rconfig(const request_rec *r)
 {
-    return (x_cfg *) ap_get_module_config(r->request_config, &example_module);
+    return (x_cfg *) ap_get_module_config(r->request_config, &example_hooks_module);
 }
 #endif /* if 0 */
 
@@ -310,7 +311,7 @@ static x_cfg *our_rconfig(const request_rec *r)
  */
 static x_cfg *our_cconfig(const conn_rec *c)
 {
-    return (x_cfg *) ap_get_module_config(c->conn_config, &example_module);
+    return (x_cfg *) ap_get_module_config(c->conn_config, &example_hooks_module);
 }
 
 /*
@@ -386,7 +387,7 @@ static void trace_startup(apr_pool_t *p, server_rec *s, x_cfg *mconfig,
  * This utility route traces the hooks called as a request is handled. 
  * It takes the current request as argument 
  */
-#define TRACE_NOTE "example-trace"
+#define TRACE_NOTE "example-hooks-trace"
  
 static void trace_request(const request_rec *r, const char *note)
 {
@@ -432,7 +433,7 @@ static void trace_request(const request_rec *r, const char *note)
  * the connection and its pool to itself entirely, and in
  * multi-threaded mode each connection will have its own pool.
  */
-#define CONN_NOTE "example-connection"
+#define CONN_NOTE "example-hooks-connection"
 
 static void trace_connection(conn_rec *c, const char *note) 
 {
@@ -983,7 +984,7 @@ static int x_handler(request_rec *r)
     trace_request(r, note);
 
     /* If it's not for us, get out as soon as possible. */
-    if (strcmp(r->handler, "example-handler")) {
+    if (strcmp(r->handler, "example-hooks-handler")) {
         return DECLINED;
     }
 
@@ -1007,11 +1008,11 @@ static int x_handler(request_rec *r)
     ap_rputs(DOCTYPE_HTML_3_2, r);
     ap_rputs("<HTML>\n", r);
     ap_rputs(" <HEAD>\n", r);
-    ap_rputs("  <TITLE>mod_example Module Content-Handler Output\n", r);
+    ap_rputs("  <TITLE>mod_example_hooks Module Content-Handler Output\n", r);
     ap_rputs("  </TITLE>\n", r);
     ap_rputs(" </HEAD>\n", r);
     ap_rputs(" <BODY>\n", r);
-    ap_rputs("  <H1><SAMP>mod_example</SAMP> Module Content-Handler Output\n", r);
+    ap_rputs("  <H1><SAMP>mod_example_hooks</SAMP> Module Content-Handler Output\n", r);
     ap_rputs("  </H1>\n", r);
     ap_rputs("  <P>\n", r);
     ap_rprintf(r, "  Apache HTTP Server version: \"%s\"\n",
@@ -1505,7 +1506,7 @@ static const command_rec x_cmds[] =
  * Module definition for configuration.  If a particular callback is not
  * needed, replace its routine name below with the word NULL.
  */
-module AP_MODULE_DECLARE_DATA example_module =
+module AP_MODULE_DECLARE_DATA example_hooks_module =
 {
     STANDARD20_MODULE_STUFF,
     x_create_dir_config,    /* per-directory config creator */
