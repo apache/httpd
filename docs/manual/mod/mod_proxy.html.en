@@ -711,7 +711,7 @@ through</td></tr>
 <div class="directive-section"><h2><a name="ProxyPass" id="ProxyPass">ProxyPass</a> <a name="proxypass" id="proxypass">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps remote servers into the local server URL-space</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var> <var>key=value</var> ...]]</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var> <var>key=value</var> ...]] [nocanon]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -975,7 +975,14 @@ through</td></tr>
       &lt;/Proxy&gt;
     </code></p></div>
 
-    
+    <p>Normally, mod_proxy will canonicalise ProxyPassed URLs.
+    But this may be incompatible with some backends, particularly those
+    that make use of <var>PATH_INFO</var>.  The optional <var>nocanon</var>
+    keyword suppresses this, and passes the URL path "raw" to the
+    backend.  Note that may affect the security of your backend, as it
+    removes the normal limited protection against URL-based attacks
+    provided by the proxy.</p>
+
     <p>When used inside a <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code> section, the first argument is omitted and the local
     directory is obtained from the <code class="directive"><a href="../mod/core.html#location">&lt;Location&gt;</a></code>.</p>
 
