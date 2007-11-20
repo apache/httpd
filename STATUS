@@ -138,25 +138,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      they close stdout/stderr first and dup a then closed fd in stdout/stderr,
      leaving us without stdout/stderr in the child.
 
-   * mod_proxy_http: Don't mangle proxied URLs
-     PR 42592
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/proxy/mod_proxy_http.c?r1=582655&r2=583803&pathrev=583803
-     2.2.x patch: http://people.apache.org/~niq/42592.patch
-     2.2.x composite patch: this together with PR41798 patch
-        http://people.apache.org/~niq/41798+42592.patch
-     +1: niq
-     -1: jim: Comment is wrong if not bundled with "nocanon" option
-     niq: On the contrary, comment is accurate without the noncanon option.
-          The comment changes in r588791, precisely because "nocanon"
-          affects it.
-     jim: The comment says 'so just check it for disallowed chars' which,
-          at least from what I can see regarding the patch applied to
-          2.2, we do not do.
-     niq: Oh, I see.  You prefer an all-in-one patch for both?
-     rpluem says: Please add a minor bump for the changes to mod_proxy.h.
-                  Then I am +1.
-     niq says: done
-
    * core: backport ap_send_interim_response API
      http://svn.apache.org/viewvc?view=rev&revision=582630
      http://svn.apache.org/viewvc?view=rev&revision=582652
@@ -170,11 +151,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 16518
      http://svn.apache.org/viewvc?view=rev&revision=582631
      http://svn.apache.org/viewvc?view=rev&revision=588806
-     +1: niq, rpluem
+     +1: niq, rpluem, jim (will add mmn bump)
 
    * mod_proxy: add "nocanon" option to ProxyPass, to suppress
      canonicalisation of reverse-proxied URLs.
-     PR 41798
+     PR 41798 PR 42592
      trunk:
         http://svn.apache.org/viewvc?view=rev&revision=588791
      2.2.x:
@@ -200,6 +181,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: Please add a minor bump for the changes to mod_proxy.h.
                   Then I am +1.
      niq says: done
+     jim: +1
 
    * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
      ap_vrprintf(). PR 43310
@@ -232,21 +214,21 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk patches work when applied in succession, but a consolidated
         patch is at 
         http://people.apache.org/~trawick/sb-charset-consolidated.txt
-     +1: trawick, niq
+     +1: trawick, niq, jim
 
     * mod_autoindex: Generate valid XHTML output by adding the xhtml namespace.
       Trunk version of patch:
          http://svn.apache.org/viewcvs.cgi?rev=593816&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, trawick
+      +1: rpluem, trawick, jim
 
    * core: Avoid some unexpected connection closes by telling the client
      that the connection is not persistent if the MPM process handling
      the request is already exiting when the response header is built.
      trunk: http://svn.apache.org/viewvc?view=rev&revision=594839
      2.2.x: trunk patch applies
-     +1: trawick, rpluem
+     +1: trawick, rpluem, jim
 
    * mod_charset_lite cleanups to remove long-abandoned logic and fix
      some minor style problems
@@ -254,7 +236,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=595646&view=rev
        http://svn.apache.org/viewvc?rev=595648&view=rev
      2.2.x: trunk patch applies
-     +1: trawick, rpluem
+     +1: trawick, rpluem, jim
 
    * mod_ssl: Don't use the pconf pool for allocating memory pointed by
      a local static variable. PR 43865.
@@ -264,7 +246,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk patch has a simple conflict due to name change of
         a optional function variable, refreshed patch:
         http://people.apache.org/~davi/ssl_engine_var_safe.patch
-     +1: davi, rpluem
+     +1: davi, rpluem, jim
      rpluem says: CHANGES patch at
                   http://people.apache.org/~rpluem/patches/CHANGES-43334.diff
 
