@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_autoindex: Generate valid XHTML output by adding the xhtml
+     namespace. PR 43649 [Jose Kahan <jose w3.org>]
+
   *) mod_ldap: Give callers a reference to data copied into the request
      pool instead of references directly into the cache
      PR 43786 [Eric Covener]
