@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2004-06-20" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2007-11-20" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -27,13 +27,35 @@ rotatelogs \- Piped logging program to rotate Apache logs
 .SH "SYNOPSIS"
  
 .PP
-\fBrotatelogs\fR [ -\fBl\fR ] \fIlogfile\fR [ \fIrotationtime\fR [ \fIoffset\fR ]] | [ \fIfilesize\fRM ]
+\fBrotatelogs\fR [ -\fBl\fR ] \fIlogfile\fR \fIrotationtime\fR|\fIfilesize\fRM [ \fIoffset\fR ]
  
 
 .SH "SUMMARY"
  
 .PP
-rotatelogs is a simple program for use in conjunction with Apache's piped logfile feature\&. For example:
+rotatelogs is a simple program for use in conjunction with Apache's piped logfile feature\&.
+ 
+
+.SH "OPTIONS"
+ 
+ 
+.TP
+-l
+Causes the use of local time rather than GMT as the base for the interval or for strftime(3) formatting with size-based rotation\&. Note that using -l in an environment which changes the GMT offset (such as for BST or DST) can lead to unpredictable results!  
+.TP
+\fIlogfile\fR
+The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&.  
+.TP
+\fIrotationtime\fR
+The time between log file rotations in seconds\&.  
+.TP
+\fIoffset\fR
+The number of minutes offset from UTC\&. If omitted, zero is assumed and UTC is used\&. For example, to use local time in the zone UTC -5 hours, specify a value of -300 for this argument\&. In most cases, -l should be used instead of specifying an offset\&.  
+.TP
+\fIfilesize\fRM
+The maximum file size in megabytes followed by the letter M to specify size rather than time\&. Use this parameter in place of rotationtime\&.  
+ 
+.SH "EXAMPLES"
  
 .nf
 
@@ -43,6 +65,15 @@ rotatelogs is a simple program for use in conjunction with Apache's piped logfil
  
 .PP
 This creates the files /var/logs/logfile\&.nnnn where nnnn is the system time at which the log nominally starts (this time will always be a multiple of the rotation time, so you can synchronize cron scripts with it)\&. At the end of each rotation time (here after 24 hours) a new log is started\&.
+ 
+.nf
+
+     CustomLog "|bin/rotatelogs -l /var/logs/logfile\&.%Y\&.%m\&.%d 86400" common
+
+.fi
+ 
+.PP
+This creates the files /var/logs/logfile\&.yyyy\&.mm\&.dd where yyyy is the year, mm is the month, and dd is the day of the month\&. Logging will switch to a new file every day at midnight, local time\&.
  
 .nf
 
@@ -61,26 +92,6 @@ This configuration will rotate the logfile whenever it reaches a size of 5 megab
  
 .PP
 This configuration will rotate the error logfile whenever it reaches a size of 5 megabytes, and the suffix to the logfile name will be created of the form errorlog\&.YYYY-mm-dd-HH_MM_SS\&.
- 
-
-.SH "OPTIONS"
- 
- 
-.TP
--l
-Causes the use of local time rather than GMT as the base for the interval\&. Note that using -l in an environment which changes the GMT offset (such as for BST or DST) can lead to unpredictable results!  
-.TP
-\fIlogfile\fR
-The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&.  
-.TP
-\fIrotationtime\fR
-The time between log file rotations in seconds\&.  
-.TP
-\fIoffset\fR
-The number of minutes offset from UTC\&. If omitted, zero is assumed and UTC is used\&. For example, to use local time in the zone UTC -5 hours, specify a value of -300 for this argument\&.  
-.TP
-\fIfilesize\fRM
-The maximum file size in megabytes followed by the letter M to specify size rather than time\&. Use this parameter in place of both rotationtime and offset\&.  
  
 .SH "PORTABILITY"
  
