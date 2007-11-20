@@ -107,7 +107,7 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      rpluem says: Please add a minor bump for the changes to mod_proxy.h.
                   Then I am +1.
      niq says: done
-     jim: +1
+     jim: +1 (needs doccos as well, 'natch)
 
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
