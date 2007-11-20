@@ -207,6 +207,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           space for the NUL, but they don't have related sections
           which assume a set size; this does (AP_IOBUFSIZE).
 
+   * mod_status: For long request lines we only see the front part of
+     the requests in mod_status, which is useless if they only vary
+     in their ending bits. Allow admin to specify whether they want
+     to see the 1st 63 chars of the request, or the last.
+     trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=590641
+     2.2.x:
+        http://people.apache.org/~jim/patches/reqtail-patch.txt
+     +1: jim
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
