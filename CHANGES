@@ -1,8 +1,13 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_proxy: Canonicalisation improvements. Add "nocanon" keyword to
+     ProxyPass, to suppress URI-canonicalisation in a reverse proxy. Also,
+     don't escape/unescape forward-proxied URLs.
+     PR 41798, 42592 [Nick Kew, Ruediger Pluem, Roy Fielding, Jim Jagielski]
+
   *) mod_ssl: Prevent memory corruption of version string.
-     PR 43865 43334 [William Rowe, Joe Orton]
+     PR 43865, 43334 [William Rowe, Joe Orton]
 
   *) core: Avoid some unexpected connection closes by telling the client
      that the connection is not persistent if the MPM process handling

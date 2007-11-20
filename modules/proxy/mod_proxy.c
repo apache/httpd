@@ -220,12 +220,12 @@ static const char *set_worker_param(apr_pool_t *p,
                 else
                     worker->status &= ~PROXY_WORKER_HOT_STANDBY;
             }
-	    else if (*v == 'I' || *v == 'i') {
-	    	if (mode)
-		    worker->status |= PROXY_WORKER_IGNORE_ERRORS;
-		else
-		    worker->status &= ~PROXY_WORKER_IGNORE_ERRORS;
-	    }
+            else if (*v == 'I' || *v == 'i') {
+                if (mode)
+                    worker->status |= PROXY_WORKER_IGNORE_ERRORS;
+                else
+                    worker->status &= ~PROXY_WORKER_IGNORE_ERRORS;
+            }
             else {
                 return "Unknown status parameter option";
             }
@@ -440,7 +440,9 @@ static int proxy_trans(request_rec *r)
     int i, len;
     struct proxy_alias *ent = (struct proxy_alias *) conf->aliases->elts;
     ap_regmatch_t regm[AP_MAX_REG_MATCH];
+    ap_regmatch_t reg1[AP_MAX_REG_MATCH];
     char *found = NULL;
+    int mismatch = 0;
 
     if (r->proxyreq) {
         /* someone has already set up the proxy, it was possibly ourselves
@@ -455,13 +457,22 @@ static int proxy_trans(request_rec *r)
      */
 
     for (i = 0; i < conf->aliases->nelts; i++) {
+        unsigned int nocanon = ent[i].flags & PROXYPASS_NOCANON;
+        const char *use_uri = nocanon ? r->unparsed_uri : r->uri;
         if (ent[i].regex) {
             if (!ap_regexec(ent[i].regex, r->uri, AP_MAX_REG_MATCH, regm, 0)) {
                 if ((ent[i].real[0] == '!') && (ent[i].real[1] == '\0')) {
                     return DECLINED;
                 }
-                found = ap_pregsub(r->pool, ent[i].real, r->uri, AP_MAX_REG_MATCH,
-                                   regm);
+                /* test that we haven't reduced the URI */
+                if (nocanon && ap_regexec(ent[i].regex, r->unparsed_uri,
+                                          AP_MAX_REG_MATCH, reg1, 0)) {
+                    mismatch = 1;
+                    use_uri = r->uri;
+                }
+                found = ap_pregsub(r->pool, ent[i].real, use_uri,
+                                   AP_MAX_REG_MATCH,
+                                   (use_uri == r->uri) ? regm : reg1);
                 /* Note: The strcmp() below catches cases where there
                  * was no regex substitution. This is so cases like:
                  *
@@ -479,8 +490,8 @@ static int proxy_trans(request_rec *r)
                     found = apr_pstrcat(r->pool, "proxy:", found, NULL);
                 }
                 else {
-                    found = apr_pstrcat(r->pool, "proxy:", ent[i].real, r->uri,
-                                        NULL);
+                    found = apr_pstrcat(r->pool, "proxy:", ent[i].real,
+                                        use_uri, NULL);
                 }
             }
         }
@@ -491,15 +502,31 @@ static int proxy_trans(request_rec *r)
                 if ((ent[i].real[0] == '!') && (ent[i].real[1] == '\0')) {
                     return DECLINED;
                 }
-
+                if (nocanon
+                    && len != alias_match(r->unparsed_uri, ent[i].fake)) {
+                    mismatch = 1;
+                    use_uri = r->uri;
+                }
                 found = apr_pstrcat(r->pool, "proxy:", ent[i].real,
-                                    r->uri + len, NULL);
+                                    use_uri + len, NULL);
             }
         }
+        if (mismatch) {
+            /* We made a reducing transformation, so we can't safely use
+             * unparsed_uri.  Safe fallback is to ignore nocanon.
+             */
+            ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r,
+                          "Unescaped URL path matched ProxyPass; ignoring unsafe nocanon");
+        }
+
         if (found) {
             r->filename = found;
             r->handler = "proxy-server";
             r->proxyreq = PROXYREQ_REVERSE;
+            if (nocanon && !mismatch) {
+                /* mod_proxy_http needs to be told.  Different module. */
+                apr_table_setn(r->notes, "proxy-nocanon", "1");
+            }
             return OK;
         }
     }
@@ -1090,6 +1117,7 @@ static const char *
     const apr_table_entry_t *elts;
     int i;
     int use_regex = is_regex;
+    unsigned int flags = 0;
 
     while (*arg) {
         word = ap_getword_conf(cmd->pool, &arg);
@@ -1103,8 +1131,12 @@ static const char *
             }
             f = word;
         }
-        else if (!r)
+        else if (!r) {
             r = word;
+        }
+        else if (!strcasecmp(word,"nocanon")) {
+            flags |= PROXYPASS_NOCANON;
+        }
         else {
             char *val = strchr(word, '=');
             if (!val) {
@@ -1135,6 +1167,7 @@ static const char *
     new = apr_array_push(conf->aliases);
     new->fake = apr_pstrdup(cmd->pool, f);
     new->real = apr_pstrdup(cmd->pool, r);
+    new->flags = flags;
     if (use_regex) {
         new->regex = ap_pregcomp(cmd->pool, f, AP_REG_EXTENDED);
         if (new->regex == NULL)
