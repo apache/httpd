@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) core: Avoid some unexpected connection closes by telling the client
+     that the connection is not persistent if the MPM process handling
+     the request is already exiting when the response header is built.
+     [Jeff Trawick]
+
   *) mod_autoindex: Generate valid XHTML output by adding the xhtml
      namespace. PR 43649 [Jose Kahan <jose w3.org>]
 
