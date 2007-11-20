@@ -79,6 +79,83 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy: add "nocanon" option to ProxyPass, to suppress
+     canonicalisation of reverse-proxied URLs.
+     PR 41798 PR 42592
+     trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=588791
+     2.2.x:
+        mod_proxy.c patch at http://people.apache.org/~niq/41798.patch
+        mod_proxy_http.c patch: trunk works after applying PR#42592 patch
+        Other files: trunk patch works.
+     2.2.x composite patch: this together with PR42592 patch
+        http://people.apache.org/~niq/41798+42592.patch
+     +1: niq
+     -1: jim: patch should be self-contained. If a mix and match of
+              files, then please create a distinct 2.2 patch.
+     niq: we NEVER do that.  When did you incorporate the CHANGES
+          update in a separate 2.2 patch?  The complexity here is that
+          mod_proxy_http.c relies on 42592, and a separate fix to
+          that would invalidate the (very simple) patch to 42592.
+    jim: The issue is that the above "use trunk but use these external
+         patch" makes the backport hard to apply and test. Instead
+         of being able to just merge in r588791, you must just use
+         those that apply "cleanly" and handle mod_proxy.c as a
+         special case. This seems ripe for a specific 2.2 patch. Yes,
+         CHANGES always conflicts, but it is a documentation question,
+         not a code one. 
+     rpluem says: Please add a minor bump for the changes to mod_proxy.h.
+                  Then I am +1.
+     niq says: done
+     jim: +1
+
+   * mod_charset_lite: Remove Content-Length when output filter can 
+     invalidate it.  Warn when input filter can invalidate it.
+     trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=380232
+        http://svn.apache.org/viewvc?view=rev&revision=593890
+     2.2.x:
+        Trunk patches work when applied in succession, but a consolidated
+        patch is at 
+        http://people.apache.org/~trawick/sb-charset-consolidated.txt
+     +1: trawick, niq, jim
+
+    * mod_autoindex: Generate valid XHTML output by adding the xhtml namespace.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=593816&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, trawick, jim
+
+   * core: Avoid some unexpected connection closes by telling the client
+     that the connection is not persistent if the MPM process handling
+     the request is already exiting when the response header is built.
+     trunk: http://svn.apache.org/viewvc?view=rev&revision=594839
+     2.2.x: trunk patch applies
+     +1: trawick, rpluem, jim
+
+   * mod_charset_lite cleanups to remove long-abandoned logic and fix
+     some minor style problems
+     trunk:
+       http://svn.apache.org/viewvc?rev=595646&view=rev
+       http://svn.apache.org/viewvc?rev=595648&view=rev
+     2.2.x: trunk patch applies
+     +1: trawick, rpluem, jim
+
+   * mod_ssl: Don't use the pconf pool for allocating memory pointed by
+     a local static variable. PR 43865.
+     trunk:
+         http://svn.apache.org/viewvc?view=rev&revision=591384
+     2.2.x:
+        Trunk patch has a simple conflict due to name change of
+        a optional function variable, refreshed patch:
+        http://people.apache.org/~davi/ssl_engine_var_safe.patch
+     +1: davi, rpluem, jim
+     rpluem says: CHANGES patch at
+                  http://people.apache.org/~rpluem/patches/CHANGES-43334.diff
+
+
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -154,36 +231,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +1: niq, rpluem
      -0: jim (how is this related to ap_send_interim_response above?)
 
-   * mod_proxy: add "nocanon" option to ProxyPass, to suppress
-     canonicalisation of reverse-proxied URLs.
-     PR 41798 PR 42592
-     trunk:
-        http://svn.apache.org/viewvc?view=rev&revision=588791
-     2.2.x:
-        mod_proxy.c patch at http://people.apache.org/~niq/41798.patch
-        mod_proxy_http.c patch: trunk works after applying PR#42592 patch
-        Other files: trunk patch works.
-     2.2.x composite patch: this together with PR42592 patch
-        http://people.apache.org/~niq/41798+42592.patch
-     +1: niq
-     -1: jim: patch should be self-contained. If a mix and match of
-              files, then please create a distinct 2.2 patch.
-     niq: we NEVER do that.  When did you incorporate the CHANGES
-          update in a separate 2.2 patch?  The complexity here is that
-          mod_proxy_http.c relies on 42592, and a separate fix to
-          that would invalidate the (very simple) patch to 42592.
-    jim: The issue is that the above "use trunk but use these external
-         patch" makes the backport hard to apply and test. Instead
-         of being able to just merge in r588791, you must just use
-         those that apply "cleanly" and handle mod_proxy.c as a
-         special case. This seems ripe for a specific 2.2 patch. Yes,
-         CHANGES always conflicts, but it is a documentation question,
-         not a code one. 
-     rpluem says: Please add a minor bump for the changes to mod_proxy.h.
-                  Then I am +1.
-     niq says: done
-     jim: +1
-
    * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
      ap_vrprintf(). PR 43310
      trunk:
@@ -205,51 +252,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           code do this by setting the endpos to one less to "save"
           space for the NUL, but they don't have related sections
           which assume a set size; this does (AP_IOBUFSIZE).
-
-   * mod_charset_lite: Remove Content-Length when output filter can 
-     invalidate it.  Warn when input filter can invalidate it.
-     trunk:
-        http://svn.apache.org/viewvc?view=rev&revision=380232
-        http://svn.apache.org/viewvc?view=rev&revision=593890
-     2.2.x:
-        Trunk patches work when applied in succession, but a consolidated
-        patch is at 
-        http://people.apache.org/~trawick/sb-charset-consolidated.txt
-     +1: trawick, niq, jim
-
-    * mod_autoindex: Generate valid XHTML output by adding the xhtml namespace.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=593816&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, trawick, jim
-
-   * core: Avoid some unexpected connection closes by telling the client
-     that the connection is not persistent if the MPM process handling
-     the request is already exiting when the response header is built.
-     trunk: http://svn.apache.org/viewvc?view=rev&revision=594839
-     2.2.x: trunk patch applies
-     +1: trawick, rpluem, jim
-
-   * mod_charset_lite cleanups to remove long-abandoned logic and fix
-     some minor style problems
-     trunk:
-       http://svn.apache.org/viewvc?rev=595646&view=rev
-       http://svn.apache.org/viewvc?rev=595648&view=rev
-     2.2.x: trunk patch applies
-     +1: trawick, rpluem, jim
-
-   * mod_ssl: Don't use the pconf pool for allocating memory pointed by
-     a local static variable. PR 43865.
-     trunk:
-         http://svn.apache.org/viewvc?view=rev&revision=591384
-     2.2.x:
-        Trunk patch has a simple conflict due to name change of
-        a optional function variable, refreshed patch:
-        http://people.apache.org/~davi/ssl_engine_var_safe.patch
-     +1: davi, rpluem, jim
-     rpluem says: CHANGES patch at
-                  http://people.apache.org/~rpluem/patches/CHANGES-43334.diff
 
 PATCHES/ISSUES THAT ARE STALLED
 
