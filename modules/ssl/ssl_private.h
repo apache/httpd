@@ -648,7 +648,9 @@ void         ssl_die(void);
 void         ssl_log_ssl_error(const char *, int, int, server_rec *);
 
 /**  Variables  */
-void         ssl_var_register(void);
+
+/* Register variables for the lifetime of the process pool 'p'. */
+void         ssl_var_register(apr_pool_t *p);
 char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec *, char *);
 const char  *ssl_ext_lookup(apr_pool_t *p, conn_rec *c, int peer, const char *oid);
 
