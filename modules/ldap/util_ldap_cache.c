@@ -266,13 +266,7 @@ void *util_ldap_compare_node_copy(util_ald_cache_t *cache, void *c)
         }
         node->lastcompare = n->lastcompare;
         node->result = n->result;
-        if (n->subgroupList && !node->subgroupList ) {
-  	    /* original entry had an SGL, no shared memory left to copy it */
-  	    node->sgl_processed = 0;
-  	}
-  	else {
-            node->sgl_processed = n->sgl_processed;
-        }
+        node->sgl_processed = n->sgl_processed;
         return node;
     }
     else {
