@@ -85,6 +85,7 @@ typedef struct charset_dir_t {
  */
 typedef struct charset_filter_ctx_t {
     apr_xlate_t *xlate;
+    int is_sb;              /* single-byte translation? */
     charset_dir_t *dc;
     ees_t ees;              /* extended error status */
     apr_size_t saved;
@@ -329,6 +330,9 @@ static int find_code_page(request_rec *r)
                           "can't open translation %s->%s",
                           dc->charset_default, dc->charset_source);
             return HTTP_INTERNAL_SERVER_ERROR;
+        }
+        if (apr_xlate_sb_get(input_ctx->xlate, &input_ctx->is_sb) != APR_SUCCESS) {
+            input_ctx->is_sb = 0;
         }
     }
 
@@ -866,6 +870,11 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                               dc->charset_source, dc->charset_default);
                 ctx->noop = 1;
             }
+            else {
+                if (apr_xlate_sb_get(ctx->xlate, &ctx->is_sb) != APR_SUCCESS) {
+                    ctx->is_sb = 0;
+                }
+            }
         }
         else {
                 ctx->noop = 1;
@@ -887,6 +896,12 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     if (!ctx->ran) {  /* filter never ran before */
         chk_filter_chain(f);
         ctx->ran = 1;
+        if (!ctx->noop && !ctx->is_sb) {
+            /* We're not converting between two single-byte charsets, so unset
+             * Content-Length since it is unlikely to remain the same.
+             */
+            apr_table_unset(f->r->headers_out, "Content-Length");
+        }
     }
 
     if (ctx->noop) {
@@ -1045,6 +1060,23 @@ static int xlate_in_filter(ap_filter_t *f, apr_bucket_brigade *bb,
     if (!ctx->ran) {  /* filter never ran before */
         chk_filter_chain(f);
         ctx->ran = 1;
+        if (!ctx->noop && !ctx->is_sb
+            && apr_table_get(f->r->headers_in, "Content-Length")) {
+            /* A Content-Length header is present, but it won't be valid after
+             * conversion because we're not converting between two single-byte
+             * charsets.  This will affect most CGI scripts and may affect
+             * some modules.
+             * Content-Length can't be unset here because that would break
+             * being able to read the request body.
+             * Processing of chunked request bodies is not impacted by this
+             * filter since the the length was not declared anyway.
+             */
+            if (dc->debug >= DBGLVL_PMC) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, f->r,
+                              "Request body length may change, resulting in "
+                              "misprocessing by some modules or scripts");
+            }
+        }
     }
 
     if (ctx->noop) {
