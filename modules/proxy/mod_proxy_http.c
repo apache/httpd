@@ -81,7 +81,26 @@ static int proxy_http_canon(request_rec *r, char *url)
         search = r->args;
 
     /* process path */
-    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0, r->proxyreq);
+    /* In a reverse proxy, our URL has been processed, so canonicalise
+     * unless proxy-nocanon is set to say it's raw
+     * In a forward proxy, we have and MUST NOT MANGLE the original.
+     */
+    switch (r->proxyreq) {
+    default: /* wtf are we doing here? */
+    case PROXYREQ_REVERSE:
+        if (apr_table_get(r->notes, "proxy-nocanon")) {
+            path = url;   /* this is the raw path */
+        }
+        else {
+            path = ap_proxy_canonenc(r->pool, url, strlen(url),
+                                     enc_path, 0, r->proxyreq);
+        }
+        break;
+    case PROXYREQ_PROXY:
+        path = url;
+        break;
+    }
+
     if (path == NULL)
         return HTTP_BAD_REQUEST;
 

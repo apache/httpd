@@ -79,36 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: add "nocanon" option to ProxyPass, to suppress
-     canonicalisation of reverse-proxied URLs.
-     PR 41798 PR 42592
-     trunk:
-        http://svn.apache.org/viewvc?view=rev&revision=588791
-     2.2.x:
-        mod_proxy.c patch at http://people.apache.org/~niq/41798.patch
-        mod_proxy_http.c patch: trunk works after applying PR#42592 patch
-        Other files: trunk patch works.
-     2.2.x composite patch: this together with PR42592 patch
-        http://people.apache.org/~niq/41798+42592.patch
-     +1: niq
-     -1: jim: patch should be self-contained. If a mix and match of
-              files, then please create a distinct 2.2 patch.
-     niq: we NEVER do that.  When did you incorporate the CHANGES
-          update in a separate 2.2 patch?  The complexity here is that
-          mod_proxy_http.c relies on 42592, and a separate fix to
-          that would invalidate the (very simple) patch to 42592.
-    jim: The issue is that the above "use trunk but use these external
-         patch" makes the backport hard to apply and test. Instead
-         of being able to just merge in r588791, you must just use
-         those that apply "cleanly" and handle mod_proxy.c as a
-         special case. This seems ripe for a specific 2.2 patch. Yes,
-         CHANGES always conflicts, but it is a documentation question,
-         not a code one. 
-     rpluem says: Please add a minor bump for the changes to mod_proxy.h.
-                  Then I am +1.
-     niq says: done
-     jim: +1 (needs doccos as well, 'natch)
-
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
