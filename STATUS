@@ -109,14 +109,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
      niq says: done
      jim: +1
 
-   * mod_charset_lite cleanups to remove long-abandoned logic and fix
-     some minor style problems
-     trunk:
-       http://svn.apache.org/viewvc?rev=595646&view=rev
-       http://svn.apache.org/viewvc?rev=595648&view=rev
-     2.2.x: trunk patch applies
-     +1: trawick, rpluem, jim
-
    * mod_ssl: Don't use the pconf pool for allocating memory pointed by
      a local static variable. PR 43865.
      trunk:
