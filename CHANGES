@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_ssl: Prevent memory corruption of version string.
+     PR 43865 43334 [William Rowe, Joe Orton]
+
   *) core: Avoid some unexpected connection closes by telling the client
      that the connection is not persistent if the MPM process handling
      the request is already exiting when the response header is built.
