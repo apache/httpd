@@ -151,7 +151,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 16518
      http://svn.apache.org/viewvc?view=rev&revision=582631
      http://svn.apache.org/viewvc?view=rev&revision=588806
-     +1: niq, rpluem, jim (will add mmn bump)
+     +1: niq, rpluem
+     -0: jim (how is this related to ap_send_interim_response above?)
 
    * mod_proxy: add "nocanon" option to ProxyPass, to suppress
      canonicalisation of reverse-proxied URLs.
