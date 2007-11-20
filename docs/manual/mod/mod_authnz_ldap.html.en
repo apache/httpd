@@ -65,8 +65,11 @@ for HTTP Basic authentication.</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authldapsubgroupclass">AuthLDAPSubGroupClass</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#authldapurl">AuthLDAPUrl</a></li>
 </ul>
 <h3>Topics</h3>
@@ -233,7 +236,8 @@ for HTTP Basic authentication.</td></tr>
 
       <li>Grant access if there is a <a href="#reqgroup"><code>Require ldap-group</code></a> directive, and
       the DN fetched from the LDAP directory (or the username
-      passed by the client) occurs in the LDAP group.</li>
+      passed by the client) occurs in the LDAP group or, potentially, in
+      one of its sub-groups.</li>
 
       <li>Grant access if there is a <a href="#reqattribute">
       <code>Require ldap-attribute</code></a> 
@@ -305,6 +309,29 @@ for HTTP Basic authentication.</td></tr>
         <td>Specifies whether to use the
         user DN or the username when doing comparisons for the
         <code>Require ldap-group</code> directive.</td>
+      </tr>
+
+      <tr>
+        <td><code class="directive"><a href="#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></code></td>
+
+        <td>Determines the maximum depth of sub-groups that will be evaluated
+        during comparisons in the <code>Require ldap-group</code> directive.</td>
+      </tr>
+
+      <tr>
+        <td><code class="directive"><a href="#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></code></td>
+
+        <td>Determines the attribute to use when obtaining sub-group members
+        of the current group during comparisons in the <code>Require ldap-group</code>
+        directive.</td>
+      </tr>
+
+      <tr>
+        <td><code class="directive"><a href="#authldapsubgroupclass">AuthLDAPSubGroupClass</a></code></td>
+
+        <td>Specifies the LDAP objectClass values used to identify if queried directory
+        objects really are group objects (as opposed to user objects) during the
+        <code>Require ldap-group</code> directive's sub-group processing.</td>
       </tr>
     </table>
 
@@ -381,8 +408,49 @@ uniqueMember: cn=Fred User, o=Airius<br />
     Barbara:</p>
 <div class="example"><p><code>Require ldap-group cn=Administrators, o=Airius</code></p></div>
 
-    <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></code> and
-    <code class="directive"><a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></code>
+    <p>Members can also be found within sub-groups of a specified LDAP group
+    if <code class="directive"><a href="#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></code>
+    is set to a value greater than 0. For example, assume the following entries
+    exist in the LDAP directory:</p>
+<div class="example"><p><code>
+dn: cn=Employees, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Managers, o=Airius<br />
+uniqueMember: cn=Administrators, o=Airius<br />
+uniqueMember: cn=Users, o=Airius<br />
+<br />
+dn: cn=Managers, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Bob Ellis, o=Airius<br />
+uniqueMember: cn=Tom Jackson, o=Airius<br />
+<br />
+dn: cn=Administrators, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Barbara Jenson, o=Airius<br />
+uniqueMember: cn=Fred User, o=Airius<br />
+<br />
+dn: cn=Users, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Allan Jefferson, o=Airius<br />
+uniqueMember: cn=Paul Tilley, o=Airius<br />
+uniqueMember: cn=Temporary Employees, o=Airius<br />
+<br />
+dn: cn=Temporary Employees, o=Airius<br />
+objectClass: groupOfUniqueNames<br />
+uniqueMember: cn=Jim Swenson, o=Airius<br />
+uniqueMember: cn=Elliot Rhodes, o=Airius<br />
+</code></p></div>
+
+    <p>The following directives would allow access for Bob Ellis, Tom Jackson,
+    Barbara Jensen, Fred User, Allan Jefferson, and Paul Tilley but would not
+    allow access for Jim Swenson, or Elliot Rhodes (since they are at a 
+    sub-group depth of 2):</p>
+<div class="example"><p><code>
+Require ldap-group cn=Employees, o-Airius<br />
+AuthLDAPSubGroupDepth 1<br />
+</code></p></div>
+
+    <p>Behavior of this directive is modified by the <code class="directive"><a href="#authldapgroupattribute">AuthLDAPGroupAttribute</a></code>, <code class="directive"><a href="#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></code>, <code class="directive"><a href="#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></code>, <code class="directive"><a href="#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></code>, and <code class="directive"><a href="#authldapsubgroupclass">AuthLDAPSubGroupClass</a></code>
     directives.</p>
 
 
@@ -798,7 +866,8 @@ Require group <em>mygroupfile</em>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthLDAPGroupAttribute" id="AuthLDAPGroupAttribute">AuthLDAPGroupAttribute</a> <a name="authldapgroupattribute" id="authldapgroupattribute">Directive</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>LDAP attributes used to check for group membership</td></tr>
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>LDAP attributes used to identify the user members of
+groups.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPGroupAttribute <em>attribute</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
@@ -806,8 +875,8 @@ Require group <em>mygroupfile</em>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
 </table>
     <p>This directive specifies which LDAP attributes are used to
-    check for group membership. Multiple attributes can be used by
-    specifying this directive multiple times. If not specified,
+    check for user members within groups. Multiple attributes can be used
+    by specifying this directive multiple times. If not specified,
     then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> uses the <code>member</code> and
     <code>uniquemember</code> attributes.</p>
 
@@ -834,6 +903,28 @@ group membership</td></tr>
     <code>cn=Babs Jenson, o=Airius</code> as a member. If this
     directive is not set, then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> will
     check if the group has <code>bjenson</code> as a member.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPMaxSubGroupDepth" id="AuthLDAPMaxSubGroupDepth">AuthLDAPMaxSubGroupDepth</a> <a name="authldapmaxsubgroupdepth" id="authldapmaxsubgroupdepth">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the maximum sub-group nesting depth that will be
+evaluated before the user search is discontinued.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPMaxSubGroupDepth <var>Number</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AuthLDAPMaxSubGroupDepth 10</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+   <p>When this directive is set to a non-zero value <code>X</code>
+   combined with use of the <code>Require ldap-group someGroupDN</code>
+   directive, the provided user credentials will be searched for
+   as a member of the <code>someGroupDN</code> directory object or of
+   any group member of the current group up to the maximum nesting
+   level <code>X</code> specified by this directive.</p>
+   <p>See the <a href="#reqgroup"><code>Require ldap-group</code></a>
+   section for a more detailed example.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -876,6 +967,52 @@ environment variable</td></tr>
     distinguished name of the authenticated user, rather than just
     the username that was passed by the client. It is turned off by
     default.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPSubGroupAttribute" id="AuthLDAPSubGroupAttribute">AuthLDAPSubGroupAttribute</a> <a name="authldapsubgroupattribute" id="authldapsubgroupattribute">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies the attribute labels, one value per
+directive line, used to distinguish the members of the current group that
+are groups.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPSubGroupAttribute <em>attribute</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>An LDAP group object may contain members that are users and
+    members that are groups (called nested or sub groups). The
+    <code>AuthLDAPSubGroupAttribute</code> directive identifies the
+    labels of group members and the <code>AuthLDAPGroupAttribute</code>
+    directive identifies the labels of the user members. Multiple
+    attributes can be used by specifying this directive multiple times.
+    If not specified, then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> uses the
+    <code>member</code> and <code>uniqueMember</code> attributes.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthLDAPSubGroupClass" id="AuthLDAPSubGroupClass">AuthLDAPSubGroupClass</a> <a name="authldapsubgroupclass" id="authldapsubgroupclass">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Specifies which LDAP objectClass values identify directory
+objects that are groups during sub-group processing.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>AuthLDAPSubGroupClass <em>LdapObjectClass</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authnz_ldap</td></tr>
+</table>
+    <p>An LDAP group object may contain members that are users and
+    members that are groups (called nested or sub groups). The
+    <code>AuthLDAPSubGroupAttribute</code> directive identifies the
+    labels of members that may be sub-groups of the current group
+    (as opposed to user members). The <code>AuthLDAPSubGroupClass</code>
+    directive specifies the LDAP objectClass values used in verifying that
+    these potential sub-groups are in fact group objects. Verified sub-groups
+    can then be searched for more user or sub-group members. Multiple
+    attributes can be used by specifying this directive multiple times.
+    If not specified, then <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code> uses the
+    <code>groupOfNames</code> and <code>groupOfUniqueNames</code> values.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
