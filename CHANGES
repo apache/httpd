@@ -11,15 +11,7 @@ Changes with Apache 2.3.0
   *) core: Handle unrecognised transfer-encodings.
      PR 43882 [Nick Kew]
 
-  *) core: Avoid some unexpected connection closes by telling the client
-     that the connection is not persistent if the MPM process handling
-     the request is already exiting when the response header is built.
-     [Jeff Trawick] 
-
   *) mod_serf: New module for Reverse Proxying. [Paul Querna]
-
-  *) mod_autoindex: Generate valid XHTML output by adding the xhtml
-     namespace. PR 43649 [Jose Kahan <jose w3.org>]
 
   *) core: Add the option to keep aside a request body up to a certain
      size that would otherwise be discarded, to be consumed by filters
@@ -38,16 +30,9 @@ Changes with Apache 2.3.0
      lengths and which only vary with the last several characters.
      [Jim Jagielski]
 
-  *) mod_proxy: add "nocanon" keyword to ProxyPass, to suppress
-     URI-canonicalisation in a reverse proxy.
-     PR 41798 [Nick Kew]
-
   *) core; scoreboard: ap_get_scoreboard_worker(sbh) now takes the sbh member
      from the connection rec, ap_get_scoreboard_worker(proc, thread) will now
      provide the unusual legacy lookup.  [William Rowe]
-
-  *) mod_proxy_http: Don't escape/unescape forward-proxied URLs
-     PR 42592 [Nick Kew]
 
   *) mpm winnt: fix null pointer dereference
      PR 42572 [Davi Arnaut]
