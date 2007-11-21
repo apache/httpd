@@ -160,7 +160,8 @@ XDCDATA		=
 # it twice to allow it parent NWGNUmakefile to work properly.  If another
 # submakefile is added, the extra reference to example.nlm should be removed.
 TARGET_nlm = \
-	$(OBJDIR)/example.nlm \
+	$(OBJDIR)/example_hooks.nlm \
+	$(OBJDIR)/example_ipc.nlm \
 	$(OBJDIR)/case_flt.nlm \
 	$(OBJDIR)/case_flt_in.nlm \
 	$(EOLIST)
