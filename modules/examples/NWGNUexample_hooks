@@ -221,7 +221,7 @@ FILES_nlm_Ximports = \
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
-	example_module \
+	example_hooks_module \
 	$(EOLIST)
 
 #
