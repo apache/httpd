@@ -187,6 +187,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~jim/patches/reqtail-patch.txt
      +1: jim
 
+   * rotatelogs: Change command-line parsing to report more types
+     of errors.  Allow local timestamps to be used when rotating based
+     on file size.
+     trunk:
+         http://svn.apache.org/viewvc?view=rev&revision=596698
+         http://svn.apache.org/viewvc?view=rev&revision=596796
+         http://svn.apache.org/viewvc?view=rev&revision=596830
+         http://svn.apache.org/viewvc?view=rev&revision=596884
+     2.2.x:
+         Trunk patches apply, but here is a consolidated patch:
+         http://people.apache.org/~trawick/rotatelogs.txt
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
