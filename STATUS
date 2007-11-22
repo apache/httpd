@@ -200,6 +200,20 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~trawick/rotatelogs.txt
      +1: trawick
 
+   * http_filters: Fix handling of unrecognised Transfer Encodings
+     PR 43882
+     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_filters.c?r1=592951&r2=595954
+
+    * mod_proxy: Support variable interpolation in reverse proxy configuration
+      (revised proposal dealing with wrowe's concerns).
+      trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
+        http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
+        http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
+        http://svn.apache.org/viewvc?view=rev&revision=589371  (code+docs)
+      2.2.x:
+        http://people.apache.org/~niq/proxy-interp.patch
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
@@ -225,15 +239,3 @@ PATCHES/ISSUES THAT ARE STALLED
               need to be added to this. See also
               http://mail-archives.apache.org/mod_mbox/httpd-dev/200607.mbox/%3c20060723093125.GA19423@redhat.com%3e
               and follow ups for more details.
-
-    * mod_proxy: Support variable interpolation in reverse proxy configuration
-      http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
-      http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
-      http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
-      +1: niq, mturk
-      -1: wrowe notes; modifying the existing syntax makes collaboration 
-          impossible by an admin team - unexpected side effects and the rest.
-          ProxyPassEnv* or ProxyPassSubstitute* directives that add this
-          behavior on a pattern-by-pattern basis would win my -1 to a +1,
-          and solve the performance hits noted by niq on an 80/20 basis.
-
