@@ -624,7 +624,7 @@ expressions</description>
     <code>/mirror/foo/i</code>.</p>
 
     <note><title>Note</title>
-      <p>Order is important. you need to put the exclusions <em>before</em> the
+      <p>Order is important: exclusions must come <em>before</em> the
       general <directive>ProxyPass</directive> directive.</p>
     </note>
 
