@@ -23,7 +23,8 @@
 </div>
 
      <p><code>rotatelogs</code> is a simple program for use in
-     conjunction with Apache's piped logfile feature.</p>
+     conjunction with Apache's piped logfile feature.  It supports
+     rotation based on a time interval or maximum size of the log.</p>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#synopsis">Synopsis</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#options">Options</a></li>
@@ -59,11 +60,24 @@ includes any '%' characters, it is treated as a format string for
 <code>strftime(3)</code>.  Otherwise, the suffix
 <var>.nnnnnnnnnn</var> is automatically added and is the time in
 seconds.  Both formats compute the start time from the beginning of
-the current period.</dd>
+the current period.  For example, if a rotation time of 86400 is 
+specified, the hour, minute, and second fields created by
+<code>strftime(3)</code> format will all be zero, referring to the
+beginning of the current 24-hour period (midnight).</dd>
 
 <dt><code><var>rotationtime</var></code></dt>
 
-<dd>The time between log file rotations in seconds.</dd>
+<dd>The time between log file rotations in seconds.  The rotation
+occurs at the beginning of this interval.  For example, if the
+rotation time is 3600, the log file will be rotated at the beginning
+of every hour; if the rotation time is 86400, the log file will be
+rotated every night at midnight.  (If no data is logged during an
+interval, no file will be created.)</dd>
+
+<dt><code><var>filesize</var>M</code></dt>
+
+<dd>The maximum file size in megabytes followed by the letter
+<code>M</code> to specify size rather than time.</dd>
 
 <dt><code><var>offset</var></code></dt>
 
@@ -73,11 +87,6 @@ UTC -5 hours, specify a value of <code>-300</code> for this argument.
 In most cases, <code>-l</code> should be used instead of specifying
 an offset.</dd>
 
-<dt><code><var>filesize</var>M</code></dt>
-
-<dd>The maximum file size in megabytes followed by the letter
-<code>M</code> to specify size rather than time.  Use this parameter
-in place of rotationtime.</dd>
 </dl>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

@@ -19,7 +19,7 @@
 .el .ne 3
 .IP "\\$1" \\$2
 ..
-.TH "ROTATELOGS" 8 "2007-11-20" "Apache HTTP Server" "rotatelogs"
+.TH "ROTATELOGS" 8 "2007-11-23" "Apache HTTP Server" "rotatelogs"
 
 .SH NAME
 rotatelogs \- Piped logging program to rotate Apache logs
@@ -33,7 +33,7 @@ rotatelogs \- Piped logging program to rotate Apache logs
 .SH "SUMMARY"
  
 .PP
-rotatelogs is a simple program for use in conjunction with Apache's piped logfile feature\&.
+rotatelogs is a simple program for use in conjunction with Apache's piped logfile feature\&. It supports rotation based on a time interval or maximum size of the log\&.
  
 
 .SH "OPTIONS"
@@ -44,16 +44,16 @@ rotatelogs is a simple program for use in conjunction with Apache's piped logfil
 Causes the use of local time rather than GMT as the base for the interval or for strftime(3) formatting with size-based rotation\&. Note that using -l in an environment which changes the GMT offset (such as for BST or DST) can lead to unpredictable results!  
 .TP
 \fIlogfile\fR
-The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&.  
+The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&. For example, if a rotation time of 86400 is specified, the hour, minute, and second fields created by strftime(3) format will all be zero, referring to the beginning of the current 24-hour period (midnight)\&.  
 .TP
 \fIrotationtime\fR
-The time between log file rotations in seconds\&.  
+The time between log file rotations in seconds\&. The rotation occurs at the beginning of this interval\&. For example, if the rotation time is 3600, the log file will be rotated at the beginning of every hour; if the rotation time is 86400, the log file will be rotated every night at midnight\&. (If no data is logged during an interval, no file will be created\&.)  
+.TP
+\fIfilesize\fRM
+The maximum file size in megabytes followed by the letter M to specify size rather than time\&.  
 .TP
 \fIoffset\fR
 The number of minutes offset from UTC\&. If omitted, zero is assumed and UTC is used\&. For example, to use local time in the zone UTC -5 hours, specify a value of -300 for this argument\&. In most cases, -l should be used instead of specifying an offset\&.  
-.TP
-\fIfilesize\fRM
-The maximum file size in megabytes followed by the letter M to specify size rather than time\&. Use this parameter in place of rotationtime\&.  
  
 .SH "EXAMPLES"
  

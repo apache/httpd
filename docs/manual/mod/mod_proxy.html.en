@@ -767,7 +767,7 @@ through</td></tr>
     <code>/mirror/foo/i</code>.</p>
 
     <div class="note"><h3>Note</h3>
-      <p>Order is important. you need to put the exclusions <em>before</em> the
+      <p>Order is important: exclusions must come <em>before</em> the
       general <code class="directive">ProxyPass</code> directive.</p>
     </div>
 
