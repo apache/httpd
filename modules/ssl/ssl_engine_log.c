@@ -107,3 +107,38 @@ void ssl_log_ssl_error(const char *file, int line, int level, server_rec *s)
         ERR_get_error();
     }
 }
+
+void ssl_log_cxerror(const char *file, int line, int level, 
+                     apr_status_t rv, conn_rec *c, X509 *cert,
+                     const char *format, ...)
+{
+    va_list ap;
+    char buf[HUGE_STRING_LEN];
+    char *sname, *iname;
+    
+    if (c->base_server->loglevel < level) {
+        /* Bail early since the rest of this function is expensive. */
+        return;
+    }
+
+    sname = X509_NAME_oneline(X509_get_subject_name(cert), NULL, 0);
+    iname = X509_NAME_oneline(X509_get_issuer_name(cert),  NULL, 0);
+    
+    va_start(ap, format);
+    apr_vsnprintf(buf, sizeof buf, format, ap);
+    va_end(ap);
+
+    ap_log_cerror(file, line, level, rv, c, 
+                  "%s [peer subject: %s, issuer: %s]",
+                  buf,
+                  sname ? sname : "-unknown-",
+                  iname ? iname : "-unknown-");
+
+    if (sname) {
+        modssl_free(sname);
+    }
+    
+    if (iname) {
+        modssl_free(iname);
+    }
+}
