@@ -105,6 +105,12 @@
 # define MODSSL_D2I_X509_CONST
 #endif
 
+#if (OPENSSL_VERSION_NUMBER >= 0x00909000)
+# define MODSSL_SSL_METHOD_CONST const
+#else
+# define MODSSL_SSL_METHOD_CONST
+#endif
+
 #define modssl_X509_verify_cert X509_verify_cert
 
 typedef int (modssl_read_bio_cb_fn)(char*,int,int,void*);
