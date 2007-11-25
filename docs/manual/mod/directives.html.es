@@ -101,8 +101,11 @@
 <li><a href="mod_authnz_ldap.html#authldapdereferencealiases">AuthLDAPDereferenceAliases</a></li>
 <li><a href="mod_authnz_ldap.html#authldapgroupattribute">AuthLDAPGroupAttribute</a></li>
 <li><a href="mod_authnz_ldap.html#authldapgroupattributeisdn">AuthLDAPGroupAttributeIsDN</a></li>
+<li><a href="mod_authnz_ldap.html#authldapmaxsubgroupdepth">AuthLDAPMaxSubGroupDepth</a></li>
 <li><a href="mod_authnz_ldap.html#authldapremoteuserattribute">AuthLDAPRemoteUserAttribute</a></li>
 <li><a href="mod_authnz_ldap.html#authldapremoteuserisdn">AuthLDAPRemoteUserIsDN</a></li>
+<li><a href="mod_authnz_ldap.html#authldapsubgroupattribute">AuthLDAPSubGroupAttribute</a></li>
+<li><a href="mod_authnz_ldap.html#authldapsubgroupclass">AuthLDAPSubGroupClass</a></li>
 <li><a href="mod_authnz_ldap.html#authldapurl">AuthLDAPUrl</a></li>
 <li><a href="mod_authn_core.html#authname">AuthName</a></li>
 <li><a href="mod_authn_core.html#authnprovideralias">&lt;AuthnProviderAlias&gt;</a></li>
