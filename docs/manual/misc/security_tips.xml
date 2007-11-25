@@ -205,7 +205,7 @@
     
     <p>To isolate the damage a wayward SSI file can cause, a server 
     administrator can enable <a href="../suexec.html">suexec</a> as 
-    described in the <a href="#cgi">CGI in General</a> section</p>
+    described in the <a href="#cgi">CGI in General</a> section.</p>
     
     <p>Enabling SSI for files with .html or .htm extensions can be 
     dangerous. This is especially true in a shared, or high traffic, 
@@ -218,7 +218,7 @@
     with <code>IncludesNOEXEC</code> in the <directive
     module="core">Options</directive> directive.  Note that users may 
     still use &lt;--#include virtual="..." --&gt; to execute CGI scripts if 
-    these scripts are in directories desginated by a <directive
+    these scripts are in directories designated by a <directive
     module="mod_alias">ScriptAlias</directive> directive.</p>
     
   </section>
@@ -359,7 +359,7 @@
     module="core">Location</directive> and <directive 
     module="core">Directory</directive> directives; for instance, even 
     if <code>&lt;Directory /&gt;</code> denies access, a <code>
-    &lt;Location /&gt;</code> directive might overturn it</p>
+    &lt;Location /&gt;</code> directive might overturn it.</p>
     
     <p>Also be wary of playing games with the <directive
     module="mod_userdir">UserDir</directive> directive; setting it to 
