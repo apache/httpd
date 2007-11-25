@@ -217,6 +217,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       2.2.x:
         http://people.apache.org/~niq/proxy-interp.patch
 
+   * mod_ssl: Enable to build with OpenSSL 0.9.9
+     trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=598019
+     2.2.x:
+        Trunk patches apply
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
