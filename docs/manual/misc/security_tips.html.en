@@ -208,7 +208,7 @@
     
     <p>To isolate the damage a wayward SSI file can cause, a server 
     administrator can enable <a href="../suexec.html">suexec</a> as 
-    described in the <a href="#cgi">CGI in General</a> section</p>
+    described in the <a href="#cgi">CGI in General</a> section.</p>
     
     <p>Enabling SSI for files with .html or .htm extensions can be 
     dangerous. This is especially true in a shared, or high traffic, 
@@ -220,7 +220,7 @@
     programs from SSI pages. To do this replace <code>Includes</code>
     with <code>IncludesNOEXEC</code> in the <code class="directive"><a href="../mod/core.html#options">Options</a></code> directive.  Note that users may 
     still use &lt;--#include virtual="..." --&gt; to execute CGI scripts if 
-    these scripts are in directories desginated by a <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> directive.</p>
+    these scripts are in directories designated by a <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> directive.</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -357,7 +357,7 @@
     
     <p>Pay particular attention to the interactions of <code class="directive"><a href="../mod/core.html#location">Location</a></code> and <code class="directive"><a href="../mod/core.html#directory">Directory</a></code> directives; for instance, even 
     if <code>&lt;Directory /&gt;</code> denies access, a <code>
-    &lt;Location /&gt;</code> directive might overturn it</p>
+    &lt;Location /&gt;</code> directive might overturn it.</p>
     
     <p>Also be wary of playing games with the <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> directive; setting it to 
     something like "./" would have the same effect, for root, as the first 
