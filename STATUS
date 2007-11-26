@@ -79,18 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * rotatelogs: Change command-line parsing to report more types
-     of errors.  Allow local timestamps to be used when rotating based
-     on file size.
-     trunk:
-         http://svn.apache.org/viewvc?view=rev&revision=596698
-         http://svn.apache.org/viewvc?view=rev&revision=596796
-         http://svn.apache.org/viewvc?view=rev&revision=596830
-         http://svn.apache.org/viewvc?view=rev&revision=596884
-     2.2.x:
-         Trunk patches apply, but here is a consolidated patch:
-         http://people.apache.org/~trawick/rotatelogs.txt
-     +1: trawick, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
