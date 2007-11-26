@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) rotatelogs: Change command-line parsing to report more types
+     of errors.  Allow local timestamps to be used when rotating based
+     on file size.  [Jeff Trawick]
+
   *) mod_proxy: Canonicalisation improvements. Add "nocanon" keyword to
      ProxyPass, to suppress URI-canonicalisation in a reverse proxy. Also,
      don't escape/unescape forward-proxied URLs.
