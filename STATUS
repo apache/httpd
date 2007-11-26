@@ -198,7 +198,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x:
          Trunk patches apply, but here is a consolidated patch:
          http://people.apache.org/~trawick/rotatelogs.txt
-     +1: trawick, rpluem
+     +1: trawick, rpluem, jim
 
    * http_filters: Fix handling of unrecognised Transfer Encodings
      PR 43882
