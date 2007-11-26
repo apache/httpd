@@ -2,10 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) rotatelogs: Change command-line parsing to report more types
-     of errors.  Allow local timestamps to be used when rotating based
-     on file size.  [Jeff Trawick]
-
   *) mod_unique_id: Fix timestamp value in UNIQUE_ID.
      PR 37064 [Kobayashi <kobayashi firstserver.co.jp>]
 
