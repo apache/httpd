@@ -210,6 +210,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x:
         Trunk patches apply
 
+   * mod_substitute: New module for on-the-fly response rewrite-like
+     capability.
+     trunk:
+        http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/experimental/mod_substitute.c?view=log
+        Don't even bother...
+     2.2.x:
+        http://people.apache.org/~jim/patches/mod_substitute-2.2.txt
+     +1: jim
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
