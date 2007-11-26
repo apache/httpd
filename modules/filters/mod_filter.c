@@ -137,7 +137,12 @@ static int filter_init(ap_filter_t *f)
 
     harness_ctx *fctx = apr_pcalloc(f->r->pool, sizeof(harness_ctx));
     for (p = filter->providers; p; p = p->next) {
-        if (p->frec->filter_init_func) {
+        if (p->frec->filter_init_func == filter_init) {
+            ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c,
+                          "Chaining of FilterProviders not supported");
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
+        else if (p->frec->filter_init_func) {
             f->ctx = NULL;
             if ((err = p->frec->filter_init_func(f)) != OK) {
                 ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, f->c,
