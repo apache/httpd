@@ -861,29 +861,14 @@ start_over:
 }
 
 /*
- * Does a recursive lookup operation to try to find a user within (cached) nested groups.
+ * Does a recursive lookup operation to try to find a user within (cached) nested
+ * groups. It accepts a cache that it will use to lookup previous compare attempts.
+ * We cache two kinds of compares (require group compares) and (require user
+ * compares). Each compare has a different cache node: require group includes the DN;
+ * require user does not because the require user cache is owned by the
  *
  * DON'T CALL THIS UNLESS YOU CALLED uldap_cache_compare FIRST!!!!!
  */
-static int uldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t *ldc,
-                                       const char *url, const char *dn,
-                                       const char *attrib, const char *value,
-                                       char **subgroupAttrs, apr_array_header_t *subgroupclasses,
-                                       int cur_subgroup_depth, int max_subgroup_depth)
-{
-    int result = LDAP_COMPARE_FALSE;
-    util_url_node_t *curl;
-    util_url_node_t curnode;
-    util_compare_node_t *compare_nodep;
-    util_compare_node_t the_compare_node;
-    util_compare_subgroup_t *tmp_local_sgl = NULL;
-    int failures = 0;
-    LDAPMessage *sga_res, *entry;
-    apr_array_header_t *subgroups = apr_array_make(r->pool, 20, sizeof(char *));
-
-    util_ldap_state_t *st = (util_ldap_state_t *)
-                            ap_get_module_config(r->server->module_config,
-                                                 &ldap_module);
 
     /*
      * 1. Call uldap_cache_compare for each subgroupclass value to check the generic,
@@ -907,13 +892,33 @@ static int uldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t *l
      * 6. Return the final result.
      */
 
-        /* Stop looking at deeper levels of nested groups if we have reached the max.
-         * Since we already checked the top-level group in uldap_cache_compare, we don't
-         * need to check it again here - so if max_subgroup_depth is set to 0, we won't
-         * check it (i.e. that is why we check < rather than <=).
-         * We'll be calling uldap_cache_compare from here to check if the user is in the
-         * next level before we recurse into that next level looking for more subgroups.
-         */
+static int uldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t *ldc,
+                                       const char *url, const char *dn,
+                                       const char *attrib, const char *value,
+                                       char **subgroupAttrs, apr_array_header_t *subgroupclasses,
+                                       int cur_subgroup_depth, int max_subgroup_depth)
+{
+    int result = LDAP_COMPARE_FALSE;
+    util_url_node_t *curl;
+    util_url_node_t curnode;
+    util_compare_node_t *compare_nodep;
+    util_compare_node_t the_compare_node;
+    util_compare_subgroup_t *tmp_local_sgl = NULL;
+    int failures = 0;
+    LDAPMessage *sga_res, *entry;
+    apr_array_header_t *subgroups = apr_array_make(r->pool, 20, sizeof(char *));
+
+    util_ldap_state_t *st = (util_ldap_state_t *)
+                            ap_get_module_config(r->server->module_config,
+                                                 &ldap_module);
+
+    /* Stop looking at deeper levels of nested groups if we have reached the max.
+     * Since we already checked the top-level group in uldap_cache_compare, we don't
+     * need to check it again here - so if max_subgroup_depth is set to 0, we won't
+     * check it (i.e. that is why we check < rather than <=).
+     * We'll be calling uldap_cache_compare from here to check if the user is in the
+     * next level before we recurse into that next level looking for more subgroups.
+     */
     if (cur_subgroup_depth < max_subgroup_depth) {
         int base_sgcIndex = 0;
         int lcl_sgl_processedFlag = 0;
@@ -928,9 +933,6 @@ static int uldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t *l
         }
 
         if (result != LDAP_COMPARE_TRUE) {
-            /* The dn we were handed doesn't seem to be a group, how can we check for SUB-groups if this
-             * isn't a group?!?!?!
-             */
             ldc->reason = "DN failed group verification.";
             return result;
         }
@@ -974,7 +976,6 @@ static int uldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t *l
                     }
                 }
             }
-            /* unlock this read lock */
             LDAP_CACHE_UNLOCK();
         }
         else {
@@ -986,8 +987,8 @@ static int uldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t *l
 
         result = LDAP_COMPARE_FALSE;
 
-        /* No cache entry had a processed SGL. Retrieve from LDAP server */
         if ((lcl_sgl_processedFlag == 0) && (!tmp_local_sgl)) {
+            /* No Cached SGL, retrieve from LDAP */
 start_over:
             /* 3.B. The cache didn't have any subgrouplist yet. Go check for subgroups. */
             if (failures++ > 10) {
@@ -1077,7 +1078,7 @@ start_over:
                 tmp_local_sgl->len = sgindex;
             }
 
-            /* Find the generic group cache entry and add the sgl. */
+            /* Find the generic group cache entry and add the sgl we just retrieved. */
             LDAP_CACHE_LOCK();
 
             the_compare_node.dn = (char *)dn;
@@ -1108,7 +1109,6 @@ start_over:
                      compare_nodep->subgroupList = NULL;
                  }
             }
-            /* unlock this read lock */
             LDAP_CACHE_UNLOCK();
         }
 
@@ -1125,11 +1125,14 @@ start_over:
                 if (result == LDAP_COMPARE_TRUE) {
                     /* 4.A. We found the user in the subgroup. Return LDAP_COMPARE_TRUE. */
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "[%" APR_PID_T_FMT "] util_ldap:"
-                                  " Found the user in a subgroup (%s) at level %d of %d. (7).",
-                                  getpid(), group, cur_subgroup_depth+1, max_subgroup_depth);
+                                  " Found user %s in a subgroup (%s) at level %d of %d.",
+                                  getpid(), r->user, group, cur_subgroup_depth+1, max_subgroup_depth);
                 }
                 else {
                     /* 4.B. We didn't find the user in this subgroup, so recurse into it and keep looking. */
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "[%" APR_PID_T_FMT "] util_ldap:"
+                                  " user %s not found in subgroup (%s) at level %d of %d.",
+                                  getpid(), r->user, group, cur_subgroup_depth+1, max_subgroup_depth);
                     result = uldap_cache_check_subgroups(r, ldc, url, group, attrib,
                                                          value, subgroupAttrs, subgroupclasses,
                                                          cur_subgroup_depth+1, max_subgroup_depth);
