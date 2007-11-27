@@ -7,6 +7,7 @@ APACHE_MODPATH_INIT(filters)
 APACHE_MODULE(ext_filter, external filter module, , , most)
 APACHE_MODULE(include, Server Side Includes, , , yes)
 APACHE_MODULE(filter, Smart Filtering, , , yes)
+APACHE_MODULE(substitute, response content rewrite-like filtering, , , most)
 
 if test "$ac_cv_ebcdic" = "yes"; then
 # mod_charset_lite can be very useful on an ebcdic system,

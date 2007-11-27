@@ -155,6 +155,7 @@ TARGET_nlm = \
 	$(OBJDIR)/extfiltr.nlm \
 	$(OBJDIR)/charsetl.nlm \
 	$(OBJDIR)/mod_filter.nlm \
+	$(OBJDIR)/substitute.nlm \
 	$(EOLIST)
 
 # If the zlib libraries source exists then build the mod_deflate module
