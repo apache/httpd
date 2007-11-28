@@ -238,6 +238,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                       and I would like to see the usage of tpool in the usage of
                       the SEDSCAT macro.
 
+   * mod_proxy_balancer: Remove the broken attempt to change balancer
+     params on-the-fly via the admin manager.
+     trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=551099 (kinda)
+     2.2.x:
+        http://people.apache.org/~jim/patches/bsel-patch.txt
+     +1: jim
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
