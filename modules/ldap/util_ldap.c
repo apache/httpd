@@ -1012,7 +1012,7 @@ static int uldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t *l
     util_compare_node_t *compare_nodep;
     util_compare_node_t the_compare_node;
     util_compare_subgroup_t *tmp_local_sgl = NULL;
-    int lcl_sgl_processedFlag = 0, failures = 0,  sgindex = 0, base_sgcIndex = 0;
+    int lcl_sgl_processedFlag = 0, sgindex = 0, base_sgcIndex = 0;
     struct mod_auth_ldap_groupattr_entry_t *sgc_ents = (struct mod_auth_ldap_groupattr_entry_t *) subgroupclasses->elts;
 
     util_ldap_state_t *st = (util_ldap_state_t *)
