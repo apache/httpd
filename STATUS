@@ -150,8 +150,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=588806
      +1: niq
      niq says: It has been suggested the function should move to http_filters.
-     I'm OK with that if others feel happier that way.  The function
-     declaration presumably remains in http_protocol.h, so no API change.
+               I'm OK with that if others feel happier that way.  The function
+               declaration presumably remains in http_protocol.h, so no API
+               change.
+     rpluem says: Please merge this proposal with the one for PR 16518
+                  below as both contain the same revision to backport (r588806)
+                  and this backport here has conflicts because it misses
+                  r582631. BTW I am +1 on a backport that contains all revisons
+                  (582630, 582652, 582631, 588806).
 
    * mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx) responses
      PR 16518
@@ -208,13 +214,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?view=rev&revision=589371  (code+docs)
       2.2.x:
         http://people.apache.org/~niq/proxy-interp.patch
+      rpluem says: Please add the documentation to your 2.2.x version of your
+                   patch and a minor bump (changes to public mod_proxy.h) and
+                   assume you are +1 to your own proposal.
+
 
    * mod_ssl: Enable to build with OpenSSL 0.9.9
      trunk:
         http://svn.apache.org/viewvc?view=rev&revision=598019
      2.2.x:
         Trunk patches apply
-     +1: fuankg
+     +1: fuankg, rpluem
 
    * mod_substitute: New module for on-the-fly response rewrite-like
      capability.
@@ -224,6 +234,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      2.2.x:
         http://people.apache.org/~jim/patches/mod_substitute-2.2.txt
      +1: jim
+     +0: rpluem says: There is much copying in do_pattmatch in the flatten case
+                      and I would like to see the usage of tpool in the usage of
+                      the SEDSCAT macro.
 
 PATCHES/ISSUES THAT ARE STALLED
 
