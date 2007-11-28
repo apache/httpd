@@ -90,7 +90,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=557972
       2.2.x
          http://people.apache.org/~rpluem/patches/code_clean.diff
-      +1: rpluem
+      +1: rpluem, trawick
 
    * mod_include: Add an "if" directive syntax to test whether an URL
      is accessible, and if so, conditionally display content. This
