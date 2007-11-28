@@ -100,6 +100,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=571927
      http://svn.apache.org/viewvc?view=rev&revision=572136
      +1: minfrin, jim
+     -0.9: niq.  I'm happy with the feature, but would prefer a different
+           implementation.  Building it in to the parser is ugly, and
+           prevents the parser generalising.  It should be implemented
+           in the string parser (some variant of ap_ssi_parse_string)
+           instead.
 
     * mod_rewrite: Also set the Vary header if a rewrite condition is true and
       uses a HTTP header, but all remaining rewrite conditions are skipped due
