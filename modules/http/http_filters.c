@@ -136,7 +136,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 return ap_pass_brigade(f->r->output_filters, bb);
             }
             else {
-                ap_log_rerror(APLOG_MARK, APLOG_WARN, 0, f->r,
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r,
                   "Unknown Transfer-Encoding: %s; using Content-Length", tenc);
                 tenc = NULL;
             }
