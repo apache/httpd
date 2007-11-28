@@ -1115,18 +1115,17 @@ static int uldap_cache_check_subgroups(request_rec *r, util_ldap_connection_t *l
             ldc->reason = "check_subgroups failed to find the cache entry to add sub-group list to.";
             return LDAP_COMPARE_FALSE;
         }
+        /*
+         * overwrite SGL if it was previously updated between the last
+         * two times we looked at the cache
+         */
+        compare_nodep->sgl_processed = 1;
+        if (tmp_local_sgl) {
+            compare_nodep->subgroupList = util_ald_sgl_dup(curl->compare_cache, tmp_local_sgl);
+        }
         else {
-             /* overwrite SGL if it was previously updated between the last
-             ** two times we looked at the cache
-             */
-             compare_nodep->sgl_processed = 1;
-             if (tmp_local_sgl) {
-                 compare_nodep->subgroupList = util_ald_sgl_dup(curl->compare_cache, tmp_local_sgl);
-             }
-             else {
-                 /* We didn't find a single subgroup, next time save us from looking */
-                 compare_nodep->subgroupList = NULL;
-             }
+            /* We didn't find a single subgroup, next time save us from looking */
+            compare_nodep->subgroupList = NULL;
         }
         LDAP_CACHE_UNLOCK();
     }
