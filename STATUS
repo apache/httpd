@@ -200,7 +200,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
    * http_filters: Fix handling of unrecognised Transfer Encodings
      PR 43882
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_filters.c?r1=592951&r2=599059
+     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_filters.c?r1=592951&r2=599137
      +1: niq
      rpluem says: 1. I assume you are +1 to your own proposal, aren't you? :-)
                   2. Please add a CHANGES entry since this fixes a PR.
