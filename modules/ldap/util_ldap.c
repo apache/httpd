@@ -66,6 +66,8 @@ module AP_MODULE_DECLARE_DATA ldap_module;
         apr_global_mutex_unlock(st->util_ldap_cache_lock);      \
 } while (0)
 
+static apr_status_t util_ldap_connection_remove (void *param);
+
 static void util_ldap_strdup (char **str, const char *newstr)
 {
     if (*str) {
@@ -119,9 +121,9 @@ static int util_ldap_handler(request_rec *r)
     return OK;
 }
 
+
+
 /* ------------------------------------------------------------------ */
-
-
 /*
  * Closes an LDAP connection by unlocking it. The next time
  * uldap_connection_find() is called this connection will be
@@ -141,18 +143,22 @@ static void uldap_connection_close(util_ldap_connection_t *ldc)
      * we don't have to...
      */
 
-    /* mark our connection as available for reuse */
-
+     if (!ldc->keep) { 
+         util_ldap_connection_remove(ldc);
+     }
+     else { 
+         /* mark our connection as available for reuse */
 #if APR_HAS_THREADS
-    apr_thread_mutex_unlock(ldc->lock);
+         apr_thread_mutex_unlock(ldc->lock);
 #endif
+     }
 }
 
 
 /*
  * Destroys an LDAP connection by unbinding and closing the connection to
  * the LDAP server. It is used to bring the connection back to a known
- * state after an error, and during pool cleanup.
+ * state after an error.
  */
 static apr_status_t uldap_connection_unbind(void *param)
 {
@@ -172,6 +178,9 @@ static apr_status_t uldap_connection_unbind(void *param)
 
 /*
  * Clean up an LDAP connection by unbinding and unlocking the connection.
+ * This cleanup does not remove the util_ldap_connection_t from the 
+ * per-virtualhost list of connections, does not remove the storage
+ * for the util_ldap_connection_t or it's data, and is NOT run automatically.
  */
 static apr_status_t uldap_connection_cleanup(void *param)
 {
@@ -193,8 +202,63 @@ static apr_status_t uldap_connection_cleanup(void *param)
         /* unlock this entry */
         uldap_connection_close(ldc);
 
+     }
+
+    return APR_SUCCESS;
+}
+
+/*
+ * util_ldap_connection_remove frees all storage associated with the LDAP
+ * connection and removes it completely from the per-virtualhost list of
+ * connections
+ *
+ * The caller should hold the lock for this connection
+ */
+static apr_status_t util_ldap_connection_remove (void *param) { 
+    util_ldap_connection_t *ldc = param, *l  = NULL, *prev = NULL;
+    util_ldap_state_t *st = ldc->st;
+
+    if (!ldc) return APR_SUCCESS;
+
+    uldap_connection_unbind(ldc);
+
+#if APR_HAS_THREADS
+    apr_thread_mutex_lock(st->mutex);
+#endif
+
+    /* Remove ldc from the list */
+    for (l=st->connections; l; l=l->next) {
+        if (l == ldc) {
+            if (prev) {
+                prev->next = l->next; 
+            }
+            else { 
+                st->connections = l->next;
+            }
+            break;
+        }
+        prev = l;
     }
 
+    /* Some unfortunate duplication between this method
+     * and uldap_connection_cleanup()
+    */
+    if (ldc->bindpw) {
+        free((void*)ldc->bindpw);
+    }
+    if (ldc->binddn) {
+        free((void*)ldc->binddn);
+    }
+
+#if APR_HAS_THREADS
+    apr_thread_mutex_unlock(ldc->lock);
+    apr_thread_mutex_unlock(st->mutex);
+#endif
+
+    /* Destory the pool associated with this connection */
+
+    apr_pool_destroy(ldc->pool);   
+   
     return APR_SUCCESS;
 }
 
@@ -523,29 +587,34 @@ static util_ldap_connection_t *
      * must create one.
      */
     if (!l) {
-
-        /*
-         * Add the new connection entry to the linked list. Note that we
-         * don't actually establish an LDAP connection yet; that happens
-         * the first time authentication is requested.
-         */
-        /* create the details to the pool in st */
-        l = apr_pcalloc(st->pool, sizeof(util_ldap_connection_t));
-        if (apr_pool_create(&l->pool, st->pool) != APR_SUCCESS) { 
+        apr_pool_t *newpool;
+        if (apr_pool_create(&newpool, NULL) != APR_SUCCESS) { 
             ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
                           "util_ldap: Failed to create memory pool");
 #if APR_HAS_THREADS
             apr_thread_mutex_unlock(st->mutex);
 #endif
             return NULL;
-    
         }
+ 
+
+        /*
+         * Add the new connection entry to the linked list. Note that we
+         * don't actually establish an LDAP connection yet; that happens
+         * the first time authentication is requested.
+         */
+
+        /* create the details of this connection in the new pool */
+        l = apr_pcalloc(newpool, sizeof(util_ldap_connection_t));
+        l->pool = newpool;
+        l->st = st;
+   
 #if APR_HAS_THREADS
-        apr_thread_mutex_create(&l->lock, APR_THREAD_MUTEX_DEFAULT, st->pool);
+        apr_thread_mutex_create(&l->lock, APR_THREAD_MUTEX_DEFAULT, l->pool);
         apr_thread_mutex_lock(l->lock);
 #endif
         l->bound = 0;
-        l->host = apr_pstrdup(st->pool, host);
+        l->host = apr_pstrdup(l->pool, host);
         l->port = port;
         l->deref = deref;
         util_ldap_strdup((char**)&(l->binddn), binddn);
@@ -560,6 +629,8 @@ static util_ldap_connection_t *
 
         /* save away a copy of the client cert list that is presently valid */
         l->client_certs = apr_array_copy_hdr(l->pool, st->client_certs);
+
+        l->keep = 1;
 
         if (p) {
             p->next = l;
