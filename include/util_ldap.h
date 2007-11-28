@@ -107,6 +107,8 @@ typedef struct util_ldap_connection_t {
     const char *reason;                 /* Reason for an error failure */
 
     struct util_ldap_connection_t *next;
+    struct util_ldap_state_t *st;        /* The LDAP vhost config this connection belongs to */
+    int keep;                            /* Will this connection be kept when it's unlocked */
 } util_ldap_connection_t;
 
 /* LDAP cache state information */ 
