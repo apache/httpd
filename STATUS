@@ -83,14 +83,14 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-    * multiple files,	Trivial cleanups
+    * multiple files, Trivial cleanups
       PR: 39518 - Christophe JAILLET
-      http://svn.apache.org/viewvc?view=rev&revision=557837
-      http://svn.apache.org/viewvc?view=rev&revision=557972
+      trunk:
+         http://svn.apache.org/viewvc?view=rev&revision=557837
+         http://svn.apache.org/viewvc?view=rev&revision=557972
+      2.2.x
+         http://people.apache.org/~rpluem/patches/code_clean.diff
       +1: rpluem
-      niq: this isn't a straight backport (which is why I dropped it).
-      +1 for core, modules/dav, modules/filters, and modules/ssl
-      Not Applicable to modules/aaa
 
    * mod_include: Add an "if" directive syntax to test whether an URL
      is accessible, and if so, conditionally display content. This
