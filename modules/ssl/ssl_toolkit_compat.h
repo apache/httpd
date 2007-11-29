@@ -38,6 +38,12 @@
 #include <openssl/evp.h>
 #include <openssl/rand.h>
 #include <openssl/x509v3.h>
+
+#ifdef HAVE_OCSP
+#include <openssl/x509_vfy.h>
+#include <openssl/ocsp.h>
+#endif
+
 /** Avoid tripping over an engine build installed globally and detected
  * when the user points at an explicit non-engine flavor of OpenSSL
  */

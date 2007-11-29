@@ -178,6 +178,13 @@ static const command_rec ssl_config_cmds[] = {
                "Require a boolean expression to evaluate to true for granting access"
                "(arbitrary complex boolean expression - see manual)")
 
+    SSL_CMD_SRV(OCSPEnable, FLAG,
+               "Enable use of OCSP to verify certificate revocation (`on', `off')")
+    SSL_CMD_SRV(OCSPDefaultResponder, TAKE1,
+               "URL of the default OCSP Responder")
+    SSL_CMD_SRV(OCSPOverrideResponder, FLAG,
+               "Force use of the default responder URL (`on', `off')")
+
     /* Deprecated directives. */
     AP_INIT_RAW_ARGS("SSLLog", ap_set_deprecated, NULL, OR_ALL,
       "SSLLog directive is no longer supported - use ErrorLog."),

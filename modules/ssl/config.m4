@@ -135,6 +135,11 @@ AC_DEFUN([CHECK_SSL_MEMCACHE], [
   fi
 ])
 
+AC_DEFUN([CHECK_OCSP], [
+AC_CHECK_HEADERS(openssl/ocsp.h, 
+  [AC_DEFINE([HAVE_OCSP], 1, [Define if OCSP is supported by OpenSSL])]
+)
+])
 
 dnl #  start of module specific part
 APACHE_MODPATH_INIT(ssl)
@@ -163,6 +168,8 @@ ssl_scache_dc.lo dnl
 ssl_scache_memcache.lo dnl
 ssl_util.lo dnl
 ssl_util_ssl.lo dnl
+ssl_engine_ocsp.lo dnl
+ssl_util_ocsp.lo dnl
 "
 dnl #  hook module into the Autoconf mechanism (--enable-ssl option)
 APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
@@ -170,6 +177,7 @@ APACHE_MODULE(ssl, [SSL/TLS support (mod_ssl)], $ssl_objs, , no, [
     APR_SETVAR(MOD_SSL_LDADD, [\$(SSL_LIBS)])
     CHECK_DISTCACHE
     CHECK_SSL_MEMCACHE
+    CHECK_OCSP
     if test "x$enable_ssl" = "xshared"; then
        # The only symbol which needs to be exported is the module
        # structure, so ask libtool to hide everything else:

@@ -198,6 +198,14 @@ SOURCE=.\ssl_expr_scan.c
 # End Source File
 # Begin Source File
 
+SOURCE=.\ssl_engine_ocsp.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\ssl_util_ocsp.c
+# End Source File
+# Begin Source File
+
 SOURCE=.\ssl_scache.c
 # End Source File
 # Begin Source File

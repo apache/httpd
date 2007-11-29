@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_ssl: Add support for OCSP validation of client certificates.
+     PR 41123.  [Marc Stern <marc.stern approach.be>, Joe Orton]
+
   *) mod_filter: Don't segfault on (unsupported) chained FilterProvider usage.
      PR 43956 [Nick Kew]
 
