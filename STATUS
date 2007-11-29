@@ -227,6 +227,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     http://svn.apache.org/viewvc?view=rev&revision=599393
     +1: niq, rpluem
 
+  * mod_autoindex: make spacing in HTML code the same as before r593816. This
+        avoids that the autoindex test (t/modules/autoindex) fails. Adjusting
+        the autoindex test would cause it to fail with older versions and would
+        make it harder to recognize regressions.
+    Trunk version of patch:
+       http://svn.apache.org/viewcvs.cgi?rev=599589&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
