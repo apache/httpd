@@ -243,6 +243,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      is no call to getpid anywhere in mod_proxy_balancer (it was removed on
      trunk in r394065). If you remove the include from your proposal I am +1.
 
+  * mod_filter: Don't try to support chained filters when it doesn't work
+    PR 43956
+    http://svn.apache.org/viewvc?view=rev&revision=598299
+    http://svn.apache.org/viewvc?view=rev&revision=598393
+    +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
