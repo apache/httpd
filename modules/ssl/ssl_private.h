@@ -452,6 +452,12 @@ typedef struct {
     X509_STORE  *crl;
 
     modssl_auth_ctx_t auth;
+
+    BOOL ocsp_enabled; /* true if OCSP verification enabled */
+    BOOL ocsp_force_default; /* true if the default responder URL is
+                              * used regardless of per-cert URL */
+    const char *ocsp_responder; /* default responder URL */
+
 } modssl_ctx_t;
 
 struct SSLSrvConfigRec {
@@ -540,6 +546,10 @@ const char  *ssl_cmd_SSLProxyCARevocationPath(cmd_parms *, void *, const char *)
 const char  *ssl_cmd_SSLProxyCARevocationFile(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificatePath(cmd_parms *, void *, const char *);
 const char  *ssl_cmd_SSLProxyMachineCertificateFile(cmd_parms *, void *, const char *);
+
+const char *ssl_cmd_SSLOCSPOverrideResponder(cmd_parms *cmd, void *dcfg, int flag);
+const char *ssl_cmd_SSLOCSPDefaultResponder(cmd_parms *cmd, void *dcfg, const char *arg);
+const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag);
 
 /**  module initialization  */
 int          ssl_init_Module(apr_pool_t *, apr_pool_t *, apr_pool_t *, server_rec *);
@@ -699,6 +709,23 @@ apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer, const cha
 void         ssl_var_log_config_register(apr_pool_t *p);
 
 #define APR_SHM_MAXSIZE (64 * 1024 * 1024)
+
+#ifdef HAVE_OCSP
+/* Perform OCSP verification using the given context and
+ * configuration.  Returns non-zero on success or zero on failure.  On
+ * failure, the context error code is set. */
+int modssl_verify_ocsp(X509_STORE_CTX *ctx, 
+                       SSLSrvConfigRec *sc, server_rec *s, conn_rec *c, 
+                       apr_pool_t *pool);
+
+/* OCSP helper interface; dispatches the given OCSP request to the
+ * responder at the given URI.  Returns the decoded OCSP response
+ * object, or NULL on error (in which case, errors will have been
+ * logged).  Pool 'p' is used for temporary allocations. */
+OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri, 
+                                            OCSP_REQUEST *request,
+                                            conn_rec *c, apr_pool_t *p);
+#endif
 
 #endif /* SSL_PRIVATE_H */
 /** @} */

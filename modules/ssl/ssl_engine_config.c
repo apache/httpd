@@ -128,6 +128,10 @@ static void modssl_ctx_init(modssl_ctx_t *mctx)
     mctx->auth.cipher_suite   = NULL;
     mctx->auth.verify_depth   = UNSET;
     mctx->auth.verify_mode    = SSL_CVERIFY_UNSET;
+
+    mctx->ocsp_enabled        = FALSE;
+    mctx->ocsp_force_default  = FALSE;
+    mctx->ocsp_responder      = NULL;
 }
 
 static void modssl_ctx_init_proxy(SSLSrvConfigRec *sc,
@@ -217,6 +221,10 @@ static void modssl_ctx_cfg_merge(modssl_ctx_t *base,
     cfgMergeString(auth.cipher_suite);
     cfgMergeInt(auth.verify_depth);
     cfgMerge(auth.verify_mode, SSL_CVERIFY_UNSET);
+
+    cfgMergeBool(ocsp_enabled);
+    cfgMergeBool(ocsp_force_default);
+    cfgMerge(ocsp_responder, NULL);
 }
 
 static void modssl_ctx_cfg_merge_proxy(modssl_ctx_t *base,
@@ -1407,6 +1415,40 @@ const char *ssl_cmd_SSLUserName(cmd_parms *cmd, void *dcfg,
 {
     SSLDirConfigRec *dc = (SSLDirConfigRec *)dcfg;
     dc->szUserName = arg;
+    return NULL;
+}
+
+const char *ssl_cmd_SSLOCSPEnable(cmd_parms *cmd, void *dcfg, int flag)
+{   
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->server->ocsp_enabled = flag ? TRUE : FALSE;
+
+#ifndef HAVE_OCSP
+    if (flag) {
+        return "OCSP support not detected in SSL library; cannot enable "
+            "OCSP validation";
+    }
+#endif    
+
+    return NULL;
+}
+	        
+const char *ssl_cmd_SSLOCSPOverrideResponder(cmd_parms *cmd, void *dcfg, int flag)
+{
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->server->ocsp_force_default = flag ? TRUE : FALSE;
+
+    return NULL;
+}
+
+const char *ssl_cmd_SSLOCSPDefaultResponder(cmd_parms *cmd, void *dcfg, const char *arg)
+{   
+    SSLSrvConfigRec *sc = mySrvConfig(cmd->server);
+
+    sc->server->ocsp_responder = arg;
+
     return NULL;
 }
 
