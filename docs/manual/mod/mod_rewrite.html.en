@@ -1250,7 +1250,7 @@ cannot use <code>$N</code> in the substitution string!
         so backreferences will be unescaped at the time they are applied.
         Using the B flag, non-alphanumeric characters in backreferences
         will be escaped.  For example, consider the rule:</p>
-        <pre><code> RewriteRule RewriteRule ^(.*)$   index.php?show=$1 </code></pre>
+        <pre><code> RewriteRule ^(.*)$ index.php?show=$1 </code></pre>
         <p>This will map <code>/C++</code> to <code>index.php?show=/C++</code>.
         But it will also map <code>/C%2b%2b</code> to
         <code>index.php?show=/C++</code>, because the <code>%2b</code>
