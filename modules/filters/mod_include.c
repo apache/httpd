@@ -3225,9 +3225,8 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
 
             /* check if we mismatched earlier and have to release some chars */
             if (release && (ctx->flags & SSI_FLAG_PRINTING)) {
-                char *to_release = apr_palloc(ctx->pool, release);
+                char *to_release = apr_pmemdup(ctx->pool, intern->start_seq, release);
 
-                memcpy(to_release, intern->start_seq, release);
                 newb = apr_bucket_pool_create(to_release, release, ctx->pool,
                                               f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(pass_bb, newb);
@@ -3414,9 +3413,9 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
     if (intern->seen_eos) {
         if (PARSE_HEAD == intern->state) {
             if (ctx->flags & SSI_FLAG_PRINTING) {
-                char *to_release = apr_palloc(ctx->pool, intern->parse_pos);
+                char *to_release = apr_pmemdup(ctx->pool, intern->start_seq,
+                                                          intern->parse_pos);
 
-                memcpy(to_release, intern->start_seq, intern->parse_pos);
                 APR_BRIGADE_INSERT_TAIL(pass_bb,
                                         apr_bucket_pool_create(to_release,
                                         intern->parse_pos, ctx->pool,
