@@ -6,7 +6,7 @@ Changes with Apache 2.3.0
      PR 41123.  [Marc Stern <marc.stern approach.be>, Joe Orton]
 
   *) mod_filter: Don't segfault on (unsupported) chained FilterProvider usage.
-     PR 43956 [Nick Kew]
+     PR 43956 [Nick Kew, Ruediger Pluem]
 
   *) mod_unique_id: Fix timestamp value in UNIQUE_ID.
      PR 37064 [Kobayashi <kobayashi firstserver.co.jp>]
