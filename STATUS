@@ -248,6 +248,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     http://svn.apache.org/viewvc?view=rev&revision=598299
     http://svn.apache.org/viewvc?view=rev&revision=598393
     +1: niq
+    rpluem says: I assume that you mean r599393 instead of r598393. If
+    yes, I am +1.
 
 PATCHES/ISSUES THAT ARE STALLED
 
