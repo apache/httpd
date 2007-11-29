@@ -24,10 +24,6 @@
 #include "apr_version.h"
 #include "apr_hooks.h"
 
-#if APR_HAVE_UNISTD_H
-#include <unistd.h> /* for getpid() */
-#endif
-
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
 static int proxy_balancer_canon(request_rec *r, char *url)
