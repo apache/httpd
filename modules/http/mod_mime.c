@@ -140,11 +140,10 @@ static void *overlay_extension_mappings(apr_pool_t *p,
                                         const void *base_val,
                                         const void *data)
 {
-    extension_info *new_info = apr_palloc(p, sizeof(extension_info));
     const extension_info *overlay_info = (const extension_info *)overlay_val;
     const extension_info *base_info = (const extension_info *)base_val;
+    extension_info *new_info = apr_pmemdup(p, base_info, sizeof(extension_info));
 
-    memcpy(new_info, base_info, sizeof(extension_info));
     if (overlay_info->forced_type) {
         new_info->forced_type = overlay_info->forced_type;
     }

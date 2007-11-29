@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) Various code cleanups. PR 38699, 39518, 42005, 42006, 42007, 42008, 42009
+     [Christophe Jaillet <christophe.jaillet wanadoo.fr>]
+
   *) rotatelogs: Change command-line parsing to report more types
      of errors.  Allow local timestamps to be used when rotating based
      on file size.  [Jeff Trawick]

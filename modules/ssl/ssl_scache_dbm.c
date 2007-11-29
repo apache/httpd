@@ -370,8 +370,7 @@ static void ssl_scache_dbm_expire(server_rec *s)
                     bDelete = TRUE;
             }
             if (bDelete) {
-                if ((keylist[keyidx].dptr = apr_palloc(p, dbmkey.dsize)) != NULL) {
-                    memcpy(keylist[keyidx].dptr, dbmkey.dptr, dbmkey.dsize);
+                if ((keylist[keyidx].dptr = apr_pmemdup(p, dbmkey.dptr, dbmkey.dsize)) != NULL) {
                     keylist[keyidx].dsize = dbmkey.dsize;
                     keyidx++;
                     if (keyidx == KEYMAX)
