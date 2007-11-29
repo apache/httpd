@@ -1701,4 +1701,64 @@ SSLCryptoDevice ubsec
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>SSLOCSPEnable</name>
+<description>Enable OCSP validation of the client certificate chain</description>
+<syntax>SSLOCSPEnable <em>flag</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
+
+<usage>
+<p>This option enables OCSP validation of the client certificate
+chain.  If this option is enabled, certificates in the client's
+certificate chain will be validated against an OCSP responder after
+normal verification (including CRL checks) have taken place.</p>
+
+<p>The OCSP responder used is either extracted from the certificate
+itself, or derived by configuration; see the
+<directive module="mod_ssl">SSLOCSPDefaultResponder</directive> and
+<directive module="mod_ssl">SSLOCSPOverrideResponder</directive>
+directives.</p>
+
+<example><title>Example</title>
+SSLVerifyClient on<br/>
+SSLOCSPEnable on<br/>
+SSLOCSPDefaultResponder http://responder.example.com:8888/responder<br/>
+SSLOCSPOverrideResponder on
+</example>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLOCSPDefaultResponder</name>
+<description>Set the default responder URI for OCSP validation</description>
+<syntax>SSLOCSDefaultResponder <em>uri</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
+
+<usage>
+<p>This option sets the default OCSP responder to use.  If <directive
+module="mod_ssl">SSLOCSPOverrideResponder</directive> is not enabled,
+the URI given will be used only if no responder URI is specified in
+the certificate being verified.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>SSLOCSPOverrideResponder</name>
+<description>Force use of the default responder URI for OCSP validation</description>
+<syntax>SSLOCSPOverrideResponder <em>flag</em></syntax>
+<contextlist><context>server config</context>
+<context>virtual host</context></contextlist>
+<compatibility>Available in httpd 2.3 and later, if using OpenSSL 0.9.7 or later</compatibility>
+
+<usage>
+<p>This option forces the configured default OCSP responder to be used
+during OCSP certificate validation, regardless of whether the
+certificate being validated references an OCSP responder.</p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
