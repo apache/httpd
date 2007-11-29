@@ -538,10 +538,6 @@ static const char *filter_provider(cmd_parms *cmd, void *CFG, const char *args)
     /* if provider has been registered, we can look it up */
     provider_frec = ap_get_output_filter_handle(pname);
     if (!provider_frec) {
-        provider_frec = apr_hash_get(cfg->live_filters, pname,
-                                     APR_HASH_KEY_STRING);
-    }
-    if (!provider_frec) {
         return apr_psprintf(cmd->pool, "Unknown filter provider %s", pname);
     }
 
