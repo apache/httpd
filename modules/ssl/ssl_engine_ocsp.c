@@ -223,8 +223,8 @@ int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
     apr_pool_t *vpool;
     int rv;
     
-    /* Since the passed-inpool is likely to be the connection pool,
-     * create a temporary pool to constrain memory use. */
+    /* Create a temporary pool to constrain memory use (the passed-in
+     * pool may be e.g. a connection pool). */
     apr_pool_create(&vpool, pool);
 
     rv = verify_ocsp_status(cert, ctx, c, sc, s, vpool);

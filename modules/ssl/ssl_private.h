@@ -711,12 +711,11 @@ void         ssl_var_log_config_register(apr_pool_t *p);
 #define APR_SHM_MAXSIZE (64 * 1024 * 1024)
 
 #ifdef HAVE_OCSP
-/* Perform OCSP verification using the given context and
- * configuration.  Returns non-zero on success or zero on failure.  On
- * failure, the context error code is set. */
-int modssl_verify_ocsp(X509_STORE_CTX *ctx, 
-                       SSLSrvConfigRec *sc, server_rec *s, conn_rec *c, 
-                       apr_pool_t *pool);
+/* Perform OCSP validation of the current cert in the given context.
+ * Returns non-zero on success or zero on failure.  On failure, the
+ * context error code is set. */
+int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc, 
+                       server_rec *s, conn_rec *c, apr_pool_t *pool);
 
 /* OCSP helper interface; dispatches the given OCSP request to the
  * responder at the given URI.  Returns the decoded OCSP response
