@@ -116,6 +116,20 @@
     <code>/var/html/rbowen/file.html</code></p>
 
   </section>
+  
+  <section id="redirect">
+    <title>Redirecting to external URLs</title>
+    <p>The <directive module="mod_userdir">UserDir</directive> directive can be
+      used to redirect user directory requests to external URLs.</p>
+      
+    <example>
+      UserDir http://www.foo.com/users/*/
+    </example>
+    
+    <p>The above example will redirect a request for
+    <code>http://example.com/~bob/abc.html</code> to
+    <code>http://www.foo.com/users/bob/abc.html</code>.</p>
+  </section>
 
   <section id="enable">
     <title>Restricting what users are permitted to use this 
