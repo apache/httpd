@@ -266,7 +266,7 @@ static apr_status_t util_ldap_connection_remove (void *param) {
 }
 
 static int uldap_connection_init(request_rec *r,
-                                 util_ldap_connection_t *ldc )
+                                 util_ldap_connection_t *ldc)
 {
     int rc = 0, ldap_option = 0;
     int version  = LDAP_VERSION3;
@@ -588,12 +588,12 @@ static util_ldap_connection_t *
 /* artificially disable cache */
 /* l = NULL; */
 
-    /* If no connection what found after the second search, we
+    /* If no connection was found after the second search, we
      * must create one.
      */
     if (!l) {
         apr_pool_t *newpool;
-        if (apr_pool_create(&newpool, NULL) != APR_SUCCESS) { 
+        if (apr_pool_create(&newpool, NULL) != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_CRIT, 0, r,
                           "util_ldap: Failed to create memory pool");
 #if APR_HAS_THREADS
@@ -602,7 +602,6 @@ static util_ldap_connection_t *
             return NULL;
         }
  
-
         /*
          * Add the new connection entry to the linked list. Note that we
          * don't actually establish an LDAP connection yet; that happens
@@ -613,7 +612,7 @@ static util_ldap_connection_t *
         l = apr_pcalloc(newpool, sizeof(util_ldap_connection_t));
         l->pool = newpool;
         l->st = st;
-   
+
 #if APR_HAS_THREADS
         apr_thread_mutex_create(&l->lock, APR_THREAD_MUTEX_DEFAULT, l->pool);
         apr_thread_mutex_lock(l->lock);
@@ -1116,7 +1115,7 @@ static int uldap_cache_check_subgroups(request_rec *r,
     util_compare_node_t *compare_nodep;
     util_compare_node_t the_compare_node;
     util_compare_subgroup_t *tmp_local_sgl = NULL;
-    int lcl_sgl_processedFlag = 0, sgindex = 0, base_sgcIndex = 0;
+    int sgl_cached_empty = 0, sgindex = 0, base_sgcIndex = 0;
     struct mod_auth_ldap_groupattr_entry_t *sgc_ents =
             (struct mod_auth_ldap_groupattr_entry_t *) subgroupclasses->elts;
     util_ldap_state_t *st = (util_ldap_state_t *)
@@ -1182,37 +1181,37 @@ static int uldap_cache_check_subgroups(request_rec *r,
              * Found the generic group entry... but the user isn't in this
              * group or we wouldn't be here.
              */
-            lcl_sgl_processedFlag = compare_nodep->sgl_processed;
-            if(compare_nodep->sgl_processed && compare_nodep->subgroupList) {
-                /* Make a local copy of the subgroup list */
-                int i;
-                tmp_local_sgl = apr_pcalloc(r->pool,
-                                            sizeof(util_compare_subgroup_t));
-                tmp_local_sgl->len = compare_nodep->subgroupList->len;
-                tmp_local_sgl->subgroupDNs =
-                   apr_pcalloc(r->pool,
-                               sizeof(char *) * compare_nodep->subgroupList->len);
-                for (i = 0; i < compare_nodep->subgroupList->len; i++) {
-                    tmp_local_sgl->subgroupDNs[i] =
-                       apr_pstrdup(r->pool,
-                                   compare_nodep->subgroupList->subgroupDNs[i]);
+            if (compare_nodep->sgl_processed) {
+                if (compare_nodep->subgroupList) {
+                    /* Make a local copy of the subgroup list */
+                    int i;
+                    ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                                  "[%" APR_PID_T_FMT "] util_ldap:"
+                                  " Making local copy of SGL for "
+                                  "group (%s)(objectClass=%s) ",
+                                  getpid(), dn,
+                                  (char *)sgc_ents[base_sgcIndex].name);
+                    tmp_local_sgl = apr_pcalloc(r->pool,
+                                                sizeof(util_compare_subgroup_t));
+                    tmp_local_sgl->len = compare_nodep->subgroupList->len;
+                    tmp_local_sgl->subgroupDNs =
+                        apr_pcalloc(r->pool,
+                                    sizeof(char *) * compare_nodep->subgroupList->len);
+                    for (i = 0; i < compare_nodep->subgroupList->len; i++) {
+                        tmp_local_sgl->subgroupDNs[i] =
+                            apr_pstrdup(r->pool,
+                                        compare_nodep->subgroupList->subgroupDNs[i]);
+                    }
+                }
+                else {
+                    sgl_cached_empty = 1;
                 }
             }
         }
         LDAP_CACHE_UNLOCK();
     }
-    else {
-          /*
-           * If we get here, something is wrong. Caches should have been
-           * created and this group entry should be found in the cache.
-           */
-        ldc->reason = "check_subgroups failed to find any caches.";
-        return LDAP_COMPARE_FALSE;
-    }
 
-    result = LDAP_COMPARE_FALSE;
-
-    if ((lcl_sgl_processedFlag == 0) && (!tmp_local_sgl)) {
+    if (!tmp_local_sgl && !sgl_cached_empty) {
         /* No Cached SGL, retrieve from LDAP */
         ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                       "[%" APR_PID_T_FMT "] util_ldap: no cached SGL for %s,"
@@ -1224,8 +1223,8 @@ static int uldap_cache_check_subgroups(request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, "[%" APR_PID_T_FMT "]"
                           " util_ldap: no subgroups for %s" , getpid(), dn);
         }
-        lcl_sgl_processedFlag = 1;
 
+      if (curl && curl->compare_cache) {
         /*
          * Find the generic group cache entry and add the sgl we just retrieved.
          */
@@ -1243,30 +1242,61 @@ static int uldap_cache_check_subgroups(request_rec *r,
 
         if (compare_nodep == NULL) {
             /*
-             * Didn't find it. This shouldn't happen since we just called
-             * uldap_cache_compare.
+             * The group entry we want to attach our SGL to doesn't exist.
+             * We only got here if we verified this DN was actually a group
+             * based on the objectClass, but we can't call the compare function
+             * while we already hold the cache lock -- only the insert.
              */
-            LDAP_CACHE_UNLOCK();
-            ldc->reason = "check_subgroups failed to find the cache entry to"
-                          " add sub-group list to.";
-            return LDAP_COMPARE_FALSE;
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                          "[%" APR_PID_T_FMT "] util_ldap: Cache entry "
+                          "for %s doesn't exist",
+                           getpid(), dn);
+            the_compare_node.result = LDAP_COMPARE_TRUE;
+            util_ald_cache_insert(curl->compare_cache, &the_compare_node);
+            compare_nodep = util_ald_cache_fetch(curl->compare_cache,
+                                                 &the_compare_node);
+            if (compare_nodep == NULL) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "[%" APR_PID_T_FMT "] util_ldap: Couldn't "
+                              "retrieve group entry for %s from cache",
+                               getpid(), dn);
+            }
         }
+
         /*
-         * overwrite SGL if it was previously updated between the last
-         * two times we looked at the cache
+         * We have a valid cache entry and a locally generated SGL.
+         * Attach the SGL to the cache entry
          */
-        compare_nodep->sgl_processed = 1;
-        if (tmp_local_sgl) {
-            compare_nodep->subgroupList = util_ald_sgl_dup(curl->compare_cache,
-                                                           tmp_local_sgl);
-        }
-        else {
-            /*
-             * We didn't find a single subgroup, next time save us from looking
-             */
-            compare_nodep->subgroupList = NULL;
+        if (compare_nodep && !compare_nodep->sgl_processed) {
+            if (!tmp_local_sgl) {
+                /* We looked up an SGL for a group and found it to be empty */
+                if (compare_nodep->subgroupList == NULL) {
+                    compare_nodep->sgl_processed = 1;
+                }
+            }
+            else {
+                util_compare_subgroup_t *sgl_copy =
+                    util_ald_sgl_dup(curl->compare_cache, tmp_local_sgl);
+                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                             "Copying local SGL of len %d for group %s into cache",
+                             tmp_local_sgl->len, dn);
+                if (sgl_copy) {
+                    if (compare_nodep->subgroupList) {
+                        util_ald_sgl_free(curl->compare_cache,
+                                          &(compare_nodep->subgroupList));
+                    }
+                    compare_nodep->subgroupList = sgl_copy;
+                    compare_nodep->sgl_processed = 1;
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                                 "Copy of SGL failed to obtain shared memory, "
+                                 "couldn't update cache");
+                }
+            }
         }
         LDAP_CACHE_UNLOCK();
+      }
     }
 
     /*
