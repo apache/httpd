@@ -42,6 +42,8 @@
 #error mod_authnz_ldap requires APR-util to have LDAP support built in. To fix add --with-ldap to ./configure.
 #endif
 
+static char *default_attributes[3] = { "member", "uniqueMember", NULL };
+
 typedef struct {
     apr_pool_t *pool;               /* Pool that this config is allocated from */
 #if APR_HAS_THREADS
@@ -71,8 +73,6 @@ typedef struct {
     apr_array_header_t *groupattr;  /* List of Group attributes identifying user members. Default:"member uniqueMember" */
     int group_attrib_is_dn;         /* If true, the group attribute is the DN, otherwise,
                                         it's the exact string passed by the HTTP client */
-    apr_array_header_t *subgroupattrs; /* List of attributes used to find subgroup references
-                                          within a group directory entry. Default:"member uniqueMember" */
     char **sgAttributes;            /* Array of strings constructed (post-config) from subgroupattrs. Last entry is NULL. */
     apr_array_header_t *subgroupclasses; /* List of object classes of sub-groups. Default:"groupOfNames groupOfUniqueNames" */
     int maxNestingDepth;            /* Maximum recursive nesting depth permitted during subgroup processing. Default: 10 */
@@ -288,8 +288,6 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
 */
     sec->groupattr = apr_array_make(p, GROUPATTR_MAX_ELTS,
                                     sizeof(struct mod_auth_ldap_groupattr_entry_t));
-    sec->subgroupattrs = apr_array_make(p, GROUPATTR_MAX_ELTS,
-                                    sizeof(struct mod_auth_ldap_groupattr_entry_t));
     sec->subgroupclasses = apr_array_make(p, GROUPATTR_MAX_ELTS,
                                     sizeof(struct mod_auth_ldap_groupattr_entry_t));
 
@@ -302,7 +300,7 @@ static void *create_authnz_ldap_dir_config(apr_pool_t *p, char *d)
     sec->group_attrib_is_dn = 1;
     sec->secure = -1;   /*Initialize to unset*/
     sec->maxNestingDepth = 10;
-    sec->sgAttributes = NULL;
+    sec->sgAttributes = apr_pcalloc(p, sizeof (char *) * GROUPATTR_MAX_ELTS + 1);
 
     sec->user_is_dn = 0;
     sec->remote_user_attribute = NULL;
@@ -785,23 +783,10 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
                                "failed [%s][%d - %s], checking sub-groups",
                                getpid(), t, ldc->reason, result, ldap_err2string(result));
 
-                if(sec->sgAttributes == NULL) {
-                    struct mod_auth_ldap_groupattr_entry_t *sg_ent = (struct mod_auth_ldap_groupattr_entry_t *) sec->subgroupattrs->elts;
-                    char **sg_attrs;
-                    int sga_index;
-
-                    /* Allocate a null-terminated array of attribute strings. */
-                    sg_attrs = apr_pcalloc(sec->pool, (sec->subgroupattrs->nelts+1) * sizeof(char *));
-                    for(sga_index = 0; sga_index < sec->subgroupattrs->nelts; sga_index++) {
-                        sg_attrs[sga_index] = apr_pstrdup(sec->pool, sg_ent[sga_index].name);
-                    }
-                    sg_attrs[sec->subgroupattrs->nelts] = NULL;
-                    sec->sgAttributes = sg_attrs;
-                }
-
                 result = util_ldap_cache_check_subgroups(r, ldc, sec->url, t, ent[i].name,
                                                          sec->group_attrib_is_dn ? req->dn : req->user,
-                                                         sec->sgAttributes, sec->subgroupclasses,
+                                                         sec->sgAttributes[0] ? sec->sgAttributes : default_attributes,
+                                                         sec->subgroupclasses,
                                                          0, sec->maxNestingDepth);
                 if(result == LDAP_COMPARE_TRUE) {
                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
@@ -1339,15 +1324,17 @@ static const char *mod_auth_ldap_set_deref(cmd_parms *cmd, void *config, const c
 
 static const char *mod_auth_ldap_add_subgroup_attribute(cmd_parms *cmd, void *config, const char *arg)
 {
-    struct mod_auth_ldap_groupattr_entry_t *new;
+    int i = 0;
 
     authn_ldap_config_t *sec = config;
 
-    if (sec->subgroupattrs->nelts > GROUPATTR_MAX_ELTS)
+    for (i = 0; sec->sgAttributes[i]; i++) {
+        ;
+    }
+    if (i == GROUPATTR_MAX_ELTS)
         return "Too many AuthLDAPSubGroupAttribute values";
 
-    new = apr_array_push(sec->subgroupattrs);
-    new->name = apr_pstrdup(cmd->pool, arg);
+    sec->sgAttributes[i] = apr_pstrdup(cmd->pool, arg);
 
     return NULL;
 }
