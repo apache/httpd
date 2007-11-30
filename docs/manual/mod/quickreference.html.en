@@ -775,7 +775,8 @@ port</td></tr>
 port</td></tr>
 <tr><td><a href="mpm_common.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">The userid under which the server will answer
 requests</td></tr>
-<tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em></a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the user-specific directories</td></tr>
+<tr class="odd"><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...
+</a></td><td></td><td>sv</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the user-specific directories</td></tr>
 <tr><td><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Dynamically configure the location of the document root
 for a given virtual host</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentrootip">VirtualDocumentRootIP <em>interpolated-directory</em>|none</a></td><td> none </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the document root
