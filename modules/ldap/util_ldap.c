@@ -198,7 +198,10 @@ static apr_status_t uldap_connection_cleanup(void *param)
         if (ldc->binddn) {
             free((void*)ldc->binddn);
         }
-
+        /* ldc->reason is allocated from r->pool */
+        if (ldc->reason) {
+            ldc->reason = NULL;
+        }
         /* unlock this entry */
         uldap_connection_close(ldc);
 
