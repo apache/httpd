@@ -602,7 +602,9 @@ static authz_status ldapuser_check_authorization(request_rec *r,
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                  "[%" APR_PID_T_FMT "] auth_ldap authorize: authorization denied", getpid());
+                  "[%" APR_PID_T_FMT "] auth_ldap authorize user: authorization denied for user %s to %s",
+                  getpid(), r->user, r->uri);
+
     return AUTHZ_DENIED;
 }
 
@@ -741,8 +743,8 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
         if (req->dn == NULL || strlen(req->dn) == 0) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                           "[%" APR_PID_T_FMT "] auth_ldap authorize: require group: "
-                          "user's DN has not been defined; failing authorization",
-                          getpid());
+                          "user's DN has not been defined; failing authorization for user %s",
+                          getpid(), r->user);
             return AUTHZ_DENIED;
         }
     }
@@ -773,8 +775,8 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
             case LDAP_COMPARE_TRUE: {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "[%" APR_PID_T_FMT "] auth_ldap authorize: require group: "
-                              "authorization successful (attribute %s) [%s][%s]",
-                              getpid(), ent[i].name, ldc->reason, ldap_err2string(result));
+                              "authorization successful (attribute %s) [%s][%d - %s]",
+                              getpid(), ent[i].name, ldc->reason, result, ldap_err2string(result));
                 return AUTHZ_GRANTED;
             }
             case LDAP_COMPARE_FALSE: {
@@ -819,14 +821,15 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
             default: {
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "[%" APR_PID_T_FMT "] auth_ldap authorize: require group \"%s\": "
-                              "authorization failed [%s][%s]",
-                              getpid(), t, ldc->reason, ldap_err2string(result));
+                              "authorization failed [%s][%d - %s]",
+                              getpid(), t, ldc->reason, result, ldap_err2string(result));
             }
         }
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                  "[%" APR_PID_T_FMT "] auth_ldap authorize: authorization denied", getpid());
+                  "[%" APR_PID_T_FMT "] auth_ldap authorize group: authorization denied for user %s to %s",
+                  getpid(), r->user, r->uri);
 
     return AUTHZ_DENIED;
 }
@@ -932,7 +935,8 @@ static authz_status ldapdn_check_authorization(request_rec *r,
 
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                  "[%" APR_PID_T_FMT "] auth_ldap authorise: authorisation denied", getpid());
+                  "[%" APR_PID_T_FMT "] auth_ldap authorize dn: authorization denied for user %s to %s",
+                  getpid(), r->user, r->uri);
 
     return AUTHZ_DENIED;
 }
@@ -1046,7 +1050,8 @@ static authz_status ldapattribute_check_authorization(request_rec *r,
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                  "[%" APR_PID_T_FMT "] auth_ldap authorise: authorisation denied", getpid());
+                  "[%" APR_PID_T_FMT "] auth_ldap authorize attribute: authorization denied for user %s to %s",
+                  getpid(), r->user, r->uri);
 
     return AUTHZ_DENIED;
 }
@@ -1181,7 +1186,8 @@ static authz_status ldapfilter_check_authorization(request_rec *r,
     }
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
-                  "[%" APR_PID_T_FMT "] auth_ldap authorise: authorization denied", getpid());
+                  "[%" APR_PID_T_FMT "] auth_ldap authorize filter: authorization denied for user %s to %s",
+                  getpid(), r->user, r->uri);
 
     return AUTHZ_DENIED;
 }
@@ -1449,18 +1455,18 @@ static const command_rec authnz_ldap_cmds[] =
 
     AP_INIT_ITERATE("AuthLDAPSubGroupAttribute", mod_auth_ldap_add_subgroup_attribute, NULL, OR_AUTHCFG,
                     "Attribute labels used to define sub-group (or nested group) membership in groups - "
-                    "defaults to member and uniqueMember (one per directive)"),
+                    "defaults to member and uniqueMember"),
 
     AP_INIT_ITERATE("AuthLDAPSubGroupClass", mod_auth_ldap_add_subgroup_class, NULL, OR_AUTHCFG,
                      "LDAP objectClass values used to identify sub-group instances - "
-                     "defaults to groupOfNames and groupOfUniqueNames (one per directive)"),
+                     "defaults to groupOfNames and groupOfUniqueNames"),
 
     AP_INIT_TAKE1("AuthLDAPMaxSubGroupDepth", mod_auth_ldap_set_subgroup_maxdepth, NULL, OR_AUTHCFG,
                       "Maximum subgroup nesting depth to be evaluated - defaults to 10 (top-level group = 0)"),
 
     AP_INIT_ITERATE("AuthLDAPGroupAttribute", mod_auth_ldap_add_group_attribute, NULL, OR_AUTHCFG,
                     "A list of attribute labels used to identify the user members of groups - defaults to "
-                    "member and uniquemember (one per directive)"),
+                    "member and uniquemember"),
 
     AP_INIT_FLAG("AuthLDAPGroupAttributeIsDN", ap_set_flag_slot,
                  (void *)APR_OFFSETOF(authn_ldap_config_t, group_attrib_is_dn), OR_AUTHCFG,
