@@ -268,7 +268,9 @@ static int uldap_connection_init(request_rec *r,
     int rc = 0, ldap_option = 0;
     int version  = LDAP_VERSION3;
     apr_ldap_err_t *result = NULL;
+#ifdef LDAP_OPT_NETWORK_TIMEOUT
     struct timeval timeOut = {10,0};    /* 10 second connection timeout */
+#endif
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
         &ldap_module);
@@ -2225,9 +2227,11 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
                                                     void *dummy,
                                                     const char *ttl)
 {
+#ifdef LDAP_OPT_NETWORK_TIMEOUT
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(cmd->server->module_config,
                                                   &ldap_module);
+#endif
     const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
 
     if (err != NULL) {
