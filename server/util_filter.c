@@ -279,7 +279,7 @@ static ap_filter_t *add_any_filter_handle(ap_filter_rec_t *frec, void *ctx,
                                           ap_filter_t **p_filters,
                                           ap_filter_t **c_filters)
 {
-    apr_pool_t* p = r ? r->pool : c->pool;
+    apr_pool_t* p = frec->ftype < AP_FTYPE_CONNECTION && r ? r->pool : c->pool;
     ap_filter_t *f = apr_palloc(p, sizeof(*f));
     ap_filter_t **outf;
 
