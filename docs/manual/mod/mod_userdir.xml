@@ -42,7 +42,8 @@ tutorial</a></seealso>
 
 <name>UserDir</name>
 <description>Location of the user-specific directories</description>
-<syntax>UserDir <em>directory-filename</em></syntax>
+<syntax>UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...
+</syntax>
 <contextlist><context>server config</context> <context>virtual
 host</context></contextlist>
 
