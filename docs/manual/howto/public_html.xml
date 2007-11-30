@@ -103,6 +103,18 @@
     translated to the file path
     <code>/var/www/rbowen/docs/file.html</code></p>
 
+    <p>Multiple directories or directory paths can also be set.</p>
+
+    <example>
+      UserDir public_html /var/html
+    </example>
+
+    <p>For the URL <code>http://example.com/~rbowen/file.html</code>, 
+    Apache will search for <code>~rbowen</code>. If it isn't found, 
+    Apache will search for <code>rbowen</code> in <code>/var/html</code>. If
+    found, the above URL will then be translated to the file path 
+    <code>/var/html/rbowen/file.html</code></p>
+
   </section>
 
   <section id="enable">
