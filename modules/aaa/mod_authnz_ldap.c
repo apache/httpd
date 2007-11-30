@@ -662,24 +662,6 @@ static authz_status ldapgroup_check_authorization(request_rec *r,
     }
 
     /*
-     * If there are no elements in the sub group attribute array, the default
-     * should be member and uniquemember; populate the array now.
-     */
-    if (sec->subgroupattrs->nelts == 0) {
-        struct mod_auth_ldap_groupattr_entry_t *grp;
-#if APR_HAS_THREADS
-        apr_thread_mutex_lock(sec->lock);
-#endif
-        grp = apr_array_push(sec->subgroupattrs);
-        grp->name = "member";
-        grp = apr_array_push(sec->subgroupattrs);
-        grp->name = "uniqueMember";
-#if APR_HAS_THREADS
-        apr_thread_mutex_unlock(sec->lock);
-#endif
-    }
-
-    /*
      * If there are no elements in the sub group classes array, the default
      * should be groupOfNames and groupOfUniqueNames; populate the array now.
      */
