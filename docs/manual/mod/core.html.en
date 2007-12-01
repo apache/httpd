@@ -121,7 +121,7 @@ available</td></tr>
     </code></p></div>
     
     <p>The <code>httpready</code> accept filter buffers entire HTTP requests at
-       the kernel level.  Once an entire request is recieved, the kernel then 
+       the kernel level.  Once an entire request is received, the kernel then 
        sends it to the server. See the 
        <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http&amp;sektion=9">
        accf_http(9)</a> man page for more details.  Since HTTPS requests are 
