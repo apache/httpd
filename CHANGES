@@ -1,6 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_include: Add an "if" directive syntax to test whether an URL
+     is accessible, and if so, conditionally display content. This
+     allows a webmaster to hide a link to a private page when the user
+     has no access to that page. [Graham Leggett]
+
   *) Various code cleanups. PR 38699, 39518, 42005, 42006, 42007, 42008, 42009
      [Christophe Jaillet <christophe.jaillet wanadoo.fr>]
 
