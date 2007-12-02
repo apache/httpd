@@ -102,9 +102,9 @@
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="msie" id="msie">Working with MS Internet Explorer</a></h2>
-    <p>The Digest authentication implementation in current Internet
-    Explorer for Windows implementations has known issues, namely that
-    <code>GET</code> requests with a query string are not RFC compliant.
+    <p>The Digest authentication implementation in previous Internet
+    Explorer for Windows versions (5 and 6) had issues, namely that
+    <code>GET</code> requests with a query string were not RFC compliant.
     There are a few ways to work around this issue.</p>
 
     <p>
@@ -118,12 +118,15 @@
     <code>AuthDigestEnableQueryStringHack</code> environment variable.
     If <code>AuthDigestEnableQueryStringHack</code> is set for the
     request, Apache will take steps to work around the MSIE bug and
-    remove the request URI from the digest comparison.  Using this
+    remove the query string from the digest comparison.  Using this
     method would look similar to the following.</p>
 
     <div class="example"><h3>Using Digest Authentication with MSIE:</h3><p><code>
     BrowserMatch "MSIE" AuthDigestEnableQueryStringHack=On
     </code></p></div>
+
+    <p>This workaround is not necessary for MSIE 7, though enabling it does
+    not cause any compatibility issues or significant overhead.</p>
 
     <p>See the <code class="directive"><a href="../mod/mod_setenvif.html#browsermatch">BrowserMatch</a></code>
     directive for more details on conditionally setting environment
