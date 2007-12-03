@@ -411,6 +411,10 @@ AP_DECLARE(ap_filter_rec_t *) ap_get_input_filter_handle(const char *name);
  * @param ctx Context data to set in the filter
  * @param r The request to add this filter for (or NULL if it isn't associated with a request)
  * @param c The connection to add this filter for
+ * @note If adding a connection-level output filter (i.e. where the type
+ * is >= AP_FTYPE_CONNECTION) during processing of a request, the request
+ * object r must be passed in to ensure the filter chains are modified
+ * correctly.  f->r will still be initialized as NULL in the new filter.
  */
 AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx, 
                                                request_rec *r, conn_rec *c);
@@ -421,7 +425,11 @@ AP_DECLARE(ap_filter_t *) ap_add_output_filter(const char *name, void *ctx,
  *
  * @param f The filter handle to add
  * @param r The request to add this filter for (or NULL if it isn't associated with a request)
- * @param c The connection to add the fillter for
+ * @param c The connection to add the filter for
+ * @note If adding a connection-level output filter (i.e. where the type
+ * is >= AP_FTYPE_CONNECTION) during processing of a request, the request
+ * object r must be passed in to ensure the filter chains are modified
+ * correctly.  f->r will still be initialized as NULL in the new filter.
  */
 AP_DECLARE(ap_filter_t *) ap_add_output_filter_handle(ap_filter_rec_t *f,
                                                       void *ctx,
