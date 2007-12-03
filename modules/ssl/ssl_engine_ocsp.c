@@ -184,9 +184,10 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
     
     if (rc == V_OCSP_CERTSTATUS_GOOD) {
         int reason = -1, status;
+        ASN1_GENERALIZEDTIME *thisup = NULL, *nextup = NULL;
 
         rc = OCSP_resp_find_status(basicResponse, certID, &status,
-                                   &reason, NULL, NULL, NULL);
+                                   &reason, NULL, &thisup, &nextup);
         if (rc != 1) {
             ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
             ssl_log_cxerror(APLOG_MARK, APLOG_ERR, 0, c, cert,
@@ -194,6 +195,27 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
             rc = V_OCSP_CERTSTATUS_UNKNOWN;
         }
         else {
+            rc = status;
+        }
+
+        /* TODO: make these configurable. */
+#define MAX_SKEW (60)
+#define MAX_AGE (360)
+
+        /* Check whether the response is inside the defined validity
+         * period; otherwise fail.  */
+        if (rc != V_OCSP_CERTSTATUS_UNKNOWN) {
+            int vrc  = OCSP_check_validity(thisup, nextup, MAX_SKEW, MAX_AGE);
+            
+            if (vrc != 1) {
+                ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
+                ssl_log_cxerror(APLOG_MARK, APLOG_ERR, 0, c, cert,
+                                "OCSP response outside validity period");
+                rc = V_OCSP_CERTSTATUS_UNKNOWN;
+            }
+        }
+
+        {
             int level = 
                 (status == V_OCSP_CERTSTATUS_GOOD) ? APLOG_INFO : APLOG_ERR;
             const char *result = 
@@ -204,7 +226,6 @@ static int verify_ocsp_status(X509 *cert, X509_STORE_CTX *ctx, conn_rec *c,
                             "OCSP validation completed, "
                             "certificate status: %s (%d, %d)",
                             result, status, reason);
-            rc = status;
         }
     }
     
