@@ -79,6 +79,14 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_proxy_balancer: Remove the broken attempt to change balancer
+     params on-the-fly via the admin manager.
+     trunk:
+        http://svn.apache.org/viewvc?view=rev&revision=551099 (kinda)
+     2.2.x:
+        http://people.apache.org/~jim/patches/bsel-patch-2.txt
+     +1: jim, rpluem, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -199,14 +207,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      +0: rpluem says: There is much copying in do_pattmatch in the flatten case
                       and I would like to see the usage of tpool in the usage of
                       the SEDSCAT macro.
-
-   * mod_proxy_balancer: Remove the broken attempt to change balancer
-     params on-the-fly via the admin manager.
-     trunk:
-        http://svn.apache.org/viewvc?view=rev&revision=551099 (kinda)
-     2.2.x:
-        http://people.apache.org/~jim/patches/bsel-patch-2.txt
-     +1: jim, rpluem
 
   * mod_filter: Don't try to support chained filters when it doesn't work
     PR 43956
