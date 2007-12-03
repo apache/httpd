@@ -126,7 +126,7 @@ static apr_socket_t *send_request(BIO *request, const apr_uri_t *uri,
     return sd;
 }
 
-/* Return a pool-alocated NUL-terminated line, with CRLF stripped,
+/* Return a pool-allocated NUL-terminated line, with CRLF stripped,
  * read from brigade 'bbin' using 'bbout' as temporary storage. */
 static char *get_line(apr_bucket_brigade *bbout, apr_bucket_brigade *bbin,
                       conn_rec *c, apr_pool_t *p)
