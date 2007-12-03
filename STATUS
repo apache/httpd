@@ -239,6 +239,18 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&rev=600645
     +1: wrowe
 
+  * core: Fix broken chunk filtering that causes all non blocking reads to be
+          converted into blocking reads
+    PR 19954 / 41056
+    Trunk version of patch:
+       http://svn.apache.org/viewcvs.cgi?rev=480135&view=rev
+       http://svn.apache.org/viewcvs.cgi?rev=480193&view=rev
+       http://svn.apache.org/viewcvs.cgi?rev=504559&view=rev
+       http://svn.apache.org/viewcvs.cgi?rev=503863&view=rev (CHANGES)
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
