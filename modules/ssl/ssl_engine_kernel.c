@@ -102,7 +102,7 @@ int ssl_hook_ReadReq(request_rec *r)
      * has sent a suitable Upgrade header. */
     if (sc->enabled == SSL_ENABLED_OPTIONAL && !myConnConfig(r->connection)
         && (upgrade = apr_table_get(r->headers_in, "Upgrade")) != NULL
-        && strcmp(ap_getword(r->pool, &upgrade, ','), "TLS/1.0") == 0) {
+        && ap_find_token(r->pool, upgrade, "TLS/1.0")) {
         if (upgrade_connection(r)) {
             return HTTP_INTERNAL_SERVER_ERROR;
         }
