@@ -207,8 +207,14 @@ static OCSP_RESPONSE *read_response(apr_socket_t *sd, BIO *bio, conn_rec *c,
                       "OCSP response header: %s", line);
     }
 
-    if (!line) {
-        ap_log_cerror(APLOG_MARK, APLOG_DEBUG, 0, c,
+    if (count == MAX_HEADERS) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
+                      "could not read response headers from OCSP server, "
+                      "exceeded maximum count (%u)", MAX_HEADERS);
+        return NULL;
+    }
+    else if (!line) {
+        ap_log_cerror(APLOG_MARK, APLOG_ERR, 0, c,
                       "could not read response header from OCSP server");
         return NULL;
     }
