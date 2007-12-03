@@ -689,7 +689,7 @@ int          ssl_mutex_off(server_rec *);
 void         ssl_die(void);
 void         ssl_log_ssl_error(const char *, int, int, server_rec *);
 
-/* ssl_log_cxerror is a wrapper for ap_log_cerror which takes the peer
+/* ssl_log_cxerror is a wrapper for ap_log_cerror which takes a
  * certificate as an additional argument and appends details of that
  * cert to the log message.  All other arguments interpreted exactly
  * as ap_log_cerror. */

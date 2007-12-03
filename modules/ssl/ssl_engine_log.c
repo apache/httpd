@@ -132,7 +132,7 @@ void ssl_log_cxerror(const char *file, int line, int level,
     va_end(ap);
 
     ap_log_cerror(file, line, level, rv, c, 
-                  "%s [peer subject: %s, issuer: %s, serial: %s]",
+                  "%s [subject: %s, issuer: %s, serial: %s]",
                   buf,
                   sname ? sname : "-unknown-",
                   iname ? iname : "-unknown-",
