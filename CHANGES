@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) http_protocol: Escape request method in 413 error reporting.
+     Determined to be not generally exploitable, but a flaw in any case.
+     PR 44014 [Victor Stinner <victor.stinner inl.fr>]
+
   *) rotatelogs: Improve atomicity when using -l and cleaup code.
      PR 44004 [Rainer Jung]
 
