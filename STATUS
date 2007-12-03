@@ -237,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Determined to be not generally exploitable, but a flaw in any case.
     PR 44014 [Victor Stinner <victor.stinner inl.fr>]
        http://svn.apache.org/viewvc?view=rev&rev=600645
-    +1: wrowe
+    +1: wrowe, rpluem
 
   * core: Fix broken chunk filtering that causes all non blocking reads to be
           converted into blocking reads
