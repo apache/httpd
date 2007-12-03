@@ -49,29 +49,29 @@ Release history:
 
 Contributors looking for a mission:
 
-    * Just do an egrep on "TODO" or "XXX" in the source.
+  * Just do an egrep on "TODO" or "XXX" in the source.
 
-    * Review the bug database at: http://issues.apache.org/bugzilla/
+  * Review the bug database at: http://issues.apache.org/bugzilla/
 
-    * Review the "PatchAvailable" bugs in the bug database:
+  * Review the "PatchAvailable" bugs in the bug database:
 
-      https://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
+    https://issues.apache.org/bugzilla/buglist.cgi?bug_status=NEW&bug_status=ASSIGNED&bug_status=REOPENED&product=Apache+httpd-2&keywords=PatchAvailable
 
-      After testing, you can append a comment saying "Reviewed and tested".
+    After testing, you can append a comment saying "Reviewed and tested".
 
-    * Open bugs in the bug database.
+  * Open bugs in the bug database.
 
 
 CURRENT RELEASE NOTES:
 
-    * Forward binary compatibility is expected of Apache 2.2.x releases, such
-      that no MMN major number changes will occur.  Such changes can only be
-      made in the trunk.
+  * Forward binary compatibility is expected of Apache 2.2.x releases, such
+    that no MMN major number changes will occur.  Such changes can only be
+    made in the trunk.
 
-    * All commits to branches/2.2.x must be reflected in SVN trunk,
-      as well, if they apply.  Logical progression is commit to trunk,
-      get feedback and votes on list or in STATUS, then merge into
-      branches/2.2.x, as applicable.
+  * All commits to branches/2.2.x must be reflected in SVN trunk,
+    as well, if they apply.  Logical progression is commit to trunk,
+    get feedback and votes on list or in STATUS, then merge into
+    branches/2.2.x, as applicable.
 
 
 RELEASE SHOWSTOPPERS:
@@ -79,134 +79,133 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_balancer: Remove the broken attempt to change balancer
-     params on-the-fly via the admin manager.
-     trunk:
-        http://svn.apache.org/viewvc?view=rev&revision=551099 (kinda)
-     2.2.x:
-        http://people.apache.org/~jim/patches/bsel-patch-2.txt
-     +1: jim, rpluem, trawick
+  * mod_proxy_balancer: Remove the broken attempt to change balancer
+    params on-the-fly via the admin manager.
+    trunk:
+       http://svn.apache.org/viewvc?view=rev&revision=551099 (kinda)
+    2.2.x:
+       http://people.apache.org/~jim/patches/bsel-patch-2.txt
+    +1: jim, rpluem, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
-    * mod_rewrite: Also set the Vary header if a rewrite condition is true and
-      uses a HTTP header, but all remaining rewrite conditions are skipped due
-      to the [OR] flag.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=574201&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, niq
-      +0: jim: I'm curious that if this would result in some
-               "regressions" for some users who either depend on
-               the old behavior or have worked around it...
-          rpluem answers: If r574684 is backported (see below) these users can
-          fix it without workarounds and a clear and promised behaviour.
-          Relying on the above is relying on a buggy iundocumented behaviour,
-          but yes I do this sometimes by myself :-).
-      +1: jim: iff r574684 is also backported
+  * mod_rewrite: Also set the Vary header if a rewrite condition is true and
+    uses a HTTP header, but all remaining rewrite conditions are skipped due
+    to the [OR] flag.
+    Trunk version of patch:
+       http://svn.apache.org/viewcvs.cgi?rev=574201&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem, niq
+    +0: jim: I'm curious that if this would result in some
+             "regressions" for some users who either depend on
+             the old behavior or have worked around it...
+        rpluem answers: If r574684 is backported (see below) these users can
+        fix it without workarounds and a clear and promised behaviour.
+        Relying on the above is relying on a buggy iundocumented behaviour,
+        but yes I do this sometimes by myself :-).
+    +1: jim: iff r574684 is also backported
 
-    * mod_rewrite: Add the novary flag to RewriteCond in order to prevent
-      the appending of HTTP headers used in a rewrite condition to the Vary
-      header of the response.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=574684&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim
+  * mod_rewrite: Add the novary flag to RewriteCond in order to prevent
+    the appending of HTTP headers used in a rewrite condition to the Vary
+    header of the response.
+    Trunk version of patch:
+       http://svn.apache.org/viewcvs.cgi?rev=574684&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem, jim
 
-   * core log.c: Work around possible solutions rejected by apr for
-     the old implementation of apr_proc_create(), and explicitly pass
-     the output and error channels to all log processes created.
-     This goes all the way back to piped logs failing to run on win32.
-     Not in or needed at trunk/, as apr 1.3.0 has the proper fix.
-       http://people.apache.org/~wrowe/httpd-2.0-2.2-procattr-bugfix-log.c.patch
-     +1: wrowe, rpluem
+  * core log.c: Work around possible solutions rejected by apr for
+    the old implementation of apr_proc_create(), and explicitly pass
+    the output and error channels to all log processes created.
+    This goes all the way back to piped logs failing to run on win32.
+    Not in or needed at trunk/, as apr 1.3.0 has the proper fix.
+      http://people.apache.org/~wrowe/httpd-2.0-2.2-procattr-bugfix-log.c.patch
+    +1: wrowe, rpluem
 
-   * mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx) responses
-     incorporating ap_send_interim_response core API
-     PR 16518
+  * mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx) responses
+    incorporating ap_send_interim_response core API
+    PR 16518
+    trunk:
+      http://svn.apache.org/viewvc?view=rev&revision=582630
+      http://svn.apache.org/viewvc?view=rev&revision=582652
+      http://svn.apache.org/viewvc?view=rev&revision=582631
+      http://svn.apache.org/viewvc?view=rev&revision=588806
+    2.2.x:
+      http://people.apache.org/~niq/16508.patch
+    +1: niq, rpluem
+
+  * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
+    ap_vrprintf(). PR 43310
+    trunk:
+       http://svn.apache.org/viewvc?view=rev&revision=589461
+    2.2.x:
+       Trunk version of patch works
+    +1: jim, rpluem
+    niq: Doesn't allocating 2^n+1 bytes risk being horribly inefficient?
+         Would it make sense to reduce AP_IOBUFSIZE to 8091 so buf doesn't
+         go one over a big boundary?
+    jim: The issue is that we allocate an array of AP_IOBUFSIZE
+         but go beyond that (note we send the end to curpos+AP_IOBUFSIZE)
+         so it's not just reducing AP_IOBUFSIZE since then we would
+         hit the bug at 8191 boundary instead of the 8192 one.
+         The actual PR suggests simply removing the setting of '\0'
+         which looks good, but there are loads of places in the related
+         code where we use AP_IOBUFSIZE, so it seemed safer to me to
+         simply allocate an extra byte. Note that other sections of
+         code do this by setting the endpos to one less to "save"
+         space for the NUL, but they don't have related sections
+         which assume a set size; this does (AP_IOBUFSIZE).
+
+  * mod_status: For long request lines we only see the front part of
+    the requests in mod_status, which is useless if they only vary
+    in their ending bits. Allow admin to specify whether they want
+    to see the 1st 63 chars of the request, or the last.
+    trunk:
+       http://svn.apache.org/viewvc?view=rev&revision=590641
+    2.2.x:
+       http://people.apache.org/~jim/patches/reqtail-patch.txt
+    +1: jim, rpluem
+
+  * http_filters: Fix handling of unrecognised Transfer Encodings
+    PR 43882
+    http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_filters.c?r1=592951&r2=599137
+    http://svn.apache.org/viewvc/httpd/httpd/trunk/CHANGES?r1=595672&r2=595671&pathrev=595672 (CHANGES)
+    +1: niq, rpluem
+    niq says: modified in 599059 (following suggestion by trawick)
+
+   * mod_proxy: Support variable interpolation in reverse proxy configuration
+     (revised proposal dealing with wrowe's concerns).
      trunk:
-       http://svn.apache.org/viewvc?view=rev&revision=582630
-       http://svn.apache.org/viewvc?view=rev&revision=582652
-       http://svn.apache.org/viewvc?view=rev&revision=582631
-       http://svn.apache.org/viewvc?view=rev&revision=588806
+       http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
+       http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
+       http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
+       http://svn.apache.org/viewvc?view=rev&revision=589371  (code+docs)
      2.2.x:
-       http://people.apache.org/~niq/16508.patch
-     +1: niq, rpluem
+       http://people.apache.org/~niq/proxy-interp.patch
+     rpluem says: Please add the documentation to your 2.2.x version of your
+                  patch and a minor bump (changes to public mod_proxy.h) and
+                  assume you are +1 to your own proposal.
 
-   * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
-     ap_vrprintf(). PR 43310
-     trunk:
-        http://svn.apache.org/viewvc?view=rev&revision=589461
-     2.2.x:
-        Trunk version of patch works
-     +1: jim, rpluem
-     niq: Doesn't allocating 2^n+1 bytes risk being horribly inefficient?
-          Would it make sense to reduce AP_IOBUFSIZE to 8091 so buf doesn't
-          go one over a big boundary?
-     jim: The issue is that we allocate an array of AP_IOBUFSIZE
-          but go beyond that (note we send the end to curpos+AP_IOBUFSIZE)
-          so it's not just reducing AP_IOBUFSIZE since then we would
-          hit the bug at 8191 boundary instead of the 8192 one.
-          The actual PR suggests simply removing the setting of '\0'
-          which looks good, but there are loads of places in the related
-          code where we use AP_IOBUFSIZE, so it seemed safer to me to
-          simply allocate an extra byte. Note that other sections of
-          code do this by setting the endpos to one less to "save"
-          space for the NUL, but they don't have related sections
-          which assume a set size; this does (AP_IOBUFSIZE).
+  * mod_ssl: Enable to build with OpenSSL 0.9.9
+    trunk:
+       http://svn.apache.org/viewvc?view=rev&revision=598019
+    2.2.x:
+       Trunk patches apply
+    +1: fuankg, rpluem
 
-   * mod_status: For long request lines we only see the front part of
-     the requests in mod_status, which is useless if they only vary
-     in their ending bits. Allow admin to specify whether they want
-     to see the 1st 63 chars of the request, or the last.
-     trunk:
-        http://svn.apache.org/viewvc?view=rev&revision=590641
-     2.2.x:
-        http://people.apache.org/~jim/patches/reqtail-patch.txt
-     +1: jim, rpluem
-
-   * http_filters: Fix handling of unrecognised Transfer Encodings
-     PR 43882
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_filters.c?r1=592951&r2=599137
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/CHANGES?r1=595672&r2=595671&pathrev=595672 (CHANGES)
-     +1: niq, rpluem
-     niq says: modified in 599059 (following suggestion by trawick)
-
-    * mod_proxy: Support variable interpolation in reverse proxy configuration
-      (revised proposal dealing with wrowe's concerns).
-      trunk:
-        http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
-        http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
-        http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
-        http://svn.apache.org/viewvc?view=rev&revision=589371  (code+docs)
-      2.2.x:
-        http://people.apache.org/~niq/proxy-interp.patch
-      rpluem says: Please add the documentation to your 2.2.x version of your
-                   patch and a minor bump (changes to public mod_proxy.h) and
-                   assume you are +1 to your own proposal.
-
-
-   * mod_ssl: Enable to build with OpenSSL 0.9.9
-     trunk:
-        http://svn.apache.org/viewvc?view=rev&revision=598019
-     2.2.x:
-        Trunk patches apply
-     +1: fuankg, rpluem
-
-   * mod_substitute: New module for on-the-fly response rewrite-like
-     capability.
-     trunk:
-        http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/experimental/mod_substitute.c?view=log
-        Don't even bother...
-     2.2.x:
-        http://people.apache.org/~jim/patches/mod_substitute-2.2.txt
-     +1: jim
-     +0: rpluem says: There is much copying in do_pattmatch in the flatten case
-                      and I would like to see the usage of tpool in the usage of
-                      the SEDSCAT macro.
+  * mod_substitute: New module for on-the-fly response rewrite-like
+    capability.
+    trunk:
+       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/experimental/mod_substitute.c?view=log
+       Don't even bother...
+    2.2.x:
+       http://people.apache.org/~jim/patches/mod_substitute-2.2.txt
+    +1: jim
+    +0: rpluem says: There is much copying in do_pattmatch in the flatten case
+                     and I would like to see the usage of tpool in the usage of
+                     the SEDSCAT macro.
 
   * mod_filter: Don't try to support chained filters when it doesn't work
     PR 43956
@@ -233,6 +232,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.2.x of patch:
        Trunk version of patch works
     +1: rpluem,
+
+  * http_protocol: Escape request method in 413 error reporting.
+    Determined to be not generally exploitable, but a flaw in any case.
+    PR 44014 [Victor Stinner <victor.stinner inl.fr>]
+       http://svn.apache.org/viewvc?view=rev&rev=600645
+    +1: wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
