@@ -1586,9 +1586,6 @@ static void ssl_io_input_add_filter(ssl_filter_ctx_t *filter_ctx, conn_rec *c,
     inctx = apr_palloc(c->pool, sizeof(*inctx));
 
     filter_ctx->pInputFilter = ap_add_input_filter(ssl_io_filter, inctx, r, c);
-    /* Immediately forget the request_rec pointer stored in the
-     * filter; it will go out of scope. */
-    filter_ctx->pInputFilter->r = NULL;
 
     filter_ctx->pbioRead = BIO_new(&bio_filter_in_method);
     filter_ctx->pbioRead->ptr = (void *)inctx;
@@ -1619,9 +1616,6 @@ void ssl_io_filter_init(conn_rec *c, request_rec *r, SSL *ssl)
     filter_ctx->nobuffer        = 0;
     filter_ctx->pOutputFilter   = ap_add_output_filter(ssl_io_filter,
                                                        filter_ctx, r, c);
-    /* Immediately forget the request_rec pointer stored in the
-     * filter; it will go out of scope. */
-    filter_ctx->pOutputFilter->r = NULL;
 
     filter_ctx->pbioWrite       = BIO_new(&bio_filter_out_method);
     filter_ctx->pbioWrite->ptr  = (void *)bio_filter_out_ctx_new(filter_ctx, c);
