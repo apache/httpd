@@ -165,13 +165,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     2.0.x:
       Patch submitted via PR 42035 by Dominique Quatravaux 
       http://issues.apache.org/bugzilla/attachment.cgi?id=19901
-    +1: trawick
+    +1: trawick, rpluem
 
   * http_protocol: Escape request method in 413 error reporting.
     Determined to be not generally exploitable, but a flaw in any case.
     PR 44014 [Victor Stinner <victor.stinner inl.fr>]
        http://svn.apache.org/viewvc?view=rev&rev=600645
-    +1: wrowe
+    +1: wrowe, rpluem
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
