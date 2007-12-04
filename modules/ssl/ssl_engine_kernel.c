@@ -70,10 +70,7 @@ static apr_status_t upgrade_connection(request_rec *r)
     sslconn = myConnConfig(conn);
     ssl = sslconn->ssl;
     
-    /* XXX: Should replace SSL_set_state with SSL_renegotiate(ssl);
-     * However, this causes failures in perl-framework currently,
-     * perhaps pre-test if we have already negotiated?
-     */
+    /* Perform initial SSL handshake. */
     SSL_set_accept_state(ssl);
     SSL_do_handshake(ssl);
 
