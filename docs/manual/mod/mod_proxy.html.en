@@ -97,7 +97,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#startup">Slow Startup</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#intranet">Intranet Proxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#envsettings">Protocol Adjustments</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">Request Bodys</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#request-bodies">Request Bodies</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#x-headers">Reverse Proxy Request Headers</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
@@ -274,7 +274,7 @@
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="request-bodies" id="request-bodies">Request Bodys</a></h2>
+<h2><a name="request-bodies" id="request-bodies">Request Bodies</a></h2>
 
     <p>Some request methods such as POST include a request body.
     The HTTP protocol requires that requests which include a body
