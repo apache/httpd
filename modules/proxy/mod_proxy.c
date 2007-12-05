@@ -2017,7 +2017,12 @@ static int proxy_status_hook(request_rec *r, int flags)
         ap_rputs("\n\n<table border=\"0\"><tr>"
                  "<th>SSes</th><th>Timeout</th><th>Method</th>"
                  "</tr>\n<tr>", r);
-        ap_rvputs(r, "<td>", balancer->sticky, NULL);
+        if (balancer->sticky) {
+            ap_rvputs(r, "<td>", balancer->sticky, NULL);
+        }
+        else {
+            ap_rputs("<td> - ", r);
+        }
         ap_rprintf(r, "</td><td>%" APR_TIME_T_FMT "</td>",
                    apr_time_sec(balancer->timeout));
         ap_rprintf(r, "<td>%s</td>\n",
