@@ -41,6 +41,7 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#ssienableaccess">SSIEnableAccess</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssiendtag">SSIEndTag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssierrormsg">SSIErrorMsg</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssistarttag">SSIStartTag</a></li>
@@ -513,6 +514,25 @@
       <dt><code><var>string</var></code></dt>
       <dd>true if <var>string</var> is not empty</dd>
 
+      <dt><code><var>-A string</var></code></dt>
+      <dd><p>true if the URL represented by the string is accessible by
+      configuration, false otherwise. This test only has an effect if
+      <code class="directive">SSIEnableAccess</code> is on. This is useful
+      where content on a page is to be hidden from users who are not
+      authorized to view the URL, such as a link to that URL. Note
+      that the URL is only tested for whether access would be granted,
+      not whether the URL exists.</p>
+
+      <div class="example"><h3>Example</h3><p><code>
+        &lt;!--#if expr="-A /private" --&gt;<br />
+        <span class="indent">
+          Click &lt;a href="/private"&gt;here&lt;/a&gt; to access private
+          information.<br />
+        </span>
+        &lt;!--#endif --&gt;
+      </code></p></div>
+      </dd>
+
       <dt><code><var>string1</var> = <var>string2</var><br />
       <var>string1</var> == <var>string2</var><br />
       <var>string1</var> != <var>string2</var></code></dt>
@@ -615,6 +635,35 @@
       parsed expression tokenizer information, the parse tree and how it is
       evaluated into the output sent to the client.</p>
     </div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SSIEnableAccess" id="SSIEnableAccess">SSIEnableAccess</a> <a name="ssienableaccess" id="ssienableaccess">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the -A flag during conditional flow control processing.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIEnableAccess on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSIEnableAccess off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
+</table>
+    <p>The <code class="directive">SSIEnableAccess</code> directive controls whether
+    the -A test is enabled during conditional flow control processing.
+    <code class="directive">SSIEnableAccess</code> can take on the following values:</p>
+
+    <dl>
+
+      <dt><code>off</code></dt>
+      <dd>&lt;!--#if expr="-A /foo"--&gt; will be interpreted as a series
+      of string and regular expression tokens, the -A has no special
+      meaning.</dd>
+
+      <dt><code>on</code></dt>
+      <dd>&lt;!--#if expr="-A /foo"--&gt; will evaluate to false if the
+      URL /foo is inaccessible by configuration, or true otherwise.</dd>
+
+    </dl>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSIEndTag" id="SSIEndTag">SSIEndTag</a> <a name="ssiendtag" id="ssiendtag">Directive</a></h2>
@@ -794,7 +843,7 @@ set</td></tr>
       </dd>
     </dl>
 
-    
+
 </div>
 </div>
 <div class="bottomlang">
