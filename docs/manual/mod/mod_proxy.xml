@@ -245,7 +245,7 @@
 
     </section> <!-- /envsettings -->
 
-    <section id="request-bodies"><title>Request Bodys</title>
+    <section id="request-bodies"><title>Request Bodies</title>
 
     <p>Some request methods such as POST include a request body.
     The HTTP protocol requires that requests which include a body
