@@ -102,8 +102,8 @@ integrity, and authentication.</p>
     <p>Anyone can encrypt a message using the public key, but only the
     owner of the private key will be able to read it. In this way, Alice
     can send private messages to the owner of a key-pair (the bank), by
-    encrypting it using their public key. Only the bank will be able to
-    decrypt it.</p>
+    encrypting them using their public key. Only the bank will be able to
+    decrypt them.</p>
 
 
 <h3><a name="messagedigests" id="messagedigests">Message Digests</a></h3>
@@ -144,13 +144,13 @@ message is really from her, so an intruder cannot request a transaction
 involving her account. A <em>digital signature</em>, created by Alice and
 included with the message, serves this purpose.</p>
 
-<p>Digital signatures are created by encrypting a digest of the message,
-and other information (such as a sequence number) with the sender's
-private key. Though anyone can <em>decrypt</em> the signature using the public
-key, only the sender knows the private key. This means that only they can
-have signed it. Including the digest in the signature means the signature is
-only good for that message; it also ensures the integrity of the message since
-no one can change the digest and still sign it.</p>
+<p>Digital signatures are created by encrypting a digest of the message, and
+other information (such as a sequence number) with the sender's private key.
+Though anyone can <em>decrypt</em> the signature using the public key, only the
+sender knows the private key. This means that only the sender can have signed
+the message. Including the digest in the signature means the signature is only
+good for that message; it also ensures the integrity of the message since no one
+can change the digest and still sign it.</p>
 <p>To guard against interception and reuse of the signature by an intruder at a
 later date, the signature contains a unique sequence number. This protects
 the bank from a fraudulent claim from Alice that she did not send the message
@@ -292,7 +292,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
     itself of the identity of the private key owner of a key-pair. 
     For instance, if Alice requests a personal certificate, the 
     Certificate Authority must first make sure that Alice really is the 
-    person the certificate claims she is.</p>
+    person the certificate request claims she is.</p>
 
     <h4><a name="certificatechains" id="certificatechains">Certificate Chains</a></h4>
     
