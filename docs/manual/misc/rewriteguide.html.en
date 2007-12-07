@@ -135,19 +135,23 @@ RewriteRule   ^/([uge])/(<strong>[^/]+</strong>)$  /$1/$2<strong>/</strong>   [<
       <dl>
         <dt>Description:</dt>
 
-        <dd>...</dd>
+        <dd>The goal of this rule is to force the use of a particular
+        hostname, in preference to other hostnames which may be used to
+        reach the same site. For example, if you wish to force the use
+        of <strong>www.example.com</strong> instead of
+        <strong>example.com</strong>, you might use a variant of the
+        following recipe.</dd>
+
 
         <dt>Solution:</dt>
 
         <dd>
 <div class="example"><pre>
-RewriteCond %{HTTP_HOST}   !^fully\.qualified\.domain\.name [NC]
+# To force the use of 
+RewriteEngine On
+RewriteCond %{HTTP_HOST}   !^www\.example\.com [NC]
 RewriteCond %{HTTP_HOST}   !^$
-RewriteCond %{SERVER_PORT} !^80$
-RewriteRule ^/(.*)         http://fully.qualified.domain.name:%{SERVER_PORT}/$1 [L,R]
-RewriteCond %{HTTP_HOST}   !^fully\.qualified\.domain\.name [NC]
-RewriteCond %{HTTP_HOST}   !^$
-RewriteRule ^/(.*)         http://fully.qualified.domain.name/$1 [L,R]
+RewriteRule ^/(.*)         http://www.example.com/$1 [L,R]
 </pre></div>
         </dd>
       </dl>
