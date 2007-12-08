@@ -79,32 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_rewrite: Also set the Vary header if a rewrite condition is true and
-    uses a HTTP header, but all remaining rewrite conditions are skipped due
-    to the [OR] flag.
-    Trunk version of patch:
-       http://svn.apache.org/viewcvs.cgi?rev=574201&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, niq
-    +0: jim: I'm curious that if this would result in some
-             "regressions" for some users who either depend on
-             the old behavior or have worked around it...
-        rpluem answers: If r574684 is backported (see below) these users can
-        fix it without workarounds and a clear and promised behaviour.
-        Relying on the above is relying on a buggy iundocumented behaviour,
-        but yes I do this sometimes by myself :-).
-    +1: jim: iff r574684 is also backported
-
-  * mod_rewrite: Add the novary flag to RewriteCond in order to prevent
-    the appending of HTTP headers used in a rewrite condition to the Vary
-    header of the response.
-    Trunk version of patch:
-       http://svn.apache.org/viewcvs.cgi?rev=574684&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim, niq
-
   * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
     ap_vrprintf(). PR 43310
     trunk:
