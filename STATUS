@@ -79,6 +79,25 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_status: For long request lines we only see the front part of
+    the requests in mod_status, which is useless if they only vary
+    in their ending bits. Allow admin to specify whether they want
+    to see the 1st 63 chars of the request, or the last.
+    trunk:
+       http://svn.apache.org/viewvc?view=rev&revision=590641
+    2.2.x:
+       http://people.apache.org/~jim/patches/reqtail-patch.txt
+    +1: jim, rpluem, niq
+
+  * core: Change etag generation to produce identical results on
+          32-bit and 64-bit platforms.
+    PR 40064.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&rev=517238
+       http://svn.apache.org/viewvc?view=rev&rev=517654
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem, jim, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -117,7 +136,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
     +1: jim, rpluem
     niq: Doesn't allocating 2^n+1 bytes risk being horribly inefficient?
-         Would it make sense to reduce AP_IOBUFSIZE to 8091 so buf doesn't
+         Would it make sense to reduce AP_IOBUFSIZE to 8191 so buf doesn't
          go one over a big boundary?
     jim: The issue is that we allocate an array of AP_IOBUFSIZE
          but go beyond that (note we send the end to curpos+AP_IOBUFSIZE)
@@ -130,16 +149,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          code do this by setting the endpos to one less to "save"
          space for the NUL, but they don't have related sections
          which assume a set size; this does (AP_IOBUFSIZE).
-
-  * mod_status: For long request lines we only see the front part of
-    the requests in mod_status, which is useless if they only vary
-    in their ending bits. Allow admin to specify whether they want
-    to see the 1st 63 chars of the request, or the last.
-    trunk:
-       http://svn.apache.org/viewvc?view=rev&revision=590641
-    2.2.x:
-       http://people.apache.org/~jim/patches/reqtail-patch.txt
-    +1: jim, rpluem
+    niq: You're missing my point.  That this patch fixes a bug is
+         perfectly clear.  But it does so by allocating (AP_IOBUFSIZE+1)
+         bytes.  My point: isn't that likely to be horribly inefficient
+         if AP_IOBUFSIZE == 2^n+1?  THEREFORE this fix should be
+         accompanied by decrementing AP_IOBUFSIZE, so that the
+         allocation of AP_IOBUFSIZE+1 bytes becomes 2^n.
+         Correct me if I'm wrong about that mattering ever, on
+         any platform and architecture.
 
    * mod_proxy: Support variable interpolation in reverse proxy configuration
      (revised proposal dealing with wrowe's concerns).
@@ -171,16 +188,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         make it harder to recognize regressions.
     Trunk version of patch:
        http://svn.apache.org/viewcvs.cgi?rev=599589&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim
-
-  * core: Change etag generation to produce identical results on
-          32-bit and 64-bit platforms.
-    PR 40064.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&rev=517238
-       http://svn.apache.org/viewvc?view=rev&rev=517654
     Backport version for 2.2.x of patch:
        Trunk version of patch works
     +1: rpluem, jim
