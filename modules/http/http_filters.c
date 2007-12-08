@@ -243,6 +243,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             if (block == APR_NONBLOCK_READ &&
                 ( (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb)) ||
                   (APR_STATUS_IS_EAGAIN(rv)) )) {
+                ctx->state = BODY_CHUNK_PART;
                 return APR_EAGAIN;
             }
 
