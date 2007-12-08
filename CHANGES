@@ -9,6 +9,11 @@ Changes with Apache 2.2.7
   *) Various code cleanups. PR 38699, 39518, 42005, 42006, 42007, 42008, 42009
      [Christophe Jaillet <christophe.jaillet wanadoo.fr>]
 
+  *) mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx)
+     responses from the backend according to RFC2616.  But make it
+     configurable in case something breaks on it.
+     PR 16518 [Nick Kew]
+
   *) rotatelogs: Change command-line parsing to report more types
      of errors.  Allow local timestamps to be used when rotating based
      on file size.  [Jeff Trawick]

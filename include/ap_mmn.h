@@ -117,6 +117,7 @@
  * 20051115.6 (2.2.7)  Added retry_set to proxy_worker (minor)
  * 20051115.7 (2.2.7)  Added conn_rec::clogging_input_filters (minor)
  * 20051115.8 (2.2.7)  Added flags to proxy_alias (minor)
+ * 20051115.9 (2.2.7)  Add ap_send_interim_response API
  *
  */
 
@@ -125,7 +126,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 8                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 9                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

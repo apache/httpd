@@ -79,18 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx) responses
-    incorporating ap_send_interim_response core API
-    PR 16518
-    trunk:
-      http://svn.apache.org/viewvc?view=rev&revision=582630
-      http://svn.apache.org/viewvc?view=rev&revision=582652
-      http://svn.apache.org/viewvc?view=rev&revision=582631
-      http://svn.apache.org/viewvc?view=rev&revision=588806
-    2.2.x:
-      http://people.apache.org/~niq/16508.patch
-    +1: niq, rpluem, jim
-
   * http_filters: Fix handling of unrecognised Transfer Encodings
     PR 43882
     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_filters.c?r1=592951&r2=599137

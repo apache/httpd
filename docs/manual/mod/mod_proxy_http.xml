@@ -90,6 +90,17 @@
         request bodies to be sent to the backend using chunked transfer
         encoding.  This allows the request to be efficiently streamed,
         but requires that the backend server supports HTTP/1.1.</dd>
+        <dt>proxy-interim-response</dt>
+        <dd>This variable takes values <code>RFC</code> or
+        <code>Suppress</code>.  Earlier httpd versions would suppress
+        HTTP interim (1xx) responses sent from the backend.  This is
+        technically a violation of the HTTP protocol.  In practice,
+        if a backend sends an interim response, it may itself be
+        extending the protocol in a manner we know nothing about,
+        or just broken.  So this is now configurable: set
+        <code>proxy-interim-response RFC</code> to be fully protocol
+        compliant, or <code>proxy-interim-response Suppress</code>
+        to suppress interim responses.</dd>
     </dl>
 </section>
 
