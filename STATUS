@@ -135,7 +135,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=602491
     2.2.x:
        Trunk version of patch works
-    +1: jim
+    +1: jim, rpluem
 
    * mod_proxy: Support variable interpolation in reverse proxy configuration
      (revised proposal dealing with wrowe's concerns).
