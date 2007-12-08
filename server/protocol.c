@@ -1525,7 +1525,7 @@ AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 {
     apr_size_t written;
     struct ap_vrprintf_data vd;
-    char vrprintf_buf[AP_IOBUFSIZE+1];
+    char vrprintf_buf[AP_IOBUFSIZE];
 
     vd.vbuff.curpos = vrprintf_buf;
     vd.vbuff.endpos = vrprintf_buf + AP_IOBUFSIZE;
@@ -1536,9 +1536,6 @@ AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
         return -1;
 
     written = apr_vformatter(r_flush, &vd.vbuff, fmt, va);
-
-    /* tack on null terminator on remaining string */
-    *(vd.vbuff.curpos) = '\0';
 
     if (written != -1) {
         int n = vd.vbuff.curpos - vrprintf_buf;
