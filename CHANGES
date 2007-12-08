@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) core: Handle unrecognised transfer-encodings.
+     PR 43882 [Nick Kew, Jeff Trawick]
+
   *) mod_include: Add an "if" directive syntax to test whether an URL
      is accessible, and if so, conditionally display content. This
      allows a webmaster to hide a link to a private page when the user
