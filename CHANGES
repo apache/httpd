@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_rewrite: Add the novary flag to RewriteCond.
+     [Ruediger Pluem] 
+
   *) core: Change etag generation to produce identical results on
      32-bit and 64-bit platforms.  PR 40064.  [Joe Orton]
 

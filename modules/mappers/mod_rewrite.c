@@ -130,6 +130,7 @@
 #define CONDFLAG_NOCASE             1<<1
 #define CONDFLAG_NOTMATCH           1<<2
 #define CONDFLAG_ORNEXT             1<<3
+#define CONDFLAG_NOVARY             1<<4
 
 #define RULEFLAG_NONE               1<<0
 #define RULEFLAG_FORCEREDIRECT      1<<1
@@ -3043,6 +3044,10 @@ static const char *cmd_rewritecond_setflag(apr_pool_t *p, void *_cfg,
              || strcasecmp(key, "OR") == 0    ) {
         cfg->flags |= CONDFLAG_ORNEXT;
     }
+    else if (   strcasecmp(key, "novary") == 0
+             || strcasecmp(key, "NV") == 0    ) {
+        cfg->flags |= CONDFLAG_NOVARY;
+    }
     else {
         return apr_pstrcat(p, "RewriteCond: unknown flag '", key, "'", NULL);
     }
@@ -3744,6 +3749,12 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
         rewritecond_entry *c = &conds[i];
 
         rc = apply_rewrite_cond(c, ctx);
+        /*
+         * Reset vary_this if the novary flag is set for this condition.
+         */
+        if (c->flags & CONDFLAG_NOVARY) {
+            ctx->vary_this = NULL;
+        }
         if (c->flags & CONDFLAG_ORNEXT) {
             if (!rc) {
                 /* One condition is false, but another can be still true. */
@@ -3756,7 +3767,6 @@ static int apply_rewrite_rule(rewriterule_entry *p, rewrite_ctx *ctx)
                        && c->flags & CONDFLAG_ORNEXT) {
                     c = &conds[++i];
                 }
-                continue;
             }
         }
         else if (!rc) {
