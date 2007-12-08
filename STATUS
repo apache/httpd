@@ -107,7 +107,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Don't even bother...
     2.2.x:
        http://people.apache.org/~jim/patches/mod_substitute-2.2rev2.txt
-    +1: jim, rpluem
+    +1: jim, rpluem, fuankg
 
   * mod_autoindex: make spacing in HTML code the same as before r593816. This
         avoids that the autoindex test (t/modules/autoindex) fails. Adjusting
@@ -117,7 +117,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs.cgi?rev=599589&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem, jim
+    +1: rpluem, jim, fuankg
 
   * core: Fix broken chunk filtering that causes all non blocking reads to be
           converted into blocking reads
