@@ -1599,6 +1599,9 @@ static apr_status_t connection_cleanup(void *theconn)
     /* determine if the connection need to be closed */
     if (conn->close) {
         apr_pool_t *p = conn->pool;
+        if (conn->connection) {
+            apr_pool_cleanup_kill(conn->pool, conn, connection_cleanup);
+        }
         apr_pool_clear(conn->pool);
         memset(conn, 0, sizeof(proxy_conn_rec));
         conn->pool = p;
@@ -1616,6 +1619,54 @@ static apr_status_t connection_cleanup(void *theconn)
     }
 
     /* Always return the SUCCESS */
+    return APR_SUCCESS;
+}
+
+static apr_status_t socket_cleanup(proxy_conn_rec *conn)
+{
+    if (conn->sock) {
+        apr_socket_close(conn->sock);
+        conn->sock = NULL;
+    }
+    if (conn->connection) {
+        apr_pool_cleanup_kill(conn->pool, conn, connection_cleanup);
+        conn->connection = NULL;
+    }
+    return APR_SUCCESS;
+}
+
+PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
+                                                            request_rec *r)
+{
+    apr_bucket_brigade *bb;
+    apr_status_t rv;
+
+    /*
+     * If we have an existing SSL connection it might be possible that the
+     * server sent some SSL message we have not read so far (e.g. a SSL
+     * shutdown message if the server closed the keepalive connection while
+     * the connection was held unused in our pool).
+     * So ensure that if present (=> APR_NONBLOCK_READ) it is read and
+     * processed. We don't expect any data to be in the returned brigade.
+     */
+    if (conn->sock && conn->connection) {
+        bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+        rv = ap_get_brigade(conn->connection->input_filters, bb,
+                            AP_MODE_READBYTES, APR_NONBLOCK_READ,
+                            HUGE_STRING_LEN);
+        if ((rv != APR_SUCCESS) && !APR_STATUS_IS_EAGAIN(rv)) {
+            socket_cleanup(conn);
+        }
+        if (!APR_BRIGADE_EMPTY(bb)) {
+            apr_off_t len;
+
+            rv = apr_brigade_length(bb, 0, &len);
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                          "proxy: SSL cleanup brigade contained %"
+                          APR_OFF_T_FMT " bytes of data.", len);
+        }
+        apr_brigade_destroy(bb);
+    }
     return APR_SUCCESS;
 }
 
@@ -1895,11 +1946,6 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "proxy: %s: has released connection for (%s)",
                  proxy_function, conn->worker->hostname);
-    /* If there is a connection kill it's cleanup */
-    if (conn->connection) {
-        apr_pool_cleanup_kill(conn->connection->pool, conn, connection_cleanup);
-        conn->connection = NULL;
-    }
     connection_cleanup(conn);
 
     return OK;
@@ -1972,14 +2018,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->hostname = apr_pstrdup(conn->pool, uri->hostname);
             conn->port = uri->port;
         }
-        if (conn->sock) {
-            apr_socket_close(conn->sock);
-            conn->sock = NULL;
-        }
-        if (conn->connection) {
-            apr_pool_cleanup_kill(conn->connection->pool, conn, connection_cleanup);
-            conn->connection = NULL;
-        }
+        socket_cleanup(conn);
         err = apr_sockaddr_info_get(&(conn->addr),
                                     conn->hostname, APR_UNSPEC,
                                     conn->port, 0,
@@ -2131,8 +2170,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
          * relatively small compared to connection lifetime
          */
         if (!(connected = is_socket_connected(conn->sock))) {
-            apr_socket_close(conn->sock);
-            conn->sock = NULL;
+            socket_cleanup(conn);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "proxy: %s: backend socket is disconnected.",
                          proxy_function);
@@ -2156,6 +2194,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             backend_addr = backend_addr->next;
             continue;
         }
+        conn->connection = NULL;
 
 #if !defined(TPF) && !defined(BEOS)
         if (worker->recv_buffer_size > 0 &&
@@ -2245,13 +2284,19 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     apr_sockaddr_t *backend_addr = conn->addr;
     int rc;
     apr_interval_time_t current_timeout;
+    apr_bucket_alloc_t *bucket_alloc;
 
+    if (conn->connection) {
+        return OK;
+    }
+
+    bucket_alloc = apr_bucket_alloc_create(conn->pool);
     /*
      * The socket is now open, create a new backend server connection
      */
-    conn->connection = ap_run_create_connection(c->pool, s, conn->sock,
-                                                c->id, c->sbh,
-                                                c->bucket_alloc);
+    conn->connection = ap_run_create_connection(conn->pool, s, conn->sock,
+                                                0, NULL,
+                                                bucket_alloc);
 
     if (!conn->connection) {
         /*
@@ -2263,15 +2308,14 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                      "new connection to %pI (%s)", proxy_function,
                      backend_addr, conn->hostname);
         /* XXX: Will be closed when proxy_conn is closed */
-        apr_socket_close(conn->sock);
-        conn->sock = NULL;
+        socket_cleanup(conn);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
     /*
      * register the connection cleanup to client connection
      * so that the connection can be closed or reused
      */
-    apr_pool_cleanup_register(c->pool, (void *)conn,
+    apr_pool_cleanup_register(conn->pool, (void *)conn,
                               connection_cleanup,
                               apr_pool_cleanup_null);
 
