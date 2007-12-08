@@ -1539,9 +1539,6 @@ AP_DECLARE(int) ap_vrprintf(request_rec *r, const char *fmt, va_list va)
 
     written = apr_vformatter(r_flush, &vd.vbuff, fmt, va);
 
-    /* tack on null terminator on remaining string */
-    *(vd.vbuff.curpos) = '\0';
-
     if (written != -1) {
         int n = vd.vbuff.curpos - vrprintf_buf;
 
