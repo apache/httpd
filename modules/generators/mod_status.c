@@ -128,10 +128,24 @@ static const char *set_extended_status(cmd_parms *cmd, void *dummy, int arg)
     return NULL;
 }
 
+static const char *set_reqtail(cmd_parms *cmd, void *dummy, int arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    ap_mod_status_reqtail = arg;
+    return NULL;
+}
+
+
 static const command_rec status_module_cmds[] =
 {
     AP_INIT_FLAG("ExtendedStatus", set_extended_status, NULL, RSRC_CONF,
       "\"On\" to enable extended status information, \"Off\" to disable"),
+    AP_INIT_FLAG("SeeRequestTail", set_reqtail, NULL, RSRC_CONF,
+      "For verbose requests, \"On\" to see the last 63 chars of the request, "
+      "\"Off\" (default) to see the first 63 in extended status display"),
     {NULL}
 };
 

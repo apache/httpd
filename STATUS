@@ -79,15 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_status: For long request lines we only see the front part of
-    the requests in mod_status, which is useless if they only vary
-    in their ending bits. Allow admin to specify whether they want
-    to see the 1st 63 chars of the request, or the last.
-    trunk:
-       http://svn.apache.org/viewvc?view=rev&revision=590641
-    2.2.x:
-       http://people.apache.org/~jim/patches/reqtail-patch.txt
-    +1: jim, rpluem, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

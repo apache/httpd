@@ -197,6 +197,7 @@ AP_DECLARE(lb_score *) ap_get_scoreboard_lb(int lb_num);
 AP_DECLARE_DATA extern scoreboard *ap_scoreboard_image;
 AP_DECLARE_DATA extern const char *ap_scoreboard_fname;
 AP_DECLARE_DATA extern int ap_extended_status;
+AP_DECLARE_DATA extern int ap_mod_status_reqtail;
 
 AP_DECLARE_DATA extern ap_generation_t volatile ap_my_generation;
 
