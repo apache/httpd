@@ -59,7 +59,7 @@ includes any '%' characters, it is treated as a format string for
 <var>.nnnnnnnnnn</var> is automatically added and is the time in
 seconds.  Both formats compute the start time from the beginning of
 the current period.  For example, if a rotation time of 86400 is 
-specified, the hour, minute, and second fields created by
+specified, the hour, minute, and second fields created from the
 <code>strftime(3)</code> format will all be zero, referring to the
 beginning of the current 24-hour period (midnight).</dd>
 
