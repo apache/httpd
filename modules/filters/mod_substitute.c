@@ -77,7 +77,7 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
     return a;
 }
 
-#define MAX_BUCKETS 1000
+#define AP_MAX_BUCKETS 1000
 
 #define SEDSCAT(s1, s2, pool, buff, blen, repl) do { \
     if (!s1) {                                       \
@@ -427,7 +427,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                          * Usually this condition should not become true, but
                          * it is a safety measure for edge cases.
                          */
-                        if (num > MAX_BUCKETS) {
+                        if (num > AP_MAX_BUCKETS) {
                             b = apr_bucket_flush_create(
                                                 f->r->connection->bucket_alloc);
                             APR_BRIGADE_INSERT_TAIL(ctx->passbb, b);
