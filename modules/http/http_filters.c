@@ -115,8 +115,30 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             if (!strcasecmp(tenc, "chunked")) {
                 ctx->state = BODY_CHUNK;
             }
+            /* test lenp, because it gives another case we can handle */
+            else if (!lenp) {
+                /* Something that isn't in HTTP, unless some future
+                 * edition defines new transfer ecodings, is unsupported.
+                 */
+                apr_bucket_brigade *bb;
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
+                              "Unknown Transfer-Encoding: %s", tenc);
+                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+                e = ap_bucket_error_create(HTTP_NOT_IMPLEMENTED, NULL,
+                                           f->r->pool, f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                e = apr_bucket_eos_create(f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                ctx->eos_sent = 1;
+                return ap_pass_brigade(f->r->output_filters, bb);
+            }
+            else {
+                ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r,
+                  "Unknown Transfer-Encoding: %s; using Content-Length", tenc);
+                tenc = NULL;
+            }
         }
-        else if (lenp) {
+        if (lenp && !tenc) {
             char *endstr;
 
             ctx->state = BODY_LENGTH;
