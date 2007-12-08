@@ -79,10 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
   * mod_rewrite: Also set the Vary header if a rewrite condition is true and
     uses a HTTP header, but all remaining rewrite conditions are skipped due
     to the [OR] flag.
@@ -107,7 +103,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs.cgi?rev=574684&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem, jim
+    +1: rpluem, jim, niq
 
   * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
     ap_vrprintf(). PR 43310
@@ -116,7 +112,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=602491
     2.2.x:
        Trunk version of patch works
-    +1: jim, rpluem
+    +1: jim, rpluem, niq
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mod_proxy: Support variable interpolation in reverse proxy configuration
      (revised proposal dealing with wrowe's concerns).
