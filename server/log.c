@@ -263,7 +263,7 @@ static int log_child(apr_pool_t *p, const char *progname,
     apr_status_t rc;
     apr_procattr_t *procattr;
     apr_proc_t *procnew;
-    apr_file_t *errfile;
+    apr_file_t *outfile, *errfile;
 
     if (((rc = apr_procattr_create(&procattr, p)) == APR_SUCCESS)
         && ((rc = apr_procattr_cmdtype_set(procattr,
@@ -282,8 +282,11 @@ static int log_child(apr_pool_t *p, const char *progname,
         pname = apr_pstrdup(p, args[0]);
         procnew = (apr_proc_t *)apr_pcalloc(p, sizeof(*procnew));
 
-        if (dummy_stderr) {
-            if ((rc = apr_file_open_stdout(&errfile, p)) == APR_SUCCESS)
+        if ((rc = apr_file_open_stdout(&outfile, p)) == APR_SUCCESS) {
+            rc = apr_procattr_child_out_set(procattr, outfile, NULL);
+            if (dummy_stderr)
+                rc = apr_procattr_child_err_set(procattr, outfile, NULL);
+            else if ((rc = apr_file_open_stderr(&errfile, p)) == APR_SUCCESS)
                 rc = apr_procattr_child_err_set(procattr, errfile, NULL);
         }
 
@@ -887,6 +890,12 @@ static apr_status_t piped_log_spawn(piped_log *pl)
     else {
         char **args;
         const char *pname;
+        apr_file_t *outfile, *errfile;
+
+        if ((status = apr_file_open_stdout(&outfile, pl->p)) == APR_SUCCESS)
+            status = apr_procattr_child_out_set(procattr, outfile, NULL);
+        if ((status = apr_file_open_stderr(&errfile, pl->p)) == APR_SUCCESS)
+            status = apr_procattr_child_err_set(procattr, errfile, NULL);
 
         apr_tokenize_to_argv(pl->program, &args, pl->p);
         pname = apr_pstrdup(pl->p, args[0]);
