@@ -132,31 +132,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     ap_vrprintf(). PR 43310
     trunk:
        http://svn.apache.org/viewvc?view=rev&revision=589461
+       http://svn.apache.org/viewvc?view=rev&revision=602491
     2.2.x:
        Trunk version of patch works
-    +1: jim, rpluem
-    niq: Doesn't allocating 2^n+1 bytes risk being horribly inefficient?
-         Would it make sense to reduce AP_IOBUFSIZE to 8191 so buf doesn't
-         go one over a big boundary?
-    jim: The issue is that we allocate an array of AP_IOBUFSIZE
-         but go beyond that (note we send the end to curpos+AP_IOBUFSIZE)
-         so it's not just reducing AP_IOBUFSIZE since then we would
-         hit the bug at 8191 boundary instead of the 8192 one.
-         The actual PR suggests simply removing the setting of '\0'
-         which looks good, but there are loads of places in the related
-         code where we use AP_IOBUFSIZE, so it seemed safer to me to
-         simply allocate an extra byte. Note that other sections of
-         code do this by setting the endpos to one less to "save"
-         space for the NUL, but they don't have related sections
-         which assume a set size; this does (AP_IOBUFSIZE).
-    niq: You're missing my point.  That this patch fixes a bug is
-         perfectly clear.  But it does so by allocating (AP_IOBUFSIZE+1)
-         bytes.  My point: isn't that likely to be horribly inefficient
-         if AP_IOBUFSIZE == 2^n+1?  THEREFORE this fix should be
-         accompanied by decrementing AP_IOBUFSIZE, so that the
-         allocation of AP_IOBUFSIZE+1 bytes becomes 2^n.
-         Correct me if I'm wrong about that mattering ever, on
-         any platform and architecture.
+    +1: jim
 
    * mod_proxy: Support variable interpolation in reverse proxy configuration
      (revised proposal dealing with wrowe's concerns).
