@@ -2,24 +2,14 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) http_protocol: Escape request method in 413 error reporting.
-     Determined to be not generally exploitable, but a flaw in any case.
-     PR 44014 [Victor Stinner <victor.stinner inl.fr>]
-
   *) rotatelogs: Improve atomicity when using -l and cleaup code.
      PR 44004 [Rainer Jung]
 
   *) mod_ssl: Add support for OCSP validation of client certificates.
      PR 41123.  [Marc Stern <marc.stern approach.be>, Joe Orton]
 
-  *) mod_filter: Don't segfault on (unsupported) chained FilterProvider usage.
-     PR 43956 [Nick Kew, Ruediger Pluem]
-
   *) mod_unique_id: Fix timestamp value in UNIQUE_ID.
      PR 37064 [Kobayashi <kobayashi firstserver.co.jp>]
-
-  *) core: Handle unrecognised transfer-encodings.
-     PR 43882 [Nick Kew]
 
   *) mod_serf: New module for Reverse Proxying. [Paul Querna]
 
@@ -33,12 +23,6 @@ Changes with Apache 2.3.0
 
   *) scoreboard: Correctly declare ap_time_process_request.
      PR 43789 [Tom Donovan <Tom.Donovan acm.org>]
-
-  *) mod_status: Add SeeRequestTail directive, which determines if
-     ExtendedStatus displays the 1st 63 characters of the request
-     or the last 63. Useful for those requests with large string
-     lengths and which only vary with the last several characters.
-     [Jim Jagielski]
 
   *) core; scoreboard: ap_get_scoreboard_worker(sbh) now takes the sbh member
      from the connection rec, ap_get_scoreboard_worker(proc, thread) will now
@@ -85,9 +69,6 @@ Changes with Apache 2.3.0
   *) mod_substitute: Added a new experimental output filter, which
      performs inline response content pattern matching (including
      regex) and substitution.  [Jim Jagielski]
-
-  *) core: Change etag generation to produce identical results on 
-     32-bit and 64-bit platforms.  PR 40064.  [Joe Orton]
 
   *) ab: Add -r option to continue after socket receive errors. 
      [Filip Hanik <devlist hanik.com>]
