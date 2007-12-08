@@ -361,7 +361,7 @@ static void ssl_init_ctx_protocol(server_rec *s,
                                   modssl_ctx_t *mctx)
 {
     SSL_CTX *ctx = NULL;
-    SSL_METHOD *method = NULL;
+    MODSSL_SSL_METHOD_CONST SSL_METHOD *method = NULL;
     char *cp;
     int protocol = mctx->protocol;
 

@@ -79,13 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_ssl: Enable to build with OpenSSL 0.9.9
-    trunk:
-       http://svn.apache.org/viewvc?view=rev&revision=598019
-    2.2.x:
-       Trunk patches apply
-    +1: fuankg, rpluem, jim
-
   * mod_filter: Don't try to support chained filters when it doesn't work
     PR 43956
     http://svn.apache.org/viewvc?view=rev&revision=598299
