@@ -49,7 +49,11 @@ typedef struct {
 } subst_dir_conf;
 
 typedef struct {
-    apr_bucket_brigade *ctxbb;
+    apr_bucket_brigade *linebb;
+    apr_bucket_brigade *linesbb;
+    apr_bucket_brigade *passbb;
+    apr_bucket_brigade *pattbb;
+    apr_pool_t *tpool;
 } substitute_module_ctx;
 
 static void *create_substitute_dcfg(apr_pool_t *p, char *d)
@@ -72,6 +76,9 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
                                                   base->patterns);
     return a;
 }
+
+#define MAX_BUCKETS 1000
+
 #define SEDSCAT(s1, s2, pool, buff, blen, repl) do { \
     if (!s1) {                                       \
         s1 = apr_pstrmemdup(pool, buff, blen);       \
@@ -91,7 +98,9 @@ static void *merge_substitute_dcfg(apr_pool_t *p, void *basev, void *overv)
     apr_bucket_delete(tmp_b);                        \
 } while (0)
 
-static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
+static void do_pattmatch(ap_filter_t *f, apr_bucket *inb,
+                         apr_bucket_brigade *mybb,
+                         apr_pool_t *tmp_pool)
 {
     int i;
     ap_regmatch_t regm[AP_MAX_REG_MATCH];
@@ -106,7 +115,6 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
     char *s2;
     apr_bucket *b;
     apr_bucket *tmp_b;
-    apr_bucket_brigade *mybb;
     apr_pool_t *tpool;
 
     subst_dir_conf *cfg =
@@ -114,11 +122,10 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                                              &substitute_module);
     subst_pattern_t *script;
 
-    mybb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
     APR_BRIGADE_INSERT_TAIL(mybb, inb);
     
     script = (subst_pattern_t *) cfg->patterns->elts;
-    apr_pool_create(&tpool, f->r->pool);
+    apr_pool_create(&tpool, tmp_pool);
     scratch = NULL;
     fbytes = 0;
     for (i = 0; i < cfg->patterns->nelts; i++) {
@@ -149,7 +156,7 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                              * are constanting allocing space and copying
                              * strings.
                              */
-                            SEDSCAT(s1, s2, f->r->pool, buff, len,
+                            SEDSCAT(s1, s2, tmp_pool, buff, len,
                                     script->replacement);
                         }
                         else {
@@ -163,8 +170,8 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                              * Finally, we create a bucket that contains the
                              * replacement...
                              */
-                            tmp_b = apr_bucket_pool_create(script->replacement,
-                                      script->replen, f->r->pool,
+                            tmp_b = apr_bucket_transient_create(script->replacement,
+                                      script->replen,
                                       f->r->connection->bucket_alloc);
                             /* ... and insert it */
                             APR_BUCKET_INSERT_BEFORE(b, tmp_b);
@@ -179,10 +186,10 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                          * we've finished looking at the bucket, so remove the
                          * old one and add in our new one
                          */
-                        s2 = apr_pstrmemdup(f->r->pool, buff, bytes);
-                        s1 = apr_pstrcat(f->r->pool, s1, s2, NULL);
-                        tmp_b = apr_bucket_pool_create(s1, strlen(s1),
-                                f->r->pool, f->r->connection->bucket_alloc);
+                        s2 = apr_pstrmemdup(tmp_pool, buff, bytes);
+                        s1 = apr_pstrcat(tmp_pool, s1, s2, NULL);
+                        tmp_b = apr_bucket_transient_create(s1, strlen(s1),
+                                            f->r->connection->bucket_alloc);
                         APR_BUCKET_INSERT_BEFORE(b, tmp_b);
                         tmp_b = APR_BUCKET_NEXT(b);
                         apr_bucket_delete(b);
@@ -210,17 +217,17 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                     while (!ap_regexec(script->regexp, p,
                                        AP_MAX_REG_MATCH, regm, 0)) {
                         /* first, grab the replacement string */
-                        repl = ap_pregsub(f->r->pool, script->replacement, p,
+                        repl = ap_pregsub(tmp_pool, script->replacement, p,
                                           AP_MAX_REG_MATCH, regm);
                         if (script->flatten) {
-                            SEDSCAT(s1, s2, f->r->pool, p, regm[0].rm_so, repl);
+                            SEDSCAT(s1, s2, tmp_pool, p, regm[0].rm_so, repl);
                         }
                         else {
                             len = (apr_size_t) (regm[0].rm_eo - regm[0].rm_so);
                             SEDRMPATBCKT(b, regm[0].rm_so, tmp_b, len);
-                            tmp_b = apr_bucket_pool_create(repl, strlen(repl),
-                                      f->r->pool,
-                                      f->r->connection->bucket_alloc);
+                            tmp_b = apr_bucket_transient_create(repl,
+                                                                strlen(repl),
+                                             f->r->connection->bucket_alloc);
                             APR_BUCKET_INSERT_BEFORE(b, tmp_b);
                         }
                         /*
@@ -230,9 +237,9 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
                         p += regm[0].rm_eo;
                     }
                     if (script->flatten && s1) {
-                        s1 = apr_pstrcat(f->r->pool, s1, p, NULL);
-                        tmp_b = apr_bucket_pool_create(s1, strlen(s1),
-                                f->r->pool, f->r->connection->bucket_alloc);
+                        s1 = apr_pstrcat(tmp_pool, s1, p, NULL);
+                        tmp_b = apr_bucket_transient_create(s1, strlen(s1),
+                                            f->r->connection->bucket_alloc);
                         APR_BUCKET_INSERT_BEFORE(b, tmp_b);
                         tmp_b = APR_BUCKET_NEXT(b);
                         apr_bucket_delete(b);
@@ -251,7 +258,7 @@ static apr_bucket_brigade *do_pattmatch(ap_filter_t *f, apr_bucket *inb)
 
     apr_pool_destroy(tpool);
 
-    return mybb;
+    return;
 }
 
 static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
@@ -259,15 +266,12 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
     apr_size_t bytes;
     apr_size_t len;
     apr_size_t fbytes;
-    apr_off_t blen;
     const char *buff;
     const char *nl = NULL;
     char *bflat;
     apr_bucket *b;
     apr_bucket *tmp_b;
-    apr_bucket_brigade *passbb;
-    apr_bucket_brigade *pattbb;
-    apr_bucket_brigade *tmp_ctxbb = NULL;
+    apr_bucket_brigade *tmp_bb = NULL;
     apr_status_t rv;
 
     substitute_module_ctx *ctx = f->ctx;
@@ -279,7 +283,21 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
      */
     if (!ctx) {
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
-        ctx->ctxbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        /*
+         * Create all the temporary brigades we need and reuse them to avoid
+         * creating them over and over again from r->pool which would cost a
+         * lot of memory in some cases.
+         */
+        ctx->linebb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        ctx->linesbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        ctx->pattbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        /*
+         * Everything to be passed to the next filter goes in
+         * here, our pass brigade.
+         */
+        ctx->passbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        /* Create our temporary pool only once */
+        apr_pool_create(&(ctx->tpool), f->r->pool);
         apr_table_unset(f->r->headers_out, "Content-Length");
     }
 
@@ -290,12 +308,6 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
         return APR_SUCCESS;
 
     /*
-     * Everything to be passed to the next filter goes in
-     * here, our pass brigade.
-     */
-    passbb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
-
-    /*
      * Here's the concept:
      *  Read in the data and look for newlines. Once we
      *  find a full "line", add it to our working brigade.
@@ -303,15 +315,15 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
      *  any left over data (not a "full" line), store that
      *  for the next pass.
      *
-     * Note: anything stored in ctxbb for sure does not have
+     * Note: anything stored in ctx->linebb for sure does not have
      * a newline char, so we don't concat that bb with the
      * new bb, since we would spending time searching for the newline
      * in data we know it doesn't exist. So instead, we simply scan
-     * our current bb and, if we see a newline, prepend ctxbb
+     * our current bb and, if we see a newline, prepend ctx->linebb
      * to the front of it. This makes the code much less straight-
-     * forward (otherwise we could APR_BRIGADE_CONCAT(ctx->ctxbb, bb)
+     * forward (otherwise we could APR_BRIGADE_CONCAT(ctx->linebb, bb)
      * and just scan for newlines and not bother with needing to know
-     * when ctx->ctxbb needs to be reset) but also faster. We'll take
+     * when ctx->linebb needs to be reset) but also faster. We'll take
      * the speed.
      *
      * Note: apr_brigade_split_line would be nice here, but we
@@ -322,43 +334,31 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
      */
 
     while ((b = APR_BRIGADE_FIRST(bb)) && (b != APR_BRIGADE_SENTINEL(bb))) {
-        apr_brigade_length(passbb, 0, &blen);
-        if ((blen != -1) && (blen > AP_MIN_BYTES_TO_WRITE)) {
-            rv = ap_pass_brigade(f->next, passbb);
-            apr_brigade_cleanup(passbb);
-            if (rv != APR_SUCCESS)
-                return rv;
-        }
         if (APR_BUCKET_IS_EOS(b)) {
             /*
              * if we see the EOS, then we need to pass along everything we
-             * have. But if the ctxbb isn't empty, then we need to add that
-             * to the end of what we'll be passing.
+             * have. But if the ctx->linebb isn't empty, then we need to add
+             * that to the end of what we'll be passing.
              */
-            if (!APR_BRIGADE_EMPTY(ctx->ctxbb)) {
-                rv = apr_brigade_pflatten(ctx->ctxbb, &bflat, 
-                                          &fbytes, f->r->pool);
-                tmp_b = apr_bucket_pool_create(bflat, fbytes, f->r->pool,
-                                               f->r->connection->bucket_alloc);
-                pattbb = do_pattmatch(f, tmp_b);
-                APR_BRIGADE_CONCAT(passbb, pattbb);
+            if (!APR_BRIGADE_EMPTY(ctx->linebb)) {
+                rv = apr_brigade_pflatten(ctx->linebb, &bflat,
+                                          &fbytes, ctx->tpool);
+                tmp_b = apr_bucket_transient_create(bflat, fbytes,
+                                                f->r->connection->bucket_alloc);
+                do_pattmatch(f, tmp_b, ctx->pattbb, ctx->tpool);
+                APR_BRIGADE_CONCAT(ctx->passbb, ctx->pattbb);
             }
-            apr_brigade_cleanup(ctx->ctxbb);
+            apr_brigade_cleanup(ctx->linebb);
             APR_BUCKET_REMOVE(b);
-            APR_BRIGADE_INSERT_TAIL(passbb, b);
-            break;
+            APR_BRIGADE_INSERT_TAIL(ctx->passbb, b);
         }
-        else if (APR_BUCKET_IS_FLUSH(b)) {
-            APR_BUCKET_REMOVE(b);
-            APR_BRIGADE_INSERT_TAIL(passbb, b);
-            rv = ap_pass_brigade(f->next, passbb);
-            apr_brigade_cleanup(passbb);
-            if (rv != APR_SUCCESS)
-                return rv;
-        }
+        /*
+         * No need to handle FLUSH buckets separately as we call
+         * ap_pass_brigade anyway at the end of the loop.
+         */
         else if (APR_BUCKET_IS_METADATA(b)) {
             APR_BUCKET_REMOVE(b);
-            APR_BRIGADE_INSERT_TAIL(passbb, b);
+            APR_BRIGADE_INSERT_TAIL(ctx->passbb, b);
         }
         else {
             /*
@@ -370,6 +370,7 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                 APR_BUCKET_REMOVE(b);
             }
             else {
+                int num = 0;
                 while (bytes > 0) {
                     nl = memchr(buff, APR_ASCII_LF, bytes);
                     if (nl) {
@@ -396,17 +397,47 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                          * bb, morph the whole shebang into a bucket which is
                          * then added to the tail of the newline bb.
                          */
-                        if (!APR_BRIGADE_EMPTY(ctx->ctxbb)) {
-                            APR_BRIGADE_INSERT_TAIL(ctx->ctxbb, b);
-                            rv = apr_brigade_pflatten(ctx->ctxbb, &bflat,
-                                                      &fbytes, f->r->pool);
-                            b = apr_bucket_pool_create(bflat, fbytes, 
-                                                       f->r->pool,
+                        if (!APR_BRIGADE_EMPTY(ctx->linebb)) {
+                            APR_BRIGADE_INSERT_TAIL(ctx->linebb, b);
+                            rv = apr_brigade_pflatten(ctx->linebb, &bflat,
+                                                      &fbytes, ctx->tpool);
+                            b = apr_bucket_transient_create(bflat, fbytes,
                                             f->r->connection->bucket_alloc);
-                            apr_brigade_cleanup(ctx->ctxbb);
+                            apr_brigade_cleanup(ctx->linebb);
                         }
-                        pattbb = do_pattmatch(f, b);
-                        APR_BRIGADE_CONCAT(passbb, pattbb);
+                        do_pattmatch(f, b, ctx->pattbb, ctx->tpool);
+                        /*
+                         * Count how many buckets we have in ctx->passbb
+                         * so far. Yes, this is correct we count ctx->passbb
+                         * and not ctx->pattbb as we do not reset num on every
+                         * iteration.
+                         */
+                        for (b = APR_BRIGADE_FIRST(ctx->pattbb);
+                             b != APR_BRIGADE_SENTINEL(ctx->pattbb);
+                             b = APR_BUCKET_NEXT(b)) {
+                            num++;
+                        }
+                        APR_BRIGADE_CONCAT(ctx->passbb, ctx->pattbb);
+                        /*
+                         * If the number of buckets in ctx->passbb reaches an
+                         * "insane" level, we consume much memory for all the
+                         * buckets as such. So lets flush them down the chain
+                         * in this case and thus clear ctx->passbb. This frees
+                         * the buckets memory for further processing.
+                         * Usually this condition should not become true, but
+                         * it is a safety measure for edge cases.
+                         */
+                        if (num > MAX_BUCKETS) {
+                            b = apr_bucket_flush_create(
+                                                f->r->connection->bucket_alloc);
+                            APR_BRIGADE_INSERT_TAIL(ctx->passbb, b);
+                            rv = ap_pass_brigade(f->next, ctx->passbb);
+                            apr_brigade_cleanup(ctx->passbb);
+                            num = 0;
+                            apr_pool_clear(ctx->tpool);
+                            if (rv != APR_SUCCESS)
+                                return rv;
+                        }
                         b = tmp_b;
                     }
                     else {
@@ -415,24 +446,36 @@ static apr_status_t substitute_filter(ap_filter_t *f, apr_bucket_brigade *bb)
                          * tuck data away and get next bucket
                          */
                         APR_BUCKET_REMOVE(b);
-                        APR_BRIGADE_INSERT_TAIL(ctx->ctxbb, b);
+                        APR_BRIGADE_INSERT_TAIL(ctx->linebb, b);
                         bytes = 0;
                     }
                 }
             }
         }
+        if (!APR_BRIGADE_EMPTY(ctx->passbb)) {
+            rv = ap_pass_brigade(f->next, ctx->passbb);
+            apr_brigade_cleanup(ctx->passbb);
+            if (rv != APR_SUCCESS) {
+                apr_pool_clear(ctx->tpool);
+                return rv;
+            }
+        }
+        apr_pool_clear(ctx->tpool);
     }
-
-    /* Pass it down */
-    rv = ap_pass_brigade(f->next, passbb);
 
     /* Anything left we want to save/setaside for the next go-around */
-    if (!APR_BRIGADE_EMPTY(ctx->ctxbb)) {
-        ap_save_brigade(f, &tmp_ctxbb, &(ctx->ctxbb), f->r->pool);
-        ctx->ctxbb = tmp_ctxbb;
+    if (!APR_BRIGADE_EMPTY(ctx->linebb)) {
+        /*
+         * Provide ap_save_brigade with an existing empty brigade
+         * (ctx->linesbb) to avoid creating a new one.
+         */
+        ap_save_brigade(f, &(ctx->linesbb), &(ctx->linebb), f->r->pool);
+        tmp_bb = ctx->linebb;
+        ctx->linebb = ctx->linesbb;
+        ctx->linesbb = tmp_bb;
     }
 
-    return rv;
+    return APR_SUCCESS;
 }
 
 static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
