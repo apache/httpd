@@ -1,6 +1,9 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) mod_filter: Don't segfault on (unsupported) chained FilterProvider usage.
+     PR 43956 [Nick Kew, Ruediger Pluem]
+
   *) core: Handle unrecognised transfer-encodings.
      PR 43882 [Nick Kew, Jeff Trawick]
 
