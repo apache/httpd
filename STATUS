@@ -95,6 +95,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem says: Please add the documentation to your 2.2.x version of your
                   patch and a minor bump (changes to public mod_proxy.h) and
                   assume you are +1 to your own proposal.
+     niq says: I'll attend to that.  As regards vote, I'm +1 on the proposal,
+               but -0 on including this as a new feature in 2.2.7.
+               Better IMHO to separate releasing it from the many bugfixes
+               in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
 
   * mod_substitute: New module for on-the-fly response rewrite-like
     capability.
