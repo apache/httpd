@@ -79,11 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * http_protocol: Escape request method in 413 error reporting.
-    Determined to be not generally exploitable, but a flaw in any case.
-    PR 44014 [Victor Stinner <victor.stinner inl.fr>]
-       http://svn.apache.org/viewvc?view=rev&rev=600645
-    +1: wrowe, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]

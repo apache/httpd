@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) http_protocol: Escape request method in 413 error reporting.
+     Determined to be not generally exploitable, but a flaw in any case.
+     PR 44014 [Victor Stinner <victor.stinner inl.fr>]
+
   *) mod_filter: Don't segfault on (unsupported) chained FilterProvider usage.
      PR 43956 [Nick Kew, Ruediger Pluem]
 
