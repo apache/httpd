@@ -136,10 +136,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/experimental/mod_substitute.c?view=log
        Don't even bother...
     2.2.x:
-       http://people.apache.org/~jim/patches/mod_substitute-2.2.txt
-    +1: jim
-    rpluem says: If you add r602469
-                 (http://svn.apache.org/viewvc?rev=602469&view=rev) I am +1.
+       http://people.apache.org/~jim/patches/mod_substitute-2.2rev2.txt
+    +1: jim, rpluem
 
   * mod_autoindex: make spacing in HTML code the same as before r593816. This
         avoids that the autoindex test (t/modules/autoindex) fails. Adjusting
