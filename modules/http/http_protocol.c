@@ -931,7 +931,7 @@ static const char *get_canned_error_string(int status,
     case HTTP_LENGTH_REQUIRED:
         s1 = apr_pstrcat(p,
                          "<p>A request of the requested method ",
-                         r->method,
+                         ap_escape_html(r->pool, r->method),
                          " requires a valid Content-length.<br />\n",
                          NULL);
         return(add_optional_notes(r, s1, "error-notes", "</p>\n"));
@@ -978,7 +978,7 @@ static const char *get_canned_error_string(int status,
                            "The requested resource<br />",
                            ap_escape_html(r->pool, r->uri), "<br />\n",
                            "does not allow request data with ",
-                           r->method,
+                           ap_escape_html(r->pool, r->method),
                            " requests, or the amount of data provided in\n"
                            "the request exceeds the capacity limit.\n",
                            NULL));
