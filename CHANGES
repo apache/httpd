@@ -36,6 +36,12 @@ Changes with Apache 2.2.7
      don't escape/unescape forward-proxied URLs.
      PR 41798, 42592 [Nick Kew, Ruediger Pluem, Roy Fielding, Jim Jagielski]
 
+  *) mod_status: Add SeeRequestTail directive, which determines if
+     ExtendedStatus displays the 1st 63 characters of the request
+     or the last 63. Useful for those requests with large string
+     lengths and which only vary with the last several characters.
+     [Jim Jagielski]
+
   *) mod_ssl: Prevent memory corruption of version string.
      PR 43865, 43334 [William Rowe, Joe Orton]
 
