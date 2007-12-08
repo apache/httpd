@@ -114,7 +114,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     This goes all the way back to piped logs failing to run on win32.
     Not in or needed at trunk/, as apr 1.3.0 has the proper fix.
       http://people.apache.org/~wrowe/httpd-2.0-2.2-procattr-bugfix-log.c.patch
-    +1: wrowe, rpluem
+    +1: wrowe, rpluem, jim
 
   * mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx) responses
     incorporating ap_send_interim_response core API
@@ -126,7 +126,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=588806
     2.2.x:
       http://people.apache.org/~niq/16508.patch
-    +1: niq, rpluem
+    +1: niq, rpluem, jim
 
   * server/protocol.c: Prevent 1-byte overflow on 8192 boundary in
     ap_vrprintf(). PR 43310
@@ -164,7 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 43882
     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_filters.c?r1=592951&r2=599137
     http://svn.apache.org/viewvc/httpd/httpd/trunk/CHANGES?r1=595672&r2=595671&pathrev=595672 (CHANGES)
-    +1: niq, rpluem
+    +1: niq, rpluem, jim
     niq says: modified in 599059 (following suggestion by trawick)
 
    * mod_proxy: Support variable interpolation in reverse proxy configuration
@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=598019
     2.2.x:
        Trunk patches apply
-    +1: fuankg, rpluem
+    +1: fuankg, rpluem, jim
 
   * mod_substitute: New module for on-the-fly response rewrite-like
     capability.
@@ -203,7 +203,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 43956
     http://svn.apache.org/viewvc?view=rev&revision=598299
     http://svn.apache.org/viewvc?view=rev&revision=599393
-    +1: niq, rpluem
+    +1: niq, rpluem, jim
 
   * mod_autoindex: make spacing in HTML code the same as before r593816. This
         avoids that the autoindex test (t/modules/autoindex) fails. Adjusting
@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs.cgi?rev=599589&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jim
 
   * core: Change etag generation to produce identical results on
           32-bit and 64-bit platforms.
@@ -223,13 +223,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&rev=517654
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jim
 
   * http_protocol: Escape request method in 413 error reporting.
     Determined to be not generally exploitable, but a flaw in any case.
     PR 44014 [Victor Stinner <victor.stinner inl.fr>]
        http://svn.apache.org/viewvc?view=rev&rev=600645
-    +1: wrowe, rpluem
+    +1: wrowe, rpluem, jim
 
   * core: Fix broken chunk filtering that causes all non blocking reads to be
           converted into blocking reads
@@ -242,7 +242,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs.cgi?rev=503863&view=rev (CHANGES)
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
