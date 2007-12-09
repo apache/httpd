@@ -50,9 +50,6 @@ Changes with Apache 2.3.0
      or remote port can be logged.  PR 43415.  [Adam Hasselbalch Hansen 
      <ahh@one.com>, Ruediger Pluem, Jeff Trawick]
 
-  *) mod_rewrite: Add the novary flag to RewriteCond.
-     [Ruediger Pluem]
-
   *) mod_include: Add an "if" directive syntax to test whether an URL
      is accessible, and if so, conditionally display content. This
      allows a webmaster to hide a link to a private page when the user
@@ -69,10 +66,6 @@ Changes with Apache 2.3.0
 
   *) mod_ssl: Add support for caching SSL Sessions in memcached. [Paul Querna]
 
-  *) mod_substitute: Added a new experimental output filter, which
-     performs inline response content pattern matching (including
-     regex) and substitution.  [Jim Jagielski]
-
   *) ab: Add -r option to continue after socket receive errors. 
      [Filip Hanik <devlist hanik.com>]
 
@@ -85,9 +78,6 @@ Changes with Apache 2.3.0
      minimal set of distinct configurations and share connection pools
      whenever possible.  Allow virtual hosts to override inherited SQL
      statements.  PR 41302.  [Chris Darroch]
-
-  *) core: Fix broken chunk filtering that causes all non blocking reads to be
-     converted into blocking reads.  PR 41056. [Jean-Frederic Clere, Jim Jagielski]
 
   *) apxs: Enhance -q flag to print all known variables and their values
      when invoked without variable name(s). 
