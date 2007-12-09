@@ -34,6 +34,10 @@ Changes with Apache 2.2.7
      configurable in case something breaks on it.
      PR 16518 [Nick Kew]
 
+  *) mod_substitute: Added a new experimental output filter, which
+     performs inline response content pattern matching (including
+     regex) and substitution.  [Jim Jagielski, Ruediger Pluem]
+
   *) rotatelogs: Change command-line parsing to report more types
      of errors.  Allow local timestamps to be used when rotating based
      on file size.  [Jeff Trawick]
