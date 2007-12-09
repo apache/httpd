@@ -226,6 +226,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_speling.html">Apache Module mod_speling</a></li>
 <li><a href="mod/mod_ssl.html">Apache Module mod_ssl</a></li>
 <li><a href="mod/mod_status.html">Apache Module mod_status</a></li>
+<li><a href="mod/mod_substitute.html">Apache Module mod_substitute</a></li>
 <li><a href="mod/mod_suexec.html">Apache Module mod_suexec</a></li>
 <li><a href="mod/mod_unique_id.html">Apache Module mod_unique_id</a></li>
 <li><a href="mod/mod_userdir.html">Apache Module mod_userdir</a></li>
