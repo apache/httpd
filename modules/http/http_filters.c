@@ -307,7 +307,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             APR_BRIGADE_INSERT_TAIL(b, e);
             ctx->eos_sent = 1;
             return APR_SUCCESS;
-        case BODY_CHUNK: case BODY_CHUNK_PART:
+        case BODY_CHUNK:
+        case BODY_CHUNK_PART:
             {
                 char line[30];
                 apr_bucket_brigade *bb;
