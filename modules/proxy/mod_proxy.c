@@ -719,9 +719,9 @@ static int proxy_handler(request_rec *r)
         /* set configured max-forwards */
         maxfwd = conf->maxfwd;
     }
-    if (maxfwd > 0) {
+    if (maxfwd >= 0) {
         apr_table_set(r->headers_in, "Max-Forwards",
-                      apr_psprintf(r->pool, "%ld", (maxfwd > 0) ? maxfwd : 0));
+                      apr_psprintf(r->pool, "%ld", maxfwd));
     }
 
     if (r->method_number == M_TRACE) {
