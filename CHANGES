@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: Lower memory consumption in case that flush buckets are passed thru
+     the chunk filter as last bucket of a brigade. PR 23567.
+     [Stefan Fritsch <sf sfritsch.de>]
+
   *) mod_proxy: Keep connections to the backend persistent in the HTTPS case.
      [Ruediger Pluem]
 
