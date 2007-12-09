@@ -89,21 +89,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        (NWGNUsubstitute need also be copied over from trunk, is missing in your patch)
     +1: jim, rpluem, fuankg
 
-  * core: Fix broken chunk filtering that causes all non blocking reads to be
-          converted into blocking reads
-    PR 19954 / 41056
-    Trunk version of patch:
-       http://svn.apache.org/viewcvs.cgi?rev=480135&view=rev
-       http://svn.apache.org/viewcvs.cgi?rev=480193&view=rev
-       http://svn.apache.org/viewcvs.cgi?rev=504559&view=rev
-       http://svn.apache.org/viewcvs.cgi?rev=602349&view=rev
-       http://svn.apache.org/viewcvs.cgi?rev=503863&view=rev (CHANGES)
-       http://svn.apache.org/viewcvs.cgi?rev=602657&view=rev (style chg)
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim, jerenkrantz
-    jerenkrantz says: Feel free to apply with or withour r602657.  =)
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

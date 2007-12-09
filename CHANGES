@@ -1,8 +1,12 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) core: Fix broken chunk filtering that causes all non blocking reads to be
+     converted into blocking reads.  PR 19954, 41056.
+    [Jean-Frederic Clere, Jim Jagielski]
+
   *) mod_rewrite: Add the novary flag to RewriteCond.
-     [Ruediger Pluem] 
+     [Ruediger Pluem]
 
   *) core: Change etag generation to produce identical results on
      32-bit and 64-bit platforms.  PR 40064.  [Joe Orton]
