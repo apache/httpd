@@ -2210,7 +2210,7 @@ Package=<4>
 
 ###############################################################################
 
-Project: "mod_substitute"=.\modules\experimental\mod_substitute.dsp - Package Owner=<4>
+Project: "mod_substitute"=.\modules\filters\mod_substitute.dsp - Package Owner=<4>
 
 Package=<5>
 {{{
