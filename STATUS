@@ -79,16 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_substitute: New module for on-the-fly response rewrite-like
-    capability.
-    trunk:
-       http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/experimental/mod_substitute.c?view=log
-       Don't even bother...
-    2.2.x:
-       http://people.apache.org/~jim/patches/mod_substitute-2.2rev2.txt
-       (NWGNUsubstitute need also be copied over from trunk, is missing in your patch)
-    +1: jim, rpluem, fuankg
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
