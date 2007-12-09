@@ -89,16 +89,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        (NWGNUsubstitute need also be copied over from trunk, is missing in your patch)
     +1: jim, rpluem, fuankg
 
-  * mod_autoindex: make spacing in HTML code the same as before r593816. This
-        avoids that the autoindex test (t/modules/autoindex) fails. Adjusting
-        the autoindex test would cause it to fail with older versions and would
-        make it harder to recognize regressions.
-    Trunk version of patch:
-       http://svn.apache.org/viewcvs.cgi?rev=599589&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim, fuankg
-
   * core: Fix broken chunk filtering that causes all non blocking reads to be
           converted into blocking reads
     PR 19954 / 41056
