@@ -32,8 +32,6 @@
     <p><module>mod_substitute</module> provides a mechanism to perform
     both regular expression and fixed string substitutions on
     response bodies.</p>
-    <p>This is an <strong>experimental</strong> module and should
-    be used with care.</p>
 </summary>
 
 <directivesynopsis>
