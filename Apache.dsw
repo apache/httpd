@@ -255,6 +255,9 @@ Package=<4>
     Project_Dep_Name mod_status
     End Project Dependency
     Begin Project Dependency
+    Project_Dep_Name mod_substitute
+    End Project Dependency
+    Begin Project Dependency
     Project_Dep_Name mod_unique_id
     End Project Dependency
     Begin Project Dependency
@@ -2077,6 +2080,27 @@ Package=<4>
 ###############################################################################
 
 Project: "mod_status"=.\modules\generators\mod_status.dsp - Package Owner=<4>
+
+Package=<5>
+{{{
+}}}
+
+Package=<4>
+{{{
+    Begin Project Dependency
+    Project_Dep_Name libapr
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libaprutil
+    End Project Dependency
+    Begin Project Dependency
+    Project_Dep_Name libhttpd
+    End Project Dependency
+}}}
+
+###############################################################################
+
+Project: "mod_substitute"=.\modules\experimental\mod_substitute.dsp - Package Owner=<4>
 
 Package=<5>
 {{{

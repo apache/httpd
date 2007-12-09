@@ -297,6 +297,7 @@ _build:
 	 $(MAKE) $(MAKEOPT) -f mod_ext_filter.mak  CFG="mod_ext_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_filter.mak      CFG="mod_filter - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	 $(MAKE) $(MAKEOPT) -f mod_include.mak     CFG="mod_include - Win32 $(LONG)" RECURSE=0 $(CTARGET)
+	 $(MAKE) $(MAKEOPT) -f mod_substitute.mak  CFG="mod_substitute - Win32 $(LONG)" RECURSE=0 $(CTARGET)
 	cd ..\..
 	cd modules\generators
 	 $(MAKE) $(MAKEOPT) -f mod_asis.mak        CFG="mod_asis - Win32 $(LONG)" RECURSE=0 $(CTARGET)
@@ -432,6 +433,9 @@ _copybin:
 	copy srclib\apr\$(LONG)\libapr-1.$(src_dll) 		"$(inst_dll)" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.$(src_dll) 	"$(inst_dll)" <.y
 	copy srclib\apr-util\$(LONG)\libaprutil-1.$(src_dll) 	"$(inst_dll)" <.y
+!IF EXIST("srclib\zlib\zlib1.$(src_dll)")
+	copy srclib\zlib\zlib1.$(src_dll)		 	"$(inst_dll)" <.y
+!ENDIF
 	copy modules\aaa\$(LONG)\mod_auth_basic.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_auth_digest.$(src_so) 	"$(inst_so)" <.y
 	copy modules\aaa\$(LONG)\mod_authn_alias.$(src_so) 	"$(inst_so)" <.y
@@ -469,13 +473,11 @@ _copybin:
 	copy modules\filters\$(LONG)\mod_charset_lite.$(src_so)	"$(inst_so)" <.y
 !IF EXIST("srclib\zlib")
 	copy modules\filters\$(LONG)\mod_deflate.$(src_so) 	"$(inst_so)" <.y
-!IF EXIST("srclib\zlib\zlib1.$(src_dll)")
-	copy srclib\zlib\zlib1.$(src_dll)		 	"$(inst_dll)" <.y
-!ENDIF
 !ENDIF
 	copy modules\filters\$(LONG)\mod_ext_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_filter.$(src_so) 	"$(inst_so)" <.y
 	copy modules\filters\$(LONG)\mod_include.$(src_so) 	"$(inst_so)" <.y
+	copy modules\filters\$(LONG)\mod_substitute.$(src_so)	"$(inst_so)" <.y
 	copy modules\generators\$(LONG)\mod_asis.$(src_so) 	"$(inst_so)" <.y
 	copy modules\generators\$(LONG)\mod_autoindex.$(src_so) "$(inst_so)" <.y
 	copy modules\generators\$(LONG)\mod_cgi.$(src_so) 	"$(inst_so)" <.y
