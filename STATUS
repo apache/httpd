@@ -79,27 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
-   * mod_proxy: Support variable interpolation in reverse proxy configuration
-     (revised proposal dealing with wrowe's concerns).
-     trunk:
-       http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
-       http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
-       http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
-       http://svn.apache.org/viewvc?view=rev&revision=589371  (code+docs)
-     2.2.x:
-       http://people.apache.org/~niq/proxy-interp.patch
-     rpluem says: Please add the documentation to your 2.2.x version of your
-                  patch and a minor bump (changes to public mod_proxy.h) and
-                  assume you are +1 to your own proposal.
-     niq says: I'll attend to that.  As regards vote, I'm +1 on the proposal,
-               but -0 on including this as a new feature in 2.2.7.
-               Better IMHO to separate releasing it from the many bugfixes
-               in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
-
   * mod_substitute: New module for on-the-fly response rewrite-like
     capability.
     trunk:
@@ -129,9 +108,31 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs.cgi?rev=504559&view=rev
        http://svn.apache.org/viewcvs.cgi?rev=602349&view=rev
        http://svn.apache.org/viewcvs.cgi?rev=503863&view=rev (CHANGES)
+       http://svn.apache.org/viewcvs.cgi?rev=602657&view=rev (style chg)
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem, jim
+    +1: rpluem, jim, jerenkrantz
+    jerenkrantz says: Feel free to apply with or withour r602657.  =)
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
+
+   * mod_proxy: Support variable interpolation in reverse proxy configuration
+     (revised proposal dealing with wrowe's concerns).
+     trunk:
+       http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
+       http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
+       http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
+       http://svn.apache.org/viewvc?view=rev&revision=589371  (code+docs)
+     2.2.x:
+       http://people.apache.org/~niq/proxy-interp.patch
+     rpluem says: Please add the documentation to your 2.2.x version of your
+                  patch and a minor bump (changes to public mod_proxy.h) and
+                  assume you are +1 to your own proposal.
+     niq says: I'll attend to that.  As regards vote, I'm +1 on the proposal,
+               but -0 on including this as a new feature in 2.2.7.
+               Better IMHO to separate releasing it from the many bugfixes
+               in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
 
 PATCHES/ISSUES THAT ARE STALLED
 
