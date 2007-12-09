@@ -3,7 +3,7 @@ Changes with Apache 2.2.7
 
   *) core: Fix broken chunk filtering that causes all non blocking reads to be
      converted into blocking reads.  PR 19954, 41056.
-    [Jean-Frederic Clere, Jim Jagielski]
+     [Jean-Frederic Clere, Jim Jagielski]
 
   *) mod_rewrite: Add the novary flag to RewriteCond.
      [Ruediger Pluem]
@@ -67,7 +67,7 @@ Changes with Apache 2.2.7
   *) mod_ldap: Give callers a reference to data copied into the request
      pool instead of references directly into the cache
      PR 43786 [Eric Covener]
-    
+
   *) mod_ldap: Stop passing a reference to pconf around for
      (limited) use during request processing, avoiding possible 
      memory corruption and crashes.  [Eric Covener]
