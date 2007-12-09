@@ -32,8 +32,6 @@
     <p><code class="module"><a href="../mod/mod_substitute.html">mod_substitute</a></code> provides a mechanism to perform
     both regular expression and fixed string substitutions on
     response bodies.</p>
-    <p>This is an <strong>experimental</strong> module and should
-    be used with care.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
