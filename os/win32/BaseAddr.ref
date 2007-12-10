@@ -80,3 +80,4 @@ mod_case_filter.so      0x6F9C0000    0x00010000
 mod_case_filter_in.so   0x6F9B0000    0x00010000
 mod_filter.so           0x6F9A0000    0x00010000
 mod_dav_lock.so         0x6F990000    0x00010000
+mod_substitute.so       0x6F980000    0x00010000
