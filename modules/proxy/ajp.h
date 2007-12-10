@@ -132,7 +132,7 @@ struct ajp_msg
 #define AJP_HEADER_SZ_LEN           2
 #define AJP_HEADER_SZ               6
 #define AJP_MSG_BUFFER_SZ           8192
-#define AJP_MAX_BUFFER_SZ           16384
+#define AJP_MAX_BUFFER_SZ           65536
 #define AJP13_MAX_SEND_BODY_SZ      (AJP_MAX_BUFFER_SZ - AJP_HEADER_SZ)
 #define AJP_PING_PONG_SZ            128
 

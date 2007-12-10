@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_ajp: Use 64K as maximum AJP packet size. This is the maximum
+     length we can squeeze inside the AJP message packet.
+     [Mladen Turk]
+
   *) core: Lower memory consumption in case that flush buckets are passed thru
      the chunk filter as last bucket of a brigade. PR 23567.
      [Stefan Fritsch <sf sfritsch.de>]
