@@ -82,6 +82,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
+   * mod_proxy_ajp: Use 64K as maximum allowable AJP packet size
+     Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=602795
+     2.2.x version of the patch works
+     +1 mturk
+
    * mod_proxy: Support variable interpolation in reverse proxy configuration
      (revised proposal dealing with wrowe's concerns).
      trunk:
