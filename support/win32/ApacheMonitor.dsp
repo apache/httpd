@@ -52,8 +52,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /debug /opt:ref
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib wtsapi32.lib /nologo /subsystem:windows
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib wtsapi32.lib /nologo /subsystem:windows /debug /opt:ref
 # Begin Special Build Tool
 TargetPath=.\Release\ApacheMonitor.exe
 SOURCE="$(InputPath)"
@@ -84,8 +84,8 @@ BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
 LINK32=link.exe
-# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /debug
-# ADD LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib /nologo /subsystem:windows /incremental:no /debug
+# ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib wtsapi32.lib /nologo /subsystem:windows /debug
+# ADD LINK32 kernel32.lib user32.lib gdi32.lib comctl32.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib wtsapi32.lib /nologo /subsystem:windows /incremental:no /debug
 # Begin Special Build Tool
 TargetPath=.\Debug\ApacheMonitor.exe
 SOURCE="$(InputPath)"

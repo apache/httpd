@@ -23,7 +23,7 @@
  * ====================================================================
  */
 
-#define _WIN32_WINNT 0x0400
+#define _WIN32_WINNT 0x0500
 #ifndef STRICT
 #define STRICT
 #endif
@@ -43,8 +43,15 @@
 #include <shlobj.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <WtsApi32.h>
 #include "ApacheMonitor.h"
 
+#ifndef AM_STRINGIFY
+/** Properly quote a value as a string in the C preprocessor */
+#define AM_STRINGIFY(n) AM_STRINGIFY_HELPER(n)
+/** Helper macro for AM_STRINGIFY */
+#define AM_STRINGIFY_HELPER(n) #n
+#endif
 
 #define OS_VERSION_WIN9X    1
 #define OS_VERSION_WINNT    2
@@ -1637,17 +1644,85 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message,
 }
 
 
+static int KillAWindow(HWND appwindow)
+{
+    HANDLE appproc;
+    DWORD procid;
+    BOOL postres;
+
+    SetLastError(0);
+    GetWindowThreadProcessId(appwindow, &procid);
+    if (GetLastError())
+        return(2);
+
+    appproc = OpenProcess(SYNCHRONIZE, 0, procid);
+    postres = PostMessage(appwindow, WM_COMMAND, IDM_EXIT, 0);
+    if (appproc && postres) {
+        if (WaitForSingleObject(appproc, 10 /* seconds */ * 1000)
+                == WAIT_OBJECT_0) {
+            CloseHandle(appproc);
+            return (0);
+        }
+    }
+    if (appproc)
+        CloseHandle(appproc);
+
+    if ((appproc = OpenProcess(PROCESS_TERMINATE, 0, procid)) != NULL) {
+        if (TerminateProcess(appproc, 0)) {
+            CloseHandle(appproc);
+            return (0);
+        }
+        CloseHandle(appproc);
+    }
+
+    /* Perhaps we were short of permissions? */
+    return (2);
+}
+
+
+static int KillAllMonitors(void)
+{
+    HWND appwindow;
+    int exitcode = 0;
+    PWTS_PROCESS_INFO tsProcs;
+    DWORD tsProcCount, i;
+    DWORD thisProcId; 
+
+    /* This is graceful, close our own Window, clearing the icon */
+    if ((appwindow = FindWindow(g_szWindowClass, g_szTitle)) != NULL)
+        exitcode = KillAWindow(appwindow);
+
+    if (g_dwOSVersion < OS_VERSION_WIN2K)
+        return exitcode;
+
+    thisProcId = GetCurrentProcessId();
+
+    if (!WTSEnumerateProcesses(WTS_CURRENT_SERVER_HANDLE, 0, 1,
+                               &tsProcs, &tsProcCount))
+        return exitcode;
+
+    /* This is ungraceful; close other Windows, with a lingering icon.
+     * Since on terminal server it's not possible to post the message
+     * to exit across sessions, we have to suffer this side effect
+     * of a taskbar 'icon' which will evaporate the next time that
+     * the user hovers over it or when the taskbar area is updated.
+     */
+    for (i = 0; i < tsProcCount; ++i) {
+        if (strcmp(tsProcs[i].pProcessName, AM_STRINGIFY(BIN_NAME)) == 0
+                && tsProcs[i].ProcessId != thisProcId)
+            WTSTerminateProcess(WTS_CURRENT_SERVER_HANDLE, 
+                                tsProcs[i].ProcessId, 1);
+    }
+    WTSFreeMemory(tsProcs);
+    return exitcode;
+}
+
+
 /* Create main invisible window */
 HWND CreateMainWindow(HINSTANCE hInstance)
 {
     HWND hWnd = NULL;
     WNDCLASSEX wcex;
-
-    if (!GetSystemOSVersion(&g_dwOSVersion))
-    {
-        ErrorMessage(NULL, TRUE);
-        return hWnd;
-    }
 
     wcex.cbSize = sizeof(WNDCLASSEX);
 
@@ -1671,7 +1746,6 @@ HWND CreateMainWindow(HINSTANCE hInstance)
                             NULL, NULL, hInstance, NULL);
     }
     return hWnd;
-
 }
 
 
@@ -1685,6 +1759,12 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     HANDLE hMutex;
     int i;
     DWORD d;
+
+    if (!GetSystemOSVersion(&g_dwOSVersion))
+    {
+        ErrorMessage(NULL, TRUE);
+        return 1;
+    }
 
     g_LangID = GetUserDefaultLangID();
     if ((g_LangID & 0xFF) != LANG_ENGLISH) {
@@ -1708,6 +1788,21 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     LoadString(hInstance, IDS_APMONITORCLASS, szTmp, MAX_LOADSTRING);
     g_szWindowClass = strdup(szTmp);
 
+    if (strstr(lpCmdLine, "--kill") != NULL) {
+        /* Off to chase and close up every ApacheMonitor taskbar window */
+        return KillAllMonitors();
+    }
+
+    hMutex = CreateMutex(NULL, FALSE, "APSRVMON_MUTEX");
+    if ((hMutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS))
+    {
+        ErrorMessage(g_lpMsg[IDS_MSG_APPRUNNING - IDS_MSG_FIRST], FALSE);
+        if (hMutex) {
+            CloseHandle(hMutex);
+        }
+        return 0;
+    }
+
     g_icoStop          = LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICOSTOP),
                                    IMAGE_ICON, 16, 16, LR_DEFAULTCOLOR);
     g_icoRun           = LoadImage(hInstance, MAKEINTRESOURCE(IDI_ICORUN),
@@ -1724,16 +1819,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     g_hBmpStop         = LoadImage(hInstance, MAKEINTRESOURCE(IDB_BMPSTOP),
                                    IMAGE_BITMAP, XBITMAP, YBITMAP,
                                    LR_DEFAULTCOLOR);
-
-    hMutex = CreateMutex(NULL, FALSE, "APSRVMON_MUTEX");
-    if ((hMutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS))
-    {
-        ErrorMessage(g_lpMsg[IDS_MSG_APPRUNNING - IDS_MSG_FIRST], FALSE);
-        if (hMutex) {
-            CloseHandle(hMutex);
-        }
-        return 0;
-    }
 
     memset(g_stServices, 0, sizeof(ST_APACHE_SERVICE) * MAX_APACHE_SERVICES);
     CoInitialize(NULL);
