@@ -1600,12 +1600,13 @@ static apr_status_t connection_cleanup(void *theconn)
     if (conn->close) {
         apr_pool_t *p = conn->pool;
         if (conn->connection) {
-            apr_pool_cleanup_kill(conn->pool, conn, connection_cleanup);
+            apr_pool_cleanup_kill(p, conn, connection_cleanup);
         }
-        apr_pool_clear(conn->pool);
+        apr_pool_clear(p);
         memset(conn, 0, sizeof(proxy_conn_rec));
         conn->pool = p;
         conn->worker = worker;
+        apr_pool_create(&(conn->scpool), p);
     }
 #if APR_HAS_THREADS
     if (worker->hmax && worker->cp->res) {
@@ -1622,17 +1623,11 @@ static apr_status_t connection_cleanup(void *theconn)
     return APR_SUCCESS;
 }
 
-static apr_status_t socket_cleanup(proxy_conn_rec *conn)
+static void socket_cleanup(proxy_conn_rec *conn)
 {
-    if (conn->sock) {
-        apr_socket_close(conn->sock);
-        conn->sock = NULL;
-    }
-    if (conn->connection) {
-        apr_pool_cleanup_kill(conn->pool, conn, connection_cleanup);
-        conn->connection = NULL;
-    }
-    return APR_SUCCESS;
+    conn->sock = NULL;
+    conn->connection = NULL;
+    apr_pool_clear(conn->scpool);
 }
 
 PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
@@ -1675,6 +1670,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
                                            apr_pool_t *pool)
 {
     apr_pool_t *ctx;
+    apr_pool_t *scpool;
     proxy_conn_rec *conn;
     proxy_worker *worker = (proxy_worker *)params;
 
@@ -1684,9 +1680,18 @@ static apr_status_t connection_constructor(void **resource, void *params,
      * when disconnecting from backend.
      */
     apr_pool_create(&ctx, pool);
+    /*
+     * Create another subpool that manages the data for the
+     * socket and the connection member of the proxy_conn_rec struct as we
+     * destroy this data more frequently than other data in the proxy_conn_rec
+     * struct like hostname and addr (at least in the case where we have
+     * keepalive connections that timed out).
+     */
+    apr_pool_create(&scpool, ctx);
     conn = apr_pcalloc(pool, sizeof(proxy_conn_rec));
 
     conn->pool   = ctx;
+    conn->scpool = scpool;
     conn->worker = worker;
 #if APR_HAS_THREADS
     conn->inreslist = 1;
@@ -2164,11 +2169,6 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     if (conn->sock) {
-        /*
-         * This increases the connection pool size
-         * but the number of dropped connections is
-         * relatively small compared to connection lifetime
-         */
         if (!(connected = is_socket_connected(conn->sock))) {
             socket_cleanup(conn);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
@@ -2179,7 +2179,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     while (backend_addr && !connected) {
         if ((rv = apr_socket_create(&newsock, backend_addr->family,
                                 SOCK_STREAM, APR_PROTO_TCP,
-                                conn->pool)) != APR_SUCCESS) {
+                                conn->scpool)) != APR_SUCCESS) {
             loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
             ap_log_error(APLOG_MARK, loglevel, rv, s,
                          "proxy: %s: error creating fam %d socket for target %s",
@@ -2290,11 +2290,11 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
         return OK;
     }
 
-    bucket_alloc = apr_bucket_alloc_create(conn->pool);
+    bucket_alloc = apr_bucket_alloc_create(conn->scpool);
     /*
      * The socket is now open, create a new backend server connection
      */
-    conn->connection = ap_run_create_connection(conn->pool, s, conn->sock,
+    conn->connection = ap_run_create_connection(conn->scpool, s, conn->sock,
                                                 0, NULL,
                                                 bucket_alloc);
 

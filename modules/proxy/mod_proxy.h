@@ -230,7 +230,7 @@ typedef struct {
     const char   *hostname;
     apr_port_t   port;
     int          is_ssl;
-    apr_pool_t   *pool;     /* Subpool used for creating socket */
+    apr_pool_t   *pool;     /* Subpool for hostname and addr data */
     apr_socket_t *sock;     /* Connection socket */
     apr_sockaddr_t *addr;   /* Preparsed remote address info */
     apr_uint32_t flags;     /* Conection flags */
@@ -240,6 +240,7 @@ typedef struct {
 #if APR_HAS_THREADS
     int          inreslist; /* connection in apr_reslist? */
 #endif
+    apr_pool_t   *scpool;   /* Subpool used for socket and connection data */
 } proxy_conn_rec;
 
 typedef struct {
