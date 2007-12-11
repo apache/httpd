@@ -112,7 +112,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=602735&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, jorton
 
    * core: Lower memory consumption of ap_r* functions by reusing the brigade
      instead of recreating it during each filter pass.
@@ -120,7 +120,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewcvs.cgi?rev=603227&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, jorton
 
    * SECURITY: mod_imagemap: fix XSS issue (CVE-2007-2500)
       Trunk version of patch:
