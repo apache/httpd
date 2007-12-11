@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy: Lower memory consumption for short lived connections.
+     PR 44026. [Ruediger Pluem]
+
   *) core: Lower memory consumption of ap_r* functions by reusing the brigade
      instead of recreating it during each filter pass.
      [Stefan Fritsch <sf sfritsch.de>]
