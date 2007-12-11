@@ -122,6 +122,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         Trunk version of patch works
      +1: rpluem,
 
+   * SECURITY: mod_imagemap: fix XSS issue (CVE-2007-2500)
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=603282&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works (will add CHANGES entry too)
+     +1: jorton
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
