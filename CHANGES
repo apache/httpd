@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: Lower memory consumption of ap_r* functions by reusing the brigade
+     instead of recreating it during each filter pass.
+     [Stefan Fritsch <sf sfritsch.de>]
+
   *) mod_proxy_ajp: Use 64K as maximum AJP packet size. This is the maximum
      length we can squeeze inside the AJP message packet.
      [Mladen Turk]

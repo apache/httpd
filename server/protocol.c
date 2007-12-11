@@ -1397,9 +1397,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_old_write_filter(
          * can simply insert our buffered data at the front and
          * pass the whole bundle down the chain.
          */
-        APR_BRIGADE_CONCAT(ctx->bb, bb);
-        bb = ctx->bb;
-        ctx->bb = NULL;
+        APR_BRIGADE_PREPEND(bb, ctx->bb);
     }
 
     return ap_pass_brigade(f->next, bb);
