@@ -19,7 +19,6 @@
 #include "ApacheMonitor.h"
 
 #define LONG_NAME Apache HTTP Server Monitor
-#define BIN_NAME  ApacheMonitor.exe
 
 #include "../../build/win32/httpd.rc"
 
