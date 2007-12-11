@@ -105,6 +105,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                Better IMHO to separate releasing it from the many bugfixes
                in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
 
+   * core: Lower memory consumption in case that flush buckets are passed thru
+     the chunk filter as last bucket of a brigade.
+     PR: 23567
+     Trunk version of patch:
+        http://svn.apache.org/viewcvs.cgi?rev=602735&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem,
+
+   * core: Lower memory consumption of ap_r* functions by reusing the brigade
+     instead of recreating it during each filter pass.
+     Trunk version of patch:
+        http://svn.apache.org/viewcvs.cgi?rev=603227&view=rev
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
