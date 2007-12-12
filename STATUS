@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=603282&view=rev
      Backport version for 2.0.x of patch:
         http://people.apache.org/~jorton/2.0.x-CVE-2007-5000.diff
-    +1: jorton
+    +1: jorton, rpluem
   
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
