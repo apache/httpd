@@ -5,10 +5,6 @@ Changes with Apache 2.0.62
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]  
 
-  *) http_protocol: Escape request method in 413 error reporting.
-     Determined to be not generally exploitable, but a flaw in any case.
-     PR 44014 [Victor Stinner <victor.stinner inl.fr>]
-
 Changes with Apache 2.0.61
 
   *) SECURITY: CVE-2007-3847 (cve.mitre.org)
