@@ -1599,9 +1599,6 @@ static apr_status_t connection_cleanup(void *theconn)
     /* determine if the connection need to be closed */
     if (conn->close) {
         apr_pool_t *p = conn->pool;
-        if (conn->connection) {
-            apr_pool_cleanup_kill(p, conn, connection_cleanup);
-        }
         apr_pool_clear(p);
         memset(conn, 0, sizeof(proxy_conn_rec));
         conn->pool = p;
@@ -2311,13 +2308,6 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
         socket_cleanup(conn);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    /*
-     * register the connection cleanup to client connection
-     * so that the connection can be closed or reused
-     */
-    apr_pool_cleanup_register(conn->pool, (void *)conn,
-                              connection_cleanup,
-                              apr_pool_cleanup_null);
 
     /* For ssl connection to backend */
     if (conn->is_ssl) {
