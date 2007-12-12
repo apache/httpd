@@ -1,5 +1,9 @@
 Changes with Apache 1.3.40
 
+  *) SECURITY: CVE-2007-5000 (cve.mitre.org)
+     mod_imap: Fix cross-site scripting issue.  Reported by JPCERT.
+    [Joe Orton]
+
   *) SECURITY: CVE-2007-3847 (cve.mitre.org)
      mod_proxy: Prevent reading past the end of a buffer when parsing
      date-related headers.  PR 41144.

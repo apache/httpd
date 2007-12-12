@@ -463,7 +463,7 @@ static int imap_reply(request_rec *r, char *redirect)
 
 static void menu_header(request_rec *r, char *menu)
 {
-    r->content_type = "text/html";
+    r->content_type = "text/html; charset=ISO-8859-1";
     ap_send_http_header(r);
 #ifdef CHARSET_EBCDIC
     /* Server-generated response, converted */
@@ -471,11 +471,13 @@ static void menu_header(request_rec *r, char *menu)
 #endif
     ap_hard_timeout("send menu", r);       /* killed in menu_footer */
 
-    ap_rvputs(r, DOCTYPE_HTML_3_2, "<html><head>\n<title>Menu for ", r->uri,
-           "</title>\n</head><body>\n", NULL);
+    ap_rvputs(r, DOCTYPE_HTML_3_2, "<html><head>\n<title>Menu for ", 
+              ap_escape_html(r->pool, r->uri),
+              "</title>\n</head><body>\n", NULL);
 
     if (!strcasecmp(menu, "formatted")) {
-        ap_rvputs(r, "<h1>Menu for ", r->uri, "</h1>\n<hr>\n\n", NULL);
+        ap_rvputs(r, "<h1>Menu for ", ap_escape_html(r->pool, r->uri),
+                  "</h1>\n<hr>\n\n", NULL);
     }
 
     return;
