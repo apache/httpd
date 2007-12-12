@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) SECURITY: CVE-2007-5000 (cve.mitre.org)
+     mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
+     [Joe Orton]  
+
   *) core: Fix broken chunk filtering that causes all non blocking reads to be
      converted into blocking reads.  PR 19954, 41056.
      [Jean-Frederic Clere, Jim Jagielski]
