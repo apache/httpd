@@ -85,7 +85,9 @@ apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b)
             }
             if (APR_BUCKET_IS_FLUSH(e)) {
                 flush = e;
-                more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
+                if (e != APR_BRIGADE_LAST(b)) {
+                    more = apr_brigade_split(b, APR_BUCKET_NEXT(e));
+                }
                 break;
             }
             else if (e->length == (apr_size_t)-1) {

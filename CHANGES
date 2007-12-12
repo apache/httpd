@@ -5,6 +5,14 @@ Changes with Apache 2.2.7
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]  
 
+  *) core: Lower memory consumption of ap_r* functions by reusing the brigade
+     instead of recreating it during each filter pass.
+     [Stefan Fritsch <sf sfritsch.de>]
+
+  *) core: Lower memory consumption in case that flush buckets are passed thru
+     the chunk filter as last bucket of a brigade. PR 23567.
+     [Stefan Fritsch <sf sfritsch.de>]
+
   *) core: Fix broken chunk filtering that causes all non blocking reads to be
      converted into blocking reads.  PR 19954, 41056.
      [Jean-Frederic Clere, Jim Jagielski]
