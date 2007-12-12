@@ -137,6 +137,12 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * SECURITY: mod_imagemap: fix XSS issue (CVE-2007-5000)
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=603282&view=rev
+     Backport version for 2.0.x of patch:
+        http://people.apache.org/~jorton/2.0.x-CVE-2007-5000.diff
+    +1: jorton, rpluem, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -172,14 +178,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     PR 44014 [Victor Stinner <victor.stinner inl.fr>]
        http://svn.apache.org/viewvc?view=rev&rev=600645
     +1: wrowe, rpluem
-
-  * SECURITY: mod_imagemap: fix XSS issue (CVE-2007-5000)
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=603282&view=rev
-     Backport version for 2.0.x of patch:
-        http://people.apache.org/~jorton/2.0.x-CVE-2007-5000.diff
-    +1: jorton, rpluem
-  
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
