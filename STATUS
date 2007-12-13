@@ -99,6 +99,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                Better IMHO to separate releasing it from the many bugfixes
                in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
 
+   * escape input method in 405 canned error response
+     trunk:
+       http://svn.apache.org/viewvc?view=rev&revision=603346
+     2.2.x:
+       trunk patch applies
+     +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
