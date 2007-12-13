@@ -104,7 +104,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=603346
      2.2.x:
        trunk patch applies
-     +1: trawick
+     +1: trawick, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
