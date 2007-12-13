@@ -46,11 +46,6 @@ Changes with Apache 2.3.0
   *) mpm winnt: fix null pointer dereference
      PR 42572 [Davi Arnaut]
 
-  *) mod_proxy_http: Correctly forward unexpected interim (HTTP 1xx)
-     responses from the backend according to RFC2616.  But make it
-     configurable in case something breaks on it.
-     PR 16518 [Nick Kew]
-
   *) mod_deflate: Don't leave a strong ETag in place while transforming
      the entity.
      PR 39727 [Nick Kew]
@@ -61,11 +56,6 @@ Changes with Apache 2.3.0
   *) mod_log_config: Add format options for %p so that the actual local
      or remote port can be logged.  PR 43415.  [Adam Hasselbalch Hansen 
      <ahh@one.com>, Ruediger Pluem, Jeff Trawick]
-
-  *) mod_include: Add an "if" directive syntax to test whether an URL
-     is accessible, and if so, conditionally display content. This
-     allows a webmaster to hide a link to a private page when the user
-     has no access to that page. [Graham Leggett]
 
   *) mod_authnz_ldap, mod_authn_dbd: Tidy up the code to expose authn
      parameters to the environment. Improve portability to
@@ -84,12 +74,6 @@ Changes with Apache 2.3.0
   *) mod_ldap: Fix the search limit parameter to ldap_search_ext_s()
      for SDKs that define LDAP_NO_LIMIT to something other than -1.
      [David Jones <oscaremma gmail.com>]
-
-  *) mod_dbd: Introduce configuration groups to allow inheritance by virtual
-     hosts of database configurations from the main server.  Determine the
-     minimal set of distinct configurations and share connection pools
-     whenever possible.  Allow virtual hosts to override inherited SQL
-     statements.  PR 41302.  [Chris Darroch]
 
   *) apxs: Enhance -q flag to print all known variables and their values
      when invoked without variable name(s). 
