@@ -106,6 +106,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                Better IMHO to separate releasing it from the many bugfixes
                in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
 
+   * mod_ssl: Correctly terminate string in SSL client certificate extensions
+     parsing by ensuring that it always has a \0 at the end.
+     PR: 44073
+     Trunk version of patch:
+        Trunk changed in http://svn.apache.org/viewvc?view=rev&revision=289444
+        in a way that IMHO is not backportable (due to the changes done in
+        mod_ssl.h).
+     Backport version for 2.2.x of patch:
+        http://people.apache.org/~rpluem/patches/foreign_patches/44073_2.2.x.diff
+     +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
