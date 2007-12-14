@@ -135,6 +135,12 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&rev=600645
     +1: wrowe, rpluem, trawick
 
+  * http_protocol: Escape request method in 405 error reporting.
+    Trunk:
+      http://svn.apache.org/viewvc?view=rev&revision=603346
+    2.0.x:
+      Trunk patch applies.
+    +1: trawick, wrowe, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
@@ -166,13 +172,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Patch submitted via PR 42035 by Dominique Quatravaux 
       http://issues.apache.org/bugzilla/attachment.cgi?id=19901
     +1: trawick, rpluem
-
-  * http_protocol: Escape request method in 405 error reporting.
-    Trunk:
-      http://svn.apache.org/viewvc?view=rev&revision=603346
-    2.0.x:
-      Trunk patch applies.
-    +1: trawick, wrowe
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
 
