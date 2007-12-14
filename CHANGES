@@ -2,10 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) http_protocol: Escape request method in 405 error reporting.
-     This has no security impact since the browser cannot be tricked
-     into sending arbitrary method strings.  [Jeff Trawick]
-
   *) ApacheMonitor.exe: Introduce --kill argument for use by the
      installer.  This will permit the installation tool to remove
      all running instances before attempting to remove the .exe.
