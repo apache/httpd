@@ -145,8 +145,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     binaries (especially when compiled --with-static-support (!)) and
     fix mod_ssl.so to compile against .a openssl archives.
       http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
+    adjusted patch without distcache complexity and accomodating the
+    changes for pkgconfig info from ssl
+      http://people.apache.org/~wrowe/httpd-2.0-limit-ssl-binding.patch
     +1: wrowe, colm
-    -1: jim (does not cleanly backport)
 
   * Backport 327179; PR 31226; allow ap_add_output_filters_by_type to handle
     proxied requests.  Basic tests by jorton and [rpluem] show that this works, 
