@@ -1052,7 +1052,8 @@ You can of course use search parameters on each of these.</p>
           specify multiple, redundant LDAP servers, just list all
           servers, separated by spaces. <module>mod_authnz_ldap</module>
           will try connecting to each server in turn, until it makes a
-          successful connection.</p>
+          successful connection. If multiple ldap servers are specified, 
+          then entire LDAP URL must be encapsulated in double quotes.</p>
 
           <p>Once a connection has been made to a server, that
           connection remains active for the life of the
