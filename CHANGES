@@ -5,6 +5,10 @@ Changes with Apache 2.2.7
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]  
 
+  *) http_protocol: Escape request method in 405 error reporting.
+     This has no security impact since the browser cannot be tricked
+     into sending arbitrary method strings.  [Jeff Trawick]
+
   *) mod_proxy_ajp: Use 64K as maximum AJP packet size. This is the maximum
      length we can squeeze inside the AJP message packet.
      [Mladen Turk]
