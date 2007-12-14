@@ -913,7 +913,8 @@ static const char *get_canned_error_string(int status,
                            NULL));
     case HTTP_METHOD_NOT_ALLOWED:
         return(apr_pstrcat(p,
-                           "<p>The requested method ", r->method,
+                           "<p>The requested method ",
+                           ap_escape_html(r->pool, r->method),
                            " is not allowed for the URL ",
                            ap_escape_html(r->pool, r->uri),
                            ".</p>\n",
