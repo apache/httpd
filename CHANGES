@@ -9,6 +9,9 @@ Changes with Apache 2.2.7
      This has no security impact since the browser cannot be tricked
      into sending arbitrary method strings.  [Jeff Trawick]
 
+  *) mod_ssl: Fix SSL client certificate extensions parsing bug. PR 44073.
+     [yl <yl bee-ware.net>]
+
   *) mod_proxy_ajp: Use 64K as maximum AJP packet size. This is the maximum
      length we can squeeze inside the AJP message packet.
      [Mladen Turk]
