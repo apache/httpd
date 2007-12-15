@@ -1175,7 +1175,7 @@ cannot use <code>$N</code> in the substitution string!
         module="core">DocumentRoot</directive>-relative path to the
         resource to be served. Note that <module>mod_rewrite</module>
         tries to guess whether you have specified a file-system path
-        or a URL-path by checking to see if the first segement of the
+        or a URL-path by checking to see if the first segment of the
         path exists at the root of the file-system. For example, if
         you specify a <em>Substitution</em> string of
         <code>/www/file.html</code>, then this will be treated as a
