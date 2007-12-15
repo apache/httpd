@@ -155,6 +155,7 @@ URLs on the fly</dd>
 <dt><a href="mod_ssl.html">mod_ssl</a></dt><dd>Strong cryptography using the Secure Sockets
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 <dt><a href="mod_status.html">mod_status</a></dt><dd>サーバの活動状況と性能に関する情報を提供する</dd>
+<dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Perform search and replace operations on response bodies</dd>
 <dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>指定されたユーザとグループで CGI スクリプトを実行する</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>それぞれのリクエストに対する一意な識別子の入った環境変数を
 提供する</dd>

@@ -398,6 +398,7 @@
 <li><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></li>
 <li><a href="mpm_common.html#startservers">StartServers</a></li>
 <li><a href="mpm_common.html#startthreads">StartThreads</a></li>
+<li><a href="mod_substitute.html#substitute">Substitute</a></li>
 <li><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup</a></li>
 <li><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit</a></li>
 <li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>
