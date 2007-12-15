@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.0.62
 
+  *) http_protocol: Escape request method in 405 error reporting.
+     This has no security impact since the browser cannot be tricked
+     into sending arbitrary method strings.  [Jeff Trawick]
+
   *) http_protocol: Escape request method in 413 error reporting.
      Determined to be not generally exploitable, but a flaw in any case.
      PR 44014 [Victor Stinner <victor.stinner inl.fr>]
