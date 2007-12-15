@@ -64,8 +64,11 @@ authldapcomparednonserver	mod/mod_authnz_ldap.html#authldapcomparednonserver
 authldapdereferencealiases	mod/mod_authnz_ldap.html#authldapdereferencealiases
 authldapgroupattribute	mod/mod_authnz_ldap.html#authldapgroupattribute
 authldapgroupattributeisdn	mod/mod_authnz_ldap.html#authldapgroupattributeisdn
+authldapmaxsubgroupdepth	mod/mod_authnz_ldap.html#authldapmaxsubgroupdepth
 authldapremoteuserattribute	mod/mod_authnz_ldap.html#authldapremoteuserattribute
 authldapremoteuserisdn	mod/mod_authnz_ldap.html#authldapremoteuserisdn
+authldapsubgroupattribute	mod/mod_authnz_ldap.html#authldapsubgroupattribute
+authldapsubgroupclass	mod/mod_authnz_ldap.html#authldapsubgroupclass
 authldapurl	mod/mod_authnz_ldap.html#authldapurl
 authname	mod/mod_authn_core.html#authname
 authnprovideralias	mod/mod_authn_core.html#authnprovideralias
@@ -360,6 +363,9 @@ sslcryptodevice	mod/mod_ssl.html#sslcryptodevice
 sslengine	mod/mod_ssl.html#sslengine
 sslhonorcipherorder	mod/mod_ssl.html#sslhonorcipherorder
 sslmutex	mod/mod_ssl.html#sslmutex
+sslocspdefaultresponder	mod/mod_ssl.html#sslocspdefaultresponder
+sslocspenable	mod/mod_ssl.html#sslocspenable
+sslocspoverrideresponder	mod/mod_ssl.html#sslocspoverrideresponder
 ssloptions	mod/mod_ssl.html#ssloptions
 sslpassphrasedialog	mod/mod_ssl.html#sslpassphrasedialog
 sslprotocol	mod/mod_ssl.html#sslprotocol
