@@ -314,6 +314,7 @@ scriptlogbuffer	mod/mod_cgi.html#scriptlogbuffer
 scriptloglength	mod/mod_cgi.html#scriptloglength
 scriptsock	mod/mod_cgid.html#scriptsock
 securelisten	mod/mod_nw_ssl.html#securelisten
+seerequesttail	mod/mod_status.html#seerequesttail
 sendbuffersize	mod/mpm_common.html#sendbuffersize
 serveradmin	mod/core.html#serveradmin
 serveralias	mod/core.html#serveralias
@@ -329,6 +330,7 @@ setenvifnocase	mod/mod_setenvif.html#setenvifnocase
 sethandler	mod/core.html#sethandler
 setinputfilter	mod/core.html#setinputfilter
 setoutputfilter	mod/core.html#setoutputfilter
+ssienableaccess	mod/mod_include.html#ssienableaccess
 ssiendtag	mod/mod_include.html#ssiendtag
 ssierrormsg	mod/mod_include.html#ssierrormsg
 ssistarttag	mod/mod_include.html#ssistarttag
@@ -372,6 +374,7 @@ sslverifyclient	mod/mod_ssl.html#sslverifyclient
 sslverifydepth	mod/mod_ssl.html#sslverifydepth
 startservers	mod/mpm_common.html#startservers
 startthreads	mod/mpm_common.html#startthreads
+substitute	mod/mod_substitute.html#substitute
 suexecusergroup	mod/mod_suexec.html#suexecusergroup
 threadlimit	mod/mpm_common.html#threadlimit
 threadsperchild	mod/mpm_common.html#threadsperchild
