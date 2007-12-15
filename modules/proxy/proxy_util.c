@@ -1349,6 +1349,7 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
      * it can be disabled.
      */
     apr_pool_create(&pool, p);
+    apr_pool_tag(pool, "proxy_worker_cp");
     /*
      * Alloc from the same pool as worker.
      * proxy_conn_pool is permanently attached to the worker.
@@ -1647,6 +1648,7 @@ static apr_status_t connection_cleanup(void *theconn)
         conn->pool = p;
         conn->worker = worker;
         apr_pool_create(&(conn->scpool), p);
+        apr_pool_tag(conn->scpool, "proxy_conn_scpool");
     }
 #if APR_HAS_THREADS
     if (worker->hmax && worker->cp->res) {
@@ -1720,6 +1722,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
      * when disconnecting from backend.
      */
     apr_pool_create(&ctx, pool);
+    apr_pool_tag(ctx, "proxy_conn_pool");
     /*
      * Create another subpool that manages the data for the
      * socket and the connection member of the proxy_conn_rec struct as we
@@ -1728,6 +1731,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
      * keepalive connections that timed out).
      */
     apr_pool_create(&scpool, ctx);
+    apr_pool_tag(scpool, "proxy_conn_scpool");
     conn = apr_pcalloc(pool, sizeof(proxy_conn_rec));
 
     conn->pool   = ctx;
