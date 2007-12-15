@@ -1576,6 +1576,9 @@ static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
     proxy_worker *worker = conn->worker;
+    apr_bucket_brigade *bb;
+    conn_rec *c;
+    request_rec *r;
 
     /*
      * If the connection pool is NULL the worker
@@ -1596,8 +1599,48 @@ static apr_status_t connection_cleanup(void *theconn)
     }
 #endif
 
+    r = conn->r;
+    if (conn->need_flush && r) {
+        /*
+         * We need to ensure that buckets that may have been buffered in the
+         * network filters get flushed to the network. This is needed since
+         * these buckets have been created with the bucket allocator of the
+         * backend connection. This allocator either gets destroyed if
+         * conn->close is set or the worker address is not reusable which
+         * causes the connection to the backend to be closed or it will be used
+         * again by another frontend connection that wants to recycle the
+         * backend connection.
+         * In this case we could run into nasty race conditions (e.g. if the
+         * next user of the backend connection destroys the allocator before we
+         * sent the buckets to the network).
+         *
+         * Remark 1: Doing a setaside does not help here as the buckets remain
+         * created by the wrong allocator in this case.
+         *
+         * Remark 2: Yes, this creates a possible performance penalty in the case
+         * of pipelined requests as we may send only a small amount of data over
+         * the wire.
+         */
+        c = r->connection;
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        if (r->eos_sent) {
+            /*
+             * If we have already sent an EOS bucket send directly to the 
+             * connection based filters. We just want to flush the buckets
+             * if something hasn't been sent to the network yet. 
+             */
+            ap_fflush(c->output_filters, bb);
+        }
+        else {
+            ap_fflush(r->output_filters, bb);
+        }
+        apr_brigade_destroy(bb);
+        conn->r = NULL;
+        conn->need_flush = 0;
+    }
+
     /* determine if the connection need to be closed */
-    if (conn->close) {
+    if (conn->close || !worker->is_address_reusable) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(p);
         memset(conn, 0, sizeof(proxy_conn_rec));
@@ -1969,6 +2012,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     apr_status_t err = APR_SUCCESS;
     apr_status_t uerr = APR_SUCCESS;
 
+    conn->r = r;
+
     /*
      * Break up the URL to determine the host to connect to
      */
@@ -2287,6 +2332,12 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
         return OK;
     }
 
+    /*
+     * We need to flush the buckets before we return the connection to the
+     * connection pool. See comment in connection_cleanup for why this is
+     * needed.
+     */
+    conn->need_flush = 1;
     bucket_alloc = apr_bucket_alloc_create(conn->scpool);
     /*
      * The socket is now open, create a new backend server connection
