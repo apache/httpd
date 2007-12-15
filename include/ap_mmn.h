@@ -145,6 +145,7 @@
  *                         with non-NULL request_rec pointer (ap_add_*_filter*)
  * 20071108.4 (2.3.0-dev)  Add ap_proxy_ssl_connection_cleanup
  * 20071108.5 (2.3.0-dev)  Add *scpool to proxy_conn_rec structure
+ * 20071108.6 (2.3.0-dev)  Add *r and need_flush to proxy_conn_rec structure
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -152,7 +153,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20071108
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 5                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 6                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

@@ -241,6 +241,10 @@ typedef struct {
     int          inreslist; /* connection in apr_reslist? */
 #endif
     apr_pool_t   *scpool;   /* Subpool used for socket and connection data */
+    request_rec  *r;        /* Request record of the frontend request
+                             * which the backend currently answers. */
+    int          need_flush;/* Flag to decide whether we need to flush the
+                             * filter chain or not */
 } proxy_conn_rec;
 
 typedef struct {
