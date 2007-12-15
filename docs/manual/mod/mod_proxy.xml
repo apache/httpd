@@ -1109,7 +1109,7 @@ connections</description>
     bytes. If you change it from the default, you must also change the 
     <code>packetSize</code> attribute of your AJP connector on the
     Tomcat side! The attribute <code>packetSize</code> is only available
-    in Tomcat <code>5.5.20+</code> and <code>6.0.2+</code>
+    in Tomcat <code>5.5.20+</code> and <code>6.0.2+</code></p>
     <p>Normally it is not necessary to change the maximum packet size.
     Problems with the default value have been reported when sending
     certificates or certificate chains.</p>
