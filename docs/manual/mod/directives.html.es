@@ -352,6 +352,7 @@
 <li><a href="mod_cgi.html#scriptloglength">ScriptLogLength</a></li>
 <li><a href="mod_cgid.html#scriptsock">ScriptSock</a></li>
 <li><a href="mod_nw_ssl.html#securelisten">SecureListen</a></li>
+<li><a href="mod_status.html#seerequesttail">SeeRequestTail</a></li>
 <li><a href="mpm_common.html#sendbuffersize">SendBufferSize</a></li>
 <li><a href="core.html#serveradmin">ServerAdmin</a></li>
 <li><a href="core.html#serveralias">ServerAlias</a></li>
@@ -367,6 +368,7 @@
 <li><a href="core.html#sethandler">SetHandler</a></li>
 <li><a href="core.html#setinputfilter">SetInputFilter</a></li>
 <li><a href="core.html#setoutputfilter">SetOutputFilter</a></li>
+<li><a href="mod_include.html#ssienableaccess">SSIEnableAccess</a></li>
 <li><a href="mod_include.html#ssiendtag">SSIEndTag</a></li>
 <li><a href="mod_include.html#ssierrormsg">SSIErrorMsg</a></li>
 <li><a href="mod_include.html#ssistarttag">SSIStartTag</a></li>
@@ -410,6 +412,7 @@
 <li><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth</a></li>
 <li><a href="mpm_common.html#startservers">StartServers</a></li>
 <li><a href="mpm_common.html#startthreads">StartThreads</a></li>
+<li><a href="mod_substitute.html#substitute">Substitute</a></li>
 <li><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup</a></li>
 <li><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit</a></li>
 <li><a href="mpm_common.html#threadsperchild">ThreadsPerChild</a></li>

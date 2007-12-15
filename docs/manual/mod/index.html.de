@@ -169,6 +169,7 @@ allowing up to one misspelling</dd>
 Layer (SSL) and Transport Layer Security (TLS) protocols</dd>
 <dt><a href="mod_status.html">mod_status</a></dt><dd>Provides information on server activity and
 performance</dd>
+<dt><a href="mod_substitute.html">mod_substitute</a></dt><dd>Perform search and replace operations on response bodies</dd>
 <dt><a href="mod_suexec.html">mod_suexec</a></dt><dd>Allows CGI scripts to run as a specified user
 and Group</dd>
 <dt><a href="mod_unique_id.html" id="U" name="U">mod_unique_id</a></dt><dd>Provides an environment variable with a unique
