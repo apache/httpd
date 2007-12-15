@@ -239,7 +239,7 @@ apr_array_header_t *ssl_extlist_by_oid(request_rec *r, const char *oidstr)
 
                 BIO_get_mem_ptr(bio, &buf);
 
-                *new = apr_pstrdup(r->pool, buf->data);
+                *new = apr_pstrmemdup(r->pool, buf->data, buf->length);
             }
 
             BIO_vfree(bio);

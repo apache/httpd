@@ -79,18 +79,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_ssl: Correctly terminate string in SSL client certificate extensions
-     parsing by ensuring that it always has a \0 at the end.
-     PR: 44073
-     Trunk version of patch:
-        Trunk changed in http://svn.apache.org/viewvc?view=rev&revision=289444
-        in a way that IMHO is not backportable (due to the changes done in
-        mod_ssl.h).
-     Backport version for 2.2.x of patch:
-        http://people.apache.org/~rpluem/patches/foreign_patches/44073_2.2.x.diff
-     +1: rpluem, jorton, trawick
-     jorton: s/pstrndup/pstrmemdup/ would be better but it works either way
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
