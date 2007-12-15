@@ -663,9 +663,18 @@ proxied</td></tr>
 </table>
     <p>The <code class="directive">ProxyIOBufferSize</code> directive adjusts the size
     of the internal buffer, which is used as a scratchpad for the data between
-    input and output. The size must be less or equal <code>8192</code>.</p>
+    input and output. The size must be less or equal <code>65536</code>.</p>
 
     <p>In almost every case there's no reason to change that value.</p>
+    <p>If used with AJP this directive sets the maximum AJP packet size in
+    bytes. If you change it from the default, you must also change the 
+    <code>packetSize</code> attribute of your AJP connector on the
+    Tomcat side! The attribute <code>packetSize</code> is only available
+    in Tomcat <code>5.5.20+</code> and <code>6.0.2+</code></p>
+    <p>Normally it is not necessary to change the maximum packet size.
+    Problems with the default value have been reported when sending
+    certificates or certificate chains.</p>
+    
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
