@@ -53,7 +53,7 @@
     <p>At present, there are 2 load balancer scheduler algorithms available
     for use: Request Counting and Weighted Traffic Counting. These are controlled
     via the <code>lbmethod</code> value of the Balancer definition. See
-    the <directive module="mod_proxy">Proxy</directive> directive for
+    the <directive module="mod_proxy">ProxyPass</directive> directive for
     more information.</p>
 
 </section>
