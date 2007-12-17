@@ -589,7 +589,7 @@ _install:
 	-awk -f <<script.awk < "srclib\openssl\LICENSE" >> "$(INSTDIR)\LICENSE.txt"
 BEGIN {
     print "";
-    print "For the libeay32.dll, ssleay32.dll and certtool.exe components:";
+    print "For the libeay32.dll, ssleay32.dll and openssl.exe components:";
     print "";
     while ( getline > 0 ) {
 	print $$0;
@@ -619,7 +619,7 @@ BEGIN {
  This binary installation of OpenSSL is a limited distribution of the
  files derived from the OpenSSL project:
 
-   OPENSSL-LICENSE.txt
+   LICENSE.txt (includes openssl LICENSE)
    OPENSSL-NEWS.txt
    OPENSSL-README.txt
    conf\openssl.cnf
