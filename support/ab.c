@@ -1147,7 +1147,7 @@ static void start_connect(struct connection * c)
         SSL_set_connect_state(c->ssl);
         if (verbosity >= 4) {
             BIO_set_callback(bio, ssl_print_cb);
-            BIO_set_callback_arg(bio, bio_err);
+            BIO_set_callback_arg(bio, (void *)bio_err);
         }
     } else {
         c->ssl = NULL;
