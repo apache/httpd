@@ -1601,7 +1601,7 @@ static apr_status_t connection_cleanup(void *theconn)
 #endif
 
     r = conn->r;
-    if (conn->need_flush && r) {
+    if (conn->need_flush && r && (r->bytes_sent || r->eos_sent)) {
         /*
          * We need to ensure that buckets that may have been buffered in the
          * network filters get flushed to the network. This is needed since
@@ -1615,10 +1615,21 @@ static apr_status_t connection_cleanup(void *theconn)
          * next user of the backend connection destroys the allocator before we
          * sent the buckets to the network).
          *
-         * Remark 1: Doing a setaside does not help here as the buckets remain
+         * Remark 1: Only do this if buckets where sent down the chain before
+         * that could still be buffered in the network filter. This is the case
+         * if we have sent an EOS bucket or if we actually sent buckets with
+         * data down the chain. In all other cases we either have not sent any
+         * buckets at all down the chain or we only sent meta buckets that are
+         * not EOS buckets down the chain. The only meta bucket that remains in
+         * this case is the flush bucket which would have removed all possibly
+         * buffered buckets in the network filter.
+         * If we sent a flush bucket in the case where not ANY buckets were
+         * sent down the chain, we break error handling which happens AFTER us.
+         *
+         * Remark 2: Doing a setaside does not help here as the buckets remain
          * created by the wrong allocator in this case.
          *
-         * Remark 2: Yes, this creates a possible performance penalty in the case
+         * Remark 3: Yes, this creates a possible performance penalty in the case
          * of pipelined requests as we may send only a small amount of data over
          * the wire.
          */
@@ -1626,9 +1637,9 @@ static apr_status_t connection_cleanup(void *theconn)
         bb = apr_brigade_create(r->pool, c->bucket_alloc);
         if (r->eos_sent) {
             /*
-             * If we have already sent an EOS bucket send directly to the 
+             * If we have already sent an EOS bucket send directly to the
              * connection based filters. We just want to flush the buckets
-             * if something hasn't been sent to the network yet. 
+             * if something hasn't been sent to the network yet.
              */
             ap_fflush(c->output_filters, bb);
         }
