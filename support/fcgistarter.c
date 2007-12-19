@@ -53,7 +53,7 @@ static void exit_error(apr_status_t rv, const char *func)
     exit(EXIT_FAILURE);
 }
 
-int main(int argc, const char *argv[])
+int main(int argc, const char * const argv[])
 {
     apr_file_t *infd, *skwrapper;
     apr_sockaddr_t *skaddr;
@@ -69,7 +69,7 @@ int main(int argc, const char *argv[])
     const char *interface = NULL;
     const char *command = NULL;
 
-    apr_initialize();
+    apr_app_initialize(&argc, &argv, NULL);
 
     atexit(apr_terminate);
 
@@ -148,15 +148,17 @@ int main(int argc, const char *argv[])
         exit_error(rv, "apr_proc_detach");
     }
 
+#if defined(WIN32) || defined(OS2) || defined(NETWARE)
+
+#error "Please implement me."
+
+#else
+
     while (--num_to_start >= 0) {
         rv = apr_proc_fork(&proc, pool);
         if (rv == APR_INCHILD) {
             apr_os_file_t oft = 0;
             apr_os_sock_t oskt;
-
-#if defined(WIN32) || defined(OS2) || defined(NETWARE)
-#error "Please implement me."
-#else
 
             /* Ok, so we need a file that has file descriptor 0 (which
              * FastCGI wants), but points to our socket.  This isn't really
@@ -197,7 +199,7 @@ int main(int argc, const char *argv[])
              *     is no longer fd 0, so it doesn't work.  Sigh. */
 
             execl(command, command, NULL);
-#endif
+
         } else if (rv == APR_INPARENT) {
             if (num_to_start == 0) {
                 apr_socket_close(skt);
@@ -206,6 +208,8 @@ int main(int argc, const char *argv[])
             exit_error(rv, "apr_proc_fork");
         }
     }
+
+#endif
 
     return EXIT_SUCCESS;
 }
