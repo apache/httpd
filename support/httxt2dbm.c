@@ -183,7 +183,7 @@ int main(int argc, const char *const argv[])
     apr_file_t *infile;
     apr_dbm_t *outdbm;
 
-    apr_initialize();
+    apr_app_initialize(&argc, &argv, NULL);
     atexit(apr_terminate);
 
     verbose = 0;
