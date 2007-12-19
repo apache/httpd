@@ -1175,7 +1175,7 @@ AP_DECLARE(int) ap_discard_request_body(request_rec *r)
     apr_bucket *e;
     int rv, seen_eos;
     core_dir_conf *dconf;
-    apr_size_t left = 0;
+    apr_off_t left = 0;
 
     /* Sometimes we'll get in a state where the input handling has
      * detected an error where we want to drop the connection, so if
