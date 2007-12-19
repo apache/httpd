@@ -707,12 +707,12 @@ BEGIN {
 	xcopy srclib\apr\include\*.h 			"$(INSTDIR)\include" /d < .a
 	xcopy srclib\apr-util\include\*.h 		"$(INSTDIR)\include" /d < .a
 	xcopy include\*.h 				"$(INSTDIR)\include" /d < .a
-	copy srclib\apr\Lib$(SHORT)\apr-1.lib 		"$(INSTDIR)\lib" <.y
-	copy srclib\apr\Lib$(SHORT)\apr_src.pdb 	"$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.lib 	"$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\Lib$(SHORT)\aprutil_src.pdb "$(INSTDIR)\lib" <.y
+	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y
+	copy srclib\apr\Lib$(SHORT)\apr-1.pdb		"$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.lib	"$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.pdb	"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.lib "$(INSTDIR)\lib" <.y
-	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml_src.pdb "$(INSTDIR)\lib" <.y
+	copy srclib\apr-util\xml\expat\lib\Lib$(SHORT)\xml.pdb "$(INSTDIR)\lib" <.y
 	copy srclib\apr\$(LONG)\libapr-1.lib 		"$(INSTDIR)\lib" <.y
 	copy srclib\apr\$(LONG)\libapr-1.exp 		"$(INSTDIR)\lib" <.y
 	copy srclib\apr-iconv\$(LONG)\libapriconv-1.lib	"$(INSTDIR)\lib" <.y
