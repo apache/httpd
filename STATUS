@@ -99,6 +99,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                Better IMHO to separate releasing it from the many bugfixes
                in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
 
+   * mod_disk_cache: Delete temporary files if they cannot be renamed to their
+     final name.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=409942&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
