@@ -1655,7 +1655,7 @@ static apr_status_t connection_cleanup(void *theconn)
     if (conn->close || !worker->is_address_reusable) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(p);
-        memset(conn, 0, sizeof(proxy_conn_rec));
+        conn = apr_pcalloc(p, sizeof(proxy_conn_rec));
         conn->pool = p;
         conn->worker = worker;
         apr_pool_create(&(conn->scpool), p);
@@ -1743,7 +1743,7 @@ static apr_status_t connection_constructor(void **resource, void *params,
      */
     apr_pool_create(&scpool, ctx);
     apr_pool_tag(scpool, "proxy_conn_scpool");
-    conn = apr_pcalloc(pool, sizeof(proxy_conn_rec));
+    conn = apr_pcalloc(ctx, sizeof(proxy_conn_rec));
 
     conn->pool   = ctx;
     conn->scpool = scpool;
