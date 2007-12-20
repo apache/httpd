@@ -173,7 +173,7 @@ static apr_status_t to_dbm(apr_dbm_t *dbm, apr_file_t *fp, apr_pool_t *pool)
     return rv;
 }
 
-int main(int argc, const char * const argv[])
+int main(int argc, const char *const argv[])
 {
     apr_pool_t *pool;
     apr_status_t rv = APR_SUCCESS;
