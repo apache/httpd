@@ -47,12 +47,14 @@ install-conf:
 	    		if test $$n_lm -eq 0 -o "x$(DSO_MODULES)" = "x"; then \
 	    			sed -e 's#@@ServerRoot@@#$(prefix)#g' \
 	    				-e 's#@@Port@@#$(PORT)#g' \
+	    				-e 's#@@SSLPort@@#$(SSLPORT)#g' \
 	    				-e '/@@LoadModule@@/d' \
 	    				< $$i; \
 	    		else \
 	    			sed -n -e '/@@LoadModule@@/q' \
 	    				-e 's#@@ServerRoot@@#$(prefix)#g' \
 	    				-e 's#@@Port@@#$(PORT)#g' \
+	    				-e 's#@@SSLPort@@#$(SSLPORT)#g' \
 	    				-e 'p' \
 	    				< $$i; \
 	    			for j in $(DSO_MODULES) "^EOL^"; do \
@@ -64,6 +66,7 @@ install-conf:
 	    				-e '/@@LoadModule@@/d' \
 	    				-e 's#@@ServerRoot@@#$(prefix)#g' \
 	    				-e 's#@@Port@@#$(PORT)#g' \
+	    				-e 's#@@SSLPort@@#$(SSLPORT)#g' \
 	    				< $$i; \
 	    		fi \
 	    	) > $(DESTDIR)$(sysconfdir)/original/$$i; \
