@@ -13,9 +13,9 @@
 # Configuration and logfile names: If the filenames you specify for many
 # of the server's control files begin with "/" (or "drive:/" for Win32), the
 # server will use that explicit path.  If the filenames do *not* begin
-# with "/", the value of ServerRoot is prepended -- so "@rel_logfiledir@/foo.log"
+# with "/", the value of ServerRoot is prepended -- so "@rel_logfiledir@/foo_log"
 # with ServerRoot set to "@@ServerRoot@@" will be interpreted by the
-# server as "@@ServerRoot@@/@rel_logfiledir@/foo.log".
+# server as "@@ServerRoot@@/@rel_logfiledir@/foo_log".
 
 #
 # ServerRoot: The top of the directory tree under which the server's
@@ -54,6 +54,7 @@ Listen @@Port@@
 @@LoadModule@@
 
 <IfModule !mpm_netware_module>
+<IfModule !mpm_winnt_module>
 #
 # If you wish httpd to run as a different user or group, you must run
 # httpd as root initially and it will switch.  
@@ -64,6 +65,8 @@ Listen @@Port@@
 #
 User daemon
 Group daemon
+
+</IfModule>
 </IfModule>
 
 # 'Main' server configuration
@@ -92,7 +95,7 @@ ServerAdmin you@example.com
 #
 # If your host doesn't have a registered DNS name, enter its IP address here.
 #
-#ServerName www.example.com:80
+#ServerName www.example.com:@@Port@@
 
 #
 # DocumentRoot: The directory out of which you will serve your
@@ -177,7 +180,7 @@ DocumentRoot "@exp_htdocsdir@"
 # logged here.  If you *do* define an error logfile for a <VirtualHost>
 # container, that host's errors will be logged there and not here.
 #
-ErrorLog @rel_logfiledir@/error_log
+ErrorLog "@rel_logfiledir@/error_log"
 
 #
 # LogLevel: Control the number of messages logged to the error_log.
@@ -206,13 +209,13 @@ LogLevel warn
     # define per-<VirtualHost> access logfiles, transactions will be
     # logged therein and *not* in this file.
     #
-    CustomLog @rel_logfiledir@/access_log common
+    CustomLog "@rel_logfiledir@/access_log" common
 
     #
     # If you prefer a logfile with access, agent, and referer information
     # (Combined Logfile Format) you can use the following directive.
     #
-    #CustomLog @rel_logfiledir@/access_log combined
+    #CustomLog "@rel_logfiledir@/access_log" combined
 </IfModule>
 
 <IfModule alias_module>
