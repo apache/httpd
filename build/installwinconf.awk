@@ -35,7 +35,7 @@ BEGIN {
     confdefault = confroot "original/";
 
     if ( sourceroot != "docs/conf/" ) {
-        sourceroot = confroot;
+        sourceroot = serverroot "/" sourceroot;
     }
 
     print "Installing Apache HTTP 2.0 server with" >tstfl;
