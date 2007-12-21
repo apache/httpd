@@ -297,6 +297,19 @@ int ssl_hook_Access(request_rec *r)
      * the currently active one.
      */
 
+#ifndef OPENSSL_NO_TLSEXT
+    /*
+     * We will switch to another virtualhost and to its ssl_ctx
+     * if changed, we will force a renegotiation.
+     */
+    if (r->hostname && !SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name)) {
+        SSL_CTX *ctx = SSL_get_SSL_CTX(ssl);
+        if (ssl_set_vhost_ctx(ssl,(char *)r->hostname) &&
+                      ctx != SSL_get_SSL_CTX(ssl))
+            renegotiate = TRUE;
+    }
+#endif
+
     /*
      * Override of SSLCipherSuite
      *
@@ -1063,6 +1076,9 @@ int ssl_hook_Fixup(request_rec *r)
     SSLDirConfigRec *dc = myDirConfig(r);
     apr_table_t *env = r->subprocess_env;
     char *var, *val = "";
+#ifndef OPENSSL_NO_TLSEXT
+    const char* servername;
+#endif
     STACK_OF(X509) *peer_certs;
     SSL *ssl;
     int i;
@@ -1088,6 +1104,13 @@ int ssl_hook_Fixup(request_rec *r)
      */
     /* the always present HTTPS (=HTTP over SSL) flag! */
     apr_table_setn(env, "HTTPS", "on");
+
+#ifndef OPENSSL_NO_TLSEXT
+    /* add content of SNI TLS extension (if supplied with ClientHello) */
+    if (servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name)) {
+        apr_table_set(env, "SSL_TLS_SNI", servername);
+    }
+#endif
 
     /* standard SSL environment variables */
     if (dc->nOptions & SSL_OPT_STDENVVARS) {
