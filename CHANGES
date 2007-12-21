@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_ssl: Added server name indication support (RFC 4366).
+     PR 34607. [Kaspar Brand <asfbugz velox.ch>]
+
   *) ApacheMonitor.exe: Introduce --kill argument for use by the
      installer.  This will permit the installation tool to remove
      all running instances before attempting to remove the .exe.
