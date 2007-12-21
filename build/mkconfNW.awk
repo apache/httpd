@@ -94,10 +94,6 @@ BEGIN {
     next
 }
 
-match ($0,/443/) {
-    sub(/443/, SSLPORT)
-}
-
 match ($0,/^#SSLSessionCache +"dbm:/) {
     sub(/^#/, "")
 }

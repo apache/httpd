@@ -443,6 +443,10 @@ AC_ARG_WITH(port,APACHE_HELP_STRING(--with-port=PORT,Port on which to listen (de
         [if test "$withval" = "yes"; then AC_MSG_ERROR('option --with-port requires a value (the TCP port number)'); else PORT="$withval"; fi],
 	[PORT=80])
 
+AC_ARG_WITH(sslport,APACHE_HELP_STRING(--with-sslport=SSLPORT,Port on which to securelisten (default is 443)),
+        [if test "$withval" = "yes"; then AC_MSG_ERROR('option --with-sslport requires a value (the SSL TCP port number)'); else SSLPORT="$withval"; fi],
+	[SSLPORT=443])
+
 APR_CHECK_APR_DEFINE(APR_HAVE_IPV6)
 
 AC_ARG_ENABLE(v4-mapped,APACHE_HELP_STRING(--enable-v4-mapped,Allow IPv6 sockets to handle IPv4 connections),
