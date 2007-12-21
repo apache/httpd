@@ -109,6 +109,7 @@ BEGIN {
 	  print "#LoadModule cache_module modules/mod_cache.so" > dstfl;
 	  print "#LoadModule cern_meta_module modules/mod_cern_meta.so" > dstfl;
 	  print "LoadModule cgi_module modules/mod_cgi.so" > dstfl;
+	  print "LoadModule charset_lite_module modules/mod_charset_lite.so" > dstfl;
 	  print "#LoadModule dav_module modules/mod_dav.so" > dstfl;
 	  print "#LoadModule dav_fs_module modules/mod_dav_fs.so" > dstfl;
 	  print "#LoadModule dav_lock_module modules/mod_dav_lock.so" > dstfl;
