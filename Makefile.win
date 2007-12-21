@@ -16,7 +16,9 @@
 #   INSTDIR     /Apache23
 #   PORT        80
 #   SSLPORT     443
-#   SERVERNAME  localhost
+#   DOMAINNAME  example.com
+#   SERVERNAME  www.example.com
+#   SERVERNAME  admin@example.com
 #
 #   ALL         (unset)     Includes additional modules for build testing
 #
@@ -124,8 +126,14 @@ _tryzlib:
 !IF "$(INSTDIR)" == ""
 INSTDIR=\Apache2x
 !ENDIF
+!IF "$(DOMAINNAME)" == ""
+DOMAINNAME=example.com
+!ENDIF 
 !IF "$(SERVERNAME)" == ""
-SERVERNAME=localhost
+SERVERNAME=www.$(DOMAINNAME)
+!ENDIF
+!IF "$(SERVERADMIN)" == ""
+SERVERADMIN=admin@$(DOMAINNAME)
 !ENDIF
 !IF "$(PORT)" == ""
 PORT=80
@@ -558,6 +566,8 @@ _install:
 	-mkdir "$(INSTDIR)\cgi-bin"
 	-mkdir "$(INSTDIR)\conf"
 	-mkdir "$(INSTDIR)\conf\extra"
+	-mkdir "$(INSTDIR)\conf\original"
+	-mkdir "$(INSTDIR)\conf\original\extra"
 	-mkdir "$(INSTDIR)\error"
 	-mkdir "$(INSTDIR)\htdocs"
 	-mkdir "$(INSTDIR)\manual"
@@ -723,65 +733,10 @@ BEGIN {
 	copy $(LONG)\libhttpd.lib 			"$(INSTDIR)\lib" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.exp 	"$(INSTDIR)\lib" <.y
 	copy modules\dav\main\$(LONG)\mod_dav.lib 	"$(INSTDIR)\lib" <.y
-	echo Y >.y
 	for %f in ( charset.conv magic mime.types ) do ( \
-	  copy docs\conf\%f "$(INSTDIR)\conf\%f.default" <.y && \
-	  if not exist "$(INSTDIR)\conf\%f" \
-	    copy "$(INSTDIR)\conf\%f.default" "$(INSTDIR)\conf\%f" \
-	)
-	copy docs\conf\httpd-win.conf "$(INSTDIR)\conf\httpd.conf.default" <.y
-	-awk -f <<script.awk "docs/conf/httpd-win.conf" "$(INSTDIR)" > "$(INSTDIR)\conf\httpd.conf.default"
-    BEGIN { 
-	serverroot = ARGV[2];
-	delete ARGV[2];
-	gsub( /\\/, "/", serverroot );
-	"cd" | getline root;
-	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
-    }
-    {
-	gsub( /@@ServerRoot@@/, serverroot );
-	gsub( /@@ServerName@@/, "$(SERVERNAME)" );
-	gsub( /@@Port@@/, "$(PORT)" );
-	print $$0;
-    }
-<<
-	if not exist "$(INSTDIR)\conf\httpd.conf" \
-	    copy "$(INSTDIR)\conf\httpd.conf.default" "$(INSTDIR)\conf\httpd.conf"
-	for %f in ( docs\conf\extra\*.in ) do ( \
-	  copy %f "$(INSTDIR)\conf\extra\%~nf.default" <.y && \
-	  awk -f <<script.awk "docs/conf/extra/%~nf.in" "$(INSTDIR)" > "$(INSTDIR)\conf\extra\%~nf.default" )
-    BEGIN { 
-	serverroot = ARGV[2];
-	delete ARGV[2];
-	gsub( /\\/, "/", serverroot );
-	"cd" | getline root;
-	gsub( /^\//, substr( root, 1, 2 ) "/", serverroot );
-    }
-    {
-	gsub( /SSLMutex  file:@exp_runtimedir@\/ssl_mutex/, "SSLMutex default" );
-	gsub( /@@ServerRoot@@/,   serverroot );
-	gsub( /@exp_cgidir@/,     serverroot "/cgi-bin" );
-	gsub( /@exp_sysconfdir@/, serverroot "/conf" );
-	gsub( /@exp_errordir@/,   serverroot "/error" );
-	gsub( /@exp_htdocsdir@/,  serverroot "/htdocs" );
-	gsub( /@exp_iconsdir@/,   serverroot "/icons" );
-	gsub( /@exp_logfiledir@/, serverroot "/logs" );
-	gsub( /@exp_runtimedir@/, serverroot "/logs" );
-	gsub( /@exp_manualdir@/,  serverroot "/manual" );
-	gsub( /@rel_runtimedir@/, "logs" );
-	gsub( /@rel_logfiledir@/, "logs" );
-	gsub( /\/home\/\*\/public_html/, "\"C:/Documents and Settings/*/My Documents/My Website\"" );
-	gsub( /UserDir public_html/, "UserDir \"My Documents/My Website\"" );
-	gsub( /@@ServerName@@/, "$(SERVERNAME)" );
-	gsub( /@@Port@@/, "$(PORT)" );
-	gsub( /443/, "$(SSLPORT)" );
-	print $$0;
-    }
-<<
-	for %f in ( docs\conf\extra\*.in ) do ( \
-	  if not exist "$(INSTDIR)\conf\extra\%~nf" \
-	    copy "$(INSTDIR)\conf\extra\%~nf.default" "$(INSTDIR)\conf\extra\%~nf" \
-	)
+	  copy docs\conf\%f "$(INSTDIR)\conf\original\%f" <.y )
+	awk -f build\installwinconf.awk $(DOMAINNAME) $(SERVERNAME) \
+	    $(SERVERADMIN) $(PORT) $(SSLPORT) "$(INSTDIR) " docs/conf/ 
 	copy "support\dbmmanage.in" "$(INSTDIR)\bin\dbmmanage.pl"
 	-awk -f <<script.awk "support/dbmmanage.in" >"$(INSTDIR)\bin\dbmmanage.pl"
     { if ( $$0 ~ /^BEGIN \{ @AnyDBM_File::/ ) {
