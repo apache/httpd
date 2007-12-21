@@ -578,7 +578,6 @@ _install:
 	-mkdir "$(INSTDIR)\lib"
 	-mkdir "$(INSTDIR)\logs"
 	-mkdir "$(INSTDIR)\modules"
-	-mkdir "$(INSTDIR)\proxy"
 	-mkdir "$(INSTDIR)\symbols"
 	-mkdir "$(INSTDIR)\symbols\exe"
 	-mkdir "$(INSTDIR)\symbols\dll"
