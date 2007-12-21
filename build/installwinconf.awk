@@ -156,7 +156,7 @@ BEGIN {
 	  print "#LoadModule vhost_alias_module modules/mod_vhost_alias.so" > dstfl;
 	  continue;
 	}
-	gsub( /SSLMutex  file:@exp_runtimedir@\/ssl_mutex/, "SSLMutex default" );
+	gsub( /^SSLMutex.*/, "SSLMutex default" );
 	gsub( /@@ServerRoot@@/,   serverroot );
 	gsub( /@exp_cgidir@/,     serverroot "/cgi-bin" );
 	gsub( /@exp_sysconfdir@/, serverroot "/conf" );
