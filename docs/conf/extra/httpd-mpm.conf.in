@@ -104,7 +104,7 @@ LockFile "@rel_logfiledir@/accept.lock"
 # ThreadsPerChild: constant number of worker threads in the server process
 # MaxRequestsPerChild: maximum  number of requests a server process serves
 <IfModule mpm_winnt_module>
-    ThreadsPerChild      250
+    ThreadsPerChild      150
     MaxRequestsPerChild    0
 </IfModule>
 
