@@ -674,9 +674,9 @@ BEGIN {
 	    print "For the mod_deflate zlib compression component:";
 	    while ( getline > 0 && $$0 !~ /^[^ ]/ ) {
 		print $$0;
-            }
-            exit 0;
-        }
+	    }
+	    exit 0;
+	}
     }
     exit 1;
 }
