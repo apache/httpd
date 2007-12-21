@@ -87,10 +87,10 @@ BEGIN {
 	  bswarning = 0;
         }
 	if ( /@@LoadModule@@/ ) {
+	  print "LoadModule access_compat_module modules/mod_access_compat.so" > dstfl;
 	  print "LoadModule actions_module modules/mod_actions.so" > dstfl;
 	  print "LoadModule alias_module modules/mod_alias.so" > dstfl;
 	  print "LoadModule asis_module modules/mod_asis.so" > dstfl;
-	  print "LoadModule access_compat_module modules/mod_access_compat.so" > dstfl;
 	  print "LoadModule auth_basic_module modules/mod_auth_basic.so" > dstfl;
 	  print "#LoadModule auth_digest_module modules/mod_auth_digest.so" > dstfl;
 	  print "#LoadModule authn_anon_module modules/mod_authn_anon.so" > dstfl;
