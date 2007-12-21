@@ -36,10 +36,6 @@ BEGIN {
 
     if ( sourceroot != "docs/conf/" ) {
         sourceroot = confroot;
-        extrapath = "";
-    }
-    else {
-        extrapath = "extra/";
     }
 
     print "Installing Apache HTTP 2.0 server with" >tstfl;
@@ -70,7 +66,7 @@ BEGIN {
         dstfl = confdefault conffile;
 	bswarning = 1;
       } else {
-        srcfl = sourceroot extrapath filelist[conffile];
+        srcfl = sourceroot "extra/" filelist[conffile];
         dstfl = confdefault "extra/" conffile;
         bswarning = 0;
       }
