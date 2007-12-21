@@ -174,6 +174,7 @@ BEGIN {
 	  gsub( /_log"/, ".log\"" )
 	}
 	gsub( /@rel_runtimedir@/, "logs" );
+	gsub( /@rel_sysconfdir@/, "conf" );
 	gsub( /\/home\/\*\/public_html/, "\"C:/Documents and Settings/*/My Documents/My Website\"" );
 	gsub( /UserDir public_html/, "UserDir \"My Documents/My Website\"" );
 	gsub( /@@ServerName@@|www.example.com/,  servername );
