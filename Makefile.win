@@ -524,14 +524,13 @@ _copybin:
 	copy modules\proxy\$(LONG)\mod_proxy_ftp.$(src_so) 	"$(inst_so)" <.y
 	copy modules\proxy\$(LONG)\mod_proxy_http.$(src_so) 	"$(inst_so)" <.y
 !IF EXIST("srclib\openssl")
-	copy modules\ssl\$(LONG)\mod_ssl.$(src_so) 			"$(inst_so)" <.y
-	$(quiet)copy srclib\openssl\$(SSLBIN)\openssl.$(src_exe) 	"$(inst_exe)" <.y
-	$(quiet)copy srclib\openssl\$(SSLBIN)\libeay32.$(src_dll) 	"$(inst_dll)" <.y
-	$(quiet)copy srclib\openssl\$(SSLBIN)\ssleay32.$(src_dll) 	"$(inst_dll)" <.y
-	copy support\$(LONG)\abs.$(src_exe) 	"$(inst_exe)\ab.$(src_exe)" <.y
-!ELSE
-	copy support\$(LONG)\ab.$(src_exe) 				"$(inst_exe)" <.y
+	copy modules\ssl\$(LONG)\mod_ssl.$(src_so) 		"$(inst_so)" <.y
+	-copy srclib\openssl\$(SSLBIN)\libeay32.$(src_dll) 	"$(inst_dll)" <.y
+	-copy srclib\openssl\$(SSLBIN)\ssleay32.$(src_dll) 	"$(inst_dll)" <.y
+	-copy srclib\openssl\$(SSLBIN)\openssl.$(src_exe) 	"$(inst_exe)" <.y
+	copy support\$(LONG)\abs.$(src_exe) 			"$(inst_exe)" <.y
 !ENDIF
+	copy support\$(LONG)\ab.$(src_exe) 			"$(inst_exe)" <.y
 	copy support\$(LONG)\htcacheclean.$(src_exe)		"$(inst_exe)" <.y
 	copy support\$(LONG)\htdbm.$(src_exe) 			"$(inst_exe)" <.y
 	copy support\$(LONG)\htdigest.$(src_exe) 		"$(inst_exe)" <.y
@@ -579,7 +578,7 @@ _install:
 	copy NOTICE       "$(INSTDIR)\NOTICE.txt" <.y
 	copy README       "$(INSTDIR)\README.txt" <.y
 !IF EXIST("srclib\openssl")
-	copy srclib\openssl\apps\openssl.cnf "$(INSTDIR)\conf\openssl.cnf" <.y
+	-copy srclib\openssl\apps\openssl.cnf "$(INSTDIR)\conf\openssl.cnf" <.y
 	type << >> "$(INSTDIR)\NOTICE.txt"
 
   This binary distribution includes cryptographic software written by
@@ -597,7 +596,7 @@ BEGIN {
    }
 }
 <<
-	copy << + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS.txt" <.y
+	copy << "$(INSTDIR)\OPENSSL-NEWS.txt" <.y
 
  Apache HTTP Server 2.2 Limited OpenSSL Distribution
 
@@ -612,8 +611,10 @@ BEGIN {
  support for the patented encryption methods IDEA, MDC-2 or RC5.
 
 --------------------------------------------------------------------------------
+
 <<
-	copy << + srclib\openssl\README "$(INSTDIR)\OPENSSL-README.txt" <.y
+	-copy "$(INSTDIR)\OPENSSL-NEWS.txt" + srclib\openssl\NEWS
+	copy << "$(INSTDIR)\OPENSSL-README.txt" <.y
 
  Apache HTTP Server 2.2 Limited OpenSSL Distribution
 
@@ -647,6 +648,7 @@ BEGIN {
 
 --------------------------------------------------------------------------------
 <<
+	-copy "$(INSTDIR)\OPENSSL-README.txt" + srclib\openssl\README
 !ENDIF
 !IF EXIST("srclib\zlib")
 	type << >> "$(INSTDIR)\NOTICE.txt"
@@ -677,7 +679,7 @@ BEGIN {
 		inst_dll="$(INSTDIR)\bin"                              \
 		inst_so="$(INSTDIR)\modules"
 	$(MAKE) $(MAKEOPT) -f Makefile.win SHORT=$(SHORT) LONG=$(LONG) \
-		_copybin src_exe=pdb src_dll=pdb src_so=pdb quiet="-"  \
+		_copybin src_exe=pdb src_dll=pdb src_so=pdb            \
 		inst_exe="$(INSTDIR)\bin"                              \
 		inst_dll="$(INSTDIR)\bin"                              \
 		inst_so="$(INSTDIR)\modules"
