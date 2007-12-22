@@ -716,10 +716,24 @@ BEGIN {
 	xcopy docs\docroot 	"$(INSTDIR)\htdocs" /d < .a
 	xcopy docs\icons 	"$(INSTDIR)\icons" /s /d < .a
 	xcopy docs\manual 	"$(INSTDIR)\manual" /s /d < .a
-	xcopy srclib\apr-util\xml\expat\lib\expat.h 	"$(INSTDIR)\include" /d < .a
-	xcopy srclib\apr\include\*.h 			"$(INSTDIR)\include" /d < .a
-	xcopy srclib\apr-util\include\*.h 		"$(INSTDIR)\include" /d < .a
-	xcopy include\*.h 				"$(INSTDIR)\include" /d < .a
+	for %f in ( \
+		srclib\apr-util\xml\expat\lib\expat.h \
+		srclib\apr\include\*.h \
+		srclib\apr-util\include\*.h \
+		include\*.h \
+		os\win32\os.h \
+		server\mpm\winnt\mpm*.h \
+		modules\aaa\mod_auth.h \
+		modules\database\mod_dbd.h \
+		modules\dav\main\mod_dav.h \
+		modules\filters\mod_include.h \
+		modules\generators\mod_cgi.h \
+		modules\generators\mod_status.h \
+		modules\loggers\mod_log_config.h \
+		modules\http\mod_core.h \
+		modules\proxy\mod_proxy.h \
+		modules\ssl\mod_ssl.h ) do \
+	    @copy %f "$(INSTDIR)\include" < .y > nul
 	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y
 	copy srclib\apr\Lib$(SHORT)\apr-1.pdb		"$(INSTDIR)\lib" <.y
 	copy srclib\apr-util\Lib$(SHORT)\aprutil-1.lib	"$(INSTDIR)\lib" <.y
