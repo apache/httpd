@@ -288,9 +288,6 @@ Package=<4>
     Project_Dep_Name ab
     End Project Dependency
     Begin Project Dependency
-    Project_Dep_Name fcgistarter
-    End Project Dependency
-    Begin Project Dependency
     Project_Dep_Name htcacheclean
     End Project Dependency
     Begin Project Dependency
