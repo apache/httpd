@@ -186,15 +186,12 @@ void am_DisconnectComputer(LPSTR szComputerName)
         free(g_stComputers[i].szComputerName);
         RegCloseKey(g_stComputers[i].hRegistry);
         for (j = i; j < MAX_APACHE_COMPUTERS - 1; j++) {
-            g_stComputers[i].szComputerName= g_stComputers[i+1].szComputerName;
-            g_stComputers[i].hRegistry = g_stComputers[i+1].hRegistry;
+            g_stComputers[j].szComputerName= g_stComputers[j+1].szComputerName;
+            g_stComputers[j].hRegistry = g_stComputers[j+1].hRegistry;
         }
-        for (i = j; i < MAX_APACHE_COMPUTERS; i++) {
-            g_stComputers[i].szComputerName = NULL;
-            g_stComputers[i].hRegistry = NULL;
-        }
+        g_stComputers[j].szComputerName = NULL;
+        g_stComputers[j].hRegistry = NULL;
     }
-
 }
 
 
@@ -1048,8 +1045,8 @@ BOOL GetApacheServicesStatus()
             }
         }
         ++computers;
+        RegCloseKey(hKey);
     }
-    RegCloseKey(hKey);
     FindRunningServices();
     return TRUE;
 }
