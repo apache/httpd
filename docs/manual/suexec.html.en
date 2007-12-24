@@ -446,7 +446,7 @@
     command <code>make install</code> to install them. The binary image
     <code>suexec</code> is installed in the directory defined by the
     <code>--sbindir</code> option. The default location is
-    "/usr/local/apache2/sbin/suexec".<br />
+    "/usr/local/apache2/bin/suexec".<br />
      Please note that you need <strong><em>root
     privileges</em></strong> for the installation step. In order
     for the wrapper to set the user ID, it must be installed as
@@ -472,7 +472,7 @@
 </code></p></div>
 
     <p>and <code class="program"><a href="./programs/suexec.html">suexec</a></code> is installed at
-    "/usr/local/apache2/sbin/suexec", you should run:</p>
+    "/usr/local/apache2/bin/suexec", you should run:</p>
 
 <div class="example"><p><code>
     chgrp webgroup /usr/local/apache2/bin/suexec<br />
