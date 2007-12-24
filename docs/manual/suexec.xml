@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
@@ -437,7 +437,7 @@
     command <code>make install</code> to install them. The binary image
     <code>suexec</code> is installed in the directory defined by the
     <code>--sbindir</code> option. The default location is
-    "/usr/local/apache2/sbin/suexec".<br />
+    "/usr/local/apache2/bin/suexec".<br />
      Please note that you need <strong><em>root
     privileges</em></strong> for the installation step. In order
     for the wrapper to set the user ID, it must be installed as
@@ -463,7 +463,7 @@
 </example>
 
     <p>and <program>suexec</program> is installed at
-    "/usr/local/apache2/sbin/suexec", you should run:</p>
+    "/usr/local/apache2/bin/suexec", you should run:</p>
 
 <example>
     chgrp webgroup /usr/local/apache2/bin/suexec<br />
