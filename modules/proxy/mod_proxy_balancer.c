@@ -753,7 +753,7 @@ static int balancer_handler(request_rec *r)
         ap_rputs("</httpd:manager>", r);
     }
     else {
-        ap_set_content_type(r, "text/html");
+        ap_set_content_type(r, "text/html; charset=ISO-8859-1");
         ap_rputs(DOCTYPE_HTML_3_2
                  "<html><head><title>Balancer Manager</title></head>\n", r);
         ap_rputs("<body><h1>Load Balancer Manager for ", r);

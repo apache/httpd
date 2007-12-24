@@ -106,7 +106,7 @@ static int util_ldap_handler(request_rec *r)
         return DECLINED;
     }
 
-    ap_set_content_type(r, "text/html");
+    ap_set_content_type(r, "text/html; charset=ISO-8859-1");
 
     if (r->header_only)
         return OK;
