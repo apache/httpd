@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8" ?>
+﻿<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
@@ -364,7 +364,7 @@
       <dd>The path to the <code>suexec</code> binary must be hard-coded
       in the server for security reasons. Use this option to override
       the default path. <em>e.g.</em>
-      <code>--with-suexec-bin=/usr/sbin/suexec</code></dd>
+      <code>--with-suexec-bin=/usr/bin/suexec</code></dd>
 
       <dt><code>--with-suexec-caller=<em>UID</em></code></dt>
 
@@ -437,7 +437,7 @@
     command <code>make install</code> to install them. The binary image
     <code>suexec</code> is installed in the directory defined by the
     <code>--sbindir</code> option. The default location is
-    "/usr/local/apache2/sbin/suexec".<br />
+    "/usr/local/apache2/bin/suexec".<br />
      Please note that you need <strong><em>root
     privileges</em></strong> for the installation step. In order
     for the wrapper to set the user ID, it must be installed as
@@ -463,7 +463,7 @@
 </example>
 
     <p>and <program>suexec</program> is installed at
-    "/usr/local/apache2/sbin/suexec", you should run:</p>
+    "/usr/local/apache2/bin/suexec", you should run:</p>
 
 <example>
     chgrp webgroup /usr/local/apache2/bin/suexec<br />
@@ -480,7 +480,7 @@
     <p>Upon startup of Apache, it looks for the file
     <program>suexec</program> in the directory defined by the
     <code>--sbindir</code> option (default is
-    "/usr/local/apache/sbin/suexec"). If Apache finds a properly
+    "/usr/local/apache/bin/suexec"). If Apache finds a properly
     configured suEXEC wrapper, it will print the following message
     to the error log:</p>
 

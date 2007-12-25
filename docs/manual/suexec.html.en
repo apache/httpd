@@ -373,7 +373,7 @@
       <dd>The path to the <code>suexec</code> binary must be hard-coded
       in the server for security reasons. Use this option to override
       the default path. <em>e.g.</em>
-      <code>--with-suexec-bin=/usr/sbin/suexec</code></dd>
+      <code>--with-suexec-bin=/usr/bin/suexec</code></dd>
 
       <dt><code>--with-suexec-caller=<em>UID</em></code></dt>
 
@@ -446,7 +446,7 @@
     command <code>make install</code> to install them. The binary image
     <code>suexec</code> is installed in the directory defined by the
     <code>--sbindir</code> option. The default location is
-    "/usr/local/apache2/sbin/suexec".<br />
+    "/usr/local/apache2/bin/suexec".<br />
      Please note that you need <strong><em>root
     privileges</em></strong> for the installation step. In order
     for the wrapper to set the user ID, it must be installed as
@@ -472,7 +472,7 @@
 </code></p></div>
 
     <p>and <code class="program"><a href="./programs/suexec.html">suexec</a></code> is installed at
-    "/usr/local/apache2/sbin/suexec", you should run:</p>
+    "/usr/local/apache2/bin/suexec", you should run:</p>
 
 <div class="example"><p><code>
     chgrp webgroup /usr/local/apache2/bin/suexec<br />
@@ -489,7 +489,7 @@
     <p>Upon startup of Apache, it looks for the file
     <code class="program"><a href="./programs/suexec.html">suexec</a></code> in the directory defined by the
     <code>--sbindir</code> option (default is
-    "/usr/local/apache/sbin/suexec"). If Apache finds a properly
+    "/usr/local/apache/bin/suexec"). If Apache finds a properly
     configured suEXEC wrapper, it will print the following message
     to the error log:</p>
 
@@ -603,6 +603,6 @@
 <a href="./ja/suexec.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2007 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2006 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Modules</a> | <a href="./mod/directives.html">Directives</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossary</a> | <a href="./sitemap.html">Sitemap</a></p></div>
 </body></html>
