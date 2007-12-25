@@ -1578,6 +1578,8 @@ static int unescape_url(char *url, const char *forbid, const char *reserved)
                 if ((decoded == '\0')
                     || (forbid && ap_strchr_c(forbid, decoded))) {
                     badpath = 1;
+                    *x = decoded;
+                    y += 2;
                 }
                 else if (reserved && ap_strchr_c(reserved, decoded)) {
                     *x++ = *y++;
