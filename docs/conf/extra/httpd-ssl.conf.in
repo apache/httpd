@@ -32,7 +32,7 @@
 # standard HTTP port (see above) and to the HTTPS port
 #
 # Note: Configurations that use IPv6 but not IPv4-mapped addresses need two
-#       Listen directives: "Listen [::]:443" and "Listen 0.0.0.0:443"
+#       Listen directives: "Listen [::]:@@SSLPort@@" and "Listen 0.0.0.0:@@SSLPort@@"
 #
 Listen @@SSLPort@@
 

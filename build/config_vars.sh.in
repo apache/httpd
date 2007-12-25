@@ -49,6 +49,7 @@ exec sed "
 /^DSO_MODULES/d
 /^MODULE_/d
 /^PORT/d
+/^SSLPORT/d
 /^nonssl_/d
 /^CORE_IMPLIB/d
 /^rel_/d
