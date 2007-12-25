@@ -107,6 +107,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem,
 
+   * configure / install: Make https port configurable.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=606316&view=rev
+         http://svn.apache.org/viewvc?rev=606806&view=rev
+      Backport version for 2.2.x of patch:
+         http://people.apache.org/~fuankg/diffs/sslport.diff
+      +1: fuankg
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
