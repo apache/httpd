@@ -165,7 +165,7 @@ static apr_status_t file_cache_el_final(disk_cache_object_t *dobj,
          */
         rv = apr_file_rename(dobj->tempfile, dobj->datafile, r->pool);
         if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                          "disk_cache: rename tempfile to datafile failed:"
                          " %s -> %s", dobj->tempfile, dobj->datafile);
             apr_file_remove(dobj->tempfile, r->pool);
@@ -874,7 +874,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
             rv = safe_file_rename(conf, dobj->tempfile, dobj->hdrsfile,
                                   r->pool);
             if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, r->server,
+                ap_log_error(APLOG_MARK, APLOG_ERR, rv, r->server,
                     "disk_cache: rename tempfile to varyfile failed: %s -> %s",
                     dobj->tempfile, dobj->hdrsfile);
                 apr_file_remove(dobj->tempfile, r->pool);
