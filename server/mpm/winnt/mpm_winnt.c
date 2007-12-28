@@ -624,6 +624,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     apr_pool_t *ptemp;
     apr_procattr_t *attr;
     apr_proc_t new_child;
+    apr_file_t *child_out, *child_err;
     HANDLE hExitEvent;
     HANDLE waitlist[2];  /* see waitlist_e */
     char *cmd;
@@ -675,6 +676,22 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
                         "Parent: Unable to create child stdin pipe.");
         apr_pool_destroy(ptemp);
         return -1;
+    }
+
+    /* httpd-2.0/2.2 specific to work around apr_proc_create bugs */
+    if (((rv = apr_file_open_stdout(&child_out, p))
+            != APR_SUCCESS) ||
+        ((rv = apr_procattr_child_out_set(attr, child_out, NULL))
+            != APR_SUCCESS)) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                     "Parent: Could not set child process stdout");
+    }
+    if (((rv = apr_file_open_stderr(&child_err, p))
+            != APR_SUCCESS) ||
+        ((rv = apr_procattr_child_err_set(attr, child_err, NULL))
+            != APR_SUCCESS)) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, ap_server_conf,
+                     "Parent: Could not set child process stderr");
     }
 
     /* Create the child_ready_event */
@@ -1078,7 +1095,7 @@ void winnt_rewrite_args(process_rec *process)
     pid = getenv("AP_PARENT_PID");
     if (pid) 
     {
-        HANDLE filehand, newhand;
+        HANDLE filehand;
         HANDLE hproc = GetCurrentProcess();
 
         /* This is the child */
@@ -1091,17 +1108,12 @@ void winnt_rewrite_args(process_rec *process)
         /* The parent gave us stdin, we need to remember this
          * handle, and no longer inherit it at our children
          * (we can't slurp it up now, we just aren't ready yet).
+         * The original handle is closed below, at apr_file_dup2()
          */
         pipe = GetStdHandle(STD_INPUT_HANDLE);
-
-        if (osver.dwPlatformId == VER_PLATFORM_WIN32_NT) {
-            /* This doesn't work for 9x, but it's cleaner. */
-            SetHandleInformation(pipe, HANDLE_FLAG_INHERIT, 0);
-        }
-        else if (DuplicateHandle(hproc, pipe,
-                                 hproc, &filehand, 0, FALSE,
-                                 DUPLICATE_SAME_ACCESS)) {
-            CloseHandle(pipe);
+        if (DuplicateHandle(hproc, pipe,
+                            hproc, &filehand, 0, FALSE,
+                            DUPLICATE_SAME_ACCESS)) {
             pipe = filehand;
         }
 
@@ -1111,12 +1123,16 @@ void winnt_rewrite_args(process_rec *process)
          * Don't infect child processes with our stdin
          * handle, use another handle to NUL!
          */
-        if ((filehand = GetStdHandle(STD_OUTPUT_HANDLE))
-            && DuplicateHandle(hproc, filehand, 
-                               hproc, &newhand, 0,
-                               TRUE, DUPLICATE_SAME_ACCESS)) {
-            SetStdHandle(STD_INPUT_HANDLE, newhand);
+        {
+            apr_file_t *infile, *outfile;
+            if ((apr_file_open_stdout(&outfile, process->pool) == APR_SUCCESS)
+             && (apr_file_open_stdin(&infile, process->pool) == APR_SUCCESS))
+                apr_file_dup2(infile, outfile, process->pool);
         }
+
+        /* This child needs the existing stderr opened for logging,
+         * already 
+         */
 
         /* The parent is responsible for providing the
          * COMPLETE ARGUMENTS REQUIRED to the child.
@@ -1283,19 +1299,10 @@ void winnt_rewrite_args(process_rec *process)
             if ((rv = apr_file_open(&nullfile, "NUL",
                                     APR_READ | APR_WRITE, APR_OS_DEFAULT,
                                     process->pool)) == APR_SUCCESS) {
-                HANDLE hproc = GetCurrentProcess();
-                HANDLE nullstdout = NULL;
-                HANDLE nullhandle;
-
-                /* Duplicate the handle to be inherited by children */
-                if ((apr_os_file_get(&nullhandle, nullfile) == APR_SUCCESS)
-                    && DuplicateHandle(hproc, nullhandle,
-                                       hproc, &nullstdout,
-                                       0, TRUE, DUPLICATE_SAME_ACCESS)) {
-                    SetStdHandle(STD_OUTPUT_HANDLE, nullstdout);
-                }
-
-                /* Close the original handle, we used the duplicate */
+                apr_file_t *nullstdout;
+                if (apr_file_open_stdout(&nullstdout, process->pool)
+                        == APR_SUCCESS)
+                    apr_file_dup2(nullstdout, nullfile, process->pool);
                 apr_file_close(nullfile);
             }
         }
