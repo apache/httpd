@@ -84,7 +84,10 @@ RELEASE SHOWSTOPPERS:
          http://svn.apache.org/viewvc?rev=607276&view=rev
       Backport version for 2.2.x of patch:
          http://people.apache.org/~rpluem/patches/utf7_fix_2.2.x.diff
-      +1: rpluem,
+      +1: rpluem, wrowe
+      wrowe notes; as nice as customization might be, this mirrors the behavior
+      or all RFC conformant browsers, and additional customization can come
+      as a new feature in the future.
 
    * mod_status: Ensure refresh parameter is numeric to prevent a possible XSS
      attack caused by redirecting to other URLs.
@@ -92,7 +95,7 @@ RELEASE SHOWSTOPPERS:
          http://svn.apache.org/viewvc?rev=607282&view=rev
       Backport version for 2.0.x of patch:
          http://awe.com/e8f6ad05238f8/CVE-2007-6388-httpd-2.x.patch
-      +1: rpluem,
+      +1: rpluem, wrowe
 
    * mod_proxy_balancer: Prevent crash in balancer manager if invalid balancer
      name is passed as parameter.
@@ -140,11 +143,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewcvs.cgi?rev=607245&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, niq
+      +1: rpluem, niq, wrowe
       niq: Provisional +1, but the error logging should be at a consistent
            level (maybe WARNING?)
       rpluem: Set it to ERROR in all cases as IMHO this should not happen.
               If this level is too high we can reduce it later.
+      wrowe: disagree with rpluem - it's incredibly disruptive to admins
+             to have their logs filled with noise - warning would be ok, 
+             provided there's no more than one entry per failed request.
+             If their request would die outright, only then is rpluem right.
 
    * configure / install: Make https port configurable.
       Trunk version of patch:
@@ -152,7 +159,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=606806&view=rev
       Backport version for 2.2.x of patch:
          http://people.apache.org/~fuankg/diffs/sslport.diff
-      +1: fuankg
+      +1: fuankg, wrowe
+      wrowe notes; Win32 is already ready for this.
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
       Trunk version of patch:
@@ -160,11 +168,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          http://people.apache.org/~fuankg/diffs/httpd-2.2.x-sni.diff
       +1: fuankg
+      +0: like ssl upgrade of 2.2, perhaps this is a good reason to bring
+          httpd-2.4 to completion?  vhost changes could be disruptive to
+          third party module authors.
 
    * mod_deflate: Don't leave a strong ETag in place when transforming content
      PR 39727
      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=580598&r2=607219&pathrev=607219
-     +1: niq
+     +1: niq, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
