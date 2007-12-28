@@ -803,8 +803,10 @@ static int balancer_handler(request_rec *r)
                           ap_escape_uri(r->pool, worker->name),
                           "\">", NULL);
                 ap_rvputs(r, worker->name, "</a></td>", NULL);
-                ap_rvputs(r, "<td>", worker->s->route, NULL);
-                ap_rvputs(r, "</td><td>", worker->s->redirect, NULL);
+                ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
+                          NULL);
+                ap_rvputs(r, "</td><td>",
+                          ap_escape_html(r->pool, worker->s->redirect), NULL);
                 ap_rprintf(r, "</td><td>%d</td>", worker->s->lbfactor);
                 ap_rprintf(r, "<td>%d</td><td>", worker->s->lbset);
                 if (worker->s->status & PROXY_WORKER_DISABLED)
@@ -842,10 +844,12 @@ static int balancer_handler(request_rec *r)
             ap_rputs("<tr><td>LB Set:</td><td><input name=\"ls\" type=text ", r);
             ap_rprintf(r, "value=\"%d\"></td></tr>\n", wsel->s->lbset);
             ap_rputs("<tr><td>Route:</td><td><input name=\"wr\" type=text ", r);
-            ap_rvputs(r, "value=\"", wsel->s->route, NULL);
+            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, wsel->s->route),
+                      NULL);
             ap_rputs("\"></td></tr>\n", r);
             ap_rputs("<tr><td>Route Redirect:</td><td><input name=\"rr\" type=text ", r);
-            ap_rvputs(r, "value=\"", wsel->s->redirect, NULL);
+            ap_rvputs(r, "value=\"", ap_escape_html(r->pool, wsel->s->redirect),
+                      NULL);
             ap_rputs("\"></td></tr>\n", r);
             ap_rputs("<tr><td>Status:</td><td>Disabled: <input name=\"dw\" value=\"Disable\" type=radio", r);
             if (wsel->s->status & PROXY_WORKER_DISABLED)
