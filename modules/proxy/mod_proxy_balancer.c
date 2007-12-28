@@ -671,7 +671,7 @@ static int balancer_handler(request_rec *r)
         proxy_worker *ws;
 
         ws = ap_proxy_get_worker(r->pool, conf, name);
-        if (ws) {
+        if (bsel && ws) {
             worker = (proxy_worker *)bsel->workers->elts;
             for (n = 0; n < bsel->workers->nelts; n++) {
                 if (strcasecmp(worker->name, ws->name) == 0) {

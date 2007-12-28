@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Prevent crash in balancer manager if invalid balancer name is passed
+     as parameter. Reported by SecurityReason. [Ruediger Pluem]
+
   *) mod_deflate: Transform ETag when transforming the entity.
      PR 39727 [Henrik Nordstrom <hno squid-cache.org>, Nick Kew]
 
