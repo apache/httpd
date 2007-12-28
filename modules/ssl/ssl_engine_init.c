@@ -62,6 +62,7 @@ static void ssl_init_SSLLibrary(server_rec *s)
 
     SSL_load_error_strings();
     SSL_library_init();
+    OpenSSL_add_all_algorithms(); /* Required for eg SHA256 client certs */
 }
 
 /*
