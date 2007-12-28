@@ -174,7 +174,7 @@ AC_DEFUN(APACHE_MODPATH_ADD,[
       modpath_static="$modpath_static $libname"
       cat >>$modpath_current/modules.mk<<EOF
 $libname: $objects
-	\$(MOD_LINK) $objects
+	\$(MOD_LINK) $objects $5
 EOF
     else
       apache_need_shared=yes
@@ -266,7 +266,10 @@ AC_DEFUN(APACHE_MODULE,[
       fi
       shared="";;
     esac
-    APACHE_MODPATH_ADD($1, $shared, $3)
+    define([modprefix], [MOD_]translit($1, [a-z-], [A-Z_]))
+    APACHE_MODPATH_ADD($1, $shared, $3,, [\$(]modprefix[_LDADD)])
+    APACHE_SUBST(modprefix[_LDADD])
+    undefine([modprefix])
   fi
 ])dnl
 
@@ -488,14 +491,24 @@ if test "x$ap_ssltk_base" = "x"; then
       APR_ADDTO(LDFLAGS, [$ap_platform_runtime_link_flag$ap_ssltk_libdir])
     fi
   fi
-  APR_ADDTO(LIBS, [-lssl -lcrypto])
+  # Put SSL libraries in SSL_LIBS.
+  if test "$ap_ssltk_type" = "openssl"; then
+    APR_SETVAR(SSL_LIBS, [-lssl -lcrypto])
+  else
+    APR_SETVAR(SSL_LIBS, [-lsslc])
+  fi
   pkg-config openssl 2> /dev/null
   if test $? -eq 0; then
     ap_ssltk_incdep=`pkg-config --cflags-only-I openssl`
     APR_ADDTO(INCLUDES, $ap_ssltk_incdep)
     ap_ssltk_libdep=`pkg-config --libs openssl`
-    APR_ADDTO(LIBS, $ap_ssltk_libdep)
+    if test "$ap_ssltk_type" = "openssl"; then
+      APR_SETVAR(SSL_LIBS, $ap_ssltk_libdep)
+    else
+      APR_SETVAR(SSL_LIBS, $ap_ssltk_libdep)
+    fi
   fi
+  APACHE_SUBST(SSL_LIBS)
   ap_cv_ssltk="$ap_ssltk_base"
 fi
 ])

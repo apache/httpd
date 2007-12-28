@@ -116,14 +116,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * Backport 102870; PR 17217; stop linking OpenSSL .so's to support/*
-    binaries (especially when compiled --with-static-support (!)) and
-    fix mod_ssl.so to compile against .a openssl archives.
-      http://svn.apache.org/viewcvs.cgi?rev=102870&view=rev
-    adjusted patch without distcache complexity and accomodating the
-    changes for pkgconfig info from ssl
-      http://people.apache.org/~wrowe/httpd-2.0-limit-ssl-binding.patch
-    +1: wrowe, colm, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
