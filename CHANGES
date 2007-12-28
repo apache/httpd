@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) SECURITY: CVE-2007-6388 (cve.mitre.org)
+     mod_status: Ensure refresh parameter is numeric to prevent
+     a possible XSS attack caused by redirecting to other URLs. 
+     Reported by SecurityReason.  [Mark Cox, Joe Orton]
+
   *) mod_proxy_balancer: Correctly escape the worker route and the worker
      redirect string in the HTML output of the balancer manager.
      Reported by SecurityReason. [Ruediger Pluem]
