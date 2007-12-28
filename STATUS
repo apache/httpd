@@ -95,7 +95,7 @@ RELEASE SHOWSTOPPERS:
          http://svn.apache.org/viewvc?rev=607282&view=rev
       Backport version for 2.0.x of patch:
          http://awe.com/e8f6ad05238f8/CVE-2007-6388-httpd-2.x.patch
-      +1: rpluem, wrowe
+      +1: rpluem, wrowe, jorton
 
    * mod_proxy_balancer: Prevent crash in balancer manager if invalid balancer
      name is passed as parameter.
@@ -103,7 +103,7 @@ RELEASE SHOWSTOPPERS:
         http://svn.apache.org/viewvc?rev=607273&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, jorton
 
    * mod_proxy_balancer: Correctly escape the worker route and the worker
      redirect string in the HTML output of the balancer manager.
