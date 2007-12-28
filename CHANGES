@@ -12,21 +12,10 @@ Changes with Apache 2.3.0
   *) mod_deflate: Transform ETag when transforming the entity.
      PR 39727 [Henrik Nordstrom <hno squid-cache.org>, Nick Kew]
 
-  *) mod_ldap: Set character set for status page to ISO-8859-1 to avoid
-     UTF-7 XSS vulnerabilities of certain browsers. [Joe Orton]
-
-  *) mod_proxy_balancer: Set character set for balancer manager to ISO-8859-1
-     to avoid UTF-7 XSS vulnerabilities of certain browsers. [Joe Orton]
-
-  *) mod_proxy_ftp: Set character set for generated FTP directory listing to
-     ISO-8859-1 to avoid UTF-7 XSS vulnerabilities of certain browsers.
-     [Joe Orton]
-
-  *) mod_info: Set character set for info page to ISO-8859-1 to avoid
-     UTF-7 XSS vulnerabilities of certain browsers. [Joe Orton]
-
-  *) mod_dav: Set character set for error pages to ISO-8859-1 to avoid
-     UTF-7 XSS vulnerabilities of certain browsers. [Joe Orton]
+  *) Add explicit charset to the output of various modules to work around
+     possible cross-site scripting flaws affecting web browsers that do not
+     derive the response character set as required by  RFC2616.  One of these
+     reported by SecurityReason [Joe Orton]
 
   *) mod_ssl: Added server name indication support (RFC 4366).
      PR 34607. [Kaspar Brand <asfbugz velox.ch>]
