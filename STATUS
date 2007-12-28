@@ -103,11 +103,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      final name.
       Trunk version of patch:
          http://svn.apache.org/viewcvs.cgi?rev=409942&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=607245&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
+      +1: rpluem, niq
       niq: Provisional +1, but the error logging should be at a consistent
            level (maybe WARNING?)
+      rpluem: Set it to ERROR in all cases as IMHO this should not happen.
+              If this level is too high we can reduce it later.
 
    * configure / install: Make https port configurable.
       Trunk version of patch:
