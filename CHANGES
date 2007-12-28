@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_deflate: Transform ETag when transforming the entity.
+     PR 39727 [Henrik Nordstrom <hno squid-cache.org>, Nick Kew]
+
   *) mod_ldap: Set character set for status page to ISO-8859-1 to avoid
      UTF-7 XSS vulnerabilities of certain browsers. [Joe Orton]
 
@@ -60,10 +63,6 @@ Changes with Apache 2.3.0
 
   *) mpm winnt: fix null pointer dereference
      PR 42572 [Davi Arnaut]
-
-  *) mod_deflate: Don't leave a strong ETag in place while transforming
-     the entity.
-     PR 39727 [Nick Kew]
 
   *) core: reinstate location walk to fix config for subrequests
      PR 41960 [Jose Kahan <jose w3.org>]

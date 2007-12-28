@@ -373,25 +373,20 @@ static apr_status_t deflate_ctx_cleanup(void *data)
     return APR_SUCCESS;
 }
 /* PR 39727: we're screwing up our clients if we leave a strong ETag
- * header while transforming content.  A minimal fix that makes us
- * protocol-compliant is to make it a weak ETag.  Whether we can
- * use this ourselves (e.g. in mod_cache) is a different issue.
+ * header while transforming content.  Henrik Nordstrom suggests
+ * appending ";gzip".
  *
- * Henrik Nordstrom suggests instead appending ";gzip", commenting:
- *   "This should allows for easy bidirectional mapping, simplifying most
- *   conditionals as no transformation of the entity body is needed to find
- *   the etag, and the simple format makes it easier to trace should any
- *   misunderstandings occur."
- *
- * We might consider such a strategy in future if we implement support
- * for such a scheme.
+ * Pending a more thorough review of our Etag handling, let's just
+ * implement his suggestion.  It fixes the bug, or at least turns it
+ * from a showstopper to an inefficiency.  And it breaks nothing that
+ * wasn't already broken.
  */
-static void deflate_check_etag(request_rec *r)
+static void deflate_check_etag(request_rec *r, const char *transform)
 {
     const char *etag = apr_table_get(r->headers_out, "ETag");
     if (etag && (((etag[0] != 'W') && (etag[0] !='w')) || (etag[1] != '/'))) {
         apr_table_set(r->headers_out, "ETag",
-                      apr_pstrcat(r->pool, "W/", etag, NULL));
+                      apr_pstrcat(r->pool, etag, "-", transform, NULL));
     }
 }
 static apr_status_t deflate_out_filter(ap_filter_t *f,
@@ -591,7 +586,7 @@ static apr_status_t deflate_out_filter(ap_filter_t *f,
         }
         apr_table_unset(r->headers_out, "Content-Length");
         apr_table_unset(r->headers_out, "Content-MD5");
-        deflate_check_etag(r);
+        deflate_check_etag(r, "gzip");
 
         /* initialize deflate output buffer */
         ctx->stream.next_out = ctx->buffer;
@@ -1084,7 +1079,7 @@ static apr_status_t inflate_out_filter(ap_filter_t *f,
         /* these are unlikely to be set anyway, but ... */
         apr_table_unset(r->headers_out, "Content-Length");
         apr_table_unset(r->headers_out, "Content-MD5");
-        deflate_check_etag(r);
+        deflate_check_etag(r, "gunzip");
 
         /* initialize inflate output buffer */
         ctx->stream.next_out = ctx->buffer;
