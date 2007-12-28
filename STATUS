@@ -113,6 +113,24 @@ CURRENT RELEASE NOTES:
 RELEASE SHOWSTOPPERS:
 
 
+ * Various modules: Add explicit charset to the output of various modules to
+   work around possible cross-site scripting flaws affecting web browsers that
+   do not derive the response character set as required by RFC2616.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=606693&view=rev
+       http://svn.apache.org/viewvc?rev=607276&view=rev
+    Backport version for 2.2.x of patch:
+       http://people.apache.org/~rpluem/patches/utf7_fix_2.0.x.diff
+    +1: rpluem,
+
+ * mod_status: Ensure refresh parameter is numeric to prevent a possible XSS
+   attack caused by redirecting to other URLs.
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=607282&view=rev
+    Backport version for 2.2.x of patch:
+       http://awe.com/e8f6ad05238f8/CVE-2007-6388-httpd-2.x.patch
+    +1: rpluem,
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
