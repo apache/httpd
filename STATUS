@@ -119,7 +119,7 @@ RELEASE SHOWSTOPPERS:
     Trunk version of patch:
        http://svn.apache.org/viewvc?rev=606693&view=rev
        http://svn.apache.org/viewvc?rev=607276&view=rev
-    Backport version for 2.2.x of patch:
+    Backport version for 2.0.x of patch:
        http://people.apache.org/~rpluem/patches/utf7_fix_2.0.x.diff
     +1: rpluem,
 
@@ -127,7 +127,7 @@ RELEASE SHOWSTOPPERS:
    attack caused by redirecting to other URLs.
     Trunk version of patch:
        http://svn.apache.org/viewvc?rev=607282&view=rev
-    Backport version for 2.2.x of patch:
+    Backport version for 2.0.x of patch:
        http://awe.com/e8f6ad05238f8/CVE-2007-6388-httpd-2.x.patch
     +1: rpluem,
 
