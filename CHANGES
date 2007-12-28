@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_balancer: Correctly escape the worker route and the worker
+     redirect string in the HTML output of the balancer manager.
+     Reported by SecurityReason. [Ruediger Pluem]
+
   *) Prevent crash in balancer manager if invalid balancer name is passed
      as parameter. Reported by SecurityReason. [Ruediger Pluem]
 
