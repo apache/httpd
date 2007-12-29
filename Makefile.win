@@ -608,7 +608,7 @@ BEGIN {
    }
 }
 <<
-	copy <<.tmp "$(INSTDIR)\OPENSSL-NEWS.txt" <.y
+	copy << "$(INSTDIR)\OPENSSL-NEWS.txt" <.y
 
  Apache HTTP Server 2.3 Limited OpenSSL Distribution
 
@@ -624,9 +624,9 @@ BEGIN {
 
 --------------------------------------------------------------------------------
 <<
-	del .tmp
-	-copy "$(INSTDIR)\OPENSSL-NEWS.txt" + srclib\openssl\NEWS
-	copy <<.tmp "$(INSTDIR)\OPENSSL-README.txt" <.y
+	-copy "$(INSTDIR)\OPENSSL-NEWS.txt" \
+	    + srclib\openssl\NEWS "$(INSTDIR)\OPENSSL-NEWS.txt"
+	copy << "$(INSTDIR)\OPENSSL-README.txt" <.y
 
  Apache HTTP Server 2.3 Limited OpenSSL Distribution
 
@@ -661,8 +661,8 @@ BEGIN {
 --------------------------------------------------------------------------------
 
 <<
-	del .tmp
-	-copy "$(INSTDIR)\OPENSSL-README.txt" + srclib\openssl\README
+	-copy "$(INSTDIR)\OPENSSL-README.txt" \
+	    + srclib\openssl\README "$(INSTDIR)\OPENSSL-README.txt"
 !ENDIF
 !IF EXIST("srclib\zlib")
 	type << >> "$(INSTDIR)\NOTICE.txt"
