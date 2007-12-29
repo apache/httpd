@@ -89,14 +89,6 @@ RELEASE SHOWSTOPPERS:
       or all RFC conformant browsers, and additional customization can come
       as a new feature in the future.
 
-   * mod_status: Ensure refresh parameter is numeric to prevent a possible XSS
-     attack caused by redirecting to other URLs.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=607282&view=rev
-      Backport version for 2.0.x of patch:
-         http://awe.com/e8f6ad05238f8/CVE-2007-6388-httpd-2.x.patch
-      +1: rpluem, wrowe, jorton
-
    * mod_proxy_balancer: Prevent crash in balancer manager if invalid balancer
      name is passed as parameter.
      Trunk version of patch:
@@ -119,6 +111,14 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+   * mod_status: Ensure refresh parameter is numeric to prevent a possible XSS
+     attack caused by redirecting to other URLs.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=607282&view=rev
+      Backport version for 2.0.x of patch:
+         http://awe.com/e8f6ad05238f8/CVE-2007-6388-httpd-2.x.patch
+      +1: rpluem, wrowe, jorton
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
