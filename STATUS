@@ -98,6 +98,8 @@ RELEASE SHOWSTOPPERS:
      Backport version for 2.2.x of patch:
         Trunk version of patch works
      +1: rpluem, jorton
+     niq: +1 to the fix, but wouldn't it be a good idea to log a debug
+          message rather than silently ignore it if the test fails?
 
    * mod_proxy_balancer: Correctly escape the worker route and the worker
      redirect string in the HTML output of the balancer manager.
@@ -107,7 +109,7 @@ RELEASE SHOWSTOPPERS:
                                                           to CHANGES entry)
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, niq
 
    * mod_dav_fs: Adjust etag generation to produce identical results on 32-bit
      and 64-bit platforms. Avoid a regression with conditional PUT's on lock
@@ -117,7 +119,7 @@ RELEASE SHOWSTOPPERS:
         http://svn.apache.org/viewvc?rev=607437&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem,
+     +1: rpluem, niq
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
