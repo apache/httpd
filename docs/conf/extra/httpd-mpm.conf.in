@@ -99,3 +99,12 @@ LockFile "@rel_logfiledir@/accept.lock"
     MaxSpareThreads       10
     MaxRequestsPerChild    0
 </IfModule>
+
+# WinNT MPM
+# ThreadsPerChild: constant number of worker threads in the server process
+# MaxRequestsPerChild: maximum  number of requests a server process serves
+<IfModule mpm_winnt_module>
+    ThreadsPerChild      150
+    MaxRequestsPerChild    0
+</IfModule>
+
