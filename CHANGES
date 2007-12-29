@@ -16,6 +16,9 @@ Changes with Apache 2.3.0
      Prevent crash in balancer manager if invalid balancer name is passed
      as parameter. Reported by SecurityReason. [Ruediger Pluem]
 
+  *) mod_dav: Fix evaluation of If-Match * and If-None-Match * conditionals.
+     PR 38034 [Paritosh Shah <shah.paritosh gmail.com>]
+
   *) mod_dav: Adjust etag generation to produce identical results on 32-bit
      and 64-bit platforms and avoid a regression with conditional PUT's on lock
      and etag. PR 44152.
