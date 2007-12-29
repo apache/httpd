@@ -101,6 +101,8 @@ RELEASE SHOWSTOPPERS:
      name is passed as parameter.
      Trunk version of patch:
         http://svn.apache.org/viewvc?rev=607273&view=rev
+        http://svn.apache.org/viewvc?rev=607402&view=rev (CVE number added
+                                                          to CHANGES entry)
      Backport version for 2.2.x of patch:
         Trunk version of patch works
      +1: rpluem, jorton
@@ -109,6 +111,8 @@ RELEASE SHOWSTOPPERS:
      redirect string in the HTML output of the balancer manager.
      Trunk version of patch:
         http://svn.apache.org/viewvc?rev=607275&view=rev
+        http://svn.apache.org/viewvc?rev=607403&view=rev (CVE number added
+                                                          to CHANGES entry)
      Backport version for 2.2.x of patch:
         Trunk version of patch works
      +1: rpluem,
