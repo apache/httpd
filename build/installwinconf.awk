@@ -38,6 +38,14 @@ BEGIN {
         sourceroot = serverroot "/" sourceroot;
     }
 
+    usertree = ENVIRON["USERPROFILE"]
+    if ( usertree > "" ) {
+        gsub( /\\/, "/", usertree );
+        gsub( /\/[^\/]+$/, "", usertree );
+    } else {
+        usertree = "C:/Documents and Settings";
+    }
+
     print "Installing Apache HTTP 2.0 server with" >tstfl;
     print " DomainName =    " domainname >tstfl;
     print " ServerName =    " servername >tstfl;
@@ -171,7 +179,8 @@ BEGIN {
 	}
 	gsub( /@rel_runtimedir@/, "logs" );
 	gsub( /@rel_sysconfdir@/, "conf" );
-	gsub( /\/home\/\*\/public_html/, "\"C:/Documents and Settings/*/My Documents/My Website\"" );
+	gsub( /\/home\/\*\/public_html/, \
+              usertree "/*/My Documents/My Website" );
 	gsub( /UserDir public_html/, "UserDir \"My Documents/My Website\"" );
 	gsub( /@@ServerName@@|www.example.com/,  servername );
         gsub( /@@ServerAdmin@@|you@example.com/, serveradmin );
