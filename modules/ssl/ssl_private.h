@@ -35,6 +35,7 @@
 #include "http_connection.h"
 #include "http_request.h"
 #include "http_protocol.h"
+#include "http_vhost.h"
 #include "util_script.h"
 #include "util_filter.h"
 #include "util_ebcdic.h"
@@ -724,6 +725,11 @@ int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
 OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri, 
                                             OCSP_REQUEST *request,
                                             conn_rec *c, apr_pool_t *p);
+#endif
+
+#ifndef OPENSSL_NO_TLSEXT
+int ssl_servername_cb(SSL *ssl, int *al, modssl_ctx_t *mctx);
+int ssl_set_vhost_ctx(SSL *ssl, const char *servername); 
 #endif
 
 #endif /* SSL_PRIVATE_H */
