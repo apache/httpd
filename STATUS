@@ -93,18 +93,10 @@ RELEASE SHOWSTOPPERS:
                 give us UTF-8).  Also mod_dav embeds r->uri in the response:
                 we would need to URL-escape that before HTML-escaping it
                 to ensure that it's ISO-8859-1-compatible.
-
-   * mod_proxy_balancer: Prevent crash in balancer manager if invalid balancer
-     name is passed as parameter.
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=607273&view=rev
-        http://svn.apache.org/viewvc?rev=607402&view=rev (CVE number added
-                                                          to CHANGES entry)
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: rpluem, jorton
-     niq: +1 to the fix, but wouldn't it be a good idea to log a debug
-          message rather than silently ignore it if the test fails?
+      rpluem says: Please see my answers on list. Keep in mind that we do NOT
+                   create a regression by this patch but only enforce browsers
+                   who do not act in an RFC compliant manner to do so.
+                   So please reconsider your -1.
 
    * mod_proxy_balancer: Correctly escape the worker route and the worker
      redirect string in the HTML output of the balancer manager.
@@ -128,6 +120,22 @@ RELEASE SHOWSTOPPERS:
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+   * mod_proxy_balancer: Prevent crash in balancer manager if invalid balancer
+     name is passed as parameter.
+     Trunk version of patch:
+        http://svn.apache.org/viewvc?rev=607273&view=rev
+        http://svn.apache.org/viewvc?rev=607402&view=rev (CVE number added
+                                                          to CHANGES entry)
+     Backport version for 2.2.x of patch:
+        Trunk version of patch works
+     +1: rpluem, jorton
+     niq: +1 to the fix, but wouldn't it be a good idea to log a debug
+          message rather than silently ignore it if the test fails?
+     rpluem: I do not see this need right now as this cannot happen if you
+             use the link contructed by the balancer manager. It can only
+             happen if you construct the URL by yourself. But I may change my
+             mind once I have to do bug hunting in this area :-).
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
