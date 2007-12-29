@@ -7,7 +7,8 @@ Changes with Apache 2.3.0
      a possible XSS attack caused by redirecting to other URLs. 
      Reported by SecurityReason.  [Mark Cox, Joe Orton]
 
-  *) mod_proxy_balancer: Correctly escape the worker route and the worker
+  *) SECURITY: CVE-2007-6421 (cve.mitre.org)
+     mod_proxy_balancer: Correctly escape the worker route and the worker
      redirect string in the HTML output of the balancer manager.
      Reported by SecurityReason. [Ruediger Pluem]
 
