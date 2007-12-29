@@ -299,13 +299,10 @@ int ssl_hook_Access(request_rec *r)
 
 #ifndef OPENSSL_NO_TLSEXT
     /*
-     * We will switch to another virtualhost and to its ssl_ctx
-     * if changed, we will force a renegotiation.
+     * We will force a renegotiation if we switch to another virtualhost.
      */
     if (r->hostname && !SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name)) {
-        SSL_CTX *ctx = SSL_get_SSL_CTX(ssl);
-        if (ssl_set_vhost_ctx(ssl,(char *)r->hostname) &&
-                      ctx != SSL_get_SSL_CTX(ssl))
+        if (ssl_set_vhost_ctx(ssl, r->hostname) && ctx != SSL_get_SSL_CTX(ssl))
             renegotiate = TRUE;
     }
 #endif
@@ -1107,7 +1104,7 @@ int ssl_hook_Fixup(request_rec *r)
 
 #ifndef OPENSSL_NO_TLSEXT
     /* add content of SNI TLS extension (if supplied with ClientHello) */
-    if (servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name)) {
+    if ((servername = SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name))) {
         apr_table_set(env, "SSL_TLS_SNI", servername);
     }
 #endif

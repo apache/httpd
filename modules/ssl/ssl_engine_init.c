@@ -152,9 +152,10 @@ static int set_ssl_vhost(void *servername, conn_rec *c, server_rec *s)
     if (!found) {
         names = s->names;
         if (names) {
-            char **name = (char **) names->elts;
+            char **name = (char **)names->elts;
             for (i = 0; i < names->nelts; ++i) {
-                if(!name[i]) continue;
+                if (!name[i])
+                    continue;
                 if (!strcasecmp(servername, name[i])) {
                     found = TRUE;
                     break;
@@ -167,9 +168,10 @@ static int set_ssl_vhost(void *servername, conn_rec *c, server_rec *s)
     if (!found) {
         names = s->wild_names;
         if (names) {
-            char **name = (char **) names->elts;
+            char **name = (char **)names->elts;
             for (i = 0; i < names->nelts; ++i) {
-                if(!name[i]) continue;
+                if (!name[i])
+                    continue;
                 if (!ap_strcasecmp_match(servername, name[i])) {
                     found = TRUE;
                     break;
@@ -180,11 +182,11 @@ static int set_ssl_vhost(void *servername, conn_rec *c, server_rec *s)
 
     /* set SSL_CTX (if matched) */
     if (found) {
-        if ((ssl = ((SSLConnRec *)myConnConfig(c))->ssl) == NULL) 
+        if ((ssl = ((SSLConnRec *)myConnConfig(c))->ssl) == NULL)
             return 0;
         if (!(sc = mySrvConfig(s)))
-            return 0;	
-        SSL_set_SSL_CTX(ssl,sc->server->ssl_ctx);
+            return 0;
+        SSL_set_SSL_CTX(ssl, sc->server->ssl_ctx);
         return 1;
     }
     return 0;
@@ -196,22 +198,19 @@ int ssl_set_vhost_ctx(SSL *ssl, const char *servername)
 
     if (servername == NULL)   /* should not occur. */
         return 0;
-
-    SSL_set_SSL_CTX(ssl,NULL);
-
-    if (!(c = (conn_rec *)SSL_get_app_data(ssl))) 
+    SSL_set_SSL_CTX(ssl, NULL);
+    if (!(c = (conn_rec *)SSL_get_app_data(ssl)))
         return 0;
-
-    return ap_vhost_iterate_given_conn(c,set_ssl_vhost,servername);
+    return ap_vhost_iterate_given_conn(c, set_ssl_vhost, (void *)servername);
 }
 
-int ssl_servername_cb(SSL *s, int *al, modssl_ctx_t *mctx)
+int ssl_servername_cb(SSL *ssl, int *al, modssl_ctx_t *mctx)
 {
-    const char *servername = SSL_get_servername(s,TLSEXT_NAMETYPE_host_name);
-
-    if (servername) {
-        return ssl_set_vhost_ctx(s,servername)?SSL_TLSEXT_ERR_OK:SSL_TLSEXT_ERR_ALERT_FATAL;
-    }
+    const char *servername =
+                SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
+    if (servername)
+        return ssl_set_vhost_ctx(ssl, servername) ? 
+                SSL_TLSEXT_ERR_OK : SSL_TLSEXT_ERR_ALERT_FATAL;
     return SSL_TLSEXT_ERR_NOACK;
 }
 #endif
@@ -437,22 +436,23 @@ static void ssl_init_server_check(server_rec *s,
 }
 
 static void ssl_init_server_extensions(server_rec *s,
-                             apr_pool_t *p,
-                             apr_pool_t *ptemp,
-                             modssl_ctx_t *mctx)
+                                       apr_pool_t *p,
+                                       apr_pool_t *ptemp,
+                                       modssl_ctx_t *mctx)
 {
     /*
      * Configure TLS extensions support
      */
-
 #ifndef OPENSSL_NO_TLSEXT
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "Configuring TLS extensions facility");
 
-    if (!SSL_CTX_set_tlsext_servername_callback(mctx->ssl_ctx, ssl_servername_cb) ||
+    if (!SSL_CTX_set_tlsext_servername_callback(mctx->ssl_ctx,
+                                                ssl_servername_cb) ||
         !SSL_CTX_set_tlsext_servername_arg(mctx->ssl_ctx, mctx)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                "Unable to initialize servername callback, bad openssl version.");
+                     "Unable to initialize servername callback - "
+                     "bad OpenSSL version.");
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
@@ -815,9 +815,8 @@ static void ssl_init_ctx(server_rec *s,
     if (mctx->pks) {
         /* XXX: proxy support? */
         ssl_init_ctx_cert_chain(s, p, ptemp, mctx);
+        ssl_init_server_extensions(s, p, ptemp, mctx);
     }
-
-    ssl_init_server_extensions(s, p, ptemp, mctx);
 }
 
 static int ssl_server_import_cert(server_rec *s,
@@ -1110,13 +1109,16 @@ void ssl_init_ConfigureServer(server_rec *s,
 
 void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
 {
-    server_rec *s, *ps;
     SSLSrvConfigRec *sc;
+    server_rec *s;
+#ifdef OPENSSL_NO_TLSEXT
+    server_rec *ps;
     apr_hash_t *table;
     const char *key;
     apr_ssize_t klen;
 
     BOOL conflict = FALSE;
+#endif
 
     /*
      * Give out warnings when a server has HTTPS configured
