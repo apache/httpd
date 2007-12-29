@@ -11,7 +11,8 @@ Changes with Apache 2.3.0
      redirect string in the HTML output of the balancer manager.
      Reported by SecurityReason. [Ruediger Pluem]
 
-  *) Prevent crash in balancer manager if invalid balancer name is passed
+  *) SECURITY: CVE-2007-6422 (cve.mitre.org)
+     Prevent crash in balancer manager if invalid balancer name is passed
      as parameter. Reported by SecurityReason. [Ruediger Pluem]
 
   *) mod_deflate: Transform ETag when transforming the entity.
