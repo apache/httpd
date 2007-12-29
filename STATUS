@@ -88,6 +88,11 @@ RELEASE SHOWSTOPPERS:
       wrowe notes; as nice as customization might be, this mirrors the behavior
       or all RFC conformant browsers, and additional customization can come
       as a new feature in the future.
+      -1: niq.  We cannot label FTP directory listings as ISO-8859-1 unless
+                we ensure they really are (e.g. some backend platforms will
+                give us UTF-8).  Also mod_dav embeds r->uri in the response:
+                we would need to URL-escape that before HTML-escaping it
+                to ensure that it's ISO-8859-1-compatible.
 
    * mod_proxy_balancer: Prevent crash in balancer manager if invalid balancer
      name is passed as parameter.
@@ -169,6 +174,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      PR 39727
      http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=580598&r2=607219&pathrev=607219
      +1: niq, wrowe
+
+   * mod_dav: Fix evaluation of If-Match * and If-None-Match * conditionals.
+     PR 38034
+     http://svn.apache.org/viewvc?view=rev&revision=607466
+     +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
