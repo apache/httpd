@@ -175,6 +175,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +0: like ssl upgrade of 2.2, perhaps this is a good reason to bring
           httpd-2.4 to completion?  vhost changes could be disruptive to
           third party module authors.
+      -1: rpluem: jorton found some problems with the trunk version and they
+                  should be fixed / discussed in trunk before we backport.
 
    * mod_deflate: Don't leave a strong ETag in place when transforming content
      PR 39727
