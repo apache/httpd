@@ -71,6 +71,7 @@
 #endif
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
+#include "apr_strings.h"
 
 #ifdef NEXT
 #if (NX_CURRENT_COMPILER_RELEASE == 410)
@@ -296,19 +297,18 @@ static int status_handler(request_rec *r)
             if ((loc = ap_strstr_c(r->args,
                                    status_options[i].form_data_str)) != NULL) {
                 switch (status_options[i].id) {
-                case STAT_OPT_REFRESH:
-                    if (*(loc + strlen(status_options[i].form_data_str)) == '='
-                        && atol(loc + strlen(status_options[i].form_data_str)
-                                + 1) > 0)
-                        apr_table_set(r->headers_out,
-                                      status_options[i].hdr_out_str,
-                                      loc +
-                                      strlen(status_options[i].hdr_out_str) +
-                                      1);
-                    else
-                        apr_table_set(r->headers_out,
-                                      status_options[i].hdr_out_str, "1");
+                case STAT_OPT_REFRESH: {
+                    apr_size_t len = strlen(status_options[i].form_data_str);
+                    long t = 0;
+
+                    if (*(loc + len ) == '=') {
+                        t = atol(loc + len + 1);
+                    }
+                    apr_table_set(r->headers_out,
+                                  status_options[i].hdr_out_str,
+                                  apr_ltoa(r->pool, t < 1 ? 1 : t));
                     break;
+                }
                 case STAT_OPT_NOTABLE:
                     no_table_report = 1;
                     break;

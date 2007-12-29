@@ -1,9 +1,14 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) SECURITY: CVE-2007-6388 (cve.mitre.org)
+     mod_status: Ensure refresh parameter is numeric to prevent
+     a possible XSS attack caused by redirecting to other URLs.
+     Reported by SecurityReason.  [Mark Cox, Joe Orton]
+
   *) SECURITY: CVE-2007-5000 (cve.mitre.org)
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
-     [Joe Orton]  
+     [Joe Orton]
 
   *) http_protocol: Escape request method in 405 error reporting.
      This has no security impact since the browser cannot be tricked
