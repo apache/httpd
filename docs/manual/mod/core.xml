@@ -1115,6 +1115,14 @@ HTTP response header</description>
     the setting for that subdirectory (which will be inherited by
     any sub-subdirectories that don't override it) will be equivalent to
     <code>FileETag&nbsp;MTime&nbsp;Size</code>.</p>
+    <note type="warning"><title>Warning</title>
+    Do not change the default for directories or locations that have WebDAV
+    enabled and use <module>mod_dav_fs</module> as a storage provider.
+    <module>mod_dav_fs</module> uses <code>INode&nbsp;MTime&nbsp;Size</code>
+    as a fixed format for <code>ETag</code> comparisons on conditional requests.
+    These conditional requests will break if the <code>ETag</code> format is
+    changed via <directive>FileETag</directive>.
+    </note>
 </usage>
 </directivesynopsis>
 
