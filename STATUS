@@ -122,6 +122,25 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_disk_cache: Delete temporary files if they cannot be renamed to their
+     final name.
+      Trunk version of patch:
+         http://svn.apache.org/viewcvs.cgi?rev=409942&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=607245&view=rev
+         http://svn.apache.org/viewcvs.cgi?rev=607440&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, niq, wrowe
+      niq: Provisional +1, but the error logging should be at a consistent
+           level (maybe WARNING?)
+      rpluem: Set it to ERROR in all cases as IMHO this should not happen.
+              If this level is too high we can reduce it later.
+      wrowe: disagree with rpluem - it's incredibly disruptive to admins
+             to have their logs filled with noise - warning would be ok, 
+             provided there's no more than one entry per failed request.
+             If their request would die outright, only then is rpluem right.
+      rpluem: Level now set to WARNING.
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -141,25 +160,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                but -0 on including this as a new feature in 2.2.7.
                Better IMHO to separate releasing it from the many bugfixes
                in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
-
-   * mod_disk_cache: Delete temporary files if they cannot be renamed to their
-     final name.
-      Trunk version of patch:
-         http://svn.apache.org/viewcvs.cgi?rev=409942&view=rev
-         http://svn.apache.org/viewcvs.cgi?rev=607245&view=rev
-         http://svn.apache.org/viewcvs.cgi?rev=607440&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, niq, wrowe
-      niq: Provisional +1, but the error logging should be at a consistent
-           level (maybe WARNING?)
-      rpluem: Set it to ERROR in all cases as IMHO this should not happen.
-              If this level is too high we can reduce it later.
-      wrowe: disagree with rpluem - it's incredibly disruptive to admins
-             to have their logs filled with noise - warning would be ok, 
-             provided there's no more than one entry per failed request.
-             If their request would die outright, only then is rpluem right.
-      rpluem: Level now set to WARNING.
 
    * configure / install: Make https port configurable.
       Trunk version of patch:
