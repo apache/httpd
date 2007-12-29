@@ -208,6 +208,7 @@ int ssl_servername_cb(SSL *ssl, int *al, modssl_ctx_t *mctx)
 {
     const char *servername =
                 SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
+
     if (servername)
         return ssl_set_vhost_ctx(ssl, servername) ? 
                 SSL_TLSEXT_ERR_OK : SSL_TLSEXT_ERR_ALERT_FATAL;
