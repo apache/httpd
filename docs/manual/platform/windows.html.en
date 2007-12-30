@@ -715,8 +715,8 @@
       http://localhost/
     </code></p></div>
 
-    <p>Apache should respond with a welcome page and a link to the
-    Apache manual. If nothing happens or you get an error, look in the
+    <p>Apache should respond with a welcome page and you should see
+    "It Works!". If nothing happens or you get an error, look in the
     <code>error.log</code> file in the <code>logs</code> subdirectory.
     If your host is not connected to the net, or if you have serious
     problems with your DNS (Domain Name Service) configuration, you
