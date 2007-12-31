@@ -154,6 +154,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     which list their contents in other-than ISO-8859-1 charset (e.g. utf-8).
     [Ruediger Pluem]
       trunk version; http://svn.apache.org/viewvc?view=rev&revision=607638
+      backport;
+        http://people.apache.org/~wrowe/mod_proxy_ftp_dir_listing-2.2.diff
       +1: wrowe
 
 
