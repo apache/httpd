@@ -5,7 +5,7 @@ Changes with Apache 2.0.62
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]
 
-  *) log.c: Ensure Win32 ressurects its lost robust logger processes.
+  *) log.c: Ensure Win32 resurrects its lost robust logger processes.
      [William Rowe]
 
   *) mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean 
