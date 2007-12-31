@@ -1,4 +1,4 @@
-                                                        -*- coding: utf-8 -*-
+﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
   *) SECURITY: CVE-2007-6388 (cve.mitre.org)
@@ -9,6 +9,9 @@ Changes with Apache 2.2.7
   *) SECURITY: CVE-2007-5000 (cve.mitre.org)
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]
+
+  *) log.c: Ensure Win32 ressurects its lost robust logger processes.
+     [William Rowe]
 
   *) mod_disk_cache: Delete temporary files if they cannot be renamed to their
      final name. [Davi Arnaut <davi haxent.com.br>]
