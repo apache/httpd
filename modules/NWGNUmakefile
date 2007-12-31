@@ -3,6 +3,13 @@
 #
 # To build with exerimental modules set the environment 
 #  variable EXPERIMENTAL=1
+# To build with the mod_ssl module set the environment
+#  variable WITH_MOD_SSL=1
+
+# If USE_STDSOCKETS is defined we allways build mod_ssl
+ifdef USE_STDSOCKETS
+WITH_MOD_SSL=1
+endif
 
 SUBDIRS = \
 	aaa \
@@ -26,8 +33,8 @@ SUBDIRS += ldap \
 	$(EOLIST)
 endif
 
-# If OSSLSDK has been defined then build the mod_ssl module
-ifndef USE_STDSOCKETS
+# If WITH_MOD_SSL and OSSLSDK have been defined then build the mod_ssl module
+ifdef WITH_MOD_SSL
 ifneq "$(OSSLSDK)" ""
 SUBDIRS += ssl \
 	$(EOLIST)
