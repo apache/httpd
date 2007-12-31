@@ -121,7 +121,7 @@ RELEASE SHOWSTOPPERS:
        http://svn.apache.org/viewvc?rev=607276&view=rev
     Backport version for 2.0.x of patch:
        http://people.apache.org/~rpluem/patches/utf7_fix_2.0.x.diff
-    +1: rpluem,
+    +1: rpluem, wrowe
 
  * mod_status: Ensure refresh parameter is numeric to prevent a possible XSS
    attack caused by redirecting to other URLs.
@@ -148,6 +148,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +0: covener
           do we need to make people opt-in for this behavior to 
           backport it to 2.0.x? What mechanism?
+
+  * mod_proxy_ftp: Introduce the ProxyFtpDirCharset directive, allowing
+    the administrator to identify a default, or specific servers or paths
+    which list their contents in other-than ISO-8859-1 charset (e.g. utf-8).
+    [Ruediger Pluem]
+      trunk version; http://svn.apache.org/viewvc?view=rev&revision=607638
+      +1: wrowe
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
