@@ -161,15 +161,26 @@ static apr_status_t clear_handle_list(void *v)
     return APR_SUCCESS;
 }
 
-/* remember to close this handle in the child process */
+/* remember to close this handle in the child process
+ *
+ * On Win32 this makes zero sense, because we don't
+ * take the parent process's child procs.
+ * If the win32 parent instead passed each and every
+ * logger write handle from itself down to the child,
+ * and the parent manages all aspects of keeping the 
+ * reliable pipe log children alive, this would still
+ * make no sense :)  Cripple it on Win32.
+ */
 static void close_handle_in_child(apr_pool_t *p, apr_file_t *f)
 {
+#ifndef WIN32
     read_handle_t *new_handle;
 
     new_handle = apr_pcalloc(p, sizeof(read_handle_t));
     new_handle->next = read_handles;
     new_handle->handle = f;
     read_handles = new_handle;
+#endif
 }
 
 void ap_logs_child_init(apr_pool_t *p, server_rec *s)
