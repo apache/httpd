@@ -97,6 +97,10 @@ RELEASE SHOWSTOPPERS:
                    create a regression by this patch but only enforce browsers
                    who do not act in an RFC compliant manner to do so.
                    So please reconsider your -1.
+      wrowe echos rpluem's sentiments, and argues supporting non-RFC clients
+            is not a key purpose of httpd.  However, if the associated non
+            showstopper new-feature will satisfy you, perhaps this should
+            be adopted (c.f. mod_proxy_ftp below).
 
    * mod_proxy_balancer: Correctly escape the worker route and the worker
      redirect string in the HTML output of the balancer manager.
@@ -191,6 +195,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      -1: rpluem: This causes a segfault on trunk. Also it changes the behaviour
                  by sending headers in cases where we did not before. It needs
                  to be evaluated first if this is the correct thing to do.
+
+  * mod_proxy_ftp: Introduce the ProxyFtpDirCharset directive, allowing
+    the administrator to identify a default, or specific servers or paths
+    which list their contents in other-than ISO-8859-1 charset (e.g. utf-8).
+    [Ruediger Pluem]
+      trunk version; http://svn.apache.org/viewvc?view=rev&revision=607638
+      +1: wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
