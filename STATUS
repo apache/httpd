@@ -101,6 +101,8 @@ RELEASE SHOWSTOPPERS:
             is not a key purpose of httpd.  However, if the associated non
             showstopper new-feature will satisfy you, perhaps this should
             be adopted (c.f. mod_proxy_ftp below).
+      niq says: I withdraw my -1 if we also apply a patch that enables
+                an admin to specify charset in an FTP directory list.
 
    * mod_proxy_balancer: Correctly escape the worker route and the worker
      redirect string in the HTML output of the balancer manager.
@@ -204,6 +206,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       backport;
         http://people.apache.org/~wrowe/mod_proxy_ftp_dir_listing-2.2.diff
       +1: wrowe
+      -0: niq: I dislike this patch for reasons stated on-list, but it
+               delivers the functionality needed for the charset "showstopper".
 
 PATCHES/ISSUES THAT ARE STALLED
 
