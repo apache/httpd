@@ -157,6 +157,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       backport;
         http://people.apache.org/~wrowe/mod_proxy_ftp_dir_listing-2.0.diff
       +1: wrowe
+      rpluem says: Your patch was incomplete and did not compile please use
+      the fixed version at
+        http://people.apache.org/~rpluem/patches/mod_proxy_ftp_dir_listing-2.0.diff
+      and I am +1.
 
 
 PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
