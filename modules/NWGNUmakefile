@@ -1,8 +1,15 @@
 #
 # Declare the sub-directories to be built here
 #
-# To build with exerimental modules set the environment 
+# To build with exerimental modules set the environment
 #  variable EXPERIMENTAL=1
+# To build with the mod_ssl module set the environment
+#  variable WITH_MOD_SSL=1
+
+# If USE_STDSOCKETS is defined we allways build mod_ssl
+ifdef USE_STDSOCKETS
+WITH_MOD_SSL=1
+endif
 
 SUBDIRS = \
 	aaa \
@@ -19,7 +26,7 @@ SUBDIRS = \
 	proxy \
 	filters \
 	database \
-	$(EOLIST) 
+	$(EOLIST)
 
 # If LDAPSDK has been defined then build the util_ldap module
 ifneq "$(LDAPSDK)" ""
@@ -27,7 +34,7 @@ SUBDIRS += ldap \
 	$(EOLIST)
 endif
 
-# If OSSLSDK has been defined then build the mod_ssl module
+# If WITH_MOD_SSL and OSSLSDK have been defined then build the mod_ssl module
 ifdef WITH_MOD_SSL
 ifneq "$(OSSLSDK)" ""
 SUBDIRS += ssl \
@@ -38,19 +45,19 @@ endif
 #If the mod_edir directory exists then build the mod_edir module
 ifeq "$(wildcard $(AP_WORK)\modules\mod_edir)" "$(AP_WORK)\modules\mod_edir"
 SUBDIRS += mod_edir \
-	       $(EOLIST)
+	$(EOLIST)
 endif
 
 # Allow the experimental modules to be built if EXPERIMENTAL is defined
 ifdef EXPERIMENTAL
 SUBDIRS += experimental \
-	       $(EOLIST)
+	$(EOLIST)
 endif
 
-# Allow the experimental modules to be built if EXPERIMENTAL is defined
+# Allow the debugging modules to be built if DEBUG is defined
 ifdef DEBUG
 SUBDIRS += debugging \
-	       $(EOLIST)
+	$(EOLIST)
 endif
 
 
@@ -64,7 +71,7 @@ include $(AP_WORK)\build\NWGNUhead.inc
 #
 # build this level's files
 
-ifeq "$(wildcard NWGNUmakefile.mak)" "NWGNUmakefile.mak" 
+ifeq "$(wildcard NWGNUmakefile.mak)" "NWGNUmakefile.mak"
 include NWGNUmakefile.mak
 endif
 
@@ -73,4 +80,4 @@ endif
 # installation area
 #
 install :: nlms FORCE
-	
+
