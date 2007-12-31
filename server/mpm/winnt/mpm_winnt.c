@@ -928,9 +928,11 @@ die_now:
                 event_handles[CHILD_HANDLE] = NULL;
             }
         }
+        CloseHandle(child_exit_event);
         return 0;  /* Tell the caller we do not want to restart */
     }
     winnt_mpm_state = AP_MPMQ_STARTING;
+    CloseHandle(child_exit_event);
     return 1;      /* Tell the caller we want a restart */
 }
 
