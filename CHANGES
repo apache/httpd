@@ -10,7 +10,7 @@ Changes with Apache 2.2.7
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]
 
-  *) log.c: Ensure Win32 ressurects its lost robust logger processes.
+  *) log.c: Ensure Win32 resurrects its lost robust logger processes.
      [William Rowe]
 
   *) mod_disk_cache: Delete temporary files if they cannot be renamed to their
