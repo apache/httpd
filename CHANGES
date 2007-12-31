@@ -16,6 +16,10 @@ Changes with Apache 2.3.0
      Prevent crash in balancer manager if invalid balancer name is passed
      as parameter. Reported by SecurityReason. [Ruediger Pluem]
 
+  *) Introduce the ProxyFtpDirCharset directive, allowing the administrator
+     to identify a default, or specific servers or paths which list their
+     contents in other-than ISO-8859-1 charset (e.g. utf-8). [Ruediger Pluem]
+
   *) mod_dav: Fix evaluation of If-Match * and If-None-Match * conditionals.
      PR 38034 [Paritosh Shah <shah.paritosh gmail.com>]
 

@@ -1691,7 +1691,13 @@ static int proxy_ftp_handler(request_rec *r, proxy_worker *worker,
 
     /* set content-type */
     if (dirlisting) {
-        ap_set_content_type(r, "text/html; charset=ISO-8859-1");
+        proxy_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
+                                                     &proxy_module);
+
+        ap_set_content_type(r, apr_pstrcat(p, "text/html;charset=",
+                                           dconf->ftp_directory_charset ?
+                                           dconf->ftp_directory_charset :
+                                           "ISO-8859-1",  NULL));
     }
     else {
         if (r->content_type) {

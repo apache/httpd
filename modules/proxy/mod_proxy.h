@@ -214,6 +214,7 @@ typedef struct {
     const apr_strmatch_pattern* cookie_path_str;
     const apr_strmatch_pattern* cookie_domain_str;
     int interpolate_env;
+    const char *ftp_directory_charset;
 } proxy_dir_conf;
 
 /* if we interpolate env vars per-request, we'll need a per-request
