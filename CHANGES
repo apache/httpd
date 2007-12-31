@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_ldap: Try to establish a new backend LDAP connection when the
+     Microsoft LDAP client library returns LDAP_UNAVAILABLE, e.g. after the
+     LDAP server has closed the connection due to a timeout. 
+     PR 39095 [Eric Covener]
+
   *) SECURITY: CVE-2007-6388 (cve.mitre.org)
      mod_status: Ensure refresh parameter is numeric to prevent
      a possible XSS attack caused by redirecting to other URLs. 

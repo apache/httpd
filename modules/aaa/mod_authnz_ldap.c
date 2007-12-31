@@ -399,7 +399,7 @@ start_over:
     util_ldap_connection_close(ldc);
 
     /* sanity check - if server is down, retry it up to 5 times */
-    if (result == LDAP_SERVER_DOWN) {
+    if (AP_LDAP_IS_SERVER_DOWN(result)) {
         if (failures++ <= 5) {
             goto start_over;
         }
