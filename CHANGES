@@ -1,9 +1,12 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.0.62
 
   *) SECURITY: CVE-2007-5000 (cve.mitre.org)
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]
+
+  *) log.c: Ensure Win32 ressurects its lost robust logger processes.
+     [William Rowe]
 
   *) mpm_winnt: Eliminate wait_for_many_objects.  Allows the clean 
      shutdown of the server when the MaxClients is higher then 257,
