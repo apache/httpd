@@ -112,7 +112,7 @@ RELEASE SHOWSTOPPERS:
                                                           to CHANGES entry)
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem, niq
+     +1: rpluem, niq, wrowe
 
    * mod_dav_fs: Adjust etag generation to produce identical results on 32-bit
      and 64-bit platforms. Avoid a regression with conditional PUT's on lock
@@ -122,10 +122,28 @@ RELEASE SHOWSTOPPERS:
         http://svn.apache.org/viewvc?rev=607437&view=rev
      Backport version for 2.2.x of patch:
         Trunk version of patch works
-     +1: rpluem, niq
+     +1: rpluem, niq, wrowe
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
+
+   *) mod_ldap: Try to establish a new backend LDAP connection when the
+      Microsoft LDAP client library returns LDAP_UNAVAILABLE, e.g. after the
+      LDAP server has closed the connection due to a timeout. 
+      PR 39095 [Eric Covener]
+        Trunk version of patch:
+          http://svn.apache.org/viewvc?view=rev&revision=607766
+          http://svn.apache.org/viewvc?rev=607841&view=rev
+        2.2.x
+          http://people.apache.org/~covener/2.2.x-ldap-server-down-with607841.diff
+      +1 covener, rpluem, wrowe
+
+   * mod_status: Modified default refresh value to 10 secs so that its possible
+                 to correct a typo in the URL.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=607873
+      Trunk version should apply to 2.2.x.
+      +1: fuankg, rpluem, wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -154,7 +172,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          http://people.apache.org/~fuankg/diffs/sslport.diff
       +1: fuankg, wrowe
-      wrowe notes; Win32 is already ready for this.
+      wrowe notes; Win32 is already ready for this, and there's no rush
+      to push this into the immediate next-release.
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
       Trunk version of patch:
@@ -167,6 +186,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           third party module authors.
       -1: rpluem: jorton found some problems with the trunk version and they
                   should be fixed / discussed in trunk before we backport.
+      -1: wrowe until the next release is out the door
 
    * mod_deflate: Don't leave a strong ETag in place when transforming content
      PR 39727
@@ -192,24 +212,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +1: wrowe, rpluem
       -0: niq: I dislike this patch for reasons stated on-list, but it
                delivers the functionality needed for the charset "showstopper".
-
-   *) mod_ldap: Try to establish a new backend LDAP connection when the
-      Microsoft LDAP client library returns LDAP_UNAVAILABLE, e.g. after the
-      LDAP server has closed the connection due to a timeout. 
-      PR 39095 [Eric Covener]
-        Trunk version of patch:
-          http://svn.apache.org/viewvc?view=rev&revision=607766
-          http://svn.apache.org/viewvc?rev=607841&view=rev
-        2.2.x
-          http://people.apache.org/~covener/2.2.x-ldap-server-down-with607841.diff
-      +1 covener, rpluem
-
-   * mod_status: Modified default refresh value to 10 secs so that its possible
-                 to correct a typo in the URL.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=607873
-      Trunk version should apply to 2.2.x.
-      +1: fuankg, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
