@@ -1467,6 +1467,8 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
     dav_buffer work_buf = { 0 };
     dav_response *new_response;
     int resource_state;
+    const char *etag;
+    int set_etag = 0;
 
 #if DAV_DEBUG
     if (depth && response == NULL) {
@@ -1484,17 +1486,28 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
         *response = NULL;
 
     /* Set the ETag header required by dav_meets_conditions() */
-    if ((err = (*resource->hooks->set_headers)(r, resource)) != NULL) {
-        return dav_push_error(r->pool, err->status, 0,
-                             "Unable to set up HTTP headers.",
-                             err);
+    etag = apr_table_get(r->headers_out, "ETag");
+    if (!etag) {
+        etag = (*resource->hooks->getetag)(resource);
+        if (etag && *etag) {
+            apr_table_set(r->headers_out, "ETag", etag);
+            set_etag = 1;
+        }
     }
-
-    resource_state = dav_get_resource_state(r, resource);
     /* Do the standard checks for conditional requests using
      * If-..-Since, If-Match etc */
-    if ((result = dav_meets_conditions(r, resource_state)) != OK) {
-        /* ### fix this up... how? */
+    resource_state = dav_get_resource_state(r, resource);
+    result = dav_meets_conditions(r, resource_state);
+    if (set_etag) {
+        /*
+         * If we have set an ETag to headers out above for
+         * dav_meets_conditions() revert this here as we do not want to set
+         * the ETag in responses to requests with methods where this might not
+         * be desired.
+         */
+        apr_table_unset(r->headers_out, "ETag");
+    }
+    if (result != OK) {
         return dav_new_error(r->pool, result, 0, NULL);
     }
 
