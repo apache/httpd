@@ -127,22 +127,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy_balancer: Prevent crash in balancer manager if invalid balancer
-     name is passed as parameter.
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=607273&view=rev
-        http://svn.apache.org/viewvc?rev=607402&view=rev (CVE number added
-                                                          to CHANGES entry)
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: rpluem, jorton
-     niq: +1 to the fix, but wouldn't it be a good idea to log a debug
-          message rather than silently ignore it if the test fails?
-     rpluem: I do not see this need right now as this cannot happen if you
-             use the link contructed by the balancer manager. It can only
-             happen if you construct the URL by yourself. But I may change my
-             mind once I have to do bug hunting in this area :-).
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -192,11 +176,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    * mod_dav: Fix evaluation of If-Match * and If-None-Match * conditionals.
      PR 38034
      http://svn.apache.org/viewvc?view=rev&revision=607466
+     http://svn.apache.org/viewvc?view=rev&revision=607472
+     http://svn.apache.org/viewvc?view=rev&revision=607838
      +1: niq
-     rpluem says: Please add r607472 to fix some style nits.
-     -1: rpluem: This causes a segfault on trunk. Also it changes the behaviour
-                 by sending headers in cases where we did not before. It needs
-                 to be evaluated first if this is the correct thing to do.
 
   * mod_proxy_ftp: Introduce the ProxyFtpDirCharset directive, allowing
     the administrator to identify a default, or specific servers or paths

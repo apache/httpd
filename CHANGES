@@ -1,6 +1,10 @@
 ﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) SECURITY: CVE-2007-6422 (cve.mitre.org)
+     Prevent crash in balancer manager if invalid balancer name is passed
+     as parameter. Reported by SecurityReason. [Ruediger Pluem]
+
   *) SECURITY: CVE-2007-6388 (cve.mitre.org)
      mod_status: Ensure refresh parameter is numeric to prevent
      a possible XSS attack caused by redirecting to other URLs.
