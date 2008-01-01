@@ -306,7 +306,7 @@ static int status_handler(request_rec *r)
                     }
                     apr_table_set(r->headers_out,
                                   status_options[i].hdr_out_str,
-                                  apr_ltoa(r->pool, t < 1 ? 1 : t));
+                                  apr_ltoa(r->pool, t < 1 ? 10 : t));
                     break;
                 }
                 case STAT_OPT_NOTABLE:
