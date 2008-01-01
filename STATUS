@@ -204,6 +204,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           http://people.apache.org/~covener/2.2.x-ldap-server-down-with607841.diff
       +1 covener, rpluem
 
+   * mod_status: Modified default refresh value to 10 secs so that its possible
+                 to correct a typo in the URL.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=607873
+      Trunk version should apply to 2.2.x.
+      +1: fuankg
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
