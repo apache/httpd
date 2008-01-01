@@ -127,17 +127,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   *) mod_ldap: Try to establish a new backend LDAP connection when the
-      Microsoft LDAP client library returns LDAP_UNAVAILABLE, e.g. after the
-      LDAP server has closed the connection due to a timeout. 
-      PR 39095 [Eric Covener]
-        Trunk version of patch:
-          http://svn.apache.org/viewvc?view=rev&revision=607766
-          http://svn.apache.org/viewvc?rev=607841&view=rev
-        2.2.x
-          http://people.apache.org/~covener/2.2.x-ldap-server-down-with607841.diff
-      +1 covener, rpluem, wrowe
-
    * mod_status: Modified default refresh value to 10 secs so that its possible
                  to correct a typo in the URL.
       Trunk version of patch:
