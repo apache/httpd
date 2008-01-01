@@ -129,7 +129,7 @@ RELEASE SHOWSTOPPERS:
        http://svn.apache.org/viewvc?rev=607282&view=rev
     Backport version for 2.0.x of patch:
        http://awe.com/e8f6ad05238f8/CVE-2007-6388-httpd-2.x.patch
-    +1: rpluem,
+    +1: rpluem, fuankg
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
