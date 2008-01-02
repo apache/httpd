@@ -613,17 +613,10 @@
       steps:</p>
 
       <ul>
-          <li>Download the latest NetWare patch for OpenSSL from the 
-          <a href="http://www.openssl.org/contrib/">OpenSSL Contribution</a>
-          page.</li>
-
-          <li>Download the corresponding OpenSSL source code from the
+          <li>Download the recent OpenSSL 0.9.8 release source code from the
           <a href="http://www.openssl.org/source/">OpenSSL Source</a>
-          page.</li>
-
-          <li>At the root of the OpenSSL source directory, apply the NetWare 
-          patch using the "patch" utility, for example:
-          <div class="example"><p><code>patch -p 1 -i netwarepatch-0.9.7g.diff</code></p></div></li>
+          page (older 0.9.7 versions need to be patched and are therefore not
+          recommended).</li>
 
           <li>Edit the file <code>NetWare/set_env.bat</code> and modify any 
           tools and utilities paths so that they correspond to your build 
@@ -632,14 +625,25 @@
           <li>From the root of the OpenSSL source directory, run the following
           scripts:
           <div class="example"><p><code>
-              Netware/set_env netware-libc<br />
-              Netware/build netware-libc
-          </code></p></div></li>
+              Netware\set_env netware-libc<br />
+              Netware\build netware-libc
+          </code></p></div>
+          For performance reasons you should enable to build with ASM code.
+          Download NASM from the <a href="http://nasm.sourceforge.net/">SF site</a>.
+          Then configure OpenSSL to use ASM code: 
+          <div class="example"><p><code>
+              Netware\build netware-libc nw-nasm enable-mdc2 enable-md5
+          </code></p></div>
+          Warning: dont use the CodeWarrior Assembler - it produces broken code!
+          </li>
 
           <li>Before building Apache, set the environment variable
           <code>OSSLSDK</code> to the full path to the root of the openssl
-          source code directory.
-          <div class="example"><p><code>Set OSSLSDK=d:\openssl-0.9.7x</code></p></div></li>
+          source code directory, and set WITH_MOD_SSL to 1.
+          <div class="example"><p><code>
+              Set OSSLSDK=d:\openssl-0.9.8x<br />
+              Set WITH_MOD_SSL=1
+          </code></p></div></li>
 
       </ul>
 
