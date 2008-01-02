@@ -104,6 +104,16 @@ RELEASE SHOWSTOPPERS:
       niq says: I withdraw my -1 if we also apply a patch that enables
                 an admin to specify charset in an FTP directory list.
 
+PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
+  [ start all new proposals below, under PATCHES PROPOSED. ]
+
+   * mod_status: Modified default refresh value to 10 secs so that its possible
+                 to correct a typo in the URL.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=607873
+      Trunk version should apply to 2.2.x.
+      +1: fuankg, rpluem, wrowe
+
    * mod_proxy_balancer: Correctly escape the worker route and the worker
      redirect string in the HTML output of the balancer manager.
      Trunk version of patch:
@@ -123,16 +133,6 @@ RELEASE SHOWSTOPPERS:
      Backport version for 2.2.x of patch:
         Trunk version of patch works
      +1: rpluem, niq, wrowe
-
-PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
-  [ start all new proposals below, under PATCHES PROPOSED. ]
-
-   * mod_status: Modified default refresh value to 10 secs so that its possible
-                 to correct a typo in the URL.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=607873
-      Trunk version should apply to 2.2.x.
-      +1: fuankg, rpluem, wrowe
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
