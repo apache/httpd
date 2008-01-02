@@ -139,7 +139,7 @@ int util_ldap_handler(request_rec *r)
         return DECLINED;
     }
 
-    r->content_type = "text/html";
+    r->content_type = "text/html; charset=ISO-8859-1";
     if (r->header_only)
         return OK;
 

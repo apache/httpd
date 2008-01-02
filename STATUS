@@ -113,16 +113,6 @@ CURRENT RELEASE NOTES:
 RELEASE SHOWSTOPPERS:
 
 
- * Various modules: Add explicit charset to the output of various modules to
-   work around possible cross-site scripting flaws affecting web browsers that
-   do not derive the response character set as required by RFC2616.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=606693&view=rev
-       http://svn.apache.org/viewvc?rev=607276&view=rev
-    Backport version for 2.0.x of patch:
-       http://people.apache.org/~rpluem/patches/utf7_fix_2.0.x.diff
-    +1: rpluem, wrowe, jim
-
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 

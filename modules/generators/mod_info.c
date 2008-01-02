@@ -318,7 +318,7 @@ static int display_info(request_rec *r)
     if (r->method_number != M_GET)
 	return DECLINED;
 
-    ap_set_content_type(r, "text/html");
+    ap_set_content_type(r, "text/html; charset=ISO-8859-1");
 
     ap_rputs(DOCTYPE_HTML_3_2
 	     "<html><head><title>Server Information</title></head>\n", r);

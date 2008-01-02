@@ -17,6 +17,11 @@ Changes with Apache 2.0.62
      shutdown of the server when the MaxClients is higher then 257,
      in a more responsive manner [Mladen Turk, William Rowe]
 
+  *) Add explicit charset to the output of various modules to work around
+     possible cross-site scripting flaws affecting web browsers that do not
+     derive the response character set as required by  RFC2616.  One of these
+     reported by SecurityReason [Joe Orton]
+
   *) http_protocol: Escape request method in 405 error reporting.
      This has no security impact since the browser cannot be tricked
      into sending arbitrary method strings.  [Jeff Trawick]

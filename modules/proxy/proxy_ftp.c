@@ -1702,7 +1702,7 @@ int ap_proxy_ftp_handler(request_rec *r, proxy_server_conf *conf,
 
     /* set content-type */
     if (dirlisting) {
-        ap_set_content_type(r, "text/html");
+        ap_set_content_type(r, "text/html; charset=ISO-8859-1");
     }
     else {
         if (r->content_type) {
