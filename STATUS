@@ -121,7 +121,7 @@ RELEASE SHOWSTOPPERS:
        http://svn.apache.org/viewvc?rev=607276&view=rev
     Backport version for 2.0.x of patch:
        http://people.apache.org/~rpluem/patches/utf7_fix_2.0.x.diff
-    +1: rpluem, wrowe
+    +1: rpluem, wrowe, jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
