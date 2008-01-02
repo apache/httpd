@@ -1777,13 +1777,15 @@ static const char *dav_fs_getetag(const dav_resource *resource)
         return apr_pstrdup(ctx->pool, "");
 
     if (ctx->finfo.filetype != 0) {
-        return apr_psprintf(ctx->pool, "\"%lx-%lx-%lx\"",
-                           (unsigned long) ctx->finfo.inode,
-                           (unsigned long) ctx->finfo.size,
-                           (unsigned long) ctx->finfo.mtime);
+        return apr_psprintf(ctx->pool, "\"%" APR_UINT64_T_HEX_FMT "-%"
+                            APR_UINT64_T_HEX_FMT "-%" APR_UINT64_T_HEX_FMT "\"",
+                            (apr_uint64_t) ctx->finfo.inode,
+                            (apr_uint64_t) ctx->finfo.size,
+                            (apr_uint64_t) ctx->finfo.mtime);
     }
 
-    return apr_psprintf(ctx->pool, "\"%lx\"", (unsigned long) ctx->finfo.mtime);
+    return apr_psprintf(ctx->pool, "\"%" APR_UINT64_T_HEX_FMT "\"",
+                       (apr_uint64_t) ctx->finfo.mtime);
 }
 
 static const dav_hooks_repository dav_hooks_repository_fs =

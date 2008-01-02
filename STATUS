@@ -124,16 +124,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         Trunk version of patch works
      +1: rpluem, niq, wrowe
 
-   * mod_dav_fs: Adjust etag generation to produce identical results on 32-bit
-     and 64-bit platforms. Avoid a regression with conditional PUT's on lock
-     and etag (because we have a regression otherwise this is a showstopper).
-     PR 44152
-     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=607437&view=rev
-     Backport version for 2.2.x of patch:
-        Trunk version of patch works
-     +1: rpluem, niq, wrowe
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

@@ -19,6 +19,11 @@ Changes with Apache 2.2.7
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]
 
+  *) mod_dav: Adjust etag generation to produce identical results on 32-bit
+     and 64-bit platforms and avoid a regression with conditional PUT's on lock
+     and etag. PR 44152.
+     [Michael Clark <michael metaparadigm.com>, Ruediger Pluem]
+
   *) log.c: Ensure Win32 resurrects its lost robust logger processes.
      [William Rowe]
 
