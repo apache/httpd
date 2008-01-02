@@ -76,33 +76,6 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-   * Various modules: Add explicit charset to the output of various modules to
-     work around possible cross-site scripting flaws affecting web browsers that
-     do not derive the response character set as required by RFC2616.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=606693&view=rev
-         http://svn.apache.org/viewvc?rev=607276&view=rev
-      Backport version for 2.2.x of patch:
-         http://people.apache.org/~rpluem/patches/utf7_fix_2.2.x.diff
-      +1: rpluem, wrowe, jim
-      wrowe notes; as nice as customization might be, this mirrors the behavior
-      or all RFC conformant browsers, and additional customization can come
-      as a new feature in the future.
-      -1: niq.  We cannot label FTP directory listings as ISO-8859-1 unless
-                we ensure they really are (e.g. some backend platforms will
-                give us UTF-8).  Also mod_dav embeds r->uri in the response:
-                we would need to URL-escape that before HTML-escaping it
-                to ensure that it's ISO-8859-1-compatible.
-      rpluem says: Please see my answers on list. Keep in mind that we do NOT
-                   create a regression by this patch but only enforce browsers
-                   who do not act in an RFC compliant manner to do so.
-                   So please reconsider your -1.
-      wrowe echos rpluem's sentiments, and argues supporting non-RFC clients
-            is not a key purpose of httpd.  However, if the associated non
-            showstopper new-feature will satisfy you, perhaps this should
-            be adopted (c.f. mod_proxy_ftp below).
-      niq says: I withdraw my -1 if we also apply a patch that enables
-                an admin to specify charset in an FTP directory list.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
