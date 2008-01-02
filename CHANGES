@@ -1,6 +1,11 @@
 ﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.0.62
 
+  *) SECURITY: CVE-2007-6388 (cve.mitre.org)
+     mod_status: Ensure refresh parameter is numeric to prevent
+     a possible XSS attack caused by redirecting to other URLs. 
+     Reported by SecurityReason.  [Mark Cox, Joe Orton]
+
   *) SECURITY: CVE-2007-5000 (cve.mitre.org)
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]

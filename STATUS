@@ -126,15 +126,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_status: Ensure refresh parameter is numeric to prevent a possible XSS
-   attack caused by redirecting to other URLs.
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=607282&view=rev
-    Backport version for 2.0.x of patch:
-       http://awe.com/e8f6ad05238f8/CVE-2007-6388-httpd-2.x.patch
-    +1: rpluem, fuankg, wrowe
-    wrowe is +1 for having that default to a value of 10 instead of 1 @ln# 307
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ please place SVN revisions from trunk here, so it is easy to
     identify exactly what the proposed changes are!  Add all new
