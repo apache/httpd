@@ -175,6 +175,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       -0: niq: I dislike this patch for reasons stated on-list, but it
                delivers the functionality needed for the charset "showstopper".
 
+  * mod_ssl: Fix handling of buffered request body for per-location SSL
+    renegotiation when an internal redirect occurs. PR 43738. [Joe Orton]
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=591393&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
