@@ -212,6 +212,7 @@ typedef struct {
     apr_array_header_t* cookie_domains;
     const apr_strmatch_pattern* cookie_path_str;
     const apr_strmatch_pattern* cookie_domain_str;
+    const char *ftp_directory_charset;
 } proxy_dir_conf;
 
 typedef struct {

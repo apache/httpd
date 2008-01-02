@@ -1024,6 +1024,9 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
         = apr_array_append(p, base->cookie_domains, add->cookie_domains);
     new->cookie_path_str = base->cookie_path_str;
     new->cookie_domain_str = base->cookie_domain_str;
+    new->ftp_directory_charset = add->ftp_directory_charset ?
+                                 add->ftp_directory_charset :
+                                 base->ftp_directory_charset;
     return new;
 }
 
@@ -1724,6 +1727,15 @@ static const char *
     return NULL;
 }
 
+static const char *set_ftp_directory_charset(cmd_parms *cmd, void *dconf,
+                                             const char *arg)
+{
+    proxy_dir_conf *conf = dconf;
+
+    conf->ftp_directory_charset = arg;
+    return NULL;
+}
+
 static void ap_add_per_proxy_conf(server_rec *s, ap_conf_vector_t *dir_config)
 {
     proxy_server_conf *sconf = ap_get_module_config(s->module_config,
@@ -1931,6 +1943,8 @@ static const command_rec proxy_cmds[] =
      "Configure Status: proxy status to one of: on | off | full"),
     AP_INIT_RAW_ARGS("ProxySet", set_proxy_param, NULL, RSRC_CONF|ACCESS_CONF,
      "A balancer or worker name with list of params"),
+    AP_INIT_TAKE1("ProxyFtpDirCharset", set_ftp_directory_charset, NULL,
+     RSRC_CONF|ACCESS_CONF, "Define the character set for proxied FTP listings"),
     {NULL}
 };
 

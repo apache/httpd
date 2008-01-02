@@ -19,6 +19,10 @@ Changes with Apache 2.2.7
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]
 
+  *) Introduce the ProxyFtpDirCharset directive, allowing the administrator
+     to identify a default, or specific servers or paths which list their
+     contents in other-than ISO-8859-1 charset (e.g. utf-8). [Ruediger Pluem]
+
   *) mod_dav: Adjust etag generation to produce identical results on 32-bit
      and 64-bit platforms and avoid a regression with conditional PUT's on lock
      and etag. PR 44152.
