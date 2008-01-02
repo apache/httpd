@@ -82,6 +82,10 @@ application/mbms-user-service-description+xml
 application/mbox				mbox
 application/mediaservercontrol+xml		mscml
 application/mikey
+application/moss-keys
+application/moss-signature
+application/mosskey-data
+application/mosskey-request
 application/mp4					mp4s
 application/mpeg4-generic
 application/mpeg4-iod
@@ -135,6 +139,10 @@ application/rtx
 application/samlassertion+xml
 application/samlmetadata+xml
 application/sbml+xml				sbml
+application/scvp-cv-request			scq
+application/scvp-cv-response			scs
+application/scvp-vp-request			spq
+application/scvp-vp-response			spp
 application/sdp					sdp
 application/set-payment
 application/set-payment-initiation		setpay
@@ -152,6 +160,8 @@ application/smil
 application/smil+xml				smi smil
 application/soap+fastinfoset
 application/soap+xml
+application/sparql-query			rq
+application/sparql-results+xml			srx
 application/spirits-event+xml
 application/srgs				gram
 application/srgs+xml				grxml
@@ -159,6 +169,7 @@ application/ssml+xml				ssml
 application/timestamp-query
 application/timestamp-reply
 application/tve-trigger
+application/ulpfec
 application/vemmi
 application/vividence.scriptfile
 application/vnd.3gpp.bsf+xml
@@ -168,6 +179,7 @@ application/vnd.3gpp.pic-bw-var			pvb
 application/vnd.3gpp.sms
 application/vnd.3gpp2.bcmcsinfo+xml
 application/vnd.3gpp2.sms
+application/vnd.3gpp2.tcap			tcap
 application/vnd.3m.post-it-notes		pwn
 application/vnd.accpac.simply.aso		aso
 application/vnd.accpac.simply.imp		imp
@@ -317,6 +329,7 @@ application/vnd.japannet-verification
 application/vnd.japannet-verification-wakeup
 application/vnd.jcp.javame.midlet-rms		rms
 application/vnd.jisp				jisp
+application/vnd.joost.joda-archive		joda
 application/vnd.kahootz				ktz ktr
 application/vnd.kde.karbon			karbon
 application/vnd.kde.kchart			chrt
@@ -393,9 +406,13 @@ application/vnd.ms-wpl				wpl
 application/vnd.ms-xpsdocument			xps
 application/vnd.mseq				mseq
 application/vnd.msign
+application/vnd.multiad.creator
+application/vnd.multiad.creator.cif
 application/vnd.music-niff
 application/vnd.musician			mus
+application/vnd.muvee.style			msty
 application/vnd.ncd.control
+application/vnd.ncd.reference
 application/vnd.nervana
 application/vnd.netfpx
 application/vnd.neurolanguage.nlu		nlu
@@ -455,7 +472,10 @@ application/vnd.oma.bcast.sprov+xml
 application/vnd.oma.dd2+xml			dd2
 application/vnd.oma.drm.risd+xml
 application/vnd.oma.group-usage-list+xml
+application/vnd.oma.poc.detailed-progress-report+xml
+application/vnd.oma.poc.final-report+xml
 application/vnd.oma.poc.groups+xml
+application/vnd.oma.poc.optimized-progress-report+xml
 application/vnd.oma.xcap-directory+xml
 application/vnd.omads-email+xml
 application/vnd.omads-file+xml
@@ -495,6 +515,7 @@ application/vnd.renlearn.rlprint
 application/vnd.rn-realmedia			rm
 application/vnd.ruckus.download
 application/vnd.s3sms
+application/vnd.sbm.mid2
 application/vnd.scribus
 application/vnd.sealed.3df
 application/vnd.sealed.csf
@@ -571,6 +592,7 @@ application/vnd.wap.wmlc			wmlc
 application/vnd.wap.wmlscriptc			wmlsc
 application/vnd.webturbo			wtb
 application/vnd.wfa.wsc
+application/vnd.wmc
 application/vnd.wordperfect			wpd
 application/vnd.wqd				wqd
 application/vnd.wrq-hp3000-labelled
@@ -742,6 +764,7 @@ audio/t140c
 audio/t38
 audio/telephone-event
 audio/tone
+audio/ulpfec
 audio/vdvi
 audio/vmr-wb
 audio/vnd.3gpp.iufp
@@ -847,6 +870,7 @@ message/s-http
 message/sip
 message/sipfrag
 message/tracking-status
+message/vnd.si.simp
 model/iges					igs iges
 model/mesh					msh mesh silo
 model/vnd.dwf					dwf
@@ -894,6 +918,7 @@ text/sgml					sgml sgm
 text/t140
 text/tab-separated-values			tsv
 text/troff					t tr roff man me ms
+text/ulpfec
 text/uri-list					uri uris urls
 text/vnd.abc
 text/vnd.curl
@@ -909,6 +934,7 @@ text/vnd.latex-z
 text/vnd.motorola.reflex
 text/vnd.ms-mediapackage
 text/vnd.net2phone.commcenter.command
+text/vnd.si.uricatalogue
 text/vnd.sun.j2me.app-descriptor		jad
 text/vnd.trolltech.linguist
 text/vnd.wap.si
@@ -957,6 +983,7 @@ video/raw
 video/rtp-enc-aescm128
 video/rtx
 video/smpte292m
+video/ulpfec
 video/vc1
 video/vnd.dlna.mpeg-tts
 video/vnd.fvt					fvt
