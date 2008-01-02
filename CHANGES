@@ -1,6 +1,11 @@
 ﻿                                                        -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
+  *) SECURITY: CVE-2007-6421 (cve.mitre.org)
+     mod_proxy_balancer: Correctly escape the worker route and the worker
+     redirect string in the HTML output of the balancer manager.
+     Reported by SecurityReason. [Ruediger Pluem]
+
   *) mod_ldap: Try to establish a new backend LDAP connection when the
      Microsoft LDAP client library returns LDAP_UNAVAILABLE, e.g. after the
      LDAP server has closed the connection due to a timeout.
