@@ -305,6 +305,7 @@
 <li><a href="mod_proxy.html#proxyblock">ProxyBlock</a></li>
 <li><a href="mod_proxy.html#proxydomain">ProxyDomain</a></li>
 <li><a href="mod_proxy.html#proxyerroroverride">ProxyErrorOverride</a></li>
+<li><a href="mod_proxy.html#proxyftpdircharset">ProxyFtpDirCharset</a></li>
 <li><a href="mod_proxy.html#proxyiobuffersize">ProxyIOBufferSize</a></li>
 <li><a href="mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></li>
 <li><a href="mod_proxy.html#proxymaxforwards">ProxyMaxForwards</a></li>
