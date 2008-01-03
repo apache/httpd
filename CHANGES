@@ -10,6 +10,10 @@ Changes with Apache 2.0.62
      mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]
 
+  *) Introduce the ProxyFtpDirCharset directive, allowing the administrator
+     to identify a default, or specific servers or paths which list their
+     contents in other-than ISO-8859-1 charset (e.g. utf-8). [Ruediger Pluem]
+
   *) log.c: Ensure Win32 resurrects its lost robust logger processes.
      [William Rowe]
 

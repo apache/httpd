@@ -166,6 +166,7 @@ typedef struct {
     const char *p;            /* The path */
     int         p_is_fnmatch; /* Is this path an fnmatch candidate? */
     regex_t    *r;            /* Is this a regex? */
+    const char *ftp_directory_charset;
 } proxy_dir_conf;
 
 typedef struct {

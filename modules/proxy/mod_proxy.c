@@ -552,10 +552,14 @@ static void *merge_proxy_dir_config(apr_pool_t *p, void *basev, void *addv)
 {
     proxy_dir_conf *new = (proxy_dir_conf *) apr_pcalloc(p, sizeof(proxy_dir_conf));
     proxy_dir_conf *add = (proxy_dir_conf *) addv;
+    proxy_dir_conf *base = (proxy_dir_conf *) basev;
 
     new->p = add->p;
     new->p_is_fnmatch = add->p_is_fnmatch;
     new->r = add->r;
+    new->ftp_directory_charset = add->ftp_directory_charset ?
+                                 add->ftp_directory_charset :
+                                 base->ftp_directory_charset;
     return new;
 }
 
@@ -940,6 +944,15 @@ static const char*
     return NULL;    
 }
 
+static const char* set_ftp_directory_charset(cmd_parms *cmd, void *dconf,
+                                             const char *arg)
+{
+    proxy_dir_conf *conf = dconf;
+
+    conf->ftp_directory_charset = arg;
+    return NULL;
+}
+
 static void ap_add_per_proxy_conf(server_rec *s, ap_conf_vector_t *dir_config)
 {
     proxy_server_conf *sconf = ap_get_module_config(s->module_config,
@@ -1076,7 +1089,8 @@ static const command_rec proxy_cmds[] =
      "This overrides the server timeout"),
     AP_INIT_TAKE1("ProxyBadHeader", set_bad_opt, NULL, RSRC_CONF,
      "How to handle bad header line in response: IsError | Ignore | StartBody"),
- 
+    AP_INIT_TAKE1("ProxyFtpDirCharset", set_ftp_directory_charset, NULL,
+    RSRC_CONF|ACCESS_CONF, "Define the character set for proxied FTP listings"),
     {NULL}
 };
 
