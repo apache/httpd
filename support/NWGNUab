@@ -12,9 +12,30 @@ include $(AP_WORK)\build\NWGNUhead.inc
 endif
 
 #
+# build this level's files
+#
+# Make sure all needed macro's are defined
+#
+
+ifdef WITH_MOD_SSL
+ifneq "$(OSSLSDK)" ""
+OSSLINC = $(OSSLSDK)/outinc_nw_libc
+OSSLLIB = $(OSSLSDK)/out_nw_libc
+HAVE_OPENSSL = 1
+endif
+endif
+
+#
 # These directories will be at the beginning of the include list, followed by
 # INCDIRS
 #
+ifdef HAVE_OPENSSL
+XINCDIRS	+= \
+			$(OSSLINC) \
+			$(OSSLINC)/openssl \
+			$(EOLIST)
+endif
+
 XINCDIRS	+= \
 			$(NWOS) \
 			$(AP_WORK)/include \
@@ -33,14 +54,18 @@ XCFLAGS		+= \
 #
 # These defines will come after DEFINES
 #
+ifdef HAVE_OPENSSL
 XDEFINES	+= \
+			-DHAVE_OPENSSL \
 			$(EOLIST)
 
 #
 # These flags will be added to the link.opt file
 #
 XLFLAGS		+= \
+			-l $(OSSLLIB) \
 			$(EOLIST)
+endif
 
 #
 # These values will be appended to the correct variables based on the value of
@@ -57,7 +82,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "noopt"
@@ -71,7 +96,7 @@ XDEFINES	+= \
 			$(EOLIST)
 
 XLFLAGS		+= \
-		   	$(EOLIST)
+			$(EOLIST)
 endif
 
 ifeq "$(RELEASE)" "release"
@@ -93,7 +118,11 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
+ifdef HAVE_OPENSSL
+NLM_NAME		= abs
+else
 NLM_NAME		= ab
+endif
 
 #
 # This is used by the link '-desc ' directive.
@@ -105,7 +134,7 @@ NLM_DESCRIPTION	= Apache $(VERSION_STR) Benchmark Utility for NetWare
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	= ab
+NLM_THREAD_NAME	= $(NLM_NAME)
 
 #
 # This is used by the '-screenname' directive.  If left blank,
@@ -118,7 +147,7 @@ NLM_SCREEN_NAME = DEFAULT
 # If this is specified, it will override VERSION value in
 # $(AP_WORK)\build\NWGNUenvironment.inc
 #
-NLM_VERSION		=
+NLM_VERSION	=
 
 #
 # If this is specified, it will override the default of 64K
@@ -144,20 +173,20 @@ NLM_CHECK_SYM	=
 #
 # If these are specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS		= AUTOUNLOAD, PSEUDOPREEMPTION
+NLM_FLAGS	= AUTOUNLOAD, PSEUDOPREEMPTION
 
 #
 # If this is specified it will be linked in with the XDCData option in the def
 # file instead of the default of $(NWOS)/apache.xdc.  XDCData can be disabled
 # by setting APACHE_UNIPROC in the environment
 #
-XDCDATA         =
+XDCDATA		=
 
 #
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/ab.nlm \
+	$(OBJDIR)/$(NLM_NAME).nlm \
 	$(EOLIST)
 
 #
@@ -179,8 +208,15 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
-   	libcpre.o \
+	libcpre.o \
 	$(EOLIST)
+
+ifdef HAVE_OPENSSL
+FILES_nlm_libs += \
+	$(OSSLLIB)/crypto.lib \
+	$(OSSLLIB)/ssl.lib \
+	$(EOLIST)
+endif
 
 #
 # These are the modules that the above NLM target depends on to load.
@@ -214,6 +250,19 @@ FILES_nlm_Ximports = \
 	@libc.imp \
 	$(EOLIST)
 
+ifdef HAVE_OPENSSL
+# Don't link with Winsock if standard sockets are being used
+ifndef USE_STDSOCKETS
+FILES_nlm_Ximports += @ws2nlm.imp \
+	$(EOLIST)
+endif
+FILES_nlm_Ximports += \
+	GetProcessSwitchCount \
+	RunningProcess \
+	GetSuperHighResolutionTimer \
+	$(EOLIST)
+endif
+
 #
 # Any symbols exported to here
 #
@@ -225,7 +274,7 @@ FILES_nlm_exports = \
 # Paths must all use the '/' character
 #
 FILES_lib_objs = \
-		$(EOLIST)
+	$(EOLIST)
 
 #
 # implement targets and dependancies (leave this section alone)
