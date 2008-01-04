@@ -129,9 +129,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      http://svn.apache.org/viewvc?view=rev&revision=607466
      http://svn.apache.org/viewvc?view=rev&revision=607472
      http://svn.apache.org/viewvc?view=rev&revision=607838
-     +1: niq
-     rpluem: I am +1 once we have a confirmation from Werner that this patch fixes
-     his problem as this patch has some differences to his original patch.
+     +1: niq, rpluem
 
   * various modules: Silence some compiler warnings
       Trunk version of patch:
