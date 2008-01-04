@@ -1,0 +1,51 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-2">
+  <title>Testovací stránka instalace web serveru Apache</title>
+ </head>
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+ <body
+  bgcolor="#FFFFFF"
+  text="#000000"
+  link="#0000FF"
+  vlink="#000080"
+  alink="#FF0000"
+ >
+  <h1 align="CENTER">
+   Funguje to! Na tomto serveru běží Apache!
+  </h1>
+  <p>
+  Pokud vidíte tuto zprávu, správce tohoto počítače právě úspěšně
+  nainstaloval Apache web server.
+  Teď ještě musí doplnit obsah a nahradit tuto standardní uvítací
+  stránku, nebo přesměrovat server na skutečnou domovskou stránku.
+  </p>
+  <hr>
+  <blockquote>
+   Pokud vidíte tuto zprávu místo očekávané domovské stránky, 
+   <strong>kontaktujte, prosím, správce příslušného web
+   serveru.</strong> (Zkuste poslat e-mail na adresu
+   <samp>&lt;Webmaster@<em>domain</em>&gt;</samp>.) 
+   Přestože tento server používá program Apache, téměř jistě nemá nic
+   společného s Apache Group, proto prosím neposílejte e-maily o tomto
+   serveru nebo jeho obsahu autorům Apache. Pokud to uděláte, budeme
+   vaše zprávy <strong><big>ignorovat</big></strong>.
+  </blockquote>
+  <hr>
+  <p>
+  Zde najdete
+  <a
+   href="manual/"
+  >dokumentaci</a>
+  Apache (anglicky) obsaženou v této distribuci.
+  </p>
+  <p>
+  Následující logo může být použito bez omezení na web serveru s
+  programem Apache. Děkujeme za použití Apache!
+  </p>
+  <div align="CENTER">
+   <img src="apache_pb.gif" alt="">
+  </div>
+ </body>
+</html>

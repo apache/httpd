@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_asis</title>
+
+  </head>
+  <!-- English Revision: 1.11 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_asis モジュール</h1>
+
+    <p>このモジュールは自分用の HTTP
+    ヘッダがあるファイルを送信する機能を提供します。</p>
+
+    <p><a href="module-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="module-dict.html#sourcefile"
+    rel="help"><strong>ソースファイル:</strong></a> mod_asis.c<br />
+     <a href="module-dict.html#moduleidentifier"
+    rel="help"><strong>モジュール識別子:</strong></a>
+    asis_module</p>
+
+    <h2>概要</h2>
+
+    <p>このモジュールはハンドラ <code>send-as-is</code>
+    を提供します。このハンドラは通常の HTTP
+    ヘッダをほとんど追加することなくドキュメントを送信します。</p>
+
+    <p>これはサーバからどんな種類のデータを送るときにも使用できます。
+    Cgi スクリプトや nph スクリプトが無くてもリダイレクトや他の特別な
+    HTTP 応答を送ることができます。</p>
+
+    <p>歴史的な理由により、このモジュールは mime タイプ
+    <code>httpd/send-as-is</code> のファイルも処理します。</p>
+
+    <h2>ディレクティブ</h2>
+
+    <p>このモジュールにはディレクティブはありません。</p>
+
+    <h2>使用法</h2>
+
+    <p>サーバ設定ファイルで、ファイルと <code>send-as-is</code>
+    ハンドラを例えば以下のように関連付けてください。</p>
+
+    <blockquote>
+      <code>AddHandler send-as-is .asis</code>
+    </blockquote>
+
+    <p>拡張子が <code>.asis</code> のすべてのファイルの内容は Apache
+    からクライアントへほとんど変更無く送られます。クライアントには
+    HTTP ヘッダが必要ですので、ファイルに書くことを忘れないでください。
+    Status: ヘッダも必要です。データは 3 桁の HTTP
+    応答コードと、その後にテキストメッセージが続いたものでなければなりません。
+
+    これはクライアントにファイルが移動したことを知らせるために
+    <em>as is</em> (そのまま) で送られるファイルの内容の例です。
+    </p>
+
+    <blockquote>
+      <code>Status: 301 Now where did I leave that URL<br />
+       Location: http://xyz.abc.com/foo/bar.html<br />
+       Content-type: text/html<br />
+      <br />
+       &lt;HTML&gt;<br />
+       &lt;HEAD&gt;<br />
+       &lt;TITLE&gt;Lame excuses'R'us&lt;/TITLE&gt;<br />
+       &lt;/HEAD&gt;<br />
+       &lt;BODY&gt;<br />
+       &lt;H1&gt;Fred's exceptionally wonderful page has moved
+      to<br />
+       &lt;A
+      HREF="http://xyz.abc.com/foo/bar.html"&gt;Joe's&lt;/A&gt;
+      site.<br />
+       &lt;/H1&gt;<br />
+       &lt;/BODY&gt;<br />
+       &lt;/HTML&gt;</code>
+    </blockquote>
+
+    <p>注意: サーバはクライアントに返されるデータに常に Date: と Server:
+    ヘッダを追加しますので、それらがファイルに書かれていてはいけません。
+    サーバは Last-Modified ヘッダを追加<em>しません</em>。
+    おそらくはそうすべきでしょうけれど。
+    </p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

@@ -1,0 +1,220 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_negotiation</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_negotiation</h1>
+
+    <p>This module provides for <a
+    href="../content-negotiation.html">content negotiation</a>.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_negotiation.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    negotiation_module</p>
+
+    <h2>Summary</h2>
+    Content negotiation, or more accurately content selection, is
+    the selection of the document that best matches the clients
+    capabilities, from one of several available documents. There
+    are two implementations of this. 
+
+    <ul>
+      <li>A type map (a file with the handler
+      <code>type-map</code>) which explicitly lists the files
+      containing the variants.</li>
+
+      <li>A MultiViews search (enabled by the MultiViews <a
+      href="core.html#options">Option</a>, where the server does an
+      implicit filename pattern match, and choose from amongst the
+      results.</li>
+    </ul>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a
+      href="#cachenegotiateddocs">CacheNegotiatedDocs</a></li>
+
+      <li><a href="#languagepriority">LanguagePriority</a></li>
+    </ul>
+    <strong>See also</strong>: <a
+    href="./mod_mime.html#defaultlanguage">DefaultLanguage</a>, <a
+    href="./mod_mime.html#addencoding">AddEncoding</a>, <a
+    href="./mod_mime.html#addlanguage">AddLanguage</a>, <a
+    href="./mod_mime.html#addtype">AddType</a>, and <a
+    href="core.html#options">Options</a>. 
+
+    <h2>Type maps</h2>
+    A type map has the same format as RFC822 mail headers. It
+    contains document descriptions separated by blank lines, with
+    lines beginning with a hash character ('#') treated as
+    comments. A document description consists of several header
+    records; records may be continued on multiple lines if the
+    continuation lines start with spaces. The leading space will be
+    deleted and the lines concatenated. A header record consists of
+    a keyword name, which always ends in a colon, followed by a
+    value. Whitespace is allowed between the header name and value,
+    and between the tokens of value. The headers allowed are: 
+
+    <dl>
+      <dt>Content-Encoding:</dt>
+
+      <dd>The encoding of the file. Apache only recognizes
+      encodings that are defined by an <a
+      href="mod_mime.html#addencoding">AddEncoding</a> directive.
+      This normally includes the encodings <code>x-compress</code>
+      for compress'd files, and <code>x-gzip</code> for gzip'd
+      files. The <code>x-</code> prefix is ignored for encoding
+      comparisons.</dd>
+
+      <dt>Content-Language:</dt>
+
+      <dd>The language of the variant, as an Internet standard
+      language tag (RFC 1766). An example is <code>en</code>,
+      meaning English.</dd>
+
+      <dt>Content-Length:</dt>
+
+      <dd>The length of the file, in bytes. If this header is not
+      present, then the actual length of the file is used.</dd>
+
+      <dt>Content-Type:</dt>
+
+      <dd>
+        The MIME media type of the document, with optional
+        parameters. Parameters are separated from the media type
+        and from one another by a semi-colon, with a syntax of
+        <code>name=value</code>. Common parameters include: 
+
+        <dl>
+          <dt>level</dt>
+
+          <dd>an integer specifying the version of the media type.
+          For <code>text/html</code> this defaults to 2, otherwise
+          0.</dd>
+
+          <dt>qs</dt>
+
+          <dd>a floating-point number with a value in the range 0.0
+          to 1.0, indicating the relative 'quality' of this variant
+          compared to the other available variants, independent of
+          the client's capabilities. For example, a jpeg file is
+          usually of higher source quality than an ascii file if it
+          is attempting to represent a photograph. However, if the
+          resource being represented is ascii art, then an ascii
+          file would have a higher source quality than a jpeg file.
+          All qs values are therefore specific to a given
+          resource.</dd>
+        </dl>
+        Example: 
+
+        <blockquote>
+          <code>Content-Type: image/jpeg; qs=0.8</code>
+        </blockquote>
+      </dd>
+
+      <dt>URI:</dt>
+
+      <dd>The path to the file containing this variant, relative to
+      the map file.</dd>
+    </dl>
+
+    <h2>MultiViews</h2>
+    A MultiViews search is enabled by the MultiViews <a
+    href="core.html#options">Option</a>. If the server receives a
+    request for <code>/some/dir/foo</code> and
+    <code>/some/dir/foo</code> does <em>not</em> exist, then the
+    server reads the directory looking for all files named
+    <code>foo.*</code>, and effectively fakes up a type map which
+    names all those files, assigning them the same media types and
+    content-encodings it would have if the client had asked for one
+    of them by name. It then chooses the best match to the client's
+    requirements, and returns that document. 
+    <hr />
+
+    <h2><a id="cachenegotiateddocs"
+    name="cachenegotiateddocs">CacheNegotiatedDocs</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a>
+    CacheNegotiatedDocs<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_negotiation<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    CacheNegotiatedDocs is only available in Apache 1.1 and later. 
+
+    <p>If set, this directive allows content-negotiated documents
+    to be cached by proxy servers. This could mean that clients
+    behind those proxys could retrieve versions of the documents
+    that are not the best match for their abilities, but it will
+    make caching more efficient.</p>
+
+    <p>This directive only applies to requests which come from
+    HTTP/1.0 browsers. HTTP/1.1 provides much better control over
+    the caching of negotiated documents, and this directive has no
+    effect in responses to HTTP/1.1 requests.</p>
+    <hr />
+
+    <h2><a id="languagepriority"
+    name="languagepriority">LanguagePriority</a> directive</h2>
+    <!--%plaintext &lt;?INDEX {\tt LanguagePriority} directive&gt; -->
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> LanguagePriority
+    <em>MIME-lang</em> [<em>MIME-lang</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_negotiation 
+
+    <p>The LanguagePriority sets the precedence of language
+    variants for the case where the client does not express a
+    preference, when handling a MultiViews request. The list of
+    <em>MIME-lang</em> are in order of decreasing preference.
+    Example:</p>
+
+    <blockquote>
+      <code>LanguagePriority en fr de</code>
+    </blockquote>
+    For a request for <code>foo.html</code>, where
+    <code>foo.html.fr</code> and <code>foo.html.de</code> both
+    existed, but the browser did not express a language preference,
+    then <code>foo.html.fr</code> would be returned. 
+
+    <p>Note that this directive only has an effect if a 'best'
+    language cannot be determined by any other means. Correctly
+    implemented HTTP/1.1 requests will mean this directive has no
+    effect.</p>
+
+    <p><strong>See also</strong>: <a
+    href="./mod_mime.html#defaultlanguage">DefaultLanguage</a> and
+    <a href="./mod_mime.html#addlanguage">AddLanguage</a> 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

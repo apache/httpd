@@ -1,0 +1,65 @@
+=== PURPOSE ===
+
+This file documents the changes made by the Apache Group to James
+Clark's Expat parser. The original Expat distribution can be found at
+http://www.jclark.com/xml/expat.html.
+
+
+=== SUBSET INFORMATION ===
+
+Apache does not choose (or need) to use the entire Expat parser
+distribution. The subset that Apache will use will be referred to as
+"expat-lite". In particular, this directory contains the files from
+the following Expat distribution subdirectories:
+
+  expat/xmltok/*
+  expat/xmlparse/*
+
+We also retain expat/expat.html for attribution to James Clark and
+licensing information.
+
+Note that Apache has replaced (with custom versions) the .dsp files
+normally distributed with Expat. Other changes are detailed further
+below.
+
+
+=== FILES ADDED ===
+
+This file (CHANGES) has been added to document changes from the
+original Expat distribution.
+
+Makefile.tmpl has been created from scratch to provide build
+instructions to the Apache build system.
+
+xmlparse.def and xmltok.def have been added.
+
+.cvsignore has been added.
+
+
+=== CHANGES TO ORIGINAL ===
+
+The files, in their original state from the Expat distribution, have
+been tagged within CVS with the "EXPAT_1_1" tag. That tag may be used
+as a reference for changes made by the Apache Group.
+
+The following changes have been made:
+
+June, 1999:
+
+  - modified xmldef.h to define XML_BYTE_ORDER in terms of the
+    AP_BYTE_ORDER symbol.
+  - removed compilation warnings from: xmlparse.c, xmltok.c, xmltok.h, 
+    xmltok_impl.c, xmltok_ns.c
+
+November, 1999:
+
+  - xmlparse.{def,dsp,mak} and xmltok.{def,dsp,mak} were added.
+    NOTE: the .dsp files are different from the standard Expat
+	  distribution.
+  - dllmain.c (from the Expat distribution) was added
+
+January, 2000:
+
+  - Renamed lookup() in hashtable.[ch] to hashTableLookup() to prevent
+    possible conflicts with third-party libraries and modules. Updated
+    calls in xmlparse.c accordingly.

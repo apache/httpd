@@ -1,0 +1,173 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache non-IP Virtual Hosts</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache non-IP Virtual Hosts</h1>
+    <strong>See Also:</strong> <a href="virtual-host.html">Virtual
+    Host Support</a> 
+    <hr />
+
+    <h2>What is a Virtual Host</h2>
+
+    <p>The "Virtual Host" refers to the practice of maintaining
+    more than one server on one machine, as differentiated by their
+    apparent hostname. For example, it is often desirable for
+    companies sharing a web server to have their own domains, with
+    web servers accessible as <code>www.company1.com</code> and
+    <code>www.company2.com</code>, without requiring the user to
+    know any extra path information.</p>
+
+    <p>Apache was one of the first servers to support virtual hosts
+    right out of the box, but since the base <code>HTTP</code>
+    (HyperText Transport Protocol) standard does not allow any
+    method for the server to determine the hostname it is being
+    addressed as, Apache's virtual host support has required a
+    separate IP address for each server. Documentation on using
+    this approach (which still works very well) <a
+    href="virtual-host.html">is available</a>.</p>
+
+    <p>While the approach described above works, with the available
+    IP address space growing smaller, and the number of domains
+    increasing, it is not the most elegant solution, and is hard to
+    implement on some machines. The <code>HTTP/1.1</code> protocol
+    contains a method for the server to identify what name it is
+    being addressed as. Apache 1.1 and later support this approach
+    as well as the traditional IP-address-per-hostname method.</p>
+
+    <p>The benefits of using the new virtual host support is a
+    practically unlimited number of servers, ease of configuration
+    and use, and requires no additional hardware or software. The
+    main disadvantage is that the user's browser must support this
+    part of the protocol. The latest versions of many browsers
+    (including Netscape Navigator 2.0 and later) do, but many
+    browsers, especially older ones, do not. This can cause
+    problems, although a possible solution is addressed below.</p>
+
+    <h2>Using non-IP Virtual Hosts</h2>
+
+    <p>Using the new virtual hosts is quite easy, and superficially
+    looks like the old method. You simply add to one of the Apache
+    configuration files (most likely <code>httpd.conf</code> or
+    <code>srm.conf</code>) code similar to the following:</p>
+<pre>
+    &lt;VirtualHost www.apache.org&gt;
+    ServerName www.apache.org
+    DocumentRoot /usr/web/apache
+    &lt;/VirtualHost&gt;
+</pre>
+
+    <p>Of course, any additional directives can (and should) be
+    placed into the <code>&lt;VirtualHost&gt;</code> section. To
+    make this work, all that is needed is to make sure that the
+    <code>www.apache.org</code> DNS entry points to the same IP
+    address as the main server. Optionally, you could simply use
+    that IP address in the &lt;VirtualHost&gt; entry.</p>
+
+    <p>Additionally, many servers may wish to be accessible by more
+    than one name. For example, the Apache server might want to be
+    accessible as <code>apache.org</code>, or
+    <code>ftp.apache.org</code>, assuming the IP addresses pointed
+    to the same server. In fact, one might want it so that all
+    addresses at <code>apache.org</code> were picked up by the
+    server. This is possible with the <code>ServerAlias</code>
+    directive, placed inside the &lt;VirtualHost&gt; section. For
+    example:</p>
+<pre>
+    ServerAlias apache.org *.apache.org
+</pre>
+
+    <p>Note that you can use <code>*</code> and <code>?</code> as
+    wild-card characters.</p>
+
+    <p>You also might need ServerAlias if you are serving local
+    users who do not always include the domain name. For example,
+    if local users are familiar with typing "www" or "www.physics"
+    then you will need to add <code>ServerAlias www
+    www.physics</code>. It isn't possible for the server to know
+    what domain the client uses for their name resolution because
+    the client doesn't provide that information in the request.</p>
+
+    <h2>Security Considerations</h2>
+    Apache allows all virtual hosts to be made accessible via the
+    <code>Host:</code> header through all IP interfaces, even those
+    which are configured to use different IP interfaces. For
+    example, if the configuration for <code>www.foo.com</code>
+    contained a virtual host section for <code>www.bar.com</code>,
+    and <code>www.bar.com</code> was a separate IP interface, such
+    that non-<code>Host:</code>-header-supporting browsers can use
+    it, as before with Apache 1.0. If a request is made to
+    <code>www.foo.com</code> and the request includes the header
+    <code>Host: www.bar.com</code>, a page from
+    <code>www.bar.com</code> will be sent. 
+
+    <p>This is a security concern if you are controlling access to
+    a particular server based on IP-layer controls, such as from
+    within a firewall or router. Let's say <code>www.bar.com</code>
+    in the above example was instead an intra-net server called
+    <code>private.foo.com</code>, and the router used by foo.com
+    only let internal users access <code>private.foo.com</code>.
+    Obviously, <code>Host:</code> header functionality now allows
+    someone who has access to <code>www.foo.com</code> to get
+    <code>private.foo.com</code>, if they send a <code>Host:
+    private.foo.com</code> header. It is important to note that
+    this condition exists only if you only implement this policy at
+    the IP layer - all security controls used by Apache
+    (<em>i.e.</em>, <a href="../mod/mod_access.html">Allow, Deny
+    from,</a> <em>etc.</em>) are consistently respected.</p>
+
+    <h2>Compatibility with Older Browsers</h2>
+
+    <p>As mentioned earlier, a majority of browsers do not send the
+    required data for the new virtual hosts to work properly. These
+    browsers will always be sent to the main server's pages. There
+    is a workaround, albeit a slightly cumbersome one:</p>
+
+    <p>To continue the <code>www.apache.org</code> example (Note:
+    Apache's web server does not actually function in this manner),
+    we might use the new <code>ServerPath</code> directive in the
+    <code>www.apache.org</code> virtual host, for example:</p>
+<pre>
+    ServerPath /apache
+</pre>
+
+    <p>What does this mean? It means that a request for any file
+    beginning with "<code>/apache</code>" will be looked for in the
+    Apache docs. This means that the pages can be accessed as
+    <code>http://www.apache.org/apache/</code> for all browsers,
+    although new browsers can also access it as
+    <code>http://www.apache.org/</code>.</p>
+
+    <p>In order to make this work, put a link on your main server's
+    page to <code>http://www.apache.org/apache/</code> (Note: Do
+    not use <code>http://www.apache.org/</code> - this would create
+    an endless loop). Then, in the virtual host's pages, be sure to
+    use either purely relative links (<em>e.g.</em>,
+    "<code>file.html</code>" or "<code>../icons/image.gif</code>"
+    or links containing the prefacing <code>/apache/</code>
+    (<em>e.g.</em>,
+    "<code>http://www.apache.org/apache/file.html</code>" or
+    "<code>/apache/docs/1.1/index.html</code>").</p>
+
+    <p>This requires a bit of discipline, but adherence to these
+    guidelines will, for the most part, ensure that your pages will
+    work with all browsers, new and old. When a new browser
+    contacts <code>http://www.apache.org/</code>, they will be
+    directly taken to the Apache pages. Older browsers will be able
+    to click on the link from the main server, go to
+    <code>http://www.apache.org/apache/</code>, and then access the
+    pages.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

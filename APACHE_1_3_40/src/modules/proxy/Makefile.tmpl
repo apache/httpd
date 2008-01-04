@@ -1,0 +1,121 @@
+
+LIB=libproxy.$(LIBEXT)
+
+OBJS=\
+     mod_proxy.o \
+     proxy_cache.o proxy_connect.o proxy_ftp.o proxy_http.o proxy_util.o
+OBJS_PIC=\
+     mod_proxy.lo \
+     proxy_cache.lo proxy_connect.lo proxy_ftp.lo proxy_http.lo proxy_util.lo
+
+all: lib
+
+lib: $(LIB)
+
+libproxy.a: $(OBJS)
+	rm -f $@
+	ar cr $@ $(OBJS)
+	$(RANLIB) $@
+
+libproxy.so: $(OBJS_PIC)
+	rm -f $@
+	$(LD_SHLIB) $(LDFLAGS_SHLIB) -o $@ $(OBJS_PIC) $(LIBS_SHLIB)
+
+libproxy.dll: $(OBJS_PIC) mod_proxy.def 
+	if [ "x$(OS)" = "xCygwin" ]; then \
+	    rm -f $@; \
+	    if [ -f "$(SRCDIR)/$(SHCORE_IMPLIB)" ]; then \
+	    $(LD_SHLIB) $(LDFLAGS_SHLIB) -o $*.dll $(OBJS_PIC) $(LIBS_SHLIB) \
+	    $(SRCDIR)/$(SHCORE_IMPLIB) $(LIBS1); \
+	    fi \
+	else \
+	    $(LD_SHLIB) $(LDFLAGS_SHLIB) -o $* $(OBJS_PIC) $(LIBS_SHLIB); \
+	    emxbind -b -q -s -h0 -dmod_proxy.def $* && \
+	    rm $*; \
+	fi
+
+.SUFFIXES: .o .lo .dll
+
+.c.o:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $<
+
+.c.lo:
+	$(CC) -c $(INCLUDES) $(CFLAGS) $(CFLAGS_SHLIB) $< && mv $*.o $*.lo
+
+clean:
+	rm -f $(OBJS) $(OBJS_PIC) $(LIB)
+
+distclean: clean
+	-rm -f Makefile
+
+# We really don't expect end users to use this rule.  It works only with
+# gcc, and rebuilds Makefile.tmpl.  You have to re-run Configure after
+# using it.
+depend:
+	cp Makefile.tmpl Makefile.tmpl.bak \
+	    && sed -ne '1,/^# DO NOT REMOVE/p' Makefile.tmpl > Makefile.new \
+	    && gcc -MM $(INCLUDES) $(CFLAGS) *.c >> Makefile.new \
+	    && sed -e '1,$$s: $(INCDIR)/: $$(INCDIR)/:g' \
+	           -e '1,$$s: $(OSDIR)/: $$(OSDIR)/:g' Makefile.new \
+		> Makefile.tmpl \
+	    && rm Makefile.new
+
+#Dependencies
+
+$(OBJS) $(OBJS_PIC): Makefile
+
+# DO NOT REMOVE
+mod_proxy.o: mod_proxy.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_vhost.h \
+ $(INCDIR)/http_request.h
+proxy_cache.o: proxy_cache.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_main.h \
+ $(INCDIR)/util_date.h $(INCDIR)/multithread.h \
+ $(INCDIR)/ap_md5.h
+proxy_connect.o: proxy_connect.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_main.h
+proxy_ftp.o: proxy_ftp.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_main.h $(INCDIR)/http_log.h
+proxy_http.o: proxy_http.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_log.h $(INCDIR)/http_main.h \
+ $(INCDIR)/http_core.h $(INCDIR)/util_date.h
+proxy_util.o: proxy_util.c mod_proxy.h $(INCDIR)/httpd.h \
+ $(INCDIR)/ap_config.h $(INCDIR)/ap_mmn.h \
+ $(INCDIR)/ap_config_auto.h $(OSDIR)/os.h \
+ $(INCDIR)/ap_ctype.h $(INCDIR)/hsregex.h \
+ $(INCDIR)/ap_alloc.h $(INCDIR)/buff.h $(INCDIR)/ap.h \
+ $(INCDIR)/util_uri.h $(INCDIR)/http_config.h \
+ $(INCDIR)/http_protocol.h $(INCDIR)/explain.h \
+ $(INCDIR)/http_main.h $(INCDIR)/ap_md5.h \
+ $(INCDIR)/multithread.h $(INCDIR)/http_log.h \
+ $(INCDIR)/util_date.h

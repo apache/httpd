@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache バーチャルホスト説明書</title>
+    <!-- English revision: 1.8 -->
+  </head>
+
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache バーチャルホスト説明書</h1>
+
+    <p><cite>バーチャルホスト</cite>という用語は、1 台のマシン上で
+    一つ以上のサーバを、
+    それぞれ別の違うホスト名で見せる運用方法のことを指します。
+    たとえば、一つのサーバを共有する複数の会社が、
+    ユーザに余計なパス名を要求せずに、<samp>www.company1.com</samp>
+    や <samp>www.company2.com</samp> といったそれぞれに固有の
+    ドメイン名でウェブサーバにアクセスできるようにしたい、
+    といったことはしばしばあります。</p>
+
+    <p>Apache は、特に手を入れない状態で IP ベースのバーチャルホスト
+    をサポートした最初のサーバの一つです。バージョン 1.1 以降の Apache
+    では、IP ベースとネームベースのバーチャルホストの両方をサポート
+    しています。ネームベースのバーチャルホストは、ホストベースあるいは非
+    IP ベースのバーチャルホストと呼ばれることもあります。</p>
+
+    <p>以下のページでは、Apache バージョン 1.3
+    以降でのバーチャルホストのサポートについての詳細を説明します。</p>
+
+    <hr />
+
+    <h2>バーチャルホストのサポート</h2>
+
+    <ul>
+      <li><a
+     href="name-based.html">ネームベースのバーチャルホスト</a></li>
+
+      <li><a href="ip-based.html">IP ベースのバーチャルホスト</a></li>
+
+      <li><a
+     href="examples.html">バーチャルホストの一般的な設定例</a></li>
+
+      <li><a
+     href="details.html">バーチャルホストのマッチングについての詳細</a></li>
+
+      <li><a href="fd-limits.html">ファイル記述子の限界</a></li>
+
+      <li><a
+     href="mass.html">大量のバーチャルホストの動的な設定</a></li>
+    </ul>
+
+    <h2>設定ディレクティブ</h2>
+
+    <ul>
+      <li><a
+      href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></li>
+
+      <li><a
+      href="../mod/core.html#namevirtualhost">NameVirtualHost</a></li>
+
+      <li><a href="../mod/core.html#servername">ServerName</a></li>
+
+      <li><a href="../mod/core.html#serveralias">ServerAlias</a></li>
+
+      <li><a href="../mod/core.html#serverpath">ServerPath</a></li>
+    </ul>
+
+
+    <p>バーチャルホストの設定のデバッグをするには
+    Apache のコマンドラインスイッチ <code>-S</code> が便利です。
+    Apache が設定ファイルをどう解析したかについて出力します。
+    IP アドレスとサーバ名を注意深く調べれば、
+    設定の間違いを見つける助けになるでしょう。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

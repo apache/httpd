@@ -1,0 +1,1047 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Performance Notes</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080"
+  alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache Performance Notes</h1>
+
+    <p>Author: Dean Gaudet</p>
+
+    <ul>
+      <li><a href="#introduction">Introduction</a></li>
+
+      <li><a href="#hardware">Hardware and Operating System Issues</a></li>
+
+      <li><a href="#runtime">Run-Time Configuration Issues</a></li>
+
+      <!--
+        Contains subsections:
+            #dns
+            #symlinks
+            #htaccess
+            #negotiation
+            #process
+            #modules
+            #mmap
+      -->
+
+      <li><a href="#compiletime">Compile-Time Configuration Issues</a></li>
+
+      <li>
+        Appendixes 
+
+        <ul>
+          <li><a href="#trace">Detailed Analysis of a Trace</a></li>
+
+          <li><a href="#patches">Patches Available</a></li>
+
+          <li><a href="#preforking">The Pre-Forking Model</a></li>
+        </ul>
+      </li>
+    </ul>
+    <hr />
+
+    <h3><a id="introduction" name="introduction">Introduction</a></h3>
+
+    <p>Apache is a general webserver, which is designed to be correct
+    first, and fast second. Even so, its performance is quite satisfactory.
+    Most sites have less than 10Mbits of outgoing bandwidth, which Apache
+    can fill using only a low end Pentium-based webserver. In practice,
+    sites with more bandwidth require more than one machine to fill the
+    bandwidth due to other constraints (such as CGI or database transaction
+    overhead). For these reasons, the development focus has been mostly on
+    correctness and configurability.</p>
+
+    <p>Unfortunately many folks overlook these facts and cite raw
+    performance numbers as if they are some indication of the quality of a
+    web server product. There is a bare minimum performance that is
+    acceptable, beyond that, extra speed only caters to a much smaller
+    segment of the market. But in order to avoid this hurdle to the
+    acceptance of Apache in some markets, effort was put into Apache 1.3 to
+    bring performance up to a point where the difference with other
+    high-end webservers is minimal.</p>
+
+    <p>Finally there are the folks who just want to see how fast something
+    can go. The author falls into this category. The rest of this document
+    is dedicated to these folks who want to squeeze every last bit of
+    performance out of Apache's current model, and want to understand why
+    it does some things which slow it down.</p>
+
+    <p>Note that this is tailored towards Apache 1.3 on Unix. Some of it
+    applies to Apache on NT. Apache on NT has not been tuned for
+    performance yet; in fact it probably performs very poorly because NT
+    performance requires a different programming model.</p>
+    <hr />
+
+    <h3><a id="hardware" name="hardware">Hardware and Operating System
+    Issues</a></h3>
+
+    <p>The single biggest hardware issue affecting webserver performance is
+    RAM. A webserver should never ever have to swap, as swapping increases
+    the latency of each request beyond a point that users consider "fast
+    enough". This causes users to hit stop and reload, further increasing
+    the load. You can, and should, control the <code>MaxClients</code>
+    setting so that your server does not spawn so many children it starts
+    swapping. The procedure for doing this is simple: determine the size of
+    your average Apache process, by looking at your process list via a tool
+    such as <code>top</code>, and divide this into your total available
+    memory, leaving some room for other processes.</p>
+
+    <p>Beyond that the rest is mundane: get a fast enough CPU, a fast
+    enough network card, and fast enough disks, where "fast enough" is
+    something that needs to be determined by experimentation.</p>
+
+    <p>Operating system choice is largely a matter of local concerns. But a
+    general guideline is to always apply the latest vendor TCP/IP
+    patches.</p>
+    <hr />
+
+    <h3><a id="runtime" name="runtime">Run-Time Configuration
+    Issues</a></h3>
+
+    <h4><a id="dns" name="dns"><code>HostnameLookups</code> and other DNS considerations</a></h4>
+
+    <p>Prior to Apache 1.3, <a
+    href="../mod/core.html#hostnamelookups"><code>HostnameLookups</code></a>
+    defaulted to <code>On</code>. This adds latency to every request
+    because it requires a DNS lookup to complete before the request is
+    finished. In Apache 1.3 this setting defaults to <code>Off</code>. If
+    you need to have addresses in your log files resolved to hostnames, use
+    the <a href="../programs/logresolve.html">logresolve</a> program that
+    comes with Apache, or one of the numerous log reporting packages which
+    are available.</p>
+
+    <p>It is recommended that you do this sort of postprocessing of your
+    log files on some machine other than the production web server machine,
+    in order that this activity not adversely affect server
+    performance.</p>
+
+    <p>If you use any <code><a
+    href="../mod/mod_access.html#allow">Allow</a> from domain</code> or
+    <code><a href="../mod/mod_access.html#deny">Deny</a> from domain</code>
+    directives (i.e., using a hostname, or a domain name, rather than an IP
+    address) then you will pay for a double reverse DNS lookup (a reverse,
+    followed by a forward to make sure that the reverse is not being
+    spoofed). For best performance, therefore, use IP addresses, rather 
+    than names, when using these directives, if possible.</p>
+
+    <p>Note that it's possible to scope the directives, such as within a
+    <code>&lt;Location /server-status&gt;</code> section. In this case the
+    DNS lookups are only performed on requests matching the criteria.
+    Here's an example which disables lookups except for .html and .cgi
+    files:</p>
+
+    <blockquote>
+<pre>
+HostnameLookups off
+&lt;Files ~ "\.(html|cgi)$"&gt;
+    HostnameLookups on
+&lt;/Files&gt;
+</pre>
+    </blockquote>
+
+    <p>But even still, if you just need DNS names in some CGIs you could
+    consider doing the <code>gethostbyname</code> call in the specific CGIs
+    that need it.</p>
+
+    <h4><a id="symlinks" name="symlinks">FollowSymLinks and SymLinksIfOwnerMatch</a></h4>
+
+    <p>Wherever in your URL-space you do not have an <code>Options
+    FollowSymLinks</code>, or you do have an <code>Options
+    SymLinksIfOwnerMatch</code> Apache will have to issue extra system
+    calls to check up on symlinks. One extra call per filename component.
+    For example, if you had:</p>
+
+    <blockquote>
+<pre>
+DocumentRoot /www/htdocs
+&lt;Directory /&gt;
+    Options SymLinksIfOwnerMatch
+&lt;/Directory&gt;
+</pre>
+    </blockquote>
+
+    <p>and a request is made for the URI <code>/index.html</code>. Then
+    Apache will perform <code>lstat(2)</code> on <code>/www</code>,
+    <code>/www/htdocs</code>, and <code>/www/htdocs/index.html</code>. The
+    results of these <code>lstats</code> are never cached, so they will
+    occur on every single request. If you really desire the symlinks
+    security checking you can do something like this:</p>
+
+    <blockquote>
+<pre>
+DocumentRoot /www/htdocs
+&lt;Directory /&gt;
+    Options FollowSymLinks
+&lt;/Directory&gt;
+&lt;Directory /www/htdocs&gt;
+    Options -FollowSymLinks +SymLinksIfOwnerMatch
+&lt;/Directory&gt;
+</pre>
+    </blockquote>
+
+    <p>This at least avoids the extra checks for the
+    <code>DocumentRoot</code> path. Note that you'll need to add similar
+    sections if you have any <code>Alias</code> or <code>RewriteRule</code>
+    paths outside of your document root. For highest performance, and no
+    symlink protection, set <code>FollowSymLinks</code> everywhere, and
+    never set <code>SymLinksIfOwnerMatch</code>.</p>
+
+    <h4><a id="htaccess" name="htaccess">AllowOverride</a></h4>
+
+    <p>Wherever in your URL-space you allow overrides (typically
+    <code>.htaccess</code> files) Apache will attempt to open
+    <code>.htaccess</code> for each filename component. For example,</p>
+
+    <blockquote>
+<pre>
+DocumentRoot /www/htdocs
+&lt;Directory /&gt;
+    AllowOverride all
+&lt;/Directory&gt;
+</pre>
+    </blockquote>
+
+    <p>and a request is made for the URI <code>/index.html</code>. Then
+    Apache will attempt to open <code>/.htaccess</code>,
+    <code>/www/.htaccess</code>, and <code>/www/htdocs/.htaccess</code>.
+    The solutions are similar to the previous case of <code>Options
+    FollowSymLinks</code>. For highest performance use <code>AllowOverride
+    None</code> everywhere in your filesystem.</p>
+
+    <p>See also the <a href="../howto/htaccess.html">.htaccess tutorial</a>
+    for further discussion of this.</p>
+
+    <h4><a id="negotiation" name="negotiation">Negotiation</a></h4>
+
+    <p>If at all possible, avoid content-negotiation if you're really
+    interested in every last ounce of performance. In practice the benefits
+    of negotiation outweigh the performance penalties. There's one case
+    where you can speed up the server. Instead of using a wildcard such
+    as:</p>
+
+    <blockquote>
+<pre>
+DirectoryIndex index
+</pre>
+    </blockquote>
+
+    <p>Use a complete list of options:</p>
+
+    <blockquote>
+<pre>
+DirectoryIndex index.cgi index.pl index.shtml index.html
+</pre>
+    </blockquote>
+
+    <p>where you list the most common choice first.</p>
+
+    <p>If your site needs content negotiation, consider using
+    <code>type-map</code> files rather than the <code>Options
+    MultiViews</code> directive to accomplish the negotiation. See the <a
+    href="../content-negotiation.html">Content Negotiation</a>
+    documentation for a full discussion of the methods of negotiation, and
+    instructions for creating <code>type-map</code> files.</p>
+
+    <h4><a name="process" id="process">Process Creation</a></h4>
+
+    <p>Prior to Apache 1.3 the <a
+    href="../mod/core.html#minspareservers"><code>MinSpareServers</code></a>,
+    <a
+    href="../mod/core.html#maxspareservers"><code>MaxSpareServers</code></a>,
+    and <a
+    href="../mod/core.html#startservers"><code>StartServers</code></a>
+    settings all had drastic effects on benchmark results. In particular,
+    Apache required a "ramp-up" period in order to reach a number of
+    children sufficient to serve the load being applied. After the initial
+    spawning of <code>StartServers</code> children, only one child per
+    second would be created to satisfy the <code>MinSpareServers</code>
+    setting. So a server being accessed by 100 simultaneous clients, using
+    the default <code>StartServers</code> of 5 would take on the order 95
+    seconds to spawn enough children to handle the load. This works fine in
+    practice on real-life servers, because they aren't restarted
+    frequently. But results in poor performance on benchmarks, which might
+    only run for ten minutes.</p>
+
+    <p>The one-per-second rule was implemented in an effort to avoid
+    swamping the machine with the startup of new children. If the machine
+    is busy spawning children it can't service requests. But it has such a
+    drastic effect on the perceived performance of Apache that it had to be
+    replaced. As of Apache 1.3, the code will relax the one-per-second
+    rule. It will spawn one, wait a second, then spawn two, wait a second,
+    then spawn four, and it will continue exponentially until it is
+    spawning 32 children per second. It will stop whenever it satisfies the
+    <code>MinSpareServers</code> setting.</p>
+
+    <p>This appears to be responsive enough that it's almost unnecessary to
+    adjust the <code>MinSpareServers</code>, <code>MaxSpareServers</code>
+    and <code>StartServers</code> settings. When more than 4 children are
+    spawned per second, a message will be emitted to the
+    <code>ErrorLog</code>. If you see a lot of these errors then consider
+    tuning these settings. Use the <code>mod_status</code> output as a
+    guide.</p>
+
+    <p>In particular, you may need to set <code>MinSpareServers</code>
+    higher if traffic on your site is extremely bursty - that is, if the
+    number of connections to your site fluctuates radically in short
+    periods of time. This may be the case, for example, if traffic to your
+    site is highly event-driven, such as sites for major sports events, or
+    other sites where users are encouraged to visit the site at a
+    particular time.</p>
+
+    <p>Related to process creation is process death induced by the
+    <code>MaxRequestsPerChild</code> setting. By default this is 0, which
+    means that there is no limit to the number of requests handled per
+    child. If your configuration currently has this set to some very low
+    number, such as 30, you may want to bump this up significantly. If you
+    are running SunOS or an old version of Solaris, limit this to 10000 or
+    so because of memory leaks.</p>
+
+    <p>When keep-alives are in use, children will be kept busy doing
+    nothing waiting for more requests on the already open connection. The
+    default <code>KeepAliveTimeout</code> of 15 seconds attempts to
+    minimize this effect. The tradeoff here is between network bandwidth
+    and server resources. In no event should you raise this above about 60
+    seconds, as <a
+    href="http://www.research.compaq.com/wrl/techreports/abstracts/95.4.html">
+    most of the benefits are lost</a>.</p>
+
+    <h4><a name="modules" id="modules">Modules</a></h4>
+
+    <p>Since memory usage is such an important consideration in
+    performance, you should attempt to eliminate modules that you are not
+    actually using. If you have built the modules as <a
+    href="../dso.html">DSOs</a>, eliminating modules is a simple matter of
+    commenting out the associated <a
+    href="../mod/core.html#addmodule.html">AddModule</a> and <a
+    href="../mod/mod_so.html#loadmodule.html">LoadModule</a> directives for
+    that module. This allows you to experiment with removing modules, and
+    seeing if your site still functions in their absence.</p>
+
+    <p>If, on the other hand, you have modules statically linked into your
+    Apache binary, you will need to recompile Apache in order to remove
+    unwanted modules.</p>
+
+    <p>An associated question that arises here is, of course, what modules
+    you need, and which ones you don't. The answer here will, of course,
+    vary from one web site to another. However, the <i>minimal</i> list of
+    modules which you can get by with tends to include <a
+    href="../mod/mod_mime.html">mod_mime</a>, <a
+    href="../mod/mod_dir.html">mod_dir</a>, and <a
+    href="../mod/mod_log_config.html">mod_log_config</a>.
+    <code>mod_log_config</code> is, of course, optional, as you can run a
+    web site without log files. This is, however, not recommended.</p>
+
+    <h4><a name="mmap" id="mmap">mod_mmap_static</a></h4>
+
+    <p>Apache comes with a module, <a
+    href="../mod/mod_mmap_static.html">mod_mmap_static</a>, which is not
+    enabled by default, which allows you to map files into RAM, and
+    serve them directly from memory rather than from the disc, which
+    should result in substantial performance improvement for
+    frequently-requests files. Note that when files are modified, you
+    will need to restart your server in order to serve the latest
+    version of the file, so this is not appropriate for files which
+    change frequently. See the documentation for this module for more
+    complete details.</p>
+
+    <hr />
+
+    <h3><a id="compiletime" name="compiletime">Compile-Time Configuration
+    Issues</a></h3>
+
+    <h4>mod_status and ExtendedStatus On</h4>
+
+    <p>If you include <a
+    href="../mod/mod_status.html"><code>mod_status</code></a> and you also
+    set <code>ExtendedStatus On</code> when building and running Apache,
+    then on every request Apache will perform two calls to
+    <code>gettimeofday(2)</code> (or <code>times(2)</code> depending on
+    your operating system), and (pre-1.3) several extra calls to
+    <code>time(2)</code>. This is all done so that the status report
+    contains timing indications. For highest performance, set
+    <code>ExtendedStatus off</code> (which is the default).</p>
+
+    <p><code>mod_status</code> should probably be configured to allow
+    access by only a few users, rather than to the general public, so this
+    will likely have very low impact on your overall performance.</p>
+
+    <h4>accept Serialization - multiple sockets</h4>
+
+    <p>This discusses a shortcoming in the Unix socket API. Suppose your
+    web server uses multiple <code>Listen</code> statements to listen on
+    either multiple ports or multiple addresses. In order to test each
+    socket to see if a connection is ready Apache uses
+    <code>select(2)</code>. <code>select(2)</code> indicates that a socket
+    has <em>zero</em> or <em>at least one</em> connection waiting on it.
+    Apache's model includes multiple children, and all the idle ones test
+    for new connections at the same time. A naive implementation looks
+    something like this (these examples do not match the code, they're
+    contrived for pedagogical purposes):</p>
+
+    <blockquote>
+<pre>
+    for (;;) {
+    for (;;) {
+        fd_set accept_fds;
+
+        FD_ZERO (&amp;accept_fds);
+        for (i = first_socket; i &lt;= last_socket; ++i) {
+        FD_SET (i, &amp;accept_fds);
+        }
+        rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+        if (rc &lt; 1) continue;
+        new_connection = -1;
+        for (i = first_socket; i &lt;= last_socket; ++i) {
+        if (FD_ISSET (i, &amp;accept_fds)) {
+            new_connection = accept (i, NULL, NULL);
+            if (new_connection != -1) break;
+        }
+        }
+        if (new_connection != -1) break;
+    }
+    process the new_connection;
+    }
+</pre>
+    </blockquote>
+    But this naive implementation has a serious starvation problem. Recall
+    that multiple children execute this loop at the same time, and so
+    multiple children will block at <code>select</code> when they are in
+    between requests. All those blocked children will awaken and return
+    from <code>select</code> when a single request appears on any socket
+    (the number of children which awaken varies depending on the operating
+    system and timing issues). They will all then fall down into the loop
+    and try to <code>accept</code> the connection. But only one will
+    succeed (assuming there's still only one connection ready), the rest
+    will be <em>blocked</em> in <code>accept</code>. This effectively locks
+    those children into serving requests from that one socket and no other
+    sockets, and they'll be stuck there until enough new requests appear on
+    that socket to wake them all up. This starvation problem was first
+    documented in <a
+    href="http://bugs.apache.org/index/full/467">PR#467</a>. There are at
+    least two solutions. 
+
+    <p>One solution is to make the sockets non-blocking. In this case the
+    <code>accept</code> won't block the children, and they will be allowed
+    to continue immediately. But this wastes CPU time. Suppose you have ten
+    idle children in <code>select</code>, and one connection arrives. Then
+    nine of those children will wake up, try to <code>accept</code> the
+    connection, fail, and loop back into <code>select</code>, accomplishing
+    nothing. Meanwhile none of those children are servicing requests that
+    occurred on other sockets until they get back up to the
+    <code>select</code> again. Overall this solution does not seem very
+    fruitful unless you have as many idle CPUs (in a multiprocessor box) as
+    you have idle children, not a very likely situation.</p>
+
+    <p>Another solution, the one used by Apache, is to serialize entry into
+    the inner loop. The loop looks like this (differences highlighted):</p>
+
+    <blockquote>
+<pre>
+    for (;;) {
+    <strong>accept_mutex_on ();</strong>
+    for (;;) {
+        fd_set accept_fds;
+
+        FD_ZERO (&amp;accept_fds);
+        for (i = first_socket; i &lt;= last_socket; ++i) {
+        FD_SET (i, &amp;accept_fds);
+        }
+        rc = select (last_socket+1, &amp;accept_fds, NULL, NULL, NULL);
+        if (rc &lt; 1) continue;
+        new_connection = -1;
+        for (i = first_socket; i &lt;= last_socket; ++i) {
+        if (FD_ISSET (i, &amp;accept_fds)) {
+            new_connection = accept (i, NULL, NULL);
+            if (new_connection != -1) break;
+        }
+        }
+        if (new_connection != -1) break;
+    }
+    <strong>accept_mutex_off ();</strong>
+    process the new_connection;
+    }
+</pre>
+    </blockquote>
+    <a id="serialize" name="serialize">The functions</a>
+    <code>accept_mutex_on</code> and <code>accept_mutex_off</code>
+    implement a mutual exclusion semaphore. Only one child can have the
+    mutex at any time. There are several choices for implementing these
+    mutexes. The choice is defined in <code>src/conf.h</code> (pre-1.3) or
+    <code>src/include/ap_config.h</code> (1.3 or later). Some architectures
+    do not have any locking choice made, on these architectures it is
+    unsafe to use multiple <code>Listen</code> directives. 
+
+    <dl>
+      <dt><code>HAVE_FLOCK_SERIALIZED_ACCEPT</code></dt>
+
+      <dd>This method uses the <code>flock(2)</code> system call to lock a
+      lock file (located by the <code>LockFile</code> directive).</dd>
+
+      <dt><code>HAVE_FCNTL_SERIALIZED_ACCEPT</code></dt>
+
+      <dd>This method uses the <code>fcntl(2)</code> system call to lock a
+      lock file (located by the <code>LockFile</code> directive).</dd>
+
+      <dt><code>HAVE_SYSVSEM_SERIALIZED_ACCEPT</code></dt>
+
+      <dd>(1.3 or later) This method uses SysV-style semaphores to
+      implement the mutex. Unfortunately SysV-style semaphores have some
+      bad side-effects. One is that it's possible Apache will die without
+      cleaning up the semaphore (see the <code>ipcs(8)</code> man page).
+      The other is that the semaphore API allows for a denial of service
+      attack by any CGIs running under the same uid as the webserver
+      (<em>i.e.</em>, all CGIs, unless you use something like suexec or
+      cgiwrapper). For these reasons this method is not used on any
+      architecture except IRIX (where the previous two are prohibitively
+      expensive on most IRIX boxes).</dd>
+
+      <dt><code>HAVE_USLOCK_SERIALIZED_ACCEPT</code></dt>
+
+      <dd>(1.3 or later) This method is only available on IRIX, and uses
+      <code>usconfig(2)</code> to create a mutex. While this method avoids
+      the hassles of SysV-style semaphores, it is not the default for IRIX.
+      This is because on single processor IRIX boxes (5.3 or 6.2) the
+      uslock code is two orders of magnitude slower than the SysV-semaphore
+      code. On multi-processor IRIX boxes the uslock code is an order of
+      magnitude faster than the SysV-semaphore code. Kind of a messed up
+      situation. So if you're using a multiprocessor IRIX box then you
+      should rebuild your webserver with
+      <code>-DHAVE_USLOCK_SERIALIZED_ACCEPT</code> on the
+      <code>EXTRA_CFLAGS</code>.</dd>
+
+      <dt><code>HAVE_PTHREAD_SERIALIZED_ACCEPT</code></dt>
+
+      <dd>(1.3 or later) This method uses POSIX mutexes and should work on
+      any architecture implementing the full POSIX threads specification,
+      however appears to only work on Solaris (2.5 or later), and even then
+      only in certain configurations. If you experiment with this you
+      should watch out for your server hanging and not responding. Static
+      content only servers may work just fine.</dd>
+    </dl>
+
+    <p>If your system has another method of serialization which isn't in
+    the above list then it may be worthwhile adding code for it (and
+    submitting a patch back to Apache). The above
+    <code>HAVE_METHOD_SERIALIZED_ACCEPT</code> defines specify which method
+    is available and works on the platform (you can have more than one);
+    <code>USE_METHOD_SERIALIZED_ACCEPT</code> is used to specify the
+    default method (see the <code>AcceptMutex</code> directive).</p>
+
+    <p>Another solution that has been considered but never implemented is
+    to partially serialize the loop -- that is, let in a certain number of
+    processes. This would only be of interest on multiprocessor boxes where
+    it's possible multiple children could run simultaneously, and the
+    serialization actually doesn't take advantage of the full bandwidth.
+    This is a possible area of future investigation, but priority remains
+    low because highly parallel web servers are not the norm.</p>
+
+    <p>Ideally you should run servers without multiple <code>Listen</code>
+    statements if you want the highest performance. But read on.</p>
+
+    <h4>accept Serialization - single socket</h4>
+
+    <p>The above is fine and dandy for multiple socket servers, but what
+    about single socket servers? In theory they shouldn't experience any of
+    these same problems because all children can just block in
+    <code>accept(2)</code> until a connection arrives, and no starvation
+    results. In practice this hides almost the same "spinning" behavior
+    discussed above in the non-blocking solution. The way that most TCP
+    stacks are implemented, the kernel actually wakes up all processes
+    blocked in <code>accept</code> when a single connection arrives. One of
+    those processes gets the connection and returns to user-space, the rest
+    spin in the kernel and go back to sleep when they discover there's no
+    connection for them. This spinning is hidden from the user-land code,
+    but it's there nonetheless. This can result in the same load-spiking
+    wasteful behavior that a non-blocking solution to the multiple sockets
+    case can.</p>
+
+    <p>For this reason we have found that many architectures behave more
+    "nicely" if we serialize even the single socket case. So this is
+    actually the default in almost all cases. Crude experiments under Linux
+    (2.0.30 on a dual Pentium pro 166 w/128Mb RAM) have shown that the
+    serialization of the single socket case causes less than a 3% decrease
+    in requests per second over unserialized single-socket. But
+    unserialized single-socket showed an extra 100ms latency on each
+    request. This latency is probably a wash on long haul lines, and only
+    an issue on LANs. If you want to override the single socket
+    serialization you can define
+    <code>SINGLE_LISTEN_UNSERIALIZED_ACCEPT</code> and then single-socket
+    servers will not serialize at all.</p>
+
+    <h4>Lingering Close</h4>
+
+    <p>As discussed in <a
+    href="http://ftp.ics.uci.edu/pub/ietf/http/draft-ietf-http-connection-00.txt">
+    draft-ietf-http-connection-00.txt</a> section 8, in order for an HTTP
+    server to <strong>reliably</strong> implement the protocol it needs to
+    shutdown each direction of the communication independently (recall that
+    a TCP connection is bi-directional, each half is independent of the
+    other). This fact is often overlooked by other servers, but is
+    correctly implemented in Apache as of 1.2.</p>
+
+    <p>When this feature was added to Apache it caused a flurry of problems
+    on various versions of Unix because of a shortsightedness. The TCP
+    specification does not state that the FIN_WAIT_2 state has a timeout,
+    but it doesn't prohibit it. On systems without the timeout, Apache 1.2
+    induces many sockets stuck forever in the FIN_WAIT_2 state. In many
+    cases this can be avoided by simply upgrading to the latest TCP/IP
+    patches supplied by the vendor. In cases where the vendor has never
+    released patches (<em>i.e.</em>, SunOS4 -- although folks with a source
+    license can patch it themselves) we have decided to disable this
+    feature.</p>
+
+    <p>There are two ways of accomplishing this. One is the socket option
+    <code>SO_LINGER</code>. But as fate would have it, this has never been
+    implemented properly in most TCP/IP stacks. Even on those stacks with a
+    proper implementation (<em>i.e.</em>, Linux 2.0.31) this method proves
+    to be more expensive (cputime) than the next solution.</p>
+
+    <p>For the most part, Apache implements this in a function called
+    <code>lingering_close</code> (in <code>http_main.c</code>). The
+    function looks roughly like this:</p>
+
+    <blockquote>
+<pre>
+    void lingering_close (int s)
+    {
+    char junk_buffer[2048];
+
+    /* shutdown the sending side */
+    shutdown (s, 1);
+
+    signal (SIGALRM, lingering_death);
+    alarm (30);
+
+    for (;;) {
+        select (s for reading, 2 second timeout);
+        if (error) break;
+        if (s is ready for reading) {
+        if (read (s, junk_buffer, sizeof (junk_buffer)) &lt;= 0) {
+            break;
+        }
+        /* just toss away whatever is read */
+        }
+    }
+
+    close (s);
+    }
+</pre>
+    </blockquote>
+    This naturally adds some expense at the end of a connection, but it is
+    required for a reliable implementation. As HTTP/1.1 becomes more
+    prevalent, and all connections are persistent, this expense will be
+    amortized over more requests. If you want to play with fire and disable
+    this feature you can define <code>NO_LINGCLOSE</code>, but this is not
+    recommended at all. In particular, as HTTP/1.1 pipelined persistent
+    connections come into use <code>lingering_close</code> is an absolute
+    necessity (and <a
+    href="http://www.w3.org/Protocols/HTTP/Performance/Pipeline.html">pipelined
+    connections are faster</a>, so you want to support them). 
+
+    <h4>Scoreboard File</h4>
+
+    <p>Apache's parent and children communicate with each other through
+    something called the scoreboard. Ideally this should be implemented in
+    shared memory. For those operating systems that we either have access
+    to, or have been given detailed ports for, it typically is implemented
+    using shared memory. The rest default to using an on-disk file. The
+    on-disk file is not only slow, but it is unreliable (and less
+    featured). Peruse the <code>src/main/conf.h</code> file for your
+    architecture and look for either <code>USE_MMAP_SCOREBOARD</code> or
+    <code>USE_SHMGET_SCOREBOARD</code>. Defining one of those two (as well
+    as their companions <code>HAVE_MMAP</code> and <code>HAVE_SHMGET</code>
+    respectively) enables the supplied shared memory code. If your system
+    has another type of shared memory, edit the file
+    <code>src/main/http_main.c</code> and add the hooks necessary to use it
+    in Apache. (Send us back a patch too please.)</p>
+
+    <p>Historical note: The Linux port of Apache didn't start to use shared
+    memory until version 1.2 of Apache. This oversight resulted in really
+    poor and unreliable behavior of earlier versions of Apache on
+    Linux.</p>
+
+    <h4><code>DYNAMIC_MODULE_LIMIT</code></h4>
+
+    <p>If you have no intention of using dynamically loaded modules (you
+    probably don't if you're reading this and tuning your server for every
+    last ounce of performance) then you should add
+    <code>-DDYNAMIC_MODULE_LIMIT=0</code> when building your server. This
+    will save RAM that's allocated only for supporting dynamically loaded
+    modules.</p>
+    <hr />
+
+    <h3><a id="trace" name="trace">Appendix: Detailed Analysis of a
+    Trace</a></h3>
+    Here is a system call trace of Apache 1.3 running on Linux. The
+    run-time configuration file is essentially the default plus: 
+
+    <blockquote>
+<pre>
+&lt;Directory /&gt;
+    AllowOverride none
+    Options FollowSymLinks
+&lt;/Directory&gt;
+</pre>
+    </blockquote>
+    The file being requested is a static 6K file of no particular content.
+    Traces of non-static requests or requests with content negotiation look
+    wildly different (and quite ugly in some cases). First the entire
+    trace, then we'll examine details. (This was generated by the
+    <code>strace</code> program, other similar programs include
+    <code>truss</code>, <code>ktrace</code>, and <code>par</code>.) 
+
+    <blockquote>
+<pre>
+accept(15, {sin_family=AF_INET, sin_port=htons(22283), sin_addr=inet_addr("127.0.0.1")}, [16]) = 3
+flock(18, LOCK_UN)                      = 0
+sigaction(SIGUSR1, {SIG_IGN}, {0x8059954, [], SA_INTERRUPT}) = 0
+getsockname(3, {sin_family=AF_INET, sin_port=htons(8080), sin_addr=inet_addr("127.0.0.1")}, [16]) = 0
+setsockopt(3, IPPROTO_TCP1, [1], 4)     = 0
+read(3, "GET /6k HTTP/1.0\r\nUser-Agent: "..., 4096) = 60
+sigaction(SIGUSR1, {SIG_IGN}, {SIG_IGN}) = 0
+time(NULL)                              = 873959960
+gettimeofday({873959960, 404935}, NULL) = 0
+stat("/home/dgaudet/ap/apachen/htdocs/6k", {st_mode=S_IFREG|0644, st_size=6144, ...}) = 0
+open("/home/dgaudet/ap/apachen/htdocs/6k", O_RDONLY) = 4
+mmap(0, 6144, PROT_READ, MAP_PRIVATE, 4, 0) = 0x400ee000
+writev(3, [{"HTTP/1.1 200 OK\r\nDate: Thu, 11"..., 245}, {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 6144}], 2) = 6389
+close(4)                                = 0
+time(NULL)                              = 873959960
+write(17, "127.0.0.1 - - [10/Sep/1997:23:39"..., 71) = 71
+gettimeofday({873959960, 417742}, NULL) = 0
+times({tms_utime=5, tms_stime=0, tms_cutime=0, tms_cstime=0}) = 446747
+shutdown(3, 1 /* send */)               = 0
+oldselect(4, [3], NULL, [3], {2, 0})    = 1 (in [3], left {2, 0})
+read(3, "", 2048)                       = 0
+close(3)                                = 0
+sigaction(SIGUSR1, {0x8059954, [], SA_INTERRUPT}, {SIG_IGN}) = 0
+munmap(0x400ee000, 6144)                = 0
+flock(18, LOCK_EX)                      = 0
+</pre>
+    </blockquote>
+
+    <p>Notice the accept serialization:</p>
+
+    <blockquote>
+<pre>
+flock(18, LOCK_UN)                      = 0
+...
+flock(18, LOCK_EX)                      = 0
+</pre>
+    </blockquote>
+    These two calls can be removed by defining
+    <code>SINGLE_LISTEN_UNSERIALIZED_ACCEPT</code> as described earlier. 
+
+    <p>Notice the <code>SIGUSR1</code> manipulation:</p>
+
+    <blockquote>
+<pre>
+sigaction(SIGUSR1, {SIG_IGN}, {0x8059954, [], SA_INTERRUPT}) = 0
+...
+sigaction(SIGUSR1, {SIG_IGN}, {SIG_IGN}) = 0
+...
+sigaction(SIGUSR1, {0x8059954, [], SA_INTERRUPT}, {SIG_IGN}) = 0
+</pre>
+    </blockquote>
+    This is caused by the implementation of graceful restarts. When the
+    parent receives a <code>SIGUSR1</code> it sends a <code>SIGUSR1</code>
+    to all of its children (and it also increments a "generation counter"
+    in shared memory). Any children that are idle (between connections)
+    will immediately die off when they receive the signal. Any children
+    that are in keep-alive connections, but are in between requests will
+    die off immediately. But any children that have a connection and are
+    still waiting for the first request will not die off immediately. 
+
+    <p>To see why this is necessary, consider how a browser reacts to a
+    closed connection. If the connection was a keep-alive connection and
+    the request being serviced was not the first request then the browser
+    will quietly reissue the request on a new connection. It has to do this
+    because the server is always free to close a keep-alive connection in
+    between requests (<em>i.e.</em>, due to a timeout or because of a
+    maximum number of requests). But, if the connection is closed before
+    the first response has been received the typical browser will display a
+    "document contains no data" dialogue (or a broken image icon). This is
+    done on the assumption that the server is broken in some way (or maybe
+    too overloaded to respond at all). So Apache tries to avoid ever
+    deliberately closing the connection before it has sent a single
+    response. This is the cause of those <code>SIGUSR1</code>
+    manipulations.</p>
+
+    <p>Note that it is theoretically possible to eliminate all three of
+    these calls. But in rough tests the gain proved to be almost
+    unnoticeable.</p>
+
+    <p>In order to implement virtual hosts, Apache needs to know the local
+    socket address used to accept the connection:</p>
+
+    <blockquote>
+<pre>
+getsockname(3, {sin_family=AF_INET, sin_port=htons(8080), sin_addr=inet_addr("127.0.0.1")}, [16]) = 0
+</pre>
+    </blockquote>
+    It is possible to eliminate this call in many situations (such as when
+    there are no virtual hosts, or when <code>Listen</code> directives are
+    used which do not have wildcard addresses). But no effort has yet been
+    made to do these optimizations. 
+
+    <p>Apache turns off the Nagle algorithm:</p>
+
+    <blockquote>
+<pre>
+setsockopt(3, IPPROTO_TCP1, [1], 4)     = 0
+</pre>
+    </blockquote>
+    because of problems described in <a
+    href="http://www.isi.edu/~johnh/PAPERS/Heidemann97a.html">a paper by
+    John Heidemann</a>. 
+
+    <p>Notice the two <code>time</code> calls:</p>
+
+    <blockquote>
+<pre>
+time(NULL)                              = 873959960
+...
+time(NULL)                              = 873959960
+</pre>
+    </blockquote>
+    One of these occurs at the beginning of the request, and the other
+    occurs as a result of writing the log. At least one of these is
+    required to properly implement the HTTP protocol. The second occurs
+    because the Common Log Format dictates that the log record include a
+    timestamp of the end of the request. A custom logging module could
+    eliminate one of the calls. Or you can use a method which moves the
+    time into shared memory, see the <a href="#patches">patches section
+    below</a>. 
+
+    <p>As described earlier, <code>ExtendedStatus On</code> causes two
+    <code>gettimeofday</code> calls and a call to <code>times</code>:</p>
+
+    <blockquote>
+<pre>
+gettimeofday({873959960, 404935}, NULL) = 0
+...
+gettimeofday({873959960, 417742}, NULL) = 0
+times({tms_utime=5, tms_stime=0, tms_cutime=0, tms_cstime=0}) = 446747
+</pre>
+    </blockquote>
+    These can be removed by setting <code>ExtendedStatus Off</code> (which
+    is the default). 
+
+    <p>It might seem odd to call <code>stat</code>:</p>
+
+    <blockquote>
+<pre>
+stat("/home/dgaudet/ap/apachen/htdocs/6k", {st_mode=S_IFREG|0644, st_size=6144, ...}) = 0
+</pre>
+    </blockquote>
+    This is part of the algorithm which calculates the
+    <code>PATH_INFO</code> for use by CGIs. In fact if the request had been
+    for the URI <code>/cgi-bin/printenv/foobar</code> then there would be
+    two calls to <code>stat</code>. The first for
+    <code>/home/dgaudet/ap/apachen/cgi-bin/printenv/foobar</code> which
+    does not exist, and the second for
+    <code>/home/dgaudet/ap/apachen/cgi-bin/printenv</code>, which does
+    exist. Regardless, at least one <code>stat</code> call is necessary
+    when serving static files because the file size and modification times
+    are used to generate HTTP headers (such as <code>Content-Length</code>,
+    <code>Last-Modified</code>) and implement protocol features (such as
+    <code>If-Modified-Since</code>). A somewhat more clever server could
+    avoid the <code>stat</code> when serving non-static files, however
+    doing so in Apache is very difficult given the modular structure. 
+
+    <p>All static files are served using <code>mmap</code>:</p>
+
+    <blockquote>
+<pre>
+mmap(0, 6144, PROT_READ, MAP_PRIVATE, 4, 0) = 0x400ee000
+...
+munmap(0x400ee000, 6144)                = 0
+</pre>
+    </blockquote>
+    On some architectures it's slower to <code>mmap</code> small files than
+    it is to simply <code>read</code> them. The define
+    <code>MMAP_THRESHOLD</code> can be set to the minimum size required
+    before using <code>mmap</code>. By default it's set to 0 (except on
+    SunOS4 where experimentation has shown 8192 to be a better value).
+    Using a tool such as <a
+    href="http://www.bitmover.com/lmbench/">lmbench</a> you can determine
+    the optimal setting for your environment. 
+
+    <p>You may also wish to experiment with <code>MMAP_SEGMENT_SIZE</code>
+    (default 32768) which determines the maximum number of bytes that will
+    be written at a time from mmap()d files. Apache only resets the
+    client's <code>Timeout</code> in between write()s. So setting this
+    large may lock out low bandwidth clients unless you also increase the
+    <code>Timeout</code>.</p>
+
+    <p>It may even be the case that <code>mmap</code> isn't used on your
+    architecture; if so then defining <code>USE_MMAP_FILES</code> and
+    <code>HAVE_MMAP</code> might work (if it works then report back to
+    us).</p>
+
+    <p>Apache does its best to avoid copying bytes around in memory. The
+    first write of any request typically is turned into a
+    <code>writev</code> which combines both the headers and the first hunk
+    of data:</p>
+
+    <blockquote>
+<pre>
+writev(3, [{"HTTP/1.1 200 OK\r\nDate: Thu, 11"..., 245}, {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 6144}], 2) = 6389
+</pre>
+    </blockquote>
+    When doing HTTP/1.1 chunked encoding Apache will generate up to four
+    element <code>writev</code>s. The goal is to push the byte copying into
+    the kernel, where it typically has to happen anyhow (to assemble
+    network packets). On testing, various Unixes (BSDI 2.x, Solaris 2.5,
+    Linux 2.0.31+) properly combine the elements into network packets.
+    Pre-2.0.31 Linux will not combine, and will create a packet for each
+    element, so upgrading is a good idea. Defining <code>NO_WRITEV</code>
+    will disable this combining, but result in very poor chunked encoding
+    performance. 
+
+    <p>The log write:</p>
+
+    <blockquote>
+<pre>
+write(17, "127.0.0.1 - - [10/Sep/1997:23:39"..., 71) = 71
+</pre>
+    </blockquote>
+    can be deferred by defining <code>BUFFERED_LOGS</code>. In this case up
+    to <code>PIPE_BUF</code> bytes (a POSIX defined constant) of log
+    entries are buffered before writing. At no time does it split a log
+    entry across a <code>PIPE_BUF</code> boundary because those writes may
+    not be atomic. (<em>i.e.</em>, entries from multiple children could
+    become mixed together). The code does its best to flush this buffer
+    when a child dies. 
+
+    <p>The lingering close code causes four system calls:</p>
+
+    <blockquote>
+<pre>
+shutdown(3, 1 /* send */)               = 0
+oldselect(4, [3], NULL, [3], {2, 0})    = 1 (in [3], left {2, 0})
+read(3, "", 2048)                       = 0
+close(3)                                = 0
+</pre>
+    </blockquote>
+    which were described earlier. 
+
+    <p>Let's apply some of these optimizations:
+    <code>-DSINGLE_LISTEN_UNSERIALIZED_ACCEPT -DBUFFERED_LOGS</code> and
+    <code>ExtendedStatus Off</code>. Here's the final trace:</p>
+
+    <blockquote>
+<pre>
+accept(15, {sin_family=AF_INET, sin_port=htons(22286), sin_addr=inet_addr("127.0.0.1")}, [16]) = 3
+sigaction(SIGUSR1, {SIG_IGN}, {0x8058c98, [], SA_INTERRUPT}) = 0
+getsockname(3, {sin_family=AF_INET, sin_port=htons(8080), sin_addr=inet_addr("127.0.0.1")}, [16]) = 0
+setsockopt(3, IPPROTO_TCP1, [1], 4)     = 0
+read(3, "GET /6k HTTP/1.0\r\nUser-Agent: "..., 4096) = 60
+sigaction(SIGUSR1, {SIG_IGN}, {SIG_IGN}) = 0
+time(NULL)                              = 873961916
+stat("/home/dgaudet/ap/apachen/htdocs/6k", {st_mode=S_IFREG|0644, st_size=6144, ...}) = 0
+open("/home/dgaudet/ap/apachen/htdocs/6k", O_RDONLY) = 4
+mmap(0, 6144, PROT_READ, MAP_PRIVATE, 4, 0) = 0x400e3000
+writev(3, [{"HTTP/1.1 200 OK\r\nDate: Thu, 11"..., 245}, {"\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0\0"..., 6144}], 2) = 6389
+close(4)                                = 0
+time(NULL)                              = 873961916
+shutdown(3, 1 /* send */)               = 0
+oldselect(4, [3], NULL, [3], {2, 0})    = 1 (in [3], left {2, 0})
+read(3, "", 2048)                       = 0
+close(3)                                = 0
+sigaction(SIGUSR1, {0x8058c98, [], SA_INTERRUPT}, {SIG_IGN}) = 0
+munmap(0x400e3000, 6144)                = 0
+</pre>
+    </blockquote>
+    That's 19 system calls, of which 4 remain relatively easy to remove,
+    but don't seem worth the effort. 
+
+    <h3><a id="patches" name="patches">Appendix: Patches Available</a></h3>
+    There are <a href="http://arctic.org/~dean/apache/1.3/">several
+    performance patches available for 1.3.</a> Although they may not apply
+    cleanly to the current version, it shouldn't be difficult for someone
+    with a little C knowledge to update them. In particular: 
+
+    <ul>
+      <li>A <a
+      href="http://arctic.org/~dean/apache/1.3/shared_time.patch">patch</a>
+      to remove all <code>time(2)</code> system calls.</li>
+
+      <li>A <a
+      href="http://arctic.org/~dean/apache/1.3/mod_include_speedups.patch">
+      patch</a> to remove various system calls from
+      <code>mod_include</code>, these calls are used by few sites but
+      required for backwards compatibility.</li>
+
+      <li>A <a
+      href="http://arctic.org/~dean/apache/1.3/top_fuel.patch">patch</a>
+      which integrates the above two plus a few other speedups at the cost
+      of removing some functionality.</li>
+    </ul>
+
+    <h3><a id="preforking" name="preforking">Appendix: The Pre-Forking
+    Model</a></h3>
+
+    <p>Apache (on Unix) is a <em>pre-forking</em> model server. The
+    <em>parent</em> process is responsible only for forking <em>child</em>
+    processes, it does not serve any requests or service any network
+    sockets. The child processes actually process connections, they serve
+    multiple connections (one at a time) before dying. The parent spawns
+    new or kills off old children in response to changes in the load on the
+    server (it does so by monitoring a scoreboard which the children keep
+    up to date).</p>
+
+    <p>This model for servers offers a robustness that other models do not.
+    In particular, the parent code is very simple, and with a high degree
+    of confidence the parent will continue to do its job without error. The
+    children are complex, and when you add in third party code via modules,
+    you risk segmentation faults and other forms of corruption. Even should
+    such a thing happen, it only affects one connection and the server
+    continues serving requests. The parent quickly replaces the dead
+    child.</p>
+
+    <p>Pre-forking is also very portable across dialects of Unix.
+    Historically this has been an important goal for Apache, and it
+    continues to remain so.</p>
+
+    <p>The pre-forking model comes under criticism for various performance
+    aspects. Of particular concern are the overhead of forking a process,
+    the overhead of context switches between processes, and the memory
+    overhead of having multiple processes. Furthermore it does not offer as
+    many opportunities for data-caching between requests (such as a pool of
+    <code>mmapped</code> files). Various other models exist and extensive
+    analysis can be found in the <a
+    href="http://www.cs.wustl.edu/~jxh/research/research.html">papers of
+    the JAWS project</a>. In practice all of these costs vary drastically
+    depending on the operating system.</p>
+
+    <p>Apache's core code is already multithread aware, and Apache version
+    1.3 is multithreaded on NT. There have been at least two other
+    experimental implementations of threaded Apache, one using the 1.3 code
+    base on DCE, and one using a custom user-level threads package and the
+    1.0 code base; neither is publicly available. There is also an
+    experimental port of Apache 1.3 to <a
+    href="http://www.mozilla.org/docs/refList/refNSPR/">Netscape's Portable
+    Run Time</a>, which <a
+    href="http://arctic.org/~dean/apache/2.0/">is available</a> (but
+    you're encouraged to join the <a
+    href="http://httpd.apache.org/lists.html">new-httpd mailing list</a>
+    if you intend to use it). Part of our redesign for version 2.0 of
+    Apache includes abstractions of the server model so that we can
+    continue to support the pre-forking model, and also support various
+    threaded models. <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

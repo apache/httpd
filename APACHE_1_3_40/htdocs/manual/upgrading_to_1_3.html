@@ -1,0 +1,342 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Upgrading to 1.3 from 1.2</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Upgrading to 1.3 from 1.2</h1>
+
+    <p>In order to assist folks upgrading we are now going to
+    maintain a document describing information critical to existing
+    Apache users. Note that it only lists differences between
+    recent major releases, so for example, folks using Apache 1.1
+    or earlier will have to figure out what changed up to Apache
+    1.2 before this document can be considered relevant. Old users
+    could look at the <code>src/CHANGES</code> file which tracks
+    code changes.</p>
+
+    <p>These are intended to be brief notes, and you should be able
+    to find more information in either the <a
+    href="new_features_1_3.html">New Features</a> document, or in
+    the <code>src/CHANGES</code> file.</p>
+
+    <h3>Compile-Time Configuration Changes</h3>
+
+    <ul>
+      <li>The source code has been <a
+      href="sourcereorg.html">reorganized</a>, which affects anyone
+      with custom modules or modifications. But also, the
+      <code>Module</code> directive has been changed to the
+      <code>AddModule</code> directive.</li>
+
+      <li>The <code>Configuration</code> variable
+      <code>EXTRA_LFLAGS</code> has been renamed
+      <code>EXTRA_LDFLAGS</code>.</li>
+
+      <li>The <code>-DMAXIMUM_DNS</code> definition has been
+      obsoleted by changes to <code>mod_access</code> enforcing
+      double-reverse DNS lookups when necessary.</li>
+
+      <li>The <code>-DSERVER_SUBVERSION=\"string\"</code>
+      compile-time option has been replaced with the run-time API
+      call <code>ap_add_version_component()</code>. Compile-time
+      modification of the server identity by the configuration
+      scripts is no longer supported.</li>
+
+      <li><code>mod_dir</code> has been split into two pieces
+      <code><a
+      href="mod/mod_autoindex.html">mod_autoindex</a></code>, and
+      <code><a href="mod/mod_dir.html">mod_dir</a></code>.</li>
+
+      <li><a
+      href="mod/mod_browser.html"><code>mod_browser</code></a> has
+      been replaced by <a
+      href="mod/mod_setenvif.html"><code>mod_setenvif</code></a>.</li>
+
+      <li>IRIX systems with untrusted users who can write CGIs
+      which execute as the same uid as httpd should consider using
+      <code>suexec</code>, or adding
+      <code>-DUSE_FCNTL_SERIALIZED_ACCEPT</code> to
+      <code>EXTRA_CFLAGS</code>. This is slower, more information
+      is available on the <a
+      href="misc/perf-tuning.html#serialize">performance tuning
+      page</a>. There is a mild denial of service attack possible
+      with the default config, but the default config is an order
+      of magnitude faster.</li>
+
+      <li><code>mod_auth_msql</code> has been removed from the
+      distribution.</li>
+
+      <li>The new Apache Autoconf-style Interface (APACI) was added
+      to the top-level to provide a real out-of-the-box build and
+      installation procedure for the complete Apache package.</li>
+    </ul>
+
+    <h3>Run-Time Configuration Changes</h3>
+
+    <ul>
+      <li>
+        There have been numerous changes to the default config
+        files. Ensure that you compare your existing configuration
+        files with the new ones to ensure there aren't any
+        undesired differences. In particular: 
+
+        <ul>
+          <li>As of Apache 1.3.0, the current config files apply
+          different <a href="mod/core.html#options">Options</a> and
+          <a href="mod/core.html#allowoverride">AllowOverride</a>
+          settings to various directories than were used in
+          1.2.</li>
+
+          <li>As of the release following Apache 1.3.3, the three
+          config file templates have been merged into
+          <samp>httpd.conf-dist</samp> and the order of the
+          directives changed.</li>
+        </ul>
+      </li>
+
+      <li>As of 1.3.2, <a
+      href="mod/mod_expires.html"><code>mod_expires</code></a> will
+      add Expires headers to content that does not come from a file
+      on disk, unless you are using a modification time based
+      setting. Previously, it would never add an Expires header
+      unless content came from a file on disk. This could result in
+      Expires headers being added in places where they were not
+      previously added.</li>
+
+      <li>Standalone <strong><samp>FancyIndexing</samp></strong>
+      directives are now combined with the settings of any
+      <samp>IndexOptions</samp> directive already in effect, rather
+      than replacing them.</li>
+
+      <li>
+        <strong><samp>AuthName</samp> strings will need to be
+        quoted</strong> in <samp>.htaccess</samp> or server
+        configuration files if they contain blank characters (like
+        spaces). For example, if you use an <samp>AuthName</samp>
+        directive like this: 
+<pre>
+     AuthName This and That
+   
+</pre>
+        you will need to change it to 
+<pre>
+     AuthName "This and That"
+   
+</pre>
+        This change was made for consistency in the config
+        language.
+      </li>
+
+      <li>
+        <strong>As of Apache 1.3.1, methods listed in
+        <samp>&lt;Limit&gt;</samp> directives must be
+        uppercase.</strong> Method names, such as <samp>GET</samp>,
+        <samp>POST</samp>, and <samp>PUT</samp> are defined as
+        being case-sensitive. That is, a <samp>GET</samp> request
+        is different from a <samp>get</samp> request. Prior to
+        Apache 1.3.1, the <samp>&lt;Limit&gt;</samp> directive
+        parser incorrectly treated both of these as being the same.
+        Apache's built-in method limit processing currently only
+        understands uppercase method names, so if you've used
+        clauses such as
+        "<samp>&lt;Limit&nbsp;Get&nbsp;post&gt;</samp>" in your
+        configuration files, you need to correct them to use
+        uppercase names. 
+
+        <p>Unrecognized method names in the server configuration
+        files will result in the server logging an error message
+        and failing to start. In <samp>.htaccess</samp> files,
+        unknown methods will cause the server to log an error to
+        its error log and return an 'Internal Server Error' page to
+        the client.</p>
+      </li>
+
+      <li><strong>The default Apache ServerRoot directory
+      changed</strong> from the NCSA-compatible
+      <samp>/usr/local/etc/httpd/</samp> to
+      <samp>/usr/local/apache/</samp>. This change covers only the
+      default setting (and the documentation); it is of course
+      possible to override it using the <em>-d ServerRoot</em> and
+      <em>-f httpd.conf</em> switches when starting apache.</li>
+
+      <li>Folks using HTTP/1.1-style virtual hosting will need to
+      list the ip:port pairs that are supposed to have
+      HTTP/1.1-style virtual hosting via the <a
+      href="mod/core.html#namevirtualhost"><code>NameVirtualHost</code></a>
+      directive (one directive per pair). Previously this support
+      was given implicitly on the "main server address". Now it has
+      to be explicitly listed so as to avoid many problems that
+      users had. Please see the <a href="vhosts/">Apache Virtual
+      Host documentation</a> for further details on
+      configuration.</li>
+
+      <li>The precedence of virtual hosts has been reversed
+      (applies mainly to vhosts using HTTP/1.1 Host: headers, and
+      the <a href="mod/core.html#serverpath">ServerPath</a>
+      directive). Now the earlier vhosts in the file have
+      precedence over the later vhosts.</li>
+
+      <li><code>HostnameLookups</code> defaults to Off.</li>
+
+      <li><strong><samp>REMOTE_HOST</samp> CGI variable
+      changed.</strong> In Apache 1.2 and earlier, the
+      <samp>REMOTE_HOST</samp> environment variable made available
+      to CGI scripts was set to either the full DNS name of the
+      client, or else to the client's IP address if the name was
+      not known. This behavior differed from that specified by the
+      CGI specification, which defines this variable as being NULL
+      if the name isn't known. In Apache 1.3, we have made this
+      correction. <samp>REMOTE_ADDR</samp> always contains the
+      client's IP address, but <samp>REMOTE_HOST</samp> is only
+      defined when the server has been able to determine the
+      client's DNS name.</li>
+
+      <li>The undocumented <a
+      href="mod/mod_access.html"><code>mod_access</code></a> syntax
+      "allow user-agents" was removed. The replacement is the more
+      general "allow from env".</li>
+
+      <li>When using wildcards in pathnames (such as * and ?) they
+      no longer match / (slash). That is, they more closely behave
+      how a UNIX shell behaves. This affects
+      <code>&lt;Directory&gt;</code> directives, for example.</li>
+
+      <li>If no <code>TransferLog</code> directive is given then
+      nothing will be logged. (Previously it would default to
+      <code>logs/access_log</code>.)</li>
+
+      <li>Apache now has <a
+      href="mod/core.html#loglevel">configurable error logging
+      levels</a>, and the default eliminates some messages that
+      earlier versions always generated.</li>
+
+      <li>When booting, Apache will now detach itself from stdin,
+      stdout, and stderr. stderr will not be detached until after
+      the config files have been read so you will be able to see
+      initial error messages. After that all errors are logged in
+      the error_log. This makes it more convenient to start Apache
+      via rsh, ssh, or crontabs.</li>
+
+      <li>&lt;Files&gt; sections previously could take a full
+      pathname, and were matched against the full pathnames. This
+      had some inconsistencies, and was removed. To emulate this
+      older behavior use a &lt;Files&gt; section nested inside a
+      &lt;Directory&gt; section.</li>
+
+      <li>&lt;Location&gt; matching behavior with respect to
+      slashes has changed. See the <a
+      href="mod/core.html#location">&lt;Location&gt;
+      documentation</a> for more info.</li>
+    </ul>
+
+    <h3>Misc Changes</h3>
+
+    <ul>
+      <li><code>ServerType inetd</code> has been deprecated. It
+      still exists, but bugs are unlikely to be fixed.</li>
+
+      <li><code>httpd_monitor</code> has been deprecated. The
+      replacement is to use <code>mod_status</code> and make a
+      request to a URL such as
+      <code>http://myhost/server-status?refresh=10</code>.</li>
+
+      <li>
+        Apache now provides an effectively unbuffered connection
+        for CGI scripts. This means that data will be sent to the
+        client as soon as the CGI pauses or stops output;
+        previously, Apache would buffer the output up to a fixed
+        buffer size before sending, which could result in the user
+        viewing an empty page until the CGI finished or output a
+        complete buffer. It is no longer necessary to use an "nph-"
+        CGI to get unbuffered output. Given that most CGIs are
+        written in a language that by default does buffering
+        (<em>e.g.</em>, perl) this shouldn't have a detrimental
+        effect on performance. 
+
+        <p>"nph-" CGIs, which formerly provided a direct socket to
+        the client without any server post-processing, were not
+        fully compatible with HTTP/1.1 or SSL support. As such they
+        would have had to implement the transport details, such as
+        encryption or chunking, in order to work properly in
+        certain situations. Now, the only difference between nph
+        and non-nph scripts is "non-parsed headers".</p>
+      </li>
+
+      <li><code>dbmmanage</code> has been overhauled.</li>
+    </ul>
+
+    <h3>Third Party Modules</h3>
+
+    <p>The following changes between the 1.2 and 1.3 API may
+    require slight changes in third party modules not maintained by
+    Apache.</p>
+
+    <ul>
+      <li>To avoid symbol clashes with third-party code compiled
+      into the server, the general prefix `<code>ap_</code>' was
+      globally applied to the following classes of symbols: Apache
+      provided general functions (<em>e.g.</em>,
+      <code>ap_cpystrn</code>), public API functions
+      (<em>e.g.</em>, <code>palloc</code>, <code>bgets</code>) and
+      private functions which can't be made static (because of
+      cross-object usage) but should be (<em>e.g.</em>,
+      <code>new_connection</code>). For backward source
+      compatibility with Apache 1.2 a new header file named
+      <code>compat.h</code> was created which provides defines for
+      the old symbol names. You'll either have to <code>#include
+      compat.h</code> or update the API symbols you use.</li>
+
+      <li>Be sure and examine the <a href="sourcereorg.html">source
+      code reorganization page</a> to see whether any item there
+      affects you.</li>
+
+      <li>Use of <samp>SERVER_VERSION</samp> definition. If
+      third-party modules reference the server version string using
+      this symbol, they should be corrected to obtain it by calling
+      the new API routine
+      <code>const&nbsp;char&nbsp;*ap_get_server_version()</code>.</li>
+
+      <li><code>ap_construct_url</code> prototype change. The
+      second parameter was previously a <code>server_rec</code>, it
+      has been changed to a <code>request_rec</code>.</li>
+
+      <li>
+        The <code>table</code> datatype has been made an opaque
+        type. Code which assumes a <code>table</code> is the same
+        as an <code>array_header</code> will not compile. This is
+        actually a change to enforce the API the way it was
+        intended, all versions of Apache have had a
+        <code>table_elts()</code> function which is intended for
+        code which needs to access the elements of a table. The
+        changes required for this are pretty easy, and work with
+        all versions of Apache. 
+
+        <p>Suppose <code>t</code> is a table. Whenever code refers
+        to <code>t-&gt;elts</code>, replace it with something like
+        this:</p>
+
+        <blockquote>
+<pre>
+    array_header *arr = table_elts(t);
+    table_entry *elts = (table_entry *)arr-&gt;elts;
+</pre>
+        </blockquote>
+        Whenever code refers to <code>t-&gt;nelts</code> use
+        <code>arr-&gt;nelts</code>. Many examples can be found in
+        the standard modules, search for <code>table_elts</code>.
+      </li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

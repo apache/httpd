@@ -1,0 +1,310 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--English revision 1.8 -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
+
+    <title>Configuration globale du serveur</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Configuration globale du serveur</h1>
+
+    <p>Ce document d&eacute;crit certaines directives
+    trait&eacute;es par le <a href="mod/core.html">noyau</a> du
+    serveur qui sont utilis&eacute;es pour configurer les
+    op&eacute;rations de base du serveur.</p>
+
+    <ul>
+      <li><a href="#identification">Identification du
+      serveur</a></li>
+
+      <li><a href="#locations">Emplacement des fichiers</a></li>
+
+      <li><a href="#process">Cr&eacute;ation des processus</a></li>
+
+      <li><a href="#network">Configuration r&eacute;seau</a></li>
+
+      <li><a href="#resource">Limitation de l'utilisation des
+      ressources</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="identification" name="identification">Identification
+    du serveur</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Directives
+        associ&eacute;es</strong><br />
+         <br />
+         <a href="mod/core.html#servername">ServerName</a><br />
+         <a href="mod/core.html#serveradmin">ServerAdmin</a><br />
+         <a
+        href="mod/core.html#serversignature">ServerSignature</a><br />
+         <a
+        href="mod/core.html#servertokens">ServerTokens</a><br />
+         <a
+        href="mod/core.html#usecanonicalname">UseCanonicalName</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Les directives <code>ServerAdmin</code> and
+    <code>ServerTokens</code> contr&ocirc;lent quelles informations
+    du serveur seront pr&eacute;sent&eacute;es dans les pages
+    g&eacute;n&eacute;r&eacute;es par le serveur telles que les
+    messages d'erreur. La directive <code>ServerTokens</code>
+    assigne la valeur du champ serveur dans les en-t&ecirc;tes de
+    r&eacute;ponse HTTP.</p>
+
+    <p>Les directives <code>ServerName</code> and
+    <code>UseCanonicalName</code> sont utilis&eacute;es pour
+    d&eacute;terminer comment former les URLs s'auto
+    r&eacute;f&eacute;ren&ccedil;ant. Par exemple, quand un client
+    requiert un r&eacute;pertoire, mais n'inclut pas de barre
+    oblique finale dans le nom du r&eacute;pertoire, Apache doit
+    rediriger le client vers le nom complet, incluant la barre
+    oblique finale permettant ainsi au client de r&eacute;soudre
+    correctement les r&eacute;f&eacute;rences relatives contenues
+    dans le document.</p>
+    <hr />
+
+    <h2><a id="locations" name="locations">Emplacement des
+    fichiers</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Directives
+        associ&eacute;es</strong><br />
+         <br />
+         <a
+        href="mod/core.html#coredumpdirectory">CoreDumpDirectory</a><br />
+         <a
+        href="mod/core.html#documentroot">DocumentRoot</a><br />
+         <a href="mod/core.html#errorlog">ErrorLog</a><br />
+         <a href="mod/core.html#lockfile">Lockfile</a><br />
+         <a href="mod/core.html#pidfile">PidFile</a><br />
+         <a
+        href="mod/core.html#scoreboardfile">ScoreBoardFile</a><br />
+         <a href="mod/core.html#serverroot">ServerRoot</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Ces directives contr&ocirc;lent les emplacements des
+    diff&eacute;rents fichiers qu'Apache utilise pour ses propres
+    besoins. Quand le chemin employ&eacute; ne commence pas par une
+    barre oblique, les fichiers sont localis&eacute;s relativement
+    &agrave; <code>ServerRoot</code>. Soyez attentifs &agrave;
+    placer ces fichiers dans des chemins qui sont autoris&eacute;s
+    en &eacute;criture aux utilisateurs autres que root. Voir les
+    <a href="misc/security_tips.html">trucs sur la
+    s&eacute;curit&eacute;</a> pour plus de d&eacute;tails.</p>
+    <hr />
+
+    <h2><a id="process" name="process">Cr&eacute;ation des
+    processus</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Directives
+        associ&eacute;es</strong><br />
+         <br />
+         <a
+        href="mod/core.html#bs2000account">BS2000Account</a><br />
+         <a href="mod/core.html#group">Group</a><br />
+         <a href="mod/core.html#maxclients">MaxClients</a><br />
+         <a
+        href="mod/core.html#maxrequestsperchild">MaxRequestsPerChild</a><br />
+         <a
+        href="mod/core.html#maxspareservers">MaxSpareServers</a><br />
+         <a
+        href="mod/core.html#minspareservers">MinSpareServers</a><br />
+         <a href="mod/core.html#servertype">ServerType</a><br />
+         <a
+        href="mod/core.html#startservers">StartServers</a><br />
+         <a
+        href="mod/core.html#threadsperchild">ThreadsPerChild</a><br />
+         <a href="mod/core.html#user">User</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Si la directive <code>ServerType</code> est d&eacute;finie
+    avec la valeur recommand&eacute;e de <code>Standalone</code>,
+    Apache 1.3 sur Unix est bas&eacute; sur un mod&egrave;le de
+    pr&eacute;lancement des processus. Un unique processus de
+    contr&ocirc;le est responsable de lancer des processus fils qui
+    &eacute;coutent les connexions et les traitent &agrave; leur
+    arriv&eacute;e. Apache essaye de maintenir un certain nombre de
+    processus en r&eacute;serve ou inactifs, qui restent toujours
+    pr&ecirc;ts &agrave; traiter les requ&ecirc;tes arrivantes. De
+    cette mani&egrave;re, les clients n'ont pas &agrave; attendre
+    que de nouveaux processus fils soient lanc&eacute;s avant que
+    leurs requ&ecirc;tes soient trait&eacute;es.</p>
+
+    <p>Les directives <code>StartServers</code>,
+    <code>MinSpareServers</code>, <code>MaxSpareServers</code>, et
+    <code>MaxServers</code> r&eacute;gissent comment le processus
+    p&egrave;re cr&eacute;e les processus fils pour traiter les
+    requ&ecirc;tes. En g&eacute;n&eacute;ral Apache se r&eacute;git
+    seul correctement, et la plupart des sites n'ont pas besoin
+    d'ajuster la valeur de ces directives. Les sites qui veulent
+    servir plus de 256 requ&ecirc;tes simultan&eacute;es doivent
+    augmenter la valeur de <code>MaxClients</code>, tandis que les
+    sites tournant sur des machines limit&eacute;es en
+    m&eacute;moire doivent r&eacute;duire la valeur de
+    <code>MaxClients</code> afin d'&eacute;viter d'utiliser le
+    fichier d'&eacute;change. Plus d'informations sur le
+    param&eacute;trage de la cr&eacute;ation des processus se
+    trouvent dans la documentation <a
+    href="misc/perf-tuning.html">Aide sur les performances
+    g&eacute;n&eacute;rales</a>.</p>
+
+    <p>Tandis que le processus p&egrave;re est
+    g&eacute;n&eacute;ralement lanc&eacute; en tant que root sous
+    Unix pour se connecter sur le port 80, les processus fils sont
+    lanc&eacute;s sous un utilisateur moins
+    privil&eacute;gi&eacute;. Les directives <code>User</code> et
+    <code>Group</code> servent &agrave; d&eacute;finir les
+    privil&egrave;ges des processus fils. Les processus fils
+    doivent &ecirc;tre capable de lire le contenu devant &ecirc;tre
+    servi, mais doivent avoir le minimum de privil&egrave;ges
+    possibles. De plus, &agrave; moins que <a
+    href="suexec.html">suexec</a> soit utilis&eacute;, ces
+    directives d&eacute;finissent &eacute;galement les droits qui
+    seront h&eacute;rit&eacute;s par les scripts CGI.</p>
+
+    <p><code>MaxRequestsPerChild</code> contr&ocirc;le la
+    fr&eacute;quence de r&eacute;novation des processus, en
+    supprimant les anciens et en lan&ccedil;ant de nouveaux.</p>
+
+    <p>Sous Windows, Apache lance un processus p&egrave;re et un
+    processus fils. Le processus fils cr&eacute;e un ensemble de
+    threads pour traiter les requ&ecirc;tes. Le nombre de threads
+    est contr&ocirc;l&eacute; par la directive
+    <code>ThreadsPerChild</code>.</p>
+    <hr />
+
+    <h2><a id="network" name="network">Configuration
+    r&eacute;seau</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Directives
+        associ&eacute;es</strong><br />
+         <br />
+         <a href="mod/core.html#bindaddress">BindAddress</a><br />
+         <a href="mod/core.html#keepalive">KeepAlive</a><br />
+         <a
+        href="mod/core.html#keepalivetimeout">KeepAliveTimeout</a><br />
+         <a href="mod/core.html#listen">Listen</a><br />
+         <a
+        href="mod/core.html#listenbacklog">ListenBackLog</a><br />
+         <a
+        href="mod/core.html#acceptfilter">AcceptFilter</a><br />
+         <a
+        href="mod/core.html#maxkeepaliverequests">MaxKeepAliveRequests</a><br />
+         <a href="mod/core.html#port">Port</a><br />
+         <a
+        href="mod/core.html#sendbuffersize">SendBufferSize</a><br />
+         <a href="mod/core.html#timeout">TimeOut</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Au d&eacute;marrage d'Apache, celui ci se connecte &agrave;
+    un port et une adresse donn&eacute;s sur la machine locale et
+    attend l'arriv&eacute;e de requ&ecirc;tes. Par d&eacute;faut,
+    il &eacute;coute sur toutes les adresses, et sur le port
+    d&eacute;fini par la directive <code>Port</code>. Toutefois, on
+    peut lui indiquer d'&eacute;couter sur plus d'un port, de
+    n'&eacute;couter qu'&agrave; partir d'une seule adresse, ou une
+    combinaison des deux. Ceci est g&eacute;n&eacute;ralement
+    combin&eacute; avec la fonction d' <a href="vhosts/">h&ocirc;te
+    virtuel</a> qui d&eacute;termine comment Apache r&eacute;pond
+    aux diff&eacute;rentes adresses IP, noms d'h&ocirc;tes et
+    ports.</p>
+
+    <p>Il y a deux directives qui permettent de restreindre ou de
+    sp&eacute;cifier quelles adresses et quels ports Apache doit
+    &eacute;couter. La directive <code>BindAddress</code> restreint
+    le serveur &agrave; n'&eacute;couter qu'une seule adresse IP.
+    La directive <code>Listen</code> peut &ecirc;tre
+    utilis&eacute;e pour sp&eacute;cifier un ensemble d'adresses et
+    de ports qu'Apache doit &eacute;couter.</p>
+
+    <p>Les directives <code>ListenBackLog</code>,
+    <code>SendBufferSize</code>, et <code>TimeOut</code> permettent
+    d'adjuster comment Apache interagit avec le r&eacute;seau. La
+    directive <code>AcceptFilter</code> contr&ocirc;le une
+    optimisation sp&eacute;cifique &agrave; BSD. Veuillez vous
+    r&eacute;f&eacute;rer &agrave; la section concernant BSD dans
+    la <a href="misc/perf-bsd44.html">documentation sur la
+    performance. --&gt;</a></p>
+    <br />
+     <br />
+     
+
+    <p>Les directives <code>KeepAlive</code>,
+    <code>KeepAliveTimeout</code>, et
+    <code>MaxKeepAliveRequests</code> d&eacute;finissent comment
+    Apache g&egrave;re les connexions persistantes.</p>
+    <hr />
+
+    <h2><a id="resource" name="resource">Limitation de
+    l'utilisation des Ressources</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>Directives
+        associ&eacute;es</strong><br />
+         <br />
+         <a
+        href="mod/core.html#limitrequestbody">LimitRequestBody</a><br />
+         <a
+        href="mod/core.html#limitrequestfields">LimitRequestFields</a><br />
+         <a
+        href="mod/core.html#limitrequestfieldsize">LimitRequestFieldsize</a><br />
+         <a
+        href="mod/core.html#limitrequestline">LimitRequestLine</a><br />
+         <a href="mod/core.html#rlimitcpu">RLimitCPU</a><br />
+         <a href="mod/core.html#rlimitmem">RLimitMEM</a><br />
+         <a href="mod/core.html#rlimitnproc">RLimitNPROC</a><br />
+         <a
+        href="mod/core.html#threadstacksize">ThreadStackSize</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Les directives commen&ccedil;ant par
+    <code>LimitRequest</code> sont employ&eacute;es pour fixer des
+    limites sur la quantit&eacute; de ressources qui seront
+    utilis&eacute;es pendant la lecture des requ&ecirc;tes
+    clientes. En limitant ces valeurs, certains types de
+    d&eacute;ni de service peuvent &ecirc;tre
+    att&eacute;nu&eacute;s.</p>
+
+    <p>Les directives commen&ccedil;ant par <code>RLimit</code>
+    sont employ&eacute;es pour fixer des limites sur la
+    quantit&eacute; de ressources qu'utiliseront les processus
+    lanc&eacute;s par les processus enfants Apache. En particulier,
+    elles contr&ocirc;le les ressources utilis&eacute;es par les
+    scripts CGI et les commandes exec SSI.</p>
+
+    <p>La directive <code>ThreadStackSize</code> est
+    utilis&eacute;e seulement sur Netware pour contr&ocirc;ler la
+    taille de la pile.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+    <title>Apache インストール時のテストページ</title>
+  </head>
+  <!-- English revision: 1.10 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+
+    <p>もしこのページが読めたのであれば、<a href="http://www.apache.org/foundation/preFAQ.html"
+    >Apacheウェブサーバ</a>のインストールがこの計算機で無事に終了したことを意味します。
+    あなたは、このディレクトリに文書を加えたり、このページを置きかえることができます。</p>
+
+    <hr width="50%" size="8" />
+    <h2 align="center">あなたの予想に反して、このページが見えているでしょうか?</h2>
+
+    <p>このページは、サイト管理者がこの web サーバの設定を変更したために見えています。
+    <strong>このサーバを管理する責任を持っている方に連絡をとって</strong>ください。
+    このサイト管理者が利用している web サーバを開発した The Apache Software Foundation
+    は、このサイトの web サーバの管理とは関係がなく、
+    サーバの設定に関する問題を解決することはできません。
+    </p>
+
+    <hr width="50%" size="8" />
+    <p>Apache に関する<a href="manual/index.html">文書</a>は、この web
+    サーバ配布物の中に含まれています。</p>
+
+    <p>以下の画像は、Apache を利用している web サーバで自由に使うことができます。
+    Apache をご利用いただき、ありがとうございます!</p>
+
+    <div align="center"><img src="apache_pb.gif" alt="" /></div>
+  </body>
+</html>

@@ -1,0 +1,323 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_setenvif</title>
+
+  </head>
+  <!-- English revision: 1.20 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_setenvif モジュール</h1>
+
+    <p>このモジュールは、
+    リクエストの属性に基づいて環境変数を設定する機能を提供します。</p>
+ 
+    <p><a href="module-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="module-dict.html#sourcefile"
+    rel="help"><strong>ソースファイル:</strong></a>
+    mod_setenvif.c<br />
+     <a href="module-dict.html#moduleidentifier"
+    rel="help"><strong>モジュール識別子:</strong></a>
+    setenvif_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a>
+    Apache 1.3 以降で使用可能。</p>
+
+    <h2>概要</h2>
+
+    <p><samp>mod_setenvif</samp>
+    モジュールは、リクエストのある側面が指定された<a
+    href="../misc/faq.html#regex">正規表現</a
+    >に合うかどうかによって環境変数を設定する機能を提供します。
+    これらの環境変数を使用して、サーバの他の部分がどのような動作をするかを
+    決定することができます。</p>
+
+    <p>このモジュールが提供するディレクティブは、
+    設定ファイルに現れる順番に適用されます。
+    それを使って、次の例のようにより複雑な設定をすることができます。
+    これは、ブラウザが mozilla ではあるけれど、MSIE ではないときに
+    <code>netscape</code> を設定します。</p>
+    <blockquote>
+<pre>
+  BrowserMatch ^Mozilla netscape
+  BrowserMatch MSIE !netscape
+ 
+</pre>
+    </blockquote>
+
+    <p>詳細は、<a href="../env.html">Apache
+    の環境変数</a>を参照してください。</p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#browsermatch">BrowserMatch</a></li>
+
+      <li><a href="#browsermatchnocase">BrowserMatchNoCase</a></li>
+
+      <li><a href="#setenvif">SetEnvIf</a></li>
+
+      <li><a href="#setenvifnocase">SetEnvIfNoCase</a></li>
+    </ul>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="browsermatch" name="browsermatch">BrowserMatch
+    ディレクティブ</a></h2>
+
+    <p><a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> BrowserMatch <em>regex
+    env-variable</em>[=<em>value</em>]
+    [<em>env-variable</em>[=<em>value</em>]] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="help"><strong>デフォルト:</strong></a> None<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_setenvif<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> Apache 1.2 以上
+    (このディレクティブは Apache 1.2 では、今では obsolete になっている
+    mod_browser モジュールにありました)。.htaccess ファイルでの使用は
+    1.3.13 以降でのみサポート。</p>
+
+    <p>BrowserMatch ディレクティブは、HTTP リクエストの
+    <samp>User-Agent</samp>
+    ヘッダフィールドに基づいて環境変数を設定します。最初の引数は
+    POSIX.2 拡張正規表現 (<samp>egrep</samp>
+    形式の正規表現と似たもの) です。
+    残りの引数は、設定をする変数名とその値で、後者は省略可能です。
+    これらは以下の形式になります。</p>
+
+    <ol>
+      <li><samp><em>varname</em></samp>, or</li>
+
+      <li><samp>!<em>varname</em></samp>, or</li>
+
+      <li><samp><em>varname</em>=<em>value</em></samp></li>
+    </ol>
+
+    <p>最初の形式では、値は &quot;1&quot; に設定されます。
+    2 番目は変数が既に定義されていた場合、それを削除します。
+    3 番目は変数の値を <samp><em>value</em></samp> に設定します。
+    <samp>User-Agent</samp>
+    フィールドの文字列が複数のエントリにマッチした場合は、
+    その結果がまとめられます。
+    エントリは現れた順に処理され、後のエントリが前のものを上書きします。
+    </p>
+    <p>例:</p>
+<pre>
+    BrowserMatch ^Mozilla forms jpeg=yes browser=netscape
+    BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript
+    BrowserMatch MSIE !javascript
+
+</pre>
+
+    <p>正規表現の文字列は<strong>大文字小文字を区別する</strong
+    >ことに注意してください。大文字小文字を区別しないマッチは<a
+    href="#browsermatchnocase"><samp>BrowserMatchNoCase</samp></a
+    >ディレクティブを参照してください。
+    </p>
+    <p><samp>BrowserMatch</samp> ディレクティブと
+    <samp>BrowserMatchNoCase</samp> ディレクティブは
+    <a href="#setenvif"><samp>SetEnvIf</samp></a> ディレクティブ
+    <a href="#setenvifnocase"><samp>SetEnvIfNoCase</samp></a>
+    ディレクティブの特別なケースです。以下の 2 行は同じ効果になります:
+    </p>
+<pre>
+   BrowserMatchNoCase Robot is_a_robot
+   SetEnvIfNoCase User-Agent Robot is_a_robot
+
+</pre>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="browsermatchnocase"
+    name="browsermatchnocase">BrowserMatchNoCase ディレクティブ</a></h2>
+
+    <p><a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> BrowserMatchNoCase
+    <em>regex env-variable</em>[=<em>value</em>]
+    [<em>env-variable</em>[=<em>value</em>]] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="help"><strong>デフォルト:</strong></a> <em>none</em><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_setenvif<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> Apache 1.2 以上
+    (このディレクティブは Apache 1.2 では、今では obsolete になっている
+    mod_browser モジュールにありました)。.htaccess ファイルでの使用は
+    1.3.13 以降でのみサポート。</p>
+    <p><samp>BrowserMatchNoCase</samp>
+    ディレクティブは、意味的には <a href="#browsermatch"
+    ><samp>BrowserMatch</samp></a>
+    ディレクティブとほとんど同じです。
+    違う点は、大文字小文字を区別しないでマッチを行なうことです。例:</p>
+<pre>
+    BrowserMatchNoCase mac platform=macintosh
+    BrowserMatchNoCase win platform=windows
+
+</pre>
+    <p><samp>BrowserMatch</samp> ディレクティブと
+    <samp>BrowserMatchNoCase</samp> ディレクティブは <a
+     href="#setenvif"><samp>SetEnvIf</samp></a> ディレクティブと <a
+     href="#setenvifnocase"><samp>SetEnvIfNoCase</samp></a>
+    ディレクティブの特別なケースです。以下の
+    2 行は同じ効果になります:</p>
+<pre>
+   BrowserMatchNoCase Robot is_a_robot
+   SetEnvIfNoCase User-Agent Robot is_a_robot
+
+</pre>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="setenvif" name="setenvif">SetEnvIf
+    ディレクティブ</a></h2>
+
+    <p><a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> SetEnvIf <em> attribute
+    regex env-variable</em>[=<em>value</em>]
+    [<em>env-variable</em>[=<em>value</em>]] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="help"><strong>デフォルト:</strong></a> <em>none</em><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_setenvif<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> Apache 1.3 以上。
+    Request_Protocol キーワードと環境変数のマッチは 1.3.7
+    以降でのみ使用可能。.htaccess ファイルでの使用は
+    1.3.13 以降でのみサポート。</p>
+
+    <p><samp>SetEnvIf</samp>
+    ディレクティブは、リクエストの属性に基づいて環境変数を定義します。
+    これらの属性は、HTTP リクエストのいろいろなヘッダフィールド
+    (詳しい情報は <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC
+    2616</a> を参照してください)
+    か、以下のような、リクエストの他の側面であることができます。</p>
+
+    <ul>
+      <li><samp>Remote_Host</samp> -
+      リクエストを行なっているクライアントのホスト名 (もしあれば)</li>
+
+      <li><samp>Remote_Addr</samp> -
+      リクエストを行なっているクライアントの IP アドレス</li>
+
+      <li><samp>Request_Method</samp> -
+      使用されているメソッド名 (<samp>GET</samp>, <samp>POST</samp>
+      <em>など</em>)</li>
+
+      <li><samp>Request_Protocol</samp> -
+      リクエストが行なわれたプロトコルの名前とバージョン
+      (<em>例えば</em>、"HTTP/0.9", "HTTP/1.1" <em>など。</em>)</li>
+
+      <li><samp>Request_URI</samp> -
+      URL のスキームとホストの後の部分</li>
+    </ul>
+
+    <p>よく使われるリクエストのヘッダフィールドには
+    <samp>Host</samp>, <samp>User-Agent</samp>, <samp>Referer</samp>
+    があります。</p>
+
+    <p>属性名 <em>attribute</em>
+    が特別なキーワードやリクエストのヘッダフィールド名にマッチしないときは、
+    リクエストに関連付けられたリストにある環境変数の名前として試されます。
+    これにより、<code>SetEnvIf</code>
+    ディレクティブが前のマッチの結果を使用することができるようになります。
+    </p>
+
+    <blockquote>
+      <strong>前の <code>SetEnvIf[NoCase]</code>
+      で定義された環境変数のみをこの方法で調べることができます。
+      「前」というのは (サーバ全体、のような)
+      より広いスコープで定義されたか、
+      現ディレクティブのスコープの中の前の方で定義されたという意味です。
+      </strong>
+    </blockquote>
+    <p>例:</p>
+<pre>
+   SetEnvIf Request_URI "\.gif$" object_is_image=gif
+   SetEnvIf Request_URI "\.jpg$" object_is_image=jpg
+   SetEnvIf Request_URI "\.xbm$" object_is_image=xbm
+        :
+   SetEnvIf Referer www\.mydomain\.com intra_site_referral
+        :
+   SetEnvIf object_is_image xbm XBIT_PROCESSING=1
+
+</pre>
+
+    <p>先頭の三つはリクエストが画像ファイルのときに、環境変数
+    <samp>object_is_image</samp> を設定します。
+    4 番目は参照元のページが <samp>www.mydomain.com</samp>
+    ウェブサイトのどこかにある場合に <samp>intra_site_referral</samp>
+    を設定します。</p>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="setenvifnocase" name="setenvifnocase">SetEnvIfNoCase
+    ディレクティブ</a></h2>
+
+    <p><a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> SetEnvIfNoCase
+    <em>attribute regex env-variable</em>[=<em>value</em>]
+    [<em>env-variable</em>[=<em>value</em>]] ...<br />
+     <a href="directive-dict.html#default"
+    rel="help"><strong>デフォルト:</strong></a> <em>none</em><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_setenvif<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> Apache 1.3 以上。
+    Request_Protocol キーワードと環境変数のマッチは 1.3.7
+    以降でのみ使用可能。.htaccess ファイルでの使用は
+    1.3.13 以降でのみサポート。</p>
+
+    <p><samp>SetEnvIfNoCase</samp> は、意味的には <a 
+    href="#setenvif"><samp>SetEnvIf</samp></a> とほとんど同じです。
+    違いは正規表現のマッチが大文字小文字を区別しないで行なわれることです。
+    例えば:</p>
+
+<pre>
+   SetEnvIfNoCase Host Apache\.Org site=apache
+</pre>
+
+    <p>これは、HTTP リクエストの <samp>Host:</samp>
+    ヘッダフィールドがあり、その値が
+    <samp>Apache.org</samp>, <samp>apache.org</samp>
+    やその他の大文字小文字の組み合わせであったときに、環境変数
+    <samp>site</samp> を &quot;<samp>apache</samp>&quot; に設定します。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

@@ -1,0 +1,677 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_mime</title>
+
+  </head>
+  <!-- English revision: 1.54 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_mime モジュール</h1>
+
+    <p>このモジュールは、ファイルのタイプをファイル名から決定する機能と、
+    ファイルにハンドラを関連付ける機能を提供します。</p>
+
+    <p><a href="module-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="module-dict.html#sourcefile"
+    rel="help"><strong>ソースファイル:</strong></a> mod_mime.c<br />
+     <a href="module-dict.html#moduleidentifier"
+    rel="help"><strong>モジュール識別子:</strong></a> mime_module
+    </p>
+
+    <h2>概要</h2>
+
+    このモジュールは、ドキュメントのいろいろな「メタ情報」
+    を決定するために使用されます。この情報は
+    ドキュメントのコンテンツに関連しているもので、ブラウザに返されたり、
+    サーバ内でコンテントネゴシエーションに使われたりします。
+    さらに、「ハンドラ」をドキュメントに対して設定することができます。
+    ハンドラはサーバ内でドキュメントをどのように処理するかを決定します。
+
+    <p>ディレクティブ <a href="#addcharset">AddCharset</a>,
+    <a href="#addencoding">AddEncoding</a>, <a href="#addhandler"
+    >AddHandler</a>, <a href="#addlanguage">AddLanguage</a>, <a
+    href="#addtype">AddType</a> はすべて、
+    ファイルの拡張子をメタ情報にマップするために使用されます。
+    それぞれ、ドキュメントの文字セット (訳注: charset)、content-encoding,
+    ハンドラ、content-language, MIME タイプ (content-type) を設定します。
+    ディレクティブ <a href="#typesconfig">TypesConfig</a> は拡張子を
+    MIME タイプにマップするファイルを指定するために使用されます。
+    ディレクティブ <a href="#forcetype">ForceType</a> と <a
+    href="#sethandler">SetHandler</a> は、与えられた場所
+    (<em>例えば</em>、特定のディレクトリ) にあるすべてのファイルを特定の
+    MIME タイプやハンドラに関連付けるために使用されます。</p>
+
+    <p>ファイルのタイプやエンコーディングを変えても <code>Last-Modified</code>
+    ヘッダの値は変わらないことに注意してください。ですから、
+    それらを変更した場合は、クライアントやプロキシで以前にキャッシュされた
+    コピーがそのときのヘッダとともに使われる可能性があります。</p>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#addcharset">AddCharset</a></li>
+
+      <li><a href="#addencoding">AddEncoding</a></li>
+
+      <li><a href="#addhandler">AddHandler</a></li>
+
+      <li><a href="#addlanguage">AddLanguage</a></li>
+
+      <li><a href="#addtype">AddType</a></li>
+
+      <li><a href="#defaultlanguage">DefaultLanguage</a></li>
+
+      <li><a href="#forcetype">ForceType</a></li>
+
+      <li><a href="#removeencoding">RemoveEncoding</a></li>
+
+      <li><a href="#removehandler">RemoveHandler</a></li>
+
+      <li><a href="#removetype">RemoveType</a></li>
+
+      <li><a href="#sethandler">SetHandler</a></li>
+
+      <li><a href="#typesconfig">TypesConfig</a></li>
+    </ul>
+
+    <p>参照: <a
+    href="mod_mime_magic.html#mimemagicfile">MimeMagicFile</a></p>
+
+    <h2><a id="multipleext"
+    name="multipleext">複数の拡張子のあるファイル</a></h2>
+
+    <p>ファイルは複数の拡張子を持つことができ、拡張子の順番は<em
+    >通常は</em>関係ありません。たとえば、<code>welcome.html.fr</code>
+    ファイルがコンテントタイプは <code>text/html</code>
+    に、言語はフランス語にマップされる場合、<code>welcome.fr.html</code>
+    もまったく同じ情報にマップされます。
+    同じメタ情報にマップされる拡張子が複数あるときには言語とコンテントエンコーディングを除いて、
+    右側にあるものが使用されます。たとえば、".gif" が MIME タイプ
+    image/gif にマップされ、".html" が MIME タイプ text/html
+    にマップされる場合は、ファイル <code>welcome.gif.html</code> は
+    MIME タイプ "text/html" に関連付けられます。</p>
+
+    <p>言語とコンテントエンコーディングはそれまでのものに追加して扱われます。
+    これは特定のリソースに対して一つ以上の言語やエンコーディングを
+    割り当てることができるからです。例えば、ファイル
+    <code>welcome.html.en.de</code> が <code>Content-Language: en, de</code>
+    で <code>Content-Type: text/html</code> といった具合です。</p>
+
+    <p>複数の拡張子のあるファイルが MIME
+    タイプとハンドラの両方に関連付けられているときは注意する必要があります。
+    その場合、普通はリクエストがハンドラに関連付けられた
+    モジュールによって扱われることになります。たとえば、拡張子
+    <code>.imap</code> が (mod_imap の) "imap-file" にマップされていて、
+    <code>.html</code> が MIME タイプ "text/html"
+    にマップされているときは、ファイル <code>world.imap.html</code> は
+    "imap-file" ハンドラと "text/html" MIME
+    タイプに関連付けられます。ファイルが処理されるときは "imap-file"
+    ハンドラが使用されますので、そのファイルは mod_imap
+    のイメージマップファイルとして扱われることになります。</p>
+    <hr />
+
+    <h2><a id="addcharset" name="addcharset">AddCharset</a>
+    ディレクティブ</h2>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> AddCharset <em>charset
+    extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、 ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> AddCharset は
+    Apache 1.3.10 以降でのみ使用可能。
+
+    <p>AddCharset ディレクティブは、与えられた拡張子を指定された
+    charset にマップします。<em>charset</em> は、拡張子
+    <em>extension</em> を含んでいるファイル名の MIME charset
+    パラメータです。新しいマッピングは既にあるものに追加され、同じ拡張子
+    <em>extension</em> のために既に存在するマッピングを上書きします。</p>
+
+    <p>例:</p>
+<pre>
+    AddLanguage ja .ja
+    AddCharset EUC-JP .euc
+    AddCharset ISO-2022-JP .jis
+    AddCharset SHIFT_JIS .sjis
+</pre>
+
+    <p>この場合、ドキュメント <code>xxxx.ja.jis</code> は charset が
+    ISO-2022-JP の日本語のドキュメントとして扱われます
+    (<code>xxxx.jis.ja</code> も同様)。AddCharset
+    ディレクティブは、ドキュメントが適切に解釈され表示されるように、
+    ドキュメントの charset の情報をクライアントに教えるために役に立ちます。
+    また、サーバがクライアントの charset
+    の優先度に基づいて複数のドキュメントの中からドキュメントを選ぶ<a
+    href="../content-negotiation.html"
+    >コンテントネゴシエーション</a>のためにも役に立ちます。</p>
+
+    <p>引数 <em>extension</em>は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
+
+    <p><strong>参照</strong>: <a
+    href="mod_negotiation.html">mod_negotiation</a></p>
+    <hr />
+
+    <h2><a id="addencoding"
+    name="addencoding">AddEncoding</a> ディレクティブ</h2>
+    <!--%plaintext &lt;?INDEX {\tt AddEncoding} directive&gt; -->
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> AddEncoding
+    <em>MIME-enc extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、 ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime<br />
+
+    <p>AddEncoding ディレクティブは、与えられた拡張子を指定された
+    エンコーディングにマップします。<em>MIME-enc</em> は、拡張子
+    <em>extension</em> を含んだドキュメントに使用する MIME
+    エンコーディングです。この新しいマッピングは既にあるものに追加され、
+    同じ拡張子 <em>extension</em>
+    のために既に存在するマッピングを上書きします。例:</p>
+
+    <blockquote>
+      <code>AddEncoding x-gzip .gz<br />
+       AddEncoding x-compress .Z</code>
+    </blockquote>
+    これは、拡張子 .gz を含むファイル名が x-gzip
+    エンコーディングを使ってエンコードされていることと、拡張子 .Z
+    を含むファイル名が x-compress
+    でエンコードされていることを示します。
+
+    <p>古いクライアントは <code>x-zip</code> と <code>x-compress</code>
+    が返ってくることを期待しますが、標準規格ではそれぞれ
+    <code>gzip</code> と <code>compress</code>
+    と等価であることになっています。Apache
+    は、コンテントエンコーディングの比較をするときには、先頭にある
+    <code>x-</code> を無視します。Apache
+    がエンコーディング付きで応答を返すときは、クライアントが要求した形式
+    (<em>すなわち</em>、<code>x-foo</code> や <code>foo</code>)
+    を使用します。要するに、この二つのエンコーディングの場合は常に
+    <code>x-gzip</code> と <code>x-compress</code>
+    を使うべきである、ということです。<code>deflate</code>
+    のようなより新しいエンコーディングでは、<code>x-</code>
+    なしで指定してください。
+    </p>
+
+    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
+
+    <p><strong>参照</strong>: <a
+    href="#multipleext">複数の拡張子のあるファイル</a></p>
+    <hr />
+
+    <h2><a id="addhandler" name="addhandler">AddHandler</a>
+    ディレクティブ</h2>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> AddHandler
+    <em>handler-name extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> AddHandler は
+    Apache 1.1 以降でのみ使用可能。<br />
+    <p>AddHandler は、拡張子 <em>extension</em> を<a
+    href="../handler.html">ハンドラ</a> <em>handler-name</em>
+    にマップします。この新しいマッピングは既にあるものに追加され、
+    同じ拡張子 <em>extension</em>
+    のために既に存在するマッピングを上書きします。たとえば、拡張子
+    "<code>.cgi</code>" で終わるファイルを CGI
+    スクリプトとして扱いたいときは、以下の設定をします。</p>
+<pre>
+    AddHandler cgi-script .cgi
+</pre>
+
+    <p>これを srm.conf か httpd.conf ファイルに記述することで、拡張子
+    "<code>.cgi</code>" を含むファイルは CGI プログラムとして扱われます。
+    </p>
+
+    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
+
+    <p><strong>参照</strong>: <a
+    href="#multipleext">複数の拡張子のあるファイル</a>、
+    <a href="#sethandler">SetHandler</a></p>
+    <hr />
+
+    <h2><a id="addlanguage" name="addlanguage">AddLanguage</a>
+    ディレクティブ</h2>
+    <!--%plaintext &lt;?INDEX {\tt AddLanguage} directive&gt; -->
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> AddLanguage <em>MIME-lang
+    extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime<br />
+
+    <p>AddLanguage ディレクティブは、与えられた拡張子を指定された
+    content language にマップします。<em>MIME-lang</em> は、拡張子
+    <em>extension</em> を含んでいるファイル名の MIME における言語です。
+    この新しいマッピングは既にあるものに追加され、同じ拡張子
+    <em>extension</em> のために既に存在するマッピングを上書きします。
+    </p>
+
+    <p>例:</p>
+
+    <blockquote>
+      <code>AddEncoding x-compress .Z<br />
+       AddLanguage en .en<br />
+       AddLanguage fr .fr<br />
+      </code>
+    </blockquote>
+
+    <p>この場合、<code>xxxx.en.Z</code> ドキュメントは compress
+    された英語のドキュメントとして扱われます (<code>xxxx.Z.en</code>
+    も同様)。content language はクライアントに通知されますが、
+    ブラウザがこの情報を使うことはおそらくありません。AddLanguage
+    ディレクティブは、サーバがクライアントの言語の優先度に基づいて複数の
+    ドキュメントの中からドキュメントを選ぶ<a
+    href="../content-negotiation.html"
+    >コンテントネゴシエーション</a>のためにより役に立ちます。</p>
+
+    <p>複数の言語が同じ拡張子に割り当てられているときは、
+    最後のものが使用されます。すなわち、次のような場合、</p>
+
+<pre>
+    AddLanguage en .en
+    AddLanguage en-gb .en
+    AddLanguage en-us .en
+</pre>
+
+    <p>拡張子 "<code>.en</code>" のあるドキュメントは
+    "<code>en-us</code>" として扱われます。</p>
+
+    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
+
+    <p><strong>参照</strong>: <a
+    href="#multipleext">複数の拡張子のあるファイル</a>、
+    <a href="#defaultlanguage">DefaultLanguage</a><br />
+    <strong>参照</strong>: <a
+    href="./mod_negotiation.html">mod_negotiation</a>
+    </p>
+    <hr />
+
+    <h2><a id="addtype" name="addtype">AddType</a> ディレクティブ</h2>
+    <!--%plaintext &lt;?INDEX {\tt AddType} directive&gt; -->
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> AddType <em>MIME-type
+    extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime
+
+    <p>AddType ディレクティブは、
+    与えられた拡張子を指定されたコンテントタイプにマップします。
+    <em>MIME-type</em> は拡張子 <em>extension</em>
+    を含んだドキュメントに使用する MIME タイプです。
+    この新しいマッピングは既にあるものに追加され、同じ拡張子
+    <em>extension</em> のために既に存在するマッピングを上書きします。
+    このディレクティブは MIME タイプファイル (<code><a
+    href="#typesconfig">TypesConfig</a></code> ディレクティブを参照)
+    にないマッピングを追加するために使用することができます。例:</p>
+
+    <blockquote>
+      <code>AddType image/gif .gif</code>
+    </blockquote>
+    新しい MIME タイプは、<a href="#typesconfig">TypesConfig</a>
+    ファイルを変更するのではなく、AddType
+    ディレクティブを使って追加することが推奨されています。
+
+    <p>NCSA httpd とは違って、このディレクティブは特定のファイルの
+    タイプを設定することはできないことに注意してください。</p>
+
+    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
+
+    <p><strong>参照</strong>: <a
+    href="#multipleext">複数の拡張子のあるファイル</a></p>
+    <hr />
+
+    <h2><a id="defaultlanguage"
+    name="defaultlanguage">DefaultLanguage</a> ディレクティブ</h2>
+    <!--%plaintext &lt;?INDEX {\tt DefaultLanguage} directive&gt; -->
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> DefaultLanguage <em>MIME-lang</em><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> DefaultLanguage は
+    Apache 1.3.4 以降でのみ使用可能。<br />
+
+    <p>DefaultLanguage ディレクティブは、Apache
+    がディレクティブのスコープ (<em>例えば</em>、その時点の
+    <code>&lt;Directory&gt;</code> の範囲) にある、明示的な言語拡張子
+    (<samp>AddLanguage</samp> で設定される <samp>.fr</samp> や
+    <samp>.de</samp>) のない全てのファイルを、指定された
+    <em>MIME-lang</em> 言語であるとみなすようにします。
+    これにより、すべてのファイル名を変えることなく、
+    ディレクトリがオランダ語のコンテントを含んでいる、
+    というようなことを指定することができます。
+    拡張子を使用して言語を指定する方法と違い、
+    <samp>DefaultLanguage</samp>
+    は一つの言語しか指定できないことに注意してください。</p>
+
+    <p>例えば:</p>
+
+    <code>DefaultLanguage fr</code>
+
+    <p><samp>DefaultLanguage</samp>
+    ディレクティブが有効でなく、ファイルに <samp>AddLanguage</samp>
+    で設定された言語の拡張子がないときは、
+    ファイルには言語属性がないとみなされます。</p>
+
+    <p><strong>参照</strong>: <a
+    href="./mod_negotiation.html">mod_negotiation</a><br />
+     <strong>参照</strong>: <a
+    href="#multipleext">複数の拡張子のあるファイル</a></p>
+    <hr />
+
+    <h2><a id="forcetype" name="forcetype">ForceType</a>
+    ディレクティブ</h2>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> ForceType
+    <em>media-type</em>|None<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> ForceType は
+    Apache 1.1 以降でのみ使用可能。
+
+    <p><code>.htaccess</code> や <code>&lt;Directory&gt;</code>
+    セクション、<code>&lt;Location&gt;</code> セクションに書かれた場合、
+    このディレクティブはそこにあるすべてのファイルが <em>media type</em>
+    で指定されたコンテントタイプとして扱われることを強制します。たとえば、
+    GIF ファイルばかりのディレクトリがあって、すべてのファイルを ".gif"
+    で終わらせたくはないときに、以下のものを使用します:</p>
+<pre>
+    ForceType image/gif
+</pre>
+
+    <p>これは、メディアタイプを決定するかもしれないすべての拡張子を
+    上書きすることに注意してください。</p>
+
+    <p>値を <code>none</code> に設定することで、
+    以前の <directive>ForceType</directive> のすべての設定を上書きすることも
+    できます:</p>
+
+<pre>
+    # force all files to be image/gif:
+    &lt;Location /images&gt;
+      ForceType image/gif
+    &lt;/Location&gt;
+
+    # but normal mime-type associations here:
+    &lt;Location /images/mixed&gt;
+      ForceType none
+    &lt;/Location&gt;
+</pre>
+
+
+    <p><strong>参照</strong>: <a
+    href="#addtype">AddType</a></p>
+    <hr />
+
+    <h2><a id="removeencoding"
+    name="removeencoding">RemoveEncoding</a> ディレクティブ</h2>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> RemoveEncoding
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> RemoveEncoding は
+    Apache 1.3.13 以降でのみ使用可能。
+
+    <p><samp>RemoveEncoding</samp> ディレクティブは、
+    与えられた拡張子に関連付けられたエンコーディングを取り消します。
+    これにより、サブディレクトリにある <code>.htaccess</code>
+    ファイルが親ディレクトリやサーバの設定ファイルから継承した関連付けを
+    取り消すことができます。たとえば:</p>
+
+    <dl>
+      <dt><code>/foo/.htaccess:</code></dt>
+
+      <dd><code>AddEncoding x-gzip .gz</code><br />
+       <code>AddType text/plain .asc</code><br />
+       <code>&lt;Files *.gz.asc&gt;</code><br />
+       <code>&nbsp;&nbsp;&nbsp;&nbsp;RemoveEncoding
+      .gz</code><br />
+       <code>&lt;/Files&gt;</code></dd>
+    </dl>
+    <p>これは、<code>foo.gz</code> は gzip
+    でエンコードされていることを指定しますが、<code>foo.gz.asc</code>
+    はエンコードされていないプレーンテキストの
+    ファイルであるということを指定します。</p>
+
+    <p><strong>注意:</strong> RemoveEncoding は
+    <a href="#addencoding">AddEncoding</a>
+    ディレクティブの<em>後</em>で処理されますので、
+    同じディレクトリの設定中に両方が現れると、
+    後者の効果が打ち消される可能性があります。</p>
+
+    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
+    <hr />
+
+    <h2><a id="removehandler"
+    name="removehandler">RemoveHandler</a> ディレクティブ</h2>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> RemoveHandler
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> RemoveHandler は
+    Apache 1.3.4 以降でのみ使用可能。
+
+    <p><samp>RemoveHandler</samp> ディレクティブ
+    は与えられた拡張子に関連付けられたハンドラを取り消します。
+    これにより、サブディレクトリにある <code>.htaccess</code>
+    ファイルが親ディレクトリやサーバの設定ファイル
+    から継承した関連付けを取り消すことができます。たとえば:</p>
+
+    <dl>
+      <dt><code>/foo/.htaccess:</code></dt>
+
+      <dd><code>AddHandler server-parsed .html</code></dd>
+
+      <dt><code>/foo/bar/.htaccess:</code></dt>
+
+      <dd><code>RemoveHandler .html</code></dd>
+    </dl>
+
+    <p>これは、<samp>/foo/bar</samp> ディレクトリの <samp>.html</samp>
+    ファイルは SSI ではなく (<a
+    href="mod_include.html"><samp>mod_include</samp></a> モジュール参照)、
+    普通のファイルとして扱われるようにする効果があります。
+    </p>
+
+    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
+    <hr />
+
+    <h2><a id="removetype"
+    name="removetype">RemoveType</a> ディレクティブ</h2>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> RemoveType
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> RemoveType は
+    Apache 1.3.13 以降でのみ使用可能。
+
+    <p><samp>RemoveType</samp> ディレクティブは与えられた拡張子の
+    MIME タイプの関連付けを取り消します。これにより、
+    サブディレクトリにある <code>.htaccess</code>
+    ファイルが親ディレクトリやサーバの設定ファイルから継承した
+    関連付けを取り消すことができます。たとえば:</p>
+
+    <dl>
+      <dt><code>/foo/.htaccess:</code></dt>
+
+      <dd><code>RemoveType .cgi</code></dd>
+    </dl>
+
+    <p>これは <code>/foo/</code> ディレクトリ以下の <code>.cgi</code>
+    ファイルの特別な扱いを取り消します。ファイルは<a
+    href="core.html#defaulttype"
+    >デフォルトタイプ</a>として扱われます。</p>
+
+    <p><strong>注意:</strong> <code>RemoveType</code> ディレクティブは
+    <code>AddType</code> ディレクティブの<em>後</em>に処理されますので、
+    両方が同じディレクトリの設定中に現れた場合、
+    後者の効果が打ち消される可能性があります。</p>
+
+    <p>引数 <em>extension</em> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
+    <hr />
+
+    <h2><a id="sethandler" name="sethandler">SetHandler</a>
+    ディレクティブ</h2>
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> SetHandler
+    <em>handler-name</em>|None<br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> SetHandler は
+    Apache 1.1 以降でのみ使用可能。
+
+    <p><code>.htaccess</code> や <code>&lt;Directory&gt;</code>
+    セクション、<code>&lt;Location&gt;</code> セクションに書かれた場合、
+    このディレクティブはそこにあるすべてのファイルが
+    <em>handler-name</em> で指定された<a href="../handler.html"
+    >ハンドラ</a>で扱われることを強制します。例えば、拡張子に関わらず、
+    ディレクトリ全体がイメージマップファイルとして解析して欲しい場合には、
+    以下をそのディレクトリの <code>.htaccess</code>
+    ファイルに記述します:</p>
+<pre>
+    SetHandler imap-file
+</pre>
+
+    <p>別の例: URL <code>http://servername/status</code>
+    が指定されたときにサーバが状態報告をするようにしたいときは、以下を
+    httpd.conf に記述します: (詳細は <a
+    href="mod_status.html">mod_status</a> を参照。)
+    </p>
+<pre>
+    &lt;Location /status&gt;
+    SetHandler server-status
+    &lt;/Location&gt;
+</pre>
+
+    <p>値を <code>None</code> にすることで、
+    以前の <code>SetHandler</code> ディレクティブの定義を上書きすることが
+    できます。</p>
+
+    <p><strong>参照</strong>: <a href="#addhandler">AddHandler</a></p>
+
+    <hr />
+
+    <h2><a id="typesconfig" name="typesconfig">TypesConfig</a>
+    ディレクティブ</h2>
+    <!--%plaintext &lt;?INDEX {\tt TypesConfig} directive&gt; -->
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> TypesConfig
+    <em>filename</em><br />
+     <a href="directive-dict.html#default"
+    rel="help"><strong>デフォルト:</strong></a> <code>TypesConfig
+    conf/mime.types</code><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a> サーバ設定ファイル<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_mime
+
+    <p>TypesConfig ディレクティブは、MIME
+    タイプ設定ファイルの位置を設定します。<em>filename</em> は
+    <a href="core.html#serverroot">ServerRoot</a> からの相対パスです。
+    このファイルはファイルの拡張子からコンテントタイプへの
+    デフォルトのマッピングを設定します。
+    このファイルを変更することは推奨されていません。代わりに
+    <a href="#addtype">AddType</a> ディレクティブを使用してください。
+    ファイルは、AddType コマンドの引数と同じ形式の行で構成されます。</p>
+
+    <blockquote>
+      <em>MIME-type extension extension ...</em>
+    </blockquote>
+    拡張子は小文字に変換されます。空行とハッシュ文字 ('#')
+    で始まる行は無視されます。
+
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

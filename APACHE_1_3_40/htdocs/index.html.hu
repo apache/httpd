@@ -1,0 +1,65 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<html>
+ <head>
+  <title>Ezen a web oldalon az Apache-webszerver van telepítve!</title>
+  <!-- Translated Wed Jan  7 09:22:01 2004 - Lacza Vilmos at siemens dot com -->
+ </head>
+ <!-- Background white, links blue (unvisited), navy (visited), red
+ (active) -->
+ <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+ vlink="#000080" alink="#FF0000">
+  <h1 align="center">Tal&aacute;lt! Ezen a web oldalon az
+  Apache-webszerver van telep&iacute;tve!</h1>
+  <p>
+    Ha &Ouml;n ezt az oldalt l&aacute;tja, az azt jelenti, hogy
+    ennek a domain-nek a tulajdonosa &eacute;ppen egy &uacute;j
+    Apache webszervert telep&iacute;tett sikeresen.  Most
+    m&eacute;g ezt a lapot a val&oacute;s web tartalommal ki kell
+    eg&eacute;sz&iacute;teni &eacute;s a lapot
+    &aacute;talak&iacute;tani (vagy a webszervert a val&oacute;s
+    tartalmak el&eacute;r&eacute;s&eacute;hez &aacute;t kell
+    konfigur&aacute;lni).
+  </p>
+  <hr />
+  <blockquote>
+   <p>
+    Ha &Ouml;n ezt a lapot egy m&aacute;sik v&aacute;rt weblap
+    helyett l&aacute;tn&aacute;, <strong>vegye fel a kapcsolatot
+    ennek a lapnak a tulajdonos&aacute;val!</strong>
+    (K&iacute;s&eacute;relje meg e-mail &uuml;zenet
+    k&uuml;ld&eacute;s&eacute;t a
+    <samp>&lt;webmaster@<em>domain-n&eacute;v</em>&gt;</samp>
+    c&iacute;mre).<br />
+   </p>
+   <p>
+     Annak ellen&eacute;re, hogy ennek a domain-nek a tulajdonosa
+     az Apache webszerver szoftvert haszn&aacute;lja, ennek az
+     oldalnak semminem&uuml; kapcsolata nincs az <em>Apache
+     Software Foundation</em> szervezettel (amely ezt a szoftvert
+     ingyenesen terjeszti). <strong>Ebb&otilde;l kifoly&oacute;lag
+     nem &aacute;ll fenn semmilyen indok e-mail &uuml;zenet
+     k&uuml;ld&eacute;s&eacute;re a szoftver fejleszt&otilde;inek
+     c&iacute;mezve.</strong> Ha &Ouml;n m&eacute;gis ezt
+     tenn&eacute;, az &Ouml;n e-mail <strong><big>&uuml;zenete
+     t&ouml;r&ouml;lve lesz</big></strong>.
+   </p>
+  </blockquote>
+  <hr />
+  <p>
+   Az Apache-webszerver szoftver angol nyelv&ucirc; <a
+   href="manual/">online dokument&aacute;ci&oacute;ja</a>
+   r&eacute;sze ennek a szoftvercsomagnak.
+  </p>
+  <p>
+   Ezen weblap webmester&eacute;nek joga van az alul
+   elhelyezked&otilde; "Powered by Apache"-log&oacute;t Apache
+   szoftveren alapul&oacute; webszerveren haszn&aacute;lni.
+   <br />
+   K&ouml;sz&ouml;net, hogy &Ouml;n az Apache szoftvert
+   v&aacute;lasztotta!
+  </p>
+  <div align="center">
+   <img src="apache_pb.gif" alt="Powered by the Apache HTTP Server!">
+  </div>
+ </body>
+</html>

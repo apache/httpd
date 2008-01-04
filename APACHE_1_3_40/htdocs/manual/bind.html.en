@@ -1,0 +1,130 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Setting which addresses and ports Apache uses</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Setting which addresses and ports Apache
+    uses</h1>
+    <hr />
+    When Apache starts, it connects to some port and address on the
+    local machine and waits for incoming requests. By default, it
+    listens to all addresses on the machine, and to the port as
+    specified by the <tt>Port</tt> directive in the server
+    configuration. However, it can be told to listen to more the
+    one port, or to listen to only selected addresses, or a
+    combination. This is often combined with the Virtual Host
+    feature which determines how Apache responds to different IP
+    addresses, hostnames and ports. 
+
+    <p>There are two directives used to restrict or specify which
+    addresses and ports Apache listens to.</p>
+
+    <ul>
+      <li><a href="#bindaddress">BindAddress</a> is used to
+      restrict the server to listening to a single address, and can
+      be used to permit multiple Apache servers on the same machine
+      listening to different IP addresses.</li>
+
+      <li><a href="#listen">Listen</a> can be used to make a single
+      Apache server listen to more than one address and/or
+      port.</li>
+    </ul>
+
+    <h3><a id="bindaddress" name="bindaddress">BindAddress</a></h3>
+    <a href="mod/directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> BindAddress <em>[ * |
+    IP-address | hostname ]</em><br />
+     <a href="mod/directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>BindAddress
+    *</code><br />
+     <a href="mod/directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="mod/directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Core 
+
+    <p>Makes the server bind to just the specified address. If the
+    argument is * (an asterisk), the server binds to all interfaces
+    currently marked as up on the server. The port bound to is set
+    with the <tt>Port</tt> directive. Only one BindAddress should
+    be used.</p>
+
+    <h3><a id="listen" name="listen">Listen</a></h3>
+    <a href="mod/directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Listen <em>[ port |
+    IP-address:port ]</em><br />
+     <a href="mod/directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>none</code><br />
+     <a href="mod/directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config<br />
+     <a href="mod/directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Core 
+
+    <p><tt>Listen</tt> can be used instead of <tt>BindAddress</tt>
+    and <tt>Port</tt>. It tells the server to accept incoming
+    requests (to listen) on the specified port or address-and-port
+    combination. If the first format is used, with a port number
+    only, the server listens on the given port on all interfaces
+    marked as up, instead of the port given by the <tt>Port</tt>
+    directive. If an IP address is given as well as a port, the
+    server will listen on the given port and interface.</p>
+
+    <p>Multiple Listen directives may be used to specify a number
+    of addresses and ports to listen to. The server will respond to
+    requests from any of the listed addresses and ports.</p>
+
+    <p>For example, to make the server accept connections on both
+    port 80 and port 8000, use:</p>
+<pre>
+   Listen 80
+   Listen 8000
+</pre>
+    To make the server accept connections on two specified
+    interfaces and port numbers, use 
+<pre>
+   Listen 192.170.2.1:80
+   Listen 192.170.2.5:8000
+</pre>
+
+    <h2>How this works with Virtual Hosts</h2>
+    <tt>BindAddress</tt> and <tt>Listen</tt> do not implement
+    Virtual Hosts. They tell the main Apache daemon process what
+    addresses and ports to bind and listen on. If no
+    &lt;VirtualHost&gt; directives are used, the server will behave
+    the same for all accepted requests. However,
+    &lt;VirtualHost&gt; can be used to specify a different behavior
+    for one or more of the addresses and ports. To implement a
+    VirtualHost, the server must: 
+
+    <ul>
+      <li>Be told to <tt>Listen</tt> to the desired address and
+      port</li>
+
+      <li>Have a &lt;VirtualHost&gt; section created for the
+      specified address and port to set the behavior of this
+      virtual host</li>
+    </ul>
+    Note that if the &lt;VirtualHost&gt; is set for an address and
+    port that the server is not listening to, it cannot be
+    accessed. 
+
+    <h2>See also</h2>
+    See also the documentation on <a href="vhosts/">Virtual
+    Hosts</a>, <a href="mod/core.html#bindaddress">BindAddress
+    directive</a>, <a href="mod/core.html#port">Port directive</a>,
+    <a href="dns-caveats.html">DNS Issues</a> and <a
+    href="mod/core.html#virtualhost">&lt;VirtualHost&gt;
+    section</a>. <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

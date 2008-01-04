@@ -1,0 +1,72 @@
+# Sample .mak file for Apache
+
+#######################################################################
+# Define shared object name                                           #
+#######################################################################
+APP := CHTA
+APP_ENTRY := main
+
+#######################################################################
+# External LIB References                                             #
+#######################################################################
+# Apache needs the Internet Daemon / ZINET (CLTY)
+LIBS := CLTY
+
+#######################################################################
+# Environments needed for build                                       #
+#######################################################################
+maketpf_env := apache
+maketpf_env += base_rt
+maketpf_env += system
+
+CFLAGS_CHTA := -fPIC
+CFLAGS_CHTA += -w
+CFLAGS_CHTA += -DTPF
+CFLAGS_CHTA += -DTPF64BIT
+
+#######################################################################
+# C programs to be compiled                                           #
+#######################################################################
+C_SRC := buildmark.c
+C_SRC += modules.c
+C_SRC += ap_base64.c
+C_SRC += ap_checkpass.c
+C_SRC += ap_cpystrn.c
+C_SRC += ap_ebcdic.c
+C_SRC += ap_execve.c
+C_SRC += ap_fnmatch.c
+C_SRC += ap_getpass.c
+C_SRC += ap_md5c.c
+C_SRC += ap_sha1.c
+C_SRC += ap_signal.c
+C_SRC += ap_slack.c
+C_SRC += ap_snprintf.c
+C_SRC += ap_strtol.c
+C_SRC += alloc.c
+C_SRC += buff.c
+C_SRC += http_config.c
+C_SRC += http_core.c
+C_SRC += http_log.c
+C_SRC += http_main.c
+C_SRC += http_protocol.c
+C_SRC += http_request.c
+C_SRC += http_vhost.c
+C_SRC += rfc1413.c
+C_SRC += util.c
+C_SRC += util_date.c
+C_SRC += util_md5.c
+C_SRC += util_script.c
+C_SRC += util_uri.c
+C_SRC += os.c
+C_SRC += os-inline.c
+
+APACHE_MODULE_FILE := $(word 1,$(foreach d,$(TPF_ROOT),$(wildcard $d/opensource/apache/src/apache.modules)))
+ifeq ("$(APACHE_MODULE_FILE)","")
+$(error $(MTPF0045E))
+endif
+C_SRC += $(shell cat $(APACHE_MODULE_FILE))
+
+#######################################################################
+# Include maketpf build rules                                         #
+#######################################################################
+include maketpf.rules

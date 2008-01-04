@@ -1,0 +1,422 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Compiling and Installing Apache</title>
+
+  </head>
+  <!-- English revision: 1.40 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#000080"
+  alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Apache 1.3 のコンパイル・インストール</h1>
+
+    <ul>
+      <li><a href="#download">Apache のダウンロード</a></li>
+      <li><a href="#intro">導入</a></li>
+      <li><a href="#apaci">APACI を使った Apache 1.3 HTTP サーバのインストール</a></li>
+      <ul>
+          <li><a href="#requirements">必要なシステム</a></li>
+          <li><a href="#configure">ソースツリーの設定</a></li>
+          <li><a href="#build">パッケージのビルド</a></li>
+          <li><a href="#installing">パッケージのインストール</a></li>
+      </ul>
+      <li><a href="#traditional">伝統的な方法によるビルドとインストール</a></li>
+      <ul>
+            <li><a href="#trad_configure">インストールの設定</a></li>
+            <li><a href="#trad_compile">Apache のコンパイル</a></li>
+            <li><a href="#trad_install">Apache のインストール</a></li>
+      </ul>
+      <li><a href="#testing">パッケージのテスト</a></li>
+      <li><a href="#time">正しいシステム時間の設定</a></li>
+    </ul>
+
+    <p>この文書は Apache を Unix システム上で、コンパイル及びインストール
+    するためのものです。それ以外のプラットホーム上でのコンパイル及び
+    インストールについては、以下の項目を参照してください。</p>
+    <ul>
+      <li><a href="windows.html">Microsoft Windows 上での Apacheの使用</a></li>
+      <li><a href="cygwin.html">Cygwin 上での Apache の使用</a></li>
+      <li><a href="netware.html">Novell Netware 上での Apache の使用</a></li>
+      <li><a href="mpeix.html">HP MPE/iX 上での Apache の使用</a></li>
+      <li><a href="unixware.html">UnixWare 上での Apache のコンパイル</a></li>
+      <li><a href="readme-tpf.html">Apache の TPF Port の概要</a>
+      </li>
+    </ul>
+
+    <h2><a id="download" name="download">Apache のダウンロード</a></h2>
+
+    <p>Apache の最新版は <a
+    href="http://httpd.apache.org/download.cgi">Download Page</a>
+    から直接ダウンロードすることが出来ます。</p>
+
+    <h2><a id="intro" name="intro">導入</a></h2>
+
+    <p>すべての良い物と同様、Apache を設定、コンパイル、インストール
+    する方法は二つあります。以下で説明する APACI プロセスを使った
+    3分インストール、または &apos;src/INSTALL&apos; ファイルで説明されている、
+    以前のバージョンの Apache と同じ機構を選択することが出来ます。
+    それぞれに利点と欠点があります。- APACI はより新しく、
+    少し熟成されていませんがそれに費やす時間は最小限で済みます。
+    対して、&quot;Configuration.tmpl&quot;
+    の機構を使った従来の方法はパワーユーザにとってはより柔軟に扱うことが出来ます。
+    我々は、それぞれのやり方に対する意見やフィードバックには大変興味があります
+    </p>
+
+    <h2><a id="apaci" name="apaci">APACI を使った Apache 1.3 HTTP
+    サーバのインストール</a></h2>
+
+    <h3>Overview for the impatient</h3>
+<pre>
+     $ ./configure --prefix=PREFIX
+     $ make
+     $ make install
+     $ PREFIX/bin/apachectl start
+</pre>
+
+    <p><b>注意:</b> <code>PREFIX</code> は &quot;PREFIX&quot;
+    という文字列ではありません。代わりに Apache をインストールしたい
+    Unix のファイルシステム上のパスを使います。たとえば上の PREFIX
+    の部分には &quot;<code>/usr/local/apache</code>&quot; が入ります。</p>
+
+    <h3><a id="requirements" name="requirements">必要なシステム</a></h3>
+    <p>Apache のビルドには以下に挙げるものが必要になります</p>
+
+    <dl>
+      <dt><b>ディスクスペース</b></dt>
+
+      <dd>約 12 MB のディスクスペースが一時的に必要になることを確認してください。
+      インストール後には約 3 MB のディスクスペースが必要になります。
+      (実際に必要になディスクスペースは組み込まれたサードパーティーの
+      モジュール等に依ります)。</dd>
+
+      <dt><b>ANSI-C コンパイラ</b></dt>
+
+      <dd>ANSI-C コンパイラがインストールされていることを確認してください。
+      Free Software Foundation (FSF) による GNU C コンパイラ (GCC)
+      を推奨します(バージョン 2.7.2 で大丈夫)。GCC を持っていない場合は
+      ベンダによるコンパイラが最低限 ANSI 互換であることを確認してください。
+      GNU のホームページは http://www.gnu.org/ に、GCC 配布は
+      http://www.gnu.org/order/ftp.html から見つけることが出来ます。</dd>
+
+      <dt><b>Perl 5 インタプリタ [オプション]</b></dt>
+
+      <dd>`apxs' や `dbmmanage' のような(Perl で書かれた)
+      サポートスクリプトの中には Perl 5 インタプリタ (バージョン 5.003
+      または 5.004 が望ましい) が必要なものがあります。APACI の
+      `configure' スクリプトにそのようなインタプリタが見つからなかった場合、
+      害にはなりません。当然、Apache 1.3 をビルド及びインストール
+      することができます。もし、複数の Perl インタプリタがインストール
+      されている場合 (恐らくはベンダによる Perl 4 と自分で導入した Perl 5)、
+      --with-perl オプション (以下参照) を使って正しいものを選択し APACI
+      に知らせてやることを推奨します。</dd>
+
+      <dt><b>動的共有オブジェクト (DSO) サポート [オプション]</b></dt>
+
+      <dd>
+        <p>現在、最大限の柔軟性のために Apache は dlopen()/dlsym()
+        システムコールを利用した DSO 機構を経由させたランタイムにより、
+        モジュールをロードすることが出来ます。これらのシステムコールはすべての
+        OS で有効なわけではないのでどのプラットホームでも DSO
+        機構を使えるとは限りません。シェアードオブジェクトのコンパイルは
+        非常にプラットフォームに依存したものであるため、Apache は現時点では
+        いくつかのプラットフォームに関してのみその方法を知っています。
+        現在の状況はこのようになります。</p>
+
+        <ul>
+          <li>
+            サポートされているプラットフォーム: 
+
+            <p>
+            <table border="0">
+              <tr>
+                <td>Linux</td>
+                <td>SunOS</td>
+                <td>UnixWare</td>
+                <td>Darwin/Mac OS</td>
+              </tr>
+              <tr>
+                <td>FreeBSD</td>
+                <td>Solaris</td>
+                <td>AIX</td>
+                <td>OpenStep/Mach</td>
+              </tr>
+              <tr>
+                <td>OpenBSD</td>
+                <td>IRIX</td>
+                <td>SCO</td>
+                <td>DYNIX/ptx</td>
+              </tr>
+              <tr>
+                <td>NetBSD</td>
+                <td>HPUX</td>
+                <td>ReliantUNIX</td>
+                <td>BSDI</td>
+              </tr>
+              <tr>
+                <td>Digital Unix</td>
+                <td>DGUX</td>
+              </tr>
+            </table>
+            </p>
+          </li>
+
+          <li>
+            完全にサポート外のプラットフォーム:
+
+            <p>Ultrix</p>
+          </li>
+        </ul>
+
+        <p>あなたのシステムがこのリストにないけれど、dlopen
+        形式のインタフェースがある場合、適切なコンパイラとリンカフラグ
+        (CFLAGS_SHLIB, LDFLAGS_SHLIB 及び LDFLAGS_SHLIB_EXPORT 参照)
+        を手動で与えてやるか、最低限 Apache がオプションを推察できるように、
+        Perl 5 インタプリタがどこにインストール
+        されているかを指定する必要があります。</p>
+
+        <p>Apache 1.3 での DSO サポートに関する、より細部の情報については
+        htdocs/manual/dso.html の文書をよく読んでください。
+        十分に注意しないで DSO 機構を使うと妙な副作用が発生することがあるため、
+        特に
+        &quot;Advantages &amp; Disadvantages&quot; と名付けられた節は
+        注意して読んでください。警告はしましたよ!</p>
+      </dd>
+    </dl>
+
+    <h3><a id="configure" name="configure">ソースツリーの設定</a></h3>
+
+    <p>次の段階は Apache ソースツリーを特定のプラットホームや
+    個々の必要に合わせて設定します。この設定で最も重要なことは後で
+    Apache がインストールされる位置の決定です。というのは
+    Apache が正しく動作するためにこの位置に合わせて設定されるからです。
+    他にも希望に応じて多くのオプションが有効です。</p>
+
+    <p>どんなことが出来るのか簡単に感じてもらうため、ここでは
+    標準的な例として、インストールツリーを /sw/pkg/apache,
+    特定のコンパイラ及びフラグ、そして 2 つの追加モジュール mod_rewrite
+    及び mod_proxy を後で DSO 機構によりロードさせるように Apache
+    をコンパイルするものとします>。</p>
+<pre>
+     $ CC="pgcc" OPTIM="-O2" \
+       ./configure --prefix=/usr/local/apache \
+                   --enable-module=rewrite --enable-shared=rewrite \
+                   --enable-module=proxy   --enable-shared=proxy
+</pre>
+
+    <p>有効なオプションの完全なリストは以下のコマンドを打ち込んでください。
+    </p>
+  <p><code>./configure --help</code></p>
+
+   <p>設定例のリストは <code>README.configure</code>
+   ファイルも見てください。</p>
+
+    <h3><a id="build" name="build">パッケージのビルド</a></h3>
+
+    <p>これで Apache パッケージの各部分をコマンド</p>
+<pre>
+        $ make 
+</pre>
+
+    <p>を実行することによりビルドすることが出来ます。
+    これには有効にしたモジュールの量にもよりますが Pentium-166/FreeBSD-2.2
+    システムの場合で約 2 分かかります。じっと待ってください。
+    </p>
+
+    <h3><a id="installing" name="installing">パッケージのインストール</a></h3>
+
+    <p>インストールの <code>PREFIX</code> (上の <code>--prefix</code>
+    オプション参照)設定によりパッケージをインストールする時です。</p>
+<pre>
+        $ make install
+</pre>
+
+   <p>以下の例では <code>PREFIX</code> はそのまま &quot;PREFIX&quot;
+   ではなく、<code>--prefix</code>
+   オプションにより与えられた引数になります。</p>
+
+<!-- Building and installing Apache in the traditional way -->
+
+    <h2><a id="traditional" name="traditional">伝統的な方法によるビルドとインストール</a></h2>
+
+    <p>APACI が出てくる以前は Apache のビルド及びインストールの方法は
+    1 つしかありませんでした。APACI は
+    人によってはよりわかりやすい設定のインターフェースを提供しますが、
+    従来からの方法は大量のコマンドライン
+    オプションを打ち込むことなくインストールの設定を
+    出来る方法が用意されています。</p>
+
+    <h3><a id="trad_configure" name="trad_configure">インストールの設定</a></h3>
+
+    <p>Apache のコンパイルは三段階で構成されます。
+    まずサーバに含めたい Apache <strong>モジュール</strong>
+    を選択してください。次に、OS に合わせた設定をします。
+    最後にコンパイルをします。</p>
+
+    <p>Apache の全ての設定は、Apache 配布の <code>src</code>
+    ディレクトリで行われます。このディレクトリに入ってください。
+    </p>
+
+    <ol>
+      <li>
+        <code>Configuration</code> ファイル <code>src/Configuration.tmpl</code> 
+        の中で Apache
+        にコンパイルするモジュールを選択します。実装したいオプションの
+        モジュールの行のコメントを外すか (ファイルの終わりにある
+        AddModule 行で) 、ダウンロードしたり、作成した追加のモジュールの
+        新しい行を追加します (どのように Apache モジュールを作成するのか?
+        についてのドキュメントは<a href="misc/API.html">API.html</a>
+        を参照してください) 。
+        あるモジュールが確実に必要でないことがわかっているならば、
+        いくつかのデフォルトモジュールをコメントアウトすることができます
+        (ただし、デフォルトのモジュールの多くはサーバの正確な操作と
+        セキュリティにとって重要なので注意してください) 。
+
+
+        <p><code>Rule</code>
+        行のいくつかを設定する必要があるかどうかを知るために
+        <code>Configuration</code> ファイルの指示も読んでください。</p>
+      </li>
+
+      <li>
+        Apache を OS に合わせて設定します。通常はただ
+        <code>Configure</code> スクリプトを下記の例のように実行します。
+        しかし、これが失敗するときや何か特殊な要求があるとき
+        (<em>例えば</em>、追加したモジュールによって何らかのライブラリが
+        必要な場合など) には <code>Configure</code>
+        ファイルの次のオプションのいくつかを編集する必要があるかもしれません。 
+        <code>EXTRA_CFLAGS, LIBS, LDFLAGS, INCLUDES</code>.
+
+
+        <p><code>Configure</code> スクリプトを実行します</p>
+
+        <blockquote>
+<pre>
+    % Configure
+    Using 'Configuration' as config file
+     + configured for &lt;whatever&gt; platform
+     + setting C compiler to &lt;whatever&gt; *
+     + setting C compiler optimization-level to &lt;whatever&gt; *
+     + Adding selected modules
+     + doing sanity check on compiler and options
+    Creating Makefile in support
+    Creating Makefile in main
+    Creating Makefile in os/unix
+    Creating Makefile in modules/standard
+
+</pre>
+        </blockquote>
+        (*: 設定内容とシステムによっては、Configure はこの通りに
+        表示しないことがありますが、それで問題ありません。)
+
+        <p>これで 3 の段階で使われる Makefile が生成されます。
+        また、オプションのサポートプログラムをコンパイルするために、
+        サポートディレクトリの中に Makefile が生成されます。</p>
+
+        <p>(もし、様々な設定を管理するつもりならば、
+        <code>Configure</code> に <code>Configure -file
+        Configuration.ai</code> のように、別の Configuration
+        ファイルを読み込むようにオプションを付けるといいでしょう。)</p>
+      </li>
+
+    <h3><a id="trad_compile" name="trad_compile">Apache のコンパイル</a></h3>
+
+      <li><code>make</code> を実行してください。</li>
+    </ol>
+    Apache 配布物にあるモジュールは Apache 開発グループによってテストが行われ、
+    多くのメンバーによって日常的に使われているものです。
+    メンバーやサードパーティによって開発された特定のニーズや機能をもつ
+    追加モジュールは、&lt;<a
+    href="http://www.apache.org/dist/httpd/contrib/modules/"
+    >http://www.apache.org/dist/httpd/contrib/modules/</a>&gt;.
+    から入手することができます。このページには、これらのモジュールを
+    Apache コアコードにリンクさせるための説明が書いてあります。
+
+    <h3><a id="trad_install" name="trad_install">Apache のインストール</a></h3>
+
+    コンパイルを行うと、<code>httpd</code> というバイナリファイルが 
+    <code>src</code> ディレクトリに作成されます。Apache
+    のバイナリ配布はこのファイルを提供します。
+
+    <p>次のステップはプログラムをインストールし、それを設定することです。
+    Apache はコンパイルされたディレクトリと同じディレクトリのセットで
+    設定、実行されるようになっています。
+    もしどこか他のところから実行させたい場合は、ディレクトリを作成し、
+    そこに <code>conf</code>, <code>logs</code> 及び <code>icons</code>
+    ディレクトリをコピーしてください。どちらの場合でも、
+    サーバルートのディレクトリのパーミッションをどう設定するかについて、
+    <a href="misc/security_tips.html#serverroot">security 情報</a>
+    を読むべきです。</p>
+
+    <p>次に、サーバの設定ファイルを編集します。3つの設定ファイルで 
+    <strong>ディレクティブ</strong> を設定します。標準状態では、
+    これらのファイルは <code>conf</code> ディレクトリに配置される、
+    <code>srm.conf</code>, <code>access.conf</code>, <code>httpd.conf</code>
+    です。設定の参考になるように、配布の <code>conf</code>
+    ディレクトリに同じ内容のファイル、<code>srm.conf-dist</code>,
+    <code>access.conf-dist</code>, <code>httpd.conf-dist</code>
+    があります。<code>-dist</code> なしで、
+    その名前のこれらのファイルをコピーするか、名前を変えてください。
+    それからそれぞれのファイルを編集してください。
+    それぞれのファイルにあるコメントを注意深く読んでください。
+    これらのファイルの正確な設定に失敗すると、サーバが動かなくなったり、
+    セキュリティ的に危険になったりします。
+    <code>conf</code> ディレクトリには <code>mime.types</code>
+    という追加ファイルがあります。
+    通常このファイルを編集する必要はありません。</p>
+
+    <p>最初に <code>httpd.conf</code> を編集してください。
+    このファイルはサーバに関する一般的な属性を設定します;
+    ポート番号や起動ユーザ <em>等々</em>です。次に <code>srm.conf</code>
+    ファイルを編集してください; これはドキュメントツリーのルート、
+    server-parsed HTML や内部的なイメージマップの解析のような特別な機能
+    <em>等々</em> を設定します。最後にアクセスに関する基本事項を
+    設定するために access.conf ファイルを編集します。</p>
+
+    <p>これら3つのファイルに加えて、サーバの動作はアクセスされた
+    ディレクトリにある <code>.htaccess</code> ファイルを使うことによって、
+    ディレクトリ毎に設定できます。</p>
+
+
+    <h3>サポートプログラムのコンパイル</h3>
+    上記でコンパイル、設定されるメインの <code>httpd</code>
+    サーバの他に、Apache には多数のサポートプログラムが含まれています。
+    これらは標準ではコンパイルされません。サポートプログラムは
+    <code>support</code> ディレクトリにあります。
+    サポートプログラムをコンパイルするには、このディレクトリに入り、
+    以下のように入力してください。
+<pre>
+    make
+</pre>
+
+    <h2><a id="testing" name="testing">パッケージのテスト</a></h2>
+
+    <p>ここで、以下のコマンドを実行することで、Apache HTTP をすぐに
+    実行できるようになっています。</p>
+<pre>
+        $ PREFIX/bin/apachectl start
+</pre>
+
+    <p>それから URL http://localhost/ (Apache を root としてあるいは
+    --without-confadjust オプションを使ってビルド、インストールした場合)
+    または http://localhost:8080/ (Apache を普通のユーザでビルド、
+    インストールした場合) により最初の文書をリクエストできます。 
+    それから以下によりサーバを止めてください。</p>
+<pre>
+        $ PREFIX/bin/apachectl stop
+</pre>
+
+    <h2><a id="time" name="time">正しいシステム時間の設定!</a></h2>
+    <p>公開されるウェブサーバの適切な操作には、HTTP
+    プロトコルの要素がその日の時間として示されるため、
+    正確な時間が必要とされます。ですから、これを機会に UNIX においては
+    NTP やなんらかの時間の同期を取るシステム、NT
+    においても何かそれと同じ働きをするものを導入してください。</p>
+
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

@@ -1,0 +1,415 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+<title>Installing Apache on z/TPF</title>
+<style type="text/css">
+   /*<![CDATA[*/
+   <!--
+   .indented { margin-left: 25pt; }
+   .output { padding-left: 20px; padding-right: 20px; background-color: #dadada;  }
+  --> /*]]>*/
+</style>
+</head>
+
+<body>
+<center>
+<h2><a id="top" name="top"></a>Installing the Apache 1.3 HTTP Server on z/TPF</h2>
+<hr />
+[ <a href="#download">Download</a> |
+<a href="#setup">MakeTPF Setup</a> |
+<a href="#compilation">Compilation</a> |
+<a href="#installation">Installation</a> |
+<a href="#activation">Activation</a>&nbsp;]
+<hr />
+</center>
+
+<p>This document outlines the steps needed to install Apache onto an IBM z/TPF
+Enterprise Edition V1 R1 system. (There are separate
+<a href="install-tpf.html">installation instructions for TPF4.1</a>.)</p>
+
+<p>You should first review <a href="readme-tpf.html">readme-tpf.html</a> for
+basic information on the port of Apache to TPF including a list of supported
+modules.</p>
+
+<p>The allocated <tt>CHTA</tt> program name is used throughout these
+instructions to refer to Apache. You can use a different program name if you
+wish.<br />
+Likewise the directory structure <tt>opensource/apache/src</tt> is used for the
+Apache source code directory. You can use different directories than
+<tt>opensource/apache</tt> if you wish.</p>
+
+<p>If you change the program or directory names be sure to change the entries
+shown in these instructions, all MakeTPF-related files, and the sample files
+accordingly.</p><br />
+
+<center>
+<h2><a id="download" name="download"></a>Download</h2>
+</center>
+
+<p>Releases of the Apache server are compressed into a "tarball" file which
+must be downloaded to your PC.  Additionally the source code from the tarball
+will need to be copied onto your Linux build system for compiling. Here are all
+the details on how to get Apache and how to get it where it needs to be:</p>
+
+<ol>
+   <li><p>Download the compressed Apache 1.3 files (the "tarball") from
+   <a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a>
+   to your PC.  The file name on the web site will be
+   <tt>apache_1.3.<i>vv</i>.tar.Z</tt>, where "<tt><i>vv</i></tt>" is the
+   version number.  Replaced "<tt><i>vv</i></tt>" throughout these instructions
+   with the actual version number.</p>
+
+   <p><font color="#CC6600"><font size="+1">TIP:</font></font>Be sure to keep
+   the <tt>.tar.Z</tt> extension when saving the file.</p></li>
+
+   <li><p>Decompress the tarball on your PC using WinZip or some other PC
+   decompression tool.</p>
+
+   <p><font color="#CC6600"><font size="+1">TIP:</font></font>If you are using
+   WinZip verify that the <i>"TAR File Smart CR/LF Conversion"</i> option
+   (under Options, Configuration) is <em>not</em> checked.</p>
+
+   <p>This is what you can expect if you use WinZip:</p>
+
+   <ul>
+      <li>open the tarball with WinZip (this can usually be done simply by
+      double-clicking on the downloaded tarball)</li>
+
+      <li>you will be told that the archive contains one file
+      (apache_1.3.<i>vv</i>.tar) - allow WinZip to decompress it to a
+      temporary folder</li>
+
+      <li>extract the archived files onto your PC - you'll be using files from
+      the&nbsp; <tt>conf, htdocs,</tt> and <tt>icons</tt> directories later in
+      the install phase<br /><br /></li>
+   </ul>
+   </li>
+
+   <li><p>FTP the tarball to your Linux build machine using binary mode:</p>
+
+   <ul>
+      <li>activate FTP in an MSDOS window:<br />
+      <b><tt>&nbsp;&nbsp;&nbsp;ftp&nbsp;<i>your.linux.build.machine.com</i></tt></b>&nbsp;</li>
+
+      <li>sign in&nbsp;</li>
+
+      <li>set mode to binary:&nbsp;&nbsp;<b><tt>binary</tt></b>&nbsp;</li>
+
+      <li>send the file to your Linux build machine:<br />
+      <b><tt>&nbsp;&nbsp;&nbsp;send&nbsp;"c:/<i>path</i>/apache_1.3.<i>vv</i>.tar.Z"&nbsp;apache_1.3.<i>vv</i>.tar.Z</tt></b></li>
+
+      <li>exit FTP:&nbsp;&nbsp;<b><tt>bye</tt></b></li>
+   </ul>
+
+   <p><font color="#CC6600"><font size="+1">TIP:</font></font> Linux file names
+   are case sensitive.</p></li>
+
+   <li><p>On your Linux build machine, decompress and extract the archived
+   files necessary for compiling Apache:</p>
+
+   <p class="indented"><b><tt>tar -xzkf apache_1.3.<i>vv</i>.tar.Z "*/src"</tt></b></p>
+
+   <p>Note that the following "<tt>src</tt>" subdirectories are not used for
+   Apache on z/TPF and may be removed if desired:</p>
+
+   <p class="indented"><tt>lib/expat-lite</tt>, <tt>lib/sdbm</tt>,
+   <tt>regex</tt>, and all <tt>os</tt> subdirectories except for
+   <tt>os/tpf</tt>.</p></li>
+
+   <li><p>Create header files that are automatically generated for other
+   platforms but are not for z/TPF:</p>
+
+   <p class="indented"><b><tt>cp apache_1.3.<i>vv</i>/src/os/tpf/samples/test_char.txt&nbsp;&nbsp;apache_1.3.<i>vv</i>/src/main/test_char.h<br />
+   cp apache_1.3.<i>vv</i>/src/os/tpf/samples/uri_delims.txt
+   apache_1.3.<i>vv</i>/src/main/uri_delims.h</tt></b></p></li>
+
+</ol><br />
+
+<center>
+<h2><a id="setup" name="setup"></a>MakeTPF Setup</h2>
+</center>
+
+<ol>
+   <li><p>Move the source code into your desired directory structure for
+   MakeTPF with the following entries.<br />
+   Replace "<tt>foobar</tt>" below with your actual directory name:</p>
+
+   <p class="indented"><b><tt>export AROOT="foobar/opensource/apache"<br />
+   mkdir -p $AROOT<br />
+   mv apache_1.3.<i>vv</i>/* $AROOT<br />
+   </tt></b></p></li>
+
+   <li><p>CHTA is already in the <tt>tpf_app_base.cntl</tt> control file.
+   Adjust any settings if necessary.</p></li>
+
+   <li><p>Create an environment file for Apache named <tt>maketpf.env_apache</tt>
+   using <tt>$AROOT/src/os/tpf/samples/sample_env.txt</tt> as a guide.<br />
+   Place <tt>maketpf.env_apache</tt> in the same directory as your other
+   environment files.</p></li>
+
+   <li><p>Create a .mak file for Apache named <tt>$AROOT/src/chta.mak</tt>
+   using <tt>$AROOT/src/os/tpf/samples/sample_mak.txt</tt> as a guide<br />
+   Verify that the <tt>maketpf_env</tt> assignments in <tt>chta.mak</tt> are
+   correct for your build environment.</p></li>
+
+   <li><p>Create a configuration file named <tt>$AROOT/src/maketpf.cfg</tt>.<br />
+   Ensure that the first assignment of <tt>TPF_ROOT</tt> in <tt>maketpf.cfg</tt>
+   is the absolute path to your "<tt>foobar</tt>" directory.</p></li>
+
+   <li><p>Later if you want to include Apache in your full build add
+   <tt>APACHE=YES</tt> to the <tt>CONFIG</tt> macro in your Stage 1 deck.<br />
+   Then reassemble the SIP deck (<tt>sip.asm</tt>) to update the SIP generated
+   build files with the <tt>APACHE</tt> function switch enabled.</p></li>
+
+</ol><br />
+
+<center>
+<h2><a id="compilation" name="compilation"></a>Compilation</h2>
+</center>
+
+<ol>
+   <li><p>Switch to the Apache source code subdirectory:</p>
+   <p class="indented"><b><tt>cd $AROOT/src</tt></b></p></li>
+
+   <li><p>Overlay src/Configuration with src/Configuration.tmpl:</p>
+
+   <p class="indented">
+   <b><tt>cp&nbsp;Configuration.tmpl&nbsp;Configuration</tt></b></p></li>
+
+   <li><p>The src/Configuration file controls which optional modules are
+   compiled into Apache.<br />
+   Leave the file as-is if you want to use the default set of modules.<br />
+   Otherwise edit the src/Configuration file to customize which modules are
+   used:</p>
+
+   <ul>
+      <li>Comment out (by preceding the line with a "#") lines corresponding
+      to those modules you do <em>not</em> wish to include.</li>
+
+      <li>Uncomment (by removing the initial "#", if present) lines corresponding
+      to those modules you wish to include.<br />
+      (The <a href="readme-tpf.html">readme-tpf.html</a> document lists the
+      modules that have been tested on TPF).</li>
+
+      <li>Add lines for any custom or third party modules you wish to include.<br />
+      The modules placed in the Apache distribution are the ones that have been
+      tested and are used regularly by various members of the Apache development
+      group. Additional modules contributed by members or third parties with
+      specific needs or functions are available at
+      <a href="http://modules.apache.org/">http://modules.apache.org/</a>.
+      There are instructions on that page for linking these modules into the core Apache code.<br />
+      &nbsp;</li>
+   </ul>
+   </li>
+
+   <li><p>If you would like to use the TCP/IP network services database add
+   "<tt>CFLAGS_CHTA += -DTPF_HAVE_NSD</tt>" to either <tt>src/chta.mak</tt> or
+   <tt>src/maketpf.cfg</tt>. See "Network Services Database Support" in the
+   <a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Product Information Center</a>
+   for details.</p></li>
+
+   <li><p><a id="run-configure" name="run-configure"></a>Run the "Configure"
+   script:</p>
+
+   <p class="indented"><b><tt>export TPF=YES; export TPF64BIT=YES<br />
+   ./Configure</tt></b></p>
+
+   <table class="indented" summary="Configure output">
+   <tr><td class="output"><pre>
+Using config file: Configuration
+Creating Makefile
++ configured for TPF platform
++ setting C compiler to c89
++ setting C pre-processor to /usr/bin/cpp
++ using "tr [a-z] [A-Z]" to uppercase
++ checking for system header files
++ adding selected modules
++ checking sizeof various data types
+Creating Makefile in support
+Creating Makefile in os/tpf
+Creating Makefile in ap
+Creating Makefile in main
+Creating Makefile in modules/standard
+$
+</pre></td></tr>
+   </table>
+
+   <p>This generates modules.c and the apache.modules text file for use later
+   by MakeTPF.<br />
+   (Other files created by <tt>Configure</tt> are <em>not</em> used on z/TPF
+   such as include/ap_config_auto.h and the various Makefiles, so don't be
+   concerned that the C compiler and pre-processor shown in the
+   <tt>Configure</tt> output are incorrect.)</p>
+
+   <p class="indented">Use the <tt>-file</tt> option if you want to maintain
+   multiple configurations:</p>
+
+   <p class="indented"><b><tt>./Configure&nbsp;-file&nbsp;Configuration.2nd</tt></b></p>
+
+   <table class="indented" summary="Configure output using -file">
+   <tr><td class="output"><pre>
+Using config file: Configuration.2nd
+Creating Makefile
++ configured for TPF platform
++ setting C compiler to c89
+<em>et cetera</em>
+</pre></td></tr>
+   </table>&nbsp;</li>
+
+   <li><p>Edit src/os/tpf/os.h if you do <em>not</em> want the scoreboard kept
+   in shared memory.</p>
+
+   <p>The default behavior for Apache on all platforms <em>except</em> TPF is
+   to use the file system for maintaining the scoreboard (which holds current
+   Apache children status). The default behavior for Apache on TPF is to use
+   shared memory. This reduces file activity and improves performance.</p>
+
+   <p>If for some reason you do not want to use shared memory for the
+   scoreboard, you must remove "<tt>#define&nbsp;USE_SHMGET_SCOREBOARD</tt>"
+   from the <tt>os.h</tt>. The change will only take effect after Apache is
+   (re)compiled.</p></li>
+
+   <li><p>Compile and link Apache:</p>
+
+   <p class="indented"><b><tt>maketpf chta -f</tt></b></p>
+
+   <p><font color="#CC6600"><font size="+1">TIP:</font></font>Apache uses
+   cinet6 from CLTY, which is part of the Internet Daemon (ZINET). Ensure that
+   you link Apache with the proper version of CLTY for your system. If you
+   apply changes to CLTY you should re-link Apache to prevent the
+   <code>inetd_getServer</code> and/or <code>inetd_getServerStatus</code>
+   functions from failing.</p></li>
+
+</ol><br />
+
+<center>
+<h2><a id="installation" name="installation">Installation</a></h2>
+</center>
+
+<ol>
+   <li><p>Load and activate Apache on your test system.</p></li>
+
+   <li><p>Ensure that the program name you are using for Apache has
+   <tt>RESTRICT</tt> and <tt>KEY0</tt> authorization:</p>
+
+   <p class="indented"><tt><b>zdpat chta</b></tt></p>
+
+   <p>If necessary you can use the <tt>zapat</tt> entry to alter the
+   authorization:</p>
+
+   <p class="indented"><tt><b>zapat chta restrict key0</b></tt></p></li>
+
+   <li><p>General documentation for Apache is located at
+   <a href="http://httpd.apache.org/docs/">http://httpd.apache.org/docs/</a>
+   and in the HTML pages included with the distribution (tarball) under the
+   <tt>htdocs/manual</tt> directory.</p></li>
+
+   <li><p>Create the Apache run-time configuration file. The server requires a
+   configuration file to initialize
+   itself during activation.<br />
+   Copy the distribution version, conf/httpd.conf-dist from the decompressed
+   tarball on your PC, to conf/httpd.conf and then edit the conf/httpd.conf
+   copy with your site specific information.</p>
+
+   <p>You must change every occurrence of "<tt>@@ServerRoot@@</tt>" to your
+   document server root (for example "<tt>/usr/local/apache</tt>")</p>
+
+   <p>You should also add the following line to the httpd.conf file to prevent
+   Apache from doing a host name lookup on your test system:</p>
+
+   <p class="indented"><tt>ServerName 127.0.0.1</tt></p></li>
+
+   <li><p>Be sure your Native Stack communications device is active on TPF.<br />
+   Refer to the
+   <a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Product Information Center</a>
+   for details.</p></li>
+
+   <li><p>Using either TFTP or FTP, transfer the configuration file, icons,
+   and web pages to your TPF system. A typical directory structure for Apache
+   is as follows:</p>
+
+   <p class="indented"><tt>/usr/local/apache/conf<br />
+   /usr/local/apache/logs<br />
+   /usr/local/apache/icons<br />
+   /usr/local/apache/htdocs<br /></tt></p>
+
+   <p>At a minimum you will need these files on TPF:</p>
+
+   <p class="indented"><tt>/usr/local/apache/conf/httpd.conf<br />
+   /usr/local/apache/conf/mime.types<br />
+   /usr/local/apache/htdocs/index.html.en<br />
+   /usr/local/apache/htdocs/apache_pb.gif<br /></tt></p>
+
+   <p>All gif, jpg, and zip files should be transferred as binary; the
+   configuration file and html pages should be transferred as text.</p>
+
+   <p>Refer to the
+   <a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Product Information Center</a>
+   for details on TFTP and FTP.</p></li>
+
+   <li><p>The logs directory must exist and be accessible in order to avoid an
+   <tt>fopen</tt> error while running Apache:</p>
+
+   <p class="indented"><b><tt>zfile mkdir /usr/local/apache/logs<br />
+   zfile chmod 777 /usr/local/apache/logs<br /></tt></b></p></li>
+
+   <li><p>Add Apache to the Internet Daemon's tables using ZINET entries:</p>
+
+   <p class="indented">
+   <tt><b>zinet&nbsp;add&nbsp;s-<i>apache</i>&nbsp;pgm-chta&nbsp;model-daemon&nbsp;user-root</b></tt></p>
+   <p>Refer to the
+   <a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Product Information Center</a>
+   for details on the Internet Daemon and ZINET commands.</p></li>
+
+   <li><p>Start the server:</p>
+
+   <p class="indented"><b><tt>zinet&nbsp;start&nbsp;s-<i>apache</i></tt></b></p></li>
+
+   <li><p>Verify Apache was successfully started:</p>
+
+   <p class="indented"><b><tt>zfile cat /usr/local/apache/logs/error_log</tt></b></p>
+
+   <p>The output should be similar to this:</p>
+   <table class="indented" summary="vi instructions">
+   <tr><td class="output"><pre>
+[<i>timestamp</i>] [notice] Apache/1.3.<i>vv</i> (TPF) configured -- resuming normal operations
+[<i>timestamp</i>] [notice] Accept mutex: tpfcore (Default: tpfcore)
+</pre></td></tr>
+   </table>
+
+   <p>If there are severe errors correct the conf file and restart the server:</p>
+
+   <p class="indented"><b><tt>zinet&nbsp;stop&nbsp;s-<i>apache</i></tt></b><br />
+   correct the httpd.conf file and transfer it to TPF<br />
+   <b><tt>zfile&nbsp;rm&nbsp;/usr/local/apache/logs/error_log</tt></b><br />
+   <b><tt>zinet&nbsp;start&nbsp;s-<i>apache</i></tt></b></p></li>
+</ol><br />
+
+<center>
+<h2><a id="activation" name="activation"></a>Activation</h2>
+</center>
+
+<ol>
+   <li><p>Request a page from your browser:</p>
+
+   <p class="indented">
+   <tt><b>http://<i>xx.xx.xx.xx</i></b></tt>&nbsp;&nbsp;&nbsp;(where
+   <i>xx.xx.xx.xx</i> is your test system IP address)</p></li>
+
+</ol>
+
+<hr />
+
+<center>
+[ <a href="#top">top</a> | <a href="#download">Download</a>
+[ <a href="#setup">MakeTPF Setup</a> |
+<a href="#compilation">Compilation</a> |
+<a href="#installation">Installation</a> |
+<a href="#activation">Activation</a>&nbsp;]
+</center>
+<hr />
+</body>
+</html>

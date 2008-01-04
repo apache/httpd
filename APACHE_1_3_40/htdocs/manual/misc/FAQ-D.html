@@ -1,0 +1,569 @@
+<!--#if expr="$FAQMASTER" -->
+<!--#set var="STANDALONE" value="" -->
+<!--#set var="INCLUDED" value="YES" -->
+<!--#if expr="$QUERY_STRING = TOC" -->
+<!--#set var="TOC" value="YES" -->
+<!--#set var="CONTENT" value="" -->
+<!--#else -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="YES" -->
+<!--#endif -->
+<!--#else -->
+<!--#set var="STANDALONE" value="YES" -->
+<!--#set var="INCLUDED" value="" -->
+<!--#set var="TOC" value="" -->
+<!--#set var="CONTENT" value="" -->
+<!--#endif -->
+<!--#if expr="$STANDALONE" -->
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Server Frequently Asked Questions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Server Frequently Asked
+    Questions</h1>
+
+    <p>$Revision: 1.21 $ ($Date: 2003/07/01 22:42:13 $)</p>
+
+    <p>The latest version of this FAQ is always available from the
+    main Apache web site, at &lt;<a
+    href="http://httpd.apache.org/docs/misc/FAQ.html"
+    rel="Help"><samp>http://httpd.apache.org/docs/misc/FAQ.html</samp></a>&gt;.</p>
+    <!-- Notes about changes:                                           -->
+    <!--  - If adding a relative link to another part of the            -->
+    <!--    documentation, *do* include the ".html" portion.  There's a -->
+    <!--    good chance that the user will be reading the documentation -->
+    <!--    on his own system, which may not be configured for          -->
+    <!--    multiviews.                                                 -->
+    <!--  - When adding items, make sure they're put in the right place -->
+    <!--    - verify that the numbering matches up.                     -->
+    <!--  - *Don't* use <PRE></PRE> blocks - they don't appear          -->
+    <!--    correctly in a reliable way when this is converted to text  -->
+    <!--    with Lynx.  Use <DL><DD><CODE>xxx<BR>xx</CODE></DD></DL>    -->
+    <!--    blocks inside a <P></P> instead.  This is necessary to get  -->
+    <!--    the horizontal and vertical indenting right.                -->
+    <!--  - Don't forget to include an HR tag after the last /P tag     -->
+    <!--    but before the /LI in an item.                              -->
+
+    <p>If you are reading a text-only version of this FAQ, you may
+    find numbers enclosed in brackets (such as "[12]"). These refer
+    to the list of reference URLs to be found at the end of the
+    document. These references do not appear, and are not needed,
+    for the hypertext version.</p>
+
+    <h2>The Questions</h2>
+
+    <ol type="A">
+      <!--#endif -->
+      <!--#if expr="$TOC || $STANDALONE" -->
+
+      <li value="4">
+        <strong>Error Log Messages and Problems Starting
+        Apache</strong> 
+
+        <ol>
+          <li><a href="#setgid">Why do I get "<samp>setgid: Invalid
+          argument</samp>" at startup?</a></li>
+
+          <li><a href="#nodelay">Why am I getting "<samp>httpd:
+          could not set socket option TCP_NODELAY</samp>" in my
+          error log?</a></li>
+
+          <li><a href="#peerreset">Why am I getting
+          "<samp>connection reset by peer</samp>" in my error
+          log?</a></li>
+
+          <li><a href="#wheres-the-dump">The errorlog says Apache
+          dumped core, but where's the dump file?</a></li>
+
+          <li><a href="#linux-shmget">When I run it under Linux I
+          get "shmget: function not found", what should I
+          do?</a></li>
+
+          <li><a href="#nfslocking">Server hangs, or fails to
+          start, and/or error log fills with "<samp>fcntl:
+          F_SETLKW: No record locks available</samp>" or similar
+          messages</a></li>
+
+          <li><a href="#aixccbug">Why am I getting "<samp>Expected
+          &lt;/Directory&gt; but saw &lt;/Directory&gt;</samp>"
+          when I try to start Apache?</a></li>
+
+          <li><a href="#redhat">I'm using RedHat Linux and I have
+          problems with httpd dying randomly or not restarting
+          properly</a></li>
+
+          <li><a href="#stopping">I upgraded from an Apache version
+          earlier than 1.2.0 and suddenly I have problems with
+          Apache dying randomly or not restarting properly</a></li>
+
+          <li><a href="#setservername">When I try to start Apache
+          from a DOS window, I get a message like "<samp>Cannot
+          determine host name. Use ServerName directive to set it
+          manually.</samp>" What does this mean?</a></li>
+
+          <li><a href="#ws2_32dll">When I try to start Apache for
+          Windows, I get a message like "<samp>Unable To Locate
+          WS2_32.DLL...</samp>". What should I do?</a></li>
+
+          <li><a href="#WSADuplicateSocket">Apache for Windows does
+          not start. Error log contains this message "<samp>[crit]
+          (10045) The attempted operation is not supported for the
+          type of object referenced: Parent: WSADuplicateSocket
+          failed for socket ###</samp>". What does this
+          mean?</a></li>
+
+          <li><a href="#err1067">When I try to start Apache on
+          Windows, I get a message like "<code>System error 1067
+          has occurred. The process terminated
+          unexpectedly.</code>" What does this mean?</a></li>
+
+          <li><a href="#suseFDN">On a SuSE Linux system, I try and 
+          configure access control using basic authentication.
+	  Although I follow the example exactly, authentication
+	  fails, and an error message "<code>admin: not a valid
+	  FDN: ....</code>" is logged.</a></li>
+
+          <li><a href="#codered">Why do I have weird entries in my
+          logs asking for <code>default.ida</code> and
+          <code>cmd.exe</code>?</a></li>
+
+          <li><a href="#restart">Why am I getting server restart
+          messages periodically, when I did not restart the
+          server?</a></li>
+
+          <li><a href="#modulemagic">Why am I getting &quot;module
+          <em>module-name</em> is not compatible with this version of
+          Apache&quot; messages in my error log?</a></li>
+
+        </ol>
+      </li>
+      <!--#endif -->
+      <!--#if expr="$STANDALONE" -->
+    </ol>
+    <hr />
+
+    <h2>The Answers</h2>
+    <!--#endif -->
+    <!--#if expr="! $TOC" -->
+
+    <h3>D. Error Log Messages and Problems Starting Apache</h3>
+
+    <ol>
+      <li>
+        <a id="setgid" name="setgid"><strong>Why do I get
+        "<samp>setgid: Invalid argument</samp>" at
+        startup?</strong></a> 
+
+        <p>Your <a
+        href="../mod/core.html#group"><samp>Group</samp></a>
+        directive (probably in <samp>conf/httpd.conf</samp>) needs
+        to name a group that actually exists in the
+        <samp>/etc/group</samp> file (or your system's equivalent).
+        This problem is also frequently seen when a negative number
+        is used in the <code>Group</code> directive (<em>e.g.</em>,
+        "<code>Group&nbsp;#-1</code>"). Using a group name -- not
+        group number -- found in your system's group database
+        should solve this problem in all cases.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="nodelay" name="nodelay"><strong>Why am I getting
+        "<samp>httpd: could not set socket option
+        TCP_NODELAY</samp>" in my error log?</strong></a> 
+
+        <p>This message almost always indicates that the client
+        disconnected before Apache reached the point of calling
+        <code>setsockopt()</code> for the connection. It shouldn't
+        occur for more than about 1% of the requests your server
+        handles, and it's advisory only in any case.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="peerreset" name="peerreset"><strong>Why am I getting
+        "<samp>connection reset by peer</samp>" in my error
+        log?</strong></a> 
+
+        <p>This is a normal message and nothing about which to be
+        alarmed. It simply means that the client canceled the
+        connection before it had been completely set up - such as
+        by the end-user pressing the "Stop" button. People's
+        patience being what it is, sites with response-time
+        problems or slow network links may experience this more
+        than high capacity ones or those with large pipes to the
+        network.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="wheres-the-dump" name="wheres-the-dump"><strong>The
+        errorlog says Apache dumped core, but where's the dump
+        file?</strong></a> 
+
+        <p>In Apache version 1.2, the error log message about
+        dumped core includes the directory where the dump file
+        should be located. However, many Unixes do not allow a
+        process that has called <code>setuid()</code> to dump core
+        for security reasons; the typical Apache setup has the
+        server started as root to bind to port 80, after which it
+        changes UIDs to a non-privileged user to serve
+        requests.</p>
+
+        <p>Dealing with this is extremely operating
+        system-specific, and may require rebuilding your system
+        kernel. Consult your operating system documentation or
+        vendor for more information about whether your system does
+        this and how to bypass it. If there <em>is</em> a
+        documented way of bypassing it, it is recommended that you
+        bypass it only for the <samp>httpd</samp> server process if
+        possible.</p>
+
+        <p>The canonical location for Apache's core-dump files is
+        the <a href="../mod/core.html#serverroot">ServerRoot</a>
+        directory. As of Apache version 1.3, the location can be
+        set <em>via</em> the <a
+        href="../mod/core.html#coredumpdirectory"><samp>CoreDumpDirectory</samp></a>
+        directive to a different directory. Make sure that this
+        directory is writable by the user the server runs as (as
+        opposed to the user the server is <em>started</em> as).</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="linux-shmget" name="linux-shmget"><strong>When I run
+        it under Linux I get "shmget: function not found", what
+        should I do?</strong></a> 
+
+        <p>Your kernel has been built without SysV IPC support. You
+        will have to rebuild the kernel with that support enabled
+        (it's under the "General Setup" submenu). Documentation for
+        kernel building is beyond the scope of this FAQ; you should
+        consult the <a
+        href="http://www.redhat.com/mirrors/LDP/HOWTO/Kernel-HOWTO.html">
+        Kernel HOWTO</a>, or the documentation provided with your
+        distribution, or a <a
+        href="http://www.redhat.com/mirrors/LDP/HOWTO/META-FAQ.html">
+        Linux newsgroup/mailing list</a>. As a last-resort
+        workaround, you can comment out the
+        <code>#define&nbsp;USE_SHMGET_SCOREBOARD</code> definition
+        in the <samp>LINUX</samp> section of
+        <samp>src/conf.h</samp> and rebuild the server (prior to
+        1.3b4, simply removing
+        <code>#define&nbsp;HAVE_SHMGET</code> would have sufficed).
+        This will produce a server which is slower and less
+        reliable.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="nfslocking" name="nfslocking"><strong>Server hangs,
+        or fails to start, and/or error log fills with
+        "<samp>fcntl: F_SETLKW: No record locks available</samp>"
+        or similar messages</strong></a> 
+
+        <p>These are symptoms of a fine locking problem, which
+        usually means that the server is trying to use a
+        synchronization file on an NFS filesystem.</p>
+
+        <p>Because of its parallel-operation model, the Apache Web
+        server needs to provide some form of synchronization when
+        accessing certain resources. One of these synchronization
+        methods involves taking out locks on a file, which means
+        that the filesystem whereon the lockfile resides must
+        support locking. In many cases this means it <em>can't</em>
+        be kept on an NFS-mounted filesystem.</p>
+
+        <p>To cause the Web server to work around the NFS locking
+        limitations, include a line such as the following in your
+        server configuration files:</p>
+
+        <dl>
+          <dd><code>LockFile /var/run/apache-lock</code></dd>
+        </dl>
+
+        <p>The directory should not be generally writable
+        (<em>e.g.</em>, don't use <samp>/var/tmp</samp>). See the
+        <a
+        href="../mod/core.html#lockfile"><samp>LockFile</samp></a>
+        documentation for more information.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="aixccbug" name="aixccbug"><strong>Why am I getting
+        "<samp>Expected &lt;/Directory&gt; but saw
+        &lt;/Directory&gt;</samp>" when I try to start
+        Apache?</strong></a> 
+
+        <p>This is a known problem with certain versions of the AIX
+        C compiler. IBM are working on a solution, and the issue is
+        being tracked by <a
+        href="http://bugs.apache.org/index/full/2312">problem
+        report #2312</a>.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="redhat" name="redhat"><strong>I'm using RedHat Linux
+        and I have problems with httpd dying randomly or not
+        restarting properly</strong></a> 
+
+        <p>RedHat Linux versions 4.x (and possibly earlier) RPMs
+        contain various nasty scripts which do not stop or restart
+        Apache properly. These can affect you even if you're not
+        running the RedHat supplied RPMs.</p>
+
+        <p>If you're using the default install then you're probably
+        running Apache 1.1.3, which is outdated. From RedHat's ftp
+        site you can pick up a more recent RPM for Apache 1.2.x.
+        This will solve one of the problems.</p>
+
+        <p>If you're using a custom built Apache rather than the
+        RedHat RPMs then you should <code>rpm -e apache</code>. In
+        particular you want the mildly broken
+        <code>/etc/logrotate.d/apache</code> script to be removed,
+        and you want the broken <code>/etc/rc.d/init.d/httpd</code>
+        (or <code>httpd.init</code>) script to be removed. The
+        latter is actually fixed by the apache-1.2.5 RPMs but if
+        you're building your own Apache then you probably don't
+        want the RedHat files.</p>
+
+        <p>We can't stress enough how important it is for folks,
+        <em>especially vendors</em> to follow the <a
+        href="../stopping.html">stopping Apache directions</a>
+        given in our documentation. In RedHat's defense, the broken
+        scripts were necessary with Apache 1.1.x because the Linux
+        support in 1.1.x was very poor, and there were various race
+        conditions on all platforms. None of this should be
+        necessary with Apache 1.2 and later.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="stopping" name="stopping"><strong>I upgraded from an
+        Apache version earlier than 1.2.0 and suddenly I have
+        problems with Apache dying randomly or not restarting
+        properly</strong></a> 
+
+        <p>You should read <a href="#redhat">the previous note</a>
+        about problems with RedHat installations. It is entirely
+        likely that your installation has start/stop/restart
+        scripts which were built for an earlier version of Apache.
+        Versions earlier than 1.2.0 had various race conditions
+        that made it necessary to use <code>kill -9</code> at times
+        to take out all the httpd servers. But that should not be
+        necessary any longer. You should follow the <a
+        href="../stopping.html">directions on how to stop and
+        restart Apache</a>.</p>
+
+        <p>As of Apache 1.3 there is a script
+        <code>src/support/apachectl</code> which, after a bit of
+        customization, is suitable for starting, stopping, and
+        restarting your server.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="setservername" name="setservername"><b>When I try to
+        start Apache from a DOS window, I get a message like
+        "<samp>Cannot determine host name. Use ServerName directive
+        to set it manually.</samp>" What does this mean?</b></a> 
+
+        <p>It means what it says; the Apache software can't
+        determine the hostname of your system. Edit your
+        <samp>conf\httpd.conf</samp> file, look for the string
+        "ServerName", and make sure there's an uncommented
+        directive such as</p>
+
+        <dl>
+          <dd><code>ServerName localhost</code></dd>
+        </dl>
+
+        <p>or</p>
+
+        <dl>
+          <dd><code>ServerName www.foo.com</code></dd>
+        </dl>
+
+        <p>in the file. Correct it if there one there with wrong
+        information, or add one if you don't already have one.</p>
+
+        <p>Also, make sure that your Windows system has DNS
+        enabled. See the TCP/IP setup component of the Networking
+        or Internet Options control panel.</p>
+
+        <p>After verifying that DNS is enabled and that you have a
+        valid hostname in your <samp>ServerName</samp> directive,
+        try to start the server again.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="ws2_32dll" name="ws2_32dll"><b>When I try to start
+        Apache for Windows, I get a message like "<samp>Unable To
+        Locate WS2_32.DLL...</samp>". What should I do?</b></a> 
+
+        <p>Short answer: You need to install Winsock 2, available
+        from <a
+        href="http://www.microsoft.com/windows95/downloads/">http://www.microsoft.com/windows95/downloads/</a></p>
+
+        <p>Detailed answer: Prior to version 1.3.9, Apache for
+        Windows used Winsock 1.1. Beginning with version 1.3.9,
+        Apache began using Winsock 2 features (specifically,
+        WSADuplicateSocket()). WS2_32.DLL implements the Winsock 2
+        API. Winsock 2 ships with Windows NT 4.0 and Windows 98.
+        Some of the earlier releases of Windows 95 did not include
+        Winsock 2.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="WSADuplicateSocket"
+        name="WSADuplicateSocket"><b>Apache for Windows does not
+        start. Error log contains this message: "<samp>[crit]
+        (10045) The attempted operation is not supported for the
+        type of object referenced: Parent: WSADuplicateSocket
+        failed for socket ###</samp>". What does this mean?</b></a>
+        
+
+        <p>We have seen this problem when Apache is run on systems
+        along with Virtual Private Networking clients like Aventail
+        Connect. Aventail Connect is a Layered Service Provider
+        (LSP) that inserts itself, as a "shim," between the Winsock
+        2 API and Window's native Winsock 2 implementation. The
+        Aventail Connect shim does not implement
+        WSADuplicateSocket, which is the cause of the failure.</p>
+
+        <p>The shim is not unloaded when Aventail Connect is shut
+        down. Once observed, the problem persists until the shim is
+        either explicitly unloaded or the machine is rebooted.
+        Another potential solution (not tested) is to add
+        <code>apache.exe</code> to the Aventail "Connect Exclusion
+        List".</p>
+
+        <p>Apache is affected in a similar way by <em>any</em>
+        firewall program that isn't correctly configured. Assure
+        you exclude your Apache server ports (usually port 80) from
+        the list of ports to block. Refer to your firewall
+        program's documentation for the how-to.</p>
+        <hr />
+      </li>
+
+      <li>
+        <a id="err1067" name="err1067"><b>When I try to start
+        Apache on Windows, I get a message like "<code>System error
+        1067 has occurred. The process terminated
+        unexpectedly</code>." What does this mean?</b></a> 
+
+        <p>This message means that the Web server was unable to
+        start correctly for one reason or another. To find out why,
+        execute the following commands in a DOS window:</p>
+<pre>
+    c:
+    cd "\Program Files\Apache Group\Apache"
+    apache
+ 
+</pre>
+
+        <p>(If you don't get the prompt back, hit Control-C to
+        cause Apache to exit.)</p>
+
+        <p>The error you see will probably be one of those
+        preceding this question in the FAQ.</p>
+
+        <p>As of Apache 1.3.14, first check the Windows NT Event
+        Log for Application errors using the Windows NT/2000 Event
+        Viewer program. Any errors that occur prior to opening the
+        Apache error log will be stored here, if Apache is run as a
+        Service on NT or 2000. As with any error, also check your
+        Apache error log.</p>
+        <hr />
+      </li>
+
+      <li><a id="suseFDN" name="suseFDN"><b>On a SuSE Linux system, I try and 
+          configure access control using basic authentication.
+	  Although I follow the example exactly, authentication
+	  fails, and an error message "<code>admin: not a valid
+	  FDN: ....</code>" is logged.</b></a>
+
+          <p>
+	  In the SuSE distribution, additional 3rd party authentication
+	  modules have been added and activated by default. These modules
+	  interfere with the Apache standard modules and cause Basic
+	  authentication to fail. Our recommendation is to comment all
+	  those modules in <code>/etc/httpd/suse_addmodule.conf</code>
+	  and <code>/etc/httpd/suse_loadmodule.conf</code> which are not
+	  actually required for running your server.
+          </p><hr />
+      </li>
+
+     <li><a id="codered" name="codered"><b>Why do I have weird entries in my
+          logs asking for <code>default.ida</code> and
+          <code>cmd.exe</code>?</b></a>
+      
+          <p>The host requesting pages from your website and creating
+          those entries is a Windows machine running IIS that has been
+          infected by an Internet worm such as Nimda or Code Red. You
+          can safely ignore these error messages as they do not affect
+          Apache.  ApacheWeek has an <a
+          href="http://www.apacheweek.com/features/codered">article</a>
+          with more information.</p><hr />
+     </li>
+
+    <li><a id="restart" name="restart"><b>Why am I getting server restart
+    messages periodically, when I did not restart the server?</b></a>
+
+          <p>Problem: You are noticing restart messages in your error log,
+          periodically, when you know you did not restart the server
+          yourself:</p>
+
+<pre>
+[Thu Jun  6 04:02:01 2002] [notice] SIGHUP received.  Attempting to restart
+[Thu Jun  6 04:02:02 2002] [notice] Apache configured -- resuming normal operations
+</pre>
+
+          <p>Check your cron jobs to see when/if your server logs are being
+          rotated. Compare the time of rotation to the error message time.
+          If they are the same, you can somewhat safely assume that the 
+          restart is due to your server logs being rotated.</p><hr />
+     </li>
+
+     <li><a id="modulemagic" name="modulemagic"><b>Why am I getting
+          &quot;module <em>module-name</em> is not compatible with this version
+          of Apache&quot; messages in my error log?</b></a>
+      
+          <p>Module Magic Number (MMN) is a constant defined in Apache
+          source that is associated with binary compatibility of
+          modules. It is changed when internal Apache structures,
+          function calls and other significant parts of API change in
+          such a way that binary compatibility cannot be guaranteed any
+          more. On MMN change, all third party modules have to be at
+          least recompiled, sometimes even slightly changed in order
+          to work with the new version of Apache.</p>
+
+          <p>If you're getting the above error messages, contact the
+          vendor of the module for the new binary, or compile it if
+          you have access to the source code.</p><hr />
+     </li>
+
+    </ol>
+    <!--#endif -->
+    <!--#if expr="$STANDALONE" -->
+    <!-- Don't forget to add HR tags at the end of each list item.. -->
+    <!--#include virtual="footer.html" -->
+    <!--#endif -->
+  </body>
+</html>
+

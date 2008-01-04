@@ -1,0 +1,1286 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_proxy</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache module mod_proxy</h1>
+
+    <p>This module provides for an <strong>HTTP 1.1</strong>
+    caching proxy server.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a> mod_proxy.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    proxy_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.1 and later.</p>
+
+    <h2>Summary</h2>
+    This module implements a proxy/cache for Apache. It implements
+    proxying capability for <code>FTP</code>, <code>CONNECT</code>
+    (for SSL), <code>HTTP/0.9</code>, <code>HTTP/1.0</code>, and
+    (as of Apache 1.3.23) <code>HTTP/1.1</code>.
+    The module can be configured to connect to other proxy modules
+    for these and other protocols. 
+
+    <p>This module was experimental in Apache 1.1.x. As of Apache
+    1.2, mod_proxy stability is <em>greatly</em> improved.</p>
+
+    <p><strong>Warning:</strong> Do not enable proxying with <a
+    href="#proxyrequests">ProxyRequests</a> until you have <a
+    href="#access">secured your server</a>.  Open proxy servers are
+    dangerous both to your network and to the Internet at large.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#proxyrequests">ProxyRequests</a></li>
+
+      <li><a href="#proxyremote">ProxyRemote</a></li>
+
+      <li><a href="#proxypass">ProxyPass</a></li>
+
+      <li><a href="#proxypassreverse">ProxyPassReverse</a></li>
+
+      <li><a href="#proxyblock">ProxyBlock</a></li>
+
+      <li><a href="#allowconnect">AllowCONNECT</a></li>
+
+      <li><a href="#proxyreceivebuffersize">ProxyReceiveBufferSize</a></li>
+
+      <li><a href="#proxyiobuffersize">ProxyIOBufferSize</a></li>
+
+      <li><a href="#noproxy">NoProxy</a></li>
+
+      <li><a href="#proxydomain">ProxyDomain</a></li>
+
+      <li><a href="#proxyvia">ProxyVia</a></li>
+
+      <li><a href="#cacheroot">CacheRoot</a></li>
+
+      <li><a href="#cachesize">CacheSize</a></li>
+
+      <li><a href="#cachemaxexpire">CacheMaxExpire</a></li>
+
+      <li><a href="#cachedefaultexpire">CacheDefaultExpire</a></li>
+
+      <li><a
+      href="#cachelastmodifiedfactor">CacheLastModifiedFactor</a></li>
+
+      <li><a href="#cachegcinterval">CacheGcInterval</a></li>
+
+      <li><a href="#cachedirlevels">CacheDirLevels</a></li>
+
+      <li><a href="#cachedirlength">CacheDirLength</a></li>
+
+      <li><a
+      href="#cacheforcecompletion">CacheForceCompletion</a></li>
+
+      <li><a href="#nocache">NoCache</a></li>
+    </ul>
+
+    <h2><a id="configs" name="configs">Common configuration
+    topics</a></h2>
+
+    <ul>
+      <li><a href="#forwardreverse">Forward and Reverse Proxies</a></li>
+
+      <li><a href="#examples">Basic Examples</a></li>
+
+      <li><a href="#access">Controlling access to your
+      proxy</a></li>
+
+      <li><a href="#shortname">Using Netscape hostname
+      shortcuts</a></li>
+
+      <li><a href="#mimetypes">Why doesn't file type <em>xxx</em>
+      download via FTP?</a></li>
+
+      <li><a href="#type">How can I force an FTP ASCII
+      download of File <em>xxx</em>?</a></li>
+
+      <li><a href="#percent2fhack">How can I access
+      FTP files outside of my home directory?</a></li>
+
+      <li><a href="#ftppass">How can I hide the
+      FTP cleartext password in my browser's URL line?</a></li>
+
+      <li><a href="#startup">Why does Apache start more slowly when
+      using the proxy module?</a></li>
+
+      <li><a href="#socks">Can I use the Apache proxy module with
+      my SOCKS proxy?</a></li>
+
+      <li><a href="#intranet">What other functions are useful for
+      an intranet proxy server?</a></li>
+    </ul>
+
+<h2><a name="forwardreverse" id="forwardreverse">Forward and Reverse Proxies</a></h2>
+      <p>Apache can be configured in both a <dfn>forward</dfn> and
+      <dfn>reverse</dfn> proxy mode.</p>
+
+      <p>An ordinary <dfn>forward proxy</dfn> is an intermediate
+      server that sits between the client and the <em>origin
+      server</em>.  In order to get content from the origin server,
+      the client sends a request to the proxy naming the origin server
+      as the target and the proxy then requests the content from the
+      origin server and returns it to the client.  The client must be
+      specially configured to use the forward proxy to access other
+      sites.</p>
+
+      <p>A typical usage of a forward proxy is to provide Internet
+      access to internal clients that are otherwise restricted by a
+      firewall.  The forward proxy can also use caching to reduce
+      network usage.</p>
+
+      <p>The forward proxy is activated using the <code><a
+      href="#proxyrequests">ProxyRequests</a></code> directive.
+      Because forward proxys allow clients to access arbitrary sites
+      through your server and to hide their true origin, it is
+      essential that you <a href="#access">secure your server</a> so
+      that only authorized clients can access the proxy before
+      activating a forward proxy.</p>
+
+      <p>A <dfn>reverse proxy</dfn>, by contrast, appears to the
+      client just like an ordinary web server.  No special
+      configuration on the client is necessary.  The client makes
+      ordinary requests for content in the name-space of the reverse
+      proxy.  The reverse proxy then decides where to send those
+      requests, and returns the content as if it was itself the
+      origin.</p>
+
+      <p>A typical usage of a reverse proxy is to provide Internet
+      users access to a server that is behind a firewall.  Reverse
+      proxies can also be used to balance load among several back-end
+      servers, or to provide caching for a slower back-end server.
+      In addition, reverse proxies can be used simply to bring
+      several servers into the same URL space.</p>
+
+      <p>A reverse proxy is activated using the <code><a
+      href="#proxypass">ProxyPass</a></code> directive or the
+      <code>[P]</code> flag to the <code><a
+      href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+      directive.  It is <strong>not</strong> necessary to turn
+      <code><a href="#proxyrequests">ProxyRequests</a></code> on in
+      order to configure a reverse proxy.</p> 
+
+<h2><a name="examples" id="examples">Basic Examples</a></h2>
+
+    <p>The examples below are only a very basic idea to help you
+    get started.  Please read the documentation on the individual
+    directives.</p>
+
+    <h3>Forward Proxy</h3><p><code>
+    ProxyRequests On<br />
+    ProxyVia On<br />
+    <br />
+    &lt;Directory proxy:*&gt;<br />
+    
+      Order deny,allow<br />
+      Deny from all<br />
+      Allow from internal.example.com<br />
+    
+    &lt;/Directory&gt;<br />
+    <br />
+    CacheRoot "/usr/local/apache/proxy"<br />
+    CacheSize 5<br />
+    CacheGcInterval 4<br />
+    CacheMaxExpire 24<br />
+    CacheLastModifiedFactor 0.1<br />
+    CacheDefaultExpire 1<br />
+    NoCache a-domain.com another-domain.edu joes.garage-sale.com
+    </code></p>
+
+    <h3>Reverse Proxy</h3><p><code>
+    ProxyRequests Off<br />
+    <br />
+    ProxyPass /foo http://foo.example.com/bar<br />
+    ProxyPassReverse /foo http://foo.example.com/bar
+    </code></p>
+
+    <h2><a id="access" name="access">Controlling access to your
+    proxy</a></h2>
+    You can control who can access your proxy via the normal
+    &lt;Directory&gt; control block using the following example: 
+<pre>
+&lt;Directory proxy:*&gt;
+Order Deny,Allow
+Deny from all
+Allow from yournetwork.example.com
+&lt;/Directory&gt;
+</pre>
+
+    <p>A &lt;Files&gt; block will also work, and is the only method
+    known to work for all possible URLs in Apache versions earlier
+    than 1.2b10.</p>
+
+    <p>For more information, see <a
+    href="mod_access.html">mod_access</a>.</p>
+
+      <p>Strictly limiting access is essential if you are using a
+      forward proxy (using the <code><a
+      href="#proxyrequests">ProxyRequests</a></code> directive).
+      Otherwise, your server can be used by any client to access
+      arbitrary hosts while hiding his or her true identity.  This is
+      dangerous both for your network and for the Internet at large.
+      When using a reverse proxy (using the <code><a
+      href="#proxypass">ProxyPass</a></code> directive with
+      <code>ProxyRequests Off</code>), access control is less critical
+      because clients can only contact the hosts that you have
+      specifically configured.</p>
+
+    <h2><a id="shortname" name="shortname">Using Netscape hostname
+    shortcuts</a></h2>
+    There is an optional patch to the proxy module to allow
+    Netscape-like hostname shortcuts to be used. It's available
+    from the <a
+    href="http://www.apache.org/dist/httpd/contrib/patches/1.2/netscapehost.patch">
+    <samp>contrib/patches/1.2</samp></a> directory on the Apache
+    Web site. 
+
+    <h2><a id="mimetypes" name="mimetypes">Why doesn't file type
+    <em>xxx</em> download via FTP?</a></h2>
+    You probably don't have that particular file type defined as
+    <em>application/octet-stream</em> in your proxy's mime.types
+    configuration file. A useful line can be 
+<pre>
+application/octet-stream        bin dms lha lzh exe class tgz taz
+</pre>
+
+    <h2><a id="type" name="type">How can I force an FTP ASCII
+    download of File <em>xxx</em>?</a></h2>
+    In the rare situation where you must download a specific file
+    using the FTP <strong>ASCII</strong> transfer method (while the
+    default transfer is in <strong>binary</strong> mode), you can
+    override mod_proxy's default by suffixing the request with
+    <samp>;type=a</samp> to force an ASCII transfer.
+    (FTP Directory listings are always executed in ASCII mode, however.)
+
+    <h2><a id="percent2fhack" name="percent2fhack">How can I access
+    FTP files outside of my home directory?</a></h2>
+    <p>
+     A FTP URI is interpreted relative to the home directory of
+     the user who is logging in. Alas, to reach higher directory
+     levels you cannot use  /../, as the dots are interpreted by the
+     browser and not actually sent to the FTP server. To address
+     this problem, the so called "Squid %2f hack" was implemented in
+     the Apache FTP proxy; it is a solution which is also used by
+     other popular proxy servers like the
+     <a href="http://www.squid-cache.org/">Squid Proxy Cache</a>.
+     By prepending /%2f to the path of your request, you can make
+     such a proxy change the FTP starting directory to / (instead
+     of the home directory). <br />
+     <b>Example:</b> To retrieve the file <code>/etc/motd</code>,
+     you would use the URL <blockquote>
+     <code>ftp://<em>user@host</em>/%2f/etc/motd</code></blockquote>
+    </p>
+
+    <h2><a id="ftppass" name="ftppass">How can I hide the FTP
+    cleartext password in my browser's URL line?</a></h2>
+    <p>
+     To log in to an FTP server by username and password, Apache
+     uses different strategies.
+     In absense of a user name and password in the URL altogether,
+     Apache sends an anonymous login to the FTP server, i.e.,
+     <blockquote><code>
+       user: anonymous<br />
+       password: apache_proxy@
+     </code></blockquote>
+     This works for all popular FTP servers which are configured for
+     anonymous access.<br>
+     For a personal login with a specific username, you can embed
+     the user name into the URL, like in:
+     <code>ftp://<em>username@host</em>/myfile</code>. If the FTP server
+     asks for a password when given this username (which it should),
+     then Apache will reply with a [401 Authorization required] response,
+     which causes the Browser to pop up the username/password dialog.
+     Upon entering the password, the connection attempt is retried,
+     and if successful, the requested resource is presented.
+     The advantage of this procedure is that your browser does not
+     display the password in cleartext (which it would if you had used
+     <code>ftp://<em>username:password@host</em>/myfile</code> in
+     the first place).
+     <br />
+     <b>Note</b> that the password which is transmitted in such a way
+     is not encrypted on its way. It travels between your browser and
+     the Apache proxy server in a base64-encoded cleartext string, and
+     between the Apache proxy and the FTP server as plaintext. You should
+     therefore think twice before accessing your FTP server via HTTP
+     (or before accessing your personal files via FTP at all!) When
+     using unsecure channels, an eavesdropper might intercept your
+     password on its way.
+    </p>
+
+
+    <h2><a id="startup" name="startup">Why does Apache start more
+    slowly when using the proxy module?</a></h2>
+    If you're using the <code>ProxyBlock</code> or
+    <code>NoCache</code> directives, hostnames' IP addresses are
+    looked up and cached during startup for later match test. This
+    may take a few seconds (or more) depending on the speed with
+    which the hostname lookups occur. 
+
+    <h2><a id="socks" name="socks">Can I use the Apache proxy
+    module with my SOCKS proxy?</a></h2>
+    Yes. Just build Apache with the rule <code>SOCKS4=yes</code> in
+    your <em>Configuration</em> file, and follow the instructions
+    there. SOCKS5 capability can be added in a similar way (there's
+    no <code>SOCKS5</code> rule yet), so use the
+    <code>EXTRA_LDFLAGS</code> definition, or build Apache normally
+    and run it with the <em>runsocks</em> wrapper provided with
+    SOCKS5, if your OS supports dynamically linked libraries. 
+
+    <p>Some users have reported problems when using SOCKS version
+    4.2 on Solaris. The problem was solved by upgrading to SOCKS
+    4.3.</p>
+
+    <p>Remember that you'll also have to grant access to your
+    Apache proxy machine by permitting connections on the
+    appropriate ports in your SOCKS daemon's configuration.</p>
+
+    <h2><a id="intranet" name="intranet">What other functions are
+    useful for an intranet proxy server?</a></h2>
+
+    <p>An Apache proxy server situated in an intranet needs to
+    forward external requests through the company's firewall
+    (for this, configure the <a href="#proxyremote">ProxyRemote</a>
+    directive to forward the respective <em>scheme</em> to
+    the firewall proxy).
+    However, when it has to access resources within the intranet,
+    it can bypass the firewall when accessing hosts. The <a
+    href="#noproxy">NoProxy</a> directive is useful for specifying
+    which hosts belong to the intranet and should be accessed
+    directly.</p>
+
+    <p>Users within an intranet tend to omit the local domain name
+    from their WWW requests, thus requesting "http://somehost/"
+    instead of "http://somehost.my.dom.ain/". Some commercial proxy
+    servers let them get away with this and simply serve the
+    request, implying a configured local domain. When the <a
+    href="#proxydomain">ProxyDomain</a> directive is used and the
+    server is <a href="#proxyrequests">configured for proxy
+    service</a>, Apache can return a redirect response and send the
+    client to the correct, fully qualified, server address. This is
+    the preferred method since the user's bookmark files will then
+    contain fully qualified hosts.</p>
+    <hr />
+
+    <h2><a id="proxyrequests"
+    name="proxyrequests">ProxyRequests</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ProxyRequests
+    on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>ProxyRequests
+    Off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ProxyRequests is
+    only available in Apache 1.1 and later. 
+
+    <p>This allows or prevents Apache from functioning as a forward proxy
+    server. Setting ProxyRequests to 'off' does not disable use of
+    the <a href="#proxypass">ProxyPass</a> directive.</p>
+
+    <p><strong>Warning:</strong> Do not enable proxying until you have
+    <a href="#access">secured your server</a>.  Open proxy servers are
+    dangerous both to your network and to the Internet at large.</p>
+
+    <hr />
+
+    <h2><a id="proxyremote" name="proxyremote">ProxyRemote</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ProxyRemote <em>match
+    remote-server</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ProxyRemote is
+    only available in Apache 1.1 and later. 
+
+    <p>This defines remote proxies to this proxy. <em>match</em> is
+    either the name of a URL-scheme that the remote server
+    supports, or a partial URL for which the remote server should
+    be used, or '*' to indicate the server should be contacted for
+    all requests. <em>remote-server</em> is a partial URL for the
+    remote server. Syntax:</p>
+<pre>
+  remote-server = protocol://hostname[:port]
+</pre>
+    <em>protocol</em> is the protocol that should be used to
+    communicate with the remote server; only "http" is supported by
+    this module. 
+
+    <p>Example:</p>
+<pre>
+  ProxyRemote http://goodguys.com/ http://mirrorguys.com:8000
+  ProxyRemote * http://cleversite.com
+  ProxyRemote ftp http://ftpproxy.mydomain.com:8080
+</pre>
+    In the last example, the proxy will forward FTP requests,
+    encapsulated as yet another HTTP proxy request, to another
+    proxy which can handle them. 
+    <hr />
+
+    <h2><a id="proxypass" name="proxypass">ProxyPass</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ProxyPass <em>path
+    url</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ProxyPass is
+    only available in Apache 1.1 and later. 
+
+    <p>This directive allows remote servers to be mapped into the
+    space of the local server; the local server does not act as a
+    proxy in the conventional sense, but appears to be a mirror of
+    the remote server. <em>path</em> is the name of a local virtual
+    path; <em>url</em> is a partial URL for the remote server.</p>
+
+    <p>Suppose the local server has address
+    <samp>http://wibble.org/</samp>; then</p>
+<pre>
+   ProxyPass /mirror/foo/ http://foo.com/
+</pre>
+    <p>will cause a local request for the
+    &lt;<samp>http://wibble.org/mirror/foo/bar</samp>&gt; to be
+    internally converted into a proxy request to
+    &lt;<samp>http://foo.com/bar</samp>&gt;.</p>
+
+    <p><strong>Warning:</strong> The <code><a
+    href="#proxyrequests">ProxyRequests</a></code> directive should
+    usually be set <strong>off</strong> when using <code
+    class="directive">ProxyPass</code>.
+
+    <hr />
+
+    <h2><a id="proxypassreverse"
+    name="proxypassreverse">ProxyPassReverse</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ProxyPassReverse
+    <em>path url</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ProxyPassReverse
+    is only available in Apache 1.3b6 and later. 
+
+    <p>This directive lets Apache adjust the URL in the
+    <tt>Location</tt> header on HTTP redirect responses. For
+    instance this is essential when Apache is used as a reverse
+    proxy to avoid by-passing the reverse proxy because of HTTP
+    redirects on the backend servers which stay behind the reverse
+    proxy.</p>
+
+    <p><em>path</em> is the name of a local virtual path.<br />
+     <em>url</em> is a partial URL for the remote server - the same
+    way they are used for the <tt>ProxyPass</tt> directive.</p>
+
+    <p>Example:<br />
+     Suppose the local server has address
+    <samp>http://wibble.org/</samp>; then</p>
+<pre>
+   ProxyPass         /mirror/foo/ http://foo.com/
+   ProxyPassReverse  /mirror/foo/ http://foo.com/
+</pre>
+    will not only cause a local request for the
+    &lt;<samp>http://wibble.org/mirror/foo/bar</samp>&gt; to be
+    internally converted into a proxy request to
+    &lt;<samp>http://foo.com/bar</samp>&gt; (the functionality
+    <samp>ProxyPass</samp> provides here). It also takes care of
+    redirects the server foo.com sends: when
+    <samp>http://foo.com/bar</samp> is redirected by him to
+    <samp>http://foo.com/quux</samp> Apache adjusts this to
+    <samp>http://wibble.org/mirror/foo/quux</samp> before
+    forwarding the HTTP redirect response to the client. 
+
+    <p>Note that this <samp>ProxyPassReverse</samp> directive can
+    also be used in conjunction with the proxy pass-through feature
+    ("<samp>RewriteRule ... [P]</samp>") from <a
+    href="mod_rewrite.html#RewriteRule"><tt>mod_rewrite</tt></a>
+    because its doesn't depend on a corresponding
+    <samp>ProxyPass</samp> directive.</p>
+    <hr />
+
+    <h2><a id="allowconnect" name="allowconnect">AllowCONNECT</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> AllowCONNECT
+    <em>port</em> [<em>port</em>] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <em><samp>AllowCONNECT</samp> 443 563</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    <samp>AllowCONNECT</samp> is only available in Apache 1.3.2 and
+    later. 
+
+    <p>The <samp>AllowCONNECT</samp> directive specifies a list of
+    port numbers to which the proxy <samp>CONNECT</samp> method may
+    connect. Today's browsers use this method when a <em>https</em>
+    connection is requested and proxy tunneling over <em>http</em>
+    is in effect.<br />
+     By default, only the default https port (443) and the default
+    snews port (563) are enabled. Use the <samp>AllowCONNECT</samp>
+    directive to override this default and allow connections to
+    the listed ports only.</p>
+    <hr />
+
+    <h2><a id="proxyblock" name="proxyblock">ProxyBlock</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ProxyBlock
+    *|<em>word|host|domain</em> [<em>word|host|domain</em>]
+    ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ProxyBlock is
+    only available in Apache 1.2 and later. 
+
+    <p>The ProxyBlock directive specifies a list of words, hosts
+    and/or domains, separated by spaces. HTTP, HTTPS, and FTP
+    document requests to sites whose names contain matched words,
+    hosts or domains are <em>blocked</em> by the proxy server. The
+    proxy module will also attempt to determine IP addresses of
+    list items which may be hostnames during startup, and cache
+    them for match test as well. Example:</p>
+<pre>
+  ProxyBlock joes-garage.com some-host.co.uk rocky.wotsamattau.edu
+</pre>
+    'rocky.wotsamattau.edu' would also be matched if referenced by
+    IP address. 
+
+    <p>Note that 'wotsamattau' would also be sufficient to match
+    'wotsamattau.edu'.</p>
+
+    <p>Note also that</p>
+<pre>
+ProxyBlock *
+</pre>
+    blocks connections to all sites. 
+    <hr />
+
+    <h2><a id="proxyreceivebuffersize"
+    name="proxyreceivebuffersize">ProxyReceiveBufferSize</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ProxyReceiveBufferSize
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    ProxyReceiveBufferSize is only available in Apache 1.3 and
+    later. 
+
+    <p>The ProxyReceiveBufferSize directive specifies an explicit
+    network buffer size for outgoing HTTP and FTP connections, for
+    increased throughput. It has to be greater than 512 or set to 0
+    to indicate that the system's default buffer size should be
+    used.</p>
+
+    <p>Example:</p>
+<pre>
+  ProxyReceiveBufferSize 2048
+</pre>
+    <hr />
+
+    <h2><a id="proxyiobuffersize"
+    name="proxyiobuffersize">ProxyIOBufferSize</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ProxyIOBufferSize
+    <em>bytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>8192</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    ProxyIOBufferSize is only available in Apache 1.3.24 and
+    later. 
+
+    <p>The ProxyIOBufferSize directive specifies the number of bytes
+    that will be read from a remote HTTP or FTP server at one time.
+    This directive is different from the ProxyReceiveBufferSize
+    directive, which specifies the low level socket buffer size.
+    </p>
+
+    <p>
+    When a response is received which fits entirely within the IO
+    buffer size, the remote HTTP or FTP server socket will be closed
+    before an attempt is made to write the response to the client.
+    This ensures that the remote server does not remain connected
+    unnecessarily while the response is delivered to a slow client.
+    A high value for the IO buffer decreases the load on remote HTTP
+    and FTP servers, at the expense of greater RAM footprint on the
+    proxy.
+    </p>
+
+    <p>Example:</p>
+<pre>
+  ProxyIOBufferSize 131072
+</pre>
+    <hr />
+
+    <h2><a id="noproxy" name="noproxy">NoProxy</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> NoProxy <a
+    href="#domain"><em>Domain</em></a>|<a
+    href="#subnet"><em>SubNet</em></a>|<a
+    href="#ipaddr"><em>IpAddr</em></a>|<a
+    href="#hostname"><em>Hostname</em></a> [<a
+    href="#domain"><em>Domain</em></a>|<a
+    href="#subnet"><em>SubNet</em></a>|<a
+    href="#ipaddr"><em>IpAddr</em></a>|<a
+    href="#hostname"><em>Hostname</em></a>] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> NoProxy is only
+    available in Apache 1.3 and later. 
+
+    <p>This directive is only useful for Apache proxy servers
+    within intranets. The NoProxy directive specifies a list of
+    subnets, IP addresses, hosts and/or domains, separated by
+    spaces. A request to a host which matches one or more of these
+    is always served directly, without forwarding to the configured
+    ProxyRemote proxy server(s).</p>
+
+    <p>Example:</p>
+<pre>
+  ProxyRemote  *  http://firewall.mycompany.com:81
+  NoProxy         .mycompany.com 192.168.112.0/21 
+</pre>
+    The arguments to the NoProxy directive are one of the following
+    type list: 
+
+    <dl>
+      <!-- ===================== Domain ======================= -->
+
+      <dt><a id="domain" name="domain"><em>Domain</em></a></dt>
+
+      <dd>A <em>Domain</em> is a partially qualified DNS domain
+      name, preceded by a period. It represents a list of hosts
+      which logically belong to the same DNS domain or zone
+      (<em>i.e.</em>, the suffixes of the hostnames are all ending
+      in <em>Domain</em>).<br />
+       Examples: <samp>.com</samp> <samp>.apache.org.</samp><br />
+       To distinguish <em>Domain</em>s from <a
+      href="#hostname"><em>Hostname</em></a>s (both syntactically
+      and semantically; a DNS domain can have a DNS A record,
+      too!), <em>Domain</em>s are always written with a leading
+      period.<br />
+       Note: Domain name comparisons are done without regard to the
+      case, and <em>Domain</em>s are always assumed to be anchored
+      in the root of the DNS tree, therefore two domains
+      <samp>.MyDomain.com</samp> and <samp>.mydomain.com.</samp>
+      (note the trailing period) are considered equal. Since a
+      domain comparison does not involve a DNS lookup, it is much
+      more efficient than subnet comparison. 
+      <!-- ===================== SubNet ======================= -->
+      </dd>
+
+      <dt><a id="subnet" name="subnet"><em>SubNet</em></a></dt>
+
+      <dd>
+        A <em>SubNet</em> is a partially qualified internet address
+        in numeric (dotted quad) form, optionally followed by a
+        slash and the netmask, specified as the number of
+        significant bits in the <em>SubNet</em>. It is used to
+        represent a subnet of hosts which can be reached over a
+        common network interface. In the absence of the explicit
+        net mask it is assumed that omitted (or zero valued)
+        trailing digits specify the mask. (In this case, the
+        netmask can only be multiples of 8 bits wide.)<br />
+         Examples: 
+
+        <dl>
+          <dt><samp>192.168</samp> or <samp>192.168.0.0</samp></dt>
+
+          <dd>the subnet 192.168.0.0 with an implied netmask of 16
+          valid bits (sometimes used in the netmask form
+          <samp>255.255.0.0</samp>)</dd>
+
+          <dt><samp>192.168.112.0/21</samp></dt>
+
+          <dd>the subnet <samp>192.168.112.0/21</samp> with a
+          netmask of 21 valid bits (also used in the form
+          255.255.248.0)</dd>
+        </dl>
+        As a degenerate case, a <em>SubNet</em> with 32 valid bits
+        is the equivalent to an <em>IPAddr</em>, while a
+        <em>SubNet</em> with zero valid bits (<em>e.g.</em>,
+        0.0.0.0/0) is the same as the constant <em>_Default_</em>,
+        matching any IP address. 
+        <!-- ===================== IPAddr ======================= -->
+      </dd>
+
+      <dt><a id="ipaddr" name="ipaddr"><em>IPAddr</em></a></dt>
+
+      <dd>
+        A <em>IPAddr</em> represents a fully qualified internet
+        address in numeric (dotted quad) form. Usually, this
+        address represents a host, but there need not necessarily
+        be a DNS domain name connected with the address.<br />
+         Example: 192.168.123.7<br />
+         Note: An <em>IPAddr</em> does not need to be resolved by
+        the DNS system, so it can result in more effective apache
+        performance. 
+
+        <p><strong>See Also:</strong> <a
+        href="../dns-caveats.html">DNS Issues</a></p>
+        <!-- ===================== Hostname ======================= -->
+      </dd>
+
+      <dt><a id="hostname"
+      name="hostname"><em>Hostname</em></a></dt>
+
+      <dd>
+        A <em>Hostname</em> is a fully qualified DNS domain name
+        which can be resolved to one or more <a
+        href="#ipaddr"><em>IPAddrs</em></a> via the DNS domain name
+        service. It represents a logical host (in contrast to <a
+        href="#domain"><em>Domain</em></a>s, see above) and must be
+        resolvable to at least one <a
+        href="#ipaddr"><em>IPAddr</em></a> (or often to a list of
+        hosts with different <a
+        href="#ipaddr"><em>IPAddr</em></a>'s).<br />
+         Examples: <samp>prep.ai.mit.edu</samp>
+        <samp>www.apache.org.</samp><br />
+         Note: In many situations, it is more effective to specify
+        an <a href="#ipaddr"><em>IPAddr</em></a> in place of a
+        <em>Hostname</em> since a DNS lookup can be avoided. Name
+        resolution in Apache can take a remarkable deal of time
+        when the connection to the name server uses a slow PPP
+        link.<br />
+         Note: <em>Hostname</em> comparisons are done without
+        regard to the case, and <em>Hostname</em>s are always
+        assumed to be anchored in the root of the DNS tree,
+        therefore two hosts <samp>WWW.MyDomain.com</samp> and
+        <samp>www.mydomain.com.</samp> (note the trailing period)
+        are considered equal.<br />
+         
+
+        <p><strong>See Also:</strong> <a
+        href="../dns-caveats.html">DNS Issues</a></p>
+      </dd>
+    </dl>
+    <hr />
+
+    <h2><a id="proxydomain" name="proxydomain">ProxyDomain</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ProxyDomain
+    <em>Domain</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ProxyDomain is
+    only available in Apache 1.3 and later. 
+
+    <p>This directive is only useful for Apache proxy servers
+    within intranets. The ProxyDomain directive specifies the
+    default domain which the apache proxy server will belong to. If
+    a request to a host without a domain name is encountered, a
+    redirection response to the same host with the configured
+    <em>Domain</em> appended will be generated.</p>
+
+    <p>Example:</p>
+<pre>
+  ProxyRemote  *  http://firewall.mycompany.com:81
+  NoProxy         .mycompany.com 192.168.112.0/21 
+  ProxyDomain     .mycompany.com
+</pre>
+    <hr />
+
+    <h2><a id="proxyvia" name="proxyvia">ProxyVia</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> ProxyVia
+    on|off|full|block<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>ProxyVia
+    off</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> ProxyVia is only
+    available in Apache 1.3.2 and later. 
+
+    <p>This directive controls the use of the <samp>Via:</samp>
+    HTTP header by the proxy. Its intended use is to control the
+    flow of of proxy requests along a chain of proxy servers. See
+    RFC2068 (HTTP/1.1) for an explanation of <samp>Via:</samp>
+    header lines.</p>
+
+    <ul>
+      <li>If set to <em>off</em>, which is the default, no special
+      processing is performed. If a request or reply contains a
+      <samp>Via:</samp> header, it is passed through
+      unchanged.</li>
+
+      <li>If set to <em>on</em>, each request and reply will get a
+      <samp>Via:</samp> header line added for the current
+      host.</li>
+
+      <li>If set to <em>full</em>, each generated <samp>Via:</samp>
+      header line will additionally have the Apache server version
+      shown as a <samp>Via:</samp> comment field.</li>
+
+      <li>If set to <em>block</em>, every proxy request will have
+      all its <samp>Via:</samp> header lines removed. No new
+      <samp>Via:</samp> header will be generated.</li>
+    </ul>
+    <hr />
+
+    <h2><a id="cacheforcecompletion"
+    name="cacheforcecompletion">CacheForceCompletion</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CacheForceCompletion
+    <em>percentage</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>90</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    CacheForceCompletion is only available in Apache 1.3.1 and
+    later. 
+
+    <p>If an http transfer that is being cached is cancelled, the
+    proxy module will complete the transfer to cache if more than
+    the percentage specified has already been transferred.</p>
+
+    <p>This is a percentage, and must be a number between 1 and
+    100, or 0 to use the default. 100 will cause a document to be
+    cached only if the transfer was allowed to complete. A number
+    between 60 and 90 is recommended.</p>
+    <hr />
+
+    <h2><a id="cacheroot" name="cacheroot">CacheRoot</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CacheRoot
+    <em>directory</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> CacheRoot is
+    only available in Apache 1.1 and later. 
+
+    <p>Sets the name of the directory to contain cache files; this
+    must be writable by the httpd server. (see the <a
+    href="core.html#user"><code>User</code></a> directive).<br />
+     Setting <code>CacheRoot</code> enables proxy cacheing; without
+    defining a <code>CacheRoot</code>, proxy functionality will be
+    available if <code>ProxyRequests</code> are set to
+    <code>On</code>, but no cacheing will be available.</p>
+    <hr />
+
+    <h2><a id="cachesize" name="cachesize">CacheSize</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CacheSize
+    <em>kilobytes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>CacheSize
+    5</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> CacheSize is
+    only available in Apache 1.1 and later. 
+
+    <p>Sets the desired space usage of the cache, in KB (1024-byte
+    units). Although usage may grow above this setting, the garbage
+    collection will delete files until the usage is at or below
+    this setting.<br />
+     Depending on the expected proxy traffic volume and
+    <code>CacheGcInterval</code>, use a value which is at least 20
+    to 40 % lower than the available space.</p>
+    <hr />
+
+    <h2><a id="cachegcinterval"
+    name="cachegcinterval">CacheGcInterval</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CacheGcInterval
+    <em>hours</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> CacheGcinterval
+    is only available in Apache 1.1 and later. 
+
+    <p>Check the cache after the specified number of
+    <em>hours</em>, and delete files if the space usage is greater
+    than that set by CacheSize. Note that <em>hours</em> accepts a
+    float value, you could for example use <code>CacheGcInterval
+    1.5</code> to check the cache every 90 minutes. (If unset, no
+    garbage collection will be performed, and the cache will grow
+    indefinitely.) Note also that the larger the
+    <code>CacheGcInterval</code>, the more extra space beyond the
+    configured <code>CacheSize</code> will be needed for the cache
+    between garbage collections.<br />
+     <!-- Note that due to a design flaw, Apache
+            does not automatically force a garbage collection when the available
+            space on the file system where the cache resides is exhausted. -->
+    </p>
+    <hr />
+
+    <h2><a id="cachemaxexpire"
+    name="cachemaxexpire">CacheMaxExpire</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CacheMaxExpire
+    <em>hours</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>CacheMaxExpire
+    24</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> CacheMaxExpire
+    is only available in Apache 1.1 and later. 
+
+    <p>Specifies the maximum number of <em>hours</em> for which
+    cachable HTTP documents will be retained without checking the
+    origin server. Thus, documents will be out of date at most this
+    number of <em>hours</em> This restriction is enforced even if
+    an expiry date was supplied with the document.</p>
+    <hr />
+
+    <h2><a id="cachelastmodifiedfactor"
+    name="cachelastmodifiedfactor">CacheLastModifiedFactor</a>
+    directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CacheLastModifiedFactor
+    <em>factor</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>CacheLastModifiedFactor 0.1</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    CacheLastModifiedFactor is only available in Apache 1.1 and
+    later. 
+
+    <p>If the origin HTTP server did not supply an expiry date for
+    the document, then estimate one using the formula</p>
+<pre>
+  expiry-period = time-since-last-modification * <em>factor</em>
+</pre>
+    For example, if the document was last modified 10 hours ago,
+    and <em>factor</em> is 0.1, then the expiry period will be set
+    to 10*0.1 = 1 hour. 
+
+    <p>If the expiry-period would be longer than that set by
+    CacheMaxExpire, then the latter takes precedence.</p>
+    <hr />
+
+    <h2><a id="cachedirlevels"
+    name="cachedirlevels">CacheDirLevels</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CacheDirLevels
+    <em>levels</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>CacheDirLevels
+    3</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> CacheDirLevels
+    is only available in Apache 1.1 and later. 
+
+    <p>CacheDirLevels sets the number of <em>levels</em> of
+    subdirectories in the cache. Cached data will be saved this
+    many directory levels below CacheRoot.</p>
+    <hr />
+
+    <h2><a id="cachedirlength"
+    name="cachedirlength">CacheDirLength</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CacheDirLength
+    <em>length</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>CacheDirLength
+    1</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> CacheDirLength
+    is only available in Apache 1.1 and later. 
+
+    <p>CacheDirLength sets the number of characters in proxy cache
+    subdirectory names.</p>
+    <hr />
+
+    <h2><a id="cachedefaultexpire"
+    name="cachedefaultexpire">CacheDefaultExpire</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> CacheDefaultExpire
+    <em>hours</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a>
+    <code>CacheDefaultExpire 1</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a>
+    CacheDefaultExpire is only available in Apache 1.1 and later. 
+
+    <p>If the document is fetched via a protocol that does not
+    support expiry times, then use the specified number of
+    <em>hours</em> as the expiry time. <a
+    href="#cachemaxexpire">CacheMaxExpire</a> does
+    <strong>not</strong> override this setting.</p>
+    <hr />
+
+    <h2><a id="nocache" name="nocache">NoCache</a> directive</h2>
+    <a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> NoCache
+    *|<em>word|host|domain</em> [<em>word|host|domain</em>]
+    ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <em>None</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> <em>Not
+    applicable</em><br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_proxy<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> NoCache is only
+    available in Apache 1.1 and later. 
+
+    <p>The NoCache directive specifies a list of words, hosts
+    and/or domains, separated by spaces. HTTP and non-passworded
+    FTP documents from matched words, hosts or domains are
+    <em>not</em> cached by the proxy server. The proxy module will
+    also attempt to determine IP addresses of list items which may
+    be hostnames during startup, and cache them for match test as
+    well. Example:</p>
+<pre>
+  NoCache joes-garage.com some-host.co.uk bullwinkle.wotsamattau.edu
+</pre>
+    'bullwinkle.wotsamattau.edu' would also be matched if
+    referenced by IP address. 
+
+    <p>Note that 'wotsamattau' would also be sufficient to match
+    'wotsamattau.edu'.</p>
+
+    <p>Note also that</p>
+<pre>
+NoCache *
+</pre>
+    disables caching completely. 
+
+    <p><!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

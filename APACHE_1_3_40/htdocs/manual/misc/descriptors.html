@@ -1,0 +1,208 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Descriptors and Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Descriptors and Apache</h1>
+
+    <p>A <em>descriptor</em>, also commonly called a <em>file
+    handle</em> is an object that a program uses to read or write
+    an open file, or open network socket, or a variety of other
+    devices. It is represented by an integer, and you may be
+    familiar with <code>stdin</code>, <code>stdout</code>, and
+    <code>stderr</code> which are descriptors 0, 1, and 2
+    respectively. Apache needs a descriptor for each log file, plus
+    one for each network socket that it listens on, plus a handful
+    of others. Libraries that Apache uses may also require
+    descriptors. Normal programs don't open up many descriptors at
+    all, and so there are some latent problems that you may
+    experience should you start running Apache with many
+    descriptors (<em>i.e.</em>, with many virtual hosts).</p>
+
+    <p>The operating system enforces a limit on the number of
+    descriptors that a program can have open at a time. There are
+    typically three limits involved here. One is a kernel
+    limitation, depending on your operating system you will either
+    be able to tune the number of descriptors available to higher
+    numbers (this is frequently called <em>FD_SETSIZE</em>). Or you
+    may be stuck with a (relatively) low amount. The second limit
+    is called the <em>hard resource</em> limit, and it is sometimes
+    set by root in an obscure operating system file, but frequently
+    is the same as the kernel limit. The third limit is called the
+    <em>soft resource</em> limit. The soft limit is always less
+    than or equal to the hard limit. For example, the hard limit
+    may be 1024, but the soft limit only 64. Any user can raise
+    their soft limit up to the hard limit. Root can raise the hard
+    limit up to the system maximum limit. The soft limit is the
+    actual limit that is used when enforcing the maximum number of
+    files a process can have open.</p>
+
+    <p>To summarize:</p>
+
+    <center>
+<pre>
+  #open files  &lt;=  soft limit  &lt;=  hard limit  &lt;=  kernel limit
+</pre>
+    </center>
+
+    <p>You control the hard and soft limits using the
+    <code>limit</code> (csh) or <code>ulimit</code> (sh)
+    directives. See the respective man pages for more information.
+    For example you can probably use <code>ulimit -n
+    unlimited</code> to raise your soft limit up to the hard limit.
+    You should include this command in a shell script which starts
+    your webserver.</p>
+
+    <p>Unfortunately, it's not always this simple. As mentioned
+    above, you will probably run into some system limitations that
+    will need to be worked around somehow. Work was done in version
+    1.2.1 to improve the situation somewhat. Here is a partial list
+    of systems and workarounds (assuming you are using 1.2.1 or
+    later):</p>
+
+    <dl>
+      <dt><strong>BSDI 2.0</strong></dt>
+
+      <dd>Under BSDI 2.0 you can build Apache to support more
+      descriptors by adding <code>-DFD_SETSIZE=nnn</code> to
+      <code>EXTRA_CFLAGS</code> (where nnn is the number of
+      descriptors you wish to support, keep it less than the hard
+      limit). But it will run into trouble if more than
+      approximately 240 Listen directives are used. This may be
+      cured by rebuilding your kernel with a higher
+      FD_SETSIZE.</dd>
+
+      <dt><strong>FreeBSD 2.2, BSDI 2.1+</strong></dt>
+
+      <dd>Similar to the BSDI 2.0 case, you should define
+      <code>FD_SETSIZE</code> and rebuild. But the extra Listen
+      limitation doesn't exist.</dd>
+
+      <dt><strong>Linux</strong></dt>
+
+      <dd>By default Linux has a kernel maximum of 256 open
+      descriptors per process. There are several patches available
+      for the 2.0.x series which raise this to 1024 and beyond, and
+      you can find them in the "unofficial patches" section of <a
+      href="http://www.linuxhq.com/">the Linux Information HQ</a>.
+      None of these patches are perfect, and an entirely different
+      approach is likely to be taken during the 2.1.x development.
+      Applying these patches will raise the FD_SETSIZE used to
+      compile all programs, and unless you rebuild all your
+      libraries you should avoid running any other program with a
+      soft descriptor limit above 256. As of this writing the
+      patches available for increasing the number of descriptors do
+      not take this into account. On a dedicated webserver you
+      probably won't run into trouble.</dd>
+
+      <dt><strong>Solaris through 2.5.1</strong></dt>
+
+      <dd>Solaris has a kernel hard limit of 1024 (may be lower in
+      earlier versions). But it has a limitation that files using
+      the stdio library cannot have a descriptor above 255. Apache
+      uses the stdio library for the ErrorLog directive. When you
+      have more than approximately 110 virtual hosts (with an error
+      log and an access log each) you will need to build Apache
+      with <code>-DHIGH_SLACK_LINE=256</code> added to
+      <code>EXTRA_CFLAGS</code>. You will be limited to
+      approximately 240 error logs if you do this.</dd>
+
+      <dt><strong>AIX</strong></dt>
+
+      <dd>AIX version 3.2?? appears to have a hard limit of 128
+      descriptors. End of story. Version 4.1.5 has a hard limit of
+      2000.  Version 4.3.3 and 5.1 say
+      <pre>
+/*
+ * Select uses bit masks of file descriptors.
+ * These macros manipulate such bit fields.
+ * FD_SETSIZE may be defined by the user to the maximum valued file
+ * descriptor to be selected; the default here should be == OPEN_MAX
+ */
+#ifndef FD_SETSIZE
+#define FD_SETSIZE     32767    /* must be == OPEN_MAX in <limits.h> */
+#endif
+</pre></dd>
+
+      <dt><strong>SCO OpenServer</strong></dt>
+
+      <dd>Edit the <code>/etc/conf/cf.d/stune</code> file or use
+      <code>/etc/conf/cf.d/configure</code> choice 7 (User and
+      Group configuration) and modify the <code>NOFILES</code>
+      kernel parameter to a suitably higher value. SCO recommends a
+      number between 60 and 11000, the default is 110. Relink and
+      reboot, and the new number of descriptors will be
+      available.</dd>
+
+      <dt><strong>Compaq Tru64 UNIX/Digital UNIX/OSF</strong></dt>
+
+      <dd>
+        <ol>
+          <li>Raise <code>open_max_soft</code> and
+          <code>open_max_hard</code> to 4096 in the proc subsystem.
+          Do a man on sysconfig, sysconfigdb, and
+          sysconfigtab.</li>
+
+          <li>Raise <code>max-vnodes</code> to a large number which
+          is greater than the number of apache processes * 4096
+          (Setting it to 250,000 should be good for most people).
+          Do a man on sysconfig, sysconfigdb, and
+          sysconfigtab.</li>
+
+          <li>If you are using Tru64 5.0, 5.0A, or 5.1, define
+          <code>NO_SLACK</code> to work around a bug in the OS.
+          <code>CFLAGS="-DNO_SLACK" ./configure</code></li>
+        </ol>
+      </dd>
+
+      <dt><strong>Others</strong></dt>
+
+      <dd>If you have details on another operating system, please
+      submit it through our <a
+      href="http://httpd.apache.org/bug_report.html">Bug Report
+      Page</a>.</dd>
+    </dl>
+
+    <p>In addition to the problems described above there are
+    problems with many libraries that Apache uses. The most common
+    example is the bind DNS resolver library that is used by pretty
+    much every unix, which fails if it ends up with a descriptor
+    above 256. We suspect there are other libraries that similar
+    limitations. So the code as of 1.2.1 takes a defensive stance
+    and tries to save descriptors less than 16 for use while
+    processing each request. This is called the <em>low slack
+    line</em>.</p>
+
+    <p>Note that this shouldn't waste descriptors. If you really
+    are pushing the limits and Apache can't get a descriptor above
+    16 when it wants it, it will settle for one below 16.</p>
+
+    <p>In extreme situations you may want to lower the low slack
+    line, but you shouldn't ever need to. For example, lowering it
+    can increase the limits 240 described above under Solaris and
+    BSDI 2.0. But you'll play a delicate balancing game with the
+    descriptors needed to serve a request. Should you want to play
+    this game, the compile time parameter is
+    <code>LOW_SLACK_LINE</code> and there's a tiny bit of
+    documentation in the header file <code>httpd.h</code>.</p>
+
+    <p>Finally, if you suspect that all this slack stuff is causing
+    you problems, you can disable it. Add <code>-DNO_SLACK</code>
+    to <code>EXTRA_CFLAGS</code> and rebuild. But please report it
+    to our <a href="http://httpd.apache.org/bug_report.html">Bug
+    Report Page</a> so that we can investigate. 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

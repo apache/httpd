@@ -1,0 +1,67 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Server Pool Management</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Server Pool Management</h1>
+    <hr />
+
+    <p>We found that many people were using values for "MaxServers"
+    either too high or too low, and were hanging themselves on it.
+    The model we adopted is still based on long-lived
+    minimal-forking processes, but instead of specifying one number
+    of persistent processes, the web-master specifies a maximum and
+    minimum number of processes to be "spare" - every couple of
+    seconds the parent checks the actual number of spare servers
+    and adjusts accordingly. This should keep the number of servers
+    concurrently running relatively low while still ensuring
+    minimal forking.</p>
+
+    <p>We renamed the current StartServers to MinSpareServers,
+    created separate StartServers parameter which means what it
+    says, and renamed MaxServers to MaxSpareServers (though the old
+    name still works, for NCSA 1.4 back-compatibility). The old
+    names were generally regarded as too confusing.</p>
+
+    <p>The defaults for each variable are:</p>
+<pre>
+MinSpareServers         5
+MaxSpareServers         10
+StartServers            5
+</pre>
+    There is an absolute maximum number of simultaneous children
+    defined by a compile-time limit which defaults to 256 and a
+    "MaxClients" directive which specifies the number of
+    simultaneous children that will be allowed. MaxClients can be
+    adjusted up to the compile-time limit (HARD_SERVER_LIMIT,
+    defined in httpd.h). If you need more than 256 simultaneous
+    children, you need to modify both HARD_SERVER_LIMIT and
+    MaxClients. 
+
+    <p>In versions before 1.2, HARD_SERVER_LIMIT defaulted to
+    150.</p>
+
+    <p>We do not recommend changing either of these values
+    unless:</p>
+
+    <ol>
+      <li>You know you have the server resources to handle
+      more</li>
+
+      <li>You use the machine for other purposes and must limit the
+      amount of memory Apache uses</li>
+    </ol>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+
