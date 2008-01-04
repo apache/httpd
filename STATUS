@@ -138,14 +138,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      rpluem: I am +1 once we have a confirmation from Werner that this patch fixes
      his problem as this patch has some differences to his original patch.
 
-  * mod_ssl: Fix handling of buffered request body for per-location SSL
-    renegotiation when an internal redirect occurs. PR 43738. [Joe Orton]
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=591393&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, wrowe
-
   * various modules: Silence some compiler warnings
       Trunk version of patch:
          http://svn.apache.org/viewvc?rev=599651&view=rev
