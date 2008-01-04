@@ -80,6 +80,11 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * mod_deflate: Don't leave a strong ETag in place when transforming content
+     PR 39727
+     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=580598&r2=607219&pathrev=607219
+     +1: niq, wrowe, jim
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -123,11 +128,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       -1: rpluem: jorton found some problems with the trunk version and they
                   should be fixed / discussed in trunk before we backport.
       -1: wrowe until the next release is out the door
-
-   * mod_deflate: Don't leave a strong ETag in place when transforming content
-     PR 39727
-     http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/filters/mod_deflate.c?r1=580598&r2=607219&pathrev=607219
-     +1: niq, wrowe
 
    * mod_dav: Fix evaluation of If-Match * and If-None-Match * conditionals.
      PR 38034
