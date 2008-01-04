@@ -1,4 +1,4 @@
-                                                        -*- coding: utf-8 No BOM -*-
+                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.7
 
   *) SECURITY: CVE-2007-6421 (cve.mitre.org)
