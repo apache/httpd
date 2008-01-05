@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.8
 
+  *) mod_dav: Fix evaluation of If-Match * and If-None-Match * conditionals.
+     PR 38034 [Paritosh Shah <shah.paritosh gmail.com>]
 
 Changes with Apache 2.2.7
 
