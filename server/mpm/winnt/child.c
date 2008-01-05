@@ -450,12 +450,12 @@ static PCOMP_CONTEXT win9x_get_connection(PCOMP_CONTEXT context)
         apr_pool_create_ex(&context->ptrans, pchild, NULL, allocator);
         apr_allocator_owner_set(allocator, context->ptrans);
         apr_pool_tag(context->ptrans, "transaction");
-        context->ba = apr_bucket_alloc_create(context->ptrans);
         apr_thread_mutex_unlock(child_lock);
     }
 
     while (1) {
         apr_pool_clear(context->ptrans);
+        context->ba = apr_bucket_alloc_create(context->ptrans);
         context->accept_socket = remove_job();
         if (context->accept_socket == INVALID_SOCKET) {
             return NULL;
