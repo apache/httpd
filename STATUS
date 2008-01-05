@@ -116,7 +116,7 @@ RELEASE SHOWSTOPPERS:
     linked for ab, mod_ssl in 2.0.62, the choice of libs were broken.
     Patch to 2.0 (applicable to no other branch);
       http://people.apache.org/~wrowe/fix-no-sslc-2.0.patch
-    +1; wrowe
+    +1; wrowe, sctemme
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
