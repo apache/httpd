@@ -2,21 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) Introduce the ProxyFtpDirCharset directive, allowing the administrator
-     to identify a default, or specific servers or paths which list their
-     contents in other-than ISO-8859-1 charset (e.g. utf-8). [Ruediger Pluem]
-
-  *) mod_dav: Fix evaluation of If-Match * and If-None-Match * conditionals.
-     PR 38034 [Paritosh Shah <shah.paritosh gmail.com>]
-
-  *) mod_deflate: Transform ETag when transforming the entity.
-     PR 39727 [Henrik Nordstrom <hno squid-cache.org>, Nick Kew]
-
-  *) Add explicit charset to the output of various modules to work around
-     possible cross-site scripting flaws affecting web browsers that do not
-     derive the response character set as required by  RFC2616.  One of these
-     reported by SecurityReason [Joe Orton]
-
   *) mod_ssl: Added server name indication support (RFC 4366).
      PR 34607. [Kaspar Brand <asfbugz velox.ch>]
 
