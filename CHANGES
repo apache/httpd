@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.8
 
+  *) winnt_mpm: Restore Win32DisableAcceptEx On directive and Win9x platform
+     by recreating the bucket allocator each time the trans pool is cleared.
+     PR: 11427 #16 (follow-on)  [Tom Donovan <Tom.Donovan acm.org>]
+
   *) mod_dav: Fix evaluation of If-Match * and If-None-Match * conditionals.
      PR 38034 [Paritosh Shah <shah.paritosh gmail.com>]
 
