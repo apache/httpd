@@ -1404,6 +1404,39 @@ static dav_error * dav_validate_walker(dav_walk_resource *wres, int calltype)
     return NULL;
 }
 
+/* If-* header checking */
+static int dav_meets_conditions(request_rec *r, int resource_state)
+{
+    const char *if_match, *if_none_match;
+    int retVal;
+
+    /* If-Match '*' fix. Resource existence not checked by ap_meets_conditions.
+     * If-Match '*' request should succeed only if the resource exists. */
+    if ((if_match = apr_table_get(r->headers_in, "If-Match")) != NULL) {
+        if (if_match[0] == '*' && resource_state != DAV_RESOURCE_EXISTS)
+            return HTTP_PRECONDITION_FAILED;
+    }
+
+    retVal = ap_meets_conditions(r);
+
+    /* If-None-Match '*' fix. If-None-Match '*' request should succeed 
+     * if the resource does not exist. */
+    if (retVal == HTTP_PRECONDITION_FAILED) {
+        /* Note. If if_none_match != NULL, if_none_match is the culprit.
+         * Since, in presence of If-None-Match, 
+         * other If-* headers are undefined. */
+        if ((if_none_match =
+            apr_table_get(r->headers_in, "If-None-Match")) != NULL) {
+            if (if_none_match[0] == '*'
+                && resource_state != DAV_RESOURCE_EXISTS) {
+                return OK;
+            }
+        }
+    }
+
+    return retVal;
+}
+
 /*
 ** dav_validate_request:  Validate if-headers (and check for locks) on:
 **    (1) r->filename @ depth;
@@ -1433,6 +1466,9 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
     const dav_hooks_repository *repos_hooks = resource->hooks;
     dav_buffer work_buf = { 0 };
     dav_response *new_response;
+    int resource_state;
+    const char *etag;
+    int set_etag = 0;
 
 #if DAV_DEBUG
     if (depth && response == NULL) {
@@ -1449,10 +1485,29 @@ DAV_DECLARE(dav_error *) dav_validate_request(request_rec *r,
     if (response != NULL)
         *response = NULL;
 
+    /* Set the ETag header required by dav_meets_conditions() */
+    etag = apr_table_get(r->headers_out, "ETag");
+    if (!etag) {
+        etag = (*resource->hooks->getetag)(resource);
+        if (etag && *etag) {
+            apr_table_set(r->headers_out, "ETag", etag);
+            set_etag = 1;
+        }
+    }
     /* Do the standard checks for conditional requests using
      * If-..-Since, If-Match etc */
-    if ((result = ap_meets_conditions(r)) != OK) {
-        /* ### fix this up... how? */
+    resource_state = dav_get_resource_state(r, resource);
+    result = dav_meets_conditions(r, resource_state);
+    if (set_etag) {
+        /*
+         * If we have set an ETag to headers out above for
+         * dav_meets_conditions() revert this here as we do not want to set
+         * the ETag in responses to requests with methods where this might not
+         * be desired.
+         */
+        apr_table_unset(r->headers_out, "ETag");
+    }
+    if (result != OK) {
         return dav_new_error(r->pool, result, 0, NULL);
     }
 
