@@ -64,7 +64,7 @@ RELEASE SHOWSTOPPERS:
         http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/generators/mod_status.c?r1=590641&r2=607873
       1.3 version of patch attached to: 
         http://mail-archives.apache.org/mod_mbox/httpd-dev/200801.mbox/%3c47813C93.4020507@apache.org%3e
-      +1: sctemme (with fuankg's change of default refresh time to 10 seconds in r607873)
+      +1: sctemme (with fuankg's change of default refresh time to 10 seconds in r607873), rpluem (as well +1 to secs)
 
 PROPOSED PATCHES FOR THIS RELEASE:
 
