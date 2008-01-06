@@ -70,7 +70,42 @@ typedef struct http_filter_ctx {
         BODY_CHUNK_PART
     } state;
     int eos_sent;
+    char chunk_ln[30];
+    char *pos;
 } http_ctx_t;
+
+static apr_status_t get_chunk_line(http_ctx_t *ctx, int len)
+{
+    /*
+     * Check if we do not overflow our chunksize / empty line buffer
+     * (ctx->chunk_ln). If we do the chunksize / empty line is bogus anyway so
+     * bail out in this case.
+     * XXX: Currently we are very limited in accepting chunk-extensions. If
+     * this is needed the chunk_ln buffer must be much larger or we must
+     * find a different way to discard them as we do not process them anyway.
+     */
+    if ((ctx->pos - ctx->chunk_ln) + len < sizeof(ctx->chunk_ln)) {
+        ctx->pos += len;
+        *(ctx->pos) = '\0';
+        /*
+         * Check if we really got a full line. If yes the
+         * last char in the just read buffer must be LF.
+         * If not advance the buffer and return APR_EAGAIN.
+         * We do not start processing until we have the
+         * full line.
+         */
+        if (ctx->pos[-1] != APR_ASCII_LF) {
+            return APR_EAGAIN;
+        }
+        /*
+         * Line is complete. So reset ctx->pos for next round.
+         */
+        ctx->pos = ctx->chunk_ln;
+        return APR_SUCCESS;
+    }
+    return APR_ENOSPC;
+}
+
 
 /* This is the HTTP_INPUT filter for HTTP requests and responses from
  * proxied servers (mod_proxy).  It handles chunked and content-length
@@ -98,6 +133,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         ctx->remaining = 0;
         ctx->limit_used = 0;
         ctx->eos_sent = 0;
+        ctx->pos = ctx->chunk_ln;
 
         /* LimitRequestBody does not apply to proxied responses.
          * Consider implementing this check in its own filter.
@@ -229,9 +265,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         /* We can't read the chunk until after sending 100 if required. */
         if (ctx->state == BODY_CHUNK) {
-            char line[30];
             apr_bucket_brigade *bb;
-            apr_size_t len = 30;
+            apr_size_t len = sizeof(ctx->chunk_ln) - (ctx->pos - ctx->chunk_ln);
             apr_off_t brigade_length;
 
             bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
@@ -258,9 +293,17 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     rv = APR_ENOSPC;
                 }
                 if (rv == APR_SUCCESS) {
-                    rv = apr_brigade_flatten(bb, line, &len);
+                    rv = apr_brigade_flatten(bb, ctx->pos, &len);
                     if (rv == APR_SUCCESS) {
-                        ctx->remaining = get_chunk_size(line);
+                        rv = get_chunk_line(ctx, len);
+                        if (APR_STATUS_IS_EAGAIN(rv)) {
+                            apr_brigade_cleanup(bb);
+                            ctx->state = BODY_CHUNK_PART;
+                            return rv;
+                        }
+                        if (rv == APR_SUCCESS) {
+                            ctx->remaining = get_chunk_size(ctx->chunk_ln);
+                        }
                     }
                 }
             }
@@ -310,9 +353,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         case BODY_CHUNK:
         case BODY_CHUNK_PART:
             {
-                char line[30];
                 apr_bucket_brigade *bb;
-                apr_size_t len = 30;
+                apr_size_t len = sizeof(ctx->chunk_ln)
+                                 - (ctx->pos - ctx->chunk_ln);
                 apr_status_t http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
 
                 bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
@@ -321,11 +364,21 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 if (ctx->state == BODY_CHUNK) {
                     rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
                                         block, 0);
-                    apr_brigade_cleanup(bb);
                     if (block == APR_NONBLOCK_READ &&
-                        (APR_STATUS_IS_EAGAIN(rv))) {
+                        ( (rv == APR_SUCCESS && APR_BRIGADE_EMPTY(bb)) ||
+                          (APR_STATUS_IS_EAGAIN(rv)) )) {
                         return APR_EAGAIN;
                     }
+                    rv = apr_brigade_flatten(bb, ctx->pos, &len);
+                    apr_brigade_cleanup(bb);
+                    if (rv == APR_SUCCESS) {
+                        rv = get_chunk_line(ctx, len);
+                        if (APR_STATUS_IS_EAGAIN(rv)) {
+                            return rv;
+                        }
+                    }
+                    /* Reset len */
+                    len = sizeof(ctx->chunk_ln) - (ctx->pos - ctx->chunk_ln);
                 } else {
                     rv = APR_SUCCESS;
                 }
@@ -343,7 +396,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     }
                     ctx->state = BODY_CHUNK;
                     if (rv == APR_SUCCESS) {
-                        rv = apr_brigade_flatten(bb, line, &len);
+                        rv = apr_brigade_flatten(bb, ctx->pos, &len);
                         if (rv == APR_SUCCESS) {
                             /* Wait a sec, that's a blank line!  Oh no. */
                             if (!len) {
@@ -351,7 +404,15 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                                 http_error = HTTP_SERVICE_UNAVAILABLE;
                             }
                             else {
-                                ctx->remaining = get_chunk_size(line);
+                                rv = get_chunk_line(ctx, len);
+                                if (APR_STATUS_IS_EAGAIN(rv)) {
+                                    ctx->state = BODY_CHUNK_PART;
+                                    apr_brigade_cleanup(bb);
+                                    return rv;
+                                }
+                               if (rv == APR_SUCCESS) {
+                                   ctx->remaining = get_chunk_size(ctx->chunk_ln);
+                               }
                             }
                         }
                     }
