@@ -1372,6 +1372,24 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
                      service_name);
         exit(APEXIT_INIT);
     }
+    else if (!one_process) {
+        /* Open a null handle to soak stdout in this process.
+         * We need to emulate apr_proc_detach, unix performs this
+         * same check in the pre_config hook (although it is
+         * arguably premature).  Services already fixed this.
+         */
+        apr_file_t *nullfile;
+
+        if ((rv = apr_file_open(&nullfile, "NUL",
+                                APR_READ | APR_WRITE, APR_OS_DEFAULT,
+                                process->pool)) == APR_SUCCESS) {
+            apr_file_t *nullstdout;
+            if (apr_file_open_stdout(&nullstdout, process->pool)
+                    == APR_SUCCESS)
+                apr_file_dup2(nullstdout, nullfile, process->pool);
+            apr_file_close(nullfile);
+        }
+    }
 
     /* Win9x: disable AcceptEx */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
