@@ -1393,7 +1393,8 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
         }
     }
 
-    /* Win9x: disable AcceptEx */
+    /* use_acceptex (enabled by default) is not available on Win9x.
+     */
     if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
         use_acceptex = 0;
     }
@@ -1406,11 +1407,6 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
 #ifdef AP_MPM_WANT_SET_MAX_MEM_FREE
         ap_max_mem_free = APR_ALLOCATOR_MAX_FREE_UNLIMITED;
 #endif
-    /* use_acceptex which is enabled by default is not available on Win9x.
-     */
-    if (osver.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS) {
-        use_acceptex = 0;
-    }
 
     apr_cpystrn(ap_coredump_dir, ap_server_root, sizeof(ap_coredump_dir));
 
