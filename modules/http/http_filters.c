@@ -73,6 +73,7 @@ typedef struct http_filter_ctx {
     char chunk_ln[32];
     char *pos;
     apr_off_t linesize;
+    apr_bucket_brigade *bb;
 } http_ctx_t;
 
 static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
@@ -194,6 +195,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->state = BODY_NONE;
         ctx->pos = ctx->chunk_ln;
+        ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
 
         /* LimitRequestBody does not apply to proxied responses.
          * Consider implementing this check in its own filter.
@@ -254,7 +256,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                               "Invalid Content-Length");
 
-                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+                bb = ctx->bb;
+                apr_brigade_cleanup(bb);
                 e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
                                            f->r->pool, f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
@@ -273,7 +276,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                           "Requested content-length of %" APR_OFF_T_FMT
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->remaining, ctx->limit);
-                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+                bb = ctx->bb;
+                apr_brigade_cleanup(bb);
                 e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
                                            f->r->pool, f->c->bucket_alloc);
                 APR_BRIGADE_INSERT_TAIL(bb, e);
@@ -313,7 +317,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
             tmp = apr_pstrcat(f->r->pool, AP_SERVER_PROTOCOL, " ",
                               ap_get_status_line(100), CRLF CRLF, NULL);
-            bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+            bb = ctx->bb;
+            apr_brigade_cleanup(bb);
             e = apr_bucket_pool_create(tmp, strlen(tmp), f->r->pool,
                                        f->c->bucket_alloc);
             APR_BRIGADE_INSERT_HEAD(bb, e);
@@ -327,7 +332,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         if (ctx->state == BODY_CHUNK) {
             apr_bucket_brigade *bb;
 
-            bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+            bb = ctx->bb;
+            apr_brigade_cleanup(bb);
 
             rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
                                 block, 0);
@@ -400,7 +406,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 apr_bucket_brigade *bb;
                 apr_status_t http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
 
-                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+                bb = ctx->bb;
+                apr_brigade_cleanup(bb);
 
                 /* We need to read the CRLF after the chunk.  */
                 if (ctx->state == BODY_CHUNK) {
@@ -539,7 +546,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                           "Read content-length of %" APR_OFF_T_FMT
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->limit_used, ctx->limit);
-            bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+            bb = ctx->bb;
+            apr_brigade_cleanup(bb);
             e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
                                        f->r->pool,
                                        f->c->bucket_alloc);
