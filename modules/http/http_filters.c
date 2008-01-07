@@ -72,20 +72,84 @@ typedef struct http_filter_ctx {
     int eos_sent;
     char chunk_ln[30];
     char *pos;
+    apr_off_t linesize;
 } http_ctx_t;
 
-static apr_status_t get_chunk_line(http_ctx_t *ctx, int len)
+static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
+                                             apr_bucket_brigade *b,
+                                             int linelimit)
 {
+    apr_status_t rv;
+    apr_off_t brigade_length;
+    apr_bucket *e;
+    const char *lineend;
+    apr_size_t len;
+
     /*
-     * Check if we do not overflow our chunksize / empty line buffer
-     * (ctx->chunk_ln). If we do the chunksize / empty line is bogus anyway so
-     * bail out in this case.
-     * XXX: Currently we are very limited in accepting chunk-extensions. If
-     * this is needed the chunk_ln buffer must be much larger or we must
-     * find a different way to discard them as we do not process them anyway.
+     * As the brigade b should have been requested in mode AP_MODE_GETLINE
+     * all buckets in this brigade are already some type of memory
+     * buckets (due to the needed scanning for LF in mode AP_MODE_GETLINE)
+     * or META buckets.
      */
-    if ((ctx->pos - ctx->chunk_ln) + len < sizeof(ctx->chunk_ln)) {
+    rv = apr_brigade_length(b, 0, &brigade_length);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    /* Sanity check. Should never happen. See above. */
+    if (brigade_length == -1) {
+        return APR_EGENERAL;
+    }
+    if (!brigade_length) {
+        return APR_EAGAIN;
+    }
+    ctx->linesize += brigade_length;
+    if (ctx->linesize > linelimit) {
+        return APR_ENOSPC;
+    }
+    /*
+     * As all buckets are already some type of memory buckets or META buckets
+     * (see above), we only need to check the last byte in the last data bucket.
+     */
+    for (e = APR_BRIGADE_LAST(b);
+         e != APR_BRIGADE_SENTINEL(b);
+         e = APR_BUCKET_PREV(e)) {
+
+        if (!APR_BUCKET_IS_METADATA(e)) {
+            break;
+        }
+    }
+    rv = apr_bucket_read(e, &lineend, &len, APR_BLOCK_READ);
+    if (rv != APR_SUCCESS) {
+        return rv;
+    }
+    if (lineend[len - 1] != APR_ASCII_LF) {
+        return APR_EAGAIN;
+    }
+    /* Line is complete. So reset ctx->linesize for next round. */
+    ctx->linesize = 0;
+    return APR_SUCCESS;
+}
+
+static apr_status_t get_chunk_line(http_ctx_t *ctx, apr_bucket_brigade *b,
+                                   int linelimit)
+{
+    apr_size_t len;
+    apr_status_t rv;
+
+    len = sizeof(ctx->chunk_ln) - (ctx->pos - ctx->chunk_ln) - 1;
+    /*
+     * Check if there is space left in ctx->chunk_ln. If not, then either
+     * the chunk size is insane or we have chunk-extensions. Ignore both
+     * by discarding the remaining part of the line via
+     * get_remaining_chunk_line. Only bail out if the line is too long.
+     */
+    if (len > 0) {
+        rv = apr_brigade_flatten(b, ctx->pos, &len);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
         ctx->pos += len;
+        ctx->linesize += len;
         *(ctx->pos) = '\0';
         /*
          * Check if we really got a full line. If yes the
@@ -95,15 +159,14 @@ static apr_status_t get_chunk_line(http_ctx_t *ctx, int len)
          * full line.
          */
         if (ctx->pos[-1] != APR_ASCII_LF) {
-            return APR_EAGAIN;
+            /* Check if the remaining data in the brigade has the LF */
+            return get_remaining_chunk_line(ctx, b, linelimit);
         }
-        /*
-         * Line is complete. So reset ctx->pos for next round.
-         */
+        /* Line is complete. So reset ctx->pos for next round. */
         ctx->pos = ctx->chunk_ln;
         return APR_SUCCESS;
     }
-    return APR_ENOSPC;
+    return get_remaining_chunk_line(ctx, b, linelimit);
 }
 
 
@@ -134,6 +197,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         ctx->limit_used = 0;
         ctx->eos_sent = 0;
         ctx->pos = ctx->chunk_ln;
+        ctx->linesize = 0;
 
         /* LimitRequestBody does not apply to proxied responses.
          * Consider implementing this check in its own filter.
@@ -266,8 +330,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         /* We can't read the chunk until after sending 100 if required. */
         if (ctx->state == BODY_CHUNK) {
             apr_bucket_brigade *bb;
-            apr_size_t len = sizeof(ctx->chunk_ln) - (ctx->pos - ctx->chunk_ln);
-            apr_off_t brigade_length;
 
             bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
 
@@ -283,28 +345,14 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             }
 
             if (rv == APR_SUCCESS) {
-                /* We have to check the length of the brigade we got back.
-                 * We will not accept partial or blank lines.
-                 */
-                rv = apr_brigade_length(bb, 1, &brigade_length);
-                if (rv == APR_SUCCESS
-                    && (!brigade_length ||
-                        brigade_length > f->r->server->limit_req_line)) {
-                    rv = APR_ENOSPC;
+                rv = get_chunk_line(ctx, bb, f->r->server->limit_req_line);
+                if (APR_STATUS_IS_EAGAIN(rv)) {
+                    apr_brigade_cleanup(bb);
+                    ctx->state = BODY_CHUNK_PART;
+                    return rv;
                 }
                 if (rv == APR_SUCCESS) {
-                    rv = apr_brigade_flatten(bb, ctx->pos, &len);
-                    if (rv == APR_SUCCESS) {
-                        rv = get_chunk_line(ctx, len);
-                        if (APR_STATUS_IS_EAGAIN(rv)) {
-                            apr_brigade_cleanup(bb);
-                            ctx->state = BODY_CHUNK_PART;
-                            return rv;
-                        }
-                        if (rv == APR_SUCCESS) {
-                            ctx->remaining = get_chunk_size(ctx->chunk_ln);
-                        }
-                    }
+                    ctx->remaining = get_chunk_size(ctx->chunk_ln);
                 }
             }
             apr_brigade_cleanup(bb);
@@ -354,8 +402,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         case BODY_CHUNK_PART:
             {
                 apr_bucket_brigade *bb;
-                apr_size_t len = sizeof(ctx->chunk_ln)
-                                 - (ctx->pos - ctx->chunk_ln);
                 apr_status_t http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
 
                 bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
@@ -369,16 +415,18 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                           (APR_STATUS_IS_EAGAIN(rv)) )) {
                         return APR_EAGAIN;
                     }
-                    rv = apr_brigade_flatten(bb, ctx->pos, &len);
+                    /*
+                     * We really don't care whats on this line. If it is RFC
+                     * compliant it should be only \r\n. If there is more
+                     * before we just ignore it as long as we do not get over
+                     * the limit for request lines.
+                     */
+                    rv = get_remaining_chunk_line(ctx, bb,
+                                                  f->r->server->limit_req_line);
                     apr_brigade_cleanup(bb);
-                    if (rv == APR_SUCCESS) {
-                        rv = get_chunk_line(ctx, len);
-                        if (APR_STATUS_IS_EAGAIN(rv)) {
-                            return rv;
-                        }
+                    if (APR_STATUS_IS_EAGAIN(rv)) {
+                        return rv;
                     }
-                    /* Reset len */
-                    len = sizeof(ctx->chunk_ln) - (ctx->pos - ctx->chunk_ln);
                 } else {
                     rv = APR_SUCCESS;
                 }
@@ -396,23 +444,23 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                     }
                     ctx->state = BODY_CHUNK;
                     if (rv == APR_SUCCESS) {
-                        rv = apr_brigade_flatten(bb, ctx->pos, &len);
+                        rv = get_chunk_line(ctx, bb, f->r->server->limit_req_line);
+                        if (APR_STATUS_IS_EAGAIN(rv)) {
+                            ctx->state = BODY_CHUNK_PART;
+                            apr_brigade_cleanup(bb);
+                            return rv;
+                        }
                         if (rv == APR_SUCCESS) {
-                            /* Wait a sec, that's a blank line!  Oh no. */
-                            if (!len) {
+                            /*
+                             * Wait a sec, that's a blank line or it starts
+                             * with an invalid character!  Oh no.
+                             */
+                            if (!apr_isxdigit(*(ctx->chunk_ln))) {
                                 rv = APR_EGENERAL;
                                 http_error = HTTP_SERVICE_UNAVAILABLE;
                             }
                             else {
-                                rv = get_chunk_line(ctx, len);
-                                if (APR_STATUS_IS_EAGAIN(rv)) {
-                                    ctx->state = BODY_CHUNK_PART;
-                                    apr_brigade_cleanup(bb);
-                                    return rv;
-                                }
-                               if (rv == APR_SUCCESS) {
-                                   ctx->remaining = get_chunk_size(ctx->chunk_ln);
-                               }
+                                ctx->remaining = get_chunk_size(ctx->chunk_ln);
                             }
                         }
                     }
