@@ -70,7 +70,7 @@ typedef struct http_filter_ctx {
         BODY_CHUNK_PART
     } state;
     int eos_sent;
-    char chunk_ln[30];
+    char chunk_ln[32];
     char *pos;
     apr_off_t linesize;
 } http_ctx_t;
