@@ -205,6 +205,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     apr_status_t rv;
     apr_off_t totalread;
     apr_status_t http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
+    apr_bucket_brigade *bb;
 
     /* just get out of the way of things we don't want. */
     if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE) {
@@ -217,6 +218,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         ctx->state = BODY_NONE;
         ctx->pos = ctx->chunk_ln;
         ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        bb = ctx->bb;
 
         /* LimitRequestBody does not apply to proxied responses.
          * Consider implementing this check in its own filter.
@@ -308,11 +310,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1) &&
             !(f->r->eos_sent || f->r->bytes_sent)) {
             char *tmp;
-            apr_bucket_brigade *bb;
 
             tmp = apr_pstrcat(f->r->pool, AP_SERVER_PROTOCOL, " ",
                               ap_get_status_line(100), CRLF CRLF, NULL);
-            bb = ctx->bb;
             apr_brigade_cleanup(bb);
             e = apr_bucket_pool_create(tmp, strlen(tmp), f->r->pool,
                                        f->c->bucket_alloc);
@@ -325,9 +325,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         /* We can't read the chunk until after sending 100 if required. */
         if (ctx->state == BODY_CHUNK) {
-            apr_bucket_brigade *bb;
-
-            bb = ctx->bb;
             apr_brigade_cleanup(bb);
 
             rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
@@ -376,6 +373,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             }
         }
     }
+    else {
+        bb = ctx->bb;
+    }
 
     if (ctx->eos_sent) {
         e = apr_bucket_eos_create(f->c->bucket_alloc);
@@ -395,9 +395,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         case BODY_CHUNK:
         case BODY_CHUNK_PART:
             {
-                apr_bucket_brigade *bb;
-
-                bb = ctx->bb;
                 apr_brigade_cleanup(bb);
 
                 /* We need to read the CRLF after the chunk.  */
@@ -517,12 +514,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
          * really count.  This seems to be up for interpretation.  */
         ctx->limit_used += totalread;
         if (ctx->limit < ctx->limit_used) {
-            apr_bucket_brigade *bb;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                           "Read content-length of %" APR_OFF_T_FMT
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->limit_used, ctx->limit);
-            bb = ctx->bb;
             apr_brigade_cleanup(bb);
             e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
                                        f->r->pool,
