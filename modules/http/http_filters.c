@@ -80,7 +80,7 @@ typedef struct http_filter_ctx {
 
 static apr_status_t bail_out_on_error(http_ctx_t *ctx,
                                       ap_filter_t *f,
-                                      apr_status_t http_error)
+                                      int http_error)
 {
     apr_bucket *e;
     apr_bucket_brigade *bb = ctx->bb;
@@ -204,7 +204,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
     apr_off_t totalread;
-    apr_status_t http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
+    int http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
     apr_bucket_brigade *bb;
 
     /* just get out of the way of things we don't want. */
