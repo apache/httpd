@@ -55,6 +55,8 @@
 #include <unistd.h>
 #endif
 
+#define INVALID_CHAR -2
+
 extern module AP_MODULE_DECLARE_DATA http_module;
 
 static long get_chunk_size(char *);
@@ -202,6 +204,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
     apr_off_t totalread;
+    apr_status_t http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
 
     /* just get out of the way of things we don't want. */
     if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE) {
@@ -347,6 +350,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 }
                 if (rv == APR_SUCCESS) {
                     ctx->remaining = get_chunk_size(ctx->chunk_ln);
+                    if (ctx->remaining == INVALID_CHAR) {
+                        rv = APR_EGENERAL;
+                        http_error = HTTP_SERVICE_UNAVAILABLE;
+                    }
                 }
             }
             apr_brigade_cleanup(bb);
@@ -355,7 +362,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             if (rv != APR_SUCCESS || ctx->remaining < 0) {
                 ctx->remaining = 0; /* Reset it in case we have to
                                      * come back here later */
-                return bail_out_on_error(ctx, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
+                return bail_out_on_error(ctx, f, http_error);
             }
 
             if (!ctx->remaining) {
@@ -389,7 +396,6 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         case BODY_CHUNK_PART:
             {
                 apr_bucket_brigade *bb;
-                apr_status_t http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
 
                 bb = ctx->bb;
                 apr_brigade_cleanup(bb);
@@ -439,16 +445,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             return rv;
                         }
                         if (rv == APR_SUCCESS) {
-                            /*
-                             * Wait a sec, that's a blank line or it starts
-                             * with an invalid character!  Oh no.
-                             */
-                            if (!apr_isxdigit(*(ctx->chunk_ln))) {
+                            ctx->remaining = get_chunk_size(ctx->chunk_ln);
+                            if (ctx->remaining == INVALID_CHAR) {
                                 rv = APR_EGENERAL;
                                 http_error = HTTP_SERVICE_UNAVAILABLE;
-                            }
-                            else {
-                                ctx->remaining = get_chunk_size(ctx->chunk_ln);
                             }
                         }
                     }
@@ -554,6 +554,13 @@ static long get_chunk_size(char *b)
 
     ap_xlate_proto_from_ascii(b, strlen(b));
 
+    if (!apr_isxdigit(*b)) {
+        /*
+         * Detect invalid character at beginning. This also works for empty
+         * chunk size lines.
+         */
+        return INVALID_CHAR;
+    }
     /* Skip leading zeros */
     while (*b == '0') {
         ++b;
