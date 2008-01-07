@@ -191,13 +191,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     if (!ctx) {
         const char *tenc, *lenp;
-        f->ctx = ctx = apr_palloc(f->r->pool, sizeof(*ctx));
+        f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->state = BODY_NONE;
-        ctx->remaining = 0;
-        ctx->limit_used = 0;
-        ctx->eos_sent = 0;
         ctx->pos = ctx->chunk_ln;
-        ctx->linesize = 0;
 
         /* LimitRequestBody does not apply to proxied responses.
          * Consider implementing this check in its own filter.
