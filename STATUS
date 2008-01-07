@@ -250,14 +250,14 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
        +1: bnicholes, jim, wrowe
        0: nd, jerenkrantz
           nd: can the local_addr->port ever be 0?
-	  bnicholes response: I couldn't tell you for sure if local_addr->port
-	    could be 0.  But it makes sense that if it were then Apache 
-	    wouldn't be listening on any port so it wouldn't matter anyway.
+          bnicholes response: I couldn't tell you for sure if local_addr->port
+            could be 0.  But it makes sense that if it were then Apache 
+            wouldn't be listening on any port so it wouldn't matter anyway.
           nd replies: But if it can't be 0 the alternatives thereafter make no
             sense anymore, right?
-	  jim proposes: UseCanonicalName Client directive
-	    which implements this, keeping UseCanonicalName Off
- 	    "as is".
+          jim proposes: UseCanonicalName Client directive
+            which implements this, keeping UseCanonicalName Off
+            "as is".
 
     *) ThreadStackSize for Win32 and threaded MPMs
        trawick will eventually put together a patch for httpd 2.0.next
@@ -406,10 +406,10 @@ RELEASE NON-SHOWSTOPPERS BUT WOULD BE REAL NICE TO WRAP THESE UP:
         Message-ID: <065701c14526$495203b0$96c0b0d0@roweclan.net>
         [Deleted comments regarding the ap_run_handler phase, as irrelevant
             as BillS points out that "common case will be caught in
-  	    default_handler already (with the r->finfo.filetype == 0 check)"
+            default_handler already (with the r->finfo.filetype == 0 check)"
             and the issue is detecting this -before- we try to run the req.]
 
-	gregames says: can this happen somehow without a broken module
+        gregames says: can this happen somehow without a broken module
             being involved?  If not, why waste cycles trying to defend against
             potential broken modules?  It seems futile.
         wrowe counters: no, it shouldn't happen unless the module is broken.
