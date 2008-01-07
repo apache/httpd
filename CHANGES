@@ -1,5 +1,9 @@
-                                                         -*- coding: utf-8 -*-
+﻿                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.2.8
+
+  *) winnt_mpm: Resolve modperl issues by redirecting console mode stdout
+     to /Device/Nul as the server is starting up, mirroring unix MPM's.
+     PR: 43534  [Tom Donovan <Tom.Donovan acm.org>, William Rowe]
 
   *) winnt_mpm: Restore Win32DisableAcceptEx On directive and Win9x platform
      by recreating the bucket allocator each time the trans pool is cleared.
