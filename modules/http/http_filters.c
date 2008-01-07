@@ -76,6 +76,24 @@ typedef struct http_filter_ctx {
     apr_bucket_brigade *bb;
 } http_ctx_t;
 
+static apr_status_t bail_out_on_error(http_ctx_t *ctx,
+                                      ap_filter_t *f,
+                                      apr_status_t http_error)
+{
+    apr_bucket *e;
+    apr_bucket_brigade *bb = ctx->bb;
+
+    apr_brigade_cleanup(bb);
+    e = ap_bucket_error_create(http_error,
+                               NULL, f->r->pool,
+                               f->c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+    e = apr_bucket_eos_create(f->c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+    ctx->eos_sent = 1;
+    return ap_pass_brigade(f->r->output_filters, bb);
+}
+
 static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
                                              apr_bucket_brigade *b,
                                              int linelimit)
@@ -221,17 +239,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 /* Something that isn't in HTTP, unless some future
                  * edition defines new transfer ecodings, is unsupported.
                  */
-                apr_bucket_brigade *bb;
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                               "Unknown Transfer-Encoding: %s", tenc);
-                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
-                e = ap_bucket_error_create(HTTP_NOT_IMPLEMENTED, NULL,
-                                           f->r->pool, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = apr_bucket_eos_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                ctx->eos_sent = 1;
-                return ap_pass_brigade(f->r->output_filters, bb);
+                return bail_out_on_error(ctx, f, HTTP_NOT_IMPLEMENTED);
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r,
@@ -250,41 +260,23 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
              * and a negative number. */
             if (apr_strtoff(&ctx->remaining, lenp, &endstr, 10)
                 || endstr == lenp || *endstr || ctx->remaining < 0) {
-                apr_bucket_brigade *bb;
 
                 ctx->remaining = 0;
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                               "Invalid Content-Length");
 
-                bb = ctx->bb;
-                apr_brigade_cleanup(bb);
-                e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
-                                           f->r->pool, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = apr_bucket_eos_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                ctx->eos_sent = 1;
-                return ap_pass_brigade(f->r->output_filters, bb);
+                return bail_out_on_error(ctx, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
             }
 
             /* If we have a limit in effect and we know the C-L ahead of
              * time, stop it here if it is invalid.
              */
             if (ctx->limit && ctx->limit < ctx->remaining) {
-                apr_bucket_brigade *bb;
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                           "Requested content-length of %" APR_OFF_T_FMT
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->remaining, ctx->limit);
-                bb = ctx->bb;
-                apr_brigade_cleanup(bb);
-                e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
-                                           f->r->pool, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = apr_bucket_eos_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                ctx->eos_sent = 1;
-                return ap_pass_brigade(f->r->output_filters, bb);
+                return bail_out_on_error(ctx, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
             }
         }
 
@@ -363,14 +355,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             if (rv != APR_SUCCESS || ctx->remaining < 0) {
                 ctx->remaining = 0; /* Reset it in case we have to
                                      * come back here later */
-                e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
-                                           f->r->pool,
-                                           f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = apr_bucket_eos_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                ctx->eos_sent = 1;
-                return ap_pass_brigade(f->r->output_filters, bb);
+                return bail_out_on_error(ctx, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
             }
 
             if (!ctx->remaining) {
@@ -472,18 +457,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
                 /* Detect chunksize error (such as overflow) */
                 if (rv != APR_SUCCESS || ctx->remaining < 0) {
-                    apr_status_t out_error;
-
                     ctx->remaining = 0; /* Reset it in case we have to
                                          * come back here later */
-                    e = ap_bucket_error_create(http_error,
-                                               NULL, f->r->pool,
-                                               f->c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(bb, e);
-                    e = apr_bucket_eos_create(f->c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(bb, e);
-                    ctx->eos_sent = 1;
-                    out_error = ap_pass_brigade(f->r->output_filters, bb);
+                    bail_out_on_error(ctx, f, http_error);
                     return rv;
                 }
 
