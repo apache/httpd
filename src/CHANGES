@@ -1,5 +1,9 @@
 Changes with Apache 1.3.41
 
+  *) SECURITY: CVE-2007-6388 (cve.mitre.org)
+     mod_status: Ensure refresh parameter is numeric to prevent
+     a possible XSS attack caused by redirecting to other URLs.
+     Reported by SecurityReason.  [Mark Cox]
 
 Changes with Apache 1.3.40
 

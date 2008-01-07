@@ -232,17 +232,15 @@ static int status_handler(request_rec *r)
 	while (status_options[i].id != STAT_OPT_END) {
 	    if ((loc = strstr(r->args, status_options[i].form_data_str)) != NULL) {
 		switch (status_options[i].id) {
-		case STAT_OPT_REFRESH:
-		    if (*(loc + strlen(status_options[i].form_data_str)) == '='
-                        && atol(loc + strlen(status_options[i].form_data_str) 
-                                    + 1) > 0)
-			ap_table_set(r->headers_out,
-			      status_options[i].hdr_out_str,
-			      loc + strlen(status_options[i].hdr_out_str) + 1);
-		    else
-			ap_table_set(r->headers_out,
-			      status_options[i].hdr_out_str, "1");
-		    break;
+                case STAT_OPT_REFRESH: {
+                    long refreshtime = 0;
+                    if (*(loc + strlen(status_options[i].form_data_str)) == '=')
+                        refreshtime = atol(loc + strlen(status_options[i].form_data_str)+1);
+                    ap_table_set(r->headers_out,
+                                 status_options[i].hdr_out_str,
+                                 ap_psprintf(r->pool,"%ld",(refreshtime<1)?10:refreshtime));
+                    break;
+                }
 		case STAT_OPT_NOTABLE:
 		    no_table_report = 1;
 		    break;
