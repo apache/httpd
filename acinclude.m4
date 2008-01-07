@@ -492,21 +492,13 @@ if test "x$ap_ssltk_base" = "x"; then
     fi
   fi
   # Put SSL libraries in SSL_LIBS.
-  if test "$ap_ssltk_type" = "openssl"; then
-    APR_SETVAR(SSL_LIBS, [-lssl -lcrypto])
-  else
-    APR_SETVAR(SSL_LIBS, [-lsslc])
-  fi
+  APR_SETVAR(SSL_LIBS, [-lssl -lcrypto])
   pkg-config openssl 2> /dev/null
   if test $? -eq 0; then
     ap_ssltk_incdep=`pkg-config --cflags-only-I openssl`
     APR_ADDTO(INCLUDES, $ap_ssltk_incdep)
     ap_ssltk_libdep=`pkg-config --libs openssl`
-    if test "$ap_ssltk_type" = "openssl"; then
-      APR_SETVAR(SSL_LIBS, $ap_ssltk_libdep)
-    else
-      APR_SETVAR(SSL_LIBS, $ap_ssltk_libdep)
-    fi
+    APR_SETVAR(SSL_LIBS, $ap_ssltk_libdep)
   fi
   APACHE_SUBST(SSL_LIBS)
   ap_cv_ssltk="$ap_ssltk_base"
