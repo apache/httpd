@@ -159,9 +159,17 @@ static apr_status_t get_chunk_line(http_ctx_t *ctx, apr_bucket_brigade *b,
                                    int linelimit)
 {
     apr_size_t len;
+    int tmp_len;
     apr_status_t rv;
 
-    len = sizeof(ctx->chunk_ln) - (ctx->pos - ctx->chunk_ln) - 1;
+    tmp_len = sizeof(ctx->chunk_ln) - (ctx->pos - ctx->chunk_ln) - 1;
+    /* Saveguard ourselves against underflows */
+    if (tmp_len < 0) {
+        len = 0;
+    }
+    else {
+        len = (apr_size_t) tmp_len;
+    }
     /*
      * Check if there is space left in ctx->chunk_ln. If not, then either
      * the chunk size is insane or we have chunk-extensions. Ignore both
