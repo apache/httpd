@@ -131,22 +131,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem,
 
-  * core: Various memory and code cleanup optimizations for ap_http_filter
-          (HTTP_INPUT) filter
+  * core: Various memory, code cleanup and edge case optimizations for
+           ap_http_filter (HTTP_INPUT) filter
     Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=609540&view=rev
         http://svn.apache.org/viewvc?rev=609541&view=rev
         http://svn.apache.org/viewvc?rev=609544&view=rev
         http://svn.apache.org/viewvc?rev=609549&view=rev
         http://svn.apache.org/viewvc?rev=609550&view=rev
         http://svn.apache.org/viewvc?rev=609552&view=rev
         http://svn.apache.org/viewvc?rev=609609&view=rev
+        http://svn.apache.org/viewvc?rev=610061&view=rev
+        http://svn.apache.org/viewvc?rev=610111&view=rev
     Backport version for 2.2.x of patch:
-        Trunk version of patch has a small conflict.
-        I will provide a clean patch as soon as the release showstopper is
-        commited
-        For ease of review:
-        http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/http/http_filters.c?r1=609540&r2=609609
+        http://people.apache.org/~rpluem/patches/chunk_optimization.diff
     +1: rpluem,
 
 PATCHES/ISSUES THAT ARE STALLED
