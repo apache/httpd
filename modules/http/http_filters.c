@@ -139,11 +139,15 @@ static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
             break;
         }
     }
+    /* We only had META buckets in this brigade */
+    if (e == APR_BRIGADE_SENTINEL(b)) {
+        return APR_EAGAIN;
+    }
     rv = apr_bucket_read(e, &lineend, &len, APR_BLOCK_READ);
     if (rv != APR_SUCCESS) {
         return rv;
     }
-    if (lineend[len - 1] != APR_ASCII_LF) {
+    if ((len == 0) || (lineend[len - 1] != APR_ASCII_LF)) {
         return APR_EAGAIN;
     }
     /* Line is complete. So reset ctx->linesize for next round. */
