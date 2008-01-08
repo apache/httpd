@@ -81,6 +81,7 @@ RELEASE SHOWSTOPPERS:
     Trunk version of patch:
         http://svn.apache.org/viewvc?rev=609394&view=rev
         http://svn.apache.org/viewvc?rev=609538&view=rev
+        http://svn.apache.org/viewvc?rev=609540&view=rev
     Backport version for 2.2.x of patch:
         Trunk version of patch works
     +1: rpluem, jim
