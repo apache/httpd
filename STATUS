@@ -26,7 +26,8 @@ Release history:
     [NOTE that x.{odd}.z versions are strictly Alpha/Beta releases,
           while x.{even}.z versions are Stable/GA releases.]
 
-    2.2.7   : Tagged January 4, 2008.
+    2.2.8   : In development
+    2.2.7   : Tagged January 4, 2008. Not released.
     2.2.6   : Released September 7, 2007.
     2.2.5   : Tagged August 10, 2007, not released.
     2.2.4   : Released on January 9, 2007 as GA.
@@ -82,7 +83,7 @@ RELEASE SHOWSTOPPERS:
         http://svn.apache.org/viewvc?rev=609538&view=rev
     Backport version for 2.2.x of patch:
         Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jim
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
