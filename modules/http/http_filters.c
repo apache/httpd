@@ -55,6 +55,8 @@
 #include <unistd.h>
 #endif
 
+#define INVALID_CHAR -2
+
 static long get_chunk_size(char *);
 
 typedef struct http_filter_ctx {
@@ -71,7 +73,26 @@ typedef struct http_filter_ctx {
     char chunk_ln[32];
     char *pos;
     apr_off_t linesize;
+    apr_bucket_brigade *bb;
 } http_ctx_t;
+
+static apr_status_t bail_out_on_error(http_ctx_t *ctx,
+                                      ap_filter_t *f,
+                                      int http_error)
+{
+    apr_bucket *e;
+    apr_bucket_brigade *bb = ctx->bb;
+
+    apr_brigade_cleanup(bb);
+    e = ap_bucket_error_create(http_error,
+                               NULL, f->r->pool,
+                               f->c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+    e = apr_bucket_eos_create(f->c->bucket_alloc);
+    APR_BRIGADE_INSERT_TAIL(bb, e);
+    ctx->eos_sent = 1;
+    return ap_pass_brigade(f->r->output_filters, bb);
+}
 
 static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
                                              apr_bucket_brigade *b,
@@ -112,13 +133,21 @@ static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
          e != APR_BRIGADE_SENTINEL(b);
          e = APR_BUCKET_PREV(e)) {
 
-        if (!APR_BUCKET_IS_METADATA(e)) {
-            break;
+        if (APR_BUCKET_IS_METADATA(e)) {
+            continue;
         }
+        rv = apr_bucket_read(e, &lineend, &len, APR_BLOCK_READ);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        if (len > 0) {
+            break;  /* we got the data we want */
+        }
+        /* If we got a zero-length data bucket, we try the next one */
     }
-    rv = apr_bucket_read(e, &lineend, &len, APR_BLOCK_READ);
-    if (rv != APR_SUCCESS) {
-        return rv;
+    /* We had no data in this brigade */
+    if (!len || e == APR_BRIGADE_SENTINEL(b)) {
+        return APR_EAGAIN;
     }
     if (lineend[len - 1] != APR_ASCII_LF) {
         return APR_EAGAIN;
@@ -132,9 +161,17 @@ static apr_status_t get_chunk_line(http_ctx_t *ctx, apr_bucket_brigade *b,
                                    int linelimit)
 {
     apr_size_t len;
+    int tmp_len;
     apr_status_t rv;
 
-    len = sizeof(ctx->chunk_ln) - (ctx->pos - ctx->chunk_ln) - 1;
+    tmp_len = sizeof(ctx->chunk_ln) - (ctx->pos - ctx->chunk_ln) - 1;
+    /* Saveguard ourselves against underflows */
+    if (tmp_len < 0) {
+        len = 0;
+    }
+    else {
+        len = (apr_size_t) tmp_len;
+    }
     /*
      * Check if there is space left in ctx->chunk_ln. If not, then either
      * the chunk size is insane or we have chunk-extensions. Ignore both
@@ -181,6 +218,8 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
     http_ctx_t *ctx = f->ctx;
     apr_status_t rv;
     apr_off_t totalread;
+    int http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
+    apr_bucket_brigade *bb;
 
     /* just get out of the way of things we don't want. */
     if (mode != AP_MODE_READBYTES && mode != AP_MODE_GETLINE) {
@@ -189,13 +228,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
     if (!ctx) {
         const char *tenc, *lenp;
-        f->ctx = ctx = apr_palloc(f->r->pool, sizeof(*ctx));
+        f->ctx = ctx = apr_pcalloc(f->r->pool, sizeof(*ctx));
         ctx->state = BODY_NONE;
-        ctx->remaining = 0;
-        ctx->limit_used = 0;
-        ctx->eos_sent = 0;
         ctx->pos = ctx->chunk_ln;
-        ctx->linesize = 0;
+        ctx->bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+        bb = ctx->bb;
 
         /* LimitRequestBody does not apply to proxied responses.
          * Consider implementing this check in its own filter.
@@ -221,17 +258,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 /* Something that isn't in HTTP, unless some future
                  * edition defines new transfer ecodings, is unsupported.
                  */
-                apr_bucket_brigade *bb;
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                               "Unknown Transfer-Encoding: %s", tenc);
-                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
-                e = ap_bucket_error_create(HTTP_NOT_IMPLEMENTED, NULL,
-                                           f->r->pool, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = apr_bucket_eos_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                ctx->eos_sent = 1;
-                return ap_pass_brigade(f->r->output_filters, bb);
+                return bail_out_on_error(ctx, f, HTTP_NOT_IMPLEMENTED);
             }
             else {
                 ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, f->r,
@@ -250,39 +279,23 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
              * and a negative number. */
             if (apr_strtoff(&ctx->remaining, lenp, &endstr, 10)
                 || endstr == lenp || *endstr || ctx->remaining < 0) {
-                apr_bucket_brigade *bb;
 
                 ctx->remaining = 0;
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                               "Invalid Content-Length");
 
-                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
-                e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
-                                           f->r->pool, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = apr_bucket_eos_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                ctx->eos_sent = 1;
-                return ap_pass_brigade(f->r->output_filters, bb);
+                return bail_out_on_error(ctx, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
             }
 
             /* If we have a limit in effect and we know the C-L ahead of
              * time, stop it here if it is invalid.
              */
             if (ctx->limit && ctx->limit < ctx->remaining) {
-                apr_bucket_brigade *bb;
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                           "Requested content-length of %" APR_OFF_T_FMT
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->remaining, ctx->limit);
-                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
-                e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
-                                           f->r->pool, f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = apr_bucket_eos_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                ctx->eos_sent = 1;
-                return ap_pass_brigade(f->r->output_filters, bb);
+                return bail_out_on_error(ctx, f, HTTP_REQUEST_ENTITY_TOO_LARGE);
             }
         }
 
@@ -311,11 +324,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1) &&
             !(f->r->eos_sent || f->r->bytes_sent)) {
             char *tmp;
-            apr_bucket_brigade *bb;
 
             tmp = apr_pstrcat(f->r->pool, AP_SERVER_PROTOCOL, " ",
                               ap_get_status_line(100), CRLF CRLF, NULL);
-            bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+            apr_brigade_cleanup(bb);
             e = apr_bucket_pool_create(tmp, strlen(tmp), f->r->pool,
                                        f->c->bucket_alloc);
             APR_BRIGADE_INSERT_HEAD(bb, e);
@@ -327,9 +339,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
         /* We can't read the chunk until after sending 100 if required. */
         if (ctx->state == BODY_CHUNK) {
-            apr_bucket_brigade *bb;
-
-            bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+            apr_brigade_cleanup(bb);
 
             rv = ap_get_brigade(f->next, bb, AP_MODE_GETLINE,
                                 block, 0);
@@ -351,6 +361,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 }
                 if (rv == APR_SUCCESS) {
                     ctx->remaining = get_chunk_size(ctx->chunk_ln);
+                    if (ctx->remaining == INVALID_CHAR) {
+                        rv = APR_EGENERAL;
+                        http_error = HTTP_SERVICE_UNAVAILABLE;
+                    }
                 }
             }
             apr_brigade_cleanup(bb);
@@ -359,14 +373,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             if (rv != APR_SUCCESS || ctx->remaining < 0) {
                 ctx->remaining = 0; /* Reset it in case we have to
                                      * come back here later */
-                e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
-                                           f->r->pool,
-                                           f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                e = apr_bucket_eos_create(f->c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
-                ctx->eos_sent = 1;
-                return ap_pass_brigade(f->r->output_filters, bb);
+                return bail_out_on_error(ctx, f, http_error);
             }
 
             if (!ctx->remaining) {
@@ -379,6 +386,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                 return APR_SUCCESS;
             }
         }
+    }
+    else {
+        bb = ctx->bb;
     }
 
     if (ctx->eos_sent) {
@@ -399,10 +409,7 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
         case BODY_CHUNK:
         case BODY_CHUNK_PART:
             {
-                apr_bucket_brigade *bb;
-                apr_status_t http_error = HTTP_REQUEST_ENTITY_TOO_LARGE;
-
-                bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+                apr_brigade_cleanup(bb);
 
                 /* We need to read the CRLF after the chunk.  */
                 if (ctx->state == BODY_CHUNK) {
@@ -449,16 +456,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             return rv;
                         }
                         if (rv == APR_SUCCESS) {
-                            /*
-                             * Wait a sec, that's a blank line or it starts
-                             * with an invalid character!  Oh no.
-                             */
-                            if (!apr_isxdigit(*(ctx->chunk_ln))) {
+                            ctx->remaining = get_chunk_size(ctx->chunk_ln);
+                            if (ctx->remaining == INVALID_CHAR) {
                                 rv = APR_EGENERAL;
                                 http_error = HTTP_SERVICE_UNAVAILABLE;
-                            }
-                            else {
-                                ctx->remaining = get_chunk_size(ctx->chunk_ln);
                             }
                         }
                     }
@@ -467,18 +468,9 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
 
                 /* Detect chunksize error (such as overflow) */
                 if (rv != APR_SUCCESS || ctx->remaining < 0) {
-                    apr_status_t out_error;
-
                     ctx->remaining = 0; /* Reset it in case we have to
                                          * come back here later */
-                    e = ap_bucket_error_create(http_error,
-                                               NULL, f->r->pool,
-                                               f->c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(bb, e);
-                    e = apr_bucket_eos_create(f->c->bucket_alloc);
-                    APR_BRIGADE_INSERT_TAIL(bb, e);
-                    ctx->eos_sent = 1;
-                    out_error = ap_pass_brigade(f->r->output_filters, bb);
+                    bail_out_on_error(ctx, f, http_error);
                     return rv;
                 }
 
@@ -536,12 +528,11 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
          * really count.  This seems to be up for interpretation.  */
         ctx->limit_used += totalread;
         if (ctx->limit < ctx->limit_used) {
-            apr_bucket_brigade *bb;
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, f->r,
                           "Read content-length of %" APR_OFF_T_FMT
                           " is larger than the configured limit"
                           " of %" APR_OFF_T_FMT, ctx->limit_used, ctx->limit);
-            bb = apr_brigade_create(f->r->pool, f->c->bucket_alloc);
+            apr_brigade_cleanup(bb);
             e = ap_bucket_error_create(HTTP_REQUEST_ENTITY_TOO_LARGE, NULL,
                                        f->r->pool,
                                        f->c->bucket_alloc);
@@ -572,6 +563,13 @@ static long get_chunk_size(char *b)
 
     ap_xlate_proto_from_ascii(b, strlen(b));
 
+    if (!apr_isxdigit(*b)) {
+        /*
+         * Detect invalid character at beginning. This also works for empty
+         * chunk size lines.
+         */
+        return INVALID_CHAR;
+    }
     /* Skip leading zeros */
     while (*b == '0') {
         ++b;
