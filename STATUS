@@ -80,23 +80,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * core: Various memory, code cleanup and edge case optimizations for
-           ap_http_filter (HTTP_INPUT) filter
-    Trunk version of patch:
-        http://svn.apache.org/viewvc?rev=609541&view=rev
-        http://svn.apache.org/viewvc?rev=609544&view=rev
-        http://svn.apache.org/viewvc?rev=609549&view=rev
-        http://svn.apache.org/viewvc?rev=609550&view=rev
-        http://svn.apache.org/viewvc?rev=609552&view=rev
-        http://svn.apache.org/viewvc?rev=609609&view=rev
-        http://svn.apache.org/viewvc?rev=610061&view=rev
-        http://svn.apache.org/viewvc?rev=610111&view=rev
-    Backport version for 2.2.x of patch:
-        http://people.apache.org/~rpluem/patches/chunk_optimization.diff
-    +1: rpluem
-    +1: niq, but please add r610240 as agreed on-list.  Corresponding
-        2.2.x patch at http://people.apache.org/~niq/chunk_optimization.diff
-    +1: jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
