@@ -144,7 +144,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         http://svn.apache.org/viewvc?rev=610111&view=rev
     Backport version for 2.2.x of patch:
         http://people.apache.org/~rpluem/patches/chunk_optimization.diff
-    +1: rpluem,
+    +1: rpluem
+    +1: niq, but please add r610240 as agreed on-list.  Corresponding
+        2.2.x patch at http://people.apache.org/~niq/chunk_optimization.diff
 
 PATCHES/ISSUES THAT ARE STALLED
 
