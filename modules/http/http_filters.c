@@ -135,19 +135,23 @@ static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
          e != APR_BRIGADE_SENTINEL(b);
          e = APR_BUCKET_PREV(e)) {
 
-        if (!APR_BUCKET_IS_METADATA(e)) {
-            break;
+        if (APR_BUCKET_IS_METADATA(e)) {
+            continue;
         }
+        rv = apr_bucket_read(e, &lineend, &len, APR_BLOCK_READ);
+        if (rv != APR_SUCCESS) {
+            return rv;
+        }
+        if (len > 0) {
+            break;  /* we got the data we want */
+        }
+        /* If we got a zero-length data bucket, we try the next one */
     }
-    /* We only had META buckets in this brigade */
+    /* We had no data in this brigade */
     if (e == APR_BRIGADE_SENTINEL(b)) {
         return APR_EAGAIN;
     }
-    rv = apr_bucket_read(e, &lineend, &len, APR_BLOCK_READ);
-    if (rv != APR_SUCCESS) {
-        return rv;
-    }
-    if ((len == 0) || (lineend[len - 1] != APR_ASCII_LF)) {
+    if (lineend[len - 1] != APR_ASCII_LF) {
         return APR_EAGAIN;
     }
     /* Line is complete. So reset ctx->linesize for next round. */
