@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.8
 
+  *) core: Fix regression in 2.2.7 in chunk filtering with massively
+     chunked requests.  [Ruediger Pluem, Nick Kew]
+
   *) winnt_mpm: Resolve modperl issues by redirecting console mode stdout
      to /Device/Nul as the server is starting up, mirroring unix MPM's.
      PR: 43534  [Tom Donovan <Tom.Donovan acm.org>, William Rowe]
@@ -83,7 +86,7 @@ Changes with Apache 2.2.7
 
   *) core: Fix broken chunk filtering that causes all non blocking reads to be
      converted into blocking reads.  PR 19954, 41056.
-     [Jean-Frederic Clere, Jim Jagielski, Ruediger Pluem, Nick Kew]
+     [Jean-Frederic Clere, Jim Jagielski]
 
   *) mod_rewrite: Add the novary flag to RewriteCond.
      [Ruediger Pluem]
