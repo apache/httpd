@@ -9,7 +9,7 @@ Changes with Apache 2.0.63
      by recreating the bucket allocator each time the trans pool is cleared.
      PR: 11427 #16 (follow-on)  [Tom Donovan <Tom.Donovan acm.org>]
 
-Changes with Apache 2.0.62
+Changes with Apache 2.0.62 (not released)
 
   *) SECURITY: CVE-2007-6388 (cve.mitre.org)
      mod_status: Ensure refresh parameter is numeric to prevent
