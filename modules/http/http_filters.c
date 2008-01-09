@@ -148,7 +148,7 @@ static apr_status_t get_remaining_chunk_line(http_ctx_t *ctx,
         /* If we got a zero-length data bucket, we try the next one */
     }
     /* We had no data in this brigade */
-    if (e == APR_BRIGADE_SENTINEL(b)) {
+    if (!len || e == APR_BRIGADE_SENTINEL(b)) {
         return APR_EAGAIN;
     }
     if (lineend[len - 1] != APR_ASCII_LF) {
