@@ -1,0 +1,435 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Running Apache for Windows as a Service</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Running Apache for Windows as a Service</h1>
+
+    <p>Apache can be run as a service on Windows NT/2000. (There is
+    also some experimental support for similar behavior on
+    <a href="#win95svc">Windows 95/98</a>, introduced with Apache
+    1.3.13).</p>
+
+    <p>Installing Apache as a service should only be done once you
+    can successfully run it in a console window. See <a
+    href="windows.html">Using Apache with Microsoft Windows</a>
+    before you attempt to install or run Apache as a service.
+    Changes to the httpd.conf file should always be followed by
+    starting Apache as a console window. If this succeeds, the
+    service should succeed.</p>
+
+    <p><strong>NOTE: Prior to version 1.3.13, the configuration was
+    <em>not tested</em> prior to performing the
+    installation</strong>, and a lack of service dependencies often
+    caused the console window to succeed, but the service would
+    still fail. See <a href="#service">below</a> if you are having
+    problems running a version of Apache prior to 1.3.13 to resolve
+    the issue. If you have this problem with version 1.3.13 or
+    greater, first try uninstalling (-u) and re-installing (-i) the
+    Apache service.  Better yet, upgrade to the most recent version.</p>
+    <hr />
+
+    <p>To start Apache as a service, you first need to install it
+    as a service. Multiple Apache services can be installed, each
+    with a different name and configuration. To install the default
+    Apache service named "Apache", choose the "Install as Service for
+    All Users" option when launching the Apache installation package.
+    Once this is done you can start the "Apache" service by opening 
+    the Services window (in the Control Panel, hidden in "Administrative
+    Tools" on Windows 2000), selecting Apache, then clicking
+    on Start. Apache will now be running, hidden in the background.
+    You can later stop Apache by clicking on Stop. As an
+    alternative to using the Services window, you can start and
+    stop the "Apache" service from the command line with</p>
+<pre>
+  NET START APACHE
+  NET STOP APACHE
+</pre>
+
+    <p>See <a href="#signal">Controlling Apache as a Service</a>
+    for more information on installing and controlling Apache
+    services.</p>
+
+    <p><strong>Apache, unlike many other Windows NT/2000 services,
+    logs most errors to its own error.log file, in the logs folder
+    within the Apache server root folder. You will find few Apache
+    error details in the Windows NT Event Log. Only errors as
+    Apache attempts to start are captured in the Application Event
+    Log.</strong></p>
+
+    <p>After starting Apache as a service (or if you have trouble
+    starting it) you can test it using the same <a
+    href="windows.html#test">procedure</a> as for running in a
+    console window. Remember to use the command:</p>
+<pre>
+  apache -n "service name"
+</pre>
+
+    <p>to assure you are using the service's default
+    configuration.</p>
+
+    <h2><a id="service" name="service">Running Apache for Windows
+    as a Service</a></h2>
+
+    <p><strong>Note: The -n option to specify a service name is
+    only available with Apache 1.3.7 and later.</strong> Earlier
+    versions of Apache only support the default service name
+    'Apache'.  Only version 1.3.21 supports Windows 2000 ability
+    to 'rename' the display name of a service.</p>
+
+    <p>You can install Apache as a Windows NT service as
+    follows:</p>
+<pre>
+    apache -i -n "service name"
+</pre>
+
+    <p>To install a service to use a particular configuration,
+    specify the configuration file when the service is
+    installed:</p>
+<pre>
+    apache -i -n "service name" -f "\my server\conf\my.conf"
+</pre>
+
+    <p>You can pass any other arguments, such as -d to change the
+    default server root directory, -D, -C or -c to change config
+    file processing, etc. Since these are stored in the registry
+    and are difficult to modify, use this command to clear the
+    options and replace them with a new list of options;</p>
+<pre>
+    apache -k config -n "service name" -f "\my server\conf\my.conf"
+</pre>
+
+    <p>To remove an Apache service, use:</p>
+<pre>
+    apache -u -n "service name"
+</pre>
+
+    <p>The default "service name", if one is not specified, is
+    "Apache".</p>
+
+    <p>Once a service is installed, you can use the <samp>-n</samp>
+    option, in conjunction with other options, to refer to a
+    service's configuration file. For example:</p>
+
+    <p>To test a service's configuration file and report the
+    default options for the service (configured with -i, -k install
+    or -k config) use:</p>
+<pre>
+    apache -n "service name" -t
+</pre>
+
+    <p>To start a console Apache using a service's configuration
+    file and its default options, use:</p>
+<pre>
+    apache -n "service name"
+</pre>
+
+    <p>Effective with Apache release 1.3.15, the -k install option
+    was added as an alias to -i, and the -k uninstall option was
+    added as an alias to -u. The original -i and -u options are
+    deprecated in Apache 2.0. These aliases were added to ease the
+    transition for administrators running both versions.</p>
+
+    <h2><a id="depends" name="depends">Important Note on service
+    dependencies:</a></h2>
+
+    <p>Prior to Apache release 1.3.13, the dependencies required to
+    successfully start an installed service were not configured.
+    After installing a service using earlier versions of Apache,
+    you must follow these steps:</p>
+<pre>
+    Run regedt32
+    Select <u>W</u>indow - "HKEY_LOCAL_MACHINE on Local Machine" from the menu
+    Double-click to open the SYSTEM, then the CurrentControlSet keys
+    Scroll down and click on the Apache servicename
+    Select <u>E</u>dit - Add <u>V</u>alue... from the menu
+    Fill in the Add Value dialog with 
+        <u>V</u>alue Name: DependOnGroup 
+        <u>D</u>ata Type: REG_MULTI_SZ
+        and click OK
+    Leave the Multi-String Editor dialog empty and click OK
+    Select <u>E</u>dit - Add <u>V</u>alue... from the menu
+    Fill in the Add Value dialog with 
+        <u>V</u>alue Name: DependOnService
+        <u>D</u>ata Type: REG_MULTI_SZ
+        and click OK
+    Type the following list (one per line) in the Multi-String Editor dialog
+        Tcpip
+        Afd
+        and click OK
+</pre>
+
+    <p>If you are using COM or DCOM components from a third party
+    module, ISAPI, or other add-in scripting technologies such as
+    ActiveState Perl, you may also need to add the entry Rpcss to
+    the DependOnService list. To avoid exposing the TCP port 135
+    when it is unnecessary, Apache does not create that entry upon
+    installation. Follow the directions above to find or create the
+    DependOnService value, double click that value if it already
+    exists, and add the Rpcss entry to the list.</p>
+
+    <p>Other installations may require additional dependencies.
+    If any files required at startup reside on a network drive, you
+    may need to first configure the service to depend on the network
+    redirector (usually lanmanworkstation) and follow the directions
+    below under the "User Account for Apache Service to Run As" section.</p>
+
+    <p>Attempting to use both IIS and Apache, on the same port but on
+    two different IP addresses may require the W3SVC (IIS) to start prior 
+    to Apache, because IIS tries to glom onto all IP addresses (0.0.0.0) 
+    as it starts, and will fail if Apache has already started on a 
+    specific IP address.</p>
+
+    <p>Apache 1.3.21 introduces a MUCH simpler way to add a dependency.
+    The -W "servicename" argument modifies the -k install or -k config
+    commands to configure a dependency for Apache.  Multiple -W arguments
+    may be given, but they should all occur after the -k option.
+    For example, to add the LanmanWorkstation dependency to an installed
+    "Apache" service, use this command:</p>
+<pre>
+    apache -k config -n Apache -W LanmanWorkstation
+</pre>
+
+    <h2>User Account for Apache Service to Run As (NT/2000)</h2>
+
+    <p>When Apache is first installed as a service (e.g. with the
+    -i option) it will run as user "System" (the LocalSystem
+    account). There should be few issues if all resources for the
+    web server reside on the local system, but it has broad
+    security privileges to affect the local machine!</p>
+
+    <blockquote>
+      LocalSystem is a very privileged account locally, so you
+      shouldn't run any shareware applications there. However, it
+      has no network privileges and cannot leave the machine via
+      any NT-secured mechanism, including file system, named pipes,
+      DCOM, or secure RPC.
+    </blockquote>
+
+    <p><strong>NEVER grant network privileges to the SYSTEM
+    account!</strong> Create a new user account instead, grant the
+    appropriate privileges to that user, and use the 'Log On As:'
+    option. Select the Start Menu -&gt; Settings -&gt; Control
+    Panel -&gt; Services -&gt; apache service ... and click the
+    "Startup" button to access this setting.</p>
+
+    <blockquote>
+      A service that runs in the context of the LocalSystem account
+      inherits the security context of the SCM. It is not
+      associated with any logged-on user account and does not have
+      credentials (domain name, user name, and password) to be used
+      for verification.
+    </blockquote>
+
+    <p>The SYSTEM account has no privileges to the network, so
+    shared pages or a shared installation of Apache is invisible to
+    the service. If you intend to use <em>any</em> network
+    resources, the following steps should help:</p>
+
+    <ul>
+      <li>Select Apache from the Control Panel's Service dialog and
+      click Startup.</li>
+
+      <li>Verify that the service account is correct. You may wish
+      to create an account for your Apache services.</li>
+
+      <li>Retype the password and password confirmation.</li>
+
+      <li>Go to User Manager for Domains.</li>
+
+      <li>Click on Policies from the title bar menu, and select
+      User Rights.</li>
+
+      <li>Select the option for Advanced User Rights.</li>
+
+      <li>
+        In the drop-down list, verify that the following rights
+        have been granted to the selected account: 
+
+        <ul>
+          <li>Act as part of the operating system</li>
+
+          <li>Back up files and directories</li>
+
+          <li>Log on as a service</li>
+
+          <li>Restore files and directories</li>
+        </ul>
+      </li>
+
+      <li>Confirm that the selected account is a member of the
+      Users group.</li>
+
+      <li>Confirm the selected account has access to all document
+      and script directories (minimally read and browse
+      access).</li>
+
+      <li>Confirm the selected account has read/write/delete access
+      to the Apache logs directory!</li>
+    </ul>
+
+    <p>If you allow the account to log in as a user, then you can
+    log in yourself and test that the account has the privileges to
+    execute the scripts, read the web pages, and that you can start
+    Apache in a console window. If this works, and you have
+    followed the steps above, Apache should execute as a service
+    with no problems.</p>
+
+    <p><strong>Note: error code 2186</strong> is a good indication
+    that you need to review the 'Log On As' configuration, since
+    the server can't access a required network resource.</p>
+
+    <h2><a id="trouble" name="trouble">Troubleshooting Apache for
+    Windows as a Service</a></h2>
+
+    <p>When starting Apache as a service you may encounter an error
+    message from Windows service manager. For example if you try to
+    start Apache using the Services applet in Windows Control Panel
+    you may get the following message;</p>
+<pre>
+  Could not start the apache service on \\COMPUTER
+  Error 1067; The process terminated unexpectedly.
+</pre>
+
+    <p>You will get this error if there is any problem starting
+    Apache. In order to see what is causing the problem you should
+    follow the instructions for <a href="windows.html#test">Testing
+    Apache at the Command Prompt</a>.</p>
+
+    <p>Also, Apache 1.3.13 now records startup errors in the
+    Application Event Log under Windows NT/2000, if Apache is run
+    as a service. Run the Event Viewer and select <u>L</u>og ...
+    <u>A</u>pplication to see these events.</p>
+
+    <p><strong>Check the Application Event Log with the Event
+    Viewer in case of any problems, even if no error message pops
+    up to warn you that an error occurred.</strong></p>
+
+    <h2><a id="cmdline" name="cmdline">Running Apache for Windows
+    from the Command Line</a></h2>
+    For details on controlling Apache service from the command
+    line, please refer to <a href="windows.html#cmdline">console
+    command line</a> section. 
+
+    <h2><a id="signal" name="signal">Controlling Apache as a
+    Service</a></h2>
+
+    <p>Multiple instances of Apache can be installed and run as
+    services. Signal an installed Apache service to start, restart,
+    or shutdown/stop as follows:</p>
+<pre>
+    apache -n "service name" -k start
+    apache -n "service name" -k restart
+    apache -n "service name" -k shutdown
+    apache -n "service name" -k stop
+</pre>
+
+    <p>For the default "Apache" service, the -n Apache option is
+    still required, since the -k commands without the -n option are
+    directed at Apache running in a console window. The quotes are
+    only required if the service name contains spaces.</p>
+
+    <p><strong>Note: the -k stop alias for the -k shutdown command
+    was introduced in Apache version 1.3.13.</strong> Earlier
+    versions of Apache will only recognize the -k shutdown option.
+    Prior to 1.3.3, Apache did not recognize <em>any</em> -k
+    options at all!</p>
+
+    <p>Note that you may specify startup options on the apache -k
+    start command line, including the -D, -C and -c options. These
+    affect the processing of the service configuration, and may be
+    used with an &lt;IfDefine&gt; block to conditionally process
+    directives. You may also override the server root path or
+    configuration file with the -d or -f options. The options
+    should also be passed to the -k restart command, but they are
+    ignored if the service is running, and only processed if the
+    service is started.</p>
+
+    <p>The service also appears in the Service Control applet on
+    Windows NT/2000. For NT, this is found in the Settings -&gt;
+    Control Panel -&gt; Services entry, and on 2000 it is found in
+    the Settings -&gt; Control Panel -&gt; Administrative Tools
+    -&gt; Services entry. Here you can select the desired Apache
+    service to start or stop it. Pass additional options such as
+    -D, -C and -c, or override the default -d or -f options in the
+    Start Parameters box before clicking the Start button. These
+    options behave identically to the apache -k start command.</p>
+
+    <p>In addition, you can use the native Windows NT/2000 command
+    NET to start and stop Apache services:</p>
+<pre>
+    NET START "service name"
+    NET STOP "service name"
+</pre>
+
+    <p>Again, quotes are only required if the service name contains
+    spaces. There is no way using the NET START command to pass
+    additional options such as -D, -c or -C using the NET START
+    command. If options are required, use one of the other two
+    methods instead.</p>
+
+    <h2><a id="win95svc" name="win95svc">Experimental
+    Windows 95/98 Service</a></h2>
+
+    <p><strong>Note: The service options for Windows 95 and 98 are
+    only available with Apache 1.3.13 and later.</strong> Earlier
+    versions of Apache only supported Apache in a console window
+    for Windows 95/98.</p>
+
+    <p>There is some support for Apache on Windows 95/98 to behave
+    in a similar manner as a service on Windows NT/2000. It is
+    <em>experimental</em>, if it works (at all) the Apache
+    Software Foundation will not attest to its reliability or
+    future support. Proceed at your own risk!</p>
+
+    <p>Once you have confirmed that Apache runs correctly at the <a
+    href="windows.html#test">Command Prompt</a> you can install,
+    control and uninstall it with the same commands as the Windows
+    NT/2000 version.</p>
+
+    <p>There are, however, significant differences that you should
+    note:</p>
+
+    <p>Apache will attempt to start and if successful it will run
+    in the background. If you run the command</p>
+<pre>
+   Apache -n "service name" -k start
+</pre>
+
+    <p>via a shortcut on your desktop, for example, then if the
+    service starts successfully a console window will flash up but
+    immediately disappears. If Apache detects any errors on startup
+    such as a incorrect entries in the httpd.conf file, then the
+    console window will remain visible. This may display an error
+    message which will be useful in tracking down the cause of the
+    problem, and you should also review the error.log file in the
+    Apache logs directory.</p>
+
+    <p>Windows 95/98 does not support NET START or NET STOP
+    commands so you must use Apache's Service Control options at a
+    command prompt. You may wish to set up a shortcut for each of
+    these commands so that you can just choose it from the start
+    menu or desktop to perform the required action.</p>
+
+    <p>Apache and Windows 95/98 offer no support for running the
+    Apache service as a specific user with network privileges. In
+    fact, Windows 95/98 offers no security on the local machine,
+    either. This is the simple reason that the Apache Software
+    Foundation never endorses the use of Windows 95/98 as a public
+    httpd server. These facilities exist only to assist the user in
+    developing web content and learning the Apache server, and
+    perhaps as a intranet server on a secured, private network.</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

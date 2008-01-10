@@ -1,0 +1,53 @@
+From:    William A. Rowe, Jr. 
+Date:    June 7th '00
+Subject: service monitoring in Apache 1.3.13
+
+The concept for a taskbar monitor has been thrown around
+for a very long while.  1.3.13 introduced Win9x services,
+and that added fuel to the mix.  Here are some sideband
+observations I've made for other developers...
+
+About Apache as a console, don't start Apache hidden without
+any command line arguments if you want to launch it yourself
+in a hidden window (it will do the classic test for 
+AllocConsole/FreeConsole)... drop in some arguments such as
+the -f or -r option and it will fly without thinking it is a 
+service under 9x and NT.
+
+Rule two, don't use --ntservice as an argument, ever.  Only
+the Windows NT Service Control Manager is allowed to pass that
+flag, and only that flag, when it runs Apache.exe.  Do use 
+--ntservice as the sole argument to the executable name if 
+you are installing an Apache NT service yourself.
+
+Rule three, use -k start and -n name when maintaining the
+HKLM/Software/Microsoft/Windows/CurrentVersion/RunServices
+list, since there is no other way for Apache to know what 
+the service is named :)  And look at any 9x installed service's 
+RunServices entry in the registry for the start service semantic.
+
+Rule four, use the WinNT Service Control Manager exclusively
+for starting, stopping and restarting Apache as an NT service.
+The restart signal is the value 128, as documented in service.h 
+and service.c - this will continue to work in Apache 2.0.  If
+it fails, you are handling an older version (pre 1.3.13) of
+Apache, and need to stop and then start the service instead.
+
+Rule five, use the legacy pid-named events to signal Win9x 
+service Apache to restart and stop the service.  But don't
+bother looking for httpd.pid files... you can get the pid
+right from the hidden service control window.  Apache 1.3.13
+and 2.x create a hidden window named for the name of the 
+service (without the spaces), with a window class of
+"ApacheWin95ServiceMonitor", so can use FindWindow to track 
+down running Win9x services.  See the service.c code for how 
+I accomplished this pretty simply in the -k stop/-k restart
+handler.
+
+Finally, to identify all installed Apache services, just query 
+the registry key HKLM\SYSTEM\CurrentControlSet\Services for any 
+key that has the ImagePath value of "...\Apache.exe"... or else
+"...\httpd.exe"... (quotes are significant here, if the leading 
+quote is ommitted the entire string ends with the text \Apache.exe
+based on Apache's own service installer in every released version.)
+

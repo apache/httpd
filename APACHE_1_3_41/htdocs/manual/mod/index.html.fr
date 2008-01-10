@@ -1,0 +1,272 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!-- Traduction anglais 1.38 -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
+
+    <title>Modules Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Modules Apache</h1>
+
+    <p>Ci dessous est donn&eacute;e une liste des modules faisant
+    partie de la distribution Apache. Voir aussi la liste des
+    modules <a href="index-bytype.html">tri&eacute;s par type</a>
+    et la liste compl&egrave;te alphab&eacute;tique de <a
+    href="directives.html">toutes les directives d'Apache</a>. Pour
+    les modules d'Apache qui ne font pas partie de la distribution,
+    vous pouvez consulter <a
+    href="http://modules.apache.org/">http://modules.apache.org</a></p>
+
+    <dl>
+      <dt><a href="core.html">Base</a></dt>
+
+      <dd>Fonctionnalit&eacute;s de base d'Apache</dd>
+
+      <dt><a href="mod_access.html">mod_access</a></dt>
+
+      <dd>Contr&ocirc;le d'acc&egrave;s bas&eacute; sur le nom du
+      client ou son adresse IP</dd>
+
+      <dt><a href="mod_actions.html">mod_actions</a> Apache 1.1 et
+      sup&eacute;rieur</dt>
+
+      <dd>Ex&eacute;cution de scripts CGI en fonction du type de
+      m&eacute;dia ou de la requ&ecirc;te</dd>
+
+      <dt><a href="mod_alias.html">mod_alias</a></dt>
+
+      <dd>Association de diff&eacute;rentes parties du
+      syst&egrave;me de fichier de l'h&ocirc;te dans l'arborescence
+      des documents, et redirection des URL.</dd>
+
+      <dt><a href="mod_asis.html">mod_asis</a></dt>
+
+      <dd>Envoi de fichiers contenant leurs propres en-t&ecirc;tes
+      HTTP</dd>
+
+      <dt><a href="mod_auth.html">mod_auth</a></dt>
+
+      <dd>Authentification des utilisateurs &agrave; partir d'un
+      fichier texte</dd>
+
+      <dt><a href="mod_auth_anon.html">mod_auth_anon</a> Apache 1.1
+      et sup&eacute;rieur</dt>
+
+      <dd>Acc&egrave;s aux utilisateurs anonymes &agrave; des zones
+      authentifi&eacute;es</dd>
+
+      <dt><a href="mod_auth_db.html">mod_auth_db</a> Apache 1.1 et
+      sup&eacute;rieur</dt>
+
+      <dd>Authentification des utilisateurs &agrave; partir d'une
+      base Berkeley</dd>
+
+      <dt><a href="mod_auth_dbm.html">mod_auth_dbm</a></dt>
+
+      <dd>Authentification des utilisateurs &agrave; partir d'un
+      fichier DBM</dd>
+
+      <dt><a href="mod_auth_digest.html">mod_auth_digest</a> Apache
+      1.3.8 et sup&eacute;rieur</dt>
+
+      <dd>Authentication des utilisateurs &agrave; partir d'un
+      fichier MD5 (exp&eacute;rimental)</dd>
+
+      <dt><a href="mod_autoindex.html">mod_autoindex</a></dt>
+
+      <dd>Cr&eacute;ation automatique des listes des
+      r&eacute;pertoires</dd>
+
+      <dt><a href="mod_browser.html">mod_browser</a> Apache 1.2.*
+      seulement</dt>
+
+      <dd>D&eacute;finition de variables d'environnement en
+      fonction de la cha&icirc;ne User-Agent. Ce module est
+      remplac&eacute; par mod_setenvif &agrave; partir de la
+      version 1.3</dd>
+
+      <dt><a href="mod_cern_meta.html">mod_cern_meta</a> Apache 1.1
+      et sup&eacute;rieur</dt>
+
+      <dd>Support des m&eacute;tafichiers d'en-t&ecirc;te HTTP</dd>
+
+      <dt><a href="mod_cgi.html">mod_cgi</a></dt>
+
+      <dd>Appel des scripts CGI</dd>
+
+      <dt><a href="mod_cookies.html">mod_cookies</a> jusqu'&agrave;
+      Apache 1.1.1</dt>
+
+      <dd>Support des cookies Netscape. Ce module est
+      remplac&eacute; dans Apache 1.2 par le module
+      mod_usertrack</dd>
+
+      <dt><a href="mod_digest.html">mod_digest</a> Apache 1.1 et
+      sup&eacute;rieur</dt>
+
+      <dd>Authentication MD5</dd>
+
+      <dt><a href="mod_dir.html">mod_dir</a></dt>
+
+      <dd>Gestion de base des r&eacute;pertoires</dd>
+
+      <dt><a href="mod_dld.html">mod_dld</a> Apache 1.2.* et
+      pr&eacute;c&eacute;dents</dt>
+
+      <dd>Lien au lancement en utilisant la librairie GNU libdld.
+      Ce module est remplc&eacute; dans Apache 1.3 par mod_so</dd>
+
+      <dt><a href="mod_env.html">mod_env</a> Apache 1.1 et
+      sup&eacute;rieur</dt>
+
+      <dd>Passage d'environnement aux scripts CGI</dd>
+
+      <dt><a href="mod_example.html">mod_example</a> Apache 1.2 et
+      sup&eacute;rieur</dt>
+
+      <dd>D&eacute;monstration de l'API Apache</dd>
+
+      <dt><a href="mod_expires.html">mod_expires</a> Apache 1.2 et
+      sup&eacute;rieur</dt>
+
+      <dd>Ajout de l'en-t&ecirc;te Expires: pour les ressources
+      sp&eacute;cifi&eacute;es</dd>
+
+      <dt><a href="mod_headers.html">mod_headers</a> Apache 1.2 et
+      sup&eacute;rieur</dt>
+
+      <dd>Ajout d'en-t&ecirc;tes HTTP aux ressources</dd>
+
+      <dt><a href="mod_imap.html">mod_imap</a> Apache 1.1 et
+      sup&eacute;rieur</dt>
+
+      <dd>Gestion des fichiers imagemap</dd>
+
+      <dt><a href="mod_include.html">mod_include</a></dt>
+
+      <dd>Documents analys&eacute;s par le serveur</dd>
+
+      <dt><a href="mod_info.html">mod_info</a> Apache 1.1 et
+      sup&eacute;rieur</dt>
+
+      <dd>Informations sur la configuration du serveur</dd>
+
+      <dt><a href="mod_isapi.html">mod_isapi</a> WIN32
+      seulement</dt>
+
+      <dd>Support des extensions Windows ISAPI</dd>
+
+      <dt><a href="mod_log_agent.html">mod_log_agent</a></dt>
+
+      <dd>Trace des User Agents</dd>
+
+      <dt><a href="mod_log_common.html">mod_log_common</a>
+      jusqu'&agrave; Apache 1.1.1</dt>
+
+      <dd>Trace des acc&egrave;s utilisant le "Common Logfile
+      Format". Ce module est remplac&eacute; par mod_log_config
+      &agrave; partir d'Apache 1.2</dd>
+
+      <dt><a href="mod_log_config.html">mod_log_config</a></dt>
+
+      <dd>Trace configurable des acc&egrave;s. Remplace
+      mod_log_common</dd>
+
+      <dt><a href="mod_log_forensic.html">mod_log_forensic</a></dt>
+
+      <dd>Forensic logging of requests made to the server</dd>
+
+      <dt><a href="mod_log_referer.html">mod_log_referer</a></dt>
+
+      <dd>Trace des r&eacute;f&eacute;rants d'un document</dd>
+
+      <dt><a href="mod_mime.html">mod_mime</a></dt>
+
+      <dd>D&eacute;termination du type des documents en fonction de
+      l'extension du fichier</dd>
+
+      <dt><a href="mod_mime_magic.html">mod_mime_magic</a></dt>
+
+      <dd>D&eacute;termination du type des documents en fonction de
+      "nombres magiques"</dd>
+
+      <dt><a href="mod_mmap_static.html">mod_mmap_static</a> Apache
+      1.3 et sup&eacute;rieur</dt>
+
+      <dd>Module exp&eacute;rimental de cache m&eacute;moire des
+      fichiers afin d'am&eacute;liorer les performances</dd>
+
+      <dt><a href="mod_negotiation.html">mod_negotiation</a></dt>
+
+      <dd>N&eacute;gotiation de contenu</dd>
+
+      <dt><a href="mod_proxy.html">mod_proxy</a> Apache 1.1 et
+      sup&eacute;rieur</dt>
+
+      <dd>Module de cache par proxy</dd>
+
+      <dt><a href="mod_rewrite.html">mod_rewrite</a> Apache 1.2 et
+      sup&eacute;rieur</dt>
+
+      <dd>Association des URI &agrave; des fichiers en utilisant
+      des expressions r&eacute;guli&egrave;res</dd>
+
+      <dt><a href="mod_setenvif.html">mod_setenvif</a> Apache 1.3
+      et sup&eacute;rieur</dt>
+
+      <dd>D&eacute;finition de variables d'environnement en
+      fonction des informations client</dd>
+
+      <dt><a href="mod_so.html">mod_so</a> Apache 1.3 et
+      sup&eacute;rieur</dt>
+
+      <dd>Support des modules dynamiques (.so sur Unix, .dll sur
+      Win32)</dd>
+
+      <dt><a href="mod_speling.html">mod_speling</a> Apache 1.3 et
+      sup&eacute;rieur</dt>
+
+      <dd>Correction automatique d'erreurs de frappe mineures dans
+      les URL</dd>
+
+      <dt><a href="mod_status.html">mod_status</a> Apache 1.1 et
+      sup&eacute;rieur</dt>
+
+      <dd>Affichage de l'&eacute;tat du syst&egrave;me</dd>
+
+      <dt><a href="mod_userdir.html">mod_userdir</a></dt>
+
+      <dd>R&eacute;pertoires personnels d'utilisateurs</dd>
+
+      <dt><a href="mod_unique_id.html">mod_unique_id</a> Apache 1.3
+      et sup&eacute;rieur</dt>
+
+      <dd>G&eacute;n&eacute;ration d'identifiants uniques de
+      requ&ecirc;te</dd>
+
+      <dt><a href="mod_usertrack.html">mod_usertrack</a> Apache 1.2
+      et sup&eacute;rieur</dt>
+
+      <dd>Suivi des utilisateurs &agrave; l'aide de cookies
+      (remplacement de mod_cookies)</dd>
+
+      <dt><a href="mod_vhost_alias.html">mod_vhost_alias</a> Apache
+      1.3.7 et sup&eacute;rieur</dt>
+
+      <dd>Support d'h&ocirc;tes virtuels dynamiquement
+      configurables</dd>
+    </dl>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

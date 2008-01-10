@@ -1,0 +1,134 @@
+.TH dbmmanage 1 "February 2004"
+.\" Licensed to the Apache Software Foundation (ASF) under one or more
+.\" contributor license agreements.  See the NOTICE file distributed with
+.\" this work for additional information regarding copyright ownership.
+.\" The ASF licenses this file to You under the Apache License, Version 2.0
+.\" (the "License"); you may not use this file except in compliance with
+.\" the License.  You may obtain a copy of the License at
+.\"
+.\"     http://www.apache.org/licenses/LICENSE-2.0
+.\"
+.\" Unless required by applicable law or agreed to in writing, software
+.\" distributed under the License is distributed on an "AS IS" BASIS,
+.\" WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+.\" See the License for the specific language governing permissions and
+.\" limitations under the License.
+.\"
+.SH NAME
+dbmmanage \- Create and update user authentication files in DBM format
+.SH SYNOPSIS
+.B dbmmanage
+.I filename
+[
+.I command
+] [
+.I username
+[
+.I encpasswd
+] ]
+.PP
+.SH DESCRIPTION
+.B dbmmanage
+is used to create and update the DBM format files used to store
+usernames and password for basic authentication of HTTP users.
+Resources available from the
+.B httpd
+Apache web server can be restricted to just the users listed
+in the files created by 
+.B dbmmanage.
+This program can only be used
+when the usernames are stored in a DBM file. To use a
+flat-file database see 
+\fBhtpasswd\fP.
+.PP
+This manual page only lists the command line arguments. For details of
+the directives necessary to configure user authentication in 
+.B httpd 
+see
+the Apache manual, which is part of the Apache distribution or can be
+found at http://httpd.apache.org/.
+.SH OPTIONS
+.IP \fB\fIfilename\fP
+The filename of the DBM format file. Usually without the 
+extension .db, .pag, or .dir.
+.IP \fB\fIcommand\fP
+This selects the operation to perform:
+.TP 12
+.B add
+Adds an entry for \fIusername\fP to \fIfilename\fP using the encrypted
+password \fIencpassword\fP.
+.TP 12
+.B adduser
+Asks for a password and then adds an entry for \fIusername\fP to
+\fIfilename\fP .
+.TP 12
+.B check
+Asks for a password and then checks if 
+\fIusername\fP is in \fIfilename\fP and if it's password matches
+the specified one.
+.TP 12
+.B delete
+Deletes the \fIusername\fP entry from \fIfilename\fP.
+.TP 12
+.B import
+Reads username:password entries (one per line) from STDIN and adds them to
+\fIfilename\fP. The passwords already has to be crypted.
+.TP 12
+.B update
+Same as the "adduser" command, except that it makes sure \fIusername\fP
+already exists in \fIfilename\fP.
+.TP 12
+.B view
+Just displays the complete contents of the DBM file.
+.IP \fB\fIusername\fP
+The user for which the update operation is performed.
+.PD
+.SH BUGS
+.PP
+One should be aware that there are a number of different DBM file
+formats in existance, and with all likelihood, libraries for more than
+one format may exist on your system.  The three primary examples are
+NDBM, the GNU project's GDBM, and Berkeley DB 2.  Unfortunately, all
+these libraries use different file formats, and you must make sure
+that the file format used by
+.I filename
+is the same format that 
+.B dbmmanage
+expects to see.  
+.B dbmmanage
+currently has no way of determining what type of DBM file it is
+looking at.  If used against the wrong format, 
+.B dbmmanage
+will simply return nothing, or may create a different DBM file with a
+different name, or at worst, it may corrupt the DBM file if you were
+attempting to write to it.
+.PP
+.B dbmmanage
+has a list of DBM format preferences, defined by the 
+.B @AnyDBM::ISA
+array near the beginning of the program.  Since we prefer the Berkeley
+DB 2 file format, the order in which
+.B dbmmanage 
+will look for system libraries is Berkeley DB 2, then NDBM, and then
+GDBM.  The first library found will be the library
+.B dbmmanage
+will attempt to use for all DBM file transactions.  This ordering is
+slightly different than the standard 
+.B @AnyDBM::ISA
+ordering in perl, as well as the ordering used by the simple dbmopen()
+call in Perl, so if you use any other utilities to manage your DBM
+files, they must also follow this preference ordering.  Similar care
+must be taken if using programs in other languages, like C, to 
+access these files.
+.PP
+Apache's 
+.B mod_auth_db.c 
+module corresponds to Berkeley DB 2 library, while
+.B mod_auth_dbm.c
+corresponds to the NDBM library.  Also, one can usually use the 
+.B file
+program supplied with most Unix systems to see what format a DBM file is in.
+.PD
+.SH SEE ALSO
+.BR httpd(8)
+.

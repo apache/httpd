@@ -1,0 +1,14 @@
+# Microsoft Developer Studio Generated Dependency File, included by xmlparse.mak
+
+.\hashtable.c : \
+	".\hashtable.h"\
+	".\xmldef.h"\
+	
+
+.\xmlparse.c : \
+	".\hashtable.h"\
+	".\xmldef.h"\
+	".\xmlparse.h"\
+	".\xmlrole.h"\
+	".\xmltok.h"\
+	

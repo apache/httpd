@@ -1,0 +1,153 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Module mod_actions</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_actions</h1>
+
+    <p>This module provides for executing CGI scripts based on
+    media type or request method.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_actions.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    action_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.1 and later.</p>
+
+    <h2>Summary</h2>
+
+    <p>This module has two directives. The Action directive lets
+    you run CGI scripts whenever a file of a certain type is
+    requested. The Script directive lets you run CGI scripts
+    whenever a particular method is used in a request. This makes
+    it much easier to execute scripts that process files.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#action">Action</a></li>
+
+      <li><a href="#script">Script</a></li>
+    </ul>
+    <hr />
+
+    <h2><a id="action" name="action">Action directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Action <em>action-type
+    cgi-script</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory, .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Override:</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_actions<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Action is only
+    available in Apache 1.1 and later</p>
+
+    <p>This directive adds an action, which will activate
+    <em>cgi-script</em> when <em>action-type</em> is triggered by the
+    request.  The <i>cgi-script</i> is the URL-path to a resource that
+    has been configured as a CGI script using <code>ScriptAlias</code>
+    or <code>AddHandler</code>. The <em>action-type</em> can be either
+    a <a href="../handler.html">handler</a> or a MIME content type. It
+    sends the URL and file path of the requested document using the
+    standard CGI PATH_INFO and PATH_TRANSLATED environment
+    variables.</p>
+
+    <p>Examples:</p>
+    <pre>
+    # Requests for files of a particular type:
+    Action image/gif /cgi-bin/images.cgi
+
+    # Files of a particular file extension
+    AddHandler my-file-type .xyz
+    Action my-file-type /cgi-bin/program.cgi
+    </pre>
+
+    <p>In the first example, requests for files with a MIME content
+    type of <code>image/gif</code> will instead be handled by the
+    specified cgi script <code>/cgi-bin/images.cgi</code>.</p>
+
+    <p>In the second example, requests for files with a file extension of
+    <code>.xyz</code> are handled instead by the specified cgi script 
+    <code>/cgi-bin/program.cgi</code>.</p>
+
+    <p><strong>See also</strong>: <a 
+        href="mod_mime.html#addhandler">AddHandler</a></p>
+
+    <hr />
+
+    <h2><a id="script" name="script">Script directive</a></h2>
+
+    <p><a href="directive-dict.html#Syntax"
+    rel="Help"><strong>Syntax:</strong></a> Script <em>method
+    cgi-script</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> server config, virtual
+    host, directory<br />
+     <a href="directive-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Base<br />
+     <a href="directive-dict.html#Module"
+    rel="Help"><strong>Module:</strong></a> mod_actions<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Script is only
+    available in Apache 1.1 and later; arbitrary method use is only
+    available with 1.3.10 and later</p>
+
+    <p>This directive adds an action, which will activate
+    <i>cgi-script</i> when a file is requested using the method of
+    <i>method</i>. The <i>cgi-script</i> is the URL-path to a resource
+    that has been configured as a CGI script using
+    <code>ScriptAlias</code> or <code>AddHandler</code>.  The URL and
+    file path of the requested document is sent using the standard CGI
+    PATH_INFO and PATH_TRANSLATED environment variables.</p>
+
+    <blockquote>
+      Prior to Apache 1.3.10, <i>method</i> can only be one of
+      <code>GET</code>, <code>POST</code>, <code>PUT</code>, or
+      <code>DELETE</code>. As of 1.3.10, any arbitrary method name
+      may be used. <b>Method names are case-sensitive</b>, so
+      <code>Script&nbsp;PUT</code> and <code>Script&nbsp;put</code>
+      have two entirely different effects.
+    </blockquote>
+
+    <p>Note that the Script command defines default actions only.
+    If a CGI script is called, or some other resource that is
+    capable of handling the requested method internally, it will do
+    so. Also note that Script with a method of <code>GET</code>
+    will only be called if there are query arguments present
+    (<em>e.g.</em>, foo.html?hi). Otherwise, the request will
+    proceed normally.</p>
+
+    <p>Examples:</p>
+<pre>
+    # For &lt;ISINDEX&gt;-style searching
+    Script GET /cgi-bin/search
+    # A CGI PUT handler
+    Script PUT /~bob/put.cgi
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,789 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=us-ascii" />
+<title>Installing Apache on TPF4.1</title>
+<style type="text/css"> /*<![CDATA[*/ <!--
+   .indented { margin-left: 25pt; }
+   .output { padding-left: 20px; padding-right: 20px; background-color: #dadada;  }
+--> /*]]>*/
+</style>
+</head>
+
+<body>
+
+<center>
+<h2><a id="top"
+    name="top"></a>Installing the Apache 1.3 HTTP Server on TPF4.1</h2>
+<hr />
+[ <a href="#download">Download</a> |
+<a href="#compilation">Compilation</a> |
+<a href="#installation">Installation</a> |
+<a href="#activation">Activation</a> |
+<a href="#linkmap">Link Map</a>&nbsp;]
+<hr />
+</center>
+
+<p>This document outlines the steps needed to install Apache
+onto an IBM TPF4.1 system. (There are separate
+<a href="install-ztpf.html">installation instructions for z/TPF</a>.)
+</p>
+
+<p>You should first review <a href="readme-tpf.html">readme-tpf.html</a>
+for basic information on the port of Apache to TPF including a list of
+supported modules and required PUT levels.</p>
+
+<p>The allocated <tt>CHTA</tt> program name is used throughout
+these instructions to refer to Apache. You can use a different
+program name if you wish.<br />
+Likewise the directory structure <tt>apache/src</tt> is used
+for the Apache source code directory. You can use different
+directories than <tt>apache</tt> if you wish.</p>
+
+<p>If you change the program or directory names be sure to
+change the entries shown in these instructions.</p><br />
+
+<center>
+<h2><a id="download" name="download"></a>Download</h2>
+</center>
+
+<p>Releases of the Apache server are compressed into a "tarball" file
+which must be downloaded to your PC.  Additionally the source code from
+the tarball will need to be copied onto an OS/390 UNIX System Services
+machine (later referred to simply as "OS/390 UNIX") for compiling. Here
+are all the details on how to get Apache and how to get it where it
+needs to be:</p>
+<ol>
+   <li><p>Download the compressed Apache 1.3 files (the "tarball") from
+   <a href="http://httpd.apache.org/download.cgi">http://httpd.apache.org/download.cgi</a>
+   to your PC.  The file name on the web site will be
+   <tt>apache_1.3.<i>vv</i>.tar.Z</tt>, where "<tt><i>vv</i></tt>" is
+   the version number.  Replaced "<tt><i>vv</i></tt>" throughout these
+   instructions with the actual version number.</p>
+
+   <p><font color="#CC6600"><font size="+1">TIP:</font></font> Be sure
+   to keep the <tt>.tar.Z</tt> extension when saving the file.</p>
+   </li>
+
+   <li>
+   <p>Decompress the tarball on your PC using WinZip or some other PC
+   decompression tool.</p>
+
+   <p><font color="#CC6600"><font size="+1">TIP:</font></font> If you
+   are using WinZip verify that the
+   <i>"TAR File Smart CR/LF Conversion"</i> option (under Options,
+   Configuration) is <em>not</em> checked.</p>
+
+   <p>This is what you can expect if you use WinZip:</p>
+
+   <ul>
+      <li>open the tarball with WinZip (this can usually be done simply
+      by double-clicking on the downloaded tarball)</li>
+
+      <li>you will be told that the archive contains one file
+      (apache_1.3.<i>vv</i>.tar) - allow WinZip to decompress it to a
+      temporary folder</li>
+
+      <li>extract the archived files onto your PC - you'll be using
+      files from the&nbsp; <tt>conf, htdocs,</tt> and <tt>icons</tt>
+      directories later in the install phase<br /><br />
+      </li>
+   </ul>
+   </li>
+
+   <li><p>FTP the tarball to your OS/390 UNIX machine using binary mode:
+   </p>
+
+   <ul>
+      <li>activate FTP in an MSDOS window:<br />
+      <b><tt>&nbsp;&nbsp;&nbsp;ftp&nbsp;<i>your.os390.unix.machine.com</i></tt></b>&nbsp;</li>
+
+      <li>sign in&nbsp;</li>
+
+      <li>set mode to binary:&nbsp;&nbsp;<b><tt>binary</tt></b>&nbsp;</li>
+
+      <li>send the file to OS/390 UNIX:<br />
+      <b><tt>&nbsp;&nbsp;&nbsp;send&nbsp;"c:/<i>path</i>/apache_1.3.<i>vv</i>.tar.Z"&nbsp;apache_1.3.<i>vv</i>.tar.Z</tt></b></li>
+
+      <li>exit FTP:&nbsp;&nbsp;<b><tt>bye</tt></b></li>
+   </ul>
+
+   <p><font color="#CC6600"><font size="+1">TIP:</font></font> UNIX file
+   names are case sensitive. If you use an NFS client to transfer files
+   from your PC to OS/390 UNIX (instead of using FTP as described above)
+   verify that the NFS drive will transfer the file names
+   with upper/lower case preserved.</p>
+   </li>
+
+   <li><p>On your OS/390 UNIX machine, decompress and extract the
+   archived files necessary for compiling Apache:</p>
+   <p class="indented"><b><tt>pax&nbsp;-rvzkf&nbsp;apache_1.3.<i>vv</i>.tar.Z&nbsp;-o&nbsp;from=ISO8859-1,to=IBM-1047&nbsp;"*/src"</tt></b></p>
+   </li>
+
+   <li><p><a id="delete-expat" name="delete-expat"></a> Remove
+   unnecessary subdirectories:</p>
+   <p class="indented"><b><tt>cd&nbsp;apache_1.3.<em>vv</em>/src/lib<br />
+   rm&nbsp;-r&nbsp;expat-lite&nbsp;sdbm<br />
+   cd&nbsp;../os<br />
+   rm -fr bs2000 cygwin mpeix netware os2 os390 unix win32<br />
+   cd&nbsp;..</tt></b></p>
+   </li>
+
+</ol>
+
+<center>
+<h2><a id="compilation" name="compilation"></a>Compilation</h2>
+</center>
+
+   <p>Apache supports the notion of "optional modules". However,
+   the server has to know which modules are compiled into it. In
+   order for those modules to be effective, it is necessary to
+   generate a short bit of code (modules.c) which simply has a
+   list of them. If you are using the <tt>Configure</tt> utility
+   and <tt>make</tt>, modules.c and other necessary files will be
+   created for you automatically.</p>
+
+   <p>The provided instructions assume a c89 compiler and have
+   been tested on an OS/390 UNIX machine running at version 2.6
+   that contained both OS/390 UNIX and TPF C header files. If you
+   are using a platform other that OS/390 UNIX you may need to
+   modify src/os/tpf/TPFExport and src/Configure to match your
+   environment.</p>
+
+   <p><font color="#CC6600"><font size="+1">TIP:</font></font>
+   Editing files on your PC prior to moving them to OS/390 UNIX
+   may result in the loss/addition of unprintable characters.
+   Files of concern include shell scripts and src/Configuration.
+   The most common problems are with tab characters and CR/LF
+   characters. Most editors will handle the CR/LF problem
+   correctly but none seem to handle tab characters. If you need
+   to edit files prior to moving them to OS/390 UNIX, edit them in
+   a UNIX editor such as vi or emacs.</p>
+
+   <p>Note that OS/390 UNIX commands in this section are shown in
+   <b><tt>bold</tt></b>, are case sensitive, and must be made from
+   the "src" directory.</p>
+
+   <ol>
+      <li><p>Switch to the Apache source code subdirectory:</p>
+      <p class="indented"><b><tt>cd&nbsp;apache_1.3.<em>vv</em>/src</tt></b></p></li>
+
+      <li><p>Overlay src/Configuration with src/Configuration.tmpl:</p>
+      <p class="indented"><b><tt>cp&nbsp;Configuration.tmpl&nbsp;Configuration</tt></b></p></li>
+
+      <li><p>The src/Configuration file controls which optional
+      modules are compiled into Apache.<br />
+      Leave the file as-is if you want to use the default set of
+      modules.<br />
+      Otherwise edit the src/Configuration file to customize which
+      modules are used:</p>
+
+      <ul>
+         <li>Comment out (by preceding the line with a "#") lines
+         corresponding to those modules you do <em>not</em> wish to
+         include.</li>
+
+         <li>Uncomment (by removing the initial "#", if present) lines
+         corresponding to those modules you wish to include.<br />
+         (The <a href="readme-tpf.html">readme-tpf.html</a> document
+         lists the modules that have been tested on TPF).</li>
+
+         <li>Add lines for any custom or third party modules you wish
+         to include.<br />
+         The modules placed in the Apache distribution are the ones that
+         have been tested and are used regularly by various members of
+         the Apache development group. Additional modules contributed by
+         members or third parties with specific needs or functions are
+         available at
+         <a href="http://modules.apache.org/">http://modules.apache.org/</a>.
+         There are instructions on that page for linking these modules
+         into the core Apache code.</li>
+
+         <li>If you did not delete the src/lib/expat-lite directory as
+         noted in the <a href="#delete-expat">download instructions</a>,
+         add "<tt>Rule&nbsp;EXPAT=no</tt>" to the src/Configuration
+         file.</li>
+
+         <li>Adjust the other rules, <tt>EXTRA_CFLAGS</tt>,
+         <tt>EXTRA_LIBS</tt>, <tt>EXTRA_LDFLAGS</tt>, and
+         <tt>EXTRA_INCLUDES</tt> settings if you feel so inclined.<br />
+         &nbsp;</li>
+
+         </ul>
+   </li>
+
+   <li><p>Indicate whether the <tt>non_socket_select</tt> function is
+   implemented on your system.</p>
+
+   <p>If you are on a PUT12 or higher system, or have PJ26895 installed,
+   then you probably support <tt>non_socket_select</tt>.<br />
+   You can verify this by looking for the <tt>non_socket_select</tt>
+   prototype in your system header files (specifically
+   <tt>i$pwbl.h</tt>).</p>
+
+   <p>If your TPF system supports <tt>non_socket_select</tt> do
+   <em>one</em> of the following:</p>
+
+   <ul>
+      <li>add "<tt>#define&nbsp;TPF_HAVE_NONSOCKET_SELECT</tt>" to
+      <tt>src/os/tpf/os.h</tt>&nbsp;&nbsp;&nbsp;<em>or</em></li>
+
+      <li>add "<tt>-DTPF_HAVE_NONSOCKET_SELECT</tt>" to the
+      <tt>_C89_OPTIONS</tt> export in src/os/tpf/TPFExport</li>
+   </ul>
+
+   <p>Otherwise:</p>
+
+   <ul>
+      <li>add "<tt>#define&nbsp;TPF_NO_NONSOCKET_SELECT</tt>" to
+      <tt>src/os/tpf/os.h</tt>&nbsp;&nbsp;&nbsp;<em>or</em></li>
+
+      <li>add "<tt>-DTPF_NO_NONSOCKET_SELECT</tt>" to the
+      <tt>_C89_OPTIONS</tt> export in src/os/tpf/TPFExport</li>
+   </ul>
+
+   <p>Without <tt>non_socket_select</tt> CGI output is buffered and
+   only sent to the browser when the CGI program finishes.</p></li>
+
+   <li><p>Indicate whether the <tt>tpf_sawnc</tt> function is
+   implemented on your system.</p>
+
+   <p>If you are on a PUT10 or higher system, or have PJ27387/PJ26188
+   installed, then you probably support <tt>tpf_sawnc</tt>.<br />
+   You can verify this by looking for the <tt>tpf_sawnc</tt> prototype
+   in your system header files (either <tt>tpfapi.h</tt> or
+   <tt>i$fsdd.h</tt>).</p>
+
+   <p>If your TPF system supports <tt>tpf_sawnc</tt> do <em>one</em> of
+   the following:</p>
+
+   <ul>
+      <li>add "<tt>#define&nbsp;TPF_HAVE_SAWNC</tt>" to
+      <tt>src/os/tpf/os.h</tt>&nbsp;&nbsp;&nbsp;<em>or</em></li>
+
+      <li>add "<tt>-DTPF_HAVE_SAWNC</tt>" to the <tt>_C89_OPTIONS</tt>
+      export in src/os/tpf/TPFExport</li>
+   </ul>
+
+   <p>Otherwise:</p>
+   <ul>
+      <li>add "<tt>#define&nbsp;TPF_NO_SAWNC</tt>" to
+      <tt>src/os/tpf/os.h</tt>&nbsp;&nbsp;&nbsp;<em>or</em></li>
+
+      <li>add "<tt>-DTPF_NO_SAWNC</tt>" to the <tt>_C89_OPTIONS</tt>
+      export in src/os/tpf/TPFExport</li>
+   </ul>
+
+   <p>The use of <tt>tpf_sawnc</tt> allows for a cleaner shutdown of
+   Apache.</p></li>
+
+   <li><p><a id="syslog" name="syslog"></a>Indicate if you have the
+   Syslog Daemon message logging facility.</p>
+
+   <p>If you are on a PUT13 or higher system, or have PJ27214 installed,
+   you can use syslog for Apache's ErrorLog.<br />
+   To have the option of using syslog you must do <em>one</em> of the
+   following:</p>
+
+   <ul>
+      <li>add "<tt>#define&nbsp;HAVE_SYSLOG</tt>" to
+      <tt>src/os/tpf/os.h</tt>&nbsp;&nbsp;&nbsp;<em>or</em></li>
+
+      <li>add "<tt>-DHAVE_SYSLOG</tt>" to the <tt>_C89_OPTIONS</tt>
+      export in src/os/tpf/TPFExport</li>
+   </ul>
+
+   <p>You also need to add "<tt>INCLUDE OBJLIB(CSYLOG40)</tt>" to your
+   link JCL.</p>
+
+   <p>See the
+   <a href="readme-tpf.html#syslog">syslog section of readme-tpf.html</a>
+   for more information.</p></li>
+
+   <li><p>Indicate if you would like to use the TCP/IP network services
+   database. (This only applies if you are using TCP/IP native stack.)</p>
+
+   <p>If you are on a PUT16 or higher system, or have PJ28195 installed,
+   you can use the TCP/IP network services database. To do so, you must
+   do <em>one</em> of the following:</p>
+
+   <ul>
+      <li>add "<tt>#define&nbsp;TPF_HAVE_NSD</tt>" to
+      <tt>src/os/tpf/os.h</tt>&nbsp;&nbsp;&nbsp;<em>or</em></li>
+
+      <li>add "<tt>-DTPF_HAVE_NSD</tt>" to the <tt>_C89_OPTIONS</tt>
+      export in src/os/tpf/TPFExport</li>
+   </ul>
+
+   <p>See "Network Services Database Support" in the
+   <a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Product Information Center</a>
+   for details.</p></li>
+
+   <li><p><a id="export" name="export"></a>Set the TPF environment
+   variables:</p>
+
+   <p class="indented"><b><tt>.&nbsp;os/tpf/TPFExport</tt></b>&nbsp;</p>
+   <p>This script will set the environment variables required to compile
+   the programs for TPF. Verify that the export variables are valid for
+   your installation, in particular, the system include file
+   directories. The system include files must reside on your OS/390 UNIX
+   system in the appropriate file structure similar to /usr/include and
+   /usr/include/sys. Do <em>not</em> modify the <tt>TPF=YES</tt> export
+   variable. If this is changed, the "Configure" script will not
+   recognize TPF.</p></li>
+
+   <li><p><a id="run-configure" name="run-configure"></a>Run the
+   "Configure" script to generate modules.c, include/ap_config_auto.h,
+   and necessary Makefiles:</p>
+
+   <p class="indented"><b><tt>./Configure</tt></b></p>
+
+   <table class="indented" summary="Configure output">
+   <tr><td class="output"><pre>
+Using config file:
+Configuration
+Creating Makefile
++ configured for TPF platform
++ setting C compiler to c89
++ setting C pre-processor to c89 -E
++ using "tr [a-z] [A-Z]" to uppercase
++ checking for system header files
++ adding selected modules
++ checking sizeof various data types
+Creating Makefile in support
+Creating Makefile in regex
+Creating Makefile in os/tpf
+Creating Makefile in ap
+Creating Makefile in main
+Creating Makefile in modules/standard
+$
+</pre></td></tr>
+   </table>
+
+   <p class="indented">Use the <tt>-file</tt> option if you want to
+   maintain multiple configurations:</p>
+
+   <p class="indented">
+   <b><tt>./Configure&nbsp;-file&nbsp;Configuration.2nd</tt></b></p>
+
+   <table class="indented" summary="Configure output using -file">
+   <tr><td class="output"><pre>
+Using config file: Configuration.2nd
+Creating Makefile
++ configured for TPF platform
++ setting C compiler to c89
+<em>et cetera</em>
+</pre></td></tr>
+   </table>
+
+   <p>If you receive an error such as "<tt>Configure 146: FSUM7351 not
+   found</tt>" the most likely explanation is that one or more of the
+   <tt>make</tt> related files were edited on a non-UNIX platform,
+   corrupting the end-of-line marks. Verify that lines ending with "\"
+   in the flagged file do not have trailing spaces. Using the vi editor
+   and the sample error above as an example...</p>
+
+   <table class="indented" summary="vi instructions">
+   <tr><td>pull up the flagged file:</td>
+       <td><tt><b>vi Configure</b></tt></td>
+   </tr>
+
+   <tr><td>turn on punctuation:</td>
+       <td><tt><b>:set list</b></tt></td>
+   </tr>
+
+   <tr><td>go to the line in question:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+       <td><tt><b>146G</b></tt></td>
+   </tr>
+
+   <tr><td><em>or</em> find a line with a "\":</td>
+       <td><tt><b>/\\</b></tt></td>
+   </tr>
+
+   <tr><td></td> <td></td></tr>
+   </table>
+
+   <p class="indented">The end of line should display as "<tt>\$</tt>".
+   If it is displayed as "<tt>\&nbsp;$</tt>" (with a blank between \ and
+   $) then you should revert to the distributed version of the file and
+   make the site-specific changes again using a UNIX compatible editor
+   such as vi or emacs. Then try the Configure command again.</p>
+
+   <table class="indented" summary="closing the file">
+   <tr><td>close the file:&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+      <td><tt><b>:q</b> (<em>or</em> <b>:quit!</b>)</tt></td>
+   </tr>
+   </table>&nbsp;
+   </li>
+
+   <li><p>Edit src/os/tpf/os.h if you want to use the
+   <tt>sigaction()</tt> function.</p>
+
+   <p>The <tt>sigaction()</tt> function supersedes the <tt>signal()</tt>
+   interface and should be used in preference. This function was
+   implemented with APAR PJ26188 which shipped with PUT10.</p>
+
+   <p>To use <tt>sigaction()</tt> remove <tt>#define
+   NO_USE_SIGACTION</tt> in os.h.</p>
+
+   <p>The change will only take effect after Apache is (re)compiled.</p></li>
+
+   <li><p>Edit src/os/tpf/os.h if you do <em>not</em> want the
+   scoreboard kept in shared memory.</p>
+
+   <p>The default behavior for Apache on all platforms <em>except</em>
+   TPF is to use the file system for maintaining the scoreboard (which
+   holds current Apache children status). The default behavior for
+   Apache on TPF is to use shared memory. This reduces file activity and
+   improves performance.</p>
+
+   <p>If you are on a pre-PUT10 system, or for some reason you do not
+   want to use shared memory for the scoreboard, you must remove
+   "<tt>#define&nbsp;USE_SHMGET_SCOREBOARD</tt>" from os.h</p>
+
+   <p>The change will only take effect after Apache is (re)compiled.</p></li>
+
+   <li><p>Now compile the programs:</p>
+
+   <p class="indented"><b><tt>make</tt></b></p>
+
+   <p>Besides compiling, <tt>make</tt> also runs
+   src/main/gen_test_char.c and src/main/gen_uri_delims.c in order to
+   create src/main/test_char.h and src/main/uri_delims.h respectively</p>
+
+   <p>The following compilation warning may or may not occur.
+   It should be ignored:</p>
+
+   <p class="indented">main/http_main.c:&nbsp;&nbsp;&nbsp;<tt>Infinite loop detected in function child_main. Program may not stop.</tt></p>
+
+   <p>If during compilation you get a warning about a missing 'regex.h',
+   set <tt>WANTHSREGEX=yes</tt> in the src/Configuration file and start
+   back at the <a href="#run-configure"><tt><b>Configure</b></tt></a>
+   step.</p>
+
+   <p>If you get a
+   '<tt>Duplicate&nbsp;type&nbsp;specifier&nbsp;"long"&nbsp;ignored</tt>'
+   error, add "<tt>-W&nbsp;0,langlvl(extended)</tt>" to the
+   <tt>_C89_OPTIONS</tt> export in src/os/tpf/TPFExport and start back
+   at the <a href="#export"><tt><b>export</b></tt></a> step</p>
+   </li>
+</ol><br />
+
+<center>
+<h2><a id="installation" name="installation"></a>Installation</h2>
+</center>
+
+   <p>The allocated <tt>CHTA</tt> program name is used throughout
+   these instructions to refer to Apache. You can use a different
+   program name if you wish.</p>
+
+   <ol>
+
+   <li><p>Link the compiled object files into a DLL. Sample link JCL
+   has been included as src/os/tpf/samples/linkhttp.jcl. You will
+   need to modify this JCL:</p>
+
+   <ul>
+      <li>Change the IDs, data set names, and libraries for your
+      particular site.</li>
+
+      <li>Add/remove <tt>mod_<i>xxx</i>.o</tt> files so they correspond
+      to the <tt>mod_<i>xxx</i>.o</tt> lines in your src/Configuration
+      file.</li>
+   </ul>
+
+   <p><font color="#CC6600"><font size="+1">TIP:</font></font>
+   Do <em>not</em> include gen_test_char.o or gen_uri_delims.o in the
+   link JCL since these files are only used during the <tt>make</tt>
+   step.</p>
+
+   <p>If you receive an "Unresolved references" error for
+   "<tt>XML_ErrorString</tt>" you probably need to
+   <a href="#delete-expat">remove the expat-lite directory</a> and start
+   back at the
+   <a href="#run-configure">"Run the Configure script" step</a></p>
+
+   <p>If you receive an "unable to open" error for
+   <tt>lib/expat-lite/hashtable.o</tt>" you probably need to remove all
+   of the expat-lite .o's from your link JCL</p>
+
+   <p><font color="#CC6600"><font size="+1">TIP:</font></font>
+   Apache uses cinet6 from CLTY, which is part of the Internet Daemon
+   (zinet). Ensure that you link Apache with the proper version of CLTY
+   for your system. If you apply changes to CLTY you should re-link
+   Apache to prevent the <code>inetd_getServer</code> and/or
+   <code>inetd_getServerStatus</code> functions from failing.</p></li>
+
+   <li><p>Create a loadset. Sample loadset JCL has been included as
+   src/os/tpf/samples/loadset.jcl. You will need to modify this JCL for
+   your particular site.</p>
+
+   <p>A JCL condition code of 4 is expected since the C load module will
+   contain no link map data.</p>
+
+   <p>If you require a link map refer to the
+   <a href="#linkmap">instructions below</a>.</p></li>
+
+   <li><p>Load (<tt>zoldr load</tt>) and activate (<tt>zoldr act</tt>)
+   the loadset on your test system.</p></li>
+
+   <li><p>Ensure that the program name you are using for Apache has
+   <tt>RESTRICT</tt> and <tt>KEY0</tt> authorization:</p>
+
+   <p class="indented"><tt><b>zdpat chta</b> (c-c)</tt></p>
+
+   <p>If necessary you can use the <tt>zapat</tt> entry to alter the
+   authorization:</p>
+
+   <p class="indented"><tt><b>zapat chta restrict key0</b> (c-c)</tt></p>
+
+   <p>Note that if the program name is unallocated, you must have the
+   loadset for it activated or you will receive <tt>INVALID PROGRAM
+   NAME</tt> from the <tt>zdpat/zapat</tt> entries.</p></li>
+
+   <li><p>General documentation for Apache is located at
+   <a href="http://httpd.apache.org/docs/">http://httpd.apache.org/docs/</a>
+   and in the HTML pages included with the distribution (tarball) under
+   the <tt>htdocs/manual</tt> directory.</p></li>
+
+   <li><p>Create the Apache run-time configuration file. The server
+   requires a configuration file to initialize itself during activation.<br />
+   Copy the distribution version, conf/httpd.conf-dist from the
+   decompressed tarball on your PC, to conf/httpd.conf and then edit the
+   conf/httpd.conf copy with your site specific information.</p>
+
+   <p>You must change every occurrence of "<tt>@@ServerRoot@@</tt>" to
+   your document server root (for example "<tt>/usr/local/apache</tt>")</p>
+
+   <p>You should also add the following line to the httpd.conf file to
+   prevent Apache from doing a host name lookup on your test system:</p>
+
+   <p class="indented"><tt>ServerName 127.0.0.1</tt></p></li>
+
+   <li><p>On TPF activate your TCP/IP Offload (ZCLAW) or Native Stack
+   communications device.<br />
+   Refer to the
+   <a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Product Information Center</a>
+   for details.</p></li>
+
+   <li><p>Using either TFTP or FTP, transfer the configuration file,
+   icons, and web pages to your TPF system. A typical directory
+   structure for Apache is as follows:</p>
+
+   <p class="indented"><tt>/usr/local/apache/conf<br />
+   /usr/local/apache/logs<br />
+   /usr/local/apache/icons<br />
+   /usr/local/apache/htdocs<br /></tt></p>
+
+   <p>At a minimum you will need these files on TPF:</p>
+
+   <p class="indented"><tt>/usr/local/apache/conf/httpd.conf<br />
+   /usr/local/apache/conf/mime.types<br />
+   /usr/local/apache/htdocs/index.html.en<br />
+   /usr/local/apache/htdocs/apache_pb.gif<br /></tt></p>
+
+   <p>All gif, jpg, and zip files should be transferred as binary; the
+   configuration file and html pages should be transferred as text.</p>
+
+   <p>Refer to the
+   <a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Product Information Center</a>
+   for details on TFTP and FTP.</p></li>
+
+   <li><p>The logs directory must exist and be accessible in order to
+   avoid an <tt>fopen</tt> error while running Apache:</p>
+
+   <p>If you're running a PUT10 or higher version of TPF make the directory using a zfile commands:</p>
+
+   <p class="indented">
+   <b><tt>zfile&nbsp;mkdir&nbsp;/usr/local/apache/logs<br />
+   zfile chmod 777 /usr/local/apache/logs</tt></b></p>
+
+   <p>If you're running TPF version PUT09 TFTP an empty file into the
+   logs subdirectory to create it.&nbsp;<br />
+   Then make sure Apache can write into the logs subdirectory:</p>
+
+   <p class="indented"><b><tt>zfile chmod 777 /usr/local/apache/logs</tt></b></p></li>
+
+   <li><p>Add Apache to the Internet Daemon's tables using zinet
+   entries</p>
+
+   <p>For PUT11 and later use the "DAEMON" model for Apache:</p>
+
+   <p class="indented">
+   <tt><b>zinet&nbsp;add&nbsp;s-<i>apache</i>&nbsp;<i>pgm-chta</i>&nbsp;model-daemon&nbsp;user-root</b></tt></p>
+
+   <p>On pre-PUT11 systems use the "NOLISTEN" model instead:</p>
+
+   <p class="indented">
+   <tt><b>zinet&nbsp;add&nbsp;s-<i>apache</i>&nbsp;<i>pgm-chta</i>&nbsp;model-nolisten</b></tt></p>
+
+   <p><font color="#CC6600" size="4">TIP:</font> Logic changes
+   implemented with PUT11 cause zinet to <i>not</i> restart NOLISTEN
+   servers after <tt>zoldr&nbsp;act</tt> and <tt>zoldr&nbsp;deact</tt>
+   entries. This means that Apache running as NOLISTEN on a PUT11 or
+   later system will exit whenever any <tt>zoldr&nbsp;act</tt> or
+   <tt>zoldr&nbsp;deact</tt> entry is made.  Therefore at PUT11 you
+   should switch to the DAEMON model and ensure that you have APARs
+   PJ25761 and PJ27363 applied.</p>
+
+   <p>Refer to the
+   <a href="http://www.ibm.com/tpf/pubs/tpfpubs.htm">IBM TPF Product Information Center</a>
+   for details on the Internet Daemon and zinet commands.</p></li>
+
+   <li><p>Start the server:</p>
+   <p class="indented"><b><tt>zinet&nbsp;start&nbsp;s-<i>apache</i></tt></b></p></li>
+
+   <li><p>Verify Apache was successfully started:</p>
+   <p class="indented"><b><tt>zfile cat /usr/local/apache/logs/error_log</tt></b></p>
+
+   <table class="indented" summary="Starting Apache">
+   <tr><td class="output"><pre>
+[<i>timestamp</i>] [notice] Apache/1.3.<i>vv</i> (TPF) configured -- resuming normal operations
+[<i>timestamp</i>] [notice] Accept mutex: tpfcore (Default: tpfcore)
+</pre></td></tr>
+   </table>
+
+   <p>If there are severe errors correct the conf file and restart the
+   server:</p>
+
+   <p class="indented"><b><tt>zinet&nbsp;stop&nbsp;s-<i>apache</i></tt></b><br />
+   correct the httpd.conf file and transfer it to TPF<br />
+   <b><tt>zfile&nbsp;rm&nbsp;/usr/local/apache/logs/error_log</tt></b><br />
+
+   <b><tt>zinet&nbsp;start&nbsp;s-<i>apache</i></tt></b></p></li>
+</ol>
+
+<center>
+<h2><a id="activation" name="activation"></a>Activation</h2>
+</center>
+
+<ol>
+   <li><p>Request a page from your browser:</p>
+
+   <p class="indented">
+   <tt><b>http://<i>xx.xx.xx.xx</i></b></tt>&nbsp;&nbsp;&nbsp;(where
+   <i>xx.xx.xx.xx</i> is your test system IP address)</p></li>
+</ol>
+<br />
+<center>
+<h2><a id="linkmap" name="linkmap"></a>Generating an Apache Link Map</h2>
+</center>
+
+<p>Three different tools can be used to generate a link map for Apache:
+TPF Build Tools, TPF Toolkit, and VisualAge TPF.</p>
+
+<h3>TPF Build Tools on OS/390 UNIX</h3>
+
+<ol>
+   <li>Download and install the
+   <a href="http://www.ibm.com/software/htp/tpf/download/bldtools.htm">TPF Build Tools</a>
+   if you have not already done so.</li>
+
+   <li>Follow the instructions to set up any necessary variables for
+   your installation.</li>
+
+   <li>Create a shell script in your Apache <code>src</code> directory:
+   <table class="indented" summary="shell script">
+   <tr><td class="output"><pre>
+ld -M --dlm -O'&lt;your-dsd-dsn&gt;(CHTA&lt;vv&gt;)' \
+CSTRTD40 \
+CINET640 \
+buildmark.o \
+modules.o \
+ap/ap_base64.o \
+   .
+   .
+   .
+regex/regexec.o \
+regex/regfree.o
+</pre></td></tr>
+   </table>In your script...
+
+   <ul>
+      <li>Each line must end with a backwards slash (\) except for the
+      last line. Be sure there are no trailing blanks after the backward
+      slashes.</li>
+
+      <li>Replace the two items in angle brackets (&lt; &gt;) with your
+      dataset name and program version.</li>
+
+      <li>Add any additional libraries prior to the first ".o" line.</li>
+
+      <li>Add a line for each .o to be linked into your configuration of
+      Apache.</li>
+
+   </ul><br />
+   </li>
+
+   <li>Change the shell script's permission settings to executable using
+   the <code>chmod</code> command.</li>
+
+   <li>Run the script.<br />
+   If you get a duplicate object warning for <tt>@@DLMHDR</tt> remove
+   the <tt>CSTRTD40</tt> line from the script and re-run.<br />
+   (You'll see this warning if the ld processing is automatically
+   including <tt>CSTRTD</tt>.)</li>
+
+</ol>
+
+<h3>TPF Toolkit</h3>
+
+<ol>
+   <li>Copy the sample <tt>linkhttp.dlm</tt> file from the
+   <tt>src/os/tpf/samples</tt> directory to your Apache <tt>src</tt>
+   directory on OS/390 UNIX.</li>
+
+   <li>This sample file contains the components for the default
+   configuration of Apache. Add and delete components (such as modules)
+   as necessary so it matches your configuration of Apache. Basically,
+   it should match your link JCL with the "<tt>.../apache/src</tt>"
+   portion of the filenames removed.</li>
+
+   <li>Change items in angle brackets (&lt; &gt;) to also match your
+   JCL. Be sure to remove the angle brackets as well.</li>
+
+   <li>In the TPF Toolkit create a project with your modified dlm file
+   as its sole contents.</li>
+
+   <li>Right click on the dlm file in your new project and choose "Build
+   DLM".</li>
+</ol>
+
+<h3>VisualAge TPF</h3>
+
+<ol>
+   <li>Copy the sample <tt>linkhttp.dlm</tt> file from the
+   <tt>src/os/tpf/samples</tt> directory to your Apache
+   <tt>src</tt> directory on OS/390 UNIX.</li>
+
+   <li>This sample file contains the components for the default
+   configuration of Apache. Add and delete components (such as modules)
+   as necessary so it matches your configuration of Apache. Basically,
+   it should match your link JCL with the "<tt>.../apache/src</tt>"
+   portion of the filenames removed.</li>
+
+   <li>Change items in angle brackets (&lt; &gt;) to also match your
+   JCL. Be sure to remove the angle brackets as well.</li>
+
+   <li>In VisualAge TPF create a container with your modified dlm file
+   as its sole contents.</li>
+
+   <li>Right click on the dlm file in your new container and choose
+   "Build DLM".</li>
+</ol>
+
+<hr />
+
+<center>
+[ <a href="#top">top</a> | <a href="#download">Download</a>
+| <a href="#compilation">Compilation</a> |
+<a href="#installation">Installation</a> |
+<a href="#activation">Activation</a> |
+<a href="#linkmap">Link Map</a>&nbsp;]
+</center>
+<hr />
+</body>
+</html>

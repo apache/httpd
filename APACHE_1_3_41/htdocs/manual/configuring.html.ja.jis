@@ -1,0 +1,253 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+
+    <title>設定ファイル</title>
+  </head>
+  <!-- English Revision: 1.12 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">設定ファイル</h1>
+
+    <ul>
+      <li><a href="#main">メインの設定ファイル</a></li>
+
+      <li><a href="#syntax">設定ファイルの構文</a></li>
+
+      <li><a href="#modules">モジュール</a></li>
+
+      <li><a href="#scope">ディレクティブの適用範囲</a></li>
+
+      <li><a href="#htaccess">.htaccess ファイル</a></li>
+
+    </ul>
+    <hr />
+
+    <h2><a id="main" name="main">メインの設定ファイル</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連モジュール</strong><br />
+         <br />
+         <a href="mod/mod_mime.html">mod_mime</a><br />
+         </td>
+
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+         <br />
+         <a
+        href="mod/core.html#accessconfig">AccessConfig</a><br />
+         <a
+        href="mod/core.html#ifdefine">&lt;IfDefine&gt;</a><br />
+         <a href="mod/core.html#include">Include</a><br />
+         <a
+        href="mod/core.html#resourceconfig">ResourceConfig</a><br />
+         <a
+        href="mod/mod_mime.html#typesconfig">TypesConfig</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Apache は <a href="mod/directives.html"
+    >ディレクティブ</a> を設定ファイルに平文で書くことにより設定します。
+    メインの設定ファイルは普通は <code>httpd.conf</code> という名前です。
+    このファイルの位置はコンパイル時に設定されますが、コマンドラインの
+    <code>-f</code> フラグにより上書きできます。サイトによっては <a
+    href="http://httpd.apache.org/info/three-config-files.html"
+    >歴史的理由</a> により <code>srm.conf</code> と <code>access.conf</code>
+    がある場合もあります。その上、他の設定ファイルが <code><a
+    href="mod/core.html#include">Include</a></code>
+    ディレクティブによって追加されているかもしれません。
+    どのディレクティブもこれらの設定ファイルのどれにでも入れられます。
+    Apache は起動時か再起動時のみメイン設定ファイルの変更を認識します。</p>
+
+
+
+    <p>Apache 1.3.13 の新しい機能として、設定ファイルが実際はディレクトリで
+    あるときにはそのディレクトリで見つかったすべてのファイル(とサブディレクトリ)
+    を解析するというものがあります。利用法としては、
+    バーチャルホストを追加するときに、それぞれのホストに対して小さな設定
+    ファイルを作り、設定ディレクトリに置くというものが挙げられます。
+    こうすると、単にファイルの追加、削除をすることにより全くファイルを
+    編集することなくバーチャルホストの追加、削除ができます。
+    これは自動化をずっと簡単にします。
+    </p>
+
+    <p>サーバは mime ドキュメントタイプを含んでいるファイルも読み込みます。
+    ファイル名は <a href="mod/mod_mime.html#typesconfig">TypesConfig</a>
+    で設定され、デフォルトで <code>mime.types</code>になっています。</p>
+
+    <hr />
+
+    <h2><a id="syntax" name="syntax">設定ファイルの構文</a></h2>
+
+
+    <p>Apache の設定ファイルは 1 行に 1 つのディレクティブからなります。
+    バックスラッシュ "\" はディレクティブが次の行に継続していることを
+    示すために行の最後の文字として使われているかもしれません。
+    行の最後とバックスラッシュの間に他の文字や空白があってはいけません。
+    </p>
+
+    <p>設定ファイルのディレクティブは大文字小文字を区別しませんが、
+    引数にはしばしば区別するものがあります。ハッシュ文字 "#"
+    で始まる行はコメントと見なされて無視されます。
+    設定ディレクティブの後の行ではコメントが含まれていては<strong
+    >いけません</strong>。ディレクティブの前の空行と空白は無視されますので、
+    わかりやすくするためにディレクティブをインデントすることができます。
+    </p>
+
+    <p>設定ファイルの構文エラーは <code>apachectl configtest</code
+    > かコマンドラインオプション <code>-t</code> を使って調べられます。
+    </p>
+
+    <hr />
+
+    <h2><a id="modules" name="modules">モジュール</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連モジュール</strong><br />
+         <br />
+         <a href="mod/mod_so.html">mod_so</a><br />
+         </td>
+
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+         <br />
+         <a href="mod/core.html#addmodule">AddModule</a><br />
+         <a
+        href="mod/core.html#clearmodulelist">ClearModuleList</a><br />
+         <a
+        href="mod/core.html#ifmodule">&lt;IfModule&gt;</a><br />
+         <a href="mod/mod_so.html#loadmodule">LoadModule</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Apache はモジュール化されたサーバです。
+    コアサーバには最も基本的な機能だけが含まれています。拡張機能は
+    Apache にロードされる<a href="mod/index-bytype.html">モジュール</a
+    >として利用可能です。デフォルトではコンパイル時にモジュールの<a
+    href="mod/module-dict.html#status">基本</a>セットが
+    サーバに含まれます。サーバが<a href="dso.html">動的ロード</a
+    >モジュールを使うようにコンパイルされている場合は、
+    モジュールを別にコンパイルして、いつでも <a href="mod/mod_so.html#loadmodule"
+    >LoadModule</a> ディレクティブを使って追加できます。
+    そうでない場合は、モジュールの追加や削除をするためには Apache
+    を再コンパイルする必要があります。設定ディレクティブは <a
+    href="mod/core.html#ifmodule">&lt;IfModule&gt;</a>
+    ブロックに入れることで特定のモジュールが存在するときだけ
+    設定ファイルに含まれるようにすることができます。</p>
+
+
+    <p>コマンドラインオプション <code>-l</code> を使って現時点で
+    どのモジュールがサーバにコンパイルされているかを知ることができます。</p>
+    <hr />
+
+    <h2><a id="scope" name="scope">ディレクティブの適用範囲</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+         <br />
+         <a
+        href="mod/core.html#directory">&lt;Directory&gt;</a><br />
+         <a
+        href="mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a><br />
+         <a href="mod/core.html#files">&lt;Files&gt;</a><br />
+         <a
+        href="mod/core.html#filesmatch">&lt;FilesMatch&gt;</a><br />
+         <a
+        href="mod/core.html#location">&lt;Location&gt;</a><br />
+         <a
+        href="mod/core.html#locationmatch">&lt;LocationMatch&gt;</a><br />
+         <a
+        href="mod/core.html#virtualhost">&lt;VirtualHost&gt;</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>メイン設定ファイルにあるディレクティブはサーバ全体に適用されます。
+    サーバの一部分の設定だけを変更したい場合は <code><a
+    href="mod/core.html#directory">&lt;Directory&gt;</a>,<a
+    href="mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a>,<a
+    href="mod/core.html#files">&lt;Files&gt;</a>,<a
+    href="mod/core.html#filesmatch">&lt;FilesMatch&gt;</a>,<a
+    href="mod/core.html#location">&lt;Location&gt;</a>,<a
+    href="mod/core.html#locationmatch">&lt;LocationMatch&gt;</a>
+    </code>
+    セクションの中に置くことで適用範囲を決められます。
+    これらのセクションはその中にあるディレクティブの適用範囲を
+    特定のファイルシステムの位置や URL に限定します。
+    非常に細粒度の設定を可能にするために、
+    セクションを入れ子にすることもできます。
+    </p>
+
+    <p>Apache は同時に多くの違うウェブサイトを扱う能力があります。
+    これは <a href="vhosts/">バーチャルホスト</a> と呼ばれています。
+    特定のウェブサイトにのみ適用されるようにするために、
+    ディレクティブは <code><a href="mod/core.html#virtualhost"
+    >&lt;VirtualHost&gt;</a></code>
+    セクションの中に置くことでも適用範囲を変えることができます。
+    </p>
+
+    <p>ほとんどのディレクティブはどのセクションにでも書けますが、
+    中にはコンテキストによっては意味をなさないものもあります。
+    例えば、プロセスの作成を制御しているディレクティブはメインサーバの
+    コンテキストにのみ書くことができます。
+    どのディレクティブをどのセクションに書くことができるかを知るためには
+    ディレクティブの <a href="mod/directive-dict.html#context"
+    >コンテキスト</a> を調べてください。詳しい情報は、<a href="sections.html"
+    >Directory, Location, Files セクションの動作法</a>にあります。
+    </p>
+    <hr />
+
+    <h2><a id="htaccess" name="htaccess">.htaccess ファイル</a></h2>
+
+    <table border="1">
+      <tr>
+        <td valign="top"><strong>関連ディレクティブ</strong><br />
+         <br />
+         <a
+        href="mod/core.html#accessfilename">AccessFileName</a><br />
+         <a
+        href="mod/core.html#allowoverride">AllowOverride</a><br />
+         </td>
+      </tr>
+    </table>
+
+    <p>Apache ではウェブツリーの中に置かれた特別なファイルを使って
+    非中央集権的な設定管理をできます。
+    その特別なファイルは普通は <code>.htaccess</code> という名前で、
+    <a href="mod/core.html#accessfilename"><code>AccessFileName</code></a>
+    ディレクティブでどんな名前でも指定できます。
+    <code>.htaccess</code> ファイルに書かれたディレクティブはファイルを
+    置いたディレクトリとその全てのサブディレクトリに適用されます。
+    <code>.htaccess</code> ファイルはすべてのリクエストで読み込まれるため、
+    変更はすぐに反映されます。
+    </p>
+
+
+    <p>どのディレクティブが <code>.htaccess</code>
+    ファイルに書けるかを調べるには、ディレクティブの<a
+    href="mod/directive-dict.html#context">コンテキスト</a> を調べてください。
+    サーバ管理者はさらにメイン設定ファイルの <a
+    href="mod/core.html#allowoverride"><code>AllowOverride</code></a>
+    を設定することでどのディレクティブを <code>.htaccess</code>
+    ファイルに書けるようにするかを制御することができます。
+    </p>
+
+    <p><code>.htaccess</code> ファイルに関する詳しい情報は
+    <a href="http://apache-server.com/tutorials/ATusing-htaccess.html"
+    >Using .htaccess Files with Apache</a> の Ken Coar's tutorial 
+    か Apache のドキュメンテーションにある <a
+    href="http://httpd.apache.org/docs/howto/htaccess.html">.htaccess
+    チュートリアル</a> を参照してください。</p>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

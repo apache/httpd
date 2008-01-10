@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>DNSとApacheについての問題</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <!-- English Revision: 1.14 -->
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">DNS と Apache にまつわる注意事項</h1>
+
+    <p>本文書の内容は次の一言に尽きます。Apache
+    が設定ファイルを読み込むときに <em>DNS
+    を使用する必要がないようにして下さい</em>。Apache
+    が設定ファイルを読み込むときに DNS
+    を使用する必要がある場合、信頼性の問題(起動しないかもしれません)
+    やサービス拒否、盗用アタック(他のユーザからヒットを盗むことを含みます)
+    の問題に直面するかもしれません。</p>
+
+    <h3>簡単な例</h3>
+    この設定例を考えてみます:
+
+    <blockquote>
+<pre>
+    &lt;VirtualHost www.abc.dom&gt;
+    ServerAdmin webgirl@abc.dom
+    DocumentRoot /www/abc
+    &lt;/VirtualHost&gt;
+</pre>
+    </blockquote>
+
+    <p>Apache が正常に機能するには、バーチャルホストごとに必ず二つの
+    情報が必要になります。それは、
+    <a href="mod/core.html#servername"><code>ServerName</code></a>
+    と、そのサーバが応答するための IP アドレス(最低一つ) です。
+    この例では IP アドレスを含んでいませんので、Apache は DNS
+    を使用して <code>www.abc.dom</code> を見つけなければなりません。
+    設定ファイルを読み込んでいるときに何らかの理由で DNS
+    が利用できなかった場合、
+    バーチャルホストは<strong>設定されません</strong>。
+    そして、そのバーチャルホストに対するヒットには応答がなされません
+    (Apache 1.2 以前では起動すらしません)。</p>
+
+    <p><code>www.abc.dom</code> のアドレスが 10.0.0.1
+    だとします。では、次の設定について考えてみましょう。</p>
+
+    <blockquote>
+<pre>
+    &lt;VirtualHost 10.0.0.1&gt;
+    ServerAdmin webgirl@abc.dom
+    DocumentRoot /www/abc
+    &lt;/VirtualHost&gt;
+</pre>
+    </blockquote>
+
+    <p>現在 Apache は DNS 逆引きを使用してこのバーチャルホストの
+    <code>ServerName</code> を見つけます。
+    その逆引きが失敗した場合は部分的にバーチャルホストを無効にします
+    (Apache 1.2 より前では起動すらしません)。
+    バーチャルホストが名前ベースであれば完全に無効になりますが、
+    IP ベースであれば概ね動作します。しかしながら、サーバ名を含む完全な
+    URL を生成しなければならない場合は、正しい URL の生成ができません。
+    </p>
+
+    <p>次の例は上記の問題を解決しています。</p>
+
+    <blockquote>
+<pre>
+    &lt;VirtualHost 10.0.0.1&gt;
+    ServerName www.abc.dom
+    ServerAdmin webgirl@abc.dom
+    DocumentRoot /www/abc
+    &lt;/VirtualHost&gt;
+</pre>
+    </blockquote>
+
+    <h3>サービス拒否</h3>
+
+    <p>サービス拒否が起こる場合、(少なくとも) 二つのケースがあります。
+    Apache 1.2 より前を実行している場合、バーチャルホストのための
+    上記の二つの DNS 検索のうち一つでも失敗すれば起動すらしません。
+    またこの DNS 検索が自分の制御下にすらない場合もありえます。
+    例えば、<code>abc.dom</code> が顧客のサーバの一つで、
+    DNS は顧客自身で管理している場合、顧客は単に
+    <code>www.abc.dom</code> レコードを削除するだけで、
+    (1.2 より前の) サーバを起動不能にすることができます。</p>
+
+    <p>もう一つのケースは、より気付きにくいものです。
+    次の設定について考えてみましょう。</p>
+
+    <blockquote>
+<pre>
+    &lt;VirtualHost www.abc.dom&gt;
+    ServerAdmin webgirl@abc.dom
+    DocumentRoot /www/abc
+    &lt;/VirtualHost&gt;
+</pre>
+    </blockquote>
+
+    <blockquote>
+<pre>
+    &lt;VirtualHost www.def.dom&gt;
+    ServerAdmin webguy@def.dom
+    DocumentRoot /www/def
+    &lt;/VirtualHost&gt;
+</pre>
+    </blockquote>
+
+    <p>10.0.0.1 を <code>www.abc.dom</code> に、10.0.0.2 を
+    <code>www.def.dom</code> に割り当てているとします。また、
+    <code>def.com</code> は顧客自身の DNS
+    の制御下にあるとします。この設定で、<code>abc.com</code>
+    に向けられたトラフィックすべてを奪うことができる位置に
+    <code>def.com</code> を設置できています。後は単に
+    <code>www.def.dom</code> が 10.0.0.1
+    を参照するように設定するだけです。DNS
+    は顧客側でコントロールされているので、<code>www.def.com</code>
+    レコードが好きな場所を指すように設定するのを止めることができません。
+    </p>
+
+    <p>10.0.0.1 に対するリクエスト
+    (<code>http://www.abc.dom/whatever</code> 形式の URL 
+    を入力したユーザからのものすべてを含みます) 
+    は、<code>def.dom</code> バーチャルホストで応答されます。
+    このようなことが何故起こるかもっとよく知るためには、
+    応答の必要なバーチャルホストへのリクエストに対して、
+    Apache がどのように整合性を確保するかについて、
+    深い議論が必要になります。おおまかな説明は<a
+    href="vhosts/details.html">こちら</a>に記述されています。</p>
+
+    <h3>「主要なサーバ」のアドレス</h3>
+
+    <p>Apache 1.1 で追加された<a href="vhosts/name-based.html">
+    名前ベースのバーチャルホストのサポート</a>により、httpd
+    が動作しているホストの IP アドレスを、Apache 
+    が知っている必要があります。このアドレスを得るために、
+    (もしあれば)グローバルの <code>ServerName</code> や C の
+    <code>gethostname</code> ファンクションコール
+    (これはコマンドプロンプトで "hostname"
+    と打ち込むのと同じ結果を返します。) を使用します。
+    それからこのアドレスの DNS 検索を行ないます。
+    現時点では、この検索の回避方法は何もありません。</p>
+
+    <p>DNS サーバのダウンが原因でこのルックアップが失敗するのを恐れる場合、
+    <code>/etc/hosts</code> に hostname を挿入することができます。
+    (マシンが正常に起動できるように、これはおそらく既に存在します。)
+    それから、DNS が失敗したときに確実に <code>/etc/hosts</code>
+    を使用するように設定します。どんな OS を使っているかによりますが、
+    <code>/etc/resolv.conf</code> や <code>/etc/nsswitch.conf</code>
+    を編集することによって完成できます。</p>
+
+    <p>もしサーバが他の理由により DNS を実行する必要が何もなければ、
+    Apache を <code>HOSTRESORDER</code> 環境変数を "local" に設定して
+    実行することで問題を避けることができるかもしれません。これは使用している
+    OS とリゾルバライブラリに依存します。
+    これは <a href="mod/mod_env.html"><code>mod_env</code></a>
+    を使って環境変数を制御していない限り、CGI にも影響します。
+    OS の man ページや FAQ を参照するようにしてください。
+    </p>
+
+    <h3><a id="tips" name="tips">これらの問題を避ける秘訣</a></h3>
+
+
+    <ul>
+      <li><code>&lt;VirtualHost&gt;</code> 中に IP アドレスを使う</li>
+
+      <li><code>Listen</code> 中に IP アドレスを使う</li>
+
+      <li><code>BindAddress</code> 中に IP アドレスを使う</li>
+
+      <li>すべてのバーチャルホストに対し明示的な <code>ServerName</code>
+      を確実に与える
+      </li>
+
+      <li>応答するページのない <code>&lt;VirtualHost _default_:*&gt;</code>
+      サーバを作成する</li>
+    </ul>
+
+    <h3>付録： 将来的な方向性</h3>
+
+    <p>DNS に関して、現状は全く宜しくありません。Apache 1.2 で、 DNS 
+    のイベントが失敗しても少なくとも起動プロセスが続くようにしましたが、 
+    これが最高の解決方法ではないでしょう。アドレスの再割り当てが
+    必要不可避 となっている今日のインターネットにおいては、
+    設定ファイルの中で明示的な IP アドレスを要求する仕様は、
+    全く宜しくありません。
+    </p>
+
+    <p>上で説明したサービス盗用攻撃に対して可能な対策は、
+    DNS の正引きにより返された IP アドレスから DNS の逆引きを実行し、
+    その二つの名前を比較することです。一致しない場合バーチャルホストは無効にされます。
+    これには、DNS の逆引きが適切に設定されている必要があります。(DNS
+    の「二重の逆引き」は FTP サーバや TCP
+    ラッパーにより一般的に使われているため、
+    ほとんどの管理者には馴染みのあるものでしょう)。
+    </p>
+
+    <p>IP アドレスが使用されていなくて DNS が失敗した場合は、
+    どうしてもバーチャルホストウェブサーバを信頼性を確保して
+    起動させることは不可能のようです。設定の一部を無効にするというような
+    部分的な解決は、サーバの目的にもよりますが
+    起動しないよりも悪いかもしれません。</p>
+
+    <p>HTTP/1.1 が開発され、ブラウザやプロキシが <code>Host</code>
+    ヘッダを発行するようになったので、IP ベースのバーチャルホストを
+    全く使用しなくても済むようになるかもしれません。
+    この場合、ウェブサーバは設定中に DNS 参照をしなくても済みます。
+    しかし 1997 年 3 月時点の状況では、
+    商用レベルのウェブサーバで使用できるほどには、
+    これらの機能は広く開発が進んでいません。
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

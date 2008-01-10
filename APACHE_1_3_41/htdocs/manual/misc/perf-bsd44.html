@@ -1,0 +1,271 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Running a High-Performance Web Server for BSD</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <a id="initial" name="initial">
+    <!--#include virtual="header.html" -->
+    </a> 
+
+    <h1 align="CENTER">Running a High-Performance Web Server for
+    BSD</h1>
+
+    <p>This document assumes that you have read the appropriate
+    overview documentation for
+    <a href="http://www.FreeBSD.org/docs.html">FreeBSD</a>,
+    <a href="http://www.NetBSD.org/Documentation/">NetBSD</a>, or
+    <a href="http://www.OpenBSD.org/docum.html">OpenBSD</a>.
+    In addition, the FreeBSD
+    <a href="http://www.FreeBSD.org/cgi/man.cgi?query=tuning">tuning</a>
+    manual page contains lots of wisdom, especially regarding sysctl
+    options.</p>
+
+    <p>Like other OS's, the listen queue is often the <strong>first
+    limit hit</strong>. The following are comments from "Aaron
+    Gifford &lt;agifford@InfoWest.COM&gt;" on how to fix this on
+    BSDI 1.x, 2.x, and FreeBSD 2.0 (and earlier):</p>
+
+    <p>Edit the following two files:</p>
+
+    <blockquote>
+      <code>/usr/include/sys/socket.h<br />
+       /usr/src/sys/sys/socket.h</code>
+    </blockquote>
+    In each file, look for the following: 
+<pre>
+    /*
+     * Maximum queue length specifiable by listen.
+     */
+    #define SOMAXCONN       5
+</pre>
+    Just change the "5" to whatever appears to work. I bumped the
+    two machines I was having problems with up to 32 and haven't
+    noticed the problem since. 
+
+    <p>After the edit, recompile the kernel and recompile the
+    Apache server then reboot.</p>
+
+    <p>FreeBSD 2.1 seems to be perfectly happy, with SOMAXCONN set
+    to 32 already.</p>
+
+    <p><a id="detail" name="detail"><strong>Addendum for
+    <em>very</em> heavily loaded BSD servers</strong><br />
+    </a> from Chuck Murcko &lt;chuck@telebase.com&gt;</p>
+
+    <p>If you're running a really busy BSD Apache server, the
+    following are useful things to do if the system is acting
+    sluggish:</p>
+
+    <ul>
+      <li>Run vmstat to check memory usage, page/swap rates,
+      <em>etc.</em></li>
+
+      <li>Run netstat -m to check mbuf usage</li>
+
+      <li>Run fstat to check file descriptor usage</li>
+    </ul>
+    These utilities give you an idea what you'll need to tune in
+    your kernel, and whether it'll help to buy more RAM. Here are
+    some BSD kernel config parameters (actually BSDI, but pertinent
+    to FreeBSD and other 4.4-lite derivatives) from a system
+    getting heavy usage. The tools mentioned above were used, and
+    the system memory was increased to 48 MB before these tuneups.
+    Other system parameters remained unchanged. 
+<pre>
+maxusers        256
+</pre>
+    Maxusers drives a <em>lot</em> of other kernel parameters: 
+
+    <ul>
+      <li>Maximum # of processes</li>
+
+      <li>Maximum # of processes per user</li>
+
+      <li>System wide open files limit</li>
+
+      <li>Per-process open files limit</li>
+
+      <li>Maximum # of mbuf clusters</li>
+
+      <li>Proc/pgrp hash table size</li>
+    </ul>
+    The actual formulae for these derived parameters are in
+    <em>/usr/src/sys/conf/param.c</em>. These calculated parameters
+    can also be overridden (in part) by specifying your own values
+    in the kernel configuration file: 
+<pre>
+# Network options. NMBCLUSTERS defines the number of mbuf clusters and
+# defaults to 256. This machine is a server that handles lots of traffic,
+# so we crank that value.
+options         NMBCLUSTERS=4096        # mbuf clusters at 4096
+
+#
+# Misc. options
+#
+options         CHILD_MAX=512           # maximum number of child processes
+options         OPEN_MAX=512            # maximum fds (breaks RPC svcs)
+</pre>
+
+    <p>In many cases, NMBCLUSTERS must be set much larger than
+    would appear necessary at first glance. The reason for this is
+    that if the browser disconnects in mid-transfer, the socket fd
+    associated with that particular connection ends up in the
+    TIME_WAIT state for several minutes, during which time its
+    mbufs are not yet freed. Another reason is that, on server
+    timeouts, some connections end up in FIN_WAIT_2 state forever,
+    because this state doesn't time out on the server, and the
+    browser never sent a final FIN. For more details see the <a
+    href="fin_wait_2.html">FIN_WAIT_2</a> page.</p>
+
+    <p>Some more info on mbuf clusters (from sys/mbuf.h):</p>
+<pre>
+/*
+ * Mbufs are of a single size, MSIZE (machine/machparam.h), which
+ * includes overhead.  An mbuf may add a single "mbuf cluster" of size
+ * MCLBYTES (also in machine/machparam.h), which has no additional overhead
+ * and is used instead of the internal data area; this is done when
+ * at least MINCLSIZE of data must be stored.
+ */
+</pre>
+
+    <p>CHILD_MAX and OPEN_MAX are set to allow up to 512 child
+    processes (different than the maximum value for processes per
+    user ID) and file descriptors. These values may change for your
+    particular configuration (a higher OPEN_MAX value if you've got
+    modules or CGI scripts opening lots of connections or files).
+    If you've got a lot of other activity besides httpd on the same
+    machine, you'll have to set NPROC higher still. In this
+    example, the NPROC value derived from maxusers proved
+    sufficient for our load.</p>
+
+    <p>To increase the size of the <code>listen()</code> queue, you
+    need to adjust the value of SOMAXCONN. SOMAXCONN is not derived
+    from maxusers, so you'll always need to increase that yourself.
+    We use a value guaranteed to be larger than Apache's default
+    for the listen() of 128, currently. The actual value for
+    SOMAXCONN is set in <code>sys/socket.h</code>. The best way to
+    adjust this parameter is run-time, rather than changing it in
+    this header file and thus hardcoding a value in the kernel and
+    elsewhere. To do this, edit <code>/etc/rc.local</code> and add
+    the following line:</p>
+<pre>
+    /usr/sbin/sysctl -w kern.somaxconn=256
+</pre>
+
+    <p>We used <code>256</code> but you can tune it for your own
+    setup. In many cases, however, even the default value of
+    <code>128</code> (for later versions of FreeBSD) is OK.</p>
+
+    <p><strong>Caveats</strong></p>
+
+    <p>Be aware that your system may not boot with a kernel that is
+    configured to use more resources than you have available system
+    RAM. <strong>ALWAYS</strong> have a known bootable kernel
+    available when tuning your system this way, and use the system
+    tools beforehand to learn if you need to buy more memory before
+    tuning.</p>
+
+    <p>RPC services will fail when the value of OPEN_MAX is larger
+    than 256. This is a function of the original implementations of
+    the RPC library, which used a byte value for holding file
+    descriptors. BSDI has partially addressed this limit in its 2.1
+    release, but a real fix may well await the redesign of RPC
+    itself.</p>
+
+    <p>Finally, there's the hard limit of child processes
+    configured in Apache.</p>
+
+    <p>For versions of Apache later than 1.0.5 you'll need to
+    change the definition for <strong>HARD_SERVER_LIMIT</strong> in
+    <em>httpd.h</em> and recompile if you need to run more than the
+    default 150 instances of httpd.</p>
+
+    <p>From conf/httpd.conf-dist:</p>
+<pre>
+# Limit on total number of servers running, <em>i.e.</em>, limit on the number
+# of clients who can simultaneously connect --- if this limit is ever
+# reached, clients will be LOCKED OUT, so it should NOT BE SET TOO LOW.
+# It is intended mainly as a brake to keep a runaway server from taking
+# Unix with it as it spirals down...
+
+MaxClients 150
+</pre>
+    Know what you're doing if you bump this value up, and make sure
+    you've done your system monitoring, RAM expansion, and kernel
+    tuning beforehand. Then you're ready to service some serious
+    hits! 
+
+    <p>Thanks to <em>Tony Sanders</em> and <em>Chris Torek</em> at
+    BSDI for their helpful suggestions and information.</p>
+
+    <p>"M. Teterin" &lt;mi@ALDAN.ziplink.net&gt; writes:</p>
+
+    <blockquote>
+      It really does help if your kernel and frequently used
+      utilities are fully optimized. Rebuilding the FreeBSD kernel
+      on an AMD-133 (486-class CPU) web-server with<br />
+       <code>-m486 -fexpensive-optimizations -fomit-frame-pointer
+      -O2</code><br />
+       helped reduce the number of "unable" errors, because the CPU
+      was often maxed out.
+    </blockquote>
+
+    <h2><a id="accf" name="accf">Accept filtering on
+    FreeBSD</a></h2>
+
+    <p>Versions of FreeBSD from August 2000 onwards include a
+    feature called "accept filters" which delay the return from
+    accept() until a condition has been met, e.g. an HTTP request
+    has arrived. This postpones the requirement for a child process
+    to handle the new connection which therefore increases the
+    number of connections that a given number of child processes
+    can handle. It also allows a child process to accomplish more
+    immediately after accept() returns (because the request is
+    already available to be read) so there is less context
+    switching.</p>
+
+    <p>Accept filters provide the most benefit on servers that are
+    already so busy that they are configured with "<code>KeepAlive
+    Off</code>". <a href="../keepalive.html">HTTP KeepAlive (aka
+    persistent connections)</a> avoids the cost of setting up a new
+    connection for every request, but connections that are being
+    kept alive use up one of the available child processes. Since
+    there is a limited number of child processes this can
+    significantly reduce the capacity of the server. The viewers of
+    a web site will still get a lot of the benefit of persistent
+    connections even with a very small
+    <code>KeepAliveTimeout</code> so you should try reducing it
+    before turning it off altogether.</p>
+
+    <p>To enable accept filtering, you must either load the
+    appropriate accept filter module, e.g. with the command
+    <code>kldload accf_http</code>, or compile a kernel with
+    <code>options ACCEPT_FILTER_HTTP</code>. Apache will then
+    enable filtering when it is restarted.</p>
+
+    <p>Accept filters are compiled in if the symbol
+    <code>SO_ACCEPTFILTER</code> is defined on the machine on which
+    Apache is built. Additionally there is a directive <a
+    href="../mod/core.html#acceptfilter">AcceptFilter</a> to switch
+    the filters on or off. The default is on; except when apache is
+    compiled with <code>-D AP_ACCEPTFILTER_ON</code>.</p>
+
+    <p>See the manual page
+    <a href="http://www.freebsd.org/cgi/man.cgi?query=accf_http">accf_http(9)</a>
+    for more information.</p>
+
+    <h3>More welcome!</h3>
+    If you have tips to contribute, send mail to <a
+    href="mailto:apache@apache.org">apache@apache.org</a> 
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

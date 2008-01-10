@@ -1,0 +1,206 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache module mod_unique_id</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Module mod_unique_id</h1>
+
+    <p>This module provides an environment variable with a unique
+    identifier for each request.</p>
+
+    <p><a href="module-dict.html#Status"
+    rel="Help"><strong>Status:</strong></a> Extension<br />
+     <a href="module-dict.html#SourceFile"
+    rel="Help"><strong>Source File:</strong></a>
+    mod_unique_id.c<br />
+     <a href="module-dict.html#ModuleIdentifier"
+    rel="Help"><strong>Module Identifier:</strong></a>
+    unique_id_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="Help"><strong>Compatibility:</strong></a> Available in
+    Apache 1.3 and later.</p>
+
+    <h2>Summary</h2>
+
+    <p>This module provides a magic token for each request which is
+    guaranteed to be unique across "all" requests under very
+    specific conditions. The unique identifier is even unique
+    across multiple machines in a properly configured cluster of
+    machines. The environment variable <code>UNIQUE_ID</code> is
+    set to the identifier for each request. Unique identifiers are
+    useful for various reasons which are beyond the scope of this
+    document.</p>
+
+    <h2>Directives</h2>
+
+    <p>This module has no directives.</p>
+
+    <h2>Theory</h2>
+
+    <p>First a brief recap of how the Apache server works on Unix
+    machines. On Unix machines, Apache creates several children,
+    the children process requests one at a time. Each child can
+    serve multiple requests in its lifetime. For the purpose of
+    this discussion, the children don't share any data with each
+    other. We'll refer to the children as httpd processes.</p>
+
+    <p>Your website has one or more machines under your
+    administrative control, together we'll call them a cluster of
+    machines. Each machine can possibly run multiple instances of
+    Apache. All of these collectively are considered "the
+    universe", and with certain assumptions we'll show that in this
+    universe we can generate unique identifiers for each request,
+    without extensive communication between machines in the
+    cluster.</p>
+
+    <p>The machines in your cluster should satisfy these
+    requirements. (Even if you have only one machine you should
+    synchronize its clock with NTP.)</p>
+
+    <ul>
+      <li>The machines' times are synchronized via NTP or other
+      network time protocol.</li>
+
+      <li>The machines' hostnames all differ, such that the module
+      can do a hostname lookup on the hostname and receive a
+      different IP address for each machine in the cluster.</li>
+    </ul>
+
+    <p>As far as operating system assumptions go, we assume that
+    pids (process ids) fit in 32-bits. If the operating system uses
+    more than 32-bits for a pid, the fix is trivial but must be
+    performed in the code.</p>
+
+    <p>Given those assumptions, at a single point in time we can
+    identify any httpd process on any machine in the cluster from
+    all other httpd processes. The machine's IP address and the pid
+    of the httpd process are sufficient to do this. So in order to
+    generate unique identifiers for requests we need only
+    distinguish between different points in time.</p>
+
+    <p>To distinguish time we will use a Unix timestamp (seconds
+    since January 1, 1970 UTC), and a 16-bit counter. The timestamp
+    has only one second granularity, so the counter is used to
+    represent up to 65536 values during a single second. The
+    quadruple <em>( ip_addr, pid, time_stamp, counter )</em> is
+    sufficient to enumerate 65536 requests per second per httpd
+    process. There are issues however with pid reuse over time, and
+    the counter is used to alleviate this issue.</p>
+
+    <p>When an httpd child is created, the counter is initialized
+    with ( current microseconds divided by 10 ) modulo 65536 (this
+    formula was chosen to eliminate some variance problems with the
+    low order bits of the microsecond timers on some systems). When
+    a unique identifier is generated, the time stamp used is the
+    time the request arrived at the web server. The counter is
+    incremented every time an identifier is generated (and allowed
+    to roll over).</p>
+
+    <p>The kernel generates a pid for each process as it forks the
+    process, and pids are allowed to roll over (they're 16-bits on
+    many Unixes, but newer systems have expanded to 32-bits). So
+    over time the same pid will be reused. However unless it is
+    reused within the same second, it does not destroy the
+    uniqueness of our quadruple. That is, we assume the system does
+    not spawn 65536 processes in a one second interval (it may even
+    be 32768 processes on some Unixes, but even this isn't likely
+    to happen).</p>
+
+    <p>Suppose that time repeats itself for some reason. That is,
+    suppose that the system's clock is screwed up and it revisits a
+    past time (or it is too far forward, is reset correctly, and
+    then revisits the future time). In this case we can easily show
+    that we can get pid and time stamp reuse. The choice of
+    initializer for the counter is intended to help defeat this.
+    Note that we really want a random number to initialize the
+    counter, but there aren't any readily available numbers on most
+    systems (<em>i.e.</em>, you can't use rand() because you need
+    to seed the generator, and can't seed it with the time because
+    time, at least at one second resolution, has repeated itself).
+    This is not a perfect defense.</p>
+
+    <p>How good a defense is it? Suppose that one of your machines
+    serves at most 500 requests per second (which is a very
+    reasonable upper bound at this writing, because systems
+    generally do more than just shovel out static files). To do
+    that it will require a number of children which depends on how
+    many concurrent clients you have. But we'll be pessimistic and
+    suppose that a single child is able to serve 500 requests per
+    second. There are 1000 possible starting counter values such
+    that two sequences of 500 requests overlap. So there is a 1.5%
+    chance that if time (at one second resolution) repeats itself
+    this child will repeat a counter value, and uniqueness will be
+    broken. This was a very pessimistic example, and with real
+    world values it's even less likely to occur. If your system is
+    such that it's still likely to occur, then perhaps you should
+    make the counter 32 bits (by editing the code).</p>
+
+    <p>You may be concerned about the clock being "set back" during
+    summer daylight savings. However this isn't an issue because
+    the times used here are UTC, which "always" go forward. Note
+    that x86 based Unixes may need proper configuration for this to
+    be true -- they should be configured to assume that the
+    motherboard clock is on UTC and compensate appropriately. But
+    even still, if you're running NTP then your UTC time will be
+    correct very shortly after reboot.</p>
+
+    <p>The <code>UNIQUE_ID</code> environment variable is
+    constructed by encoding the 112-bit (32-bit IP address, 32 bit
+    pid, 32 bit time stamp, 16 bit counter) quadruple using the
+    alphabet <code>[A-Za-z0-9@-]</code> in a manner similar to MIME
+    base64 encoding, producing 19 characters. The MIME base64
+    alphabet is actually <code>[A-Za-z0-9+/]</code> however
+    <code>+</code> and <code>/</code> need to be specially encoded
+    in URLs, which makes them less desirable. All values are
+    encoded in network byte ordering so that the encoding is
+    comparable across architectures of different byte ordering. The
+    actual ordering of the encoding is: time stamp, IP address,
+    pid, counter. This ordering has a purpose, but it should be
+    emphasized that applications should not dissect the encoding.
+    Applications should treat the entire encoded
+    <code>UNIQUE_ID</code> as an opaque token, which can be
+    compared against other <code>UNIQUE_ID</code>s for equality
+    only.</p>
+
+    <p>The ordering was chosen such that it's possible to change
+    the encoding in the future without worrying about collision
+    with an existing database of <code>UNIQUE_ID</code>s. The new
+    encodings should also keep the time stamp as the first element,
+    and can otherwise use the same alphabet and bit length. Since
+    the time stamps are essentially an increasing sequence, it's
+    sufficient to have a <em>flag second</em> in which all machines
+    in the cluster stop serving and request, and stop using the old
+    encoding format. Afterwards they can resume requests and begin
+    issuing the new encodings.</p>
+
+    <p>This is a relatively portable solution. It is extended to
+    multithreaded systems like Windows NT, which add the thread-id
+    to the ID, producing a 144-bit (including 32-bit tid) quadruple
+    that generates a 24 character UNIQUE_ID value. The identifiers
+    generated have essentially an infinite life-time because future
+    identifiers can be made longer as required. Essentially no
+    communication is required between machines in the cluster (only
+    NTP synchronization is required, which is low overhead), and no
+    communication between httpd processes is required (the
+    communication is implicit in the pid value assigned by the
+    kernel). In very specific situations the identifier can be
+    shortened, but more information needs to be assumed (for
+    example the 32-bit IP address is overkill for any site, but
+    there is no portable shorter replacement for it). This module
+    may be extended to include an entire IPv6 address, but that is
+    overkill for nearly all server configurations. 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

@@ -1,0 +1,71 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache HTTP Server and Supporting Programs</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Server and Supporting Programs</h1>
+
+    <p>This page documents all the executable programs included
+    with the Apache HTTP Server.</p>
+
+    <dl>
+      <dt><a href="httpd.html">httpd</a></dt>
+
+      <dd>Apache hypertext transfer protocol server</dd>
+
+      <dt><a href="apachectl.html">apachectl</a></dt>
+
+      <dd>Apache HTTP server control interface</dd>
+
+      <dt><a href="ab.html">ab</a></dt>
+
+      <dd>Apache HTTP server benchmarking tool</dd>
+
+      <dt><a href="apxs.html">apxs</a></dt>
+
+      <dd>APache eXtenSion tool</dd>
+
+      <dt><a href="dbmmanage.html">dbmmanage</a></dt>
+
+      <dd>Create and update user authentication files in DBM format
+      for basic authentication</dd>
+
+      <dt><a href="htdigest.html">htdigest</a></dt>
+
+      <dd>Create and update user authentication files for digest
+      authentication</dd>
+
+      <dt><a href="htpasswd.html">htpasswd</a></dt>
+
+      <dd>Create and update user authentication files for basic
+      authentication</dd>
+
+      <dt><a href="logresolve.html">logresolve</a></dt>
+
+      <dd>Resolve hostnames for IP-addresses in Apache
+      logfiles</dd>
+
+      <dt><a href="rotatelogs.html">rotatelogs</a></dt>
+
+      <dd>Rotate Apache logs without having to kill the server</dd>
+
+      <dt><a href="suexec.html">suexec</a></dt>
+
+      <dd>Switch User For Exec</dd>
+
+      <dt><a href="other.html">Other Programs</a></dt>
+    </dl>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

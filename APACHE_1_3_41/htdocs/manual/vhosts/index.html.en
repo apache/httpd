@@ -1,0 +1,84 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>Apache Virtual Host documentation</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">Apache Virtual Host documentation</h1>
+
+    <p>The term <cite>Virtual Host</cite> refers to the practice of
+    maintaining more than one server on one machine, as
+    differentiated by their apparent hostname. For example, it is
+    often desirable for companies sharing a web server to have
+    their own domains, with web servers accessible as
+    <samp>www.company1.com</samp> and
+    <samp>www.company2.com</samp>, without requiring the user to
+    know any extra path information.</p>
+
+    <p>Apache was one of the first servers to support IP-based
+    virtual hosts right out of the box. Versions 1.1 and later of
+    Apache support both, IP-based and name-based virtual hosts
+    (vhosts). The latter variant of virtual hosts is sometimes also
+    called host-based or non-IP virtual hosts.</p>
+
+    <p>Below is a list of documentation pages which explain all
+    details of virtual host support in Apache version 1.3 and
+    later.</p>
+    <hr />
+
+    <h2>Virtual Host Support</h2>
+
+    <ul>
+      <li><a href="name-based.html">Name-based Virtual
+      Hosts</a></li>
+
+      <li><a href="ip-based.html">IP-based Virtual Hosts</a></li>
+
+      <li><a href="examples.html">Virtual Host examples for common
+      setups</a></li>
+
+      <li><a href="details.html">In-Depth Discussion of Virtual
+      Host Matching</a></li>
+
+      <li><a href="fd-limits.html">File Descriptor Limits</a></li>
+
+      <li><a href="mass.html">Dynamically Configured Mass Virtual
+      Hosting</a></li>
+    </ul>
+
+    <h2>Configuration directives</h2>
+
+    <ul>
+      <li><a
+      href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></li>
+
+      <li><a
+      href="../mod/core.html#namevirtualhost">NameVirtualHost</a></li>
+
+      <li><a href="../mod/core.html#servername">ServerName</a></li>
+
+      <li><a
+      href="../mod/core.html#serveralias">ServerAlias</a></li>
+
+      <li><a href="../mod/core.html#serverpath">ServerPath</a></li>
+    </ul>
+
+    <p>Folks trying to debug their virtual host configuration may
+    find the Apache <code>-S</code> command line switch useful. It
+    will dump out a description of how Apache parsed the
+    configuration file. Careful examination of the IP addresses and
+    server names may help uncover configuration mistakes. 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

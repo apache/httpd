@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="ja" lang="ja">
+  <head>
+
+    <title>Apache module mod_speling</title>
+
+  </head>
+  <!-- English revision: 1.14 -->
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+  <body bgcolor="#ffffff" text="#000000" link="#0000ff"
+  vlink="#000080" alink="#ff0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">mod_speling モジュール</h1>
+
+    <p>このモジュールは大文字小文字の違いを無視したり、
+    一文字以下の綴りの間違いを無視することで
+    URL の綴りの間違いの修正を試みます。</p>
+
+    <p><a href="module-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Extension<br />
+     <a href="module-dict.html#sourcefile"
+    rel="help"><strong>ソースファイル:</strong></a>
+    mod_speling.c<br />
+     <a href="module-dict.html#moduleidentifier"
+    rel="help"><strong>モジュール識別子:</strong></a>
+    speling_module<br />
+     <a href="module-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> Apache 1.3
+    以降で使用可能。Apache 1.1 以降では外部モジュールとして使用可能。
+    </p>
+
+    <h2>概要</h2>
+
+    <p>リクエストの綴りが間違っていたり、
+    大文字小文字が違っていたりするために、Apache のコアサーバが
+    ドキュメントへのリクエストへの応答を正しく提供できないことがあります。
+    このモジュールは、他のすべてのモジュールがあきらめた後であったとしても、
+    リクエストに合うドキュメントを見つけようとすることによりこの問題の
+    解決を試みます。このモジュールはリクエストされたディレクトリにある
+    それぞれのドキュメントの名前と、リクエストされたドキュメントの名前とを
+    <strong>大文字小文字の区別を無視し</strong>、
+    <strong>一文字までの綴りの間違い</strong>
+    (文字の挿入/省略/隣合う文字の置換、間違った文字)
+    を許可して比較することにより、目的を達成しようとします。
+    この方法でリクエストに合うドキュメントの一覧が作成されます。</p>
+
+    <p>ディレクトリをスキャンした後に、</p>
+
+    <ul>
+      <li>適切なドキュメントが見つからなかった場合、
+      Apache はいつもと同じように処理をし、
+      「ドキュメントが見つからない」というエラーを返します。</li>
+
+      <li>リクエストに「ほとんど」合うドキュメントが一つだけ見つかった場合、
+       それがリダイレクト応答として返されます。</li>
+
+      <li>よく似たドキュメントが複数見つかった場合、
+      そのリストがクライアントに返され、
+      クライアントが正しい候補を選択できるようにします。</li>
+    </ul>
+
+    <h2>ディレクティブ</h2>
+
+    <ul>
+      <li><a href="#checkspelling">CheckSpelling</a></li>
+    </ul>
+    <hr />
+    <!-- the HR is part of the directive description -->
+
+    <h2><a id="checkspelling"
+    name="checkspelling">CheckSpelling</a> ディレクティブ</h2>
+
+     <a href="directive-dict.html#syntax"
+    rel="help"><strong>構文:</strong></a> CheckSpelling on|off<br />
+     <a href="directive-dict.html#default"
+    rel="help"><strong>デフォルト:</strong></a> <code>CheckSpelling
+    Off</code><br />
+     <a href="directive-dict.html#context"
+    rel="help"><strong>コンテキスト:</strong></a>
+    サーバ設定ファイル、バーチャルホスト、ディレクトリ、.htaccess<br />
+     <a href="directive-dict.html#override"
+    rel="help"><strong>上書き:</strong></a> Options<br />
+     <a href="directive-dict.html#status"
+    rel="help"><strong>ステータス:</strong></a> Base<br />
+     <a href="directive-dict.html#module"
+    rel="help"><strong>モジュール:</strong></a> mod_speling<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="help"><strong>互換性:</strong></a> CheckSpelling は
+    Apache 1.1 では外部のモジュールとして使用可能でしたが、
+    大文字小文字の違いを修正する機能のみでした。Apache 1.3 では
+    Apache の配布の一部になっています。Apache 1.3.2 以前では、
+    <samp>CheckSpelling</samp> ディレクティブは "サーバ" と
+    "バーチャルホスト" のコンテキストのみで使用可能でした。
+
+
+    <p>このディレクティブは綴り用のモジュールを使用するかどうかを
+    決めます。使用時には、以下のことを覚えておいてください</p>
+
+    <ul>
+      <li>同時にたくさんの綴りの訂正を行なわなければならないときは、
+      そのために行なわれるディレクトリのスキャンが
+      サーバの性能に影響を与えます。</li>
+
+      <li>ドキュメントの中に綴りの「訂正」により
+      意図せず合ってしまうような重要なファイルがないようにしてください。
+      </li>
+
+      <li>モジュールはユーザ名の綴りの間違い
+      (<code>http://my.host/~apahce/</code> のように)
+      を訂正することはできません。
+      訂正できるのはファイル名とディレクトリ名だけです。</li>
+
+      <li>綴りの訂正は存在するファイルに厳密に適用されますので、
+      <samp>&lt;Location /status&gt;</samp>
+      はネゴシエーションの結果のファイル "<samp>/stats.html</samp>"
+      として間違って扱われるかもしれません。</li>
+    </ul>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>

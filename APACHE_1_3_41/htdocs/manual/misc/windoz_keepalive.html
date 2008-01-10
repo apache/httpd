@@ -1,0 +1,54 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+
+    <title>MS Windows Netscape 3.0b4 KeepAlive problem
+    solved</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="CENTER">HTTP/1.1 KeepAlive problems with Netscape
+    3.0</h1>
+<pre>
+Date: Mon, 1 Jul 1996 16:03:06 -0700 (PDT)
+From: Alexei Kosut &lt;akosut@organic.com&gt;
+To: Apache Group
+Subject: Re: keepalive and windoze
+
+Good news and good news (of a sort)..
+
+I was able to snag a Windows 95 machine here at Organic, and tried out
+some things:
+
+1) On Netscape 3.0b4, I was able to reproduce the bug, each and every
+time. It's really simple: go to the Network Setup panel. Set it to
+"Connect Every Time" and only let it have 1 connection at once (this may
+not be necessary, but it's helpful). Then load an image that's
+kept-alive. Then wait until the connection times out (this depends on the
+server - 10-30 seconds, except for MIIS, which never times out, near as I
+can tell). Then hit reload. It will hang. (actually, once it crashed).
+
+2) This happens with all forms of server. Apache 1.1, Netscape 2.0,
+Spyglass 1.2, NCSA 1.5 (although, as stated, I couldn't test MIIS).
+
+3) Netscape 3.0b5 does, indeed, *not* have this bug. At least, I couldn't
+get it to perform such. Yipee.
+
+So, we just put up a note on the web page. Make sure we say that all the
+servers have the bug, it's a Windows bug, and Netscape Navigator 3.0b5
+works around it. That way, no one can yell at us. Yes?
+
+-- Alexei Kosut &lt;akosut@organic.com&gt;            The Apache HTTP Server
+   http://www.nueva.pvt.k12.ca.us/~akosut/      http://www.apache.org/
+</pre>
+    <!--#include virtual="footer.html" -->
+  </body>
+</html>
+

@@ -1,0 +1,280 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/*
+ * util_date.c: date parsing utility routines
+ *     These routines are (hopefully) platform-independent.
+ * 
+ * 27 Oct 1996  Roy Fielding
+ *     Extracted (with many modifications) from mod_proxy.c and
+ *     tested with over 50,000 randomly chosen valid date strings
+ *     and several hundred variations of invalid date strings.
+ * 
+ */
+
+#include "ap_config.h"
+#include "util_date.h"
+#include <ctype.h>
+#include <string.h>
+
+/*
+ * Compare a string to a mask
+ * Mask characters (arbitrary maximum is 256 characters, just in case):
+ *   @ - uppercase letter
+ *   $ - lowercase letter
+ *   & - hex digit
+ *   # - digit
+ *   ~ - digit or space
+ *   * - swallow remaining characters 
+ *  <x> - exact match for any other character
+ */
+API_EXPORT(int) ap_checkmask(const char *data, const char *mask)
+{
+    int i;
+    char d;
+
+    for (i = 0; i < 256; i++) {
+	d = data[i];
+	switch (mask[i]) {
+	case '\0':
+	    return (d == '\0');
+
+	case '*':
+	    return 1;
+
+	case '@':
+	    if (!ap_isupper(d))
+		return 0;
+	    break;
+	case '$':
+	    if (!ap_islower(d))
+		return 0;
+	    break;
+	case '#':
+	    if (!ap_isdigit(d))
+		return 0;
+	    break;
+	case '&':
+	    if (!ap_isxdigit(d))
+		return 0;
+	    break;
+	case '~':
+	    if ((d != ' ') && !ap_isdigit(d))
+		return 0;
+	    break;
+	default:
+	    if (mask[i] != d)
+		return 0;
+	    break;
+	}
+    }
+    return 0;			/* We only get here if mask is corrupted (exceeds 256) */
+}
+
+/*
+ * tm2sec converts a GMT tm structure into the number of seconds since
+ * 1st January 1970 UT.  Note that we ignore tm_wday, tm_yday, and tm_dst.
+ * 
+ * The return value is always a valid time_t value -- (time_t)0 is returned
+ * if the input date is outside that capable of being represented by time(),
+ * i.e., before Thu, 01 Jan 1970 00:00:00 for all systems and 
+ * beyond 2038 for 32bit systems.
+ *
+ * This routine is intended to be very fast, much faster than mktime().
+ */
+API_EXPORT(time_t) ap_tm2sec(const struct tm * t)
+{
+    int year;
+    time_t days;
+    static const int dayoffset[12] =
+    {306, 337, 0, 31, 61, 92, 122, 153, 184, 214, 245, 275};
+
+    year = t->tm_year;
+
+    if (year < 70 || ((sizeof(time_t) <= 4) && (year >= 138)))
+	return BAD_DATE;
+
+    /* shift new year to 1st March in order to make leap year calc easy */
+
+    if (t->tm_mon < 2)
+	year--;
+
+    /* Find number of days since 1st March 1900 (in the Gregorian calendar). */
+
+    days = year * 365 + year / 4 - year / 100 + (year / 100 + 3) / 4;
+    days += dayoffset[t->tm_mon] + t->tm_mday - 1;
+    days -= 25508;		/* 1 jan 1970 is 25508 days since 1 mar 1900 */
+
+    days = ((days * 24 + t->tm_hour) * 60 + t->tm_min) * 60 + t->tm_sec;
+
+    if (days < 0)
+	return BAD_DATE;	/* must have overflowed */
+    else
+	return days;		/* must be a valid time */
+}
+
+/*
+ * Parses an HTTP date in one of three standard forms:
+ *
+ *     Sun, 06 Nov 1994 08:49:37 GMT  ; RFC 822, updated by RFC 1123
+ *     Sunday, 06-Nov-94 08:49:37 GMT ; RFC 850, obsoleted by RFC 1036
+ *     Sun Nov  6 08:49:37 1994       ; ANSI C's asctime() format
+ *
+ * and returns the time_t number of seconds since 1 Jan 1970 GMT, or
+ * 0 if this would be out of range or if the date is invalid.
+ *
+ * The restricted HTTP syntax is
+ * 
+ *     HTTP-date    = rfc1123-date | rfc850-date | asctime-date
+ *
+ *     rfc1123-date = wkday "," SP date1 SP time SP "GMT"
+ *     rfc850-date  = weekday "," SP date2 SP time SP "GMT"
+ *     asctime-date = wkday SP date3 SP time SP 4DIGIT
+ *
+ *     date1        = 2DIGIT SP month SP 4DIGIT
+ *                    ; day month year (e.g., 02 Jun 1982)
+ *     date2        = 2DIGIT "-" month "-" 2DIGIT
+ *                    ; day-month-year (e.g., 02-Jun-82)
+ *     date3        = month SP ( 2DIGIT | ( SP 1DIGIT ))
+ *                    ; month day (e.g., Jun  2)
+ *
+ *     time         = 2DIGIT ":" 2DIGIT ":" 2DIGIT
+ *                    ; 00:00:00 - 23:59:59
+ *
+ *     wkday        = "Mon" | "Tue" | "Wed"
+ *                  | "Thu" | "Fri" | "Sat" | "Sun"
+ *
+ *     weekday      = "Monday" | "Tuesday" | "Wednesday"
+ *                  | "Thursday" | "Friday" | "Saturday" | "Sunday"
+ *
+ *     month        = "Jan" | "Feb" | "Mar" | "Apr"
+ *                  | "May" | "Jun" | "Jul" | "Aug"
+ *                  | "Sep" | "Oct" | "Nov" | "Dec"
+ *
+ * However, for the sake of robustness (and Netscapeness), we ignore the
+ * weekday and anything after the time field (including the timezone).
+ *
+ * This routine is intended to be very fast; 10x faster than using sscanf.
+ *
+ * Originally from Andrew Daviel <andrew@vancouver-webpages.com>, 29 Jul 96
+ * but many changes since then.
+ *
+ */
+API_EXPORT(time_t) ap_parseHTTPdate(const char *date)
+{
+    struct tm ds;
+    int mint, mon;
+    const char *monstr, *timstr;
+    static const int months[12] =
+    {
+	('J' << 16) | ('a' << 8) | 'n', ('F' << 16) | ('e' << 8) | 'b',
+	('M' << 16) | ('a' << 8) | 'r', ('A' << 16) | ('p' << 8) | 'r',
+	('M' << 16) | ('a' << 8) | 'y', ('J' << 16) | ('u' << 8) | 'n',
+	('J' << 16) | ('u' << 8) | 'l', ('A' << 16) | ('u' << 8) | 'g',
+	('S' << 16) | ('e' << 8) | 'p', ('O' << 16) | ('c' << 8) | 't',
+	('N' << 16) | ('o' << 8) | 'v', ('D' << 16) | ('e' << 8) | 'c'};
+
+    if (!date)
+	return BAD_DATE;
+
+    while (*date && ap_isspace(*date))	/* Find first non-whitespace char */
+	++date;
+
+    if (*date == '\0')
+	return BAD_DATE;
+
+    if ((date = strchr(date, ' ')) == NULL)	/* Find space after weekday */
+	return BAD_DATE;
+
+    ++date;			/* Now pointing to first char after space, which should be */
+    /* start of the actual date information for all 3 formats. */
+
+    if (ap_checkmask(date, "## @$$ #### ##:##:## *")) {	/* RFC 1123 format */
+	ds.tm_year = ((date[7] - '0') * 10 + (date[8] - '0') - 19) * 100;
+	if (ds.tm_year < 0)
+	    return BAD_DATE;
+
+	ds.tm_year += ((date[9] - '0') * 10) + (date[10] - '0');
+
+	ds.tm_mday = ((date[0] - '0') * 10) + (date[1] - '0');
+
+	monstr = date + 3;
+	timstr = date + 12;
+    }
+    else if (ap_checkmask(date, "##-@$$-## ##:##:## *")) {		/* RFC 850 format  */
+	ds.tm_year = ((date[7] - '0') * 10) + (date[8] - '0');
+	if (ds.tm_year < 70)
+	    ds.tm_year += 100;
+
+	ds.tm_mday = ((date[0] - '0') * 10) + (date[1] - '0');
+
+	monstr = date + 3;
+	timstr = date + 10;
+    }
+    else if (ap_checkmask(date, "@$$ ~# ##:##:## ####*")) {	/* asctime format  */
+	ds.tm_year = ((date[16] - '0') * 10 + (date[17] - '0') - 19) * 100;
+	if (ds.tm_year < 0)
+	    return BAD_DATE;
+
+	ds.tm_year += ((date[18] - '0') * 10) + (date[19] - '0');
+
+	if (date[4] == ' ')
+	    ds.tm_mday = 0;
+	else
+	    ds.tm_mday = (date[4] - '0') * 10;
+
+	ds.tm_mday += (date[5] - '0');
+
+	monstr = date;
+	timstr = date + 7;
+    }
+    else
+	return BAD_DATE;
+
+    if (ds.tm_mday <= 0 || ds.tm_mday > 31)
+	return BAD_DATE;
+
+    ds.tm_hour = ((timstr[0] - '0') * 10) + (timstr[1] - '0');
+    ds.tm_min = ((timstr[3] - '0') * 10) + (timstr[4] - '0');
+    ds.tm_sec = ((timstr[6] - '0') * 10) + (timstr[7] - '0');
+
+    if ((ds.tm_hour > 23) || (ds.tm_min > 59) || (ds.tm_sec > 61))
+	return BAD_DATE;
+
+    mint = (monstr[0] << 16) | (monstr[1] << 8) | monstr[2];
+    for (mon = 0; mon < 12; mon++)
+	if (mint == months[mon])
+	    break;
+    if (mon == 12)
+	return BAD_DATE;
+
+    if ((ds.tm_mday == 31) && (mon == 3 || mon == 5 || mon == 8 || mon == 10))
+	return BAD_DATE;
+
+    /* February gets special check for leapyear */
+
+    if ((mon == 1) &&
+	((ds.tm_mday > 29)
+	 || ((ds.tm_mday == 29)
+	     && ((ds.tm_year & 3)
+		 || (((ds.tm_year % 100) == 0)
+		     && (((ds.tm_year % 400) != 100)))))))
+	return BAD_DATE;
+
+    ds.tm_mon = mon;
+
+    return ap_tm2sec(&ds);
+}

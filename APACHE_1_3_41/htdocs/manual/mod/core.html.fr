@@ -1,0 +1,4105 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!--Traduction anglais 1.190 -->
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta name="generator" content="HTML Tidy, see www.w3.org" />
+    <meta http-equiv="Content-Type"
+    content="text/html; charset=iso-8859-1" />
+
+    <title>Noyau d'Apache</title>
+  </head>
+  <!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+
+  <body bgcolor="#FFFFFF" text="#000000" link="#0000FF"
+  vlink="#000080" alink="#FF0000">
+    <!--#include virtual="header.html" -->
+
+    <h1 align="center">Noyau d'Apache</h1>
+
+    <p>Ces param&egrave;tres de configuration contr&ocirc;lent les
+    fonctionnalit&eacute;s premi&egrave;res d'Apache, et sont
+    toujours disponibles.</p>
+
+    <h2>Directives</h2>
+
+    <ul>
+      <li><a href="#acceptfilter">AcceptFilter</a></li>
+
+      <li><a href="#accessconfig">AccessConfig</a></li>
+
+      <li><a href="#accessfilename">AccessFileName</a></li>
+
+      <li><a href="#adddefaultcharset">AddDefaultCharset</a></li>
+
+      <li><a href="#addmodule">AddModule</a></li>
+
+      <li><a href="#allowoverride">AllowOverride</a></li>
+
+      <li><a href="#authname">AuthName</a></li>
+
+      <li><a href="#authtype">AuthType</a></li>
+
+      <li><a href="#bindaddress">BindAddress</a></li>
+
+      <li><a href="#bs2000account">BS2000Account</a></li>
+
+      <li><a href="#clearmodulelist">ClearModuleList</a></li>
+
+      <li><a href="#contentdigest">ContentDigest</a></li>
+
+      <li><a href="#coredumpdirectory">CoreDumpDirectory</a></li>
+
+      <li><a href="#defaulttype">DefaultType</a></li>
+
+      <li><a href="#directory">&lt;Directory&gt;</a></li>
+
+      <li><a href="#directorymatch">&lt;DirectoryMatch&gt;</a></li>
+
+      <li><a href="#documentroot">DocumentRoot</a></li>
+
+      <li><a href="#ebcdicconvert">EBCDICConvert</a></li>
+
+      <li><a
+      href="#ebcdicconvertbytype">EBCDICConvertByType</a></li>
+
+      <li><a href="#ebcdickludge">EBCDICKludge</a></li>
+
+      <li><a href="#errordocument">ErrorDocument</a></li>
+
+      <li><a href="#errorlog">ErrorLog</a></li>
+
+      <li><a href="#files">&lt;Files&gt;</a></li>
+
+      <li><a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
+
+      <li><a href="#group">Group</a></li>
+
+      <li><a href="#hostnamelookups">HostNameLookups</a></li>
+
+      <li><a href="#identitycheck">IdentityCheck</a></li>
+
+      <li><a href="#ifdefine">&lt;IfDefine&gt;</a></li>
+
+      <li><a href="#ifmodule">&lt;IfModule&gt;</a></li>
+
+      <li><a href="#include">Include</a></li>
+
+      <li><a href="#keepalive">KeepAlive</a></li>
+
+      <li><a href="#keepalivetimeout">KeepAliveTimeout</a></li>
+
+      <li><a href="#limit">&lt;Limit&gt;</a></li>
+
+      <li><a href="#limitexcept">&lt;LimitExcept&gt;</a></li>
+
+      <li><a href="#limitrequestbody">LimitRequestBody</a></li>
+
+      <li><a href="#limitrequestfields">LimitRequestFields</a></li>
+
+      <li><a
+      href="#limitrequestfieldsize">LimitRequestFieldsize</a></li>
+
+      <li><a href="#limitrequestline">LimitRequestLine</a></li>
+
+      <li><a href="#listen">Listen</a></li>
+
+      <li><a href="#listenbacklog">ListenBacklog</a></li>
+
+      <li><a href="#location">&lt;Location&gt;</a></li>
+
+      <li><a href="#locationmatch">&lt;LocationMatch&gt;</a></li>
+
+      <li><a href="#lockfile">LockFile</a></li>
+
+      <li><a href="#loglevel">LogLevel</a></li>
+
+      <li><a href="#maxclients">MaxClients</a></li>
+
+      <li><a
+      href="#maxkeepaliverequests">MaxKeepAliveRequests</a></li>
+
+      <li><a
+      href="#maxrequestsperchild">MaxRequestsPerChild</a></li>
+
+      <li><a href="#maxspareservers">MaxSpareServers</a></li>
+
+      <li><a href="#minspareservers">MinSpareServers</a></li>
+
+      <li><a href="#namevirtualhost">NameVirtualHost</a></li>
+
+      <li><a href="#options">Options</a></li>
+
+      <li><a href="#pidfile">PidFile</a></li>
+
+      <li><a href="#port">Port</a></li>
+
+      <li><a href="#require">require</a></li>
+
+      <li><a href="#resourceconfig">ResourceConfig</a></li>
+
+      <li><a href="#rlimitcpu">RLimitCPU</a></li>
+
+      <li><a href="#rlimitmem">RLimitMEM</a></li>
+
+      <li><a href="#rlimitnproc">RLimitNPROC</a></li>
+
+      <li><a href="#satisfy">Satisfy</a></li>
+
+      <li><a href="#scoreboardfile">ScoreBoardFile</a></li>
+
+      <li><a
+      href="#scriptinterpretersource">ScriptInterpreterSource</a></li>
+
+      <li><a href="#sendbuffersize">SendBufferSize</a></li>
+
+      <li><a href="#serveradmin">ServerAdmin</a></li>
+
+      <li><a href="#serveralias">ServerAlias</a></li>
+
+      <li><a href="#servername">ServerName</a></li>
+
+      <li><a href="#serverpath">ServerPath</a></li>
+
+      <li><a href="#serverroot">ServerRoot</a></li>
+
+      <li><a href="#serversignature">ServerSignature</a></li>
+
+      <li><a href="#servertokens">ServerTokens</a></li>
+
+      <li><a href="#servertype">ServerType</a></li>
+
+      <li><a href="#startservers">StartServers</a></li>
+
+      <li><a href="#threadsperchild">ThreadsPerChild</a></li>
+
+      <li><a href="#threadstacksize">ThreadStackSize</a></li>
+
+      <li><a href="#timeout">TimeOut</a></li>
+
+      <li><a href="#usecanonicalname">UseCanonicalName</a></li>
+
+      <li><a href="#user">User</a></li>
+
+      <li><a href="#virtualhost">&lt;VirtualHost&gt;</a></li>
+    </ul>
+
+    <h2><a id="acceptfilter" name="acceptfilter">Directive
+    AcceptFilter</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt AcceptFilter} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> AcceptFilter on|off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>AccceptFilter on</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> server config<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> core 
+
+    <p><code>AcceptFilter</code> contr&ocirc;le une optimisation
+    sp&eacute;cifique &agrave; BSD. Elle est compil&eacute;e par
+    d&eacute;faut et activ&eacute;e par d&eacute;faut si votre
+    syst&egrave;me l'impl&eacute;mente (option SO_ACCCEPTFILTER de
+    setsocketopt()). A l'heure actuelle, seul FreeBSD
+    l'impl&eacute;mente.</p>
+
+    <p>Se r&eacute;f&eacute;rer &agrave; la section concernant les
+    filtres dans la <a href="../misc/perf-bsd44.html">documentation
+    sur la performance</a> pour de plus amples informations.</p>
+
+    <p>L'option de compilation <code>AP_ACCEPTFILTER_OFF</code>
+    peut &ecirc;tre utilis&eacute;e pour changer le d&eacute;faut
+    &agrave; 'off'. <code>httpd -V</code> et <code>httpd -L</code>
+    affichent dor&eacute;navant les valeurs par d&eacute;fauts au
+    moment de la compilation, et si oui ou non SO_ACCEPTFILTER a
+    &eacute;t&eacute; d&eacute;fini pour cette compilation.</p>
+    <hr />
+    <!-- XXX translate a name="accessconfig" / Directive AccessConfig 
+                  -->
+
+    <h2><a id="accessconfig" name="accessconfig">Directive
+    AccessConfig</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt AccessConfig} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> AccessConfig
+    <em>nomfichier|nomr&eacute;pertoire</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>AccessConfig conf/access.conf</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> configuration serveur,
+    h&ocirc;tes virtuels<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Le serveur lit dans ce fichier des directives
+    suppl&eacute;mentaires apr&egrave;s avoir ouvert le fichier <a
+    href="#resourceconfig">ResourceConfig</a>. <em>nomfichier</em>
+    est exprim&eacute; relativement &agrave; <a
+    href="#serverroot">ServerRoot</a>. Cette fonctionnalit&eacute;
+    peut &ecirc;tre d&eacute;sactiv&eacute;e en &eacute;crivant
+    :</p>
+
+    <blockquote>
+      <code>AccessConfig /dev/null</code>
+    </blockquote>
+    ou sur les serverus Win32 
+
+    <blockquote>
+      <code>AccessConfig nul</code>
+    </blockquote>
+
+    <p>Historiquement, ce fichier ne contenait que des sections <a
+    href="#directory">&lt;Directory&gt;</a>; en fait, il pourra
+    maintenant contenir toute directive "serveur" autoris&eacute;e
+    dans le contexte de la <em>configuration serveur</em>.</p>
+
+    <p>Une nouveaut&eacute; de la version d'Apache 1.3.13 est la
+    possibilit&eacute; qu'<code>AccessConfig</code>
+    repr&eacute;sente un r&eacute;pertoire plutot qu'un fichier.
+    Apache lira tous les fichiers de ce r&eacute;pertoire ainsi que
+    tous les sous-r&eacute;pertoires et analysera tous ces fichiers
+    de configuration.</p>
+
+    <p>Voir &eacute;galement <a
+    href="#resourceconfig">ResourceConfig</a>.</p>
+    <hr />
+
+    <h2><a id="accessfilename" name="accessfilename">Directive
+    AccessFileName</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt AccessFileName} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> AccessFileName <em>nomfichier</em>
+    [<em>nomfichier</em>] ...<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>AccessFileName .htaccess</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Context:</strong></a> configuration serveur,
+    h&ocirc;te virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    AccessFileName ne peut accepter plusieurs noms de fichiers
+    qu'&agrave; partir de la version 1.3 d'Apache 
+
+    <p>Lorsqu'il retourne un document au client, le serveur cherche
+    le premier fichier de contr&ocirc;le d'acc&egrave;s existant
+    dans cette liste dans chacun des r&eacute;pertoires inscrit
+    dans le chemin d'acc&egrave;s menant au document, pour
+    d&eacute;terminer si l'acc&egrave;s est autoris&eacute; dan
+    chacun de ces r&eacute;pertoires. Par exemple:</p>
+
+    <blockquote>
+      <code>AccessFileName .acl</code>
+    </blockquote>
+
+    <p>Avant de servir le document
+    <code>/usr/local/web/index.html</code>, le serveur lira les
+    fichiers <code>/.acl</code>, <code>/usr/.acl</code>,
+    <code>/usr/local/.acl</code> et
+    <code>/usr/local/web/.acl</code> &agrave; la recherche de
+    directives, sauf si celles-ci ont &eacute;t&eacute;
+    d&eacute;sactiv&eacute;es par l'&eacute;criture</p>
+
+    <blockquote>
+      <code>&lt;Directory /&gt; AllowOverride None
+      &lt;/Directory&gt;</code>
+    </blockquote>
+
+    <p><strong>Voir &eacute;galement :</strong> <a
+    href="#allowoverride">AllowOverride</a></p>
+    <hr />
+
+    <h2><a id="adddefaultcharset"
+    name="adddefaultcharset">Directive AddDefaultCharset</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> AddDefaultCharset On|Off|<em>charset</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> tous<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>AddDefaultCharset Off</code><br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    AddDefaultCharset n'est disponible qu'&agrave; partir de la
+    version 1.3.12 
+
+    <p>Cette directive sp&eacute;cifie le nom de la table de
+    caract&egrave;res qui sera ajout&eacute; &agrave; toutes les
+    r&eacute;ponses qui n'ont aucun param&egrave;tre sur le type de
+    contenu dans l'en-t&ecirc;te HTTP. Elle remplace la table de
+    caract&egrave;re sp&eacute;cifi&eacute; dans le corps du
+    document par l'utilisation du marqueur <code>META</code>. La
+    mise de <code>AddDefaultCharset Off</code> d&eacute;sactive
+    cette fonctionnalit&eacute;. <code>AddDefaultCharset On</code>
+    active la table de caract&egrave;re <code>iso-8859-1</code> par
+    d&eacute;faut d'Apache. Vous pouvez &eacute;galement
+    d&eacute;finir une autre table de caract&egrave;res &agrave;
+    employer. Par exemple <code>AddDefaultCharset utf-8</code>.</p>
+    <hr />
+
+    <h2><a id="addmodule" name="addmodule">Directive
+    AddModule</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt AddModule} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> AddModule <em>module</em> [<em>module</em>]
+    ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur <br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    <tt>AddModule</tt> n'est disponible qu'&agrave; partir de la
+    version 1.2 d'Apache 
+
+    <p>Le serveur peut int&eacute;grer des modules compil&eacute;s
+    qui ne sont pas mis en service. Cette directive peut &ecirc;tre
+    utilis&eacute;e pour activer ou d&eacute;sactiver ces modules.
+    Le serveur est install&eacute; avec une liste
+    pr&eacute;-configur&eacute;e de modules actifs cette liste peut
+    &ecirc;tre effac&eacute;e par la directive <a
+    href="#clearmodulelist">ClearModuleList</a>.</p>
+    <hr />
+
+    <h2><a id="allowoverride" name="allowoverride">Directive
+    AllowOverride</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt AllowOverride} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> AllowOverride All|None|<em>type de
+    directive</em> [<em>type de directive</em>] ... <br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>AllowOverride All All</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a>
+    r&eacute;pertoire<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Lorsque le serveur trouve un fichier .htaccess (comme
+    sp&eacute;cifi&eacute; par <a
+    href="#accessfilename">AccessFileName</a>) il doit savoir
+    quelles directives declar&eacute;es dans ce fichier peuvent
+    outrepasser les droits fix&eacute;s par des directives
+    pr&eacute;c&eacute;dentes.</p>
+
+    <p>Si la directive est d&eacute;finie &agrave;
+    <code>None</code>, les fichier .htaccess sont ignor&eacute;s.
+    Dans ce cas, le serveur n'essaie m&ecirc;me pas de lire les
+    fichiers .htaccess.</p>
+
+    <p>Si la directive est d&eacute;finie &agrave; <code>All</code>
+    toutes les directives possibles dans le <a
+    href="directive-dict.html#Context">contexte</a> .htacces sont
+    autoris&eacute;es dans les fichiers .htaccess.</p>
+
+    <p>Les <em>types de directives</em> peuvent &ecirc;tre parmi
+    ces groupes de directives :</p>
+
+    <dl>
+      <dt>AuthConfig</dt>
+
+      <dd>
+      <!--%plaintext &lt;?INDEX {\tt AuthConfig} override&gt; -->
+      Autorise l'usage de la directive Authorization (<a
+      href="mod_auth_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a>,
+      <a
+      href="mod_auth_dbm.html#authdbmuserfile">AuthDBMUserFile</a>,
+      <a href="mod_auth.html#authgroupfile">AuthGroupFile</a>, <a
+      href="#authname">AuthName</a>, <a
+      href="#authtype">AuthType</a>, <a
+      href="mod_auth.html#authuserfile">AuthUserFile</a>, <a
+      href="#require">Require</a>, etc.).</dd>
+
+      <dt>FileInfo</dt>
+
+      <dd><!--%plaintext &lt;?INDEX {\tt FileInfo} override&gt; -->
+      Autorise l'usage de directives contr&ocirc;lant
+      l'acc&egrave;s aux types de documents (<a
+      href="mod_mime.html#addencoding">AddEncoding</a>, <a
+      href="mod_mime.html#addlanguage">AddLanguage</a>, <a
+      href="mod_mime.html#addtype">AddType</a>, <a
+      href="#defaulttype">DefaultType</a>, <a
+      href="#errordocument">ErrorDocument</a>, <a
+      href="mod_negotiation.html#languagepriority">LanguagePriority</a>,
+      etc.).</dd>
+
+      <dt>Indexes</dt>
+
+      <dd><!--%plaintext &lt;?INDEX {\tt Indexes} override&gt; -->
+      Autorise l'usage de directives contr&ocirc;lant l'indexation
+      des r&eacute;pertoires (<a
+      href="mod_autoindex.html#adddescription">AddDescription</a>,
+      <a href="mod_autoindex.html#addicon">AddIcon</a>, <a
+      href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding</a>,
+      <a href="mod_autoindex.html#addiconbytype">AddIconByType</a>,
+      <a href="mod_autoindex.html#defaulticon">DefaultIcon</a>, <a
+      href="mod_dir.html#directoryindex">DirectoryIndex</a>, <a
+      href="mod_autoindex.html#fancyindexing">FancyIndexing</a>, <a
+      href="mod_autoindex.html#headername">HeaderName</a>, <a
+      href="mod_autoindex.html#indexignore">IndexIgnore</a>, <a
+      href="mod_autoindex.html#indexoptions">IndexOptions</a>, <a
+      href="mod_autoindex.html#readmename">ReadmeName</a>,
+      etc.).</dd>
+
+      <dt>Limit</dt>
+
+      <dd><!--%plaintext &lt;?INDEX {\tt Limit} override&gt; -->
+      Autorise l'usage de directives contr&ocirc;lant les
+      acc&egrave;s de certains h&ocirc;tes (allow, deny et
+      order).</dd>
+
+      <dt>Options</dt>
+
+      <dd><!--%plaintext &lt;?INDEX {\tt Options} override&gt; -->
+      Autorise l'usage de directives contr&ocirc;lant certaines
+      fonctionnalit&eacute;s sp&eacute;cifiques des
+      r&eacute;pertoires (<a href="#options">Options</a> et <a
+      href="mod_include.html#xbithack">XBitHack</a>).</dd>
+    </dl>
+
+    <p><strong>Voir &eacute;galement :</strong> <a
+    href="#accessfilename">AccessFileName</a></p>
+    <hr />
+
+    <h2><a id="authname" name="authname">Directive
+    AuthName</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt AuthName} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> AuthName <em>domaine-autoris&eacute;</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> r&eacute;pertoire,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Surcharge :</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Cette directive indique le nom du sch&eacute;ma
+    d'autorisation pour un r&eacute;pertoire. Ce sch&eacute;ma sera
+    donn&eacute; au client de sorte que l'utilisateur sache quel
+    nom et quel mot de passe envoyer. <samp>AuthName</samp> prend
+    un seul argument. Si le sch&eacute;ma d'autorisation contient
+    des espaces, il doit &ecirc;tre entour&eacute; de guillemets.
+    Pour fonctionner correctement, elle devra &ecirc;tre
+    accompagn&eacute;e des directives <a
+    href="#authtype">AuthType</a> et <a
+    href="#require">require</a>, et de directives telles que <a
+    href="mod_auth.html#authuserfile">AuthUserFile</a> et <a
+    href="mod_auth.html#authgroupfile">AuthGroupFile</a>.</p>
+    <hr />
+
+    <h2><a id="authtype" name="authtype">Directive
+    AuthType</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt AuthType} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> AuthType <em>type</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> r&eacute;pertoire,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Surcharge :</strong></a> AuthConfig<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Cette directive selectionne le type d'authentification pour
+    un r&eacute;pertoire. Seul les types <code>Basic</code> et
+    <code>Digest</code> sont actuellement
+    impl&eacute;ment&eacute;s. 
+    <!--%plaintext &lt;?INDEX {\tt Basic} authentication scheme&gt; -->
+     Pour fonctionner correctement, elle devra &ecirc;tre
+    accompagn&eacute;e des directives <a
+    href="#authname">AuthName</a> et <a
+    href="#require">require</a>, et de directives telles que <a
+    href="mod_auth.html#authuserfile">AuthUserFile</a> et <a
+    href="mod_auth.html#authgroupfile">AuthGroupFile</a>.</p>
+    <hr />
+
+    <h2><a id="bindaddress" name="bindaddress">Directive
+    BindAddress</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt BindAddress} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> BindAddress *|<em>addresse IP</em>|<em>nom de
+    domaine</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>BindAddress *</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Un serveur http sous Unix&reg; peut soit &eacute;couter
+    toutes les adresses IP de la machine sur lequel il est
+    ex&eacute;cut&eacute;, ou uniquement une de ces adresses. Si
+    l'argument de cette directive est *, le serveur traitera les
+    connections sur toutes les adresses IP. Sinon, le serveur peut
+    &eacute;couter &agrave; partir d'une <em>adresse IP</em>
+    sp&eacute;cifique ou d'un <em>nom de domaine</em> Internet.</p>
+
+    <p>Une et une seule directive <tt>BindAddress</tt> peut
+    &ecirc;tre utilis&eacute;e. Pour contr&ocirc;ler plus finement
+    quels ports et adresses Apache &eacute;coute, utilisez la
+    directive <a href="#listen">Listen</a> au lieu de
+    <tt>BindAddress</tt>.</p>
+
+    <p><tt>BindAddress</tt> peut &ecirc;tre utilis&eacute;e comme
+    alternative &agrave; l'implantation d'<a
+    href="../vhosts/">h&ocirc;tes virtuels</a> utilisant des
+    serveurs multiples ind&eacute;pendants, soit au lieu d'utiliser
+    les sections <a
+    href="#virtualhost">&lt;VirtualHost&gt;</a>.</p>
+
+    <p><strong>Voir aussi:</strong> <a
+    href="../dns-caveats.html">Apache et DNS</a><br />
+     <strong>Voir aussi:</strong> <a href="../bind.html">Configurer
+    les ports et adresses utilis&eacute;s par Apache</a></p>
+    <hr />
+
+    <h2><a id="bs2000account" name="bs2000account">BS2000Account
+    directive</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt BS2000Account} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> BS2000Account <em>account</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <em>none</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    BS2000Account n'est valable que pour les machines BS2000,
+    &agrave; partir de la version 1.3 d'Apache. 
+
+    <p>La directive <code>BS2000Account</code> n'est disponible que
+    pour les machines BS2000. Elle doit &ecirc;tre employ&eacute;e
+    pour d&eacute;finir le num&eacute;ro de compte pour
+    l'utilisateur non privil&eacute;gi&eacute; (qui est
+    d&eacute;fini par la directive <a href="#user">User</a> ). Ceci
+    est requis par le sous syst&egrave;me POSIX du BS2000 afin de
+    changer l'environnement d'ex&eacute;cution sosu jacent du BS200
+    en effectuant une sous connexion, et &eacute;viter ainsi que
+    des scripts CGI puissent acc&eacute;der &agrave; des ressources
+    accessible &agrave; l'utilisateur privil&eacute;gi&eacute;
+    utilis&eacute; pour lancer le serveur,
+    g&eacute;n&eacute;ralement <samp>SYSROOT</samp>.<br />
+     Seulement une directive <code>BS2000Account</code> peut
+    &ecirc;tre utilis&eacute;e.</p>
+
+    <p><strong>Voir &eacute;galement:</strong> <a
+    href="../ebcdic.html">Portage EBCDIC d'Apache</a></p>
+    <hr />
+
+    <h2><a id="clearmodulelist" name="clearmodulelist">Directive
+    ClearModuleList</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ClearModuleList} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ClearModuleList<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    <tt>ClearModuleList</tt> n'est disponible qu'&agrave; partir de
+    la version 1.2 d'Apache 
+
+    <p>Le serveur dispose &agrave; l'installation d'une liste
+    pr&eacute;-configur&eacute;e de modules actifs. Cette directive
+    efface cette liste. Il est suppos&eacute; que cette liste sera
+    reconstruite &agrave; partir de directives <a
+    href="#addmodule">AddModule</a>.</p>
+    <hr />
+
+    <h2><a id="contentdigest" name="contentdigest">Directive
+    ContentDigest</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ContentDigest} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ContentDigest <em>on|off</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ContentDigest off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels, r&eacute;pertoire,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Surcharge :</strong></a> Options<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> exp&eacute;rimental 
+
+    <p><a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    ContentDigest n'est disponible qu'&agrave; partir de la version
+    1.1 d'Apache</p>
+
+    <p>Cette directive active la g&eacute;n&eacute;ration
+    d'en-t&ecirc;tes <code>Content-MD5</code> conformes aux RFC1864
+    et RFC2068.</p>
+
+    <p>MD5 est un algorithme permettant d'extraire un
+    "r&eacute;sum&eacute;" &agrave; partir d'un bloc de
+    donn&eacute;es de longueur arbitraire, avec un degr&eacute; de
+    confiance suffisant dans la mesure ou une moindre
+    alt&eacute;ration dans les donn&eacute;es sera
+    refl&eacute;t&eacute;e par un changement dans le
+    "r&eacute;sum&eacute;".</p>
+
+    <p>L'en-t&ecirc;te <code>Content-MD5</code> procure un test de
+    l'int&eacute;grit&eacute; de message de bout en bout (MIC) sur
+    le corps d'entit&eacute;. Un proxy ou client pourra tester cet
+    en-t&ecirc;te pour d&eacute;tecter des modifications
+    accidentelles du corps d'entit&eacute; en cours de transfert.
+    Exemple d'en-t&ecirc;te:</p>
+<pre>
+  Content-MD5: AuLb7Dp1rqtRtxz2m9kRpA==
+ 
+</pre>
+
+    <p>Notez que ceci peut r&eacute;duire les performances de votre
+    serveur dans la mesure o&ugrave; le "r&eacute;sum&eacute;" est
+    calcul&eacute; &agrave; chaque requ&ecirc;te (il ne peut
+    &ecirc;tre mis en cache).</p>
+
+    <p><code>Content-MD5</code> n'est &eacute;mis que pour des
+    documents servis par le noyau, et &agrave; l'exception de tout
+    module. Par exemple, les documents SSI, la sortie de scripts
+    CGI, et des r&eacute;ponses en flux d'octet binaire ne pourront
+    utiliser cet en-t&ecirc;te.</p>
+    <hr />
+
+    <h2><a id="coredumpdirectory"
+    name="coredumpdirectory">Directive CoreDumpDirectory</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt CoreDumpDirectory} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> CoreDumpDirectory
+    <em>nomr&eacute;pertoire</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> m&ecirc;me
+    r&eacute;pertoire que ServerRoot<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Elle d&eacute;finit le r&eacute;pertoire auquel Apache tente
+    d'acc&eacute;der avant d'enregistrer un "noyau dump". Par
+    d&eacute;faut, il s'agit du r&eacute;pertoire <a
+    href="#serverroot">ServerRoot</a>, cependant, si ce
+    r&eacute;pertoire n'est pas accessible en &eacute;criture par
+    l'utilisateur sous lequel tourne le serveur, le "noyau dump" ne
+    pourra &ecirc;tre g&eacute;n&eacute;r&eacute;. Si vous
+    souhaitez dans ce cas obtenir un "noyau dump" pour des
+    n&eacute;cessit&eacute;s de d&eacute;bogage, vous pouvez
+    utiliser cette directive pour sp&eacute;cifier un autre
+    r&eacute;pertoire dans lequel vous avez toute autorisation pour
+    &eacute;crire.</p>
+    <hr />
+
+    <h2><a id="defaulttype" name="defaulttype">Directive
+    DefaultType</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt DefaultType} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> DefaultType <em>mime-type</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>DefaultType text/html</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels, r&eacute;pertoire,
+    .htaccess<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Surcharge :</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Il peut arriver qu'une requ&ecirc;te demande au serveur un
+    document dont le type ne peut &ecirc;tre
+    d&eacute;termin&eacute; par les tables de MIME.</p>
+
+    <p>Le serveur doit informer le client du type de contenu
+    (Content-type) du document. Dans le cas d'un type inconnu, il
+    utilisera le <tt>DefaultType</tt>. Par exemple :</p>
+
+    <blockquote>
+      <code>DefaultType image/gif</code>
+    </blockquote>
+
+    <p>sera appropri&eacute; dans un r&eacute;pertoire contenant
+    une majorit&eacute; d'images gif dont certaines ne
+    pr&eacute;sentent pas explicitement l'extension .gif.</p>
+    <hr />
+
+    <h2><a id="directory" name="directory">Directive
+    &lt;Directory&gt;</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt Directory} section directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> &lt;Directory <em>nomr&eacute;pertoire</em>&gt;
+    ... &lt;/Directory&gt; <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p><tt>&lt;Directory&gt;</tt> et <tt>&lt;/Directory&gt;</tt>
+    sont utilis&eacute;s pour "encapsuler" un groupe de directives
+    applicables uniquement au r&eacute;prtoire indiqu&eacute; ainsi
+    qu'&agrave; ses sous-r&eacute;pertoires. Toute directive
+    autoris&eacute;e dans un contexte de r&eacute;pertoire peut
+    appara&icirc;tre entre ces deux balises.
+    <em>nomr&eacute;pertoire</em> est soit le chemin
+    enti&egrave;rement qualifi&eacute; du r&eacute;pertoire, ou un
+    motif. Dans un motif, '?' remplace un caract&egrave;re unique
+    quelconque, et '*' remplace toute s&eacute;quence de
+    z&eacute;ro ou plus caract&egrave;res quelconques. Sur Apache
+    1.3, vous pouvez aussi utiliser les plages de caract&egrave;res
+    '[]' comme dans un shell UNIX. De plus aucun des
+    m&eacute;tacaract&egrave;res ne peut remplacer un '/', ce qui
+    correspond plus intimement &agrave; la r&eacute;action des
+    shells UNIX. Exemple:</p>
+<pre>
+   &lt;Directory /usr/local/httpd/htdocs&gt;
+   Options Indexes FollowSymLinks
+   &lt;/Directory&gt;
+</pre>
+
+    <p><strong>A partir d'Apache 1.2 :</strong> peuvent &ecirc;tre
+    utilis&eacute;es les "expressions r&eacute;guli&egrave;res",
+    lesquelles devront &ecirc;tre pr&eacute;c&eacute;d&eacute;es du
+    caract&egrave;re <code>~</code>. Par exemple :</p>
+<pre>
+  &lt;Directory ~"^/www/.*/[0-9]{3}"&gt;
+</pre>
+    correspondrait &agrave; des r&eacute;pertoires dans /www/ dont
+    le nom serait constitu&eacute; de trois digits. 
+
+    <p>Si plusieurs sections de r&eacute;pertoires pointent sur le
+    r&eacute;pertoire d'un document (ou l'un de ses p&egrave;res)
+    sans qu'il s'agisse d'une expression r&eacute;guli&egrave;re,
+    alors les directives sont appliqu&eacute;es selon la loi de "la
+    plus courte qualification d'abord", combin&eacute;es aux
+    directives des fichiers <a
+    href="#accessfilename">.htaccess</a>. Par exemple, avec
+    l'&eacute;criture</p>
+
+    <blockquote>
+      <code>&lt;Directory /&gt; AllowOverride None
+      &lt;/Directory&gt; &lt;Directory /home/*&gt; AllowOverride
+      FileInfo &lt;/Directory&gt;</code>
+    </blockquote>
+
+    <p>pour le contr&ocirc;le d'acc&egrave;s au document
+    <code>/home/web/dir/doc.html</code> les &eacute;tapes
+    d'&eacute;valuation sont les suivantes :</p>
+
+    <ul>
+      <li>Applique la directive <code>AllowOverride None</code>
+      (d&eacute;sactivant les fichiers
+      <code>.htaccess</code>).</li>
+
+      <li>Appliquela directive <code>AllowOverride FileInfo</code>
+      (pour le r&eacute;pertoire <code>/home/web</code>).</li>
+
+      <li>Applique toutes les directives <tt>FileInfo</tt> de
+      <code>/home/web/.htaccess</code></li>
+    </ul>
+
+    <p>Les sections exprimant des r&eacute;pertoires sous forme
+    d'expressions r&eacute;guli&egrave;res sont g&eacute;r&eacute;s
+    l&eacute;g&egrave;rement diff&eacute;remment par Apache 1.2 et
+    1.3. Sous Apache 1.2, elles sont combin&eacute;es aux sections
+    "normales" et s'appliquent dans l'ordre o&ugrave; elles
+    apparaissent dans le fichier de configuration. Elles ne
+    s'appliquent qu'une fois, seulement pour celles qui font partie
+    de la section "&agrave; plus courte correspondance". Sous
+    Apache 1.3 les sections bas&eacute;es sur des expressions
+    r&eacute;guli&egrave;res ne sont pas &eacute;valu&eacute;es
+    tant que toutes les sections "normales" n'ont pas
+    &eacute;t&eacute; consid&eacute;r&eacute;es. A ce moment, les
+    sections "r&eacute;guli&egrave;res" sont trait&eacute;es dans
+    l'ordre o&ugrave; elles apparaissent dans le fichier de
+    configuration. Par exemple, avec l'&eacute;criture</p>
+
+    <blockquote>
+      <code>&lt;Directory ~ abc$&gt; ... directives ici ...
+      &lt;/Directory&gt;</code>
+    </blockquote>
+
+    <p>Supposez que le nom de fichier demand&eacute; soit
+    <code>/home/abc/public_html/abc/index.html</code>. Le serveur
+    consid&egrave;re chacune des sections <code>/</code>,
+    <code>/home</code>, <code>/home/abc</code>,
+    <code>/home/abc/public_html</code>, et
+    <code>/home/abc/public_html/abc</code> dans cet ordre. Sous
+    Apache 1.2, lorsque <code>/home/abc</code> est pris en compte,
+    l'expression r&eacute;guli&egrave;re correspondra et ses termes
+    seront appliqu&eacute;s. Sous Apache 1.3 l'expression
+    r&eacute;guli&egrave;re n'est pas consid&eacute;r&eacute;e du
+    tout &agrave; ce point de l'arbre. Elle ne le sera pas tant que
+    toutes les sections "normales" <tt>&lt;Directory&gt;s</tt> et
+    celles des fichiers <code>.htaccess</code> n'ont pas
+    &eacute;t&eacute; appliqu&eacute;es. A ce moment seulement
+    l'expression r&eacute;guli&egrave;re reconna&icirc;tra
+    <code>/home/abc/public_html/abc</code> et les directives seront
+    appliqu&eacute;es.</p>
+
+    <p><strong>Notez que l'acc&egrave;s par d&eacute;faut d'Apache
+    pour les sections <tt>&lt;Directory&gt;</tt> est <code>Allow
+    from All</code>. Ceci veut dire que par d&eacute;faut, Apache
+    desservira tout fichier indiqu&eacute; par une URL. Nous
+    recommandons de modifier ceci &agrave; l'aide d'un bloc tel
+    que</strong></p>
+<pre>
+  &lt;Directory /&gt;
+     Order Deny,Allow
+     Deny from All
+&lt;/Directory&gt;
+</pre>
+
+    <p><strong>puis d&eacute;sactiver s&eacute;lectivement la
+    protection pour les r&eacute;pertoires devant rester
+    accessibles. Voir la page <a
+    href="../misc/security_tips.html">Trucs sur la
+    s&eacute;curit&eacute;</a> pour plus de
+    d&eacute;tails.</strong></p>
+
+    <p>Les sections de r&eacute;pertoires apparaissent
+    habituellement dans le fichier access.conf, mais peuvent
+    &ecirc;tre pr&eacute;sentes dans n'importe quel fichier de
+    configuration. Les directives &lt;Directory&gt; ne peuvent
+    &ecirc;tre imbriqu&eacute;es, et ne peuvent petre incluses dans
+    des sections <a href="#limit">&lt;Limit&gt;</a> ou <a
+    href="#limitexcept">&lt;LimitExcept&gt;</a>.</p>
+
+    <p><strong>Voir aussi</strong> : <a
+    href="../sections.html">Comment fonctionnent les sections
+    concernant les r&eacute;pertoires, chemins et fichiers</a> pour
+    une explication plus pr&eacute;cise concernant la
+    mani&egrave;re dont ces sections sont combin&eacute;es
+    lorsqu'une requ&ecirc;te est trait&eacute;e.</p>
+    <hr />
+
+    <h2><a id="directorymatch" name="directorymatch">Directive
+    &lt;DirectoryMatch&gt;</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> &lt;DirectoryMatch <em>regex</em>&gt; ...
+    &lt;/DirectoryMatch&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    Disponible &agrave; partir de la version 1.3 d'Apache 
+
+    <p><tt>&lt;DirectoryMatch&gt;</tt> et
+    <tt>&lt;/DirectoryMatch&gt;</tt> sont utilis&eacute;s pour
+    encapsuler un groupe de directives s'appliquant uniquement aux
+    r&eacute;pertoires nomm&eacute;s et ses
+    sous-r&eacute;pertoires, de mani&egrave;re identique &agrave;
+    la directive <a href="#directory">&lt;Directory&gt;</a>.
+    Cependant, elle n'accepte comme argument qu'une expression
+    r&eacute;guli&egrave;re. Par exemple :</p>
+
+    <blockquote>
+      <code>&lt;DirectoryMatch "^/www/.*/[0-9]{3}"&gt;</code>
+    </blockquote>
+
+    <p>correspondrait aux r&eacute;pertoires de /www/ dont le nom
+    consiste en trois chiffres.</p>
+
+    <p><strong>Voir aussi :</strong> <a
+    href="#directory">&lt;Directory&gt;</a> pour une description de
+    la mani&egrave;re dont les d&eacute;finitions par expression
+    r&eacute;guli&egrave;re sont combin&eacute;es aux sections
+    <tt>&lt;Directory&gt;</tt> "normales".<br />
+     <strong>Voir aussi</strong> : <a
+    href="../sections.html">Comment fonctionnent les sections
+    concernant les r&eacute;pertoires, chemins et fichiers</a> pour
+    une explication plus pr&eacute;cise concernant la
+    mani&egrave;re dont ces sections sont combin&eacute;es
+    lorsqu'une requ&ecirc;te est trait&eacute;e</p>
+    <hr />
+
+    <h2><a id="documentroot" name="documentroot">Directive
+    DocumentRoot</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt DocumentRoot} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> DocumentRoot <em>directory-filename</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>DocumentRoot /usr/local/apache/htdocs</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Cette directive d&eacute;finit le r&eacute;pertoire racine
+    &agrave; partir duquel httpd va distribuer les fichiers. Sauf
+    si le r&eacute;pertoire est point&eacute; par une directive
+    telle que Alias, le serveur ajoute le chemin relatif
+    mentionn&eacute;e dans l'URL pr&eacute;sent&eacute;e &agrave;
+    cette racine pour &eacute;tablir le chemin complet jusqu'au
+    document. Exemple :</p>
+
+    <blockquote>
+      <code>DocumentRoot /usr/web</code>
+    </blockquote>
+
+    <p>Un acc&egrave;s &agrave;
+    <code>http://www.my.host.com/index.html</code> se
+    r&eacute;ferre au document
+    <code>/usr/web/index.html</code>.</p>
+
+    <p>Un bogue existe pour cette directive mod_dir, laquelle
+    fonctionne mal lorsque DocumentRoot est donn&eacute;e avec un
+    '/' final (c-&agrave;-d. "DocumentRoot /usr/web/"). Il vaut
+    mieux &eacute;viter cette &eacute;criture.</p>
+    <hr />
+
+    <h2><a id="ebcdicconvert"
+    name="ebcdicconvert">EBCDICConvert</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt EBCDICConvert} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> EBCDICConvert On|Off[=<em>direction</em>]
+    <em>extension</em> [<em>extension</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel, r&eacute;pertoire, .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Surcharge :</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> la
+    conversion EBCDIC est disponible &agrave; partir de la version
+    1.3.19 d'Apache sur les plate-formes bas&eacute;es sur EBCDIC. 
+
+    <p>La directive EBCDICConvert associe une extension de fichier
+    &agrave; une possible conversion (<samp>On</samp> ou
+    <samp>Off</samp>). Les extensions de fichiers peuvent commencer
+    ou non par un point.</p>
+
+    <p>Si le format optionnel <samp>On=<i>direction</i></samp> (or
+    <samp>Off=<i>direction</i></samp>) est employ&eacute;,
+    o&ugrave; <i>direction</i> est choisi parmi <samp>In</samp>,
+    <samp>Out</samp> ou <samp>InOut</samp>, alors la directive ne
+    s'applique seulement que dans une direction de transfert
+    donn&eacute;e (<samp>In</samp> : contenu re&ccedil;u par une
+    requ&ecirc;te PUT ou POST , <samp>Out</samp> : contenu
+    renvoy&eacute; &agrave; une requete GET ou POST, et
+    <samp>InOut</samp> : conversion dans les deux
+    directions).<br />
+     Sinon, <samp>InOut</samp> (conversion dans les deux
+    directions) est d&eacute;fini.</p>
+
+    <p>La configuration de conversion bas&eacute; sur un type de
+    fichier est test&eacute; avant la configuration bas&eacute; sur
+    les types MIME, afin de permettre aux r&egrave;gles
+    g&eacute;n&eacute;riques MIME d'&ecirc;tre surcharg&eacute;es
+    par une extension sp&eacute;cifique (pplusieurs extensions de
+    fichier peuvent exister pour le m&ecirc;me type MIME).</p>
+
+    <p><strong>Exemple</strong>:<br />
+     Avec la configuration suivante, les fichiers
+    <samp>*.html</samp> contiennent du texte HTML au format EBCDIC,
+    tandis que les fichiers <samp>*.ahtml</samp> contiennent du
+    texte HTML au format ASCII :</p>
+<pre>
+    # *.html et *.ahtml contiennet du texte HTML :
+    AddType  text/html  .html .ahtml
+
+    # *.ahtml n'est pas converti (il contient d&eacute;j&agrave; du texte ASCII)
+    EBCDICConvert       Off .ahtml
+
+    # Les autres fichiers text/html contiennent du texte EBCDIC:
+    EBCDICConvertByType On  text/html
+</pre>
+    <br />
+     <br />
+     
+
+    <p><strong>Voir &eacute;galement</strong>: <a
+    href="#ebcdicconvertbytype">EBCDICConvertByType</a> et <a
+    href="../ebcdic.html#ebcdic">Aper&ccedil;u des fonctions de
+    conversion EBCDIC</a></p>
+    <hr />
+
+    <h2><a id="ebcdicconvertbytype"
+    name="ebcdicconvertbytype">EBCDICConvertByType</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt EBCDICConvertByType} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> EBCDICConvertByType On|Off[=<em>direction</em>]
+    <em>mimetype</em> [<em>mimetype</em>] ...<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel, r&eacute;pertoire, .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Surcharge :</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> la
+    conversion EBCDIC est disponible &agrave; partir de la version
+    1.3.19 d'Apache sur les plate-formes bas&eacute;es sur EBCDIC. 
+
+    <p>La directive EBCDICConvertByType associe un type MIME
+    (pouvant contenir une *) &agrave; une &eacute;ventuelle
+    conversion (<samp>On</samp> ou <samp>Off</samp>).</p>
+
+    <p>Si le format optionnel <samp>On=<i>direction</i></samp> (or
+    <samp>Off=<i>direction</i></samp>) est employ&eacute;,
+    o&ugrave; <i>direction</i> est choisi parmi <samp>In</samp>,
+    <samp>Out</samp> ou <samp>InOut</samp>, alors la directive ne
+    s'applique seulement que dans une direction de transfert
+    donn&eacute;e (<samp>In</samp> : contenu re&ccedil;u par une
+    requ&ecirc;te PUT ou POST , <samp>Out</samp> : contenu
+    renvoy&eacute; &agrave; une requete GET ou POST, et
+    <samp>InOut</samp> : conversion dans les deux
+    directions).<br />
+     Sinon, <samp>InOut</samp> (conversion dans les deux
+    directions) est d&eacute;fini.</p>
+
+    <p><strong>Par exemple</strong>:<br />
+     Une configuration standard pratique devrait au moins contenir
+    ces directives :</p>
+<pre>
+    # All text documents are stored as EBCDIC files:
+    # Tous les document textes sont stock&eacute;s au format EBCDIC
+    EBCDICConvertByType On  text/* message/* multipart/*
+    EBCDICConvertByType On  application/x-www-form-urlencoded \
+          model/vrml application/postscript
+    # Les autres fichiers sont trait&eacute;s comme binaires.
+    EBCDICConvertByType Off */*
+</pre>
+    Si vous servez seulement que des documents ASCII, par exemple
+    provenant d'un montage NFS d'un serveur Unix, utilisez : 
+<pre>
+    # Tous les documents sont d&eacute;j&agrave; en ASCII:
+    EBCDICConvertByType Off */*
+</pre>
+
+    <p><strong>Voir &eacute;galement</strong>: <a
+    href="#ebcdicconvert">EBCDICConvert</a> et <a
+    href="../ebcdic.html#ebcdic">Aper&ccedil;u des fonctions de
+    conversion EBCDIC</a></p>
+    <hr />
+
+    <h2><a id="ebcdickludge"
+    name="ebcdickludge">EBCDICKludge</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt EBCDICKludge} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> EBCDICKludge On|Off<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>Default:</strong></a> <code>EBCDICKludge
+    Off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel, r&eacute;pertoire, .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Surcharge :</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    EBCDICKludge est disponible &agrave; partir de la version
+    1.3.19 d'Apache sur les plate-formes bas&eacute;es sur EBCDIC.
+    Il est d&eacute;suet et sera abandonn&eacute; dans les versions
+    ult&eacute;rieures.<br />
+     
+
+    <p>The EBCDICKludge est propos&eacute;e par
+    compatibilit&eacute; avec les versions d'Apache 1.3.0 &agrave;
+    1.3.18. Dans ces versions, tous les fichiers dont le type MIME
+    commence par "text/", "message/" ou "multipart/" ou dont le
+    type est "application/x-www-form-urlencoded" sont convertis par
+    d&eacute;faut, les autres documents sont retourn&eacute;s sans
+    conversion. Un document est pr&eacute;sum&eacute; &ecirc;tre au
+    format ASCII iuniquement si il est du type
+    "<samp>text/<b>x-ascii-</b><i>sous-type</i></samp>", et ne sera
+    donc pas converti. A la place, le pr&eacute;fixe
+    "<samp><b>x-ascii-</b></samp>" &eacute;tait supprim&eacute; du
+    type, obtenant ainsi le type MIME
+    "<samp>text/<i>sous-type</i></samp>" comme type du document
+    retourn&eacute;.</p>
+
+    <p>Si la directive EBCDICKludge est mise &agrave;
+    <samp>On</samp>, et si aucune des extensions de fichiers ne
+    correspondent aux directives <a
+    href="#ebcdicconvert">EBCDICConvert</a> d&eacute;finis dans le
+    contexte , alors le serveur teste avec le type MIME de format
+    <samp><i>type/</i><b>x-ascii-</b><i>sous-type</i></samp>. Si le
+    document a un tel type alors la cha&icirc;ne
+    "<samp><b>x-ascii-</b></samp>" est supprim&eacute;e et la
+    conversion est mise &agrave; <samp>Off</samp>. Cela permet de
+    surcharger l'assertion implicite que tous les fichiers sont
+    stock&eacute;s au format EBCDIC, par exemple si Apache sert des
+    fichiers provenant d'un montage NFS d'un r&eacute;pertoire
+    contenant des documents ASCII.<br />
+     En utilisant EBCDICKludge, Il n'y a aucun moyen de forcer un
+    des autres types MIME (par exemple model/vrml) d'&ecirc;tre
+    trait&eacute; au format EBCDIC. L'utilisation de la directive
+    <a href="#ebcdicconvertbytype">EBCDICConvertByType</a> est
+    pr&eacute;f&eacute;rable pour d&eacute;finir une telle
+    conversion. Avant Apache 1.3.19, il n'y avait aucun moyen de
+    forcer ces document binaires d'&ecirc;tre trait&eacute;s comme
+    des fichiers textes EBCDIC</p>
+
+    <p><strong>Voir &eacute;galement</strong> : <a
+    href="#ebcdicconvert">EBCDICConvert</a>, <a
+    href="#ebcdicconvertbytype">EBCDICConvertByType</a> and <a
+    href="../ebcdic.html#ebcdic">Aper&ccedil;u des fonctions de
+    conversion EBCDIC</a></p>
+    <hr />
+
+    <h2><a id="errordocument" name="errordocument">Directive
+    ErrorDocument</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ErrorDocument} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ErrorDocument <em>code d'erreur
+    document</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels, r&eacute;pertoire,
+    .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Surcharge :</strong></a> FileInfo<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> Les
+    contextes r&eacute;pertoire et .htaccess ne sont utilisables
+    qu'&agrave; partir de la version 1.1 d'Apache. 
+
+    <p>Dans l'&eacute;ventualit&eacute; d'un probl&egrave;me ou
+    d'une erreur, Apache peut ex&eacute;cuter l'une des quatre
+    actions suivantes :</p>
+
+    <ol>
+      <li>sortie d'un message d'erreur simple standard</li>
+
+      <li>sortie d'un message personnalis&eacute;</li>
+
+      <li>redirection vers une URL locale pour traiter le
+      probl&egrave;me (ou l'erreur)</li>
+
+      <li>redirection vers une URL externe pour traiter le
+      probl&egrave;me (ou l'erreur)</li>
+    </ol>
+
+    <p>La premi&egrave;re option est celle par d&eacute;faut, les
+    options 2 &agrave; 4 seront obtenues en utilisant la directive
+    <tt>ErrorDocument</tt>, suivi du code HTTP d'erreur et du
+    message textuel d'erreur, ou une URL.</p>
+
+    <p><em>Messages</em> dans ce contexte, commence par un
+    guillemet simple (<code>"</code>), qui ne fait pas partie du
+    message lui-m&ecirc;me. Apache ajoutera souvent des
+    informations compl&eacute;mentaires explicitant le
+    probl&egrave;me (ou l'erreur).</p>
+
+    <p>L'URL peut d&eacute;buter par un slash (/) pour des URL
+    locales, ou &ecirc;tre compl&egrave;tement qualifi&eacute;es.
+    Exemples:</p>
+
+    <blockquote>
+      <code>ErrorDocument 500
+      http://foo.example.com/cgi-bin/tester<br />
+       ErrorDocument 404 /cgi-bin/bad_urls.pl<br />
+       ErrorDocument 401 /subscription_info.html<br />
+       ErrorDocument 403 "Sorry can't allow you access today</code>
+    </blockquote>
+
+    <p>Notez que lorsque vous sp&eacute;cifiez un
+    <tt>ErrorDocument</tt> qui pointe vers une URL externe (c'est
+    -&agrave;-dire toute adresse commen&ccedil;ant par quelque
+    chose du style "http:") Apache &eacute;mettra une requ&ecirc;te
+    de redirection au client pour lui indiquer o&ugrave; trouver le
+    document. Ceci peut perturber les robots et d'autres clients
+    qui essaient de d&eacute;terminer si une URL est valide en
+    testant le code retour de la requ&ecirc;te. De plus, si vous
+    utilisez l'&eacute;criture <code>ErrorDocument 401</code> le
+    client ne saura pas qu'il doit demander un mot de passe
+    puisqu'il ne recevra pas le code retour 401. Par
+    cons&eacute;quent, il est imp&eacute;ratif d'utiliser une URL
+    locale pour une directive "ErrorDocument 401". Ceci est induit
+    par la nature des sch&eacute;mas d'authentification de base
+    d'HTTP.</p>
+
+    <p><strong>Voir aussi:</strong> <a
+    href="../custom-error.html">documentation sur les
+    r&eacute;ponses personnalis&eacute;es.</a></p>
+    <hr />
+
+    <h2><a id="errorlog" name="errorlog">Directive
+    ErrorLog</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ErrorLog} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ErrorLog <em>nomfichier</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <code>ErrorLog
+    logs/error_log</code> (Unix)<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <code>ErrorLog
+    logs/error.log</code> (Windows et OS/2)<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Cette directive d&eacute;finit le nom du fichier dans lequel
+    le serveur marque la trace des erreurs rencontr&eacute;es. Si
+    le nom de fichier ne commence pas par un slash (/), alors la
+    partie "chemin d'acc&egrave;s" est consid&eacute;r&eacute;e
+    relativement &agrave; <a href="#serverroot">ServerRoot</a>.
+    Exemple:</p>
+
+    <blockquote>
+      <code>ErrorLog /dev/null</code>
+    </blockquote>
+
+    <p>Cette expression a pour effet de d&eacute;sactiver la trace
+    d'erreurs.</p>
+    Si le fichier commence par une barre verticale (|), il est
+    cens&eacute; &ecirc;tre une commande &agrave; ex&eacute;cuter
+    pour ttraiter le message d'erreur.<br />
+     <br />
+     
+
+    <p><strong>Apache 1.3 et ult&eacute;rieur:</strong> en
+    utilisant <code>syslog</code> &agrave; la place d'un fichier
+    permet d'employer syslogd(8) si le syst&egrave;me l'accepte. Le
+    d&eacute;fau est d'utiliser la fonction syslog
+    <code>local7</code>, mais vous pouvez remplacer ceci en
+    utilisant la syntaxe <code>syslog:</code><em>service</em>
+    o&ugrave; <em>service</em> peut &ecirc;tre un des noms
+    document&eacute; dans syslog(1).</p>
+
+    <p><strong>S&eacute;curit&eacute; :</strong> Voir la page <a
+    href="../misc/security_tips.html">note sur la
+    securit&eacute;</a> pour plus d'information concernant une
+    possibilit&eacute; de br&ecirc;che de s&eacute;curit&eacute; si
+    le r&eacute;pertoire d'accueil des fichiers de trace peut
+    &ecirc;tre &eacute;crit par tout autre utilisateur que le
+    propri&eacute;taire du processus serveur.</p>
+    <hr />
+
+    <h2><a id="files" name="files">Directive &lt;Files&gt;</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> &lt;Files <em>nomfichier</em>&gt; ...
+    &lt;/Files&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels, .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    Disponible &agrave; partir de la version 1.2 d'Apache. 
+
+    <p>La directive <tt>&lt;Files&gt;</tt> permet une gestion de
+    contr&ocirc;le d'acc&egrave;s fichier par fichier. Elle est
+    comparable aux directives <a
+    href="#directory">&lt;Directory&gt;</a> et <a
+    href="#location">&lt;Location&gt;</a>. Elle doit s'apparier
+    &agrave; une directive <tt>&lt;/Files&gt;</tt>. Les directives
+    applicables au fichier indiqu&eacute; sont encapsul&eacute;es
+    entre ces deux balises. Les sections <tt>&lt;Files&gt;</tt>
+    sont trait&eacute;es dans l'ordre o&ugrave; elles apparaissent
+    dans le fichier de configuration, une fois trait&eacute;es les
+    sections <tt>&lt;Directory&gt;</tt> et les fichiers .htaccess,
+    mais avant les sections <tt>&lt;Location&gt;</tt>.</p>
+
+    <p>L'argument <em>filename</em> peut inclure un nom de fichier,
+    o&ugrave; un motif, dans lequel '?' correspond &agrave; tout
+    caract&egrave;re unique quelconque, et '*' correspond &agrave;
+    une s&eacute;quence de z&eacute;ro &agrave; un nombre
+    quelconque de caract&egrave;res. Les "expressions
+    r&eacute;guli&egrave;res" peuvent aussi &ecirc;tre
+    utilis&eacute;es, pourvu qu'elles soient
+    pr&eacute;c&eacute;d&eacute;es du caract&egrave;re
+    <code>~</code>. Par exemple :</p>
+<pre>
+ &lt;Files ~"\.(gif|jpe?g|png)$"&gt;
+</pre>
+
+    <p>correspondrait &agrave; la majorit&eacute; des fichiers
+    graphiques utilis&eacute;s sur Internet. A partir de la version
+    1.3 d'Apache, l'usage de la directive <a
+    href="#filesmatch">&lt;FilesMatch&gt;</a> est cependant
+    pr&eacute;f&eacute;rable.</p>
+
+    <p>Notez que, contrairement aux sections <a
+    href="#directory">&lt;Directory&gt;</a> et <a
+    href="#location">&lt;Location&gt;</a>, les sections
+    <tt>&lt;Files&gt;</tt> peuvent appara&icirc;tre dans des
+    fichiers <code>.htaccess</code>. Ceci permet aux utilisateurs
+    de contr&ocirc;ler l'acc&egrave;s &agrave; leurs propres
+    fichiers, sur un mode individuel. Lorsqu'elles sont
+    utilis&eacute;es dans un fichier <code>.htaccess</code>, si
+    <em>nomfichier</em> ne commence pas par un slash (/), le
+    r&eacute;pertoire courant contenant ledit fichier
+    <code>.htaccess</code> y sera pr&eacute;fix&eacute;
+    automatiquement.</p>
+
+    <p><strong>Voir aussi :</strong> <a
+    href="../sections.html">Comment fonctionnent les sections
+    concernant les r&eacute;pertoires, chemins et fichiers</a> pour
+    une explication plus pr&eacute;cise concernant la
+    mani&egrave;re dont ces sections sont combin&eacute;es
+    lorsqu'une requ&ecirc;te est trait&eacute;e</p>
+    <hr />
+
+    <h2><a id="filesmatch" name="filesmatch">Directive
+    &lt;FilesMatch&gt;</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> &lt;FilesMatch <em>regex</em>&gt; ...
+    &lt;/FilesMatch&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels, .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    Disponible &agrave; partir de la version 1.3 d'Apache. 
+
+    <p>La directive <tt>&lt;FilesMatch&gt;</tt> permet un
+    contr&ocirc;le d'acc&egrave;s fichier par fichier, tout comme
+    la directive <a href="#files">&lt;Files&gt;</a>. Cependant,
+    elle n'accepte qu'un argument sous forme d'expression
+    r&eacute;guli&egrave;re. Par exemple :</p>
+
+    <blockquote>
+      <code>&lt;FilesMatch "\.(gif|jpe?g|png)$"&gt;</code>
+    </blockquote>
+
+    <p>qui correspondrait &agrave; la plupart des fichiers
+    graphiques utilis&eacute;s sur Internet.</p>
+
+    <p><strong>Voir aussi :</strong> <a
+    href="../sections.html">Comment fonctionnent les sections
+    concernant les r&eacute;pertoires, chemins et fichiers</a> pour
+    une explication plus pr&eacute;cise concernant la
+    mani&egrave;re dont ces sections sont combin&eacute;es
+    lorsqu'une requ&ecirc;te est trait&eacute;e</p>
+    <hr />
+
+    <h2><a id="group" name="group">Directive Group</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt Group} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> Group <em>groupeUnix</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <code>Group
+    #-1</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>Group</tt> d&eacute;finit le groupe dont
+    les requ&ecirc;tes seront trait&eacute;es par le serveur. Pour
+    utiliser cette directive, le serveur stand-alone doit tout
+    d'abord &ecirc;tre ex&eacute;cut&eacute; par l'utilisateur
+    "root". <em>groupeUnix</em> est &agrave; choisir parmi :</p>
+
+    <dl>
+      <dt>un nom de groupe</dt>
+
+      <dd>se r&eacute;f&egrave;re &agrave; un groupe unix par son
+      nom.</dd>
+
+      <dt># suivi d'unnum&eacute;ro de groupe.</dt>
+
+      <dd>se r&eacute;f&egrave;re &agrave; un groupe par son
+      indice.</dd>
+    </dl>
+
+    <p>Il est recommend&eacute; de cr&eacute;er un nouveau groupe
+    d'utilisateurs pour les utilisateurs ex&eacute;cutant le
+    serveur. Certains administrateurs assignent le serveur &agrave;
+    l'utilisateur <code>nobody</code>, mais ceci n'est pas toujours
+    possible ou souha&icirc;table.</p>
+
+    <p><strong>Note :</strong> si vous d&eacute;marrez le serveur
+    sous un compte utilisateur autre que "root", la commutation sur
+    un autre groupe &eacute;chouera, et le groupe utilis&eacute;
+    restera le groupe initial de l'utilisateur.</p>
+
+    <p><strong>Note sp&eacute;ciale :</strong> L'utilisation de
+    cette directive dans un contexte <tt>&lt;VirtualHost&gt;</tt>
+    n&eacute;cessite un <a href="../suexec.html">suEXEC wrapper</a>
+    correctement configur&eacute;. De cette mani&egrave;re et dans
+    ce contexte, seul le groupe dans lequel sont
+    ex&eacute;cut&eacute;s les CGI sont affect&eacute;s. Toute
+    requ&ecirc;te autre que CGI sont toujours lanc&eacute;es dans
+    le groupe d&eacute;fini par la directive Group principale.</p>
+
+    <p><strong>S&eacute;curit&eacute; :</strong> Voir <a
+    href="#user">Utilisateur</a> pour une discussion plus
+    d&eacute;taill&eacute;e sur les aspects utilisateurs.</p>
+    <hr />
+
+    <h2><a id="hostnamelookups" name="hostnamelookups">Directive
+    HostNameLookups</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt HostNameLookups} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> HostNameLookups <em>on | off | double</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>HostNameLookups off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel, r&eacute;pertoire, .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    <code>double</code> n'est disponible qu'&agrave; partir de la
+    version 1.3 d'Apache.<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> La
+    valeur par d&eacute;faut &eacute;tait <code>on</code> pour
+    toute version ant&eacute;rieure &agrave; la version 1.3
+    d'Apache. 
+
+    <p>Cette directive autorise la r&eacute;solution DNS pour la
+    trace d'acc&egrave;s (et pour les passer aux CGI/SSI en
+    <code>REMOTE_HOST</code>). La valeur <code>double</code>
+    signifie une r&eacute;solution DNS inverse double.
+    C'est-&agrave;-dire, apr&egrave;s qu'une r&eacute;solution
+    inverse soit effectu&eacute;e, une r&eacute;solution est
+    ensuite effectu&eacute;e &agrave; partir du r&eacute;sultat
+    obtenu. Au moins une des adresses IP obtenues par la
+    deuxi&egrave;me r&eacute;solution doit correspondre &agrave;
+    l'adresse originale. (Dans le langage des "fous de tcp" ceci
+    s'appelle <code>PARANOID</code>.)</p>
+
+    <p>Ind&eacute;pendamment du mode choisi, lorsque <a
+    href="mod_access.html">mod_access</a> est utilis&eacute; pour
+    faire du contr&ocirc;le d'acc&egrave;s par nom d'h&ocirc;te,
+    une r&eacute;solution inverse double sera effectu&eacute;e.
+    Ceci est indispensable pour des raisons de
+    s&eacute;curit&eacute;. Notez que le r&eacute;sultat de cette
+    r&eacute;solution inverse double n'est en g&eacute;n&eacute;ral
+    pas accessible sauf si l'option <samp>HostnameLookups
+    double</samp> est activ&eacute;e. Par exemple, si l'option est
+    simplement <samp>HostnameLookups on</samp> et une requ&ecirc;te
+    est re&ccedil;ue vers un objet soumis &agrave; des restrictions
+    quant aux noms d'h&ocirc;tes, et quelque soit le
+    r&eacute;sultat de la r&eacute;slution inverse double, les CGI
+    recevront le r&eacute;sultat de la r&eacute;solution inverse
+    dans la variable d'environnement <code>REMOTE_HOST</code>.</p>
+
+    <p>Par d&eacute;faut, l'&eacute;tat choisi &eacute;tait
+    <code>on</code> dans les versions d'apache ant&eacute;rieures
+    &agrave; la version 1.3. Elle est aujourd'hui &agrave;
+    <code>off</code> afin de diminuer le trafic pour les sites qui
+    n'ont pas un besoin absolu de la r&eacute;solution inverse.
+    C'est aussi un avantage pour les utilisateurs finaux qui
+    n'auront pas &agrave; attendre la fin du processus de
+    r&eacute;solution avant d'&ecirc;tre servis. Des sites
+    charg&eacute;s devraient plut&ocirc;t laisser cette opyion
+    &agrave; <code>off</code>, dans la mesure o&ugrave; une
+    recherche DNS peut consommer un temps non n&eacute;gligeable.
+    L'utilitaire <code>logresolve</code>, fourni dans le
+    r&eacute;pertoire <i>/support</i>, peut &ecirc;tre
+    utilis&eacute; pour r&eacute;soudre des noms d'h&ocirc;tes
+    &agrave; partir des adresses IP trac&eacute;es en mode
+    "offline".</p>
+    <hr />
+
+    <h2><a id="identitycheck" name="identitycheck">Directive
+    IdentityCheck</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt IdentityCheck} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> IdentityCheck <em>bool&eacute;en</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>IdentityCheck off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel, r&eacute;pertoire, .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Cette directive autorise une trace conforme &agrave; la
+    RFC1413 du nom d'utilisateur pour chaque connexion, lorsque la
+    machine cliente ex&eacute;cute identd ou un procesus similaire.
+    Cette information est trac&eacute;e dans le fichier
+    <code>access log</code>. <em>bool&eacute;en</em> vaut soit
+    <code>on</code> ou <code>off</code>.</p>
+
+    <p>Cette information n'est absolument pas certifi&eacute;e et
+    ne peut &ecirc;tre consid&eacute;r&eacute;e que pour une
+    analyse sommaire.</p>
+
+    <p>Notez que ce fontionnement peut rallonger notablement les
+    d&eacute;lais d'acc&egrave;s &agrave; votre serveur dans la
+    mesure o&ugrave; chaque requ&ecirc;te n&eacute;cessite
+    l'ex&eacute;cution d'une r&eacute;solution. Lorsque des
+    "firewalls" sont pr&eacute;sents chaque r&eacute;solution peut
+    &eacute;ventuellement &eacute;chouer et ajouter ainsi 30
+    secondes d'attente pour chaque acc&egrave;s. En conclusion,
+    cette option n'est en g&eacute;n&eacute;ral pas opportune pour
+    des serveurs Internet ouverts au public.</p>
+    <hr />
+
+    <h2><a id="ifdefine" name="ifdefine">&lt;IfDefine&gt;
+    directive</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> &lt;IfDefine
+    [!]<em>nom-param&egrave;tre</em>&gt; <em>...</em>
+    &lt;/IfDefine&gt;<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> aucun<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> tous<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    &lt;IfDefine&gt; est disponible &agrave; partir de la version
+    1.3.1 
+
+    <p>La section &lt;IfDefine
+    <em>test</em>&gt;...&lt;/IfDefine&gt; est employ&eacute;e pour
+    d&eacute;limiter des directives conditionnelles. Les directives
+    &agrave; l'int&eacute;rieur d'un section IfDefine ne sont
+    prises en compte que si <em>test</em> est vraie. Si
+    <em>test</em> est faux, tout ce qui se trouve entre le marqueur
+    de d&eacute;but et celui de fin est ignor&eacute;.</p>
+
+    <p>Le <em>test</em> de la section &lt;IfDefine&gt; peut exister
+    sous deux formes :</p>
+
+    <ul>
+      <li><em>nom-param&egrave;tre</em></li>
+
+      <li><code>!</code><em>nom-param&egrave;tre</em></li>
+    </ul>
+
+    <p>Dans le premier cas, les directives entre les marqueurs de
+    d&eacute;but et de fin ne sont trait&eacute; que si le
+    param&egrave;tre nomm&eacute; <em>nom-param&egrave;tre</em> est
+    d&eacute;fini. Dans le deuxi&egrave;me cas, les directives
+    entre les marqueurs de d&eacute;but et de fin ne sont
+    trait&eacute; que si le param&egrave;tre nomm&eacute;
+    <em>nom-param&egrave;tre</em> n'est <strong>pas</strong>
+    d&eacute;fini.</p>
+
+    <p>L'argument <em>nom-param&egrave;tre</em> est une
+    d&eacute;finition qui peut &ecirc;tre donn&eacute;e en ligne de
+    commande d'httpd en utilisant l'option
+    <code>-D</code><em>nom-param&egrave;tre</em>, au lancement du
+    serveur.</p>
+
+    <p>Les sections &lt;IfDefine&gt; peuvent s'imbriquer, ce qui
+    permet de r&eacute;aliser des test sur plusieurs
+    param&egrave;tres. Par exemple :</p>
+<pre>
+  $ httpd -DReverseProxy ...
+
+  # httpd.conf
+  &lt;IfDefine ReverseProxy&gt;
+  LoadModule rewrite_module libexec/mod_rewrite.so
+  LoadModule proxy_module   libexec/libproxy.so
+  &lt;/IfDefine&gt;
+</pre>
+    <hr />
+
+    <h2><a id="ifmodule" name="ifmodule">Directive
+    &lt;IfModule&gt;</a></h2>
+    <b>Syntaxe :</b> &lt;IfModule [!]<i>nomModule</i>&gt;
+    <i>...</i> &lt;/IfModule&gt;<br />
+     <b>D&eacute;faut :</b> aucun<br />
+     <b>Contexte :</b> tous<br />
+     <b>Statut :</b> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> IfModule
+    n'est disponible qu'&agrave; partir de la version 1.2 d'Apache.
+    
+
+    <p>La section <tt>&lt;IfModule
+    <i>test</i>&gt;</tt>...&lt;/IfModule&gt; permet de rendre
+    conditionnelles un groupe de directives. Les directives
+    &agrave; l'int&eacute;rieur d'une section IfModule ne sont
+    consid&eacute;r&eacute;es que si le <i>test</i> est
+    v&eacute;rifi&eacute;. Si <i>test</i> vaut faux, toute
+    directive inclue entre la balise de d&eacute;but et celle de
+    fin sont ignor&eacute;es.</p>
+
+    <p>Le <em>test</em> d'une section <tt>&lt;IfModule&gt;</tt>
+    peut prendre l'une des formes suivantes :</p>
+
+    <ul>
+      <li><i>nomModule</i></li>
+
+      <li>!<i>nomModule</i></li>
+    </ul>
+
+    <p>Dans le premier cas, les directives entre les deux balises
+    de d&eacute;but et de fin ne sont trait&eacute;es que si le
+    module indiqu&eacute; par <em>nomModule</em> est compil&eacute;
+    dans votre version d'Apache. La seconde forme inverse le sens
+    du test, et ne traite les directives que si le module
+    <em>nomModule</em> n'est <b>pas</b> compil&eacute;.</p>
+
+    <p>L'argument <em>nomModule</em> sp&eacute;cifie un nom de
+    module par son nom de fichier source, tel qu'appel&eacute; par
+    la compilation. Par exemple, <code>mod_rewrite.c</code>.</p>
+
+    <p>Les sections <tt>&lt;IfModule&gt;</tt> peuvent &ecirc;tre
+    imbriqu&eacute;es, ce qui peut &ecirc;tre utile pour
+    impl&eacute;menter simplement des tests multi-modules.</p>
+    <hr />
+
+    <h2><a id="include" name="include">Directive Include</a></h2>
+    <strong>Syntaxe :</strong> Include <em>nomfichier</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> Include
+    n'est disponible qu'&agrave; partir de la version 1.3 d'Apache.
+    
+
+    <p>Cette directive permet l'inclusion d'autres fichiers de
+    configuration &agrave; partir d'autres fichiers de
+    configuration serveur.</p>
+
+    <p>A partir de la version Apache 1.3.13, si
+    <code>Include</code> pointe vers un r&eacute;pertoire plutot
+    qu'un fichier, Apche lira tous fichiers de ce
+    r&eacute;pertoire, ou des sous-r&eacute;pertoires, et traitera
+    chacun de ces fichiers de configuration.</p>
+    <hr />
+
+    <h2><a id="keepalive" name="keepalive">Directive
+    KeepAlive</a></h2>
+    <strong>Syntaxe : (Apache 1.1)</strong> KeepAlive
+    <em>requ&ecirc;tesMax</em><br />
+     <strong>D&eacute;faut : (Apache 1.1)</strong> <code>KeepAlive
+    5</code><br />
+     <strong>Syntaxe : (Apache 1.2)</strong> KeepAlive
+    <em>on/off</em><br />
+     <strong>D&eacute;faut : (Apache 1.2)</strong> <code>KeepAlive
+    On</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    KeepAlive est disponible &agrave; partir de la version 1.1
+    d'Apache. 
+
+    <p>L'extension Keep-Alive d'HTTP/1.0 et les connexions
+    persistantes d'HTTP/1.1 fournissent des sessions durables HTTP
+    , qui autorisent plusieurs requ&ecirc;tes &agrave; &ecirc;tre
+    envoy&eacute;es sur la m&ecirc;me connexion. Dans certains cas,
+    il a &eacute;t&eacute; constat&eacute; une r&eacute;duction de
+    50% du temps de latence ppour des documents HTML contenant de
+    nombreuses images. Pour activer les connexions persistantes
+    (keep-alive) &agrave; partir d'Apache 1.2 il faut
+    d&eacute;finir la directive <code>KeepAlive On</code>.</p>
+
+    <p>Pour les clients HTTP/1.1, Les connexions persistantes ne
+    sont employ&eacute;es que si elles sont sp&eacute;cifiquement
+    demand&eacute;es par un client. De plus, une connexion
+    persistantes ne peut &ecirc;tre employ&eacute;es que si la
+    taille du contenu est connu &agrave; l'avance. Ceci implique
+    que les contenus dynamiques, tels que les scripts CGI, les
+    pages SSI, et les listes de r&eacute;pertoires
+    g&eacute;n&eacute;r&eacute;s par le serveur n'utilisent pas de
+    connexions persistentes pour les clients HTTP/1.0. Pour les
+    clients HTTP/1.1, les connexions sont persistantes par
+    d&eacute;faut &agrave; moins d'&ecirc;tre
+    sp&eacute;cifi&eacute;e. Si le client le demande, l'encodage
+    par tranches est utilis&eacute; afin d'envoyer des contenus de
+    tailles inconnus au travers de connxions persistantes.</p>
+
+    <p><strong>Sous Apache 1.1</strong>: Mettre
+    <em>requ&ecirc;tesMax</em> au nombre maximum de requ&ecirc;tes
+    qu'Apache peut traiter par connexion persistante. Une
+    limitation est impos&eacute;e pour &eacute;viter qu'un client
+    ne vienne asphyxier votre serveur en ressources. Mettre un
+    <code>0</code> pour d&eacute;sactiver ce support. A partir de
+    la version 1.2, ceci est contr&ocirc;l&eacute; par la directive
+    MaxKeepAliveRequests</p>
+    Voir aussi la directive <a
+    href="#maxkeepaliverequests">MaxKeepAliveRequests</a>.<br />
+     <br />
+     
+    <hr />
+
+    <h2><a id="keepalivetimeout" name="keepalivetimeout">Directive
+    KeepAliveTimeout</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> KeepAliveTimeout <em>secondes</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>KeepAliveTimeout 15</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    <tt>KeepAliveTimeout</tt> est disponible &agrave; partir de la
+    version 1.1 d'Apache. 
+
+    <p>Le nombre de secondes pendant lesquelles Apache attendra une
+    requ&ecirc;te post&eacute;rieure avant de rompre une connexion.
+    D&egrave;s qu'une requ&ecirc;te est re&ccedil;ue, la valeur de
+    la temporisation sp&eacute;cifi&eacute;e par la directive <a
+    href="#timeout">Timeout</a> s'applique.</p>
+
+    <p>Mettre <code>KeepAliveTimeout</code> &agrave; une grande
+    valeur peut cr&eacute;er des probl&egrave;mes de performance
+    pour des serveurs charg&eacute;s. Le plus grand est ce
+    d&eacute;lai, le plus les processus du serveur seront
+    occup&eacute;s en attente de connexions avec des clients
+    inactifs.</p>
+    <hr />
+
+    <h2><a id="limit" name="limit">Directive &lt;Limit&gt;</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt Limit} section directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> &lt;Limit <em>m&eacute;thode m&eacute;thode</em>
+    ... &gt; ... &lt;/Limit&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> tous<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Les contr&ocirc;les d'acc&egrave;s sont normalement actives
+    pour <strong>toutes</strong> les m&eacute;thodes
+    d'acc&egrave;s, et ceci est le comportement normal. <strong>En
+    g&eacute;n&eacute;ral, les directives de contr&ocirc;le
+    d'acc&egrave;s ne doivent &ecirc;tre plac&eacute;es &agrave;
+    l'int&eacute;rieur d'une section
+    <code>&lt;limit&gt;</code>.</strong></p>
+
+    <p>Le but de la directive &lt;Limit&gt; est de restreindre la
+    port&eacute;e des contr&ocirc;les d'acc&egrave;s &agrave;
+    certaines m&eacute;thodes HTTP. Pour toutes les autres
+    m&eacute;thodes, les restrictions d'acc&egrave;s qui sont
+    situ&eacute;es &agrave; l'int&eacute;rieur de &lt;Limit&gt;
+    <strong>sont sans effets</strong>. L'exemple suivant applique
+    le contr&ocirc;le d'acc&egrave;s uniquement aux m&eacute;thodes
+    POST, PUT, and DELETE, laissant les autres m&eacute;thodes non
+    prot&eacute;g&eacute;es :</p>
+
+    <blockquote>
+      <code>&lt;Limit POST PUT DELETE&gt;<br />
+       Require valid-user<br />
+       &lt;/Limit&gt;</code>
+    </blockquote>
+    Les noms de m&eacute;thodes peuvent &ecirc;tre choisis parmi
+    GET, POST, PUT, DELETE, CONNECT, OPTIONS, TRACE, PATCH,
+    PROPFIND, PROPPATCH, MKCOL, COPY, MOVE, LOCK, et UNLOCK.
+    <strong>Le nom de la m&eacute;thode est sensible &agrave; la
+    casse.</strong> Si GET est employ&eacute;, il restreindra
+    &eacute;galement les requ&ecirc;tes HEAD. 
+    <hr />
+
+    <h2><a id="limitexcept" name="limitexcept">Directive
+    &lt;LimitExcept&gt;</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt LimitExcept} section directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> &lt;LimitExcept <em>m&eacute;thode</em>
+    [<em>m&eacute;thode</em>] ... &gt; ...
+    &lt;/LimitExcept&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> tous<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    disponible &agrave; partir de la version 1.3.5 d'Apache. 
+
+    <p>&lt;LimitExcept&gt; et &lt;/LimitExcept&gt; sont
+    employ&eacute;s pour entourer un groupe de directives de
+    contr&ocirc;le d'acc&egrave;s qui s'appliqueront pour n'importe
+    quelle m&eacute;thode d'acc&egrave;s ne se trouvant
+    <strong>pas</strong> en arguments Cette directive est
+    l'opps&eacute;e de <a href="#limit">&lt;Limit&gt;</a> et peut
+    &ecirc;tre employ&eacute;e pour contr&ocirc;ler les
+    m&eacute;thodes non reconnues ou non standard. Voir la
+    documentation de <a href="#limit">&lt;Limit&gt;</a> pour plus
+    de d&eacute;tails.</p>
+    <hr />
+
+    <h2><a id="limitrequestbody" name="limitrequestbody">Directive
+    LimitRequestBody</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt LimitRequestBody} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> LimitRequestBody <em>octets</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>LimitRequestBody 0</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel, r&eacute;pertoire .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    LimitRequestBody est disponible &agrave; partir de la version
+    1.3.2. 
+
+    <p>Cette directive d&eacute;termine la taille maximale en
+    octets que peut avoir le corps d'une requ&ecirc;te. Elle peut
+    aller de 0 (illimit&eacute;) &agrave; 2147483647 (2GB). La
+    valeur par d&eacute;faut est d&eacute;termin&eacute;e &agrave;
+    la compilation par la constante
+    <code>DEFAULT_LIMIT_REQUEST_BODY</code> (0 dans les
+    distributions).</p>
+
+    <p>La directive LimitRequestBody directive permet &agrave;
+    l'utilisateur de fixer une limite &agrave; la taille du corps
+    d'une requ&ecirc;te &agrave; l'int&eacute;rieur du contexte
+    o&ugrave; cette directive est situ&eacute;e (serveur, par
+    r&eacute;pertoire, par fichier). Si le client effezctue une
+    requ&ecirc;te exc&eacute;dant cette limite, le serveur
+    retournera un message d'erreur au lieu de traiter la
+    requ&ecirc;te. La taille d'une requ&ecirc;te normale peut
+    beaucoup varier en fonction de la nature de la ressource
+    demand&eacute;e et des m&eacute;thodes d'acc&egrave;s permise
+    sur cette ressource. Typiquement les scripts CGI utilise le
+    corps du message pour passer des informations au serveur. Des
+    impl&eacute;mentation de la m&eacute;thode PUT n&eacute;cessite
+    une valeur au moins aussi grande que le serveur souhaite
+    recevoir pour cette ressource.</p>
+
+    <p>Cette directive donne &agrave; l'administrateur un plus
+    grand contr&ocirc;le par rapport &agrave; des requ&ecirc;tes
+    anormales de clients, et peut &ecirc;tre utile pour
+    &eacute;viter certaines formes d'attaques par d&eacute;ni de
+    service.</p>
+    <hr />
+
+    <h2><a id="limitrequestfields"
+    name="limitrequestfields">Directive LimitRequestFields</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt LimitRequestFields} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> LimitRequestFields <em>number</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>LimitRequestFields 100</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    LimitRequestFields est disponible &agrave; partir de la version
+    1.3.2. 
+
+    <p><em>Number</em> est un entier allant de 0 (signifiant sans
+    limite) &agrave; 32767. La valeur par d&eacute;faut est
+    d&eacute;finie &agrave; la compilation par la constante
+    <code>DEFAULT_LIMIT_REQUEST_FIELDS</code> (100 dans la
+    distribution).</p>
+
+    <p>La directive LimitRequestFields permet &agrave;
+    l'administrateur du serveur de modifier le nombre maximum de
+    champs autoris&eacute; &agrave; l'int&eacute;rieur de
+    l'en-t&ecirc;te d'une requ&ecirc;te HTTP. Un serveur doit avoir
+    cette valeur sup&eacute;rieure au nombre de champs qu'un client
+    normal peut inclure. Le nombre de champs utilis&eacute; par un
+    client exc&egrave;de rarement 20, mais ceci peut varier en
+    fonction de l'impl&eacute;mentation des clients, le plus
+    souvent il d&eacute;pend du niveau auquel le client a
+    configur&eacute; son butineur pour accepter une
+    n&eacute;gociation de contenu tr&egrave;s fine. Les extensions
+    HTTP optionnelles sont exprim&eacute;es en utilisant des champs
+    dans l'en-t&ecirc;te de requ&ecirc;te.</p>
+
+    <p>Cette directive permet &agrave; l'administrateur un meilleur
+    contr&ocirc;le par rapport &agrave; des requ&ecirc;tes
+    anormales, ce qui peut &ecirc;tre utile pour &eacute;viter
+    certaines attaques par d&eacute;ni de service. Cette valeur
+    doit &ecirc;tre augment&eacute;e si certains clients obtiennent
+    un message d'erreur &agrave; leurs requ&ecirc;tes indiquant que
+    trop de champs sont envoy&eacute;s dans la requ&ecirc;te.</p>
+    <hr />
+
+    <h2><a id="limitrequestfieldsize"
+    name="limitrequestfieldsize">Directive
+    LimitRequestFieldsize</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt LimitRequestFieldsize} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> LimitRequestFieldsize <em>octets</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>LimitRequestFieldsize 8190</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    LimitRequestFieldsize est disponible &agrave; partir de la
+    version 1.3.2. 
+
+    <p>Cette directive indique la taille maximale de
+    l'en-t&ecirc;te d'une requ&ecirc;te HTTP et peut aller de 0
+    <em>octets</em> &agrave; la valeur d&eacute;finit &agrave; la
+    compilation par la constante
+    <code>DEFAULT_LIMIT_REQUEST_FIELDSIZE</code> (8190 dans la
+    distribution standard).</p>
+
+    <p>La directive LimitRequestFieldsize permet &agrave;
+    l'administrateur de limiter la taille autoris&eacute;e pour le
+    champ d'en-t&ecirc;te HTTP d'une requ&ecirc;te &agrave; une
+    valeur inf&eacute;rieure &agrave; celle d&eacute;finie &agrave;
+    la compilation. Un serveur doit avoir cette valeur suffisamment
+    grande pour pouvoir traiter les requ&ecirc;tes de clients
+    normaux. La taille d'une requ&ecirc;te noramle peut beaucoup
+    varier en fonction de l'impl&eacute;mentation du client, le
+    plus souvent il d&eacute;pend du niveau auquel le client a
+    configur&eacute; son butineur pour accepter une
+    n&eacute;gociation de contenu tr&egrave;s fine.</p>
+
+    <p>Cette directive permet l'administrateur d'avoir un meilleur
+    contr&ocirc;le sur des requ&ecirc;tes ayant un comportement
+    anormale, ce qui peut &ecirc;tre utile afin d'&eacute;viter
+    certaines formes d'attaques par d&eacute;ni de service. Dans
+    des conditions normales, cette valeur doit rester celle par
+    d&eacute;faut.</p>
+    <hr />
+
+    <h2><a id="limitrequestline" name="limitrequestline">Directive
+    LimitRequestLine</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt LimitRequestLine} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> LimitRequestLine <em>octets</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>LimitRequestLine 8190</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    LimitRequestLine est disponible &agrave; partir de la version
+    1.3.2. 
+
+    <p>Cette directive indique la taille maximale d'une
+    requ&ecirc;te HTTP et peut aller de 0 <em>octets</em> &agrave;
+    la valeur d&eacute;finit &agrave; la compilation par la
+    constante <code>DEFAULT_LIMIT_REQUEST_LINE</code> (8190 dans la
+    distribution standard).</p>
+
+    <p>La directive LimitRequestLine permet &agrave;
+    l'administrateur de r&eacute;duire la limite fix&eacute;e pour
+    une requ&ecirc;te HTTP en dessous de la valeur fix&eacute;e
+    &agrave; la compilation. Comme une requ&ecirc;te est
+    compos&eacute;e de la m&eacute;thode HTTP, d'une URI et de la
+    version du protocole utilis&eacute;, la directive
+    LimitRequestLine place une restriction sur la taille maximale
+    que peut avoir une URI dansune requ&ecirc;te. Un serveur doit
+    avoir cette valeur suffisamment grande pour pouvoir traiter
+    n'importe quelle de ses ressources, en prenant en compte les
+    informations qui pourrait &ecirc;tre pass&eacute;es dans une
+    requ&ecirc;te GET.</p>
+
+    <p>Cette directive permet l'administrateur d'avoir un meilleur
+    contr&ocirc;le sur des requ&ecirc;tes ayant un comportement
+    anormale, ce qui peut &ecirc;tre utile afin d'&eacute;viter
+    certaines formes d'attaques par d&eacute;ni de service. Dans
+    des conditions normales, cette valeur doit rester celle par
+    d&eacute;faut.</p>
+    <hr />
+
+    <h2><a id="listen" name="listen">Directive Listen</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> Listen
+    [<em>adresseIp</em>:]<em>num&eacute;roPort</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> Listen
+    est disponible &agrave; partir de la version 1.1 d'Apache. 
+
+    <p>La directive <tt>Listen</tt> enjoint Apache &agrave;
+    &eacute;couter plus d'une adresse IP ou port; par d&eacute;faut
+    Apache r&eacute;pond aux requ&ecirc;tes re&ccedil;ues sur
+    toutes les interfaces IP, mais seulement celles arrivant sur le
+    port donn&eacute; par la directive <a
+    href="#port">Port</a>.</p>
+    <tt>Listen</tt> peut &ecirc;tre utilis&eacute;e &agrave; la
+    place de <tt><a href="#bindaddress">BindAddress</a></tt> et
+    <tt>Port</tt>. Elle indique au serveur d'accepter des
+    requ&ecirc;tes entrantes sur le port sp&eacute;cifi&eacute; ou
+    sur une combinaison adresse-port. Si le premier format est
+    utilis&eacute; (avec seule mention d'un num&eacute;ro de port),
+    le serveur "&eacute;coutera" tous les ports
+    sp&eacute;cifi&eacute;s sur chacune des interfaces IP qu'il
+    conna&icirc;t, plut&ocirc;t que sur le port donn&eacute; par la
+    directive <tt>Port</tt>. Si une adresse IP adresse IP est
+    pr&eacute;cis&eacute;e en compl&eacute;ment, le serveur
+    restreindra son &eacute;coute &agrave; la combinaison
+    adresse-port pr&eacute;cis&eacute;e.<br />
+     <br />
+     
+
+    <p>Notez que vous avez toujours besoin de la directive
+    <tt>Port</tt> qui permettent &agrave; Apache de
+    g&eacute;n&eacute;rer les URL de retour vers votre serveur.</p>
+
+    <p>Plusieurs directives <tt>Listen</tt> peuvent &ecirc;tre
+    utilis&eacute;es pour sp&eacute;cifier un ensemble d'adresses
+    et de ports &agrave; &eacute;couter. Le serveur r&eacute;pondra
+    aux requ&ecirc;tes re&ccedil;ues sur n'importe laquelle des
+    combinaisons adresse-port ainsi sp&eacute;cifi&eacute;e.</p>
+
+    <p>Par exemple, pour autoriser le serveur &agrave; accepter des
+    connexions sur les ports 80 et 8000, &eacute;crire :</p>
+
+    <blockquote>
+<pre>
+<code>Listen 80
+Listen 8000
+</code>
+</pre>
+    </blockquote>
+
+    <p>Pour autoriser un serveur &agrave; accepter des connexions
+    sur deux "sockets" qualifi&eacute;s, &eacute;crire :</p>
+<pre>
+Listen 192.170.2.1:80
+Listen 192.170.2.5:8000
+</pre>
+
+    <p><strong>Voir aussi:</strong> <a
+    href="../dns-caveats.html">Apache et DNS</a><br />
+     <strong>Voir aussi:</strong> <a href="../bind.html">Configurer
+    les ports et adresses utilis&eacute;e par Apache</a><br />
+     <strong>Voir aussi :</strong> <a
+    href="http://httpd.apache.org/info/known_bugs.html#listenbug">Bogues
+    connus</a></p>
+    <hr />
+
+    <h2><a id="listenbacklog" name="listenbacklog">Directive
+    ListenBacklog</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ListenBacklog <em>backlog</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ListenBacklog 511</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    <tt>ListenBacklog</tt> n'est disponible qu'&agrave; partir de
+    la version 1.2.0 d'Apache. 
+
+    <p>La longueur maximale de la file d'attente des connexions en
+    attente. En g&eacute;n&eacute;ral, aucun ajustement n'est
+    n&eacute;cessaire, cependant, il est souhaitable sur certains
+    syst&egrave;mes d'augmenter cette longueur de file pour
+    r&eacute;pondre &agrave; des attaques TCP SYN. Voir les
+    param&egrave;tres backlog dans l'appel syst&egrave;me
+    <code>listen(2)</code>.</p>
+
+    <p>Cette directive est limit&eacute;e &agrave; un petit nombre
+    par le syst&egrave;me d'exploitation. Elle peut varier d'un
+    syst&egrave;me &agrave; un autre. Il faut &eacute;galement
+    noter que pour la plupart des syst&egrave;mes, la valeur
+    r&eacute;ellement utilis&eacute;e n'est pas celle
+    sp&eacute;cifi&eacute;e par la directive, mais un nombre
+    bas&eacute; sur cette valeur (g&eacute;n&eacute;ralement plus
+    grande).</p>
+    <hr />
+
+    <h2><a id="location" name="location">Directive
+    &lt;Location&gt;</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> &lt;Location <em>URL</em>&gt; ...
+    &lt;/Location&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    <tt>Location</tt> est disponible &agrave; partir des versions
+    1.1 d'Apache. 
+
+    <p>La directive <tt>&lt;Location&gt;</tt> permet d'instaurer un
+    contr&ocirc;le d'acc&egrave;s sur une base URL. Elle est
+    comparable &agrave; la directive <a
+    href="#directory">&lt;Directory&gt;</a>, et doit s'apparier
+    &agrave; une directive <tt>&lt;/Location&gt;</tt>. Les
+    directives s'appliquant &agrave; l'URL pr&eacute;cis&eacute;e
+    seront &agrave; inclure entre ces deux balises. Les sections
+    <tt>&lt;Location&gt;</tt> sont trait&eacute;es dans l'ordre
+    o&ugrave; elles apparaissent dans le fichier de configuration,
+    une fois les sections <tt>&lt;Directory&gt;</tt> et les
+    fichiers <code>.htaccess</code> trait&eacute;s.</p>
+
+    <p>Il faut noter que les URL n'ont pas du tout &agrave; suivre
+    la m&ecirc;me organisation que le syst&egrave;me de fichiers,
+    et il faut souligner que la directive &lt;Location&gt;
+    op&egrave;re de mani&egrave;re totalement ind&eacute;pendante
+    du syst&egrave;me de fichiers.</p>
+
+    <p>Le <em>pr&eacute;fixe d'URL</em> devra, sauf pour des
+    requ&ecirc;tes &agrave; un proxy, &ecirc;tre de la forme
+    <code>/chemin/</code>, et ne devra pas inclure de mention
+    <code>http://nomserveur</code>. Elle ne prot&egrave;ge pas
+    n&eacute;cessairement un r&eacute;pertoire (cela peut
+    &ecirc;tre un fichier individuel, ou un ensemble de fichiers),
+    et peut inclure des m&eacute;tacaract&egrave;res. Dans un motif
+    (avec des m&eacute;tacaract&egrave;res), '?' remplace un
+    caract&egrave;re quelconque, et '*' remplace toute cha&icirc;ne
+    quelconque de 0 ou plus caract&egrave;res. POur les
+    requ&ecirc;tes &agrave; un proxy, l'URL doitt &ecirc;tre de la
+    forme <code>scheme://nomserveur/serveur</code>, et vous devez
+    inclure le pr&eacute;fixe.</p>
+
+    <p><strong>Apache 1.2 et plus :</strong> Des expression
+    r&eacute;guli&egrave;res peuvent &ecirc;tre utilis&eacute;es,
+    &agrave; condition de les faire pr&eacute;c&eacute;der du
+    caract&egrave;re <code>~</code>. Par exemple :</p>
+
+    <blockquote>
+      <code>&lt;Location ~ "/(extra|special)/data"&gt;</code>
+    </blockquote>
+
+    <p>correspondrait &agrave; des URL contenant la
+    sous-cha&icirc;ne "/extra/data" ou "/special/data". Cependant,
+    sous Apache 1.3, l'utilisation de la directive <a
+    href="#locationmatch">&lt;LocationMatch&gt;</a> est
+    conseill&eacute;e.</p>
+
+    <p>La fonctionnalit&eacute; <tt>Location</tt> est
+    particuli&egrave;rement pratique lorsque combin&eacute;e
+    &agrave; la directive <a
+    href="mod_mime.html#sethandler">SetHandler</a>. Par exemple,
+    pour permettre des requ&ecirc;tes sur les rapports
+    d'&eacute;tat, mais ne les autoriser que pour des agents
+    requ&eacute;rant &agrave; partir du domaine foo.com, vous
+    pourriez &eacute;crire :</p>
+
+    <blockquote>
+<pre>
+<code>&lt;Location /status&gt;
+SetHandler server-status
+order deny,allow
+deny from all
+allow from .foo.com
+&lt;/Location&gt;
+</code>
+</pre>
+    </blockquote>
+
+    <p><strong>Note sur / (barre oblique) pour les version
+    sup&eacute;rieures &agrave; 1.3</strong>: La caract&egrave;re
+    barre oblique &agrave; une signification particuli&egrave;re en
+    fonction de l'endroit o&ugrave; il se situe. Des personnes sont
+    habitu&eacute;s au comportement dans certains syst&egrave;mes
+    de fichiers o&ugrave; de multiples caract&egrave;res obliques
+    sont remplac&eacute;s par un caract&egrave;re unique (par
+    exemple <code>/home///foo</code> est identique &agrave;
+    <code>/home/foo</code>). Dans le monde des URL ceci n'est pas
+    obligatoirement vrai. La directive
+    <code>&lt;LocationMatch&gt;</code> et la version avec
+    expression r&eacute;guli&egrave;re de
+    <code>&lt;Location&gt;</code> demande de sp&eacute;cifier
+    plusieurs caract&egrave;res obliques si ceci est votre
+    intention. Par exemple, <code>&lt;LocationMatch
+    ^/abc&gt;</code> fonctionnera avec l'URL <code>/abc</code> mais
+    pas avec l'URL <code>//abc</code>. La directive (sans
+    expression r&eacute;guli&egrave;re)
+    <code>&lt;Location&gt;</code> se comporte de mani&egrave;re
+    similaire quand elle est employ&eacute;e pour des
+    requ&ecirc;tes proxy. Mais si la directive (sans expression
+    r&eacute;guli&egrave;re) <code>&lt;Location&gt;</code> est
+    utilis&eacute;e pour des requ&ecirc;tes sans proxy, il
+    associera implicitement plusieurs obliques &agrave; un seul.
+    Par exemple, si vous sp&eacute;cifiez <code>&lt;Location
+    /abc/def&gt;</code> et que la requ&ecirc;te est
+    <code>/abc//def</code> celle ci correspondra.</p>
+
+    <p><strong>Voir aussi</strong>: <a
+    href="../sections.html">Comment fonctionnent les sections
+    concernant les r&eacute;pertoires, chemins et fichiers</a> pour
+    une explication plus pr&eacute;cise concernant la
+    mani&egrave;re dont ces sections sont combin&eacute;es
+    lorsqu'une requ&ecirc;te est trait&eacute;e.</p>
+    <hr />
+
+    <h2><a id="locationmatch" name="locationmatch">Directive
+    &lt;LocationMatch&gt;</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> &lt;LocationMatch <em>regex</em>&gt; ...
+    &lt;/LocationMatch&gt;<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> Location
+    est disponible &agrave; partir de la version 1.3 d'Apache. 
+
+    <p>La directive <tt>&lt;LocationMatch&gt;</tt> permet
+    l'&eacute;tablissement d'un contr&ocirc;le d'acc&egrave;s sur
+    une base URL, d'une fa&ccedil;on identique &agrave; la
+    directive <a href="#location">&lt;Location&gt;</a>. Cependant,
+    elle n'accepte qu'une expression r&eacute;guli&egrave;re comme
+    argument. Par exemple :</p>
+
+    <blockquote>
+      <code>&lt;LocationMatch "/(extra|special)/data"&gt;</code>
+    </blockquote>
+    repr&eacute;sente des URL contenant l'une des
+    sous-cha&icirc;nes "/extra/data" ou "/special/data". <br />
+     <br />
+     <strong>Voir aussi</strong> : <a
+    href="../sections.html">Comment fonctionnent les sections
+    concernant les r&eacute;pertoires, chemins et fichiers</a> pour
+    une explication plus pr&eacute;cise concernant la
+    mani&egrave;re dont ces sections sont combin&eacute;es
+    lorsqu'une requ&ecirc;te est trait&eacute;e. 
+    <hr />
+
+    <h2><a id="lockfile" name="lockfile">Directive
+    LockFile</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> LockFile <em>nomfichier</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <code>LockFile
+    logs/accept.lock</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>LockFile</tt> indique le chemin
+    d'acc&egrave;s du fichier de verrouillage utilis&eacute;
+    lorsqu'Apache est compil&eacute; en mode
+    <code>USE_FCNTL_SERIALIZED_ACCEPT</code> ou
+    <code>USE_FLOCK_SERIALIZED_ACCEPT</code>. Ce param&egrave;tre
+    sera laiss&eacute; g&eacute;n&eacute;ralement dans son
+    &eacute;tat par d&eacute;faut. La raison principale qui
+    conduirait &agrave; modifier ce param&egrave;tre serait le fait
+    que le r&eacute;pertoire des traces (<code>logs</code>) soit
+    mont&eacute; sous NFS, le fichier de verrouillage devant de
+    pr&eacute;f&eacute;rence &ecirc;tre situ&eacute; sur un disque
+    local &agrave; la machine serveur pour autant que possible. Le
+    PID du processus serveur principal est automatiquement
+    rajout&eacute; au nom de fichier.</p>
+
+    <p><strong>SECURITE :</strong> il vaut mieux &eacute;viter de
+    metttre ce fichier dans un r&eacute;pertoire inscriptible par
+    tout le monde tel que <code>/var/tmp</code> cas quelqu'un
+    pourrait cr&eacute;er une attaque par d&eacute;ni de service et
+    emp&eacute;cher le serveur de red&eacute;marrer en
+    cr&eacute;ant un fichier de verrouillage de m&ecirc;me nom que
+    celui que veut cr&eacute;er le serveur.</p>
+    <hr />
+
+    <h2><a id="loglevel" name="loglevel">Directive
+    LogLevel</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> LogLevel <em>niveau</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <code>LogLevel
+    error</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;tes virtuels<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> LogLevel
+    est disponible &agrave; partir de la version 1.3. 
+
+    <p>LogLevel ajuste le niveau de verbosit&eacute; des messages
+    inscrits dans les traces d'erreur (voir la directive <a
+    href="#errorlog">ErrorLog</a>). Les niveaux possibles sont par
+    ordre de gravit&eacute; d&eacute;croissante :</p>
+
+    <table>
+      <tr>
+        <th align="LEFT"><strong>Niveau</strong> </th>
+
+        <th align="LEFT"><strong>Description</strong> </th>
+      </tr>
+
+      <tr>
+        <th>
+        </th>
+
+        <th align="LEFT"><strong>Exemple</strong> </th>
+      </tr>
+
+      <tr>
+        <td><code>emerg</code> </td>
+
+        <td>Urgences - le syst&egrave;me est inutilisable.</td>
+      </tr>
+
+      <tr>
+        <td>
+        </td>
+
+        <td>"Child cannot open lock file. Exiting"</td>
+      </tr>
+
+      <tr>
+        <td><code>alert</code> </td>
+
+        <td>Une action doit &ecirc;tre prise
+        imm&eacute;diatement.</td>
+      </tr>
+
+      <tr>
+        <td>
+        </td>
+
+        <td>"getpwuid: couldn't determine user name from uid"</td>
+      </tr>
+
+      <tr>
+        <td><code>crit</code> </td>
+
+        <td>Conditions critiques.</td>
+      </tr>
+
+      <tr>
+        <td>
+        </td>
+
+        <td>"socket: Failed to get a socket, exiting child"</td>
+      </tr>
+
+      <tr>
+        <td><code>error</code> </td>
+
+        <td>Cas d'erreur.</td>
+      </tr>
+
+      <tr>
+        <td>
+        </td>
+
+        <td>"Premature end of script headers"</td>
+      </tr>
+
+      <tr>
+        <td><code>warn</code> </td>
+
+        <td>Avertissements.</td>
+      </tr>
+
+      <tr>
+        <td>
+        </td>
+
+        <td>"child process 1234 did not exit, sending another
+        SIGHUP"</td>
+      </tr>
+
+      <tr>
+        <td><code>notice</code> </td>
+
+        <td>Normal mais condition significative.</td>
+      </tr>
+
+      <tr>
+        <td>
+        </td>
+
+        <td>"httpd: caught SIGBUS, attempting to dump core in
+        ..."</td>
+      </tr>
+
+      <tr>
+        <td><code>info</code> </td>
+
+        <td>Pour information.</td>
+      </tr>
+
+      <tr>
+        <td>
+        </td>
+
+        <td>"Server seems busy, (you may need to increase
+        StartServers, or Min/MaxSpareServers)..."</td>
+      </tr>
+
+      <tr>
+        <td><code>debug</code> </td>
+
+        <td>Messages de d&eacute;boguage</td>
+      </tr>
+
+      <tr>
+        <td>
+        </td>
+
+        <td>"Opening config file ..."</td>
+      </tr>
+    </table>
+
+    <p>Quand un niveau est sp&eacute;cifi&eacute;, les messages des
+    niveaux de plus haute gravit&eacute; seront &eacute;galement
+    rapport&eacute;s. Par exemple, quand la directive
+    <code>LogLevel info</code> est d&eacute;finie, les messages de
+    niveau <code>notice</code> et <code>warn</code> seront aussi
+    notifi&eacute;s.</p>
+
+    <p>L'utilisation d'un niveau de gravit&eacute; d'au moins
+    <code>crit</code> est recommand&eacute;.</p>
+    <hr />
+
+    <h2><a id="maxclients" name="maxclients">Directive
+    MaxClients</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt MaxClients} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> MaxClients <em>nombre</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>MaxClients 256</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>MaxClients</tt> indique le nombre limite de
+    requ&ecirc;tes simultan&eacute;es pouvant &ecirc;tre
+    accept&eacute;es par le serveur ; il repr&eacute;sente le
+    nombre maximum de processus serveur fils qui peuvent tourner
+    &agrave; un instant donn&eacute;. Pour configurer plus de 256
+    clients, vous devez modifier la constante HARD_SERVER_LIMIT du
+    fichier source d'Apache httpd.h et recompiler Apache.</p>
+
+    <p>Les tentatives de connexions au del&agrave; de MaxClients
+    sont normalement mises en attente, jusqu'&agrave; une limite
+    fix&eacute;e par la directive <a
+    href="#listenbacklog">ListenBacklog</a>. Une fois qu'un
+    processus fils est libre &agrave; la fin d'une requ&ecirc;te
+    diff&eacute;rente, la connexion en attente est
+    trait&eacute;e.</p>
+    <hr />
+
+    <h2><a id="maxkeepaliverequests"
+    name="maxkeepaliverequests">Directive
+    MaxKeepAliveRequests</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> MaxKeepAliveRequests <em>nombre</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>MaxKeepAliveRequests 100</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    Uniquement &agrave; partir de la version 1.2 d'Apache. 
+
+    <p>La directive <tt>MaxKeepAliveRequests</tt> limite le nombre
+    de requ&ecirc;tes permises pour une connexion unique lorsque la
+    directive <a href="#keepalive">KeepAlive</a> est
+    activ&eacute;e. Si <em>nombre</em> vaut "<code>0</code>",
+    chaque connexion peut admettre un nombre illimit&eacute; de
+    requ&ecirc;tes. Nous recommendons que ce param&egrave;tre soit
+    r&eacute;gl&eacute; sur une valeur relativement haute pour
+    obtenir des performances optimales du serveur. Dans la version
+    1.1 d'Apache, ceci est contr&ocirc;l&eacute; par la directive
+    Keepalive</p>
+    <hr />
+
+    <h2><a id="maxrequestsperchild"
+    name="maxrequestsperchild">Directive
+    MaxRequestsPerChild</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt MaxRequestsPerChild} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> MaxRequestsPerChild <em>nombre</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>MaxRequestsPerChild 0</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>MaxRequestsPerChild</tt> indique le nombre
+    limite de requ&ecirc;tes qu'un processus serveur fils peut
+    tra&icirc;ter. Apr&egrave;s <tt>MaxRequestsPerChild</tt>
+    requ&ecirc;tes, ce processus fils meurt. Si ce param&egrave;tre
+    est fix&eacute; &agrave; 0, alors les processus fils ne meurent
+    jamais.</p>
+
+    <p>Le fait de mettre <tt>MaxRequestsPerChild</tt> &agrave; une
+    valeur non nulle a deux cons&eacute;quences
+    b&eacute;n&eacute;fiques :</p>
+
+    <ul>
+      <li>cela limite le volume de m&eacute;moire qu'un processus
+      peut consommer (accidentellement) et &eacute;vite une
+      saturation m&eacute;moire ;</li>
+
+      <li>en donnant &agrave; un processus un temps de vie fini, le
+      nombre total de processus impliqu&eacute;s dans le serveur
+      d&eacute;croit lorsque la charge du serveur retombe.</li>
+    </ul>
+
+    <p>Cependant sur les syst&egrave;mes Win32, il est
+    recommand&eacute; de mettre cette valeur &agrave; 0. Si celle
+    ci est &agrave; une valeur non nulle, quand le nombre de
+    requ&ecirc;tes est atteint, le processus fils quitte, et est
+    relanc&eacute; en relisant les fichiers de configuration. Ceci
+    peut conduire &agrave; un comportement impr&eacute;visible si
+    vous avez modifi&eacute; un fichier de configuration, mais ne
+    souhaitez pas que ces changements soient pris en compte. Voir
+    &eacute;galement <a
+    href="#threadsperchild">ThreadsPerChild</a>.</p>
+
+    <p><strong>NOTE:</strong> pour les requ&ecirc;tes
+    <em>KeepAlive</em> requests, seule la premi&egrave;re
+    requ&ecirc;te est compt&eacute;e. En r&eacute;alit&eacute;, il
+    change le comportement afin de limiter le nombre de
+    <em>connexions</em> par fils.</p>
+    <hr />
+
+    <h2><a id="maxspareservers" name="maxspareservers">Directive
+    MaxSpareServers</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt MaxSpareServers} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> MaxSpareServers <em>nombre</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>MaxSpareServers 10</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>MaxSpareServers</tt> indique le nombre
+    maximal de processus fils en <em>attente</em>. Un processus en
+    attente est un processus qui existe, mais qui ne traite pas de
+    requ&ecirc;te. S'il existe plus de <tt>MaxSpareServers</tt> de
+    ces processus, alors le p&egrave;re viendra tuer les processus
+    en suppl&eacute;mentaires.</p>
+
+    <p>L'activation de cette fonctionnalit&eacute; ne devrait
+    &ecirc;tre n&eacute;cessaire que sur les site vraiment
+    tr&egrave;s charg&eacute;s. R&eacute;gler ce param&egrave;tre
+    sur une grande valeur est de toutes fa&ccedil;on toujours une
+    mauvaise id&eacute;e.</p>
+
+    <p>Cette directive n'a aucun effet quand elle est
+    employ&eacute;e sur les plates-formes WIndows.</p>
+
+    <p>Voir aussi <a href="#minspareservers">MinSpareServers</a> et
+    <a href="#startservers">StartServers</a>.</p>
+    <hr />
+
+    <h2><a id="minspareservers" name="minspareservers">Directive
+    MinSpareServers</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt MinSpareServers} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> MinSpareServers <em>nombre</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>MinSpareServers 5</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>MinSpareServers</tt> indique le nombre
+    minimum de processus fils en <em>attente</em> qu'un serveur
+    pourra conserver. S'il existe moins de <tt>MinSpareServers</tt>
+    processus serveurs fils en attente, le processus p&egrave;re
+    recr&eacute;era des processus fils au rythme de 1 par
+    seconde.</p>
+
+    <p>L'activation de cette fonctionnalit&eacute; ne devrait
+    &ecirc;tre n&eacute;cessaire que sur des sites tr&egrave;s
+    charg&eacute;s. R&eacute;gler ce param&egrave;tre sur une
+    grande valeur est de toutes fa&ccedil;ons toujours une mauvaise
+    id&eacute;e.</p>
+
+    <p>Cette directive n'a aucun effet quand elle est
+    employ&eacute;e sur les plates-formes WIndows.</p>
+
+    <p>Voir aussi <a href="#maxspareservers">MaxSpareServers</a> et
+    <a href="#startservers">StartServers</a>.</p>
+    <hr />
+
+    <h2><a id="namevirtualhost" name="namevirtualhost">Directive
+    NameVirtualHost</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt NameVirtualHost} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> NameVirtualHost
+    <em>addr</em>[:<em>port</em>]<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    <tt>NameVirtualHost</tt> n'est disponible qu'&agrave; partir de
+    la version 1.3 d'Apache. 
+
+    <p>La directive <tt>NameVirtualHost</tt> est n&eacute;cessaire
+    si vous souhaitez configurer <a href="../vhosts/index.html">des
+    h&ocirc;tes virtuels nomm&eacute;s</a>.</p>
+
+    <p>Bien que <em>addr</em> puisse &ecirc;tre exprim&eacute;e
+    comme un nom d'h&ocirc;te, il est recommand&eacute; d'utiliser
+    une adresse IP, exemple :</p>
+
+    <blockquote>
+      <code>NameVirtualHost 111.22.33.44</code>
+    </blockquote>
+
+    <p>Avec cette directive <tt>NameVirtualHost</tt>, l'adresse
+    nomm&eacute;e par le nom de votre h&ocirc;te virtuel se
+    r&eacute;sout. Si vous exploitez plusieurs h&ocirc;tes
+    nomm&eacute;s sur des adresses multiples, r&eacute;p&eacute;tez
+    cette directive autant de fois que n&eacute;cessaire (pour
+    chaque adresse).</p>
+
+    <p>Note: le "serveur principal" et tous les serveurs "par
+    d&eacute;faut" ne seront <strong>jamais</strong> servis pour
+    une requ&ecirc;te vers une adresse IP NameVirtualHost (&agrave;
+    moins que pour une raison donn&eacute;e vous d&eacute;finissiez
+    NameVirtualHost mais qu'aucun VirtualHosts ne soit
+    d&eacute;fini pour cette adresse).</p>
+
+    <p>En option, vous pouvez pr&eacute;ciser un num&eacute;ro de
+    port sur lequel l'h&ocirc;te virtuel nomm&eacute; sera atteint,
+    par exemple :</p>
+
+    <blockquote>
+      <code>NameVirtualHost 111.22.33.44:8080</code>
+    </blockquote>
+    A partir de la version 1.3.13, vous pouvez donner comme adresse
+    <code>*</code> Ceci cr&eacute;e un NameVirtualHost qui
+    correspond &agrave; toutes les connexions venant de toutes les
+    adresses IP qui ne sont pas configur&eacute;s avec une autre
+    directive NameVirtualHost ou un section <a
+    href="#virtualhost">&lt;VirtualHost&gt;</a>. Cette option est
+    pratique si vous n'utilisez que des h&ocirc;tes virtuels
+    nomm&eacute;s et que vous ne souhaitez pas coder en dur
+    l'adresse IP de votre machine dans le fichier de
+    configuration.<br />
+     <br />
+     <strong>Voir aussi :</strong> <a href="../vhosts/">H&ocirc;tes
+    virtuels sur Apache</a> 
+    <hr />
+
+    <h2><a id="options" name="options">Directive Options</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt Options} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> Options <em>[+|-]option [+|-]option
+    ...</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel, r&eacute;pertoire, .htaccess<br />
+     <strong>Surcharge:</strong> Options<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>Options</tt> contr&ocirc;le quelles
+    fonctions du serveur sont disponibles dans un r&eacute;pertoire
+    particulier.</p>
+
+    <p><em>option</em> peut valoir <code>None</code>, auquel cas
+    aucune fonction suppl&eacute;mentaire n'est disponible, ou une
+    ou plus des possibilit&eacute;s suivantes :</p>
+
+    <dl>
+      <dt>All</dt>
+
+      <dd>toutes options sauf MultiViews.</dd>
+
+      <dt>ExecCGI</dt>
+
+      <dd><!--%plaintext &lt;?INDEX {\tt ExecCGI} option&gt; -->
+      L'ex&eacute;cution des scripts CGI est autoris&eacute;e.</dd>
+
+      <dt>FollowSymLinks</dt>
+
+      <dd>
+        <!--%plaintext &lt;?INDEX {\tt FollowSymLinks} option&gt; -->
+        Le serveur est autoris&eacute; &agrave; suivre les liens
+        symboliques dans ce r&eacute;pertoire. 
+
+        <p><strong>Note</strong>: m&ecirc;me si le serveur suit le
+        lien symbolique, il <b>ne</b> doit <b>pas</b> changer le
+        chemin d'acc&egrave;s afin de ne pas entrer en
+        contradiction avec les sections
+        <tt>&lt;Directory&gt;</tt>.</p>
+      </dd>
+
+      <dt>Includes</dt>
+
+      <dd><!--%plaintext &lt;?INDEX {\tt Includes} option&gt; -->
+      Les inclusions par Server-Side-Include sont permises.</dd>
+
+      <dt>IncludesNOEXEC</dt>
+
+      <dd>
+      <!--%plaintext &lt;?INDEX {\tt IncludesNOEXEC} option&gt; -->
+      Les SSI sont autoris&eacute;s, mais pas la commande #exec ni
+      <code>#include</code> des scripts CGI.</dd>
+
+      <dt>Indexes</dt>
+
+      <dd><!--%plaintext &lt;?INDEX {\tt Indexes} option&gt; -->
+      Si une URL requise pointe sur un r&eacute;pertoire, et aucun
+      fichier d&eacute;fini par <tt>DirectoryIndex</tt> (ex.
+      index.html) n'existe dans ce r&eacute;pertoire, alors le
+      serveur retourne une liste format&eacute;e du contenu du
+      r&eacute;pertoire.</dd>
+
+      <dt>MultiViews</dt>
+
+      <dd><!--%plaintext &lt;?INDEX {\tt MultiViews} option&gt; -->
+      <a href="../content-negotiation.html">Un contenu
+      n&eacute;goci&eacute;</a> en <code>MultiViews</code> est
+      permis.</dd>
+
+      <dt>SymLinksIfOwnerMatch</dt>
+
+      <dd>
+      <!--%plaintext &lt;?INDEX {\tt SymLinksIfOwnerMatch} option&gt; -->
+      Le serveur ne suivra les liens symboliques uniquement si le
+      fichier vis&eacute; ou le r&eacute;pertoire vis&eacute;
+      appartiennent au m&ecirc;me utilisateur que le lien
+      lui-m&ecirc;me.</dd>
+    </dl>
+
+    <p>Normalement, si plusieurs options <code>Options</code>
+    peuvent &ecirc;tre appliqu&eacute;es &agrave; un
+    r&eacute;pertoire, alors la plus restrictive est
+    appliqu&eacute;e ; les options ne sont pas combin&eacute;es.
+    Cependant, si <i>all</i> les options dans la directive
+    <code>Options</code> sontpr&eacute;c&eacute;d&eacute;es d'un
+    symbole + ou -, alors les options sont alors combin&eacute;es
+    entre elles. Toute option pr&eacute;c&eacute;d&eacute;e d'un +
+    est ajout&eacute;e aux options en cours, toute option
+    pr&eacute;c&eacute;d&eacute;e d'un - est
+    d&eacute;sactiv&eacute;e.</p>
+
+    <p>Par exemple, sans symboles + ni - :</p>
+
+    <blockquote>
+<pre>
+<code>&lt;Directory /web/docs&gt;
+Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+&lt;Directory /web/docs/spec&gt;
+Options Includes
+&lt;/Directory&gt;
+</code>
+</pre>
+    </blockquote>
+
+    <p>seul <code>Includes</code> sera activ&eacute; pour le
+    r&eacute;pertoire <code>/web/docs/spec</code>. Cependant, si la
+    seconde directive d'<code>Options</code> utilise les symboles +
+    et - :</p>
+
+    <blockquote>
+<pre>
+<code>&lt;Directory /web/docs&gt;
+Options Indexes FollowSymLinks
+&lt;/Directory&gt;
+&lt;Directory /web/docs/spec&gt; 
+Options +Includes -Indexes
+&lt;/Directory&gt;
+</code>
+</pre>
+    </blockquote>
+
+    <p>alors les options <code>FollowSymLinks</code> et
+    <code>Includes</code> sont valid&eacute;es pour le
+    r&eacute;pertoire <code>/web/docs/spec</code>.</p>
+    <hr />
+
+    <h2><a id="pidfile" name="pidfile">Directive PidFile</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt PidFile} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> PidFile <em>filename</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <code>PidFile
+    logs/httpd.pid</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>PidFile</tt> d&eacute;finit le fichier dans
+    lequel le serveur enregistre l'identificateur de processus du
+    d&eacute;mon. Si le nom de fichier ne commence pas par un slash
+    (/) alors le fichier est d&eacute;fini relativement au <a
+    href="#serverroot">ServerRoot</a>. Le fichier <tt>PidFile</tt>
+    n'est utilis&eacute; que dans le mode <a
+    href="#servertype">standalone</a>.</p>
+
+    <p>Il est souvent utile de pouvoir envoyer un signal au
+    serveur, pour qu'il referme et r&eacute;ouvre ses fichiers <a
+    href="#errorlog">ErrorLog</a> et <tt>TransferLog</tt>, et
+    relise ses fichiers de configuration. Ceci peut &ecirc;tre fait
+    en envoyant un signal SIGHUP (kill -1) au processus
+    identifi&eacute; par l'identificateur de processus
+    marqu&eacute; dans <tt>PidFile</tt>.</p>
+
+    <p>Le fichier <tt>PidFile</tt> est concern&eacute; par les
+    m&ecirc;mes probl&egrave;mes d'emplacement et de <a
+    href="../misc/security_tips.html">securit&eacute;</a> que les
+    fichiers de trace.</p>
+    <hr />
+
+    <h2><a id="port" name="port">Directive Port</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt Port} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> Port <em>num&eacute;ro</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <code>Port
+    80</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p><em>num&eacute;ro</em> est un nombre compris entre 0 et
+    65535; certains num&eacute;ros de ports (surtout en dessous de
+    1024) sont r&eacute;serv&eacute;s pour des protocoles
+    sp&eacute;cifiques. Une liste des ports
+    pr&eacute;d&eacute;finis est consultable dans la RFC 1340
+    "Assigned Numbers" <code>/etc/services</code>; le port standard
+    assign&eacute; au protocole http est le port 80.</p>
+
+    <p>La directive <tt>Port</tt> a deux comportements, le premier
+    est n&eacute;cessaire pour assurer la compatibilit&eacute; NCSA
+    (et qui peut pr&eacute;ter &agrave; confusion dans le contexte
+    d'Apache).</p>
+
+    <ul>
+      <li>En absence de toute directive <a
+      href="#listen">Listen</a> ou <a
+      href="#bindaddress">BindAddress</a> sp&eacute;cifiant un
+      num&eacute;ro de port, la directive <tt>Port</tt>
+      d&eacute;finit le port r&eacute;seau que le serveur
+      &eacute;coute. S'il existe une directive <tt>Listen</tt> ou
+      <tt>BindAddress</tt> sp&eacute;cifiant un
+      <code>:num&eacute;ro</code> alors la directive Port n'a aucun
+      effet quant au socket que le serveur &eacute;coute.</li>
+
+      <li>La directive Port d&eacute;finit la variable
+      d'environnement <code>SERVER_PORT</code> (pour les <a
+      href="mod_cgi.html">CGI</a> et les <a
+      href="mod_include.html">SSI</a>), laquelle est
+      utilis&eacute;e lorsque le serveur g&eacute;n&egrave;re une
+      URL qui point sur lui-m&ecirc;me (par exemple lorsqu'il
+      indique une indirection externe vers lui-m&ecirc;me).</li>
+    </ul>
+
+    <p>Dans aucun cas une d&eacute;finition du <tt>Port</tt> ne
+    d&eacute;finit &agrave; quel port un <a
+    href="#virtualhost">VirtualHost</a> r&eacute;pond, la directive
+    <tt>VirtualHost</tt> elle-m&ecirc;me se chargeant de cette
+    d&eacute;finition.</p>
+
+    <p>Le comportement premier de la directive <tt>Port</tt> doit
+    &ecirc;tre consid&eacute;r&eacute; comme similaire &agrave;
+    celui de la directive <a href="#servername">ServerName</a>.
+    <tt>ServerName</tt> et <tt>Port</tt> sp&eacute;cifient
+    conjointement ce que vous consid&eacute;rez &ecirc;tre
+    l'adresse <em>canonique</em> du serveur.</p>
+
+    <p>Le Port 80 est l'un des ports pr&eacute;d&eacute;finis
+    d'Unix. Tous les ports num&eacute;rot&eacute;s en dessous de
+    1024 sont r&eacute;serv&eacute;s &agrave; un usage
+    syst&egrave;me, c-&agrave;-d. que des utilisateurs non
+    privil&eacute;gi&eacute;s (non-root) ne peuvent les utiliser ;
+    ces derniers peuvent par contre utiliser des ports de plus haut
+    rang. Pour utiliser le port 80, le serveur doit &ecirc;tre
+    ex&eacute;cut&eacute; sous <code>root</code>. Apr&egrave;s
+    avoir li&eacute; le port (bind) et avant d'accepter des
+    requ&ecirc;tes, Apache changera son utilisateur associ&eacute;
+    tel que d&eacute;fini par la directive <a
+    href="#user">User</a>.</p>
+
+    <p>Si vous ne pouvez utiliser le port 80, choisissez tout autre
+    port libre. Les utilisateurs non-root devront choisir un
+    num&eacute;ro de port sup&eacute;rieur &agrave; 1023, 8000 par
+    exemple.</p>
+
+    <p><strong>S&eacute;curit&eacute; :</strong> si vous
+    d&eacute;marrez le serveur sous <code>root</code>, assurez vous
+    que la directive <a href="#user">User</a> ne mentionne pas
+    <code>root</code>. Si vous traitez des requ&ecirc;tes en
+    disposant toujours de super privil&egrave;ges, vous ouvrez
+    votre syst&egrave;me &agrave; des attaques majeures.</p>
+    <hr />
+
+    <h2><a id="require" name="require">Directive require</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt require} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> require <em>nomEntite Entite
+    Entite...</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> r&eacute;pertoire,
+    .htaccess<br />
+     <strong>Surcharge:</strong> AuthConfig<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Cette directive choisi quels utilisateurs autoris&eacute;s
+    peuvent acc&eacute;der &agrave; un r&eacute;pertoire. Les
+    syntaxes valides sont :</p>
+
+    <ul>
+      <li>
+        require user <em>utilisateur utilisateur ...</em> 
+
+        <p>Seuls les utilisateurs nomm&eacute;s peuvent
+        acc&eacute;der au r&eacute;pertoire.</p>
+      </li>
+
+      <li>
+        require group <em>nomGroupe nomGroupe ...</em> 
+
+        <p>Seuls les utilisateurs des groupes cit&eacute;s peuvent
+        acc&eacute;der au r&eacute;pertoire.</p>
+      </li>
+
+      <li>
+        require valid-user 
+
+        <p>Tout utilisateur reconnu peut acc&eacute;der au
+        r&eacute;pertoire (par opposition aux non
+        utilisateurs).</p>
+      </li>
+    </ul>
+
+    <p>Si <code>require</code> appara&icirc;t dans une section <a
+    href="#limit">&lt;Limit&gt;</a>, alors les restrictions ne sont
+    appliqu&eacute;es qu'aux m&eacute;thodes http
+    mentionn&eacute;es. Autrement, toutes les m&eacute;thodes http
+    sont restreintes. Exemple :</p>
+
+    <blockquote>
+<pre>
+<code>AuthType Basic
+AuthName unDomaine
+AuthUserFile /web/users
+AuthGroupFile /web/groups
+&lt;Limit GET POST&gt;
+require group admin
+&lt;/Limit&gt;
+</code>
+</pre>
+    </blockquote>
+
+    <p>Pour fonctionner correctement, la directive Require doit
+    &ecirc;tre accompagn&eacute; de directives <a
+    href="#authname">AuthName</a> et <a
+    href="#authtype">AuthType</a>, et de directives de type <a
+    href="mod_auth.html#authuserfile">AuthUserFile</a> et <a
+    href="mod_auth.html#authgroupfile">AuthGroupFile</a> (servant
+    &agrave; d&eacute;finir les utilisateurs et les groupes).</p>
+    <hr />
+
+    <h2><a id="resourceconfig" name="resourceconfig">Directive
+    ResourceConfig</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ResourceConfig} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ResourceConfig <em>nomfichier</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ResourceConfig conf/srm.conf</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Le serveur lit dans ce fichier des directives
+    suppl&eacute;mentaires, apr&egrave;s avoir lu le fichier
+    <code>httpd.conf</code>. <em>nomfichier</em> est
+    consid&eacute;r&eacute; relativement &agrave; <a
+    href="#serverroot">ServerRoot</a>. Cette fonctionnalit&eacute;
+    peut &ecirc;tre d&eacute;sactiv&eacute;e par l'&eacute;criture
+    :</p>
+
+    <blockquote>
+      <code>ResourceConfig /dev/null</code>
+    </blockquote>
+    ou sur les serveurs Win32 
+
+    <blockquote>
+      <code>ResourceConfig nul</code>
+    </blockquote>
+
+    <p>Historiquement, ce fichier contenait essentiellement les
+    directives autres que celles servant &agrave; la configuration
+    du serveur ou les sections <a
+    href="#directory">&lt;Directory&gt;</a> ; en fait, il peut
+    contenir maintenant toute directive admise dans le contexte
+    <em>configuration serveur</em>.</p>
+
+    <p>A partir de la version 1.3.13, si la directive
+    <code>ResourceConfig</code> pointe sur un r&eacute;pertoire
+    plutot qu'un fichier, Apache lira tous les fichiers de ce
+    r&eacute;pertoire ou de ses sous-r&eacute;pertoires et les
+    traitera comme fichiers de configuration.</p>
+
+    <p>Voir aussi <a href="#accessconfig">AccessConfig</a>.</p>
+    <hr />
+
+    <h2><a id="rlimit" name="rlimit">Directive RLimitCPU</a> <a
+    id="rlimitcpu" name="rlimitcpu"></a></h2>
+    <!--%plaintext &lt;?INDEX {\tt RLimitCPU} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> RLimitCPU <em># ou 'max'</em> <em>[# ou
+    'max']</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <em>Non
+    pr&eacute;cis&eacute;; utilise le d&eacute;faut du
+    syst&egrave;me d'exploitation</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    RLimitCPU n'est disponible qu'&agrave; partir de la version 1.2
+    d'Apache 
+
+    <p>Accepte 1 ou 2 paramet&egrave;res. Le premier
+    param&egrave;tre indique la limite logicielle pour tous les
+    processus et le second param&egrave;tre la limite
+    sup&eacute;rieure en termes de ressources. Chacun des
+    param&egrave;tres peut &ecirc;tre exprim&eacute; par un nombre,
+    ou <em>max</em> pour indiquer au serveur que la limite est
+    celle impos&eacute;e par le syst&egrave;me d'exploitation. La
+    limite sup&eacute;rieure en ressource ne peut &ecirc;tre
+    atteinte que si le serveur tourne sous root, ou
+    &eacute;ventuellement pendant la phase de d&eacute;marrage.</p>
+
+    <p>Ceci est valide pour les processus lanc&eacute;s par les
+    processus fils d'Apache pour le traitement des requ&ecirc;tes
+    et non pour les processus fils d'Apache eux-m&ecirc;mes. Cela
+    inclut les scripts CGI, les commandes exec SSI, mais pas les
+    processus lanc&eacute;s par le processu Apache p&egrave;re tels
+    que les traces.</p>
+
+    <p>La limite de ressources CPU est exprim&eacute;e en secondes
+    par processus.</p>
+
+    <p>Voir aussi <a href="#rlimitmem">RLimitMEM</a> ou <a
+    href="#rlimitnproc">RLimitNPROC</a>.</p>
+    <hr />
+
+    <h2><a id="rlimitmem" name="rlimitmem">Directive
+    RLimitMEM</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt RLimitMEM} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> RLimitMEM <em># ou 'max'</em> <em>[# ou
+    'max']</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <em>Non
+    pr&eacute;cis&eacute; ; utilise le d&eacute;faut du
+    syst&egrave;me d'exploitation</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    RLimitMEM is only available in Apache 1.2 and later 
+
+    <p>Accepte 1 ou 2 param&egrave;tres. Le premier
+    param&egrave;tre fixe la limite logicielle en ressources
+    m&eacute;moire pour tous les processus tandis que le second
+    param&egrave;tre fixe la limite absolue de ressources
+    m&eacute;moire. Chaque param&egrave;tre peut &ecirc;tre un
+    nombre, ou <em>max</em> pour indiquer au serveur que la limite
+    est fix&eacute;e par le syst&egrave;me d'exploitation. La
+    limite sup&eacute;rieure en ressource ne peut &ecirc;tre
+    atteinte que si le serveur tourne sous root, ou
+    &eacute;ventuellement pendant la phase de d&eacute;marrage.</p>
+
+    <p>Ceci est valide pour les processus lanc&eacute;s par les
+    processus fils d'Apache pour le traitement des requ&ecirc;tes
+    et non pour les processus fils d'Apache eux-m&ecirc;mes. Cela
+    inclut les scripts CGI, les commandes exec SSI, mais pas les
+    processus lanc&eacute;s par le processu Apache p&egrave;re tels
+    que les traces.</p>
+
+    <p>Les ressources m&eacute;moire sont exprim&eacute;es en
+    octets par processus.</p>
+
+    <p>Voir aussi <a href="#rlimitcpu">RLimitCPU</a> ou <a
+    href="#rlimitnproc">RLimitNPROC</a>.</p>
+    <hr />
+
+    <h2><a id="rlimitnproc" name="rlimitnproc">Directive
+    RLimitNPROC</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt RLimitNPROC} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> RLimitNPROC <em># ou 'max'</em> <em>[# ou
+    'max']</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <em>Unset; uses
+    operating system defaults</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    RLimitNPROC n'est disponible qu'&agrave; partir de la version
+    1.2 d'Apache 
+
+    <p>Accepte 1 ou 2 param&egrave;tres. Le premier
+    param&egrave;tre fixe la limite logicielle en ressources pour
+    tous les processus tandis que le second param&egrave;tre fixe
+    la limite absolue de ressources m&eacute;moire. Chaque
+    param&egrave;tre peut &ecirc;tre un nombre, ou <em>max</em>
+    pour indiquer au serveur que la limite est fix&eacute;e par le
+    syst&egrave;me d'exploitation. La limite sup&eacute;rieure en
+    ressource ne peut &ecirc;tre atteinte que si le serveur tourne
+    sous root, ou &eacute;ventuellement pendant la phase de
+    d&eacute;marrage.</p>
+
+    <p>Ceci est valide pour les processus lanc&eacute;s par les
+    processus fils d'Apache pour le traitement des requ&ecirc;tes
+    et non pour les processus fils d'Apache eux-m&ecirc;mes. Cela
+    inclut les scripts CGI, les commandes exec SSI, mais pas les
+    processus lanc&eacute;s par le processu Apache p&egrave;re tels
+    que les traces.</p>
+
+    <p>Cette limite contr&ocirc;le le nombre de processus maximum
+    par utilisateur.</p>
+
+    <p><strong>Note :</strong> Si les processus CGI <b>ne</b>
+    tournent <b>pas</b> sous un autre utilisateur que l'utilisateur
+    du serveur, cette directive limitera aussi le nombre de
+    processus que le serveur lui-m&ecirc;me peut cr&eacute;er.
+    Cette situation sera indiqu&eacute;e de fa&ccedil;on
+    &eacute;vidente par des messages d'erreur <b><em>cannot
+    fork</em></b> dans le fichier error_log.</p>
+
+    <p>Voir aussi <a href="#rlimitmem">RLimitMEM</a> ou <a
+    href="#rlimitcpu">RLimitCPU</a>.</p>
+    <hr />
+
+    <h2><a id="satisfy" name="satisfy">Directive Satisfy</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt Satisfy} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> Satisfy <em>'any' ou 'all'</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> Satisfy
+    all<br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> r&eacute;pertoire,
+    .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    <tt>Satisfy</tt> n'est disponible qu'&agrave; partir de la
+    version 1.2 d'Apache 
+
+    <p>Politique d'acc&egrave;s si &agrave; la fois 'allow' et
+    'require' sont utilis&eacute;s. Le param&egrave;tre peut valoir
+    soit <em>'all'</em> soit <em>'any'</em>. Cette directive n'est
+    utile que si l'acc&egrave;s &agrave; une zone
+    particuli&egrave;re est &agrave; la fois restreinte par un
+    username/password <em>et</em> et par l'adresse d'h&ocirc;te
+    client. Dans ce cas le comportement par d&eacute;faut ("all")
+    impose au client de passer la restriction d'adresse <em>et</em>
+    d'entrer un identificateur d'utilisateur et un mot de passe
+    valides. Avec l'option "any", le client sera servi si son
+    adresse d'h&ocirc;te est conforme <em>ou</em> s'il rentre des
+    param&egrave;tres d'identification corrects. Ceci peut
+    &ecirc;tre utilis&eacute; pour restreindre un zone par un mot
+    de passe, tout en laissant quelques client bien
+    identifi&eacute;s entrer dans le domaine sans avoir &agrave; se
+    soumettre &agrave; la proc&eacute;dure d'identification.</p>
+
+    <p>Voir aussi <a href="#require">Require</a> et <a
+    href="mod_access.html#allow">Allow</a>.</p>
+    <hr />
+
+    <h2><a id="scoreboardfile" name="scoreboardfile">Directive
+    ScoreBoardFile</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ScoreBoardFile} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ScoreBoardFile <em>nomfichier</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ScoreBoardFile logs/apache_status</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>ScoreBoardFile</tt> est n&eacute;cessaire
+    sur certaines architectures pour cr&eacute;er un fichier
+    servant &agrave; la communication entre des processus
+    p&egrave;res et des processus fils. La meilleure fa&ccedil;on
+    de savoir si votre syst&egrave;me n&eacute;cessite un tel
+    fichier est d'ex&eacute;cuter Apache et de voir s'il
+    cr&eacute;e le fichier mentionn&eacute; dans la directive. Si
+    votre syst&egrave;me n&eacute;cessite l'emploi de ce fichier,
+    alors vous devez vous assurer que celui-ci ne peut &ecirc;tre
+    utilis&eacute; que par une et une seule invocation
+    d'Apache.</p>
+
+    <p>Si vous devez utiliser un <tt>ScoreBoardFile</tt>, vous
+    pourrez optimiser votre temps d'ex&eacute;cution en le
+    pla&ccedil;ant sur un disque virtuel en RAM. Cependant,
+    rappelez-vous que les m&ecirc;mes recommandations sont &agrave;
+    prendre en compte pour la position de ce fichier que pour la
+    position des fichiers de trace quant &agrave; la <a
+    href="../misc/security_tips.html">securit&eacute;</a>.</p>
+
+    <p><i>A partir d'Apache 1.2 :</i></p>
+
+    <p>Les utilisateurs de Linux 1.x doivent pouvoir ajouter
+    <code>-DHAVE_SHMGET</code> aux <code>EXTRA_CFLAGS</code> dans
+    leur fichier de <code>Configuration</code>. Ceci devrait
+    fonctionner sur certaines installations en 1.x, mais pas
+    forc&eacute;ment sur toutes.</p>
+
+    <p>Les utilisateurs de SVR4 devront consid&eacute;rer
+    l'opportunit&eacute; d'ajouter <code>-DHAVE_SHMGET</code> aux
+    <code>EXTRA_CFLAGS</code> dans leur fichier de
+    <code>Configuration</code>. Il semble que cela fonctionne, mais
+    nous n'avons pu le tester pour la version 1.2. (avant la
+    version 1.3b4, <code>HAVE_SHMGET</code> devait suffire.)</p>
+    <br />
+     <br />
+     
+
+    <p><strong>Voir aussi</strong> : <a
+    href="../stopping.html">Arr&ecirc;ter et red&eacute;marrer
+    Apache</a></p>
+    <hr />
+
+    <h2><a id="scriptinterpretersource"
+    name="scriptinterpretersource">ScriptInterpreterSource
+    directive</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ScriptInterpreterSource} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ScriptInterpreterSource registry|script<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ScriptInterpreterSource script</code> <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> r&eacute;pertoire,
+    .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau (seulement sur Windows) 
+
+    <p>Cette directive sert, &agrave; partir de la version 1.3.5
+    d'Apache, &agrave; d&eacute;terminer o&ugrave; trouver
+    l'interpr&eacute;teur employ&eacute; pour ex&eacute;cuter les
+    scripts CGI. La technique par d&eacute;faut est de prendre
+    l'interpr&eacute;teur point&eacute; par les caract&egrave;res
+    #! dans le script. En fixant ScriptInterpreterSource &agrave;
+    registry, La table de registration de Windows sera
+    employ&eacute;e pour chercher l'interpr&eacute;teur, en prenant
+    l'extension du fichier comme cl&eacute; (par exemple .pl).</p>
+    <hr />
+
+    <h2><a id="sendbuffersize" name="sendbuffersize">Directive
+    SendBufferSize</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt SendBufferSize} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> SendBufferSize <em>octets</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>Le serveur r&egrave;gle la taille du tampon interne de TCP
+    au nombre d'octets sp&eacute;cifi&eacute;. Tr&egrave;s utile
+    pour augmenter les tailles par d&eacute;faut dans le cas
+    d'utilisation de liaisons haute vitesse (ex. des liaisons
+    transcontinantales rapides).</p>
+    <hr />
+
+    <h2><a id="serveradmin" name="serveradmin">Directive
+    ServerAdmin</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ServerAdmin} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ServerAdmin <em>adresseEMail</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>ServerAdmin</tt> d&eacute;finit l'adresse
+    e-mail que le serveur inclut dans tout message d'erreur
+    retourn&eacute; au client.</p>
+
+    <p>Il peut &ecirc;tre utile de d&eacute;dier une adresse
+    r&eacute;serv&eacute;e &agrave; cet usage, par exemple :</p>
+
+    <blockquote>
+      <code>ServerAdmin www-admin@foo.bar.com</code>
+    </blockquote>
+
+    <p>car les utilisateur ne rappellent pas toujours dans leur
+    message ce &agrave; propos de quoi ils interviennent!</p>
+    <hr />
+
+    <h2><a id="serveralias" name="serveralias">Directive
+    ServerAlias</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ServerAlias <em>h&ocirc;te1 h&ocirc;te2
+    ...</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> h&ocirc;te
+    virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    <tt>ServerAlias</tt> est disponible &agrave; partir de la
+    version 1.1 d'Apache 
+
+    <p>La directive <tt>ServerAlias</tt> d&eacute;fini un nom
+    secondaire pour un h&ocirc;te, utilisable dans le contexte d'<a
+    href="../vhosts/name-based.html">h&ocirc;te virtuels
+    nomm&eacute;s</a>.</p>
+
+    <p><strong>Voir aussi :</strong> <a
+    href="../vhosts/index.html">H&ocirc;tes virtuels sur
+    Apache</a></p>
+    <hr />
+
+    <h2><a id="servername" name="servername">Directive
+    ServerName</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ServerName} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ServerName <em>nom de domaine enti&egrave;rement
+    qualifi&eacute;</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>ServerName</tt> d&eacute;finit le nom
+    d'h&ocirc;te du serveur ; celui-ci n'est utilis&eacute; que
+    pour cr&eacute;er des URL de redirection. S'il n'est pas
+    d&eacute;fini, alors le serveur tentera de le r&eacute;soudre
+    &agrave; partir de sa propre adresse IP ; cependant, cette
+    r&eacute;solution n'est pas d'une fiabilit&eacute; absolue, ou
+    peut r&eacute;sulter en un nom autre que le nom
+    "souhait&eacute;". Par exemple :</p>
+
+    <blockquote>
+      <code>ServerName www.wibble.com</code>
+    </blockquote>
+
+    <p>peut &ecirc;tre d&eacute;fini lorsque le nom canonique
+    (principal) de la machine actuelle est
+    <code>monster.wibble.com</code>.</p>
+
+    <p>Si vous utilisez des <a
+    href="../vhosts/name-based.html">h&ocirc;tes virtuels
+    nomm&eacute;s</a>, la directive <code>ServerName</code>
+    &agrave; l'int&eacute;rieur d'une section <a
+    href="#virtualhost"><code>&lt;VirtualHost&gt;</code></a> impose
+    que quel nom d'h&ocirc;te doit appara&icirc;tre dans
+    l'en-t&ecirc;te <code>Host:</code> d'une requ&ecirc;te pour
+    &ecirc;tre associ&eacute; &agrave; cet h&ocirc;te virtuel.</p>
+
+    <p><strong>Voir aussi</strong> : <a
+    href="../dns-caveats.html">Apache et DNS</a> <a
+    href="../vhosts/">documentation sur les h&ocirc;tes virtuels
+    Apache</a><br />
+     <a href="#usecanonicalname">UseCanonicalName</a><br />
+     <a href="#namevirtualhost">NameVirtualHost</a><br />
+     <a href="#serveralias">ServerAlias</a><br />
+    </p>
+    <hr />
+
+    <h2><a id="serverpath" name="serverpath">Directive
+    ServerPath</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ServerPath <em>chemin</em><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> h&ocirc;te
+    virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    <tt>ServerPath</tt> est disponible &agrave; partir de la
+    version 1.1 d'Apache. 
+
+    <p>La directive <tt>ServerPath</tt> d&eacute;finit le chemin
+    d'acc&egrave;s servant de base pour les URL ciblant un <a
+    href="../vhosts/index.html">h&ocirc;te virtuel
+    nomm&eacute;</a>.</p>
+
+    <p><strong>Voir aussi :</strong> <a
+    href="../vhosts/index.html">H&ocirc;tes virtuels sur
+    Apache</a></p>
+    <hr />
+
+    <h2><a id="serverroot" name="serverroot">Directive
+    ServerRoot</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ServerRoot} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ServerRoot <em>nomr&eacute;pertoire</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ServerRoot /usr/local/apache</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>ServerRoot</tt> d&eacute;finit le
+    r&eacute;pertoire dans lequel se situe le serveur. Typiquement,
+    ce r&eacute;pertoire contiendra les sous-r&eacute;pertoires
+    <code>conf/</code> et <code>logs/</code>. Les chemins
+    d'acc&egrave;s relatifs pour d'autres fichiers de configuration
+    seront consid&eacute;r&eacute;s relativement &agrave; ce
+    r&eacute;pertoire.<br />
+     Voir aussi <a href="../invoking.html">les <code>-d</code>
+    options de httpd</a>.</p>
+
+    <p>Voir aussi <a
+    href="../misc/security_tips.html#serverroot">les trucs de
+    s&eacute;curit&eacute;</a> pour plus d'informations sur comment
+    correctment d&eacute;finir les droits d'acc&egrave;s &agrave;
+    ServerRoot.</p>
+    <hr />
+
+    <h2><a id="serversignature" name="serversignature">Directive
+    ServerSignature</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ServerSignature} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ServerSignature On|Off|EMail<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ServerSignature Off</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel, r&eacute;pertoire, .htaccess<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    ServerSignature est disponible &agrave; partir de la version
+    1.3. 
+
+    <p>La directive ServerSignature permet la configuration d'une
+    ligne de bas de page pour les documents
+    g&eacute;n&eacute;r&eacute;s par le serveur (messages d'erreur,
+    liste des r&eacute;pertoire ftp, affichage de mod_info, ...)
+    L'utilit&eacute; de l'emploi d'une telle ligne appara&icirc;t
+    dans la cas d'encha&icirc;nement de proxy, o&ugrave;
+    l'utilisateuir souvent n'a aucune possibilit&eacute; de
+    d&eacute;terminer quel &eacute;l&eacute;ment de la cha&icirc;ne
+    de proxies a produit un message d'erreur.<br />
+     La valeur par d&eacute;faut <samp>Off</samp> supprime la ligne
+    d'erreur (et est compatible avec le comportement d'Apache 1.2
+    et pr&eacute;c&eacute;dents). La valeur <samp>On</samp> ajoute
+    une ligne contenant la version du serveur, la valeur de <a
+    href="#servername">ServerName</a> de l'h&ocirc;te virtuel et la
+    valeur <samp>EMail</samp> ajoute une r&eacute;f&eacute;rence
+    "mailto:" vers l'adresse <a href="#serveradmin">ServerAdmin</a>
+    du document demand&eacute;.</p>
+    <hr />
+
+    <h2><a id="servertokens" name="servertokens">Directive
+    ServerTokens</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ServerTokens} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ServerTokens Minimal|ProductOnly|OS|Full<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ServerTokens Full</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur <br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    ServerTokens est disponible &agrave; partir de la version 1.3
+    d'Apache. Le mot cl&eacute; <code>ProductOnly</code> est
+    disponible &agrave; pertir de la version 1.3.12 
+
+    <p>Cette directive contr&ocirc;le si le champ
+    <samp>Server</samp> de l'en-t&ecirc;te de r&eacute;ponse qui
+    est renvoy&eacute; aux clients inclut une description du type
+    de syst&egrave;me de du serveur ainsi que des informations sur
+    les odules compil&eacute;s.</p>
+
+    <dl>
+      <dt><code>ServerTokens Prod[uctOnly]</code></dt>
+
+      <dd>Le serveur renvoie par exemple : <samp>Server:
+      Apache</samp></dd>
+
+      <dt><code>ServerTokens Min[imal]</code></dt>
+
+      <dd>Le serveur renvoie par exemple : <samp>Server:
+      Apache/1.3.0</samp></dd>
+
+      <dt><code>ServerTokens OS</code></dt>
+
+      <dd>Le serveur renvoie par exemple : <samp>Server:
+      Apache/1.3.0 (Unix)</samp></dd>
+
+      <dt><code>ServerTokens Full</code> (ou non
+      sp&eacute;cifi&eacute;)</dt>
+
+      <dd>Le serveur renvoie par exemple : <samp>Server:
+      Apache/1.3.0 (Unix) PHP/3.0 MyMod/1.2</samp></dd>
+    </dl>
+
+    <p>Cette directive s'applique &agrave; la globalit&eacute; du
+    serveur et ne paut pas &ecirc;tre activ&eacute; ou
+    d&eacute;sactiv&eacute; sur la base d'h&ocirc;tes virtuels.</p>
+    <hr />
+
+    <h2><a id="servertype" name="servertype">Directive
+    ServerType</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt ServerType} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ServerType <em>type</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ServerType standalone</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>ServerType</tt> d&eacute;finit comment le
+    serveur est ex&eacute;cut&eacute; par le syst&egrave;me
+    d'exploitation. <em>Type</em> peut prendre l'une des valeurs
+    suivantes :</p>
+
+    <dl>
+      <dt>inetd</dt>
+
+      <dd>Le serveur sera ex&eacute;cut&eacute; &agrave; partir du
+      processus system inetd ; la commande n&eacute;cessaire au
+      d&eacute;marrage du serveur devra &ecirc;tre ajout&eacute;e
+      au fichier <code>/etc/inetd.conf</code></dd>
+
+      <dt>standalone</dt>
+
+      <dd>Le serveur est lanc&eacute; en tant que d&eacute;mon ; la
+      commande de d&eacute;marrage du serveur sera ajout&eacute;e
+      aux scripts de d&eacute;marrage du syst&egrave;me
+      d'exploitation. (<code>/etc/rc.local</code> ou
+      <code>/etc/rc3.d/...</code>.)</dd>
+    </dl>
+
+    <p>Inetd est l'option la moins utilis&eacute;e des deux. Pour
+    chaque connexion http demand&eacute;e, une nouvelle instance du
+    serveur est cr&eacute;&eacute;e ; une fois la connexion
+    &eacute;tablie, ce programme tourne. Ceci implique un
+    co&ucirc;t important en ressources pour chaque connexion, mais
+    certains administrateurs pr&eacute;f&egrave;rent parfois ce
+    mode pour des raisons de s&eacute;curit&eacute;.</p>
+
+    <p>Standalone est l'option la plus fr&eacute;quente pour la
+    directive <tt>ServerType</tt> dans la mesure o&ugrave; ce
+    dernier est de loin plus performant. Le serveur n'est
+    d&eacute;marr&eacute; qu'une fois, et dessert toutes les
+    connexions ult&eacute;rieures. Si vous utilisez Apache sur un
+    site tr&egrave;s charg&eacute;, le mode standalone sera
+    certainement le seul choix possible.</p>
+    <hr />
+
+    <h2><a id="startservers" name="startservers">Directive
+    StartServers</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt StartServers} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> StartServers <em>nombre</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>StartServers 5</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>StartServers</tt> d&eacute;finit le nombre
+    de processus fils cr&eacute;&eacute;s d&egrave;s le
+    d&eacute;marrage du serveur. Le nombre de ces processus
+    &eacute;tant contr&ocirc;l&eacute; dynamiquement en fonction de
+    la charge, il y a en g&eacute;n&eacute;ral peu
+    d'int&eacute;r&ecirc;t &agrave; modifier la valeur par
+    d&eacute;faut de ce param&egrave;tre.</p>
+
+    <p>Lorsque le serveur est ex&eacute;cut&eacute; sous Microsoft
+    Windows, cette directive n'a aucun effet. Comme la version
+    Windows d'Apache est &eacute;crite en multithread, un seul
+    processus g&egrave;re l'int&eacute;gralit&eacute; des
+    requ&ecirc;tes. La directive <a
+    href="#threadsperchild">ThreadsPerChild</a> contr&ocirc;le le
+    nombre maximal de threads traitant les requ&ecirc;tes, ce qui a
+    un effet similaire &agrave; la directive Unix
+    <samp>StartServers</samp></p>
+
+    <p>Voir aussi <a href="#minspareservers">MinSpareServers</a> et
+    <a href="#maxspareservers">MaxSpareServers</a>.</p>
+    <hr />
+
+    <h2><a id="threadsperchild" name="threadsperchild">Directive
+    ThreadsPerChild</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ThreadsPerChild <em>nombre</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ThreadsPerChild 50</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau (Windows)<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    Disponible seulement &agrave; partir de la version 1.3 pour
+    Windows d'Apache 
+
+    <p>Cette directive indique au serveur combien de threads il
+    doit lancer. Cela est &eacute;quivalent au nombre maximum de
+    connexions que le serveur peut traiter simultan&eacute;ment ;
+    soyez s&ucirc;r de vous et r&eacute;glez le nombre suffisament
+    haut si votre site est tr&egrave;s fr&eacute;quent&eacute;.</p>
+
+    <p>Cette directive n'a aucun effet sur les syst&egrave;mes
+    Unix. Les utilisateurs Unix regarderont les directives <a
+    href="#startservers">StartServers</a> et <a
+    href="#maxrequestsperchild">MaxRequestsPerChild</a>.</p>
+    <hr />
+
+    <h2><a id="threadstacksize" name="threadstacksize">Directive
+    ThreadStackSize</a></h2>
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> ThreadStackSize <em>nombre</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>ThreadStackSize 65536</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau (NetWare)<br />
+     <strong>Compatibilit&eacute; :</strong> disponible &agrave;
+    partir de la version d'Apache 1.3 sur Netware. 
+
+    <p>Cette directive indique la taille de la pile &agrave;
+    utiliser pour les threads. Si vous rencontrer un
+    probl&egrave;me de d&eacute;bordement de pile, vous devez
+    augmenter cette valeur.</p>
+
+    <p>Cette directive n'a aucun effet sur les autres
+    syst&egrave;mes.</p>
+    <hr />
+
+    <h2><a id="timeout" name="timeout">Directive TimeOut</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt TimeOut} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> TimeOut <em>nombre</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <code>TimeOut
+    300</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>TimeOut</tt> d&eacute;finit la
+    temporisation courante pendant laquelle Apache attendra l'une
+    de ces trois choses :</p>
+
+    <ol>
+      <li>Le temps total de r&eacute;ception d'une requ&ecirc;te
+      GET.</li>
+
+      <li>Le temps entre la r&eacute;ception de paquets TCP lors
+      d'une requ&ecirc;te POST ou PUT.</li>
+
+      <li>Le temps entre deux acquittements lors de la transmission
+      de paquets TCP de r&eacute;ponse.</li>
+    </ol>
+
+    <p>Nous pr&eacute;voyons dans le futur de permettre une
+    configuration individuelle de chacune de ces temporisations. La
+    valeur par d&eacute;faut &eacute;tait de 1200 avant la version
+    1.2, mais a &eacute;t&eacute; abaiss&eacute;e &agrave; 300
+    depuis, ce qui est d&eacute;j&agrave; largement plus que
+    n&eacute;cessaire dans la plupart des situations. Il n'est
+    cependant pas r&eacute;gl&eacute; plus bas car il peut exister
+    (encore) des portions de code un peu "floues" par lesquelles le
+    temporisateur n'est pas remis &agrave; z&eacute;ro lors de la
+    transmission d'un paquet.</p>
+    <hr />
+
+    <h2><a id="usecanonicalname"
+    name="usecanonicalname">UseCanonicalName directive</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt UseCanonicalName} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> UseCanonicalName on|off|dns<br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a>
+    <code>UseCanonicalName on</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel, r&eacute;pertoire<br />
+     <a href="directive-dict.html#Override"
+    rel="Help"><strong>Surcharge :</strong></a> Options<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a>
+    UseCanonicalName est disponible &agrave; partir de la verion
+    1.3 
+
+    <p>Dans beaucoup de situations, Apache doit construire des URL
+    <em>s'autor&eacute;f&eacute;ren&ccedil;ant</em>, autremnet dit,
+    des URL r&eacute;f&eacute;ren&ccedil;ant le m&ecirc;me serveur.
+    Avec la directive <code>UseCanonicalName on</code> (dans les
+    versions d'Apache inf&eacute;rieures &agrave; 1.3) Apache
+    utilise les valeurs des directives <a
+    href="#servername">ServerName</a> et <a href="#port">Port</a>
+    pour construire un nom canonique du serveur. Ce nom est
+    utilis&eacute; pour toutes les URL autor&eacute;f&eacute;rentes
+    et pour les valeurs de <code>SERVER_NAME</code> et
+    <code>SERVER_PORT</code> pour les scripts CGI.</p>
+
+    <p>Avec <code>UseCanonicalName off</code>, Apache formera les
+    URLS autor&eacute;f&eacute;rentes en utilisant le nom
+    d'h&ocirc;te le num&eacute;ro de port fourni par le client si
+    ceux ci sont fournis (sinon il utilisera le nom canonique). Ces
+    valeurs sont les m&ecirc;mes qui sont employ&eacute;es pour
+    impl&eacute;menter les <a
+    href="../vhosts/name-based.html">h&ocirc;tes virtuels
+    bas&eacute;s sur des noms</a>, et sont disponibles pour les
+    m&ecirc;mes clients. Les variable CGI <code>SERVER_NAME</code>
+    et <code>SERVER_PORT</code> seront aussi construites &agrave;
+    partir des valeurs fournies par les clients.</p>
+
+    <p>Un exemple o&ugrave; cette directive est utile est le cas
+    d'un serveur intranet o&ugrave; des utilisateurs se connectent
+    &agrave; la machine en utilisant des noms courts tels que
+    <code>www</code>. Vous noterez que si l'utilisateur tape un nom
+    court et que l'URL est un r&eacute;pertoire tel que
+    <code>http://www/splat</code>, <em>sans le caract&egrave;re
+    oblique / final</em> , Apache redirigera la requ&ecirc;te vers
+    <code>http://www.domain.com/splat/</code>. Si vous avez une
+    authentification active, lu'tilisateur devra s'authentifier
+    deux fois, (une premi&egrave;re fois pour <code>www</code> et
+    une deuxi&egrave;me fois pour An example where this may be
+    useful is on an intranet server where you have users connecting
+    to the machine using short names such as . You'll notice that
+    if the users type a <code>www.domain.com</code>). Mais si la
+    directive <code>UseCanonicalName</code> est &agrave; off,
+    Apache redirigera vers <code>http://www/splat/</code>.</p>
+
+    <p>Il existe une troisi&egrave;me option,
+    <code>UseCanonicalName DNS</code>, qui est pr&eacute;vu pour
+    &ecirc;tre employ&eacute; avec de nombreux h&ocirc;tes virtuels
+    bas&eacute;s sur les adresses IP afin de supporter les clients
+    qui ne fournissent pas d'en-t&ecirc;te <code>Host:</code>. Avec
+    cette option Apache effectue une r&eacute;solution DNS inverse
+    sur l'adresse IP du serveur sur lequel le client se connecte
+    afin de travailler avec pour les URL
+    autor&eacute;f&eacute;rentes.</p>
+
+    <p><strong>Attention :</strong> si les scripts CGI font des
+    suppositions sur les valeurs de <code>SERVER_NAME</code> il
+    peuvent ne plus fonctionner avec cette option. Mais le script
+    CGI utilise uniquement <code>SERVER_NAME</code> pour construire
+    des URL autor&eacute;f&eacute;rentes, il ne evrait y avoir
+    aucun probl&egrave;mes.</p>
+
+    <p><strong>Voir &eacute;galement :</strong> <a
+    href="#servername">ServerName</a>, <a href="#port">Port</a></p>
+    <hr />
+
+    <h2><a id="user" name="user">Directive User</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt User} directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> User <em>utilisateurUnix</em><br />
+     <a href="directive-dict.html#Default"
+    rel="Help"><strong>D&eacute;faut :</strong></a> <code>User
+    #-1</code><br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur, h&ocirc;te virtuel<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> noyau 
+
+    <p>La directive <tt>User</tt> d&eacute;finit l'utilisateur
+    associ&eacute; au serveur. Pour utiliser cette directive, un
+    serveur standalone devra &ecirc;tre lanc&eacute; sous
+    <code>root</code>. <em>utilisateurUnix</em> est l'un parmi
+    :</p>
+
+    <dl>
+      <dt>un nom d'utilisateur</dt>
+
+      <dd>se r&eacute;f&egrave;re &agrave; un utilisateur
+      d&eacute;clar&eacute; du syst&egrave;me.</dd>
+
+      <dt># suivi d'un num&eacute;ro d'utilisateur.</dt>
+
+      <dd>se r&eacute;f&egrave;re &agrave; l'utilisateur
+      d&eacute;clar&eacute; du syst&egrave;me portant ce
+      num&eacute;ro.</dd>
+    </dl>
+
+    <p>L'utilisateur peut n'avoir aucun privil&egrave;ge ce qui lui
+    permet n&eacute;anmoins de pouvoir avoir acc&egrave;s &agrave;
+    des fichiers qui ne sont pas sens&eacute;s &ecirc;tre visibles
+    du "reste du monde", mais pas d'ex&eacute;cuter du code qui ne
+    serait pas explicitement ex&eacute;cutable par l'utilisateur
+    associ&eacute; &agrave; httpd. Il est d'ailleurs
+    recommand&eacute; de cr&eacute;er un utilisateur et un groupe
+    specialement pour ex&eacute;cuter le serveur. Certains
+    administrateurs utilisent souvent l'utilisateur
+    <code>nobody</code>, mais ceci n'est pas toujours possible ou
+    souhaitable. Par exemple, le cache de mod_proxy quancd celui
+    est activ&eacute; , doit &ecirc;tre accessible &agrave; cette
+    utilisateur (voir la directive <a
+    href="mod_proxy.html#cacheroot"><code>CacheRoot</code></a>
+    ).</p>
+
+    <p><strong>Note :</strong> si vous d&eacute;marrez le serveur
+    sous un utilisateur non-root, la tentative pour passer sous un
+    utilisateur de moindre privil&egrave;ge &eacute;chouera, et le
+    serveur continuera &agrave; sex&eacute;cuter sous l'utilisateur
+    d'origine. Si vous d&eacute;marrez le serveur sous
+    <code>root</code>, alors il sera normal que le processus
+    p&egrave;re continue &agrave; s'ex&eacute;cuter sous
+    <code>root</code>.</p>
+
+    <p><strong>Note sp&eacute;cifique :</strong> L'utilisation de
+    cette directive dans une section <tt>&lt;VirtualHost&gt;</tt>
+    n&eacute;cessite un <a href="../suexec.html">wrapper suEXEC</a>
+    correctement configur&eacute;. Lorsqu'elle est utilis&eacute;e
+    de cette fa&ccedil;on dans une section
+    <tt>&lt;VirtualHost&gt;</tt>, seul l'utilisateur associ&eacute;
+    &agrave; l'ex&eacute;cution des scripts CGI est affect&eacute;.
+    Les requ&ecirc;tes non-CGI seront toujours trait&eacute;es sous
+    l'utilisateur d&eacute;fini dans la directive User de la
+    section principale.</p>
+
+    <p><strong>S&eacute;curit&eacute; :</strong> Ne
+    d&eacute;finissez pas l'utilisateur (ni le <a
+    href="#group">groupe</a>) comme <code>root</code> sauf si vous
+    savez exactement ce que vous faites, et si vous &ecirc;tes
+    totalement conscients des risques qui sont encourus.</p>
+    <hr />
+
+    <h2><a id="virtualhost" name="virtualhost">Directive
+    &lt;VirtualHost&gt;</a></h2>
+    <!--%plaintext &lt;?INDEX {\tt VirtualHost} section directive&gt; -->
+    <a href="directive-dict.html#Syntax" rel="Help"><strong>Syntaxe
+    :</strong></a> &lt;VirtualHost <em>adresse</em>[:<em>port</em>]
+    ...&gt; ... &lt;/VirtualHost&gt; <br />
+     <a href="directive-dict.html#Context"
+    rel="Help"><strong>Contexte :</strong></a> configuration
+    serveur<br />
+     <a href="directive-dict.html#Status" rel="Help"><strong>Statut
+    :</strong></a> Core<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> la
+    "virtualisation" d'h&ocirc;tes non bas&eacute;s sur l'adressage
+    IP n'est disponible qu'&agrave; partir de la version 1.1
+    d'Apache<br />
+     <a href="directive-dict.html#Compatibility"
+    rel="Help"><strong>Compatibilit&eacute; :</strong></a> le
+    support d'adresses multiples n'est disponible qu'&agrave;
+    partir de la version 1.2 d'Apache 
+
+    <p>Les directives &lt;VirtualHost&gt; et &lt;/VirtualHost&gt;
+    sont utilis&eacute;es pour "encapsuler" un groupe de directives
+    qui s'appliquent &agrave; un h&ocirc;te virtuel particulier.
+    Toute directive autoris&eacute;e dans un contexte "h&ocirc;te
+    virtuel" peut &ecirc;tre pr&eacute;sente. Lorsque le serveur
+    re&ccedil;oit une requ&ecirc;te demandant un document
+    sp&eacute;cifique sur un h&ocirc;te virtuel sp&eacute;cifique,
+    il utilise les directives de configuration explicit&eacute;es
+    dans la section &lt;VirtualHost&gt; correspondante.
+    <em>Adresse</em> peut &ecirc;tre :</p>
+
+    <ul>
+      <li>l'adresse IP de l'h&ocirc;te virtuel</li>
+
+      <li>un nom de domaine enti&egrave;rement qualifi&eacute; pour
+      l'adresse IP de cet h&ocirc;te virtuel.</li>
+    </ul>
+
+    <p>Exemple :</p>
+
+    <blockquote>
+<pre>
+<code>&lt;VirtualHost 10.1.2.3&gt; 
+ServerAdmin webmaster@host.foo.com
+DocumentRoot /www/docs/host.foo.com 
+ServerName host.foo.com
+ErrorLog logs/host.foo.com-error_log
+TransferLog logs/host.foo.com-access_log
+&lt;/VirtualHost&gt;
+</code>
+</pre>
+    </blockquote>
+
+    <p>Chaque h&ocirc;te virtuel doit &ecirc;tre associ&eacute;
+    &agrave; une adresse IP, &agrave; un num&eacute;ro de port ou
+    &agrave; un nom d'h&ocirc;te diff&eacute;rents que celui
+    attribu&eacute; au serveur, dans le dernier cas la machine du
+    serveur doit &ecirc;tre configur&eacute;e pour accepter des
+    paquets IP sur plusieurs adresses. (Si la machine ne dispose
+    pas de plusieurs interfaces r&eacute;seau physiques, ceci peut
+    &ecirc;tre obtenu par la commande <code>ifconfig alias</code>
+    (si votre OS l'accepte), ou par des patchs du kernel du type <a
+    href="../misc/vif-info.html">VIF</a> (pour SunOS(TM)
+    4.1.x)).</p>
+
+    <p>Vous pouvez sp&eacute;cifier plus d'une adresse IP. Ceci
+    peut &ecirc;tre utile si une machine r&eacute;pond au
+    m&ecirc;me nom venant de deux diff&eacute;rentes interfaces.
+    Par exemple, si vous avez un h&ocirc;te virtuel qui est
+    accessible des h&ocirc;tes &agrave; partir d'un r&eacute;seau
+    interne (intranet) et externe (internet). Exemple :</p>
+
+    <blockquote>
+      <code>&lt;VirtualHost 192.168.1.2 204.255.176.199&gt;<br />
+       DocumentRoot /www/docs/host.foo.com<br />
+       ServerName host.foo.com<br />
+       ServerAlias host<br />
+       &lt;/VirtualHost&gt;</code>
+    </blockquote>
+
+    <p>Le nom pr&eacute;d&eacute;fini <code>_default_</code> peut
+    &ecirc;tre attribu&eacute; auquel cas cet h&ocirc;te virtuel
+    lira toutes les adresses IP qui ne sont pas explicitement
+    list&eacute;es dans les autres h&ocirc;tes virtuels
+    d&eacute;finis. En l'absence d'un h&ocirc;te virtuel _default_,
+    la configuration serveur "principale", &agrave; savoir toutes
+    les d&eacute;finitions en dehors des sections VirtualHost,
+    seront utilis&eacute;es si aucun h&ocirc;te virtuel ne
+    reconna&icirc;t l'adresse.</p>
+
+    <p>Vous pouvez sp&eacute;cifier une commande <code>:port</code>
+    pour changer le port reconnu par l'h&ocirc;te virtuel. Si aucun
+    port n'est mentionn&eacute;, alors le port reconnu est par
+    d&eacute;faut celui mentionn&eacute; dans la derni&egrave;re
+    directive de <code><a href="#port">Port</a></code> de la
+    section principale qui pr&eacute;c&egrave;de. Vous pouvez
+    &eacute;galement sp&eacute;cifier <code>:*</code> pour
+    reconna&icirc;tre tous les ports &agrave; cette adresse. (Ceci
+    est conseill&eacute; lorsque l'h&ocirc;te virtuel est le
+    <code>_default_</code>.)</p>
+
+    <p><strong>S&eacute;curit&eacute;</strong>: Voir les <a
+    href="../misc/security_tips.html">conseils de
+    s&eacute;curit&eacute;</a> pour plus de d&eacute;tails sur les
+    risques encourus si le r&eacute;pertoire contenant les fichiers
+    de trace peut &ecirc;tre &eacute;crit par un autre utilisateur
+    que celui sous lequel est ex&eacute;cut&eacute; le serveur.</p>
+
+    <p><strong>Note</strong>: L'utilisation de la directive
+    &lt;VirtualHost&gt; <strong>n'</strong> affecte
+    <strong>pas</strong> les adresses qu'&eacute;coute Apache. Vous
+    devez vous assurer que les adresses d&eacute;finies pour les
+    h&ocirc;tes virtuels font aussi partie de l'ensemble des
+    adresses &eacute;cout&eacute;es par Apache et d&eacute;finies
+    par des directives <a href="#bindaddress">BindAddress</a> ou <a
+    href="#listen">Listen</a>.</p>
+
+    <p><strong>Voir aussi :</strong> <a
+    href="../vhosts/index.html">H&ocirc;tes virtuels sur
+    Apache</a><br />
+     <a href="../dns-caveats.html">Avertissement concernant DNS et
+    Apache</a><br />
+     <a href="../bind.html">Configurer les ports et adresses
+    utilis&eacute;s par Apache</a></p>
+
+    <p><strong>Voir aussi</strong> : <a
+    href="../sections.html">Comment fonctionnent les sections
+    concernant les r&eacute;pertoires, chemins et fichiers</a> pour
+    une explication plus pr&eacute;cise concernant la
+    mani&egrave;re dont ces sections sont combin&eacute;es
+    lorsqu'une requ&ecirc;te est trait&eacute;e. 
+    <!--#include virtual="footer.html" -->
+    </p>
+  </body>
+</html>
+

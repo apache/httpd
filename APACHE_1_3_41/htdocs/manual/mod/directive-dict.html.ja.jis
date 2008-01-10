@@ -1,0 +1,300 @@
+<?xml version="1.0" encoding="iso-2022-jp"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+    "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<title>Apache のディレクティブの解説に使われる用語</title>
+</head>
+<!-- English revision: 1.7 -->
+<!-- Background white, links blue (unvisited), navy (visited), red (active) -->
+<body bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#000080"
+alink="#FF0000">
+<!--#include virtual="header.html" -->
+<h1 align="center">Apache
+のディレクティブの解説に使われる用語</h1>
+
+<p>それぞれの Apache
+ディレクティブは、次のような共通の書式によって記述されます:</p>
+
+<dl>
+<dd><a href="#Syntax" rel="Help"><strong>構文:</strong></a>
+<em>directive-name</em> <em>some args</em><br />
+ <a href="#Default" rel="Help"><strong>デフォルト:</strong></a>
+<samp><em>directive-name default-value</em></samp><br />
+ <a href="#Context" rel="Help"><strong>コンテキスト:</strong></a>
+<em>context-list</em><br />
+ <a href="#Override" rel="Help"><strong>上書き:</strong></a>
+<em>override</em><br />
+ <a href="#Status" rel="Help"><strong>ステータス:</strong></a>
+<em>status</em><br />
+ <a href="#Module" rel="Help"><strong>モジュール:</strong></a>
+<em>module-name</em><br />
+ <a href="#Compatibility" rel="Help"><strong>互換性:</strong></a>
+<em>compatibility notes</em></dd>
+</dl>
+
+<p>このドキュメントではディレクティブのそれぞれの属性が説明され
+ています。可能な場合はディレクティブが取り得るすべての値も書かれています。</p>
+
+<h2>ディレクティブの用語</h2>
+
+<ul>
+<li><a href="#Syntax">構文</a></li>
+
+<li><a href="#Default">デフォルト</a></li>
+
+<li><a href="#Context">コンテキスト</a></li>
+
+<li><a href="#Override">上書き</a></li>
+
+<li><a href="#Status">ステータス</a></li>
+
+<li><a href="#Module">モジュール</a></li>
+
+<li><a href="#Compatibility">互換性</a></li>
+</ul>
+
+<hr />
+<h2><a id="Syntax" name="Syntax">構文</a></h2>
+
+<p>設定ファイル中のディレクティブの書式を示します。
+この構文はディレクティブ特有なので、詳細はディレクティブの説明を
+参照してください。一般的に、ディレクティブ名の後には
+空白により分割されたいくつかの引数が続きます。
+引数が空白を含むときは二重引用符 (訳注: ")
+で囲まれています。 オプショナルな引数は括弧 (訳注:
+[]) で囲まれています。
+引数が複数の値を取り得る場合は、それらの値は垂直の棒 "|" で
+分割されています。
+変更されないテキストはデフォルトのフォントで表示され、置換の必要な
+引数は<em>強調されて</em>表示されます。
+引数の数が変わるディレクティブは最後の
+引数が繰り返されることを示すために "..." で終わります。</p>
+
+<p>ディレクティブは多くの違う型の引数をとります。いくつか、良く
+使われるものを以下で定義します。</p>
+
+<dl>
+<dt><em>URL</em></dt>
+
+<dd><code>http://www.example.com/path/to/file.html</code>
+のように、
+スキーム、ホスト名、パス名(省略可能)を含んでいる完全な
+Uniform Resource Locator。</dd>
+
+<dt><em>URL-path</em></dt>
+
+<dd><code>/path/to/file.html</code> のように、スキームと
+ホスト名の後に続く <em>url</em> の一部。<em>url-path</em>
+は ファイルシステムからの視点ではなく、
+ウェブからの視点でリソースを表現します。</dd>
+
+<dt><em>file-path</em></dt>
+
+<dd><code>/usr/local/apache/htdocs/path/to/file.html</code>
+のように、
+ルートディレクトリから始まるローカルのファイルシステム上のファイルへのパス。
+通常、スラッシュで始まらない <em>file-path</em> は <a
+href="core.html#serverroot">ServerRoot</a> からの相対パスとして
+扱われます。</dd>
+
+<dt><em>directory-path</em></dt>
+
+<dd><code>/usr/local/apache/htdocs/path/to/</code> のように、
+ルートディレクトリから始まるローカルのファイルシステムのディレクトリへの
+パス。</dd>
+
+<dt><em>filename</em></dt>
+
+<dd><code>file.html</code> のように、パス情報の付いていない
+ファイル名。</dd>
+
+<dt><em>regex</em></dt>
+
+<dd><a href="../misc/FAQ.html#regex">正規表現</a>。これは、
+テキストのマッチのパターンを表します。ディレクティブの定義が
+<em>regex</em> が何に対してマッチを行なうのかを指定します。</dd>
+
+<dt><em>extension</em></dt>
+
+<dd>一般的には <em>filename</em>
+の最後のドットの後の部分です。 しかし、Apache
+は複数のファイルの拡張子を認識しますので、<em>filename</em>
+に複数のドットがあると、最初のドットの後の、それぞれのドットで分離された部分が
+<em>extension</em> (訳注: 拡張子)
+になります。例えば、<em>filename</em> <code>file.html.en</code>
+には二つの拡張子があります。<code>.html</code> と
+<code>.en</code> です。Apache
+のディレクティブでは、<em>extension</em>
+はドット付きでも無しでも指定できます。さらに、<em>extension</em>
+は 大文字小文字を区別しません。</dd>
+
+<dt><em>MIME-type</em></dt>
+
+<dd><code>text/html</code> のように、スラッシュで分離された
+主フォーマットと副フォーマットによってファイルの形式を
+表す方法です。</dd>
+
+<dt><em>env-variable</em></dt>
+
+<dd>Apache の設定により定義される <a
+href="../env.html">環境変数</a>の名前です。これはオペレーティングシステムの
+環境変数と同じとは限らないことに注意してください。詳細は <a
+href="../env.html">環境変数の説明</a>を参照してください。</dd>
+</dl>
+
+<hr />
+<h2><a id="Default" name="Default">デフォルト</a></h2>
+
+<p>ディレクティブにデフォルト値
+(<em>すなわち</em>、設定ファイルから
+省略されていても、Apache
+ウェブサーバは特定の値に設定されているかのように
+動作します) がある場合はここに記述されます。
+デフォルト値の無い場合、ここは "<em>None</em>" と
+書かれます。ここで書かれているデフォルトはサーバと共に配布されている
+デフォルトの httpd.conf
+内に書かれているディレクティブの値と
+違う可能性があることに注意してください。</p>
+
+<hr />
+<h2><a id="Context" name="Context">コンテキスト</a></h2>
+
+<p>
+これは、サーバの設定ファイル中のどこでディレクティブが有効なのかを示します。
+次に示す値が一つ以上カンマ区切りで列挙されています。</p>
+
+<dl>
+<dt><strong>サーバ設定ファイル</strong></dt>
+
+<dd>これは、サーバ設定ファイル
+(<em>例えば</em>、<samp>httpd.conf</samp>,
+<samp>srm.conf</samp>, <samp>access.conf</samp>)
+内では使用できますが、 <samp>&lt;VirtualHost&gt;</samp>や
+<samp>&lt;Directory&gt;</samp> の中では
+<strong>使用できない</strong>ことを示します。
+<samp>.htaccess</samp>ファイルでの使用は許可されていません。</dd>
+
+<dt><strong>バーチャルホスト</strong></dt>
+
+<dd>これは、サーバ設定ファイルの <samp>&lt;VirtualHost&gt;</samp>
+の中で使用できることを示します。</dd>
+
+<dt><strong>ディレクトリ</strong></dt>
+
+<dd>これは、サーバ設定ファイルの
+<samp>&lt;Directory&gt;</samp>、
+<samp>&lt;Location&gt;</samp>、<samp>&lt;Files&gt;</samp>
+の中で、 <a
+href="../sections.html">Directory、Location、Files
+セクションの機能</a>
+で説明されている制限の下で使用できることを示します。</dd>
+
+<dt><strong>.htaccess</strong></dt>
+
+<dd>これは、ディレクトリ<em>毎</em>の
+<samp>.htaccess</samp> ファイル内で
+使用可能であることを示します。 ただ、<a href="#Override"
+rel="Help">上書き</a>
+の設定によっては、処理されないかもしれません。</dd>
+</dl>
+
+<p>
+ディレクティブは指示されたコンテキストで<em>のみ</em>許可されます。
+他の場所で使おうとすると、サーバがそのコンテキストを正しく扱えなく
+なるような設定エラーが発生するか、サーバがまったく動作しなくなる、
+<em>すなわち</em>、サーバが起動しなくなるということになります。</p>
+
+<p>
+ディレクティブの有効な位置は、実際は挙げられているコンテキストの
+論理和 (訳注: Boolen OR) になります。言い換えると、
+"<samp>サーバ設定ファイル、.htaccess</samp>" で有効だと
+記されているディレクティブは <samp>httpd.conf</samp>
+ファイルと <samp>.htaccess</samp> ファイルとで有効ですが、
+<samp>&lt;Directory&gt;</samp> や
+<samp>&lt;VirtualHost&gt;</samp> の中では使用できません。</p>
+
+<hr />
+<h2><a id="Override" name="Override">上書き</a></h2>
+
+<p>このディレクティブの属性は、<samp>.htaccess</samp>
+ファイル中に
+ディレクティブが現れたときに、それの処理を有効にするために
+どの設定の上書きが必要かを示します。 ディレクティブの <a
+href="#Context" rel="Help">コンテキスト</a>
+が、<samp>.htaccess</samp>
+ファイル中では許可していない場合は、 この属性は
+"<em>適用不可</em>" と書かれます。</p>
+
+<p>上書きは、<a href="core.html#allowoverride"
+rel="Help"><samp>AllowOverride</samp></a>
+ディレクティブによって有効にされ、
+特定のスコープ(ディレクトリなど)と、
+さらに下位のレベルの <samp>AllowOverride</samp>
+で修正されない限り、 その配下に対して適用されます。
+ディレクティブのドキュメントは取り得る上書きの名前も挙げます。</p>
+
+<hr />
+<h2><a id="Status" name="Status">ステータス</a></h2>
+
+<p>これはディレクティブが Apache
+ウェブサーバにどれくらいきつく組み込まれているかを
+示します。言い換えれば、ディレクティブとその機能を利用するために、
+モジュールの数を増やして、サーバを再コンパイルする必要があるかもしれない
+ということを示します。
+この属性が取り得る値は以下のものです:</p>
+
+<dl>
+<dt><strong>Core</strong></dt>
+
+<dd>"Core" のディレクティブは Apache
+ウェブサーバの基本となるべきものであり、
+常に使用可能であることを示します。</dd>
+
+<dt><strong>Base</strong></dt>
+
+<dd>"Base" のディレクティブは
+デフォルトでサーバに組み込まれている標準モジュールの中の一つでサ
+ポートされていて、わざわざ設定からモジュールを削除したときを除いて、
+通常では使用可能であることを示します。</dd>
+
+<dt><strong>Extension</strong></dt>
+
+<dd>"Extension" のディレクティブは、 Apache
+サーバの配布物に同梱されているモジュールの一つで提供されているものの、
+通常ではサーバに組み込まれていないことを示します。
+ディレクティブとその機能を有効にするには、サーバビルド用の設定ファイルを
+変更して Apache を再コンパイルする必要があります。</dd>
+
+<dt><strong>Experimental</strong></dt>
+
+<dd>"Experimental" のディレクティブは、Apache 配布物に
+同梱されているものの、試したい場合は自己責任で行なう
+必要があるということを示します。ディレクティブは、すべてのドキュメントを
+完全にそろわせるために解説されていますが、サポートされているとは限りません。
+ディレクティブを提供するモジュールはデフォルトで組み込まれているかも
+しれませんし、そうでないかもしれません。使用可能かどうかは、
+ディレクティブとモジュールの説明をしているページの先頭を調べてください。</dd>
+</dl>
+
+<hr />
+<h2><a id="Module" name="Module">モジュール</a></h2>
+
+<p>
+これは単純にディレクティブが定義されているモジュールの名前を記載します。</p>
+
+<hr />
+<h2><a id="Compatibility" name="Compatibility">互換性</a></h2>
+
+<p>ディレクティブが Apache 1
+の配布に組み込まれていなかった場合、
+ディレクティブが導入されたバージョンがここに書かれています。
+ディレクティブが NCSA HTTPd
+サーバのものと同じ名前である場合、
+異なる挙動があるとここに書かれます。
+挙動が同じ場合は、"<em>互換性の問題無し</em>"
+と書かれています。</p>
+
+<!--#include virtual="footer.html" -->
+</body>
+</html>
