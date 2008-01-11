@@ -204,7 +204,11 @@ AuthBasicProvider    file
 AuthUserFile         /usr/local/apache2/conf/httpd.passwd
 require              valid-user
 &lt;/Directory&gt;</pre></div>
-
+    
+    <p>The password used in this example is the DES encrypted string "password".
+    See the <code class="directive"><a href="../mod/mod_ssl.html#ssloptions">SSLOptions</a></code> docs for more 
+    information.</p>
+    
     <div class="example"><h3>httpd.passwd</h3><pre>
 /C=DE/L=Munich/O=Snake Oil, Ltd./OU=Staff/CN=Foo:xxj31ZMTZzkVA
 /C=US/L=S.F./O=Snake Oil, Ltd./OU=CA/CN=Bar:xxj31ZMTZzkVA
