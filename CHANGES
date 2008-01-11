@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_http: Return HTTP status codes instead of apr_status_t
+     values for errors encountered while forwarding the request body
+     PR 44165 [Eric Covener]
+
   *) mod_logio: Provide optional function to allow modules to adjust the 
      bytes_in count [Eric Covener]
      
