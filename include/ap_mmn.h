@@ -147,6 +147,7 @@
  * 20071108.5 (2.3.0-dev)  Add *scpool to proxy_conn_rec structure
  * 20071108.6 (2.3.0-dev)  Add *r and need_flush to proxy_conn_rec structure
  * 20071108.7 (2.3.0-dev)  Add *ftp_directory_charset to proxy_dir_conf
+ * 20071108.8 (2.3.0-dev)  Add optional function ap_logio_add_bytes_in() to mog_logio
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
