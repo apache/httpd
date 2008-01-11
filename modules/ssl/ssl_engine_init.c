@@ -135,87 +135,6 @@ static int ssl_tmp_keys_init(server_rec *s)
     return OK;
 }
 
-#ifndef OPENSSL_NO_TLSEXT
-static int set_ssl_vhost(void *servername, conn_rec *c, server_rec *s) 
-{
-    SSLSrvConfigRec *sc;
-    SSL *ssl;
-    BOOL found = FALSE;
-    apr_array_header_t *names;
-    int i;
-
-    /* check ServerName */
-    if (!strcasecmp(servername, s->server_hostname))
-        found = TRUE;
-
-    /* if not matched yet, check ServerAlias entries */
-    if (!found) {
-        names = s->names;
-        if (names) {
-            char **name = (char **)names->elts;
-            for (i = 0; i < names->nelts; ++i) {
-                if (!name[i])
-                    continue;
-                if (!strcasecmp(servername, name[i])) {
-                    found = TRUE;
-                    break;
-                }
-            }
-        }
-    }
-
-    /* if still no match, check ServerAlias entries with wildcards */
-    if (!found) {
-        names = s->wild_names;
-        if (names) {
-            char **name = (char **)names->elts;
-            for (i = 0; i < names->nelts; ++i) {
-                if (!name[i])
-                    continue;
-                if (!ap_strcasecmp_match(servername, name[i])) {
-                    found = TRUE;
-                    break;
-                }
-            }
-        }
-    }
-
-    /* set SSL_CTX (if matched) */
-    if (found) {
-        if ((ssl = ((SSLConnRec *)myConnConfig(c))->ssl) == NULL)
-            return 0;
-        if (!(sc = mySrvConfig(s)))
-            return 0;
-        SSL_set_SSL_CTX(ssl, sc->server->ssl_ctx);
-        return 1;
-    }
-    return 0;
-}
-
-int ssl_set_vhost_ctx(SSL *ssl, const char *servername) 
-{
-    conn_rec *c;
-
-    if (servername == NULL)   /* should not occur. */
-        return 0;
-    SSL_set_SSL_CTX(ssl, NULL);
-    if (!(c = (conn_rec *)SSL_get_app_data(ssl)))
-        return 0;
-    return ap_vhost_iterate_given_conn(c, set_ssl_vhost, (void *)servername);
-}
-
-int ssl_servername_cb(SSL *ssl, int *al, modssl_ctx_t *mctx)
-{
-    const char *servername =
-                SSL_get_servername(ssl, TLSEXT_NAMETYPE_host_name);
-
-    if (servername)
-        return ssl_set_vhost_ctx(ssl, servername) ? 
-                SSL_TLSEXT_ERR_OK : SSL_TLSEXT_ERR_ALERT_FATAL;
-    return SSL_TLSEXT_ERR_NOACK;
-}
-#endif
-
 /*
  *  Per-module initialization
  */
@@ -436,29 +355,32 @@ static void ssl_init_server_check(server_rec *s,
     }
 }
 
-static void ssl_init_server_extensions(server_rec *s,
-                                       apr_pool_t *p,
-                                       apr_pool_t *ptemp,
-                                       modssl_ctx_t *mctx)
+#ifndef OPENSSL_NO_TLSEXT
+static void ssl_init_ctx_tls_extensions(server_rec *s,
+                                        apr_pool_t *p,
+                                        apr_pool_t *ptemp,
+                                        modssl_ctx_t *mctx)
 {
     /*
      * Configure TLS extensions support
      */
-#ifndef OPENSSL_NO_TLSEXT
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "Configuring TLS extensions facility");
+                 "Configuring TLS extension handling");
 
+    /*
+     * Server name indication (SNI)
+     */
     if (!SSL_CTX_set_tlsext_servername_callback(mctx->ssl_ctx,
-                                                ssl_servername_cb) ||
+                          ssl_callback_ServerNameIndication) ||
         !SSL_CTX_set_tlsext_servername_arg(mctx->ssl_ctx, mctx)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "Unable to initialize servername callback - "
-                     "bad OpenSSL version.");
+                     "Unable to initialize TLS servername extension "
+                     "callback (incompatible OpenSSL version?)");
         ssl_log_ssl_error(APLOG_MARK, APLOG_ERR, s);
         ssl_die();
     }
-#endif
 }
+#endif
 
 static void ssl_init_ctx_protocol(server_rec *s,
                                   apr_pool_t *p,
@@ -816,7 +738,9 @@ static void ssl_init_ctx(server_rec *s,
     if (mctx->pks) {
         /* XXX: proxy support? */
         ssl_init_ctx_cert_chain(s, p, ptemp, mctx);
-        ssl_init_server_extensions(s, p, ptemp, mctx);
+#ifndef OPENSSL_NO_TLSEXT
+        ssl_init_ctx_tls_extensions(s, p, ptemp, mctx);
+#endif
     }
 }
 
@@ -1110,16 +1034,13 @@ void ssl_init_ConfigureServer(server_rec *s,
 
 void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
 {
+    server_rec *s, *ps;
     SSLSrvConfigRec *sc;
-    server_rec *s;
-#ifdef OPENSSL_NO_TLSEXT
-    server_rec *ps;
     apr_hash_t *table;
     const char *key;
     apr_ssize_t klen;
 
     BOOL conflict = FALSE;
-#endif
 
     /*
      * Give out warnings when a server has HTTPS configured
@@ -1147,7 +1068,6 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
         }
     }
 
-#ifdef OPENSSL_NO_TLSEXT
     /*
      * Give out warnings when more than one SSL-aware virtual server uses the
      * same IP:port. This doesn't work because mod_ssl then will always use
@@ -1172,7 +1092,11 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
         if ((ps = (server_rec *)apr_hash_get(table, key, klen))) {
             ap_log_error(APLOG_MARK, APLOG_WARNING, 0,
                          base_server,
+#ifdef OPENSSL_NO_TLSEXT
                          "Init: SSL server IP/port conflict: "
+#else
+                         "Init: SSL server IP/port overlap: "
+#endif
                          "%s (%s:%d) vs. %s (%s:%d)",
                          ssl_util_vhostid(p, s),
                          (s->defn_name ? s->defn_name : "unknown"),
@@ -1189,10 +1113,15 @@ void ssl_init_CheckServers(server_rec *base_server, apr_pool_t *p)
 
     if (conflict) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, base_server,
+#ifdef OPENSSL_NO_TLSEXT
                      "Init: You should not use name-based "
                      "virtual hosts in conjunction with SSL!!");
-    }
+#else
+                     "Init: Name-based SSL virtual hosts only "
+                     "work for clients with TLS server name indication "
+                     "support (RFC 4366)");
 #endif
+    }
 }
 
 #ifdef SSLC_VERSION_NUMBER

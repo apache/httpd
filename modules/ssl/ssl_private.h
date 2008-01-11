@@ -581,6 +581,9 @@ int          ssl_callback_NewSessionCacheEntry(SSL *, SSL_SESSION *);
 SSL_SESSION *ssl_callback_GetSessionCacheEntry(SSL *, unsigned char *, int, int *);
 void         ssl_callback_DelSessionCacheEntry(SSL_CTX *, SSL_SESSION *);
 void         ssl_callback_LogTracingState(MODSSL_INFO_CB_ARG_TYPE, int, int);
+#ifndef OPENSSL_NO_TLSEXT
+int          ssl_callback_ServerNameIndication(SSL *, int *, modssl_ctx_t *);
+#endif
 
 /**  Session Cache Support  */
 void         ssl_scache_init(server_rec *, apr_pool_t *);
@@ -725,11 +728,6 @@ int modssl_verify_ocsp(X509_STORE_CTX *ctx, SSLSrvConfigRec *sc,
 OCSP_RESPONSE *modssl_dispatch_ocsp_request(const apr_uri_t *uri, 
                                             OCSP_REQUEST *request,
                                             conn_rec *c, apr_pool_t *p);
-#endif
-
-#ifndef OPENSSL_NO_TLSEXT
-int ssl_servername_cb(SSL *ssl, int *al, modssl_ctx_t *mctx);
-int ssl_set_vhost_ctx(SSL *ssl, const char *servername); 
 #endif
 
 #endif /* SSL_PRIVATE_H */
