@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_rewrite: Don't canonicalise URLs with [P,NE]
+     PR 43319 [<rahul sun.com>]
+
   *) mod_ssl: Added server name indication support (RFC 4366).
      PR 34607. [Kaspar Brand <asfbugz velox.ch>]
 

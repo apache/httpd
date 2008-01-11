@@ -4412,6 +4412,10 @@ static int hook_uri2file(request_rec *r)
                 return HTTP_FORBIDDEN;
             }
 
+            if (rulestatus == ACTION_NOESCAPE) {
+                apr_table_setn(r->notes, "proxy-nocanon", "1");
+            }
+
             /* make sure the QUERY_STRING and
              * PATH_INFO parts get incorporated
              */
