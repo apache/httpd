@@ -320,6 +320,12 @@ static char *ssl_var_lookup_ssl(apr_pool_t *p, conn_rec *c, char *var)
     else if (ssl != NULL && strcEQ(var, "COMPRESS_METHOD")) {
         result = ssl_var_lookup_ssl_compress_meth(ssl);
     }
+#ifndef OPENSSL_NO_TLSEXT
+    else if (ssl != NULL && strcEQ(var, "TLS_SNI")) {
+        result = apr_pstrdup(p, SSL_get_servername(ssl,
+                                                   TLSEXT_NAMETYPE_host_name));
+    }
+#endif
     return result;
 }
 
