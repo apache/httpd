@@ -132,6 +132,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem,
 
+  * mod_rewrite: Don't canonicalise URLs with [P,NE]
+    PR 43319
+    http://svn.apache.org/viewvc?rev=611134&view=rev
+    +1: niq
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
