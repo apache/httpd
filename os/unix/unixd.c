@@ -117,6 +117,30 @@ AP_DECLARE(int) unixd_setup_child(void)
     if (set_group_privs()) {
         return -1;
     }
+
+    if (NULL != unixd_config.chroot_dir) {
+        if (geteuid()) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "Cannot chroot when not started as root");
+            return -1;
+        }
+        if (chdir(unixd_config.chroot_dir) != 0) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "Can't chdir to %s", unixd_config.chroot_dir);
+            return -1;
+        }
+        if (chroot(unixd_config.chroot_dir) != 0) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "Can't chroot to %s", unixd_config.chroot_dir);
+            return -1;
+        }
+        if (chdir("/") != 0) {
+            ap_log_error(APLOG_MARK, APLOG_ALERT, errno, NULL,
+                         "Can't chdir to new root");
+            return -1;
+        }
+    }
+
 #ifdef MPE
     /* Only try to switch if we're running as MANAGER.SYS */
     if (geteuid() == 1 && unixd_config.user_id > 1) {
@@ -198,6 +222,20 @@ AP_DECLARE(const char *) unixd_set_group(cmd_parms *cmd, void *dummy,
 
     return NULL;
 }
+AP_DECLARE(const char *) unixd_set_chroot_dir(cmd_parms *cmd, void *dummy,
+                                              const char *arg)
+{
+    const char *err = ap_check_cmd_context(cmd, GLOBAL_ONLY);
+    if (err != NULL) {
+        return err;
+    }
+    if (!ap_is_directory(cmd->pool, arg)) {
+        return "ChrootDir must be a valid directory";
+    }
+
+    unixd_config.chroot_dir = arg;
+    return NULL;
+}
 
 AP_DECLARE(void) unixd_pre_config(apr_pool_t *ptemp)
 {
@@ -206,6 +244,8 @@ AP_DECLARE(void) unixd_pre_config(apr_pool_t *ptemp)
     unixd_config.user_name = DEFAULT_USER;
     unixd_config.user_id = ap_uname2id(DEFAULT_USER);
     unixd_config.group_id = ap_gname2id(DEFAULT_GROUP);
+    
+    unixd_config.chroot_dir = NULL; /* none */
 
     /* Check for suexec */
     unixd_config.suexec_enabled = 0;
