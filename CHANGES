@@ -1,6 +1,8 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_rewrite: Don't canonicalise URLs with [P,NE]
+     PR 43319 [<rahul sun.com>]
 
 Changes with Apache 2.2.8
 
