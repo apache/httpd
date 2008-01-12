@@ -80,6 +80,10 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_rewrite: Don't canonicalise URLs with [P,NE]
+    PR 43319
+    http://svn.apache.org/viewvc?rev=611134&view=rev
+    +1: niq, rpluem, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -131,12 +135,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=611376&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
-
-  * mod_rewrite: Don't canonicalise URLs with [P,NE]
-    PR 43319
-    http://svn.apache.org/viewvc?rev=611134&view=rev
-    +1: niq, rpluem
+      +1: rpluem, covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
