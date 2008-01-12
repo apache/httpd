@@ -2,15 +2,15 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_ftp: Fix base for directory listings.
+     PR 27834 [Nick Kew]
+
   *) mod_proxy_http: Return HTTP status codes instead of apr_status_t
      values for errors encountered while forwarding the request body
      PR 44165 [Eric Covener]
 
   *) mod_logio: Provide optional function to allow modules to adjust the 
      bytes_in count [Eric Covener]
-     
-  *) mod_rewrite: Don't canonicalise URLs with [P,NE]
-     PR 43319 [<rahul sun.com>]
 
   *) mod_ssl: Added server name indication support (RFC 4366).
      PR 34607. [Kaspar Brand <asfbugz velox.ch>]

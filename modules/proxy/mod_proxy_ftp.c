@@ -314,6 +314,7 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
         /* basedir is either "", or "/%2f" for the "squid %2f hack" */
         const char *basedir = "";  /* By default, path is relative to the $HOME dir */
         char *wildcard = NULL;
+        const char *escpath;
 
         /* Save "scheme://site" prefix without password */
         site = apr_uri_unparse(p, &f->r->parsed_uri, APR_URI_UNP_OMITPASSWORD | APR_URI_UNP_OMITPATHINFO);
@@ -350,13 +351,14 @@ static apr_status_t proxy_send_dir_filter(ap_filter_t *f,
         str = (basedir[0] != '\0') ? "<a href=\"/%2f/\">%2f</a>/" : "";
 
         /* print "ftp://host/" */
+        escpath = ap_escape_html(p, path);
         str = apr_psprintf(p, DOCTYPE_HTML_3_2
                 "<html>\n <head>\n  <title>%s%s%s</title>\n"
+                "<base href=\"%s%s%s\">\n"
                 " </head>\n"
                 " <body>\n  <h2>Directory of "
                 "<a href=\"/\">%s</a>/%s",
-                site, basedir, ap_escape_html(p, path),
-                site, str);
+                site, basedir, escpath, site, basedir, escpath, site, str);
 
         APR_BRIGADE_INSERT_TAIL(out, apr_bucket_pool_create(str, strlen(str),
                                                           p, c->bucket_alloc));
