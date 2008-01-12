@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Support chroot on Unix-family platforms
+     PR 43596 [Dimitar Pashev <mitko banksoft-bg.com>]
+
   *) Don't add bogus duplicate Content-Language entries
      PR 11035 [Davi Arnaut]
 
