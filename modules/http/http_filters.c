@@ -1173,10 +1173,22 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
 
     if (!apr_is_empty_array(r->content_languages)) {
         int i;
+        char *token;
         char **languages = (char **)(r->content_languages->elts);
-        for (i = 0; i < r->content_languages->nelts; ++i) {
-            apr_table_mergen(r->headers_out, "Content-Language", languages[i]);
+        const char *field = apr_table_get(r->headers_out, "Content-Language");
+
+        while (field && (token = ap_get_list_item(r->pool, &field)) != NULL) {
+            for (i = 0; i < r->content_languages->nelts; ++i) {
+                if (!strcasecmp(token, languages[i]))
+                    break;
+            }
+            if (i == r->content_languages->nelts) {
+                *((char **) apr_array_push(r->content_languages)) = token;
+            }
         }
+
+        field = apr_array_pstrcat(r->pool, r->content_languages, ',');
+        apr_table_setn(r->headers_out, "Content-Language", field);
     }
 
     /*

@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Don't add bogus duplicate Content-Language entries
+     PR 11035 [Davi Arnaut]
+
   *) mod_proxy_ftp: Fix base for directory listings.
      PR 27834 [Nick Kew]
 
