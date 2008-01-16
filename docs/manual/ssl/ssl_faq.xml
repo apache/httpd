@@ -107,7 +107,7 @@ author.</p>
 <li><a href="#mutex">Why do I get permission errors related to 
 SSLMutex when I start Apache?</a></li>
 <li><a href="#entropy">Why does mod_ssl stop with the error "Failed to 
-generate temporary 512 bit RSA private key", when I start Apache?</a></li>
+generate temporary 512 bit RSA private key" when I start Apache?</a></li>
 </ul>
 
 <section id="mutex"><title>Why do I get permission errors related to 
@@ -123,7 +123,7 @@ generate temporary 512 bit RSA private key", when I start Apache?</a></li>
 </section>
 
 <section id="entropy"><title>Why does mod_ssl stop with the error
-	"Failed to generate temporary 512 bit RSA private key", when I start 
+	"Failed to generate temporary 512 bit RSA private key" when I start 
 	Apache?</title>
     <p>Cryptographic software needs a source of unpredictable data
     to work correctly. Many open source operating systems provide
@@ -137,7 +137,7 @@ generate temporary 512 bit RSA private key", when I start Apache?</a></li>
     <p>To prevent this error, <module>mod_ssl</module> has to provide 
     enough entropy to the PRNG to allow it to work correctly. This can 
     be done via the <directive module="mod_ssl">SSLRandomSeed</directive> 
-    directives.</p>
+    directive.</p>
 </section>
 </section>
 <!-- /installation -->
@@ -150,7 +150,7 @@ the same server?</a></li>
 <li><a href="#httpstest">How do I speak HTTPS manually for testing 
 purposes?</a></li>
 <li><a href="#hang">Why does the connection hang when I connect to my 
-SSL-aware Apache server</a></li>
+SSL-aware Apache server?</a></li>
 <li><a href="#refused">Why do I get ``Connection Refused'' errors, when 
 trying to access my newly installed Apache+mod_ssl server via HTTPS?</a></li>
 <li><a href="#envvars">Why are the <code>SSL_XXX</code> variables not
@@ -165,16 +165,17 @@ relative hyperlinks?</a></li>
     port 80, HTTPS to port 443), so there is no direct conflict between 
     them. You can either run two separate server instances bound to 
     these ports, or use Apache's elegant virtual hosting facility to 
-    create two virtual servers over one instance of Apache - one 
-    responding to requests on port 80 and speaking HTTP and the other 
-    responding to requests on port 443 speaking HTTPS.</p>
+    create two virtual servers, both served by the same instance of Apache 
+    - one responding over HTTP to requests on port 80, and the other 
+    responding over HTTPS to requests on port 443.</p>
 </section>
 
 <section id="ports"><title>Which port does HTTPS use?</title>
 <p>You can run HTTPS on any port, but the standards specify port 443, which
     is where any HTTPS compliant browser will look by default. You can force
-    your browser to look on a different port by specifying it in the URL like
-    this (for port 666): <code>https://secure.server.dom:666/</code></p>
+    your browser to look on a different port by specifying it in the URL. For
+    example, if your server is set up to serve pages over HTTPS on port 8080,
+    you can access them at <code>https://example.com:8080/</code></p> 
 </section>
 
 <section id="httpstest"><title>How do I speak HTTPS manually for testing purposes?</title>
@@ -186,7 +187,7 @@ relative hyperlinks?</a></li>
     <p>for simple testing of Apache via HTTP, it's not so easy for
     HTTPS because of the SSL protocol between TCP and HTTP. With the
     help of OpenSSL's <code>s_client</code> command, however, you can 
-    do a similar check for HTTPS:</p>
+    do a similar check via HTTPS:</p>
     
     <example>$ openssl s_client -connect localhost:443 -state -debug<br />
     GET / HTTP/1.0</example>
@@ -197,7 +198,7 @@ relative hyperlinks?</a></li>
     perform GET and POST operations, can use a proxy, supports byte 
     ranges, etc. you should have a look at the nifty 
     <a href="http://curl.haxx.se/">cURL</a> tool. Using this, you can 
-    check that Apache is responding correctly on ports 80 and 443 as 
+    check that Apache is responding correctly to requests via HTTP and HTTPS as 
     follows:</p>
     
     <example>$ curl http://localhost/<br />
@@ -206,21 +207,19 @@ relative hyperlinks?</a></li>
 
 <section id="hang"><title>Why does the connection hang when I connect 
     to my SSL-aware Apache server?</title>
-<p>Because you connected with HTTP to the HTTPS port, i.e. you used an URL of
-    the form ``<code>http://</code>'' instead of ``<code>https://</code>''.
-    This also happens the other way round when you connect via HTTPS to a HTTP
-    port, i.e. when you try to use ``<code>https://</code>'' on a server that
-    doesn't support SSL (on this port). Make sure you are connecting to a
-    virtual server that supports SSL, which is probably the IP associated with
-    your hostname, not localhost (127.0.0.1).</p>
-</section>
+
+<p>This can happen when you try to connect to a HTTPS server (or virtual
+    server) via HTTP (eg, using <code>http://example.com/</code> instead of
+    <code>https://example.com</code>). It can also happen when trying to
+    connect via HTTPS to a HTTP server (eg, using
+    <code>https://example.com/</code> on a server which doesn't support HTTPS,
+    or which supports it on a non-standard port). Make sure that you're
+    connecting to a (virtual) server that supports SSL. </p> </section>
 
 <section id="refused"><title>Why do I get ``Connection Refused'' messages, 
     when trying to access my newly installed Apache+mod_ssl server via HTTPS?</title>
-<p>This can happen for various reasons. The most common mistakes 
-    include starting Apache with just <code>apachectl start</code> (or
-    <program>httpd</program>) instead of <code>apachectl startssl</code> (or
-    <code>httpd -DSSL</code>). Your configuration may also be incorrect. 
+<p>
+    This error can be caused by an incorrect configuration.
     Please make sure that your <directive module="mpm_common"
     >Listen</directive> directives match your 
     <directive type="section" module="core">VirtualHost</directive>
@@ -249,7 +248,7 @@ relative hyperlinks?</a></li>
 
     <p>This rewrite ruleset lets you use hyperlinks of the form
     <code>&lt;a href="document.html:SSL"&gt;</code>, to switch to HTTPS
-    in a relative link.</p>
+    in a relative link. (Replace SSL with NOSSL to switch to HTTP.)</p>
 </section>
 </section>
 <!-- configuration -->
@@ -259,7 +258,7 @@ relative hyperlinks?</a></li>
 <li><a href="#keyscerts">What are RSA Private Keys, CSRs and 
 Certificates?</a></li>
 <li><a href="#startup">Is there a difference on startup between
-the original Apache and an SSL-aware Apache?</a></li>
+a non-SSL-aware Apache and an SSL-aware Apache?</a></li>
 <li><a href="#selfcert">How do I create a self-signed SSL 
 Certificate for testing purposes?</a></li>
 <li><a href="#realcert">How do I create a real SSL Certificate?</a></li>
@@ -305,7 +304,7 @@ verify my Verisign Global ID server certificate?</a></li>
 </section>
 
 <section id="startup"><title>Is there a difference on startup between 
-    the original Apache and an SSL-aware Apache?</title>
+    a non-SSL-aware Apache and an SSL-aware Apache?</title>
 <p>Yes. In general, starting Apache with 
     <module>mod_ssl</module> built-in is just like starting Apache 
     without it. However, if you have a passphrase on your SSL private 
@@ -316,7 +315,8 @@ verify my Verisign Global ID server certificate?</a></li>
     can be problematic - for example, when starting the server from the 
     system boot scripts. In this case, you can follow the steps
     <a href="#removepassphrase">below</a> to remove the passphrase from
-    your private key.</p>
+    your private key. Bear in mind that doing so brings additional security
+    risks - proceed with caution!</p>
 </section>
 
 <section id="selfcert"><title>How do I create a self-signed SSL 
@@ -511,7 +511,7 @@ Certificate for testing purposes?</title>
 <section id="removepassphrase"><title>How can I get rid of the pass-phrase dialog at Apache startup time?</title>
 <p>The reason this dialog pops up at startup and every re-start
     is that the RSA private key inside your server.key file is stored in
-    encrypted format for security reasons. The pass-phrase is needed decrypt
+    encrypted format for security reasons. The pass-phrase is needed to decrypt
     this file, so it can be read and parsed. Removing the pass-phrase 
     removes a layer of security from your server - proceed with caution!</p>
     <ol>
@@ -578,7 +578,7 @@ Certificate for testing purposes?</title>
 bad certificate" error?</title>
 <p>Errors such as <code>OpenSSL: error:14094412: SSL
     routines:SSL3_READ_BYTES:sslv3 alert bad certificate</code> in the SSL
-    logfile, are usually caused a browser which is unable to handle the server
+    logfile, are usually caused by a browser which is unable to handle the server
     certificate/private-key. For example, Netscape Navigator 3.x is 
     unable to handle RSA key lengths not equal to 1024 bits.</p>
 </section>
@@ -994,8 +994,8 @@ provide when writing a bug report?</title>
     <dt>In case of core dumps please include a Backtrace</dt>
     <dd>If your Apache+mod_ssl+OpenSSL dumps its core, please attach
     a stack-frame ``backtrace'' (see <a href="#backtrace">below</a> 
-    for information on how to get this). Without this information, the 
-    reason for your core dump cannot be found
+    for information on how to get this). This information is required
+    in order to find a reason for your core dump.
     </dd>
     
     <dt>A detailed description of your problem</dt>
