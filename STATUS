@@ -141,6 +141,23 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
       +1: rpluem,
 
+  * mod_proxy_http: Return HTTP status codes instead of apr_status_t
+    values for errors encountered while forwarding the request body
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=611292&view=rev
+      Backport version for 2.2.x of patch (trunk applies):
+         http://people.apache.org/~covener/2.2.x-proxy-status_t.diff 
+
+  * mod_logio: Provide optional function to allow modules to adjust the
+    bytes_in count 
+
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=611199&view=rev
+         http://svn.apache.org/viewvc?rev=611259&view=rev
+         http://svn.apache.org/viewvc?rev=611413&view=rev
+      Backport version of 2.2.x of patch:
+         http://people.apache.org/~covener/2.2.x-logio_subtract_bytes.diff
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
