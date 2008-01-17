@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) ab: Do not try to read non existing response bodies of HEAD requests.
+     PR 34275 [Takashi Sato <serai lans-tv.com>]
+
   *) Support chroot on Unix-family platforms
      PR 43596 [Dimitar Pashev <mitko banksoft-bg.com>]
 

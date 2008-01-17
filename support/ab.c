@@ -1463,7 +1463,8 @@ static void read_connection(struct connection * c)
                     cl = strstr(c->cbuff, "Content-length:");
                 if (cl) {
                     c->keepalive = 1;
-                    c->length = atoi(cl + 16);
+                    /* response to HEAD doesn't have entity body */
+                    c->length = posting >= 0 ? atoi(cl + 16) : 0;
                 }
                 /* The response may not have a Content-Length header */
                 if (!cl) {
