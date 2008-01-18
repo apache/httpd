@@ -557,6 +557,12 @@ static void child_main(int child_num_arg)
                         if (one_process && shutdown_pending) {
                             return;
                         }
+                        else if (die_now) {
+                            /* In graceful stop/restart; drop the mutex
+                             * and terminate the child. */
+                            SAFE_ACCEPT(accept_mutex_off());
+                            clean_child_exit(0);
+                        }
                         continue;
                     }
                     /* Single Unix documents select as returning errnos
