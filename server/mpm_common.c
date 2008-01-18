@@ -126,6 +126,8 @@ static int reclaim_one_pid(pid_t pid, action_t action)
 {
     apr_proc_t proc;
     apr_status_t waitret;
+    apr_exit_why_e why;
+    int status;
 
     /* Ensure pid sanity. */
     if (pid < 1) {
@@ -133,8 +135,11 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     }        
 
     proc.pid = pid;
-    waitret = apr_proc_wait(&proc, NULL, NULL, APR_NOWAIT);
+    waitret = apr_proc_wait(&proc, &status, &why, APR_NOWAIT);
     if (waitret != APR_CHILD_NOTDONE) {
+#ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
+        ap_process_child_status(&proc, why, status);
+#endif
         return 1;
     }
 
