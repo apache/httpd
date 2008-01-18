@@ -567,6 +567,7 @@ static void child_main(int child_num_arg)
                      */
                     ap_log_error(APLOG_MARK, APLOG_ERR, status,
                                  ap_server_conf, "apr_pollset_poll: (listen)");
+                    SAFE_ACCEPT(accept_mutex_off());
                     clean_child_exit(1);
                 }
 
