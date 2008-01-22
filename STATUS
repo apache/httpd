@@ -163,7 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch:
         http://svn.apache.org/viewvc?view=rev&revision=529626
       Backport version for 2.2.x of patch:
-        http://svn.apache.org/viewvc?view=rev&revision=529626
+        http://people.apache.org/~trawick/r529626_to_22x.txt
       +1: trawick
 
 PATCHES/ISSUES THAT ARE STALLED
