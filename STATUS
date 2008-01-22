@@ -158,6 +158,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version of 2.2.x of patch:
          http://people.apache.org/~covener/2.2.x-logio_subtract_bytes.diff
 
+  * mod_authz_host: Log uri in "client denied" message for non-file
+    requests.
+      Trunk version of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=529626
+      Backport version for 2.2.x of patch:
+        http://svn.apache.org/viewvc?view=rev&revision=529626
+      +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
