@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_ldap: Add support (taking advantage of the new APR capability)
+     for ldap rebind callback while chasing referrals. This allows direct
+     searches on LDAP servers (in particular MS Active Directory 2003+)
+     using referrals without the use of the global catalog.
+     PRs 26538, 40268, and 42557 [Paul J. Reder]
+
   *) ab: Do not try to read non existing response bodies of HEAD requests.
      PR 34275 [Takashi Sato <serai lans-tv.com>]
 
