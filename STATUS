@@ -88,6 +88,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
         http://people.apache.org/~trawick/r529626_to_22x.txt
       +1: trawick, rpluem, covener
 
+  * various modules: Silence some compiler warnings
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=599651&view=rev
+         http://svn.apache.org/viewvc?rev=608508&view=rev
+         http://svn.apache.org/viewvc?rev=611376&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, covener, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -131,15 +140,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                   should be fixed / discussed in trunk before we backport.
       -1: wrowe until the next release is out the door
 
-  * various modules: Silence some compiler warnings
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=599651&view=rev
-         http://svn.apache.org/viewvc?rev=608508&view=rev
-         http://svn.apache.org/viewvc?rev=611376&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, covener
-
   * mod_proxy_ajp: Use a sufficient size for AJP CPING / CPONG messages.
     Otherwise CPING / CPONG tests will always fail.
     PR: 43504
@@ -148,7 +148,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=467274
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem,
+      +1: rpluem, trawick
 
   * mod_proxy_http: Return HTTP status codes instead of apr_status_t
     values for errors encountered while forwarding the request body
