@@ -29,6 +29,7 @@
 #include "apr_tables.h"
 #include "apr_time.h"
 #include "apr_ldap.h"
+#include "apr_ldap_rebind.h"
 
 #if APR_HAS_MICROSOFT_LDAPSDK
 #define AP_LDAP_IS_SERVER_DOWN(s)                ((s) == LDAP_SERVER_DOWN \
@@ -112,11 +113,18 @@ typedef struct util_ldap_connection_t {
     apr_array_header_t *client_certs;   /* Client certificates on this connection */
 
     const char *reason;                 /* Reason for an error failure */
+    int ChaseReferrals;                 /* [on|off] (on=1, off=0, default = On)*/
+    int ReferralHopLimit;               /* # of referral hops to follow (default = 5) */
 
     struct util_ldap_connection_t *next;
     struct util_ldap_state_t *st;        /* The LDAP vhost config this connection belongs to */
     int keep;                            /* Will this connection be kept when it's unlocked */
 } util_ldap_connection_t;
+
+typedef struct util_ldap_config_t {
+    int ChaseReferrals;
+    int ReferralHopLimit;
+} util_ldap_config_t;
 
 /* LDAP cache state information */ 
 typedef struct util_ldap_state_t {

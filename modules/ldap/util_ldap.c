@@ -187,6 +187,8 @@ static apr_status_t uldap_connection_cleanup(void *param)
     util_ldap_connection_t *ldc = param;
 
     if (ldc) {
+        /* Release the rebind info for this connection. No more referral rebinds required. */
+        apr_ldap_rebind_remove(ldc->ldap);
 
         /* unbind and disconnect from the LDAP server */
         uldap_connection_unbind(ldc);
@@ -290,7 +292,6 @@ static int uldap_connection_init(request_rec *r,
                   APR_LDAP_NONE,
                   &(result));
 
-
     if (result != NULL && result->rc) {
         ldc->reason = result->reason;
     }
@@ -305,6 +306,16 @@ static int uldap_connection_init(request_rec *r,
             ldc->reason = result->reason;
         }
         return(result->rc);
+    }
+
+    /* Now that we have an ldap struct, add it to the referral list for rebinds. */
+    rc = apr_ldap_rebind_add(ldc->pool, ldc->ldap, ldc->binddn, ldc->bindpw);
+    if (rc != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                     "LDAP: Unable to add rebind cross reference entry. Out of memory?");
+        uldap_connection_unbind(ldc);
+        ldc->reason = "LDAP: Unable to add rebind cross reference entry.";
+        return(rc);
     }
 
     /* always default to LDAP V3 */
@@ -335,6 +346,44 @@ static int uldap_connection_init(request_rec *r,
     /* Set the alias dereferencing option */
     ldap_option = ldc->deref;
     ldap_set_option(ldc->ldap, LDAP_OPT_DEREF, &ldap_option);
+
+    /* Set options for rebind and referrals. */
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                 "LDAP: Setting referrals to %s.",
+                 (ldc->ChaseReferrals ? "On" : "Off"));
+    apr_ldap_set_option(r->pool, ldc->ldap,
+                        APR_LDAP_OPT_REFERRALS,
+                        (void *)(ldc->ChaseReferrals ? LDAP_OPT_ON : LDAP_OPT_OFF),
+                        &(result));
+    if (result->rc != LDAP_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "Unable to set LDAP_OPT_REFERRALS option to %s: %d.",
+                     (ldc->ChaseReferrals ? "On" : "Off"),
+                     result->rc);
+        result->reason = "Unable to set LDAP_OPT_REFERRALS.";
+        uldap_connection_unbind(ldc);
+        return(result->rc);
+    }
+
+    if (ldc->ChaseReferrals) {
+        /* Referral hop limit - only if referrals are enabled */
+        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                     "Setting referral hop limit to %d.",
+                     ldc->ReferralHopLimit);
+        apr_ldap_set_option(r->pool, ldc->ldap,
+                            APR_LDAP_OPT_REFHOPLIMIT,
+                            (void *)&ldc->ReferralHopLimit,
+                            &(result));
+        if (result->rc != LDAP_SUCCESS) {
+          ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
+                       "Unable to set LDAP_OPT_REFHOPLIMIT option to %d: %d.",
+                       ldc->ReferralHopLimit,
+                       result->rc);
+          result->reason = "Unable to set LDAP_OPT_REFHOPLIMIT.";
+          uldap_connection_unbind(ldc);
+          return(result->rc);
+        }
+    }
 
 /*XXX All of the #ifdef's need to be removed once apr-util 1.2 is released */
 #ifdef APR_LDAP_OPT_VERIFY_CERT
@@ -517,7 +566,8 @@ static util_ldap_connection_t *
     util_ldap_state_t *st =
         (util_ldap_state_t *)ap_get_module_config(r->server->module_config,
         &ldap_module);
-
+    util_ldap_config_t *dc =
+        (util_ldap_config_t *) ap_get_module_config(r->per_dir_config, &ldap_module);
 
 #if APR_HAS_THREADS
     /* mutex lock this function */
@@ -623,6 +673,8 @@ static util_ldap_connection_t *
         l->deref = deref;
         util_ldap_strdup((char**)&(l->binddn), binddn);
         util_ldap_strdup((char**)&(l->bindpw), bindpw);
+        l->ChaseReferrals = dc->ChaseReferrals;
+        l->ReferralHopLimit = dc->ReferralHopLimit;
 
         /* The security mode after parsing the URL will always be either
          * APR_LDAP_NONE (ldap://) or APR_LDAP_SSL (ldaps://).
@@ -2288,6 +2340,47 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
 }
 
 
+static const char *util_ldap_set_chase_referrals(cmd_parms *cmd,
+                                                 void *config,
+                                                 int mode)
+{
+    util_ldap_config_t *dc =  config;
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+                      "LDAP: Setting refferal chasing %s",
+                      mode?"ON":"OFF");
+
+    dc->ChaseReferrals = mode;
+
+    return(NULL);
+}
+
+static const char *util_ldap_set_referral_hop_limit(cmd_parms *cmd,
+                                                    void *config,
+                                                    const char *hop_limit)
+{
+    util_ldap_config_t *dc =  config;
+
+    dc->ReferralHopLimit = atol(hop_limit);
+
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
+                 "LDAP: Limit chased referrals to maximum of %d hops.",
+                 dc->ReferralHopLimit);
+
+    return NULL;
+}
+
+static void *util_ldap_create_dir_config(apr_pool_t *p, char *d) {
+   util_ldap_config_t *dc =
+       (util_ldap_config_t *) apr_pcalloc(p,sizeof(util_ldap_config_t));
+
+   dc->ChaseReferrals = 1;   /* default is to turn referral chasing on. */
+   dc->ReferralHopLimit = 5; /* default is to chase a max of 5 hops. */
+
+   return dc;
+}
+
+
 static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
 {
     util_ldap_state_t *st =
@@ -2315,6 +2408,9 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->secure_set = 0;
     st->connectionTimeout = 10;
     st->verify_svr_cert = 1;
+
+    /* Initialize the rebind callback's cross reference list. */
+    apr_ldap_rebind_init (p);
 
     return st;
 }
@@ -2614,6 +2710,15 @@ static const command_rec util_ldap_cmds[] = {
                   "Specify the LDAP socket connection timeout in seconds "
                   "(default: 10)"),
 
+    AP_INIT_FLAG("LDAPReferrals", util_ldap_set_chase_referrals,
+                  NULL, OR_AUTHCFG,
+                  "Choose whether referrals are chased ['ON'|'OFF'].  Default 'ON'"),
+
+    AP_INIT_TAKE1("LDAPReferralHopLimit", util_ldap_set_referral_hop_limit,
+                  NULL, OR_AUTHCFG,
+                  "Limit the number of referral hops that LDAP can follow. "
+                  "(Integer value, default=5)"),
+
     {NULL}
 };
 
@@ -2638,7 +2743,7 @@ static void util_ldap_register_hooks(apr_pool_t *p)
 
 module AP_MODULE_DECLARE_DATA ldap_module = {
    STANDARD20_MODULE_STUFF,
-   NULL,                        /* create dir config */
+   util_ldap_create_dir_config, /* create dir config */
    NULL,                        /* merge dir config */
    util_ldap_create_config,     /* create server config */
    util_ldap_merge_config,      /* merge server config */
