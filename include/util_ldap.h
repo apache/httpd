@@ -93,6 +93,11 @@ typedef enum {
     always=LDAP_DEREF_ALWAYS
 } deref_options;
 
+#define AP_LDAP_DEFAULT_HOPLIMIT      5    /* make sure these two stay    */
+#define AP_LDAP_DEFAULT_HOPLIMIT_STR "5"   /*   in synch with each other! */
+#define AP_LDAP_CHASEREFERRALS_OFF 0
+#define AP_LDAP_CHASEREFERRALS_ON 1
+
 /* Structure representing an LDAP connection */
 typedef struct util_ldap_connection_t {
     LDAP *ldap;
@@ -113,12 +118,13 @@ typedef struct util_ldap_connection_t {
     apr_array_header_t *client_certs;   /* Client certificates on this connection */
 
     const char *reason;                 /* Reason for an error failure */
-    int ChaseReferrals;                 /* [on|off] (on=1, off=0, default = On)*/
-    int ReferralHopLimit;               /* # of referral hops to follow (default = 5) */
 
     struct util_ldap_connection_t *next;
     struct util_ldap_state_t *st;        /* The LDAP vhost config this connection belongs to */
     int keep;                            /* Will this connection be kept when it's unlocked */
+
+    int ChaseReferrals;                 /* [on|off] (default = AP_LDAP_CHASEREFERRALS_ON)*/
+    int ReferralHopLimit;               /* # of referral hops to follow (default = AP_LDAP_DEFAULT_HOPLIMIT) */
 } util_ldap_connection_t;
 
 typedef struct util_ldap_config_t {

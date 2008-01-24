@@ -350,22 +350,23 @@ static int uldap_connection_init(request_rec *r,
     /* Set options for rebind and referrals. */
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                  "LDAP: Setting referrals to %s.",
-                 (ldc->ChaseReferrals ? "On" : "Off"));
+                 ((ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) ? "On" : "Off"));
     apr_ldap_set_option(r->pool, ldc->ldap,
                         APR_LDAP_OPT_REFERRALS,
-                        (void *)(ldc->ChaseReferrals ? LDAP_OPT_ON : LDAP_OPT_OFF),
+                        (void *)((ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) ?
+                                 LDAP_OPT_ON : LDAP_OPT_OFF),
                         &(result));
     if (result->rc != LDAP_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "Unable to set LDAP_OPT_REFERRALS option to %s: %d.",
-                     (ldc->ChaseReferrals ? "On" : "Off"),
+                     ((ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) ? "On" : "Off"),
                      result->rc);
         result->reason = "Unable to set LDAP_OPT_REFERRALS.";
         uldap_connection_unbind(ldc);
         return(result->rc);
     }
 
-    if (ldc->ChaseReferrals) {
+    if (ldc->ChaseReferrals == AP_LDAP_CHASEREFERRALS_ON) {
         /* Referral hop limit - only if referrals are enabled */
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                      "Setting referral hop limit to %d.",
@@ -2348,7 +2349,7 @@ static const char *util_ldap_set_chase_referrals(cmd_parms *cmd,
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, cmd->server,
                       "LDAP: Setting refferal chasing %s",
-                      mode?"ON":"OFF");
+                      (mode == AP_LDAP_CHASEREFERRALS_ON) ? "ON" : "OFF");
 
     dc->ChaseReferrals = mode;
 
@@ -2374,8 +2375,9 @@ static void *util_ldap_create_dir_config(apr_pool_t *p, char *d) {
    util_ldap_config_t *dc =
        (util_ldap_config_t *) apr_pcalloc(p,sizeof(util_ldap_config_t));
 
-   dc->ChaseReferrals = 1;   /* default is to turn referral chasing on. */
-   dc->ReferralHopLimit = 5; /* default is to chase a max of 5 hops. */
+   /* defaults are AP_LDAP_CHASEREFERRALS_ON and AP_LDAP_DEFAULT_HOPLIMIT */
+   dc->ChaseReferrals = AP_LDAP_CHASEREFERRALS_ON;
+   dc->ReferralHopLimit = AP_LDAP_DEFAULT_HOPLIMIT;
 
    return dc;
 }
@@ -2717,7 +2719,7 @@ static const command_rec util_ldap_cmds[] = {
     AP_INIT_TAKE1("LDAPReferralHopLimit", util_ldap_set_referral_hop_limit,
                   NULL, OR_AUTHCFG,
                   "Limit the number of referral hops that LDAP can follow. "
-                  "(Integer value, default=5)"),
+                  "(Integer value, default=" AP_LDAP_DEFAULT_HOPLIMIT_STR ")"),
 
     {NULL}
 };
