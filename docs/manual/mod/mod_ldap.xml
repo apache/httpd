@@ -104,6 +104,15 @@ by other LDAP modules</description>
     <p>There is no need to manually enable connection pooling in
     the Apache configuration. Any module using this module for
     access to LDAP services will share the connection pool.</p>
+
+    <p>LDAP connections can keep track of the ldap client
+    credentials used when binding to an LDAP server. These
+    credentials can be provided to LDAP servers that do not
+    allow anonymous binds during referral chasing. To control
+    this feature, see the <directive module="mod_ldap">
+    LDAPReferrals</directive> and <directive module="mod_ldap">
+    LDAPReferralHopLimit</directive> directives. By default,
+    this feature is enabled.</p>
 </section>
 
 <section id="cache"><title>LDAP Cache</title>
@@ -466,6 +475,40 @@ valid</description>
 <usage>
     <p>Specifies the time (in seconds) that entries in the
     operation cache remain valid. The default is 600 seconds.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPReferralHopLimit</name>
+<description>The maximum number of referral hops to chase before terminating an LDAP query.</description>
+<syntax>LDAPReferralHopLimit <var>number</var></syntax>
+<default>LDAPReferralHopLimit 5</default>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>This directive, if enabled by the <code>LDAPReferrals</code> directive,
+    limits the number of referral hops that are followed before terminating an
+    LDAP query.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>LDAPReferrals</name>
+<description>Enable referral chasing during queries to the LDAP server.</description>
+<syntax>LDAPReferrals <var>On|Off</var></syntax>
+<default>LDAPReferrals On</default>
+<contextlist><context>directory</context><context>.htaccess</context></contextlist>
+<override>AuthConfig</override>
+
+<usage>
+    <p>Some LDAP servers divide their directory among multiple domains and use referrals
+    to direct a client when a domain boundary is crossed. By setting <code>LDAPReferrals On</code>
+    referrals will be chased (setting it to off causes referrals to be ignored). The directive
+    <code>LDAPReferralHopLimit</code> works in conjunction with this directive to limit the
+    number of referral hops to follow before terminating the LDAP query. When referral processing
+    is enabled client credentials will be provided, via a rebind callback, for any LDAP server
+    requiring them. </p> 
 </usage>
 </directivesynopsis>
 
