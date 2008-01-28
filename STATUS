@@ -132,7 +132,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=467274
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-      +1: rpluem, trawick
+      +1: rpluem, trawick, jim
 
   * mod_proxy_http: Return HTTP status codes instead of apr_status_t
     values for errors encountered while forwarding the request body
