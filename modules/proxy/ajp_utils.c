@@ -31,7 +31,7 @@ apr_status_t ajp_handle_cping_cpong(apr_socket_t *sock,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, r->server,
                          "Into ajp_handle_cping_cpong");
 
-    rc = ajp_msg_create(r->pool, AJP_HEADER_SZ_LEN+1, &msg);
+    rc = ajp_msg_create(r->pool, AJP_PING_PONG_SZ, &msg);
     if (rc != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                "ajp_handle_cping_cpong: ajp_msg_create failed");
