@@ -81,6 +81,16 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy_ajp: Use a sufficient size for AJP CPING / CPONG messages.
+    Otherwise CPING / CPONG tests will always fail.
+    PR: 43504
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=467259
+         http://svn.apache.org/viewvc?view=rev&revision=467274
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, trawick, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -123,16 +133,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       -1: rpluem: jorton found some problems with the trunk version and they
                   should be fixed / discussed in trunk before we backport.
       -1: wrowe until the next release is out the door
-
-  * mod_proxy_ajp: Use a sufficient size for AJP CPING / CPONG messages.
-    Otherwise CPING / CPONG tests will always fail.
-    PR: 43504
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=467259
-         http://svn.apache.org/viewvc?view=rev&revision=467274
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, trawick, jim
 
   * mod_proxy_http: Return HTTP status codes instead of apr_status_t
     values for errors encountered while forwarding the request body
