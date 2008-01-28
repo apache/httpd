@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) rotatelogs: Don't leak memory when reopening the logfile.
+     PR 40183 [Ruediger Pluem, Takashi Sato <serai lans-tv.com>]
+
   *) mod_ldap: Add support (taking advantage of the new APR capability)
      for ldap rebind callback while chasing referrals. This allows direct
      searches on LDAP servers (in particular MS Active Directory 2003+)

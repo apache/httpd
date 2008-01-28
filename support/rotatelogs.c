@@ -120,6 +120,8 @@ int main (int argc, const char * const argv[])
     const char *szLogRoot;
     apr_file_t *f_stdin, *nLogFD = NULL, *nLogFDprev = NULL;
     apr_pool_t *pool;
+    apr_pool_t *pfile = NULL;
+    apr_pool_t *pfile_prev = NULL;
     apr_getopt_t *opt;
     apr_status_t rv;
     char c;
@@ -233,8 +235,10 @@ int main (int argc, const char * const argv[])
                 sprintf(buf2, "%s.%010d", szLogRoot, tLogStart);
             }
             tLogEnd = tLogStart + tRotation;
+            pfile_prev = pfile;
+            apr_pool_create(&pfile, pool);
             rv = apr_file_open(&nLogFD, buf2, APR_WRITE | APR_CREATE | APR_APPEND,
-                               APR_OS_DEFAULT, pool);
+                               APR_OS_DEFAULT, pfile);
             if (rv != APR_SUCCESS) {
                 char error[120];
 
@@ -249,6 +253,8 @@ int main (int argc, const char * const argv[])
                 }
                 else {
                     nLogFD = nLogFDprev;
+                    apr_pool_destroy(pfile);
+                    pfile = pfile_prev;
                     /* Try to keep this error message constant length
                      * in case it occurs several times. */
                     apr_snprintf(errbuf, sizeof errbuf,
@@ -265,6 +271,9 @@ int main (int argc, const char * const argv[])
             }
             else if (nLogFDprev) {
                 apr_file_close(nLogFDprev);
+                if (pfile_prev) {
+                    apr_pool_destroy(pfile_prev);
+                }
             }
             nMessCount = 0;
         }
