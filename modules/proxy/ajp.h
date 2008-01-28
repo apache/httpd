@@ -147,6 +147,7 @@ struct ajp_msg
 #define AJP_MSG_BUFFER_SZ           8192
 #define AJP_MAX_BUFFER_SZ           65536
 #define AJP13_MAX_SEND_BODY_SZ      (AJP_MAX_BUFFER_SZ - AJP_HEADER_SZ)
+#define AJP_PING_PONG_SZ            128
 
 /** Send a request from web server to container*/
 #define CMD_AJP13_FORWARD_REQUEST   (unsigned char)2
