@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 425051:608059 (outdated) -->
+<!-- English Revision: 608059 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -72,7 +72,7 @@
     <p>引数に <code>none</code> を指定すると、プロトコルに対する全ての Accept 
        Filter が無効になります。<code>nntp</code> といった、先にサーバにデータを
        送る必要のあるプロトコルに有効です :</p>
-    <example>AcceptFilter nttp none</example>
+    <example>AcceptFilter nntp none</example>
 
 </usage>
 </directivesynopsis>
@@ -278,8 +278,6 @@
       <directive module="core">ForceType</directive> ディレクティブを使います。
       (nphでない) CGI スクリプトでコンテントタイプを設定するというものでも
       大丈夫です。</p>
-
-      <p>タイプ毎の出力フィルタはプロキシリクエストには決して適用されません。</p>
     </note>
 </usage>
 
@@ -583,7 +581,7 @@
 <name>DefaultType</name>
 <description>サーバがコンテントタイプを決定できないときに
 送られる MIME コンテントタイプ</description>
-<syntax>DefaultType <var>MIME-type</var></syntax>
+<syntax>DefaultType <var>MIME-type|none</var></syntax>
 <default>DefaultType text/plain</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -595,8 +593,8 @@
     のマッピングでは決定できない
     ドキュメントの送信を要求されることがあります。</p>
 
-    <p>サーバは、ドキュメントのコンテントタイプをクライアントに通知する必要が
-    ありますので、このようにタイプが未知の場合は
+    <p>サーバは、ドキュメントのコンテントタイプをクライアントに通知するべき(SHOULD)です。
+    もし通常の方法ではコンテントタイプが分からない場合は、
     <code>DefaultType</code> で指定されたタイプを利用します。
     例:</p>
 
@@ -606,6 +604,14 @@
 
     <p>これは <code>.gif</code> という拡張子がファイル名に含まれていない
     多くの GIF 画像が含まれているディレクトリに適しているでしょう。</p>
+    
+    <p>サーバ側でも管理者側(たとえば proxy)でもコンテントタイプが分からない場合で、
+    MIME タイプの情報が誤ってついているかもしれないぐらいであればむしろ無いほうがよい、
+    という場合もあるでしょう。このような場合は、次のようにします。</p>
+    <example>
+      DefaultType None
+    </example>
+    <p>DefaultType None は httpd-2.2.7 以降で使えます。</p>
 
     <p><directive module="core">ForceType</directive> ディレクティブと
     違って、このディレクティブはデフォルトの MIME タイプを提供するだけで
@@ -1145,6 +1151,16 @@ module="core">Directory</directive></seealso>
     そのサブディレクトリの設定は (設定が上書きされなければサブディレクトリの
     サブディレクトリにも継承されます) <code>FileETag&nbsp;MTime&nbsp;Size</code>
     と同じになります。</p>
+    <note type="warning"><title>警告</title>
+    WebDAV を使っていて、<module>mod_dav_fs</module> をストレージプロバイダとして
+    使っているような Directory や Location では、デフォルト値を変更しないでください。
+    条件つきリクエスト中で、<module>mod_dav_fs</module> では 
+    <code>INode&nbsp;MTime&nbsp;Size</code>
+    という形式の固定フォーマットであることを前提として
+    <code>ETag</code> の比較を行っています。もし <code>ETag</code> フォーマットを
+    <directive>FileETag</directive> で変えてしまうと、条件つきリクエストが
+    うまく動作しなくなるでしょう。
+    </note>
 </usage>
 </directivesynopsis>
 
@@ -1913,7 +1929,8 @@ module="core">Directory</directive></seealso>
     という接頭辞を含む形でマッチし、接頭辞を含めて指定する必要があります。</p>
 
     <p>URL にはワイルドカードを利用することができます。
-    <code>?</code> は任意の一文字、<code>*</code> は任意の文字列にマッチします。 </p>
+    <code>?</code> は任意の一文字、<code>*</code> は任意の文字列にマッチします。
+    どちらのワイルドカード文字も URL-path の / にはマッチしません。</p>
 
     <p><code>~</code> という文字を追加することで、<glossary ref="regex">正規表現</glossary>を
     利用することもできます。
@@ -2269,7 +2286,11 @@ module="core">Directory</directive></seealso>
       パス名は<em>変更されません</em>。</p>
       <p><directive type="section" module="core">Location</directive> 内に
       このオプションを指定しても<strong>無視される</strong>ことに
-      注意してください。</p></note></dd>
+      注意してください。</p>
+      <p>このオプションを省略したからといってセキュリティの強化にはなりません。
+      なぜなら symlink の検査はレースコンディションを引き起こす可能性があり、
+      そのため回避可能になるからです。</p>
+      </note></dd>
 
       <dt><code>Includes</code></dt>
 
@@ -2305,9 +2326,13 @@ module="core">Directory</directive></seealso>
       シンボリックリンクの所有ユーザ ID と同じ場合にのみシンボリックリンクを
       たどれるようにします。
 
-      <note><title>注</title> <directive type="section" module="core"
+      <note><title>注</title> <p><directive type="section" module="core"
       >Location</directive> 内にこのオプションを
-      指定しても無視されます。</note>
+      指定しても無視されます。</p>
+      <p>このオプションはセキュリティの強化にはなりません。
+      なぜなら symlink の検査はレースコンディションを引き起こす可能性があり、
+      そのため回避可能になるからです。</p>
+      </note>
       </dd>
     </dl>
 
@@ -2320,6 +2345,13 @@ module="core">Directory</directive></seealso>
     指定された場合はオプションの値はマージされます。
     <code>+</code> を頭につければ現在の設定に加えられ、
     <code>-</code> を付ければ現在の設定から削除されます。</p>
+
+    <note type="warning"><title>警告</title>
+    <p><directive>Options</directive> で指定する際に、
+    <code>+</code> や <code>-</code> のついたものと、ついていないものを
+    混ぜて指定する記述は誤った構文で、予期しない結果になるかもしれません。
+    </p>
+    </note>
 
     <p>例えば、<code>+</code> や <code>-</code> を利用しない場合は:</p>
 
@@ -2602,9 +2634,10 @@ module="core">Directory</directive></seealso>
     できます:</p>
 
     <example>
-    Require valid-user<br />
-    Allow from 192.168.1<br />
-    Satisfy Any
+      Require valid-user<br />
+      Order allow,deny<br />
+      Allow from 192.168.1<br />
+      Satisfy Any
     </example>
    
     <p>バージョン 2.0.51 からは
@@ -2658,6 +2691,11 @@ module="core">Directory</directive></seealso>
     <code>Shell\Open\Command</code> がスクリプトファイルを開くために
     使われます。レジストリキーが見つからないときは、Apache は <code>Script</code>
     オプションが指定されたときの動作に戻ります。</p>
+
+    <p>たとえば、レジストリの設定で .pl 拡張子が perl に関連付けられている：</p>
+
+    <example><code>HKEY_CLASSES_ROOT\.pl\Shell\ExecCGI\Command\(Default) => C:\Perl\bin\perl.exe -wT</code></example>
+
 
     <note type="warning"><title>セキュリティ</title> 
     <p><code>ScriptInterpreterSource Registry</code> を <directive
@@ -2726,7 +2764,8 @@ module="core">Directory</directive></seealso>
 <usage>
     <p><directive>ServerAlias</directive> ディレクティブは、<a
     href="../vhosts/name-based.html">ネームベースのバーチャルホスト</a>において
-    使用するホストの別名を指定します。</p>
+    使用するホストの別名を指定します。<directive>ServerAlias</directive>
+    は適切であればワイルドカードも含めることができます。</p>
 
     <example>
       &lt;VirtualHost *&gt;<br />
@@ -3047,7 +3086,7 @@ module="core">Directory</directive></seealso>
 待つ時間を設定</description>
 <syntax>TimeOut <var>seconds</var></syntax>
 <default>TimeOut 300</default>
-<contextlist><context>server config</context></contextlist>
+<contextlist><context>server config</context><context>virtual host</context></contextlist>
 
 <usage>
     <p><directive>TimeOut</directive> ディレクティブは、現在のところ
@@ -3088,7 +3127,7 @@ module="core">Directory</directive></seealso>
     <module>mod_proxy</module> は <code>405</code> (メソッド不許可)
     エラーをクライアントに返します。</p>
 
-    <p>最後に、テストや調査目的などの限定用途として、使用に準拠しない
+    <p>最後に、テストや調査目的などの限定用途として、仕様に準拠しない
     <code>TraceEnable extended</code> を使って、リクエストボディを
     受け付けるように挙動を変更できます。(オリジンサーバとしての)
     コアサーバでは、リクエストボディのサイズは 64k (
@@ -3232,7 +3271,7 @@ module="core">Directory</directive></seealso>
     <ul>
       <li>バーチャルホストの IP アドレス</li>
 
-      <li>バーチャルホストの IP に対応する完全なドメイン名</li>
+      <li>バーチャルホストの IP に対応する完全なドメイン名(非推奨)</li>
 
       <li><code>NameVirtualHost *</code> と共に使われる、
       すべての IP アドレスにマッチする文字 <code>*</code></li>
@@ -3304,6 +3343,11 @@ module="core">Directory</directive></seealso>
     <code>:*</code> を指定することにより、
     アドレス上の全てのポートにマッチします。(<code>_default_</code> のときは
     これを使うことが推奨されています。)</p>
+
+    <p>それぞれの <directive type="section">VirtualHost</directive>
+    ブロック内で <directive module="core">ServerName</directive>
+    を指定します。もしこれが無いと、"main" サーバ設定の
+    <directive module="core">ServerName</directive> が引き継がれます。</p>
 
     <note type="warning"><title>セキュリティ</title>
     <p>サーバーを起動した以外のユーザがログファイルが保管されるディレクトリに
