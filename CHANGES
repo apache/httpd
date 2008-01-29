@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_http: Fix processing of chunked responses if
+     Connection: Transfer-Encoding is set in the response of the proxied
+     system. PR 44311 [Ruediger Pluem]
+
   *) ProxyPassReverse is now balancer aware. [Jim Jagielski]
 
   *) rotatelogs: Don't leak memory when reopening the logfile.
