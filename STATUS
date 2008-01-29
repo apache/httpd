@@ -131,6 +131,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=611292&view=rev
       Backport version for 2.2.x of patch (trunk applies):
          http://people.apache.org/~covener/2.2.x-proxy-status_t.diff 
+    +1 covener
 
   * mod_logio: Provide optional function to allow modules to adjust the
     bytes_in count 
@@ -141,6 +142,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=611413&view=rev
       Backport version of 2.2.x of patch:
          http://people.apache.org/~covener/2.2.x-logio_subtract_bytes.diff
+    +1 covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
