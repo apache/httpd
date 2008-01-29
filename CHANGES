@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) ProxyPassReverse is now balancer aware. [Jim Jagielski]
+
   *) rotatelogs: Don't leak memory when reopening the logfile.
      PR 40183 [Ruediger Pluem, Takashi Sato <serai lans-tv.com>]
 
