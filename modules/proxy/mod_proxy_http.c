@@ -1331,6 +1331,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
     static const char *hop_by_hop_hdrs[] =
         {"Keep-Alive", "Proxy-Authenticate", "TE", "Trailer", "Upgrade", NULL};
     int i;
+    const char *te = NULL;
 
     bb = apr_brigade_create(p, c->bucket_alloc);
 
@@ -1461,6 +1462,11 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 backend->close += 1;
             }
 
+            /*
+             * Save a possible Transfer-Encoding header as we need it later for
+             * ap_http_filter to know where to end.
+             */
+            te = apr_table_get(r->headers_out, "Transfer-Encoding");
             /* strip connection listed hop-by-hop headers from response */
             backend->close += ap_proxy_liststr(apr_table_get(r->headers_out,
                                                              "Connection"),
@@ -1601,6 +1607,14 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * ap_http_filter to know where to end.
              */
             rp->headers_in = apr_table_copy(r->pool, r->headers_out);
+            /*
+             * Restore Transfer-Encoding header from response if we saved
+             * one before and there is none left. We need it for the
+             * ap_http_filter. See below.
+             */
+            if (te && !apr_table_get(rp->headers_in, "Transfer-Encoding")) {
+                apr_table_add(rp->headers_in, "Transfer-Encoding", te);
+            }
 
             apr_table_unset(r->headers_out,"Transfer-Encoding");
 
