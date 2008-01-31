@@ -147,6 +147,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~covener/2.2.x-logio_subtract_bytes.diff
     +1 covener
 
+  * core: Reinstate location walk for subrequests.
+      Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=579664
+      Backport version of 2.2.x of patch:
+       Trunk version works (minus CHANGES conflict)
+    +1: jim
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
