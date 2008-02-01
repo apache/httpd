@@ -1610,7 +1610,7 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             /*
              * Restore Transfer-Encoding header from response if we saved
              * one before and there is none left. We need it for the
-             * ap_http_filter. See below.
+             * ap_http_filter. See above.
              */
             if (te && !apr_table_get(rp->headers_in, "Transfer-Encoding")) {
                 apr_table_add(rp->headers_in, "Transfer-Encoding", te);
