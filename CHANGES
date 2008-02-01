@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_proxy_http: Fix processing of chunked responses if
+     Connection: Transfer-Encoding is set in the response of the proxied
+     system. PR 44311 [Ruediger Pluem]
+
   *) mod_rewrite: Don't canonicalise URLs with [P,NE]
      PR 43319 [<rahul sun.com>]
 
