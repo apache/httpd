@@ -81,6 +81,25 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+   * configure / install: Make https port configurable.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=606316&view=rev
+         http://svn.apache.org/viewvc?rev=606806&view=rev
+      Backport version for 2.2.x of patch:
+         http://people.apache.org/~fuankg/diffs/sslport.diff
+      +1: fuankg, wrowe, mturk
+      wrowe notes; Win32 is already ready for this, and there's no rush
+      to push this into the immediate next-release.
+
+  * mod_proxy: Fix processing of chunked responses if
+    Connection: Transfer-Encoding is set in the response of the
+    proxied system.  PR: 44311
+      Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=616517
+       http://svn.apache.org/viewvc?view=rev&revision=617653
+      Backport version of 2.2.x of patch:
+       Trunk version works (minus CHANGES conflict)
+    +1: jim, rpluem, mturk
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -101,16 +120,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                but -0 on including this as a new feature in 2.2.7.
                Better IMHO to separate releasing it from the many bugfixes
                in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
-
-   * configure / install: Make https port configurable.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=606316&view=rev
-         http://svn.apache.org/viewvc?rev=606806&view=rev
-      Backport version for 2.2.x of patch:
-         http://people.apache.org/~fuankg/diffs/sslport.diff
-      +1: fuankg, wrowe, mturk
-      wrowe notes; Win32 is already ready for this, and there's no rush
-      to push this into the immediate next-release.
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
       Trunk version of patches:
@@ -153,16 +162,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version of 2.2.x of patch:
        Trunk version works (minus CHANGES conflict)
     +1: 
-
-  * mod_proxy: Fix processing of chunked responses if
-    Connection: Transfer-Encoding is set in the response of the
-    proxied system.  PR: 44311
-      Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=616517
-       http://svn.apache.org/viewvc?view=rev&revision=617653
-      Backport version of 2.2.x of patch:
-       Trunk version works (minus CHANGES conflict)
-    +1: jim, rpluem, mturk
 
 PATCHES/ISSUES THAT ARE STALLED
 
