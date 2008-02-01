@@ -138,7 +138,8 @@ static int reclaim_one_pid(pid_t pid, action_t action)
     waitret = apr_proc_wait(&proc, &status, &why, APR_NOWAIT);
     if (waitret != APR_CHILD_NOTDONE) {
 #ifdef AP_MPM_WANT_PROCESS_CHILD_STATUS
-        ap_process_child_status(&proc, why, status);
+        if (waitret == APR_CHILD_DONE)
+            ap_process_child_status(&proc, why, status);
 #endif
         return 1;
     }
@@ -417,7 +418,7 @@ void ap_wait_or_timeout(apr_exit_why_e *status, int *exitcode, apr_proc_t *ret,
 int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
 {
     int signum = status;
-    const char *sigdesc = apr_signal_description_get(signum);
+    const char *sigdesc;
 
     /* Child died... if it died due to a fatal error,
      * we should simply bail out.  The caller needs to
@@ -445,6 +446,8 @@ int ap_process_child_status(apr_proc_t *pid, apr_exit_why_e why, int status)
     }
 
     if (APR_PROC_CHECK_SIGNALED(why)) {
+        sigdesc = apr_signal_description_get(signum);
+
         switch (signum) {
         case SIGTERM:
         case SIGHUP:
