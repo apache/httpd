@@ -20,7 +20,7 @@ Changes with Apache 2.0.62 (not released)
      Reported by SecurityReason.  [Mark Cox, Joe Orton]
 
   *) SECURITY: CVE-2007-5000 (cve.mitre.org)
-     mod_imagemap: Fix a cross-site scripting issue.  Reported by JPCERT.
+     mod_imap: Fix a cross-site scripting issue.  Reported by JPCERT.
      [Joe Orton]
 
   *) Introduce the ProxyFtpDirCharset directive, allowing the administrator
