@@ -306,9 +306,9 @@ const char *tdstring;
 
 apr_size_t doclen = 0;      /* the length the document should be */
 long started = 0;           /* number of requests started, so no excess */
-long totalread = 0;         /* total number of bytes read */
-long totalbread = 0;        /* totoal amount of entity body read */
-long totalposted = 0;       /* total number of bytes posted, inc. headers */
+apr_uint64_t totalread = 0;         /* total number of bytes read */
+apr_uint64_t totalbread = 0;        /* totoal amount of entity body read */
+apr_uint64_t totalposted = 0;       /* total number of bytes posted, inc. headers */
 long done = 0;              /* number of requests we have done */
 long doneka = 0;            /* number of keep alive connections done */
 long good = 0, bad = 0;     /* number of good and bad requests */
@@ -773,10 +773,10 @@ static void output_results(int sig)
         printf("Non-2xx responses:      %d\n", err_response);
     if (keepalive)
         printf("Keep-Alive requests:    %ld\n", doneka);
-    printf("Total transferred:      %ld bytes\n", totalread);
+    printf("Total transferred:      %" APR_UINT64_T_FMT " bytes\n", totalread);
     if (posting > 0)
-        printf("Total POSTed:           %ld\n", totalposted);
-    printf("HTML transferred:       %ld bytes\n", totalbread);
+        printf("Total POSTed:           %" APR_UINT64_T_FMT "\n", totalposted);
+    printf("HTML transferred:       %" APR_UINT64_T_FMT " bytes\n", totalbread);
 
     /* avoid divide by zero */
     if (timetaken) {
@@ -1045,14 +1045,14 @@ static void output_html_results(void)
            "<td colspan=2 %s>%ld</td></tr>\n",
            trstring, tdstring, tdstring, doneka);
     printf("<tr %s><th colspan=2 %s>Total transferred:</th>"
-       "<td colspan=2 %s>%ld bytes</td></tr>\n",
+       "<td colspan=2 %s>%" APR_UINT64_T_FMT " bytes</td></tr>\n",
        trstring, tdstring, tdstring, totalread);
     if (posting > 0)
         printf("<tr %s><th colspan=2 %s>Total POSTed:</th>"
-           "<td colspan=2 %s>%ld</td></tr>\n",
+           "<td colspan=2 %s>%" APR_UINT64_T_FMT "</td></tr>\n",
            trstring, tdstring, tdstring, totalposted);
     printf("<tr %s><th colspan=2 %s>HTML transferred:</th>"
-       "<td colspan=2 %s>%ld bytes</td></tr>\n",
+       "<td colspan=2 %s>%" APR_UINT64_T_FMT " bytes</td></tr>\n",
        trstring, tdstring, tdstring, totalbread);
 
     /* avoid divide by zero */
