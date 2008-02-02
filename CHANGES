@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_ajp: Do not retry request in the case that we either failed to
+     sent a part of the request body or if the request is not idempotent.
+     PR 44334 [Ruediger Pluem]
+
   *) mod_proxy_http: Fix processing of chunked responses if
      Connection: Transfer-Encoding is set in the response of the proxied
      system. PR 44311 [Ruediger Pluem]
