@@ -32,9 +32,9 @@
 # standard HTTP port (see above) and to the HTTPS port
 #
 # Note: Configurations that use IPv6 but not IPv4-mapped addresses need two
-#       Listen directives: "Listen [::]:443" and "Listen 0.0.0.0:443"
+#       Listen directives: "Listen [::]:@@SSLPort@@" and "Listen 0.0.0.0:@@SSLPort@@"
 #
-Listen 443
+Listen @@SSLPort@@
 
 ##
 ##  SSL Global Context
@@ -71,11 +71,11 @@ SSLMutex  "file:@exp_runtimedir@/ssl_mutex"
 ## SSL Virtual Host Context
 ##
 
-<VirtualHost _default_:443>
+<VirtualHost _default_:@@SSLPort@@>
 
 #   General setup for the virtual host
 DocumentRoot "@exp_htdocsdir@"
-ServerName www.example.com:443
+ServerName www.example.com:@@SSLPort@@
 ServerAdmin you@example.com
 ErrorLog "@exp_logfiledir@/error_log"
 TransferLog "@exp_logfiledir@/access_log"
