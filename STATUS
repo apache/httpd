@@ -81,16 +81,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * configure / install: Make https port configurable.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=606316&view=rev
-         http://svn.apache.org/viewvc?rev=606806&view=rev
-      Backport version for 2.2.x of patch:
-         http://people.apache.org/~fuankg/diffs/sslport.diff
-      +1: fuankg, wrowe, mturk
-      wrowe notes; Win32 is already ready for this, and there's no rush
-      to push this into the immediate next-release.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
