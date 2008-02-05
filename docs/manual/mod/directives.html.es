@@ -243,6 +243,8 @@
 <li><a href="mod_ldap.html#ldapconnectiontimeout">LDAPConnectionTimeout</a></li>
 <li><a href="mod_ldap.html#ldapopcacheentries">LDAPOpCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapopcachettl">LDAPOpCacheTTL</a></li>
+<li><a href="mod_ldap.html#ldapreferralhoplimit">LDAPReferralHopLimit</a></li>
+<li><a href="mod_ldap.html#ldapreferrals">LDAPReferrals</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachefile">LDAPSharedCacheFile</a></li>
 <li><a href="mod_ldap.html#ldapsharedcachesize">LDAPSharedCacheSize</a></li>
 <li><a href="mod_ldap.html#ldaptrustedclientcert">LDAPTrustedClientCert</a></li>
@@ -457,6 +459,6 @@
 <a href="../ja/mod/directives.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/directives.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2007 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licencia bajo los términos de la <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">Módulos</a> | <a href="../mod/directives.html">Directivas</a> | <a href="../faq/">Preguntas Frecuentes</a> | <a href="../glossary.html">Glosario</a> | <a href="../sitemap.html">Mapa de este sitio web</a></p></div>
 </body></html>
