@@ -258,7 +258,7 @@ authenticating the user if this one fails</td></tr>
 ファイルに表示するアイコン</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>MIME-lang</var></a></td><td></td><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">あるスコープのすべてのファイルを指定された言語に
 設定する</td></tr>
-<tr><td><a href="core.html#defaulttype">DefaultType <var>MIME-type</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバがコンテントタイプを決定できないときに
+<tr><td><a href="core.html#defaulttype">DefaultType <var>MIME-type|none</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバがコンテントタイプを決定できないときに
 送られる MIME コンテントタイプ</td></tr>
 <tr class="odd"><td><a href="mod_deflate.html#deflatebuffersize">DeflateBufferSize <var>value</var></a></td><td> 8096 </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">zlib が一度に圧縮する塊の大きさ</td></tr>
 <tr><td><a href="mod_deflate.html#deflatecompressionlevel">DeflateCompressionLevel <var>value</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">出力に対して行なう圧縮の程度</td></tr>
@@ -648,7 +648,7 @@ Certificate verification</td></tr>
 <tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">子プロセスそれぞれに生成されるスレッド数</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>size</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントのコネクションを受け持つスレッドが使用する
 スタックのバイト数</td></tr>
-<tr><td><a href="core.html#timeout">TimeOut <var>seconds</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">各イベントについて、リクエストを失敗させるまでにサーバが
+<tr><td><a href="core.html#timeout">TimeOut <var>seconds</var></a></td><td> 300 </td><td>sv</td><td>C</td></tr><tr><td class="descr" colspan="4">各イベントについて、リクエストを失敗させるまでにサーバが
 待つ時間を設定</td></tr>
 <tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4"><code>TRACE</code> メソッドのリクエストに対する応答方法を決める
 </td></tr>
@@ -684,6 +684,6 @@ a given virtual host</td></tr>
 <a href="../ko/mod/quickreference.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../ru/mod/quickreference.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2007 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>
