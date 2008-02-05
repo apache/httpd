@@ -137,19 +137,27 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
   * core: Reinstate location walk for subrequests.
       Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=579664
+         http://svn.apache.org/viewvc?view=rev&revision=579664
       Backport version of 2.2.x of patch:
-       Trunk version works (minus CHANGES conflict)
+         Trunk version works (minus CHANGES conflict)
     +1: 
 
  * ab: Use a 64 bit unsigned int instead of a signed long to count the
-       bytes transferred to avoid integer overflows
+   bytes transferred to avoid integer overflows
    PR: 44346
       Trunk version of patch:
          http://svn.apache.org/viewvc?rev=617890&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
     +1: rpluem, jim
+
+ * mod_proxy: Make ProxyPassReverse balancer aware; a common config
+   confusion issue.    
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=616335
+      Backport version for 2.2.x of patch:
+         Trunk version works (minus CHANGES conflict)
+    +1: jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
