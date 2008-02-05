@@ -115,7 +115,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           third party module authors.
       -1: rpluem: jorton found some problems with the trunk version and they
                   should be fixed / discussed in trunk before we backport.
-      -1: wrowe until the next release is out the door
 
   * mod_proxy_http: Return HTTP status codes instead of apr_status_t
     values for errors encountered while forwarding the request body
@@ -150,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=617890&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
