@@ -25,8 +25,6 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>常に使用可能な Apache HTTP サーバのコア機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Core</td></tr></table>
 </div>
@@ -144,7 +142,7 @@
     <p>引数に <code>none</code> を指定すると、プロトコルに対する全ての Accept 
        Filter が無効になります。<code>nntp</code> といった、先にサーバにデータを
        送る必要のあるプロトコルに有効です :</p>
-    <div class="example"><p><code>AcceptFilter nttp none</code></p></div>
+    <div class="example"><p><code>AcceptFilter nntp none</code></p></div>
 
 
 </div>
@@ -351,8 +349,6 @@
       <code class="directive"><a href="#forcetype">ForceType</a></code> ディレクティブを使います。
       (nphでない) CGI スクリプトでコンテントタイプを設定するというものでも
       大丈夫です。</p>
-
-      <p>タイプ毎の出力フィルタはプロキシリクエストには決して適用されません。</p>
     </div>
 
 <h3>参照</h3>
@@ -624,7 +620,7 @@
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サーバがコンテントタイプを決定できないときに
 送られる MIME コンテントタイプ</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DefaultType <var>MIME-type</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DefaultType <var>MIME-type|none</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>DefaultType text/plain</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
@@ -635,8 +631,8 @@
     のマッピングでは決定できない
     ドキュメントの送信を要求されることがあります。</p>
 
-    <p>サーバは、ドキュメントのコンテントタイプをクライアントに通知する必要が
-    ありますので、このようにタイプが未知の場合は
+    <p>サーバは、ドキュメントのコンテントタイプをクライアントに通知するべき(SHOULD)です。
+    もし通常の方法ではコンテントタイプが分からない場合は、
     <code>DefaultType</code> で指定されたタイプを利用します。
     例:</p>
 
@@ -646,6 +642,14 @@
 
     <p>これは <code>.gif</code> という拡張子がファイル名に含まれていない
     多くの GIF 画像が含まれているディレクトリに適しているでしょう。</p>
+    
+    <p>サーバ側でも管理者側(たとえば proxy)でもコンテントタイプが分からない場合で、
+    MIME タイプの情報が誤ってついているかもしれないぐらいであればむしろ無いほうがよい、
+    という場合もあるでしょう。このような場合は、次のようにします。</p>
+    <div class="example"><p><code>
+      DefaultType None
+    </code></p></div>
+    <p>DefaultType None は httpd-2.2.7 以降で使えます。</p>
 
     <p><code class="directive"><a href="#forcetype">ForceType</a></code> ディレクティブと
     違って、このディレクティブはデフォルトの MIME タイプを提供するだけで
@@ -1185,6 +1189,16 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     そのサブディレクトリの設定は (設定が上書きされなければサブディレクトリの
     サブディレクトリにも継承されます) <code>FileETag&nbsp;MTime&nbsp;Size</code>
     と同じになります。</p>
+    <div class="warning"><h3>警告</h3>
+    WebDAV を使っていて、<code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> をストレージプロバイダとして
+    使っているような Directory や Location では、デフォルト値を変更しないでください。
+    条件つきリクエスト中で、<code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> では 
+    <code>INode&nbsp;MTime&nbsp;Size</code>
+    という形式の固定フォーマットであることを前提として
+    <code>ETag</code> の比較を行っています。もし <code>ETag</code> フォーマットを
+    <code class="directive">FileETag</code> で変えてしまうと、条件つきリクエストが
+    うまく動作しなくなるでしょう。
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1944,7 +1958,8 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     という接頭辞を含む形でマッチし、接頭辞を含めて指定する必要があります。</p>
 
     <p>URL にはワイルドカードを利用することができます。
-    <code>?</code> は任意の一文字、<code>*</code> は任意の文字列にマッチします。 </p>
+    <code>?</code> は任意の一文字、<code>*</code> は任意の文字列にマッチします。
+    どちらのワイルドカード文字も URL-path の / にはマッチしません。</p>
 
     <p><code>~</code> という文字を追加することで、<a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a>を
     利用することもできます。
@@ -2302,7 +2317,11 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
       パス名は<em>変更されません</em>。</p>
       <p><code class="directive"><a href="#location">&lt;Location&gt;</a></code> 内に
       このオプションを指定しても<strong>無視される</strong>ことに
-      注意してください。</p></div></dd>
+      注意してください。</p>
+      <p>このオプションを省略したからといってセキュリティの強化にはなりません。
+      なぜなら symlink の検査はレースコンディションを引き起こす可能性があり、
+      そのため回避可能になるからです。</p>
+      </div></dd>
 
       <dt><code>Includes</code></dt>
 
@@ -2338,8 +2357,12 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
       シンボリックリンクの所有ユーザ ID と同じ場合にのみシンボリックリンクを
       たどれるようにします。
 
-      <div class="note"><h3>注</h3> <code class="directive"><a href="#location">&lt;Location&gt;</a></code> 内にこのオプションを
-      指定しても無視されます。</div>
+      <div class="note"><h3>注</h3> <p><code class="directive"><a href="#location">&lt;Location&gt;</a></code> 内にこのオプションを
+      指定しても無視されます。</p>
+      <p>このオプションはセキュリティの強化にはなりません。
+      なぜなら symlink の検査はレースコンディションを引き起こす可能性があり、
+      そのため回避可能になるからです。</p>
+      </div>
       </dd>
     </dl>
 
@@ -2351,6 +2374,13 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     指定された場合はオプションの値はマージされます。
     <code>+</code> を頭につければ現在の設定に加えられ、
     <code>-</code> を付ければ現在の設定から削除されます。</p>
+
+    <div class="warning"><h3>警告</h3>
+    <p><code class="directive">Options</code> で指定する際に、
+    <code>+</code> や <code>-</code> のついたものと、ついていないものを
+    混ぜて指定する記述は誤った構文で、予期しない結果になるかもしれません。
+    </p>
+    </div>
 
     <p>例えば、<code>+</code> や <code>-</code> を利用しない場合は:</p>
 
@@ -2635,9 +2665,10 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     できます:</p>
 
     <div class="example"><p><code>
-    Require valid-user<br />
-    Allow from 192.168.1<br />
-    Satisfy Any
+      Require valid-user<br />
+      Order allow,deny<br />
+      Allow from 192.168.1<br />
+      Satisfy Any
     </code></p></div>
    
     <p>バージョン 2.0.51 からは
@@ -2692,6 +2723,11 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     <code>Shell\Open\Command</code> がスクリプトファイルを開くために
     使われます。レジストリキーが見つからないときは、Apache は <code>Script</code>
     オプションが指定されたときの動作に戻ります。</p>
+
+    <p>たとえば、レジストリの設定で .pl 拡張子が perl に関連付けられている：</p>
+
+    <div class="example"><p><code><code>HKEY_CLASSES_ROOT\.pl\Shell\ExecCGI\Command\(Default) =&gt; C:\Perl\bin\perl.exe -wT</code></code></p></div>
+
 
     <div class="warning"><h3>セキュリティ</h3> 
     <p><code>ScriptInterpreterSource Registry</code> を <code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code> されたディレクトリで使うときは
@@ -2759,7 +2795,8 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
     <p><code class="directive">ServerAlias</code> ディレクティブは、<a href="../vhosts/name-based.html">ネームベースのバーチャルホスト</a>において
-    使用するホストの別名を指定します。</p>
+    使用するホストの別名を指定します。<code class="directive">ServerAlias</code>
+    は適切であればワイルドカードも含めることができます。</p>
 
     <div class="example"><p><code>
       &lt;VirtualHost *&gt;<br />
@@ -3092,7 +3129,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 待つ時間を設定</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>TimeOut <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>TimeOut 300</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
@@ -3135,7 +3172,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> は <code>405</code> (メソッド不許可)
     エラーをクライアントに返します。</p>
 
-    <p>最後に、テストや調査目的などの限定用途として、使用に準拠しない
+    <p>最後に、テストや調査目的などの限定用途として、仕様に準拠しない
     <code>TraceEnable extended</code> を使って、リクエストボディを
     受け付けるように挙動を変更できます。(オリジンサーバとしての)
     コアサーバでは、リクエストボディのサイズは 64k (
@@ -3284,7 +3321,7 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     <ul>
       <li>バーチャルホストの IP アドレス</li>
 
-      <li>バーチャルホストの IP に対応する完全なドメイン名</li>
+      <li>バーチャルホストの IP に対応する完全なドメイン名(非推奨)</li>
 
       <li><code>NameVirtualHost *</code> と共に使われる、
       すべての IP アドレスにマッチする文字 <code>*</code></li>
@@ -3355,6 +3392,11 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
     アドレス上の全てのポートにマッチします。(<code>_default_</code> のときは
     これを使うことが推奨されています。)</p>
 
+    <p>それぞれの <code class="directive">&lt;VirtualHost&gt;</code>
+    ブロック内で <code class="directive"><a href="#servername">ServerName</a></code>
+    を指定します。もしこれが無いと、"main" サーバ設定の
+    <code class="directive"><a href="#servername">ServerName</a></code> が引き継がれます。</p>
+
     <div class="warning"><h3>セキュリティ</h3>
     <p>サーバーを起動した以外のユーザがログファイルが保管されるディレクトリに
     書き込み可能なときになぜセキュリティが破られる可能性があるかの詳細は
@@ -3377,6 +3419,6 @@ Apache がファイルをアクセスするために使うファイルシステムのパスに
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div><div id="footer">
-<p class="apache">Copyright 2007 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
 </body></html>
