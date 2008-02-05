@@ -439,7 +439,7 @@
     <div class="example"><p><code>
     &lt;VirtualHost *:*&gt;<br />
         ProxyPreserveHost On<br />
-        ProxyPass / http://192.168.111.2<br />
+        ProxyPass / http://192.168.111.2/<br />
         ProxyPassReverse / http://192.168.111.2/<br />
         ServerName hostname.example.com<br />
     &lt;/VirtualHost&gt;
