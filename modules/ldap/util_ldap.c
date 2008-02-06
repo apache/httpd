@@ -2333,7 +2333,7 @@ static const char *util_ldap_set_connection_timeout(cmd_parms *cmd,
                  " timeout to %ld seconds.", getpid(), st->connectionTimeout);
 #else
     ap_log_error(APLOG_MARK, APLOG_NOTICE, 0, cmd->server,
-                 "LDAP: Connection timout option not supported by the "
+                 "LDAP: Connection timeout option not supported by the "
                  "LDAP SDK in use." );
 #endif
 
