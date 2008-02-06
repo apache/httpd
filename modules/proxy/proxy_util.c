@@ -2441,7 +2441,7 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                  proxy_function, backend_addr, conn->hostname);
 
     /*
-     * save the timout of the socket because core_pre_connection
+     * save the timeout of the socket because core_pre_connection
      * will set it to base_server->timeout
      * (core TimeOut directive).
      */
