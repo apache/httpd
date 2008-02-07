@@ -36,7 +36,7 @@
     common to all authentication providers.</p>
 </summary>
 
-<section id="authnalias"><title>Creating Provider Aliases</title>
+<section id="authnalias"><title>Creating Authentication Provider Aliases</title>
 
     <p>Extended authentication providers can be created 
     within the configuration file and assigned an alias name.  The alias 
@@ -51,11 +51,10 @@
     <section id="example"><title>Example</title>
         <p>The example below creates two different ldap authentication 
         provider aliases based on the ldap provider.  This allows
-        a single authenticated location can be serviced by multiple 
-        ldap hosts:</p>
+        a single authenticated location to be serviced by multiple ldap
+        hosts:</p>
     
         <example><title>Example</title>
-          LoadModule authn_alias_module modules/mod_authn_alias.so<br /><br />
           &lt;AuthnProviderAlias ldap ldap-alias1&gt;<br />
           <indent>
              AuthLDAPBindDN cn=youruser,o=ctx<br />
