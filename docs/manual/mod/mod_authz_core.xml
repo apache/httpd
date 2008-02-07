@@ -41,6 +41,60 @@
     authorization processing.</p>
 </summary>
 
+<section id="authzalias"><title>Creating Authorization Provider Aliases</title>
+
+    <p>Extended authorization providers can be created within the configuration
+    file and assigned an alias name.  The alias providers can then be referenced
+    through the <directive module="mod_authz_core">Require</directive> directive
+    in the same way as a base authorization provider.  Besides the ability to
+    create and alias an extended provider, it also allows the same extended
+    authorization provider to be reference by multiple locations.
+    </p>
+
+    <section id="example"><title>Example</title>
+        <p>The example below creates two different ldap authorization provider
+        aliases based on the ldap-group authorization provider.  This example
+        allows a single authorization location to check group membership within
+        multiple ldap hosts:
+        </p>
+    
+        <example><title>Example</title>
+          &lt;RequireAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;<br />
+          <indent>
+             AuthLDAPBindDN cn=youruser,o=ctx<br />
+             AuthLDAPBindPassword yourpassword<br />
+             AuthLDAPURL ldap://ldap.host/o=ctx<br />
+          </indent> 
+          &lt;/RequireAlias&gt;<br /><br /> 
+          &lt;AuthnProviderAlias ldap-group ldap-group-alias2
+           cn=my-other-group,o=dev&gt;<br />
+          <indent>
+             AuthLDAPBindDN cn=yourotheruser,o=dev<br />
+             AuthLDAPBindPassword yourotherpassword<br />
+             AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
+          </indent> 
+          &lt;/RequireAlias&gt;<br /><br />
+    
+          Alias /secure /webpages/secure<br />
+          &lt;Directory /webpages/secure&gt;<br />
+          <indent>
+             Order deny,allow<br />
+             Allow from all<br /><br />
+        
+             AuthBasicProvider file<br /><br />
+        
+             AuthType Basic<br />
+             AuthName LDAP_Protected_Place<br /><br />
+
+             #implied OR operation<br /> 
+             require alias1-ldap-group<br /> 
+             require alias2-ldap-group<br />
+          </indent> &lt;/Directory&gt;<br />
+        </example>
+    </section>
+
+</section>
+
 <directivesynopsis>
 <name>Require</name>
 <description>Selects which authenticated users can access
@@ -246,6 +300,26 @@ the current &lt;Directory&gt; or &lt;Location&gt; block will apply.</description
     authorization rules that may exist above it.</p>
 </usage>
 
+</directivesynopsis>
+
+<directivesynopsis type="section">
+<name>RequireAlias</name>
+<description>Enclose a group of directives that represent an
+extension of a base authorization provider and referenced by the specified
+alias</description>
+<syntax>&lt;RequireAlias <var>baseProvider Alias Require-Parameters</var>&gt; 
+... &lt;/RequireAlias&gt;
+</syntax>
+<contextlist><context>server config</context>
+</contextlist>
+
+<usage>
+    <p><directive type="section">RequireAlias</directive> and
+    <code>&lt;/RequireAlias&gt;</code> are used to enclose a group of
+    authorization directives that can be referenced by the alias name using the
+    directive <directive module="mod_authz_core"> Require</directive>.</p>
+
+</usage>
 </directivesynopsis>
 
 </modulesynopsis>
