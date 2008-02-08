@@ -643,6 +643,11 @@
       parsed expression tokenizer information, the parse tree and how it is
       evaluated into the output sent to the client.</p>
     </div>
+ 
+    <div class="note"><h3>Escaping slashes in regex strings</h3>
+     <p>All slashes which are not intended to act as delimiters in your regex must
+     be escaped.  This is regardless of their meaning to the regex engine.</p>
+    </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSIEnableAccess" id="SSIEnableAccess">SSIEnableAccess</a> <a name="ssienableaccess" id="ssienableaccess">Directive</a></h2>
