@@ -374,7 +374,7 @@ nmake /f Makefile.win installd INSTDIR=<em>dir</em>
     <p>This will install the following:</p>
 
     <ul>
-      <li><code><em>dir</em>\bin\Apache.exe</code> - Apache
+      <li><code><em>dir</em>\bin\httpd.exe</code> - Apache
       executable</li>
 
       <li><code><em>dir</em>\bin\ApacheMonitor.exe</code> - Service
