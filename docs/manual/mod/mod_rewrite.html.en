@@ -71,6 +71,9 @@ URLs on the fly</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#EnvVar">Environment Variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#vhosts">Rewriting in Virtual Hosts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Solutions">Practical Solutions</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="#rewriteflags">Rewrite Flags</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -1238,6 +1241,7 @@ cannot use <code>$N</code> in the substitution string!
      </div>
 
 
+
       <p>Additionally you can set special <a name="rewriteflags" id="rewriteflags">actions</a> to be performed by 
       appending <strong><code>[</code><em>flags</em><code>]</code></strong>
       as the third argument to the <code>RewriteRule</code>
@@ -1512,6 +1516,7 @@ cannot use <code>$N</code> in the substitution string!
         </code></p></div>
         </dd>
       </dl>
+
 
 <div class="note"><h3>Home directory expansion</h3>
 <p> When the substitution string begins with a string
