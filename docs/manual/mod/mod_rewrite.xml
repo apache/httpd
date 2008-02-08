@@ -56,6 +56,8 @@ URLs on the fly</description>
       <a href="../rewrite/">detailed mod_rewrite documentation</a>.</p>
 </summary>
 
+<seealso><a href="#rewriteflags">Rewrite Flags</a></seealso>
+
 <section id="quoting"><title>Quoting Special Characters</title>
 
       <p>As of Apache 1.3.20, special characters in
@@ -1253,6 +1255,7 @@ cannot use <code>$N</code> in the substitution string!
      </note>
 
 
+
       <p>Additionally you can set special <a name="rewriteflags"
       id="rewriteflags">actions</a> to be performed by 
       appending <strong><code>[</code><em>flags</em><code>]</code></strong>
@@ -1531,6 +1534,7 @@ cannot use <code>$N</code> in the substitution string!
         </example>
         </dd>
       </dl>
+
 
 <note><title>Home directory expansion</title>
 <p> When the substitution string begins with a string
