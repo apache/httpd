@@ -73,6 +73,9 @@ URLs on the fly</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#quoting">Quoting Special Characters</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#EnvVar">Environment Variables</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#Solutions">Practical Solutions</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><a href="#rewriteflags">Rewrite Flags</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
