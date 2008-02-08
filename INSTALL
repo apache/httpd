@@ -77,8 +77,8 @@
   the text "@@" to discover what you must edit.  To install and start the 
   service after you have corrected the httpd.conf file, use the command
 
-    bin\Apache -k install
-    bin\Apache -k start
+    bin\httpd.exe -k install
+    bin\httpd.exe -k start
 
   The .msi package configures the httpd.conf file, and installs and starts 
   the Apache2 service for you.  It also installs plenty of useful shortcuts

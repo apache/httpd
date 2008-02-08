@@ -586,7 +586,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     apr_pool_create_ex(&ptemp, p, NULL, NULL);
 
     /* Build the command line. Should look something like this:
-     * C:/apache/bin/apache.exe -f ap_server_confname
+     * C:/apache/bin/httpd.exe -f ap_server_confname
      * First, get the path to the executable...
      */
     apr_procattr_create(&attr, ptemp);
