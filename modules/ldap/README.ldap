@@ -38,7 +38,7 @@ Quick installation instructions (win32):
 3. Compile the two modules util_ldap and mod_authnz_ldap using the dsp files
 4. You get a mod_authnz_ldap.so and a mod_ldap.so module
 5. Put them in the modules directory, don't forget to copy the
-   nsldap32v50.dll somewhere where apache.exe will find it
+   nsldap32v50.dll somewhere where httpd.exe will find it
 6. Load the two modules in your httpd.conf, like below:
    LoadModule ldap_module modules/mod_ldap.so
    LoadModule authnz_ldap_module modules/mod_authnz_ldap.so
