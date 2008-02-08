@@ -44,13 +44,19 @@
 
       <dl>
       <dt>Check the ErrorLog!</dt>
-      <dd>Apache tries to be helpful when it encounters a problem. In many
+      <dd><p>Apache tries to be helpful when it encounters a problem. In many
       cases, it will provide some details by writing one or more messages to the
       server error log. Sometimes this is enough for you to diagnose and fix
       the problem yourself (such as file permissions or the like). The default
       location of the error log is
       <code>/usr/local/apache2/logs/error_log</code>, but see the <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> directive in your config files for the
-      location on your server.</dd>
+      location on your server.</p>
+
+      <p>If you end up in any of the support forums this is quite likely to be the 
+      first place they will ask you retrieve information from.  Please ensure you
+      know where to find your errorlog.  If you are unsure, the wiki page 
+      <a href="http://wiki.apache.org/httpd/DistrosDefaultLayout"> here</a> can
+      give you some ideas where to look.</p></dd>
 
       <dt>Consult the wiki</dt>
       <dd>The <a href="http://wiki.apache.org/httpd/">Apache HTTP
