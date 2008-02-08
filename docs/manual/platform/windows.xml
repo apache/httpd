@@ -432,7 +432,7 @@
       Apache <code>logs</code> directory.</li>
 
       <li>Grant the account read and execute (RX) rights to the
-      <code>Apache.exe</code> binary executable.</li>
+      <code>httpd.exe</code> binary executable.</li>
     </ol>
 
     <note>It is usually a good practice to grant the user the Apache
