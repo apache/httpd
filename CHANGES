@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_dir, mod_negotiation: pass the output filter information
+     to newly created sub requests; as these are later on used
+     as true requests with an internal redirect. This allows for
+     mod_cache et.al. to trap the results of the redirect. 
+     [Dirk-Willem van Gulik, Ruediger Pluem]
+
   *) ab: Use a 64 bit unsigned int instead of a signed long to count the
      bytes transferred to avoid integer overflows. PR 44346 [Ruediger Pluem]
 
