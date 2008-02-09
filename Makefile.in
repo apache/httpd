@@ -192,6 +192,9 @@ INSTALL_HEADERS = \
 	$(srcdir)/modules/http/mod_core.h \
 	$(srcdir)/modules/proxy/mod_proxy.h \
 	$(srcdir)/modules/ssl/mod_ssl.h \
+	$(srcdir)/modules/mappers/mod_so.h \
+	$(srcdir)/modules/mappers/mod_rewrite.h \
+	$(srcdir)/modules/cache/mod_cache.h \
 	$(srcdir)/os/$(OS_DIR)/*.h
 
 install-include:
