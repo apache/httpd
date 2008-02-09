@@ -736,7 +736,10 @@ BEGIN {
 		modules\loggers\mod_log_config.h \
 		modules\http\mod_core.h \
 		modules\proxy\mod_proxy.h \
-		modules\ssl\mod_ssl.h ) do \
+		modules\ssl\mod_ssl.h \
+		modules\mappers\mod_so.h \
+		modules\mappers\mod_rewrite.h \
+		modules\cache\mod_cache.h ) do \
 	    @copy %f "$(INSTDIR)\include" < .y > nul
 	copy srclib\apr\Lib$(SHORT)\apr-1.lib		"$(INSTDIR)\lib" <.y
 	copy srclib\apr\Lib$(SHORT)\apr-1.pdb		"$(INSTDIR)\lib" <.y
