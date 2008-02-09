@@ -4,7 +4,7 @@ Changes with Apache 2.3.0
 
   *) Also install mod_so.h, mod_rewrite.h and mod_cache.h; as these
      contain public function declarations which are useful for
-     third party module authors [Dirk-Willem van Gulik].
+     third party module authors. PR 42431 [Dirk-Willem van Gulik].
 
   *) mod_dir, mod_negotiation: pass the output filter information
      to newly created sub requests; as these are later on used
