@@ -144,7 +144,7 @@ INFO="and also the site you see when the browser does not support SNI."
 
 for n in ${NAMES}
 do
-    dw  FQDN=$n.$DOMAIN
+    FQDN=$n.$DOMAIN
     serial=`expr $serial + 1`
 
     # Create a certificate request for this host.
@@ -224,8 +224,8 @@ server against it with
 
     .../httpd -f ${DIR}/httpd-sni.conf
 
-and keep an eye on ${DIR}/logs/... When everything 
-is fine you will see an entries like:
+and keep an eye on ${DIR}/logs/error_log. When everything 
+is fine you will see entries like:
 
     Feb 11 16:12:26 2008] [debug] Init: 
         SSL server IP/port overlap: ape.*:443 (httpd-sni.conf:24) vs. jane.*:443 (httpd-sni.conf:42)
@@ -235,7 +235,7 @@ for each vhost configured and a concluding warning:
     [Mon Feb 11 16:12:26 2008] [warn] Init: 
         Name-based SSL virtual hosts only work for clients with TLS server name indication support (RFC 4366)
 
-HOWEVER - If you see an entry like
+HOWEVER - If you see an entry like:
 
     [Mon Feb 11 15:41:41 2008] [warn] Init: 
         You should not use name-based virtual hosts in conjunction with SSL!!
