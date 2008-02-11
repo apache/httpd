@@ -57,8 +57,9 @@ Changes with Apache 2.3.0
   *) mod_logio: Provide optional function to allow modules to adjust the 
      bytes_in count [Eric Covener]
 
-  *) mod_ssl: Added server name indication support (RFC 4366).
-     PR 34607. [Kaspar Brand <asfbugz velox.ch>]
+  *) mod_ssl: Added server name indication support (SNI, RFC 4366).
+     PR 34607. [Kaspar Brand <asfbugz velox.ch>]. A test configuration
+     can be created with test/make_sni.sh [Dirk-Willem van Gulik].
 
   *) ApacheMonitor.exe: Introduce --kill argument for use by the
      installer.  This will permit the installation tool to remove
