@@ -4,7 +4,7 @@ dnl APACHE_MODULE(name, helptext[, objects[, structname[, default[, config]]]])
 
 APACHE_MODPATH_INIT(cache)
 
-APACHE_MODULE(file_cache, File cache, , , no)
+APACHE_MODULE(file_cache, File cache, , , most)
 
 dnl #  list of object files for mod_cache
 cache_objs="dnl
@@ -18,9 +18,10 @@ mod_mem_cache.lo dnl
 cache_cache.lo dnl
 cache_pqueue.lo dnl
 cache_hash.lo dnl
+cache_util.lo dnl
 "
-APACHE_MODULE(cache, dynamic file caching, $cache_objs, , no)
-APACHE_MODULE(disk_cache, disk caching module, , , no)
-APACHE_MODULE(mem_cache, memory caching module, $mem_cache_objs, , no)
+APACHE_MODULE(cache, dynamic file caching, $cache_objs, , most)
+APACHE_MODULE(disk_cache, disk caching module, , , most)
+APACHE_MODULE(mem_cache, memory caching module, $mem_cache_objs, , )
 
 APACHE_MODPATH_FINISH
