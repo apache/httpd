@@ -59,7 +59,8 @@
       <p>This module operates on the full URLs (including the
       path-info part) both in per-server context
       (<code>httpd.conf</code>) and per-directory context
-      (<code>.htaccess</code>) and can even generate query-string
+      (<code>.htaccess</code> files and <code>&lt;Directory&gt;</code>
+      blocks) and can even generate query-string
       parts on result. The rewritten result can lead to internal
       sub-processing, external request redirection or even to an
       internal proxy throughput.</p>
