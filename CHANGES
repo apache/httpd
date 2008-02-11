@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Activate mod_cache, mod_file_cache and mod_disc_cache as part of the
+     'most' set for '--enable-modules' and '--enable-shared-mods'. Include 
+     mod_mem_cache in 'all' as well. [Dirk-Willem van Gulik]
+
   *) Also install mod_so.h, mod_rewrite.h and mod_cache.h; as these
      contain public function declarations which are useful for
      third party module authors. PR 42431 [Dirk-Willem van Gulik].
