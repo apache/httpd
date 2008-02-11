@@ -102,7 +102,7 @@ static char *data_file(apr_pool_t *p, disk_cache_conf *conf,
      }
 }
 
-static void mkdir_structure(disk_cache_conf *conf, const char *file, apr_pool_t *pool)
+static apr_status_t mkdir_structure(disk_cache_conf *conf, const char *file, apr_pool_t *pool)
 {
     apr_status_t rv;
     char *p;
@@ -116,11 +116,12 @@ static void mkdir_structure(disk_cache_conf *conf, const char *file, apr_pool_t 
         rv = apr_dir_make(file,
                           APR_UREAD|APR_UWRITE|APR_UEXECUTE, pool);
         if (rv != APR_SUCCESS && !APR_STATUS_IS_EEXIST(rv)) {
-            /* XXX */
+            return rv;
         }
         *p = '/';
         ++p;
     }
+    return APR_SUCCESS;
 }
 
 /* htcacheclean may remove directories underneath us.
@@ -141,7 +142,9 @@ static apr_status_t safe_file_rename(disk_cache_conf *conf,
             /* 1000 micro-seconds aka 0.001 seconds. */
             apr_sleep(1000);
 
-            mkdir_structure(conf, dest, pool);
+            rv = mkdir_structure(conf, dest, pool);
+            if (rv != APR_SUCCESS)
+                continue;
 
             rv = apr_file_rename(src, dest, pool);
         }
@@ -472,7 +475,8 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
 #endif
     rc = apr_file_open(&dobj->fd, dobj->datafile, flags, 0, r->pool);
     if (rc != APR_SUCCESS) {
-        /* XXX: Log message */
+        ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+                 "disk_cache: Cannot open info header file %s",  dobj->datafile);
         return DECLINED;
     }
 
@@ -484,7 +488,8 @@ static int open_entity(cache_handle_t *h, request_rec *r, const char *key)
     /* Read the bytes to setup the cache_info fields */
     rc = file_cache_recall_mydata(dobj->hfd, info, dobj, r);
     if (rc != APR_SUCCESS) {
-        /* XXX log message */
+        ap_log_error(APLOG_MARK, APLOG_ERR, rc, r->server,
+                 "disk_cache: Cannot read header file %s",  dobj->hdrsfile);
         return DECLINED;
     }
 
@@ -749,7 +754,8 @@ static apr_status_t recall_headers(cache_handle_t *h, request_rec *r)
 
     /* This case should not happen... */
     if (!dobj->hfd) {
-        /* XXX log message */
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
+                 "disk_cache: recalling headers; but no header fd for %s", dobj->name);
         return APR_NOTFOUND;
     }
 
@@ -846,13 +852,23 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
                 dobj->prefix = NULL;
             }
 
-            mkdir_structure(conf, dobj->hdrsfile, r->pool);
+            rv = mkdir_structure(conf, dobj->hdrsfile, r->pool);
+
+            if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
+                    "disk_cache: could not create directory path to %s",
+                    dobj->hdrsfile);
+                return rv;
+            }
 
             rv = apr_file_mktemp(&dobj->tfd, dobj->tempfile,
                                  APR_CREATE | APR_WRITE | APR_BINARY | APR_EXCL,
                                  r->pool);
 
             if (rv != APR_SUCCESS) {
+                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
+                    "disk_cache: could not create temp file %s",
+                    dobj->tempfile);
                 return rv;
             }
 
@@ -877,7 +893,6 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
                 ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
                     "disk_cache: rename tempfile to varyfile failed: %s -> %s",
                     dobj->tempfile, dobj->hdrsfile);
-                apr_file_remove(dobj->tempfile, r->pool);
                 return rv;
             }
 
@@ -896,6 +911,9 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
                          APR_BUFFERED | APR_EXCL, r->pool);
 
     if (rv != APR_SUCCESS) {
+       ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
+           "disk_cache: could not create temp file %s",
+           dobj->tempfile);
         return rv;
     }
 
@@ -916,6 +934,9 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
     rv = apr_file_writev(dobj->hfd, (const struct iovec *) &iov, 2, &amt);
     if (rv != APR_SUCCESS) {
+       ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
+           "disk_cache: could not write info to header file %s",
+           dobj->hdrsfile);
         return rv;
     }
 
@@ -935,6 +956,9 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
                                         r->err_headers_out);
         rv = store_table(dobj->hfd, headers_out);
         if (rv != APR_SUCCESS) {
+           ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
+               "disk_cache: could not write out-headers to header file %s",
+               dobj->hdrsfile);
             return rv;
         }
     }
@@ -948,6 +972,9 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
                                                  r->server);
         rv = store_table(dobj->hfd, headers_in);
         if (rv != APR_SUCCESS) {
+           ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
+               "disk_cache: could not write in-headers to header file %s",
+               dobj->hdrsfile);
             return rv;
         }
     }
@@ -960,7 +987,13 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
      */
     rv = apr_file_remove(dobj->hdrsfile, r->pool);
     if (rv != APR_SUCCESS) {
-        mkdir_structure(conf, dobj->hdrsfile, r->pool);
+        rv = mkdir_structure(conf, dobj->hdrsfile, r->pool);
+        if (rv != APR_SUCCESS) {
+            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
+                     "disk_cache: creating directories for hdrsfile %s failed",
+                     dobj->hdrsfile);
+            return rv;
+        }
     }
 
     rv = safe_file_rename(conf, dobj->tempfile, dobj->hdrsfile, r->pool);
