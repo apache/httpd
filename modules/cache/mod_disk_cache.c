@@ -854,13 +854,6 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
 
             rv = mkdir_structure(conf, dobj->hdrsfile, r->pool);
 
-            if (rv != APR_SUCCESS) {
-                ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
-                    "disk_cache: could not create directory path to %s",
-                    dobj->hdrsfile);
-                return rv;
-            }
-
             rv = apr_file_mktemp(&dobj->tfd, dobj->tempfile,
                                  APR_CREATE | APR_WRITE | APR_BINARY | APR_EXCL,
                                  r->pool);
@@ -893,6 +886,7 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
                 ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
                     "disk_cache: rename tempfile to varyfile failed: %s -> %s",
                     dobj->tempfile, dobj->hdrsfile);
+                    apr_file_remove(dobj->tempfile, r->pool);
                 return rv;
             }
 
@@ -988,12 +982,6 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     rv = apr_file_remove(dobj->hdrsfile, r->pool);
     if (rv != APR_SUCCESS) {
         rv = mkdir_structure(conf, dobj->hdrsfile, r->pool);
-        if (rv != APR_SUCCESS) {
-            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
-                     "disk_cache: creating directories for hdrsfile %s failed",
-                     dobj->hdrsfile);
-            return rv;
-        }
     }
 
     rv = safe_file_rename(conf, dobj->tempfile, dobj->hdrsfile, r->pool);
