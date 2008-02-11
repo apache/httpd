@@ -135,7 +135,8 @@ RewriteRule \.exe - [F]
 </example>
 
 <p>This example uses the "-" syntax for the rewrite target, which means
-that the requested URI is not modified.</p>
+that the requested URI is not modified. There's no reason to rewrite to
+another URI, if you're going to forbid the request.</p>
 
 </section>
 
@@ -143,6 +144,13 @@ that the requested URI is not modified.</p>
 <p>The [G] flag forces Apache to return a 410 Gone status with the
 response. This indicates that a resource used to be available, but is no
 longer available.</p>
+
+<p>As with the [F] flag, you will typically use the "-" syntax for the
+rewrite target when using the [G] flag:</p>
+
+<example>
+RewriteRule oldproduct - [G,NC]
+</example>
 </section>
 
 <section id="flag_h"><title>H|handler</title>
@@ -184,7 +192,17 @@ start over.</p>
 module="mod_rewrite">RewriteRule</directive> directives in one of these
 context that you take explicit steps to avoid rules looping, and not
 count solely on the [L] flag to terminate execution of a series of
-rules.</p>
+rules, as shown below.</p>
+
+<p>The example given here will rewrite any request to
+<code>index.php</code>, giving the original request as a query string
+argument to <code>index.php</code>, however, if the request is already
+for <code>index.php</code>, this rull will be skipped.</p>
+
+<example>
+RewriteCond %{REQUEST_URI} !index\.php<br />
+RewriteRule ^(.*) index.php?req=$1 [L]
+</example>
 </section>
 
 <section id="flag_n"><title>N|next</title>
@@ -194,8 +212,17 @@ with extreme caution, as it may result in loop.
 </p>
 <p>
 The [Next] flag could be used, for example, if you wished to replace a
-certain string or letter repeatedly in a request.
+certain string or letter repeatedly in a request. The example shown here
+will replace A with B everywhere in a request, and will continue doing
+so until there are no more As to be replaced.
 </p>
+
+<example>
+RewriteRule (.*)A(.*) $1B$2 [N]
+</example>
+
+<p>You can think of this as a <code>while</code> loop: While this
+pattern still matches, perform this substitution.</p>
 
 </section>
 
@@ -228,7 +255,8 @@ RewriteRule ^/anchor/(.+) /bigpage.html#$1 [NE,R]
 <p>
 The above example will redirect <code>/anchor/xyz</code> to
 <code>/bigpage.html#xyz</code>. Omitting the [NE] will result in the #
-being converted to its hexcode equivalent, <code>%23</code>.
+being converted to its hexcode equivalent, <code>%23</code>, which will
+then result in a 404 Not Found error condition.
 </p>
 
 </section>
@@ -285,7 +313,7 @@ use the [PT] flag to ensure that the
 </p>
 
 <example>
-Alias /icons /usr/local/apache/icons
+Alias /icons /usr/local/apache/icons<br />
 RewriteRule /pics/(.+)\.jpg /icons/$1.gif [PT]
 </example>
 
@@ -350,8 +378,10 @@ module="mod_rewrite">RewriteRule</directive> if the requested URI
 doesn't correspond with an actual file.</p>
 
 <example>
+# Is the request for a non-existent file?
 RewriteCond %{REQUEST_FILENAME} !-f<br />
 RewriteCond %{REQUEST_FILENAME} !-d<br />
+# If so, skip these two RewriteRules
 RewriteRule .? - [S=2]<br />
 <br />
 RewriteRule (.*\.gif) images.php?$1<br />
@@ -376,8 +406,17 @@ module="mod_mime">AddType</directive> directive.</p>
 source code as plain text, if requested in a particular way:</p>
 
 <example>
-# Files with 'IMG' in the name are gif images.
-RewriteRule IMG - [T=image/gif]
+# Serve .pl files as plan text
+RewriteRule \.pl$ - [T=text/plain]
+</example>
+
+<p>Or, perhaps, if you have a camera that produces jpeg images without
+file extensions, you could force those images to be served with the
+correct MIME type by virtue of their file names:</p>
+
+<example>
+# Files with 'IMG' in the name are jpg images.<br />
+RewriteRule IMG - [T=image/jpg]
 </example>
 
 <p>Please note that this is a trivial example, and could be better done
