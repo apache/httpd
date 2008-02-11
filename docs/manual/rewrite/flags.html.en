@@ -127,7 +127,8 @@ RewriteRule \.exe - [F]
 </code></p></div>
 
 <p>This example uses the "-" syntax for the rewrite target, which means
-that the requested URI is not modified.</p>
+that the requested URI is not modified. There's no reason to rewrite to
+another URI, if you're going to forbid the request.</p>
 
 
 
@@ -135,6 +136,13 @@ that the requested URI is not modified.</p>
 <p>The [G] flag forces Apache to return a 410 Gone status with the
 response. This indicates that a resource used to be available, but is no
 longer available.</p>
+
+<p>As with the [F] flag, you will typically use the "-" syntax for the
+rewrite target when using the [G] flag:</p>
+
+<div class="example"><p><code>
+RewriteRule oldproduct - [G,NC]
+</code></p></div>
 
 
 <h3><a name="flag_h" id="flag_h">H|handler</a></h3>
@@ -174,7 +182,17 @@ start over.</p>
 <p>It is therefore important, if you are using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives in one of these
 context that you take explicit steps to avoid rules looping, and not
 count solely on the [L] flag to terminate execution of a series of
-rules.</p>
+rules, as shown below.</p>
+
+<p>The example given here will rewrite any request to
+<code>index.php</code>, giving the original request as a query string
+argument to <code>index.php</code>, however, if the request is already
+for <code>index.php</code>, this rull will be skipped.</p>
+
+<div class="example"><p><code>
+RewriteCond %{REQUEST_URI} !index\.php<br />
+RewriteRule ^(.*) index.php?req=$1 [L]
+</code></p></div>
 
 
 <h3><a name="flag_n" id="flag_n">N|next</a></h3>
@@ -184,8 +202,17 @@ with extreme caution, as it may result in loop.
 </p>
 <p>
 The [Next] flag could be used, for example, if you wished to replace a
-certain string or letter repeatedly in a request.
+certain string or letter repeatedly in a request. The example shown here
+will replace A with B everywhere in a request, and will continue doing
+so until there are no more As to be replaced.
 </p>
+
+<div class="example"><p><code>
+RewriteRule (.*)A(.*) $1B$2 [N]
+</code></p></div>
+
+<p>You can think of this as a <code>while</code> loop: While this
+pattern still matches, perform this substitution.</p>
 
 
 
@@ -217,7 +244,8 @@ RewriteRule ^/anchor/(.+) /bigpage.html#$1 [NE,R]
 <p>
 The above example will redirect <code>/anchor/xyz</code> to
 <code>/bigpage.html#xyz</code>. Omitting the [NE] will result in the #
-being converted to its hexcode equivalent, <code>%23</code>.
+being converted to its hexcode equivalent, <code>%23</code>, which will
+then result in a 404 Not Found error condition.
 </p>
 
 
@@ -271,7 +299,7 @@ use the [PT] flag to ensure that the
 </p>
 
 <div class="example"><p><code>
-Alias /icons /usr/local/apache/icons
+Alias /icons /usr/local/apache/icons<br />
 RewriteRule /pics/(.+)\.jpg /icons/$1.gif [PT]
 </code></p></div>
 
@@ -335,8 +363,10 @@ ruleset. In the following example, we only want to run the <code class="directiv
 doesn't correspond with an actual file.</p>
 
 <div class="example"><p><code>
+# Is the request for a non-existent file?
 RewriteCond %{REQUEST_FILENAME} !-f<br />
 RewriteCond %{REQUEST_FILENAME} !-d<br />
+# If so, skip these two RewriteRules
 RewriteRule .? - [S=2]<br />
 <br />
 RewriteRule (.*\.gif) images.php?$1<br />
@@ -359,8 +389,17 @@ sent. This has the same effect as the <code class="directive"><a href="../mod/mo
 source code as plain text, if requested in a particular way:</p>
 
 <div class="example"><p><code>
-# Files with 'IMG' in the name are gif images.
-RewriteRule IMG - [T=image/gif]
+# Serve .pl files as plan text
+RewriteRule \.pl$ - [T=text/plain]
+</code></p></div>
+
+<p>Or, perhaps, if you have a camera that produces jpeg images without
+file extensions, you could force those images to be served with the
+correct MIME type by virtue of their file names:</p>
+
+<div class="example"><p><code>
+# Files with 'IMG' in the name are jpg images.<br />
+RewriteRule IMG - [T=image/jpg]
 </code></p></div>
 
 <p>Please note that this is a trivial example, and could be better done
