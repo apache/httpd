@@ -340,6 +340,7 @@
 <li><a href="mod_mime.html#removetype">RemoveType</a></li>
 <li><a href="mod_headers.html#requestheader">RequestHeader</a></li>
 <li><a href="mod_authz_core.html#require">Require</a></li>
+<li><a href="mod_authz_core.html#requirealias">&lt;RequireAlias&gt;</a></li>
 <li><a href="mod_rewrite.html#rewritebase">RewriteBase</a></li>
 <li><a href="mod_rewrite.html#rewritecond">RewriteCond</a></li>
 <li><a href="mod_rewrite.html#rewriteengine">RewriteEngine</a></li>

@@ -45,11 +45,69 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#authzmergerules">AuthzMergeRules</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#reject">Reject</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#require">Require</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requirealias">&lt;RequireAlias&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#satisfyall">&lt;SatisfyAll&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#satisfyone">&lt;SatisfyOne&gt;</a></li>
 </ul>
-</div>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#authzalias">Creating Authorization Provider Aliases</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="authzalias" id="authzalias">Creating Authorization Provider Aliases</a></h2>
 
+    <p>Extended authorization providers can be created within the configuration
+    file and assigned an alias name.  The alias providers can then be referenced
+    through the <code class="directive"><a href="#require">Require</a></code> directive
+    in the same way as a base authorization provider.  Besides the ability to
+    create and alias an extended provider, it also allows the same extended
+    authorization provider to be reference by multiple locations.
+    </p>
+
+    <h3><a name="example" id="example">Example</a></h3>
+        <p>The example below creates two different ldap authorization provider
+        aliases based on the ldap-group authorization provider.  This example
+        allows a single authorization location to check group membership within
+        multiple ldap hosts:
+        </p>
+    
+        <div class="example"><h3>Example</h3><p><code>
+          &lt;RequireAlias ldap-group ldap-group-alias1 cn=my-group,o=ctx&gt;<br />
+          <span class="indent">
+             AuthLDAPBindDN cn=youruser,o=ctx<br />
+             AuthLDAPBindPassword yourpassword<br />
+             AuthLDAPURL ldap://ldap.host/o=ctx<br />
+          </span> 
+          &lt;/RequireAlias&gt;<br /><br /> 
+          &lt;AuthnProviderAlias ldap-group ldap-group-alias2
+           cn=my-other-group,o=dev&gt;<br />
+          <span class="indent">
+             AuthLDAPBindDN cn=yourotheruser,o=dev<br />
+             AuthLDAPBindPassword yourotherpassword<br />
+             AuthLDAPURL ldap://other.ldap.host/o=dev?cn<br />
+          </span> 
+          &lt;/RequireAlias&gt;<br /><br />
+    
+          Alias /secure /webpages/secure<br />
+          &lt;Directory /webpages/secure&gt;<br />
+          <span class="indent">
+             Order deny,allow<br />
+             Allow from all<br /><br />
+        
+             AuthBasicProvider file<br /><br />
+        
+             AuthType Basic<br />
+             AuthName LDAP_Protected_Place<br /><br />
+
+             #implied OR operation<br /> 
+             require alias1-ldap-group<br /> 
+             require alias2-ldap-group<br />
+          </span> &lt;/Directory&gt;<br />
+        </code></p></div>
+    
+
+</div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="AuthzMergeRules" id="AuthzMergeRules">AuthzMergeRules</a> <a name="authzmergerules" id="authzmergerules">Directive</a></h2>
 <table class="directive">
@@ -168,6 +226,26 @@ a resource</td></tr>
     and Access Control</a></li>
 <li><code class="module"><a href="../mod/mod_authz_host.html">mod_authz_host</a></code></li>
 </ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="RequireAlias" id="RequireAlias">&lt;RequireAlias&gt;</a> <a name="requirealias" id="requirealias">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enclose a group of directives that represent an
+extension of a base authorization provider and referenced by the specified
+alias</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;RequireAlias <var>baseProvider Alias Require-Parameters</var>&gt; 
+... &lt;/RequireAlias&gt;
+</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_authz_core</td></tr>
+</table>
+    <p><code class="directive">&lt;RequireAlias&gt;</code> and
+    <code>&lt;/RequireAlias&gt;</code> are used to enclose a group of
+    authorization directives that can be referenced by the alias name using the
+    directive <code class="directive"><a href="# require"> Require</a></code>.</p>
+
+
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SatisfyAll" id="SatisfyAll">&lt;SatisfyAll&gt;</a> <a name="satisfyall" id="satisfyall">Directive</a></h2>

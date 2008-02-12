@@ -160,19 +160,16 @@
     avec les anciens logs.</p>
 
     <div class="note">
-    Si votre fichier de configuration comporte des erreurs lorsque vous
-    effectuez un redémarrage, votre processus parent ne redémarrera pas
-    et se terminera avec une erreur. Dans le cas d'un redémarrage en douceur
-    (graceful restart), il laissera les processus enfants
-    s'exécuter quand il s'arrêtera. (Ce sont les processus enfants qui
-    "s'arrêtent en douceur" en terminant de traiter leur dernière requête.)
-    Ceci provoquera des problèmes si vous tentez de redémarrer le serveur
-    -- il ne pourra pas s'associer à ses ports d'écoute. Avant d'effectuer un
-    redémarrage, vous pouvez vérifier la syntaxe des fichiers de
-    configuration à l'aide de l'argument de ligne de commande <code>-t</code>
-    (voir <code class="program"><a href="./programs/httpd.html">httpd</a></code>).
+    <p>Lorsque vous initiez un redémarrage, une vérification de
+    la syntaxe est tout d'abord effectuée, afin de s'assurer qu'il n'y a
+    pas d'erreurs dans les fichiers de configuration. Si votre fichier de
+    configuration comporte des erreurs de syntaxe, vous recevrez un message
+    d'erreur les concernant, et le serveur refusera de redémarrer. Ceci
+    permet d'éviter la situation où un serveur a
+    été arrêté et ne peut plus redémarrer,
+    et où vous vous retrouvez avec un serveur hors-service.</p>
 
-    Ceci ne garantit pas encore que le serveur va redémarrer
+    <p>Ceci ne garantit pas encore que le serveur va redémarrer
     correctement. Pour vérifier la sémantique des fichiers de configuration
     en plus de leur syntaxe, vous pouvez essayer de démarrer
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> sous un utilisateur non root.
@@ -182,7 +179,7 @@
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> est déjà associée à ces ports). S'il échoue
     pour toute autre raison, il y a probablement une erreur dans le
     fichier de configuration et celle-ci doit être corrigée avant de lancer
-    le redémarrage en douceur.</div>
+    le redémarrage en douceur.</p></div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="hup" id="hup">Redémarrer immédiatement</a></h2>
@@ -202,10 +199,11 @@
     noteront que les statistiques du serveur sont remises à zéro quand un
     signal <code>HUP</code> est envoyé.</p>
 
-<div class="note">Si votre fichier de configuration comporte des erreurs quand vous
-effectuez un redémarrage, votre processus parent ne redémarrera pas,
-il se terminera avec une erreur. Voir plus haut la méthode à employer
-pour éviter ce problème.</div>
+<div class="note">Comme dans le cas d'un redémarrage "graceful", une
+vérification de la syntaxe est effectuée avant que le
+redémarrage ne soit tenté. Si votre fichier de configuration comporte
+des erreurs de syntaxe, le redémarrage ne sera pas effectueacute;, et
+vous recevrez un message concernant ces erreurs.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="gracefulstop" id="gracefulstop">Arrêt en douceur</a></h2>
@@ -248,8 +246,7 @@ pour éviter ce problème.</div>
     comme ceux définis par les directives
     <code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> et
     <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> contiennent le PID
-    du serveur dans leurs noms donc ils coexistent sans problème.
-    Cependant, si une directive de
+    du serveur,et coexistent sans problème. Cependant, si une directive de
     configuration , un module tiers ou une CGI résidente utilise un autre
     verrou ou fichier d'état sur disque, il faut prendre soin de s'assurer
     que chaque instance de <code class="program"><a href="./programs/httpd.html">httpd</a></code> qui s'exécute

@@ -56,7 +56,7 @@ que la manière dont ces modules sont utilisés par le serveur HTTP Apache.</p>
     entre les différents processus enfants.</p>
 
     <p>L'extension de la conception modulaire à ce niveau du serveur
-    comporte deux avantages importants:</p>
+    comporte deux avantages importants :</p>
 
     <ul>
       <li>Apache peut supporter plus proprement et efficacement une grande
