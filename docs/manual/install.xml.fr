@@ -398,7 +398,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 
     <p>Vous pouvez ajouter des arguments suppl&eacute;mentaires &agrave;
     <code>config.nice</code> ; ils seront alors ajout&eacute;s aux options de
-    votre script <program>configure</program> original :
+    votre script <program>configure</program> original :</p>
 
      <example>
      $ ./config.nice --prefix=/home/test/apache --with-port=90
