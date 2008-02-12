@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 420990 -->
+<!-- LastChangedRevision English document : 567441 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2007070101 $ -->
+<!-- Reviewed By : Vincent Deffontaines -->
+<!--English Revision : 567441 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -75,8 +76,8 @@
     localisation du binaire <program>httpd</program> et tout argument de ligne
     de commande que vous souhaitez voir <em>syst&eacute;matiquement</em> pr&eacute;sent.</p>
 
-    <p>La premi&egrave;re chose qu'effectue <code>httpd</code> quand il est
-    invoqu&eacute; et de localiser et lire le <a
+    <p>La premi&egrave;re chose qu'effectue <program>httpd</program> quand il est
+    invoqu&eacute; est de localiser et lire le <a
     href="configuring.html">fichier de configuration</a>
     <code>httpd.conf</code>. La localisation de ce fichier est d&eacute;finie &agrave; la
     compilation, mais il est possible d'en sp&eacute;cifier une autre &agrave;
@@ -90,11 +91,7 @@
     Ceci indique que le serveur a d&eacute;marr&eacute; et est en cours d'ex&eacute;cution.
     &Agrave; partir de ce moment, vous pouvez utiliser votre navigateur pour vous connecter
     au serveur et afficher la page de test situ&eacute;e dans le r&eacute;pertoire d&eacute;fini
-    par la directive <directive module="core">DocumentRoot</directive>,
-    ainsi qu'une copie locale de la documentation sous forme d'un lien
-    situ&eacute; sur cette page.
-    (note du traducteur : en fait, vous ne devriez voir que "It works !"
-    s'afficher sur votre &eacute;cran !)</p>
+    par la directive <directive module="core">DocumentRoot</directive></p>
 </section>
 
 <section id="errors"><title>Erreurs en cours de d&eacute;marrage</title>

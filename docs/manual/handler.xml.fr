@@ -1,6 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
+<!-- French translation : Lucien GENTIS -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!--English Revision : 420990-->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -135,7 +138,7 @@
     </section>
   </section>
   <section id="programmer">
-    <title>Note du programmeur</title>
+    <title>Note du d&eacute;veloppeur</title>
 
     <p>Pour impl&eacute;menter la fonctionnalit&eacute; des gestionnaires, l'
     <a href="developer/API.html">API Apache</a> a fait l'objet d'un ajout
