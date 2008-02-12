@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 420990 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2007070101 $ -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!--English Revision : 586770 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -159,19 +159,16 @@
     avec les anciens logs.</p>
 
     <note>
-    Si votre fichier de configuration comporte des erreurs lorsque vous
-    effectuez un red&eacute;marrage, votre processus parent ne red&eacute;marrera pas
-    et se terminera avec une erreur. Dans le cas d'un red&eacute;marrage en douceur
-    (graceful restart), il laissera les processus enfants
-    s'ex&eacute;cuter quand il s'arr&ecirc;tera. (Ce sont les processus enfants qui
-    "s'arr&ecirc;tent en douceur" en terminant de traiter leur derni&egrave;re requ&ecirc;te.)
-    Ceci provoquera des probl&egrave;mes si vous tentez de red&eacute;marrer le serveur
-    -- il ne pourra pas s'associer &agrave; ses ports d'&eacute;coute. Avant d'effectuer un
-    red&eacute;marrage, vous pouvez v&eacute;rifier la syntaxe des fichiers de
-    configuration &agrave; l'aide de l'argument de ligne de commande <code>-t</code>
-    (voir <program>httpd</program>).
+    <p>Lorsque vous initiez un red&eacute;marrage, une v&eacute;rification de
+    la syntaxe est tout d'abord effectu&eacute;e, afin de s'assurer qu'il n'y a
+    pas d'erreurs dans les fichiers de configuration. Si votre fichier de
+    configuration comporte des erreurs de syntaxe, vous recevrez un message
+    d'erreur les concernant, et le serveur refusera de red&eacute;marrer. Ceci
+    permet d'&eacute;viter la situation o&ugrave; un serveur a
+    &eacute;t&eacute; arr&ecirc;t&eacute; et ne peut plus red&eacute;marrer,
+    et o&ugrave; vous vous retrouvez avec un serveur hors-service.</p>
 
-    Ceci ne garantit pas encore que le serveur va red&eacute;marrer
+    <p>Ceci ne garantit pas encore que le serveur va red&eacute;marrer
     correctement. Pour v&eacute;rifier la s&eacute;mantique des fichiers de configuration
     en plus de leur syntaxe, vous pouvez essayer de d&eacute;marrer
     <program>httpd</program> sous un utilisateur non root.
@@ -181,7 +178,7 @@
     <program>httpd</program> est d&eacute;j&agrave; associ&eacute;e &agrave; ces ports). S'il &eacute;choue
     pour toute autre raison, il y a probablement une erreur dans le
     fichier de configuration et celle-ci doit &ecirc;tre corrig&eacute;e avant de lancer
-    le red&eacute;marrage en douceur.</note>
+    le red&eacute;marrage en douceur.</p></note>
 </section>
 
 <section id="hup"><title>Red&eacute;marrer imm&eacute;diatement</title>
@@ -201,10 +198,11 @@
     noteront que les statistiques du serveur sont remises &agrave; z&eacute;ro quand un
     signal <code>HUP</code> est envoy&eacute;.</p>
 
-<note>Si votre fichier de configuration comporte des erreurs quand vous
-effectuez un red&eacute;marrage, votre processus parent ne red&eacute;marrera pas,
-il se terminera avec une erreur. Voir plus haut la m&eacute;thode &agrave; employer
-pour &eacute;viter ce probl&egrave;me.</note>
+<note>Comme dans le cas d'un red&eacute;marrage "graceful", une
+v&eacute;rification de la syntaxe est effectu&eacute;e avant que le
+red&eacute;marrage ne soit tent&eacute;. Si votre fichier de configuration comporte
+des erreurs de syntaxe, le red&eacute;marrage ne sera pas effectueacute;, et
+vous recevrez un message concernant ces erreurs.</note>
 </section>
 
 <section id="gracefulstop"><title>Arr&ecirc;t en douceur</title>
@@ -248,8 +246,7 @@ pour &eacute;viter ce probl&egrave;me.</note>
     comme ceux d&eacute;finis par les directives
     <directive module="core">Lockfile</directive> et
     <directive  module="mod_cgid">ScriptSock</directive> contiennent le PID
-    du serveur dans leurs noms donc ils coexistent sans probl&egrave;me.
-    Cependant, si une directive de
+    du serveur,et coexistent sans probl&egrave;me. Cependant, si une directive de
     configuration , un module tiers ou une CGI r&eacute;sidente utilise un autre
     verrou ou fichier d'&eacute;tat sur disque, il faut prendre soin de s'assurer
     que chaque instance de <program>httpd</program> qui s'ex&eacute;cute

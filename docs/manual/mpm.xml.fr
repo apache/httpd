@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 421100 -->
 <!-- French translation : Lucien GENTIS -->
-<!-- $LastChangedRevision: 2007070801 $ -->
+<!-- Reviewed by : Vincent Deffontaines -->
+<!--English Revision : 420990 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -52,7 +52,7 @@ que la mani&egrave;re dont ces modules sont utilis&eacute;s par le serveur HTTP 
     entre les diff&eacute;rents processus enfants.</p>
 
     <p>L'extension de la conception modulaire &agrave; ce niveau du serveur
-    comporte deux avantages importants:</p>
+    comporte deux avantages importants :</p>
 
     <ul>
       <li>Apache peut supporter plus proprement et efficacement une grande
