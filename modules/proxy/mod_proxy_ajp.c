@@ -89,15 +89,12 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     return OK;
 }
 
+#define METHOD_NON_IDEMPOTENT       0
+#define METHOD_IDEMPOTENT           1
+#define METHOD_IDEMPOTENT_WITH_ARGS 2
+
 static int is_idempotent(request_rec *r)
 {
-    /*
-     * If the request has arguments it might not be idempotent as it might have
-     * side-effects.
-     */
-    if (r->args) {
-        return 0;
-    }
     /*
      * RFC2616 (9.1.2): GET, HEAD, PUT, DELETE, OPTIONS, TRACE are considered
      * idempotent. Hint: HEAD requests use M_GET as method number as well.
@@ -108,10 +105,18 @@ static int is_idempotent(request_rec *r)
         case M_PUT:
         case M_OPTIONS:
         case M_TRACE:
-            return 1;
+            /*
+             * If the request has arguments it might have side-effects and thus
+             * it might be undesirable to resent it to a backend again
+             * automatically.
+             */
+            if (r->args) {
+                return METHOD_IDEMPOTENT_WITH_ARGS;
+            }
+            return METHOD_IDEMPOTENT;
         /* Everything else is not considered idempotent. */
         default:
-            return 0;
+            return METHOD_NON_IDEMPOTENT;
     }
 }
 
@@ -193,7 +198,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
              * case we can dare to retry it with a different worker if we are
              * a balancer member.
              */
-            if (is_idempotent(r)) {
+            if (is_idempotent(r) == METHOD_IDEMPOTENT) {
                 return HTTP_SERVICE_UNAVAILABLE;
             }
             return HTTP_INTERNAL_SERVER_ERROR;
@@ -294,7 +299,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
          * again) and the method is idempotent. In this case we can dare to
          * retry it with a different worker if we are a balancer member.
          */
-        if ((bufsiz == 0) && is_idempotent(r)) {
+        if ((bufsiz == 0) && (is_idempotent(r) == METHOD_IDEMPOTENT)) {
             return HTTP_SERVICE_UNAVAILABLE;
         }
         return HTTP_INTERNAL_SERVER_ERROR;
