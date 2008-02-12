@@ -125,11 +125,6 @@
       	apr_dbd, fournit le support SQL direct aux modules
 	qui en ont besoin.  Supporte la mise en commun des connexions
           dans les modules MPM threadés.</p>
-	  <p><strong>Utilisateurs Windows</strong> : veuillez noter que ce
-	  support n'est pas encore inclus dans l'implémentation Windows
-	  standard.  Si vous l'utilisez sur la plate-forme
-	  Windows, merci de nous faire savoir comment vous vous y
-	  prenez.</p>
 	  </dd>
 
     </dl>
@@ -142,7 +137,7 @@
       <dd>Les modules du répertoire aaa ont été renommés et fournissent
           un support amélioré pour la méthode d'authentification <strong>digest</strong>.  Par exemple, mod_auth
           est maintenant scindé en deux modules : <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code> et
-          <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>; mod_auth_dbm s'appelle maintenant
+          <code class="module"><a href="./mod/mod_auth_file.html">mod_auth_file</a></code>; mod_auth_dbm s'appelle maintenant
           <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>; mod_access a été renommé en
           <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>.  Est également apparu le nouveau module
           <code class="module"><a href="./mod/mod_authn_alias.html">mod_authn_alias</a></code> qui simplifie
@@ -155,14 +150,7 @@
 	  <code>Authn/Authz</code>.
 	  Les nouvelles fonctionnalités comprennent l'utilisation des valeurs
 	  d'attributs LDAP et des filtres de recherche avancés dans la
-          directive <code class="directive"><a href="./mod/core.html#require">Require</a></code>.</dd>
-
-      <dt><code class="module"><a href="./mod/mod_authz_owner.html">mod_authz_owner</a></code></dt>
-      <dd>Ce nouveau module propose une gestion des droits d'accès aux ressources web selon leur appartenance
-      à un utilisateur au niveau du système de fichiers.</dd>
-
-      <dt><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></dt>
-      <dd>Ce nouveau module permet de définir des blocs de configuration activables selon le numéro de version du serveur en fonctionnement.</dd>
+          directive <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code>.</dd>
 
       <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
       <dd>Un nouvel argument <code>?config</code> a été ajouté, qui permettra d'afficher
@@ -174,7 +162,7 @@
 
       <dt><code class="module"><a href="./mod/mod_ssl.html">mod_ssl</a></code></dt>
       
-      <dd>Le support de <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, a été ajouté, ce qui permet de passer d'une
+      <dd>Le support de la <a href="http://www.ietf.org/rfc/rfc2817.txt">RFC 2817</a>, a été ajouté, ce qui permet de passer d'une
 	connexion en clair au cryptage TLS.</dd>
 
       <dt><code class="module"><a href="./mod/mod_imagemap.html">mod_imagemap</a></code></dt>
@@ -196,7 +184,7 @@
      <code class="module"><a href="./mod/mod_so.html">mod_so</a></code>.</dd>
       <dt><code class="program"><a href="./programs/httxt2dbm.html">httxt2dbm</a></code></dt>
       <dd>Un nouveau programme servant à générer des fichiers dbm à partir
-      d'une source texte, à utiliser avec la directive
+      d'une source au format texte, à utiliser avec la directive
       <code class="directive"><a href="./mod/mod_rewrite.html#rewritemap">RewriteMap</a></code>
           et le type de mise en correspondance <code>dbm</code>.</dd>
     </dl>
@@ -210,7 +198,7 @@
       <dd>Apache 2.2 utilise l'API APR 1.0.  Toutes les fonctions et
       symboles obsolètes ont été supprimés du code de <code>APR</code> et
           <code>APR-Util</code>. Pour plus de détails, consultez le
-          <a href="http://apr.apache.org/">site web de APR</a>.</dd>
+          <a href="http://apr.apache.org/">site web d'APR</a>.</dd>
 
       <dt>Authn/Authz</dt>
       <dd>Les modules d'authentification et d'autorisation intégrés ont
@@ -221,7 +209,7 @@
           <li>mod_authn_* -&gt; Modules qui fournissent un dispositif
 	  	d'authentification en arrière-plan</li>
           <li>mod_authz_* -&gt; Modules qui implémentent l'autorisation (ou l'accès)</li>
-          <li>mod_authnz_*-&gt; Module qui implémentent à la fois
+          <li>mod_authnz_*-&gt; Modules qui implémentent à la fois
 	  l'authentification &amp; l'autorisation</li>
           </ul>
 	  L'organisation des méthodes d'authentification a également été revue, ce qui va simplifier
@@ -240,10 +228,10 @@
       que si l'utilisateur passe le paramètre <code>-t</code> à
       <code class="program"><a href="./programs/httpd.html">httpd</a></code>.</dd>
 
-      <dt>Définition de la taille de la pile pour les modules MPM threadés</dt>
+      <dt>Définition de la taille de la pile pour les modules MPM en processus légers</dt>
 
       <dd>Une nouvelle directive a été ajoutée, <code>ThreadStackSize</code>
-     afin de définir la taille de la pile pour tous les modules MPM threadés.
+     afin de définir la taille de la pile pour tous les modules MPM en processus légers (modules threadés).
      Ceci s'avère nécessaire pour certains modules tiers sur des plateformes
      dont la taille de la pile des threads par défaut est
      trop petite.</dd>
@@ -263,16 +251,16 @@
       des jobs réguliers/planifiés au niveau du processus père
       (root).</dd>
 
-      <dt>Modifications de l'API de traitement des expressions régulières</dt>
+      <dt>Modifications de l'API de traitement des expressions rationnelles</dt>
 
-      <dd>Le fichier d'en-tête <code>pcreposix.h</code> n'est plus disponible;
+      <dd>Le fichier d'en-tête <code>pcreposix.h</code> n'est plus disponible ;
       il a été remplacé par le nouveau fichier
       d'en-tête <code>ap_regex.h</code>.  L'implémentation
       POSIX.2 <code>regex.h</code> exposée dans l'ancien fichier d'en-tête
       est maintenant disponible dans l'espace de nommage <code>ap_</code>
       depuis <code>ap_regex.h</code>.  Les appels à <code>regcomp</code>,
       <code>regexec</code>, etc... peuvent être remplacés par des appels à
-      <code>ap_regcomp</code>, <code>ap_regcomp</code>.</dd>
+      <code>ap_regcomp</code>, <code>ap_regexec</code>.</dd>
 
       <dt>Cadre d'application DBD (API pour base de données SQL)</dt>
 
@@ -290,7 +278,7 @@
       <p>Les nouveaux modules DEVRAIENT désormais utiliser ces APIs pour
       toutes les opérations liées aux bases de données SQL.
       De même, les applications existantes DEVRAIENT être mises à jour
-      lorsque c'est possible, soit de manière transparente ou sous forme
+      lorsque c'est possible, que ce soit de manière transparente ou sous forme
       d'une option recommandée à leurs utilisateurs.</p></dd>
     </dl>
   </div></div>

@@ -27,14 +27,13 @@
 </div>
 
 
-    <p>Ce document couvre l'installation et la compilation du serveur
-    HTTP Apache
+    <p>Ce document couvre l'installation et la compilation d'Apache
     sur les systèmes Unix et similaires seulement. Pour la compilation et
-    l'installation sous Windows, voir <a href="platform/windows.html">Utiliser Apache HTTPd avec Microsoft
+    l'installation sous Windows, voir <a href="platform/windows.html">Utiliser Apache avec Microsoft
     Windows</a>. Pour les autres plateformes, se référer à la documentation par
      <a href="platform/">plateforme</a>.</p>
 
-    <p>Apache HTTPd utilise <code>libtool</code> et <code>autoconf</code>
+    <p>Apache httpd utilise <code>libtool</code> et <code>autoconf</code>
     afin de créer un environnement de construction similaire à la plupart
     des projets Open Source .</p>
 
@@ -54,7 +53,7 @@
 <li><img alt="" src="./images/down.gif" /> <a href="#test">Test</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#upgrading">Mise à jour</a></li>
 </ul><h3>Voir aussi</h3><ul class="seealso"><li><a href="programs/configure.html">Configuration de l'arborescence
-	des sources</a></li><li><a href="invoking.html">Démarrer le serveur HTTP Apache</a></li><li><a href="stopping.html">Arrêt et redémarrage</a></li></ul></div>
+	des sources</a></li><li><a href="invoking.html">Démarrer Apache</a></li><li><a href="stopping.html">Arrêt et redémarrage</a></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="overview" id="overview">Aperçu pour les plus pressés</a></h2>
@@ -118,12 +117,12 @@
 
     <p>Chaque étape du processus de compilation et d'installation est
     décrite plus en détails ci-dessous, à commencer par les prérequis
-    pour compiler et installer le serveur HTTP Apache.</p>
+    pour compiler et installer Apache httpd.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="requirements" id="requirements">Prérequis</a></h2>
 
-    <p>Les prérequis pour la construction d'Apache HTTPd sont les suivants:</p>
+    <p>Les prérequis pour la construction d'Apache sont les suivants:</p>
 
     <dl>
       <dt>Espace disque</dt>
@@ -174,7 +173,7 @@
     <p>Le serveur HTTP Apache peut être téléchargé à partir du
     <a href="http://httpd.apache.org/download.cgi">site de téléchargement
     du serveur HTTP Apache</a>, qui fournit la liste de nombreux miroirs.
-    Il sera plus commode à la plupart des utilisateurs d'Apache HTTPd sur les
+    Il sera plus commode à la plupart des utilisateurs d'Apache sur les
     systèmes UNIX ou similaires de télécharger et de compiler
     la version sources.  Le processus de construction (décrit ci-dessous) est
     simple, et vous permet de personnaliser votre serveur selon vos besoins.
@@ -193,7 +192,7 @@
 <div class="section">
 <h2><a name="extract" id="extract">Extraction</a></h2>
 
-    <p>L'extraction des sources depuis l'archive Apache HTTPd consiste
+    <p>L'extraction des sources depuis l'archive Apache HTTPD consiste
     simplement à décompresser et à désarchiver cette dernière :</p>
 
 <div class="example"><p><code>
@@ -209,11 +208,11 @@ $ tar xvf httpd-<em>NN</em>.tar
 <h2><a name="configure" id="configure">Configuration de l'arborescence des sources</a></h2>
 
     <p>L'étape suivante consiste à configurer l'arborescence des sources
-    d'Apache HTTPd en fonction de votre plateforme et de vos besoins personnels.
+    d'Apache en fonction de votre plateforme et de vos besoins personnels.
     Le script  <code class="program"><a href="./programs/configure.html">configure</a></code>, situé à la racine du
     répertoire de la distribution, a été conçu à cet effet.
     (Les développeurs qui téléchargent
-    une version non officielle de l'arborescence des sources d'Apache HTTPd
+    une version non officielle de l'arborescence des sources d'Apache
     devront disposer de
     <code>autoconf</code> et <code>libtool</code> et
     exécuter <code>buildconf</code> avant de passer à l'étape suivante,
@@ -226,14 +225,14 @@ $ tar xvf httpd-<em>NN</em>.tar
     d'options de ligne de commande.</p>
 
     <p>L'option la plus importante <code>--prefix</code> est le chemin
-    du répertoire d'installation du serveur HTTP Apache, car Apache doit être configuré
+    du répertoire d'installation d'Apache, car Apache doit être configuré
     en fonction de ce chemin pour pouvoir fonctionner correctement.
     Il est possible de définir plus finement le chemin d'installation des fichiers
     à l'aide d'<a href="programs/configure.html#installationdirectories">
     options supplémentaires de configure</a>.</p>
 
     <p>À ce niveau, vous pouvez aussi spécifier de quelles <a href="programs/configure.html#optionalfeatures">fonctionnalités</a> vous
-    voulez disposer dans Apache HTTPd en activant ou désactivant des <a href="mod/">modules</a>.  Apache est fourni avec un jeu de modules de
+    voulez disposer dans Apache en activant ou désactivant des <a href="mod/">modules</a>.  Apache est fourni avec un jeu de modules de
     <a href="mod/module-dict.html#Status">Base</a> inclus par défaut.
     Les autres modules sont activés à l'aide de l'option
     <code>--enable-<var>module</var></code>, où
@@ -255,7 +254,9 @@ $ tar xvf httpd-<em>NN</em>.tar
     d'en-têtes.  A cet effet, vous pouvez passer des options de ligne de
     commande ou des variables d'environnement au script
     <code class="program"><a href="./programs/configure.html">configure</a></code>. Pour plus d'informations, voir la
-    page de manuel de <code class="program"><a href="./programs/configure.html">configure</a></code>.</p>
+    page de manuel de <code class="program"><a href="./programs/configure.html">configure</a></code>. Ou lancez le script
+    <code class="program"><a href="./programs/configure.html">configure</a></code> avec l'option <code>--help</code>.
+    </p>
 
     <p>Pour vous faire une idée des possibilités qui s'offrent à vous, voici
     un exemple typique de compilation d'Apache avec le répertoire
@@ -283,7 +284,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <h2><a name="compile" id="compile">Construction</a></h2>
 
     <p>Vous pouvez maintenant construire les différents éléments qui
-    composent le paquet Apache HTTPd en lançant tout simplement la commande :</p>
+    composent le paquet Apache en lançant tout simplement la commande :</p>
 
 <div class="example"><p><code>$ make</code></p></div>
 
@@ -300,6 +301,11 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <div class="example"><p><code>$ make install</code></p></div>
 
+    <p>Cette étape nécessite habituellement les privilàges
+    de root, car <em>PREFIX</em> est en général un
+    répertoire possàdant des droits en écriture
+    restreints.</p>
+
     <p>Si vous effectuez une mise à jour, l'installation n'écrasera pas
     vos fichiers de configuration ou autres documents.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -312,8 +318,8 @@ $ tar xvf httpd-<em>NN</em>.tar
 
 <div class="example"><p><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code></p></div>
 
-    <p>Consultez le manuel du serveur HTTP Apache situé dans
-    <a href="./">docs/manual/</a> ou
+    <p>Consultez le manuel d'Apache situé dans
+    <code><em>PREFIX</em>/docs/manual/</code> ou
     <a href="http://httpd.apache.org/docs/trunk/">http://httpd.apache.org/docs/trunk/</a> pour la version la plus
     récente de ce manuel et la liste complète des <a href="mod/directives.html">directives de configuration</a> disponibles.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -321,7 +327,7 @@ $ tar xvf httpd-<em>NN</em>.tar
 <h2><a name="test" id="test">Test</a></h2>
 
     <p>Vous pouvez maintenant <a href="invoking.html">démarrer</a> votre
-    Serveur HTTP Apache en lançant:</p>
+    serveur HTTP Apache en lançant:</p>
 
 <div class="example"><p><code>$ <em>PREFIX</em>/bin/apachectl -k start</code></p></div>
 
@@ -387,6 +393,14 @@ $ tar xvf httpd-<em>NN</em>.tar
     <code>--prefix</code> et un port différents (en ajustant la directive
     <code class="directive"><a href="./mod/mpm_common.html#listen">Listen</a></code>) afin de déceler toute
     incompatibilité avant d'effectuer la mise à jour définitive.</div>
+
+    <p>Vous pouvez ajouter des arguments supplémentaires à
+    <code>config.nice</code> ; ils seront alors ajoutés aux options de
+    votre script <code class="program"><a href="./programs/configure.html">configure</a></code> original :</p>
+
+     <div class="example"><p><code>
+     $ ./config.nice --prefix=/home/test/apache --with-port=90
+     </code></p></div>
 
     </div></div>
 <div class="bottomlang">
