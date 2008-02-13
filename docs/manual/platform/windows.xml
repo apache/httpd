@@ -147,8 +147,9 @@
       site(s).</p></li>
 
       <li><p><strong>Where to install.</strong> The default path is
-      <code>C:\Program Files\Apache Group</code> under which a directory
-      called <code>Apache2</code> will be created by default.</p></li>
+      <code>C:\Program Files\Apache Software Foundation</code>
+      under which a directory called 
+      <code>Apache2.3</code> will be created by default.</p></li>
     </ol>
 
     <p>During the installation, Apache will configure the files in the
@@ -249,7 +250,7 @@
       <li><p>Apache for Windows contains the ability to load modules at
       runtime, without recompiling the server. If Apache is compiled
       normally, it will install a number of optional modules in the
-      <code>\Apache2\modules</code> directory. To activate these or
+      <code>\Apache2.3\modules</code> directory. To activate these or
       other modules, the new <directive module="mod_so">LoadModule</directive>
       directive must be used. For example, to activate the status
       module, use the following (in addition to the status-activating
@@ -319,7 +320,7 @@
     the command prompt at the Apache <code>bin</code> subdirectory:</p>
 
     <example>
-      httpd -k install
+      httpd.exe -k install
     </example>
 
     <p>If you need to specify the name of the service you want to
@@ -328,14 +329,14 @@
     computer.</p>
 
     <example>
-      httpd -k install -n "MyServiceName"
+      httpd.exe -k install -n "MyServiceName"
     </example>
 
     <p>If you need to have specifically named configuration files for
     different services, you must use this:</p>
 
     <example>
-      httpd -k install -n "MyServiceName" -f "c:\files\my.conf"
+      httpd.exe -k install -n "MyServiceName" -f "c:\files\my.conf"
     </example>
 
     <p>If you use the first command without any special parameters except
@@ -346,13 +347,13 @@
     <p>Removing an Apache service is easy. Just use:</p>
 
     <example>
-      httpd -k uninstall
+      httpd.exe -k uninstall
     </example>
 
     <p>The specific Apache service to be uninstalled can be specified by using:</p>
 
     <example>
-      httpd -k uninstall -n "MyServiceName"
+      httpd.exe -k uninstall -n "MyServiceName"
     </example>
 
     <p>Normal starting, restarting and shutting down of an Apache
@@ -363,34 +364,34 @@
     service's configuration file by using:</p>
 
     <example>
-      httpd -n "MyServiceName" -t
+      httpd.exe -n "MyServiceName" -t
     </example>
 
     <p>You can control an Apache service by its command line switches,
     too. To start an installed Apache service you'll use this:</p>
 
     <example>
-      httpd -k start
+      httpd.exe -k start
     </example>
 
     <p>To stop an Apache service via the command line switches, use
     this:</p>
 
     <example>
-      httpd -k stop
+      httpd.exe -k stop
     </example>
 
     <p>or</p>
 
     <example>
-      httpd -k shutdown
+      httpd.exe -k shutdown
     </example>
 
     <p>You can also restart a running service and force it to reread
     its configuration file by using:</p>
 
     <example>
-      httpd -k restart
+      httpd.exe -k restart
     </example>
 
     <p>By default, all Apache services are registered to run as the
@@ -482,7 +483,7 @@
       in the background. If you run the command</p>
 
       <example>
-        httpd -n "MyServiceName" -k start
+        httpd.exe -n "MyServiceName" -k start
       </example>
 
       <p>via a shortcut on your desktop, for example, then if the
@@ -530,7 +531,7 @@
     use the following command:</p>
 
     <example>
-      httpd
+      httpd.exe
     </example>
 
     <p>Apache will execute, and will remain running until it is stopped
@@ -551,7 +552,7 @@
     window and entering:</p>
 
     <example>
-      httpd -k shutdown
+      httpd.exe -k shutdown
     </example>
 
     <p>This should be preferred over pressing Control-C because this
@@ -562,7 +563,7 @@
     complete without interruption. To restart Apache, use:</p>
 
     <example>
-      httpd -k restart
+      httpd.exe -k restart
     </example>
 
     <note>Note for people familiar with the Unix version of Apache:
@@ -574,15 +575,15 @@
     <p>If the Apache console window closes immediately or unexpectedly
     after startup, open the Command Prompt from the Start Menu --&gt;
     Programs. Change to the folder to which you installed Apache, type
-    the command <code>apache</code>, and read the error message. Then
+    the command <code>httpd.exe</code>, and read the error message. Then
     change to the logs folder, and review the <code>error.log</code>
     file for configuration mistakes. If you accepted the defaults when
     you installed Apache, the commands would be:</p>
 
     <example>
       c: <br />
-      cd "\Program Files\Apache Group\Apache2\bin" <br />
-      httpd
+      cd "\Program Files\Apache Software Foundation\Apache2.3\bin" <br />
+      httpd.exe
     </example>
 
     <p>Then wait for Apache to stop, or press Control-C. Then enter the
@@ -602,20 +603,20 @@
       a particular configuration file:</p>
 
       <example>
-        httpd -f "c:\my server files\anotherconfig.conf"
+        httpd.exe -f "c:\my server files\anotherconfig.conf"
       </example>
 
       <p>or</p>
 
       <example>
-        httpd -f files\anotherconfig.conf
+        httpd.exe -f files\anotherconfig.conf
       </example></li>
 
       <li><p><code>-n</code> specifies the installed Apache service
       whose configuration file is to be used:</p>
 
       <example>
-        httpd -n "MyServiceName"
+        httpd.exe -n "MyServiceName"
       </example>
       </li>
     </ul>
@@ -651,7 +652,7 @@
 
       <li>The server root compiled into the server. This is <code>
       /apache</code> by default, you can verify it by using <code>
-      apache -V</code> and looking for a value labelled as
+      httpd.exe -V</code> and looking for a value labelled as
       <code>HTTPD_ROOT</code>.</li>
     </ol>
 
@@ -664,7 +665,7 @@
     </p>
 
     <example>
-      HKEY_LOCAL_MACHINE\SOFTWARE\Apache Group\Apache\2.0.43
+      HKEY_LOCAL_MACHINE\SOFTWARE\Apache Software Foundation\Apache\2.3.2
     </example>
 
     <p>Correspondingly, if you chose to install Apache for the current
@@ -673,7 +674,7 @@
     logged on:</p>
 
     <example>
-      HKEY_CURRENT_USER\SOFTWARE\Apache Group\Apache\2.0.43
+      HKEY_CURRENT_USER\SOFTWARE\Apache Software Foundation\Apache\2.3.2
     </example>
 
     <p>This key is compiled into the server and can enable you to test
@@ -728,9 +729,9 @@
 
     <p>If you happen to be running Apache on an alternate port, you
     need to explicitly put that in the URL:</p>
-   
+
     <example>
-       http://127.0.0.1:8080/
+      http://127.0.0.1:8080/
     </example>
 
     <p>Once your basic installation is working, you should configure it
