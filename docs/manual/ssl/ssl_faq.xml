@@ -739,7 +739,7 @@ trying to use Anonymous Diffie-Hellman (ADH) ciphers?</title>
 <section id="sharedciphers"><title>Why do I get a 'no shared ciphers' 
 error when connecting to my newly installed server?</title>
 <p>Either you have made a mistake with your 
-    <directive module="mod_ssl">>SSLCipherSuite</directive>
+    <directive module="mod_ssl">SSLCipherSuite</directive>
     directive (compare it with the pre-configured example in
     <code>httpd.conf-dist</code>) or you chose to use DSA/DH
     algorithms instead of RSA when you generated your private key
