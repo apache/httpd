@@ -633,11 +633,11 @@ Require valid-user
 
 <section id="exposed"><title>Exposing Login Information</title>
 
-    <p>Whenever a query is made to the LDAP server, all LDAP attributes
-    returned by the query are placed in the environment, using environment
-    variables with the prefix "AUTHENTICATE_".</p>
+    <p>When this module performs authentication, LDAP attributes specified
+    in the <directive module="mod_authnz_ldap">AuthLDAPUrl</directive> 
+    directive are placed in environment variables with the prefix "AUTHENTICATE_".</p>
 
-    <p>If an LDAP query for example returned the username, common name
+    <p>If the attribute field contains the username, common name
     and telephone number of a user, a CGI program will have access to
     this information without the need to make a second independent LDAP
     query to gather this additional information.</p>
