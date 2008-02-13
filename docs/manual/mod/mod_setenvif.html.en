@@ -174,8 +174,9 @@ respect to case</td></tr>
       <li><code>Request_URI</code> - the resource requested on the HTTP
        request line -- generally the portion of the URL
       following the scheme and host portion without the query string. See
-      <code class="module"><a href="../mod/mod_rewrite.html#rewritecond">mod_rewrite</a></code>
-      for extra information on how to match your query string.</li>
+      the <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code>
+      directive of <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> for extra information on
+      how to match your query string.</li>
     </ul>
 </li>
 
