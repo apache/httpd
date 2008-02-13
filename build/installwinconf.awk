@@ -85,7 +85,7 @@ BEGIN {
 	  print "#" > dstfl;
 	  print "# NOTE: Where filenames are specified, you must use forward slashes" > dstfl;
 	  print "# instead of backslashes (e.g., \"c:/apache\" instead of \"c:\\apache\")." > dstfl;
-	  print "# If a drive letter is omitted, the drive on which Apache.exe is located" > dstfl;
+	  print "# If a drive letter is omitted, the drive on which httpd.exe is located" > dstfl;
 	  print "# will be used by default.  It is recommended that you always supply" > dstfl;
 	  print "# an explicit drive letter in absolute paths to avoid confusion." > dstfl;
 	  bswarning = 0;
