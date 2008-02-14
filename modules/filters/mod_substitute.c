@@ -488,7 +488,7 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
     subst_pattern_t *nscript;
     int is_pattern = 0;
     int ignore_case = 0;
-    int flatten = 0;
+    int flatten = 1;
     ap_regex_t *r = NULL;
 
     if (apr_tolower(*line) != 's') {
@@ -525,8 +525,10 @@ static const char *set_pattern(cmd_parms *cmd, void *cfg, const char *line)
             is_pattern = 1;
         else if (delim == 'f')
             flatten = 1;
+        else if (delim == 'q')
+            flatten = 0;
         else
-            return "Bad Substitute flag, only s///[inf] are supported";
+            return "Bad Substitute flag, only s///[infq] are supported";
         flags++;
     }
 
