@@ -1698,7 +1698,7 @@ static apr_status_t connection_cleanup(void *theconn)
     }
 
     /* determine if the connection need to be closed */
-    if (conn->close || !worker->is_address_reusable) {
+    if (conn->close || !worker->is_address_reusable || worker->disablereuse) {
         apr_pool_t *p = conn->pool;
         apr_pool_clear(p);
         conn = apr_pcalloc(p, sizeof(proxy_conn_rec));
@@ -1902,8 +1902,13 @@ PROXY_DECLARE(apr_status_t) ap_proxy_initialize_worker(proxy_worker *worker, ser
     if (!worker->retry_set) {
         worker->retry = apr_time_from_sec(PROXY_WORKER_DEFAULT_RETRY);
     }
-    /* By default address is reusable */
-    worker->is_address_reusable = 1;
+    /* By default address is reusable unless DisableReuse is set */
+    if (worker->disablereuse) {
+        worker->is_address_reusable = 0;
+    }
+    else {
+        worker->is_address_reusable = 1;
+    }
 
 #if APR_HAS_THREADS
     ap_mpm_query(AP_MPMQ_MAX_THREADS, &mpm_threads);
@@ -2114,7 +2119,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
      *
      * TODO: Handle this much better...
      */
-    if (!conn->hostname || !worker->is_address_reusable ||
+    if (!conn->hostname || !worker->is_address_reusable || 
+         worker->disablereuse ||
          (r->connection->keepalives &&
          (r->proxyreq == PROXYREQ_PROXY || r->proxyreq == PROXYREQ_REVERSE) &&
          (strcasecmp(conn->hostname, uri->hostname) != 0) ) ) {

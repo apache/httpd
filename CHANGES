@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Added 'disablereuse' option for ProxyPass which, essentially,
+     disables connection pooling for the backend servers.
+     [Jim Jagielski]
+
   *) Activate mod_cache, mod_file_cache and mod_disc_cache as part of the
      'most' set for '--enable-modules' and '--enable-shared-mods'. Include 
      mod_mem_cache in 'all' as well. [Dirk-Willem van Gulik]

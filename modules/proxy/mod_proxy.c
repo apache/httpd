@@ -176,6 +176,15 @@ static const char *set_worker_param(apr_pool_t *p,
             return "KeepAlive must be On|Off";
         worker->keepalive_set = 1;
     }
+    else if (!strcasecmp(key, "disablereuse")) {
+        if (!strcasecmp(val, "on"))
+            worker->disablereuse = 1;
+        else if (!strcasecmp(val, "off"))
+            worker->disablereuse = 0;
+        else
+            return "DisableReuse must be On|Off";
+        worker->disablereuse_set = 1;
+    }
     else if (!strcasecmp(key, "route")) {
         /* Worker route.
          */
