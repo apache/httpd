@@ -3,7 +3,7 @@
 
                         http://httpd.apache.org/
 
-                             February 2002
+                             February 2008
 
 The Apache Project is a collaborative software development effort aimed
 at creating a robust, commercial-grade, featureful, and freely-available
@@ -65,72 +65,7 @@ December 1, 1995.
 Less than a year after the group was formed, the Apache server passed
 NCSA's httpd as the #1 server on the Internet.
 
-The survey by Netcraft (http://www.netcraft.com/survey/) shows that Apache
-is today more widely used than all other web servers combined.
-
  ============================================================================
-
-Current Apache Group in alphabetical order as of 2 April 2002:
-
-   Greg Ames              IBM Corporation, Research Triangle Park, NC, USA
-   Aaron Bannert          California
-   Brian Behlendorf       Collab.Net, California 
-   Ken Coar               IBM Corporation, Research Triangle Park, NC, USA
-   Mark J. Cox            Red Hat, UK
-   Lars Eilebrecht        Freelance Consultant, Munich, Germany 
-   Ralf S. Engelschall    Cable & Wireless Deutschland, Munich, Germany
-   Justin Erenkrantz      University of California, Irvine
-   Roy T. Fielding        Day Software, California 
-   Tony Finch             Covalent Technologies, California
-   Dean Gaudet            Transmeta Corporation, California 
-   Dirk-Willem van Gulik  Covalent Technologies, California 
-   Brian Havard           Australia
-   Ian Holsman            CNET, California
-   Ben Hyde               Gensym, Massachusetts
-   Jim Jagielski          jaguNET Access Services, Maryland 
-   Manoj Kasichainula     Collab.Net, California
-   Alexei Kosut           Stanford University, California 
-   Martin Kraemer         Munich, Germany
-   Ben Laurie             Freelance Consultant, UK 
-   Rasmus Lerdorf         Yahoo!, California
-   Daniel Lopez Ridruejo  Covalent Technologies, California
-   Doug MacEachern        Covalent Technologies, California
-   Aram W. Mirzadeh       CableVision, New York 
-   Chuck Murcko           The Topsail Group, Pennsylvania 
-   Brian Pane             CNET Networks, California
-   Sameer Parekh          California 
-   David Reid             UK
-   William A. Rowe, Jr.   Covalent, Illinois
-   Wilfredo Sanchez       Apple Computer, California
-   Cliff Skolnick         California
-   Marc Slemko            Canada 
-   Joshua Slive           Canada
-   Greg Stein             California
-   Bill Stoddard          IBM Corporation, Research Triangle Park, NC
-   Sander Striker         The Netherlands
-   Paul Sutton            Seattle
-   Randy Terbush          Covalent Technologies, California 
-   Jeff Trawick           IBM Corporation, Research Triangle Park, NC
-   Cliff Woolley          University of Virginia
-
-Apache Emeritus (old group members now off doing other things)
-
-   Ryan Bloom             California
-   Rob Hartill            Internet Movie DB, UK 
-   David Robinson         Cambridge University, UK
-   Robert S. Thau         MIT, Massachusetts
-   Andrew Wilson          Freelance Consultant, UK 
-   
-Other major contributors
-
-   Howard Fear (mod_include), Florent Guillaume (language negotiation),
-   Koen Holtman (rewrite of mod_negotiation),
-   Kevin Hughes (creator of all those nifty icons),
-   Brandon Long and Beth Frank (NCSA Server Development Team, post-1.3),
-   Ambarish Malpani (Beginning of the NT port),
-   Rob McCool (original author of the NCSA httpd 1.3),
-   Paul Richards (convinced the group to use remote CVS after 1.0),
-   Garey Smiley (OS/2 port), Henry Spencer (author of the regex library).
 
 Many 3rd-party modules, frequently used and recommended, are also
 freely-available and linked from the related projects page:
@@ -139,10 +74,6 @@ contribute ideas, patches, and testing.
 
 Hundreds of people have made individual contributions to the Apache
 project.  Patch contributors are listed in the CHANGES file.
-Frequent contributors have included Petr Lampa, Tom Tromey, James H.
-Cloos Jr., Ed Korthof, Nathan Neulinger, Jason S. Clary, Jason A. Dour,
-Michael Douglass, Tony Sanders, Brian Tao, Michael Smith, Adam Sussman,
-Nathan Schrenk, Matthew Gray, and John Heidemann.
 
  ============================================================================
 
@@ -190,7 +121,7 @@ members -- three +1 (yes votes) and no -1 (no votes, or vetoes) are needed
 to commit a code change during a release cycle; docs are usually committed
 first and then changed as needed, with conflicts resolved by majority vote.
 
-Our primary method of communication is our mailing list. Approximately 40
+Our primary method of communication is our mailing list. Approximately 100
 messages a day flow over the list, and are typically very conversational in
 tone. We discuss new features to add, bug fixes, user problems, developments
 in the web server community, release dates, etc.  The actual code development
@@ -207,7 +138,7 @@ nominated by one member and unanimously approved by the voting members.
 In most cases, this "new" member has been actively contributing to the
 group's work for over six months, so it's usually an easy decision.
 
-The above describes our past and current (as of July 2000) guidelines,
+The above describes our past and current (as of February 2008) guidelines,
 which will probably change over time as the membership of the group
 changes and our development/coordination tools improve.
 
