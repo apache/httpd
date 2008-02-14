@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_substitute: The default is now flattening the buckets after
+     each substitution. The newly added 'q' flag allows for the
+     quicker, more efficient bucket-splitting if the user so
+     desires. [Jim Jagielski]
+
   *) Added 'disablereuse' option for ProxyPass which, essentially,
      disables connection pooling for the backend servers.
      [Jim Jagielski]

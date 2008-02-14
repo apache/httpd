@@ -37,7 +37,7 @@
 <directivesynopsis>
 <name>Substitute</name>
 <description>Pattern to filter the response content</description>
-<syntax>Substitute <var>s/pattern/substitution/[inf]</var></syntax>
+<syntax>Substitute <var>s/pattern/substitution/[infq]</var></syntax>
 <contextlist><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
@@ -59,7 +59,14 @@
         <dt><code>f</code></dt>
         <dd>The <code>f</code> flag causes mod_substitute to flatten the
         result of a substitution allowing for later substitutions to
-        take place on the boundary of this one.</dd>
+        take place on the boundary of this one. This is the default.</dd>
+        <dt><code>q</code></dt>
+        <dd>The <code>q</code> flag causes mod_substitute to not
+        flatten the buckets after each substitution. This can
+        result in much faster response and a decrease in memory
+        utilization, but should only be used if there is no possibility
+        that the result of one substitution will ever match a pattern
+        or regex of a subsequent one.</dd>
     </dl>
     
     <example><title>Example</title>
