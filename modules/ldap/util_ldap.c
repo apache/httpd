@@ -2678,23 +2678,25 @@ static const command_rec util_ldap_cmds[] = {
 
     AP_INIT_TAKE23("LDAPTrustedGlobalCert", util_ldap_set_trusted_global_cert,
                    NULL, RSRC_CONF,
-                   "Takes three args; the file and/or directory containing "
-                   "the trusted CA certificates (and global client certs "
-                   "for Netware) used to validate the LDAP server.  Second "
-                   "arg is the cert type for the first arg, one of CA_DER, "
-                   "CA_BASE64, CA_CERT7_DB, CA_SECMOD, CERT_DER, CERT_BASE64, "
-                   "CERT_KEY3_DB, CERT_NICKNAME, KEY_DER, or KEY_BASE64. "
-                   "Third arg is an optional passphrase if applicable."),
+                   "Takes three arguments; the first argument is the cert "
+                   "type of the second argument, one of CA_DER, CA_BASE64, "
+                   "CA_CERT7_DB, CA_SECMOD, CERT_DER, CERT_BASE64, CERT_KEY3_DB, "
+                   "CERT_NICKNAME, KEY_DER, or KEY_BASE64. The second argument "
+                   "specifes the file and/or directory containing the trusted CA "
+                   "certificates (and global client certs for Netware) used to "
+                   "validate the LDAP server. The third argument is an optional "
+                   "passphrase if applicable."),
 
     AP_INIT_TAKE23("LDAPTrustedClientCert", util_ldap_set_trusted_client_cert,
                    NULL, RSRC_CONF,
-                   "Takes three args; the file and/or directory containing "
-                   "the client certificate, or certificate ID used to "
-                   "validate this LDAP client.  Second arg is the cert type "
-                   "for the first arg, one of CA_DER, CA_BASE64, CA_CERT7_DB, "
-                   "CA_SECMOD, CERT_DER, CERT_BASE64, CERT_KEY3_DB, "
-                   "CERT_NICKNAME, KEY_DER, or KEY_BASE64. Third arg is an "
-                   "optional passphrase if applicable."),
+                   "Takes three arguments: the first argument is the certificate "
+                   "type of the second argument, one of CA_DER, CA_BASE64, "
+                   "CA_CERT7_DB, CA_SECMOD, CERT_DER, CERT_BASE64, CERT_KEY3_DB, "
+                   "CERT_NICKNAME, KEY_DER, or KEY_BASE64. The second argument "
+                   "specifies the file and/or directory containing the client "
+                   "certificate, or certificate ID used to validate this LDAP "
+                   "client.  The third argument is an optional passphrase if "
+                   "applicable."),
 
     AP_INIT_TAKE1("LDAPTrustedMode", util_ldap_set_trusted_mode,
                   NULL, RSRC_CONF,
