@@ -352,6 +352,8 @@ struct proxy_worker {
     char ping_timeout_set;
     int             lbset;      /* load balancer cluster set */
     char            retry_set;
+    char            disablereuse;
+    char            disablereuse_set;
 };
 
 /*
