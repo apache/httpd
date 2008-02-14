@@ -697,10 +697,10 @@ expressions</description>
         <td>Off</td>
         <td>This parameter should be used when you want to force mod_proxy
     to immediately close a connection to the backend after being used, and
-    thus, disable its persistant connection and pool for that backend.
+    thus, disable its persistent connection and pool for that backend.
     This helps in various situations where a firewall between Apache and
-    the backend server (irregardless of protocol) tends to silently
-    drop connections. To prevent mod_proxy from reusing the backend connection,
+    the backend server (regardless of protocol) tends to silently
+    drop connections. To disable connection pooling reuse,
     set this property value to <code>On</code>. 
     </td></tr>
     <tr><td>flushpackets</td>
