@@ -43,7 +43,7 @@
 <div class="directive-section"><h2><a name="Substitute" id="Substitute">Substitute</a> <a name="substitute" id="substitute">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Pattern to filter the response content</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Substitute <var>s/pattern/substitution/[inf]</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Substitute <var>s/pattern/substitution/[infq]</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">Override:</a></th><td>FileInfo</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Experimental</td></tr>
@@ -65,7 +65,14 @@
         <dt><code>f</code></dt>
         <dd>The <code>f</code> flag causes mod_substitute to flatten the
         result of a substitution allowing for later substitutions to
-        take place on the boundary of this one.</dd>
+        take place on the boundary of this one. This is the default.</dd>
+        <dt><code>q</code></dt>
+        <dd>The <code>q</code> flag causes mod_substitute to not
+        flatten the buckets after each substitution. This can
+        result in much faster response and a decrease in memory
+        utilization, but should only be used if there is no possibility
+        that the result of one substitution will ever match a pattern
+        or regex of a subsequent one.</dd>
     </dl>
     
     <div class="example"><h3>Example</h3><p><code>

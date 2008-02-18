@@ -779,7 +779,7 @@ Certificate verification</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#startservers">StartServers <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Anzahl der Kindprozesse des Servers, die beim Start erstellt
   werden</td></tr>
 <tr><td><a href="mpm_common.html#startthreads">StartThreads <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Anzahl der Threads, die beim Start erstellt werden</td></tr>
-<tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[inf]</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
+<tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
 <tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">User and group permissions for CGI programs</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>Anzahl</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bestimmt die Obergrenze der konfigurierbaren Anzahl von Threads
   pro Kindprozess</td></tr>
