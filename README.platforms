@@ -48,6 +48,14 @@
    this affects you, downgrading to autoconf 2.13 (which is installed
    on Darwin) will help.
 
+   With Leopard (at least up to 10.5.2), when running configure
+   you will likely see errors such as:
+
+      rm: conftest.dSYM: is a directory
+
+   This is a known issue and will be fixed in a later version of the
+   autoconf suite. These errors can be safely ignored.
+
 ==========
   FreeBSD:
    autoconf 2.52 creates scripts that are incompatible with the Posix
