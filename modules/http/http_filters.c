@@ -325,18 +325,23 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
             (ctx->state == BODY_LENGTH && ctx->remaining > 0)) &&
             f->r->expecting_100 && f->r->proto_num >= HTTP_VERSION(1,1) &&
             !(f->r->eos_sent || f->r->bytes_sent)) {
-            char *tmp;
+            if (ap_is_HTTP_CLIENT_ERROR(f->r->status)) {
+                ctx->state = BODY_NONE;
+                ctx->eos_sent = 1;
+            } else {
+                char *tmp;
 
-            tmp = apr_pstrcat(f->r->pool, AP_SERVER_PROTOCOL, " ",
-                              ap_get_status_line(100), CRLF CRLF, NULL);
-            apr_brigade_cleanup(bb);
-            e = apr_bucket_pool_create(tmp, strlen(tmp), f->r->pool,
-                                       f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_HEAD(bb, e);
-            e = apr_bucket_flush_create(f->c->bucket_alloc);
-            APR_BRIGADE_INSERT_TAIL(bb, e);
+                tmp = apr_pstrcat(f->r->pool, AP_SERVER_PROTOCOL, " ",
+                                  ap_get_status_line(100), CRLF CRLF, NULL);
+                apr_brigade_cleanup(bb);
+                e = apr_bucket_pool_create(tmp, strlen(tmp), f->r->pool,
+                                           f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_HEAD(bb, e);
+                e = apr_bucket_flush_create(f->c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
 
-            ap_pass_brigade(f->c->output_filters, bb);
+                ap_pass_brigade(f->c->output_filters, bb);
+            }
         }
 
         /* We can't read the chunk until after sending 100 if required. */

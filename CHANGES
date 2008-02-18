@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) http_filters: Don't returm 100-continue on client error
+     PR 43711 [Chetan Reddy <chetanreddy gmail.com>]
+
   *) mod_substitute: The default is now flattening the buckets after
      each substitution. This was mostly done to abide by the
      Principle Of Least Astonishment. The newly added 'q' flag allows for
