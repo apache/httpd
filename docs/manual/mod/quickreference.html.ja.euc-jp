@@ -695,7 +695,7 @@ in the Session Cache</td></tr>
 Certificate verification</td></tr>
 <tr><td><a href="mpm_common.html#startservers">StartServers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">起動時に生成される子サーバプロセスの数</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">起動時に生成されるスレッドの数</td></tr>
-<tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[inf]</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
+<tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
 <tr class="odd"><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td /></tr><tr class="odd"><td class="descr" colspan="4">CGI プログラムのユーザパーミッション、グループパーミッション</td></tr>
 <tr><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">設定可能な子プロセス毎のスレッド数の上限を
 設定します</td></tr>
