@@ -115,6 +115,18 @@ static void to64(char *s, unsigned long v, int n)
     }
 }
 
+static void generate_salt(char *s, size_t size)
+{
+    static unsigned char tbl[] = 
+        "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    size_t i;
+    for (i = 0; i < size; ++i) {
+        int idx = (int) (64.0 * rand() / (RAND_MAX + 1.0));
+        s[i] = tbl[idx];
+    }
+}
+
+
 static void putline(apr_file_t *f, const char *l)
 {
     apr_file_puts(l, f);
@@ -163,7 +175,7 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
 
     case ALG_APMD5:
         (void) srand((int) time((time_t *) NULL));
-        to64(&salt[0], rand(), 8);
+        generate_salt(&salt[0], 8);
         salt[8] = '\0';
 
         apr_md5_encode((const char *)pw, (const char *)salt,
