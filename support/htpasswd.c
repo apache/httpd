@@ -126,6 +126,18 @@ static void generate_salt(char *s, size_t size)
     }
 }
 
+static apr_status_t seed_rand()
+{
+    int seed = 0;
+    apr_status_t rv;
+    rv = apr_generate_random_bytes((unsigned char*) &seed, sizeof(seed));
+    if (rv) {
+        apr_file_printf(errfile, "Unable to generate random bytes: %pm" NL, rv);
+        return rv;
+    }
+    srand(seed);
+    return rv;
+}
 
 static void putline(apr_file_t *f, const char *l)
 {
@@ -174,7 +186,9 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         break;
 
     case ALG_APMD5:
-        (void) srand((int) time((time_t *) NULL));
+        if (seed_rand()) {
+            break;
+        }
         generate_salt(&salt[0], 8);
         salt[8] = '\0';
 
@@ -190,7 +204,9 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
 #if (!(defined(WIN32) || defined(TPF) || defined(NETWARE)))
     case ALG_CRYPT:
     default:
-        (void) srand((int) time((time_t *) NULL));
+        if (seed_rand()) {
+            break;
+        }
         to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
