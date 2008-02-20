@@ -3312,6 +3312,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             if (store) {
                 if (index) {
                     APR_BUCKET_REMOVE(b);
+                    apr_bucket_setaside(b, r->pool);
                     APR_BRIGADE_INSERT_TAIL(intern->tmp_bb, b);
                     b = newb;
                 }
@@ -3364,6 +3365,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             if (store) {
                 if (index) {
                     APR_BUCKET_REMOVE(b);
+                    apr_bucket_setaside(b, r->pool);
                     APR_BRIGADE_INSERT_TAIL(intern->tmp_bb, b);
                     b = newb;
                 }
@@ -3404,6 +3406,7 @@ static apr_status_t send_parsed_content(ap_filter_t *f, apr_bucket_brigade *bb)
             default:             /* partial match */
                 newb = APR_BUCKET_NEXT(b);
                 APR_BUCKET_REMOVE(b);
+                apr_bucket_setaside(b, r->pool);
                 APR_BRIGADE_INSERT_TAIL(intern->tmp_bb, b);
                 b = newb;
                 break;

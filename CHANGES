@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_include: Correctly handle SSI directives split over multiple filter
+     passes.  PR 44447 [Harald Niesche <harald brokenerror.de>]
+
   *) http_filters: Don't returm 100-continue on client error
      PR 43711 [Chetan Reddy <chetanreddy gmail.com>]
 
