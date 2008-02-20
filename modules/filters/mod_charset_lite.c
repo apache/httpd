@@ -76,6 +76,8 @@ typedef struct charset_dir_t {
     const char *charset_default; /* how to ship on wire */
     /** module does ap_add_*_filter()? */
     enum {IA_INIT, IA_IMPADD, IA_NOIMPADD} implicit_add;
+    /** treat all mimetypes as text? */
+    enum {FX_INIT, FX_FORCE, FX_NOFORCE} force_xlate;
 } charset_dir_t;
 
 /* charset_filter_ctx_t is created for each filter instance; because the same
@@ -138,6 +140,8 @@ static void *merge_charset_dir_conf(apr_pool_t *p, void *basev, void *overridesv
         over->charset_source ? over->charset_source : base->charset_source;
     a->implicit_add =
         over->implicit_add != IA_INIT ? over->implicit_add : base->implicit_add;
+    a->force_xlate=
+        over->force_xlate != FX_INIT ? over->force_xlate : base->force_xlate;
     return a;
 }
 
@@ -175,6 +179,12 @@ static const char *add_charset_options(cmd_parms *cmd, void *in_dc,
     }
     else if (!strcasecmp(flag, "NoImplicitAdd")) {
         dc->implicit_add = IA_NOIMPADD;
+    }
+    if (!strcasecmp(flag, "ForceAllMimeTypes")) {
+        dc->force_xlate = FX_FORCE;
+    }
+    else if (!strcasecmp(flag, "NoForceAllMimeTypes")) {
+        dc->force_xlate = FX_NOFORCE;
     }
     else if (!strncasecmp(flag, "DebugLevel=", 11)) {
         dc->debug = atoi(flag + 11);
@@ -803,7 +813,8 @@ static apr_status_t xlate_out_filter(ap_filter_t *f, apr_bucket_brigade *bb)
          */
             strcmp(mime_type, DIR_MAGIC_TYPE) == 0 ||
 #endif
-            strncasecmp(mime_type, "message/", 8) == 0) {
+            strncasecmp(mime_type, "message/", 8) == 0 || 
+            dc->force_xlate == FX_FORCE) {
 
             rv = apr_xlate_open(&ctx->xlate,
                                 dc->charset_default, dc->charset_source, f->r->pool);

@@ -166,6 +166,14 @@
       explicitly configured using the <code class="directive"><a href="../mod/mod_mime.html#addoutputfilter">AddOutputFilter</a></code> directive, <code>NoImplicitAdd</code>
       should be specified so that <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code>
       doesn't add its filter.</dd>
+
+      <dt><code>ForceAllMimeTypes | NoForceAllMimeTypes</code></dt>
+      <dd>Normally, <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> will only perform
+      translation on a small subset of possible mimetypes.  When the
+      <code>ForceAllMimeTypes</code> keyord is specified for a given
+      configuration section, translation is performed without regard for
+      mimetype.</dd>
+
     </dl>
 
 </div>
