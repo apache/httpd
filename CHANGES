@@ -2,11 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) mod_charset_lite: Add TranslateAllMimeTypes sub-option to  
-     CharsetOptions, allowing the administrator to skip the
-     mimetype checking that precedes translation.
-     PR 44458 [Eric Covener]
-
   *) mod_include: Correctly handle SSI directives split over multiple filter
      passes.  PR 44447 [Harald Niesche <harald brokenerror.de>]
 
