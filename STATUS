@@ -81,6 +81,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_charset_lite: Add TranslateAllMimeTypes sub-option to
+   CharsetOptions.  PR 44458
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=629615&view=rev
+         http://svn.apache.org/viewvc?rev=629915&view=rev
+    +1: covener, rpluem, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -175,13 +182,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version works (minus CHANGES conflict)
     +1: jim, rpluem
-
- * mod_charset_lite: Add TranslateAllMimeTypes sub-option to
-   CharsetOptions.  PR 44458
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=629615&view=rev
-         http://svn.apache.org/viewvc?rev=629915&view=rev
-    +1: covener, rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
