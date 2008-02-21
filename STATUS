@@ -174,14 +174,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=628644
       Backport version for 2.2.x of patch:
          Trunk version works (minus CHANGES conflict)
-    +1: jim
+    +1: jim, rpluem
 
  * mod_charset_lite: Add TranslateAllMimeTypes sub-option to
    CharsetOptions.  PR 44458
       Trunk version of patch:
          http://svn.apache.org/viewvc?rev=629615&view=rev
          http://svn.apache.org/viewvc?rev=629915&view=rev
-    +1: covener
+    +1: covener, rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
