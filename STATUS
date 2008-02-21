@@ -176,6 +176,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version works (minus CHANGES conflict)
     +1: jim
 
+ * mod_charset_lite: Add TranslateAllMimeTypes sub-option to
+   CharsetOptions.  PR 44458
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=629615&view=rev
+         http://svn.apache.org/viewvc?rev=629915&view=rev
+    +1: covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
