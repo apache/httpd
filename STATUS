@@ -181,7 +181,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Trunk version of patch:
          http://svn.apache.org/viewvc?rev=629615&view=rev
          http://svn.apache.org/viewvc?rev=629915&view=rev
-    +1: covener, rpluem
+    +1: covener, rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
