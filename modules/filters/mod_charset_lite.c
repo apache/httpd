@@ -180,10 +180,10 @@ static const char *add_charset_options(cmd_parms *cmd, void *in_dc,
     else if (!strcasecmp(flag, "NoImplicitAdd")) {
         dc->implicit_add = IA_NOIMPADD;
     }
-    if (!strcasecmp(flag, "ForceAllMimeTypes")) {
+    if (!strcasecmp(flag, "TranslateAllMimeTypes")) {
         dc->force_xlate = FX_FORCE;
     }
-    else if (!strcasecmp(flag, "NoForceAllMimeTypes")) {
+    else if (!strcasecmp(flag, "NoTranslateAllMimeTypes")) {
         dc->force_xlate = FX_NOFORCE;
     }
     else if (!strncasecmp(flag, "DebugLevel=", 11)) {
