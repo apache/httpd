@@ -45,55 +45,21 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
      * Warn the user that he should use the session cache.
      * But we can operate without it, of course.
      */
-    if (mc->nSessionCacheMode == SSL_SCMODE_UNSET) {
+    if (mc->sesscache == NULL) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, 0, s,
                      "Init: Session Cache is not configured "
                      "[hint: SSLSessionCache]");
-        mc->nSessionCacheMode = SSL_SCMODE_NONE;
         return;
     }
 
-    if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
-        ssl_scache_dbm_init(s, p);
-#ifdef HAVE_DISTCACHE
-    else if (mc->nSessionCacheMode == SSL_SCMODE_DC)
-        ssl_scache_dc_init(s, p);
-#endif
-#ifdef HAVE_SSL_CACHE_MEMCACHE
-    else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
-        ssl_scache_mc_init(s, p);
-#endif
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB) {
-        void *data;
-        const char *userdata_key = "ssl_scache_init";
-
-        apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-        if (!data) {
-            apr_pool_userdata_set((const void *)1, userdata_key,
-                                  apr_pool_cleanup_null, s->process->pool);
-            return;
-        }
-        ssl_scache_shmcb_init(s, p);
-    }
+    mc->sesscache->init(s, p);
 }
 
 void ssl_scache_kill(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
 
-    if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
-        ssl_scache_dbm_kill(s);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
-        ssl_scache_shmcb_kill(s);
-#ifdef HAVE_DISTCACHE
-    else if (mc->nSessionCacheMode == SSL_SCMODE_DC)
-        ssl_scache_dc_kill(s);
-#endif
-#ifdef HAVE_SSL_CACHE_MEMCACHE
-    else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
-        ssl_scache_mc_kill(s);
-#endif
-    return;
+    mc->sesscache->destroy(s);
 }
 
 BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
@@ -101,42 +67,16 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
                       apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    BOOL rv = FALSE;
-
-    if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
-        rv = ssl_scache_dbm_store(s, id, idlen, expiry, sess, p);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
-        rv = ssl_scache_shmcb_store(s, id, idlen, expiry, sess);
-#ifdef HAVE_DISTCACHE
-    else if (mc->nSessionCacheMode == SSL_SCMODE_DC)
-        rv = ssl_scache_dc_store(s, id, idlen, expiry, sess);
-#endif
-#ifdef HAVE_SSL_CACHE_MEMCACHE
-    else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
-        rv = ssl_scache_mc_store(s, id, idlen, expiry, sess);
-#endif
-    return rv;
+    
+    return mc->sesscache->store(s, id, idlen, expiry, sess);
 }
 
 SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
                                  apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    SSL_SESSION *sess = NULL;
 
-    if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
-        sess = ssl_scache_dbm_retrieve(s, id, idlen, p);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
-        sess = ssl_scache_shmcb_retrieve(s, id, idlen);
-#ifdef HAVE_DISTCACHE
-    else if (mc->nSessionCacheMode == SSL_SCMODE_DC)
-        sess = ssl_scache_dc_retrieve(s, id, idlen);
-#endif
-#ifdef HAVE_SSL_CACHE_MEMCACHE
-    else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
-        sess = ssl_scache_mc_retrieve(s, id, idlen, p);
-#endif
-    return sess;
+    return mc->sesscache->retrieve(s, id, idlen, p);
 }
 
 void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen,
@@ -144,18 +84,8 @@ void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen,
 {
     SSLModConfigRec *mc = myModConfig(s);
 
-    if (mc->nSessionCacheMode == SSL_SCMODE_DBM)
-        ssl_scache_dbm_remove(s, id, idlen, p);
-    else if (mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
-        ssl_scache_shmcb_remove(s, id, idlen);
-#ifdef HAVE_DISTCACHE
-    else if (mc->nSessionCacheMode == SSL_SCMODE_DC)
-        ssl_scache_dc_remove(s, id, idlen);
-#endif
-#ifdef HAVE_SSL_CACHE_MEMCACHE
-    else if (mc->nSessionCacheMode == SSL_SCMODE_MC)
-        ssl_scache_mc_remove(s, id, idlen);
-#endif
+    mc->sesscache->delete(s, id, idlen, p);
+
     return;
 }
 
@@ -166,9 +96,9 @@ void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen,
 */
 static int ssl_ext_status_hook(request_rec *r, int flags)
 {
-    SSLSrvConfigRec *sc = mySrvConfig(r->server);
+    SSLModConfigRec *mc = myModConfig(r->server);
 
-    if (sc == NULL || flags & AP_STATUS_SHORT)
+    if (mc == NULL || flags & AP_STATUS_SHORT)
         return OK;
 
     ap_rputs("<hr>\n", r);
@@ -178,18 +108,7 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
     ap_rputs("</td></tr>\n", r);
     ap_rputs("<tr><td bgcolor=\"#ffffff\">\n", r);
 
-    if (sc->mc->nSessionCacheMode == SSL_SCMODE_DBM)
-        ssl_scache_dbm_status(r, flags, r->pool);
-    else if (sc->mc->nSessionCacheMode == SSL_SCMODE_SHMCB)
-        ssl_scache_shmcb_status(r, flags, r->pool);
-#ifdef HAVE_DISTCACHE
-    else if (sc->mc->nSessionCacheMode == SSL_SCMODE_DC)
-        ssl_scache_dc_status(r, flags, r->pool);
-#endif
-#ifdef HAVE_SSL_CACHE_MEMCACHE
-    else if (sc->mc->nSessionCacheMode == SSL_SCMODE_MC)
-        ssl_scache_mc_status(r, flags, r->pool);
-#endif
+    mc->sesscache->status(r, flags, r->pool);
 
     ap_rputs("</td></tr>\n", r);
     ap_rputs("</table>\n", r);

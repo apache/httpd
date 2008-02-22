@@ -364,6 +364,18 @@ typedef struct {
     int non_ssl_request;
 } SSLConnRec;
 
+/* Session cache provider vtable. */
+typedef struct {
+    void (*init)(server_rec *s, apr_pool_t *pool);
+    void (*destroy)(server_rec *s);
+    BOOL (*store)(server_rec *s, UCHAR *id, int idlen,
+                  time_t expiry, SSL_SESSION *session);
+    SSL_SESSION *(*retrieve)(server_rec *s, UCHAR *id, int idlen,
+                             apr_pool_t *pool);
+    void (*delete)(server_rec *s, UCHAR *id, int idlen, apr_pool_t *pool);
+    void (*status)(request_rec *r, int flags, apr_pool_t *pool);
+} modssl_sesscache_provider;
+
 typedef struct {
     pid_t           pid;
     apr_pool_t     *pPool;
@@ -374,6 +386,10 @@ typedef struct {
     apr_shm_t      *pSessionCacheDataMM;
     apr_rmm_t      *pSessionCacheDataRMM;
     void           *tSessionCacheDataTable;
+
+    /* The configured provider: */
+    const modssl_sesscache_provider *sesscache;
+
     ssl_mutexmode_t nMutexMode;
     apr_lockmech_e  nMutexMech;
     const char     *szMutexFile;
@@ -595,38 +611,15 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *, UCHAR *, int, apr_pool_t *);
 void         ssl_scache_remove(server_rec *, UCHAR *, int,
                                apr_pool_t *);
 
-char        *ssl_scache_id2sz(UCHAR *, int);
-void         ssl_scache_dbm_init(server_rec *, apr_pool_t *);
-void         ssl_scache_dbm_kill(server_rec *);
-BOOL         ssl_scache_dbm_store(server_rec *, UCHAR *, int,
-                                  time_t, SSL_SESSION *, apr_pool_t *);
-SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *, UCHAR *, int,
-                                     apr_pool_t *);
-void         ssl_scache_dbm_remove(server_rec *, UCHAR *, int,
-                                   apr_pool_t *);
-void         ssl_scache_dbm_status(request_rec *r, int flags, apr_pool_t *);
+const modssl_sesscache_provider modssl_sesscache_shmcb;
+const modssl_sesscache_provider modssl_sesscache_dbm;
 
-void         ssl_scache_shmcb_init(server_rec *, apr_pool_t *);
-void         ssl_scache_shmcb_kill(server_rec *);
-BOOL         ssl_scache_shmcb_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
-SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *, UCHAR *, int);
-void         ssl_scache_shmcb_remove(server_rec *, UCHAR *, int);
-void         ssl_scache_shmcb_status(request_rec *r, int flags, apr_pool_t *pool);
-
-void         ssl_scache_dc_init(server_rec *, apr_pool_t *);
-void         ssl_scache_dc_kill(server_rec *);
-BOOL         ssl_scache_dc_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
-SSL_SESSION *ssl_scache_dc_retrieve(server_rec *, UCHAR *, int);
-void         ssl_scache_dc_remove(server_rec *, UCHAR *, int);
-void         ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool);
+#ifdef HAVE_DISTCACHE
+const modssl_sesscache_provider modssl_sesscache_dc;
+#endif
 
 #ifdef HAVE_SSL_CACHE_MEMCACHE
-void         ssl_scache_mc_init(server_rec *, apr_pool_t *);
-void         ssl_scache_mc_kill(server_rec *);
-BOOL         ssl_scache_mc_store(server_rec *, UCHAR *, int, time_t, SSL_SESSION *);
-SSL_SESSION *ssl_scache_mc_retrieve(server_rec *, UCHAR *, int, apr_pool_t *);
-void         ssl_scache_mc_remove(server_rec *, UCHAR *, int);
-void         ssl_scache_mc_status(request_rec *r, int flags, apr_pool_t *pool);
+const modssl_sesscache_provider modssl_sesscache_mc;
 #endif
 
 /** Proxy Support */

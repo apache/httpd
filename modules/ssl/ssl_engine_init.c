@@ -492,9 +492,11 @@ static void ssl_init_ctx_session_cache(server_rec *s,
 
     SSL_CTX_set_session_cache_mode(ctx, cache_mode);
 
-    SSL_CTX_sess_set_new_cb(ctx,    ssl_callback_NewSessionCacheEntry);
-    SSL_CTX_sess_set_get_cb(ctx,    ssl_callback_GetSessionCacheEntry);
-    SSL_CTX_sess_set_remove_cb(ctx, ssl_callback_DelSessionCacheEntry);
+    if (mc->sesscache) {
+        SSL_CTX_sess_set_new_cb(ctx,    ssl_callback_NewSessionCacheEntry);
+        SSL_CTX_sess_set_get_cb(ctx,    ssl_callback_GetSessionCacheEntry);
+        SSL_CTX_sess_set_remove_cb(ctx, ssl_callback_DelSessionCacheEntry);
+    }
 }
 
 static void ssl_init_ctx_callbacks(server_rec *s,

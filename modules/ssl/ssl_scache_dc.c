@@ -48,7 +48,7 @@
 **
 */
 
-void ssl_scache_dc_init(server_rec *s, apr_pool_t *p)
+static void ssl_scache_dc_init(server_rec *s, apr_pool_t *p)
 {
     DC_CTX *ctx;
     SSLModConfigRec *mc = myModConfig(s);
@@ -88,7 +88,7 @@ void ssl_scache_dc_init(server_rec *s, apr_pool_t *p)
     return;
 }
 
-void ssl_scache_dc_kill(server_rec *s)
+static void ssl_scache_dc_kill(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
 
@@ -97,8 +97,8 @@ void ssl_scache_dc_kill(server_rec *s)
     mc->tSessionCacheDataTable = NULL;
 }
 
-BOOL ssl_scache_dc_store(server_rec *s, UCHAR *id, int idlen,
-                           time_t timeout, SSL_SESSION * pSession)
+static BOOL ssl_scache_dc_store(server_rec *s, UCHAR *id, int idlen,
+                                time_t timeout, SSL_SESSION * pSession)
 {
     unsigned char der[SSL_SESSION_MAX_DER];
     int der_len;
@@ -122,7 +122,7 @@ BOOL ssl_scache_dc_store(server_rec *s, UCHAR *id, int idlen,
     return TRUE;
 }
 
-SSL_SESSION *ssl_scache_dc_retrieve(server_rec *s, UCHAR *id, int idlen)
+static SSL_SESSION *ssl_scache_dc_retrieve(server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)
 {
     unsigned char der[SSL_SESSION_MAX_DER];
     unsigned int der_len;
@@ -150,7 +150,7 @@ SSL_SESSION *ssl_scache_dc_retrieve(server_rec *s, UCHAR *id, int idlen)
     return pSession;
 }
 
-void ssl_scache_dc_remove(server_rec *s, UCHAR *id, int idlen)
+static void ssl_scache_dc_remove(server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     DC_CTX *ctx = mc->tSessionCacheDataTable;
@@ -163,7 +163,7 @@ void ssl_scache_dc_remove(server_rec *s, UCHAR *id, int idlen)
     }
 }
 
-void ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool)
+static void ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool)
 {
     SSLModConfigRec *mc = myModConfig(r->server);
 
@@ -172,6 +172,15 @@ void ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool)
     ap_rprintf(r, "cache type: <b>DC (Distributed Cache)</b>, "
                " target: <b>%s</b><br>", mc->szSessionCacheDataFile);
 }
+
+const modssl_sesscache_provider modssl_sesscache_dc = {
+    ssl_scache_dc_init,
+    ssl_scache_dc_kill,
+    ssl_scache_dc_store,
+    ssl_scache_dc_retrieve,
+    ssl_scache_dc_remove,
+    ssl_scache_dc_status
+};
 
 #endif
 

@@ -63,7 +63,7 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->nSessionCacheDataSize  = 0;
     mc->pSessionCacheDataMM    = NULL;
     mc->pSessionCacheDataRMM   = NULL;
-    mc->tSessionCacheDataTable = NULL;
+    mc->sesscache              = NULL;
     mc->nMutexMode             = SSL_MUTEXMODE_UNSET;
     mc->nMutexMech             = APR_LOCK_DEFAULT;
     mc->szMutexFile            = NULL;
@@ -977,6 +977,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
     }
     else if ((arglen > 4) && strcEQn(arg, "dbm:", 4)) {
         mc->nSessionCacheMode      = SSL_SCMODE_DBM;
+        mc->sesscache = &modssl_sesscache_dbm;
         mc->szSessionCacheDataFile = ap_server_root_relative(mc->pPool, arg+4);
         if (!mc->szSessionCacheDataFile) {
             return apr_psprintf(cmd->pool,
@@ -991,6 +992,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
         return MODSSL_NO_SHARED_MEMORY_ERROR;
 #endif
         mc->nSessionCacheMode      = SSL_SCMODE_SHMCB;
+        mc->sesscache = &modssl_sesscache_shmcb;
         colon = ap_strchr_c(arg, ':');
         mc->szSessionCacheDataFile =
             ap_server_root_relative(mc->pPool, colon+1);
@@ -1032,6 +1034,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
     else if ((arglen > 3) && strcEQn(arg, "dc:", 3)) {
 #ifdef HAVE_DISTCACHE
         mc->nSessionCacheMode      = SSL_SCMODE_DC;
+        mc->sesscache = &modssl_sesscache_dc;
         mc->szSessionCacheDataFile = apr_pstrdup(mc->pPool, arg+3);
         if (!mc->szSessionCacheDataFile) {
             return apr_pstrcat(cmd->pool,
@@ -1045,6 +1048,7 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
     else if ((arglen > 3) && strcEQn(arg, "memcache:", 9)) {
 #ifdef HAVE_SSL_CACHE_MEMCACHE
         mc->nSessionCacheMode      = SSL_SCMODE_MC;
+        mc->sesscache = &modssl_sesscache_mc;
         mc->szSessionCacheDataFile = apr_pstrdup(mc->pPool, arg+9);
         if (!mc->szSessionCacheDataFile) {
             return apr_pstrcat(cmd->pool,

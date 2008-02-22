@@ -70,7 +70,7 @@ static apr_memcache_t *memctxt;
 #endif
 
 
-void ssl_scache_mc_init(server_rec *s, apr_pool_t *p)
+static void ssl_scache_mc_init(server_rec *s, apr_pool_t *p)
 {
     apr_status_t rv;
     int thread_limit = 0;
@@ -158,7 +158,7 @@ void ssl_scache_mc_init(server_rec *s, apr_pool_t *p)
     return;
 }
 
-void ssl_scache_mc_kill(server_rec *s)
+static void ssl_scache_mc_kill(server_rec *s)
 {
 
 }
@@ -181,8 +181,8 @@ static char *mc_session_id2sz(unsigned char *id, int idlen,
     return str;
 }
 
-BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
-                           time_t timeout, SSL_SESSION *pSession)
+static BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
+                                time_t timeout, SSL_SESSION *pSession)
 {
     char buf[MC_KEY_LEN];
     char *strkey = NULL;
@@ -221,13 +221,12 @@ BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
     return TRUE;
 }
 
-SSL_SESSION *ssl_scache_mc_retrieve(server_rec *s, UCHAR *id, int idlen,
-                                    apr_pool_t *p)
+static SSL_SESSION *ssl_scache_mc_retrieve(server_rec *s, UCHAR *id, int idlen,
+                                           apr_pool_t *p)
 {
     SSL_SESSION *pSession;
     MODSSL_D2I_SSL_SESSION_CONST unsigned char *pder;
     apr_size_t der_len;
-    SSLModConfigRec *mc = myModConfig(s);
     char buf[MC_KEY_LEN];
     char* strkey = NULL;
     apr_status_t rv;
@@ -275,7 +274,7 @@ SSL_SESSION *ssl_scache_mc_retrieve(server_rec *s, UCHAR *id, int idlen,
     return pSession;
 }
 
-void ssl_scache_mc_remove(server_rec *s, UCHAR *id, int idlen)
+static void ssl_scache_mc_remove(server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)
 {
     char buf[MC_KEY_LEN];
     char* strkey = NULL;
@@ -297,10 +296,18 @@ void ssl_scache_mc_remove(server_rec *s, UCHAR *id, int idlen)
     }
 }
 
-void ssl_scache_mc_status(request_rec *r, int flags, apr_pool_t *pool)
+static void ssl_scache_mc_status(request_rec *r, int flags, apr_pool_t *pool)
 {
     /* SSLModConfigRec *mc = myModConfig(r->server); */
     /* TODO: Make a mod_status handler. meh. */
 }
 
+const modssl_sesscache_provider modssl_sesscache_mc = {
+    ssl_scache_mc_init,
+    ssl_scache_mc_kill,
+    ssl_scache_mc_store,
+    ssl_scache_mc_retrieve,
+    ssl_scache_mc_remove,
+    ssl_scache_mc_status
+};
 #endif

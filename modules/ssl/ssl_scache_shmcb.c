@@ -173,7 +173,7 @@ static BOOL shmcb_subcache_remove(server_rec *, SHMCBHeader *, SHMCBSubcache *,
  * subcache internals are deferred to shmcb_subcache_*** functions lower down
  */
 
-void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
+static void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     void *shm_segment;
@@ -181,6 +181,18 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
     apr_status_t rv;
     SHMCBHeader *header;
     unsigned int num_subcache, num_idx, loop;
+
+    {
+        void *data;
+        const char *userdata_key = "ssl_scache_init";
+
+        apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+        if (!data) {
+            apr_pool_userdata_set((const void *)1, userdata_key,
+                                  apr_pool_cleanup_null, s->process->pool);
+            return;
+        }
+    }
 
     /* Create shared memory segment */
     if (mc->szSessionCacheDataFile == NULL) {
@@ -296,7 +308,7 @@ void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
     mc->tSessionCacheDataTable = shm_segment;
 }
 
-void ssl_scache_shmcb_kill(server_rec *s)
+static void ssl_scache_shmcb_kill(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
 
@@ -307,8 +319,8 @@ void ssl_scache_shmcb_kill(server_rec *s)
     return;
 }
 
-BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
-                           time_t timeout, SSL_SESSION * pSession)
+static BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
+                                   time_t timeout, SSL_SESSION * pSession)
 {
     SSLModConfigRec *mc = myModConfig(s);
     BOOL to_return = FALSE;
@@ -351,7 +363,8 @@ done:
     return to_return;
 }
 
-SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR *id, int idlen)
+static SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR *id, int idlen,
+                                              apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     SSL_SESSION *pSession = NULL;
@@ -381,7 +394,7 @@ done:
     return pSession;
 }
 
-void ssl_scache_shmcb_remove(server_rec *s, UCHAR *id, int idlen)
+static void ssl_scache_shmcb_remove(server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     SHMCBHeader *header = mc->tSessionCacheDataTable;
@@ -406,7 +419,7 @@ done:
     ssl_mutex_off(s);
 }
 
-void ssl_scache_shmcb_status(request_rec *r, int flags, apr_pool_t *p)
+static void ssl_scache_shmcb_status(request_rec *r, int flags, apr_pool_t *p)
 {
     server_rec *s = r->server;
     SSLModConfigRec *mc = myModConfig(s);
@@ -736,3 +749,12 @@ static BOOL shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
 
     return to_return;
 }
+
+const modssl_sesscache_provider modssl_sesscache_shmcb = {
+    ssl_scache_shmcb_init,
+    ssl_scache_shmcb_kill,
+    ssl_scache_shmcb_store,
+    ssl_scache_shmcb_retrieve,
+    ssl_scache_shmcb_remove,
+    ssl_scache_shmcb_status
+};
