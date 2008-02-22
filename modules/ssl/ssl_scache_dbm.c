@@ -28,7 +28,10 @@
 
 static void ssl_scache_dbm_expire(server_rec *s);
 
-void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
+static void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen,
+                                  apr_pool_t *p);
+
+static void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_dbm_t *dbm;
@@ -82,7 +85,7 @@ void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
     return;
 }
 
-void ssl_scache_dbm_kill(server_rec *s)
+static void ssl_scache_dbm_kill(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_pool_t *p;
@@ -102,9 +105,8 @@ void ssl_scache_dbm_kill(server_rec *s)
     return;
 }
 
-BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
-                          time_t expiry, SSL_SESSION *sess,
-                          apr_pool_t *p)
+static BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
+                                 time_t expiry, SSL_SESSION *sess)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_dbm_t *dbm;
@@ -114,6 +116,11 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
     int nData;
     UCHAR *ucp;
     apr_status_t rv;
+    apr_pool_t *p;
+
+    /* ### This is not in any way sane, a persistent pool which gets
+     * cleared each time is needed. */
+    apr_pool_create(&p, s->process->pool);
 
     /* streamline session data */
     if ((nData = i2d_SSL_SESSION(sess, NULL)) > sizeof(ucaData)) {
@@ -167,6 +174,7 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
                      "(store)",
                      mc->szSessionCacheDataFile);
         ssl_mutex_off(s);
+        apr_pool_destroy(p);
         free(dbmval.dptr);
         return FALSE;
     }
@@ -176,11 +184,13 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
                      mc->szSessionCacheDataFile);
         apr_dbm_close(dbm);
         ssl_mutex_off(s);
+        apr_pool_destroy(p);
         free(dbmval.dptr);
         return FALSE;
     }
     apr_dbm_close(dbm);
     ssl_mutex_off(s);
+    apr_pool_destroy(p);
 
     /* free temporary buffers */
     free(dbmval.dptr);
@@ -191,8 +201,8 @@ BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
     return TRUE;
 }
 
-SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen,
-                                     apr_pool_t *p)
+static SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen,
+                                            apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_dbm_t *dbm;
@@ -267,8 +277,8 @@ SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen,
     return sess;
 }
 
-void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen,
-                           apr_pool_t *p)
+static void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen,
+                                  apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_dbm_t *dbm;
@@ -416,7 +426,7 @@ static void ssl_scache_dbm_expire(server_rec *s)
     return;
 }
 
-void ssl_scache_dbm_status(request_rec *r, int flags, apr_pool_t *p)
+static void ssl_scache_dbm_status(request_rec *r, int flags, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(r->server);
     apr_dbm_t *dbm;
@@ -466,3 +476,11 @@ void ssl_scache_dbm_status(request_rec *r, int flags, apr_pool_t *p)
     return;
 }
 
+const modssl_sesscache_provider modssl_sesscache_dbm = {
+    ssl_scache_dbm_init,
+    ssl_scache_dbm_kill,
+    ssl_scache_dbm_store,
+    ssl_scache_dbm_retrieve,
+    ssl_scache_dbm_remove,
+    ssl_scache_dbm_status
+};
