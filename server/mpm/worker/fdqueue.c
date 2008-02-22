@@ -96,7 +96,7 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
         for (;;) {
             /* Save queue_info->recycled_pool in local variable next because
              * new_recycle->next can be changed after apr_atomic_casptr
-             * function call.
+             * function call. For gory details see PR 44402.
              */
             struct recycled_pool *next = queue_info->recycled_pools;
             new_recycle->next = next;
