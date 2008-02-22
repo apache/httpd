@@ -94,10 +94,14 @@ apr_status_t ap_queue_info_set_idle(fd_queue_info_t *queue_info,
                                                          sizeof(*new_recycle));
         new_recycle->pool = pool_to_recycle;
         for (;;) {
-            new_recycle->next = queue_info->recycled_pools;
+            /* Save queue_info->recycled_pool in local variable next because
+             * new_recycle->next can be changed after apr_atomic_casptr
+             * function call.
+             */
+            struct recycled_pool *next = queue_info->recycled_pools;
+            new_recycle->next = next;
             if (apr_atomic_casptr((volatile void**)&(queue_info->recycled_pools),
-                                  new_recycle, new_recycle->next) ==
-                new_recycle->next) {
+                                  new_recycle, new_recycle->next) == next) {
                 break;
             }
         }

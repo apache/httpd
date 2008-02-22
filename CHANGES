@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Worker MPM: fix race condition in recycling a pool
+     PR 44402 [Basant Kumar Kukreja <basant.kukreja sun.com>]
+
   *) mod_include: Correctly handle SSI directives split over multiple filter
      passes.  PR 44447 [Harald Niesche <harald brokenerror.de>]
 
