@@ -106,32 +106,19 @@ static void ssl_scache_dbm_kill(server_rec *s)
 }
 
 static BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
-                                 time_t expiry, SSL_SESSION *sess)
+                                 time_t expiry, 
+                                 unsigned char *ucaData, unsigned int nData)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
     apr_datum_t dbmval;
-    UCHAR ucaData[SSL_SESSION_MAX_DER];
-    int nData;
-    UCHAR *ucp;
     apr_status_t rv;
     apr_pool_t *p;
 
     /* ### This is not in any way sane, a persistent pool which gets
      * cleared each time is needed. */
     apr_pool_create(&p, s->process->pool);
-
-    /* streamline session data */
-    if ((nData = i2d_SSL_SESSION(sess, NULL)) > sizeof(ucaData)) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "streamline session data size too large: %d > "
-                     "%" APR_SIZE_T_FMT,
-                     nData, sizeof(ucaData));
-        return FALSE;
-    }
-    ucp = ucaData;
-    i2d_SSL_SESSION(sess, &ucp);
 
     /* be careful: do not try to store too much bytes in a DBM file! */
 #ifdef PAIRMAX

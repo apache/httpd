@@ -320,13 +320,12 @@ static void ssl_scache_shmcb_kill(server_rec *s)
 }
 
 static BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
-                                   time_t timeout, SSL_SESSION * pSession)
+                                   time_t timeout, 
+                                   unsigned char *encoded,
+                                   unsigned int len_encoded)
 {
     SSLModConfigRec *mc = myModConfig(s);
     BOOL to_return = FALSE;
-    unsigned char encoded[SSL_SESSION_MAX_DER];
-    unsigned char *ptr_encoded;
-    unsigned int len_encoded;
     SHMCBHeader *header = mc->tSessionCacheDataTable;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
 
@@ -339,15 +338,6 @@ static BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
                 "(%u bytes)", idlen);
         goto done;
     }
-    /* Serialise the session. */
-    len_encoded = i2d_SSL_SESSION(pSession, NULL);
-    if (len_encoded > SSL_SESSION_MAX_DER) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "session is too big (%u bytes)", len_encoded);
-        goto done;
-    }
-    ptr_encoded = encoded;
-    len_encoded = i2d_SSL_SESSION(pSession, &ptr_encoded);
     if (!shmcb_subcache_store(s, header, subcache, encoded,
                               len_encoded, id, timeout)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,

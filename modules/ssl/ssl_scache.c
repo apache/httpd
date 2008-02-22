@@ -67,8 +67,21 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
                       apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    
-    return mc->sesscache->store(s, id, idlen, expiry, sess);
+    unsigned char encoded[SSL_SESSION_MAX_DER], *ptr;
+    unsigned int len;
+
+    /* Serialise the session. */
+    len = i2d_SSL_SESSION(sess, NULL);
+    if (len > sizeof encoded) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                     "session is too big (%u bytes)", len);
+        return FALSE;
+    }
+
+    ptr = encoded;
+    len = i2d_SSL_SESSION(sess, &ptr);
+
+    return mc->sesscache->store(s, id, idlen, expiry, encoded, len);
 }
 
 SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
