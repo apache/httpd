@@ -98,18 +98,12 @@ static void ssl_scache_dc_kill(server_rec *s)
 }
 
 static BOOL ssl_scache_dc_store(server_rec *s, UCHAR *id, int idlen,
-                                time_t timeout, SSL_SESSION * pSession)
+                                time_t timeout,
+                                unsigned char *der, unsigned int der_len)
 {
-    unsigned char der[SSL_SESSION_MAX_DER];
-    int der_len;
-    unsigned char *pder = der;
     SSLModConfigRec *mc = myModConfig(s);
     DC_CTX *ctx = mc->tSessionCacheDataTable;
 
-    /* Serialise the SSL_SESSION object */
-    if ((der_len = i2d_SSL_SESSION(pSession, NULL)) > SSL_SESSION_MAX_DER)
-        return FALSE;
-    i2d_SSL_SESSION(pSession, &pder);
     /* !@#$%^ - why do we deal with *absolute* time anyway??? */
     timeout -= time(NULL);
     /* Send the serialised session to the distributed cache context */

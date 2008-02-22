@@ -369,7 +369,8 @@ typedef struct {
     void (*init)(server_rec *s, apr_pool_t *pool);
     void (*destroy)(server_rec *s);
     BOOL (*store)(server_rec *s, UCHAR *id, int idlen,
-                  time_t expiry, SSL_SESSION *session);
+                  time_t expiry, 
+                  unsigned char *data, unsigned int datalen);
     SSL_SESSION *(*retrieve)(server_rec *s, UCHAR *id, int idlen,
                              apr_pool_t *pool);
     void (*delete)(server_rec *s, UCHAR *id, int idlen, apr_pool_t *pool);

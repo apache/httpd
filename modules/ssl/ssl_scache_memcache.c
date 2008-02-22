@@ -182,26 +182,12 @@ static char *mc_session_id2sz(unsigned char *id, int idlen,
 }
 
 static BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
-                                time_t timeout, SSL_SESSION *pSession)
+                                time_t timeout,
+                                unsigned char *ucaData, unsigned int nData)
 {
     char buf[MC_KEY_LEN];
     char *strkey = NULL;
-    UCHAR ucaData[SSL_SESSION_MAX_DER];
-    UCHAR *ucp;
-    int nData;
     apr_status_t rv;
-
-    /* streamline session data */
-    if ((nData = i2d_SSL_SESSION(pSession, NULL)) > sizeof(ucaData)) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "scache_mc: streamline session data size too large: %d > "
-                     "%" APR_SIZE_T_FMT,
-                     nData, sizeof(ucaData));
-        return FALSE;
-    }
-
-    ucp = ucaData;
-    i2d_SSL_SESSION(pSession, &ucp);
 
     strkey = mc_session_id2sz(id, idlen, buf, sizeof(buf));
     if(!strkey) {
