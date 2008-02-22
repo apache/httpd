@@ -126,7 +126,7 @@ static void generate_salt(char *s, size_t size)
     }
 }
 
-static apr_status_t seed_rand()
+static apr_status_t seed_rand(void)
 {
     int seed = 0;
     apr_status_t rv;
