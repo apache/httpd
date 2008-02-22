@@ -163,8 +163,8 @@ static void ssl_scache_mc_kill(server_rec *s)
 
 }
 
-static char *mc_session_id2sz(unsigned char *id, int idlen,
-                               char *str, int strsize)
+static char *mc_session_id2sz(const unsigned char *id, int idlen,
+                              char *str, int strsize)
 {
     char *cp;
     int n;
@@ -207,57 +207,45 @@ static BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
     return TRUE;
 }
 
-static SSL_SESSION *ssl_scache_mc_retrieve(server_rec *s, UCHAR *id, int idlen,
-                                           apr_pool_t *p)
+static BOOL ssl_scache_mc_retrieve(server_rec *s, const UCHAR *id, int idlen,
+                                   unsigned char *dest, unsigned int *destlen,
+                                   apr_pool_t *p)
 {
-    SSL_SESSION *pSession;
-    MODSSL_D2I_SSL_SESSION_CONST unsigned char *pder;
     apr_size_t der_len;
-    char buf[MC_KEY_LEN];
+    char buf[MC_KEY_LEN], *der;
     char* strkey = NULL;
     apr_status_t rv;
 
     strkey = mc_session_id2sz(id, idlen, buf, sizeof(buf));
 
-    if(!strkey) {
+    if (!strkey) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "scache_mc: Key generation borked.");
-        return NULL;
+        return FALSE;
     }
 
-    rv = apr_memcache_getp(memctxt,  p, strkey,
-                           (char**)&pder, &der_len, NULL);
+    /* ### this could do with a subpool, but _getp looks like it will
+     * eat memory like it's going out of fashion anyway. */
 
-    if (rv == APR_NOTFOUND) {
-        /* ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                       "scache_mc: 'get_session' MISS"); */
-        return NULL;
+    rv = apr_memcache_getp(memctxt, p, strkey,
+                           &der, &der_len, NULL);
+    if (rv) {
+        if (rv != APR_NOTFOUND) {
+            ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
+                         "scache_mc: 'get_session' FAIL");
+        }
+        return FALSE;
     }
-
-    if (rv != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "scache_mc: 'get_session' FAIL");
-        return NULL;
-    }
-
-    if (der_len > SSL_SESSION_MAX_DER) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+    else if (der_len > *destlen) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "scache_mc: 'get_session' OVERFLOW");
-        return NULL;
-    }
+        return FALSE;
+    }    
 
-    pSession = d2i_SSL_SESSION(NULL, &pder, der_len);
+    memcpy(dest, der, der_len);
+    *destlen = der_len;
 
-    if (!pSession) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                     "scache_mc: 'get_session' CORRUPT");
-        return NULL;
-    }
-
-    /* ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-        "scache_mc: 'get_session' HIT"); */
-
-    return pSession;
+    return TRUE;
 }
 
 static void ssl_scache_mc_remove(server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)

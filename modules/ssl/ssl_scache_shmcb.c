@@ -80,8 +80,8 @@ typedef struct {
     unsigned int data_pos;
     /* size (most logic ignores this, we keep it only to minimise memcpy) */
     unsigned int data_used;
-    /* Optimisation to prevent ASN decoding unless a match is likely */
-    unsigned char s_id2;
+    /* length of the used data which contains the id */
+    unsigned int id_len;
     /* Used to mark explicitly-removed sessions */
     unsigned char removed;
 } SHMCBIndex;
@@ -115,6 +115,18 @@ typedef struct {
  * use.  Both ->idx_* values have a range of [0, header->index_num)
  *
  * Each in-use SHMCBIndex structure represents a single SSL session.
+ * The ID and data segment are stored consecutively in the subcache's
+ * cyclic data buffer.  The "Data" segment can thus be seen to 
+ * look like this, for example
+ *
+ * offset:  [ 0     1     2     3     4     5     6    ...
+ * contents:[ ID1   Data1       ID2   Data2       ID3  ...
+ *
+ * where the corresponding indices would look like:
+ *
+ * idx1 = { data_pos = 0, data_used = 3, id_len = 1, ...}
+ * idx2 = { data_pos = 3, data_used = 3, id_len = 1, ...}
+ * ...
  */
 
 /* This macro takes a pointer to the header and a zero-based index and returns
@@ -190,12 +202,42 @@ static void shmcb_cyclic_cton_memcpy(unsigned int buf_size, unsigned char *dest,
     }
 }
 
+/* A memcmp against a cyclic data buffer.  Compares SRC of length
+ * SRC_LEN data which begins at offset DEST_OFFSET in cyclic buffer
+ * DATA which is of size BUF_SIZE.  Got that?  Good. */
+static int shmcb_cyclic_memcmp(unsigned int buf_size, unsigned char *data,
+                               unsigned int dest_offset, 
+                               const unsigned char *src,
+                               unsigned int src_len)
+{
+    if (dest_offset + src_len < buf_size)
+        /* It be compared all in one go */
+        return memcmp(data + dest_offset, src, src_len);
+    else {
+        /* Compare the two splits */
+        int diff;
+        
+        diff = memcmp(data + dest_offset, src, buf_size - dest_offset);
+        if (diff) {
+            return diff;
+        }
+        return memcmp(data, src + buf_size - dest_offset,
+                      src_len + dest_offset - buf_size);
+    }
+}
+
+
 /* Prototypes for low-level subcache operations */
 static void shmcb_subcache_expire(server_rec *, SHMCBHeader *, SHMCBSubcache *);
-static BOOL shmcb_subcache_store(server_rec *, SHMCBHeader *, SHMCBSubcache *,
-                                 UCHAR *, unsigned int, UCHAR *, time_t);
-static SSL_SESSION *shmcb_subcache_retrieve(server_rec *, SHMCBHeader *, SHMCBSubcache *,
-                                            UCHAR *, unsigned int);
+static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
+                                 SHMCBSubcache *subcache, 
+                                 UCHAR *data, unsigned int data_len,
+                                 UCHAR *id, unsigned int id_len,
+                                 time_t expiry);
+static BOOL shmcb_subcache_retrieve(server_rec *, SHMCBHeader *, SHMCBSubcache *,
+                                    const UCHAR *id, unsigned int idlen,
+                                    UCHAR *data, unsigned int *datalen);
+                                    
 static BOOL shmcb_subcache_remove(server_rec *, SHMCBHeader *, SHMCBSubcache *,
                                  UCHAR *, unsigned int);
 
@@ -271,12 +313,13 @@ static void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
     /* Select the number of subcaches to create and how many indexes each
      * should contain based on the size of the memory (the header has already
      * been subtracted). Typical non-client-auth sslv3/tlsv1 sessions are
-     * around 150 bytes, so erring to division by 120 helps ensure we would
-     * exhaust data storage before index storage (except sslv2, where it's
-     * *slightly* the other way). From there, we select the number of subcaches
-     * to be a power of two, such that the number of indexes per subcache at
-     * least twice the number of subcaches. */
-    num_idx = (shm_segsize) / 120;
+     * around 180 bytes (148 bytes data and 32 bytes for the id), so
+     * erring to division by 150 helps ensure we would exhaust data
+     * storage before index storage (except sslv2, where it's
+     * *slightly* the other way). From there, we select the number of
+     * subcaches to be a power of two, such that the number of indexes
+     * per subcache at least twice the number of subcaches. */
+    num_idx = (shm_segsize) / 150;
     num_subcache = 256;
     while ((num_idx / num_subcache) < (2 * num_subcache))
         num_subcache /= 2;
@@ -370,7 +413,7 @@ static BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
         goto done;
     }
     if (!shmcb_subcache_store(s, header, subcache, encoded,
-                              len_encoded, id, timeout)) {
+                              len_encoded, id, idlen, timeout)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "can't store a session!");
         goto done;
@@ -384,35 +427,34 @@ done:
     return to_return;
 }
 
-static SSL_SESSION *ssl_scache_shmcb_retrieve(server_rec *s, UCHAR *id, int idlen,
-                                              apr_pool_t *p)
+static BOOL ssl_scache_shmcb_retrieve(server_rec *s, 
+                                      const UCHAR *id, int idlen,
+                                      unsigned char *dest, unsigned int *destlen,
+                                      apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
-    SSL_SESSION *pSession = NULL;
     SHMCBHeader *header = mc->tSessionCacheDataTable;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
+    BOOL rv;
 
     ssl_mutex_on(s);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "ssl_scache_shmcb_retrieve (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
-    if (idlen < 4) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short session_id provided "
-                "(%u bytes)", idlen);
-        goto done;
-    }
+
     /* Get the session corresponding to the session_id or NULL if it doesn't
      * exist (or is flagged as "removed"). */
-    pSession = shmcb_subcache_retrieve(s, header, subcache, id, idlen);
-    if (pSession)
+    rv = shmcb_subcache_retrieve(s, header, subcache, id, idlen,
+                                 dest, destlen);
+    if (rv)
         header->stat_retrieves_hit++;
     else
         header->stat_retrieves_miss++;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving ssl_scache_shmcb_retrieve successfully");
-done:
+
     ssl_mutex_off(s);
-    return pSession;
+    return rv;
 }
 
 static void ssl_scache_shmcb_remove(server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)
@@ -564,16 +606,18 @@ static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
 static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
                                  SHMCBSubcache *subcache, 
                                  UCHAR *data, unsigned int data_len,
-                                 UCHAR *id, time_t expiry)
+                                 UCHAR *id, unsigned int id_len,
+                                 time_t expiry)
 {
-    unsigned int new_offset, new_idx;
+    unsigned int data_offset, new_idx, id_offset;
     SHMCBIndex *idx;
+    unsigned int total_len = id_len + data_len;
 
     /* Sanity check the input */
-    if ((data_len > header->subcache_data_size) || (data_len > SSL_SESSION_MAX_DER)) {
+    if (total_len > header->subcache_data_size) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "inserting session larger (%d) than subcache data area (%d)",
-                     data_len, header->subcache_data_size);
+                     total_len, header->subcache_data_size);
         return FALSE;
     }
 
@@ -581,7 +625,7 @@ static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
     shmcb_subcache_expire(s, header, subcache);
 
     /* Loop until there is enough space to insert */
-    if (header->subcache_data_size - subcache->data_used < data_len
+    if (header->subcache_data_size - subcache->data_used < total_len
         || subcache->idx_used == header->index_num) {
         unsigned int loop = 0;
 
@@ -611,7 +655,7 @@ static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
             /* Loop admin */
             idx = idx2;
             loop++;
-        } while (header->subcache_data_size - subcache->data_used < data_len);
+        } while (header->subcache_data_size - subcache->data_used < total_len);
 
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "finished force-expire, subcache: idx_used=%d, "
@@ -628,11 +672,18 @@ static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
      * would make this stuff *MUCH* more efficient. Mind you, it's very
      * efficient right now because I'm ignoring this problem!!!
      */
-    /* Insert the data */
-    new_offset = SHMCB_CYCLIC_INCREMENT(subcache->data_pos, subcache->data_used,
-                                        header->subcache_data_size);
+    /* Insert the id */
+    id_offset = SHMCB_CYCLIC_INCREMENT(subcache->data_pos, subcache->data_used,
+                                       header->subcache_data_size);
     shmcb_cyclic_ntoc_memcpy(header->subcache_data_size,
-                             SHMCB_DATA(header, subcache), new_offset,
+                             SHMCB_DATA(header, subcache), id_offset,
+                             id, id_len);
+    subcache->data_used += id_len;
+    /* Insert the data */
+    data_offset = SHMCB_CYCLIC_INCREMENT(subcache->data_pos, subcache->data_used,
+                                         header->subcache_data_size);
+    shmcb_cyclic_ntoc_memcpy(header->subcache_data_size,
+                             SHMCB_DATA(header, subcache), data_offset,
                              data, data_len);
     subcache->data_used += data_len;
     /* Insert the index */
@@ -640,13 +691,14 @@ static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
                                      header->index_num);
     idx = SHMCB_INDEX(subcache, new_idx);
     idx->expires = expiry;
-    idx->data_pos = new_offset;
-    idx->data_used = data_len;
-    idx->s_id2 = id[1];
+    idx->data_pos = id_offset;
+    idx->data_used = total_len;
+    idx->id_len = id_len;
     idx->removed = 0;
     subcache->idx_used++;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "insert happened at idx=%d, data=%d", new_idx, new_offset);
+                 "insert happened at idx=%d, data=(%u:%u)", new_idx, 
+                 id_offset, data_offset);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "finished insert, subcache: idx_pos/idx_used=%d/%d, "
                  "data_pos/data_used=%d/%d",
@@ -655,9 +707,10 @@ static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
     return TRUE;
 }
 
-static SSL_SESSION *shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
-                                            SHMCBSubcache *subcache, UCHAR *id,
-                                            unsigned int idlen)
+static BOOL shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
+                                    SHMCBSubcache *subcache, 
+                                    const UCHAR *id, unsigned int idlen,
+                                    UCHAR *dest, unsigned int *destlen)
 {
     unsigned int pos;
     unsigned int loop = 0;
@@ -669,39 +722,31 @@ static SSL_SESSION *shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
     while (loop < subcache->idx_used) {
         SHMCBIndex *idx = SHMCB_INDEX(subcache, pos);
 
-        /* Only consider 'idx' if;
-         * (a) the s_id2 byte matches
-         * (b) the "removed" flag isn't set.
-         */
-        if ((idx->s_id2 == id[1]) && !idx->removed) {
-            SSL_SESSION *pSession;
-            unsigned char *s_id;
-            unsigned int s_idlen;
-            unsigned char tempasn[SSL_SESSION_MAX_DER];
-            MODSSL_D2I_SSL_SESSION_CONST unsigned char *ptr = tempasn;
-
+        /* Only consider 'idx' if the id matches, and the "removed"
+         * flag isn't set; check the data length too to avoid a buffer
+         * overflow in case of corruption, which should be impossible,
+         * but it's cheap to be safe. */
+        if (idx->id_len == idlen && (idx->data_used - idx->id_len) < *destlen
+            && shmcb_cyclic_memcmp(header->subcache_data_size,
+                                   SHMCB_DATA(header, subcache),
+                                   idx->data_pos, id, idx->id_len) == 0) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                         "possible match at idx=%d, data=%d", pos, idx->data_pos);
-            /* Copy the data */
+                         "match at idx=%d, data=%d", pos, idx->data_pos);
+            unsigned int data_offset;
+
+            /* Find the offset of the data segment, after the id */
+            data_offset = SHMCB_CYCLIC_INCREMENT(idx->data_pos, 
+                                                 idx->id_len,
+                                                 header->subcache_data_size);
+
+            *destlen = idx->data_used - idx->id_len;
+
+            /* Copy out the data */
             shmcb_cyclic_cton_memcpy(header->subcache_data_size,
-                                     tempasn, SHMCB_DATA(header, subcache),
-                                     idx->data_pos, idx->data_used);
-            /* Decode the session */
-            pSession = d2i_SSL_SESSION(NULL, &ptr, idx->data_used);
-            if (!pSession) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                             "shmcb_subcache_retrieve internal error");
-                return NULL;
-            }
-            s_id = SSL_SESSION_get_session_id(pSession);
-            s_idlen = SSL_SESSION_get_session_id_length(pSession);
-            if (s_idlen == idlen && memcmp(s_id, id, idlen) == 0) {
-                /* Found the matching session */
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                             "shmcb_subcache_retrieve returning matching session");
-                return pSession;
-            }
-            SSL_SESSION_free(pSession);
+                                     dest, SHMCB_DATA(header, subcache),
+                                     data_offset, *destlen);
+
+            return TRUE;
         }
         /* Increment */
         loop++;
@@ -710,7 +755,7 @@ static SSL_SESSION *shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "shmcb_subcache_retrieve found no match");
-    return NULL;
+    return FALSE;
 }
 
 static BOOL shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
@@ -730,38 +775,20 @@ static BOOL shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
     pos = subcache->idx_pos;
     while (!to_return && (loop < subcache->idx_used)) {
         SHMCBIndex *idx = SHMCB_INDEX(subcache, pos);
-        /* Only consider 'idx' if the s_id2 byte matches and it's not already
-         * removed - easiest way to avoid costly ASN decodings. */
-        if ((idx->s_id2 == id[1]) && !idx->removed) {
-            SSL_SESSION *pSession;
-            unsigned char *s_id;
-            unsigned int s_idlen;
-            unsigned char tempasn[SSL_SESSION_MAX_DER];
-            MODSSL_D2I_SSL_SESSION_CONST unsigned char *ptr = tempasn;
 
+        /* Only consider 'idx' if the id matches, and the "removed"
+         * flag isn't set. */
+        if (idx->id_len == idlen
+            && shmcb_cyclic_memcmp(header->subcache_data_size,
+                                   SHMCB_DATA(header, subcache),
+                                   idx->data_pos, id, idx->id_len) == 0) {
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "possible match at idx=%d, data=%d", pos, idx->data_pos);
-            /* Copy the data */
-            shmcb_cyclic_cton_memcpy(header->subcache_data_size,
-                                     tempasn, SHMCB_DATA(header, subcache),
-                                     idx->data_pos, idx->data_used);
-            /* Decode the session */
-            pSession = d2i_SSL_SESSION(NULL, &ptr, idx->data_used);
-            if (!pSession) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
-                             "shmcb_subcache_remove internal error");
-                return FALSE;
-            }
-            s_id = SSL_SESSION_get_session_id(pSession);
-            s_idlen = SSL_SESSION_get_session_id_length(pSession);
-            if (s_idlen == idlen && memcmp(s_id, id, idlen) == 0) {
-                /* Found the matching session, remove it quietly. */
-                idx->removed = 1;
-                to_return = TRUE;
-                ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+            /* Found the matching session, remove it quietly. */
+            idx->removed = 1;
+            to_return = TRUE;
+            ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                              "shmcb_subcache_remove removing matching session");
-            }
-            SSL_SESSION_free(pSession);
         }
         /* Increment */
         loop++;
