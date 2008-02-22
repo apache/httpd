@@ -41,6 +41,11 @@
 
     <p>This module requires <code class="module"><a href="../mod/mod_log_config.html">mod_log_config</a></code>.</p>
 
+    <div class="note">When KeepAlive connections are used with SSL, the overhead of the SSL
+    handshake is reflected in the byte count of the first request on the
+    connection.  When per-directory SSL renegotiation occurs, the bytes are associated
+    with the request that triggered the renegotiation.</div>
+
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <p>This module provides no
