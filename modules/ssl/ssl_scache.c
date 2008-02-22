@@ -88,8 +88,17 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
                                  apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
+    unsigned char dest[SSL_SESSION_MAX_DER];
+    unsigned int destlen = SSL_SESSION_MAX_DER;
+    MODSSL_D2I_SSL_SESSION_CONST unsigned char *ptr;
+    
+    if (mc->sesscache->retrieve(s, id, idlen, dest, &destlen, p) == FALSE) {
+        return NULL;
+    }
 
-    return mc->sesscache->retrieve(s, id, idlen, p);
+    ptr = dest;
+
+    return d2i_SSL_SESSION(NULL, &ptr, destlen);
 }
 
 void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen,

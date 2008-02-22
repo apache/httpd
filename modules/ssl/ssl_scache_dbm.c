@@ -188,16 +188,15 @@ static BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
     return TRUE;
 }
 
-static SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen,
-                                            apr_pool_t *p)
+static BOOL ssl_scache_dbm_retrieve(server_rec *s, const UCHAR *id, int idlen,
+                                    unsigned char *dest, unsigned int *destlen,
+                                    apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
     apr_datum_t dbmval;
-    SSL_SESSION *sess = NULL;
-    MODSSL_D2I_SSL_SESSION_CONST unsigned char *ucpData;
-    int nData;
+    unsigned int nData;
     time_t expiry;
     time_t now;
     apr_status_t rc;
@@ -221,32 +220,30 @@ static SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen,
                      "(fetch)",
                      mc->szSessionCacheDataFile);
         ssl_mutex_off(s);
-        return NULL;
+        return FALSE;
     }
     rc = apr_dbm_fetch(dbm, dbmkey, &dbmval);
     if (rc != APR_SUCCESS) {
         apr_dbm_close(dbm);
         ssl_mutex_off(s);
-        return NULL;
+        return FALSE;
     }
     if (dbmval.dptr == NULL || dbmval.dsize <= sizeof(time_t)) {
         apr_dbm_close(dbm);
         ssl_mutex_off(s);
-        return NULL;
+        return FALSE;
     }
 
     /* parse resulting data */
     nData = dbmval.dsize-sizeof(time_t);
-    ucpData = malloc(nData);
-    if (ucpData == NULL) {
+    if (nData > *destlen) {
         apr_dbm_close(dbm);
         ssl_mutex_off(s);
-        return NULL;
-    }
-    /* Cast needed, ucpData may be const */
-    memcpy((unsigned char *)ucpData,
-           (char *)dbmval.dptr + sizeof(time_t), nData);
+        return FALSE;
+    }    
+
     memcpy(&expiry, dbmval.dptr, sizeof(time_t));
+    memcpy(dest, (char *)dbmval.dptr + sizeof(time_t), nData);
 
     apr_dbm_close(dbm);
     ssl_mutex_off(s);
@@ -254,14 +251,11 @@ static SSL_SESSION *ssl_scache_dbm_retrieve(server_rec *s, UCHAR *id, int idlen,
     /* make sure the stuff is still not expired */
     now = time(NULL);
     if (expiry <= now) {
-        ssl_scache_dbm_remove(s, id, idlen, p);
-        return NULL;
+        ssl_scache_dbm_remove(s, (UCHAR *)id, idlen, p);
+        return FALSE;
     }
 
-    /* unstreamed SSL_SESSION */
-    sess = d2i_SSL_SESSION(NULL, &ucpData, nData);
-
-    return sess;
+    return TRUE;
 }
 
 static void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen,

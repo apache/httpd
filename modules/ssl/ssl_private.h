@@ -371,8 +371,14 @@ typedef struct {
     BOOL (*store)(server_rec *s, UCHAR *id, int idlen,
                   time_t expiry, 
                   unsigned char *data, unsigned int datalen);
-    SSL_SESSION *(*retrieve)(server_rec *s, UCHAR *id, int idlen,
-                             apr_pool_t *pool);
+    /* Retrieve cached data with key ID of length IDLEN,
+     * returning TRUE on success or FALSE otherwise.  If
+     * TRUE, the data must be placed in DEST, which has length
+     * on entry of *DESTLEN.  *DESTLEN must be updated to 
+     * equal the length of data written on exit. */
+    BOOL (*retrieve)(server_rec *s, const UCHAR *id, int idlen,
+                     unsigned char *dest, unsigned int *destlen,
+                     apr_pool_t *pool);
     void (*delete)(server_rec *s, UCHAR *id, int idlen, apr_pool_t *pool);
     void (*status)(request_rec *r, int flags, apr_pool_t *pool);
 } modssl_sesscache_provider;
