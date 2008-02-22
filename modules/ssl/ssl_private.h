@@ -366,21 +366,31 @@ typedef struct {
 
 /* Session cache provider vtable. */
 typedef struct {
-    void (*init)(server_rec *s, apr_pool_t *pool);
-    void (*destroy)(server_rec *s);
-    BOOL (*store)(server_rec *s, UCHAR *id, int idlen,
-                  time_t expiry, 
+    /* Initialize the cache.  Return APR error code.  The context
+     * pointer returned in *CONTEXT will be passed as the first
+     * argument to subsequent invocations. */
+    apr_status_t (*init)(server_rec *s, void **context, apr_pool_t *pool);
+    /* Destroy a given cache context. */    
+    void (*destroy)(void *context, server_rec *s);
+    /* Store an object in the cache. */
+    BOOL (*store)(void *context, server_rec *s, 
+                  UCHAR *id, int idlen, time_t expiry, 
                   unsigned char *data, unsigned int datalen);
     /* Retrieve cached data with key ID of length IDLEN,
      * returning TRUE on success or FALSE otherwise.  If
      * TRUE, the data must be placed in DEST, which has length
      * on entry of *DESTLEN.  *DESTLEN must be updated to 
      * equal the length of data written on exit. */
-    BOOL (*retrieve)(server_rec *s, const UCHAR *id, int idlen,
+    BOOL (*retrieve)(void *context, server_rec *s,
+                     const UCHAR *id, int idlen,
                      unsigned char *dest, unsigned int *destlen,
                      apr_pool_t *pool);
-    void (*delete)(server_rec *s, UCHAR *id, int idlen, apr_pool_t *pool);
-    void (*status)(request_rec *r, int flags, apr_pool_t *pool);
+    /* Remove an object from the cache. */
+    void (*delete)(void *context, server_rec *s,
+                   UCHAR *id, int idlen, apr_pool_t *pool);
+    /* Dump cache status for mod_status output. */
+    void (*status)(void *context, request_rec *r, 
+                   int flags, apr_pool_t *pool);
 } modssl_sesscache_provider;
 
 typedef struct {
@@ -390,12 +400,11 @@ typedef struct {
     int             nSessionCacheMode;
     char           *szSessionCacheDataFile;
     int             nSessionCacheDataSize;
-    apr_shm_t      *pSessionCacheDataMM;
-    apr_rmm_t      *pSessionCacheDataRMM;
-    void           *tSessionCacheDataTable;
 
-    /* The configured provider: */
+    /* The configured provider, and associated private data
+     * structure. */
     const modssl_sesscache_provider *sesscache;
+    void *sesscache_context;
 
     ssl_mutexmode_t nMutexMode;
     apr_lockmech_e  nMutexMech;

@@ -40,6 +40,20 @@
 void ssl_scache_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
+    apr_status_t rv;
+
+    /* ### push this up into scache_init??? */
+    {
+        void *data;
+        const char *userdata_key = "ssl_scache_init";
+
+        apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+        if (!data) {
+            apr_pool_userdata_set((const void *)1, userdata_key,
+                                  apr_pool_cleanup_null, s->process->pool);
+            return;
+        }
+    }
 
     /*
      * Warn the user that he should use the session cache.
@@ -52,14 +66,20 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         return;
     }
 
-    mc->sesscache->init(s, p);
+    rv = mc->sesscache->init(s, &mc->sesscache_context, p);
+    if (rv) {
+        /* ABORT ABORT etc. */
+        ssl_die();
+    }
 }
 
 void ssl_scache_kill(server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
-
-    mc->sesscache->destroy(s);
+    
+    if (mc->sesscache) {
+        mc->sesscache->destroy(mc->sesscache_context, s);
+    }
 }
 
 BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
@@ -81,7 +101,8 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
     ptr = encoded;
     len = i2d_SSL_SESSION(sess, &ptr);
 
-    return mc->sesscache->store(s, id, idlen, expiry, encoded, len);
+    return mc->sesscache->store(mc->sesscache_context, s, id, idlen, 
+                                expiry, encoded, len);
 }
 
 SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
@@ -92,7 +113,8 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
     unsigned int destlen = SSL_SESSION_MAX_DER;
     MODSSL_D2I_SSL_SESSION_CONST unsigned char *ptr;
     
-    if (mc->sesscache->retrieve(s, id, idlen, dest, &destlen, p) == FALSE) {
+    if (mc->sesscache->retrieve(mc->sesscache_context, s, id, idlen, 
+                                dest, &destlen, p) == FALSE) {
         return NULL;
     }
 
@@ -106,7 +128,7 @@ void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen,
 {
     SSLModConfigRec *mc = myModConfig(s);
 
-    mc->sesscache->delete(s, id, idlen, p);
+    mc->sesscache->delete(mc->sesscache_context, s, id, idlen, p);
 
     return;
 }
@@ -130,7 +152,7 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
     ap_rputs("</td></tr>\n", r);
     ap_rputs("<tr><td bgcolor=\"#ffffff\">\n", r);
 
-    mc->sesscache->status(r, flags, r->pool);
+    mc->sesscache->status(mc->sesscache_context, r, flags, r->pool);
 
     ap_rputs("</td></tr>\n", r);
     ap_rputs("</table>\n", r);
