@@ -86,6 +86,37 @@ typedef struct {
     unsigned char removed;
 } SHMCBIndex;
 
+
+/* The SHM data segment is of fixed size and stores data as follows.
+ *
+ *   [ SHMCBHeader | Subcaches ]
+ *
+ * The SHMCBHeader header structure stores metadata concerning the
+ * cache and the contained subcaches.
+ *
+ * Subcaches is a hash table of header->subcache_num SHMCBSubcache
+ * structures.  The hash table is indexed by SHMCB_MASK(id). Each
+ * SHMCBSubcache structure has a fixed size (header->subcache_size),
+ * which is determined at creation time, and looks like the following:
+ *
+ *   [ SHMCBSubcache | Indexes | Data ]
+ *
+ * Each subcache is prefixed by the SHMCBSubcache structure.
+ *
+ * The subcache's "Data" segment is a single cyclic data buffer, of
+ * total size header->subcache_data_size; data inside is referenced
+ * using byte offsets. The offset marking the beginning of the cyclic
+ * buffer is subcache->data_pos the buffer's length is
+ * subcache->data_used.
+ *
+ * "Indexes" is an array of header->index_num SHMCBIndex structures,
+ * which is used as a cyclic queue; subcache->idx_pos gives the array
+ * index of the first in use, subcache->idx_used gives the number in
+ * use.  Both ->idx_* values have a range of [0, header->index_num)
+ *
+ * Each in-use SHMCBIndex structure represents a single SSL session.
+ */
+
 /* This macro takes a pointer to the header and a zero-based index and returns
  * a pointer to the corresponding subcache. */
 #define SHMCB_SUBCACHE(pHeader, num) \
