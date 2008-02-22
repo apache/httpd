@@ -48,16 +48,22 @@
 **
 */
 
-static void ssl_scache_dc_init(server_rec *s, apr_pool_t *p)
+struct context {
+    DC_CTX *dc;
+};
+
+static apr_status_t ssl_scache_dc_init(server_rec *s, void **context, apr_pool_t *p)
 {
-    DC_CTX *ctx;
+    DC_CTX *dc;
     SSLModConfigRec *mc = myModConfig(s);
+    struct context *ctx;
+
     /*
      * Create a session context
      */
     if (mc->szSessionCacheDataFile == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "SSLSessionCache required");
-        ssl_die();
+        return APR_EINVAL;
     }
 #if 0
     /* If a "persistent connection" mode of operation is preferred, you *must*
@@ -75,39 +81,41 @@ static void ssl_scache_dc_init(server_rec *s, apr_pool_t *p)
      * performance/stability danger of file-descriptor bloatage. */
 #define SESSION_CTX_FLAGS        0
 #endif
-    ctx = DC_CTX_new(mc->szSessionCacheDataFile, SESSION_CTX_FLAGS);
-    if (!ctx) {
+    dc = DC_CTX_new(mc->szSessionCacheDataFile, SESSION_CTX_FLAGS);
+    if (!dc) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache failed to obtain context");
-        ssl_die();
+        return APR_EGENERAL;
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "distributed scache context initialised");
     /*
      * Success ...
      */
-    mc->tSessionCacheDataTable = ctx;
-    return;
+    ctx = *context = apr_palloc(p, sizeof *ctx);
+    ctx->dc = dc;
+
+    return APR_SUCCESS;
 }
 
-static void ssl_scache_dc_kill(server_rec *s)
+static void ssl_scache_dc_kill(void *context, server_rec *s)
 {
-    SSLModConfigRec *mc = myModConfig(s);
+    struct context *ctx = context;
 
-    if (mc->tSessionCacheDataTable)
-        DC_CTX_free(mc->tSessionCacheDataTable);
-    mc->tSessionCacheDataTable = NULL;
+    if (ctx && ctx->dc) {
+        DC_CTX_free(ctx->dc);
+        ctx->dc = NULL;
+    }
 }
 
-static BOOL ssl_scache_dc_store(server_rec *s, UCHAR *id, int idlen,
+static BOOL ssl_scache_dc_store(void *context, server_rec *s, UCHAR *id, int idlen,
                                 time_t timeout,
                                 unsigned char *der, unsigned int der_len)
 {
-    SSLModConfigRec *mc = myModConfig(s);
-    DC_CTX *ctx = mc->tSessionCacheDataTable;
+    struct context *ctx = context;
 
     /* !@#$%^ - why do we deal with *absolute* time anyway??? */
     timeout -= time(NULL);
     /* Send the serialised session to the distributed cache context */
-    if (!DC_CTX_add_session(ctx, id, idlen, der, der_len,
+    if (!DC_CTX_add_session(ctx->dc, id, idlen, der, der_len,
                             (unsigned long)timeout * 1000)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'add_session' failed");
         return FALSE;
@@ -116,16 +124,16 @@ static BOOL ssl_scache_dc_store(server_rec *s, UCHAR *id, int idlen,
     return TRUE;
 }
 
-static BOOL ssl_scache_dc_retrieve(server_rec *s, const UCHAR *id, int idlen,
+static BOOL ssl_scache_dc_retrieve(void *context,
+                                   server_rec *s, const UCHAR *id, int idlen,
                                    unsigned char *dest, unsigned int *destlen,
                                    apr_pool_t *p)
 {
     unsigned int data_len;
-    SSLModConfigRec *mc = myModConfig(s);
-    DC_CTX *ctx = mc->tSessionCacheDataTable;
+    struct context *ctx = context;
 
     /* Retrieve any corresponding session from the distributed cache context */
-    if (!DC_CTX_get_session(ctx, id, idlen, dest, *destlen, &data_len)) {
+    if (!DC_CTX_get_session(ctx->dc, id, idlen, dest, *destlen, &data_len)) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'get_session' MISS");
         return FALSE;
     }
@@ -137,20 +145,20 @@ static BOOL ssl_scache_dc_retrieve(server_rec *s, const UCHAR *id, int idlen,
     return TRUE;
 }
 
-static void ssl_scache_dc_remove(server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)
+static void ssl_scache_dc_remove(void *context, server_rec *s, 
+                                 UCHAR *id, int idlen, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig(s);
-    DC_CTX *ctx = mc->tSessionCacheDataTable;
+    struct context *ctx = context;
 
     /* Remove any corresponding session from the distributed cache context */
-    if (!DC_CTX_remove_session(ctx, id, idlen)) {
+    if (!DC_CTX_remove_session(ctx->dc, id, idlen)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'remove_session' MISS");
     } else {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'remove_session' HIT");
     }
 }
 
-static void ssl_scache_dc_status(request_rec *r, int flags, apr_pool_t *pool)
+static void ssl_scache_dc_status(void *context, request_rec *r, int flags, apr_pool_t *pool)
 {
     SSLModConfigRec *mc = myModConfig(r->server);
 

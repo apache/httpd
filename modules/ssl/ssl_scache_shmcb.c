@@ -86,6 +86,10 @@ typedef struct {
     unsigned char removed;
 } SHMCBIndex;
 
+struct context {
+    apr_shm_t *shm;
+    SHMCBHeader *header;
+};
 
 /* The SHM data segment is of fixed size and stores data as follows.
  *
@@ -203,8 +207,8 @@ static void shmcb_cyclic_cton_memcpy(unsigned int buf_size, unsigned char *dest,
 }
 
 /* A memcmp against a cyclic data buffer.  Compares SRC of length
- * SRC_LEN data which begins at offset DEST_OFFSET in cyclic buffer
- * DATA which is of size BUF_SIZE.  Got that?  Good. */
+ * SRC_LEN against the contents of cyclic buffer DATA (which is of
+ * size BUF_SIZE), starting at offset DEST_OFFSET. Got that?  Good. */
 static int shmcb_cyclic_memcmp(unsigned int buf_size, unsigned char *data,
                                unsigned int dest_offset, 
                                const unsigned char *src,
@@ -246,7 +250,8 @@ static BOOL shmcb_subcache_remove(server_rec *, SHMCBHeader *, SHMCBSubcache *,
  * subcache internals are deferred to shmcb_subcache_*** functions lower down
  */
 
-static void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
+static apr_status_t ssl_scache_shmcb_init(server_rec *s, void **context,
+                                          apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     void *shm_segment;
@@ -254,36 +259,30 @@ static void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
     apr_status_t rv;
     SHMCBHeader *header;
     unsigned int num_subcache, num_idx, loop;
+    struct context *ctx;
 
-    {
-        void *data;
-        const char *userdata_key = "ssl_scache_init";
+    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
+                 "POOL %p %p", mc->pPool, p);
 
-        apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-        if (!data) {
-            apr_pool_userdata_set((const void *)1, userdata_key,
-                                  apr_pool_cleanup_null, s->process->pool);
-            return;
-        }
-    }
+    /* Allocate the context. */
+    *context = ctx = apr_pcalloc(p, sizeof *ctx);
 
     /* Create shared memory segment */
     if (mc->szSessionCacheDataFile == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "SSLSessionCache required");
-        ssl_die();
+        return APR_EINVAL;
     }
 
     /* Use anonymous shm by default, fall back on name-based. */
-    rv = apr_shm_create(&(mc->pSessionCacheDataMM), 
-                        mc->nSessionCacheDataSize, 
+    rv = apr_shm_create(&ctx->shm, mc->nSessionCacheDataSize, 
                         NULL, mc->pPool);
     if (APR_STATUS_IS_ENOTIMPL(rv)) {
         /* For a name-based segment, remove it first in case of a
          * previous unclean shutdown. */
         apr_shm_remove(mc->szSessionCacheDataFile, mc->pPool);
 
-        rv = apr_shm_create(&(mc->pSessionCacheDataMM),
+        rv = apr_shm_create(&ctx->shm,
                             mc->nSessionCacheDataSize,
                             mc->szSessionCacheDataFile,
                             mc->pPool);
@@ -293,16 +292,16 @@ static void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "could not allocate shared memory for shmcb "
                      "session cache");
-        ssl_die();
+        return rv;
     }
 
-    shm_segment = apr_shm_baseaddr_get(mc->pSessionCacheDataMM);
-    shm_segsize = apr_shm_size_get(mc->pSessionCacheDataMM);
+    shm_segment = apr_shm_baseaddr_get(ctx->shm);
+    shm_segsize = apr_shm_size_get(ctx->shm);
     if (shm_segsize < (5 * sizeof(SHMCBHeader))) {
         /* the segment is ridiculously small, bail out */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "shared memory segment too small");
-        ssl_die();
+        return APR_ENOSPC;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "shmcb_init allocated %" APR_SIZE_T_FMT
@@ -333,10 +332,10 @@ static void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
         /* we're still too small, bail out */
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "shared memory segment too small");
-        ssl_die();
+        return APR_ENOSPC;
     }
     /* OK, we're sorted */
-    header = shm_segment;
+    ctx->header = header = shm_segment;
     header->stat_stores = 0;
     header->stat_expiries = 0;
     header->stat_scrolled = 0;
@@ -379,28 +378,29 @@ static void ssl_scache_shmcb_init(server_rec *s, apr_pool_t *p)
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s,
                  "Shared memory session cache initialised");
     /* Success ... */
-    mc->tSessionCacheDataTable = shm_segment;
+
+    return APR_SUCCESS;
 }
 
-static void ssl_scache_shmcb_kill(server_rec *s)
+static void ssl_scache_shmcb_kill(void *context, server_rec *s)
 {
-    SSLModConfigRec *mc = myModConfig(s);
+    struct context *ctx = context;
 
-    if (mc->pSessionCacheDataMM != NULL) {
-        apr_shm_destroy(mc->pSessionCacheDataMM);
-        mc->pSessionCacheDataMM = NULL;
+    if (ctx && ctx->shm) {
+        apr_shm_destroy(ctx->shm);
+        ctx->shm = NULL;
     }
-    return;
 }
 
-static BOOL ssl_scache_shmcb_store(server_rec *s, UCHAR *id, int idlen,
+static BOOL ssl_scache_shmcb_store(void *context, server_rec *s, 
+                                   UCHAR *id, int idlen,
                                    time_t timeout, 
                                    unsigned char *encoded,
                                    unsigned int len_encoded)
 {
-    SSLModConfigRec *mc = myModConfig(s);
     BOOL to_return = FALSE;
-    SHMCBHeader *header = mc->tSessionCacheDataTable;
+    struct context *ctx = context;
+    SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
 
     ssl_mutex_on(s);
@@ -427,13 +427,13 @@ done:
     return to_return;
 }
 
-static BOOL ssl_scache_shmcb_retrieve(server_rec *s, 
+static BOOL ssl_scache_shmcb_retrieve(void *context, server_rec *s, 
                                       const UCHAR *id, int idlen,
                                       unsigned char *dest, unsigned int *destlen,
                                       apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig(s);
-    SHMCBHeader *header = mc->tSessionCacheDataTable;
+    struct context *ctx = context;
+    SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
     BOOL rv;
 
@@ -457,10 +457,11 @@ static BOOL ssl_scache_shmcb_retrieve(server_rec *s,
     return rv;
 }
 
-static void ssl_scache_shmcb_remove(server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)
+static void ssl_scache_shmcb_remove(void *context, server_rec *s, 
+                                    UCHAR *id, int idlen, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig(s);
-    SHMCBHeader *header = mc->tSessionCacheDataTable;
+    struct context *ctx = context;
+    SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
 
     ssl_mutex_on(s);
@@ -482,12 +483,13 @@ done:
     ssl_mutex_off(s);
 }
 
-static void ssl_scache_shmcb_status(request_rec *r, int flags, apr_pool_t *p)
+static void ssl_scache_shmcb_status(void *context, request_rec *r, 
+                                    int flags, apr_pool_t *p)
 {
     server_rec *s = r->server;
     SSLModConfigRec *mc = myModConfig(s);
-    void *shm_segment = apr_shm_baseaddr_get(mc->pSessionCacheDataMM);
-    SHMCBHeader *header = shm_segment;
+    struct context *ctx = context;
+    SHMCBHeader *header = ctx->header;
     unsigned int loop, total = 0, cache_total = 0, non_empty_subcaches = 0;
     time_t idx_expiry, min_expiry = 0, max_expiry = 0, average_expiry = 0;
     time_t now = time(NULL);

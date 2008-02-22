@@ -26,12 +26,12 @@
 
 #include "ssl_private.h"
 
-static void ssl_scache_dbm_expire(server_rec *s);
+static void ssl_scache_dbm_expire(void *context, server_rec *s);
 
-static void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen,
+static void ssl_scache_dbm_remove(void *context, server_rec *s, UCHAR *id, int idlen,
                                   apr_pool_t *p);
 
-static void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
+static apr_status_t ssl_scache_dbm_init(server_rec *s, void **context, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_dbm_t *dbm;
@@ -41,7 +41,7 @@ static void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
     if (mc->szSessionCacheDataFile == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "SSLSessionCache required");
-        ssl_die();
+        return APR_EINVAL;
     }
 
     /* open it once to create it and to make sure it _can_ be created */
@@ -52,7 +52,7 @@ static void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
                      "Cannot create SSLSessionCache DBM file `%s'",
                      mc->szSessionCacheDataFile);
         ssl_mutex_off(s);
-        return;
+        return rv;
     }
     apr_dbm_close(dbm);
 
@@ -81,11 +81,12 @@ static void ssl_scache_dbm_init(server_rec *s, apr_pool_t *p)
     }
 #endif
     ssl_mutex_off(s);
-    ssl_scache_dbm_expire(s);
-    return;
+    ssl_scache_dbm_expire(context, s);
+
+    return APR_SUCCESS;
 }
 
-static void ssl_scache_dbm_kill(server_rec *s)
+static void ssl_scache_dbm_kill(void *context, server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_pool_t *p;
@@ -105,7 +106,7 @@ static void ssl_scache_dbm_kill(server_rec *s)
     return;
 }
 
-static BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
+static BOOL ssl_scache_dbm_store(void *context, server_rec *s, UCHAR *id, int idlen,
                                  time_t expiry, 
                                  unsigned char *ucaData, unsigned int nData)
 {
@@ -183,12 +184,12 @@ static BOOL ssl_scache_dbm_store(server_rec *s, UCHAR *id, int idlen,
     free(dbmval.dptr);
 
     /* allow the regular expiring to occur */
-    ssl_scache_dbm_expire(s);
+    ssl_scache_dbm_expire(context, s);
 
     return TRUE;
 }
 
-static BOOL ssl_scache_dbm_retrieve(server_rec *s, const UCHAR *id, int idlen,
+static BOOL ssl_scache_dbm_retrieve(void *context, server_rec *s, const UCHAR *id, int idlen,
                                     unsigned char *dest, unsigned int *destlen,
                                     apr_pool_t *p)
 {
@@ -202,7 +203,7 @@ static BOOL ssl_scache_dbm_retrieve(server_rec *s, const UCHAR *id, int idlen,
     apr_status_t rc;
 
     /* allow the regular expiring to occur */
-    ssl_scache_dbm_expire(s);
+    ssl_scache_dbm_expire(context, s);
 
     /* create DBM key and values */
     dbmkey.dptr  = (char *)id;
@@ -251,14 +252,14 @@ static BOOL ssl_scache_dbm_retrieve(server_rec *s, const UCHAR *id, int idlen,
     /* make sure the stuff is still not expired */
     now = time(NULL);
     if (expiry <= now) {
-        ssl_scache_dbm_remove(s, (UCHAR *)id, idlen, p);
+        ssl_scache_dbm_remove(context, s, (UCHAR *)id, idlen, p);
         return FALSE;
     }
 
     return TRUE;
 }
 
-static void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen,
+static void ssl_scache_dbm_remove(void *context, server_rec *s, UCHAR *id, int idlen,
                                   apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
@@ -288,7 +289,7 @@ static void ssl_scache_dbm_remove(server_rec *s, UCHAR *id, int idlen,
     return;
 }
 
-static void ssl_scache_dbm_expire(server_rec *s)
+static void ssl_scache_dbm_expire(void *context, server_rec *s)
 {
     SSLModConfigRec *mc = myModConfig(s);
     SSLSrvConfigRec *sc = mySrvConfig(s);
@@ -407,7 +408,8 @@ static void ssl_scache_dbm_expire(server_rec *s)
     return;
 }
 
-static void ssl_scache_dbm_status(request_rec *r, int flags, apr_pool_t *p)
+static void ssl_scache_dbm_status(void *context, request_rec *r, 
+                                  int flags, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(r->server);
     apr_dbm_t *dbm;

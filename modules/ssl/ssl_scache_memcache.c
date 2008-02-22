@@ -44,8 +44,6 @@
 
 
 /* The underlying apr_memcache system is thread safe.. */
-static apr_memcache_t *memctxt;
-
 #define MC_TAG "mod_ssl:"
 #define MC_TAG_LEN \
     (sizeof(MC_TAG))
@@ -69,8 +67,11 @@ static apr_memcache_t *memctxt;
 #define MC_DEFAULT_SERVER_TTL 600
 #endif
 
+struct context {
+    apr_memcache_t *mc;
+};
 
-static void ssl_scache_mc_init(server_rec *s, apr_pool_t *p)
+static apr_status_t ssl_scache_mc_init(server_rec *s, void **context, apr_pool_t *p)
 {
     apr_status_t rv;
     int thread_limit = 0;
@@ -79,12 +80,13 @@ static void ssl_scache_mc_init(server_rec *s, apr_pool_t *p)
     char *split;
     char *tok;
     SSLModConfigRec *mc = myModConfig(s);
+    struct context *ctx = apr_palloc(p, sizeof *ctx);
 
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
 
     if (mc->szSessionCacheDataFile == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "SSLSessionCache required");
-        ssl_die();
+        return APR_EINVAL;
     }
 
     /* Find all the servers in the first run to get a total count */
@@ -95,12 +97,12 @@ static void ssl_scache_mc_init(server_rec *s, apr_pool_t *p)
         split = apr_strtok(NULL,",", &tok);
     }
 
-    rv = apr_memcache_create(p, nservers, 0, &memctxt);
+    rv = apr_memcache_create(p, nservers, 0, &ctx->mc);
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "SSLSessionCache: Failed to create Memcache Object of '%d' size.", 
                      nservers);
-        ssl_die();
+        return rv;
     }
 
     /* Now add each server to the memcache */
@@ -116,14 +118,14 @@ static void ssl_scache_mc_init(server_rec *s, apr_pool_t *p)
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                          "SSLSessionCache: Failed to Parse Server: '%s'", split);
-            ssl_die();
+            return rv;
         }
 
         if (host_str == NULL) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                          "SSLSessionCache: Failed to Parse Server, "
                          "no hostname specified: '%s'", split);
-            ssl_die();
+            return APR_EINVAL;
         }
 
         if (port == 0) {
@@ -141,26 +143,28 @@ static void ssl_scache_mc_init(server_rec *s, apr_pool_t *p)
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                          "SSLSessionCache: Failed to Create Server: %s:%d", 
                          host_str, port);
-            ssl_die();
+            return rv;
         }
 
-        rv = apr_memcache_add_server(memctxt, st);
+        rv = apr_memcache_add_server(ctx->mc, st);
         if (rv != APR_SUCCESS) {
             ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                          "SSLSessionCache: Failed to Add Server: %s:%d", 
                          host_str, port);
-            ssl_die();
+            return rv;
         }
 
         split = apr_strtok(NULL,",", &tok);
     }
 
-    return;
+    *context = ctx;
+
+    return APR_SUCCESS;
 }
 
-static void ssl_scache_mc_kill(server_rec *s)
+static void ssl_scache_mc_kill(void *context, server_rec *s)
 {
-
+    /* noop. */
 }
 
 static char *mc_session_id2sz(const unsigned char *id, int idlen,
@@ -181,10 +185,12 @@ static char *mc_session_id2sz(const unsigned char *id, int idlen,
     return str;
 }
 
-static BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
+static BOOL ssl_scache_mc_store(void *context, server_rec *s, 
+                                UCHAR *id, int idlen,
                                 time_t timeout,
                                 unsigned char *ucaData, unsigned int nData)
 {
+    struct context *ctx = context;
     char buf[MC_KEY_LEN];
     char *strkey = NULL;
     apr_status_t rv;
@@ -195,7 +201,7 @@ static BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
         return FALSE;
     }
 
-    rv = apr_memcache_set(memctxt, strkey, (char*)ucaData, nData, timeout, 0);
+    rv = apr_memcache_set(ctx->mc, strkey, (char*)ucaData, nData, timeout, 0);
 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
@@ -207,13 +213,15 @@ static BOOL ssl_scache_mc_store(server_rec *s, UCHAR *id, int idlen,
     return TRUE;
 }
 
-static BOOL ssl_scache_mc_retrieve(server_rec *s, const UCHAR *id, int idlen,
+static BOOL ssl_scache_mc_retrieve(void *context, server_rec *s, 
+                                   const UCHAR *id, int idlen,
                                    unsigned char *dest, unsigned int *destlen,
                                    apr_pool_t *p)
 {
+    struct context *ctx = context;
     apr_size_t der_len;
     char buf[MC_KEY_LEN], *der;
-    char* strkey = NULL;
+    char *strkey = NULL;
     apr_status_t rv;
 
     strkey = mc_session_id2sz(id, idlen, buf, sizeof(buf));
@@ -227,7 +235,7 @@ static BOOL ssl_scache_mc_retrieve(server_rec *s, const UCHAR *id, int idlen,
     /* ### this could do with a subpool, but _getp looks like it will
      * eat memory like it's going out of fashion anyway. */
 
-    rv = apr_memcache_getp(memctxt, p, strkey,
+    rv = apr_memcache_getp(ctx->mc, p, strkey,
                            &der, &der_len, NULL);
     if (rv) {
         if (rv != APR_NOTFOUND) {
@@ -248,8 +256,9 @@ static BOOL ssl_scache_mc_retrieve(server_rec *s, const UCHAR *id, int idlen,
     return TRUE;
 }
 
-static void ssl_scache_mc_remove(server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)
+static void ssl_scache_mc_remove(void *context, server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)
 {
+    struct context *ctx = context;
     char buf[MC_KEY_LEN];
     char* strkey = NULL;
     apr_status_t rv;
@@ -260,7 +269,7 @@ static void ssl_scache_mc_remove(server_rec *s, UCHAR *id, int idlen, apr_pool_t
         return;
     }
 
-    rv = apr_memcache_delete(memctxt, strkey, 0);
+    rv = apr_memcache_delete(ctx->mc, strkey, 0);
 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
@@ -270,7 +279,8 @@ static void ssl_scache_mc_remove(server_rec *s, UCHAR *id, int idlen, apr_pool_t
     }
 }
 
-static void ssl_scache_mc_status(request_rec *r, int flags, apr_pool_t *pool)
+static void ssl_scache_mc_status(void *context, request_rec *r, 
+                                 int flags, apr_pool_t *pool)
 {
     /* SSLModConfigRec *mc = myModConfig(r->server); */
     /* TODO: Make a mod_status handler. meh. */

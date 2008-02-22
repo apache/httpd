@@ -61,8 +61,6 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     mc->nSessionCacheMode      = SSL_SCMODE_UNSET;
     mc->szSessionCacheDataFile = NULL;
     mc->nSessionCacheDataSize  = 0;
-    mc->pSessionCacheDataMM    = NULL;
-    mc->pSessionCacheDataRMM   = NULL;
     mc->sesscache              = NULL;
     mc->nMutexMode             = SSL_MUTEXMODE_UNSET;
     mc->nMutexMech             = APR_LOCK_DEFAULT;
@@ -1001,7 +999,6 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
                                 "SSLSessionCache: Invalid cache file path %s",
                                 colon+1);
         }
-        mc->tSessionCacheDataTable = NULL;
         mc->nSessionCacheDataSize  = 1024*512; /* 512KB */
 
         if ((cp = strchr(mc->szSessionCacheDataFile, '('))) {
