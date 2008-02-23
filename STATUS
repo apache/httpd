@@ -81,6 +81,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * http_filters: Don't return 100-continue on client error
+   PR 43711 
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=628644
+      Backport version for 2.2.x of patch:
+         Trunk version works (minus CHANGES conflict)
+    +1: jim, rpluem, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -123,7 +130,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=611292&view=rev
       Backport version for 2.2.x of patch (trunk applies):
          http://people.apache.org/~covener/2.2.x-proxy-status_t.diff 
-    +1 covener
+    +1 covener, niq
+    niq comments: you introduced some trivial style violations
 
   * mod_logio: Provide optional function to allow modules to adjust the
     bytes_in count 
@@ -141,7 +149,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=579664
       Backport version of 2.2.x of patch:
          Trunk version works (minus CHANGES conflict)
-    +1: 
+    +1: niq
 
  * ab: Use a 64 bit unsigned int instead of a signed long to count the
    bytes transferred to avoid integer overflows
@@ -169,13 +177,27 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version works (minus CHANGES conflict)
     +1: jim, covener
 
- * http_filters: Don't return 100-continue on client error
-   PR 43711 
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=628644
-      Backport version for 2.2.x of patch:
-         Trunk version works (minus CHANGES conflict)
-    +1: jim, rpluem
+ * mod_proxy_ftp: fixup base URL for directory listings.
+   PR 27834
+   http://svn.apache.org/viewvc?rev=611466&view=rev
+   +1: niq
+
+ * Worker and Event MPMs: Fix race condition in pool recycling
+   PR 44402
+   http://svn.apache.org/viewvc?rev=630335&view=rev
+   http://svn.apache.org/viewvc?rev=630348&view=rev
+   http://svn.apache.org/viewvc?rev=630350&view=rev
+   +1: niq
+
+ * Don't add bogus duplicate Content-Language entries to generated output
+   PR 11035
+   http://svn.apache.org/viewvc?rev=611475&view=rev
+   +1: niq
+
+ * Support chroot on unix-family platforms
+   PR 43596
+   http://svn.apache.org/viewvc?rev=611483&view=rev
+   +1: niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
