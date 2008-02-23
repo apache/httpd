@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) http_filters: Don't returm 100-continue on client error
+     PR 43711 [Chetan Reddy <chetanreddy gmail.com>]
+
   *) mod_charset_lite: Add TranslateAllMimeTypes sub-option to
      CharsetOptions, allowing the administrator to skip the
      mimetype checking that precedes translation.
