@@ -107,6 +107,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=607420
          http://svn.apache.org/viewvc?view=rev&revision=607425
          http://svn.apache.org/viewvc?view=rev&revision=611216
+         http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ssl/ssl_engine_kernel.c?r1=611216&r2=630436
+
       Backport version for 2.2.x of updated patch:
          http://people.apache.org/~fuankg/diffs/httpd-2.2.x-sni.diff
       +1: fuankg
