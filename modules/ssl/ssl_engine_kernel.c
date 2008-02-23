@@ -2023,19 +2023,22 @@ static int ssl_find_vhost(void *servername, conn_rec *c, server_rec *s)
         }
 
         /*
-         * We also need to make sure that the correct mctx is
-         * assigned to the connection - the CRL callback e.g.
+         * We also need to make sure that the correct mctx
+         * (accessed through the c->base_server->module_config vector)
+         * is assigned to the connection - the CRL callback e.g.
          * makes use of it for retrieving its store (mctx->crl).
+         * Since logging in callbacks uses c->base_server in many
+         * cases, it also ensures that these messages are routed
+         * to the proper log.
          */
         c->base_server = s;
 
-        /* Since logging in callbacks uses c->base_server in many
-         * cases, it also ensures that these messages are routed
-         * to the proper log.  And finally, there is one special
-         * filter callback, which is set very early depending on the
-         * base_server's log level. If this is not the first vhost
-         * we're now selecting (and the first vhost doesn't use
-         * APLOG_DEBUG), then we need to set that callback here.
+        /*
+         * There is one special filter callback, which is set
+         * very early depending on the base_server's log level.
+         * If this is not the first vhost we're now selecting
+         * (and the first vhost doesn't use APLOG_DEBUG), then
+         * we need to set that callback here.
          */
         if (c->base_server->loglevel >= APLOG_DEBUG) {
             BIO_set_callback(SSL_get_rbio(ssl), ssl_io_data_cb);
