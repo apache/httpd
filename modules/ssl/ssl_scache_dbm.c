@@ -52,6 +52,8 @@ static const char *ssl_scache_dbm_create(void **context, const char *arg,
         return apr_psprintf(tmp, "Invalid cache file path %s", arg);
     }
     
+    apr_pool_create(&ctx->pool, p);
+
     return NULL;
 }
 
