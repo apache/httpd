@@ -141,6 +141,7 @@ static BOOL ssl_scache_dc_retrieve(void *context,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'get_session' OVERFLOW");
         return FALSE;
     }
+    *destlen = data_len;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'get_session' HIT");
     return TRUE;
 }
