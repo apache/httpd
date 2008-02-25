@@ -41,18 +41,19 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
 {
     SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
-
-    /* ### push this up into scache_init??? */
-    {
-        void *data;
-        const char *userdata_key = "ssl_scache_init";
-
-        apr_pool_userdata_get(&data, userdata_key, s->process->pool);
-        if (!data) {
-            apr_pool_userdata_set((const void *)1, userdata_key,
-                                  apr_pool_cleanup_null, s->process->pool);
-            return;
-        }
+    void *data;
+    const char *userdata_key = "ssl_scache_init";
+    
+    /* The very first invocation of this function will be the
+     * post_config invocation during server startup; do nothing for
+     * this first (and only the first) time through, since the pool
+     * will be immediately cleared anyway.  For every subsequent
+     * invocation, initialize the configured cache. */
+    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+    if (!data) {
+        apr_pool_userdata_set((const void *)1, userdata_key,
+                              apr_pool_cleanup_null, s->process->pool);
+        return;
     }
 
     /*
