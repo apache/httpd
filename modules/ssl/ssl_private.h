@@ -366,10 +366,18 @@ typedef struct {
 
 /* Session cache provider vtable. */
 typedef struct {
-    /* Initialize the cache.  Return APR error code.  The context
-     * pointer returned in *CONTEXT will be passed as the first
-     * argument to subsequent invocations. */
-    apr_status_t (*init)(server_rec *s, void **context, apr_pool_t *pool);
+    /* Create a session cache based on the given configuration string
+     * ARG.  Returns NULL on success, or an error string on failure.
+     * Pool TMP should be used for any temporary allocations, pool P
+     * should be used for any allocations lasting as long as the
+     * lifetime of the return context.
+     *
+     * The context pointer returned in *CONTEXT will be passed as the
+     * first argument to subsequent invocations. */
+    const char *(*create)(void **context, const char *arg, 
+                          apr_pool_t *tmp, apr_pool_t *p);
+    /* Initialize the cache.  Return APR error code.   */
+    apr_status_t (*init)(void *context, server_rec *s, apr_pool_t *pool);
     /* Destroy a given cache context. */    
     void (*destroy)(void *context, server_rec *s);
     /* Store an object in the cache. */
@@ -398,8 +406,6 @@ typedef struct {
     apr_pool_t     *pPool;
     BOOL            bFixed;
     int             nSessionCacheMode;
-    char           *szSessionCacheDataFile;
-    int             nSessionCacheDataSize;
 
     /* The configured provider, and associated private data
      * structure. */
