@@ -271,19 +271,6 @@ typedef enum {
 typedef unsigned int ssl_pathcheck_t;
 
 /**
- * Define the SSL session cache modes and structures
- */
-typedef enum {
-    SSL_SCMODE_UNSET = UNSET,
-    SSL_SCMODE_NONE  = 0,
-    SSL_SCMODE_DBM   = 1,
-    SSL_SCMODE_SHMCB = 3,
-    SSL_SCMODE_DC    = 4,
-    SSL_SCMODE_MC    = 5,
-    SSL_SCMODE_NONE_NOT_NULL = 6
-} ssl_scmode_t;
-
-/**
  * Define the SSL mutex modes
  */
 typedef enum {
@@ -364,6 +351,9 @@ typedef struct {
     int non_ssl_request;
 } SSLConnRec;
 
+#define MODSSL_SESSCACHE_PROVIDER_GROUP "mod_ssl-sesscache"
+#define MODSSL_SESSCACHE_PROVIDER_VERSION "0"
+
 /* Session cache provider vtable. */
 typedef struct {
     /* Create a session cache based on the given configuration string
@@ -405,7 +395,9 @@ typedef struct {
     pid_t           pid;
     apr_pool_t     *pPool;
     BOOL            bFixed;
-    int             nSessionCacheMode;
+
+    /* OpenSSL SSL_SESS_CACHE_* flags: */
+    long            sesscache_mode;
 
     /* The configured provider, and associated private data
      * structure. */

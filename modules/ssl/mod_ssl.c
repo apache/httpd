@@ -28,6 +28,8 @@
 #include "mod_ssl.h"
 #include "util_md5.h"
 #include "util_mutex.h"
+#include "ap_provider.h"
+
 #include <assert.h>
 
 /*
@@ -452,6 +454,33 @@ static int ssl_hook_pre_connection(conn_rec *c, void *csd)
     return ssl_init_ssl_connection(c, NULL);
 }
 
+/* Register all session cache providers. */
+static void modssl_register_scache(apr_pool_t *p)
+{
+    /* shmcb is a cache of many names. */
+    ap_register_provider(p, MODSSL_SESSCACHE_PROVIDER_GROUP, "shmcb", 
+                         MODSSL_SESSCACHE_PROVIDER_VERSION,
+                         &modssl_sesscache_shmcb);
+    ap_register_provider(p, MODSSL_SESSCACHE_PROVIDER_GROUP, "shmht", 
+                         MODSSL_SESSCACHE_PROVIDER_VERSION,
+                         &modssl_sesscache_shmcb);
+    ap_register_provider(p, MODSSL_SESSCACHE_PROVIDER_GROUP, "shm", 
+                         MODSSL_SESSCACHE_PROVIDER_VERSION,
+                         &modssl_sesscache_shmcb);
+    ap_register_provider(p, MODSSL_SESSCACHE_PROVIDER_GROUP, "dbm",
+                         MODSSL_SESSCACHE_PROVIDER_VERSION,
+                         &modssl_sesscache_dbm);
+#ifdef HAVE_DISTCACHE
+    ap_register_provider(p, MODSSL_SESSCACHE_PROVIDER_GROUP, "dc",
+                         MODSSL_SESSCACHE_PROVIDER_VERSION,
+                         &modssl_sesscache_dc);
+#endif
+#ifdef HAVE_SSL_CACHE_MEMCACHE
+    ap_register_provider(p, MODSSL_SESSCACHE_PROVIDER_GROUP, "mc",
+                         MODSSL_SESSCACHE_PROVIDER_VERSION,
+                         &modssl_sesscache_mc);
+#endif
+}
 
 /*
  *  the module registration phase
@@ -479,6 +508,8 @@ static void ssl_register_hooks(apr_pool_t *p)
     ap_hook_post_read_request(ssl_hook_ReadReq, pre_prr,NULL, APR_HOOK_MIDDLE);
 
     ssl_var_register(p);
+
+    modssl_register_scache(p);
 
     APR_REGISTER_OPTIONAL_FN(ssl_proxy_enable);
     APR_REGISTER_OPTIONAL_FN(ssl_engine_disable);

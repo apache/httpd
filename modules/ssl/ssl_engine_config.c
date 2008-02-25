@@ -28,6 +28,7 @@
                                                -- Unknown        */
 #include "ssl_private.h"
 #include "util_mutex.h"
+#include "ap_provider.h"
 
 /*  _________________________________________________________________
 **
@@ -58,7 +59,7 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
     /*
      * initialize per-module configuration
      */
-    mc->nSessionCacheMode      = SSL_SCMODE_UNSET;
+    mc->sesscache_mode         = SSL_SESS_CACHE_OFF;
     mc->sesscache              = NULL;
     mc->nMutexMode             = SSL_MUTEXMODE_UNSET;
     mc->nMutexMech             = APR_LOCK_DEFAULT;
@@ -951,8 +952,8 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
                                     const char *arg)
 {
     SSLModConfigRec *mc = myModConfig(cmd->server);
-    const char *err, *colon;
-    int arglen = strlen(arg);
+    const char *err, *sep;
+    long enabled_flags;
 
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
         return err;
@@ -962,52 +963,55 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
         return NULL;
     }
 
+    /* The OpenSSL session cache mode must have both the flags
+     * SSL_SESS_CACHE_SERVER and SSL_SESS_CACHE_NO_INTERNAL set if a
+     * session cache is configured; NO_INTERNAL prevents the
+     * OpenSSL-internal session cache being used in addition to the
+     * "external" (mod_ssl-provided) cache, which otherwise causes
+     * additional memory consumption. */
+    enabled_flags = SSL_SESS_CACHE_SERVER | SSL_SESS_CACHE_NO_INTERNAL;
+
     if (strcEQ(arg, "none")) {
-        mc->nSessionCacheMode      = SSL_SCMODE_NONE;
+        /* Nothing to do; session cache will be off. */
     }
     else if (strcEQ(arg, "nonenotnull")) {
-        mc->nSessionCacheMode      = SSL_SCMODE_NONE_NOT_NULL;
+        /* ### Having a separate mode for this seems logically
+         * unnecessary; the stated purpose of sending non-empty
+         * session IDs would be better fixed in OpenSSL or simply
+         * doing it by default if "none" is used. */
+        mc->sesscache_mode = enabled_flags;
     }
-    else if ((arglen > 4) && strcEQn(arg, "dbm:", 4)) {
-        mc->nSessionCacheMode      = SSL_SCMODE_DBM;
-        mc->sesscache = &modssl_sesscache_dbm;
-        err = mc->sesscache->create(&mc->sesscache_context, arg + 4, 
-                                    cmd->pool, mc->pPool);
-    }
-    else if (((arglen > 4) && strcEQn(arg, "shm:", 4)) ||
-             ((arglen > 6) && strcEQn(arg, "shmht:", 6)) ||
-             ((arglen > 6) && strcEQn(arg, "shmcb:", 6))) {
-#if !APR_HAS_SHARED_MEMORY
-        return MODSSL_NO_SHARED_MEMORY_ERROR;
-#endif
-        mc->nSessionCacheMode      = SSL_SCMODE_SHMCB;
-        mc->sesscache = &modssl_sesscache_shmcb;
-        colon = ap_strchr_c(arg, ':');
-        err = mc->sesscache->create(&mc->sesscache_context, colon + 1,
-                                    cmd->pool, mc->pPool);
-    }
-    else if ((arglen > 3) && strcEQn(arg, "dc:", 3)) {
-#ifdef HAVE_DISTCACHE
-        mc->nSessionCacheMode      = SSL_SCMODE_DC;
-        mc->sesscache = &modssl_sesscache_dc;
-        err = mc->sesscache->create(&mc->sesscache_context, arg + 3,
-                                    cmd->pool, mc->pPool);
-#else
-        err = "distcache support disabled";
-#endif
-    }
-    else if ((arglen > 3) && strcEQn(arg, "memcache:", 9)) {
-#ifdef HAVE_SSL_CACHE_MEMCACHE
-        mc->nSessionCacheMode      = SSL_SCMODE_MC;
-        mc->sesscache = &modssl_sesscache_mc;
-        err = mc->sesscache->create(&mc->sesscache_context, arg + 9,
-                                    cmd->pool, mc->pPool);
-#else
-        err = "memcache support disabled";
-#endif
+    else if ((sep = ap_strchr_c(arg, ':')) != NULL) {
+        char *name = apr_pstrmemdup(cmd->pool, arg, sep - arg);
+
+        /* Find the provider of given name. */
+        mc->sesscache = ap_lookup_provider(MODSSL_SESSCACHE_PROVIDER_GROUP,
+                                           name,
+                                           MODSSL_SESSCACHE_PROVIDER_VERSION);
+        if (mc->sesscache) {
+            /* Cache found; create it, passing anything beyond the colon. */
+            mc->sesscache_mode = enabled_flags;
+            err = mc->sesscache->create(&mc->sesscache_context, sep + 1, 
+                                        cmd->pool, mc->pPool);
+        }
+        else {
+            apr_array_header_t *name_list;
+            const char *all_names;
+
+            /* Build a comma-separated list of all registered provider
+             * names: */
+            name_list = ap_list_provider_names(cmd->pool, 
+                                               MODSSL_SESSCACHE_PROVIDER_GROUP,
+                                               MODSSL_SESSCACHE_PROVIDER_VERSION);
+            all_names = apr_array_pstrcat(cmd->pool, name_list, ',');
+
+            err = apr_psprintf(cmd->pool, "'%s' session cache not supported "
+                               "(known names: %s)", name, all_names);
+        }
     }
     else {
-        err = "Invalid argument";
+        err = apr_psprintf(cmd->pool, "'%s' session cache not supported or missing argument",
+                           arg);
     }
 
     if (err) {
