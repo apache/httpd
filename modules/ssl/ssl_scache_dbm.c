@@ -293,8 +293,10 @@ static void ssl_scache_dbm_remove(void *context, server_rec *s, UCHAR *id, int i
 
     /* and delete it from the DBM file */
     ssl_mutex_on(s);
-    if ((rv = apr_dbm_open(&dbm, ctx->data_file,
-            APR_DBM_RWCREATE, SSL_DBM_FILE_MODE, p)) != APR_SUCCESS) {
+    apr_pool_clear(ctx->pool);
+
+    if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
+                           SSL_DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "Cannot open SSLSessionCache DBM file `%s' for writing "
                      "(delete)",
