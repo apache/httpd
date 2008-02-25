@@ -87,6 +87,8 @@ typedef struct {
 } SHMCBIndex;
 
 struct context {
+    const char *data_file;
+    apr_size_t shm_size;
     apr_shm_t *shm;
     SHMCBHeader *header;
 };
@@ -250,42 +252,71 @@ static BOOL shmcb_subcache_remove(server_rec *, SHMCBHeader *, SHMCBSubcache *,
  * subcache internals are deferred to shmcb_subcache_*** functions lower down
  */
 
-static apr_status_t ssl_scache_shmcb_init(server_rec *s, void **context,
-                                          apr_pool_t *p)
+static const char *ssl_scache_shmcb_create(void **context, const char *arg, 
+                                           apr_pool_t *tmp, apr_pool_t *p)
 {
-    SSLModConfigRec *mc = myModConfig(s);
+    struct context *ctx;
+    char *path, *cp, *cp2;
+
+    /* Allocate the context. */
+    *context = ctx = apr_pcalloc(p, sizeof *ctx);
+    
+    ctx->data_file = path = ap_server_root_relative(p, arg);
+    ctx->shm_size  = 1024*512; /* 512KB */
+
+    cp = strchr(path, '(');
+    if (cp) {
+        *cp++ = NUL;
+
+        if (!(cp2 = strchr(cp, ')'))) {
+            return "Invalid argument: no closing parenthesis";
+        }
+            
+        *cp2 = NUL;
+        
+        ctx->shm_size = atoi(cp);
+        
+        if (ctx->shm_size < 8192) {
+            return "Invalid argument: size has to be >= 8192 bytes";
+            
+        }
+        
+        if (ctx->shm_size >= APR_SHM_MAXSIZE) {
+            return apr_psprintf(tmp,
+                                "Invalid argument: size has "
+                                "to be < %d bytes on this platform", 
+                                APR_SHM_MAXSIZE);
+            
+        }
+    }
+
+    return NULL;
+}
+
+static apr_status_t ssl_scache_shmcb_init(void *context, server_rec *s, apr_pool_t *p)
+{
     void *shm_segment;
     apr_size_t shm_segsize;
     apr_status_t rv;
     SHMCBHeader *header;
     unsigned int num_subcache, num_idx, loop;
-    struct context *ctx;
-
-    ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                 "POOL %p %p", mc->pPool, p);
-
-    /* Allocate the context. */
-    *context = ctx = apr_pcalloc(p, sizeof *ctx);
+    struct context *ctx = context;
 
     /* Create shared memory segment */
-    if (mc->szSessionCacheDataFile == NULL) {
+    if (ctx->data_file == NULL) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "SSLSessionCache required");
         return APR_EINVAL;
     }
 
     /* Use anonymous shm by default, fall back on name-based. */
-    rv = apr_shm_create(&ctx->shm, mc->nSessionCacheDataSize, 
-                        NULL, mc->pPool);
+    rv = apr_shm_create(&ctx->shm, ctx->shm_size, NULL, p);
     if (APR_STATUS_IS_ENOTIMPL(rv)) {
         /* For a name-based segment, remove it first in case of a
          * previous unclean shutdown. */
-        apr_shm_remove(mc->szSessionCacheDataFile, mc->pPool);
+        apr_shm_remove(ctx->data_file, p);
 
-        rv = apr_shm_create(&ctx->shm,
-                            mc->nSessionCacheDataSize,
-                            mc->szSessionCacheDataFile,
-                            mc->pPool);
+        rv = apr_shm_create(&ctx->shm, ctx->shm_size, ctx->data_file, p);
     }
 
     if (rv != APR_SUCCESS) {
@@ -487,7 +518,6 @@ static void ssl_scache_shmcb_status(void *context, request_rec *r,
                                     int flags, apr_pool_t *p)
 {
     server_rec *s = r->server;
-    SSLModConfigRec *mc = myModConfig(s);
     struct context *ctx = context;
     SHMCBHeader *header = ctx->header;
     unsigned int loop, total = 0, cache_total = 0, non_empty_subcaches = 0;
@@ -525,9 +555,9 @@ static void ssl_scache_shmcb_status(void *context, request_rec *r,
     cache_pct = (100 * cache_total) / (header->subcache_data_size *
                                        header->subcache_num);
     /* Generate HTML */
-    ap_rprintf(r, "cache type: <b>SHMCB</b>, shared memory: <b>%d</b> "
+    ap_rprintf(r, "cache type: <b>SHMCB</b>, shared memory: <b>%" APR_SIZE_T_FMT "</b> "
                "bytes, current sessions: <b>%d</b><br>",
-               mc->nSessionCacheDataSize, total);
+               ctx->shm_size, total);
     ap_rprintf(r, "subcaches: <b>%d</b>, indexes per subcache: <b>%d</b><br>",
                header->subcache_num, header->index_num);
     if (non_empty_subcaches) {
@@ -802,6 +832,7 @@ static BOOL shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
 }
 
 const modssl_sesscache_provider modssl_sesscache_shmcb = {
+    ssl_scache_shmcb_create,
     ssl_scache_shmcb_init,
     ssl_scache_shmcb_kill,
     ssl_scache_shmcb_store,

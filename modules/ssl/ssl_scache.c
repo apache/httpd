@@ -67,7 +67,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         return;
     }
 
-    rv = mc->sesscache->init(s, &mc->sesscache_context, p);
+    rv = mc->sesscache->init(mc->sesscache_context, s, p);
     if (rv) {
         /* ABORT ABORT etc. */
         ssl_die();

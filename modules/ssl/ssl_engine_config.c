@@ -59,8 +59,6 @@ SSLModConfigRec *ssl_config_global_create(server_rec *s)
      * initialize per-module configuration
      */
     mc->nSessionCacheMode      = SSL_SCMODE_UNSET;
-    mc->szSessionCacheDataFile = NULL;
-    mc->nSessionCacheDataSize  = 0;
     mc->sesscache              = NULL;
     mc->nMutexMode             = SSL_MUTEXMODE_UNSET;
     mc->nMutexMech             = APR_LOCK_DEFAULT;
@@ -954,7 +952,6 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
 {
     SSLModConfigRec *mc = myModConfig(cmd->server);
     const char *err, *colon;
-    char *cp, *cp2;
     int arglen = strlen(arg);
 
     if ((err = ap_check_cmd_context(cmd, GLOBAL_ONLY))) {
@@ -967,21 +964,15 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
 
     if (strcEQ(arg, "none")) {
         mc->nSessionCacheMode      = SSL_SCMODE_NONE;
-        mc->szSessionCacheDataFile = NULL;
     }
     else if (strcEQ(arg, "nonenotnull")) {
         mc->nSessionCacheMode      = SSL_SCMODE_NONE_NOT_NULL;
-        mc->szSessionCacheDataFile = NULL;
     }
     else if ((arglen > 4) && strcEQn(arg, "dbm:", 4)) {
         mc->nSessionCacheMode      = SSL_SCMODE_DBM;
         mc->sesscache = &modssl_sesscache_dbm;
-        mc->szSessionCacheDataFile = ap_server_root_relative(mc->pPool, arg+4);
-        if (!mc->szSessionCacheDataFile) {
-            return apr_psprintf(cmd->pool,
-                                "SSLSessionCache: Invalid cache file path %s",
-                                arg+4);
-        }
+        err = mc->sesscache->create(&mc->sesscache_context, arg + 4, 
+                                    cmd->pool, mc->pPool);
     }
     else if (((arglen > 4) && strcEQn(arg, "shm:", 4)) ||
              ((arglen > 6) && strcEQn(arg, "shmht:", 6)) ||
@@ -992,74 +983,37 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
         mc->nSessionCacheMode      = SSL_SCMODE_SHMCB;
         mc->sesscache = &modssl_sesscache_shmcb;
         colon = ap_strchr_c(arg, ':');
-        mc->szSessionCacheDataFile =
-            ap_server_root_relative(mc->pPool, colon+1);
-        if (!mc->szSessionCacheDataFile) {
-            return apr_psprintf(cmd->pool,
-                                "SSLSessionCache: Invalid cache file path %s",
-                                colon+1);
-        }
-        mc->nSessionCacheDataSize  = 1024*512; /* 512KB */
-
-        if ((cp = strchr(mc->szSessionCacheDataFile, '('))) {
-            *cp++ = NUL;
-
-            if (!(cp2 = strchr(cp, ')'))) {
-                return "SSLSessionCache: Invalid argument: "
-                       "no closing parenthesis";
-            }
-
-            *cp2 = NUL;
-
-            mc->nSessionCacheDataSize = atoi(cp);
-
-            if (mc->nSessionCacheDataSize < 8192) {
-                return "SSLSessionCache: Invalid argument: "
-                       "size has to be >= 8192 bytes";
-
-            }
-
-            if (mc->nSessionCacheDataSize >= APR_SHM_MAXSIZE) {
-                return apr_psprintf(cmd->pool,
-                                    "SSLSessionCache: Invalid argument: "
-                                    "size has to be < %d bytes on this "
-                                    "platform", APR_SHM_MAXSIZE);
-
-            }
-        }
+        err = mc->sesscache->create(&mc->sesscache_context, colon + 1,
+                                    cmd->pool, mc->pPool);
     }
     else if ((arglen > 3) && strcEQn(arg, "dc:", 3)) {
 #ifdef HAVE_DISTCACHE
         mc->nSessionCacheMode      = SSL_SCMODE_DC;
         mc->sesscache = &modssl_sesscache_dc;
-        mc->szSessionCacheDataFile = apr_pstrdup(mc->pPool, arg+3);
-        if (!mc->szSessionCacheDataFile) {
-            return apr_pstrcat(cmd->pool,
-                               "SSLSessionCache: Invalid cache file path: ",
-                               arg+3, NULL);
-        }
+        err = mc->sesscache->create(&mc->sesscache_context, arg + 3,
+                                    cmd->pool, mc->pPool);
 #else
-        return "SSLSessionCache: distcache support disabled";
+        err = "distcache support disabled";
 #endif
     }
     else if ((arglen > 3) && strcEQn(arg, "memcache:", 9)) {
 #ifdef HAVE_SSL_CACHE_MEMCACHE
         mc->nSessionCacheMode      = SSL_SCMODE_MC;
         mc->sesscache = &modssl_sesscache_mc;
-        mc->szSessionCacheDataFile = apr_pstrdup(mc->pPool, arg+9);
-        if (!mc->szSessionCacheDataFile) {
-            return apr_pstrcat(cmd->pool,
-                               "SSLSessionCache: Invalid memcache config: ",
-                               arg+9, NULL);
-        }
+        err = mc->sesscache->create(&mc->sesscache_context, arg + 9,
+                                    cmd->pool, mc->pPool);
 #else
-        return "SSLSessionCache: memcache support disabled";
+        err = "memcache support disabled";
 #endif
     }
     else {
-        return "SSLSessionCache: Invalid argument";
+        err = "Invalid argument";
     }
 
+    if (err) {
+        return apr_psprintf(cmd->pool, "SSLSessionCache: %s", err);
+    }
+    
     return NULL;
 }
 

@@ -68,10 +68,23 @@
 #endif
 
 struct context {
+    const char *servers;
     apr_memcache_t *mc;
 };
 
-static apr_status_t ssl_scache_mc_init(server_rec *s, void **context, apr_pool_t *p)
+static const char *ssl_scache_mc_create(void **context, const char *arg, 
+                                        apr_pool_t *tmp, apr_pool_t *p)
+{
+    struct context *ctx;
+    
+    *context = ctx = apr_palloc(p, sizeof *ctx);
+
+    ctx->servers = apr_pstrdup(p, arg);
+
+    return NULL;
+}
+
+static apr_status_t ssl_scache_mc_init(void *context, server_rec *s, apr_pool_t *p)
 {
     apr_status_t rv;
     int thread_limit = 0;
@@ -79,18 +92,12 @@ static apr_status_t ssl_scache_mc_init(server_rec *s, void **context, apr_pool_t
     char *cache_config;
     char *split;
     char *tok;
-    SSLModConfigRec *mc = myModConfig(s);
-    struct context *ctx = apr_palloc(p, sizeof *ctx);
+    struct context *ctx = context;
 
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
 
-    if (mc->szSessionCacheDataFile == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "SSLSessionCache required");
-        return APR_EINVAL;
-    }
-
     /* Find all the servers in the first run to get a total count */
-    cache_config = apr_pstrdup(p, mc->szSessionCacheDataFile);
+    cache_config = apr_pstrdup(p, ctx->servers);
     split = apr_strtok(cache_config, ",", &tok);
     while (split) {
         nservers++;
@@ -106,7 +113,7 @@ static apr_status_t ssl_scache_mc_init(server_rec *s, void **context, apr_pool_t
     }
 
     /* Now add each server to the memcache */
-    cache_config = apr_pstrdup(p, mc->szSessionCacheDataFile);
+    cache_config = apr_pstrdup(p, ctx->servers);
     split = apr_strtok(cache_config, ",", &tok);
     while (split) {
         apr_memcache_server_t *st;
@@ -156,8 +163,6 @@ static apr_status_t ssl_scache_mc_init(server_rec *s, void **context, apr_pool_t
 
         split = apr_strtok(NULL,",", &tok);
     }
-
-    *context = ctx;
 
     return APR_SUCCESS;
 }
@@ -287,6 +292,7 @@ static void ssl_scache_mc_status(void *context, request_rec *r,
 }
 
 const modssl_sesscache_provider modssl_sesscache_mc = {
+    ssl_scache_mc_create,
     ssl_scache_mc_init,
     ssl_scache_mc_kill,
     ssl_scache_mc_store,

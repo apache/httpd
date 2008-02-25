@@ -49,22 +49,28 @@
 */
 
 struct context {
+    /* Configured target server: */
+    const char *target;
+    /* distcache client context: */
     DC_CTX *dc;
 };
 
-static apr_status_t ssl_scache_dc_init(server_rec *s, void **context, apr_pool_t *p)
+static const char *ssl_scache_dc_create(void **context, const char *arg, 
+                                        apr_pool_t *tmp, apr_pool_t *p)
 {
-    DC_CTX *dc;
-    SSLModConfigRec *mc = myModConfig(s);
     struct context *ctx;
 
-    /*
-     * Create a session context
-     */
-    if (mc->szSessionCacheDataFile == NULL) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "SSLSessionCache required");
-        return APR_EINVAL;
-    }
+    ctx = *context = apr_palloc(p, sizeof *ctx);
+    
+    ctx->target = apr_pstrdup(p, arg);
+
+    return NULL;
+}
+
+static apr_status_t ssl_scache_dc_init(void *context, server_rec *s, apr_pool_t *p)
+{
+    struct context *ctx = ctx;
+
 #if 0
     /* If a "persistent connection" mode of operation is preferred, you *must*
      * also use the PIDCHECK flag to ensure fork()'d processes don't interlace
@@ -81,17 +87,12 @@ static apr_status_t ssl_scache_dc_init(server_rec *s, void **context, apr_pool_t
      * performance/stability danger of file-descriptor bloatage. */
 #define SESSION_CTX_FLAGS        0
 #endif
-    dc = DC_CTX_new(mc->szSessionCacheDataFile, SESSION_CTX_FLAGS);
-    if (!dc) {
+    ctx->dc = DC_CTX_new(ctx->target, SESSION_CTX_FLAGS);
+    if (!ctx->dc) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache failed to obtain context");
         return APR_EGENERAL;
     }
     ap_log_error(APLOG_MARK, APLOG_INFO, 0, s, "distributed scache context initialised");
-    /*
-     * Success ...
-     */
-    ctx = *context = apr_palloc(p, sizeof *ctx);
-    ctx->dc = dc;
 
     return APR_SUCCESS;
 }
@@ -161,15 +162,16 @@ static void ssl_scache_dc_remove(void *context, server_rec *s,
 
 static void ssl_scache_dc_status(void *context, request_rec *r, int flags, apr_pool_t *pool)
 {
-    SSLModConfigRec *mc = myModConfig(r->server);
+    struct context *ctx = context;
 
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "distributed scache 'ssl_scache_dc_status'");
     ap_rprintf(r, "cache type: <b>DC (Distributed Cache)</b>, "
-               " target: <b>%s</b><br>", mc->szSessionCacheDataFile);
+               " target: <b>%s</b><br>", ctx->target);
 }
 
 const modssl_sesscache_provider modssl_sesscache_dc = {
+    ssl_scache_dc_create,
     ssl_scache_dc_init,
     ssl_scache_dc_kill,
     ssl_scache_dc_store,
