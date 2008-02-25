@@ -243,6 +243,7 @@ static BOOL ssl_scache_dbm_retrieve(void *context, server_rec *s, const UCHAR *i
         return FALSE;
     }    
 
+    *destlen = nData;
     memcpy(&expiry, dbmval.dptr, sizeof(time_t));
     memcpy(dest, (char *)dbmval.dptr + sizeof(time_t), nData);
 
