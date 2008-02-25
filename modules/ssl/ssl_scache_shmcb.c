@@ -728,7 +728,8 @@ static BOOL shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
          * flag isn't set; check the data length too to avoid a buffer
          * overflow in case of corruption, which should be impossible,
          * but it's cheap to be safe. */
-        if (idx->id_len == idlen && (idx->data_used - idx->id_len) < *destlen
+        if (!idx->removed
+            && idx->id_len == idlen && (idx->data_used - idx->id_len) < *destlen
             && shmcb_cyclic_memcmp(header->subcache_data_size,
                                    SHMCB_DATA(header, subcache),
                                    idx->data_pos, id, idx->id_len) == 0) {
@@ -780,7 +781,7 @@ static BOOL shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
 
         /* Only consider 'idx' if the id matches, and the "removed"
          * flag isn't set. */
-        if (idx->id_len == idlen
+        if (!idx->removed && idx->id_len == idlen
             && shmcb_cyclic_memcmp(header->subcache_data_size,
                                    SHMCB_DATA(header, subcache),
                                    idx->data_pos, id, idx->id_len) == 0) {
