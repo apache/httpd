@@ -627,15 +627,15 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *, UCHAR *, int, apr_pool_t *);
 void         ssl_scache_remove(server_rec *, UCHAR *, int,
                                apr_pool_t *);
 
-const modssl_sesscache_provider modssl_sesscache_shmcb;
-const modssl_sesscache_provider modssl_sesscache_dbm;
+extern const modssl_sesscache_provider modssl_sesscache_shmcb;
+extern const modssl_sesscache_provider modssl_sesscache_dbm;
 
 #ifdef HAVE_DISTCACHE
-const modssl_sesscache_provider modssl_sesscache_dc;
+extern const modssl_sesscache_provider modssl_sesscache_dc;
 #endif
 
 #ifdef HAVE_SSL_CACHE_MEMCACHE
-const modssl_sesscache_provider modssl_sesscache_mc;
+extern const modssl_sesscache_provider modssl_sesscache_mc;
 #endif
 
 /** Proxy Support */
