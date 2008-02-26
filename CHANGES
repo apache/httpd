@@ -2,10 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) Worker / Event MPM: Fix race condition in pool recycling that leads to
-     segmentation faults under load.  PR 44402
-     [Basant Kumar Kukreja <basant.kukreja sun.com>]
-
   *) mod_include: Correctly handle SSI directives split over multiple filter
      passes.  PR 44447 [Harald Niesche <harald brokenerror.de>]
 
@@ -60,18 +56,9 @@ Changes with Apache 2.3.0
   *) Support chroot on Unix-family platforms
      PR 43596 [Dimitar Pashev <mitko banksoft-bg.com>]
 
-  *) Don't add bogus duplicate Content-Language entries
-     PR 11035 [Davi Arnaut]
-
-  *) mod_proxy_ftp: Fix base for directory listings.
-     PR 27834 [Nick Kew]
-
   *) mod_proxy_http: Return HTTP status codes instead of apr_status_t
      values for errors encountered while forwarding the request body
      PR 44165 [Eric Covener]
-
-  *) mod_logio: Provide optional function to allow modules to adjust the 
-     bytes_in count [Eric Covener]
 
   *) mod_ssl: Added server name indication support (SNI, RFC 4366).
      PR 34607. [Kaspar Brand <asfbugz velox.ch>]. A test configuration
