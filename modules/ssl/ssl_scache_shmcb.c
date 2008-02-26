@@ -763,9 +763,9 @@ static BOOL shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
             && shmcb_cyclic_memcmp(header->subcache_data_size,
                                    SHMCB_DATA(header, subcache),
                                    idx->data_pos, id, idx->id_len) == 0) {
+            unsigned int data_offset;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "match at idx=%d, data=%d", pos, idx->data_pos);
-            unsigned int data_offset;
 
             /* Find the offset of the data segment, after the id */
             data_offset = SHMCB_CYCLIC_INCREMENT(idx->data_pos, 
