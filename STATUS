@@ -81,11 +81,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * Don't add bogus duplicate Content-Language entries to generated output
-   PR 11035
-   http://svn.apache.org/viewvc?rev=611475&view=rev
-   +1: niq, rpluem, jim
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
