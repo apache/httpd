@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) Don't add bogus duplicate Content-Language entries
+     PR 11035 [Davi Arnaut]
+
   *) Worker / Event MPM: Fix race condition in pool recycling that leads to
      segmentation faults under load.  PR 44402
      [Basant Kumar Kukreja <basant.kukreja sun.com>]
