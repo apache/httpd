@@ -71,7 +71,6 @@ static apr_status_t ssl_scache_dbm_init(void *context, server_rec *s, apr_pool_t
     }
 
     /* open it once to create it and to make sure it _can_ be created */
-    ssl_mutex_on(s);
     apr_pool_clear(ctx->pool);
 
     if ((rv = apr_dbm_open(&dbm, ctx->data_file,
@@ -79,7 +78,6 @@ static apr_status_t ssl_scache_dbm_init(void *context, server_rec *s, apr_pool_t
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "Cannot create SSLSessionCache DBM file `%s'",
                      ctx->data_file);
-        ssl_mutex_off(s);
         return rv;
     }
     apr_dbm_close(dbm);
@@ -108,7 +106,6 @@ static apr_status_t ssl_scache_dbm_init(void *context, server_rec *s, apr_pool_t
         }
     }
 #endif
-    ssl_mutex_off(s);
     ssl_scache_dbm_expire(ctx, s);
 
     return APR_SUCCESS;
@@ -173,7 +170,6 @@ static BOOL ssl_scache_dbm_store(void *context, server_rec *s, UCHAR *id, int id
     memcpy((char *)dbmval.dptr+sizeof(time_t), ucaData, nData);
 
     /* and store it to the DBM file */
-    ssl_mutex_on(s);
     apr_pool_clear(ctx->pool);
 
     if ((rv = apr_dbm_open(&dbm, ctx->data_file,
@@ -182,7 +178,6 @@ static BOOL ssl_scache_dbm_store(void *context, server_rec *s, UCHAR *id, int id
                      "Cannot open SSLSessionCache DBM file `%s' for writing "
                      "(store)",
                      ctx->data_file);
-        ssl_mutex_off(s);
         free(dbmval.dptr);
         return FALSE;
     }
@@ -191,12 +186,10 @@ static BOOL ssl_scache_dbm_store(void *context, server_rec *s, UCHAR *id, int id
                      "Cannot store SSL session to DBM file `%s'",
                      ctx->data_file);
         apr_dbm_close(dbm);
-        ssl_mutex_off(s);
         free(dbmval.dptr);
         return FALSE;
     }
     apr_dbm_close(dbm);
-    ssl_mutex_off(s);
 
     /* free temporary buffers */
     free(dbmval.dptr);
@@ -231,7 +224,6 @@ static BOOL ssl_scache_dbm_retrieve(void *context, server_rec *s, const UCHAR *i
      * XXX: Should we open the dbm against r->pool so the cleanup will
      * do the apr_dbm_close? This would make the code a bit cleaner.
      */
-    ssl_mutex_on(s);
     apr_pool_clear(ctx->pool);
     if ((rc = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
                            SSL_DBM_FILE_MODE, ctx->pool)) != APR_SUCCESS) {
@@ -239,18 +231,15 @@ static BOOL ssl_scache_dbm_retrieve(void *context, server_rec *s, const UCHAR *i
                      "Cannot open SSLSessionCache DBM file `%s' for reading "
                      "(fetch)",
                      ctx->data_file);
-        ssl_mutex_off(s);
         return FALSE;
     }
     rc = apr_dbm_fetch(dbm, dbmkey, &dbmval);
     if (rc != APR_SUCCESS) {
         apr_dbm_close(dbm);
-        ssl_mutex_off(s);
         return FALSE;
     }
     if (dbmval.dptr == NULL || dbmval.dsize <= sizeof(time_t)) {
         apr_dbm_close(dbm);
-        ssl_mutex_off(s);
         return FALSE;
     }
 
@@ -258,7 +247,6 @@ static BOOL ssl_scache_dbm_retrieve(void *context, server_rec *s, const UCHAR *i
     nData = dbmval.dsize-sizeof(time_t);
     if (nData > *destlen) {
         apr_dbm_close(dbm);
-        ssl_mutex_off(s);
         return FALSE;
     }    
 
@@ -267,7 +255,6 @@ static BOOL ssl_scache_dbm_retrieve(void *context, server_rec *s, const UCHAR *i
     memcpy(dest, (char *)dbmval.dptr + sizeof(time_t), nData);
 
     apr_dbm_close(dbm);
-    ssl_mutex_off(s);
 
     /* make sure the stuff is still not expired */
     now = time(NULL);
@@ -292,7 +279,6 @@ static void ssl_scache_dbm_remove(void *context, server_rec *s, UCHAR *id, int i
     dbmkey.dsize = idlen;
 
     /* and delete it from the DBM file */
-    ssl_mutex_on(s);
     apr_pool_clear(ctx->pool);
 
     if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
@@ -301,12 +287,10 @@ static void ssl_scache_dbm_remove(void *context, server_rec *s, UCHAR *id, int i
                      "Cannot open SSLSessionCache DBM file `%s' for writing "
                      "(delete)",
                      ctx->data_file);
-        ssl_mutex_off(s);
         return;
     }
     apr_dbm_delete(dbm, dbmkey);
     apr_dbm_close(dbm);
-    ssl_mutex_off(s);
 
     return;
 }
@@ -333,10 +317,7 @@ static void ssl_scache_dbm_expire(struct context *ctx, server_rec *s)
      */
     tNow = time(NULL);
 
-    ssl_mutex_on(s);
-
     if (tNow < ctx->last_expiry + sc->session_cache_timeout) {
-        ssl_mutex_off(s);
         return;
     }
 
@@ -415,7 +396,6 @@ static void ssl_scache_dbm_expire(struct context *ctx, server_rec *s)
         if (keyidx < KEYMAX)
             break;
     }
-    ssl_mutex_off(s);
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "Inter-Process Session Cache (DBM) Expiry: "
@@ -437,7 +417,6 @@ static void ssl_scache_dbm_status(void *context, request_rec *r,
 
     nElem = 0;
     nSize = 0;
-    ssl_mutex_on(r->server);
 
     apr_pool_clear(ctx->pool);
     if ((rv = apr_dbm_open(&dbm, ctx->data_file, APR_DBM_RWCREATE, 
@@ -446,7 +425,6 @@ static void ssl_scache_dbm_status(void *context, request_rec *r,
                      "Cannot open SSLSessionCache DBM file `%s' for status "
                      "retrival",
                      ctx->data_file);
-        ssl_mutex_off(r->server);
         return;
     }
     /*
@@ -461,7 +439,6 @@ static void ssl_scache_dbm_status(void *context, request_rec *r,
         nSize += dbmval.dsize;
     }
     apr_dbm_close(dbm);
-    ssl_mutex_off(r->server);
     if (nSize > 0 && nElem > 0)
         nAverage = nSize / nElem;
     else
@@ -473,6 +450,8 @@ static void ssl_scache_dbm_status(void *context, request_rec *r,
 }
 
 const modssl_sesscache_provider modssl_sesscache_dbm = {
+    "dbm",
+    MODSSL_SESSCACHE_FLAG_NOTMPSAFE,
     ssl_scache_dbm_create,
     ssl_scache_dbm_init,
     ssl_scache_dbm_kill,

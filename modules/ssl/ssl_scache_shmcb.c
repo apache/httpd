@@ -429,33 +429,28 @@ static BOOL ssl_scache_shmcb_store(void *context, server_rec *s,
                                    unsigned char *encoded,
                                    unsigned int len_encoded)
 {
-    BOOL to_return = FALSE;
     struct context *ctx = context;
     SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
 
-    ssl_mutex_on(s);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "ssl_scache_shmcb_store (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
     if (idlen < 4) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short session_id provided "
                 "(%u bytes)", idlen);
-        goto done;
+        return FALSE;
     }
     if (!shmcb_subcache_store(s, header, subcache, encoded,
                               len_encoded, id, idlen, timeout)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "can't store a session!");
-        goto done;
+        return FALSE;
     }
     header->stat_stores++;
-    to_return = TRUE;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving ssl_scache_shmcb_store successfully");
-done:
-    ssl_mutex_off(s);
-    return to_return;
+    return TRUE;
 }
 
 static BOOL ssl_scache_shmcb_retrieve(void *context, server_rec *s, 
@@ -468,7 +463,6 @@ static BOOL ssl_scache_shmcb_retrieve(void *context, server_rec *s,
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
     BOOL rv;
 
-    ssl_mutex_on(s);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "ssl_scache_shmcb_retrieve (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
@@ -484,7 +478,6 @@ static BOOL ssl_scache_shmcb_retrieve(void *context, server_rec *s,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving ssl_scache_shmcb_retrieve successfully");
 
-    ssl_mutex_off(s);
     return rv;
 }
 
@@ -495,14 +488,13 @@ static void ssl_scache_shmcb_remove(void *context, server_rec *s,
     SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
 
-    ssl_mutex_on(s);
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "ssl_scache_shmcb_remove (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
     if (idlen < 4) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short session_id provided "
                 "(%u bytes)", idlen);
-        goto done;
+        return;
     }
     if (shmcb_subcache_remove(s, header, subcache, id, idlen))
         header->stat_removes_hit++;
@@ -510,8 +502,6 @@ static void ssl_scache_shmcb_remove(void *context, server_rec *s,
         header->stat_removes_miss++;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving ssl_scache_shmcb_remove successfully");
-done:
-    ssl_mutex_off(s);
 }
 
 static void ssl_scache_shmcb_status(void *context, request_rec *r, 
@@ -530,7 +520,6 @@ static void ssl_scache_shmcb_status(void *context, request_rec *r,
     /* Perform the iteration inside the mutex to avoid corruption or invalid
      * pointer arithmetic. The rest of our logic uses read-only header data so
      * doesn't need the lock. */
-    ssl_mutex_on(s);
     /* Iterate over the subcaches */
     for (loop = 0; loop < header->subcache_num; loop++) {
         SHMCBSubcache *subcache = SHMCB_SUBCACHE(header, loop);
@@ -549,7 +538,6 @@ static void ssl_scache_shmcb_status(void *context, request_rec *r,
                 min_expiry = ((idx_expiry < min_expiry) ? idx_expiry : min_expiry);
         }
     }
-    ssl_mutex_off(s);
     index_pct = (100 * total) / (header->index_num *
                                  header->subcache_num);
     cache_pct = (100 * cache_total) / (header->subcache_data_size *
@@ -832,6 +820,8 @@ static BOOL shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
 }
 
 const modssl_sesscache_provider modssl_sesscache_shmcb = {
+    "shmcb",
+    MODSSL_SESSCACHE_FLAG_NOTMPSAFE,
     ssl_scache_shmcb_create,
     ssl_scache_shmcb_init,
     ssl_scache_shmcb_kill,

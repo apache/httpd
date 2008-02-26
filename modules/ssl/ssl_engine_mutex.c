@@ -39,12 +39,24 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
     SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
 
-    if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
+    /* A mutex is only needed if a session cache is configured, and
+     * the provider used is not internally multi-process/thread
+     * safe. */
+    if (!mc->sesscache
+        || (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) == 0) {
         return TRUE;
+    }
 
     if (mc->pMutex) {
         return TRUE;
     }
+    else if (mc->nMutexMode == SSL_MUTEXMODE_NONE) {
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
+                     "An SSLMutex is required for the '%s' session cache",
+                     mc->sesscache->name);
+        return FALSE;
+    }
+
     if ((rv = apr_global_mutex_create(&mc->pMutex, mc->szMutexFile,
                                       mc->nMutexMech, s->process->pool))
             != APR_SUCCESS) {
@@ -97,8 +109,6 @@ int ssl_mutex_on(server_rec *s)
     SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
 
-    if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
-        return TRUE;
     if ((rv = apr_global_mutex_lock(mc->pMutex)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
                      "Failed to acquire SSL session cache lock");
@@ -112,8 +122,6 @@ int ssl_mutex_off(server_rec *s)
     SSLModConfigRec *mc = myModConfig(s);
     apr_status_t rv;
 
-    if (mc->nMutexMode == SSL_MUTEXMODE_NONE)
-        return TRUE;
     if ((rv = apr_global_mutex_unlock(mc->pMutex)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_WARNING, rv, s,
                      "Failed to release SSL session cache lock");

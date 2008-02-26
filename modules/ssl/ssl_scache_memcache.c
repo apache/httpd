@@ -292,6 +292,8 @@ static void ssl_scache_mc_status(void *context, request_rec *r,
 }
 
 const modssl_sesscache_provider modssl_sesscache_mc = {
+    "memcache",
+    0,
     ssl_scache_mc_create,
     ssl_scache_mc_init,
     ssl_scache_mc_kill,

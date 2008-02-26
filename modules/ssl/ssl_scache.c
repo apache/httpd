@@ -90,6 +90,7 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
     SSLModConfigRec *mc = myModConfig(s);
     unsigned char encoded[SSL_SESSION_MAX_DER], *ptr;
     unsigned int len;
+    BOOL rv;
 
     /* Serialise the session. */
     len = i2d_SSL_SESSION(sess, NULL);
@@ -102,8 +103,18 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
     ptr = encoded;
     len = i2d_SSL_SESSION(sess, &ptr);
 
-    return mc->sesscache->store(mc->sesscache_context, s, id, idlen, 
-                                expiry, encoded, len);
+    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+        ssl_mutex_on(s);
+    }
+    
+    rv = mc->sesscache->store(mc->sesscache_context, s, id, idlen, 
+                              expiry, encoded, len);
+
+    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+        ssl_mutex_off(s);
+    }
+
+    return rv;
 }
 
 SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
@@ -113,9 +124,20 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
     unsigned char dest[SSL_SESSION_MAX_DER];
     unsigned int destlen = SSL_SESSION_MAX_DER;
     MODSSL_D2I_SSL_SESSION_CONST unsigned char *ptr;
-    
-    if (mc->sesscache->retrieve(mc->sesscache_context, s, id, idlen, 
-                                dest, &destlen, p) == FALSE) {
+    BOOL rv;
+
+    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+        ssl_mutex_on(s);
+    }
+
+    rv = mc->sesscache->retrieve(mc->sesscache_context, s, id, idlen, 
+                                 dest, &destlen, p);
+
+    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+        ssl_mutex_off(s);
+    }
+
+    if (rv == FALSE) {
         return NULL;
     }
 
@@ -129,9 +151,15 @@ void ssl_scache_remove(server_rec *s, UCHAR *id, int idlen,
 {
     SSLModConfigRec *mc = myModConfig(s);
 
+    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+        ssl_mutex_on(s);
+    }
+
     mc->sesscache->delete(mc->sesscache_context, s, id, idlen, p);
 
-    return;
+    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+        ssl_mutex_off(s);
+    }
 }
 
 /*  _________________________________________________________________
@@ -153,7 +181,15 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
     ap_rputs("</td></tr>\n", r);
     ap_rputs("<tr><td bgcolor=\"#ffffff\">\n", r);
 
+    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+        ssl_mutex_on(r->server);
+    }
+
     mc->sesscache->status(mc->sesscache_context, r, flags, r->pool);
+
+    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+        ssl_mutex_off(r->server);
+    }
 
     ap_rputs("</td></tr>\n", r);
     ap_rputs("</table>\n", r);
