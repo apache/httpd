@@ -1102,7 +1102,8 @@ static const command_rec cmds[] =
                     add_charset_options,
                     NULL,
                     OR_FILEINFO,
-                    "valid options: ImplicitAdd, NoImplicitAdd, DebugLevel=n"),
+                    "valid options: ImplicitAdd, NoImplicitAdd, TranslateAllMimeTypes, "
+                    "NoTranslateAllMimeTypes, DebugLevel=n"),
     {NULL}
 };
 
