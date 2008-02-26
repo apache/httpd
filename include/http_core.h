@@ -672,6 +672,9 @@ AP_DECLARE_HOOK(int, get_mgmt_items,
 APR_DECLARE_OPTIONAL_FN(void, ap_logio_add_bytes_out,
                         (conn_rec *c, apr_off_t bytes));
 
+APR_DECLARE_OPTIONAL_FN(void, ap_logio_add_bytes_in,
+                        (conn_rec *c, apr_off_t bytes));
+
 /* ----------------------------------------------------------------------
  *
  * ident lookups with mod_ident

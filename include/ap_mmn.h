@@ -120,6 +120,7 @@
  * 20051115.9 (2.2.7)  Add ap_send_interim_response API
  * 20051115.10(2.2.7)  Added ap_mod_status_reqtail (minor)
  * 20051115.11(2.2.7)  Add *ftp_directory_charset to proxy_dir_conf
+ * 20051115.12(2.2.8) Add optional function ap_logio_add_bytes_in() to mog_logio
  *
  */
 
@@ -128,7 +129,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 11                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 12                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
