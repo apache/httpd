@@ -143,7 +143,7 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
 {
     SSLModConfigRec *mc = myModConfig(r->server);
 
-    if (mc == NULL || flags & AP_STATUS_SHORT)
+    if (mc == NULL || flags & AP_STATUS_SHORT || mc->sesscache == NULL)
         return OK;
 
     ap_rputs("<hr>\n", r);
