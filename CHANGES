@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) Worker / Event MPM: Fix race condition in pool recycling that leads to
+     segmentation faults under load.  PR 44402
+     [Basant Kumar Kukreja <basant.kukreja sun.com>]
+
   *) mod_proxy_ftp: Fix base for directory listings.
      PR 27834 [Nick Kew]
 
