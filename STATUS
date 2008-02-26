@@ -81,6 +81,34 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_logio: Provide optional function to allow modules to adjust the
+    bytes_in count 
+
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=611199&view=rev
+         http://svn.apache.org/viewvc?rev=611259&view=rev
+         http://svn.apache.org/viewvc?rev=611413&view=rev
+      Backport version of 2.2.x of patch:
+         http://people.apache.org/~covener/2.2.x-logio_subtract_bytes.diff
+    +1 covener, rpluem, jim
+
+ * mod_proxy_ftp: fixup base URL for directory listings.
+   PR 27834
+   http://svn.apache.org/viewvc?rev=611466&view=rev
+   +1: niq, rpluem, jim
+
+ * Worker and Event MPMs: Fix race condition in pool recycling
+   PR 44402
+   http://svn.apache.org/viewvc?rev=630335&view=rev
+   http://svn.apache.org/viewvc?rev=630348&view=rev
+   http://svn.apache.org/viewvc?rev=630350&view=rev
+   +1: niq, rpluem, jim
+
+ * Don't add bogus duplicate Content-Language entries to generated output
+   PR 11035
+   http://svn.apache.org/viewvc?rev=611475&view=rev
+   +1: niq, rpluem, jim
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -127,17 +155,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1 covener, niq
     niq comments: you introduced some trivial style violations
 
-  * mod_logio: Provide optional function to allow modules to adjust the
-    bytes_in count 
-
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=611199&view=rev
-         http://svn.apache.org/viewvc?rev=611259&view=rev
-         http://svn.apache.org/viewvc?rev=611413&view=rev
-      Backport version of 2.2.x of patch:
-         http://people.apache.org/~covener/2.2.x-logio_subtract_bytes.diff
-    +1 covener, rpluem, jim
-
   * core: Reinstate location walk for subrequests.
       Trunk version of patch:
          http://svn.apache.org/viewvc?view=rev&revision=579664
@@ -170,23 +187,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version works (minus CHANGES conflict)
     +1: jim, covener
-
- * mod_proxy_ftp: fixup base URL for directory listings.
-   PR 27834
-   http://svn.apache.org/viewvc?rev=611466&view=rev
-   +1: niq, rpluem, jim
-
- * Worker and Event MPMs: Fix race condition in pool recycling
-   PR 44402
-   http://svn.apache.org/viewvc?rev=630335&view=rev
-   http://svn.apache.org/viewvc?rev=630348&view=rev
-   http://svn.apache.org/viewvc?rev=630350&view=rev
-   +1: niq, rpluem, jim
-
- * Don't add bogus duplicate Content-Language entries to generated output
-   PR 11035
-   http://svn.apache.org/viewvc?rev=611475&view=rev
-   +1: niq, rpluem, jim
 
  * Support chroot on unix-family platforms
    PR 43596
