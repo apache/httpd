@@ -81,11 +81,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_proxy_ftp: fixup base URL for directory listings.
-   PR 27834
-   http://svn.apache.org/viewvc?rev=611466&view=rev
-   +1: niq, rpluem, jim
-
  * Worker and Event MPMs: Fix race condition in pool recycling
    PR 44402
    http://svn.apache.org/viewvc?rev=630335&view=rev

@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_proxy_ftp: Fix base for directory listings.
+     PR 27834 [Nick Kew]
+
   *) mod_logio: Provide optional function to allow modules to adjust the 
      bytes_in count [Eric Covener]
      
