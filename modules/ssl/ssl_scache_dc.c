@@ -171,6 +171,8 @@ static void ssl_scache_dc_status(void *context, request_rec *r, int flags, apr_p
 }
 
 const modssl_sesscache_provider modssl_sesscache_dc = {
+    "distcache",
+    0,
     ssl_scache_dc_create,
     ssl_scache_dc_init,
     ssl_scache_dc_kill,

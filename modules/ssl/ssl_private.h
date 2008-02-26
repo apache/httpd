@@ -354,8 +354,20 @@ typedef struct {
 #define MODSSL_SESSCACHE_PROVIDER_GROUP "mod_ssl-sesscache"
 #define MODSSL_SESSCACHE_PROVIDER_VERSION "0"
 
+/* If this flag is set, the store/retrieve/delete/status interfaces of
+ * the provider are NOT safe to be called concurrently from multiple
+ * processes or threads, and an external global mutex must be used to
+ * serialize access to the provider. */
+#define MODSSL_SESSCACHE_FLAG_NOTMPSAFE (0x0001)
+
 /* Session cache provider vtable. */
 typedef struct {
+    /* Canonical provider name: */
+    const char *name;
+
+    /* Bitmask of MODSSL_SESSCACHE_FLAG_* flags: */
+    unsigned int flags;
+
     /* Create a session cache based on the given configuration string
      * ARG.  Returns NULL on success, or an error string on failure.
      * Pool TMP should be used for any temporary allocations, pool P
