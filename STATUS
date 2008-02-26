@@ -194,6 +194,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: niq
    rpluem says: I am missing a minor bump and documentation.
 
+ * Include recently added TranslateAllMimeTypes option to this
+   AP_INIT_ITERATE parameter 
+      http://svn.apache.org/viewvc?rev=631342&view=rev
+   +1: covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
