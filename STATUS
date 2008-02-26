@@ -136,7 +136,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=611413&view=rev
       Backport version of 2.2.x of patch:
          http://people.apache.org/~covener/2.2.x-logio_subtract_bytes.diff
-    +1 covener
+    +1 covener, rpluem
 
   * core: Reinstate location walk for subrequests.
       Trunk version of patch:
@@ -160,7 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=616335
       Backport version for 2.2.x of patch:
          Trunk version works (minus CHANGES conflict)
-    +1: jim
+    +1: jim, rpluem
 
  * mod_substitute: Make default behavior flattening of buckets. Allow
    for people to specifically set "quick" mode.
@@ -174,24 +174,25 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  * mod_proxy_ftp: fixup base URL for directory listings.
    PR 27834
    http://svn.apache.org/viewvc?rev=611466&view=rev
-   +1: niq
+   +1: niq, rpluem
 
  * Worker and Event MPMs: Fix race condition in pool recycling
    PR 44402
    http://svn.apache.org/viewvc?rev=630335&view=rev
    http://svn.apache.org/viewvc?rev=630348&view=rev
    http://svn.apache.org/viewvc?rev=630350&view=rev
-   +1: niq
+   +1: niq, rpluem
 
  * Don't add bogus duplicate Content-Language entries to generated output
    PR 11035
    http://svn.apache.org/viewvc?rev=611475&view=rev
-   +1: niq
+   +1: niq, rpluem
 
  * Support chroot on unix-family platforms
    PR 43596
    http://svn.apache.org/viewvc?rev=611483&view=rev
    +1: niq
+   rpluem says: I am missing a minor bump and documentation.
 
 PATCHES/ISSUES THAT ARE STALLED
 
