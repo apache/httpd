@@ -81,13 +81,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * Worker and Event MPMs: Fix race condition in pool recycling
-   PR 44402
-   http://svn.apache.org/viewvc?rev=630335&view=rev
-   http://svn.apache.org/viewvc?rev=630348&view=rev
-   http://svn.apache.org/viewvc?rev=630350&view=rev
-   +1: niq, rpluem, jim
-
  * Don't add bogus duplicate Content-Language entries to generated output
    PR 11035
    http://svn.apache.org/viewvc?rev=611475&view=rev
