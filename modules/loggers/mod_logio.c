@@ -66,6 +66,16 @@ static void ap_logio_add_bytes_out(conn_rec *c, apr_off_t bytes){
 }
 
 /*
+ * Optional function for modules to adjust bytes_in
+ */
+
+static void ap_logio_add_bytes_in(conn_rec *c, apr_off_t bytes){
+    logio_config_t *cf = ap_get_module_config(c->conn_config, &logio_module);
+
+    cf->bytes_in += bytes;
+}
+
+/*
  * Format items...
  */
 
@@ -178,6 +188,7 @@ static void register_hooks(apr_pool_t *p)
                               AP_FTYPE_NETWORK - 1);
 
     APR_REGISTER_OPTIONAL_FN(ap_logio_add_bytes_out);
+    APR_REGISTER_OPTIONAL_FN(ap_logio_add_bytes_in);
 }
 
 module AP_MODULE_DECLARE_DATA logio_module =
