@@ -181,7 +181,7 @@ static char *mc_session_id2sz(const unsigned char *id, int idlen,
 
     cp = apr_cpystrn(str, MC_TAG, MC_TAG_LEN);
     for (n = 0; n < idlen && n < maxlen; n++) {
-        apr_snprintf(cp, 2, "%02X", id[n]);
+        apr_snprintf(cp, 3, "%02X", (unsigned) id[n]);
         cp += 2;
     }
 
