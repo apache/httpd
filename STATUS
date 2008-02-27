@@ -179,6 +179,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc?rev=603238&view=rev
    +1: wrowe
 
+ * ab: ab very poor performance with both -k and -i cmdline options specified
+    PR34275
+    Trunk version of patch:
+      http://svn.apache.org/viewvc?rev=612954&view=rev
+    Backport version for 2.2.x of patch:
+      Trunk version of patch works
+  +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
