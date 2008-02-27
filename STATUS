@@ -171,6 +171,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=631342&view=rev
    +1: covener
 
+ * ApacheMonitor (win32); Introduce --kill flag, for use by the
+   installer, to (mostly) gracefully stop all sessions monitor
+   icons for clean un-installation.  TS seperation rules don't
+   provide us a cleaner way to send an exit message to those
+   running in other consoles, however, we simply axe them.
+   http://svn.apache.org/viewvc?rev=603238&view=rev
+   +1: wrowe
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
