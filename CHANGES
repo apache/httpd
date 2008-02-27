@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy: Do not try a direct connection if the connection via a
+     remote proxy failed before and the request has a request body.
+     [Ruediger Pluem]
+
   *) mod_include: Correctly handle SSI directives split over multiple filter
      passes.  PR 44447 [Harald Niesche <harald brokenerror.de>]
 

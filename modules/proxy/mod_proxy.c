@@ -932,12 +932,41 @@ static int proxy_handler(request_rec *r)
                                                              ents[i].hostname,
                                                              ents[i].port);
 
-                    /* an error or success */
-                    if (access_status != DECLINED &&
-                        access_status != HTTP_BAD_GATEWAY) {
-                        goto cleanup;
+                    /* Did the scheme handler process the request? */
+                    if (access_status != DECLINED) {
+                        const char *cl_a;
+                        char *end;
+                        apr_off_t cl;
+
+                        /*
+                         * An fatal error or success, so no point in
+                         * retrying with a direct connection.
+                         */
+                        if (access_status != HTTP_BAD_GATEWAY) {
+                            goto cleanup;
+                        }
+                        cl_a = apr_table_get(r->headers_in, "Content-Length");
+                        if (cl_a) {
+                            apr_strtoff(&cl, cl_a, &end, 0);
+                            /*
+                             * The request body is of length > 0. We cannot
+                             * retry with a direct connection since we already
+                             * sent (parts of) the request body to the proxy
+                             * and do not have any longer.
+                             */
+                            if (cl > 0) {
+                                goto cleanup;
+                            }
+                        }
+                        /*
+                         * Transfer-Encoding was set as input header, so we had
+                         * a request body. We cannot retry with a direct
+                         * connection for the same reason as above.
+                         */
+                        if (apr_table_get(r->headers_in, "Transfer-Encoding")) {
+                            goto cleanup;
+                        }
                     }
-                    /* we failed to talk to the upstream proxy */
                 }
             }
         }
