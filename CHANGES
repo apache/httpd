@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) rotatelogs: Added '-f' option to force rotatelogs to create the
+     logfile as soon as started, and not wait until it reads the
+     first entry. [Jim Jagielski]
+
   *) mod_proxy: Do not try a direct connection if the connection via a
      remote proxy failed before and the request has a request body.
      [Ruediger Pluem]
