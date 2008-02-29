@@ -27,7 +27,7 @@ rotatelogs \- Piped logging program to rotate Apache logs
 .SH "SYNOPSIS"
  
 .PP
-\fBrotatelogs\fR [ -\fBl\fR ] \fIlogfile\fR \fIrotationtime\fR|\fIfilesize\fRM [ \fIoffset\fR ]
+\fBrotatelogs\fR [ -\fBl\fR ] [ -\fBf\fR ] \fIlogfile\fR \fIrotationtime\fR|\fIfilesize\fRM [ \fIoffset\fR ]
  
 
 .SH "SUMMARY"
@@ -42,6 +42,9 @@ rotatelogs is a simple program for use in conjunction with Apache's piped logfil
 .TP
 -l
 Causes the use of local time rather than GMT as the base for the interval or for strftime(3) formatting with size-based rotation\&. Note that using -l in an environment which changes the GMT offset (such as for BST or DST) can lead to unpredictable results!  
+.TP
+-f
+Causes the logfile to be immediately opened as soon as rotatelogs starts (instead of waiting for the first log entry)  
 .TP
 \fIlogfile\fR
 The path plus basename of the logfile\&. If \fIlogfile\fR includes any '%' characters, it is treated as a format string for strftime(3)\&. Otherwise, the suffix \fI\&.nnnnnnnnnn\fR is automatically added and is the time in seconds\&. Both formats compute the start time from the beginning of the current period\&. For example, if a rotation time of 86400 is specified, the hour, minute, and second fields created from the strftime(3) format will all be zero, referring to the beginning of the current 24-hour period (midnight)\&.  

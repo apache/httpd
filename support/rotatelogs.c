@@ -31,6 +31,9 @@
  * interval.  NB: Using -l in an environment which changes the GMT offset
  * (such as for BST or DST) can lead to unpredictable results!
  *
+ * -f option added Feb, 2008. This causes rotatelog to open/create
+ *    the logfile as soon as it's started, not as soon as it sees
+ *    data.
  */
 
 
@@ -67,7 +70,7 @@ static void usage(const char *argv0, const char *reason)
         fprintf(stderr, "%s\n", reason);
     }
     fprintf(stderr,
-            "Usage: %s [-l] <logfile> "
+            "Usage: %s [-l] [-f] <logfile> "
             "{<rotation time in seconds>|<rotation size in megabytes>} "
             "[offset minutes from UTC]\n\n",
             argv0);
@@ -116,6 +119,7 @@ int main (int argc, const char * const argv[])
     apr_size_t nRead, nWrite;
     int use_strftime = 0;
     int use_localtime = 0;
+    int bypass_io = 0;
     int now = 0;
     const char *szLogRoot;
     apr_file_t *f_stdin, *nLogFD = NULL, *nLogFDprev = NULL;
@@ -133,10 +137,13 @@ int main (int argc, const char * const argv[])
 
     apr_pool_create(&pool, NULL);
     apr_getopt_init(&opt, pool, argc, argv);
-    while ((rv = apr_getopt(opt, "l", &c, &optarg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lf", &c, &optarg)) == APR_SUCCESS) {
         switch (c) {
         case 'l':
             use_localtime = 1;
+            break;
+        case 'f':
+            bypass_io = 1;
             break;
         }
     }
@@ -183,8 +190,17 @@ int main (int argc, const char * const argv[])
 
     for (;;) {
         nRead = sizeof(buf);
-        if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS) {
-            exit(3);
+        /*
+         * Bypass reading stdin if we are forcing the logfile
+         * to be opened as soon as we start. Since we won't be
+         * writing anything, we just want to open the file.
+         * First time through is the only time we do this
+         * since we reset bypass_io after the 1st loop
+         */
+        if (!bypass_io) {
+            if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS) {
+                exit(3);
+            }
         }
         if (tRotation) {
             now = get_now(use_localtime, utc_offset);
@@ -277,23 +293,33 @@ int main (int argc, const char * const argv[])
             }
             nMessCount = 0;
         }
-        nWrite = nRead;
-        apr_file_write(nLogFD, buf, &nWrite);
-        if (nWrite != nRead) {
-            nMessCount++;
-            sprintf(errbuf,
-                    "Error writing to log file. "
-                    "%10d messages lost.\n",
-                    nMessCount);
-            nWrite = strlen(errbuf);
-            apr_file_trunc(nLogFD, 0);
-            if (apr_file_write(nLogFD, errbuf, &nWrite) != APR_SUCCESS) {
-                fprintf(stderr, "Error writing to the file %s\n", buf2);
+        /*
+         * If we just bypassed reading stdin, due to bypass_io,
+         * then we have nothing to write, so skip this.
+         */
+        if (!bypass_io) {
+            nWrite = nRead;
+            apr_file_write(nLogFD, buf, &nWrite);
+            if (nWrite != nRead) {
+                nMessCount++;
+                sprintf(errbuf,
+                        "Error writing to log file. "
+                        "%10d messages lost.\n",
+                        nMessCount);
+                nWrite = strlen(errbuf);
+                apr_file_trunc(nLogFD, 0);
+                if (apr_file_write(nLogFD, errbuf, &nWrite) != APR_SUCCESS) {
+                    fprintf(stderr, "Error writing to the file %s\n", buf2);
                 exit(2);
+                }
+            }
+            else {
+                nMessCount++;
             }
         }
         else {
-            nMessCount++;
+           /* now worry about reading 'n writing all the time */
+           bypass_io = 0;
         }
     }
     /* Of course we never, but prevent compiler warnings */
