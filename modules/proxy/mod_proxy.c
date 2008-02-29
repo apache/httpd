@@ -737,7 +737,8 @@ static int proxy_needsdomain(request_rec *r, const char *url, const char *domain
         return DECLINED;
 
     /* If host does contain a dot already, or it is "localhost", decline */
-    if (strchr(r->parsed_uri.hostname, '.') != NULL
+    if (strchr(r->parsed_uri.hostname, '.') != NULL /* has domain, or IPv4 literal */
+     || strchr(r->parsed_uri.hostname, ':') != NULL /* IPv6 literal */
      || strcasecmp(r->parsed_uri.hostname, "localhost") == 0)
         return DECLINED;    /* host name has a dot already */
 
