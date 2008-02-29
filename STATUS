@@ -185,7 +185,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=612954&view=rev
     Backport version for 2.2.x of patch:
       Trunk version of patch works
-  +1: rpluem,
+  +1: rpluem, jim
 
  * mod_proxy: Allow for keepalive backend proxies, which also
    addresses PR44026. These are pretty much interwrapped here.
