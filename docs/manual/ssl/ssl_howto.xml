@@ -247,7 +247,7 @@ Intranet website, for clients coming from the Internet? I still want to allow
 plain HTTP access for clients on the Intranet.</title>
    
    <p>These examples presume that clients on the Intranet have IPs in the range 
-   192.160.1.0/24, and that the part of the Intranet website you want to allow
+   192.168.1.0/24, and that the part of the Intranet website you want to allow
    internet access to is <code>/usr/local/apache2/htdocs/subarea</code>. 
    This configuration should remain outside of your HTTPS virtual host, so
    that it applies to both HTTPS and HTTP.</p>
