@@ -236,7 +236,7 @@ authentication or client certificates for access to a subarea on the
 Intranet website for clients coming from the Internet but still allow
 plain HTTP access for clients on the Intranet?</title>
    <p>Let us assume the Intranet can be distinguished through the IP
-   network 192.160.1.0/24 and the subarea on the Intranet website has
+   network 192.168.1.0/24 and the subarea on the Intranet website has
    the URL <code>/subarea</code>. Then configure the following outside
    your HTTPS virtual host (so it applies to both HTTPS and HTTP):</p>
 
