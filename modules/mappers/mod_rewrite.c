@@ -226,6 +226,7 @@ typedef struct {
     const char *datafile;          /* filename for map data files         */
     const char *dbmtype;           /* dbm type for dbm map data files     */
     const char *checkfile;         /* filename to check for map existence */
+    const char *checkfile2;        /* as above, NULL if only one file     */
     const char *cachename;         /* for cached maps (txt/rnd/dbm)       */
     int   type;                    /* the type of the map                 */
     apr_file_t *fpin;              /* in  file pointer for program maps   */
@@ -1612,6 +1613,21 @@ static char *lookup_map(request_rec *r, char *name, char *key)
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
                           "mod_rewrite: can't access DBM RewriteMap file %s",
                           s->checkfile);
+        }
+        else if(s->checkfile2 != NULL) {
+            apr_finfo_t st2;
+
+            rv = apr_stat(&st2, s->checkfile2, APR_FINFO_MIN, r->pool);
+            if (rv != APR_SUCCESS) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, rv, r,
+                              "mod_rewrite: can't access DBM RewriteMap "
+                              "file %s", s->checkfile2);
+            }
+            else if(st2.mtime > st.mtime) {
+                st.mtime = st2.mtime;
+            }
+        }
+        if(rv != APR_SUCCESS) {
             rewritelog((r, 1, NULL,
                         "can't open DBM RewriteMap file, see error log"));
             return NULL;
@@ -2927,6 +2943,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->type      = MAPTYPE_TXT;
         newmap->datafile  = fname;
         newmap->checkfile = fname;
+        newmap->checkfile2= NULL;
         newmap->cachename = apr_psprintf(cmd->pool, "%pp:%s",
                                          (void *)cmd->server, a1);
     }
@@ -2939,11 +2956,11 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->type      = MAPTYPE_RND;
         newmap->datafile  = fname;
         newmap->checkfile = fname;
+        newmap->checkfile2= NULL;
         newmap->cachename = apr_psprintf(cmd->pool, "%pp:%s",
                                          (void *)cmd->server, a1);
     }
     else if (strncasecmp(a2, "dbm", 3) == 0) {
-        const char *ignored_fname;
         apr_status_t rv;
 
         newmap->type = MAPTYPE_DBM;
@@ -2978,7 +2995,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
 
         rv = apr_dbm_get_usednames_ex(cmd->pool, newmap->dbmtype,
                                       newmap->datafile, &newmap->checkfile,
-                                      &ignored_fname);
+                                      &newmap->checkfile2);
         if (rv != APR_SUCCESS) {
             return apr_pstrcat(cmd->pool, "RewriteMap: dbm type ",
                                newmap->dbmtype, " is invalid", NULL);
@@ -3015,12 +3032,14 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->type      = MAPTYPE_PRG;
         newmap->datafile  = NULL;
         newmap->checkfile = newmap->argv[0];
+        newmap->checkfile2= NULL;
         newmap->cachename = NULL;
     }
     else if (strncasecmp(a2, "int:", 4) == 0) {
         newmap->type      = MAPTYPE_INT;
         newmap->datafile  = NULL;
         newmap->checkfile = NULL;
+        newmap->checkfile2= NULL;
         newmap->cachename = NULL;
         newmap->func      = (char *(*)(request_rec *,char *))
                             apr_hash_get(mapfunc_hash, a2+4, strlen(a2+4));
@@ -3038,6 +3057,7 @@ static const char *cmd_rewritemap(cmd_parms *cmd, void *dconf, const char *a1,
         newmap->type      = MAPTYPE_TXT;
         newmap->datafile  = fname;
         newmap->checkfile = fname;
+        newmap->checkfile2= NULL;
         newmap->cachename = apr_psprintf(cmd->pool, "%pp:%s",
                                          (void *)cmd->server, a1);
     }

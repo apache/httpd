@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_rewrite: Check all files used by DBM maps for freshness, mod_rewrite
+     didn't pick up on updated sdbm maps due to this.
+     PR41190 [Niklas Edmundsson]
+
   *) rotatelogs: Added '-f' option to force rotatelogs to create the
      logfile as soon as started, and not wait until it reads the
      first entry. [Jim Jagielski]
