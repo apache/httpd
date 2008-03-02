@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_cache: Revalidate cache entities which have Cache-Control: no-cache
+     set in their response headers. PR 44511 [Ruediger Pluem]
+
   *) mod_rewrite: Check all files used by DBM maps for freshness, mod_rewrite
      didn't pick up on updated sdbm maps due to this.
      PR41190 [Niklas Edmundsson]
