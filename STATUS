@@ -202,6 +202,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~jim/patches/proxy-ssl-44026-patch.txt
    +1: jim, rpluem
 
+ * mod_rewrite: Stat all files for DBM maps (PR41190)
+    Trunk version of patch: 
+      http://svn.apache.org/viewvc?rev=632730&view=rev
+    Backport version for 2.2.x of patch:
+      Trunk version of patch should work (modulo CHANGES).
+   +1: nikke
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
