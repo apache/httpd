@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: check symlink ownership if both FollowSymlinks and
+     SymlinksIfOwnerMatch are set [Nick Kew]
+
+  *) core: fix origin checking in SymlinksIfOwnerMatch
+     PR 36783 [Robert L Mathews <rob-apache.org.bugs tigertech.net>]
+
   *) mod_cache: Revalidate cache entities which have Cache-Control: no-cache
      set in their response headers. PR 44511 [Ruediger Pluem]
 
