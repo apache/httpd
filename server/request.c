@@ -354,7 +354,7 @@ static int resolve_symlink(char *d, apr_finfo_t *lfi, int opts, apr_pool_t *p)
      * owner of the symlink, then get the info of the target.
      */
     if (!(lfi->valid & APR_FINFO_OWNER)) {
-        if ((res = apr_stat(&lfi, d,
+        if ((res = apr_stat(lfi, d,
                             lfi->valid | APR_FINFO_LINK | APR_FINFO_OWNER, p))
             != APR_SUCCESS) {
             return HTTP_FORBIDDEN;
