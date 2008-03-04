@@ -33,7 +33,6 @@
 
 #if defined(_MSC_VER) && _MSC_VER >= 1400
 #define _CRT_SECURE_NO_DEPRECATE
-#pragma warning(disable: 4996)
 #endif
 
 #include <windows.h>
@@ -224,6 +223,29 @@ void ErrorMessage(LPCTSTR szError, BOOL bFatal)
     if (bFatal) {
         PostQuitMessage(0);
     }
+}
+
+
+int am_RespawnAsUserAdmin(HWND hwnd, DWORD op, LPCTSTR szService, 
+                          LPCTSTR szComputerName)
+{
+    TCHAR args[MAX_PATH + MAX_COMPUTERNAME_LENGTH + 12];
+
+    if (g_dwOSVersion < OS_VERSION_WIN2K) {
+        ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST], FALSE);
+        return 0;
+    }
+
+    _sntprintf(args, sizeof(args) / sizeof(TCHAR), 
+               _T("%d \"%s\" \"%s\""), op, szService,
+               szComputerName ? szComputerName : _T(""));
+    if (!ShellExecute(hwnd, _T("runas"), __targv[0], args, NULL, SW_NORMAL)) {
+        ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST],
+                     FALSE);
+        return 0;
+    }
+
+    return 1;
 }
 
 
@@ -777,13 +799,29 @@ BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
         schSCManager = OpenSCManager(szComputerName, NULL,
                                      SC_MANAGER_CONNECT);
         if (!schSCManager) {
+            ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST],
+                         FALSE);
             return FALSE;
         }
 
         schService = OpenService(schSCManager, szServiceName,
                                  SERVICE_QUERY_STATUS | SERVICE_START |
                                  SERVICE_STOP | SERVICE_USER_DEFINED_CONTROL);
-        if (schService != NULL)
+        if (schService == NULL)
+        {
+            /* Avoid recursion of ImagePath NULL (from this Respawn) */
+            if (szImagePath) {
+                am_RespawnAsUserAdmin(g_hwndMain, dwCommand, 
+                                      szServiceName, szComputerName);
+            }
+            else {
+                ErrorMessage(g_lpMsg[IDS_MSG_SRVFAILED - IDS_MSG_FIRST],
+                             FALSE);
+            }
+            CloseServiceHandle(schSCManager);
+            return FALSE;
+        }
+        else
         {
             retValue = FALSE;
             g_bConsoleRun = TRUE;
@@ -900,10 +938,6 @@ BOOL ApacheManageService(LPCTSTR szServiceName, LPCTSTR szImagePath,
             SetCursor(g_hCursorArrow);
             return retValue;
         }
-        else {
-            g_bRescanServices = TRUE;
-        }
-        CloseServiceHandle(schSCManager);
         return FALSE;
     }
 
@@ -1438,7 +1472,7 @@ LRESULT CALLBACK ServiceDlgProc(HWND hDlg, UINT message,
 
         case IDC_SMANAGER:
             if (g_dwOSVersion >= OS_VERSION_WIN2K) {
-                ShellExecute(NULL, _T("open"), _T("services.msc"), _T("/s"),
+                ShellExecute(hDlg, _T("open"), _T("services.msc"), _T("/s"),
                              NULL, SW_NORMAL);
             }
             else {
@@ -1777,19 +1811,21 @@ HWND CreateMainWindow(HINSTANCE hInstance)
     return hWnd;
 }
 
-#ifdef UNICODE
-int WINAPI wWinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
-                    LPWSTR lpCmdLine, int nCmdShow)
-#else
+
+#ifndef UNICODE
+/* Borrowed from CRT internal.h for _MBCS argc/argv parsing in this GUI app */
+int  __CRTDECL _setargv(void);
+#endif
+
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
                    LPSTR lpCmdLine, int nCmdShow)
-#endif
 {
     TCHAR szTmp[MAX_LOADSTRING];
     TCHAR szCmp[MAX_COMPUTERNAME_LENGTH+4];
     MSG msg;
-    /* single instance mutex */
-    HANDLE hMutex;
+    /* existing window */
+    HWND appwindow;
+    DWORD dwControl;
     int i;
     DWORD d;
 
@@ -1821,18 +1857,39 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     LoadString(hInstance, IDS_APMONITORCLASS, szTmp, MAX_LOADSTRING);
     g_szWindowClass = _tcsdup(szTmp);
 
-    if (_tcsstr(lpCmdLine, _T("--kill")) != NULL) {
+    appwindow = FindWindow(g_szWindowClass, g_szTitle);
+
+#ifdef UNICODE
+    __wargv = CommandLineToArgvW(GetCommandLineW(), &__argc);
+#else
+    _setargv();
+#endif
+
+    if ((__argc == 2) && (_tcscmp(__targv[1], _T("--kill")) == 0))
+    {
         /* Off to chase and close up every ApacheMonitor taskbar window */
         return KillAllMonitors();
     }
+    else if ((__argc == 4) && (g_dwOSVersion >= OS_VERSION_WIN2K))
+    {
+        dwControl = _tstoi(__targv[1]));
+        if ((dwControl != SERVICE_CONTROL_CONTINUE) &&
+            (dwControl != SERVICE_APACHE_RESTART) &&
+            (dwControl != SERVICE_CONTROL_STOP))
+        {
+            return 1;
+        }
 
-    hMutex = CreateMutex(NULL, FALSE, _T("APSRVMON_MUTEX"));
-    if ((hMutex == NULL) || (GetLastError() == ERROR_ALREADY_EXISTS))
+        /* Chase down and close up our session's previous window */
+        if ((appwindow) != NULL)
+            KillAWindow(appwindow);
+    }
+    else if (__argc != 1) {
+        return 1;
+    }
+    else if (appwindow)
     {
         ErrorMessage(g_lpMsg[IDS_MSG_APPRUNNING - IDS_MSG_FIRST], FALSE);
-        if (hMutex) {
-            CloseHandle(hMutex);
-        }
         return 0;
     }
 
@@ -1863,6 +1920,10 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     g_hwndServiceDlg = NULL;
     if (g_hwndMain != NULL)
     {
+        /* To avoid recursion, pass ImagePath NULL (a noop on NT and later) */
+        if ((__argc == 4) && (g_dwOSVersion >= OS_VERSION_WIN2K))
+            ApacheManageService(__targv[2], NULL, __targv[3], dwControl);
+
         while (GetMessage(&msg, NULL, 0, 0) == TRUE)
         {
             TranslateMessage(&msg);
@@ -1872,7 +1933,6 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     }
     am_ClearComputersSt();
     DeleteCriticalSection(&g_stcSection);
-    CloseHandle(hMutex);
     DestroyIcon(g_icoStop);
     DestroyIcon(g_icoRun);
     DestroyCursor(g_hCursorHourglass);
