@@ -188,6 +188,14 @@ apr_status_t ap_queue_info_wait_for_idler(fd_queue_info_t *queue_info,
     apr_atomic_dec32(&(queue_info->idlers));
 
     /* Atomically pop a pool from the recycled list */
+
+    /* This function is safe only as long as it is single threaded because
+     * it reaches into the queue and accesses "next" which can change.
+     * We are OK today because it is only called from the listener thread.
+     * cas-based pushes do not have the same limitation - any number can
+     * happen concurrently with a single cas-based pop.
+     */
+
     for (;;) {
         struct recycled_pool *first_pool = queue_info->recycled_pools;
         if (first_pool == NULL) {
