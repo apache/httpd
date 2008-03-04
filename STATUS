@@ -177,7 +177,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    provide us a cleaner way to send an exit message to those
    running in other consoles, however, we simply axe them.
    http://svn.apache.org/viewvc?rev=603238&view=rev
-   +1: wrowe
+   +1: wrowe, jim
 
  * ab: ab very poor performance with both -k and -i cmdline options specified
     PR34275
@@ -208,6 +208,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.2.x of patch:
       Trunk version of patch should work (modulo CHANGES).
    +1: nikke, rpluem
+   -0: jim (even though not a public API, not happy with adding
+            checkfile2 smack in the middle of rewritemap_entry...
+            Will create a 2.2 specific patch to address this).
 
  * mod_cache: Revalidate cache entities which have Cache-Control: no-cache
               set in their response headers. PR44511
@@ -215,7 +218,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewcvs.cgi?rev=632749&view=rev
    Backport version for 2.2.x of patch:
        Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
