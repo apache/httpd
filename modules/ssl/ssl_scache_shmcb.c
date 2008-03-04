@@ -178,7 +178,7 @@ struct context {
 
 /* A "normal-to-cyclic" memcpy. */
 static void shmcb_cyclic_ntoc_memcpy(unsigned int buf_size, unsigned char *data,
-                                     unsigned int dest_offset, unsigned char *src,
+                                     unsigned int dest_offset, const unsigned char *src,
                                      unsigned int src_len)
 {
     if (dest_offset + src_len < buf_size)
@@ -194,7 +194,7 @@ static void shmcb_cyclic_ntoc_memcpy(unsigned int buf_size, unsigned char *data,
 
 /* A "cyclic-to-normal" memcpy. */
 static void shmcb_cyclic_cton_memcpy(unsigned int buf_size, unsigned char *dest,
-                                     unsigned char *data, unsigned int src_offset,
+                                     const unsigned char *data, unsigned int src_offset,
                                      unsigned int src_len)
 {
     if (src_offset + src_len < buf_size)
@@ -235,17 +235,19 @@ static int shmcb_cyclic_memcmp(unsigned int buf_size, unsigned char *data,
 
 /* Prototypes for low-level subcache operations */
 static void shmcb_subcache_expire(server_rec *, SHMCBHeader *, SHMCBSubcache *);
-static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
-                                 SHMCBSubcache *subcache, 
-                                 UCHAR *data, unsigned int data_len,
-                                 UCHAR *id, unsigned int id_len,
-                                 time_t expiry);
-static BOOL shmcb_subcache_retrieve(server_rec *, SHMCBHeader *, SHMCBSubcache *,
-                                    const UCHAR *id, unsigned int idlen,
-                                    UCHAR *data, unsigned int *datalen);
-                                    
-static BOOL shmcb_subcache_remove(server_rec *, SHMCBHeader *, SHMCBSubcache *,
-                                 UCHAR *, unsigned int);
+/* Returns zero on success, non-zero on failure. */   
+static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
+                                SHMCBSubcache *subcache, 
+                                unsigned char *data, unsigned int data_len,
+                                const unsigned char *id, unsigned int id_len,
+                                time_t expiry);
+/* Returns zero on success, non-zero on failure. */   
+static int shmcb_subcache_retrieve(server_rec *, SHMCBHeader *, SHMCBSubcache *,
+                                   const unsigned char *id, unsigned int idlen,
+                                   unsigned char *data, unsigned int *datalen);
+/* Returns zero on success, non-zero on failure. */   
+static int shmcb_subcache_remove(server_rec *, SHMCBHeader *, SHMCBSubcache *,
+                                 const unsigned char *, unsigned int);
 
 /*
  * High-Level "handlers" as per ssl_scache.c
@@ -423,11 +425,11 @@ static void ssl_scache_shmcb_kill(void *context, server_rec *s)
     }
 }
 
-static BOOL ssl_scache_shmcb_store(void *context, server_rec *s, 
-                                   UCHAR *id, int idlen,
-                                   time_t timeout, 
-                                   unsigned char *encoded,
-                                   unsigned int len_encoded)
+static apr_status_t ssl_scache_shmcb_store(void *context, server_rec *s, 
+                                           const unsigned char *id, unsigned int idlen,
+                                           time_t timeout, 
+                                           unsigned char *encoded,
+                                           unsigned int len_encoded)
 {
     struct context *ctx = context;
     SHMCBHeader *header = ctx->header;
@@ -439,50 +441,50 @@ static BOOL ssl_scache_shmcb_store(void *context, server_rec *s,
     if (idlen < 4) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "unusably short session_id provided "
                 "(%u bytes)", idlen);
-        return FALSE;
+        return APR_EINVAL;
     }
-    if (!shmcb_subcache_store(s, header, subcache, encoded,
-                              len_encoded, id, idlen, timeout)) {
+    if (shmcb_subcache_store(s, header, subcache, encoded,
+                             len_encoded, id, idlen, timeout)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "can't store a session!");
-        return FALSE;
+        return APR_ENOSPC;
     }
     header->stat_stores++;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving ssl_scache_shmcb_store successfully");
-    return TRUE;
+    return APR_SUCCESS;
 }
 
-static BOOL ssl_scache_shmcb_retrieve(void *context, server_rec *s, 
-                                      const UCHAR *id, int idlen,
-                                      unsigned char *dest, unsigned int *destlen,
-                                      apr_pool_t *p)
+static apr_status_t ssl_scache_shmcb_retrieve(void *context, server_rec *s, 
+                                              const unsigned char *id, unsigned int idlen,
+                                              unsigned char *dest, unsigned int *destlen,
+                                              apr_pool_t *p)
 {
     struct context *ctx = context;
     SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
-    BOOL rv;
+    int rv;
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "ssl_scache_shmcb_retrieve (0x%02x -> subcache %d)",
                  SHMCB_MASK_DBG(header, id));
 
-    /* Get the session corresponding to the session_id or NULL if it doesn't
-     * exist (or is flagged as "removed"). */
+    /* Get the session corresponding to the session_id, if it exists. */
     rv = shmcb_subcache_retrieve(s, header, subcache, id, idlen,
                                  dest, destlen);
-    if (rv)
+    if (rv == 0)
         header->stat_retrieves_hit++;
     else
         header->stat_retrieves_miss++;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "leaving ssl_scache_shmcb_retrieve successfully");
 
-    return rv;
+    return rv == 0 ? APR_SUCCESS : APR_EGENERAL;
 }
 
 static void ssl_scache_shmcb_remove(void *context, server_rec *s, 
-                                    UCHAR *id, int idlen, apr_pool_t *p)
+                                    const unsigned char *id, unsigned int idlen,
+                                    apr_pool_t *p)
 {
     struct context *ctx = context;
     SHMCBHeader *header = ctx->header;
@@ -504,8 +506,7 @@ static void ssl_scache_shmcb_remove(void *context, server_rec *s,
                  "leaving ssl_scache_shmcb_remove successfully");
 }
 
-static void ssl_scache_shmcb_status(void *context, request_rec *r, 
-                                    int flags, apr_pool_t *p)
+static void ssl_scache_shmcb_status(void *context, request_rec *r, int flags)
 {
     server_rec *s = r->server;
     struct context *ctx = context;
@@ -623,11 +624,11 @@ static void shmcb_subcache_expire(server_rec *s, SHMCBHeader *header,
                  "we now have %u sessions", subcache->idx_used);
 }
 
-static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
-                                 SHMCBSubcache *subcache, 
-                                 UCHAR *data, unsigned int data_len,
-                                 UCHAR *id, unsigned int id_len,
-                                 time_t expiry)
+static int shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
+                                SHMCBSubcache *subcache, 
+                                unsigned char *data, unsigned int data_len,
+                                const unsigned char *id, unsigned int id_len,
+                                time_t expiry)
 {
     unsigned int data_offset, new_idx, id_offset;
     SHMCBIndex *idx;
@@ -638,7 +639,7 @@ static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s,
                      "inserting session larger (%d) than subcache data area (%d)",
                      total_len, header->subcache_data_size);
-        return FALSE;
+        return -1;
     }
 
     /* If there are entries to expire, ditch them first. */
@@ -724,13 +725,13 @@ static BOOL shmcb_subcache_store(server_rec *s, SHMCBHeader *header,
                  "data_pos/data_used=%d/%d",
                  subcache->idx_pos, subcache->idx_used,
                  subcache->data_pos, subcache->data_used);
-    return TRUE;
+    return 0;
 }
 
-static BOOL shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
-                                    SHMCBSubcache *subcache, 
-                                    const UCHAR *id, unsigned int idlen,
-                                    UCHAR *dest, unsigned int *destlen)
+static int shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
+                                   SHMCBSubcache *subcache, 
+                                   const unsigned char *id, unsigned int idlen,
+                                   unsigned char *dest, unsigned int *destlen)
 {
     unsigned int pos;
     unsigned int loop = 0;
@@ -767,7 +768,7 @@ static BOOL shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
                                      dest, SHMCB_DATA(header, subcache),
                                      data_offset, *destlen);
 
-            return TRUE;
+            return 0;
         }
         /* Increment */
         loop++;
@@ -776,16 +777,16 @@ static BOOL shmcb_subcache_retrieve(server_rec *s, SHMCBHeader *header,
 
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "shmcb_subcache_retrieve found no match");
-    return FALSE;
+    return -1;
+
 }
 
-static BOOL shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
-                                  SHMCBSubcache *subcache,
-                                  UCHAR *id, unsigned int idlen)
+static int shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
+                                 SHMCBSubcache *subcache,
+                                 const unsigned char *id, unsigned int idlen)
 {
     unsigned int pos;
     unsigned int loop = 0;
-    BOOL to_return = FALSE;
 
     /* Unlike the others, we don't do an expire-run first. This is to keep
      * consistent statistics where a "remove" operation may actually be the
@@ -794,7 +795,7 @@ static BOOL shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
      * intended session was in fact removed by an expiry run. */
 
     pos = subcache->idx_pos;
-    while (!to_return && (loop < subcache->idx_used)) {
+    while (loop < subcache->idx_used) {
         SHMCBIndex *idx = SHMCB_INDEX(subcache, pos);
 
         /* Only consider 'idx' if the id matches, and the "removed"
@@ -807,16 +808,16 @@ static BOOL shmcb_subcache_remove(server_rec *s, SHMCBHeader *header,
                          "possible match at idx=%d, data=%d", pos, idx->data_pos);
             /* Found the matching session, remove it quietly. */
             idx->removed = 1;
-            to_return = TRUE;
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                              "shmcb_subcache_remove removing matching session");
+            return 0;
         }
         /* Increment */
         loop++;
         pos = SHMCB_CYCLIC_INCREMENT(pos, 1, header->index_num);
     }
 
-    return to_return;
+    return -1; /* failure */
 }
 
 const modssl_sesscache_provider modssl_sesscache_shmcb = {

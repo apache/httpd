@@ -107,9 +107,10 @@ static void ssl_scache_dc_kill(void *context, server_rec *s)
     }
 }
 
-static BOOL ssl_scache_dc_store(void *context, server_rec *s, UCHAR *id, int idlen,
-                                time_t timeout,
-                                unsigned char *der, unsigned int der_len)
+static apr_status_t ssl_scache_dc_store(void *context, server_rec *s, 
+                                        const unsigned char *id, unsigned int idlen,
+                                        time_t timeout,
+                                        unsigned char *der, unsigned int der_len)
 {
     struct context *ctx = context;
 
@@ -119,16 +120,16 @@ static BOOL ssl_scache_dc_store(void *context, server_rec *s, UCHAR *id, int idl
     if (!DC_CTX_add_session(ctx->dc, id, idlen, der, der_len,
                             (unsigned long)timeout * 1000)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'add_session' failed");
-        return FALSE;
+        return APR_EGENERAL;
     }
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'add_session' successful");
-    return TRUE;
+    return APR_SUCCESS;
 }
 
-static BOOL ssl_scache_dc_retrieve(void *context,
-                                   server_rec *s, const UCHAR *id, int idlen,
-                                   unsigned char *dest, unsigned int *destlen,
-                                   apr_pool_t *p)
+static apr_status_t ssl_scache_dc_retrieve(void *context, server_rec *s, 
+                                           const unsigned char *id, unsigned int idlen,
+                                           unsigned char *dest, unsigned int *destlen,
+                                           apr_pool_t *p)
 {
     unsigned int data_len;
     struct context *ctx = context;
@@ -136,19 +137,20 @@ static BOOL ssl_scache_dc_retrieve(void *context,
     /* Retrieve any corresponding session from the distributed cache context */
     if (!DC_CTX_get_session(ctx->dc, id, idlen, dest, *destlen, &data_len)) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'get_session' MISS");
-        return FALSE;
+        return APR_EGENERAL;
     }
     if (data_len > *destlen) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'get_session' OVERFLOW");
-        return FALSE;
+        return APR_ENOSPC;
     }
     *destlen = data_len;
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "distributed scache 'get_session' HIT");
-    return TRUE;
+    return APR_SUCCESS;
 }
 
 static void ssl_scache_dc_remove(void *context, server_rec *s, 
-                                 UCHAR *id, int idlen, apr_pool_t *p)
+                                 const unsigned char *id, unsigned int idlen, 
+                                 apr_pool_t *p)
 {
     struct context *ctx = context;
 
@@ -160,7 +162,7 @@ static void ssl_scache_dc_remove(void *context, server_rec *s,
     }
 }
 
-static void ssl_scache_dc_status(void *context, request_rec *r, int flags, apr_pool_t *pool)
+static void ssl_scache_dc_status(void *context, request_rec *r, int flags)
 {
     struct context *ctx = context;
 

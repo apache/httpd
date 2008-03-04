@@ -383,24 +383,25 @@ typedef struct {
     /* Destroy a given cache context. */    
     void (*destroy)(void *context, server_rec *s);
     /* Store an object in the cache. */
-    BOOL (*store)(void *context, server_rec *s, 
-                  UCHAR *id, int idlen, time_t expiry, 
-                  unsigned char *data, unsigned int datalen);
+    apr_status_t (*store)(void *context, server_rec *s, 
+                          const unsigned char *id, unsigned int idlen, 
+                          time_t expiry, 
+                          unsigned char *data, unsigned int datalen);
     /* Retrieve cached data with key ID of length IDLEN,
      * returning TRUE on success or FALSE otherwise.  If
      * TRUE, the data must be placed in DEST, which has length
      * on entry of *DESTLEN.  *DESTLEN must be updated to 
      * equal the length of data written on exit. */
-    BOOL (*retrieve)(void *context, server_rec *s,
-                     const UCHAR *id, int idlen,
-                     unsigned char *dest, unsigned int *destlen,
-                     apr_pool_t *pool);
+    apr_status_t (*retrieve)(void *context, server_rec *s,
+                             const unsigned char *id, unsigned int idlen,
+                             unsigned char *dest, unsigned int *destlen,
+                             apr_pool_t *pool);
     /* Remove an object from the cache. */
     void (*delete)(void *context, server_rec *s,
-                   UCHAR *id, int idlen, apr_pool_t *pool);
+                   const unsigned char *id, unsigned int idlen,
+                   apr_pool_t *pool);
     /* Dump cache status for mod_status output. */
-    void (*status)(void *context, request_rec *r, 
-                   int flags, apr_pool_t *pool);
+    void (*status)(void *context, request_rec *r, int flags);
 } modssl_sesscache_provider;
 
 typedef struct {

@@ -90,7 +90,7 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
     SSLModConfigRec *mc = myModConfig(s);
     unsigned char encoded[SSL_SESSION_MAX_DER], *ptr;
     unsigned int len;
-    BOOL rv;
+    apr_status_t rv;
 
     /* Serialise the session. */
     len = i2d_SSL_SESSION(sess, NULL);
@@ -114,7 +114,7 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
         ssl_mutex_off(s);
     }
 
-    return rv;
+    return rv == APR_SUCCESS ? TRUE : FALSE;
 }
 
 SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
@@ -124,7 +124,7 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
     unsigned char dest[SSL_SESSION_MAX_DER];
     unsigned int destlen = SSL_SESSION_MAX_DER;
     MODSSL_D2I_SSL_SESSION_CONST unsigned char *ptr;
-    BOOL rv;
+    apr_status_t rv;
 
     if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
         ssl_mutex_on(s);
@@ -137,7 +137,7 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
         ssl_mutex_off(s);
     }
 
-    if (rv == FALSE) {
+    if (rv != APR_SUCCESS) {
         return NULL;
     }
 
@@ -185,7 +185,7 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
         ssl_mutex_on(r->server);
     }
 
-    mc->sesscache->status(mc->sesscache_context, r, flags, r->pool);
+    mc->sesscache->status(mc->sesscache_context, r, flags);
 
     if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
         ssl_mutex_off(r->server);
