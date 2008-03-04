@@ -172,7 +172,7 @@ static void ssl_scache_mc_kill(void *context, server_rec *s)
     /* noop. */
 }
 
-static char *mc_session_id2sz(const unsigned char *id, int idlen,
+static char *mc_session_id2sz(const unsigned char *id, unsigned int idlen,
                               char *str, int strsize)
 {
     char *cp;
@@ -190,10 +190,10 @@ static char *mc_session_id2sz(const unsigned char *id, int idlen,
     return str;
 }
 
-static BOOL ssl_scache_mc_store(void *context, server_rec *s, 
-                                UCHAR *id, int idlen,
-                                time_t timeout,
-                                unsigned char *ucaData, unsigned int nData)
+static apr_status_t ssl_scache_mc_store(void *context, server_rec *s, 
+                                        const unsigned char *id, unsigned int idlen,
+                                        time_t timeout,
+                                        unsigned char *ucaData, unsigned int nData)
 {
     struct context *ctx = context;
     char buf[MC_KEY_LEN];
@@ -203,7 +203,7 @@ static BOOL ssl_scache_mc_store(void *context, server_rec *s,
     strkey = mc_session_id2sz(id, idlen, buf, sizeof(buf));
     if(!strkey) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "scache_mc: Key generation borked.");
-        return FALSE;
+        return APR_EGENERAL;
     }
 
     rv = apr_memcache_set(ctx->mc, strkey, (char*)ucaData, nData, timeout, 0);
@@ -212,16 +212,16 @@ static BOOL ssl_scache_mc_store(void *context, server_rec *s,
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "scache_mc: error setting key '%s' "
                      "with %d bytes of data", strkey, nData);
-        return FALSE;
+        return rv;
     }
 
-    return TRUE;
+    return APR_SUCCESS;
 }
 
-static BOOL ssl_scache_mc_retrieve(void *context, server_rec *s, 
-                                   const UCHAR *id, int idlen,
-                                   unsigned char *dest, unsigned int *destlen,
-                                   apr_pool_t *p)
+static apr_status_t ssl_scache_mc_retrieve(void *context, server_rec *s, 
+                                           const unsigned char *id, unsigned int idlen,
+                                           unsigned char *dest, unsigned int *destlen,
+                                           apr_pool_t *p)
 {
     struct context *ctx = context;
     apr_size_t der_len;
@@ -234,7 +234,7 @@ static BOOL ssl_scache_mc_retrieve(void *context, server_rec *s,
     if (!strkey) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                      "scache_mc: Key generation borked.");
-        return FALSE;
+        return APR_EGENERAL;
     }
 
     /* ### this could do with a subpool, but _getp looks like it will
@@ -247,21 +247,23 @@ static BOOL ssl_scache_mc_retrieve(void *context, server_rec *s,
             ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                          "scache_mc: 'get_session' FAIL");
         }
-        return FALSE;
+        return rv;
     }
     else if (der_len > *destlen) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
                      "scache_mc: 'get_session' OVERFLOW");
-        return FALSE;
+        return rv;
     }    
 
     memcpy(dest, der, der_len);
     *destlen = der_len;
 
-    return TRUE;
+    return APR_SUCCESS;
 }
 
-static void ssl_scache_mc_remove(void *context, server_rec *s, UCHAR *id, int idlen, apr_pool_t *p)
+static void ssl_scache_mc_remove(void *context, server_rec *s, 
+                                 const unsigned char *id, unsigned int idlen,
+                                 apr_pool_t *p)
 {
     struct context *ctx = context;
     char buf[MC_KEY_LEN];
@@ -284,8 +286,7 @@ static void ssl_scache_mc_remove(void *context, server_rec *s, UCHAR *id, int id
     }
 }
 
-static void ssl_scache_mc_status(void *context, request_rec *r, 
-                                 int flags, apr_pool_t *pool)
+static void ssl_scache_mc_status(void *context, request_rec *r, int flags)
 {
     /* SSLModConfigRec *mc = myModConfig(r->server); */
     /* TODO: Make a mod_status handler. meh. */

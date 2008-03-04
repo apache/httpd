@@ -37,7 +37,8 @@ struct context {
 
 static void ssl_scache_dbm_expire(struct context *ctx, server_rec *s);
 
-static void ssl_scache_dbm_remove(void *context, server_rec *s, UCHAR *id, int idlen,
+static void ssl_scache_dbm_remove(void *context, server_rec *s,
+                                  const unsigned char *id, unsigned int idlen,
                                   apr_pool_t *p);
 
 static const char *ssl_scache_dbm_create(void **context, const char *arg, 
@@ -127,9 +128,10 @@ static void ssl_scache_dbm_kill(void *context, server_rec *s)
     return;
 }
 
-static BOOL ssl_scache_dbm_store(void *context, server_rec *s, UCHAR *id, int idlen,
-                                 time_t expiry, 
-                                 unsigned char *ucaData, unsigned int nData)
+static apr_status_t ssl_scache_dbm_store(void *context, server_rec *s, 
+                                         const unsigned char *id, unsigned int idlen,
+                                         time_t expiry, 
+                                         unsigned char *ucaData, unsigned int nData)
 {
     struct context *ctx = context;
     apr_dbm_t *dbm;
@@ -143,14 +145,14 @@ static BOOL ssl_scache_dbm_store(void *context, server_rec *s, UCHAR *id, int id
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "data size too large for DBM session cache: %d >= %d",
                  (idlen + nData), PAIRMAX);
-        return FALSE;
+        return APR_ENOSPC;
     }
 #else
     if ((idlen + nData) >= 950 /* at least less than approx. 1KB */) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "data size too large for DBM session cache: %d >= %d",
                  (idlen + nData), 950);
-        return FALSE;
+        return APR_ENOSPC;
     }
 #endif
 
@@ -164,7 +166,7 @@ static BOOL ssl_scache_dbm_store(void *context, server_rec *s, UCHAR *id, int id
     if (dbmval.dptr == NULL) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "malloc error creating DBM value");
-        return FALSE;
+        return APR_ENOMEM;
     }
     memcpy((char *)dbmval.dptr, &expiry, sizeof(time_t));
     memcpy((char *)dbmval.dptr+sizeof(time_t), ucaData, nData);
@@ -179,7 +181,7 @@ static BOOL ssl_scache_dbm_store(void *context, server_rec *s, UCHAR *id, int id
                      "(store)",
                      ctx->data_file);
         free(dbmval.dptr);
-        return FALSE;
+        return rv;
     }
     if ((rv = apr_dbm_store(dbm, dbmkey, dbmval)) != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, rv, s,
@@ -187,7 +189,7 @@ static BOOL ssl_scache_dbm_store(void *context, server_rec *s, UCHAR *id, int id
                      ctx->data_file);
         apr_dbm_close(dbm);
         free(dbmval.dptr);
-        return FALSE;
+        return rv;
     }
     apr_dbm_close(dbm);
 
@@ -197,12 +199,13 @@ static BOOL ssl_scache_dbm_store(void *context, server_rec *s, UCHAR *id, int id
     /* allow the regular expiring to occur */
     ssl_scache_dbm_expire(ctx, s);
 
-    return TRUE;
+    return APR_SUCCESS;
 }
 
-static BOOL ssl_scache_dbm_retrieve(void *context, server_rec *s, const UCHAR *id, int idlen,
-                                    unsigned char *dest, unsigned int *destlen,
-                                    apr_pool_t *p)
+static apr_status_t ssl_scache_dbm_retrieve(void *context, server_rec *s, 
+                                            const unsigned char *id, unsigned int idlen,
+                                            unsigned char *dest, unsigned int *destlen,
+                                            apr_pool_t *p)
 {
     struct context *ctx = context;
     apr_dbm_t *dbm;
@@ -231,23 +234,23 @@ static BOOL ssl_scache_dbm_retrieve(void *context, server_rec *s, const UCHAR *i
                      "Cannot open SSLSessionCache DBM file `%s' for reading "
                      "(fetch)",
                      ctx->data_file);
-        return FALSE;
+        return rc;
     }
     rc = apr_dbm_fetch(dbm, dbmkey, &dbmval);
     if (rc != APR_SUCCESS) {
         apr_dbm_close(dbm);
-        return FALSE;
+        return rc;
     }
     if (dbmval.dptr == NULL || dbmval.dsize <= sizeof(time_t)) {
         apr_dbm_close(dbm);
-        return FALSE;
+        return rc;
     }
 
     /* parse resulting data */
     nData = dbmval.dsize-sizeof(time_t);
     if (nData > *destlen) {
         apr_dbm_close(dbm);
-        return FALSE;
+        return APR_ENOSPC;
     }    
 
     *destlen = nData;
@@ -259,14 +262,15 @@ static BOOL ssl_scache_dbm_retrieve(void *context, server_rec *s, const UCHAR *i
     /* make sure the stuff is still not expired */
     now = time(NULL);
     if (expiry <= now) {
-        ssl_scache_dbm_remove(context, s, (UCHAR *)id, idlen, p);
-        return FALSE;
+        ssl_scache_dbm_remove(context, s, id, idlen, p);
+        return APR_EGENERAL;
     }
 
-    return TRUE;
+    return APR_SUCCESS;
 }
 
-static void ssl_scache_dbm_remove(void *context, server_rec *s, UCHAR *id, int idlen,
+static void ssl_scache_dbm_remove(void *context, server_rec *s, 
+                                  const unsigned char *id, unsigned int idlen,
                                   apr_pool_t *p)
 {
     struct context *ctx = context;
@@ -403,8 +407,7 @@ static void ssl_scache_dbm_expire(struct context *ctx, server_rec *s)
                  nElements, nElements-nDeleted, nDeleted);
 }
 
-static void ssl_scache_dbm_status(void *context, request_rec *r, 
-                                  int flags, apr_pool_t *p)
+static void ssl_scache_dbm_status(void *context, request_rec *r, int flags)
 {
     struct context *ctx = context;
     apr_dbm_t *dbm;
