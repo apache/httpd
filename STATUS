@@ -207,8 +207,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=632730&view=rev
     Backport version for 2.2.x of patch:
       Trunk version of patch should work (modulo CHANGES).
-   +1: nikke
+   +1: nikke, rpluem
 
+ * mod_cache: Revalidate cache entities which have Cache-Control: no-cache
+              set in their response headers. PR44511
+   Trunk version of patch:
+       http://svn.apache.org/viewcvs.cgi?rev=632749&view=rev
+   Backport version for 2.2.x of patch:
+       Trunk version of patch works
+   +1: rpluem,
 
 PATCHES/ISSUES THAT ARE STALLED
 
