@@ -22,9 +22,6 @@ Changes with Apache 2.3.0
   *) mod_include: Correctly handle SSI directives split over multiple filter
      passes.  PR 44447 [Harald Niesche <harald brokenerror.de>]
 
-  *) http_filters: Don't return 100-continue on client error
-     PR 43711 [Chetan Reddy <chetanreddy gmail.com>]
-
   *) mod_substitute: The default is now flattening the buckets after
      each substitution. This was mostly done to abide by the
      Principle Of Least Astonishment. The newly added 'q' flag allows for
