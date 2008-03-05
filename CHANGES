@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_rewrite: Check all files used by DBM maps for freshness, mod_rewrite
+     didn't pick up on updated sdbm maps due to this.
+     PR41190 [Niklas Edmundsson]
+
   *) Don't add bogus duplicate Content-Language entries
      PR 11035 [Davi Arnaut]
 
