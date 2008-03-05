@@ -211,6 +211,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    -0: jim (even though not a public API, not happy with adding
             checkfile2 smack in the middle of rewritemap_entry...
             Will create a 2.2 specific patch to address this).
+   rpluem says: Good catch. I missed this. I think it would be better
+                to fix this in trunk to keep 2.2.x and trunk more
+                diffable. Fixed on trunk in r633791.
 
  * mod_cache: Revalidate cache entities which have Cache-Control: no-cache
               set in their response headers. PR44511
