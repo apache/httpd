@@ -226,7 +226,6 @@ typedef struct {
     const char *datafile;          /* filename for map data files         */
     const char *dbmtype;           /* dbm type for dbm map data files     */
     const char *checkfile;         /* filename to check for map existence */
-    const char *checkfile2;        /* as above, NULL if only one file     */
     const char *cachename;         /* for cached maps (txt/rnd/dbm)       */
     int   type;                    /* the type of the map                 */
     apr_file_t *fpin;              /* in  file pointer for program maps   */
@@ -236,6 +235,8 @@ typedef struct {
                   char *);
     char **argv;                   /* argv of the external rewrite map    */
     const char *dbdq;              /* SQL SELECT statement for rewritemap */
+    const char *checkfile2;        /* filename to check for map existence
+                                      NULL if only one file               */
 } rewritemap_entry;
 
 /* special pattern types for RewriteCond */
