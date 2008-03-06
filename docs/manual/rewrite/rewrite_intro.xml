@@ -96,10 +96,9 @@ times</td><td><code>a+</code> matches <code>a</code>, <code>aa</code>,
 <tr><td><code>*</code></td><td>Repeats the previous match zero or more
 times.</td><td><code>a*</code> matches all the same things
 <code>a+</code> matches, but will also match an empty string.</td></tr>
-<tr><td><code>?</code></td><td>Makes the match optional.</td><td></td></tr>
-<tr><td><code>.</code></td><td>Matches any
-character</td><td><code>colou?r</code> will match <code>color</code> and
-<code>colour</code>.</td></tr>
+<tr><td><code>?</code></td><td>Makes the match optional.</td><td>
+<code>colou?r</code> will match <code>color</code> and <code>colour</code>.</td>
+</tr>
 <tr><td><code>^</code></td><td>Called an anchor, matches the beginning
 of the string</td><td><code>^a</code> matches a string that begins with
 <code>a</code></td></tr>
