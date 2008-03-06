@@ -520,7 +520,7 @@ AuthLDAPSubGroupDepth 1<br />
         Grant access to anyone who exists in the LDAP directory,
         using their UID for searches. 
 <example>
-AuthLDAPURL ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)<br />
+AuthLDAPURL "ldap://ldap1.airius.com:389/ou=People, o=Airius?uid?sub?(objectClass=*)"<br />
 Require valid-user
 </example>
       </li>
@@ -529,7 +529,7 @@ Require valid-user
         The next example is the same as above; but with the fields
         that have useful defaults omitted. Also, note the use of a
         redundant LDAP server. 
-<example>AuthLDAPURL ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius<br />
+<example>AuthLDAPURL "ldap://ldap1.airius.com ldap2.airius.com/ou=People, o=Airius"<br />
 Require valid-user
 </example>
       </li>
@@ -544,7 +544,7 @@ Require valid-user
         choose an attribute that is guaranteed unique in your
         directory, such as <code>uid</code>. 
 <example>
-AuthLDAPURL ldap://ldap.airius.com/ou=People, o=Airius?cn<br />
+AuthLDAPURL "ldap://ldap.airius.com/ou=People, o=Airius?cn"<br />
 Require valid-user
 </example>
       </li>
