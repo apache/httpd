@@ -194,7 +194,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   +1: rpluem, jim
 
  * mod_proxy: Allow for keepalive backend proxies (PR43238), which also
-   addresses PR44026. These are pretty much interwrapped here.
+   addresses PR44026 and PR44543. These are pretty much interwrapped here.
     Trunk version of patch:
       http://svn.apache.org/viewvc?view=rev&revision=602542
       http://svn.apache.org/viewvc?view=rev&revision=603237
