@@ -22,9 +22,9 @@
 <!-- ==================================================================== -->
 <project name="lang-targets">
 
-<target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, fr, ja, ko, pt-br, ru"/>
-<target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-pt-br, zip-ru"/>
-<target description="- builds all war download packages" name="war-all" depends="war-de, war-en, war-es, war-fr, war-ja, war-ko, war-pt-br, war-ru"/>
+<target description="- builds all HTML files and nroff man pages" name="all" depends="de, en, es, fr, ja, ko, pt-br, ru, tr"/>
+<target description="- builds all zip download packages" name="zip-all" depends="zip-de, zip-en, zip-es, zip-fr, zip-ja, zip-ko, zip-pt-br, zip-ru, zip-tr"/>
+<target description="- builds all war download packages" name="war-all" depends="war-de, war-en, war-es, war-fr, war-ja, war-ko, war-pt-br, war-ru, war-tr"/>
 
 <!-- German                                                               -->
 <!-- ==================================================================== -->
@@ -208,6 +208,32 @@
     <war.generic lang="ru"/>
 </target>
 
+<!-- Turkish                                                              -->
+<!-- ==================================================================== -->
+<property value=".xml.tr" name="inputext.tr"/>
+<property value=".html.tr" name="outputext.tr"/>
+
+<target description="- builds Turkish HTML files" name="tr">
+    <html.generic lang="tr"/>
+</target>
+<target unless="-off.tr.done" depends="metafiles" name="-off-tr">
+    <dependencies.offline dir="_off" style="zip" lang="tr"/>
+    <offline.generic dir="_off" style="zip" lang="tr"/>
+    <property value="yes" name="-off.tr.done"/>
+</target>
+<target description="- builds the Turkish zipped download package" depends="-off-tr" name="zip-tr">
+    <zip.generic lang="tr"/>
+</target>
+<target description="- builds the Turkish Konqueror Web Archive" depends="-off-tr" name="war-tr">
+    <war.generic lang="tr"/>
+</target>
+<target description="- builds the Turkish CHM file" name="chm-tr">
+    <chm.generic lang="tr"/>
+</target>
+<target description="- builds the Turkish nroff files" name="man-tr">
+    <nroff.generic lang="tr"/>
+</target>
+
 <!-- XML validation.                                                      -->
 <!-- If you get an error during transformation, this task may be useful   -->
 <!-- because it mostly gives you a hint, where you forgot the </p> ;-)    -->
@@ -224,6 +250,7 @@
             <include name="**/*.xml.ko"/>
             <include name="**/*.xml.pt-br"/>
             <include name="**/*.xml.ru"/>
+            <include name="**/*.xml.tr"/>
 
             <patternset refid="excludes"/>
             <patternset refid="scratch"/>
