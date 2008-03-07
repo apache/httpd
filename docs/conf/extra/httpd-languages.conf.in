@@ -38,7 +38,8 @@
 # Korean (ko) - Luxembourgeois* (ltz) - Norwegian Nynorsk (nn)
 # Norwegian (no) - Polish (pl) - Portugese (pt)
 # Brazilian Portuguese (pt-BR) - Russian (ru) - Swedish (sv)
-# Simplified Chinese (zh-CN) - Spanish (es) - Traditional Chinese (zh-TW)
+# Turkish (tr) - Simplified Chinese (zh-CN) - Spanish (es)
+# Traditional Chinese (zh-TW)
 #
 AddLanguage ca .ca
 AddLanguage cs .cz .cs
@@ -64,6 +65,7 @@ AddLanguage pt .pt
 AddLanguage pt-BR .pt-br
 AddLanguage ru .ru
 AddLanguage sv .sv
+AddLanguage tr .tr
 AddLanguage zh-CN .zh-cn
 AddLanguage zh-TW .zh-tw
 
@@ -73,7 +75,7 @@ AddLanguage zh-TW .zh-tw
 # Just list the languages in decreasing order of preference. We have
 # more or less alphabetized them here. You probably want to change this.
 #
-LanguagePriority en ca cs da de el eo es et fr he hr it ja ko ltz nl nn no pl pt pt-BR ru sv zh-CN zh-TW
+LanguagePriority en ca cs da de el eo es et fr he hr it ja ko ltz nl nn no pl pt pt-BR ru sv tr zh-CN zh-TW
 
 #
 # ForceLanguagePriority allows you to serve a result page rather than
