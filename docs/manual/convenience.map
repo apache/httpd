@@ -206,6 +206,8 @@ ldapcachettl	mod/mod_ldap.html#ldapcachettl
 ldapconnectiontimeout	mod/mod_ldap.html#ldapconnectiontimeout
 ldapopcacheentries	mod/mod_ldap.html#ldapopcacheentries
 ldapopcachettl	mod/mod_ldap.html#ldapopcachettl
+ldapreferralhoplimit	mod/mod_ldap.html#ldapreferralhoplimit
+ldapreferrals	mod/mod_ldap.html#ldapreferrals
 ldapsharedcachefile	mod/mod_ldap.html#ldapsharedcachefile
 ldapsharedcachesize	mod/mod_ldap.html#ldapsharedcachesize
 ldaptrustedclientcert	mod/mod_ldap.html#ldaptrustedclientcert
@@ -268,6 +270,7 @@ proxybadheader	mod/mod_proxy.html#proxybadheader
 proxyblock	mod/mod_proxy.html#proxyblock
 proxydomain	mod/mod_proxy.html#proxydomain
 proxyerroroverride	mod/mod_proxy.html#proxyerroroverride
+proxyftpdircharset	mod/mod_proxy.html#proxyftpdircharset
 proxyiobuffersize	mod/mod_proxy.html#proxyiobuffersize
 proxymatch	mod/mod_proxy.html#proxymatch
 proxymaxforwards	mod/mod_proxy.html#proxymaxforwards
@@ -302,6 +305,7 @@ removeoutputfilter	mod/mod_mime.html#removeoutputfilter
 removetype	mod/mod_mime.html#removetype
 requestheader	mod/mod_headers.html#requestheader
 require	mod/mod_authz_core.html#require
+requirealias	mod/mod_authz_core.html#requirealias
 rewritebase	mod/mod_rewrite.html#rewritebase
 rewritecond	mod/mod_rewrite.html#rewritecond
 rewriteengine	mod/mod_rewrite.html#rewriteengine
