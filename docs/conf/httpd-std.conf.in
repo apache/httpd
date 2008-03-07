@@ -562,7 +562,7 @@ Alias /icons/ "@exp_iconsdir@/"
 # the manual, even if you choose to move your DocumentRoot.  You may comment
 # this out if you do not care for the documentation.
 #
-AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|ru))?(/.*)?$ "@exp_manualdir@$1"
+AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|ru|tr))?(/.*)?$ "@exp_manualdir@$1"
 
 <Directory "@exp_manualdir@">
     Options Indexes
@@ -574,8 +574,8 @@ AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|ru))?(/.*)?$ "@exp_manualdir@$1"
         SetHandler type-map
     </Files>
 
-    SetEnvIf Request_URI ^/manual/(de|en|es|fr|ja|ko|ru)/ prefer-language=$1
-    RedirectMatch 301 ^/manual(?:/(de|en|es|fr|ja|ko|ru)){2,}(/.*)?$ /manual/$1$2
+    SetEnvIf Request_URI ^/manual/(de|en|es|fr|ja|ko|ru|tr)/ prefer-language=$1
+    RedirectMatch 301 ^/manual(?:/(de|en|es|fr|ja|ko|ru|tr)){2,}(/.*)?$ /manual/$1$2
 </Directory>
 
 #
@@ -725,7 +725,8 @@ IndexIgnore .??* *~ *# HEADER* README* RCS CVS *,v *,t
 # Korean (ko) - Luxembourgeois* (ltz) - Norwegian Nynorsk (nn)
 # Norwegian (no) - Polish (pl) - Portugese (pt)
 # Brazilian Portuguese (pt-BR) - Russian (ru) - Swedish (sv)
-# Simplified Chinese (zh-CN) - Spanish (es) - Traditional Chinese (zh-TW)
+# Turkish (tr) - Simplified Chinese (zh-CN) - Spanish (es)
+# Traditional Chinese (zh-TW)
 #
 AddLanguage ca .ca
 AddLanguage cs .cz .cs
@@ -751,6 +752,7 @@ AddLanguage pt .pt
 AddLanguage pt-BR .pt-br
 AddLanguage ru .ru
 AddLanguage sv .sv
+AddLanguage tr .tr
 AddLanguage zh-CN .zh-cn
 AddLanguage zh-TW .zh-tw
 
@@ -761,7 +763,7 @@ AddLanguage zh-TW .zh-tw
 # Just list the languages in decreasing order of preference. We have
 # more or less alphabetized them here. You probably want to change this.
 #
-LanguagePriority en ca cs da de el eo es et fr he hr it ja ko ltz nl nn no pl pt pt-BR ru sv zh-CN zh-TW
+LanguagePriority en ca cs da de el eo es et fr he hr it ja ko ltz nl nn no pl pt pt-BR ru sv tr zh-CN zh-TW
 
 #
 # ForceLanguagePriority allows you to serve a result page rather than
