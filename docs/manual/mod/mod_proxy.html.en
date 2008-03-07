@@ -92,7 +92,8 @@
 </ul>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Forward and Reverse Proxies</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#forwardreverse">Forward Proxies and Reverse 
+       Proxies/Gateways</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#examples">Basic Examples</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#access">Controlling access to your proxy</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#startup">Slow Startup</a></li>
@@ -111,9 +112,10 @@
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="forwardreverse" id="forwardreverse">Forward and Reverse Proxies</a></h2>
+<h2><a name="forwardreverse" id="forwardreverse">Forward Proxies and Reverse 
+       Proxies/Gateways</a></h2>
       <p>Apache can be configured in both a <dfn>forward</dfn> and
-      <dfn>reverse</dfn> proxy mode.</p>
+      <dfn>reverse</dfn> proxy (also known as <dfn>gateway</dfn>) mode.</p>
 
       <p>An ordinary <dfn>forward proxy</dfn> is an intermediate
       server that sits between the client and the <em>origin
@@ -136,13 +138,13 @@
       authorized clients can access the proxy before activating a
       forward proxy.</p>
 
-      <p>A <dfn>reverse proxy</dfn>, by contrast, appears to the
-      client just like an ordinary web server.  No special
-      configuration on the client is necessary.  The client makes
-      ordinary requests for content in the name-space of the reverse
-      proxy.  The reverse proxy then decides where to send those
-      requests, and returns the content as if it was itself the
-      origin.</p>
+      <p>A <dfn>reverse proxy</dfn> (or <dfn>gateway</dfn>), by
+      contrast, appears to the client just like an ordinary web
+      server.  No special configuration on the client is necessary.
+      The client makes ordinary requests for content in the name-space
+      of the reverse proxy.  The reverse proxy then decides where to
+      send those requests, and returns the content as if it was itself
+      the origin.</p>
 
       <p>A typical usage of a reverse proxy is to provide Internet
       users access to a server that is behind a firewall.  Reverse
@@ -750,12 +752,13 @@ through</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
-    <p>This directive allows remote servers to be mapped into the space of
-    the local server; the local server does not act as a proxy in the
-    conventional sense, but appears to be a mirror of the remote
-    server. <var>path</var> is the name of a local virtual path; <var>url</var>
-    is a partial URL for the remote server and cannot include a query
-    string.</p>
+    <p>This directive allows remote servers to be mapped into the
+    space of the local server; the local server does not act as a
+    proxy in the conventional sense, but appears to be a mirror of the
+    remote server. The local server is often called a <dfn>reverse
+    proxy</dfn> or <dfn>gateway</dfn>. The <var>path</var> is the name of
+    a local virtual path; <var>url</var> is a partial URL for the
+    remote server and cannot include a query string.</p>
 
     <div class="warning">The <code class="directive"><a href="#proxyrequests">ProxyRequests</a></code> directive should
     usually be set <strong>off</strong> when using
@@ -1116,10 +1119,11 @@ proxied server</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 </table>
     <p>This directive lets Apache adjust the URL in the <code>Location</code>,
-    <code>Content-Location</code> and <code>URI</code> headers on HTTP redirect
-    responses. This is essential when Apache is used as a reverse proxy to avoid
-    by-passing the reverse proxy because of HTTP redirects on the backend
-    servers which stay behind the reverse proxy.</p>
+    <code>Content-Location</code> and <code>URI</code> headers on HTTP
+    redirect responses. This is essential when Apache is used as a
+    reverse proxy (or gateway) to avoid by-passing the reverse proxy
+    because of HTTP redirects on the backend servers which stay behind
+    the reverse proxy.</p>
 
     <p>Only the HTTP response headers specifically mentioned above
     will be rewritten.  Apache will not rewrite other response
@@ -1315,7 +1319,8 @@ expressions</td></tr>
     server. (Setting ProxyRequests to <code>Off</code> does not disable use of
     the <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.)</p>
 
-    <p>In a typical reverse proxy configuration, this option should be set to
+    <p>In a typical reverse proxy or gateway configuration, this
+    option should be set to
     <code>Off</code>.</p>
 
     <p>In order to get the functionality of proxying HTTP or FTP sites, you
@@ -1327,6 +1332,10 @@ expressions</td></tr>
       both to your network and to the Internet at large.</p>
     </div>
 
+<h3>See also</h3>
+<ul>
+<li><a href="#forwardreverse">Forward and Reverse Proxies/Gateways</a></li>
+</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="ProxySet" id="ProxySet">ProxySet</a> <a name="proxyset" id="proxyset">Directive</a></h2>

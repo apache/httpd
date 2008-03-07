@@ -68,9 +68,10 @@
 <seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_ssl</module></seealso>
 
-    <section id="forwardreverse"><title>Forward and Reverse Proxies</title>
+    <section id="forwardreverse"><title>Forward Proxies and Reverse 
+       Proxies/Gateways</title>
       <p>Apache can be configured in both a <dfn>forward</dfn> and
-      <dfn>reverse</dfn> proxy mode.</p>
+      <dfn>reverse</dfn> proxy (also known as <dfn>gateway</dfn>) mode.</p>
 
       <p>An ordinary <dfn>forward proxy</dfn> is an intermediate
       server that sits between the client and the <em>origin
@@ -94,13 +95,13 @@
       authorized clients can access the proxy before activating a
       forward proxy.</p>
 
-      <p>A <dfn>reverse proxy</dfn>, by contrast, appears to the
-      client just like an ordinary web server.  No special
-      configuration on the client is necessary.  The client makes
-      ordinary requests for content in the name-space of the reverse
-      proxy.  The reverse proxy then decides where to send those
-      requests, and returns the content as if it was itself the
-      origin.</p>
+      <p>A <dfn>reverse proxy</dfn> (or <dfn>gateway</dfn>), by
+      contrast, appears to the client just like an ordinary web
+      server.  No special configuration on the client is necessary.
+      The client makes ordinary requests for content in the name-space
+      of the reverse proxy.  The reverse proxy then decides where to
+      send those requests, and returns the content as if it was itself
+      the origin.</p>
 
       <p>A typical usage of a reverse proxy is to provide Internet
       users access to a server that is behind a firewall.  Reverse
@@ -439,7 +440,8 @@ request</description>
     server. (Setting ProxyRequests to <code>Off</code> does not disable use of
     the <directive module="mod_proxy">ProxyPass</directive> directive.)</p>
 
-    <p>In a typical reverse proxy configuration, this option should be set to
+    <p>In a typical reverse proxy or gateway configuration, this
+    option should be set to
     <code>Off</code>.</p>
 
     <p>In order to get the functionality of proxying HTTP or FTP sites, you
@@ -453,6 +455,7 @@ request</description>
       both to your network and to the Internet at large.</p>
     </note>
 </usage>
+<seealso><a href="#forwardreverse">Forward and Reverse Proxies/Gateways</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -596,12 +599,13 @@ expressions</description>
 </contextlist>
 
 <usage>
-    <p>This directive allows remote servers to be mapped into the space of
-    the local server; the local server does not act as a proxy in the
-    conventional sense, but appears to be a mirror of the remote
-    server. <var>path</var> is the name of a local virtual path; <var>url</var>
-    is a partial URL for the remote server and cannot include a query
-    string.</p>
+    <p>This directive allows remote servers to be mapped into the
+    space of the local server; the local server does not act as a
+    proxy in the conventional sense, but appears to be a mirror of the
+    remote server. The local server is often called a <dfn>reverse
+    proxy</dfn> or <dfn>gateway</dfn>. The <var>path</var> is the name of
+    a local virtual path; <var>url</var> is a partial URL for the
+    remote server and cannot include a query string.</p>
 
     <note type="warning">The <directive
     module="mod_proxy">ProxyRequests</directive> directive should
@@ -939,10 +943,11 @@ proxied server</description>
 
 <usage>
     <p>This directive lets Apache adjust the URL in the <code>Location</code>,
-    <code>Content-Location</code> and <code>URI</code> headers on HTTP redirect
-    responses. This is essential when Apache is used as a reverse proxy to avoid
-    by-passing the reverse proxy because of HTTP redirects on the backend
-    servers which stay behind the reverse proxy.</p>
+    <code>Content-Location</code> and <code>URI</code> headers on HTTP
+    redirect responses. This is essential when Apache is used as a
+    reverse proxy (or gateway) to avoid by-passing the reverse proxy
+    because of HTTP redirects on the backend servers which stay behind
+    the reverse proxy.</p>
 
     <p>Only the HTTP response headers specifically mentioned above
     will be rewritten.  Apache will not rewrite other response
