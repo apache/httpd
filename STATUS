@@ -225,6 +225,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
    +1: covener, rpluem
 
+ * mod_ldap: Correctly return all requested attribute values
+   when some attributes have a null value.
+   PR: 44560
+   Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=634821&view=rev
+   Backport version for 2.2.x of patch:
+       http://people.apache.org/~covener/2.2.x-pr44560.diff
+   +1 covener
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
