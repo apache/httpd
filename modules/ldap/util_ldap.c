@@ -1462,13 +1462,10 @@ static int uldap_cache_checkuserid(request_rec *r, util_ldap_connection_t *ldc,
                 /* ...and entry is valid */
                 *binddn = apr_pstrdup(r->pool, search_nodep->dn);
                 if (attrs) {
-                    int i = 0, k = 0;
-                    while (attrs[k++]);
-                    *retvals = apr_pcalloc(r->pool, sizeof(char *) * k);
-                    while (search_nodep->vals[i]) {
-                        (*retvals)[i] = apr_pstrdup(r->pool,
-                                                    search_nodep->vals[i]);
-                        i++;
+                    int i;
+                    *retvals = apr_pcalloc(r->pool, sizeof(char *) * search_nodep->numvals);
+                    for (i = 0; i < search_nodep->numvals; i++) {
+                        (*retvals)[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
                     }
                 }
                 LDAP_CACHE_UNLOCK();
@@ -1712,13 +1709,10 @@ static int uldap_cache_getuserdn(request_rec *r, util_ldap_connection_t *ldc,
                 /* ...and entry is valid */
                 *binddn = apr_pstrdup(r->pool, search_nodep->dn);
                 if (attrs) {
-                    int i = 0, k = 0;
-                    while (attrs[k++]);
-                    *retvals = apr_pcalloc(r->pool, sizeof(char *) * k);
-                    while (search_nodep->vals[i]) {
-                        (*retvals)[i] = apr_pstrdup(r->pool,
-                                                    search_nodep->vals[i]);
-                        i++;
+                    int i;
+                    *retvals = apr_pcalloc(r->pool, sizeof(char *) * search_nodep->numvals);
+                    for (i = 0; i < search_nodep->numvals; i++) {
+                        (*retvals)[i] = apr_pstrdup(r->pool, search_nodep->vals[i]);
                     }
                 }
                 LDAP_CACHE_UNLOCK();

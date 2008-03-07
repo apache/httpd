@@ -1,6 +1,10 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
+ 
+  *) mod_ldap: Correctly return all requested attribute values
+     when some attributes have a null value. 
+     PR 44560 [Anders Kaseorg <anders kaseorg.com>]
 
   *) core: check symlink ownership if both FollowSymlinks and
      SymlinksIfOwnerMatch are set [Nick Kew]
