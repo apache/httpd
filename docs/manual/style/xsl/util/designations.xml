@@ -7,4 +7,5 @@
 <item charset="EUC-JP" lang="ja">.html.ja.euc-jp</item>
 <item charset="EUC-KR" lang="ko">.html.ko.euc-kr</item>
 <item charset="KOI8-R" lang="ru">.html.ru.koi8-r</item>
+<item charset="UTF-8" lang="tr">.html.tr</item>
 </items>
