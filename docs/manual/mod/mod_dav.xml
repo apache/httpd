@@ -91,7 +91,7 @@
          <br />
          &lt;LimitExcept GET POST OPTIONS&gt;<br />
          <indent>
-           require user admin<br />
+           Require user admin<br />
          </indent>
          &lt;/LimitExcept&gt;<br />
        </indent>
