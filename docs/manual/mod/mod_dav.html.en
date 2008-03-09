@@ -104,7 +104,7 @@
          <br />
          &lt;LimitExcept GET POST OPTIONS&gt;<br />
          <span class="indent">
-           require user admin<br />
+           Require user admin<br />
          </span>
          &lt;/LimitExcept&gt;<br />
        </span>
