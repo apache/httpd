@@ -57,7 +57,7 @@ address)</td></tr>
             directives.</p>
 <h3>Topics</h3>
 <ul id="topics">
-<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The require Directives</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#requiredirectives">The Require Directives</a></li>
 </ul><h3>See also</h3>
 <ul class="seealso">
 <li><a href="../howto/auth.html">Authentication, Authorization,
@@ -67,7 +67,7 @@ address)</td></tr>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="requiredirectives" id="requiredirectives">The require Directives</a></h2>
+<h2><a name="requiredirectives" id="requiredirectives">The Require Directives</a></h2>
 
     <p>Apache's <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> and 
     <code class="directive"><a href="../mod/mod_authz_core.html#reject">Reject</a></code> directives are 
@@ -83,7 +83,7 @@ address)</td></tr>
     characteristics of the client request captured in environment
     variables.</p>
 
-<h3><a name="reqenv" id="reqenv">require env</a></h3>
+<h3><a name="reqenv" id="reqenv">Require env</a></h3>
 
     <p>The <code>env</code> provider allows access to the server
     to be controlled based on the existence of an <a href="../env.html">environment variable</a>. When <code>Require 
