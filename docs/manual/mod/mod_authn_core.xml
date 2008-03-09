@@ -80,7 +80,7 @@
         
              AuthType Basic<br />
              AuthName LDAP_Protected_Place<br />
-             require valid-user<br />
+             Require valid-user<br />
           </indent>
           &lt;/Directory&gt;<br />
         </example>

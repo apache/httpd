@@ -57,7 +57,7 @@ address)</description>
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
 <seealso><directive module="mod_authz_core">Reject</directive></seealso>
 
-<section id="requiredirectives"><title>The require Directives</title>
+<section id="requiredirectives"><title>The Require Directives</title>
 
     <p>Apache's <directive module="mod_authz_core">Require</directive> and 
     <directive module="mod_authz_core">Reject</directive> directives are 
@@ -73,7 +73,7 @@ address)</description>
     characteristics of the client request captured in environment
     variables.</p>
 
-<section id="reqenv"><title>require env</title>
+<section id="reqenv"><title>Require env</title>
 
     <p>The <code>env</code> provider allows access to the server
     to be controlled based on the existence of an <a
