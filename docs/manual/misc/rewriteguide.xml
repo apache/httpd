@@ -26,6 +26,13 @@
   <title>URL Rewriting Guide</title>
 
   <summary>
+
+    <note type="warning">
+     <p>This document is obsolete. It has been replaced with a
+     new <a href="../rewrite/">Rewrite Guide</a>.</p>
+    </note>
+
+
     <note>
       <p>Originally written by<br />
       <cite>Ralf S. Engelschall &lt;rse@apache.org&gt;</cite><br />
