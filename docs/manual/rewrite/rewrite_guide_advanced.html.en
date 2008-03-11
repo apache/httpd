@@ -14,9 +14,9 @@
 <p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
 <img alt="" src="../images/feather.gif" /></div>
-<div class="up"><a href="./index.html"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>URL Rewriting Guide - Advanced topics</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Rewrite</a></div><div id="page-content"><div id="preamble"><h1>URL Rewriting Guide - Advanced topics</h1>
 <div class="toplang">
 <p><span>Available Languages: </span><a href="../en/rewrite/rewrite_guide_advanced.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
@@ -44,9 +44,20 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Structured Homedirs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filereorg">Filesystem Reorganization</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#redirect404">Redirect Failing URLs To Other Webserver</a></li>
-<li><img alt="" src="../images/down.gif" /> Archive Access Multiplexer</li>
-<li><img alt="" src="../images/down.gif" /> <a href="#content">Content Handling</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#access">Access Restriction</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#archive-access-multiplexer">Archive Access Multiplexer</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#browser-depedent-content">Browser Dependent Content</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#dynamic-mirror">Dynamic Mirror</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#reverse-dynamic-mirror">Reverse Dynamic Mirror</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#retrieve-missing-data">Retrieve Missing Data from Intranet</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#load-balancing">Load Balancing</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#new-mime-type">New MIME-type, New Service</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#on-the-fly-content">On-the-fly Content-Regeneration</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#autorefresh">Document With Autorefresh</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mass-virtual-hosting">Mass Virtual Hosting</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#host-deny">Host Deny</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#proxy-deny">Proxy Deny</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#special-authentication">Special Authentication Variant</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#referer-deflector">Referer-based Deflector</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module
 documentation</a></li><li><a href="rewrite_intro.html">mod_rewrite
 introduction</a></li><li><a href="rewrite_guide.html">Rewrite Guide - useful
@@ -361,7 +372,7 @@ RewriteRule   ^(.+)          http://<strong>webserverB</strong>.dom/$1
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2>Archive Access Multiplexer</h2>
+<h2><a name="archive-access-multiplexer" id="archive-access-multiplexer">Archive Access Multiplexer</a></h2>
 
       
 
@@ -414,11 +425,7 @@ com       ftp://ftp.cxan.com/CxAN/
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="content" id="content">Content Handling</a></h2>
-
-    
-
-   <h3>Browser Dependent Content</h3>
+<h2><a name="browser-depedent-content" id="browser-depedent-content">Browser Dependent Content</a></h2>
 
       
 
@@ -460,9 +467,9 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
         </dd>
       </dl>
 
-    
-
-    <h3>Dynamic Mirror</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="dynamic-mirror" id="dynamic-mirror">Dynamic Mirror</a></h2>
 
       
 
@@ -506,9 +513,9 @@ RewriteRule    ^<strong>usa-news\.html</strong>$   <strong>http://www.quux-corp.
         </dd>
       </dl>
 
-    
-
-    <h3>Reverse Dynamic Mirror</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="reverse-dynamic-mirror" id="reverse-dynamic-mirror">Reverse Dynamic Mirror</a></h2>
 
       
 
@@ -528,9 +535,9 @@ RewriteRule   ^http://www\.remotesite\.com/(.*)$ /mirror/of/remotesite/$1
         </dd>
       </dl>
 
-    
-
-    <h3>Retrieve Missing Data from Intranet</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="retrieve-missing-data" id="retrieve-missing-data">Retrieve Missing Data from Intranet</a></h2>
 
       
 
@@ -576,9 +583,9 @@ RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom
         </dd>
       </dl>
 
-    
-
-    <h3>Load Balancing</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="load-balancing" id="load-balancing">Load Balancing</a></h2>
 
       
 
@@ -727,9 +734,9 @@ while (&lt;STDIN&gt;) {
         </dd>
       </dl>
 
-    
-
-    <h3>New MIME-type, New Service</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="new-mime-type" id="new-mime-type">New MIME-type, New Service</a></h2>
 
       
 
@@ -811,9 +818,9 @@ HREF="*"
         </dd>
       </dl>
 
-    
-
-    <h3>On-the-fly Content-Regeneration</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="on-the-fly-content" id="on-the-fly-content">On-the-fly Content-Regeneration</a></h2>
 
       
 
@@ -854,9 +861,9 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
         </dd>
       </dl>
 
-    
-
-    <h3>Document With Autorefresh</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="autorefresh" id="autorefresh">Document With Autorefresh</a></h2>
 
       
 
@@ -1006,9 +1013,9 @@ exit(0);
         </dd>
       </dl>
 
-    
-
-    <h3>Mass Virtual Hosting</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="mass-virtual-hosting" id="mass-virtual-hosting">Mass Virtual Hosting</a></h2>
 
       
 
@@ -1092,15 +1099,9 @@ RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
         </dd>
       </dl>
 
-    
-
-  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="access" id="access">Access Restriction</a></h2>
-
-    
-
-    <h3>Host Deny</h3>
+<h2><a name="host-deny" id="host-deny">Host Deny</a></h2>
 
       
 
@@ -1153,9 +1154,9 @@ bsdti1.sdm.de  -
         </dd>
       </dl>
 
-    
-
-    <h3>Proxy Deny</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="proxy-deny" id="proxy-deny">Proxy Deny</a></h2>
 
       
 
@@ -1190,9 +1191,9 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
         </dd>
       </dl>
 
-    
-
-    <h3>Special Authentication Variant</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="special-authentication" id="special-authentication">Special Authentication Variant</a></h2>
 
       
 
@@ -1222,9 +1223,9 @@ RewriteRule ^/~quux/only-for-friends/      -                                 [F]
         </dd>
       </dl>
 
-    
-
-    <h3>Referer-based Deflector</h3>
+    </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="referer-deflector" id="referer-deflector">Referer-based Deflector</a></h2>
 
       
 
@@ -1274,9 +1275,7 @@ http://www.badguys.com/bad/index3.html   http://somewhere.com/
         </dd>
       </dl>
 
-    
-
-  </div></div>
+    </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/rewrite/rewrite_guide_advanced.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">

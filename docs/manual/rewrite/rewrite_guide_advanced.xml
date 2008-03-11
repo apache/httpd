@@ -21,7 +21,7 @@
 -->
 
 <manualpage metafile="rewrite_guide_advanced.xml.meta">
-  <parentdocument href="./index.html" />
+  <parentdocument href="./">Rewrite</parentdocument>
 
   <title>URL Rewriting Guide - Advanced topics</title>
 
@@ -364,7 +364,7 @@ RewriteRule   ^(.+)          http://<strong>webserverB</strong>.dom/$1
 
     </section>
 
-   <section>
+   <section id="archive-access-multiplexer">
 
       <title>Archive Access Multiplexer</title>
 
@@ -418,11 +418,7 @@ com       ftp://ftp.cxan.com/CxAN/
 
     </section>
 
-  <section id="content">
-
-    <title>Content Handling</title>
-
-   <section>
+   <section id="browser-depedent-content">
 
       <title>Browser Dependent Content</title>
 
@@ -466,7 +462,7 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
 
     </section>
 
-    <section>
+    <section id="dynamic-mirror">
 
       <title>Dynamic Mirror</title>
 
@@ -512,7 +508,7 @@ RewriteRule    ^<strong>usa-news\.html</strong>$   <strong>http://www.quux-corp.
 
     </section>
 
-    <section>
+    <section id="reverse-dynamic-mirror">
 
       <title>Reverse Dynamic Mirror</title>
 
@@ -534,7 +530,7 @@ RewriteRule   ^http://www\.remotesite\.com/(.*)$ /mirror/of/remotesite/$1
 
     </section>
 
-    <section>
+    <section id="retrieve-missing-data">
 
       <title>Retrieve Missing Data from Intranet</title>
 
@@ -582,7 +578,7 @@ RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom
 
     </section>
 
-    <section>
+    <section id="load-balancing">
 
       <title>Load Balancing</title>
 
@@ -734,7 +730,7 @@ while (&lt;STDIN&gt;) {
 
     </section>
 
-    <section>
+    <section id="new-mime-type">
 
       <title>New MIME-type, New Service</title>
 
@@ -818,7 +814,7 @@ HREF="*"
 
     </section>
 
-    <section>
+    <section id="on-the-fly-content">
 
       <title>On-the-fly Content-Regeneration</title>
 
@@ -861,7 +857,7 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
 
     </section>
 
-    <section>
+    <section id="autorefresh">
 
       <title>Document With Autorefresh</title>
 
@@ -1013,7 +1009,7 @@ exit(0);
 
     </section>
 
-    <section>
+    <section id="mass-virtual-hosting">
 
       <title>Mass Virtual Hosting</title>
 
@@ -1100,13 +1096,7 @@ RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
 
     </section>
 
-  </section>
-
-  <section id="access">
-
-    <title>Access Restriction</title>
-
-    <section>
+    <section id="host-deny">
 
       <title>Host Deny</title>
 
@@ -1161,7 +1151,7 @@ bsdti1.sdm.de  -
 
     </section>
 
-    <section>
+    <section id="proxy-deny">
 
       <title>Proxy Deny</title>
 
@@ -1198,7 +1188,7 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
 
     </section>
 
-    <section>
+    <section id="special-authentication">
 
       <title>Special Authentication Variant</title>
 
@@ -1230,7 +1220,7 @@ RewriteRule ^/~quux/only-for-friends/      -                                 [F]
 
     </section>
 
-    <section>
+    <section id="referer-deflector">
 
       <title>Referer-based Deflector</title>
 
@@ -1281,8 +1271,6 @@ http://www.badguys.com/bad/index3.html   http://somewhere.com/
       </dl>
 
     </section>
-
-  </section>
 
 </manualpage>
 
