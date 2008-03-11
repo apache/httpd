@@ -21,7 +21,7 @@
 -->
 
 <manualpage metafile="rewrite_guide.xml.meta">
-  <parentdocument href="./index.html" />
+  <parentdocument href="./">Rewrite</parentdocument>
 
   <title>URL Rewriting Guide</title>
 
@@ -413,7 +413,7 @@ RewriteRule   ^(/~.+)         http://www.somewhere.com/$1 [R,L]
 
     </section>
 
-    <section id="time">
+    <section id="time-dependent">
 
       <title>Time-Dependent Rewriting</title>
 
@@ -454,7 +454,7 @@ RewriteRule   ^foo\.html$             foo.night.html
 
     </section>
 
-    <section>
+    <section id="backward-compatibility">
 
       <title>Backward Compatibility for YYYY to XXXX migration</title>
 
@@ -497,11 +497,7 @@ RewriteRule   ^(.*)$ $1.html
 
     </section>
 
-  <section id="content">
-
-    <title>Content Handling</title>
-
-    <section>
+    <section id="old-to-new">
 
       <title>From Old to New (intern)</title>
 
@@ -532,7 +528,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html
 
     </section>
 
-    <section>
+    <section id="old-to-new-extern">
 
       <title>From Old to New (extern)</title>
 
@@ -564,7 +560,7 @@ RewriteRule    ^<strong>foo</strong>\.html$  <strong>bar</strong>.html  [<strong
 
     </section>
 
-    <section>
+    <section id="static-to-dynamic">
 
       <title>From Static to Dynamic</title>
 
@@ -597,13 +593,8 @@ RewriteRule    ^foo\.<strong>html</strong>$  foo.<strong>cgi</strong>  [H=<stron
       </dl>
 
     </section>
-</section>
 
-  <section id="access">
-
-    <title>Access Restriction</title>
-
-    <section>
+    <section id="blocking-of-robots">
 
       <title>Blocking of Robots</title>
 
@@ -641,7 +632,7 @@ RewriteRule ^<strong>/~quux/foo/arc/</strong>.+   -   [<strong>F</strong>]
 
     </section>
 
-    <section>
+    <section id="blocked-inline-images">
 
       <title>Blocked Inline-Images</title>
 
@@ -679,7 +670,7 @@ RewriteRule <strong>^inlined-in-foo\.gif$</strong>   -                        [F
 
     </section>
 
-    <section>
+    <section id="proxy-deny">
 
       <title>Proxy Deny</title>
 
@@ -716,13 +707,7 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
 
     </section>
 
-  </section>
-
-  <section id="other">
-
-    <title>Other</title>
-
-    <section>
+    <section id="external-rewriting">
 
       <title>External Rewriting Engine</title>
 
@@ -777,8 +762,6 @@ while (&lt;&gt;) {
       </dl>
 
     </section>
-
-  </section>
 
 </manualpage>
 

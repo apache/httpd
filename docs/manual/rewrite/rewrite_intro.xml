@@ -21,7 +21,7 @@
 -->
 
 <manualpage metafile="rewrite_intro.xml.meta">
-<parentdocument href="./index.html"/>
+<parentdocument href="./">Rewrite</parentdocument>
 
   <title>Apache mod_rewrite Introduction</title>
 
