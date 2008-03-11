@@ -166,7 +166,8 @@ is available only in Apache 2.0</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>The <code>edit</code> argument is available in version 2.2.4 and later</compatibility>
+<compatibility>The <code>edit</code> argument is available in version
+2.2.4 and later</compatibility>
 
 <usage>
     <p>This directive can replace, merge, change or remove HTTP request
@@ -250,7 +251,8 @@ is available only in Apache 2.0</compatibility>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-
+<compatibility>The <code>edit</code> argument is available in version
+2.2.4 and later</compatibility>
 <usage>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
@@ -297,11 +299,13 @@ is available only in Apache 2.0</compatibility>
     <var>value</var> must be omitted.</dd>
 
     <dt><code>edit</code></dt>
-    <dd>If this request header exists, its value is transformed according
-    to a <glossary ref="regex">regular expression</glossary>
-    search-and-replace.  The <var>value</var> argument is a <glossary
-    ref="regex">regular expression</glossary>, and the <var>replacement</var>
-    is a replacement string, which may contain backreferences.</dd>
+    <dd>If this request header exists, its value is transformed
+    according to a <glossary ref="regex">regular expression</glossary>
+    search-and-replace.  The <var>value</var> argument is
+    a <glossary ref="regex">regular expression</glossary>, and
+    the <var>replacement</var> is a replacement string, which may
+    contain backreferences. <em>Available in version 2.2.4 and
+    later.</em></dd>
     </dl>
 
     <p>This argument is followed by a <var>header</var> name, which
