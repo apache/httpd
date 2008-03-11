@@ -112,7 +112,7 @@ address)</td></tr>
 
 
 
-<h3><a name="reqip" id="reqip">require ip</a></h3>
+<h3><a name="reqip" id="reqip">Require ip</a></h3>
 
     <p>The <code>ip</code> provider allows access to the server
     to be controlled based on the IP address of the remote client. 
@@ -167,7 +167,7 @@ address)</td></tr>
 
 
 
-<h3><a name="reqhost" id="reqhost">require host</a></h3>
+<h3><a name="reqhost" id="reqhost">Require host</a></h3>
 
     <p>The <code>host</code> provider allows access to the server
     to be controlled based on the host name of the remote client. 
@@ -195,7 +195,7 @@ address)</td></tr>
 
 
 
-<h3><a name="reqall" id="reqall">require all</a></h3>
+<h3><a name="reqall" id="reqall">Require all</a></h3>
 
     <p>The <code>all</code> provider mimics the functionality the
     was previously provided by the 'Allow from all' and 'Deny from all'
