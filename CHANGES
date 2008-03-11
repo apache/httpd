@@ -1,7 +1,11 @@
                                                         -*- coding: utf-8 -*-
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
- 
+
+  *) mod_speling: remove regression from 1.3/2.0 behavior and
+     drop dependency between mod_speling and AcceptPathInfo.
+     PR 43562 [Jose Kahan <jose w3.org>]
+
   *) mod_ldap: Correctly return all requested attribute values
      when some attributes have a null value. 
      PR 44560 [Anders Kaseorg <anders kaseorg.com>]
