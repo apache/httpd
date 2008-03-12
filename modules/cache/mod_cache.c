@@ -613,6 +613,12 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
             cache->provider->remove_entity(cache->stale_handle);
             /* Treat the request as if it wasn't conditional. */
             cache->stale_handle = NULL;
+            /*
+             * Restore the original request headers as they may be needed
+             * by further output filters like the byterange filter to make
+             * the correct decisions.
+             */
+            r->headers_in = cache->stale_headers;
         }
     }
 

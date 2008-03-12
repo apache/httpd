@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_cache: Handle If-Range correctly if the cached resource was stale.
+     PR 44579 [Ruediger Pluem]
+
   *) mod_speling: remove regression from 1.3/2.0 behavior and
      drop dependency between mod_speling and AcceptPathInfo.
      PR 43562 [Jose Kahan <jose w3.org>]
