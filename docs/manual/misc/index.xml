@@ -55,16 +55,6 @@
         site secure.</p>
       </dd>
 
-      <dt><a href="rewriteguide.html">URL Rewriting Guide</a></dt>
-
-      <dd>
-        <p>This document supplements the <module>mod_rewrite</module>
-        <a href="../mod/mod_rewrite.html">reference documentation</a>.
-        It describes how one can use Apache's <module>mod_rewrite</module>
-        to solve typical URL-based problems webmasters are usually confronted
-        with in practice.</p>
-      </dd>
-
       <dt><a href="relevant_standards.html">Relevant Standards</a></dt>
 
       <dd>
