@@ -34,23 +34,4 @@
     <p>세번째와 네번째 열은 각각 아래 표에 따라 지시어를 사용할
     수 있는 장소와 지시어의 상태를 나타낸다.</p>
   </summary>
-
-  <legend>
-    <table>
-      <columnspec><column width=".1"/><column width=".2"/></columnspec>
-      <tr><th>s</th><td>주서버설정</td></tr>
-      <tr><th>v</th><td>가상호스트</td></tr>
-      <tr><th>d</th><td>directory</td></tr>
-      <tr><th>h</th><td>.htaccess</td></tr>
-    </table>
-
-    <table>
-      <columnspec><column width=".1"/><column width=".2"/></columnspec>
-      <tr><th>C</th><td>Core</td></tr>
-      <tr><th>M</th><td>MPM</td></tr>
-      <tr><th>B</th><td>Base</td></tr>
-      <tr><th>E</th><td>Extension</td></tr>
-      <tr><th>X</th><td>Experimental</td></tr>
-    </table>
-  </legend>
 </quickreference>

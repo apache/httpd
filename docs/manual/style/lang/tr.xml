@@ -26,13 +26,13 @@
     <name>Turkish</name>
     <charset>UTF-8</charset>
     <source-ext>.xml.tr</source-ext>
-    <target-ext>.html.tr</target-ext>
+    <target-ext>.html.tr.utf8</target-ext>
 
     <chm>
         <lang>0x41f Turkish</lang>
         <toc-font>,8,0</toc-font>
         <charset>windows-1254</charset>
-        <settings>Türkçe</settings>
+        <settings>Turkish</settings>
     </chm>
 
     <man>
@@ -78,11 +78,18 @@
         <message id="status">Durum</message>
         <message id="module">Modül</message>
 
+        <!-- Status descriptions -->
+        <message id="base" letter="T">Temel</message>
+        <message id="mpm" letter="M">MPM</message>
+        <message id="core" letter="Ç">Çekirdek</message>
+        <message id="extension" letter="E">Eklenti</message>
+        <message id="experimental" letter="D">Deneysel</message>
+
         <!-- Used in directive context lists -->
-        <message id="serverconfig">sunucu yapılandırması</message>
-        <message id="virtualhost">sanal konak</message>
-        <message id="directory">dizin</message>
-        <message id="htaccess">.htaccess</message>
+        <message id="serverconfig" letter="s">sunucu yapılandırması</message>
+        <message id="virtualhost" letter="k">sanal konak</message>
+        <message id="directory" letter="d">dizin</message>
+        <message id="htaccess" letter="h">.htaccess</message>
 
         <!-- Used for directive lists -->
         <message id="directives">Yönergeler</message>
@@ -121,7 +128,8 @@
         <message id="sitemap">Site Haritası</message>
 
         <!-- footer line -->
-        <message id="licensed">Lisans:</message>
+        <message id="before-license"></message>
+        <message id="after-license">altında lisanslıdır</message>
         <message id="langavail">Mevcut Diller</message>
 
         <!-- not up to date -->

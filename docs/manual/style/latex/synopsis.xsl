@@ -65,7 +65,9 @@
 
 <xsl:value-of select="$message[@id='status']" />
 <xsl:text>: &amp;</xsl:text>
-<xsl:value-of select="status" />
+    <xsl:variable name="status" select="translate(
+        status, $uppercase, $lowercase)"/>
+    <xsl:value-of select="$message[@id=$status]"/>
 <xsl:text>\\
 </xsl:text>
 
@@ -234,7 +236,9 @@
 
 <xsl:value-of select="$message[@id='status']" />
 <xsl:text>: &amp;</xsl:text>
-<xsl:value-of select="../status" />
+<xsl:variable name="status" select="translate(
+    ../status, $uppercase, $lowercase)"/>
+<xsl:value-of select="$message[@id=$status]"/>
 <xsl:text> \\
 </xsl:text>
 

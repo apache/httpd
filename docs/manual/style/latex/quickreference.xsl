@@ -85,25 +85,27 @@
       </xsl:if>
 
       <xsl:text>&amp;</xsl:text>
-
-            <xsl:if test="contextlist/context
-                          [normalize-space(.)='server config']">s</xsl:if>
-            <xsl:if test="contextlist/context
-                          [normalize-space(.)='virtual host']">v</xsl:if>
-            <xsl:if test="contextlist/context
-                          [normalize-space(.)='directory']">d</xsl:if>
-            <xsl:if test="contextlist/context
-                          [normalize-space(.)='.htaccess']">h</xsl:if>
+        <xsl:if test="contextlist/context
+                      [normalize-space(.)='server config']">
+            <xsl:value-of select="$message[@id='serverconfig']/@letter"/>
+        </xsl:if>
+        <xsl:if test="contextlist/context
+                      [normalize-space(.)='virtual host']">
+            <xsl:value-of select="$message[@id='virtualhost']/@letter"/>
+        </xsl:if>
+        <xsl:if test="contextlist/context
+                      [normalize-space(.)='directory']">
+            <xsl:value-of select="$message[@id='directory']/@letter"/>
+        </xsl:if>
+        <xsl:if test="contextlist/context
+                      [normalize-space(.)='.htaccess']">
+            <xsl:value-of select="$message[@id='htaccess']/@letter"/>
+        </xsl:if>
 
       <xsl:text>&amp;</xsl:text>
-            <xsl:choose>
-            <xsl:when test="../status='Base'">B</xsl:when>
-            <xsl:when test="../status='MPM'">M</xsl:when>
-            <xsl:when test="../status='Core'">C</xsl:when>
-            <xsl:when test="../status='Extension'">E</xsl:when>
-            <xsl:when test="../status='Experimental'">X</xsl:when>
-            </xsl:choose>
-
+        <xsl:variable name="status" select="translate(
+            ../status, $uppercase, $lowercase)"/>
+        <xsl:value-of select="$message[@id=$status]/@letter"/>
      <xsl:text>\\*
 </xsl:text>
 
@@ -134,7 +136,9 @@
 </xsl:template>
 
 <xsl:template match="legend">
-<xsl:apply-templates/>
+<!-- TODO: This table is no longer in source file
+     <xsl:apply-templates/>
+-->
 </xsl:template>
 
 </xsl:stylesheet>
