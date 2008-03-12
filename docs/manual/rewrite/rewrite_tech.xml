@@ -33,10 +33,10 @@ and URL matching.</p>
 documentation</a></seealso>
 <seealso><a href="rewrite_intro.html">mod_rewrite
 introduction</a></seealso>
-<seealso><a href="rewrite_guide.html">Practical solutions to common
-problems</a></seealso>
-<seealso><a href="rewrite_guide_advanced.html">Practical solutions to
-advanced problems</a></seealso>
+<seealso><a href="rewrite_guide.html">Rewrite Guide - useful 
+examples</a></seealso>
+<seealso><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide -
+advanced useful examples</a></seealso>
 
 <section id="Internal"><title>Internal Processing</title>
 
