@@ -30,7 +30,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</td></tr>
-<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>mime_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_mime.c</td></tr></table>
 <h3>概要</h3>
@@ -237,7 +237,7 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddCharset</code> ディレクティブは、
@@ -280,7 +280,7 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddEncoding</code> ディレクティブは、
@@ -327,7 +327,7 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p>拡張子 <var>extension</var> が名前にあるファイルは指定された <a href="../handler.html">handler-name</a> に扱われます。
@@ -362,7 +362,7 @@
 <var>extension</var> [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -393,7 +393,7 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddLanguage</code> ディレクティブは、与えられた拡張子を指定された
@@ -445,7 +445,7 @@
 <var>extension</var> [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -484,7 +484,7 @@
 [<var>extension</var>] ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">AddType</code> ディレクティブは、
@@ -523,7 +523,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DefaultLanguage <var>MIME-lang</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">DefaultLanguage</code> ディレクティブは、Apache
@@ -563,7 +563,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>ModMimeUsePathInfo On|Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>ModMimeUsePathInfo Off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0.41 以降</td></tr>
 </table>
@@ -606,7 +606,7 @@
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MultiviewsMatch NegotiatedOnly</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -664,7 +664,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.24 以降で使用可能</td></tr>
 </table>
@@ -691,7 +691,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">RemoveEncoding</code> ディレクティブは、
@@ -736,7 +736,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">RemoveHandler</code> ディレクティブ
@@ -770,7 +770,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降で使用可能</td></tr>
 </table>
@@ -797,7 +797,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.24 以降で使用可能</td></tr>
 </table>
@@ -819,7 +819,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.26 以降でのみ使用可能</td></tr>
 </table>
@@ -850,7 +850,7 @@
 ...</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>バーチャルホスト, ディレクトリ, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">RemoveType</code> ディレクティブは与えられた拡張子の
@@ -885,7 +885,7 @@
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>TypesConfig <var>file-path</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>TypesConfig conf/mime.types</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>ベース</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mime</td></tr>
 </table>
     <p><code class="directive">TypesConfig</code> ディレクティブは、MIME

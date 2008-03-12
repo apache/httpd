@@ -47,21 +47,18 @@
   </div>
 <div id="directive-ref"><table id="legend">
 <tr><td class="letters"><span><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#G">&nbsp;G&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#K">&nbsp;K&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#O">&nbsp;O&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#T">&nbsp;T&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></span></td>
-<td><table>
-      
-      <tr><th>s</th><td>サーバ設定ファイル</td></tr>
-      <tr><th>v</th><td>バーチャルホスト</td></tr>
-      <tr><th>d</th><td>ディレクトリ</td></tr>
-      <tr><th>h</th><td>.htaccess</td></tr>
-    </table></td>
-<td><table>
-      
-      <tr><th>C</th><td>Core</td></tr>
-      <tr><th>M</th><td>MPM</td></tr>
-      <tr><th>B</th><td>Base</td></tr>
-      <tr><th>E</th><td>Extension</td></tr>
-      <tr><th>X</th><td>Experimental</td></tr>
-    </table></td></tr>
+<td><table><tr><th>s</th><td>サーバ設定ファイル</td></tr>
+<tr><th>v</th><td>バーチャルホスト</td></tr>
+<tr><th>d</th><td>ディレクトリ</td></tr>
+<tr><th>h</th><td>.htaccess</td></tr>
+</table></td>
+<td><table><tr><th>C</th><td>Core</td></tr>
+<tr><th>M</th><td>MPM</td></tr>
+<tr><th>B</th><td>Base</td></tr>
+<tr><th>E</th><td>Extension</td></tr>
+<tr><th>X</th><td>Experimental</td></tr>
+<tr><th>T</th><td>External</td></tr>
+</table></td></tr>
 </table>
 <table class="qref">
 <tr><td><a href="core.html#acceptfilter" id="A" name="A">AcceptFilter <var>protocol</var> <var>accept_filter</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">プロトコルを Listen しているソケットの最適化を設定する</td></tr>
@@ -81,15 +78,15 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
 [<var>MIME-type</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">アイコンの代わりに
 表示される、MIME タイプで選択された代替テキスト</td></tr>
 <tr><td><a href="mod_mime.html#addcharset">AddCharset <var>charset</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">ファイル名の拡張子を指定された文字セットにマップする</td></tr>
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">ファイル名の拡張子を指定された文字セットにマップする</td></tr>
 <tr class="odd"><td><a href="core.html#adddefaultcharset">AddDefaultCharset On|Off|<var>charset</var></a></td><td> Off </td><td>svdh</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">レスポンスのコンテントタイプが <code>text/plain</code> あるいは
 <code>text/html</code> の場合に追加するデフォルトの charset パラメータ</td></tr>
 <tr><td><a href="mod_autoindex.html#adddescription">AddDescription <var>string</var> <var>file</var> [<var>file</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">ファイルに対して表示する説明</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addencoding">AddEncoding <var>MIME-enc</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル名の拡張子を指定されたエンコーディング
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ファイル名の拡張子を指定されたエンコーディング
 にマップする</td></tr>
 <tr><td><a href="mod_mime.html#addhandler">AddHandler <var>handler-name</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">ファイル名の拡張子を指定されたハンドラにマップする</td></tr>
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">ファイル名の拡張子を指定されたハンドラにマップする</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#addicon">AddIcon <var>icon</var> <var>name</var>
 [<var>name</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ファイルに表示するアイコンを名前で選択</td></tr>
 <tr><td><a href="mod_autoindex.html#addiconbyencoding">AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
@@ -99,19 +96,19 @@ accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
 [<var>MIME-type</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ファイルの隣に表示するアイコンを
 MIME タイプによって選択</td></tr>
 <tr><td><a href="mod_mime.html#addinputfilter">AddInputFilter <var>filter</var>[;<var>filter</var>...]
-<var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子をクライアントのリクエストを処理する
+<var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">ファイルの拡張子をクライアントのリクエストを処理する
     フィルタにマップする</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addlanguage">AddLanguage <var>MIME-lang</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル名を指定された言語にマップ</td></tr>
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ファイル名を指定された言語にマップ</td></tr>
 <tr><td><a href="mod_info.html#addmoduleinfo">AddModuleInfo <var>module-name</var> <var>string</var></a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">server-info ハンドラにより表示されるモジュールの情報に
 追加の情報を付け加える</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addoutputfilter">AddOutputFilter <var>filter</var>[;<var>filter</var>...]
-<var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル名の拡張子をサーバからの応答を処理するフィルタに
+<var>extension</var> [<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ファイル名の拡張子をサーバからの応答を処理するフィルタに
     マップする</td></tr>
 <tr><td><a href="core.html#addoutputfilterbytype">AddOutputFilterByType <var>filter</var>[;<var>filter</var>...] <var>MIME-type</var>
 [<var>MIME-type</var>] ...</a></td><td></td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">MIME-type に出力フィルタを割り当てる</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#addtype">AddType <var>MIME-type</var> <var>extension</var>
-[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル名の拡張子を指定されたコンテントタイプにマップ</td></tr>
+[<var>extension</var>] ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ファイル名の拡張子を指定されたコンテントタイプにマップ</td></tr>
 <tr><td><a href="mod_alias.html#alias">Alias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">URL をファイルシステムの位置にマップする</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#aliasmatch">AliasMatch <var>regex</var>
@@ -280,7 +277,7 @@ processes</td></tr>
 <tr class="odd"><td><a href="mod_dbd.html#dbdriver">DBDriver <var>name</var></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Specify an SQL driver</td></tr>
 <tr><td><a href="mod_autoindex.html#defaulticon">DefaultIcon <var>url-path</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">特定のアイコンが何も設定されていない時に
 ファイルに表示するアイコン</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>MIME-lang</var></a></td><td></td><td>svdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">あるスコープのすべてのファイルを指定された言語に
+<tr class="odd"><td><a href="mod_mime.html#defaultlanguage">DefaultLanguage <var>MIME-lang</var></a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">あるスコープのすべてのファイルを指定された言語に
 設定する</td></tr>
 <tr><td><a href="core.html#defaulttype">DefaultType <var>MIME-type</var></a></td><td> text/plain </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">サーバがコンテントタイプを決定できないときに
 送られる MIME コンテントタイプ</td></tr>
@@ -467,10 +464,10 @@ using the specified magic file</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">リクエストに応答することのできる
 アイドルスレッド数の最小数</td></tr>
 <tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>X</td></tr><tr><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td /></tr><tr class="odd"><td class="descr" colspan="4"><code>path_info</code> コンポーネントをファイル名の一部として扱うように
+<tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4"><code>path_info</code> コンポーネントをファイル名の一部として扱うように
 <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> に通知する</td></tr>
 <tr><td><a href="mod_mime.html#multiviewsmatch">MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
-[Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>svdh</td><td /></tr><tr><td class="descr" colspan="4">MultiViews でのマッチングの検索に含ませる
+[Handlers|Filters]</a></td><td> NegotiatedOnly </td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">MultiViews でのマッチングの検索に含ませる
 ファイルのタイプを指定する</td></tr>
 <tr class="odd"><td><a href="core.html#namevirtualhost" id="N" name="N">NameVirtualHost <var>addr</var>[:<var>port</var>]</a></td><td></td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">名前ベースのバーチャルホストのための IP アドレスを指定</td></tr>
 <tr><td><a href="mod_proxy.html#noproxy">NoProxy <var>host</var> [<var>host</var>] ...</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">直接接続する ホスト、ドメイン、ネットワーク</td></tr>
@@ -527,22 +524,22 @@ URL を調整する</td></tr>
 <tr class="odd"><td><a href="mod_authz_core.html#reject">Reject <var>entity-name</var> [<var>entity-name</var>] ...</a></td><td></td><td>dh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Rejects authenticated users or host based 
 requests from accessing a resource</td></tr>
 <tr><td><a href="mod_mime.html#removecharset">RemoveCharset <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべての文字セット
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべての文字セット
 を解除する</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#removeencoding">RemoveEncoding <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのコンテントエンコーディング
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのコンテントエンコーディング
 を解除する</td></tr>
 <tr><td><a href="mod_mime.html#removehandler">RemoveHandler <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのハンドラを
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">ファイルの拡張子に関連付けられたすべてのハンドラを
 解除する</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#removeinputfilter">RemoveInputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル拡張子に関連付けられた入力フィルタを解除する</td></tr>
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ファイル拡張子に関連付けられた入力フィルタを解除する</td></tr>
 <tr><td><a href="mod_mime.html#removelanguage">RemoveLanguage <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイル拡張子に関連付けられた言語を解除する</td></tr>
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">ファイル拡張子に関連付けられた言語を解除する</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#removeoutputfilter">RemoveOutputFilter <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr class="odd"><td class="descr" colspan="4">ファイル拡張子に関連付けられた出力フィルタを解除する</td></tr>
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">ファイル拡張子に関連付けられた出力フィルタを解除する</td></tr>
 <tr><td><a href="mod_mime.html#removetype">RemoveType <var>extension</var> [<var>extension</var>]
-...</a></td><td></td><td>vdh</td><td /></tr><tr><td class="descr" colspan="4">ファイルの拡張子と関連付けられたコンテントタイプを
+...</a></td><td></td><td>vdh</td><td>B</td></tr><tr><td class="descr" colspan="4">ファイルの拡張子と関連付けられたコンテントタイプを
 解除する</td></tr>
 <tr class="odd"><td><a href="mod_headers.html#requestheader">RequestHeader set|append|add|unset <var>header</var>
 [<var>value</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>svdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">HTTP リクエストヘッダの設定</td></tr>
@@ -696,7 +693,7 @@ Certificate verification</td></tr>
 <tr><td><a href="mpm_common.html#startservers">StartServers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">起動時に生成される子サーバプロセスの数</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#startthreads">StartThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">起動時に生成されるスレッドの数</td></tr>
 <tr><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>X</td></tr><tr><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
-<tr class="odd"><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td /></tr><tr class="odd"><td class="descr" colspan="4">CGI プログラムのユーザパーミッション、グループパーミッション</td></tr>
+<tr class="odd"><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">CGI プログラムのユーザパーミッション、グループパーミッション</td></tr>
 <tr><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">設定可能な子プロセス毎のスレッド数の上限を
 設定します</td></tr>
 <tr class="odd"><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">子プロセスそれぞれに生成されるスレッド数</td></tr>
@@ -705,7 +702,7 @@ Certificate verification</td></tr>
 <tr class="odd"><td><a href="core.html#timeout">TimeOut <var>seconds</var></a></td><td> 300 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">各イベントについて、リクエストを失敗させるまでにサーバが
 待つ時間を設定</td></tr>
 <tr><td><a href="mod_log_config.html#transferlog">TransferLog <var>file</var>|<var>pipe</var></a></td><td></td><td>sv</td><td>B</td></tr><tr><td class="descr" colspan="4">ログファイルの位置を指定</td></tr>
-<tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td /></tr><tr class="odd"><td class="descr" colspan="4"><code>mime.types</code> ファイルの位置</td></tr>
+<tr class="odd"><td><a href="mod_mime.html#typesconfig">TypesConfig <var>file-path</var></a></td><td> conf/mime.types </td><td>s</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4"><code>mime.types</code> ファイルの位置</td></tr>
 <tr><td><a href="mod_env.html#unsetenv" id="U" name="U">UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr><td class="descr" colspan="4">環境から変数を取り除く</td></tr>
 <tr class="odd"><td><a href="core.html#usecanonicalname">UseCanonicalName On|Off|Dns</a></td><td> Off </td><td>svd</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">サーバが自分自身の名前とポートを決定する方法を設定する</td></tr>
