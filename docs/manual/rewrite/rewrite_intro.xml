@@ -100,7 +100,7 @@ well as write your own.</p>
 <th>Example</th>
 </tr>
 
-<tr><td><code>.</code></td><td>Matches any
+<tr><td><code>.</code></td><td>Matches any single
 character</td><td><code>c.t</code> will match <code>cat</code>,
 <code>cot</code>, <code>cut</code>, etc.</td></tr>
 <tr><td><code>+</code></td><td>Repeats the previous match one or more
@@ -125,10 +125,13 @@ For more on backreferences see <a href="#InternalBackRefs">below</a>.</td></tr>
 <tr><td><code>[ ]</code></td><td>A character class - matches one of the
 characters</td><td><code>c[uoa]t</code> matches <code>cut</code>,
 <code>cot</code> or <code>cat</code>.</td></tr>
-<tr><td><code>!</code></td><td>Not</td><td>Negates a match - that is,
-ensures that it does not match.</td></tr>
-
+<tr><td><code>[^ ]</code></td><td>Negative character class - matches any character not specified</td><td><code>c[^/]t</code> matches <code>cat</code> or <code>c=t</code> but not <code>c/t</code></td></tr>
 </table>
+
+<p>In <module>mod_rewrite</module> the <code>!</code> character can be
+used before a regular expression to negate it. This is, a string will
+be considered to have matched only if it does not match the rest of
+the expression.</p>
 
 </section>
 
