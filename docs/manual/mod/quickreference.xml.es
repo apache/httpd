@@ -39,24 +39,5 @@
     la directiva puede funcionar y el estado de la directiva de
     acuerdo con las notas que detallan m&#225;s abajo.</p>
   </summary>
-
-  <legend>
-    <table>
-      <columnspec><column width=".1"/><column width=".2"/></columnspec>
-      <tr><th>s</th><td>server&#160;config</td></tr>
-      <tr><th>v</th><td>virtual&#160;host</td></tr>
-      <tr><th>d</th><td>directory</td></tr>
-      <tr><th>h</th><td>.htaccess</td></tr>
-    </table>
-
-    <table>
-      <columnspec><column width=".1"/><column width=".2"/></columnspec>
-      <tr><th>C</th><td>Core</td></tr>
-      <tr><th>M</th><td>MPM</td></tr>
-      <tr><th>B</th><td>Base</td></tr>
-      <tr><th>E</th><td>Extensi&#243;n</td></tr>
-      <tr><th>X</th><td>Experimental</td></tr>
-    </table>
-  </legend>
 </quickreference>
 
