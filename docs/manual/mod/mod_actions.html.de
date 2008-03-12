@@ -28,7 +28,7 @@
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Beschreibung:</a></th><td>Dieses Modul ermöglicht die Ausführung von CGI-Skripten
   in Abhängigkeit von Medientypen und Anfragemethoden.</td></tr>
-<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Basis</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">Modulbezeichner:</a></th><td>actions_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">Quelltext-Datei:</a></th><td>mod_actions.c</td></tr></table>
 <h3>Zusammenfassung</h3>
@@ -59,7 +59,7 @@
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Action <var>Aktionsart</var> <var>CGI-Skript</var> [virtual]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Override">AllowOverride:</a></th><td>FileInfo</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Basis</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>mod_actions</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Kompatibilität:</a></th><td>Der Schalter <code>virtual</code> und die Übergabe des 
   Handlers wurden in Apache 2.1 eingeführt.</td></tr>
@@ -118,7 +118,7 @@
   Anfragemethode.</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>Script <var>Methode</var> <var>CGI-Skript</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Kontext:</a></th><td>Serverkonfiguration, Virtual Host, Verzeichnis</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Basis</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>mod_actions</td></tr>
 </table>
   <p>Die Direktive fügt eine Aktion hinzu, welche das

@@ -27,7 +27,7 @@
 <a href="../ko/mod/mod_suexec.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>指定されたユーザとグループで CGI スクリプトを実行する</td></tr>
-<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>拡張</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>suexec_module</td></tr>
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_suexec.c</td></tr>
 <tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.0 以降で使用可能</td></tr></table>
@@ -52,7 +52,7 @@
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>CGI プログラムのユーザパーミッション、グループパーミッション</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SuexecUserGroup <em>User Group</em></code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
-<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>拡張</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_suexec</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>SuexecUserGroup は 2.0 以降でのみ使用可能。</td></tr>
 </table>
