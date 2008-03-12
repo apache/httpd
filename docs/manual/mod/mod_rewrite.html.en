@@ -1086,50 +1086,10 @@ later</td></tr>
       <code>%{QUERY_STRING}</code> variables respectively.</p>
 </div>
 
-
-
-      <p>Some hints on the syntax of <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular 
-      expressions</a>:</p>
-
-<div class="note"><pre>
-<strong>Text:</strong>
-  <strong><code>.</code></strong>           Any single character
-  <strong><code>[</code></strong>chars<strong><code>]</code></strong>     Character class: Any character of the class ``chars''
-  <strong><code>[^</code></strong>chars<strong><code>]</code></strong>    Character class: Not a character of the class ``chars''
-  text1<strong><code>|</code></strong>text2 Alternative: text1 or text2
-
-<strong>Quantifiers:</strong>
-  <strong><code>?</code></strong>           0 or 1 occurrences of the preceding text
-  <strong><code>*</code></strong>           0 or N occurrences of the preceding text (N &gt; 0)
-  <strong><code>+</code></strong>           1 or N occurrences of the preceding text (N &gt; 1)
-
-<strong>Grouping:</strong>
-  <strong><code>(</code></strong>text<strong><code>)</code></strong>      Grouping of text
-              (used either to set the borders of an alternative as above, or
-              to make backreferences, where the <strong>N</strong>th group can 
-              be referred to on the RHS of a RewriteRule as <code>$</code><strong>N</strong>)
-
-<strong>Anchors:</strong>
-  <strong><code>^</code></strong>           Start-of-line anchor
-  <strong><code>$</code></strong>           End-of-line anchor
-
-<strong>Escaping:</strong>
-  <strong><code>\</code></strong>char       escape the given char
-              (for instance, to specify the chars "<code>.[]()</code>" <em>etc.</em>)
-</pre></div>
-
-      <p>For more information about regular expressions, have a look at the
-      perl regular expression manpage ("<a href="http://perldoc.perl.org/perlre.html">perldoc
-      perlre</a>"). If you are interested in more detailed
-      information about regular expressions and their variants
-      (POSIX regex etc.) the following book is dedicated to this topic:</p>
-
-      <p class="indent">
-        <em>Mastering Regular Expressions, 2nd Edition</em><br />
-         Jeffrey E.F. Friedl<br />
-         O'Reilly &amp; Associates, Inc. 2002<br />
-         ISBN 0-596-00289-0<br />
-      </p>
+      <p>For some hints on <a class="glossarylink" href="../glossary.html#regex" title="see glossary">regular
+      expressions</a>, see
+      the <a href="../rewrite/rewrite_intro.html#regex">mod_rewrite
+      Introduction</a>.</p>
 
       <p>In mod_rewrite, the NOT character	
        ('<code>!</code>') is also available as a possible pattern 
