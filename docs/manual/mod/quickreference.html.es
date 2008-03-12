@@ -27,6 +27,10 @@
 <a href="../ko/mod/quickreference.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="../ru/mod/quickreference.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
+<div class="outofdate">Esta traducción podría estar
+            obsoleta. Consulte la versión en inglés de la
+            documentación para comprobar si se han producido cambios
+            recientemente.</div>
 
     <p>La Guía Rápida de Referencia de Directivas muestra el uso, las
     opciones por defecto, el estado y el contexto de cada directiva de
@@ -46,21 +50,17 @@
   </div>
 <div id="directive-ref"><table id="legend">
 <tr><td class="letters"><span><a href="#A">&nbsp;A&nbsp;</a> | <a href="#B">&nbsp;B&nbsp;</a> | <a href="#C">&nbsp;C&nbsp;</a> | <a href="#D">&nbsp;D&nbsp;</a> | <a href="#E">&nbsp;E&nbsp;</a> | <a href="#F">&nbsp;F&nbsp;</a> | <a href="#G">&nbsp;G&nbsp;</a> | <a href="#H">&nbsp;H&nbsp;</a> | <a href="#I">&nbsp;I&nbsp;</a> | <a href="#K">&nbsp;K&nbsp;</a> | <a href="#L">&nbsp;L&nbsp;</a> | <a href="#M">&nbsp;M&nbsp;</a> | <a href="#N">&nbsp;N&nbsp;</a> | <a href="#O">&nbsp;O&nbsp;</a> | <a href="#P">&nbsp;P&nbsp;</a> | <a href="#R">&nbsp;R&nbsp;</a> | <a href="#S">&nbsp;S&nbsp;</a> | <a href="#T">&nbsp;T&nbsp;</a> | <a href="#U">&nbsp;U&nbsp;</a> | <a href="#V">&nbsp;V&nbsp;</a> | <a href="#W">&nbsp;W&nbsp;</a> | <a href="#X">&nbsp;X&nbsp;</a></span></td>
-<td><table>
-      
-      <tr><th>s</th><td>server&nbsp;config</td></tr>
-      <tr><th>v</th><td>virtual&nbsp;host</td></tr>
-      <tr><th>d</th><td>directory</td></tr>
-      <tr><th>h</th><td>.htaccess</td></tr>
-    </table></td>
-<td><table>
-      
-      <tr><th>C</th><td>Core</td></tr>
-      <tr><th>M</th><td>MPM</td></tr>
-      <tr><th>B</th><td>Base</td></tr>
-      <tr><th>E</th><td>Extensión</td></tr>
-      <tr><th>X</th><td>Experimental</td></tr>
-    </table></td></tr>
+<td><table><tr><th>s</th><td>server config</td></tr>
+<tr><th>v</th><td>virtual host</td></tr>
+<tr><th>d</th><td>directory</td></tr>
+<tr><th>h</th><td>.htaccess</td></tr>
+</table></td>
+<td><table><tr><th>C</th><td>Core</td></tr>
+<tr><th>M</th><td>MPM</td></tr>
+<tr><th>B</th><td>Base</td></tr>
+<tr><th>E</th><td>Extensión</td></tr>
+<tr><th>X</th><td>Experimental</td></tr>
+</table></td></tr>
 </table>
 <table class="qref">
 <tr><td><a href="mpm_common.html#acceptmutex" id="A" name="A">AcceptMutex Default|<var>method</var></a></td><td> Default </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Método que usa Apache para serializar múltiples procesos
