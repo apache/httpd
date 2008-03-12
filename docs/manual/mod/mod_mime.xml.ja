@@ -26,7 +26,7 @@
 <description>リクエストされたファイルの拡張子とファイルの振る舞い
     (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
     とを関連付ける</description>
-<status>ベース</status>
+<status>Base</status>
 <sourcefile>mod_mime.c</sourcefile>
 <identifier>mime_module</identifier>
 

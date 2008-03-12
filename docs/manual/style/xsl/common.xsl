@@ -278,8 +278,10 @@
 <div id="footer">&lf;
     <p class="apache">
         <xsl:text>Copyright 2008 The Apache Software Foundation.</xsl:text><br />
-        <xsl:value-of select="$message[@id='licensed']"/>
-        <xsl:text> </xsl:text>
+        <xsl:if test="normalize-space($message[@id='before-license'])">
+            <xsl:value-of select="$message[@id='before-license']"/>
+            <xsl:text> </xsl:text>
+        </xsl:if>
 
         <a href="http://www.apache.org/licenses/LICENSE-2.0">
             <xsl:if test="$ext-target">
@@ -287,6 +289,11 @@
             </xsl:if>
             <xsl:text>Apache License, Version 2.0</xsl:text>
         </a>
+        <xsl:if test="normalize-space($message[@id='after-license'])">
+            <xsl:text> </xsl:text>
+            <xsl:value-of select="$message[@id='after-license']"/>
+        </xsl:if>
+
         <xsl:text>.</xsl:text>
     </p>&lf;
 

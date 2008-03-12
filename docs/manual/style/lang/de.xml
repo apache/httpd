@@ -72,11 +72,19 @@
         <message id="status">Status</message>
         <message id="module">Modul</message>
 
+        <!-- Status descriptions -->
+        <message id="base" letter="B">Basis</message>
+        <message id="mpm" letter="M">MPM</message>
+        <message id="core" letter="C">Core</message>
+        <message id="extension" letter="E">Erweiterung</message>
+        <message id="experimental" letter="X">experimentell</message>
+        <message id="external" letter="T">extern</message>
+
         <!-- Used in directive context lists -->
-        <message id="serverconfig">Serverkonfiguration</message>
-        <message id="virtualhost">Virtual Host</message>
-        <message id="directory">Verzeichnis</message>
-        <message id="htaccess">.htaccess</message>
+        <message id="serverconfig" letter="s">Serverkonfiguration</message>
+        <message id="virtualhost" letter="v">Virtual Host</message>
+        <message id="directory" letter="d">Verzeichnis</message>
+        <message id="htaccess" letter="h">.htaccess</message>
 
         <!-- Used for directive lists -->
         <message id="directives">Direktiven</message>
@@ -119,7 +127,8 @@
         <message id="sitemap">Seitenindex</message>
 
         <!-- footer line -->
-        <message id="licensed">Lizenziert unter der</message>
+        <message id="before-license">Lizenziert unter der</message>
+        <message id="after-license"></message>
         <message id="langavail">Verfügbare Sprachen</message>
 
         <!-- not up to date -->
