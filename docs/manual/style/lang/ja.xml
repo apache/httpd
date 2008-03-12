@@ -71,11 +71,19 @@
         <message id="status">ステータス</message>
         <message id="module">モジュール</message>
 
+        <!-- Status descriptions -->
+        <message id="base" letter="B">Base</message>
+        <message id="mpm" letter="M">MPM</message>
+        <message id="core" letter="C">Core</message>
+        <message id="extension" letter="E">Extension</message>
+        <message id="experimental" letter="X">Experimental</message>
+        <message id="external" letter="T">External</message>
+
         <!-- Used in directive context lists -->
-        <message id="serverconfig">サーバ設定ファイル</message>
-        <message id="virtualhost">バーチャルホスト</message>
-        <message id="directory">ディレクトリ</message>
-        <message id="htaccess">.htaccess</message>
+        <message id="serverconfig" letter="s">サーバ設定ファイル</message>
+        <message id="virtualhost" letter="v">バーチャルホスト</message>
+        <message id="directory" letter="d">ディレクトリ</message>
+        <message id="htaccess" letter="h">.htaccess</message>
 
         <!-- Used for directive lists -->
         <message id="directives">ディレクティブ</message>
@@ -118,7 +126,8 @@
         <message id="sitemap">サイトマップ</message>
 
         <!-- footer line -->
-        <message id="licensed">Licensed under the</message>
+        <message id="before-license">Licensed under the</message>
+        <message id="after-license"></message>
         <message id="langavail">Available Languages</message>
 
         <!-- not up to date -->

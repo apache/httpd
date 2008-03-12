@@ -39,24 +39,4 @@
     Direktive erlaubt ist, sowie den Status der Direktive entsprechend
     der Legende.</p>
   </summary>
-
-  <legend>
-    <table>
-      <columnspec><column width=".1"/><column width=".2"/></columnspec>
-      <tr><th>s</th><td>Serverkonfiguration</td></tr>
-      <tr><th>v</th><td>Virtual&#160;Host</td></tr>
-      <tr><th>d</th><td>Verzeichnis</td></tr>
-      <tr><th>h</th><td>.htaccess</td></tr>
-    </table>
-
-    <table>
-      <columnspec><column width=".1"/><column width=".2"/></columnspec>
-      <tr><th>C</th><td>Core</td></tr>
-      <tr><th>M</th><td>MPM</td></tr>
-      <tr><th>B</th><td>Basis</td></tr>
-      <tr><th>E</th><td>Erweiterung</td></tr>
-      <tr><th>X</th><td>experimentell</td></tr>
-      <tr><th>T</th><td>extern</td></tr>
-    </table>
-  </legend>
 </quickreference>

@@ -89,14 +89,17 @@
                         </a>
                     </th>
                     <td>
+                        <xsl:variable name="status" select="translate(
+                            status, $uppercase, $lowercase)"/>
                         <xsl:choose>
                         <xsl:when test="status = 'External' and status/@href">
                             <a href="{status/@href}">
-                                <xsl:value-of select="status" />
+                                <xsl:value-of select="$message[@id=$status]"/>
                             </a>
                         </xsl:when>
                         <xsl:otherwise>
-                            <xsl:value-of select="status" />
+                            <xsl:value-of
+                                select="$message[@id=$status]"/>
                         </xsl:otherwise>
                         </xsl:choose>
                     </td>
@@ -384,7 +387,9 @@
                 </a>
             </th>
             <td>
-                <xsl:value-of select="../status" />
+                <xsl:variable name="status" select="translate(
+                    ../status, $uppercase, $lowercase)"/>
+                <xsl:value-of select="$message[@id=$status]"/>
             </td>
         </tr>&lf;
 

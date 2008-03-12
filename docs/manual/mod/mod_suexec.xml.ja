@@ -24,7 +24,7 @@
 
 <name>mod_suexec</name>
 <description>指定されたユーザとグループで CGI スクリプトを実行する</description>
-<status>拡張</status>
+<status>Extension</status>
 <sourcefile>mod_suexec.c</sourcefile>
 <identifier>suexec_module</identifier>
 <compatibility>Apache 2.0 以降で使用可能</compatibility>
