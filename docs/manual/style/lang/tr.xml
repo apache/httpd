@@ -17,7 +17,7 @@
  limitations under the License.
 -->
 <!--
-  Translated by Nilgün Belma Bugüner <nilgun (at) belgeler dot org>
+  Translated by NilgÃ¼n Belma BugÃ¼ner <nilgun (at) belgeler dot org>
   (March, 2008)
   Reviewed by Orhan Berent <berent (at) belgeler dot org>
 -->
@@ -43,97 +43,97 @@
     <!-- comments...                                                      -->
     <messages>
         <!-- language link titles -->
-        <message id="nativename">Türkçe</message>
+        <message id="nativename">TÃ¼rkÃ§e</message>
 
          <!-- Used for the moduleindex -->
-        <message id="corefeatures">Temel Özellikler ve Çoklu ¿¿lem Modülleri</message>
-        <message id="othermodules">Di¿er Modüller</message>
-        <message id="obsoletemodules">At¿l Modüller</message>
+        <message id="corefeatures">Temel Ã–zellikler ve Ã‡oklu Ä°ÅŸlem ModÃ¼lleri</message>
+        <message id="othermodules">DiÄŸer ModÃ¼ller</message>
+        <message id="obsoletemodules">AtÄ±l ModÃ¼ller</message>
 
         <!-- Used for the modulesynopsis and sitemap -->
-        <message id="obsoleteapachemodule">At¿l Apache Modülü</message>
-        <message id="apachemodule">Apache Modülü</message>
-        <message id="apachecore">Apache Temel Özellikleri</message>
-        <message id="apachempmcommon">Apache MPM Ortak Yönergeleri</message>
+        <message id="obsoleteapachemodule">AtÄ±l Apache ModÃ¼lÃ¼</message>
+        <message id="apachemodule">Apache ModÃ¼lÃ¼</message>
+        <message id="apachecore">Apache Temel Ã–zellikleri</message>
+        <message id="apachempmcommon">Apache MPM Ortak YÃ¶nergeleri</message>
         <message id="apachempm">Apache MPM</message>
 
         <!-- Used in description box for modulesynopsis -->
-        <message id="description">Aç¿klama</message>
-        <message id="seealso">Ayr¿ca bkz,</message>
+        <message id="description">AÃ§Ä±klama</message>
+        <message id="seealso">AyrÄ±ca bkz,</message>
         <message id="topics">Konular</message>
         <message id="status">Durum</message>
-        <message id="moduleidentifier">Modül&nbsp;Betimleyici</message>
-        <message id="sourcefile">Kaynak&nbsp;Dosyas¿</message>
+        <message id="moduleidentifier">ModÃ¼l&nbsp;Betimleyici</message>
+        <message id="sourcefile">Kaynak&nbsp;DosyasÄ±</message>
         <message id="compatibility">Uyumluluk</message>
 
         <!-- Used in manualpage -->
-        <message id="relatedmodules">¿lgili Modüller</message>
-        <message id="relateddirectives">¿lgili Yönergeler</message>
+        <message id="relatedmodules">Ä°lgili ModÃ¼ller</message>
+        <message id="relateddirectives">Ä°lgili YÃ¶nergeler</message>
 
         <!-- Used in description box for directives -->
-        <message id="syntax">Sözdizimi</message>
-        <message id="default">Öntan¿ml¿</message>
-        <message id="context">Ba¿lam</message>
-        <message id="override">Geçersizle¿tirme</message>
+        <message id="syntax">SÃ¶zdizimi</message>
+        <message id="default">Ã–ntanÄ±mlÄ±</message>
+        <message id="context">BaÄŸlam</message>
+        <message id="override">GeÃ§ersizleÅŸtirme</message>
         <message id="status">Durum</message>
-        <message id="module">Modül</message>
+        <message id="module">ModÃ¼l</message>
 
         <!-- Status descriptions -->
         <message id="base" letter="T">Temel</message>
         <message id="mpm" letter="M">MPM</message>
-        <message id="core" letter="Ç">Çekirdek</message>
+        <message id="core" letter="Ã‡">Ã‡ekirdek</message>
         <message id="extension" letter="E">Eklenti</message>
         <message id="experimental" letter="D">Deneysel</message>
         <message id="external" letter="H">Harici</message>
 
         <!-- Used in directive context lists -->
-        <message id="serverconfig" letter="s">sunucu yap¿land¿rmas¿</message>
+        <message id="serverconfig" letter="s">sunucu yapÄ±landÄ±rmasÄ±</message>
         <message id="virtualhost" letter="k">sanal konak</message>
         <message id="directory" letter="d">dizin</message>
         <message id="htaccess" letter="h">.htaccess</message>
 
         <!-- Used for directive lists -->
-        <message id="directives">Yönergeler</message>
+        <message id="directives">YÃ¶nergeler</message>
         <!-- the optional attribute replace-space-with takes a string.
              if present, the space between <directive name> and 'Directive'
              in directivesynopsis headings will be replaced by the given string.
              (see de.xml for an example) -->
-        <message id="directive">Yönerge</message>
-        <message id="nodirectives">Bu modül yönerge içermez.</message>
+        <message id="directive">YÃ¶nerge</message>
+        <message id="nodirectives">Bu modÃ¼l yÃ¶nerge iÃ§ermez.</message>
 
         <!-- Used in summaries -->
-        <message id="summary">Özet</message>
+        <message id="summary">Ã–zet</message>
 
         <!-- Used for glossary link titles -->
-        <message id="glossarylink">sözlü¿e bak¿n¿z</message>
+        <message id="glossarylink">sÃ¶zlÃ¼ÄŸe bakÄ±nÄ±z</message>
 
         <!-- Used in headers and footers -->
         <message id="apachetitle">- Apache HTTP Sunucusu</message>
-        <message id="apachehttpserver">Apache HTTP Sunucusu Sürüm
+        <message id="apachehttpserver">Apache HTTP Sunucusu SÃ¼rÃ¼m
             &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[APACHE BELGELEME]</message>
-        <message id="search">Google¿de Ara</message> <!-- search button -->
+        <message id="search">Googleâ€™de Ara</message> <!-- search button -->
         <message id="index">Dizin</message> <!-- deprecated -->
-        <message id="home">Ba¿ Sayfa</message> <!-- deprecated -->
+        <message id="home">BaÅŸ Sayfa</message> <!-- deprecated -->
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>
         <message id="http-server">HTTP Sunucusu</message>
         <message id="documentation">Belgeleme</message>
-        <message id="version">Sürüm &httpd.major;.&httpd.minor;</message>
+        <message id="version">SÃ¼rÃ¼m &httpd.major;.&httpd.minor;</message>
 
         <!-- super menu -->
-        <message id="modules">Modüller</message>
+        <message id="modules">ModÃ¼ller</message>
         <message id="faq">SSS</message>
         <message id="glossary">Terimler</message>
-        <message id="sitemap">Site Haritas¿</message>
+        <message id="sitemap">Site HaritasÄ±</message>
 
         <!-- footer line -->
         <message id="before-license"></message>
-        <message id="after-license">alt¿nda lisansl¿d¿r</message>
+        <message id="after-license">altÄ±nda lisanslÄ±dÄ±r</message>
         <message id="langavail">Mevcut Diller</message>
 
         <!-- not up to date -->
-        <message id="outofdate">Bu çeviri güncel olmayabilir. Son de¿i¿iklikler için ¿ngilizce sürüm geçerlidir.</message>
+        <message id="outofdate">Bu Ã§eviri gÃ¼ncel olmayabilir. Son deÄŸiÅŸiklikler iÃ§in Ä°ngilizce sÃ¼rÃ¼m geÃ§erlidir.</message>
     </messages>
 </language>
