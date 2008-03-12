@@ -73,6 +73,19 @@
         <message id="status">Статус</message>
         <message id="module">Модуль</message>
 
+        <!-- Status descriptions -->
+        <message id="base" letter="B">Base</message>
+        <message id="mpm" letter="M">MPM</message>
+        <message id="core" letter="C">Core</message>
+        <message id="extension" letter="E">Extension</message>
+        <message id="experimental" letter="X">Experimental</message>
+
+        <!-- Used in directive context lists -->
+        <message id="serverconfig" letter="s">server config</message>
+        <message id="virtualhost" letter="v">virtual host</message>
+        <message id="directory" letter="d">directory</message>
+        <message id="htaccess" letter="h">.htaccess</message>
+
         <!-- Used for directive lists -->
         <message id="directives">Директивы</message>
         <message id="directive">Директива</message>
@@ -106,7 +119,8 @@
         <message id="sitemap">Карта сайта</message>
 
         <!-- footer line -->
-        <message id="licensed">Licensed under the</message>
+        <message id="before-license">Licensed under the</message>
+        <message id="after-license"></message>
         <message id="langavail">Доступные языки</message>
 
         <!-- not up to date -->
