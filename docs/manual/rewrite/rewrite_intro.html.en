@@ -245,7 +245,7 @@ argument is a list of flags that modify how the match is evaluated.</p>
 <p>For example, to send all requests from a particular IP range to a
 different server, you could use:</p>
 <div class="example"><p><code>
-RewriteCond %{REMOTE_ADDR} ^10\2.<br />
+RewriteCond %{REMOTE_ADDR} ^10\.2\.<br />
 RewriteRule (.*) http://intranet.example.com$1
 </code></p></div>
 
