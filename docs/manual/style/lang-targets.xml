@@ -211,7 +211,7 @@
 <!-- Turkish                                                              -->
 <!-- ==================================================================== -->
 <property value=".xml.tr" name="inputext.tr"/>
-<property value=".html.tr" name="outputext.tr"/>
+<property value=".html.tr.utf8" name="outputext.tr"/>
 
 <target description="- builds Turkish HTML files" name="tr">
     <html.generic lang="tr"/>
