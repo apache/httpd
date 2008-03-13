@@ -20,8 +20,8 @@
  limitations under the License.
 -->
 
-<manualpage metafile="flags.xml.meta">
-<parentdocument href="./index.html"/>
+<manualpage metafile="rewrite_flags.xml.meta">
+<parentdocument href="./"/>
 
   <title>Apache mod_rewrite Flags</title>
 
