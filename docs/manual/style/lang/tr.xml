@@ -59,7 +59,7 @@
 
         <!-- Used in description box for modulesynopsis -->
         <message id="description">Açıklama</message>
-        <message id="seealso">Ayrıca bkz,</message>
+        <message id="seealso">Ayrıca bakınız:</message>
         <message id="topics">Konular</message>
         <message id="status">Durum</message>
         <message id="moduleidentifier">Modül&nbsp;Betimleyici</message>
@@ -87,7 +87,7 @@
         <message id="external" letter="H">Harici</message>
 
         <!-- Used in directive context lists -->
-        <message id="serverconfig" letter="s">sunucu yapılandırması</message>
+        <message id="serverconfig" letter="s">sunucu geneli</message>
         <message id="virtualhost" letter="k">sanal konak</message>
         <message id="directory" letter="d">dizin</message>
         <message id="htaccess" letter="h">.htaccess</message>
@@ -98,7 +98,7 @@
              if present, the space between <directive name> and 'Directive'
              in directivesynopsis headings will be replaced by the given string.
              (see de.xml for an example) -->
-        <message id="directive">Yönerge</message>
+        <message id="directive">Yönergesi</message>
         <message id="nodirectives">Bu modül yönerge içermez.</message>
 
         <!-- Used in summaries -->
