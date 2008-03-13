@@ -21,7 +21,7 @@
 -->
 
 <manualpage metafile="rewrite_flags.xml.meta">
-<parentdocument href="./"/>
+<parentdocument href="./">Rewrite</parentdocument>
 
   <title>Apache mod_rewrite Flags</title>
 
