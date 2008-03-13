@@ -6,35 +6,35 @@
         XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
       -->
 <title>Apache mod_rewrite Flags - Apache HTTP Server</title>
-<link href="/style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
-<link href="/style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
-<link href="/style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
-<link href="/images/favicon.ico" rel="shortcut icon" /></head>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
 <body id="manual-page"><div id="page-header">
-<p class="menu"><a href="/mod/">Modules</a> | <a href="/mod/directives.html">Directives</a> | <a href="/faq/">FAQ</a> | <a href="/glossary.html">Glossary</a> | <a href="/sitemap.html">Sitemap</a></p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
 <p class="apache">Apache HTTP Server Version 2.3</p>
-<img alt="" src="/images/feather.gif" /></div>
-<div class="up"><a href="./index.html"><img title="&lt;-" alt="&lt;-" src="/images/left.gif" /></a></div>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
 <div id="path">
-<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="/">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite Flags</h1>
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a></div><div id="page-content"><div id="preamble"><h1>Apache mod_rewrite Flags</h1>
 <div class="toplang">
-<p><span>Available Languages: </span></p>
+<p><span>Available Languages: </span><a href="../en/rewrite/rewrite_flags.html" title="English">&nbsp;en&nbsp;</a></p>
 </div>
 
 <p>This document discusses the flags which are available to the
-<code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive,
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directive,
 providing detailed explanations and examples. This is not necessarily
 a comprehensive list of all flags available, so be sure to also
 consult the reference documentation.</p>
 </div>
-<div id="quickview"><ul id="toc"><li><img alt="" src="/images/down.gif" /> <a href="#introduction">Introduction</a></li>
-<li><img alt="" src="/images/down.gif" /> <a href="#flags">The flags</a></li>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#introduction">Introduction</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#flags">The flags</a></li>
 </ul><h3>See also</h3><ul class="seealso"><li><a href="../mod/mod_rewrite.html">Module documentation</a></li><li><a href="rewrite_tech.html">Technical details</a></li><li><a href="rewrite_guide.html">Rewrite Guide - useful examples</a></li><li><a href="rewrite_guide_advanced.html">Advanced Rewrite Guide -
 advanced useful examples</a></li></ul></div>
-<div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="introduction" id="introduction">Introduction</a></h2>
-<p><code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s can have
+<p><code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>s can have
 their behavior modified by one or more flags. Flags are included in
 square brackets at the end of the rule, and multiple flags are separated
 by commas.</p>
@@ -46,7 +46,7 @@ RewriteRule pattern target [Flag1,Flag2,Flag3]
 a longer form, such as <code>cookie</code>. Some flags take one or more
 arguments. Flags are not case sensitive.</p>
 
-</div><div class="top"><a href="#page-header"><img alt="top" src="/images/up.gif" /></a></div>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="flags" id="flags">The flags</a></h2>
 
@@ -58,7 +58,7 @@ long form, so that you remember what each flag is supposed to do.</p>
 of how you might use them.</p>
 
 <h3><a name="flag_c" id="flag_c">C|chain</a></h3>
-<p>The [C] or [chain] flag indicates that the <code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is chained to the next
+<p>The [C] or [chain] flag indicates that the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is chained to the next
 rule. That is, if the rule matches, then it is processed as usual and
 control moves on to the next rule. However, if it does not match, then
 the next rule, and any other rules that are chained together, will be
@@ -68,7 +68,7 @@ skipped.</p>
 
 <h3><a name="flag_co" id="flag_co">CO|cookie</a></h3>
 <p>The [CO], or [cookie] flag, allows you to set a cookie when a
-particular <code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
+particular <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>
 matches. The argument consists of three required fields and two optional
 fields.</p>
 <p>You must declare a name and value for the cookie to be set, and the
@@ -111,14 +111,14 @@ RewriteRule \.(png|gif|jpg) - [E=image:1]<br />
 CustomLog logs/access_log combined env=!image
 </code></p></div>
 
-<p>Note that this same effect can be obtained using <code class="directive"><a href="/mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. This technique is offered as
+<p>Note that this same effect can be obtained using <code class="directive"><a href="../mod/mod_setenvif.html#setenvif">SetEnvIf</a></code>. This technique is offered as
 an example, not as a recommendation.</p>
 
 
 <h3><a name="flag_f" id="flag_f">F|forbidden</a></h3>
 <p>Using the [F] flag causes Apache to return a 403 Forbidden status
 code to the client. While the same behavior can be accomplished using
-the <code class="directive"><a href="/mod/mod_access.html#deny">Deny</a></code> directive, this 
+the <code class="directive"><a href="../mod/mod_access.html#deny">Deny</a></code> directive, this 
 allows more flexibility in assigning a Forbidden status.</p>
 
 <p>The following rule will forbid <code>.exe</code> files from being
@@ -163,25 +163,25 @@ that does not contain the literal <code>.</code> character.
 
 
 <h3><a name="flag_l" id="flag_l">L|last</a></h3>
-<p>The [L] flag causes <code class="module"><a href="/mod/mod_rewrite.html">mod_rewrite</a></code> to stop processing
+<p>The [L] flag causes <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code> to stop processing
 the rule set. In most contexts, this means that if the rule matches, no
 further rules will be processed.</p>
 
-<p>If you are using <code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in either
+<p>If you are using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> in either
 <code>.htaccess</code> files or in 
-<code class="directive"><a href="/mod/core.html#directory">&lt;Directory&gt;</a></code> sections,
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> sections,
 it is important to have some understanding of how the rules are
 processed.  The simplified form of this is that once the rules have been
 processed, the rewritten request is handed back to the URL parsing
 engine to do what it may with it. It is possible that as the rewritten
 request is handled, the <code>.htaccess</code> file or 
-<code class="directive"><a href="/mod/core.html#directory">&lt;Directory&gt;</a></code> section
+<code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code> section
 may be encountered again, and thus the ruleset may be run again from the
 start. Most commonly this will happen if one of the rules causes a
 redirect - either internal or external - causing the request process to
 start over.</p>
 
-<p>It is therefore important, if you are using <code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives in one of these
+<p>It is therefore important, if you are using <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> directives in one of these
 context that you take explicit steps to avoid rules looping, and not
 count solely on the [L] flag to terminate execution of a series of
 rules, as shown below.</p>
@@ -219,7 +219,7 @@ pattern still matches, perform this substitution.</p>
 
 
 <h3><a name="flag_nc" id="flag_nc">NC|nocase</a></h3>
-<p>Use of the [NC] flag causes the <code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be matched in a
+<p>Use of the [NC] flag causes the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be matched in a
 case-insensitive manner. That is, it doesn't care whether letters appear
 as upper-case or lower-case in the matched URI.</p>
 
@@ -267,7 +267,7 @@ requests.
 
 <h3><a name="flag_p" id="flag_p">P|proxy</a></h3>
 <p>Use of the [P] flag causes the request to be handled by
-<code class="module"><a href="/mod/mod_proxy.html">mod_proxy</a></code>, and handled via a proxy request. For
+<code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>, and handled via a proxy request. For
 example, if you wanted all image requests to be handled by a back-end
 image server, you might do something like the following:</p>
 
@@ -287,17 +287,17 @@ considered.</p>
 The target (or substitution string) in a RewriteRule is assumed to be a
 file path, by default. The use of the [PT] flag causes it to be trated
 as a URI instead. That is to say, the
-use of the [PT] flag causes the result of the <code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be passed back through
-URL mapping, so that location-based mappings, such as <code class="directive"><a href="/mod/mod_alias.html#alias">Alias</a></code>, for example, might have a chance to take
+use of the [PT] flag causes the result of the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> to be passed back through
+URL mapping, so that location-based mappings, such as <code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>, for example, might have a chance to take
 effect.
 </p>
 
 <p>
 If, for example, you have an 
-<code class="directive"><a href="/mod/mod_alias.html#alias">Alias</a></code>
-for /icons, and have a <code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pointing there, you should
+<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code>
+for /icons, and have a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> pointing there, you should
 use the [PT] flag to ensure that the 
-<code class="directive"><a href="/mod/mod_alias.html#alias">Alias</a></code> is evaluated.
+<code class="directive"><a href="../mod/mod_alias.html#alias">Alias</a></code> is evaluated.
 </p>
 
 <div class="example"><p><code>
@@ -315,7 +315,7 @@ ignored, resulting in a 'File not found' error being returned.
 <h3><a name="flag_qsa" id="flag_qsa">QSA|qsappend</a></h3>
 <p>
 When the replacement URI contains a query string, the default behavior
-of <code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is to discard
+of <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> is to discard
 the existing query string, and replace it with the newly generated one.
 Using the [QSA] flag causes the query strings to be combined.
 </p>
@@ -361,7 +361,7 @@ URI in request' warnings.
 <h3><a name="flag_s" id="flag_s">S|skip</a></h3>
 <p>The [S] flag is used to skip rules that you don't want to run. This
 can be thought of as a <code>goto</code> statement in your rewrite
-ruleset. In the following example, we only want to run the <code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> if the requested URI
+ruleset. In the following example, we only want to run the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> if the requested URI
 doesn't correspond with an actual file.</p>
 
 <div class="example"><p><code>
@@ -375,8 +375,8 @@ RewriteRule (.*\.gif) images.php?$1<br />
 RewriteRule (.*\.html) docs.php?$1
 </code></p></div>
 
-<p>This technique is useful because a <code class="directive"><a href="/mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> only applies to the
-<code class="directive"><a href="/mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> immediately
+<p>This technique is useful because a <code class="directive"><a href="../mod/mod_rewrite.html#rewritecond">RewriteCond</a></code> only applies to the
+<code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> immediately
 following it. Thus, if you want to make a <code>RewriteCond</code> apply
 to several <code>RewriteRule</code>s, one possible technique is to
 negate those conditions and use a [Skip] flag.</p>
@@ -385,7 +385,7 @@ negate those conditions and use a [Skip] flag.</p>
 
 <h3><a name="flag_t" id="flag_t">T|type</a></h3>
 <p>Sets the MIME type with which the resulting response will be
-sent. This has the same effect as the <code class="directive"><a href="/mod/mod_mime.html#addtype">AddType</a></code> directive.</p>
+sent. This has the same effect as the <code class="directive"><a href="../mod/mod_mime.html#addtype">AddType</a></code> directive.</p>
 
 <p>For example, you might use the following technique to serve Perl
 source code as plain text, if requested in a particular way:</p>
@@ -405,7 +405,7 @@ RewriteRule IMG - [T=image/jpg]
 </code></p></div>
 
 <p>Please note that this is a trivial example, and could be better done
-using <code class="directive"><a href="/mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>
+using <code class="directive"><a href="../mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>
 instead. Always consider the alternate
 solutions to a problem before resorting to rewrite, which will
 invariably be a less efficient solution than the alternatives.</p>
@@ -413,8 +413,8 @@ invariably be a less efficient solution than the alternatives.</p>
 
 </div></div>
 <div class="bottomlang">
-<p><span>Available Languages: </span></p>
+<p><span>Available Languages: </span><a href="../en/rewrite/rewrite_flags.html" title="English">&nbsp;en&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
-<p class="menu"><a href="/mod/">Modules</a> | <a href="/mod/directives.html">Directives</a> | <a href="/faq/">FAQ</a> | <a href="/glossary.html">Glossary</a> | <a href="/sitemap.html">Sitemap</a></p></div>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
 </body></html>
