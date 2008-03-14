@@ -235,6 +235,14 @@ CACHE_DECLARE(int) ap_cache_check_freshness(cache_handle_t *h,
     cc_cresp = apr_table_get(h->resp_hdrs, "Cache-Control");
     expstr = apr_table_get(h->resp_hdrs, "Expires");
 
+    if (ap_cache_liststr(NULL, cc_cresp, "no-cache", NULL)) {
+        /*
+         * The cached entity contained Cache-Control: no-cache, so treat as
+         * stale causing revalidation
+         */
+        return 0;
+    }
+
     if ((agestr = apr_table_get(h->resp_hdrs, "Age"))) {
         age_c = apr_atoi64(agestr);
     }
