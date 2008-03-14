@@ -86,6 +86,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_cache: Revalidate cache entities which have Cache-Control: no-cache
+              set in their response headers. PR44511
+   Trunk version of patch:
+       http://svn.apache.org/viewcvs.cgi?rev=632749&view=rev
+   Backport version for 2.2.x of patch:
+       Trunk version of patch works
+   +1: rpluem, jim, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -207,14 +214,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.2.x of patch:
       http://people.apache.org/~jim/patches/proxy-ssl-44026-patch.txt
    +1: jim, rpluem
-
- * mod_cache: Revalidate cache entities which have Cache-Control: no-cache
-              set in their response headers. PR44511
-   Trunk version of patch:
-       http://svn.apache.org/viewcvs.cgi?rev=632749&view=rev
-   Backport version for 2.2.x of patch:
-       Trunk version of patch works
-   +1: rpluem, jim
 
  * mod_include: Set aside buckets that remain unprocessed in the filter 
    context for the next filter pass. 
