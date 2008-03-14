@@ -19,9 +19,6 @@ Changes with Apache 2.3.0
   *) core: fix origin checking in SymlinksIfOwnerMatch
      PR 36783 [Robert L Mathews <rob-apache.org.bugs tigertech.net>]
 
-  *) mod_cache: Revalidate cache entities which have Cache-Control: no-cache
-     set in their response headers. PR 44511 [Ruediger Pluem]
-
   *) rotatelogs: Added '-f' option to force rotatelogs to create the
      logfile as soon as started, and not wait until it reads the
      first entry. [Jim Jagielski]
