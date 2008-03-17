@@ -86,14 +86,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_include: Set aside buckets that remain unprocessed in the filter 
-   context for the next filter pass. 
-   PR: 44447
-   Trunk version of patch: 
-       http://svn.apache.org/viewvc?rev=629456&view=rev
-   Backport version for 2.2.x of patch:
-       Trunk version of patch works
-   +1: covener, rpluem, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
