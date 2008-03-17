@@ -207,7 +207,7 @@ RewriteRule ^/product/(.*)/view$ /var/web/productdb/$1
 was matched by the expression inside the parenthesis in
 the <var>Pattern</var>. For example, a request
 for <code>http://example.com/product/r14df/view</code> will be mapped
-to the path <code>/var/web/productdbr14df</code>.</p>
+to the path <code>/var/web/productdb/r14df</code>.</p>
 
 <p>If there is more than one expression in parenthesis, they are
 available in order in the
@@ -219,7 +219,7 @@ on.</p>
 <div class="section">
 <h2><a name="flags" id="flags">Rewrite Flags</a></h2>
 <p>The behavior of a <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code> can be modified by the
-application of one more flags to the end of the rule. For example, the
+application of one or more flags to the end of the rule. For example, the
 matching behavior of a rule can be made case-insensitive by the
 application of the <code>[NC]</code> flag:
 </p>
@@ -298,7 +298,7 @@ sections or <a href="../howto/htaccess.html"><code>.htaccess</code>
 files</a> at the expense of some additional complexity. This technique
 is called per-directory rewrites.</p>
 
-<p>The main difference with per-directory rewrites is that the path
+<p>The main difference with per-server rewrites is that the path
 prefix of the directory containing the <code>.htaccess</code> file is
 stripped before matching in
 the <code class="directive"><a href="../mod/mod_rewrite.html#rewriterule">RewriteRule</a></code>. In addition, the <code class="directive"><a href="../mod/mod_rewrite.html#rewritebase">RewriteBase</a></code> should be used to assure the request is properly mapped.</p>
