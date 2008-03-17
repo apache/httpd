@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
- 
+
+  *) mod_include: Correctly handle SSI directives split over multiple filter
+     passes.  PR 44447 [Harald Niesche <harald brokenerror.de>]
+
   *) mod_cache: Revalidate cache entities which have Cache-Control: no-cache
      set in their response headers. PR 44511 [Ruediger Pluem]
 
