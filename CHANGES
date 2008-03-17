@@ -27,9 +27,6 @@ Changes with Apache 2.3.0
      remote proxy failed before and the request has a request body.
      [Ruediger Pluem]
 
-  *) mod_include: Correctly handle SSI directives split over multiple filter
-     passes.  PR 44447 [Harald Niesche <harald brokenerror.de>]
-
   *) mod_substitute: The default is now flattening the buckets after
      each substitution. This was mostly done to abide by the
      Principle Of Least Astonishment. The newly added 'q' flag allows for
