@@ -214,7 +214,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=629456&view=rev
    Backport version for 2.2.x of patch:
        Trunk version of patch works
-   +1: covener, rpluem
+   +1: covener, rpluem, jim
 
  * mod_ldap: Correctly return all requested attribute values
    when some attributes have a null value.
