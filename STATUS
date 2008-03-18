@@ -86,6 +86,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_proxy: Make ProxyPassReverse balancer aware; a common config
+   confusion issue.    
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=616335
+      Backport version for 2.2.x of patch:
+         Trunk version works (minus CHANGES conflict)
+    +1: jim, rpluem, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -131,7 +138,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch (trunk applies):
          http://people.apache.org/~covener/2.2.x-proxy-status_t.diff 
     +1 covener, niq
-    niq comments: you introduced some trivial style violations
 
   * core: Reinstate location walk for subrequests.
       Trunk version of patch:
@@ -148,14 +154,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       Backport version for 2.2.x of patch:
          Trunk version of patch works
     +1: rpluem, jim
-
- * mod_proxy: Make ProxyPassReverse balancer aware; a common config
-   confusion issue.    
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=616335
-      Backport version for 2.2.x of patch:
-         Trunk version works (minus CHANGES conflict)
-    +1: jim, rpluem
 
  * mod_substitute: Make default behavior flattening of buckets. Allow
    for people to specifically set "quick" mode.
@@ -224,7 +222,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=568879
    Backport version for 2.2.x of patch:
        http://people.apache.org/~chrisd/patches/mod_headers_merge/mod_headers-merge-2.2.x.patch
-   +1 chrisd
+   +1 chrisd, niq
 
   * mod_speling: remove regression from 1.3/2.0 behavior and
     drop dependency between mod_speling and AcceptPathInfo.
@@ -233,7 +231,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=635953
    Backport version for 2.2.x of patch:
        Trunk version of patch works
-   +1: jim
+   +1: jim, niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
