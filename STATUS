@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=634821&view=rev
    Backport version for 2.2.x of patch:
        http://people.apache.org/~covener/2.2.x-pr44560.diff
-   +1 covener
+   +1 covener, niq
 
  * mod_headers: Add merge option to avoid duplicate values within
    the same header.
