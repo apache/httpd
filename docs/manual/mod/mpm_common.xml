@@ -1029,4 +1029,25 @@ requests</description>
 </usage>
 </directivesynopsis>
 
+<directivesynopsis>
+<name>ChrootDir</name>
+<description>Directory for apache to run chroot(8) after startup.</description>
+<syntax>ChrootDir <var>/path/to/directory</var></syntax>
+<default>none</default>
+<contextlist><context>server config</context></contextlist>
+<modulelist><module>event</module>
+<module>prefork</module><module>worker</module></modulelist>
+
+<usage>
+    <p>This directive, available in httpd 2.2.9(?) and later, tells the
+    server to <var>chroot(8)</var> to the specified directory after
+    startup, but before accepting requests over the 'net.</p>
+    <p>Note that running the server under chroot is not simple,
+    and requires additional setup, particularly if you are running
+    scripts such as CGI or PHP.  Please make sure you are properly
+    familiar with the operation of chroot before attempting to use
+    this feature.</p>
+</usage>
+</directivesynopsis>
+
 </modulesynopsis>
