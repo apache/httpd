@@ -166,9 +166,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
 
  * Support chroot on unix-family platforms
    PR 43596
-   http://svn.apache.org/viewvc?rev=611483&view=rev
+   http://svn.apache.org/viewvc?rev=611483&view=rev (source)
+   http://svn.apache.org/viewvc?rev=639005&view=rev (docs)
+   http://svn.apache.org/viewvc?rev=639010&view=rev (mmn)
    +1: niq
    rpluem says: I am missing a minor bump and documentation.
+   niq replies: Done.
 
  * mod_ext_filter: Include recently added TranslateAllMimeTypes option 
    to this AP_INIT_ITERATE parameter 
