@@ -4178,7 +4178,6 @@ static int pre_config(apr_pool_t *pconf,
     APR_OPTIONAL_FN_TYPE(ap_register_rewrite_mapfunc) *map_pfn_register;
 
     /* register int: rewritemap handlers */
-    mapfunc_hash = apr_hash_make(pconf);
     map_pfn_register = APR_RETRIEVE_OPTIONAL_FN(ap_register_rewrite_mapfunc);
     if (map_pfn_register) {
         map_pfn_register("tolower", rewrite_mapfunc_tolower);
@@ -4979,6 +4978,10 @@ static void register_hooks(apr_pool_t *p)
      */
     static const char * const aszPre[]={ "mod_proxy.c", NULL };
 
+    /* make the hashtable before registering the function, so that
+     * other modules are prevented from accessing uninitialized memory.
+     */
+    mapfunc_hash = apr_hash_make(p);
     APR_REGISTER_OPTIONAL_FN(ap_register_rewrite_mapfunc);
 
     ap_hook_handler(handler_redirect, NULL, NULL, APR_HOOK_MIDDLE);
