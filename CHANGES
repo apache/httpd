@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_authn_dbd: Disambiguate and tidy database authentication
+     error messages.  PR 43210.  [Chris Darroch, Phil Endecott
+     <spam_from_apache_bugzilla chezphil.org>]
+
   *) mod_cache: Handle If-Range correctly if the cached resource was stale.
      PR 44579 [Ruediger Pluem]
 
