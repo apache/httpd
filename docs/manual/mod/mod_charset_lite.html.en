@@ -170,7 +170,7 @@
       <dt><code>TranslateAllMimeTypes | NoTranslateAllMimeTypes</code></dt>
       <dd>Normally, <code class="module"><a href="../mod/mod_charset_lite.html">mod_charset_lite</a></code> will only perform
       translation on a small subset of possible mimetypes.  When the
-      <code>TranslateAllMimeTypes</code> keyord is specified for a given
+      <code>TranslateAllMimeTypes</code> keyword is specified for a given
       configuration section, translation is performed without regard for
       mimetype.</dd>
 
