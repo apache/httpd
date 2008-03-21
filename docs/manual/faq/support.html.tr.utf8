@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Destek - Sıkça Sorulan Sorular - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page" class="no-sidebar"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.0</a> &gt; <a href="./">SSS</a></div><div id="page-content"><div id="preamble"><h1>Destek - Sıkça Sorulan Sorular</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/faq/support.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/faq/support.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/faq/support.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="support" id="support">Destek</a></h2>
+    <ul>
+    <li><a href="#support.what2do">“Neden ... yapamıyorum? Niçin ... çalışmıyor?” gibi sorular için</a></li>
+
+    <li><a href="#support.support">Destek için kime başvurayım?</a></li>
+    </ul>
+
+    <h3><a name="support.what2do" id="support.what2do">“Neden ... yapamıyorum? Niçin ... çalışmıyor?” gibi
+    sorular için</a></h3>
+    
+
+      <p>Apache sunucu yazılımınızla ilgili sorunlar yaşıyorsanız şu
+      adımları izleyin:</p>
+
+      <dl>
+      <dt>Günlük kayıt dosyalarına bakın!</dt>
+      <dd>Apache sorunları saptamaya ve size yardımcı olmaya çalışır. Çoğu
+        durumda, günlük dosyalarına bir kaç ileti yazarak sunucu hataları için
+        size bazı ayrıntıları sağlayacaktır. Bu genellikle sorunun sizin
+        tarafınızdan teşhis edilmesi (dosya izinleri ve benzeri) ve düzeltilmesi
+        için yeterli olur. Hata kayıtlarının tutulduğu günlük dosyalarının
+        öntanımlı yeri <code>/usr/local/apache2/logs/error_log</code> olup
+        sizin sunucunuzdaki yeri için yapılandırma dosyalarınızdaki <code class="directive"><a href="../mod/core.html#errorlog">ErrorLog</a></code> yönergesine bakabilirsiniz.</dd>
+
+      <dt><a href="http://httpd.apache.org/docs/2.0/faq/">SSS</a>’ye
+        bakın!</dt>
+      <dd>Apache Sıkça Sorulan Sorular listesinin en son sürümünü daima
+        <a href="http://httpd.apache.org/docs/2.0/faq/">ana Apache sitesinde</a> bulabilirsiniz.</dd>
+
+      <dt>Apache hata ayıklama veritabanına bakın</dt>
+      <dd>Apache Grubuna bildirilen çoğu sorun <a href="http://httpd.apache.org/bug_report.html">hata ayıklama
+        veritabanına</a> kaydedilir. Açık ya da kapalı, mevcut hata raporlarını
+        incelemeden ve sorununuz hakkında kullanıcı destek listelerine (aşağıya
+        bakınız) danışmadan lütfen yeni bir hata bildirimi
+        <strong>yapmayın</strong>. Zaten raporlanmış bir sorunsa bir “ben de”
+        veya “+1” raporu <em>eklemeyin</em>. Eğer özgün rapor henüz
+        kapatılmamışsa ara sıra son durumuna bakmanızı öneririz. Ayrıca,
+        raporu gönderenle de iletişime geçmeniz iyi olabilir, çünkü konu
+        hakkında henüz veritabanına geçmemiş bir eposta alışverişi olabilir.</dd>
+
+      <dt><a id="support.what2do.user-support" name="support.what2do.user-support">Bir kullanıcı destek listesine
+        sorun</a></dt>
+      <dd><p>Apache, bilgilerini gönüllü olarak paylaşan etkin bir kullanıcı
+        topluluğuna sahiptir. Bu topluluğa katılarak sorularınıza ve
+        sorunlarınıza genellikle en iyi ve en hızlı yanıtı alırsınız.</p>
+
+      <p><a href="http://httpd.apache.org/userslist.html">Apache kullanıcıları
+        eposta listesi</a></p>
+
+      <p>USENET haber öbekleri:</p>
+
+      <ul>
+      <li>comp.infosystems.www.servers.unix
+      [<a href="news:comp.infosystems.www.servers.unix">news</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.unix">google</a>]
+      </li>
+
+      <li>comp.infosystems.www.servers.ms-windows
+      [<a href="news:comp.infosystems.www.servers.ms-windows">news</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.ms-windows">google</a>]
+      </li>
+
+      <li>comp.infosystems.www.authoring.cgi
+      [<a href="news:comp.infosystems.www.authoring.cgi">news</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.authoring.cgi">google</a>]
+      </li>
+      </ul></dd>
+
+      <dt>Bunlar da çözüm olmadıysa sorunu hata ayıklama veritabanına
+        bildirin</dt>
+      <dd><p>Eğer yukarıdaki adımlardan size uygun olanları izlemiş ve
+        bir çare bulamamışsanız lütfen <a href="http://httpd.apache.org/bug_report.html">bir hata ayıklama
+        bildirimi</a>nde bulunarak httpd geliştiricilerini sorun hakkında
+        bilgilendirin.</p>
+
+      <p>Eğer sorununuz sunucunun çökmesine ve bir ‘core’ üretilmesine sebep
+        oluyorsa hatayı bildirirken lütfen (mümkünse) bir geriye doğru hata
+        izleme raporu ekleyin. Bir örnek:</p>
+
+      <div class="example"><p><code>
+        # cd <var>ServerRoot</var><br />
+        # dbx <var>httpd</var> <var>core</var><br />
+        (dbx) where
+      </code></p></div>
+
+      <p>(<var>ServerRoot</var> yerine kendi sunucu kök dizininizi ve
+        <var>httpd</var> ve <var>core</var> dosyalarının yerine de kendi
+        dosyalarınızı yazınız. Ayrıca, <code>dbx</code> yerine
+        <code>gdb</code> de kullanabilirsiniz.)</p>
+      </dd>
+      </dl>
+    
+
+    <h3><a name="support.support" id="support.support">Destek için kime başvurayım?</a></h3>
+      <p>Milyonlarca kullanıcı ve altmıştan az gönüllü geliştirici ile
+        Apache için kişisel destek sağlayamıyoruz. Ücretsiz destek için
+        <a href="#support.what2do.user-support">yardımlaşma listelerine</a>
+        katılmanızı öneriyoruz.</p>
+
+      <p>Profesyonel ve ticari Apache desteği almak için bu tür destekleri
+        sunan <a href="http://www.apache.org/info/support.cgi">şirketlere
+        başvurunuz</a>.</p>
+    
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/faq/support.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/faq/support.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/faq/support.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>

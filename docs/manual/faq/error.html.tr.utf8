@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Hata İletileri - Sıkça Sorulan Sorular - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page" class="no-sidebar"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.0</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.0</a> &gt; <a href="./">SSS</a></div><div id="page-content"><div id="preamble"><h1>Hata İletileri - Sıkça Sorulan Sorular</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/faq/error.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/faq/error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/faq/error.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="error" id="error">Hata İletileri</a></h2>
+    <ul>
+    <li><a href="#error.sendfile">Invalid argument:
+    core_output_filter: writing data to the network</a></li>
+    <li><a href="#error.acceptex">AcceptEx failed</a></li>
+    <li><a href="#error.scriptheaders">Premature end of script
+    headers</a></li>
+    </ul>
+
+    <h3><a name="error.sendfile" id="error.sendfile">Invalid argument:
+    core_output_filter: writing data to the network</a></h3>
+
+    <p>Yanıtların gönderiminin hızlandırılmasının mümkün olduğu platformlarda
+      Apache <code>sendfile</code> sistem çağrısını kullanır. Ne yazık ki,
+      Apache’nin derleme sırasında varlığını tespit ettiği
+      <code>sendfile</code> bazı sistemlerde düzgün çalışmaz. Bu en çok ağ ve
+      diğer standartdışı dosya sistemleri kullanılırken ortaya çıkar.</p>
+
+    <p>Hata kayıt dosyalarında yukarıdaki iletinin bulunması, sıfır boyutlu
+      olmayan dosyalar için sıfır boyutlu yanıtlar dönmesi bu sorunun
+      belirtileri arasında sayılabilir. Devingen içerik için normalde
+      <code>sendfile</code> kullanılmadığından sorun genellikle sadece durağan
+      dosyalarda ortaya çıkar.</p>
+
+    <p>Sorunu ortadan kaldırmak için <code class="directive"><a href="../mod/core.html#enablesendfile">EnableSendfile</a></code> yönergesini kullanarak sunucunun
+      bütün bölümlerinde <code>sendfile</code> kullanımını iptal etmek yeterli
+      olur. Ayrıca, benzer sorunlarda yardımı olabilen <code class="directive"><a href="../mod/core.html#enablemmap">EnableMMAP</a></code> yönergesine de bakınız.</p>
+
+    
+
+    <h3><a name="error.acceptex" id="error.acceptex">AcceptEx Failed</a></h3>
+
+    <p>Eğer win32’de <code>AcceptEx</code> sistem çağrısı ile ilgili hata
+      iletileri alıyorsanız <code class="directive"><a href="../mod/mpm_winnt.html#win32disableacceptex">Win32DisableAcceptEx</a></code> yönergesine
+      bakınız.</p>
+    
+
+
+    <h3><a name="error.scriptheaders" id="error.scriptheaders">Premature end of script
+    headers</a></h3>
+
+    <p>CGI betiklerindeki çoğu sorun tarayıcıya bir <code>Internal Server
+      Error</code> (Dahili Sunucu Hatası) bildirimiyle ve hata kayıt dosyasına
+      bu iletinin yazılmasıyla sonuçlanır. Bu tür sorunlarda hata ayıklamaya
+      yardımcı olmak için bir <a href="../howto/cgi.html#troubleshoot">CGI
+      öğretici</a> mevcuttur.</p>
+    
+
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/faq/error.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ko/faq/error.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/faq/error.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>
