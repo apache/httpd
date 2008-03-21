@@ -32,6 +32,7 @@ more than one multi-processing module (MPM)</td></tr>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
 <li><img alt="" src="../images/down.gif" /> <a href="#acceptmutex">AcceptMutex</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#chrootdir">ChrootDir</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#coredumpdirectory">CoreDumpDirectory</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#enableexceptionhook">EnableExceptionHook</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#gracefulshutdowntimeout">GracefulShutdownTimeout</a></li>
@@ -140,6 +141,26 @@ accepting requests on network sockets</td></tr>
      <code>pthread_mutexattr_setrobust_np()</code> function,
      you may be able to use the <code>pthread</code> option safely.</p>
   </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="ChrootDir" id="ChrootDir">ChrootDir</a> <a name="chrootdir" id="chrootdir">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Directory for apache to run chroot(8) after startup.</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ChrootDir <var>/path/to/directory</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>MPM</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td><code class="module"><a href="../mod/event.html">event</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code>, <code class="module"><a href="../mod/worker.html">worker</a></code></td></tr>
+</table>
+    <p>This directive, available in httpd 2.2.9(?) and later, tells the
+    server to <var>chroot(8)</var> to the specified directory after
+    startup, but before accepting requests over the 'net.</p>
+    <p>Note that running the server under chroot is not simple,
+    and requires additional setup, particularly if you are running
+    scripts such as CGI or PHP.  Please make sure you are properly
+    familiar with the operation of chroot before attempting to use
+    this feature.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
