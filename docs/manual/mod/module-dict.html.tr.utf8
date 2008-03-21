@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="tr" xml:lang="tr"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>Modülleri Tanımlamakta Kullanılan Terimler - Apache HTTP Sunucusu</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body id="manual-page"><div id="page-header">
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p>
+<p class="apache">Apache HTTP Sunucusu Sürüm 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Sunucusu</a> &gt; <a href="http://httpd.apache.org/docs/">Belgeleme</a> &gt; <a href="../">Sürüm 2.2</a></div><div id="page-content"><div id="preamble"><h1>Modülleri Tanımlamakta Kullanılan Terimler</h1>
+<div class="toplang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/module-dict.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/module-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/module-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/module-dict.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div>
+
+   <p>Bu belgede Apache <a href="./">modül</a>lerini tanımlarken kullanılan terimler açıklanmıştır.</p>
+</div>
+<div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#Description">Açıklama</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Status">Durum</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#SourceFile">Kaynak Dosyası</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ModuleIdentifier">Modül Betimleyici</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#Compatibility">Uyumluluk</a></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Description" id="Description">Açıklama</a></h2>
+
+<p>Modülün kullanım amacının kısa bir açıklaması.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Status" id="Status">Durum</a></h2>
+
+    <p>Modülün Apache HTTP sunucusuna ne kadar sıkı bağlı olduğunu belirtir. Başka bir deyişle, modüle ve işlevselliğine erişim kazanmak için sunucuyu yeniden derlemek gerekip gerekmediği ile ilgili durumu belirtir. Bu özniteliğin olası değerleri şunlardır:</p>
+
+    <dl>
+      <dt>MPM</dt>
+
+      <dd>“MPM” durumlu bir modül bir <a href="../mpm.html">Çok Süreçlilik Modülü</a>dür. Diğer modül türlerinin aksine, sunucunun kullandığı MPM modülü sayısı birden fazla olamaz. Bu modül türü temelde sunucuya gelen isteklerin ele alınmasından ve öldürülmesinden sorumludur.</dd>
+
+      <dt>Temel</dt>
+
+      <dd>“Temel” durumuyla etiketlenmiş bir modül öntanımlı olarak olarak derlenir ve sunucuya öntanımlı olarak yüklenir. Bu bakımdan derleme öncesi paket yapılandırması sırasında modülün derlenmemesi özellikle istenmedikçe bu modül derlenecek ve sunucuya yüklenecektir.</dd>
+
+      <dt>Eklenti</dt>
+
+      <dd>“Eklenti” durumundaki bir modül normal olarak derlenmez ve sunucuya yüklenmez. Modülü ve işlevselliğini etkin kılmak için sunucunun derleme öncesi paket yapılandırması sırasında modülün derleneceğini açıkça belirttikten sonra gerekirse yeniden derlemeniz gerekir.</dd>
+
+      <dt>Deneysel</dt>
+
+      <dd>“Deneysel” durumu modülün Apache sunucusunun bir parçası olarak kabul edildiğini ancak modülü denemenin tamamen sizin insiyatifinize bırakıldığı anlamına gelir. Böyle bir modül her şeyiyle belgelenmiştir fakat gerektiği gibi desteklenmemiştir.</dd>
+
+      <dt>Harici</dt>
+
+      <dd>“Harici” durumu temel Apache dağıtımında bulunmayan (“üçüncü parti”) modüller için kullanılır. Böyle modüller için sorumluluk kabul etmediğimiz gibi bunları desteklemiyoruz.</dd>
+    </dl>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="SourceFile" id="SourceFile">Kaynak Dosyası</a></h2>
+
+    <p>Karşısına modül kodunu içeren kaynak dosyasının ismi yazılır. Bu isim ayrıca <code class="directive"><a href="../mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> yönergesi tarafından da kullanılır.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="ModuleIdentifier" id="ModuleIdentifier">Modül Betimleyici</a></h2>
+
+    <p>Modüller devingen olarak yüklenirken <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> yönergesinde kullanmak için modülü betimleyen dizgedir. Aslında, kaynak dosyasında <code>module</code> türündeki harici değişkenin ismidir.</p>
+</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="Compatibility" id="Compatibility">Uyumluluk</a></h2>
+
+    <p>Eğer modül Apache’nin 2. sürüm dağıtımının özgün parçası değilse söz  konusu sürüm burada belirtilir. Ayrıca, modülün kullanımı belli platformlarla sınırlıysa bunun ayrıntıları da burada belirtilir.</p>
+</div></div>
+<div class="bottomlang">
+<p><span>Mevcut Diller: </span><a href="../en/mod/module-dict.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/module-dict.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/module-dict.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="../tr/mod/module-dict.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br /><a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a> altında lisanslıdır.</p>
+<p class="menu"><a href="../mod/">Modüller</a> | <a href="../mod/directives.html">Yönergeler</a> | <a href="../faq/">SSS</a> | <a href="../glossary.html">Terimler</a> | <a href="../sitemap.html">Site Haritası</a></p></div>
+</body></html>
