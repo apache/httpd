@@ -62,37 +62,30 @@
 <p>This simple example shows use of this module in the context of
 the Authentication and DBD frameworks.</p>
 <example><pre>
-#Database Management
+# mod_dbd configuration
+DBDriver pgsql
+DBDParams "dbname=apacheauth user=apache password=xxxxxx"
 
-#Use the PostgreSQL driver
-<code>DBDriver pgsql</code>
+DBDMin  4
+DBDKeep 8
+DBDMax  20
+DBDExptime 300
 
-#Connection string: database name and login credentials
-<code>DBDParams "dbname=htpasswd user=apache password=xxxxxx"</code>
+&lt;Directory /usr/www/myhost/private&gt;
+  # mod_authn_core and mod_auth_basic configuration
+  # for mod_authn_dbd
+  AuthType Basic
+  AuthName "My Server"
+  AuthBasicProvider dbd
 
-#Parameters for Connection Pool Management
-<code>DBDMin  1
-DBDKeep 2
-DBDMax  10
-DBDExptime 60</code>
+  # mod_authz_core configuration
+  Require valid-user
 
-#Authentication Section
-<code>&lt;Directory /usr/www/myhost/private&gt;</code>
-
-    #mod_auth configuration for authn_dbd
-    <code>AuthType Basic
-    AuthName "My Server"
-    AuthBasicProvider dbd</code>
-
-    #authz configuration
-    <code>Require valid-user</code>
-
-    #SQL query to verify a user
-    #(note: DBD drivers recognise both stdio-like %s and native syntax)
-    <code>AuthDBDUserPWQuery "select password from authn where username = %s"
-&lt;/Directory&gt;</code>
-</pre>
-</example>
+  # mod_authn_dbd SQL query to authenticate a user
+  AuthDBDUserPWQuery \
+    "SELECT password FROM authn WHERE user = %s"
+&lt;/Directory&gt;
+</pre></example>
 </section>
 
 <section id="exposed">
@@ -120,16 +113,22 @@ configuration required in some web applications.
 
 <usage>
     <p>The <directive>AuthDBDUserPWQuery</directive> specifies an
-    SQL query to look up a password for a specified user.
-    The query must take a single string (typically SQL varchar)
-    argument (username), and return a single value (encrypted password).
-    </p>
-    <example>
-    AuthDBDUserPWQuery "SELECT password FROM authn WHERE username = %s"
-    </example>
-    <p>If httpd was built against apr v1.3.0 or higher, any additional
-    columns specified in the select statement will be inserted into
-    the environment with the name <code>AUTHENTICATE_&lt;COLUMN&gt;</code>.
+    SQL query to look up a password for a specified user.  The user's ID
+    will be passed as a single string parameter when the SQL query is
+    executed.  It may be referenced within the query statement using
+    a <code>%s</code> format specifier.</p>
+    <example><title>Example</title><pre>
+AuthDBDUserPWQuery \
+  "SELECT password FROM authn WHERE user = %s"
+</pre></example>
+    <p>The first column value of the first row returned by the query
+    statement should be a string containing the encrypted password.
+    Subsequent rows will be ignored.  If no rows are returned, the user
+    will not be authenticated through <module>mod_authn_dbd</module>.</p>
+    <p>If httpd was built against <glossary>APR</glossary> version 1.3.0
+    or higher, any additional column values in the first row returned by
+    the query statement will be stored as environment variables with
+    names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
     </p>
 </usage>
 </directivesynopsis>
@@ -145,18 +144,22 @@ configuration required in some web applications.
 <usage>
     <p>The <directive>AuthDBDUserRealmQuery</directive> specifies an
     SQL query to look up a password for a specified user and realm.
-    The query must take two string (typically SQL varchar) arguments
-    (username and realm), and return a single value (encrypted password).
+    The user's ID and the realm, in that order, will be passed as string
+    parameters when the SQL query is executed.  They may be referenced
+    within the query statement using <code>%s</code> format specifiers.</p>
+    <example><title>Example</title><pre>
+AuthDBDUserRealmQuery \
+  "SELECT password FROM authn WHERE user = %s AND realm = %s"
+</pre></example>
+    <p>The first column value of the first row returned by the query
+    statement should be a string containing the encrypted password.
+    Subsequent rows will be ignored.  If no rows are returned, the user
+    will not be authenticated through <module>mod_authn_dbd</module>.</p>
+    <p>If httpd was built against <glossary>APR</glossary> version 1.3.0
+    or higher, any additional column values in the first row returned by
+    the query statement will be stored as environment variables with
+    names of the form <code>AUTHENTICATE_<var>COLUMN</var></code>.
     </p>
-    <example>
-    AuthDBDUserRealmQuery "SELECT password FROM authn
-                              WHERE username = %s AND realm = %s"
-    </example>
-    <p>If httpd was built against apr v1.3.0 or higher, any additional
-    columns specified in the select statement will be inserted into
-    the environment with the name <code>AUTHENTICATE_&lt;COLUMN&gt;</code>.
-    </p>
-
 </usage>
 </directivesynopsis>
 

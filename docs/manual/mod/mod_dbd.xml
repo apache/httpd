@@ -31,11 +31,14 @@
 
 <summary>
     <p><module>mod_dbd</module> manages SQL database connections using
-    <a href="http://people.apache.org/~niq/dbd.html">apr_dbd</a>.
-    It provides database connections on request to modules
-    requiring SQL database functions, and takes care of
+    <glossary>APR</glossary>.  It provides database connections on request
+    to modules requiring SQL database functions, and takes care of
     managing databases with optimal efficiency and scalability
-    for both threaded and non-threaded MPMs.</p>
+    for both threaded and non-threaded MPMs.  For details, see the
+    <a href="http://apr.apache.org/">APR</a> website and this overview of the
+    <a href="http://people.apache.org/~niq/dbd.html">Apache DBD Framework</a>
+    by its original developer.
+</p>
 </summary>
 
 <seealso><a href="../misc/password_encryptions.html">Password Formats</a></seealso>
@@ -47,9 +50,9 @@
     classic LAMP (Linux, Apache, Mysql, Perl/PHP/Python).
     On threaded platform, it provides an altogether more
     scalable and efficient <em>connection pool</em>, as
-    described in <a href="http://www.apachetutor.org/dev/reslist"
-    >this article at ApacheTutor</a>. <module>mod_dbd</module> supersedes
-    the modules presented in that article.</p>
+    described in <a href="http://www.apachetutor.org/dev/reslist">this
+    article at ApacheTutor</a>.  Note that <module>mod_dbd</module>
+    supersedes the modules presented in that article.</p>
 </section>
 
 <section id="API"><title>Apache DBD API</title>
