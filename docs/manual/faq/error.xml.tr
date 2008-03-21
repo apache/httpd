@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE faq SYSTEM "../style/faq.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421174 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<faq metafile="error.xml.meta">
+<parentdocument href="./">SSS</parentdocument>
+
+<title>Hata İletileri - Sıkça Sorulan Sorular</title>
+<description>Bu hata iletileri ne anlama geliyor?</description>
+
+
+
+<section id="error"><title>Hata İletileri</title>
+    <ul>
+    <li><a href="#error.sendfile">Invalid argument:
+    core_output_filter: writing data to the network</a></li>
+    <li><a href="#error.acceptex">AcceptEx failed</a></li>
+    <li><a href="#error.scriptheaders">Premature end of script
+    headers</a></li>
+    </ul>
+
+    <section id="error.sendfile"><title>Invalid argument:
+    core_output_filter: writing data to the network</title>
+
+    <p>Yanıtların gönderiminin hızlandırılmasının mümkün olduğu platformlarda
+      Apache <code>sendfile</code> sistem çağrısını kullanır. Ne yazık ki,
+      Apache’nin derleme sırasında varlığını tespit ettiği
+      <code>sendfile</code> bazı sistemlerde düzgün çalışmaz. Bu en çok ağ ve
+      diğer standartdışı dosya sistemleri kullanılırken ortaya çıkar.</p>
+
+    <p>Hata kayıt dosyalarında yukarıdaki iletinin bulunması, sıfır boyutlu
+      olmayan dosyalar için sıfır boyutlu yanıtlar dönmesi bu sorunun
+      belirtileri arasında sayılabilir. Devingen içerik için normalde
+      <code>sendfile</code> kullanılmadığından sorun genellikle sadece durağan
+      dosyalarda ortaya çıkar.</p>
+
+    <p>Sorunu ortadan kaldırmak için <directive
+      module="core">EnableSendfile</directive> yönergesini kullanarak sunucunun
+      bütün bölümlerinde <code>sendfile</code> kullanımını iptal etmek yeterli
+      olur. Ayrıca, benzer sorunlarda yardımı olabilen <directive
+      module="core">EnableMMAP</directive> yönergesine de bakınız.</p>
+
+    </section>
+
+    <section id="error.acceptex"><title>AcceptEx Failed</title>
+
+    <p>Eğer win32’de <code>AcceptEx</code> sistem çağrısı ile ilgili hata
+      iletileri alıyorsanız <directive
+      module="mpm_winnt">Win32DisableAcceptEx</directive> yönergesine
+      bakınız.</p>
+    </section>
+
+
+    <section id="error.scriptheaders"><title>Premature end of script
+    headers</title>
+
+    <p>CGI betiklerindeki çoğu sorun tarayıcıya bir <code>Internal Server
+      Error</code> (Dahili Sunucu Hatası) bildirimiyle ve hata kayıt dosyasına
+      bu iletinin yazılmasıyla sonuçlanır. Bu tür sorunlarda hata ayıklamaya
+      yardımcı olmak için bir <a href="../howto/cgi.html#troubleshoot">CGI
+      öğretici</a> mevcuttur.</p>
+    </section>
+
+</section>
+
+</faq>
+

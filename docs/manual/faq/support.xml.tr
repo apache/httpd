@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE faq SYSTEM "../style/faq.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421174 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<faq metafile="support.xml.meta">
+<parentdocument href="./">SSS</parentdocument>
+
+<title>Destek - Sıkça Sorulan Sorular</title>
+<description>Sorunlarım olduğunda ne yapayım?</description>
+
+<section id="support"><title>Destek</title>
+    <ul>
+    <li><a href="#support.what2do">“Neden ... yapamıyorum? Niçin ... çalışmıyor?” gibi sorular için</a></li>
+
+    <li><a href="#support.support">Destek için kime başvurayım?</a></li>
+    </ul>
+
+    <section id="support.what2do">
+    <title>“Neden ... yapamıyorum? Niçin ... çalışmıyor?” gibi
+    sorular için</title>
+
+      <p>Apache sunucu yazılımınızla ilgili sorunlar yaşıyorsanız şu
+      adımları izleyin:</p>
+
+      <dl>
+      <dt>Günlük kayıt dosyalarına bakın!</dt>
+      <dd>Apache sorunları saptamaya ve size yardımcı olmaya çalışır. Çoğu
+        durumda, günlük dosyalarına bir kaç ileti yazarak sunucu hataları için
+        size bazı ayrıntıları sağlayacaktır. Bu genellikle sorunun sizin
+        tarafınızdan teşhis edilmesi (dosya izinleri ve benzeri) ve düzeltilmesi
+        için yeterli olur. Hata kayıtlarının tutulduğu günlük dosyalarının
+        öntanımlı yeri <code>/usr/local/apache2/logs/error_log</code> olup
+        sizin sunucunuzdaki yeri için yapılandırma dosyalarınızdaki <directive
+        module="core">ErrorLog</directive> yönergesine bakabilirsiniz.</dd>
+
+      <dt><a href="http://httpd.apache.org/docs/&httpd.docs;/faq/">SSS</a>’ye
+        bakın!</dt>
+      <dd>Apache Sıkça Sorulan Sorular listesinin en son sürümünü daima
+        <a href="http://httpd.apache.org/docs/&httpd.docs;/faq/"
+        >ana Apache sitesinde</a> bulabilirsiniz.</dd>
+
+      <dt>Apache hata ayıklama veritabanına bakın</dt>
+      <dd>Apache Grubuna bildirilen çoğu sorun <a
+        href="http://httpd.apache.org/bug_report.html">hata ayıklama
+        veritabanına</a> kaydedilir. Açık ya da kapalı, mevcut hata raporlarını
+        incelemeden ve sorununuz hakkında kullanıcı destek listelerine (aşağıya
+        bakınız) danışmadan lütfen yeni bir hata bildirimi
+        <strong>yapmayın</strong>. Zaten raporlanmış bir sorunsa bir “ben de”
+        veya “+1” raporu <em>eklemeyin</em>. Eğer özgün rapor henüz
+        kapatılmamışsa ara sıra son durumuna bakmanızı öneririz. Ayrıca,
+        raporu gönderenle de iletişime geçmeniz iyi olabilir, çünkü konu
+        hakkında henüz veritabanına geçmemiş bir eposta alışverişi olabilir.</dd>
+
+      <dt><a id="support.what2do.user-support"
+      name="support.what2do.user-support">Bir kullanıcı destek listesine
+        sorun</a></dt>
+      <dd><p>Apache, bilgilerini gönüllü olarak paylaşan etkin bir kullanıcı
+        topluluğuna sahiptir. Bu topluluğa katılarak sorularınıza ve
+        sorunlarınıza genellikle en iyi ve en hızlı yanıtı alırsınız.</p>
+
+      <p><a href="http://httpd.apache.org/userslist.html">Apache kullanıcıları
+        eposta listesi</a></p>
+
+      <p>USENET haber öbekleri:</p>
+
+      <ul>
+      <li>comp.infosystems.www.servers.unix
+      [<a href="news:comp.infosystems.www.servers.unix">news</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.unix">google</a>]
+      </li>
+
+      <li>comp.infosystems.www.servers.ms-windows
+      [<a href="news:comp.infosystems.www.servers.ms-windows">news</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.servers.ms-windows">google</a>]
+      </li>
+
+      <li>comp.infosystems.www.authoring.cgi
+      [<a href="news:comp.infosystems.www.authoring.cgi">news</a>]
+      [<a href="http://groups.google.com/groups?group=comp.infosystems.www.authoring.cgi">google</a>]
+      </li>
+      </ul></dd>
+
+      <dt>Bunlar da çözüm olmadıysa sorunu hata ayıklama veritabanına
+        bildirin</dt>
+      <dd><p>Eğer yukarıdaki adımlardan size uygun olanları izlemiş ve
+        bir çare bulamamışsanız lütfen <a
+        href="http://httpd.apache.org/bug_report.html">bir hata ayıklama
+        bildirimi</a>nde bulunarak httpd geliştiricilerini sorun hakkında
+        bilgilendirin.</p>
+
+      <p>Eğer sorununuz sunucunun çökmesine ve bir ‘core’ üretilmesine sebep
+        oluyorsa hatayı bildirirken lütfen (mümkünse) bir geriye doğru hata
+        izleme raporu ekleyin. Bir örnek:</p>
+
+      <example>
+        # cd <var>ServerRoot</var><br />
+        # dbx <var>httpd</var> <var>core</var><br />
+        (dbx) where
+      </example>
+
+      <p>(<var>ServerRoot</var> yerine kendi sunucu kök dizininizi ve
+        <var>httpd</var> ve <var>core</var> dosyalarının yerine de kendi
+        dosyalarınızı yazınız. Ayrıca, <code>dbx</code> yerine
+        <code>gdb</code> de kullanabilirsiniz.)</p>
+      </dd>
+      </dl>
+    </section>
+
+    <section id="support.support"><title>Destek için kime başvurayım?</title>
+      <p>Milyonlarca kullanıcı ve altmıştan az gönüllü geliştirici ile
+        Apache için kişisel destek sağlayamıyoruz. Ücretsiz destek için
+        <a href="#support.what2do.user-support">yardımlaşma listelerine</a>
+        katılmanızı öneriyoruz.</p>
+
+      <p>Profesyonel ve ticari Apache desteği almak için bu tür destekleri
+        sunan <a href="http://www.apache.org/info/support.cgi">şirketlere
+        başvurunuz</a>.</p>
+    </section>
+</section>
+
+</faq>
+
