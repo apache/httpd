@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="module-dict.xml.meta">
+
+  <title>Modülleri Tanımlamakta Kullanılan Terimler</title>
+
+<summary>
+   <p>Bu belgede Apache <a href="./">modül</a>lerini tanımlarken kullanılan terimler açıklanmıştır.</p>
+</summary>
+
+<section id="Description"><title>Açıklama</title>
+
+<p>Modülün kullanım amacının kısa bir açıklaması.</p>
+</section>
+
+<section id="Status"><title>Durum</title>
+
+    <p>Modülün Apache HTTP sunucusuna ne kadar sıkı bağlı olduğunu belirtir. Başka bir deyişle, modüle ve işlevselliğine erişim kazanmak için sunucuyu yeniden derlemek gerekip gerekmediği ile ilgili durumu belirtir. Bu özniteliğin olası değerleri şunlardır:</p>
+
+    <dl>
+      <dt>MPM</dt>
+
+      <dd>“MPM” durumlu bir modül bir <a
+      href="../mpm.html">Çok Süreçlilik Modülü</a>dür. Diğer modül türlerinin aksine, sunucunun kullandığı MPM modülü sayısı birden fazla olamaz. Bu modül türü temelde sunucuya gelen isteklerin ele alınmasından ve öldürülmesinden sorumludur.</dd>
+
+      <dt>Temel</dt>
+
+      <dd>“Temel” durumuyla etiketlenmiş bir modül öntanımlı olarak olarak derlenir ve sunucuya öntanımlı olarak yüklenir. Bu bakımdan derleme öncesi paket yapılandırması sırasında modülün derlenmemesi özellikle istenmedikçe bu modül derlenecek ve sunucuya yüklenecektir.</dd>
+
+      <dt>Eklenti</dt>
+
+      <dd>“Eklenti” durumundaki bir modül normal olarak derlenmez ve sunucuya yüklenmez. Modülü ve işlevselliğini etkin kılmak için sunucunun derleme öncesi paket yapılandırması sırasında modülün derleneceğini açıkça belirttikten sonra gerekirse yeniden derlemeniz gerekir.</dd>
+
+      <dt>Deneysel</dt>
+
+      <dd>“Deneysel” durumu modülün Apache sunucusunun bir parçası olarak kabul edildiğini ancak modülü denemenin tamamen sizin insiyatifinize bırakıldığı anlamına gelir. Böyle bir modül her şeyiyle belgelenmiştir fakat gerektiği gibi desteklenmemiştir.</dd>
+
+      <dt>Harici</dt>
+
+      <dd>“Harici” durumu temel Apache dağıtımında bulunmayan (“üçüncü parti”) modüller için kullanılır. Böyle modüller için sorumluluk kabul etmediğimiz gibi bunları desteklemiyoruz.</dd>
+    </dl>
+</section>
+
+<section id="SourceFile"><title>Kaynak Dosyası</title>
+
+    <p>Karşısına modül kodunu içeren kaynak dosyasının ismi yazılır. Bu isim ayrıca <directive module="core" type="section">IfModule</directive> yönergesi tarafından da kullanılır.</p>
+</section>
+
+<section id="ModuleIdentifier"><title>Modül Betimleyici</title>
+
+    <p>Modüller devingen olarak yüklenirken <directive module="mod_so">LoadModule</directive> yönergesinde kullanmak için modülü betimleyen dizgedir. Aslında, kaynak dosyasında <code>module</code> türündeki harici değişkenin ismidir.</p>
+</section>
+
+<section id="Compatibility"><title>Uyumluluk</title>
+
+    <p>Eğer modül Apache’nin 2. sürüm dağıtımının özgün parçası değilse söz  konusu sürüm burada belirtilir. Ayrıca, modülün kullanımı belli platformlarla sınırlıysa bunun ayrıntıları da burada belirtilir.</p>
+</section>
+
+</manualpage>
