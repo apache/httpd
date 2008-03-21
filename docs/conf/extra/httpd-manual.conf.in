@@ -17,6 +17,10 @@ AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|pt-br|ru|tr))?(/.*)?$ "@exp_manualdi
     <Files *.html>
         SetHandler type-map
     </Files>
+    <!-- .tr is text/troff in mime.types! -->
+    <Files *.html.tr.utf8>
+        ForceType text/html
+    </Files>
 
     SetEnvIf Request_URI ^/manual/(de|en|es|fr|ja|ko|pt-br|ru|tr)/ prefer-language=$1
     RedirectMatch 301 ^/manual(?:/(de|en|es|fr|ja|ko|pt-br|ru|tr)){2,}(/.*)?$ /manual/$1$2
