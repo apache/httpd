@@ -1,0 +1,163 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="directive-dict.xml.meta">
+
+  <title>Yönergeleri Tanımlamakta Kullanılan Terimler</title>
+
+<summary>
+    <p>Bu belgede Apache <a href="directives.html">yapılandırma yönergeler</a>ini tanımlamakta kullanılan terimler açıklanmıştır.</p>
+</summary>
+<seealso><a href="../configuring.html">Yapılandırma dosyaları</a></seealso>
+
+<section id="Description"><title>Açıklama</title>
+
+<p>Yönergenin kullanım amacının kısa bir açıklaması.</p>
+</section>
+
+<section id="Syntax"><title>Sözdizimi</title>
+
+    <p>Yönergenin bir yapılandırma dosyasında hangi söz dizimiyle görünebileceği belirtilir. Bu sözdizimi yönergeye özeldir ve ayrıntıları yönerge tanımında açıklanır. Genelde yönerge ismini aralarında boşluklar bırakılmış bir dizi argüman izler. Eğer argümanlardan biri kendi içinde boşluk içeriyorsa çift tırnak içine alınır. İsteğe bağlı argümanlar sözdiziminde köşeli ayraçların arasında gösterilmiştir. Birden fazla olası değeri olan argümanlarda değerler aralarına | karakteri konarak ayrılmıştır. Değerin yerine ismi belirtilen argümanlarda bu isimler <em>eğik</em> yazılırken, kendisi değer olan dizgeler öntanımlı yazıtipi ile gösterilmiştir. Değişik sayıda argüman alan yönergelerde bu durum son argümanı takibeden “...” ile belirtilmiştir.</p>
+
+    <p>Yönergelerde kullanılan argüman türleri çok çeşitlidir. Çok kullanılanlardan bazıları aşağıda tanımlanmıştır.</p>
+
+    <dl>
+      <dt><em>URL</em></dt>
+
+      <dd><code>http://www.mesela.dom/yol/yordam/dosya.html</code> örneğindeki gibi protokol şeması ve konak ismini isteğe bağlı bir dosya yolunun izlediği, açılımı “Uniform Resource Locator” olan ve Türkçe’ye “Tektip Özkaynak Konumlayıcı” şeklinde çevrilebilecek adresleri betimler.</dd>
+
+      <dt><em>URL-yolu</em></dt>
+
+      <dd><code>/yol/yordam/dosya.html</code> örneğindeki gibi bir <em>url</em>’nin parçası olarak protokol şeması ve konak ismini izleyen bir yol dizgesini betimler. <em>url-yolu</em>, bir dosya sisteminin kök dizinine göre değil, <a
+      href="core.html#documentroot">DocumentRoot</a> ile belirtilen dizine göre bir dosya yolu betimler.</dd>
+
+      <dt><em>dosya-yolu</em></dt>
+
+      <dd><code>/usr/local/apache/htdocs/yol/yordam/dosya.html</code> örneğindeki gibi yerel dosya sisteminin kök dizini ile başlayan bir dosya yolunu betimler. Aksi belirtilmedikçe, bir / ile başlamayan bir <em>dosya-yolu</em> <a
+      href="core.html#serverroot">ServerRoot</a> ile belirtilen dizine göre ele alınır.</dd>
+
+      <dt><em>dizin-yolu</em></dt>
+
+      <dd><code>/usr/local/apache/htdocs/yol/yordam/</code> örneğindeki gibi kök dizin ile başlayan, yerel dosya sistemindeki bir dizin yolunu betimler.</dd>
+
+      <dt><em>dosya-ismi</em></dt>
+
+      <dd><code>dosya.html</code> örneğindeki gibi dizin yolu içermeyen bir dosya ismini betimler.</dd>
+
+      <dt><em>düzifd</em></dt>
+
+      <dd>Bir Perl uyumlu <glossary ref="regex">düzenli ifade</glossary> betimler. Yönerge tanımında <em>düzifd</em> ile eşleşenler argüman olarak ele alınır.</dd>
+
+      <dt><em>uzantı</em></dt>
+
+      <dd>Bu genelde, <em>dosya-ismi</em>’nin bir parçası olarak son noktadan sonraki kısmı betimler. Bununla birlikte, Apache çok sayıda nokta içeren dosya isimlerinde ilk noktadan sonrasını <em>uzantı</em> kabul eden çoklu dosya ismi uzantılarını da tanır. Örneğin, <em>dosya-ismi</em> olarak <code>dosya.html.tr</code> değeri iki uzantı içerir: <code>.html</code> ve
+      <code>.tr</code>. Apache yönergelerinde <em>uzantı</em>’ları başında noktası olmaksızın da belirtebilirsiniz. Ayrıca, <em>uzantı</em>’lar harf büyüklüğüne de duyarlı değildir.</dd>
+
+      <dt><em>MIME-türü</em></dt>
+
+      <dd>Dosya biçiminin, <code>text/html</code> örneğindeki gibi aralarına bir / konulmuş asıl ve alt biçimler şeklinde açıklandığı yönteme göre belirtileceğini betimler.</dd>
+
+      <dt><em>ortam-değişkeni</em></dt>
+
+      <dd>Apache yapılandırma sürecinde tanımlanmış bir <a href="../env.html">ortam değişkeni</a>nin ismini betimler. Daha ayrıntılı bilgi için <a href="../env.html">ortam değişkenleri belgesi</a>ne bakınız.</dd>
+    </dl>
+</section>
+
+<section id="Default"><title>Öntanımlı</title>
+
+    <p>Eğer yönerge öntanımlı bir değere sahipse o burada belirtilir (öntanımlı değer, yönergede kullanıcı tarafından belirtilmediği halde Apache tarafından belirtildiği varsayılarak işlem yapılan değerdir). Eğer öntanımlı bir değer yoksa bu bölümde bu durum “<em>Yok</em>” şeklinde belirtilir. Burada belirtilen öntanımlı değerin sunucu ile dağıtılan öntanımlı httpd.conf içindeki yönergede kullanılan değerle aynı olmasının gerekmediğine dikkat ediniz.</p>
+</section>
+
+<section id="Context"><title>Bağlam</title>
+
+    <p>Yönergenin sunucunun yapılandırma dosyalarının nerelerinde meşru kabul edildiği aşağıdaki değerlerin virgül ayraçlı bir listesi halinde burada belirtilir.</p>
+
+    <dl>
+      <dt>sunucu geneli</dt>
+
+      <dd>Yönergenin sunucunun (<code>httpd.conf</code> gibi) yapılandırma dosyalarında <directive module="core" type="section">VirtualHost</directive> ve <directive module="core" type="section">Directory</directive> bölümleri <strong>dışında</strong> her yerde kullanılabileceğini belirtir. Ayrıca, <code>.htaccess</code> dosyalarında bulunmasına da izin verilmez.</dd>
+
+      <dt>sanal konak</dt>
+
+      <dd>Yönergenin sunucunun yapılandırma dosyalarının sadece <directive module="core" type="section">VirtualHost</directive> bölümlerinde kullanıldığında geçerli kabul edileceğini belirtir.</dd>
+
+      <dt>dizin</dt>
+
+      <dd>Yönergenin sunucunun yapılandırma dosyalarında sadece <directive module="core" type="section">Directory</directive>, <directive type="section" module="core">Location</directive>, <directive module="core"
+      type="section">Files</directive> ve <directive module="mod_proxy" type="section">Proxy</directive> bölümlerinde kullanıldığında geçerli kabul edileceğini belirtir. Bu bağlama konu sınırlamaların çerçevesi  <a href="../sections.html">Yapılandırma Bölümleri</a> içinde çizilmiştir.</dd>
+
+      <dt>.htaccess</dt>
+
+      <dd>Bu bağlamda geçerli olacağı kabul edilen bir yönerge sadece dizin içi <code>.htaccess</code> dosyalarında görüldüğü zaman işleme sokulur. Üzerinde bir <a href="#Override">geçersizleştirme</a> etkin kılınmışsa yönerge her şeye rağmen işleme sokulmayabilir.</dd>
+    </dl>
+
+    <p>Yönergeye <em>sadece</em> tasarlandığı bağlam içinde izin verilir; başka bir yerde kullanmayı denerseniz ya sunucunun bu bağlamı doğru şekilde işlemesine engel olan ya da sunucunun tamamen işlevsiz kalmasına sebep olan  -- sunucu hiç başlatılamayabilir -- bir yapılandırma hatası alırsınız.</p>
+
+    <p>Yönergenin geçerli olacağı konumlar, aslında, listelenen bağlamların tamamına mantıksal VEYA uygulanarak bulunur. Başka bir deyişle, bir yönergenin geçerli olacağı yerler "<code>sunucu geneli, .htaccess</code>" şeklinde belirtilmişse yönerge <code>httpd.conf</code> dosyasında ve <code>.htaccess</code> dosyalarında, <directive module="core" type="section">Directory</directive> veya <directive module="core" type="section">VirtualHost</directive> bölümleri haricinde her yerde kullanılabilir.</p>
+</section>
+
+<section id="Override"><title>Geçersizleştirme</title>
+
+    <p>Bir <code>.htaccess</code> dosyasında göründüğü takdirde yönerge işlenirken hangi yapılandırma geçersizleşirmesinin etkin olacağı burada belirtilir. Eğer yönerge <a href="#Context" >bağlam</a>ının <code>.htaccess</code> dosyalarında görünmesine izin verilmiyorsa hiçbir bağlam listelenmez.</p>
+
+    <p>Geçersizleştirmeler <directive module="core">AllowOverride</directive> yönergesi tarafından etkinleştirilir ve belli bir bağlama ve alt seviyelerde başka <directive module="core">AllowOverride</directive> yönergeleri ile değiştirilmedikçe tüm çocuklarına uygulanır. Yönergenin belgesinde ayrıca kullanılabilecek tüm olası geçersizleştirme isimleri belirtilir.</p>
+</section>
+
+<section id="Status"><title>Durum</title>
+
+    <p>Yönergenin Apache HTTP sunucusuna ne kadar sıkı bağlı olduğunu belirtir. Başka bir deyişle, yönergeye ve işlevselliğine erişim kazanmak için sunucuyu belli bir modül kümesiyle yeniden derlemek gerekip gerekmediği ile ilgili durumu belirtir. Bu özniteliğin olası değerleri şunlardır:</p>
+
+    <dl>
+      <dt>Çekirdek</dt>
+
+      <dd>Eğer bir yönerge “Çekirdek” durumuna sahip olarak listelenmişse bu, yönergenin Apache HTTP sunucusunun en iç kısımlarının bir parçası olduğu ve daima kullanılabilir olacağı anlamına gelir.</dd>
+
+      <dt>MPM</dt>
+
+      <dd>“MPM” durumuna sahip bir yönerge <a href="../mpm.html">Çok Süreklilik Modülü</a> tarafından sağlanır. Bu yönerge türü sadece ve sadece yönerge tanımının <a href="#Module">Modül</a> satırında listelenmiş MPM’lerden birini kullanıyorsanız mevcut olacaktır.</dd>
+
+      <dt>Temel</dt>
+
+      <dd>“Temel” durumuna sahip bir yönerge, sunucuda öntanımlı derlenmiş standart Apache modüllerinden biri tarafından destekleniyor demektir. Bu nedenle sunucuyu derlemek için yapılandırırken yönergeyi içeren modülü yapılandırmadan özellikle kaldırmazsanız yönerge normal olarak kullanılabilir olacaktır.</dd>
+
+      <dt>Eklenti</dt>
+
+      <dd>“Eklenti” durumuna sahip bir yönerge, Apache sunucu kitinde bulunan ancak normalde sunucuyla birlikte derlenmeyen modüllerden biri tarafından sağlanır. Yönergeyi ve işlevselliğini etkin kılmak için sunucunun derleme öncesi paket yapılandırması sırasında modülün derleneceğini açıkça belirttikten sonra gerekirse sunucuyu yeniden derlemeniz gerekir.</dd>
+
+      <dt>Deneysel</dt>
+
+      <dd>“Deneysel” durumuna sahip bir yönerge, Apache sunucu kitinde bulunan modüllerden biri tarafından sağlanır ve modülün denenmesi tamamen sizin insiyatifinize bırakılır. Böyle bir yönerge her şeyiyle belgelenmiştir fakat gerektiği gibi desteklenmemiştir. Yönergeyi içeren modül öntanımlı olarak sunucuyla birlikte derlenebileceği gibi derlenmeyebilir de; bunun için yönergenin açıklandığı sayfanın başına ve kullanılabilirliği hakkında bilgi edinmek için yönergeyi içeren modüle bakın.</dd>
+    </dl>
+</section>
+
+<section id="Module"><title>Modül</title>
+
+    <p>Burada sadece yönergeyi tanımlayan kaynak modülün ismi yazılır.</p>
+</section>
+
+<section id="Compatibility"><title>Uyumluluk</title>
+
+    <p>Eğer yönerge Apache’nin 2. sürüm dağıtımının özgün parçası değilse söz konusu sürüm burada belirtilir. Ayrıca, yönergenin kullanımı belli platformlarla sınırlıysa bunun ayrıntıları da burada belirtilir.</p>
+</section>
+
+</manualpage>
+
