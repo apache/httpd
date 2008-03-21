@@ -17,7 +17,7 @@ AliasMatch ^/manual(?:/(?:de|en|es|fr|ja|ko|pt-br|ru|tr))?(/.*)?$ "@exp_manualdi
     <Files *.html>
         SetHandler type-map
     </Files>
-    <!-- .tr is text/troff in mime.types! -->
+    # .tr is text/troff in mime.types!
     <Files *.html.tr.utf8>
         ForceType text/html
     </Files>
