@@ -80,7 +80,8 @@ RELEASE SHOWSTOPPERS:
 
 * rpluem says: We need a new apr-util release to fix the regression discussed in
   http://mail-archives.apache.org/mod_mbox/httpd-dev/200802.mbox/%3cPine.GSO.4.64.0802212127120.16348@kleopatra.acc.umu.se%3e
-  (probably PR44538). The needed patch is already backported to apr-util 1.2.x
+  (probably PR44538, definitely PR44648). The needed patch is already
+  backported to apr-util 1.2.x
   (http://svn.apache.org/viewvc?rev=631559&view=rev).
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
