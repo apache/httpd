@@ -164,15 +164,16 @@ static int authz_dbd_login(request_rec *r, authz_dbd_cfg *cfg,
             for (rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1);
                  rv != -1;
                  rv = apr_dbd_get_row(dbd->driver, r->pool, res, &row, -1)) {
-                if (rv == 0) {
-                    newuri = apr_dbd_get_entry(dbd->driver, row, 0);
-                }
-                else {
+                if (rv != 0) {
                     message = apr_dbd_error(dbd->driver, dbd->handle, rv);
                     ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                           "authz_dbd in get_row; action=%s user=%s [%s]",
                           action, r->user, message?message:noerror);
                 }
+                else if (newuri == NULL) {
+                    newuri = apr_dbd_get_entry(dbd->driver, row, 0);
+                }
+                /* we can't break out here or row won't get cleaned up */
             }
         }
         else {
@@ -185,13 +186,9 @@ static int authz_dbd_login(request_rec *r, authz_dbd_cfg *cfg,
     if (newuri != NULL) {
         r->status = HTTP_MOVED_TEMPORARILY;
         apr_table_set(r->err_headers_out, "Location", newuri);
-        rv = HTTP_MOVED_TEMPORARILY;
     }
-    else {
-        rv = OK;
-    }
-    authz_dbd_run_client_login(r, rv, action);
-    return rv;
+    authz_dbd_run_client_login(r, OK, action);
+    return OK;
 }
 
 static int authz_dbd_group_query(request_rec *r, authz_dbd_cfg *cfg,
