@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_authz_dbd: When redirecting after successful login/logout per
+     AuthzDBDRedirectQuery, do not report authorization failure, and use
+     first row returned by database query instead of last row.
+     [Chris Darroch]
+
   *) mod_rewrite: Initialize hash needed by ap_register_rewrite_mapfunc early
      enough. PR 44641 [Daniel Lescohier <daniel.lescohier cnet.com>]
 
