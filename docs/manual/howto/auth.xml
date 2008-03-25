@@ -391,7 +391,7 @@ person in</title>
     authentication or authorization method. In fact any number of the 
     providers can be mixed and matched to provide you with exactly the 
     scheme that meets your needs. In the following example, both the 
-    file and ldap based authentication providers are being used.</p>
+    file and LDAP based authentication providers are being used.</p>
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
@@ -405,17 +405,17 @@ person in</title>
     </example>
 
     <p>In this example the file provider will attempt to authenticate
-    the user first. If it is unable to authenticate the user, the ldap
+    the user first. If it is unable to authenticate the user, the LDAP
     provider will be called. This allows the scope of authentication
     to be broadened if your organization implements more than
     one type of authentication store. Other authentication and authorization
     scenarios may include mixing one type of authentication with a
     different type of authorization. For example, authenticating against
-    a password file yet authorizing against and ldap directory.</p>
+    a password file yet authorizing against an LDAP directory.</p>
 
     <p>Just as multiple authentication providers can be implemented, multiple
     authorization methods can also be used. In this example both file group
-    authorization as well as ldap group authorization is being used.</p>
+    authorization as well as LDAP group authorization is being used.</p>
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
@@ -471,7 +471,7 @@ person in</title>
 
         <example>
           # if ((user == "John") ||<br />
-          # &nbsp;&nbsp; ((Group == "admin")<br />
+          # &nbsp;&nbsp; ((Group == "admins")<br />
           # &nbsp; &nbsp; &amp;&amp; (ldap-group &lt;ldap-object&gt; contains auth'ed_user)<br />
           # &nbsp; &nbsp; &amp;&amp; ((ldap-attribute dept == "sales")<br />
           # &nbsp; &nbsp; &nbsp; &nbsp; || (file-group contains auth'ed_user))))<br />
@@ -503,7 +503,7 @@ person in</title>
         </example>
 
         <p>By default all <directive module="mod_authz_core">Require</directive> 
-        directives are handled through and OR operation. In other words, if 
+        directives are handled through an OR operation. In other words, if 
         any of the specified authorization methods succeed, then authorization 
         is granted. By enclosing a set of 
         <directive module="mod_authz_core">Require</directive> directives within
