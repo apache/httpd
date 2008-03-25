@@ -32,22 +32,38 @@
 <summary>
     <p>This module provides authorization capabilities so that
        authenticated users can be allowed or denied access to portions
-       of the web site by group membership. It also provides
-       database/backend login/logout in conjunction with
-       <module>mod_authn_dbd</module>.</p>
+       of the web site by group membership.  Similar functionality is
+       provided by <module>mod_authz_groupfile</module> and
+       <module>mod_authz_dbm</module>, with the exception that
+       this module queries a SQL database to determine whether a
+       user is a member of a group.</p>
+    <p>This module can also provide database-backed user login/logout
+       capabilities.  These are likely to be of most value when used
+       in conjunction with <module>mod_authn_dbd</module>.</p>
+    <p>This module relies on <module>mod_dbd</module> to specify
+       the backend database driver and connection parameters, and
+       manage the database connections.</p>
 </summary>
 
 <seealso><directive module="mod_authz_core">Require</directive></seealso>
+<seealso>
+  <directive module="mod_authz_core">AuthzMergeRules</directive>
+</seealso>
+<seealso>
+  <directive module="mod_authn_dbd">AuthDBDUserPWQuery</directive>
+</seealso>
 <seealso><directive module="mod_dbd">DBDriver</directive></seealso>
 <seealso><directive module="mod_dbd">DBDParams</directive></seealso>
 
 <section id="login">
 <title>Database Login</title>
-<p>In addition to the standard authz function of checking group
-membership, this module provides database Login/Logout capability.
-Specifically, we can maintain a logged in/logged out status in
-the database, and control the status via designated URLs (subject
-of course to users supplying the necessary credentials).</p>
+<p>
+In addition to the standard authorization function of checking group
+membership, this module can also provide server-side user session
+management via database-backed login/logout capabilities.
+Specifically, it can update a user's session status in the database
+whenever the user visits designated URLs (subject of course to users
+supplying the necessary credentials).</p>
 <p>This works by defining two special
 <directive module="mod_authz_core">Require</directive> types:
 <code>Require dbd-login</code> and <code>Require dbd-logout</code>.
@@ -56,15 +72,14 @@ For usage details, see the configuration example below.</p>
 
 <section id="client">
 <title>Client Login</title>
-<p>In conjunction with server login/logout, we may wish to implement
-clientside login/out, for example by setting and unsetting a cookie
-or other such token.  Although this is not the business of an authz
-module, client session management software should be able to tie its
-operation in to database login/logout.  To support this,
-<module>mod_authz_dbd</module> exports an optional hook that will
-be run whenever a user successfully logs into or out of the database.
-Session management modules can use the hook to implement functions
-to start and end a client session.</p>
+<p>Some administrators may wish to implement client-side session
+management that works in concert with the server-side login/logout
+capabilities offered by this module, for example, by setting or unsetting
+an HTTP cookie or other such token when a user logs in or out.
+To support such integration, <module>mod_authz_dbd</module> exports an
+optional hook that will be run whenever a user's status is updated in
+the database.  Other session management modules can then use the hook
+to implement functions that start and end client-side sessions.</p>
 </section>
 
 <section id="example">
@@ -88,17 +103,19 @@ DBDExptime 300
 
   # mod_authn_dbd SQL query to authenticate a logged-in user
   AuthDBDUserPWQuery \
-    "SELECT password FROM authn WHERE user = %s AND login = true"
+    "SELECT password FROM authn WHERE user = %s AND login = 'true'"
 
   # mod_authz_core configuration for mod_authz_dbd
+  AuthzMergeRules Off
   Require dbd-group team
 
   # mod_authz_dbd configuration
   AuthzDBDQuery "SELECT group FROM authz WHERE user = %s"
 
   # when a user fails to be authenticated or authorized,
-  # invite them to login
-  ErrorDocument 401 /team-private/login-form.html
+  # invite them to login; this page should provide a link
+  # to /team-private/login.html
+  ErrorDocument 401 /login-info.html
 
   &lt;Files login.html&gt;
     # don't require user to already be logged in!
@@ -106,9 +123,10 @@ DBDExptime 300
       "SELECT password FROM authn WHERE user = %s"
 
     # dbd-login action executes a statement to log user in
+    AuthzMergeRules Off
     Require dbd-login
     AuthzDBDQuery \
-      "UPDATE authn SET login = true WHERE user = %s"
+      "UPDATE authn SET login = 'true' WHERE user = %s"
 
     # return user to referring page (if any) after
     # successful login
@@ -117,9 +135,10 @@ DBDExptime 300
 
   &lt;Files logout.html&gt;
     # dbd-logout action executes a statement to log user out
+    AuthzMergeRules Off
     Require dbd-logout
     AuthzDBDQuery \
-      "UPDATE authn SET login = false WHERE user = %s"
+      "UPDATE authn SET login = 'false' WHERE user = %s"
   &lt;/Files&gt;
 &lt;/Directory&gt;
 </pre></example>
@@ -158,7 +177,7 @@ AuthzDBDQuery \
     <example><title>Example</title><pre>
 Require dbd-login
 AuthzDBDQuery \
-  "UPDATE authn SET login = true WHERE user = %s"
+  "UPDATE authn SET login = 'true' WHERE user = %s"
 </pre></example>
     </li>
     </ul>
