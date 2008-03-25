@@ -226,7 +226,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=568879
    Backport version for 2.2.x of patch:
        http://people.apache.org/~chrisd/patches/mod_headers_merge/mod_headers-merge-2.2.x.patch
-   +1 chrisd, niq
+   +1: chrisd, niq
 
   * mod_speling: remove regression from 1.3/2.0 behavior and
     drop dependency between mod_speling and AcceptPathInfo.
@@ -236,6 +236,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
        Trunk version of patch works
    +1: jim, niq
+
+ * mod_authn_dbd: Disambiguate and tidy database authentication
+   error messages.  Also move assignment statements after #if blocks
+   to avoid having them treated as variable declarations.
+   PR: 43210.
+   Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=639079
+       http://svn.apache.org/viewvc?view=rev&revision=468042
+   Backport version for 2.2.x of patch:
+       http://people.apache.org/~chrisd/patches/mod_authn_dbd_msgs/mod_authn_dbd-msgs-2.2.x.patch
+   +1: chrisd
 
 PATCHES/ISSUES THAT ARE STALLED
 
