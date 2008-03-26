@@ -103,9 +103,10 @@ DBDExptime 300
 <h2><a name="exposed" id="exposed">Exposing Login Information</a></h2>
 
 <p>
-Whenever a query is made to the database server, all columns returned by
-the query are placed in the environment, using environment variables with
-the prefix "AUTHENTICATE_".
+If httpd was built against <a class="glossarylink" href="../glossary.html#apr" title="see glossary">APR</a> version 1.3.0
+or higher, then whenever a query is made to the database server, all
+column values in the first row returned by the query are placed in the
+environment, using environment variables with the prefix "AUTHENTICATE_".
 </p>
 <p>If a database query for example returned the username, full name
 and telephone number of a user, a CGI program will have access to
