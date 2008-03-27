@@ -586,16 +586,14 @@ static int proxy_ajp_handler(request_rec *r, proxy_worker *worker,
                  "proxy: AJP: serving URL %s", url);
 
     /* create space for state information */
-    if (!backend) {
-        status = ap_proxy_acquire_connection(scheme, &backend, worker,
-                                             r->server);
-        if (status != OK) {
-            if (backend) {
-                backend->close = 1;
-                ap_proxy_release_connection(scheme, backend, r->server);
-            }
-            return status;
+    status = ap_proxy_acquire_connection(scheme, &backend, worker,
+                                         r->server);
+    if (status != OK) {
+        if (backend) {
+            backend->close = 1;
+            ap_proxy_release_connection(scheme, backend, r->server);
         }
+        return status;
     }
 
     backend->is_ssl = 0;
