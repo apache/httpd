@@ -83,7 +83,7 @@ AP_DECLARE(parse_node_t*) ap_expr_parse(apr_pool_t *pool, const char *expr,
  * @return the value the expression parsed to
  */
 AP_DECLARE(int) ap_expr_eval(request_rec *r, parse_node_t *root,
-		             int *was_error, backref_t **reptr,
+                             int *was_error, backref_t **reptr,
                              string_func_t string_func, opt_func_t eval_func);
 /**
  * Evaluate an expression
@@ -97,5 +97,5 @@ AP_DECLARE(int) ap_expr_eval(request_rec *r, parse_node_t *root,
  */
 AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
                                    int *was_error, backref_t **reptr,
-				   string_func_t string_func,
+                                   string_func_t string_func,
                                    opt_func_t eval_func);
