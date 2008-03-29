@@ -3,6 +3,9 @@ Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
   *) Introduced ap_expr API for expression evaluation.
+     This is adapted from mod_include, which is the first module
+     to use the new API.
+     [Nick Kew]
 
   *) mod_authz_dbd: When redirecting after successful login/logout per
      AuthzDBDRedirectQuery, do not report authorization failure, and use
