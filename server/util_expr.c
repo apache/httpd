@@ -866,9 +866,9 @@ AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
 {
     parse_node_t *root = ap_expr_parse(r->pool, expr, was_error);
     if (*was_error || !root) {
-	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Error parsing expression in %s", r->filename);   
-	return 0;
+        return 0;
     }
     return ap_expr_eval(r, root, was_error, reptr, string_func, eval_func);
 }
