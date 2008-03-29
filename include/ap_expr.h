@@ -14,7 +14,14 @@
  * limitations under the License.
  */
 
+#ifndef AP_EXPR_H
+#define AP_EXPR_H
+
 #include "httpd.h"
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 /* conditional expression parser stuff */
 typedef enum {
@@ -101,3 +108,9 @@ AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
                                    int *was_error, backref_t **reptr,
                                    string_func_t string_func,
                                    opt_func_t eval_func);
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif /* AP_EXPR_H */
