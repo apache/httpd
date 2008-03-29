@@ -141,11 +141,24 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     +1 covener, niq
 
   * core: Reinstate location walk for subrequests.
+    PR: 41960.
       Trunk version of patch:
          http://svn.apache.org/viewvc?view=rev&revision=579664
       Backport version of 2.2.x of patch:
          Trunk version works (minus CHANGES conflict)
     +1: niq
+    chrisd says: The patch seems to address the issues in the PR.
+                 My only concern would be that the ap_location_walk() call
+                 (the second one) expects r->uri.  I'm fairly sure that
+                 no native httpd code creates subrequests where r->uri is
+                 NULL.  However, it might be wise to wrap the second
+                 ap_location_walk() with something like:
+                     if(!file_req || (r->uri && r->uri[0] != '\0'))
+                 Things like "RewriteCond /foo -F" can use
+                 ap_sub_req_lookup_file() to create subrequests with
+                 r->uri = "" (but not NULL, I think ...); we might as
+                 well bypass <Location> checks on these, and also handle
+                 any external modules that might try passing r->uri as NULL.
 
  * ab: Use a 64 bit unsigned int instead of a signed long to count the
    bytes transferred to avoid integer overflows
