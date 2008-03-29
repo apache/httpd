@@ -14,6 +14,11 @@
  * limitations under the License.
  */
 
+/**
+ * @file ap_expr.h
+ * @brief Expression parser
+ */
+
 #ifndef AP_EXPR_H
 #define AP_EXPR_H
 
