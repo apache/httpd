@@ -14,6 +14,8 @@
  * limitations under the License.
  */
 
+#include "httpd.h"
+
 /* conditional expression parser stuff */
 typedef enum {
     TOKEN_STRING,
