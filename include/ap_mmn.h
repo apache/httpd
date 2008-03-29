@@ -149,6 +149,7 @@
  * 20071108.7 (2.3.0-dev)  Add *ftp_directory_charset to proxy_dir_conf
  * 20071108.8 (2.3.0-dev)  Add optional function ap_logio_add_bytes_in() to mog_logio
  * 20071108.9 (2.3.0-dev)  Add chroot support to unixd_config
+ * 20071108.10(2.3.0-dev)  Introduce new ap_expr API
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -156,7 +157,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20071108
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 9                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 10                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

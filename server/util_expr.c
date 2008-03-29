@@ -1,0 +1,874 @@
+/* Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+#include "apr.h"
+#include "apr_strings.h"
+#include "apr_lib.h"
+
+#define APR_WANT_STRFUNC
+#define APR_WANT_MEMFUNC
+#include "apr_want.h"
+
+#include "httpd.h"
+#include "http_log.h"
+
+#include "ap_expr.h"
+#if 1
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |                  Debugging Utilities
+ * |                                                       |
+ * +-------------------------------------------------------+
+ */
+
+#ifdef DEBUG_INCLUDE
+
+#define TYPE_TOKEN(token, ttype) do { \
+    (token)->type = ttype;            \
+    (token)->s = #ttype;              \
+} while(0)
+
+#define CREATE_NODE(pool,name) do {                          \
+    (name) = apr_palloc(pool, sizeof(*(name)));      \
+    (name)->parent = (name)->left = (name)->right = NULL; \
+    (name)->done = 0;                                     \
+    (name)->dump_done = 0;                                \
+} while(0)
+
+static void debug_printf(request_rec *r, const char *fmt, ...)
+{
+    va_list ap;
+    char *debug__str;
+
+    va_start(ap, fmt);
+    debug__str = apr_pvsprintf(r->pool, fmt, ap);
+    va_end(ap);
+/*
+    APR_BRIGADE_INSERT_TAIL(ctx->intern->debug.bb, apr_bucket_pool_create(
+                            debug__str, strlen(debug__str), ctx->pool,
+                            ctx->intern->debug.f->c->bucket_alloc));
+                            */
+}
+
+#define DUMP__CHILD(ctx, is, node, child) if (1) {                           \
+    parse_node_t *d__c = node->child;                                        \
+    if (d__c) {                                                              \
+        if (!d__c->dump_done) {                                              \
+            if (d__c->parent != node) {                                      \
+                debug_printf(ctx, "!!! Parse tree is not consistent !!!\n"); \
+                if (!d__c->parent) {                                         \
+                    debug_printf(ctx, "Parent of " #child " child node is "  \
+                                 "NULL.\n");                                 \
+                }                                                            \
+                else {                                                       \
+                    debug_printf(ctx, "Parent of " #child " child node "     \
+                                 "points to another node (of type %s)!\n",   \
+                                 d__c->parent->token.s);                     \
+                }                                                            \
+                return;                                                      \
+            }                                                                \
+            node = d__c;                                                     \
+            continue;                                                        \
+        }                                                                    \
+    }                                                                        \
+    else {                                                                   \
+        debug_printf(ctx, "%s(missing)\n", is);                              \
+    }                                                                        \
+}
+
+static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
+{
+    parse_node_t *current;
+    char *is;
+
+    if (!root) {
+        debug_printf(ctx, "     -- Parse Tree empty --\n\n");
+        return;
+    }
+
+    debug_printf(ctx, "     ----- Parse Tree -----\n");
+    current = root;
+    is = "     ";
+
+    while (current) {
+        switch (current->token.type) {
+        case TOKEN_STRING:
+        case TOKEN_RE:
+            debug_printf(ctx, "%s%s (%s)\n", is, current->token.s,
+                         current->token.value);
+            current->dump_done = 1;
+            current = current->parent;
+            continue;
+
+        case TOKEN_NOT:
+        case TOKEN_GROUP:
+        case TOKEN_RBRACE:
+        case TOKEN_LBRACE:
+            if (!current->dump_done) {
+                debug_printf(ctx, "%s%s\n", is, current->token.s);
+                is = apr_pstrcat(ctx->dpool, is, "    ", NULL);
+                current->dump_done = 1;
+            }
+
+            DUMP__CHILD(ctx, is, current, right)
+
+            if (!current->right || current->right->dump_done) {
+                is = apr_pstrmemdup(ctx->dpool, is, strlen(is) - 4);
+                if (current->right) current->right->dump_done = 0;
+                current = current->parent;
+            }
+            continue;
+
+        default:
+            if (!current->dump_done) {
+                debug_printf(ctx, "%s%s\n", is, current->token.s);
+                is = apr_pstrcat(ctx->dpool, is, "    ", NULL);
+                current->dump_done = 1;
+            }
+
+            DUMP__CHILD(ctx, is, current, left)
+            DUMP__CHILD(ctx, is, current, right)
+
+            if ((!current->left || current->left->dump_done) &&
+                (!current->right || current->right->dump_done)) {
+
+                is = apr_pstrmemdup(ctx->dpool, is, strlen(is) - 4);
+                if (current->left) current->left->dump_done = 0;
+                if (current->right) current->right->dump_done = 0;
+                current = current->parent;
+            }
+            continue;
+        }
+    }
+
+    /* it is possible to call this function within the parser loop, to see
+     * how the tree is built. That way, we must cleanup after us to dump
+     * always the whole tree
+     */
+    root->dump_done = 0;
+    if (root->left) root->left->dump_done = 0;
+    if (root->right) root->right->dump_done = 0;
+
+    debug_printf(ctx, "     --- End Parse Tree ---\n\n");
+
+    return;
+}
+
+#define DEBUG_INIT(ctx, filter, brigade) do { \
+    (ctx)->intern->debug.f = filter;          \
+    (ctx)->intern->debug.bb = brigade;        \
+} while(0)
+
+#define DEBUG_PRINTF(arg) debug_printf arg
+
+#define DEBUG_DUMP_TOKEN(ctx, token) do {                                     \
+    token_t *d__t = (token);                                                  \
+                                                                              \
+    if (d__t->type == TOKEN_STRING || d__t->type == TOKEN_RE) {               \
+        DEBUG_PRINTF(((ctx), "     Found: %s (%s)\n", d__t->s, d__t->value)); \
+    }                                                                         \
+    else {                                                                    \
+        DEBUG_PRINTF((ctx, "     Found: %s\n", d__t->s));                     \
+    }                                                                         \
+} while(0)
+
+#define DEBUG_DUMP_EVAL(r, node) do {                                       \
+    char c = '"';                                                             \
+    switch ((node)->token.type) {                                             \
+    case TOKEN_STRING:                                                        \
+        debug_printf((r), "     Evaluate: %s (%s) -> %c\n", (node)->token.s,\
+                     (node)->token.value, ((node)->value) ? '1':'0');         \
+        break;                                                                \
+    case TOKEN_AND:                                                           \
+    case TOKEN_OR:                                                            \
+        debug_printf((r), "     Evaluate: %s (Left: %s; Right: %s) -> %c\n",\
+                     (node)->token.s,                                         \
+                     (((node)->left->done) ? ((node)->left->value ?"1":"0")   \
+                                          : "short circuited"),               \
+                     (((node)->right->done) ? ((node)->right->value?"1":"0")  \
+                                          : "short circuited"),               \
+                     (node)->value ? '1' : '0');                              \
+        break;                                                                \
+    case TOKEN_EQ:                                                            \
+    case TOKEN_NE:                                                            \
+    case TOKEN_GT:                                                            \
+    case TOKEN_GE:                                                            \
+    case TOKEN_LT:                                                            \
+    case TOKEN_LE:                                                            \
+        if ((node)->right->token.type == TOKEN_RE) c = '/';                   \
+        debug_printf((r), "     Compare:  %s (\"%s\" with %c%s%c) -> %c\n", \
+                     (node)->token.s,                                         \
+                     (node)->left->token.value,                               \
+                     c, (node)->right->token.value, c,                        \
+                     (node)->value ? '1' : '0');                              \
+        break;                                                                \
+    default:                                                                  \
+        debug_printf((r), "     Evaluate: %s -> %c\n", (node)->token.s,     \
+                     (node)->value ? '1' : '0');                              \
+        break;                                                                \
+    }                                                                         \
+} while(0)
+
+#define DEBUG_DUMP_UNMATCHED(r, unmatched) do {                        \
+    if (unmatched) {                                                     \
+        DEBUG_PRINTF(((r), "     Unmatched %c\n", (char)(unmatched))); \
+    }                                                                    \
+} while(0)
+
+#define DEBUG_DUMP_COND(ctx, text)                                 \
+    DEBUG_PRINTF(((ctx), "**** %s cond status=\"%c\"\n", (text),   \
+                  ((ctx)->flags & SSI_FLAG_COND_TRUE) ? '1' : '0'))
+
+#define DEBUG_DUMP_TREE(ctx, root) debug_dump_tree(ctx, root)
+
+#else /* DEBUG_INCLUDE */
+
+#define TYPE_TOKEN(token, ttype) (token)->type = ttype
+
+#define CREATE_NODE(pool,name) do {                       \
+    (name) = apr_palloc(pool, sizeof(*(name)));   \
+    (name)->parent = (name)->left = (name)->right = NULL; \
+    (name)->done = 0;                                     \
+} while(0)
+
+#define DEBUG_INIT(ctx, f, bb)
+#define DEBUG_PRINTF(arg)
+#define DEBUG_DUMP_TOKEN(ctx, token)
+#define DEBUG_DUMP_EVAL(ctx, node)
+#define DEBUG_DUMP_UNMATCHED(ctx, unmatched)
+#define DEBUG_DUMP_COND(ctx, text)
+#define DEBUG_DUMP_TREE(ctx, root)
+
+#endif /* !DEBUG_INCLUDE */
+
+#endif /* 0 */
+
+
+/*
+ * +-------------------------------------------------------+
+ * |                                                       |
+ * |              Conditional Expression Parser
+ * |                                                       |
+ * +-------------------------------------------------------+
+ */
+static APR_INLINE int re_check(request_rec *r, const char *string,
+                               const char *rexp, backref_t **reptr)
+{
+    ap_regex_t *compiled;
+    backref_t *re = *reptr;
+    int rc;
+
+    compiled = ap_pregcomp(r->pool, rexp, AP_REG_EXTENDED);
+    if (!compiled) {
+        ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, "unable to "
+                      "compile pattern \"%s\"", rexp);
+        return -1;
+    }
+
+    if (!re) {
+        re = *reptr = apr_palloc(r->pool, sizeof(*re));
+    }
+
+    re->source = apr_pstrdup(r->pool, string);
+    re->rexp = apr_pstrdup(r->pool, rexp);
+    re->nsub = compiled->re_nsub;
+    rc = !ap_regexec(compiled, string, AP_MAX_REG_MATCH, re->match, 0);
+
+    ap_pregfree(r->pool, compiled);
+    return rc;
+}
+
+static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token,
+                      token_t *previous)
+{
+    const char *p;
+    apr_size_t shift;
+    int unmatched;
+
+    token->value = NULL;
+
+    if (!*parse) {
+        return 0;
+    }
+
+    /* Skip leading white space */
+    while (apr_isspace(**parse)) {
+        ++*parse;
+    }
+
+    if (!**parse) {
+        *parse = NULL;
+        return 0;
+    }
+
+    TYPE_TOKEN(token, TOKEN_STRING); /* the default type */
+    p = *parse;
+    unmatched = 0;
+
+    switch (*(*parse)++) {
+    case '(':
+        TYPE_TOKEN(token, TOKEN_LBRACE);
+        return 0;
+    case ')':
+        TYPE_TOKEN(token, TOKEN_RBRACE);
+        return 0;
+    case '=':
+        if (**parse == '=') ++*parse;
+        TYPE_TOKEN(token, TOKEN_EQ);
+        return 0;
+    case '!':
+        if (**parse == '=') {
+            TYPE_TOKEN(token, TOKEN_NE);
+            ++*parse;
+            return 0;
+        }
+        TYPE_TOKEN(token, TOKEN_NOT);
+        return 0;
+    case '\'':
+        unmatched = '\'';
+        break;
+    case '/':
+        /* if last token was ACCESS, this token is STRING */
+        if (previous != NULL && TOKEN_ACCESS == previous->type) {
+            break;
+        }
+        TYPE_TOKEN(token, TOKEN_RE);
+        unmatched = '/';
+        break;
+    case '|':
+        if (**parse == '|') {
+            TYPE_TOKEN(token, TOKEN_OR);
+            ++*parse;
+            return 0;
+        }
+        break;
+    case '&':
+        if (**parse == '&') {
+            TYPE_TOKEN(token, TOKEN_AND);
+            ++*parse;
+            return 0;
+        }
+        break;
+    case '>':
+        if (**parse == '=') {
+            TYPE_TOKEN(token, TOKEN_GE);
+            ++*parse;
+            return 0;
+        }
+        TYPE_TOKEN(token, TOKEN_GT);
+        return 0;
+    case '<':
+        if (**parse == '=') {
+            TYPE_TOKEN(token, TOKEN_LE);
+            ++*parse;
+            return 0;
+        }
+        TYPE_TOKEN(token, TOKEN_LT);
+        return 0;
+    case '-':
+        if (apr_isalnum(**parse) && apr_isspace((*parse)[1])) {
+            TYPE_TOKEN(token, TOKEN_ACCESS);
+            token->value = *parse;
+            ++*parse;
+            return 0;
+        }
+        break;
+    }
+
+    /* It's a string or regex token
+     * Now search for the next token, which finishes this string
+     */
+    shift = 0;
+    p = *parse = token->value = unmatched ? *parse : p;
+
+    for (; **parse; p = ++*parse) {
+        if (**parse == '\\') {
+            if (!*(++*parse)) {
+                p = *parse;
+                break;
+            }
+
+            ++shift;
+        }
+        else {
+            if (unmatched) {
+                if (**parse == unmatched) {
+                    unmatched = 0;
+                    ++*parse;
+                    break;
+                }
+            }
+            else if (apr_isspace(**parse)) {
+                break;
+            }
+            else {
+                int found = 0;
+
+                switch (**parse) {
+                case '(':
+                case ')':
+                case '=':
+                case '!':
+                case '<':
+                case '>':
+                    ++found;
+                    break;
+
+                case '|':
+                case '&':
+                    if ((*parse)[1] == **parse) {
+                        ++found;
+                    }
+                    break;
+                }
+
+                if (found) {
+                    break;
+                }
+            }
+        }
+    }
+
+    if (unmatched) {
+        token->value = apr_pstrdup(pool, "");
+    }
+    else {
+        apr_size_t len = p - token->value - shift;
+        char *c = apr_palloc(pool, len + 1);
+
+        p = token->value;
+        token->value = c;
+
+        while (shift--) {
+            const char *e = ap_strchr_c(p, '\\');
+
+            memcpy(c, p, e-p);
+            c   += e-p;
+            *c++ = *++e;
+            len -= e-p;
+            p    = e+1;
+        }
+
+        if (len) {
+            memcpy(c, p, len);
+        }
+        c[len] = '\0';
+    }
+
+    return unmatched;
+}
+
+/* This is what we export.  We can split it in two. */
+AP_DECLARE(parse_node_t*) ap_expr_parse(apr_pool_t* pool, const char *expr,
+                                        int *was_error)
+{
+    parse_node_t *new, *root = NULL, *current = NULL;
+    const char *error = "Invalid expression \"%s\" in file %s";
+    const char *parse = expr;
+    int was_unmatched = 0;
+    unsigned regex = 0;
+
+    *was_error = 0;
+
+    if (!parse) {
+        return 0;
+    }
+
+    /* Create Parse Tree */
+    while (1) {
+        /* uncomment this to see how the tree a built:
+         *
+         * DEBUG_DUMP_TREE(ctx, root);
+         */
+        CREATE_NODE(pool, new);
+
+        was_unmatched = get_ptoken(pool, &parse, &new->token,
+                     (current != NULL ? &current->token : NULL));
+        if (!parse) {
+            break;
+        }
+
+        DEBUG_DUMP_UNMATCHED(ctx, was_unmatched);
+        DEBUG_DUMP_TOKEN(ctx, &new->token);
+
+        if (!current) {
+            switch (new->token.type) {
+            case TOKEN_STRING:
+            case TOKEN_NOT:
+            case TOKEN_ACCESS:
+            case TOKEN_LBRACE:
+                root = current = new;
+                continue;
+
+            default:
+                *was_error = 1;
+                return 0;
+            }
+        }
+
+        switch (new->token.type) {
+        case TOKEN_STRING:
+            switch (current->token.type) {
+            case TOKEN_STRING:
+                current->token.value =
+                    apr_pstrcat(pool, current->token.value,
+                                *current->token.value ? " " : "",
+                                new->token.value, NULL);
+                continue;
+
+            case TOKEN_RE:
+            case TOKEN_RBRACE:
+            case TOKEN_GROUP:
+                break;
+
+            default:
+                new->parent = current;
+                current = current->right = new;
+                continue;
+            }
+            break;
+
+        case TOKEN_RE:
+            switch (current->token.type) {
+            case TOKEN_EQ:
+            case TOKEN_NE:
+                new->parent = current;
+                current = current->right = new;
+                ++regex;
+                continue;
+
+            default:
+                break;
+            }
+            break;
+
+        case TOKEN_AND:
+        case TOKEN_OR:
+            switch (current->token.type) {
+            case TOKEN_STRING:
+            case TOKEN_RE:
+            case TOKEN_GROUP:
+                current = current->parent;
+
+                while (current) {
+                    switch (current->token.type) {
+                    case TOKEN_AND:
+                    case TOKEN_OR:
+                    case TOKEN_LBRACE:
+                        break;
+
+                    default:
+                        current = current->parent;
+                        continue;
+                    }
+                    break;
+                }
+
+                if (!current) {
+                    new->left = root;
+                    root->parent = new;
+                    current = root = new;
+                    continue;
+                }
+
+                new->left = current->right;
+                new->left->parent = new;
+                new->parent = current;
+                current = current->right = new;
+                continue;
+
+            default:
+                break;
+            }
+            break;
+
+        case TOKEN_EQ:
+        case TOKEN_NE:
+        case TOKEN_GE:
+        case TOKEN_GT:
+        case TOKEN_LE:
+        case TOKEN_LT:
+            if (current->token.type == TOKEN_STRING) {
+                current = current->parent;
+
+                if (!current) {
+                    new->left = root;
+                    root->parent = new;
+                    current = root = new;
+                    continue;
+                }
+
+                switch (current->token.type) {
+                case TOKEN_LBRACE:
+                case TOKEN_AND:
+                case TOKEN_OR:
+                    new->left = current->right;
+                    new->left->parent = new;
+                    new->parent = current;
+                    current = current->right = new;
+                    continue;
+
+                default:
+                    break;
+                }
+            }
+            break;
+
+        case TOKEN_RBRACE:
+            while (current && current->token.type != TOKEN_LBRACE) {
+                current = current->parent;
+            }
+
+            if (current) {
+                TYPE_TOKEN(&current->token, TOKEN_GROUP);
+                continue;
+            }
+
+            error = "Unmatched ')' in \"%s\" in file %s";
+            break;
+
+        case TOKEN_NOT:
+        case TOKEN_ACCESS:
+        case TOKEN_LBRACE:
+            switch (current->token.type) {
+            case TOKEN_STRING:
+            case TOKEN_RE:
+            case TOKEN_RBRACE:
+            case TOKEN_GROUP:
+                break;
+
+            default:
+                current->right = new;
+                new->parent = current;
+                current = new;
+                continue;
+            }
+            break;
+
+        default:
+            break;
+        }
+
+        *was_error = 1;
+        return 0;
+    }
+
+    DEBUG_DUMP_TREE(ctx, root);
+    return root;
+}
+
+#define PARSE_STRING(r,s) (string_func ? string_func((r),(s)) : (s))
+AP_DECLARE(int) ap_expr_eval(request_rec *r, parse_node_t *root,
+                             int *was_error, backref_t **reptr,
+                             string_func_t string_func, opt_func_t eval_func)
+{
+    parse_node_t *current = root;
+    const char *error = NULL;
+    unsigned int regex = 0;
+
+    /* Evaluate Parse Tree */
+    while (current) {
+        switch (current->token.type) {
+        case TOKEN_STRING:
+            current->token.value = PARSE_STRING(r, current->token.value);
+            current->value = !!*current->token.value;
+            break;
+
+        case TOKEN_AND:
+        case TOKEN_OR:
+            if (!current->left || !current->right) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Invalid expression in file %s", r->filename);
+                *was_error = 1;
+                return 0;
+            }
+
+            if (!current->left->done) {
+                switch (current->left->token.type) {
+                case TOKEN_STRING:
+                    current->left->token.value =
+                        PARSE_STRING(r, current->left->token.value);
+                    current->left->value = !!*current->left->token.value;
+                    DEBUG_DUMP_EVAL(ctx, current->left);
+                    current->left->done = 1;
+                    break;
+
+                default:
+                    current = current->left;
+                    continue;
+                }
+            }
+
+            /* short circuit evaluation */
+            if (!current->right->done && !regex &&
+                ((current->token.type == TOKEN_AND && !current->left->value) ||
+                (current->token.type == TOKEN_OR && current->left->value))) {
+                current->value = current->left->value;
+            }
+            else {
+                if (!current->right->done) {
+                    switch (current->right->token.type) {
+                    case TOKEN_STRING:
+                        current->right->token.value =
+                            PARSE_STRING(r,current->right->token.value);
+                        current->right->value = !!*current->right->token.value;
+                        DEBUG_DUMP_EVAL(r, current->right);
+                        current->right->done = 1;
+                        break;
+
+                    default:
+                        current = current->right;
+                        continue;
+                    }
+                }
+
+                if (current->token.type == TOKEN_AND) {
+                    current->value = current->left->value &&
+                                     current->right->value;
+                }
+                else {
+                    current->value = current->left->value ||
+                                     current->right->value;
+                }
+            }
+            break;
+
+        case TOKEN_EQ:
+        case TOKEN_NE:
+            if (!current->left || !current->right ||
+                current->left->token.type != TOKEN_STRING ||
+                (current->right->token.type != TOKEN_STRING &&
+                 current->right->token.type != TOKEN_RE)) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                            "Invalid expression in file %s", r->filename);
+                *was_error = 1;
+                return 0;
+            }
+            current->left->token.value =
+                PARSE_STRING(r, current->left->token.value);
+            current->right->token.value =
+                PARSE_STRING(r, current->right->token.value);
+
+            if (current->right->token.type == TOKEN_RE) {
+                current->value = re_check(r, current->left->token.value,
+                                          current->right->token.value, reptr);
+                --regex;
+            }
+            else {
+                current->value = !strcmp(current->left->token.value,
+                                         current->right->token.value);
+            }
+
+            if (current->token.type == TOKEN_NE) {
+                current->value = !current->value;
+            }
+            break;
+
+        case TOKEN_GE:
+        case TOKEN_GT:
+        case TOKEN_LE:
+        case TOKEN_LT:
+            if (!current->left || !current->right ||
+                current->left->token.type != TOKEN_STRING ||
+                current->right->token.type != TOKEN_STRING) {
+                ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                              "Invalid expression in file %s", r->filename);
+                *was_error = 1;
+                return 0;
+            }
+
+            current->left->token.value =
+                PARSE_STRING(r, current->left->token.value);
+            current->right->token.value =
+                PARSE_STRING(r, current->right->token.value);
+
+            current->value = strcmp(current->left->token.value,
+                                    current->right->token.value);
+
+            switch (current->token.type) {
+            case TOKEN_GE: current->value = current->value >= 0; break;
+            case TOKEN_GT: current->value = current->value >  0; break;
+            case TOKEN_LE: current->value = current->value <= 0; break;
+            case TOKEN_LT: current->value = current->value <  0; break;
+            default: current->value = 0; break; /* should not happen */
+            }
+            break;
+
+        case TOKEN_NOT:
+        case TOKEN_GROUP:
+            if (current->right) {
+                if (!current->right->done) {
+                    current = current->right;
+                    continue;
+                }
+                current->value = current->right->value;
+            }
+            else {
+                current->value = 1;
+            }
+
+            if (current->token.type == TOKEN_NOT) {
+                current->value = !current->value;
+            }
+            break;
+        case TOKEN_ACCESS:
+            if (eval_func) {
+                *was_error = eval_func(r, current, string_func);
+                if (*was_error) {
+                    return 0;
+                }
+            }
+            break;
+
+        case TOKEN_RE:
+            if (!error) {
+                error = "No operator before regex in file %s";
+            }
+        case TOKEN_LBRACE:
+            if (!error) {
+                error = "Unmatched '(' in file %s";
+            }
+        default:
+            if (!error) {
+                error = "internal parser error in file %s";
+            }
+
+            ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r, error, r->filename);
+            *was_error = 1;
+            return 0;
+        }
+
+        DEBUG_DUMP_EVAL(r, current);
+        current->done = 1;
+        current = current->parent;
+    }
+
+    return (root ? root->value : 0);
+}
+AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
+                                   int *was_error, backref_t **reptr,
+                                   string_func_t string_func,
+                                   opt_func_t eval_func)
+{
+    parse_node_t *root = ap_expr_parse(r->pool, expr, was_error);
+    if (*was_error || !root) {
+	ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
+                      "Error parsing expression in %s", r->filename);   
+	return 0;
+    }
+    return ap_expr_eval(r, root, was_error, reptr, string_func, eval_func);
+}

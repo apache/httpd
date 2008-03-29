@@ -24,6 +24,7 @@
 #include "ap_mpm.h"
 #include "ap_provider.h"
 #include "ap_release.h"
+#include "ap_expr.h"
 #include "http_config.h"
 #include "http_connection.h"
 #include "http_core.h"

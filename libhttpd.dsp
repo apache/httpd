@@ -116,6 +116,10 @@ SOURCE=.\include\ap_config.h
 # End Source File
 # Begin Source File
 
+SOURCE=.\include\ap_expr.h
+# End Source File
+# Begin Source File
+
 SOURCE=.\include\ap_mmn.h
 # End Source File
 # Begin Source File
@@ -489,6 +493,10 @@ SOURCE=.\include\util_charset.h
 # Begin Source File
 
 SOURCE=.\include\util_ebcdic.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\server\util_expr.c
 # End Source File
 # Begin Source File
 
