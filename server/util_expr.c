@@ -26,7 +26,6 @@
 #include "http_log.h"
 
 #include "ap_expr.h"
-#include <assert.h>
 #if 1
 /*
  * +-------------------------------------------------------+
@@ -670,9 +669,9 @@ AP_DECLARE(ap_parse_node_t*) ap_expr_parse(apr_pool_t* pool, const char *expr,
     return root;
 }
 
-AP_DECLARE(ap_parse_node_t*) ap_expr_clone_tree(apr_pool_t *pool,
-                                                ap_parse_node_t *pnode,
-		                                ap_parse_node_t *parent)
+static ap_parse_node_t *ap_expr_clone_tree(apr_pool_t *pool,
+                                           ap_parse_node_t *pnode,
+		                           ap_parse_node_t *parent)
 {
     ap_parse_node_t *ret;
     ret = apr_pmemdup(pool, pnode, sizeof(ap_parse_node_t));
@@ -687,9 +686,9 @@ AP_DECLARE(ap_parse_node_t*) ap_expr_clone_tree(apr_pool_t *pool,
 }
 
 #define PARSE_STRING(r,s) (string_func ? string_func((r),(s)) : (s))
-AP_DECLARE(int) ap_expr_eval(request_rec *r, ap_parse_node_t *root,
-                             int *was_error, backref_t **reptr,
-                             string_func_t string_func, opt_func_t eval_func)
+static int expr_eval(request_rec *r, ap_parse_node_t *root,
+                     int *was_error, backref_t **reptr,
+                     string_func_t string_func, opt_func_t eval_func)
 {
     ap_parse_node_t *current = root;
     const char *error = NULL;
@@ -868,6 +867,13 @@ AP_DECLARE(int) ap_expr_eval(request_rec *r, ap_parse_node_t *root,
 
     return (root ? root->value : 0);
 }
+AP_DECLARE(int) ap_expr_eval(request_rec *r, ap_parse_node_t *root,
+                             int *was_error, backref_t **reptr,
+                             string_func_t string_func, opt_func_t eval_func)
+{
+    ap_parse_node_t *clone = ap_expr_clone_tree(r->pool, root, NULL);
+    return expr_eval(r, clone, was_error, reptr, string_func, eval_func);
+}
 AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
                                    int *was_error, backref_t **reptr,
                                    string_func_t string_func,
@@ -879,7 +885,7 @@ AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
                       "Error parsing expression in %s", r->filename);   
         return 0;
     }
-    return ap_expr_eval(r, root, was_error, reptr, string_func, eval_func);
+    return expr_eval(r, root, was_error, reptr, string_func, eval_func);
 }
 
 
@@ -888,7 +894,7 @@ AP_DECLARE(const char*) ap_expr_string(request_rec *r, const char *str)
 {
     /* a default string evaluator: support headers and env */
     ap_regmatch_t match[3];
-    assert(isvar != NULL);
+    ap_assert(isvar != NULL);
     if (ap_regexec(isvar, str, 3, match, 0) == 0) {
         apr_table_t *table = NULL;
         int len = match[1].rm_eo-match[1].rm_so;

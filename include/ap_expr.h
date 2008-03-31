@@ -102,7 +102,9 @@ AP_DECLARE(int) ap_expr_eval(request_rec *r, ap_parse_node_t *root,
                              int *was_error, backref_t **reptr,
                              string_func_t string_func, opt_func_t eval_func);
 /**
- * Evaluate an expression
+ * Evaluate an expression.  This is functionally equivalent to
+ * ap_expr_parse followed by ap_expr_eval, but faster and more efficient
+ * when an expression only needs to be parsed once and discarded.
  * @param r The current request
  * @param expr The expression to parse
  * @param was_error On return, set to zero if parse successful, nonzero on error
@@ -140,19 +142,6 @@ AP_DECLARE(apr_status_t) ap_expr_init(apr_pool_t *pool);
  * @return The evaluated string
  */
 AP_DECLARE(const char*) ap_expr_string(request_rec *r, const char *str);
-
-/**
- * Clone a parse tree.  This is required if you create a parse tree
- * using ap_expr_parse, and wish to re-use it many times in ap_expr_eval.
- * It is not required if you need to use it just once.
- * @param pool Pool
- * @param node The parse tree to clone
- * @param parent Parent node (for internal use when recursing - pass in NULL)
- * @return The cloned tree
- */
-AP_DECLARE(ap_parse_node_t*) ap_expr_clone_tree(apr_pool_t *pool,
-                                                ap_parse_node_t *node,
-                                                ap_parse_node_t *parent);
 
 #ifdef __cplusplus
 }

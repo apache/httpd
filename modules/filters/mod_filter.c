@@ -141,14 +141,12 @@ static int filter_lookup(ap_filter_t *f, ap_filter_rec_t *filter)
     request_rec *r = f->r;
     harness_ctx *ctx = f->ctx;
     provider_ctx *pctx;
-    ap_parse_node_t *tree;
     mod_filter_ctx *rctx = ap_get_module_config(r->request_config,
                                                 &filter_module);
 
     /* Check registered providers in order */
     for (provider = filter->providers; provider; provider = provider->next) {
-        tree = ap_expr_clone_tree(r->pool, provider->expr, NULL);
-        match = ap_expr_eval(r, tree, &err, NULL, ap_expr_string, NULL);
+        match = ap_expr_eval(r, provider->expr, &err, NULL, ap_expr_string, NULL);
         if (err) {
             /* log error but accept match value ? */
             ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
