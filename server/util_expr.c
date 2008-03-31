@@ -26,6 +26,7 @@
 #include "http_log.h"
 
 #include "ap_expr.h"
+#include <assert.h>
 #if 1
 /*
  * +-------------------------------------------------------+
@@ -43,10 +44,7 @@
 } while(0)
 
 #define CREATE_NODE(pool,name) do {                          \
-    (name) = apr_palloc(pool, sizeof(*(name)));      \
-    (name)->parent = (name)->left = (name)->right = NULL; \
-    (name)->done = 0;                                     \
-    (name)->dump_done = 0;                                \
+    (name) = apr_pcalloc(pool, sizeof(*(name)));
 } while(0)
 
 static void debug_printf(request_rec *r, const char *fmt, ...)
@@ -65,7 +63,7 @@ static void debug_printf(request_rec *r, const char *fmt, ...)
 }
 
 #define DUMP__CHILD(ctx, is, node, child) if (1) {                           \
-    parse_node_t *d__c = node->child;                                        \
+    ap_parse_node_t *d__c = node->child;                                     \
     if (d__c) {                                                              \
         if (!d__c->dump_done) {                                              \
             if (d__c->parent != node) {                                      \
@@ -90,9 +88,9 @@ static void debug_printf(request_rec *r, const char *fmt, ...)
     }                                                                        \
 }
 
-static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
+static void debug_dump_tree(include_ctx_t *ctx, ap_parse_node_t *root)
 {
-    parse_node_t *current;
+    ap_parse_node_t *current;
     char *is;
 
     if (!root) {
@@ -240,9 +238,7 @@ static void debug_dump_tree(include_ctx_t *ctx, parse_node_t *root)
 #define TYPE_TOKEN(token, ttype) (token)->type = ttype
 
 #define CREATE_NODE(pool,name) do {                       \
-    (name) = apr_palloc(pool, sizeof(*(name)));   \
-    (name)->parent = (name)->left = (name)->right = NULL; \
-    (name)->done = 0;                                     \
+    (name) = apr_pcalloc(pool, sizeof(*(name)));	\
 } while(0)
 
 #define DEBUG_INIT(ctx, f, bb)
@@ -269,7 +265,7 @@ static APR_INLINE int re_check(request_rec *r, const char *string,
                                const char *rexp, backref_t **reptr)
 {
     ap_regex_t *compiled;
-    backref_t *re = *reptr;
+    backref_t *re = reptr ? *reptr : NULL;
     int rc;
 
     compiled = ap_pregcomp(r->pool, rexp, AP_REG_EXTENDED);
@@ -280,7 +276,10 @@ static APR_INLINE int re_check(request_rec *r, const char *string,
     }
 
     if (!re) {
-        re = *reptr = apr_palloc(r->pool, sizeof(*re));
+        re = apr_palloc(r->pool, sizeof(*re));
+        if (reptr) {
+            *reptr = re;
+        }
     }
 
     re->source = apr_pstrdup(r->pool, string);
@@ -473,10 +472,10 @@ static int get_ptoken(apr_pool_t *pool, const char **parse, token_t *token,
 }
 
 /* This is what we export.  We can split it in two. */
-AP_DECLARE(parse_node_t*) ap_expr_parse(apr_pool_t* pool, const char *expr,
-                                        int *was_error)
+AP_DECLARE(ap_parse_node_t*) ap_expr_parse(apr_pool_t* pool, const char *expr,
+                                           int *was_error)
 {
-    parse_node_t *new, *root = NULL, *current = NULL;
+    ap_parse_node_t *new, *root = NULL, *current = NULL;
     const char *error = "Invalid expression \"%s\" in file %s";
     const char *parse = expr;
     int was_unmatched = 0;
@@ -671,21 +670,40 @@ AP_DECLARE(parse_node_t*) ap_expr_parse(apr_pool_t* pool, const char *expr,
     return root;
 }
 
+AP_DECLARE(ap_parse_node_t*) ap_expr_clone_tree(apr_pool_t *pool,
+                                                ap_parse_node_t *pnode,
+		                                ap_parse_node_t *parent)
+{
+    ap_parse_node_t *ret;
+    ret = apr_pmemdup(pool, pnode, sizeof(ap_parse_node_t));
+    if (pnode->left) {
+        ret->left = ap_expr_clone_tree(pool, pnode->left, ret);
+    }
+    if (pnode->right) {
+        ret->right = ap_expr_clone_tree(pool, pnode->right, ret);
+    }
+    ret->parent = parent;
+    return ret;
+}
+
 #define PARSE_STRING(r,s) (string_func ? string_func((r),(s)) : (s))
-AP_DECLARE(int) ap_expr_eval(request_rec *r, parse_node_t *root,
+AP_DECLARE(int) ap_expr_eval(request_rec *r, ap_parse_node_t *root,
                              int *was_error, backref_t **reptr,
                              string_func_t string_func, opt_func_t eval_func)
 {
-    parse_node_t *current = root;
+    ap_parse_node_t *current = root;
     const char *error = NULL;
     unsigned int regex = 0;
+    const char *val;
+    const char *lval;
+    const char *rval;
 
     /* Evaluate Parse Tree */
     while (current) {
         switch (current->token.type) {
         case TOKEN_STRING:
-            current->token.value = PARSE_STRING(r, current->token.value);
-            current->value = !!*current->token.value;
+            val = PARSE_STRING(r, current->token.value);
+            current->value = !!*val;
             break;
 
         case TOKEN_AND:
@@ -700,9 +718,8 @@ AP_DECLARE(int) ap_expr_eval(request_rec *r, parse_node_t *root,
             if (!current->left->done) {
                 switch (current->left->token.type) {
                 case TOKEN_STRING:
-                    current->left->token.value =
-                        PARSE_STRING(r, current->left->token.value);
-                    current->left->value = !!*current->left->token.value;
+                    lval = PARSE_STRING(r, current->left->token.value);
+                    current->left->value = !!*lval;
                     DEBUG_DUMP_EVAL(ctx, current->left);
                     current->left->done = 1;
                     break;
@@ -723,9 +740,8 @@ AP_DECLARE(int) ap_expr_eval(request_rec *r, parse_node_t *root,
                 if (!current->right->done) {
                     switch (current->right->token.type) {
                     case TOKEN_STRING:
-                        current->right->token.value =
-                            PARSE_STRING(r,current->right->token.value);
-                        current->right->value = !!*current->right->token.value;
+                        rval = PARSE_STRING(r,current->right->token.value);
+                        current->right->value = !!*rval;
                         DEBUG_DUMP_EVAL(r, current->right);
                         current->right->done = 1;
                         break;
@@ -758,19 +774,15 @@ AP_DECLARE(int) ap_expr_eval(request_rec *r, parse_node_t *root,
                 *was_error = 1;
                 return 0;
             }
-            current->left->token.value =
-                PARSE_STRING(r, current->left->token.value);
-            current->right->token.value =
-                PARSE_STRING(r, current->right->token.value);
+            lval = PARSE_STRING(r, current->left->token.value);
+            rval = PARSE_STRING(r, current->right->token.value);
 
             if (current->right->token.type == TOKEN_RE) {
-                current->value = re_check(r, current->left->token.value,
-                                          current->right->token.value, reptr);
+                current->value = re_check(r, lval, rval, reptr);
                 --regex;
             }
             else {
-                current->value = !strcmp(current->left->token.value,
-                                         current->right->token.value);
+                current->value = !strcmp(lval, rval);
             }
 
             if (current->token.type == TOKEN_NE) {
@@ -791,13 +803,10 @@ AP_DECLARE(int) ap_expr_eval(request_rec *r, parse_node_t *root,
                 return 0;
             }
 
-            current->left->token.value =
-                PARSE_STRING(r, current->left->token.value);
-            current->right->token.value =
-                PARSE_STRING(r, current->right->token.value);
+            lval = PARSE_STRING(r, current->left->token.value);
+            rval = PARSE_STRING(r, current->right->token.value);
 
-            current->value = strcmp(current->left->token.value,
-                                    current->right->token.value);
+            current->value = strcmp(lval, rval);
 
             switch (current->token.type) {
             case TOKEN_GE: current->value = current->value >= 0; break;
@@ -864,11 +873,73 @@ AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
                                    string_func_t string_func,
                                    opt_func_t eval_func)
 {
-    parse_node_t *root = ap_expr_parse(r->pool, expr, was_error);
+    ap_parse_node_t *root = ap_expr_parse(r->pool, expr, was_error);
     if (*was_error || !root) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
                       "Error parsing expression in %s", r->filename);   
         return 0;
     }
     return ap_expr_eval(r, root, was_error, reptr, string_func, eval_func);
+}
+
+
+static ap_regex_t *isvar = NULL;
+AP_DECLARE(const char*) ap_expr_string(request_rec *r, const char *str)
+{
+    /* a default string evaluator: support headers and env */
+    ap_regmatch_t match[3];
+    assert(isvar != NULL);
+    if (ap_regexec(isvar, str, 3, match, 0) == 0) {
+        apr_table_t *table = NULL;
+        int len = match[1].rm_eo-match[1].rm_so;
+        const char *name = str+match[1].rm_so;
+        if (!strncasecmp("req", name, len)) {
+            table = r->headers_in;
+        }
+        else if (!strncasecmp("resp", name, len)) {
+            table = r->headers_out;
+        }
+        else if (!strncasecmp("env", name, len)) {
+            table = r->subprocess_env;
+        }
+        if (table != NULL) {
+            char *key = apr_pstrndup(r->pool, str+match[2].rm_so,
+                                     match[2].rm_eo-match[2].rm_so);
+            return apr_table_get(table, key);
+        }
+    }
+    else if (str[0] == '$') {
+        if (!strcasecmp(str, "$handler")) {
+            return r->handler;
+        }
+        else if (!strcasecmp(str, "$content-type")) {
+            return r->content_type;
+        }
+    }
+    /* TODO: provide a hook so modules can interpret other patterns */
+    /* OhBugger, where's the regexp for backreferences ? */
+    return str;  /* default - literal string as-is */
+}
+static apr_status_t ap_expr_term(void *expr)
+{
+    if (isvar) {
+        ap_regfree(isvar);
+        isvar = NULL;
+    }
+    return APR_SUCCESS;
+}
+AP_DECLARE(apr_status_t) ap_expr_init(apr_pool_t *pool)
+{
+    static ap_regex_t var;
+    if (!isvar) {
+        isvar = &var;
+        if (ap_regcomp(isvar, "\\$([A-Za-z0-9]+)\\{([^\\}]+)\\}", 0)) {
+            isvar = NULL;
+        }
+        else {
+            apr_pool_cleanup_register(pool, isvar, ap_expr_term,
+                                      apr_pool_cleanup_null);
+        }
+    }
+    return isvar ? APR_SUCCESS : APR_EGENERAL;
 }

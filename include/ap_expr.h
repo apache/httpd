@@ -23,6 +23,7 @@
 #define AP_EXPR_H
 
 #include "httpd.h"
+#include "ap_regex.h"
 
 #ifdef __cplusplus
 extern "C" {
@@ -65,7 +66,7 @@ typedef struct parse_node {
 #ifdef DEBUG_INCLUDE
     int dump_done;
 #endif
-} parse_node_t;
+} ap_parse_node_t;
 
 typedef struct {
     const char *source;
@@ -74,8 +75,8 @@ typedef struct {
     ap_regmatch_t match[AP_MAX_REG_MATCH];
 } backref_t;
 
-typedef char *(*string_func_t)(request_rec*, const char*);
-typedef int (*opt_func_t)(request_rec*, parse_node_t*, string_func_t);
+typedef const char *(*string_func_t)(request_rec*, const char*);
+typedef int (*opt_func_t)(request_rec*, ap_parse_node_t*, string_func_t);
 
 /**
  * Parse an expression into a parse tree
@@ -84,8 +85,8 @@ typedef int (*opt_func_t)(request_rec*, parse_node_t*, string_func_t);
  * @param was_error On return, set to zero if parse successful, nonzero on error
  * @return The parse tree
  */
-AP_DECLARE(parse_node_t*) ap_expr_parse(apr_pool_t *pool, const char *expr,
-                                        int *was_error);
+AP_DECLARE(ap_parse_node_t*) ap_expr_parse(apr_pool_t *pool, const char *expr,
+                                           int *was_error);
 /**
  * Evaluate a parse tree
  * @param r The current request
@@ -93,10 +94,11 @@ AP_DECLARE(parse_node_t*) ap_expr_parse(apr_pool_t *pool, const char *expr,
  * @param was_error On return, set to zero if parse successful, nonzero on error
  * @param reptr Regular expression memory for backreferencing if a regexp was parsed
  * @param string_func String parser function - perform variable substitutions
+ *                    Use ap_expr_string where applicable
  * @param eval_func Option evaluation function (e.g. -A filename)
  * @return the value the expression parsed to
  */
-AP_DECLARE(int) ap_expr_eval(request_rec *r, parse_node_t *root,
+AP_DECLARE(int) ap_expr_eval(request_rec *r, ap_parse_node_t *root,
                              int *was_error, backref_t **reptr,
                              string_func_t string_func, opt_func_t eval_func);
 /**
@@ -106,6 +108,7 @@ AP_DECLARE(int) ap_expr_eval(request_rec *r, parse_node_t *root,
  * @param was_error On return, set to zero if parse successful, nonzero on error
  * @param reptr Regular expression memory for backreferencing if a regexp was parsed
  * @param string_func String parser function - perform variable substitutions
+ *                    Use ap_expr_string where applicable
  * @param eval_func Option evaluation function (e.g. -A filename)
  * @return the value the expression parsed to
  */
@@ -113,6 +116,43 @@ AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
                                    int *was_error, backref_t **reptr,
                                    string_func_t string_func,
                                    opt_func_t eval_func);
+
+/**
+ * Internal initialisation of ap_expr (for httpd)
+ * @param pool Pool
+ * @return APR_SUCCESS or error
+ */
+AP_DECLARE(apr_status_t) ap_expr_init(apr_pool_t *pool);
+
+/**
+ * Default string evaluation function for passing to ap_expr_eval and
+ * ap_expr_evalstring.  Use this (and update as necessary) to offer
+ * a consistent expression syntax across different modules.
+ * Supports the following:
+ *     $req{foo}     - request header "foo"
+ *     $resp{foo}    - response header "foo"
+ *     $env{foo}     - environment variable "foo"
+ *     $handler      - r->handler
+ *     $content-type - r->content_type
+ * Other strings are returned unmodified.
+ * @param r The current request
+ * @param str The string to evaluate
+ * @return The evaluated string
+ */
+AP_DECLARE(const char*) ap_expr_string(request_rec *r, const char *str);
+
+/**
+ * Clone a parse tree.  This is required if you create a parse tree
+ * using ap_expr_parse, and wish to re-use it many times in ap_expr_eval.
+ * It is not required if you need to use it just once.
+ * @param pool Pool
+ * @param node The parse tree to clone
+ * @param parent Parent node (for internal use when recursing - pass in NULL)
+ * @return The cloned tree
+ */
+AP_DECLARE(ap_parse_node_t*) ap_expr_clone_tree(apr_pool_t *pool,
+                                                ap_parse_node_t *node,
+                                                ap_parse_node_t *parent);
 
 #ifdef __cplusplus
 }
