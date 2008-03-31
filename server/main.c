@@ -40,6 +40,7 @@
 #include "util_ebcdic.h"
 #include "ap_mpm.h"
 #include "mpm_common.h"
+#include "ap_expr.h"
 
 #if APR_HAVE_UNISTD_H
 #include <unistd.h>
@@ -492,6 +493,9 @@ int main(int argc, const char * const argv[])
         destroy_and_exit_process(process, 1);
     }
 #endif
+    if (ap_expr_init(pglobal) != APR_SUCCESS) {
+        destroy_and_exit_process(process, 1);
+    }
 
     apr_pool_create(&pcommands, pglobal);
     apr_pool_tag(pcommands, "pcommands");
