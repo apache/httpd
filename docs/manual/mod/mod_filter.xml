@@ -128,6 +128,23 @@
     beginning or end of the chain, remove a filter, or clear the chain.</dd>
 </dl>
 </section>
+<section id="upgrade"><title>Upgrading from HTTPD 2.2 Configuration</title>
+    <p>The <directive module="mod_filter">FilterProvider</directive>
+    directive has changed from HTTPD 2.2: the <var>match</var> and
+    <var>dispatch</var> arguments are replaced with a single but
+    more versatile <var>expression</var>.  In general, you can convert
+    a match/dispatch pair to the two sides of an expression, using
+    something like:</p>
+    <example>"dispatch = match"</example>
+    <p>The Request headers, Response headers and Environment variables
+    are now interpreted from syntax <var>$req{foo}</var>,
+    <var>$resp{foo}</var> and <var>$env{foo}</var> respectively.
+    The variables <var>$handler</var> and <var>$Content-Type</var>
+    are also supported.</p>
+    <p>Note that the match no longer supports integer comparisons
+    or substring matches.  The latter can be replaced by regular
+    expression matches.</p>
+</section>
 
 <section id="examples"><title>Examples</title>
     <dl>
