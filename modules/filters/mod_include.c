@@ -866,13 +866,13 @@ static char *ap_ssi_parse_string(include_ctx_t *ctx, const char *in, char *out,
     return ret;
 }
 
-static char *ssi_parse_string(request_rec *r, const char *in)
+static const char *ssi_parse_string(request_rec *r, const char *in)
 {
     include_ctx_t *ctx = ap_get_module_config(r->request_config,
                                               &include_module);
     return ap_ssi_parse_string(ctx, in, NULL, 0, SSI_EXPAND_DROP_NAME);
 }
-static int ssi_access(request_rec *r, parse_node_t *current,
+static int ssi_access(request_rec *r, ap_parse_node_t *current,
                       string_func_t parse_string)
 {
     request_rec *rr;
