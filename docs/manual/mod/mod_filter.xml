@@ -111,12 +111,14 @@
     declare it with the default type AP_FTYPE_RESOURCE. The provider
     must have been
     registered with <code>ap_register_output_filter</code> by some module.
-    The remaining arguments to <directive module="mod_filter"
-    >FilterProvider</directive> are a dispatch criterion and a match string.
-    The former may be an HTTP request or response header, an environment
-    variable, or the Handler used by this request.  The latter is matched
-    to it for each request, to determine whether this provider will be
-    used to implement the filter for this request.</dd>
+    The final argument to <directive module="mod_filter"
+    >FilterProvider</directive> is an expression: the provider will be
+    selected to run for a request if and only if the expression evaluates
+    to true.  The expression may evaluate HTTP request or response
+    headers, environment variables, or the Handler used by this request.
+    Unlike earlier versions, mod_filter now supports complex expressions
+    involving multiple criteria with AND / OR logic (&amp;&amp; / ||)
+    and brackets.</dd>
 
     <dt>Configure the Chain</dt>
     <dd>The above directives build components of a smart filter chain,
@@ -134,7 +136,7 @@
     <directive module="core">AddOutputFilterByType</directive>
     <example>
       FilterDeclare SSI<br/>
-      FilterProvider SSI INCLUDES resp=Content-Type $text/html<br/>
+      FilterProvider SSI INCLUDES "$resp{Content-Type} = /^text\/html/"<br/>
       FilterChain SSI
     </example>
     </dd>
@@ -143,7 +145,7 @@
     <dd>The same as the above but dispatching on handler (classic
     SSI behaviour; .shtml files get processed).
     <example>
-      FilterProvider SSI INCLUDES Handler server-parsed<br/>
+      FilterProvider SSI INCLUDES "Handler = server-parsed"<br/>
       FilterChain SSI
     </example>
     </dd>
@@ -153,7 +155,7 @@
     Accept-Encoding header.  This filter runs with ftype CONTENT_SET.
     <example>
       FilterDeclare gzip CONTENT_SET<br/>
-      FilterProvider gzip inflate req=Accept-Encoding !$gzip<br/>
+      FilterProvider gzip inflate "$req{Accept-Encoding} != /gzip/"<br/>
       FilterChain gzip
     </example>
     </dd>
@@ -162,16 +164,16 @@
     <dd>Suppose we want to downsample all web images, and have filters
     for GIF, JPEG and PNG.
     <example>
-      FilterProvider unpack jpeg_unpack Content-Type $image/jpeg<br/>
-      FilterProvider unpack gif_unpack Content-Type $image/gif<br/>
-      FilterProvider unpack png_unpack Content-Type $image/png<br/>
+      FilterProvider unpack jpeg_unpack "$resp{Content-Type} = image/jpeg"<br/>
+      FilterProvider unpack gif_unpack "$resp{Content-Type} = image/gif"<br/>
+      FilterProvider unpack png_unpack "$resp{Content-Type} = image/png"<br/>
       <br />
-      FilterProvider downsample downsample_filter Content-Type $image<br/>
+      FilterProvider downsample downsample_filter "$resp{Content-Type} = /image\/(jpeg|gif|png)/"<br/>
       FilterProtocol downsample "change=yes"<br/>
       <br />
-      FilterProvider repack jpeg_pack Content-Type $image/jpeg<br/>
-      FilterProvider repack gif_pack Content-Type $image/gif<br/>
-      FilterProvider repack png_pack Content-Type $image/png<br/>
+      FilterProvider repack jpeg_pack "$resp{Content-Type} = image/jpeg"<br/>
+      FilterProvider repack gif_pack "$resp{Content-Type} = image/gif"<br/>
+      FilterProvider repack png_pack "$resp{Content-Type} = image/png"<br/>
       &lt;Location /image-filter&gt;<br/>
       <indent>
         FilterChain unpack downsample repack<br/>
@@ -252,63 +254,67 @@
 <name>FilterProvider</name>
 <description>Register a content filter</description>
 <syntax>FilterProvider <var>filter-name</var> <var>provider-name</var>
- [req|resp|env]=<var>dispatch</var> <var>match</var></syntax>
+ <var>expression</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Options</override>
 
 <usage>
     <p>This directive registers a <em>provider</em> for the smart filter.
-    The provider will be called if and only if the <var>match</var> declared
-    here matches the value of the header or environment variable declared
-    as <var>dispatch</var>.</p>
+    The provider will be called if and only if the <var>expression</var>
+    declared evaluates to true when the harness is first called.</p>
 
     <p>
     <var>provider-name</var> must have been registered by loading
     a module that registers the name with
     <code>ap_register_output_filter</code>.
-<!-- Placeholder; this is totally broken as of now
-     , or declared with
-    <directive module="mod_filter">FilterDeclare</directive>
-    (or implicitly with another
-    <directive module="mod_filter">FilterProvider</directive>).
--->
     </p>
 
-    <p>The <var>dispatch</var> argument is a string with optional
-    <code>req=</code>, <code>resp=</code> or <code>env=</code> prefix
-    causing it to dispatch on (respectively) the request header, response
-    header, or environment variable named.  In the absence of a
-    prefix, it defaults to a response header.  A special case is the
-    word <code>handler</code>, which causes <module>mod_filter</module>
-    to dispatch on the content handler.</p>
+    <p><var>expression</var> can be any of the following:</p>
+    <dl>
+      <dt><code><var>string</var></code></dt>
+      <dd>true if <var>string</var> is not empty</dd>
 
-    <p>The <var>match</var> argument specifies a match that will be applied to
-    the filter's <var>dispatch</var> criterion.  The <var>match</var> may be
-    a string match (exact match or substring), a <glossary ref="regex"
-    >regex</glossary>, an integer (greater, lessthan or equals), or
-    unconditional.  The first characters of the <var>match</var> argument
-    determines this:</p>
+      <dt><code><var>string1</var> = <var>string2</var><br />
+      <var>string1</var> == <var>string2</var><br />
+      <var>string1</var> != <var>string2</var></code></dt>
 
-    <p><strong>First</strong>, if the first character is an exclamation mark
-    (<code>!</code>), this reverses the rule, so the provider will be used
-    if and only if the match <em>fails</em>.</p>
+      <dd><p>Compare <var>string1</var> with <var>string2</var>. If
+      <var>string2</var> has the form <code>/<var>string2</var>/</code>
+      then it is treated as a regular expression. Regular expressions are
+      implemented by the <a href="http://www.pcre.org">PCRE</a> engine and
+      have the same syntax as those in <a href="http://www.perl.com">perl
+      5</a>. Note that <code>==</code> is just an alias for <code>=</code>
+      and behaves exactly the same way.</p>
+      </dd>
 
-    <p><strong>Second</strong>, it interprets the first character excluding
-    any leading <code>!</code> as follows:</p>
+      <dt><code><var>string1</var> &lt; <var>string2</var><br />
+       <var>string1</var> &lt;= <var>string2</var><br />
+       <var>string1</var> &gt; <var>string2</var><br />
+       <var>string1</var> &gt;= <var>string2</var></code></dt>
 
-    <table style="zebra" border="yes">
-    <tr><th>Character</th><th>Description</th></tr>
-    <tr><td><em>(none)</em></td><td>exact match</td></tr>
-    <tr><td><code>$</code></td><td>substring match</td></tr>
-    <tr><td><code>/</code></td><td>regex match (delimited by a second <code>/</code>)</td></tr>
-    <tr><td><code>=</code></td><td>integer equality</td></tr>
-    <tr><td><code>&lt;</code></td><td>integer less-than</td></tr>
-    <tr><td><code>&lt;=</code></td><td>integer less-than or equal</td></tr>
-    <tr><td><code>&gt;</code></td><td>integer greater-than</td></tr>
-    <tr><td><code>&gt;=</code></td><td>integer greater-than or equal</td></tr>
-    <tr><td><code>*</code></td><td>Unconditional match</td></tr>
-    </table>
+      <dd>Compare <var>string1</var> with <var>string2</var>. Note, that
+      strings are compared <em>literally</em> (using
+      <code>strcmp(3)</code>). Therefore the string "100" is less than
+      "20".</dd>
+
+      <dt><code>( <var>expression</var> )</code></dt>
+      <dd>true if <var>expression</var> is true</dd>
+
+      <dt><code>! <var>expression</var></code></dt>
+      <dd>true if <var>expression</var> is false</dd>
+
+      <dt><code><var>expression1</var> &amp;&amp;
+        <var>expression2</var></code></dt>
+      <dd>true if both <var>expression1</var> and
+      <var>expression2</var> are true</dd>
+
+      <dt><code><var>expression1</var> ||
+        <var>expression2</var></code></dt>
+      <dd>true if either <var>expression1</var> or
+      <var>expression2</var> is true</dd>
+    </dl>
+
 </usage>
 </directivesynopsis>
 
