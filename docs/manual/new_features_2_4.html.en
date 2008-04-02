@@ -63,6 +63,11 @@
           console.  The user can thus be alerted to misconfiguration problems
           before the core <code>open_logs</code> hook function redirects
           console output to the error log.</dd>
+    <dt>Expression Parser Added</dt>
+    <dd>We now have a general-purpose expression parser, whose API is
+        exposed in <var>ap_expr.h</var>.  This is adapted from the
+        expression parser previously implemented in
+        <code class="module"><a href="./mod/mod_include.html">mod_include</a></code>.</dd>
     </dl>
   </div></div>
 <div class="bottomlang">
