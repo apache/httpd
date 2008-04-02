@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_speling - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_speling</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_speling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_speling.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_speling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ユーザが入力したであろう間違った URL を、
+大文字小文字の区別を無視することと一つ以下の綴り間違いを許容することで
+修正を試みる</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>speling_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_speling.c</td></tr></table>
+<h3>概要</h3>
+
+
+    <p>リクエストの綴りが間違っていたり、
+    大文字小文字が違っていたりするために、Apache のコアサーバが
+    ドキュメントへのリクエストへの応答を正しく提供できないことがあります。
+    このモジュールは、他のすべてのモジュールがあきらめた後であったとしても、
+    リクエストに合うドキュメントを見つけようとすることによりこの問題の
+    解決を試みます。このモジュールはリクエストされたディレクトリにある
+    それぞれのドキュメントの名前と、リクエストされたドキュメントの名前とを
+    <strong>大文字小文字の区別を無視し</strong>、<strong>一文字までの
+    綴りの間違い</strong> (文字の挿入/省略/隣合う文字の置換、間違った文字)
+    を許可して比較することにより、目的を達成しようとします。
+    この方法でリクエストに合うドキュメントの一覧が作成されます。</p>
+
+    <p>ディレクトリをスキャンした後に、</p>
+
+    <ul>
+      <li>適切なドキュメントが見つからなかった場合、
+      Apache はいつもと同じように処理をし、
+      「ドキュメントが見つからない」というエラーを返します。</li>
+
+      <li>リクエストに「ほとんど」合うドキュメントが一つだけ見つかった場合、
+       それがリダイレクト応答として返されます。</li>
+
+      <li>よく似たドキュメントが複数見つかった場合、
+      そのリストがクライアントに返され、
+      クライアントが正しい候補を選択できるようにします。</li>
+    </ul>
+
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#checkspelling">CheckSpelling</a></li>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CheckSpelling" id="CheckSpelling">CheckSpelling</a> <a name="checkspelling" id="checkspelling">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>spelling モジュールを使用するようにする</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CheckSpelling on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CheckSpelling Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>Options</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_speling</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>CheckSpelling は Apache 1.1 では別配布のモジュールで、
+大文字小文字の間違いのみの機能でした。Apache 1.3 で Apache の配布に
+含まれるようになりました。Apache 1.3.2 より前では <code>CheckSpelling</code>
+ディレクティブは「サーバ」と「バーチャルホスト」コンテキストでのみ
+使用可能でした</td></tr>
+</table>
+    <p>このディレクティブは綴り用のモジュールを使用するかどうかを
+    決めます。使用時には、以下のことを覚えておいてください</p>
+
+    <ul>
+      <li>同時にたくさんの綴りの訂正を行なわなければならないときは、
+      そのために行なわれるディレクトリのスキャンがサーバの性能に
+      影響を与えます。</li>
+
+      <li>ドキュメントの中に綴りの「訂正」により
+      意図せず合ってしまうような重要なファイルがないようにしてください。
+      </li>
+
+      <li>モジュールはユーザ名の綴りの間違い
+      (<code>http://my.host/~apahce/</code> のように)
+      を訂正することはできません。
+      訂正できるのはファイル名とディレクトリ名だけです。</li>
+
+      <li>綴りの訂正は存在するファイルに厳密に適用されますので、
+      <code>&lt;Location /status&gt;</code>
+      はネゴシエーションの結果のファイル "<code>/stats.html</code>"
+      として間違って扱われるかもしれません。</li>
+    </ul>
+
+    
+    <p><a href="mod_dav.html">DAV</a> が有効なディレクトリでは
+    <code class="module"><a href="../mod/mod_speling.html">mod_speling</a></code> は有効にしないでください。
+    新しく作成したリソース名を既に存在するファイル名に「修正」しようとする、
+    例えば、新規ドキュメント <code>doc43.html</code> が既に存在する
+    <code>doc34.html</code> にリダイレクトされて、
+    期待とは違う挙動になるからです。</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_speling.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_speling.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_speling.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

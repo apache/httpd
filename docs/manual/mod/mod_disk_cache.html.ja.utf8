@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_disk_cache - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_disk_cache</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_disk_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_disk_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>URI をキーにしたコンテンツキャッシュストレージ管理</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>disk_cache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_disk_cache.c</td></tr></table>
+<h3>概要</h3>
+
+    <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> はディスクを使用したストレージ
+    管理機構を実装しています。主に
+    <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> と組み合わせて使われます。</p>
+
+    <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
+    アクセス保護のかけられているコンテンツはキャッシュされません。</p>
+
+    <p>キャッシュの大きさを最大レベルで維持するために
+    <code class="program"><a href="../programs/htcacheclean.html">htcacheclean</a></code> を使うことができます。</p>
+
+    <div class="note"><h3>注:</h3>
+      <p><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> は
+      <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> を必要とします</p>
+    </div>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#cachedirlength">CacheDirLength</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachedirlevels">CacheDirLevels</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cachemaxfilesize">CacheMaxFileSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheminfilesize">CacheMinFileSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#cacheroot">CacheRoot</a></li>
+</ul>
+</div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheDirLength" id="CacheDirLength">CacheDirLength</a> <a name="cachedirlength" id="cachedirlength">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>サブディレクトリ名の文字数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDirLength <var>length</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDirLength 2</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p><code class="directive">CacheDirLength</code> ディレクティブはキャッシュ
+    階層の各サブディレクトリの文字数を設定します。</p>
+
+    <div class="note">
+      <p><code class="directive">CacheDirLevels</code>*
+      <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> の
+      結果は 20 以内でなければなりません。</p>
+    </div>
+
+    <div class="example"><p><code>
+      CacheDirLength  4
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheDirLevels" id="CacheDirLevels">CacheDirLevels</a> <a name="cachedirlevels" id="cachedirlevels">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュのサブディレクトリの深さの数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheDirLevels <var>levels</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheDirLevels 3</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p><code class="directive">CacheDirLevels</code> ディレクティブはキャッシュの
+    サブディレクトリの深さを設定します。キャッシュデータは <code class="directive"><a href="#cacheroot">CacheRoot</a></code> ディレクトリから
+    このディレクトリの深さ分下のディレクトリに保存されます。</p>
+
+    <div class="note">
+      <p><code class="directive">CacheDirLevels</code>*
+      <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> の
+      結果は 20 以内でなければなりません。</p>
+    </div>
+
+    <div class="example"><p><code>
+      CacheDirLevels  5
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheMaxFileSize" id="CacheMaxFileSize">CacheMaxFileSize</a> <a name="cachemaxfilesize" id="cachemaxfilesize">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュに保管されるドキュメントの最大の (バイトでの) サイズ</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMaxFileSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMaxFileSize 1000000</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p><code class="directive">CacheMaxFileSize</code> ディレクティブは、ドキュメントを
+    キャッシュするかどうかを判定する、最大のサイズをバイト数で設定します。</p>
+
+    <div class="example"><p><code>
+      CacheMaxFileSize 64000
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheMinFileSize" id="CacheMinFileSize">CacheMinFileSize</a> <a name="cacheminfilesize" id="cacheminfilesize">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュに保管されるドキュメントの最小限の (バイトでの) 大きさ</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMinFileSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMinFileSize 1</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p><code class="directive">CacheMinFileSize</code> ディレクティブは、ドキュメントを
+    キャッシュするかどうかを判定する、最小のサイズをバイト数で設定します。</p>
+
+    <div class="example"><p><code>
+      CacheMinFileSize 64
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="CacheRoot" id="CacheRoot">CacheRoot</a> <a name="cacheroot" id="cacheroot">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュファイルが保管されるルートディレクトリ</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheRoot <var>directory</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_disk_cache</td></tr>
+</table>
+    <p><code class="directive">CacheRoot</code> ディレクティブはキャッシュファイルを
+    保管するためのディスク上のディレクトリを指定します。<code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code> モジュールが Apache サーバにロードされて
+    いるか、組み込まれていれば、このディレクティブは<em>必ず</em>
+    定義しなければなりません。
+    <code class="directive">CacheRoot</code> の値を指定しなければ、
+    設定ファイルの処理でエラーになります。<code class="directive"><a href="#cachedirlevels">CacheDirLevels</a></code> ディレクティブと <code class="directive"><a href="#cachedirlength">CacheDirLength</a></code> ディレクティブが
+    指定されたルートディレクトリ下のディレクトリ構成を定義します。</p>
+
+    <div class="example"><p><code>
+      CacheRoot c:/cacheroot
+    </code></p></div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_disk_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_disk_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_disk_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

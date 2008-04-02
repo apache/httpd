@@ -1,0 +1,236 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_mem_cache - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_mem_cache</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_mem_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_mem_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_mem_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>URI をキーにしたコンテンツのキャッシュ</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>mem_cache_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_mem_cache.c</td></tr></table>
+<h3>概要</h3>
+
+    <p>このモジュールは <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> を<em>必要とします</em>。
+    これは <code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> のサポートモジュールとして
+    動作し、メモリを使用したストレージ管理機構を提供します。
+    <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> は二つのモードのどちらかで動作するように
+    設定できます: ファイル記述子のキャッシュかヒープ中のオブジェクトの
+    キャッシュです。ローカルで生成されたコンテンツに対してキャッシュするときや、
+    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> を使って <code class="directive"><a href="../mod/mod_proxy.html#proxypass">ProxyPass</a></code> (つまり<dfn>リバースプロキシ</dfn>向け) に設定したときのバックエンドサーバのコンテンツに対して
+    キャッシュをするときに、たいへん効果的です。</p>
+
+    <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
+    アクセス保護のかけられているコンテンツはキャッシュされません。</p>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectcount">MCacheMaxObjectCount</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxobjectsize">MCacheMaxObjectSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcacheminobjectsize">MCacheMinObjectSize</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#mcachesize">MCacheSize</a></li>
+</ul>
+<h3>参照</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code></li>
+<li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheMaxObjectCount" id="MCacheMaxObjectCount">MCacheMaxObjectCount</a> <a name="mcachemaxobjectcount" id="mcachemaxobjectcount">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュに保管されるオブジェクトの最大数</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheMaxObjectCount <var>value</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheMaxObjectCount 1009</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p><code class="directive">MCacheMaxObjectCount</code> ディレクティブは
+    キャッシュされるオブジェクトの最大数を指定します。
+    この値はハッシュテーブルを作成するときに使われます。
+    新しいオブジェクトを挿入するときに、オブジェクトの最大数に
+    達してしまっているとき、新しいオブジェクトをキャッシュできるように、
+    オブジェクトを一つ消去します。オブジェクトは
+    <code class="directive"><a href="#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code>
+    で指定されたアルゴリズムに従って削除されます。</p>
+
+    <div class="example"><h3>例</h3><p><code>
+      MCacheMaxObjectCount 13001
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheMaxObjectSize" id="MCacheMaxObjectSize">MCacheMaxObjectSize</a> <a name="mcachemaxobjectsize" id="mcachemaxobjectsize">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュに保管できるドキュメントの最大サイズ (バイト)</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheMaxObjectSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheMaxObjectSize 10000</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p><code class="directive">MCacheMaxObjectSize</code> はドキュメントを
+    キャッシュするかどうかを判定する、最大のサイズをバイト数で設定します。</p>
+
+    <div class="example"><h3>例</h3><p><code>
+      MCacheMaxObjectSize 6400000
+    </code></p></div>
+
+    <div class="note"><h3>注</h3>
+      <p><code class="directive">MCacheMaxObjectSize</code> の値は <code class="directive"><a href="#mcacheminobjectsize">MCacheMinObjectSize</a></code>
+      で指定した値よりも大きくなければなりません。</p>
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheMaxStreamingBuffer" id="MCacheMaxStreamingBuffer">MCacheMaxStreamingBuffer</a> <a name="mcachemaxstreamingbuffer" id="mcachemaxstreamingbuffer">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ストリームされている応答をキャッシュ不能と決定するまでに
+メモリにバッファする最大量</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheMaxStreamingBuffer <var>size_in_bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheMaxStreamingBuffer of 100000 か MCacheMaxObjectSize の少い方</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p><code class="directive">MCacheMaxStreamingBuffer</code> ディレクティブは、
+    サイズが大きすぎてキャッシュできないと判断するまでの、
+    ストリーム応答のバッファのための最大バイト数を指定します。
+    ストリーム応答とは、コンテンツの全体がすぐには得られず、
+    <code>Content-Length</code> がわからない応答を指します。
+    ストリーム応答を行なうようなものにはプロキシされた応答や、
+    CGI スクリプトの出力などがあります。デフォルトではストリームの応答は
+    <code>Content-Length</code> がない限りキャッシュ<em>されません</em>。
+    このような動作になっている理由は、結局キャッシュに収まりきらないと
+    判断することになってしまうような、サイズの大きな応答のバッファリングに、
+    大量のメモリが消費されるのを避けるためです。
+    <code class="directive">MCacheMaxStreamingBuffer</code> ディレクティブを使うと、
+    <code>Content-Length</code> を含まない応答に対して指定された最大量まで
+    バッファするようにできます。バッファを使い切ると、バッファ中の
+    コンテンツは捨てられ、キャッシュ動作を中止します。</p>
+
+    <div class="note"><h3>注:</h3>
+      <p><code class="directive">MCacheMaxStreamingBuffer</code> に非零の値を
+      使っても、クライアントへの応答の転送に特に遅延は発生しません。
+      <code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code> はストリームコンテンツの断片を
+      バッファにコピーした後、即座に、その部分をクライアントへの配送の
+      次段の出力フィルタに送ります。</p>
+    </div>
+
+    <div class="example"><p><code>
+      # Enable caching of streamed responses up to 64KB:<br />
+      MCacheMaxStreamingBuffer 65536
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheMinObjectSize" id="MCacheMinObjectSize">MCacheMinObjectSize</a> <a name="mcacheminobjectsize" id="mcacheminobjectsize">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュに保管されるドキュメントの最小サイズ (バイト)</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheMinObjectSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheMinObjectSize 0</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p><code class="directive">MCacheMinObjectSize</code> ディレクティブは、ドキュメントを
+    キャッシュするかどうかを判定する、最小のサイズをバイト数で設定します。</p>
+
+    <div class="example"><h3>例</h3><p><code>
+      MCacheMinObjectSize 10000
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheRemovalAlgorithm" id="MCacheRemovalAlgorithm">MCacheRemovalAlgorithm</a> <a name="mcacheremovalalgorithm" id="mcacheremovalalgorithm">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュから削除するドキュメントを選ぶためのアルゴリズム</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheRemovalAlgorithm LRU|GDSF</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheRemovalAlgorithm GDSF</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p><code class="directive">MCacheRemovalAlgorithm</code> ディレクティブは、
+    キャッシュから削除するドキュメントを選択するためのアルゴリズムを
+    指定します。選択肢は二つあります:</p>
+
+    <dl>
+      <dt><code>LRU</code> (Least Recently Used)</dt>
+      <dd><code>LRU</code> 一番長くアクセスされていないドキュメントを削除します。
+      </dd>
+
+      <dt><code>GDSF</code> (GreadyDual-Size)</dt>
+      <dd><code>GDSF</code> はキャッシュミスのコストとドキュメントのサイズをもとに、
+      ドキュメントのキャッシュに対して優先度をつけます。
+      優先度の一番低いドキュメントが最初に削除されます。</dd>
+    </dl>
+
+    <div class="example"><h3>例</h3><p><code>
+      MCacheRemovalAlgorithm GDSF<br />
+      MCacheRemovalAlgorithm LRU
+    </code></p></div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="MCacheSize" id="MCacheSize">MCacheSize</a> <a name="mcachesize" id="mcachesize">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>キャッシュに使われるメモリの最大量をバイト単位で指定</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>MCacheSize <var>KBytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>MCacheSize 100</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_mem_cache</td></tr>
+</table>
+    <p><code class="directive">MCacheSize</code> ディレクティブはキャッシュに
+    使われるメモリの大きさをキロバイト (1024 バイト単位) で設定します。
+    新しいオブジェクトをキャッシュに挿入することになり、オブジェクトの
+    サイズが残りのメモリより大きい場合は、その新しいオブジェクトの挿入が
+    可能になるまで、古いオブジェクトが削除されていきます。
+    オブジェクトは <code class="directive"><a href="#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code>
+    で指定したアルゴリズムに従って削除されます。</p>
+
+    <div class="example"><h3>例</h3><p><code>
+      MCacheSize 700000
+    </code></p></div>
+
+    <div class="note"><h3>注</h3>
+      <p><code class="directive">MCacheSize</code> の値は <code class="directive"><a href="#mcachemaxobjectsize">MCacheMaxObjectSize</a></code> ディレクティブで指定した値より
+      大きくなければなりません。</p>
+    </div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_mem_cache.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_mem_cache.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_mem_cache.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

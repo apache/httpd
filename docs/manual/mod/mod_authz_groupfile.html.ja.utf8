@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_authz_groupfile - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_authz_groupfile</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authz_groupfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_authz_groupfile.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_authz_groupfile.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>プレーンテキストファイルを用いたグループ承認</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>authz_groupfile_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_authz_groupfile.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.1 以降</td></tr></table>
+<h3>概要</h3>
+
+    <p>このモジュールは認証されたユーザがグループのメンバーか
+    否かによってウェブサイトの一部へのアクセスを許可するか拒否するかの
+    承認機能を提供します。同様の機能は <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>
+    によっても提供されています。</p>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authgroupfile">AuthGroupFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#authzgroupfileauthoritative">AuthzGroupFileAuthoritative</a></li>
+</ul>
+<h3>参照</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthGroupFile" id="AuthGroupFile">AuthGroupFile</a> <a name="authgroupfile" id="authgroupfile">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>証認に使用するユーザグループの一覧が格納されている、
+テキストファイルの名前を設定する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthGroupFile <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_authz_groupfile</td></tr>
+</table>
+    <p><code class="directive">AuthGroupFile</code> ディレクティブは、
+    証認に使用するユーザグループの一覧が格納されている、
+    テキストファイルの名前を設定します。
+    <var>file-path</var> はグループファイルへのパスです。
+    絶対パスでなければ、
+    <code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code>
+    からの相対パスとして扱われます。</p>
+
+    <p>グループファイル各行は、グループ名、コロン、そして
+    スペース区切りでそのメンバーのユーザ名を記述します。</p>
+
+    <div class="example"><h3>例:</h3><p><code>
+      mygroup: bob joe anne
+    </code></p></div> 
+
+    <p>大きなファイルを探索するのは、<em>非常に</em>効率が悪いという点に
+    注意してください。そのような場合は、
+    <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>
+    の方がずっと良い性能を発揮します。</p>
+
+    <div class="warning"><h3>セキュリティ</h3>
+      <p><code class="directive">AuthGroupFile</code> は、
+      ウェブサーバのドキュメントツリーの外側に
+      保管するようにしてください。
+      保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
+      そうしないとクライアントが <code class="directive">AuthGroupFile</code> を
+      ダウンロードできてしまう可能性があります。</p>
+    </div>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzGroupFileAuthoritative" id="AuthzGroupFileAuthoritative">AuthzGroupFileAuthoritative</a> <a name="authzgroupfileauthoritative" id="authzgroupfileauthoritative">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>承認が下位のモジュールに渡されるかどうかを設定する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthzGroupFileAuthoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AuthzGroupFileAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_authz_groupfile</td></tr>
+</table>
+    <p><code class="directive">AuthzGroupFileAuthoritative</code> ディレクティブを
+    明示的に <code>Off</code> に設定すると userID に対応する
+    <strong>グループがない場合に</strong>、
+    (<code>module.c</code> で定義されている) 下位のモジュールにグループ承認を
+    渡すことを許可します。</p>
+
+
+    <p>デフォルトでは制御は渡されず、未知のグループの場合は Authentication
+    Required 応答が返されます。ですから、これを設定しないと
+    システムを安全に保つことができ、NCSA 互換の振る舞いをさせることになります。</p>
+
+    <div class="warning"><h3>セキュリティ</h3>
+      <p>ユーザの <code>.htaccess</code> ファイルで他の承認手段への
+      委譲ができるようにすることの意味するところは十分に考慮しておいてください。
+      そしてそれが、本当に望む挙動であることを確かめてください。
+      通常は一つの <code>.htpasswd</code> ファイルを安全にする方が
+      より多くのアクセスインタフェースを持つかもしれないデータベースを
+      安全にするよりも簡単です。</p>
+    </div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authz_groupfile.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_authz_groupfile.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_authz_groupfile.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>
