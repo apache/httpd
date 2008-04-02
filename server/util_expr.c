@@ -871,7 +871,11 @@ AP_DECLARE(int) ap_expr_eval(request_rec *r, ap_parse_node_t *root,
                              int *was_error, backref_t **reptr,
                              string_func_t string_func, opt_func_t eval_func)
 {
-    ap_parse_node_t *clone = ap_expr_clone_tree(r->pool, root, NULL);
+    ap_parse_node_t *clone;
+    if (root == NULL) {  /* no condition == unconditional */
+        return 1;
+    }
+    clone = ap_expr_clone_tree(r->pool, root, NULL);
     return expr_eval(r, clone, was_error, reptr, string_func, eval_func);
 }
 AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
