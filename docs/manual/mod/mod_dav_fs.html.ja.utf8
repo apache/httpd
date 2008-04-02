@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_dav_fs - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_dav_fs</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_dav_fs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_dav_fs.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_dav_fs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code> のためのファイルシステムプロバイダ</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>dav_fs_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_dav_fs.c</td></tr></table>
+<h3>概要</h3>
+
+    <p>このモジュールは <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>
+    のサービスを<em>必要とします</em>。<code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>
+    のサポートモジュールとして動作し、サーバファイルシステム上に
+    位置するリソースへのアクセスを提供します。このプロバイダの正式な名前は
+    <code>filesystem</code> です。<code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>
+    バックエンドプロバイダは <code class="directive"><a href="../mod/mod_dav.html#dav">Dav</a></code>
+    ディレクティブを使用して起動されます。</p>
+
+    <div class="example"><h3>例</h3><p><code>
+      Dav filesystem
+    </code></p></div>
+
+    <p><code>filesystem</code> は <code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code>
+    のデフォルトプロバイダになっていますから、代わりに単に
+    <code>On</code> と指定することもできます。</p>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#davlockdb">DavLockDB</a></li>
+</ul>
+<h3>参照</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_dav.html">mod_dav</a></code></li>
+</ul></div>
+
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="DavLockDB" id="DavLockDB">DavLockDB</a> <a name="davlockdb" id="davlockdb">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>DAV ロックデータベースの位置</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>DavLockDB <var>file-path</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_dav_fs</td></tr>
+</table>
+    <p>ロックデータベースへのフルパスを、拡張子を除いた形で
+    指定するには、<code class="directive">DavLockDB</code>
+    を使います。パスが絶対パスでなければ、<code class="directive"><a href="../mod/core.html#serverroot">ServerRoot</a></code> からの相対パスと解釈されます。
+    <code class="module"><a href="../mod/mod_dav_fs.html">mod_dav_fs</a></code> 実装では、ユーザロックを
+    追跡するために SDBM データベースを使います。</p>
+
+    
+
+    <div class="example"><h3>例</h3><p><code>
+      DavLockDB logs/DavLock
+    </code></p></div>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_dav_fs.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_dav_fs.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_dav_fs.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>

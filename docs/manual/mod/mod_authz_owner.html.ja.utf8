@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="ja" xml:lang="ja"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_authz_owner - Apache HTTP サーバ</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p>
+<p class="apache">Apache HTTP サーバ バージョン 2.2</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP サーバ</a> &gt; <a href="http://httpd.apache.org/docs/">ドキュメンテーション</a> &gt; <a href="../">バージョン 2.2</a> &gt; <a href="./">モジュール</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache モジュール mod_authz_owner</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authz_owner.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_authz_owner.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_authz_owner.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>ファイルの所有者に基づいた承認</td></tr>
+<tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>authz_owner_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_authz_owner.c</td></tr>
+<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td>Apache 2.1 以降で使用可能</td></tr></table>
+<h3>概要</h3>
+
+    <p>このモジュールはリクエストされたファイルのファイルシステムの
+    所有者やグループを HTTP 認証に使われたユーザ ID (ウェブユーザ ID) と
+    比較することでアクセスを承認します。提供されたユーザ名とパスワードは
+    <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code> や
+    <code class="module"><a href="../mod/mod_auth_digest.html">mod_auth_digest</a></code> のような認証モジュールで既に
+    適切に検証されている必要があります。<code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code>
+    は以下のように、<code class="directive"><a href="../mod/core.html#require">Require</a></code> ディレクティブの <code>file-owner</code> と
+    <code>file-group</code> という二つの引数を認識します:</p>
+
+    <dl>
+      <dt><code>file-owner</code></dt>
+      <dd>提供されたウェブユーザ名はリクエストされたファイルの所有者の
+      システムにおける名前と一致する必要があります。つまり、オペレーティング
+      システムがファイルは <code>jones</code> により所有されている
+      と言ったときは、ウェブからのアクセスに使われるユーザ名も
+      <code>jones</code> でなければなりません。</dd>
+
+      <dt><code>file-group</code></dt>
+      <dd>ファイルを所有するシステムのグループの名前が、例えば
+      <code class="module"><a href="../mod/mod_authz_groupfile.html">mod_authz_groupfile</a></code> や <code class="module"><a href="../mod/mod_authz_dbm.html">mod_authz_dbm</a></code>
+      により提供されるグループデータベースに存在していて、
+      ウェブユーザ名がそのグループに属していなければなりません。
+      例えば、オペレーティングシステムがファイルは (システムの) グループ
+      <code>accounts</code> により所有されていると言ったときは、
+      <code>accounts</code> がグループデータベースに存在して、
+      リクエストに使用されたウェブユーザ名がそのグループに属している
+      必要があります。</dd>
+    </dl>
+
+    <div class="note"><h3>注</h3>
+      <p>ファイルシステムに実際には存在しないリソース
+      (<em>つまり</em> バーチャルなリソース) の承認に
+      <code class="module"><a href="../mod/mod_authz_owner.html">mod_authz_owner</a></code> が使用されたときは、
+      アクセスは拒否されます。</p>
+
+      <p>特に、<a href="../content-negotiation.html#multiviews">コンテント
+      ネゴシエーションされた"MultiViews"</a> のリソースは
+      決して承認しません。</p>
+    </div>
+</div>
+<div id="quickview"><h3 class="directives">ディレクティブ</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#authzownerauthoritative">AuthzOwnerAuthoritative</a></li>
+</ul>
+<h3>トピック</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#examples">設定例</a></li>
+</ul><h3>参照</h3>
+<ul class="seealso">
+<li><code class="directive"><a href="../mod/core.html#require">Require</a></code></li>
+<li><code class="directive"><a href="../mod/core.html#satisfy">Satisfy</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="examples" id="examples">設定例</a></h2>
+
+    <h3><a name="examples.file-owner" id="examples.file-owner">Require file-owner</a></h3>
+      <p>複数ユーザのシステムで Apache ウェブサーバが実行されていて、
+      <code>~/public_html/private</code> に各ユーザがファイルを置いているとします。
+      <code class="directive"><a href="../mod/mod_authn_dbm.html#authdbmuserfile">AuthDBMUserFile</a></code>
+      データベースが一つだけあり、すべてのウェブユーザ名が列挙されており、
+      このユーザ名がサーバで実際にファイルを所有しているユーザ名と一致している場合、
+      次の節のような設定で、ユーザが自分自身のファイルにアクセスできるようになります。
+      <code>/home/smith/public_html/private</code> の中のファイルは、所有者が
+      <code>smith</code> の代わりに <code>jones</code> になっていない限り、
+      <code>jones</code> にはアクセスは許可されません。</p>
+
+      <div class="example"><p><code>
+        &lt;Directory /home/*/public_html/private&gt;<br />
+        <span class="indent">
+          AuthType Basic<br />
+          AuthName MyPrivateFiles<br />
+          AuthBasicProvider dbm<br />
+          AuthDBMUserFile /usr/local/apache2/etc/.htdbm-all<br />
+          Satisfy All<br />
+          Require file-owner<br />
+        </span>
+        &lt;/Directory&gt;
+      </code></p></div>
+    
+
+    <h3><a name="examples.file-group" id="examples.file-group">Require file-group</a></h3>
+      <p>上記のようなシステムで、数人のユーザがプロジェクトのファイルを
+      <code>~/public_html/project-foo</code> で共有しているとします。
+      ファイルはシステムのグループ <code>foo</code> に所有されていて、
+      <code class="directive"><a href="../mod/mod_authz_dbm.html#authdbmgroupfile">AuthDBMGroupFile</a></code>
+      データベースが一つだけあり、そこにすべてのウェブユーザ名と
+      グループのメンバが列挙されている、<em>つまり</em>、それらの
+      ユーザは少なくとも <code>foo</code> というグループに属している、とします。
+      <code>jones</code> と<code>smith</code> の二人共がグループ
+      <code>foo</code> のメンバである場合、どちらの人も両方の
+      <code>project-foo</code> にアクセスが許可されます。</p>
+
+      <div class="example"><p><code>
+        &lt;Directory /home/*/public_html/project-foo&gt;<br />
+        <span class="indent">
+          AuthType Basic<br />
+          AuthName "Project Foo Files"<br />
+          AuthBasicProvider dbm<br />
+          <br />
+          # combined user/group database<br />
+          AuthDBMUserFile  /usr/local/apache2/etc/.htdbm-all<br />
+          AuthDBMGroupFile /usr/local/apache2/etc/.htdbm-all<br />
+          <br />
+          Satisfy All<br />
+          Require file-group<br />
+        </span>
+        &lt;/Directory&gt;
+      </code></p></div>
+    
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="AuthzOwnerAuthoritative" id="AuthzOwnerAuthoritative">AuthzOwnerAuthoritative</a> <a name="authzownerauthoritative" id="authzownerauthoritative">ディレクティブ</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>承認が下位承認モジュールに渡されるかどうかを設定する</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>AuthzOwnerAuthoritative On|Off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>AuthzOwnerAuthoritative On</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>ディレクトリ, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">上書き:</a></th><td>AuthConfig</td></tr>
+<tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_authz_owner</td></tr>
+</table>
+    <p><code class="directive">AuthzOwnerAuthoritative</code> ディレクティブを
+    明示的に <code>Off</code> に設定すると、以下の場合に認証が
+    (<code>modules.c</code> で定義されている) 下位のモジュールに
+    渡されるようにします:</p>
+
+    <ul>
+    <li><code>file-owner</code> の場合は、提供されたウェブユーザ名に
+    ファイルシステムの所有者が一致しないか、所有者がわからない場合。</li>
+
+    <li><code>file-group</code> の場合は、提供されたウェブユーザ名が
+    ファイルシステムグループに存在しないか、わからない場合。</li>
+    </ul>
+
+    <p>値を <code>Off</code> に設定すると、<code>file-owner</code> と
+    <code>file-group</code> を組み合わせることもできるようになり、
+    その場合はどちらか (両方でも) にマッチした場合にアクセスを許可されます。</p>
+
+    <p>デフォルトでは制御は渡されず、未知のグループの場合は Authentication
+    Required 応答が返されます。ですから、<code>Off</code> に設定しないことで
+    システムを安全に保つことができ、NCSA 互換の振る舞いをさせることになります。</p>
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_authz_owner.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
+<a href="../ja/mod/mod_authz_owner.html" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="../ko/mod/mod_authz_owner.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">モジュール</a> | <a href="../mod/directives.html">ディレクティブ</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">用語</a> | <a href="../sitemap.html">サイトマップ</a></p></div>
+</body></html>
