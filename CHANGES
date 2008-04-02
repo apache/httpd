@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_dav: Return "method not allowed" if the destination URI of a WebDAV
+     copy / move operation is no DAV resource. PR 44734 [Ruediger Pluem]
+
   *) Introduced ap_expr API for expression evaluation.
      This is adapted from mod_include, which is the first module
      to use the new API.
