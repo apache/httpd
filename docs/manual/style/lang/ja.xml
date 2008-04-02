@@ -21,9 +21,9 @@
 
 <language id="ja">
     <name>Japanese</name>
-    <charset>EUC-JP</charset>
+    <charset>UTF-8</charset>
     <source-ext>.xml.ja</source-ext>
-    <target-ext>.html.ja.euc-jp</target-ext>
+    <target-ext>.html.ja.utf8</target-ext>
 
     <chm>
         <lang>0x411 Japanese</lang>
