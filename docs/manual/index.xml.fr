@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 421100 -->
+<!-- English revision : 636034 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 <!-- $LastChangedRevision: 2007072801 $ -->
@@ -65,7 +65,7 @@
     <page href="server-wide.html">Configuration &agrave; l'&eacute;chelle du serveur</page>
     <page href="ssl/">Chiffrement SSL/TLS</page>
     <page href="suexec.html">Ex&eacute;cution des CGI avec suexec</page>
-    <page href="misc/rewriteguide.html">Guide de r&eacute;&eacute;criture des URLs</page>
+    <page href="rewrite/">Guide de r&eacute;&eacute;criture des URLs</page>
     <page href="vhosts/">Hôtes virtuels</page>
 </category>
 
