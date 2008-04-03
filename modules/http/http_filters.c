@@ -427,6 +427,10 @@ apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                           (APR_STATUS_IS_EAGAIN(rv)) )) {
                         return APR_EAGAIN;
                     }
+                    /* If we get an error, then leave */
+                    if (rv != APR_SUCCESS) {
+                        return rv;
+                    }
                     /*
                      * We really don't care whats on this line. If it is RFC
                      * compliant it should be only \r\n. If there is more
