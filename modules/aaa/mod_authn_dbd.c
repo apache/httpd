@@ -18,6 +18,7 @@
 #include "httpd.h"
 #include "http_config.h"
 #include "http_log.h"
+#include "http_request.h"
 #include "apr_lib.h"
 #include "apr_dbd.h"
 #include "mod_dbd.h"
@@ -268,7 +269,8 @@ static void authn_dbd_hooks(apr_pool_t *p)
         &authn_dbd_realm
     };
 
-    ap_register_provider(p, AUTHN_PROVIDER_GROUP, "dbd", "0", &authn_dbd_provider);
+    ap_register_auth_provider(p, AUTHN_PROVIDER_GROUP, "dbd", "0",
+                              &authn_dbd_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 module AP_MODULE_DECLARE_DATA authn_dbd_module =
 {

@@ -90,7 +90,8 @@ static int authenticate_no_user(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_check_user_id(authenticate_no_user,NULL,NULL,APR_HOOK_LAST);
+    ap_hook_check_authn(authenticate_no_user, NULL, NULL, APR_HOOK_LAST,
+                        AP_AUTH_INTERNAL_PER_CONF);
 }
 
 module AP_MODULE_DECLARE_DATA authn_default_module =

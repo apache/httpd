@@ -483,8 +483,9 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
                      APR_HASH_KEY_STRING, prvdraliasrec);
 
         /* Register the fake provider so that we get called first */
-        ap_register_provider(cmd->pool, AUTHZ_PROVIDER_GROUP, provider_alias, "0",
-                             &authz_alias_provider);
+        ap_register_auth_provider(cmd->pool, AUTHZ_PROVIDER_GROUP,
+                                  provider_alias, "0", &authz_alias_provider,
+                                  AP_AUTH_INTERNAL_PER_CONF);
     }
 
     cmd->override = old_overrides;
@@ -802,11 +803,18 @@ static int authz_some_auth_required(request_rec *r)
     return req_authz;
 }
 
+static apr_array_header_t *authz_ap_list_provider_names(apr_pool_t *ptemp)
+{   
+    return ap_list_provider_names(ptemp, AUTHZ_PROVIDER_GROUP, "0");
+}
+
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(authz_some_auth_required);
+    APR_REGISTER_OPTIONAL_FN(authz_ap_list_provider_names);
 
-    ap_hook_auth_checker(authorize_user, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_authz(authorize_user, NULL, NULL, APR_HOOK_MIDDLE,
+                        AP_AUTH_INTERNAL_PER_CONF);
 }
 
 module AP_MODULE_DECLARE_DATA authz_core_module =

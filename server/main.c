@@ -35,6 +35,7 @@
 #include "http_log.h"
 #include "http_config.h"
 #include "http_core.h"
+#include "http_request.h"
 #include "http_vhost.h"
 #include "apr_uri.h"
 #include "util_ebcdic.h"
@@ -713,6 +714,7 @@ int main(int argc, const char * const argv[])
     for (;;) {
         apr_hook_deregister_all();
         apr_pool_clear(pconf);
+        ap_clear_auth_internal(server_conf);
 
         for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
             ap_register_hooks(*mod, pconf);

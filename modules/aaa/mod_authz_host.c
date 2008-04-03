@@ -241,14 +241,14 @@ static const authz_provider authz_all_provider =
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "env", "0",
-                         &authz_env_provider);
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "ip", "0",
-                         &authz_ip_provider);
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "host", "0",
-                         &authz_host_provider);
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "all", "0",
-                         &authz_all_provider);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "env", "0",
+                              &authz_env_provider, AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ip", "0",
+                              &authz_ip_provider, AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "host", "0",
+                              &authz_host_provider, AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "all", "0",
+                              &authz_all_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
 module AP_MODULE_DECLARE_DATA authz_host_module =

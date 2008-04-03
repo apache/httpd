@@ -310,12 +310,15 @@ static const authz_provider authz_dbdlogout_provider =
 
 static void authz_dbd_hooks(apr_pool_t *p)
 {
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "dbd-group", "0",
-                         &authz_dbdgroup_provider);
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "dbd-login", "0",
-                         &authz_dbdlogin_provider);
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "dbd-logout", "0",
-                         &authz_dbdlogout_provider);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "dbd-group", "0",
+                              &authz_dbdgroup_provider,
+                              AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "dbd-login", "0",
+                              &authz_dbdlogin_provider,
+                              AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "dbd-logout", "0",
+                              &authz_dbdlogout_provider,
+                              AP_AUTH_INTERNAL_PER_CONF);
 }
 
 module AP_MODULE_DECLARE_DATA authz_dbd_module =

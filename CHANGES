@@ -2,6 +2,14 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core, authn/z: Avoid calling access control hooks for internal requests
+     with configurations which match those of initial request.  Revert to
+     original behaviour (call access control hooks for internal requests
+     with URIs different from initial request) if any access control hooks or
+     providers are not registered as permitting this optimization.
+     Introduce wrappers for access control hook and provider registration
+     which can accept additional mode and flag data.  [Chris Darroch]
+
   *) http_filters: Don't spin if get an error when reading the
      next chunk. PR 44381 [Ruediger Pluem]
 
