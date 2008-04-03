@@ -152,15 +152,16 @@
  * 20071108.10(2.3.0-dev)  Introduce new ap_expr API
  * 20071108.11(2.3.0-dev)  Revise/Expand new ap_expr API
  * 20071108.12(2.3.0-dev)  Remove ap_expr_clone from the API (same day it was added)
- * 20000403.0 (2.3.0-dev)  Add condition field to core dir config
+ * 20080403.0 (2.3.0-dev)  Add condition field to core dir config
+ * 20080403.1 (2.3.0-dev)  Add authn/z hook and provider registration wrappers.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20071108
+#define MODULE_MAGIC_NUMBER_MAJOR 20080403
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
