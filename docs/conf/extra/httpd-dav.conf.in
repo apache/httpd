@@ -24,9 +24,11 @@ Alias /uploads "@@ServerRoot@@/uploads"
 
     AuthType Digest
     AuthName DAV-upload
+
     # You can use the htdigest program to create the password database:
     #   htdigest -c "@@ServerRoot@@/user.passwd" DAV-upload admin
     AuthUserFile "@@ServerRoot@@/user.passwd"
+    AuthDigestProvider file
 
     # Allow universal read-access, but writes are restricted
     # to the admin user.
