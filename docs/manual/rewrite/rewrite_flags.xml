@@ -199,7 +199,7 @@ rules, as shown below.</p>
 <p>The example given here will rewrite any request to
 <code>index.php</code>, giving the original request as a query string
 argument to <code>index.php</code>, however, if the request is already
-for <code>index.php</code>, this rull will be skipped.</p>
+for <code>index.php</code>, this rule will be skipped.</p>
 
 <example>
 RewriteCond %{REQUEST_URI} !index\.php<br />
@@ -296,7 +296,7 @@ considered.</p>
 
 <p>
 The target (or substitution string) in a RewriteRule is assumed to be a
-file path, by default. The use of the [PT] flag causes it to be trated
+file path, by default. The use of the [PT] flag causes it to be treated
 as a URI instead. That is to say, the
 use of the [PT] flag causes the result of the <directive
 module="mod_rewrite">RewriteRule</directive> to be passed back through
@@ -408,7 +408,7 @@ module="mod_mime">AddType</directive> directive.</p>
 source code as plain text, if requested in a particular way:</p>
 
 <example>
-# Serve .pl files as plan text
+# Serve .pl files as plain text
 RewriteRule \.pl$ - [T=text/plain]
 </example>
 
