@@ -198,8 +198,8 @@ static const authn_provider authn_anon_provider =
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_register_provider(p, AUTHN_PROVIDER_GROUP, "anon", "0",
-                         &authn_anon_provider);
+    ap_register_auth_provider(p, AUTHN_PROVIDER_GROUP, "anon", "0",
+                              &authn_anon_provider, AP_AUTH_INTERNAL_PER_CONF);
 }
 
 module AP_MODULE_DECLARE_DATA authn_anon_module =

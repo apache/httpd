@@ -89,7 +89,8 @@ static int check_user_access(request_rec *r)
 
 static void register_hooks(apr_pool_t *p)
 {
-    ap_hook_auth_checker(check_user_access,NULL,NULL,APR_HOOK_LAST);
+    ap_hook_check_authz(check_user_access, NULL, NULL, APR_HOOK_LAST,
+                        AP_AUTH_INTERNAL_PER_CONF);
 }
 
 module AP_MODULE_DECLARE_DATA authz_default_module =

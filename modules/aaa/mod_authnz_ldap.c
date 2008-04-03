@@ -1582,20 +1582,25 @@ static void ImportULDAPOptFn(void)
 static void register_hooks(apr_pool_t *p)
 {
     /* Register authn provider */
-    ap_register_provider(p, AUTHN_PROVIDER_GROUP, "ldap", "0",
-                         &authn_ldap_provider);
+    ap_register_auth_provider(p, AUTHN_PROVIDER_GROUP, "ldap", "0",
+                              &authn_ldap_provider, AP_AUTH_INTERNAL_PER_CONF);
 
     /* Register authz providers */
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-user", "0",
-                         &authz_ldapuser_provider);
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-group", "0",
-                         &authz_ldapgroup_provider);
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-dn", "0",
-                         &authz_ldapdn_provider);
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-attribute", "0",
-                         &authz_ldapattribute_provider);
-    ap_register_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-filter", "0",
-                         &authz_ldapfilter_provider);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-user", "0",
+                              &authz_ldapuser_provider,
+                              AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-group", "0",
+                              &authz_ldapgroup_provider,
+                              AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-dn", "0",
+                              &authz_ldapdn_provider,
+                              AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-attribute", "0",
+                              &authz_ldapattribute_provider,
+                              AP_AUTH_INTERNAL_PER_CONF);
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "ldap-filter", "0",
+                              &authz_ldapfilter_provider,
+                              AP_AUTH_INTERNAL_PER_CONF);
 
     ap_hook_post_config(authnz_ldap_post_config,NULL,NULL,APR_HOOK_MIDDLE);
 

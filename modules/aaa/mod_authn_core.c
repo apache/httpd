@@ -253,8 +253,9 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
         apr_hash_set(authcfg->alias_rec, provider_alias, APR_HASH_KEY_STRING, prvdraliasrec);
 
         /* Register the fake provider so that we get called first */
-        ap_register_provider(cmd->pool, AUTHN_PROVIDER_GROUP, provider_alias, "0",
-                             &authn_alias_provider);
+        ap_register_auth_provider(cmd->pool, AUTHN_PROVIDER_GROUP,
+                                  provider_alias, "0", &authn_alias_provider,
+                                  AP_AUTH_INTERNAL_PER_CONF);
     }
 
     cmd->override = old_overrides;
@@ -296,6 +297,11 @@ static const char *authn_ap_auth_name(request_rec *r)
     return apr_pstrdup(r->pool, conf->ap_auth_name);
 }
 
+static apr_array_header_t *authn_ap_list_provider_names(apr_pool_t *ptemp)
+{
+    return ap_list_provider_names(ptemp, AUTHN_PROVIDER_GROUP, "0");
+}
+
 static const command_rec authn_cmds[] =
 {
     AP_INIT_TAKE1("AuthType", ap_set_string_slot,
@@ -313,6 +319,7 @@ static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(authn_ap_auth_type);
     APR_REGISTER_OPTIONAL_FN(authn_ap_auth_name);
+    APR_REGISTER_OPTIONAL_FN(authn_ap_list_provider_names);
 }
 
 module AP_MODULE_DECLARE_DATA authn_core_module =

@@ -324,6 +324,7 @@ static x_cfg *our_cconfig(const conn_rec *c)
 #define EXAMPLE_LOG_EACH 0
 #endif
 
+#if EXAMPLE_LOG_EACH 
 static void example_log_each(apr_pool_t *p, server_rec *s, const char *note)
 {
     if (s != NULL) {
@@ -336,7 +337,7 @@ static void example_log_each(apr_pool_t *p, server_rec *s, const char *note)
                         "context: %s\n", note);
     }
 }
-
+#endif
 
 /* 
  * This utility routine traces the hooks called when the server starts up. 
@@ -564,8 +565,8 @@ static void *x_create_dir_config(apr_pool_t *p, char *dirspec)
      */
     dname = (dname != NULL) ? dname : "";
     cfg->loc = apr_pstrcat(p, "DIR(", dname, ")", NULL);
-    note = apr_psprintf(p, "x_create_dir_config(p == 0x%x, dirspec == %s)", 
-                        p, dirspec);
+    note = apr_psprintf(p, "x_create_dir_config(p == %pp, dirspec == %s)", 
+                        (void*) p, dirspec);
     trace_startup(p, NULL, cfg, note);
     return (void *) cfg;
 }
@@ -617,9 +618,9 @@ static void *x_merge_dir_config(apr_pool_t *p, void *parent_conf,
      * Now just record our being called in the trace list.  Include the
      * locations we were asked to merge.
      */
-    note = apr_psprintf(p, "x_merge_dir_config(p == 0x%x, parent_conf == " 
-                        "0x%x, newloc_conf == 0x%x)", p, parent_conf,
-                        newloc_conf);
+    note = apr_psprintf(p, "x_merge_dir_config(p == %pp, parent_conf == " 
+                        "%pp, newloc_conf == %pp)", (void*) p,
+                        (void*) parent_conf, (void*) newloc_conf);
     trace_startup(p, NULL, merged_config, note);
     return (void *) merged_config;
 }
@@ -1120,8 +1121,8 @@ static int x_pre_connection(conn_rec *c, void *csd)
     /*
      * Log the call and exit.
      */
-    note = apr_psprintf(c->pool, "x_pre_connection(c = %x, p = %x)", 
-                        c, c->pool);
+    note = apr_psprintf(c->pool, "x_pre_connection(c = %pp, p = %pp)", 
+                        (void*) c, (void*) c->pool);
     trace_connection(c, note);
 
     return OK;
@@ -1219,6 +1220,20 @@ static int x_header_parser(request_rec *r)
 
 
 /*
+ * This routine is called to check for any module-specific restrictions placed
+ * upon the requested resource.  (See the mod_access_compat module for an
+ * example.)
+ *
+ * This is a RUN_ALL hook. The first handler to return a status other than OK
+ * or DECLINED (for instance, HTTP_FORBIDDEN) aborts the callback chain. 
+ */
+static int x_check_access(request_rec *r)
+{
+    trace_request(r, "x_check_access()");
+    return DECLINED;
+}
+
+/*
  * This routine is called to check the authentication information sent with
  * the request (such as looking up the user in a database and verifying that
  * the [encrypted] password sent matches the one in the database).
@@ -1226,12 +1241,12 @@ static int x_header_parser(request_rec *r)
  * This is a RUN_FIRST hook. The return value is OK, DECLINED, or some 
  * HTTP_mumble error (typically HTTP_UNAUTHORIZED).  
  */
-static int x_check_user_id(request_rec *r)
+static int x_check_authn(request_rec *r)
 {
     /*
      * Don't do anything except log the call.
      */
-    trace_request(r, "x_check_user_id()");
+    trace_request(r, "x_check_authn()");
     return DECLINED;
 }
 
@@ -1246,26 +1261,13 @@ static int x_check_user_id(request_rec *r)
  * If *all* modules return DECLINED, the request is aborted with a server
  * error.
  */
-static int x_auth_checker(request_rec *r)
+static int x_check_authz(request_rec *r)
 {
     /*
      * Log the call and return OK, or access will be denied (even though we
      * didn't actually do anything).
      */
-    trace_request(r, "x_auth_checker()");
-    return DECLINED;
-}
-
-/*
- * This routine is called to check for any module-specific restrictions placed
- * upon the requested resource.  (See the mod_access module for an example.)
- *
- * This is a RUN_ALL hook. The first handler to return a status other than OK
- * or DECLINED (for instance, HTTP_FORBIDDEN) aborts the callback chain. 
- */
-static int x_access_checker(request_rec *r)
-{
-    trace_request(r, "x_access_checker()");
+    trace_request(r, "x_check_authz()");
     return DECLINED;
 }
 
@@ -1456,11 +1458,14 @@ static void x_register_hooks(apr_pool_t *p)
     ap_hook_translate_name(x_translate_name, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_map_to_storage(x_map_to_storage, NULL,NULL, APR_HOOK_MIDDLE);
     ap_hook_header_parser(x_header_parser, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_check_user_id(x_check_user_id, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_fixups(x_fixups, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_type_checker(x_type_checker, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_access_checker(x_access_checker, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_auth_checker(x_auth_checker, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_access(x_check_access, NULL, NULL, APR_HOOK_MIDDLE,
+                         AP_AUTH_INTERNAL_PER_CONF);
+    ap_hook_check_authn(x_check_authn, NULL, NULL, APR_HOOK_MIDDLE,
+                        AP_AUTH_INTERNAL_PER_CONF);
+    ap_hook_check_authz(x_check_authz, NULL, NULL, APR_HOOK_MIDDLE,
+                        AP_AUTH_INTERNAL_PER_CONF);
     ap_hook_insert_filter(x_insert_filter, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_error_filter(x_insert_error_filter, NULL, NULL, APR_HOOK_MIDDLE);
 #ifdef HAVE_UNIX_SUEXEC

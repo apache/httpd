@@ -2002,7 +2002,6 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     int old_overrides = cmd->override;
     char *old_path = cmd->path;
     core_dir_config *conf;
-    ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     core_dir_config *c = mconfig;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
@@ -3753,6 +3752,7 @@ static int core_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pte
 
     set_banner(pconf);
     ap_setup_make_content_type(pconf);
+    ap_setup_auth_internal(ptemp);
     return OK;
 }
 
@@ -3963,7 +3963,6 @@ static void register_hooks(apr_pool_t *p)
     /* FIXME: I suspect we can eliminate the need for these do_nothings - Ben */
     ap_hook_type_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_fixups(core_override_type,NULL,NULL,APR_HOOK_REALLY_FIRST);
-    ap_hook_access_checker(do_nothing,NULL,NULL,APR_HOOK_REALLY_LAST);
     ap_hook_create_request(core_create_req, NULL, NULL, APR_HOOK_MIDDLE);
     APR_OPTIONAL_HOOK(proxy, create_req, core_create_proxy_req, NULL, NULL,
                       APR_HOOK_MIDDLE);
