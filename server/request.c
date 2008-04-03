@@ -44,6 +44,7 @@
 #include "util_filter.h"
 #include "util_charset.h"
 #include "util_script.h"
+#include "ap_expr.h"
 
 #include "mod_core.h"
 
@@ -1413,16 +1414,24 @@ AP_DECLARE(int) ap_file_walk(request_rec *r)
          * really try them with the most general first.
          */
         for (sec_idx = 0; sec_idx < num_sec; ++sec_idx) {
-
+            int err = 0;
             core_dir_config *entry_core;
             entry_core = ap_get_module_config(sec_ent[sec_idx], &core_module);
 
-            if (entry_core->r
-                ? ap_regexec(entry_core->r, cache->cached , 0, NULL, 0)
-                : (entry_core->d_is_fnmatch
-                   ? apr_fnmatch(entry_core->d, cache->cached, APR_FNM_PATHNAME)
-                   : strcmp(entry_core->d, cache->cached))) {
-                continue;
+            if (entry_core->condition) {
+                if (!ap_expr_eval(r, entry_core->condition, &err, NULL,
+                                  ap_expr_string, NULL)) {
+                    continue;
+                }
+            }
+            else {
+                if (entry_core->r
+                    ? ap_regexec(entry_core->r, cache->cached , 0, NULL, 0)
+                    : (entry_core->d_is_fnmatch
+                       ? apr_fnmatch(entry_core->d, cache->cached, APR_FNM_PATHNAME)
+                       : strcmp(entry_core->d, cache->cached))) {
+                    continue;
+                }
             }
 
             /* If we merged this same section last time, reuse it

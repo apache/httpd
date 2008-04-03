@@ -1304,6 +1304,36 @@ MIME content-type</description>
 </directivesynopsis>
 
 <directivesynopsis type="section">
+<name>If</name>
+<description>Contains directives that apply only if a condition is
+satisfied by a request at runtime</description>
+<syntax>&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</syntax>
+<contextlist><context>server config</context><context>virtual host</context>
+<context>directory</context><context>.htaccess</context>
+</contextlist>
+<override>All</override>
+
+<usage>
+    <p>The <directive type="section">If</directive> directive
+    evaluates an expression at runtime, and applies the enclosed
+    directives if and only if the expression evaluates to true.
+    For example:</p>
+
+    <example>
+        &lt;If "$req{Host} = ''"&gt;
+    </example>
+
+    <p>would match HTTP/1.0 requests without a <var>Host:</var> header.</p>
+</usage>
+
+<seealso><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt; sections work</a> for an explanation of how these
+    different sections are combined when a request is received.
+    <directive type="section">If</directive> has the same precedence
+    and usage as <directive type="section">Files</directive></seealso>
+</directivesynopsis>
+
+<directivesynopsis type="section">
 <name>IfDefine</name>
 <description>Encloses directives that will be processed only
 if a test is true at startup</description>
@@ -1633,7 +1663,8 @@ methods</description>
     <code>LOCK</code>, and <code>UNLOCK</code>. <strong>The method name is
     case-sensitive.</strong> If <code>GET</code> is used it will also
     restrict <code>HEAD</code> requests. The <code>TRACE</code> method
-    cannot be limited.</p>
+    cannot be limited (see <directive type="section" module="core"
+    >TraceEnable</directive>).</p>
 
     <note type="warning">A <directive type="section"
     module="core">LimitExcept</directive> section should always be
