@@ -30,6 +30,7 @@
 #include "apr_hash.h"
 #include "apr_optional.h"
 #include "util_filter.h"
+#include "ap_expr.h"
 
 #if APR_HAVE_STRUCT_RLIMIT
 #include <sys/time.h>
@@ -541,6 +542,7 @@ typedef struct {
 #define USE_CANONICAL_PHYS_PORT_UNSET (2)
     unsigned use_canonical_phys_port : 2;
 
+    ap_parse_node_t *condition;   /* Conditionally merge <If> sections */
 } core_dir_config;
 
 /* Per-server core configuration */
