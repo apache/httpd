@@ -897,6 +897,7 @@ static ap_regex_t *isvar = NULL;
 AP_DECLARE(const char*) ap_expr_string(request_rec *r, const char *str)
 {
     /* a default string evaluator: support headers and env */
+    const char *ret = str;
     ap_regmatch_t match[3];
     ap_assert(isvar != NULL);
     if (ap_regexec(isvar, str, 3, match, 0) == 0) {
@@ -915,20 +916,23 @@ AP_DECLARE(const char*) ap_expr_string(request_rec *r, const char *str)
         if (table != NULL) {
             char *key = apr_pstrndup(r->pool, str+match[2].rm_so,
                                      match[2].rm_eo-match[2].rm_so);
-            return apr_table_get(table, key);
+            ret = apr_table_get(table, key);
         }
     }
     else if (str[0] == '$') {
         if (!strcasecmp(str, "$handler")) {
-            return r->handler;
+            ret = r->handler;
         }
         else if (!strcasecmp(str, "$content-type")) {
-            return r->content_type;
+            ret = r->content_type;
         }
     }
     /* TODO: provide a hook so modules can interpret other patterns */
     /* OhBugger, where's the regexp for backreferences ? */
-    return str;  /* default - literal string as-is */
+    if (!ret) {
+        ret = "";
+    }
+    return ret;  /* default - literal string as-is */
 }
 static apr_status_t ap_expr_term(void *expr)
 {
