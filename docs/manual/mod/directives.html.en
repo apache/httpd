@@ -217,6 +217,7 @@
 <li><a href="core.html#hostnamelookups">HostnameLookups</a></li>
 <li><a href="mod_ident.html#identitycheck" id="I" name="I">IdentityCheck</a></li>
 <li><a href="mod_ident.html#identitychecktimeout">IdentityCheckTimeout</a></li>
+<li><a href="core.html#if">&lt;If&gt;</a></li>
 <li><a href="core.html#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><a href="core.html#ifmodule">&lt;IfModule&gt;</a></li>
 <li><a href="mod_version.html#ifversion">&lt;IfVersion&gt;</a></li>

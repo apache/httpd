@@ -67,7 +67,7 @@
 <li><a href="server-wide.html">Configuration à l'échelle du serveur</a></li>
 <li><a href="ssl/">Chiffrement SSL/TLS</a></li>
 <li><a href="suexec.html">Exécution des CGI avec suexec</a></li>
-<li><a href="misc/rewriteguide.html">Guide de réécriture des URLs</a></li>
+<li><a href="rewrite/">Guide de réécriture des URLs</a></li>
 <li><a href="vhosts/">Hôtes virtuels</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">Recettes / Tutoriels</a></h2>
@@ -87,6 +87,7 @@
 <li><a href="sitemap.html">Plan du site</a></li>
 <li><a href="developer/">Documentation du développeur</a></li>
 <li><a href="misc/">Autres notes</a></li>
+<li><a href="http://wiki.apache.org/httpd/">Wiki</a></li>
 </ul>
 </div></td></tr></table></div>
 <div class="bottomlang">

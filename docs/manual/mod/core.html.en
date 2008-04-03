@@ -54,6 +54,7 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#filesmatch">&lt;FilesMatch&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#forcetype">ForceType</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#hostnamelookups">HostnameLookups</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#if">&lt;If&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifdefine">&lt;IfDefine&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ifmodule">&lt;IfModule&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
@@ -1329,6 +1330,37 @@ MIME content-type</td></tr>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="If" id="If">&lt;If&gt;</a> <a name="if" id="if">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Contains directives that apply only if a condition is
+satisfied by a request at runtime</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>&lt;If <var>expression</var>&gt; ... &lt;/If&gt;</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory, .htaccess</td></tr>
+<tr><th><a href="directive-dict.html#Override">Override:</a></th><td>All</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
+</table>
+    <p>The <code class="directive">&lt;If&gt;</code> directive
+    evaluates an expression at runtime, and applies the enclosed
+    directives if and only if the expression evaluates to true.
+    For example:</p>
+
+    <div class="example"><p><code>
+        &lt;If "$req{Host} = ''"&gt;
+    </code></p></div>
+
+    <p>would match HTTP/1.0 requests without a <var>Host:</var> header.</p>
+
+<h3>See also</h3>
+<ul>
+<li><a href="../sections.html">How &lt;Directory&gt;, &lt;Location&gt;,
+    &lt;Files&gt; sections work</a> for an explanation of how these
+    different sections are combined when a request is received.
+    <code class="directive">&lt;If&gt;</code> has the same precedence
+    and usage as <code class="directive">&lt;Files&gt;</code></li>
+</ul>
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="IfDefine" id="IfDefine">&lt;IfDefine&gt;</a> <a name="ifdefine" id="ifdefine">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Encloses directives that will be processed only
@@ -1654,7 +1686,7 @@ methods</td></tr>
     <code>LOCK</code>, and <code>UNLOCK</code>. <strong>The method name is
     case-sensitive.</strong> If <code>GET</code> is used it will also
     restrict <code>HEAD</code> requests. The <code>TRACE</code> method
-    cannot be limited.</p>
+    cannot be limited (see <code class="directive"><a href="#traceenable">&lt;TraceEnable&gt;</a></code>).</p>
 
     <div class="warning">A <code class="directive"><a href="#limitexcept">&lt;LimitExcept&gt;</a></code> section should always be
     used in preference to a <code class="directive"><a href="#limit">&lt;Limit&gt;</a></code> section when restricting access,
