@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) http_filters: Don't spin if get an error when reading the
+     next chunk. PR 44381 [Ruediger Pluem]
+
   *) mod_dav: Return "method not allowed" if the destination URI of a WebDAV
      copy / move operation is no DAV resource. PR 44734 [Ruediger Pluem]
 
