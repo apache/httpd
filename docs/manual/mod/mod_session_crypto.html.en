@@ -1,0 +1,221 @@
+<?xml version="1.0" encoding="ISO-8859-1"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head><!--
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+              This file is generated from xml source: DO NOT EDIT
+        XXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXXX
+      -->
+<title>mod_session_crypto - Apache HTTP Server</title>
+<link href="../style/css/manual.css" rel="stylesheet" media="all" type="text/css" title="Main stylesheet" />
+<link href="../style/css/manual-loose-100pc.css" rel="alternate stylesheet" media="all" type="text/css" title="No Sidebar - Default font size" />
+<link href="../style/css/manual-print.css" rel="stylesheet" media="print" type="text/css" />
+<link href="../images/favicon.ico" rel="shortcut icon" /></head>
+<body>
+<div id="page-header">
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p>
+<p class="apache">Apache HTTP Server Version 2.3</p>
+<img alt="" src="../images/feather.gif" /></div>
+<div class="up"><a href="./"><img title="&lt;-" alt="&lt;-" src="../images/left.gif" /></a></div>
+<div id="path">
+<a href="http://www.apache.org/">Apache</a> &gt; <a href="http://httpd.apache.org/">HTTP Server</a> &gt; <a href="http://httpd.apache.org/docs/">Documentation</a> &gt; <a href="../">Version 2.3</a> &gt; <a href="./">Modules</a></div>
+<div id="page-content">
+<div id="preamble"><h1>Apache Module mod_session_crypto</h1>
+<div class="toplang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_session_crypto.html" title="English">&nbsp;en&nbsp;</a></p>
+</div>
+<table class="module"><tr><th><a href="module-dict.html#Description">Description:</a></th><td>Session encryption support</td></tr>
+<tr><th><a href="module-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="module-dict.html#ModuleIdentifier">Module Identifier:</a></th><td>session_crypto_module</td></tr>
+<tr><th><a href="module-dict.html#SourceFile">Source File:</a></th><td>mod_session_crypto.c</td></tr></table>
+<h3>Summary</h3>
+
+    <div class="warning"><h3>Warning</h3>
+      <p>The session modules make use of HTTP cookies, and as such can fall
+      victim to Cross Site Scripting attacks, or expose potentially private
+      information to clients. Please ensure that the relevant risks have
+      been taken into account before enabling the session functionality on
+      your server.</p>
+    </div>
+
+    <p>This submodule of <code class="module"><a href="../mod/mod_session.html">mod_session</a></code> provides support for the
+    encryption of user sessions before being written to a local database, or
+    written to a remove browser via an HTTP cookie.</p>
+    
+    <p>This can help provide privacy to user sessions where the contents of
+    the session should be kept private from the user, or where protection is
+    needed against the effects of cross site scripting attacks.</p>
+    
+    <p>For more details on the session interface, see the documentation for
+    the <code class="module"><a href="../mod/mod_session.html">mod_session</a></code> module.</p>
+    
+</div>
+<div id="quickview"><h3 class="directives">Directives</h3>
+<ul id="toc">
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptocertificatefile">SessionCryptoCertificateFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptocertificatekeyfile">SessionCryptoCertificateKeyFile</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptocipher">SessionCryptoCipher</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptodigest">SessionCryptoDigest</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptoengine">SessionCryptoEngine</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></li>
+</ul>
+<h3>Topics</h3>
+<ul id="topics">
+<li><img alt="" src="../images/down.gif" /> <a href="#basicusage">Basic Usage</a></li>
+</ul><h3>See also</h3>
+<ul class="seealso">
+<li><code class="module"><a href="../mod/mod_session.html">mod_session</a></code></li>
+<li><code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code></li>
+<li><code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code></li>
+</ul></div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="section">
+<h2><a name="basicusage" id="basicusage">Basic Usage</a></h2>
+    
+      <p>To create a simple encrypted session and store it in a cookie called
+      <var>session</var>, configure the session as follows:</p>
+      
+      <div class="example"><h3>Browser based encrypted session</h3><p><code>
+        Session On<br />
+        SessionCookieName session path=/<br />
+        SessionCryptoPassphrase secret
+      </code></p></div>
+      
+      <p>The session will be encrypted with the given key. Different servers can
+      be configured to share sessions by ensuring the same encryption key is used
+      on each server.</p>
+      
+      <p>If the encryption key is changed, sessions will be invalidated
+      automatically.</p>
+      
+      <p>For documentation on how the session can be used to store username
+      and password details, see the <code class="module"><a href="../mod/mod_auth_form.html">mod_auth_form</a></code> module.</p>
+
+    </div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionCryptoCertificateFile" id="SessionCryptoCertificateFile">SessionCryptoCertificateFile</a> <a name="sessioncryptocertificatefile" id="sessioncryptocertificatefile">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The certificate used to encrypt and decrypt the session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoCertificateFile <var>file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+</table>
+    <p>The <code class="directive">SessionCryptoCertificateFile</code> directive specifies the name
+    of a certificate to be used to encrypt the contents of the session before writing
+    the session, or decrypting the content of the session after reading the session.</p>
+    
+    <p>Changing the certificate on a server has the effect of invalidating all existing
+    sessions.</p>
+
+    <div class="warning"><h3>Experimental</h3>
+      <p>This directive is dependent on experimental support for assymetrical encryption
+      support currently available in prerelease versions of OpenSSL, and will only be
+      available on platforms that support it.</p>
+    </div>
+    
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionCryptoCertificateKeyFile" id="SessionCryptoCertificateKeyFile">SessionCryptoCertificateKeyFile</a> <a name="sessioncryptocertificatekeyfile" id="sessioncryptocertificatekeyfile">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The certificate key used to encrypt and decrypt the session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoCertificateKeyFile <var>file</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+</table>
+    <p>The <code class="directive">SessionCryptoCertificateKeyFile</code> directive specifies the name
+    of a certificate key to be used alongside a certificate to encrypt the contents of the
+    session before writing the session, or decrypting the content of the session after reading
+    the session.</p>
+    
+    <p>Changing the certificate or key on a server has the effect of invalidating all existing
+    sessions.</p>
+
+    <div class="warning"><h3>Experimental</h3>
+      <p>This directive is dependent on experimental support for asymmetrical encryption
+      support currently available in prerelease versions of OpenSSL, and will only be
+      available on platforms that support it.</p>
+    </div>
+    
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionCryptoCipher" id="SessionCryptoCipher">SessionCryptoCipher</a> <a name="sessioncryptocipher" id="sessioncryptocipher">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of the cipher to use during encryption / decryption</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoCipher <var>cipher</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>AES256</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+</table>
+    <p>The <code class="directive">SessionCryptoCipher</code> directive specifies the name
+    of the cipher to use during encryption. The ciphers available will depend on the
+    underlying encryption toolkit on the server platform.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionCryptoDigest" id="SessionCryptoDigest">SessionCryptoDigest</a> <a name="sessioncryptodigest" id="sessioncryptodigest">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of the digest to use during encryption / decryption</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoDigest <var>cipher</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SHA</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+</table>
+    <p>The <code class="directive">SessionCryptoDigest</code> directive specifies the name
+    of the digest to use during encryption. The list of digests available will depend
+    on the underlying encryption toolkit on the server platform.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionCryptoEngine" id="SessionCryptoEngine">SessionCryptoEngine</a> <a name="sessioncryptoengine" id="sessioncryptoengine">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The name of the engine to use during encryption / decryption</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoEngine <var>engine</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+</table>
+    <p>The <code class="directive">SessionCryptoEngine</code> directive specifies the name
+    of the engine to use during encryption, depending on the capabilities of the
+    underlying encryption toolkit on the server platform.</p>
+
+</div>
+<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+<div class="directive-section"><h2><a name="SessionCryptoPassphrase" id="SessionCryptoPassphrase">SessionCryptoPassphrase</a> <a name="sessioncryptopassphrase" id="sessioncryptopassphrase">Directive</a></h2>
+<table class="directive">
+<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>The key used to encrypt the session</td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SessionCryptoPassphrase <var>secret</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>none</code></td></tr>
+<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
+<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
+<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_session_crypto</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
+</table>
+    <p>The <code class="directive">SessionCryptoPassphrase</code> directive specifies the key
+    to be used to encrypt the contents of the session before writing the session, or
+    decrypting the contents of the session after reading the session.</p>
+    
+    <p>Keys are more secure when they are long, and consist of truly random characters.
+    Changing the key on a server has the effect of invalidating all existing sessions.</p>
+    
+
+</div>
+</div>
+<div class="bottomlang">
+<p><span>Available Languages: </span><a href="../en/mod/mod_session_crypto.html" title="English">&nbsp;en&nbsp;</a></p>
+</div><div id="footer">
+<p class="apache">Copyright 2008 The Apache Software Foundation.<br />Licensed under the <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
+<p class="menu"><a href="../mod/">Modules</a> | <a href="../mod/directives.html">Directives</a> | <a href="../faq/">FAQ</a> | <a href="../glossary.html">Glossary</a> | <a href="../sitemap.html">Sitemap</a></p></div>
+</body></html>
