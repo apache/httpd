@@ -166,7 +166,10 @@ by other LDAP modules</dd>
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_rewrite.html" id="R" name="R">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
-<dt><a href="mod_setenvif.html" id="S" name="S">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
+<dt><a href="mod_session.html" id="S" name="S">mod_session</a></dt><dd>Session support</dd>
+<dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>
+<dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
+<dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
 on characteristics of the request</dd>
 <dt><a href="mod_so.html">mod_so</a></dt><dd>Loading of executable code and
 modules into the server at start-up or restart time</dd>
