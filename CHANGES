@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_session: Add a generic session interface to unify the different
+     attempts at saving persistent sessions across requests.
+     [Graham Leggett]
+
   *) core, authn/z: Avoid calling access control hooks for internal requests
      with configurations which match those of initial request.  Revert to
      original behaviour (call access control hooks for internal requests

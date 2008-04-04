@@ -1646,6 +1646,11 @@ AP_DECLARE(char *) ap_construct_server(apr_pool_t *p, const char *hostname,
     }
 }
 
+AP_DECLARE(int) ap_unescape_all(char *url)
+{
+    return unescape_url(url, NULL, NULL);
+}
+
 /* c2x takes an unsigned, and expects the caller has guaranteed that
  * 0 <= what < 256... which usually means that you have to cast to
  * unsigned char first, because (unsigned)(char)(x) first goes through
@@ -1685,9 +1690,8 @@ static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
  * something with a '/' in it (and thus does not prefix "./").
  */
 
-AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
+AP_DECLARE(char *) ap_escape_path_segment_b(char *copy, const char *segment)
 {
-    char *copy = apr_palloc(p, 3 * strlen(segment) + 1);
     const unsigned char *s = (const unsigned char *)segment;
     unsigned char *d = (unsigned char *)copy;
     unsigned c;
@@ -1703,6 +1707,11 @@ AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
     }
     *d = '\0';
     return copy;
+}
+
+AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
+{
+    return ap_escape_path_segment_b(apr_palloc(p, 3 * strlen(segment) + 1), segment);
 }
 
 AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
