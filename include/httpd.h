@@ -1435,6 +1435,13 @@ AP_DECLARE(int) ap_find_last_token(apr_pool_t *p, const char *line, const char *
 AP_DECLARE(int) ap_is_url(const char *u);
 
 /**
+ * Unescape a string
+ * @param url The string to unescape
+ * @return 0 on success, non-zero otherwise
+ */
+AP_DECLARE(int) ap_unescape_all(char *url);
+
+/**
  * Unescape a URL
  * @param url The url to unescape
  * @return 0 on success, non-zero otherwise
@@ -1468,6 +1475,14 @@ AP_DECLARE(void) ap_getparents(char *name);
  * @return The converted URL
  */
 AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *s);
+
+/**
+ * Escape a path segment, as defined in RFC 1808, to a preallocated buffer.
+ * @param c The preallocated buffer to write to
+ * @param s The path to convert
+ * @return The converted URL (c)
+ */
+AP_DECLARE(char *) ap_escape_path_segment_b(char *c, const char *s);
 
 /**
  * convert an OS path to a URL in an OS dependant way.
