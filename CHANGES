@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_session_cookie: Add a session implementation capable of storing
+     session information within cookies on the browser. Useful for high
+     volume sites where server bound sessions are too resource intensive.
+     [Graham Leggett]
+
   *) mod_session: Add a generic session interface to unify the different
      attempts at saving persistent sessions across requests.
      [Graham Leggett]
