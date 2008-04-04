@@ -229,6 +229,7 @@ static void *merge_core_dir_configs(apr_pool_t *a, void *basev, void *newv)
     conf->d_is_fnmatch = new->d_is_fnmatch;
     conf->d_components = new->d_components;
     conf->r = new->r;
+    conf->condition = new->condition;
 
     if (new->opts & OPT_UNSET) {
         /* there was no explicit setting of new->opts, so we merge
@@ -2023,7 +2024,6 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
         return missing_container_arg(cmd);
     }
 
-    //cmd->path = "*";
     condition = ap_getword_conf(cmd->pool, &arg);
     /* Only if not an .htaccess file */
     if (!old_path) {
