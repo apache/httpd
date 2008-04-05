@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_session_dbd: Add a session implementation capable of storing
+     session information in a SQL database via the dbd interface. Useful
+     for sites where session privacy is important. [Graham Leggett]
+
   *) mod_session_crypto: Add a session encoding implementation capable
      of encrypting and decrypting sessions wherever they may be stored.
      Introduces a level of privacy when sessions are stored on the
