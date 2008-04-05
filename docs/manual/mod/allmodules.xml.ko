@@ -69,6 +69,7 @@
   <modulefile>mod_session.xml</modulefile>
   <modulefile>mod_session_cookie.xml</modulefile>
   <modulefile>mod_session_crypto.xml</modulefile>
+  <modulefile>mod_session_dbd.xml</modulefile>
   <modulefile>mod_setenvif.xml.ko</modulefile>
   <modulefile>mod_so.xml.ko</modulefile>
   <modulefile>mod_speling.xml.ko</modulefile>

@@ -232,6 +232,7 @@ Server on HPUX</a></li>
 <li><a href="mod/mod_session.html">Apache Module mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">Apache Module mod_session_cookie</a></li>
 <li><a href="mod/mod_session_crypto.html">Apache Module mod_session_crypto</a></li>
+<li><a href="mod/mod_session_dbd.html">Apache Module mod_session_dbd</a></li>
 <li><a href="mod/mod_setenvif.html">Apache Module mod_setenvif</a></li>
 <li><a href="mod/mod_so.html">Apache Module mod_so</a></li>
 <li><a href="mod/mod_speling.html">Apache Module mod_speling</a></li>
