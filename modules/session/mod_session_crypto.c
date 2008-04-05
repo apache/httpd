@@ -122,7 +122,8 @@ static apr_status_t crypt_init(request_rec * r, apr_evp_factory_t ** f, apr_evp_
  *
  * Returns APR_SUCCESS if successful.
  */
-static apr_status_t encrypt_string(request_rec * r, const char *in, char **out)
+static apr_status_t encrypt_string(request_rec * r, session_crypto_dir_conf *conf,
+                                   const char *in, char **out)
 {
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 3)
     apr_status_t res;
@@ -132,9 +133,6 @@ static apr_status_t encrypt_string(request_rec * r, const char *in, char **out)
     unsigned char *encrypt = NULL;
     apr_size_t encryptlen, tlen;
     char *base64;
-
-    session_crypto_dir_conf *conf = ap_get_module_config(r->per_dir_config,
-                                                    &session_crypto_module);
 
     /* by default, return an empty string */
     *out = "";
@@ -199,7 +197,8 @@ static apr_status_t encrypt_string(request_rec * r, const char *in, char **out)
  *
  * Returns APR_SUCCESS if successful.
  */
-static apr_status_t decrypt_string(request_rec * r, const char *in, char **out)
+static apr_status_t decrypt_string(request_rec * r, session_crypto_dir_conf *conf,
+                                   const char *in, char **out)
 {
 #if APU_MAJOR_VERSION > 1 || (APU_MAJOR_VERSION == 1 && APU_MINOR_VERSION >= 3)
     apr_status_t res;
@@ -210,9 +209,6 @@ static apr_status_t decrypt_string(request_rec * r, const char *in, char **out)
     apr_size_t decryptedlen, tlen;
     apr_size_t decodedlen;
     char *decoded;
-
-    session_crypto_dir_conf *conf = ap_get_module_config(r->per_dir_config,
-                                                    &session_crypto_module);
 
     res = crypt_init(r, &f, &key, conf);
     if (res != APR_SUCCESS) {
@@ -279,7 +275,7 @@ AP_DECLARE(int) ap_session_crypto_encode(request_rec * r, session_rec * z)
                                                     &session_crypto_module);
 
     if (conf->passphrase_set || conf->certfile_set) {
-        res = encrypt_string(r, z->encoded, &encoded);
+        res = encrypt_string(r, conf, z->encoded, &encoded);
         if (res != OK) {
             ap_log_rerror(APLOG_MARK, APLOG_DEBUG, res, r, LOG_PREFIX
                           "encrypt session failed");
@@ -307,7 +303,7 @@ AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z)
                                                     &session_crypto_module);
 
     if ((conf->passphrase_set || conf->certfile_set) && z->encoded) {
-        res = decrypt_string(r, z->encoded, &encoded);
+        res = decrypt_string(r, conf, z->encoded, &encoded);
         if (res != APR_SUCCESS) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                           "decrypt session failed, wrong passphrase?");
