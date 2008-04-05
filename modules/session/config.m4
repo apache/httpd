@@ -12,7 +12,7 @@ dnl
 APACHE_MODULE(session, session module, , , most)
 APACHE_MODULE(session_cookie, session cookie module, , , most)
 APACHE_MODULE(session_crypto, session crypto module, , , most)
-dnl APACHE_MODULE(session_dbd, session dbd module, , , most)
+APACHE_MODULE(session_dbd, session dbd module, , , most)
 dnl APACHE_MODULE(session_ldap, session ldap module, , , most)
 
 APACHE_MODPATH_FINISH
