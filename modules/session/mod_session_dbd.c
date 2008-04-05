@@ -203,16 +203,8 @@ AP_DECLARE(int) ap_session_dbd_load(request_rec * r, session_rec ** z)
     /* load anonymous sessions */
     if (conf->name_set || conf->name2_set) {
 
-        /* load RFC2109 compliant cookie */
-        if (conf->name_set) {
-            ap_cookie_read(r, conf->name, &key, conf->remove);
-        }
-
-        /* load RFC2965 compliant cookie */
-        if (!key && conf->name2_set) {
-            ap_cookie_read(r, conf->name2, &key, conf->remove);
-        }
-
+        /* load an RFC2109 or RFC2965 compliant cookie */
+        ap_cookie_read(r, name, &key, conf->remove);
         if (key) {
             ret = dbd_load(r, key, &val);
             if (ret != APR_SUCCESS) {
