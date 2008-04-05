@@ -87,12 +87,17 @@
 
 <usage>
     <p>The <directive>SessionCryptoPassphrase</directive> directive specifies the key
-    to be used to encrypt the contents of the session before writing the session, or
-    decrypting the contents of the session after reading the session.</p>
-    
+    to be used to enable symmetrical encryption on the contents of the session before
+    writing the session, or decrypting the contents of the session after reading the session.</p>
+
     <p>Keys are more secure when they are long, and consist of truly random characters.
     Changing the key on a server has the effect of invalidating all existing sessions.</p>
-    
+
+    <p>If the <directive module="mod_session_crypto">SessionCryptoCertificateFile</directive>
+    directive is set and asymmetrical encryption is enabled instead, the
+    <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> directive
+    will be interpreted as the passphrase of the key, if the key is encrypted.</p>
+
 </usage>
 </directivesynopsis>
 
@@ -107,11 +112,15 @@
 
 <usage>
     <p>The <directive>SessionCryptoCertificateFile</directive> directive specifies the name
-    of a certificate to be used to encrypt the contents of the session before writing
-    the session, or decrypting the content of the session after reading the session.</p>
-    
+    of a certificate to be used to asymmetrically encrypt the contents of the session before
+    writing the session, or decrypting the content of the session after reading the session.</p>
+
     <p>Changing the certificate on a server has the effect of invalidating all existing
     sessions.</p>
+
+    <p>If the key associated with this certificate is protected with a passphrase, the
+    <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> directive
+    will be interpreted as the passphrase to use to decrypt the key.</p>
 
     <note type="warning"><title>Experimental</title>
       <p>This directive is dependent on experimental support for assymetrical encryption
@@ -139,6 +148,10 @@
     
     <p>Changing the certificate or key on a server has the effect of invalidating all existing
     sessions.</p>
+
+    <p>If this key is protected with a passphrase, the
+    <directive module="mod_session_crypto">SessionCryptoPassphrase</directive> directive
+    will be interpreted as the passphrase to use to decrypt the key.</p>
 
     <note type="warning"><title>Experimental</title>
       <p>This directive is dependent on experimental support for asymmetrical encryption
