@@ -1482,7 +1482,7 @@ AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *s);
  * @param s The path to convert
  * @return The converted URL (c)
  */
-AP_DECLARE(char *) ap_escape_path_segment_b(char *c, const char *s);
+AP_DECLARE(char *) ap_escape_path_segment_buffer(char *c, const char *s);
 
 /**
  * convert an OS path to a URL in an OS dependant way.
