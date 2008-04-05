@@ -267,7 +267,7 @@ AP_DECLARE(void) ap_copy_method_list(ap_method_list_t *dest,
  * return true if found.
  *
  * @param   method  String containing the name of the method to check.
- * @param   l       Pointer to a method list, such as cmd->methods_limited.
+ * @param   l       Pointer to a method list, such as r->allowed_methods.
  * @return  1 if method is in the list, otherwise 0
  */
 AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method);
@@ -277,7 +277,7 @@ AP_DECLARE(int) ap_method_in_list(ap_method_list_t *l, const char *method);
  * already listed.
  *
  * @param   method  String containing the name of the method to check.
- * @param   l       Pointer to a method list, such as cmd->methods_limited.
+ * @param   l       Pointer to a method list, such as r->allowed_methods.
  * @return  None.
  */
 AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method);
@@ -285,7 +285,7 @@ AP_DECLARE(void) ap_method_list_add(ap_method_list_t *l, const char *method);
 /**
  * Remove an HTTP method name from an ap_method_list_t structure.
  *
- * @param   l       Pointer to a method list, such as cmd->methods_limited.
+ * @param   l       Pointer to a method list, such as r->allowed_methods.
  * @param   method  String containing the name of the method to remove.
  * @return  None.
  */
@@ -295,7 +295,7 @@ AP_DECLARE(void) ap_method_list_remove(ap_method_list_t *l,
 /**
  * Reset a method list to be completely empty.
  *
- * @param   l       Pointer to a method list, such as cmd->methods_limited.
+ * @param   l       Pointer to a method list, such as r->allowed_methods.
  * @return  None.
  */
 AP_DECLARE(void) ap_clear_method_list(ap_method_list_t *l);
