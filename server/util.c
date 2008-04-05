@@ -1690,7 +1690,7 @@ static APR_INLINE unsigned char *c2x(unsigned what, unsigned char prefix,
  * something with a '/' in it (and thus does not prefix "./").
  */
 
-AP_DECLARE(char *) ap_escape_path_segment_b(char *copy, const char *segment)
+AP_DECLARE(char *) ap_escape_path_segment_buffer(char *copy, const char *segment)
 {
     const unsigned char *s = (const unsigned char *)segment;
     unsigned char *d = (unsigned char *)copy;
@@ -1711,7 +1711,7 @@ AP_DECLARE(char *) ap_escape_path_segment_b(char *copy, const char *segment)
 
 AP_DECLARE(char *) ap_escape_path_segment(apr_pool_t *p, const char *segment)
 {
-    return ap_escape_path_segment_b(apr_palloc(p, 3 * strlen(segment) + 1), segment);
+    return ap_escape_path_segment_buffer(apr_palloc(p, 3 * strlen(segment) + 1), segment);
 }
 
 AP_DECLARE(char *) ap_os_escape_path(apr_pool_t *p, const char *path, int partial)
