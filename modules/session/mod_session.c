@@ -279,11 +279,11 @@ static int identity_concat(char *buffer, const char *key, const char *val)
         *slider = '&';
         slider++;
     }
-    ap_escape_path_segment_b(slider, key);
+    ap_escape_path_segment_buffer(slider, key);
     slider += strlen(slider);
     *slider = '=';
     slider++;
-    ap_escape_path_segment_b(slider, val);
+    ap_escape_path_segment_buffer(slider, val);
     return 1;
 }
 
