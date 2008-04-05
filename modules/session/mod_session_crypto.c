@@ -58,7 +58,7 @@ static apr_status_t crypt_init(request_rec * r, apr_evp_factory_t ** f, apr_evp_
 {
     apr_status_t res;
 
-    if (!conf->certfile_set && !conf->keyfile_set && !conf->passphrase_set) {
+    if (!conf->certfile_set && !conf->passphrase_set) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, LOG_PREFIX
                       "encryption not configured, "
                       "no passphrase or certfile/keyfile set");
@@ -69,17 +69,19 @@ static apr_status_t crypt_init(request_rec * r, apr_evp_factory_t ** f, apr_evp_
     if (conf->certfile_set) {
         *key = APR_EVP_KEY_PUBLIC;
         res = apr_evp_factory_create(f, conf->keyfile, conf->certfile, NULL,
-                   NULL, NULL, conf->digest, APR_EVP_FACTORY_ASYM, r->pool);
+                   conf->passphrase, conf->engine, conf->digest,
+                   APR_EVP_FACTORY_ASYM, r->pool);
         if (APR_ENOTIMPL == res) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                 "generic public/private key encryption is not supported by "
                     "this version of APR. session encryption not possible");
         }
     }
-    if (conf->passphrase) {
+    else {
         *key = APR_EVP_KEY_SYM;
         res = apr_evp_factory_create(f, NULL, NULL, conf->cipher,
-        conf->passphrase, NULL, conf->digest, APR_EVP_FACTORY_SYM, r->pool);
+                                     conf->passphrase, conf->engine, conf->digest,
+                                     APR_EVP_FACTORY_SYM, r->pool);
         if (APR_ENOTIMPL == res) {
             ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                   "generic symmetrical encryption is not supported by this "
@@ -133,6 +135,9 @@ static apr_status_t encrypt_string(request_rec * r, const char *in, char **out)
 
     session_crypto_dir_conf *conf = ap_get_module_config(r->per_dir_config,
                                                     &session_crypto_module);
+
+    /* by default, return an empty string */
+    *out = "";
 
     /* don't attempt to encrypt an empty string, trying to do so causes a segfault */
     if (!in || !*in) {
@@ -232,6 +237,8 @@ static apr_status_t decrypt_string(request_rec * r, const char *in, char **out)
     if (res) {
         ap_log_rerror(APLOG_MARK, APLOG_ERR, res, r, LOG_PREFIX
                       "decrypt: attempt to decrypt failed");
+        apr_evp_factory_cleanup(f);
+        apr_evp_crypt_cleanup(e);
         return res;
     }
     *out = (char *) decrypted;
