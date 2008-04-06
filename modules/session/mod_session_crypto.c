@@ -326,10 +326,7 @@ static void *create_session_crypto_dir_config(apr_pool_t * p, char *dummy)
 
     /* default cipher AES256-SHA */
     new->cipher = DEFAULT_CIPHER;
-    new->cipher_set = 1;
-
     new->digest = DEFAULT_DIGEST;
-    new->digest_set = 1;
 
     /* initialise SSL */
     apr_ssl_init();
