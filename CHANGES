@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_session_crypto: Initialise SSL in the post config hook.
+     [Ruediger Pluem, Graham Leggett]
+
   *) mod_session_dbd: Add a session implementation capable of storing
      session information in a SQL database via the dbd interface. Useful
      for sites where session privacy is important. [Graham Leggett]
