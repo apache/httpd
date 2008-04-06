@@ -316,6 +316,15 @@ AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z)
 
 }
 
+/**
+ * Initialise the SSL in the post_config hook.
+ */
+AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
+                                       apr_pool_t *ptemp, server_rec *s)
+{
+    apr_ssl_init();
+    return OK;
+}
 
 
 
@@ -327,9 +336,6 @@ static void *create_session_crypto_dir_config(apr_pool_t * p, char *dummy)
     /* default cipher AES256-SHA */
     new->cipher = DEFAULT_CIPHER;
     new->digest = DEFAULT_DIGEST;
-
-    /* initialise SSL */
-    apr_ssl_init();
 
     return (void *) new;
 }
@@ -453,6 +459,7 @@ static void register_hooks(apr_pool_t * p)
 {
     ap_hook_session_encode(ap_session_crypto_encode, NULL, NULL, APR_HOOK_LAST);
     ap_hook_session_decode(ap_session_crypto_decode, NULL, NULL, APR_HOOK_FIRST);
+    ap_hook_post_config(ap_session_crypto_init, NULL, NULL, APR_HOOK_FIRST);
 }
 
 module AP_MODULE_DECLARE_DATA session_crypto_module =
