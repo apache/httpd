@@ -63,7 +63,7 @@ module from each group.</p>
       <directive module="mod_authz_core">Require</directive> directive)
     <ul>
       <li><module>mod_authnz_ldap</module></li>
-      <li><module>mod_authz_dbm</module></li>
+      <li><module>mod_authz_dbd</module></li>
       <li><module>mod_authz_dbm</module></li>
       <li><module>mod_authz_default</module></li>
       <li><module>mod_authz_groupfile</module></li>
