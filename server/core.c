@@ -1081,8 +1081,7 @@ static const char *set_access_name(cmd_parms *cmd, void *dummy,
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
 
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
         return err;
     }
@@ -1115,8 +1114,7 @@ static const char *set_gprof_dir(cmd_parms *cmd, void *dummy, const char *arg)
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
 
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
         return err;
     }
@@ -1130,11 +1128,6 @@ static const char *set_add_default_charset(cmd_parms *cmd,
                                            void *d_, const char *arg)
 {
     core_dir_config *d = d_;
-
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-    if (err != NULL) {
-        return err;
-    }
 
     if (!strcasecmp(arg, "Off")) {
        d->add_default_charset = ADD_DEFAULT_CHARSET_OFF;
@@ -1157,8 +1150,7 @@ static const char *set_document_root(cmd_parms *cmd, void *dummy,
     void *sconf = cmd->server->module_config;
     core_server_config *conf = ap_get_module_config(sconf, &core_module);
 
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
         return err;
     }
@@ -1213,11 +1205,6 @@ static const char *set_error_document(cmd_parms *cmd, void *conf_,
     core_dir_config *conf = conf_;
     int error_number, index_number, idx500;
     enum { MSG, LOCAL_PATH, REMOTE_PATH } what = MSG;
-
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-    if (err != NULL) {
-        return err;
-    }
 
     /* 1st parameter should be a 3 digit number, which we recognize;
      * convert it into an array index
@@ -1342,11 +1329,6 @@ static const char *set_override(cmd_parms *cmd, void *d_, const char *l)
     core_dir_config *d = d_;
     char *w;
     char *k, *v;
-
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-    if (err != NULL) {
-        return err;
-    }
 
     /* Throw a warning if we're in <Location> or <Files> */
     if (ap_check_cmd_context(cmd, NOT_IN_LOCATION | NOT_IN_FILES)) {
@@ -1612,11 +1594,6 @@ static const char *set_enable_mmap(cmd_parms *cmd, void *d_,
                                    const char *arg)
 {
     core_dir_config *d = d_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
-    if (err != NULL) {
-        return err;
-    }
 
     if (strcasecmp(arg, "on") == 0) {
         d->enable_mmap = ENABLE_MMAP_ON;
@@ -1635,11 +1612,6 @@ static const char *set_enable_sendfile(cmd_parms *cmd, void *d_,
                                    const char *arg)
 {
     core_dir_config *d = d_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
-    if (err != NULL) {
-        return err;
-    }
 
     if (strcasecmp(arg, "on") == 0) {
         d->enable_sendfile = ENABLE_SENDFILE_ON;
@@ -1753,8 +1725,7 @@ static const char *dirsection(cmd_parms *cmd, void *mconfig, const char *arg)
     ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
 
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
         return err;
     }
@@ -1857,8 +1828,7 @@ static const char *urlsection(cmd_parms *cmd, void *mconfig, const char *arg)
     ap_regex_t *r = NULL;
     const command_rec *thiscmd = cmd->cmd;
     ap_conf_vector_t *new_url_conf = ap_create_per_dir_config(cmd->pool);
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
         return err;
     }
@@ -1926,7 +1896,7 @@ static const char *filesection(cmd_parms *cmd, void *mconfig, const char *arg)
     const command_rec *thiscmd = cmd->cmd;
     core_dir_config *c = mconfig;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT|NOT_IN_LOCATION);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_LOCATION);
 
     if (err != NULL) {
         return err;
@@ -2006,7 +1976,7 @@ static const char *ifsection(cmd_parms *cmd, void *mconfig, const char *arg)
     const command_rec *thiscmd = cmd->cmd;
     core_dir_config *c = mconfig;
     ap_conf_vector_t *new_file_conf = ap_create_per_dir_config(cmd->pool);
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT|NOT_IN_LOCATION);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_LOCATION);
     const char *condition;
     int expr_err = 0;
 
@@ -2290,7 +2260,7 @@ AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto)
 static const char *set_protocol(cmd_parms *cmd, void *dummy,
                                 const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     core_server_config *conf = ap_get_module_config(cmd->server->module_config,
                                                     &core_module);
     char* proto;
@@ -2315,7 +2285,7 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
     char *struct_ptr = (char *)cmd->server;
 
     const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+                                           NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
         return err;
     }
@@ -2334,7 +2304,7 @@ static const char *set_server_string_slot(cmd_parms *cmd, void *dummy,
 
 static const char *server_hostname_port(cmd_parms *cmd, void *dummy, const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     const char *portstr, *part;
     char *scheme;
     int port;
@@ -2379,11 +2349,6 @@ static const char *set_signature_flag(cmd_parms *cmd, void *d_,
                                       const char *arg)
 {
     core_dir_config *d = d_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
-    if (err != NULL) {
-        return err;
-    }
 
     if (strcasecmp(arg, "On") == 0) {
         d->server_signature = srv_sig_on;
@@ -2421,7 +2386,7 @@ static const char *set_server_root(cmd_parms *cmd, void *dummy,
 
 static const char *set_timeout(cmd_parms *cmd, void *dummy, const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
 
     if (err != NULL) {
         return err;
@@ -2434,11 +2399,6 @@ static const char *set_timeout(cmd_parms *cmd, void *dummy, const char *arg)
 static const char *set_allow2f(cmd_parms *cmd, void *d_, int arg)
 {
     core_dir_config *d = d_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
-    if (err != NULL) {
-        return err;
-    }
 
     d->allow_encoded_slashes = arg != 0;
     return NULL;
@@ -2448,11 +2408,6 @@ static const char *set_hostname_lookups(cmd_parms *cmd, void *d_,
                                         const char *arg)
 {
     core_dir_config *d = d_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
-    if (err != NULL) {
-        return err;
-    }
 
     if (!strcasecmp(arg, "on")) {
         d->hostname_lookups = HOSTNAME_LOOKUP_ON;
@@ -2473,7 +2428,7 @@ static const char *set_hostname_lookups(cmd_parms *cmd, void *d_,
 static const char *set_serverpath(cmd_parms *cmd, void *dummy,
                                   const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
 
     if (err != NULL) {
         return err;
@@ -2487,11 +2442,6 @@ static const char *set_serverpath(cmd_parms *cmd, void *dummy,
 static const char *set_content_md5(cmd_parms *cmd, void *d_, int arg)
 {
     core_dir_config *d = d_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
-    if (err != NULL) {
-        return err;
-    }
 
     d->content_md5 = arg != 0;
     return NULL;
@@ -2521,11 +2471,6 @@ static const char *set_use_canonical_name(cmd_parms *cmd, void *d_,
                                           const char *arg)
 {
     core_dir_config *d = d_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
-    if (err != NULL) {
-        return err;
-    }
 
     if (strcasecmp(arg, "on") == 0) {
         d->use_canonical_name = USE_CANONICAL_NAME_ON;
@@ -2547,11 +2492,6 @@ static const char *set_use_canonical_phys_port(cmd_parms *cmd, void *d_,
                                           const char *arg)
 {
     core_dir_config *d = d_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
-    if (err != NULL) {
-        return err;
-    }
 
     if (strcasecmp(arg, "on") == 0) {
         d->use_canonical_phys_port = USE_CANONICAL_PHYS_PORT_ON;
@@ -2620,8 +2560,7 @@ static const char *set_loglevel(cmd_parms *cmd, void *dummy, const char *arg)
 {
     char *str;
 
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     if (err != NULL) {
         return err;
     }
@@ -2838,8 +2777,7 @@ static const char *set_serv_tokens(cmd_parms *cmd, void *dummy,
 static const char *set_limit_req_line(cmd_parms *cmd, void *dummy,
                                       const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     int lim;
 
     if (err != NULL) {
@@ -2859,8 +2797,7 @@ static const char *set_limit_req_line(cmd_parms *cmd, void *dummy,
 static const char *set_limit_req_fieldsize(cmd_parms *cmd, void *dummy,
                                            const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     int lim;
 
     if (err != NULL) {
@@ -2881,8 +2818,7 @@ static const char *set_limit_req_fieldsize(cmd_parms *cmd, void *dummy,
 static const char *set_limit_req_fields(cmd_parms *cmd, void *dummy,
                                         const char *arg)
 {
-    const char *err = ap_check_cmd_context(cmd,
-                                           NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
     int lim;
 
     if (err != NULL) {
@@ -2904,12 +2840,7 @@ static const char *set_limit_req_body(cmd_parms *cmd, void *conf_,
                                       const char *arg)
 {
     core_dir_config *conf = conf_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
     char *errp;
-
-    if (err != NULL) {
-        return err;
-    }
 
     if (APR_SUCCESS != apr_strtoff(&conf->limit_req_body, arg, &errp, 10)) {
         return "LimitRequestBody argument is not parsable.";
@@ -2925,11 +2856,6 @@ static const char *set_limit_xml_req_body(cmd_parms *cmd, void *conf_,
                                           const char *arg)
 {
     core_dir_config *conf = conf_;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_LIMIT);
-
-    if (err != NULL) {
-        return err;
-    }
 
     conf->limit_xml_body = atol(arg);
     if (conf->limit_xml_body < 0)
