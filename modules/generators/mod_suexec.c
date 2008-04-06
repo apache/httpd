@@ -60,7 +60,7 @@ static const char *set_suexec_ugid(cmd_parms *cmd, void *mconfig,
                                    const char *uid, const char *gid)
 {
     suexec_config_t *cfg = (suexec_config_t *) mconfig;
-    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE|NOT_IN_LIMIT);
+    const char *err = ap_check_cmd_context(cmd, NOT_IN_DIR_LOC_FILE);
 
     if (err != NULL) {
         return err;
