@@ -713,7 +713,7 @@ int main(int argc, const char * const argv[])
     for (;;) {
         apr_hook_deregister_all();
         apr_pool_clear(pconf);
-        ap_clear_auth_internal(server_conf);
+        ap_clear_auth_internal();
 
         for (mod = ap_prelinked_modules; *mod != NULL; mod++) {
             ap_register_hooks(*mod, pconf);
