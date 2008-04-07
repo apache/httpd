@@ -22,7 +22,7 @@
 #include "http_config.h"
 #include "http_log.h"
 #include "http_protocol.h"
-#define CORE_PRIVATE
+
 #include "http_core.h"
 #include "apr_buckets.h"
 #include "util_filter.h"

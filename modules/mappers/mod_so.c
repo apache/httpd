@@ -88,7 +88,6 @@
 #include "apr_strings.h"
 #include "apr_errno.h"
 
-#define CORE_PRIVATE
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"

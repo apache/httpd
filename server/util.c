@@ -42,8 +42,6 @@
 #include <netdb.h>              /* for gethostbyname() */
 #endif
 
-#define CORE_PRIVATE
-
 #include "ap_config.h"
 #include "apr_base64.h"
 #include "httpd.h"

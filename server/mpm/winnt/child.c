@@ -16,7 +16,6 @@
 
 #ifdef WIN32
 
-#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_main.h"
 #include "http_log.h"

@@ -23,8 +23,6 @@ BEGIN {
     printf(" * uses them.\n")
     printf(" */\n")
     printf("\n")
-    printf("#define CORE_PRIVATE\n")
-    printf("\n")
     
     for (i = 1; i < ARGC; i++) {
         file = ARGV[i]

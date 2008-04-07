@@ -31,8 +31,6 @@
  * - on exit most worker threads segfault trying to access a kernel page.
  */
 
-#define CORE_PRIVATE
-
 #include <kernel/OS.h>
 #include <unistd.h>
 #include <sys/socket.h>

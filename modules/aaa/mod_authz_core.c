@@ -29,7 +29,6 @@
 #define APR_WANT_BYTEFUNC
 #include "apr_want.h"
 
-#define CORE_PRIVATE
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"

@@ -26,7 +26,7 @@
 
 #include "httpd.h"
 #include "http_config.h"
-#define CORE_PRIVATE
+
 #include "http_core.h"
 #include "http_log.h"
 #include "http_main.h"

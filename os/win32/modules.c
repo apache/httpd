@@ -19,7 +19,6 @@
  * the core server
  */
 
-#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 

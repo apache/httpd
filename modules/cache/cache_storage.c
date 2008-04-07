@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
-
 #include "mod_cache.h"
 
 extern APR_OPTIONAL_FN_TYPE(ap_cache_generate_key) *cache_generate_key;

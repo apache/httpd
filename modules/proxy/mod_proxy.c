@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
-
 #include "mod_proxy.h"
 #include "mod_core.h"
 #include "apr_optional.h"

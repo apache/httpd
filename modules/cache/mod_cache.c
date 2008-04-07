@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
-
 #include "mod_cache.h"
 
 module AP_MODULE_DECLARE_DATA cache_module;

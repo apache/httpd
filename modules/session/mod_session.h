@@ -26,8 +26,6 @@
  * @{
  */
 
-#define CORE_PRIVATE
-
 #include "apr_hooks.h"
 #include "apr_optional.h"
 #include "apr_tables.h"

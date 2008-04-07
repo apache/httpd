@@ -29,7 +29,6 @@
 #define APR_WANT_MEMFUNC
 #include "apr_want.h"
 
-#define CORE_PRIVATE
 #include "util_filter.h"
 #include "ap_config.h"
 #include "httpd.h"

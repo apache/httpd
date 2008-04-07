@@ -16,8 +16,6 @@
 
 /* Load balancer module for Apache proxy */
 
-#define CORE_PRIVATE
-
 #include "mod_proxy.h"
 #include "scoreboard.h"
 #include "ap_mpm.h"

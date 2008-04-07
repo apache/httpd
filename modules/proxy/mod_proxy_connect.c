@@ -16,8 +16,6 @@
 
 /* CONNECT method for Apache proxy */
 
-#define CORE_PRIVATE
-
 #include "mod_proxy.h"
 #include "apr_poll.h"
 
