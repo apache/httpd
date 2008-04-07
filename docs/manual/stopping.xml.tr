@@ -1,0 +1,243 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="./style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="stopping.xml.meta">
+
+  <title>Durdurma ve Yeniden Başlatma</title>
+
+<summary>
+    <p>Bu belge Apache HTTPd’nin Unix benzeri sistemlerde durdurulması ve
+      yeniden başlatılması konularını kapsar. Windows NT, 2000 ve XP
+      kullanıcıları Apache HTTPd’yi bu platformlarda nasıl denetimlerine
+      alacaklarını öğrenmek için <a href="platform/windows.html#winsvc">Apache
+      HTTPd’nin Bir Hizmet Olarak Çalıştırılması</a> sayfasına, Windows 9x ve
+      ME kullanıcıları ise <a href="platform/windows.html#wincons">Apache
+      HTTPd’nin Bir Konsol Uygulaması Olarak Çalıştırılması</a> sayfasına
+      bakabilirler.</p>
+</summary>
+
+<seealso><program>httpd</program></seealso>
+<seealso><program>apachectl</program></seealso>
+<seealso><a href="invoking.html">Başlatma</a></seealso>
+
+<section id="introduction"><title>Giriş</title>
+
+    <p>Apache HTTPd’yi durdurmak ve yeniden başlatmak için çalışan
+      <program>httpd</program> süreçlerine bir sinyal göndermeniz gerekir.
+      Sinyal göndermek için iki yol vardır. İlki, süreçlere doğrudan sinyal
+      göndermek için unix <code>kill</code> komutunun kullanımıdır. Bu
+      suretle, sisteminizde çalışmakta olan bir çok <program>httpd</program>
+      sürecini uyarabilirsiniz ama süreç kimliği <directive
+      module="mpm_common">PidFile</directive> yönergesi ile belirtilen dosyada
+      tutulan ana süreç dışında hiçbirine sinyal göndermemelisiniz. Başka
+      bir deyişle, ana süreç haricinde hiçbir sürece sinyal göndermeye normal
+      olarak ihtiyacınız olmaması gerekir. Ana sürece gönderebileceğiniz
+      dört çeşit sinyal vardır:
+      <code><a href="#term">TERM</a></code>,
+      <code><a href="#graceful">USR1</a></code>,
+      <code><a href="#hup">HUP</a></code> ve
+      <code><a href="#gracefulstop">WINCH</a></code>. Bunlar yeri geldikçe
+      açıklanacaktır.</p>
+
+    <p>Ana sürece <code>kill</code> ile sinyal göndermek için şöyle bir
+      komut verebilirsiniz:</p>
+
+    <example>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</example>
+
+    <p><program>httpd</program> süreçlerine sinyal göndermenin ikinci yolu
+      <code>-k</code> komut satırı seçeneğini şu değerlerden biri ile
+      kullanmaktır: <code>stop</code>, <code>restart</code>,
+      <code>graceful</code> ve <code>graceful-stop</code>. Bunlar aşağıda
+      açıklanacaktır. <code>-k</code> komut satırı seçeneği
+      <program>httpd</program>’ye ait olsa da ana sürece bu sinyalleri
+      göndermek için <program>apachectl</program> betiğini kullanmanızı
+      öneririz. <program>apachectl</program>, komut satırı seçeneklerini
+      <program>httpd</program>’ye aktaracaktır.</p>
+
+    <p><program>httpd</program>’ye sinyal gönderdikten sonra olup biteni şu
+      komutla izleyebilirsiniz:</p>
+
+    <example>tail -f /usr/local/apache2/logs/error_log</example>
+
+    <p>Bu örnekleri, kendi <directive module="core">ServerRoot</directive> ve
+      <directive module="mpm_common">PidFile</directive> yönergelerinizdeki
+      ayarlara uygun olarak değiştirdikten sonra kullanınız.</p>
+</section>
+
+<section id="term"><title>Hemen Durdur</title>
+
+  <dl><dt>Sinyal: TERM</dt>
+    <dd><code>apachectl -k stop</code></dd>
+  </dl>
+
+    <p>Ana sürece <code>TERM</code> veya <code>stop</code> sinyali
+      göndererek tüm çocukların bir an önce öldürülmeye çalışılmasını sağlamış
+      olursunuz. Tüm çocukların öldürülmesi bir kaç saniye sürebilir. Son
+      olarak ana süreç çıkacaktır. Yanıtlanmakta olan istekler hemen
+      sonlandırılacak ve artık isteklere yanıt verilmeyecektir.</p>
+</section>
+
+<section id="graceful"><title>Nazikçe Yeniden Başlat</title>
+
+  <dl><dt>Sinyal: USR1</dt>
+    <dd><code>apachectl -k graceful</code></dd>
+  </dl>
+
+    <p>Ana sürece <code>USR1</code> veya <code>graceful</code> sinyalinin
+      gönderilmesi, çocuklara ellerindeki mevcut işleri bitirdikten sonra
+      (veya sundukları bir şey yoksa hemen) çıkmalarının <em>önerilmesi</em>
+      demektir. Ana süreç kendi yapılandırma dosyalarını yeniden okur ve
+      kendi günlük dosyalarını yeniden açar. Ana sürecin öldürdüğü her sürecin
+      yerine yeni yapılandırma <em>kuşağından</em> bir süreç başlatır ve hemen
+      yeni isteklere hizmet sunulmaya başlanır.</p>
+
+    <p>Bu kod MPM’lerin süreçleri denetleyen yönergelerine daima uyacak
+      şekilde tasarlanmıştır. Bu suretle, istemcilere hizmet sunacak çocuk
+      süreçler ve evreler, yeniden başlatma işleminde de uygun sayıda
+      sağlanmış olur. Bununla birlikte, <directive
+      module="mpm_common">StartServers</directive> yönergesinde şöyle
+      davranılır: İlk saniye içinde en azından <directive
+      module="mpm_common">StartServers</directive> sayıda yeni çocuk
+      oluşturulmamışsa iş olmayan bir devreyi geçiştirecek kadarı oluşturulur.
+      Ardından sunucunun mevcut yükünü karşılamak için gereken sayıda çocuk
+      süreç oluşturulur. Bu suretle, kod her ikisi için de gereğini yerine
+      getirmeye çalışmış olur.</p>
+
+    <p><module>mod_status</module> kullanıcıları <code>USR1</code>
+      gönderildiği zaman sunucu istatistiklerinin sıfırlanmadığı konusunda
+      uyarılacaktır. Kod, sunucunun yeni isteklere yanıt veremediği zamanı en
+      aza indirmenin yanısıra ayar parametrelerinize de uymak üzere
+      tasarlanmıştır (yeni istekler işletim sistemi tarafından kuyruğa
+      alınacağından bir istek kaybı olayı yaşanmaz). Bunu sağlamak için, her
+      iki kuşağın çocuklarının izini sürecek bir <em>çetele</em> tutulur.</p>
+
+    <p><module>mod_status</module> modülü, nazikçe yeniden başlat komutunun
+      verilmesinden önce başlamış ve sunulmaya devam eden isteklere bakan
+      çocukları imlemek için ayrıca bir <code>G</code> (Graceful’un baş harfi)
+      kullanır.</p>
+
+    <p>Günlük dosyası döndürme betiğine, yeniden başlatma öncesi günlüğe yazan
+      tüm çocukların işini bitirdiğini <code>USR1</code> kullanarak
+      bildirmenin bir yolu yoktur.  Önerimiz, eski günlük kaydı üzerinde bir
+      işlem yapmaya başlamadan önce <code>USR1</code> sinyali gönderilmesinin
+      ardından belli bir süre beklenilmesi olacaktır. Örneğin, düşük band
+      genişliğine sahip istemcilere hizmet sunan çoğu sürecin işinin 10
+      dakikadan önce bitmeyeceğini gözönüne alarak eski günlük üzerinde işlem
+      yapmaya başlamak için 15 dakika beklenebilir.</p>
+
+    <note>Bir yeniden başlatma isteğinde, eğer yapılandırma dosyalarınızda bir
+      hata varsa sunucu yeniden başlamaz ve bir hata ile çıkar. Nazikçe
+      yeniden başlatma durumunda ana süreç çıkarken çocuklarını çalışır durumda
+      bırakır. (Bunlar, ellerindeki istekler bitince ‘nazikçe çıkacak’ olan
+      çocuk süreçlerdir.) Eğer sunucuyu yeniden başlatmaya çalışırsanız bu
+      sorunlara yol açar; örneğin, dinleyeceği portları bağlayamayabilir. Bir
+      yeniden başlatma öncesinde yapılandırma dosyalarınızın sözdizimini
+      <code>-t</code> komut satırı seçeneği ile sınayabilirsiniz (bkz,
+      <program>httpd</program>).  Ancak, bu hala sunucunuzun düzgünce yeniden
+      başlatılmasını garanti etmeyecektir. Yapılandırma dosyalarınızı
+      sözdizimi denetiminin yanında anlamlandırılması bakımından da sınamak
+      için <program>httpd</program>’nin root olmayan bir kullanıcı tarafından
+      çalıştırılmasını deneyebilirsiniz. Eğer yapılandırma dosyalarında bir
+      hata yoksa soketleri ve günlük dosyalarını açmaya çalışırken root
+      aidiyetinde çalışmadığından veya çalışmakta olan asıl sunucu bu portları
+      zaten dinlediğinden başarısız olacaktır. Eğer başka bir sebeple
+      başarısız olursa olası sebep bir yapılandırma dosyası hatasıdır ve asıl
+      sunucuya ‘nazikçe yeniden başla’ komutunu vermeden önce bu hatayı
+      düzeltmeniz gerekir.</note>
+</section>
+
+<section id="hup"><title>Hemen Yeniden Başlat</title>
+
+  <dl><dt>Sinyal: HUP</dt>
+    <dd><code>apachectl -k restart</code></dd>
+  </dl>
+
+    <p>Ana sürece <code>HUP</code> veya <code>restart</code> sinyalinin
+      gönderilmesi tüm çocukların <code>TERM</code> sinyali gönderilmiş gibi
+      öldürülmesine sebep olur fakat ana sürecin çıkmasını sağlamaz.
+      Ana süreç yapılandırma dosyalarını yeniden okur ve günlük kayıt
+      dosyalarını yeniden açar. Bunların ardından isteklere yanıt verecek yeni
+      kuşak çocukları oluşturmaya başlar.</p>
+
+    <p><module>mod_status</module> kullanıcıları bir <code>HUP</code> sinyali
+      gönderildiğinde sunucu istatistiklerinin sıfırlandığı konusunda
+      uyarılırlar.</p>
+
+    <note>Eğer yapılandırma dosyalarınızda sözdizimi hatası varsa yeniden
+     başlatma işlemi gerçekleşmez ve ana süreç bir hata vererek çıkar.
+     Bundan kaçınmak için önceki yönteme bakınız.</note>
+</section>
+
+<section id="gracefulstop"><title>Nazikçe Durdur</title>
+
+  <dl><dt>Sinyal: WINCH</dt>
+    <dd><code>apachectl -k graceful-stop</code></dd>
+  </dl>
+
+    <p>Ana sürecin <code>WINCH</code> veya <code>graceful-stop</code>
+      sinyalini alması, çocuklara ellerindeki mevcut işleri bitirdikten sonra
+      (veya sundukları bir şey yoksa hemen) çıkmalarının <em>önerilmesine</em>
+      sebep olur. Ebevey süreç bunun hemen <directive
+      module="mpm_common">PidFile</directive> dosyasını siler ve port
+      dinlemeyi keser. Ana süreç çalışmaya ve isteklere yanıt vermekte olan
+      çocuk süreçleri izlemeye devam eder. Tüm çocuklar işlerini bitirip
+      çıktığında veya <directive
+      module="mpm_common">GracefulShutdownTimeout</directive> ile belirtilen
+      zaman aşımı dolduğunda ana süreç de kendini sonlandırır. Eğer zaman aşımı
+      devreye girmişse o an calışmakta olan çocuk süreçlere <code>TERM</code>
+      sinyali gönderilerek hemen çıkmaları sağlanır.</p>
+
+    <p>Bir <code>TERM</code> sinyali ile "graceful" durumundaki tüm çocuklar
+      ve ana süreç hemen sonlandırılacaktır. Bununla birlikte, <directive
+      module="mpm_common">PidFile</directive> dosyası da silineceğinden, artık
+      <code>apachectl</code> veya <code>httpd</code>’yi bu sinyali göndermek
+      için kullanamayacaksınız.</p>
+
+    <note><p><code>graceful-stop</code> sinyali, aynı anda, aynı yapılandırma
+      ile çok sayıda <program>httpd</program> kopyasının çalıştırılabilmesine
+      imkan verir.  Bu, Apache nazikçe yükseltileceği zaman güçlü bir özellik
+      haline gelmekteyse de, bazı yapılandırmalarda yarış koşullarının
+      oluşmasına ve kısır çekişmelere (deadlock) sebep olabilir.</p>
+
+    <p>Sunucunun süreç kimliğini içeren <directive
+      module="core">Lockfile</directive> ve <directive
+      module="mod_cgid">ScriptSock</directive> gibi dosyaların disk üzerindeki
+      mevcudiyetlerinin sorunsuz olarak devam ettiğinden emin olunmaya
+      çalışılmalıdır.  Ayrıca, bir yapılandırma yönergesi, üçüncü parti bir
+      modül veya kalıcı CGI uygulamalarına ait disk kilit veya durum dosyaları
+      olabilir; <program>httpd</program>’nin birden fazla kopyasının çalışması
+      nedeniyle bu dosyaların da üzerine yazılmadığından emin olunmaya
+      çalışılmalıdır.</p>
+
+    <p><program>rotatelogs</program> tarzı borulu günlükleme kullanımı gibi
+      durumlarda yarış koşullarının oluşması olasılığına karşı uyanık
+      olunmalıdır. Aynı günlük kayıt dosyalarını aynı anda döndürmeye çalışan
+      birden fazla <program>rotatelogs</program> kopyasının çalıştırılması
+      halinde bunların her biri diğerlerinin günlük kayıt dosyalarının kaybına
+      sebep olabilir.</p></note>
+</section>
+
+</manualpage>
