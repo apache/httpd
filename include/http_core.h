@@ -32,6 +32,8 @@
 #include "util_filter.h"
 #include "ap_expr.h"
 
+#include "http_config.h"
+
 #if APR_HAVE_STRUCT_RLIMIT
 #include <sys/time.h>
 #include <sys/resource.h>
