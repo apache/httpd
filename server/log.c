@@ -40,8 +40,6 @@
 #include <unistd.h>
 #endif
 
-#define CORE_PRIVATE
-
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_config.h"

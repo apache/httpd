@@ -49,8 +49,6 @@
 #include <sys/types.h>
 #endif
 
-#define CORE_PRIVATE
-
 #include "util_filter.h"
 #include "httpd.h"
 #include "http_config.h"

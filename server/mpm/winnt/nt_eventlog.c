@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
-
 #include "httpd.h"
 #include "http_log.h"
 #include "mpm_winnt.h"

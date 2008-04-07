@@ -43,8 +43,6 @@
 #error The Leader/Follower MPM requires APR threads, but they are unavailable.
 #endif
 
-#define CORE_PRIVATE
-
 #include "ap_config.h"
 #include "httpd.h"
 #include "http_main.h"

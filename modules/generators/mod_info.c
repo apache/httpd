@@ -47,8 +47,6 @@
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
-#define CORE_PRIVATE
-
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"

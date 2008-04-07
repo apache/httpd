@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
-
 #include "mod_session.h"
 #include "apu_version.h"
 #include "apr_base64.h"                /* for apr_base64_decode et al */

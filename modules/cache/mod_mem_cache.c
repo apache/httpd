@@ -35,7 +35,6 @@
  * of 0 means the object is not in the cache and no worker threads are accessing
  * it.
  */
-#define CORE_PRIVATE
 #include "mod_cache.h"
 #include "cache_pqueue.h"
 #include "cache_cache.h"

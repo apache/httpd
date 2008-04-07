@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
 #include "httpd.h"
 #include "http_config.h"
 #include "http_core.h"

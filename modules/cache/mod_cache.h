@@ -26,8 +26,6 @@
 #ifndef MOD_CACHE_H
 #define MOD_CACHE_H 
 
-#define CORE_PRIVATE
-
 #include "apr_hooks.h"
 #include "apr.h"
 #include "apr_lib.h"

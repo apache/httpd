@@ -31,8 +31,6 @@
 #include <sys/types.h>
 #endif
 
-#define CORE_PRIVATE
-
 #include "ap_config.h"
 #include "httpd.h"
 #include "mpm_default.h"

@@ -42,8 +42,6 @@
 
  */
 
-#define CORE_PRIVATE
-
 #include "apr_hooks.h"
 #include "apr.h"
 #include "apr_lib.h"

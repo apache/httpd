@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
 #define INCL_NOPMAPI
 #define INCL_DOS
 #define INCL_DOSERRORS

@@ -32,7 +32,6 @@
 #define APR_WANT_STRFUNC
 #include "apr_want.h"
 
-#define CORE_PRIVATE
 #include "ap_config.h"
 #include "ap_provider.h"
 #include "httpd.h"

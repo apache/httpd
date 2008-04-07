@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
-
 #include "mod_cache.h"
 
 #include <ap_provider.h>

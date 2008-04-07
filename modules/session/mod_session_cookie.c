@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
-
 #include "mod_session.h"
 #include "apr_lib.h"
 #include "apr_strings.h"

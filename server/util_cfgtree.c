@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
 #include "util_cfgtree.h"
 #include <stdlib.h>
 

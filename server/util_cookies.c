@@ -14,8 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
-
 #include "util_cookies.h"
 #include "apr_lib.h"
 #include "apr_strings.h"

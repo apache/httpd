@@ -19,7 +19,6 @@
  * preload the API symbols now...
  */
 
-#define CORE_PRIVATE
 #define _WINUSER_
 
 #include "httpd.h"

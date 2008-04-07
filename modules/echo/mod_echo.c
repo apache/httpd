@@ -14,7 +14,6 @@
  * limitations under the License.
  */
 
-#define CORE_PRIVATE
 #include "ap_config.h"
 #include "ap_mmn.h"
 #include "httpd.h"
