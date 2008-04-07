@@ -211,7 +211,7 @@ AP_DECLARE(int) ap_some_auth_required(request_rec *r);
  * Clear flag which determines when access control hooks will be run for
  * internal requests.
  */
-AP_DECLARE(void) ap_clear_auth_internal();
+AP_DECLARE(void) ap_clear_auth_internal(void);
 
 /**
  * Determine whether access control hooks will be run for all internal
