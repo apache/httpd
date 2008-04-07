@@ -110,7 +110,7 @@
     sessions.</p>
 
     <div class="warning"><h3>Experimental</h3>
-      <p>This directive is dependent on experimental support for assymetrical encryption
+      <p>This directive is dependent on experimental support for asymmetrical encryption
       support currently available in prerelease versions of OpenSSL, and will only be
       available on platforms that support it.</p>
     </div>

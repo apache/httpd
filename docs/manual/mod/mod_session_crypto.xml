@@ -123,7 +123,7 @@
     will be interpreted as the passphrase to use to decrypt the key.</p>
 
     <note type="warning"><title>Experimental</title>
-      <p>This directive is dependent on experimental support for assymetrical encryption
+      <p>This directive is dependent on experimental support for asymmetrical encryption
       support currently available in prerelease versions of OpenSSL, and will only be
       available on platforms that support it.</p>
     </note>
