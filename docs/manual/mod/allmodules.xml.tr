@@ -83,7 +83,7 @@
   <modulefile>mod_version.xml</modulefile>
   <modulefile>mod_vhost_alias.xml</modulefile>
   <modulefile>beos.xml</modulefile>
-  <modulefile>mpm_common.xml</modulefile>
+  <modulefile>mpm_common.xml.tr</modulefile>
   <modulefile>event.xml</modulefile>
   <modulefile>leader.xml</modulefile>
   <modulefile>mpm_netware.xml</modulefile>
