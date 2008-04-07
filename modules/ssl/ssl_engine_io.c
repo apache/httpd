@@ -879,7 +879,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
             break;
             
     case MODSSL_ERROR_BAD_GATEWAY:
-        bucket = ap_bucket_error_create(HTTP_BAD_REQUEST, "fish",
+        bucket = ap_bucket_error_create(HTTP_BAD_REQUEST, NULL,
                                         f->c->pool, 
                                         f->c->bucket_alloc);
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
