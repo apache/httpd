@@ -226,6 +226,7 @@ Windows ile Apache Kullanımı</a></li>
 <li><a href="mod/mod_session.html">Apache Modülü mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">Apache Modülü mod_session_cookie</a></li>
 <li><a href="mod/mod_session_crypto.html">Apache Modülü mod_session_crypto</a></li>
+<li><a href="mod/mod_session_dbd.html">Apache Modülü mod_session_dbd</a></li>
 <li><a href="mod/mod_setenvif.html">Apache Modülü mod_setenvif</a></li>
 <li><a href="mod/mod_so.html">Apache Modülü mod_so</a></li>
 <li><a href="mod/mod_speling.html">Apache Modülü mod_speling</a></li>
