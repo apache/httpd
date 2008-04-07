@@ -905,9 +905,8 @@ static const char ssl_io_buffer[] = "SSL/TLS Buffer";
  *  (called immediately _before_ the socket is closed)
  *  or called with
  */
-static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
-                                           conn_rec *c,
-                                           int abortive)
+static void ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
+                                   conn_rec *c, int abortive)
 {
     SSL *ssl = filter_ctx->pssl;
     const char *type = "";
@@ -915,7 +914,7 @@ static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
     int shutdown_type;
 
     if (!ssl) {
-        return APR_SUCCESS;
+        return;
     }
 
     /*
@@ -1007,8 +1006,6 @@ static apr_status_t ssl_filter_io_shutdown(ssl_filter_ctx_t *filter_ctx,
         /* prevent any further I/O */
         c->aborted = 1;
     }
-
-    return APR_SUCCESS;
 }
 
 static apr_status_t ssl_io_filter_cleanup(void *data)
@@ -1119,7 +1116,8 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             inctx->rc = APR_EGENERAL;
         }
 
-        return ssl_filter_io_shutdown(filter_ctx, c, 1);
+        ssl_filter_io_shutdown(filter_ctx, c, 1);
+        return inctx->rc;
     }
 
     /*
@@ -1158,7 +1156,8 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
                          error ? error : "unknown");
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
 
-            return ssl_filter_io_shutdown(filter_ctx, c, 1);
+            ssl_filter_io_shutdown(filter_ctx, c, 1);
+            return APR_ECONNABORTED;
         }
     }
 
@@ -1183,7 +1182,8 @@ static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
         ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, c,
                       "No acceptable peer certificate available");
 
-        return ssl_filter_io_shutdown(filter_ctx, c, 1);
+        ssl_filter_io_shutdown(filter_ctx, c, 1);
+        return APR_ECONNABORTED;
     }
 
     return APR_SUCCESS;
@@ -1342,11 +1342,7 @@ static apr_status_t ssl_io_filter_output(ap_filter_t *f,
              * - issue the SSL_shutdown
              */
             filter_ctx->nobuffer = 1;
-            status = ssl_filter_io_shutdown(filter_ctx, f->c, 0);
-            if (status != APR_SUCCESS) {
-                ap_log_cerror(APLOG_MARK, APLOG_INFO, status, f->c,
-                              "SSL filter error shutting down I/O");
-            }
+            ssl_filter_io_shutdown(filter_ctx, f->c, 0);
             if ((status = ap_pass_brigade(f->next, bb)) != APR_SUCCESS) {
                 return status;
             }
