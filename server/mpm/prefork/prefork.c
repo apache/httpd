@@ -431,14 +431,6 @@ static void set_signals(void)
 static int requests_this_child;
 static int num_listensocks = 0;
 
-
-int ap_graceful_stop_signalled(void)
-{
-    /* not ever called anymore... */
-    return 0;
-}
-
-
 static void child_main(int child_num_arg)
 {
     apr_pool_t *ptrans;
