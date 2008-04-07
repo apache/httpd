@@ -221,8 +221,14 @@ static int ap_process_http_connection(conn_rec *c)
 
         ap_update_child_status(c->sbh, SERVER_BUSY_KEEPALIVE, NULL);
 
-        if (ap_graceful_stop_signalled())
+        int mpm_state = 0;
+        if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state)) {
             break;
+        }
+
+        if (mpm_state == AP_MPMQ_STOPPING) {
+          break;
+        }
 
         if (!csd) {
             csd = ap_get_module_config(c->conn_config, &core_module);
