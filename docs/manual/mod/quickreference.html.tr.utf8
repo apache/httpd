@@ -51,8 +51,9 @@
 </table>
 <table class="qref">
 <tr><td><a href="core.html#acceptfilter" id="A" name="A">AcceptFilter <var>protocol</var> <var>accept_filter</var></a></td><td></td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Configures optimizations for a Protocol's Listener Sockets</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#acceptmutex">AcceptMutex Default|<var>method</var></a></td><td> Default </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Method that Apache uses to serialize multiple children
-accepting requests on network sockets</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#acceptmutex">AcceptMutex Default|<var>yöntem</var></a></td><td> Default </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Apache HTTPd Sunucusunun ağ soketlerinden istekleri kabul eden
+  çok sayıda çocuk süreci sıraya sokmak için kullandığı yöntemi
+  belirler.</td></tr>
 <tr><td><a href="core.html#acceptpathinfo">AcceptPathInfo On|Off|Default</a></td><td> Default </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Resources accept trailing pathname information</td></tr>
 <tr class="odd"><td><a href="core.html#accessfilename">AccessFileName <var>filename</var> [<var>filename</var>] ...</a></td><td> .htaccess </td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the distributed configuration file</td></tr>
 <tr><td><a href="mod_actions.html#action">Action <var>action-type</var> <var>cgi-script</var> [virtual]</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular handler or
@@ -246,7 +247,8 @@ module</td></tr>
 <tr class="odd"><td><a href="perchild.html#childperuserid">ChildPerUserID <var>user-id</var> <var>group-id</var>
 <var>num-children</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Specify user ID and group ID for a number of child
 processes</td></tr>
-<tr><td><a href="mpm_common.html#chrootdir">ChrootDir <var>/path/to/directory</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Directory for apache to run chroot(8) after startup.</td></tr>
+<tr><td><a href="mpm_common.html#chrootdir">ChrootDir <var>/dizin/yolu</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun başlatıldıktan sonra chroot(8) yapacağı dizini
+  belirler.</td></tr>
 <tr class="odd"><td><a href="core.html#contentdigest">ContentDigest On|Off</a></td><td> Off </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Enables the generation of <code>Content-MD5</code> HTTP Response
 headers</td></tr>
 <tr><td><a href="mod_usertrack.html#cookiedomain">CookieDomain <em>domain</em></a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">The domain to which the tracking cookie applies</td></tr>
@@ -256,8 +258,8 @@ headers</td></tr>
 <tr><td><a href="mod_usertrack.html#cookiestyle">CookieStyle
     <em>Netscape|Cookie|Cookie2|RFC2109|RFC2965</em></a></td><td> Netscape </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Format of the cookie header field</td></tr>
 <tr class="odd"><td><a href="mod_usertrack.html#cookietracking">CookieTracking on|off</a></td><td> off </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enables tracking cookie</td></tr>
-<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>directory</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Directory where Apache attempts to
-switch before dumping core</td></tr>
+<tr><td><a href="mpm_common.html#coredumpdirectory">CoreDumpDirectory <var>dizin</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4"><code>core</code> dosyasını dökümlemek üzere Apache’nin geçmeye
+  çalışacağı dizin.</td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#customlog">CustomLog  <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>]</a></td><td></td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename and format of log file</td></tr>
@@ -307,8 +309,8 @@ from the web</td></tr>
 <tr><td><a href="mod_dumpio.html#dumpioinput">DumpIOInput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all input data to the error log</td></tr>
 <tr class="odd"><td><a href="mod_dumpio.html#dumpiologlevel">DumpIOLogLevel <var>level</var></a></td><td> debug </td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Controls the logging level of the DumpIO output</td></tr>
 <tr><td><a href="mod_dumpio.html#dumpiooutput">DumpIOOutput On|Off</a></td><td> Off </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Dump all output data to the error log</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Enables a hook that runs exception handlers
-after a crash</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#enableexceptionhook" id="E" name="E">EnableExceptionHook On|Off</a></td><td> Off </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bir çöküş sonrası olağandışılık eylemcilerini çalıştıracak
+  kancayı etkin kılar.</td></tr>
 <tr><td><a href="core.html#enablemmap">EnableMMAP On|Off</a></td><td> On </td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Use memory-mapping to read files during delivery</td></tr>
 <tr class="odd"><td><a href="core.html#enablesendfile">EnableSendfile On|Off</a></td><td> On </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Use the kernel sendfile support to deliver files to the client</td></tr>
 <tr><td><a href="core.html#errordocument">ErrorDocument <var>error-code</var> <var>document</var></a></td><td></td><td>skdh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">What the server will return to the client
@@ -345,10 +347,9 @@ found</td></tr>
 <tr><td><a href="core.html#forcetype">ForceType <var>MIME-type</var>|None</a></td><td></td><td>dh</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Forces all matching files to be served with the specified
 MIME content-type</td></tr>
 <tr class="odd"><td><a href="mod_log_forensic.html#forensiclog">ForensicLog <var>filename</var>|<var>pipe</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Sets filename of the forensic log</td></tr>
-<tr><td><a href="mpm_common.html#gracefulshutdowntimeout" id="G" name="G">GracefulShutDownTimeout <var>seconds</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Specify a timeout after which a gracefully shutdown server
-will exit.</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#group">Group <var>unix-group</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Group under which the server will answer
-requests</td></tr>
+<tr><td><a href="mpm_common.html#gracefulshutdowntimeout" id="G" name="G">GracefulShutDownTimeout <var>saniye</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun nazikçe kapatılmasının ardından ana süreç çıkana kadar
+  geçecek süre için bir zaman aşımı belirler.</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#group">Group <var>unix-grubu</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı grubu belirler.</td></tr>
 <tr><td><a href="mod_headers.html#header" id="H" name="H">Header [<var>condition</var>] set|append|merge|add|unset|echo|edit
 <var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</a></td><td></td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Configure HTTP response headers</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#headername">HeaderName <var>filename</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the top
@@ -437,9 +438,10 @@ client</td></tr>
 <tr><td><a href="core.html#limitrequestline">LimitRequestLine <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Limit the size of the HTTP request line that will be accepted
 from the client</td></tr>
 <tr class="odd"><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bytes</var></a></td><td> 1000000 </td><td>skdh</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Limits the size of an XML-based request body</td></tr>
-<tr><td><a href="mpm_common.html#listen">Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">IP addresses and ports that the server
-listens to</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>backlog</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum length of the queue of pending connections</td></tr>
+<tr><td><a href="mpm_common.html#listen">Listen [<var>IP-adresi</var>:]<var>port-numarası</var>
+  [<var>protokol</var>]</a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun dinleyeceği IP adresini ve portu belirler.</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#listenbacklog">ListenBacklog <var>kuyruk-uzunluğu</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Bekleyen bağlantılar kuyruğunun azami uzunluğunu
+  belirler</td></tr>
 <tr><td><a href="mod_so.html#loadfile">LoadFile <em>filename</em> [<em>filename</em>] ...</a></td><td></td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">Link in the named object file or library</td></tr>
 <tr class="odd"><td><a href="mod_so.html#loadmodule">LoadModule <em>module filename</em></a></td><td></td><td>s</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Links in the object file or library, and adds to the list
 of active modules</td></tr>
@@ -449,22 +451,24 @@ URLs</td></tr>
 <tr class="odd"><td><a href="core.html#locationmatch">&lt;LocationMatch
     <var>regex</var>&gt; ... &lt;/LocationMatch&gt;</a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Applies the enclosed directives only to regular-expression
 matching URLs</td></tr>
-<tr><td><a href="mpm_common.html#lockfile">LockFile <var>filename</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Location of the accept serialization lock file <em>(deprecated)</em></td></tr>
+<tr><td><a href="mpm_common.html#lockfile">LockFile <var>dosya</var></a></td><td> logs/accept.lock </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Apache HTTPd Sunucusunun ağ soketlerinden istekleri kabul eden
+  çok sayıda çocuk süreci sıraya sokarken kullandığı kilit dosyasının yerini
+  belirler. <em>(kullanımı önerilmemektedir)</em></td></tr>
 <tr class="odd"><td><a href="mod_log_config.html#logformat">LogFormat <var>format</var>|<var>nickname</var>
 [<var>nickname</var>]</a></td><td> "%h %l %u %t \"%r\" +</td><td>sk</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Describes a format for use in a log file</td></tr>
 <tr><td><a href="core.html#loglevel">LogLevel <var>level</var></a></td><td> warn </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Controls the verbosity of the ErrorLog</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of child processes that will be created
-to serve requests</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxclients" id="M" name="M">MaxClients <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">İstekleri sunarken oluşturulacak çocuk süreçlerin azami sayısını
+  belirler.</td></tr>
 <tr><td><a href="core.html#maxkeepaliverequests">MaxKeepAliveRequests <var>number</var></a></td><td> 100 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Number of requests allowed on a persistent
 connection</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>KBytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum amount of memory that the main allocator is allowed
-to hold without calling <code>free()</code></td></tr>
-<tr><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <var>number</var></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Limit on the number of requests that an individual child server
-will handle during its life</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxmemfree">MaxMemFree <var>kB-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4"><code>free()</code> çağrılmaksızın ana bellek ayırıcının
+  ayırmasına izin verilen azami bellek miktarını belirler.</td></tr>
+<tr><td><a href="mpm_common.html#maxrequestsperchild">MaxRequestsPerChild <var>sayı</var></a></td><td> 10000 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Tek bir çocuk sürecin ömrü boyunca işleme sokabileceği istek
+  sayısını sınırlamakta kullanılır.</td></tr>
 <tr class="odd"><td><a href="beos.html#maxrequestsperthread">MaxRequestsPerThread <var>number</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Limit on the number of requests that an individual thread
 will handle during its life</td></tr>
 <tr><td><a href="prefork.html#maxspareservers">MaxSpareServers <var>number</var></a></td><td> 10 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Maximum number of idle child server processes</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of idle threads</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#maxsparethreads">MaxSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Boştaki azami evre sayısını belirler</td></tr>
 <tr><td><a href="mpm_netware.html#maxthreads">MaxThreads <var>number</var></a></td><td> 2048 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Set the maximum number of worker threads</td></tr>
 <tr class="odd"><td><a href="perchild.html#maxthreadsperchild">MaxThreadsPerChild <var>number</var></a></td><td> 64 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Maximum number of threads per child process</td></tr>
 <tr><td><a href="mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount <var>value</var></a></td><td> 1009 </td><td>s</td><td>E</td></tr><tr><td class="descr" colspan="4">The maximum number of objects allowed to be placed in the
@@ -487,8 +491,8 @@ meta information</td></tr>
 <tr class="odd"><td><a href="mod_mime_magic.html#mimemagicfile">MimeMagicFile <var>file-path</var></a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Enable MIME-type determination based on file contents
 using the specified magic file</td></tr>
 <tr><td><a href="prefork.html#minspareservers">MinSpareServers <var>number</var></a></td><td> 5 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Minimum number of idle child server processes</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Minimum number of idle threads available to handle request
-spikes</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#minsparethreads">MinSpareThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">İsteklerin ani artışında devreye girecek boştaki evrelerin asgari
+  sayısını belirler.</td></tr>
 <tr><td><a href="mod_file_cache.html#mmapfile">MMapFile <var>file-path</var> [<var>file-path</var>] ...</a></td><td></td><td>s</td><td>D</td></tr><tr><td class="descr" colspan="4">Map a list of files into memory at startup time</td></tr>
 <tr class="odd"><td><a href="mod_mime.html#modmimeusepathinfo">ModMimeUsePathInfo On|Off</a></td><td> Off </td><td>d</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Tells <code class="module"><a href="../mod/mod_mime.html">mod_mime</a></code> to treat <code>path_info</code>
 components as part of the filename</td></tr>
@@ -510,8 +514,7 @@ directory</td></tr>
 evaluated.</td></tr>
 <tr><td><a href="mod_env.html#passenv" id="P" name="P">PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</a></td><td></td><td>skdh</td><td>T</td></tr><tr><td class="descr" colspan="4">Passes environment variables from the shell</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">File where the server records the process ID
-of the daemon</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#pidfile">PidFile <var>dosya</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ana sürecin süreç kimliğinin (PID) kaydedileceği dosyayı belirler.</td></tr>
 <tr><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td></td><td>sk</td><td>D</td></tr><tr><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</a></td><td></td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Container for directives applied to proxied resources</td></tr>
 <tr><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">Determines how to handle bad header lines in a
@@ -556,7 +559,7 @@ expressions</td></tr>
 header for proxied requests</td></tr>
 <tr class="odd"><td><a href="mod_autoindex.html#readmename" id="R" name="R">ReadmeName <var>filename</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Name of the file that will be inserted at the end
 of the index listing</td></tr>
-<tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP receive buffer size</td></tr>
+<tr><td><a href="mpm_common.html#receivebuffersize">ReceiveBufferSize <var>bayt-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP alım tamponu boyu</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#redirect">Redirect [<var>status</var>] <var>URL-path</var>
 <var>URL</var></a></td><td></td><td>skdh</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Sends an external redirect asking the client to fetch
 a different URL</td></tr>
@@ -632,8 +635,8 @@ for 'AND' logic to be applied to various authorization providers.</td></tr>
 satisfy at least one in order to grant access to a resource.  This 
 block allows for 'OR' logic to be applied to various authorization 
 providers.</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>file-path</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Location of the file used to store coordination data for
-the child processes</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#scoreboardfile">ScoreBoardFile <var>dosya-yolu</var></a></td><td> logs/apache_status </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Çocuk süreçler için eşgüdüm verisini saklamakta kullanılan
+  dosyanın yerini belirler.</td></tr>
 <tr><td><a href="mod_actions.html#script">Script <var>method</var> <var>cgi-script</var></a></td><td></td><td>skd</td><td>T</td></tr><tr><td class="descr" colspan="4">Activates a CGI script for a particular request
 method.</td></tr>
 <tr class="odd"><td><a href="mod_alias.html#scriptalias">ScriptAlias <var>URL-path</var>
@@ -655,12 +658,12 @@ the cgi daemon</td></tr>
 <tr class="odd"><td><a href="mod_status.html#seerequesttail">SeeRequestTail On|Off</a></td><td> Off </td><td>s</td><td>T</td></tr><tr class="odd"><td class="descr" colspan="4">Determine if mod_status displays the first 63 characters
 of a request or the last 63, assuming the request itself is greater than
 63 chars.</td></tr>
-<tr><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bytes</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP buffer size</td></tr>
+<tr><td><a href="mpm_common.html#sendbuffersize">SendBufferSize <var>bayt-sayısı</var></a></td><td> 0 </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">TCP tamponu boyu</td></tr>
 <tr class="odd"><td><a href="core.html#serveradmin">ServerAdmin <var>email-address</var>|<var>URL</var></a></td><td></td><td>sk</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Email address that the server includes in error
 messages sent to the client</td></tr>
 <tr><td><a href="core.html#serveralias">ServerAlias <var>hostname</var> [<var>hostname</var>] ...</a></td><td></td><td>k</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Alternate names for a host used when matching requests
 to name-virtual hosts</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#serverlimit">ServerLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Upper limit on configurable number of processes</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#serverlimit">ServerLimit <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Ayarlanabilir süreç sayısının üst sınırını belirler.</td></tr>
 <tr><td><a href="core.html#servername">ServerName [<var>scheme</var>://]<var>fully-qualified-domain-name</var>[:<var>port</var>]</a></td><td></td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Hostname and port that the server uses to identify
 itself</td></tr>
 <tr class="odd"><td><a href="core.html#serverpath">ServerPath <var>URL-path</var></a></td><td></td><td>k</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Legacy URL pathname for a name-based virtual host that
@@ -679,6 +682,14 @@ header</td></tr>
 <tr><td><a href="mod_session_crypto.html#sessioncryptodigest">SessionCryptoDigest <var>cipher</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">The name of the digest to use during encryption / decryption</td></tr>
 <tr class="odd"><td><a href="mod_session_crypto.html#sessioncryptoengine">SessionCryptoEngine <var>engine</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The name of the engine to use during encryption / decryption</td></tr>
 <tr><td><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase <var>secret</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">The key used to encrypt the session</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName <var>name</var> <var>attributes</var></a></td><td></td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Name and attributes for the RFC2109 cookie storing the session ID</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2 <var>name</var> <var>attributes</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Name and attributes for the RFC2965 cookie storing the session ID</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove On|Off</a></td><td> On </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control for whether session ID cookies should be removed from incoming HTTP headers</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel <var>label</var></a></td><td> deletesession </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to remove sessions from the database</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel <var>label</var></a></td><td> insertsession </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to insert sessions into the database</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser On|Off</a></td><td> Off </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Enable a per user session</td></tr>
+<tr class="odd"><td><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel <var>label</var></a></td><td> selectsession </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">The SQL query to use to select sessions from the database</td></tr>
+<tr><td><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel <var>label</var></a></td><td> updatesession </td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">The SQL query to use to update existing sessions in the database</td></tr>
 <tr class="odd"><td><a href="mod_session.html#sessionenv">SessionEnv On|Off</a></td><td> Off </td><td>d</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Control whether the contents of the session are written to the
 <var>HTTP_SESSION</var> environment variable</td></tr>
 <tr><td><a href="mod_session.html#sessionexclude">SessionExclude <var>path</var></a></td><td></td><td>d</td><td>E</td></tr><tr><td class="descr" colspan="4">Define URL prefixes for which a session is ignored</td></tr>
@@ -769,15 +780,18 @@ in the Session Cache</td></tr>
 <tr class="odd"><td><a href="mod_ssl.html#sslverifyclient">SSLVerifyClient <em>level</em></a></td><td> none </td><td>skdh</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Type of Client Certificate verification</td></tr>
 <tr><td><a href="mod_ssl.html#sslverifydepth">SSLVerifyDepth <em>number</em></a></td><td> 1 </td><td>skdh</td><td>E</td></tr><tr><td class="descr" colspan="4">Maximum depth of CA Certificates in Client 
 Certificate verification</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#startservers">StartServers <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Number of child server processes created at startup</td></tr>
-<tr><td><a href="mpm_common.html#startthreads">StartThreads <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of threads created on startup</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#startservers">StartServers <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sunucunun başlatılması sırasında oluşturulan çocuk süreçlerin
+  sayısını belirler.</td></tr>
+<tr><td><a href="mpm_common.html#startthreads">StartThreads <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Sunucunun başlatılması sırasında oluşturulan evrelerin sayısını
+  belirler.</td></tr>
 <tr class="odd"><td><a href="mod_substitute.html#substitute">Substitute <var>s/pattern/substitution/[infq]</var></a></td><td></td><td>dh</td><td>D</td></tr><tr class="odd"><td class="descr" colspan="4">Pattern to filter the response content</td></tr>
 <tr><td><a href="mod_suexec.html#suexecusergroup">SuexecUserGroup <em>User Group</em></a></td><td></td><td>sk</td><td>E</td></tr><tr><td class="descr" colspan="4">User and group permissions for CGI programs</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Sets the upper limit on the configurable number of threads
-per child process</td></tr>
-<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>number</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Number of threads created by each child process</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>size</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">The size in bytes of the stack used by threads handling 
-client connections</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#threadlimit" id="T" name="T">ThreadLimit <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">Çocuk süreç başına ayarlanabilir evre sayısının üst sınırını
+  belirler.</td></tr>
+<tr><td><a href="mpm_common.html#threadsperchild">ThreadsPerChild <var>sayı</var></a></td><td></td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">Her çocuk süreç tarafından oluşturulan evrelerin sayısını
+  belirler.</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#threadstacksize">ThreadStackSize <var>boyut</var></a></td><td></td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">İstemci bağlantılarını elde eden evreler tarafından kullanılan
+  yığıtın bayt cinsinden uzunluğunu belirler.</td></tr>
 <tr><td><a href="core.html#timeout">TimeOut <var>seconds</var></a></td><td> 300 </td><td>sk</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Amount of time the server will wait for
 certain events before failing a request</td></tr>
 <tr class="odd"><td><a href="core.html#traceenable">TraceEnable <var>[on|off|extended]</var></a></td><td> on </td><td>s</td><td>Ç</td></tr><tr class="odd"><td class="descr" colspan="4">Determines the behaviour on <code>TRACE</code>
@@ -790,8 +804,8 @@ requests</td></tr>
 port</td></tr>
 <tr><td><a href="core.html#usecanonicalphysicalport">UseCanonicalPhysicalPort On|Off</a></td><td> Off </td><td>skd</td><td>Ç</td></tr><tr><td class="descr" colspan="4">Configures how the server determines its own name and
 port</td></tr>
-<tr class="odd"><td><a href="mpm_common.html#user">User <var>unix-userid</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">The userid under which the server will answer
-requests</td></tr>
+<tr class="odd"><td><a href="mpm_common.html#user">User <var>unix-kullanıcısı</var></a></td><td> #-1 </td><td>s</td><td>M</td></tr><tr class="odd"><td class="descr" colspan="4">İsteklere yanıt verecek sunucunun ait olacağı kullanıcıyı
+  belirler.</td></tr>
 <tr><td><a href="mod_userdir.html#userdir">UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...
 </a></td><td></td><td>sk</td><td>T</td></tr><tr><td class="descr" colspan="4">Location of the user-specific directories</td></tr>
 <tr class="odd"><td><a href="mod_vhost_alias.html#virtualdocumentroot" id="V" name="V">VirtualDocumentRoot <em>interpolated-directory</em>|none</a></td><td> none </td><td>sk</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Dynamically configure the location of the document root
