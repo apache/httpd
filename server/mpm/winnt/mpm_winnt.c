@@ -207,13 +207,6 @@ void setup_signal_names(char *prefix)
         "%s_restart", signal_name_prefix);
 }
 
-int volatile is_graceful = 0;
-
-AP_DECLARE(int) ap_graceful_stop_signalled(void)
-{
-    return is_graceful;
-}
-
 AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
 {
     HANDLE e;
@@ -230,7 +223,6 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
            case SIGNAL_PARENT_RESTART:
            case SIGNAL_PARENT_RESTART_GRACEFUL:
            {
-               is_graceful = 1;
                SetEvent(restart_event);
                break;
            }
@@ -249,7 +241,6 @@ AP_DECLARE(void) ap_signal_parent(ap_signal_parent_e type)
        case SIGNAL_PARENT_RESTART_GRACEFUL:
        {
            signal_name = signal_restart_name;
-           is_graceful = 1;
            break;
        }
        default:

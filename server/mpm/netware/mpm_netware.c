@@ -314,12 +314,6 @@ int nlmUnloadSignaled(int wait)
  */
 
 
-int ap_graceful_stop_signalled(void)
-{
-    /* not ever called anymore... */
-    return 0;
-}
-
 #define MAX_WB_RETRIES  3
 #ifdef DBINFO_ON
 static int would_block = 0;

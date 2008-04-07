@@ -91,14 +91,6 @@ extern "C" {
 AP_DECLARE(int) ap_mpm_run(apr_pool_t *pconf, apr_pool_t *plog, server_rec *server_conf);
 
 /**
- * predicate indicating if a graceful stop has been requested ...
- * used by the connection loop 
- * @return 1 if a graceful stop has been requested, 0 otherwise
- * @fn int ap_graceful_stop_signalled(*void)
- */
-AP_DECLARE(int) ap_graceful_stop_signalled(void);
-
-/**
  * Spawn a process with privileges that another module has requested
  * @param r The request_rec of the current request
  * @param newproc The resulting process handle.

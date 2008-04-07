@@ -448,12 +448,6 @@ AP_DECLARE(apr_status_t) ap_mpm_query(int query_code, int *result)
 
 
 
-int ap_graceful_stop_signalled(void)
-{
-    return is_graceful;
-}
-
-
 
 /* Configuration handling stuff */
 

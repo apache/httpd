@@ -405,15 +405,6 @@ static void set_signals(void)
             ap_log_error(APLOG_MARK, APLOG_WARNING, errno, ap_server_conf, "sigaction(" AP_SIG_GRACEFUL_STRING ")");
 }
 
-/*****************************************************************
- * Here follows a long bunch of generic server bookkeeping stuff...
- */
-
-int ap_graceful_stop_signalled(void)
-{
-    return is_graceful;
-}
-
 /* This is the thread that actually does all the work. */
 static int32 worker_thread(void *dummy)
 {
