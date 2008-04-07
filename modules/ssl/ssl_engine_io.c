@@ -839,6 +839,14 @@ static apr_status_t ssl_filter_write(ap_filter_t *f,
                                sizeof(HTTP_ON_HTTPS_PORT) - 1, \
                                alloc)
 
+/* Custom apr_status_t error code, used when a plain HTTP request is
+ * recevied on an SSL port. */
+#define MODSSL_ERROR_HTTP_ON_HTTPS (APR_OS_START_USERERR + 0)
+
+/* Custom apr_status_t error code, used when the proxy cannot
+ * establish an outgoing SSL connection. */
+#define MODSSL_ERROR_BAD_GATEWAY (APR_OS_START_USERERR + 1)
+
 static void ssl_io_filter_disable(SSLConnRec *sslconn, ap_filter_t *f)
 {
     bio_filter_in_ctx_t *inctx = f->ctx;
@@ -856,7 +864,7 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
     apr_bucket *bucket;
 
     switch (status) {
-      case HTTP_BAD_REQUEST:
+    case MODSSL_ERROR_HTTP_ON_HTTPS:
             /* log the situation */
             ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
                          "SSL handshake failed: HTTP spoken on HTTPS port; "
@@ -869,8 +877,16 @@ static apr_status_t ssl_io_filter_error(ap_filter_t *f,
             /* fake the request line */
             bucket = HTTP_ON_HTTPS_PORT_BUCKET(f->c->bucket_alloc);
             break;
+            
+    case MODSSL_ERROR_BAD_GATEWAY:
+        bucket = ap_bucket_error_create(HTTP_BAD_REQUEST, "fish",
+                                        f->c->pool, 
+                                        f->c->bucket_alloc);
+        ap_log_cerror(APLOG_MARK, APLOG_INFO, 0, f->c,
+                      "SSL handshake failed: sending 502");
+        break;
 
-      default:
+    default:
         return status;
     }
 
@@ -1020,7 +1036,7 @@ static apr_status_t ssl_io_filter_cleanup(void *data)
 
 /* Perform the SSL handshake (whether in client or server mode), if
  * necessary, for the given connection. */
-static int ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
+static apr_status_t ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
 {
     conn_rec *c         = (conn_rec *)SSL_get_app_data(filter_ctx->pssl);
     SSLConnRec *sslconn = myConnConfig(c);
@@ -1041,7 +1057,7 @@ static int ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
             ssl_log_ssl_error(APLOG_MARK, APLOG_INFO, c->base_server);
             /* ensure that the SSL structures etc are freed, etc: */
             ssl_filter_io_shutdown(filter_ctx, c, 1);
-            return HTTP_BAD_GATEWAY;
+            return MODSSL_ERROR_BAD_GATEWAY;
         }
 
         return APR_SUCCESS;
@@ -1071,7 +1087,7 @@ static int ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
              * TBD.
              */
             outctx->rc = APR_EAGAIN;
-            return SSL_ERROR_WANT_READ;
+            return APR_EAGAIN;
         }
         else if (ERR_GET_LIB(ERR_peek_error()) == ERR_LIB_SSL &&
                  ERR_GET_REASON(ERR_peek_error()) == SSL_R_HTTP_REQUEST) {
@@ -1081,7 +1097,7 @@ static int ssl_io_filter_handshake(ssl_filter_ctx_t *filter_ctx)
              * ssl_io_filter_error will disable the ssl filters when it
              * sees this status code.
              */
-            return HTTP_BAD_REQUEST;
+            return MODSSL_ERROR_HTTP_ON_HTTPS;
         }
         else if (ssl_err == SSL_ERROR_SYSCALL) {
             ap_log_cerror(APLOG_MARK, APLOG_INFO, rc, c,
