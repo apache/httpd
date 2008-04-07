@@ -38,6 +38,7 @@ AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, cons
 {
 
     char *buffer;
+    char *rfc2109;
 
     /* handle expiry */
     buffer = "";
@@ -46,10 +47,10 @@ AP_DECLARE(apr_status_t) ap_cookie_write(request_rec * r, const char *name, cons
     }
 
     /* create RFC2109 compliant cookie */
-    char *rfc2109 = apr_pstrcat(r->pool, name, "=", val, ";",
-                                buffer,
-                                attrs && strlen(attrs) > 0 ?
-                                attrs : DEFAULT_ATTRS, NULL);
+    rfc2109 = apr_pstrcat(r->pool, name, "=", val, ";",
+                          buffer,
+                          attrs && strlen(attrs) > 0 ?
+                          attrs : DEFAULT_ATTRS, NULL);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
                   "user '%s' set cookie: '%s'", r->user, rfc2109);
     apr_table_addn(r->headers_out, SET_COOKIE, rfc2109);
@@ -73,6 +74,7 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
 {
 
     char *buffer;
+    char *rfc2965;
 
     /* handle expiry */
     buffer = "";
@@ -81,10 +83,10 @@ AP_DECLARE(apr_status_t) ap_cookie_write2(request_rec * r, const char *name2, co
     }
 
     /* create RFC2965 compliant cookie */
-    char *rfc2965 = apr_pstrcat(r->pool, name2, "=", val, ";",
-                                buffer,
-                                attrs2 && strlen(attrs2) > 0 ?
-                                attrs2 : DEFAULT_ATTRS, NULL);
+    rfc2965 = apr_pstrcat(r->pool, name2, "=", val, ";",
+                          buffer,
+                          attrs2 && strlen(attrs2) > 0 ?
+                          attrs2 : DEFAULT_ATTRS, NULL);
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r, LOG_PREFIX
                   "user '%s' set cookie2: '%s'", r->user, rfc2965);
     apr_table_addn(r->headers_out, SET_COOKIE2, rfc2965);
