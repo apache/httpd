@@ -653,8 +653,6 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
         char *buf;
         unsigned int seg, startseg;
 
-        cached &= auth_internal_per_conf;
-
         /* Invariant: from the first time filename_len is set until
          * it goes out of scope, filename_len==strlen(r->filename)
          */
@@ -662,6 +660,8 @@ AP_DECLARE(int) ap_directory_walk(request_rec *r)
 #ifdef CASE_BLIND_FILESYSTEM
         apr_size_t canonical_len;
 #endif
+
+        cached &= auth_internal_per_conf;
 
         /*
          * We must play our own mini-merge game here, for the few
