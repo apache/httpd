@@ -157,7 +157,7 @@ AP_IMPLEMENT_HOOK_VOID(insert_error_filter, (request_rec *r), (r))
  */
 #define METHOD_NUMBER_LAST  62
 
-static int is_mpm_running()
+static int is_mpm_running(void)
 {
     int mpm_state = 0;
 
