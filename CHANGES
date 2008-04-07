@@ -110,8 +110,6 @@ Changes with Apache 2.3.0
      sent a part of the request body or if the request is not idempotent.
      PR 44334 [Ruediger Pluem]
 
-  *) ProxyPassReverse is now balancer aware. [Jim Jagielski]
-
   *) rotatelogs: Don't leak memory when reopening the logfile.
      PR 40183 [Ruediger Pluem, Takashi Sato <serai lans-tv.com>]
 
