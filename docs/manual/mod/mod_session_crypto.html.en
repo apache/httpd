@@ -39,7 +39,7 @@
 
     <p>This submodule of <code class="module"><a href="../mod/mod_session.html">mod_session</a></code> provides support for the
     encryption of user sessions before being written to a local database, or
-    written to a remove browser via an HTTP cookie.</p>
+    written to a remote browser via an HTTP cookie.</p>
     
     <p>This can help provide privacy to user sessions where the contents of
     the session should be kept private from the user, or where protection is
