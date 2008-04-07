@@ -68,8 +68,6 @@
 extern "C" {
 #endif
 
-#ifdef CORE_PRIVATE
-
 /* ----------------------------- config dir ------------------------------ */
 
 /** Define this to be the default server home dir. Most things later in this
@@ -209,8 +207,6 @@ extern "C" {
  * enabled.  Overridden with AddDefaultCharsetName.
  */
 #define DEFAULT_ADD_DEFAULT_CHARSET_NAME "iso-8859-1"
-
-#endif /* CORE_PRIVATE */
 
 /** default HTTP Server protocol */
 #define AP_SERVER_PROTOCOL "HTTP/1.1"

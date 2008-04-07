@@ -140,13 +140,11 @@ AP_DECLARE(apr_time_t) ap_rationalize_mtime(request_rec *r, apr_time_t mtime);
 AP_DECLARE(const char *) ap_make_content_type(request_rec *r,
                                               const char *type);
 
-#ifdef CORE_PRIVATE
 /**
  * Precompile metadata structures used by ap_make_content_type()
  * @param pool The pool to use for allocations
  */
 AP_DECLARE(void) ap_setup_make_content_type(apr_pool_t *pool);
-#endif /* CORE_PRIVATE */
 
 /**
  * Construct an entity tag from the resource information.  If it's a real

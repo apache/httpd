@@ -121,8 +121,6 @@ AP_DECLARE(apr_status_t) ap_replace_stderr_log(apr_pool_t *p,
 int ap_open_logs(apr_pool_t *pconf, apr_pool_t *plog, 
                  apr_pool_t *ptemp, server_rec *s_main);
 
-#ifdef CORE_PRIVATE
-
 /**
  * Perform special processing for piped loggers in MPM child
  * processes.
@@ -132,8 +130,6 @@ int ap_open_logs(apr_pool_t *pconf, apr_pool_t *plog,
  * internal core function
  */
 void ap_logs_child_init(apr_pool_t *p, server_rec *s);
-
-#endif /* CORE_PRIVATE */
 
 /* 
  * The primary logging functions, ap_log_error, ap_log_rerror, ap_log_cerror,

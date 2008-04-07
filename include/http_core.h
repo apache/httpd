@@ -307,8 +307,6 @@ AP_DECLARE(const char *) ap_auth_name(request_rec *r);
  */
 AP_DECLARE(int) ap_satisfies(request_rec *r);
 
-#ifdef CORE_PRIVATE
-
 /**
  * Core is also unlike other modules in being implemented in more than
  * one file... so, data structures are declared here, even though most of
@@ -599,7 +597,6 @@ int ap_core_input_filter(ap_filter_t *f, apr_bucket_brigade *b,
                          apr_off_t readbytes);
 apr_status_t ap_core_output_filter(ap_filter_t *f, apr_bucket_brigade *b);
 
-#endif /* CORE_PRIVATE */
 
 AP_DECLARE(const char*) ap_get_server_protocol(server_rec* s);
 AP_DECLARE(void) ap_set_server_protocol(server_rec* s, const char* proto);

@@ -308,7 +308,6 @@ AP_DECLARE(void) ap_allow_standard_methods(request_rec *r, int reset, ...);
 #define MERGE_ALLOW 0
 #define REPLACE_ALLOW 1
 
-#ifdef CORE_PRIVATE
 /**
  * Process a top-level request from a client, and synchronously write
  * the response to the client
@@ -330,7 +329,6 @@ void ap_process_async_request(request_rec *);
  * @param r The current request
  */
 AP_DECLARE(void) ap_die(int type, request_rec *r);
-#endif
 
 /* Hooks */
 

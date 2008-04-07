@@ -721,8 +721,6 @@ AP_DECLARE(const char *) ap_check_cmd_context(cmd_parms *cmd,
 
 /** @} */
 
-#ifdef CORE_PRIVATE
-
 /**
  * @brief This structure is used to assign symbol names to module pointers
  */
@@ -961,8 +959,6 @@ AP_CORE_DECLARE(void *) ap_set_config_vectors(server_rec *server,
                                               ap_conf_vector_t *section_vector,
                                               const char *section,
                                               module *mod, apr_pool_t *pconf);
-
-#endif
 
   /* Hooks */
 
