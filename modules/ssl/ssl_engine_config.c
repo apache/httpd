@@ -944,9 +944,6 @@ const char *ssl_cmd_SSLVerifyDepth(cmd_parms *cmd,
     return NULL;
 }
 
-#define MODSSL_NO_SHARED_MEMORY_ERROR \
-    "SSLSessionCache: shared memory cache not useable on this platform"
-
 const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
                                     void *dcfg,
                                     const char *arg)
