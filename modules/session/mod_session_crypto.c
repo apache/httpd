@@ -46,6 +46,11 @@ typedef struct {
     int engine_set;
 } session_crypto_dir_conf;
 
+AP_DECLARE(int) ap_session_crypto_encode(request_rec * r, session_rec * z);
+AP_DECLARE(int) ap_session_crypto_decode(request_rec * r, session_rec * z);
+AP_DECLARE(int) ap_session_crypto_init(apr_pool_t *p, apr_pool_t *plog,
+                                       apr_pool_t *ptemp, server_rec *s);
+
 /**
  * Initialise the encryption as per the current config.
  *

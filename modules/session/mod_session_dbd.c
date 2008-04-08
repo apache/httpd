@@ -48,6 +48,10 @@ typedef struct {
     const char *deletelabel;
 } session_dbd_dir_conf;
 
+AP_DECLARE(int) ap_session_dbd_load(request_rec * r, session_rec ** z);
+AP_DECLARE(int) ap_session_dbd_save(request_rec * r, session_rec * z);
+AP_DECLARE(int) ap_session_dbd_monitor(apr_pool_t *p);
+
 /* optional function - look it up once in post_config */
 static ap_dbd_t *(*session_dbd_acquire_fn) (request_rec *) = NULL;
 static void (*session_dbd_prepare_fn) (server_rec *, const char *, const char *) = NULL;
