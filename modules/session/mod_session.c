@@ -139,6 +139,7 @@ AP_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z)
                                                    &session_module);
     apr_time_t now;
     session_rec *zz = NULL;
+    int rv = 0;
 
     /* is the session enabled? */
     if (!dconf->enabled) {
@@ -153,7 +154,7 @@ AP_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z)
     }
 
     /* load the session from the session hook */
-    int rv = ap_run_session_load(r, &zz);
+    rv = ap_run_session_load(r, &zz);
     if (DECLINED == rv) {
         ap_log_rerror(APLOG_MARK, APLOG_WARNING, 0, r, SESSION_PREFIX
                       "session is enabled but no session modules have been configured, "
