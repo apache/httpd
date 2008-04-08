@@ -48,11 +48,9 @@
 #include "apr_lib.h"
 #include "apr_fnmatch.h"
 #include "apr_strings.h"
-#include "apr_dbm.h"
-#include "apr_rmm.h"
-#include "apr_shm.h"
 #include "apr_global_mutex.h"
 #include "apr_optional.h"
+#include "ap_socache.h"
 
 #define MOD_SSL_VERSION AP_SERVER_BASEREVISION
 
@@ -157,25 +155,6 @@ typedef enum {
  * Support for MM library
  */
 #define SSL_MM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
-
-/**
- * Support for DBM library
- */
-#define SSL_DBM_FILE_MODE ( APR_UREAD | APR_UWRITE | APR_GREAD | APR_WREAD )
-
-#if !defined(SSL_DBM_FILE_SUFFIX_DIR) && !defined(SSL_DBM_FILE_SUFFIX_PAG)
-#if defined(DBM_SUFFIX)
-#define SSL_DBM_FILE_SUFFIX_DIR DBM_SUFFIX
-#define SSL_DBM_FILE_SUFFIX_PAG DBM_SUFFIX
-#elif defined(__FreeBSD__) || (defined(DB_LOCK) && defined(DB_SHMEM))
-#define SSL_DBM_FILE_SUFFIX_DIR ".db"
-#define SSL_DBM_FILE_SUFFIX_PAG ".db"
-#else
-#define SSL_DBM_FILE_SUFFIX_DIR ".dir"
-#define SSL_DBM_FILE_SUFFIX_PAG ".pag"
-#endif
-#endif
-
 
 /**
  * Define the certificate algorithm types
@@ -351,59 +330,6 @@ typedef struct {
     int non_ssl_request;
 } SSLConnRec;
 
-#define MODSSL_SESSCACHE_PROVIDER_GROUP "mod_ssl-sesscache"
-#define MODSSL_SESSCACHE_PROVIDER_VERSION "0"
-
-/* If this flag is set, the store/retrieve/delete/status interfaces of
- * the provider are NOT safe to be called concurrently from multiple
- * processes or threads, and an external global mutex must be used to
- * serialize access to the provider. */
-#define MODSSL_SESSCACHE_FLAG_NOTMPSAFE (0x0001)
-
-/* Session cache provider vtable. */
-typedef struct {
-    /* Canonical provider name: */
-    const char *name;
-
-    /* Bitmask of MODSSL_SESSCACHE_FLAG_* flags: */
-    unsigned int flags;
-
-    /* Create a session cache based on the given configuration string
-     * ARG.  Returns NULL on success, or an error string on failure.
-     * Pool TMP should be used for any temporary allocations, pool P
-     * should be used for any allocations lasting as long as the
-     * lifetime of the return context.
-     *
-     * The context pointer returned in *CONTEXT will be passed as the
-     * first argument to subsequent invocations. */
-    const char *(*create)(void **context, const char *arg, 
-                          apr_pool_t *tmp, apr_pool_t *p);
-    /* Initialize the cache.  Return APR error code.   */
-    apr_status_t (*init)(void *context, server_rec *s, apr_pool_t *pool);
-    /* Destroy a given cache context. */    
-    void (*destroy)(void *context, server_rec *s);
-    /* Store an object in the cache. */
-    apr_status_t (*store)(void *context, server_rec *s, 
-                          const unsigned char *id, unsigned int idlen, 
-                          time_t expiry, 
-                          unsigned char *data, unsigned int datalen);
-    /* Retrieve cached data with key ID of length IDLEN,
-     * returning TRUE on success or FALSE otherwise.  If
-     * TRUE, the data must be placed in DEST, which has length
-     * on entry of *DESTLEN.  *DESTLEN must be updated to 
-     * equal the length of data written on exit. */
-    apr_status_t (*retrieve)(void *context, server_rec *s,
-                             const unsigned char *id, unsigned int idlen,
-                             unsigned char *dest, unsigned int *destlen,
-                             apr_pool_t *pool);
-    /* Remove an object from the cache. */
-    void (*delete)(void *context, server_rec *s,
-                   const unsigned char *id, unsigned int idlen,
-                   apr_pool_t *pool);
-    /* Dump cache status for mod_status output. */
-    void (*status)(void *context, request_rec *r, int flags);
-} modssl_sesscache_provider;
-
 typedef struct {
     pid_t           pid;
     apr_pool_t     *pPool;
@@ -414,8 +340,8 @@ typedef struct {
 
     /* The configured provider, and associated private data
      * structure. */
-    const modssl_sesscache_provider *sesscache;
-    void *sesscache_context;
+    const ap_socache_provider_t *sesscache;
+    ap_socache_instance_t *sesscache_context;
 
     ssl_mutexmode_t nMutexMode;
     apr_lockmech_e  nMutexMech;
@@ -638,17 +564,6 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *, UCHAR *, int, apr_pool_t *);
 void         ssl_scache_remove(server_rec *, UCHAR *, int,
                                apr_pool_t *);
 
-extern const modssl_sesscache_provider modssl_sesscache_shmcb;
-extern const modssl_sesscache_provider modssl_sesscache_dbm;
-
-#ifdef HAVE_DISTCACHE
-extern const modssl_sesscache_provider modssl_sesscache_dc;
-#endif
-
-#ifdef HAVE_SSL_CACHE_MEMCACHE
-extern const modssl_sesscache_provider modssl_sesscache_mc;
-#endif
-
 /** Proxy Support */
 int ssl_proxy_enable(conn_rec *c);
 int ssl_engine_disable(conn_rec *c);
@@ -731,8 +646,6 @@ char        *ssl_var_lookup(apr_pool_t *, server_rec *, conn_rec *, request_rec 
 apr_array_header_t *ssl_ext_list(apr_pool_t *p, conn_rec *c, int peer, const char *extension);
 
 void         ssl_var_log_config_register(apr_pool_t *p);
-
-#define APR_SHM_MAXSIZE (64 * 1024 * 1024)
 
 #ifdef HAVE_OCSP
 /* Perform OCSP validation of the current cert in the given context.

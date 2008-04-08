@@ -985,9 +985,9 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
         char *name = apr_pstrmemdup(cmd->pool, arg, sep - arg);
 
         /* Find the provider of given name. */
-        mc->sesscache = ap_lookup_provider(MODSSL_SESSCACHE_PROVIDER_GROUP,
+        mc->sesscache = ap_lookup_provider(AP_SOCACHE_PROVIDER_GROUP,
                                            name,
-                                           MODSSL_SESSCACHE_PROVIDER_VERSION);
+                                           AP_SOCACHE_PROVIDER_VERSION);
         if (mc->sesscache) {
             /* Cache found; create it, passing anything beyond the colon. */
             mc->sesscache_mode = enabled_flags;
@@ -1001,8 +1001,8 @@ const char *ssl_cmd_SSLSessionCache(cmd_parms *cmd,
             /* Build a comma-separated list of all registered provider
              * names: */
             name_list = ap_list_provider_names(cmd->pool, 
-                                               MODSSL_SESSCACHE_PROVIDER_GROUP,
-                                               MODSSL_SESSCACHE_PROVIDER_VERSION);
+                                               AP_SOCACHE_PROVIDER_GROUP,
+                                               AP_SOCACHE_PROVIDER_VERSION);
             all_names = apr_array_pstrcat(cmd->pool, name_list, ',');
 
             err = apr_psprintf(cmd->pool, "'%s' session cache not supported "
