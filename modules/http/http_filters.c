@@ -38,6 +38,7 @@
 #include "http_main.h"
 #include "http_request.h"
 #include "http_vhost.h"
+#include "http_connection.h"
 #include "http_log.h"           /* For errors detected in basic auth common
                                  * support code... */
 #include "apr_date.h"           /* For apr_date_parse_http and APR_DATE_BAD */
@@ -1094,6 +1095,7 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
     header_struct h;
     header_filter_ctx *ctx = f->ctx;
     const char *ctype;
+    ap_bucket_error *eb = NULL;
 
     AP_DEBUG_ASSERT(!r->main);
 
@@ -1111,12 +1113,22 @@ AP_CORE_DECLARE_NONSTD(apr_status_t) ap_http_header_filter(ap_filter_t *f,
          e != APR_BRIGADE_SENTINEL(b);
          e = APR_BUCKET_NEXT(e))
     {
-        if (AP_BUCKET_IS_ERROR(e)) {
-            ap_bucket_error *eb = e->data;
-
-            ap_die(eb->status, r);
-            return AP_FILTER_ERROR;
+        if (AP_BUCKET_IS_ERROR(e) && !eb) {
+            eb = e->data;
+            continue;
         }
+        /*
+         * If we see an EOC bucket it is a signal that we should get out
+         * of the way doing nothing.
+         */
+        if (AP_BUCKET_IS_EOC(e)) {
+            ap_remove_output_filter(f);
+            return ap_pass_brigade(f->next, b);
+        }
+    }
+    if (eb) {
+        ap_die(eb->status, r);
+        return AP_FILTER_ERROR;
     }
 
     if (r->assbackwards) {
