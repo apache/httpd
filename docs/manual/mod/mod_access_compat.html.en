@@ -282,7 +282,7 @@ evaluated.</td></tr>
 
       <dt><code>Mutual-failure</code></dt>
 
-      <dd>This order has the same effect as <code class="directive">Order
+      <dd>This order has the same effect as <code>Order
       Allow,Deny</code> and is deprecated in its favor.</dd>
     </dl>
 
@@ -390,7 +390,7 @@ user authentication</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Influenced by <code class="directive"><a href="../mod/core.html#limit">&lt;Limit&gt;</a></code> and <code class="directive"><a href="../mod/core.html#limitexcept">&lt;LimitExcept&gt;</a></code> in version 2.0.51 and
 later</td></tr>
 </table>
-    <p>Access policy if both <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> used. The parameter can be
+    <p>Access policy if both <code class="directive"><a href="#allow">Allow</a></code> and <code class="directive"><a href="../mod/mod_authz_core.html#require">Require</a></code> used. The parameter can be
     either <code>All</code> or <code>Any</code>. This directive is only
     useful if access to a particular area is being restricted by both
     username/password <em>and</em> client host address. In this case
