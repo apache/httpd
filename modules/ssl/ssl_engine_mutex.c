@@ -43,7 +43,7 @@ int ssl_mutex_init(server_rec *s, apr_pool_t *p)
      * the provider used is not internally multi-process/thread
      * safe. */
     if (!mc->sesscache
-        || (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) == 0) {
+        || (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) == 0) {
         return TRUE;
     }
 
@@ -88,7 +88,7 @@ int ssl_mutex_reinit(server_rec *s, apr_pool_t *p)
     apr_status_t rv;
 
     if (mc->nMutexMode == SSL_MUTEXMODE_NONE || !mc->sesscache
-        || (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) == 0) {
+        || (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) == 0) {
         return TRUE;
     }
 
