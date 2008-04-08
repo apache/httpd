@@ -35,10 +35,6 @@
 #include "apr_memcache.h"
 
 /* The underlying apr_memcache system is thread safe.. */
-#define MC_TAG "mod_ssl:"
-#define MC_TAG_LEN \
-    (sizeof(MC_TAG))
-
 #define MC_KEY_LEN 254
 
 #ifndef MC_DEFAULT_SERVER_PORT
@@ -61,6 +57,8 @@
 struct ap_socache_instance_t {
     const char *servers;
     apr_memcache_t *mc;
+    const char *tag;
+    apr_size_t taglen;
 };
 
 static const char *socache_mc_create(ap_socache_instance_t **context, 
@@ -77,6 +75,8 @@ static const char *socache_mc_create(ap_socache_instance_t **context,
 }
 
 static apr_status_t socache_mc_init(ap_socache_instance_t *ctx, 
+                                    const char *namespace,
+                                    const struct ap_socache_hints *hints,
                                     server_rec *s, apr_pool_t *p)
 {
     apr_status_t rv;
@@ -156,6 +156,9 @@ static apr_status_t socache_mc_init(ap_socache_instance_t *ctx,
         split = apr_strtok(NULL,",", &tok);
     }
 
+    ctx->tag = apr_pstrcat(p, namespace, ":", NULL);
+    ctx->taglen = strlen(ctx->tag);
+
     return APR_SUCCESS;
 }
 
@@ -164,22 +167,21 @@ static void socache_mc_kill(ap_socache_instance_t *context, server_rec *s)
     /* noop. */
 }
 
-static char *mc_session_id2sz(const unsigned char *id, unsigned int idlen,
-                              char *str, int strsize)
+static void mc_session_id2sz(ap_socache_instance_t *ctx,
+                             const unsigned char *id, unsigned int idlen,
+                             char *buf, apr_size_t buflen)
 {
+    apr_size_t maxlen = (buflen - ctx->taglen) / 2;
     char *cp;
     int n;
-    int maxlen = (strsize - MC_TAG_LEN)/2;
 
-    cp = apr_cpystrn(str, MC_TAG, MC_TAG_LEN);
+    cp = apr_cpystrn(buf, ctx->tag, ctx->taglen);
     for (n = 0; n < idlen && n < maxlen; n++) {
         apr_snprintf(cp, 3, "%02X", (unsigned) id[n]);
         cp += 2;
     }
 
     *cp = '\0';
-
-    return str;
 }
 
 static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s, 
@@ -188,21 +190,16 @@ static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s,
                                      unsigned char *ucaData, unsigned int nData)
 {
     char buf[MC_KEY_LEN];
-    char *strkey = NULL;
     apr_status_t rv;
 
-    strkey = mc_session_id2sz(id, idlen, buf, sizeof(buf));
-    if(!strkey) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "scache_mc: Key generation borked.");
-        return APR_EGENERAL;
-    }
+    mc_session_id2sz(ctx, id, idlen, buf, sizeof(buf));
 
-    rv = apr_memcache_set(ctx->mc, strkey, (char*)ucaData, nData, timeout, 0);
+    rv = apr_memcache_set(ctx->mc, buf, (char*)ucaData, nData, timeout, 0);
 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_CRIT, rv, s,
                      "scache_mc: error setting key '%s' "
-                     "with %d bytes of data", strkey, nData);
+                     "with %d bytes of data", buf, nData);
         return rv;
     }
 
@@ -217,21 +214,14 @@ static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx,
 {
     apr_size_t der_len;
     char buf[MC_KEY_LEN], *der;
-    char *strkey = NULL;
     apr_status_t rv;
 
-    strkey = mc_session_id2sz(id, idlen, buf, sizeof(buf));
-
-    if (!strkey) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
-                     "scache_mc: Key generation borked.");
-        return APR_EGENERAL;
-    }
+    mc_session_id2sz(ctx, id, idlen, buf, sizeof(buf));
 
     /* ### this could do with a subpool, but _getp looks like it will
      * eat memory like it's going out of fashion anyway. */
 
-    rv = apr_memcache_getp(ctx->mc, p, strkey,
+    rv = apr_memcache_getp(ctx->mc, p, buf,
                            &der, &der_len, NULL);
     if (rv) {
         if (rv != APR_NOTFOUND) {
@@ -257,21 +247,16 @@ static void socache_mc_remove(ap_socache_instance_t *ctx, server_rec *s,
                               apr_pool_t *p)
 {
     char buf[MC_KEY_LEN];
-    char* strkey = NULL;
     apr_status_t rv;
 
-    strkey = mc_session_id2sz(id, idlen, buf, sizeof(buf));
-    if(!strkey) {
-        ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s, "scache_mc: Key generation borked.");
-        return;
-    }
+    mc_session_id2sz(ctx, id, idlen, buf, sizeof(buf));
 
-    rv = apr_memcache_delete(ctx->mc, strkey, 0);
+    rv = apr_memcache_delete(ctx->mc, buf, 0);
 
     if (rv != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_DEBUG, rv, s,
                      "scache_mc: error deleting key '%s' ",
-                     strkey);
+                     buf);
         return;
     }
 }

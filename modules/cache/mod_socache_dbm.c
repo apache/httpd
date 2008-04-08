@@ -41,7 +41,7 @@ struct ap_socache_instance_t {
     /* Pool must only be used with the mutex held. */
     apr_pool_t *pool;
     time_t last_expiry;
-    time_t timeout;
+    time_t expiry_interval;
 };
 
 /**
@@ -81,13 +81,15 @@ static const char *socache_dbm_create(ap_socache_instance_t **context,
     if (!ctx->data_file) {
         return apr_psprintf(tmp, "Invalid cache file path %s", arg);
     }
-    ctx->timeout = 30; /* ### take as hint in _init */
+
     apr_pool_create(&ctx->pool, p);
 
     return NULL;
 }
 
 static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx, 
+                                     const char *namespace, 
+                                     const struct ap_socache_hints *hints,
                                      server_rec *s, apr_pool_t *p)
 {
     apr_dbm_t *dbm;
@@ -111,6 +113,9 @@ static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx,
         return rv;
     }
     apr_dbm_close(dbm);
+
+    ctx->expiry_interval = (hints && hints->expiry_interval 
+                            ? hints->expiry_interval : 30);
 
 #if !defined(OS2) && !defined(WIN32) && !defined(BEOS) && !defined(NETWARE)
     /*
@@ -345,7 +350,7 @@ static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
      */
     tNow = time(NULL);
 
-    if (tNow < ctx->last_expiry + ctx->timeout) {
+    if (tNow < ctx->last_expiry + ctx->expiry_interval) {
         return;
     }
 

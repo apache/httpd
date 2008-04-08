@@ -39,6 +39,18 @@
 /* A cache instance. */
 typedef struct ap_socache_instance_t ap_socache_instance_t;
 
+/* Hints which may be passed to the init function; providers may
+ * ignore some or all of these hints. */
+struct ap_socache_hints {
+    /* Approximate average length of IDs: */
+    apr_size_t avg_id_len;
+    /* Approximate average size of objects: */
+    apr_size_t avg_obj_size;
+    /* Interval (in seconds) after which an expiry run is
+     * necessary. */
+    time_t expiry_interval;
+};
+
 typedef struct ap_socache_provider_t {
     /* Canonical provider name: */
     const char *name;
@@ -56,8 +68,11 @@ typedef struct ap_socache_provider_t {
      * first argument to subsequent invocations. */
     const char *(*create)(ap_socache_instance_t **instance, const char *arg, 
                           apr_pool_t *tmp, apr_pool_t *p);
-    /* Initialize the cache.  Return APR error code.   */
-    apr_status_t (*init)(ap_socache_instance_t *instance, /* hints, namespace */
+    /* Initialize the cache.  NAMESPACE must given a unique string
+     * prefix for use with memcached; if hints is non-NULL, it gives a
+     * set of hints for the provider.  Return APR error code.  */
+    apr_status_t (*init)(ap_socache_instance_t *instance, const char *namespace, 
+                         const struct ap_socache_hints *hints,
                          server_rec *s, apr_pool_t *pool);
     /* Destroy a given cache context. */    
     void (*destroy)(ap_socache_instance_t *instance, server_rec *s);

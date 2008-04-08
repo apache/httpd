@@ -43,6 +43,7 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
     apr_status_t rv;
     void *data;
     const char *userdata_key = "ssl_scache_init";
+    struct ap_socache_hints hints;
     
     /* The very first invocation of this function will be the
      * post_config invocation during server startup; do nothing for
@@ -67,7 +68,12 @@ void ssl_scache_init(server_rec *s, apr_pool_t *p)
         return;
     }
 
-    rv = mc->sesscache->init(mc->sesscache_context, s, p);
+    memset(&hints, 0, sizeof hints);
+    hints.avg_obj_size = 150;
+    hints.avg_id_len = 30;
+    hints.expiry_interval = 30;
+    
+    rv = mc->sesscache->init(mc->sesscache_context, "mod_ssl", &hints, s, p);
     if (rv) {
         /* ABORT ABORT etc. */
         ssl_die();
