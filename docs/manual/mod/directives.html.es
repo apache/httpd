@@ -391,6 +391,14 @@
 <li><a href="mod_session_crypto.html#sessioncryptodigest">SessionCryptoDigest</a></li>
 <li><a href="mod_session_crypto.html#sessioncryptoengine">SessionCryptoEngine</a></li>
 <li><a href="mod_session_crypto.html#sessioncryptopassphrase">SessionCryptoPassphrase</a></li>
+<li><a href="mod_session_dbd.html#sessiondbdcookiename">SessionDBDCookieName</a></li>
+<li><a href="mod_session_dbd.html#sessiondbdcookiename2">SessionDBDCookieName2</a></li>
+<li><a href="mod_session_dbd.html#sessiondbdcookieremove">SessionDBDCookieRemove</a></li>
+<li><a href="mod_session_dbd.html#sessiondbddeletelabel">SessionDBDDeleteLabel</a></li>
+<li><a href="mod_session_dbd.html#sessiondbdinsertlabel">SessionDBDInsertLabel</a></li>
+<li><a href="mod_session_dbd.html#sessiondbdperuser">SessionDBDPerUser</a></li>
+<li><a href="mod_session_dbd.html#sessiondbdselectlabel">SessionDBDSelectLabel</a></li>
+<li><a href="mod_session_dbd.html#sessiondbdupdatelabel">SessionDBDUpdateLabel</a></li>
 <li><a href="mod_session.html#sessionenv">SessionEnv</a></li>
 <li><a href="mod_session.html#sessionexclude">SessionExclude</a></li>
 <li><a href="mod_session.html#sessionheader">SessionHeader</a></li>

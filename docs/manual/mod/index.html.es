@@ -172,6 +172,7 @@ URLs on the fly</dd>
 <dt><a href="mod_session.html" id="S" name="S">mod_session</a></dt><dd>Session support</dd>
 <dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>
 <dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
+<dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>DBD/SQL based session support</dd>
 <dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>Allows the setting of environment variables based
 on characteristics of the request</dd>
 <dt><a href="mod_so.html">mod_so</a></dt><dd>Loading of executable code and

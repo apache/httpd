@@ -353,6 +353,14 @@ sessioncryptocipher	mod/mod_session_crypto.html#sessioncryptocipher
 sessioncryptodigest	mod/mod_session_crypto.html#sessioncryptodigest
 sessioncryptoengine	mod/mod_session_crypto.html#sessioncryptoengine
 sessioncryptopassphrase	mod/mod_session_crypto.html#sessioncryptopassphrase
+sessiondbdcookiename	mod/mod_session_dbd.html#sessiondbdcookiename
+sessiondbdcookiename2	mod/mod_session_dbd.html#sessiondbdcookiename2
+sessiondbdcookieremove	mod/mod_session_dbd.html#sessiondbdcookieremove
+sessiondbddeletelabel	mod/mod_session_dbd.html#sessiondbddeletelabel
+sessiondbdinsertlabel	mod/mod_session_dbd.html#sessiondbdinsertlabel
+sessiondbdperuser	mod/mod_session_dbd.html#sessiondbdperuser
+sessiondbdselectlabel	mod/mod_session_dbd.html#sessiondbdselectlabel
+sessiondbdupdatelabel	mod/mod_session_dbd.html#sessiondbdupdatelabel
 sessionenv	mod/mod_session.html#sessionenv
 sessionexclude	mod/mod_session.html#sessionexclude
 sessionheader	mod/mod_session.html#sessionheader

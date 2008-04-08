@@ -159,6 +159,7 @@ URLs on the fly</dd>
 <dt><a href="mod_session.html" id="S" name="S">mod_session</a></dt><dd>Session support</dd>
 <dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>
 <dt><a href="mod_session_crypto.html">mod_session_crypto</a></dt><dd>Session encryption support</dd>
+<dt><a href="mod_session_dbd.html">mod_session_dbd</a></dt><dd>DBD/SQL based session support</dd>
 <dt><a href="mod_setenvif.html">mod_setenvif</a></dt><dd>リクエストの特徴に基づいた環境変数の設定を可能にする</dd>
 <dt><a href="mod_so.html">mod_so</a></dt><dd>起動時や再起動時に実行コードとモジュールをサーバにロードする
 </dd>
