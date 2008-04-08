@@ -403,6 +403,7 @@ static apr_status_t dbd_clean(apr_pool_t *p)
 AP_DECLARE(int) ap_session_dbd_save(request_rec * r, session_rec * z)
 {
 
+    char *buffer;
     apr_status_t ret = APR_SUCCESS;
     session_dbd_dir_conf *conf = ap_get_module_config(r->per_dir_config,
                                                       &session_dbd_module);
@@ -414,7 +415,7 @@ AP_DECLARE(int) ap_session_dbd_save(request_rec * r, session_rec * z)
         apr_table_addn(r->headers_out, "Cache-Control", "no-cache");
 
         /* must we create a uuid? */
-        char *buffer = apr_pcalloc(r->pool, APR_UUID_FORMATTED_LENGTH + 1);
+        buffer = apr_pcalloc(r->pool, APR_UUID_FORMATTED_LENGTH + 1);
         apr_uuid_format(buffer, z->uuid);
 
         /* save the session with the uuid as key */
