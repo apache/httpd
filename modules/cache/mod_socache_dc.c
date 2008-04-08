@@ -31,17 +31,18 @@
 #error "You must compile with a more recent version of the distcache-base package"
 #endif
 
-struct context {
+struct ap_socache_instance_t {
     /* Configured target server: */
     const char *target;
     /* distcache client context: */
     DC_CTX *dc;
 };
 
-static const char *socache_dc_create(void **context, const char *arg, 
+static const char *socache_dc_create(ap_socache_instance_t **context, 
+                                     const char *arg, 
                                      apr_pool_t *tmp, apr_pool_t *p)
 {
-    struct context *ctx;
+    struct ap_socache_instance_t *ctx;
 
     ctx = *context = apr_palloc(p, sizeof *ctx);
     
@@ -50,10 +51,8 @@ static const char *socache_dc_create(void **context, const char *arg,
     return NULL;
 }
 
-static apr_status_t socache_dc_init(void *context, server_rec *s, apr_pool_t *p)
+static apr_status_t socache_dc_init(ap_socache_instance_t *ctx, server_rec *s, apr_pool_t *p)
 {
-    struct context *ctx = ctx;
-
 #if 0
     /* If a "persistent connection" mode of operation is preferred, you *must*
      * also use the PIDCHECK flag to ensure fork()'d processes don't interlace
@@ -80,23 +79,19 @@ static apr_status_t socache_dc_init(void *context, server_rec *s, apr_pool_t *p)
     return APR_SUCCESS;
 }
 
-static void socache_dc_kill(void *context, server_rec *s)
+static void socache_dc_kill(ap_socache_instance_t *ctx, server_rec *s)
 {
-    struct context *ctx = context;
-
     if (ctx && ctx->dc) {
         DC_CTX_free(ctx->dc);
         ctx->dc = NULL;
     }
 }
 
-static apr_status_t socache_dc_store(void *context, server_rec *s, 
+static apr_status_t socache_dc_store(ap_socache_instance_t *ctx, server_rec *s, 
                                      const unsigned char *id, unsigned int idlen,
                                      time_t timeout,
                                      unsigned char *der, unsigned int der_len)
 {
-    struct context *ctx = context;
-
     /* !@#$%^ - why do we deal with *absolute* time anyway??? */
     timeout -= time(NULL);
     /* Send the serialised session to the distributed cache context */
@@ -109,13 +104,12 @@ static apr_status_t socache_dc_store(void *context, server_rec *s,
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_dc_retrieve(void *context, server_rec *s, 
+static apr_status_t socache_dc_retrieve(ap_socache_instance_t *ctx, server_rec *s, 
                                         const unsigned char *id, unsigned int idlen,
                                         unsigned char *dest, unsigned int *destlen,
                                         apr_pool_t *p)
 {
     unsigned int data_len;
-    struct context *ctx = context;
 
     /* Retrieve any corresponding session from the distributed cache context */
     if (!DC_CTX_get_session(ctx->dc, id, idlen, dest, *destlen, &data_len)) {
@@ -131,12 +125,10 @@ static apr_status_t socache_dc_retrieve(void *context, server_rec *s,
     return APR_SUCCESS;
 }
 
-static void socache_dc_remove(void *context, server_rec *s, 
+static void socache_dc_remove(ap_socache_instance_t *ctx, server_rec *s, 
                               const unsigned char *id, unsigned int idlen, 
                               apr_pool_t *p)
 {
-    struct context *ctx = context;
-
     /* Remove any corresponding session from the distributed cache context */
     if (!DC_CTX_remove_session(ctx->dc, id, idlen)) {
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, s, "distributed scache 'remove_session' MISS");
@@ -145,10 +137,8 @@ static void socache_dc_remove(void *context, server_rec *s,
     }
 }
 
-static void socache_dc_status(void *context, request_rec *r, int flags)
+static void socache_dc_status(ap_socache_instance_t *ctx, request_rec *r, int flags)
 {
-    struct context *ctx = context;
-
     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                   "distributed scache 'socache_dc_status'");
     ap_rprintf(r, "cache type: <b>DC (Distributed Cache)</b>, "

@@ -58,15 +58,16 @@
 #define MC_DEFAULT_SERVER_TTL 600
 #endif
 
-struct context {
+struct ap_socache_instance_t {
     const char *servers;
     apr_memcache_t *mc;
 };
 
-static const char *socache_mc_create(void **context, const char *arg, 
+static const char *socache_mc_create(ap_socache_instance_t **context, 
+                                     const char *arg, 
                                      apr_pool_t *tmp, apr_pool_t *p)
 {
-    struct context *ctx;
+    ap_socache_instance_t *ctx;
     
     *context = ctx = apr_palloc(p, sizeof *ctx);
 
@@ -75,7 +76,8 @@ static const char *socache_mc_create(void **context, const char *arg,
     return NULL;
 }
 
-static apr_status_t socache_mc_init(void *context, server_rec *s, apr_pool_t *p)
+static apr_status_t socache_mc_init(ap_socache_instance_t *ctx, 
+                                    server_rec *s, apr_pool_t *p)
 {
     apr_status_t rv;
     int thread_limit = 0;
@@ -83,7 +85,6 @@ static apr_status_t socache_mc_init(void *context, server_rec *s, apr_pool_t *p)
     char *cache_config;
     char *split;
     char *tok;
-    struct context *ctx = context;
 
     ap_mpm_query(AP_MPMQ_HARD_LIMIT_THREADS, &thread_limit);
 
@@ -158,7 +159,7 @@ static apr_status_t socache_mc_init(void *context, server_rec *s, apr_pool_t *p)
     return APR_SUCCESS;
 }
 
-static void socache_mc_kill(void *context, server_rec *s)
+static void socache_mc_kill(ap_socache_instance_t *context, server_rec *s)
 {
     /* noop. */
 }
@@ -181,12 +182,11 @@ static char *mc_session_id2sz(const unsigned char *id, unsigned int idlen,
     return str;
 }
 
-static apr_status_t socache_mc_store(void *context, server_rec *s, 
+static apr_status_t socache_mc_store(ap_socache_instance_t *ctx, server_rec *s, 
                                      const unsigned char *id, unsigned int idlen,
                                      time_t timeout,
                                      unsigned char *ucaData, unsigned int nData)
 {
-    struct context *ctx = context;
     char buf[MC_KEY_LEN];
     char *strkey = NULL;
     apr_status_t rv;
@@ -209,12 +209,12 @@ static apr_status_t socache_mc_store(void *context, server_rec *s,
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_mc_retrieve(void *context, server_rec *s, 
+static apr_status_t socache_mc_retrieve(ap_socache_instance_t *ctx, 
+                                        server_rec *s, 
                                         const unsigned char *id, unsigned int idlen,
                                         unsigned char *dest, unsigned int *destlen,
                                         apr_pool_t *p)
 {
-    struct context *ctx = context;
     apr_size_t der_len;
     char buf[MC_KEY_LEN], *der;
     char *strkey = NULL;
@@ -252,11 +252,10 @@ static apr_status_t socache_mc_retrieve(void *context, server_rec *s,
     return APR_SUCCESS;
 }
 
-static void socache_mc_remove(void *context, server_rec *s, 
+static void socache_mc_remove(ap_socache_instance_t *ctx, server_rec *s, 
                               const unsigned char *id, unsigned int idlen,
                               apr_pool_t *p)
 {
-    struct context *ctx = context;
     char buf[MC_KEY_LEN];
     char* strkey = NULL;
     apr_status_t rv;
@@ -277,7 +276,7 @@ static void socache_mc_remove(void *context, server_rec *s,
     }
 }
 
-static void socache_mc_status(void *context, request_rec *r, int flags)
+static void socache_mc_status(ap_socache_instance_t *ctx, request_rec *r, int flags)
 {
     /* SSLModConfigRec *mc = myModConfig(r->server); */
     /* TODO: Make a mod_status handler. meh. */
