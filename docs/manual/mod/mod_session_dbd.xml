@@ -61,7 +61,7 @@
 <seealso><module>mod_session_cookie</module></seealso>
 <seealso><module>mod_dbd</module></seealso>
 
-    <section id="anonymous"><title>DBD Configuration</title>
+    <section id="dbdconfig"><title>DBD Configuration</title>
 
       <p>Before the <module>mod_session_dbd</module> module can be configured to maintain a
       session, the <module>mod_dbd</module> module must be configured to make the various database queries
