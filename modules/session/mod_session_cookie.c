@@ -39,6 +39,9 @@ typedef struct {
     int remove_set;
 } session_cookie_dir_conf;
 
+AP_DECLARE(int) ap_session_cookie_save(request_rec * r, session_rec * z);
+AP_DECLARE(int) ap_session_cookie_load(request_rec * r, session_rec ** z);
+
 /**
  * Set the cookie and embed the session within it.
  *

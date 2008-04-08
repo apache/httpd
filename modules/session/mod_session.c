@@ -40,13 +40,18 @@ AP_IMPLEMENT_HOOK_RUN_ALL(int, session_encode,
                    (request_rec * r, session_rec * z), (r, z), OK, DECLINED)
 AP_IMPLEMENT_HOOK_RUN_ALL(int, session_decode,
                    (request_rec * r, session_rec * z), (r, z), OK, DECLINED)
+
+AP_DECLARE(int) ap_session_identity_encode(request_rec * r, session_rec * z);
+AP_DECLARE(int) ap_session_identity_decode(request_rec * r, session_rec * z);
+AP_DECLARE(int) ap_session_fixups(request_rec * r);
+
 /**
  * Should the session be included within this URL.
  *
  * This function tests whether a session is valid for this URL. It uses the
  * include and exclude arrays to determine whether they should be included.
  */
-    static int session_included(request_rec * r, session_dir_conf * conf)
+static int session_included(request_rec * r, session_dir_conf * conf)
 {
 
     const char **includes = (const char **) conf->includes->elts;
