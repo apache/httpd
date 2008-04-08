@@ -36,7 +36,7 @@
 
 /* Use of the context structure must be thread-safe after the initial
  * create/init; callers must hold the mutex. */
-struct context {
+struct ap_socache_instance_t {
     const char *data_file;
     /* Pool must only be used with the mutex held. */
     apr_pool_t *pool;
@@ -63,18 +63,17 @@ struct context {
 #endif
 #endif
 
+static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s);
 
-
-static void socache_dbm_expire(struct context *ctx, server_rec *s);
-
-static void socache_dbm_remove(void *context, server_rec *s, 
+static void socache_dbm_remove(ap_socache_instance_t *ctx, server_rec *s, 
                                const unsigned char *id, unsigned int idlen,
                                apr_pool_t *p);
 
-static const char *socache_dbm_create(void **context, const char *arg, 
+static const char *socache_dbm_create(ap_socache_instance_t **context, 
+                                      const char *arg, 
                                       apr_pool_t *tmp, apr_pool_t *p)
 {
-    struct context *ctx;
+    ap_socache_instance_t *ctx;
 
     *context = ctx = apr_pcalloc(p, sizeof *ctx);
 
@@ -88,9 +87,9 @@ static const char *socache_dbm_create(void **context, const char *arg,
     return NULL;
 }
 
-static apr_status_t socache_dbm_init(void *context, server_rec *s, apr_pool_t *p)
+static apr_status_t socache_dbm_init(ap_socache_instance_t *ctx, 
+                                     server_rec *s, apr_pool_t *p)
 {
-    struct context *ctx = context;
     apr_dbm_t *dbm;
     apr_status_t rv;
 
@@ -142,10 +141,8 @@ static apr_status_t socache_dbm_init(void *context, server_rec *s, apr_pool_t *p
     return APR_SUCCESS;
 }
 
-static void socache_dbm_kill(void *context, server_rec *s)
+static void socache_dbm_kill(ap_socache_instance_t *ctx, server_rec *s)
 {
-    struct context *ctx = context;
-
     /* the correct way */
     unlink(apr_pstrcat(ctx->pool, ctx->data_file, SSL_DBM_FILE_SUFFIX_DIR, NULL));
     unlink(apr_pstrcat(ctx->pool, ctx->data_file, SSL_DBM_FILE_SUFFIX_PAG, NULL));
@@ -158,12 +155,11 @@ static void socache_dbm_kill(void *context, server_rec *s)
     return;
 }
 
-static apr_status_t socache_dbm_store(void *context, server_rec *s,
-                                      const unsigned char *id, unsigned int idlen,
-                                      time_t expiry, 
-                                      unsigned char *ucaData, unsigned int nData)
+static apr_status_t socache_dbm_store(
+    ap_socache_instance_t *ctx, server_rec *s,
+    const unsigned char *id, unsigned int idlen,
+    time_t expiry, unsigned char *ucaData, unsigned int nData)
 {
-    struct context *ctx = context;
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
     apr_datum_t dbmval;
@@ -232,12 +228,12 @@ static apr_status_t socache_dbm_store(void *context, server_rec *s,
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_dbm_retrieve(void *context, server_rec *s, 
-                                         const unsigned char *id, unsigned int idlen,
-                                         unsigned char *dest, unsigned int *destlen,
-                                         apr_pool_t *p)
+static apr_status_t socache_dbm_retrieve(
+    ap_socache_instance_t *ctx, server_rec *s, 
+    const unsigned char *id, unsigned int idlen,
+    unsigned char *dest, unsigned int *destlen,
+    apr_pool_t *p)
 {
-    struct context *ctx = context;
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
     apr_datum_t dbmval;
@@ -299,11 +295,10 @@ static apr_status_t socache_dbm_retrieve(void *context, server_rec *s,
     return APR_SUCCESS;
 }
 
-static void socache_dbm_remove(void *context, server_rec *s, 
+static void socache_dbm_remove(ap_socache_instance_t *ctx, server_rec *s, 
                                const unsigned char *id, unsigned int idlen,
                                apr_pool_t *p)
 {
-    struct context *ctx = context;
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
     apr_status_t rv;
@@ -329,7 +324,7 @@ static void socache_dbm_remove(void *context, server_rec *s,
     return;
 }
 
-static void socache_dbm_expire(struct context *ctx, server_rec *s)
+static void socache_dbm_expire(ap_socache_instance_t *ctx, server_rec *s)
 {
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
@@ -436,9 +431,9 @@ static void socache_dbm_expire(struct context *ctx, server_rec *s)
                  nElements, nElements-nDeleted, nDeleted);
 }
 
-static void socache_dbm_status(void *context, request_rec *r, int flags)
+static void socache_dbm_status(ap_socache_instance_t *ctx, request_rec *r, 
+                               int flags)
 {
-    struct context *ctx = context;
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
     apr_datum_t dbmval;

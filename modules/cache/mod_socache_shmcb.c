@@ -91,7 +91,7 @@ typedef struct {
     unsigned char removed;
 } SHMCBIndex;
 
-struct context {
+struct ap_socache_instance_t {
     const char *data_file;
     apr_size_t shm_size;
     apr_shm_t *shm;
@@ -259,10 +259,11 @@ static int shmcb_subcache_remove(server_rec *, SHMCBHeader *, SHMCBSubcache *,
  * subcache internals are deferred to shmcb_subcache_*** functions lower down
  */
 
-static const char *socache_shmcb_create(void **context, const char *arg, 
+static const char *socache_shmcb_create(ap_socache_instance_t **context,
+                                        const char *arg, 
                                         apr_pool_t *tmp, apr_pool_t *p)
 {
-    struct context *ctx;
+    ap_socache_instance_t *ctx;
     char *path, *cp, *cp2;
 
     /* Allocate the context. */
@@ -300,14 +301,14 @@ static const char *socache_shmcb_create(void **context, const char *arg,
     return NULL;
 }
 
-static apr_status_t socache_shmcb_init(void *context, server_rec *s, apr_pool_t *p)
+static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
+                                       server_rec *s, apr_pool_t *p)
 {
     void *shm_segment;
     apr_size_t shm_segsize;
     apr_status_t rv;
     SHMCBHeader *header;
     unsigned int num_subcache, num_idx, loop;
-    struct context *ctx = context;
 
     /* Create shared memory segment */
     if (ctx->data_file == NULL) {
@@ -420,23 +421,21 @@ static apr_status_t socache_shmcb_init(void *context, server_rec *s, apr_pool_t 
     return APR_SUCCESS;
 }
 
-static void socache_shmcb_kill(void *context, server_rec *s)
+static void socache_shmcb_kill(ap_socache_instance_t *ctx, server_rec *s)
 {
-    struct context *ctx = context;
-
     if (ctx && ctx->shm) {
         apr_shm_destroy(ctx->shm);
         ctx->shm = NULL;
     }
 }
 
-static apr_status_t socache_shmcb_store(void *context, server_rec *s, 
+static apr_status_t socache_shmcb_store(ap_socache_instance_t *ctx, 
+                                        server_rec *s, 
                                         const unsigned char *id, unsigned int idlen,
                                         time_t timeout, 
                                         unsigned char *encoded,
                                         unsigned int len_encoded)
 {
-    struct context *ctx = context;
     SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
 
@@ -460,12 +459,12 @@ static apr_status_t socache_shmcb_store(void *context, server_rec *s,
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_shmcb_retrieve(void *context, server_rec *s, 
-                                              const unsigned char *id, unsigned int idlen,
-                                              unsigned char *dest, unsigned int *destlen,
-                                              apr_pool_t *p)
+static apr_status_t socache_shmcb_retrieve(ap_socache_instance_t *ctx, 
+                                           server_rec *s, 
+                                           const unsigned char *id, unsigned int idlen,
+                                           unsigned char *dest, unsigned int *destlen,
+                                           apr_pool_t *p)
 {
-    struct context *ctx = context;
     SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
     int rv;
@@ -487,11 +486,10 @@ static apr_status_t socache_shmcb_retrieve(void *context, server_rec *s,
     return rv == 0 ? APR_SUCCESS : APR_EGENERAL;
 }
 
-static void socache_shmcb_remove(void *context, server_rec *s, 
-                                    const unsigned char *id, unsigned int idlen,
-                                    apr_pool_t *p)
+static void socache_shmcb_remove(ap_socache_instance_t *ctx, server_rec *s, 
+                                 const unsigned char *id, unsigned int idlen,
+                                 apr_pool_t *p)
 {
-    struct context *ctx = context;
     SHMCBHeader *header = ctx->header;
     SHMCBSubcache *subcache = SHMCB_MASK(header, id);
 
@@ -511,10 +509,10 @@ static void socache_shmcb_remove(void *context, server_rec *s,
                  "leaving socache_shmcb_remove successfully");
 }
 
-static void socache_shmcb_status(void *context, request_rec *r, int flags)
+static void socache_shmcb_status(ap_socache_instance_t *ctx, 
+                                 request_rec *r, int flags)
 {
     server_rec *s = r->server;
-    struct context *ctx = context;
     SHMCBHeader *header = ctx->header;
     unsigned int loop, total = 0, cache_total = 0, non_empty_subcaches = 0;
     time_t idx_expiry, min_expiry = 0, max_expiry = 0, average_expiry = 0;
