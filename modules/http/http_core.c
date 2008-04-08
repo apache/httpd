@@ -189,6 +189,7 @@ static int ap_process_http_connection(conn_rec *c)
     request_rec *r;
     conn_state_t *cs = c->cs;
     apr_socket_t *csd = NULL;
+    int mpm_state = 0;
 
     /*
      * Read and process each request found on our connection
@@ -220,7 +221,6 @@ static int ap_process_http_connection(conn_rec *c)
 
         ap_update_child_status(c->sbh, SERVER_BUSY_KEEPALIVE, NULL);
 
-        int mpm_state = 0;
         if (ap_mpm_query(AP_MPMQ_MPM_STATE, &mpm_state)) {
             break;
         }
