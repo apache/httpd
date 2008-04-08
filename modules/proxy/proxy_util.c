@@ -1531,12 +1531,13 @@ PROXY_DECLARE(int) ap_proxy_post_request(proxy_worker *worker,
                                          request_rec *r,
                                          proxy_server_conf *conf)
 {
-    int access_status;
+    int access_status = OK;
     if (balancer) {
         access_status = proxy_run_post_request(worker, balancer, r, conf);
-    }
-    else {
-        access_status = OK;
+        if (access_status == DECLINED) {
+            access_status = OK; /* no post_request handler available */
+            /* TODO: recycle direct worker */
+        }
     }
 
     return access_status;
