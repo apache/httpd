@@ -103,14 +103,14 @@ BOOL ssl_scache_store(server_rec *s, UCHAR *id, int idlen,
     ptr = encoded;
     len = i2d_SSL_SESSION(sess, &ptr);
 
-    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+    if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
         ssl_mutex_on(s);
     }
     
     rv = mc->sesscache->store(mc->sesscache_context, s, id, idlen, 
                               expiry, encoded, len);
 
-    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+    if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
         ssl_mutex_off(s);
     }
 
@@ -126,14 +126,14 @@ SSL_SESSION *ssl_scache_retrieve(server_rec *s, UCHAR *id, int idlen,
     MODSSL_D2I_SSL_SESSION_CONST unsigned char *ptr;
     apr_status_t rv;
 
-    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+    if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
         ssl_mutex_on(s);
     }
 
     rv = mc->sesscache->retrieve(mc->sesscache_context, s, id, idlen, 
                                  dest, &destlen, p);
 
-    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+    if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
         ssl_mutex_off(s);
     }
 
@@ -181,13 +181,13 @@ static int ssl_ext_status_hook(request_rec *r, int flags)
     ap_rputs("</td></tr>\n", r);
     ap_rputs("<tr><td bgcolor=\"#ffffff\">\n", r);
 
-    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+    if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
         ssl_mutex_on(r->server);
     }
 
     mc->sesscache->status(mc->sesscache_context, r, flags);
 
-    if (mc->sesscache->flags & MODSSL_SESSCACHE_FLAG_NOTMPSAFE) {
+    if (mc->sesscache->flags & AP_SOCACHE_FLAG_NOTMPSAFE) {
         ssl_mutex_off(r->server);
     }
 
