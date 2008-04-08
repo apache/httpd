@@ -160,10 +160,10 @@ static void socache_dbm_kill(ap_socache_instance_t *ctx, server_rec *s)
     return;
 }
 
-static apr_status_t socache_dbm_store(
-    ap_socache_instance_t *ctx, server_rec *s,
-    const unsigned char *id, unsigned int idlen,
-    time_t expiry, unsigned char *ucaData, unsigned int nData)
+static apr_status_t socache_dbm_store(ap_socache_instance_t *ctx, server_rec *s,
+                                      const unsigned char *id, unsigned int idlen,
+                                      time_t expiry, unsigned char *ucaData, 
+                                      unsigned int nData)
 {
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
@@ -233,11 +233,10 @@ static apr_status_t socache_dbm_store(
     return APR_SUCCESS;
 }
 
-static apr_status_t socache_dbm_retrieve(
-    ap_socache_instance_t *ctx, server_rec *s, 
-    const unsigned char *id, unsigned int idlen,
-    unsigned char *dest, unsigned int *destlen,
-    apr_pool_t *p)
+static apr_status_t socache_dbm_retrieve(ap_socache_instance_t *ctx, server_rec *s, 
+                                         const unsigned char *id, unsigned int idlen,
+                                         unsigned char *dest, unsigned int *destlen,
+                                         apr_pool_t *p)
 {
     apr_dbm_t *dbm;
     apr_datum_t dbmkey;
