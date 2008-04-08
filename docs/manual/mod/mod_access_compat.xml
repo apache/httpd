@@ -292,8 +292,8 @@ evaluated.</description>
 
       <dt><code>Mutual-failure</code></dt>
 
-      <dd>This order has the same effect as <directive>Order
-      Allow,Deny</directive> and is deprecated in its favor.</dd>
+      <dd>This order has the same effect as <code>Order
+      Allow,Deny</code> and is deprecated in its favor.</dd>
     </dl>
 
     <p>Keywords may only be separated by a comma; <em>no whitespace</em>
@@ -408,7 +408,7 @@ later</compatibility>
 
 <usage>
     <p>Access policy if both <directive
-    module="mod_authz_host">Allow</directive> and <directive
+    module="mod_access_compat">Allow</directive> and <directive
     module="mod_authz_core">Require</directive> used. The parameter can be
     either <code>All</code> or <code>Any</code>. This directive is only
     useful if access to a particular area is being restricted by both
