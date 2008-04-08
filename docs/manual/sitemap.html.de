@@ -237,6 +237,7 @@ HPUX betreiben</a></li>
 <li><a href="mod/mod_session.html">Apache-Modul mod_session</a></li>
 <li><a href="mod/mod_session_cookie.html">Apache-Modul mod_session_cookie</a></li>
 <li><a href="mod/mod_session_crypto.html">Apache-Modul mod_session_crypto</a></li>
+<li><a href="mod/mod_session_dbd.html">Apache-Modul mod_session_dbd</a></li>
 <li><a href="mod/mod_setenvif.html">Apache-Modul mod_setenvif</a></li>
 <li><a href="mod/mod_so.html">Apache-Modul mod_so</a></li>
 <li><a href="mod/mod_speling.html">Apache-Modul mod_speling</a></li>

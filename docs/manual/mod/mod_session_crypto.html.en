@@ -103,11 +103,15 @@
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive">SessionCryptoCertificateFile</code> directive specifies the name
-    of a certificate to be used to encrypt the contents of the session before writing
-    the session, or decrypting the content of the session after reading the session.</p>
-    
+    of a certificate to be used to asymmetrically encrypt the contents of the session before
+    writing the session, or decrypting the content of the session after reading the session.</p>
+
     <p>Changing the certificate on a server has the effect of invalidating all existing
     sessions.</p>
+
+    <p>If the key associated with this certificate is protected with a passphrase, the
+    <code class="directive"><a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> directive
+    will be interpreted as the passphrase to use to decrypt the key.</p>
 
     <div class="warning"><h3>Experimental</h3>
       <p>This directive is dependent on experimental support for asymmetrical encryption
@@ -135,6 +139,10 @@
     
     <p>Changing the certificate or key on a server has the effect of invalidating all existing
     sessions.</p>
+
+    <p>If this key is protected with a passphrase, the
+    <code class="directive"><a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> directive
+    will be interpreted as the passphrase to use to decrypt the key.</p>
 
     <div class="warning"><h3>Experimental</h3>
       <p>This directive is dependent on experimental support for asymmetrical encryption
@@ -204,12 +212,17 @@
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive">SessionCryptoPassphrase</code> directive specifies the key
-    to be used to encrypt the contents of the session before writing the session, or
-    decrypting the contents of the session after reading the session.</p>
-    
+    to be used to enable symmetrical encryption on the contents of the session before
+    writing the session, or decrypting the contents of the session after reading the session.</p>
+
     <p>Keys are more secure when they are long, and consist of truly random characters.
     Changing the key on a server has the effect of invalidating all existing sessions.</p>
-    
+
+    <p>If the <code class="directive"><a href="#sessioncryptocertificatefile">SessionCryptoCertificateFile</a></code>
+    directive is set and asymmetrical encryption is enabled instead, the
+    <code class="directive"><a href="#sessioncryptopassphrase">SessionCryptoPassphrase</a></code> directive
+    will be interpreted as the passphrase of the key, if the key is encrypted.</p>
+
 
 </div>
 </div>
