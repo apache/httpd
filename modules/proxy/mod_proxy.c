@@ -1023,13 +1023,7 @@ static int proxy_handler(request_rec *r)
         goto cleanup;
     }
 cleanup:
-    if (balancer) {
-        int post_status = proxy_run_post_request(worker, balancer, r, conf);
-        if (post_status == DECLINED) {
-            post_status = OK; /* no post_request handler available */
-            /* TODO: recycle direct worker */
-        }
-    }
+    ap_proxy_post_request(worker, balancer, r, conf);
 
     proxy_run_request_status(&access_status, r);
 
