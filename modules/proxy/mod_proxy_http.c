@@ -1359,6 +1359,38 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
             ap_log_rerror(APLOG_MARK, APLOG_ERR, rc, r,
                           "proxy: error reading status line from remote "
                           "server %s", backend->hostname);
+            /*
+             * If we are a reverse proxy request shutdown the connection
+             * WITHOUT ANY response to trigger a retry by the client
+             * if allowed (as for idempotent requests).
+             * BUT currently we should not do this if the request is the
+             * first request on a keepalive connection as browsers like
+             * seamonkey only display an empty page in this case and do
+             * not do a retry.
+             */
+            if (r->proxyreq == PROXYREQ_REVERSE && c->keepalives) {
+                ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                              "proxy: Closing connection to client because"
+                              " reading from backend server %s failed. Number"
+                              " of keepalives %i", backend->hostname, 
+                              c->keepalives);
+                ap_proxy_backend_broke(r, bb);
+                /*
+                 * Add an EOC bucket to signal the ap_http_header_filter
+                 * that it should get out of our way
+                 */
+                e = ap_bucket_eoc_create(c->bucket_alloc);
+                APR_BRIGADE_INSERT_TAIL(bb, e);
+                ap_pass_brigade(r->output_filters, bb);
+                /* Need to return OK to avoid sending an error message */
+                return OK;
+            }
+            else if (!c->keepalives) {
+                     ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
+                                   "proxy: NOT Closing connection to client"
+                                   " although reading from backend server %s"
+                                   " failed.", backend->hostname);
+            }
             return ap_proxyerror(r, HTTP_BAD_GATEWAY,
                                  "Error reading from remote server");
         }
