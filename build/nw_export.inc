@@ -38,6 +38,7 @@
 #include "scoreboard.h"
 #include "util_cfgtree.h"
 #include "util_charset.h"
+#include "util_cookies.h"
 #include "util_ebcdic.h"
 #include "util_filter.h"
 /*#include "util_ldap.h"*/
