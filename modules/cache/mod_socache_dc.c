@@ -51,7 +51,10 @@ static const char *socache_dc_create(ap_socache_instance_t **context,
     return NULL;
 }
 
-static apr_status_t socache_dc_init(ap_socache_instance_t *ctx, server_rec *s, apr_pool_t *p)
+static apr_status_t socache_dc_init(ap_socache_instance_t *ctx, 
+                                    const char *namespace, 
+                                    const struct ap_socache_hints *hints, 
+                                    server_rec *s, apr_pool_t *p)
 {
 #if 0
     /* If a "persistent connection" mode of operation is preferred, you *must*

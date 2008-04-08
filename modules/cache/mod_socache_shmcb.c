@@ -302,6 +302,8 @@ static const char *socache_shmcb_create(ap_socache_instance_t **context,
 }
 
 static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
+                                       const char *namespace, 
+                                       const struct ap_socache_hints *hints,
                                        server_rec *s, apr_pool_t *p)
 {
     void *shm_segment;
@@ -309,6 +311,7 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
     apr_status_t rv;
     SHMCBHeader *header;
     unsigned int num_subcache, num_idx, loop;
+    apr_size_t avg_obj_size, avg_id_len;
 
     /* Create shared memory segment */
     if (ctx->data_file == NULL) {
@@ -348,16 +351,10 @@ static apr_status_t socache_shmcb_init(ap_socache_instance_t *ctx,
                  shm_segsize);
     /* Discount the header */
     shm_segsize -= sizeof(SHMCBHeader);
-    /* Select the number of subcaches to create and how many indexes each
-     * should contain based on the size of the memory (the header has already
-     * been subtracted). Typical non-client-auth sslv3/tlsv1 sessions are
-     * around 180 bytes (148 bytes data and 32 bytes for the id), so
-     * erring to division by 150 helps ensure we would exhaust data
-     * storage before index storage (except sslv2, where it's
-     * *slightly* the other way). From there, we select the number of
-     * subcaches to be a power of two, such that the number of indexes
-     * per subcache at least twice the number of subcaches. */
-    num_idx = (shm_segsize) / 150;
+    /* Select index size based on average object size hints, if given. */
+    avg_obj_size = hints && hints->avg_obj_size ? hints->avg_obj_size : 150;
+    avg_id_len = hints && hints->avg_id_len ? hints->avg_id_len : 30;
+    num_idx = (shm_segsize) / (avg_obj_size + avg_id_len);
     num_subcache = 256;
     while ((num_idx / num_subcache) < (2 * num_subcache))
         num_subcache /= 2;
