@@ -141,16 +141,6 @@ static void *merge_dbd_config(apr_pool_t *pool, void *basev, void *addv)
     return svr;
 }
 
-#define ISINT(val) do {                                                 \
-        const char *p;                                                  \
-                                                                        \
-        for (p = val; *p; ++p) {                                        \
-            if (!apr_isdigit(*p)) {                                     \
-                return "Argument must be numeric!";                     \
-            }                                                           \
-        }                                                               \
-    } while (0)
-
 static const char *dbd_param(cmd_parms *cmd, void *dconf, const char *val)
 {
     const apr_dbd_driver_t *driver = NULL;
@@ -185,32 +175,47 @@ static const char *dbd_param(cmd_parms *cmd, void *dconf, const char *val)
     case cmd_params:
         cfg->params = val;
         break;
-#if APR_HAS_THREADS
-    case cmd_min:
-        ISINT(val);
-        cfg->nmin = atoi(val);
-        cfg->set |= NMIN_SET;
-        break;
-    case cmd_keep:
-        ISINT(val);
-        cfg->nkeep = atoi(val);
-        cfg->set |= NKEEP_SET;
-        break;
-    case cmd_max:
-        ISINT(val);
-        cfg->nmax = atoi(val);
-        cfg->set |= NMAX_SET;
-        break;
-    case cmd_exp:
-        ISINT(val);
-        cfg->exptime = atoi(val);
-        cfg->set |= EXPTIME_SET;
-        break;
-#endif
     }
 
     return NULL;
 }
+
+#if APR_HAS_THREADS
+static const char *dbd_param_int(cmd_parms *cmd, void *dconf, const char *val)
+{
+    svr_cfg *svr = ap_get_module_config(cmd->server->module_config,
+                                        &dbd_module);
+    dbd_cfg_t *cfg = svr->cfg;
+    const char *p;
+
+    for (p = val; *p; ++p) {
+        if (!apr_isdigit(*p)) {
+            return "Argument must be numeric!";
+        }
+    }
+
+    switch ((long) cmd->info) {
+    case cmd_min:
+        cfg->nmin = atoi(val);
+        cfg->set |= NMIN_SET;
+        break;
+    case cmd_keep:
+        cfg->nkeep = atoi(val);
+        cfg->set |= NKEEP_SET;
+        break;
+    case cmd_max:
+        cfg->nmax = atoi(val);
+        cfg->set |= NMAX_SET;
+        break;
+    case cmd_exp:
+        cfg->exptime = atoi(val);
+        cfg->set |= EXPTIME_SET;
+        break;
+    }
+
+    return NULL;
+}
+#endif
 
 static const char *dbd_param_flag(cmd_parms *cmd, void *dconf, int flag)
 {
@@ -250,15 +255,15 @@ static const command_rec dbd_cmds[] = {
                    "SQL statement to prepare (or nothing, to override "
                    "statement inherited from main server) and label"),
 #if APR_HAS_THREADS
-    AP_INIT_TAKE1("DBDMin", dbd_param, (void*)cmd_min, RSRC_CONF,
+    AP_INIT_TAKE1("DBDMin", dbd_param_int, (void*)cmd_min, RSRC_CONF,
                   "Minimum number of connections"),
     /* XXX: note that mod_proxy calls this "smax" */
-    AP_INIT_TAKE1("DBDKeep", dbd_param, (void*)cmd_keep, RSRC_CONF,
+    AP_INIT_TAKE1("DBDKeep", dbd_param_int, (void*)cmd_keep, RSRC_CONF,
                   "Maximum number of sustained connections"),
-    AP_INIT_TAKE1("DBDMax", dbd_param, (void*)cmd_max, RSRC_CONF,
+    AP_INIT_TAKE1("DBDMax", dbd_param_int, (void*)cmd_max, RSRC_CONF,
                   "Maximum number of connections"),
     /* XXX: note that mod_proxy calls this "ttl" (time to live) */
-    AP_INIT_TAKE1("DBDExptime", dbd_param, (void*)cmd_exp, RSRC_CONF,
+    AP_INIT_TAKE1("DBDExptime", dbd_param_int, (void*)cmd_exp, RSRC_CONF,
                   "Keepalive time for idle connections"),
 #endif
     {NULL}
