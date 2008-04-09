@@ -256,7 +256,10 @@
 <description>Enables a session for the current directory or location</description>
 <syntax>Session On|Off</syntax>
 <default>Session Off</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -272,7 +275,10 @@
 <description>Define a maximum age in seconds for a session</description>
 <syntax>SessionMaxAge <var>maxage</var></syntax>
 <default>SessionMaxAge 0</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -295,7 +301,10 @@
 <var>HTTP_SESSION</var> environment variable</description>
 <syntax>SessionEnv On|Off</syntax>
 <default>SessionEnv Off</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -318,7 +327,10 @@
 <description>Import session updates from a given HTTP response header</description>
 <syntax>SessionHeader <var>header</var></syntax>
 <default>none</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -344,7 +356,10 @@
 <description>Define URL prefixes for which a session is valid</description>
 <syntax>SessionInclude <var>path</var></syntax>
 <default>all URLs</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -368,7 +383,10 @@
 <description>Define URL prefixes for which a session is ignored</description>
 <syntax>SessionExclude <var>path</var></syntax>
 <default>none</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 

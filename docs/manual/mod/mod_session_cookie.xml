@@ -81,7 +81,10 @@
 <description>Name and attributes for the RFC2109 cookie storing the session</description>
 <syntax>SessionCookieName <var>name</var> <var>attributes</var></syntax>
 <default>none</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -109,7 +112,10 @@
 <description>Name and attributes for the RFC2965 cookie storing the session</description>
 <syntax>SessionCookieName2 <var>name</var> <var>attributes</var></syntax>
 <default>none</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -137,7 +143,10 @@
 <description>Control for whether session cookies should be removed from incoming HTTP headers</description>
 <syntax>SessionCookieRemove On|Off</syntax>
 <default>SessionCookieRemove Off</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 

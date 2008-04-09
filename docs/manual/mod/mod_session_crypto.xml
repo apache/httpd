@@ -81,7 +81,10 @@
 <description>The key used to encrypt the session</description>
 <syntax>SessionCryptoPassphrase <var>secret</var></syntax>
 <default>none</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -106,7 +109,10 @@
 <description>The certificate used to encrypt and decrypt the session</description>
 <syntax>SessionCryptoCertificateFile <var>file</var></syntax>
 <default>none</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -136,7 +142,10 @@
 <description>The certificate key used to encrypt and decrypt the session</description>
 <syntax>SessionCryptoCertificateKeyFile <var>file</var></syntax>
 <default>none</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -167,7 +176,10 @@
 <description>The name of the cipher to use during encryption / decryption</description>
 <syntax>SessionCryptoCipher <var>cipher</var></syntax>
 <default>AES256</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -183,7 +195,10 @@
 <description>The name of the digest to use during encryption / decryption</description>
 <syntax>SessionCryptoDigest <var>cipher</var></syntax>
 <default>SHA</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -199,7 +214,10 @@
 <description>The name of the engine to use during encryption / decryption</description>
 <syntax>SessionCryptoEngine <var>engine</var></syntax>
 <default>none</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 

@@ -241,11 +241,11 @@ static const char *
 
 static const command_rec session_cookie_cmds[] =
 {
-    AP_INIT_RAW_ARGS("SessionCookieName", set_cookie_name, NULL, OR_AUTHCFG,
+    AP_INIT_RAW_ARGS("SessionCookieName", set_cookie_name, NULL, RSRC_CONF|OR_AUTHCFG,
                      "The name of the RFC2109 cookie carrying the session"),
-    AP_INIT_RAW_ARGS("SessionCookieName2", set_cookie_name2, NULL, OR_AUTHCFG,
+    AP_INIT_RAW_ARGS("SessionCookieName2", set_cookie_name2, NULL, RSRC_CONF|OR_AUTHCFG,
                      "The name of the RFC2965 cookie carrying the session"),
-    AP_INIT_FLAG("SessionCookieRemove", set_remove, NULL, OR_AUTHCFG,
+    AP_INIT_FLAG("SessionCookieRemove", set_remove, NULL, RSRC_CONF|OR_AUTHCFG,
                  "Set to 'On' to remove the session cookie from the headers "
                  "and hide the cookie from a backend server or process"),
     {NULL}

@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Change the directives within the mod_session* modules to be valid
+     both inside and outside the location/directory sections, as
+     suggested by wrowe. [Graham Leggett]
+
   *) mod_auth_form: Add a module capable of allowing end users to log
      in using an HTML form, storing the credentials within mod_session.
      [Graham Leggett]
