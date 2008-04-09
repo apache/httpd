@@ -563,6 +563,8 @@ static int get_form_auth(request_rec * r,
     apr_off_t len;
     apr_size_t size;
     apr_bucket_brigade *kept_body = NULL;
+    int res;
+    char *buffer;
 
     /* have we isolated the user and pw before? */
     get_notes_auth(r, sent_user, sent_pw, sent_method, sent_mimetype);
@@ -570,7 +572,7 @@ static int get_form_auth(request_rec * r,
         return OK;
     }
 
-    int res = ap_parse_request_form(r, &pairs, -1, conf->form_size);
+    res = ap_parse_request_form(r, &pairs, -1, conf->form_size);
     if (res != OK) {
         return res;
     }
@@ -578,7 +580,7 @@ static int get_form_auth(request_rec * r,
         ap_form_pair_t *pair = (ap_form_pair_t *) apr_array_pop(pairs);
         if (username && !strcmp(pair->name, username) && sent_user) {
             apr_brigade_length(pair->value, 1, &len);
-            char *buffer = apr_palloc(r->pool, len + 1);
+            buffer = apr_palloc(r->pool, len + 1);
             size = (apr_size_t) len;
             apr_brigade_flatten(pair->value, buffer, &size);
             buffer[len] = 0;
@@ -586,7 +588,7 @@ static int get_form_auth(request_rec * r,
         }
         else if (password && !strcmp(pair->name, password) && sent_pw) {
             apr_brigade_length(pair->value, 1, &len);
-            char *buffer = apr_palloc(r->pool, len + 1);
+            buffer = apr_palloc(r->pool, len + 1);
             size = (apr_size_t) len;
             apr_brigade_flatten(pair->value, buffer, &size);
             buffer[len] = 0;
@@ -594,7 +596,7 @@ static int get_form_auth(request_rec * r,
         }
         else if (location && !strcmp(pair->name, location) && sent_loc) {
             apr_brigade_length(pair->value, 1, &len);
-            char *buffer = apr_palloc(r->pool, len + 1);
+            buffer = apr_palloc(r->pool, len + 1);
             size = (apr_size_t) len;
             apr_brigade_flatten(pair->value, buffer, &size);
             buffer[len] = 0;
@@ -602,7 +604,7 @@ static int get_form_auth(request_rec * r,
         }
         else if (method && !strcmp(pair->name, method) && sent_method) {
             apr_brigade_length(pair->value, 1, &len);
-            char *buffer = apr_palloc(r->pool, len + 1);
+            buffer = apr_palloc(r->pool, len + 1);
             size = (apr_size_t) len;
             apr_brigade_flatten(pair->value, buffer, &size);
             buffer[len] = 0;
@@ -610,7 +612,7 @@ static int get_form_auth(request_rec * r,
         }
         else if (mimetype && !strcmp(pair->name, mimetype) && sent_mimetype) {
             apr_brigade_length(pair->value, 1, &len);
-            char *buffer = apr_palloc(r->pool, len + 1);
+            buffer = apr_palloc(r->pool, len + 1);
             size = (apr_size_t) len;
             apr_brigade_flatten(pair->value, buffer, &size);
             buffer[len] = 0;
