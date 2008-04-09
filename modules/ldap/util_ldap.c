@@ -2405,9 +2405,6 @@ static void *util_ldap_create_config(apr_pool_t *p, server_rec *s)
     st->connectionTimeout = 10;
     st->verify_svr_cert = 1;
 
-    /* Initialize the rebind callback's cross reference list. */
-    apr_ldap_rebind_init (p);
-
     return st;
 }
 
@@ -2614,6 +2611,9 @@ static int util_ldap_post_config(apr_pool_t *p, apr_pool_t *plog,
                      result_err ? ": " : "",
                      result_err ? result_err->reason : "");
     }
+
+    /* Initialize the rebind callback's cross reference list. */
+    apr_ldap_rebind_init (p);
 
     return(OK);
 }
