@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_auth_form: Add a module capable of allowing end users to log
+     in using an HTML form, storing the credentials within mod_session.
+     [Graham Leggett]
+
   *) Add a function to the http filters that is able to parse an HTML
      form request with the type of application/x-www-form-urlencoded.
      [Graham Leggett]
