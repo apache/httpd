@@ -284,8 +284,15 @@ static int authenticate_basic_user(request_rec *r)
     return OK;
 }
 
+static apr_array_header_t *authn_ap_list_provider_names(apr_pool_t *ptemp)
+{
+    return ap_list_provider_names(ptemp, AUTHN_PROVIDER_GROUP, "0");
+}
+
 static void register_hooks(apr_pool_t *p)
 {
+    APR_REGISTER_OPTIONAL_FN(authn_ap_list_provider_names);
+
     ap_hook_check_authn(authenticate_basic_user, NULL, NULL, APR_HOOK_MIDDLE,
                         AP_AUTH_INTERNAL_PER_CONF);
 }
