@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) Add a function to the http filters that is able to parse an HTML
+     form request with the type of application/x-www-form-urlencoded.
+     [Graham Leggett]
+
   *) mod_session_crypto: Initialise SSL in the post config hook.
      [Ruediger Pluem, Graham Leggett]
 
