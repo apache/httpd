@@ -8,6 +8,7 @@
   <modulefile>mod_asis.xml.ko</modulefile>
   <modulefile>mod_auth_basic.xml.ko</modulefile>
   <modulefile>mod_auth_digest.xml.ko</modulefile>
+  <modulefile>mod_auth_form.xml</modulefile>
   <modulefile>mod_authn_anon.xml.ko</modulefile>
   <modulefile>mod_authn_core.xml</modulefile>
   <modulefile>mod_authn_dbd.xml</modulefile>
