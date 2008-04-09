@@ -1961,11 +1961,17 @@ static int add_auth_info(request_rec *r)
     return OK;
 }
 
+static apr_array_header_t *authn_ap_list_provider_names(apr_pool_t *ptemp)
+{
+    return ap_list_provider_names(ptemp, AUTHN_PROVIDER_GROUP, "0");
+}
 
 static void register_hooks(apr_pool_t *p)
 {
     static const char * const cfgPost[]={ "http_core.c", NULL };
     static const char * const parsePre[]={ "mod_proxy.c", NULL };
+
+    APR_REGISTER_OPTIONAL_FN(authn_ap_list_provider_names);
 
     ap_hook_post_config(initialize_module, NULL, cfgPost, APR_HOOK_MIDDLE);
     ap_hook_child_init(initialize_child, NULL, NULL, APR_HOOK_MIDDLE);
