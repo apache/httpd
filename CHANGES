@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_dbd: Handle integer configuration directive parameters with a
+     dedicated function.
+
   *) Change the directives within the mod_session* modules to be valid
      both inside and outside the location/directory sections, as
      suggested by wrowe. [Graham Leggett]
