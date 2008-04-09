@@ -14,7 +14,6 @@ include $(AP_WORK)\build\NWGNUhead.inc
 
 #
 # build this level's files
-
 #
 # Make sure all needed macro's are defined
 #
@@ -24,6 +23,13 @@ include $(AP_WORK)\build\NWGNUhead.inc
 # INCDIRS
 #
 XINCDIRS	+= \
+			$(APR)/include \
+			$(APRUTIL)/include \
+			$(AP_WORK)/include \
+			$(AP_WORK)/os/NetWare \
+			$(AP_WORK)/server/mpm/NetWare \
+			$(AP_WORK)/srclib/pcre \
+			$(NWOS) \
 			$(EOLIST)
 
 #
@@ -95,19 +101,19 @@ endif
 # This is used by the link 'name' directive to name the nlm.  If left blank
 # TARGET_nlm (see below) will be used.
 #
-NLM_NAME	=
+NLM_NAME	= socacheshmcb
 
 #
 # This is used by the link '-desc ' directive.
 # If left blank, NLM_NAME will be used.
 #
-NLM_DESCRIPTION	=
+NLM_DESCRIPTION	= Apache $(VERSION_STR) Socache DC Module
 
 #
 # This is used by the '-threadname' directive.  If left blank,
 # NLM_NAME Thread will be used.
 #
-NLM_THREAD_NAME	=
+NLM_THREAD_NAME	= socacheshmcb
 
 #
 # If this is specified, it will override VERSION value in
@@ -118,18 +124,18 @@ NLM_VERSION	=
 #
 # If this is specified, it will override the default of 64K
 #
-NLM_STACK_SIZE	=
+NLM_STACK_SIZE	= 65536
 
 
 #
 # If this is specified it will be used by the link '-entry' directive
 #
-NLM_ENTRY_SYM	=
+NLM_ENTRY_SYM	= _LibCPrelude
 
 #
 # If this is specified it will be used by the link '-exit' directive
 #
-NLM_EXIT_SYM	=
+NLM_EXIT_SYM	= _LibCPostlude
 
 #
 # If this is specified it will be used by the link '-check' directive
@@ -137,9 +143,9 @@ NLM_EXIT_SYM	=
 NLM_CHECK_SYM	=
 
 #
-# If these are specified it will be used by the link '-flags' directive
+# If this is specified it will be used by the link '-flags' directive
 #
-NLM_FLAGS	=
+NLM_FLAGS	= AUTOUNLOAD, PSEUDOPREEMPTION
 
 #
 # If this is specified it will be linked in with the XDCData option in the def
@@ -149,14 +155,14 @@ NLM_FLAGS	=
 XDCDATA		=
 
 #
+# Declare all target files (you must add your files here)
+#
+
+#
 # If there is an NLM target, put it here
 #
 TARGET_nlm = \
-	$(OBJDIR)/mod_cach.nlm \
-	$(OBJDIR)/mem_cach.nlm \
-	$(OBJDIR)/dsk_cach.nlm \
-	$(OBJDIR)/socachdbm.nlm \
-	$(OBJDIR)/socachshmcb.nlm \
+	$(OBJDIR)/$(NLM_NAME).nlm \
 	$(EOLIST)
 
 #
@@ -170,6 +176,7 @@ TARGET_lib = \
 # Paths must all use the '/' character
 #
 FILES_nlm_objs = \
+	$(OBJDIR)/mod_socache_shmcb.o \
 	$(EOLIST)
 
 #
@@ -177,6 +184,7 @@ FILES_nlm_objs = \
 # These will be added as a library command in the link.opt file.
 #
 FILES_nlm_libs = \
+	libcpre.o \
 	$(EOLIST)
 
 #
@@ -184,6 +192,9 @@ FILES_nlm_libs = \
 # These will be added as a module command in the link.opt file.
 #
 FILES_nlm_modules = \
+	Apache2 \
+	Libc \
+	mod_cach \
 	$(EOLIST)
 
 #
@@ -205,12 +216,17 @@ FILE_nlm_copyright =
 # Any additional imports go here
 #
 FILES_nlm_Ximports = \
+	@libc.imp \
+	@$(APR)/aprlib.imp \
+	@httpd.imp \
+	@mod_cache.imp \
 	$(EOLIST)
 
 #
 # Any symbols exported to here
 #
 FILES_nlm_exports = \
+	socache_shmcb_module \
 	$(EOLIST)
 
 #
@@ -233,7 +249,6 @@ nlms :: libs $(TARGET_nlm)
 # correct place.  (See $(AP_WORK)\build\NWGNUhead.inc for examples)
 #
 install :: nlms FORCE
-	copy $(OBJDIR)\*.nlm $(INSTALL)\$(BASEDIR)\modules\*.*
 
 #
 # Any specialized rules here
