@@ -582,17 +582,17 @@ static const char *add_session_exclude(cmd_parms * cmd, void *dconf, const char 
 
 static const command_rec session_cmds[] =
 {
-    AP_INIT_FLAG("Session", set_session_enable, NULL, OR_AUTHCFG,
+    AP_INIT_FLAG("Session", set_session_enable, NULL, RSRC_CONF|OR_AUTHCFG,
                  "on if a session should be maintained for these URLs"),
-    AP_INIT_TAKE1("SessionMaxAge", set_session_maxage, NULL, OR_AUTHCFG,
+    AP_INIT_TAKE1("SessionMaxAge", set_session_maxage, NULL, RSRC_CONF|OR_AUTHCFG,
                   "length of time for which a session should be valid. Zero to disable"),
-    AP_INIT_TAKE1("SessionHeader", set_session_header, NULL, OR_AUTHCFG,
+    AP_INIT_TAKE1("SessionHeader", set_session_header, NULL, RSRC_CONF|OR_AUTHCFG,
                   "output header, if present, whose contents will be injected into the session."),
-    AP_INIT_FLAG("SessionEnv", set_session_env, NULL, OR_AUTHCFG,
+    AP_INIT_FLAG("SessionEnv", set_session_env, NULL, RSRC_CONF|OR_AUTHCFG,
                  "on if a session should be written to the CGI environment. Defaults to off"),
-    AP_INIT_TAKE1("SessionInclude", add_session_include, NULL, OR_AUTHCFG,
+    AP_INIT_TAKE1("SessionInclude", add_session_include, NULL, RSRC_CONF|OR_AUTHCFG,
                   "URL prefixes to include in the session. Defaults to all URLs"),
-    AP_INIT_TAKE1("SessionExclude", add_session_exclude, NULL, OR_AUTHCFG,
+    AP_INIT_TAKE1("SessionExclude", add_session_exclude, NULL, RSRC_CONF|OR_AUTHCFG,
                   "URL prefixes to exclude from the session. Defaults to no URLs"),
     {NULL}
 };

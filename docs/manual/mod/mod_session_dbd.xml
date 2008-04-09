@@ -148,7 +148,10 @@
 <description>Name and attributes for the RFC2109 cookie storing the session ID</description>
 <syntax>SessionDBDCookieName <var>name</var> <var>attributes</var></syntax>
 <default>none</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -176,7 +179,10 @@
 <description>Name and attributes for the RFC2965 cookie storing the session ID</description>
 <syntax>SessionDBDCookieName2 <var>name</var> <var>attributes</var></syntax>
 <default>none</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -204,7 +210,10 @@
 <description>Control for whether session ID cookies should be removed from incoming HTTP headers</description>
 <syntax>SessionDBDCookieRemove On|Off</syntax>
 <default>SessionDBDCookieRemove On</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -225,7 +234,10 @@
 <description>Enable a per user session</description>
 <syntax>SessionDBDPerUser On|Off</syntax>
 <default>SessionDBDPerUser Off</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -242,7 +254,10 @@
 <description>The SQL query to use to select sessions from the database</description>
 <syntax>SessionDBDSelectLabel <var>label</var></syntax>
 <default>SessionDBDSelectLabel selectsession</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -259,7 +274,10 @@
 <description>The SQL query to use to insert sessions into the database</description>
 <syntax>SessionDBDInsertLabel <var>label</var></syntax>
 <default>SessionDBDInsertLabel insertsession</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -279,7 +297,10 @@
 <description>The SQL query to use to update existing sessions in the database</description>
 <syntax>SessionDBDUpdateLabel <var>label</var></syntax>
 <default>SessionDBDUpdateLabel updatesession</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
@@ -300,7 +321,10 @@
 <description>The SQL query to use to remove sessions from the database</description>
 <syntax>SessionDBDDeleteLabel <var>label</var></syntax>
 <default>SessionDBDDeleteLabel deletesession</default>
-<contextlist><context>directory</context>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+<context>directory</context>
+<context>.htaccess</context>
 </contextlist>
 <compatibility>Available in Apache 2.3.0 and later</compatibility>
 
