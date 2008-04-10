@@ -160,7 +160,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=617890&view=rev
       Backport version for 2.2.x of patch:
          Trunk version of patch works
-    +1: rpluem, jim
+    +1: rpluem, jim, covener
 
  * mod_substitute: Make default behavior flattening of buckets. Allow
    for people to specifically set "quick" mode.
@@ -199,7 +199,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=612954&view=rev
     Backport version for 2.2.x of patch:
       Trunk version of patch works
-  +1: rpluem, jim
+  +1: rpluem, jim, covener
 
  * mod_proxy: Allow for keepalive backend proxies (PR43238), which also
    addresses PR44026 and PR44543. These are pretty much interwrapped here.
@@ -261,7 +261,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=644391
    Backport version for 2.2.x of patch:
        Trunk version of patch works
-   +1: jim, rpluem
+   +1: jim, rpluem, covener
 
 PATCHES/ISSUES THAT ARE STALLED
 
