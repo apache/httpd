@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) rotatelogs: Log the current file size and error code/description
+     when failing to write to the log file.  [Jeff Trawick]
+
   *) mod_dbd: Handle integer configuration directive parameters with a
      dedicated function.
 

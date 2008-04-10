@@ -58,7 +58,7 @@
 #endif
 
 #define BUFSIZE         65536
-#define ERRMSGSZ        128
+#define ERRMSGSZ        256
 
 #ifndef MAX_PATH
 #define MAX_PATH        1024
@@ -299,13 +299,32 @@ int main (int argc, const char * const argv[])
          */
         if (!bypass_io) {
             nWrite = nRead;
-            apr_file_write(nLogFD, buf, &nWrite);
+            rv = apr_file_write(nLogFD, buf, &nWrite);
+            if (rv == APR_SUCCESS && nWrite != nRead) {
+                /* buffer partially written, which for rotatelogs means we encountered
+                 * an error such as out of space or quota or some other limit reached;
+                 * try to write the rest so we get the real error code
+                 */
+                apr_size_t nWritten = nWrite;
+
+                nRead  = nRead - nWritten;
+                nWrite = nRead;
+                rv = apr_file_write(nLogFD, buf + nWritten, &nWrite);
+            }
             if (nWrite != nRead) {
+                char strerrbuf[120];
+                apr_off_t cur_offset;
+                
+                cur_offset = 0;
+                if (apr_file_seek(nLogFD, APR_CUR, &cur_offset) != APR_SUCCESS) {
+                    cur_offset = -1;
+                }
+                apr_strerror(rv, strerrbuf, sizeof strerrbuf);
                 nMessCount++;
-                sprintf(errbuf,
-                        "Error writing to log file. "
-                        "%10d messages lost.\n",
-                        nMessCount);
+                apr_snprintf(errbuf, sizeof errbuf,
+                             "Error %d writing to log file at offset %" APR_OFF_T_FMT ". "
+                             "%10d messages lost (%s)\n",
+                             rv, cur_offset, nMessCount, strerrbuf);
                 nWrite = strlen(errbuf);
                 apr_file_trunc(nLogFD, 0);
                 if (apr_file_write(nLogFD, errbuf, &nWrite) != APR_SUCCESS) {
