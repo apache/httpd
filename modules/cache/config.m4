@@ -97,9 +97,9 @@ ap_ssltk_dc="no"])
   fi
 ])
 
-APACHE_MODULE(socache_shmcb,  shmcb small object cache provider, , most)
-APACHE_MODULE(socache_dbm, dbm small object cache provider, , most)
-APACHE_MODULE(socache_memcache, memcache small object cache provider, , most)
+APACHE_MODULE(socache_shmcb,  shmcb small object cache provider, , , most)
+APACHE_MODULE(socache_dbm, dbm small object cache provider, , , most)
+APACHE_MODULE(socache_memcache, memcache small object cache provider, , , most)
 APACHE_MODULE(socache_dc, distcache small object cache provider, , , no, [
    CHECK_DISTCACHE
 ])
