@@ -38,17 +38,8 @@
 extern "C" {
 #endif
 
-/**
- * Core per-directory configuration.
- */
-typedef struct {
-    apr_off_t keep_body;
-    int keep_body_set;
-} core_dir_conf;
-
 /* Handles for core filters */
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
-extern AP_DECLARE_DATA ap_filter_rec_t *ap_kept_body_input_filter_handle;
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
 extern AP_DECLARE_DATA ap_filter_rec_t *ap_http_outerror_filter_handle;
@@ -60,14 +51,6 @@ extern AP_DECLARE_DATA ap_filter_rec_t *ap_byterange_filter_handle;
 apr_status_t ap_http_filter(ap_filter_t *f, apr_bucket_brigade *b,
                             ap_input_mode_t mode, apr_read_type_e block,
                             apr_off_t readbytes);
-
-/* Filter to handle a kept body on subrequests */
-apr_status_t ap_kept_body_filter(ap_filter_t *f, apr_bucket_brigade *b,
-                                 ap_input_mode_t mode, apr_read_type_e block,
-                                 apr_off_t readbytes);
-
-/* Initialisation of filter to handle a kept body on subrequests */
-int ap_kept_body_filter_init(ap_filter_t *f);
 
 /* HTTP/1.1 chunked transfer encoding filter. */
 apr_status_t ap_http_chunk_filter(ap_filter_t *f, apr_bucket_brigade *b);

@@ -36,7 +36,6 @@
 
 /* Handles for core filters */
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_input_filter_handle;
-AP_DECLARE_DATA ap_filter_rec_t *ap_kept_body_input_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_header_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_chunk_filter_handle;
 AP_DECLARE_DATA ap_filter_rec_t *ap_http_outerror_filter_handle;
@@ -89,20 +88,6 @@ static const char *set_keep_alive_max(cmd_parms *cmd, void *dummy,
     return NULL;
 }
 
-static const char *set_kept_body_size(cmd_parms *cmd, void *dconf,
-                                      const char *arg)
-{
-    core_dir_conf *conf = dconf;
-
-    if (APR_SUCCESS != apr_strtoff(&(conf->keep_body), arg, NULL, 0)
-        || conf->keep_body < 0) {
-        return "KeptBodySize must be a size in bytes, or zero.";
-    }
-    conf->keep_body_set = 1;
-
-    return NULL;
-}
-
 static const command_rec http_cmds[] = {
     AP_INIT_TAKE1("KeepAliveTimeout", set_keep_alive_timeout, NULL, RSRC_CONF,
                   "Keep-Alive timeout duration (sec)"),
@@ -111,8 +96,6 @@ static const command_rec http_cmds[] = {
                   "or 0 for infinite"),
     AP_INIT_TAKE1("KeepAlive", set_keep_alive, NULL, RSRC_CONF,
                   "Whether persistent connections should be On or Off"),
-    AP_INIT_TAKE1("KeptBodySize", set_kept_body_size, NULL, ACCESS_CONF,
-                  "Maximum size of request bodies kept aside for use by filters"),
     { NULL }
 };
 
@@ -290,9 +273,6 @@ static void register_hooks(apr_pool_t *p)
     ap_http_input_filter_handle =
         ap_register_input_filter("HTTP_IN", ap_http_filter,
                                  NULL, AP_FTYPE_PROTOCOL);
-    ap_kept_body_input_filter_handle =
-        ap_register_input_filter("KEPT_BODY", ap_kept_body_filter,
-                                 ap_kept_body_filter_init, AP_FTYPE_RESOURCE);
     ap_http_header_filter_handle =
         ap_register_output_filter("HTTP_HEADER", ap_http_header_filter,
                                   NULL, AP_FTYPE_PROTOCOL);
@@ -308,35 +288,12 @@ static void register_hooks(apr_pool_t *p)
     ap_method_registry_init(p);
 }
 
-static void *create_core_dir_config(apr_pool_t *p, char *dummy)
-{
-    core_dir_conf *new =
-        (core_dir_conf *) apr_pcalloc(p, sizeof(core_dir_conf));
-
-    new->keep_body_set = 0; /* unset */
-    new->keep_body = 0; /* don't by default */
-
-    return (void *) new;
-}
-
-static void *merge_core_dir_config(apr_pool_t *p, void *basev, void *addv)
-{
-    core_dir_conf *new = (core_dir_conf *) apr_pcalloc(p, sizeof(core_dir_conf));
-    core_dir_conf *add = (core_dir_conf *) addv;
-    core_dir_conf *base = (core_dir_conf *) basev;
-
-    new->keep_body = (add->keep_body_set == 0) ? base->keep_body : add->keep_body;
-    new->keep_body_set = add->keep_body_set || base->keep_body_set;
-
-    return new;
-}
-
 module AP_MODULE_DECLARE_DATA http_module = {
     STANDARD20_MODULE_STUFF,
-    create_core_dir_config, /* create per-directory config structure */
-    merge_core_dir_config,  /* merge per-directory config structures */
-    NULL,                   /* create per-server config structure */
-    NULL,                   /* merge per-server config structures */
-    http_cmds,              /* command apr_table_t */
-    register_hooks          /* register hooks */
+    NULL,              /* create per-directory config structure */
+    NULL,              /* merge per-directory config structures */
+    NULL,              /* create per-server config structure */
+    NULL,              /* merge per-server config structures */
+    http_cmds,         /* command apr_table_t */
+    register_hooks     /* register hooks */
 };

@@ -352,7 +352,7 @@
       to <code>exec cgi</code> to include the output of CGI programs
       into an HTML document.</p>
 
-      <p>If the <directive module="core">KeptBodySize</directive>
+      <p>If the <directive module="mod_request">KeptBodySize</directive>
       directive is correctly configured and valid for this included
       file, attempts to POST requests to the enclosing HTML document
       will be passed through to subrequests as POST requests as well.
