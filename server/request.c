@@ -45,6 +45,7 @@
 #include "util_charset.h"
 #include "util_script.h"
 #include "ap_expr.h"
+#include "mod_request.h"
 
 #include "mod_core.h"
 
@@ -1648,8 +1649,8 @@ static request_rec *make_sub_request(const request_rec *r,
      * Add the KEPT_BODY filter, which will insert any body marked to be
      * kept for the use of a subrequest, into the subrequest.
      */
-    ap_add_input_filter_handle(ap_kept_body_input_filter_handle,
-                               NULL, rnew, rnew->connection);
+    ap_add_input_filter(KEPT_BODY_FILTER,
+                        NULL, rnew, rnew->connection);
 
     return rnew;
 }

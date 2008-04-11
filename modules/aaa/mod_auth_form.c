@@ -33,6 +33,7 @@
 
 #include "mod_auth.h"
 #include "mod_session.h"
+#include "mod_request.h"
 
 #define LOG_PREFIX "mod_auth_form: "
 #define FORM_LOGIN_HANDLER "form-login-handler"
@@ -45,6 +46,8 @@ static void (*ap_session_get_fn) (request_rec * r, session_rec * z,
                                   const char *key, const char **value) = NULL;
 static void (*ap_session_set_fn) (request_rec * r, session_rec * z,
                                   const char *key, const char *value) = NULL;
+static void (*ap_parse_request_form_fn) (request_rec * r, apr_array_header_t ** ptr,
+                                         apr_size_t num, apr_size_t size) = NULL;
 
 typedef struct {
     authn_provider_list *providers;
@@ -176,7 +179,15 @@ static const char *add_authn_provider(cmd_parms * cmd, void *config,
         ap_session_set_fn = APR_RETRIEVE_OPTIONAL_FN(ap_session_set);
         if (!ap_session_load_fn || !ap_session_get_fn || !ap_session_set_fn) {
             return "You must load mod_session to enable the mod_auth_form "
-                "functions";
+                   "functions";
+        }
+    }
+
+    if (!ap_parse_request_form_fn) {
+        ap_parse_request_form_fn = APR_RETRIEVE_OPTIONAL_FN(ap_parse_request_form);
+        if (!ap_parse_request_form_fn) {
+            return "You must load mod_request to enable the mod_auth_form "
+                   "functions";
         }
     }
 
