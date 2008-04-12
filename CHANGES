@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
+     PR 44799 [Christian Wenz <christian wenz.org>]
+
   *) Move the KeptBodySize directive, kept_body filters and the
      ap_parse_request_body function out of the http module and into a
      new module called mod_request, reducing the size of the core.
