@@ -2444,6 +2444,8 @@ static void add_cookie(request_rec *r, char *s)
     char *domain;
     char *expires;
     char *path;
+    char *secure;
+    char *httponly;
 
     char *tok_cntx;
     char *cookie;
@@ -2468,6 +2470,8 @@ static void add_cookie(request_rec *r, char *s)
 
             expires = apr_strtok(NULL, ":", &tok_cntx);
             path = expires ? apr_strtok(NULL, ":", &tok_cntx) : NULL;
+            secure = path ? apr_strtok(NULL, ":", &tok_cntx) : NULL;
+            httponly = secure ? apr_strtok(NULL, ":", &tok_cntx) : NULL;
 
             if (expires) {
                 apr_time_exp_t tms;
@@ -2488,6 +2492,8 @@ static void add_cookie(request_rec *r, char *s)
                                  "; domain=", domain,
                                  expires ? "; expires=" : NULL,
                                  expires ? exp_time : NULL,
+                                 (strcasecmp(secure, "true") == 0 || strcasecmp(secure, "1") == 0) ? "; secure" : NULL,
+                                 httponly ? "; HttpOnly" : NULL, 
                                  NULL);
 
             apr_table_addn(rmain->err_headers_out, "Set-Cookie", cookie);
