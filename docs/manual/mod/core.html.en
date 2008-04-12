@@ -60,7 +60,6 @@ available</td></tr>
 <li><img alt="" src="../images/down.gif" /> <a href="#include">Include</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalive">KeepAlive</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#keepalivetimeout">KeepAliveTimeout</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#keptbodysize">KeptBodySize</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limit">&lt;Limit&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitexcept">&lt;LimitExcept&gt;</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#limitinternalrecursion">LimitInternalRecursion</a></li>
@@ -1584,65 +1583,6 @@ requests on a persistent connection</td></tr>
     higher the timeout, the more server processes will be kept
     occupied waiting on connections with idle clients.</p>
 
-</div>
-<div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="KeptBodySize" id="KeptBodySize">KeptBodySize</a> <a name="keptbodysize" id="keptbodysize">Directive</a></h2>
-<table class="directive">
-<tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Keep the request body instead of discarding it up to
-the specified maximum size, for potential use by filters such as
-mod_include.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>KeptBodySize <var>maximum size in bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>KeptBodySize 0</code></td></tr>
-<tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory</td></tr>
-<tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
-<tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
-</table>
-    <p>Under normal circumstances, request handlers such as the
-    default handler for static files will discard the request body
-    when it is not needed by the request handler. As a result,
-    filters such as mod_include are limited to making <code>GET</code> requests
-    only when including other URLs as subrequests, even if the
-    original request was a <code>POST</code> request, as the discarded
-    request body is no longer available once filter processing is
-    taking place.</p>
-
-    <p>When this directive has a value greater than zero, request
-    handlers that would otherwise discard request bodies will
-    instead set the request body aside for use by filters up to
-    the maximum size specified. In the case of the mod_include
-    filter, an attempt to <code>POST</code> a request to the static
-    shtml file will cause any subrequests to be <code>POST</code>
-    requests, instead of <code>GET</code> requests as before.</p>
-
-    <p>This feature makes it possible to break up complex web pages and
-    web applications into small individual components, and combine
-    the components and the surrounding web page structure together
-    using <code class="module"><a href="../mod/mod_include.html">mod_include</a></code>. The components can take the
-    form of CGI programs, scripted languages, or URLs reverse proxied
-    into the URL space from another server using
-    <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>.</p>
-
-    <p><strong>Note:</strong> Each request set aside has to be set
-    aside in temporary RAM until the request is complete. As a result,
-    care should be taken to ensure sufficient RAM is available on the
-    server to support the intended load. Use of this directive
-    should be limited to where needed on targeted parts of your
-    URL space, and with the lowest possible value that is still big
-    enough to hold a request body.</p>
-
-    <p>If the request size sent by the client exceeds the maximum
-    size allocated by this directive, the server will return
-    <code>413 Request Entity Too Large</code>.</p>
-
-    <p>Handlers such as <code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> that consume request
-    bodies for their own purposes rather than discard them do not take
-    this directive into account.</p>
-
-
-<h3>See also</h3>
-<ul>
-<li><a href="mod_include.html">mod_include</a> documentation</li>
-</ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="Limit" id="Limit">&lt;Limit&gt;</a> <a name="limit" id="limit">Directive</a></h2>

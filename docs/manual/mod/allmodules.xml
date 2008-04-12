@@ -66,6 +66,7 @@
   <modulefile>mod_proxy_connect.xml</modulefile>
   <modulefile>mod_proxy_ftp.xml</modulefile>
   <modulefile>mod_proxy_http.xml</modulefile>
+  <modulefile>mod_request.xml</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
   <modulefile>mod_session.xml</modulefile>
   <modulefile>mod_session_cookie.xml</modulefile>

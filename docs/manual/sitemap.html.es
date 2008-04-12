@@ -174,6 +174,7 @@ usados para describir las directivas de Apache</a></li>
 <li><a href="mod/mod_asis.html">Módulo Apache mod_asis</a></li>
 <li><a href="mod/mod_auth_basic.html">Módulo Apache mod_auth_basic</a></li>
 <li><a href="mod/mod_auth_digest.html">Módulo Apache mod_auth_digest</a></li>
+<li><a href="mod/mod_auth_form.html">Módulo Apache mod_auth_form</a></li>
 <li><a href="mod/mod_authn_anon.html">Módulo Apache mod_authn_anon</a></li>
 <li><a href="mod/mod_authn_core.html">Módulo Apache mod_authn_core</a></li>
 <li><a href="mod/mod_authn_dbd.html">Módulo Apache mod_authn_dbd</a></li>
