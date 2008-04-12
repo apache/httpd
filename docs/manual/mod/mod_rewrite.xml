@@ -1261,7 +1261,7 @@ cannot use <code>$N</code> in the substitution string!
         <em>path</em> is the path of the cookie. If <em>secure</em>
         is set to 'true' or '1', the cookie is only transmitted via secured
         connections. If <em>httponly</em> is set to any string, the
-        <code>HttpOnly</code> flag is used, making the cookie not accessible
+        <code>HttpOnly</code> flag is used, making the cookie inaccessible
         to JavaScript code on browsers that support this feature.</dd>
 
         <dt>
