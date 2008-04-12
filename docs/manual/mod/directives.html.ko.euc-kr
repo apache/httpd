@@ -90,6 +90,22 @@
 <li><a href="mod_auth_digest.html#authdigestprovider">AuthDigestProvider</a></li>
 <li><a href="mod_auth_digest.html#authdigestqop">AuthDigestQop</a></li>
 <li><a href="mod_auth_digest.html#authdigestshmemsize">AuthDigestShmemSize</a></li>
+<li><a href="mod_auth_form.html#authformauthoritative">AuthFormAuthoritative</a></li>
+<li><a href="mod_auth_form.html#authformbody">AuthFormBody</a></li>
+<li><a href="mod_auth_form.html#authformdisablenostore">AuthFormDisableNoStore</a></li>
+<li><a href="mod_auth_form.html#authformfakebasicauth">AuthFormFakeBasicAuth</a></li>
+<li><a href="mod_auth_form.html#authformlocation">AuthFormLocation</a></li>
+<li><a href="mod_auth_form.html#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></li>
+<li><a href="mod_auth_form.html#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></li>
+<li><a href="mod_auth_form.html#authformlogoutlocation">AuthFormLogoutLocation</a></li>
+<li><a href="mod_auth_form.html#authformlogoutlocation">AuthFormLogoutLocation</a></li>
+<li><a href="mod_auth_form.html#authformmethod">AuthFormMethod</a></li>
+<li><a href="mod_auth_form.html#authformmimetype">AuthFormMimetype</a></li>
+<li><a href="mod_auth_form.html#authformpassword">AuthFormPassword</a></li>
+<li><a href="mod_auth_form.html#authformprovider">AuthFormProvider</a></li>
+<li><a href="mod_auth_form.html#authformsitepassphrase">AuthFormSitePassphrase</a></li>
+<li><a href="mod_auth_form.html#authformsize">AuthFormSize</a></li>
+<li><a href="mod_auth_form.html#authformusername">AuthFormUsername</a></li>
 <li><a href="mod_authz_groupfile.html#authgroupfile">AuthGroupFile</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbinddn">AuthLDAPBindDN</a></li>
 <li><a href="mod_authnz_ldap.html#authldapbindpassword">AuthLDAPBindPassword</a></li>
@@ -234,7 +250,7 @@
 <li><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></li>
 <li><a href="core.html#keepalive" id="K" name="K">KeepAlive</a></li>
 <li><a href="core.html#keepalivetimeout">KeepAliveTimeout</a></li>
-<li><a href="core.html#keptbodysize">KeptBodySize</a></li>
+<li><a href="request_body.html#keptbodysize">KeptBodySize</a></li>
 <li><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority</a></li>
 <li><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL</a></li>

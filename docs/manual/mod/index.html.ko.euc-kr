@@ -75,6 +75,7 @@ address)</dd>
 <dt><a href="mod_asis.html">mod_asis</a></dt><dd>HTTP 헤더를 포함한 파일을 보낸다</dd>
 <dt><a href="mod_auth_basic.html">mod_auth_basic</a></dt><dd>Basic authentication</dd>
 <dt><a href="mod_auth_digest.html">mod_auth_digest</a></dt><dd>MD5 Digest Authentication을 사용한 사용자인증.</dd>
+<dt><a href="mod_auth_form.html">mod_auth_form</a></dt><dd>Form authentication</dd>
 <dt><a href="mod_authn_anon.html">mod_authn_anon</a></dt><dd>인증영역에 "익명(anonymous)" 사용자의 접근을
 허용한다</dd>
 <dt><a href="mod_authn_core.html">mod_authn_core</a></dt><dd>Core Authentication</dd>
