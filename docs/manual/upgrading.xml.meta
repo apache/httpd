@@ -6,7 +6,6 @@
   <relpath>.</relpath>
 
   <variants>
-    <variant outdated="yes">de</variant>
     <variant>en</variant>
     <variant outdated="yes">ja</variant>
     <variant outdated="yes">ko</variant>
