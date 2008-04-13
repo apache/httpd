@@ -21,7 +21,7 @@
   <modulefile>mod_authz_dbm.xml</modulefile>
   <modulefile>mod_authz_default.xml.ja</modulefile>
   <modulefile>mod_authz_groupfile.xml.ja</modulefile>
-  <modulefile>mod_authz_host.xml.ja</modulefile>
+  <modulefile>mod_authz_host.xml</modulefile>
   <modulefile>mod_authz_owner.xml.ja</modulefile>
   <modulefile>mod_authz_user.xml.ja</modulefile>
   <modulefile>mod_autoindex.xml.ja</modulefile>
