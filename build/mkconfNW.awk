@@ -61,7 +61,7 @@ BEGIN {
     print "#LoadModule asis_module modules/mod_asis.nlm"
     print "LoadModule autoindex_module modules/autoindex.nlm"
     print "#LoadModule cern_meta_module modules/cernmeta.nlm"
-    print "#LoadModule cgi_module modules/mod_cgi.nlm"
+    print "LoadModule cgi_module modules/mod_cgi.nlm"
     print "#LoadModule dav_module modules/mod_dav.nlm"
     print "#LoadModule dav_fs_module modules/moddavfs.nlm"
     print "#LoadModule dav_lock_module modules/moddavlk.nlm"
@@ -126,10 +126,19 @@ match ($0,/@nonssl_.*@/) {
     sub(/@nonssl_.*@/,B[s],$0)
 }
 
+match ($0,/^<IfModule cgid_module>$/) {
+    print "#"
+    print "# CGIMapExtension: Technique for locating the interpreter for CGI scripts."
+    print "# The special interpreter path \"OS\" can be used for NLM CGIs."
+    print "#"
+    print "#CGIMapExtension OS .cgi"
+    print "CGIMapExtension SYS:/perl/Perlcgi/perlcgi.nlm .pl"
+    print ""
+}
+
 {
     print
 }
-
 
 END {
     if ((ARGV[1] ~ /httpd.conf.in/) && !BSDSKT) { 
@@ -142,6 +151,6 @@ END {
        print "# prevent Apache from glomming onto all bound IP addresses (0.0.0.0)"
        print "#"
        print "#SecureListen "SSLPORT" \"SSL CertificateDNS\""
-       print ""
     }
+    print ""
 }
