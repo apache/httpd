@@ -90,7 +90,8 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>DBM 파일을 사용한 그룹 인증</dd>
 <dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>최후 권한부여모듈</dd>
 <dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>일반 문자파일을 이용한 그룹 권한부여</dd>
-<dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>호스트 (이름이나 IP 주소)를 사용한 그룹 권한부여</dd>
+<dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Group authorizations based on host (name or IP
+address)</dd>
 <dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>파일 소유자를 이용한 권한부여</dd>
 <dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>사용자 권한부여</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>자동으로 유닉스의 <code>ls</code> 명령어나 Win32의

@@ -94,7 +94,8 @@ for HTTP Basic authentication.</dd>
 <dt><a href="mod_authz_dbm.html">mod_authz_dbm</a></dt><dd>Group authorization using DBM files</dd>
 <dt><a href="mod_authz_default.html">mod_authz_default</a></dt><dd>承認フォールバックモジュール</dd>
 <dt><a href="mod_authz_groupfile.html">mod_authz_groupfile</a></dt><dd>プレーンテキストファイルを用いたグループ承認</dd>
-<dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>ホスト (名前もしくは IP アドレス) に基づいたグループ承認</dd>
+<dt><a href="mod_authz_host.html">mod_authz_host</a></dt><dd>Group authorizations based on host (name or IP
+address)</dd>
 <dt><a href="mod_authz_owner.html">mod_authz_owner</a></dt><dd>ファイルの所有者に基づいた承認</dd>
 <dt><a href="mod_authz_user.html">mod_authz_user</a></dt><dd>ユーザ承認</dd>
 <dt><a href="mod_autoindex.html">mod_autoindex</a></dt><dd>Unix の <code>ls</code> コマンドや
