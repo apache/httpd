@@ -31,7 +31,7 @@
     <a href="../mod/mod_rewrite.html">reference documentation</a>.
     It describes how one can use Apache's <module>mod_rewrite</module>
     to solve typical URL-based problems with which webmasters are
-    commonony confronted. We give detailed descriptions on how to
+    commonly confronted. We give detailed descriptions on how to
     solve each problem by configuring URL rewriting rulesets.</p>
 
     <note type="warning">ATTENTION: Depending on your server configuration
@@ -78,7 +78,7 @@ examples</a></seealso>
         <dd>
           <p>First, the knowledge of the target servers come from
           (distributed) external maps which contain information
-          where our users, groups and entities stay. The have the
+          where our users, groups and entities stay. They have the
           form</p>
 
 <example><pre>
@@ -380,7 +380,7 @@ RewriteRule   ^(.+)          http://<strong>webserverB</strong>.dom/$1
           near the location of the requesting client. Actually this
           can be called an FTP access multiplexing service. While
           CPAN runs via CGI scripts, how can a similar approach
-          implemented via <module>mod_rewrite</module>?</p>
+          be implemented via <module>mod_rewrite</module>?</p>
         </dd>
 
         <dt>Solution:</dt>
@@ -418,7 +418,7 @@ com       ftp://ftp.cxan.com/CxAN/
 
     </section>
 
-   <section id="browser-depedent-content">
+   <section id="browser-dependent-content">
 
       <title>Browser Dependent Content</title>
 
@@ -438,10 +438,10 @@ com       ftp://ftp.cxan.com/CxAN/
         <dd>
           <p>We cannot use content negotiation because the browsers do
           not provide their type in that form. Instead we have to
-          act on the HTTP header "User-Agent". The following condig
+          act on the HTTP header "User-Agent". The following config
           does the following: If the HTTP header "User-Agent"
           begins with "Mozilla/3", the page <code>foo.html</code>
-          is rewritten to <code>foo.NS.html</code> and and the
+          is rewritten to <code>foo.NS.html</code> and the
           rewriting stops. If the browser is "Lynx" or "Mozilla" of
           version 1 or 2 the URL becomes <code>foo.20.html</code>.
           All other browsers receive page <code>foo.32.html</code>.
@@ -630,7 +630,7 @@ www   IN  A       1.2.3.5
               resolved, <code>BIND</code> gives out <code>www0-www5</code>
               - but in a slightly permutated/rotated order every time.
               This way the clients are spread over the various
-              servers. But notice that this not a perfect load
+              servers. But notice that this is not a perfect load
               balancing scheme, because DNS resolve information
               gets cached by the other nameservers on the net, so
               once a client has resolved <code>www.foo.com</code>
@@ -747,7 +747,7 @@ while (&lt;STDIN&gt;) {
           let us configure a new file type with extension
           <code>.scgi</code> (for secure CGI) which will be processed
           by the popular <code>cgiwrap</code> program. The problem
-          here is that for instance we use a Homogeneous URL Layout
+          here is that for instance if we use a Homogeneous URL Layout
           (see above) a file inside the user homedirs has the URL
           <code>/u/user/foo/bar.scgi</code>. But
           <code>cgiwrap</code> needs the URL in the form
@@ -761,11 +761,11 @@ RewriteRule ^/[uge]/<strong>([^/]+)</strong>/\.www/(.+)\.scgi(.*) ...
 
           <p>Or assume we have some more nifty programs:
           <code>wwwlog</code> (which displays the
-          <code>access.log</code> for a URL subtree and
+          <code>access.log</code> for a URL subtree) and
           <code>wwwidx</code> (which runs Glimpse on a URL
           subtree). We have to provide the URL area to these
           programs so they know on which area they have to act on.
-          But usually this ugly, because they are all the times
+          But usually this is ugly, because they are all the times
           still requested from that areas, i.e. typically we would
           run the <code>swwidx</code> program from within
           <code>/u/user/foo/</code> via hyperlink to</p>
@@ -1087,7 +1087,7 @@ RewriteCond   ${lowercase:%{HTTP_HOST}|NONE}  ^(.+)$
 RewriteCond   ${vhost:%1}  ^(/.*)$
 #
 #   5. finally we can map the URL to its docroot location
-#      and remember the virtual host for logging puposes
+#      and remember the virtual host for logging purposes
 RewriteRule   ^/(.*)$   %1/$1  [E=VHOST:${lowercase:%{HTTP_HOST}}]
     :
 </pre></example>
