@@ -290,7 +290,7 @@ static void register_hooks(apr_pool_t *p)
 #endif
 }
 
-const module AP_MODULE_DECLARE_DATA socache_memcache_module = {
+module AP_MODULE_DECLARE_DATA socache_memcache_module = {
     STANDARD20_MODULE_STUFF,
     NULL, NULL, NULL, NULL, NULL,
     register_hooks

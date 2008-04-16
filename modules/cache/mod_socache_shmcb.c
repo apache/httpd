@@ -839,7 +839,7 @@ static void register_hooks(apr_pool_t *p)
                          &socache_shmcb);
 }
 
-const module AP_MODULE_DECLARE_DATA socache_shmcb_module = {
+module AP_MODULE_DECLARE_DATA socache_shmcb_module = {
     STANDARD20_MODULE_STUFF,
     NULL, NULL, NULL, NULL, NULL,
     register_hooks
