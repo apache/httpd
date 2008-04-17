@@ -29,6 +29,7 @@
 
 #include "apr.h"
 #include "apr_buckets.h"
+#include "apr_optional.h"
 
 #include "httpd.h"
 #include "util_filter.h"
@@ -113,8 +114,8 @@ typedef struct {
 AP_DECLARE(int) ap_parse_request_form(request_rec * r, apr_array_header_t ** ptr,
                                       apr_size_t num, apr_size_t size);
 
-APR_DECLARE_OPTIONAL_FN(void, ap_parse_request_form, (request_rec * r, apr_array_header_t ** ptr,
-                                                      apr_size_t num, apr_size_t size));
+APR_DECLARE_OPTIONAL_FN(int, ap_parse_request_form, (request_rec * r, apr_array_header_t ** ptr,
+                                                     apr_size_t num, apr_size_t size));
 
 #ifdef __cplusplus
 }

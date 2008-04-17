@@ -46,8 +46,8 @@ static void (*ap_session_get_fn) (request_rec * r, session_rec * z,
                                   const char *key, const char **value) = NULL;
 static void (*ap_session_set_fn) (request_rec * r, session_rec * z,
                                   const char *key, const char *value) = NULL;
-static void (*ap_parse_request_form_fn) (request_rec * r, apr_array_header_t ** ptr,
-                                         apr_size_t num, apr_size_t size) = NULL;
+static int (*ap_parse_request_form_fn) (request_rec * r, apr_array_header_t ** ptr,
+                                        apr_size_t num, apr_size_t size) = NULL;
 
 typedef struct {
     authn_provider_list *providers;
