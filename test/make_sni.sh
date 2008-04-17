@@ -21,22 +21,34 @@
 #
 # $Id$
 #
+#
 OPENSSL=${OPENSSL:-openssl}
 DOMAIN=${DOMAIN:-my-sni-test.org}
 DIR=${DIR:-$PWD/sni}
+
+# List of hostnames automatically created by default.
 NAMES=${NAMES:-ape nut pear apple banana}
 
-args=`getopt fd:D: $*`
+# IP address these hostnames are bound to.
+IP=${IP:-127.0.0.1}
+
+args=`getopt a:fd:D: $*`
 if [ $? != 0 ]; then
-    echo "Syntax: $0 [-f] [-d outdir] [-D domain ] [two or more vhost names ]"
+    echo "Syntax: $0 [-f] [-a IPaddress] [-d outdir] [-D domain ] [two or more vhost names ]"
     echo "    -f        Force overwriting of outdir (default is $DIR)"
     echo "    -d dir    Directory to create the SNI test server in (default is $DIR)"
     echo "    -D domain Domain name to use for this test (default is $DOMAIN)"
+    echo "    -a IP     IP address to use for this virtual host (default is $IP)"
     echo "    [names]   List of optional vhost names (default is $NAMES)"
     echo 
     echo "Example:"
     echo "    $0 -D SecureBlogsAreUs.com peter fred mary jane ardy"
-    echo 
+    echo
+    echo "Which will create peter.SecureBlogsAreUs.com, fred.SecureBlogsAreUs.com and"
+    echo "so on. Note that the _first_ FQDN is also the default for non SNI hosts. It"
+    echo "may make sense to give this host a generic name - and allow each of the real"
+    echo "SNI site as sub directories/URI's of this generic name; thus allowing the "
+    echo "few non-SNI browsers access."
     exit 1
 fi
 set -- $args
@@ -46,6 +58,9 @@ do
     in
         -f)
             FORCE=1
+            shift;;
+        -a)
+            IP=$2; shift
             shift;;
         -d)
             DIR=$2; shift
@@ -86,7 +101,6 @@ fi
 mkdir -p ${DIR} || exit 1
 mkdir -p ${DIR}/ssl ${DIR}/htdocs ${DIR}/logs || exit 1
         
-
 # Create a 'CA' - keep using different serial numbers
 # as the browsers get upset if they see an identical 
 # serial with a different pub-key.
@@ -105,11 +119,16 @@ openssl req -new -nodes -batch \
     || exit 2
 
 
+# Create the header for the example '/etc/hosts' file.
+#
 echo '# To append to your hosts file' > ${DIR}/hosts
+
+# Create a header for the httpd.conf snipped.
+#
 cat > ${DIR}/httpd-sni.conf << EOM
 # To append to your httpd.conf file'
-Listen 127.0.0.1:443
-NameVirtualHost 127.0.0.1:443
+Listen ${IP}:443
+NameVirtualHost ${IP}:443
 
 LoadModule ssl_module modules/mod_ssl.so
 
@@ -123,6 +142,11 @@ ErrorLog ${DIR}/logs/error_log
 # You'll get a warning about this.
 #
 SSLSessionCache none
+
+# Note that this SSL configuration is far
+# from complete - you propably will want
+# to configure SSLMutex-es and SSLSession
+# Caches at the very least.
 
 <Directory />
     Options None
@@ -140,7 +164,18 @@ SSLSessionCache none
 #
 EOM
 
+# Create the header of a sample BIND zone file.
+#
+(
+        echo "; Configuration sample to be added to the $DOMAIN zone file of BIND."
+        echo "\$ORIGIN $DOMAIN."
+) > ${DIR}/zone-file
+
+ZADD="IN A $IP"
 INFO="and also the site you see when the browser does not support SNI."
+
+set -- ${NAMES}
+DEFAULT=$1
 
 for n in ${NAMES}
 do
@@ -161,13 +196,19 @@ do
         -set_serial $serial -in ${DIR}/$n.req -out ${DIR}/$n.pem \
                 || exit 4
 
-        cat ${DIR}/$n.pem ${DIR}/$n.key > ${DIR}/ssl/$n.crt
-        rm ${DIR}/$n.req ${DIR}/$n.key ${DIR}/$n.pem
+    # Combine the key and certificate in one file.
+    #
+    cat ${DIR}/$n.pem ${DIR}/$n.key > ${DIR}/ssl/$n.crt
+    rm ${DIR}/$n.req ${DIR}/$n.key ${DIR}/$n.pem
 
-        LST="$LST
-        https://$FQDN/index.html"
+    LST="$LST
+    https://$FQDN/index.html"
 
-        echo "127.0.0.1         $FQDN $n" >> ${DIR}/hosts
+    # Create a /etc/host and bind-zone file example
+    #
+    echo "${IP}         $FQDN $n" >> ${DIR}/hosts
+    echo "$n    $ZADD" >> ${DIR}/zone-file
+    ZADD="IN CNAME $DEFAULT"
 
     # Create and populate a docroot for this host.
     #
@@ -182,7 +223,7 @@ do
     # And create a configuration snipped.
     #
     cat >> ${DIR}/httpd-sni.conf << EOM
-<VirtualHost 127.0.0.1:443>
+<VirtualHost ${IP}:443>
     SSLEngine On
     ServerName $FQDN:443
     DocumentRoot ${DIR}/htdocs/$n
@@ -252,5 +293,13 @@ $LST
 and verify that each returns its own name (and an entry in its
 own ${DIR}/logs) file).
 
+NOTE
+====
+
+Note that in the generated example the 'first' domain is special - and is the
+catch all for non-SNI browsers. Depending on your circumstances it may make
+sense to use a generic name - and have each of the SNI domains as subdirectories
+(and hence URI's under this generic name). Thus allowing non SNI browsers also
+access to those sites.
 EOM
 exit 0
