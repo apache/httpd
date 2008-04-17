@@ -72,8 +72,13 @@ static int proxy_ajp_canon(request_rec *r, char *url)
         search = r->args;
 
     /* process path */
-    path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
-                             r->proxyreq);
+    if (apr_table_get(r->notes, "proxy-nocanon")) {
+        path = url;   /* this is the raw path */
+    }
+    else {
+        path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
+                                 r->proxyreq);
+    }
     if (path == NULL)
         return HTTP_BAD_REQUEST;
 
