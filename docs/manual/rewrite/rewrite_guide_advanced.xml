@@ -35,13 +35,13 @@
     solve each problem by configuring URL rewriting rulesets.</p>
 
     <note type="warning">ATTENTION: Depending on your server configuration
-    it may be necessary to slightly change the examples for your
-    situation, e.g. adding the <code>[PT]</code> flag when
-    additionally using <module>mod_alias</module> and
+    it may be necessary to adjust the examples for your
+    situation, <em>e.g.,</em> adding the <code>[PT]</code> flag if
+    using <module>mod_alias</module> and
     <module>mod_userdir</module>, etc. Or rewriting a ruleset
-    to fit in <code>.htaccess</code> context instead
+    to work in <code>.htaccess</code> context instead
     of per-server context. Always try to understand what a
-    particular ruleset really does before you use it. This
+    particular ruleset really does before you use it; this
     avoids many problems.</note>
 
   </summary>
@@ -56,30 +56,30 @@ examples</a></seealso>
 
     <section id="cluster">
 
-      <title>Webcluster through Homogeneous URL Layout</title>
+      <title>Web Cluster with Consistent URL Space</title>
 
       <dl>
         <dt>Description:</dt>
 
         <dd>
           <p>We want to create a homogeneous and consistent URL
-          layout over all WWW servers on a Intranet webcluster, i.e.
-          all URLs (per definition server local and thus server
-          dependent!) become actually server <em>independent</em>!
-          What we want is to give the WWW namespace a consistent
-          server-independent layout: no URL should have to include
-          any physically correct target server. The cluster itself
-          should drive us automatically to the physical target
-          host.</p>
+          layout across all WWW servers on an Intranet web cluster, <em>i.e.,</em>
+          all URLs (by definition server-local and thus
+          server-dependent!) become server <em>independent</em>!
+          What we want is to give the WWW namespace a single consistent
+          layout: no URL should refer to
+          any particular target server. The cluster itself
+          should connect users automatically to a physical target
+          host as needed, invisibly.</p>
         </dd>
 
         <dt>Solution:</dt>
 
         <dd>
-          <p>First, the knowledge of the target servers come from
-          (distributed) external maps which contain information
-          where our users, groups and entities stay. They have the
-          form</p>
+          <p>First, the knowledge of the target servers comes from
+          (distributed) external maps which contain information on
+          where our users, groups, and entities reside. They have the
+          form:</p>
 
 <example><pre>
 user1  server_of_user1
@@ -89,7 +89,7 @@ user2  server_of_user2
 
           <p>We put them into files <code>map.xxx-to-host</code>.
           Second we need to instruct all servers to redirect URLs
-          of the forms</p>
+          of the forms:</p>
 
 <example><pre>
 /u/user/anypath
@@ -105,8 +105,8 @@ http://physical-host/g/group/anypath
 http://physical-host/e/entity/anypath
 </pre></example>
 
-          <p>when the URL is not locally valid to a server. The
-          following ruleset does this for us by the help of the map
+          <p>when any URL path need not be valid on every server. The
+          following ruleset does this for us with the help of the map
           files (assuming that server0 is a default server which
           will be used if a user has no entry in the map):</p>
 
@@ -137,9 +137,9 @@ RewriteRule   ^/([uge])/([^/]+)/([^.]+.+)   /$1/$2/.www/$3\
         <dt>Description:</dt>
 
         <dd>
-          <p>Some sites with thousands of users usually use a
-          structured homedir layout, i.e. each homedir is in a
-          subdirectory which begins for instance with the first
+          <p>Some sites with thousands of users use a
+          structured homedir layout, <em>i.e.</em> each homedir is in a
+          subdirectory which begins (for instance) with the first
           character of the username. So, <code>/~foo/anypath</code>
           is <code>/home/<strong>f</strong>/foo/.www/anypath</code>
           while <code>/~bar/anypath</code> is
@@ -150,7 +150,7 @@ RewriteRule   ^/([uge])/([^/]+)/([^.]+.+)   /$1/$2/.www/$3\
 
         <dd>
           <p>We use the following ruleset to expand the tilde URLs
-          into exactly the above layout.</p>
+          into the above layout.</p>
 
 <example><pre>
 RewriteEngine on
@@ -176,7 +176,7 @@ RewriteRule   ^/~(<strong>([a-z])</strong>[a-z0-9]+)(.*)  /home/<strong>$2</stro
           adjusted. Background: <strong><em>net.sw</em></strong> is
           my archive of freely available Unix software packages,
           which I started to collect in 1992. It is both my hobby
-          and job to to this, because while I'm studying computer
+          and job to do this, because while I'm studying computer
           science I have also worked for many years as a system and
           network administrator in my spare time. Every week I need
           some sort of software so I created a deep hierarchy of
@@ -205,11 +205,11 @@ drwxrwxr-x  10 netsw  users    512 Jul  9 14:08 X11/
           the world via a nice Web interface. "Nice" means that I
           wanted to offer an interface where you can browse
           directly through the archive hierarchy. And "nice" means
-          that I didn't wanted to change anything inside this
+          that I didn't want to change anything inside this
           hierarchy - not even by putting some CGI scripts at the
-          top of it. Why? Because the above structure should be
-          later accessible via FTP as well, and I didn't want any
-          Web or CGI stuff to be there.</p>
+          top of it. Why? Because the above structure should later be
+          accessible via FTP as well, and I didn't want any
+          Web or CGI stuff mixed in there.</p>
         </dd>
 
         <dt>Solution:</dt>
@@ -237,8 +237,8 @@ drwxr-xr-x   2 netsw  users     512 Jul  8 23:47 netsw-img/
 </pre></example>
 
           <p>The <code>DATA/</code> subdirectory holds the above
-          directory structure, i.e. the real
-          <strong><em>net.sw</em></strong> stuff and gets
+          directory structure, <em>i.e.</em> the real
+          <strong><em>net.sw</em></strong> stuff, and gets
           automatically updated via <code>rdist</code> from time to
           time. The second part of the problem remains: how to link
           these two structures together into one smooth-looking URL
@@ -247,7 +247,7 @@ drwxr-xr-x   2 netsw  users     512 Jul  8 23:47 netsw-img/
           for the various URLs. Here is the solution: first I put
           the following into the per-directory configuration file
           in the <directive module="core">DocumentRoot</directive>
-          of the server to rewrite the announced URL
+          of the server to rewrite the public URL path
           <code>/net.sw/</code> to the internal path
           <code>/e/netsw</code>:</p>
 
@@ -297,7 +297,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
 
           <ol>
             <li>Notice the <code>L</code> (last) flag and no
-            substitution field ('<code>-</code>') in the forth part</li>
+            substitution field ('<code>-</code>') in the fourth part</li>
 
             <li>Notice the <code>!</code> (not) character and
             the <code>C</code> (chain) flag at the first rule
@@ -312,7 +312,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
 
     <section id="redirect404">
 
-      <title>Redirect Failing URLs To Other Webserver</title>
+      <title>Redirect Failing URLs to Another Webserver</title>
 
       <dl>
         <dt>Description:</dt>
@@ -321,18 +321,18 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
           <p>A typical FAQ about URL rewriting is how to redirect
           failing requests on webserver A to webserver B. Usually
           this is done via <directive module="core"
-          >ErrorDocument</directive> CGI-scripts in Perl, but
+          >ErrorDocument</directive> CGI scripts in Perl, but
           there is also a <module>mod_rewrite</module> solution.
-          But notice that this performs more poorly than using an
+          But note that this performs more poorly than using an
           <directive module="core">ErrorDocument</directive>
-          CGI-script!</p>
+          CGI script!</p>
         </dd>
 
         <dt>Solution:</dt>
 
         <dd>
           <p>The first solution has the best performance but less
-          flexibility, and is less error safe:</p>
+          flexibility, and is less safe:</p>
 
 <example><pre>
 RewriteEngine on
@@ -343,7 +343,7 @@ RewriteRule   ^(.+)                             http://<strong>webserverB</stron
           <p>The problem here is that this will only work for pages
           inside the <directive module="core">DocumentRoot</directive>. While you can add more
           Conditions (for instance to also handle homedirs, etc.)
-          there is better variant:</p>
+          there is a better variant:</p>
 
 <example><pre>
 RewriteEngine on
@@ -353,12 +353,12 @@ RewriteRule   ^(.+)          http://<strong>webserverB</strong>.dom/$1
 
           <p>This uses the URL look-ahead feature of <module>mod_rewrite</module>.
           The result is that this will work for all types of URLs
-          and is a safe way. But it does a performance impact on
-          the webserver, because for every request there is one
+          and is safe. But it does have a performance impact on
+          the web server, because for every request there is one
           more internal subrequest. So, if your webserver runs on a
           powerful CPU, use this one. If it is a slow machine, use
-          the first approach or better a <directive module="core"
-          >ErrorDocument</directive> CGI-script.</p>
+          the first approach or better an <directive module="core"
+          >ErrorDocument</directive> CGI script.</p>
         </dd>
       </dl>
 
@@ -376,17 +376,17 @@ RewriteRule   ^(.+)          http://<strong>webserverB</strong>.dom/$1
           Network) under <a href="http://www.perl.com/CPAN"
           >http://www.perl.com/CPAN</a>?
           This does a redirect to one of several FTP servers around
-          the world which carry a CPAN mirror and is approximately
-          near the location of the requesting client. Actually this
-          can be called an FTP access multiplexing service. While
-          CPAN runs via CGI scripts, how can a similar approach
+          the world which each carry a CPAN mirror and (theoretically)
+          near the requesting client. Actually this
+          can be called an FTP access multiplexing service.
+          CPAN runs via CGI scripts, but how could a similar approach
           be implemented via <module>mod_rewrite</module>?</p>
         </dd>
 
         <dt>Solution:</dt>
 
         <dd>
-          <p>First we notice that from version 3.0.0
+          <p>First we notice that as of version 3.0.0,
           <module>mod_rewrite</module> can
           also use the "<code>ftp:</code>" scheme on redirects.
           And second, the location approximation can be done by a
@@ -428,9 +428,9 @@ com       ftp://ftp.cxan.com/CxAN/
         <dd>
           <p>At least for important top-level pages it is sometimes
           necessary to provide the optimum of browser dependent
-          content, i.e. one has to provide a maximum version for the
-          latest Netscape variants, a minimum version for the Lynx
-          browsers and a average feature version for all others.</p>
+          content, <em>i.e.,</em> one has to provide one version for
+          current browsers, a different version for the Lynx and text-mode
+          browsers, and another for other browsers.</p>
         </dd>
 
         <dt>Solution:</dt>
@@ -443,9 +443,9 @@ com       ftp://ftp.cxan.com/CxAN/
           begins with "Mozilla/3", the page <code>foo.html</code>
           is rewritten to <code>foo.NS.html</code> and the
           rewriting stops. If the browser is "Lynx" or "Mozilla" of
-          version 1 or 2 the URL becomes <code>foo.20.html</code>.
+          version 1 or 2, the URL becomes <code>foo.20.html</code>.
           All other browsers receive page <code>foo.32.html</code>.
-          This is done by the following ruleset:</p>
+          This is done with the following ruleset:</p>
 
 <example><pre>
 RewriteCond %{HTTP_USER_AGENT}  ^<strong>Mozilla/3</strong>.*
@@ -475,13 +475,13 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
           the <code>mirror</code> program which actually maintains an
           explicit up-to-date copy of the remote data on the local
           machine. For a webserver we could use the program
-          <code>webcopy</code> which acts similar via HTTP. But both
+          <code>webcopy</code> which runs via HTTP. But both
           techniques have one major drawback: The local copy is
-          always just as up-to-date as often we run the program. It
+          always just as up-to-date as the last time we ran the program. It
           would be much better if the mirror is not a static one we
           have to establish explicitly. Instead we want a dynamic
           mirror with data which gets updated automatically when
-          there is need (updated data on the remote host).</p>
+          there is need (updated on the remote host).</p>
         </dd>
 
         <dt>Solution:</dt>
@@ -605,7 +605,7 @@ RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom
               <p>The simplest method for load-balancing is to use
               the DNS round-robin feature of <code>BIND</code>.
               Here you just configure <code>www[0-9].foo.com</code>
-              as usual in your DNS with A(address) records, e.g.</p>
+              as usual in your DNS with A(address) records, <em>e.g.,</em></p>
 
 <example><pre>
 www0   IN  A       1.2.3.1
@@ -631,13 +631,13 @@ www   IN  A       1.2.3.5
               - but in a slightly permutated/rotated order every time.
               This way the clients are spread over the various
               servers. But notice that this is not a perfect load
-              balancing scheme, because DNS resolve information
+              balancing scheme, because DNS resolution information
               gets cached by the other nameservers on the net, so
               once a client has resolved <code>www.foo.com</code>
-              to a particular <code>wwwN.foo.com</code>, all
+              to a particular <code>wwwN.foo.com</code>, all its
               subsequent requests also go to this particular name
               <code>wwwN.foo.com</code>. But the final result is
-              ok, because the total sum of the requests are really
+              okay, because the requests are collectively
               spread over the various webservers.</p>
             </li>
 
@@ -668,7 +668,7 @@ www    IN  CNAME   www0.foo.com.
 
               <p>entry in the DNS. Then we convert
               <code>www0.foo.com</code> to a proxy-only server,
-              i.e. we configure this machine so all arriving URLs
+              <em>i.e.,</em> we configure this machine so all arriving URLs
               are just pushed through the internal proxy to one of
               the 5 other servers (<code>www1-www5</code>). To
               accomplish this we first establish a ruleset which
@@ -766,7 +766,7 @@ RewriteRule ^/[uge]/<strong>([^/]+)</strong>/\.www/(.+)\.scgi(.*) ...
           subtree). We have to provide the URL area to these
           programs so they know on which area they have to act on.
           But usually this is ugly, because they are all the times
-          still requested from that areas, i.e. typically we would
+          still requested from that areas, <em>i.e.,</em> typically we would
           run the <code>swwidx</code> program from within
           <code>/u/user/foo/</code> via hyperlink to</p>
 
@@ -823,7 +823,7 @@ HREF="*"
 
         <dd>
           <p>Here comes a really esoteric feature: Dynamically
-          generated but statically served pages, i.e. pages should be
+          generated but statically served pages, <em>i.e.,</em> pages should be
           delivered as pure static pages (read from the filesystem
           and just passed through), but they have to be generated
           dynamically by the webserver if missing. This way you can
