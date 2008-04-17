@@ -165,7 +165,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=579664
       Backport version of 2.2.x of patch:
          Trunk version works (minus CHANGES conflict)
-    +1: niq
+    +1: niq, wrowe [with chrisd's suggested change below]
     chrisd says: The patch seems to address the issues in the PR.
                  My only concern would be that the ap_location_walk() call
                  (the second one) expects r->uri.  I'm fairly sure that
@@ -179,7 +179,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  well bypass <Location> checks on these, and also handle
                  any external modules that might try passing r->uri as NULL.
 
-
  * mod_substitute: Make default behavior flattening of buckets. Allow
    for people to specifically set "quick" mode.
       Trunk version of patch:
@@ -187,7 +186,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=628864
       Backport version for 2.2.x of patch:
          Trunk version works (minus CHANGES conflict)
-    +1: jim, covener
+    +1: jim, covener, wrowe
 
  * Support chroot on unix-family platforms
    PR 43596
@@ -203,13 +202,19 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?rev=631342&view=rev
    +1: covener
 
- * ApacheMonitor (win32); Introduce --kill flag, for use by the
-   installer, to (mostly) gracefully stop all sessions monitor
-   icons for clean un-installation.  TS seperation rules don't
-   provide us a cleaner way to send an exit message to those
-   running in other consoles, however, we simply axe them.
-   http://svn.apache.org/viewvc?rev=603238&view=rev
-   +1: wrowe, jim
+ * ApacheMonitor (win32); Sync to current trunk/.  This would
+   Introduce the --kill flag, for use by the installer, solve
+   a leak when using ApacheMonitor against another machine,
+   update to international service names etc (unicoding it)
+   and finally will allow Windows 2008 admins, and earlier
+   versions' users to invoke the start|stop|restart etc with
+   admin permissions.  Trouble is, an Admin under UAC does
+   not actually launch admin-capable applications without
+   being show a dialog to do so.  We could force this at the
+   start of ApacheMonitor, but it would be bogus to present
+   this on every login.
+   http://svn.apache.org/viewvc/httpd/httpd/trunk/support/win32/ApacheMonitor.c?view=log
+   +1: wrowe
 
  * mod_proxy: Allow for keepalive backend proxies (PR43238), which also
    addresses PR44026 and PR44543. These are pretty much interwrapped here.
@@ -251,7 +256,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=635953
    Backport version for 2.2.x of patch:
        Trunk version of patch works
-   +1: jim, niq
+   +1: jim, niq, wrowe
 
  * mod_authn_dbd: Disambiguate and tidy database authentication
    error messages.  Also move assignment statements after #if blocks
