@@ -156,6 +156,8 @@
  * 20080403.1 (2.3.0-dev)  Add authn/z hook and provider registration wrappers.
  * 20080403.2 (2.3.0-dev)  Add ap_escape_path_segment_buffer() and ap_unescape_all().
  * 20080407.0 (2.3.0-dev)  Remove ap_graceful_stop_signalled.
+ * 20080407.1              Deprecate ap_cache_cacheable_hdrs_out and add two
+ *                         generalized ap_cache_cacheable_headers_(in|out).
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
@@ -163,7 +165,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20080407
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
