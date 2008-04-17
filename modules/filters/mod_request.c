@@ -574,6 +574,7 @@ static void register_hooks(apr_pool_t *p)
         ap_register_input_filter(KEPT_BODY_FILTER, ap_kept_body_filter,
                                  kept_body_filter_init, AP_FTYPE_RESOURCE);
     ap_hook_fixups(request_fixups, NULL, NULL, APR_HOOK_MIDDLE);
+    APR_REGISTER_OPTIONAL_FN(ap_parse_request_form);
 }
 
 module AP_MODULE_DECLARE_DATA request_module = {
