@@ -760,7 +760,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
         r->headers_out = apr_table_overlay(r->pool, r->headers_out,
                                            r->err_headers_out);
 
-	/* XXX check -- we're not patching up content-type - i.e. this
+        /* XXX check -- we're not patching up content-type - i.e. this
          *     propably should be ap_cache_cacheable_headers_out().
          */
         r->headers_out = ap_cache_cacheable_headers(r->pool, r->headers_out,
