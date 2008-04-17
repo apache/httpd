@@ -1,6 +1,11 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_substitute: The default is now flattening the buckets after
+     each substitution. The newly added 'q' flag allows for the
+     quicker, more efficient bucket-splitting if the user so
+     desires. [Jim Jagielski]
+
   *) http_filters: Don't spin if get an error when reading the
      next chunk. PR 44381 [Ruediger Pluem]
 
