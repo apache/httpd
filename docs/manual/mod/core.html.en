@@ -539,7 +539,7 @@ headers</td></tr>
 </table>
     <p>This directive enables the generation of
     <code>Content-MD5</code> headers as defined in RFC1864
-    respectively RFC2068.</p>
+    respectively RFC2616.</p>
 
     <p>MD5 is an algorithm for computing a "message digest"
     (sometimes called "fingerprint") of arbitrary-length data, with
