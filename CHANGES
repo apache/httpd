@@ -57,9 +57,6 @@ Changes with Apache 2.3.0
      Introduce wrappers for access control hook and provider registration
      which can accept additional mode and flag data.  [Chris Darroch]
 
-  *) http_filters: Don't spin if get an error when reading the
-     next chunk. PR 44381 [Ruediger Pluem]
-
   *) mod_dav: Return "method not allowed" if the destination URI of a WebDAV
      copy / move operation is no DAV resource. PR 44734 [Ruediger Pluem]
 
@@ -83,10 +80,6 @@ Changes with Apache 2.3.0
   *) mod_cache: Handle If-Range correctly if the cached resource was stale.
      PR 44579 [Ruediger Pluem]
 
-  *) mod_speling: remove regression from 1.3/2.0 behavior and
-     drop dependency between mod_speling and AcceptPathInfo.
-     PR 43562 [Jose Kahan <jose w3.org>]
-
   *) mod_ldap: Correctly return all requested attribute values
      when some attributes have a null value. 
      PR 44560 [Anders Kaseorg <anders kaseorg.com>]
@@ -104,12 +97,6 @@ Changes with Apache 2.3.0
   *) mod_proxy: Do not try a direct connection if the connection via a
      remote proxy failed before and the request has a request body.
      [Ruediger Pluem]
-
-  *) mod_substitute: The default is now flattening the buckets after
-     each substitution. This was mostly done to abide by the
-     Principle Of Least Astonishment. The newly added 'q' flag allows for
-     the quicker, more efficient bucket-splitting if the user so
-     desires. [Jim Jagielski]
 
   *) Added 'disablereuse' option for ProxyPass which, essentially,
      disables connection pooling for the backend servers.
@@ -129,9 +116,6 @@ Changes with Apache 2.3.0
      mod_cache et.al. to trap the results of the redirect. 
      [Dirk-Willem van Gulik, Ruediger Pluem]
 
-  *) ab: Use a 64 bit unsigned int instead of a signed long to count the
-     bytes transferred to avoid integer overflows. PR 44346 [Ruediger Pluem]
-
   *) mod_proxy_ajp: Do not retry request in the case that we either failed to
      sent a part of the request body or if the request is not idempotent.
      PR 44334 [Ruediger Pluem]
@@ -144,9 +128,6 @@ Changes with Apache 2.3.0
      searches on LDAP servers (in particular MS Active Directory 2003+)
      using referrals without the use of the global catalog.
      PRs 26538, 40268, and 42557 [Paul J. Reder]
-
-  *) ab: Do not try to read non existing response bodies of HEAD requests.
-     PR 34275 [Takashi Sato <serai lans-tv.com>]
 
   *) Support chroot on Unix-family platforms
      PR 43596 [Dimitar Pashev <mitko banksoft-bg.com>]
