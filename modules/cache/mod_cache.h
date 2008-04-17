@@ -286,8 +286,26 @@ CACHE_DECLARE(int) ap_cache_liststr(apr_pool_t *p, const char *list,
                                     const char *key, char **val);
 CACHE_DECLARE(const char *)ap_cache_tokstr(apr_pool_t *p, const char *list, const char **str);
 
-/* Create a new table consisting of those elements from a request_rec's
- * headers_out that are allowed to be stored in a cache
+/* Create a new table consisting of those elements from an 
+ * headers table that are allowed to be stored in a cache.
+ */
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers(apr_pool_t *pool,
+                                                        apr_table_t *t,
+                                                        server_rec *s);
+
+/* Create a new table consisting of those elements from an input
+ * headers table that are allowed to be stored in a cache.
+ */
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_in(request_rec * r);
+
+/* Create a new table consisting of those elements from an output
+ * headers table that are allowed to be stored in a cache;
+ * ensure there is a content type and capture any errors.
+ */
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec * r);
+
+/* Legacy call - functionally equivalent to ap_cache_cacheable_headers.
+ * @deprecated @see ap_cache_cacheable_headers
  */
 CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
                                                         apr_table_t *t,

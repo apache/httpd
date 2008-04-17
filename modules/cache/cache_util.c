@@ -577,10 +577,10 @@ CACHE_DECLARE(char *)ap_cache_generate_name(apr_pool_t *p, int dirlevels,
     return apr_pstrdup(p, hashfile);
 }
 
-/* Create a new table consisting of those elements from an input
+/* Create a new table consisting of those elements from an 
  * headers table that are allowed to be stored in a cache.
  */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers(apr_pool_t *pool,
                                                         apr_table_t *t,
                                                         server_rec *s)
 {
@@ -588,12 +588,20 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
     char **header;
     int i;
 
+    /* Short circuit the common case that there are not
+     * (yet) any headers populated.
+     */
+    if (t == NULL) {
+	return apr_table_make(pool, 10);
+    };
+
     /* Make a copy of the headers, and remove from
      * the copy any hop-by-hop headers, as defined in Section
      * 13.5.1 of RFC 2616
      */
     apr_table_t *headers_out;
     headers_out = apr_table_copy(pool, t);
+
     apr_table_unset(headers_out, "Connection");
     apr_table_unset(headers_out, "Keep-Alive");
     apr_table_unset(headers_out, "Proxy-Authenticate");
@@ -605,6 +613,7 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
 
     conf = (cache_server_conf *)ap_get_module_config(s->module_config,
                                                      &cache_module);
+
     /* Remove the user defined headers set with CacheIgnoreHeaders.
      * This may break RFC 2616 compliance on behalf of the administrator.
      */
@@ -613,4 +622,45 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *pool,
         apr_table_unset(headers_out, header[i]);
     }
     return headers_out;
+}
+
+/* Legacy call - functionally equivalent to ap_cache_cacheable_headers.
+ * @deprecated @see ap_cache_cacheable_headers
+ */
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *p,
+                                                        apr_table_t *t,
+                                                        server_rec *s)
+{
+    return ap_cache_cacheable_headers(p,t,s);
+}
+
+/* Create a new table consisting of those elements from an input
+ * headers table that are allowed to be stored in a cache.
+ */
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_in(request_rec * r)
+{
+	return ap_cache_cacheable_headers(r->pool, r->headers_in, r->server);
+}
+
+/* Create a new table consisting of those elements from an output
+ * headers table that are allowed to be stored in a cache; 
+ * ensure there is a content type and capture any errors.
+ */
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec * r)
+{
+	apr_table_t *headers_out;
+
+	headers_out = ap_cache_cacheable_headers(r->pool, r->headers_out,
+                                                  r->server);
+
+        if (!apr_table_get(headers_out, "Content-Type")
+            && r->content_type) {
+            apr_table_setn(headers_out, "Content-Type",
+                           ap_make_content_type(r, r->content_type));
+        }
+
+        headers_out = apr_table_overlay(r->pool, headers_out,
+                                        r->err_headers_out);
+
+	return headers_out;
 }

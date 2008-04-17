@@ -2,6 +2,14 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) cache: retire ap_cache_cacheable_hdrs_out() which was used
+     for both in- and out-put headers; and replace it by a single
+     ap_cache_cacheable_headers() wrapped in a in- and out-put
+     specific ap_cache_cacheable_headers_in()/out(). The latter
+     which will also merge error and ensure content-type. To keep
+     cache modules consistent with ease. This API change bumps
+     up the minor MM by one [Dirk-Willem van Gulik].
+
   *) mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
      PR 44799 [Christian Wenz <christian wenz.org>]
 
