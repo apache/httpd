@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) ab: Do not try to read non existing response bodies of HEAD requests.
+     PR 34275 [Takashi Sato <serai lans-tv.com>]
+
   *) ab: Use a 64 bit unsigned int instead of a signed long to count the
      bytes transferred to avoid integer overflows. PR 44346 [Ruediger Pluem]
 
