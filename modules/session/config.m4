@@ -10,10 +10,10 @@ dnl Session modules; modules that are capable of storing key value pairs in
 dnl various places, such as databases, LDAP, or cookies.
 dnl
 APACHE_MODULE(session, session module, , , most)
-APACHE_MODULE(session_cookie, session cookie module, , , most)
-APACHE_MODULE(session_crypto, session crypto module, , , most)
-APACHE_MODULE(session_dbd, session dbd module, , , most)
-dnl APACHE_MODULE(session_ldap, session ldap module, , , most)
+APACHE_MODULE(session_cookie, session cookie module, , , $enable_session)
+APACHE_MODULE(session_crypto, session crypto module, , , $enable_session)
+APACHE_MODULE(session_dbd, session dbd module, , , $enable_session)
+dnl APACHE_MODULE(session_ldap, session ldap module, , , $enable_session)
 
 APACHE_MODPATH_FINISH
 
