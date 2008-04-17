@@ -538,6 +538,11 @@ static apr_status_t get_session_auth(request_rec * r,
         ap_session_get(r, z, apr_pstrcat(r->pool, authname, "-" MOD_AUTH_FORM_HASH, NULL), hash);
     }
 
+    /* set the user, even though the user is unauthenticated at this point */
+    if (user && *user) {
+        r->user = (char *) *user;
+    }
+
     return APR_SUCCESS;
 
 }
