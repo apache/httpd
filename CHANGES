@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) http_filters: Don't spin if get an error when reading the
+     next chunk. PR 44381 [Ruediger Pluem]
+
   *) ab: Do not try to read non existing response bodies of HEAD requests.
      PR 34275 [Takashi Sato <serai lans-tv.com>]
 

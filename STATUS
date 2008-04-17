@@ -88,15 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * http_filter: Don't spin if we get an error when reading
-    (the next) chunk.
-    PR: 44381
-   Trunk version of patch: 
-       http://svn.apache.org/viewvc?view=rev&revision=644391
-   Backport version for 2.2.x of patch:
-       Trunk version of patch works
-   +1: jim, rpluem, covener
-
  * mod_substitute: Make default behavior flattening of buckets. Allow
    for people to specifically set "quick" mode.
       Trunk version of patch:
