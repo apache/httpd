@@ -20,7 +20,7 @@
  limitations under the License.
 -->
 
-<modulesynopsis metafile="mod_request_body.xml.meta">
+<modulesynopsis metafile="mod_request.xml.meta">
 
 <name>request_body</name>
 <description>Filters to handle and make available HTTP request bodies</description>
