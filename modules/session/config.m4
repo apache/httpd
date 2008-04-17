@@ -20,7 +20,7 @@ dnl various places, such as databases, LDAP, or cookies.
 dnl
 APACHE_MODULE(session, session module, , , most)
 APACHE_MODULE(session_cookie, session cookie module, , , $session_mods_enable)
-APACHE_MODULE(session_crypto, session crypto module, , , $session_mods_enable)
+APACHE_MODULE(session_crypto, session crypto module, , , no)
 APACHE_MODULE(session_dbd, session dbd module, , , $session_mods_enable)
 dnl APACHE_MODULE(session_ldap, session ldap module, , , $session_mods_enable)
 
