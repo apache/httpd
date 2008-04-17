@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) ab: Use a 64 bit unsigned int instead of a signed long to count the
+     bytes transferred to avoid integer overflows. PR 44346 [Ruediger Pluem]
+
   *) ProxyPassReverse is now balancer aware. [Jim Jagielski]
 
   *) mod_include: Correctly handle SSI directives split over multiple filter
