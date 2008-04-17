@@ -1,13 +1,10 @@
 dnl modules enabled in this directory by default
 
-if test "$enable_session" = "shared"; then
-  session_mods_enable=shared
-elif test "$enable_proxy" = "yes"; then
-  session_mods_enable=yes
+if test -z "$enable_session" ; then
+  session_mods_enable=most
 else
-  session_mods_enable=no
+  session_mods_enable=$enable_session
 fi
-
 
 dnl Session
 
