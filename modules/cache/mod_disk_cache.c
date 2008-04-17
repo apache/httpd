@@ -937,17 +937,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     if (r->headers_out) {
         apr_table_t *headers_out;
 
-        headers_out = ap_cache_cacheable_hdrs_out(r->pool, r->headers_out,
-                                                  r->server);
+        headers_out = ap_cache_cacheable_headers_out(r);
 
-        if (!apr_table_get(headers_out, "Content-Type")
-            && r->content_type) {
-            apr_table_setn(headers_out, "Content-Type",
-                           ap_make_content_type(r, r->content_type));
-        }
-
-        headers_out = apr_table_overlay(r->pool, headers_out,
-                                        r->err_headers_out);
         rv = store_table(dobj->hfd, headers_out);
         if (rv != APR_SUCCESS) {
            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
@@ -962,8 +953,8 @@ static apr_status_t store_headers(cache_handle_t *h, request_rec *r, cache_info 
     if (r->headers_in) {
         apr_table_t *headers_in;
 
-        headers_in = ap_cache_cacheable_hdrs_out(r->pool, r->headers_in,
-                                                 r->server);
+        headers_in = ap_cache_cacheable_headers_in(r);
+
         rv = store_table(dobj->hfd, headers_in);
         if (rv != APR_SUCCESS) {
            ap_log_error(APLOG_MARK, APLOG_WARNING, rv, r->server,
