@@ -88,15 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_substitute: Make default behavior flattening of buckets. Allow
-   for people to specifically set "quick" mode.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=627764
-         http://svn.apache.org/viewvc?view=rev&revision=628864
-      Backport version for 2.2.x of patch:
-         Trunk version works (minus CHANGES conflict)
-    +1: jim, covener, wrowe
-
   * mod_speling: remove regression from 1.3/2.0 behavior and
     drop dependency between mod_speling and AcceptPathInfo.
     PR: 43562
