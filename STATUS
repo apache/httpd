@@ -114,6 +114,24 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
    +1: jim, rpluem, covener
 
+ * mod_substitute: Make default behavior flattening of buckets. Allow
+   for people to specifically set "quick" mode.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=627764
+         http://svn.apache.org/viewvc?view=rev&revision=628864
+      Backport version for 2.2.x of patch:
+         Trunk version works (minus CHANGES conflict)
+    +1: jim, covener, wrowe
+
+  * mod_speling: remove regression from 1.3/2.0 behavior and
+    drop dependency between mod_speling and AcceptPathInfo.
+    PR: 43562
+   Trunk version of patch: 
+       http://svn.apache.org/viewvc?view=rev&revision=635953
+   Backport version for 2.2.x of patch:
+       Trunk version of patch works
+   +1: jim, niq, wrowe
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -179,15 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  well bypass <Location> checks on these, and also handle
                  any external modules that might try passing r->uri as NULL.
 
- * mod_substitute: Make default behavior flattening of buckets. Allow
-   for people to specifically set "quick" mode.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=627764
-         http://svn.apache.org/viewvc?view=rev&revision=628864
-      Backport version for 2.2.x of patch:
-         Trunk version works (minus CHANGES conflict)
-    +1: jim, covener, wrowe
-
  * Support chroot on unix-family platforms
    PR 43596
    http://svn.apache.org/viewvc?rev=611483&view=rev (source)
@@ -248,15 +257,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
        http://people.apache.org/~chrisd/patches/mod_headers_merge/mod_headers-merge-2.2.x.patch
    +1: chrisd, niq
-
-  * mod_speling: remove regression from 1.3/2.0 behavior and
-    drop dependency between mod_speling and AcceptPathInfo.
-    PR: 43562
-   Trunk version of patch: 
-       http://svn.apache.org/viewvc?view=rev&revision=635953
-   Backport version for 2.2.x of patch:
-       Trunk version of patch works
-   +1: jim, niq, wrowe
 
  * mod_authn_dbd: Disambiguate and tidy database authentication
    error messages.  Also move assignment statements after #if blocks
