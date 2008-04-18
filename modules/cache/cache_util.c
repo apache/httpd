@@ -588,6 +588,7 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers(apr_pool_t *pool,
     cache_server_conf *conf;
     char **header;
     int i;
+    apr_table_t *headers_out;
 
     /* Short circuit the common case that there are not
      * (yet) any headers populated.
@@ -600,7 +601,6 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers(apr_pool_t *pool,
      * the copy any hop-by-hop headers, as defined in Section
      * 13.5.1 of RFC 2616
      */
-    apr_table_t *headers_out;
     headers_out = apr_table_copy(pool, t);
 
     apr_table_unset(headers_out, "Connection");
