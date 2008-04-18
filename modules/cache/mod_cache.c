@@ -757,15 +757,7 @@ static int cache_save_filter(ap_filter_t *f, apr_bucket_brigade *in)
          * err_headers_out and we also need to strip any hop-by-hop
          * headers that might have snuck in.
          */
-        r->headers_out = apr_table_overlay(r->pool, r->headers_out,
-                                           r->err_headers_out);
-
-        /* XXX check -- we're not patching up content-type - i.e. this
-         *     propably should be ap_cache_cacheable_headers_out().
-         */
-        r->headers_out = ap_cache_cacheable_headers(r->pool, r->headers_out,
-                                                     r->server);
-        apr_table_clear(r->err_headers_out);
+        r->headers_out = ap_cache_cacheable_headers_out(r);
 
         /* Merge in our cached headers.  However, keep any updated values. */
         ap_cache_accept_headers(cache->handle, r, 1);

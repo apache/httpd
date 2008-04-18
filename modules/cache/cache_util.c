@@ -654,6 +654,11 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec * r)
 {
     apr_table_t *headers_out;
 
+    headers_out = apr_table_overlay(r->pool, headers_out,
+                                        r->err_headers_out);
+
+    apr_table_clear(r->err_headers_out);
+
     headers_out = ap_cache_cacheable_headers(r->pool, r->headers_out,
                                                   r->server);
 
@@ -662,9 +667,6 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec * r)
         apr_table_setn(headers_out, "Content-Type",
                        ap_make_content_type(r, r->content_type));
     }
-
-    headers_out = apr_table_overlay(r->pool, headers_out,
-                                    r->err_headers_out);
 
     return headers_out;
 }
