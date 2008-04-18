@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) ap_cache_cacheable_headers_out() will (now) always
+     merge an error heaeders _before_ clearing them and _before_
+     merging in the actual entity headers and doing normal
+     hop-by-hop cleansing. [Dirk-Willem van Gulik].
+
   *) cache: retire ap_cache_cacheable_hdrs_out() which was used
      for both in- and out-put headers; and replace it by a single
      ap_cache_cacheable_headers() wrapped in a in- and out-put
