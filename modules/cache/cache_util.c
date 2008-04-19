@@ -640,17 +640,17 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_hdrs_out(apr_pool_t *p,
  * Create a new table consisting of those elements from an input
  * headers table that are allowed to be stored in a cache.
  */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_in(request_rec * r)
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_in(request_rec *r)
 {
     return ap_cache_cacheable_headers(r->pool, r->headers_in, r->server);
 }
 
 /*
  * Create a new table consisting of those elements from an output
- * headers table that are allowed to be stored in a cache; 
+ * headers table that are allowed to be stored in a cache;
  * ensure there is a content type and capture any errors.
  */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec * r)
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r)
 {
     apr_table_t *headers_out;
 
