@@ -31,7 +31,6 @@ static int proxy_ajp_canon(request_rec *r, char *url)
 {
     char *host, *path, *search, sport[7];
     const char *err;
-    const char *pnocanon;
     apr_port_t port = AJP13_DEF_PORT;
 
     /* ap_port_of_scheme() */
@@ -59,27 +58,17 @@ static int proxy_ajp_canon(request_rec *r, char *url)
 
     /*
      * now parse path/search args, according to rfc1738
-     *
-     * N.B. if this isn't a true proxy request, then the URL _path_
-     * has already been decoded.  True proxy requests have
-     * r->uri == r->unparsed_uri, and no others have that property.
      */
-    pnocanon = apr_table_get(r->notes, "proxy-nocanon");
-    if ((r->uri == r->unparsed_uri) ||  pnocanon) {
-        search = strchr(url, '?');
-        if (search != NULL)
-            *(search++) = '\0';
-    }
-    else
-        search = r->args;
+    search = NULL;
 
     /* process path */
-    if (pnocanon) {
+    if (apr_table_get(r->notes, "proxy-nocanon")) {
         path = url;   /* this is the raw path */
     }
     else {
         path = ap_proxy_canonenc(r->pool, url, strlen(url), enc_path, 0,
                                  r->proxyreq);
+        search = r->args;
     }
     if (path == NULL)
         return HTTP_BAD_REQUEST;
