@@ -654,7 +654,7 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec * r)
 {
     apr_table_t *headers_out;
 
-    headers_out = apr_table_overlay(r->pool, headers_out,
+    headers_out = apr_table_overlay(r->pool, r->headers_out,
                                         r->err_headers_out);
 
     apr_table_clear(r->err_headers_out);
