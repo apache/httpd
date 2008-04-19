@@ -296,13 +296,13 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers(apr_pool_t *pool,
 /* Create a new table consisting of those elements from an input
  * headers table that are allowed to be stored in a cache.
  */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_in(request_rec * r);
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_in(request_rec *r);
 
 /* Create a new table consisting of those elements from an output
  * headers table that are allowed to be stored in a cache;
  * ensure there is a content type and capture any errors.
  */
-CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec * r);
+CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r);
 
 /* Legacy call - functionally equivalent to ap_cache_cacheable_headers.
  * @deprecated @see ap_cache_cacheable_headers
