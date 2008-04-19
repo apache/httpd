@@ -659,7 +659,7 @@ CACHE_DECLARE(apr_table_t *)ap_cache_cacheable_headers_out(request_rec *r)
 
     apr_table_clear(r->err_headers_out);
 
-    headers_out = ap_cache_cacheable_headers(r->pool, r->headers_out,
+    headers_out = ap_cache_cacheable_headers(r->pool, headers_out,
                                                   r->server);
 
     if (!apr_table_get(headers_out, "Content-Type")
