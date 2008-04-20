@@ -34,6 +34,7 @@ static apr_status_t ap_proxy_http_cleanup(const char *scheme,
 static int proxy_http_canon(request_rec *r, char *url)
 {
     char *host, *path, *search, sport[7];
+    char *search = NULL;
     const char *err;
     const char *scheme;
     apr_port_t port, def_port;
@@ -67,11 +68,11 @@ static int proxy_http_canon(request_rec *r, char *url)
         return HTTP_BAD_REQUEST;
     }
 
-    /* now parse path/search args, according to rfc1738 */
-    search = NULL;
-
-    /* process path */
-    /* In a reverse proxy, our URL has been processed, so canonicalise
+    /*
+     * now parse path/search args, according to rfc1738:
+     * process the path.
+     *
+     * In a reverse proxy, our URL has been processed, so canonicalise
      * unless proxy-nocanon is set to say it's raw
      * In a forward proxy, we have and MUST NOT MANGLE the original.
      */

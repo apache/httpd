@@ -29,7 +29,8 @@ module AP_MODULE_DECLARE_DATA proxy_ajp_module;
  */
 static int proxy_ajp_canon(request_rec *r, char *url)
 {
-    char *host, *path, *search, sport[7];
+    char *host, *path, sport[7];
+    char *search = NULL;
     const char *err;
     apr_port_t port = AJP13_DEF_PORT;
 
@@ -57,11 +58,10 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     }
 
     /*
-     * now parse path/search args, according to rfc1738
+     * now parse path/search args, according to rfc1738:
+     * process the path. With proxy-noncanon set (by
+     * mod_proxy) we use the raw, unparsed uri
      */
-    search = NULL;
-
-    /* process path */
     if (apr_table_get(r->notes, "proxy-nocanon")) {
         path = url;   /* this is the raw path */
     }
