@@ -33,7 +33,7 @@ static apr_status_t ap_proxy_http_cleanup(const char *scheme,
  */
 static int proxy_http_canon(request_rec *r, char *url)
 {
-    char *host, *path, *search, sport[7];
+    char *host, *path, sport[7];
     char *search = NULL;
     const char *err;
     const char *scheme;
