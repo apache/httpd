@@ -31,7 +31,7 @@
 
     <div class="warning">ATTENTION: Depending on your server configuration
     it may be necessary to adjust the examples for your
-    situation, <em>e.g.,</em> adding the <code>[PT]</code> flag if
+    situation, e.g., adding the <code>[PT]</code> flag if
     using <code class="module"><a href="../mod/mod_alias.html">mod_alias</a></code> and
     <code class="module"><a href="../mod/mod_userdir.html">mod_userdir</a></code>, etc. Or rewriting a ruleset
     to work in <code>.htaccess</code> context instead
@@ -43,7 +43,7 @@
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#cluster">Web Cluster with Consistent URL Space</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#structuredhomedirs">Structured Homedirs</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#filereorg">Filesystem Reorganization</a></li>
-<li><img alt="" src="../images/down.gif" /> <a href="#redirect404">Redirect Failing URLs to Another Webserver</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#redirect404">Redirect Failing URLs to Another Web Server</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#archive-access-multiplexer">Archive Access Multiplexer</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#browser-dependent-content">Browser Dependent Content</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#dynamic-mirror">Dynamic Mirror</a></li>
@@ -73,7 +73,7 @@ examples</a></li><li><a href="rewrite_tech.html">Technical details</a></li></ul>
 
         <dd>
           <p>We want to create a homogeneous and consistent URL
-          layout across all WWW servers on an Intranet web cluster, <em>i.e.,</em>
+          layout across all WWW servers on an Intranet web cluster, i.e.,
           all URLs (by definition server-local and thus
           server-dependent!) become server <em>independent</em>!
           What we want is to give the WWW namespace a single consistent
@@ -320,7 +320,7 @@ RewriteRule   (.*)                     netsw-lsdir.cgi/$1
 
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="redirect404" id="redirect404">Redirect Failing URLs to Another Webserver</a></h2>
+<h2><a name="redirect404" id="redirect404">Redirect Failing URLs to Another Web Server</a></h2>
 
       
 
@@ -364,7 +364,7 @@ RewriteRule   ^(.+)          http://<strong>webserverB</strong>.dom/$1
           The result is that this will work for all types of URLs
           and is safe. But it does have a performance impact on
           the web server, because for every request there is one
-          more internal subrequest. So, if your webserver runs on a
+          more internal subrequest. So, if your web server runs on a
           powerful CPU, use this one. If it is a slow machine, use
           the first approach or better an <code class="directive"><a href="../mod/core.html#errordocument">ErrorDocument</a></code> CGI script.</p>
         </dd>
@@ -382,10 +382,10 @@ RewriteRule   ^(.+)          http://<strong>webserverB</strong>.dom/$1
         <dd>
           <p>Do you know the great CPAN (Comprehensive Perl Archive
           Network) under <a href="http://www.perl.com/CPAN">http://www.perl.com/CPAN</a>?
-          This does a redirect to one of several FTP servers around
-          the world which each carry a CPAN mirror and (theoretically)
-          near the requesting client. Actually this
-          can be called an FTP access multiplexing service.
+          CPAN automatically redirects browsers to one of many FTP
+          servers around the world (generally one near the requesting
+          client); each server carries a full CPAN mirror. This is
+          effectively an FTP access multiplexing service.
           CPAN runs via CGI scripts, but how could a similar approach
           be implemented via <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>?</p>
         </dd>
@@ -435,7 +435,7 @@ com       ftp://ftp.cxan.com/CxAN/
         <dd>
           <p>At least for important top-level pages it is sometimes
           necessary to provide the optimum of browser dependent
-          content, <em>i.e.,</em> one has to provide one version for
+          content, i.e., one has to provide one version for
           current browsers, a different version for the Lynx and text-mode
           browsers, and another for other browsers.</p>
         </dd>
@@ -477,25 +477,25 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
         <dt>Description:</dt>
 
         <dd>
-          <p>Assume there are nice webpages on remote hosts we want
+          <p>Assume there are nice web pages on remote hosts we want
           to bring into our namespace. For FTP servers we would use
           the <code>mirror</code> program which actually maintains an
           explicit up-to-date copy of the remote data on the local
-          machine. For a webserver we could use the program
+          machine. For a web server we could use the program
           <code>webcopy</code> which runs via HTTP. But both
-          techniques have one major drawback: The local copy is
-          always just as up-to-date as the last time we ran the program. It
-          would be much better if the mirror is not a static one we
+          techniques have a major drawback: The local copy is
+          always only as up-to-date as the last time we ran the program. It
+          would be much better if the mirror was not a static one we
           have to establish explicitly. Instead we want a dynamic
-          mirror with data which gets updated automatically when
-          there is need (updated on the remote host).</p>
+          mirror with data which gets updated automatically
+          as needed on the remote host(s).</p>
         </dd>
 
         <dt>Solution:</dt>
 
         <dd>
-          <p>To provide this feature we map the remote webpage or even
-          the complete remote webarea to our namespace by the use
+          <p>To provide this feature we map the remote web page or even
+          the complete remote web area to our namespace by the use
           of the <dfn>Proxy Throughput</dfn> feature
           (flag <code>[P]</code>):</p>
 
@@ -546,22 +546,22 @@ RewriteRule   ^http://www\.remotesite\.com/(.*)$ /mirror/of/remotesite/$1
 
         <dd>
           <p>This is a tricky way of virtually running a corporate
-          (external) Internet webserver
+          (external) Internet web server
           (<code>www.quux-corp.dom</code>), while actually keeping
-          and maintaining its data on a (internal) Intranet webserver
+          and maintaining its data on an (internal) Intranet web server
           (<code>www2.quux-corp.dom</code>) which is protected by a
-          firewall. The trick is that on the external webserver we
-          retrieve the requested data on-the-fly from the internal
+          firewall. The trick is that the external web server retrieves
+          the requested data on-the-fly from the internal
           one.</p>
         </dd>
 
         <dt>Solution:</dt>
 
         <dd>
-          <p>First, we have to make sure that our firewall still
-          protects the internal webserver and that only the
-          external webserver is allowed to retrieve data from it.
-          For a packet-filtering firewall we could for instance
+          <p>First, we must make sure that our firewall still
+          protects the internal web server and only the
+          external web server is allowed to retrieve data from it.
+          On a packet-filtering firewall, for instance, we could
           configure a firewall ruleset like the following:</p>
 
 <div class="example"><pre>
@@ -601,18 +601,18 @@ RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom
         <dt>Solution:</dt>
 
         <dd>
-          <p>There are a lot of possible solutions for this problem.
-          We will discuss first a commonly known DNS-based variant
-          and then the special one with <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>:</p>
+          <p>There are many possible solutions for this problem.
+          We will first discuss a common DNS-based method,
+          and then one based on <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>:</p>
 
           <ol>
             <li>
               <strong>DNS Round-Robin</strong>
 
               <p>The simplest method for load-balancing is to use
-              the DNS round-robin feature of <code>BIND</code>.
+              DNS round-robin.
               Here you just configure <code>www[0-9].foo.com</code>
-              as usual in your DNS with A(address) records, <em>e.g.,</em></p>
+              as usual in your DNS with A (address) records, e.g.,</p>
 
 <div class="example"><pre>
 www0   IN  A       1.2.3.1
@@ -623,7 +623,7 @@ www4   IN  A       1.2.3.5
 www5   IN  A       1.2.3.6
 </pre></div>
 
-              <p>Then you additionally add the following entry:</p>
+              <p>Then you additionally add the following entries:</p>
 
 <div class="example"><pre>
 www   IN  A       1.2.3.1
@@ -635,17 +635,19 @@ www   IN  A       1.2.3.5
 
               <p>Now when <code>www.foo.com</code> gets
               resolved, <code>BIND</code> gives out <code>www0-www5</code>
-              - but in a slightly permutated/rotated order every time.
+              - but in a permutated (rotated) order every time.
               This way the clients are spread over the various
               servers. But notice that this is not a perfect load
-              balancing scheme, because DNS resolution information
-              gets cached by the other nameservers on the net, so
+              balancing scheme, because DNS resolutions are
+              cached by clients and other nameservers, so
               once a client has resolved <code>www.foo.com</code>
               to a particular <code>wwwN.foo.com</code>, all its
-              subsequent requests also go to this particular name
-              <code>wwwN.foo.com</code>. But the final result is
-              okay, because the requests are collectively
-              spread over the various webservers.</p>
+              subsequent requests will continue to go to the same
+              IP (and thus a single server), rather than being
+              distributed across the other available servers. But the
+              overall result is
+              okay because the requests are collectively
+              spread over the various web servers.</p>
             </li>
 
             <li>
@@ -655,8 +657,8 @@ www   IN  A       1.2.3.5
               load-balancing is to use the program
               <code>lbnamed</code> which can be found at <a href="http://www.stanford.edu/~schemers/docs/lbnamed/lbnamed.html">
               http://www.stanford.edu/~schemers/docs/lbnamed/lbnamed.html</a>.
-              It is a Perl 5 program in conjunction with auxilliary
-              tools which provides a real load-balancing for
+              It is a Perl 5 program which, in conjunction with auxilliary
+              tools, provides real load-balancing via
               DNS.</p>
             </li>
 
@@ -674,8 +676,8 @@ www    IN  CNAME   www0.foo.com.
 
               <p>entry in the DNS. Then we convert
               <code>www0.foo.com</code> to a proxy-only server,
-              <em>i.e.,</em> we configure this machine so all arriving URLs
-              are just pushed through the internal proxy to one of
+              i.e., we configure this machine so all arriving URLs
+              are simply passed through its internal proxy to one of
               the 5 other servers (<code>www1-www5</code>). To
               accomplish this we first establish a ruleset which
               contacts a load balancing script <code>lb.pl</code>
@@ -716,19 +718,23 @@ while (&lt;STDIN&gt;) {
               <code>www0.foo.com</code> still is overloaded? The
               answer is yes, it is overloaded, but with plain proxy
               throughput requests, only! All SSI, CGI, ePerl, etc.
-              processing is completely done on the other machines.
-              This is the essential point.</div>
+              processing is handled done on the other machines.
+              For a complicated site, this may work well. The biggest
+              risk here is that www0 is now a single point of failure --
+              if it crashes, the other servers are inaccessible.</div>
             </li>
 
             <li>
-              <strong>Hardware/TCP Round-Robin</strong>
+              <strong>Dedicated Load Balancers</strong>
 
-              <p>There is a hardware solution available, too. Cisco
-              has a beast called LocalDirector which does a load
-              balancing at the TCP/IP level. Actually this is some
-              sort of a circuit level gateway in front of a
-              webcluster. If you have enough money and really need
-              a solution with high performance, use this one.</p>
+              <p>There are more sophisticated solutions, as well. Cisco,
+              F5, and several other companies sell hardware load
+              balancers (typically used in pairs for redundancy), which
+              offer sophisticated load balancing and auto-failover
+              features. There are software packages which offer similar
+              features on commodity hardware, as well. If you have
+              enough money or need, check these out. The <a href="http://vegan.net/lb/">lb-l mailing list</a> is a
+              good place to research.</p>
             </li>
           </ol>
         </dd>
@@ -744,8 +750,8 @@ while (&lt;STDIN&gt;) {
         <dt>Description:</dt>
 
         <dd>
-          <p>On the net there are a lot of nifty CGI programs. But
-          their usage is usually boring, so a lot of webmaster
+          <p>On the net there are many nifty CGI programs. But
+          their usage is usually boring, so a lot of webmasters
           don't use them. Even Apache's Action handler feature for
           MIME-types is only appropriate when the CGI programs
           don't need special URLs (actually <code>PATH_INFO</code>
@@ -754,9 +760,9 @@ while (&lt;STDIN&gt;) {
           <code>.scgi</code> (for secure CGI) which will be processed
           by the popular <code>cgiwrap</code> program. The problem
           here is that for instance if we use a Homogeneous URL Layout
-          (see above) a file inside the user homedirs has the URL
-          <code>/u/user/foo/bar.scgi</code>. But
-          <code>cgiwrap</code> needs the URL in the form
+          (see above) a file inside the user homedirs might have a URL
+          like <code>/u/user/foo/bar.scgi</code>, but
+          <code>cgiwrap</code> needs URLs in the form
           <code>/~user/foo/bar.scgi/</code>. The following rule
           solves the problem:</p>
 
@@ -770,9 +776,9 @@ RewriteRule ^/[uge]/<strong>([^/]+)</strong>/\.www/(.+)\.scgi(.*) ...
           <code>access.log</code> for a URL subtree) and
           <code>wwwidx</code> (which runs Glimpse on a URL
           subtree). We have to provide the URL area to these
-          programs so they know on which area they have to act on.
-          But usually this is ugly, because they are all the times
-          still requested from that areas, <em>i.e.,</em> typically we would
+          programs so they know which area they are really working with.
+          But usually this is complicated, because they may still be
+          requested by the alternate URL form, i.e., typically we would
           run the <code>swwidx</code> program from within
           <code>/u/user/foo/</code> via hyperlink to</p>
 
@@ -780,10 +786,10 @@ RewriteRule ^/[uge]/<strong>([^/]+)</strong>/\.www/(.+)\.scgi(.*) ...
 /internal/cgi/user/swwidx?i=/u/user/foo/
 </pre></div>
 
-          <p>which is ugly. Because we have to hard-code
+          <p>which is ugly, because we have to hard-code
           <strong>both</strong> the location of the area
           <strong>and</strong> the location of the CGI inside the
-          hyperlink. When we have to reorganize the area, we spend a
+          hyperlink. When we have to reorganize, we spend a
           lot of time changing the various hyperlinks.</p>
         </dd>
 
@@ -829,12 +835,12 @@ HREF="*"
 
         <dd>
           <p>Here comes a really esoteric feature: Dynamically
-          generated but statically served pages, <em>i.e.,</em> pages should be
+          generated but statically served pages, i.e., pages should be
           delivered as pure static pages (read from the filesystem
           and just passed through), but they have to be generated
-          dynamically by the webserver if missing. This way you can
-          have CGI-generated pages which are statically served unless
-          one (or a cronjob) removes the static contents. Then the
+          dynamically by the web server if missing. This way you can
+          have CGI-generated pages which are statically served unless an
+          admin (or a <code>cron</code> job) removes the static contents. Then the
           contents gets refreshed.</p>
         </dd>
 
@@ -848,16 +854,16 @@ RewriteCond %{REQUEST_FILENAME}   <strong>!-s</strong>
 RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [T=application/x-httpd-cgi,L]
 </pre></div>
 
-          <p>Here a request to <code>page.html</code> leads to a
+          <p>Here a request for <code>page.html</code> leads to an
           internal run of a corresponding <code>page.cgi</code> if
-          <code>page.html</code> is still missing or has filesize
+          <code>page.html</code> is missing or has filesize
           null. The trick here is that <code>page.cgi</code> is a
-          usual CGI script which (additionally to its <code>STDOUT</code>)
+          CGI script which (additionally to its <code>STDOUT</code>)
           writes its output to the file <code>page.html</code>.
-          Once it was run, the server sends out the data of
+          Once it has completed, the server sends out
           <code>page.html</code>. When the webmaster wants to force
-          a refresh the contents, he just removes
-          <code>page.html</code> (usually done by a cronjob).</p>
+          a refresh of the contents, he just removes
+          <code>page.html</code> (typically from <code>cron</code>).</p>
         </dd>
       </dl>
 
@@ -871,9 +877,9 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
         <dt>Description:</dt>
 
         <dd>
-          <p>Wouldn't it be nice while creating a complex webpage if
-          the webbrowser would automatically refresh the page every
-          time we write a new version from within our editor?
+          <p>Wouldn't it be nice, while creating a complex web page, if
+          the web browser would automatically refresh the page every
+          time we save a new version from within our editor?
           Impossible?</p>
         </dd>
 
@@ -881,10 +887,10 @@ RewriteRule ^page\.<strong>html</strong>$          page.<strong>cgi</strong>   [
 
         <dd>
           <p>No! We just combine the MIME multipart feature, the
-          webserver NPH feature and the URL manipulation power of
+          web server NPH feature, and the URL manipulation power of
           <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>. First, we establish a new
           URL feature: Adding just <code>:refresh</code> to any
-          URL causes this to be refreshed every time it gets
+          URL causes the 'page' to be refreshed every time it is
           updated on the filesystem.</p>
 
 <div class="example"><pre>
@@ -1024,18 +1030,17 @@ exit(0);
 
         <dd>
           <p>The <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> feature of Apache is nice
-          and works great when you just have a few dozens
+          and works great when you just have a few dozen
           virtual hosts. But when you are an ISP and have hundreds of
-          virtual hosts to provide this feature is not the best
-          choice.</p>
+          virtual hosts, this feature is suboptimal.</p>
         </dd>
 
         <dt>Solution:</dt>
 
         <dd>
-          <p>To provide this feature we map the remote webpage or even
-          the complete remote webarea to our namespace by the use
-          of the <dfn>Proxy Throughput</dfn> feature (flag <code>[P]</code>):</p>
+          <p>To provide this feature we map the remote web page or even
+          the complete remote web area to our namespace using the
+          <dfn>Proxy Throughput</dfn> feature (flag <code>[P]</code>):</p>
 
 <div class="example"><pre>
 ##
@@ -1173,7 +1178,7 @@ bsdti1.sdm.de  -
         <dd>
           <p>We first have to make sure <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
           is below(!) <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code> in the Configuration
-          file when compiling the Apache webserver. This way it gets
+          file when compiling the Apache web server. This way it gets
           called <em>before</em> <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code>. Then we
           configure the following for a host-dependent deny...</p>
 
@@ -1201,11 +1206,11 @@ RewriteRule !^http://[^/.]\.mydomain.com.*  - [F]
         <dt>Description:</dt>
 
         <dd>
-          <p>Sometimes a very special authentication is needed, for
-          instance a authentication which checks for a set of
+          <p>Sometimes very special authentication is needed, for
+          instance authentication which checks for a set of
           explicitly configured users. Only these should receive
           access and without explicit prompting (which would occur
-          when using the Basic Auth via <code class="module"><a href="../mod/mod_auth.html">mod_auth</a></code>).</p>
+          when using Basic Auth via <code class="module"><a href="../mod/mod_auth_basic.html">mod_auth_basic</a></code>).</p>
         </dd>
 
         <dt>Solution:</dt>
