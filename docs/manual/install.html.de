@@ -23,7 +23,8 @@
 <a href="./es/install.html" hreflang="es" rel="alternate" title="EspaÒol">&nbsp;es&nbsp;</a> |
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./ru/install.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
+<a href="./ru/install.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
+<a href="./tr/install.html" hreflang="tr" rel="alternate" title="T¸rkÁe">&nbsp;tr&nbsp;</a></p>
 </div>
 
     <p>Dieses Dokument umfaﬂt nur die Kompilierung und Installation des
@@ -397,7 +398,8 @@
 <a href="./es/install.html" hreflang="es" rel="alternate" title="EspaÒol">&nbsp;es&nbsp;</a> |
 <a href="./ja/install.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="./ko/install.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
-<a href="./ru/install.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
+<a href="./ru/install.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
+<a href="./tr/install.html" hreflang="tr" rel="alternate" title="T¸rkÁe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Lizenziert unter der <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
 <p class="menu"><a href="./mod/">Module</a> | <a href="./mod/directives.html">Direktiven</a> | <a href="./faq/">FAQ</a> | <a href="./glossary.html">Glossar</a> | <a href="./sitemap.html">Seitenindex</a></p></div>
