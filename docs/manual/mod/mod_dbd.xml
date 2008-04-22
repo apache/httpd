@@ -127,8 +127,13 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     untrusted input is merged into the SQL statement.</p>
     <p>It can be made safe by <em>untainting</em> all inputs:
     a process inspired by Perl's taint checking.  Each input
-    is matched against a regexp, and only the match is used.
-    To use this, the untainting regexps must be included in the
+    is matched against a regexp, and only the match is used,
+    according to the Perl idiom:</p>
+    <example>
+        <pre><code>  $untrusted =~ /([a-z])+/;
+  $trusted = $1;</code></pre>
+    </example>
+    <p>To use this, the untainting regexps must be included in the
     prepared statements configured.  The regexp follows immediately
     after the % in the prepared statement, and is enclosed in
     curly brackets {}.  For example, if your application expects
