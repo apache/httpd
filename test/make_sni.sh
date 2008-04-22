@@ -32,13 +32,20 @@ NAMES=${NAMES:-ape nut pear apple banana}
 # IP address these hostnames are bound to.
 IP=${IP:-127.0.0.1}
 
-args=`getopt a:fd:D: $*`
+# A certificate password for the .p12 files of the client
+# authentication test. Normally not set. However some browsers
+# require a password of at least 4 characters.
+#
+PASSWD=${PASSWD:-}
+
+args=`getopt a:fd:D:p: $*`
 if [ $? != 0 ]; then
     echo "Syntax: $0 [-f] [-a IPaddress] [-d outdir] [-D domain ] [two or more vhost names ]"
     echo "    -f        Force overwriting of outdir (default is $DIR)"
     echo "    -d dir    Directory to create the SNI test server in (default is $DIR)"
     echo "    -D domain Domain name to use for this test (default is $DOMAIN)"
     echo "    -a IP     IP address to use for this virtual host (default is $IP)"
+    echo "    -p str    Password for the client certificate test (some browsers require a set password)"
     echo "    [names]   List of optional vhost names (default is $NAMES)"
     echo 
     echo "Example:"
@@ -64,6 +71,9 @@ do
             shift;;
         -d)
             DIR=$2; shift
+            shift;;
+        -p)
+            PASSWD=$2; shift
             shift;;
         -D)
             DOMAIN=$2; shift
@@ -111,13 +121,66 @@ mkdir -p ${DIR}/ssl ${DIR}/htdocs ${DIR}/logs || exit 1
 # keyUsage = cRLSign, keyCertSign values. This is fine
 # for most browsers.
 #
-serial=$$
+serial=$RANDOM
 openssl req -new -nodes -batch \
     -x509  \
     -days 10 -subj '/CN=Da Root/O=SNI testing/' -set_serial $serial \
     -keyout ${DIR}/root.key -out ${DIR}/root.pem  \
     || exit 2
 
+CDIR=${DIR}/client-xs-control
+mkdir -p ${CDIR}
+# Create some certificate authorities for testing client controls
+#
+openssl req -new -nodes -batch \
+    -x509  \
+    -days 10 -subj '/CN=Da Second Root/O=SNI user access I/' -set_serial $RANDOM \
+    -keyout ${CDIR}/xs-root-1.key -out ${CDIR}/xs-root-1.pem  \
+    || exit 2
+
+openssl req -new -nodes -batch \
+    -x509  \
+    -days 10 -subj '/CN=Da Second Root/O=SNI user access II/' -set_serial $RANDOM \
+    -keyout ${CDIR}/xs-root-2.key -out ${CDIR}/xs-root-2.pem  \
+    || exit 2
+
+# Create a chain of just the two access authorites:
+cat ${CDIR}/xs-root-2.pem ${CDIR}/xs-root-1.pem > ${CDIR}/xs-root-chain.pem
+
+# And likewise a directory with the same information (using the
+# required 'hash' naming format
+#
+mkdir -p ${CDIR}/xs-root-dir || exit 1
+rm -f {$CDIR}/*.0
+ln ${CDIR}/xs-root-1.pem ${CDIR}/xs-root-dir/`openssl x509 -noout -hash -in ${CDIR}/xs-root-1.pem`.0
+ln ${CDIR}/xs-root-2.pem ${CDIR}/xs-root-dir/`openssl x509 -noout -hash -in ${CDIR}/xs-root-2.pem`.0
+
+# Use the above two client certificate authorities to make a few users
+for i in 1 2
+do
+    # Create a certificate request for a test user.
+    #
+    openssl req -new -nodes -batch \
+        -days 9 -subj "/CN=User $i/O=SNI Test Crash Dummy Dept/" \
+        -keyout ${CDIR}/client-$i.key -out ${CDIR}/client-$i.req -batch  \
+                || exit 3
+
+    # And get it signed by either our client cert issuing root authority.
+    #
+    openssl x509 -text -req \
+        -CA ${CDIR}/xs-root-$i.pem -CAkey ${CDIR}/xs-root-$i.key \
+        -set_serial $RANDOM -in ${CDIR}/client-$i.req -out ${CDIR}/client-$i.pem \
+                || exit 4
+
+    # And create a pkcs#12 version for easy browser import.
+    #
+    openssl pkcs12 -export \
+        -inkey ${CDIR}/client-$i.key -in ${CDIR}/client-$i.pem -name "Client $i" \
+        -caname "Issuing client root $i" -certfile ${CDIR}/xs-root-$i.pem  \
+        -out ${CDIR}/client.p12 -passout pass:"$PASSWD" || exit 5
+
+    rm ${CDIR}/client-$i.req 
+done
 
 # Create the header for the example '/etc/hosts' file.
 #
@@ -229,6 +292,20 @@ do
     DocumentRoot ${DIR}/htdocs/$n
     SSLCertificateChainFile ${DIR}/root.pem
     SSLCertificateFile ${DIR}/ssl/$n.crt
+
+    # Uncomment the following lines if you
+    # want to only allow access to clients with
+    # a certificate issued/signed by some 
+    # selection of the issuing authorites
+    #
+    # SSLCACertificate ${CDIR}/xs-root-1.pem # just root 1
+    # SSLCACertificate ${CDIR}/xs-root-2.pem # just root 2
+    # SSLCACertificate ${CDIR}/xs-root-chain.pem # 1 & 2 
+    # SSLCACertificateDir ${CDIR}/xs-root-dir # 1 & 2 - but as a directory.
+    #
+    # SSLVerifyClient require
+    # SSLVerifyDepth 2
+    # 
     TransferLog ${DIR}/logs/access_$n
 </VirtualHost>
 
@@ -256,6 +333,21 @@ The directory ${DIR}/sni has been populated with the following
 
 -       logs            logfiles, one for each domain and an
                         access_log for any misses.
+
+The directory ${CDIR} contains optional test files to allow client
+authentication testing:
+
+-       client*pem/p12  Files for client authentication testing. These
+                        need to be imported into the browser.
+
+-       xs-root-1/2     Certificate authority which has issued above
+                        client authentication certificates.
+
+-       xs-root-dir     A directory specific for the SSLCACertificateDir
+                        directive.
+
+-       xs-root-chain   A chain of the two client xs authorities for the
+                        SSLCACertificate directive.
 
 SNI Test
 ========
