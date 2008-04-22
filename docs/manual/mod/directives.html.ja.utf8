@@ -98,7 +98,6 @@
 <li><a href="mod_auth_form.html#authformloginrequiredlocation">AuthFormLoginRequiredLocation</a></li>
 <li><a href="mod_auth_form.html#authformloginsuccesslocation">AuthFormLoginSuccessLocation</a></li>
 <li><a href="mod_auth_form.html#authformlogoutlocation">AuthFormLogoutLocation</a></li>
-<li><a href="mod_auth_form.html#authformlogoutlocation">AuthFormLogoutLocation</a></li>
 <li><a href="mod_auth_form.html#authformmethod">AuthFormMethod</a></li>
 <li><a href="mod_auth_form.html#authformmimetype">AuthFormMimetype</a></li>
 <li><a href="mod_auth_form.html#authformpassword">AuthFormPassword</a></li>
