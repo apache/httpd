@@ -130,7 +130,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
     is matched against a regexp, and only the match is used,
     according to the Perl idiom:</p>
     <example>
-        <pre><code>  $untrusted =~ /([a-z])+/;
+        <pre><code>  $untrusted =~ /([a-z]+)/;
   $trusted = $1;</code></pre>
     </example>
     <p>To use this, the untainting regexps must be included in the
