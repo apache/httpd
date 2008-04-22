@@ -575,42 +575,6 @@ lower level modules</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>AuthFormLogoutLocation</name>
-<description>The URI of the page on the server to redirect to after a user has logged out</description>
-<syntax>AuthFormLogoutLocation <var>uri</var></syntax>
-<default>none</default>
-<contextlist><context>directory</context>
-</contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
-
-<usage>
-    <p>The <directive module="mod_auth_form">AuthFormLogoutLocation</directive> directive
-    specifies the URI of a page on the server to redirect to internally should the user
-    attempt log out.</p>
-    
-    <p>When a URI is accessed that is served by the handler <code>form-logout-handler</code>,
-    the page specified by this directive will be shown to the end user. For example:</p>
-    
-    <example><title>Example</title>
-      &lt;Location /logout&gt;<br />
-      <indent>
-        SetHandler form-logout-handler<br />
-        AuthFormLogoutLocation /logout.html<br />
-        Session on<br />
-        ...
-      </indent>
-      &lt;/Location&gt;
-    </example>
-    
-    <p>An attempt to access the URI <var>/logout/</var> will result in the user being logged
-    out, and the page <var>/logout.html</var> will be displayed. Make sure that the page
-    <var>logout.html</var> is not password protected, otherwise the page will not be
-    displayed.</p>
-
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>AuthFormFakeBasicAuth</name>
 <description>Fake a Basic Authentication header</description>
 <syntax>AuthFormFakeBasicAuth <var>On|Off</var></syntax>
