@@ -480,7 +480,7 @@ RewriteRule ^foo\.html$         foo.<strong>32</strong>.html          [<strong>L
           always only as up-to-date as the last time we ran the program. It
           would be much better if the mirror was not a static one we
           have to establish explicitly. Instead we want a dynamic
-          mirror with data which gets updated automatically on the
+          mirror with data which gets updated automatically
           as needed on the remote host(s).</p>
         </dd>
 
@@ -638,8 +638,8 @@ www   IN  A       1.2.3.5
               subsequent requests will continue to go to the same
               IP (and thus a single server), rather than being
               distributed across the other available servers. But the
-              over result is
-              okay, because the requests are collectively
+              overall result is
+              okay because the requests are collectively
               spread over the various web servers.</p>
             </li>
 
