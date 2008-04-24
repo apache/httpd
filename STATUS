@@ -234,6 +234,13 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~jim/patches/proxy-disablereuse.txt
    +1: jim
 
+ * mod_log_config: Add format options for %p.  PR 43415
+   Trunk version of patch:
+     http://svn.apache.org/viewvc?view=rev&revision=579425
+   Backport version for 2.2.x of patch:
+     trunk patch applies
+   +1: trawick
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
