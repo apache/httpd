@@ -88,6 +88,13 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * mod_proxy_http: Return HTTP status codes instead of apr_status_t
+    values for errors encountered while forwarding the request body
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=611292&view=rev
+      Backport version for 2.2.x of patch (trunk applies):
+         http://people.apache.org/~covener/2.2.x-proxy-status_t.diff 
+    +1 covener, niq, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -126,14 +133,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       -1: rpluem: jorton found some problems with the trunk version and they
                   should be fixed / discussed in trunk before we backport.
 
-  * mod_proxy_http: Return HTTP status codes instead of apr_status_t
-    values for errors encountered while forwarding the request body
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=611292&view=rev
-      Backport version for 2.2.x of patch (trunk applies):
-         http://people.apache.org/~covener/2.2.x-proxy-status_t.diff 
-    +1 covener, niq
-
   * core: Reinstate location walk for subrequests.
     PR: 41960.
       Trunk version of patch:
@@ -164,9 +163,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    niq replies: Done.
 
  * mod_ext_filter: Include recently added TranslateAllMimeTypes option 
-   to this AP_INIT_ITERATE parameter 
+   to this AP_INIT_ITERATE parameter (the help message parameter)
       http://svn.apache.org/viewvc?rev=631342&view=rev
-   +1: covener
+   +1: covener, trawick
 
  * ApacheMonitor (win32); Sync to current trunk/.  This would
    Introduce the --kill flag, for use by the installer, solve
