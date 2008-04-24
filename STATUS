@@ -204,6 +204,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
        http://people.apache.org/~covener/2.2.x-pr44560.diff
    +1 covener, niq
+   trawick: I don't understand the API for the affected array.
+     Consider uldap_cache_getuserdn():  
+     Before this change, we returned a new list of ptrs to strings,
+     with a NULL ptr signifying the end of the list.  (Yes, we messed
+     up and could miss some of the strings.)
+     After this change, we return a new list of ptrs to strings,
+     of indeterminate length since NULL pointers are scattered 
+     through the array.  So how does the caller know how to walk
+     through the list? (It seems that we need need to allocate numvals+1,
+     then store in (*retvals)[j++] when vals[i] != NULL.)
 
  * mod_headers: Add merge option to avoid duplicate values within
    the same header.
