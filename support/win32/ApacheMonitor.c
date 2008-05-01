@@ -1814,7 +1814,7 @@ HWND CreateMainWindow(HINSTANCE hInstance)
 
 #ifndef UNICODE
 /* Borrowed from CRT internal.h for _MBCS argc/argv parsing in this GUI app */
-int  __CRTDECL _setargv(void);
+int  __cdecl _setargv(void);
 #endif
 
 int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
@@ -1872,7 +1872,7 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
     }
     else if ((__argc == 4) && (g_dwOSVersion >= OS_VERSION_WIN2K))
     {
-        dwControl = _tstoi(__targv[1]);
+        dwControl = _ttoi(__targv[1]);
         if ((dwControl != SERVICE_CONTROL_CONTINUE) &&
             (dwControl != SERVICE_APACHE_RESTART) &&
             (dwControl != SERVICE_CONTROL_STOP))
