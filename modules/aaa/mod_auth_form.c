@@ -693,9 +693,7 @@ static int check_site(request_rec * r, const char *site, const char *sent_user, 
     if (site && sent_user && sent_hash) {
         const char *hash = ap_md5(r->pool,
                       (unsigned char *) apr_pstrcat(r->pool, sent_user, ":", site, NULL));
-        
-//        if (APR_SUCCESS == apr_password_validate(apr_pstrcat(r->pool, sent_user, ":", site, NULL),
-//                                                 sent_hash)) {
+
         if (!strcmp(sent_hash, hash)) {
             return OK;
         }
