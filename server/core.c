@@ -1434,7 +1434,7 @@ static const char *set_options(cmd_parms *cmd, void *d_, const char *l)
             return apr_pstrcat(cmd->pool, "Illegal option ", w, NULL);
         }
 
-        if (!(cmd->override_opts & opt) && opt != OPT_NONE) {
+        if ( (cmd->override_opts & opt) != opt ) {
             return apr_pstrcat(cmd->pool, "Option ", w, " not allowed here", NULL);
         }
         else if (action == '-') {
