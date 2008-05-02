@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+
+  *) core: Do not allow Options ALL if not all options are allowed to be
+     overwritten. PR 44262 [Michał Grzędzicki <lazy iq.pl>]
+
   *) ap_cache_cacheable_headers_out() will (now) always
      merge an error heaeders _before_ clearing them and _before_
      merging in the actual entity headers and doing normal
