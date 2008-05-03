@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='UTF-8' ?>
+﻿<?xml version='1.0' encoding='UTF-8' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.en.xsl"?>
 <!-- $LastChangedRevision$ -->
@@ -502,7 +502,7 @@
     the normal negotiation process applies.</p>
 
     <example><title>Example</title>
-      SetEnvIf Cookie "language=(.+)" prefer-language=$1
+      SetEnvIf Cookie "language=(.+)" prefer-language=$1<br />
       Header append Vary cookie
     </example>
 </section>
