@@ -96,6 +96,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          http://people.apache.org/~covener/2.2.x-proxy-status_t.diff 
     +1 covener, niq, trawick
 
+ * mod_ldap: Correctly return all requested attribute values
+   when some attributes have a null value.
+   PR: 44560
+   Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=634821&view=rev
+   Backport version for 2.2.x of patch:
+       http://people.apache.org/~covener/2.2.x-pr44560.diff
+   +1 covener, niq, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -195,32 +204,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
     Backport version for 2.2.x of patch:
       http://people.apache.org/~jim/patches/proxy-ssl-44026-patch.txt
    +1: jim, rpluem
-
- * mod_ldap: Correctly return all requested attribute values
-   when some attributes have a null value.
-   PR: 44560
-   Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=634821&view=rev
-   Backport version for 2.2.x of patch:
-       http://people.apache.org/~covener/2.2.x-pr44560.diff
-   +1 covener, niq
-   trawick: I don't understand the API for the affected array.
-     Consider uldap_cache_getuserdn():  
-     Before this change, we returned a new list of ptrs to strings,
-     with a NULL ptr signifying the end of the list.  (Yes, we messed
-     up and could miss some of the strings.)
-     After this change, we return a new list of ptrs to strings,
-     of indeterminate length since NULL pointers are scattered 
-     through the array.  So how does the caller know how to walk
-     through the list? (It seems that we need need to allocate numvals+1,
-     then store in (*retvals)[j++] when vals[i] != NULL.)
-   covener: The caller has asked for values corresponding to a passed list 
-     of attributes (attrs), so the returned list does not need to be null 
-     terminated (or otherwise convey a length)
-     mod_authnz_ldap iterates through it's own copy of the _attributes_ 
-     (null terminated, like the native LDAP API) and uses the 
-     correspondingly-indexed entry in the returned values 
-     (retvals in uldap_cache_getuserdn() signature)
 
  * mod_headers: Add merge option to avoid duplicate values within
    the same header.
