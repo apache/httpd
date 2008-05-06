@@ -45,7 +45,7 @@
     -<strong>p</strong><var>path</var>
     -<strong>l</strong><var>limit</var></code></p>
 
-    <p><code><strong>htcacheclean</strong> -<strong>b</strong>
+    <p><code><strong>htcacheclean</strong>
     [ -<strong>n</strong> ]
     [ -<strong>t</strong> ]
     [ -<strong>i</strong> ]
