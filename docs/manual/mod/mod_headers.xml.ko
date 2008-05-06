@@ -27,9 +27,6 @@
 <status>Extension</status>
 <sourcefile>mod_headers.c</sourcefile>
 <identifier>headers_module</identifier>
-<compatibility><directive
-module="mod_headers">RequestHeader</directive>는 아파치 2.0에만
-있다</compatibility>
 
 <summary>
     <p>이 모듈은 HTTP 요청 헤더와 응답 헤더를 조절하고 수정하는

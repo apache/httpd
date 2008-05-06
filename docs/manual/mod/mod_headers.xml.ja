@@ -27,8 +27,6 @@
 <status>Extension</status>
 <sourcefile>mod_headers.c</sourcefile>
 <identifier>headers_module</identifier>
-<compatibility><directive module="mod_headers">RequestHeader</directive> 
-は Apache 2.0 以降のみで使用可能</compatibility>
 
 <summary>
     <p>このモジュールは HTTP のリクエストヘッダと応答ヘッダを制御し、
