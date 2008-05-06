@@ -149,10 +149,6 @@ Changes with Apache 2.3.0
   *) Support chroot on Unix-family platforms
      PR 43596 [Dimitar Pashev <mitko banksoft-bg.com>]
 
-  *) mod_proxy_http: Return HTTP status codes instead of apr_status_t
-     values for errors encountered while forwarding the request body
-     PR 44165 [Eric Covener]
-
   *) mod_ssl: Added server name indication support (SNI, RFC 4366).
      PR 34607. [Kaspar Brand <asfbugz velox.ch>]. A test configuration
      can be created with test/make_sni.sh [Dirk-Willem van Gulik].
