@@ -1560,6 +1560,10 @@ requests on a persistent connection</description>
     may cause performance problems in heavily loaded servers. The
     higher the timeout, the more server processes will be kept
     occupied waiting on connections with idle clients.</p>
+    
+    <note type="warning"><title>Note</title>
+      <p>This directive will be ignored in a name-based virtual host context.</p>
+    </note>
 </usage>
 </directivesynopsis>
 
