@@ -88,14 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-  * mod_proxy_http: Return HTTP status codes instead of apr_status_t
-    values for errors encountered while forwarding the request body
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=611292&view=rev
-      Backport version for 2.2.x of patch (trunk applies):
-         http://people.apache.org/~covener/2.2.x-proxy-status_t.diff 
-    +1 covener, niq, trawick
-
  * mod_ldap: Correctly return all requested attribute values
    when some attributes have a null value.
    PR: 44560
