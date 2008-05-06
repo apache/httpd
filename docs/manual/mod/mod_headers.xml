@@ -28,8 +28,6 @@ headers</description>
 <status>Extension</status>
 <sourcefile>mod_headers.c</sourcefile>
 <identifier>headers_module</identifier>
-<compatibility><directive module="mod_headers">RequestHeader</directive>
-is available only in Apache 2.0</compatibility>
 
 <summary>
     <p>This module provides directives to control and modify HTTP
