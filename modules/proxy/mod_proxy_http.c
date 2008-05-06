@@ -259,7 +259,7 @@ static void terminate_headers(apr_bucket_alloc_t *bucket_alloc,
     APR_BRIGADE_INSERT_TAIL(header_brigade, e);
 }
 
-static apr_status_t pass_brigade(apr_bucket_alloc_t *bucket_alloc,
+static int pass_brigade(apr_bucket_alloc_t *bucket_alloc,
                                  request_rec *r, proxy_conn_rec *conn,
                                  conn_rec *origin, apr_bucket_brigade *bb,
                                  int flush)
@@ -279,22 +279,27 @@ static apr_status_t pass_brigade(apr_bucket_alloc_t *bucket_alloc,
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                      "proxy: pass request body failed to %pI (%s)",
                      conn->addr, conn->hostname);
-        return status;
+        if (origin->aborted) { 
+            return APR_STATUS_IS_TIMEUP(status) ? HTTP_GATEWAY_TIME_OUT : HTTP_BAD_GATEWAY;
+        }
+        else { 
+            return HTTP_BAD_REQUEST; 
+        }
     }
     apr_brigade_cleanup(bb);
-    return APR_SUCCESS;
+    return OK;
 }
 
 #define MAX_MEM_SPOOL 16384
 
-static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
+static int stream_reqbody_chunked(apr_pool_t *p,
                                            request_rec *r,
                                            proxy_conn_rec *p_conn,
                                            conn_rec *origin,
                                            apr_bucket_brigade *header_brigade,
                                            apr_bucket_brigade *input_brigade)
 {
-    int seen_eos = 0;
+    int seen_eos = 0, rv = OK;
     apr_size_t hdr_len;
     apr_off_t bytes;
     apr_status_t status;
@@ -352,7 +357,7 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
              */
             status = ap_save_brigade(NULL, &bb, &input_brigade, p);
             if (status != APR_SUCCESS) {
-                return status;
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
 
             header_brigade = NULL;
@@ -362,9 +367,9 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
         }
 
         /* The request is flushed below this loop with chunk EOS header */
-        status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 0);
-        if (status != APR_SUCCESS) {
-            return status;
+        rv = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 0);
+        if (rv != OK) {
+            return rv;
         }
 
         if (seen_eos) {
@@ -376,7 +381,7 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
                                 HUGE_STRING_LEN);
 
         if (status != APR_SUCCESS) {
-            return status;
+            return HTTP_BAD_REQUEST;
         }
     }
 
@@ -403,11 +408,11 @@ static apr_status_t stream_reqbody_chunked(apr_pool_t *p,
     APR_BRIGADE_INSERT_TAIL(bb, e);
 
     /* Now we have headers-only, or the chunk EOS mark; flush it */
-    status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
-    return status;
+    rv = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
+    return rv;
 }
 
-static apr_status_t stream_reqbody_cl(apr_pool_t *p,
+static int stream_reqbody_cl(apr_pool_t *p,
                                       request_rec *r,
                                       proxy_conn_rec *p_conn,
                                       conn_rec *origin,
@@ -415,7 +420,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
                                       apr_bucket_brigade *input_brigade,
                                       const char *old_cl_val)
 {
-    int seen_eos = 0;
+    int seen_eos = 0, rv = 0;
     apr_status_t status = APR_SUCCESS;
     apr_bucket_alloc_t *bucket_alloc = r->connection->bucket_alloc;
     apr_bucket_brigade *bb;
@@ -428,7 +433,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         add_cl(p, bucket_alloc, header_brigade, old_cl_val);
         if (APR_SUCCESS != (status = apr_strtoff(&cl_val, old_cl_val, NULL,
                                                  0))) {
-            return status;
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
     }
     terminate_headers(bucket_alloc, header_brigade);
@@ -476,7 +481,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
              */
             status = ap_save_brigade(NULL, &bb, &input_brigade, p);
             if (status != APR_SUCCESS) {
-                return status;
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
 
             header_brigade = NULL;
@@ -486,9 +491,9 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         }
 
         /* Once we hit EOS, we are ready to flush. */
-        status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, seen_eos);
-        if (status != APR_SUCCESS) {
-            return status;
+        rv = pass_brigade(bucket_alloc, r, p_conn, origin, bb, seen_eos);
+        if (rv != OK) {
+            return rv ;
         }
 
         if (seen_eos) {
@@ -500,7 +505,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
                                 HUGE_STRING_LEN);
 
         if (status != APR_SUCCESS) {
-            return status;
+            return HTTP_BAD_REQUEST;
         }
     }
 
@@ -508,7 +513,7 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: client %s given Content-Length did not match"
                      " number of body bytes read", r->connection->remote_ip);
-        return APR_EOF;
+        return HTTP_BAD_REQUEST;
     }
 
     if (header_brigade) {
@@ -516,12 +521,13 @@ static apr_status_t stream_reqbody_cl(apr_pool_t *p,
          * body; send it now with the flush flag
          */
         bb = header_brigade;
-        status = pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1);
+        return(pass_brigade(bucket_alloc, r, p_conn, origin, bb, 1));
     }
-    return status;
+
+    return OK;
 }
 
-static apr_status_t spool_reqbody_cl(apr_pool_t *p,
+static int spool_reqbody_cl(apr_pool_t *p,
                                      request_rec *r,
                                      proxy_conn_rec *p_conn,
                                      conn_rec *origin,
@@ -562,7 +568,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
                 if (status != APR_SUCCESS) {
                     ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                                  "proxy: search for temporary directory failed");
-                    return status;
+                    return HTTP_INTERNAL_SERVER_ERROR;
                 }
                 apr_filepath_merge(&template, temp_dir,
                                    "modproxy.tmp.XXXXXX",
@@ -572,7 +578,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
                     ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                                  "proxy: creation of temporary file in directory %s failed",
                                  temp_dir);
-                    return status;
+                    return HTTP_INTERNAL_SERVER_ERROR;
                 }
             }
             for (e = APR_BRIGADE_FIRST(input_brigade);
@@ -592,7 +598,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
                     ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
                                  "proxy: write to temporary file %s failed",
                                  tmpfile_name);
-                    return status;
+                    return HTTP_INTERNAL_SERVER_ERROR;
                 }
                 AP_DEBUG_ASSERT(bytes_read == bytes_written);
                 fsize += bytes_written;
@@ -612,7 +618,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
              */
             status = ap_save_brigade(NULL, &body_brigade, &input_brigade, p);
             if (status != APR_SUCCESS) {
-                return status;
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
 
         }
@@ -628,7 +634,7 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
                                 HUGE_STRING_LEN);
 
         if (status != APR_SUCCESS) {
-            return status;
+            return HTTP_BAD_REQUEST;
         }
     }
 
@@ -662,12 +668,11 @@ static apr_status_t spool_reqbody_cl(apr_pool_t *p,
         APR_BRIGADE_INSERT_TAIL(header_brigade, e);
     }
     /* This is all a single brigade, pass with flush flagged */
-    status = pass_brigade(bucket_alloc, r, p_conn, origin, header_brigade, 1);
-    return status;
+    return(pass_brigade(bucket_alloc, r, p_conn, origin, header_brigade, 1));
 }
 
 static
-apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
+int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                                    proxy_conn_rec *p_conn, conn_rec *origin,
                                    proxy_server_conf *conf,
                                    apr_uri_t *uri,
@@ -690,7 +695,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
     const char *old_te_val = NULL;
     apr_off_t bytes_read = 0;
     apr_off_t bytes;
-    int force10;
+    int force10, rv;
     apr_table_t *headers_in_copy;
 
     header_brigade = apr_brigade_create(p, origin->bucket_alloc);
@@ -932,7 +937,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: %s Transfer-Encoding is not supported",
                      old_te_val);
-        return APR_EINVAL;
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
 
     if (old_cl_val && old_te_val) {
@@ -965,7 +970,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                          " from %s (%s)",
                          p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
                          c->remote_ip, c->remote_host ? c->remote_host: "");
-            return status;
+            return HTTP_BAD_REQUEST;
         }
 
         apr_brigade_length(temp_brigade, 1, &bytes);
@@ -987,7 +992,7 @@ apr_status_t ap_proxy_http_request(apr_pool_t *p, request_rec *r,
                          " to %pI (%s) from %s (%s)",
                          p_conn->addr, p_conn->hostname ? p_conn->hostname: "",
                          c->remote_ip, c->remote_host ? c->remote_host: "");
-            return status;
+            return HTTP_INTERNAL_SERVER_ERROR;
         }
 
     /* Ensure we don't hit a wall where we have a buffer too small
@@ -1101,37 +1106,38 @@ skip_body:
     /* send the request body, if any. */
     switch(rb_method) {
     case RB_STREAM_CHUNKED:
-        status = stream_reqbody_chunked(p, r, p_conn, origin, header_brigade,
+        rv = stream_reqbody_chunked(p, r, p_conn, origin, header_brigade,
                                         input_brigade);
         break;
     case RB_STREAM_CL:
-        status = stream_reqbody_cl(p, r, p_conn, origin, header_brigade,
+        rv = stream_reqbody_cl(p, r, p_conn, origin, header_brigade,
                                    input_brigade, old_cl_val);
         break;
     case RB_SPOOL_CL:
-        status = spool_reqbody_cl(p, r, p_conn, origin, header_brigade,
+        rv = spool_reqbody_cl(p, r, p_conn, origin, header_brigade,
                                   input_brigade, (old_cl_val != NULL)
                                               || (old_te_val != NULL)
                                               || (bytes_read > 0));
         break;
     default:
         /* shouldn't be possible */
-        status = APR_EINVAL;
+        rv = HTTP_INTERNAL_SERVER_ERROR ;
         break;
     }
 
-    if (status != APR_SUCCESS) {
-        ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
+    if (rv != OK) {
+        /* apr_errno value has been logged in lower level method */
+        ap_log_error(APLOG_MARK, APLOG_ERR, 0, r->server,
                      "proxy: pass request body failed to %pI (%s)"
                      " from %s (%s)",
                      p_conn->addr,
                      p_conn->hostname ? p_conn->hostname: "",
                      c->remote_ip,
                      c->remote_host ? c->remote_host: "");
-        return status;
+        return rv;
     }
 
-    return APR_SUCCESS;
+    return OK;
 }
 
 static void process_proxy_header(request_rec* r, proxy_dir_conf* c,
