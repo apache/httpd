@@ -88,14 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_ldap: Correctly return all requested attribute values
-   when some attributes have a null value.
-   PR: 44560
-   Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=634821&view=rev
-   Backport version for 2.2.x of patch:
-       http://people.apache.org/~covener/2.2.x-pr44560.diff
-   +1 covener, niq, trawick
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
