@@ -2,6 +2,8 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_cgid: Don't try to restart the daemon if it fails to initialize
+     the socket.  [Jeff Trawick]
 
   *) core: Do not allow Options ALL if not all options are allowed to be
      overwritten. PR 44262 [Michał Grzędzicki <lazy iq.pl>]
