@@ -224,6 +224,10 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: jim
    niq: there's a typo in the docs and some trivial style matters.
    More importantly, doesn't it require an MMN bump?
+   rpluem says: I agree with niq here that a minor bump is needed.
+   Further question: Why is the address not reusable (that means we
+   need to do a DNS query each time) when we only want to prevent that
+   this connection is kept alive?
 
  * rotatelogs: sync with trunk to pick up
    . enhanced error logging:
