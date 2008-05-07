@@ -164,7 +164,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
  * mod_ext_filter: Include recently added TranslateAllMimeTypes option 
    to this AP_INIT_ITERATE parameter (the help message parameter)
       http://svn.apache.org/viewvc?rev=631342&view=rev
-   +1: covener, trawick
+   +1: covener, trawick, rpluem
 
  * ApacheMonitor (win32); Sync to current trunk/.  This would
    Introduce the --kill flag, for use by the installer, solve
@@ -202,7 +202,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=568879
    Backport version for 2.2.x of patch:
        http://people.apache.org/~chrisd/patches/mod_headers_merge/mod_headers-merge-2.2.x.patch
-   +1: chrisd, niq
+   +1: chrisd, niq, rpluem
 
  * mod_authn_dbd: Disambiguate and tidy database authentication
    error messages.  Also move assignment statements after #if blocks
@@ -213,7 +213,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=468042
    Backport version for 2.2.x of patch:
        http://people.apache.org/~chrisd/patches/mod_authn_dbd_msgs/mod_authn_dbd-msgs-2.2.x.patch
-   +1: chrisd, niq
+   +1: chrisd, niq, rpluem
 
  * mod_proxy: Add in 'disablereuse' option for parity with similar
    mod_jk functionality.
