@@ -117,7 +117,16 @@ AP_DECLARE(int) ap_session_cookie_load(request_rec * r, session_rec ** z)
     const char *val = NULL;
     const char *note = NULL;
     const char *name = NULL;
-    request_rec *m = r->main ? r->main : r;
+    request_rec *m = r;
+
+    /* find the first redirect */
+    while (m->prev) {
+        m = m->prev;
+    }
+    /* find the main request */
+    while (m->main) {
+        m = m->main;
+    }
 
     /* is our session in a cookie? */
     if (conf->name2_set) {
