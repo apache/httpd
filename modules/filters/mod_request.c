@@ -411,7 +411,7 @@ AP_DECLARE(int) ap_parse_request_form(request_rec * r, apr_array_header_t ** ptr
                     else if (c >= '0') {
                         low = c - '0';
                     }
-                    c = low ^ hi;
+                    c = low | hi;
                     percent = FORM_NORMAL;
                 }
                 switch (state) {
