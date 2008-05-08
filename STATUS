@@ -88,13 +88,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_log_config: Add format options for %p.  PR 43415
-   Trunk version of patch:
-     http://svn.apache.org/viewvc?view=rev&revision=579425
-   Backport version for 2.2.x of patch:
-     trunk patch applies
-   +1: trawick, covener, niq
-
  * mod_headers: Add merge option to avoid duplicate values within
    the same header.
    Trunk version of patch:
