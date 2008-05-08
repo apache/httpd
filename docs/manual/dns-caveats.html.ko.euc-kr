@@ -60,11 +60,11 @@
     이 가상호스트는 요청에 응답할 수 없다. (아파치 1.2 이전
     버전에서는 심지어 서버가 부팅도 안한다.)</p>
 
-    <p><code>www.abc.dom</code>의 주소가 10.0.0.1이라고 가정하자.
+    <p><code>www.abc.dom</code>의 주소가 192.0.2.1이라고 가정하자.
     그리고 다음 설정을 보라:</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost 10.0.0.1&gt; <br />
+      &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
       &lt;/VirtualHost&gt;
@@ -81,7 +81,7 @@
     <p>아래 경우 이 두가지 문제가 없다.</p>
 
     <div class="example"><p><code>
-      &lt;VirtualHost 10.0.0.1&gt; <br />
+      &lt;VirtualHost 192.0.2.1&gt; <br />
       ServerName www.abc.dom <br />
       ServerAdmin webgirl@abc.dom <br />
       DocumentRoot /www/abc <br />
@@ -114,18 +114,18 @@
       &lt;/VirtualHost&gt;
     </code></p></div>
 
-    <p>당신이 <code>www.abc.dom</code>에 10.0.0.1,
-    <code>www.def.dom</code>에 10.0.0.2를 할당했다고 하자.
+    <p>당신이 <code>www.abc.dom</code>에 192.0.2.1,
+    <code>www.def.dom</code>에 192.0.2.2를 할당했다고 하자.
     또, <code>def.dom</code>은 자체 DNS를 사용한다고 가정하자.
     이 설정과 함께 <code>def.dom</code>을 <code>abc.dom</code>으로
     가는 모든 통신을 가로챌 수 있는 장소에 두었다. 그렇다면 그들은
-    <code>www.def.dom</code>을 10.0.0.1로 설정하기만 하면 된다.
+    <code>www.def.dom</code>을 192.0.2.1로 설정하기만 하면 된다.
     그들이 자체 DNS를 사용하기때문에 당신은 그들이 원하는데로
     <code>www.def.dom</code> 레코드를 설정하는 것을 막을 수
     없다.</p>
 
     <p>(사용자가 <code>http://www.abc.dom/whatever</code> 형식의
-    URL을 입력하는 경우를 포함하여) 10.0.0.1로 오는 모든 요청을
+    URL을 입력하는 경우를 포함하여) 192.0.2.1로 오는 모든 요청을
     <code>def.dom</code> 가상호스트가 서비스하게 된다. 왜 이런
     일이 일어나는지 이해하려면 아파치가 어떻게 가상호스트로
     오는 요청을 처리하는지에 대한 설명이 필요하다.

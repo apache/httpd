@@ -30,9 +30,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>HTTP リクエストのヘッダと応答のヘッダのカスタマイズ</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>headers_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_headers.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">互換性:</a></th><td><code class="directive"><a href="#requestheader">RequestHeader</a></code> 
-は Apache 2.0 以降のみで使用可能</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_headers.c</td></tr></table>
 <h3>概要</h3>
 
     <p>このモジュールは HTTP のリクエストヘッダと応答ヘッダを制御し、
