@@ -90,7 +90,9 @@
  * %...l:  remote logname (from identd, if supplied)
  * %...{Foobar}n:  The contents of note "Foobar" from another module.
  * %...{Foobar}o:  The contents of Foobar: header line(s) in the reply.
- * %...p:  the port the request was served to
+ * %...p:  the canonical port for the server
+ * %...{format}p: the canonical port for the server, or the actual local
+ *                or remote port
  * %...P:  the process ID of the child that serviced the request.
  * %...{format}P: the process ID or thread ID of the child/thread that
  *                serviced the request
@@ -633,8 +635,22 @@ static const char *log_virtual_host(request_rec *r, char *a)
 
 static const char *log_server_port(request_rec *r, char *a)
 {
-    return apr_psprintf(r->pool, "%u",
-                        r->server->port ? r->server->port : ap_default_port(r));
+    apr_port_t port;
+
+    if (*a == '\0' || !strcasecmp(a, "canonical")) {
+        port = r->server->port ? r->server->port : ap_default_port(r);
+    }
+    else if (!strcasecmp(a, "remote")) {
+        port = r->connection->remote_addr->port;
+    }
+    else if (!strcasecmp(a, "local")) {
+        port = r->connection->local_addr->port;
+    }
+    else {
+        /* bogus format */
+        return a;
+    }
+    return apr_itoa(r->pool, (int)port);
 }
 
 /* This respects the setting of UseCanonicalName so that
