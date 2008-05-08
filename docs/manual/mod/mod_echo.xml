@@ -41,6 +41,7 @@ modules</description>
 <name>ProtocolEcho</name>
 <description>Turn the echo server on or off</description>
 <syntax>ProtocolEcho On|Off</syntax>
+<default>ProtocolEcho Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 <compatibility>ProtocolEcho is only available in 2.0 and
