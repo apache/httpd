@@ -228,14 +228,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=600154
    Backport version for 2.2.x:
      http://people.apache.org/~trawick/rotatelogs_sync.txt
-   +1: trawick, covener
+   +1: trawick, covener, wrowe
 
  * mod_cgid: Don't try to restart the daemon if it fails to initialize the socket.
    Trunk version of patch:
        http://svn.apache.org/viewvc?rev=654232&view=rev
    Backport version for 2.2.x:
        Trunk version works
-   +1: covener, trawick
+   +1: covener, trawick, wrowe
          
  * mod_cgid: Explicitly set permissions of the socket (ScriptSock) for
      OS'es like HPUX and AIX that don't use umask for AF_UNIX sockets
@@ -243,7 +243,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=654332&view=rev
    Backport version for 2.2.x:
        Trunk version works 
-   +1: covener, trawick
+   +1: covener, trawick, wrowe
 
 PATCHES/ISSUES THAT ARE STALLED
 
