@@ -127,6 +127,12 @@
     <tr><td><code>%p</code></td>
         <td>The canonical port of the server serving the request</td></tr>
 
+    <tr><td><code>%{<var>format</var>}p</code></td>
+        <td>The canonical port of the server serving the request or the
+        server's actual port or the client's actual port.  Valid formats
+        are <code>canonical</code>, <code>local</code>, or <code>remote</code>.
+        </td></tr>
+
     <tr><td><code>%P</code></td>
         <td>The process ID of the child that serviced the request.</td></tr>
 
