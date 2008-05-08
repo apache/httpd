@@ -3,7 +3,7 @@ Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
   *) mod_cgid: Explicitly set permissions of the socket (ScriptSock) shared by
-     mod_cgid and request processing threads, for OS'es such as HPUX and AIX
+     mod_cgid and request processing threads, for OS'es such as HP-UX and AIX
      that do not use umask for AF_UNIX socket permissions.
      [Eric Covener, Jeff Trawick]
 
