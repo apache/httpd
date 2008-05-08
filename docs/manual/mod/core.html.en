@@ -1582,6 +1582,10 @@ requests on a persistent connection</td></tr>
     may cause performance problems in heavily loaded servers. The
     higher the timeout, the more server processes will be kept
     occupied waiting on connections with idle clients.</p>
+    
+    <div class="warning"><h3>Note</h3>
+      <p>This directive will be ignored in a name-based virtual host context.</p>
+    </div>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
