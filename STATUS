@@ -235,7 +235,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=654232&view=rev
    Backport version for 2.2.x:
        Trunk version works
-   +1: covener
+   +1: covener, trawick
          
  * mod_cgid: Explicitly set permissions of the socket (ScriptSock) for
      OS'es like HPUX and AIX that don't use umask for AF_UNIX sockets
@@ -243,7 +243,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=654332&view=rev
    Backport version for 2.2.x:
        Trunk version works 
-   +1: covener
+   +1: covener, trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
