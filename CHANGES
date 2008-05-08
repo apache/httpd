@@ -203,10 +203,6 @@ Changes with Apache 2.3.0
   *) core: reinstate location walk to fix config for subrequests
      PR 41960 [Jose Kahan <jose w3.org>]
 
-  *) mod_log_config: Add format options for %p so that the actual local
-     or remote port can be logged.  PR 43415.  [Adam Hasselbalch Hansen 
-     <ahh@one.com>, Ruediger Pluem, Jeff Trawick]
-
   *) mod_authnz_ldap, mod_authn_dbd: Tidy up the code to expose authn
      parameters to the environment. Improve portability to
      EBCDIC machines by using apr_toupper(). [Martin Kraemer]
