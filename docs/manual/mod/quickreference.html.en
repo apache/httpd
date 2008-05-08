@@ -536,7 +536,7 @@ evaluated.</td></tr>
 ...</a></td><td></td><td>svdh</td><td>B</td></tr><tr class="odd"><td class="descr" colspan="4">Passes environment variables from the shell</td></tr>
 <tr><td><a href="mpm_common.html#pidfile">PidFile <var>filename</var></a></td><td> logs/httpd.pid </td><td>s</td><td>M</td></tr><tr><td class="descr" colspan="4">File where the server records the process ID
 of the daemon</td></tr>
-<tr class="odd"><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td></td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
+<tr class="odd"><td><a href="mod_echo.html#protocolecho">ProtocolEcho On|Off</a></td><td> Off </td><td>sv</td><td>X</td></tr><tr class="odd"><td class="descr" colspan="4">Turn the echo server on or off</td></tr>
 <tr><td><a href="mod_proxy.html#proxy">&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</a></td><td></td><td>sv</td><td>E</td></tr><tr><td class="descr" colspan="4">Container for directives applied to proxied resources</td></tr>
 <tr class="odd"><td><a href="mod_proxy.html#proxybadheader">ProxyBadHeader IsError|Ignore|StartBody</a></td><td> IsError </td><td>sv</td><td>E</td></tr><tr class="odd"><td class="descr" colspan="4">Determines how to handle bad header lines in a
 response</td></tr>
