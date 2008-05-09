@@ -2,14 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) mod_cgid: Explicitly set permissions of the socket (ScriptSock) shared by
-     mod_cgid and request processing threads, for OS'es such as HP-UX and AIX
-     that do not use umask for AF_UNIX socket permissions.
-     [Eric Covener, Jeff Trawick]
-
-  *) mod_cgid: Don't try to restart the daemon if it fails to initialize
-     the socket.  [Jeff Trawick]
-
   *) core: Do not allow Options ALL if not all options are allowed to be
      overwritten. PR 44262 [Michał Grzędzicki <lazy iq.pl>]
 
