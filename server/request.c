@@ -1645,13 +1645,6 @@ static request_rec *make_sub_request(const request_rec *r,
     /* Pass on the kept body (if any) into the new request. */
     rnew->kept_body = r->kept_body;
 
-    /*
-     * Add the KEPT_BODY filter, which will insert any body marked to be
-     * kept for the use of a subrequest, into the subrequest.
-     */
-    ap_add_input_filter(KEPT_BODY_FILTER,
-                        NULL, rnew, rnew->connection);
-
     return rnew;
 }
 

@@ -185,7 +185,7 @@ static int kept_body_filter_init(ap_filter_t *f) {
     if (kept_body) {
         apr_table_unset(r->headers_in, "Transfer-Encoding");
         apr_brigade_length(kept_body, 1, &length);
-        apr_table_set(r->headers_in, "Content-Length", apr_off_t_toa(r->pool, length));
+        apr_table_setn(r->headers_in, "Content-Length", apr_off_t_toa(r->pool, length));
     }
 
     return OK;
@@ -307,13 +307,11 @@ typedef enum {
  * NOTE: File upload is not yet supported, but can be without change
  * to the function call.
  */
-AP_DECLARE(int) ap_parse_request_form(request_rec * r, apr_array_header_t ** ptr,
+AP_DECLARE(int) ap_parse_request_form(request_rec * r, ap_filter_t * f, 
+                                      apr_array_header_t ** ptr,
                                       apr_size_t num, apr_size_t size)
 {
-    request_dir_conf *dconf;
-    apr_off_t left = 0;
-    apr_bucket_brigade *bb = NULL, *kept_body = NULL;
-    apr_bucket *e;
+    apr_bucket_brigade *bb = NULL;
     int seen_eos = 0;
     char buffer[HUGE_STRING_LEN + 1];
     const char *ct;
@@ -333,18 +331,15 @@ AP_DECLARE(int) ap_parse_request_form(request_rec * r, apr_array_header_t ** ptr
         return ap_discard_request_body(r);
     }
 
-    dconf = ap_get_module_config(r->per_dir_config,
-                                     &request_module);
-    if (dconf->keep_body > 0) {
-        left = dconf->keep_body;
-        kept_body = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+    if (!f) {
+        f = r->input_filters;
     }
 
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
     do {
         apr_bucket *bucket = NULL, *last = NULL;
 
-        int rv = ap_get_brigade(r->input_filters, bb, AP_MODE_READBYTES,
+        int rv = ap_get_brigade(f, bb, AP_MODE_READBYTES,
                                 APR_BLOCK_READ, HUGE_STRING_LEN);
         if (rv != APR_SUCCESS) {
             apr_brigade_destroy(bb);
@@ -460,24 +455,6 @@ AP_DECLARE(int) ap_parse_request_form(request_rec * r, apr_array_header_t ** ptr
                 }
             }
 
-            /* If we have been asked to, keep the data up until the
-             * configured limit. If the limit is exceeded, we return an
-             * HTTP_REQUEST_ENTITY_TOO_LARGE response so the caller is
-             * clear the server couldn't handle their request.
-             */
-            if (kept_body) {
-                if (len <= left) {
-                    apr_bucket_copy(bucket, &e);
-                    APR_BRIGADE_INSERT_TAIL(kept_body, e);
-                    left -= len;
-                }
-                else {
-                    apr_brigade_destroy(bb);
-                    apr_brigade_destroy(kept_body);
-                    return HTTP_REQUEST_ENTITY_TOO_LARGE;
-                }
-            }
-
         }
 
         apr_brigade_cleanup(bb);
@@ -492,34 +469,69 @@ AP_DECLARE(int) ap_parse_request_form(request_rec * r, apr_array_header_t ** ptr
         APR_BRIGADE_INSERT_TAIL(pair->value, b);
     }
 
-    if (kept_body) {
-        r->kept_body = kept_body;
-    }
-
     return OK;
 
 }
 
 /**
- * Fixups hook.
+ * Check whether this filter is not already present.
+ */
+static int request_is_filter_present(request_rec * r, ap_filter_rec_t *fn)
+{
+    ap_filter_t * f = r->input_filters;
+    while (f) {
+        if (f->frec == fn) {
+            return 1;
+        }
+        f = f->next;
+    }
+    return 0;
+}
+
+/**
+ * Insert filter hook.
  * 
  * Add the KEEP_BODY filter to the request, if the admin wants to keep
  * the body using the KeptBodySize directive.
  * 
+ * As a precaution, any pre-existing instances of either the kept_body or
+ * keep_body filters will be removed before the filter is added.
+ * 
  * @param r The request
  */
-static int request_fixups(request_rec * r)
+AP_DECLARE(void) ap_request_insert_filter(request_rec * r)
 {
     request_dir_conf *conf = ap_get_module_config(r->per_dir_config,
                                                   &request_module);
 
-    if (conf->keep_body) {
-        ap_add_input_filter_handle(ap_keep_body_input_filter_handle,
-                                   NULL, r, r->connection);
+    if (r->kept_body) {
+        if (!request_is_filter_present(r, ap_kept_body_input_filter_handle)) {
+            ap_add_input_filter_handle(ap_kept_body_input_filter_handle,
+                                       NULL, r, r->connection);
+        }
+    }
+    else if (conf->keep_body) {
+        if (!request_is_filter_present(r, ap_kept_body_input_filter_handle)) {
+            ap_add_input_filter_handle(ap_keep_body_input_filter_handle,
+                                       NULL, r, r->connection);
+        }
     }
 
-    return OK;
+}
 
+/**
+ * Remove the kept_body and keep body filters from this specific request.
+ */
+AP_DECLARE(void) ap_request_remove_filter(request_rec * r)
+{
+    ap_filter_t * f = r->input_filters;
+    while (f) {
+        if (f->frec->filter_func.in_func == ap_kept_body_filter ||
+                f->frec->filter_func.in_func == ap_keep_body_filter) {
+            ap_remove_input_filter(f);
+        }
+        f = f->next;
+    }
 }
 
 static void *create_request_dir_config(apr_pool_t *p, char *dummy)
@@ -573,8 +585,10 @@ static void register_hooks(apr_pool_t *p)
     ap_kept_body_input_filter_handle =
         ap_register_input_filter(KEPT_BODY_FILTER, ap_kept_body_filter,
                                  kept_body_filter_init, AP_FTYPE_RESOURCE);
-    ap_hook_fixups(request_fixups, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_insert_filter(ap_request_insert_filter, NULL, NULL, APR_HOOK_LAST);
     APR_REGISTER_OPTIONAL_FN(ap_parse_request_form);
+    APR_REGISTER_OPTIONAL_FN(ap_request_insert_filter);
+    APR_REGISTER_OPTIONAL_FN(ap_request_remove_filter);
 }
 
 module AP_MODULE_DECLARE_DATA request_module = {
