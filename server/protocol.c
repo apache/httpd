@@ -1084,8 +1084,8 @@ AP_DECLARE(void) ap_set_sub_req_protocol(request_rec *rnew,
     /* did the original request have a body?  (e.g. POST w/SSI tags)
      * if so, make sure the subrequest doesn't inherit body headers
      */
-    if (apr_table_get(r->headers_in, "Content-Length")
-        || apr_table_get(r->headers_in, "Transfer-Encoding")) {
+    if (!r->kept_body && (apr_table_get(r->headers_in, "Content-Length")
+        || apr_table_get(r->headers_in, "Transfer-Encoding"))) {
         clone_headers_no_body(rnew, r);
     } else {
         /* no body (common case).  clone headers the cheap way */
