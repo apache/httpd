@@ -69,7 +69,7 @@
     <program>httpd</program> binary and any command-line arguments that you
     wish to be <em>always</em> present.</p>
 
-    <p>The first thing that <code>httpd</code> does when it is
+    <p>The first thing that <program>httpd</program> does when it is
     invoked is to locate and read the <a
     href="configuring.html">configuration file</a>
     <code>httpd.conf</code>. The location of this file is set at
