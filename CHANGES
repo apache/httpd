@@ -89,10 +89,6 @@ Changes with Apache 2.3.0
   *) mod_rewrite: Initialize hash needed by ap_register_rewrite_mapfunc early
      enough. PR 44641 [Daniel Lescohier <daniel.lescohier cnet.com>]
 
-  *) mod_authn_dbd: Disambiguate and tidy database authentication
-     error messages.  PR 43210.  [Chris Darroch, Phil Endecott
-     <spam_from_apache_bugzilla chezphil.org>]
-
   *) mod_cache: Handle If-Range correctly if the cached resource was stale.
      PR 44579 [Ruediger Pluem]
 
