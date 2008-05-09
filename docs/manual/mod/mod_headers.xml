@@ -192,8 +192,9 @@ headers</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>The <code>edit</code> argument is available in version
-2.2.4 and later</compatibility>
+<compatibility>The <code>merge</code> argument is available in version
+2.2.9 and later. The <code>edit</code> argument is available in version
+2.2.4 and later.</compatibility>
 
 <usage>
     <p>This directive can replace, merge, change or remove HTTP request
@@ -222,7 +223,8 @@ headers</description>
     with a comma.  This is the HTTP standard way of giving a header multiple
     values.  Values are compared in a case sensitive manner, and after
     all format specifiers have been processed.  Values in double quotes
-    are considered different from otherwise identical unquoted values.</dd>
+    are considered different from otherwise identical unquoted values.
+    <em>Available in version 2.2.9 and later.</em></dd>
 
     <dt><code>add</code></dt>
     <dd>The request header is added to the existing set of headers,
@@ -287,8 +289,9 @@ headers</description>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>The <code>edit</code> argument is available in version
-2.2.4 and later</compatibility>
+<compatibility>The <code>merge</code> argument is available in version
+2.2.9 and later. The <code>edit</code> argument is available in version
+2.2.4 and later.</compatibility>
 <usage>
     <p>This directive can replace, merge or remove HTTP response
     headers. The header is modified just after the content handler
@@ -324,7 +327,8 @@ headers</description>
     This is the HTTP standard way of giving a header multiple values.
     Values are compared in a case sensitive manner, and after
     all format specifiers have been processed.  Values in double quotes
-    are considered different from otherwise identical unquoted values.</dd>
+    are considered different from otherwise identical unquoted values.
+    <em>Available in version 2.2.9 and later.</em></dd>
 
     <dt><code>add</code></dt>
     <dd>The response header is added to the existing set of headers,
