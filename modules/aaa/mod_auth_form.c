@@ -46,8 +46,11 @@ static void (*ap_session_get_fn) (request_rec * r, session_rec * z,
                                   const char *key, const char **value) = NULL;
 static void (*ap_session_set_fn) (request_rec * r, session_rec * z,
                                   const char *key, const char *value) = NULL;
-static int (*ap_parse_request_form_fn) (request_rec * r, apr_array_header_t ** ptr,
+static int (*ap_parse_request_form_fn) (request_rec * r, ap_filter_t *f, 
+                                        apr_array_header_t ** ptr,
                                         apr_size_t num, apr_size_t size) = NULL;
+static void (*ap_request_insert_filter_fn) (request_rec * r) = NULL;
+static void (*ap_request_remove_filter_fn) (request_rec * r) = NULL;
 
 typedef struct {
     authn_provider_list *providers;
@@ -183,9 +186,11 @@ static const char *add_authn_provider(cmd_parms * cmd, void *config,
         }
     }
 
-    if (!ap_parse_request_form_fn) {
+    if (!ap_parse_request_form_fn || !ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
         ap_parse_request_form_fn = APR_RETRIEVE_OPTIONAL_FN(ap_parse_request_form);
-        if (!ap_parse_request_form_fn) {
+        ap_request_insert_filter_fn = APR_RETRIEVE_OPTIONAL_FN(ap_request_insert_filter);
+        ap_request_remove_filter_fn = APR_RETRIEVE_OPTIONAL_FN(ap_request_remove_filter);
+        if (!ap_parse_request_form_fn || !ap_request_insert_filter_fn || !ap_request_remove_filter_fn) {
             return "You must load mod_request to enable the mod_auth_form "
                    "functions";
         }
@@ -570,6 +575,7 @@ static int get_form_auth(request_rec * r,
                              const char **sent_loc,
                              const char **sent_method,
                              const char **sent_mimetype,
+                             apr_bucket_brigade **sent_body,
                              auth_form_config_rec * conf)
 {
     /* sanity check - are we a POST request? */
@@ -578,7 +584,6 @@ static int get_form_auth(request_rec * r,
     apr_array_header_t *pairs = NULL;
     apr_off_t len;
     apr_size_t size;
-    apr_bucket_brigade *kept_body = NULL;
     int res;
     char *buffer;
 
@@ -588,7 +593,7 @@ static int get_form_auth(request_rec * r,
         return OK;
     }
 
-    res = ap_parse_request_form(r, &pairs, -1, conf->form_size);
+    res = ap_parse_request_form_fn(r, NULL, &pairs, -1, conf->form_size);
     if (res != OK) {
         return res;
     }
@@ -634,8 +639,8 @@ static int get_form_auth(request_rec * r,
             buffer[len] = 0;
             *sent_mimetype = buffer;
         }
-        else if (body && !strcmp(pair->name, body)) {
-            kept_body = pair->value;
+        else if (body && !strcmp(pair->name, body) && sent_body) {
+            *sent_body = pair->value;
         }
     }
 
@@ -647,23 +652,6 @@ static int get_form_auth(request_rec * r,
     /* a missing username or missing password means auth denied */
     if (!sent_user || !*sent_user || !sent_pw || !*sent_pw) {
         return HTTP_UNAUTHORIZED;
-    }
-
-    /* was a body specified? */
-    if (kept_body && sent_mimetype && *sent_mimetype) {
-        apr_off_t length = 0;
-
-        /*
-         * replace the body, the content-type of the body, and the
-         * content-length of the body specified in the form to the current
-         * request. This is safe because in order to get here at all, the
-         * existing body must already be completely read in.
-         */
-        apr_table_set(r->headers_in, "Content-Type", *sent_mimetype);
-        apr_brigade_length(kept_body, 1, &length);
-        apr_table_set(r->headers_in, "Content-Length", apr_off_t_toa(r->pool, length));
-        r->kept_body = kept_body;
-
     }
 
     /*
@@ -712,7 +700,7 @@ static int check_site(request_rec * r, const char *site, const char *sent_user, 
  *
  * Return an HTTP code.
  */
-static int check_auth(request_rec * r, const char *sent_user, const char *sent_pw)
+static int check_authn(request_rec * r, const char *sent_user, const char *sent_pw)
 {
     authn_status auth_result;
     authn_provider_list *current_provider;
@@ -834,16 +822,15 @@ static void fake_basic_authentication(request_rec *r, auth_form_config_rec *conf
  * is up to the webmaster to ensure this screen displays a suitable login
  * form to give the user the opportunity to log in.
  */
-static int authenticate_form_user(request_rec * r)
+static int authenticate_form_authn(request_rec * r)
 {
     auth_form_config_rec *conf = ap_get_module_config(r->per_dir_config,
                                                       &auth_form_module);
-    const char *sent_user = NULL, *sent_pw = NULL, *sent_loc = NULL, *sent_method = NULL,
-        *sent_mimetype = NULL, *sent_hash = NULL;
+    const char *sent_user = NULL, *sent_pw = NULL, *sent_hash = NULL;
+    const char *sent_loc = NULL, *sent_method = "GET", *sent_mimetype = NULL;
     const char *current_auth = NULL;
     apr_status_t res;
     int rv = HTTP_UNAUTHORIZED;
-    int rv2 = HTTP_UNAUTHORIZED;
 
     /* Are we configured to be Form auth? */
     current_auth = ap_auth_type(r);
@@ -873,8 +860,14 @@ static int authenticate_form_user(request_rec * r)
 
     r->ap_auth_type = (char *) current_auth;
 
-    /* try get the username and password from a session, if present */
-    res = get_session_auth(r, &sent_user, &sent_pw, &sent_hash);
+    /* try get the username and password from the notes, if present */
+    get_notes_auth(r, &sent_user, &sent_pw, &sent_method, &sent_mimetype);
+    if (!sent_user || !sent_pw || !*sent_user || !*sent_pw) {
+
+        /* otherwise try get the username and password from a session, if present */
+        res = get_session_auth(r, &sent_user, &sent_pw, &sent_hash);
+
+    }
 
     /* first test whether the site passphrase matches */
     if (APR_SUCCESS == res && sent_user && sent_hash && sent_pw) {
@@ -887,7 +880,7 @@ static int authenticate_form_user(request_rec * r)
 
     /* otherwise test for a normal password match */
     if (APR_SUCCESS == res && sent_user && sent_pw) {
-        rv = check_auth(r, sent_user, sent_pw);
+        rv = check_authn(r, sent_user, sent_pw);
         if (OK == rv) {
             fake_basic_authentication(r, conf, sent_user, sent_pw);
             return OK;
@@ -912,19 +905,73 @@ static int authenticate_form_user(request_rec * r)
      * type and with the given body.
      *
      * Otherwise access is denied.
+     * 
+     * Reading the body requires some song and dance, because the input filters
+     * are not yet configured. To work around this problem, we create a
+     * subrequest and use that to create a sane filter stack we can read the
+     * form from.
+     * 
+     * The main request is then capped with a kept_body input filter, which has
+     * the effect of guaranteeing the input stack can be safely read a second time.
+     * 
      */
-    if (r->method_number == M_POST) {
-        rv2 = get_form_auth(r, conf->username, conf->password, conf->location,
-                            conf->method, conf->mimetype, conf->body,
-                            &sent_user, &sent_pw, &sent_loc, &sent_method,
-                            &sent_mimetype, conf);
-        if (OK == rv2) {
-            rv = check_auth(r, sent_user, sent_pw);
+    if (HTTP_UNAUTHORIZED == rv && r->method_number == M_POST && ap_is_initial_req(r)) {
+        request_rec *rr;
+        apr_bucket_brigade *sent_body = NULL;
+
+        /* create a subrequest of our current uri */
+        rr = ap_sub_req_lookup_uri(r->uri, r, r->input_filters);
+        rr->headers_in = r->headers_in;
+
+        /* run the insert_filters hook on the subrequest to ensure a body read can
+         * be done properly.
+         */
+        ap_run_insert_filter(rr);
+
+        /* parse the form by reading the subrequest */
+        rv = get_form_auth(rr, conf->username, conf->password, conf->location,
+                           conf->method, conf->mimetype, conf->body,
+                           &sent_user, &sent_pw, &sent_loc, &sent_method,
+                           &sent_mimetype, &sent_body, conf);
+
+        /* insert the kept_body filter on the main request to guarantee the
+         * input filter stack cannot be read a second time, optionally inject
+         * a saved body if one was specified in the login form.
+         */
+        if (sent_body && sent_mimetype) {
+            apr_table_set(r->headers_in, "Content-Type", sent_mimetype);
+            r->kept_body = sent_body;
+        }
+        else {
+            r->kept_body = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+        }
+        ap_request_insert_filter_fn(r);
+        ap_destroy_sub_req(rr);
+
+        /* did the form ask to change the method? if so, switch in the redirect handler
+         * to relaunch this request as the subrequest with the new method. If the
+         * form didn't specify a method, the default value GET will force a redirect.
+         */
+        if (sent_method && strcmp(r->method, sent_method)) {
+            r->handler = FORM_REDIRECT_HANDLER;
+        }
+
+        /* check the authn in the main request, based on the username found */
+        if (OK == rv) {
+            rv = check_authn(r, sent_user, sent_pw);
             if (OK == rv) {
-                fake_basic_authentication(r, conf, sent_user, sent_pw);
                 set_session_auth(r, sent_user, sent_pw, conf->site);
+                if (sent_loc) {
+                    apr_table_set(r->headers_out, "Location", sent_loc);
+                    return HTTP_MOVED_PERMANENTLY;
+                }
+                if (conf->loginsuccess) {
+                    apr_table_set(r->headers_out, "Location", conf->loginsuccess);
+                    return HTTP_MOVED_PERMANENTLY;
+                }
             }
         }
+
     }
 
     /*
@@ -935,29 +982,13 @@ static int authenticate_form_user(request_rec * r)
         apr_table_set(r->headers_out, "Location", conf->loginrequired);
         return HTTP_MOVED_PERMANENTLY;
     }
-
+ 
     /* did the user ask to be redirected on login success? */
     if (sent_loc) {
         apr_table_set(r->headers_out, "Location", sent_loc);
         rv = HTTP_MOVED_PERMANENTLY;
     }
 
-    /*
-     * If the user has submitted a sent method along with their form, switch
-     * in the redirect handler. The redirect handler will replace the form
-     * login request with the request given inside the login form.
-     */
-    if (OK == rv) {
-        if (sent_method && sent_mimetype && r->kept_body) {
-            r->handler = FORM_REDIRECT_HANDLER;
-        }
-        else if (sent_method || sent_mimetype || r->kept_body) {
-            ap_log_rerror(APLOG_MARK, APLOG_ERR,
-             0, r, LOG_PREFIX "the login form must contain a field for all "
-                          "three of the method, mimetype and body for the original request "
-                          "to be redirected, reverting to GET: %s", r->uri);
-        }
-    }
 
     /*
      * potential security issue: if we return a login to the browser, we must
@@ -1013,9 +1044,9 @@ static int authenticate_form_login_handler(request_rec * r)
     rv = get_form_auth(r, conf->username, conf->password, conf->location,
                        NULL, NULL, NULL,
                        &sent_user, &sent_pw, &sent_loc,
-                       NULL, NULL, conf);
+                       NULL, NULL, NULL, conf);
     if (OK == rv) {
-        rv = check_auth(r, sent_user, sent_pw);
+        rv = check_authn(r, sent_user, sent_pw);
         if (OK == rv) {
             set_session_auth(r, sent_user, sent_pw, conf->site);
             if (sent_loc) {
@@ -1127,10 +1158,10 @@ static int authenticate_form_redirect_handler(request_rec * r)
 static void register_hooks(apr_pool_t * p)
 {
 #if AP_MODULE_MAGIC_AT_LEAST(20080403,1)
-    ap_hook_check_authn(authenticate_form_user, NULL, NULL, APR_HOOK_MIDDLE,
+    ap_hook_check_authn(authenticate_form_authn, NULL, NULL, APR_HOOK_MIDDLE,
                         AP_AUTH_INTERNAL_PER_CONF);
 #else
-    ap_hook_check_user_id(authenticate_form_user, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_check_user_id(authenticate_form_authn, NULL, NULL, APR_HOOK_MIDDLE);
 #endif
     ap_hook_handler(authenticate_form_login_handler, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(authenticate_form_logout_handler, NULL, NULL, APR_HOOK_MIDDLE);

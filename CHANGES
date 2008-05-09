@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_auth_form: Make sure the input filter stack is properly set
+     up before reading the login form. Make sure the kept body filter
+     is correctly inserted to ensure the body can be read a second
+     time safely should the authn be successful. [Graham Leggett,
+     Rüdiger Pluem]
+
   *) mod_request: Insert the KEPT_BODY filter via the insert_filter
      hook instead of during fixups. Add a safety check to ensure the
      filters cannot be inserted more than once. [Graham Leggett,
