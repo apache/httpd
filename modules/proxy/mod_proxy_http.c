@@ -266,6 +266,10 @@ static int pass_brigade(apr_bucket_alloc_t *bucket_alloc,
     apr_brigade_length(bb, 0, &transferred);
     if (transferred != -1)
         conn->worker->s->transferred += transferred;
+char tmp[1024000];
+apr_size_t tlen = 1024000;
+apr_brigade_flatten(bb, tmp, &tlen);
+printf(tmp, NULL);
     status = ap_pass_brigade(origin->output_filters, bb);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
@@ -893,8 +897,11 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      * input_brigade and jump past all of the request body logic...
      * Reading anything with ap_get_brigade is likely to consume the
      * main request's body or read beyond EOS - which would be unplesant.
+     * 
+     * An exception: when a kept_body is present, then subrequest CAN use
+     * pass request bodies, and we DONT skip the body.
      */
-    if (r->main) {
+    if (!r->kept_body && r->main) {
         /* XXX: Why DON'T sub-requests use keepalives? */
         p_conn->close++;
         if (old_cl_val) {

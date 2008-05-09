@@ -2,6 +2,12 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core, mod_proxy: If a kept_body is present, it becomes safe for
+     subrequests to support message bodies. Make sure that safety
+     checks within the core and within the proxy are not triggered
+     when kept_body is present. This makes it possible to embed
+     proxied POST requests within mod_include. [Graham Leggett]
+
   *) mod_auth_form: Make sure the input filter stack is properly set
      up before reading the login form. Make sure the kept body filter
      is correctly inserted to ensure the body can be read a second
