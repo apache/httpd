@@ -26,9 +26,6 @@ Changes with Apache 2.3.0
      new module called mod_request, reducing the size of the core.
      [Graham Leggett]
 
-  *) rotatelogs: Log the current file size and error code/description
-     when failing to write to the log file.  [Jeff Trawick]
-
   *) mod_dbd: Handle integer configuration directive parameters with a
      dedicated function.
 
@@ -102,10 +99,6 @@ Changes with Apache 2.3.0
   *) core: fix origin checking in SymlinksIfOwnerMatch
      PR 36783 [Robert L Mathews <rob-apache.org.bugs tigertech.net>]
 
-  *) rotatelogs: Added '-f' option to force rotatelogs to create the
-     logfile as soon as started, and not wait until it reads the
-     first entry. [Jim Jagielski]
-
   *) mod_proxy: Do not try a direct connection if the connection via a
      remote proxy failed before and the request has a request body.
      [Ruediger Pluem]
@@ -132,9 +125,6 @@ Changes with Apache 2.3.0
      sent a part of the request body or if the request is not idempotent.
      PR 44334 [Ruediger Pluem]
 
-  *) rotatelogs: Don't leak memory when reopening the logfile.
-     PR 40183 [Ruediger Pluem, Takashi Sato <serai lans-tv.com>]
-
   *) mod_ldap: Add support (taking advantage of the new APR capability)
      for ldap rebind callback while chasing referrals. This allows direct
      searches on LDAP servers (in particular MS Active Directory 2003+)
@@ -158,9 +148,6 @@ Changes with Apache 2.3.0
 
   *) mod_proxy: Keep connections to the backend persistent in the HTTPS case.
      [Ruediger Pluem]
-
-  *) rotatelogs: Improve atomicity when using -l and cleaup code.
-     PR 44004 [Rainer Jung]
 
   *) mod_ssl: Add support for OCSP validation of client certificates.
      PR 41123.  [Marc Stern <marc.stern approach.be>, Joe Orton]
