@@ -266,10 +266,6 @@ static int pass_brigade(apr_bucket_alloc_t *bucket_alloc,
     apr_brigade_length(bb, 0, &transferred);
     if (transferred != -1)
         conn->worker->s->transferred += transferred;
-char tmp[1024000];
-apr_size_t tlen = 1024000;
-apr_brigade_flatten(bb, tmp, &tlen);
-printf(tmp, NULL);
     status = ap_pass_brigade(origin->output_filters, bb);
     if (status != APR_SUCCESS) {
         ap_log_error(APLOG_MARK, APLOG_ERR, status, r->server,
