@@ -33,7 +33,10 @@
  *     add    - add this header, possible resulting in two or more
  *              headers with the same name
  *     append - append this text onto any existing header of this same
+ *     merge  - merge this text onto any existing header of this same,
+ *              avoiding duplicate values
  *     unset  - remove this header
+ *      edit  - transform the header value according to a regexp
  *
  * Where action is unset, the third argument (value) should not be given.
  * The header name can include the colon, or not.
@@ -88,6 +91,7 @@ typedef enum {
     hdr_add = 'a',              /* add header (could mean multiple hdrs) */
     hdr_set = 's',              /* set (replace old value) */
     hdr_append = 'm',           /* append (merge into any old value) */
+    hdr_merge = 'g',            /* merge (merge, but avoid duplicates) */
     hdr_unset = 'u',            /* unset header */
     hdr_echo = 'e',             /* echo headers from request to response */
     hdr_edit = 'r'              /* change value by regexp */
@@ -394,6 +398,8 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
         new->action = hdr_add;
     else if (!strcasecmp(action, "append"))
         new->action = hdr_append;
+    else if (!strcasecmp(action, "merge"))
+        new->action = hdr_merge;
     else if (!strcasecmp(action, "unset"))
         new->action = hdr_unset;
     else if (!strcasecmp(action, "echo"))
@@ -401,8 +407,8 @@ static APR_INLINE const char *header_inout_cmd(cmd_parms *cmd,
     else if (!strcasecmp(action, "edit"))
         new->action = hdr_edit;
     else
-        return "first argument must be 'add', 'set', 'append', 'unset', "
-               "'echo' or 'edit'.";
+        return "first argument must be 'add', 'set', 'append', 'merge', "
+               "'unset', 'echo', or 'edit'.";
 
     if (new->action == hdr_edit) {
         if (subs == NULL) {
@@ -609,6 +615,46 @@ static void do_headers_fixup(request_rec *r, apr_table_t *headers,
             break;
         case hdr_append:
             apr_table_mergen(headers, hdr->header, process_tags(hdr, r));
+            break;
+        case hdr_merge:
+            val = apr_table_get(headers, hdr->header);
+            if (val == NULL) {
+                apr_table_addn(headers, hdr->header, process_tags(hdr, r));
+            } else {
+                char *new_val = process_tags(hdr, r);
+                apr_size_t new_val_len = strlen(new_val);
+                int tok_found = 0;
+
+                /* modified version of logic in ap_get_token() */
+                while (*val) {
+                    const char *tok_start;
+
+                    while (*val && apr_isspace(*val))
+                        ++val;
+
+                    tok_start = val;
+
+                    while (*val && *val != ',') {
+                        if (*val++ == '"')
+                            while (*val)
+                                if (*val++ == '"')
+                                    break;
+                    }
+
+                    if (new_val_len == (apr_size_t)(val - tok_start)
+                        && !strncmp(tok_start, new_val, new_val_len)) {
+                        tok_found = 1;
+                        break;
+                    }
+
+                    if (*val)
+                        ++val;
+                }
+
+                if (!tok_found) {
+                    apr_table_mergen(headers, hdr->header, new_val);
+                }
+            }
             break;
         case hdr_set:
             apr_table_setn(headers, hdr->header, process_tags(hdr, r));

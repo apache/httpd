@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_headers: Add 'merge' option to avoid duplicate values within
+     the same header. [Chris Darroch]
+
   *) mod_cgid: Explicitly set permissions of the socket (ScriptSock) shared by
      mod_cgid and request processing threads, for OS'es such as HPUX and AIX
      that do not use umask for AF_UNIX socket permissions.
