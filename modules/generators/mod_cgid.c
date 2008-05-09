@@ -93,6 +93,15 @@ static const char *sockname;
 static pid_t parent_pid;
 static ap_unix_identity_t empty_ugid = { (uid_t)-1, (gid_t)-1, -1 };
 
+/* The APR other-child API doesn't tell us how the daemon exited
+ * (SIGSEGV vs. exit(1)).  The other-child maintenance function
+ * needs to decide whether to restart the daemon after a failure
+ * based on whether or not it exited due to a fatal startup error
+ * or something that happened at steady-state.  This exit status
+ * is unlikely to collide with exit signals.
+ */
+#define DAEMON_STARTUP_ERROR 254
+
 /* Read and discard the data in the brigade produced by a CGI script */
 static void discard_script_output(apr_bucket_brigade *bb);
 
@@ -256,9 +265,15 @@ static void cgid_maint(int reason, void *data, apr_wait_t status)
                 stopping = 0;
             }
             if (!stopping) {
-                ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
-                             "cgid daemon process died, restarting");
-                cgid_start(root_pool, root_server, proc);
+                if (status == DAEMON_STARTUP_ERROR) {
+                    ap_log_error(APLOG_MARK, APLOG_CRIT, 0, NULL,
+                                 "cgid daemon failed to initialize");
+                }
+                else {
+                    ap_log_error(APLOG_MARK, APLOG_ERR, 0, NULL,
+                                 "cgid daemon process died, restarting");
+                    cgid_start(root_pool, root_server, proc);
+                }
             }
             break;
         case APR_OC_REASON_RESTART:
@@ -560,6 +575,7 @@ static int cgid_server(void *data)
     apr_pool_t *ptrans;
     server_rec *main_server = data;
     apr_hash_t *script_hash = apr_hash_make(pcgi);
+    apr_status_t rv;
 
     apr_pool_create(&ptrans, pcgi);
 
@@ -592,6 +608,15 @@ static int cgid_server(void *data)
                      "Couldn't bind unix domain socket %s",
                      sockname);
         return errno;
+    }
+
+    /* Not all flavors of unix use the current umask for AF_UNIX perms */
+    rv = apr_file_perms_set(sockname, APR_FPROT_UREAD|APR_FPROT_UWRITE|APR_FPROT_UEXECUTE);
+    if (rv != APR_SUCCESS) {
+        ap_log_error(APLOG_MARK, APLOG_CRIT, rv, main_server,
+                     "Couldn't set permissions on unix domain socket %s",
+                     sockname);
+        return rv;
     }
 
     if (listen(sd, DEFAULT_CGID_LISTENBACKLOG) < 0) {
@@ -780,7 +805,7 @@ static int cgid_server(void *data)
             }
         }
     }
-    return -1;
+    return -1; /* should be <= 0 to distinguish from startup errors */
 }
 
 static int cgid_start(apr_pool_t *p, server_rec *main_server,
@@ -797,8 +822,7 @@ static int cgid_start(apr_pool_t *p, server_rec *main_server,
         if (pcgi == NULL) {
             apr_pool_create(&pcgi, p);
         }
-        cgid_server(main_server);
-        exit(-1);
+        exit(cgid_server(main_server) > 0 ? DAEMON_STARTUP_ERROR : -1);
     }
     procnew->pid = daemon_pid;
     procnew->err = procnew->in = procnew->out = NULL;
