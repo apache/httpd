@@ -96,7 +96,7 @@
           bodies has also been added.</dd>
 
       <dt>Event MPM</dt>
-      <dd>The <module>event</module> MPM uses a seperate thread to handle
+      <dd>The <module>event</module> MPM uses a separate thread to handle
           Keep Alive requests and accepting connections.  Keep Alive requests
           have traditionally required httpd to dedicate a worker to handle it.
           This dedicated worker could not be used again until the Keep Alive 
@@ -118,7 +118,7 @@
       <dd>Modules in the aaa directory have been renamed and offer
           better support for digest authentication.  For example, mod_auth
           is now split into <module>mod_auth_basic</module> and
-          <module>mod_auth_file</module>; mod_auth_dbm is now called
+          <module>mod_authn_file</module>; mod_auth_dbm is now called
           <module>mod_authn_dbm</module>; mod_access has been renamed
           <module>mod_authz_host</module>.  There is also a new
           <module>mod_authn_alias</module> module for simplifying
@@ -131,6 +131,14 @@
           framework.  New features include using LDAP attribute values and 
           complicated search filters in the 
           <directive module="mod_authz_core">Require</directive> directive.</dd>
+
+      <dt><module>mod_authz_owner</module></dt>
+      <dd>A new module that authorizes access to files based
+          on the owner of the file on the file system</dd>
+
+      <dt><module>mod_version</module></dt>
+      <dd>A new module that allows configuration blocks to be enabled based on the
+          version number of the running server.</dd>
 
       <dt><module>mod_info</module></dt>
       <dd>Added a new <code>?config</code> argument which will show
@@ -193,7 +201,7 @@
       <dt>Connection Error Logging</dt>
 
       <dd>A new function, <code>ap_log_cerror</code> has been added to log
-          errors that occure with the client's connection.  When logged, 
+          errors that occur with the client's connection.  When logged, 
           the message includes the client IP address.</dd>
 
       <dt>Test Configuration Hook Added</dt>
