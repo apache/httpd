@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_authn_dbd: Disambiguate and tidy database authentication
+     error messages.  PR 43210.  [Chris Darroch, Phil Endecott
+     <spam_from_apache_bugzilla chezphil.org>]
+
   *) mod_headers: Add 'merge' option to avoid duplicate values within
      the same header. [Chris Darroch]
 
