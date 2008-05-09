@@ -31,6 +31,9 @@
  * interval.  NB: Using -l in an environment which changes the GMT offset
  * (such as for BST or DST) can lead to unpredictable results!
  *
+ * -f option added Feb, 2008. This causes rotatelog to open/create
+ *    the logfile as soon as it's started, not as soon as it sees
+ *    data.
  */
 
 
@@ -55,7 +58,7 @@
 #endif
 
 #define BUFSIZE         65536
-#define ERRMSGSZ        128
+#define ERRMSGSZ        256
 
 #ifndef MAX_PATH
 #define MAX_PATH        1024
@@ -67,7 +70,7 @@ static void usage(const char *argv0, const char *reason)
         fprintf(stderr, "%s\n", reason);
     }
     fprintf(stderr,
-            "Usage: %s [-l] <logfile> "
+            "Usage: %s [-l] [-f] <logfile> "
             "{<rotation time in seconds>|<rotation size in megabytes>} "
             "[offset minutes from UTC]\n\n",
             argv0);
@@ -92,6 +95,21 @@ static void usage(const char *argv0, const char *reason)
     exit(1);
 }
 
+static int get_now(int use_localtime, int utc_offset)
+{
+    apr_time_t tNow = apr_time_now();
+    if (use_localtime) {
+        /* Check for our UTC offset before using it, since it might
+         * change if there's a switch between standard and daylight
+         * savings time.
+         */
+        apr_time_exp_t lt;
+        apr_time_exp_lt(&lt, tNow);
+        utc_offset = lt.tm_gmtoff;
+    }
+    return (int)apr_time_sec(tNow) + utc_offset;
+}
+
 int main (int argc, const char * const argv[])
 {
     char buf[BUFSIZE], buf2[MAX_PATH], errbuf[ERRMSGSZ];
@@ -101,10 +119,13 @@ int main (int argc, const char * const argv[])
     apr_size_t nRead, nWrite;
     int use_strftime = 0;
     int use_localtime = 0;
+    int bypass_io = 0;
     int now = 0;
     const char *szLogRoot;
     apr_file_t *f_stdin, *nLogFD = NULL, *nLogFDprev = NULL;
     apr_pool_t *pool;
+    apr_pool_t *pfile = NULL;
+    apr_pool_t *pfile_prev = NULL;
     apr_getopt_t *opt;
     apr_status_t rv;
     char c;
@@ -116,10 +137,13 @@ int main (int argc, const char * const argv[])
 
     apr_pool_create(&pool, NULL);
     apr_getopt_init(&opt, pool, argc, argv);
-    while ((rv = apr_getopt(opt, "l", &c, &optarg)) == APR_SUCCESS) {
+    while ((rv = apr_getopt(opt, "lf", &c, &optarg)) == APR_SUCCESS) {
         switch (c) {
         case 'l':
             use_localtime = 1;
+            break;
+        case 'f':
+            bypass_io = 1;
             break;
         }
     }
@@ -166,21 +190,20 @@ int main (int argc, const char * const argv[])
 
     for (;;) {
         nRead = sizeof(buf);
-        if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS) {
-            exit(3);
+        /*
+         * Bypass reading stdin if we are forcing the logfile
+         * to be opened as soon as we start. Since we won't be
+         * writing anything, we just want to open the file.
+         * First time through is the only time we do this
+         * since we reset bypass_io after the 1st loop
+         */
+        if (!bypass_io) {
+            if (apr_file_read(f_stdin, buf, &nRead) != APR_SUCCESS) {
+                exit(3);
+            }
         }
         if (tRotation) {
-            /*
-             * Check for our UTC offset every time through the loop, since
-             * it might change if there's a switch between standard and
-             * daylight savings time.
-             */
-            if (use_localtime) {
-                apr_time_exp_t lt;
-                apr_time_exp_lt(&lt, apr_time_now());
-                utc_offset = lt.tm_gmtoff;
-            }
-            now = (int)(apr_time_now() / APR_USEC_PER_SEC) + utc_offset;
+            now = get_now(use_localtime, utc_offset);
             if (nLogFD != NULL && now >= tLogEnd) {
                 nLogFDprev = nLogFD;
                 nLogFD = NULL;
@@ -213,16 +236,7 @@ int main (int argc, const char * const argv[])
                 tLogStart = (now / tRotation) * tRotation;
             }
             else {
-                if (use_localtime) {
-                    /* Check for our UTC offset before using it, since it might
-                     * change if there's a switch between standard and daylight
-                     * savings time.
-                     */
-                    apr_time_exp_t lt;
-                    apr_time_exp_lt(&lt, apr_time_now());
-                    utc_offset = lt.tm_gmtoff;
-                }
-                tLogStart = (int)apr_time_sec(apr_time_now()) + utc_offset;
+                tLogStart = get_now(use_localtime, utc_offset);
             }
 
             if (use_strftime) {
@@ -237,8 +251,10 @@ int main (int argc, const char * const argv[])
                 sprintf(buf2, "%s.%010d", szLogRoot, tLogStart);
             }
             tLogEnd = tLogStart + tRotation;
+            pfile_prev = pfile;
+            apr_pool_create(&pfile, pool);
             rv = apr_file_open(&nLogFD, buf2, APR_WRITE | APR_CREATE | APR_APPEND,
-                               APR_OS_DEFAULT, pool);
+                               APR_OS_DEFAULT, pfile);
             if (rv != APR_SUCCESS) {
                 char error[120];
 
@@ -253,6 +269,8 @@ int main (int argc, const char * const argv[])
                 }
                 else {
                     nLogFD = nLogFDprev;
+                    apr_pool_destroy(pfile);
+                    pfile = pfile_prev;
                     /* Try to keep this error message constant length
                      * in case it occurs several times. */
                     apr_snprintf(errbuf, sizeof errbuf,
@@ -269,26 +287,58 @@ int main (int argc, const char * const argv[])
             }
             else if (nLogFDprev) {
                 apr_file_close(nLogFDprev);
+                if (pfile_prev) {
+                    apr_pool_destroy(pfile_prev);
+                }
             }
             nMessCount = 0;
         }
-        nWrite = nRead;
-        apr_file_write(nLogFD, buf, &nWrite);
-        if (nWrite != nRead) {
-            nMessCount++;
-            sprintf(errbuf,
-                    "Error writing to log file. "
-                    "%10d messages lost.\n",
-                    nMessCount);
-            nWrite = strlen(errbuf);
-            apr_file_trunc(nLogFD, 0);
-            if (apr_file_write(nLogFD, errbuf, &nWrite) != APR_SUCCESS) {
-                fprintf(stderr, "Error writing to the file %s\n", buf2);
+        /*
+         * If we just bypassed reading stdin, due to bypass_io,
+         * then we have nothing to write, so skip this.
+         */
+        if (!bypass_io) {
+            nWrite = nRead;
+            rv = apr_file_write(nLogFD, buf, &nWrite);
+            if (rv == APR_SUCCESS && nWrite != nRead) {
+                /* buffer partially written, which for rotatelogs means we encountered
+                 * an error such as out of space or quota or some other limit reached;
+                 * try to write the rest so we get the real error code
+                 */
+                apr_size_t nWritten = nWrite;
+
+                nRead  = nRead - nWritten;
+                nWrite = nRead;
+                rv = apr_file_write(nLogFD, buf + nWritten, &nWrite);
+            }
+            if (nWrite != nRead) {
+                char strerrbuf[120];
+                apr_off_t cur_offset;
+                
+                cur_offset = 0;
+                if (apr_file_seek(nLogFD, APR_CUR, &cur_offset) != APR_SUCCESS) {
+                    cur_offset = -1;
+                }
+                apr_strerror(rv, strerrbuf, sizeof strerrbuf);
+                nMessCount++;
+                apr_snprintf(errbuf, sizeof errbuf,
+                             "Error %d writing to log file at offset %" APR_OFF_T_FMT ". "
+                             "%10d messages lost (%s)\n",
+                             rv, cur_offset, nMessCount, strerrbuf);
+                nWrite = strlen(errbuf);
+                apr_file_trunc(nLogFD, 0);
+                if (apr_file_write(nLogFD, errbuf, &nWrite) != APR_SUCCESS) {
+                    fprintf(stderr, "Error writing to the file %s\n", buf2);
                 exit(2);
+                }
+            }
+            else {
+                nMessCount++;
             }
         }
         else {
-            nMessCount++;
+           /* now worry about reading 'n writing all the time */
+           bypass_io = 0;
         }
     }
     /* Of course we never, but prevent compiler warnings */
