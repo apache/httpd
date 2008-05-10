@@ -17,12 +17,12 @@ Changes with Apache 2.3.0
      up before reading the login form. Make sure the kept body filter
      is correctly inserted to ensure the body can be read a second
      time safely should the authn be successful. [Graham Leggett,
-     Rüdiger Pluem]
+     Ruediger Pluem]
 
   *) mod_request: Insert the KEPT_BODY filter via the insert_filter
      hook instead of during fixups. Add a safety check to ensure the
      filters cannot be inserted more than once. [Graham Leggett,
-     Rüdiger Pluem]
+     Ruediger Pluem]
 
   *) core: Do not allow Options ALL if not all options are allowed to be
      overwritten. PR 44262 [Michał Grzędzicki <lazy iq.pl>]
