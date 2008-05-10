@@ -150,10 +150,9 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  If r->uri is NULL then the preceding call to
                  ap_getparents() crashes, so no functional modules
                  could be doing this.  As for empty r->uri values,
-                 <Location ""> will match against these (along with
-                 everything else), so we shouldn't bypass them.
-                 (Such <Location> usage may not be what's expected, but
-                 it works and could be in use by someone.)
+                 <LocationMatch ^$> will match against these, so we
+                 shouldn't bypass them.  (Such <LocationMatch> usage may
+                 not be common, but it works and could be in use by someone.)
 
  * Support chroot on unix-family platforms
    PR 43596
