@@ -132,7 +132,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=579664
       Backport version of 2.2.x of patch:
          Trunk version works (minus CHANGES conflict)
-    +1: niq, wrowe [with chrisd's suggested change below]
+    +1: niq, wrowe [with chrisd's suggested change below], chrisd [as-is]
     chrisd says: The patch seems to address the issues in the PR.
                  My only concern would be that the ap_location_walk() call
                  (the second one) expects r->uri.  I'm fairly sure that
@@ -145,6 +145,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                  r->uri = "" (but not NULL, I think ...); we might as
                  well bypass <Location> checks on these, and also handle
                  any external modules that might try passing r->uri as NULL.
+    chrisd says: I did some testing with NULL and empty r->uri values
+                 and concluded this change appears to be OK as it stands.
+                 If r->uri is NULL then the preceding call to
+                 ap_getparents() crashes, so no functional modules
+                 could be doing this.  As for empty r->uri values,
+                 <Location ""> will match against these (along with
+                 everything else), so we shouldn't bypass them.
+                 (Such <Location> usage may not be what's expected, but
+                 it works and could be in use by someone.)
 
  * Support chroot on unix-family platforms
    PR 43596
