@@ -546,7 +546,7 @@
 <status>Experimental</status>
 
 <usage>
-    <p>このディレクティブは、RFC1864 及び RFC2068 において定義されている
+    <p>このディレクティブは、RFC1864 及び RFC2616 において定義されている
     <code>Content-MD5</code> ヘッダーの生成を有効にします。</p>
 
     <p>MD5 は、任意長のデータの「メッセージダイジェスト」(「指紋」
@@ -1789,8 +1789,8 @@ module="core">Directory</directive></seealso>
 <name>LimitRequestFieldSize</name>
 <description>クライアントからの HTTP リクエストのヘッダの
 サイズを制限する</description>
-<syntax>LimitRequestFieldsize <var>bytes</var></syntax>
-<default>LimitRequestFieldsize 8190</default>
+<syntax>LimitRequestFieldSize <var>bytes</var></syntax>
+<default>LimitRequestFieldSize 8190</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
