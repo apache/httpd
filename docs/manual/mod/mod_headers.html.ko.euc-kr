@@ -29,9 +29,7 @@
 <table class="module"><tr><th><a href="module-dict.html#Description">설명:</a></th><td>HTTP 요청 헤더와 응답 헤더 수정</td></tr>
 <tr><th><a href="module-dict.html#Status">상태:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">모듈명:</a></th><td>headers_module</td></tr>
-<tr><th><a href="module-dict.html#SourceFile">소스파일:</a></th><td>mod_headers.c</td></tr>
-<tr><th><a href="module-dict.html#Compatibility">지원:</a></th><td><code class="directive"><a href="#requestheader">RequestHeader</a></code>는 아파치 2.0에만
-있다</td></tr></table>
+<tr><th><a href="module-dict.html#SourceFile">소스파일:</a></th><td>mod_headers.c</td></tr></table>
 <h3>요약</h3>
 
     <p>이 모듈은 HTTP 요청 헤더와 응답 헤더를 조절하고 수정하는
