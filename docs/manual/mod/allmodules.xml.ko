@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- GENERATED FROM XML: DO NOT EDIT -->
 
 <modulefilelist>
   <modulefile>core.xml</modulefile>

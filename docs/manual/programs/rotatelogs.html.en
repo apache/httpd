@@ -61,7 +61,8 @@ first logfile entry to be read (for non-busy sites, there may be
 a substantial delay between when the server is started
 and when the first request is handled, meaning that the
 associated logfile does not "exist" until then, which
-causes problems from some automated logging tools)</dd>
+causes problems from some automated logging tools).
+<em>Available in version 2.2.9 and later.</em></dd>
 
 <dt><code><var>logfile</var></code></dt>
 

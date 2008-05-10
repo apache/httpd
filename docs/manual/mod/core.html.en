@@ -604,7 +604,7 @@ headers</td></tr>
 </table>
     <p>This directive enables the generation of
     <code>Content-MD5</code> headers as defined in RFC1864
-    respectively RFC2068.</p>
+    respectively RFC2616.</p>
 
     <p>MD5 is an algorithm for computing a "message digest"
     (sometimes called "fingerprint") of arbitrary-length data, with
@@ -877,8 +877,8 @@ from the web</td></tr>
 
 <h3>See also</h3>
 <ul>
-<li><a href="../urlmapping.html">Mapping URLs to Filesystem
-Location</a></li>
+<li><a href="../urlmapping.html#documentroot">Mapping URLs to Filesystem
+Locations</a></li>
 </ul>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -1573,6 +1573,10 @@ the server configuration files</td></tr>
     encoding will be used in order to send content of unknown
     length over persistent connections.</p>
 
+    <p>When a client uses a Keep-Alive connection it will be counted
+    as a single "request" for the MaxRequestsPerChild directive, regardless
+    of how many requests are sent using the connection.</p>
+
 <h3>See also</h3>
 <ul>
 <li><code class="directive"><a href="#maxkeepaliverequests">MaxKeepAliveRequests</a></code></li>
@@ -1808,8 +1812,8 @@ will be accepted from the client</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Limits the size of the HTTP request header allowed from the
 client</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LimitRequestFieldsize <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LimitRequestFieldsize 8190</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>LimitRequestFieldSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>LimitRequestFieldSize 8190</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>core</td></tr>
