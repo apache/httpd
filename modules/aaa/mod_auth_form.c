@@ -868,6 +868,9 @@ static int authenticate_form_authn(request_rec * r)
         res = get_session_auth(r, &sent_user, &sent_pw, &sent_hash);
 
     }
+    else {
+        res = APR_SUCCESS;
+    }
 
     /* first test whether the site passphrase matches */
     if (APR_SUCCESS == res && sent_user && sent_hash && sent_pw) {
