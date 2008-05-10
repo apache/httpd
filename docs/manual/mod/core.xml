@@ -565,7 +565,7 @@ headers</description>
 <usage>
     <p>This directive enables the generation of
     <code>Content-MD5</code> headers as defined in RFC1864
-    respectively RFC2068.</p>
+    respectively RFC2616.</p>
 
     <p>MD5 is an algorithm for computing a "message digest"
     (sometimes called "fingerprint") of arbitrary-length data, with
@@ -842,8 +842,8 @@ from the web</description>
     <p>The <directive>DocumentRoot</directive> should be specified without
     a trailing slash.</p>
 </usage>
-<seealso><a href="../urlmapping.html">Mapping URLs to Filesystem
-Location</a></seealso>
+<seealso><a href="../urlmapping.html#documentroot">Mapping URLs to Filesystem
+Locations</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
@@ -1549,6 +1549,10 @@ the server configuration files</description>
     unless otherwise specified. If the client requests it, chunked
     encoding will be used in order to send content of unknown
     length over persistent connections.</p>
+
+    <p>When a client uses a Keep-Alive connection it will be counted
+    as a single "request" for the MaxRequestsPerChild directive, regardless
+    of how many requests are sent using the connection.</p>
 </usage>
 
 <seealso><directive module="core">MaxKeepAliveRequests</directive></seealso>
@@ -1792,8 +1796,8 @@ will be accepted from the client</description>
 <name>LimitRequestFieldSize</name>
 <description>Limits the size of the HTTP request header allowed from the
 client</description>
-<syntax>LimitRequestFieldsize <var>bytes</var></syntax>
-<default>LimitRequestFieldsize 8190</default>
+<syntax>LimitRequestFieldSize <var>bytes</var></syntax>
+<default>LimitRequestFieldSize 8190</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
