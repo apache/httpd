@@ -514,9 +514,9 @@ static apr_status_t set_session_auth(request_rec * r,
     }
 
     ap_session_load_fn(r, &z);
-    ap_session_set(r, z, apr_pstrcat(r->pool, authname, "-" MOD_SESSION_USER, NULL), user);
-    ap_session_set(r, z, apr_pstrcat(r->pool, authname, "-" MOD_SESSION_PW, NULL), pw);
-    ap_session_set(r, z, apr_pstrcat(r->pool, authname, "-" MOD_AUTH_FORM_HASH, NULL), hash);
+    ap_session_set_fn(r, z, apr_pstrcat(r->pool, authname, "-" MOD_SESSION_USER, NULL), user);
+    ap_session_set_fn(r, z, apr_pstrcat(r->pool, authname, "-" MOD_SESSION_PW, NULL), pw);
+    ap_session_set_fn(r, z, apr_pstrcat(r->pool, authname, "-" MOD_AUTH_FORM_HASH, NULL), hash);
 
     return APR_SUCCESS;
 
@@ -534,13 +534,13 @@ static apr_status_t get_session_auth(request_rec * r,
     ap_session_load_fn(r, &z);
 
     if (user) {
-        ap_session_get(r, z, apr_pstrcat(r->pool, authname, "-" MOD_SESSION_USER, NULL), user);
+        ap_session_get_fn(r, z, apr_pstrcat(r->pool, authname, "-" MOD_SESSION_USER, NULL), user);
     }
     if (pw) {
-        ap_session_get(r, z, apr_pstrcat(r->pool, authname, "-" MOD_SESSION_PW, NULL), pw);
+        ap_session_get_fn(r, z, apr_pstrcat(r->pool, authname, "-" MOD_SESSION_PW, NULL), pw);
     }
     if (hash) {
-        ap_session_get(r, z, apr_pstrcat(r->pool, authname, "-" MOD_AUTH_FORM_HASH, NULL), hash);
+        ap_session_get_fn(r, z, apr_pstrcat(r->pool, authname, "-" MOD_AUTH_FORM_HASH, NULL), hash);
     }
 
     /* set the user, even though the user is unauthenticated at this point */
