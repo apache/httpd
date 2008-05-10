@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core: When testing for slash-terminated configuration paths in
+     ap_location_walk(), don't look past the start of an empty string
+     such as that created by a <Location ""> directive.
+     [Chris Darroch]
+
   *) core, mod_proxy: If a kept_body is present, it becomes safe for
      subrequests to support message bodies. Make sure that safety
      checks within the core and within the proxy are not triggered

@@ -1315,7 +1315,8 @@ AP_DECLARE(int) ap_location_walk(request_rec *r)
                 : (entry_core->d_is_fnmatch
                    ? apr_fnmatch(entry_core->d, cache->cached, APR_FNM_PATHNAME)
                    : (strncmp(entry_core->d, cache->cached, len)
-                      || (entry_core->d[len - 1] != '/'
+                      || (len > 0
+                          && entry_core->d[len - 1] != '/'
                           && cache->cached[len] != '/'
                           && cache->cached[len] != '\0')))) {
                 continue;
