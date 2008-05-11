@@ -2,6 +2,13 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) ab: Overhaul stats collection and reporting to avoid integer
+     truncation and time divisions within the test loop, retain
+     native time resolution until output, remove unused data,
+     consistently round milliseconds, and generally avoid losing
+     accuracy of calculation due to type casts. PR 44878, 44931.
+     [Roy T. Fielding]
+
   *) core: When testing for slash-terminated configuration paths in
      ap_location_walk(), don't look past the start of an empty string
      such as that created by a <Location ""> directive.
