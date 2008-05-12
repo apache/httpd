@@ -1,0 +1,99 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+  <title>Sunucu ve Destek Programları</title>
+
+<summary>
+    <p>Bu sayfada Apache HTTP Sunucusuna dahil tüm çalıştırılabilir programlar tanıtılmıştır.</p>
+</summary>
+
+<section id="index"><title>Dizin</title>
+
+    <dl>
+      <dt><program>httpd</program></dt>
+
+      <dd>Apache hiper metin aktarım protokolü sunucusu.</dd>
+
+      <dt><program>apachectl</program></dt>
+
+      <dd>Apache HTTP Sunucusu denetim arayüzü.</dd>
+
+      <dt><program>ab</program></dt>
+
+      <dd>Apache HTTP Sunucusu  başarım ölçme aracı.</dd>
+
+      <dt><program>apxs</program></dt>
+
+      <dd>Apache HTTP Sunucusu eklenti aracı (APache eXtenSion tool).</dd>
+
+      <dt><program>configure</program></dt>
+
+      <dd>Kaynak ağacını yapılandırır.</dd>
+
+      <dt><program>dbmmanage</program></dt>
+
+      <dd>Kullanıcı kimlik doğrulama dosyalarını temel kimlik doğrulaması için DBM biçeminde oluşturur ve günceller.</dd>
+
+      <dt><program>htcacheclean</program></dt>
+      <dd>Disk arabelleğini temizler.</dd>
+
+      <dt><program>htdigest</program></dt>
+
+      <dd>Kullanıcı kimlik doğrulama dosyalarını özet kimlik doğrulaması için oluşturur ve günceller.</dd>
+
+      <dt><program>htdbm</program></dt>
+
+      <dd>DBM parola veritabanlarını idare eder.</dd>
+
+      <dt><program>htpasswd</program></dt>
+
+      <dd>Kullanıcı kimlik doğrulama dosyalarını temel kimlik doğrulaması için oluşturur ve günceller.</dd>
+
+      <dt><program>httxt2dbm</program></dt>
+
+      <dd><directive module="mod_rewrite">RewriteMap</directive> ile kullanmak üzere DBM dosyaları oluşturur.</dd>
+
+      <dt><program>logresolve</program></dt>
+
+      <dd>Apache günlük dosyalarındaki IP adreslerini konak isimlerine dönüştürür.</dd>
+
+      <dt><program>rotatelogs</program></dt>
+
+      <dd>Sunucuyu öldürmek gerekmeksizin günlük dosyalarının döndürülmesini sağlar.</dd>
+
+      <dt><program>suexec</program></dt>
+
+      <dd>Bir dosyayı belli bir kullanıcı adına çalıştırır.</dd>
+
+      <dt><a href="other.html">Diğer Programlar</a></dt>
+      <dd>Kendi kılavuz sayfası bulunmayan destek araçları.</dd>
+    </dl>
+</section>
+
+</manualpage>
