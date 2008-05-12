@@ -100,7 +100,7 @@
           bodies has also been added.</dd>
 
       <dt>Event MPM</dt>
-      <dd>The <code class="module"><a href="./mod/event.html">event</a></code> MPM uses a seperate thread to handle
+      <dd>The <code class="module"><a href="./mod/event.html">event</a></code> MPM uses a separate thread to handle
           Keep Alive requests and accepting connections.  Keep Alive requests
           have traditionally required httpd to dedicate a worker to handle it.
           This dedicated worker could not be used again until the Keep Alive 
@@ -122,7 +122,7 @@
       <dd>Modules in the aaa directory have been renamed and offer
           better support for digest authentication.  For example, mod_auth
           is now split into <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code> and
-          <code class="module"><a href="./mod/mod_auth_file.html">mod_auth_file</a></code>; mod_auth_dbm is now called
+          <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>; mod_auth_dbm is now called
           <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>; mod_access has been renamed
           <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>.  There is also a new
           <code class="module"><a href="./mod/mod_authn_alias.html">mod_authn_alias</a></code> module for simplifying
@@ -135,6 +135,14 @@
           framework.  New features include using LDAP attribute values and 
           complicated search filters in the 
           <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code> directive.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_authz_owner.html">mod_authz_owner</a></code></dt>
+      <dd>A new module that authorizes access to files based
+          on the owner of the file on the file system</dd>
+
+      <dt><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></dt>
+      <dd>A new module that allows configuration blocks to be enabled based on the
+          version number of the running server.</dd>
 
       <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
       <dd>Added a new <code>?config</code> argument which will show
@@ -197,7 +205,7 @@
       <dt>Connection Error Logging</dt>
 
       <dd>A new function, <code>ap_log_cerror</code> has been added to log
-          errors that occure with the client's connection.  When logged, 
+          errors that occur with the client's connection.  When logged, 
           the message includes the client IP address.</dd>
 
       <dt>Test Configuration Hook Added</dt>
