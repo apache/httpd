@@ -1137,8 +1137,9 @@ static void start_connect(struct connection * c)
     c->gotheader = 0;
     c->rwrite = 0;
     if (c->ctx)
-        apr_pool_destroy(c->ctx);
-    apr_pool_create(&c->ctx, cntxt);
+        apr_pool_clear(c->ctx);
+    else
+        apr_pool_create(&c->ctx, cntxt);
 
     if ((rv = apr_socket_create(&c->aprsock, destsa->family,
                 SOCK_STREAM, 0, c->ctx)) != APR_SUCCESS) {
