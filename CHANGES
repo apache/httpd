@@ -2,6 +2,14 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) ab: Don't stop sending a request if EAGAIN is returned, which
+     will only happen if both the write and subsequent wait are
+     returning EAGAIN, and count posted bytes correctly when the initial
+     write of a request is not complete. PR 10038, 38861, 39679
+     [Patrick McManus <mcmanus datapower.com>,
+      Stefan Fleiter <stefan.fleiter web.de>,
+      Davanum Srinivas, Roy T. Fielding]
+
   *) ab: Overhaul stats collection and reporting to avoid integer
      truncation and time divisions within the test loop, retain
      native time resolution until output, remove unused data,
