@@ -25,6 +25,8 @@
 <a href="../en/mod/core.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="../ja/mod/core.html" title="Japanese">&nbsp;ja&nbsp;</a></p>
 </div>
+<div class="outofdate">This translation may be out of date. Check the
+            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>常に使用可能な Apache HTTP サーバのコア機能</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Core</td></tr></table>
 </div>
@@ -585,7 +587,7 @@
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
 </table>
-    <p>このディレクティブは、RFC1864 及び RFC2068 において定義されている
+    <p>このディレクティブは、RFC1864 及び RFC2616 において定義されている
     <code>Content-MD5</code> ヘッダーの生成を有効にします。</p>
 
     <p>MD5 は、任意長のデータの「メッセージダイジェスト」(「指紋」
@@ -1820,8 +1822,8 @@ Apache がファイルをアクセスするために使うファイルシステ�
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">説明:</a></th><td>クライアントからの HTTP リクエストのヘッダの
 サイズを制限する</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LimitRequestFieldsize <var>bytes</var></code></td></tr>
-<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>LimitRequestFieldsize 8190</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>LimitRequestFieldSize <var>bytes</var></code></td></tr>
+<tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>LimitRequestFieldSize 8190</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル</td></tr>
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Core</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>core</td></tr>
