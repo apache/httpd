@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) ab: Improve client performance by clearing connection pool instead
+     of destroying it. PR 40054 [Brad Roberts <braddr puremagic.com>]
+
   *) ab: Don't stop sending a request if EAGAIN is returned, which
      will only happen if both the write and subsequent wait are
      returning EAGAIN, and count posted bytes correctly when the initial
