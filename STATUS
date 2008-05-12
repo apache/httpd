@@ -187,6 +187,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         bump. Not sure what style and typo changes are required.
    jim: Latest rev of patch should address stated concerns :)
 
+  * mod_proxy:  In the case that we fail to read the response line
+   from the backend and if we are a reverse proxy request, shutdown
+   the connection WITHOUT ANY response to trigger a retry by the client
+   if allowed (as for idempotent requests).
+   Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=645813
+   Backport version for 2.2.x of patch:
+       Trunk version works
+   +1: 
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
