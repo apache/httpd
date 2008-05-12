@@ -1583,9 +1583,9 @@ requests on a persistent connection</td></tr>
     higher the timeout, the more server processes will be kept
     occupied waiting on connections with idle clients.</p>
     
-    <div class="warning"><h3>Note</h3>
-      <p>This directive will be ignored in a name-based virtual host context.</p>
-    </div>
+    <p>In a name-based virtual host context, the value of the first
+    defined virtual host (the default host) in a set of <code class="directive"><a href="#namevirtualhost">NameVirtualHost</a></code> will be used.
+    The other values will be ignored.</p>
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
