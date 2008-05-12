@@ -573,7 +573,7 @@ HTTP-Response-Headern</td></tr>
 <tr><th><a href="directive-dict.html#Module">Modul:</a></th><td>core</td></tr>
 </table>
     <p>Die Direktive aktiviert die Generierung von
-    <code>Content-MD5</code>-Headern, wie sie in RFC1864 bzw. RFC2068
+    <code>Content-MD5</code>-Headern, wie sie in RFC1864 bzw. RFC2616
     definiert sind.</p>
 
     <p>MD5 ist ein Algorithmus zur Berechnung eines "Datenextrakts"

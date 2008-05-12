@@ -390,7 +390,7 @@ Certificate Authority or global client certificates</td></tr>
 総量を制限する</td></tr>
 <tr class="odd"><td><a href="core.html#limitrequestfields">LimitRequestFields <var>number</var></a></td><td> 100 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントからの HTTP リクエストのヘッダフィールドの数を
 制限する</td></tr>
-<tr><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldsize <var>bytes</var></a></td><td></td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">クライアントからの HTTP リクエストのヘッダの
+<tr><td><a href="core.html#limitrequestfieldsize">LimitRequestFieldSize <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr><td class="descr" colspan="4">クライアントからの HTTP リクエストのヘッダの
 サイズを制限する</td></tr>
 <tr class="odd"><td><a href="core.html#limitrequestline">LimitRequestLine <var>bytes</var></a></td><td> 8190 </td><td>s</td><td>C</td></tr><tr class="odd"><td class="descr" colspan="4">クライアントからの HTTP リクエスト行のサイズを制限する</td></tr>
 <tr><td><a href="core.html#limitxmlrequestbody">LimitXMLRequestBody <var>bytes</var></a></td><td> 1000000 </td><td>svdh</td><td>C</td></tr><tr><td class="descr" colspan="4">XML 形式のリクエストのボディのサイズを制限する</td></tr>
