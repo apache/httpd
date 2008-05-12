@@ -172,7 +172,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=627728
    Backport version for 2.2.x of patch:
        http://people.apache.org/~jim/patches/proxy-disablereuse-v2.txt
-   +1: jim
+   +1: jim, rpluem
    niq: there's a typo in the docs and some trivial style matters.
    More importantly, doesn't it require an MMN bump?
    rpluem says: I agree with niq here that a minor bump is needed.
@@ -186,6 +186,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
         be the one we do the "next" time. Will update with mmn
         bump. Not sure what style and typo changes are required.
    jim: Latest rev of patch should address stated concerns :)
+   rpluem: Ok, convinced.
 
   * mod_proxy:  In the case that we fail to read the response line
    from the backend and if we are a reverse proxy request, shutdown
@@ -195,7 +196,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=645813
    Backport version for 2.2.x of patch:
        Trunk version works
-   +1: 
+   +1: rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
