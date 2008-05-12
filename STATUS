@@ -84,10 +84,39 @@ RELEASE SHOWSTOPPERS:
   (probably PR44538, definitely PR44648). The needed patch is already
   backported to apr-util 1.2.x
   (http://svn.apache.org/viewvc?rev=631559&view=rev).
+  jim says: I am baselining shipping with apr-1.3; assuming we do, the
+            above show-stopper would be moot.
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+  * core: Reinstate location walk for subrequests.
+    PR: 41960.
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=579664
+      Backport version of 2.2.x of patch:
+         Trunk version works (minus CHANGES conflict)
+    +1: niq, wrowe [with chrisd's suggested change below], chrisd [as-is]
+    chrisd says: The patch seems to address the issues in the PR.
+                 My only concern would be that the ap_location_walk() call
+                 (the second one) expects r->uri.  I'm fairly sure that
+                 no native httpd code creates subrequests where r->uri is
+                 NULL.  However, it might be wise to wrap the second
+                 ap_location_walk() with something like:
+                     if(!file_req || (r->uri && r->uri[0] != '\0'))
+                 Things like "RewriteCond /foo -F" can use
+                 ap_sub_req_lookup_file() to create subrequests with
+                 r->uri = "" (but not NULL, I think ...); we might as
+                 well bypass <Location> checks on these, and also handle
+                 any external modules that might try passing r->uri as NULL.
+    chrisd says: I did some testing with NULL and empty r->uri values
+                 and concluded this change appears to be OK as it stands.
+                 If r->uri is NULL then the preceding call to
+                 ap_getparents() crashes, so no functional modules
+                 could be doing this.  As for empty r->uri values,
+                 <LocationMatch ^$> will match against these, so we
+                 shouldn't bypass them.  (Such <LocationMatch> usage may
+                 not be common, but it works and could be in use by someone.)
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -125,34 +154,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
           third party module authors.
       -1: rpluem: jorton found some problems with the trunk version and they
                   should be fixed / discussed in trunk before we backport.
-
-  * core: Reinstate location walk for subrequests.
-    PR: 41960.
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=579664
-      Backport version of 2.2.x of patch:
-         Trunk version works (minus CHANGES conflict)
-    +1: niq, wrowe [with chrisd's suggested change below], chrisd [as-is]
-    chrisd says: The patch seems to address the issues in the PR.
-                 My only concern would be that the ap_location_walk() call
-                 (the second one) expects r->uri.  I'm fairly sure that
-                 no native httpd code creates subrequests where r->uri is
-                 NULL.  However, it might be wise to wrap the second
-                 ap_location_walk() with something like:
-                     if(!file_req || (r->uri && r->uri[0] != '\0'))
-                 Things like "RewriteCond /foo -F" can use
-                 ap_sub_req_lookup_file() to create subrequests with
-                 r->uri = "" (but not NULL, I think ...); we might as
-                 well bypass <Location> checks on these, and also handle
-                 any external modules that might try passing r->uri as NULL.
-    chrisd says: I did some testing with NULL and empty r->uri values
-                 and concluded this change appears to be OK as it stands.
-                 If r->uri is NULL then the preceding call to
-                 ap_getparents() crashes, so no functional modules
-                 could be doing this.  As for empty r->uri values,
-                 <LocationMatch ^$> will match against these, so we
-                 shouldn't bypass them.  (Such <LocationMatch> usage may
-                 not be common, but it works and could be in use by someone.)
 
  * Support chroot on unix-family platforms
    PR 43596
@@ -205,6 +206,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Further question: Why is the address not reusable (that means we
    need to do a DNS query each time) when we only want to prevent that
    this connection is kept alive?
+   jim: re-usable is a more "extensive" concept that just disabling
+        keepalives. What if, for example, the backend itself is
+        under round-robin DNS? In this case, we need to never
+        assume that the backend we've "just" connected to will
+        be the one we do the "next" time. Will update with mmn
+        bump. Not sure what style and typo changes are required.
 
 PATCHES/ISSUES THAT ARE STALLED
 
