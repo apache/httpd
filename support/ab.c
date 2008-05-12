@@ -627,8 +627,8 @@ static void write_request(struct connection * c)
         if (c->rwrite == 0) {
             apr_socket_timeout_set(c->aprsock, 0);
             c->connect = tnow;
-            c->rwrite = reqlen;
             c->rwrote = 0;
+            c->rwrite = reqlen;
             if (posting)
                 c->rwrite += postlen;
         }
@@ -655,28 +655,17 @@ static void write_request(struct connection * c)
 #endif
             e = apr_socket_send(c->aprsock, request + c->rwrote, &l);
 
-        /*
-         * Bail early on the most common case
-         */
-        if (l == c->rwrite)
-            break;
-
-        if (e != APR_SUCCESS) {
-            /*
-             * Let's hope this traps EWOULDBLOCK too !
-             */
-            if (!APR_STATUS_IS_EAGAIN(e)) {
-                epipe++;
-                printf("Send request failed!\n");
-                close_connection(c);
-            }
+        if (e != APR_SUCCESS && !APR_STATUS_IS_EAGAIN(e)) {
+            epipe++;
+            printf("Send request failed!\n");
+            close_connection(c);
             return;
         }
+        totalposted += l;
         c->rwrote += l;
         c->rwrite -= l;
-    } while (1);
+    } while (c->rwrite);
 
-    totalposted += c->rwrite;
     c->state = STATE_READ;
     c->endwrite = lasttime = apr_time_now();
     {
