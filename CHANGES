@@ -204,9 +204,6 @@ Changes with Apache 2.3.0
   *) mpm winnt: fix null pointer dereference
      PR 42572 [Davi Arnaut]
 
-  *) core: reinstate location walk to fix config for subrequests
-     PR 41960 [Jose Kahan <jose w3.org>]
-
   *) mod_authnz_ldap, mod_authn_dbd: Tidy up the code to expose authn
      parameters to the environment. Improve portability to
      EBCDIC machines by using apr_toupper(). [Martin Kraemer]
