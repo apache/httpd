@@ -1561,9 +1561,10 @@ requests on a persistent connection</description>
     higher the timeout, the more server processes will be kept
     occupied waiting on connections with idle clients.</p>
     
-    <note type="warning"><title>Note</title>
-      <p>This directive will be ignored in a name-based virtual host context.</p>
-    </note>
+    <p>In a name-based virtual host context, the value of the first
+    defined virtual host (the default host) in a set of <directive
+    module="core">NameVirtualHost</directive> will be used.
+    The other values will be ignored.</p>
 </usage>
 </directivesynopsis>
 
