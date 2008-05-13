@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 159149:420990 (outdated) -->
+<!-- English Revision: 420990 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -39,7 +39,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
     Apache ではモジュール化された設計により幅広い環境に適応してきました。
     この設計のおかげで、管理者は
     コンパイル時または実行時にどのモジュールをロードするか選ぶことによって、
-    どの機能をサーバに取り込むか選択することがができます。</p>
+    どの機能をサーバに取り込むか選択することができます。</p>
 
     <p>Apache 2.0 では、
     このモジュール化された設計をサーバの基本機能にまで拡張しました。
@@ -68,10 +68,7 @@ Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
       <module>worker</module> や <module>event</module> といったスレッド化された
       MPM を利用できる一方で、安定性や古いソフトウェアとの互換性を
       必要とするサイトでは <module>prefork</module>
-      が利用できます。また、
-      異なるホストを異なるユーザ ID で動作させる
-      (<module>perchild</module>) といった
-      特別な機能も提供できます。</li>
+      が利用できます。</li>
     </ul>
 
     <p>ユーザレベルでは、MPM は他の Apache 
