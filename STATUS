@@ -163,7 +163,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://svn.apache.org/viewvc?view=rev&revision=605314
       http://svn.apache.org/viewvc?view=rev&revision=605838
     Backport version for 2.2.x of patch:
-      http://people.apache.org/~jim/patches/proxy-ssl-44026-patch.txt
+      http://people.apache.org/~rpluem/patches/proxy-ssl-44026-patch.txt
    +1: jim, rpluem
 
  * mod_proxy:  In the case that we fail to read the response line
