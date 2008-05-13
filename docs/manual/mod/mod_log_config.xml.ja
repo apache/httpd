@@ -93,7 +93,7 @@
         <td>サーバに送られたリクエスト中のクッキー <var>Foobar</var> の値</td></tr>
 
     <tr><td><code>%...D</code></td>
-        <td>リクエストを処理するのにかかった時間、ミリ秒単位</td></tr>
+        <td>リクエストを処理するのにかかった時間、マイクロ秒単位</td></tr>
 
     <tr><td><code>%...{<var>FOOBAR</var>}e</code></td>
         <td>環境変数 <var>FOOBAR</var> の内容</td></tr>
