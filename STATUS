@@ -198,6 +198,44 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version works
    +1: rpluem
 
+  * ab: Sync to current trunk in order to include:
+    Add -r option to continue after socket receive errors.
+    The apr_port_t type is unsigned, but ab was using a signed format
+    code in its reports. PR 42070.
+    Correct behavior of HTTP request headers sent by ab in presence of
+    -H command-line overrides. PR: 31268, 26554
+    Explain that POST data should be sent as the correct MIME type. 
+    Do not try to read non existing response bodies of HEAD requests. PR: 34275
+    Use a 64 bit unsigned int instead of a signed long to count the
+    bytes transferred to avoid integer overflows. PR: 44346
+    Overhaul ab.c stats collection and reporting to avoid integer
+    truncation and time divisions within the test loop, retain
+    native time resolution until output, remove unused data,
+    avoid structure copies, consistently round milliseconds, and
+    generally avoid losing accuracy of calculation due to type casts.
+    Incidentally fixes output bug on gnuplot (seconds were being
+    output as microseconds).  PR: 44878, 44931.
+    Don't stop sending a request if EAGAIN is returned, which will only
+    happen if both the write and subsequent wait are returning EAGAIN,
+    and count posted bytes correctly when the initial write of a request
+    is not complete.  PR 10038, 38861, 39679
+    Improve client performance by clearing connection pool instead
+    of destroying it. PR 40054
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=516175
+       http://svn.apache.org/viewvc?view=rev&revision=526584
+       http://svn.apache.org/viewvc?view=rev&revision=526872
+       http://svn.apache.org/viewvc?view=rev&revision=541138
+       http://svn.apache.org/viewvc?view=rev&revision=612954
+       http://svn.apache.org/viewvc?view=rev&revision=617890
+       http://svn.apache.org/viewvc?view=rev&revision=655214
+       http://svn.apache.org/viewvc?view=rev&revision=655637
+       http://svn.apache.org/viewvc?view=rev&revision=655654
+   Backport version for 2.2.x of patch:
+       Trunk version works
+   +1: fielding
+
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
