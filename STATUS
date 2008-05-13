@@ -90,6 +90,23 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * gen_test_char: add double-quote to the list of T_HTTP_TOKEN_STOP.
+   PR 9727 [Ville Skytt <ville.skytta iki.fi>]
+   Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=655714
+   Backport version for 2.2.x of patch:
+       Trunk version works
+  +1: fielding, rpluem, niq
+
+ * mod_proxy: Add in 'disablereuse' option for parity with similar
+   mod_jk functionality.
+   Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=627728
+   Backport version for 2.2.x of patch:
+       http://people.apache.org/~jim/patches/proxy-disablereuse-v2.txt
+   +1: jim, rpluem
+   niq: +1 with the proviso that there's still a typo in the docs in
+        proxy-disablereuse-v2.txt.  But it's fixed in r655986.
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -166,28 +183,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~jim/patches/proxy-ssl-44026-patch.txt
    +1: jim, rpluem
 
- * mod_proxy: Add in 'disablereuse' option for parity with similar
-   mod_jk functionality.
-   Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=627728
-   Backport version for 2.2.x of patch:
-       http://people.apache.org/~jim/patches/proxy-disablereuse-v2.txt
-   +1: jim, rpluem
-   niq: there's a typo in the docs and some trivial style matters.
-   More importantly, doesn't it require an MMN bump?
-   rpluem says: I agree with niq here that a minor bump is needed.
-   Further question: Why is the address not reusable (that means we
-   need to do a DNS query each time) when we only want to prevent that
-   this connection is kept alive?
-   jim: re-usable is a more "extensive" concept that just disabling
-        keepalives. What if, for example, the backend itself is
-        under round-robin DNS? In this case, we need to never
-        assume that the backend we've "just" connected to will
-        be the one we do the "next" time. Will update with mmn
-        bump. Not sure what style and typo changes are required.
-   jim: Latest rev of patch should address stated concerns :)
-   rpluem: Ok, convinced.
-
  * mod_proxy:  In the case that we fail to read the response line
    from the backend and if we are a reverse proxy request, shutdown
    the connection WITHOUT ANY response to trigger a retry by the client
@@ -254,14 +249,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       we need to find a better way to do this. In particular,
       ?ids cannot, iirc, be signed - this is more a note to
       self ;) )
-
- * gen_test_char: add double-quote to the list of T_HTTP_TOKEN_STOP.
-   PR 9727 [Ville Skytt <ville.skytta iki.fi>]
-   Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=655714
-   Backport version for 2.2.x of patch:
-       Trunk version works
-  +1: fielding, rpluem
 
 * mod_ssl: Fix a memory leak with connections that have zlib compression
   turned on. PR 44975 [Joe Orton, Amund Elstad <Amund.Elstad ist.com>, 
