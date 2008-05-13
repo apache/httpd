@@ -47,7 +47,7 @@
   <modulefile>mod_file_cache.xml</modulefile>
   <modulefile>mod_filter.xml</modulefile>
   <modulefile>mod_headers.xml.ja</modulefile>
-  <modulefile>mod_ident.xml</modulefile>
+  <modulefile>mod_ident.xml.ja</modulefile>
   <modulefile>mod_imagemap.xml</modulefile>
   <modulefile>mod_include.xml.ja</modulefile>
   <modulefile>mod_info.xml.ja</modulefile>

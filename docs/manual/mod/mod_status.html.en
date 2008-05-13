@@ -143,8 +143,6 @@ request</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ExtendedStatus is only available in Apache 1.3.2 and 
-later.</td></tr>
 </table>
     <p>This setting applies to the entire server, and cannot be
     enabled or disabled on a virtualhost-by-virtualhost basis.
@@ -163,7 +161,7 @@ of a request or the last 63, assuming the request itself is greater than
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_status</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SeeRequestTail is only available in Apache 2.3.x and 
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>SeeRequestTail is only available in Apache 2.2.7 and 
 later.</td></tr>
 </table>
     <p>mod_status with ExtendedStatus On displays the actual request being
