@@ -50,7 +50,8 @@ tutorial</a></li>
 <div class="directive-section"><h2><a name="UserDir" id="UserDir">UserDir</a> <a name="userdir" id="userdir">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Location of the user-specific directories</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UserDir <em>directory-filename</em></code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>UserDir <em>directory-filename</em> [<em>directory-filename</em>] ...
+</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_userdir</td></tr>
