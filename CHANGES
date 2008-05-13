@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) gen_test_char: add double-quote to the list of T_HTTP_TOKEN_STOP.
+     PR 9727 [Ville Skytt <ville.skytta iki.fi>]
+
   *) core: reinstate location walk to fix config for subrequests
      PR 41960 [Jose Kahan <jose w3.org>]
 

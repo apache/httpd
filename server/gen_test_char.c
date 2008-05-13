@@ -90,8 +90,8 @@ int main(int argc, char *argv[])
             flags |= T_OS_ESCAPE_PATH;
         }
 
-        /* these are the "tspecials" from RFC2068 */
-        if (c && (apr_iscntrl(c) || strchr(" \t()<>@,;:\\/[]?={}", c))) {
+        /* these are the "tspecials" (RFC2068) or "separators" (RFC2616) */
+        if (c && (apr_iscntrl(c) || strchr(" \t()<>@,;:\\\"/[]?={}", c))) {
             flags |= T_HTTP_TOKEN_STOP;
         }
 
