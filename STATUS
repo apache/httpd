@@ -261,8 +261,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=655714
    Backport version for 2.2.x of patch:
        Trunk version works
-  +1: fielding
+  +1: fielding, rpluem
 
+* mod_ssl: Fix a memory leak with connections that have zlib compression
+  turned on. PR 44975 [Joe Orton, Amund Elstad <Amund.Elstad ist.com>, 
+  Dr Stephen Henson <steve openssl.org>]
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=654119&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem
 
 PATCHES/ISSUES THAT ARE STALLED
 
