@@ -337,6 +337,8 @@ struct proxy_worker {
     apr_interval_time_t ping_timeout;
     char ping_timeout_set;
     char            retry_set;
+    char            disablereuse;
+    char            disablereuse_set;
 };
 
 /*

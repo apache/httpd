@@ -98,16 +98,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        Trunk version works
   +1: fielding, rpluem, niq
 
- * mod_proxy: Add in 'disablereuse' option for parity with similar
-   mod_jk functionality.
-   Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=627728
-   Backport version for 2.2.x of patch:
-       http://people.apache.org/~jim/patches/proxy-disablereuse-v2.txt
-   +1: jim, rpluem
-   niq: +1 with the proviso that there's still a typo in the docs in
-        proxy-disablereuse-v2.txt.  But it's fixed in r655986.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 

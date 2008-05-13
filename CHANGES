@@ -36,6 +36,10 @@ Changes with Apache 2.2.9
      or remote port can be logged.  PR 43415.  [Adam Hasselbalch Hansen
      <ahh@one.com>, Ruediger Pluem, Jeff Trawick]
 
+  *) Added 'disablereuse' option for ProxyPass which, essentially,
+     disables connection pooling for the backend servers.
+     [Jim Jagielski]
+
   *) mod_speling: remove regression from 1.3/2.0 behavior and
      drop dependency between mod_speling and AcceptPathInfo.
      PR 43562 [Jose Kahan <jose w3.org>]
