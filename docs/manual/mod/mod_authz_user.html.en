@@ -36,7 +36,7 @@
     authenticated users can be allowed or denied access to portions
     of the web site. <code class="module"><a href="../mod/mod_authz_user.html">mod_authz_user</a></code> grants
     access if the authenticated user is listed in a <code>Require user</code>
-    directive. Alternatively <code>require valid-user</code> can be used to
+    directive. Alternatively <code>Require valid-user</code> can be used to
     grant access to all successfully authenticated users.</p>
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
