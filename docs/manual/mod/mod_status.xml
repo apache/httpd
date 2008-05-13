@@ -129,8 +129,6 @@ request</description>
 <syntax>ExtendedStatus On|Off</syntax>
 <default>ExtendedStatus Off</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>ExtendedStatus is only available in Apache 1.3.2 and 
-later.</compatibility>
 
 <usage>
     <p>This setting applies to the entire server, and cannot be
@@ -149,7 +147,7 @@ of a request or the last 63, assuming the request itself is greater than
 <syntax>SeeRequestTail On|Off</syntax>
 <default>SeeRequestTail Off</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>SeeRequestTail is only available in Apache 2.3.x and 
+<compatibility>SeeRequestTail is only available in Apache 2.2.7 and 
 later.</compatibility>
 
 <usage>
