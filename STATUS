@@ -90,13 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * gen_test_char: add double-quote to the list of T_HTTP_TOKEN_STOP.
-   PR 9727 [Ville Skytt <ville.skytta iki.fi>]
-   Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=655714
-   Backport version for 2.2.x of patch:
-       Trunk version works
-  +1: fielding, rpluem, niq
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
