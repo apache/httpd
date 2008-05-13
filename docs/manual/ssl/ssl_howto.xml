@@ -205,7 +205,7 @@ AuthName             "Snake Oil Authentication"
 AuthType             Basic
 AuthBasicProvider    file
 AuthUserFile         /usr/local/apache2/conf/httpd.passwd
-require              valid-user
+Require              valid-user
 &lt;/Directory&gt;</pre>
     </example>
     

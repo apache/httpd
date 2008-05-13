@@ -43,7 +43,7 @@ configuration</description>
 
     <p>You may wish to use <module>mod_access</module> inside the
     <directive type="section" module="core">Location</directive>
-    directive to limite access to your server configuration
+    directive to limit access to your server configuration
     information:</p>
 
     <example>
