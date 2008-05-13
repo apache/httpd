@@ -395,13 +395,15 @@ int main(int argc, char *argv[])
             log_err("invalid target group name: (%s)\n", target_gname);
             exit(106);
         }
-        gid = gr->gr_gid;
-        actual_gname = strdup(gr->gr_name);
     }
     else {
-        gid = atoi(target_gname);
-        actual_gname = strdup(target_gname);
+        if ((gr = getgrgid(atoi(target_gname))) == NULL) {
+            log_err("invalid target group id: (%s)\n", target_gname);
+            exit(106);
+        }
     }
+    gid = gr->gr_gid;
+    actual_gname = strdup(gr->gr_name);
 
 #ifdef _OSD_POSIX
     /*

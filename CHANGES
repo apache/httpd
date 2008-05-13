@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) suexec: When group is given as a numeric gid, validate it by looking up
+     the actual group name such that the name can be used in log entries.
+     PR 7862 [<y-koga apache.or.jp>, Leif W <warp-9.9 usa.net>]
+
   *) ab: Improve client performance by clearing connection pool instead
      of destroying it. PR 40054 [Brad Roberts <braddr puremagic.com>]
 
