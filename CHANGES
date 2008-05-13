@@ -2,6 +2,9 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) gen_test_char: add double-quote to the list of T_HTTP_TOKEN_STOP.
+     PR 9727 [Ville Skytt <ville.skytta iki.fi>]
+
   *) suexec: When group is given as a numeric gid, validate it by looking up
      the actual group name such that the name can be used in log entries.
      PR 7862 [<y-koga apache.or.jp>, Leif W <warp-9.9 usa.net>]
