@@ -535,12 +535,12 @@ static int process_dir(char *path, apr_pool_t *pool)
                         if (apr_file_read_full(fd, &expires, len,
                                                &len) == APR_SUCCESS) {
 
-                          apr_file_close(fd);
+                            apr_file_close(fd);
 
-                          if (expires < current) {
-                              delete_entry(path, d->basename, p);
-                          }
-                          break;
+                            if (expires < current) {
+                                delete_entry(path, d->basename, p);
+                            }
+                            break;
                         }
                     }
                 }
