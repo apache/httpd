@@ -105,6 +105,16 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
       http://people.apache.org/~rpluem/patches/proxy-ssl-44026-patch.txt
    +1: jim, rpluem, fielding
 
+ * mod_proxy:  In the case that we fail to read the response line
+   from the backend and if we are a reverse proxy request, shutdown
+   the connection WITHOUT ANY response to trigger a retry by the client
+   if allowed (as for idempotent requests).
+   Trunk version of patch:
+       http://svn.apache.org/viewvc?view=rev&revision=645813
+   Backport version for 2.2.x of patch:
+       Trunk version works
+   +1: rpluem, jim, fielding
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -166,16 +176,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    http://svn.apache.org/viewvc/httpd/httpd/trunk/support/win32/ApacheMonitor.c?view=log
    +1: wrowe
 
- * mod_proxy:  In the case that we fail to read the response line
-   from the backend and if we are a reverse proxy request, shutdown
-   the connection WITHOUT ANY response to trigger a retry by the client
-   if allowed (as for idempotent requests).
-   Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=645813
-   Backport version for 2.2.x of patch:
-       Trunk version works
-   +1: rpluem, jim
-
  * ab: Sync to current trunk in order to include:
    Add siege-like behaviour to ApacheBench; output the results, as they
    have accrued so far, when the user interrupts with ctrl-c. As the
@@ -227,12 +227,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=655711
    Backport version for 2.2.x of patch:
        Trunk version works
-  +1: fielding, jim (the use of atoi to generate the ?ID is
+  +1: fielding, jim
+  jim says: the use of atoi to generate the ?ID is
       consistent with what we do elsewhere but troubling...
       we need to find a better way to do this. In particular,
       ?ids cannot, iirc, be signed - this is more a note to
-      self ;) ) [Roy notes that the patch adds an id lookup
-      and replaces the id with the validated result.]
+      self ;)
+  Roy replies: the patch adds an id lookup and replaces the atoi id
+      with the validated result.  Invalid input will now error out.
 
 * mod_ssl: Fix a memory leak with connections that have zlib compression
   turned on. PR 44975 [Joe Orton, Amund Elstad <Amund.Elstad ist.com>, 
