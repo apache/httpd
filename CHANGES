@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_ssl: Fix a memory leak with connections that have zlib compression
+     turned on. PR 44975 [Joe Orton, Amund Elstad <Amund.Elstad ist.com>,
+     Dr Stephen Henson <steve openssl.org>]
+
   *) mod_proxy: Trigger a retry by the client in the case we fail to read the
      response line from the backend by closing the connection to the client.
      PR 37770 [Ruediger Pluem]
