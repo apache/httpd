@@ -45,11 +45,11 @@
     <p>Sessions may be stored on the server, or may be stored on the
     browser. Sessions may also be optionally encrypted for added security.
     These features are divided into several modules in addition to
-    <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>: <code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code>,
+    <code class="module"><a href="../mod/mod_session.html">mod_session</a></code>; <code class="module"><a href="../mod/mod_session_crypto.html">mod_session_crypto</a></code>,
     <code class="module"><a href="../mod/mod_session_cookie.html">mod_session_cookie</a></code> and <code class="module"><a href="../mod/mod_session_dbd.html">mod_session_dbd</a></code>.
     Depending on the server requirements, load the appropriate modules
     into the server (either statically at compile time or dynamically
-    via the <code class="directive"><a href="../mod/mod_so.html#loalmodule">LoalModule</a></code> directive).</p>
+    via the <code class="directive"><a href="../mod/mod_so.html#loadmodule">LoadModule</a></code> directive).</p>
 
     <p>Sessions may be manipulated from other modules that depend on the
     session, or the session may be read from and written to using
@@ -87,7 +87,7 @@
       <p>At the core of the session interface is a table of key and value pairs
       that are made accessible across browser requests.</p>
       
-      <p>These pairs can be set any valid set of strings, as needed by the
+      <p>These pairs can be set to any valid string, as needed by the
       application making use of the session.</p>
       
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -330,7 +330,7 @@
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in Apache 2.3.0 and later</td></tr>
 </table>
     <p>The <code class="directive">SessionExclude</code> directive allows sessions to
-    be disabled specific URL prefixes only. This can be used to make a
+    be disabled relative to URL prefixes only. This can be used to make a
     website more efficient, by targeting a more precise URL space for which
     a session should be maintained. By default, all URLs within the directory
     or location are included in the session. The

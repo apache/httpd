@@ -45,11 +45,11 @@
     <p>Sessions may be stored on the server, or may be stored on the
     browser. Sessions may also be optionally encrypted for added security.
     These features are divided into several modules in addition to
-    <module>mod_session</module>: <module>mod_session_crypto</module>,
+    <module>mod_session</module>; <module>mod_session_crypto</module>,
     <module>mod_session_cookie</module> and <module>mod_session_dbd</module>.
     Depending on the server requirements, load the appropriate modules
     into the server (either statically at compile time or dynamically
-    via the <directive module="mod_so">LoalModule</directive> directive).</p>
+    via the <directive module="mod_so">LoadModule</directive> directive).</p>
 
     <p>Sessions may be manipulated from other modules that depend on the
     session, or the session may be read from and written to using
@@ -64,7 +64,7 @@
       <p>At the core of the session interface is a table of key and value pairs
       that are made accessible across browser requests.</p>
       
-      <p>These pairs can be set any valid set of strings, as needed by the
+      <p>These pairs can be set to any valid string, as needed by the
       application making use of the session.</p>
       
     </section>
@@ -392,7 +392,7 @@
 
 <usage>
     <p>The <directive>SessionExclude</directive> directive allows sessions to
-    be disabled specific URL prefixes only. This can be used to make a
+    be disabled relative to URL prefixes only. This can be used to make a
     website more efficient, by targeting a more precise URL space for which
     a session should be maintained. By default, all URLs within the directory
     or location are included in the session. The
