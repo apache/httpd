@@ -115,6 +115,15 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        Trunk version works
    +1: rpluem, jim, fielding
 
+* mod_ssl: Fix a memory leak with connections that have zlib compression
+  turned on. PR 44975 [Joe Orton, Amund Elstad <Amund.Elstad ist.com>, 
+  Dr Stephen Henson <steve openssl.org>]
+      Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=654119&view=rev
+      Backport version for 2.2.x of patch:
+         Trunk version of patch works
+      +1: rpluem, jim, fielding
+
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -235,15 +244,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       self ;)
   Roy replies: the patch adds an id lookup and replaces the atoi id
       with the validated result.  Invalid input will now error out.
-
-* mod_ssl: Fix a memory leak with connections that have zlib compression
-  turned on. PR 44975 [Joe Orton, Amund Elstad <Amund.Elstad ist.com>, 
-  Dr Stephen Henson <steve openssl.org>]
-      Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=654119&view=rev
-      Backport version for 2.2.x of patch:
-         Trunk version of patch works
-      +1: rpluem, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
