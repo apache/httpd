@@ -44,16 +44,16 @@
     HTML login form can provide a much friendlier experience for end users.
     </p>
 
-    <p>HTTP Basic authentication is provided by
-    <module>mod_auth_basic</module>, and HTTP Digest Authentication is
+    <p>HTTP basic authentication is provided by
+    <module>mod_auth_basic</module>, and HTTP digest authentication is
     provided by <module>mod_auth_digest</module>.  This module should
-    usually be combined with at least one authentication module
+    be combined with at least one authentication module
     such as <module>mod_authn_file</module> and one authorization
     module such as <module>mod_authz_user</module>.</p>
 
     <p>Once the user has been successfully authenticated, the user's login
-    details will be stored in a suitably configured <strong>session</strong>,
-    as provided by the <module>mod_session</module> module.</p>
+    details will be stored in a session provided by <module>mod_session</module>.
+    </p>
     
 </summary>
 <seealso><module>mod_session</module></seealso>
@@ -150,8 +150,8 @@
       <p>The URLs specified by the
       <directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive> directive will typically
       point to a page explaining to the user that their login attempt was unsuccessful, and they
-      should try again, while the <directive module="mod_auth_form">AuthFormLoginSuccessLocation</directive>
-      directive specifies the URL the user should be redirected to on success.</p>
+      should try again.  The <directive module="mod_auth_form">AuthFormLoginSuccessLocation</directive>
+      directive specifies the URL the user should be redirected to upon successful login.</p>
       
       <p>Alternatively, the URL to redirect the user to on success can be embedded within the login
       form, as in the example below. As a result, the same <var>form-login-handler</var> can be
@@ -187,15 +187,15 @@
       session is in force, and the session times out in the middle of the user request. The
       user can be re-authenticated in place, and they can continue where they left off.</p>
 
-      <p>When a page protected by <module>mod_auth_form</module> is accessed, and the user is
-      not logged in, and no <directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive>
-      directive is specified as described in the section above, an <var>HTTP_UNAUTHORIZED</var>
-      status code is returned to the browser in the normal way indicating to the user that
-      they are not authorised to view the page.</p>
+      <p>If a non-authenticated user attempts to access a page protected by
+      <module>mod_auth_form</module> that isn't configured with a
+      <directive module="mod_auth_form">AuthFormLoginRequiredLocation</directive> directive,
+      a <var>HTTP_UNAUTHORIZED</var> status code is returned to the browser indicating to the user
+      that they are not authorized to view the page.</p>
       
       <p>To configure inline authentication, the administrator overrides the error document
-      returned by the <var>HTTP_UNAUTHORIZED</var> status code with a custom error document,
-      containing the login form, as follows.</p>
+      returned by the <var>HTTP_UNAUTHORIZED</var> status code with a custom error document
+      containing the login form, as follows:</p>
 
       <example><title>Basic inline example</title>
         AuthFormProvider file<br />
@@ -209,9 +209,8 @@
         SessionCryptoPassphrase secret<br />
       </example>
       
-      <p>The error document file should contain the login form used to log in, as
-      per the example below. The key difference in this form is that the HTML
-      form action is left blank. This has the effect of submitting the form to
+      <p>The error document page should contain a login form with an empty action property,
+      as per the example below.  This has the effect of submitting the form to
       the original protected URL, without the page having to know what that
       URL is.</p>
 
@@ -243,7 +242,7 @@
       end user.</p>
 
       <p><module>mod_auth_form</module> addresses this by allowing the method and body
-      of the original request to be embedded in the login form, and if authentication
+      of the original request to be embedded in the login form. If authentication
       is successful, the original method and body will be retried by Apache, preserving
       the state of the original request.</p>
 
@@ -269,7 +268,7 @@
 
       <p>One option is to use the <module>mod_include</module> module along with the
       <directive module="core">KeptBodySize</directive> directive, along with a suitable
-      CGI script, to embed the variables in the form.</p>
+      CGI script to embed the variables in the form.</p>
       
       <p>Another option is to render the login form using a CGI script or other dynamic
       technology.</p>
@@ -304,12 +303,12 @@
         SessionCryptoPassphrase secret<br />
       </example>
 
-      <p>Note that logging a user out does not delete the session, it merely removes
+      <p>Note that logging a user out does not delete the session; it merely removes
       the username and password from the session. If this results in an empty session,
-      the nett effect will be the removal of that session, but this is not
+      the net effect will be the removal of that session, but this is not
       guaranteed. If you want to guarantee the removal of a session, set the
       <directive module="mod_session">SessionMaxAge</directive> directive to a small
-      value, like 1. (Setting the directive to zero would mean no session age limit).
+      value, like 1 (setting the directive to zero would mean no session age limit).
       </p>
 
       <example><title>Basic session expiry example</title>
@@ -621,8 +620,8 @@ lower level modules</description>
     </example>
     
     <p>An attempt to access the URI <var>/logout/</var> will result in the user being logged
-    out, and the page <var>/logout.html</var> will be displayed. Make sure that the page
-    <var>logout.html</var> is not password protected, otherwise the page will not be
+    out, and the page <var>/loggedout.html</var> will be displayed. Make sure that the page
+    <var>loggedout.html</var> is not password protected, otherwise the page will not be
     displayed.</p>
 
 </usage>
