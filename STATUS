@@ -90,16 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_proxy:  In the case that we fail to read the response line
-   from the backend and if we are a reverse proxy request, shutdown
-   the connection WITHOUT ANY response to trigger a retry by the client
-   if allowed (as for idempotent requests).
-   Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=645813
-   Backport version for 2.2.x of patch:
-       Trunk version works
-   +1: rpluem, jim, fielding
-
 * mod_ssl: Fix a memory leak with connections that have zlib compression
   turned on. PR 44975 [Joe Orton, Amund Elstad <Amund.Elstad ist.com>, 
   Dr Stephen Henson <steve openssl.org>]
