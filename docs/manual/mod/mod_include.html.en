@@ -41,7 +41,7 @@
 </div>
 <div id="quickview"><h3 class="directives">Directives</h3>
 <ul id="toc">
-<li><img alt="" src="../images/down.gif" /> <a href="#ssienableaccess">SSIEnableAccess</a></li>
+<li><img alt="" src="../images/down.gif" /> <a href="#ssiaccessenable">SSIAccessEnable</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssiendtag">SSIEndTag</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssierrormsg">SSIErrorMsg</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ssistarttag">SSIStartTag</a></li>
@@ -525,7 +525,7 @@
       <dt><code><var>-A string</var></code></dt>
       <dd><p>true if the URL represented by the string is accessible by
       configuration, false otherwise. This test only has an effect if
-      <code class="directive">SSIEnableAccess</code> is on. This is useful
+      <code class="directive">SSIAccessEnable</code> is on. This is useful
       where content on a page is to be hidden from users who are not
       authorized to view the URL, such as a link to that URL. Note
       that the URL is only tested for whether access would be granted,
@@ -650,18 +650,18 @@
     </div>
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
-<div class="directive-section"><h2><a name="SSIEnableAccess" id="SSIEnableAccess">SSIEnableAccess</a> <a name="ssienableaccess" id="ssienableaccess">Directive</a></h2>
+<div class="directive-section"><h2><a name="SSIAccessEnable" id="SSIAccessEnable">SSIAccessEnable</a> <a name="ssiaccessenable" id="ssiaccessenable">Directive</a></h2>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Enable the -A flag during conditional flow control processing.</td></tr>
-<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIEnableAccess on|off</code></td></tr>
-<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSIEnableAccess off</code></td></tr>
+<tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>SSIAccessEnable on|off</code></td></tr>
+<tr><th><a href="directive-dict.html#Default">Default:</a></th><td><code>SSIAccessEnable off</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>directory, .htaccess</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_include</td></tr>
 </table>
-    <p>The <code class="directive">SSIEnableAccess</code> directive controls whether
+    <p>The <code class="directive">SSIAccessEnable</code> directive controls whether
     the -A test is enabled during conditional flow control processing.
-    <code class="directive">SSIEnableAccess</code> can take on the following values:</p>
+    <code class="directive">SSIAccessEnable</code> can take on the following values:</p>
 
     <dl>
 
