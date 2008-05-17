@@ -123,6 +123,9 @@
  * 20051115.12(2.2.8)  Add optional function ap_logio_add_bytes_in() to mog_logio
  * 20051115.13(2.2.9)  Add disablereuse and disablereuse_set
  *                     to proxy_worker struct (minor)
+ * 20051115.14(2.2.9)  Add ap_proxy_ssl_connection_cleanup and
+ *                     add *scpool, *r and need_flush to proxy_conn_rec
+ *                     structure
  *
  */
 
@@ -131,7 +134,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 13                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 14                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

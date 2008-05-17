@@ -1850,14 +1850,9 @@ static int proxy_http_handler(request_rec *r, proxy_worker *worker,
 
 
     backend->is_ssl = is_ssl;
-    /*
-     * TODO: Currently we cannot handle persistent SSL backend connections,
-     * because we recreate backend->connection for each request and thus
-     * try to initialize an already existing SSL connection. This does
-     * not work.
-     */
-    if (is_ssl)
-        backend->close_on_recycle = 1;
+    if (is_ssl) {
+        ap_proxy_ssl_connection_cleanup(backend, r);
+    }
 
     /* Step One: Determine Who To Connect To */
     if ((status = ap_proxy_determine_connection(p, r, conf, worker, backend,
