@@ -332,16 +332,16 @@ PROXY_DECLARE(const char *)
 
 PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
 {
-    request_rec *rp = apr_pcalloc(c->pool, sizeof(*r));
+    request_rec *rp = apr_pcalloc(r->pool, sizeof(*r));
 
-    rp->pool            = c->pool;
+    rp->pool            = r->pool;
     rp->status          = HTTP_OK;
 
-    rp->headers_in      = apr_table_make(c->pool, 50);
-    rp->subprocess_env  = apr_table_make(c->pool, 50);
-    rp->headers_out     = apr_table_make(c->pool, 12);
-    rp->err_headers_out = apr_table_make(c->pool, 5);
-    rp->notes           = apr_table_make(c->pool, 5);
+    rp->headers_in      = apr_table_make(r->pool, 50);
+    rp->subprocess_env  = apr_table_make(r->pool, 50);
+    rp->headers_out     = apr_table_make(r->pool, 12);
+    rp->err_headers_out = apr_table_make(r->pool, 5);
+    rp->notes           = apr_table_make(r->pool, 5);
 
     rp->server = r->server;
     rp->proxyreq = r->proxyreq;
@@ -352,7 +352,7 @@ PROXY_DECLARE(request_rec *)ap_proxy_make_fake_req(conn_rec *c, request_rec *r)
     rp->proto_output_filters  = c->output_filters;
     rp->proto_input_filters   = c->input_filters;
 
-    rp->request_config  = ap_create_request_config(c->pool);
+    rp->request_config  = ap_create_request_config(r->pool);
     proxy_run_create_req(r, rp);
 
     return rp;
@@ -1369,6 +1369,7 @@ static void init_conn_pool(apr_pool_t *p, proxy_worker *worker)
      * it can be disabled.
      */
     apr_pool_create(&pool, p);
+    apr_pool_tag(pool, "proxy_worker_cp");
     /*
      * Alloc from the same pool as worker.
      * proxy_conn_pool is permanently attached to the worker.
@@ -1596,6 +1597,9 @@ static apr_status_t connection_cleanup(void *theconn)
 {
     proxy_conn_rec *conn = (proxy_conn_rec *)theconn;
     proxy_worker *worker = conn->worker;
+    apr_bucket_brigade *bb;
+    conn_rec *c;
+    request_rec *r;
 
     /*
      * If the connection pool is NULL the worker
@@ -1616,14 +1620,67 @@ static apr_status_t connection_cleanup(void *theconn)
     }
 #endif
 
+    r = conn->r;
+    if (conn->need_flush && r && (r->bytes_sent || r->eos_sent)) {
+        /*
+         * We need to ensure that buckets that may have been buffered in the
+         * network filters get flushed to the network. This is needed since
+         * these buckets have been created with the bucket allocator of the
+         * backend connection. This allocator either gets destroyed if
+         * conn->close is set or the worker address is not reusable which
+         * causes the connection to the backend to be closed or it will be used
+         * again by another frontend connection that wants to recycle the
+         * backend connection.
+         * In this case we could run into nasty race conditions (e.g. if the
+         * next user of the backend connection destroys the allocator before we
+         * sent the buckets to the network).
+         *
+         * Remark 1: Only do this if buckets where sent down the chain before
+         * that could still be buffered in the network filter. This is the case
+         * if we have sent an EOS bucket or if we actually sent buckets with
+         * data down the chain. In all other cases we either have not sent any
+         * buckets at all down the chain or we only sent meta buckets that are
+         * not EOS buckets down the chain. The only meta bucket that remains in
+         * this case is the flush bucket which would have removed all possibly
+         * buffered buckets in the network filter.
+         * If we sent a flush bucket in the case where not ANY buckets were
+         * sent down the chain, we break error handling which happens AFTER us.
+         *
+         * Remark 2: Doing a setaside does not help here as the buckets remain
+         * created by the wrong allocator in this case.
+         *
+         * Remark 3: Yes, this creates a possible performance penalty in the case
+         * of pipelined requests as we may send only a small amount of data over
+         * the wire.
+         */
+        c = r->connection;
+        bb = apr_brigade_create(r->pool, c->bucket_alloc);
+        if (r->eos_sent) {
+            /*
+             * If we have already sent an EOS bucket send directly to the
+             * connection based filters. We just want to flush the buckets
+             * if something hasn't been sent to the network yet.
+             */
+            ap_fflush(c->output_filters, bb);
+        }
+        else {
+            ap_fflush(r->output_filters, bb);
+        }
+        apr_brigade_destroy(bb);
+        conn->r = NULL;
+        conn->need_flush = 0;
+    }
+
     /* determine if the connection need to be closed */
     if (conn->close_on_recycle || conn->close || worker->disablereuse ||
         !worker->is_address_reusable) {
         apr_pool_t *p = conn->pool;
-        apr_pool_clear(conn->pool);
-        memset(conn, 0, sizeof(proxy_conn_rec));
+        apr_pool_clear(p);
+        conn = apr_pcalloc(p, sizeof(proxy_conn_rec));
         conn->pool = p;
         conn->worker = worker;
+        apr_pool_create(&(conn->scpool), p);
+        apr_pool_tag(conn->scpool, "proxy_conn_scpool");
     }
 #if APR_HAS_THREADS
     if (worker->hmax && worker->cp->res) {
@@ -1640,11 +1697,54 @@ static apr_status_t connection_cleanup(void *theconn)
     return APR_SUCCESS;
 }
 
+static void socket_cleanup(proxy_conn_rec *conn)
+{
+    conn->sock = NULL;
+    conn->connection = NULL;
+    apr_pool_clear(conn->scpool);
+}
+
+PROXY_DECLARE(apr_status_t) ap_proxy_ssl_connection_cleanup(proxy_conn_rec *conn,
+                                                            request_rec *r)
+{
+    apr_bucket_brigade *bb;
+    apr_status_t rv;
+
+    /*
+     * If we have an existing SSL connection it might be possible that the
+     * server sent some SSL message we have not read so far (e.g. a SSL
+     * shutdown message if the server closed the keepalive connection while
+     * the connection was held unused in our pool).
+     * So ensure that if present (=> APR_NONBLOCK_READ) it is read and
+     * processed. We don't expect any data to be in the returned brigade.
+     */
+    if (conn->sock && conn->connection) {
+        bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+        rv = ap_get_brigade(conn->connection->input_filters, bb,
+                            AP_MODE_READBYTES, APR_NONBLOCK_READ,
+                            HUGE_STRING_LEN);
+        if ((rv != APR_SUCCESS) && !APR_STATUS_IS_EAGAIN(rv)) {
+            socket_cleanup(conn);
+        }
+        if (!APR_BRIGADE_EMPTY(bb)) {
+            apr_off_t len;
+
+            rv = apr_brigade_length(bb, 0, &len);
+            ap_log_rerror(APLOG_MARK, APLOG_DEBUG, rv, r,
+                          "proxy: SSL cleanup brigade contained %"
+                          APR_OFF_T_FMT " bytes of data.", len);
+        }
+        apr_brigade_destroy(bb);
+    }
+    return APR_SUCCESS;
+}
+
 /* reslist constructor */
 static apr_status_t connection_constructor(void **resource, void *params,
                                            apr_pool_t *pool)
 {
     apr_pool_t *ctx;
+    apr_pool_t *scpool;
     proxy_conn_rec *conn;
     proxy_worker *worker = (proxy_worker *)params;
 
@@ -1654,9 +1754,20 @@ static apr_status_t connection_constructor(void **resource, void *params,
      * when disconnecting from backend.
      */
     apr_pool_create(&ctx, pool);
-    conn = apr_pcalloc(pool, sizeof(proxy_conn_rec));
+    apr_pool_tag(ctx, "proxy_conn_pool");
+    /*
+     * Create another subpool that manages the data for the
+     * socket and the connection member of the proxy_conn_rec struct as we
+     * destroy this data more frequently than other data in the proxy_conn_rec
+     * struct like hostname and addr (at least in the case where we have
+     * keepalive connections that timed out).
+     */
+    apr_pool_create(&scpool, ctx);
+    apr_pool_tag(scpool, "proxy_conn_scpool");
+    conn = apr_pcalloc(ctx, sizeof(proxy_conn_rec));
 
     conn->pool   = ctx;
+    conn->scpool = scpool;
     conn->worker = worker;
 #if APR_HAS_THREADS
     conn->inreslist = 1;
@@ -1925,11 +2036,6 @@ PROXY_DECLARE(int) ap_proxy_release_connection(const char *proxy_function,
     ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                  "proxy: %s: has released connection for (%s)",
                  proxy_function, conn->worker->hostname);
-    /* If there is a connection kill it's cleanup */
-    if (conn->connection) {
-        apr_pool_cleanup_kill(conn->connection->pool, conn, connection_cleanup);
-        conn->connection = NULL;
-    }
     connection_cleanup(conn);
 
     return OK;
@@ -1950,6 +2056,8 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
     int server_port;
     apr_status_t err = APR_SUCCESS;
     apr_status_t uerr = APR_SUCCESS;
+
+    conn->r = r;
 
     /*
      * Break up the URL to determine the host to connect to
@@ -2003,14 +2111,7 @@ ap_proxy_determine_connection(apr_pool_t *p, request_rec *r,
             conn->hostname = apr_pstrdup(conn->pool, uri->hostname);
             conn->port = uri->port;
         }
-        if (conn->sock) {
-            apr_socket_close(conn->sock);
-            conn->sock = NULL;
-        }
-        if (conn->connection) {
-            apr_pool_cleanup_kill(conn->connection->pool, conn, connection_cleanup);
-            conn->connection = NULL;
-        }
+        socket_cleanup(conn);
         err = apr_sockaddr_info_get(&(conn->addr),
                                     conn->hostname, APR_UNSPEC,
                                     conn->port, 0,
@@ -2154,14 +2255,8 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
         (proxy_server_conf *) ap_get_module_config(sconf, &proxy_module);
 
     if (conn->sock) {
-        /*
-         * This increases the connection pool size
-         * but the number of dropped connections is
-         * relatively small compared to connection lifetime
-         */
         if (!(connected = is_socket_connected(conn->sock))) {
-            apr_socket_close(conn->sock);
-            conn->sock = NULL;
+            socket_cleanup(conn);
             ap_log_error(APLOG_MARK, APLOG_DEBUG, 0, s,
                          "proxy: %s: backend socket is disconnected.",
                          proxy_function);
@@ -2170,7 +2265,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
     while (backend_addr && !connected) {
         if ((rv = apr_socket_create(&newsock, backend_addr->family,
                                 SOCK_STREAM, APR_PROTO_TCP,
-                                conn->pool)) != APR_SUCCESS) {
+                                conn->scpool)) != APR_SUCCESS) {
             loglevel = backend_addr->next ? APLOG_DEBUG : APLOG_ERR;
             ap_log_error(APLOG_MARK, loglevel, rv, s,
                          "proxy: %s: error creating fam %d socket for target %s",
@@ -2185,6 +2280,7 @@ PROXY_DECLARE(int) ap_proxy_connect_backend(const char *proxy_function,
             backend_addr = backend_addr->next;
             continue;
         }
+        conn->connection = NULL;
 
 #if !defined(TPF) && !defined(BEOS)
         if (worker->recv_buffer_size > 0 &&
@@ -2274,13 +2370,25 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
     apr_sockaddr_t *backend_addr = conn->addr;
     int rc;
     apr_interval_time_t current_timeout;
+    apr_bucket_alloc_t *bucket_alloc;
 
+    if (conn->connection) {
+        return OK;
+    }
+
+    /*
+     * We need to flush the buckets before we return the connection to the
+     * connection pool. See comment in connection_cleanup for why this is
+     * needed.
+     */
+    conn->need_flush = 1;
+    bucket_alloc = apr_bucket_alloc_create(conn->scpool);
     /*
      * The socket is now open, create a new backend server connection
      */
-    conn->connection = ap_run_create_connection(c->pool, s, conn->sock,
-                                                c->id, c->sbh,
-                                                c->bucket_alloc);
+    conn->connection = ap_run_create_connection(conn->scpool, s, conn->sock,
+                                                0, NULL,
+                                                bucket_alloc);
 
     if (!conn->connection) {
         /*
@@ -2292,17 +2400,9 @@ PROXY_DECLARE(int) ap_proxy_connection_create(const char *proxy_function,
                      "new connection to %pI (%s)", proxy_function,
                      backend_addr, conn->hostname);
         /* XXX: Will be closed when proxy_conn is closed */
-        apr_socket_close(conn->sock);
-        conn->sock = NULL;
+        socket_cleanup(conn);
         return HTTP_INTERNAL_SERVER_ERROR;
     }
-    /*
-     * register the connection cleanup to client connection
-     * so that the connection can be closed or reused
-     */
-    apr_pool_cleanup_register(c->pool, (void *)conn,
-                              connection_cleanup,
-                              apr_pool_cleanup_null);
 
     /* For ssl connection to backend */
     if (conn->is_ssl) {

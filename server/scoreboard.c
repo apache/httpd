@@ -344,6 +344,9 @@ AP_DECLARE(void) ap_increment_counts(ap_sb_handle_t *sb, request_rec *r)
 {
     worker_score *ws;
 
+    if (!sb)
+        return;
+
     ws = &ap_scoreboard_image->servers[sb->child_num][sb->thread_num];
 
 #ifdef HAVE_TIMES
@@ -471,6 +474,9 @@ AP_DECLARE(int) ap_update_child_status_from_indexes(int child_num,
 AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status,
                                       request_rec *r)
 {
+    if (!sbh)
+        return -1;
+
     return ap_update_child_status_from_indexes(sbh->child_num, sbh->thread_num,
                                                status, r);
 }
@@ -478,6 +484,9 @@ AP_DECLARE(int) ap_update_child_status(ap_sb_handle_t *sbh, int status,
 void ap_time_process_request(ap_sb_handle_t *sbh, int status)
 {
     worker_score *ws;
+
+    if (!sbh)
+        return;
 
     if (sbh->child_num < 0) {
         return;

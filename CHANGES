@@ -73,6 +73,12 @@ Changes with Apache 2.2.9
      didn't pick up on updated sdbm maps due to this.
      PR41190 [Niklas Edmundsson]
 
+  *) mod_proxy: Lower memory consumption for short lived connections.
+     PR 44026. [Ruediger Pluem]
+
+  *) mod_proxy: Keep connections to the backend persistent in the HTTPS case.
+     [Ruediger Pluem]
+
   *) Don't add bogus duplicate Content-Language entries
      PR 11035 [Davi Arnaut]
 
