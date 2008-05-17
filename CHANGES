@@ -188,12 +188,6 @@ Changes with Apache 2.3.0
      all running instances before attempting to remove the .exe.
      [William Rowe]
 
-  *) mod_proxy: Lower memory consumption for short lived connections.
-     PR 44026. [Ruediger Pluem]
-
-  *) mod_proxy: Keep connections to the backend persistent in the HTTPS case.
-     [Ruediger Pluem]
-
   *) mod_ssl: Add support for OCSP validation of client certificates.
      PR 41123.  [Marc Stern <marc.stern approach.be>, Joe Orton]
 
