@@ -199,6 +199,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <name>DBDMin</name>
 <description>Minimum number of connections</description>
 <syntax>DBDMin <var>number</var></syntax>
+<default>DBDMin 1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -212,6 +213,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <name>DBDKeep</name>
 <description>Maximum sustained number of connections</description>
 <syntax>DBDKeep <var>number</var></syntax>
+<default>DBDKeep 2</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -226,6 +228,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <name>DBDMax</name>
 <description>Maximum number of connections</description>
 <syntax>DBDMax <var>number</var></syntax>
+<default>DBDMax 10</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
@@ -239,6 +242,7 @@ APR_DECLARE_OPTIONAL_FN(void, ap_dbd_prepare, (server_rec*, const char*, const c
 <name>DBDExptime</name>
 <description>Keepalive time for idle connections</description>
 <syntax>DBDExptime <var>time-in-seconds</var></syntax>
+<default>DBDExptime 300</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
