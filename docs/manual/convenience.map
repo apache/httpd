@@ -387,7 +387,7 @@ setenvifnocase	mod/mod_setenvif.html#setenvifnocase
 sethandler	mod/core.html#sethandler
 setinputfilter	mod/core.html#setinputfilter
 setoutputfilter	mod/core.html#setoutputfilter
-ssienableaccess	mod/mod_include.html#ssienableaccess
+ssiaccessenable	mod/mod_include.html#ssiaccessenable
 ssiendtag	mod/mod_include.html#ssiendtag
 ssierrormsg	mod/mod_include.html#ssierrormsg
 ssistarttag	mod/mod_include.html#ssistarttag
