@@ -2,7 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) ab: Make ab.c compile on VC6. PR 45024  [Ruediger Pluem]
+  *) http_filters: Don't return 100-continue on redirects. PR 43711
+     [Ruediger Pluem]
+
+  *) ab: Make ab.c compile on VC6. PR 45024 [Ruediger Pluem]
 
   *) configure: Don't reject libtool 2.x
      PR 44817 [Arfrever Frehtes Taifersar Arahesis <Arfrever.FTA gmail.com>]
