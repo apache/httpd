@@ -227,7 +227,8 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
     }
 
     /* Look up the alias provider to make sure that it hasn't already been registered. */
-    provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP, provider_alias, "0");
+    provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP, provider_alias,
+                                  AUTHN_PROVIDER_VERSION);
     if (provider) {
         return apr_pstrcat(cmd->pool, "The alias provider ", provider_alias,
                            " has already be registered previously as either a base provider or an alias provider.", 
@@ -241,7 +242,8 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
 
     if (!errmsg) {
         provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool, sizeof(provider_alias_rec));
-        provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP, provider_name, "0");
+        provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP, provider_name,
+                                      AUTHN_PROVIDER_VERSION);
 
         /* Save off the new directory config along with the original provider name
            and function pointer data */
@@ -253,7 +255,8 @@ static const char *authaliassection(cmd_parms *cmd, void *mconfig, const char *a
 
         /* Register the fake provider so that we get called first */
         ap_register_auth_provider(cmd->pool, AUTHN_PROVIDER_GROUP,
-                                  provider_alias, "0", &authn_alias_provider,
+                                  provider_alias, AUTHN_PROVIDER_VERSION,
+                                  &authn_alias_provider,
                                   AP_AUTH_INTERNAL_PER_CONF);
     }
 
@@ -298,7 +301,8 @@ static const char *authn_ap_auth_name(request_rec *r)
 
 static apr_array_header_t *authn_ap_list_provider_names(apr_pool_t *ptemp)
 {
-    return ap_list_provider_names(ptemp, AUTHN_PROVIDER_GROUP, "0");
+    return ap_list_provider_names(ptemp, AUTHN_PROVIDER_GROUP,
+                                  AUTHN_PROVIDER_VERSION);
 }
 
 static const command_rec authn_cmds[] =

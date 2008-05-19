@@ -346,7 +346,8 @@ static const char *add_authz_provider(cmd_parms *cmd, void *config,
 
     /* lookup and cache the actual provider now */
     newp->provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
-                                        newp->provider_name, "0");
+                                        newp->provider_name,
+                                        AUTHZ_PROVIDER_VERSION);
     newp->req_state = conf->req_state;
     newp->req_state_level = conf->req_state_level;
     newp->is_reject = (cmd->info != NULL);
@@ -466,8 +467,9 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
     if (!errmsg) {
         provider_alias_rec *prvdraliasrec = apr_pcalloc(cmd->pool, 
                                                         sizeof(provider_alias_rec));
-        const authz_provider *provider = ap_lookup_provider(AUTHZ_PROVIDER_GROUP,
-                                                            provider_name,"0");
+        const authz_provider *provider =
+            ap_lookup_provider(AUTHZ_PROVIDER_GROUP, provider_name,
+                               AUTHZ_PROVIDER_VERSION);
 
         /* Save off the new directory config along with the original provider name
          * and function pointer data 
@@ -483,7 +485,8 @@ static const char *authz_require_alias_section(cmd_parms *cmd, void *mconfig,
 
         /* Register the fake provider so that we get called first */
         ap_register_auth_provider(cmd->pool, AUTHZ_PROVIDER_GROUP,
-                                  provider_alias, "0", &authz_alias_provider,
+                                  provider_alias, AUTHZ_PROVIDER_VERSION,
+                                  &authz_alias_provider,
                                   AP_AUTH_INTERNAL_PER_CONF);
     }
 
@@ -804,7 +807,8 @@ static int authz_some_auth_required(request_rec *r)
 
 static apr_array_header_t *authz_ap_list_provider_names(apr_pool_t *ptemp)
 {   
-    return ap_list_provider_names(ptemp, AUTHZ_PROVIDER_GROUP, "0");
+    return ap_list_provider_names(ptemp, AUTHZ_PROVIDER_GROUP,
+                                  AUTHZ_PROVIDER_VERSION);
 }
 
 static void register_hooks(apr_pool_t *p)
