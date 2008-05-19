@@ -658,12 +658,12 @@ Require valid-user
     a User Principle Name (UPN) can be added to a user's entry in the
     directory. This UPN usually takes the form of the user's account
     name, followed by the domain components of the particular domain,
-    for example <em>somebody@nz.somedomain.com</em>.</p>
+    for example <em>somebody@nz.example.com</em>.</p>
 
     <p>You may wish to configure the <code class="module"><a href="../mod/mod_authnz_ldap.html">mod_authnz_ldap</a></code>
     module to authenticate users present in any of the domains making up
     the Active Directory forest. In this way both
-    <em>somebody@nz.somedomain.com</em> and <em>someone@au.somedomain.com</em>
+    <em>somebody@nz.example.com</em> and <em>someone@au.example.com</em>
     can be authenticated using the same query at the same time.</p>
 
     <p>To make this practical, Active Directory supports the concept of
@@ -679,13 +679,13 @@ Require valid-user
     an empty search root, like so:</p>
 
 <div class="example"><p><code>
-AuthLDAPBindDN apache@somedomain.com<br />
+AuthLDAPBindDN apache@example.com<br />
 AuthLDAPBindPassword password<br />
 AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
 </code></p></div>
 
     <p>Users will need to enter their User Principal Name as a login, in
-    the form <em>somebody@nz.somedomain.com</em>.</p>
+    the form <em>somebody@nz.example.com</em>.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

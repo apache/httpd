@@ -89,7 +89,7 @@ tutorial</a></li>
     <code>Userdir</code> directive, the argument is treated as a
     filename pattern, and is used to turn the name into a directory
     specification. A request for
-    <code>http://www.foo.com/~bob/one/two.html</code> will be
+    <code>http://www.example.com/~bob/one/two.html</code> will be
     translated to:</p>
 
 <table>
@@ -105,11 +105,11 @@ tutorial</a></li>
 <table>
 <tr><th>UserDir directive used</th>
 <th>Translated path</th></tr>
-<tr><td>UserDir http://www.foo.com/users</td><td>http://www.foo.com/users/bob/one/two.html</td></tr>
+<tr><td>UserDir http://www.example.com/users</td><td>http://www.example.com/users/bob/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.foo.com/*/usr</td><td>http://www.foo.com/bob/usr/one/two.html</td></tr>
+http://www.example.com/*/usr</td><td>http://www.example.com/bob/usr/one/two.html</td></tr>
 <tr><td>UserDir
-http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
+http://www.example.com/~*/</td><td>http://www.example.com/~bob/one/two.html</td></tr>
 </table> 
 
 <div class="note">
@@ -142,12 +142,12 @@ UserDir disabled user4 user5 user6
 <p>It is also possible to specify alternative user directories.
 If you use a command like:</p>
 <div class="example"><p><code>
-Userdir public_html /usr/web http://www.foo.com/
+Userdir public_html /usr/web http://www.example.com/
 </code></p></div>
-<p>With a request for http://www.foo.com/~bob/one/two.html, will try to 
+<p>With a request for http://www.example.com/~bob/one/two.html, will try to 
 find the page at ~bob/public_html/one/two.html first, then
 /usr/web/bob/one/two.html, and finally it will send a redirect
-to http://www.foo.com/bob/one/two.html.</p>
+to http://www.example.com/bob/one/two.html.</p>
 <p>If you add a redirect, it must be the last alternative in the list.
 Apache cannot determine if the redirect succeeded or not, so if you have
 the redirect earlier in the list, that will always be the alternative

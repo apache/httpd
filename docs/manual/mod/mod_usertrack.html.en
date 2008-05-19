@@ -130,7 +130,7 @@ time late in the year "37".
 
     <p>The domain string <strong>must</strong> begin with a dot, and
     <strong>must</strong> include at least one embedded dot. That is,
-    <code>.foo.com</code> is legal, but <code>foo.bar.com</code> and 
+    <code>.example.com</code> is legal, but <code>foo.example.com</code> and 
     <code>.com</code> are not.</p>
 
     <div class="note">Most browsers in use today will not allow cookies to be set
