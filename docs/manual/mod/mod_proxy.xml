@@ -693,9 +693,9 @@ expressions</description>
     <tr><td>acquire</td>
         <td>-</td>
         <td>If set this will be the maximum time to wait for a free
-    connection in the connection pool. If there are no free connections
-    in the pool the Apache will return <code>SERVER_BUSY</code> status to
-    the client.
+    connection in the connection pool, in milliseconds. If there are no free
+    connections in the pool the Apache will return <code>SERVER_BUSY</code>
+    status to the client.
     </td></tr>
     <tr><td>disablereuse</td>
         <td>Off</td>
