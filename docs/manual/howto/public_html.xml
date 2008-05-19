@@ -123,12 +123,12 @@
       used to redirect user directory requests to external URLs.</p>
       
     <example>
-      UserDir http://www.foo.com/users/*/
+      UserDir http://example.org/users/*/
     </example>
     
     <p>The above example will redirect a request for
     <code>http://example.com/~bob/abc.html</code> to
-    <code>http://www.foo.com/users/bob/abc.html</code>.</p>
+    <code>http://example.org/users/bob/abc.html</code>.</p>
   </section>
 
   <section id="enable">

@@ -397,7 +397,7 @@
     the second example will list the ten last denied clients, for example:</p>
     
     <example>
-      [Thu Jul 11 17:18:39 2002] [error] [client foo.bar.com] client denied 
+      [Thu Jul 11 17:18:39 2002] [error] [client foo.example.com] client denied 
       by server configuration: /usr/local/apache/htdocs/.htpasswd
     </example>
     
@@ -406,7 +406,7 @@
     would have seen something similar to:</p>
     
     <example>
-      foo.bar.com - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
+      foo.example.com - - [12/Jul/2002:01:59:13 +0200] "GET /.htpasswd HTTP/1.1"
     </example>
     
     <p>in your <a href="../logs.html#accesslog">Access Log</a>. This means 

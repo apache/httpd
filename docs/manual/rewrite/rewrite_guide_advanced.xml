@@ -587,7 +587,7 @@ RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom
 
         <dd>
           <p>Suppose we want to load balance the traffic to
-          <code>www.foo.com</code> over <code>www[0-5].foo.com</code>
+          <code>www.example.com</code> over <code>www[0-5].example.com</code>
           (a total of 6 servers). How can this be done?</p>
         </dd>
 
@@ -604,7 +604,7 @@ RewriteRule ^/home/([^/]+)/.www/?(.*) http://<strong>www2</strong>.quux-corp.dom
 
               <p>The simplest method for load-balancing is to use
               DNS round-robin.
-              Here you just configure <code>www[0-9].foo.com</code>
+              Here you just configure <code>www[0-9].example.com</code>
               as usual in your DNS with A (address) records, e.g.,</p>
 
 <example><pre>
@@ -626,15 +626,15 @@ www   IN  A       1.2.3.4
 www   IN  A       1.2.3.5
 </pre></example>
 
-              <p>Now when <code>www.foo.com</code> gets
+              <p>Now when <code>www.example.com</code> gets
               resolved, <code>BIND</code> gives out <code>www0-www5</code>
               - but in a permutated (rotated) order every time.
               This way the clients are spread over the various
               servers. But notice that this is not a perfect load
               balancing scheme, because DNS resolutions are
               cached by clients and other nameservers, so
-              once a client has resolved <code>www.foo.com</code>
-              to a particular <code>wwwN.foo.com</code>, all its
+              once a client has resolved <code>www.example.com</code>
+              to a particular <code>wwwN.example.com</code>, all its
               subsequent requests will continue to go to the same
               IP (and thus a single server), rather than being
               distributed across the other available servers. But the
@@ -661,15 +661,15 @@ www   IN  A       1.2.3.5
 
               <p>In this variant we use <module>mod_rewrite</module>
               and its proxy throughput feature. First we dedicate
-              <code>www0.foo.com</code> to be actually
-              <code>www.foo.com</code> by using a single</p>
+              <code>www0.example.com</code> to be actually
+              <code>www.example.com</code> by using a single</p>
 
 <example><pre>
-www    IN  CNAME   www0.foo.com.
+www    IN  CNAME   www0.example.com.
 </pre></example>
 
               <p>entry in the DNS. Then we convert
-              <code>www0.foo.com</code> to a proxy-only server,
+              <code>www0.example.com</code> to a proxy-only server,
               i.e., we configure this machine so all arriving URLs
               are simply passed through its internal proxy to one of
               the 5 other servers (<code>www1-www5</code>). To
@@ -709,7 +709,7 @@ while (&lt;STDIN&gt;) {
 </pre></example>
 
               <note>A last notice: Why is this useful? Seems like
-              <code>www0.foo.com</code> still is overloaded? The
+              <code>www0.example.com</code> still is overloaded? The
               answer is yes, it is overloaded, but with plain proxy
               throughput requests, only! All SSI, CGI, ePerl, etc.
               processing is handled done on the other machines.
