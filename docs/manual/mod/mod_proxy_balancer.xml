@@ -354,7 +354,7 @@ candidate lbstatus -= total factor</code></pre>
     <module>mod_status</module> and <module>mod_proxy_balancer</module>
     have to be present in the server.</p>
 
-    <p>To enable load balancer management for browsers from the foo.com
+    <p>To enable load balancer management for browsers from the example.com
     domain add this code to your <code>httpd.conf</code>
     configuration file</p>
 <example>
@@ -363,7 +363,7 @@ candidate lbstatus -= total factor</code></pre>
 <br />
     Order Deny,Allow<br />
     Deny from all<br />
-    Allow from .foo.com<br />
+    Allow from .example.com<br />
     &lt;/Location&gt;
 </example>
 

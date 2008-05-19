@@ -1947,7 +1947,7 @@ URLs</description>
     functionality is especially useful when combined with the
     <directive module="core">SetHandler</directive>
     directive. For example, to enable status requests, but allow them
-    only from browsers at <code>foo.com</code>, you might use:</p>
+    only from browsers at <code>example.com</code>, you might use:</p>
 
     <example>
       &lt;Location /status&gt;<br />
@@ -1955,7 +1955,7 @@ URLs</description>
         SetHandler server-status<br />
         Order Deny,Allow<br />
         Deny from all<br />
-        Allow from .foo.com<br />
+        Allow from .example.com<br />
       </indent>
       &lt;/Location&gt;
     </example>
@@ -3152,11 +3152,11 @@ hostname or IP address</description>
     <example><title>Example</title>
       &lt;VirtualHost 10.1.2.3&gt;<br />
       <indent>
-        ServerAdmin webmaster@host.foo.com<br />
-        DocumentRoot /www/docs/host.foo.com<br />
-        ServerName host.foo.com<br />
-        ErrorLog logs/host.foo.com-error_log<br />
-        TransferLog logs/host.foo.com-access_log<br />
+        ServerAdmin webmaster@host.example.com<br />
+        DocumentRoot /www/docs/host.example.com<br />
+        ServerName host.example.com<br />
+        ErrorLog logs/host.example.com-error_log<br />
+        TransferLog logs/host.example.com-access_log<br />
       </indent>
       &lt;/VirtualHost&gt;
     </example>

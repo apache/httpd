@@ -1196,8 +1196,8 @@ directly</description>
     <directive module="mod_proxy">ProxyRemote</directive> proxy server(s).</p>
 
     <example><title>Example</title>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
-      NoProxy         .mycompany.com 192.168.112.0/21
+      ProxyRemote  *  http://firewall.example.com:81<br />
+      NoProxy         .example.com 192.168.112.0/21
     </example>
 
     <p>The <var>host</var> arguments to the <directive>NoProxy</directive>
@@ -1224,8 +1224,8 @@ directly</description>
     <note><title>Note</title>
       <p>Domain name comparisons are done without regard to the case, and
       <var>Domain</var>s are always assumed to be anchored in the root of the
-      DNS tree, therefore two domains <code>.MyDomain.com</code> and
-      <code>.mydomain.com.</code> (note the trailing period) are considered
+      DNS tree, therefore two domains <code>.ExAmple.com</code> and
+      <code>.example.com.</code> (note the trailing period) are considered
       equal. Since a domain comparison does not involve a DNS lookup, it is much
       more efficient than subnet comparison.</p>
     </note></dd>
@@ -1282,7 +1282,7 @@ directly</description>
     of hosts with different <var><a href="#ipaddr">IPAddr</a></var>s).</p>
 
     <example><title>Examples</title>
-      prep.ai.mit.edu<br />
+      prep.ai.example.com<br />
       www.apache.org
     </example>
 
@@ -1294,8 +1294,8 @@ directly</description>
       link.</p>
       <p><var>Hostname</var> comparisons are done without regard to the case,
       and <var>Hostname</var>s are always assumed to be anchored in the root
-      of the DNS tree, therefore two hosts <code>WWW.MyDomain.com</code>
-      and <code>www.mydomain.com.</code> (note the trailing period) are
+      of the DNS tree, therefore two hosts <code>WWW.ExAmple.com</code>
+      and <code>www.example.com.</code> (note the trailing period) are
       considered equal.</p>
      </note></dd>
     </dl>
@@ -1336,9 +1336,9 @@ directly</description>
     will be generated.</p>
 
     <example><title>Example</title>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
-      NoProxy         .mycompany.com 192.168.112.0/21<br />
-      ProxyDomain     .mycompany.com
+      ProxyRemote  *  http://firewall.example.com:81<br />
+      NoProxy         .example.com 192.168.112.0/21<br />
+      ProxyDomain     .example.com
     </example>
 </usage>
 </directivesynopsis>
