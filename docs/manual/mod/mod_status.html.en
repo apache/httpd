@@ -85,7 +85,7 @@ performance</td></tr>
 <h2><a name="enable" id="enable">Enabling Status Support</a></h2>
     
 
-    <p>To enable status reports only for browsers from the foo.com
+    <p>To enable status reports only for browsers from the example.com
     domain add this code to your <code>httpd.conf</code>
     configuration file</p>
 <div class="example"><p><code>
@@ -94,7 +94,7 @@ performance</td></tr>
 <br />
     Order Deny,Allow<br />
     Deny from all<br />
-    Allow from .foo.com<br />
+    Allow from .example.com<br />
     &lt;/Location&gt;
 </code></p></div>
 

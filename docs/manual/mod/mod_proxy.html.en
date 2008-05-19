@@ -390,8 +390,8 @@ directly</td></tr>
     <code class="directive"><a href="#proxyremote">ProxyRemote</a></code> proxy server(s).</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
-      NoProxy         .mycompany.com 192.168.112.0/21
+      ProxyRemote  *  http://firewall.example.com:81<br />
+      NoProxy         .example.com 192.168.112.0/21
     </code></p></div>
 
     <p>The <var>host</var> arguments to the <code class="directive">NoProxy</code>
@@ -417,8 +417,8 @@ directly</td></tr>
     <div class="note"><h3>Note</h3>
       <p>Domain name comparisons are done without regard to the case, and
       <var>Domain</var>s are always assumed to be anchored in the root of the
-      DNS tree, therefore two domains <code>.MyDomain.com</code> and
-      <code>.mydomain.com.</code> (note the trailing period) are considered
+      DNS tree, therefore two domains <code>.ExAmple.com</code> and
+      <code>.example.com.</code> (note the trailing period) are considered
       equal. Since a domain comparison does not involve a DNS lookup, it is much
       more efficient than subnet comparison.</p>
     </div></dd>
@@ -475,7 +475,7 @@ directly</td></tr>
     of hosts with different <var><a href="#ipaddr">IPAddr</a></var>s).</p>
 
     <div class="example"><h3>Examples</h3><p><code>
-      prep.ai.mit.edu<br />
+      prep.ai.example.com<br />
       www.apache.org
     </code></p></div>
 
@@ -486,8 +486,8 @@ directly</td></tr>
       link.</p>
       <p><var>Hostname</var> comparisons are done without regard to the case,
       and <var>Hostname</var>s are always assumed to be anchored in the root
-      of the DNS tree, therefore two hosts <code>WWW.MyDomain.com</code>
-      and <code>www.mydomain.com.</code> (note the trailing period) are
+      of the DNS tree, therefore two hosts <code>WWW.ExAmple.com</code>
+      and <code>www.example.com.</code> (note the trailing period) are
       considered equal.</p>
      </div></dd>
     </dl>
@@ -625,9 +625,9 @@ proxied</td></tr>
     will be generated.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      ProxyRemote  *  http://firewall.mycompany.com:81<br />
-      NoProxy         .mycompany.com 192.168.112.0/21<br />
-      ProxyDomain     .mycompany.com
+      ProxyRemote  *  http://firewall.example.com:81<br />
+      NoProxy         .example.com 192.168.112.0/21<br />
+      ProxyDomain     .example.com
     </code></p></div>
 
 </div>
