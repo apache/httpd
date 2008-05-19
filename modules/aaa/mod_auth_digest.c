@@ -452,7 +452,8 @@ static const char *add_authn_provider(cmd_parms *cmd, void *config,
 
     /* lookup and cache the actual provider now */
     newp->provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP,
-                                        newp->provider_name, "0");
+                                        newp->provider_name,
+                                        AUTHN_PROVIDER_VERSION);
 
     if (newp->provider == NULL) {
        /* by the time they use it, the provider should be loaded and
@@ -1332,7 +1333,8 @@ static authn_status get_hash(request_rec *r, const char *user,
          */
         if (!current_provider) {
             provider = ap_lookup_provider(AUTHN_PROVIDER_GROUP,
-                                          AUTHN_DEFAULT_PROVIDER, "0");
+                                          AUTHN_DEFAULT_PROVIDER,
+                                          AUTHN_PROVIDER_VERSION);
 
             if (!provider || !provider->get_realm_hash) {
                 ap_log_rerror(APLOG_MARK, APLOG_ERR, 0, r,
@@ -1963,7 +1965,8 @@ static int add_auth_info(request_rec *r)
 
 static apr_array_header_t *authn_ap_list_provider_names(apr_pool_t *ptemp)
 {
-    return ap_list_provider_names(ptemp, AUTHN_PROVIDER_GROUP, "0");
+    return ap_list_provider_names(ptemp, AUTHN_PROVIDER_GROUP,
+                                  AUTHN_PROVIDER_VERSION);
 }
 
 static void register_hooks(apr_pool_t *p)

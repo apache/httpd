@@ -266,10 +266,12 @@ static void register_hooks(apr_pool_t *p)
 {
     authz_owner_get_file_group = APR_RETRIEVE_OPTIONAL_FN(authz_owner_get_file_group);
 
-    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "group", "0",
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "group",
+                              AUTHZ_PROVIDER_VERSION,
                               &authz_group_provider,
                               AP_AUTH_INTERNAL_PER_CONF);
-    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "file-group", "0",
+    ap_register_auth_provider(p, AUTHZ_PROVIDER_GROUP, "file-group",
+                              AUTHZ_PROVIDER_VERSION,
                               &authz_filegroup_provider,
                               AP_AUTH_INTERNAL_PER_CONF);
 }
