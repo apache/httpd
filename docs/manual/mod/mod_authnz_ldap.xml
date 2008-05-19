@@ -674,11 +674,11 @@ Require valid-user
     subtree search for the attribute <em>userPrincipalName</em>, with
     an empty search root, like so:</p>
 
-<example><pre>
-AuthLDAPBindDN <em>apache@somedomain.com</em>
-AuthLDAPBindPassword <em>password</em>
-AuthLDAPURL <em>ldap://10.0.0.1:3268/>userPrincipalName?sub</em>
-</pre></example>
+<example>
+AuthLDAPBindDN apache@somedomain.com<br />
+AuthLDAPBindPassword password<br />
+AuthLDAPURL ldap://10.0.0.1:3268/?userPrincipalName?sub
+</example>
 
     <p>Users will need to enter their User Principal Name as a login, in
     the form <em>somebody@nz.somedomain.com</em>.</p>
