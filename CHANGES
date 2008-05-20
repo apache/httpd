@@ -3,6 +3,7 @@ Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
   *) authn/z: Convert common provider version strings to macros.
+     [Chris Darroch]
 
   *) http_filters: Don't return 100-continue on redirects. PR 43711
      [Ruediger Pluem]
