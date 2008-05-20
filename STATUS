@@ -192,7 +192,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=655654
   Backport version for 2.2.x of patch:
        http://people.apache.org/~fielding/p/ab-sync.txt
-  +1: fielding, jim
+  +1: fielding, jim, wrowe
 
  * suexec: When group is given as a numeric gid, validate it by looking up
    the actual group name such that the name can be used in log entries.
