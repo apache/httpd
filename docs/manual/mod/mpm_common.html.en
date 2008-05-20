@@ -504,15 +504,8 @@ will handle during its life</td></tr>
     </div>
 
     <p>Setting <code class="directive">MaxRequestsPerChild</code> to a
-    non-zero limit has two beneficial effects:</p>
-
-    <ul>
-      <li>it limits the amount of memory that process can consume
-      by (accidental) memory leakage;</li>
-
-      <li>by giving processes a finite lifetime, it helps reduce
-      the number of processes when the server load reduces.</li>
-    </ul>
+    non-zero value limits the amount of memory that process can consume
+    by (accidental) memory leakage.</p>
 
     <div class="note"><h3>Note</h3>
       <p>For <code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> requests, only
