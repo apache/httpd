@@ -526,15 +526,8 @@ will handle during its life</description>
     </note>
 
     <p>Setting <directive>MaxRequestsPerChild</directive> to a
-    non-zero limit has two beneficial effects:</p>
-
-    <ul>
-      <li>it limits the amount of memory that process can consume
-      by (accidental) memory leakage;</li>
-
-      <li>by giving processes a finite lifetime, it helps reduce
-      the number of processes when the server load reduces.</li>
-    </ul>
+    non-zero value limits the amount of memory that process can consume
+    by (accidental) memory leakage.</p>
 
     <note><title>Note</title>
       <p>For <directive module="core">KeepAlive</directive> requests, only
