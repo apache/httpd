@@ -94,7 +94,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
    * mod_proxy: Support variable interpolation in reverse proxy configuration
-     (revised proposal dealing with wrowe's concerns).
      trunk:
        http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
        http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
@@ -109,6 +108,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
                but -0 on including this as a new feature in 2.2.7.
                Better IMHO to separate releasing it from the many bugfixes
                in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
+     +1: wrowe
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
       Trunk version of patches:
