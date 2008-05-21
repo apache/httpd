@@ -27,6 +27,7 @@
 <status>Extension</status>
 <sourcefile>mod_session_dbd.c</sourcefile>
 <identifier>session_dbd_module</identifier>
+<compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
     <note type="warning"><title>Warning</title>
@@ -153,7 +154,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionDBDCookieName</directive> directive specifies the name and
@@ -184,7 +184,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionDBDCookieName2</directive> directive specifies the name and
@@ -215,7 +214,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionDBDCookieRemove</directive> flag controls whether the cookies
@@ -239,7 +237,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionDBDPerUser</directive> flag enables a per user session keyed
@@ -259,7 +256,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionDBDSelectLabel</directive> directive sets the default select
@@ -279,7 +275,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionDBDInsertLabel</directive> directive sets the default insert
@@ -302,7 +297,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionDBDUpdateLabel</directive> directive sets the default update
@@ -326,7 +320,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionDBDDeleteLabel</directive> directive sets the default delete

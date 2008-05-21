@@ -27,6 +27,7 @@
 <status>Extension</status>
 <sourcefile>mod_session_crypto.c</sourcefile>
 <identifier>session_crypto_module</identifier>
+<compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
     <note type="warning"><title>Warning</title>
