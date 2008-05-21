@@ -1377,13 +1377,28 @@ if a test is true at startup</description>
     multiple-parameter tests. Example:</p>
 
     <example>
-      httpd -DReverseProxy ...<br />
+      httpd -DReverseProxy -DUseCache -DMemCache...<br />
       <br />
       # httpd.conf<br />
       &lt;IfDefine ReverseProxy&gt;<br />
       <indent>
         LoadModule rewrite_module modules/mod_rewrite.so<br />
         LoadModule proxy_module   modules/libproxy.so<br />
+        &lt;IfDefine UseCache&gt;<br />
+        <indent>
+          LoadModule cache_module   modules/mod_cache.so<br />
+          &lt;IfDefine MemCache&gt;<br />
+          <indent>
+            LoadModule mem_cache_module   modules/mod_mem_cache.so<br />
+          </indent>
+          &lt;/IfDefine&gt;<br />
+          &lt;IfDefine !MemCache&gt;<br />
+          <indent>
+            LoadModule disk_cache_module   modules/mod_disk_cache.so<br />
+          </indent>
+          &lt;/IfDefine&gt;
+        </indent>
+        &lt;/IfDefine&gt;
       </indent>
       &lt;/IfDefine&gt;
     </example>
