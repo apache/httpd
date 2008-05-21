@@ -1275,9 +1275,9 @@ connections</td></tr>
     this module.</p>
 
     <div class="example"><h3>Example</h3><p><code>
-      ProxyRemote http://goodguys.com/ http://mirrorguys.com:8000<br />
-      ProxyRemote * http://cleversite.com<br />
-      ProxyRemote ftp http://ftpproxy.mydomain.com:8080
+      ProxyRemote http://goodguys.example.com/ http://mirrorguys.example.com:8000<br />
+      ProxyRemote * http://cleverproxy.localdomain<br />
+      ProxyRemote ftp http://ftpproxy.mydomain:8080
     </code></p></div>
 
     <p>In the last example, the proxy will forward FTP requests, encapsulated

@@ -231,7 +231,7 @@ of</p>
    SetEnvIf Request_URI "\.jpg$" object_is_image=jpg<br />
    SetEnvIf Request_URI "\.xbm$" object_is_image=xbm<br />
         :<br />
-   SetEnvIf Referer www\.mydomain\.com intra_site_referral<br />
+   SetEnvIf Referer www\.mydomain\.example\.com intra_site_referral<br />
         :<br />
    SetEnvIf object_is_image xbm XBIT_PROCESSING=1<br />
         :<br />
@@ -244,7 +244,7 @@ of</p>
     <code>object_is_image</code> if the request was for an image
     file, and the fourth sets <code>intra_site_referral</code> if
     the referring page was somewhere on the
-    <code>www.mydomain.com</code> Web site.</p>
+    <code>www.mydomain.example.com</code> Web site.</p>
 
     <p>The sixth example will set the <code>NetscapeComment</code>
     environment variable to the string found in the corresponding
