@@ -218,14 +218,14 @@
       generated:</p>
 
       <example>
-        &lt;a href="http://foo.com/"&gt;<var>Menu text</var>&lt;/a&gt;
+        &lt;a href="http://example.com/"&gt;<var>Menu text</var>&lt;/a&gt;
       </example>
 
       <p>If no quoted text is present, the name of the link will be
       used as the text:</p>
 
       <example>
-        &lt;a href="http://foo.com/"&gt;http://foo.com&lt;/a&gt;
+        &lt;a href="http://example.com/"&gt;http://example.com&lt;/a&gt;
       </example>
 
       <p>If you want to use double quotes within this text, you have to
@@ -243,11 +243,11 @@
       base referer<br />
       poly map "Could I have a menu, please?" 0,0 0,10 10,10 10,0<br />
       rect .. 0,0 77,27 "the directory of the referer"<br />
-      circle http://www.inetnebr.com/lincoln/feedback/ 195,0 305,27<br />
+      circle http://www.inetnebr.example.com/lincoln/feedback/ 195,0 305,27<br />
       rect another_file "in same directory as referer" 306,0 419,27<br />
-      point http://www.zyzzyva.com/ 100,100<br />
-      point http://www.tripod.com/ 200,200<br />
-      rect mailto:nate@tripod.com 100,150 200,0 "Bugs?"<br />
+      point http://www.zyzzyva.example.com/ 100,100<br />
+      point http://www.tripod.example.com/ 200,200<br />
+      rect mailto:nate@tripod.example.com 100,150 200,0 "Bugs?"<br />
     </example>
 
 </section>
