@@ -27,6 +27,7 @@
 <status>Extension</status>
 <sourcefile>mod_session.c</sourcefile>
 <identifier>session_module</identifier>
+<compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
     <note type="warning"><title>Warning</title>
@@ -261,7 +262,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>Session</directive> directive enables a session for the
@@ -280,7 +280,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionMaxAge</directive> directive defines a time limit
@@ -306,7 +305,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>If set to <var>On</var>, the <directive>SessionEnv</directive> directive
@@ -332,7 +330,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionHeader</directive> directive defines the name of an
@@ -361,7 +358,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionInclude</directive> directive allows sessions to
@@ -388,7 +384,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionExclude</directive> directive allows sessions to

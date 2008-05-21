@@ -27,6 +27,7 @@
 <status>Extension</status>
 <sourcefile>mod_session_cookie.c</sourcefile>
 <identifier>session_cookie_module</identifier>
+<compatibility>Available in Apache 2.3 and later</compatibility>
 
 <summary>
     <note type="warning"><title>Warning</title>
@@ -86,7 +87,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionCookieName</directive> directive specifies the name and
@@ -117,7 +117,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionCookieName2</directive> directive specifies the name and
@@ -148,7 +147,6 @@
 <context>directory</context>
 <context>.htaccess</context>
 </contextlist>
-<compatibility>Available in Apache 2.3.0 and later</compatibility>
 
 <usage>
     <p>The <directive>SessionCookieRemove</directive> flag controls whether the cookies
