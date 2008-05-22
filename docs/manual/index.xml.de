@@ -63,7 +63,7 @@
     <page href="server-wide.html">Serverweite Konfiguration</page>
     <page href="ssl/">SSL/TLS-Verschl&uuml;sselung</page>
     <page href="suexec.html">Suexec f&uuml;r CGI</page>
-    <page href="misc/rewriteguide.html">Einf&uuml;hrung in die
+    <page href="rewrite/">Einf&uuml;hrung in die
     URL-Manipulation</page>
     <page href="vhosts/">Virtual-Hosts</page>
 </category>
