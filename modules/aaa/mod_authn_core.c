@@ -299,12 +299,6 @@ static const char *authn_ap_auth_name(request_rec *r)
     return apr_pstrdup(r->pool, conf->ap_auth_name);
 }
 
-static apr_array_header_t *authn_ap_list_provider_names(apr_pool_t *ptemp)
-{
-    return ap_list_provider_names(ptemp, AUTHN_PROVIDER_GROUP,
-                                  AUTHN_PROVIDER_VERSION);
-}
-
 static const command_rec authn_cmds[] =
 {
     AP_INIT_TAKE1("AuthType", ap_set_string_slot,
@@ -322,7 +316,6 @@ static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(authn_ap_auth_type);
     APR_REGISTER_OPTIONAL_FN(authn_ap_auth_name);
-    APR_REGISTER_OPTIONAL_FN(authn_ap_list_provider_names);
 }
 
 module AP_MODULE_DECLARE_DATA authn_core_module =

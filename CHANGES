@@ -2,6 +2,11 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) core, authn/z: Determine registered authn/z providers directly in
+     ap_setup_auth_internal(), which allows optional functions that just
+     wrapped ap_list_provider_names() to be removed from authn/z modules.
+     [Chris Darroch]
+
   *) authn/z: Convert common provider version strings to macros.
      [Chris Darroch]
 

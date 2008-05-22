@@ -48,6 +48,7 @@
 #include "mod_request.h"
 
 #include "mod_core.h"
+#include "mod_auth.h"
 
 #if APR_HAVE_STDARG_H
 #include <stdarg.h>
@@ -1685,10 +1686,6 @@ AP_DECLARE(void) ap_clear_auth_internal(void)
 
 AP_DECLARE(void) ap_setup_auth_internal(apr_pool_t *ptemp)
 {
-    APR_OPTIONAL_FN_TYPE(authn_ap_list_provider_names)
-        *authn_ap_list_provider_names;
-    APR_OPTIONAL_FN_TYPE(authz_ap_list_provider_names)
-        *authz_ap_list_provider_names;
     int total_auth_hooks = 0;
     int total_auth_providers = 0;
 
@@ -1708,18 +1705,12 @@ AP_DECLARE(void) ap_setup_auth_internal(apr_pool_t *ptemp)
         return;
     }
 
-    authn_ap_list_provider_names =
-        APR_RETRIEVE_OPTIONAL_FN(authn_ap_list_provider_names);
-    authz_ap_list_provider_names =
-        APR_RETRIEVE_OPTIONAL_FN(authz_ap_list_provider_names);
-
-    if (authn_ap_list_provider_names) {
-        total_auth_providers += authn_ap_list_provider_names(ptemp)->nelts;
-    }
-
-    if (authz_ap_list_provider_names) {
-        total_auth_providers += authz_ap_list_provider_names(ptemp)->nelts;
-    }
+    total_auth_providers +=
+        ap_list_provider_names(ptemp, AUTHN_PROVIDER_GROUP,
+                               AUTHN_PROVIDER_VERSION)->nelts;
+    total_auth_providers +=
+        ap_list_provider_names(ptemp, AUTHZ_PROVIDER_GROUP,
+                               AUTHZ_PROVIDER_VERSION)->nelts;
 
     if (total_auth_providers > auth_internal_per_conf_providers) {
         return;
