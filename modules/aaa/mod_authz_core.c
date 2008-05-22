@@ -805,16 +805,9 @@ static int authz_some_auth_required(request_rec *r)
     return req_authz;
 }
 
-static apr_array_header_t *authz_ap_list_provider_names(apr_pool_t *ptemp)
-{   
-    return ap_list_provider_names(ptemp, AUTHZ_PROVIDER_GROUP,
-                                  AUTHZ_PROVIDER_VERSION);
-}
-
 static void register_hooks(apr_pool_t *p)
 {
     APR_REGISTER_OPTIONAL_FN(authz_some_auth_required);
-    APR_REGISTER_OPTIONAL_FN(authz_ap_list_provider_names);
 
     ap_hook_check_authz(authorize_user, NULL, NULL, APR_HOOK_MIDDLE,
                         AP_AUTH_INTERNAL_PER_CONF);
