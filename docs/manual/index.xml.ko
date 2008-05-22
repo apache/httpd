@@ -59,7 +59,7 @@
     <page href="server-wide.html">서버 전역 설정</page>
     <page href="ssl/">SSL/TLS 암호화</page>
     <page href="suexec.html">CGI의 Suexec 실행</page>
-    <page href="misc/rewriteguide.html">URL 재작성(rewriting) 지침서</page>
+    <page href="rewrite/">URL 재작성(rewriting) 지침서</page>
     <page href="vhosts/">가상호스트</page>
 </category>
 
