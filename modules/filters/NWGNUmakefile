@@ -155,6 +155,7 @@ TARGET_nlm = \
 	$(OBJDIR)/extfiltr.nlm \
 	$(OBJDIR)/charsetl.nlm \
 	$(OBJDIR)/mod_filter.nlm \
+	$(OBJDIR)/mod_request.nlm \
 	$(OBJDIR)/substitute.nlm \
 	$(EOLIST)
 
