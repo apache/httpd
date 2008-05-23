@@ -1058,12 +1058,23 @@ AP_DECLARE_NONSTD(int) ap_send_http_trace(request_rec *r)
     /* Now we recreate the request, and echo it back */
 
     bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
+#if APR_CHARSET_EBCDIC
+    {
+        char *tmp;
+        apr_size_t len;
+        len = strlen(r->the_request);
+        tmp = apr_pmemdup(r->pool, r->the_request, len);
+        ap_xlate_proto_to_ascii(tmp, len);
+        apr_brigade_putstrs(bb, NULL, NULL, tmp, CRLF_ASCII, NULL);
+    }
+#else
     apr_brigade_putstrs(bb, NULL, NULL, r->the_request, CRLF, NULL);
+#endif
     h.pool = r->pool;
     h.bb = bb;
     apr_table_do((int (*) (void *, const char *, const char *))
                  form_header_field, (void *) &h, r->headers_in, NULL);
-    apr_brigade_puts(bb, NULL, NULL, CRLF);
+    apr_brigade_puts(bb, NULL, NULL, CRLF_ASCII);
 
     /* If configured to accept a body, echo the body */
     if (bodylen) {
