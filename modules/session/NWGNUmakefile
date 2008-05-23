@@ -154,9 +154,10 @@ XDCDATA		=
 TARGET_nlm = \
 	$(OBJDIR)/session.nlm \
 	$(OBJDIR)/session_cookie.nlm \
-	$(OBJDIR)/session_crypto.nlm \
 	$(OBJDIR)/session_dbd.nlm \
 	$(EOLIST)
+
+#	$(OBJDIR)/session_crypto.nlm \
 
 #
 # If there is an LIB target, put it here
