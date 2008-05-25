@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='ISO-8859-1' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
-<!-- English Revision: 420990 -->
+<!-- English Revision: 659902 -->
 <!-- French translation by alain B, review by Vincent Deffontaines -->
 
 <!--
@@ -131,7 +131,7 @@ résident pour des serveurs virtuels</title>
     ErrorLog /groups/smallco/logs/error_log<br />
     TransferLog /groups/smallco/logs/access_log<br />
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost www.baygroup.org&gt;<br />
     ServerAdmin webmaster@mail.baygroup.org<br />
     DocumentRoot /groups/baygroup/www<br />
@@ -139,7 +139,7 @@ résident pour des serveurs virtuels</title>
     ErrorLog /groups/baygroup/logs/error_log<br />
     TransferLog /groups/baygroup/logs/access_log<br />
     &lt;/VirtualHost&gt;
-		</example>
+    </example>
 
     <p>Il est recommandé d'utiliser une adresse IP plutôt qu'un nom 
     de domaine (consultez <a href="../dns-caveats.html">Problèmes DNS 

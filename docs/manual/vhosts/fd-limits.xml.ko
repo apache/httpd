@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='EUC-KR' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ko.xsl"?>
-<!-- English Revision: 420990 -->
+<!-- English Revision: 659902 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -53,7 +53,7 @@
       제약을 가한다.</li>
     </ol>
 
-	<p>이 경우 해결책은:</p>
+    <p>이 경우 해결책은:</p>
 
     <ul>
       <li>로그파일 개수를 줄인다. <directive type="section"

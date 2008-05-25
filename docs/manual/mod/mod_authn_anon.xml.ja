@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
+<!-- English Revision: 659902 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -20,7 +21,6 @@
 -->
 
 <modulesynopsis metafile="mod_authn_anon.xml.meta">
-<!-- English Revision: 420990 -->
 
 <name>mod_authn_anon</name>
 <description>認証が必要な領域への "anonymous" ユーザのアクセスを許可する
