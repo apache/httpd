@@ -79,12 +79,12 @@
     </modulelist>
 
     <directivelist>
-	<directive module="core">DocumentRoot</directive>
-	<directive module="core">NameVirtualHost</directive>
-	<directive module="core">ServerAlias</directive>
-	<directive module="core">ServerName</directive>
-	<directive module="core">ServerPath</directive>
-	<directive module="core" type="section">VirtualHost</directive>
+        <directive module="core">DocumentRoot</directive>
+        <directive module="core">NameVirtualHost</directive>
+        <directive module="core">ServerAlias</directive>
+        <directive module="core">ServerName</directive>
+        <directive module="core">ServerPath</directive>
+        <directive module="core" type="section">VirtualHost</directive>
     </directivelist>
 </related>
 
@@ -101,7 +101,7 @@
     automatically make the server listen to that IP address. See
     <a href="../bind.html">Setting which addresses and ports Apache uses</a>
     for more details. In addition, any IP address specified here must be
-    associated with a network interface	on the server.</p>
+    associated with a network interface on the server.</p>
 
     <p>The next step is to create a <directive type="section"
     module="core">VirtualHost</directive> block for
@@ -109,7 +109,7 @@
     <directive type="section" module="core">VirtualHost</directive> directive
     must match a defined <directive
     module="core">NameVirtualHost</directive> directive. (In this usual case,
-    this will be "*:80").  Inside each <directive type="section"	
+    this will be "*:80").  Inside each <directive type="section"
     module="core">VirtualHost</directive> block, you will need at minimum a
     <directive module="core">ServerName</directive> directive to designate
     which host is served and a <directive module="core">DocumentRoot</directive>
@@ -205,7 +205,7 @@
     the <em>main server</em> will <strong>never</strong> be used when an IP
     address matches the <directive module="core">NameVirtualHost</directive> 
     directive. If you would like to have a special configuration for requests 
-    that do not	match any particular virtual host, simply put that configuration
+    that do not match any particular virtual host, simply put that configuration
     in a <directive type="section" module="core">VirtualHost</directive>
     container and list it first in the configuration file.</p>
 

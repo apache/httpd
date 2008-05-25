@@ -100,7 +100,7 @@ existing HTML documents.</p>
     the following directives:</p>
 <example>
         AddType text/html .shtml<br />
-	AddOutputFilter INCLUDES .shtml
+        AddOutputFilter INCLUDES .shtml
 </example>
 
     <p>One disadvantage to this approach is that if you wanted to

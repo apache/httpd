@@ -102,7 +102,7 @@
 </section>
 
 <section id="single"><title>Setting up a single daemon
-	with virtual hosts</title>
+  with virtual hosts</title>
 
     <p>For this case, a single <program>httpd</program> will service
     requests for the main server and all the virtual hosts. The <directive
@@ -125,7 +125,7 @@
     ErrorLog /groups/smallco/logs/error_log<br />
     TransferLog /groups/smallco/logs/access_log<br />
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost www.baygroup.org&gt;<br />
     ServerAdmin webmaster@mail.baygroup.org<br />
     DocumentRoot /groups/baygroup/www<br />
@@ -133,7 +133,7 @@
     ErrorLog /groups/baygroup/logs/error_log<br />
     TransferLog /groups/baygroup/logs/access_log<br />
     &lt;/VirtualHost&gt;
-		</example>
+    </example>
 
     <p>It is recommended that you use an IP address instead of a
     hostname (see <a href="../dns-caveats.html">DNS caveats</a>).</p>

@@ -37,7 +37,7 @@
     enabled. You can enable access when using <directive module="mod_userdir"
     >UserDir</directive> by uncommenting the line</p>
     <example>
-	    #Include conf/extra/httpd-userdir.conf
+      #Include conf/extra/httpd-userdir.conf
     </example>
     <p>in the default config file, and adapting the <code
     >httpd-userdir.conf</code>

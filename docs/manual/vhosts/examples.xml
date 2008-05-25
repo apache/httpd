@@ -101,9 +101,9 @@
 
             <example>
             NameVirtualHost 172.20.30.40<br />
-						<br />
+            <br />
             &lt;VirtualHost 172.20.30.40&gt;<br />
- 		        # etc ...
+             # etc ...
             </example>
 
            <p>However, it is additionally useful to use <code>*</code>
@@ -120,15 +120,15 @@
     configuration will not work for, in fact, is when you are serving
     different content based on differing IP addresses or ports.</p>
 
-	</section>
+  </section>
 
-	<section id="twoips"><title>Name-based hosts on more than one
+  <section id="twoips"><title>Name-based hosts on more than one
     IP address.</title>
 
-  	<note>
-		  <title>Note</title><p>Any of the
-          techniques discussed here can be extended to any number of IP
-          addresses.</p>
+    <note>
+      <title>Note</title>
+      <p>Any of the techniques discussed here can be extended to any
+      number of IP addresses.</p>
     </note>
 
     <p>The server has two IP addresses. On one (<code>172.20.30.40</code>), we
@@ -139,31 +139,31 @@
     <title>Server configuration</title>
 
     Listen 80<br />
-		<br />
+    <br />
     # This is the "main" server running on 172.20.30.40<br />
     ServerName server.domain.com<br />
     DocumentRoot /www/mainserver<br />
-		<br />
+    <br />
     # This is the other address<br />
     NameVirtualHost 172.20.30.50<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
-   			<br />
+        <br />
         # Other directives here ...<br />
-				<br />
+        <br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
         ServerName www.example.org<br />
-				<br />
+        <br />
         # Other directives here ...<br />
-				<br />
+        <br />
     </indent>
     &lt;/VirtualHost&gt;
     </example>
@@ -173,9 +173,9 @@
     unknown hostname, or no <code>Host:</code> header, will be served from
     <code>www.example.com</code>.</p>
 
-	</section>
+  </section>
 
-	<section id="intraextra"><title>Serving the same content on
+  <section id="intraextra"><title>Serving the same content on
     different IP addresses (such as an internal and external
     address).</title>
 
@@ -196,7 +196,7 @@
 
     NameVirtualHost 192.168.1.1<br />
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/server1<br />
@@ -220,9 +220,9 @@
           respond the same on all addresses.</p>
     </note>
 
-	</section>
+  </section>
 
-	<section id="port"><title>Running different sites on different
+  <section id="port"><title>Running different sites on different
     ports.</title>
 
     <p>You have multiple domains going to the same IP and also want to
@@ -236,31 +236,31 @@
 
     Listen 80<br />
     Listen 8080<br />
-		<br />
+    <br />
     NameVirtualHost 172.20.30.40:80<br />
     NameVirtualHost 172.20.30.40:8080<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
         ServerName www.example.com<br />
         DocumentRoot /www/domain-80<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
         ServerName www.example.com<br />
         DocumentRoot /www/domain-8080<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
         ServerName www.example.org<br />
         DocumentRoot /www/otherdomain-80<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
         ServerName www.example.org<br />
@@ -269,9 +269,9 @@
     &lt;/VirtualHost&gt;
     </example>
 
-	</section>
+  </section>
 
-	<section id="ip"><title>IP-based virtual hosting</title>
+  <section id="ip"><title>IP-based virtual hosting</title>
 
     <p>The server has two IP addresses (<code>172.20.30.40</code> and
     <code>172.20.30.50</code>) which resolve to the names
@@ -282,14 +282,14 @@
     <title>Server configuration</title>
 
     Listen 80<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
@@ -303,10 +303,10 @@
     <code>localhost</code>, for example) will go to the main server, if
     there is one.</p>
 
-	</section>
+  </section>
 
-	<section id="ipport"><title>Mixed port-based and ip-based virtual
-	hosts</title>
+  <section id="ipport"><title>Mixed port-based and ip-based virtual
+  hosts</title>
 
     <p>The server machine has two IP addresses (<code>172.20.30.40</code> and
     <code>172.20.30.50</code>) which resolve to the names
@@ -321,28 +321,28 @@
     Listen 172.20.30.40:8080<br />
     Listen 172.20.30.50:80<br />
     Listen 172.20.30.50:8080<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <indent>
         DocumentRoot /www/example1-80<br />
         ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <indent>
         DocumentRoot /www/example1-8080<br />
         ServerName www.example.com<br />
-		</indent>
+    </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50:80&gt;<br />
     <indent>
         DocumentRoot /www/example2-80<br />
         ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50:8080&gt;<br />
     <indent>
         DocumentRoot /www/example2-8080<br />
@@ -351,9 +351,9 @@
     &lt;/VirtualHost&gt;
     </example>
 
-	</section>
+  </section>
 
-	<section id="mixed"><title>Mixed name-based and IP-based
+  <section id="mixed"><title>Mixed name-based and IP-based
     vhosts</title>
 
     <p>On some of my addresses, I want to do name-based virtual hosts, and
@@ -363,30 +363,30 @@
     <title>Server configuration</title>
 
     Listen 80<br />
-		<br />
+    <br />
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
         ServerName www.example.org<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example3<br />
         ServerName www.example3.net<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     # IP-based<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <indent>
@@ -394,7 +394,7 @@
         ServerName www.example4.edu<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.60&gt;<br />
     <indent>
         DocumentRoot /www/example5<br />
@@ -403,7 +403,7 @@
     &lt;/VirtualHost&gt;
     </example>
 
-	</section>
+  </section>
 
     <section id="proxy"><title>Using <code>Virtual_host</code> and
     mod_proxy together</title>
@@ -427,10 +427,10 @@
 
     </section>
 
-	<section id="default"><title>Using <code>_default_</code>
+  <section id="default"><title>Using <code>_default_</code>
     vhosts</title>
 
-  	<section id="defaultallports"><title><code>_default_</code> vhosts
+    <section id="defaultallports"><title><code>_default_</code> vhosts
     for all ports</title>
 
     <p>Catching <em>every</em> request to any unspecified IP address and
@@ -476,7 +476,7 @@
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost _default_:*&gt;<br />
     <indent>
         DocumentRoot /www/default<br />
@@ -511,9 +511,9 @@
     served from the main server.</p>
     </section>
 
-	</section>
+  </section>
 
-	<section id="migrate"><title>Migrating a name-based vhost to an
+  <section id="migrate"><title>Migrating a name-based vhost to an
     IP-based vhost</title>
 
     <p>The name-based vhost with the hostname
@@ -534,9 +534,9 @@
     Listen 80<br />
     ServerName www.example.com<br />
     DocumentRoot /www/example1<br />
-		<br />
+    <br />
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
     <indent>
         DocumentRoot /www/example2<br />
@@ -544,7 +544,7 @@
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/example3<br />
@@ -559,10 +559,10 @@
     IP-based vhost) and through the old address (as a name-based
     vhost).</p>
 
-	</section>
+  </section>
 
-	<section id="serverpath"><title>Using the <code>ServerPath</code>
-	directive</title>
+  <section id="serverpath"><title>Using the <code>ServerPath</code>
+  directive</title>
 
     <p>We have a server with two name-based vhosts. In order to match the
     correct virtual host a client must send the correct <code>Host:</code>
@@ -577,7 +577,7 @@
     <title>Server configuration</title>
 
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         # primary vhost<br />
@@ -587,7 +587,7 @@
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     DocumentRoot /www/subdomain/sub1<br />
     <indent>
@@ -598,7 +598,7 @@
         # ...<br />
     </indent>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <indent>
         DocumentRoot /www/subdomain/sub2<br />
@@ -629,6 +629,6 @@
     <code>Host:</code> header can use both URL variants, <em>i.e.</em>,
     with or without URL prefix.</p>
 
-	</section>
+  </section>
 
 </manualpage>

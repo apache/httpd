@@ -517,11 +517,11 @@ expressions</description>
 <name>BalancerMember</name>
 <description>Add a member to a load balancing group</description>
 <syntax>BalancerMember <var>url</var> [<var
-		>key=value [key=value ...]]</var></syntax>
+  >key=value [key=value ...]]</var></syntax>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>BalancerMember is only available in Apache 2.2
-	and later.</compatibility>
+  and later.</compatibility>
 <usage>
     <p>This directive adds a member to a load balancing group. It must be used
     within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
@@ -542,7 +542,7 @@ expressions</description>
 <contextlist><context>directory</context>
 </contextlist>
 <compatibility>ProxySet is only available in Apache 2.2
-	and later.</compatibility>
+  and later.</compatibility>
 <usage>
     <p>This directive is used as an alternate method of setting any of the
     parameters available to Proxy balancers and workers normally done via the
@@ -593,7 +593,7 @@ expressions</description>
 <name>ProxyPass</name>
 <description>Maps remote servers into the local server URL-space</description>
 <syntax>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
-	<var>[key=value</var> ...]] [nocanon] [interpolate]</syntax>
+  <var>[key=value</var> ...]] [nocanon] [interpolate]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
@@ -776,8 +776,8 @@ expressions</description>
         <td>-</td>
         <td>Single letter value defining the initial status of
         this worker: 'D' is disabled, 'S' is stopped, 'I' is ignore-errors,
-	'H' is hot-standby and 'E' is in an error state. Status 
-	can be set (which is the default) by prepending with '+' or 
+        'H' is hot-standby and 'E' is in an error state. Status 
+        can be set (which is the default) by prepending with '+' or 
         cleared by prepending with '-'.
         Thus, a setting of 'S-E' sets this worker to Stopped and
         clears the in-error flag.
@@ -1277,7 +1277,7 @@ directly</description>
     <p>A <dfn>Hostname</dfn> is a fully qualified DNS domain name which can
     be resolved to one or more <var><a href="#ipaddr">IPAddrs</a></var> via the
     DNS domain name service. It represents a logical host (in contrast to
-	<var><a href="#domain">Domain</a></var>s, see above) and must be resolvable
+    <var><a href="#domain">Domain</a></var>s, see above) and must be resolvable
     to at least one <var><a href="#ipaddr">IPAddr</a></var> (or often to a list
     of hosts with different <var><a href="#ipaddr">IPAddr</a></var>s).</p>
 
