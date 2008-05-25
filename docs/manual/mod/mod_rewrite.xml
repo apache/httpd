@@ -487,16 +487,16 @@ while (&lt;STDIN&gt;) {
 
           <ol>
             <li>``<em>Keep it simple, stupid</em>'' (KISS).
-	    If this program hangs, it will cause Apache to hang 
-	    when trying to use the relevant rewrite rule.</li>
+            If this program hangs, it will cause Apache to hang 
+            when trying to use the relevant rewrite rule.</li>
 
             <li>A common mistake is to use buffered I/O on
             <code>stdout</code>. Avoid this, as it will cause a deadloop!
             ``<code>$|=1</code>'' is used above, to prevent this.</li>
 
             <li>The <directive
-	    module="mod_rewrite">RewriteLock</directive> directive can 
-	    be used to define a lockfile which mod_rewrite can use to synchronize 
+            module="mod_rewrite">RewriteLock</directive> directive can 
+            be used to define a lockfile which mod_rewrite can use to synchronize 
             communication with the mapping program. By default no such
             synchronization takes place.</li>
           </ol>
@@ -625,8 +625,8 @@ Result:
               has to be re-injected into the Apache kernel. 
               This is not the serious overhead it may seem to be - 
               this re-injection is completely internal to the 
-	      Apache server (and the same procedure is used by 
-	      many other operations within Apache).</p> 
+              Apache server (and the same procedure is used by 
+              many other operations within Apache).</p> 
 </note>
 
 </usage>
@@ -661,7 +661,7 @@ Result:
           (0 &lt;= N &lt;= 9), which provide access to the grouped
           parts (in parentheses) of the pattern, from the
           <code>RewriteRule</code> which is subject to the current 
-	  set of <code>RewriteCond</code> conditions..
+          set of <code>RewriteCond</code> conditions..
         </li>
         <li>
           <strong>RewriteCond backreferences</strong>: These are
@@ -674,7 +674,7 @@ Result:
         <li>
           <strong>RewriteMap expansions</strong>: These are
           expansions of the form <strong><code
-	  >${mapname:key|default}</code></strong>.
+          >${mapname:key|default}</code></strong>.
           See <a href="#mapfunc">the documentation for
           RewriteMap</a> for more details.
         </li>
@@ -691,11 +691,11 @@ Result:
            <column width=".3"/></columnspec>
             <tr>
               <th>HTTP headers:</th> <th>connection &amp; request:</th> <th></th>
-	    </tr>
+            </tr>
 
             <tr>
-	      <td>
-		 HTTP_USER_AGENT<br />
+              <td>
+                 HTTP_USER_AGENT<br />
                  HTTP_REFERER<br />
                  HTTP_COOKIE<br />
                  HTTP_FORWARDED<br />
@@ -716,17 +716,17 @@ Result:
                  QUERY_STRING<br />
                  AUTH_TYPE<br />
               </td>
-	      
-	      <td></td>
+
+              <td></td>
             </tr>
 
             <tr>
               <th>server internals:</th> <th>date and time:</th> <th>specials:</th>
-	    </tr>
+            </tr>
 
             <tr>
-	      <td>
-	         DOCUMENT_ROOT<br />
+              <td>
+                 DOCUMENT_ROOT<br />
                  SERVER_ADMIN<br />
                  SERVER_NAME<br />
                  SERVER_ADDR<br />
@@ -764,7 +764,7 @@ Result:
                 Most are documented elsewhere in the Manual or in
                 the CGI specification. Those that are special to
                 mod_rewrite include those below.</p>
-	<note>
+        <note>
                 <dl>
                   <dt><code>IS_SUBREQ</code></dt>
 
@@ -830,8 +830,8 @@ Result:
 
         <li>
         <code>%{ENV:variable}</code>, where <em>variable</em> can be
-	any environment variable, is also available. 
-	This is looked-up via internal
+        any environment variable, is also available. 
+        This is looked-up via internal
         Apache structures and (if not found there) via
         <code>getenv()</code> from the Apache server process.</li>
 
@@ -846,8 +846,8 @@ Result:
 
         <li>
         <code>%{HTTP:header}</code>, where <em>header</em> can be
-	any HTTP MIME-header name, can always be used to obtain the
-	value of a header sent in the HTTP request.
+        any HTTP MIME-header name, can always be used to obtain the
+        value of a header sent in the HTTP request.
         Example: <code>%{HTTP:Proxy-Connection}</code> is
         the value of the HTTP header
         ``<code>Proxy-Connection:</code>''.
@@ -863,21 +863,21 @@ Result:
         <li>
         <code>%{LA-U:variable}</code> can be used for look-aheads which perform
         an internal (URL-based) sub-request to determine the final
-	value of <em>variable</em>. This can be used to access
+        value of <em>variable</em>. This can be used to access
         variable for rewriting which is not available at the current 
-	stage, but will be set in a later phase.
-	<p>For instance, to rewrite according to the
+        stage, but will be set in a later phase.
+        <p>For instance, to rewrite according to the
         <code>REMOTE_USER</code> variable from within the
         per-server context (<code>httpd.conf</code> file) you must
         use <code>%{LA-U:REMOTE_USER}</code> - this
         variable is set by the authorization phases, which come
-	<em>after</em> the URL translation phase (during which mod_rewrite
-	operates).</p>
-	<p>On the other hand, because mod_rewrite implements
+        <em>after</em> the URL translation phase (during which mod_rewrite
+        operates).</p>
+        <p>On the other hand, because mod_rewrite implements
         its per-directory context (<code>.htaccess</code> file) via
         the Fixup phase of the API and because the authorization
         phases come <em>before</em> this phase, you just can use
-	<code>%{REMOTE_USER}</code> in that context.</p></li>
+        <code>%{REMOTE_USER}</code> in that context.</p></li>
 
         <li>
         <code>%{LA-F:variable}</code> can be used to perform an internal
@@ -908,7 +908,7 @@ Result:
 
           <ul>
             <li>'<strong>&lt;CondPattern</strong>' (lexicographically 
-	    precedes)<br />
+            precedes)<br />
             Treats the <em>CondPattern</em> as a plain string and
             compares it lexicographically to <em>TestString</em>. True if
             <em>TestString</em> lexicographically precedes
@@ -955,9 +955,9 @@ Result:
             <li>'<strong>-x</strong>' (has e<strong>x</strong>ecutable
             permissions)<br />
             Treats the <em>TestString</em> as a pathname and tests
-	    whether or not it exists, and has executable permissions. 
-	    These permissions are determined according to 
-	    the underlying OS.</li>
+            whether or not it exists, and has executable permissions. 
+            These permissions are determined according to 
+            the underlying OS.</li>
 
             <li>'<strong>-F</strong>' (is existing file, via
             subrequest)<br />
@@ -983,7 +983,7 @@ Result:
 </note>
         </li>
 
-	<li>You can also set special flags for
+        <li>You can also set special flags for
       <em>CondPattern</em> by appending
         <strong><code>[</code><em>flags</em><code>]</code></strong>
       as the third argument to the <code>RewriteCond</code>
@@ -994,7 +994,7 @@ Result:
         <li>'<strong><code>nocase|NC</code></strong>'
         (<strong>n</strong>o <strong>c</strong>ase)<br />
         This makes the test case-insensitive - differences 
-	between 'A-Z' and 'a-z' are ignored, both in the
+        between 'A-Z' and 'a-z' are ignored, both in the
         expanded <em>TestString</em> and the <em>CondPattern</em>.
         This flag is effective only for comparisons between
         <em>TestString</em> and <em>CondPattern</em>. It has no
@@ -1051,14 +1051,14 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
 </example>
 
         <p>Explanation: If you use a browser which identifies itself 
-	as 'Mozilla' (including Netscape Navigator, Mozilla etc), then you
+        as 'Mozilla' (including Netscape Navigator, Mozilla etc), then you
         get the max homepage (which could include frames, or other special
-	features).
+        features).
         If you use the Lynx browser (which is terminal-based), then
-	you get the min homepage (which could be a version designed for 
-	easy, text-only browsing).
-	If neither of these conditions apply (you use any other browser,
-	or your browser identifies itself as something non-standard), you get
+        you get the min homepage (which could be a version designed for 
+        easy, text-only browsing).
+        If neither of these conditions apply (you use any other browser,
+        or your browser identifies itself as something non-standard), you get
         the std (standard) homepage.</p>
 
 </usage>
@@ -1102,8 +1102,8 @@ RewriteRule  ^/$                 /homepage.std.html  [L]
       the <a href="../rewrite/rewrite_intro.html#regex">mod_rewrite
       Introduction</a>.</p>
 
-      <p>In mod_rewrite, the NOT character	
-       ('<code>!</code>') is also available as a possible pattern 
+      <p>In mod_rewrite, the NOT character
+      ('<code>!</code>') is also available as a possible pattern 
       prefix. This enables you to negate a pattern; to say, for instance:
       ``<em>if the current URL does <strong>NOT</strong> match this
       pattern</em>''. This can be used for exceptional cases, where
@@ -1184,7 +1184,7 @@ cannot use <code>$N</code> in the substitution string!
       </ol>
 
       <p>Back-references are identifiers of the form 
-	      <code>$</code><strong>N</strong>
+      <code>$</code><strong>N</strong>
       (<strong>N</strong>=0..9), which will be replaced
       by the contents of the <strong>N</strong>th group of the
       matched <em>Pattern</em>. The server-variables are the same
@@ -1273,17 +1273,17 @@ cannot use <code>$N</code> in the substitution string!
         <code>%N</code>) which will be expanded. You can use this
         flag more than once, to set more than one variable. The
         variables can later be dereferenced in many situations, most commonly
-	from within XSSI (via <code>&lt;!--#echo
+        from within XSSI (via <code>&lt;!--#echo
         var="VAR"--&gt;</code>) or CGI (<code>$ENV{'VAR'}</code>). 
-	You can also dereference the variable in a later RewriteCond pattern, using
+        You can also dereference the variable in a later RewriteCond pattern, using
         <code>%{ENV:VAR}</code>. Use this to strip 
         information from URLs, while maintaining a record of that information.</dd>
 
         <dt>'<code>forbidden|F</code>' (force URL
         to be forbidden)</dt><dd>
         This forces the current URL to be forbidden - it immediately 
-	sends back a HTTP response of 403 (FORBIDDEN). 
-	Use this flag in conjunction with
+        sends back a HTTP response of 403 (FORBIDDEN). 
+        Use this flag in conjunction with
         appropriate RewriteConds to conditionally block some
         URLs.</dd>
 
@@ -1299,8 +1299,8 @@ cannot use <code>$N</code> in the substitution string!
          Force the Content-handler of the target file to be
         <em>Content-handler</em>. For instance, this can be used to
         simulate the <module>mod_alias</module> directive
-	<directive module="mod_alias">ScriptAlias</directive>, 
-	which internally forces all files
+        <directive module="mod_alias">ScriptAlias</directive>, 
+        which internally forces all files
         inside the mapped directory to have a handler of
         ``<code>cgi-script</code>''.</dd>
 
@@ -1369,7 +1369,7 @@ cannot use <code>$N</code> in the substitution string!
           exclude some rules.</p>
           <p>To decide whether or not to use this rule: if you
           prefix URLs with CGI-scripts, to force them to be
-	  processed by the CGI-script, it's likely that you 
+          processed by the CGI-script, it's likely that you 
           will run into problems (or significant overhead) on
           sub-requests. In these cases, use this flag.</p>
         </dd>
@@ -1378,8 +1378,8 @@ cannot use <code>$N</code> in the substitution string!
           '<code>proxy|P</code>' (force
           proxy)</dt><dd>
           This flag forces the substitution part to be internally
-	  sent as a proxy request and immediately (rewrite 
-	  processing stops here) put through the <a
+          sent as a proxy request and immediately (rewrite 
+          processing stops here) put through the <a
           href="mod_proxy.html">proxy module</a>. You must make
           sure that the substitution string is a valid URI
           (typically starting with
@@ -1418,7 +1418,7 @@ cannot use <code>$N</code> in the substitution string!
 </example>
           If you omit the <code>PT</code> flag,
           <code>mod_rewrite</code> will rewrite 
-	  <code>uri=/abc/...</code> to
+          <code>uri=/abc/...</code> to
           <code>filename=/def/...</code> as a full API-compliant
           URI-to-filename translator should do. Then
           <code>mod_alias</code> will try to do a

@@ -32,11 +32,11 @@
     <title>Filtering in Apache 2</title>
     <related>
       <modulelist>
-	<module>mod_filter</module>
+        <module>mod_filter</module>
         <module>mod_deflate</module>
         <module>mod_ext_filter</module>
         <module>mod_include</module>
-	<module>mod_charset_lite</module>
+        <module>mod_charset_lite</module>
       </modulelist>
       <directivelist>
         <directive module="mod_filter">FilterChain</directive>

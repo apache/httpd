@@ -163,8 +163,8 @@
     directives to control access logging, including
     mod_log_referer, mod_log_agent, and the
     <code>TransferLog</code> directive. The <directive
-	module="mod_log_config">CustomLog</directive> directive now subsumes
-	the functionality of all the older directives.</p>
+    module="mod_log_config">CustomLog</directive> directive now subsumes
+    the functionality of all the older directives.</p>
 
     <p>The format of the access log is highly configurable. The format
     is specified using a format string that looks much like a C-style
@@ -196,11 +196,11 @@
       control characters "<code>\n</code>" for new-line and
       "<code>\t</code>" for tab.</p>
 
-      <p>The <directive	module="mod_log_config">CustomLog</directive>
-	  directive sets up a new log file using the defined
-	  <em>nickname</em>. The filename for the access log is relative to
-	  the <directive module="core">ServerRoot</directive> unless it
-	  begins with a slash.</p>
+      <p>The <directive module="mod_log_config">CustomLog</directive>
+      directive sets up a new log file using the defined
+      <em>nickname</em>. The filename for the access log is relative to
+      the <directive module="core">ServerRoot</directive> unless it
+      begins with a slash.</p>
 
       <p>The above configuration will write log entries in a format
       known as the Common Log Format (CLF). This standard format can
@@ -374,7 +374,7 @@
       information. The last two <directive
       module="mod_log_config">CustomLog</directive> lines show how
       to mimic the effects of the <code>ReferLog</code> and <code
-	  >AgentLog</code> directives.</p>
+      >AgentLog</code> directives.</p>
 
       <example>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
@@ -385,9 +385,9 @@
 
       <p>This example also shows that it is not necessary to define a
       nickname with the <directive
-	  module="mod_log_config">LogFormat</directive> directive. Instead,
+      module="mod_log_config">LogFormat</directive> directive. Instead,
       the log format can be specified directly in the <directive
-	  module="mod_log_config">CustomLog</directive> directive.</p>
+      module="mod_log_config">CustomLog</directive> directive.</p>
     </section>
 
     <section id="conditional">
@@ -401,9 +401,9 @@
       meets certain conditions. This is usually accomplished with 
       <directive module="mod_setenvif">SetEnvIf</directive>. Then the
       <code>env=</code> clause of the <directive
-	  module="mod_log_config">CustomLog</directive> directive is used to
-	  include or exclude requests where the environment variable is
-	  set. Some examples:</p>
+      module="mod_log_config">CustomLog</directive> directive is used to
+      include or exclude requests where the environment variable is
+      set. Some examples:</p>
 
       <example>
         # Mark requests from the loop-back interface<br />
@@ -609,7 +609,7 @@
       <p>On startup, Apache httpd saves the process id of the parent
       httpd process to the file <code>logs/httpd.pid</code>. This
       filename can be changed with the <directive
-	  module="mpm_common">PidFile</directive> directive. The
+      module="mpm_common">PidFile</directive> directive. The
       process-id is for use by the administrator in restarting and
       terminating the daemon by sending signals to the parent
       process; on Windows, use the -k command line option instead.

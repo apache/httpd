@@ -90,7 +90,6 @@
           ordering problems in the 2.0 architecture.</dd>
 
       <dt>Large File Support</dt>
-
       <dd>httpd is now built with support for files larger than 2GB on
           modern 32-bit Unix systems.  Support for handling &gt;2GB request
           bodies has also been added.</dd>
@@ -103,10 +102,9 @@
           timeout was reached.</dd>
 
       <dt>SQL Database Support</dt>
-      <dd><p><module>mod_dbd</module>, together with the apr_dbd framework,
+      <dd><module>mod_dbd</module>, together with the apr_dbd framework,
           brings direct SQL support to modules that need it.  Supports
-          connection pooling in threaded MPMs.</p>
-	  </dd>
+          connection pooling in threaded MPMs.</dd>
 
     </dl>
   </section>

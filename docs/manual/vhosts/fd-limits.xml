@@ -54,7 +54,7 @@
       below 256. (Solaris 2)</li>
     </ol>
 
-	<p>In the event of problems you can:</p>
+    <p>In the event of problems you can:</p>
 
     <ul>
       <li>Reduce the number of log files; don't specify log files

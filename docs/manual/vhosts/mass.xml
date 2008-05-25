@@ -189,7 +189,7 @@ ScriptAlias  /cgi-bin/  /www/std-cgi/<br />
 </section>
 
 <section id="combinations"><title>Using Multiple Virtual
-	Hosting Systems on the Same Server</title>
+  Hosting Systems on the Same Server</title>
 
     <p>With more complicated setups, you can use Apache's normal
     <code>&lt;VirtualHost&gt;</code> directives to control the
@@ -242,15 +242,15 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
 </example>
 
 <note>
-	<title>Note</title>
-	<p>If the first VirtualHost block does <em>not</em> include a
-	<directive module="core">ServerName</directive> directive, the reverse
-	DNS of the relevant IP will be used instead. 
-	If this is not the server name you
-	wish to use, a bogus entry (<code>ServerName
-	none.example.com</code>) can be added to get around this
-	behaviour.</p>
-</note>	
+    <title>Note</title>
+    <p>If the first VirtualHost block does <em>not</em> include a
+    <directive module="core">ServerName</directive> directive, the reverse
+    DNS of the relevant IP will be used instead. 
+    If this is not the server name you
+    wish to use, a bogus entry (<code>ServerName
+    none.example.com</code>) can be added to get around this
+    behaviour.</p>
+</note>
 
 </section>
 

@@ -59,19 +59,19 @@
 </section>
 
 <section id="example">
-	<title>Example of a balancer configuration</title>
-	<p>Before we dive into the technical details, here's an example of
-	how you might use <module>mod_proxy_balancer</module> to provide
-	load balancing between two back-end servers:
-	</p>
+    <title>Example of a balancer configuration</title>
+    <p>Before we dive into the technical details, here's an example of
+    how you might use <module>mod_proxy_balancer</module> to provide
+    load balancing between two back-end servers:
+    </p>
 
-	<example>
-	&lt;Proxy balancer://mycluster&gt;<br />
-		BalancerMember http://192.168.1.50:80<br />
-		BalancerMember http://192.168.1.51:80<br />
-	&lt;/Proxy&gt;<br />
-	ProxyPass /test balancer://mycluster/
-	</example>
+    <example>
+    &lt;Proxy balancer://mycluster&gt;<br />
+        BalancerMember http://192.168.1.50:80<br />
+        BalancerMember http://192.168.1.51:80<br />
+    &lt;/Proxy&gt;<br />
+    ProxyPass /test balancer://mycluster/
+    </example>
 </section>
 
 <section id="requests">
