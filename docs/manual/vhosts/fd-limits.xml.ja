@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 420990 -->
+<!-- English Revision: 659902 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -54,7 +54,7 @@
       (Solaris 2)、など。</li>
     </ol>
 
-        <p>問題が発生した時に取り得る対処方法は次のとおり:</p>
+    <p>問題が発生した時に取り得る対処方法は次のとおり:</p>
 
     <ul>
       <li>ログファイルの数を減らす。<directive type="section"
