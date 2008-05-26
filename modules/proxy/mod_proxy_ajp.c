@@ -165,6 +165,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     proxy_server_conf *psf =
     ap_get_module_config(r->server->module_config, &proxy_module);
     apr_size_t maxsize = AJP_MSG_BUFFER_SZ;
+    int send_body = 0;
 
     if (psf->io_buffer_size_set)
        maxsize = psf->io_buffer_size;
@@ -274,6 +275,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
             conn->worker->s->transferred += bufsiz;
+            send_body = 1;
         }
     }
 
@@ -295,7 +297,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
          * again) and the method is idempotent. In this case we can dare to
          * retry it with a different worker if we are a balancer member.
          */
-        if ((bufsiz == 0) && (is_idempotent(r) == METHOD_IDEMPOTENT)) {
+        if (!send_body && (is_idempotent(r) == METHOD_IDEMPOTENT)) {
             return HTTP_SERVICE_UNAVAILABLE;
         }
         return HTTP_INTERNAL_SERVER_ERROR;
