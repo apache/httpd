@@ -204,7 +204,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=660207&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, niq
 
  * mod_proxy: Do not try a direct connection if the connection via a
    remote proxy failed before and the request has a request body.
@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=631735&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, niq
 
  * mod_cache: Handle If-Range correctly if the cached resource was stale.
    PR 44579
@@ -221,7 +221,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=636653&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, niq
 
  * mod_rewrite: Initialize hash needed by ap_register_rewrite_mapfunc early
    enough. PR 44641
@@ -229,7 +229,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=639465&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, niq
 
  * mod_dav: Return "method not allowed" if the destination URI of a WebDAV
    copy / move operation is no DAV resource. PR 44734 
@@ -237,7 +237,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=644050&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, niq
 
  * mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
    PR 44799
@@ -246,6 +246,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    Backport version for 2.2.x of patch:
          Trunk version of patch works
    +1: rpluem,
+   -1: niq - strcasecmp(NULL, ...) when secure is not set
 
  * core: Do not allow Options ALL if not all options are allowed to be
    overwritten. PR 44262
@@ -253,7 +254,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=652885&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, niq
 
  * ab: Make ab.c compile on VC6. PR 45024
    Trunk version of patch:
@@ -267,7 +268,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=657933&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, niq
 
 PATCHES/ISSUES THAT ARE STALLED
 
