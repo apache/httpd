@@ -214,6 +214,61 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
    +1: rpluem,
 
+ * mod_cache: Handle If-Range correctly if the cached resource was stale.
+   PR 44579
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=636386&view=rev
+         http://svn.apache.org/viewvc?rev=636653&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem,
+
+ * mod_rewrite: Initialize hash needed by ap_register_rewrite_mapfunc early
+   enough. PR 44641
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=639465&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem,
+
+ * mod_dav: Return "method not allowed" if the destination URI of a WebDAV
+   copy / move operation is no DAV resource. PR 44734 
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=644050&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem,
+
+ * mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
+   PR 44799
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=647395&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem,
+
+ * core: Do not allow Options ALL if not all options are allowed to be
+   overwritten. PR 44262
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=652885&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem,
+
+ * ab: Make ab.c compile on VC6. PR 45024
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=657433&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem,
+
+ * http_filters: Don't return 100-continue on redirects. PR 43711
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=657933&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
