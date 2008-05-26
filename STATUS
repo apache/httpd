@@ -210,6 +210,16 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   Roy replies: the patch adds an id lookup and replaces the atoi id
       with the validated result.  Invalid input will now error out.
 
+ * mod_proxy_ajp: Do not retry request in the case that we either failed to
+   sent a part of the request body or if the request is not idempotent. PR44334
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=617822&view=rev
+         http://svn.apache.org/viewvc?rev=627097&view=rev
+         http://svn.apache.org/viewvc?rev=660207&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
