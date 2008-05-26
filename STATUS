@@ -180,20 +180,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    rpluem says: I am missing a minor bump and documentation.
    niq replies: Done.
 
- * ApacheMonitor (win32); Sync to current trunk/.  This would
-   Introduce the --kill flag, for use by the installer, solve
-   a leak when using ApacheMonitor against another machine,
-   update to international service names etc (unicoding it)
-   and finally will allow Windows 2008 admins, and earlier
-   versions' users to invoke the start|stop|restart etc with
-   admin permissions.  Trouble is, an Admin under UAC does
-   not actually launch admin-capable applications without
-   being show a dialog to do so.  We could force this at the
-   start of ApacheMonitor, but it would be bogus to present
-   this on every login.
-   http://svn.apache.org/viewvc/httpd/httpd/trunk/support/win32/ApacheMonitor.c?view=log
-   +1: wrowe
-
  * suexec: When group is given as a numeric gid, validate it by looking up
    the actual group name such that the name can be used in log entries.
    PR 7862 [<y-koga apache.or.jp>, Leif W <warp-9.9 usa.net>]
