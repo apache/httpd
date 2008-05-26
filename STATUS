@@ -300,20 +300,6 @@ PATCHES TO BACKPORT THAT ARE ON HOLD OR NOT GOING ANYWHERE SOON:
        +1: niq, wrowe
          wrowe adds; looks good, no way to apply this without a minor bump
 
- * ApacheMonitor (win32); Sync to current trunk/.  This would
-   Introduce the --kill flag, for use by the installer, solve
-   a leak when using ApacheMonitor against another machine,
-   update to international service names etc (unicoding it)
-   and finally will allow Windows 2008 admins, and earlier
-   versions' users to invoke the start|stop|restart etc with
-   admin permissions.  Trouble is, an Admin under UAC does
-   not actually launch admin-capable applications without
-   being show a dialog to do so.  We could force this at the
-   start of ApacheMonitor, but it would be bogus to present
-   this on every login.
-   http://svn.apache.org/viewvc/httpd/httpd/trunk/support/win32/ApacheMonitor.c?view=log
-   +1: wrowe
-
 CURRENT VOTES:
 
     *) httpd-std.conf and friends;
