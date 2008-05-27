@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) http_filters: Don't return 100-continue on redirects. PR 43711
+     [Ruediger Pluem]
+
   *) mod_ssl: Fix a memory leak with connections that have zlib compression
      turned on. PR 44975 [Joe Orton, Amund Elstad <Amund.Elstad ist.com>,
      Dr Stephen Henson <steve openssl.org>]
