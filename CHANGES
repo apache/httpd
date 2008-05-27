@@ -22,24 +22,6 @@ Changes with Apache 2.3.0
      the actual group name such that the name can be used in log entries.
      PR 7862 [<y-koga apache.or.jp>, Leif W <warp-9.9 usa.net>]
 
-  *) ab: Improve client performance by clearing connection pool instead
-     of destroying it. PR 40054 [Brad Roberts <braddr puremagic.com>]
-
-  *) ab: Don't stop sending a request if EAGAIN is returned, which
-     will only happen if both the write and subsequent wait are
-     returning EAGAIN, and count posted bytes correctly when the initial
-     write of a request is not complete. PR 10038, 38861, 39679
-     [Patrick McManus <mcmanus datapower.com>,
-      Stefan Fleiter <stefan.fleiter web.de>,
-      Davanum Srinivas, Roy T. Fielding]
-
-  *) ab: Overhaul stats collection and reporting to avoid integer
-     truncation and time divisions within the test loop, retain
-     native time resolution until output, remove unused data,
-     consistently round milliseconds, and generally avoid losing
-     accuracy of calculation due to type casts. PR 44878, 44931.
-     [Roy T. Fielding]
-
   *) core: When testing for slash-terminated configuration paths in
      ap_location_walk(), don't look past the start of an empty string
      such as that created by a <Location ""> directive.
@@ -140,9 +122,6 @@ Changes with Apache 2.3.0
      first row returned by database query instead of last row.
      [Chris Darroch]
 
-  *) mod_cache: Handle If-Range correctly if the cached resource was stale.
-     PR 44579 [Ruediger Pluem]
-
   *) mod_ldap: Correctly return all requested attribute values
      when some attributes have a null value. 
      PR 44560 [Anders Kaseorg <anders kaseorg.com>]
@@ -152,10 +131,6 @@ Changes with Apache 2.3.0
 
   *) core: fix origin checking in SymlinksIfOwnerMatch
      PR 36783 [Robert L Mathews <rob-apache.org.bugs tigertech.net>]
-
-  *) mod_proxy: Do not try a direct connection if the connection via a
-     remote proxy failed before and the request has a request body.
-     [Ruediger Pluem]
 
   *) Activate mod_cache, mod_file_cache and mod_disc_cache as part of the
      'most' set for '--enable-modules' and '--enable-shared-mods'. Include 
@@ -170,10 +145,6 @@ Changes with Apache 2.3.0
      as true requests with an internal redirect. This allows for
      mod_cache et.al. to trap the results of the redirect. 
      [Dirk-Willem van Gulik, Ruediger Pluem]
-
-  *) mod_proxy_ajp: Do not retry request in the case that we either failed to
-     sent a part of the request body or if the request is not idempotent.
-     PR 44334 [Ruediger Pluem]
 
   *) mod_ldap: Add support (taking advantage of the new APR capability)
      for ldap rebind callback while chasing referrals. This allows direct
