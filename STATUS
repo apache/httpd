@@ -90,16 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_proxy_ajp: Do not retry request in the case that we either failed to
-   sent a part of the request body or if the request is not idempotent. PR44334
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=617822&view=rev
-         http://svn.apache.org/viewvc?rev=627097&view=rev
-         http://svn.apache.org/viewvc?rev=660207&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq, jim
-
  * mod_proxy: Do not try a direct connection if the connection via a
    remote proxy failed before and the request has a request body.
    Trunk version of patch:

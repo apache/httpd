@@ -89,6 +89,37 @@ static int proxy_ajp_canon(request_rec *r, char *url)
     return OK;
 }
 
+#define METHOD_NON_IDEMPOTENT       0
+#define METHOD_IDEMPOTENT           1
+#define METHOD_IDEMPOTENT_WITH_ARGS 2
+
+static int is_idempotent(request_rec *r)
+{
+    /*
+     * RFC2616 (9.1.2): GET, HEAD, PUT, DELETE, OPTIONS, TRACE are considered
+     * idempotent. Hint: HEAD requests use M_GET as method number as well.
+     */
+    switch (r->method_number) {
+        case M_GET:
+        case M_DELETE:
+        case M_PUT:
+        case M_OPTIONS:
+        case M_TRACE:
+            /*
+             * If the request has arguments it might have side-effects and thus
+             * it might be undesirable to resent it to a backend again
+             * automatically.
+             */
+            if (r->args) {
+                return METHOD_IDEMPOTENT_WITH_ARGS;
+            }
+            return METHOD_IDEMPOTENT;
+        /* Everything else is not considered idempotent. */
+        default:
+            return METHOD_NON_IDEMPOTENT;
+    }
+}
+
 /*
  * XXX: AJP Auto Flushing
  *
@@ -122,7 +153,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     apr_bucket_brigade *input_brigade;
     apr_bucket_brigade *output_brigade;
     ajp_msg_t *msg;
-    apr_size_t bufsiz;
+    apr_size_t bufsiz = 0;
     char *buff;
     apr_uint16_t size;
     const char *tenc;
@@ -138,6 +169,7 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
     proxy_server_conf *psf =
     ap_get_module_config(r->server->module_config, &proxy_module);
     apr_size_t maxsize = AJP_MSG_BUFFER_SZ;
+    int send_body = 0;
 
     if (psf->io_buffer_size_set)
        maxsize = psf->io_buffer_size;
@@ -161,8 +193,17 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      conn->worker->hostname);
         if (status == AJP_EOVERFLOW)
             return HTTP_BAD_REQUEST;
-        else
-            return HTTP_SERVICE_UNAVAILABLE;
+        else {
+            /*
+             * This is only non fatal when the method is idempotent. In this
+             * case we can dare to retry it with a different worker if we are
+             * a balancer member.
+             */
+            if (is_idempotent(r) == METHOD_IDEMPOTENT) {
+                return HTTP_SERVICE_UNAVAILABLE;
+            }
+            return HTTP_INTERNAL_SERVER_ERROR;
+        }
     }
 
     /* allocate an AJP message to store the data of the buckets */
@@ -231,9 +272,14 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                              "proxy: send failed to %pI (%s)",
                              conn->worker->cp->addr,
                              conn->worker->hostname);
-                return HTTP_SERVICE_UNAVAILABLE;
+                /*
+                 * It is fatal when we failed to send a (part) of the request
+                 * body.
+                 */
+                return HTTP_INTERNAL_SERVER_ERROR;
             }
             conn->worker->s->transferred += bufsiz;
+            send_body = 1;
         }
     }
 
@@ -249,7 +295,16 @@ static int ap_proxy_ajp_request(apr_pool_t *p, request_rec *r,
                      "proxy: read response failed from %pI (%s)",
                      conn->worker->cp->addr,
                      conn->worker->hostname);
-        return HTTP_SERVICE_UNAVAILABLE;
+        /*
+         * This is only non fatal when we have not sent (parts) of a possible
+         * request body so far (we do not store it and thus cannot sent it
+         * again) and the method is idempotent. In this case we can dare to
+         * retry it with a different worker if we are a balancer member.
+         */
+        if (!send_body && (is_idempotent(r) == METHOD_IDEMPOTENT)) {
+            return HTTP_SERVICE_UNAVAILABLE;
+        }
+        return HTTP_INTERNAL_SERVER_ERROR;
     }
     /* parse the reponse */
     result = ajp_parse_type(r, conn->data);
