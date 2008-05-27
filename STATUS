@@ -94,22 +94,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * suexec: When group is given as a numeric gid, validate it by looking up
-   the actual group name such that the name can be used in log entries.
-   PR 7862 [<y-koga apache.or.jp>, Leif W <warp-9.9 usa.net>]
-   Trunk version of patch:
-       http://svn.apache.org/viewvc?view=rev&revision=655711
-   Backport version for 2.2.x of patch:
-       Trunk version works
-  +1: fielding, jim, rpluem
-  jim says: the use of atoi to generate the ?ID is
-      consistent with what we do elsewhere but troubling...
-      we need to find a better way to do this. In particular,
-      ?ids cannot, iirc, be signed - this is more a note to
-      self ;)
-  Roy replies: the patch adds an id lookup and replaces the atoi id
-      with the validated result.  Invalid input will now error out.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
