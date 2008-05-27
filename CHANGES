@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) ab: Include <limits.h> earlier if available since we may need
+     INT_MAX (defined there on Windows) for the definition of MAX_REQUESTS.
+     PR 45024 [Ruediger Pluem]
+
   *) ab: Improve client performance by clearing connection pool instead
      of destroying it. PR 40054 [Brad Roberts <braddr puremagic.com>]
 
