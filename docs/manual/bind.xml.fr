@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 421100 -->
+<!-- English Revision: 654723 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- $LastChangedRevision: 2007072801 $ -->
+<!-- $LastChangedRevision: 2008051201 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -31,7 +31,7 @@
     <p>Configuration d'Apache pour l'&eacute;coute sur un port et une adresse IP sp&eacute;cifiques.</p>
   </summary>
 
-  <seealso><a href="vhosts/">Hôtes virtuels</a></seealso>
+  <seealso><a href="vhosts/">H&ocirc;tes virtuels</a></seealso>
   <seealso><a href="dns-caveats.html">Probl&egrave;mes li&eacute;s &agrave; DNS</a></seealso>
 
   <section id="overview">
@@ -50,17 +50,17 @@
 
 
     <p>Au d&eacute;marrage d'Apache, un port et une adresse lui sont associ&eacute;s sur
-    l'hôte local et le serveur se met en attente de l'arriv&eacute;e d'une requ&ecirc;te.
-    Par d&eacute;faut, le serveur &eacute;coute toutes les adresses de l'hôte local.
-    Cependant, il faut lui pr&eacute;ciser des ports sp&eacute;cifiques &agrave; &eacute;couter,
-    ou lui dire de n'&eacute;couter que certaines adresses,
+    l'h&ocirc;te local et le serveur se met en attente de l'arriv&eacute;e d'une requ&ecirc;te.
+    Par d&eacute;faut, le serveur &eacute;coute toutes les adresses de l'h&ocirc;te local.
+    Cependant, on peut lui pr&eacute;ciser des ports sp&eacute;cifiques &agrave; &eacute;couter,
+    ou lui dire de n'&eacute;couter que sur certaines adresses,
     ou une combinaison des deux.
-    Tout ceci est souvent associ&eacute; avec la fonctionnalit&eacute; des hôtes virtuels
+    Tout ceci est souvent associ&eacute; avec la fonctionnalit&eacute; des h&ocirc;tes virtuels
     qui d&eacute;termine la mani&egrave;re dont Apache r&eacute;pond aux diff&eacute;rents ports,
-    noms d'hôtes et adresses IP.</p>
+    noms d'h&ocirc;tes et adresses IP.</p>
 
     <p>La directive <directive module="mpm_common">Listen</directive>
-    enjoint le serveur de n'accepter des requ&ecirc;tes que sur le port sp&eacute;cifi&eacute; ou
+    enjoint le serveur de n'accepter des requ&ecirc;tes que sur les ports sp&eacute;cifi&eacute;s ou
     une combinaison adresse/port. Si seul un num&eacute;ro de port est sp&eacute;cifi&eacute;
     dans la directive <directive module="mpm_common">Listen</directive>,
     le serveur &eacute;coute ce port sur toutes les interfaces r&eacute;seau.
@@ -72,22 +72,23 @@
     aux requ&ecirc;tes sur ces ports et adresses sp&eacute;cifi&eacute;s.</p>
 
     <p>Par exemple, pour faire en sorte que le serveur accepte des connexions
-    sur les ports 80 et 8000, utilisez :</p>
+    sur les ports 80 et 8000 sur toutes ses interfaces, utilisez :</p>
 
     <example>
       Listen 80<br />
       Listen 8000
     </example>
 
-    <p>Pour faire en sorte que le serveur accepte des connexions en provenance
-    de deux couples d'interfaces et ports, utilisez :</p>
+    <p>Pour faire en sorte que le serveur accepte des connexions
+    sur le port 80 sur une interface, et sur le port 8000 sur une
+    autre interface :</p>
 
     <example>
       Listen 192.0.2.1:80<br />
       Listen 192.0.2.5:8000
     </example>
 
-    <p>Les adresses IPv6 doivent &ecirc;tre entre crochets, comme dans
+    <p>Les adresses IPv6 doivent &ecirc;tre entour&ecirc;es de crochets, comme dans
     l'exemple suivant :</p>
 
     <example>
@@ -101,16 +102,16 @@
     <p>Un nombre croissant de plateformes impl&eacute;mentent IPv6, et
     <glossary>APR</glossary> supporte IPv6 sur la plupart d'entre elles,
     ce qui permet &agrave; Apache d'allouer des points de connexion (sockets) IPv6
-    et de traiter des requ&ecirc;tes qui ont &eacute;t&eacute; envoy&eacute;es sur IPv6.</p>
+    et de traiter des requ&ecirc;tes envoy&eacute;es sur IPv6.</p>
 
     <p>Les administrateurs d'Apache doivent se pr&eacute;occuper de la possibilit&eacute;
     pour un point de connexion IPv6 de traiter &agrave; la fois des connexions IPv4
     et des connexions IPv6.
     Le traitement de connexions IPv4 avec un point de connexion IPv6 utilise
     des adresses IPv6 traduites en IPv4, qui sont autoris&eacute;es par d&eacute;faut sur la
-    plupart des plateformes mais sont interdites par d&eacute;faut sous FreeBSD, NetBSD,
-    et OpenBSD afin de respecter la politique de s&eacute;curit&eacute; du syst&egrave;me sur ces plateformes.
-    Mais m&ecirc;me sur ces syst&egrave;mes o&ugrave; ces adresses sont interdites par d&eacute;faut, un
+    plupart des plateformes, mais sont interdites par d&eacute;faut sous FreeBSD, NetBSD,
+    et OpenBSD, afin de respecter la politique de s&eacute;curit&eacute; du syst&egrave;me sur ces plateformes.
+    Mais m&ecirc;me sur les syst&egrave;mes o&ugrave; ces adresses sont interdites par d&eacute;faut, un
     param&egrave;tre sp&eacute;cial du script <program>configure</program> permet de modifier
     ce comportement pour Apache.</p>
 
@@ -146,10 +147,10 @@
   </section>
 
   <section id="virtualhost">
-    <title>Comment tout ceci fonctionne-t-il avec les hôtes virtuels</title>
+    <title>Comment tout ceci fonctionne-t-il avec les h&ocirc;tes virtuels</title>
 
     <p> La directive <directive
-    module="mpm_common">Listen</directive> n'impl&eacute;mente pas les hôtes virtuels.
+    module="mpm_common">Listen</directive> n'impl&eacute;mente pas les h&ocirc;tes virtuels.
     Elle indique simplement au serveur principal sur quels adresses et ports
     il doit &eacute;couter. Si aucune directive
     <directive module="core" type="section">VirtualHost</directive>
@@ -157,15 +158,16 @@
     les requ&ecirc;tes accept&eacute;es. En revanche, la directive
     <directive module="core" type="section">VirtualHost</directive>
     peut &ecirc;tre utilis&eacute;e pour provoquer une r&eacute;action diff&eacute;rente du serveur
-    pour un ou plusieurs adresses/ports. Pour impl&eacute;menter un hôte virtuel,
+    pour un ou plusieurs adresses/ports. Pour impl&eacute;menter un h&ocirc;te virtuel,
     on doit d'abord indiquer au serveur sur quels adresses et ports il doit &eacute;couter.
     Ensuite, une section
     <directive module="core" type="section">VirtualHost</directive>
     doit &ecirc;tre cr&eacute;&eacute;e pour chaque couple adresse+port sp&eacute;cifi&eacute; afin de d&eacute;finir le
-    comportement de cet hôte virtuel. Notez que si la directive
+    comportement de cet h&ocirc;te virtuel. Notez que si la directive
     <directive module="core" type="section">VirtualHost</directive>
     est d&eacute;finie pour une adresse et un port sur lesquels le serveur n'est pas cens&eacute;
-    &eacute;couter, cet hôte virtuel ne sera pas accessible.</p>
+    &eacute;couter, cet h&ocirc;te virtuel ne sera pas accessible.</p>
   </section>
 </manualpage>
+
 

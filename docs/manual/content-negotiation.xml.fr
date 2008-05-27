@@ -1,10 +1,10 @@
-<?xml version="1.0" encoding="ISO-8859-1" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- LastChangedRevision English document : 421100 -->
+<!-- English Revision: 655872 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!-- $LastChangedRevision: 2007081801 $ -->
+<!-- $LastChangedRevision: 2008051401 $ -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -269,7 +269,7 @@
       <li><strong>La n&eacute;gociation de contenu transparente</strong> est utilis&eacute;e
       quand le navigateur le demande explicitement selon le m&eacute;canisme d&eacute;fini
       dans la RFC 2295. Cette m&eacute;thode de n&eacute;gociation donne au navigateur le
-      contrôle total du choix de la meilleure variante; le r&eacute;sultat d&eacute;pend
+      contr&ocirc;le total du choix de la meilleure variante; le r&eacute;sultat d&eacute;pend
       cependant de la sp&eacute;cificit&eacute; des algorithmes utilis&eacute;s par le navigateur.
       Au cours du processus de n&eacute;gociation transparente, le navigateur peut
       demander &agrave; Apache d'ex&eacute;cuter l'"algorithme de s&eacute;lection de variante &agrave;
@@ -676,7 +676,7 @@ conventions de nommage</title>
     module="mod_negotiation">CacheNegotiatedDocs</directive> peut &ecirc;tre utilis&eacute;e
     pour permettre la mise en cache des r&eacute;ponses qui ont fait l'objet d'une
     n&eacute;gociation. Cette directive peut intervenir dans la configuration au
-    niveau du serveur ou de l'hôte virtuel, et n'accepte aucun argument. Elle
+    niveau du serveur ou de l'h&ocirc;te virtuel, et n'accepte aucun argument. Elle
     n'a aucun effet sur les requ&ecirc;tes en provenance de clients HTTP/1.1.</p>
 
     <p>Pour les clients HTTP/1.1, Apache envoie un en-t&ecirc;te de r&eacute;ponse HTTP
