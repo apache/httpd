@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) core: Do not allow Options ALL if not all options are allowed to be
+     overwritten. PR 44262 [Michał Grzędzicki <lazy iq.pl>]
+
   *) mod_cache: Handle If-Range correctly if the cached resource was stale.
      PR 44579 [Ruediger Pluem]
 
