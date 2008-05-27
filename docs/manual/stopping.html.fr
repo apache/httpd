@@ -203,7 +203,7 @@
 <div class="note">Comme dans le cas d'un redémarrage "graceful", une
 vérification de la syntaxe est effectuée avant que le
 redémarrage ne soit tenté. Si votre fichier de configuration comporte
-des erreurs de syntaxe, le redémarrage ne sera pas effectueacute;, et
+des erreurs de syntaxe, le redémarrage ne sera pas effectué, et
 vous recevrez un message concernant ces erreurs.</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">

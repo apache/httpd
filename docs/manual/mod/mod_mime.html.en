@@ -234,7 +234,7 @@
 
       <div class="example"><p><code>
         Content-Language: en, fr<br />
-	Content-Type: text/plain; charset=ISO-8859-1
+        Content-Type: text/plain; charset=ISO-8859-1
       </code></p></div>
 
       <p>The language specification is the two-letter abbreviation

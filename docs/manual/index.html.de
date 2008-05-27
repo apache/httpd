@@ -70,7 +70,7 @@
 <li><a href="server-wide.html">Serverweite Konfiguration</a></li>
 <li><a href="ssl/">SSL/TLS-Verschlüsselung</a></li>
 <li><a href="suexec.html">Suexec für CGI</a></li>
-<li><a href="misc/rewriteguide.html">Einführung in die
+<li><a href="rewrite/">Einführung in die
     URL-Manipulation</a></li>
 <li><a href="vhosts/">Virtual-Hosts</a></li>
 </ul>

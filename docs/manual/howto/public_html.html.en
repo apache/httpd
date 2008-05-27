@@ -31,7 +31,7 @@
 <p>Note that, by default, access to these directories is <strong>not</strong>
     enabled. You can enable access when using <code class="directive"><a href="../mod/mod_userdir.html#userdir">UserDir</a></code> by uncommenting the line</p>
     <div class="example"><p><code>
-	    #Include conf/extra/httpd-userdir.conf
+      #Include conf/extra/httpd-userdir.conf
     </code></p></div>
     <p>in the default config file, and adapting the <code>httpd-userdir.conf</code>
     file as necessary, or by including the appropriate directives in a

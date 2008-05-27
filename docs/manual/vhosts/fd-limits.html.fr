@@ -56,7 +56,7 @@
       fichiers inférieurs à 256. (sous Solaris 2).</li>
     </ol>
 
-	<p>En cas de problème, Vous pouvez&nbsp;:</p>
+    <p>En cas de problème, Vous pouvez&nbsp;:</p>
 
     <ul>
       <li>Réduire le nombre de fichiers journaux, en ne spécifiant 

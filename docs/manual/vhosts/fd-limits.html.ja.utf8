@@ -54,7 +54,7 @@
       (Solaris 2)、など。</li>
     </ol>
 
-        <p>問題が発生した時に取り得る対処方法は次のとおり:</p>
+    <p>問題が発生した時に取り得る対処方法は次のとおり:</p>
 
     <ul>
       <li>ログファイルの数を減らす。<code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>

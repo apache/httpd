@@ -344,7 +344,7 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
         they also manage them -- that is, they determine for how long
         certificates remain valid, they renew them, and they keep lists of
         certificates that were issued in the past but are no longer valid
-	    (Certificate Revocation Lists, or CRLs).</p> 
+        (Certificate Revocation Lists, or CRLs).</p> 
 
         <p>For example, if Alice is entitled to a certificate as an 
         employee of a company, but has now left

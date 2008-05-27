@@ -105,7 +105,7 @@ an offset.</dd>
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs /var/logs/logfile 86400" common
 </code></p></div>
-	 
+
      <p>This creates the files /var/logs/logfile.nnnn where nnnn  is
      the system time at which the log nominally starts (this time
      will always be a multiple of the rotation time, so  you  can
@@ -115,7 +115,7 @@ an offset.</dd>
 <div class="example"><p><code>
      CustomLog "|bin/rotatelogs -l /var/logs/logfile.%Y.%m.%d 86400" common
 </code></p></div>
-	 
+
      <p>This creates the files /var/logs/logfile.yyyy.mm.dd where
      yyyy is the year, mm is the month, and dd is the day of the month.
      Logging will switch to a new file every day at midnight, local time.</p>

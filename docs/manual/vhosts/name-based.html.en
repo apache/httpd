@@ -85,7 +85,7 @@
     automatically make the server listen to that IP address. See
     <a href="../bind.html">Setting which addresses and ports Apache uses</a>
     for more details. In addition, any IP address specified here must be
-    associated with a network interface	on the server.</p>
+    associated with a network interface on the server.</p>
 
     <p>The next step is to create a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> block for
     each different host that you would like to serve. The argument to the
@@ -174,7 +174,7 @@
     the <em>main server</em> will <strong>never</strong> be used when an IP
     address matches the <code class="directive"><a href="../mod/core.html#namevirtualhost">NameVirtualHost</a></code> 
     directive. If you would like to have a special configuration for requests 
-    that do not	match any particular virtual host, simply put that configuration
+    that do not match any particular virtual host, simply put that configuration
     in a <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     container and list it first in the configuration file.</p>
 

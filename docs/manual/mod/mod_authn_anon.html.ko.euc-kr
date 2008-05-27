@@ -89,7 +89,7 @@
         AuthType Basic<br />
         AuthBasicProvider file anon<br />
         AuthUserFile /path/to/your/.htpasswd<br />
-	<br />
+        <br />
         Anonymous_NoUserID off<br />
         Anonymous_MustGiveEmail on<br />
         Anonymous_VerifyEmail on<br />

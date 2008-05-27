@@ -96,7 +96,7 @@
     Apache に伝えることができます:</p>
 <div class="example"><p><code>
         AddType text/html .shtml<br />
-	AddOutputFilter INCLUDES .shtml
+        AddOutputFilter INCLUDES .shtml
 </code></p></div>
 
     <p>この方法の欠点は、もし現在のページに SSI ディレクティブを加えたい場合、

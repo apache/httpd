@@ -33,7 +33,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#simple">Simple Dynamic Virtual Hosts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#homepages">A Virtually Hosted Homepages System</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#combinations">Using Multiple Virtual
-	Hosting Systems on the Same Server</a></li>
+  Hosting Systems on the Same Server</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ipbased">More Efficient IP-Based Virtual Hosting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#simple.rewrite">Simple Dynamic
     Virtual Hosts Using <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code></a></li>
@@ -199,7 +199,7 @@ ScriptAlias  /cgi-bin/  /www/std-cgi/<br />
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="combinations" id="combinations">Using Multiple Virtual
-	Hosting Systems on the Same Server</a></h2>
+  Hosting Systems on the Same Server</a></h2>
 
     <p>With more complicated setups, you can use Apache's normal
     <code>&lt;VirtualHost&gt;</code> directives to control the
@@ -252,15 +252,15 @@ LogFormat "%V %h %l %u %t \"%r\" %s %b" vcommon<br />
 </code></p></div>
 
 <div class="note">
-	<h3>Note</h3>
-	<p>If the first VirtualHost block does <em>not</em> include a
-	<code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directive, the reverse
-	DNS of the relevant IP will be used instead. 
-	If this is not the server name you
-	wish to use, a bogus entry (<code>ServerName
-	none.example.com</code>) can be added to get around this
-	behaviour.</p>
-</div>	
+    <h3>Note</h3>
+    <p>If the first VirtualHost block does <em>not</em> include a
+    <code class="directive"><a href="../mod/core.html#servername">ServerName</a></code> directive, the reverse
+    DNS of the relevant IP will be used instead. 
+    If this is not the server name you
+    wish to use, a bogus entry (<code>ServerName
+    none.example.com</code>) can be added to get around this
+    behaviour.</p>
+</div>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">

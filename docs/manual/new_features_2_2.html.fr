@@ -106,7 +106,6 @@
 	  et d'ordonnancement rencontrés avec l'architecture 2.0.</dd>
 
       <dt>Support des gros fichiers</dt>
-
       <dd>httpd supporte maintenant les fichiers d'une taille supérieure
       à 2GB sur les systèmes 32 bits UNIX modernes.  Le support des
       corps de requête d'une taille supérieure à 2GB a aussi été
@@ -121,11 +120,10 @@
           soit écoulé.</dd>
 
       <dt>Support des bases de données SQL</dt>
-      <dd>Le module <p><code class="module"><a href="./mod/mod_dbd.html">mod_dbd</a></code>, associé à l'environnement
+      <dd>Le module <code class="module"><a href="./mod/mod_dbd.html">mod_dbd</a></code>, associé à l'environnement
       	apr_dbd, fournit le support SQL direct aux modules
 	qui en ont besoin.  Supporte la mise en commun des connexions
-          dans les modules MPM threadés.</p>
-	  </dd>
+          dans les modules MPM threadés.</dd>
 
     </dl>
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
@@ -137,7 +135,7 @@
       <dd>Les modules du répertoire aaa ont été renommés et fournissent
           un support amélioré pour la méthode d'authentification <strong>digest</strong>.  Par exemple, mod_auth
           est maintenant scindé en deux modules : <code class="module"><a href="./mod/mod_auth_basic.html">mod_auth_basic</a></code> et
-          <code class="module"><a href="./mod/mod_auth_file.html">mod_auth_file</a></code>; mod_auth_dbm s'appelle maintenant
+          <code class="module"><a href="./mod/mod_authn_file.html">mod_authn_file</a></code>; mod_auth_dbm s'appelle maintenant
           <code class="module"><a href="./mod/mod_authn_dbm.html">mod_authn_dbm</a></code>; mod_access a été renommé en
           <code class="module"><a href="./mod/mod_authz_host.html">mod_authz_host</a></code>.  Est également apparu le nouveau module
           <code class="module"><a href="./mod/mod_authn_alias.html">mod_authn_alias</a></code> qui simplifie
@@ -151,6 +149,16 @@
 	  Les nouvelles fonctionnalités comprennent l'utilisation des valeurs
 	  d'attributs LDAP et des filtres de recherche avancés dans la
           directive <code class="directive"><a href="./mod/mod_authz_core.html#require">Require</a></code>.</dd>
+
+      <dt><code class="module"><a href="./mod/mod_authz_owner.html">mod_authz_owner</a></code></dt>
+	<dd>Un nouveau module qui autorise l'accès à un fichier
+	en fonction du propriétaire du fichier dans le système de
+	fichiers</dd>
+
+	<dt><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></dt>
+	<dd>Un nouveau module qui permet d'activer des blocs de
+	configuration en fonction de la version du serveur en cours
+	d'exécution.</dd>
 
       <dt><code class="module"><a href="./mod/mod_info.html">mod_info</a></code></dt>
       <dd>Un nouvel argument <code>?config</code> a été ajouté, qui permettra d'afficher
