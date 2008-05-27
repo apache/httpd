@@ -243,10 +243,12 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    PR 44799
    Trunk version of patch:
          http://svn.apache.org/viewvc?rev=647395&view=rev
+         http://svn.apache.org/viewvc?rev=660461&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
    +1: rpluem,
    -1: niq - strcasecmp(NULL, ...) when secure is not set
+   rpluem: Good catch. Should be fixed by r660461.
 
  * core: Do not allow Options ALL if not all options are allowed to be
    overwritten. PR 44262
