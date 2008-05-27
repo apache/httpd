@@ -2,9 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) Fix garbled TRACE response on EBCDIC platforms.
-     [David Jones <oscaremma gmail.com>]
-
   *) core, authn/z: Determine registered authn/z providers directly in
      ap_setup_auth_internal(), which allows optional functions that just
      wrapped ap_list_provider_names() to be removed from authn/z modules.
