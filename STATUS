@@ -90,6 +90,40 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_proxy_ajp: Do not retry request in the case that we either failed to
+   sent a part of the request body or if the request is not idempotent. PR44334
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=617822&view=rev
+         http://svn.apache.org/viewvc?rev=627097&view=rev
+         http://svn.apache.org/viewvc?rev=660207&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem, niq, jim
+
+ * mod_proxy: Do not try a direct connection if the connection via a
+   remote proxy failed before and the request has a request body.
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=631735&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem, niq, jim
+
+ * mod_cache: Handle If-Range correctly if the cached resource was stale.
+   PR 44579
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=636386&view=rev
+         http://svn.apache.org/viewvc?rev=636653&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem, niq, jim
+
+ * core: Do not allow Options ALL if not all options are allowed to be
+   overwritten. PR 44262
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=652885&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem, niq, jim
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -153,33 +187,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   Roy replies: the patch adds an id lookup and replaces the atoi id
       with the validated result.  Invalid input will now error out.
 
- * mod_proxy_ajp: Do not retry request in the case that we either failed to
-   sent a part of the request body or if the request is not idempotent. PR44334
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=617822&view=rev
-         http://svn.apache.org/viewvc?rev=627097&view=rev
-         http://svn.apache.org/viewvc?rev=660207&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq, jim
-
- * mod_proxy: Do not try a direct connection if the connection via a
-   remote proxy failed before and the request has a request body.
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=631735&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq, jim
-
- * mod_cache: Handle If-Range correctly if the cached resource was stale.
-   PR 44579
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=636386&view=rev
-         http://svn.apache.org/viewvc?rev=636653&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq, jim
-
  * mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
    PR 44799
    Trunk version of patch:
@@ -190,14 +197,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: rpluem,
    -1: niq - strcasecmp(NULL, ...) when secure is not set
    rpluem: Good catch. Should be fixed by r660461.
-
- * core: Do not allow Options ALL if not all options are allowed to be
-   overwritten. PR 44262
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=652885&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq, jim
 
  * ab: Make ab.c compile on VC6. PR 45024
    Trunk version of patch:
