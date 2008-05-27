@@ -2492,10 +2492,12 @@ static void add_cookie(request_rec *r, char *s)
                                  "; domain=", domain,
                                  expires ? "; expires=" : NULL,
                                  expires ? exp_time : NULL,
-                                 secure ? ((strcasecmp(secure, "true") == 0
-                                           || strcasecmp(secure, "1") == 0) ?
-                                           "; secure" : NULL) : NULL,
-                                 httponly ? "; HttpOnly" : NULL, 
+                                 (secure && (!strcasecmp(secure, "true")
+                                             || !strcasecmp(secure, "1"))) ?
+                                  "; secure" : NULL,
+                                 (httponly && (!strcasecmp(httponly, "true")
+                                               || !strcasecmp(httponly, "1"))) ?
+                                  "; HttpOnly" : NULL,
                                  NULL);
 
             apr_table_addn(rmain->err_headers_out, "Set-Cookie", cookie);
