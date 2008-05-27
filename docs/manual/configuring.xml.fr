@@ -159,7 +159,7 @@ le Serveur HTTP Apache.</p>
     une configuration tr&egrave;s fine.</p>
 
     <p>Apache peut servir simultan&eacute;ment de nombreux sites web au travers des
-    <a href="vhosts/">Hôtes Virtuels</a>. La port&eacute;e des directives peut ainsi
+    <a href="vhosts/">H&ocirc;tes Virtuels</a>. La port&eacute;e des directives peut ainsi
     &ecirc;tre limit&eacute;e en les pla&ccedil;ant dans des sections
     <directive module="core" type="section">VirtualHost</directive>,
     afin qu'elles ne s'appliquent qu'aux requ&ecirc;tes
@@ -168,7 +168,7 @@ le Serveur HTTP Apache.</p>
     <p>Bien que la plupart des directives puissent &ecirc;tre plac&eacute;es dans
     chacune de ces sections, certaines d'entre elles n'ont aucun sens
     dans certains contextes.
-    Par exemple, les directives qui contrôlent la cr&eacute;ation des processus
+    Par exemple, les directives qui contr&ocirc;lent la cr&eacute;ation des processus
     n'ont de sens que dans le contexte du serveur principal. Pour d&eacute;terminer
     quelles directives peuvent &ecirc;tre plac&eacute;es dans quelles sections, consultez
     le <a href="mod/directive-dict.html#Context">Contexte</a> de la
@@ -203,7 +203,7 @@ le Serveur HTTP Apache.</p>
     <p>Pour d&eacute;terminer quelles directives peuvent &ecirc;tre plac&eacute;es
     dans les fichiers <code>.htaccess</code>, consultez le
     <a href="mod/directive-dict.html#Context">Contexte</a> de la
-    directive. L'administrateur du serveur peut contrôler quelles
+    directive. L'administrateur du serveur peut contr&ocirc;ler quelles
     directives peuvent &ecirc;tre plac&eacute;es dans les fichiers
     <code>.htaccess</code> en d&eacute;finissant la directive
     <directive module="core">AllowOverride</directive>
