@@ -193,6 +193,9 @@ typedef STACK_OF(X509) X509_STACK_TYPE;
 #if APR_HAVE_CTYPE_H
 #include <ctype.h>
 #endif
+#if APR_HAVE_LIMITS_H
+#include <limits.h>
+#endif
 
 /* ------------------- DEFINITIONS -------------------------- */
 
@@ -426,7 +429,6 @@ static void ssl_state_cb(const SSL *s, int w, int r)
 }
 
 #ifndef RAND_MAX
-#include <limits.h>
 #define RAND_MAX INT_MAX
 #endif
 
