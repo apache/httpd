@@ -134,13 +134,6 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~fielding/p/ab-sync.txt
   +1: fielding, jim, wrowe
 
- * http_filters: Don't return 100-continue on redirects. PR 43711
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=657933&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq, trawick
-
  * mod_dav: Return "method not allowed" if the destination URI of a WebDAV
    copy / move operation is no DAV resource. PR 44734 
    Trunk version of patch:
