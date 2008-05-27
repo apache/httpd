@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_rewrite: Initialize hash needed by ap_register_rewrite_mapfunc early
+     enough. PR 44641 [Daniel Lescohier <daniel.lescohier cnet.com>]
+
   *) mod_dav: Return "method not allowed" if the destination URI of a WebDAV
      copy / move operation is no DAV resource. PR 44734 [Ruediger Pluem]
 
