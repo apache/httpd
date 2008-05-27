@@ -1364,6 +1364,8 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
              * not do a retry.
              */
             if (r->proxyreq == PROXYREQ_REVERSE && c->keepalives) {
+                apr_bucket *eos;
+
                 ap_log_rerror(APLOG_MARK, APLOG_DEBUG, 0, r,
                               "proxy: Closing connection to client because"
                               " reading from backend server %s failed. Number"
@@ -1372,10 +1374,26 @@ apr_status_t ap_proxy_http_process_response(apr_pool_t * p, request_rec *r,
                 ap_proxy_backend_broke(r, bb);
                 /*
                  * Add an EOC bucket to signal the ap_http_header_filter
-                 * that it should get out of our way
+                 * that it should get out of our way, BUT ensure that the
+                 * EOC bucket is inserted BEFORE an EOS bucket in bb as
+                 * some resource filters like mod_deflate pass everything
+                 * up to the EOS down the chain immediately and sent the
+                 * remainder of the brigade later (or even never). But in
+                 * this case the ap_http_header_filter does not get out of
+                 * our way soon enough.
                  */
                 e = ap_bucket_eoc_create(c->bucket_alloc);
-                APR_BRIGADE_INSERT_TAIL(bb, e);
+                eos = APR_BRIGADE_LAST(bb);
+                while ((APR_BRIGADE_SENTINEL(bb) != eos)
+                       && !APR_BUCKET_IS_EOS(eos)) {
+                    eos = APR_BUCKET_PREV(eos);
+                }
+                if (eos == APR_BRIGADE_SENTINEL(bb)) {
+                    APR_BRIGADE_INSERT_TAIL(bb, e);
+                }
+                else {
+                    APR_BUCKET_INSERT_BEFORE(eos, e);
+                }
                 ap_pass_brigade(r->output_filters, bb);
                 /* Need to return OK to avoid sending an error message */
                 return OK;
