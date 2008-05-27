@@ -134,6 +134,29 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
        http://people.apache.org/~fielding/p/ab-sync.txt
   +1: fielding, jim, wrowe
 
+ * http_filters: Don't return 100-continue on redirects. PR 43711
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=657933&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem, niq, trawick
+
+ * mod_dav: Return "method not allowed" if the destination URI of a WebDAV
+   copy / move operation is no DAV resource. PR 44734 
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=644050&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem, niq, trawick
+
+ * mod_rewrite: Initialize hash needed by ap_register_rewrite_mapfunc early
+   enough. PR 44641
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=639465&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem, niq, trawick
+
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
@@ -223,22 +246,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
    +1: rpluem, niq
 
- * mod_rewrite: Initialize hash needed by ap_register_rewrite_mapfunc early
-   enough. PR 44641
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=639465&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq
-
- * mod_dav: Return "method not allowed" if the destination URI of a WebDAV
-   copy / move operation is no DAV resource. PR 44734 
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=644050&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq
-
  * mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
    PR 44799
    Trunk version of patch:
@@ -263,14 +270,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=657433&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem,
+   +1: rpluem, trawick
 
- * http_filters: Don't return 100-continue on redirects. PR 43711
+ * Fix garbled TRACE response on EBCDIC platforms.
    Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=657933&view=rev
+         http://svn.apache.org/viewvc?view=rev&revision=659560
+         http://svn.apache.org/viewvc?view=rev&revision=660485
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem, niq
+   +1: trawick
 
 PATCHES/ISSUES THAT ARE STALLED
 
