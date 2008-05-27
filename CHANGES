@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) Fix garbled TRACE response on EBCDIC platforms.
+     [David Jones <oscaremma gmail.com>]
+
   *) ab: Include <limits.h> earlier if available since we may need
      INT_MAX (defined there on Windows) for the definition of MAX_REQUESTS.
      PR 45024 [Ruediger Pluem]
