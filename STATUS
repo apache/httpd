@@ -90,15 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_cache: Handle If-Range correctly if the cached resource was stale.
-   PR 44579
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=636386&view=rev
-         http://svn.apache.org/viewvc?rev=636653&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq, jim
-
  * core: Do not allow Options ALL if not all options are allowed to be
    overwritten. PR 44262
    Trunk version of patch:
