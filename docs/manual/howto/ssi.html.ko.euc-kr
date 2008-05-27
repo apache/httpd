@@ -87,7 +87,7 @@
     파일 확장자를 가진 파일을 처리하는 방법이다.</p>
 <div class="example"><p><code>
         AddType text/html .shtml<br />
-	AddOutputFilter INCLUDES .shtml
+        AddOutputFilter INCLUDES .shtml
 </code></p></div>
 
     <p>이 방법의 단점은 이미 있는 페이지에 SSI 지시어를 추가하는

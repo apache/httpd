@@ -71,7 +71,7 @@
       configuration file. A useful line can be</p>
 
       <div class="example"><pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre></div>
-	<p>Alternatively you may prefer to default everything to binary:</p>
+    <p>Alternatively you may prefer to default everything to binary:</p>
       <div class="example"><pre>DefaultType application/octet-stream</pre></div>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -86,8 +86,8 @@
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ftpnonget" id="ftpnonget">How can I do FTP upload?</a></h2>
-	<p>Currently, only GET is supported for FTP in mod_proxy.  You can
-	of course use HTTP upload (POST or PUT) through an Apache proxy.</p>
+    <p>Currently, only GET is supported for FTP in mod_proxy.  You can
+    of course use HTTP upload (POST or PUT) through an Apache proxy.</p>
     </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="percent2fhck" id="percent2fhck">How can I access FTP files outside

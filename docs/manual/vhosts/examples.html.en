@@ -42,7 +42,7 @@
     ports.</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ip">IP-based virtual hosting</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#ipport">Mixed port-based and ip-based virtual
-	hosts</a></li>
+  hosts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#mixed">Mixed name-based and IP-based
     vhosts</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#proxy">Using <code>Virtual_host</code> and
@@ -52,7 +52,7 @@
 <li><img alt="" src="../images/down.gif" /> <a href="#migrate">Migrating a name-based vhost to an
     IP-based vhost</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#serverpath">Using the <code>ServerPath</code>
-	directive</a></li>
+  directive</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
@@ -122,9 +122,9 @@
 
             <div class="example"><p><code>
             NameVirtualHost 172.20.30.40<br />
-						<br />
+            <br />
             &lt;VirtualHost 172.20.30.40&gt;<br />
- 		        # etc ...
+             # etc ...
             </code></p></div>
 
            <p>However, it is additionally useful to use <code>*</code>
@@ -141,15 +141,15 @@
     configuration will not work for, in fact, is when you are serving
     different content based on differing IP addresses or ports.</p>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="twoips" id="twoips">Name-based hosts on more than one
     IP address.</a></h2>
 
-  	<div class="note">
-		  <h3>Note</h3><p>Any of the
-          techniques discussed here can be extended to any number of IP
-          addresses.</p>
+    <div class="note">
+      <h3>Note</h3>
+      <p>Any of the techniques discussed here can be extended to any
+      number of IP addresses.</p>
     </div>
 
     <p>The server has two IP addresses. On one (<code>172.20.30.40</code>), we
@@ -160,31 +160,31 @@
     
 
     Listen 80<br />
-		<br />
+    <br />
     # This is the "main" server running on 172.20.30.40<br />
     ServerName server.domain.com<br />
     DocumentRoot /www/mainserver<br />
-		<br />
+    <br />
     # This is the other address<br />
     NameVirtualHost 172.20.30.50<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <span class="indent">
         DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
-   			<br />
+        <br />
         # Other directives here ...<br />
-				<br />
+        <br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2<br />
         ServerName www.example.org<br />
-				<br />
+        <br />
         # Other directives here ...<br />
-				<br />
+        <br />
     </span>
     &lt;/VirtualHost&gt;
     </code></p></div>
@@ -194,7 +194,7 @@
     unknown hostname, or no <code>Host:</code> header, will be served from
     <code>www.example.com</code>.</p>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="intraextra" id="intraextra">Serving the same content on
     different IP addresses (such as an internal and external
@@ -217,7 +217,7 @@
 
     NameVirtualHost 192.168.1.1<br />
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 192.168.1.1 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/server1<br />
@@ -241,7 +241,7 @@
           respond the same on all addresses.</p>
     </div>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="port" id="port">Running different sites on different
     ports.</a></h2>
@@ -257,31 +257,31 @@
 
     Listen 80<br />
     Listen 8080<br />
-		<br />
+    <br />
     NameVirtualHost 172.20.30.40:80<br />
     NameVirtualHost 172.20.30.40:8080<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <span class="indent">
         ServerName www.example.com<br />
         DocumentRoot /www/domain-80<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <span class="indent">
         ServerName www.example.com<br />
         DocumentRoot /www/domain-8080<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <span class="indent">
         ServerName www.example.org<br />
         DocumentRoot /www/otherdomain-80<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <span class="indent">
         ServerName www.example.org<br />
@@ -290,7 +290,7 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ip" id="ip">IP-based virtual hosting</a></h2>
 
@@ -303,14 +303,14 @@
     
 
     Listen 80<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2<br />
@@ -324,10 +324,10 @@
     <code>localhost</code>, for example) will go to the main server, if
     there is one.</p>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="ipport" id="ipport">Mixed port-based and ip-based virtual
-	hosts</a></h2>
+  hosts</a></h2>
 
     <p>The server machine has two IP addresses (<code>172.20.30.40</code> and
     <code>172.20.30.50</code>) which resolve to the names
@@ -342,28 +342,28 @@
     Listen 172.20.30.40:8080<br />
     Listen 172.20.30.50:80<br />
     Listen 172.20.30.50:8080<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:80&gt;<br />
     <span class="indent">
         DocumentRoot /www/example1-80<br />
         ServerName www.example.com<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40:8080&gt;<br />
     <span class="indent">
         DocumentRoot /www/example1-8080<br />
         ServerName www.example.com<br />
-		</span>
+    </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50:80&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2-80<br />
         ServerName www.example.org<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.50:8080&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2-8080<br />
@@ -372,7 +372,7 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="mixed" id="mixed">Mixed name-based and IP-based
     vhosts</a></h2>
@@ -384,30 +384,30 @@
     
 
     Listen 80<br />
-		<br />
+    <br />
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/example1<br />
         ServerName www.example.com<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2<br />
         ServerName www.example.org<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/example3<br />
         ServerName www.example3.net<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     # IP-based<br />
     &lt;VirtualHost 172.20.30.50&gt;<br />
     <span class="indent">
@@ -415,7 +415,7 @@
         ServerName www.example4.edu<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.60&gt;<br />
     <span class="indent">
         DocumentRoot /www/example5<br />
@@ -424,7 +424,7 @@
     &lt;/VirtualHost&gt;
     </code></p></div>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy">Using <code>Virtual_host</code> and
     mod_proxy together</a></h2>
@@ -450,7 +450,7 @@
 <h2><a name="default" id="default">Using <code>_default_</code>
     vhosts</a></h2>
 
-  	<h3><a name="defaultallports" id="defaultallports"><code>_default_</code> vhosts
+    <h3><a name="defaultallports" id="defaultallports"><code>_default_</code> vhosts
     for all ports</a></h3>
 
     <p>Catching <em>every</em> request to any unspecified IP address and
@@ -496,7 +496,7 @@
         # ...<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost _default_:*&gt;<br />
     <span class="indent">
         DocumentRoot /www/default<br />
@@ -531,7 +531,7 @@
     served from the main server.</p>
     
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="migrate" id="migrate">Migrating a name-based vhost to an
     IP-based vhost</a></h2>
@@ -553,9 +553,9 @@
     Listen 80<br />
     ServerName www.example.com<br />
     DocumentRoot /www/example1<br />
-		<br />
+    <br />
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40 172.20.30.50&gt;<br />
     <span class="indent">
         DocumentRoot /www/example2<br />
@@ -563,7 +563,7 @@
         # ...<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/example3<br />
@@ -578,10 +578,10 @@
     IP-based vhost) and through the old address (as a name-based
     vhost).</p>
 
-	</div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
+  </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="serverpath" id="serverpath">Using the <code>ServerPath</code>
-	directive</a></h2>
+  directive</a></h2>
 
     <p>We have a server with two name-based vhosts. In order to match the
     correct virtual host a client must send the correct <code>Host:</code>
@@ -596,7 +596,7 @@
     
 
     NameVirtualHost 172.20.30.40<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         # primary vhost<br />
@@ -606,7 +606,7 @@
         # ...<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     DocumentRoot /www/subdomain/sub1<br />
     <span class="indent">
@@ -617,7 +617,7 @@
         # ...<br />
     </span>
     &lt;/VirtualHost&gt;<br />
-		<br />
+    <br />
     &lt;VirtualHost 172.20.30.40&gt;<br />
     <span class="indent">
         DocumentRoot /www/subdomain/sub2<br />
@@ -648,7 +648,7 @@
     <code>Host:</code> header can use both URL variants, <em>i.e.</em>,
     with or without URL prefix.</p>
 
-	</div></div>
+  </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="../en/vhosts/examples.html" title="English">&nbsp;en&nbsp;</a> |
 <a href="../fr/vhosts/examples.html" hreflang="fr" rel="alternate" title="Français">&nbsp;fr&nbsp;</a> |

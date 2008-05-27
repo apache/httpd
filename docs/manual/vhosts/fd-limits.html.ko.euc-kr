@@ -52,7 +52,7 @@
       제약을 가한다.</li>
     </ol>
 
-	<p>이 경우 해결책은:</p>
+    <p>이 경우 해결책은:</p>
 
     <ul>
       <li>로그파일 개수를 줄인다. <code class="directive"><a href="../mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code> 섹션에서 로그파일을

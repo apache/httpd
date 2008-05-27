@@ -107,7 +107,7 @@ generate temporary 512 bit RSA private key" when I start Apache?</a></li>
 </ul>
 
 <h3><a name="mutex" id="mutex">Why do I get permission errors related to 
-	SSLMutex when I start Apache?</a></h3>
+        SSLMutex when I start Apache?</a></h3>
     <p>Errors such as ``<code>mod_ssl: Child could not open
     SSLMutex lockfile /opt/apache/logs/ssl_mutex.18332 (System error follows)
     [...] System: Permission denied (errno: 13)</code>'' are usually
@@ -119,8 +119,8 @@ generate temporary 512 bit RSA private key" when I start Apache?</a></li>
 
 
 <h3><a name="entropy" id="entropy">Why does mod_ssl stop with the error
-	"Failed to generate temporary 512 bit RSA private key" when I start 
-	Apache?</a></h3>
+        "Failed to generate temporary 512 bit RSA private key" when I start 
+        Apache?</a></h3>
     <p>Cryptographic software needs a source of unpredictable data
     to work correctly. Many open source operating systems provide
     a "randomness device" that serves this purpose (usually named
@@ -155,7 +155,7 @@ relative hyperlinks?</a></li>
 </ul>
 
 <h3><a name="parallel" id="parallel">Is it possible to provide HTTP and HTTPS 
-	from the same server?</a></h3>
+        from the same server?</a></h3>
     <p>Yes. HTTP and HTTPS use different server ports (HTTP binds to 
     port 80, HTTPS to port 443), so there is no direct conflict between 
     them. You can either run two separate server instances bound to 
@@ -320,24 +320,24 @@ Certificate for testing purposes?</a></h3>
     </li>
     <li>Run the following command, to create <code>server.key</code> and
         <code>server.crt</code> files:<br />
-	<code><strong>$ openssl req -new -x509 -nodes -out server.crt 
-			-keyout server.key</strong></code><br />
-	These can be used as follows in your <code>httpd.conf</code> 
-	file:
+        <code><strong>$ openssl req -new -x509 -nodes -out server.crt 
+                        -keyout server.key</strong></code><br />
+        These can be used as follows in your <code>httpd.conf</code> 
+        file:
         <pre>
              SSLCertificateFile    /path/to/this/server.crt
              SSLCertificateKeyFile /path/to/this/server.key
-	</pre>
+        </pre>
     </li>
     <li>It is important that you are aware that this 
-	<code>server.key</code> does <em>not</em> have any passphrase.
-	To add a passphrase to the key, you should run the following 
-	command, and enter &amp; verify the passphrase as requested.<br />
-	<p><code><strong>$ openssl rsa -des3 -in server.key -out 
-	server.key.new</strong></code><br />
-	<code><strong>$ mv server.key.new server.key</strong></code><br /></p>
-	Please backup the <code>server.key</code> file, and the passphrase 
-	you entered, in a secure location.
+        <code>server.key</code> does <em>not</em> have any passphrase.
+        To add a passphrase to the key, you should run the following 
+        command, and enter &amp; verify the passphrase as requested.<br />
+        <p><code><strong>$ openssl rsa -des3 -in server.key -out 
+        server.key.new</strong></code><br />
+        <code><strong>$ mv server.key.new server.key</strong></code><br /></p>
+        Please backup the <code>server.key</code> file, and the passphrase 
+        you entered, in a secure location.
     </li>
     </ol>
 
@@ -474,7 +474,7 @@ Certificate for testing purposes?</a></h3>
        with the RSA key you just created (output will be PEM formatted):<br />
        <br />
        <code><strong>$ openssl req -new -x509 -nodes -sha1 -days 365 
-		       -key server.key -out server.crt</strong></code><br />
+                       -key server.key -out server.crt</strong></code><br />
        <br />
        This signs the server CSR and results in a <code>server.crt</code> file.<br />
        You can see the details of this Certificate using:<br />
@@ -913,15 +913,15 @@ for my core dump?</a></li>
     <dl>
     <dt>Answers in the User Manual's F.A.Q. List (this)</dt>
     <dd><a href="http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html">
-	http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html</a><br />
-	First check the F.A.Q. (this text). If your problem is a common
-	one, it may have been answered several times before, and been included
-	in this doc.
+        http://httpd.apache.org/docs/trunk/ssl/ssl_faq.html</a><br />
+        First check the F.A.Q. (this text). If your problem is a common
+        one, it may have been answered several times before, and been included
+        in this doc.
     </dd>
     <dt>Postings from the modssl-users Support Mailing List
         <a href="http://www.modssl.org/support/">http://www.modssl.org/support/</a></dt>
     <dd>Search for your problem in the archives of the modssl-users mailing list. 
-	You're probably not the first person to have had this problem!
+        You're probably not the first person to have had this problem!
     </dd>
     </dl>
 
@@ -929,16 +929,16 @@ for my core dump?</a></li>
 <h3><a name="contact" id="contact">What support contacts are available in case 
 of mod_ssl problems?</a></h3>
  <p>The following lists all support possibilities for mod_ssl, in order of
-	 preference. Please go through these possibilities 
-	 <em>in this order</em> - don't just pick the one you like the look of. </p>
+         preference. Please go through these possibilities 
+         <em>in this order</em> - don't just pick the one you like the look of. </p>
     <ol>
     <li><em>Send a Problem Report to the modssl-users Support Mailing List</em><br />
         <a href="mailto:modssl-users@modssl.org">
         modssl-users@modssl.org</a><br />
         This is the preferred way of submitting your problem report, because this way,
-	others can see the problem, and learn from any answers. You must subscribe to 
+        others can see the problem, and learn from any answers. You must subscribe to 
         the list first, but you can then easily discuss your problem with both the 
-	author and the whole mod_ssl user community.
+        author and the whole mod_ssl user community.
         </li>
 
     <li><em>Send a Problem Report to the Apache httpd Users Support Mailing List</em><br />
@@ -950,11 +950,11 @@ of mod_ssl problems?</a></h3>
     </li>
 
     <li><em>Write a Problem Report in the Bug Database</em><br />
-	<a href="http://httpd.apache.org/bug_report.html">
-	http://httpd.apache.org/bug_report.html</a><br />
+        <a href="http://httpd.apache.org/bug_report.html">
+        http://httpd.apache.org/bug_report.html</a><br />
         This is the last way of submitting your problem report. You should only
-	do this if you've already posted to the mailing lists, and had no success.
-	Please follow the instructions on the above page <em>carefully</em>.
+        do this if you've already posted to the mailing lists, and had no success.
+        Please follow the instructions on the above page <em>carefully</em>.
     </li>
     </ol>
 
@@ -1017,8 +1017,8 @@ the reason for my core dump?</a></h3>
 
     <li>Start the server and try to reproduce the core-dump. For this you may
         want to use a directive like ``<code>CoreDumpDirectory /tmp</code>'' to
-	make sure that the core-dump file can be written. This should result
-	in a <code>/tmp/core</code> or <code>/tmp/httpd.core</code> file. If you
+        make sure that the core-dump file can be written. This should result
+        in a <code>/tmp/core</code> or <code>/tmp/httpd.core</code> file. If you
         don't get one of these, try running your server under a non-root UID. 
         Many modern kernels do not allow a process to dump core after it has
         done a <code>setuid()</code> (unless it does an <code>exec()</code>) for
@@ -1029,7 +1029,7 @@ the reason for my core dump?</a></h3>
 
     <li>Analyze the core-dump. For this, run <code>gdb /path/to/httpd
         /tmp/httpd.core</code> or a similar command. In GDB, all you 
-	have to do then is to enter <code>bt</code>, and voila, you get the
+        have to do then is to enter <code>bt</code>, and voila, you get the
         backtrace. For other debuggers consult your local debugger manual. 
     </li>
     </ol>

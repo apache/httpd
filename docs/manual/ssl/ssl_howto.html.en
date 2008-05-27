@@ -155,11 +155,12 @@ Intranet website, for clients coming from the Internet?</a></li>
 
 
 <h3><a name="arbitraryclients" id="arbitraryclients">How can I force clients to authenticate using certificates for a
-	particular URL, but still allow arbitrary clients to access the rest of the server?</a></h3>
+  particular URL, but still allow arbitrary clients to access the rest of the server?</a></h3>
 
 
-<p>To force clients to authenticate using certificates for a particular URL,
-	you can use the per-directory reconfiguration features of <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>:</p>
+    <p>To force clients to authenticate using certificates for a particular URL,
+    you can use the per-directory reconfiguration features of
+    <code class="module"><a href="../mod/mod_ssl.html">mod_ssl</a></code>:</p>
 
     <div class="example"><h3>httpd.conf</h3><p><code>
     SSLVerifyClient none<br />
@@ -173,7 +174,7 @@ Intranet website, for clients coming from the Internet?</a></li>
 
 
 <h3><a name="certauthenticate" id="certauthenticate">How can I allow only clients who have certificates to access a
-	particular URL, but allow all clients to access the rest of the server?</a></h3>
+  particular URL, but allow all clients to access the rest of the server?</a></h3>
 
 
     <p>The key to doing this is checking that part of the client certificate

@@ -94,7 +94,7 @@ existing HTML documents.</p>
     the following directives:</p>
 <div class="example"><p><code>
         AddType text/html .shtml<br />
-	AddOutputFilter INCLUDES .shtml
+        AddOutputFilter INCLUDES .shtml
 </code></p></div>
 
     <p>One disadvantage to this approach is that if you wanted to

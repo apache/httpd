@@ -360,7 +360,7 @@ proxy</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>BalancerMember is only available in Apache 2.2
-	and later.</td></tr>
+  and later.</td></tr>
 </table>
     <p>This directive adds a member to a load balancing group. It must be used
     within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
@@ -470,7 +470,7 @@ directly</td></tr>
     <p>A <dfn>Hostname</dfn> is a fully qualified DNS domain name which can
     be resolved to one or more <var><a href="#ipaddr">IPAddrs</a></var> via the
     DNS domain name service. It represents a logical host (in contrast to
-	<var><a href="#domain">Domain</a></var>s, see above) and must be resolvable
+    <var><a href="#domain">Domain</a></var>s, see above) and must be resolvable
     to at least one <var><a href="#ipaddr">IPAddr</a></var> (or often to a list
     of hosts with different <var><a href="#ipaddr">IPAddr</a></var>s).</p>
 
@@ -747,7 +747,7 @@ through</td></tr>
 <table class="directive">
 <tr><th><a href="directive-dict.html#Description">Description:</a></th><td>Maps remote servers into the local server URL-space</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">Syntax:</a></th><td><code>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var>
-	<var>[key=value</var> ...]] [nocanon] [interpolate]</code></td></tr>
+  <var>[key=value</var> ...]] [nocanon] [interpolate]</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
@@ -928,8 +928,8 @@ through</td></tr>
         <td>-</td>
         <td>Single letter value defining the initial status of
         this worker: 'D' is disabled, 'S' is stopped, 'I' is ignore-errors,
-	'H' is hot-standby and 'E' is in an error state. Status 
-	can be set (which is the default) by prepending with '+' or 
+        'H' is hot-standby and 'E' is in an error state. Status 
+        can be set (which is the default) by prepending with '+' or 
         cleared by prepending with '-'.
         Thus, a setting of 'S-E' sets this worker to Stopped and
         clears the in-error flag.
@@ -1346,7 +1346,7 @@ expressions</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>ProxySet is only available in Apache 2.2
-	and later.</td></tr>
+  and later.</td></tr>
 </table>
     <p>This directive is used as an alternate method of setting any of the
     parameters available to Proxy balancers and workers normally done via the

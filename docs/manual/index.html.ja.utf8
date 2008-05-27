@@ -69,7 +69,7 @@
 <li><a href="server-wide.html">サーバ全体の設定</a></li>
 <li><a href="ssl/">SSL/TLS による暗号化</a></li>
 <li><a href="suexec.html">CGI の Suexec 実行</a></li>
-<li><a href="misc/rewriteguide.html">URL Rewriting の手引き</a></li>
+<li><a href="rewrite/">URL Rewriting の手引き</a></li>
 <li><a href="vhosts/">バーチャルホスト</a></li>
 </ul>
 </div></td><td class="col3"><div class="category"><h2><a name="howto" id="howto">How-To / チュートリアル</a></h2>
