@@ -64,7 +64,7 @@
 
     <p>Le module <module>mod_file_cache</module> quant &agrave; lui, constitue une
     forme de mise en cache plus basique, mais quelques fois int&eacute;ressante.
-    Plutôt que de g&eacute;rer la complexit&eacute; de s'assurer de mani&egrave;re active de la
+    Plut&ocirc;t que de g&eacute;rer la complexit&eacute; de s'assurer de mani&egrave;re active de la
     possibilit&eacute; de mise en cache d'URLs,
     <module>mod_file_cache</module> fournit des m&eacute;thodes pour la gestion
     et l'&eacute;dition de fichiers en m&eacute;moire afin de maintenir un cache de fichiers
@@ -150,19 +150,19 @@
       positionnement de la directive
       <directive module="core">UseCanonicalName</directive> &agrave;
       <code>On</code> peut am&eacute;liorer de mani&egrave;re spectaculaire le taux de
-      pr&eacute;sence dans le cache. Ceci est du au fait que le nom d'hôte de l'hôte
+      pr&eacute;sence dans le cache. Ceci est du au fait que le nom d'h&ocirc;te de l'h&ocirc;te
       virtuel qui sert le contenu constitue une partie de la cl&eacute; de cache.
       Avec <directive module="core">UseCanonicalName</directive> positionn&eacute;e
       &agrave; <code>On</code>,
-      les hôtes virtuels poss&eacute;dant plusieurs noms de serveur ou alias ne
+      les h&ocirc;tes virtuels poss&eacute;dant plusieurs noms de serveur ou alias ne
       g&eacute;n&eacute;reront pas d'entit&eacute;s de cache diff&eacute;rentes, et le contenu sera mis en
-      cache en faisant r&eacute;f&eacute;rence au nom d'hôte canonique.</p>
+      cache en faisant r&eacute;f&eacute;rence au nom d'h&ocirc;te canonique.</p>
 
       <p>Les documents mis en cache ne seront servis qu'en r&eacute;ponse &agrave; des
       requ&ecirc;tes de type URL, car la mise en cache est effectu&eacute;e lors de la phase
       de traduction de l'URL en nom de fichier.
       En g&eacute;n&eacute;ral, cela n'a que peu d'effet, &agrave; moins que vous n'utilisiez les
-      <a href="howto/ssi.html">Inclusions Côt&eacute; Serveur (SSI)</a>;</p>
+      <a href="howto/ssi.html">Inclusions C&ocirc;t&eacute; Serveur (SSI)</a>;</p>
 
       <example>
       <pre>
@@ -198,7 +198,7 @@
       <p>La p&eacute;riode d'expiration des contenus locaux peut &ecirc;tre ajust&eacute;e finement
       en utilisant le module <module>mod_expires</module>.</p>
 
-      <p>On peut aussi contrôler la p&eacute;riode d'expiration maximale en utilisant
+      <p>On peut aussi contr&ocirc;ler la p&eacute;riode d'expiration maximale en utilisant
       la directive <directive module="mod_cache">CacheMaxExpire</directive>.</p>
 
     </section>
@@ -207,7 +207,7 @@
       <title>Guide succinct des requ&ecirc;tes conditionnelles</title>
 
       <p>Lorsqu'un contenu est arriv&eacute; &agrave; expiration dans le cache et fait
-      l'objet d'une nouvelle demande d'acc&egrave;s, plutôt que traiter directement
+      l'objet d'une nouvelle demande d'acc&egrave;s, plut&ocirc;t que traiter directement
       la requ&ecirc;te originale, Apache pr&eacute;f&egrave;re utiliser une
       requ&ecirc;te conditionnelle.</p>
 
@@ -354,7 +354,7 @@ Vary: negotiate,accept-language,accept-charset
     <title>Consid&eacute;rations sur la s&eacute;curit&eacute;</title>
 
     <section>
-      <title>Autorisation et contrôle d'acc&egrave;s</title>
+      <title>Autorisation et contr&ocirc;le d'acc&egrave;s</title>
 
       <p>Utiliser <module>mod_cache</module> revient sensiblement &agrave; la m&ecirc;me
       chose qu'avoir un mandataire inverse int&eacute;gr&eacute; (reverse-proxy). Les requ&ecirc;tes
@@ -426,17 +426,17 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>Par exemple, si les serveur DNS qu'utilise votre syst&egrave;me o&ugrave; tourne
       Apache sont vuln&eacute;rables &agrave; l'empoisonnement du cache des DNS, un attaquant
-      pourra contrôler vers o&ugrave; Apache se connecte lorsqu'il demande un contenu
+      pourra contr&ocirc;ler vers o&ugrave; Apache se connecte lorsqu'il demande un contenu
       depuis le serveur d'origine.
       Un autre exemple est constitu&eacute; par les attaques ainsi nomm&eacute;es
       "Dissimulation de requ&ecirc;tes HTTP" (HTTP request-smuggling).</p>
 
       <p>Ce document n'est pas le bon endroit pour une discussion approfondie
-      &agrave; propos de la Dissimulation de requ&ecirc;tes HTTP (utilisez plutôt votre
+      &agrave; propos de la Dissimulation de requ&ecirc;tes HTTP (utilisez plut&ocirc;t votre
       moteur de recherche favori); il est cependant important de savoir qu'il
       est possible d'&eacute;laborer une s&eacute;rie de requ&ecirc;tes, et d'exploiter une
       vuln&eacute;rabilit&eacute; d'un serveur web d'origine de telle fa&ccedil;on que l'attaquant
-      puisse contrôler enti&egrave;rement le contenu renvoy&eacute; par le mandataire.</p>
+      puisse contr&ocirc;ler enti&egrave;rement le contenu renvoy&eacute; par le mandataire.</p>
     </section>
   </section>
 
@@ -468,7 +468,7 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>La forme la plus &eacute;l&eacute;mentaire de mise en cache que propose Apache est
       fournie par le module <module>mod_file_cache</module>.
-      Plutôt que de mettre en cache le contenu des fichiers, ce cache maintient
+      Plut&ocirc;t que de mettre en cache le contenu des fichiers, ce cache maintient
       une table des descripteurs de fichiers ouverts. Les fichiers &agrave; mettre en
       cache de cette mani&egrave;re sont sp&eacute;cifi&eacute;s dans le fichier de configuration
       en utilisant la directive
@@ -542,8 +542,8 @@ Vary: negotiate,accept-language,accept-charset
 
     <p>Servir un contenu directement depuis la m&eacute;moire syst&egrave;me est
     universellement reconnu comme la m&eacute;thode la plus rapide. Lire des fichiers
-    depuis un contrôleur de disque ou pire, depuis un r&eacute;seau distant est plus
-    lent de plusieurs ordres de grandeur. Les contrôleurs de disque r&eacute;alisent
+    depuis un contr&ocirc;leur de disque ou pire, depuis un r&eacute;seau distant est plus
+    lent de plusieurs ordres de grandeur. Les contr&ocirc;leurs de disque r&eacute;alisent
     en g&eacute;n&eacute;ral des op&eacute;rations m&eacute;caniques, et l'acc&egrave;s au r&eacute;seau est limit&eacute; par la
     bande passante dont vous disposez. Par contre, les temps d'acc&egrave;s &agrave; la
     m&eacute;moire sont de l'ordre de la nano-seconde.</p>
@@ -703,7 +703,7 @@ CacheDirLength 1</pre>
       <p>Pour stocker des entit&eacute;s dans le cache,
       le module <module>mod_disk_cache</module> cr&eacute;e une empreinte (hash) de 22
       caract&egrave;res de l'URL qui a fait l'objet d'une requ&ecirc;te. Cette empreinte
-      comprend le nom d'hôte, le protocole, le port, le chemin et tout argument
+      comprend le nom d'h&ocirc;te, le protocole, le port, le chemin et tout argument
       de type CGI associ&eacute; &agrave; l'URL, afin d'&ecirc;tre sur que plusieurs URLs
       n'interf&egrave;rent pas entre elles.</p>
 

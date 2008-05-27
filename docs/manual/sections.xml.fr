@@ -29,7 +29,7 @@
 
 <summary> <p>Les directives des <a
 href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
-au serveur dans son ensemble, ou seulement &agrave; des r&eacute;pertoires, fichiers, hôtes,
+au serveur dans son ensemble, ou seulement &agrave; des r&eacute;pertoires, fichiers, h&ocirc;tes,
 ou URLs particuliers.  Ce document d&eacute;crit comment utiliser les conteneurs de
 sections de configuration ou les fichiers <code>.htaccess</code> pour
 modifier la port&eacute;e des directives de configuration.</p>
@@ -363,14 +363,14 @@ toutes les requ&ecirc;tes sans tenir compte de l'URL sp&eacute;cifique.</p>
 
 </section>
 
-<section id="virtualhost"><title>Hôtes virtuels</title>
+<section id="virtualhost"><title>H&ocirc;tes virtuels</title>
 
 <p>Le conteneur <directive type="section" module="core">VirtualHost</directive>
-contient des directives qui s'appliquent &agrave; des hôtes sp&eacute;cifiques.
-Ceci s'av&egrave;re utile pour servir des hôtes multiples &agrave; partir de la m&ecirc;me machine,
+contient des directives qui s'appliquent &agrave; des h&ocirc;tes sp&eacute;cifiques.
+Ceci s'av&egrave;re utile pour servir des h&ocirc;tes multiples &agrave; partir de la m&ecirc;me machine,
 chacun d'entre eux poss&eacute;dant une configuration diff&eacute;rente.  Pour de plus amples
 informations,
-voir la <a href="vhosts/">Documentation sur les hôtes virtuels</a>.</p>
+voir la <a href="vhosts/">Documentation sur les h&ocirc;tes virtuels</a>.</p>
 </section>
 
 <section id="proxy"><title>Mandataire</title>
@@ -483,7 +483,7 @@ sont interpr&eacute;t&eacute;es.</p>
     <p>Les sections situ&eacute;es &agrave; l'int&eacute;rieur de sections <directive type="section"
     module="core">VirtualHost</directive>
     sont appliqu&eacute;es <em>apr&egrave;s</em> les sections correspondantes situ&eacute;es en
-    dehors de la d&eacute;finition de l'hôte virtuel, ce qui permet &agrave; l'hôte virtuel
+    dehors de la d&eacute;finition de l'h&ocirc;te virtuel, ce qui permet &agrave; l'h&ocirc;te virtuel
     de pr&eacute;valoir sur la configuration du serveur principal.</p>
 
     <p>Quand la requ&ecirc;te est servie par le module <module>mod_proxy</module>,

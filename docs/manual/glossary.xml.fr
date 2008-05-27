@@ -62,7 +62,7 @@
     <dd>L'identification formelle d'une entit&eacute; du r&eacute;seau comme un serveur, un
     client, ou un utilisateur.<br />
       Voir : <a href="howto/auth.html">Authentification, Autorisation, et
-      contrôle d'acc&egrave;s</a>
+      contr&ocirc;le d'acc&egrave;s</a>
     </dd>
 
     <dt><a name="certificationauthority"
@@ -134,14 +134,14 @@
       pour d&eacute;crire les directives d'Apache</a>
     </dd>
 
-    <dt><a name="accesscontrol" id="accesscontrol">Contrôle d'acc&egrave;s
+    <dt><a name="accesscontrol" id="accesscontrol">Contr&ocirc;le d'acc&egrave;s
     (Access Control)</a></dt>
     <dd>La restriction d'acc&egrave;s &agrave; des zones du r&eacute;seau. Habituellement
     dans un contexte Apache,
       la restriction d'acc&egrave;s &agrave; certaines <em>URLs</em>.<br />
       Voir :  <a
       href="howto/auth.html">Authentification, Autorisation et
-      Contrôle d'acc&egrave;s</a>
+      Contr&ocirc;le d'acc&egrave;s</a>
     </dd>
 
     <dt><a name="securesocketslayer" id="securesocketslayer">
@@ -192,7 +192,7 @@
     </dd>
 
     <dt><a name="directive" id="directive">Directive</a></dt>
-    <dd>Une commande de configuration qui contrôle un ou plusieurs aspects du
+    <dd>Une commande de configuration qui contr&ocirc;le un ou plusieurs aspects du
     comportement d'Apache.  Les directives sont plac&eacute;es dans le <glossary
       ref="configurationfile">Fichier de configuration</glossary><br />
     Voir : <a href="mod/directives.html">Index des directives</a>
@@ -230,7 +230,7 @@
     (Configuration File)</a></dt>
     <dd>Un fichier texte contenant des
     <glossary ref="directive">Directives</glossary>
-      qui contrôlent la configuration d'Apache.<br />
+      qui contr&ocirc;lent la configuration d'Apache.<br />
       Voir : <a href="configuring.html">Fichiers de configuration</a>
     </dd>
 
@@ -242,7 +242,7 @@
       Par exemple, le filtre en sortie
       <code>INCLUDES</code>
       traite les documents pour les
-      <glossary ref="ssi">Server Side Includes (Inclusions côt&eacute; Serveur)
+      <glossary ref="ssi">Server Side Includes (Inclusions c&ocirc;t&eacute; Serveur)
       </glossary>.<br />
       Voir : <a href="filter.html">Filtres</a>
     </dd>
@@ -268,12 +268,12 @@
     <dt><a name="virtualhosting" id="virtualhosting">H&eacute;bergement Virtuel
     (Virtual Hosting)</a></dt>
   <dd>Servir des sites web multiples en utilisant une seule instance d'Apache.
-  Les <em>Hôtes virtuels bas&eacute;s sur IP</em> diff&eacute;rencient les sites web en se
+  Les <em>H&ocirc;tes virtuels bas&eacute;s sur IP</em> diff&eacute;rencient les sites web en se
   basant sur leur adresse IP, alors que les
-  <em>Hôtes virtuels bas&eacute;s sur le nom</em> utilisent uniquement le nom d'hôte
+  <em>H&ocirc;tes virtuels bas&eacute;s sur le nom</em> utilisent uniquement le nom d'h&ocirc;te
   et peuvent en cons&eacute;quence h&eacute;berger de nombreux sites avec la m&ecirc;me
   adresse IP.<br />
-    Voir la <a href="vhosts/">Documentation des Hôtes Virtuels d'Apache</a>
+    Voir la <a href="vhosts/">Documentation des H&ocirc;tes Virtuels d'Apache</a>
   </dd>
 
 
@@ -283,7 +283,7 @@
     <glossary ref="directive">directives</glossary> de configuration au
     r&eacute;pertoire dans lequel il est plac&eacute;, ainsi qu'&agrave; tous ses sous-r&eacute;pertoires.
     En d&eacute;pit de son nom, ce fichier peut contenir pratiquement tout type de
-    directive, et pas seulement des directives de contrôle d'acc&egrave;s.<br />
+    directive, et pas seulement des directives de contr&ocirc;le d'acc&egrave;s.<br />
       Voir : <a href="configuring.html">Fichiers de configuration</a>
     </dd>
 
@@ -315,12 +315,12 @@
   </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">
-    Inclusions Côt&eacute; Serveur
+    Inclusions C&ocirc;t&eacute; Serveur
     (Server Side Includes)</a> <a name="ssi" id="ssi">(SSI)
       </a></dt>
   <dd>Une technique permettant d'englober des directives de traitement dans
   des fichiers HTML.<br />
-    Voir : <a href="howto/ssi.html">Introduction aux Inclusions Côt&eacute; Serveur</a>
+    Voir : <a href="howto/ssi.html">Introduction aux Inclusions C&ocirc;t&eacute; Serveur</a>
   </dd>
 
 <dt><a name="commongatewayinterface" id="commongatewayinterface">
@@ -357,7 +357,7 @@ Localisation de Ressource Uniformis&eacute;e
       Identificateur de Ressource Uniformis&eacute;</glossary>.
     Les URLs sont g&eacute;n&eacute;ralement construites selon un sch&eacute;ma, comme
     <code>http</code> ou
-    <code>https</code>, un nom d'hôte, et un chemin.  Une URL pour cette page
+    <code>https</code>, un nom d'h&ocirc;te, et un chemin.  Une URL pour cette page
     pourrait &ecirc;tre
     <code>http://httpd.apache.org/docs/&httpd.docs;/glossary.html</code>.
   </dd>
@@ -369,7 +369,7 @@ Localisation de Ressource Uniformis&eacute;e
     Il prend en compte les requ&ecirc;tes des clients, les transmet au serveur
     d'origine, puis renvoie la r&eacute;ponse du serveur d'origine au client.
     Si plusieurs clients demandent le m&ecirc;me contenu, le mandataire peut l'extraire
-    de son cache, plutôt que le demander au serveur d'origine
+    de son cache, plut&ocirc;t que le demander au serveur d'origine
     &agrave; chaque fois, ce qui r&eacute;duit le temps de r&eacute;ponse.<br />
       Voir : <a href="mod/mod_proxy.html">mod_proxy</a>
     </dd>
@@ -419,9 +419,9 @@ Localisation de Ressource Uniformis&eacute;e
         id="fully-qualifieddomain-name">Nom de domaine enti&egrave;rement qualifi&eacute;
 	(Fully-Qualified Domain-Name)</a>
       <a name="fqdn" id="fqdn">(FQDN)</a></dt>
-    <dd>Le nom unique d'une entit&eacute; du r&eacute;seau, comprenant un nom d'hôte et un
+    <dd>Le nom unique d'une entit&eacute; du r&eacute;seau, comprenant un nom d'h&ocirc;te et un
     nom de domaine qui peuvent &ecirc;tre r&eacute;solus en une adresse IP. Par exemple,
-      <code>www</code> est un nom d'hôte, <code>example.com</code> est un nom
+      <code>www</code> est un nom d'h&ocirc;te, <code>example.com</code> est un nom
       de domaine, et <code>www.example.com</code> est un nom de domaine
       enti&egrave;rement qualifi&eacute;.
     </dd>

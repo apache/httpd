@@ -66,11 +66,11 @@
     <page href="ssl/">Chiffrement SSL/TLS</page>
     <page href="suexec.html">Ex&eacute;cution des CGI avec suexec</page>
     <page href="rewrite/">Guide de r&eacute;&eacute;criture des URLs</page>
-    <page href="vhosts/">Hôtes virtuels</page>
+    <page href="vhosts/">H&ocirc;tes virtuels</page>
 </category>
 
 <category id="howto"><title>Recettes / Tutoriels</title>
-    <page href="howto/auth.html">Authentification, autorisation, et contrôle d'acc&egrave;s</page>
+    <page href="howto/auth.html">Authentification, autorisation, et contr&ocirc;le d'acc&egrave;s</page>
     <page href="howto/cgi.html">CGI: Contenu dynamique</page>
     <page href="howto/htaccess.html">Fichiers .htaccess</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
