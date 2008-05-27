@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_proxy_ajp: Do not retry request in the case that we either failed to
+     sent a part of the request body or if the request is not idempotent.
+     PR 44334 [Ruediger Pluem]
+
   *) mod_rewrite: Initialize hash needed by ap_register_rewrite_mapfunc early
      enough. PR 44641 [Daniel Lescohier <daniel.lescohier cnet.com>]
 
