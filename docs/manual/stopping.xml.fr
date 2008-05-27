@@ -3,7 +3,7 @@
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
-<!--English Revision : 586770 -->
+<!--English Revision : 655319 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -201,7 +201,7 @@
 <note>Comme dans le cas d'un red&eacute;marrage "graceful", une
 v&eacute;rification de la syntaxe est effectu&eacute;e avant que le
 red&eacute;marrage ne soit tent&eacute;. Si votre fichier de configuration comporte
-des erreurs de syntaxe, le red&eacute;marrage ne sera pas effectueacute;, et
+des erreurs de syntaxe, le red&eacute;marrage ne sera pas effectu&eacute;, et
 vous recevrez un message concernant ces erreurs.</note>
 </section>
 

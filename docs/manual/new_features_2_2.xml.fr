@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="ISO-8859-1" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.fr.xsl"?>
-<!-- English revision : 583232 -->
+<!-- English revision : 659902 -->
 <!-- French translation : Lucien GENTIS -->
 <!-- Reviewed by : Vincent Deffontaines -->
 
@@ -104,7 +104,6 @@
 	  et d'ordonnancement rencontr&eacute;s avec l'architecture 2.0.</dd>
 
       <dt>Support des gros fichiers</dt>
-
       <dd>httpd supporte maintenant les fichiers d'une taille sup&eacute;rieure
       &agrave; 2GB sur les syst&egrave;mes 32 bits UNIX modernes.  Le support des
       corps de requ&ecirc;te d'une taille sup&eacute;rieure &agrave; 2GB a aussi &eacute;t&eacute;
@@ -119,11 +118,10 @@
           soit &eacute;coul&eacute;.</dd>
 
       <dt>Support des bases de donn&eacute;es SQL</dt>
-      <dd>Le module <p><module>mod_dbd</module>, associ&eacute; &agrave; l'environnement
+      <dd>Le module <module>mod_dbd</module>, associ&eacute; &agrave; l'environnement
       	apr_dbd, fournit le support SQL direct aux modules
 	qui en ont besoin.  Supporte la mise en commun des connexions
-          dans les modules MPM thread&eacute;s.</p>
-	  </dd>
+          dans les modules MPM thread&eacute;s.</dd>
 
     </dl>
   </section>
@@ -135,7 +133,7 @@
       <dd>Les modules du r&eacute;pertoire aaa ont &eacute;t&eacute; renomm&eacute;s et fournissent
           un support am&eacute;lior&eacute; pour la m&eacute;thode d'authentification <strong>digest</strong>.  Par exemple, mod_auth
           est maintenant scind&eacute; en deux modules : <module>mod_auth_basic</module> et
-          <module>mod_auth_file</module>; mod_auth_dbm s'appelle maintenant
+          <module>mod_authn_file</module>; mod_auth_dbm s'appelle maintenant
           <module>mod_authn_dbm</module>; mod_access a &eacute;t&eacute; renomm&eacute; en
           <module>mod_authz_host</module>.  Est &eacute;galement apparu le nouveau module
           <module>mod_authn_alias</module> qui simplifie
@@ -149,6 +147,16 @@
 	  Les nouvelles fonctionnalit&eacute;s comprennent l'utilisation des valeurs
 	  d'attributs LDAP et des filtres de recherche avanc&eacute;s dans la
           directive <directive module="mod_authz_core">Require</directive>.</dd>
+
+      <dt><module>mod_authz_owner</module></dt>
+	<dd>Un nouveau module qui autorise l'acc&egrave;s &agrave; un fichier
+	en fonction du propri&eacute;taire du fichier dans le syst&egrave;me de
+	fichiers</dd>
+
+	<dt><module>mod_version</module></dt>
+	<dd>Un nouveau module qui permet d'activer des blocs de
+	configuration en fonction de la version du serveur en cours
+	d'ex&eacute;cution.</dd>
 
       <dt><module>mod_info</module></dt>
       <dd>Un nouvel argument <code>?config</code> a &eacute;t&eacute; ajout&eacute;, qui permettra d'afficher
