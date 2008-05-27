@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) suexec: When group is given as a numeric gid, validate it by looking up
+     the actual group name such that the name can be used in log entries.
+     PR 7862 [<y-koga apache.or.jp>, Leif W <warp-9.9 usa.net>]
+
   *) Fix garbled TRACE response on EBCDIC platforms.
      [David Jones <oscaremma gmail.com>]
 
