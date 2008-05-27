@@ -2492,7 +2492,9 @@ static void add_cookie(request_rec *r, char *s)
                                  "; domain=", domain,
                                  expires ? "; expires=" : NULL,
                                  expires ? exp_time : NULL,
-                                 (strcasecmp(secure, "true") == 0 || strcasecmp(secure, "1") == 0) ? "; secure" : NULL,
+                                 secure ? ((strcasecmp(secure, "true") == 0
+                                           || strcasecmp(secure, "1") == 0) ?
+                                           "; secure" : NULL) : NULL,
                                  httponly ? "; HttpOnly" : NULL, 
                                  NULL);
 
