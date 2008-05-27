@@ -87,6 +87,10 @@ RELEASE SHOWSTOPPERS:
   jim says: I am baselining shipping with apr-1.3; assuming we do, the
             above show-stopper would be moot.
 
+* rpluem says: The backport revision r657443 causes a regression. So either we
+  need to fix it (e.g. by backporting r660726 which should fix it, see proposal
+  below) or we need to back out r657443 before releasing.
+
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
@@ -171,6 +175,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
    +1: fielding
 
+ * mod_proxy: Fix a regression to 2.2.8!!! that is caused by backport
+   r657443. This regression causes blank pages to be displayed if the
+   backend connection is faulty and mod_deflate is in place.
+   More details see:
+   http://mail-archives.apache.org/mod_mbox/httpd-dev/200805.mbox/%3caafb0e350805231019tbd42c07ue7ef5fba6e46d366@mail.gmail.com%3e
+   PR 37770
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?rev=660726&view=rev
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: rpluem,
 
 PATCHES/ISSUES THAT ARE STALLED
 
