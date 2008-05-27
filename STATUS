@@ -90,14 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * mod_proxy: Do not try a direct connection if the connection via a
-   remote proxy failed before and the request has a request body.
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?rev=631735&view=rev
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: rpluem, niq, jim
-
  * mod_cache: Handle If-Range correctly if the cached resource was stale.
    PR 44579
    Trunk version of patch:

@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_proxy: Do not try a direct connection if the connection via a
+     remote proxy failed before and the request has a request body.
+     [Ruediger Pluem]
+
   *) mod_proxy_ajp: Do not retry request in the case that we either failed to
      sent a part of the request body or if the request is not idempotent.
      PR 44334 [Ruediger Pluem]
