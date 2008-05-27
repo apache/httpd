@@ -15,10 +15,6 @@ Changes with Apache 2.3.0
   *) configure: Don't reject libtool 2.x
      PR 44817 [Arfrever Frehtes Taifersar Arahesis <Arfrever.FTA gmail.com>]
 
-  *) suexec: When group is given as a numeric gid, validate it by looking up
-     the actual group name such that the name can be used in log entries.
-     PR 7862 [<y-koga apache.or.jp>, Leif W <warp-9.9 usa.net>]
-
   *) core: When testing for slash-terminated configuration paths in
      ap_location_walk(), don't look past the start of an empty string
      such as that created by a <Location ""> directive.
