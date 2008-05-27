@@ -13,9 +13,6 @@ Changes with Apache 2.3.0
   *) authn/z: Convert common provider version strings to macros.
      [Chris Darroch]
 
-  *) http_filters: Don't return 100-continue on redirects. PR 43711
-     [Ruediger Pluem]
-
   *) ab: Make ab.c compile on VC6. PR 45024 [Ruediger Pluem]
 
   *) configure: Don't reject libtool 2.x
@@ -133,9 +130,6 @@ Changes with Apache 2.3.0
      Introduce wrappers for access control hook and provider registration
      which can accept additional mode and flag data.  [Chris Darroch]
 
-  *) mod_dav: Return "method not allowed" if the destination URI of a WebDAV
-     copy / move operation is no DAV resource. PR 44734 [Ruediger Pluem]
-
   *) Introduced ap_expr API for expression evaluation.
      This is adapted from mod_include, which is the first module
      to use the new API.
@@ -145,9 +139,6 @@ Changes with Apache 2.3.0
      AuthzDBDRedirectQuery, do not report authorization failure, and use
      first row returned by database query instead of last row.
      [Chris Darroch]
-
-  *) mod_rewrite: Initialize hash needed by ap_register_rewrite_mapfunc early
-     enough. PR 44641 [Daniel Lescohier <daniel.lescohier cnet.com>]
 
   *) mod_cache: Handle If-Range correctly if the cached resource was stale.
      PR 44579 [Ruediger Pluem]
