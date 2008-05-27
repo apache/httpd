@@ -97,6 +97,13 @@ PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
          Trunk version of patch works
    +1: rpluem, trawick, fielding
 
+ * Fix garbled TRACE response on EBCDIC platforms.
+   Trunk version of patch:
+         http://svn.apache.org/viewvc?view=rev&revision=659560
+         http://svn.apache.org/viewvc?view=rev&revision=660485
+   Backport version for 2.2.x of patch:
+         Trunk version of patch works
+   +1: trawick, jim, covener
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -170,14 +177,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: rpluem,
    -1: niq - strcasecmp(NULL, ...) when secure is not set
    rpluem: Good catch. Should be fixed by r660461.
-
- * Fix garbled TRACE response on EBCDIC platforms.
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=659560
-         http://svn.apache.org/viewvc?view=rev&revision=660485
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-   +1: trawick, jim
 
  * ab.c: Check for failure of apr_file_info_get call
    [rpluem] Reported By: BOYA SUN <boya.sun case.edu>
