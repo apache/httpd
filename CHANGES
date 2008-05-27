@@ -19,6 +19,9 @@ Changes with Apache 2.2.9
      accuracy of calculation due to type casts. PR 44878, 44931.
      [Roy T. Fielding]
 
+  *) ab: Add -r option to continue after socket receive errors.
+     [Filip Hanik <devlist hanik.com>]
+
   *) core: Do not allow Options ALL if not all options are allowed to be
      overwritten. PR 44262 [Michał Grzędzicki <lazy iq.pl>]
 
