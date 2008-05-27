@@ -2638,6 +2638,11 @@ static int dav_method_copymove(request_rec *r, int is_move)
                                   "Destination URI had an error.");
     }
 
+    if (dav_get_provider(lookup.rnew) == NULL) {
+        return dav_error_response(r, HTTP_METHOD_NOT_ALLOWED,
+                                  "DAV not enabled for Destination URI.");
+    }
+
     /* Resolve destination resource */
     err = dav_get_resource(lookup.rnew, 0 /* label_allowed */,
                            0 /* use_checked_in */, &resnew);
