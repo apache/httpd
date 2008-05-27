@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 421174:658428 (outdated) -->
+<!-- English Revision: 658428 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -98,14 +98,14 @@
 <compatibility>Sadece BS2000 makineler içindir.</compatibility>
 
 <usage>
-    <p><directive>BS2000Account</directive> yönergesi sadece BS2000 
+    <p><directive>BS2000Account</directive> yönergesi sadece BS2000
 	konaklar için kullanılabilir. <directive module="mpm_common"
-	>User</directive> yönergesi ile belirtilen yetkisiz apache sunucu 
+	>User</directive> yönergesi ile belirtilen yetkisiz apache sunucu
 	kullanıcısı için hesap numarası tanımlamakta kullanılmalıdır. Buna,
 	CGI betiklerinin sunucu tarafından başlatılmış yetkili hesabın
-	(normal olarak <code>SYSROOT</code>’un) özkaynaklarına erişmesini 
+	(normal olarak <code>SYSROOT</code>’un) özkaynaklarına erişmesini
 	engellemek için BS2000 POSIX alt sistemleri tarafından gerek duyulur.</p>
-	
+
     <note><title>Ek Bilgi</title>
       <p>Sadece bir <code>BS2000Account</code> yönergesi kullanılabilir.</p>
     </note>
@@ -483,15 +483,8 @@
     </note>
 
     <p><directive>MaxRequestsPerChild</directive> için sıfırdan farklı bir
-      değer belirtmenin iki yararlı etkisi vardır:</p>
-
-    <ul>
-      <li>Sürecin kullanacağı bellek miktarını sınırlamak suretiyle olası
-        bellek sızıntılarını engeller.</li>
-
-      <li>Sürece sonlu bir ömür biçerek sunucu yükü düştüğünde süreç sayısının
-        da düşürülmesine yardımcı olur.</li>
-    </ul>
+      değer belirtilmesi sürecin kullanacağı bellek miktarını sınırlamak
+      suretiyle olası bellek sızıntılarını engeller.</p>
 
     <note><title>Ek Bilgi</title>
       <p><directive module="core">KeepAlive</directive> isteklerinde sadece
