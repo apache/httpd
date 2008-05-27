@@ -161,7 +161,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=660207&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem, niq
+   +1: rpluem, niq, jim
 
  * mod_proxy: Do not try a direct connection if the connection via a
    remote proxy failed before and the request has a request body.
@@ -169,7 +169,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=631735&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem, niq
+   +1: rpluem, niq, jim
 
  * mod_cache: Handle If-Range correctly if the cached resource was stale.
    PR 44579
@@ -178,7 +178,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=636653&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem, niq
+   +1: rpluem, niq, jim
 
  * mod_rewrite: Allow Cookie option to set secure and HttpOnly flags.
    PR 44799
@@ -197,7 +197,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?rev=652885&view=rev
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: rpluem, niq
+   +1: rpluem, niq, jim
 
  * ab: Make ab.c compile on VC6. PR 45024
    Trunk version of patch:
@@ -212,7 +212,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=660485
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: trawick
+   +1: trawick, jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
