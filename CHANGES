@@ -201,9 +201,6 @@ Changes with Apache 2.3.0
 
   *) mod_ssl: Add support for caching SSL Sessions in memcached. [Paul Querna]
 
-  *) ab: Add -r option to continue after socket receive errors. 
-     [Filip Hanik <devlist hanik.com>]
-
   *) mod_ldap: Fix the search limit parameter to ldap_search_ext_s()
      for SDKs that define LDAP_NO_LIMIT to something other than -1.
      [David Jones <oscaremma gmail.com>]
