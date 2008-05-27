@@ -173,7 +173,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=656400
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-   +1: fielding
+   +1: fielding, rpluem
 
  * mod_proxy: Fix a regression to 2.2.8!!! that is caused by backport
    r657443. This regression causes blank pages to be displayed if the
