@@ -110,6 +110,7 @@ struct proxy_remote {
 };
 
 #define PROXYPASS_NOCANON 0x01
+#define PROXYPASS_INTERPOLATE 0x02
 struct proxy_alias {
     const char  *real;
     const char  *fake;
@@ -212,8 +213,18 @@ typedef struct {
     apr_array_header_t* cookie_domains;
     const apr_strmatch_pattern* cookie_path_str;
     const apr_strmatch_pattern* cookie_domain_str;
+    int interpolate_env;
     const char *ftp_directory_charset;
 } proxy_dir_conf;
+
+/* if we interpolate env vars per-request, we'll need a per-request
+ * copy of the reverse proxy config
+ */
+typedef struct {
+    apr_array_header_t *raliases;
+    apr_array_header_t* cookie_paths;
+    apr_array_header_t* cookie_domains;
+} proxy_req_conf;
 
 typedef struct {
     conn_rec     *connection;

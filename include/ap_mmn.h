@@ -126,6 +126,8 @@
  * 20051115.14(2.2.9)  Add ap_proxy_ssl_connection_cleanup and
  *                     add *scpool, *r and need_flush to proxy_conn_rec
  *                     structure
+ * 20051115.15(2.2.9)  Add interpolate_env to proxy_dir_conf and
+ *                     introduce proxy_req_conf.
  *
  */
 
@@ -134,7 +136,7 @@
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
 #define MODULE_MAGIC_NUMBER_MAJOR 20051115
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 14                    /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 15                    /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a

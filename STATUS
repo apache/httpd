@@ -90,37 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-   * mod_proxy: Support variable interpolation in reverse proxy configuration
-     trunk:
-       http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
-       http://svn.apache.org/viewvc?view=rev&revision=422178  (code)
-       http://svn.apache.org/viewvc/httpd/httpd/trunk/docs/manual/mod/mod_proxy.xml?r1=420990&r2=421725 (docs)
-       http://svn.apache.org/viewvc?view=rev&revision=589371  (code+docs)
-     2.2.x:
-       http://people.apache.org/~niq/proxy-interp.patch (OUTDATED)
-       http://people.apache.org/~niq/proxy-interpolate.patch (current code)
-     rpluem says: Please add the documentation to your 2.2.x version of your
-                  patch and a minor bump (changes to public mod_proxy.h) and
-                  assume you are +1 to your own proposal.
-     niq says: I'll attend to that.  As regards vote, I'm +1 on the proposal,
-               but -0 on including this as a new feature in 2.2.7.
-               Better IMHO to separate releasing it from the many bugfixes
-               in 2.2.7 mod_proxy.  Hence +1 for 2.2.8.
-     niq says: docs done; take MMN-on-backport as implicit.  One more
-               vote required for 2.2.9
-     +1: wrowe, niq
-     rpluem says: There is a problem with the new element interpolate_env in
-     proxy_dir_conf: To have the struct in the same order as in trunk we need to
-     add it BEFORE ftp_directory_charset as done in the patch. OTOH not adding
-     it to the end of the struct requires a MAJOR bump which we cannot do for
-     a backport. My proposal: Add interpolate_env to the end of proxy_dir_conf
-     in 2.2.x, do a minor bump of 2.2.x, swap the order of interpolate_env and
-     ftp_directory_charset on trunk and do a MAJOR bump on trunk (where it does
-     not really harm).
-     Apart from this problem I am +1.
-     niq says: committed the /trunk/ change, made the 2.2.x change
-     you suggest locally.  Taking your +1 and promoting.
-
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
 
