@@ -1041,6 +1041,7 @@ PROXY_DECLARE(void) ap_proxy_table_unmerge(apr_pool_t *p, apr_table_t *t, char *
 PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
                               proxy_dir_conf *conf, const char *url)
 {
+    proxy_req_conf *rconf;
     struct proxy_alias *ent;
     int i, l1, l2;
     char *u;
@@ -1049,9 +1050,18 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
      * XXX FIXME: Make sure this handled the ambiguous case of the :<PORT>
      * after the hostname
      */
+    if (r->proxyreq != PROXYREQ_REVERSE) {
+        return url;
+    }
 
     l1 = strlen(url);
-    ent = (struct proxy_alias *)conf->raliases->elts;
+    if (conf->interpolate_env == 1) {
+        rconf = ap_get_module_config(r->request_config, &proxy_module);
+        ent = (struct proxy_alias *)rconf->raliases->elts;
+    }
+    else {
+        ent = (struct proxy_alias *)conf->raliases->elts;
+    }
     for (i = 0; i < conf->raliases->nelts; i++) {
         proxy_server_conf *sconf = (proxy_server_conf *)
             ap_get_module_config(r->server->module_config, &proxy_module);
@@ -1119,6 +1129,8 @@ PROXY_DECLARE(const char *) ap_proxy_location_reverse_map(request_rec *r,
 PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
                               proxy_dir_conf *conf, const char *str)
 {
+    proxy_req_conf *rconf = ap_get_module_config(r->request_config,
+                                                 &proxy_module);
     struct proxy_alias *ent;
     size_t len = strlen(str);
     const char *newpath = NULL;
@@ -1133,6 +1145,10 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
     int pdiff = 0;
     char *ret;
 
+    if (r->proxyreq != PROXYREQ_REVERSE) {
+        return str;
+    }
+
    /*
     * Find the match and replacement, but save replacing until we've done
     * both path and domain so we know the new strlen
@@ -1143,7 +1159,12 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
         pathe = ap_strchr_c(pathp, ';');
         l1 = pathe ? (pathe - pathp) : strlen(pathp);
         pathe = pathp + l1 ;
-        ent = (struct proxy_alias *)conf->cookie_paths->elts;
+        if (conf->interpolate_env == 1) {
+            ent = (struct proxy_alias *)rconf->cookie_paths->elts;
+        }
+        else {
+            ent = (struct proxy_alias *)conf->cookie_paths->elts;
+        }
         for (i = 0; i < conf->cookie_paths->nelts; i++) {
             l2 = strlen(ent[i].fake);
             if (l1 >= l2 && strncmp(ent[i].fake, pathp, l2) == 0) {
@@ -1160,7 +1181,12 @@ PROXY_DECLARE(const char *) ap_proxy_cookie_reverse_map(request_rec *r,
         domaine = ap_strchr_c(domainp, ';');
         l1 = domaine ? (domaine - domainp) : strlen(domainp);
         domaine = domainp + l1;
-        ent = (struct proxy_alias *)conf->cookie_domains->elts;
+        if (conf->interpolate_env == 1) {
+            ent = (struct proxy_alias *)rconf->cookie_domains->elts;
+        }
+        else {
+            ent = (struct proxy_alias *)conf->cookie_domains->elts;
+        }
         for (i = 0; i < conf->cookie_domains->nelts; i++) {
             l2 = strlen(ent[i].fake);
             if (l1 >= l2 && strncasecmp(ent[i].fake, domainp, l2) == 0) {
