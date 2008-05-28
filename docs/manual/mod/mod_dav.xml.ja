@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:655823 (outdated) -->
+<!-- English Revision: 421100 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -83,6 +83,8 @@
       <br />
        &lt;Location /foo&gt;<br />
        <indent>
+         Order Allow,Deny<br />
+         Allow from all<br />
          Dav On<br />
          <br />
          AuthType Basic<br />
