@@ -90,10 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
-
-PATCHES PROPOSED TO BACKPORT FROM TRUNK:
-  [ New proposals should be added at the end of the list ]
-
    * mod_proxy: Support variable interpolation in reverse proxy configuration
      trunk:
        http://svn.apache.org/viewvc?view=rev&revision=421686  (code)
@@ -122,6 +118,11 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      ftp_directory_charset on trunk and do a MAJOR bump on trunk (where it does
      not really harm).
      Apart from this problem I am +1.
+     niq says: committed the /trunk/ change, made the 2.2.x change
+     you suggest locally.  Taking your +1 and promoting.
+
+PATCHES PROPOSED TO BACKPORT FROM TRUNK:
+  [ New proposals should be added at the end of the list ]
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
       Trunk version of patches:
