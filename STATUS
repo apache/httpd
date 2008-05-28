@@ -113,6 +113,15 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
      niq says: docs done; take MMN-on-backport as implicit.  One more
                vote required for 2.2.9
      +1: wrowe, niq
+     rpluem says: There is a problem with the new element interpolate_env in
+     proxy_dir_conf: To have the struct in the same order as in trunk we need to
+     add it BEFORE ftp_directory_charset as done in the patch. OTOH not adding
+     it to the end of the struct requires a MAJOR bump which we cannot do for
+     a backport. My proposal: Add interpolate_env to the end of proxy_dir_conf
+     in 2.2.x, do a minor bump of 2.2.x, swap the order of interpolate_env and
+     ftp_directory_charset on trunk and do a MAJOR bump on trunk (where it does
+     not really harm).
+     Apart from this problem I am +1.
 
    * mod_ssl: Add server name indication (RFC 4366) support (PR 34607).
       Trunk version of patches:
