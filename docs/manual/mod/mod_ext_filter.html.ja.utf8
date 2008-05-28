@@ -25,8 +25,6 @@
 <a href="../ja/mod/mod_ext_filter.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/mod/mod_ext_filter.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">説明:</a></th><td>レスポンスのボディをクライアントに送る前に外部プログラムで処理する</td></tr>
 <tr><th><a href="module-dict.html#Status">ステータス:</a></th><td>Extension</td></tr>
 <tr><th><a href="module-dict.html#ModuleIdentifier">モジュール識別子:</a></th><td>ext_filter_module</td></tr>
@@ -261,7 +259,7 @@
 
       <dd>応答を処理するフィルタには <code>mode=output</code> (デフォルト)
       を使います。リクエストを処理するフィルタには <code>mode=input</code>
-      を使います。<code>mode=input</code> は Apache 2.1 からの新しい機能です。</dd>
+      を使います。<code>mode=input</code> は Apache 2.1 以降で使用できます。</dd>
 
       <dt><code>intype=<var>imt</var></code></dt>
 

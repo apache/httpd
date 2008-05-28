@@ -25,8 +25,6 @@
 <a href="./ko/handler.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./ru/handler.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 
     <p>Apache のハンドラの使用に関して記述しています。</p>
   </div>
@@ -48,9 +46,8 @@
     ファイルタイプの中には別に「ハンドル」(訳注: 扱う)
     されるものもあります。</p>
 
-    <p>Apache 1.1 では、ハンドラを明示的に使用する機能が追加されました。
-    ファイルの拡張子や置いている場所に基づいて、
-    ファイル型と関係なくハンドラを指定することができます。
+    <p>ファイル型に関係なく、ファイルの拡張子や置いている場所に基づいて
+    明示的にハンドラを指定することもできます。
     これはより優雅な解決法という点と、ファイルにタイプ<strong>と</strong>ハンドラの両方を関連付けることができるという点で優れています。
     (<a href="mod/mod_mime.html#multipleext">複数の拡張子のあるファイル</a>も参照してください)。</p>
 

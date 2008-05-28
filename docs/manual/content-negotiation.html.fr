@@ -270,7 +270,7 @@ conventions de nommage</a></li>
       <li><strong>La négociation de contenu transparente</strong> est utilisée
       quand le navigateur le demande explicitement selon le mécanisme défini
       dans la RFC 2295. Cette méthode de négociation donne au navigateur le
-      contrÃ´le total du choix de la meilleure variante; le résultat dépend
+      contrôle total du choix de la meilleure variante; le résultat dépend
       cependant de la spécificité des algorithmes utilisés par le navigateur.
       Au cours du processus de négociation transparente, le navigateur peut
       demander à Apache d'exécuter l'"algorithme de sélection de variante à
@@ -672,7 +672,7 @@ conventions de nommage</a></h2>
     (un navigateur ou un cache), la directive <code class="directive"><a href="./mod/mod_negotiation.html#cachenegotiateddocs">CacheNegotiatedDocs</a></code> peut être utilisée
     pour permettre la mise en cache des réponses qui ont fait l'objet d'une
     négociation. Cette directive peut intervenir dans la configuration au
-    niveau du serveur ou de l'hÃ´te virtuel, et n'accepte aucun argument. Elle
+    niveau du serveur ou de l'hôte virtuel, et n'accepte aucun argument. Elle
     n'a aucun effet sur les requêtes en provenance de clients HTTP/1.1.</p>
 
     <p>Pour les clients HTTP/1.1, Apache envoie un en-tête de réponse HTTP
