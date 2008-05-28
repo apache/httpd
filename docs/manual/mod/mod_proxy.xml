@@ -880,7 +880,8 @@ expressions</description>
     removes the normal limited protection against URL-based attacks
     provided by the proxy.</p>
 
-    <p>The optional <var>interpolate</var> keyword, in combination with
+    <p>The optional <var>interpolate</var> keyword (available in
+    httpd 2.2.9 and later), in combination with
     <directive>ProxyPassInterpolateEnv</directive> causes the ProxyPass
     to interpolate environment variables, using the syntax
     <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
@@ -990,7 +991,8 @@ proxied server</description>
     because it doesn't depend on a corresponding <directive module="mod_proxy"
     >ProxyPass</directive> directive.</p>
 
-    <p>The optional <var>interpolate</var> keyword, used together with
+    <p>The optional <var>interpolate</var> keyword (available in
+    httpd 2.2.9 and later), used together with
     <directive>ProxyPassInterpolateEnv</directive>, enables interpolation
     of environment variables specified using the format <var>${VARNAME}</var>.
     </p>
@@ -1410,7 +1412,7 @@ header for proxied requests</description>
 <context>virtual host</context>
 <context>directory</context>
 </contextlist>
-<compatibility>Available in trunk only</compatibility>
+<compatibility>Available in httpd 2.2.9 and later</compatibility>
 
 <usage>
     <p>This directive, together with the <var>interpolate</var> argument to
