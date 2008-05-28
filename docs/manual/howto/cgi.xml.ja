@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='iso-2022-jp' ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:421100 (outdated) -->
+<!-- English Revision: 421100 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -198,7 +198,7 @@
     <p>「通常の」プログラミングと CGI
     プログラミングの間には主に二つの違いがあります。</p>
 
-    <p>一つは、CGI プログラムのすべての出力には MIME-type
+    <p>一つは、CGI プログラムのすべての出力には <glossary>MIME-type</glossary>
     ヘッダを付けなければなりません。
     これはどのような種類のコンテンツを受け取っているかをクライアントに示す
     HTTP ヘッダです。ほとんどの場合では、次のように出力します:</p>

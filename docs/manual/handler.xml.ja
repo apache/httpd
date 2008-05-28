@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 396056:421100 (outdated) -->
+<!-- English Revision: 421100 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -57,9 +57,8 @@
     ファイルタイプの中には別に「ハンドル」(訳注: 扱う)
     されるものもあります。</p>
 
-    <p>Apache 1.1 では、ハンドラを明示的に使用する機能が追加されました。
-    ファイルの拡張子や置いている場所に基づいて、
-    ファイル型と関係なくハンドラを指定することができます。
+    <p>ファイル型に関係なく、ファイルの拡張子や置いている場所に基づいて
+    明示的にハンドラを指定することもできます。
     これはより優雅な解決法という点と、ファイルにタイプ<strong>と</strong
     >ハンドラの両方を関連付けることができるという点で優れています。
     (<a href="mod/mod_mime.html#multipleext"
