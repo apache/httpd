@@ -192,14 +192,16 @@ start over.</p>
 
 <p>It is therefore important, if you are using <directive
 module="mod_rewrite">RewriteRule</directive> directives in one of these
-context that you take explicit steps to avoid rules looping, and not
+contexts, that you take explicit steps to avoid rules looping, and not
 count solely on the [L] flag to terminate execution of a series of
 rules, as shown below.</p>
 
 <p>The example given here will rewrite any request to
 <code>index.php</code>, giving the original request as a query string
-argument to <code>index.php</code>, however, if the request is already
-for <code>index.php</code>, this rule will be skipped.</p>
+argument to <code>index.php</code>, however, the <directive
+module="mod_rewrite">RewriteCond</directive> ensures that if the request 
+is already for <code>index.php</code>, the <directive
+module="mod_rewrite">RewriteRule</directive> will be skipped.</p>
 
 <example>
 RewriteCond %{REQUEST_URI} !index\.php<br />
@@ -224,7 +226,9 @@ RewriteRule (.*)A(.*) $1B$2 [N]
 </example>
 
 <p>You can think of this as a <code>while</code> loop: While this
-pattern still matches, perform this substitution.</p>
+pattern still matches (i.e., while the URI still contains an
+<code>A</code>), perform this substitution (i.e., replace the
+<code>A</code> with a <code>B</code>).</p>
 
 </section>
 
