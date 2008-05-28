@@ -158,14 +158,17 @@
  * 20080407.0 (2.3.0-dev)  Remove ap_graceful_stop_signalled.
  * 20080407.1              Deprecate ap_cache_cacheable_hdrs_out and add two
  *                         generalized ap_cache_cacheable_headers_(in|out).
+ * 20080528.0 (2.3.0-dev)  Switch order of ftp_directory_charset and
+ *                         interpolate_env in proxy_dir_conf.
+ *                         Rationale: see r661069.
  */
 
 #define MODULE_MAGIC_COOKIE 0x41503234UL /* "AP24" */
 
 #ifndef MODULE_MAGIC_NUMBER_MAJOR
-#define MODULE_MAGIC_NUMBER_MAJOR 20080407
+#define MODULE_MAGIC_NUMBER_MAJOR 20080528
 #endif
-#define MODULE_MAGIC_NUMBER_MINOR 1                     /* 0...n */
+#define MODULE_MAGIC_NUMBER_MINOR 0                     /* 0...n */
 
 /**
  * Determine if the server's current MODULE_MAGIC_NUMBER is at least a
