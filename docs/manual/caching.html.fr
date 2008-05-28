@@ -65,7 +65,7 @@
 
     <p>Le module <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> quant à lui, constitue une
     forme de mise en cache plus basique, mais quelques fois intéressante.
-    PlutÃ´t que de gérer la complexité de s'assurer de manière active de la
+    Plutôt que de gérer la complexité de s'assurer de manière active de la
     possibilité de mise en cache d'URLs,
     <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code> fournit des méthodes pour la gestion
     et l'édition de fichiers en mémoire afin de maintenir un cache de fichiers
@@ -133,19 +133,19 @@
       positionnement de la directive
       <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code> à
       <code>On</code> peut améliorer de manière spectaculaire le taux de
-      présence dans le cache. Ceci est du au fait que le nom d'hÃ´te de l'hÃ´te
+      présence dans le cache. Ceci est du au fait que le nom d'hôte de l'hôte
       virtuel qui sert le contenu constitue une partie de la clé de cache.
       Avec <code class="directive"><a href="./mod/core.html#usecanonicalname">UseCanonicalName</a></code> positionnée
       à <code>On</code>,
-      les hÃ´tes virtuels possédant plusieurs noms de serveur ou alias ne
+      les hôtes virtuels possédant plusieurs noms de serveur ou alias ne
       généreront pas d'entités de cache différentes, et le contenu sera mis en
-      cache en faisant référence au nom d'hÃ´te canonique.</p>
+      cache en faisant référence au nom d'hôte canonique.</p>
 
       <p>Les documents mis en cache ne seront servis qu'en réponse à des
       requêtes de type URL, car la mise en cache est effectuée lors de la phase
       de traduction de l'URL en nom de fichier.
       En général, cela n'a que peu d'effet, à moins que vous n'utilisiez les
-      <a href="howto/ssi.html">Inclusions CÃ´té Serveur (SSI)</a>;</p>
+      <a href="howto/ssi.html">Inclusions Côté Serveur (SSI)</a>;</p>
 
       <div class="example"><pre>
 &lt;!-- L'inclusion suivante peut être mise en cache --&gt;
@@ -177,7 +177,7 @@
       <p>La période d'expiration des contenus locaux peut être ajustée finement
       en utilisant le module <code class="module"><a href="./mod/mod_expires.html">mod_expires</a></code>.</p>
 
-      <p>On peut aussi contrÃ´ler la période d'expiration maximale en utilisant
+      <p>On peut aussi contrôler la période d'expiration maximale en utilisant
       la directive <code class="directive"><a href="./mod/mod_cache.html#cachemaxexpire">CacheMaxExpire</a></code>.</p>
 
     
@@ -186,7 +186,7 @@
       
 
       <p>Lorsqu'un contenu est arrivé à expiration dans le cache et fait
-      l'objet d'une nouvelle demande d'accès, plutÃ´t que traiter directement
+      l'objet d'une nouvelle demande d'accès, plutôt que traiter directement
       la requête originale, Apache préfère utiliser une
       requête conditionnelle.</p>
 
@@ -330,7 +330,7 @@ Vary: negotiate,accept-language,accept-charset
 <h2><a name="security" id="security">Considérations sur la sécurité</a></h2>
     
 
-    <h3>Autorisation et contrÃ´le d'accès</h3>
+    <h3>Autorisation et contrôle d'accès</h3>
       
 
       <p>Utiliser <code class="module"><a href="./mod/mod_cache.html">mod_cache</a></code> revient sensiblement à la même
@@ -403,17 +403,17 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>Par exemple, si les serveur DNS qu'utilise votre système où tourne
       Apache sont vulnérables à l'empoisonnement du cache des DNS, un attaquant
-      pourra contrÃ´ler vers où Apache se connecte lorsqu'il demande un contenu
+      pourra contrôler vers où Apache se connecte lorsqu'il demande un contenu
       depuis le serveur d'origine.
       Un autre exemple est constitué par les attaques ainsi nommées
       "Dissimulation de requêtes HTTP" (HTTP request-smuggling).</p>
 
       <p>Ce document n'est pas le bon endroit pour une discussion approfondie
-      à propos de la Dissimulation de requêtes HTTP (utilisez plutÃ´t votre
+      à propos de la Dissimulation de requêtes HTTP (utilisez plutôt votre
       moteur de recherche favori); il est cependant important de savoir qu'il
       est possible d'élaborer une série de requêtes, et d'exploiter une
       vulnérabilité d'un serveur web d'origine de telle façon que l'attaquant
-      puisse contrÃ´ler entièrement le contenu renvoyé par le mandataire.</p>
+      puisse contrôler entièrement le contenu renvoyé par le mandataire.</p>
     
   </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -435,7 +435,7 @@ Vary: negotiate,accept-language,accept-charset
 
       <p>La forme la plus élémentaire de mise en cache que propose Apache est
       fournie par le module <code class="module"><a href="./mod/mod_file_cache.html">mod_file_cache</a></code>.
-      PlutÃ´t que de mettre en cache le contenu des fichiers, ce cache maintient
+      Plutôt que de mettre en cache le contenu des fichiers, ce cache maintient
       une table des descripteurs de fichiers ouverts. Les fichiers à mettre en
       cache de cette manière sont spécifiés dans le fichier de configuration
       en utilisant la directive
@@ -495,8 +495,8 @@ Vary: negotiate,accept-language,accept-charset
 
     <p>Servir un contenu directement depuis la mémoire système est
     universellement reconnu comme la méthode la plus rapide. Lire des fichiers
-    depuis un contrÃ´leur de disque ou pire, depuis un réseau distant est plus
-    lent de plusieurs ordres de grandeur. Les contrÃ´leurs de disque réalisent
+    depuis un contrôleur de disque ou pire, depuis un réseau distant est plus
+    lent de plusieurs ordres de grandeur. Les contrôleurs de disque réalisent
     en général des opérations mécaniques, et l'accès au réseau est limité par la
     bande passante dont vous disposez. Par contre, les temps d'accès à la
     mémoire sont de l'ordre de la nano-seconde.</p>
@@ -642,7 +642,7 @@ CacheDirLength 1</pre></div>
       <p>Pour stocker des entités dans le cache,
       le module <code class="module"><a href="./mod/mod_disk_cache.html">mod_disk_cache</a></code> crée une empreinte (hash) de 22
       caractères de l'URL qui a fait l'objet d'une requête. Cette empreinte
-      comprend le nom d'hÃ´te, le protocole, le port, le chemin et tout argument
+      comprend le nom d'hôte, le protocole, le port, le chemin et tout argument
       de type CGI associé à l'URL, afin d'être sur que plusieurs URLs
       n'interfèrent pas entre elles.</p>
 

@@ -22,8 +22,6 @@
 <a href="../ja/howto/cgi.html" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../ko/howto/cgi.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="../images/down.gif" /> <a href="#intro">はじめに</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#configuring">CGI を許可するように Apache を設定する</a></li>
@@ -195,7 +193,7 @@
     <p>「通常の」プログラミングと CGI
     プログラミングの間には主に二つの違いがあります。</p>
 
-    <p>一つは、CGI プログラムのすべての出力には MIME-type
+    <p>一つは、CGI プログラムのすべての出力には <a class="glossarylink" href="../glossary.html#mime-type" title="用語集を参照">MIME-type</a>
     ヘッダを付けなければなりません。
     これはどのような種類のコンテンツを受け取っているかをクライアントに示す
     HTTP ヘッダです。ほとんどの場合では、次のように出力します:</p>

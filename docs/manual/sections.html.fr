@@ -25,7 +25,7 @@
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
  <p>Les directives des <a href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
-au serveur dans son ensemble, ou seulement à des répertoires, fichiers, hÃ´tes,
+au serveur dans son ensemble, ou seulement à des répertoires, fichiers, hôtes,
 ou URLs particuliers.  Ce document décrit comment utiliser les conteneurs de
 sections de configuration ou les fichiers <code>.htaccess</code> pour
 modifier la portée des directives de configuration.</p>
@@ -34,7 +34,7 @@ modifier la portée des directives de configuration.</p>
 configuration</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#file-and-web">Système de fichiers et
 arborescence du site web</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">HÃ´tes virtuels</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#virtualhost">Hôtes virtuels</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#proxy">Mandataire</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#whatwhere">Quelles sont les directives autorisées ?</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#mergin">Comment les sections sont combinées entre elles</a></li>
@@ -333,14 +333,14 @@ toutes les requêtes sans tenir compte de l'URL spécifique.</p>
 
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="virtualhost" id="virtualhost">HÃ´tes virtuels</a></h2>
+<h2><a name="virtualhost" id="virtualhost">Hôtes virtuels</a></h2>
 
 <p>Le conteneur <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
-contient des directives qui s'appliquent à des hÃ´tes spécifiques.
-Ceci s'avère utile pour servir des hÃ´tes multiples à partir de la même machine,
+contient des directives qui s'appliquent à des hôtes spécifiques.
+Ceci s'avère utile pour servir des hôtes multiples à partir de la même machine,
 chacun d'entre eux possédant une configuration différente.  Pour de plus amples
 informations,
-voir la <a href="vhosts/">Documentation sur les hÃ´tes virtuels</a>.</p>
+voir la <a href="vhosts/">Documentation sur les hôtes virtuels</a>.</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="proxy" id="proxy">Mandataire</a></h2>
@@ -442,7 +442,7 @@ sont interprétées.</p>
 
     <p>Les sections situées à l'intérieur de sections <code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code>
     sont appliquées <em>après</em> les sections correspondantes situées en
-    dehors de la définition de l'hÃ´te virtuel, ce qui permet à l'hÃ´te virtuel
+    dehors de la définition de l'hôte virtuel, ce qui permet à l'hôte virtuel
     de prévaloir sur la configuration du serveur principal.</p>
 
     <p>Quand la requête est servie par le module <code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code>,

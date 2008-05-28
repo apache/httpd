@@ -61,7 +61,7 @@
     <dd>L'identification formelle d'une entité du réseau comme un serveur, un
     client, ou un utilisateur.<br />
       Voir : <a href="howto/auth.html">Authentification, Autorisation, et
-      contrÃ´le d'accès</a>
+      contrôle d'accès</a>
     </dd>
 
     <dt><a name="certificationauthority" id="certificationauthority">Autorité de Certification
@@ -129,13 +129,13 @@
       pour décrire les directives d'Apache</a>
     </dd>
 
-    <dt><a name="accesscontrol" id="accesscontrol">ContrÃ´le d'accès
+    <dt><a name="accesscontrol" id="accesscontrol">Contrôle d'accès
     (Access Control)</a></dt>
     <dd>La restriction d'accès à des zones du réseau. Habituellement
     dans un contexte Apache,
       la restriction d'accès à certaines <em>URLs</em>.<br />
       Voir :  <a href="howto/auth.html">Authentification, Autorisation et
-      ContrÃ´le d'accès</a>
+      Contrôle d'accès</a>
     </dd>
 
     <dt><a name="securesocketslayer" id="securesocketslayer">
@@ -184,7 +184,7 @@
     </dd>
 
     <dt><a name="directive" id="directive">Directive</a></dt>
-    <dd>Une commande de configuration qui contrÃ´le un ou plusieurs aspects du
+    <dd>Une commande de configuration qui contrôle un ou plusieurs aspects du
     comportement d'Apache.  Les directives sont placées dans le <a class="glossarylink" href="./glossary.html#configurationfile" title="see glossary">Fichier de configuration</a><br />
     Voir : <a href="mod/directives.html">Index des directives</a>
     </dd>
@@ -219,7 +219,7 @@
     (Configuration File)</a></dt>
     <dd>Un fichier texte contenant des
     <a class="glossarylink" href="./glossary.html#directive" title="see glossary">Directives</a>
-      qui contrÃ´lent la configuration d'Apache.<br />
+      qui contrôlent la configuration d'Apache.<br />
       Voir : <a href="configuring.html">Fichiers de configuration</a>
     </dd>
 
@@ -231,7 +231,7 @@
       Par exemple, le filtre en sortie
       <code>INCLUDES</code>
       traite les documents pour les
-      <a class="glossarylink" href="./glossary.html#ssi" title="see glossary">Server Side Includes (Inclusions cÃ´té Serveur)
+      <a class="glossarylink" href="./glossary.html#ssi" title="see glossary">Server Side Includes (Inclusions côté Serveur)
       </a>.<br />
       Voir : <a href="filter.html">Filtres</a>
     </dd>
@@ -257,12 +257,12 @@
     <dt><a name="virtualhosting" id="virtualhosting">Hébergement Virtuel
     (Virtual Hosting)</a></dt>
   <dd>Servir des sites web multiples en utilisant une seule instance d'Apache.
-  Les <em>HÃ´tes virtuels basés sur IP</em> différencient les sites web en se
+  Les <em>Hôtes virtuels basés sur IP</em> différencient les sites web en se
   basant sur leur adresse IP, alors que les
-  <em>HÃ´tes virtuels basés sur le nom</em> utilisent uniquement le nom d'hÃ´te
+  <em>Hôtes virtuels basés sur le nom</em> utilisent uniquement le nom d'hôte
   et peuvent en conséquence héberger de nombreux sites avec la même
   adresse IP.<br />
-    Voir la <a href="vhosts/">Documentation des HÃ´tes Virtuels d'Apache</a>
+    Voir la <a href="vhosts/">Documentation des Hôtes Virtuels d'Apache</a>
   </dd>
 
 
@@ -272,7 +272,7 @@
     <a class="glossarylink" href="./glossary.html#directive" title="see glossary">directives</a> de configuration au
     répertoire dans lequel il est placé, ainsi qu'à tous ses sous-répertoires.
     En dépit de son nom, ce fichier peut contenir pratiquement tout type de
-    directive, et pas seulement des directives de contrÃ´le d'accès.<br />
+    directive, et pas seulement des directives de contrôle d'accès.<br />
       Voir : <a href="configuring.html">Fichiers de configuration</a>
     </dd>
 
@@ -301,12 +301,12 @@
   </dd>
 
     <dt><a name="serversideincludes" id="serversideincludes">
-    Inclusions CÃ´té Serveur
+    Inclusions Côté Serveur
     (Server Side Includes)</a> <a name="ssi" id="ssi">(SSI)
       </a></dt>
   <dd>Une technique permettant d'englober des directives de traitement dans
   des fichiers HTML.<br />
-    Voir : <a href="howto/ssi.html">Introduction aux Inclusions CÃ´té Serveur</a>
+    Voir : <a href="howto/ssi.html">Introduction aux Inclusions Côté Serveur</a>
   </dd>
 
 <dt><a name="commongatewayinterface" id="commongatewayinterface">
@@ -339,7 +339,7 @@ Localisation de Ressource Uniformisée
       Identificateur de Ressource Uniformisé</a>.
     Les URLs sont généralement construites selon un schéma, comme
     <code>http</code> ou
-    <code>https</code>, un nom d'hÃ´te, et un chemin.  Une URL pour cette page
+    <code>https</code>, un nom d'hôte, et un chemin.  Une URL pour cette page
     pourrait être
     <code>http://httpd.apache.org/docs/2.2/glossary.html</code>.
   </dd>
@@ -351,7 +351,7 @@ Localisation de Ressource Uniformisée
     Il prend en compte les requêtes des clients, les transmet au serveur
     d'origine, puis renvoie la réponse du serveur d'origine au client.
     Si plusieurs clients demandent le même contenu, le mandataire peut l'extraire
-    de son cache, plutÃ´t que le demander au serveur d'origine
+    de son cache, plutôt que le demander au serveur d'origine
     à chaque fois, ce qui réduit le temps de réponse.<br />
       Voir : <a href="mod/mod_proxy.html">mod_proxy</a>
     </dd>
@@ -399,9 +399,9 @@ Localisation de Ressource Uniformisée
     <dt><a name="fully-qualifieddomain-name" id="fully-qualifieddomain-name">Nom de domaine entièrement qualifié
 	(Fully-Qualified Domain-Name)</a>
       <a name="fqdn" id="fqdn">(FQDN)</a></dt>
-    <dd>Le nom unique d'une entité du réseau, comprenant un nom d'hÃ´te et un
+    <dd>Le nom unique d'une entité du réseau, comprenant un nom d'hôte et un
     nom de domaine qui peuvent être résolus en une adresse IP. Par exemple,
-      <code>www</code> est un nom d'hÃ´te, <code>example.com</code> est un nom
+      <code>www</code> est un nom d'hôte, <code>example.com</code> est un nom
       de domaine, et <code>www.example.com</code> est un nom de domaine
       entièrement qualifié.
     </dd>
