@@ -165,8 +165,16 @@ RewriteRule   <strong>^/$</strong>  /about/  [<strong>R</strong>]
     <p>Note that this can also be handled using the <code class="directive"><a href="../mod/mod_alias.html#redirectmatch">RedirectMatch</a></code> directive:</p>
 
 <div class="example"><p><code>
-RedirectMatch ^/$ http://example.com/e/www/
+RedirectMatch ^/$ http://example.com/about/
 </code></p></div>
+
+<p>Note also that the example rewrites only the root URL. That is, it
+rewrites a request for <code>http://example.com/</code>, but not a
+request for <code>http://example.com/page.html</code>. If you have in 
+fact changed your document root - that is, if <strong>all</strong> of 
+your content is in fact in that subdirectory, it is greatly preferable 
+to simply change your <code class="directive"><a href="../mod/core.html#documentroot">DocumentRoot</a></code>
+directive, rather than rewriting URLs.</p>
 </dd>
 </dl>
 
