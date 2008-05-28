@@ -1032,7 +1032,8 @@ through</td></tr>
     removes the normal limited protection against URL-based attacks
     provided by the proxy.</p>
 
-    <p>The optional <var>interpolate</var> keyword, in combination with
+    <p>The optional <var>interpolate</var> keyword (available in
+    httpd 2.2.9 and later), in combination with
     <code class="directive">ProxyPassInterpolateEnv</code> causes the ProxyPass
     to interpolate environment variables, using the syntax
     <var>${VARNAME}</var>.  Note that many of the standard CGI-derived
@@ -1057,7 +1058,7 @@ through</td></tr>
 <tr><th><a href="directive-dict.html#Context">Context:</a></th><td>server config, virtual host, directory</td></tr>
 <tr><th><a href="directive-dict.html#Status">Status:</a></th><td>Extension</td></tr>
 <tr><th><a href="directive-dict.html#Module">Module:</a></th><td>mod_proxy</td></tr>
-<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in trunk only</td></tr>
+<tr><th><a href="directive-dict.html#Compatibility">Compatibility:</a></th><td>Available in httpd 2.2.9 and later</td></tr>
 </table>
     <p>This directive, together with the <var>interpolate</var> argument to
     <code class="directive">ProxyPass</code>, <code class="directive">ProxyPassReverse</code>,
@@ -1163,7 +1164,8 @@ proxied server</td></tr>
     (<code>RewriteRule ...  [P]</code>) from <code class="module"><a href="../mod/mod_rewrite.html">mod_rewrite</a></code>
     because it doesn't depend on a corresponding <code class="directive"><a href="#proxypass">ProxyPass</a></code> directive.</p>
 
-    <p>The optional <var>interpolate</var> keyword, used together with
+    <p>The optional <var>interpolate</var> keyword (available in
+    httpd 2.2.9 and later), used together with
     <code class="directive">ProxyPassInterpolateEnv</code>, enables interpolation
     of environment variables specified using the format <var>${VARNAME}</var>.
     </p>
