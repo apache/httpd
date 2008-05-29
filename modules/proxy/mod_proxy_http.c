@@ -690,8 +690,6 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
      */
 
     if (apr_table_get(r->subprocess_env, "force-proxy-request-1.0")) {
-        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
-        force10 = 1;
         /*
          * According to RFC 2616 8.2.3 we are not allowed to forward an
          * Expect: 100-continue to an HTTP/1.0 server. Instead we MUST return
@@ -700,6 +698,8 @@ int ap_proxy_http_request(apr_pool_t *p, request_rec *r,
         if (r->expecting_100) {
             return HTTP_EXPECTATION_FAILED;
         }
+        buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.0" CRLF, NULL);
+        force10 = 1;
         p_conn->close++;
     } else {
         buf = apr_pstrcat(p, r->method, " ", url, " HTTP/1.1" CRLF, NULL);
