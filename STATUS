@@ -167,12 +167,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=613260
    Backport version for 2.2.x of patch:
          Trunk version of patch works
+    +1: 
 
  * prefork: Unlock mutex before terminating.
    Trunk version of patch:
          http://svn.apache.org/viewvc?view=rev&revision=613252
    Backport version for 2.2.x of patch:
          Trunk version of patch works
+    +1: 
 
  * prefork: Stop processing new connections if shutdown_pending is set,
    i.e. when SIGTERM is received in single-process mode.
@@ -181,6 +183,8 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=552029
    Backport version for 2.2.x of patch:
          Trunk version of patch works
+    +1: 
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
