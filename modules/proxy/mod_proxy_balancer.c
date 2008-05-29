@@ -26,7 +26,8 @@ module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
 static int proxy_balancer_canon(request_rec *r, char *url)
 {
-    char *host, *path, *search;
+    char *host, *path;
+    char *search = NULL;
     const char *err;
     apr_port_t port = 0;
 
@@ -50,10 +51,11 @@ static int proxy_balancer_canon(request_rec *r, char *url)
                       url, err);
         return HTTP_BAD_REQUEST;
     }
-    /* now parse path/search args, according to rfc1738 */
-    search = NULL;
-
-    /* process path */
+    /*
+     * now parse path/search args, according to rfc1738:
+     * process the path. With proxy-noncanon set (by
+     * mod_proxy) we use the raw, unparsed uri
+     */
     if (apr_table_get(r->notes, "proxy-nocanon")) {
         path = url;   /* this is the raw path */
     }
