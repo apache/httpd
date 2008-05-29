@@ -2,6 +2,10 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
+  *) mod_proxy_http: Do not forward requests with 'Expect: 100-continue' to
+     known HTTP/1.0 servers. Return 'Expectation failed' (417) instead.
+     [Ruediger Pluem]
+
   *) core, authn/z: Determine registered authn/z providers directly in
      ap_setup_auth_internal(), which allows optional functions that just
      wrapped ap_list_provider_names() to be removed from authn/z modules.
