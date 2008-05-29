@@ -142,7 +142,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=404848
      Backport version for 2.2.x:
        http://people.apache.org/~chrisd/patches/scoreboard_lb_score/scoreboard-lb_score-2.2.x.patch
-     +1: chrisd
+     +1: chrisd, rpluem
 
  * mod_proxy_http, mod_proxy_ajp, mod_proxy_balancer: Make modules nocanon aware
    and do not add the query string again in this case. PR 44803
