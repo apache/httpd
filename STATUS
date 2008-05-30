@@ -191,6 +191,17 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
     +1: rpluem,
 
+ * htpasswd: Fix salt generation weakness. PR 31440
+   [Andreas Krennmair <ak synflood.at>, Peter Watkins <peterw tux.org>, Paul Querna]
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=629159&view=rev
+       http://svn.apache.org/viewvc?rev=629164&view=rev
+       http://svn.apache.org/viewvc?rev=629218&view=rev
+       http://svn.apache.org/viewvc?rev=630139&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+    +1: rpluem,
+
 PATCHES/ISSUES THAT ARE STALLED
 
    * beos MPM: Create pmain pool and run modules' child_init hooks when
