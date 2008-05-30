@@ -142,7 +142,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?view=rev&revision=404848
      Backport version for 2.2.x:
        http://people.apache.org/~chrisd/patches/scoreboard_lb_score/scoreboard-lb_score-2.2.x.patch
-     +1: chrisd, rpluem
+     +1: chrisd, rpluem, jim
 
  * mod_proxy_http, mod_proxy_ajp, mod_proxy_balancer: Make modules nocanon aware
    and do not add the query string again in this case. PR 44803
@@ -157,7 +157,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        http://svn.apache.org/viewvc?rev=661459&view=rev
     Backport version for 2.2.x of patch:
        Trunk version of patch works
-    +1: rpluem,
+    +1: rpluem, jim
 
  * prefork: prefork's apr_pollset_poll() loop-on-EINTR loop was not checking
   die_now; the child holding the mutex will not die immediately if poll
@@ -167,14 +167,14 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=613260
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-    +1: 
+    +1: jim
 
  * prefork: Unlock mutex before terminating.
    Trunk version of patch:
          http://svn.apache.org/viewvc?view=rev&revision=613252
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-    +1: 
+    +1: jim
 
  * prefork: Stop processing new connections if shutdown_pending is set,
    i.e. when SIGTERM is received in single-process mode.
@@ -183,7 +183,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=552029
    Backport version for 2.2.x of patch:
          Trunk version of patch works
-    +1: 
+    +1: jim
 
 PATCHES/ISSUES THAT ARE STALLED
 
