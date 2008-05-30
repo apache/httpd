@@ -21,8 +21,11 @@
 #include "ap_mpm.h"
 #include "apr_version.h"
 #include "apr_hooks.h"
+#include "apr_uuid.h"
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
+
+static apr_uuid_t balancer_nonce;
 
 static int proxy_balancer_canon(request_rec *r, char *url)
 {
@@ -619,6 +622,27 @@ static void recalc_factors(proxy_balancer *balancer)
     }
 }
 
+/* post_config hook: */
+static int balancer_init(apr_pool_t *p, apr_pool_t *plog,
+                         apr_pool_t *ptemp, server_rec *s)
+{
+    void *data;
+    const char *userdata_key = "mod_proxy_balancer_init";
+
+    /* balancer_init() will be called twice during startup.  So, only
+     * set up the static data the second time through. */
+    apr_pool_userdata_get(&data, userdata_key, s->process->pool);
+    if (!data) {
+        apr_pool_userdata_set((const void *)1, userdata_key,
+                               apr_pool_cleanup_null, s->process->pool);
+        return OK;
+    }
+
+    apr_uuid_get(&balancer_nonce);
+
+    return OK;
+}
+
 /* Manages the loadfactors and member status
  */
 static int balancer_handler(request_rec *r)
@@ -632,6 +656,9 @@ static int balancer_handler(request_rec *r)
     int access_status;
     int i, n;
     const char *name;
+    char nonce[APR_UUID_FORMATTED_LENGTH + 1];
+
+    apr_uuid_format(nonce, &balancer_nonce);
 
     /* is this for us? */
     if (strcmp(r->handler, "balancer-manager"))
@@ -661,6 +688,14 @@ static int balancer_handler(request_rec *r)
                 return HTTP_BAD_REQUEST;
         }
     }
+    
+    /* Check that the supplied nonce matches this server's nonce;
+     * otherwise ignore all parameters, to prevent a CSRF attack. */
+    if ((name = apr_table_get(params, "nonce")) == NULL 
+        || strcmp(nonce, name) != 0) {
+        apr_table_clear(params);
+    }
+
     if ((name = apr_table_get(params, "b")))
         bsel = ap_proxy_get_balancer(r->pool, conf,
             apr_pstrcat(r->pool, "balancer://", name, NULL));
@@ -798,6 +833,7 @@ static int balancer_handler(request_rec *r)
                 ap_rvputs(r, "<tr>\n<td><a href=\"", r->uri, "?b=",
                           balancer->name + sizeof("balancer://") - 1, "&w=",
                           ap_escape_uri(r->pool, worker->name),
+                          "&nonce=", nonce, 
                           "\">", NULL);
                 ap_rvputs(r, worker->name, "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
@@ -861,6 +897,8 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, "<input type=hidden name=\"b\" ", NULL);
             ap_rvputs(r, "value=\"", bsel->name + sizeof("balancer://") - 1,
                       "\">\n</form>\n", NULL);
+            ap_rvputs(r, "<input type=hidden name=\"nonce\" value=\"", nonce, "\">\n",
+                      NULL);
             ap_rputs("<hr />\n", r);
         }
         ap_rputs(ap_psignature("",r), r);
@@ -1099,6 +1137,7 @@ static void ap_proxy_balancer_register_hook(apr_pool_t *p)
      */
     static const char *const aszPred[] = { "mpm_winnt.c", "mod_proxy.c", NULL};
      /* manager handler */
+    ap_hook_post_config(balancer_init, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_handler(balancer_handler, NULL, NULL, APR_HOOK_FIRST);
     ap_hook_child_init(child_init, aszPred, NULL, APR_HOOK_MIDDLE);
     proxy_hook_pre_request(proxy_balancer_pre_request, NULL, NULL, APR_HOOK_FIRST);
