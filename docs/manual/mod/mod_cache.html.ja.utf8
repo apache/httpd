@@ -33,9 +33,13 @@
 <tr><th><a href="module-dict.html#SourceFile">ソースファイル:</a></th><td>mod_cache.c</td></tr></table>
 <h3>概要</h3>
 
-    <div class="warning">
-      これは実験的なモジュールです。文書もまだ開発中です...
-    </div>
+    <div class="warning">使用方法については注意する必要があり、
+    <code class="directive"><a href="../mod/mod_authz_host.html#allow">Allow</a></code> や
+    <code class="directive"><a href="../mod/mod_authz_host.html#deny">Deny</a></code> 
+    ディレクティブを迂回する設定もできてしまいます。
+    ホスト名やアドレスや環境変数に基づいてクライアントからの
+    アクセスを制限したい場合は、キャッシュ機能を有効にすべきでは
+    ありません。</div>
 
     <p><code class="module"><a href="../mod/mod_cache.html">mod_cache</a></code> はローカルのコンテンツやプロキシされた
     コンテンツをキャッシュするために使われる <a href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> 準拠の
@@ -61,6 +65,8 @@
 
     <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
     アクセス保護のかけられているコンテンツはキャッシュされません。</p>
+    <p>詳細や解説、例については
+    <a href="../caching.html">Caching Guide</a> を参照して下さい。</p>
 </div>
 <div id="quickview"><h3 class="directives">ディレクティブ</h3>
 <ul id="toc">
@@ -79,11 +85,14 @@
 <ul id="topics">
 <li><img alt="" src="../images/down.gif" /> <a href="#related">関連モジュールとディレクティブ</a></li>
 <li><img alt="" src="../images/down.gif" /> <a href="#sampleconf">サンプル設定</a></li>
+</ul><h3>参照</h3>
+<ul class="seealso">
+<li><a href="../caching.html">Caching Guide</a></li>
 </ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="related" id="related">関連モジュールとディレクティブ</a></h2>
-    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachesize">CacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
+    <table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="../mod/mod_disk_cache.html">mod_disk_cache</a></code></li><li><code class="module"><a href="../mod/mod_mem_cache.html">mod_mem_cache</a></code></li></ul></td><td><ul><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheroot">CacheRoot</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlevels">CacheDirLevels</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachedirlength">CacheDirLength</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cacheminfilesize">CacheMinFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_disk_cache.html#cachemaxfilesize">CacheMaxFileSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachesize">MCacheSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectcount">MCacheMaxObjectCount</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheminobjectsize">MCacheMinObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxobjectsize">MCacheMaxObjectSize</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcacheremovalalgorithm">MCacheRemovalAlgorithm</a></code></li><li><code class="directive"><a href="../mod/mod_mem_cache.html#mcachemaxstreamingbuffer">MCacheMaxStreamingBuffer</a></code></li></ul></td></tr></table>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="sampleconf" id="sampleconf">サンプル設定</a></h2>
@@ -96,8 +105,8 @@
       &lt;IfModule mod_cache.c&gt;<br />
       <span class="indent">
         #LoadModule disk_cache_module modules/mod_disk_cache.so<br />
-        # If you want to use mod_disk_cache instead of mod_mem_cache,
-        # uncomment the line above and comment out the LoadModule line below.
+        # If you want to use mod_disk_cache instead of mod_mem_cache,<br />
+        # uncomment the line above and comment out the LoadModule line below.<br />
         &lt;IfModule mod_disk_cache.c&gt;<br />
         <span class="indent">
           CacheRoot c:/cacheroot<br />
@@ -117,6 +126,9 @@
           MCacheMaxObjectSize 2048<br />
         </span>
         &lt;/IfModule&gt;<br />
+        <br />
+        # When acting as a proxy, don't cache the list of security updates<br />
+        CacheDisable http://security.update.server/update-list/<br />
       </span>
       &lt;/IfModule&gt;
     </code></p></div>
@@ -192,6 +204,20 @@
       CacheEnable  fd    /images<br />
       CacheEnable  disk  /<br />
     </code></p></div>
+
+    <p>フォワードプロクシサーバとして動作させる場合は、
+    <var>url-string</var> でリモートサイトとプロクシするプロトコルを
+    指定して、何に対してキャッシュを有効にするか指定することもできます。</p>
+ 
+    <div class="example"><p><code>
+      # Cache proxied url's<br />
+      CacheEnable  disk  /<br /><br />
+      # Cache FTP-proxied url's<br />
+      CacheEnable  disk  ftp://<br /><br />
+      # Cache content from www.apache.org<br />
+      CacheEnable  disk  http://www.apache.org/<br />
+    </code></p></div>
+
 
 </div>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
@@ -346,7 +372,7 @@
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="CacheMaxExpire" id="CacheMaxExpire">CacheMaxExpire</a> <a name="cachemaxexpire" id="cachemaxexpire">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ドキュメントをキャッシュする最大時間を秒数で現したもの</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>ドキュメントをキャッシュする最大時間を秒数で表したもの</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>CacheMaxExpire <var>seconds</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>CacheMaxExpire 86400 (一日)</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト</td></tr>

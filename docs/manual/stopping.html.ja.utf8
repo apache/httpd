@@ -38,9 +38,9 @@
 </div>
 <div id="quickview"><ul id="toc"><li><img alt="" src="./images/down.gif" /> <a href="#introduction">イントロダクション</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#term">急な停止</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#graceful">緩やかな再起動</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#graceful">緩やかな再起動 (Graceful Restart)</a></li>
 <li><img alt="" src="./images/down.gif" /> <a href="#hup">急な再起動</a></li>
-<li><img alt="" src="./images/down.gif" /> <a href="#race">付録: シグナルと競合状態</a></li>
+<li><img alt="" src="./images/down.gif" /> <a href="#gracefulstop">緩やかな停止 (Graceful Stop)</a></li>
 </ul><h3>参照</h3><ul class="seealso"><li><code class="program"><a href="./programs/httpd.html">httpd</a></code></li><li><code class="program"><a href="./programs/apachectl.html">apachectl</a></code></li></ul></div>
 <div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
@@ -72,7 +72,7 @@
     <p><code class="program"><a href="./programs/httpd.html">httpd</a></code> プロセスにシグナルを送る 2 番目の方法は
     <code>-k</code> というコマンドライン引数を使用することです。
     下で説明されているように、<code>stop</code>, <code>restart</code>, 
-    <code>graceful</code> を指定できます。
+    <code>graceful</code>, <code>graceful-stop</code> を指定できます。
     これらは <code class="program"><a href="./programs/httpd.html">httpd</a></code> の引数ですが、
     制御用のスクリプト <code class="program"><a href="./programs/apachectl.html">apachectl</a></code> はそれらの引数をそのまま
     <code class="program"><a href="./programs/httpd.html">httpd</a></code> に渡します。</p>
@@ -102,7 +102,7 @@
     応答はされません。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="graceful" id="graceful">緩やかな再起動</a></h2>
+<h2><a name="graceful" id="graceful">緩やかな再起動 (Graceful Restart)</a></h2>
 
 <dl><dt>シグナル: USR1</dt>
 <dd><code>apachectl -k graceful</code></dd>
@@ -116,12 +116,6 @@
     子プロセスが徐々になくなるに従って、
     新しい<em>世代</em>の設定による子プロセスに置き換えていきます。
     そして、これらが新たなリクエストに即座に応答し始めます。</p>
-
-    <div class="note">特定のプラットホームでは <code>USR1</code>
-    を緩やかな再起動のために使うことができませんが、代わりのシグナル
-    (例えば WINCH) が使用できるでしょう。
-    <code>apachectl graceful</code>
-    というコマンドはプラットホームに合ったシグナルを送ります。</div>
 
     <p>このコードは常に
     MPM のプロセス制御ディレクティブの設定を重視しますので、
@@ -203,48 +197,49 @@
     これを避けるには次の方法をご覧下さい。</div>
 </div><div class="top"><a href="#page-header"><img alt="top" src="./images/up.gif" /></a></div>
 <div class="section">
-<h2><a name="race" id="race">付録: シグナルと競合状態</a></h2>
+<h2><a name="gracefulstop" id="gracefulstop">緩やかな停止 (Graceful Stop)</a></h2>
 
-    <p>Apache 1.2b9 以前は、再起動や停止のシグナルを含む<em>競合状態</em>
-    (競合状態を簡単に説明すると: タイミンにグよる問題で、
-    具合の悪い時間帯にちょうど何かが起こると予想外の動作をする
-    ようなことを指します) がありました。
-    「正しい」機能を持っているアーキテクチャでは、できるだけ
-    このようなことが起こらないようにしています。
-    しかし、ある種のアーキテクチャでは競合状態は未だ確実に起こりえる
-    ということに注意してください。</p>
+<dl><dt>Signal: WINCH</dt>
+<dd><code>apachectl -k graceful-stop</code></dd>
+</dl>
 
-    <p>ディスク上で
-    <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code>
-    を使用しているアーキテクチャでは、
-    潜在的にスコアボードが壊れる可能性があります。
-    スコアボードが壊れた場合は、
-    "bind: Address already in use" (<code>HUP</code> 後) や
-    "long lost child came home!" (<code>USR1</code> 後)
-    といった結果になります。
-    前者は致命的なエラーですが、
-    後者はスコアボードスロットを失うだけです。
-    ですから緩やかな再起動は、たまに確実な再起動 (HUP)
-    も併用して使った方が良いでしょう。
-    これらの問題を克服するのは非常に難しいのですが、
-    幸いなことに大部分のアーキテクチャではスコアボードのファイルは必要ありません。
-    これを使用するアーキテクチャは、
-    <code class="directive"><a href="./mod/mpm_common.html#scoreboardfile">ScoreBoardFile</a></code>
-    をご覧下さい。</p>
+    <p>親プロセスは <code>WINCH</code> あるいは <code>graceful-stop</code>
+    シグナルを受け取ると、子プロセスに現在のリクエストの処理の後に終了する
+    (あるいは何もしていなければすぐに終了する)
+    ように<em>助言</em>します。
+    その後に親プロセスは <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code>
+    を削除し、全ポートからの Listen をやめます。
+    親プロセスはこのまま継続し、子プロセスがリクエストを処理する
+    のを監視しています。子プロセスが全て処理を終えて終了するか、<code class="directive"><a href="./mod/mpm_common.html#gracefulshutdowntimeout">GracefulShutdownTimeout</a></code>
+    で指定されたタイムアウトに達した後で、親プロセスも終了します。
+    タイムアウトに達した場合は、残りの子プロセスには <code>TERM</code>
+    シグナルが送信され、強制終了されます。</p>
+    
+    <p><code>TERM</code> シグナルによって、"graceful" 状態にある親プロセスと
+    子プロセスの全てが直ちに終了します。ただし、
+    <code class="directive"><a href="./mod/mpm_common.html#pidfile">PidFile</a></code> は既に削除
+    されてしまっていますので、<code>apachectl</code> や <code>httpd</code>
+    でこれらにシグナルを送ることはできません。</p>
 
-    <p>全てのアーキテクチャにおいて、個々の子プロセスで
-    継続的な HTTP コネクション (KeepAlive)
-    に関する小さな競合状態が起こりえます。
-    リクエスト行を読んだ後、そしてリクエストヘッダを読む前に
-    子プロセスは終了するかも知れません。
-    これに対する修正がありますが 1.2 で修正するには発見が遅すぎました。
-    理論的には、これは問題ではありません。
-    なぜなら KeepAlive のクライアントは、ネットワーク遅延や
-    サーバのタイムアウトなどに備えていなければならないからです。
-    実際にも何か影響があるようには見えません
-    -- テストケースでサーバを 1 秒間に 20 回再起動しても
-    クライアントは壊れた画像や空のドキュメントを受け取ることなく
-    正常に閲覧できています。</p>
+    <div class="note"><p><code>graceful-stop</code> シグナルを使うと、まったく同一の設定
+    ファイルを使った <code class="program"><a href="./programs/httpd.html">httpd</a></code> を同時に複数起動することが
+    できるようになります。
+    この機能を使うと、Apache をアップグレードする際にとても便利でしょう。
+    ただし、設定によってはデッドロックや競合状態 (レースコンディション) 
+    を引き起こすかもしれません。</p>
+
+    <p><code class="directive"><a href="./mod/core.html#lockfile">Lockfile</a></code> や <code class="directive"><a href="./mod/mod_cgid.html#scriptsock">ScriptSock</a></code> などでのディスク上のファイルについては、
+    ファイルにサーバの PID が含まれるようになっていて、httpd が複数同時に動作していても
+    問題がおきないように注意が払われています。
+    しかし、設定ディレクティブやサードパーティ製モジュール、CGI で使用される永続的な
+    ディスクを使ったロックや状態ファイルを活用している場合についても、
+    複数の <code class="program"><a href="./programs/httpd.html">httpd</a></code> が動作している状態であっても、それぞれで
+    ファイルを上書きしないように注意しなければなりません。</p>
+
+    <p>潜在的な競合状態についても心配する必要があるでしょう。
+    たとえば <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> 形式のパイプによるログなどが該当します。
+    複数の <code class="program"><a href="./programs/rotatelogs.html">rotatelogs</a></code> インスタンスが同時に同じログファイルを
+    rotate しようとすると、ログファイルが破壊されるかもしれません。</p></div>
 </div></div>
 <div class="bottomlang">
 <p><span>Available Languages: </span><a href="./de/stopping.html" hreflang="de" rel="alternate" title="Deutsch">&nbsp;de&nbsp;</a> |

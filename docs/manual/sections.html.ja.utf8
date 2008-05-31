@@ -24,8 +24,6 @@
 <a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">This translation may be out of date. Check the
-            English version for recent changes.</div>
  <p><a href="configuring.html">設定ファイル</a>中のディレクティブは
 サーバ全体に適用されたり、特定のディレクトリやファイル、ホスト、URL にのみ
 適用されるように制限したりすることができます。この文書は設定用のセクションの
@@ -43,12 +41,13 @@
 <div class="section">
 <h2><a name="types" id="types">設定用セクションコンテナの種類</a></h2>
 
-<table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
+<table class="related"><tr><th>関連モジュール</th><th>関連ディレクティブ</th></tr><tr><td><ul><li><code class="module"><a href="./mod/core.html">core</a></code></li><li><code class="module"><a href="./mod/mod_version.html">mod_version</a></code></li><li><code class="module"><a href="./mod/mod_proxy.html">mod_proxy</a></code></li></ul></td><td><ul><li><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxy">&lt;Proxy&gt;</a></code></li><li><code class="directive"><a href="./mod/mod_proxy.html#proxymatch">&lt;ProxyMatch&gt;</a></code></li><li><code class="directive"><a href="./mod/core.html#virtualhost">&lt;VirtualHost&gt;</a></code></li></ul></td></tr></table>
 
 <p>コンテナには二つの基本となる種類があります。ほとんどのコンテナは
 各リクエストに対して評価されます。その場合、コンテナ中のディレクティブは
 コンテナにマッチするリクエストにのみ適用されます。
-一方、<code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> コンテナと <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> コンテナは
+一方、<code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> コンテナ. <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> コンテナ,
+<code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code> は
 サーバの起動時と再起動時にのみ評価されます。起動時に条件が真であれば、
 コンテナ中のディレクティブはすべてのリクエストに適用されます。条件が
 偽であれば、コンテナ中のディレクティブは無視されます。</p>
@@ -85,8 +84,26 @@ MimeMagicFile conf/magic<br />
 &lt;/IfModule&gt;
 </code></p></div>
 
-<p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> ディレクティブと
-<code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> ディレクティブは
+<p><code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code>
+ディレクティブは <code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> 
+や <code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> 
+によく似ていますが、サーバが特定のバージョンであるときにのみ有効にしたい
+ディレクティブを囲むのに使います。
+テストスイートや大規模ネットワークなどの、さまざまなバージョンの httpd を
+異なる設定で扱う用途向けにデザインされています。</p>
+
+<div class="example"><p><code>
+  &lt;IfVersion &gt;= 2.1&gt;<br />
+  <span class="indent">
+    # this happens only in versions greater or<br />
+    # equal 2.1.0.<br />
+  </span>
+  &lt;/IfVersion&gt;
+</code></p></div>
+
+<p><code class="directive"><a href="./mod/core.html#ifdefine">&lt;IfDefine&gt;</a></code> ディレクティブ,
+<code class="directive"><a href="./mod/core.html#ifmodule">&lt;IfModule&gt;</a></code> ディレクティブ,
+<code class="directive"><a href="./mod/mod_version.html#ifversion">&lt;IfVersion&gt;</a></code> ディレクティブは
 テストの前に "!" を付けることで否定の条件を適用することができます。
 また、これらのセクションはより複雑な制限を課すために入れ子にすることができます。
 </p>
@@ -113,7 +130,8 @@ MimeMagicFile conf/magic<br />
 
 <p><code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> ディレクティブと
 <code class="directive"><a href="./mod/core.html#files">&lt;Files&gt;</a></code> ディレクティブ、それと
-それらの正規表現版はディレクティブをファイルシステムの一部分に対して適用します。
+それらの<a class="glossarylink" href="./glossary.html#regex" title="用語集を参照">正規表現</a>版はディレクティブを
+ファイルシステムの一部分に対して適用します。
 <code class="directive"><a href="./mod/core.html#directory">&lt;Directory&gt;</a></code> セクションの
 中のディレクティブは指定されたディレクトリとそのすべてのサブディレクトリに
 適用されます。<a href="howto/htaccess.html">.htaccess ファイル</a>を
@@ -211,8 +229,8 @@ shell スタイルのワイルドカードキャラクタが使用できます�
 <code class="directive"><a href="./mod/core.html#directorymatch">&lt;DirectoryMatch&gt;</a></code>, 
 <code class="directive"><a href="./mod/core.html#filesmatch">&lt;FilesMatch&gt;</a></code>, 
 <code class="directive"><a href="./mod/core.html#locationmatch">&lt;LocationMatch&gt;</a></code>
-があり、マッチを選択するのに perl 互換<a href="glossary.html#regex">正規表現</a>を使用できます。しかし、次の設定のマージに目を通して、
-regex セクションを使用することで、ディレクティブの適用がどのように
+があり、マッチを選択するのに perl 互換<a class="glossarylink" href="./glossary.html#regex" title="用語集を参照">正規表現</a>を使用できます。しかし、次の設定のマージに目を通して、
+正規表現のセクションを使用することで、ディレクティブの適用がどのように
 変化するか把握しておいてください。</p>
 
 <p>全ユーザディレクトリの設定を変更する、非 regex
@@ -250,7 +268,7 @@ Deny from all<br />
 
 <p>ファイルシステム上のオブジェクトへのアクセスを制限するために、
 <code class="directive"><a href="./mod/core.html#location">&lt;Location&gt;</a></code>
-を決して使用ないようにしましょう。
+を決して使用しないようにしましょう。
 同一のファイルシステム位置にマップしている、ウェブ空間位置 (URL)
 が多数あって、設定した制限を迂回されてしまうかもしれないからです。
 例えば次の設定を考えてみましょう。</p>

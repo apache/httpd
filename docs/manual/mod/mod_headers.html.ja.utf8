@@ -203,7 +203,7 @@
 
     <dt><code>echo</code></dt>
     <dd>指定されたものと同じ名前のリクエストヘッダを応答ヘッダで
-    そのまま返します。<var>header</var> には正規表現も指定できます。
+    そのまま返します。<var>header</var> には<a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a>も指定できます。
     <var>value</var> をつけてはいけません。</dd>
     </dl>
 
@@ -212,7 +212,7 @@
     <code>set</code>, <code>append</code>, <code>add</code>,
     <code>unset</code> では大文字小文字は
     区別されません。echo の <em>header</em> 名は大文字小文字を区別し、
-    正規表現を指定することもできます。</p>
+    <a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a>を指定することもできます。</p>
 
     <p><code>add</code>, <code>append</code>,
     <code>set</code> では <var>value</var> を三つ目の
@@ -227,11 +227,11 @@
 <tr class="odd"><td><code>%t</code></td>
         <td>リクエストを受け取った時刻を、
         Universal Coordinated Time での始まりの時刻 (Jan. 1, 1970) から経過した
-        時間をマイクロ秒として現したもの。値の最初には 
+        時間をマイクロ秒として表したもの。値の最初には 
         <code>t=</code> が付加されます。</td></tr>
 <tr><td><code>%D</code></td>
         <td>リクエストを受け取った時刻と、ヘッダを送り出した
-        時間との差。これは、リクエストが存在していた期間を現します。
+        時間との差。これは、リクエストが存在していた期間を表します。
         値の最初には <code>D=</code> が付加されます。</td></tr>
 <tr class="odd"><td><code>%{FOOBAR}e</code></td>
         <td><a href="../env.html">環境変数</a>
