@@ -74,7 +74,7 @@
     MIME タイプ <code>text/html</code> になります)。</p>
 
     <p>詳しい情報は <a
-    href="../howto/ssi.html">Tutorial on Server Side Includes</a>.</p>
+    href="../howto/ssi.html">Server Side Includes チュートリアル</a>を参照してください。</p>
 </section> <!-- /enabling -->
 
 <section id="pathinfo">
@@ -205,7 +205,7 @@
     <section id="element.exec"><title>exec 要素</title>
       <p><code>exec</code> コマンドは指定されたシェルコマンドや CGI スクリプトを
       実行します。<module>mod_cgi</module> がサーバに組み込まれているいなければ
-      なりません。<directive module="core">Option</directive> 
+      なりません。<directive module="core">Options</directive> 
       <code>IncludesNOEXEC</code> はこのコマンドを無効にします。
       使用可能な属性は次の通りです。</p>
 
@@ -217,7 +217,7 @@
       サーバが CGI スクリプトとして扱っていなくても CGI スクリプトとして
       起動されます。ただし、スクリプトのあるディレクトリでは
       (<directive module="mod_alias">ScriptAlias</directive>
-      や <directive module="core">Option</directive> <code>ExecCGI</code>
+      や <directive module="core">Options</directive> <code>ExecCGI</code>
       によって) CGI スクリプトの使用が許可されている必要があります。</p>
 
       <p>CGI スクリプトには、クライアントからの元々のリクエストの
@@ -298,7 +298,7 @@
       <p>このコマンドは別の文書やファイルのテキストを解析しているファイルに
       挿入します。挿入されるファイルはアクセス制御の管理下にあります。
       解析しているファイルの存在するディレクトリに
-      <a href="core.html#options">Option</a> <code>IncludesNOEXEC</code>
+      <a href="core.html#options">Options</a> <code>IncludesNOEXEC</code>
       が設定されている場合、text MIME タイプ (<code>text/plain</code>,
       <code>text/html</code> 等) のドキュメントのみインクルードが行なわれます。
       その他の場合は、クエリー文字列も含め、コマンドで指定された
@@ -698,7 +698,7 @@ directive]&quot;</default>
 
 <directivesynopsis>
 <name>SSITimeFormat</name>
-<description>日付けを現す文字列の書式を設定する</description>
+<description>日付けを表す文字列の書式を設定する</description>
 <syntax>SSITimeFormat <var>formatstring</var></syntax>
 <default>SSITimeFormat &quot;%A, %d-%b-%Y %H:%M:%S %Z&quot;</default>
 <contextlist>
@@ -708,7 +708,7 @@ directive]&quot;</default>
 <compatibility>2.0.30 以降で使用可能</compatibility>
 
 <usage>
-<p>このディレクティブは <code>DATE</code> 環境変数を echo して日付を現す文字列が
+<p>このディレクティブは <code>DATE</code> 環境変数を echo して日付を表す文字列が
     表示されるときの書式を変更します。<var>formatstring</var> は
     C 標準ライブラリの <code>strftime(3)</code> と同じ形式です。</p>
 

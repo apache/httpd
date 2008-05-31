@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:658547 (outdated) -->
+<!-- English Revision: 125277 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -142,7 +142,7 @@
     href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a> を
     参照してください)。例えば、<code>Host</code>,
     <code>User-Agent</code>, <code>Referer</code>, 
-    <code>Accept-Language</code> です。リクエストヘッダの集合を現すために
+    <code>Accept-Language</code> です。リクエストヘッダの集合を表すために
     正規表現を使うこともできます。</li>
 
 <li>以下のリクエストの一部分のどれか:
