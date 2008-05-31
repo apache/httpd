@@ -22,9 +22,12 @@
 
 <modulesynopsis metafile="mod_request.xml.meta">
 
-<name>request_body</name>
+<name>mod_request</name>
 <description>Filters to handle and make available HTTP request bodies</description>
-<status>Core</status>
+<status>Base</status>
+<sourcefile>mod_request.c</sourcefile>
+<identifier>request_module</identifier>
+<compatibility>Available in Apache 2.3 and later</compatibility>
 
 <directivesynopsis>
 <name>KeptBodySize</name>
