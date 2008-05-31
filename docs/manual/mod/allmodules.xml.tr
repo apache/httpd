@@ -2,7 +2,7 @@
 <!-- GENERATED FROM XML: DO NOT EDIT -->
 
 <modulefilelist>
-  <modulefile>core.xml</modulefile>
+  <modulefile>core.xml.tr</modulefile>
   <modulefile>mod_access_compat.xml</modulefile>
   <modulefile>mod_actions.xml</modulefile>
   <modulefile>mod_alias.xml</modulefile>
@@ -67,7 +67,7 @@
   <modulefile>mod_proxy_connect.xml</modulefile>
   <modulefile>mod_proxy_ftp.xml</modulefile>
   <modulefile>mod_proxy_http.xml</modulefile>
-  <modulefile>mod_request.xml</modulefile>
+  <modulefile>mod_request.xml.tr</modulefile>
   <modulefile>mod_rewrite.xml</modulefile>
   <modulefile>mod_session.xml</modulefile>
   <modulefile>mod_session_cookie.xml</modulefile>

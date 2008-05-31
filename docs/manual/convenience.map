@@ -216,7 +216,7 @@ isapilognotsupported	mod/mod_isapi.html#isapilognotsupported
 isapireadaheadbuffer	mod/mod_isapi.html#isapireadaheadbuffer
 keepalive	mod/core.html#keepalive
 keepalivetimeout	mod/core.html#keepalivetimeout
-keptbodysize	mod/request_body.html#keptbodysize
+keptbodysize	mod/mod_request.html#keptbodysize
 languagepriority	mod/mod_negotiation.html#languagepriority
 ldapcacheentries	mod/mod_ldap.html#ldapcacheentries
 ldapcachettl	mod/mod_ldap.html#ldapcachettl
