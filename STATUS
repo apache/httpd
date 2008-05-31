@@ -90,22 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * prefork: prefork's apr_pollset_poll() loop-on-EINTR loop was not checking
-  die_now; the child holding the mutex will not die immediately if poll
-  fails with EINTR, and will hence appear to "hang" until a new connection
-  is recevied.
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=613260
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-    +1: jim, jorton, rpluem
-
- * prefork: Unlock mutex before terminating.
-   Trunk version of patch:
-         http://svn.apache.org/viewvc?view=rev&revision=613252
-   Backport version for 2.2.x of patch:
-         Trunk version of patch works
-    +1: jim, jorton, rpluem
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
