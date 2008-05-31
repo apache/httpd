@@ -22,8 +22,8 @@
 <a href="./en/invoking.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/invoking.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./fr/invoking.html" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="">&nbsp;ja&nbsp;</a> |
+<a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a> |
 <a href="./ru/invoking.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
 <a href="./tr/invoking.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
@@ -154,8 +154,8 @@
 <a href="./en/invoking.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./es/invoking.html" hreflang="es" rel="alternate" title="Español">&nbsp;es&nbsp;</a> |
 <a href="./fr/invoking.html" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
-<a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
+<a href="./ja/invoking.html" hreflang="ja" rel="alternate" title="">&nbsp;ja&nbsp;</a> |
+<a href="./ko/invoking.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a> |
 <a href="./ru/invoking.html" hreflang="ru" rel="alternate" title="Russian">&nbsp;ru&nbsp;</a> |
 <a href="./tr/invoking.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
