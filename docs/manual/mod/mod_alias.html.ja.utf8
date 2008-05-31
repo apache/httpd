@@ -127,7 +127,11 @@ Alias /foo /gaq
     </code></p></div>
 
     <p>http://myserver/image/foo.gif へのリクエストに対して、サーバは
-    ファイル /ftp/pub/image/foo.gif を返します。</p>
+    ファイル /ftp/pub/image/foo.gif を返します。完全なパスセグメントが
+    一致した時にのみ働きますので、上の例は http://myserver/imagefoo.gif
+    に対するリクエストにはマッチしません。正規表現を使ったより複雑な
+    マッチングに関しては <code class="directive"><a href="#aliasmatch">AliasMatch</a></code>
+    ディレクティブをご覧ください。</p>
 
     <p>もし <var>url-path</var> の最後に /
     を書いたなら、サーバがエイリアスを展開するためには、最後の /
@@ -174,7 +178,8 @@ Alias /foo /gaq
 </table>
     <p>このディレクティブは <code class="directive"><a href="#alias">Alias</a></code>
     とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
-    標準正規表現を利用します。ここで指定された正規表現と URL のパス
+    <a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a>を利用します。
+    ここで指定された正規表現と URL のパス
     が合うかどうかを調べ、合う場合は括弧で括られたマッチを
     与えられた文字列で置き換え、それをファイル名として使用します。たとえば、
     <code>/icons</code> ディレクトリを使う
@@ -197,27 +202,37 @@ Alias /foo /gaq
 <tr><th><a href="directive-dict.html#Status">ステータス:</a></th><td>Base</td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_alias</td></tr>
 </table>
-    <p>Redirect ディレクティブは古い URL を新しいものへマップします。
-    新しい URL がクライアントに返されます。そして、
-    クライアントは新しいアドレスをもう一回取得しようとします。
-    <var>URL-path</var> (% が復号された) パスで始まるドキュメントへの
-    すべてのリクエストは <var>URL</var> で始まる新しい
-    (% が符号化された) URL へのリダイレクトエラーが返されます。</p>
+    <p>Redirect ディレクティブは古い URL を新しいものへマップして、
+    クライアントに新しい場所を訪れるように指し示します。</p>
+    
+    <p>古い <var>URL-path</var> (% が復号された) パスは、
+    スラッシュで始まるものです。相対パスは使用できません。
+    新しい <em>URL</em> は絶対 URL 、つまりスキームとホスト名で
+    始まるものであるべきですが、URL-path の、スラッシュで始まるものも
+    使用可能です。その場合は、現在のスキームとホスト名が追加されたことに
+    なります。</p>
+
+    <p><em>URL-Path</em> で始まるどんなリクエストも、ターゲットの
+    <em>URL</em> へとリダイレクトが返されます。<em>URL-Path</em>
+    にマッチした path 情報は、ターゲット URL の後ろに追加された
+    形で引き継がれます。</p>
 
     <div class="example"><h3>例</h3><p><code>
-      Redirect /service http://foo2.bar.com/service
+      Redirect /service http://foo2.example.com/service
     </code></p></div>
 
-    <p>クライアントは http://myserver/service/foo.txt
-    へのリクエストを行なうと、代わりに http://foo2.bar.com/service/foo.txt
-    をアクセスするように告げられます。</p>
+    <p>クライアントは http://example.com/service/foo.txt
+    へのリクエストを行なうと、代わりに http://foo2.example.com/service/foo.txt
+    をアクセスするように告げられます。
+    パスセグメントが完全に一致したもののみがマッチしますので、
+    上記の例は http://example.com/servicefoo.txt にはマッチしません。
+    正規表現を使ったより複雑なマッチングについては、
+    <code class="directive"><a href="#redirectmatch">RedirectMatch</a></code>
+    ディレクティブをご覧ください。</p>
 
 <div class="note"><h3>注意</h3><p>設定ファイル中の順番に関わらず、
 Redirect 系のディレクティブは Alias
-ディレクティブと ScriptAlias ディレクティブよりも優先されます。
-また、.htaccess ファイルや <code class="directive"><a href="../mod/core.html#directory">&lt;Directory&gt;</a></code>
-セクションの中で使われていたとしても、<var>URL-path</var>
-は相対パスではなく、完全な URL でなければなりません。</p></div>
+ディレクティブと ScriptAlias ディレクティブよりも優先されます。</p></div>
 
     <p>もし <var>status</var> 引数が与えられていなければ、リダイレクトは
     "temporary" (HTTP ステータス 302) になります。これはクライアントに
@@ -277,7 +292,8 @@ Redirect 系のディレクティブは Alias
 </table>
     <p>このディレクティブは <code class="directive"><a href="#redirect">Redirect</a></code>
     とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
-    標準正規表現を利用します。ここで指定された正規表現と URL-path
+    <a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a>を利用します。
+    ここで指定された正規表現と URL-path
     が合うかどうかを調べ、合う場合は括弧で括られたマッチを
     与えられた文字列で置き換え、それをファイル名として使用します。
     たとえば、すべての GIF ファイルを別サーバの同様な名前の JPEG
@@ -364,7 +380,7 @@ CGI スクリプトに指定</td></tr>
 </table>
     <p>このディレクティブは <code class="directive"><a href="#scriptalias">ScriptAlias</a></code>
     とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
-    標準正規表現を利用します。ここで指定された正規表現と URL-path
+    <a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a>を利用します。ここで指定された正規表現と URL-path
     が合うかどうかを調べ、合う場合は括弧で括られたマッチを
     与えられた文字列で置き換え、それをファイル名として使用します。
     たとえば、標準の <code>/cgi-bin</code>

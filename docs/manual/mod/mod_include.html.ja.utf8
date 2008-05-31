@@ -96,7 +96,7 @@
     Apache は INCLUDES フィルタを有効にします (出力されるものは
     MIME タイプ <code>text/html</code> になります)。</p>
 
-    <p>詳しい情報は <a href="../howto/ssi.html">Tutorial on Server Side Includes</a>.</p>
+    <p>詳しい情報は <a href="../howto/ssi.html">Server Side Includes チュートリアル</a>を参照してください。</p>
 </div><div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="section">
 <h2><a name="pathinfo" id="pathinfo">サーバサイドインクルード (SSI) での PATH_INFO</a></h2>
@@ -225,7 +225,7 @@
     <h3><a name="element.exec" id="element.exec">exec 要素</a></h3>
       <p><code>exec</code> コマンドは指定されたシェルコマンドや CGI スクリプトを
       実行します。<code class="module"><a href="../mod/mod_cgi.html">mod_cgi</a></code> がサーバに組み込まれているいなければ
-      なりません。<code class="directive"><a href="../mod/core.html#option">Option</a></code> 
+      なりません。<code class="directive"><a href="../mod/core.html#options">Options</a></code> 
       <code>IncludesNOEXEC</code> はこのコマンドを無効にします。
       使用可能な属性は次の通りです。</p>
 
@@ -237,7 +237,7 @@
       サーバが CGI スクリプトとして扱っていなくても CGI スクリプトとして
       起動されます。ただし、スクリプトのあるディレクトリでは
       (<code class="directive"><a href="../mod/mod_alias.html#scriptalias">ScriptAlias</a></code>
-      や <code class="directive"><a href="../mod/core.html#option">Option</a></code> <code>ExecCGI</code>
+      や <code class="directive"><a href="../mod/core.html#options">Options</a></code> <code>ExecCGI</code>
       によって) CGI スクリプトの使用が許可されている必要があります。</p>
 
       <p>CGI スクリプトには、クライアントからの元々のリクエストの
@@ -316,7 +316,7 @@
       <p>このコマンドは別の文書やファイルのテキストを解析しているファイルに
       挿入します。挿入されるファイルはアクセス制御の管理下にあります。
       解析しているファイルの存在するディレクトリに
-      <a href="core.html#options">Option</a> <code>IncludesNOEXEC</code>
+      <a href="core.html#options">Options</a> <code>IncludesNOEXEC</code>
       が設定されている場合、text MIME タイプ (<code>text/plain</code>,
       <code>text/html</code> 等) のドキュメントのみインクルードが行なわれます。
       その他の場合は、クエリー文字列も含め、コマンドで指定された
@@ -693,7 +693,7 @@ directive]"</code></td></tr>
 <div class="top"><a href="#page-header"><img alt="top" src="../images/up.gif" /></a></div>
 <div class="directive-section"><h2><a name="SSITimeFormat" id="SSITimeFormat">SSITimeFormat</a> <a name="ssitimeformat" id="ssitimeformat">ディレクティブ</a></h2>
 <table class="directive">
-<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>日付けを現す文字列の書式を設定する</td></tr>
+<tr><th><a href="directive-dict.html#Description">説明:</a></th><td>日付けを表す文字列の書式を設定する</td></tr>
 <tr><th><a href="directive-dict.html#Syntax">構文:</a></th><td><code>SSITimeFormat <var>formatstring</var></code></td></tr>
 <tr><th><a href="directive-dict.html#Default">デフォルト:</a></th><td><code>SSITimeFormat "%A, %d-%b-%Y %H:%M:%S %Z"</code></td></tr>
 <tr><th><a href="directive-dict.html#Context">コンテキスト:</a></th><td>サーバ設定ファイル, バーチャルホスト, ディレクトリ, .htaccess</td></tr>
@@ -702,7 +702,7 @@ directive]"</code></td></tr>
 <tr><th><a href="directive-dict.html#Module">モジュール:</a></th><td>mod_include</td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">互換性:</a></th><td>2.0.30 以降で使用可能</td></tr>
 </table>
-<p>このディレクティブは <code>DATE</code> 環境変数を echo して日付を現す文字列が
+<p>このディレクティブは <code>DATE</code> 環境変数を echo して日付を表す文字列が
     表示されるときの書式を変更します。<var>formatstring</var> は
     C 標準ライブラリの <code>strftime(3)</code> と同じ形式です。</p>
 

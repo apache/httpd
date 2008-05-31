@@ -151,7 +151,7 @@
 <li>HTTP リクエストヘッダフィールド (詳しい情報は <a href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a> を
     参照してください)。例えば、<code>Host</code>,
     <code>User-Agent</code>, <code>Referer</code>, 
-    <code>Accept-Language</code> です。リクエストヘッダの集合を現すために
+    <code>Accept-Language</code> です。リクエストヘッダの集合を表すために
     正規表現を使うこともできます。</li>
 
 <li>以下のリクエストの一部分のどれか:
@@ -190,9 +190,9 @@
 <em>attribute</em> に正規表現が使われなかったときにのみ考慮されます。</li>
 </ol>
 
-<p>二つ目の引数 (<em>regex</em>) は <a href="http://www.pcre.org/">Perl 互換の正規表現</a>です。
-これは POSIX.2 の egrep 形式の正規表現と似ています。<em>regex</em> が
-<em>attribute</em> にマッチする場合は、残りの引数が評価されます。</p>
+<p>二つ目の引数 (<em>regex</em>) は <a class="glossarylink" href="../glossary.html#regex" title="用語集を参照">正規表現</a>です。
+<em>regex</em> が <em>attribute</em> にマッチする場合は、
+残りの引数が評価されます。</p>
 
 <p>残りの引数は設定する変数の名前で、設定される値を指定することもできます。
 これは、</p>
