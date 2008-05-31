@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 125277 -->
+<!-- English Revision: 421100 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -181,10 +181,10 @@
 <em>attribute</em> に正規表現が使われなかったときにのみ考慮されます。</li>
 </ol>
 
-<p>二つ目の引数 (<em>regex</em>) は <a
-href="http://www.pcre.org/">Perl 互換の正規表現</a>です。
-これは POSIX.2 の egrep 形式の正規表現と似ています。<em>regex</em> が
-<em>attribute</em> にマッチする場合は、残りの引数が評価されます。</p>
+<p>二つ目の引数 (<em>regex</em>) は <glossary
+ref="regex">正規表現</glossary>です。
+<em>regex</em> が <em>attribute</em> にマッチする場合は、
+残りの引数が評価されます。</p>
 
 <p>残りの引数は設定する変数の名前で、設定される値を指定することもできます。
 これは、</p>
