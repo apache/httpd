@@ -27,7 +27,6 @@
 <a href="../ja/mod/mpm_common.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
 <a href="../tr/mod/mpm_common.html" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
-<div class="outofdate">Bu çeviri güncel olmayabilir. Son değişiklikler için İngilizce sürüm geçerlidir.</div>
 <table class="module"><tr><th><a href="module-dict.html#Description">Açıklama:</a></th><td>Birden fazla Çok Süreçlilik Modülü (MPM) tarafından gerçeklenmiş
   yönergeler bütünü.</td></tr>
 <tr><th><a href="module-dict.html#Status">Durum:</a></th><td>MPM</td></tr></table>
@@ -124,13 +123,13 @@
 <tr><th><a href="directive-dict.html#Module">Modül:</a></th><td><code class="module"><a href="../mod/perchild.html">perchild</a></code>, <code class="module"><a href="../mod/prefork.html">prefork</a></code></td></tr>
 <tr><th><a href="directive-dict.html#Compatibility">Uyumluluk:</a></th><td>Sadece BS2000 makineler içindir.</td></tr>
 </table>
-    <p><code class="directive">BS2000Account</code> yönergesi sadece BS2000 
-	konaklar için kullanılabilir. <code class="directive"><a href="#user">User</a></code> yönergesi ile belirtilen yetkisiz apache sunucu 
+    <p><code class="directive">BS2000Account</code> yönergesi sadece BS2000
+	konaklar için kullanılabilir. <code class="directive"><a href="#user">User</a></code> yönergesi ile belirtilen yetkisiz apache sunucu
 	kullanıcısı için hesap numarası tanımlamakta kullanılmalıdır. Buna,
 	CGI betiklerinin sunucu tarafından başlatılmış yetkili hesabın
-	(normal olarak <code>SYSROOT</code>’un) özkaynaklarına erişmesini 
+	(normal olarak <code>SYSROOT</code>’un) özkaynaklarına erişmesini
 	engellemek için BS2000 POSIX alt sistemleri tarafından gerek duyulur.</p>
-	
+
     <div class="note"><h3>Ek Bilgi</h3>
       <p>Sadece bir <code>BS2000Account</code> yönergesi kullanılabilir.</p>
     </div>
@@ -443,15 +442,8 @@
     </div>
 
     <p><code class="directive">MaxRequestsPerChild</code> için sıfırdan farklı bir
-      değer belirtmenin iki yararlı etkisi vardır:</p>
-
-    <ul>
-      <li>Sürecin kullanacağı bellek miktarını sınırlamak suretiyle olası
-        bellek sızıntılarını engeller.</li>
-
-      <li>Sürece sonlu bir ömür biçerek sunucu yükü düştüğünde süreç sayısının
-        da düşürülmesine yardımcı olur.</li>
-    </ul>
+      değer belirtilmesi sürecin kullanacağı bellek miktarını sınırlamak
+      suretiyle olası bellek sızıntılarını engeller.</p>
 
     <div class="note"><h3>Ek Bilgi</h3>
       <p><code class="directive"><a href="../mod/core.html#keepalive">KeepAlive</a></code> isteklerinde sadece

@@ -68,7 +68,7 @@
         <td><a href="#extract">Paketi açma</a></td>
 
         <td><code>$ gzip -d httpd-2_0_<em>NN</em>.tar.gz<br />
-         $ tar xvf httpd-2_0_<em>NN</em>.tar</code></td><br />
+         $ tar xvf httpd-2_0_<em>NN</em>.tar</code></td>
       </tr>
 
       <tr>
