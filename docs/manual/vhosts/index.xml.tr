@@ -1,0 +1,105 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
+<?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
+<!-- English Revision: 421100 -->
+<!-- =====================================================
+ Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
+   Reviewed by: Orhan Berent <berent belgeler.org>
+========================================================== -->
+
+<!--
+ Licensed to the Apache Software Foundation (ASF) under one or more
+ contributor license agreements.  See the NOTICE file distributed with
+ this work for additional information regarding copyright ownership.
+ The ASF licenses this file to You under the Apache License, Version 2.0
+ (the "License"); you may not use this file except in compliance with
+ the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-->
+
+<manualpage metafile="index.xml.meta">
+<parentdocument href="../"/>
+
+   <title>Apache Sanal Konak Belgeleri</title>
+
+<summary>
+
+    <p><cite>Sanal Konak</cite> (Virtual Host) terimi tek bir makine üzerinde
+      birden fazla sitenin (www.sirket1.dom, www.sirket2.dom gibi) barındırılma
+      uygulamasını betimler. Sanal konaklar, "<a href="ip-based.html">IP’ye
+      dayalı</a>" veya "<a href="name-based.html">isme dayalı</a>" olabilir;
+      birincisinde, her site ayrı bir IP adresinden sunulurken, ikincisinde her
+      IP adresinde birden fazla site sunulur. Olayda aynı fiziksel sunucu
+      kullanıldığı halde bu sunucu son kullanıcıya görünür değildir.</p>
+
+    <p>Apache yazılımsal olarak IP’ye dayalı sanal konakları destekleyen ilk
+      sunuculardan biridir. 1.1 sürümünden itibaren Apache hem IP’ye dayalı hem de
+      isme dayalı sanal konakları desteklemektedir. İsme dayalı sanal konaklara
+      bazen <em>konağa dayalı</em> sanal konaklar veya <em>IP’ye dayanmayan</em>
+      sanal konaklar da denmektedir.</p>
+
+    <p>Aşağıda, Apache’nin 1.3 sürümü ve sonrası için sanal konak desteğini bütün
+      ayrıntıları ile açıklayan belgeler listelenmiştir.</p>
+
+</summary>
+
+<seealso><module>mod_vhost_alias</module></seealso>
+<seealso><a href="name-based.html">İsme Dayalı Sanal Konaklar</a></seealso>
+<seealso><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a></seealso>
+<seealso><a href="examples.html">Sanal Konak Örnekleri</a></seealso>
+<seealso><a href="fd-limits.html">Dosya Tanıtıcı Sınırları</a></seealso>
+<seealso><a href="mass.html">Kütlesel Sanal Konaklık</a></seealso>
+<seealso><a href="details.html">Ayrıntılı olarak Konak Eşleme</a></seealso>
+
+<section id="support"><title>Sanal Konak Desteği</title>
+
+    <ul>
+      <li><a href="name-based.html">İsme Dayalı Sanal Konaklar</a> (Her IP
+        adresinde birden fazla site)</li>
+      <li><a href="ip-based.html">IP Adresine Dayalı Sanal Konaklar</a> (Her site
+        için ayrı IP adresi)</li>
+      <li><a href="examples.html">Çok kullanılan sanal konak yapılandırma
+        örnekleri</a></li>
+      <li><a href="fd-limits.html">Dosya Tanıtıcı Sınırları</a> (veya,
+        <em>çok fazla günlük dosyası</em>)</li>
+      <li><a href="mass.html">Devingen olarak Yapılandırılan Kütlesel Sanal
+        Barındırma</a></li>
+      <li><a href="details.html">Konak Eşlemenin Derinliğine İncelenmesi</a></li>
+    </ul>
+
+</section>
+
+<section id="directives"><title>Yapılandırma Yönergeleri</title>
+
+    <ul>
+      <li><directive type="section"
+           module="core">VirtualHost</directive></li>
+      <li><directive module="core">NameVirtualHost</directive></li>
+      <li><directive module="core">ServerName</directive></li>
+      <li><directive module="core">ServerAlias</directive></li>
+      <li><directive module="core">ServerPath</directive></li>
+    </ul>
+
+    <p>Sanal konak yapılandırmanız üzerinde hata ayıklamaya çalışıyorsanız
+      Apache’nin <code>-S</code> komut satırı seçeneği şu şekilde çok işinize
+      yarayabilir:</p>
+
+    <example>
+    /usr/local/apache2/bin/httpd -S
+    </example>
+
+    <p>Bu komut, yapılandırma dosyasının Apache yorumunu dökümler. IP
+      adreslerinin ve sunucu isimlerinin dikkatli bir incelemesi, yapılandırma
+      yanlışlarınızı keşfetmenize yardımcı olabilir. (Diğer komut satırı
+      seçenekleri için <program>httpd</program> programının belgelerine
+      bakınız.)</p>
+
+</section>
+</manualpage>
