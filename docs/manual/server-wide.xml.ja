@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:421100 (outdated) -->
+<!-- English Revision: 421100 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -40,11 +40,13 @@
         <directive module="core">ServerSignature</directive>
         <directive module="core">ServerTokens</directive>
         <directive module="core">UseCanonicalName</directive>
+        <directive module="core">UseCanonicalPhysicalPort</directive>
       </directivelist>
     </related>
 
-    <p><directive module="core">ServerAdmin</directive> ディレクティブと
-    <directive module="core">ServerTokens</directive>
+    <p><directive module="core">ServerAdmin</directive>, 
+    <directive module="core">ServerTokens</directive>, 
+    <directive module="core">UseCanonicalPhysicalPort</directive>
     ディレクティブは、エラーメッセージなどのサーバが作るドキュメントに、
     どのようなサーバの情報を表示するかを制御します。
     <directive module="core">ServerTokens</directive> ディレクティブは、Server HTTP

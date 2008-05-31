@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
-<!-- English Revision: 151408:654883 (outdated) -->
+<!-- English Revision: 421100 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -257,7 +257,8 @@
 
     <dt><code>echo</code></dt>
     <dd>指定されたものと同じ名前のリクエストヘッダを応答ヘッダで
-    そのまま返します。<var>header</var> には正規表現も指定できます。
+    そのまま返します。<var>header</var> には<glossary 
+    ref="regex">正規表現</glossary>も指定できます。
     <var>value</var> をつけてはいけません。</dd>
     </dl>
 
@@ -266,7 +267,7 @@
     <code>set</code>, <code>append</code>, <code>add</code>,
     <code>unset</code> では大文字小文字は
     区別されません。echo の <em>header</em> 名は大文字小文字を区別し、
-    正規表現を指定することもできます。</p>
+    <glossary ref="regex">正規表現</glossary>を指定することもできます。</p>
 
     <p><code>add</code>, <code>append</code>,
     <code>set</code> では <var>value</var> を三つ目の

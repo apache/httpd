@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="iso-2022-jp"?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
-<!-- English Revision: 151408:421100 (outdated) -->
+<!-- English Revision: 421100 -->
 
 <!--
  Licensed to the Apache Software Foundation (ASF) under one or more
@@ -36,6 +36,7 @@
 <related>
 <modulelist>
 <module>core</module>
+<module>mod_version</module>
 <module>mod_proxy</module>
 </modulelist>
 <directivelist>
@@ -45,6 +46,7 @@
 <directive type="section" module="core">FilesMatch</directive>
 <directive type="section" module="core">IfDefine</directive>
 <directive type="section" module="core">IfModule</directive>
+<directive type="section" module="mod_version">IfVersion</directive>
 <directive type="section" module="core">Location</directive>
 <directive type="section" module="core">LocationMatch</directive>
 <directive type="section" module="mod_proxy">Proxy</directive>
@@ -57,8 +59,9 @@
 各リクエストに対して評価されます。その場合、コンテナ中のディレクティブは
 コンテナにマッチするリクエストにのみ適用されます。
 一方、<directive type="section"
- module="core">IfDefine</directive> コンテナと <directive
-type="section" module="core">IfModule</directive> コンテナは
+ module="core">IfDefine</directive> コンテナ. <directive
+type="section" module="core">IfModule</directive> コンテナ,
+<directive type="section" module="mod_version">IfVersion</directive> は
 サーバの起動時と再起動時にのみ評価されます。起動時に条件が真であれば、
 コンテナ中のディレクティブはすべてのリクエストに適用されます。条件が
 偽であれば、コンテナ中のディレクティブは無視されます。</p>
@@ -96,8 +99,26 @@ MimeMagicFile conf/magic<br />
 &lt;/IfModule&gt;
 </example>
 
-<p><directive type="section" module="core">IfDefine</directive> ディレクティブと
-<directive type="section" module="core">IfModule</directive> ディレクティブは
+<p><directive type="section" module="mod_version">IfVersion</directive>
+ディレクティブは <directive type="section" module="core">IfDefine</directive> 
+や <directive type="section" module="core">IfModule</directive> 
+によく似ていますが、サーバが特定のバージョンであるときにのみ有効にしたい
+ディレクティブを囲むのに使います。
+テストスイートや大規模ネットワークなどの、さまざまなバージョンの httpd を
+異なる設定で扱う用途向けにデザインされています。</p>
+
+<example>
+  &lt;IfVersion >= 2.1&gt;<br />
+  <indent>
+    # this happens only in versions greater or<br />
+    # equal 2.1.0.<br />
+  </indent>
+  &lt;/IfVersion&gt;
+</example>
+
+<p><directive type="section" module="core">IfDefine</directive> ディレクティブ,
+<directive type="section" module="core">IfModule</directive> ディレクティブ,
+<directive type="section" module="mod_version">IfVersion</directive> ディレクティブは
 テストの前に "!" を付けることで否定の条件を適用することができます。
 また、これらのセクションはより複雑な制限を課すために入れ子にすることができます。
 </p>
@@ -124,7 +145,8 @@ MimeMagicFile conf/magic<br />
 
 <p><directive type="section" module="core">Directory</directive> ディレクティブと
 <directive type="section" module="core">Files</directive> ディレクティブ、それと
-それらの正規表現版はディレクティブをファイルシステムの一部分に対して適用します。
+それらの<glossary ref="regex">正規表現</glossary>版はディレクティブを
+ファイルシステムの一部分に対して適用します。
 <directive type="section" module="core">Directory</directive> セクションの
 中のディレクティブは指定されたディレクトリとそのすべてのサブディレクトリに
 適用されます。<a href="howto/htaccess.html">.htaccess ファイル</a>を
@@ -222,9 +244,9 @@ shell スタイルのワイルドカードキャラクタが使用できます。
 <directive type="section" module="core">DirectoryMatch</directive>, 
 <directive type="section" module="core">FilesMatch</directive>, 
 <directive type="section" module="core">LocationMatch</directive>
-があり、マッチを選択するのに perl 互換<a href="glossary.html#regex"
->正規表現</a>を使用できます。しかし、次の設定のマージに目を通して、
-regex セクションを使用することで、ディレクティブの適用がどのように
+があり、マッチを選択するのに perl 互換<glossary 
+ref="regex">正規表現</glossary>を使用できます。しかし、次の設定のマージに目を通して、
+正規表現のセクションを使用することで、ディレクティブの適用がどのように
 変化するか把握しておいてください。</p>
 
 <p>全ユーザディレクトリの設定を変更する、非 regex
