@@ -156,7 +156,8 @@ by other LDAP modules</dd>
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
 <dt><a href="mod_proxy_http.html">mod_proxy_http</a></dt><dd>HTTP support module for
 <code class="module"><a href="../mod/mod_proxy.html">mod_proxy</a></code></dd>
-<dt><a href="mod_rewrite.html" id="R" name="R">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
+<dt><a href="mod_request.html" id="R" name="R">mod_request</a></dt><dd>Filters to handle and make available HTTP request bodies</dd>
+<dt><a href="mod_rewrite.html">mod_rewrite</a></dt><dd>Provides a rule-based rewriting engine to rewrite requested
 URLs on the fly</dd>
 <dt><a href="mod_session.html" id="S" name="S">mod_session</a></dt><dd>Session support</dd>
 <dt><a href="mod_session_cookie.html">mod_session_cookie</a></dt><dd>Cookie based session support</dd>

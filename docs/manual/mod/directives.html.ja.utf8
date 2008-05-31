@@ -247,7 +247,7 @@
 <li><a href="mod_isapi.html#isapireadaheadbuffer">ISAPIReadAheadBuffer</a></li>
 <li><a href="core.html#keepalive" id="K" name="K">KeepAlive</a></li>
 <li><a href="core.html#keepalivetimeout">KeepAliveTimeout</a></li>
-<li><a href="request_body.html#keptbodysize">KeptBodySize</a></li>
+<li><a href="mod_request.html#keptbodysize">KeptBodySize</a></li>
 <li><a href="mod_negotiation.html#languagepriority" id="L" name="L">LanguagePriority</a></li>
 <li><a href="mod_ldap.html#ldapcacheentries">LDAPCacheEntries</a></li>
 <li><a href="mod_ldap.html#ldapcachettl">LDAPCacheTTL</a></li>
