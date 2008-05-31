@@ -174,7 +174,7 @@
 </directivesynopsis>
 <directivesynopsis>
 <name>CacheMaxExpire</name>
-<description>ドキュメントをキャッシュする最大時間を秒数で現したもの</description>
+<description>ドキュメントをキャッシュする最大時間を秒数で表したもの</description>
 <syntax>CacheMaxExpire <var>seconds</var></syntax>
 <default>CacheMaxExpire 86400 (一日)</default>
 <contextlist><context>server config</context><context>virtual host</context>
