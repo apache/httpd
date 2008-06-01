@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 649163 -->
+<!-- English Revision: 662005 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -29,6 +29,9 @@
 <name>mod_request</name>
 <description>HTTP istek gövdelerini işleme sokup kullanılabilir kılan süzgeçler</description>
 <status>Base</status>
+<sourcefile>mod_request.c</sourcefile>
+<identifier>request_module</identifier>
+<compatibility>Apache 2.3 ve sonrasında mevcuttur.</compatibility>
 
 
 <directivesynopsis>
