@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) htpasswd: Fix salt generation weakness. PR 31440
+     [Andreas Krennmair <ak synflood.at>, Peter Watkins <peterw tux.org>,
+     Paul Querna]
+
   *) core: Add the filename of the configuration file to the warning message
      about the useless use of AllowOverride. PR 39992.
      [Darryl Miles <darryl darrylmiles.org>]
