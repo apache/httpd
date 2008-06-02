@@ -168,9 +168,6 @@ Changes with Apache 2.3.0
   *) mod_ssl: Add support for OCSP validation of client certificates.
      PR 41123.  [Marc Stern <marc.stern approach.be>, Joe Orton]
 
-  *) mod_unique_id: Fix timestamp value in UNIQUE_ID.
-     PR 37064 [Kobayashi <kobayashi firstserver.co.jp>]
-
   *) mod_serf: New module for Reverse Proxying. [Paul Querna]
 
   *) core: Add the option to keep aside a request body up to a certain
@@ -277,10 +274,6 @@ Changes with Apache 2.3.0
 
   *) mod_proxy: Support environment variable interpolation in reverse
      proxying directives. [Nick Kew]
-
-  *) core: Add the filename of the configuration file to the warning message
-     about the useless use of AllowOverride. PR 39992.
-     [Darryl Miles <darryl darrylmiles.org>]
 
   *) New SSLLogLevelDebugDump [ None (default) | IO (not bytes) | Bytes ]
      configures the I/O Dump of SSL traffic, when LogLevel is set to Debug.
