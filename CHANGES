@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) core: Add the filename of the configuration file to the warning message
+     about the useless use of AllowOverride. PR 39992.
+     [Darryl Miles <darryl darrylmiles.org>]
+
   *) scoreboard: Remove unused proxy load balancer elements from scoreboard
      image (not scoreboard memory itself).  [Chris Darroch]
 
