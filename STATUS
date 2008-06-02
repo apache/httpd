@@ -90,14 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * core: Add the filename of the configuration file to the warning message
-   about the useless use of AllowOverride. PR 39992
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=420307&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim, pquerna
-
  * htpasswd: Fix salt generation weakness. PR 31440
    [Andreas Krennmair <ak synflood.at>, Peter Watkins <peterw tux.org>, Paul Querna]
     Trunk version of patch:
