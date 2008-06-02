@@ -304,7 +304,7 @@ static int gen_unique_id(request_rec *r)
     new_unique_id.pid = cur_unique_id.pid;
     new_unique_id.counter = cur_unique_id.counter;
 
-    new_unique_id.stamp = htonl((unsigned int)r->request_time);
+    new_unique_id.stamp = htonl((unsigned int)apr_time_sec(r->request_time));
     new_unique_id.thread_index = htonl((unsigned int)r->connection->id);
 
     /* we'll use a temporal buffer to avoid uuencoding the possible internal

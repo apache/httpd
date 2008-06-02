@@ -1,6 +1,9 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) mod_unique_id: Fix timestamp value in UNIQUE_ID.
+     PR 37064 [Kobayashi <kobayashi firstserver.co.jp>]
+
   *) htpasswd: Fix salt generation weakness. PR 31440
      [Andreas Krennmair <ak synflood.at>, Peter Watkins <peterw tux.org>,
      Paul Querna]
