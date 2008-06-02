@@ -90,17 +90,6 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
- * htpasswd: Fix salt generation weakness. PR 31440
-   [Andreas Krennmair <ak synflood.at>, Peter Watkins <peterw tux.org>, Paul Querna]
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=629159&view=rev
-       http://svn.apache.org/viewvc?rev=629164&view=rev
-       http://svn.apache.org/viewvc?rev=629218&view=rev
-       http://svn.apache.org/viewvc?rev=630139&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-    +1: rpluem, jim, pquerna
-
  * mod_unique_id: Convert request time to seconds before before storing it in
    unique_id_rec struct. PR 37064
     Trunk version of patch:

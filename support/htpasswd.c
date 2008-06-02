@@ -115,6 +115,30 @@ static void to64(char *s, unsigned long v, int n)
     }
 }
 
+static void generate_salt(char *s, size_t size)
+{
+    static unsigned char tbl[] = 
+        "./0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
+    size_t i;
+    for (i = 0; i < size; ++i) {
+        int idx = (int) (64.0 * rand() / (RAND_MAX + 1.0));
+        s[i] = tbl[idx];
+    }
+}
+
+static apr_status_t seed_rand(void)
+{
+    int seed = 0;
+    apr_status_t rv;
+    rv = apr_generate_random_bytes((unsigned char*) &seed, sizeof(seed));
+    if (rv) {
+        apr_file_printf(errfile, "Unable to generate random bytes: %pm" NL, &rv);
+        return rv;
+    }
+    srand(seed);
+    return rv;
+}
+
 static void putline(apr_file_t *f, const char *l)
 {
     apr_file_puts(l, f);
@@ -162,8 +186,10 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
         break;
 
     case ALG_APMD5:
-        (void) srand((int) time((time_t *) NULL));
-        to64(&salt[0], rand(), 8);
+        if (seed_rand()) {
+            break;
+        }
+        generate_salt(&salt[0], 8);
         salt[8] = '\0';
 
         apr_md5_encode((const char *)pw, (const char *)salt,
@@ -178,7 +204,9 @@ static int mkrecord(char *user, char *record, apr_size_t rlen, char *passwd,
 #if !(defined(WIN32) || defined(NETWARE))
     case ALG_CRYPT:
     default:
-        (void) srand((int) time((time_t *) NULL));
+        if (seed_rand()) {
+            break;
+        }
         to64(&salt[0], rand(), 8);
         salt[8] = '\0';
 
