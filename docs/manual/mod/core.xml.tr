@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.tr.xsl"?>
-<!-- English Revision: 655483 -->
+<!-- English Revision: 662727 -->
 <!-- =====================================================
  Translated by: Nilgün Belma Bugüner <nilgun belgeler.org>
    Reviewed by: Orhan Berent <berent belgeler.org>
@@ -1422,16 +1422,6 @@ yönergeleri sarmalar.</description>
       Include conf/vhosts/*.conf
     </example>
 
-    <p><code>apachectl configtest</code> ile yapılandırma sınanırken işleme
-      sokulan dosyalar listelenir:</p>
-
-    <example>
-      root@host# apachectl configtest<br />
-      Processing config file: /usr/local/apache2/conf/ssl.conf<br />
-      Processing config file: /usr/local/apache2/conf/vhosts/vhost1.conf<br />
-      Processing config file: /usr/local/apache2/conf/vhosts/vhost2.conf<br />
-      Syntax OK
-    </example>
 </usage>
 
 <seealso><program>apachectl</program></seealso>
