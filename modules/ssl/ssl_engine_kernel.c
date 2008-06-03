@@ -432,6 +432,11 @@ int ssl_hook_Access(request_rec *r)
      * currently active/remembered verify depth (because this means more
      * restriction on the certificate chain).
      */
+    if ((sc->server->auth.verify_depth != UNSET) &&
+        (dc->nVerifyDepth == UNSET)) {
+        /* apply per-vhost setting, if per-directory config is not set */
+        dc->nVerifyDepth = sc->server->auth.verify_depth;
+    }
     if (dc->nVerifyDepth != UNSET) {
         /* XXX: doesnt look like sslconn->verify_depth is actually used */
         if (!(n = sslconn->verify_depth)) {
@@ -461,6 +466,11 @@ int ssl_hook_Access(request_rec *r)
      * verification but at least skip the I/O-intensive renegotation
      * handshake.
      */
+    if ((sc->server->auth.verify_mode != SSL_CVERIFY_UNSET) &&
+        (dc->nVerifyClient == SSL_CVERIFY_UNSET)) {
+        /* apply per-vhost setting, if per-directory config is not set */
+        dc->nVerifyClient = sc->server->auth.verify_mode;
+    }
     if (dc->nVerifyClient != SSL_CVERIFY_UNSET) {
         /* remember old state */
         verify_old = SSL_get_verify_mode(ssl);
