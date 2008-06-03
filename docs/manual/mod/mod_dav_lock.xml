@@ -35,11 +35,11 @@
     the service of <module>mod_dav</module>. But without a backend provider
     which makes use of it, it's useless and should not be loaded into the
     server. A sample backend module which actually utilizes
-    <module>mod_dav_lock</module>, is <a href="http://subversion.tigris.org/"
+    <module>mod_dav_lock</module> is <a href="http://subversion.tigris.org/"
     >mod_dav_svn</a>, the subversion provider module.</p>
 
     <p>Note that <module>mod_dav_fs</module> does <em>not</em> need this
-    generic locking module, because it uses it's own more specialized
+    generic locking module, because it uses its own more specialized
     version.</p>
 
     <p>In order to make <module>mod_dav_lock</module> functional, you just have
@@ -50,7 +50,7 @@
     <note><title>Developer's Note</title>
       <p>In order to retrieve the pointer to the locking provider function, you
       have to use the <code>ap_lookup_provider</code> API with the arguments
-      <code>dav-lock</code>, <code>generic</code> and <code>0</code>.</p>
+      <code>dav-lock</code>, <code>generic</code>, and <code>0</code>.</p>
     </note>
 </summary>
 <seealso><module>mod_dav</module></seealso>
@@ -66,7 +66,7 @@
 <usage>
     <p>Use the <directive>DavGenericLockDB</directive> directive to specify
     the full path to the lock database, excluding an extension. If
-    the path is not absolute, it will be taken relative to <directive
+    the path is not absolute, it will be interpreted relative to <directive
     module="core">ServerRoot</directive>. The implementation of
     <module>mod_dav_lock</module> uses a SDBM database to track user
     locks.</p>
@@ -83,7 +83,7 @@
     an existing directory.  In the above example, Apache will create
     files in the <code>var/</code> directory under the <directive
     module="core">ServerRoot</directive> with the base filename
-    <code>DavLock</code> and extension name chosen by the server.</p>
+    <code>DavLock</code> and an extension added by the server.</p>
 
 </usage>
 </directivesynopsis>
