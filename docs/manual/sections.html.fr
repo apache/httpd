@@ -20,8 +20,8 @@
 <div class="toplang">
 <p><span>Langues Disponibles: </span><a href="./en/sections.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/sections.html" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ja/sections.html" hreflang="ja" rel="alternate" title="">&nbsp;ja&nbsp;</a> |
-<a href="./ko/sections.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a> |
+<a href="./ja/sections.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div>
  <p>Les directives des <a href="configuring.html">fichiers de configuration</a> peuvent s'appliquer
@@ -453,10 +453,10 @@ sont interprétées.</p>
     sur celles qui les précèdent.</p>
 
 <div class="note"><h3>Note technique</h3>
-	Une séquence
-	<code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
-	est réellement traitée juste avant la phase de traduction du nom
-	(où <code>Aliases</code> et <code>DocumentRoots</code>
+      Une séquence
+      <code>&lt;Location&gt;</code>/<code>&lt;LocationMatch&gt;</code>
+      est réellement traitée juste avant la phase de traduction du nom
+      (où <code>Aliases</code> et <code>DocumentRoots</code>
       sont utilisés pour faire correspondre les URLs aux noms de fichiers).
       Les effets de cette séquence disparaissent totalement lorsque
       la traduction est terminée.
@@ -521,8 +521,8 @@ Deny from badguy.example.com<br />
 <div class="bottomlang">
 <p><span>Langues Disponibles: </span><a href="./en/sections.html" hreflang="en" rel="alternate" title="English">&nbsp;en&nbsp;</a> |
 <a href="./fr/sections.html" title="Français">&nbsp;fr&nbsp;</a> |
-<a href="./ja/sections.html" hreflang="ja" rel="alternate" title="">&nbsp;ja&nbsp;</a> |
-<a href="./ko/sections.html" hreflang="ko" rel="alternate" title="">&nbsp;ko&nbsp;</a> |
+<a href="./ja/sections.html" hreflang="ja" rel="alternate" title="Japanese">&nbsp;ja&nbsp;</a> |
+<a href="./ko/sections.html" hreflang="ko" rel="alternate" title="Korean">&nbsp;ko&nbsp;</a> |
 <a href="./tr/sections.html" hreflang="tr" rel="alternate" title="Türkçe">&nbsp;tr&nbsp;</a></p>
 </div><div id="footer">
 <p class="apache">Copyright 2008 The Apache Software Foundation.<br />Authorisé sous <a href="http://www.apache.org/licenses/LICENSE-2.0">Apache License, Version 2.0</a>.</p>
