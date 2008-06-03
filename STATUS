@@ -100,6 +100,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
          http://svn.apache.org/viewvc?view=rev&revision=607425
          http://svn.apache.org/viewvc?view=rev&revision=611216
          http://svn.apache.org/viewvc/httpd/httpd/trunk/modules/ssl/ssl_engine_kernel.c?r1=611216&r2=630436
+         http://svn.apache.org/viewvc?view=rev&revision=662815
 
       Backport version for 2.2.x of updated patch:
          http://people.apache.org/~fuankg/diffs/httpd-2.2.x-sni.diff
@@ -107,8 +108,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
       +0: like ssl upgrade of 2.2, perhaps this is a good reason to bring
           httpd-2.4 to completion?  vhost changes could be disruptive to
           third party module authors.
-      -1: rpluem: jorton found some problems with the trunk version and they
-                  should be fixed / discussed in trunk before we backport.
 
  * Support chroot on unix-family platforms
    PR 43596
