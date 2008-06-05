@@ -144,7 +144,7 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
        Trunk version of patch works
        Rollup-patch for 2.2 available at:
           http://people.apache.org/~jim/patches/nocanon-patch-2.2.txt
-    +1: rpluem, jim
+    +1: rpluem, jim, jfclere
 
 PATCHES/ISSUES THAT ARE STALLED
 
