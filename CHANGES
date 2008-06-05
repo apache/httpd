@@ -1,6 +1,10 @@
                                                          -*- coding: utf-8 -*-
 Changes with Apache 2.2.9
 
+  *) SECURITY: CVE-2007-6420 (cve.mitre.org)
+     mod_proxy_balancer: Prevent CSRF attacks against the balancer-manager
+     interface.  [Joe Orton]
+
   *) mod_unique_id: Fix timestamp value in UNIQUE_ID.
      PR 37064 [Kobayashi <kobayashi firstserver.co.jp>]
 
