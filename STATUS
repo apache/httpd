@@ -84,6 +84,22 @@ RELEASE SHOWSTOPPERS:
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
 
+ * mod_proxy_http, mod_proxy_ajp, mod_proxy_balancer: Make modules nocanon aware
+   and do not add the query string again in this case. PR 44803
+   [Jim Jagielski, Ruediger Pluem]
+    Trunk version of patch:
+       http://svn.apache.org/viewvc?rev=649169&view=rev
+       http://svn.apache.org/viewvc?rev=649239&view=rev
+       http://svn.apache.org/viewvc?rev=649840&view=rev
+       http://svn.apache.org/viewvc?rev=649922&view=rev
+       http://svn.apache.org/viewvc?rev=650026&view=rev
+       http://svn.apache.org/viewvc?rev=661452&view=rev
+       http://svn.apache.org/viewvc?rev=661459&view=rev
+    Backport version for 2.2.x of patch:
+       Trunk version of patch works
+       Rollup-patch for 2.2 available at:
+          http://people.apache.org/~jim/patches/nocanon-patch-2.2.txt
+    +1: rpluem, jim, jfclere
 
 PATCHES PROPOSED TO BACKPORT FROM TRUNK:
   [ New proposals should be added at the end of the list ]
@@ -128,23 +144,6 @@ PATCHES PROPOSED TO BACKPORT FROM TRUNK:
    +1: rpluem,
    -1: niq - strcasecmp(NULL, ...) when secure is not set
    rpluem: Good catch. Should be fixed by r660461.
-
- * mod_proxy_http, mod_proxy_ajp, mod_proxy_balancer: Make modules nocanon aware
-   and do not add the query string again in this case. PR 44803
-   [Jim Jagielski, Ruediger Pluem]
-    Trunk version of patch:
-       http://svn.apache.org/viewvc?rev=649169&view=rev
-       http://svn.apache.org/viewvc?rev=649239&view=rev
-       http://svn.apache.org/viewvc?rev=649840&view=rev
-       http://svn.apache.org/viewvc?rev=649922&view=rev
-       http://svn.apache.org/viewvc?rev=650026&view=rev
-       http://svn.apache.org/viewvc?rev=661452&view=rev
-       http://svn.apache.org/viewvc?rev=661459&view=rev
-    Backport version for 2.2.x of patch:
-       Trunk version of patch works
-       Rollup-patch for 2.2 available at:
-          http://people.apache.org/~jim/patches/nocanon-patch-2.2.txt
-    +1: rpluem, jim, jfclere
 
 PATCHES/ISSUES THAT ARE STALLED
 
