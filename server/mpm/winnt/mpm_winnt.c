@@ -561,7 +561,6 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     /* These NEVER change for the lifetime of this parent
      */
     static char **args = NULL;
-    static char **env = NULL;
     static char pidbuf[28];
 
     apr_status_t rv;
@@ -572,6 +571,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     HANDLE waitlist[2];  /* see waitlist_e */
     char *cmd;
     char *cwd;
+    char **env;
+    int envc;
 
     apr_pool_create_ex(&ptemp, p, NULL, NULL);
 
@@ -640,21 +641,15 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         return -1;
     }
 
-    if (!env)
-    {
-        /* Build the env array, only once since it won't change
-         * for the lifetime of this parent process.
-         */
-        int envc;
-        for (envc = 0; _environ[envc]; ++envc) {
-            ;
-        }
-        env = malloc((envc + 2) * sizeof (char*));
-        memcpy(env, _environ, envc * sizeof (char*));
-        apr_snprintf(pidbuf, sizeof(pidbuf), "AP_PARENT_PID=%i", parent_pid);
-        env[envc] = pidbuf;
-        env[envc + 1] = NULL;
+    /* Build the env array */
+    for (envc = 0; _environ[envc]; ++envc) {
+        ;
     }
+    env = apr_palloc(ptemp, (envc + 2) * sizeof (char*));  
+    memcpy(env, _environ, envc * sizeof (char*));
+    apr_snprintf(pidbuf, sizeof(pidbuf), "AP_PARENT_PID=%i", parent_pid);
+    env[envc] = pidbuf;
+    env[envc + 1] = NULL;
 
     rv = apr_proc_create(&new_child, cmd, args, env, attr, ptemp);
     if (rv != APR_SUCCESS) {
