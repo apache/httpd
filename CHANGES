@@ -2,10 +2,6 @@
 Changes with Apache 2.3.0
 [ When backported to 2.2.x, remove entry from this file ]
 
-  *) SECURITY: CVE-2007-6420 (cve.mitre.org)
-     mod_proxy_balancer: Prevent CSRF attacks against the balancer-manager
-     interface.  [Joe Orton]
-
   *) mod_proxy_http: Do not forward requests with 'Expect: 100-continue' to
      known HTTP/1.0 servers. Return 'Expectation failed' (417) instead.
      [Ruediger Pluem]
