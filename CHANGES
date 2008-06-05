@@ -5,6 +5,10 @@ Changes with Apache 2.2.9
      mod_proxy_balancer: Prevent CSRF attacks against the balancer-manager
      interface.  [Joe Orton]
 
+  *) mod_proxy: Make all proxy modules nocanon aware and do not add the
+     query string again in this case. PR 44803.
+     [Jim Jagielski, Ruediger Pluem]
+
   *) mod_unique_id: Fix timestamp value in UNIQUE_ID.
      PR 37064 [Kobayashi <kobayashi firstserver.co.jp>]
 
