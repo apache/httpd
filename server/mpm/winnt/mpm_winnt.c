@@ -1612,10 +1612,6 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
                     }
                 }
             }
-            else /* ! -k runservice */
-            {
-                mpm_start_console_handler();
-            }
 
             /* Create the start mutex, as an unnamed object for security.
              * Ths start mutex is used during a restart to prevent more than
@@ -1631,6 +1627,12 @@ static int winnt_post_config(apr_pool_t *pconf, apr_pool_t *plog, apr_pool_t *pt
                 return HTTP_INTERNAL_SERVER_ERROR;
             }
         }
+        /* Always reset our console handler to be the first, even on a restart
+        *  because some modules (e.g. mod_perl) might have set a console 
+        *  handler to terminate the process.
+        */
+        if (strcasecmp(signal_arg, "runservice"))
+            mpm_start_console_handler();
     }
     else /* parent_pid != my_pid */
     {
