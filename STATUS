@@ -79,13 +79,7 @@ CURRENT RELEASE NOTES:
 
 RELEASE SHOWSTOPPERS:
 
-* rpluem says: We need a new apr-util release to fix the regression discussed in
-  http://mail-archives.apache.org/mod_mbox/httpd-dev/200802.mbox/%3cPine.GSO.4.64.0802212127120.16348@kleopatra.acc.umu.se%3e
-  (probably PR44538, definitely PR44648). The needed patch is already
-  backported to apr-util 1.2.x
-  (http://svn.apache.org/viewvc?rev=631559&view=rev).
-  jim says: I am baselining shipping with apr-1.3; assuming we do, the
-            above show-stopper would be moot.
+
 
 PATCHES ACCEPTED TO BACKPORT FROM TRUNK:
   [ start all new proposals below, under PATCHES PROPOSED. ]
