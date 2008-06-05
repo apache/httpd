@@ -680,7 +680,8 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
     }
 
     /* httpd-2.0/2.2 specific to work around apr_proc_create bugs */
-    if (((rv = apr_file_open_stdout(&child_out, p))
+    /* set "NUL" as sysout for the child */
+    if (((rv = apr_file_open(&child_out, "NUL", APR_WRITE | APR_READ, APR_OS_DEFAULT,p)) 
             != APR_SUCCESS) ||
         ((rv = apr_procattr_child_out_set(attr, child_out, NULL))
             != APR_SUCCESS)) {
@@ -734,7 +735,7 @@ static int create_process(apr_pool_t *p, HANDLE *child_proc, HANDLE *child_exit_
         CloseHandle(new_child.hproc);
         return -1;
     }
-
+    apr_file_close(child_out);
     ap_log_error(APLOG_MARK, APLOG_NOTICE, APR_SUCCESS, ap_server_conf,
                  "Parent: Created child process %d", new_child.pid);
 
@@ -1399,26 +1400,6 @@ static int winnt_pre_config(apr_pool_t *pconf_, apr_pool_t *plog, apr_pool_t *pt
                      "%s: Unable to start the service manager.",
                      service_name);
         exit(APEXIT_INIT);
-    }
-    else if (!one_process && !ap_my_generation) {
-        /* Open a null handle to soak stdout in this process.
-         * We need to emulate apr_proc_detach, unix performs this
-         * same check in the pre_config hook (although it is
-         * arguably premature).  Services already fixed this.
-         */
-        apr_file_t *nullfile;
-        apr_status_t rv;
-        apr_pool_t *pproc = apr_pool_parent_get(pconf);
-
-        if ((rv = apr_file_open(&nullfile, "NUL",
-                                APR_READ | APR_WRITE, APR_OS_DEFAULT,
-                                pproc)) == APR_SUCCESS) {
-            apr_file_t *nullstdout;
-            if (apr_file_open_stdout(&nullstdout, pproc)
-                    == APR_SUCCESS)
-                apr_file_dup2(nullstdout, nullfile, pproc);
-            apr_file_close(nullfile);
-        }
     }
 
     /* Win9x: disable AcceptEx */
