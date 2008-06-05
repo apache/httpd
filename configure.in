@@ -599,7 +599,8 @@ APACHE_HELP_STRING(--with-suexec-umask,umask for suexec'd process),[
   AC_DEFINE_UNQUOTED(AP_SUEXEC_UMASK, 0$withval, [umask for suexec'd process] ) ] )
 
 dnl APR should go after the other libs, so the right symbols can be picked up
-AP_LIBS="$AP_LIBS `$apu_config --link-libtool --libs` `$apr_config --link-libtool --libs`"
+AP_LIBS="$AP_LIBS `$apu_config --avoid-ldap --link-libtool --libs`"
+AP_LIBS="$AP_LIBS `$apr_config --link-libtool --libs`" 
 APACHE_SUBST(AP_LIBS)
 APACHE_SUBST(AP_BUILD_SRCLIB_DIRS)
 APACHE_SUBST(AP_CLEAN_SRCLIB_DIRS)
