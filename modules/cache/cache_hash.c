@@ -80,7 +80,7 @@ static cache_hash_entry_t **alloc_array(cache_hash_t *ht, int max)
    return calloc(1, sizeof(*ht->array) * (max + 1));
 }
 
-CACHE_DECLARE(cache_hash_t *) cache_hash_make(apr_size_t size)
+cache_hash_t* cache_hash_make(apr_size_t size)
 {
     cache_hash_t *ht;
     ht = malloc(sizeof(cache_hash_t));
@@ -97,7 +97,7 @@ CACHE_DECLARE(cache_hash_t *) cache_hash_make(apr_size_t size)
     return ht;
 }
 
-CACHE_DECLARE(void) cache_hash_free(cache_hash_t *ht)
+void cache_hash_free(cache_hash_t *ht)
 {
     if (ht) {
         if (ht->array) {
@@ -110,7 +110,7 @@ CACHE_DECLARE(void) cache_hash_free(cache_hash_t *ht)
  * Hash iteration functions.
  */
 
-CACHE_DECLARE(cache_hash_index_t *) cache_hash_next(cache_hash_index_t *hi)
+cache_hash_index_t* cache_hash_next(cache_hash_index_t *hi)
 {
     hi->this = hi->next;
     while (!hi->this) {
@@ -122,7 +122,7 @@ CACHE_DECLARE(cache_hash_index_t *) cache_hash_next(cache_hash_index_t *hi)
     return hi;
 }
 
-CACHE_DECLARE(cache_hash_index_t *) cache_hash_first(cache_hash_t *ht)
+cache_hash_index_t* cache_hash_first(cache_hash_t *ht)
 {
     cache_hash_index_t *hi;
 
@@ -134,7 +134,7 @@ CACHE_DECLARE(cache_hash_index_t *) cache_hash_first(cache_hash_t *ht)
     return cache_hash_next(hi);
 }
 
-CACHE_DECLARE(void) cache_hash_this(cache_hash_index_t *hi,
+void cache_hash_this(cache_hash_index_t *hi,
                                   const void **key,
                                   apr_ssize_t *klen,
                                   void **val)
@@ -240,7 +240,7 @@ static cache_hash_entry_t **find_entry(cache_hash_t *ht,
     return hep;
 }
 
-CACHE_DECLARE(void *) cache_hash_get(cache_hash_t *ht,
+void* cache_hash_get(cache_hash_t *ht,
                                    const void *key,
                                    apr_ssize_t klen)
 {
@@ -252,7 +252,7 @@ CACHE_DECLARE(void *) cache_hash_get(cache_hash_t *ht,
         return NULL;
 }
 
-CACHE_DECLARE(void *) cache_hash_set(cache_hash_t *ht,
+void* cache_hash_set(cache_hash_t *ht,
                                      const void *key,
                                      apr_ssize_t klen,
                                      const void *val)
@@ -284,7 +284,7 @@ CACHE_DECLARE(void *) cache_hash_set(cache_hash_t *ht,
     return NULL;
 }
 
-CACHE_DECLARE(int) cache_hash_count(cache_hash_t *ht)
+int cache_hash_count(cache_hash_t *ht)
 {
     return ht->count;
 }
