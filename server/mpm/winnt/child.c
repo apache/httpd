@@ -50,9 +50,6 @@ extern DWORD my_pid;
 apr_proc_mutex_t *start_mutex;
 HANDLE exit_event;
 
-/* child_main() should never need to modify is_graceful!?! */
-extern int volatile is_graceful;
-
 /* Queue for managing the passing of COMP_CONTEXTs between
  * the accept and worker threads.
  */
@@ -1092,10 +1089,6 @@ void child_main(apr_pool_t *pconf)
  shutdown:
 
     winnt_mpm_state = AP_MPMQ_STOPPING;
-    /* Setting is_graceful will cause threads handling keep-alive connections
-     * to close the connection after handling the current request.
-     */
-    is_graceful = 1;
 
     /* Close the listening sockets. Note, we must close the listeners
      * before closing any accept sockets pending in AcceptEx to prevent
