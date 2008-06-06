@@ -277,8 +277,8 @@ static int dbd_pre_config(apr_pool_t *pconf, apr_pool_t *plog,
    return OK;
 }
 
-DBD_DECLARE_NONSTD(void) ap_dbd_prepare(server_rec *s, const char *query,
-                                        const char *label)
+DBD_DECLARE(void) ap_dbd_prepare(server_rec *s, const char *query,
+                                 const char *label)
 {
     svr_cfg *svr;
 
@@ -687,7 +687,7 @@ static apr_status_t dbd_setup_lock(server_rec *s, dbd_group_t *group)
         - open acquires a connection from the pool (opens one if necessary)
         - close releases it back in to the pool
 */
-DBD_DECLARE_NONSTD(void) ap_dbd_close(server_rec *s, ap_dbd_t *rec)
+DBD_DECLARE(void) ap_dbd_close(server_rec *s, ap_dbd_t *rec)
 {
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
 
@@ -725,7 +725,7 @@ static apr_status_t dbd_check(apr_pool_t *pool, server_rec *s, ap_dbd_t *rec)
     return rv;
 }
 
-DBD_DECLARE_NONSTD(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
+DBD_DECLARE(ap_dbd_t*) ap_dbd_open(apr_pool_t *pool, server_rec *s)
 {
     svr_cfg *svr = ap_get_module_config(s->module_config, &dbd_module);
     dbd_group_t *group = svr->group;
@@ -804,7 +804,7 @@ static apr_status_t dbd_release(void *data)
     return APR_SUCCESS;
 }
 
-DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
+DBD_DECLARE(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
 {
     dbd_acquire_t *acq;
 
@@ -837,7 +837,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
     return acq->rec;
 }
 
-DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
+DBD_DECLARE(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
 {
     dbd_acquire_t *acq = ap_get_module_config(c->conn_config, &dbd_module);
 
@@ -860,7 +860,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
     return acq->rec;
 }
 #else
-DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
+DBD_DECLARE(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
 {
     ap_dbd_t *rec;
 
@@ -884,7 +884,7 @@ DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_acquire(request_rec *r)
     return rec;
 }
 
-DBD_DECLARE_NONSTD(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
+DBD_DECLARE(ap_dbd_t *) ap_dbd_cacquire(conn_rec *c)
 {
     ap_dbd_t *rec = ap_get_module_config(c->conn_config, &dbd_module);
 
