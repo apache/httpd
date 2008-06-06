@@ -18,7 +18,6 @@ mod_mem_cache.lo dnl
 cache_cache.lo dnl
 cache_pqueue.lo dnl
 cache_hash.lo dnl
-cache_util.lo dnl
 "
 APACHE_MODULE(cache, dynamic file caching, $cache_objs, , most)
 APACHE_MODULE(disk_cache, disk caching module, , , most)
