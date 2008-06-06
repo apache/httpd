@@ -59,7 +59,7 @@ typedef struct cache_hash_index_t cache_hash_index_t;
  * @param size 
  * @return The hash table just created
   */
-CACHE_DECLARE(cache_hash_t *) cache_hash_make(apr_size_t size);
+cache_hash_t* cache_hash_make(apr_size_t size);
 
 /**
  * Create a hash table.
@@ -70,7 +70,7 @@ CACHE_DECLARE(cache_hash_t *) cache_hash_make(apr_size_t size);
  *         not removed from the cache prior to calling cache_hash_free()
  *         will be unaccessable.
  */
-CACHE_DECLARE(void) cache_hash_free(cache_hash_t *ht);
+void cache_hash_free(cache_hash_t *ht);
 
 
 /**
@@ -82,7 +82,7 @@ CACHE_DECLARE(void) cache_hash_free(cache_hash_t *ht);
  * @remark If the value is NULL the hash entry is deleted.
  * @return The value of the deleted cache entry (so the caller can clean it up).
  */
-CACHE_DECLARE(void *) cache_hash_set(cache_hash_t *ht, const void *key,
+void* cache_hash_set(cache_hash_t *ht, const void *key,
                                      apr_ssize_t klen, const void *val);
 
 /**
@@ -92,7 +92,7 @@ CACHE_DECLARE(void *) cache_hash_set(cache_hash_t *ht, const void *key,
  * @param klen Length of the key. Can be CACHE_HASH_KEY_STRING to use the string length.
  * @return Returns NULL if the key is not present.
  */
-CACHE_DECLARE(void *) cache_hash_get(cache_hash_t *ht, const void *key,
+void* cache_hash_get(cache_hash_t *ht, const void *key,
                                    apr_ssize_t klen);
 
 /**
@@ -121,7 +121,7 @@ CACHE_DECLARE(void *) cache_hash_get(cache_hash_t *ht, const void *key,
  * progress at the same time.
  * </PRE>
   */
-CACHE_DECLARE(cache_hash_index_t *) cache_hash_first(cache_hash_t *ht);
+cache_hash_index_t* cache_hash_first(cache_hash_t *ht);
 
 /**
  * Continue iterating over the entries in a hash table.
@@ -129,7 +129,7 @@ CACHE_DECLARE(cache_hash_index_t *) cache_hash_first(cache_hash_t *ht);
  * @return a pointer to the updated iteration state.  NULL if there are no more  
  *         entries.
  */
-CACHE_DECLARE(cache_hash_index_t *) cache_hash_next(cache_hash_index_t *hi);
+cache_hash_index_t* cache_hash_next(cache_hash_index_t *hi);
 
 /**
  * Get the current entry's details from the iteration state.
@@ -140,7 +140,7 @@ CACHE_DECLARE(cache_hash_index_t *) cache_hash_next(cache_hash_index_t *hi);
  * @remark The return pointers should point to a variable that will be set to the
  *         corresponding data, or they may be NULL if the data isn't interesting.
  */
-CACHE_DECLARE(void) cache_hash_this(cache_hash_index_t *hi, const void **key, 
+void cache_hash_this(cache_hash_index_t *hi, const void **key, 
                                   apr_ssize_t *klen, void **val);
 
 /**
@@ -148,7 +148,7 @@ CACHE_DECLARE(void) cache_hash_this(cache_hash_index_t *hi, const void **key,
  * @param ht The hash table
  * @return The number of key/value pairs in the hash table.
  */
-CACHE_DECLARE(int) cache_hash_count(cache_hash_t *ht);
+int cache_hash_count(cache_hash_t *ht);
 
 
 /** @} */

@@ -99,14 +99,46 @@ PostBuild_Cmds=if exist $(TargetPath).manifest mt.exe -manifest $(TargetPath).ma
 
 # Name "mod_mem_cache - Win32 Release"
 # Name "mod_mem_cache - Win32 Debug"
+# Begin Group "Header Files"
+
+# PROP Default_Filter "h;hpp;hxx;hm;inl"
+# Begin Source File
+
+SOURCE=.\cache_cache.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cache_hash.h
+# End Source File
+# Begin Source File
+
+SOURCE=.\cache_pqueue.h
+# End Source File
 # Begin Source File
 
 SOURCE=.\mod_cache.h
+# End Source File
+# End Group
+# Begin Group "Source Files"
+
+# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;hpj;bat;for;f90"
+# Begin Source File
+
+SOURCE=.\cache_cache.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\cache_hash.c
+# End Source File
+# Begin Source File
+
+SOURCE=.\cache_pqueue.c
 # End Source File
 # Begin Source File
 
 SOURCE=.\mod_mem_cache.c
 # End Source File
+# End Group
 # Begin Source File
 
 SOURCE=..\..\build\win32\httpd.rc
