@@ -32,18 +32,18 @@ APR_HOOK_STRUCT(
                 APR_HOOK_LINK(session_encode)
                 APR_HOOK_LINK(session_decode)
 )
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, session_load,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(session, SESSION, int, session_load,
                       (request_rec * r, session_rec ** z), (r, z), DECLINED)
-AP_IMPLEMENT_HOOK_RUN_FIRST(int, session_save,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_FIRST(session, SESSION, int, session_save,
                        (request_rec * r, session_rec * z), (r, z), DECLINED)
-AP_IMPLEMENT_HOOK_RUN_ALL(int, session_encode,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(session, SESSION, int, session_encode,
                    (request_rec * r, session_rec * z), (r, z), OK, DECLINED)
-AP_IMPLEMENT_HOOK_RUN_ALL(int, session_decode,
+APR_IMPLEMENT_EXTERNAL_HOOK_RUN_ALL(session, SESSION, int, session_decode,
                    (request_rec * r, session_rec * z), (r, z), OK, DECLINED)
 
-AP_DECLARE(int) ap_session_identity_encode(request_rec * r, session_rec * z);
-AP_DECLARE(int) ap_session_identity_decode(request_rec * r, session_rec * z);
-AP_DECLARE(int) ap_session_fixups(request_rec * r);
+static int session_identity_encode(request_rec * r, session_rec * z);
+static int session_identity_decode(request_rec * r, session_rec * z);
+static int session_fixups(request_rec * r);
 
 /**
  * Should the session be included within this URL.
@@ -90,7 +90,7 @@ static int session_included(request_rec * r, session_dir_conf * conf)
  * @param key The key to get.
  * @param value The buffer to write the value to.
  */
-AP_DECLARE(void) ap_session_get(request_rec * r, session_rec * z, const char *key, const char **value)
+SESSION_DECLARE(void) ap_session_get(request_rec * r, session_rec * z, const char *key, const char **value)
 {
     if (!z) {
         ap_session_load(r, &z);
@@ -112,7 +112,7 @@ AP_DECLARE(void) ap_session_get(request_rec * r, session_rec * z, const char *ke
  * @param key The key to set. The existing key value will be replaced.
  * @param value The value to set.
  */
-AP_DECLARE(void) ap_session_set(request_rec * r, session_rec * z,
+SESSION_DECLARE(void) ap_session_set(request_rec * r, session_rec * z,
                                 const char *key, const char *value)
 {
     if (!z) {
@@ -137,7 +137,7 @@ AP_DECLARE(void) ap_session_set(request_rec * r, session_rec * z,
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z)
+SESSION_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z)
 {
 
     session_dir_conf *dconf = ap_get_module_config(r->per_dir_config,
@@ -216,7 +216,7 @@ AP_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z)
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE(int) ap_session_save(request_rec * r, session_rec * z)
+SESSION_DECLARE(int) ap_session_save(request_rec * r, session_rec * z)
 {
     if (z) {
         apr_time_t now = apr_time_now();
@@ -304,7 +304,7 @@ static int identity_concat(char *buffer, const char *key, const char *val)
  * @param r The request pointer.
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE(int) ap_session_identity_encode(request_rec * r, session_rec * z)
+static int session_identity_encode(request_rec * r, session_rec * z)
 {
 
     char *buffer = NULL;
@@ -340,7 +340,7 @@ AP_DECLARE(int) ap_session_identity_encode(request_rec * r, session_rec * z)
  * @param r The request pointer.
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE(int) ap_session_identity_decode(request_rec * r, session_rec * z)
+static int session_identity_decode(request_rec * r, session_rec * z)
 {
 
     char *last = NULL;
@@ -425,7 +425,7 @@ static apr_status_t ap_session_output_filter(ap_filter_t * f,
             }
             if (override) {
                 z->encoded = override;
-                ap_session_identity_decode(r, z);
+                session_identity_decode(r, z);
             }
         }
 
@@ -462,7 +462,7 @@ static void ap_session_insert_output_filter(request_rec * r)
  * 
  * @param r The request
  */
-AP_DECLARE(int) ap_session_fixups(request_rec * r)
+static int session_fixups(request_rec * r)
 {
     session_dir_conf *conf = ap_get_module_config(r->per_dir_config,
                                                   &session_module);
@@ -471,7 +471,7 @@ AP_DECLARE(int) ap_session_fixups(request_rec * r)
     ap_session_load(r, &z);
 
     if (conf->env) {
-        ap_session_identity_encode(r, z);
+        session_identity_encode(r, z);
         if (z->encoded) {
             apr_table_set(r->subprocess_env, HTTP_SESSION, z->encoded);
             z->encoded = NULL;
@@ -604,9 +604,9 @@ static void register_hooks(apr_pool_t * p)
     ap_hook_insert_filter(ap_session_insert_output_filter, NULL, NULL, APR_HOOK_MIDDLE);
     ap_hook_insert_error_filter(ap_session_insert_output_filter,
                                 NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_fixups(ap_session_fixups, NULL, NULL, APR_HOOK_MIDDLE);
-    ap_hook_session_encode(ap_session_identity_encode, NULL, NULL, APR_HOOK_REALLY_FIRST);
-    ap_hook_session_decode(ap_session_identity_decode, NULL, NULL, APR_HOOK_REALLY_LAST);
+    ap_hook_fixups(session_fixups, NULL, NULL, APR_HOOK_MIDDLE);
+    ap_hook_session_encode(session_identity_encode, NULL, NULL, APR_HOOK_REALLY_FIRST);
+    ap_hook_session_decode(session_identity_decode, NULL, NULL, APR_HOOK_REALLY_LAST);
     APR_REGISTER_OPTIONAL_FN(ap_session_get);
     APR_REGISTER_OPTIONAL_FN(ap_session_set);
     APR_REGISTER_OPTIONAL_FN(ap_session_load);

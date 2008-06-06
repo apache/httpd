@@ -17,6 +17,27 @@
 #ifndef MOD_SESSION_H
 #define MOD_SESSION_H
 
+/* Create a set of SESSION_DECLARE(type), SESSION_DECLARE_NONSTD(type) and 
+ * SESSION_DECLARE_DATA with appropriate export and import tags for the platform
+ */
+#if !defined(WIN32)
+#define SESSION_DECLARE(type)        type
+#define SESSION_DECLARE_NONSTD(type) type
+#define SESSION_DECLARE_DATA
+#elif defined(SESSION_DECLARE_STATIC)
+#define SESSION_DECLARE(type)        type __stdcall
+#define SESSION_DECLARE_NONSTD(type) type
+#define SESSION_DECLARE_DATA
+#elif defined(SESSION_DECLARE_EXPORT)
+#define SESSION_DECLARE(type)        __declspec(dllexport) type __stdcall
+#define SESSION_DECLARE_NONSTD(type) __declspec(dllexport) type
+#define SESSION_DECLARE_DATA         __declspec(dllexport)
+#else
+#define SESSION_DECLARE(type)        __declspec(dllimport) type __stdcall
+#define SESSION_DECLARE_NONSTD(type) __declspec(dllimport) type
+#define SESSION_DECLARE_DATA         __declspec(dllimport)
+#endif
+
 /**
  * @file  mod_session.h
  * @brief Session Module for Apache
@@ -105,7 +126,7 @@ typedef struct {
  * @param key The key to get.
  * @param value The buffer to write the value to.
  */
-AP_DECLARE(void) ap_session_get(request_rec * r, session_rec * z, const char *key, const char **value);
+SESSION_DECLARE(void) ap_session_get(request_rec * r, session_rec * z, const char *key, const char **value);
 
 /**
  * Set a particular value to the session.
@@ -119,7 +140,7 @@ AP_DECLARE(void) ap_session_get(request_rec * r, session_rec * z, const char *ke
  * @param key The key to set. The existing key value will be replaced.
  * @param value The value to set.
  */
-AP_DECLARE(void) ap_session_set(request_rec * r, session_rec * z,
+SESSION_DECLARE(void) ap_session_set(request_rec * r, session_rec * z,
                                 const char *key, const char *value);
 
 /**
@@ -130,7 +151,7 @@ AP_DECLARE(void) ap_session_set(request_rec * r, session_rec * z,
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z);
+SESSION_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z);
 
 /**
  * Hook to load the session.
@@ -140,7 +161,8 @@ AP_DECLARE(int) ap_session_load(request_rec * r, session_rec ** z);
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE_HOOK(int, session_load, (request_rec * r, session_rec ** z))
+APR_DECLARE_EXTERNAL_HOOK(session, SESSION, int, session_load,
+                          (request_rec * r, session_rec ** z))
 
 /**
  * Save the session.
@@ -151,7 +173,7 @@ AP_DECLARE_HOOK(int, session_load, (request_rec * r, session_rec ** z))
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE(int) ap_session_save(request_rec * r, session_rec * z);
+SESSION_DECLARE(int) ap_session_save(request_rec * r, session_rec * z);
 
 /**
  * Hook to save the session.
@@ -162,7 +184,8 @@ AP_DECLARE(int) ap_session_save(request_rec * r, session_rec * z);
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE_HOOK(int, session_save, (request_rec * r, session_rec * z))
+APR_DECLARE_EXTERNAL_HOOK(session, SESSION, int, session_save,
+                          (request_rec * r, session_rec * z))
 
 /**
  * Hook to encode the session.
@@ -174,7 +197,8 @@ AP_DECLARE_HOOK(int, session_save, (request_rec * r, session_rec * z))
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE_HOOK(int, session_encode, (request_rec * r, session_rec * z))
+APR_DECLARE_EXTERNAL_HOOK(session, SESSION, int, session_encode,
+                          (request_rec * r, session_rec * z))
 
 /**
  * Hook to decode the session.
@@ -186,7 +210,8 @@ AP_DECLARE_HOOK(int, session_encode, (request_rec * r, session_rec * z))
  * @param r The request
  * @param z A pointer to where the session will be written.
  */
-AP_DECLARE_HOOK(int, session_decode, (request_rec * r, session_rec * z))
+APR_DECLARE_EXTERNAL_HOOK(session, SESSION, int, session_decode,
+                          (request_rec * r, session_rec * z))
 
 APR_DECLARE_OPTIONAL_FN(void, ap_session_get, (request_rec * r, session_rec * z,
                                                const char *key, const char **value));
