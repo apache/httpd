@@ -894,7 +894,8 @@ AP_DECLARE(int) ap_expr_evalstring(request_rec *r, const char *expr,
 
 
 static ap_regex_t *isvar = NULL;
-AP_DECLARE(const char*) ap_expr_string(request_rec *r, const char *str)
+AP_DECLARE_NONSTD(const char*) ap_expr_string(request_rec *r, 
+                                              const char *str)
 {
     /* a default string evaluator: support headers and env */
     const char *ret = str;
