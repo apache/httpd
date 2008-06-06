@@ -44,7 +44,7 @@ struct cache_cache_t  {
     cache_cache_free *free_entry;
 };
 
-CACHE_DECLARE(cache_cache_t *)cache_init(int max_entries,
+cache_cache_t* cache_init(int max_entries,
                                          apr_size_t max_size,
                                          cache_pqueue_get_priority get_pri,
                                          cache_pqueue_set_priority set_pri,
@@ -75,7 +75,7 @@ CACHE_DECLARE(cache_cache_t *)cache_init(int max_entries,
     return tmp;
 }
 
-CACHE_DECLARE(void) cache_free(cache_cache_t *c)
+void cache_free(cache_cache_t *c)
 {
     cache_pq_free(c->pq);
     cache_hash_free(c->ht);
@@ -83,12 +83,12 @@ CACHE_DECLARE(void) cache_free(cache_cache_t *c)
 }
 
 
-CACHE_DECLARE(void*) cache_find(cache_cache_t* c, const char *key)
+void* cache_find(cache_cache_t* c, const char *key)
 {
     return cache_hash_get(c->ht, key, CACHE_HASH_KEY_STRING);
 }
 
-CACHE_DECLARE(void) cache_update(cache_cache_t* c, void *entry)
+void cache_update(cache_cache_t* c, void *entry)
 {
     long old_priority;
     long new_priority;
@@ -99,7 +99,7 @@ CACHE_DECLARE(void) cache_update(cache_cache_t* c, void *entry)
     cache_pq_change_priority(c->pq, old_priority, new_priority, entry);
 }
 
-CACHE_DECLARE(void) cache_insert(cache_cache_t* c, void *entry)
+void cache_insert(cache_cache_t* c, void *entry)
 {
     void *ejected = NULL;
     long priority;
@@ -132,7 +132,7 @@ CACHE_DECLARE(void) cache_insert(cache_cache_t* c, void *entry)
     cache_hash_set(c->ht, c->key_entry(entry), CACHE_HASH_KEY_STRING, entry);
 }
 
-CACHE_DECLARE(void *) cache_pop(cache_cache_t *c)
+void* cache_pop(cache_cache_t *c)
 {
     void *entry;
 
@@ -150,7 +150,7 @@ CACHE_DECLARE(void *) cache_pop(cache_cache_t *c)
     return entry;
 }
 
-CACHE_DECLARE(apr_status_t) cache_remove(cache_cache_t *c, void *entry)
+apr_status_t cache_remove(cache_cache_t *c, void *entry)
 {
     apr_size_t entry_size = c->size_entry(entry);
     apr_status_t rc;
