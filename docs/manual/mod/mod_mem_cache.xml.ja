@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:656733 (outdated) -->
@@ -23,77 +23,77 @@
 <modulesynopsis metafile="mod_mem_cache.xml.meta">
 
 <name>mod_mem_cache</name>
-<description>URI $B$r%-!<$K$7$?%3%s%F%s%D$N%-%c%C%7%e(B</description>
+<description>URI をキーにしたコンテンツのキャッシュ</description>
 <status>Extension</status>
 <sourcefile>mod_mem_cache.c</sourcefile>
 <identifier>mem_cache_module</identifier>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$O(B <module>mod_cache</module> $B$r(B<em>$BI,MW$H$7$^$9(B</em>$B!#(B
-    $B$3$l$O(B <module>mod_cache</module> $B$N%5%]!<%H%b%8%e!<%k$H$7$F(B
-    $BF0:n$7!"%a%b%j$r;HMQ$7$?%9%H%l!<%84IM}5!9=$rDs6!$7$^$9!#(B
-    <module>mod_mem_cache</module> $B$OFs$D$N%b!<%I$N$I$A$i$+$GF0:n$9$k$h$&$K(B
-    $B@_Dj$G$-$^$9(B: $B%U%!%$%k5-=R;R$N%-%c%C%7%e$+%R!<%WCf$N%*%V%8%'%/%H$N(B
-    $B%-%c%C%7%e$G$9!#%m!<%+%k$G@8@.$5$l$?%3%s%F%s%D$KBP$7$F%-%c%C%7%e$9$k$H$-$d!"(B
-    <module>mod_proxy</module> $B$r;H$C$F(B <directive 
-    module="mod_proxy">ProxyPass</directive> ($B$D$^$j(B<dfn>$B%j%P!<%9%W%m%-%7(B</dfn
-    >$B8~$1(B) $B$K@_Dj$7$?$H$-$N%P%C%/%(%s%I%5!<%P$N%3%s%F%s%D$KBP$7$F(B
-    $B%-%c%C%7%e$r$9$k$H$-$K!"$?$$$X$s8z2LE*$G$9!#(B</p>
+    <p>このモジュールは <module>mod_cache</module> を<em>必要とします</em>。
+    これは <module>mod_cache</module> のサポートモジュールとして
+    動作し、メモリを使用したストレージ管理機構を提供します。
+    <module>mod_mem_cache</module> は二つのモードのどちらかで動作するように
+    設定できます: ファイル記述子のキャッシュかヒープ中のオブジェクトの
+    キャッシュです。ローカルで生成されたコンテンツに対してキャッシュするときや、
+    <module>mod_proxy</module> を使って <directive 
+    module="mod_proxy">ProxyPass</directive> (つまり<dfn>リバースプロキシ</dfn
+    >向け) に設定したときのバックエンドサーバのコンテンツに対して
+    キャッシュをするときに、たいへん効果的です。</p>
 
-    <p>$B%3%s%F%s%D$N%-%c%C%7%e$X$NJ]B8$H<hF@$O(B URI $B$K4p$E$$$?%-!<$,;H$o$l$^$9!#(B
-    $B%"%/%;%9J]8n$N$+$1$i$l$F$$$k%3%s%F%s%D$O%-%c%C%7%e$5$l$^$;$s!#(B</p>
+    <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
+    アクセス保護のかけられているコンテンツはキャッシュされません。</p>
 </summary>
 <seealso><module>mod_cache</module></seealso>
 <seealso><module>mod_disk_cache</module></seealso>
 
 <directivesynopsis>
 <name>MCacheSize</name>
-<description>$B%-%c%C%7%e$K;H$o$l$k%a%b%j$N:GBgNL$r%P%$%HC10L$G;XDj(B</description>
+<description>キャッシュに使われるメモリの最大量をバイト単位で指定</description>
 <syntax>MCacheSize <var>KBytes</var></syntax>
 <default>MCacheSize 100</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p><directive>MCacheSize</directive> $B%G%#%l%/%F%#%V$O%-%c%C%7%e$K(B
-    $B;H$o$l$k%a%b%j$NBg$-$5$r%-%m%P%$%H(B (1024 $B%P%$%HC10L(B) $B$G@_Dj$7$^$9!#(B
-    $B?7$7$$%*%V%8%'%/%H$r%-%c%C%7%e$KA^F~$9$k$3$H$K$J$j!"%*%V%8%'%/%H$N(B
-    $B%5%$%:$,;D$j$N%a%b%j$h$jBg$-$$>l9g$O!"$=$N?7$7$$%*%V%8%'%/%H$NA^F~$,(B
-    $B2DG=$K$J$k$^$G!"8E$$%*%V%8%'%/%H$,:o=|$5$l$F$$$-$^$9!#(B
-    $B%*%V%8%'%/%H$O(B <directive
+    <p><directive>MCacheSize</directive> ディレクティブはキャッシュに
+    使われるメモリの大きさをキロバイト (1024 バイト単位) で設定します。
+    新しいオブジェクトをキャッシュに挿入することになり、オブジェクトの
+    サイズが残りのメモリより大きい場合は、その新しいオブジェクトの挿入が
+    可能になるまで、古いオブジェクトが削除されていきます。
+    オブジェクトは <directive
     module="mod_mem_cache">MCacheRemovalAlgorithm</directive>
-    $B$G;XDj$7$?%"%k%4%j%:%`$K=>$C$F:o=|$5$l$^$9!#(B</p>
+    で指定したアルゴリズムに従って削除されます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       MCacheSize 700000
     </example>
 
-    <note><title>$BCm(B</title>
-      <p><directive>MCacheSize</directive> $B$NCM$O(B <directive module="mod_mem_cache"
-      >MCacheMaxObjectSize</directive> $B%G%#%l%/%F%#%V$G;XDj$7$?CM$h$j(B
-      $BBg$-$/$J$1$l$P$J$j$^$;$s!#(B</p>
+    <note><title>注</title>
+      <p><directive>MCacheSize</directive> の値は <directive module="mod_mem_cache"
+      >MCacheMaxObjectSize</directive> ディレクティブで指定した値より
+      大きくなければなりません。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>MCacheMaxObjectCount</name>
-<description>$B%-%c%C%7%e$KJ]4I$5$l$k%*%V%8%'%/%H$N:GBg?t(B</description>
+<description>キャッシュに保管されるオブジェクトの最大数</description>
 <syntax>MCacheMaxObjectCount <var>value</var></syntax>
 <default>MCacheMaxObjectCount 1009</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p><directive>MCacheMaxObjectCount</directive> $B%G%#%l%/%F%#%V$O(B
-    $B%-%c%C%7%e$5$l$k%*%V%8%'%/%H$N:GBg?t$r;XDj$7$^$9!#(B
-    $B$3$NCM$O%O%C%7%e%F!<%V%k$r:n@.$9$k$H$-$K;H$o$l$^$9!#(B
-    $B?7$7$$%*%V%8%'%/%H$rA^F~$9$k$H$-$K!"%*%V%8%'%/%H$N:GBg?t$K(B
-    $BC#$7$F$7$^$C$F$$$k$H$-!"?7$7$$%*%V%8%'%/%H$r%-%c%C%7%e$G$-$k$h$&$K!"(B
-    $B%*%V%8%'%/%H$r0l$D>C5n$7$^$9!#%*%V%8%'%/%H$O(B
+    <p><directive>MCacheMaxObjectCount</directive> ディレクティブは
+    キャッシュされるオブジェクトの最大数を指定します。
+    この値はハッシュテーブルを作成するときに使われます。
+    新しいオブジェクトを挿入するときに、オブジェクトの最大数に
+    達してしまっているとき、新しいオブジェクトをキャッシュできるように、
+    オブジェクトを一つ消去します。オブジェクトは
     <directive
     module="mod_mem_cache">MCacheRemovalAlgorithm</directive>
-    $B$G;XDj$5$l$?%"%k%4%j%:%`$K=>$C$F:o=|$5$l$^$9!#(B</p>
+    で指定されたアルゴリズムに従って削除されます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       MCacheMaxObjectCount 13001
     </example>
 </usage>
@@ -101,16 +101,16 @@
 
 <directivesynopsis>
 <name>MCacheMinObjectSize</name>
-<description>$B%-%c%C%7%e$KJ]4I$5$l$k%I%-%e%a%s%H$N:G>.%5%$%:(B ($B%P%$%H(B)</description>
+<description>キャッシュに保管されるドキュメントの最小サイズ (バイト)</description>
 <syntax>MCacheMinObjectSize <var>bytes</var></syntax>
 <default>MCacheMinObjectSize 0</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p><directive>MCacheMinObjectSize</directive> $B%G%#%l%/%F%#%V$O!"%I%-%e%a%s%H$r(B
-    $B%-%c%C%7%e$9$k$+$I$&$+$rH=Dj$9$k!":G>.$N%5%$%:$r%P%$%H?t$G@_Dj$7$^$9!#(B</p>
+    <p><directive>MCacheMinObjectSize</directive> ディレクティブは、ドキュメントを
+    キャッシュするかどうかを判定する、最小のサイズをバイト数で設定します。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       MCacheMinObjectSize 10000
     </example>
 </usage>
@@ -118,51 +118,51 @@
 
 <directivesynopsis>
 <name>MCacheMaxObjectSize</name>
-<description>$B%-%c%C%7%e$KJ]4I$G$-$k%I%-%e%a%s%H$N:GBg%5%$%:(B ($B%P%$%H(B)</description>
+<description>キャッシュに保管できるドキュメントの最大サイズ (バイト)</description>
 <syntax>MCacheMaxObjectSize <var>bytes</var></syntax>
 <default>MCacheMaxObjectSize 10000</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p><directive>MCacheMaxObjectSize</directive> $B$O%I%-%e%a%s%H$r(B
-    $B%-%c%C%7%e$9$k$+$I$&$+$rH=Dj$9$k!":GBg$N%5%$%:$r%P%$%H?t$G@_Dj$7$^$9!#(B</p>
+    <p><directive>MCacheMaxObjectSize</directive> はドキュメントを
+    キャッシュするかどうかを判定する、最大のサイズをバイト数で設定します。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       MCacheMaxObjectSize 6400000
     </example>
 
-    <note><title>$BCm(B</title>
-      <p><directive>MCacheMaxObjectSize</directive> $B$NCM$O(B <directive
+    <note><title>注</title>
+      <p><directive>MCacheMaxObjectSize</directive> の値は <directive
       module="mod_mem_cache">MCacheMinObjectSize</directive>
-      $B$G;XDj$7$?CM$h$j$bBg$-$/$J$1$l$P$J$j$^$;$s!#(B</p>
+      で指定した値よりも大きくなければなりません。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>MCacheRemovalAlgorithm</name>
-<description>$B%-%c%C%7%e$+$i:o=|$9$k%I%-%e%a%s%H$rA*$V$?$a$N%"%k%4%j%:%`(B</description>
+<description>キャッシュから削除するドキュメントを選ぶためのアルゴリズム</description>
 <syntax>MCacheRemovalAlgorithm LRU|GDSF</syntax>
 <default>MCacheRemovalAlgorithm GDSF</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p><directive>MCacheRemovalAlgorithm</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B%-%c%C%7%e$+$i:o=|$9$k%I%-%e%a%s%H$rA*Br$9$k$?$a$N%"%k%4%j%:%`$r(B
-    $B;XDj$7$^$9!#A*Br;h$OFs$D$"$j$^$9(B:</p>
+    <p><directive>MCacheRemovalAlgorithm</directive> ディレクティブは、
+    キャッシュから削除するドキュメントを選択するためのアルゴリズムを
+    指定します。選択肢は二つあります:</p>
 
     <dl>
       <dt><code>LRU</code> (Least Recently Used)</dt>
-      <dd><code>LRU</code> $B0lHVD9$/%"%/%;%9$5$l$F$$$J$$%I%-%e%a%s%H$r:o=|$7$^$9!#(B
+      <dd><code>LRU</code> 一番長くアクセスされていないドキュメントを削除します。
       </dd>
 
       <dt><code>GDSF</code> (GreadyDual-Size)</dt>
-      <dd><code>GDSF</code> $B$O%-%c%C%7%e%_%9$N%3%9%H$H%I%-%e%a%s%H$N%5%$%:$r$b$H$K!"(B
-      $B%I%-%e%a%s%H$N%-%c%C%7%e$KBP$7$FM%@hEY$r$D$1$^$9!#(B
-      $BM%@hEY$N0lHVDc$$%I%-%e%a%s%H$,:G=i$K:o=|$5$l$^$9!#(B</dd>
+      <dd><code>GDSF</code> はキャッシュミスのコストとドキュメントのサイズをもとに、
+      ドキュメントのキャッシュに対して優先度をつけます。
+      優先度の一番低いドキュメントが最初に削除されます。</dd>
     </dl>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       MCacheRemovalAlgorithm GDSF<br />
       MCacheRemovalAlgorithm LRU
     </example>
@@ -171,36 +171,36 @@
 
 <directivesynopsis>
 <name>MCacheMaxStreamingBuffer</name>
-<description>$B%9%H%j!<%`$5$l$F$$$k1~Ez$r%-%c%C%7%eITG=$H7hDj$9$k$^$G$K(B
-$B%a%b%j$K%P%C%U%!$9$k:GBgNL(B</description>
+<description>ストリームされている応答をキャッシュ不能と決定するまでに
+メモリにバッファする最大量</description>
 <syntax>MCacheMaxStreamingBuffer <var>size_in_bytes</var></syntax>
-<default>MCacheMaxStreamingBuffer of 100000 $B$+(B MCacheMaxObjectSize $B$N>/$$J}(B</default>
+<default>MCacheMaxStreamingBuffer of 100000 か MCacheMaxObjectSize の少い方</default>
 <contextlist><context>server config</context>
 </contextlist>
 
 <usage>
-    <p><directive>MCacheMaxStreamingBuffer</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B%5%$%:$,Bg$-$9$.$F%-%c%C%7%e$G$-$J$$$HH=CG$9$k$^$G$N!"(B
-    $B%9%H%j!<%`1~Ez$N%P%C%U%!$N$?$a$N:GBg%P%$%H?t$r;XDj$7$^$9!#(B
-    $B%9%H%j!<%`1~Ez$H$O!"%3%s%F%s%D$NA4BN$,$9$0$K$OF@$i$l$:!"(B
-    <code>Content-Length</code> $B$,$o$+$i$J$$1~Ez$r;X$7$^$9!#(B
-    $B%9%H%j!<%`1~Ez$r9T$J$&$h$&$J$b$N$K$O%W%m%-%7$5$l$?1~Ez$d!"(B
-    CGI $B%9%/%j%W%H$N=PNO$J$I$,$"$j$^$9!#%G%U%)%k%H$G$O%9%H%j!<%`$N1~Ez$O(B
-    <code>Content-Length</code> $B$,$J$$8B$j%-%c%C%7%e(B<em>$B$5$l$^$;$s(B</em>$B!#(B
-    $B$3$N$h$&$JF0:n$K$J$C$F$$$kM}M3$O!"7k6I%-%c%C%7%e$K<}$^$j$-$i$J$$$H(B
-    $BH=CG$9$k$3$H$K$J$C$F$7$^$&$h$&$J!"%5%$%:$NBg$-$J1~Ez$N%P%C%U%!%j%s%0$K!"(B
-    $BBgNL$N%a%b%j$,>CHq$5$l$k$N$rHr$1$k$?$a$G$9!#(B
-    <directive>MCacheMaxStreamingBuffer</directive> $B%G%#%l%/%F%#%V$r;H$&$H!"(B
-    <code>Content-Length</code> $B$r4^$^$J$$1~Ez$KBP$7$F;XDj$5$l$?:GBgNL$^$G(B
-    $B%P%C%U%!$9$k$h$&$K$G$-$^$9!#%P%C%U%!$r;H$$@Z$k$H!"%P%C%U%!Cf$N(B
-    $B%3%s%F%s%D$O<N$F$i$l!"%-%c%C%7%eF0:n$rCf;_$7$^$9!#(B</p>
+    <p><directive>MCacheMaxStreamingBuffer</directive> ディレクティブは、
+    サイズが大きすぎてキャッシュできないと判断するまでの、
+    ストリーム応答のバッファのための最大バイト数を指定します。
+    ストリーム応答とは、コンテンツの全体がすぐには得られず、
+    <code>Content-Length</code> がわからない応答を指します。
+    ストリーム応答を行なうようなものにはプロキシされた応答や、
+    CGI スクリプトの出力などがあります。デフォルトではストリームの応答は
+    <code>Content-Length</code> がない限りキャッシュ<em>されません</em>。
+    このような動作になっている理由は、結局キャッシュに収まりきらないと
+    判断することになってしまうような、サイズの大きな応答のバッファリングに、
+    大量のメモリが消費されるのを避けるためです。
+    <directive>MCacheMaxStreamingBuffer</directive> ディレクティブを使うと、
+    <code>Content-Length</code> を含まない応答に対して指定された最大量まで
+    バッファするようにできます。バッファを使い切ると、バッファ中の
+    コンテンツは捨てられ、キャッシュ動作を中止します。</p>
 
-    <note><title>$BCm(B:</title>
-      <p><directive>MCacheMaxStreamingBuffer</directive> $B$KHsNm$NCM$r(B
-      $B;H$C$F$b!"%/%i%$%"%s%H$X$N1~Ez$NE>Aw$KFC$KCY1d$OH/@8$7$^$;$s!#(B
-      <module>mod_mem_cache</module> $B$O%9%H%j!<%`%3%s%F%s%D$NCGJR$r(B
-      $B%P%C%U%!$K%3%T!<$7$?8e!"B(:B$K!"$=$NItJ,$r%/%i%$%"%s%H$X$NG[Aw$N(B
-      $B<!CJ$N=PNO%U%#%k%?$KAw$j$^$9!#(B</p>
+    <note><title>注:</title>
+      <p><directive>MCacheMaxStreamingBuffer</directive> に非零の値を
+      使っても、クライアントへの応答の転送に特に遅延は発生しません。
+      <module>mod_mem_cache</module> はストリームコンテンツの断片を
+      バッファにコピーした後、即座に、その部分をクライアントへの配送の
+      次段の出力フィルタに送ります。</p>
     </note>
 
     <example>

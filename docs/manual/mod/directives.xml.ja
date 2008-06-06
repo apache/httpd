@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE directiveindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -21,18 +21,18 @@
 -->
 
 <directiveindex metafile="directives.xml.meta">
-  <title>$B%G%#%l%/%F%#%V0lMw(B</title>
+  <title>ディレクティブ一覧</title>
   <summary>
     <p>
-      $BI8=`(B Apache $BG[I[$K$"$k$9$Y$F$N(B Apache $B$N%G%#%l%/%F%#%V$N0lMw$G$9!#(B
-      $B$3$l$i$O0l4S$7$?7A<0$G=q$+$l$F$$$F!";H$o$l$F$$$kMQ8l$N(B
+      標準 Apache 配布にあるすべての Apache のディレクティブの一覧です。
+      これらは一貫した形式で書かれていて、使われている用語の
       <a href="directive-dict.html"
-      rel="Glossary">$BMQ8l=8(B</a> $B$bMQ0U$5$l$F$$$^$9!#(B
+      rel="Glossary">用語集</a> も用意されています。
     </p>
     <p>
-      $B3F%G%#%l%/%F%#%V$N35MW$r@bL@$7$?(B <a
-      href="quickreference.html">$B%G%#%l%/%F%#%V%/%$%C%/%j%U%!%l%s%9(B</a>$B$b(B
-      $B$"$j$^$9!#(B
+      各ディレクティブの概要を説明した <a
+      href="quickreference.html">ディレクティブクイックリファレンス</a>も
+      あります。
     </p>
   </summary>
 </directiveindex>

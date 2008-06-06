@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:635137 (outdated) -->
@@ -23,27 +23,27 @@
 <modulesynopsis metafile="mod_authz_user.xml.meta">
 
 <name>mod_authz_user</name> 
-<description>$B%f!<%6>5G'(B</description>
+<description>ユーザ承認</description>
 <status>Base</status>
 <sourcefile>mod_authz_user.c</sourcefile>
 <identifier>authz_user_module</identifier>
-<compatibility>Apache 2.1 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>Apache 2.1 以降で使用可能</compatibility>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$O!"G'>Z$5$l$?%f!<%6$K%&%'%V%5%$%H$N0lIt$X$N(B
-    $B%"%/%;%9$r5v2D$7$?$j5qH]$7$?$j$9$k$?$a$N>5G'5!G=$rDs6!$7$^$9!#(B
-    <module>mod_authz_user</module> $B$OG'>Z$5$l$?%f!<%6$,(B
-    <code>Require user</code> $B%G%#%l%/%F%#%V$K=q$+$l$F$$$l$P(B
-    $B%"%/%;%9$rG'$a$^$9!#G'>Z$K@.8y$7$?%f!<%6$9$Y$F$K%"%/%;%9$r(B
-    $B5v2D$9$k$K$O!"Be$o$j$K(B <code>require valid-user</code> $B$r(B
-    $B;H$&$3$H$,$G$-$^$9!#(B</p>
+    <p>このモジュールは、認証されたユーザにウェブサイトの一部への
+    アクセスを許可したり拒否したりするための承認機能を提供します。
+    <module>mod_authz_user</module> は認証されたユーザが
+    <code>Require user</code> ディレクティブに書かれていれば
+    アクセスを認めます。認証に成功したユーザすべてにアクセスを
+    許可するには、代わりに <code>require valid-user</code> を
+    使うことができます。</p>
 </summary>
 <seealso><directive module="core">Require</directive></seealso>
 <seealso><directive module="core">Satisfy</directive></seealso>
 
 <directivesynopsis>
 <name>AuthzUserAuthoritative</name>
-<description>$B>5G'$,2<0L$N%b%8%e!<%k$KEO$5$l$k$+$I$&$+$r@_Dj$9$k(B</description>
+<description>承認が下位のモジュールに渡されるかどうかを設定する</description>
 <syntax>AuthzUserAuthoritative On|Off</syntax>
 <default>AuthzUserAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -51,15 +51,15 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthzUserAuthoritative</directive> $B%G%#%l%/%F%#%V$r(B
-    $BL@<(E*$K(B <code>Off</code> $B$K@_Dj$9$k$H(B userID $B$KBP1~$9$k(B
-    <strong>$B%0%k!<%W$,$J$$>l9g$K(B</strong>$B!"(B
-    (<code>module.c</code> $B$GDj5A$5$l$F$$$k(B) $B2<0L$N%b%8%e!<%k$K%0%k!<%W>5G'$r(B
-    $BEO$9$3$H$r5v2D$7$^$9!#(B</p>
+    <p><directive>AuthzUserAuthoritative</directive> ディレクティブを
+    明示的に <code>Off</code> に設定すると userID に対応する
+    <strong>グループがない場合に</strong>、
+    (<code>module.c</code> で定義されている) 下位のモジュールにグループ承認を
+    渡すことを許可します。</p>
 
-    <p>$B%G%U%)%k%H$G$O@)8f$OEO$5$l$:!"L$CN$N%0%k!<%W$N>l9g$O(B Authentication
-    Required $B1~Ez$,JV$5$l$^$9!#$G$9$+$i!"$3$l$r@_Dj$7$J$$$H(B
-    $B%7%9%F%`$r0BA4$KJ]$D$3$H$,$G$-!"(BNCSA $B8_49$N?6$kIq$$$r$5$;$k$3$H$K$J$j$^$9!#(B</p>
+    <p>デフォルトでは制御は渡されず、未知のグループの場合は Authentication
+    Required 応答が返されます。ですから、これを設定しないと
+    システムを安全に保つことができ、NCSA 互換の振る舞いをさせることになります。</p>
 </usage>
 </directivesynopsis>
 

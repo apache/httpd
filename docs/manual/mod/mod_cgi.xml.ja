@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:558718 (outdated) -->
@@ -23,7 +23,7 @@
 <modulesynopsis metafile="mod_cgi.xml.meta">
 
 <name>mod_cgi</name>
-<description>CGI $B%9%/%j%W%H$N<B9T(B</description>
+<description>CGI スクリプトの実行</description>
 <status>Base</status>
 <sourcefile>mod_cgi.c</sourcefile>
 <identifier>cgi_module</identifier>
@@ -33,132 +33,132 @@
           is the link to howto/cgi not sufficient? -nd
     -->
 
-    <p>Mime $B%?%$%W$,(B <code>application/x-httpd-cgi</code> 
-    $B$G$"$k$+!"%O%s%I%i(B <code>cgi-script</code> (Apache 1.1 $B0J9_(B)
-    $B$,;XDj$5$l$F$$$k%U%!%$%k$O(B CGI $B%9%/%j%W%H$H$7$F07$o$l!"(B
-    $B%5!<%P$K$h$j<B9T$5$l!"$=$N=PNO$,%/%i%$%"%s%H$KJV$5$l$^$9!#(B
-    $B%U%!%$%k$O!"(B<directive module="mod_mime">AddType</directive>
-    $B%G%#%l%/%F%#%V$K;XDj$5$l$?(B $B3HD%;R$rL>A0$K4^$`$+!"(B
+    <p>Mime タイプが <code>application/x-httpd-cgi</code> 
+    であるか、ハンドラ <code>cgi-script</code> (Apache 1.1 以降)
+    が指定されているファイルは CGI スクリプトとして扱われ、
+    サーバにより実行され、その出力がクライアントに返されます。
+    ファイルは、<directive module="mod_mime">AddType</directive>
+    ディレクティブに指定された 拡張子を名前に含むか、
     <directive module="mod_alias">ScriptAlias</directive>
-    $B%G%#%l%/%H%j$KB8:_$9$k$3$H$K$h$j$3$N%?%$%W$K$J$j$^$9!#(B</p>
+    ディレクトリに存在することによりこのタイプになります。</p>
 
-    <p>$B%5!<%P$,(B CGI $B%9%/%j%W%H$r<B9T$9$k$H$-$K$O!"(B
+    <p>サーバが CGI スクリプトを実行するときには、
     <code>DOCUMENT_ROOT</code>
-    $B$H8F$P$l$kJQ?t$r4D6-$KDI2C$7$^$9!#$3$NJQ?t$O(B
+    と呼ばれる変数を環境に追加します。この変数は
     <directive module="core">DocumentRoot</directive>
-    $B$NCM$rJ];}$7$^$9!#(B</p>
+    の値を保持します。</p>
 
-    <p>Apache $B$G(B CGI $B%9%/%j%W%H$r;HMQ$9$k$?$a$N%$%s%H%m%@%/%7%g%s$O!"(B
-    <a href="../howto/cgi.html">CGI $B$K$h$kF0E*%3%s%F%s%D(B</a>
-    $B$r;2>H$7$F$/$@$5$$!#(B</p>
+    <p>Apache で CGI スクリプトを使用するためのイントロダクションは、
+    <a href="../howto/cgi.html">CGI による動的コンテンツ</a>
+    を参照してください。</p>
 
-    <p>Unix $B$G%^%k%A%9%l%C%I$N(B MPM $B$r;H$C$F$$$k>l9g$O!"$3$N%b%8%e!<%k$N(B
-    $BBe$o$j$K(B <module>mod_cgid</module> $B$r;H$&I,MW$,$"$j$^$9!#(B
-    $B%f!<%6%l%Y%k$G$O$3$NFs$D$N%b%8%e!<%k$OK\<AE*$K$OF10l$G$9!#(B</p>
+    <p>Unix でマルチスレッドの MPM を使っている場合は、このモジュールの
+    代わりに <module>mod_cgid</module> を使う必要があります。
+    ユーザレベルではこの二つのモジュールは本質的には同一です。</p>
 </summary>
 
 <seealso><directive module="core">AcceptPathInfo</directive></seealso>
 <seealso><directive module="core">Options</directive></seealso>
 <seealso><directive module="mod_alias">ScriptAlias</directive></seealso>
 <seealso><directive module="mod_mime">AddHandler</directive></seealso>
-<seealso><a href="../suexec.html">CGI $B%W%m%0%i%`$rJL$N%f!<%6(B ID $B$G<B9T$9$k(B</a></seealso>
-<seealso><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI $B5,3J=q(B</a></seealso>
+<seealso><a href="../suexec.html">CGI プログラムを別のユーザ ID で実行する</a></seealso>
+<seealso><a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI 規格書</a></seealso>
 
-<section id="env"><title>CGI $B4D6-JQ?t(B</title>
-    <p>$B%5!<%P$O(B <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
-    $B5,3J(B</a> $B$G7h$a$i$l$F$$$k(B CGI
-    $B4D6-JQ?t$r@_Dj$7$^$9!#0J2<$N$b$N$O!">r7oIU$-$G@_Dj$5$l$^$9!#(B</p>
+<section id="env"><title>CGI 環境変数</title>
+    <p>サーバは <a href="http://hoohoo.ncsa.uiuc.edu/cgi/">CGI
+    規格</a> で決められている CGI
+    環境変数を設定します。以下のものは、条件付きで設定されます。</p>
 
     <dl>
       <dt>PATH_INFO</dt>
 
-      <dd>$B$3$l$O(B <directive module="core"
-      >AcceptPathInfo</directive> $B%G%#%l%/%F%#%V$,L@<(E*$K(B <code>off</code>
-      $B$K@_Dj$5$l$F$$$k>l9g$O@_Dj$5$l$^$;$s!#%G%U%)%k%H$N!"(B
-      <directive>AcceptPathInfo</directive> $B$,(B
-      $B;XDj$5$l$F$$$J$$$H$-$N?6$kIq$$$G$O!"(B<module>mod_cgi</module> $B$O%Q%9>pJs(B
-      (URI $B$N%9%/%j%W%H$N%U%!%$%kL>$N8e$KB3$/(B <code>/more/path/info</code>) $B$r(B
-      $B<u$1IU$1$^$9$,!"%3%"$O%5!<%P$O%Q%9>pJs$N$"$k%j%/%(%9%H$K(B
-      $BBP$7$F(B 404 NOT FOUND $B%(%i!<$rJV$7$^$9!#(B<directive>AcceptPathInfo</directive>
-      $B%G%#%l%/%F%#%V$r(B
-      $B>JN,$9$k$H!"(B<module>mod_cgi</module> $B$X$N%j%/%(%9%H$KBP$7$F(B
-      <code>On</code> $B$r(B
-      $B@_Dj$7$?$N$HF1$88z2L$K$J$j$^$9!#(B</dd>
+      <dd>これは <directive module="core"
+      >AcceptPathInfo</directive> ディレクティブが明示的に <code>off</code>
+      に設定されている場合は設定されません。デフォルトの、
+      <directive>AcceptPathInfo</directive> が
+      指定されていないときの振る舞いでは、<module>mod_cgi</module> はパス情報
+      (URI のスクリプトのファイル名の後に続く <code>/more/path/info</code>) を
+      受け付けますが、コアはサーバはパス情報のあるリクエストに
+      対して 404 NOT FOUND エラーを返します。<directive>AcceptPathInfo</directive>
+      ディレクティブを
+      省略すると、<module>mod_cgi</module> へのリクエストに対して
+      <code>On</code> を
+      設定したのと同じ効果になります。</dd>
 
       <dt>REMOTE_HOST</dt>
 
       <dd><directive module="core">HostnameLookups</directive>
-      $B$,(B <code>on</code> ($B%G%U%)%k%H$G$O(B off $B$G$9(B)
-      $B$G!"%"%/%;%9$7$F$$$k%[%9%H$N%"%I%l%9$N(B DNS
-      $B$N5U0z$-$,<B:]$K%[%9%HL>$r8+$D$1$?$H$-$K$N$_@_Dj$5$l$^$9!#(B</dd>
+      が <code>on</code> (デフォルトでは off です)
+      で、アクセスしているホストのアドレスの DNS
+      の逆引きが実際にホスト名を見つけたときにのみ設定されます。</dd>
 
       <dt>REMOTE_IDENT</dt>
 
       <dd><directive module="core">IdentityCheck</directive>
-      $B$,(B <code>on</code> $B$K@_Dj$5$l$F$$$F!"%"%/%;%9$7$F$$$k%[%9%H$,(B
-      ident $B%W%m%H%3%k$r%5%]!<%H$7$F$$$k$H$-$K$N$_@_Dj$5$l$^$9!#(B
-      $B$3$l$O4JC1$K56$k$3$H$,$G$-!"%/%i%$%"%s%H$H%5!<%P$N4V$K(B
-      $B%W%m%-%7$,$"$l$P$^$C$?$/Lr$KN)$?$J$$$N$G!"(B
-      $B$3$NJQ?t$NCM$O?.MQ$G$-$J$$$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#(B
+      が <code>on</code> に設定されていて、アクセスしているホストが
+      ident プロトコルをサポートしているときにのみ設定されます。
+      これは簡単に偽ることができ、クライアントとサーバの間に
+      プロキシがあればまったく役に立たないので、
+      この変数の値は信用できないということに注意してください。
       </dd>
 
       <dt>REMOTE_USER</dt>
 
       <dd>CGI
-      $B%9%/%j%W%H$KG'>Z$,I,MW$J$H$-$K$N$_@_Dj$5$l$^$9!#(B</dd>
+      スクリプトに認証が必要なときにのみ設定されます。</dd>
     </dl>
 </section>
 
-<section id="cgi-debug"><title>CGI $B$N%G%P%C%0(B</title>
-    <p>CGI $B%9%/%j%W%H$N%G%P%C%0$O!"@5$7$/F0:n$7$F$$$J$$%9%/%j%W%H$N=PNO(B
-    ($BI8=`=PNO$H%(%i!<(B)
-    $B$rD4$Y$k$3$H$,$G$-$J$$$?$a$K!"Fq$7$$>uBV$,B3$$$F$$$^$7$?!#(B
-    $B$3$l$i$N(B Apache 1.2 $B0J9_$K$"$k(B
-    $B%G%#%l%/%F%#%V$O$h$j>\:Y$J%(%i!<$N%m%0<}=8$rDs6!$7$^$9!#(B</p>
+<section id="cgi-debug"><title>CGI のデバッグ</title>
+    <p>CGI スクリプトのデバッグは、正しく動作していないスクリプトの出力
+    (標準出力とエラー)
+    を調べることができないために、難しい状態が続いていました。
+    これらの Apache 1.2 以降にある
+    ディレクティブはより詳細なエラーのログ収集を提供します。</p>
 
-    <section><title>CGI $B%m%0%U%!%$%k$N=q<0(B</title>
-	<p>$B@_Dj$5$l$F$$$k$H$-$K$O!"(BCGI $B%(%i!<%m%0$OE,@Z$KF0:n$7$J$$$9$Y$F$N(B
-	CGI $B$r%m%0<}=8$7$^$9!#$=$l$>$l$N@5$7$/F0:n$7$J$$(B CGI
-	$B%9%/%j%W%H$O(B $BJ#?t$N9T$K$o$?$k>pJs$,%m%0<}=8$5$l$^$9!#:G=i$N(B
-	2 $B9T$O>o$K0J2<$N=q<0$G$9(B:</p>
+    <section><title>CGI ログファイルの書式</title>
+	<p>設定されているときには、CGI エラーログは適切に動作しないすべての
+	CGI をログ収集します。それぞれの正しく動作しない CGI
+	スクリプトは 複数の行にわたる情報がログ収集されます。最初の
+	2 行は常に以下の書式です:</p>
 
       <example>
         %% [<var>time</var>] <var>request-line</var><br />
         %% <var>HTTP-status</var> <var>CGI-script-filename</var>
       </example>
 
-      <p>$B%(%i!<$,!"(BCGI $B%9%/%j%W%H$,<B9T$G$-$J$$$H$$$&$b$N$G$"$k>l9g$O!"(B
-      $B%m%0%U%!%$%k$O$5$i$K$b$&(B 2 $B9T=q$+$l$^$9(B:</p>
+      <p>エラーが、CGI スクリプトが実行できないというものである場合は、
+      ログファイルはさらにもう 2 行書かれます:</p>
 
       <example>
         %%error<br />
         <var>error-message</var>
       </example>
 
-      <p>$B$=$&$G$O$J$/!"%(%i!<$,@5$7$/$J$$%X%C%@>pJs$rJV$97k2L$G$"$k>l9g(B
-      ($B%9%/%j%W%H$N%P%0$G$"$k$3$H$,$h$/$"$j$^$9(B)$B!"(B
-      $B0J2<$N>pJs$,%m%0<}=8$5$l$^$9(B:</p>
+      <p>そうではなく、エラーが正しくないヘッダ情報を返す結果である場合
+      (スクリプトのバグであることがよくあります)、
+      以下の情報がログ収集されます:</p>
 
     <example>
       %request<br />
-      <var>$B<u$1<h$C$?$9$Y$F$N(B HTTP $B%j%/%(%9%H%X%C%@(B</var><br />
-      <var>($B$b$7$"$l$P(B) POST $B$d(B PUT $B$NCf?H(B</var><br />
+      <var>受け取ったすべての HTTP リクエストヘッダ</var><br />
+      <var>(もしあれば) POST や PUT の中身</var><br />
       %response<br />
-      <var>CGI $B%9%/%j%W%H$K$h$j=PNO$5$l$?$9$Y$F$N%X%C%@(B</var><br />
+      <var>CGI スクリプトにより出力されたすべてのヘッダ</var><br />
       %stdout<br />
-      <var>CGI $BI8=`=PNO(B</var><br />
+      <var>CGI 標準出力</var><br />
       %stderr<br />
-      <var>CGI $BI8=`%(%i!<(B</var><br />
+      <var>CGI 標準エラー</var><br />
     </example>
 
-    <p>($B%9%/%j%W%H$,I8=`=PNO$dI8=`%(%i!<$K2?$b=PNO$7$J$+$C$?>l9g$O!"(B
-    %stdout $B$d(B %stderr $B$O$"$j$^$;$s(B)$B!#(B</p>
+    <p>(スクリプトが標準出力や標準エラーに何も出力しなかった場合は、
+    %stdout や %stderr はありません)。</p>
 </section>
 </section>
 
 <directivesynopsis>
 <name>ScriptLog</name>
-<description>CGI $B%9%/%j%W%H$N%(%i!<%m%0%U%!%$%k$N>l=j(B</description>
+<description>CGI スクリプトのエラーログファイルの場所</description>
 <syntax>ScriptLog <var>file-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -167,40 +167,40 @@
 </modulelist>
 
 <usage>
-    <p><directive>ScriptLog</directive> $B%G%#%l%/%F%#%V$O(B CGI $B%9%/%j%W%H$N(B
-    $B%(%i!<%m%0%U%!%$%k$r@_Dj$7$^$9!#(B<directive>ScriptLog</directive> $B$,(B
-    $B@_Dj$5$l$F$$$J$$$H$-$O!"(B
-    $B%(%i!<%m%0$O:n@.$5$l$^$;$s!#@_Dj$5$l$F$$$k$H$-$O!"(BCGI
-    $B$N%(%i!<$O$9$Y$F0z?t$H$7$FM?$($i$l$F$$$k%U%!%$%kL>$K%m%0$5$l$^$9!#(B
-    $BAjBP%Q%9$G;XDj$5$l$F$$$k$H$-$O!"(B
-    <directive module="core">ServerRoot</directive>$B$+$i$NAjBP%Q%9$H$7$F(B
-    $B07$o$l$^$9!#(B</p>
+    <p><directive>ScriptLog</directive> ディレクティブは CGI スクリプトの
+    エラーログファイルを設定します。<directive>ScriptLog</directive> が
+    設定されていないときは、
+    エラーログは作成されません。設定されているときは、CGI
+    のエラーはすべて引数として与えられているファイル名にログされます。
+    相対パスで指定されているときは、
+    <directive module="core">ServerRoot</directive>からの相対パスとして
+    扱われます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ScriptLog logs/cgi_log
     </example>
 
-    <p>$B$3$N%m%0$O;R%W%m%;%9$,<B9T$5$l$F$$$k%f!<%6$H$7$F%*!<%W%s$5$l$^$9!#(B
-    <em>$B$9$J$o$A(B</em>$B!"(B<directive module="mpm_commmon"
-    >User</directive> $B%G%#%l%/%F%#%V$G;XDj$5$l$?(B
-    $B%f!<%6$G$9!#$3$l$O!"%9%/%j%W%H%m%0$,=q$+$l$k%G%#%l%/%H%j$,$=$N%f!<%6$G(B
-    $B=q$-9~$_2DG=$+!"%9%/%j%W%H%U%!%$%k$,<jF0$G:n@.$5$l!"$=$N%f!<%6$G(B
-    $B=q$-9~$_2DG=$K$J$C$F$$$kI,MW$,$"$k$H$$$&$3$H$G$9!#%9%/%j%W%H%m%0$r(B
-    $B%"%/%;%9%m%0$J$I$N$?$a$N%m%0%G%#%l%/%H%j$K=q$+$l$k$h$&$K$7$?$H$-$O!"(B
-    $B$=$N%G%#%l%/%H%j$r;R%W%m%;%9$r<B9T$7$F$$$k%f!<%6$N8"8B$G(B
-    $B=q$-9~$_2DG=$K$O(B<strong>$B$7$J$$(B</strong>$B$h$&$K$7$F$/$@$5$$!#(B</p>
+    <p>このログは子プロセスが実行されているユーザとしてオープンされます。
+    <em>すなわち</em>、<directive module="mpm_commmon"
+    >User</directive> ディレクティブで指定された
+    ユーザです。これは、スクリプトログが書かれるディレクトリがそのユーザで
+    書き込み可能か、スクリプトファイルが手動で作成され、そのユーザで
+    書き込み可能になっている必要があるということです。スクリプトログを
+    アクセスログなどのためのログディレクトリに書かれるようにしたときは、
+    そのディレクトリを子プロセスを実行しているユーザの権限で
+    書き込み可能には<strong>しない</strong>ようにしてください。</p>
 
-    <p>$B%9%/%j%W%H$N%m%0<}=8$O(B CGI $B%9%/%j%W%H$r=q$/$H$-$N(B
-    $B%G%P%C%0MQ$N5!G=$H$7$F0U?^$5$l$F$$$F!"DL>o$N%5!<%P$G(B
-    $B>o$K;HMQ$5$l$k$h$&$K$O0U?^$5$l$F$$$J$$$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#(B
-    $BB.EY$d8zN($O:GE,2=$5$l$F$*$i$:!"@_7W$5$l$?0J30$NJ}K!$G;HMQ$5$l$k$H(B
-    $B%;%-%e%j%F%#$NLdBj$,$"$k$+$b$7$l$^$;$s!#(B</p>
+    <p>スクリプトのログ収集は CGI スクリプトを書くときの
+    デバッグ用の機能として意図されていて、通常のサーバで
+    常に使用されるようには意図されていないということに注意してください。
+    速度や効率は最適化されておらず、設計された以外の方法で使用されると
+    セキュリティの問題があるかもしれません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ScriptLogLength</name>
-<description>CGI $B%9%/%j%W%H$N%m%0%U%!%$%k$NBg$-$5$N>e8B(B</description>
+<description>CGI スクリプトのログファイルの大きさの上限</description>
 <syntax>ScriptLogLength <var>bytes</var></syntax>
 <default>ScriptLogLength 10385760</default>
 <contextlist><context>server config</context>
@@ -210,20 +210,20 @@
 </modulelist>
 
 <usage>
-    <p><directive>ScriptLogLength</directive> $B$O(B CGI $B%9%/%j%W%H$N%m%0%U%!%$%k(B
-    $B$NBg$-$5$r@)8B$9$k$?$a$K;HMQ$9$k$3$H$,$G$-$^$9!#%m%0%U%!%$%k$O(B
-    CGI $B$N%(%i!<Kh$KBgNL$N>pJs(B ($B%j%/%(%9%H$N$9$Y$F$N%X%C%@!"(B
-    $B$9$Y$F$N=PNO(B)$B$r%m%0$7$^$9$N$G!"$9$0$KBg$-$J%U%!%$%k$K$J$j$^$9!#(B
-    $B$3$NBg$-$5$N@)8B$,$J$$$3$H$K$h$kLdBj$rKI$0$?$a$K!"(B
-    $B$3$N%G%#%l%/%F%#%V$r;H$C$F(B CGI $B$N%m%0%U%!%$%k$N(B
-    $B:GBg$N%U%!%$%k%5%$%:$r@_Dj$9$k$3$H$,$G$-$^$9!#(B
-    $B%U%!%$%k$,$3$NBg$-$5$rD6$($?>l9g$O!"$=$l0J>e$O=q$-9~$^$l$^$;$s!#(B</p>
+    <p><directive>ScriptLogLength</directive> は CGI スクリプトのログファイル
+    の大きさを制限するために使用することができます。ログファイルは
+    CGI のエラー毎に大量の情報 (リクエストのすべてのヘッダ、
+    すべての出力)をログしますので、すぐに大きなファイルになります。
+    この大きさの制限がないことによる問題を防ぐために、
+    このディレクティブを使って CGI のログファイルの
+    最大のファイルサイズを設定することができます。
+    ファイルがこの大きさを超えた場合は、それ以上は書き込まれません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ScriptLogBuffer</name>
-<description>$B%9%/%j%W%H%m%0$K5-O?$5$l$k(B PUT $B$d(B POST $B%j%/%(%9%H$NFbMF$N>e8B(B</description>
+<description>スクリプトログに記録される PUT や POST リクエストの内容の上限</description>
 <syntax>ScriptLogBuffer <em>bytes</em></syntax>
 <default>ScriptLogBuffer 1024</default>
 <contextlist><context>server config</context>
@@ -233,11 +233,11 @@
 </modulelist>
 
 <usage>
-    <p>$BBg$-$JK\BN$r<u$1<h$C$?$H$-$K%m%0%U%!%$%k$,$9$0$KBg$-$/$J$j$9$.$k(B
-    $BLdBj$rHr$1$k$?$a$K!"%U%!%$%k$K%m%0<}=8$5$l$k(B PUT $B$H(B POST
-    $B$NK\BN$NBg$-$5$O@)8B$5$l$F$$$^$9!#%G%U%)%k%H$G$O!"(B1024
-    $B%P%$%H$^$G$,%m%0<}=8$5$l$^$9$,!"(B
-    $B$3$N%G%#%l%/%F%#%V$O$=$l$rJQ99$9$k$3$H$,$G$-$^$9!#(B 
+    <p>大きな本体を受け取ったときにログファイルがすぐに大きくなりすぎる
+    問題を避けるために、ファイルにログ収集される PUT と POST
+    の本体の大きさは制限されています。デフォルトでは、1024
+    バイトまでがログ収集されますが、
+    このディレクティブはそれを変更することができます。 
     </p>
 </usage>
 </directivesynopsis>

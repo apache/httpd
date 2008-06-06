@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:574882 (outdated) -->
@@ -21,16 +21,16 @@
 -->
 
 <manualpage metafile="htaccess.xml.meta">
-<parentdocument href="./">How-To / $B%A%e!<%H%j%"%k(B</parentdocument>
+<parentdocument href="./">How-To / チュートリアル</parentdocument>
 
-<title>Apache $B%A%e!<%H%j%"%k(B: .htaccess $B%U%!%$%k(B</title>
+<title>Apache チュートリアル: .htaccess ファイル</title>
 
 <summary>
-<p><code>.htaccess</code> $B%U%!%$%k$O%G%#%l%/%H%jKh$K@_Dj$rJQ99$9$kJ}K!$r(B
-$BDs6!$7$^$9!#(B</p>
+<p><code>.htaccess</code> ファイルはディレクトリ毎に設定を変更する方法を
+提供します。</p>
 </summary>
 
-<section id="related"><title>.htaccess $B%U%!%$%k(B</title>
+<section id="related"><title>.htaccess ファイル</title>
     <related>
         <modulelist>
             <module>core</module>
@@ -58,106 +58,106 @@
 </section>
 
 <section id="what">
-<title>.htaccess $B%U%!%$%k$H$O2?$+(B/$B$=$N;H$$J}(B</title>
+<title>.htaccess ファイルとは何か/その使い方</title>
 
-    <p><code>.htaccess</code> $B%U%!%$%k(B ($B!VJ,;6@_Dj%U%!%$%k!W(B) $B$O(B
-    $B%G%#%l%/%H%jKh$K@_Dj$rJQ99$9$kJ}K!$rDs6!$7$^$9!#%G%#%l%/%F%#%V$N(B
-    $B=q$+$l$?%U%!%$%k$r%G%#%l%/%H%j$KCV$/$3$H$G!"$=$N%G%#%l%/%H%j$H$=$N(B
-    $B%5%V%G%#%l%/%H%j$9$Y$F$K%G%#%l%/%F%#%V$rE,MQ$5$;$k$3$H$,$G$-$^$9!#(B</p>
+    <p><code>.htaccess</code> ファイル (「分散設定ファイル」) は
+    ディレクトリ毎に設定を変更する方法を提供します。ディレクティブの
+    書かれたファイルをディレクトリに置くことで、そのディレクトリとその
+    サブディレクトリすべてにディレクティブを適用させることができます。</p>
 
-    <note><title>$BCm(B:</title>
-      <p><code>.htaccess</code> $B%U%!%$%k$rJL$NL>A0$K$7$?$$>l9g$O!"(B
-      <directive module="core">AccessFileName</directive> $B%G%#%l%/%F%#%V$r(B
-      $B;H$C$FJQ99$9$k$3$H$,$G$-$^$9!#Nc$($P!"$=$N%U%!%$%k$r(B <code>.config</code> 
-      $B$H$$$&L>A0$K$7$?$$>l9g$O!"0J2<$N@_Dj$r%5!<%P@_Dj%U%!%$%k$KF~$l$k$3$H$,(B
-      $B$G$-$^$9(B:</p>
+    <note><title>注:</title>
+      <p><code>.htaccess</code> ファイルを別の名前にしたい場合は、
+      <directive module="core">AccessFileName</directive> ディレクティブを
+      使って変更することができます。例えば、そのファイルを <code>.config</code> 
+      という名前にしたい場合は、以下の設定をサーバ設定ファイルに入れることが
+      できます:</p>
 
       <example>
         AccessFileName .config
       </example>
     </note>
 
-    <p>$B0lHL$K!"(B<code>.htaccess</code> $B%U%!%$%k$N9=J8$O(B
-    <a href="../configuring.html#syntax">$B<g@_Dj%U%!%$%k(B</a>
-    $B$HF1$8$G$9!#$3$l$i$N%U%!%$%k$K=q$/$3$H$N$G$-$k%G%#%l%/%F%#%V$O(B <directive
-    module="core">AllowOverride</directive> $B%G%#%l%/%F%#%V$K$h$j7h$^$j$^$9!#(B
-    $B$3$N%G%#%l%/%F%#%V$O!"(B<code>.htaccess</code> $B%U%!%$%k$K(B
-    $B=q$+$l$?%G%#%l%/%F%#%V$NCf$G!"!"(B
-    $B$I$N%G%#%l%/%F%#%V$,E,MQ$5$l$k$+$r%+%F%4%j!<C10L$G;XDj$7$^$9!#(B
-    <code>.htaccess</code> $B$K=q$/$3$H$N$G$-$k%G%#%l%/%F%#%V$G$"$l$P!"(B
-    $B@bL@J8=q$K$O!V>e=q$-!W$H$$$&9`L\$,$"$j!"(B.htaccess $B$K=q$/$3$H$,$G$-$k$h$&$K(B
-    $B$J$k$?$a$N(B <directive 
-    module="core">AllowOverride</directive> $B$NCM$,;XDj$5$l$F$$$^$9!#(B</p>
+    <p>一般に、<code>.htaccess</code> ファイルの構文は
+    <a href="../configuring.html#syntax">主設定ファイル</a>
+    と同じです。これらのファイルに書くことのできるディレクティブは <directive
+    module="core">AllowOverride</directive> ディレクティブにより決まります。
+    このディレクティブは、<code>.htaccess</code> ファイルに
+    書かれたディレクティブの中で、、
+    どのディレクティブが適用されるかをカテゴリー単位で指定します。
+    <code>.htaccess</code> に書くことのできるディレクティブであれば、
+    説明文書には「上書き」という項目があり、.htaccess に書くことができるように
+    なるための <directive 
+    module="core">AllowOverride</directive> の値が指定されています。</p>
 
-    <p>$BNc$($P!"(B<directive
-    module="core">AddDefaultCharset</directive> $B%G%#%l%/%F%#%V$N@bL@$r(B
-    $B8+$k$H!"(B<code>.htaccess</code> $B%U%!%$%k$G$N;HMQ$,5v2D$5$l$F$$$k$3$H$,(B
-    $B$o$+$j$^$9!#(B ($B%G%#%l%/%F%#%V$N35MW$N=j$K$"$k!V%3%s%F%-%9%H!W$H=q$+$l$F$$$k(B
-    $B9T$r8+$F$/$@$5$$!#(B) <a
-    href="../mod/directive-dict.html#Context">$B>e=q$-(B</a>$B$H=q$+$l$F$$$k9T$K$O(B
-    <code>FileInfo</code> $B$H$"$j$^$9!#$G$9$+$i!"(B<code>.htaccess</code> $BCf$N(B
-    $B$3$N%G%#%l%/%F%#%V$,M-8z$K$J$k$?$a$K$O!">/$J$/$H$b(B
-    <code>AllowOverride FileInfo</code> $B$,@_Dj$5$l$F$$$kI,MW$,$"$j$^$9!#(B</p>
+    <p>例えば、<directive
+    module="core">AddDefaultCharset</directive> ディレクティブの説明を
+    見ると、<code>.htaccess</code> ファイルでの使用が許可されていることが
+    わかります。 (ディレクティブの概要の所にある「コンテキスト」と書かれている
+    行を見てください。) <a
+    href="../mod/directive-dict.html#Context">上書き</a>と書かれている行には
+    <code>FileInfo</code> とあります。ですから、<code>.htaccess</code> 中の
+    このディレクティブが有効になるためには、少なくとも
+    <code>AllowOverride FileInfo</code> が設定されている必要があります。</p>
 
-    <example><title>$BNc(B:</title>
+    <example><title>例:</title>
       <table>
         <tr>
           <td><a
-          href="../mod/directive-dict.html#Context">$B%3%s%F%-%9%H(B:</a></td>
-          <td>$B%5!<%P@_Dj%U%!%$%k(B,$B%P!<%A%c%k%[%9%H(B,$B%G%#%l%/%H%j(B,.htaccess</td>
+          href="../mod/directive-dict.html#Context">コンテキスト:</a></td>
+          <td>サーバ設定ファイル,バーチャルホスト,ディレクトリ,.htaccess</td>
         </tr>
 
         <tr>
           <td><a
-          href="../mod/directive-dict.html#Override">$B>e=q$-(B:</a></td>
+          href="../mod/directive-dict.html#Override">上書き:</a></td>
           <td>FileInfo</td>
         </tr>
       </table>
     </example>
 
-    <p>$B$"$k%G%#%l%/%F%#%V$r(B <code>.htaccess</code> $B%U%!%$%k$K=q$/$3$H$,$G$-$k$+(B
-    $B$I$&$+$o$+$i$J$$$H$-$O!"$=$N%G%#%l%/%F%#%V$N@bL@$rC5$7$F!"(B".htaccess"
-    $B$N$?$a$N!V%3%s%F%-%9%H!W$N9T$rD4$Y$F$/$@$5$$!#(B</p>
+    <p>あるディレクティブを <code>.htaccess</code> ファイルに書くことができるか
+    どうかわからないときは、そのディレクティブの説明を探して、".htaccess"
+    のための「コンテキスト」の行を調べてください。</p>
     </section>
 
-    <section id="when"><title>$B$$$D(B .htaccess $B%U%!%$%k$r;H$&(B($B;H$o$J$$(B)$B$+!#(B</title>
+    <section id="when"><title>いつ .htaccess ファイルを使う(使わない)か。</title>
 
-    <p>$B0lHLE*$K!"%5!<%P$N<g@_Dj%U%!%$%k$K%"%/%;%9$G$-$J$$>l9g$r=|$$$F!"(B
-    <code>.htaccess</code> $B%U%!%$%k$N;HMQ$O6KNOHr$1$F$/$@$5$$!#(B
-    $B@$$NCf$K$O!"Nc$($P!"%f!<%6G'>Z$O>o$K(B <code>.htaccess</code> $B%U%!%$%k$G(B
-    $B9T$J$o$J$1$l$P$J$i$J$$!"$H$$$&8m2r$,9-$^$C$F$$$^$9$,!"$^$C$?$/$=$s$J$3$H$O(B
-    $B$"$j$^$;$s!#%f!<%6G'>Z$N@_Dj$O%5!<%P<g@_Dj%U%!%$%k$K=q$/$3$H$,$G$-!"(B
-    $B<B:]!"$=$NJ}$,$h$jNI$$@_DjJ}K!$G$9!#(B</p>
+    <p>一般的に、サーバの主設定ファイルにアクセスできない場合を除いて、
+    <code>.htaccess</code> ファイルの使用は極力避けてください。
+    世の中には、例えば、ユーザ認証は常に <code>.htaccess</code> ファイルで
+    行なわなければならない、という誤解が広まっていますが、まったくそんなことは
+    ありません。ユーザ認証の設定はサーバ主設定ファイルに書くことができ、
+    実際、その方がより良い設定方法です。</p>
 
-    <p><code>.htaccess</code> $B%U%!%$%k$O%3%s%F%s%DDs6!<T$,%G%#%l%/%H%jKh$N(B
-    $B@_Dj$r9T$J$$$?$$$1$l$I!"%5!<%P%7%9%F%`$N(B root $B%"%/%;%98"8B$r;}$C$F$$$J$$(B
-    $B$H$$$&>l9g$K$N$_;H$&$Y$-$b$N$G$9!#%5!<%P4IM}<T$,IQHK$K@_DjJQ99$r9T$J$$$?$/$O(B
-    $B$J$$!"$H$$$&$H$-$K$O8D!9$N%f!<%6$,(B <code>.htaccess</code> $B%U%!%$%k$r;H$C$F(B
-    $B<+J,$G@_Dj$NJQ99$r9T$J$&$3$H$r5v2D$7$?J}$,NI$$$H$-$b$"$k$G$7$g$&!#(B
-    $B$3$l$OFC$K!"(BISP $B$,J#?t$N%f!<%6$N%5%$%H$r0l$D$N%^%7%s$G%[%9%H$7$F$$$F!"(B
-    $B3F%f!<%6$,@_Dj$NJQ99$r$G$-$k$h$&$K$7$?$$$h$&$J$H$-$K$"$F$O$^$j$^$9!#(B</p>
+    <p><code>.htaccess</code> ファイルはコンテンツ提供者がディレクトリ毎の
+    設定を行ないたいけれど、サーバシステムの root アクセス権限を持っていない
+    という場合にのみ使うべきものです。サーバ管理者が頻繁に設定変更を行ないたくは
+    ない、というときには個々のユーザが <code>.htaccess</code> ファイルを使って
+    自分で設定の変更を行なうことを許可した方が良いときもあるでしょう。
+    これは特に、ISP が複数のユーザのサイトを一つのマシンでホストしていて、
+    各ユーザが設定の変更をできるようにしたいようなときにあてはまります。</p>
 
-    <p>$B$7$+$7!"IaDL$O2DG=$G$"$l$P(B <code>.htaccess</code> $B%U%!%$%k$N;HMQ$O(B
-    $BHr$1$F$/$@$5$$!#(B<code>.htaccess</code> $B%U%!%$%k$K=q$3$&$H9M$($k$h$&$J(B
-    $B$9$Y$F$N@_Dj$O!"%5!<%P$N<g@_Dj%U%!%$%k$N(B <directive module="core"
-    type="section">Directory</directive> $B%;%/%7%g%s$GF1$8$h$&$K9T$J$&$3$H$,(B
-    $B$G$-$^$9!#(B</p>
+    <p>しかし、普通は可能であれば <code>.htaccess</code> ファイルの使用は
+    避けてください。<code>.htaccess</code> ファイルに書こうと考えるような
+    すべての設定は、サーバの主設定ファイルの <directive module="core"
+    type="section">Directory</directive> セクションで同じように行なうことが
+    できます。</p>
 
-    <p><code>.htaccess</code> $B%U%!%$%k$N;HMQ$rHr$1$kM}M3$O<g$KFs$D$"$j$^$9!#(B</p>
+    <p><code>.htaccess</code> ファイルの使用を避ける理由は主に二つあります。</p>
 
-    <p>$B0l$DL\$O%5!<%P$N@-G=$NLdBj$G$9!#(B<directive 
-    module="core">AllowOverride</directive> $B%G%#%l%/%F%#%V$,(B
-    <code>.htaccess</code> $B%U%!%$%k$N@_Dj$r5v2D$7$F$$$k>l9g$O!"(BApache $B$O(B
-    $B3F%G%#%l%/%H%j$G(B <code>.htaccess</code> $B%U%!%$%k$rC5$7$^$9!#(B
-    $B$G$9$+$i!"(B<code>.htaccess</code> $B%U%!%$%k$r5v2D$9$k$H!"<B:]$K;HMQ$7$F$$$k$+(B
-    $B$I$&$+$K4X$o$i$:!"@-G=$NDc2<$r>7$/$3$H$K$J$j$^$9(B! $B$^$?!"(B<code>.htaccess</code>
-    $B%U%!%$%k$OJ8=q$,%j%/%(%9%H$5$l$kEY$KFI$_9~$^$l$^$9!#(B</p>
+    <p>一つ目はサーバの性能の問題です。<directive 
+    module="core">AllowOverride</directive> ディレクティブが
+    <code>.htaccess</code> ファイルの設定を許可している場合は、Apache は
+    各ディレクトリで <code>.htaccess</code> ファイルを探します。
+    ですから、<code>.htaccess</code> ファイルを許可すると、実際に使用しているか
+    どうかに関わらず、性能の低下を招くことになります! また、<code>.htaccess</code>
+    ファイルは文書がリクエストされる度に読み込まれます。</p>
 
-    <p>$B$5$i$K!"(BApache $B$OE,MQ$9$Y$-%G%#%l%/%F%#%V$r=8$a$k$?$a$K!"$9$Y$F$N(B
-    $B>e0L$N%G%#%l%/%H%j$N(B <code>.htaccess</code> $B%U%!%$%k$rC5$9I,MW$,$"$k$3$H$K$b(B
-    $BCm0U$7$F$/$@$5$$!#(B(<a href="#how">$B%G%#%l%/%F%#%V$,E,MQ$5$l$kJ}K!(B</a>$B$r(B
-    $B;2>H$7$F$/$@$5$$!#(B)$B$G$9$+$i!"(B<code>/www/htdocs/example</code> $B$K$"$k(B
-    $B%U%!%$%k$,%j%/%(%9%H$5$l$?$H$-$O!"(BApache $B$O0J2<$N%U%!%$%k$rD4$Y$^$9!#(B</p>
+    <p>さらに、Apache は適用すべきディレクティブを集めるために、すべての
+    上位のディレクトリの <code>.htaccess</code> ファイルを探す必要があることにも
+    注意してください。(<a href="#how">ディレクティブが適用される方法</a>を
+    参照してください。)ですから、<code>/www/htdocs/example</code> にある
+    ファイルがリクエストされたときは、Apache は以下のファイルを調べます。</p>
 
     <example>
       /.htaccess<br />
@@ -166,37 +166,37 @@
       /www/htdocs/example/.htaccess
     </example>
 
-    <p>$B$G$9$+$i!"$=$N%G%#%l%/%H%j$N$=$l$>$l$N%U%!%$%k$X$N%"%/%;%9$KBP$7$F!"(B
-    $B>e$NNc$N%U%!%$%k$,$^$C$?$/B8:_$7$J$$$H$-$G$b!"DI2C$N%U%!%$%k%7%9%F%`$N(B
-    $B%"%/%;%9$,9T$J$o$l$k$3$H$K$J$j$^$9!#(B($B$3$l$O!"(B<code>.htaccess</code> $B$,(B
-    <code>/</code> $B$KBP$7$FM-8z$K$J$C$F$$$k$H$-$N>l9g$G!"IaDL$O$=$&$J$C$F(B
-    $B$$$J$$$3$H$KCm0U$7$F$/$@$5$$!#(B)</p>
+    <p>ですから、そのディレクトリのそれぞれのファイルへのアクセスに対して、
+    上の例のファイルがまったく存在しないときでも、追加のファイルシステムの
+    アクセスが行なわれることになります。(これは、<code>.htaccess</code> が
+    <code>/</code> に対して有効になっているときの場合で、普通はそうなって
+    いないことに注意してください。)</p>
 
-    <p>$BFs$DL\$O%;%-%e%j%F%#$G$9!#%f!<%6$K%5!<%P$N@_Dj$rJQ99$9$k$3$H$r(B
-    $B5v2D$9$k$3$H$K$J$j$^$9$N$G!"$"$J$?<+?H$,4IM}$G$-$J$$JQ99$r$5$l$k(B
-    $B62$l$,$"$j$^$9!#%f!<%6$K$3$NFC8"$rM?$($k$N$,NI$$$N$+$I$&$+!"==J,(B
-    $B8!F$$7$F$/$@$5$$!#$^$?!"%f!<%6$KM?$($k8"8B$,I,MW$J$b$N$h$j$b>/$J$9$.$k$H!"(B
-    $BM>J,$J5;=Q%5%]!<%HJs9p$r<u$1<h$k$h$&$K$J$k2DG=@-$,9b$$$3$H$K$b(B
-    $BCm0U$7$F$/$@$5$$!#3N<B$K!"%f!<%6$K$I$NDxEY$N8"8B$rM?$($?$+L@3N$K9p$2$k$h$&$K(B
-    $B$7$F$/$@$5$$!#(B<directive module="core">AllowOverride</directive> $B$K(B
-    $B2?$r@_Dj$7$?$+$H$$$&$3$H$H!"4XO"$9$kJ8=q$r<($9$3$H$G!"(B
-    $B8e!9$N:.Mp$r$0$C$H8:$i$9$3$H$,(B
-    $B$G$-$^$9!#(B</p>
+    <p>二つ目はセキュリティです。ユーザにサーバの設定を変更することを
+    許可することになりますので、あなた自身が管理できない変更をされる
+    恐れがあります。ユーザにこの特権を与えるのが良いのかどうか、十分
+    検討してください。また、ユーザに与える権限が必要なものよりも少なすぎると、
+    余分な技術サポート報告を受け取るようになる可能性が高いことにも
+    注意してください。確実に、ユーザにどの程度の権限を与えたか明確に告げるように
+    してください。<directive module="core">AllowOverride</directive> に
+    何を設定したかということと、関連する文書を示すことで、
+    後々の混乱をぐっと減らすことが
+    できます。</p>
 
-    <p>$B$H$3$m$G!"%G%#%l%/%F%#%V$N=q$+$l$?(B <code>.htaccess</code> $B$r(B
-    <code>/www/htdocs/example</code> $B$KCV$/$3$H$H!"F1$8%G%#%l%/%F%#%V$r(B
-    $B<g%5!<%P@_Dj$N(B Directory $B%;%/%7%g%s(B
-    <code>&lt;Directory /www/htdocs/example&gt;</code> $B$K=q$/$3$H$O(B
-    $B40A4$KEy2A$G$9(B:</p>
+    <p>ところで、ディレクティブの書かれた <code>.htaccess</code> を
+    <code>/www/htdocs/example</code> に置くことと、同じディレクティブを
+    主サーバ設定の Directory セクション
+    <code>&lt;Directory /www/htdocs/example&gt;</code> に書くことは
+    完全に等価です:</p>
 
-    <p><code>/www/htdocs/example</code> $B$N(B <code>.htaccess</code> $B%U%!%$%k(B:</p>
+    <p><code>/www/htdocs/example</code> の <code>.htaccess</code> ファイル:</p>
 
-    <example><title><code>/www/htdocs/example</code> $B$N(B .htaccess $B%U%!%$%k$N(B
-    $BFbMF(B</title>
+    <example><title><code>/www/htdocs/example</code> の .htaccess ファイルの
+    内容</title>
         AddType text/example .exm
     </example>
 
-    <example><title><code>httpd.conf $B$N%;%/%7%g%s(B</code>
+    <example><title><code>httpd.conf のセクション</code>
     file</title>
       &lt;Directory /www/htdocs/example&gt;<br />
       <indent>
@@ -205,60 +205,60 @@
       &lt;/Directory&gt;
     </example>
 
-    <p>$B$7$+$7!"$3$N@_Dj$O%5!<%P@_Dj%U%!%$%k$K=q$$$?J}$,%Q%U%)!<%^%s%9$N(B
-    $BDc2<$,>/$J$/$J$j$^$9!#%U%!%$%k$,%j%/%(%9%H$5$l$kEY$K(B
-    $BFI$_9~$^$l$kBe$o$j$K!"(BApache $B$N5/F0;~$K(B 1 $B2s$@$1FI$_9~$a$P(B
-    $B$h$/$J$k$+$i$G$9!#(B</p>
+    <p>しかし、この設定はサーバ設定ファイルに書いた方がパフォーマンスの
+    低下が少なくなります。ファイルがリクエストされる度に
+    読み込まれる代わりに、Apache の起動時に 1 回だけ読み込めば
+    よくなるからです。</p>
 
-    <p><directive module="core">AllowOverride</directive> $B%G%#%l%/%F%#%V$N(B
-    $BCM$r(B <code>none</code> $B$K@_Dj$9$k$3$H$G(B <code>.htaccess</code> $B%U%!%$%k(B
-    $B$N;HMQ$r40A4$KL58z$K$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p><directive module="core">AllowOverride</directive> ディレクティブの
+    値を <code>none</code> に設定することで <code>.htaccess</code> ファイル
+    の使用を完全に無効にすることができます。</p>
 
     <example>
       AllowOverride None
     </example>
 </section>
 
-<section id="how"><title>$B%G%#%l%/%F%#%V$NE,MQ$N$5$lJ}(B</title>
+<section id="how"><title>ディレクティブの適用のされ方</title>
 
-    <p><code>.htaccess</code> $B%U%!%$%k$N@_Dj%G%#%l%/%F%#%V$O(B <code>.htaccess</code>
-    $B%U%!%$%k$NB8:_$9$k%G%#%l%/%H%j$H!"$=$N%5%V%G%#%l%/%H%j$9$Y$F$KE,MQ$5$l$^$9!#(B
-    $B$7$+$7!">e$N3,AX$N%G%#%l%/%H%j$K$b(B <code>.htaccess</code> $B%U%!%$%k$,(B
-    $BB8:_$9$k$+$b$7$l$J$$$3$H$r3P$($F$*$/$3$H$OBg@Z$G$9!#%G%#%l%/%F%#%V$O8=$l$k(B
-    $B=gHV$KE,MQ$5$l$^$9!#$G$9$+$i!"$"$k%G%#%l%/%H%j$N(B <code>.htaccess</code> $B$O(B
-    $B%G%#%l%/%H%j%D%j!<$N$h$j>e$N3,AX$N(B <code>.htaccess</code> $B%U%!%$%k$N(B
-    $B@_Dj$r>e=q$-$9$k$+$b$7$l$^$;$s!#$=$7$F!"$=$N(B <code>.htaccess</code> $B$b(B
-    $B$h$j>e$N3,AX$G=q$+$l$?%G%#%l%/%F%#%V$r>e=q$-$7$?$j!"<g%5!<%P@_Dj%U%!%$%k(B
-    $B$=$N$b$N$N@_Dj$r>e=q$-$7$?$j$7$F$$$k$+$b$7$l$^$;$s!#(B</p>
+    <p><code>.htaccess</code> ファイルの設定ディレクティブは <code>.htaccess</code>
+    ファイルの存在するディレクトリと、そのサブディレクトリすべてに適用されます。
+    しかし、上の階層のディレクトリにも <code>.htaccess</code> ファイルが
+    存在するかもしれないことを覚えておくことは大切です。ディレクティブは現れる
+    順番に適用されます。ですから、あるディレクトリの <code>.htaccess</code> は
+    ディレクトリツリーのより上の階層の <code>.htaccess</code> ファイルの
+    設定を上書きするかもしれません。そして、その <code>.htaccess</code> も
+    より上の階層で書かれたディレクティブを上書きしたり、主サーバ設定ファイル
+    そのものの設定を上書きしたりしているかもしれません。</p>
 
-    <p>$BNc(B:</p>
+    <p>例:</p>
 
-    <p>$B%G%#%l%/%H%j(B <code>/www/htdocs/example1</code> $B$K0J2<$NFbMF$N(B
-    <code>.htaccess</code> $B%U%!%$%k$,$"$j$^$9(B:</p>
+    <p>ディレクトリ <code>/www/htdocs/example1</code> に以下の内容の
+    <code>.htaccess</code> ファイルがあります:</p>
 
     <example>
        Options +ExecCGI
     </example>
 
-    <p>($BCm(B: <code>.htaccess</code>
-    $B%U%!%$%k$G(B "<directive
-    module="core">Options</directive>" $B%G%#%l%/%F%#%V$,M-8z$K$J$k$?$a$K$O!"(B
-    "<code>AllowOverride Options</code>" $B$rM-8z$K$9$kI,MW$,$"$j$^$9!#(B)</p>
+    <p>(注: <code>.htaccess</code>
+    ファイルで "<directive
+    module="core">Options</directive>" ディレクティブが有効になるためには、
+    "<code>AllowOverride Options</code>" を有効にする必要があります。)</p>
 
-    <p>$B%G%#%l%/%H%j(B <code>/www/htdocs/example1/example2</code> $B$K$O(B
-    $B0J2<$N$h$&$J(B <code>.htaccess</code> $B%U%!%$%k$,$"$j$^$9(B:</p>
+    <p>ディレクトリ <code>/www/htdocs/example1/example2</code> には
+    以下のような <code>.htaccess</code> ファイルがあります:</p>
 
     <example>
        Options Includes
     </example>
 
-    <p>$BFs$D$a$N(B <code>.htaccess</code> $B$K$h$j!"%G%#%l%/%H%j(B
-    <code>/www/htdocs/example1/example2</code> $B$G$O(B CGI $B$N<B9T$O(B
-    $B5v2D$5$l$^$;$s!#$3$l$O!"(B<code>Options Includes</code> $B$N$_$,(B
-    $B8zNO$r;}$A!"$=$l$,$9$Y$F$N0JA0$N@_Dj$r>e=q$-$9$k$+$i$G$9!#(B</p>
+    <p>二つめの <code>.htaccess</code> により、ディレクトリ
+    <code>/www/htdocs/example1/example2</code> では CGI の実行は
+    許可されません。これは、<code>Options Includes</code> のみが
+    効力を持ち、それがすべての以前の設定を上書きするからです。</p>
 
-    <section id="merge"><title>$B%a%$%s@_Dj%U%!%$%k$KBP$9$k(B
-    .htaccess $B$N%^!<%8(B</title>
+    <section id="merge"><title>メイン設定ファイルに対する
+    .htaccess のマージ</title>
 
     <p>As discussed in the documentation on <a
     href="../sections.html">Configuration Sections</a>,
@@ -271,18 +271,18 @@
     module="core">AllowOverride</directive> setting.  For example, to
     prevent script execution while allowing anything else to be set in
     <code>.htaccess</code> you can use:</p>
-    <p><a href="../sections.html">$B%;%/%7%g%s$N@_Dj(B</a>
-    $B$K5-:\$5$l$F$$$k$h$&$K!"(B<code>.htaccess</code> $B%U%!%$%k$r;H$C$F(B
+    <p><a href="../sections.html">セクションの設定</a>
+    に記載されているように、<code>.htaccess</code> ファイルを使って
     <directive type="section" module="core">Directory</directive>
-    $B%;%/%7%g%s$N@_Dj$r%G%#%l%/%H%jKh$K>e=q$-$G$-$^$9$,!"(B
-    $B%a%$%s@_Dj%U%!%$%kCf$K$"$k!"B>$N<oN`$N@_Dj%;%/%7%g%s$K$h$C$F(B
-    $B$5$i$K>e=q$-$5$l$k$3$H$b$"$j$^$9!#(B
-    $B$3$NFCD'$r;H$C$F!"(B
+    セクションの設定をディレクトリ毎に上書きできますが、
+    メイン設定ファイル中にある、他の種類の設定セクションによって
+    さらに上書きされることもあります。
+    この特徴を使って、
     <directive module="core">AllowOverride</directive>
-    $B$G<+M3EY$N9b$$@_Dj$,$"$C$?$H$7$F$b!"$"$kFCDj$N@_Dj$,3N<B$K(B
-    $BH?1G$5$l$k$h$&$K$G$-$^$9!#Nc$($P!"(BCGI $B%9%/%j%W%H$N<B9T$O(B
-    $BIT5v2D$K!"$+$D!"(B<code>.htaccess</code> $B$G$=$NB>$N9`L\$O(B
-    $B@_Dj$G$-$k$h$&$K!"$H$$$&>l9g$O<!$N$h$&$K$G$-$^$9(B :</p>
+    で自由度の高い設定があったとしても、ある特定の設定が確実に
+    反映されるようにできます。例えば、CGI スクリプトの実行は
+    不許可に、かつ、<code>.htaccess</code> でその他の項目は
+    設定できるように、という場合は次のようにできます :</p>
     
     <example>
 &lt;Directory /&gt;<br />
@@ -301,24 +301,24 @@ Options +IncludesNoExec -ExecCGI<br />
 
 </section>
 
-<section id="auth"><title>$BG'>Z$NNc(B</title>
+<section id="auth"><title>認証の例</title>
 
-    <p>$B$b$7G'>Z$NJ}K!$rCN$k$?$a$K$3$NItJ,$KD>@\Mh$?$N$G$"$l$P!"<!$N$3$H$r(B
-    $BCN$C$F$*$/$3$H$,=EMW$G$9!#$h$/$"$k8m2r$K!"%Q%9%o!<%IG'>Z$r9T$J$&$?$a$K$O(B
-    <code>.htaccess</code> $B%U%!%$%k$r;H$&I,MW$,$"$k!"$H$$$&$b$N$,$"$j$^$9!#(B
-    $B$3$l$O@5$7$/$"$j$^$;$s!#<g%5!<%P@_Dj%U%!%$%k$N(B <directive
-    module="core" type="section">Directory</directive> $B%;%/%7%g%s$K(B
-    $BG'>ZMQ$N%G%#%l%/%F%#%V$r=q$/J}$,?d>)$5$l$kJ}K!$G!"(B<code>.htaccess</code>
-    $B%U%!%$%k$O<g%5!<%P@_Dj%U%!%$%k$rJQ99$G$-$J$$$H$-$K$N$_;HMQ$9$Y$-$G$9!#(B
-    $B$$$D(B <code>.htaccess</code> $B%U%!%$%k$r;H$&$Y$-$G!"$$$D;H$&$Y$-$G$O$J$$$+$K(B
-    $B$D$$$F$O(B <a 
-    href="#when">$B>e(B</a>$B$r;2>H$7$F$/$@$5$$!#(B</p>
+    <p>もし認証の方法を知るためにこの部分に直接来たのであれば、次のことを
+    知っておくことが重要です。よくある誤解に、パスワード認証を行なうためには
+    <code>.htaccess</code> ファイルを使う必要がある、というものがあります。
+    これは正しくありません。主サーバ設定ファイルの <directive
+    module="core" type="section">Directory</directive> セクションに
+    認証用のディレクティブを書く方が推奨される方法で、<code>.htaccess</code>
+    ファイルは主サーバ設定ファイルを変更できないときにのみ使用すべきです。
+    いつ <code>.htaccess</code> ファイルを使うべきで、いつ使うべきではないかに
+    ついては <a 
+    href="#when">上</a>を参照してください。</p>
 
-    <p>$B0J>e$N$3$H$r$U$^$($?>e$G!"$b$7(B <code>.htaccess</code> $B$N;HMQ$,(B
-    $B$^$@I,MW$@$H;W$&>l9g$O!"<!$N$h$&$J$b$N$,K>$_$N$3$H$r$7$F$/$l$k$+$b(B
-    $B$7$l$^$;$s!#(B</p>
+    <p>以上のことをふまえた上で、もし <code>.htaccess</code> の使用が
+    まだ必要だと思う場合は、次のようなものが望みのことをしてくれるかも
+    しれません。</p>
 
-    <p><code>.htaccess</code> $B%U%!%$%k$NFbMF(B:</p>
+    <p><code>.htaccess</code> ファイルの内容:</p>
 
     <example>
       AuthType Basic<br />
@@ -328,20 +328,20 @@ Options +IncludesNoExec -ExecCGI<br />
       Require Group admins
     </example>
 
-    <p>$B$3$l$i$N%G%#%l%/%F%#%V$,M-8z$K$J$k$?$a$K$O!"(B
-    <code>AllowOverride AuthConfig</code> $B$,M-8z$G$J$/$F$O$J$i$J$$$3$H$K(B
-    $BCm0U$7$F$/$@$5$$!#(B</p>
+    <p>これらのディレクティブが有効になるためには、
+    <code>AllowOverride AuthConfig</code> が有効でなくてはならないことに
+    注意してください。</p>
 
-    <p>$BG'>Z$H>5G'$K$D$$$F$O(B <a href="auth.html">$BG'>Z%A%e!<%H%j%"%k(B</a>$B$r(B
-    $B;2>H$7$F$/$@$5$$!#(B</p>
+    <p>認証と承認については <a href="auth.html">認証チュートリアル</a>を
+    参照してください。</p>
 </section>
 
-<section id="ssi"><title>SSI $B$NNc(B</title>
+<section id="ssi"><title>SSI の例</title>
 
-    <p>$B$b$&0l$D$N(B <code>.htaccess</code> $B%U%!%$%k$N$h$/$"$kMxMQK!$O(B
-    $BFCDj$N%G%#%l%/%H%j$G(B SSI $B$rM-8z$K$9$k$3$H$G$9!#$3$l$O!"K>$_$N%G%#%l%/%H%j$N(B
-    <code>.htaccess</code> $B%U%!%$%k$K0J2<$N@_Dj%G%#%l%/%F%#%V$r=q$/$3$H$G(B
-    $BC#@.$G$-$^$9(B:</p>
+    <p>もう一つの <code>.htaccess</code> ファイルのよくある利用法は
+    特定のディレクトリで SSI を有効にすることです。これは、望みのディレクトリの
+    <code>.htaccess</code> ファイルに以下の設定ディレクティブを書くことで
+    達成できます:</p>
 
     <example>
        Options +Includes<br />
@@ -349,59 +349,59 @@ Options +IncludesNoExec -ExecCGI<br />
        AddHandler server-parsed shtml
     </example>
 
-    <p>$B$3$l$i$N%G%#%l%/%F%#%V$,M-8z$K$J$k$?$a$K$O!"(B
-    <code>AllowOverride Options</code> $B$H(B <code>AllowOverride
-    FileInfo</code> $B$,M-8z$K$J$C$F$$$kI,MW$,$"$k$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    <p>これらのディレクティブが有効になるためには、
+    <code>AllowOverride Options</code> と <code>AllowOverride
+    FileInfo</code> が有効になっている必要があることに注意してください。</p>
 
-    <p>$B$h$j$^$H$^$C$?(B SSI $B$N@bL@$O(B <a href="ssi.html">SSI $B%A%e!<%H%j%"%k(B</a>$B$r(B
-    $B;2>H$7$F$/$@$5$$!#(B</p>
+    <p>よりまとまった SSI の説明は <a href="ssi.html">SSI チュートリアル</a>を
+    参照してください。</p>
 </section>
 
-<section id="cgi"><title>CGI $B$NNc(B</title>
+<section id="cgi"><title>CGI の例</title>
 
-    <p>$B:G8e$K!"FCDj$N%G%#%l%/%H%j$G(B CGI $B%W%m%0%i%`$N<B9T$r5v2D$7$?$$$3$H$,(B
-    $B$"$k$G$7$g$&!#$3$l$O0J2<$N@_Dj$G9T$J$&$3$H$,$G$-$^$9(B:</p>
+    <p>最後に、特定のディレクトリで CGI プログラムの実行を許可したいことが
+    あるでしょう。これは以下の設定で行なうことができます:</p>
 
     <example>
        Options +ExecCGI<br />
        AddHandler cgi-script cgi pl
     </example>
 
-    <p>$B$b$7$/$O!"$"$k%G%#%l%/%H%j$N$9$Y$F$N%U%!%$%k$,(B CGI $B%W%m%0%i%`$H(B
-    $B$_$J$5$l$k$h$&$K$7$?$$$J$i!"0J2<$N@_Dj$G<B8=$9$k$3$H$,$G$-$^$9(B:</p>
+    <p>もしくは、あるディレクトリのすべてのファイルが CGI プログラムと
+    みなされるようにしたいなら、以下の設定で実現することができます:</p>
 
     <example>
        Options +ExecCGI<br />
        SetHandler cgi-script
     </example>
 
-    <p>$B$3$l$i$N%G%#%l%/%F%#%V$,M-8z$K$J$k$?$a$K$O!"(B
-    <code>AllowOverride Options</code> $B$H(B <code>AllowOverride
-    FileInfo</code> $B$,M-8z$G$"$kI,MW$,$"$k$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    <p>これらのディレクティブが有効になるためには、
+    <code>AllowOverride Options</code> と <code>AllowOverride
+    FileInfo</code> が有効である必要があることに注意してください。</p>
 
-    <p>CGI $B%W%m%0%i%`$H@_Dj$N$h$j$^$H$^$C$?@bL@$O(B <a
-    href="cgi.html">CGI $B%A%e!<%H%j%"%k(B</a>$B$r;2>H$7$F$/$@$5$$!#(B</p>
+    <p>CGI プログラムと設定のよりまとまった説明は <a
+    href="cgi.html">CGI チュートリアル</a>を参照してください。</p>
 
 </section>
 
-<section id="troubleshoot"><title>$BLdBj2r7h(B</title>
+<section id="troubleshoot"><title>問題解決</title>
 
-    <p>$B@_Dj%G%#%l%/%F%#%V$r(B <code>.htaccess</code> $B%U%!%$%k$K=q$$$?$1$l$I$b!"(B
-    $B4|BT$7$?8z2L$,F@$i$l$J$$$H$-$K$O!"$$$/$D$+$N860x$,9M$($i$l$^$9!#(B</p>
+    <p>設定ディレクティブを <code>.htaccess</code> ファイルに書いたけれども、
+    期待した効果が得られないときには、いくつかの原因が考えられます。</p>
 
-    <p>$B0lHV$h$/$"$k$3$H$O!"@_Dj%G%#%l%/%F%#%V$,9MN8$5$l$k$h$&$K$O(B
-    <directive module="core">AllowOverride</directive> $B$,@_Dj$5$l$F$$$J$$(B
-    $B$H$$$&$b$N$G$9!#3:Ev$N%U%!%$%k$N%9%3!<%W$K(B <code>AllowOverride None</code>
-    $B$,@_Dj$5$l$F$$$J$$$3$H$r3NG'$7$F$/$@$5$$!#$3$l$rD4$Y$k$?$a$NNI$$J}K!$O!"(B
-    <code>.htaccess</code> $B%U%!%$%k$K$4$_$r=q$$$F!"%j%m!<%I$9$k$3$H$G$9!#(B
-    $B%5!<%P$N%(%i!<$,@8@.$5$l$J$$$H$-$O!"$[$\3N<B$K(B <code>AllowOverride
-    None</code> $B$,@_Dj$5$l$F$$$k>uBV$K$J$C$F$$$^$9!#(B</p>
+    <p>一番よくあることは、設定ディレクティブが考慮されるようには
+    <directive module="core">AllowOverride</directive> が設定されていない
+    というものです。該当のファイルのスコープに <code>AllowOverride None</code>
+    が設定されていないことを確認してください。これを調べるための良い方法は、
+    <code>.htaccess</code> ファイルにごみを書いて、リロードすることです。
+    サーバのエラーが生成されないときは、ほぼ確実に <code>AllowOverride
+    None</code> が設定されている状態になっています。</p>
 
-    <p>$B$=$&$G$O$J$/!"J8=q$r%"%/%;%9$7$h$&$H$7$?$H$-$K%(%i!<$,H/@8$7$F$$$k(B
-    $B$H$-$O!"(BApache $B$N%(%i!<%m%0$rD4$Y$F$/$@$5$$!#(B<code>.htaccess</code> $B%U%!%$%k$G(B
-    $B;HMQ$5$l$?%G%#%l%/%F%#%V$,5v2D$5$l$F$$$J$$!"$H$$$&$3$H$rCN$i$;$F$$$k(B
-    $B2DG=@-$,9b$$$G$9!#$^$?$O!"9=J8$N4V0c$$$,$"$k$3$H$r=R$Y$F$$$k$+$b$7$l$^$;$s!#(B
-    $B$=$N>l9g$K$O$^$:$=$l$r=$@5$9$kI,MW$,$"$j$^$9!#(B</p>
+    <p>そうではなく、文書をアクセスしようとしたときにエラーが発生している
+    ときは、Apache のエラーログを調べてください。<code>.htaccess</code> ファイルで
+    使用されたディレクティブが許可されていない、ということを知らせている
+    可能性が高いです。または、構文の間違いがあることを述べているかもしれません。
+    その場合にはまずそれを修正する必要があります。</p>
 
 </section>
 

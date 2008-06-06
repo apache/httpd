@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 395228:659902 (outdated) -->
@@ -23,66 +23,66 @@
 <modulesynopsis metafile="mod_proxy_balancer.xml.meta">
 
 <name>mod_proxy_balancer</name>
-<description>$BIi2YJ,;6$N$?$a$N(B <module>mod_proxy</module> $B3HD%(B</description>
+<description>負荷分散のための <module>mod_proxy</module> 拡張</description>
 <status>Extension</status>
 <sourcefile>proxy_balancer.c</sourcefile>
 <identifier>proxy_balancer_module</identifier>
-<compatibility>2.1 $B0J9_(B</compatibility>
+<compatibility>2.1 以降</compatibility>
 
 <summary>
-    <p>$BK\%b%8%e!<%k$K$O(B <module>mod_proxy</module> $B$,(B<em>$BI,MW$G$9(B</em>$B!#(B
-    <code>HTTP</code>, <code>FTP</code> $B$H(B <code>AJP13</code>
-    $B%W%m%H%3%k$N%m!<%I%P%i%s%95!G=$r;}$C$F$$$^$9!#(B</p>
+    <p>本モジュールには <module>mod_proxy</module> が<em>必要です</em>。
+    <code>HTTP</code>, <code>FTP</code> と <code>AJP13</code>
+    プロトコルのロードバランス機能を持っています。</p>
 
-    <p>$B$G$9$+$i!"(B $B%m!<%I%P%i%s%9$rM-8z$K$9$k>l9g(B <module>mod_proxy</module>
-    $B$H(B <module>mod_proxy_balancer</module> $B$,%5!<%P$KAH$_9~$^$l$F(B
-    $B$$$J$1$l$P$$$1$^$;$s!#(B</p>
+    <p>ですから、 ロードバランスを有効にする場合 <module>mod_proxy</module>
+    と <module>mod_proxy_balancer</module> がサーバに組み込まれて
+    いなければいけません。</p>
 
-    <note type="warning"><title>$B7Y9p(B</title>
+    <note type="warning"><title>警告</title>
       <p><a href="mod_proxy.html#access"
-      >$B0BA4$J%5!<%P$K$9$k(B</a>$B$^$G%W%m%/%75!G=$OM-8z$K$7$J$$$G$/$@$5$$!#(B
-      $B%*!<%W%s%W%m%-%7%5!<%P$O$"$J$?<+?H$N%M%C%H%o!<%/$K$H$C$F$b!"(B
-      $B%$%s%?!<%M%C%HA4BN$K$H$C$F$b4m81$G$9!#(B</p>
+      >安全なサーバにする</a>までプロクシ機能は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
     </note>
 </summary>
 <seealso><module>mod_proxy</module></seealso>
 
 <section id="scheduler">
-    <title>$B%m!<%I%P%i%s%5$N%9%1%8%e!<%i$N%"%k%4%j%:%`(B</title>
-    <p>$B8=;~E@$G$O(B 2 $B<oN`$N%m!<%I%P%i%s%5%9%1%8%e!<%i%"%k%4%j%:%`$+$iA*$Y$^$9!#(B
-    $B%j%/%(%9%H2s?t$K$h$k$b$N(B <transnote>Request Counting</transnote>
-    $B$H!"%H%i%U%#%C%/NL$K$h$k$b$N(B <transnote>Weighted Traffic Counting</transnote>
-    $B$,$"$j$^$9!#%P%i%s%5$N@_Dj(B <code>lbmethod</code> $BCM$G!"$I$A$i$r;H$&$+;XDj$7$^$9!#(B
-    $B>\:Y$O(B <directive module="mod_proxy">Proxy</directive> $B%G%#%l%/%F%#%V$r(B
-    $B;2>H$7$F$/$@$5$$!#(B</p>
+    <title>ロードバランサのスケジューラのアルゴリズム</title>
+    <p>現時点では 2 種類のロードバランサスケジューラアルゴリズムから選べます。
+    リクエスト回数によるもの <transnote>Request Counting</transnote>
+    と、トラフィック量によるもの <transnote>Weighted Traffic Counting</transnote>
+    があります。バランサの設定 <code>lbmethod</code> 値で、どちらを使うか指定します。
+    詳細は <directive module="mod_proxy">Proxy</directive> ディレクティブを
+    参照してください。</p>
 
 </section>
 
 <section id="requests">
-    <title>Request Counting $B%"%k%4%j%:%`(B</title>
-    <p><code>lbmethod=byrequests</code> $B$GM-8z$K$J$j$^$9!#(B
-    $B$3$N%9%1%8%e!<%i$NGX7J$K$"$k9M$(J}$O!"MM!9$J%o!<%+!<$,$=$l$>$l!"(B
-    $B@_Dj$5$l$F$$$kJ,C4%j%/%(%9%H?t$r$-$A$s$H<u$1<h$l$k$h$&$K!"(B
-    $B%j%/%(%9%H$r07$&$H$$$&9M$(J}$G$9!#<!$N$h$&$KF0:n$7$^$9(B:</p>
+    <title>Request Counting アルゴリズム</title>
+    <p><code>lbmethod=byrequests</code> で有効になります。
+    このスケジューラの背景にある考え方は、様々なワーカーがそれぞれ、
+    設定されている分担リクエスト数をきちんと受け取れるように、
+    リクエストを扱うという考え方です。次のように動作します:</p>
 
-    <p><dfn>lbfactor</dfn> $B$O!"(B<em>$B$I$NDxEY%o!<%+!<$K;E;v$r?6$k$+(B</em>
-    $B$D$^$j(B<em>$B%o!<%+!<$N%/%*!<%?(B</em>$B$r;X$7$^$9!#$3$NCM$O(B "$BJ,C4(B" 
-    $BNL$rI=$9@55,2=$5$l$?CM$G$9!#(B</p>
+    <p><dfn>lbfactor</dfn> は、<em>どの程度ワーカーに仕事を振るか</em>
+    つまり<em>ワーカーのクオータ</em>を指します。この値は "分担" 
+    量を表す正規化された値です。</p>
 
-    <p><dfn>lbstatus</dfn> $B$O!"(B<em>$B%o!<%+!<$N%/%*!<%?$rK~$?$9$?$a$K(B
-    $B$I$N$0$i$$5^$.$GF/$+$J$1$l$P$J$i$J$$$+(B</em>$B$r;X$7$^$9!#(B</p>
+    <p><dfn>lbstatus</dfn> は、<em>ワーカーのクオータを満たすために
+    どのぐらい急ぎで働かなければならないか</em>を指します。</p>
 
-    <p><dfn>$B%o!<%+!<(B</dfn>$B$O%m!<%I%P%i%s%5$N%a%s%P$G!"DL>o$O!"(B
-    $B%5%]!<%H$5$l$k%W%m%H%3%k$N$&$A$N0l$D$rDs6!$7$F$$$k%j%b!<%H%[%9%H$G$9!#(B
+    <p><dfn>ワーカー</dfn>はロードバランサのメンバで、通常は、
+    サポートされるプロトコルのうちの一つを提供しているリモートホストです。
     </p>
 
-    <p>$B$^$:8D!9$N%o!<%+!<$K%o!<%+!<%/%*!<%?$r3d$j?6$j!"$I$N%o!<%+!<$,:G$b5^$.$G(B
-    $BF/$+$J$1$l$P$J$i$J$$$+(B (lbstatus $B$,:GBg$N$b$N(B) $B$rD4$Y$^$9!#(B
-    $B<!$K;E;v$r$9$k$h$&$K$3$N%o!<%+!<$rA*Br$7!"A*Br$7$?%o!<%+!<$N(B lbstatus 
-    $B$rA4BN$K3d$j?6$C$?$V$s$@$1:9$70z$-$^$9!#$G$9$+$i!"(Blbstatus $B$NAmNL$O(B
-    $B7k2LE*$KJQ2=$7$^$;$s(B(*)$B$7!"%j%/%(%9%H$O4|BTDL$j$KJ,;6$5$l$^$9!#(B</p>
+    <p>まず個々のワーカーにワーカークオータを割り振り、どのワーカーが最も急ぎで
+    働かなければならないか (lbstatus が最大のもの) を調べます。
+    次に仕事をするようにこのワーカーを選択し、選択したワーカーの lbstatus 
+    を全体に割り振ったぶんだけ差し引きます。ですから、lbstatus の総量は
+    結果的に変化しません(*)し、リクエストは期待通りに分散されます。</p>
 
-    <p>$B$"$k%o!<%+!<$,L58z$K$J$C$F$b!"B>$N$b$N$O@5>o$K%9%1%8%e!<%k$5$lB3$1$^$9!#(B
+    <p>あるワーカーが無効になっても、他のものは正常にスケジュールされ続けます。
     </p>
 
     <example><pre><code>for each worker in workers
@@ -94,7 +94,7 @@
 candidate lbstatus -= total factor</code></pre>
     </example>
 
-    <p>$B%P%i%s%5$r<!$N$h$&$K@_Dj$7$?>l9g(B:</p>
+    <p>バランサを次のように設定した場合:</p>
     
     <table style="data">
     <tr><th>worker</th>
@@ -114,8 +114,8 @@ candidate lbstatus -= total factor</code></pre>
         <td>0</td></tr>
     </table>
 
-    <p>$B$=$7$F(B <var>b</var> $B$,L58z$K$J$C$?>l9g!"<!$N$h$&$J%9%1%8%e!<%k$,(B
-    $B9T$o$l$^$9!#(B</p>
+    <p>そして <var>b</var> が無効になった場合、次のようなスケジュールが
+    行われます。</p>
 
     <table style="data">
     <tr><th>worker</th>
@@ -141,9 +141,9 @@ candidate lbstatus -= total factor</code></pre>
     <tr><td colspan="5">(repeat)</td></tr>
     </table>
 
-    <p>$B$D$^$j$3$N$h$&$K%9%1%8%e!<%k$5$l$^$9(B: <var>a</var> <var>c</var>
+    <p>つまりこのようにスケジュールされます: <var>a</var> <var>c</var>
     <var>d</var> <var>a</var> <var>c</var> <var>d</var> <var>a</var>
-    <var>c</var> <var>d</var> ... $B<!$NE@$KCm0U$7$F$/$@$5$$(B:</p>
+    <var>c</var> <var>d</var> ... 次の点に注意してください:</p>
 
     <table style="data">
     <tr><th>worker</th>
@@ -158,7 +158,7 @@ candidate lbstatus -= total factor</code></pre>
         <td>25</td></tr>
     </table>
 
-    <p>$B$3$N5sF0$O!"<!$N@_Dj$HA4$/F1$8$K$J$j$^$9(B:</p>
+    <p>この挙動は、次の設定と全く同じになります:</p>
 
     <table style="data">
     <tr><th>worker</th>
@@ -175,8 +175,8 @@ candidate lbstatus -= total factor</code></pre>
 
     <p>This is because all values of <dfn>lbfactor</dfn> are normalized
     with respect to the others. For:</p>
-    <p><dfn>lbfactor</dfn> $B$OA4$F@55,2=$5$l$?$b$N$G!"(B
-    $BB>$H$NAjBPCM$@$+$i$G$9!#<!$N@_Dj$G$O(B:</p>
+    <p><dfn>lbfactor</dfn> は全て正規化されたもので、
+    他との相対値だからです。次の設定では:</p>
 
     <table style="data">
     <tr><th>worker</th>
@@ -189,10 +189,10 @@ candidate lbstatus -= total factor</code></pre>
         <td>1</td></tr>
     </table>
 
-    <p>$B%o!<%+!<(B <var>b</var> $B$O!"J?6Q$7$F!"(B<var>a</var> $B$H(B <var>c</var>
-    $B$N(B 4 $BG\$N?t$N%j%/%(%9%H$r<u$1;}$D$3$H$K$J$j$^$9!#(B</p>
+    <p>ワーカー <var>b</var> は、平均して、<var>a</var> と <var>c</var>
+    の 4 倍の数のリクエストを受け持つことになります。</p>
 
-    <p>$B<!$N$h$&$JHsBP>N$J@_Dj$G$O!"$3$&$J$k$HM=A[$5$l$k$G$7$g$&(B:</p>
+    <p>次のような非対称な設定では、こうなると予想されるでしょう:</p>
 
     <table style="data">
     <tr><th>worker</th>
@@ -235,23 +235,23 @@ candidate lbstatus -= total factor</code></pre>
     <tr><td colspan="3">(repeat)</td></tr>
     </table>
 
-    <p>$B%9%1%8%e!<%k$O(B 10 $B%9%1%8%e!<%k8e$K7+$jJV$5$l!"(B<var>a</var> 7 $B2s$H(B
-    <var>b</var> 3 $B2s$G$^$P$i$KA*$P$l$^$9!#(B</p>
+    <p>スケジュールは 10 スケジュール後に繰り返され、<var>a</var> 7 回と
+    <var>b</var> 3 回でまばらに選ばれます。</p>
 </section>
 
 <section id="traffic">
-    <title>Weighted Traffic Counting $B%"%k%4%j%:%`(B</title>
-    <p><code>lbmethod=bytraffic</code> $B$GM-8z$K$J$j$^$9!#(B
-    $B$3$N%9%1%8%e!<%i$NGX7J$K$"$k9M$(J}$O!"(BRequest Counting 
-    $B$HHs>o$K;w$F$$$^$9$,!"<!$N0c$$$,$"$j$^$9(B:</p>
+    <title>Weighted Traffic Counting アルゴリズム</title>
+    <p><code>lbmethod=bytraffic</code> で有効になります。
+    このスケジューラの背景にある考え方は、Request Counting 
+    と非常に似ていますが、次の違いがあります:</p>
 
-    <p><dfn>lbfactor</dfn> $B$O(B <em>$B$I$l$@$1$N%P%$%H?t$N%H%i%U%#%C%/NL$r!"(B
-    $B$3$N%o!<%+!<$K=hM}$7$F$b$i$$$?$$$+(B</em> $B$rI=$7$^$9!#(B
-    $B$3$NCM$bF1MM$K@55,2=$5$l$?CM$G!"%o!<%+!<A4BN$N$&$A$G$N(B "$BJ,C4(B"
-    $BNL$rI=8=$7$F$$$^$9!#%j%/%(%9%H?t$rC1=c$K?t$($kBe$o$j$K!"(B
-    $B$I$l$@$1$NE>AwNL$r=hM}$7$?$+$r?t$($^$9!#(B</p>
+    <p><dfn>lbfactor</dfn> は <em>どれだけのバイト数のトラフィック量を、
+    このワーカーに処理してもらいたいか</em> を表します。
+    この値も同様に正規化された値で、ワーカー全体のうちでの "分担"
+    量を表現しています。リクエスト数を単純に数える代わりに、
+    どれだけの転送量を処理したかを数えます。</p>
 
-    <p>$B<!$N$h$&$K%P%i%s%5$r@_Dj$7$?>l9g(B:</p>
+    <p>次のようにバランサを設定した場合:</p>
     
     <table style="data">
     <tr><th>worker</th>
@@ -264,31 +264,31 @@ candidate lbstatus -= total factor</code></pre>
         <td>1</td></tr>
     </table>
 
-    <p><var>b</var> $B$K$O(B <var>a</var> $B$d(B <var>c</var> $B$N(B 2 $BG\(B
-    $B=hM}$7$F$[$7$$$H$$$&$3$H$K$J$j$^$9!#(B
-    <var>b</var> $B$O(B 2 $BG\$N(B I/O $B$r=hM}$9$k$H$$$&0UL#$K$J$j!"(B
-    2 $BG\$N%j%/%(%9%H?t$r=hM}$9$k$H$$$&$3$H$K$O$J$j$^$;$s!#(B
-    $B$G$9$+$i%j%/%(%9%H$H%l%9%]%s%9$N%5%$%:$,!"(B
-    $B=E$_IU$1$H?6$jJ,$1$N%"%k%4%j%:%`$K8z$$$F$$$^$9!#(B</p>
+    <p><var>b</var> には <var>a</var> や <var>c</var> の 2 倍
+    処理してほしいということになります。
+    <var>b</var> は 2 倍の I/O を処理するという意味になり、
+    2 倍のリクエスト数を処理するということにはなりません。
+    ですからリクエストとレスポンスのサイズが、
+    重み付けと振り分けのアルゴリズムに効いています。</p>
 
 </section>
 
 <section id="enable">
-    <title>$B%P%i%s%5%^%M!<%8%c$N%5%]!<%H$rM-8z$K$9$k(B</title>
-    <p>$B$3$N%b%8%e!<%k$O(B <module>mod_status</module> $B$N%5!<%S%9$r(B
-    <em>$BI,MW$H$7$^$9(B</em>$B!#(B
-    $B%P%i%s%5%^%M!<%8%c$r;H$&$H!"%P%i%s%5$N%a%s%P!<$NF0E*$J99?7$,(B
-    $B$G$-$^$9!#%P%i%s%5%^%M!<%8%c$r;H$C$F!"%P%i%s%978?t(B (lbfactor)
-    $B$rJQ99$7$?$j!"%a%s%P!<$rJQ99$7$?$j!"FCDj$N%a%s%P!<$r(B
-    $B%*%U%i%$%s%b!<%I$K$7$?$j$G$-$^$9!#(B</p>
+    <title>バランサマネージャのサポートを有効にする</title>
+    <p>このモジュールは <module>mod_status</module> のサービスを
+    <em>必要とします</em>。
+    バランサマネージャを使うと、バランサのメンバーの動的な更新が
+    できます。バランサマネージャを使って、バランス係数 (lbfactor)
+    を変更したり、メンバーを変更したり、特定のメンバーを
+    オフラインモードにしたりできます。</p>
 
-    <p>$B$G$9$+$i!"%m!<%I%P%i%s%54IM}5!G=$r;H$$$?$1$l$P!"(B
-    <module>mod_status</module> $B$H(B <module>mod_proxy_balancer</module>
-    $B$r%5!<%P$KAH$_9~$^$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p>ですから、ロードバランサ管理機能を使いたければ、
+    <module>mod_status</module> と <module>mod_proxy_balancer</module>
+    をサーバに組み込まなければなりません。</p>
 
-    <p>foo.com $B%I%a%$%s$N%V%i%&%6$+$i%m!<%I%P%i%s%54IM}5!G=$r(B
-    $B;H$($k$h$&$K$9$k$K$O!"<!$N$h$&$J%3!<%I$r(B <code>httpd.conf</code>
-    $B$KDI2C$7$^$9!#(B</p>
+    <p>foo.com ドメインのブラウザからロードバランサ管理機能を
+    使えるようにするには、次のようなコードを <code>httpd.conf</code>
+    に追加します。</p>
 <example>
     &lt;Location /balancer-manager&gt;<br />
     SetHandler balancer-manager<br />
@@ -299,9 +299,9 @@ candidate lbstatus -= total factor</code></pre>
     &lt;/Location&gt;
 </example>
 
-    <p>$B$3$&$9$k$H!"(B<code>http://your.server.name/balancer-manager</code>
-    $B$N%Z!<%87PM3$G!"%&%'%V%V%i%&%6$+$i%m!<%I%P%i%s%5%^%M!<%8%c$K(B
-    $B%"%/%;%9$G$-$k$h$&$K$J$j$^$9!#(B</p>
+    <p>こうすると、<code>http://your.server.name/balancer-manager</code>
+    のページ経由で、ウェブブラウザからロードバランサマネージャに
+    アクセスできるようになります。</p>
 </section>
 
 </modulesynopsis>

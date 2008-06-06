@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 479777:645246 (outdated) -->
@@ -21,32 +21,32 @@
 -->
 
 <manualpage metafile="auth.xml.meta">
-<parentdocument href="./">How-To / $B%A%e!<%H%j%"%k(B</parentdocument>
+<parentdocument href="./">How-To / チュートリアル</parentdocument>
 
-<title>$BG'>Z!">5G'!"%"%/%;%9@)8f(B</title>
+<title>認証、承認、アクセス制御</title>
 
 <summary>
-    <p>$B!VG'>Z!W$H$O!"C/$+$,<+J,$OC/$G$"$k$+$r<gD%$7$?>l9g$K!"(B
-    $B$=$l$r3NG'$9$k$?$a$NA42aDx$r;X$7$^$9!#!V>5G'!W$H$O!"(B
-    $BC/$+$,9T$-$?$$>l=j$K9T$1$k$h$&$K!"$"$k$$$OM_$7$$>pJs$r(B
-    $BF@$k$3$H$,$G$-$k$h$&$K$9$k$?$a$NA42aDx$r;X$7$^$9!#(B</p>
+    <p>「認証」とは、誰かが自分は誰であるかを主張した場合に、
+    それを確認するための全過程を指します。「承認」とは、
+    誰かが行きたい場所に行けるように、あるいは欲しい情報を
+    得ることができるようにするための全過程を指します。</p>
 </summary>
 
-<section id="related"><title>$B4XO"$9$k%b%8%e!<%k$H%G%#%l%/%F%#%V(B</title>
-<p>$BG'>Z$H>5G'$N=hM}$K4XO"$9$k(B 3 $B<oN`$N%b%8%e!<%k$,$"$j$^$9!#(B
-$B$=$l$>$l>/$J$/$H$b$R$H$D$:$DI,MW$G$9!#(B</p>
+<section id="related"><title>関連するモジュールとディレクティブ</title>
+<p>認証と承認の処理に関連する 3 種類のモジュールがあります。
+それぞれ少なくともひとつずつ必要です。</p>
 
 <ul>
-  <li>$BG'>Z$N%?%$%W(B (
-      <directive module="core">AuthType</directive> $B%G%#%l%/%F%#%V;2>H(B)
+  <li>認証のタイプ (
+      <directive module="core">AuthType</directive> ディレクティブ参照)
     <ul>
       <li><module>mod_auth_basic</module></li>
       <li><module>mod_auth_digest</module></li>
     </ul>
   </li>
-  <li>$BG'>Z%W%m%P%$%@(B (
+  <li>認証プロバイダ (
   <directive module="mod_auth_basic">AuthBasicProvider</directive>,
-  <directive module="mod_auth_digest">AuthDigestProvider</directive> $B%G%#%l%/%F%#%V;2>H(B)
+  <directive module="mod_auth_digest">AuthDigestProvider</directive> ディレクティブ参照)
 
     <ul>
       <li><module>mod_authn_anon</module></li>
@@ -57,8 +57,8 @@
       <li><module>mod_authnz_ldap</module></li>
     </ul>
   </li>
-  <li>$B>5G'(B (
-      <directive module="core">Require</directive> $B%G%#%l%/%F%#%V;2>H(B)
+  <li>承認 (
+      <directive module="core">Require</directive> ディレクティブ参照)
     <ul>
       <li><module>mod_authnz_ldap</module></li>
       <li><module>mod_authz_dbm</module></li>
@@ -72,114 +72,114 @@
   </li>
 </ul>
 
-  <p>$B$3$l$i$N%b%8%e!<%k$K2C$($F!"(B<module>mod_authn_core</module>
-  $B$H(B <module>mod_authz_core</module> $B$,$"$j$^$9!#(B
-  $B$3$N(B 2 $B$D$N%b%8%e!<%k$OG'>Z%b%8%e!<%k$K6&DL$J%3%"%G%#%l%/%F%#%V$r(B
-  $B<BAu$7$F$$$^$9!#(B</p>
+  <p>これらのモジュールに加えて、<module>mod_authn_core</module>
+  と <module>mod_authz_core</module> があります。
+  この 2 つのモジュールは認証モジュールに共通なコアディレクティブを
+  実装しています。</p>
 
-  <p><module>mod_authnz_ldap</module> $B$OG'>Z%W%m%P%$%@$H>5G'%W%m%P%$%@$N(B
-  $BN>J}$N5!G=$r;}$C$F$$$^$9!#(B
-  <module>mod_authz_host</module> $B$O%[%9%HL>!"(BIP $B%"%I%l%9$d(B
-  $B%j%/%(%9%H$NFCD'$K4p$E$$$?%"%/%;%9@)8f$r9T$$$^$9$,!"(B
-  $BG'>Z%W%m%P%$%@$N%7%9%F%`$N0lIt$G$O$"$j$^$;$s!#(B
-  mod_access $B$H$N8eJ}8_49@-$N$?$a!"(B
-  $B?7$7$$%b%8%e!<%k$N(B <module>mod_access_compat</module> $B$,$"$j$^$9!#(B</p>
+  <p><module>mod_authnz_ldap</module> は認証プロバイダと承認プロバイダの
+  両方の機能を持っています。
+  <module>mod_authz_host</module> はホスト名、IP アドレスや
+  リクエストの特徴に基づいたアクセス制御を行いますが、
+  認証プロバイダのシステムの一部ではありません。
+  mod_access との後方互換性のため、
+  新しいモジュールの <module>mod_access_compat</module> があります。</p>
 
-  <p>$BMM!9$J%"%/%;%9@)8f$N9T$J$$J}$K$D$$$F$O!"(B
-  <a href="access.html">$B%"%/%;%9@)8f(B</a>$B$NJ}K!$r$4Mw$/$@$5$$!#(B</p>
+  <p>様々なアクセス制御の行ない方については、
+  <a href="access.html">アクセス制御</a>の方法をご覧ください。</p>
 
 </section>
 
-<section id="introduction"><title>$B$O$8$a$K(B</title>
-    <p>$B$b$75!L)$N>pJs$d!"$4$/$4$/>/?t%0%k!<%W$N?M8~$1$N>pJs$r(B
-    $B%&%'%V%5%$%H$KCV$/$N$G$"$l$P!"$3$NJ8=q$K=q$+$l$F$$$k(B
-    $B%F%/%K%C%/$r;H$&$3$H$G!"$=$N%Z!<%8$r8+$F$$$k?M$?$A$,(B
-    $BK>$_$N?M$?$A$G$"$k$3$H$r3N<B$K$G$-$k$G$7$g$&!#(B</p>
+<section id="introduction"><title>はじめに</title>
+    <p>もし機密の情報や、ごくごく少数グループの人向けの情報を
+    ウェブサイトに置くのであれば、この文書に書かれている
+    テクニックを使うことで、そのページを見ている人たちが
+    望みの人たちであることを確実にできるでしょう。</p>
 
-    <p>$B$3$NJ8=q$G$O!"B?$/$N?M$,:NMQ$9$k$G$"$m$&!"(B
-    $B%&%'%V%5%$%H$N0lItJ,$rJ]8n$9$k!V0lHLE*$J!W(B
-    $BJ}K!$K$D$$$F%+%P!<$7$F$$$^$9!#(B</p>
+    <p>この文書では、多くの人が採用するであろう、
+    ウェブサイトの一部分を保護する「一般的な」
+    方法についてカバーしています。</p>
 
-    <note><title>$BCm0U(B</title>
-    <p>$B%G!<%?$,K\Ev$K5!L)$J$N$G$"$l$P!"G'>Z$K2C$($F$5$i$K(B
-    <module>mod_ssl</module> $B$r;H$&$HNI$$$G$7$g$&!#(B</p>
+    <note><title>注意</title>
+    <p>データが本当に機密なのであれば、認証に加えてさらに
+    <module>mod_ssl</module> を使うと良いでしょう。</p>
     </note>
 </section>
 
-<section id="theprerequisites"><title>$B=`Hw(B</title>
-    <p>$B$3$NJ8=q$G<h$j07$o$l$k%G%#%l%/%F%#%V$O!"(B
-    $B%a%$%s%5!<%P@_Dj%U%!%$%k(B ($BIaDL$O(B 
+<section id="theprerequisites"><title>準備</title>
+    <p>この文書で取り扱われるディレクティブは、
+    メインサーバ設定ファイル (普通は 
     <directive module="core" type="section">Directory</directive>
-    $B%;%/%7%g%sCf(B) $B$+!"$"$k$$$O%G%#%l%/%H%jKh$N@_Dj%U%!%$%k(B 
-    (<code>.htaccess</code> $B%U%!%$%k(B) $B$+$GMQ$$$^$9!#(B</p>
+    セクション中) か、あるいはディレクトリ毎の設定ファイル 
+    (<code>.htaccess</code> ファイル) かで用います。</p>
 
-    <p><code>.htaccess</code> $B%U%!%$%k$rMQ$$$k$N$G$"$l$P!"(B
-    $B$3$l$i$N%U%!%$%k$KG'>ZMQ$N%G%#%l%/%F%#%V$rCV$1$k$h$&$K(B
-    $B%5!<%P$N@_Dj$r$7$J$$$H$$$1$J$$$G$7$g$&!#$3$l$O(B
+    <p><code>.htaccess</code> ファイルを用いるのであれば、
+    これらのファイルに認証用のディレクティブを置けるように
+    サーバの設定をしないといけないでしょう。これは
     <directive module="core">AllowOverride</directive>
-    $B%G%#%l%/%F%#%V$G2DG=$K$J$j$^$9!#(B
+    ディレクティブで可能になります。
     <directive module="core">AllowOverride</directive>
-    $B%G%#%l%/%F%#%V$G$O!"%G%#%l%/%H%jKh$N@_Dj%U%!%$%kCf$KCV$/$3$H$N$G$-$k(B
-    $B%G%#%l%/%F%#%V$r!"$b$7$"$l$P!";XDj$7$^$9!#(B</p>
+    ディレクティブでは、ディレクトリ毎の設定ファイル中に置くことのできる
+    ディレクティブを、もしあれば、指定します。</p>
 
-    <p>$BG'>Z$K$D$$$FOC$r?J$a$F$$$k$N$G!"<!$N$h$&$J(B
+    <p>認証について話を進めているので、次のような
     <directive module="core">AllowOverride</directive>
-    $B%G%#%l%/%F%#%V$,I,MW$K$J$k$G$7$g$&!#(B</p>
+    ディレクティブが必要になるでしょう。</p>
 
     <example>
       AllowOverride AuthConfig
     </example>
 
-    <p>$B$=$&$G$J$/!"%a%$%s%5!<%P@_Dj%U%!%$%k$NCf$K(B
-    $BD>@\CV$/$N$G$"$l$P!"EvA3$J$,$i$=$N%U%!%$%k$X$N=q$-9~$_(B
-    $B8"8B$r;}$C$F$$$J$1$l$P$J$i$J$$$G$7$g$&!#(B</p>
+    <p>そうでなく、メインサーバ設定ファイルの中に
+    直接置くのであれば、当然ながらそのファイルへの書き込み
+    権限を持っていなければならないでしょう。</p>
 
-    <p>$B$^$?!"$I$N%U%!%$%k$,$I$3$KJ]B8$5$l$F$$$k$+CN$k$?$a$K!"(B
-    $B%5!<%P$N%G%#%l%/%H%j9=B$$K$D$$$F>/$7CN$C$F$*$/(B
-    $BI,MW$,$"$k$G$7$g$&!#(B
-    $B$3$l$O$=$s$J$KFq$7$/$J$$$N$G!"$3$NJ8=qCf$G(B
-    $B%G%#%l%/%H%j9=B$$K$D$$$FCN$C$F$*$/I,MW$,$"$k>lLL$G$O!"(B
-    $BL@$i$+$K$J$k$h$&$K$7$^$9!#(B</p>
+    <p>また、どのファイルがどこに保存されているか知るために、
+    サーバのディレクトリ構造について少し知っておく
+    必要があるでしょう。
+    これはそんなに難しくないので、この文書中で
+    ディレクトリ構造について知っておく必要がある場面では、
+    明らかになるようにします。</p>
 
-    <p><module>mod_authn_core</module> $B$H(B <module>mod_authz_core</module> 
-    $B$NN>J}$,(B httpd $B%P%$%J%j$K@EE*$KAH$_9~$_:Q$_$G$"$k$+!"(Bhttpd.conf 
-    $B@_Dj%U%!%$%k$GF0E*$K%m!<%I$5$l$k$+$7$F!"(Bhttpd $B$KAH$_9~$^$l$F$$$J$1$l$P(B
-    $B$J$j$^$;$s!#$3$l$i$NFs$D$N%b%8%e!<%k$O!"@_Dj%U%!%$%k$N$J$+$GHs>o$K(B
-    $B=EMW$G%&%'%V%5!<%P$NG'>Z$H>5G'$G;HMQ$5$l$k%3%"%G%#%l%/%F%#%V$H(B
-    $B$=$N5!G=$rDs6!$7$F$$$^$9!#(B</p>
+    <p><module>mod_authn_core</module> と <module>mod_authz_core</module> 
+    の両方が httpd バイナリに静的に組み込み済みであるか、httpd.conf 
+    設定ファイルで動的にロードされるかして、httpd に組み込まれていなければ
+    なりません。これらの二つのモジュールは、設定ファイルのなかで非常に
+    重要でウェブサーバの認証と承認で使用されるコアディレクティブと
+    その機能を提供しています。</p>
 </section>
 
-<section id="gettingitworking"><title>$BF0:n$5$;$k(B</title>
-    <p>$B$G$O!"%5!<%P>e$N$"$k%G%#%l%/%H%j$r%Q%9%o!<%I$GJ]8n$9$k(B
-    $B4pK\<j=g$r<($7$^$9!#(B</p>
+<section id="gettingitworking"><title>動作させる</title>
+    <p>では、サーバ上のあるディレクトリをパスワードで保護する
+    基本手順を示します。</p>
 
-    <p>$B$^$:$O$8$a$K!"%Q%9%o!<%I%U%!%$%k$r:n$j$^$9!#(B
-    $B$I$NG'>Z%W%m%P%$%@$r;H$&$+$K$h$C$F!"%Q%9%o!<%I%U%!%$%k@8@.$N<j=g$O(B
-    $BBg$-$/0[$J$j$^$9!#$3$3$G$NNc$G$O!"<j;O$a$K%F%-%9%H%Q%9%o!<%I%U%!%$%k$r(B
-    $B;H$$$^$9!#(B</p>
+    <p>まずはじめに、パスワードファイルを作ります。
+    どの認証プロバイダを使うかによって、パスワードファイル生成の手順は
+    大きく異なります。ここでの例では、手始めにテキストパスワードファイルを
+    使います。</p>
 
-    <p>$B$3$N%Q%9%o!<%I%U%!%$%k$O!"%&%'%V$+$i%"%/%;%9$G$-$k>l=j$K(B
-    $BCV$/$Y$-$G$O$"$j$^$;$s!#B>$N?M$,%Q%9%o!<%I%U%!%$%k$r(B
-    $B%@%&%s%m!<%I$G$-$J$$$h$&$K$9$k$?$a$G$9!#Nc$($P!"(B
-    <code>/usr/local/apache/htdocs</code> $B$G%I%-%e%a%s%H$r(B
-    $BDs6!$7$F$$$k$N$G$"$l$P!"%Q%9%o!<%I%U%!%$%k$O(B
+    <p>このパスワードファイルは、ウェブからアクセスできる場所に
+    置くべきではありません。他の人がパスワードファイルを
+    ダウンロードできないようにするためです。例えば、
+    <code>/usr/local/apache/htdocs</code> でドキュメントを
+    提供しているのであれば、パスワードファイルは
     <code>/usr/local/apache/passwd</code>
-    $B$J$I$KCV$$$?J}$,NI$$$G$7$g$&!#(B</p>
+    などに置いた方が良いでしょう。</p>
 
-    <p>$B%U%!%$%k$r:n$k$?$a$K$O!"(BApache $BIUB0$N(B <program>htpasswd</program> 
-    $B$r;H$$$^$9!#$3$N%3%^%s%I$O(B Apache $B$r$I$3$K%$%s%9%H!<%k$7$h$&$H$b!"(B
-    $B%$%s%9%H!<%k%G%#%l%/%H%j$N(B <code>bin</code> 
-    $B%G%#%l%/%H%j0J2<$KCV$+$l$^$9!#%5!<%I%P!<%F%#@=$N%Q%C%1!<%8$G(B
-    $B%$%s%9%H!<%k$7$?>l9g$O!"<B9T%Q%9$NCf$G8+$D$+$k$G$7$g$&!#(B</p>
+    <p>ファイルを作るためには、Apache 付属の <program>htpasswd</program> 
+    を使います。このコマンドは Apache をどこにインストールしようとも、
+    インストールディレクトリの <code>bin</code> 
+    ディレクトリ以下に置かれます。サードバーティ製のパッケージで
+    インストールした場合は、実行パスの中で見つかるでしょう。</p>
     
-    <p>$B%U%!%$%k$r:n$k$K$O!"<!$N$h$&$K%?%$%W$7$F$/$@$5$$!#(B</p>
+    <p>ファイルを作るには、次のようにタイプしてください。</p>
 
     <example>
       htpasswd -c /usr/local/apache/passwd/passwords rbowen
     </example>
 
-    <p><program>htpasswd</program> $B$O!"%Q%9%o!<%I$rMW5a$7!"$=$N8e(B
-    $B3NG'$N$?$a$K$b$&0lEYF~NO$9$k$h$&$KMW5a$7$F$-$^$9!#(B</p>
+    <p><program>htpasswd</program> は、パスワードを要求し、その後
+    確認のためにもう一度入力するように要求してきます。</p>
 
     <example>
       # htpasswd -c /usr/local/apache/passwd/passwords rbowen<br />
@@ -188,23 +188,23 @@
       Adding password for user rbowen
     </example>
 
-    <p>$B$b$7(B <program>htpasswd</program> $B$,%Q%9$NCf$KF~$C$F$$$J$$>l9g$O!"(B
-    $B$b$A$m$s!"<B9T$9$k$?$a$K%W%m%0%i%`$^$G$N%U%k%Q%9$r(B
-    $B%?%$%W$9$kI,MW$,$"$j$^$9!#%G%U%)%k%H$N%$%s%9%H!<%k>uBV$G$"$l$P!"(B
+    <p>もし <program>htpasswd</program> がパスの中に入っていない場合は、
+    もちろん、実行するためにプログラムまでのフルパスを
+    タイプする必要があります。デフォルトのインストール状態であれば、
     <code>/usr/local/apache/bin/htpasswd</code>
-    $B$K%W%m%0%i%`$,CV$+$l$F$$$^$9!#(B</p>
+    にプログラムが置かれています。</p>
 
-    <p>$B<!$K!"%5!<%P$,%Q%9%o!<%I$rMW5a$9$k$h$&$K@_Dj$7$F!"(B
-    $B$I$N%f!<%6$,%"%/%;%9$r5v$5$l$F$$$k$+$r%5!<%P$KCN$i$;$J$1$l$P(B
-    $B$J$j$^$;$s!#(B <code>httpd.conf</code> $B$rJT=8$9$k$+(B
-    <code>.htaccess</code> $B%U%!%$%k$r;HMQ$9$k$+$G(B
-    $B@_Dj$7$^$9!#Nc$($P!"%G%#%l%/%H%j(B
+    <p>次に、サーバがパスワードを要求するように設定して、
+    どのユーザがアクセスを許されているかをサーバに知らせなければ
+    なりません。 <code>httpd.conf</code> を編集するか
+    <code>.htaccess</code> ファイルを使用するかで
+    設定します。例えば、ディレクトリ
     <code>/usr/local/apache/htdocs/secret</code>
-    $B$rJ]8n$7$?$$>l9g$O!"(B
+    を保護したい場合は、
     <code>/usr/local/apache/htdocs/secret/.htaccess</code>
-    $B$+(B httpd.conf $BCf$N(B &lt;Directory
-    /usr/local/apache/htdocs/secret&gt; $B%;%/%7%g%s$K(B
-    $BG[CV$7$F!"<!$N%G%#%l%/%F%#%V$r;H$&$3$H$,$G$-$^$9!#(B</p>
+    か httpd.conf 中の &lt;Directory
+    /usr/local/apache/htdocs/secret&gt; セクションに
+    配置して、次のディレクティブを使うことができます。</p>
 
     <example>
       AuthType Basic<br />
@@ -215,108 +215,108 @@
       Require user rbowen
     </example>
 
-    <p>$B8D!9$N%G%#%l%/%F%#%V$K$D$$$F8+$F$_$^$7$g$&!#(B
+    <p>個々のディレクティブについて見てみましょう。
     <directive module="core">AuthType</directive>
-    $B%G%#%l%/%F%#%V$O$I$&$$$&G'>ZJ}K!$G%f!<%6$NG'>Z$r9T$&$+$r(B
-    $BA*Br$7$^$9!#:G$b0lHLE*$JJ}K!$O(B <code>Basic</code>
-    $B$G!"$3$l$O(B <module>mod_auth_basic</module>
-    $B$G<BAu$5$l$F$$$^$9!#$7$+$7$J$,$i!"(B
-    $B$3$l$O5$$rIU$1$k$Y$-=EMW$J%]%$%s%H$J$N$G$9$,!"(B
-    Basic $BG'>Z$O%/%i%$%"%s%H$+$i%5!<%P$X!"(B
-    $B%Q%9%o!<%I$r0E9f2=$;$:$KAw$j$^$9!#$G$9$+$i$3$NJ}K!$O!"(B
-    <module>mod_ssl</module> $B$HAH$_9g$o$;$J$$>uBV$G$O!"(B
-    $BFC$K5!L)@-$N9b$$%G!<%?$KBP$7$F$OMQ$$$k$Y$-$G$O(B
-    $B$"$j$^$;$s!#(B Apache $B$G$O$b$&0l$DJL$NG'>ZJ}K!(B:
-    <code>AuthType Digest</code> $B$r%5%]!<%H$7$F$$$^$9!#(B
-    $B$3$NJ}K!$O(B <module>mod_auth_digest</module>
-    $B$G<BAu$5$l$F$$$F!"$b$C$H0BA4$G$9!#(B
-    $B:G6a$N%/%i%$%"%s%H$O(B Digest
-    $BG'>Z$r%5%]!<%H$7$F$$$k$h$&$G$9!#(B</p>
+    ディレクティブはどういう認証方法でユーザの認証を行うかを
+    選択します。最も一般的な方法は <code>Basic</code>
+    で、これは <module>mod_auth_basic</module>
+    で実装されています。しかしながら、
+    これは気を付けるべき重要なポイントなのですが、
+    Basic 認証はクライアントからサーバへ、
+    パスワードを暗号化せずに送ります。ですからこの方法は、
+    <module>mod_ssl</module> と組み合わせない状態では、
+    特に機密性の高いデータに対しては用いるべきでは
+    ありません。 Apache ではもう一つ別の認証方法:
+    <code>AuthType Digest</code> をサポートしています。
+    この方法は <module>mod_auth_digest</module>
+    で実装されていて、もっと安全です。
+    最近のクライアントは Digest
+    認証をサポートしているようです。</p>
 
     <p><directive module="core">AuthName</directive>
-    $B%G%#%l%/%F%#%V$G$O!"G'>Z$K;H$&(B <dfn>Realm</dfn> ($BLuCm(B: $BNN0h(B)
-    $B$r@_Dj$7$^$9!#(BRealm $B$OBg$-$/J,$1$FFs$D$N5!G=$rDs6!$7$^$9!#(B
-    $B0l$DL\$O!"%/%i%$%"%s%H$,%Q%9%o!<%I%@%$%"%m%0%\%C%/%9$N(B
-    $B0lIt$H$7$F%f!<%6$K$3$N>pJs$r$h$/Ds<($9$k!"$H$$$&$b$N$G$9!#(B
-    $BFs$DL\$K$O!"%/%i%$%"%s%H$,M?$($i$l$?G'>ZNN0h$KBP$7$F$I$N%Q%9%o!<%I$r(B
-    $BAw?.$9$l$PNI$$$N$+$r7hDj$9$k$?$a$K;H$o$l$k!"$H$$$&5!G=$G$9!#(B</p>
+    ディレクティブでは、認証に使う <dfn>Realm</dfn> (訳注: 領域)
+    を設定します。Realm は大きく分けて二つの機能を提供します。
+    一つ目は、クライアントがパスワードダイアログボックスの
+    一部としてユーザにこの情報をよく提示する、というものです。
+    二つ目には、クライアントが与えられた認証領域に対してどのパスワードを
+    送信すれば良いのかを決定するために使われる、という機能です。</p>
 
-    <p>$BNc$($P!"(B<code>"Restricted Files"</code> $BNN0hCf$G(B
-    $B0lEYG'>Z$5$l$l$P!"F10l%5!<%P>e$G(B <code>"Restricted Files"</code>
-    Realm $B$H$7$F%^!<%/$5$l$?$I$s$JNN0h$G$b!"%/%i%$%"%s%H$O(B
-    $B<+F0E*$KF1$8%Q%9%o!<%I$r;H$*$&$H;n$_$^$9!#(B
-    $B$3$N$*$+$2$G!"J#?t$N@)8BNN0h$KF1$8(B realm $B$r6&M-$5$;$F!"(B
-    $B%f!<%6$,%Q%9%o!<%I$r2?EY$bMW5a$5$l$k;vBV$r(B
-    $BKI$0$3$H$,$G$-$^$9!#$b$A$m$s!"%;%-%e%j%F%#>e$NM}M3$+$i!"(B
-    $B%5!<%P$N%[%9%HL>$,JQ$o$l$P$$$D$G$bI,$:!"(B
-    $B%/%i%$%"%s%H$O:F$S%Q%9%o!<%I$r?R$M$kI,MW$,$"$j$^$9!#(B</p>
+    <p>例えば、<code>"Restricted Files"</code> 領域中で
+    一度認証されれば、同一サーバ上で <code>"Restricted Files"</code>
+    Realm としてマークされたどんな領域でも、クライアントは
+    自動的に同じパスワードを使おうと試みます。
+    このおかげで、複数の制限領域に同じ realm を共有させて、
+    ユーザがパスワードを何度も要求される事態を
+    防ぐことができます。もちろん、セキュリティ上の理由から、
+    サーバのホスト名が変わればいつでも必ず、
+    クライアントは再びパスワードを尋ねる必要があります。</p>
 
     <p><directive
     module="mod_auth_basic">AuthBasicProvider</directive>
-    $B$O%G%U%)%k%HCM$,(B <code>file</code> $B$J$N$G!":#2s$N>l9g$OL5$/$F$b9=$$$^$;$s!#(B
-    <module>mod_authn_dbm</module> $B$d(B <module>mod_authn_dbd</module>
-    $B$H$$$C$?B>$N%b%8%e!<%k$r;H$&>l9g$K$OI,MW$K$J$j$^$9!#(B
+    はデフォルト値が <code>file</code> なので、今回の場合は無くても構いません。
+    <module>mod_authn_dbm</module> や <module>mod_authn_dbd</module>
+    といった他のモジュールを使う場合には必要になります。
     </p>
 
     <p><directive module="mod_authn_file">AuthUserFile</directive>
-    $B%G%#%l%/%F%#%V$O(B <program>htpasswd</program> $B$G:n$C$?(B
-    $B%Q%9%o!<%I%U%!%$%k$X$N%Q%9$r@_Dj$7$^$9!#(B
-    $B%f!<%6?t$,B?$$>l9g$O!"%j%/%(%9%HKh$N%f!<%6$NG'>Z$N$?$a$N(B
-    $B%W%l!<%s%F%-%9%H$NC5:w$,Hs>o$KCY$/$J$k$3$H$,$"$j$^$9!#(B
-    Apache $B$G$O%f!<%6>pJs$r9bB.$J%G!<%?%Y!<%9%U%!%$%k$K(B
-    $BJ]4I$9$k$3$H$b$G$-$^$9!#(B
-    <module>mod_authn_dbm</module> $B%b%8%e!<%k$,(B
+    ディレクティブは <program>htpasswd</program> で作った
+    パスワードファイルへのパスを設定します。
+    ユーザ数が多い場合は、リクエスト毎のユーザの認証のための
+    プレーンテキストの探索が非常に遅くなることがあります。
+    Apache ではユーザ情報を高速なデータベースファイルに
+    保管することもできます。
+    <module>mod_authn_dbm</module> モジュールが
     <directive module="mod_authn_dbm">AuthDBMUserFile</directive>
-    $B%G%#%l%/%F%#%V$rDs6!$7$^$9!#$3$l$i$N%U%!%$%k$O(B <program >dbmmanage</program>
-    $B%W%m%0%i%`$G:n@.$7$?$jA`:n$7$?$j$G$-$^$9!#(B
+    ディレクティブを提供します。これらのファイルは <program >dbmmanage</program>
+    プログラムで作成したり操作したりできます。
     <a href="http://modules.apache.org/">Apache 
-    $B%b%8%e!<%k%G!<%?%Y!<%9(B</a>$BCf$K$"$k%5!<%I%Q!<%F%#!<@=$N(B
-    $B%b%8%e!<%k$G!"$=$NB>B?$/$N%?%$%W$NG'>Z%*%W%7%g%s$,(B
-    $BMxMQ2DG=$G$9!#(B</p>
+    モジュールデータベース</a>中にあるサードパーティー製の
+    モジュールで、その他多くのタイプの認証オプションが
+    利用可能です。</p>
 
-    <p>$B:G8e$K!"(B<directive module="core">Require</directive>
-    $B%G%#%l%/%F%#%V$,!"%5!<%P$N$3$NNN0h$K%"%/%;%9$G$-$k%f!<%6$r(B
-    $B;XDj$9$k$3$H$K$h$C$F!"%W%m%;%9$N>5G'ItJ,$rDs6!$7$^$9!#(B
-    $B<!$N%;%/%7%g%s$G$O!"(B<directive module="core">Require</directive>
-    $B%G%#%l%/%F%#%V$NMM!9$JMQK!$K$D$$$F=R$Y$^$9!#(B</p>
+    <p>最後に、<directive module="core">Require</directive>
+    ディレクティブが、サーバのこの領域にアクセスできるユーザを
+    指定することによって、プロセスの承認部分を提供します。
+    次のセクションでは、<directive module="core">Require</directive>
+    ディレクティブの様々な用法について述べます。</p>
 </section>
 
 <section id="lettingmorethanonepersonin"><title>
-$BJ#?t$N?M$,F~$l$k$h$&$K$9$k(B</title>
-    <p>$B>e5-$N%G%#%l%/%F%#%V$O!"$?$@0l?M(B ($B6qBNE*$K$O%f!<%6L>(B
-    <code>rbowen</code> $B$NC/$+(B) $B$,%G%#%l%/%H%j$K(B
-    $BF~$l$k$h$&$K$7$^$9!#B?$/$N>l9g$O!"J#?t$N?M$,(B
-    $BF~$l$k$h$&$K$7$?$$$G$7$g$&!#$3$3$G(B
+複数の人が入れるようにする</title>
+    <p>上記のディレクティブは、ただ一人 (具体的にはユーザ名
+    <code>rbowen</code> の誰か) がディレクトリに
+    入れるようにします。多くの場合は、複数の人が
+    入れるようにしたいでしょう。ここで
     <directive module="mod_authz_groupfile">AuthGroupFile</directive>
-    $B$NEP>l$G$9!#(B</p>
+    の登場です。</p>
 
-    <p>$B$b$7J#?t$N?M$,F~$l$k$h$&$K$7$?$$$N$G$"$l$P!"(B
-    $B%0%k!<%W$KB0$9$k%f!<%6$N0lMw$NF~$C$F$$$k!"%0%k!<%WL>$N$D$$$?(B
-    $B%0%k!<%W%U%!%$%k$r:n$kI,MW$,$"$j$^$9!#$3$N%U%!%$%k$N(B
-    $B=q<0$O$-$o$a$FC1=c$G!"$*9%$_$N%(%G%#%?$G@8@.$G$-$^$9!#(B
-    $B%U%!%$%k$NCf?H$O<!$N$h$&$J$b$N$G$9!#(B</p>
+    <p>もし複数の人が入れるようにしたいのであれば、
+    グループに属するユーザの一覧の入っている、グループ名のついた
+    グループファイルを作る必要があります。このファイルの
+    書式はきわめて単純で、お好みのエディタで生成できます。
+    ファイルの中身は次のようなものです。</p>
 
    <example>
      GroupName: rbowen dpitts sungo rshersey
    </example>
 
-    <p>$B0l9T$K%9%Z!<%96h@Z$j$G!"%0%k!<%W$K=jB0$9$k%a%s%P!<$N(B
-    $B0lMw$r$J$i$Y$k$@$1$G$9!#(B</p>
+    <p>一行にスペース区切りで、グループに所属するメンバーの
+    一覧をならべるだけです。</p>
 
-    <p>$B4{$KB8:_$9$k%Q%9%o!<%I%U%!%$%k$K%f!<%6$r2C$($k>l9g$O!"(B
-    $B<!$N$h$&$K%?%$%W$7$F$/$@$5$$!#(B</p>
+    <p>既に存在するパスワードファイルにユーザを加える場合は、
+    次のようにタイプしてください。</p>
 
     <example>
       htpasswd /usr/local/apache/passwd/passwords dpitts
     </example>
 
-    <p>$B0JA0$HF1$81~Ez$,JV$5$l$^$9$,!"?7$7$$%U%!%$%k$r(B
-    $B:n$k$N$G$O$J$/!"4{$K$"$k%U%!%$%k$KDI2C$5$l$F$$$^$9!#(B
-    ($B?7$7$$%Q%9%o!<%I%U%!%$%k$r:n$k$K$O(B <code>-c</code>
-    $B$r;H$$$^$9!#(B)</p>
+    <p>以前と同じ応答が返されますが、新しいファイルを
+    作るのではなく、既にあるファイルに追加されています。
+    (新しいパスワードファイルを作るには <code>-c</code>
+    を使います。)</p>
 
-    <p>$B$3$3$G<!$N$h$&$K$7$F(B <code>.htaccess</code> $B%U%!%$%k$r(B
-    $B=$@5$9$kI,MW$,$"$j$^$9!#(B</p>
+    <p>ここで次のようにして <code>.htaccess</code> ファイルを
+    修正する必要があります。</p>
 
     <example>
       AuthType Basic<br />
@@ -328,64 +328,64 @@
       Require group GroupName
     </example>
 
-    <p>$B$3$l$G!"%0%k!<%W(B <code>GroupName</code> $B$K%j%9%H$5$l$F$$$F!"(B
-    <code>password</code> $B%U%!%$%k$K%(%s%H%j$,$"$k?M$O!"(B
-    $B@5$7$$%Q%9%o!<%I$r%?%$%W$9$l$PF~$k$3$H$,$G$-$k$G$7$g$&!#(B</p>
+    <p>これで、グループ <code>GroupName</code> にリストされていて、
+    <code>password</code> ファイルにエントリがある人は、
+    正しいパスワードをタイプすれば入ることができるでしょう。</p>
 
-    <p>$B$b$C$HFCDj$;$:$KJ#?t$N%f!<%6$,F~$l$k$h$&$K$9$k!"(B
-    $B$b$&0l$D$NJ}K!$,$"$j$^$9!#%0%k!<%W%U%!%$%k$r:n$k$N$G$O$J$/!"(B
-    $B<!$N%G%#%l%/%F%#%V$r;H$($P$G$-$^$9!#(B</p>
+    <p>もっと特定せずに複数のユーザが入れるようにする、
+    もう一つの方法があります。グループファイルを作るのではなく、
+    次のディレクティブを使えばできます。</p>
 
     <example>
       Require valid-user
     </example>
 
-    <p><code>require user rbowen</code> $B9T$G$J$/!">e5-$r;H$&$H!"(B
-    $B%Q%9%o!<%I%U%!%$%k$K%j%9%H$5$l$F$$$k?M$G$"$l$PC/$G$b(B
-    $B5v2D$5$l$^$9!#(B
-    $BC1$K%Q%9%o!<%I%U%!%$%k$r%0%k!<%WKh$KJ,$1$F$*$/$3$H$G!"(B
-    $B%0%k!<%W$N$h$&$J?6$kIq$$$r$5$;$k$3$H$b$G$-$^$9!#(B
-    $B$3$N%"%W%m!<%A$NMxE@$O!"(BApache $B$OFs$D$G$O$J$/!"(B
-    $B$?$@0l$D$N%U%!%$%k$@$1$r8!::$9$l$P$h$$$H$$$&E@$G$9!#(B
-    $B7gE@$O!"$?$/$5$s$N%Q%9%o!<%I%U%!%$%k$r4IM}$7$F!"$=$NCf$+$i(B
+    <p><code>require user rbowen</code> 行でなく、上記を使うと、
+    パスワードファイルにリストされている人であれば誰でも
+    許可されます。
+    単にパスワードファイルをグループ毎に分けておくことで、
+    グループのような振る舞いをさせることもできます。
+    このアプローチの利点は、Apache は二つではなく、
+    ただ一つのファイルだけを検査すればよいという点です。
+    欠点は、たくさんのパスワードファイルを管理して、その中から
     <directive module="mod_authn_file">AuthUserFile</directive>
-    $B%G%#%l%/%F%#%V$K@5$7$$%U%!%$%k$r;2>H$5$;$J$1$l$P$J$i$J$$E@$G$9!#(B</p>
+    ディレクティブに正しいファイルを参照させなければならない点です。</p>
 </section>
 
-<section id="possibleproblems"><title>$B5/$3$j$($kLdBj(B</title>
-    <p>Basic $BG'>Z$,;XDj$5$l$F$$$k>l9g$O!"(B
-    $B%5!<%P$K%I%-%e%a%s%H$r%j%/%(%9%H$9$kEY$K(B
-    $B%f!<%6L>$H%Q%9%o!<%I$r8!::$7$J$1$l$P$J$j$^$;$s!#(B
-    $B$3$l$OF1$8%Z!<%8!"%Z!<%8$K$"$kA4$F$N2hA|$r(B
-    $B%j%m!<%I$9$k>l9g$G$"$C$F$b3:Ev$7$^$9(B
-     ($B$b$72hA|$bJ]8n$5$l$?%G%#%l%/%H%j$+$iMh$k$N$G$"$l$P(B) $B!#(B
-    $BM=A[$5$l$kDL$j!"$3$l$OF0:n$rB?>/CY$/$7$^$9!#(B
-    $BCY$/$J$kDxEY$O%Q%9%o!<%I%U%!%$%k$NBg$-$5$HHfNc$7$^$9$,!"(B
-    $B$3$l$O!"%U%!%$%k$r3+$$$F$"$J$?$NL>A0$rH/8+$9$k$^$G(B
-    $B%f!<%6L>$N%j%9%H$rFI$^$J$1$l$P$J$i$J$$$+$i$G$9!#(B
-    $B$=$7$F!"%Z!<%8$,%m!<%I$5$l$kEY$K$3$l$r9T$o$J$1$l$P(B
-    $B$J$j$^$;$s!#(B</p>
+<section id="possibleproblems"><title>起こりえる問題</title>
+    <p>Basic 認証が指定されている場合は、
+    サーバにドキュメントをリクエストする度に
+    ユーザ名とパスワードを検査しなければなりません。
+    これは同じページ、ページにある全ての画像を
+    リロードする場合であっても該当します
+     (もし画像も保護されたディレクトリから来るのであれば) 。
+    予想される通り、これは動作を多少遅くします。
+    遅くなる程度はパスワードファイルの大きさと比例しますが、
+    これは、ファイルを開いてあなたの名前を発見するまで
+    ユーザ名のリストを読まなければならないからです。
+    そして、ページがロードされる度にこれを行わなければ
+    なりません。</p>
 
-    <p>$B7kO@$H$7$F$O!"0l$D$N%Q%9%o!<%I%U%!%$%k$KCV$/$3$H$N$G$-$k(B
-    $B%f!<%6?t$K$O<B<AE*$J8B3&$,$"$j$^$9!#(B
-    $B$3$N8B3&$O%5!<%P%^%7%s$N@-G=$K0MB8$7$FJQ$o$j$^$9$,!"(B
-    $B?tI4$N%(%s%H%j$r1[$($?$"$?$j$+$iB.EYDc2<$,8+$i$l$k$HM=4|$5$l$F$$$^$9!#(B
-    $B$=$N;~$OB>$NG'>ZJ}K!$r9MN8$KF~$l$?J}$,NI$$$G$7$g$&!#(B</p>
+    <p>結論としては、一つのパスワードファイルに置くことのできる
+    ユーザ数には実質的な限界があります。
+    この限界はサーバマシンの性能に依存して変わりますが、
+    数百のエントリを越えたあたりから速度低下が見られると予期されています。
+    その時は他の認証方法を考慮に入れた方が良いでしょう。</p>
 </section>
 
-<section id="dbmdbd"><title>$B%Q%9%o!<%I$NJ]B87A<0$rJQ$($k(B</title>
+<section id="dbmdbd"><title>パスワードの保存形式を変える</title>
 
-    <p>$B%W%l!<%s%F%-%9%H$G%Q%9%o!<%I$rJ]B8$9$kJ}K!$K$O>e5-$NLdBj$,$"$j!"(B
-    $B%G!<%?%Y!<%9$N$h$&$JJL$N>l=j$K%Q%9%o!<%I$rJ]B8$7$?$$$H;W$&(B
-    $B$+$b$7$l$^$;$s!#(B</p>
+    <p>プレーンテキストでパスワードを保存する方法には上記の問題があり、
+    データベースのような別の場所にパスワードを保存したいと思う
+    かもしれません。</p>
 
-    <p><module>mod_authn_dbm</module> $B$H(B <module>mod_authn_dbd</module>
-    $B$r;H$&$H!"$=$l$,$G$-$k$h$&$K$J$j$^$9!#(B
+    <p><module>mod_authn_dbm</module> と <module>mod_authn_dbd</module>
+    を使うと、それができるようになります。
     <directive module="mod_auth_basic">AuthBasicSource</directive>
-    $B$G(B file $B$NBe$o$j$K!"(B<code>dbm</code> $B$"$k$$$O(B <code>dbd</code>
-    $B$r3JG<7A<0$H$7$FA*$Y$^$9!#(B</p>
+    で file の代わりに、<code>dbm</code> あるいは <code>dbd</code>
+    を格納形式として選べます。</p>
 
-    <p>$B%F%-%9%H%U%!%$%k$NBe$o$j$K(B dbm $B%U%!%$%k$rA*Br$9$k>l9g$O!"$?$H$($P<!$N$h$&$K$7$^$9!#(B</p>
+    <p>テキストファイルの代わりに dbm ファイルを選択する場合は、たとえば次のようにします。</p>
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
@@ -397,17 +397,17 @@
     &lt;/Directory&gt;
     </example>
 
-    <p>$B$3$NB>$N%*%W%7%g%s$bB8:_$7$^$9!#>\:Y$K4X$7$F$O(B
-    <module>mod_authn_dbm</module> $B$N%I%-%e%a%s%H$r$4Mw$/$@$5$$!#(B</p>
+    <p>この他のオプションも存在します。詳細に関しては
+    <module>mod_authn_dbm</module> のドキュメントをご覧ください。</p>
 </section>
 
-<section id="multprovider"><title>$BJ#?t$N%W%m%P%$%@$r;HMQ$9$k(B</title>
+<section id="multprovider"><title>複数のプロバイダを使用する</title>
 
-    <p>$BG'>Z>5G'%"!<%-%F%/%A%c$K4p$E$$$F$$$k?7$7$$%W%m%P%$%@$r;H$&$H!"(B
-    $BG'>Z>5G'$NJ}K!$r$R$H$D$KG{$kI,MW$,$J$/$J$j$^$9!#(B
-    $B$$$/$D$b$N%W%m%P%$%@$rAH$_9g$o$;$F!"<+J,$NK>$_$N5sF0$K$G$-$^$9!#(B
-    $B<!$NNc$G$O(B file $BG'>Z%W%m%P%$%@$H(B ldap $BG'>Z%W%m%P%$%@$r(B
-    $BAH$_9g$o$;$F$$$^$9!#(B</p>
+    <p>認証承認アーキテクチャに基づいている新しいプロバイダを使うと、
+    認証承認の方法をひとつに縛る必要がなくなります。
+    いくつものプロバイダを組み合わせて、自分の望みの挙動にできます。
+    次の例では file 認証プロバイダと ldap 認証プロバイダを
+    組み合わせています。</p>
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
@@ -419,16 +419,16 @@
     Require valid-user
     </example>
 
-    <p>$B$3$NNc$G$O!"$^$:(B file $B%W%m%P%$%@$,%f!<%6G'>Z$r;n$_$^$9!#(B
-    $BG'>Z$G$-$J$+$C$?>l9g$K$O!"(Bldap $B%W%m%P%$%@$,8F$S=P$5$l$^$9!#(B
-    $BAH?%$GJ#?t$NG'>Z3JG<J}K!$r;H$C$F$$$k:]$J$I$K!"(B
-    $B$3$NJ}K!$r;H$C$FG'>Z$N%9%3!<%W$r3HBg$G$-$^$9!#(B
-    $B$b$&$R$H$D$N%7%J%j%*$O!"$R$H$D$NG'>Z%?%$%W$H0[$J$k>5G'$r(B
-    $BAH$_9g$o$;$kJ}K!$G$7$g$&!#$?$H$($P!"%Q%9%o!<%I%U%!%$%k$GG'>Z$7$F!"(B
-    ldap $B%G%#%l%/%H%j$G>5G'$r9T$&$H$$$C$?>l9g$G$9!#(B</p>
+    <p>この例では、まず file プロバイダがユーザ認証を試みます。
+    認証できなかった場合には、ldap プロバイダが呼び出されます。
+    組織で複数の認証格納方法を使っている際などに、
+    この方法を使って認証のスコープを拡大できます。
+    もうひとつのシナリオは、ひとつの認証タイプと異なる承認を
+    組み合わせる方法でしょう。たとえば、パスワードファイルで認証して、
+    ldap ディレクトリで承認を行うといった場合です。</p>
 
-    <p>$BG'>Z%W%m%P%$%@$rJ#?t<BAu$G$-$k$h$&$K!">5G'J}K!$bJ#?t;HMQ$G$-$^$9!#(B
-    $B$3$NNc$G$O(B file $B%0%k!<%W>5G'$H(B ldap $B%0%k!<%W>5G'$r;H$C$F$$$^$9!#(B</p>
+    <p>認証プロバイダを複数実装できるように、承認方法も複数使用できます。
+    この例では file グループ承認と ldap グループ承認を使っています。</p>
 
     <example>
     &lt;Directory /www/docs/private&gt;<br />
@@ -442,44 +442,44 @@
     Require ldap-group cn=mygroup,o=yourorg
     </example>
 
-    <p>$B>5G'$r$h$j:Y$+$/@)8f$7$?$$>l9g$O!"(B
-    <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive> $B$H(B
+    <p>承認をより細かく制御したい場合は、
+    <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive> と
     <directive module="mod_authz_core">&lt;SatisfyOne&gt;</directive> 
-    $B%G%#%l%/%F%#%V$r;H$C$F(B AND/OR $B%m%8%C%/$G;XDj$7!"@_Dj%U%!%$%k$G(B
-    $B>5G'$N=hM}=gHV$N@)8f$,$G$-$k$h$&$K$J$C$F$$$^$9!#(B
-    $B$3$l$i$N%G%#%l%/%F%#%V$r$I$N$h$&$K;H$($k$+!"LVMe$7$?Nc$r$4Mw$/$@$5$$!#(B</p>
+    ディレクティブを使って AND/OR ロジックで指定し、設定ファイルで
+    承認の処理順番の制御ができるようになっています。
+    これらのディレクティブをどのように使えるか、網羅した例をご覧ください。</p>
 
 </section>
 
-<section id="beyond"><title>$BC1=c$J>5G'$N$=$N@h(B</title>
+<section id="beyond"><title>単純な承認のその先</title>
 
-    <p>$B>5G'$NJ}K!$O!"$R$H$D$N%G!<%?%=!<%9$r8+$F0l2s$@$1%A%'%C%/$9$k$N$HHf$Y$F!"(B
-    $B$:$C$HB?:L$JE,MQJ}K!$,$G$-$^$9!#(B
-    $B>5G'=hM}$NE,MQ=g=x$d@)8f!"A*Br$,$G$-$k$h$&$K$J$j$^$7$?!#(B</p>
+    <p>承認の方法は、ひとつのデータソースを見て一回だけチェックするのと比べて、
+    ずっと多彩な適用方法ができます。
+    承認処理の適用順序や制御、選択ができるようになりました。</p>
 
-    <section id="authandororder"><title>AND/OR $B%m%8%C%/$NE,MQ$H=g=xIU$1(B</title>
-        <p>$B>5G'$,$I$N$h$&$J=g=x$GE,MQ$5$l$F$$$k$+!"$^$?!"$=$l$r$I$N$h$&$K@)8f$9$k$+$O!"(B
-        $B$3$l$^$G:.Mp$r>7$$$F$$$^$7$?!#(B
-        Apache 2.2 $B$G$O%W%m%P%$%@%Y!<%9$NG'>Z%a%+%K%:%`$,F3F~$5$l!"(B
-        $B>5G'=hM}$+$iG'>Z=hM}$H%5%]!<%H5!G=$H$,@Z$jJ,$1$i$l$^$7$?!#(B
-        $B$3$l$K$h$k$R$H$D$N8z2L$H$7$F!"(B
-        $BG'>Z%b%8%e!<%k$N%m!<%I=g$d%b%8%e!<%k<+BN$N=g=x$K0MB8$9$k$3$H$J$/!"(B
-        $B;XDj$7$?=gHV$GG'>Z%W%m%P%$%@$,8F$S=P$;$k$h$&!"(B
-	$B@_Dj$G$-$k$h$&$K$J$j$^$7$?!#(B
-        $B$3$N%W%m%P%$%@%a%+%K%:%`$O>5G'=hM}$G$bF3F~$5$l$F$$$^$9!#(B
-        $B$D$^$j!"(B<directive module="mod_authz_core">Require</directive>
-        $B%G%#%l%/%F%#%V$OC1$K$I$N>5G'<jK!$,;H$o$l$k$+$r;XDj$9$k$@$1$G$O$J$/!"(B
-        $B$=$l$i$N8F$S=P$7=g=x$b;XDj$G$-$k$h$&$K$J$j$^$7$?!#(B
-        $BJ#?t$N>5G'<jK!$,$"$k$H$-!"$=$N8F$S=P$7=g$O!"@_Dj%U%!%$%k$N(B
-        <directive module="mod_authz_core">Require</directive> $B%G%#%l%/%F%#%VCf$G(B
-        $B8=$l$?=g=x$HF1$8$K$J$j$^$9!#(B</p>
+    <section id="authandororder"><title>AND/OR ロジックの適用と順序付け</title>
+        <p>承認がどのような順序で適用されているか、また、それをどのように制御するかは、
+        これまで混乱を招いていました。
+        Apache 2.2 ではプロバイダベースの認証メカニズムが導入され、
+        承認処理から認証処理とサポート機能とが切り分けられました。
+        これによるひとつの効果として、
+        認証モジュールのロード順やモジュール自体の順序に依存することなく、
+        指定した順番で認証プロバイダが呼び出せるよう、
+	設定できるようになりました。
+        このプロバイダメカニズムは承認処理でも導入されています。
+        つまり、<directive module="mod_authz_core">Require</directive>
+        ディレクティブは単にどの承認手法が使われるかを指定するだけではなく、
+        それらの呼び出し順序も指定できるようになりました。
+        複数の承認手法があるとき、その呼び出し順は、設定ファイルの
+        <directive module="mod_authz_core">Require</directive> ディレクティブ中で
+        現れた順序と同じになります。</p>
 
-        <p>$BDI2C$GF3F~$5$l$?(B
+        <p>追加で導入された
         <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive>,
         <directive module="mod_authz_core">&lt;SatisfyOne&gt;</directive>
-        $B%G%#%l%/%F%#%V$r;H$C$F!">5G'<jK!$,$$$D8F$S=P$5$l!"%"%/%;%9$,5v2D$5$l$?:]$K(B
-        $B$I$N<jB3$-$,E,MQ$5$l$k$+;XDj$9$k$3$H$,$G$-$^$9!#(B
-        $B$?$H$($P!"<!$N>5G'%V%m%C%/$N%m%8%C%/$r8+$F$_$^$7$g$&(B:</p>
+        ディレクティブを使って、承認手法がいつ呼び出され、アクセスが許可された際に
+        どの手続きが適用されるか指定することができます。
+        たとえば、次の承認ブロックのロジックを見てみましょう:</p>
 
         <example>
           # if ((user == "John") ||<br />
@@ -514,66 +514,66 @@
           &lt;/Directory&gt;
         </example>
 
-        <p>$B%G%U%)%k%H$G$O(B <directive module="mod_authz_core">Require</directive>
-        $B%G%#%l%/%F%#%V$O(B OR $BA`:n$H$7$F07$o$l$^$9!#$D$^$j!"$b$7;XDj$7$?>5G'<jK!$N(B
-        $B$R$H$D$G$b9g3J$9$l$P!">5G'$5$l$^$9!#(B
-        <directive module="mod_authz_core">Require</directive> $B%G%#%l%/%F%#%V$N%;%C%H$r(B
-        $B$R$H$D$N(B <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive>
-        $B%V%m%C%/$G0O$`$H(BAND $BA`:n$H$J$j!"A4$F$N>5G'<jK!$G9g3J$7$J$1$l$P5v2D$5$l$^$;$s!#(B</p>
+        <p>デフォルトでは <directive module="mod_authz_core">Require</directive>
+        ディレクティブは OR 操作として扱われます。つまり、もし指定した承認手法の
+        ひとつでも合格すれば、承認されます。
+        <directive module="mod_authz_core">Require</directive> ディレクティブのセットを
+        ひとつの <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive>
+        ブロックで囲むとAND 操作となり、全ての承認手法で合格しなければ許可されません。</p>
 
     </section>
 
-    <section id="reqaccessctrl"><title>$B%"%/%;%9@)8f$K$*$1$k(B Require $B$H(B Reject $B$N;H$$J}(B</title>
-        <p>$B%f!<%6L>$H%Q%9%o!<%I$K$h$kG'>Z$OA4BN$N0lItJ,$G$7$+$"$j$^$;$s!#(B
-        $BC/$,%"%/%;%9$7$F$-$?$+$H$$$C$?>pJs0J30$N>r7o$r;H$$$?$$!"(B
-	$B$H$h$/;W$&$3$H$G$7$g$&!#(B
-        $B$?$H$($P!"$I$3$+$i%"%/%;%9$7$F$-$F$$$k$+!"$H$$$C$?6q9g$G$9!#(B</p>
+    <section id="reqaccessctrl"><title>アクセス制御における Require と Reject の使い方</title>
+        <p>ユーザ名とパスワードによる認証は全体の一部分でしかありません。
+        誰がアクセスしてきたかといった情報以外の条件を使いたい、
+	とよく思うことでしょう。
+        たとえば、どこからアクセスしてきているか、といった具合です。</p>
     
-        <p>$B>5G'%W%m%P%$%@(B <directive module="mod_authz_host">all</directive>,
+        <p>承認プロバイダ <directive module="mod_authz_host">all</directive>,
         <directive module="mod_authz_host">env</directive>, 
         <directive module="mod_authz_host">host</directive>,
         <directive module="mod_authz_host">ip</directive>
-        $B$r;H$&$H!"%j%/%(%9%H$rAw?.$7$F$-$F$$$k%^%7%s$N%[%9%HL>$d(B IP $B%"%I%l%9(B
-        $B$H$$$C$?!"%[%9%H%Y!<%9$G$N%"%/%;%9@)8f$,$G$-$^$9!#(B</p>
+        を使うと、リクエストを送信してきているマシンのホスト名や IP アドレス
+        といった、ホストベースでのアクセス制御ができます。</p>
     
-        <p>$B$3$l$i%W%m%P%$%@$N07$$$O(B
-        <directive module="mod_authz_core">Require</directive> $B$d(B
-        <directive module="mod_authz_core">Reject</directive> $B$G(B
-        $B;XDj$5$l$^$9!#$3$l$i$N%G%#%l%/%F%#%V$O>5G'%W%m%P%$%@$rEPO?$7!"(B
-        $B%j%/%(%9%H=hM}$N>5G'CJ3,$G8F$S=P$5$l$^$9!#$?$H$($P(B:</p>
+        <p>これらプロバイダの扱いは
+        <directive module="mod_authz_core">Require</directive> や
+        <directive module="mod_authz_core">Reject</directive> で
+        指定されます。これらのディレクティブは承認プロバイダを登録し、
+        リクエスト処理の承認段階で呼び出されます。たとえば:</p>
     
         <example>
           Require ip <var>address</var>
         </example>
     
-        <p>$B$3$3$G!"(B<var>address</var> $B$O(B IP $B%"%I%l%9(B ($B$"$k$$$O(B IP $B%"%I%l%9$N(B
-        $B0lIt(B) $B$+(B : </p>
+        <p>ここで、<var>address</var> は IP アドレス (あるいは IP アドレスの
+        一部) か : </p>
     
         <example>
           Require host <var>domain_name</var>
         </example>
     
-        <p>$B$3$3$G(B <var>domain_name</var> $B$O(B FQDN ($B$"$k$$$O%I%a%$%sL>$N0lIt(B)
-        $B$G!"I,MW$G$"$l$PJ#?t$N%"%I%l%9$d%I%a%$%sL>$r=q$/$3$H$,$G$-$^$9!#(B</p>
+        <p>ここで <var>domain_name</var> は FQDN (あるいはドメイン名の一部)
+        で、必要であれば複数のアドレスやドメイン名を書くことができます。</p>
     
-        <p>$B$?$H$($P!"%9%Q%`%a%C%;!<%8$rAw?.$7$F$/$kC/$+$r5qH]$7$?$$>l9g!"(B
-        $B<!$N$h$&$K$J$j$^$9(B : </p>
+        <p>たとえば、スパムメッセージを送信してくる誰かを拒否したい場合、
+        次のようになります : </p>
     
         <example>
           Reject ip 10.252.46.165
         </example>
     
-        <p>$B$3$N%G%#%l%/%F%#%V$,M-8z$JHO0O$N%3%s%F%s%D$KBP$7$F$O!"(B
-        $B$=$N%"%I%l%9$+$i%"%/%;%9$7$F$-$F$b8+$k$3$H$,$G$-$^$;$s!#(B
-        $B$b$7%^%7%sL>$,$o$+$C$F$$$F(B IP $B%"%I%l%9$h$j$b$=$A$i$G(B
-        $B;XDj$7$?$$$N$G$"$l$P!"$=$N%^%7%sL>$,;H$($^$9!#(B</p>
+        <p>このディレクティブが有効な範囲のコンテンツに対しては、
+        そのアドレスからアクセスしてきても見ることができません。
+        もしマシン名がわかっていて IP アドレスよりもそちらで
+        指定したいのであれば、そのマシン名が使えます。</p>
     
         <example>
           Reject host <var>host.example.com</var>
         </example>
     
-        <p>$B$^$?!"FCDj$N%I%a%$%s$+$i$N%"%/%;%9A4$F$r%V%m%C%/$7$?$$>l9g$O!"(B
-        IP $B%"%I%l%9$N0lIt$d!"%I%a%$%sL>$,;XDj$G$-$^$9(B :</p>
+        <p>また、特定のドメインからのアクセス全てをブロックしたい場合は、
+        IP アドレスの一部や、ドメイン名が指定できます :</p>
     
         <example>
           &lt;SatisfyAll&gt;<br />
@@ -584,57 +584,57 @@
           &lt;/SatisfyAll&gt;
         </example>
     
-        <p><directive module="mod_authz_host">Reject</directive> $B%G%#%l%/%F%#%V$r(B
-        <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive> $B%V%m%C%/$NCf$G;H$&$H!"(B
-        $B5v2D$7$?$$%0%k!<%W$K$N$_%"%/%;%9$,$G$-$k$h$&$K3NG'$G$-$^$9!#(B</p>
+        <p><directive module="mod_authz_host">Reject</directive> ディレクティブを
+        <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive> ブロックの中で使うと、
+        許可したいグループにのみアクセスができるように確認できます。</p>
     
-        <p>$B>e5-$NNc$G$O(B <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive>
-        $B$r;H$C$F!"%"%/%;%9$K9g3J$9$kA0CJ3,$G!"A4$F$N(B 
-        <directive module="mod_authz_host">Reject</directive> $B%G%#%l%/%F%#%V$,(B
-        $BK~$?$5$l$F$$$k$3$H$r3NG'$7$F$$$^$9!#(B</p>
+        <p>上記の例では <directive module="mod_authz_core">&lt;SatisfyAll&gt;</directive>
+        を使って、アクセスに合格する前段階で、全ての 
+        <directive module="mod_authz_host">Reject</directive> ディレクティブが
+        満たされていることを確認しています。</p>
     
     </section>
 
-    <section id="filesystem"><title>$B%"%/%;%9@)8f$N8eJ}8_49@-(B</title>
-        <p>$BG'>Z%W%m%P%$%@%Y!<%9$N5!9=$,$"$k$?$a!"0JA0;HMQ$5$l$F$$$?%G%#%l%/%F%#%V(B
+    <section id="filesystem"><title>アクセス制御の後方互換性</title>
+        <p>認証プロバイダベースの機構があるため、以前使用されていたディレクティブ
         <directive module="mod_access_compat">Order</directive>,
         <directive module="mod_access_compat">Allow</directive>,
         <directive module="mod_access_compat">Deny</directive>,
         <directive module="mod_access_compat">Satisfy</directive>
-        $B$OI,MW$J$/$J$j$^$7$?!#(B
-        $B$H$O$$$&$b$N$N!"8E$$@_Dj%U%!%$%k$G$N8eJ}8_49@-$rDs6!$9$k$?$a!"(B
-        $B$3$l$i$N%G%#%l%/%F%#%V$O(B <module>mod_access_compat</module> $B%b%8%e!<%k$K0\$5$l$^$7$?!#(B</p>
+        は必要なくなりました。
+        とはいうものの、古い設定ファイルでの後方互換性を提供するため、
+        これらのディレクティブは <module>mod_access_compat</module> モジュールに移されました。</p>
 
-        <p>$B$3$l$i$N%G%#%l%/%F%#%V$NJz$($F$$$?LdBj$N$R$H$D$K!">5G'$N@_Dj9T$H%"%/%;%9@)8f$N@_Dj9T$N(B
-        $B4X78$,$H$F$b$"$$$^$$$@$C$?$3$H$,5s$2$i$l$^$9!#(B
-        <directive module="mod_access_compat">Satisfy</directive> $B%G%#%l%/%F%#%V$O(B
-        $B%j%/%(%9%H=hM}Cf$G$=$l<+?H$r8F$S=P$9$3$H$K$h$C$F!"$3$l$i$N(B 2 $B$D$N=hM}CJ3,$r7k$S$D$1$h$&$H$7$^$9!#(B
-        $B8=:_$O!"$3$l$i$N%G%#%l%/%F%#%V$O(B <module>mod_access_compat</module> $B$K0\F0$7!"(B
-        $B?7$7$$G'>Z%G%#%l%/%F%#%V$H8E$$%"%/%;%9@)8f%G%#%l%/%F%#%V$r:.$<$F;H$&$3$H$O(B
-        $BFq$7$/$J$C$F$$$^$9!#$3$NLdBj$N$?$a!"(B<module>mod_authz_default</module> $B%b%8%e!<%k$r(B
-        $B%m!<%I$9$k$3$H$,$H$F$b=EMW$G!"I,?\$K$J$C$F$$$^$9!#(B
-        <module>mod_authz_default</module>$B!!%b%8%e!<%k$N<g$JL\E*$O!"$I$N>5G'%W%m%P%$%@$G(B
-        $B=hM}$5$l$J$+$C$?>5G'%j%/%(%9%H$r<u$1$k$3$H$K$"$j$^$9!#(B
-        $B$7$+$7!"8E$$%"%/%;%9@)8f%G%#%l%/%F%#%V$,MQ$$$i$l$?>l9g$K$O!"(B
-        $B%"%/%;%9@)8f$H>5G'$r7k$S$D$1$F!"$9$Y$F$N=hM}CJ3,$N=PNO7k2L$r8+$F%"%/%;%9$K9g3J$9$k$+$r7h$a$F$$$^$9!#(B
-        $B$G$9$+$i!"8E$$%G%#%l%/%F%#%V$,$&$^$/F0:n$7$J$$>l9g$O!"(B
-        <module>mod_authz_default</module> $B$,%m!<%I$5$l$F$$$J$$$+$i$+$b$7$l$J$$!"(B
-        $B$H5?$C$F$_$F$/$@$5$$!#(B</p>
+        <p>これらのディレクティブの抱えていた問題のひとつに、承認の設定行とアクセス制御の設定行の
+        関係がとてもあいまいだったことが挙げられます。
+        <directive module="mod_access_compat">Satisfy</directive> ディレクティブは
+        リクエスト処理中でそれ自身を呼び出すことによって、これらの 2 つの処理段階を結びつけようとします。
+        現在は、これらのディレクティブは <module>mod_access_compat</module> に移動し、
+        新しい認証ディレクティブと古いアクセス制御ディレクティブを混ぜて使うことは
+        難しくなっています。この問題のため、<module>mod_authz_default</module> モジュールを
+        ロードすることがとても重要で、必須になっています。
+        <module>mod_authz_default</module>　モジュールの主な目的は、どの承認プロバイダで
+        処理されなかった承認リクエストを受けることにあります。
+        しかし、古いアクセス制御ディレクティブが用いられた場合には、
+        アクセス制御と承認を結びつけて、すべての処理段階の出力結果を見てアクセスに合格するかを決めています。
+        ですから、古いディレクティブがうまく動作しない場合は、
+        <module>mod_authz_default</module> がロードされていないからかもしれない、
+        と疑ってみてください。</p>
 
     </section>
 
 </section>
 
-<section id="moreinformation"><title>$BDI2C>pJs(B</title>
-    <p>$B$3$l$iA4$F$,$I$N$h$&$KF0:n$9$k$+$K$D$$$F(B
-    $B$b$C$HB?$/$N>pJs$,=q$+$l$F$$$k(B <module>mod_auth_basic</module> $B$H(B
+<section id="moreinformation"><title>追加情報</title>
+    <p>これら全てがどのように動作するかについて
+    もっと多くの情報が書かれている <module>mod_auth_basic</module> と
     <module>mod_authz_host</module>
-    $B$NJ8=q$bFI$`$H$h$$$G$7$g$&!#(B
+    の文書も読むとよいでしょう。
     <directive module="mod_authn_core">&lt;AuthnProviderAlias&gt;</directive>
-    $B%G%#%l%/%F%#%V$r;H$&$H!"FCDj$NG'>Z@_Dj$,4JC1$K=q$1$k$h$&$K$J$j$^$9!#(B</p>
+    ディレクティブを使うと、特定の認証設定が簡単に書けるようになります。</p>
 
-    <p><a href="access.html">$B%"%/%;%9@)8f(B</a>$B$NJ}K!$b!"(B
-    $B4XO"$9$k%H%T%C%/$,$?$/$5$s5-:\$5$l$F$$$^$9$N$G!"$4Mw$/$@$5$$!#(B</p>
+    <p><a href="access.html">アクセス制御</a>の方法も、
+    関連するトピックがたくさん記載されていますので、ご覧ください。</p>
 
 </section>
 

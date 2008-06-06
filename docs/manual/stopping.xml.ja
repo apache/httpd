@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 151408:655319 (outdated) -->
@@ -22,225 +22,225 @@
 
 <manualpage metafile="stopping.xml.meta">
 
-  <title>$BDd;_$H:F5/F0(B</title>
+  <title>停止と再起動</title>
 
 <summary>
-    <p>$B$3$NJ8=q$G$O(B Unix $B$KN`;w$7$?%7%9%F%`$G$N(B
-    Apache $B$NDd;_$H:F5/F0$K$D$$$F07$C$F$$$^$9!#(B
-    Windows NT, 2000, XP $B%f!<%6$O(B<a
-    href="platform/windows.html#winsvc">$B%5!<%S%9$H$7$F(B
-    Apache $B$r<B9T$9$k(B</a>$B$G!"(BWindows 9x, ME$B%f!<%6$O(B<a
-    href="platform/windows.html#wincons">$B%3%s%=!<%k%"%W%j%1!<%7%g%s$H$7$F(B
-    Apache $B$r<B9T$9$k(B</a>$B$G!"(B
-    $B$3$l$i$N%W%i%C%H%[!<%`$G$N;HMQJ}K!$r$4Mw2<$5$$!#(B</p>
+    <p>この文書では Unix に類似したシステムでの
+    Apache の停止と再起動について扱っています。
+    Windows NT, 2000, XP ユーザは<a
+    href="platform/windows.html#winsvc">サービスとして
+    Apache を実行する</a>で、Windows 9x, MEユーザは<a
+    href="platform/windows.html#wincons">コンソールアプリケーションとして
+    Apache を実行する</a>で、
+    これらのプラットホームでの使用方法をご覧下さい。</p>
 </summary>
 
 <seealso><program>httpd</program></seealso>
 <seealso><program>apachectl</program></seealso>
 
-<section id="introduction"><title>$B%$%s%H%m%@%/%7%g%s(B</title>
+<section id="introduction"><title>イントロダクション</title>
 
-    <p>Apache $B$rDd;_$7$?$j:F5/F0$7$?$j$9$k$?$a$K$O!"<B9T$5$l$F$$$k(B
-    <program>httpd</program> $B%W%m%;%9$K%7%0%J%k$rAw$kI,MW$,$"$j$^$9!#(B
-    $B%7%0%J%k$rAw$k$K$OFs$D$NJ}K!$,$"$j$^$9!#(B
-    $B0l$DL\$O%W%m%;%9$KD>@\%7%0%J%k$rAw$k(B unix $B$N(B <code>kill</code>
-    $B%3%^%s%I$r;HMQ$9$kJ}K!$G$9!#(B
-    $B%7%9%F%`$r8+$l$P$?$/$5$s$N(B <program>httpd</program> $B$,(B
-    $B<B9T$5$l$F$$$k$N$K5$$,IU$/$G$7$g$&$,!"%7%0%J%k$rAw$k$N$O(B
-    $B?F%W%m%;%9$@$1$G!"$=$l0J30$N8D!9$N%W%m%;%9$K$O(B
-    $B%7%0%J%k$rAw$i$J$$$G2<$5$$!#$=$N?F%W%m%;%9$N(B pid $B$O(B
+    <p>Apache を停止したり再起動したりするためには、実行されている
+    <program>httpd</program> プロセスにシグナルを送る必要があります。
+    シグナルを送るには二つの方法があります。
+    一つ目はプロセスに直接シグナルを送る unix の <code>kill</code>
+    コマンドを使用する方法です。
+    システムを見ればたくさんの <program>httpd</program> が
+    実行されているのに気が付くでしょうが、シグナルを送るのは
+    親プロセスだけで、それ以外の個々のプロセスには
+    シグナルを送らないで下さい。その親プロセスの pid は
     <directive module="mpm_common">PidFile</directive>
-    $B$K=q$+$l$F$$$^$9!#$3$l$O$D$^$j!"?F0J30$N%W%m%;%9$K(B
-    $B%7%0%J%k$rAw$kI,MW$9$i$J$$!"$H$$$&$3$H$G$9!#(B
-    $B?F%W%m%;%9$KAw$k$3$H$,$G$-$k(B 3 $B<oN`$N%7%0%J%k$,$"$j$^$9(B:
+    に書かれています。これはつまり、親以外のプロセスに
+    シグナルを送る必要すらない、ということです。
+    親プロセスに送ることができる 3 種類のシグナルがあります:
     <code><a href="#term">TERM</a></code>,
     <code><a href="#hup">HUP</a></code>, 
     <code><a href="#graceful">USR1</a></code>
-    $B$G$9!#$3$l$i$N@bL@$K$D$$$F$OB3$-$r$4Mw2<$5$$!#(B</p>
+    です。これらの説明については続きをご覧下さい。</p>
 
-    <p>$B?F%W%m%;%9$K%7%0%J%k$rAw$k$K$O!"(B
-    $B<!$N$h$&$J%3%^%s%I$rH/9T$7$F2<$5$$(B:</p>
+    <p>親プロセスにシグナルを送るには、
+    次のようなコマンドを発行して下さい:</p>
 
 <example>kill -TERM `cat /usr/local/apache2/logs/httpd.pid`</example>
 
-    <p><program>httpd</program> $B%W%m%;%9$K%7%0%J%k$rAw$k(B 2 $BHVL\$NJ}K!$O(B
-    <code>-k</code> $B$H$$$&%3%^%s%I%i%$%s0z?t$r;HMQ$9$k$3$H$G$9!#(B
-    $B2<$G@bL@$5$l$F$$$k$h$&$K!"(B<code>stop</code>, <code>restart</code>, 
-    <code>graceful</code> $B$r;XDj$G$-$^$9!#(B
-    $B$3$l$i$O(B <program>httpd</program> $B$N0z?t$G$9$,!"(B
-    $B@)8fMQ$N%9%/%j%W%H(B <program>apachectl</program> $B$O$=$l$i$N0z?t$r$=$N$^$^(B
-    <program>httpd</program> $B$KEO$7$^$9!#(B</p>
+    <p><program>httpd</program> プロセスにシグナルを送る 2 番目の方法は
+    <code>-k</code> というコマンドライン引数を使用することです。
+    下で説明されているように、<code>stop</code>, <code>restart</code>, 
+    <code>graceful</code> を指定できます。
+    これらは <program>httpd</program> の引数ですが、
+    制御用のスクリプト <program>apachectl</program> はそれらの引数をそのまま
+    <program>httpd</program> に渡します。</p>
 
-    <p><program>httpd</program> $B$K%7%0%J%k$rAw$C$?8e!"(B
-    $B<B9T>u67$r<!$N%3%^%s%I$GFI$`$3$H$,$G$-$^$9(B:</p>
+    <p><program>httpd</program> にシグナルを送った後、
+    実行状況を次のコマンドで読むことができます:</p>
 
 <example>tail -f /usr/local/apache2/logs/error_log</example>
-    <p>$B$3$3$K5s$2$?Nc$O!"3F<+$N(B
+    <p>ここに挙げた例は、各自の
     <directive module="core">ServerRoot</directive>
-    $B$H(B
+    と
     <directive module="mpm_common">PidFile</directive>
-    $B$N@_Dj$KE,9g$9$k$h$&$KE,59=$@5$7$F2<$5$$!#(B</p>
+    の設定に適合するように適宜修正して下さい。</p>
 </section>
 
-<section id="term"><title>$B5^$JDd;_(B</title>
+<section id="term"><title>急な停止</title>
 
-<dl><dt>$B%7%0%J%k(B: TERM</dt>
+<dl><dt>シグナル: TERM</dt>
 <dd><code>apachectl -k stop</code></dd>
 </dl>
 
-    <p><code>TERM</code> $B$"$k$$$O(B <code>stop</code> 
-    $B%7%0%J%k$r?F%W%m%;%9$KAw$k$H!"B(:B$K;R%W%m%;%9A4$F$r(B kill $B$7$h$&$H$7$^$9!#(B
-    $B;R%W%m%;%9$r40A4$K(B kill $B$7=*$o$k$^$G$K?tIC$+$+$k$+$b$7$l$^$;$s!#(B
-    $B$=$N8e!"?F%W%m%;%9<+?H$,=*N;$7$^$9!#(B
-    $B=hM}Cf$N%j%/%(%9%H$OA4$FDd;_$5$l!"$b$O$d%j%/%(%9%H$KBP$9$k(B
-    $B1~Ez$O$5$l$^$;$s!#(B</p>
+    <p><code>TERM</code> あるいは <code>stop</code> 
+    シグナルを親プロセスに送ると、即座に子プロセス全てを kill しようとします。
+    子プロセスを完全に kill し終わるまでに数秒かかるかもしれません。
+    その後、親プロセス自身が終了します。
+    処理中のリクエストは全て停止され、もはやリクエストに対する
+    応答はされません。</p>
 </section>
 
-<section id="graceful"><title>$B4K$d$+$J:F5/F0(B</title>
+<section id="graceful"><title>緩やかな再起動</title>
 
-<dl><dt>$B%7%0%J%k(B: USR1</dt>
+<dl><dt>シグナル: USR1</dt>
 <dd><code>apachectl -k graceful</code></dd>
 </dl>
 
-    <p>$B?F%W%m%;%9$O(B <code>USR1</code> $B$"$k$$$O(B <code>graceful</code>
-    $B%7%0%J%k$r<u$1<h$k$H!";R%W%m%;%9$K8=:_$N%j%/%(%9%H$N=hM}$N8e$K=*N;$9$k(B
-    ($B$"$k$$$O2?$b$7$F$$$J$1$l$P$9$0$K=*N;$9$k(B)
-    $B$h$&$K(B<em>$B=u8@(B</em>$B$7$^$9!#(B
-    $B?F%W%m%;%9$O@_Dj%U%!%$%k$r:FFI9~$7$F!"%m%0%U%!%$%k$r3+$-D>$7$^$9!#(B
-    $B;R%W%m%;%9$,=y!9$K$J$/$J$k$K=>$C$F!"(B
-    $B?7$7$$(B<em>$B@$Be(B</em>$B$N@_Dj$K$h$k;R%W%m%;%9$KCV$-49$($F$$$-$^$9!#(B
-    $B$=$7$F!"$3$l$i$,?7$?$J%j%/%(%9%H$KB(:B$K1~Ez$7;O$a$^$9!#(B</p>
+    <p>親プロセスは <code>USR1</code> あるいは <code>graceful</code>
+    シグナルを受け取ると、子プロセスに現在のリクエストの処理の後に終了する
+    (あるいは何もしていなければすぐに終了する)
+    ように<em>助言</em>します。
+    親プロセスは設定ファイルを再読込して、ログファイルを開き直します。
+    子プロセスが徐々になくなるに従って、
+    新しい<em>世代</em>の設定による子プロセスに置き換えていきます。
+    そして、これらが新たなリクエストに即座に応答し始めます。</p>
 
-    <note>$BFCDj$N%W%i%C%H%[!<%`$G$O(B <code>USR1</code>
-    $B$r4K$d$+$J:F5/F0$N$?$a$K;H$&$3$H$,$G$-$^$;$s$,!"Be$o$j$N%7%0%J%k(B
-    ($BNc$($P(B WINCH) $B$,;HMQ$G$-$k$G$7$g$&!#(B
+    <note>特定のプラットホームでは <code>USR1</code>
+    を緩やかな再起動のために使うことができませんが、代わりのシグナル
+    (例えば WINCH) が使用できるでしょう。
     <code>apachectl graceful</code>
-    $B$H$$$&%3%^%s%I$O%W%i%C%H%[!<%`$K9g$C$?%7%0%J%k$rAw$j$^$9!#(B</note>
+    というコマンドはプラットホームに合ったシグナルを送ります。</note>
 
-    <p>$B$3$N%3!<%I$O>o$K(B
-    MPM $B$N%W%m%;%9@)8f%G%#%l%/%F%#%V$N@_Dj$r=E;k$7$^$9$N$G!"(B
-    $B%/%i%$%"%s%H$N%j%/%(%9%H$r07$&%W%m%;%9$H%9%l%C%I$N?t$r:F5/F0$N=hM}Cf$b(B
-    $BE,@Z$JCM$K0];}$5$l$^$9!#!#$^$?!"<!$N$h$&$K$7$F(B
+    <p>このコードは常に
+    MPM のプロセス制御ディレクティブの設定を重視しますので、
+    クライアントのリクエストを扱うプロセスとスレッドの数を再起動の処理中も
+    適切な値に維持されます。。また、次のようにして
     <directive module="mpm_common">StartServers</directive>
-    $B$r<i$j$^$9(B:
-    $B>/$J$/$H$b(B 1 $BIC8e$K(B <directive
-    module="mpm_common">StartServers</directive> $B8D$N?7$7$$;R%W%m%;%9$,(B
-    $B@8@.$5$l$F$$$J$1$l$P!"$=$N?t$K$J$k$h$&$KE,59%W%m%;%9$r@8@.$7$^$9!#(B
-    $B$3$N5sF0$O8=:_$NIi2Y$KBP$7$FE,@Z$J;R%W%m%;%9$N?t$H(B
+    を守ります:
+    少なくとも 1 秒後に <directive
+    module="mpm_common">StartServers</directive> 個の新しい子プロセスが
+    生成されていなければ、その数になるように適宜プロセスを生成します。
+    この挙動は現在の負荷に対して適切な子プロセスの数と
     <directive
-    module="mpm_common">StartServers</directive> $B%Q%i%a!<%?$G$N(B
-    $B4uK>$N?t$NN>J}$r0];}$7$h$&$H$7$F$$$^$9!#(B</p>
+    module="mpm_common">StartServers</directive> パラメータでの
+    希望の数の両方を維持しようとしています。</p>
 
-    <p><module>mod_status</module> $B$r(B
-    $B;HMQ$7$F$$$k>l9g$O!"(B<code>USR1</code> $B%7%0%J%k$,Aw$i$l$?:]$K(B
-    $B%5!<%PE}7W$,%<%m$K(B<strong>$B@_Dj$5$l$J$$(B</strong>$B$3$H$K(B
-    $BCm0U$7$F$/$@$5$$!#(B
-    $B%5!<%P$,?7$7$$%j%/%(%9%H$K1~EzITG=$J;~4V$r:G>.$K$9$k$h$&$K(B
-    ($B%j%/%(%9%H$O(B OS $B$K$h$C$F%-%e!<$KDI2C$5$l$k$N$G@dBP$KJ6<:$O$7$^$;$s(B)$B!"(B
-    $B$^$?F1;~$K!"4uK>$N%A%e!<%K%s%0%Q%i%a!<%?$r<i$k$h$&$K(B
-    $B%3!<%I$O=q$+$l$F$$$^$9!#(B
-    $B$3$N$h$&$K$9$k$?$a$K!"@$Be$r$^$?$,$C$?A4;R%W%m%;%9$NDI@W$K;H$o$l$F$$$k(B
-    <em>$B%9%3%"%\!<%I(B</em>$B$r0];}$7$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p><module>mod_status</module> を
+    使用している場合は、<code>USR1</code> シグナルが送られた際に
+    サーバ統計がゼロに<strong>設定されない</strong>ことに
+    注意してください。
+    サーバが新しいリクエストに応答不能な時間を最小にするように
+    (リクエストは OS によってキューに追加されるので絶対に紛失はしません)、
+    また同時に、希望のチューニングパラメータを守るように
+    コードは書かれています。
+    このようにするために、世代をまたがった全子プロセスの追跡に使われている
+    <em>スコアボード</em>を維持しなければなりません。</p>
 
-    <p>status $B%b%8%e!<%k$O!"4K$d$+$J:F5/F00JA0$+$i3+;O$7$F(B
-    $B%j%/%(%9%H$K1~Ez$7B3$1$F$$$k;R%W%m%;%9$rFCDj$9$k$?$a$K!"(B
-    <code>G</code> $B$r;H$&$3$H$b$7$^$9!#(B</p>
+    <p>status モジュールは、緩やかな再起動以前から開始して
+    リクエストに応答し続けている子プロセスを特定するために、
+    <code>G</code> を使うこともします。</p>
 
-    <p>$B8=:_!"(B<code>USR1</code> $B$r;H$&%m%00\F0%9%/%j%W%H$G$O!"(B
-    $B:F5/F0A0$N;R%W%m%;%9$,%m%0$r=q$-=*$o$C$?$3$H$r3N>Z$9$kJ}K!$,(B
-    $B$"$j$^$;$s!#8E$$%m%0$KBP$7$F2?$+$9$kA0$K!"(B
-    <code>USR1</code> $B%7%0%J%k$rAw$C$?8e$$$/$i$+E,Ev$J;~4VBT$D$3$H$r(B
-    $BDs0F$7$^$9!#Nc$($P!"BS0h$N69$$DL?.O)$N%f!<%6$N%j%/%(%9%H$N$[$H$s$I$,(B 10 
-    $BJ,0J2<$G40N;$7$F$$$k$H$$$&$3$H$,J,$+$C$F$$$l$P!"(B
-    $B8E$$%m%0$K2?$+$9$kA0$K(B 15 $BJ,BT$D$H$$$&$3$H$G$9!#(B</p>
+    <p>現在、<code>USR1</code> を使うログ移動スクリプトでは、
+    再起動前の子プロセスがログを書き終わったことを確証する方法が
+    ありません。古いログに対して何かする前に、
+    <code>USR1</code> シグナルを送った後いくらか適当な時間待つことを
+    提案します。例えば、帯域の狭い通信路のユーザのリクエストのほとんどが 10 
+    分以下で完了しているということが分かっていれば、
+    古いログに何かする前に 15 分待つということです。</p>
 
-    <note>$B:F5/F0;~$K@_Dj%U%!%$%k$K8m$j$,$"$k$H!"(B
-    $B?F%W%m%;%9$O:F5/F0$;$:$K%(%i!<$H$H$b$K=*N;$7$^$9!#(B
-    $B4K$d$+$J:F5/F0$N>l9g$O!"?F%W%m%;%9$,=*N;$7$?8e$G$b;R%W%m%;%9$,(B
-    $B<B9T$5$l$?$^$^J|CV$5$l$?$j$b$7$^$9!#(B
-    ($B:G8e$N%j%/%(%9%H$r=hM}$7$?8e!V4K$d$+$K=*N;!W$9$k(B
-    $B;R%W%m%;%9$H$J$j$^$9!#(B)
-    $B%5!<%P$r:F5/F0$9$k:]$K!"$3$l$,LdBj$K$J$k$+$b$7$l$^$;$s(B
-    -- $B%5!<%P$O(B listen $B$9$k%]!<%H$K%P%$%s%I$G$-$J$$$+$b$7$l$^$;$s!#(B
-    $B:F5/F0$9$kA0$K!"@_Dj%U%!%$%k$N9=J8$r(B <code>-t</code>
-    $B%3%^%s%I%i%$%s0z?t(B
-    (<program>httpd</program> $B$r$4Mw2<$5$$(B)
-    $B$r;H$C$F8!>Z$9$k$3$H$,$G$-$^$9!#(B
-    $B@_Dj%U%!%$%k$N0UL#E*$JFbMF$r9=J8$HF1MM$K8!>Z$7$?$$>l9g$O!"(B
-    $BHs(B root $B%f!<%6$G(B <program>httpd</program> $B$r5/F0$7$h$&$H$9$l$P$o$+$j$^$9!#(B
-    $B$b$7%(%i!<$,$J$1$l$P!"%=%1%C%H$d%m%0$r3+$3$&$H$7$F(B
-    root $B$G$J$$$?$a(B
-    ($B$b$7$/$O<B9TCf$N(B <program>httpd</program>
-    $B$,4{$KI,MW$J%]!<%H$K%P%$%s%I$7$F$$$k$?$a(B)
-    $B$K<:GT$9$k$G$7$g$&!#(B
-    $B$3$l0J30$NM}M3$G5/F0$K<:GT$7$?$N$G$"$l$P!"(B
-    $B$=$l$O@_Dj%U%!%$%k$N%(%i!<$G!"(B
-    $B4K$d$+$J:F5/F0$r9T$&A0$K$=$N8m$j$r=$@5$7$J$1$l$P$J$j$^$;$s!#(B</note>
+    <note>再起動時に設定ファイルに誤りがあると、
+    親プロセスは再起動せずにエラーとともに終了します。
+    緩やかな再起動の場合は、親プロセスが終了した後でも子プロセスが
+    実行されたまま放置されたりもします。
+    (最後のリクエストを処理した後「緩やかに終了」する
+    子プロセスとなります。)
+    サーバを再起動する際に、これが問題になるかもしれません
+    -- サーバは listen するポートにバインドできないかもしれません。
+    再起動する前に、設定ファイルの構文を <code>-t</code>
+    コマンドライン引数
+    (<program>httpd</program> をご覧下さい)
+    を使って検証することができます。
+    設定ファイルの意味的な内容を構文と同様に検証したい場合は、
+    非 root ユーザで <program>httpd</program> を起動しようとすればわかります。
+    もしエラーがなければ、ソケットやログを開こうとして
+    root でないため
+    (もしくは実行中の <program>httpd</program>
+    が既に必要なポートにバインドしているため)
+    に失敗するでしょう。
+    これ以外の理由で起動に失敗したのであれば、
+    それは設定ファイルのエラーで、
+    緩やかな再起動を行う前にその誤りを修正しなければなりません。</note>
 </section>
 
-<section id="hup"><title>$B5^$J:F5/F0(B</title>
+<section id="hup"><title>急な再起動</title>
 
-<dl><dt>$B%7%0%J%k(B: HUP</dt>
+<dl><dt>シグナル: HUP</dt>
 <dd><code>apachectl -k restart</code></dd>
 </dl>
 
-    <p><code>HUP</code> $B$"$k$$$O(B <code>restart</code> $B%7%0%J%k$r?F%W%m%;%9$KAw$k$H!"(B
-    <code>TERM</code> $B$HF1MM$K;R%W%m%;%9$r(B kill $B$7$^$9$,!"(B
-    $B?F%W%m%;%9$O=*N;$7$^$;$s!#(B
-    $B@_Dj%U%!%$%k$r:FFI9~$7$F!"%m%0%U%!%$%kA4$F$r3+$-D>$7$^$9!#(B
-    $B$=$N8e!"?7$7$$;R%W%m%;%9$r5/F0$7$F1~Ez$rB3$1$^$9!#(B</p>
+    <p><code>HUP</code> あるいは <code>restart</code> シグナルを親プロセスに送ると、
+    <code>TERM</code> と同様に子プロセスを kill しますが、
+    親プロセスは終了しません。
+    設定ファイルを再読込して、ログファイル全てを開き直します。
+    その後、新しい子プロセスを起動して応答を続けます。</p>
 
     <p><module>mod_status</module>
-    $B$r;H$C$F$$$k>l9g$O!"(B<code>HUP</code> $B$,Aw$i$l$?>l9g$K(B
-    $B%5!<%PE}7W$,%<%m$K@_Dj$5$l$k$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    を使っている場合は、<code>HUP</code> が送られた場合に
+    サーバ統計がゼロに設定されることに注意してください。</p>
 
-    <note>$B:F5/F0;~$K@_Dj%U%!%$%k$K8m$j$,$"$k$H!"(B
-    $B?F%W%m%;%9$O:F5/F0$;$:$K%(%i!<$H$H$b$K=*N;$7$^$9!#(B
-    $B$3$l$rHr$1$k$K$O<!$NJ}K!$r$4Mw2<$5$$!#(B</note>
+    <note>再起動時に設定ファイルに誤りがあると、
+    親プロセスは再起動せずにエラーとともに終了します。
+    これを避けるには次の方法をご覧下さい。</note>
 </section>
 
-<section id="race"><title>$BIUO?(B: $B%7%0%J%k$H6%9g>uBV(B</title>
+<section id="race"><title>付録: シグナルと競合状態</title>
 
-    <p>Apache 1.2b9 $B0JA0$O!":F5/F0$dDd;_$N%7%0%J%k$r4^$`(B<em>$B6%9g>uBV(B</em>
-    ($B6%9g>uBV$r4JC1$K@bL@$9$k$H(B: $B%?%$%_%s$K%0$h$kLdBj$G!"(B
-    $B6q9g$N0-$$;~4VBS$K$A$g$&$I2?$+$,5/$3$k$HM=A[30$NF0:n$r$9$k(B
-    $B$h$&$J$3$H$r;X$7$^$9(B) $B$,$"$j$^$7$?!#(B
-    $B!V@5$7$$!W5!G=$r;}$C$F$$$k%"!<%-%F%/%A%c$G$O!"$G$-$k$@$1(B
-    $B$3$N$h$&$J$3$H$,5/$3$i$J$$$h$&$K$7$F$$$^$9!#(B
-    $B$7$+$7!"$"$k<o$N%"!<%-%F%/%A%c$G$O6%9g>uBV$OL$$@3N<B$K5/$3$j$($k(B
-    $B$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    <p>Apache 1.2b9 以前は、再起動や停止のシグナルを含む<em>競合状態</em>
+    (競合状態を簡単に説明すると: タイミンにグよる問題で、
+    具合の悪い時間帯にちょうど何かが起こると予想外の動作をする
+    ようなことを指します) がありました。
+    「正しい」機能を持っているアーキテクチャでは、できるだけ
+    このようなことが起こらないようにしています。
+    しかし、ある種のアーキテクチャでは競合状態は未だ確実に起こりえる
+    ということに注意してください。</p>
 
-    <p>$B%G%#%9%/>e$G(B
+    <p>ディスク上で
     <directive module="mpm_common">ScoreBoardFile</directive>
-    $B$r;HMQ$7$F$$$k%"!<%-%F%/%A%c$G$O!"(B
-    $B@x:_E*$K%9%3%"%\!<%I$,2u$l$k2DG=@-$,$"$j$^$9!#(B
-    $B%9%3%"%\!<%I$,2u$l$?>l9g$O!"(B
-    "bind: Address already in use" (<code>HUP</code> $B8e(B) $B$d(B
-    "long lost child came home!" (<code>USR1</code> $B8e(B)
-    $B$H$$$C$?7k2L$K$J$j$^$9!#(B
-    $BA0<T$OCWL?E*$J%(%i!<$G$9$,!"(B
-    $B8e<T$O%9%3%"%\!<%I%9%m%C%H$r<:$&$@$1$G$9!#(B
-    $B$G$9$+$i4K$d$+$J:F5/F0$O!"$?$^$K3N<B$J:F5/F0(B (HUP)
-    $B$bJ;MQ$7$F;H$C$?J}$,NI$$$G$7$g$&!#(B
-    $B$3$l$i$NLdBj$r9nI~$9$k$N$OHs>o$KFq$7$$$N$G$9$,!"(B
-    $B9,$$$J$3$H$KBgItJ,$N%"!<%-%F%/%A%c$G$O%9%3%"%\!<%I$N%U%!%$%k$OI,MW$"$j$^$;$s!#(B
-    $B$3$l$r;HMQ$9$k%"!<%-%F%/%A%c$O!"(B
+    を使用しているアーキテクチャでは、
+    潜在的にスコアボードが壊れる可能性があります。
+    スコアボードが壊れた場合は、
+    "bind: Address already in use" (<code>HUP</code> 後) や
+    "long lost child came home!" (<code>USR1</code> 後)
+    といった結果になります。
+    前者は致命的なエラーですが、
+    後者はスコアボードスロットを失うだけです。
+    ですから緩やかな再起動は、たまに確実な再起動 (HUP)
+    も併用して使った方が良いでしょう。
+    これらの問題を克服するのは非常に難しいのですが、
+    幸いなことに大部分のアーキテクチャではスコアボードのファイルは必要ありません。
+    これを使用するアーキテクチャは、
     <directive module="mpm_common">ScoreBoardFile</directive>
-    $B$r$4Mw2<$5$$!#(B</p>
+    をご覧下さい。</p>
 
-    <p>$BA4$F$N%"!<%-%F%/%A%c$K$*$$$F!"8D!9$N;R%W%m%;%9$G(B
-    $B7QB3E*$J(B HTTP $B%3%M%/%7%g%s(B (KeepAlive)
-    $B$K4X$9$k>.$5$J6%9g>uBV$,5/$3$j$($^$9!#(B
-    $B%j%/%(%9%H9T$rFI$s$@8e!"$=$7$F%j%/%(%9%H%X%C%@$rFI$`A0$K(B
-    $B;R%W%m%;%9$O=*N;$9$k$+$bCN$l$^$;$s!#(B
-    $B$3$l$KBP$9$k=$@5$,$"$j$^$9$,(B 1.2 $B$G=$@5$9$k$K$OH/8+$,CY$9$.$^$7$?!#(B
-    $BM}O@E*$K$O!"$3$l$OLdBj$G$O$"$j$^$;$s!#(B
-    $B$J$<$J$i(B KeepAlive $B$N%/%i%$%"%s%H$O!"%M%C%H%o!<%/CY1d$d(B
-    $B%5!<%P$N%?%$%`%"%&%H$J$I$KHw$($F$$$J$1$l$P$J$i$J$$$+$i$G$9!#(B
-    $B<B:]$K$b2?$+1F6A$,$"$k$h$&$K$O8+$($^$;$s(B
-    -- $B%F%9%H%1!<%9$G%5!<%P$r(B 1 $BIC4V$K(B 20 $B2s:F5/F0$7$F$b(B
-    $B%/%i%$%"%s%H$O2u$l$?2hA|$d6u$N%I%-%e%a%s%H$r<u$1<h$k$3$H$J$/(B
-    $B@5>o$K1\Mw$G$-$F$$$^$9!#(B</p>
+    <p>全てのアーキテクチャにおいて、個々の子プロセスで
+    継続的な HTTP コネクション (KeepAlive)
+    に関する小さな競合状態が起こりえます。
+    リクエスト行を読んだ後、そしてリクエストヘッダを読む前に
+    子プロセスは終了するかも知れません。
+    これに対する修正がありますが 1.2 で修正するには発見が遅すぎました。
+    理論的には、これは問題ではありません。
+    なぜなら KeepAlive のクライアントは、ネットワーク遅延や
+    サーバのタイムアウトなどに備えていなければならないからです。
+    実際にも何か影響があるようには見えません
+    -- テストケースでサーバを 1 秒間に 20 回再起動しても
+    クライアントは壊れた画像や空のドキュメントを受け取ることなく
+    正常に閲覧できています。</p>
 </section>
 
 </manualpage>

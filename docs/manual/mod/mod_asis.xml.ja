@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -23,43 +23,43 @@
 <modulesynopsis metafile="mod_asis.xml.meta">
 
 <name>mod_asis</name>
-<description>$B<+J,MQ$N(B HTTP $B%X%C%@$N=q$+$l$F$$$k%U%!%$%k$rAw?.$9$k(B</description>
+<description>自分用の HTTP ヘッダの書かれているファイルを送信する</description>
 <status>Base</status>
 <sourcefile>mod_asis.c</sourcefile>
 <identifier>asis_module</identifier>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$O%O%s%I%i(B <code>send-as-is</code>
-    $B$rDs6!$7$^$9!#$3$N%O%s%I%i$ODL>o$N(B HTTP
-    $B%X%C%@$r$[$H$s$IDI2C$9$k$3$H$J$/%I%-%e%a%s%H$rAw?.$7$^$9!#(B</p>
+    <p>このモジュールはハンドラ <code>send-as-is</code>
+    を提供します。このハンドラは通常の HTTP
+    ヘッダをほとんど追加することなくドキュメントを送信します。</p>
 
-    <p>$B$3$l$O%5!<%P$+$i$I$s$J<oN`$N%G!<%?$rAw$k$H$-$K$b;HMQ$G$-$^$9!#(B
-    Cgi $B%9%/%j%W%H$d(B nph $B%9%/%j%W%H$,L5$/$F$b%j%@%$%l%/%H$dB>$NFCJL$J(B
-    HTTP $B1~Ez$rAw$k$3$H$,$G$-$^$9!#(B</p>
+    <p>これはサーバからどんな種類のデータを送るときにも使用できます。
+    Cgi スクリプトや nph スクリプトが無くてもリダイレクトや他の特別な
+    HTTP 応答を送ることができます。</p>
 
-    <p>$BNr;KE*$JM}M3$K$h$j!"$3$N%b%8%e!<%k$O(B mime $B%?%$%W(B
-    <code>httpd/send-as-is</code> $B$N%U%!%$%k$b=hM}$7$^$9!#(B</p>
+    <p>歴史的な理由により、このモジュールは mime タイプ
+    <code>httpd/send-as-is</code> のファイルも処理します。</p>
 </summary>
 
 <seealso><module>mod_headers</module></seealso>
 <seealso><module>mod_cern_meta</module></seealso>
-<seealso><a href="../handler.html">Apache $B$N%O%s%I%i$N;HMQ(B</a></seealso>
+<seealso><a href="../handler.html">Apache のハンドラの使用</a></seealso>
 
-<section id="usage"><title>$B;HMQK!(B</title>
+<section id="usage"><title>使用法</title>
 
-    <p>$B%5!<%P@_Dj%U%!%$%k$G!"%U%!%$%k$H(B <code>send-as-is</code>
-    $B%O%s%I%i$rNc$($P0J2<$N$h$&$K4XO"IU$1$F$/$@$5$$!#(B</p>
+    <p>サーバ設定ファイルで、ファイルと <code>send-as-is</code>
+    ハンドラを例えば以下のように関連付けてください。</p>
 
     <example>AddHandler send-as-is asis</example>
 
-    <p>$B3HD%;R$,(B <code>.asis</code> $B$N$9$Y$F$N%U%!%$%k$NFbMF$O(B Apache
-    $B$+$i%/%i%$%"%s%H$X$[$H$s$IJQ99L5$/Aw$i$l$^$9!#%/%i%$%"%s%H$K$O(B
-    HTTP $B%X%C%@$,I,MW$G$9$N$G!"%U%!%$%k$K=q$/$3$H$rK:$l$J$$$G$/$@$5$$!#(B
-    Status: $B%X%C%@$bI,MW$G$9!#%G!<%?$O(B 3 $B7e$N(B HTTP
-    $B1~Ez%3!<%I$H!"$=$N8e$K%F%-%9%H%a%C%;!<%8$,B3$$$?$b$N$G$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p>拡張子が <code>.asis</code> のすべてのファイルの内容は Apache
+    からクライアントへほとんど変更無く送られます。クライアントには
+    HTTP ヘッダが必要ですので、ファイルに書くことを忘れないでください。
+    Status: ヘッダも必要です。データは 3 桁の HTTP
+    応答コードと、その後にテキストメッセージが続いたものでなければなりません。</p>
 
-    <p>$B$3$l$O%/%i%$%"%s%H$K%U%!%$%k$,0\F0$7$?$3$H$rCN$i$;$k$?$a$K(B
-    <em>as is</em> ($B$=$N$^$^(B) $B$GAw$i$l$k%U%!%$%k$NFbMF$NNc$G$9!#(B
+    <p>これはクライアントにファイルが移動したことを知らせるために
+    <em>as is</em> (そのまま) で送られるファイルの内容の例です。
     </p>
 
 
@@ -81,12 +81,12 @@
       &lt;/html&gt;
     </example>
 
-    <note><title>$BCm0U(B</title>
-    <p>$BCm0U(B: $B%5!<%P$O%/%i%$%"%s%H$KJV$5$l$k%G!<%?$K>o$K(B <code>Date:</code>
-    $B$H(B <code>Server:</code> $B%X%C%@$rDI2C$7$^$9$N$G!"(B
-    $B$=$l$i$,%U%!%$%k$K=q$+$l$F$$$F$O$$$1$^$;$s!#(B
-    $B%5!<%P$O(B <code>Last-Modified</code> $B%X%C%@$rDI2C(B<em>$B$7$^$;$s(B</em>$B!#(B
-    $B$*$=$i$/$O$=$&$9$Y$-$G$7$g$&$1$l$I!#(B</p>
+    <note><title>注意</title>
+    <p>注意: サーバはクライアントに返されるデータに常に <code>Date:</code>
+    と <code>Server:</code> ヘッダを追加しますので、
+    それらがファイルに書かれていてはいけません。
+    サーバは <code>Last-Modified</code> ヘッダを追加<em>しません</em>。
+    おそらくはそうすべきでしょうけれど。</p>
     </note>
 </section>
 

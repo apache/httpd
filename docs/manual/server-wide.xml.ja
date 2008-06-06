@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -22,16 +22,16 @@
 
 <manualpage metafile="server-wide.xml.meta">
 
-  <title>$B%5!<%PA4BN$N@_Dj(B</title>
+  <title>サーバ全体の設定</title>
 
 <summary>
-<p>$B$3$N%I%-%e%a%s%H$G$O(B<module>core</module>
-$B%5!<%P$N%G%#%l%/%F%#%V$NCf$G!"(B
-$B4pK\F0:n$r@_Dj$9$k$?$a$N$b$N$r@bL@$7$^$9!#(B</p>
+<p>このドキュメントでは<module>core</module>
+サーバのディレクティブの中で、
+基本動作を設定するためのものを説明します。</p>
 </summary>
 
   <section id="identification">
-    <title>$B%5!<%P(B ID</title>
+    <title>サーバ ID</title>
 
     <related>
       <directivelist>
@@ -43,26 +43,26 @@
       </directivelist>
     </related>
 
-    <p><directive module="core">ServerAdmin</directive> $B%G%#%l%/%F%#%V$H(B
+    <p><directive module="core">ServerAdmin</directive> ディレクティブと
     <directive module="core">ServerTokens</directive>
-    $B%G%#%l%/%F%#%V$O!"%(%i!<%a%C%;!<%8$J$I$N%5!<%P$,:n$k%I%-%e%a%s%H$K!"(B
-    $B$I$N$h$&$J%5!<%P$N>pJs$rI=<($9$k$+$r@)8f$7$^$9!#(B
-    <directive module="core">ServerTokens</directive> $B%G%#%l%/%F%#%V$O!"(BServer HTTP
-    $B%l%9%]%s%9%X%C%@%U%#!<%k%I$NCM$r@_Dj$7$^$9!#(B</p>
+    ディレクティブは、エラーメッセージなどのサーバが作るドキュメントに、
+    どのようなサーバの情報を表示するかを制御します。
+    <directive module="core">ServerTokens</directive> ディレクティブは、Server HTTP
+    レスポンスヘッダフィールドの値を設定します。</p>
 
-    <p><directive module="core">ServerName</directive> $B%G%#%l%/%F%#%V$H(B
+    <p><directive module="core">ServerName</directive> ディレクティブと
     <directive module="core">UseCanonicalName</directive>
-    $B%G%#%l%/%F%#%V$O!"%5!<%P$,<+J,<+?H$r;2>H$9$k(B URL
-    $B$r:n$k$H$-$K;H$o$l$^$9!#(B
-    $B$?$H$($P!"%/%i%$%"%s%H$,%G%#%l%/%H%j$rMW5a$7$F!"(B
-    $B$=$N%G%#%l%/%H%jL>$N:G8e$K%9%i%C%7%e$,IU$$$F$$$J$$$h$&$J>l9g$K$O!"(B
-    $B%I%-%e%a%s%H$NAjBPE*$J;2>H$r@5$7$/2r7h$G$-$k$h$&$K$9$k$?$a$K!"(B
-    Apache $B$O:G8e$N%9%i%C%7%e$r4^$s$@40A4$J%Q%9$K%/%i%$%"%s%H$r(B
-    $B%j%@%$%l%/%H$5$;$kI,MW$,$"$j$^$9!#(B</p>
+    ディレクティブは、サーバが自分自身を参照する URL
+    を作るときに使われます。
+    たとえば、クライアントがディレクトリを要求して、
+    そのディレクトリ名の最後にスラッシュが付いていないような場合には、
+    ドキュメントの相対的な参照を正しく解決できるようにするために、
+    Apache は最後のスラッシュを含んだ完全なパスにクライアントを
+    リダイレクトさせる必要があります。</p>
   </section>
 
   <section id="locations">
-    <title>$B%U%!%$%k$N0LCV(B</title>
+    <title>ファイルの位置</title>
 
     <related>
       <directivelist>
@@ -76,18 +76,18 @@
       </directivelist>
     </related>
 
-    <p>$B$3$l$i$N%G%#%l%/%F%#%V$O(B Apache
-    $B$,E,@Z$JF0:n$r$9$k$?$a$KI,MW$J3F<o%U%!%$%k$N0LCV$r@)8f$7$^$9!#(B
-    $B%Q%9$,%9%i%C%7%e(B (/) $B$G;O$^$C$F$$$J$$$H$-$O!"%U%!%$%k$O(B
-    <directive module="core">ServerRoot</directive> $B$+$i$NAjBP%Q%9$H$7$F(B
-    $BC5$5$l$^$9!#(Broot
-    $B0J30$N%f!<%6$,=q$-9~$_2DG=$J%Q%9$K%U%!%$%k$rCV$/>l9g$OCm0U$,I,MW$G$9!#(B
-    $B>\:Y$O(B<a href="misc/security_tips.html#serverroot">$B!V%;%-%e%j%F%#>pJs!W(B</a>
-    $B$r;2>H$7$F$/$@$5$$!#(B</p>
+    <p>これらのディレクティブは Apache
+    が適切な動作をするために必要な各種ファイルの位置を制御します。
+    パスがスラッシュ (/) で始まっていないときは、ファイルは
+    <directive module="core">ServerRoot</directive> からの相対パスとして
+    探されます。root
+    以外のユーザが書き込み可能なパスにファイルを置く場合は注意が必要です。
+    詳細は<a href="misc/security_tips.html#serverroot">「セキュリティ情報」</a>
+    を参照してください。</p>
   </section>
 
   <section id="resource">
-    <title>$B%j%=!<%9$N@)8B(B</title>
+    <title>リソースの制限</title>
 
     <related>
       <directivelist>
@@ -102,17 +102,17 @@
       </directivelist>
     </related>
 
-    <p><directive>LimitRequest</directive>* $B%G%#%l%/%F%#%V$O(B Apache
-    $B$,%/%i%$%"%s%H$+$i$N%j%/%(%9%HFI$_9~$_$G;H$&(B
-    $B%j%=!<%9$r@)8B$9$k$?$a$K;H$o$l$^$9!#$3$l$i$NCM$r@)8B$9$k$3$H$G!"(B
-    $B$$$/$D$+$N%5!<%S%95qH]967b$O1F6A$rOB$i$2$k$3$H$,$G$-$^$9!#(B</p>
+    <p><directive>LimitRequest</directive>* ディレクティブは Apache
+    がクライアントからのリクエスト読み込みで使う
+    リソースを制限するために使われます。これらの値を制限することで、
+    いくつかのサービス拒否攻撃は影響を和らげることができます。</p>
 
-    <p><directive>RLimit</directive>* $B%G%#%l%/%F%#%V$O!"(BApache $B$N;R%W%m%;%9$+$i(B
-    fork $B$5$l$?%W%m%;%9$,;HMQ$9$k%j%=!<%9$r@)8B$9$k$?$a$K;H$o$l$^$9!#(B
-    $BFC$K!"$3$l$O(B CGI $B%9%/%j%W%H$H(B SSI exec
-    $B%3%^%s%I$G;H$o$l$k%j%=!<%9$r@)8f$7$^$9!#(B</p>
+    <p><directive>RLimit</directive>* ディレクティブは、Apache の子プロセスから
+    fork されたプロセスが使用するリソースを制限するために使われます。
+    特に、これは CGI スクリプトと SSI exec
+    コマンドで使われるリソースを制御します。</p>
 
-    <p><directive module="mpm_common">ThreadStackSize</directive> $B$O(B Netware
-    $B$G$N$_!"%9%?%C%/$NBg$-$5$r@)8f$9$k$?$a$K;H$o$l$^$9!#(B</p>
+    <p><directive module="mpm_common">ThreadStackSize</directive> は Netware
+    でのみ、スタックの大きさを制御するために使われます。</p>
   </section>
 </manualpage>

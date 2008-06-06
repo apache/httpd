@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -22,217 +22,217 @@
 
 <manualpage metafile="new_features_2_0.xml.meta">
 
-<title>Apache 2.0 $B$N?75!G=$N35MW(B</title>
+<title>Apache 2.0 の新機能の概要</title>
 
 <summary>
-  <p>$B$3$NJ8=q$G$O!"(BApache HTTP $B%5!<%P%P!<%8%g%s(B 1.3 $B$H(B 2.0
-     $B$N<g$J0c$$$K$D$$$F5-=R$7$F$$$^$9!#(B</p>
+  <p>この文書では、Apache HTTP サーババージョン 1.3 と 2.0
+     の主な違いについて記述しています。</p>
 </summary>
 
-<seealso><a href="upgrading.html">1.3 $B$+$i(B 2.0 $B$X$N%"%C%W%0%l!<%I(B</a></seealso>
+<seealso><a href="upgrading.html">1.3 から 2.0 へのアップグレード</a></seealso>
 
   <section id="core">
-    <title>$B%3%"5!G=$N3HD%(B</title>
+    <title>コア機能の拡張</title>
 
     <dl>
-      <dt>Unix $B$N%9%l%C%I(B</dt>
+      <dt>Unix のスレッド</dt>
 
-      <dd>POSIX $B%9%l%C%I$r%5%]!<%H$7$F$$$k(B Unix $B%7%9%F%`>e$G$O!"(B
-      Apache $B$O%^%k%A%W%m%;%9!"%^%k%A%9%l%C%I$N%O%$%V%j%C%I%b!<%I$G(B
-      $B<B9T$G$-$k$h$&$K$J$j$^$7$?!#$3$l$K$h$j(B
-      $BB?$/$N@_Dj$K$*$$$F%9%1!<%i%S%j%F%#$,8~>e$7$^$9!#(B</dd>
+      <dd>POSIX スレッドをサポートしている Unix システム上では、
+      Apache はマルチプロセス、マルチスレッドのハイブリッドモードで
+      実行できるようになりました。これにより
+      多くの設定においてスケーラビリティが向上します。</dd>
 
-      <dt>$B?7$7$$%S%k%I%7%9%F%`(B</dt>
+      <dt>新しいビルドシステム</dt>
 
-      <dd>$B%S%k%I%7%9%F%`$O(B <code>autoconf</code> $B$H(B <code>libtool</code>
-      $B$K4p$E$$$?$b$N$K$J$k$h$&$K!"(B
-      $B?7$7$/=q$-D>$5$l$^$7$?!#$3$l$K$h$j!"(BApache $B$N(B configure $B$N%7%9%F%`$O(B
-      $BB>$N%Q%C%1!<%8$H;w$?$b$N$K$J$j$^$7$?!#(B</dd>
+      <dd>ビルドシステムは <code>autoconf</code> と <code>libtool</code>
+      に基づいたものになるように、
+      新しく書き直されました。これにより、Apache の configure のシステムは
+      他のパッケージと似たものになりました。</dd>
 
-      <dt>$B%^%k%A%W%m%H%3%k%5%]!<%H(B</dt>
+      <dt>マルチプロトコルサポート</dt>
 
-      <dd>Apache $B$KJ#?t$N%W%m%H%3%k$r07$&$?$a$N5!9=$,Hw$o$j$^$7$?!#(B
-      $BNc$H$7$F(B <module>mod_echo</module> $B$,=q$+$l$F$$$^$9!#(B</dd>
+      <dd>Apache に複数のプロトコルを扱うための機構が備わりました。
+      例として <module>mod_echo</module> が書かれています。</dd>
 
-      <dt>Unix $B0J30$N%W%i%C%H%U%)!<%`$N%5%]!<%H$N2~A1(B</dt>
+      <dt>Unix 以外のプラットフォームのサポートの改善</dt>
 
-      <dd>Apache 2.0 $B$O(B BeOS$B!"(BOS/2$B!"(BWindows $B$J$I$N(B Unix $B0J30$N(B
-      $B%W%i%C%H%U%)!<%`$G!"$h$jB.$/!"$h$j0BDj$7$FF0:n$9$k$h$&$K$J$j$^$7$?!#(B
-      $B%W%i%C%H%U%)!<%`FCM-$N(B <a
-      href="mpm.html">$B%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B</a> (MPM) $B$H(B
-      Apache Portable Runtime (APR) $B$NF3F~$K$h$j!"(B
-      $B%M%$%F%#%t$N(B API $B$G<BAu$5$l$k$h$&$K$J$j!"(B
-      $B%P%0$,B?$/!"@-G=$N0-$$$3$H$,B?$$(B POSIX $B%(%_%e%l!<%7%g%s%l%$%d$N;HMQ$r(B
-      $B2sHr$9$k$3$H$,$G$-$^$7$?!#(B</dd>
+      <dd>Apache 2.0 は BeOS、OS/2、Windows などの Unix 以外の
+      プラットフォームで、より速く、より安定して動作するようになりました。
+      プラットフォーム特有の <a
+      href="mpm.html">マルチプロセッシングモジュール</a> (MPM) と
+      Apache Portable Runtime (APR) の導入により、
+      ネイティヴの API で実装されるようになり、
+      バグが多く、性能の悪いことが多い POSIX エミュレーションレイヤの使用を
+      回避することができました。</dd>
 
-      <dt>$B?7$7$$(B Apache API</dt>
+      <dt>新しい Apache API</dt>
 
-      <dd>2.0 $B$G$O%b%8%e!<%k$N(B API $B$,Bg$-$/JQ$o$j$^$7$?!#(B
-      1.3 $B$K$"$C$?%b%8%e!<%k$N=gHV(B/$BM%@hEY$NLdBj$NB?$/$O(B
-      $B$J$/$J$C$F$$$k$O$:$G$9!#(B2.0 $B$OM%@hEY$NA*Br$r$[$H$s$I$r<+F0E*$K9T$J$$!"(B
-      $B%b%8%e!<%k$N=gHV$O$h$j=@Fp@-$r9b$a$k$?$a$K%U%C%/Kh$K9T$J$o$l$k$h$&$K(B
-      $B$J$j$^$7$?!#$^$?!"%3%"(B Apache $B%5!<%P$K%Q%C%A$r$"$F$k$3$H$J$/(B
-      $BDI2C$N%b%8%e!<%k5!G=$rDs6!$9$k$3$H$,$G$-$k$h$&$K?7$7$$4X?t$,(B
-      $BDI2C$5$l$^$7$?!#(B</dd>
+      <dd>2.0 ではモジュールの API が大きく変わりました。
+      1.3 にあったモジュールの順番/優先度の問題の多くは
+      なくなっているはずです。2.0 は優先度の選択をほとんどを自動的に行ない、
+      モジュールの順番はより柔軟性を高めるためにフック毎に行なわれるように
+      なりました。また、コア Apache サーバにパッチをあてることなく
+      追加のモジュール機能を提供することができるように新しい関数が
+      追加されました。</dd>
 
-      <dt>IPv6 $B%5%]!<%H(B</dt>
+      <dt>IPv6 サポート</dt>
 
-      <dd>Apache $B$,;HMQ$7$F$$$k(B Apache Portable Runtime library $B$,(B
-      IPv6 $B$r%5%]!<%H$7$F$$$k%7%9%F%`$G$O(B Apache $B$O(B $B%G%U%)%k%H$G(B
-      IPv6 $B$N%=%1%C%H$r(B listen $B$7$^$9!#$5$i$K!"(B
+      <dd>Apache が使用している Apache Portable Runtime library が
+      IPv6 をサポートしているシステムでは Apache は デフォルトで
+      IPv6 のソケットを listen します。さらに、
       <directive module="mpm_common">Listen</directive>,
       <directive module="core">NameVirtualHost</directive>,
       <directive module="core">VirtualHost</directive>
-      $B$N3F%G%#%l%/%F%#%V$,(B IPv6 $B$N%"%I%l%9$r(B
-      $B%5%]!<%H$9$k$h$&$K$J$j$^$7$?(B ($BNc$($P!"(B
-      "<code>Listen [2001:db8::1]:8080</code>")$B!#(B</dd>
+      の各ディレクティブが IPv6 のアドレスを
+      サポートするようになりました (例えば、
+      "<code>Listen [2001:db8::1]:8080</code>")。</dd>
 
-      <dt>$B%U%#%k%?(B</dt>
+      <dt>フィルタ</dt>
 
-      <dd>Apache $B$N%b%8%e!<%k$O%5!<%P$+$iAw$i$l$F$-$?$j!"%5!<%P$X(B
-      $BAw$k%9%H%j!<%`$KBP$7$FF0:n$9$k%U%#%k%?$H$7$F=q$/$3$H$,$G$-$k$h$&$K(B
-      $B$J$j$^$7$?!#$3$l$K$h$j!"Nc$($P(B CGI $B%9%/%j%W%H$N=PNO$r(B
-      <module>mod_include</module> $B$N(B <code>INCLUDES</code> $B%U%#%k%?$r;H$C$F(B
-      Server Side Include $B$N%G%#%l%/%F%#%V$r2r@O$9$k!"(B
-      $B$H$$$&$h$&$J$3$H$,2DG=$K$J$j$^$7$?!#(B<module>mod_ext_filter</module>
-      $B$G30It%W%m%0%i%`$r%U%#%k%?$H$7$FF0:n$5$;$k$3$H$,$G$-$^$9!#(B
-      $B$3$l$O(B CGI $B%W%m%0%i%`$r%O%s%I%i$H$7$FF0:n$5$;$k$N$H(B
-      $B$h$/;w$?J}K!$G$G$-$^$9!#(B</dd>
+      <dd>Apache のモジュールはサーバから送られてきたり、サーバへ
+      送るストリームに対して動作するフィルタとして書くことができるように
+      なりました。これにより、例えば CGI スクリプトの出力を
+      <module>mod_include</module> の <code>INCLUDES</code> フィルタを使って
+      Server Side Include のディレクティブを解析する、
+      というようなことが可能になりました。<module>mod_ext_filter</module>
+      で外部プログラムをフィルタとして動作させることができます。
+      これは CGI プログラムをハンドラとして動作させるのと
+      よく似た方法でできます。</dd>
 
-      <dt>$BB?8@8l%(%i!<1~Ez(B</dt>
+      <dt>多言語エラー応答</dt>
 
-      <dd>$B%V%i%&%6$X$N%(%i!<1~Ez$N%a%C%;!<%8$,!"(BSSI $B$NJ8=q$r;H$C$F(B
-      $BJ#?t$N8@8l$GDs6!$5$l$k$h$&$K$J$j$^$7$?!#8+$?$a$N0l4S@-$rJ]$D$?$a$K(B
-      $B4IM}<T$,%+%9%?%^%$%:$9$k$3$H$b$G$-$^$9!#(B</dd>
+      <dd>ブラウザへのエラー応答のメッセージが、SSI の文書を使って
+      複数の言語で提供されるようになりました。見ための一貫性を保つために
+      管理者がカスタマイズすることもできます。</dd>
 
-      <dt>$B@_Dj$N4JAG2=(B</dt>
+      <dt>設定の簡素化</dt>
 
-      <dd>$BB?$/$N:.Mp$r>7$-$,$A$J%G%#%l%/%F%#%V$,4JAG2=$5$l$^$7$?!#(B
-      $B$h$/:.Mp$r0z$-5/$3$7$F$$$?(B <code>Port</code> $B%G%#%l%/%F%#%V$H(B 
-      <code>Bind</code> $B%G%#%l%/%F%#%V$O(B
-      $B$J$/$J$j$^$7$?!#(B<directive module="mpm_common">Listen</directive>
-      $B%G%#%l%/%F%#%V$N$_$,(B IP $B%"%I%l%9$N%P%$%s%I$K;H$o$l$^$9!#(B
-      <directive module="core">ServerName</directive> $B%G%#%l%/%F%#%V$G$O(B
-      $B%j%@%$%l%/%H$H(B vhost $B$NG'<1$N$?$a$@$1$K%5!<%P$NL>A0$H%]!<%HHV9f$r(B
-      $B;XDj$7$^$9!#(B</dd>
+      <dd>多くの混乱を招きがちなディレクティブが簡素化されました。
+      よく混乱を引き起こしていた <code>Port</code> ディレクティブと 
+      <code>Bind</code> ディレクティブは
+      なくなりました。<directive module="mpm_common">Listen</directive>
+      ディレクティブのみが IP アドレスのバインドに使われます。
+      <directive module="core">ServerName</directive> ディレクティブでは
+      リダイレクトと vhost の認識のためだけにサーバの名前とポート番号を
+      指定します。</dd>
 
-      <dt>Windows NT $B$N%M%$%F%#%t(B Unicode $B%5%]!<%H(B</dt>
+      <dt>Windows NT のネイティヴ Unicode サポート</dt>
 
-      <dd>Windows NT $B>e$N(B Apache 2.0 $B$O%U%!%$%kL>$NJ8;z%(%s%3!<%IA4$F$K(B
-      utf-8 $B$r;H$&$h$&$K$J$j$^$7$?!#$3$l$i$O(B Unicode $B%U%!%$%k%7%9%F%`$K(B
-      $BD>@\JQ49$5$l$k$N$G!"(BWindows 2000 $B$H(B Windows XP $B$r4^$`!"A4$F$N(B
-      Windows NT $B7O$GB?8@8l%5%]!<%H$,Ds6!$5$l$^$9!#(B
-      <em>$B$3$N%5%]!<%H$O!"%U%!%$%k%7%9%F%`$N%"%/%;%9;~$K%m!<%+%k$N(B
-      $B%3!<%I%Z!<%8$r;H$&(B Windows 95, 98, ME $B$K$OE,MQ$5$l$^$;$s!#(B</em></dd>
+      <dd>Windows NT 上の Apache 2.0 はファイル名の文字エンコード全てに
+      utf-8 を使うようになりました。これらは Unicode ファイルシステムに
+      直接変換されるので、Windows 2000 と Windows XP を含む、全ての
+      Windows NT 系で多言語サポートが提供されます。
+      <em>このサポートは、ファイルシステムのアクセス時にローカルの
+      コードページを使う Windows 95, 98, ME には適用されません。</em></dd>
 
-      <dt>$B@55,I=8=%i%$%V%i%j$N%"%C%W%G!<%H(B</dt>
+      <dt>正規表現ライブラリのアップデート</dt>
 
-      <dd>Apache 2.0 $B$O(B <a href="http://www.pcre.org/">Perl
-      $B8_49@55,I=8=%i%$%V%i%j(B (PCRE) </a>$B$r4^$s$G$$$^$9!#(B
-      $B@55,I=8=$NI>2A$K$O!"$h$j6/NO$K$J$C$?(B Perl 5
-      $B9=J8$r;HMQ$7$^$9!#(B</dd>
+      <dd>Apache 2.0 は <a href="http://www.pcre.org/">Perl
+      互換正規表現ライブラリ (PCRE) </a>を含んでいます。
+      正規表現の評価には、より強力になった Perl 5
+      構文を使用します。</dd>
 
     </dl>
   </section>
 
   <section id="module">
-    <title>$B%b%8%e!<%k$N3HD%(B</title>
+    <title>モジュールの拡張</title>
 
     <dl>
       <dt><module>mod_ssl</module></dt>
 
-      <dd>Apache 2.0 $B$N?7%b%8%e!<%k!#$3$N%b%8%e!<%k$O(B OpenSSL $B$,(B
-      $BDs6!$9$k(B SSL/TLS $B0E9f%W%m%H%3%k$X$N%$%s%?%U%'!<%9$G$9!#(B</dd>
+      <dd>Apache 2.0 の新モジュール。このモジュールは OpenSSL が
+      提供する SSL/TLS 暗号プロトコルへのインタフェースです。</dd>
 
       <dt><module>mod_dav</module></dt>
 
-      <dd>Apache 2.0 $B$N?7%b%8%e!<%k!#$3$N%b%8%e!<%k$O%&%'%V%3%s%F%s%D$r(B
-      $BAw$j!"0];}$9$k$?$a$N5,3J(B
-      HTTP Distributed Authoring and Versioning (DAV) $B$r<BAu$7$F$$$^$9!#(B</dd>
+      <dd>Apache 2.0 の新モジュール。このモジュールはウェブコンテンツを
+      送り、維持するための規格
+      HTTP Distributed Authoring and Versioning (DAV) を実装しています。</dd>
 
       <dt><module>mod_deflate</module></dt>
 
-      <dd>Apache 2.0 $B$N?7%b%8%e!<%k!#Aw?.A0$KAw?.FbMF$r05=L$7$F(B
-      $B%M%C%H%o!<%/BS0h$r@aLs$9$k!"$H$$$&%j%/%(%9%H$r%V%i%&%6$,(B
-      $BMW5a$G$-$k$h$&$K$7$^$9!#(B</dd>
+      <dd>Apache 2.0 の新モジュール。送信前に送信内容を圧縮して
+      ネットワーク帯域を節約する、というリクエストをブラウザが
+      要求できるようにします。</dd>
 
       <dt><module>mod_auth_ldap</module></dt>
 
-      <dd>Apache 2.0.41 $B$N?7%b%8%e!<%k!#(BHTTP $B4pK\G'>Z$N>ZL@=q$rJ]B8$9$k$N$K!"(B
-      LDAP $B%G!<%?%Y!<%9$r;HMQ$G$-$k$h$&$K$J$j$^$9!#(B
-      $B4XO"%b%8%e!<%k$N(B <module>mod_ldap</module> $B$G!"(B
-      $B%3%M%/%7%g%s$N%W!<%k5!G=$H7k2L$N%-%c%C%7%e5!G=$,Ds6!$5$l$^$9!#(B</dd>
+      <dd>Apache 2.0.41 の新モジュール。HTTP 基本認証の証明書を保存するのに、
+      LDAP データベースを使用できるようになります。
+      関連モジュールの <module>mod_ldap</module> で、
+      コネクションのプール機能と結果のキャッシュ機能が提供されます。</dd>
 
       <dt><module>mod_auth_digest</module></dt>
 
-      <dd>$B$3$N%b%8%e!<%k$O6&M-%a%b%j$r;H$&$3$H$K$h$j!"%W%m%;%9$r$^$?$$$@(B
-      $B%;%C%7%g%s$N%-%c%C%7%e$r%5%]!<%H$9$k$h$&$K$J$j$^$7$?!#(B</dd>
+      <dd>このモジュールは共有メモリを使うことにより、プロセスをまたいだ
+      セッションのキャッシュをサポートするようになりました。</dd>
 
       <dt><module>mod_charset_lite</module></dt>
 
-      <dd>Apache 2.0 $B$N?7%b%8%e!<%k!#$3$N<B83E*$J%b%8%e!<%k$O(B
-      $B%-%c%i%/%?%;%C%H$NJQ49$d:FId9f2=$r2DG=$K$7$^$9!#(B</dd>
+      <dd>Apache 2.0 の新モジュール。この実験的なモジュールは
+      キャラクタセットの変換や再符号化を可能にします。</dd>
 
       <dt><module>mod_file_cache</module></dt>
 
-      <dd>Apache 2.0 $B$N?7%b%8%e!<%k!#$3$N%b%8%e!<%k$K$O!"(B
-      Apache 1.3 $B$K$*$1$k(B <code>mod_mmap_static</code> $B5!G=$,4^$^$l!"(B
-      $B$^$?!"DI2C$N%-%c%C%7%e5!G=$,2C$o$C$F$$$^$9!#(B</dd>
+      <dd>Apache 2.0 の新モジュール。このモジュールには、
+      Apache 1.3 における <code>mod_mmap_static</code> 機能が含まれ、
+      また、追加のキャッシュ機能が加わっています。</dd>
 
       <dt><module>mod_headers</module></dt>
 
-      <dd>$B$3$N%b%8%e!<%k$O(B Apache 2.0 $B$GHs>o$K=@Fp@-$,(B
-      $B9b$/$J$j$^$7$?!#(B<module>mod_proxy</module>
-      $B$G;H$o$l$k%j%/%(%9%H$N%X%C%@$rJQ99$G$-$k$h$&$K$J$j$^$7$?$7!"(B
-      $B1~Ez%X%C%@$r>r7o$K1~$8$F@_Dj$G$-$k$h$&$K$J$j$^$7$?!#(B</dd>
+      <dd>このモジュールは Apache 2.0 で非常に柔軟性が
+      高くなりました。<module>mod_proxy</module>
+      で使われるリクエストのヘッダを変更できるようになりましたし、
+      応答ヘッダを条件に応じて設定できるようになりました。</dd>
 
       <dt><module>mod_proxy</module></dt>
 
-      <dd>proxy $B%b%8%e!<%k$O?7$7$$%U%#%k%?$N5!9=$rMxMQ$9$k$?$a$H!"(B
-      $B$h$j?.Mj$G$-$k!"(BHTTP/1.1 $B$K=`5r$7$?(B proxy $B$r<BAu$9$k$?$a$K(B
-      $B40A4$K=q$-D>$5$l$^$7$?!#$5$i$K!"?7$7$$(B 
+      <dd>proxy モジュールは新しいフィルタの機構を利用するためと、
+      より信頼できる、HTTP/1.1 に準拠した proxy を実装するために
+      完全に書き直されました。さらに、新しい 
       <directive module="mod_proxy" type="section">Proxy</directive>
-      $B@_Dj%;%/%7%g%s$,(Bproxy $B$5$l$k%5%$%H$N$h$jFI$_$d$9$/(B ($BFbItE*$K$b$h$jB.$$(B)
-      $B@_Dj$rDs6!$7$^$9!#%*!<%P!<%m!<%I$5$l$?(B
+      設定セクションがproxy されるサイトのより読みやすく (内部的にもより速い)
+      設定を提供します。オーバーロードされた
       <code>&lt;Directory "proxy:... &gt;</code>
-      $B@_Dj$O%5%]!<%H$5$l$F$$$^$;$s!#$3$N%b%8%e!<%k$O(B <code>proxy_connect</code>,
+      設定はサポートされていません。このモジュールは <code>proxy_connect</code>,
       <code>proxy_ftp</code>, <code>proxy_http</code> 
-      $B$H$$$C$?!"FCDj$N%W%m%H%3%k$r%5%]!<%H$9$k(B
-      $B%b%8%e!<%k$KJ,3d$5$l$k$h$&$K$J$j$^$7$?!#(B</dd>
+      といった、特定のプロトコルをサポートする
+      モジュールに分割されるようになりました。</dd>
 
       <dt><module>mod_negotiation</module></dt>
 
-      <dd>$B%/%i%$%"%s%H$,(B NOT ACCEPTABLE $B$d(B MULTIPLE CHOICES $B1~Ez$N(B
-      $BBe$o$j$K>o$KC1FH$NJ8=q$r<u$1$H$k$h$&$K$9$k$?$a$K!"?7$7$$%G%#%l%/%F%#%V(B
+      <dd>クライアントが NOT ACCEPTABLE や MULTIPLE CHOICES 応答の
+      代わりに常に単独の文書を受けとるようにするために、新しいディレクティブ
       <directive module="mod_negotiation">ForceLanguagePriority</directive>
-      $B$r;H$&$3$H$,$G$-$k$h$&$K$J$j$^$7$?!#(B
-      $B$5$i$K!"$h$j0l4S@-$N$"$k7k2L$rDs6!$9$k$?$a$K(B
-      $B%M%4%7%(!<%7%g%s$H(B MultiViews $B$N%"%k%4%j%:%`$,2~A1$5$l!"(B
-      $BJ8=q$NFbMF$r4^$a$k$3$H$N$G$-$k!"?7$7$$7A<0$N%?%$%W%^%C%W$,(B
-      $BDs6!$5$l$k$h$&$K$J$j$^$7$?!#(B</dd>
+      を使うことができるようになりました。
+      さらに、より一貫性のある結果を提供するために
+      ネゴシエーションと MultiViews のアルゴリズムが改善され、
+      文書の内容を含めることのできる、新しい形式のタイプマップが
+      提供されるようになりました。</dd>
 
       <dt><module>mod_autoindex</module></dt>
 
-      <dd>Autoindex $B$5$l$k%G%#%l%/%H%j$NFbMF0lMw$,!"(B
-      $B$-$l$$$KI=<($5$l$k$?$a$K(B HTML $B$N%F!<%V%k$r;H$&$h$&$K(B
-      $B@_Dj$G$-$k$h$&$K$J$j$^$7$?!#$^$?!"%P!<%8%g%s$K$h$k%=!<%F%#%s%0$J$I!"(B
-      $B$h$j:Y$+$$%=!<%F%#%s%0$N@)8f$,$G$-$k$h$&$K$J$j!"%G%#%l%/%H%j(B
-      $B$NFbMF0lMw$r%o%$%k%I%+!<%I$K$h$jA*JL$9$k$3$H$,$G$-$k$h$&$K$b$J$j$^$7$?!#(B</dd>
+      <dd>Autoindex されるディレクトリの内容一覧が、
+      きれいに表示されるために HTML のテーブルを使うように
+      設定できるようになりました。また、バージョンによるソーティングなど、
+      より細かいソーティングの制御ができるようになり、ディレクトリ
+      の内容一覧をワイルドカードにより選別することができるようにもなりました。</dd>
 
       <dt><module>mod_include</module></dt>
 
-      <dd>$B?7$7$$%G%#%l%/%F%#%V$K$h$j!"(BSSI $B$N%G%U%)%k%H$N3+;O%?%0$H=*N;%?%0$r(B
-      $BJQ99$G$-$k$h$&$K$J$j$^$7$?!#$^$?!"%(%i!<$H;~9o$N7A<0$N@_Dj$,(B SSI $B$N(B
-      $BJ8=qCf$G$O$J$/!"<g@_Dj%U%!%$%kCf$G9T$J$($k$h$&$K$J$j$^$7$?!#(B
-      $B@55,I=8=$N2r@O$H%0%k!<%W2=$N7k2L(B (Perl $B$N@55,I=8=$N9=J8$K(B
-      $B4p$E$$$?$b$N$K$J$j$^$7$?(B) $B$r(B <module>mod_include</module>
-      $B$NJQ?t(B $0 .. $9 $B$K$h$j<hF@$G$-$k$h$&$K$J$j$^$7$?!#(B</dd>
+      <dd>新しいディレクティブにより、SSI のデフォルトの開始タグと終了タグを
+      変更できるようになりました。また、エラーと時刻の形式の設定が SSI の
+      文書中ではなく、主設定ファイル中で行なえるようになりました。
+      正規表現の解析とグループ化の結果 (Perl の正規表現の構文に
+      基づいたものになりました) を <module>mod_include</module>
+      の変数 $0 .. $9 により取得できるようになりました。</dd>
 
       <dt><module>mod_auth_dbm</module></dt>
 
       <dd><directive module="mod_auth_dbm">AuthDBMType</directive>
-      $B%G%#%l%/%F%#%V$K$h$j!"J#?t$N(B DBM $B7?$N%G!<%?%Y!<%9$r%5%]!<%H$9$k(B
-      $B$h$&$K$J$j$^$7$?!#(B</dd>
+      ディレクティブにより、複数の DBM 型のデータベースをサポートする
+      ようになりました。</dd>
 
     </dl>
   </section>

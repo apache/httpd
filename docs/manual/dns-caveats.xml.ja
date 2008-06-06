@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 151408:507346 (outdated) -->
@@ -22,19 +22,19 @@
 
 <manualpage metafile="dns-caveats.xml.meta">
 
-  <title>DNS $B$H(B Apache $B$K$^$D$o$kCm0U;v9`(B</title>
+  <title>DNS と Apache にまつわる注意事項</title>
 
   <summary>
-    <p>$BK\J8=q$NFbMF$O<!$N0l8@$K?T$-$^$9!#!V(BApache $B$,@_Dj%U%!%$%k$rFI$_9~$`$H$-$K(B
-    DNS $B$r;HMQ$9$kI,MW$,$J$$$h$&$K$7$F2<$5$$!W!#(BApache $B$,@_Dj%U%!%$%k$r(B
-    $BFI$_9~$`$H$-$K(B DNS $B$r;HMQ$9$kI,MW$,$"$k>l9g!"?.Mj@-$NLdBj(B
-    ($B5/F0$7$J$$$+$b$7$l$^$;$s(B) $B$d%5!<%S%95qH]$dEpMQ%"%?%C%/(B
-    ($BB>$N%f!<%6$+$i%R%C%H$rEp$`$3$H$r4^$_$^$9(B)
-    $B$NLdBj$KD>LL$9$k$+$b$7$l$^$;$s!#(B</p>
+    <p>本文書の内容は次の一言に尽きます。「Apache が設定ファイルを読み込むときに
+    DNS を使用する必要がないようにして下さい」。Apache が設定ファイルを
+    読み込むときに DNS を使用する必要がある場合、信頼性の問題
+    (起動しないかもしれません) やサービス拒否や盗用アタック
+    (他のユーザからヒットを盗むことを含みます)
+    の問題に直面するかもしれません。</p>
   </summary>
 
   <section id="example">
-    <title>$B4JC1$JNc(B</title>
+    <title>簡単な例</title>
 
     <example>
       &lt;VirtualHost www.abc.dom&gt; <br />
@@ -43,20 +43,20 @@
       &lt;/VirtualHost&gt;
     </example>
 
-    <p>Apache $B$,@5>o$K5!G=$9$k$K$O!"%P!<%A%c%k%[%9%HKh$KI,$:Fs$D$N(B
-    $B>pJs$,I,MW$K$J$j$^$9!#$=$l$O!"(B
+    <p>Apache が正常に機能するには、バーチャルホスト毎に必ず二つの
+    情報が必要になります。それは、
     <directive module="core">ServerName</directive>
-    $B$H!"$=$N%5!<%P$,1~Ez$9$k$?$a$N(B IP ($B:GDc0l$D(B) $B$G$9!#(B
-    $B>e5-Nc$G$O(B IP $B%"%I%l%9$r4^$s$G$$$^$;$s$N$G!"(BApache $B$O(B DNS
-    $B$r;HMQ$7$F(B <code>www.abc.dom</code> $B$r8+$D$1$J$1$l$P$J$j$^$;$s!#(B
-    $B2?$i$+$NM}M3$G@_Dj%U%!%$%k$rFI$_9~$s$G$$$k$H$-$K(B DNS 
-    $B$,MxMQ$G$-$J$+$C$?>l9g!"(B
-    $B%P!<%A%c%k%[%9%H$O(B<strong>$B@_Dj$5$l$^$;$s(B</strong>$B!#(B
-    $B$=$7$F!"$=$N%P!<%A%c%k%[%9%H$KBP$9$k%R%C%H$K$O1~Ez$,$J$5$l$^$;$s(B
-    (Apache 1.2 $B0JA0$G$O5/F0$9$i$7$^$;$s(B)$B!#(B</p>
+    と、そのサーバが応答するための IP (最低一つ) です。
+    上記例では IP アドレスを含んでいませんので、Apache は DNS
+    を使用して <code>www.abc.dom</code> を見つけなければなりません。
+    何らかの理由で設定ファイルを読み込んでいるときに DNS 
+    が利用できなかった場合、
+    バーチャルホストは<strong>設定されません</strong>。
+    そして、そのバーチャルホストに対するヒットには応答がなされません
+    (Apache 1.2 以前では起動すらしません)。</p>
 
-    <p><code>www.abc.dom</code> $B$N%"%I%l%9$,(B 192.0.2.1
-    $B$@$H$7$^$9!#$G$O!"<!$N@_Dj$K$D$$$F9M$($F$_$^$7$g$&!#(B</p>
+    <p><code>www.abc.dom</code> のアドレスが 192.0.2.1
+    だとします。では、次の設定について考えてみましょう。</p>
 
     <example>
       &lt;VirtualHost 192.0.2.1&gt; <br />
@@ -65,17 +65,17 @@
       &lt;/VirtualHost&gt;
     </example>
 
-    <p>$B8=:_$N%j%j!<%9$G$O(B Apache $B$O(B DNS $B5U0z$-$r;HMQ$7$F(B
-    $B$3$N%P!<%A%c%k%[%9%H$N(B <directive module="core">ServerName</directive>
-    $B$r8+$D$1$^$9!#(B
-    $B$=$N5U0z$-$,<:GT$7$?>l9g$OItJ,E*$K%P!<%A%c%k%[%9%H$rL58z$K$7$^$9(B
-    (Apache 1.2 $B$h$jA0$G$O5/F0$9$i$7$^$;$s(B)$B!#(B
-    $B%P!<%A%c%k%[%9%H$,L>A0%Y!<%9$G$"$l$P40A4$KL58z$K$J$j$^$9$,!"(B
-    IP $B%Y!<%9$G$"$l$P35$MF0:n$7$^$9!#$7$+$7$J$,$i!"%5!<%PL>$r(B
-    $B4^$`40A4$J(B URL $B$r@8@.$7$J$1$l$P$J$i$J$$>l9g$O!"@5$7$$(B URL
-    $B$N@8@.$,$G$-$^$;$s!#(B</p>
+    <p>現在のリリースでは Apache は DNS 逆引きを使用して
+    このバーチャルホストの <directive module="core">ServerName</directive>
+    を見つけます。
+    その逆引きが失敗した場合は部分的にバーチャルホストを無効にします
+    (Apache 1.2 より前では起動すらしません)。
+    バーチャルホストが名前ベースであれば完全に無効になりますが、
+    IP ベースであれば概ね動作します。しかしながら、サーバ名を
+    含む完全な URL を生成しなければならない場合は、正しい URL
+    の生成ができません。</p>
 
-    <p>$B<!$NNc$O>e5-$NLdBj$r2r7h$7$F$$$^$9!#(B</p>
+    <p>次の例は上記の問題を解決しています。</p>
 
     <example>
       &lt;VirtualHost 192.0.2.1&gt; <br />
@@ -87,19 +87,19 @@
   </section>
 
   <section id="denial">
-    <title>$B%5!<%S%95qH](B</title>
+    <title>サービス拒否</title>
 
-    <p>$B%5!<%S%95qH]$,5/$3$k>l9g!"(B($B>/$J$/$H$b(B) $BFs$D$N%1!<%9$,$"$j$^$9!#(B
-    Apache 1.2 $B$h$jA0$r<B9T$7$F$$$k>l9g!"%P!<%A%c%k%[%9%H$N$?$a$N(B
-    $B>e5-$NFs$D$N(B DNS $B8!:w$N$&$A0l$D<:GT$9$l$P5/F0$9$i$7$^$;$s!#(B
-    $B$=$7$F$3$N(B DNS $B8!:w$,<+J,$N@)8f2<$K$9$i$J$$>l9g$b$"$j$($^$9!#(B
-    $BNc$($P!"(B<code>abc.dom</code> $B$,8\5R$N%5!<%P$N0l$D$G!"(B
-    DNS $B$O8\5R<+?H$G4IM}$7$F$$$k>l9g!"C1$K(B
-    <code>www.abc.dom</code> $B%l%3!<%I$r:o=|$9$k$@$1$G!"(B
-    (1.2 $B$h$jA0$N(B) $B%5!<%P$r5/F0ITG=$K$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>サービス拒否が起こる場合、(少なくとも) 二つのケースがあります。
+    Apache 1.2 より前を実行している場合、バーチャルホストのための
+    上記の二つの DNS 検索のうち一つ失敗すれば起動すらしません。
+    そしてこの DNS 検索が自分の制御下にすらない場合もありえます。
+    例えば、<code>abc.dom</code> が顧客のサーバの一つで、
+    DNS は顧客自身で管理している場合、単に
+    <code>www.abc.dom</code> レコードを削除するだけで、
+    (1.2 より前の) サーバを起動不能にすることができます。</p>
 
-    <p>$B$b$&0l$D$N%1!<%9$O!"$h$j5$IU$-$K$/$$$b$N$G$9!#(B
-    $B<!$N@_Dj$K$D$$$F9M$($F$_$^$7$g$&!#(B</p>
+    <p>もう一つのケースは、より気付きにくいものです。
+    次の設定について考えてみましょう。</p>
 
     <example>
       &lt;VirtualHost www.abc.dom&gt; <br />
@@ -113,119 +113,119 @@
       &lt;/VirtualHost&gt;
     </example>
 
-    <p>192.0.2.1 $B$r(B <code>www.abc.dom</code> $B$K!"(B
-    192.0.2.2 $B$r(B <code>www.def.dom</code> $B$K3d$jEv$F$F$$$k$H$7$^$9!#(B
-    $B$^$?!"(B<code>def.dom</code> $B$O8\5R<+?H$N(B DNS
-    $B$N@)8f2<$K$"$k$H$7$^$9!#$3$N@_Dj$G!"(B<code>abc.dom</code>
-    $B$K8~$1$i$l$?%H%i%U%#%C%/A4$F$rC%$&$3$H$,$G$-$k0LCV$K(B
-    <code>def.dom</code> $B$r@_CV$G$-$F$$$^$9!#8e$OC1$K(B 
-    <code>www.def.dom</code> $B$,(B 192.0.2.1 $B$r;2>H$9$k$h$&$K(B
-    $B@_Dj$9$k$@$1$G$9!#(BDNS $B$O8\5RB&$N(B DNS $B$G%3%s%H%m!<%k$5$l$F$$$k$N$G!"(B
-    <code>www.def.dom</code> $B%l%3!<%I$,9%$-$J>l=j$r;X$9$h$&$K(B
-    $B@_Dj$G$-$F$7$^$&$N$r;_$a$5$;$k$3$H$,$G$-$^$;$s!#(B</p>
+    <p>192.0.2.1 を <code>www.abc.dom</code> に、
+    192.0.2.2 を <code>www.def.dom</code> に割り当てているとします。
+    また、<code>def.dom</code> は顧客自身の DNS
+    の制御下にあるとします。この設定で、<code>abc.dom</code>
+    に向けられたトラフィック全てを奪うことができる位置に
+    <code>def.dom</code> を設置できています。後は単に 
+    <code>www.def.dom</code> が 192.0.2.1 を参照するように
+    設定するだけです。DNS は顧客側の DNS でコントロールされているので、
+    <code>www.def.dom</code> レコードが好きな場所を指すように
+    設定できてしまうのを止めさせることができません。</p>
 
-    <p>192.0.2.1 $B$KBP$9$k%j%/%(%9%H(B
-    (<code>http://www.abc.dom/whatever</code> $B7A<0$N(B URL 
-    $B$rF~NO$7$?%f!<%6$+$i$N$b$NA4$F$r4^$_$^$9(B) 
-    $B$O!"(B<code>def.dom</code> $B%P!<%A%c%k%[%9%H$G1~Ez$5$l$^$9!#(B
-    $B$3$N$h$&$J$3$H$,2?8N5/$3$k$+$b$C$HNI$/CN$k$?$a$K$O!"(B
-    $B1~Ez$NI,MW$J%P!<%A%c%k%[%9%H$X$N%j%/%(%9%H$KBP$7$F!"(B
-    Apache $B$,$I$N$h$&$K@09g@-$r3NJ]$9$k$+$K$D$$$F!"(B
-    $B?<$$5DO@$,I,MW$K$J$j$^$9!#$*$*$6$C$Q$J@bL@$O(B<a
-    href="vhosts/details.html">$B$3$A$i(B</a>$B$K5-=R$5$l$F$$$^$9!#(B</p>
+    <p>192.0.2.1 に対するリクエスト
+    (<code>http://www.abc.dom/whatever</code> 形式の URL 
+    を入力したユーザからのもの全てを含みます) 
+    は、<code>def.dom</code> バーチャルホストで応答されます。
+    このようなことが何故起こるかもっと良く知るためには、
+    応答の必要なバーチャルホストへのリクエストに対して、
+    Apache がどのように整合性を確保するかについて、
+    深い議論が必要になります。おおざっぱな説明は<a
+    href="vhosts/details.html">こちら</a>に記述されています。</p>
   </section>
 
   <section id="main">
-    <title>$B!V<g%5!<%P!W%"%I%l%9(B</title>
+    <title>「主サーバ」アドレス</title>
 
-    <p>Apache 1.1 $B$G$N(B <a href="vhost/name-based.html"
-    >$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$N%5%]!<%H(B</a> $BDI2C$N:]$K!"(B
-    Apache $B$O(B <program>httpd</program> $B$N<B9T$5$l$F$$$k%[%9%H$N(B IP
-    $B%"%I%l%9$rCN$kI,MW$,=P$F$-$^$7$?!#$3$N%"%I%l%9$rF@$k$?$a$K!"(B
-    ($B$b$7$"$l$P(B) $B%0%m!<%P%k$J(B
-    <directive module="core">ServerName</directive> $B$r;HMQ$9$k$+!"(B
-    C $B8@8l$N4X?t(B <code>gethostname</code> ($B%3%^%s%I%W%m%s%W%H$G(B
-    <code>hostname</code> $B$H%?%$%W$7$?$H$-$HF1$8$b$N$rJV$7$^$9(B)
-    $B$r8F$S=P$9$+$r$7$^$9!#(B
-    $B$=$N8e!"F@$i$l$?%"%I%l%9$G(B DNS $B8!:w$r9T$J$$$^$9!#(B
-    $B8=:_$N$H$3$m!"$3$N(B DNS $B8!:w$r2sHr$9$kJ}K!$O$"$j$^$;$s!#(B</p>
+    <p>Apache 1.1 での <a href="vhost/name-based.html"
+    >名前ベースのバーチャルホストのサポート</a> 追加の際に、
+    Apache は <program>httpd</program> の実行されているホストの IP
+    アドレスを知る必要が出てきました。このアドレスを得るために、
+    (もしあれば) グローバルな
+    <directive module="core">ServerName</directive> を使用するか、
+    C 言語の関数 <code>gethostname</code> (コマンドプロンプトで
+    <code>hostname</code> とタイプしたときと同じものを返します)
+    を呼び出すかをします。
+    その後、得られたアドレスで DNS 検索を行ないます。
+    現在のところ、この DNS 検索を回避する方法はありません。</p>
 
-    <p>DNS $B%5!<%P$,%@%&%s$7$F!"$3$N8!:w$,$G$-$J$$;vBV$,5/$3$k$3$H$r(B
-    $B62$l$F$$$k$N$G$"$l$P!"(B<code>/etc/hosts</code>
-    $B$K%[%9%HL>$r5-=R$7$F$*$/$3$H$,$G$-$^$9(B
-    ($B%^%7%s$,@5>o$K5/F0$9$k$h$&$K4{$K@_Dj$5$l$F$$$k$+$b$7$l$^$;$s(B)$B!#(B
-    $B$=$N>l9g!"(BDNS $B;2>H$,<:GT$7$?>l9g$K%^%7%s$,(B <code>/etc/hosts</code>
-    $B$r;HMQ$9$k$h$&$K@_Dj$7$F$$$k$3$H$r3NG'$7$F$/$@$5$$!#(B
-    $B$=$NJ}K!$O!"$I$N(B OS $B$r;HMQ$7$F$$$k$+$K0MB8$7$^$9$,!"(B
-    <code>/etc/resolv.conf</code> $B$+(B <code>/etc/nsswitch.conf</code>
-    $B$rJT=8$9$k$3$H$G@_Dj$G$-$^$9!#(B</p>
+    <p>DNS サーバがダウンして、この検索ができない事態が起こることを
+    恐れているのであれば、<code>/etc/hosts</code>
+    にホスト名を記述しておくことができます
+    (マシンが正常に起動するように既に設定されているかもしれません)。
+    その場合、DNS 参照が失敗した場合にマシンが <code>/etc/hosts</code>
+    を使用するように設定していることを確認してください。
+    その方法は、どの OS を使用しているかに依存しますが、
+    <code>/etc/resolv.conf</code> か <code>/etc/nsswitch.conf</code>
+    を編集することで設定できます。</p>
 
-    <p>$B$b$7B>$NM}M3$G(B DNS $B$rMxMQ$9$kI,MW$,$J$$>l9g$O!"(B
-    <code>HOSTRESORDER</code> $B4D6-JQ?t$r!V(B <code>local</code>
-    $B!W$K@_Dj$9$k$3$H$G$=$N$h$&$K$G$-$^$9!#0J>e$3$l$i$N;vJA$O!"$I$s$J(B
-    OS $B!"%l%>%k%P%i%$%V%i%j$r;HMQ$7$F$$$k$+$K0MB8$7$^$9!#$^$?!"(B
-    <module>mod_env</module> $B$r;HMQ$7$F4D6-JQ?t$r@)8f$7$J$$8B$j!"(B
-    CGI $B$K$b1F6A$rM?$($^$9!#(Bman $B%Z!<%8$d;HMQ$7$F$$$k(B OS
-    $B$N(B FAQ $B$GD4$Y$k$HNI$$$G$7$g$&!#(B</p>
+    <p>もし他の理由で DNS を利用する必要がない場合は、
+    <code>HOSTRESORDER</code> 環境変数を「 <code>local</code>
+    」に設定することでそのようにできます。以上これらの事柄は、どんな
+    OS 、レゾルバライブラリを使用しているかに依存します。また、
+    <module>mod_env</module> を使用して環境変数を制御しない限り、
+    CGI にも影響を与えます。man ページや使用している OS
+    の FAQ で調べると良いでしょう。</p>
   </section>
 
   <section id="tips">
-    <title>$B0J>e$NLdBj$r2r7h$9$kJ}K!(B</title>
+    <title>以上の問題を解決する方法</title>
 
     <ul>
       <li>
         <directive module="core">VirtualHost</directive>
-	$B$G(B IP $B%"%I%l%9$r;HMQ$9$k!#(B
+	で IP アドレスを使用する。
       </li>
 
       <li>
         <directive module="mpm_common">Listen</directive>
-	$B$G(B IP $B%"%I%l%9$r;HMQ$9$k!#(B
+	で IP アドレスを使用する。
       </li>
 
       <li>
-	$BA4$F$N%P!<%A%c%k%[%9%H$,L@<(E*$K(B
+	全てのバーチャルホストが明示的に
         <directive module="core">ServerName</directive>
-	$B$r;}$D$h$&$K$9$k!#(B
+	を持つようにする。
       </li>
 
-      <li>$B2?$b1~Ez$7$J$$(B
+      <li>何も応答しない
       <code>&lt;VirtualHost _default_:*&gt;</code>
-      $B%5!<%P$r:n$k!#(B</li>
+      サーバを作る。</li>
     </ul>
   </section>
 
   <section id="appendix">
-    <title>$BIUO?(B: $B>-MhE*$JJ}8~@-(B</title>
+    <title>付録: 将来的な方向性</title>
 
-    <p>DNS $B$K4X$7$F!"8=>u$OA4$/59$7$/$"$j$^$;$s!#(BApache 1.2 $B$G!"(B
-    DNS $B$N%$%Y%s%H$,<:GT$7$F$b>/$J$/$H$b5/F0%W%m%;%9$,B3$/$h$&$K$7$^$7$?$,!"(B
-    $B$3$l$,:G9b$N2r7hJ}K!$G$O$J$$$G$7$g$&!#%"%I%l%9$N:F3d$jEv$F$,I,MWIT2DHr(B
-    $B$H$J$C$F$$$k:#F|$N%$%s%?!<%M%C%H$K$*$$$F$O!"(B
-    $B@_Dj%U%!%$%k$NCf$GL@<(E*$J(B IP $B%"%I%l%9$rMW5a$9$k;EMM$O!"(B
-    $BA4$/59$7$/$"$j$^$;$s!#(B</p>
+    <p>DNS に関して、現状は全く宜しくありません。Apache 1.2 で、
+    DNS のイベントが失敗しても少なくとも起動プロセスが続くようにしましたが、
+    これが最高の解決方法ではないでしょう。アドレスの再割り当てが必要不可避
+    となっている今日のインターネットにおいては、
+    設定ファイルの中で明示的な IP アドレスを要求する仕様は、
+    全く宜しくありません。</p>
 
-    <p>$BEpMQ$N%5!<%S%9%"%?%C%/$K4X$7$F9T$J$&$Y$-;v$O!"(B
-    DNS $B=g0z$-$r9T$J$C$FF@$i$l$?%"%I%l%9$KBP$9$k(B DNS 
-    $B5U0z$-$r9T$J$C$F!"Fs$D$NL>A0$rHf3S$9$k$3$H$G$9!#(B
-    $B$3$NFs$D$,0lCW$7$J$1$l$P%P!<%A%c%k%[%9%H$OL58z$K$J$k$h$&$K$7$^$9!#(B
-    $B$3$&$9$k$?$a$K$O5U0z$-(B DNS $B$,E,@Z$K@_Dj$5$l$F$$$kI,MW$,$"$j$^$9(B
-    (FTP $B%5!<%P$d(B TCP $B%i%C%Q!<$N$*$+$2$G!VFs=E5U0z$-!W(BDNS $B$O0lHLE*$K(B
-    $B$J$C$F$$$^$9$N$G!"4IM}<T$K$O$*Fk@w$_$b$N$G$7$g$&(B)$B!#(B</p>
+    <p>盗用のサービスアタックに関して行なうべき事は、
+    DNS 順引きを行なって得られたアドレスに対する DNS 
+    逆引きを行なって、二つの名前を比較することです。
+    この二つが一致しなければバーチャルホストは無効になるようにします。
+    こうするためには逆引き DNS が適切に設定されている必要があります
+    (FTP サーバや TCP ラッパーのおかげで「二重逆引き」DNS は一般的に
+    なっていますので、管理者にはお馴染みものでしょう)。</p>
 
-    <p>IP $B%"%I%l%9$,;HMQ$5$l$F$$$J$/$F(B DNS $B$,<:GT$7$?>l9g$O!"(B
-    $B$I$&$7$F$b%P!<%A%c%k%[%9%H%&%'%V%5!<%P$r?.Mj@-$r3NJ]$7$F(B
-    $B5/F0$5$;$k$3$H$OIT2DG=$N$h$&$G$9!#(B
-    $B@_Dj$N0lIt$rL58z$K$9$k$H$$$&$h$&$JItJ,E*$J2r7h$G$O!"(B
-    $B%5!<%P$,2?$r$9$k$h$&$K$9$k$+$K$b$h$j$^$9$,!"(B
-    $B$=$N%5!<%P$,5/F0$7$J$$$h$j3N<B$K0-$$>u67$K$J$k$G$7$g$&!#(B</p>
+    <p>IP アドレスが使用されていなくて DNS が失敗した場合は、
+    どうしてもバーチャルホストウェブサーバを信頼性を確保して
+    起動させることは不可能のようです。
+    設定の一部を無効にするというような部分的な解決では、
+    サーバが何をするようにするかにもよりますが、
+    そのサーバが起動しないより確実に悪い状況になるでしょう。</p>
 
-    <p>HTTP/1.1 $B$,3+H/$5$l!"%V%i%&%6$d%W%m%-%7$,(B <code>Host</code>
-    $B%X%C%@$rH/9T$9$k$h$&$K$J$C$?$N$G!"(BIP $B%Y!<%9$N%P!<%A%c%k%[%9%H$r(B
-    $BA4$/;HMQ$7$J$/$F$b:Q$`$h$&$K$J$k$+$b$7$l$^$;$s!#(B
-    $B$3$N>l9g!"%&%'%V%5!<%P$O@_DjCf$K(B DNS $B;2>H$r$7$J$/$F$b:Q$_$^$9!#(B
-    $B$7$+$7(B 1997 $BG/(B 3 $B7n;~E@$N>u67$G$O!"(B
-    $B>&MQ%l%Y%k$N%&%'%V%5!<%P$G;HMQ$G$-$k$[$I$K$O!"(B
-    $B$3$l$i$N5!G=$O9-$/3+H/$,?J$s$G$$$^$;$s!#(B</p>
+    <p>HTTP/1.1 が開発され、ブラウザやプロキシが <code>Host</code>
+    ヘッダを発行するようになったので、IP ベースのバーチャルホストを
+    全く使用しなくても済むようになるかもしれません。
+    この場合、ウェブサーバは設定中に DNS 参照をしなくても済みます。
+    しかし 1997 年 3 月時点の状況では、
+    商用レベルのウェブサーバで使用できるほどには、
+    これらの機能は広く開発が進んでいません。</p>
   </section>
 </manualpage>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:579425 (outdated) -->
@@ -23,316 +23,316 @@
 <modulesynopsis metafile="mod_log_config.xml.meta">
 
 <name>mod_log_config</name>
-<description>$B%5!<%P$X$N%j%/%(%9%H$N%m%.%s%0(B</description>
+<description>サーバへのリクエストのロギング</description>
 <status>Base</status>
 <sourcefile>mod_log_config.c</sourcefile>
 <identifier>log_config_module</identifier>
 
 <summary>
     <p>
-    $B$3$N%b%8%e!<%k$O%/%i%$%"%s%H$N%j%/%(%9%H$r=@Fp$K%m%0<}=8$9$k5!G=$r(B
-    $BDs6!$7$^$9!#%m%0$O%+%9%?%^%$%:2DG=$J=q<0$G=q$+$l!"%U%!%$%k$KD>@\(B
-    $B=q$$$?$j!"30It%W%m%0%i%`$KEO$7$?$j$9$k$3$H$,$G$-$^$9!#8D!9$N%j%/%(%9%H$r(B
-    $BFCD'$K1~$8$F%m%0$K=q$$$?$j=q$+$J$+$C$?$j$G$-$k$h$&$K!">r7o$K$h$k(B
-    $B%m%0<}=8$bDs6!$5$l$F$$$^$9!#(B</p>
+    このモジュールはクライアントのリクエストを柔軟にログ収集する機能を
+    提供します。ログはカスタマイズ可能な書式で書かれ、ファイルに直接
+    書いたり、外部プログラムに渡したりすることができます。個々のリクエストを
+    特徴に応じてログに書いたり書かなかったりできるように、条件による
+    ログ収集も提供されています。</p>
 
-    <p>$B$3$N%b%8%e!<%k$O;0$D$N%G%#%l%/%F%#%VDs6!$7$^$9(B:
-    $B%m%0%U%!%$%k$r:n@.$9$k$?$a$N(B <directive module="mod_log_config"
+    <p>このモジュールは三つのディレクティブ提供します:
+    ログファイルを作成するための <directive module="mod_log_config"
     >TransferLog</directive>,
-    $B?7$7$$=q<0$r(B $BDj5A$9$k(B <directive module="mod_log_config">LogFormat</directive>,
-    $B%m%0%U%!%$%k$H(B $B=q<0$r0lEY$KDj5A$9$k(B <directive module="mod_log_config"
-    >CustomLog</directive> $B$G$9!#(B
-    $B3F%j%/%(%9%H$,J#?t2s%m%0<}=8$5$l$k$h$&$K$9$k$?$a$K(B
-    <directive>TransferLog</directive> $B%G%#%l%/%F%#%V$H(B
+    新しい書式を 定義する <directive module="mod_log_config">LogFormat</directive>,
+    ログファイルと 書式を一度に定義する <directive module="mod_log_config"
+    >CustomLog</directive> です。
+    各リクエストが複数回ログ収集されるようにするために
+    <directive>TransferLog</directive> ディレクティブと
     <directive>CustomLog</directive>
-    $B%G%#%l%/%F%#%V$OJ#?t2s;HMQ$9$k$3$H$,$G$-$^$9!#(B</p>
+    ディレクティブは複数回使用することができます。</p>
 </summary>
-<seealso><a href="../logs.html">Apache $B%m%0%U%!%$%k(B</a></seealso>
+<seealso><a href="../logs.html">Apache ログファイル</a></seealso>
 
-<section id="formats"><title>$B%+%9%?%`%m%0=q<0(B</title>
+<section id="formats"><title>カスタムログ書式</title>
 
-    <p><directive module="mod_log_config">LogFormat</directive> $B%G%#%l%/%F%#%V$H(B
+    <p><directive module="mod_log_config">LogFormat</directive> ディレクティブと
     <directive module="mod_log_config">CustomLog</directive>
-    $B%G%#%l%/%F%#%V$N=q<0$r;XDj$9$k0z?t$OJ8;zNs$G$9!#$3$NJ8;zNs$r;H$C$F$=$l$>$l$N(B
-    $B%j%/%(%9%H$,%m%0%U%!%$%k$K%m%0<}=8$5$l$^$9!#$=$NJ8;zNs$K$O(B
-    $B%m%0%U%!%$%k$K$=$N$^$^(B
-    $B=q$+$l$kJ8;zNs$d!"$=$l$>$l2~9T$H%?%V$rI=$9(B C $B8@8l(B
-    $B7A<0$N@)8fJ8;z(B "\n" $B$H(B "\t"
-    $B$H$r4^$a$k$3$H$,$G$-$^$9!#$=$N$^$^=PNO$5$;$?$$0zMQId$H%P%C%/%9%i%C%7%e$O(B
-    $B%P%C%/%9%i%C%7%e$G%(%9%1!<%W$9$kI,MW$,$"$j$^$9!#(B</p>
+    ディレクティブの書式を指定する引数は文字列です。この文字列を使ってそれぞれの
+    リクエストがログファイルにログ収集されます。その文字列には
+    ログファイルにそのまま
+    書かれる文字列や、それぞれ改行とタブを表す C 言語
+    形式の制御文字 "\n" と "\t"
+    とを含めることができます。そのまま出力させたい引用符とバックスラッシュは
+    バックスラッシュでエスケープする必要があります。</p>
 
-    <p>$B%j%/%(%9%H$NFCD'$=$N$b$N$O(B "<code>%</code>"
-    $B%G%#%l%/%F%#%V$r=q<0$NJ8;zNs$K=q$/$3$H$G(B
-    $B%m%0<}=8$5$l$^$9!#(B"%"
-    $B%G%#%l%/%F%#%V$O%m%0%U%!%$%kCf$G$O0J2<$N$h$&$J(B
-    $BCM$GCV49$5$l$^$9(B:</p>
+    <p>リクエストの特徴そのものは "<code>%</code>"
+    ディレクティブを書式の文字列に書くことで
+    ログ収集されます。"%"
+    ディレクティブはログファイル中では以下のような
+    値で置換されます:</p>
 
     <table border="1" style="zebra">
     <columnspec><column width=".2"/><column width=".8"/></columnspec>
-    <tr><th>$B%U%)!<%^%C%HJ8;zNs(B</th>
-        <th>$B@bL@(B</th></tr>
+    <tr><th>フォーマット文字列</th>
+        <th>説明</th></tr>
 
     <tr><td><code>%%</code></td>
-        <td>$B%Q!<%;%s%H5-9f(B</td></tr>
+        <td>パーセント記号</td></tr>
 
     <tr><td><code>%a</code></td>
-        <td>$B%j%b!<%H(B IP $B%"%I%l%9(B</td></tr>
+        <td>リモート IP アドレス</td></tr>
 
     <tr><td><code>%A</code></td>
-        <td>$B%m!<%+%k(B IP $B%"%I%l%9(B</td></tr>
+        <td>ローカル IP アドレス</td></tr>
 
     <tr><td><code>%B</code></td>
-        <td>$B%l%9%]%s%9$N%P%$%H?t!#(BHTTP $B%X%C%@$O=|$/!#(B</td></tr>
+        <td>レスポンスのバイト数。HTTP ヘッダは除く。</td></tr>
 
     <tr><td><code>%b</code></td>
-        <td>$B%l%9%]%s%9$N%P%$%H?t!#(BHTTP $B%X%C%@$O=|$/!#(BCLF $B=q<0!#(B
-        <em>$B$9$J$o$A(B</em>$B!"(B1 $B%P%$%H$bAw$i$l$J$+$C$?$H$-$O(B 0 $B$G$O$J$/!"(B
-        '<code>-</code>' $B$K$J$k(B</td></tr>
+        <td>レスポンスのバイト数。HTTP ヘッダは除く。CLF 書式。
+        <em>すなわち</em>、1 バイトも送られなかったときは 0 ではなく、
+        '<code>-</code>' になる</td></tr>
 
     <tr><td><code>%{<var>Foobar</var>}C</code></td>
-        <td>$B%5!<%P$KAw$i$l$?%j%/%(%9%HCf$N%/%C%-!<(B <var>Foobar</var> $B$NCM(B</td></tr>
+        <td>サーバに送られたリクエスト中のクッキー <var>Foobar</var> の値</td></tr>
 
     <tr><td><code>%D</code></td>
-        <td>$B%j%/%(%9%H$r=hM}$9$k$N$K$+$+$C$?;~4V!"%^%$%/%mICC10L(B</td></tr>
+        <td>リクエストを処理するのにかかった時間、マイクロ秒単位</td></tr>
 
     <tr><td><code>%{<var>FOOBAR</var>}e</code></td>
-        <td>$B4D6-JQ?t(B <var>FOOBAR</var> $B$NFbMF(B</td></tr>
+        <td>環境変数 <var>FOOBAR</var> の内容</td></tr>
 
     <tr><td><code>%f</code></td>
-        <td>$B%U%!%$%kL>(B</td></tr>
+        <td>ファイル名</td></tr>
 
     <tr><td><code>%h</code></td>
-        <td>$B%j%b!<%H%[%9%H(B</td></tr>
+        <td>リモートホスト</td></tr>
 
     <tr><td><code>%H</code></td>
-        <td>$B%j%/%(%9%H%W%m%H%3%k(B</td></tr>
+        <td>リクエストプロトコル</td></tr>
 
     <tr><td><code>%{<var>Foobar</var>}i</code></td>
-        <td>$B%5!<%P$KAw$i$l$?%j%/%(%9%H$N(B <code><var>Foobar</var>:</code>
-        $B%X%C%@$NFbMF(B</td></tr>
+        <td>サーバに送られたリクエストの <code><var>Foobar</var>:</code>
+        ヘッダの内容</td></tr>
 
     <tr><td><code>%l</code></td>
-        <td>(identd $B$+$i$b$7Ds6!$5$l$F$$$l$P(B) $B%j%b!<%H%m%0L>!#(B
-        $B$3$l$O(B <module>mod_ident</module> $B$,%5!<%P$KB8:_$7$F!"(B
+        <td>(identd からもし提供されていれば) リモートログ名。
+        これは <module>mod_ident</module> がサーバに存在して、
         <directive module="mod_ident">IdentityCheck</directive>
-        $B%G%#%l%/%F%#%V$,(B <code>On</code> $B$K@_Dj$5$l$F$$$J$$8B$j!"(B
-        <code>-</code> $B$K$J$j$^$9!#(B</td></tr>
+        ディレクティブが <code>On</code> に設定されていない限り、
+        <code>-</code> になります。</td></tr>
 
     <tr><td><code>%m</code></td>
-        <td>$B%j%/%(%9%H%a%=%C%I(B</td></tr>
+        <td>リクエストメソッド</td></tr>
 
     <tr><td><code>%{<var>Foobar</var>}n</code></td>
-        <td>$BB>$N%b%8%e!<%k$+$i$N%a%b(B <var>Foobar</var> $B$NFbMF(B</td></tr>
+        <td>他のモジュールからのメモ <var>Foobar</var> の内容</td></tr>
 
     <tr><td><code>%{<var>Foobar</var>}o</code></td>
-        <td>$B1~Ez$N(B <code><var>Foobar</var>:</code> $B%X%C%@$NFbMF(B</td></tr>
+        <td>応答の <code><var>Foobar</var>:</code> ヘッダの内容</td></tr>
 
     <tr><td><code>%p</code></td>
-        <td>$B%j%/%(%9%H$r07$C$F$$$k%5!<%P$N@5<0$J%]!<%H(B</td></tr>
+        <td>リクエストを扱っているサーバの正式なポート</td></tr>
 
     <tr><td><code>%P</code></td>
-        <td>$B%j%/%(%9%H$r07$C$?;R%W%m%;%9$N%W%m%;%9(B ID</td></tr>
+        <td>リクエストを扱った子プロセスのプロセス ID</td></tr>
 
     <tr><td><code>%{<var>format</var>}P</code></td>
-        <td>$B%j%/%(%9%H$r07$C$?%o!<%+!<$N%W%m%;%9(B ID $B$+%9%l%C%I(B ID$B!#(B
-        <var>format</var> $B$H$7$FM-8z$JCM$O(B <code>pid</code>, <code>tid</code>,
-        <code>hextid</code> $B$G$9!#(B<code>hextid</code> $B$r;H$&$K$O(B
-        APR 1.2.0 $B0J9_$,I,MW$G$9!#(B
+        <td>リクエストを扱ったワーカーのプロセス ID かスレッド ID。
+        <var>format</var> として有効な値は <code>pid</code>, <code>tid</code>,
+        <code>hextid</code> です。<code>hextid</code> を使うには
+        APR 1.2.0 以降が必要です。
         </td></tr>
 
     <tr><td><code>%q</code></td>
-        <td>$BLd$$9g$;J8;zNs(B ($BB8:_$9$k>l9g$OA0$K(B <code>?</code> $B$,DI2C$5$l$k!#(B
-        $B$=$&$G$J$$>l9g$O6uJ8;zNs(B)</td></tr>
+        <td>問い合せ文字列 (存在する場合は前に <code>?</code> が追加される。
+        そうでない場合は空文字列)</td></tr>
 
     <tr><td><code>%r</code></td>
-        <td>$B%j%/%(%9%H$N:G=i$N9T(B</td></tr>
+        <td>リクエストの最初の行</td></tr>
 
     <tr><td><code>%s</code></td>
-        <td>$B%9%F!<%?%9!#FbIt$G%j%@%$%l%/%H$5$l$?%j%/%(%9%H$O!"85!9$N(B
-         $B%j%/%(%9%H$N%9%F!<%?%9(B --- $B:G8e$N%9%F!<%?%9$O(B <code>%&gt;s</code>
+        <td>ステータス。内部でリダイレクトされたリクエストは、元々の
+         リクエストのステータス --- 最後のステータスは <code>%&gt;s</code>
     </td></tr>
 
     <tr><td><code>%t</code></td>
-        <td>$B%j%/%(%9%H$r<uIU$1$?;~9o!#(B
-        CLF $B$N;~9o$N=q<0(B ($BI8=`$N1Q8l$N=q<0(B)</td></tr>
+        <td>リクエストを受付けた時刻。
+        CLF の時刻の書式 (標準の英語の書式)</td></tr>
 
     <tr><td><code>%{<var>format</var>}t</code></td>
-        <td><var>format</var> $B$GM?$($i$l$?=q<0$K$h$k;~9o!#(Bformat $B$O(B
-         <code>strftime (3)</code> $B$N(B
-         $B=q<0$G$"$kI,MW$,$"$k!#(B($BCO0h2=$5$l$F$$$k2DG=@-$,$"$k(B)</td></tr>
+        <td><var>format</var> で与えられた書式による時刻。format は
+         <code>strftime (3)</code> の
+         書式である必要がある。(地域化されている可能性がある)</td></tr>
 
     <tr><td><code>%T</code></td>
-        <td>$B%j%/%(%9%H$r07$&$N$K$+$+$C$?;~4V!"ICC10L(B</td></tr>
+        <td>リクエストを扱うのにかかった時間、秒単位</td></tr>
 
     <tr><td><code>%u</code></td>
-        <td>$B%j%b!<%H%f!<%6(B ($BG'>Z$K$h$k$b$N!#%9%F!<%?%9(B (<code>%s</code>) $B$,(B
-        401 $B$N$H$-$O0UL#$,$J$$$b$N$G$"$k2DG=@-$,$"$k(B)
+        <td>リモートユーザ (認証によるもの。ステータス (<code>%s</code>) が
+        401 のときは意味がないものである可能性がある)
     </td></tr>
 
     <tr><td><code>%U</code></td>
-        <td>$B%j%/%(%9%H$5$l$?(B URL $B%Q%9!#%/%(%jJ8;zNs$O4^$^$J$$(B</td></tr>
+        <td>リクエストされた URL パス。クエリ文字列は含まない</td></tr>
 
     <tr><td><code>%v</code></td>
-        <td>$B%j%/%(%9%H$r07$C$F$$$k%5!<%P$N@5<0$J(B <directive
+        <td>リクエストを扱っているサーバの正式な <directive
         module="core">ServerName</directive></td></tr>
 
     <tr><td><code>%V</code></td>
         <td><directive module="core"
-        >UseCanonicalName</directive> $B$N@_Dj$K$h$k%5!<%PL>(B</td></tr>
+        >UseCanonicalName</directive> の設定によるサーバ名</td></tr>
 
     <tr><td><code>%X</code></td>
-        <td>$B1~Ez$,40N;$7$?$H$-$N@\B3%9%F!<%?%9(B:
+        <td>応答が完了したときの接続ステータス:
 
         <table>
         <columnspec><column width=".2"/><column width=".6"/></columnspec>
         <tr><td><code>X</code> =</td>
-            <td>$B1~Ez$,40N;$9$kA0$K@\B3$,0[>o=*N;(B</td></tr>
+            <td>応答が完了する前に接続が異常終了</td></tr>
         <tr><td><code>+</code> =</td>
-            <td>$B1~Ez$,Aw$i$l$?8e$K@\B3$r;}B3$9$k$3$H$,2DG=(B</td></tr>
+            <td>応答が送られた後に接続を持続することが可能</td></tr>
         <tr><td><code>-</code> = </td>
-            <td>$B1~Ez$,Aw$i$l$?8e$K@\B3$,@Z$i$l$k(B</td></tr>
+            <td>応答が送られた後に接続が切られる</td></tr>
         </table>
 
-        <p>($B$3$N%G%#%l%/%F%#%V$O(B Apache
-        1.3 $B$N8e4|$N%P!<%8%g%s$G$O(B <code>%c</code> $B$K3d$jEv$F$i$l$F(B
-        $B$$$^$7$?$,!"$3$l$ONr;KE*$K(B ssl $B$,;HMQ$7$F$$$k(B
+        <p>(このディレクティブは Apache
+        1.3 の後期のバージョンでは <code>%c</code> に割り当てられて
+        いましたが、これは歴史的に ssl が使用している
         <code>%{<var>var</var>}c</code>
-        $B9=J8$H>WFM$7$F$$$^$7$?!#(B)</p></td></tr>
+        構文と衝突していました。)</p></td></tr>
 
     <tr><td><code>%I</code></td>
-        <td>$B%j%/%(%9%H$H%X%C%@$r4^$`!"<u$1<h$C$?%P%$%H?t!#(B
-        0 $B$K$O$J$i$J$$!#(B
-        $B$3$l$r;HMQ$9$k$?$a$K$O(B <module>mod_logio</module> $B$,I,MW(B</td></tr>
+        <td>リクエストとヘッダを含む、受け取ったバイト数。
+        0 にはならない。
+        これを使用するためには <module>mod_logio</module> が必要</td></tr>
 
     <tr><td><code>%O</code></td>
-        <td>$B%X%C%@$r4^$`!"Aw?.$7$?%P%$%H?t!#(B0 $B$K$O$J$i$J$$!#(B
-        $B$3$l$r;HMQ$9$k$?$a$K$O(B <module>mod_logio</module> $B$,I,MW(B</td></tr>
+        <td>ヘッダを含む、送信したバイト数。0 にはならない。
+        これを使用するためには <module>mod_logio</module> が必要</td></tr>
     </table>
 
-    <section id="modifiers"><title>$B=$>~;R(B</title>
+    <section id="modifiers"><title>修飾子</title>
 
-      <p>$BFCDj$NMWAG$O(B "%" $B$ND>8e$K(B HTTP $B%9%F!<%?%9%3!<%I$r%+%s%^6h@Z$j$G(B
-      $B;XDj$9$k$3$H$G!"I=<($r@)8B$9$k$3$H$,$G$-$^$9!#Nc$($P(B 
-      <code>"%400,501{User-agent}i"</code> $B$G$O!"(B
-      400 $B$H(B 500 $BHV%(%i!<$G$N$_(B <code>User-agent</code> $B$r%m%0$7$^$9!#(B
-      $BB>$N%9%F!<%?%9%3!<%I$G$O(B <code>"-"</code> $B$H$$$&J8;zNs$,(B
-      $B%m%0$5$l$^$9!#%9%F!<%?%9%3!<%I$N%j%9%H$O(B "<code>!</code>" 
-      $B$GH]Dj$r;XDj$9$k$3$H$,$G$-$^$9(B :
-      <code>"%!200,304,302{Referer}i"</code> $B$O!";XDj$5$l$?(B
-      3 $B$D$N%3!<%I$N(B<em>$B$I$l$K$b3:Ev$7$J$$(B</em>$B%j%/%(%9%HA4$F$G(B
-      <code>Referer</code> $B$r%m%0$7$^$9!#(B</p>
+      <p>特定の要素は "%" の直後に HTTP ステータスコードをカンマ区切りで
+      指定することで、表示を制限することができます。例えば 
+      <code>"%400,501{User-agent}i"</code> では、
+      400 と 500 番エラーでのみ <code>User-agent</code> をログします。
+      他のステータスコードでは <code>"-"</code> という文字列が
+      ログされます。ステータスコードのリストは "<code>!</code>" 
+      で否定を指定することができます :
+      <code>"%!200,304,302{Referer}i"</code> は、指定された
+      3 つのコードの<em>どれにも該当しない</em>リクエスト全てで
+      <code>Referer</code> をログします。</p>
 
-      <p>$B=$>~;R(B "&lt;" $B$H(B "&gt;" $B$OFbIt%j%@%$%l%/%H$5$l$?%j%/%(%9%H$N%m%0$K(B
-      $B85$N%j%/%(%9%H$+:G=*E*$J%j%/%(%9%H$N$I$A$i$r;HMQ$9$k$+$r(B
-      $B;XDj$9$k$?$a$K;H$$$^$9!#%G%U%)%k%H$G$O!"(B<code>%</code> $B%G%#%l%/%F%#%V$N(B
-      <code>%s, %U, %T, %D, %r</code> $B$O85$N%j%/%(%9%H$r!"B>$O:G=*E*$J%j%/%(%9%H$r(B
-      $B;HMQ$7$^$9!#Nc$($P!"%j%/%(%9%H$N:G=*%9%F!<%?%9$r5-O?$9$k$K$O(B
-      <code>%&gt;s</code> $B$r!"FbItE*$KG'>Z$5$l$F$$$J$$%j%=!<%9$X%j%@%$%l%/%H$5$l$?(B
-      $B%j%/%(%9%H$G85$N%j%/%(%9%H$GG'>Z$5$l$?%f!<%6$r5-O?$9$k$?$a$K$O(B
-      <code>%&lt;u</code> $B$r;H$&$3$H$,$G$-$^$9!#(B</p>
-
-    </section>
-
-    <section id="format-notes"><title>$B$=$NB>Cm0UE@(B</title>
-
-      <p>$B%;%-%e%j%F%#>e$NM}M3$K$h$j(B 2.0.46 $B$h$j!"(B
-      <code>%r</code>, <code>%i</code>, <code>%o</code> $B$KF~$C$F$$$k!"(B
-      $B0u;zIT2DG=$JJ8;z$HB>$NFCJL$JJ8;z$O!"(B<code>\x<var>hh</var></code> 
-      $B$H$$$&7A<0$NJ8;zNs$G%(%9%1!<%W$5$l$k$h$&$K$J$j$^$7$?!#(B<var>hh</var> $B$O(B
-      $B$=$N$^$^$N%P%$%H$NCM$N(B 16 $B?J$G$NCM$G$9!#$3$N5,B'$NNc30$K$O!"(B
-      $B%P%C%/%9%i%C%7%e$r;H$C$F%(%9%1!<%W$5$l$k(B <code>"</code> $B$H(B <code>\</code> $B$H!"(B
-      C $B7A<0$NI=5-K!$,;H$o$l$k6uGrJ8;z(B (<code>\n</code>, <code>\t</code> $B$J$I(B)
-      $B$,$"$j$^$9!#(B2.0.46 $B0JA0$N%P!<%8%g%s$G$O%(%9%1!<%W=hM}$O9T$o$l$^$;$s$N$G!"(B
-      $B@8%m%0%U%!%$%k$r07$&:]$KCm0U$,I,MW$G$9!#(B</p>
-
-      <p>httpd 2.0 $B$G$O(B 1.3 $B$H$O0[$J$j!"(B<code>%b</code> $B$H(B <code>%B</code>
-      $B%U%)!<%^%C%HJ8;zNs$O%/%i%$%"%s%H$KAw?.$5$l$?%P%$%H?t$=$N$b$N$G$O$J$/!"(B
-      HTTP $B%l%9%]%s%9$N%P%$%H?t$G$9(B ($B$3$l$i$O0[$J$k$b$N$G!"$?$H$($P!"(B
-      $B%3%M%/%7%g%s$,ESCf$GGK4~$5$l$?>l9g$d!"(BSSL $B;HMQ;~$K0lCW$7$^$;$s(B) $B!#(B
-      <module>mod_logio</module> $B$GDs6!$5$l$F$$$k(B <code>%O</code>
-      $B%U%)!<%^%C%HJ8;zNs$G!"%M%C%H%o!<%/7PM3$G<B:]$KE>Aw$5$l$?%P%$%H?t$r(B
-      $B5-O?$G$-$^$9!#(B</p>
+      <p>修飾子 "&lt;" と "&gt;" は内部リダイレクトされたリクエストのログに
+      元のリクエストか最終的なリクエストのどちらを使用するかを
+      指定するために使います。デフォルトでは、<code>%</code> ディレクティブの
+      <code>%s, %U, %T, %D, %r</code> は元のリクエストを、他は最終的なリクエストを
+      使用します。例えば、リクエストの最終ステータスを記録するには
+      <code>%&gt;s</code> を、内部的に認証されていないリソースへリダイレクトされた
+      リクエストで元のリクエストで認証されたユーザを記録するためには
+      <code>%&lt;u</code> を使うことができます。</p>
 
     </section>
 
-    <section id="examples"><title>$BNc(B</title>
+    <section id="format-notes"><title>その他注意点</title>
 
-      <p>$B$h$/;H$o$l$k%U%)!<%^%C%HJ8;zNs$O(B:</p>
+      <p>セキュリティ上の理由により 2.0.46 より、
+      <code>%r</code>, <code>%i</code>, <code>%o</code> に入っている、
+      印字不可能な文字と他の特別な文字は、<code>\x<var>hh</var></code> 
+      という形式の文字列でエスケープされるようになりました。<var>hh</var> は
+      そのままのバイトの値の 16 進での値です。この規則の例外には、
+      バックスラッシュを使ってエスケープされる <code>"</code> と <code>\</code> と、
+      C 形式の表記法が使われる空白文字 (<code>\n</code>, <code>\t</code> など)
+      があります。2.0.46 以前のバージョンではエスケープ処理は行われませんので、
+      生ログファイルを扱う際に注意が必要です。</p>
+
+      <p>httpd 2.0 では 1.3 とは異なり、<code>%b</code> と <code>%B</code>
+      フォーマット文字列はクライアントに送信されたバイト数そのものではなく、
+      HTTP レスポンスのバイト数です (これらは異なるもので、たとえば、
+      コネクションが途中で破棄された場合や、SSL 使用時に一致しません) 。
+      <module>mod_logio</module> で提供されている <code>%O</code>
+      フォーマット文字列で、ネットワーク経由で実際に転送されたバイト数を
+      記録できます。</p>
+
+    </section>
+
+    <section id="examples"><title>例</title>
+
+      <p>よく使われるフォーマット文字列は:</p>
 
       <dl>
         <dt>Common Log Format (CLF)</dt>
         <dd><code>"%h %l %u %t \"%r\" %&gt;s %b"</code></dd>
 
-        <dt>$B%P!<%A%c%k%[%9%HIU$-(B Common Log Format</dt>
+        <dt>バーチャルホスト付き Common Log Format</dt>
         <dd><code>"%v %h %l %u %t \"%r\" %&gt;s %b"</code></dd>
 
-        <dt>NCSA extended/combined $B%m%0=q<0(B</dt>
+        <dt>NCSA extended/combined ログ書式</dt>
         <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
         \"%{User-agent}i\""</code></dd>
 
-        <dt>Referer $B%m%0=q<0(B</dt>
+        <dt>Referer ログ書式</dt>
         <dd><code>"%{Referer}i -&gt; %U"</code></dd>
 
-        <dt>Agent ($B%V%i%&%6(B) $B%m%0=q<0(B</dt>
+        <dt>Agent (ブラウザ) ログ書式</dt>
         <dd><code>"%{User-agent}i"</code></dd>
       </dl>
     </section>
 </section>
 
-<section id="security"><title>$B%;%-%e%j%F%#$K4X$7$F(B</title>
-    <p>$B%m%0%U%!%$%k$,J]B8$5$l$F$$$k%G%#%l%/%H%j$,%5!<%P$r5/F0$7$?0J30$N%f!<%6$G(B
-    $B=q$-9~$_2DG=$J$H$-$K%;%-%e%j%F%#$NLdBj$,H/@8$9$kM}M3$N>\:Y$O(B<a
-    href="../misc/security_tips.html#serverroot">$B%;%-%e%j%F%#$N$3$D(B</a>
-    $B$r;2>H$7$F$/$@$5$$!#(B</p>
+<section id="security"><title>セキュリティに関して</title>
+    <p>ログファイルが保存されているディレクトリがサーバを起動した以外のユーザで
+    書き込み可能なときにセキュリティの問題が発生する理由の詳細は<a
+    href="../misc/security_tips.html#serverroot">セキュリティのこつ</a>
+    を参照してください。</p>
 </section>
 
 <directivesynopsis>
 <name>BufferedLogs</name>
-<description>$B%G%#%9%/$K=q$-=P$9A0$K%a%b%j$K%m%0%(%s%H%j$r%P%C%U%!$9$k(B</description>
+<description>ディスクに書き出す前にメモリにログエントリをバッファする</description>
 <syntax>BufferedLogs On|Off</syntax>
 <default>BufferedLogs Off</default>
 <contextlist><context>server config</context></contextlist>
 <status>Experimental</status>
-<compatibility>2.0.41 $B0J9_(B</compatibility>
+<compatibility>2.0.41 以降</compatibility>
 
 <usage>
-    <p><directive>BufferedLogs</directive> $B%G%#%l%/%F%#%V$r;H$&$H(B
-    <module>mod_log_config</module> $B$N5sF0$,JQ2=$7$F!"(B
-    $BJ#?t$N%m%0$r=q$-=P$9:]$K!"$=$l$>$l$N%j%/%(%9%H=hM}8eKh$K(B
-    $B=q$-=P$9$N$G$O$J$/!"$$$C$?$s%a%b%j$KC_$($F$+$i!"(B
-    $B$^$H$a$F%G%#%9%/$K=q$-=P$9$h$&$K$J$j$^$9!#(B
-    $B$3$N7k2L%G%#%9%/%"%/%;%9$,$h$j8zN(E*$K$J$j!"(B
-    $B9b$$%Q%U%)!<%^%s%9$NF@$i$l$k%7%9%F%`$b$"$k$G$7$g$&!#(B
-    $B$3$N%G%#%l%/%F%#%V$O%5!<%PA4BN$G0lEY$@$1@_Dj$G$-$^$9(B; 
-    $B%P!<%A%c%k%[%9%H$4$H$K@_Dj$9$k$3$H$O$G$-$^$;$s!#(B</p>
+    <p><directive>BufferedLogs</directive> ディレクティブを使うと
+    <module>mod_log_config</module> の挙動が変化して、
+    複数のログを書き出す際に、それぞれのリクエスト処理後毎に
+    書き出すのではなく、いったんメモリに蓄えてから、
+    まとめてディスクに書き出すようになります。
+    この結果ディスクアクセスがより効率的になり、
+    高いパフォーマンスの得られるシステムもあるでしょう。
+    このディレクティブはサーバ全体で一度だけ設定できます; 
+    バーチャルホストごとに設定することはできません。</p>
 
-    <note>$B$3$N%G%#%l%/%F%#%V$O<B83E*$J$b$N$G$9$N$G!"(B
-    $B;HMQ$9$k:]$OCm0U$7$F$/$@$5$$!#(B</note>
+    <note>このディレクティブは実験的なものですので、
+    使用する際は注意してください。</note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CookieLog</name>
-<description>$B%/%C%-%s%0$N%m%.%s%0$N$?$a$N%U%!%$%kL>$r@_Dj$9$k(B</description>
+<description>クッキングのロギングのためのファイル名を設定する</description>
 <syntax>CookieLog <var>filename</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>$B$3$N%G%#%l%/%F%#%V$OHs?d>)(B</compatibility>
+<compatibility>このディレクティブは非推奨</compatibility>
 
 <usage>
     <p><directive>CookieLog</directive>
-    $B%G%#%l%/%F%#%V$O%/%C%-!<$N%m%.%s%0$N$?$a$N%U%!%$%kL>$r(B
-    $B@_Dj$7$^$9!#(Bfilename $B$O(B <directive
+    ディレクティブはクッキーのロギングのためのファイル名を
+    設定します。filename は <directive
     module="core">ServerRoot</directive>
-    $B$+$i$NAjBP%Q%9$G$9!#$3$N%G%#%l%/%F%#%V$O(B <code
-    >mod_cookies</code> $B$H$N8_49@-$N$?$a$@$1$K(B
-    $BB8:_$7!";HMQ$O?d>)$5$l$F$$$^$;$s!#(B</p>
+    からの相対パスです。このディレクティブは <code
+    >mod_cookies</code> との互換性のためだけに
+    存在し、使用は推奨されていません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CustomLog</name>
-<description>$B%m%0%U%!%$%k$NL>A0$H=q<0$r@_Dj$9$k(B</description>
+<description>ログファイルの名前と書式を設定する</description>
 <syntax>CustomLog  <var>file</var>|<var>pipe</var>
 <var>format</var>|<var>nickname</var>
 [env=[!]<var>environment-variable</var>]</syntax>
@@ -340,45 +340,45 @@
 </contextlist>
 
 <usage>
-    <p><directive>CustomLog</directive> $B%G%#%l%/%F%#%V$O%5!<%P$X$N%j%/%(%9%H$r(B
-    $B%m%0<}=8$9$k$?$a$K;H$o$l$^$9!#%m%0$N=q<0$,;XDj$5$l!"(B
-    $B4D6-JQ?t$r;H$C$F%m%.%s%0$,>r7o$K1~$8$F9T$J$o$l$k$h$&$K$9$k$3$H$b$G$-$^$9!#(B</p>
+    <p><directive>CustomLog</directive> ディレクティブはサーバへのリクエストを
+    ログ収集するために使われます。ログの書式が指定され、
+    環境変数を使ってロギングが条件に応じて行なわれるようにすることもできます。</p>
 
-    <p>$B%m%0$,=q$+$l$k>l=j$r;XDj$9$k:G=i$N0z?t$O0J2<$NFs$D$N7A<0$NCM$r(B
-    $B$H$k$3$H$,$G$-$^$9(B:</p>
+    <p>ログが書かれる場所を指定する最初の引数は以下の二つの形式の値を
+    とることができます:</p>
 
     <dl>
       <dt><var>file</var></dt>
       <dd><directive module="core">ServerRoot</directive>
-      $B$+$i$NAjBP%Q%9$GI=$5$l$k%U%!%$%kL>!#(B</dd>
+      からの相対パスで表されるファイル名。</dd>
 
       <dt><var>pipe</var></dt>
-      <dd>$B%Q%$%WJ8;z(B "<code>|</code>" $B$H!"$=$N8e$KI8=`F~NO$+$i%m%0$N(B
-      $B>pJs$r<u$1$H$k%W%m%0%i%`$X$N%Q%9$,B3$$$?$b$N!#(B
+      <dd>パイプ文字 "<code>|</code>" と、その後に標準入力からログの
+      情報を受けとるプログラムへのパスが続いたもの。
 
-      <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
-      <p>$B$b$7%W%m%0%i%`$,;HMQ$5$l$?>l9g!"(B
-      <program>httpd</program> $B$,5/F0$5$l$?%f!<%6$H$7$F<B9T$5$l$^$9!#$3$l$O%5!<%P$,(B
-      root $B$K$h$C$F5/F0$5$l$?>l9g$O(B root $B$K$J$j$^$9!#%W%m%0%i%`$,(B
-      $B0BA4$G$"$k$h$&$KN10U$7$F$/$@$5$$!#(B</p>
+      <note type="warning"><title>セキュリティ</title>
+      <p>もしプログラムが使用された場合、
+      <program>httpd</program> が起動されたユーザとして実行されます。これはサーバが
+      root によって起動された場合は root になります。プログラムが
+      安全であるように留意してください。</p>
       </note>
-      <note type="warning"><title>$BCm(B</title>
-        <p>Unix $B$G$J$$%W%i%C%H%U%)!<%`$G%U%!%$%k$N%Q%9$rF~NO$7$F$$$k$H$-$O!"(B
-        $B;HMQ$7$F$$$k%W%i%C%H%U%)!<%`$,%P%C%/%9%i%C%7%e$N;HMQ$r5v2D$7$F$$$?(B
-        $B$H$7$F!"DL>o$N%9%i%C%7%e$@$1$r;H$&$h$&$K5$$r$D$1$F$/$@$5$$!#(B
-        $B0lHLE*$K!"@_Dj%U%!%$%kCf$G$O>o$KIaDL$N%9%i%C%7%e$N$_$r;H$&$h$&$K$9$k(B
-        $BJ}$,NI$$$G$9!#(B</p>
+      <note type="warning"><title>注</title>
+        <p>Unix でないプラットフォームでファイルのパスを入力しているときは、
+        使用しているプラットフォームがバックスラッシュの使用を許可していた
+        として、通常のスラッシュだけを使うように気をつけてください。
+        一般的に、設定ファイル中では常に普通のスラッシュのみを使うようにする
+        方が良いです。</p>
       </note></dd>
     </dl>
 
-    <p>$BFs$D$a$N0z?t$O%m%0%U%!%$%k$K2?$,=q$+$l$k$+$r;XDj$7$^$9!#(B
-    $BA0$K$"$k(B <directive
-    module="mod_log_config">LogFormat</directive> $B%G%#%l%/%F%#%V$K$h$j(B
-    $BDj5A$5$l$?(B <var>nickname</var> $B$+!"(B<a href="#formats">$B%m%0$N=q<0(B</a>
-    $B$N$H$3$m$G@bL@$5$l$F$$$k!"L@<(E*$J(B <var>format</var> $BJ8;zNs$N(B
-    $B$I$A$i$+$r;XDj$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>二つめの引数はログファイルに何が書かれるかを指定します。
+    前にある <directive
+    module="mod_log_config">LogFormat</directive> ディレクティブにより
+    定義された <var>nickname</var> か、<a href="#formats">ログの書式</a>
+    のところで説明されている、明示的な <var>format</var> 文字列の
+    どちらかを指定することができます。</p>
 
-    <p>$BNc$($P!"0J2<$NFs$D$N%G%#%l%/%F%#%V72$OA4$/F1$88z2L$r$b$?$i$7$^$9(B:</p>
+    <p>例えば、以下の二つのディレクティブ群は全く同じ効果をもたらします:</p>
 
     <example>
       # CustomLog with format nickname<br />
@@ -389,18 +389,18 @@
       CustomLog logs/access_log "%h %l %u %t \"%r\" %&gt;s %b"
     </example>
 
-    <p>$B;0$DL\$N0z?t$O>JN,2DG=$G!"%5!<%P$N4D6-$K$"$kJQ?t$,$"$k$+$J$$$+$K(B
-    $B1~$8$F%j%/%(%9%H$r%m%0<}=8$9$k$+$I$&$+$r@)8f$9$k$?$a$K;H$&$3$H$,$G$-$^$9!#(B
-    $B;XDj$5$l$?(B<a href="../env.html">$B4D6-JQ?t(B</a>$B$,%j%/%(%9%H$KBP$7$F(B
-    $B@_Dj$5$l$F$$$?>l9g(B ('<code>env=!<var>name</var></code>' $BJ8$,;H$o$l$?$H$-$O(B
-    $B@_Dj$5$l$F$$$J$$>l9g(B)$B!"%j%/%(%9%H$,%m%0<}=8$5$l$^$9!#(B</p>
+    <p>三つ目の引数は省略可能で、サーバの環境にある変数があるかないかに
+    応じてリクエストをログ収集するかどうかを制御するために使うことができます。
+    指定された<a href="../env.html">環境変数</a>がリクエストに対して
+    設定されていた場合 ('<code>env=!<var>name</var></code>' 文が使われたときは
+    設定されていない場合)、リクエストがログ収集されます。</p>
 
-    <p>$B4D6-JQ?t$O(B <module>mod_setenvif</module> $B%b%8%e!<%k$H(B
-    <module>mod_rewrite</module> $B%b%8%e!<%k$NN>J}$b$7$/$O(B
-    $BJRJ}$rMQ$$$F%j%/%(%9%H$4$H$K@_Dj$9$k$3$H$,$G$-$^$9!#(B
-    $BNc$($P!"%5!<%P$K$"$k$9$Y$F$N(B GIF $B2hA|$X$N%j%/%(%9%H$rJL$N%m%0%U%!%$%k(B
-    $B$K$O5-O?$7$?$$$1$l$I!"%a%$%s%m%0$K$O5-O?$7$?$/$J$$!"$H$$$&$H$-$O(B
-    $B0J2<$N$b$N$r;H$&$3$H$,$G$-$^$9(B:</p>
+    <p>環境変数は <module>mod_setenvif</module> モジュールと
+    <module>mod_rewrite</module> モジュールの両方もしくは
+    片方を用いてリクエストごとに設定することができます。
+    例えば、サーバにあるすべての GIF 画像へのリクエストを別のログファイル
+    には記録したいけれど、メインログには記録したくない、というときは
+    以下のものを使うことができます:</p>
     
     <example>
       SetEnvIf Request_URI \.gif$ gif-image<br />
@@ -408,8 +408,8 @@
       CustomLog nongif-requests.log common env=!gif-image
     </example>
 
-    <p>$B8E$$(B RefererIgnore $B%G%#%l%/%F%#%V$HF1$85sF0$r$5$;$?$$>l9g$O!"(B
-    $B<!$N$h$&$K$7$^$9(B:</p>
+    <p>古い RefererIgnore ディレクティブと同じ挙動をさせたい場合は、
+    次のようにします:</p>
 
     <example>
     SetEnvIf Referer example\.com localreferer<br />
@@ -420,7 +420,7 @@
 
 <directivesynopsis>
 <name>LogFormat</name>
-<description>$B%m%0%U%!%$%k$G;HMQ$9$k=q<0$r@_Dj$9$k(B</description>
+<description>ログファイルで使用する書式を設定する</description>
 <syntax>LogFormat <var>format</var>|<var>nickname</var>
 [<var>nickname</var>]</syntax>
 <default>LogFormat "%h %l %u %t \"%r\" %>s %b"</default>
@@ -428,35 +428,35 @@
 </contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O%"%/%;%9%m%0%U%!%$%k$N=q<0$r;XDj$7$^$9!#(B</p>
+    <p>このディレクティブはアクセスログファイルの書式を指定します。</p>
 
-    <p><directive>LogFormat</directive> $B%G%#%l%/%F%#%V$OFs$D$N7A<0$N$I$A$i$+$r(B
-    $B$H$k$3$H$,$G$-$^$9!#:G=i$N7A<0$G$O0l$D$N0z?t$N$_$,;XDj$5$l!"(B
-    $BB3$/(B <directive>TransferLog</directive>
-    $B$G;XDj$5$l$?%m%0$G;H$o$l$k%m%0$N=q<0$r@_Dj$7$^$9!#$3$NC1FH$N0z?t$G$O(B
-    $B>e$N(B<a href="#formats">$B%+%9%?%`%m%0=q<0(B</a>$B$G@bL@$5$l$F$$$k$h$&$K(B
-    <var>format</var> $B$rL@<(E*$K;XDj$9$k$3$H$,$G$-$^$9!#(B
-    $B$b$7$/$O!"2<$G@bL@$5$l$F$$$k$h$&$KA0$K(B <directive>LogFormat</directive>
-    $B%G%#%l%/%F%#%V$GDj5A$5$l$?%m%0$N=q<0$r(B <var>nickname</var>$B$r;H$C$F(B
-    $B;2>H$9$k$3$H$b$G$-$^$9!#(B</p>
+    <p><directive>LogFormat</directive> ディレクティブは二つの形式のどちらかを
+    とることができます。最初の形式では一つの引数のみが指定され、
+    続く <directive>TransferLog</directive>
+    で指定されたログで使われるログの書式を設定します。この単独の引数では
+    上の<a href="#formats">カスタムログ書式</a>で説明されているように
+    <var>format</var> を明示的に指定することができます。
+    もしくは、下で説明されているように前に <directive>LogFormat</directive>
+    ディレクティブで定義されたログの書式を <var>nickname</var>を使って
+    参照することもできます。</p>
 
-    <p><directive>LogFormat</directive> $B%G%#%l%/%F%#%V$NFs$D$a$N7A<0$O(B
-    <var>format</var> $B$K(B <var>nickname</var> $B$rM?$($^$9!#(B
-    $B%U%)!<%^%C%HJ8;zNsA4BN$r:F$S=q$/$+$o$j$K!"(B
-    $B$3$N(B <var>nickname</var> $B$rB3$-$N(B <directive
-    >LogFormat</directive> $B%G%#%l%/%F%#%V$d(B
-    <directive>CustomLog</directive> $B%G%#%l%/%F%#%V$G;H$&$3$H$,$G$-$^$9!#(B
-    Nickname $B$rDj5A$9$k(B <directive>LogFormat</directive> $B%G%#%l%/%F%#%V$O(B
-    <strong>$BB>$K$O2?$b$7$^$;$s(B</strong> -- $B$9$J$o$A!"%K%C%/%M!<%`$rDj5A(B
-    $B$9$k(B<em>$B$@$1(B</em>$B$G!"<B:]$K=q<0$rE,MQ$7$F%G%U%)%k%H$K$9$k$H$$$&$3$H$O9T$J$$$^$;$s!#(B
-    $B$G$9$+$i!"$3$l$OB3$/(B <directive module="mod_log_config">TransferLog</directive>
-    $B%G%#%l%/%F%#%V$K$O1F6A$rM?$($^$;$s!#(B
-    $B$5$i$K!"(B<directive>LogFormat</directive> $B%G%#%l%/%F%#%V$O4{B8$N(B nickname $B$r(B
-    $B;H$C$FJL$N(B nickname $B$rDj5A$9$k$3$H$O$G$-$^$;$s!#(BNickname $B$K$O(B
-    $B%Q!<%;%s%H5-9f(B (<code>%</code>) $B$,4^$^$l$F$$$F$O$$$1$J$$$3$H$K$bCm0U(B
-    $B$7$F$/$@$5$$!#(B</p>
+    <p><directive>LogFormat</directive> ディレクティブの二つめの形式は
+    <var>format</var> に <var>nickname</var> を与えます。
+    フォーマット文字列全体を再び書くかわりに、
+    この <var>nickname</var> を続きの <directive
+    >LogFormat</directive> ディレクティブや
+    <directive>CustomLog</directive> ディレクティブで使うことができます。
+    Nickname を定義する <directive>LogFormat</directive> ディレクティブは
+    <strong>他には何もしません</strong> -- すなわち、ニックネームを定義
+    する<em>だけ</em>で、実際に書式を適用してデフォルトにするということは行ないません。
+    ですから、これは続く <directive module="mod_log_config">TransferLog</directive>
+    ディレクティブには影響を与えません。
+    さらに、<directive>LogFormat</directive> ディレクティブは既存の nickname を
+    使って別の nickname を定義することはできません。Nickname には
+    パーセント記号 (<code>%</code>) が含まれていてはいけないことにも注意
+    してください。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       LogFormat "%v %h %l %u %t \"%r\" %&gt;s %b" vhost_common
     </example>
 </usage>
@@ -464,23 +464,23 @@
 
 <directivesynopsis>
 <name>TransferLog</name>
-<description>$B%m%0%U%!%$%k$N0LCV$r;XDj(B</description>
+<description>ログファイルの位置を指定</description>
 <syntax>TransferLog <var>file</var>|<var>pipe</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O!"%m%0=q<0$rD>@\;XDj$G$-$J$$$3$H$H!"(B
-    $B>r7oIU$-%m%.%s%0$,L5$$$3$H$r=|$/$H!"(B<directive module="mod_log_config"
-    >CustomLog</directive> $B$HA4$/F1$80z?t$H8z2L$,$"$j$^$9!#(B
-    $BD>@\%m%0=q<0$r;XDj$9$kBe$o$j$K!"%m%0$N=q<0$O$=$3$^$G$G0lHV:G8e$K;XDj$5$l$?(B
-    $B%K%C%/%M!<%`$rDj5A$7$J$$(B
-    <directive module="mod_log_config">LogFormat</directive> $B%G%#%l%/%F%#%V(B
-	$B$GDj5A$5$l$?$b$N$r;H$$$^$9!#(B
-    $B$b$7B>$N=q<0$,A4$/;XDj$5$l$F$$$J$$$H$-$O(B Common Log Format
-    $B$,;H$o$l$^$9!#(B</p>
+    <p>このディレクティブは、ログ書式を直接指定できないことと、
+    条件付きロギングが無いことを除くと、<directive module="mod_log_config"
+    >CustomLog</directive> と全く同じ引数と効果があります。
+    直接ログ書式を指定する代わりに、ログの書式はそこまでで一番最後に指定された
+    ニックネームを定義しない
+    <directive module="mod_log_config">LogFormat</directive> ディレクティブ
+	で定義されたものを使います。
+    もし他の書式が全く指定されていないときは Common Log Format
+    が使われます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\" \"%{User-agent}i\""<br />
       TransferLog logs/access_log
     </example>

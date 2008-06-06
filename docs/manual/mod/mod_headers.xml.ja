@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:568323 (outdated) -->
@@ -23,83 +23,83 @@
 <modulesynopsis metafile="mod_headers.xml.meta">
 
 <name>mod_headers</name>
-<description>HTTP $B%j%/%(%9%H$N%X%C%@$H1~Ez$N%X%C%@$N%+%9%?%^%$%:(B</description>
+<description>HTTP リクエストのヘッダと応答のヘッダのカスタマイズ</description>
 <status>Extension</status>
 <sourcefile>mod_headers.c</sourcefile>
 <identifier>headers_module</identifier>
 <compatibility><directive module="mod_headers">RequestHeader</directive> 
-$B$O(B Apache 2.0 $B0J9_$N$_$G;HMQ2DG=(B</compatibility>
+は Apache 2.0 以降のみで使用可能</compatibility>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$O(B HTTP $B$N%j%/%(%9%H%X%C%@$H1~Ez%X%C%@$r@)8f$7!"(B
-    $BJQ99$9$k$?$a$N%G%#%l%/%F%#%V$rDs6!$7$^$9!#%X%C%@$rDI2C$7$?$j!"(B
-    $BCV$-49$($?$j!":o=|$7$?$j$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>このモジュールは HTTP のリクエストヘッダと応答ヘッダを制御し、
+    変更するためのディレクティブを提供します。ヘッダを追加したり、
+    置き換えたり、削除したりすることができます。</p>
 </summary>
 
-<section id="order"><title>$B=hM}$N=gHV(B</title>
+<section id="order"><title>処理の順番</title>
 
-    <p><module>mod_header</module> $B$N%G%#%l%/%F%#%V$O%5!<%P@_Dj$N$[$\$I$3$K$G$b(B
-    $B=q$/$3$H$,$G$-!"1F6A$9$kHO0O$r(B<a
-    href="../sections.html">$B@_DjMQ%;%/%7%g%s(B</a>$B$G0O$`$3$H$G8BDj$9$k(B
-    $B$3$H$,$G$-$^$9!#(B</p>
+    <p><module>mod_header</module> のディレクティブはサーバ設定のほぼどこにでも
+    書くことができ、影響する範囲を<a
+    href="../sections.html">設定用セクション</a>で囲むことで限定する
+    ことができます。</p>
 
-    <p>$B=hM}$N=gHV$O=EMW$G!"@_Dj%U%!%$%kCf$N=gHV$H!"(B<a
-    href="../sections.html">$B@_DjMQ%;%/%7%g%s(B</a>$BFb$N0LCV$H$NN>J}$K(B
-    $B1F6A$5$l$^$9!#0J2<$NFs$D$N%X%C%@$O=gHV$,5U$K$J$k$H(B
-    $B0c$&7k2L$K$J$j$^$9(B:</p>
+    <p>処理の順番は重要で、設定ファイル中の順番と、<a
+    href="../sections.html">設定用セクション</a>内の位置との両方に
+    影響されます。以下の二つのヘッダは順番が逆になると
+    違う結果になります:</p>
 
     <example>
       RequestHeader append MirrorID "mirror 12"<br />
       RequestHeader unset MirrorID
     </example>
 
-    <p>$B$3$N=gHV$N>l9g$O!"(B<code>MirrorID</code> $B%X%C%@$O@_Dj$5$l$^$;$s!#(B
-    $B5U$K$J$C$F$$$k$H!"(BMirrorID $B%X%C%@$O(B "mirror 12" $B$K@_Dj$5$l$^$9!#(B</p>
+    <p>この順番の場合は、<code>MirrorID</code> ヘッダは設定されません。
+    逆になっていると、MirrorID ヘッダは "mirror 12" に設定されます。</p>
 </section>
 
-<section id="early"><title>$BAa4|=hM}!"8e4|=hM}(B</title>
-    <p><module>mod_headers</module> $B$G$O!"%j%/%(%9%H$NAa4|$+8e4|$+$N(B
-    $B$I$A$i$GE,MQ$9$k$+$rA*$Y$^$9!#DL>o$O8e4|%b!<%I$G!"(B
-    $B%3%s%F%s%D@8@.$,<B9T$5$l$kD>A0$K%j%/%(%9%H%X%C%@$,%;%C%H$5$l!"(B
-    $B%l%9%]%s%9$H$7$FAw=P$5$l$kD>A0$K%l%9%]%s%9%X%C%@$,%;%C%H$5$l$^$9!#(B
-    $B1?MQCf$N%5!<%P$G$OI,$:8e4|%b!<%I$r;H$C$F$/$@$5$$!#(B</p>
+<section id="early"><title>早期処理、後期処理</title>
+    <p><module>mod_headers</module> では、リクエストの早期か後期かの
+    どちらで適用するかを選べます。通常は後期モードで、
+    コンテンツ生成が実行される直前にリクエストヘッダがセットされ、
+    レスポンスとして送出される直前にレスポンスヘッダがセットされます。
+    運用中のサーバでは必ず後期モードを使ってください。</p>
 
-    <p>$BAa4|%b!<%I$O3+H/<T8~$1$N%F%9%H(B/$B%G%P%C%0MQ$K@_7W$5$l$F$$$^$9!#(B
-    <code>early</code> $B%-!<%o!<%I;XDj$5$l$?%G%#%l%/%F%#%V$K$h$C$F!"(B
-    $B%j%/%(%9%H=hM}$N3+;OCOE@$K$J$j$^$9!#(B
-    $B$D$^$j!"0[$J$k%j%/%(%9%H$r;n$7$?$j%F%9%H%1!<%9$r%;%C%H%"%C%W$9$k$N$K(B
-    $B3hMQ$G$-$k0lJ}$G!"%l%9%]%s%9$r@8@.$9$kA0$KB>$N%b%8%e!<%k$K$h$C$F(B
-    $B%X%C%@$,=q$-49$($i$l$F$7$^$&$+$b$7$l$J$$$H$$$&$3$H$r0UL#$7$^$9!#(B</p>
+    <p>早期モードは開発者向けのテスト/デバッグ用に設計されています。
+    <code>early</code> キーワード指定されたディレクティブによって、
+    リクエスト処理の開始地点になります。
+    つまり、異なるリクエストを試したりテストケースをセットアップするのに
+    活用できる一方で、レスポンスを生成する前に他のモジュールによって
+    ヘッダが書き換えられてしまうかもしれないということを意味します。</p>
 
-    <p>early $B%G%#%l%/%F%#%V$G$O%j%/%(%9%H%Q%9$N@_Dj$,2r7h$5$l$kA0$K(B
-    $B=hM}$5$l$k$N$G!"%a%$%s%5!<%P$+%P!<%A%c%k%[%9%H%3%s%F%-%9%H$G$N$_!"(B
-    $BAa4|%X%C%@$r%;%C%H$G$-$^$9!#(Bearly $B%G%#%l%/%F%#%V$O%j%/%(%9%H%Q%9$K(B
-    $B0MB8$9$k$3$H$O$G$-$^$;$s$N$G!"(B<code>&lt;Directory&gt;</code> $B$d(B
-    <code>&lt;Location&gt;</code> $B$H$$$C$?%3%s%F%-%9%HFb$G$O;HMQ(B
-    $B$G$-$^$;$s!#(B</p>
+    <p>early ディレクティブではリクエストパスの設定が解決される前に
+    処理されるので、メインサーバかバーチャルホストコンテキストでのみ、
+    早期ヘッダをセットできます。early ディレクティブはリクエストパスに
+    依存することはできませんので、<code>&lt;Directory&gt;</code> や
+    <code>&lt;Location&gt;</code> といったコンテキスト内では使用
+    できません。</p>
 </section>
 
-<section id="examples"><title>$BNc(B</title>
+<section id="examples"><title>例</title>
 
     <ol>
-      <li>$B%j%/%(%9%H%X%C%@Cf$N(B "TS" $B$G;O$^$k%U%#!<%k%I$r$9$Y$F1~Ez%X%C%@$K(B
-        $B%3%T!<$7$^$9(B:
+      <li>リクエストヘッダ中の "TS" で始まるフィールドをすべて応答ヘッダに
+        コピーします:
         <example>
           Header echo ^TS
         </example>
       </li>
 
       <li>
-        $B%j%/%(%9%H$r<u$1IU$1$?;~9o$H%j%/%(%9%H$r=hM}$7$?;~4V$rF~$l$?%X%C%@!"(B
-        <code>MyHeader</code> $B$r1~Ez$KDI2C$7$^$9!#$3$N%X%C%@$O%/%i%$%"%s%H$,(B
-        $B%5!<%P$NIi2Y$rD>4QE*$KCN$k$?$a$d!"%/%i%$%"%s%H(B-$B%5!<%P4V$N(B
-        $B%\%H%k%M%C%/$rD4$Y$k$?$a$K;H$&$3$H$,$G$-$^$9!#(B
+        リクエストを受け付けた時刻とリクエストを処理した時間を入れたヘッダ、
+        <code>MyHeader</code> を応答に追加します。このヘッダはクライアントが
+        サーバの負荷を直観的に知るためや、クライアント-サーバ間の
+        ボトルネックを調べるために使うことができます。
 
         <example>
            Header add MyHeader "%D %t"
         </example>
 
-        <p>$B>e5-$N@_Dj$G$O!"0J2<$N$h$&$J%X%C%@$,1~Ez$KDI2C$5$l$k$3$H$K$J$j$^$9(B:</p>
+        <p>上記の設定では、以下のようなヘッダが応答に追加されることになります:</p>
 
         <example>
            MyHeader: D=3775428 t=991424704447256
@@ -107,31 +107,31 @@
       </li>
 
       <li>
-        Joe $B$K$"$$$5$D$r$7$^$9(B:
+        Joe にあいさつをします:
 
         <example>
            Header add MyHeader "Hello Joe. It took %D microseconds for Apache to serve this request."
         </example>
 
-        <p>$B0J2<$N$h$&$J%X%C%@$,1~Ez$KDI2C$5$l$k$3$H$K$J$j$^$9(B</p>
+        <p>以下のようなヘッダが応答に追加されることになります</p>
 
         <example>
            MyHeader: Hello Joe. It took D=3775428 microseconds for Apache to serve this request.
         </example>
       </li>
 
-      <li>$B%j%/%(%9%H$K(B "MyRequestHeader" $B$,$"$k$H$-$K8B$j(B <code>MyHeader</code> $B$r1~Ez$K(B
-      $BIU$1$^$9!#$3$l$O!"%/%i%$%"%s%H$NMW5a$K1~$($F%X%C%@$r:n@.$9$k$H$-$K(B
-      $BLr$KN)$A$^$9!#$3$NNc$G$O(B <module>mod_setenvif</module> $B%b%8%e!<%k$,I,MW$J$3$H$K(B
-      $BCm0U$7$F$/$@$5$$!#(B
+      <li>リクエストに "MyRequestHeader" があるときに限り <code>MyHeader</code> を応答に
+      付けます。これは、クライアントの要求に応えてヘッダを作成するときに
+      役に立ちます。この例では <module>mod_setenvif</module> モジュールが必要なことに
+      注意してください。
 
         <example>
            SetEnvIf MyRequestHeader value HAVE_MyRequestHeader<br />
            Header add MyHeader "%D %t mytext" env=HAVE_MyRequestHeader
         </example>
 
-        <p>$B$b$7(B HTTP $B%j%/%(%9%H$K(B <code>MyRequestHeader: value</code> $B%X%C%@$,(B
-        $B$"$k$H!"1~Ez$K$O0J2<$N$h$&$J%X%C%@$,IU2C$5$l$^$9!#(B</p>
+        <p>もし HTTP リクエストに <code>MyRequestHeader: value</code> ヘッダが
+        あると、応答には以下のようなヘッダが付加されます。</p>
 
         <example>
            MyHeader: D=3775428 t=991424704447256 mytext
@@ -142,7 +142,7 @@
 
 <directivesynopsis>
 <name>RequestHeader</name>
-<description>HTTP $B%j%/%(%9%H%X%C%@$N@_Dj(B</description>
+<description>HTTP リクエストヘッダの設定</description>
 <syntax>RequestHeader set|append|add|unset <var>header</var>
 [<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -150,186 +150,186 @@
 <override>FileInfo</override>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B HTTP $B%j%/%(%9%H%X%C%@$rCV49!"DI2C!":o=|$G$-$^$9!#(B
-    $B%X%C%@$O%3%s%F%s%H%O%s%I%i$,<B9T$5$l$kD>A0$K<B9T$5$l!"(B
-    $BF~$C$FMh$k%X%C%@$rJQ99$9$k$3$H$,2DG=$K$J$C$F$$$^$9!#(B
-    $B9T$J$&=hM}$OBh(B 1 $B0z?t$K$h$j7h$^$j$^$9!#$3$l$K$O0J2<$NCM$r;XDj(B
-    $B$9$k$3$H$,$G$-$^$9(B:</p>
+    <p>このディレクティブは HTTP リクエストヘッダを置換、追加、削除できます。
+    ヘッダはコンテントハンドラが実行される直前に実行され、
+    入って来るヘッダを変更することが可能になっています。
+    行なう処理は第 1 引数により決まります。これには以下の値を指定
+    することができます:</p>
 
     <dl>
     <dt><code>set</code></dt>
-    <dd>$B%j%/%(%9%H%X%C%@$r@_Dj$7$^$9!#F1$8L>A0$N%X%C%@$,B8:_$7$F$$$k$H!"(B
-    $B$=$l$rCV$-49$($^$9!#(B</dd>
+    <dd>リクエストヘッダを設定します。同じ名前のヘッダが存在していると、
+    それを置き換えます。</dd>
 
     <dt><code>append</code></dt>
-    <dd>$B%j%/%(%9%H%X%C%@$O!"4{$KB8:_$9$kF1$8L>A0$N%X%C%@$KDI2C$5$l$^$9!#(B
-    $B?7$7$$CM$,4{B8$N%X%C%@$KDI2C$5$l$k$H$-$K$O!"4{B8$N%X%C%@$N(B
-    $B8e$K%3%s%^$G6h@Z$i$l$FDI2C$5$l$^$9!#$3$l$O%X%C%@$KJ#?t$NCM$r(B
-    $B;XDj$9$k$H$-$N(B HTTP $B$NI8=`$NJ}K!$G$9!#(B</dd>
+    <dd>リクエストヘッダは、既に存在する同じ名前のヘッダに追加されます。
+    新しい値が既存のヘッダに追加されるときには、既存のヘッダの
+    後にコンマで区切られて追加されます。これはヘッダに複数の値を
+    指定するときの HTTP の標準の方法です。</dd>
 
     <dt><code>add</code></dt>
-    <dd>$B%X%C%@$,4{$KB8:_$7$F$$$k$H$-$G$5$($b!"%j%/%(%9%H%X%C%@$r(B
-    $B4{B8$N%X%C%@$KDI2C$7$^$9!#$3$l$K$h$j!"Fs$D(B ($B$+$=$l0J>e(B) $B$N(B
-    $B%X%C%@$NL>A0$,F1$8$K$J$k$3$H$,$"$j$^$9!#$=$N7k2L!"A[Dj$G$-$J$$(B
-    $B$3$H$,5/$3$k2DG=@-$,$"$j$^$9$N$G!"0lHLE*$K$O(B <code>append</code> $B$NJ}$r(B
-    $B;H$&J}$,NI$$$G$7$g$&!#(B</dd>
+    <dd>ヘッダが既に存在しているときでさえも、リクエストヘッダを
+    既存のヘッダに追加します。これにより、二つ (かそれ以上) の
+    ヘッダの名前が同じになることがあります。その結果、想定できない
+    ことが起こる可能性がありますので、一般的には <code>append</code> の方を
+    使う方が良いでしょう。</dd>
 
     <dt><code>unset</code></dt>
-    <dd>$B$b$7;XDj$5$l$?L>A0$N%j%/%(%9%H%X%C%@$,B8:_$7$F$$$l$P!":o=|$5$l$^$9!#(B
-    $BF1$8L>A0$NJ#?t$N%X%C%@$,$"$k$H$-$O!"$9$Y$F:o=|$5$l$^$9!#(B
-    <var>value</var> $B$r$D$1$F$O$$$1$^$;$s!#(B</dd>
+    <dd>もし指定された名前のリクエストヘッダが存在していれば、削除されます。
+    同じ名前の複数のヘッダがあるときは、すべて削除されます。
+    <var>value</var> をつけてはいけません。</dd>
     </dl>
 
-    <p>$B$3$N0z?t$N8e$K$O%X%C%@L>(B (<em>header</em>) $B$,B3$-$^$9!#(B
-    $B%X%C%@L>$K$O:G8e$K%3%m%s$r4^$a$k$3$H$b$G$-$^$9$,!"L5$/$F$b9=$$$^$;$s!#(B
-    $BBgJ8;z>.J8;z$O6hJL$5$l$^$;$s!#(B<code>add</code>,
-    <code>append</code>, <code>set</code> $B$N>l9g$O!"(B<em>value</em> $B$,;0$DL\$N(B
-    $B0z?t$H$7$F;XDj$5$l$^$9!#(B<em>value</em> $B$K6uGr$,$"$k>l9g$OFs=E0zMQId$G(B
-    $B0O$`I,MW$,$"$j$^$9!#(Bunset $B$N>l9g$O!"(B<em>value</em> $B$O;XDj$7$^$;$s!#(B
-    <var>value</var> $B$OJ8;zNs!"%U%)!<%^%C%H;XDj;R!"$"$k$$$O!"$=$N:.9g$G$9!#(B
-    $B;H$&$3$H$N$G$-$k%U%)!<%^%C%H;XDj;R$O!"(B<directive
-    module="mod_headers">Header</directive> $B$HF1$8$G$9$N$G!"(B
-    $B>\:Y$O$=$A$i$r$4Mw$/$@$5$$!#(B</p>
+    <p>この引数の後にはヘッダ名 (<em>header</em>) が続きます。
+    ヘッダ名には最後にコロンを含めることもできますが、無くても構いません。
+    大文字小文字は区別されません。<code>add</code>,
+    <code>append</code>, <code>set</code> の場合は、<em>value</em> が三つ目の
+    引数として指定されます。<em>value</em> に空白がある場合は二重引用符で
+    囲む必要があります。unset の場合は、<em>value</em> は指定しません。
+    <var>value</var> は文字列、フォーマット指定子、あるいは、その混合です。
+    使うことのできるフォーマット指定子は、<directive
+    module="mod_headers">Header</directive> と同じですので、
+    詳細はそちらをご覧ください。</p>
 
-    <p><directive>RequestHeader</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B$I$&$$$C$?>r7o2<$G%"%/%7%g%s$r9T$&$+$r;XDj$9$kDI2C0z?t(B
-    $B$"$k$$$O!"(B<a href="#early">$BAa4|=hM}(B</a> $B$r;XDj$9$k(B <code>early</code> 
-    $B%-!<%o!<%I$r@_Dj$9$k$3$H$,$G$-$^$9!#(B
-    <code>env=<var>...</var></code> $B$N0z?t$G@_Dj$5$l$F$$$k(B
-    <a href="../env.html">$B4D6-JQ?t(B</a> $B$,B8:_$7$F$$$k(B
-    ($B$"$k$$$O(B <code>env=!<var>...</var></code> $B$G;XDj$5$l$?4D6-JQ?t$,(B
-    $BB8:_$7$J$$(B) $B>l9g!"(B<directive>RequestHeader</directive> $B%G%#%l%/%F%#%V$O(B
-    $BM-8z$K$J$j$^$9!#$=$l0J30$N>l9g!"%G%#%l%/%F%#%V$O8zNO$r;}$A$^$;$s!#(B</p>
+    <p><directive>RequestHeader</directive> ディレクティブは、
+    どういった条件下でアクションを行うかを指定する追加引数
+    あるいは、<a href="#early">早期処理</a> を指定する <code>early</code> 
+    キーワードを設定することができます。
+    <code>env=<var>...</var></code> の引数で設定されている
+    <a href="../env.html">環境変数</a> が存在している
+    (あるいは <code>env=!<var>...</var></code> で指定された環境変数が
+    存在しない) 場合、<directive>RequestHeader</directive> ディレクティブは
+    有効になります。それ以外の場合、ディレクティブは効力を持ちません。</p>
 
-    <p><a href="#early">early</a> $B%b!<%I$G$J$$>l9g$K8B$j!"(B
-    <directive>RequestHeader</directive> $B%G%#%l%/%F%#%V$O(B
-    fixup $B%U%'!<%:$G%j%/%(%9%H$,%O%s%I%i$K07$o$l$kD>A0$K(B
-    $B=hM}$5$l$^$9!#$3$l$K$h$j!"%V%i%&%6$d(B Apache $B$NF~NO%U%#%k%?$K$h$j(B
-    $B@8@.$5$l$?%X%C%@$r>e=q$-$7$?$j=$@5$7$?$j$G$-$k$h$&$K$J$C$F$$$^$9!#(B</p>
+    <p><a href="#early">early</a> モードでない場合に限り、
+    <directive>RequestHeader</directive> ディレクティブは
+    fixup フェーズでリクエストがハンドラに扱われる直前に
+    処理されます。これにより、ブラウザや Apache の入力フィルタにより
+    生成されたヘッダを上書きしたり修正したりできるようになっています。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Header</name>
-<description>HTTP $B1~Ez%X%C%@$N@_Dj(B</description>
+<description>HTTP 応答ヘッダの設定</description>
 <syntax>Header [<var>condition</var>] set|append|add|unset|echo
 <var>header</var> [<var>value</var>] [early|env=[!]<var>variable</var>]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B HTTP $B1~Ez%X%C%@$rCV49!"DI2C!":o=|$G$-$^$9!#(B
-    $B%X%C%@$O%3%s%F%s%H%O%s%I%i$d=PNO%U%#%k%?$,<B9T$5$l$?D>8e$K<B9T$5$l!"(B
-    $B=P$F9T$/%X%C%@$rJQ99$G$-$k$h$&$K$J$C$F$$$^$9!#(B</p>
+    <p>このディレクティブは HTTP 応答ヘッダを置換、追加、削除できます。
+    ヘッダはコンテントハンドラや出力フィルタが実行された直後に実行され、
+    出て行くヘッダを変更できるようになっています。</p>
 
-    <p>$B%*%W%7%g%s$N(B <var>condition</var> $B$O(B <code>onsuccess</code> $B$+(B
-    <code>always</code> $B$N$I$A$i$+$r;XDj$G$-$^$9!#$3$l$OFbIt%X%C%@%F!<%V%k$N$I$l$r(B
-    $BA`:n$9$k$+$r7hDj$7$^$9!#(B<code>onsuccess</code> $B$O(B <code>2<var>xx</var></code>
-    $B%9%F!<%?%9%3!<%I$N!"(B<code>always</code> $B$OA4$F$N%9%F!<%?%9%3!<%I(B
-    (<code>2<var>xx</var></code> $B$r4^$`(B) $B$N0UL#$K$J$j$^$9!#(B
-    $B$"$k%b%8%e!<%k$G%;%C%H$5$l$k%X%C%@$r%"%s%;%C%H$7$?$$>l9g$OFC$K!"(B
-    $B$I$N%F!<%V%k$,1F6A$r<u$1$k$+$r<B:]$K;n$7$?$[$&$,$h$$$G$7$g$&!#(B</p>
+    <p>オプションの <var>condition</var> は <code>onsuccess</code> か
+    <code>always</code> のどちらかを指定できます。これは内部ヘッダテーブルのどれを
+    操作するかを決定します。<code>onsuccess</code> は <code>2<var>xx</var></code>
+    ステータスコードの、<code>always</code> は全てのステータスコード
+    (<code>2<var>xx</var></code> を含む) の意味になります。
+    あるモジュールでセットされるヘッダをアンセットしたい場合は特に、
+    どのテーブルが影響を受けるかを実際に試したほうがよいでしょう。</p>
 
-    <p>$B9T$J$&=hM}$OFsHVL\$N$N0z?t$G7h$^$j$^$9!#(B
-    $B$3$N0z?t$K$O<!$NCM$r;XDj$G$-$^$9(B:</p>
+    <p>行なう処理は二番目のの引数で決まります。
+    この引数には次の値を指定できます:</p>
 
     <dl>
     <dt><code>set</code></dt>
-    <dd>$B1~Ez%X%C%@$r@_Dj$7$^$9!#F1$8L>A0$N%X%C%@$,B8:_$9$k>l9g$O$=$l$r(B
-    $BCV$-49$($^$9!#(B<em>value</em> $B$K$O%U%)!<%^%C%HJ8;zNs$r(B
-    $B;XDj$9$k$3$H$b$G$-$^$9!#(B</dd>
+    <dd>応答ヘッダを設定します。同じ名前のヘッダが存在する場合はそれを
+    置き換えます。<em>value</em> にはフォーマット文字列を
+    指定することもできます。</dd>
 
     <dt><code>append</code></dt>
-    <dd>$B1~Ez%X%C%@$r4{$KB8:_$9$kF1$8L>A0$N%X%C%@$KDI2C$7$^$9!#(B
-    $B?7$7$$CM$,4{B8$N%X%C%@$KDI2C$5$l$k$H$-$K$O!"4{B8$N%X%C%@$N(B
-    $B8e$K%3%s%^$G6h@Z$i$l$FDI2C$5$l$^$9!#$3$l$O%X%C%@$KJ#?t$NCM$r(B
-    $B;XDj$9$k$H$-$N(B HTTP $B$NI8=`$NJ}K!$G$9!#(B</dd>
+    <dd>応答ヘッダを既に存在する同じ名前のヘッダに追加します。
+    新しい値が既存のヘッダに追加されるときには、既存のヘッダの
+    後にコンマで区切られて追加されます。これはヘッダに複数の値を
+    指定するときの HTTP の標準の方法です。</dd>
 
     <dt><code>add</code></dt>
-    <dd>$B%X%C%@$,4{$KB8:_$7$F$$$k$H$-$G$5$($b!"1~Ez%X%C%@$r(B
-    $B4{B8$N%X%C%@$KDI2C$7$^$9!#$3$l$K$h$j!"Fs$D(B ($B$+$=$l0J>e(B) $B$N(B
-    $B%X%C%@$NL>A0$,F1$8$K$J$k$3$H$,$"$j$^$9!#$=$N7k2L!"A[Dj$G$-$J$$(B
-    $B$3$H$,5/$3$k2DG=@-$,$"$j$^$9$N$G!"0lHLE*$K$O(B <code>append</code> $B$NJ}$r(B
-    $B;H$&J}$,NI$$$G$7$g$&!#(B</dd>
+    <dd>ヘッダが既に存在しているときでさえも、応答ヘッダを
+    既存のヘッダに追加します。これにより、二つ (かそれ以上) の
+    ヘッダの名前が同じになることがあります。その結果、想定できない
+    ことが起こる可能性がありますので、一般的には <code>append</code> の方を
+    使う方が良いでしょう。</dd>
 
     <dt><code>unset</code></dt>
-    <dd>$B$b$7;XDj$5$l$?L>A0$N1~Ez%X%C%@$,B8:_$7$F$$$l$P!":o=|$5$l$^$9!#(B
-    $BF1$8L>A0$N%X%C%@$,J#?t$"$k$H$-$O!"$9$Y$F:o=|$5$l$^$9!#(B
-    <var>value</var> $B$r$D$1$F$O$$$1$^$;$s!#(B</dd>
+    <dd>もし指定された名前の応答ヘッダが存在していれば、削除されます。
+    同じ名前のヘッダが複数あるときは、すべて削除されます。
+    <var>value</var> をつけてはいけません。</dd>
 
     <dt><code>echo</code></dt>
-    <dd>$B;XDj$5$l$?$b$N$HF1$8L>A0$N%j%/%(%9%H%X%C%@$r1~Ez%X%C%@$G(B
-    $B$=$N$^$^JV$7$^$9!#(B<var>header</var> $B$K$O@55,I=8=$b;XDj$G$-$^$9!#(B
-    <var>value</var> $B$r$D$1$F$O$$$1$^$;$s!#(B</dd>
+    <dd>指定されたものと同じ名前のリクエストヘッダを応答ヘッダで
+    そのまま返します。<var>header</var> には正規表現も指定できます。
+    <var>value</var> をつけてはいけません。</dd>
     </dl>
 
-    <p>$B$3$N0z?t$N8e$K$O%X%C%@L>(B (<var>header</var>) $B$,B3$-$^$9!#(B
-    $B%X%C%@L>$K$O:G8e$K%3%m%s$r4^$a$k$3$H$b$G$-$^$9$,!"L5$/$F$b9=$$$^$;$s!#(B
+    <p>この引数の後にはヘッダ名 (<var>header</var>) が続きます。
+    ヘッダ名には最後にコロンを含めることもできますが、無くても構いません。
     <code>set</code>, <code>append</code>, <code>add</code>,
-    <code>unset</code> $B$G$OBgJ8;z>.J8;z$O(B
-    $B6hJL$5$l$^$;$s!#(Becho $B$N(B <em>header</em> $BL>$OBgJ8;z>.J8;z$r6hJL$7!"(B
-    $B@55,I=8=$r;XDj$9$k$3$H$b$G$-$^$9!#(B</p>
+    <code>unset</code> では大文字小文字は
+    区別されません。echo の <em>header</em> 名は大文字小文字を区別し、
+    正規表現を指定することもできます。</p>
 
     <p><code>add</code>, <code>append</code>,
-    <code>set</code> $B$G$O(B <var>value</var> $B$r;0$DL\$N(B
-    $B0z?t$H$7$F;XDj$7$^$9!#(B<var>value</var> $B$K6uGr$,$"$k>l9g$OFs=E0zMQId$G(B
-    $B0O$`I,MW$,$"$j$^$9!#(B<var>value</var> $B$OJ8;z$N$_$+$i$J$kJ8;zNs!"(B
-    $B%U%)!<%^%C%H;X<(;R$r4^$`J8;zNs!"$b$7$/$ON>J}$+$i$J$kJ8;zNs$r;XDj$G$-$^$9!#(B
-    <var>value</var> $B$O0J2<$N%U%)!<%^%C%H;X<(;R$r%5%]!<%H$7$^$9(B:</p>
+    <code>set</code> では <var>value</var> を三つ目の
+    引数として指定します。<var>value</var> に空白がある場合は二重引用符で
+    囲む必要があります。<var>value</var> は文字のみからなる文字列、
+    フォーマット指示子を含む文字列、もしくは両方からなる文字列を指定できます。
+    <var>value</var> は以下のフォーマット指示子をサポートします:</p>
 
     <table border="1" style="zebra">
     <columnspec><column width=".25"/><column width=".75"/></columnspec>
-    <tr><th>$B%U%)!<%^%C%H(B</th><th>$B2r@b(B</th></tr>
+    <tr><th>フォーマット</th><th>解説</th></tr>
     <tr><td><code>%%</code></td>
-        <td>$B%Q!<%;%s%H5-9f(B</td></tr>
+        <td>パーセント記号</td></tr>
 
     <tr><td><code>%t</code></td>
-        <td>$B%j%/%(%9%H$r<u$1<h$C$?;~9o$r!"(B
-        Universal Coordinated Time $B$G$N;O$^$j$N;~9o(B (Jan. 1, 1970) $B$+$i7P2a$7$?(B
-        $B;~4V$r%^%$%/%mIC$H$7$F8=$7$?$b$N!#CM$N:G=i$K$O(B 
-        <code>t=</code> $B$,IU2C$5$l$^$9!#(B</td></tr>
+        <td>リクエストを受け取った時刻を、
+        Universal Coordinated Time での始まりの時刻 (Jan. 1, 1970) から経過した
+        時間をマイクロ秒として現したもの。値の最初には 
+        <code>t=</code> が付加されます。</td></tr>
 
     <tr><td><code>%D</code></td>
-        <td>$B%j%/%(%9%H$r<u$1<h$C$?;~9o$H!"%X%C%@$rAw$j=P$7$?(B
-        $B;~4V$H$N:9!#$3$l$O!"%j%/%(%9%H$,B8:_$7$F$$$?4|4V$r8=$7$^$9!#(B
-        $BCM$N:G=i$K$O(B <code>D=</code> $B$,IU2C$5$l$^$9!#(B</td></tr>
+        <td>リクエストを受け取った時刻と、ヘッダを送り出した
+        時間との差。これは、リクエストが存在していた期間を現します。
+        値の最初には <code>D=</code> が付加されます。</td></tr>
 
     <tr><td><code>%{FOOBAR}e</code></td>
-        <td><a href="../env.html">$B4D6-JQ?t(B</a>
-        <code>FOOBAR</code> $B$NCM$G$9!#(B</td></tr>
+        <td><a href="../env.html">環境変数</a>
+        <code>FOOBAR</code> の値です。</td></tr>
 
     <tr><td><code>%{FOOBAR}s</code></td>
-        <td><module>mod_ssl</module> $B$,M-8z$J>l9g!"(B
-        <a href="mod_ssl.html#envvars">SSL $B4D6-JQ?t(B</a> <code>FOOBAR</code>
-        $B$NFbMF(B</td></tr>
+        <td><module>mod_ssl</module> が有効な場合、
+        <a href="mod_ssl.html#envvars">SSL 環境変数</a> <code>FOOBAR</code>
+        の内容</td></tr>
 
     </table>
 
-    <note><title>$BCm(B</title>
-      <p><code>%s</code> $B%U%)!<%^%C%H;XDj;R$O(B 2.1 $B0J9_$G$N$_MxMQ$G$-$^$9!#(B
-      <code>SSLOptions +StdEnvVars</code> $B$rM-8z$K$9$k$3$H$K$h$k%*!<%P!<%X%C%I$r(B
-      $BHr$1$k$?$a!"(B<code>%e</code> $B$NBe$o$j$H$7$F;H$($^$9!#(B
-      $BB>$NM}M3$J$I$,$"$C$F!"$I$&$7$F$b(B <code>SSLOptions +StdEnvVars</code> 
-      $B$rM-8z$K$7$J$1$l$P$J$i$J$$>l9g$O!"(B<code>%e</code> $B$N$[$&$,(B
-      <code>%s</code> $B$h$j$b=hM}8zN($ONI$$$G$9!#(B</p>
+    <note><title>注</title>
+      <p><code>%s</code> フォーマット指定子は 2.1 以降でのみ利用できます。
+      <code>SSLOptions +StdEnvVars</code> を有効にすることによるオーバーヘッドを
+      避けるため、<code>%e</code> の代わりとして使えます。
+      他の理由などがあって、どうしても <code>SSLOptions +StdEnvVars</code> 
+      を有効にしなければならない場合は、<code>%e</code> のほうが
+      <code>%s</code> よりも処理効率は良いです。</p>
     </note> 
 
-    <p><directive>Header</directive> $B%G%#%l%/%F%#%V$K$ODI2C$N0z?t$r;}$?$;$k$3$H$,(B
-    $B$G$-$F!"$I$&$$$C$?%"%/%7%g%s$,9T$o$l$?$+$N>r7o$r;XDj$7$?$j!"(B
-    <a href="#early">$BAa4|=hM}(B</a> $B$r;XDj$9$k(B <code>early</code> $B%-!<%o!<%I$r(B
-    $B;XDj$G$-$^$9!#(B
-    <code>env=...</code> $B0z?t$G;XDj$5$l$?(B <a
-    href="../env.html">$B4D6-JQ?t(B</a> $B$,B8:_$9$k(B ($B$b$7$/$O(B <code>env=!...</code>
-    $B$,;XDj$5$l$F$$$F4D6-JQ?t$,B8:_$7$J$$(B) $B>l9g$O!"(B<directive>Header</directive>
-    $B%G%#%l%/%F%#%V$G;XDj$5$l$?F0:n$,9T$J$o$l$^$9!#$=$&$G$J$$>l9g$O!"(B
-    $B%G%#%l%/%F%#%V$O$=$N%j%/%(%9%H$K$O2?$b$7$^$;$s!#(B</p>
+    <p><directive>Header</directive> ディレクティブには追加の引数を持たせることが
+    できて、どういったアクションが行われたかの条件を指定したり、
+    <a href="#early">早期処理</a> を指定する <code>early</code> キーワードを
+    指定できます。
+    <code>env=...</code> 引数で指定された <a
+    href="../env.html">環境変数</a> が存在する (もしくは <code>env=!...</code>
+    が指定されていて環境変数が存在しない) 場合は、<directive>Header</directive>
+    ディレクティブで指定された動作が行なわれます。そうでない場合は、
+    ディレクティブはそのリクエストには何もしません。</p>
 
-    <p><a href="#early">$BAa4|=hM}(B</a>$B%b!<%I$N>l9g0J30$G$O!"(B
+    <p><a href="#early">早期処理</a>モードの場合以外では、
     <directive>Header</directive>
-    $B%G%#%l%/%F%#%V$O1~Ez$,%M%C%H%o!<%/$KAw$i$l$kD>A0$K(B
-    $B=hM}$5$l$^$9!#$3$l$O!"%X%C%@%U%#%k%?$K$h$jDI2C$5$l$k%X%C%@$r(B
-    $B=|$-!"$[$H$s$I$N%X%C%@$r@_Dj$7$?$j>e=q$-$7$?$j$9$k$3$H$,(B
-    $B2DG=!"$H$$$&$3$H$G$9!#(B</p>
+    ディレクティブは応答がネットワークに送られる直前に
+    処理されます。これは、ヘッダフィルタにより追加されるヘッダを
+    除き、ほとんどのヘッダを設定したり上書きしたりすることが
+    可能、ということです。</p>
 </usage>
 </directivesynopsis>
 

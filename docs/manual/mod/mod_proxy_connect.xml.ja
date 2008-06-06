@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -23,27 +23,27 @@
 <modulesynopsis metafile="mod_proxy_connect.xml.meta">
 
 <name>mod_proxy_connect</name>
-<description><code>CONNECT</code> $B%j%/%(%9%H$r07$&(B
-<module>mod_proxy</module> $BMQ$N3HD%(B</description>
+<description><code>CONNECT</code> リクエストを扱う
+<module>mod_proxy</module> 用の拡張</description>
 <status>Extension</status>
 <sourcefile>proxy_connect.c</sourcefile>
 <identifier>proxy_connect_module</identifier>
 
 <summary>
-    <p>$BK\%b%8%e!<%k$K$O(B <module>mod_proxy</module> $B$,(B<em>$BI,MW$G$9(B</em>$B!#(B
-    <code>CONNECT</code> HTTP $B%a%=%C%I$r%5%]!<%H$7$^$9!#(B
-    $B$3$N%a%=%C%I$O<g$K%W%m%-%7$K(B SSL $B%j%/%(%9%H$rDL$9(B
-    <transnote>SSL$B%H%s%M%j%s%0(B</transnote>$B$K;H$o$l$^$9!#(B</p>
+    <p>本モジュールには <module>mod_proxy</module> が<em>必要です</em>。
+    <code>CONNECT</code> HTTP メソッドをサポートします。
+    このメソッドは主にプロキシに SSL リクエストを通す
+    <transnote>SSLトンネリング</transnote>に使われます。</p>
 
-    <p><code>CONNECT</code> $B%j%/%(%9%H$r07$($k$h$&$K$9$k$K$O(B
-    <module>mod_proxy</module> $B$H(B <module>mod_proxy_connect</module>
-    $B$r%5!<%P$KAH$_9~$`I,MW$,$"$j$^$9!#(B</p>
+    <p><code>CONNECT</code> リクエストを扱えるようにするには
+    <module>mod_proxy</module> と <module>mod_proxy_connect</module>
+    をサーバに組み込む必要があります。</p>
 
-    <note type="warning"><title>$B7Y9p(B</title>
+    <note type="warning"><title>警告</title>
       <p><a href="mod_proxy.html#access"
-      >$B0BA4$J%5!<%P$K$9$k(B</a>$B$^$G%W%m%-%75!G=$OM-8z$K$7$J$$$G$/$@$5$$!#(B
-      $B%*!<%W%s%W%m%-%7%5!<%P$O$"$J$?<+?H$N%M%C%H%o!<%/$K$H$C$F$b!"(B
-      $B%$%s%?!<%M%C%HA4BN$K$H$C$F$b4m81$G$9!#(B</p>
+      >安全なサーバにする</a>までプロキシ機能は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
     </note>
 </summary>
 <seealso><directive module="mod_proxy">AllowCONNECT</directive></seealso>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -22,15 +22,15 @@
 
 <manualpage metafile="configuring.xml.meta">
 
-  <title>$B@_Dj%U%!%$%k(B</title>
+  <title>設定ファイル</title>
 
 <summary>
-<p>$B$3$NJ8=q$G$O!"(BApache HTTP $B%5!<%P$r@_Dj$9$k$N$K;HMQ$9$k%U%!%$%k$K$D$$$F(B
-$B5-=R$7$F$$$^$9!#(B</p>
+<p>この文書では、Apache HTTP サーバを設定するのに使用するファイルについて
+記述しています。</p>
 </summary>
 
   <section id="main">
-    <title>$B%a%$%s$N@_Dj%U%!%$%k(B</title>
+    <title>メインの設定ファイル</title>
     <related>
       <modulelist>
         <module>mod_mime</module>
@@ -42,49 +42,49 @@
       </directivelist>
     </related>
 
-    <p>Apache $B$O(B <a href="mod/directives.html"
-    >$B%G%#%l%/%F%#%V(B</a> $B$r@_Dj%U%!%$%k$KJ?J8$G=q$/$3$H$K$h$j@_Dj$7$^$9!#(B
-    $B%a%$%s$N@_Dj%U%!%$%k$OIaDL$O(B <code>httpd.conf</code> $B$H$$$&L>A0$G$9!#(B
-    $B$3$N%U%!%$%k$N0LCV$O%3%s%Q%$%k;~$K@_Dj$5$l$^$9$,!"%3%^%s%I%i%$%s$N(B
-    <code>-f</code> $B%U%i%0$K$h$j>e=q$-$G$-$^$9!#(B
-    $B$^$?!"B>$N@_Dj%U%!%$%k$r(B <directive module="core">Include</directive>
-    $B%G%#%l%/%F%#%V$K$h$C$FDI2C$G$-!"%o%$%k%I%+!<%I$r;HMQ$7$FB??t$N(B
-    $B@_Dj%U%!%$%k$rDI2C$9$k$3$H$,$G$-$^$9!#(B
-    $B$I$s$J%G%#%l%/%F%#%V$b!"$3$l$i$N@_Dj%U%!%$%k$I$l$K$G$bF~$l$k$3$H$,$G$-$^$9!#(B
-    Apache $B$O5/F0;~$+:F5/F0;~$N$_%a%$%s@_Dj%U%!%$%k$NJQ99$rG'<1$7$^$9!#(B</p>
+    <p>Apache は <a href="mod/directives.html"
+    >ディレクティブ</a> を設定ファイルに平文で書くことにより設定します。
+    メインの設定ファイルは普通は <code>httpd.conf</code> という名前です。
+    このファイルの位置はコンパイル時に設定されますが、コマンドラインの
+    <code>-f</code> フラグにより上書きできます。
+    また、他の設定ファイルを <directive module="core">Include</directive>
+    ディレクティブによって追加でき、ワイルドカードを使用して多数の
+    設定ファイルを追加することができます。
+    どんなディレクティブも、これらの設定ファイルどれにでも入れることができます。
+    Apache は起動時か再起動時のみメイン設定ファイルの変更を認識します。</p>
 
-    <p>$B%5!<%P$O(B MIME
-    $B%I%-%e%a%s%H%?%$%W$r4^$s$G$$$k%U%!%$%k$bFI$_9~$_$^$9!#%U%!%$%kL>$O(B
+    <p>サーバは MIME
+    ドキュメントタイプを含んでいるファイルも読み込みます。ファイル名は
     <directive module="mod_mime">TypesConfig</directive>
-    $B$G@_Dj$5$l!"%G%U%)%k%H$G$O(B <code>mime.types</code>
-    $B$K$J$C$F$$$^$9!#(B</p>
+    で設定され、デフォルトでは <code>mime.types</code>
+    になっています。</p>
   </section>
 
   <section id="syntax">
-    <title>$B@_Dj%U%!%$%k$N9=J8(B</title>
+    <title>設定ファイルの構文</title>
 
-    <p>Apache $B$N@_Dj%U%!%$%k$O(B 1 $B9T$K(B 1 $B$D$N%G%#%l%/%F%#%V$+$i$J$j$^$9!#(B
-    $B%P%C%/%9%i%C%7%e(B "\" $B$O%G%#%l%/%F%#%V$,<!$N9T$K7QB3$7$F$$$k$3$H$r(B
-    $B<($9$?$a$K9T$N:G8e$NJ8;z$H$7$F;H$o$l$F$$$k$+$b$7$l$^$;$s!#(B
-    $B9T$N:G8e$H%P%C%/%9%i%C%7%e$N4V$KB>$NJ8;z$d6uGr$,$"$C$F$O$$$1$^$;$s!#(B
+    <p>Apache の設定ファイルは 1 行に 1 つのディレクティブからなります。
+    バックスラッシュ "\" はディレクティブが次の行に継続していることを
+    示すために行の最後の文字として使われているかもしれません。
+    行の最後とバックスラッシュの間に他の文字や空白があってはいけません。
     </p>
 
-    <p>$B@_Dj%U%!%$%k$N%G%#%l%/%F%#%V$OBgJ8;z>.J8;z$r6hJL$7$^$;$s$,!"(B
-    $B0z?t$K$O$7$P$7$P6hJL$9$k$b$N$,$"$j$^$9!#%O%C%7%eJ8;z(B "#"
-    $B$G;O$^$k9T$O%3%a%s%H$H8+$J$5$l$FL5;k$5$l$^$9!#(B
-    $B@_Dj%G%#%l%/%F%#%V$N8e$N9T$G$O%3%a%s%H$,4^$^$l$F$$$F$O(B<strong
-    >$B$$$1$^$;$s(B</strong>$B!#%G%#%l%/%F%#%V$NA0$N6u9T$H6uGr$OL5;k$5$l$^$9$N$G!"(B
-    $B$o$+$j$d$9$/$9$k$?$a$K%G%#%l%/%F%#%V$r%$%s%G%s%H$7$F$b9=$$$^$;$s!#(B
+    <p>設定ファイルのディレクティブは大文字小文字を区別しませんが、
+    引数にはしばしば区別するものがあります。ハッシュ文字 "#"
+    で始まる行はコメントと見なされて無視されます。
+    設定ディレクティブの後の行ではコメントが含まれていては<strong
+    >いけません</strong>。ディレクティブの前の空行と空白は無視されますので、
+    わかりやすくするためにディレクティブをインデントしても構いません。
     </p>
 
-    <p>$B@_Dj%U%!%$%k$N9=J8%(%i!<$O!"(B
+    <p>設定ファイルの構文エラーは、
     <code>apachectl configtest</code>
-    $B$+%3%^%s%I%i%$%s%*%W%7%g%s(B
-    <code>-t</code> $B$r;H$C$FD4$Y$i$l$^$9!#(B</p>
+    かコマンドラインオプション
+    <code>-t</code> を使って調べられます。</p>
   </section>
 
   <section id="modules">
-    <title>$B%b%8%e!<%k(B</title>
+    <title>モジュール</title>
 
     <related>
       <modulelist>
@@ -96,28 +96,28 @@
       </directivelist>
     </related>
 
-    <p>Apache $B$O%b%8%e!<%k2=$5$l$?%5!<%P$G$9!#(B
-    $B%3%"%5!<%P$K$O:G$b4pK\E*$J5!G=$@$1$,4^$^$l$F$$$^$9!#3HD%5!G=$O(B
-    Apache $B$K%m!<%I$5$l$k(B<a href="mod/">$B%b%8%e!<%k(B</a
-    >$B$H$7$FMxMQ2DG=$G$9!#%G%U%)%k%H$G$O!"%3%s%Q%$%k;~$K%b%8%e!<%k$N(B
-    <a href="mod/module-dict.html#Status">Base</a> $B%;%C%H(B ($B4pK\%;%C%H(B) $B$,(B
-    $B%5!<%P$K4^$^$l$^$9!#%5!<%P$,(B<a href="dso.html">$BF0E*%m!<%I(B</a
-    >$B%b%8%e!<%k$r;H$&$h$&$K%3%s%Q%$%k$5$l$F$$$k>l9g$O!"(B
-    $B%b%8%e!<%k$rJL$K%3%s%Q%$%k$7$F!"$$$D$G$b(B
+    <p>Apache はモジュール化されたサーバです。
+    コアサーバには最も基本的な機能だけが含まれています。拡張機能は
+    Apache にロードされる<a href="mod/">モジュール</a
+    >として利用可能です。デフォルトでは、コンパイル時にモジュールの
+    <a href="mod/module-dict.html#Status">Base</a> セット (基本セット) が
+    サーバに含まれます。サーバが<a href="dso.html">動的ロード</a
+    >モジュールを使うようにコンパイルされている場合は、
+    モジュールを別にコンパイルして、いつでも
     <directive module="mod_so">LoadModule</directive>
-    $B%G%#%l%/%F%#%V$r;H$C$FDI2C$G$-$^$9!#(B
-    $B$=$&$G$J$$>l9g$O!"%b%8%e!<%k$NDI2C$d:o=|$r$9$k$?$a$K$O(B Apache
-    $B$r:F%3%s%Q%$%k$9$kI,MW$,$"$j$^$9!#@_Dj%G%#%l%/%F%#%V$O(B <directive
+    ディレクティブを使って追加できます。
+    そうでない場合は、モジュールの追加や削除をするためには Apache
+    を再コンパイルする必要があります。設定ディレクティブは <directive
     module="core" type="section">IfModule</directive>
-    $B%V%m%C%/$KF~$l$k$3$H$GFCDj$N%b%8%e!<%k$,B8:_$9$k$H$-$@$1(B
-    $B@_Dj%U%!%$%k$K4^$^$l$k$h$&$K$9$k$3$H$,$G$-$^$9!#(B</p>
+    ブロックに入れることで特定のモジュールが存在するときだけ
+    設定ファイルに含まれるようにすることができます。</p>
 
-    <p>$B%3%^%s%I%i%$%s%*%W%7%g%s(B <code>-l</code> $B$r;H$C$F8=;~E@$G(B
-    $B$I$N%b%8%e!<%k$,%5!<%P$K%3%s%Q%$%k$5$l$F$$$k$+$rCN$k$3$H$,$G$-$^$9!#(B</p>
+    <p>コマンドラインオプション <code>-l</code> を使って現時点で
+    どのモジュールがサーバにコンパイルされているかを知ることができます。</p>
   </section>
 
   <section id="scope">
-    <title>$B%G%#%l%/%F%#%V$NE,MQHO0O(B</title>
+    <title>ディレクティブの適用範囲</title>
 
     <related>
       <directivelist>
@@ -131,40 +131,40 @@
       </directivelist>
     </related>
 
-    <p>$B%a%$%s@_Dj%U%!%$%k$K$"$k%G%#%l%/%F%#%V$O%5!<%PA4BN$KE,MQ$5$l$^$9!#(B
-    $B%5!<%P$N0lItJ,$N@_Dj$@$1$rJQ99$7$?$$>l9g$O(B <directive module="core"
+    <p>メイン設定ファイルにあるディレクティブはサーバ全体に適用されます。
+    サーバの一部分の設定だけを変更したい場合は <directive module="core"
     type="section">Directory</directive>, <directive module="core"
     type="section">DirectoryMatch</directive>, <directive module="core"
     type="section">Files</directive>, <directive module="core"
     type="section">FilesMatch</directive>, <directive module="core"
     type="section">Location</directive>, <directive module="core"
     type="section">LocationMatch</directive>
-    $B%;%/%7%g%s$NCf$KCV$/$3$H$GE,MQHO0O$r7h$a$i$l$^$9!#(B
-    $B$3$l$i$N%;%/%7%g%s$O$=$NCf$K$"$k%G%#%l%/%F%#%V$NE,MQHO0O$r(B
-    $BFCDj$N%U%!%$%k%7%9%F%`$N0LCV$d(B URL $B$K8BDj$7$^$9!#(B
-    $BHs>o$K:YN3EY$N@_Dj$r2DG=$K$9$k$?$a$K!"(B
-    $B%;%/%7%g%s$rF~$l;R$K$9$k$3$H$b$G$-$^$9!#(B</p>
+    セクションの中に置くことで適用範囲を決められます。
+    これらのセクションはその中にあるディレクティブの適用範囲を
+    特定のファイルシステムの位置や URL に限定します。
+    非常に細粒度の設定を可能にするために、
+    セクションを入れ子にすることもできます。</p>
 
-    <p>Apache $B$OF1;~$KB?$/$N0c$&%&%'%V%5%$%H$r07$&G=NO$,$"$j$^$9!#(B
-    $B$3$l$O(B <a href="vhosts/">$B%P!<%A%c%k%[%9%H(B</a> $B$H8F$P$l$F$$$^$9!#(B
-    $BFCDj$N%&%'%V%5%$%H$K$N$_E,MQ$5$l$k$h$&$K$9$k$?$a$K!"(B
-    $B%G%#%l%/%F%#%V$O(B
+    <p>Apache は同時に多くの違うウェブサイトを扱う能力があります。
+    これは <a href="vhosts/">バーチャルホスト</a> と呼ばれています。
+    特定のウェブサイトにのみ適用されるようにするために、
+    ディレクティブは
     <directive module="core" type="section">VirtualHost</directive>
-    $B%;%/%7%g%s$NCf$KCV$/$3$H$G$bE,MQHO0O$rJQ$($k$3$H$,$G$-$^$9!#(B</p>
+    セクションの中に置くことでも適用範囲を変えることができます。</p>
 
-    <p>$B$[$H$s$I$N%G%#%l%/%F%#%V$O$I$N%;%/%7%g%s$K$G$b=q$1$^$9$,!"(B
-    $BCf$K$O%3%s%F%-%9%H$K$h$C$F$O0UL#$r$J$5$J$$$b$N$b$"$j$^$9!#(B
-    $BNc$($P!"%W%m%;%9$N:n@.$r@)8f$7$F$$$k%G%#%l%/%F%#%V$O%a%$%s%5!<%P$N(B
-    $B%3%s%F%-%9%H$K$N$_=q$/$3$H$,$G$-$^$9!#(B
-    $B$I$N%G%#%l%/%F%#%V$r$I$N%;%/%7%g%s$K=q$/$3$H$,$G$-$k$+$rCN$k$?$a$K$O(B
-    $B%G%#%l%/%F%#%V$N(B <a href="mod/directive-dict.html#Context"
-    >$B%3%s%F%-%9%H(B</a> $B$rD4$Y$F$/$@$5$$!#>\$7$$>pJs$O!"(B
+    <p>ほとんどのディレクティブはどのセクションにでも書けますが、
+    中にはコンテキストによっては意味をなさないものもあります。
+    例えば、プロセスの作成を制御しているディレクティブはメインサーバの
+    コンテキストにのみ書くことができます。
+    どのディレクティブをどのセクションに書くことができるかを知るためには
+    ディレクティブの <a href="mod/directive-dict.html#Context"
+    >コンテキスト</a> を調べてください。詳しい情報は、
     <a href="sections.html">Directory, Location, Files
-    $B%;%/%7%g%s$NF0:nK!(B</a>$B$K$"$j$^$9!#(B</p>
+    セクションの動作法</a>にあります。</p>
   </section>
 
   <section id="htaccess">
-    <title>.htaccess $B%U%!%$%k(B</title>
+    <title>.htaccess ファイル</title>
 
     <related>
       <directivelist>
@@ -173,30 +173,30 @@
       </directivelist>
     </related>
 
-    <p>Apache $B$G$O%&%'%V%D%j!<$NCf$KCV$+$l$?FCJL$J%U%!%$%k$r;H$C$F(B
-    $BHsCf1{=88"E*$J@_Dj4IM}$r$G$-$^$9!#$=$NFCJL$J%U%!%$%k$OIaDL$O(B
-    <code>.htaccess</code> $B$H$$$&L>A0$G!"(B
+    <p>Apache ではウェブツリーの中に置かれた特別なファイルを使って
+    非中央集権的な設定管理をできます。その特別なファイルは普通は
+    <code>.htaccess</code> という名前で、
     <directive module="core">AccessFileName</directive>
-    $B%G%#%l%/%F%#%V$G$I$s$JL>A0$K$G$b;XDj$G$-$^$9!#(B
+    ディレクティブでどんな名前にでも指定できます。
     <code>.htaccess</code>
-    $B%U%!%$%k$K=q$+$l$?%G%#%l%/%F%#%V$O%U%!%$%k$rCV$$$?(B
-    $B%G%#%l%/%H%j$H$=$NA4$F$N%5%V%G%#%l%/%H%j$KE,MQ$5$l$^$9!#(B
-    <code>.htaccess</code> $B%U%!%$%k$O!"%a%$%s$N@_Dj%U%!%$%k$HF1$8(B
-    $B9=J8$r;H$$$^$9!#(B
+    ファイルに書かれたディレクティブはファイルを置いた
+    ディレクトリとその全てのサブディレクトリに適用されます。
+    <code>.htaccess</code> ファイルは、メインの設定ファイルと同じ
+    構文を使います。
     <code>.htaccess</code>
-    $B%U%!%$%k$O$9$Y$F$N%j%/%(%9%H$GFI$_9~$^$l$k$?$a!"(B
-    $BJQ99$O$9$0$KH?1G$5$l$^$9!#(B</p>
+    ファイルはすべてのリクエストで読み込まれるため、
+    変更はすぐに反映されます。</p>
 
-    <p>$B$I$N%G%#%l%/%F%#%V$,(B <code>.htaccess</code>
-    $B%U%!%$%k$K=q$1$k$+$rD4$Y$k$K$O!"%G%#%l%/%F%#%V$N(B<a
-    href="mod/directive-dict.html#Context">$B%3%s%F%-%9%H(B</a>
-    $B$rD4$Y$F$/$@$5$$!#%5!<%P4IM}<T$O$5$i$K%a%$%s@_Dj%U%!%$%k$N(B
+    <p>どのディレクティブが <code>.htaccess</code>
+    ファイルに書けるかを調べるには、ディレクティブの<a
+    href="mod/directive-dict.html#Context">コンテキスト</a>
+    を調べてください。サーバ管理者はさらにメイン設定ファイルの
     <directive module="core">AllowOverride</directive>
-    $B$r@_Dj$9$k$3$H$G$I$N%G%#%l%/%F%#%V$r(B <code>.htaccess</code>
-    $B%U%!%$%k$K=q$1$k$h$&$K$9$k$+$r@)8f$9$k$3$H$,$G$-$^$9!#(B</p>
+    を設定することでどのディレクティブを <code>.htaccess</code>
+    ファイルに書けるようにするかを制御することができます。</p>
 
-    <p><code>.htaccess</code> $B%U%!%$%k$K4X$9$k>\$7$$>pJs$O(B
-    <a href="howto/htaccess.html">.htaccess $B%A%e!<%H%j%"%k(B</a>
-    $B$r;2>H$7$F$/$@$5$$!#(B</p>
+    <p><code>.htaccess</code> ファイルに関する詳しい情報は
+    <a href="howto/htaccess.html">.htaccess チュートリアル</a>
+    を参照してください。</p>
   </section>
 </manualpage>

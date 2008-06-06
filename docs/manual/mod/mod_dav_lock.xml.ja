@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420993 -->
@@ -23,71 +23,71 @@
 <modulesynopsis metafile="mod_dav_lock.xml.meta">
 
 <name>mod_dav_lock</name> 
-<description><module>mod_dav</module> $BMQ$NHFMQ%m%C%/%b%8%e!<%k(B</description>
+<description><module>mod_dav</module> 用の汎用ロックモジュール</description>
 <status>Extension</status>
 <sourcefile>mod_dav_lock.c</sourcefile>
 <identifier>dav_lock_module</identifier>
-  <compatibility>$B%P!<%8%g%s(B 2.1 $B0J9_(B</compatibility>
+  <compatibility>バージョン 2.1 以降</compatibility>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$O(B <module>mod_dav</module> $B$N$I$N%P%C%/%(%s%I(B
-    $B$+$i$G$b;H$($kHFMQ%m%C%/(B API $B$rDs6!$7$^$9!#(B
-    $B;HMQ$K$O:GDc8B(B <module>mod_dav</module>
-    $B$rI,MW$H$7$^$9$,!"$3$l$rMxMQ$9$k%P%C%/%(%s%I$,B8:_$7$J$$$HLr$KN)$?$J$$$N$G!"(B
-    $B$=$N$h$&$J>l9g$O%5!<%P$KFI$_9~$`$Y$-$G$O$"$j$^$;$s!#(B
+    <p>このモジュールは <module>mod_dav</module> のどのバックエンド
+    からでも使える汎用ロック API を提供します。
+    使用には最低限 <module>mod_dav</module>
+    を必要としますが、これを利用するバックエンドが存在しないと役に立たないので、
+    そのような場合はサーバに読み込むべきではありません。
     <module>mod_dav_lock</module>
-    $B$r<B:]$KMxMQ$9$k%P%C%/%(%s%I%b%8%e!<%k$NNc$H$7$F$O(B subversion
-    $B%W%m%P%$%@%b%8%e!<%k$N(B <a href="http://subversion.tigris.org/"
-    >mod_dav_svn</a> $B$,$"$j$^$9!#(B</p>
+    を実際に利用するバックエンドモジュールの例としては subversion
+    プロバイダモジュールの <a href="http://subversion.tigris.org/"
+    >mod_dav_svn</a> があります。</p>
 
-    <p><module>mod_dav_fs</module> $B$OFC2=$5$l$?@lMQ$N%P!<%8%g%s$r(B
-    $B;H$&$?$a!"$3$NHFMQ%b%8%e!<%k$O(B<em>$BI,MW$J$$(B</em>$B$3$H$KCm0U$7$F(B
-    $B$/$@$5$$!#(B</p>
+    <p><module>mod_dav_fs</module> は特化された専用のバージョンを
+    使うため、この汎用モジュールは<em>必要ない</em>ことに注意して
+    ください。</p>
 
-    <p><module>mod_dav_lock</module> $B$r5!G=$5$;$k$K$O!"(B
-    $B0J2<$G@bL@$5$l$F$$$k(B <directive
-    module="mod_dav_lock">DavGenericLockDB</directive> $B$r;H$C$F(B
-    $B%m%C%/%G!<%?%Y!<%9$N>l=j$r;XDj$9$k$@$1$G$9!#(B</p>
+    <p><module>mod_dav_lock</module> を機能させるには、
+    以下で説明されている <directive
+    module="mod_dav_lock">DavGenericLockDB</directive> を使って
+    ロックデータベースの場所を指定するだけです。</p>
 
-    <note><title>$B3+H/<T8~$1$N%a%b(B</title>
-      <p>$B%m%C%/$rDs6!$7$F$$$k4X?t$X$N%]%$%s%?$r<hF@$9$k$?$a$K$O!"(B
-      <code>ap_lookup_provider</code> API $B$r!"0z?t(B <code>dav-lock</code>,
-      <code>generic</code>, <code>0</code> $B$r;XDj$7$F;H$&I,MW$,(B
-      $B$"$j$^$9!#(B</p>
+    <note><title>開発者向けのメモ</title>
+      <p>ロックを提供している関数へのポインタを取得するためには、
+      <code>ap_lookup_provider</code> API を、引数 <code>dav-lock</code>,
+      <code>generic</code>, <code>0</code> を指定して使う必要が
+      あります。</p>
     </note>
 </summary>
 <seealso><module>mod_dav</module></seealso>
 
 <directivesynopsis>
 <name>DavGenericLockDB</name>
-<description>DAV $B%m%C%/%G!<%?%Y!<%9$N>l=j(B</description>
+<description>DAV ロックデータベースの場所</description>
 <syntax>DavGenericLockDB <var>file-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 
 <usage>
-    <p><directive>DavGenericLockDB</directive> $B%G%#%l%/%F%#%V$r(B
-    $B;H$C$F!"3HD%;R$r=|$$$?%m%C%/%G!<%?%Y!<%9$X$N%U%k%Q%9$r(B
-    $B;XDj$7$^$9!#@dBP%Q%9$G$J$$$H$-$O(B <directive
-    module="core">ServerRoot</directive> $B$+$i$NAjBP%Q%9$H$7$F(B
-    $B07$o$l$^$9!#(B<module>mod_dav_lock</module> $B$N<BAu$G$O%f!<%6$N(B
-    $B%m%C%/$rDI@W$9$k$N$K(B SDBM $B%G!<%?%Y!<%9$r;H$$$^$9!#(B</p>
+    <p><directive>DavGenericLockDB</directive> ディレクティブを
+    使って、拡張子を除いたロックデータベースへのフルパスを
+    指定します。絶対パスでないときは <directive
+    module="core">ServerRoot</directive> からの相対パスとして
+    扱われます。<module>mod_dav_lock</module> の実装ではユーザの
+    ロックを追跡するのに SDBM データベースを使います。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       DavGenericLockDB var/DavLock
     </example>
 
-    <p>$B%m%C%/%G!<%?%Y!<%9%U%!%$%k$N$"$k%G%#%l%/%H%j$O(B
-    Apache $B$,<B9T$5$l$F$$$k(B <directive module="mpm_common">User</directive>
-    $B$H(B <directive module="mpm_common" >Group</directive> $B$K$h$C$F(B
-    $B=q$-9~$_2DG=$G$J$1$l$P$J$j$^$;$s!#%;%-%e%j%F%#>e$NM}M3$+$i!"(B
-    $B4{B8$N%G%#%l%/%H%j$N%Q!<%_%C%7%g%s$rJQ99$9$k$N$G$O$J$/!"(B
-    $B@lMQ$N%G%#%l%/%H%j$r:n$k$N$,NI$$$G$7$g$&!#>e$NNc$G$O!"(B
-    Apache $B$O(B <directive
-    module="core">ServerRoot</directive> $B$N2<$N(B <code>var/</code>
-    $B%G%#%l%/%H%j$K!"%U%!%$%kL>$NK\BN$,(B <code>DavLock</code> $B$G(B
-    $B%5!<%P$,A*Br$7$?3HD%;R$r;}$D%U%!%$%k$r:n@.$7$^$9!#(B</p>
+    <p>ロックデータベースファイルのあるディレクトリは
+    Apache が実行されている <directive module="mpm_common">User</directive>
+    と <directive module="mpm_common" >Group</directive> によって
+    書き込み可能でなければなりません。セキュリティ上の理由から、
+    既存のディレクトリのパーミッションを変更するのではなく、
+    専用のディレクトリを作るのが良いでしょう。上の例では、
+    Apache は <directive
+    module="core">ServerRoot</directive> の下の <code>var/</code>
+    ディレクトリに、ファイル名の本体が <code>DavLock</code> で
+    サーバが選択した拡張子を持つファイルを作成します。</p>
 
 </usage>
 </directivesynopsis>

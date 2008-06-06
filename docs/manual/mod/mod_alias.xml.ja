@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:554716 (outdated) -->
@@ -23,75 +23,75 @@
 <modulesynopsis metafile="mod_alias.xml.meta">
 
 <name>mod_alias</name>
-<description>$B%[%9%H%U%!%$%k%7%9%F%`>e$N$$$m$$$m$J0c$&>l=j$r(B
-    $B%I%-%e%a%s%H%D%j!<$K%^%C%W$9$k5!G=$H!"(B
-    URL $B$N%j%@%$%l%/%H$r9T$J$&5!G=$rDs6!$9$k(B</description>
+<description>ホストファイルシステム上のいろいろな違う場所を
+    ドキュメントツリーにマップする機能と、
+    URL のリダイレクトを行なう機能を提供する</description>
 <status>Base</status>
 <sourcefile>mod_alias.c</sourcefile>
 <identifier>alias_module</identifier>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$N%G%#%l%/%F%#%V$O%5!<%P$K%j%/%(%9%H$,E~Ce$7$?$H$-$K(B
-    URL $B$NA`:n$d@)8f$r$9$k$3$H$r2DG=$K$7$^$9!#(B<directive
+    <p>このモジュールのディレクティブはサーバにリクエストが到着したときに
+    URL の操作や制御をすることを可能にします。<directive
     module="mod_alias">Alias</directive>
-    $B%G%#%l%/%F%#%V$H(B <directive module="mod_alias">ScriptAlias</directive>
-    $B%G%#%l%/%F%#%V$O(B
-    URL $B$H%U%!%$%k%7%9%F%`$N%Q%9$r%^%C%W$9$k$?$a$K;HMQ$5$l$^$9!#$3$l$O(B
+    ディレクティブと <directive module="mod_alias">ScriptAlias</directive>
+    ディレクティブは
+    URL とファイルシステムのパスをマップするために使用されます。これは
     <directive module="core">DocumentRoot</directive>
-    $B$N2<$K$J$$%I%-%e%a%s%H$r%&%'%V$N%I%-%e%a%s%H%D%j!<$N0lIt$H$7$F(B
-    $BAw$i$l$k$h$&$K$7$^$9!#(B<directive module="mod_alias">ScriptAlias</directive>
-    $B%G%#%l%/%F%#%V$K$O%^%C%W@h$N%G%#%l%/%H%j$,(B CGI
-    $B%9%/%j%W%H$N$_$G$"$k$3$H$r<($9$H$$$&DI2C$N8z2L$,$"$j$^$9!#(B
+    の下にないドキュメントをウェブのドキュメントツリーの一部として
+    送られるようにします。<directive module="mod_alias">ScriptAlias</directive>
+    ディレクティブにはマップ先のディレクトリが CGI
+    スクリプトのみであることを示すという追加の効果があります。
     </p>
 
-    <p><directive module="mod_alias">Redirect</directive> $B%G%#%l%/%F%#%V$O(B
-    $B%/%i%$%"%s%H$K0c$C$?(B
-    URL $B$K?7$7$$%j%/%(%9%H$rAw$k$h$&$K;X<($7$^$9!#$3$l$O!"(B
-    $B%j%=!<%9$,?7$7$$>l=j$K0\F0$7$?$H$-$K$h$/;HMQ$5$l$^$9!#(B</p>
+    <p><directive module="mod_alias">Redirect</directive> ディレクティブは
+    クライアントに違った
+    URL に新しいリクエストを送るように指示します。これは、
+    リソースが新しい場所に移動したときによく使用されます。</p>
 
-    <p><module>mod_alias</module> $B$O4JC1$J(B URL $BA`:n8~$1$K@_7W$5$l$F$$$^$9!#(B
-    $B$h$jJ#;($JA`:n!"%/%(%j!<%9%H%j%s%0$NA`:n$K$O!"(B<module>mod_rewrite</module>
-    $B$GDs6!$5$l$k%D!<%k$r;HMQ$7$F$/$@$5$$!#(B</p>
+    <p><module>mod_alias</module> は簡単な URL 操作向けに設計されています。
+    より複雑な操作、クエリーストリングの操作には、<module>mod_rewrite</module>
+    で提供されるツールを使用してください。</p>
 
 </summary>
 
 <seealso><module>mod_rewrite</module></seealso> <seealso><a
-href="../urlmapping.html">URL $B$+$i%U%!%$%k%7%9%F%`>e$N0LCV$X$N%^%C%T%s%0(B</a></seealso>
+href="../urlmapping.html">URL からファイルシステム上の位置へのマッピング</a></seealso>
 
-<section id="order"><title>$B=hM}$N=gHV(B</title>
+<section id="order"><title>処理の順番</title>
 
-<p>$BMM!9$J%3%s%F%-%9%HCf$G$N(B Alias $B$d(B Redirect $B$OB>$N%G%#%l%/%F%#%V$H(B
-$BF1$8$h$&$KI8=`$N(B <a href="../sections.html#mergin">$B%^!<%85,B'(B</a> $B$K(B
-$B=>$C$F=hM}$5$l$^$9!#$?$@$7!"(B($BNc$($P(B <directive type="section" module="core"
->VirtualHost</directive> $B%;%/%7%g%s$NCf$N$h$&$K(B) $BJ#?t$N(B Alias $B$d(B Redirect $B$,(B
-$BF1$8%3%s%F%-%9%HCf$K8=$l$?>l9g$O7h$^$C$?=gHV$G=hM}$5$l$^$9!#(B</p>
+<p>様々なコンテキスト中での Alias や Redirect は他のディレクティブと
+同じように標準の <a href="../sections.html#mergin">マージ規則</a> に
+従って処理されます。ただし、(例えば <directive type="section" module="core"
+>VirtualHost</directive> セクションの中のように) 複数の Alias や Redirect が
+同じコンテキスト中に現れた場合は決まった順番で処理されます。</p>
 
-<p>$B$^$:!"(BAlias $B$NA0$K$9$Y$F$N(B Redirect $B$,=hM}$5$l$^$9!#$G$9$+$i!"(B<directive
-module="mod_alias">Redirect</directive> $B$+(B <directive
-module="mod_alias">RedirectMatch</directive> $B$K%^%C%A$9$k%j%/%(%9%H$K$O(B
-Alias $B$O7h$7$FE,MQ$5$l$^$;$s!#<!$K!"(BAlias $B$H(B Redirect $B$,@_Dj%U%!%$%kCf$N(B
-$B=gHV$KE,MQ$5$l!":G=i$K%^%C%A$7$?$b$N$,M%@h$5$l$^$9!#(B</p>
+<p>まず、Alias の前にすべての Redirect が処理されます。ですから、<directive
+module="mod_alias">Redirect</directive> か <directive
+module="mod_alias">RedirectMatch</directive> にマッチするリクエストには
+Alias は決して適用されません。次に、Alias と Redirect が設定ファイル中の
+順番に適用され、最初にマッチしたものが優先されます。</p>
 
-<p>$B$G$9$+$i!"Fs$D0J>e$N%G%#%l%/%F%#%V$,F1$8%Q%9$KE,MQ$5$l$k$H$-$O!"(B
-$B$9$Y$F$N%G%#%l%/%F%#%V$N8z2L$rF@$k$?$a$K$O$h$j>\$7$$%Q%9$r@h$K=q$/(B
-$BI,MW$,$"$j$^$9!#Nc$($P!"<!$N@_Dj$O4|BTDL$j$NF0:n$r$7$^$9(B:</p>
+<p>ですから、二つ以上のディレクティブが同じパスに適用されるときは、
+すべてのディレクティブの効果を得るためにはより詳しいパスを先に書く
+必要があります。例えば、次の設定は期待通りの動作をします:</p>
 
 <example>
 Alias /foo/bar /baz<br />
 Alias /foo /gaq
 </example>
 
-<p>$B$7$+$7!">e5-$NFs$D$N%G%#%l%/%F%#%V$N=gHV$,5U$K$J$k$H!"(B
-<code>/foo</code> <directive module="mod_alias">Alias</directive> $B$,(B
-$B>o$K(B <code>/foo/bar</code> <directive
-module="mod_alias">Alias</directive> $B$h$j@h$K%^%C%A$7$^$9$N$G!"8e<T$O(B
-$B7h$7$FE,MQ$5$l$k$3$H$O$"$j$^$;$s!#(B</p>
+<p>しかし、上記の二つのディレクティブの順番が逆になると、
+<code>/foo</code> <directive module="mod_alias">Alias</directive> が
+常に <code>/foo/bar</code> <directive
+module="mod_alias">Alias</directive> より先にマッチしますので、後者は
+決して適用されることはありません。</p>
 
 </section>
 
 <directivesynopsis>
 <name>Alias</name>
-<description>URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</description>
+<description>URL をファイルシステムの位置にマップする</description>
 <syntax>Alias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context>
@@ -99,47 +99,47 @@ module="mod_alias">Alias</directive> $B$h$j@h$K%^%C%A$7$^$9$N$G!"8e<T$O(B
 </contextlist>
 
 <usage>
-    <p><directive>Alias</directive> $B%G%#%l%/%F%#%V$O%I%-%e%a%s%H$r(B
-    $B%m!<%+%k%U%!%$%k%7%9%F%`$N(B
+    <p><directive>Alias</directive> ディレクティブはドキュメントを
+    ローカルファイルシステムの
     <directive module="core">DocumentRoot</directive>
-    $B0J30$N>l=j$KJ]4I$9$k$3$H$r2DG=$K$7$^$9!#(B
-    URL $B$N(B (% $B$,I|9f$5$l$?(B) $B%Q%9$,(B <var>url-path</var> $B$G;O$^$k$b$N$O(B
+    以外の場所に保管することを可能にします。
+    URL の (% が復号された) パスが <var>url-path</var> で始まるものは
     <var>directory-filename</var>
-    $B$G;O$^$k%m!<%+%k%U%!%$%k$K%^%C%W$5$l$^$9!#(B</p>
+    で始まるローカルファイルにマップされます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       Alias /image /ftp/pub/image
     </example>
 
-    <p>http://myserver/image/foo.gif $B$X$N%j%/%(%9%H$KBP$7$F!"%5!<%P$O(B
-    $B%U%!%$%k(B /ftp/pub/image/foo.gif $B$rJV$7$^$9!#(B</p>
+    <p>http://myserver/image/foo.gif へのリクエストに対して、サーバは
+    ファイル /ftp/pub/image/foo.gif を返します。</p>
 
-    <p>$B$b$7(B <var>url-path</var> $B$N:G8e$K(B /
-    $B$r=q$$$?$J$i!"%5!<%P$,%(%$%j%"%9$rE83+$9$k$?$a$K$O!":G8e$N(B /
-    $B$,I,MW$K$J$k$3$H$KCm0U$7$F$/$@$5$$!#$9$J$o$A!"(B<code>Alias /icons/
-     /usr/local/apache/icons/</code> $B$H$$$&$b$N$r;HMQ$7$F$$$k>l9g$O!"(B
-    <code>/icons</code> $B$H$$$&(B url $B$O%(%$%j%"%9$5$l$^$;$s!#(B</p>
+    <p>もし <var>url-path</var> の最後に /
+    を書いたなら、サーバがエイリアスを展開するためには、最後の /
+    が必要になることに注意してください。すなわち、<code>Alias /icons/
+     /usr/local/apache/icons/</code> というものを使用している場合は、
+    <code>/icons</code> という url はエイリアスされません。</p>
 
-    <p>$B%(%$%j%"%9$N(B<em>$B9T$-@h(B</em>$B$r4^$s$G$$$k(B <directive
+    <p>エイリアスの<em>行き先</em>を含んでいる <directive
     type="section" module="core">Directory</directive>
-    $B%;%/%7%g%s$rDI2C$9$kI,MW$,$"$k$+$b$7$l$J$$$3$H$KCm0U$7$F$/$@$5$$!#(B
-    $B%(%$%j%"%9$NE83+$O(B <directive
+    セクションを追加する必要があるかもしれないことに注意してください。
+    エイリアスの展開は <directive
     type="section" module="core">Directory</directive>
-    $B%;%/%7%g%s$rD4$Y$kA0$K9T$J$o$l$^$9$N$G!"(B
-    $B%(%$%j%"%9$N9T$-@h$N(B <directive
-    type="section" module="core">Directory</directive> $B%;%/%7%g%s$N$_(B
-    $B8z2L$,$"$j$^$9!#(B
-    ($B$7$+$7!"(B<directive
+    セクションを調べる前に行なわれますので、
+    エイリアスの行き先の <directive
+    type="section" module="core">Directory</directive> セクションのみ
+    効果があります。
+    (しかし、<directive
     type="section" module="core">Location</directive>
-    $B%;%/%7%g%s$O%(%$%j%"%9$,=hM}$5$l$kA0$K<B9T$5$l$^$9$N$G!"(B
-    $B$3$A$i$OE,MQ$5$l$^$9!#(B)</p>
+    セクションはエイリアスが処理される前に実行されますので、
+    こちらは適用されます。)</p>
 
-    <p>$BFC$K!"(B<code>Alias</code> $B$r(B
+    <p>特に、<code>Alias</code> を
     <directive module="core">DocumentRoot</directive>
-    $B%G%#%l%/%H%j$N30B&$KG[CV$7$?>l9g$O!"9T$-@h$N%G%#%l%/%H%j$KBP$9$k(B
-    $B%"%/%;%98"8B$rL@<(E*$K@)8B$7$J$1$l$P$J$i$J$$$G$7$g$&!#(B</p>
+    ディレクトリの外側に配置した場合は、行き先のディレクトリに対する
+    アクセス権限を明示的に制限しなければならないでしょう。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
         Alias /image /ftp/pub/image<br />
         &lt;Directory /ftp/pub/image&gt;<br />
         <indent>
@@ -154,7 +154,7 @@ module="mod_alias">Alias</directive> $B$h$j@h$K%^%C%A$7$^$9$N$G!"8e<T$O(B
 
 <directivesynopsis>
 <name>AliasMatch</name>
-<description>$B@55,I=8=$r;H$C$F(B URL $B$r%U%!%$%k%7%9%F%`$N0LCV$K%^%C%W$9$k(B</description>
+<description>正規表現を使って URL をファイルシステムの位置にマップする</description>
 <syntax>AliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context>
@@ -162,13 +162,13 @@ module="mod_alias">Alias</directive> $B$h$j@h$K%^%C%A$7$^$9$N$G!"8e<T$O(B
 </contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B <directive module="mod_alias">Alias</directive>
-    $B$H$[$H$s$IF1$8$G$9$,!"4JC1$J@hF,$+$i$N%^%C%A$r9T$J$&$N$G$O$J$/!"(B
-    $BI8=`@55,I=8=$rMxMQ$7$^$9!#$3$3$G;XDj$5$l$?@55,I=8=$H(B URL $B$N%Q%9(B
-    $B$,9g$&$+$I$&$+$rD4$Y!"9g$&>l9g$O3g8L$G3g$i$l$?%^%C%A$r(B
-    $BM?$($i$l$?J8;zNs$GCV$-49$(!"$=$l$r%U%!%$%kL>$H$7$F;HMQ$7$^$9!#$?$H$($P!"(B
-    <code>/icons</code> $B%G%#%l%/%H%j$r;H$&(B
-    $B$?$a$K$O0J2<$N$h$&$J$b$N$,;HMQ$G$-$^$9(B:</p>
+    <p>このディレクティブは <directive module="mod_alias">Alias</directive>
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    標準正規表現を利用します。ここで指定された正規表現と URL のパス
+    が合うかどうかを調べ、合う場合は括弧で括られたマッチを
+    与えられた文字列で置き換え、それをファイル名として使用します。たとえば、
+    <code>/icons</code> ディレクトリを使う
+    ためには以下のようなものが使用できます:</p>
 
     <example>
       AliasMatch ^/icons(.*) /usr/local/apache/icons$1
@@ -178,8 +178,8 @@ module="mod_alias">Alias</directive> $B$h$j@h$K%^%C%A$7$^$9$N$G!"8e<T$O(B
 
 <directivesynopsis>
 <name>Redirect</name>
-<description>$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N%j%@%$%l%/%H$r(B
-$BAw$k(B</description>
+<description>クライアントが違う URL を取得するように外部へのリダイレクトを
+送る</description>
 <syntax>Redirect [<var>status</var>] <var>URL-path</var>
 <var>URL</var></syntax>
 <contextlist><context>server config</context>
@@ -188,67 +188,67 @@ module="mod_alias">Alias</directive> $B$h$j@h$K%^%C%A$7$^$9$N$G!"8e<T$O(B
 <override>FileInfo</override>
 
 <usage>
-    <p>Redirect $B%G%#%l%/%F%#%V$O8E$$(B URL $B$r?7$7$$$b$N$X%^%C%W$7$^$9!#(B
-    $B?7$7$$(B URL $B$,%/%i%$%"%s%H$KJV$5$l$^$9!#$=$7$F!"(B
-    $B%/%i%$%"%s%H$O?7$7$$%"%I%l%9$r$b$&0l2s<hF@$7$h$&$H$7$^$9!#(B
-    <var>URL-path</var> (% $B$,I|9f$5$l$?(B) $B%Q%9$G;O$^$k%I%-%e%a%s%H$X$N(B
-    $B$9$Y$F$N%j%/%(%9%H$O(B <var>URL</var> $B$G;O$^$k?7$7$$(B
-    (% $B$,Id9f2=$5$l$?(B) URL $B$X$N%j%@%$%l%/%H%(%i!<$,JV$5$l$^$9!#(B</p>
+    <p>Redirect ディレクティブは古い URL を新しいものへマップします。
+    新しい URL がクライアントに返されます。そして、
+    クライアントは新しいアドレスをもう一回取得しようとします。
+    <var>URL-path</var> (% が復号された) パスで始まるドキュメントへの
+    すべてのリクエストは <var>URL</var> で始まる新しい
+    (% が符号化された) URL へのリダイレクトエラーが返されます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       Redirect /service http://foo2.bar.com/service
     </example>
 
-    <p>$B%/%i%$%"%s%H$O(B http://myserver/service/foo.txt
-    $B$X$N%j%/%(%9%H$r9T$J$&$H!"Be$o$j$K(B http://foo2.bar.com/service/foo.txt
-    $B$r%"%/%;%9$9$k$h$&$K9p$2$i$l$^$9!#(B</p>
+    <p>クライアントは http://myserver/service/foo.txt
+    へのリクエストを行なうと、代わりに http://foo2.bar.com/service/foo.txt
+    をアクセスするように告げられます。</p>
 
-<note><title>$BCm0U(B</title><p>$B@_Dj%U%!%$%kCf$N=gHV$K4X$o$i$:!"(B
-Redirect $B7O$N%G%#%l%/%F%#%V$O(B Alias
-$B%G%#%l%/%F%#%V$H(B ScriptAlias $B%G%#%l%/%F%#%V$h$j$bM%@h$5$l$^$9!#(B
-$B$^$?!"(B.htaccess $B%U%!%$%k$d(B <directive
+<note><title>注意</title><p>設定ファイル中の順番に関わらず、
+Redirect 系のディレクティブは Alias
+ディレクティブと ScriptAlias ディレクティブよりも優先されます。
+また、.htaccess ファイルや <directive
 type="section" module="core">Directory</directive>
-$B%;%/%7%g%s$NCf$G;H$o$l$F$$$?$H$7$F$b!"(B<var>URL-path</var>
-$B$OAjBP%Q%9$G$O$J$/!"40A4$J(B URL $B$G$J$1$l$P$J$j$^$;$s!#(B</p></note>
+セクションの中で使われていたとしても、<var>URL-path</var>
+は相対パスではなく、完全な URL でなければなりません。</p></note>
 
-    <p>$B$b$7(B <var>status</var> $B0z?t$,M?$($i$l$F$$$J$1$l$P!"%j%@%$%l%/%H$O(B
-    "temporary" (HTTP $B%9%F!<%?%9(B 302) $B$K$J$j$^$9!#$3$l$O%/%i%$%"%s%H$K(B
-    $B%j%=!<%9$,0l;~E*$K0\F0$7$?$H$$$&$3$H$r<($7$^$9!#(B<var>Status</var>
-    $B0z?t$O(B $BB>$N(B HTTP $B$N%9%F!<%?%9%3!<%I$rJV$9$?$a$K;HMQ$9$k$3$H$,$G$-$^$9(B:</p>
+    <p>もし <var>status</var> 引数が与えられていなければ、リダイレクトは
+    "temporary" (HTTP ステータス 302) になります。これはクライアントに
+    リソースが一時的に移動したということを示します。<var>Status</var>
+    引数は 他の HTTP のステータスコードを返すために使用することができます:</p>
 
     <dl>
       <dt>permanent</dt>
 
-      <dd>$B1J5W$K%j%@%$%l%/%H$r$9$k%9%F!<%?%9(B (301) $B$rJV$7$^$9!#(B
-      $B$3$l$O%j%=!<%9$,1J5W$K0\F0$7$?$H$$$&$3$H$r0UL#$7$^$9!#(B</dd>
+      <dd>永久にリダイレクトをするステータス (301) を返します。
+      これはリソースが永久に移動したということを意味します。</dd>
 
       <dt>temp</dt>
 
-      <dd>$B0l;~E*$J%j%@%$%l%/%H%9%F!<%?%9(B (302)
-      $B$rJV$7$^$9!#$3$l$,%G%U%)%k%H$G$9!#(B</dd>
+      <dd>一時的なリダイレクトステータス (302)
+      を返します。これがデフォルトです。</dd>
 
       <dt>seeother</dt>
 
-      <dd>"See Other" $B%9%F!<%?%9(B (303) $B$rJV$7$^$9!#(B
-      $B$3$l$O%j%=!<%9$,B>$N$b$N$GCV$-49$($i$l$?$3$H$r0UL#$7$^$9!#(B</dd>
+      <dd>"See Other" ステータス (303) を返します。
+      これはリソースが他のもので置き換えられたことを意味します。</dd>
 
     <dt>gone</dt>
 
-      <dd>"Gone" $B%9%F!<%?%9(B (410) $B$rJV$7$^$9!#$3$l$O%j%=!<%9$,1J5W$K(B
-      $B:o=|$5$l$?$3$H$r0UL#$7$^$9!#$3$N%9%F!<%?%9$,;HMQ$5$l$?>l9g!"(B
-      <var>url</var> $B0z?t$O>JN,$5$l$J$1$l$P$J$j$^$;$s!#(B</dd>
+      <dd>"Gone" ステータス (410) を返します。これはリソースが永久に
+      削除されたことを意味します。このステータスが使用された場合、
+      <var>url</var> 引数は省略されなければなりません。</dd>
     </dl>
 
-    <p><var>Status</var> $B$NCM$K%9%F!<%?%9%3!<%I$r?tCM$GM?$($k$3$H$G(B
-    $BB>$N%9%F!<%?%9%3!<%I$bJV$9$3$H$,$G$-$^$9!#%9%F!<%?%9$,(B 300 $B$H(B 399
-    $B$N4V$K$"$k>l9g!"(B<var>url</var> $B0z?t$OB8:_$7$F$$$J$1$l$P$$$1$^$;$s!#(B
-    $B$=$NB>$N>l9g$O>JN,$5$l$F$$$J$1$l$P$J$j$^$;$s!#$?$@$7!"(B
-    $B%9%F!<%?%9$O(B Apache $B$N%3!<%I$,CN$C$F$$$k$b$N$G$"$kI,MW$,$"$j$^$9(B
-    (http_protocol.c $B$N4X?t(B <code>send_error_response</code>
-    $B$r8+$F$/$@$5$$(B)$B!#(B</p>
-    <p>$BNc(B:</p>
+    <p><var>Status</var> の値にステータスコードを数値で与えることで
+    他のステータスコードも返すことができます。ステータスが 300 と 399
+    の間にある場合、<var>url</var> 引数は存在していなければいけません。
+    その他の場合は省略されていなければなりません。ただし、
+    ステータスは Apache のコードが知っているものである必要があります
+    (http_protocol.c の関数 <code>send_error_response</code>
+    を見てください)。</p>
+    <p>例:</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       Redirect permanent /one http://example.com/two<br />
       Redirect 303 /three http://example.com/other
     </example>
@@ -258,8 +258,8 @@ type="section" module="core">Directory</directive>
 
 <directivesynopsis>
 <name>RedirectMatch</name>
-<description>$B8=:_$N(B URL $B$X$N@55,I=8=$N%^%C%A$K$h$j(B
-$B30It$X$N%j%@%$%l%/%H$rAw$k(B</description>
+<description>現在の URL への正規表現のマッチにより
+外部へのリダイレクトを送る</description>
 <syntax>RedirectMatch [<var>status</var>] <var>regex</var>
 <var>URL</var></syntax>
 <contextlist><context>server config</context>
@@ -268,13 +268,13 @@ type="section" module="core">Directory</directive>
 <override>FileInfo</override>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B <directive module="mod_alias">Redirect</directive>
-    $B$H$[$H$s$IF1$8$G$9$,!"4JC1$J@hF,$+$i$N%^%C%A$r9T$J$&$N$G$O$J$/!"(B
-    $BI8=`@55,I=8=$rMxMQ$7$^$9!#$3$3$G;XDj$5$l$?@55,I=8=$H(B URL-path
-    $B$,9g$&$+$I$&$+$rD4$Y!"9g$&>l9g$O3g8L$G3g$i$l$?%^%C%A$r(B
-    $BM?$($i$l$?J8;zNs$GCV$-49$(!"$=$l$r%U%!%$%kL>$H$7$F;HMQ$7$^$9!#(B
-    $B$?$H$($P!"$9$Y$F$N(B GIF $B%U%!%$%k$rJL%5!<%P$NF1MM$JL>A0$N(B JPEG
-    $B%U%!%$%k$K%j%@%$%l%/%H$9$k$K$O!"0J2<$N$h$&$J$b$N$r;H$$$^$9(B:
+    <p>このディレクティブは <directive module="mod_alias">Redirect</directive>
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    標準正規表現を利用します。ここで指定された正規表現と URL-path
+    が合うかどうかを調べ、合う場合は括弧で括られたマッチを
+    与えられた文字列で置き換え、それをファイル名として使用します。
+    たとえば、すべての GIF ファイルを別サーバの同様な名前の JPEG
+    ファイルにリダイレクトするには、以下のようなものを使います:
     </p>
 
     <example>
@@ -285,8 +285,8 @@ type="section" module="core">Directory</directive>
 
 <directivesynopsis>
 <name>RedirectTemp</name>
-<description>$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N0l;~E*$J(B
-$B%j%@%$%l%/%H$rAw$k(B</description>
+<description>クライアントが違う URL を取得するように外部への一時的な
+リダイレクトを送る</description>
 <syntax>RedirectTemp <var>URL-path</var> <var>URL</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -294,16 +294,16 @@ type="section" module="core">Directory</directive>
 <override>FileInfo</override>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O%/%i%$%"%s%H$K(B Redirect
-    $B$,0l;~E*$J$b$N$G$"$k(B ($B%9%F!<%?%9(B 302) $B$3$H$rCN$i$;$^$9!#(B
-    <code>Redirect temp</code> $B$H$^$C$?$/F1$8$G$9!#(B</p>
+    <p>このディレクティブはクライアントに Redirect
+    が一時的なものである (ステータス 302) ことを知らせます。
+    <code>Redirect temp</code> とまったく同じです。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RedirectPermanent</name>
-<description>$B%/%i%$%"%s%H$,0c$&(B URL $B$r<hF@$9$k$h$&$K30It$X$N1J5WE*$J(B
-$B%j%@%$%l%/%H$rAw$k(B</description>
+<description>クライアントが違う URL を取得するように外部への永久的な
+リダイレクトを送る</description>
 <syntax>RedirectPermanent <var>URL-path</var> <var>URL</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -311,16 +311,16 @@ type="section" module="core">Directory</directive>
 <override>FileInfo</override>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O%/%i%$%"%s%H$K(B Redirect $B$,1J5WE*$J$b$N(B
-    ($B%9%F!<%?%9(B 301) $B$G$"$k$3$H$rCN$i$;$^$9!#(B
-    <code>Redirect permanent</code> $B$H$^$C$?$/F1$8$G$9!#(B</p>
+    <p>このディレクティブはクライアントに Redirect が永久的なもの
+    (ステータス 301) であることを知らせます。
+    <code>Redirect permanent</code> とまったく同じです。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ScriptAlias</name>
-<description>URL $B$r%U%!%$%k%7%9%F%`$N0LCV$X%^%C%W$7!"%^%C%W@h$r(B
-CGI $B%9%/%j%W%H$K;XDj(B</description>
+<description>URL をファイルシステムの位置へマップし、マップ先を
+CGI スクリプトに指定</description>
 <syntax>ScriptAlias <var>URL-path</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context>
@@ -328,30 +328,30 @@ CGI $B%9%/%j%W%H$K;XDj(B</description>
 </contextlist>
 
 <usage>
-    <p><directive>ScriptAlias</directive> $B%G%#%l%/%F%#%V$O!"BP>]%G%#%l%/%H%j$K(B
-    <module>mod_cgi</module> $B$N(B cgi-script
-    $B%O%s%I%i$G=hM}$5$l$k(B CGI
-    $B%9%/%j%W%H$,$"$k$3$H$r<($90J30$O(B
+    <p><directive>ScriptAlias</directive> ディレクティブは、対象ディレクトリに
+    <module>mod_cgi</module> の cgi-script
+    ハンドラで処理される CGI
+    スクリプトがあることを示す以外は
     <directive module="mod_alias">Alias</directive>
-    $B%G%#%l%/%F%#%V$HF1$8?6$kIq$$$r$7$^$9!#(B
-    URL $B$N(B (% $B$,I|9f$5$l$?(B) $B%Q%9$,(B <var>URL-path</var> $B$G;O$^$k$b$N$O(B
-    $B%m!<%+%k$N%U%!%$%k%7%9%F%`$N(B
-    $B%U%k%Q%9$G$"$kFsHVL\$N0z?t$K%^%C%W$5$l$^$9!#(B</p>
+    ディレクティブと同じ振る舞いをします。
+    URL の (% が復号された) パスが <var>URL-path</var> で始まるものは
+    ローカルのファイルシステムの
+    フルパスである二番目の引数にマップされます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ScriptAlias /cgi-bin/ /web/cgi-bin/
     </example>
 
     <p><code>http://myserver/cgi-bin/foo</code>
-    $B$X$N%j%/%(%9%H$KBP$7$F%5!<%P$O%9%/%j%W%H(B
-    <code>/web/cgi-bin/foo</code> $B$r<B9T$7$^$9!#(B</p>
+    へのリクエストに対してサーバはスクリプト
+    <code>/web/cgi-bin/foo</code> を実行します。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ScriptAliasMatch</name>
-<description>URL $B$r@55,I=8=$r;H$C$F%U%!%$%k%7%9%F%`$N0LCV$X%^%C%W$7!"%^%C%W@h$r(B
-CGI $B%9%/%j%W%H$K;XDj(B</description>
+<description>URL を正規表現を使ってファイルシステムの位置へマップし、マップ先を
+CGI スクリプトに指定</description>
 <syntax>ScriptAliasMatch <var>regex</var>
 <var>file-path</var>|<var>directory-path</var></syntax>
 <contextlist><context>server config</context>
@@ -359,13 +359,13 @@ CGI $B%9%/%j%W%H$K;XDj(B</description>
 </contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B <directive module="mod_alias">ScriptAlias</directive>
-    $B$H$[$H$s$IF1$8$G$9$,!"4JC1$J@hF,$+$i$N%^%C%A$r9T$J$&$N$G$O$J$/!"(B
-    $BI8=`@55,I=8=$rMxMQ$7$^$9!#$3$3$G;XDj$5$l$?@55,I=8=$H(B URL-path
-    $B$,9g$&$+$I$&$+$rD4$Y!"9g$&>l9g$O3g8L$G3g$i$l$?%^%C%A$r(B
-    $BM?$($i$l$?J8;zNs$GCV$-49$(!"$=$l$r%U%!%$%kL>$H$7$F;HMQ$7$^$9!#(B
-    $B$?$H$($P!"I8=`$N(B <code>/cgi-bin</code>
-    $B$r;HMQ$9$k$h$&$K$9$k$?$a$K$O!"0J2<$N$h$&$J$b$N$r;H$$$^$9(B:
+    <p>このディレクティブは <directive module="mod_alias">ScriptAlias</directive>
+    とほとんど同じですが、簡単な先頭からのマッチを行なうのではなく、
+    標準正規表現を利用します。ここで指定された正規表現と URL-path
+    が合うかどうかを調べ、合う場合は括弧で括られたマッチを
+    与えられた文字列で置き換え、それをファイル名として使用します。
+    たとえば、標準の <code>/cgi-bin</code>
+    を使用するようにするためには、以下のようなものを使います:
     </p>
 
     <example>

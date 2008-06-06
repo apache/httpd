@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -24,17 +24,17 @@
 
 <name>mpm_winnt</name>
 <description>Windows NT
-$B8~$1$K:GE,2=$5$l$?%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B</description>
+向けに最適化されたマルチプロセッシングモジュール</description>
 <status>MPM</status>
 <sourcefile>mpm_winnt.c</sourcefile>
 <identifier>mpm_winnt_module</identifier>
 
 <summary>
-    <p>$B$3$N%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B (MPM)
-    $B$O(B Windows NT $B$G$N%G%U%)%k%H$K$J$j$^$9!#(B
-    $B0l$D$N@)8fMQ%W%m%;%9$rMQ$$!"$3$l$,0l$D$N;R%W%m%;%9$r5/F0$7!"(B
-    $B$=$7$F;R%W%m%;%9$,%j%/%(%9%H$r<h$j07$&$?$a$K%9%l%C%I$r(B
-    $B5/F0$7$^$9!#(B</p>
+    <p>このマルチプロセッシングモジュール (MPM)
+    は Windows NT でのデフォルトになります。
+    一つの制御用プロセスを用い、これが一つの子プロセスを起動し、
+    そして子プロセスがリクエストを取り扱うためにスレッドを
+    起動します。</p>
 </summary>
 
 <directivesynopsis location="mpm_common"><name>CoreDumpDirectory</name>
@@ -62,20 +62,20 @@
 
 <directivesynopsis>
 <name>Win32DisableAcceptEx</name>
-<description>$B%M%C%H%o!<%/@\B3$N<u$1IU$1$K(B accept() $B$r(BAcceptEx $B$NBe$o$j$K;H$&(B</description>
+<description>ネットワーク接続の受け付けに accept() をAcceptEx の代わりに使う</description>
 <syntax>Win32DisableAcceptEx</syntax>
-<default>AcceptEx() $B$O%G%U%)%k%H$GM-8z$K$J$C$F$$$^$9!#(BAcceptEx() $B$rL58z$K$9$k(B
-$B$?$a$K$3$N%G%#%l%/%F%#%V$r;H$$$^$9!#(B</default>
+<default>AcceptEx() はデフォルトで有効になっています。AcceptEx() を無効にする
+ためにこのディレクティブを使います。</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>2.0.49 $B%P!<%8%g%s0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>2.0.49 バージョン以降で使用可能</compatibility>
 
 <usage>
-    <p>AcceptEx() $B$O(B Microsoft WinSock v2 API $B$G!">l9g$K$h$C$F$O(B
-    BSD $B7A<0$N(B <code>accept()</code> API $B$h$j$b$h$$@-G=$rH/4x$7$^$9!#(B
-    $B$h$/;H$o$l$F$$$k(B Windows $B@=IJ$NCf$G!"FC$K%&%#%k%9%9%-%c%J$d(B VPN $B%Q%C%1!<%8(B
-    $B$NCf$K$O!"%P%0$,860x$G(B <code>AcceptEx()</code> $B$NE,@Z$JF0:n$rK8$2$k$b$N$,$"$j$^$9!#(B
-    $B0J2<$N$h$&$J%(%i!<$KAx6x$7$?>l9g$O!"$3$N%G%#%l%/%F%#%V$r;HMQ$7$F(B
-    <code>AcceptEx()</code> $B$r;HMQ$7$J$$$h$&$K$7$F$/$@$5$$!#(B</p>
+    <p>AcceptEx() は Microsoft WinSock v2 API で、場合によっては
+    BSD 形式の <code>accept()</code> API よりもよい性能を発揮します。
+    よく使われている Windows 製品の中で、特にウィルススキャナや VPN パッケージ
+    の中には、バグが原因で <code>AcceptEx()</code> の適切な動作を妨げるものがあります。
+    以下のようなエラーに遭遇した場合は、このディレクティブを使用して
+    <code>AcceptEx()</code> を使用しないようにしてください。</p>
 
     <example>
         [error] (730038)An operation was attempted on something that is

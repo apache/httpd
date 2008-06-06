@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420993 (outdated) -->
@@ -22,21 +22,21 @@
 
 <modulesynopsis metafile="mod_version.xml.meta">
 <name>mod_version</name>
-<description>$B%P!<%8%g%s0MB8$N@_Dj(B</description>
+<description>バージョン依存の設定</description>
 <status>Extension</status>
 <sourcefile>mod_version.c</sourcefile>
 <identifier>version_module</identifier>
-<compatibility>$B%P!<%8%g%s(B 2.1 $B0J9_(B</compatibility>
+<compatibility>バージョン 2.1 以降</compatibility>
 
 <summary>
-    <p>$BMM!9$J%P!<%8%g%s$N(B httpd $B$N0[$J$k@_Dj$r07$&$3$H$K$J$k!"(B
-    $B%F%9%H%9%$!<%H$dBg5,LO%M%C%H%o!<%/$G$N;HMQ$N$?$a$K@_7W$5$l$F$$$^$9!#(B
-    $B$3$N%b%8%e!<%k$O?7$7$$%3%s%F%J(B $B!=(B <directive
-    type="section" module="mod_version">IfVersion</directive> $B$r(B
-    $BDs6!$7$^$9!#$3$l$r;H$&$H!"?t;z$NHf3S$d@55,I=8=$K$h$k=@Fp$J(B
-    $B%P!<%8%g%s%A%'%C%/$,$G$-$k$h$&$K$J$j$^$9!#(B</p>
+    <p>様々なバージョンの httpd の異なる設定を扱うことになる、
+    テストスイートや大規模ネットワークでの使用のために設計されています。
+    このモジュールは新しいコンテナ ― <directive
+    type="section" module="mod_version">IfVersion</directive> を
+    提供します。これを使うと、数字の比較や正規表現による柔軟な
+    バージョンチェックができるようになります。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       &lt;IfVersion 2.1.0&gt;<br />
       <indent>
         # current httpd version is exactly 2.1.0<br />
@@ -50,12 +50,12 @@
       &lt;/IfVersion&gt;
     </example>
 
-    <p>$B>\:Y$O0J2<$rFI$s$G$/$@$5$$!#(B</p>
+    <p>詳細は以下を読んでください。</p>
 </summary>
 
 <directivesynopsis type="section">
 <name>IfVersion</name>
-<description>$B%P!<%8%g%s0MB8$N@_Dj$rF~$l$k(B</description>
+<description>バージョン依存の設定を入れる</description>
 <syntax>&lt;IfVersion [[!]<var>operator</var>] <var>version</var>&gt; ...
 &lt;/IfVersion&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -63,30 +63,30 @@
 <override>All</override>
 
 <usage>
-    <p><directive type="section">IfVersion</directive> $B$O(B <program>httpd</program> $B$N%P!<%8%g%s(B
-    $B$,4p=`$rK~$?$7$?$H$-$K$N$_<B9T$5$;$?$$%G%#%l%/%F%#%V$r0O$_$^$9!#(B
-    $BDL>o$N(B ($B?tCM(B) $BHf3S$N$H$-$O(B <var>version</var> $B0z?t$O(B
-    <code><var>major</var>[.<var>minor</var>[.<var>patch</var>]]</code> $B$H$$$&(B
-    $B7A<0!"Nc$($P!"(B<code>2.1.0</code> $B$d(B <code>2.2</code> $B$H$J$j$^$9!#(B
-    <var>minor</var> $B$H(B <var>patch</var> $B$O>JN,2DG=$G$9!#>JN,$5$l$?>l9g$O!"(B
-    0 $B$r;XDj$7$?$b$N$H$_$J$5$l$^$9!#Hf3S$K$O<!$N?tCM(B <var>operator</var> $B$r(B
-    $B;XDj$G$-$^$9(B:</p>
+    <p><directive type="section">IfVersion</directive> は <program>httpd</program> のバージョン
+    が基準を満たしたときにのみ実行させたいディレクティブを囲みます。
+    通常の (数値) 比較のときは <var>version</var> 引数は
+    <code><var>major</var>[.<var>minor</var>[.<var>patch</var>]]</code> という
+    形式、例えば、<code>2.1.0</code> や <code>2.2</code> となります。
+    <var>minor</var> と <var>patch</var> は省略可能です。省略された場合は、
+    0 を指定したものとみなされます。比較には次の数値 <var>operator</var> を
+    指定できます:</p>
 
     <table style="zebra" border="1">
-    <tr><th><var>operator</var></th><th>$B@bL@(B</th></tr>
-    <tr><td><code>=</code> $B$H(B <code>==</code></td>
-        <td>$BF1$8(B httpd $B%P!<%8%g%s(B</td></tr>
+    <tr><th><var>operator</var></th><th>説明</th></tr>
+    <tr><td><code>=</code> と <code>==</code></td>
+        <td>同じ httpd バージョン</td></tr>
     <tr><td><code>&gt;</code></td>
-        <td>$B$h$jBg$-$$(B httpd $B%P!<%8%g%s(B</td></tr>
+        <td>より大きい httpd バージョン</td></tr>
     <tr><td><code>&gt;=</code></td>
-        <td>$B;XDj0J>e$N(B httpd $B%P!<%8%g%s(B</td></tr>
+        <td>指定以上の httpd バージョン</td></tr>
     <tr><td><code>&lt;</code></td>
-        <td>$B;XDjL$K~$N(B httpd $B%P!<%8%g%s(B</td></tr>
+        <td>指定未満の httpd バージョン</td></tr>
     <tr><td><code>&lt;=</code></td>
-        <td>$B;XDj0J2<$N(B httpd $B%P!<%8%g%s(B</td></tr>
+        <td>指定以下の httpd バージョン</td></tr>
     </table>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       &lt;IfVersion >= 2.1&gt;<br />
       <indent>
         # this happens only in versions greater or<br />
@@ -95,20 +95,20 @@
       &lt;/IfVersion&gt;
     </example>
 
-    <p>$B?tCMHf3S$K2C$($F!"(Bhttp $B$N%P!<%8%g%sHV9f$KBP$7$F@55,I=8=$K$h$k(B
-    $B%^%C%A%s%0$,$G$-$^$9!#Fs<oN`$N=q$-J}$,$"$j$^$9(B:</p>
+    <p>数値比較に加えて、http のバージョン番号に対して正規表現による
+    マッチングができます。二種類の書き方があります:</p>
 
     <table style="zebra" border="1">
-    <tr><th><var>operator</var></th><th>$B@bL@(B</th></tr>
+    <tr><th><var>operator</var></th><th>説明</th></tr>
     <tr><td><code>=</code> or <code>==</code></td>
-        <td><var>version</var> $B$O(B
-            <code>/<var>regex</var>/</code> $B7A<0(B</td></tr>
+        <td><var>version</var> は
+            <code>/<var>regex</var>/</code> 形式</td></tr>
     <tr><td><code>~</code></td>
-        <td><var>version</var> $B$O(B
-            <code><var>regex</var></code> $B7A<0(B</td></tr>
+        <td><var>version</var> は
+            <code><var>regex</var></code> 形式</td></tr>
     </table>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       &lt;IfVersion = /^2.1.[01234]$/&gt;<br />
       <indent>
         # e.g. workaround for buggy versions
@@ -116,8 +116,8 @@
       &lt;/IfVersion&gt;
     </example>
 
-    <p>$B%^%C%A%s%0$NH]Dj$rI=8=$9$k$?$a$K!"$9$Y$F$N%*%Z%l!<%?$OA0$K(B
-    $B46C2Id(B (<code>!</code>)$B$rIU$1$k$3$H$,$G$-$^$9(B:</p>
+    <p>マッチングの否定を表現するために、すべてのオペレータは前に
+    感嘆符 (<code>!</code>)を付けることができます:</p>
 
     <example>
       &lt;IfVersion !~ ^2.1.[01234]$&gt;<br />
@@ -127,8 +127,8 @@
       &lt;/IfVersion&gt;
     </example>
 
-    <p><var>operator</var> $B$,>JN,$5$l$?$H$-$O(B <code>=</code> $B$H(B
-    $B$_$J$5$l$^$9!#(B</p>
+    <p><var>operator</var> が省略されたときは <code>=</code> と
+    みなされます。</p>
 </usage>
 </directivesynopsis>
 

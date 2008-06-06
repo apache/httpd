@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 165671:659902 (outdated) -->
@@ -22,35 +22,35 @@
 
 <manualpage metafile="logs.xml.meta">
 
-  <title>$B%m%0%U%!%$%k(B</title>
+  <title>ログファイル</title>
 
   <summary>
-    <p>$B%&%'%V%5!<%P$r8z2LE*$K4IM}$9$k$?$a$K$O!"%5!<%P$N3hF0$d%Q%U%)!<%^%s%9!"(B
-    $B:#H/@8$7$F$$$k$+$b$7$l$J$$LdBj$K4X$9$k%U%#!<%I%P%C%/$rF@$k$3$H$,I,MW$G$9!#(B
-    Apache HTTP $B%5!<%P$K$OHs>o$KJq3gE*$G=@Fp$J%m%.%s%05!G=$,$"$j$^$9!#(B
-    $B$3$NJ8=q$O%m%.%s%05!G=$N@_Dj$N;EJ}$H!"%m%0$K2?$,=q$+$l$F$$$k$+$r(B
-    $BM}2r$9$k$?$a$NJ}K!$r@bL@$7$^$9!#(B</p>
+    <p>ウェブサーバを効果的に管理するためには、サーバの活動やパフォーマンス、
+    今発生しているかもしれない問題に関するフィードバックを得ることが必要です。
+    Apache HTTP サーバには非常に包括的で柔軟なロギング機能があります。
+    この文書はロギング機能の設定の仕方と、ログに何が書かれているかを
+    理解するための方法を説明します。</p>
   </summary>
 
   <section id="security"><title>
-    $B%;%-%e%j%F%#$K4X$9$k7Y9p(B</title>
+    セキュリティに関する警告</title>
 
-    <p>Apache $B$,%m%0%U%!%$%k$r=q$$$F$$$k%G%#%l%/%H%j$K=q$-9~$a$k?M$O!"(B
-    $B$[$\3N<B$K%5!<%P$,5/F0$5$l$?(B uid $B$X$N%"%/%;%9$r<j$KF~$l$k$3$H$,$G$-$^$9!#(B
-    $B$=$7$F!"$=$l$ODL>o$O(B root $B%f!<%6$G$9!#(B
-    $B$A$c$s$H7k2L$r9M$($k$3$H$J$/!"$=$N%G%#%l%/%H%j$X$N(B
-    $B=q$-9~$_8"8B$rM?$((B<em>$B$J$$(B</em>$B$G$/$@$5$$!#>\$7$/$O(B
-    <a href="misc/security_tips.html">$B%;%-%e%j%F%#$N$3$D(B</a>$B$NJ8=q$r(B
-    $BFI$s$G$/$@$5$$!#(B</p>
+    <p>Apache がログファイルを書いているディレクトリに書き込める人は、
+    ほぼ確実にサーバが起動された uid へのアクセスを手に入れることができます。
+    そして、それは通常は root ユーザです。
+    ちゃんと結果を考えることなく、そのディレクトリへの
+    書き込み権限を与え<em>ない</em>でください。詳しくは
+    <a href="misc/security_tips.html">セキュリティのこつ</a>の文書を
+    読んでください。</p>
 
-    <p>$B2C$($F!"%m%0%U%!%$%k$K$O%/%i%$%"%s%H$+$i$N>pJs$,$=$N$^$^!"(B
-    $B%(%9%1!<%W$5$l$k$3$H$J$/=q$+$l$F$$$^$9!#$G$9$+$i!"0-0U$N$"$k(B
-    $B%/%i%$%"%s%H$,%m%0%U%!%$%k$K@)8fJ8;z$rA^F~$9$k$3$H$,$G$-$^$9!#(B
-    $B@8$N%m%0$r07$&$H$-$OCm0U$7$F$/$@$5$$!#(B</p>
+    <p>加えて、ログファイルにはクライアントからの情報がそのまま、
+    エスケープされることなく書かれています。ですから、悪意のある
+    クライアントがログファイルに制御文字を挿入することができます。
+    生のログを扱うときは注意してください。</p>
   </section>
 
   <section id="errorlog">
-    <title>$B%(%i!<%m%0(B</title>
+    <title>エラーログ</title>
     <related>
       <directivelist>
         <directive module="core">ErrorLog</directive>
@@ -58,22 +58,22 @@
       </directivelist>
     </related>
 
-    <p><directive module="core">ErrorLog</directive> $B%G%#%l%/%F%#%V$K$h$j(B
-    $BL>A0$H>l=j$,7h$^$k%5!<%P$N%(%i!<%m%0$O!"0lHV=EMW$J%m%0%U%!%$%k$G$9!#(B
-    Apache $B$N?GCG>pJs$O$3$3$KAw$i$l!"%j%/%(%9%H$r=hM}$7$F$$$k$H$-$K(B
-    $BH/@8$7$?%(%i!<$O$9$Y$F$3$3$K5-O?$5$l$^$9!#%5!<%P$r5/F0$7$?$H$-$d!"(B
-    $B%5!<%P$NF0:n$KLdBj$,5/$3$C$?$H$-$O!"0lHV:G=i$KD4$Y$k$Y$-(B
-    $B$H$3$m$G$9!#4V0c$$$N>\:Y$d=$@5J}K!$,$=$3$K=q$+$l$F$$$k$3$H$,(B
-    $B$h$/$"$j$^$9!#(B</p>
+    <p><directive module="core">ErrorLog</directive> ディレクティブにより
+    名前と場所が決まるサーバのエラーログは、一番重要なログファイルです。
+    Apache の診断情報はここに送られ、リクエストを処理しているときに
+    発生したエラーはすべてここに記録されます。サーバを起動したときや、
+    サーバの動作に問題が起こったときは、一番最初に調べるべき
+    ところです。間違いの詳細や修正方法がそこに書かれていることが
+    よくあります。</p>
 
-    <p>$B%(%i!<%m%0$OIaDL$O%U%!%$%k$K=q$+$l$^$9(B ($BDL>o(B unix $B%7%9%F%`$G$O(B
-    <code>error_log</code>$B!"(BWindows $B$H(B OS/2 $B$G$O(B <code>error.log</code>)$B!#(B
-    Unix $B%7%9%F%`$G$O%(%i!<$r(B <code>syslog</code> $B$d(B
-    <a href="#piped">$B%Q%$%W$G%W%m%0%i%`$KAw$k(B</a> $B$3$H$,$G$-$^$9!#(B</p>
+    <p>エラーログは普通はファイルに書かれます (通常 unix システムでは
+    <code>error_log</code>、Windows と OS/2 では <code>error.log</code>)。
+    Unix システムではエラーを <code>syslog</code> や
+    <a href="#piped">パイプでプログラムに送る</a> ことができます。</p>
 
-    <p>$B%(%i!<%m%0$N=q<0$OHf3SE*<+M3EY$N9b$$$b$N$G!"@bL@E*$K=q$+$l$F$$$^$9!#(B
-    $B$?$@$7!"$$$/$D$+$N>pJs$O$[$H$s$I$N%(%i!<%m%0$N%(%s%H%j$K$"$j$^$9!#(B
-    $BNc$($P!"BeI=E*$J$b$N$K<!$N$h$&$J%a%C%;!<%8$,$"$j$^$9!#(B</p>
+    <p>エラーログの書式は比較的自由度の高いもので、説明的に書かれています。
+    ただし、いくつかの情報はほとんどのエラーログのエントリにあります。
+    例えば、代表的なものに次のようなメッセージがあります。</p>
 
     <example>
       [Wed Oct 11 14:32:52 2000] [error] [client 127.0.0.1]
@@ -81,32 +81,32 @@
       /export/home/live/ap/htdocs/test
     </example>
 
-    <p>$B%m%0%(%s%H%j$N:G=i$N9`L\$O%a%C%;!<%8$NF|IU$H;~9o$G$9!#(B
-    $BFs$D$a$N9`L\$OJs9p$5$l$F$$$k%(%i!<$N=EMWEY$G$9!#(B
-    <directive module="core">LogLevel</directive> $B$G=EMWEY$N%l%Y%k$r(B
-    $B@)8B$9$k$3$H$K$h$j%(%i!<%m%0$KAw$i$l$k%(%i!<$N<oN`$r@)8f$9$k$3$H$,(B
-    $B$G$-$^$9!#;0$DL\$N9`L\$O%(%i!<$rH/@8$5$;$?%/%i%$%"%s%H$N(B IP $B%"%I%l%9(B
-    $B$G$9!#;D$j$O%a%C%;!<%8$G!"$3$N>l9g$O%5!<%P$,%/%i%$%"%s%H$N%"%/%;%9$r(B
-    $B5qH]$9$k$h$&$K@_Dj$5$l$F$$$k!"$H$$$&$3$H$r<($7$F$$$^$9!#(B
-    $B%5!<%P$O%j%/%(%9%H$5$l$?J8=q$N(B ($B%&%'%V$N%Q%9$G$O$J$/(B) $B%U%!%$%k%7%9%F%`$N(B
-    $B%Q%9$rJs9p$7$^$9!#(B</p>
+    <p>ログエントリの最初の項目はメッセージの日付と時刻です。
+    二つめの項目は報告されているエラーの重要度です。
+    <directive module="core">LogLevel</directive> で重要度のレベルを
+    制限することによりエラーログに送られるエラーの種類を制御することが
+    できます。三つ目の項目はエラーを発生させたクライアントの IP アドレス
+    です。残りはメッセージで、この場合はサーバがクライアントのアクセスを
+    拒否するように設定されている、ということを示しています。
+    サーバはリクエストされた文書の (ウェブのパスではなく) ファイルシステムの
+    パスを報告します。</p>
 
-    <p>$BHs>o$K9-HO0O$N%a%C%;!<%8$,%(%i!<%m%0$K8=$l$^$9!#$?$$$F$$$N$b$N$O(B
-    $B>e$NNc$N$h$&$J46$8$G$9!#%(%i!<%m%0$K$O(B CGI $B%9%/%j%W%H$N%G%P%C%0(B
-    $B=PNO$b=q$+$l$^$9!#(BCGI $B%9%/%j%W%H$,(B <code>stderr</code> $B$K=q$$$?(B
-    $B$9$Y$F$N>pJs$OD>@\%(%i!<%m%0$K%3%T!<$5$l$^$9!#(B</p>
+    <p>非常に広範囲のメッセージがエラーログに現れます。たいていのものは
+    上の例のような感じです。エラーログには CGI スクリプトのデバッグ
+    出力も書かれます。CGI スクリプトが <code>stderr</code> に書いた
+    すべての情報は直接エラーログにコピーされます。</p>
 
-    <p>$B>pJs$rDI2C$7$?$j:o=|$7$?$j$7$F%(%i!<%m%0$r%+%9%?%^%$%:$9$k$3$H$O(B
-    $B$G$-$^$;$s!#$7$+$7!"%j%/%(%9%H$KBP$9$k%(%i!<%m%0$N%(%s%H%j$O!"(B
-    $BBP1~$9$k%(%s%H%j$,(B<a href="#accesslog">$B%"%/%;%9%m%0(B</a>$B$K$"$j$^$9!#(B
-    $BNc$($P!">e$NNc$N%(%s%H%j$O%"%/%;%9%m%0$N%9%F!<%?%9%3!<%I(B 403 $B$N(B
-    $B%(%s%H%j$KBP1~$7$^$9!#%"%/%;%9%m%0$O%+%9%?%^%$%:2DG=$G$9$N$G!"(B
-    $B$=$A$i$r;H$&$3$H$K$h$j%(%i!<$N>u67$K4X$9$k>pJs$r$h$jB?$/(B
-    $B<j$KF~$l$k$3$H$,$G$-$^$9!#(B</p>
+    <p>情報を追加したり削除したりしてエラーログをカスタマイズすることは
+    できません。しかし、リクエストに対するエラーログのエントリは、
+    対応するエントリが<a href="#accesslog">アクセスログ</a>にあります。
+    例えば、上の例のエントリはアクセスログのステータスコード 403 の
+    エントリに対応します。アクセスログはカスタマイズ可能ですので、
+    そちらを使うことによりエラーの状況に関する情報をより多く
+    手に入れることができます。</p>
 
-    <p>$B%F%9%H$N:GCf$O!"LdBj$,H/@8$7$F$$$k$+$I$&$+$r8+$k$?$a$K!"(B
-    $B>o$K%(%i!<%m%0$r4F;k$9$k$N$,Lr$KN)$D>l9g$,$h$/$"$j$^$9!#(B
-    Unix $B%7%9%F%`$G$O!"<!$N$b$N$r;H$&$3$H$,$G$-$^$9!#(B</p>
+    <p>テストの最中は、問題が発生しているかどうかを見るために、
+    常にエラーログを監視するのが役に立つ場合がよくあります。
+    Unix システムでは、次のものを使うことができます。</p>
 
     <example>
       tail -f error_log
@@ -114,7 +114,7 @@
   </section>
 
   <section id="accesslog">
-    <title>$B%"%/%;%9%m%0(B</title>
+    <title>アクセスログ</title>
 
     <related>
       <modulelist>
@@ -128,121 +128,121 @@
       </directivelist>
     </related>
 
-    <p>$B%5!<%P%"%/%;%9%m%0$O%5!<%P$,=hM}$r$7$?$9$Y$F$N%j%/%(%9%H$r(B
-    $B5-O?$7$^$9!#%"%/%;%9%m%0$N>l=j$HFbMF$O(B <directive
+    <p>サーバアクセスログはサーバが処理をしたすべてのリクエストを
+    記録します。アクセスログの場所と内容は <directive
     module="mod_log_config">CustomLog</directive>
-    $B%G%#%l%/%F%#%V$K$h$j7h$^$j$^$9!#%m%0$NFbMF$NA*Br$r4J7i$K$9$k$?$a$K(B
+    ディレクティブにより決まります。ログの内容の選択を簡潔にするために
     <directive module="mod_log_config">LogFormat</directive>
-    $B%G%#%l%/%F%#%V$r;HMQ$9$k$3$H$,$G$-$^$9!#$3$N%;%/%7%g%s$O%"%/%;%9%m%0$K(B
-    $B>pJs$r5-O?$9$k$?$a$N%5!<%P$N@_DjJ}K!$r@bL@$7$^$9!#(B</p>
+    ディレクティブを使用することができます。このセクションはアクセスログに
+    情報を記録するためのサーバの設定方法を説明します。</p>
 
-    <p>$B$b$A$m$s!"%"%/%;%9%m%0$K>pJs$rC_@Q$9$k$3$H$O%m%04IM}$N(B
-    $B;O$^$j$K2a$.$^$;$s!#<!$NCJ3,$OM-MQ$JE}7W$r<h$k$?$a$K$3$N>pJs$r(B
-    $B2r@O$9$k$3$H$G$9!#0lHLE*$J%m%02r@O$O$3$NJ8=q$NHO0O30$G!"(B
-    $B%&%'%V%5!<%P<+?H$N;E;v$H$$$&$o$1$G$b$"$j$^$;$s!#$3$NOC$d!"(B
-    $B%m%02r@O$r9T$J$&%"%W%j%1!<%7%g%s$N>pJs$rF@$k$K$O!"(B<a
+    <p>もちろん、アクセスログに情報を蓄積することはログ管理の
+    始まりに過ぎません。次の段階は有用な統計を取るためにこの情報を
+    解析することです。一般的なログ解析はこの文書の範囲外で、
+    ウェブサーバ自身の仕事というわけでもありません。この話や、
+    ログ解析を行なうアプリケーションの情報を得るには、<a
     href="http://dmoz.org/Computers/Software/Internet/Site_Management/Log_analysis/">
-    Open Directory</a> $B$d(B <a
+    Open Directory</a> や <a
     href="http://dir.yahoo.com/Computers_and_Internet/Software/Internet/World_Wide_Web/Servers/Log_Analysis_Tools/">
-    Yahoo</a> $B$rD4$Y$F$/$@$5$$!#(B</p>
+    Yahoo</a> を調べてください。</p>
 
-    <p>$B$$$m$s$J%P!<%8%g%s$N(B Apache httpd $B$,(B mod_log_config,
-    mod_log_agent, <code>TransferLog</code> $B%G%#%l%/%F%#%V$H$$$C$?!"(B
-    $BB>$N%b%8%e!<%k$d%G%#%l%/%F%#%V$r;H$C$F%"%/%;%9$N%m%.%s%0$r(B
-    $B@)8f$7$F$-$^$7$?!#:#$G$O!"(B<directive
-    module="mod_log_config">CustomLog</directive> $B$,$9$Y$F$N8E$$(B
-    $B%G%#%l%/%F%#%V$N5!G=$r4^$`$h$&$K$J$C$F$$$^$9!#(B</p>
+    <p>いろんなバージョンの Apache httpd が mod_log_config,
+    mod_log_agent, <code>TransferLog</code> ディレクティブといった、
+    他のモジュールやディレクティブを使ってアクセスのロギングを
+    制御してきました。今では、<directive
+    module="mod_log_config">CustomLog</directive> がすべての古い
+    ディレクティブの機能を含むようになっています。</p>
 
-    <p>$B%"%/%;%9%m%0$N=q<0$OHs>o$K=@Fp$J@_Dj$,2DG=$G$9!#(B
-    $B=q<0$O(B C $B$N(B printf(1) $B%U%)!<%^%C%HJ8;zNs$KHs>o$K;w$?(B
-    <directive module="mod_log_config">$B%U%)!<%^%C%HJ8;zNs(B</directive>
-    $B$K$h$j;XDj$5$l$^$9!#$$$/$D$+<!$N@a$GNc$r<($7$^$9!#(B
-    $B%U%)!<%^%C%HJ8;zNs$K;HMQ$G$-$kFbMF$N0lMw$O(B <a
-    href="mod/mod_log_config.html">mod_log_config $B$NJ8=q(B</a>
-    $B$r8+$F$/$@$5$$!#(B</p>
+    <p>アクセスログの書式は非常に柔軟な設定が可能です。
+    書式は C の printf(1) フォーマット文字列に非常に似た
+    <directive module="mod_log_config">フォーマット文字列</directive>
+    により指定されます。いくつか次の節で例を示します。
+    フォーマット文字列に使用できる内容の一覧は <a
+    href="mod/mod_log_config.html">mod_log_config の文書</a>
+    を見てください。</p>
 
     <section id="common">
       <title>Common Log Format</title>
 
-      <p>$B%"%/%;%9%m%0$N$h$/$"$k@_Dj$K0J2<$N$b$N$,$"$j$^$9!#(B</p>
+      <p>アクセスログのよくある設定に以下のものがあります。</p>
 
       <example>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
          CustomLog logs/access_log common
       </example>
 
-      <p>$B$3$l$O!"(B<em>$B%K%C%/%M!<%`(B</em> <code>common</code> $B$rDj5A$7!"(B
-      $B%m%0$N%U%)!<%^%C%HJ8;zNs$N0l$D$H4XO"IU$1$^$9!#%U%)!<%^%C%HJ8;zNs$O(B
-      $B%Q!<%;%s%H%G%#%l%/%F%#%V$+$i$J$j!"$=$l$>$l$N%Q!<%;%s%H%G%#%l%/%F%#%V$O(B
-      $B%5!<%P$K$I$N>pJs$r%m%.%s%0$9$k$+$r;X<($7$^$9!#%U%)!<%^%C%HJ8;zNs$K(B
-      $BJ8;z$r$=$N$^$^F~$l$k$3$H$b$G$-!"$=$l$i$O%m%0$N=PNO$KD>@\%3%T!<$5$l$^$9!#(B
-      $B$=$3$K0zMQJ8;z(B (<code>"</code>) $B$r=q$/$H$-$O!"(B
-      $B%U%)!<%^%C%HJ8;zNs$N:G8e$H$7$F2r<a(B
-      $B$5$l$k$3$H$rKI$0$?$a$K%P%C%/%9%i%C%7%e$G%(%9%1!<%W$9$kI,MW$,$"$j$^$9!#(B
-      $B%U%)!<%^%C%HJ8;zNs$K$O2~9TMQ$N(B "<code>\n</code>"$B!"%?%VMQ$N(B
-      "<code>\t</code>" $B$H$$$&FCJL$J@)8fJ8;z$b4^$a$k$3$H$,$G$-$^$9!#(B</p>
+      <p>これは、<em>ニックネーム</em> <code>common</code> を定義し、
+      ログのフォーマット文字列の一つと関連付けます。フォーマット文字列は
+      パーセントディレクティブからなり、それぞれのパーセントディレクティブは
+      サーバにどの情報をロギングするかを指示します。フォーマット文字列に
+      文字をそのまま入れることもでき、それらはログの出力に直接コピーされます。
+      そこに引用文字 (<code>"</code>) を書くときは、
+      フォーマット文字列の最後として解釈
+      されることを防ぐためにバックスラッシュでエスケープする必要があります。
+      フォーマット文字列には改行用の "<code>\n</code>"、タブ用の
+      "<code>\t</code>" という特別な制御文字も含めることができます。</p>
 
-      <p><directive module="mod_log_config">CustomLog</directive> $B%G%#%l%/%F%#%V$O(B
-      $B4{$KDj5A$5$l$?(B
-      <em>$B%K%C%/%M!<%`(B</em> $B$r;H$C$F?7$7$$%m%0%U%!%$%k$r@_Dj$7$^$9!#(B
-      $B%"%/%;%9%m%0$N%U%!%$%kL>$O%9%i%C%7%e$G;O$^$i$J$$8B$j!"(B
-      <directive module="core">ServerRoot</directive> $B$+$i$NAjBP%Q%9$H$7$F(B
-      $B07$o$l$^$9!#(B</p>
+      <p><directive module="mod_log_config">CustomLog</directive> ディレクティブは
+      既に定義された
+      <em>ニックネーム</em> を使って新しいログファイルを設定します。
+      アクセスログのファイル名はスラッシュで始まらない限り、
+      <directive module="core">ServerRoot</directive> からの相対パスとして
+      扱われます。</p>
 
-      <p>$B>e$N@_Dj$O(B Common Log Format (CLF) $B$H8F$P$l$k7A<0$G(B
-      $B%m%0%(%s%H%j$r=q$-$^$9!#$3$NI8=`$N7A<0$O0[$J$k%&%'%V%5!<%P$NB?$/$,(B
-      $B@8@.$9$k$3$H$,$G$-!"B?$/$N%m%02r@O%W%m%0%i%`$,FI$_$3$`$3$H$,$G$-$^$9!#(B
-      CLF $B$K$h$j@8@.$5$l$?%m%0%U%!%$%k$N%(%s%H%j$O0J2<$N$h$&$K$J$j$^$9(B:</p>
+      <p>上の設定は Common Log Format (CLF) と呼ばれる形式で
+      ログエントリを書きます。この標準の形式は異なるウェブサーバの多くが
+      生成することができ、多くのログ解析プログラムが読みこむことができます。
+      CLF により生成されたログファイルのエントリは以下のようになります:</p>
 
       <example>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
         /apache_pb.gif HTTP/1.0" 200 2326
       </example>
 
-      <p>$B$3$N%m%0%(%s%H%j$N$=$l$>$l$NItJ,$N0UL#$O0J2<$G@bL@$7$^$9!#(B</p>
+      <p>このログエントリのそれぞれの部分の意味は以下で説明します。</p>
 
       <dl>
 	<dt><code>127.0.0.1</code> (<code>%h</code>)</dt>
 
-	<dd>$B$3$l$O%5!<%P$X%j%/%(%9%H$r$7$?%/%i%$%"%s%H(B ($B%j%b!<%H%[%9%H(B)
-	$B$N(B IP $B%"%I%l%9$G$9!#(B<directive
-	module="core">HostnameLookups</directive> $B$,(B
-	<code>On</code> $B$N>l9g$O!"%5!<%P$O%[%9%HL>$rD4$Y$F!"(B
-	IP $B%"%I%l%9$,=q$+$l$F$$$k$H$3$m$K5-O?$7$^$9!#$7$+$7!"$3$N@_Dj$O(B
-	$B%5!<%P$r$+$J$jCY$/$9$k$N$G!"$"$^$j$*4+$a$G$-$^$;$s!#(B
-	$B$=$&$G$O$J$/!"(B<program>logresolve</program> $B$N(B
-	$B$h$&$J%m%0$N8e=hM}$r9T$J$&%W%m%0%i%`$G%[%9%HL>$rD4$Y$k$N$,NI$$$G$7$g$&!#(B
-	$B$3$3$KJs9p$5$l$k(B IP $B%"%I%l%9$OI,$:$7$b%f!<%6$,;H$C$F$$$k%^%7%s$N(B
-	$B$b$N$G$"$k$H$O8B$j$^$;$s!#%f!<%6$H%5!<%P$N4V$K%W%m%-%7%5!<%P$,(B
-	$B$"$l$P!"$3$N%"%I%l%9$O85$N%^%7%s$N$b$N$G$O$J$/!"%W%m%-%7$N(B
-	$B%"%I%l%9$K$J$j$^$9!#(B</dd>
+	<dd>これはサーバへリクエストをしたクライアント (リモートホスト)
+	の IP アドレスです。<directive
+	module="core">HostnameLookups</directive> が
+	<code>On</code> の場合は、サーバはホスト名を調べて、
+	IP アドレスが書かれているところに記録します。しかし、この設定は
+	サーバをかなり遅くするので、あまりお勧めできません。
+	そうではなく、<program>logresolve</program> の
+	ようなログの後処理を行なうプログラムでホスト名を調べるのが良いでしょう。
+	ここに報告される IP アドレスは必ずしもユーザが使っているマシンの
+	ものであるとは限りません。ユーザとサーバの間にプロキシサーバが
+	あれば、このアドレスは元のマシンのものではなく、プロキシの
+	アドレスになります。</dd>
 
 	<dt><code>-</code> (<code>%l</code>)</dt>
 
-	<dd>$B=PNOCf$N!V%O%$%U%s!W$OMW5a$5$l$?>pJs$,<j$KF~$i$J$+$C$?$H$$$&$3$H$r(B
-	$B0UL#$7$^$9!#$3$N>l9g!"<hF@$G$-$J$+$C$?>pJs$O%/%i%$%"%s%H$N%^%7%s$N(B
-	<code>identd</code> $B$K$h$j7h$^$k(B RFC 1413 $B$N%/%i%$%"%s%H$N(B
-	$B%"%$%G%s%F%#%F%#$G$9!#$3$N>pJs$O$"$^$j?.MQ$9$k$3$H$,$G$-$:!"(B
-	$B$7$C$+$j$H4IM}$5$l$?FbIt%M%C%H%o!<%/$r=|$$$F$O;H$&$Y$-$G$O$"$j$^$;$s!#(B
-	Apache $B$O(B <directive
-	module="core">IdentityCheck</directive> $B$,(B
-	<code>On</code> $B$K$J$C$F$$$J$$8B$j!"$3$N>pJs$rF@$h$&$H$9$i$7$^$;$s!#(B</dd>
+	<dd>出力中の「ハイフン」は要求された情報が手に入らなかったということを
+	意味します。この場合、取得できなかった情報はクライアントのマシンの
+	<code>identd</code> により決まる RFC 1413 のクライアントの
+	アイデンティティです。この情報はあまり信用することができず、
+	しっかりと管理された内部ネットワークを除いては使うべきではありません。
+	Apache は <directive
+	module="core">IdentityCheck</directive> が
+	<code>On</code> になっていない限り、この情報を得ようとすらしません。</dd>
 
 	<dt><code>frank</code> (<code>%u</code>)</dt>
 
-	<dd>$B$3$l$O(B HTTP $BG'>Z$K$h$k!"%I%-%e%a%s%H$r%j%/%(%9%H$7$??M$N(B
-	$B%f!<%6(B ID $B$G$9!#(BCGI $B%9%/%j%W%H$K$ODL>oF1$8CM$,(B <code>REMOTE_USER</code>
-	$B4D6-JQ?t$H$7$FM?$($i$l$^$9!#%j%/%(%9%H$N%9%F!<%?%9%3!<%I(B
-	($B0J2<$r;2>H(B) $B$,(B 401 $B$G$"$C$?>l9g$O!"%f!<%6$OG'>Z$K<:GT$7$F$$$k$N$G!"(B
-	$B$3$NCM$O?.MQ$G$-$^$;$s!#%I%-%e%a%s%H$,%Q%9%o!<%I$GJ]8n$5$l$F$$$J$$(B
-	$B>l9g$O!"$3$N%(%s%H%j$OA0$N$b$N$HF1$8$h$&$K(B "<code>-</code>" $B$K(B
-	$B$J$j$^$9!#(B</dd>
+	<dd>これは HTTP 認証による、ドキュメントをリクエストした人の
+	ユーザ ID です。CGI スクリプトには通常同じ値が <code>REMOTE_USER</code>
+	環境変数として与えられます。リクエストのステータスコード
+	(以下を参照) が 401 であった場合は、ユーザは認証に失敗しているので、
+	この値は信用できません。ドキュメントがパスワードで保護されていない
+	場合は、このエントリは前のものと同じように "<code>-</code>" に
+	なります。</dd>
 
 	<dt><code>[10/Oct/2000:13:55:36 -0700]</code>
 	(<code>%t</code>)</dt>
 
 	<dd>
-	  $B%5!<%P$,%j%/%(%9%H$r<u$1<h$C$?;~9o$G$9!#=q<0$O(B:
+	  サーバがリクエストを受け取った時刻です。書式は:
 
 	    <p class="indent">
 	      <code>[day/month/year:hour:minute:second zone]<br />
@@ -254,43 +254,43 @@
 	       second = 2*digit<br />
 	       zone = (`+' | `-') 4*digit</code>
 	    </p>
-	  $B%m%0$N%U%)!<%^%C%HJ8;zNs$K(B <code>%{format}t</code> $B$r(B
-	  $B;XDj$9$k$3$H$G!"JL$N7A<0$G;~9o$rI=<($5$;$k$3$H$b$G$-$^$9!#(B
-	  $B$3$N$H$-!"(B<code>format</code> $B$O(B C $B$NI8=`%i%$%V%i%j$N(B
-	  <code>strftime(3)</code> $B$N7A<0$K$J$j$^$9!#(B
+	  ログのフォーマット文字列に <code>%{format}t</code> を
+	  指定することで、別の形式で時刻を表示させることもできます。
+	  このとき、<code>format</code> は C の標準ライブラリの
+	  <code>strftime(3)</code> の形式になります。
 	</dd>
 
 	<dt><code>"GET /apache_pb.gif HTTP/1.0"</code>
 	(<code>\"%r\"</code>)</dt>
 
-	<dd>$B%/%i%$%"%s%H$+$i$N%j%/%(%9%H$,Fs=E0zMQId$NCf$K<($5$l$F$$$^$9!#(B
-	$B%j%/%(%9%H$K$OB?$/$NM-MQ$J>pJs$,$"$j$^$9!#$^$:!"$3$N>l9g%/%i%$%"%s%H$,(B
-	$B;H$C$?%a%=%C%I$O(B <code>GET</code> $B$G$9!#<!$K!"%/%i%$%"%s%H$O(B
-	$B%j%=!<%9(B <code>/apache_pb.gif</code> $B$rMW5a$7$^$7$?!#$=$7$F!"(B
-	$B%/%i%$%"%s%H$O%W%m%H%3%k(B <code>HTTP/1.0</code> $B$r;HMQ$7$^$7$?!#(B
-	$B%j%/%(%9%H$N3FItJ,$rFHN)$K%m%0<}=8$9$k$3$H$b$G$-$^$9!#Nc$($P!"(B
-	$B%U%)!<%^%C%HJ8;zNs(B "<code>%m %U%q %H</code>" $B$O(B
-	$B%a%=%C%I!"%Q%9!"%/%(%jJ8;zNs!"%W%m%H%3%k$r%m%0<}=8$7!"(B
-	$B7k6I(B "<code>%r</code>" $B$H$^$C$?$/F1$8=PNO$K$J$j$^$9!#(B</dd>
+	<dd>クライアントからのリクエストが二重引用符の中に示されています。
+	リクエストには多くの有用な情報があります。まず、この場合クライアントが
+	使ったメソッドは <code>GET</code> です。次に、クライアントは
+	リソース <code>/apache_pb.gif</code> を要求しました。そして、
+	クライアントはプロトコル <code>HTTP/1.0</code> を使用しました。
+	リクエストの各部分を独立にログ収集することもできます。例えば、
+	フォーマット文字列 "<code>%m %U%q %H</code>" は
+	メソッド、パス、クエリ文字列、プロトコルをログ収集し、
+	結局 "<code>%r</code>" とまったく同じ出力になります。</dd>
 
 	<dt><code>200</code> (<code>%&gt;s</code>)</dt>
 
-	<dd>$B%5!<%P$,%/%i%$%"%s%H$KAw$jJV$9%9%F!<%?%9%3!<%I$G$9!#(B
-	$B$3$N>pJs$O!"%j%/%(%9%H$,@.8y1~Ez(B (2 $B$G;O$^$k%3!<%I(B) $B$G$"$C$?$+!"(B
-	$B%j%@%$%l%/%7%g%s(B (3 $B$G;O$^$k%3!<%I(B) $B$G$"$C$?$+!"%/%i%$%"%s%H$K$h$k(B
-	$B%(%i!<(B (4 $B$G;O$^$k%3!<%I(B) $B$G$"$C$?$+!"%5!<%P$N%(%i!<(B (5 $B$G;O$^$k%3!<%I(B)
-	$B$G$"$C$?$+!"$r8=$9$N$G!"Hs>o$KBg@Z$G$9!#%9%F!<%?%9%3!<%I$N(B
-	$B40A4$J%j%9%H$O(B <a
+	<dd>サーバがクライアントに送り返すステータスコードです。
+	この情報は、リクエストが成功応答 (2 で始まるコード) であったか、
+	リダイレクション (3 で始まるコード) であったか、クライアントによる
+	エラー (4 で始まるコード) であったか、サーバのエラー (5 で始まるコード)
+	であったか、を現すので、非常に大切です。ステータスコードの
+	完全なリストは <a
 	href="http://www.w3.org/Protocols/rfc2616/rfc2616.txt">HTTP
-	$B5,3J(B</a> (RFC2616 $BBh(B 10 $B@a(B) $B$K$"$j$^$9!#(B</dd>
+	規格</a> (RFC2616 第 10 節) にあります。</dd>
 
 	<dt><code>2326</code> (<code>%b</code>)</dt>
 
-	<dd>$B$3$N:G8e$N%(%s%H%j$O%/%i%$%"%s%H$KAw?.$5$l$?%*%V%8%'%/%H$N!"(B
-	$B1~Ez%X%C%@$r=|$$$?%5%$%:$r8=$7$^$9!#%3%s%F%s%H$,%/%i%$%"%s%H$KAw$i$l$J$+$C$?(B
-	$B>l9g$O!"$3$NCM$O(B "<code>-</code>" $B$K$J$j$^$9!#%3%s%F%s%H$,L5$$>l9g$K(B
-	"<code>0</code>" $B$r%m%0<}=8$9$k$K$O!"(B<code>%b</code> $B$G$O$J$/(B
-	<code>%B</code> $B$r;H$C$F$/$@$5$$!#(B</dd>
+	<dd>この最後のエントリはクライアントに送信されたオブジェクトの、
+	応答ヘッダを除いたサイズを現します。コンテントがクライアントに送られなかった
+	場合は、この値は "<code>-</code>" になります。コンテントが無い場合に
+	"<code>0</code>" をログ収集するには、<code>%b</code> ではなく
+	<code>%B</code> を使ってください。</dd>
 
       </dl>
     </section>
@@ -298,8 +298,8 @@
     <section id="combined">
       <title>Combined Log Format</title>
 
-      <p>$B$b$&0l$D$N$h$/;H$o$l$k=q<0$O(B Combined Log Format $B$H8F$P$l$F$$$^$9!#(B
-      $B0J2<$N$h$&$K$7$F;H$&$3$H$,$G$-$^$9!#(B</p>
+      <p>もう一つのよく使われる書式は Combined Log Format と呼ばれています。
+      以下のようにして使うことができます。</p>
 
       <example>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
@@ -307,11 +307,11 @@
          CustomLog log/access_log combined
       </example>
 
-      <p>$B$3$N=q<0$N:G=i$NJ}$O(B Common Log Format $B$H$^$C$?$/F1$8$G!":G8e$K(B
-      $BFs$DDI2C$N%(%s%H%j$,$"$j$^$9!#DI2C$N%(%s%H%j$O%Q!<%;%s%H%G%#%l%/%F%#%V(B
-      <code>%{<em>header</em>}i</code> $B$r;H$C$F$$$^$9!#$3$3$G(B
-      <em>header</em> $B$O(B HTTP $B$N%j%/%(%9%H%X%C%@$N$I$l$+$G$9!#$3$N=q<0$K$h$k(B
-      $B%"%/%;%9%m%0$O0J2<$N$h$&$J46$8$K$J$j$^$9(B:</p>
+      <p>この書式の最初の方は Common Log Format とまったく同じで、最後に
+      二つ追加のエントリがあります。追加のエントリはパーセントディレクティブ
+      <code>%{<em>header</em>}i</code> を使っています。ここで
+      <em>header</em> は HTTP のリクエストヘッダのどれかです。この書式による
+      アクセスログは以下のような感じになります:</p>
 
       <example>
         127.0.0.1 - frank [10/Oct/2000:13:55:36 -0700] "GET
@@ -320,36 +320,36 @@
         (Win98; I ;Nav)"
       </example>
 
-      <p>$BDI2C$N%(%s%H%j$O(B:</p>
+      <p>追加のエントリは:</p>
 
       <dl>
 	<dt><code>"http://www.example.com/start.html"</code>
 	(<code>\"%{Referer}i\"</code>)</dt>
 
-	<dd>"Referer" ($B0U?^E*$JDV$j4V0c$$(B) HTTP $B%j%/%(%9%H%X%C%@$G$9!#(B
-	$B$3$l$O%/%i%$%"%s%H$,Js9p$7$F$/$k;2>H85$N%5%$%H$rI=$7$^$9!#(B
-	($B$3$N>l9g$O!"(B<code>/apache_pb.gif</code> $B$K%j%s%/$7$F$$$k$+!"(B
-	$B$=$l$r4^$s$G$$$k%Z!<%8$G$9(B)$B!#(B</dd>
+	<dd>"Referer" (意図的な綴り間違い) HTTP リクエストヘッダです。
+	これはクライアントが報告してくる参照元のサイトを表します。
+	(この場合は、<code>/apache_pb.gif</code> にリンクしているか、
+	それを含んでいるページです)。</dd>
 
 	<dt><code>"Mozilla/4.08 [en] (Win98; I ;Nav)"</code>
 	(<code>\"%{User-agent}i\"</code>)</dt>
 
-	<dd>User-Agent HTTP $B%j%/%(%9%H%X%C%@$G$9!#$3$l$O%/%i%$%"%s%H$N%V%i%&%6$,(B
-	$B<+J,<+?H$N$3$H$rJs9p$7$F$/$k>pJs$G$9!#(B</dd>
+	<dd>User-Agent HTTP リクエストヘッダです。これはクライアントのブラウザが
+	自分自身のことを報告してくる情報です。</dd>
       </dl>
     </section>
 
     <section id="multiple">
-      <title>$BJ#?t$N%"%/%;%9%m%0(B</title>
+      <title>複数のアクセスログ</title>
 
-    <p>$BJ#?t$N%"%/%;%9%m%0$OC1$K@_Dj%U%!%$%k$KJ#?t$N(B <directive
+    <p>複数のアクセスログは単に設定ファイルに複数の <directive
     module="mod_log_config">CustomLog</directive>
-    $B%G%#%l%/%F%#%V$r=q$/$3$H$G:n@.$5$l$^$9!#Nc$($P!"0J2<$N%G%#%l%/%F%#%V$O(B
-    $B;0$D$N%"%/%;%9%m%0$r:n$j$^$9!#:G=i$N$b$N$O4pK\E*$J(B CLF $B$N>pJs$G!"(B
-    $BFs$DL\$H;0$DL\$O(B referer $B$H%V%i%&%6$N>pJs$G$9!#:G8eFs$D$N(B
-    <directive module="mod_log_config">CustomLog</directive> $B$O(B
-    <code>ReferLog</code> $B%G%#%l%/%F%#%V$H(B
-    <code>AgentLog</code> $B%G%#%l%/%F%#%V$N8z2L$r$^$M$kJ}K!$r<($7$F$$$^$9!#(B</p>
+    ディレクティブを書くことで作成されます。例えば、以下のディレクティブは
+    三つのアクセスログを作ります。最初のものは基本的な CLF の情報で、
+    二つ目と三つ目は referer とブラウザの情報です。最後二つの
+    <directive module="mod_log_config">CustomLog</directive> は
+    <code>ReferLog</code> ディレクティブと
+    <code>AgentLog</code> ディレクティブの効果をまねる方法を示しています。</p>
 
       <example>
         LogFormat "%h %l %u %t \"%r\" %&gt;s %b" common<br />
@@ -358,26 +358,26 @@
         CustomLog logs/agent_log "%{User-agent}i"
       </example>
 
-    <p>$B$3$NNc$O(B <directive module="mod_log_config">LogFormat</directive> $B$G(B
-    $B%K%C%/%M!<%`$rDj5A$9$kI,MW$,$J$$!"(B
-    $B$H$$$&$3$H$b<($7$F$$$^$9!#%K%C%/%M!<%`$NBe$o$j$K!"(B
-    <directive module="mod_log_config">CustomLog</directive> $B%G%#%l%/%F%#%V$K(B
-    $BD>@\%m%0$N=q<0$r;XDj$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>この例は <directive module="mod_log_config">LogFormat</directive> で
+    ニックネームを定義する必要がない、
+    ということも示しています。ニックネームの代わりに、
+    <directive module="mod_log_config">CustomLog</directive> ディレクティブに
+    直接ログの書式を指定することができます。</p>
     </section>
 
     <section id="conditional">
-      <title>$B>r7oIU$-%m%0(B</title>
+      <title>条件付きログ</title>
 
-    <p>$B%/%i%$%"%s%H$N%j%/%(%9%H$NFCD'$K4p$E$$$F%"%/%;%9%m%0$K%(%s%H%j$N(B
-    $B0lIt$r%m%.%s%0$7$J$$J}$,JXMx$J$3$H$,$"$j$^$9!#$3$l$O(B <a
-    href="env.html">$B4D6-JQ?t(B</a> $B$NJd=u$K$h$j4JC1$K<B8=$G$-$^$9!#$^$:!"(B
-    $B%j%/%(%9%H$,2?$i$+$N>r7o$K9g$&$H$$$&$3$H$r8=$9$?$a$K4D6-JQ?t$,(B
-    $B@_Dj$5$l$kI,MW$,$"$j$^$9!#$3$l$ODL>o$O(B <directive
-    module="mod_setenvif">SetEnvIf</directive> $B$K$h$j(B
-    $B9T$J$o$l$^$9!#$=$7$F!"(B<directive
-    module="mod_log_config">CustomLog</directive> $B%G%#%l%/%F%#%V$N(B
-    <code>env=</code> $B@a$r;H$C$F4D6-JQ?t$,@_Dj$5$l$F$$$k%j%/%(%9%H$r(B
-    $B4^$a$?$jGS=|$7$?$j$9$k$3$H$,$G$-$^$9!#$$$/$D$+Nc$r5s$2$^$9(B:</p>
+    <p>クライアントのリクエストの特徴に基づいてアクセスログにエントリの
+    一部をロギングしない方が便利なことがあります。これは <a
+    href="env.html">環境変数</a> の補助により簡単に実現できます。まず、
+    リクエストが何らかの条件に合うということを現すために環境変数が
+    設定される必要があります。これは通常は <directive
+    module="mod_setenvif">SetEnvIf</directive> により
+    行なわれます。そして、<directive
+    module="mod_log_config">CustomLog</directive> ディレクティブの
+    <code>env=</code> 節を使って環境変数が設定されているリクエストを
+    含めたり排除したりすることができます。いくつか例を挙げます:</p>
 
       <example>
         # Mark requests from the loop-back interface<br />
@@ -388,8 +388,8 @@
         CustomLog logs/access_log common env=!dontlog
       </example>
 
-    <p>$BB>$NNc$H$7$F!"1Q8l$rOC$9?M$+$i$N%j%/%(%9%H$H$=$l0J30$N?M$+$i$N%j%/%(%9%H$r(B
-    $BJ,$1$?$$!"$H$$$&>l9g$r9M$($F$_$F$/$@$5$$!#(B</p>
+    <p>他の例として、英語を話す人からのリクエストとそれ以外の人からのリクエストを
+    分けたい、という場合を考えてみてください。</p>
 
       <example>
         SetEnvIf Accept-Language "en" english<br />
@@ -397,33 +397,33 @@
         CustomLog logs/non_english_log common env=!english
       </example>
 
-    <p>$B$3$3$^$G$G$O>r7oIU$-%m%.%s%0$,Hs>o$K6/NO$G=@Fp$G$"$k$3$H$r<($7$F$-$^$7$?$,!"(B
-    $B$=$l$,%m%0$NFbMF$r@)8f$9$kM#0l$NJ}K!$H$$$&$o$1$G$O$"$j$^$;$s!#%m%0%U%!%$%k$O(B
-    $B%5!<%P$N3hF0$N40A4$J5-O?$G$"$kJ}$,$h$jLr$KN)$A$^$9!#C1=c$K%m%0%U%!%$%k$r(B
-    $B8e=hM}$7$F!"9MN8$7$?$/$J$$%m%0$r:o=|$9$kJ}$,4JC1$G$"$k$3$H$,$h$/$"$j$^$9!#(B</p>
+    <p>ここまででは条件付きロギングが非常に強力で柔軟であることを示してきましたが、
+    それがログの内容を制御する唯一の方法というわけではありません。ログファイルは
+    サーバの活動の完全な記録である方がより役に立ちます。単純にログファイルを
+    後処理して、考慮したくないログを削除する方が簡単であることがよくあります。</p>
     </section>
   </section>
 
   <section id="rotation">
-    <title>$B%m%0$N8rBX(B</title>
+    <title>ログの交替</title>
 
-    <p>$BIaDL$NIi2Y$N%5!<%P$G$5$(!"%m%0%U%!%$%k$KJ]B8$5$l$k>pJs$NNL$O(B
-    $BKDBg$K$J$j$^$9!#%"%/%;%9%m%0$N%U%!%$%k$OIaDL(B 10,000 $B%j%/%(%9%HKh$K(B
-    1 MB $B0J>eA}$($^$9!#$G$9$+$i!"4{B8$N%m%0$r0\F0$7$?$j!":o=|$7$?$j$7$F!"(B
-    $BDj4|E*$K%m%0$r8rBX$5$;$k$3$H$,I,MW$K$J$j$^$9!#$3$l$O%5!<%P$N<B9TCf$K$O(B
-    $B9T$J$($^$;$s!#$H$$$&$N$O!"(BApache $B$O%U%!%$%k$,(B open $B$5$l$F$$$k4V$O(B
-    $B$:$C$H8E$$%m%0%U%!%$%k$K=q$-B3$1$k$+$i$G$9!#(B
-    $B?7$7$$%m%0%U%!%$%k$r(B open $B$G$-$k$h$&$K!"%m%0%U%!%$%k$,0\F0$5$l$?$j(B
-    $B:o=|$5$l$?8e$K!"%5!<%P$r(B<a href="stopping.html">$B:F5/F0(B</a>$B$9$k(B
-    $BI,MW$,$"$j$^$9!#(B</p>
+    <p>普通の負荷のサーバでさえ、ログファイルに保存される情報の量は
+    膨大になります。アクセスログのファイルは普通 10,000 リクエスト毎に
+    1 MB 以上増えます。ですから、既存のログを移動したり、削除したりして、
+    定期的にログを交替させることが必要になります。これはサーバの実行中には
+    行なえません。というのは、Apache はファイルが open されている間は
+    ずっと古いログファイルに書き続けるからです。
+    新しいログファイルを open できるように、ログファイルが移動されたり
+    削除された後に、サーバを<a href="stopping.html">再起動</a>する
+    必要があります。</p>
 
-    <p><em>$BM%2m$J(B</em> $B:F5/F0$r9T$J$&$3$H$G!"%5!<%P$O4{B8$N%3%M%/%7%g%s$d(B
-    $B=hM}BT$A$N%3%M%/%7%g%s$r<:$&$3$H$J$/?7$7$$%m%0%U%!%$%k$r(B open $B$5$;$k(B
-    $B$3$H$,$G$-$^$9!#$7$+$7!"$3$l$r<B8=$9$k$?$a$K!"%5!<%P$O8E$$%j%/%(%9%H$r(B
-    $B07$C$F$$$k4V$O8E$$%m%0%U%!%$%k$K=q$-B3$1$kI,MW$,$"$j$^$9!#(B
-    $B$G$9$+$i!":F5/F0$N8e$G$O%m%0%U%!%$%k$N=hM}$r;O$a$kA0$K!"$7$P$i$/BT$?$J$1$l$P(B
-    $B$J$j$^$;$s!#C1$K%m%0$r8rBX$5$;$F!"%G%#%9%/$N@aLs$N$?$a$K8E$$%m%0$r(B
-    $B05=L$9$kIaDL$N%7%J%j%*$O(B:</p>
+    <p><em>優雅な</em> 再起動を行なうことで、サーバは既存のコネクションや
+    処理待ちのコネクションを失うことなく新しいログファイルを open させる
+    ことができます。しかし、これを実現するために、サーバは古いリクエストを
+    扱っている間は古いログファイルに書き続ける必要があります。
+    ですから、再起動の後ではログファイルの処理を始める前に、しばらく待たなければ
+    なりません。単にログを交替させて、ディスクの節約のために古いログを
+    圧縮する普通のシナリオは:</p>
 
     <example>
       mv access_log access_log.old<br />
@@ -433,81 +433,81 @@
       gzip access_log.old error_log.old
     </example>
 
-    <p>$B%m%0$N8rBX$r$9$k$b$&0l$D$NJ}K!$O(B<a
-    href="#piped">$B%Q%$%W7PM3$N%m%0(B</a>$B$r;H$&$b$N$G!"<!$N@a$G@bL@$5$l$F$$$^$9!#(B</p>
+    <p>ログの交替をするもう一つの方法は<a
+    href="#piped">パイプ経由のログ</a>を使うもので、次の節で説明されています。</p>
   </section>
 
   <section id="piped">
-    <title>$B%Q%$%W7PM3$N%m%0(B</title>
+    <title>パイプ経由のログ</title>
 
-    <p>Apache httpd $B$O%(%i!<%m%0$H%"%/%;%9%m%0$r%U%!%$%k$KD>@\=q$/Be$o$j$K!"(B
-    $B%Q%$%W$rDL$7$FJL$N%W%m%0%i%`$K=q$-=P$9$3$H$,$G$-$^$9!#(B
-    $B$3$N5!G=$K$h$j!"<g%5!<%P$K%3!<%I$rDI2C$9$k$3$H$J$/(B
-    $B%m%.%s%0$N=@Fp@-$,Hs>o$K9b$^$C$F$$$^$9!#%Q%$%W$K%m%0$r=q$/$?$a$K$O!"(B
-    $BC1$K%U%!%$%kL>$r%Q%$%WJ8;z(B "<code>|</code>" $B$KCV$-49$(!"$=$NB3$-$K(B
-    $BI8=`F~NO$+$i%m%0$N%(%s%H%j$r<u$1$H$k<B9T%W%m%0%i%`$NL>A0$r=q$/$@$1$G$9!#(B
-    Apache $B$O%Q%$%W7PM3$N%m%0MQ$N%W%m%;%9$r%5!<%P$N5/F0;~$K<B9T$7!"(B
-    $B%5!<%P$N<B9TCf$K$=$N%W%m%0%i%`$,%/%i%C%7%e$7$?$H$-$O$=$l$r:F$S(B
-    $B<B9T$7$^$9!#(B($B$3$N:G8e$N5!G=$,$3$N5;=Q$,!V?.Mj@-$N$"$k%Q%$%W7PM3$N%m%.%s%0!W(B
-    $B$H8F$P$l$F$$$kM}M3$G$9!#(B)</p>
+    <p>Apache httpd はエラーログとアクセスログをファイルに直接書く代わりに、
+    パイプを通して別のプログラムに書き出すことができます。
+    この機能により、主サーバにコードを追加することなく
+    ロギングの柔軟性が非常に高まっています。パイプにログを書くためには、
+    単にファイル名をパイプ文字 "<code>|</code>" に置き換え、その続きに
+    標準入力からログのエントリを受けとる実行プログラムの名前を書くだけです。
+    Apache はパイプ経由のログ用のプロセスをサーバの起動時に実行し、
+    サーバの実行中にそのプログラムがクラッシュしたときはそれを再び
+    実行します。(この最後の機能がこの技術が「信頼性のあるパイプ経由のロギング」
+    と呼ばれている理由です。)</p>
 
-    <p>$B%Q%$%W7PM3$N%m%0MQ$N%W%m%;%9$O(B Apache httpd $B$N?F%W%m%;%9$+$i5/F0$5$l!"(B
-    $B$=$N%W%m%;%9$N%f!<%6(B ID $B$r7Q>5$7$^$9!#$3$l$O!"$3$l$O!"%Q%$%W7PM3$N%m%0MQ$N(B
-    $B%W%m%0%i%`$OIaDL(B root $B$H$7$F<B9T$5$l$k$3$H$r0UL#$7$^$9!#(B
-    $B$G$9$+$i!"%W%m%0%i%`$r4JC1$G0BA4$KJ]$D$3$H$,Hs>o$K=EMW$G$9!#(B</p>
+    <p>パイプ経由のログ用のプロセスは Apache httpd の親プロセスから起動され、
+    そのプロセスのユーザ ID を継承します。これは、これは、パイプ経由のログ用の
+    プログラムは普通 root として実行されることを意味します。
+    ですから、プログラムを簡単で安全に保つことが非常に重要です。</p>
 
-    <p>$B%Q%$%W7PM3$N%m%0$N=EMW$JMxMQK!$O!"%5!<%P$N:F5/F0$J$7$G%m%0$N8rBX$r(B
-    $B$9$k$3$H$G$9!#(BApache HTTP $B%5!<%P$K$O$3$N$?$a$N(B  <program
-    >rotatelogs</program> $B$H8F$P$l$k4JC1$J(B
-    $B%W%m%0%i%`$,IUB0$7$F$$$^$9!#$?$H$($P!"(B24 $B;~4VKh$K%m%0$r8rBX$5$;$k$K$O!"(B
-    $B0J2<$N$b$N$r;H$&$3$H$,$G$-$^$9(B:</p>
+    <p>パイプ経由のログの重要な利用法は、サーバの再起動なしでログの交替を
+    することです。Apache HTTP サーバにはこのための  <program
+    >rotatelogs</program> と呼ばれる簡単な
+    プログラムが付属しています。たとえば、24 時間毎にログを交替させるには、
+    以下のものを使うことができます:</p>
 
     <example>
       CustomLog "|/usr/local/apache/bin/rotatelogs
       /var/log/access_log 86400" common
     </example>
 
-    <p>$B%Q%$%W$N@h$G8F$P$l$k%3%^%s%IA4BN$,0zMQId$G0O$^$l$F$$$k$3$H$KCmL\$7$F(B
-    $B$/$@$5$$!#$3$NNc$O%"%/%;%9%m%0$r;H$C$F$$$^$9$,!"%(%i!<%m%0$K$bF1$85;=Q$r(B
-    $B;H$&$3$H$,$G$-$^$9!#(B</p>
+    <p>パイプの先で呼ばれるコマンド全体が引用符で囲まれていることに注目して
+    ください。この例はアクセスログを使っていますが、エラーログにも同じ技術を
+    使うことができます。</p>
 
-    <p>$B;w$F$$$k$1$l$I!"$h$j$:$C$H=@Fp$J(B
-    <a href="http://www.cronolog.org/">cronolog</a> $B$H$$$&%m%08rBXMQ$N(B
-    $B%W%m%0%i%`$,30It$N%5%$%H$K$"$j$^$9!#(B</p>
+    <p>似ているけれど、よりずっと柔軟な
+    <a href="http://www.cronolog.org/">cronolog</a> というログ交替用の
+    プログラムが外部のサイトにあります。</p>
 
-    <p>$B>r7oIU$-%m%.%s%0$HF1MM!"%Q%$%W7PM3$N%m%0$OHs>o$K6/NO$J(B
-    $BF;6q$G$9$,!"%*%U%i%$%s$N8e=hM}$N$h$&$J!"$h$j4JC1$J2r7hJ}K!$,$"$k$H$-$O(B
-    $B;H$o$J$$J}$,NI$$$G$7$g$&!#(B</p>
+    <p>条件付きロギングと同様、パイプ経由のログは非常に強力な
+    道具ですが、オフラインの後処理のような、より簡単な解決方法があるときは
+    使わない方が良いでしょう。</p>
   </section>
 
   <section id="virtualhosts">
-    <title>$B%P!<%A%c%k%[%9%H(B</title>
+    <title>バーチャルホスト</title>
 
-    <p>$BB?$/$N(B <a href="vhosts/">$B%P!<%A%c%k%[%9%H(B</a> $B$N$"$k%5!<%P$r<B9T$7$F$$$k(B
-    $B$H$-$O!"%m%0%U%!%$%k$N07$$J}$K$$$/$D$+$NJ}K!$,$"$j$^$9!#(B
-    $B$^$:!"C1FH$N%[%9%H$N$_$N%5!<%P$H$^$C$?$/F1$8$h$&$K%m%0$r;H$&$3$H$,$G$-$^$9!#(B
-    $B%m%.%s%0%G%#%l%/%F%#%V$r<g%5!<%P$N%3%s%F%-%9%H$N(B
+    <p>多くの <a href="vhosts/">バーチャルホスト</a> のあるサーバを実行している
+    ときは、ログファイルの扱い方にいくつかの方法があります。
+    まず、単独のホストのみのサーバとまったく同じようにログを使うことができます。
+    ロギングディレクティブを主サーバのコンテキストの
     <directive module="core"
-    type="section">VirtualHost</directive> $B%;%/%7%g%s$N30$KCV$/$3$H$G!"(B
-    $B$9$Y$F$N%m%0$rF1$8%"%/%;%9%m%0$H%(%i!<%m%0$K%m%0<}=8$9$k$3$H$,$G$-$^$9!#(B
-    $B$3$N<jK!$G$O8D!9$N%P!<%A%c%k%[%9%H$NE}7W$r4JC1$K$H$k$3$H$O$G$-$^$;$s!#(B</p>
+    type="section">VirtualHost</directive> セクションの外に置くことで、
+    すべてのログを同じアクセスログとエラーログにログ収集することができます。
+    この手法では個々のバーチャルホストの統計を簡単にとることはできません。</p>
 
-    <p><directive module="mod_log_config">>CustomLog</directive> $B$d(B
-    <directive module="mod_log_config">ErrorLog</directive> $B%G%#%l%/%F%#%V$,(B
-    <directive module="core" type="section">VirtualHost</directive> $B$NCf$K(B
-    $BCV$+$l$?>l9g$O!"$=$N%P!<%A%c%k(B
-    $B%[%9%H$X$N$9$Y$F$N%j%/%(%9%H$d%(%i!<$,$=$3$G;XDj$5$l$?%U%!%$%k$K$N$_(B
-    $B%m%0<}=8$5$l$^$9!#%m%.%s%0%G%#%l%/%F%#%V$N$J$$%P!<%A%c%k%[%9%H$O(B
-    $B0MA3$H$7$F%j%/%(%9%H$,<g%5!<%P$N%m%0$KAw$i$l$^$9!#$3$N<jK!$O>/$J$$(B
-    $B%P!<%A%c%k%[%9%H$KBP$7$F$OHs>o$KM-MQ$G$9$,!"%[%9%H$N?t$,Hs>o$KB?$/$J$k$H(B
-    $B4IM}$,BgJQ$K$J$j$^$9!#$5$i$K!"(B<a
-    href="vhosts/fd-limits.html">$B%U%!%$%k5-=R;R$N8B3&(B</a>$B$NLdBj$r5/$3$9$3$H$,(B
-    $B$"$j$^$9!#(B</p>
+    <p><directive module="mod_log_config">>CustomLog</directive> や
+    <directive module="mod_log_config">ErrorLog</directive> ディレクティブが
+    <directive module="core" type="section">VirtualHost</directive> の中に
+    置かれた場合は、そのバーチャル
+    ホストへのすべてのリクエストやエラーがそこで指定されたファイルにのみ
+    ログ収集されます。ロギングディレクティブのないバーチャルホストは
+    依然としてリクエストが主サーバのログに送られます。この手法は少ない
+    バーチャルホストに対しては非常に有用ですが、ホストの数が非常に多くなると
+    管理が大変になります。さらに、<a
+    href="vhosts/fd-limits.html">ファイル記述子の限界</a>の問題を起こすことが
+    あります。</p>
 
-    <p>$B%"%/%;%9%m%0$K$O!"Hs>o$KNI$$BE6(0F$,$"$j$^$9!#%P!<%A%c%k%[%9%H$N(B
-    $B>pJs$r%m%0$N%U%)!<%^%C%HJ8;zNs$K2C$($k$3$H$G!"$9$Y$F$N%[%9%H$X$N(B
-    $B%j%/%(%9%H$rF1$8%m%0$K%m%0<}=8$7$F!"8e$G%m%0$r8D!9$N%U%!%$%k$KJ,3d$9$k$3$H$,(B
-    $B$G$-$^$9!#$?$H$($P!"0J2<$N%G%#%l%/%F%#%V$r8+$F$/$@$5$$!#(B</p>
+    <p>アクセスログには、非常に良い妥協案があります。バーチャルホストの
+    情報をログのフォーマット文字列に加えることで、すべてのホストへの
+    リクエストを同じログにログ収集して、後でログを個々のファイルに分割することが
+    できます。たとえば、以下のディレクティブを見てください。</p>
 
     <example>
       LogFormat "%v %l %u %t \"%r\" %&gt;s %b"
@@ -515,19 +515,19 @@
       CustomLog logs/access_log comonvhost
     </example>
 
-    <p><code>%v</code> $B$,%j%/%(%9%H$r07$C$F$$$k%P!<%A%c%k%[%9%H$NL>A0$r(B
-    $B%m%0<}=8$9$k$?$a$K;H$o$l$F$$$^$9!#$=$7$F!"(B<a
-    href="programs/other.html">split-logfile</a> $B$N$h$&$J%W%m%0%i%`$r(B
-    $B;H$C$F%"%/%;%9%m%0$r8e=hM}$9$k$3$H$G!"(B
-    $B%P!<%A%c%k%[%9%HKh$N%U%!%$%k$K%m%0$rJ,3d$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p><code>%v</code> がリクエストを扱っているバーチャルホストの名前を
+    ログ収集するために使われています。そして、<a
+    href="programs/other.html">split-logfile</a> のようなプログラムを
+    使ってアクセスログを後処理することで、
+    バーチャルホスト毎のファイルにログを分割することができます。</p>
 
-    <p>$B;DG0$J$,$i!"%(%i!<%m%0$K$OF1MM$N<jK!$O$"$j$^$;$s!#$G$9$+$i!"(B
-    $B$9$Y$F$N%P!<%A%c%k%[%9%H$rF1$8%(%i!<%m%0$NCf$K:.$<$k$+!"(B
-    $B%P!<%A%c%k%[%9%HKh$K%(%i!<%m%0$r;H$&$+$rA*$P$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p>残念ながら、エラーログには同様の手法はありません。ですから、
+    すべてのバーチャルホストを同じエラーログの中に混ぜるか、
+    バーチャルホスト毎にエラーログを使うかを選ばなければなりません。</p>
   </section>
 
   <section id="other">
-    <title>$BB>$N%m%0%U%!%$%k(B</title>
+    <title>他のログファイル</title>
 
     <related>
       <modulelist>
@@ -545,41 +545,41 @@
     </related>
 
     <section id="pidfile">
-      <title>PID $B%U%!%$%k(B</title>
+      <title>PID ファイル</title>
 
-      <p>$B5/F0;~$K!"(BApache $B$O?F(B httpd $B%W%m%;%9$N%W%m%;%9(B ID $B$r(B
-      <code>logs/httpd.pid</code> $B$KJ]B8$7$^$9!#$3$N(B
-      $B%U%!%$%kL>$O(B <directive
-      module="mpm_common">PidFile</directive> $B%G%#%l%/%F%#%V$r;H$C$F(B
-      $BJQ99$9$k$3$H$,$G$-$^$9!#%W%m%;%9(B ID $B$O4IM}<T$,?F%W%m%;%9$K(B
-      $B%7%0%J%k$rAw$k$3$H$G%G!<%b%s$r:F5/F0$7$?$j=*N;$5$;$?$j$9$k$H$-$K(B
-      $B;HMQ$7$^$9!#(BWindows $B$G$O!"Be$o$j$K(B -k $B%3%^%s%I%*%W%7%g%s$r(B
-      $B;H$C$F$/$@$5$$!#>\$7$$>pJs$O(B <a href="stopping.html">$B=*N;$H(B
-      $B:F5/F0(B</a> $B$N%Z!<%8$r8+$F$/$@$5$$!#(B</p>
+      <p>起動時に、Apache は親 httpd プロセスのプロセス ID を
+      <code>logs/httpd.pid</code> に保存します。この
+      ファイル名は <directive
+      module="mpm_common">PidFile</directive> ディレクティブを使って
+      変更することができます。プロセス ID は管理者が親プロセスに
+      シグナルを送ることでデーモンを再起動したり終了させたりするときに
+      使用します。Windows では、代わりに -k コマンドオプションを
+      使ってください。詳しい情報は <a href="stopping.html">終了と
+      再起動</a> のページを見てください。</p>
     </section>
 
     <section id="scriptlog">
-      <title>$B%9%/%j%W%H%m%0(B</title>
+      <title>スクリプトログ</title>
 
-      <p>$B%G%P%C%0$NJd=u$N$?$a$K!"(B<directive
-      module="mod_cgi">ScriptLog</directive> $B%G%#%l%/%F%#%V$O(B
-      CGI $B%9%/%j%W%H$NF~NO$H=PNO$r5-O?$9$k$h$&$K$G$-$^$9!#(B
-      $B$3$l$O%F%9%HMQ$K$N$_;HMQ$7$F!"DL>o$N%5!<%P$G$O;HMQ$7$J$$$G$/$@$5$$!#(B
-      $B>\$7$$>pJs$O(B <a
-      href="mod/mod_cgi.html">mod_cgi $B$NJ8=q(B</a> $B$K$"$j$^$9!#(B</p>
+      <p>デバッグの補助のために、<directive
+      module="mod_cgi">ScriptLog</directive> ディレクティブは
+      CGI スクリプトの入力と出力を記録するようにできます。
+      これはテスト用にのみ使用して、通常のサーバでは使用しないでください。
+      詳しい情報は <a
+      href="mod/mod_cgi.html">mod_cgi の文書</a> にあります。</p>
     </section>
 
     <section id="rewritelog">
-      <title>$B%j%i%$%H%m%0(B</title>
+      <title>リライトログ</title>
 
-      <p><directive module="mod_rewrite">mod_rewrite</directive> $B$N6/NO$G(B
-      $BJ#;($J5!G=$r(B
-      $B;H$C$F$$$k$H$-$O!"$[$\$$$D$b%G%P%C%0$r4JC1$K$9$k$?$a$K(B
-      <directive module="mod_rewrite">RewriteLog</directive> $B$N;HMQ$,(B
-      $BI,MW$G$7$g$&!#$3$N%m%0%U%!%$%k$K$O%j%i%$%H%(%s%8%s$,%j%/%(%9%H$r(B
-      $B=q$-49$($kJ}K!$N>\:Y$J2r@O$,=PNO$5$l$^$9!#>\$7$5$NEY9g$O(B <directive
+      <p><directive module="mod_rewrite">mod_rewrite</directive> の強力で
+      複雑な機能を
+      使っているときは、ほぼいつもデバッグを簡単にするために
+      <directive module="mod_rewrite">RewriteLog</directive> の使用が
+      必要でしょう。このログファイルにはリライトエンジンがリクエストを
+      書き換える方法の詳細な解析が出力されます。詳しさの度合は <directive
       module="mod_rewrite">RewriteLogLevel</directive>
-      $B$G@)8f$G$-$^$9!#(B</p>
+      で制御できます。</p>
     </section>
   </section>
 </manualpage>

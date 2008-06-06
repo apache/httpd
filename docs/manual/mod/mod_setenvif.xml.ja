@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:658546 (outdated) -->
@@ -23,34 +23,34 @@
 <modulesynopsis metafile="mod_setenvif.xml.meta">
 
 <name>mod_setenvif</name>
-<description>$B%j%/%(%9%H$NFCD'$K4p$E$$$?4D6-JQ?t$N@_Dj$r2DG=$K$9$k(B</description>
+<description>リクエストの特徴に基づいた環境変数の設定を可能にする</description>
 <status>Base</status>
 <sourcefile>mod_setenvif.c</sourcefile>
 <identifier>setenvif_module</identifier>
 <summary>
 
     <p><module>mod_setenvif</module>
-    $B%b%8%e!<%k$O!"%j%/%(%9%H$N$"$kB&LL$,;XDj$5$l$?@55,I=8=(B
-    $B$K9g$&$+$I$&$+$K$h$C$F4D6-JQ?t$r@_Dj$9$k5!G=$rDs6!$7$^$9!#(B
-    $B$3$l$i$N4D6-JQ?t$r;HMQ$7$F!"%5!<%P$NB>$NItJ,$,$I$N$h$&$JF0:n$r$9$k$+$r(B
-    $B7hDj$9$k$3$H$,$G$-$^$9!#(B</p>
+    モジュールは、リクエストのある側面が指定された正規表現
+    に合うかどうかによって環境変数を設定する機能を提供します。
+    これらの環境変数を使用して、サーバの他の部分がどのような動作をするかを
+    決定することができます。</p>
 
-    <p>$B$3$N%b%8%e!<%k$,Ds6!$9$k%G%#%l%/%F%#%V$O!"(B
-    $B@_Dj%U%!%$%k$K8=$l$k=gHV$KE,MQ$5$l$^$9!#(B
-    $B$=$l$r;H$C$F!"<!$NNc$N$h$&$K$h$jJ#;($J@_Dj$r$9$k$3$H$,$G$-$^$9!#(B
-    $B$3$l$O!"%V%i%&%6$,(B mozilla $B$G$O$"$k$1$l$I!"(BMSIE $B$G$O$J$$$H$-$K(B
-    <code>netscape</code> $B$r@_Dj$7$^$9!#(B</p>
+    <p>このモジュールが提供するディレクティブは、
+    設定ファイルに現れる順番に適用されます。
+    それを使って、次の例のようにより複雑な設定をすることができます。
+    これは、ブラウザが mozilla ではあるけれど、MSIE ではないときに
+    <code>netscape</code> を設定します。</p>
 <example>
   BrowserMatch ^Mozilla netscape<br />
   BrowserMatch MSIE !netscape<br />
 </example>
 </summary>
 
-<seealso><a href="../env.html">Apache $B$N4D6-JQ?t(B</a></seealso>
+<seealso><a href="../env.html">Apache の環境変数</a></seealso>
 
 <directivesynopsis>
 <name>BrowserMatch</name>
-<description>HTTP User-Agent $B$K4p$E$$$F4D6-JQ?t$r@_Dj$9$k(B
+<description>HTTP User-Agent に基づいて環境変数を設定する
 </description>
 <syntax>BrowserMatch <em>regex [!]env-variable</em>[=<em>value</em>]
 [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
@@ -60,17 +60,17 @@
 <override>FileInfo</override>
 
 <usage>
-  <p><directive>BrowserMatch</directive> $B$O(B
-  <directive module="mod_setenvif">SetEnvIf</directive> $B%G%#%l%/%F%#%V$N(B
-  $BFCNc$G!"(B<code>User-Agent</code> HTTP $B%j%/%(%9%H%X%C%@$K4p$E$$$F(B
-  $B4D6-JQ?t$r@_Dj$7$^$9!#0J2<$N(B 2 $B9T$N8z2L$OF1$8$K$J$j$^$9(B:</p>
+  <p><directive>BrowserMatch</directive> は
+  <directive module="mod_setenvif">SetEnvIf</directive> ディレクティブの
+  特例で、<code>User-Agent</code> HTTP リクエストヘッダに基づいて
+  環境変数を設定します。以下の 2 行の効果は同じになります:</p>
 
 <example>
    BrowserMatchNoCase Robot is_a_robot<br /> 
    SetEnvIfNoCase User-Agent Robot is_a_robot<br /> 
 </example>
 
-    <p>$B$=$NB>$NNc(B:</p>
+    <p>その他の例:</p>
 <example>
     BrowserMatch ^Mozilla forms jpeg=yes browser=netscape<br />
     BrowserMatch "^Mozilla/[2-3]" tables agif frames javascript<br />
@@ -81,37 +81,37 @@
 
 <directivesynopsis>
 <name>BrowserMatchNoCase</name>
-<description>HTTP User-Agent $B$K4p$E$$$FBgJ8;z>.J8;z$r6hJL$;$:$K(B
-$B4D6-JQ?t$r@_Dj$9$k(B</description>
+<description>HTTP User-Agent に基づいて大文字小文字を区別せずに
+環境変数を設定する</description>
 <syntax>BrowserMatchNoCase  <em>regex [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.2 $B0J9_(B
-    (Apache 1.2 $B$G$O$3$N%G%#%l%/%F%#%V$O$b$&MQ$$$i$l$F$$$J$$(B
-    mod_browser $B%b%8%e!<%k$K$"$j$^$7$?(B)</compatibility>
+<compatibility>Apache 1.2 以降
+    (Apache 1.2 ではこのディレクティブはもう用いられていない
+    mod_browser モジュールにありました)</compatibility>
 
 <usage>
 
-    <p><directive>BrowserMatchNoCase</directive> $B%G%#%l%/%F%#%V$O(B
-    $B0UL#E*$K$O(B <directive
-    module="mod_setenvif">BrowserMatch</directive> $B%G%#%l%/%F%#%V$H(B
-    $BF1$8$G$9!#$?$@$7!"$3$N%G%#%l%/%F%#%V$OBgJ8;z>.J8;z$r6hJL$7$J$$(B
-    $B%^%C%A%s%0$r9T$J$$$^$9!#Nc$($P(B:</p>
+    <p><directive>BrowserMatchNoCase</directive> ディレクティブは
+    意味的には <directive
+    module="mod_setenvif">BrowserMatch</directive> ディレクティブと
+    同じです。ただし、このディレクティブは大文字小文字を区別しない
+    マッチングを行ないます。例えば:</p>
 
 <example>
     BrowserMatchNoCase mac platform=macintosh<br />
     BrowserMatchNoCase win platform=windows<br />
 </example>
 
-    <p><directive>BrowserMatch</directive> $B%G%#%l%/%F%#%V$H(B
-    <directive>BrowserMatchNoCase</directive> $B%G%#%l%/%F%#%V$O(B
-    <directive module="mod_setenvif">SetEnvIf</directive> $B%G%#%l%/%F%#%V$H(B
+    <p><directive>BrowserMatch</directive> ディレクティブと
+    <directive>BrowserMatchNoCase</directive> ディレクティブは
+    <directive module="mod_setenvif">SetEnvIf</directive> ディレクティブと
     <directive
-    module="mod_setenvif">SetEnvIfNoCase</directive> $B%G%#%l%/%F%#%V$N(B
-    $BFCNc$G$9!#0J2<$N(B 2 $B9T$N8z2L$OF1$8$G$9(B:</p>
+    module="mod_setenvif">SetEnvIfNoCase</directive> ディレクティブの
+    特例です。以下の 2 行の効果は同じです:</p>
 
 <example>
    BrowserMatchNoCase Robot is_a_robot<br />
@@ -122,7 +122,7 @@
 
 <directivesynopsis>
 <name>SetEnvIf</name>
-<description>$B%j%/%(%9%H$NB0@-$K4p$E$$$F4D6-JQ?t$r@_Dj$9$k(B
+<description>リクエストの属性に基づいて環境変数を設定する
 </description>
 <syntax>SetEnvIf <em>attribute
     regex [!]env-variable</em>[=<em>value</em>]
@@ -134,60 +134,60 @@
 
 <usage>
     <p><directive>SetEnvIf</directive>
-    $B%G%#%l%/%F%#%V$O!"%j%/%(%9%H$NB0@-$K4p$E$$$F4D6-JQ?t$rDj5A$7$^$9!#(B
-    $B:G=i$N0z?t$G;XDj$G$-$k(B <em>attribute</em> $B$O0J2<$N;0$D$N$I$l$+$G$9(B:</p>
+    ディレクティブは、リクエストの属性に基づいて環境変数を定義します。
+    最初の引数で指定できる <em>attribute</em> は以下の三つのどれかです:</p>
 
 <ol>
-<li>HTTP $B%j%/%(%9%H%X%C%@%U%#!<%k%I(B ($B>\$7$$>pJs$O(B <a
-    href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a> $B$r(B
-    $B;2>H$7$F$/$@$5$$(B)$B!#Nc$($P!"(B<code>Host</code>,
+<li>HTTP リクエストヘッダフィールド (詳しい情報は <a
+    href="http://www.rfc-editor.org/rfc/rfc2616.txt">RFC 2616</a> を
+    参照してください)。例えば、<code>Host</code>,
     <code>User-Agent</code>, <code>Referer</code>, 
-    <code>Accept-Language</code> $B$G$9!#%j%/%(%9%H%X%C%@$N=89g$r8=$9$?$a$K(B
-    $B@55,I=8=$r;H$&$3$H$b$G$-$^$9!#(B</li>
+    <code>Accept-Language</code> です。リクエストヘッダの集合を現すために
+    正規表現を使うこともできます。</li>
 
-<li>$B0J2<$N%j%/%(%9%H$N0lItJ,$N$I$l$+(B:
+<li>以下のリクエストの一部分のどれか:
 
     <ul>
       <li><code>Remote_Host</code> -
-      $B%j%/%(%9%H$r9T$J$C$F$$$k%/%i%$%"%s%H$N%[%9%HL>(B ($B$b$7$"$l$P(B)</li>
+      リクエストを行なっているクライアントのホスト名 (もしあれば)</li>
 
       <li><code>Remote_Addr</code> -
-      $B%j%/%(%9%H$r9T$J$C$F$$$k%/%i%$%"%s%H$N(B IP $B%"%I%l%9(B</li>
+      リクエストを行なっているクライアントの IP アドレス</li>
 
       <li><code>Server_Addr</code> - 
-      $B%j%/%(%9%H$r<u$1<h$C$?%5!<%P$N(B IP $B%"%I%l%9(B
-      (2.0.43 $B0J9_$N$_(B)</li>
+      リクエストを受け取ったサーバの IP アドレス
+      (2.0.43 以降のみ)</li>
 
       <li><code>Request_Method</code> -
-      $B;HMQ$5$l$F$$$k%a%=%C%IL>(B (<code>GET</code>, <code>POST</code>
-      <em>$B$J$I(B</em>)</li>
+      使用されているメソッド名 (<code>GET</code>, <code>POST</code>
+      <em>など</em>)</li>
 
       <li><code>Request_Protocol</code> -
-      $B%j%/%(%9%H$,9T$J$o$l$?%W%m%H%3%k$NL>A0$H%P!<%8%g%s(B
-      (<em>$BNc$($P(B</em>$B!"(B"HTTP/0.9", "HTTP/1.1" <em>$B$J$I!#(B</em>)</li>
+      リクエストが行なわれたプロトコルの名前とバージョン
+      (<em>例えば</em>、"HTTP/0.9", "HTTP/1.1" <em>など。</em>)</li>
 
       <li><code>Request_URI</code> -
-      URL $B$N%9%-!<%`$H%[%9%H$N8e$NItJ,(B</li>
+      URL のスキームとホストの後の部分</li>
     </ul>
 </li>
 
-<li>$B%j%/%(%9%H$H4XO"IU$1$i$l$k4D6-JQ?t$N%j%9%H!#$3$l$K$h$j(B
-<directive>SetEnvIf</directive> $B%G%#%l%/%F%#%V$,0JA0$N%^%C%A$N7k2L$r(B
-$B;H$&$3$H$,$G$-$k$h$&$K$J$j$^$9!#$3$NJ}K!$N%F%9%H$G$OA0$NItJ,$K$"$k(B
-<code>SetEnvIf[NoCase]</code> $B$N7k2L$N$_$r;HMQ2DG=$G$9!#!VA0!W$H$O!"(B
-$B$h$j9-$$HO0O$KBP$7$FDj5A$5$l$F$$$k(B ($B%5!<%PA4BN$N$h$&$K(B) $B$+!"8=:_$N%G%#%l%/%F%#%V$N(B
-$BHO0O$G$h$jA0$NItJ,$GDj5A$5$l$F$$$k$+!"$H$$$&$3$H$G$9!#(B
-$B4D6-JQ?t$G$"$k2DG=@-$O!"%j%/%(%9%H$NFC@-$KBP$9$k%^%C%A$,B8:_$;$:!"(B
-<em>attribute</em> $B$K@55,I=8=$,;H$o$l$J$+$C$?$H$-$K$N$_9MN8$5$l$^$9!#(B</li>
+<li>リクエストと関連付けられる環境変数のリスト。これにより
+<directive>SetEnvIf</directive> ディレクティブが以前のマッチの結果を
+使うことができるようになります。この方法のテストでは前の部分にある
+<code>SetEnvIf[NoCase]</code> の結果のみを使用可能です。「前」とは、
+より広い範囲に対して定義されている (サーバ全体のように) か、現在のディレクティブの
+範囲でより前の部分で定義されているか、ということです。
+環境変数である可能性は、リクエストの特性に対するマッチが存在せず、
+<em>attribute</em> に正規表現が使われなかったときにのみ考慮されます。</li>
 </ol>
 
-<p>$BFs$DL\$N0z?t(B (<em>regex</em>) $B$O(B <a
-href="http://www.pcre.org/">Perl $B8_49$N@55,I=8=(B</a>$B$G$9!#(B
-$B$3$l$O(B POSIX.2 $B$N(B egrep $B7A<0$N@55,I=8=$H;w$F$$$^$9!#(B<em>regex</em> $B$,(B
-<em>attribute</em> $B$K%^%C%A$9$k>l9g$O!";D$j$N0z?t$,I>2A$5$l$^$9!#(B</p>
+<p>二つ目の引数 (<em>regex</em>) は <a
+href="http://www.pcre.org/">Perl 互換の正規表現</a>です。
+これは POSIX.2 の egrep 形式の正規表現と似ています。<em>regex</em> が
+<em>attribute</em> にマッチする場合は、残りの引数が評価されます。</p>
 
-<p>$B;D$j$N0z?t$O@_Dj$9$kJQ?t$NL>A0$G!"@_Dj$5$l$kCM$r;XDj$9$k$3$H$b$G$-$^$9!#(B
-$B$3$l$O!"(B</p>
+<p>残りの引数は設定する変数の名前で、設定される値を指定することもできます。
+これは、</p>
 
     <ol>
       <li><code><em>varname</em></code></li>
@@ -197,17 +197,17 @@ href="http://www.pcre.org/">Perl $B8_49$N@55,I=8=(B</a>$B$G$9!#(B
       <li><code><em>varname</em>=<em>value</em></code></li>
     </ol>
 
-    <p>$B$N$I$l$+$N7A<0$K$J$j$^$9!#(B</p>
+    <p>のどれかの形式になります。</p>
 
-    <p>$B:G=i$N7A<0$G$O!"CM$O(B "1" $B$K@_Dj$5$l$^$9!#(B
-    $BFs$DL\$O$b$7CM$,Dj5A$5$l$F$$$l$P$=$l$r<h$j=|$-$^$9!#(B
-    $B;0$DL\$OJQ?t$r(B <code><em>value</em></code> $B$NM?$($i$l$?CM$K@_Dj$7$^$9!#(B
-    2.0.51 $B0J9_$G$O!"(B<var>regex</var> $BFb$K(B <code>$1</code>..<code>$9</code>
-    $B$,B8:_$9$l$P$=$l$rG'<1$7!"(B<var>regex</var> $B$NBP1~$9$k4]3g8L$G0O$^$l$?ItJ,$G(B
-    $BCV49$7$^$9!#(B</p>
+    <p>最初の形式では、値は "1" に設定されます。
+    二つ目はもし値が定義されていればそれを取り除きます。
+    三つ目は変数を <code><em>value</em></code> の与えられた値に設定します。
+    2.0.51 以降では、<var>regex</var> 内に <code>$1</code>..<code>$9</code>
+    が存在すればそれを認識し、<var>regex</var> の対応する丸括弧で囲まれた部分で
+    置換します。</p>
 
 <example>
-<title>$BNc(B:</title>
+<title>例:</title>
    SetEnvIf Request_URI "\.gif$" object_is_image=gif<br />
    SetEnvIf Request_URI "\.jpg$" object_is_image=jpg<br />
    SetEnvIf Request_URI "\.xbm$" object_is_image=xbm<br />
@@ -219,22 +219,22 @@ href="http://www.pcre.org/">Perl $B8_49$N@55,I=8=(B</a>$B$G$9!#(B
    SetEnvIf ^TS*  ^[a-z].*  HAVE_TS<br />
 </example>
 
-    <p>$B=i$a$N;0$D$O%j%/%(%9%H$,2hA|$G$"$k$H$-$K4D6-JQ?t(B
-    <code>object_is_image</code> $B$r@_Dj$7$^$9!#;M$DL\$O(B
-    $B;2>H85$N%Z!<%8$,%&%'%V%5%$%H(B <code>www.mydomain.com</code> $B$K$"$k$H$-$K(B
-    <code>intra_site_referral</code> $B$r@_Dj$7$^$9!#(B</p>
+    <p>初めの三つはリクエストが画像であるときに環境変数
+    <code>object_is_image</code> を設定します。四つ目は
+    参照元のページがウェブサイト <code>www.mydomain.com</code> にあるときに
+    <code>intra_site_referral</code> を設定します。</p>
 
-    <p>$B:G8e$NNc$O!"%j%/%(%9%H$K(B "TS" $B$G;O$^$j!"CM$,=89g(B [a-z] $B$N$I$l$+$G(B
-    $B;O$^$k%X%C%@$,$"$k$H$-$K(B <code>HAVE_TS</code> $B$r@_Dj$7$^$9!#(B</p>
+    <p>最後の例は、リクエストに "TS" で始まり、値が集合 [a-z] のどれかで
+    始まるヘッダがあるときに <code>HAVE_TS</code> を設定します。</p>
 </usage>
 
-<seealso>$BB>$NNc$O!"(B<a href="../env.html">Apache $B$N4D6-JQ?t(B</a>
+<seealso>他の例は、<a href="../env.html">Apache の環境変数</a>
 </seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>SetEnvIfNoCase</name>
-<description>$B%j%/%(%9%H$NB0@-$K4p$E$$$FBgJ8;z>.J8;z$r6hJL$;$:$K4D6-JQ?t$r@_Dj$9$k(B</description>
+<description>リクエストの属性に基づいて大文字小文字を区別せずに環境変数を設定する</description>
 <syntax>SetEnvIfNoCase <em>attribute regex 
         [!]env-variable</em>[=<em>value</em>]
     [[!]<em>env-variable</em>[=<em>value</em>]] ...</syntax>
@@ -242,23 +242,23 @@ href="http://www.pcre.org/">Perl $B8_49$N@55,I=8=(B</a>$B$G$9!#(B
 <context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>Apache 1.3 $B0J9_(B</compatibility>
+<compatibility>Apache 1.3 以降</compatibility>
 
 <usage>
 
-    <p><directive>SetEnvIfNoCase</directive> $B$O0UL#E*$K$O(B
-    <directive module="mod_setenvif">SetEnvIf</directive> $B%G%#%l%/%F%#%V$H(B
-    $BF1$8$G$9!#0c$$$O!"@55,I=8=$N%^%C%A%s%0$,BgJ8;z>.J8;z$r6hJL$7$J$$$G(B
-    $B9T$J$o$l$k$3$H$G$9!#Nc$($P(B:</p>
+    <p><directive>SetEnvIfNoCase</directive> は意味的には
+    <directive module="mod_setenvif">SetEnvIf</directive> ディレクティブと
+    同じです。違いは、正規表現のマッチングが大文字小文字を区別しないで
+    行なわれることです。例えば:</p>
 
 <example>
    SetEnvIfNoCase Host Apache\.Org site=apache
 </example>
 
-    <p>$B$3$l$O(B HTTP $B%j%/%(%9%H%X%C%@$K%U%#!<%k%I(B <code>Host:</code> $B$,(B
-    $B$"$j!"$=$NCM$,(B <code>Apache.Org</code> $B$d(B <code>apache.org</code>$B!"(B
-    $B$=$NB>$NBgJ8;z>.J8;z$NAH$_9g$o$;$G$"$C$?$H$-$K(B <code>site</code>
-    $B4D6-JQ?t$r(B "<code>apache</code>" $B$K@_Dj$7$^$9!#(B</p>
+    <p>これは HTTP リクエストヘッダにフィールド <code>Host:</code> が
+    あり、その値が <code>Apache.Org</code> や <code>apache.org</code>、
+    その他の大文字小文字の組み合わせであったときに <code>site</code>
+    環境変数を "<code>apache</code>" に設定します。</p>
 
 </usage>
 </directivesynopsis>

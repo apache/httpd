@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -23,74 +23,74 @@
 <manualpage metafile="index.xml.meta">
   <parentdocument href="../"/>
 
-  <title>How-To / $B%A%e!<%H%j%"%k(B</title>
+  <title>How-To / チュートリアル</title>
 
   <section id="howto">
 
-    <title>How-To / $B%A%e!<%H%j%"%k(B</title>
+    <title>How-To / チュートリアル</title>
 
     <dl>
-      <dt>$BG'>Z(B</dt>
+      <dt>認証</dt>
       <dd>
-        <p>$BG'>Z$H$O!"C/$+$,<+J,$OC/$G$"$k$+$rL>>h$C$F$$$k$b$N$r8!>Z$9$k(B
-        $B=hM}$N$3$H$G$9!#>5G'$H$O!"C/$+$,K>$_$N>l=j$KC)$jCe$1$?$j!"(B
-        $BK>$_$N>pJs$r<j$KF~$l$?$j$9$k$3$H$r5v2D$9$k=hM}$N$3$H$G$9!#(B</p>
+        <p>認証とは、誰かが自分は誰であるかを名乗っているものを検証する
+        処理のことです。承認とは、誰かが望みの場所に辿り着けたり、
+        望みの情報を手に入れたりすることを許可する処理のことです。</p>
 
-        <p>$B;2>H(B: <a href="auth.html">$BG'>Z!">5G'!"%"%/%;%9@)8f(B</a></p>
+        <p>参照: <a href="auth.html">認証、承認、アクセス制御</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>CGI $B$K$h$kF0E*%3%s%F%s%D(B</dt>
+      <dt>CGI による動的コンテンツ</dt>
       <dd>
-        <p>CGI (Common Gateway Interface) $B$O%&%'%V%5!<%P$,30It$N%3%s%F%s%D(B
-        $B@8@.%W%m%0%i%`$H$I$N$h$&$KAj8_F0:n$r$9$k$+$rDj5A$7$^$9!#(B
-        $B$=$N30It%W%m%0%i%`$ODL>o(B CGI $B%W%m%0%i%`$d(B CGI $B%9%/%j%W%H$H8F$P$l$^$9!#(B
-        CGI $B$O%&%'%V%5%$%H$KF0E*$J%3%s%F%s%D$rDI2C$9$k$?$a$N!"(B
-        $B0lHVC1=c$G$h$/;H$o$l$F$$$kJ}K!$G$9!#$3$NJ8=q$O(B Apache $B%&%'%V%5!<%P$K(B
-        CGI $B$r@_Dj$7!"(BCGI $B%W%m%0%i%`$r=q$-;O$a$k$?$a$N%$%s%H%m%@%/%7%g%s$G$9!#(B</p>
+        <p>CGI (Common Gateway Interface) はウェブサーバが外部のコンテンツ
+        生成プログラムとどのように相互動作をするかを定義します。
+        その外部プログラムは通常 CGI プログラムや CGI スクリプトと呼ばれます。
+        CGI はウェブサイトに動的なコンテンツを追加するための、
+        一番単純でよく使われている方法です。この文書は Apache ウェブサーバに
+        CGI を設定し、CGI プログラムを書き始めるためのイントロダクションです。</p>
 
-        <p>$B;2>H(B: <a href="cgi.html">CGI: $BF0E*%3%s%F%s%D(B</a></p>
+        <p>参照: <a href="cgi.html">CGI: 動的コンテンツ</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt><code>.htaccess</code> $B%U%!%$%k(B</dt>
+      <dt><code>.htaccess</code> ファイル</dt>
       <dd>
-        <p><code>.htaccess</code> $B%U%!%$%k$O%G%#%l%/%H%jKh$K@_Dj$rJQ99$9$k$?$a$N(B
-        $BJ}K!$rDs6!$7$^$9!#@_Dj%G%#%l%/%F%#%V$,=q$+$l$?%U%!%$%k$,!"$"$k%I%-%e%a%s%H(B
-        $B%G%#%l%/%H%j$KCV$+$l$k$H!"%G%#%l%/%F%#%V$O$=$N%G%#%l%/%H%j$H(B
-        $B$9$Y$F$N%5%V%G%#%l%/%H%j$KE,MQ$5$l$^$9!#(B</p>
+        <p><code>.htaccess</code> ファイルはディレクトリ毎に設定を変更するための
+        方法を提供します。設定ディレクティブが書かれたファイルが、あるドキュメント
+        ディレクトリに置かれると、ディレクティブはそのディレクトリと
+        すべてのサブディレクトリに適用されます。</p>
 
-        <p>$B;2>H(B: <a href="htaccess.html"><code>.htaccess</code> $B%U%!%$%k(B</a></p>
+        <p>参照: <a href="htaccess.html"><code>.htaccess</code> ファイル</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>Server Side Includes $B%$%s%H%m%@%/%7%g%s(B</dt>
+      <dt>Server Side Includes イントロダクション</dt>
       <dd>
-        <p>SSI (Server Side Includes) $B$O(B HTML $B%Z!<%8Cf$K=q$+$l$k%G%#%l%/%F%#%V$G!"(B
-        $B%Z!<%8$,Aw$i$l$k;~$K%5!<%P$K$h$jI>2A$5$l$^$9!#$3$l$K$h$j!"%Z!<%8A4BN$r(B
-        CGI $B%W%m%0%i%`$G@8@.$7$?$j!"B>$NF0E*$J5;=Q$r;H$&$3$H$J$/!"4{B8$N(B HTML
-        $B%Z!<%8$KF0E*$K@8@.$5$l$?FbMF$rIU2C$9$k$3$H$,$G$-$^$9!#(B</p>
+        <p>SSI (Server Side Includes) は HTML ページ中に書かれるディレクティブで、
+        ページが送られる時にサーバにより評価されます。これにより、ページ全体を
+        CGI プログラムで生成したり、他の動的な技術を使うことなく、既存の HTML
+        ページに動的に生成された内容を付加することができます。</p>
 
-        <p>$B;2>H(B: <a href="ssi.html">Server Side Includes (SSI)</a></p>
+        <p>参照: <a href="ssi.html">Server Side Includes (SSI)</a></p>
       </dd>
     </dl>
 
     <dl>
-      <dt>$B%f!<%6Kh$N%&%'%V%G%#%l%/%H%j(B</dt>
+      <dt>ユーザ毎のウェブディレクトリ</dt>
       <dd>
-        <p>$BJ#?t%f!<%6$NB8:_$9$k%7%9%F%`$G$O!"$=$l$>$l$N%f!<%6$O(B <directive
-        module="mod_userdir">UserDir</directive> $B%G%#%l%/%F%#%V$r;H$&$3$H$K$h$C$F(B
-        $B%[!<%`%G%#%l%/%H%j>e$K%&%'%V%5%$%H$r:n@.$9$k$3$H$,$G$-$^$9!#(B
-        URL <code>http://example.com/~username/</code> $B$rK,$l$??M$O(B
-        $B%f!<%6(B "<code>username</code>" $B$N%[!<%`%G%#%l%/%H%j$N!"(B<directive
-        module="mod_userdir">UserDir</directive> $B%G%#%l%/%F%#%V$G;XDj$5$l$?(B
-       $B%5%V%G%#%l%/%H%j$+$i%3%s%F%s%D$rF@$k$3$H$K$J$j$^$9!#(B</p>
+        <p>複数ユーザの存在するシステムでは、それぞれのユーザは <directive
+        module="mod_userdir">UserDir</directive> ディレクティブを使うことによって
+        ホームディレクトリ上にウェブサイトを作成することができます。
+        URL <code>http://example.com/~username/</code> を訪れた人は
+        ユーザ "<code>username</code>" のホームディレクトリの、<directive
+        module="mod_userdir">UserDir</directive> ディレクティブで指定された
+       サブディレクトリからコンテンツを得ることになります。</p>
 
-        <p>$B;2>H(B: <a href="public_html.html"
-        >$B%f!<%6%&%'%V%G%#%l%/%H%j(B (<code>public_html</code>)</a></p>
+        <p>参照: <a href="public_html.html"
+        >ユーザウェブディレクトリ (<code>public_html</code>)</a></p>
       </dd>
     </dl>
 

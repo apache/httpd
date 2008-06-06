@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -23,109 +23,109 @@
 <modulesynopsis metafile="mod_negotiation.xml.meta">
 
 <name>mod_negotiation</name>
-<description><a href="../content-negotiation.html">$B%3%s%F%s%H%M%4%7%(!<%7%g%s(B</a>
-  $B5!G=$rDs6!$9$k(B</description>
+<description><a href="../content-negotiation.html">コンテントネゴシエーション</a>
+  機能を提供する</description>
 <status>Base</status>
 <sourcefile>mod_negotiation.c</sourcefile>
 <identifier>negotiation_module</identifier>
 
 <summary>
-    <p>$B%3%s%F%s%H%M%4%7%(!<%7%g%s!"$h$j@53N$K$O%3%s%F%s%D$NA*Br5!G=$O!"(B
-    $BJ#?tMQ0U$5$l$F$$$k%I%-%e%a%s%H$+$i!"%/%i%$%"%s%H$NG=NO$K0lHV9g$C$?(B
-    $B%I%-%e%a%s%H$rA*Br$9$k5!G=$G$9!#$3$N<BAu$OFs$D$"$j$^$9!#(B</p>
+    <p>コンテントネゴシエーション、より正確にはコンテンツの選択機能は、
+    複数用意されているドキュメントから、クライアントの能力に一番合った
+    ドキュメントを選択する機能です。この実装は二つあります。</p>
 
     <ul>
-      <li>$B%?%$%W%^%C%W(B (<code>type-map</code>
-      $B%O%s%I%i$G07$o$l$k%U%!%$%k(B)$B!#$3$l$O(B variants
-      $B$r4^$s$G$$$k%U%!%$%k$rL@<(E*$K;XDj$7$^$9!#(B</li>
+      <li>タイプマップ (<code>type-map</code>
+      ハンドラで扱われるファイル)。これは variants
+      を含んでいるファイルを明示的に指定します。</li>
 
-      <li>MultiViews $B$NC5:w(B (<code>MultiViews</code> <directive
-      module="core">Option</directive> $B$GM-8z$K$J$j$^$9(B)$B!#(B
-      $B%5!<%P$,0EL[$NFb$K%U%!%$%kL>$N%Q%?!<%s%^%C%A$r9T$J$$!"(B
-      $B$=$N7k2L$+$iA*Br$7$^$9!#(B</li>
+      <li>MultiViews の探索 (<code>MultiViews</code> <directive
+      module="core">Option</directive> で有効になります)。
+      サーバが暗黙の内にファイル名のパターンマッチを行ない、
+      その結果から選択します。</li>
     </ul>
 </summary>
 <seealso><directive module="core">Options</directive></seealso>
 <seealso><module>mod_mime</module></seealso>
-<seealso><a href="../content-negotiation.html">$B%3%s%F%s%H%M%4%7%(!<%7%g%s(B</a></seealso>
-<seealso><a href="../env.html">$B4D6-JQ?t(B</a></seealso>
+<seealso><a href="../content-negotiation.html">コンテントネゴシエーション</a></seealso>
+<seealso><a href="../env.html">環境変数</a></seealso>
 
-<section id="typemaps"><title>$B%?%$%W%^%C%W(B</title>
-    <p>$B%?%$%W%^%C%W$O(B RFC 822 $B$N%a!<%k%X%C%@$KN`;w$7$?=q<0$G$9!#(B
-    $B%I%-%e%a%s%H$N5-=R$,6u9T$GJ,N%$5$l$F=q$+$l$F$$$F!"%O%C%7%eJ8;z(B
-    ('#') $B$G;O$^$k9T$O%3%a%s%H$H$7$F07$o$l$^$9!#(B
-    $B%I%-%e%a%s%H$N@bL@$OJ#?t$N%X%C%@%l%3!<%I$+$i9=@.$5$l$^$9!#(B
-    $B%l%3!<%I$O!"B3$-$N9T$,6uGr$G;O$^$C$F$$$k$HJ#?t$N9T$K$^$?$,$j$^$9!#(B
-    $B:G=i$N6uGr$,>C5n$5$l$F!"A0$N9T$H$D$J$2$F(B 1 $B9T$H$7$F07$o$l$^$9!#(B
-    $B%X%C%@%l%3!<%I$O%-!<%o!<%IL>$N8e$KCM$,B3$/$H$$$&7A<0$G!"(B
-    $B%-!<%o!<%IL>$O>o$K%3%m%s$G=*$o$j$^$9!#6uGr$O%X%C%@L>$HCM$N4V!"(B
-    $BCM$N%H!<%/%s$N4V$KF~$l$k$3$H$,$G$-$^$9!#(B
-    $B;HMQ2DG=$J%X%C%@$O0J2<$N$H$*$j$G$9(B:</p>
+<section id="typemaps"><title>タイプマップ</title>
+    <p>タイプマップは RFC 822 のメールヘッダに類似した書式です。
+    ドキュメントの記述が空行で分離されて書かれていて、ハッシュ文字
+    ('#') で始まる行はコメントとして扱われます。
+    ドキュメントの説明は複数のヘッダレコードから構成されます。
+    レコードは、続きの行が空白で始まっていると複数の行にまたがります。
+    最初の空白が消去されて、前の行とつなげて 1 行として扱われます。
+    ヘッダレコードはキーワード名の後に値が続くという形式で、
+    キーワード名は常にコロンで終わります。空白はヘッダ名と値の間、
+    値のトークンの間に入れることができます。
+    使用可能なヘッダは以下のとおりです:</p>
 
     <dl>
       <dt><code>Content-Encoding:</code></dt>
-      <dd>$B%U%!%$%k$N%(%s%3!<%G%#%s%0!#(BApache $B$O(B <directive
-      module="mod_mime">AddEncoding</directive> $B%G%#%l%/%F%#%V(B
-      $B$GDj5A$5$l$?%(%s%3!<%G%#%s%0$@$1$rG'<1$7$^$9!#DL>o(B compress
-      $B$5$l$?%U%!%$%k$N$?$a$N(B <code>x-compress</code> $B$H(B gzip
-      $B$5$l$?%U%!%$%k$N$?$a$N(B <code>x-gzip</code> $B$r4^$_$^$9!#(B
-      $B%(%s%3!<%G%#%s%0$NHf3S$r$9$k$H$-$O!"@\F,<-(B <code>x-</code>
-      $B$OL5;k$5$l$^$9!#(B</dd>
+      <dd>ファイルのエンコーディング。Apache は <directive
+      module="mod_mime">AddEncoding</directive> ディレクティブ
+      で定義されたエンコーディングだけを認識します。通常 compress
+      されたファイルのための <code>x-compress</code> と gzip
+      されたファイルのための <code>x-gzip</code> を含みます。
+      エンコーディングの比較をするときは、接頭辞 <code>x-</code>
+      は無視されます。</dd>
 
       <dt><code>Content-Language:</code></dt>
-      <dd>$B%$%s%?!<%M%C%HI8=`$N8@8l%?%0(B 
+      <dd>インターネット標準の言語タグ 
       (<a href="http://www.ietf.org/rfc/rfc1766.txt">RFC 1766</a>)
-      $B$GDj5A$5$l$F$$$k8@8l$N<oN`!#Nc$($P!"(B<code>en</code>
-      $B$O1Q8l$rI=$7$^$9!#(B
-      $BJ#?t$N8@8l$,3JG<$5$l$k>l9g$O%3%s%^$G6h@Z$i$l$^$9!#(B</dd>
+      で定義されている言語の種類。例えば、<code>en</code>
+      は英語を表します。
+      複数の言語が格納される場合はコンマで区切られます。</dd>
 
       <dt><code>Content-Length:</code></dt>
-      <dd>$B%U%!%$%k$ND9$5(B ($B%P%$%H?t(B)$B!#(B
-      $B$3$N%X%C%@$,$J$$>l9g!"%U%!%$%k$N<B:]$ND9$5$,;HMQ$5$l$^$9!#(B</dd>
+      <dd>ファイルの長さ (バイト数)。
+      このヘッダがない場合、ファイルの実際の長さが使用されます。</dd>
 
       <dt><code>Content-Type:</code></dt>
-      <dd>$B%I%-%e%a%s%H$N(B MIME
-      $B%a%G%#%"%?%$%W!"%*%W%7%g%J%k$J%Q%i%a!<%?IU$-!#%Q%i%a!<%?$N9=J8$O(B
+      <dd>ドキュメントの MIME
+      メディアタイプ、オプショナルなパラメータ付き。パラメータの構文は
       <code>name=value</code>
-      $B$G!"%a%G%#%"%?%$%W$dB>$N%Q%i%a!<%?$H$O%;%_%3%m%s$GJ,N%$5$l$^$9!#(B
-      $B6&DL$N%Q%i%a!<%?$O0J2<$N$H$*$j(B:
+      で、メディアタイプや他のパラメータとはセミコロンで分離されます。
+      共通のパラメータは以下のとおり:
 
         <dl>
           <dt><code>level</code></dt>
-          <dd>$B%a%G%#%"%?%$%W$N%P!<%8%g%s$r<($9@0?t!#(B
-          <code>text/html</code> $B$G$O(B 2 $B$,%G%U%)%k%H$G!"$=$NB>$N>l9g$O(B
-          0 $B$,%G%U%)%k%H$G$9!#(B</dd>
+          <dd>メディアタイプのバージョンを示す整数。
+          <code>text/html</code> では 2 がデフォルトで、その他の場合は
+          0 がデフォルトです。</dd>
 
           <dt><code>qs</code></dt>
-          <dd>$B%/%i%$%"%s%H$NG=NO$K4X78$J$/!"(Bvariant
-          $B$rB>$HHf3S$7$?$H$-$NAjBPE*$J!VIJ<A!W$G!"(B0.0 $B$+$i(B 1.0
-          $B$NHO0O$NIbF0E@>.?t!#(B
-          $BNc$($P!"<L??$rI=8=$7$h$&$H$7$F$$$k$H$-$OIaDL$O(B JPEG
-          $B%U%!%$%k$NJ}$,(B ASCII $B%U%!%$%k$h$j$b9b$$IJ<A$K$J$j$^$9!#(B
-          $B$7$+$7!"%j%=!<%9$,(B ASCII $B%"!<%H$GI=8=$5$l$F$$$k$H$-$O!"(BASCII
-          $B%U%!%$%k$NJ}$,(B JPEG
-          $B%U%!%$%k$h$j$b9b$$IJ<A$K$J$j$^$9!#$3$N$h$&$K!"(B<code>qs</code>
-          $B$O%j%=!<%9Kh$KFCM-$NCM$r<h$j$^$9!#(B
+          <dd>クライアントの能力に関係なく、variant
+          を他と比較したときの相対的な「品質」で、0.0 から 1.0
+          の範囲の浮動点小数。
+          例えば、写真を表現しようとしているときは普通は JPEG
+          ファイルの方が ASCII ファイルよりも高い品質になります。
+          しかし、リソースが ASCII アートで表現されているときは、ASCII
+          ファイルの方が JPEG
+          ファイルよりも高い品質になります。このように、<code>qs</code>
+          はリソース毎に特有の値を取ります。
           </dd>
         </dl>
 
-        <example><title>$BNc(B</title>
+        <example><title>例</title>
           Content-Type: image/jpeg; qs=0.8
         </example>
       </dd>
 
       <dt><code>URI:</code></dt>
-      <dd>($B;XDj$N%a%G%#%"%?%$%W!"%3%s%F%s%H%(%s%3!<%G%#%s%0$N(B) variant $B$N(B
-      $B%U%!%$%k$N(B uri.  $B$3$l$O!"%^%C%W%U%!%$%k$+$i$NAjBP(B URL $B$H$7$F(B
-      $B2r<a$5$l$^$9!#F1$8%5!<%P$KB8:_$7$J$1$l$P$J$i$:!"%/%i%$%"%s%H$,(B
-      $BD>@\%j%/%(%9%H$7$?$H$-$K%"%/%;%9$r5v2D$5$l$k$b$N$G$J$1$l$P$J$j$^$;$s!#(B</dd>
+      <dd>(指定のメディアタイプ、コンテントエンコーディングの) variant の
+      ファイルの uri.  これは、マップファイルからの相対 URL として
+      解釈されます。同じサーバに存在しなければならず、クライアントが
+      直接リクエストしたときにアクセスを許可されるものでなければなりません。</dd>
 
       <dt><code>Body:</code></dt>
-      <dd>Apache 2.0 $B$G?7@_$5$l$?$3$N(B Body $B%X%C%@$r;H$C$F!"(B
-      $B%j%=!<%9$N<B:]$NFbMF$r%?%$%W%^%C%W%U%!%$%k$K=q$/$3$H$,$G$-$^$9!#(B
-      $B$3$N%X%C%@$OK\J8$NFbMF$N6h@Z$j$H$J$kJ8;zNs$G;O$^$kI,MW$,$"$j$^$9!#(B
-      $B%?%$%W%^%C%W%U%!%$%k$NB3$/9T$O!"6h@Z$jJ8;zNs$,8+$D$+$k$^$G!"(B
-      $B%j%=!<%9$NK\J8$K$J$j$^$9!#(B
+      <dd>Apache 2.0 で新設されたこの Body ヘッダを使って、
+      リソースの実際の内容をタイプマップファイルに書くことができます。
+      このヘッダは本文の内容の区切りとなる文字列で始まる必要があります。
+      タイプマップファイルの続く行は、区切り文字列が見つかるまで、
+      リソースの本文になります。
 
       <example><title>Example:</title>
         Body:----xyz----<br />
@@ -141,110 +141,110 @@
 </section>
 
 <section id="multiviews"><title>MultiViews</title>
-    <p>MultiViews $BC5:w$O!"(B<code>Multiviews</code> <directive
-    module="core">Options</directive> $B%G%#%l%/%F%#%V$K$h$jM-8z$K$J$j$^$9!#(B
-    $B%5!<%P$,(B <code>/some/dir/foo</code>
-    $B$X$N%j%/%(%9%H$r<u$1<h$j!"(B<code>/some/dir/foo</code> $B$,B8:_(B
-    <em>$B$7$J$$(B</em>$B>l9g!"%5!<%P$O%G%#%l%/%H%j$rFI$s$G!"(B
-    <code>foo.*</code> $B$K$"$F$O$^$kA4$F$N%U%!%$%k$rC5$7!"(B
-    $B;v<B>e$=$l$i$N%U%!%$%k$r%^%C%W$9$k%?%$%W%^%C%W$r:n$j$^$9!#(B
-    $B$=$N$H$-!"%a%G%#%"%?%$%W$H%3%s%F%s%H%(%s%3!<%G%#%s%0$O!"(B
-    $B$=$N%U%!%$%kL>$rD>@\;XDj$7$?$H$-$HF1$8$b$N$,3d$jEv$F$i$l$^$9!#(B
-    $B$=$l$+$i%/%i%$%"%s%H$NMW5a$K0lHV9g$&$b$N$rA*$S!"(B
-    $B$=$N%I%-%e%a%s%H$rJV$7$^$9!#(B</p>
+    <p>MultiViews 探索は、<code>Multiviews</code> <directive
+    module="core">Options</directive> ディレクティブにより有効になります。
+    サーバが <code>/some/dir/foo</code>
+    へのリクエストを受け取り、<code>/some/dir/foo</code> が存在
+    <em>しない</em>場合、サーバはディレクトリを読んで、
+    <code>foo.*</code> にあてはまる全てのファイルを探し、
+    事実上それらのファイルをマップするタイプマップを作ります。
+    そのとき、メディアタイプとコンテントエンコーディングは、
+    そのファイル名を直接指定したときと同じものが割り当てられます。
+    それからクライアントの要求に一番合うものを選び、
+    そのドキュメントを返します。</p>
 
-    <p>$B%U%!%$%k$rA*Br$9$k:]$K!"4XO"$9$k%3%s%F%s%H%M%4%7%(!<%7%g%s$N(B
-    $B%a%?>pJs$r;}$?$J$$%U%!%$%k$K$D$$$F!"H=Dj$r9T$&$+$I$&$+$r(B
+    <p>ファイルを選択する際に、関連するコンテントネゴシエーションの
+    メタ情報を持たないファイルについて、判定を行うかどうかを
     <directive module="mod_mime">MultiViewsMatch</directive>
-    $B%G%#%l%/%F%#%V$G@_Dj$7$^$9!#(B</p>
+    ディレクティブで設定します。</p>
 </section>
 
 <directivesynopsis>
 <name>CacheNegotiatedDocs</name>
-<description>$B%3%s%F%s%H%M%4%7%(!<%7%g%s$5$l$?%I%-%e%a%s%H$r%W%m%-%7%5!<%P$,(B
-$B%-%c%C%7%e$G$-$k$h$&$K$9$k(B</description>
+<description>コンテントネゴシエーションされたドキュメントをプロキシサーバが
+キャッシュできるようにする</description>
 <syntax>CacheNegotiatedDocs On|Off</syntax>
 <default>CacheNegotiatedDocs Off</default>
 <contextlist><context>server config</context>
 <context>virtual host</context>
 </contextlist>
-<compatibility>$B%P!<%8%g%s(B 2.0$B$G9=J8$,JQ$o$j$^$7$?(B</compatibility>
+<compatibility>バージョン 2.0で構文が変わりました</compatibility>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$,@_Dj$5$l$F$$$k$H!"%3%s%F%s%H%M%4%7%(!<%7%g%s(B
-    $B$r$7$?7k2L$N%I%-%e%a%s%H$N%-%c%C%7%e$r5v2D$7$^$9!#(B
-    $B$3$l$O!"%W%m%-%7$N8e$m$K$$$k%/%i%$%"%s%H$,G=NO$K0lHV9g$C$?(B
-    $B%I%-%e%a%s%H$G$O$J$/!"(B
-    $B%-%c%C%7%e$r$h$j8z2LE*$K$9$k$b$N$rF@$k2DG=@-$,$"$k$H$$$&$3$H$G$9!#(B</p>
+    <p>このディレクティブが設定されていると、コンテントネゴシエーション
+    をした結果のドキュメントのキャッシュを許可します。
+    これは、プロキシの後ろにいるクライアントが能力に一番合った
+    ドキュメントではなく、
+    キャッシュをより効果的にするものを得る可能性があるということです。</p>
 
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B HTTP/1.0 $B%V%i%&%6$+$i$N%j%/%(%9%H(B
-    $B$N$_$KE,MQ$5$l$^$9!#(BHTTP/1.1 $B$O!"(B
-    $B8r>D$5$l$?%I%-%e%a%s%H$N%-%c%C%7%e$KBP$7$F$:$C$H$h$$@)8f$,2DG=$J$N$G!"(B
-    $B$3$N%G%#%l%/%F%#%V$O(B HTTP/1.1 $B$N%j%/%(%9%H$K$O1F6A$7$^$;$s!#(B</p>
-    <p>2.0 $B$h$jA0$N%P!<%8%g%s$G$O!"(B
-    <directive>CacheNegotiatedDocs</directive> $B$O0z?t$r<h$i$:!"(B
-    $B%G%#%l%/%F%#%V$,B8:_$9$k$3$H$G(B on $B$NF0:n$r$7$F$$$^$7$?!#(B</p>
+    <p>このディレクティブは HTTP/1.0 ブラウザからのリクエスト
+    のみに適用されます。HTTP/1.1 は、
+    交渉されたドキュメントのキャッシュに対してずっとよい制御が可能なので、
+    このディレクティブは HTTP/1.1 のリクエストには影響しません。</p>
+    <p>2.0 より前のバージョンでは、
+    <directive>CacheNegotiatedDocs</directive> は引数を取らず、
+    ディレクティブが存在することで on の動作をしていました。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ForceLanguagePriority</name>
-<description>$BMW5a$K9g$&C1FH$N%I%-%e%a%s%H$,8+$D$+$i$J$+$C$?$H$-$K9T$J$&$3$H$r;XDj(B
+<description>要求に合う単独のドキュメントが見つからなかったときに行なうことを指定
 </description>
 <syntax>ForceLanguagePriority None|Prefer|Fallback [Prefer|Fallback]</syntax>
 <default>ForceLanguagePriority Prefer</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>$B%P!<%8%g%s(B 2.0.30 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>バージョン 2.0.30 以降で使用可能</compatibility>
 
 <usage>
-    <p><directive>ForceLanguagePriority</directive> $B%G%#%l%/%F%#%V$O(B
-    $BMW5a$K9g$&%I%-%e%a%s%H$r0l$D$@$1JV$9$3$H$,$G$-$J$$$H$-$K!"(B
+    <p><directive>ForceLanguagePriority</directive> ディレクティブは
+    要求に合うドキュメントを一つだけ返すことができないときに、
     <directive module="mod_negotiation">LanguagePriority</directive>
-    $B%G%#%l%/%F%#%V$r;H$C$F%M%4%7%(!<%7%g%s$N7k2L$rJV$7$^$9!#(B</p>
+    ディレクティブを使ってネゴシエーションの結果を返します。</p>
 
-    <p><code>ForceLanguagePriority Prefer</code> $B$O!"F1Ey$NA*Br;h$,(B
-    $B$$$/$D$+$"$k$H$-$K!"(BHTTP $B$N(B 300 (MULTIPLE CHOICES) $B$rJV$9Be$o$j$K!"(B
-    <code>LanguagePriority</code> $B$r;H$C$F0l$D$@$1%I%-%e%a%s%H$rJV$9$h$&$K(B
-    $B$7$^$9!#0J2<$N%G%#%l%/%F%#%V$,;XDj$5$l$F$$$F!"%f!<%6$N(B <code>Accept-Language</code>
-    $B%X%C%@$G$O(B <code>en</code> $B$H(B <code>de</code> $B$NIJ<A$,6&$K(B
-    <code>.500</code> ($BF1$8$/$i$$5vMF(B) $B$G$"$k$H$-$O!"(B
-    $B:G=i$K%^%C%A$9$k(B variant $B$N(B <code>en</code> $B$,Aw$i$l$^$9!#(B</p>
+    <p><code>ForceLanguagePriority Prefer</code> は、同等の選択肢が
+    いくつかあるときに、HTTP の 300 (MULTIPLE CHOICES) を返す代わりに、
+    <code>LanguagePriority</code> を使って一つだけドキュメントを返すように
+    します。以下のディレクティブが指定されていて、ユーザの <code>Accept-Language</code>
+    ヘッダでは <code>en</code> と <code>de</code> の品質が共に
+    <code>.500</code> (同じくらい許容) であるときは、
+    最初にマッチする variant の <code>en</code> が送られます。</p>
 
     <example>
       LanguagePriority en fr de<br />
       ForceLanguagePriority Prefer
     </example>
 
-    <p><code>ForceLanguagePriority Fallback</code> $B$G$O!"(BHTTP 406
-    (NOT ACCEPTABLE) $B$rAw?.$9$kBe$o$j$K!"(B
+    <p><code>ForceLanguagePriority Fallback</code> では、HTTP 406
+    (NOT ACCEPTABLE) を送信する代わりに、
     <directive module="mod_negotiation">LanguagePriority</directive>
-    $B$,@5$7$$7k2L$rAw$j$^$9!#(B
-    $B0J2<$N%G%#%l%/%F%#%V$,;XDj$5$l$F$$$F!"%f!<%6$N(B <code>Accept-Language</code>
-    $B$,(B <code>es</code> $B8@8l$N$_$r5v2D$7$F$$$F!"$5$i$K$=$N$h$&$J(B variant $B$,$J$$$H$-$K$O!"(B
-    $B0J2<$N(B <directive module="mod_negotiation">LanguagePriority</directive>
-    $B$N%j%9%H$N:G=i$N(B variant $B$,Aw$l$l$^$9!#(B</p>
+    が正しい結果を送ります。
+    以下のディレクティブが指定されていて、ユーザの <code>Accept-Language</code>
+    が <code>es</code> 言語のみを許可していて、さらにそのような variant がないときには、
+    以下の <directive module="mod_negotiation">LanguagePriority</directive>
+    のリストの最初の variant が送れれます。</p>
 
     <example>
       LanguagePriority en fr de<br />
       ForceLanguagePriority Fallback
     </example>
 
-    <p><code>Prefer</code> $B$H(B <code>Fallback</code> $B$NN>J}$N%*%W%7%g%s$r(B
-    $BF1;~$K;XDj$9$k$3$H$,$G$-$^$9!#(B
-    $B$G$9$+$i!"J#?t$N(B variant $B$,$"$k$H$-$O(B
-    <directive module="mod_negotiation">LanguagePriority</directive> $B$N:G=i$N(B
-    variant $B$,Aw$i$l!"%/%i%$%"%s%H$N5vMF8@8l$K9g$&(B vaiant $B$,$J$$$H$-$O(B
-    $BB8:_$9$k%I%-%e%a%s%H$G:G=i$N$b$N$,Aw$i$l$k!"$H$$$&MM$K$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p><code>Prefer</code> と <code>Fallback</code> の両方のオプションを
+    同時に指定することができます。
+    ですから、複数の variant があるときは
+    <directive module="mod_negotiation">LanguagePriority</directive> の最初の
+    variant が送られ、クライアントの許容言語に合う vaiant がないときは
+    存在するドキュメントで最初のものが送られる、という様にすることができます。</p>
 </usage>
 <seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>LanguagePriority</name>
-<description>$B%/%i%$%"%s%H$,M%@hEY$r<($5$J$+$C$?$H$-$N8@8l$N(B variant $B$NM%@hEY$r(B
-$B;XDj(B</description>
+<description>クライアントが優先度を示さなかったときの言語の variant の優先度を
+指定</description>
 <syntax>LanguagePriority <var>MIME-lang</var> [<var>MIME-lang</var>]
 ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -252,25 +252,25 @@
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>LanguagePriority</directive> $B$O!"(BMultiViews
-    $B%j%/%(%9%H$r07$&$H$-$K!"%/%i%$%"%s%H$,M%@h=g0L$rDs6!$7$F$$$J$$>l9g$N(B
-    $B8@8l$NM%@h=g0L$r@_Dj$7$^$9!#(B<var>MIME-lang</var>
-    $B$N%j%9%H$,M%@hEY$N9_=g$KJB$S$^$9!#(B</p>
+    <p><directive>LanguagePriority</directive> は、MultiViews
+    リクエストを扱うときに、クライアントが優先順位を提供していない場合の
+    言語の優先順位を設定します。<var>MIME-lang</var>
+    のリストが優先度の降順に並びます。</p>
 
     <example><title>Example:</title>
       LanguagePriority en fr de
     </example>
 
-    <p><code>foo.html</code> $B$,%j%/%(%9%H$5$l!"(B<code>foo.html.fr</code>
-    $B$H(B <code>foo.html.de</code> $B$,N>J}B8:_$7!"(B
-    $B%V%i%&%6$,8@8l$NM%@h=g0L$rDs6!$7$F$J$$>l9g$O(B
-    <code>foo.html.fr</code> $B$,JV$5$l$^$9!#(B</p>
+    <p><code>foo.html</code> がリクエストされ、<code>foo.html.fr</code>
+    と <code>foo.html.de</code> が両方存在し、
+    ブラウザが言語の優先順位を提供してない場合は
+    <code>foo.html.fr</code> が返されます。</p>
 
-    <p>$B$3$N%G%#%l%/%F%#%V$OB>$NJ}K!$G!V:GA1!W(B
-    $B$N8@8l$,7hDj$G$-$J$$$H$-$+!"(B<directive
-    module="mod_negotiation">ForceLanguagePriority</directive> $B%G%#%l%/%F%#%V$,(B
-    <code>None</code> $B0J30$N$H$-$K$N$_8z2L$,$"$k$3$H$KCm0U$7$F$/$@$5$$!#(B
-    $B0lHLE*$K$O!"%5!<%PB&$G$O$J$/%/%i%$%"%s%HB&$G9%$_$N8@8l$r7hDj$7$^$9!#(B</p>
+    <p>このディレクティブは他の方法で「最善」
+    の言語が決定できないときか、<directive
+    module="mod_negotiation">ForceLanguagePriority</directive> ディレクティブが
+    <code>None</code> 以外のときにのみ効果があることに注意してください。
+    一般的には、サーバ側ではなくクライアント側で好みの言語を決定します。</p>
 </usage>
 <seealso><directive module="mod_mime">AddLanguage</directive></seealso>
 </directivesynopsis>

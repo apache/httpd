@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 395228:655869 (outdated) -->
@@ -22,127 +22,127 @@
 
 <manualpage metafile="content-negotiation.xml.meta">
 
-<title>$B%3%s%F%s%H%M%4%7%(!<%7%g%s(B</title>
+<title>コンテントネゴシエーション</title>
 
 <summary>
 
-    <p>Apache $B$O(B HTTP/1.1 $B$N5,3J$K5-=R$5$l$F$$$k%3%s%F%s%H%M%4%7%(!<%7%g%s$r(B
-    $B%5%]!<%H$7$F$$$^$9!#(B
-    $B%V%i%&%6$K$h$jDs6!$5$l$?%a%G%#%"%?%$%W!"(B
-    $B8@8l!"J8;z%;%C%H!"%(%s%3!<%G%#%s%0$NM%@h798~$K4p$E$$$F!"(B
-    $B:GE,$J%j%=!<%9$NI=8=$rA*Br$G$-$^$9!#(B
-    $B$^$?!"IT40A4$J%M%4%7%(!<%7%g%s>pJs$rAw$C$F$/$k%V%i%&%6$+$i$N%j%/%(%9%H$r(B
-    $B$b$C$H8-$/<h$j07$($k$h$&!"$$$/$D$+5!G=$b<BAu$7$F$"$j$^$9!#(B</p>
+    <p>Apache は HTTP/1.1 の規格に記述されているコンテントネゴシエーションを
+    サポートしています。
+    ブラウザにより提供されたメディアタイプ、
+    言語、文字セット、エンコーディングの優先傾向に基づいて、
+    最適なリソースの表現を選択できます。
+    また、不完全なネゴシエーション情報を送ってくるブラウザからのリクエストを
+    もっと賢く取り扱えるよう、いくつか機能も実装してあります。</p>
 
-    <p>$B%3%s%F%s%H%M%4%7%(!<%7%g%s$O(B
+    <p>コンテントネゴシエーションは
     <module>mod_negotiation</module>
-    $B%b%8%e!<%k$K$h$C$FDs6!$5$l$F$$$F!"%G%U%)%k%H$GAH$_9~$^$l$F$$$^$9!#(B</p>
+    モジュールによって提供されていて、デフォルトで組み込まれています。</p>
 </summary>
 
-<section id="about"><title>$B%3%s%F%s%H%M%4%7%(!<%7%g%s$K$D$$$F(B</title>
+<section id="about"><title>コンテントネゴシエーションについて</title>
 
-    <p>$B%j%=!<%9$O!"4v$D$+0[$J$C$?I=8=$GMxMQ$G$-$k>l9g$,$"$j$^$9!#(B
-    $BNc$($P!"0[$J$k8@8l$d0[$J$k%a%G%#%"%?%$%W!"(B
-    $B$^$?$O$=$l$i$NAH$_9g$o$;$GMxMQ$G$-$k$+$bCN$l$^$;$s!#(B
-    $B$b$C$H$bE,$7$?A*Br$r$9$kJ}K!$N0l$D$K$O!"%$%s%G%C%/%9%Z!<%8$r(B
-    $B%f!<%6$K8+$;$F!"%f!<%6$KA*$s$G$b$i$&J}K!$,$"$j$^$9!#(B
-    $B$7$+$7!"%5!<%P$,<+F0E*$KA*$V$3$H$,$G$-$k>l9g$,B?$/$"$j$^$9!#(B
-    $B$3$l$O!"%V%i%&%6$,%j%/%(%9%HKh$K!"(B
-    $B$I$NI=8=$rSO9%$9$k$+$H$$$&>pJs$rAw$k$3$H$GF0:n$7$F$$$^$9!#(B
-    $BNc$($P%V%i%&%6$O!"2DG=$J$i%U%i%s%98l$G>pJs$r8+$?$$!"(B
-    $BIT2DG=$J$i$=$NBe$o$j$K1Q8l$G$b$h$$$H!"(B
-    $B<+J,$NSO9%$rCN$i$;$k$3$H$,$G$-$^$9!#(B
-    $B%V%i%&%6$O%j%/%(%9%H$N%X%C%@$G<+J,$NM%@h798~$rCN$i$;$^$9!#(B
-    $B%U%i%s%98l$N$_$NI=8=$rMW5a$9$k>l9g$O!"%V%i%&%6$O<!$rAw$j$^$9!#(B</p>
+    <p>リソースは、幾つか異なった表現で利用できる場合があります。
+    例えば、異なる言語や異なるメディアタイプ、
+    またはそれらの組み合わせで利用できるかも知れません。
+    もっとも適した選択をする方法の一つには、インデックスページを
+    ユーザに見せて、ユーザに選んでもらう方法があります。
+    しかし、サーバが自動的に選ぶことができる場合が多くあります。
+    これは、ブラウザがリクエスト毎に、
+    どの表現を嗜好するかという情報を送ることで動作しています。
+    例えばブラウザは、可能ならフランス語で情報を見たい、
+    不可能ならその代わりに英語でもよいと、
+    自分の嗜好を知らせることができます。
+    ブラウザはリクエストのヘッダで自分の優先傾向を知らせます。
+    フランス語のみの表現を要求する場合は、ブラウザは次を送ります。</p>
 
 <example>Accept-Language: fr</example>
 
-    <p>$B$3$NM%@h798~$O!"A*Br2DG=$JI=8=$,B8:_$7$F!"(B
-    $B8@8l$K$h$C$FMM!9$JI=8=$,$"$k>l9g$K$N$_E,MQ$5$l$k(B
-    $B$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    <p>この優先傾向は、選択可能な表現が存在して、
+    言語によって様々な表現がある場合にのみ適用される
+    ということに注意してください。</p>
 
-    <p>$B$b$C$HJ#;($J%j%/%(%9%H$NNc$r5s$2$^$7$g$&!#(B
-    $B$3$N%V%i%&%6$O%U%i%s%98l$H1Q8l$r<u$1IU$1$k!"$7$+$7%U%i%s%98l$r9%$`!"(B
-    $B$=$7$FMM!9$J%a%G%#%"%?%$%W$r<u$1IU$1$k$,!"(B
-    $B%W%l%$%s%F%-%9%H$dB>$N%?%$%W$h$j$O(B HTML $B$r9%$`!"(B
-    $BB>$N%a%G%#%"%?%$%W$h$j$O(B GIF $B$d(B JPEG $B$r9%$`!"$7$+$7:G=*<jCJ$H$7$F(B
-    $BB>$N%a%G%#%"%?%$%W$b<u$1IU$1$k!"$H@_Dj$5$l$F$$$^$9!#(B</p>
+    <p>もっと複雑なリクエストの例を挙げましょう。
+    このブラウザはフランス語と英語を受け付ける、しかしフランス語を好む、
+    そして様々なメディアタイプを受け付けるが、
+    プレインテキストや他のタイプよりは HTML を好む、
+    他のメディアタイプよりは GIF や JPEG を好む、しかし最終手段として
+    他のメディアタイプも受け付ける、と設定されています。</p>
 
 <example>
   Accept-Language: fr; q=1.0, en; q=0.5<br />
   Accept: text/html; q=1.0, text/*; q=0.8, image/gif; q=0.6, image/jpeg; q=0.6, image/*; q=0.5, */*; q=0.1
 </example>
 
-    <p>Apache $B$O(B HTTP/1.1 $B5,3J$GDj5A$5$l$F$$$k(B 'server
-    driven' $B%3%s%F%s%H%M%4%7%(!<%7%g%s$r%5%]!<%H$7$F$$$^$9!#(B
+    <p>Apache は HTTP/1.1 規格で定義されている 'server
+    driven' コンテントネゴシエーションをサポートしています。
     <code>Accept</code>, <code>Accept-Language</code>, 
     <code>Accept-Charset</code>, <code>Accept-Encoding</code>
-    $B%j%/%(%9%H%X%C%@$r40A4$K%5%]!<%H$7$F$$$^$9!#(BApache $B$O(B
-    'transparent' $B%3%s%F%s%H%M%4%7%(!<%7%g%s$b%5%]!<%H$7$F$$$^$9$,!"(B
-    $B$3$l$O(B RFC 2295 $B$H(B RFC 2296 $B$GDj5A$5$l$F$$$k;n83E*$J(B
-    $B%M%4%7%(!<%7%g%s%W%m%H%3%k$G$9!#(B
-    $B$3$l$i$N(B RFC$B$GDj5A$5$l$F$$$k(B 'feature negotiation'
-    $B$O%5%]!<%H$7$F$$$^$;$s!#(B</p>
+    リクエストヘッダを完全にサポートしています。Apache は
+    'transparent' コンテントネゴシエーションもサポートしていますが、
+    これは RFC 2295 と RFC 2296 で定義されている試験的な
+    ネゴシエーションプロトコルです。
+    これらの RFCで定義されている 'feature negotiation'
+    はサポートしていません。</p>
 
-    <p><strong>$B%j%=!<%9(B</strong>$B$H$O(B URI
-    $B$GFCDj$5$l$k35G0>e$N$b$N$N$3$H$G$9(B (RFC 2396)$B!#(B Apache
-    $B$N$h$&$J(B HTTP $B%5!<%P$O!"$=$NL>A06u4V$NCf$G$N(B
-    $B%j%=!<%9$N(B<strong>$BI=8=(B</strong>$B$X$N%"%/%;%9$rDs6!$7$^$9!#(B
-    $B$=$l$>$l$NI=8=$O(B
-    $BDj5A$5$l$?%a%G%#%"%?%$%W!"J8;z%;%C%H!"%(%s%3!<%G%#%s%0Ey$N(B
-    $BIUB0$7$?!"%P%$%HNs$N7A<0$G$9!#(B
-    $B$=$l$>$l$N%j%=!<%9$O$"$k;~E@$G(B 0 $B8D!"(B1 $B8D!"$=$l0J>e$NI=8=$H(B
-    $B4XO"IU$1$i$l$k2DG=@-$,$"$j$^$9!#J#?t$NI=8=$,MxMQ$G$-$k>l9g$O!"(B
-    $B%j%=!<%9$O(B<strong>$B%M%4%7%(!<%7%g%s2DG=$G$"$k(B</strong>$B$H$5$l!"(B
-    $B8D!9$NI=8=$O(B <strong>variant</strong> $B$H8F$P$l$^$9!#(B
-    $B%M%4%7%(!<%7%g%s2DG=$J%j%=!<%9$N(B variant $B$,0[$J$k!"(B
-    $B$=$N>uBV$r;X$7$F!"(B
-    $B%M%4%7%(!<%7%g%s$N(B<strong>$B<!85(B</strong>$B$H8F$S$^$9!#(B</p>
+    <p><strong>リソース</strong>とは URI
+    で特定される概念上のもののことです (RFC 2396)。 Apache
+    のような HTTP サーバは、その名前空間の中での
+    リソースの<strong>表現</strong>へのアクセスを提供します。
+    それぞれの表現は
+    定義されたメディアタイプ、文字セット、エンコーディング等の
+    付属した、バイト列の形式です。
+    それぞれのリソースはある時点で 0 個、1 個、それ以上の表現と
+    関連付けられる可能性があります。複数の表現が利用できる場合は、
+    リソースは<strong>ネゴシエーション可能である</strong>とされ、
+    個々の表現は <strong>variant</strong> と呼ばれます。
+    ネゴシエーション可能なリソースの variant が異なる、
+    その状態を指して、
+    ネゴシエーションの<strong>次元</strong>と呼びます。</p>
 </section>
 
-<section id="negotiation"><title>Apache $B$K$*$1$k%M%4%7%(!<%7%g%s(B</title>
+<section id="negotiation"><title>Apache におけるネゴシエーション</title>
 
-    <p>$B%j%=!<%9$r%M%4%7%(!<%7%g%s$9$k$?$a$K$O!"(B
-    $B%5!<%P$O(B variant $B$=$l$>$l$K$D$$$F$N>pJs$rCN$C$F$*$/I,MW$,$"$j$^$9!#(B
-    $B$3$l$O0J2<$NFs$D$NJ}K!$N$I$A$i$+$G9T$o$l$^$9!#(B</p>
+    <p>リソースをネゴシエーションするためには、
+    サーバは variant それぞれについての情報を知っておく必要があります。
+    これは以下の二つの方法のどちらかで行われます。</p>
 
     <ul>
-      <li>$B%?%$%W%^%C%W(B
-      (<em>$B$9$J$o$A(B</em> <code>*.var</code> $B%U%!%$%k(B)
-      $B$r;H$&J}K!!#(B $B$3$l$O(B variant
-      $B$rL@<(E*$K5s$2$F$$$k%U%!%$%k$r;XDj$7$^$9!#(B</li>
+      <li>タイプマップ
+      (<em>すなわち</em> <code>*.var</code> ファイル)
+      を使う方法。 これは variant
+      を明示的に挙げているファイルを指定します。</li>
 
       <li>'Multiviews'
-      $B$r;H$C$F!"%5!<%P$,0EL[$NFb$K%U%!%$%kL>$K%Q%?!<%s>H9g$r(B
-      $B9T$J$C$F$=$N7k2L$+$iA*Br$9$kJ}K!!#(B</li>
+      を使って、サーバが暗黙の内にファイル名にパターン照合を
+      行なってその結果から選択する方法。</li>
     </ul>
 
-   <section id="type-map"><title>type-map $B%U%!%$%k$r;H$&(B</title>
+   <section id="type-map"><title>type-map ファイルを使う</title>
 
-    <p>$B%?%$%W%^%C%W$O(B <code>type-map</code> $B%O%s%I%i(B
-    ($B$b$7$/$O!"8E$$(B Apache
-    $B$N@_Dj$H2<0L8_49$G$"$k(B <glossary ref="mime-type">MIME $B%?%$%W(B</glossary>
+    <p>タイプマップは <code>type-map</code> ハンドラ
+    (もしくは、古い Apache
+    の設定と下位互換である <glossary ref="mime-type">MIME タイプ</glossary>
     <code>application/x-type-map</code>)
-    $B$K4XO"IU$1$i$l$?%I%-%e%a%s%H$G$9!#(B
-    $B$3$N5!G=$r;H$&$?$a$K$O!"$"$k%U%!%$%k$N3HD%;R$r(B
+    に関連付けられたドキュメントです。
+    この機能を使うためには、あるファイルの拡張子を
     <code>type-map</code>
-    $B$H$7$FDj5A$9$k$h$&$J%O%s%I%i$r!"(B
-    $B@_Dj%U%!%$%kCf$KCV$/I,MW$,$"$k$3$H$KCm0U$7$F$/$@$5$$!#(B
-    $B$3$l$O(B</p>
+    として定義するようなハンドラを、
+    設定ファイル中に置く必要があることに注意してください。
+    これは</p>
 
 <example>AddHandler type-map .var</example>
 
-    <p>$B$r%5!<%P@_Dj%U%!%$%kCf$K=q$/$3$H$,0lHVNI$$J}K!$G$9!#(B</p>
+    <p>をサーバ設定ファイル中に書くことが一番良い方法です。</p>
 
-    <p>$B%?%$%W%^%C%W%U%!%$%k$O5-=R$9$k%j%=!<%9$HF1$8L>A0$r;}$C$F$$$F!"(B
-    $BMxMQ2DG=$J(B variant $B$=$l$>$l$N%(%s%H%j$r;}$C$F$$$kI,MW$,$"$j$^$9!#(B
-    $B$=$7$F!"$3$N%(%s%H%j$OO"B3$7$?(B HTTP $B$N%X%C%@9T$G9=@.$5$l$^$9!#(B
-    $B0[$J$k(B variant $B$N$?$a$N%(%s%H%j$O6u9T$G6h@Z$i$l$F$$$^$9!#(B
-    $B%(%s%H%jCf$K6u9T$,J#?t$"$C$F$O$$$1$^$;$s!#(B
-    $B=,47E*$K$O!"%^%C%W%U%!%$%k$OA4BN$r7k9g$7$?$b$N$N%(%s%H%j$+$i;O$^$j$^$9(B
-    ($B$7$+$7$3$l$OI,?\$G$O$J$/!"$"$C$?$H$7$F$bL5;k$5$l$k$b$N$G$9(B)$B!#(B
-    $B<!$KNc$r<($7$^$9!#$3$N%U%!%$%k$O%j%=!<%9(B <code>foo</code> 
-    $B$r5-=R$7$F$$$k$N$G!"(B<code>foo.var</code> $B$H$$$&L>A0$K$J$j$^$9!#(B</p>
+    <p>タイプマップファイルは記述するリソースと同じ名前を持っていて、
+    利用可能な variant それぞれのエントリを持っている必要があります。
+    そして、このエントリは連続した HTTP のヘッダ行で構成されます。
+    異なる variant のためのエントリは空行で区切られています。
+    エントリ中に空行が複数あってはいけません。
+    習慣的には、マップファイルは全体を結合したもののエントリから始まります
+    (しかしこれは必須ではなく、あったとしても無視されるものです)。
+    次に例を示します。このファイルはリソース <code>foo</code> 
+    を記述しているので、<code>foo.var</code> という名前になります。</p>
 
 <example>
   URI: foo<br />
@@ -155,12 +155,12 @@
   Content-type: text/html;charset=iso-8859-2<br />
   Content-language: fr, de<br />
 </example>
-    <p>$B$?$H$((B MultiViews $B$r;HMQ$9$k$h$&$K$J$C$F$$$?$H$7$F$b!"(B
-    $B%U%!%$%kL>$N3HD%;R$h$j%?%$%W%^%C%W$NJ}$,M%@h8"$r;}$D$H$$$&$3$H$K$b(B
-    $BCm0U$7$F$/$@$5$$!#(B
-    variant $B$NIJ<A$,0c$&$H$-$O!"$3$N2hA|$N$h$&$K(B (JPEG, GIF, ASCII
-    $B%"!<%H$,$"$j$^$9(B) $B%a%G%#%"%?%$%W$N(B "qs"
-    $B%Q%i%a!<%?$G;XDj$5$l$^$9!#(B</p>
+    <p>たとえ MultiViews を使用するようになっていたとしても、
+    ファイル名の拡張子よりタイプマップの方が優先権を持つということにも
+    注意してください。
+    variant の品質が違うときは、この画像のように (JPEG, GIF, ASCII
+    アートがあります) メディアタイプの "qs"
+    パラメータで指定されます。</p>
 
 <example>
   URI: foo<br />
@@ -175,362 +175,362 @@
   Content-type: text/plain; qs=0.01<br />
 </example>
 
-    <p>qs $BCM$NHO0O$O(B 0.000 $B$+$i(B 1.000 $B$G$9!#(Bqs $BCM$,(B
-    0.000 $B$N(B variant $B$O7h$7$F(B
-    $BA*Br$5$l$J$$$3$H$KCm0U$7$F$/$@$5$$!#(B'qs' $BCM$N$J$$(B variant
-    $B$O(B qs $BCM(B 1.0 $B$r(B $BM?$($i$l$^$9!#(Bqs
-    $B%Q%i%a!<%?$O%/%i%$%"%s%H$NG=NO$K4X78L5$/!"B>$N(B variant $B$H(B
-    $BHf3S$7$?$H$-$N(B variant
-    $B$NAjBPE*$J!VIJ<A!W$r<($7$^$9!#(B
-    $BNc$($P!"<L??$rI=8=$7$h$&$H$7$F$$$k$H$-$O(B JPEG
-    $B%U%!%$%k$NJ}$,IaDL$O(B ASCII
-    $B%U%!%$%k$h$j$b9b$$IJ<A$K$J$j$^$9!#$7$+$7!"%j%=!<%9$,85!9(B
-    ASCII $B%"!<%H$GI=8=$5$l$F$$$k$H$-$O!"(BASCII $B%U%!%$%k$N(B
-    $BJ}$,(B JPEG $B%U%!%$%k$h$j$b9b$$IJ<A$K$J$j$^$9!#$3$N$h$&$K!"(Bqs
-    $B$O(B $BI=8=$5$l$k%j%=!<%9$N@-<A$K$h$C$F(B variant
-    $BKh$KFCM-$NCM$r<h$j$^$9!#(B</p>
+    <p>qs 値の範囲は 0.000 から 1.000 です。qs 値が
+    0.000 の variant は決して
+    選択されないことに注意してください。'qs' 値のない variant
+    は qs 値 1.0 を 与えられます。qs
+    パラメータはクライアントの能力に関係無く、他の variant と
+    比較したときの variant
+    の相対的な「品質」を示します。
+    例えば、写真を表現しようとしているときは JPEG
+    ファイルの方が普通は ASCII
+    ファイルよりも高い品質になります。しかし、リソースが元々
+    ASCII アートで表現されているときは、ASCII ファイルの
+    方が JPEG ファイルよりも高い品質になります。このように、qs
+    は 表現されるリソースの性質によって variant
+    毎に特有の値を取ります。</p>
 
-    <p>$BG'<1$5$l$k%X%C%@$N0lMw$O(B
+    <p>認識されるヘッダの一覧は
     <a href="mod/mod_negotiation.html#typemaps">mod_negotiation</a>
-    $B%I%-%e%a%s%H$K$"$j$^$9!#(B</p>
+    ドキュメントにあります。</p>
 </section>
 
 <section id="multiviews"><title>Multiviews</title>
 
-    <p><code>MultiViews</code> $B$O%G%#%l%/%H%jKh$N%*%W%7%g%s$G!"(B
-    <code>httpd.conf</code>$B%U%!%$%k$N(B
+    <p><code>MultiViews</code> はディレクトリ毎のオプションで、
+    <code>httpd.conf</code>ファイルの
     <directive module="core" type="section">Directory</directive>, 
     <directive module="core" type="section">Location</directive>, 
     <directive module="core" type="section">Files</directive>
-    $B%;%/%7%g%sCf$d!"(B(<directive module="core">AllowOverride</directive>
-    $B$,E,@Z$JCM$K(B $B@_Dj$5$l$F$$$k$H(B) <code>.htaccess</code>
-    $B%U%!%$%k$G(B <directive module="core">Options</directive>
-    $B%G%#%l%/%F%#%V$K$h$C$F@_Dj$9$k$3$H$,$G$-$^$9!#(B
-    <code>Options All</code> $B$O(B
+    セクション中や、(<directive module="core">AllowOverride</directive>
+    が適切な値に 設定されていると) <code>.htaccess</code>
+    ファイルで <directive module="core">Options</directive>
+    ディレクティブによって設定することができます。
+    <code>Options All</code> は
     <code>MultiViews</code>
-    $B$r%;%C%H$7$J$$$3$H$KCm0U$7$F$/$@$5$$!#L@<(E*$K(B
-    $B$=$NL>A0$r=q$/I,MW$,$"$j$^$9!#(B</p>
+    をセットしないことに注意してください。明示的に
+    その名前を書く必要があります。</p>
 
-    <p><code>MultiViews</code> $B$N8z2L$O0J2<$N$h$&$K$J$j$^$9(B:
-    $B%5!<%P$,(B <code>/some/dir/foo</code>
-    $B$X$N%j%/%(%9%H$r<u$1<h$j!"(B<code>/some/dir</code> $B$G(B
-    <code>MultiViews</code> $B$,M-8z$G$"$C$F!"(B
-    <code>/some/dir/foo</code> $B$,B8:_(B<em>$B$7$J$$(B</em>$B>l9g!"(B
-    $B%5!<%P$O%G%#%l%/%H%j$rFI$s$G(B <code>foo.*</code>
-    $B$K$"$F$O$^$kA4$F$N%U%!%$%k$rC5$7!"(B
-    $B;v<B>e$=$l$i$N%U%!%$%k$r%^%C%W$9$k%?%$%W%^%C%W$r:n$j$^$9!#(B
-    $B$=$N$H$-!"%a%G%#%"%?%$%W$H%3%s%F%s%H%(%s%3!<%G%#%s%0$O!"$=$N%U%!%$%kL>$r(B
-    $BD>@\;XDj$7$?$H$-$HF1$8$b$N$,3d$jEv$F$i$l$^$9!#(B
-    $B$=$l$+$i%/%i%$%"%s%H$NMW5a$K0lHV9g$&$b$N$rA*$S$^$9!#(B</p>
+    <p><code>MultiViews</code> の効果は以下のようになります:
+    サーバが <code>/some/dir/foo</code>
+    へのリクエストを受け取り、<code>/some/dir</code> で
+    <code>MultiViews</code> が有効であって、
+    <code>/some/dir/foo</code> が存在<em>しない</em>場合、
+    サーバはディレクトリを読んで <code>foo.*</code>
+    にあてはまる全てのファイルを探し、
+    事実上それらのファイルをマップするタイプマップを作ります。
+    そのとき、メディアタイプとコンテントエンコーディングは、そのファイル名を
+    直接指定したときと同じものが割り当てられます。
+    それからクライアントの要求に一番合うものを選びます。</p>
 
-    <p>$B%5!<%P$,%G%#%l%/%H%j$N:w0z$r:n$m$&$H$7$F$$$k>l9g!"(B
+    <p>サーバがディレクトリの索引を作ろうとしている場合、
     <code>MultiViews</code>
-    $B$O(B <directive module="mod_dir">DirectoryIndex</directive>
-    $B%G%#%l%/%F%#%V$G;XDj$5$l$?%U%!%$%k$rC5$92aDx$K$b(B
-    $BE,MQ$5$l$^$9!#@_Dj%U%!%$%k$K(B</p>
+    は <directive module="mod_dir">DirectoryIndex</directive>
+    ディレクティブで指定されたファイルを探す過程にも
+    適用されます。設定ファイルに</p>
 <example>DirectoryIndex index</example>
-    <p>$B$,=q$+$l$F$$$F!"(B<code>index.html</code> $B$H(B
-    <code>index.html3</code> $B$,(B
-    $BN>J}B8:_$7$F$$$k$H!"%5!<%P$O$=$NCf$+$i$I$A$i$+$rE,Ev$KA*$S$^$9!#(B
-    $B$b$7$=$NN>J}$,B8:_$;$:$K(B <code>index.cgi</code>
-    $B$,B8:_$7$F$$$k$H!"(B $B%5!<%P$O$=$l$r<B9T$7$^$9!#(B</p>
+    <p>が書かれていて、<code>index.html</code> と
+    <code>index.html3</code> が
+    両方存在していると、サーバはその中からどちらかを適当に選びます。
+    もしその両方が存在せずに <code>index.cgi</code>
+    が存在していると、 サーバはそれを実行します。</p>
 
-    <p>$B$b$7%G%#%l%/%H%j$rFI$s$G$$$k:]$K!"(B
-    $BJ8;z%;%C%H!"%3%s%F%s%H%?%$%W!"8@8l!"%(%s%3!<%G%#%s%0$r(B
-    $B;XDj$9$k$?$a$N(B <code>mod_mime</code> 
-    $B$GG'<1$G$-$k3HD%;R$r;}$?$J$$%U%!%$%k$,8+$D$+$k$H!"7k2L$O(B
+    <p>もしディレクトリを読んでいる際に、
+    文字セット、コンテントタイプ、言語、エンコーディングを
+    指定するための <code>mod_mime</code> 
+    で認識できる拡張子を持たないファイルが見つかると、結果は
     <directive module="mod_mime">MultiViewsMatch</directive>
-    $B%G%#%l%/%F%#%V$N@_Dj$K0MB8$7$^$9!#$3$N%G%#%l%/%F%#%V$O(B
-    $B%O%s%I%i!"%U%#%k%?!"B>$N%U%!%$%k3HD%;R%?%$%W$N$I$l$,(B
-    MultiViews $B%M%4%7%(!<%7%g%s$G;HMQ$G$-$k$+$r7hDj$7$^$9!#(B</p>
+    ディレクティブの設定に依存します。このディレクティブは
+    ハンドラ、フィルタ、他のファイル拡張子タイプのどれが
+    MultiViews ネゴシエーションで使用できるかを決定します。</p>
 </section>
 </section>
 
-<section id="methods"><title>$B%M%4%7%(!<%7%g%sJ}K!(B</title>
+<section id="methods"><title>ネゴシエーション方法</title>
 
-    <p>Apache $B$O%j%=!<%9$N(B variant $B$N0lMw$r!"%?%$%W%^%C%W%U%!%$%k$+(B
-    $B%G%#%l%/%H%jFb$N%U%!%$%kL>$+$i$+$G<hF@$7$?8e!"(B
-    $B!V:GE,$J!W(B variant $B$r7hDj$9$k$?$a$KFs$D$NJ}K!$N(B
-    $B$I$A$i$+$r5/F0$7$^$9!#(B
-    Apache $B$N%3%s%F%s%H%M%4%7%(!<%7%g%s$N5!G=$r;H$&$?$a$K!"(B
-    $B$I$N$h$&$K$7$F$3$ND4Dd$,9T$o$l$k$+>\:Y$rCN$kI,MW$O$"$j$^$;$s!#(B
-    $B$7$+$7$J$,$i!"$3$NJ8=q$N;D$j$G$O4X?4$N$"$k?M$N$?$a$K!"(B
-    $B;HMQ$5$l$F$$$kJ}K!$K$D$$$F@bL@$7$F$$$^$9!#(B</p>
+    <p>Apache はリソースの variant の一覧を、タイプマップファイルか
+    ディレクトリ内のファイル名からかで取得した後、
+    「最適な」 variant を決定するために二つの方法の
+    どちらかを起動します。
+    Apache のコンテントネゴシエーションの機能を使うために、
+    どのようにしてこの調停が行われるか詳細を知る必要はありません。
+    しかしながら、この文書の残りでは関心のある人のために、
+    使用されている方法について説明しています。</p>
 
-    <p>$B%M%4%7%(!<%7%g%sJ}K!$OFs$D$"$j$^$9!#(B</p>
+    <p>ネゴシエーション方法は二つあります。</p>
 
     <ol>
-      <li>$BDL>o$O(B <strong>Apache $B$N%"%k%4%j%:%`$rMQ$$$?(B Server
-      driven negotiation</strong> $B$,;HMQ$5$l$^$9!#(BApache
-      $B$N%"%k%4%j%:%`$O8e$K>\:Y$K@bL@$5$l$F$$$^$9!#(B
-      $B$3$N%"%k%4%j%:%`$,;HMQ$5$l$?>l9g!"(BApache
-      $B$O$h$jNI$$7k2L$K$J$k$h$&$K!"FCDj$N<!85$K$*$$$FIJ<A$NCM$r(B
-      $B!VJQ$($k!W$3$H$,$G$-$^$9!#(BApache
-      $B$,IJ<A$NCM$rJQ$($kJ}K!$O8e$G>\:Y$K@bL@$5$l$F$$$^$9!#(B</li>
+      <li>通常は <strong>Apache のアルゴリズムを用いた Server
+      driven negotiation</strong> が使用されます。Apache
+      のアルゴリズムは後に詳細に説明されています。
+      このアルゴリズムが使用された場合、Apache
+      はより良い結果になるように、特定の次元において品質の値を
+      「変える」ことができます。Apache
+      が品質の値を変える方法は後で詳細に説明されています。</li>
 
       <li>RFC 2295
-      $B$GDj5A$5$l$F$$$k5!9=$rMQ$$$F%V%i%&%6$,FC$K;XDj$7$?>l9g!"(B
+      で定義されている機構を用いてブラウザが特に指定した場合、
       <strong>transparent content negotiation</strong>
-      $B$,;HMQ$5$l$^$9!#$3$N%M%4%7%(!<%7%g%sJ}K!$G$O!"!V:GE,$J!W(B
-      variant $B$N7hDj$r%V%i%&%6$,40A4$K@)8f$9$k$3$H$,$G$-$^$9!#(B
-      $B$G$9$+$i!"7k2L$O%V%i%&%6$,;HMQ$7$F$$$k%"%k%4%j%:%`$K0MB8$7$^$9!#(B
-      Transparent negotiation $B$N=hM}$N2aDx$G!"%V%i%&%6$O(B RFC 2296
-      $B$G(B $BDj5A$5$l$F$$$k(B 'remote variant selection algorithm'
-      $B$r<B9T$9$k$h$&$KMj$`$3$H$,$G$-$^$9!#(B</li>
+      が使用されます。このネゴシエーション方法では、「最適な」
+      variant の決定をブラウザが完全に制御することができます。
+      ですから、結果はブラウザが使用しているアルゴリズムに依存します。
+      Transparent negotiation の処理の過程で、ブラウザは RFC 2296
+      で 定義されている 'remote variant selection algorithm'
+      を実行するように頼むことができます。</li>
     </ol>
 
-<section id="dimensions"><title>$B%M%4%7%(!<%7%g%s$N<!85(B</title>
+<section id="dimensions"><title>ネゴシエーションの次元</title>
 
     <table>
       <columnspec><column width=".15"/><column width=".85"/></columnspec>
       <tr valign="top">
-        <th>$B<!85(B</th>
+        <th>次元</th>
 
-        <th>$B@bL@(B</th>
+        <th>説明</th>
       </tr>
 
       <tr valign="top">
-        <td>$B%a%G%#%"%?%$%W(B</td>
+        <td>メディアタイプ</td>
 
-        <td>$B%V%i%&%6$O(B <code>Accept</code>
-	$B%X%C%@%U%#!<%k%I$GM%@h798~$r;XDj$7$^$9!#(B
-	$B%"%$%F%`$=$l$>$l$O!"4XO"$7$?IJ<A?tCM$r;}$D$3$H$,$G$-$^$9!#(B
-	variant $B$N@bL@$bIJ<A?tCM$r;}$D$3$H$,$G$-$^$9(B
-	("qs" $B%Q%i%a!<%?$r$4Mw2<$5$$(B)$B!#(B</td>
+        <td>ブラウザは <code>Accept</code>
+	ヘッダフィールドで優先傾向を指定します。
+	アイテムそれぞれは、関連した品質数値を持つことができます。
+	variant の説明も品質数値を持つことができます
+	("qs" パラメータをご覧下さい)。</td>
       </tr>
 
       <tr valign="top">
-        <td>$B8@8l(B</td>
+        <td>言語</td>
 
-	<td>$B%V%i%&%6$O(B <code>Accept-Language</code>
-	$B%X%C%@%U%#!<%k%I$GM%@h798~$r;XDj$7$^$9!#(B
-	$BMWAG$=$l$>$l$KIJ<A?tCM$r;}$?$;$k$3$H$,$G$-$^$9!#(B
-	variants $B$O(B 0 $B$+(B 1 $B$D$+$=$l0J>e$N8@8l$H(B
-	$B4XO"$E$1$k$3$H$,$G$-$^$9!#(B</td>
+	<td>ブラウザは <code>Accept-Language</code>
+	ヘッダフィールドで優先傾向を指定します。
+	要素それぞれに品質数値を持たせることができます。
+	variants は 0 か 1 つかそれ以上の言語と
+	関連づけることができます。</td>
       </tr>
 
       <tr valign="top">
-        <td>$B%(%s%3!<%G%#%s%0(B</td>
+        <td>エンコーディング</td>
 
-	<td>$B%V%i%&%6$O(B <code>Accept-Encoding</code>
-	$B%X%C%@%U%#!<%k%I$GM%@h798~$r;XDj$7$^$9!#(B
-	$BMWAG$=$l$>$l$KIJ<A?tCM$r;}$?$;$k$3$H$,$G$-$^$9!#(B</td>
+	<td>ブラウザは <code>Accept-Encoding</code>
+	ヘッダフィールドで優先傾向を指定します。
+	要素それぞれに品質数値を持たせることができます。</td>
       </tr>
 
       <tr valign="top">
-        <td>$BJ8;z%;%C%H(B</td>
+        <td>文字セット</td>
 
-	<td>$B%V%i%&%6$O(B <code>Accept-Charset</code>
-	$B%X%C%@%U%#!<%k%I$GM%@h798~$r;XDj$7$^$9!#(B
-	$BMWAG$=$l$>$l$KIJ<A?tCM$r;}$?$;$k$3$H$,$G$-$^$9!#(B
-	variant $B$O%a%G%#%"%?%$%W$N%Q%i%a!<%?$H$7$FJ8;z%;%C%H$r(B
-	$B;XDj$9$k$3$H$b$G$-$^$9!#(B</td>
+	<td>ブラウザは <code>Accept-Charset</code>
+	ヘッダフィールドで優先傾向を指定します。
+	要素それぞれに品質数値を持たせることができます。
+	variant はメディアタイプのパラメータとして文字セットを
+	指定することもできます。</td>
       </tr>
     </table>
 </section>
 
-<section id="algorithm"><title>Apache $B%M%4%7%(!<%7%g%s%"%k%4%j%:%`(B</title>
+<section id="algorithm"><title>Apache ネゴシエーションアルゴリズム</title>
 
-    <p>$B%V%i%&%6$KJV$9!V:GE,$J!W(Bvariant $B$r(B ($B$b$7$"$l$P(B) $BA*Br$9$k$h$&$K(B
-    Apache $B$O<!$N%"%k%4%j%:%`$r;H$&$3$H$,$G$-$^$9!#(B
-    $B$3$N%"%k%4%j%:%`$r@_Dj$K$h$jJQ99$9$k$3$H$O$G$-$^$;$s!#(B
-    $B<!$N$h$&$KF0:n$7$^$9(B:</p>
+    <p>ブラウザに返す「最適な」variant を (もしあれば) 選択するように
+    Apache は次のアルゴリズムを使うことができます。
+    このアルゴリズムを設定により変更することはできません。
+    次のように動作します:</p>
 
     <ol>
-      <li>$B$^$:$O$8$a$K!"%M%4%7%(!<%7%g%s$N<!85$=$l$>$l$K$D$$$FE,@Z$J(B
-      <em>Accept*</em> $B%X%C%@%U%#!<%k%I$rD4$Y!"(B
-      variant $B$=$l$>$l$KIJ<A$r3d$jEv$F$^$9!#(B
-      $B$b$7$"$k<!85$N(B <em>Accept*</em> $B%X%C%@$G$=$N(B variant
-      $B$,5vMF$G$-$J$$$3$H$,<($5$l$F$$$l$P!"$=$l$r:o=|$7$^$9!#(B
-      variant $B$,0l$D$b;D$C$F$$$J$1$l$P!"%9%F%C%W(B 4 $B$K9T$-$^$9!#(B</li>
+      <li>まずはじめに、ネゴシエーションの次元それぞれについて適切な
+      <em>Accept*</em> ヘッダフィールドを調べ、
+      variant それぞれに品質を割り当てます。
+      もしある次元の <em>Accept*</em> ヘッダでその variant
+      が許容できないことが示されていれば、それを削除します。
+      variant が一つも残っていなければ、ステップ 4 に行きます。</li>
 
       <li>
-	$B>C5nK!$G!V:GE,$J!W(B variant $B$rA*$S$^$9!#(B
-	$B<!$N%F%9%H$,=gHV$KE,MQ$5$l$^$9!#(B
-	$B%F%9%H$GA*Br$5$l$J$+$C$?(B variant $B$O:o=|$5$l$F$$$-$^$9!#(B
-	$B%F%9%H8e(B variant $B$,0l$D$@$1;D$C$F$$$l$P!"$=$l$r:GE,$J$b$N$H$7$F(B
-	$B%9%F%C%W(B 3 $B$K?J$_$^$9!#(B
-	$BJ#?t(B variant $B$,;D$C$F$$$l$P!"<!$N%F%9%H$K?J$_$^$9!#(B
+	消去法で「最適な」 variant を選びます。
+	次のテストが順番に適用されます。
+	テストで選択されなかった variant は削除されていきます。
+	テスト後 variant が一つだけ残っていれば、それを最適なものとして
+	ステップ 3 に進みます。
+	複数 variant が残っていれば、次のテストに進みます。
 
         <ol>
-	  <li>variant $B$N%a%G%#%"%?%$%W$NIJ<A?tCM$H(B <code>Accept</code>
-	  $B%X%C%@$NIJ<A?tCM$H$N@Q$r7W;;$7$F!":G9bCM$N(B variant
-	  $B$rA*$S$^$9!#(B</li>
+	  <li>variant のメディアタイプの品質数値と <code>Accept</code>
+	  ヘッダの品質数値との積を計算して、最高値の variant
+	  を選びます。</li>
 
-	  <li>$B8@8lIJ<A?tCM$,:G9b$N(B variant $B$rA*$S$^$9!#(B</li>
+	  <li>言語品質数値が最高の variant を選びます。</li>
 
-	  <li>($B$b$7$"$l$P(B) <code>Accept-Language</code> $B%X%C%@$N8@8l=g$+!"(B
-	  ($B$b$7$"$l$P(B)
+	  <li>(もしあれば) <code>Accept-Language</code> ヘッダの言語順か、
+	  (もしあれば)
 	  <directive module="mod_negotiation">LanguagePriority</directive> 
-	  $B%G%#%l%/%F%#%V$N8@8l=g$G:GE,$J8@8l$N(B variant $B$rA*$S$^$9!#(B</li>
+	  ディレクティブの言語順で最適な言語の variant を選びます。</li>
 
-	  <li>$B:G9b!V%l%Y%k!W$N%a%G%#%"%Q%i%a!<%?(B
-	  (text/html $B%a%G%#%"%?%$%W$N%P!<%8%g%s$rM?$($k$?$a$K;H$o$l$^$9(B)
-	  $B$r;}$D(B variant $B$rA*$S$^$9!#(B</li>
+	  <li>最高「レベル」のメディアパラメータ
+	  (text/html メディアタイプのバージョンを与えるために使われます)
+	  を持つ variant を選びます。</li>
 
-	  <li><code>Accept-Charset</code> $B%X%C%@9T$GM?$($i$l$F$$$k:G9b$NJ8;z%;%C%H(B
-	  $B%a%G%#%"%Q%i%a!<%?$r;}$D(B variant $B$rA*$S$^$9!#(B
-	  $BL@<(E*$K=|30$5$l$F$$$J$$8B$j!"(BISO-8859-1
-	  $B$,5vMF$5$l$k$h$&$K$J$C$F$$$^$9!#(B
-	  <code>text/*</code> $B%a%G%#%"%?%$%W$G$"$k$1$l$I$b(B
-	  $BFCDj$NJ8;z%;%C%H$KL@<(E*$K4XO"$E$1$i$l$F$$$k$o$1$G$O$J$$(B
-	  variant $B$O(B ISO-8859-1 $B$G$"$k$H2>Dj$5$l$^$9!#(B</li>
+	  <li><code>Accept-Charset</code> ヘッダ行で与えられている最高の文字セット
+	  メディアパラメータを持つ variant を選びます。
+	  明示的に除外されていない限り、ISO-8859-1
+	  が許容されるようになっています。
+	  <code>text/*</code> メディアタイプであるけれども
+	  特定の文字セットに明示的に関連づけられているわけではない
+	  variant は ISO-8859-1 であると仮定されます。</li>
 
-	  <li>ISO-8859-1 <em>$B$G$O$J$$(B</em>$BJ8;z%;%C%H%a%G%#%"%Q%i%a!<%?$H(B
-	  $B4XO"$E$1$i$l$F$$$k(B variant $B$rA*$S$^$9!#(B
-	  $B$=$N$h$&$J(B variant $B$,$J$$>l9g$O!"Be$o$j$KA4$F$N(B
-	  variant $B$rA*$S$^$9!#(B</li>
+	  <li>ISO-8859-1 <em>ではない</em>文字セットメディアパラメータと
+	  関連づけられている variant を選びます。
+	  そのような variant がない場合は、代わりに全ての
+	  variant を選びます。</li>
 
-	  <li>$B:GE,$J%(%s%3!<%G%#%s%0$N(B variant $B$rA*$S$^$9!#(B
-	  $B$b$7(B user-agent $B$,5vMF$9$k%(%s%3!<%G%#%s%0$,$"$l$P!"(B
-	  $B$=$N(B variant $B$N$_$rA*$S$^$9!#(B
-	  $B$=$&$G$O$J$/!"$b$7%(%s%3!<%I$5$l$?$b$N$H$=$&$G$J$$(B
-	  variant $B$,:.$6$C$FB8:_$7$F$$$?$i%(%s%3!<%I$5$l$F$$$J$$(B
-	  variant $B$N$_$rA*$S$^$9!#(B
-	  variant $B$,A4It%(%s%3!<%I$5$l$F$$$k$+(B
-	  variant $B$,A4It%(%s%3!<%I$5$l$F$$$J$$$H$$$&>l9g$O!"(B
-	  $BA4$F$N(B variant $B$rA*$S$^$9!#(B</li>
+	  <li>最適なエンコーディングの variant を選びます。
+	  もし user-agent が許容するエンコーディングがあれば、
+	  その variant のみを選びます。
+	  そうではなく、もしエンコードされたものとそうでない
+	  variant が混ざって存在していたらエンコードされていない
+	  variant のみを選びます。
+	  variant が全部エンコードされているか
+	  variant が全部エンコードされていないという場合は、
+	  全ての variant を選びます。</li>
 
-	  <li>$BFbMF$N:G$bC;$$(B variant $B$rA*$S$^$9!#(B</li>
+	  <li>内容の最も短い variant を選びます。</li>
 
-	  <li>$B;D$C$F$$$k(B variant $B$N:G=i$N$b$N$rA*$S$^$9!#(B
-	  $B%?%$%W%^%C%W%U%!%$%k$N:G=i$K%j%9%H$5$l$F$$$k$+!"(B
-	  variant $B$,%G%#%l%/%H%j$+$i:G=i$KFI$_9~$^$l$k;~$K(B
-	  ASCII$B=g$G%=!<%H$7$F%U%!%$%kL>$,@hF,$K$J$C$?$+!"$N$I$A$i$+$G$9!#(B</li>
+	  <li>残っている variant の最初のものを選びます。
+	  タイプマップファイルの最初にリストされているか、
+	  variant がディレクトリから最初に読み込まれる時に
+	  ASCII順でソートしてファイル名が先頭になったか、のどちらかです。</li>
         </ol>
       </li>
 
-      <li>$B%"%k%4%j%:%`$r;H$C$F0l$D$N!V:GE,$J!W(Bvariant $B$rA*$S$^$7$?$N$G!"(B
-      $B$=$l$r1~Ez$H$7$FJV$7$^$9!#%M%4%7%(!<%7%g%s$N<!85$r;XDj$9$k$?$a$K(B
-      HTTP $B%l%9%]%s%9%X%C%@(B <code>Vary</code> $B$,@_Dj$5$l$^$9(B
-      ($B%j%=!<%9$N%-%c%C%7%e$r$9$k;~$K!"(B
-      $B%V%i%&%6$d%-%c%C%7%e$O$3$N>pJs$r;H$&$3$H$,$G$-$^$9(B)$B!#(B
-      $B0J>e$G=*$o$j!#(B</li>
+      <li>アルゴリズムを使って一つの「最適な」variant を選びましたので、
+      それを応答として返します。ネゴシエーションの次元を指定するために
+      HTTP レスポンスヘッダ <code>Vary</code> が設定されます
+      (リソースのキャッシュをする時に、
+      ブラウザやキャッシュはこの情報を使うことができます)。
+      以上で終わり。</li>
 
-      <li>$B$3$3$KMh$?$H$$$&$3$H$O!"(Bvariant $B$,0l$D$bA*Br$5$l$J$+$C$?(B
-      ($B%V%i%&%6$,5vMF$9$k$b$N$,$J$+$C$?$?$a(B) $B$H$$$&$3$H$G$9!#(B
-      406 $B%9%F!<%?%9(B ("No Acceptable representation" $B$r0UL#$9$k(B)
-      $B$,!"MxMQ2DG=$J(B variant $B$N%j%9%H$N$D$$$?(B HTML 
-      $B%I%-%e%a%s%H$H$H$b$KJV$5$l$^$9!#(B
-      $BAj0c$N<!85$r<($9(B HTTP <code>Vary</code> $B%X%C%@$b@_Dj$5$l$^$9!#(B</li>
+      <li>ここに来たということは、variant が一つも選択されなかった
+      (ブラウザが許容するものがなかったため) ということです。
+      406 ステータス ("No Acceptable representation" を意味する)
+      が、利用可能な variant のリストのついた HTML 
+      ドキュメントとともに返されます。
+      相違の次元を示す HTTP <code>Vary</code> ヘッダも設定されます。</li>
     </ol>
 </section>
 </section>
 
-<section id="better"><title>$BIJ<A$NCM$rJQ$($k(B</title>
+<section id="better"><title>品質の値を変える</title>
 
-    <p>$B>e5-$N(B Apache $B%M%4%7%(!<%7%g%s%"%k%4%j%:%`$N873J$J2r<a$G(B
-    $BF@$i$l$k$G$"$m$&CM$+$i!"(BApache $B$OIJ<A?tCM$r;~!9JQ$($^$9!#(B
-    $B$3$l$O!"$3$N%"%k%4%j%:%`$G40A4$G$O$J$$!"$"$k$$$O@53N$G$J$$>pJs$rAw$k(B
-    $B%V%i%&%68~$1$K$h$j$h$$7k2L$rF@$k$?$a$K9T$o$l$^$9!#(B
-    $B$+$J$j%]%T%e%i!<$J%V%i%&%6$G!"$b$7$J$$$H4V0c$C$?(B variant
-    $B$rA*Br$9$k7k2L$K$J$C$F$7$^$&$h$&$J(B <code>Accept</code>
-    $B%X%C%@>pJs$rAw$k$b$N$b$"$j$^$9!#(B
-    $B%V%i%&%6$,40A4$G@5$7$$>pJs$rAw$C$F$$$l$P!"(B
-    $B$3$N?tCMJQ2=$OE,MQ$5$l$^$;$s!#(B</p>
+    <p>上記の Apache ネゴシエーションアルゴリズムの厳格な解釈で
+    得られるであろう値から、Apache は品質数値を時々変えます。
+    これは、このアルゴリズムで完全ではない、あるいは正確でない情報を送る
+    ブラウザ向けによりよい結果を得るために行われます。
+    かなりポピュラーなブラウザで、もしないと間違った variant
+    を選択する結果になってしまうような <code>Accept</code>
+    ヘッダ情報を送るものもあります。
+    ブラウザが完全で正しい情報を送っていれば、
+    この数値変化は適用されません。</p>
 
-<section id="wildcards"><title>$B%a%G%#%"%?%$%W$H%o%$%k%I%+!<%I(B</title>
+<section id="wildcards"><title>メディアタイプとワイルドカード</title>
 
-    <p><code>Accept:</code> $B%j%/%(%9%H%X%C%@$O%a%G%#%"%?%$%W$NM%@h798~$r;XDj$7$^$9!#(B
-    $B$3$l$O$^$?!"(B"image/*" $B$d(B "*/*"
-    $B$H$$$C$?!V%o%$%k%I%+!<%I!W%a%G%#%"%?%$%W$r4^$`$3$H$,$G$-$^$9!#(B
-    $B$3$3$G(B * $B$OG$0U$NJ8;zNs$K%^%C%A$7$^$9!#(B
-    $B$G$9$+$i!"<!$N(B:</p>
+    <p><code>Accept:</code> リクエストヘッダはメディアタイプの優先傾向を指定します。
+    これはまた、"image/*" や "*/*"
+    といった「ワイルドカード」メディアタイプを含むことができます。
+    ここで * は任意の文字列にマッチします。
+    ですから、次の:</p>
 
 <example>Accept: image/*, */*</example>
 
-    <p>$B$r4^$`%j%/%(%9%H$O!"(B"image/" $B$G$O$8$^$k%?%$%WA4$F$,5vMF$G$-$k!"(B
-    $B$=$7$FB>$N$I$s$J%?%$%W$b5vMF$G$-$k(B
-    ($B$3$N>l9g$O$8$a$N(B "image/*" $B$O>iD9$K$J$j$^$9(B)
-    $B$3$H$r<($7$^$9!#(B
-    $B07$&$3$H$N$G$-$kL@<(E*$J%?%$%W$K2C$($F!"5!3#E*$K(B
-    $B%o%$%k%I%+!<%I$rAw$k%V%i%&%6$b$"$j$^$9!#Nc$($P(B:</p>
+    <p>を含むリクエストは、"image/" ではじまるタイプ全てが許容できる、
+    そして他のどんなタイプも許容できる
+    (この場合はじめの "image/*" は冗長になります)
+    ことを示します。
+    扱うことのできる明示的なタイプに加えて、機械的に
+    ワイルドカードを送るブラウザもあります。例えば:</p>
 
 <example>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*
 </example>
-    <p>$B$3$&$9$k$3$H$NA@$$$O!"L@<(E*$K%j%9%H$7$F$$$k%?%$%W$,M%@h$5$l$k$1$l$I$b!"(B
-    $B0[$J$kI=8=$,MxMQ2DG=$G$"$l$P$=$l$G$bNI$$!"$H$$$&$3$H$G$9!#(B
-    $B$7$+$7$J$,$i!">e$N4pK\E*$J%"%k%4%j%:%`$G$O!"(B
-    */* $B%o%$%k%I%+!<%I$OB>$NA4$F$N%?%$%W$HA4$/F1Ey$J$N$GM%@h$5$l$^$;$s!#(B
-    $B%V%i%&%6$O(B */* $B$K$b$C$HDc$$IJ<A(B ($BM%@h(B) 
-    $BCM$rIU$1$F%j%/%(%9%H$rAw$k$Y$-$J$N$G$9!#Nc$($P(B:</p>
+    <p>こうすることの狙いは、明示的にリストしているタイプが優先されるけれども、
+    異なる表現が利用可能であればそれでも良い、ということです。
+    しかしながら、上の基本的なアルゴリズムでは、
+    */* ワイルドカードは他の全てのタイプと全く同等なので優先されません。
+    ブラウザは */* にもっと低い品質 (優先) 
+    値を付けてリクエストを送るべきなのです。例えば:</p>
 <example>
   Accept: text/html, text/plain, image/gif, image/jpeg, */*; q=0.01
 </example>
-    <p>$BL@<(E*$J%?%$%W$K$OIJ<A?tCM$,IU$1$i$l$F$$$^$;$s$N$G!"(B
-    $B%G%U%)%k%H$N(B 1.0 ($B:G9bCM(B) $B$NM%@h$K$J$j$^$9!#(B
-    $B%o%$%k%I%+!<%I(B */* $B$ODc$$M%@hEY(B 0.01 $B$rM?$($i$l$F$$$k$N$G!"(B
-    $BL@<(E*$K%j%9%H$5$l$F$$$k%?%$%W$K9gCW$9$k(B variant $B$,$J$$>l9g$K$N$_!"(B
-    $BB>$N%?%$%W$,JV$5$l$^$9!#(B</p>
+    <p>明示的なタイプには品質数値が付けられていませんので、
+    デフォルトの 1.0 (最高値) の優先になります。
+    ワイルドカード */* は低い優先度 0.01 を与えられているので、
+    明示的にリストされているタイプに合致する variant がない場合にのみ、
+    他のタイプが返されます。</p>
 
-    <p>$B$b$7(B <code>Accept:</code> $B%X%C%@$,(B q $BCM$rA4$/4^$s$G(B<em>$B$$$J$1$l$P(B</em>$B!"(B
-    $BK>$_$N5sF0$r$9$k$?$a$K!"(B
-    Apache $B$O(B "*/*" $B$,$"$l$P(B 0.01 $B$N(B q $BCM$r@_Dj$7$^$9!#(B
-    $B$^$?!"(B"type/*" $B$N7A$N%o%$%k%I%+!<%I$K$O(B 0.02 $B$N(B q $BCM$r@_Dj$7$^$9(B
-    ($B$G$9$+$i$3$l$i$O(B "*/*" $B$N%^%C%A$h$j$bM%@h$5$l$^$9(B)$B!#(B
-    $B$b$7(B <code>Accept:</code> $B%X%C%@Cf$N%a%G%#%"%?%$%W$N$I$l$+$,(B q
-    $BCM$r4^$s$G$$$l$P!"$3$l$i$NFC<l$JCM$OE,1~(B<em>$B$5$l$:(B</em>$B!"(B
-    $B@5$7$$>pJs$rAw$k%V%i%&%6$+$i$N%j%/%(%9%H$O4|BTDL$j$K(B
-    $BF0:n$9$k$h$&$K$J$j$^$9!#(B</p>
+    <p>もし <code>Accept:</code> ヘッダが q 値を全く含んで<em>いなければ</em>、
+    望みの挙動をするために、
+    Apache は "*/*" があれば 0.01 の q 値を設定します。
+    また、"type/*" の形のワイルドカードには 0.02 の q 値を設定します
+    (ですからこれらは "*/*" のマッチよりも優先されます)。
+    もし <code>Accept:</code> ヘッダ中のメディアタイプのどれかが q
+    値を含んでいれば、これらの特殊な値は適応<em>されず</em>、
+    正しい情報を送るブラウザからのリクエストは期待通りに
+    動作するようになります。</p>
 </section>
 
-<section id="exceptions"><title>$B8@8l%M%4%7%(!<%7%g%s$NNc30=hM}(B</title>
+<section id="exceptions"><title>言語ネゴシエーションの例外処理</title>
 
-    <p>Apache 2.0 $B$G$O?7$?$K!"8@8l%M%4%7%(!<%7%g%s$,E,9g$9$k$b$N$r(B
-    $B8+$D$1$k$N$K<:GT$7$?;~$K!"M%2m$K%U%)!<%k%P%C%/$G$-$k$h$&$J(B
-    $B%M%4%7%(!<%7%g%s%"%k%4%j%:%`$,4v$D$+DI2C$5$l$^$7$?!#(B</p>
+    <p>Apache 2.0 では新たに、言語ネゴシエーションが適合するものを
+    見つけるのに失敗した時に、優雅にフォールバックできるような
+    ネゴシエーションアルゴリズムが幾つか追加されました。</p>
 
-    <p>$B%5!<%P$N%Z!<%8$r%/%i%$%"%s%H$,%j%/%(%9%H$7$?$1$l$I$b!"(B
-    $B%V%i%&%6$NAw$C$F$-$?(B <code>Accept-Language</code> $B$K9gCW$9$k%Z!<%8$,0l$D$b(B
-    $B8+$D$+$i$J$+$C$?>l9g$K!"%5!<%P$O(B "No Acceptable Variant"
-    $B$+(B "Multiple Choices" $B%l%9%]%s%9$r%/%i%$%"%s%H$KJV$7$^$9!#(B
-    $B$3$l$i$N%(%i!<%a%C%;!<%8$rJV$5$J$$$h$&$K!"(B
-    $B$3$N$h$&$J>l9g$K$O(B Apache $B$,(B <code>Accept-Language</code> $B$rL5;k$7$F!"(B
-    $B%/%i%$%"%s%H$N%j%/%(%9%H$KL@<(E*$K$O9gCW$7$J$$%I%-%e%a%s%H$r(B
-    $BDs6!$9$k$h$&$K@_Dj$G$-$^$9!#(B
+    <p>サーバのページをクライアントがリクエストしたけれども、
+    ブラウザの送ってきた <code>Accept-Language</code> に合致するページが一つも
+    見つからなかった場合に、サーバは "No Acceptable Variant"
+    か "Multiple Choices" レスポンスをクライアントに返します。
+    これらのエラーメッセージを返さないように、
+    このような場合には Apache が <code>Accept-Language</code> を無視して、
+    クライアントのリクエストに明示的には合致しないドキュメントを
+    提供するように設定できます。
     <directive module="mod_negotiation">ForceLanguagePriority</directive>
-    $B%G%#%l%/%F%#%V$O!"$3$l$i$N%(%i!<$N0l$D$+N>J}$r%*!<%P!<%i%$%I$9$k$?$a$K(B
-    $B;HMQ$G$-$F!"(B
+    ディレクティブは、これらのエラーの一つか両方をオーバーライドするために
+    使用できて、
     <directive module="mod_negotiation">LanguagePriority</directive>
-    $B%G%#%l%/%F%#%V$NFbMF$r;H$C$F%5!<%P$NH=CG$rBe9T$9$k$h$&$K$G$-$^$9!#(B</p>
+    ディレクティブの内容を使ってサーバの判断を代行するようにできます。</p>
 
-    <p>$B%5!<%P$OB>$KE,9g$9$k$b$N$,8+$D$+$i$J$1$l$P!"(B
-    $B8@8l%5%V%;%C%H$GE,9g$9$k$b$N$r;n$=$&$H$b$7$^$9!#(B
-    $BNc$($P%/%i%$%"%s%H$,1Q9q1Q8l$G$"$k(B <code>en-GB</code> $B8@8l$G(B
-    $B%I%-%e%a%s%H$r%j%/%(%9%H$7$?>l9g!"%5!<%P$O(B HTTP/1.1
-    $B5,3J$G$O!"C1$K(B <code>en</code> $B$H%^!<%/$5$l$F$$$k%I%-%e%a%s%H$r(B
-    $B%^%C%A$9$k$b$N$H$9$k$3$H$ODL>o$O5v$5$l$F$$$^$;$s!#(B
-    ($B1Q9q1Q8l$OM}2r$G$-$k$1$I0lHLE*$J1Q8l$OM}2r$G$-$J$$$H$$$&FI$_<j$O(B
-    $B9M$($i$l$J$$$N$G!"(BAccept-Language $B%X%C%@$G(B <code>en-GB</code> 
-    $B$r4^$s$G(B <code>en</code> $B$r4^$^$J$$$N$O$[$\3N<B$K@_Dj$N4V0c$$$G$"$k!"(B
-    $B$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#(B
-    $B$G$9$,IT9,$J$3$H$K!"B?$/$N%/%i%$%"%s%H$G$O%G%U%)%k%H$G(B
-    $B$3$N$h$&$J@_Dj$K$J$C$F$$$^$9!#(B)
-    $B$7$+$7$J$,$i!"B>$N8@8l$K$O%^%C%A$;$:!"(B"No Acceptable Variants"
-    $B%(%i!<$rJV$7$?$j!"(B
+    <p>サーバは他に適合するものが見つからなければ、
+    言語サブセットで適合するものを試そうともします。
+    例えばクライアントが英国英語である <code>en-GB</code> 言語で
+    ドキュメントをリクエストした場合、サーバは HTTP/1.1
+    規格では、単に <code>en</code> とマークされているドキュメントを
+    マッチするものとすることは通常は許されていません。
+    (英国英語は理解できるけど一般的な英語は理解できないという読み手は
+    考えられないので、Accept-Language ヘッダで <code>en-GB</code> 
+    を含んで <code>en</code> を含まないのはほぼ確実に設定の間違いである、
+    ということに注意してください。
+    ですが不幸なことに、多くのクライアントではデフォルトで
+    このような設定になっています。)
+    しかしながら、他の言語にはマッチせず、"No Acceptable Variants"
+    エラーを返したり、
     <directive module="mod_negotiation">LanguagePriority</directive>
-    $B$K%U%)!<%k%P%C%/$7$h$&$H$7$F$$$k$H$-$O!"(B
-    $B%5%V%;%C%H;XDj$rL5;k$7$F!"(B<code>en-GB</code> $B$r(B <code>en</code>
-    $B$K%^%C%A$7$^$9!#(B
-    Apache $B$O%/%i%$%"%s%H$N5vMF8@8l%j%9%H$K0EL[$K(B
-    $BHs>o$KDc$$IJ<ACM$N?F8@8l$r2C$($k$3$H$K$J$j$^$9!#(B
-    $B$7$+$7!"%/%i%$%"%s%H$,(B "en-GB; q=0.9, fr; q=0.8" $B$H%j%/%(%9%H$7$F!"(B
-    $B%5!<%P$,(B "en" $B$H(B "fr" $B$H@_7W$5$l$?%I%-%e%a%s%H$r;}$C$F$$$k>l9g$O!"(B
-    "fr" $B%I%-%e%a%s%H$,JV$5$l$k$3$H$KCm0U$7$F$/$@$5$$!#(B
-    $B$3$N$h$&$J=hM}$O!"(BHTTP 1.1 $B5,3J$H$N@09g@-$r0];}$7$F!"(B
-    $BE,@Z$K@_Dj$5$l$?%/%i%$%"%s%H$H$b$-$A$s$HF0:n$9$k$?$a$K(B
-    $BI,MW$G$9!#(B</p>
+    にフォールバックしようとしているときは、
+    サブセット指定を無視して、<code>en-GB</code> を <code>en</code>
+    にマッチします。
+    Apache はクライアントの許容言語リストに暗黙に
+    非常に低い品質値の親言語を加えることになります。
+    しかし、クライアントが "en-GB; q=0.9, fr; q=0.8" とリクエストして、
+    サーバが "en" と "fr" と設計されたドキュメントを持っている場合は、
+    "fr" ドキュメントが返されることに注意してください。
+    このような処理は、HTTP 1.1 規格との整合性を維持して、
+    適切に設定されたクライアントともきちんと動作するために
+    必要です。</p>
 
-    <p>$B$h$j9bEY$J%F%/%K%C%/(B (Cookie $B$dFC<l$J(B URL $B%Q%9Ey(B)
-    $B$K$*$$$F$b%f!<%6$N8@8lA*Br$r%5%]!<%H$9$k$?$a!"(B
-    Apache 2.0.47 $B$+$i$O!"(B<module>mod_negotiation</module>
-    $B$,(B<a href="env.html">$B4D6-JQ?t(B</a> <code>prefer-language</code>
-    $B$rG'<1$9$k$h$&$K$J$j$^$7$?!#(B
-    $B$3$NJQ?t$,B8:_$7$F!"E,@Z$J8@8l%?%0$,BeF~$5$l$F$$$k$N$G$"$l$P!"(B
-    <module>mod_negotiation</module> $B$O9gCW$9$k(B variant
-    $B$rA*Br$7$h$&$H$7$^$9!#9gCW$9$k$b$N$,L5$1$l$P!"(B
-    $BDL>o$N%M%4%7%(!<%7%g%s<j=g$,E,MQ$5$l$^$9!#(B</p>
+    <p>より高度なテクニック (Cookie や特殊な URL パス等)
+    においてもユーザの言語選択をサポートするため、
+    Apache 2.0.47 からは、<module>mod_negotiation</module>
+    が<a href="env.html">環境変数</a> <code>prefer-language</code>
+    を認識するようになりました。
+    この変数が存在して、適切な言語タグが代入されているのであれば、
+    <module>mod_negotiation</module> は合致する variant
+    を選択しようとします。合致するものが無ければ、
+    通常のネゴシエーション手順が適用されます。</p>
 
     <example><title>Example</title>
       SetEnvIf Cookie "language=(.+)" prefer-language=$1
@@ -539,39 +539,39 @@
 </section>
 
 <section id="extensions"><title>Transparent Content Negotiation
-$B$N3HD%(B</title> 
+の拡張</title> 
 
-<p>Apache $B$O(B transparent content negotiation $B%W%m%H%3%k(B
-(RFC 2295) $B$r<!$N$h$&$K3HD%$7$F$$$^$9!#(B
-$BFCDj$N%3%s%F%s%H%(%s%3!<%G%#%s%0$N$_$,MxMQ2DG=$G$"$k(B variant 
-$B$K0u$rIU$1$k$?$a$K!"?7$?$K(B <code>{encoding ..}</code> 
-$BMWAG$r(B variant $B%j%9%HCf$K;H$C$F$$$^$9!#(B
-$B%j%9%HCf$N%(%s%3!<%I$5$l$?(B variant $B$rG'<1$7!"(B
-<code>Accept-Encoding</code> $B%j%/%(%9%H%X%C%@$K=>$C$F5vMF$5$l$k(B
-$B%(%s%3!<%I$r$b$C$?(B variant $B$O!"$I$l$G$b8uJd(B variant
-$B$H$7$F;HMQ$9$k$h$&$K!"(B
-RVSA/1.0 $B%"%k%4%j%:%`(B (RFC 2296) $B$N<BAu$,3HD%$5$l$^$7$?!#(B
-RVSA/1.0 $B$N<BAu$G$O!":GE,$J(B variant $B$,8+$D$+$k$^$G!"(B
-$B7W;;$7$?IJ<A?tCM$O>.?tE@0J2<(B 5 $B7e$^$G4]$a$^$;$s!#(B</p>
+<p>Apache は transparent content negotiation プロトコル
+(RFC 2295) を次のように拡張しています。
+特定のコンテントエンコーディングのみが利用可能である variant 
+に印を付けるために、新たに <code>{encoding ..}</code> 
+要素を variant リスト中に使っています。
+リスト中のエンコードされた variant を認識し、
+<code>Accept-Encoding</code> リクエストヘッダに従って許容される
+エンコードをもった variant は、どれでも候補 variant
+として使用するように、
+RVSA/1.0 アルゴリズム (RFC 2296) の実装が拡張されました。
+RVSA/1.0 の実装では、最適な variant が見つかるまで、
+計算した品質数値は小数点以下 5 桁まで丸めません。</p>
 </section>
 
-<section id="naming"><title>$B%j%s%/$HL>A0$NJQ49$K4X$9$kCm0UE@(B</title>
+<section id="naming"><title>リンクと名前の変換に関する注意点</title>
 
-    <p>$B8@8l%M%4%7%(!<%7%g%s$r;H$C$F$$$k>l9g$O!"(B
-    $B%U%!%$%k$,0l$D0J>e$N3HD%;R$r;}$F$F!"(B
-    $B3HD%;R$N=gHV$ODL>o$O9MN8$5$l$J$$(B
-    ($B>\:Y$O(B <a href="mod/mod_mime.html#multipleext">mod_mime</a> 
-    $B$r;2>H(B) $B$N$G!"(B
-    $B4v$D$+$N0[$J$kL>A0$NJQ49$rA*$Y$k$3$H$K$J$j$^$9!#(B</p>
+    <p>言語ネゴシエーションを使っている場合は、
+    ファイルが一つ以上の拡張子を持てて、
+    拡張子の順番は通常は考慮されない
+    (詳細は <a href="mod/mod_mime.html#multipleext">mod_mime</a> 
+    を参照) ので、
+    幾つかの異なる名前の変換を選べることになります。</p>
 
-    <p>$BE57?E*$J%U%!%$%k$G$O!"(BMIME $B%?%$%W3HD%;R(B (<em>$BNc$($P(B</em>
-    <code>html</code>) $B$r;}$C$F$$$F!"%(%s%3!<%G%#%s%03HD%;R(B
-    (<em>$BNc$($P(B</em> <code>gz</code>) $B$r;}$C$F$$$k$+$b$7$l$J$/$F!"(B
-    $B$3$N%U%!%$%k$K0[$J$k8@8l(B variant $B$rMQ0U$7$F$$$l$P!"(B
-    $B$b$A$m$s8@8l3HD%;R(B (<em>$BNc$($P(B</em> <code>en</code>)
-    $B$r;}$C$F$$$k$G$7$g$&!#(B</p>
+    <p>典型的なファイルでは、MIME タイプ拡張子 (<em>例えば</em>
+    <code>html</code>) を持っていて、エンコーディング拡張子
+    (<em>例えば</em> <code>gz</code>) を持っているかもしれなくて、
+    このファイルに異なる言語 variant を用意していれば、
+    もちろん言語拡張子 (<em>例えば</em> <code>en</code>)
+    を持っているでしょう。</p>
 
-    <p>$BNc(B:</p>
+    <p>例:</p>
 
     <ul>
       <li>foo.en.html</li>
@@ -581,17 +581,17 @@ RVSA/1.0 $B$N<BAu$G$O!":GE,$J(B variant $B$,8+$D$+$k$^$G!"(B
       <li>foo.en.html.gz</li>
     </ul>
 
-    <p>$B%U%!%$%kL>$H!"$=$l$KBP$7$F;H$($k%j%s%/$H;H$($J$$%j%s%/$NNc$G$9(B:</p>
+    <p>ファイル名と、それに対して使えるリンクと使えないリンクの例です:</p>
 
     <table border="1" cellpadding="8" cellspacing="0">
       <columnspec><column width=".2"/><column width=".2"/>
         <column width=".2"/></columnspec>
       <tr>
-        <th>$B%U%!%$%kL>(B</th>
+        <th>ファイル名</th>
 
-        <th>$B;H$($k%j%s%/(B</th>
+        <th>使えるリンク</th>
 
-        <th>$B;H$($J$$%j%s%/(B</th>
+        <th>使えないリンク</th>
       </tr>
 
       <tr>
@@ -652,63 +652,63 @@ RVSA/1.0 $B$N<BAu$G$O!":GE,$J(B variant $B$,8+$D$+$k$^$G!"(B
       </tr>
     </table>
 
-    <p>$B>e$NI=$r8+$F!"3HD%;R$J$7$N%j%s%/(B (<em>$BNc$($P(B</em> <code>foo</code>) 
-    $B$,$$$D$G$b;H$($k$3$H$K5$$,IU$/$G$7$g$&!#(B
-    $B$3$NMxE@$O!"%I%-%e%a%s%H$H$7$F1~Ez$9$k%U%!%$%k$N(B
-    $B<B:]$N%U%!%$%k%?%$%W$r1#JC$7$F!"%j%s%/$N;2>H$rJQ99$9$k$3$H$J$/(B
-    $B8e$+$i%U%!%$%k$rJQ99$G$-$k!"(B
-    <em>$BNc$($P(B</em> <code>html</code> $B$+$i(B <code>shtml</code>
-    $B$K!"$"$k$$$O(B <code>cgi</code> $B$KJQ99$G$-$kE@$G$9!#(B</p>
+    <p>上の表を見て、拡張子なしのリンク (<em>例えば</em> <code>foo</code>) 
+    がいつでも使えることに気が付くでしょう。
+    この利点は、ドキュメントとして応答するファイルの
+    実際のファイルタイプを隠蔽して、リンクの参照を変更することなく
+    後からファイルを変更できる、
+    <em>例えば</em> <code>html</code> から <code>shtml</code>
+    に、あるいは <code>cgi</code> に変更できる点です。</p>
 
-    <p>$B%j%s%/$K(B MIME $B%?%$%W$r;H$$B3$1$?$$(B (<em>$BNc$($P(B</em>
-    <code>foo.html</code>)$B;~$O!"8@8l3HD%;R$O(B
-    ($B%(%s%3!<%G%#%s%03HD%;R$b$"$l$P$=$l$b4^$a$F(B)
-    MIME $B%?%$%W3HD%;R$N1&B&$K$J$1$l$P$J$j$^$;$s(B
-    (<em>$BNc$($P(B</em> <code>foo.html.en</code>)$B!#(B</p>
+    <p>リンクに MIME タイプを使い続けたい (<em>例えば</em>
+    <code>foo.html</code>)時は、言語拡張子は
+    (エンコーディング拡張子もあればそれも含めて)
+    MIME タイプ拡張子の右側になければなりません
+    (<em>例えば</em> <code>foo.html.en</code>)。</p>
 </section>
 
-<section id="caching"><title>$B%-%c%C%7%e$K4X$9$kCm0U;v9`(B</title>
+<section id="caching"><title>キャッシュに関する注意事項</title>
 
-    <p>$B%-%c%C%7%e$,0l$D$NI=8=$rJ]B8$7$F$$$k$H$-$O!"(B
-    $B%j%/%(%9%H(B URL $B$H4XO"$E$1$i$l$F$$$^$9!#(B
-    $B<!$K$=$N(B URL $B$,%j%/%(%9%H$5$l$?;~$K!"%-%c%C%7%e$O(B
-    $BJ]B8$5$l$F$$$kI=8=$r;HMQ$G$-$^$9!#$7$+$7!"(B
-    $B%j%=!<%9$,%5!<%P$G%M%4%7%(!<%7%g%s2DG=$G$"$l$P!"(B
-    $B:G=i$N%j%/%(%9%H$G%-%c%C%7%e$5$l$FB3$/%-%c%C%7%e%R%C%H$G$O(B
-    $B4V0c$C$?1~Ez$rJV$7$F$7$^$&$H$$$&$3$H$K$J$j$+$M$^$;$s!#(B
-    $B$3$l$rKI$0$?$a$K!"(BApache $B$O%3%s%F%s%H%M%4%7%(!<%7%g%s$N(B
-    $B8e$KJV$5$l$?1~EzA4$F$K!"(BHTTP/1.0 $B%/%i%$%"%s%H$G$O(B
-    $B%-%c%C%7%eIT2DG=$N0u$r$D$1$^$9!#(B
-    $B$^$?!"%M%4%7%(!<%7%g%s$5$l$?1~Ez$N%-%c%C%7%e$r2DG=$K$9$k(B
-    HTTP/1.1 $B%W%m%H%3%k$N5!G=$b(B Apache $B$O%5%]!<%H$7$^$9!#(B</p>
+    <p>キャッシュが一つの表現を保存しているときは、
+    リクエスト URL と関連づけられています。
+    次にその URL がリクエストされた時に、キャッシュは
+    保存されている表現を使用できます。しかし、
+    リソースがサーバでネゴシエーション可能であれば、
+    最初のリクエストでキャッシュされて続くキャッシュヒットでは
+    間違った応答を返してしまうということになりかねません。
+    これを防ぐために、Apache はコンテントネゴシエーションの
+    後に返された応答全てに、HTTP/1.0 クライアントでは
+    キャッシュ不可能の印をつけます。
+    また、ネゴシエーションされた応答のキャッシュを可能にする
+    HTTP/1.1 プロトコルの機能も Apache はサポートします。</p>
 
-    <p>HTTP/1.0 $B=`5r$N%/%i%$%"%s%H$+$i$N%j%/%(%9%H$KBP$7$F$O!"(B
-    ($B%V%i%&%6$G$"$m$&$H%-%c%C%7%e$G$"$m$&$H(B)
-    $B%M%4%7%(!<%7%g%s$r<u$1$?1~Ez$N%-%c%C%7%e$r5v$9$?$a$K!"(B
+    <p>HTTP/1.0 準拠のクライアントからのリクエストに対しては、
+    (ブラウザであろうとキャッシュであろうと)
+    ネゴシエーションを受けた応答のキャッシュを許すために、
     <directive module="mod_negotiation">CacheNegotiatedDocs</directive>
-    $B%G%#%l%/%F%#%V$r;HMQ$G$-$^$9!#(B
-    $B$3$N%G%#%l%/%F%#%V$O!"%5!<%P@_Dj%U%!%$%k$d%P!<%A%c%k%[%9%H$K=q$/$3$H$,$G$-!"(B
-    $B0z?t$r$H$j$^$;$s!#(B
-    HTTP/1.1 $B%/%i%$%"%s%H$+$i$N%j%/%(%9%H$K$O8zNO$r;}$A$^$;$s!#(B</p>
+    ディレクティブを使用できます。
+    このディレクティブは、サーバ設定ファイルやバーチャルホストに書くことができ、
+    引数をとりません。
+    HTTP/1.1 クライアントからのリクエストには効力を持ちません。</p>
 
-    <p>HTTP/1.1 $B%/%i%$%"%s%H$KBP$7$F$O!"%l%9%]%s%9$N%M%4%7%(!<%7%g%s<!85(B
-    $B$r<($9$?$a$K(B <code>Vary</code> HTTP $B%l%9%]%s%9%X%C%@$rAw$j$^$9!#(B
-    $B%-%c%C%7%e$O!"$3$l$r;H$C$F8eB3$N%j%/%(%9%H$KBP$7$F%m!<%+%k%3%T!<$G1~Ez$G$-$k$+(B
-    $B$I$&$+$r7hDj$G$-$^$9!#(B
-    $B%M%4%7%(!<%7%g%s<!85$H$O4X78$J$7$K%m!<%+%k%3%T!<$N;HMQ$rM%@h$9$k$h$&$K$9$k$K$O!"(B
-    <code>force-no-vary</code> <a href="env.html#special">$B4D6-JQ?t(B</a>$B$r(B
-    $B@_Dj$7$^$9!#(B</p>
+    <p>HTTP/1.1 クライアントに対しては、レスポンスのネゴシエーション次元
+    を示すために <code>Vary</code> HTTP レスポンスヘッダを送ります。
+    キャッシュは、これを使って後続のリクエストに対してローカルコピーで応答できるか
+    どうかを決定できます。
+    ネゴシエーション次元とは関係なしにローカルコピーの使用を優先するようにするには、
+    <code>force-no-vary</code> <a href="env.html#special">環境変数</a>を
+    設定します。</p>
 
 </section>
 
-<section id="more"><title>$BDI2C>pJs(B</title>
+<section id="more"><title>追加情報</title>
 
-    <p>$B%3%s%F%s%H%M%4%7%(!<%7%g%s$K4X$9$kDI2C>pJs$O!"(B
-    Alan J. Flavell $B$5$s$N(B<a
+    <p>コンテントネゴシエーションに関する追加情報は、
+    Alan J. Flavell さんの<a
     href="http://ppewww.ph.gla.ac.uk/~flavell/www/lang-neg.html">Language
-    Negotiation Notes</a> $B$r$4Mw2<$5$$!#$G$9$,!"(B
-    Apache 2.0 $B$G$NJQ99E@$r4^$`$?$a$K$O99?7$5$l$F$$$J$$$+$b$7$l$J$$(B
-    $B$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    Negotiation Notes</a> をご覧下さい。ですが、
+    Apache 2.0 での変更点を含むためには更新されていないかもしれない
+    ということに注意してください。</p>
 </section>
 
 </manualpage>

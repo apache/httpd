@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -23,44 +23,44 @@
 <modulesynopsis metafile="mod_dir.xml.meta">
 
 <name>mod_dir</name>
-<description>$B!V:G8e$N%9%i%C%7%e!W$N%j%@%$%l%/%H$H!"%G%#%l%/%H%j$N(B
-$B%$%s%G%C%/%9%U%!%$%k$r07$&5!G=$rDs6!$9$k(B</description>
+<description>「最後のスラッシュ」のリダイレクトと、ディレクトリの
+インデックスファイルを扱う機能を提供する</description>
 <status>Base</status>
 <sourcefile>mod_dir.c</sourcefile>
 <identifier>dir_module</identifier>
 
 <summary>
-    <p>$B%G%#%l%/%H%j%$%s%G%C%/%9$O!"<!$NFs$D$N$&$A$I$A$i$+$,MxMQ$5$l$^$9(B:</p>
+    <p>ディレクトリインデックスは、次の二つのうちどちらかが利用されます:</p>
 
     <ul>
-      <li>$B0l$DL\$O!"%f!<%6$,:n@.$7$?%U%!%$%k$rMQ$$$k$b$N$G!"DL>o(B
-      <code>index.html</code> $B$H$$$&%U%!%$%kL>$r;H$$$^$9!#$3$N%U%!%$%kL>$O!"(B
-      <directive module="mod_dir">DirectoryIndex</directive> $B%G%#%l%/%F%#%V$G(B
-      $B;XDj$9$k$3$H$,$G$-$^$9!#$3$N5!G=$O(B <module>mod_dir</module>
-      $B%b%8%e!<%k$GDs6!$5$l$^$9!#(B</li>
+      <li>一つ目は、ユーザが作成したファイルを用いるもので、通常
+      <code>index.html</code> というファイル名を使います。このファイル名は、
+      <directive module="mod_dir">DirectoryIndex</directive> ディレクティブで
+      指定することができます。この機能は <module>mod_dir</module>
+      モジュールで提供されます。</li>
 
-      <li>$B$b$&0l$D$NJ}K!$O!"(B
-      $B%5!<%P$K$h$C$F<+F0E*$K@8@.$5$l$k%G%#%l%/%H%j%j%9%H$rMQ$$$k>l9g$G$9!#(B
-      $B$3$N5!G=$O!"(B<module>mod_autoindex</module>
-      $B%b%8%e!<%k$K$h$jDs6!$5$l$^$9!#(B</li>
+      <li>もう一つの方法は、
+      サーバによって自動的に生成されるディレクトリリストを用いる場合です。
+      この機能は、<module>mod_autoindex</module>
+      モジュールにより提供されます。</li>
     </ul>
 
-    <p>$B<+F0E*$J%$%s%G%C%/%9@8@.5!G=$r:o=|(B ($B$b$7$/$O8r49(B)
-    $B$G$-$k$h$&$K!"$3$NFs$D$N5!G=$OJ,N%$5$l$F$$$^$9!#(B</p>
+    <p>自動的なインデックス生成機能を削除 (もしくは交換)
+    できるように、この二つの機能は分離されています。</p>
 
-    <p>$B$J$*(B <code>http://servername/foo/dirname</code> $B$H$$$&(B URL
-    $B$X$N%j%/%(%9%H$,$"$C$?:]$K!"(B<code>dirname</code>
-    $B$H$$$&%G%#%l%/%H%j$,$"$l$P!"!V:G8e$K%9%i%C%7%e$r$D$1$?7A!W$N(B URL
-    $B$X$N%j%@%$%l%/%H$rAw=P$7$^$9!#(B
-    $B%G%#%l%/%H%j$X$N%"%/%;%9$O%9%i%C%7%e$G=*$o$C$F$$$kI,MW$,$"$j!"(B
-    <code>mod_dir</code> $B$O!"(B<code>http://servername/foo/dirname/</code>
-    $B$X$N%j%@%$%l%/%H$rAw=P$9$k$3$H$K$J$j$^$9!#(B</p>
+    <p>なお <code>http://servername/foo/dirname</code> という URL
+    へのリクエストがあった際に、<code>dirname</code>
+    というディレクトリがあれば、「最後にスラッシュをつけた形」の URL
+    へのリダイレクトを送出します。
+    ディレクトリへのアクセスはスラッシュで終わっている必要があり、
+    <code>mod_dir</code> は、<code>http://servername/foo/dirname/</code>
+    へのリダイレクトを送出することになります。</p>
 </summary>
 
 <directivesynopsis>
 <name>DirectoryIndex</name>
-<description>$B%/%i%$%"%s%H$,%G%#%l%/%H%j$r%j%/%(%9%H$7$?$H$-$KD4$Y$k(B
-$B%j%=!<%9$N%j%9%H(B</description>
+<description>クライアントがディレクトリをリクエストしたときに調べる
+リソースのリスト</description>
 <syntax>DirectoryIndex
     <var>local-url</var> [<var>local-url</var>] ...</syntax>
 <default>DirectoryIndex index.html</default>
@@ -70,72 +70,72 @@
 
 <usage>
     <p>
-    $B%/%i%$%"%s%H$,!"%G%#%l%/%H%jL>$N:G8e$K!V(B/$B!W(B
-    $B$r;XDj$7$F%G%#%l%/%H%j%$%s%G%C%/%9$rMW5a$9$k>l9g$KC5$9%j%=!<%9$N%j%9%H$r(B
-    <directive>DirectoryIndex</directive> $B%G%#%l%/%F%#%V$G@_Dj$7$^$9!#(B
+    クライアントが、ディレクトリ名の最後に「/」
+    を指定してディレクトリインデックスを要求する場合に探すリソースのリストを
+    <directive>DirectoryIndex</directive> ディレクティブで設定します。
     <var>Local-url</var>
-    $B$O!"%j%/%(%9%H$5$l$?%G%#%l%/%H%j$KBP1~$9$k!"%5!<%P>e$N%I%-%e%a%s%H$N(B
-    (% $B%(%s%3!<%I$5$l$?(B) URL $B$G!"IaDL$O%G%#%l%/%H%jCf$N%U%!%$%k$NL>A0$G$9!#(B
-    $BJ#?t$N(B URL $B$,@_Dj$5$l$?>l9g$K$O!":G=i$K8+$D$+$C$?$b$N$rJV$7$^$9!#(B
-    $B$=$l$i$,8+$D$+$i$:!"(B<code>Indexes</code>
-    $B%*%W%7%g%s$,%;%C%H$5$l$F$$$k>l9g!"%G%#%l%/%H%j$N%j%9%H$r@8@.$7$^$9!#(B
+    は、リクエストされたディレクトリに対応する、サーバ上のドキュメントの
+    (% エンコードされた) URL で、普通はディレクトリ中のファイルの名前です。
+    複数の URL が設定された場合には、最初に見つかったものを返します。
+    それらが見つからず、<code>Indexes</code>
+    オプションがセットされている場合、ディレクトリのリストを生成します。
     </p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       DirectoryIndex index.html
     </example>
 
-    <p><code>http://myserver/docs/</code> $B$X$N%"%/%;%9$,$"$j!"(B
+    <p><code>http://myserver/docs/</code> へのアクセスがあり、
     <code>http://myserver/docs/index.html</code>
-    $B$,B8:_$9$l$P!"$3$N(B URL $B$,JV$5$l$^$9!#(B
-    $B$b$7B8:_$7$J$1$l$P!"%G%#%l%/%H%j$N%j%9%H$,JV$5$l$^$9!#(B</p>
+    が存在すれば、この URL が返されます。
+    もし存在しなければ、ディレクトリのリストが返されます。</p>
 
-    <p>$BCm(B: $B%I%-%e%a%s%H$,F1$8%G%#%l%/%H%jFb$KB8:_$9$k$OI,MW$"$j$^$;$s!#(B
+    <p>注: ドキュメントが同じディレクトリ内に存在するは必要ありません。
     </p>
 
     <example>
       DirectoryIndex index.html index.txt  /cgi-bin/index.pl
     </example>
 
-    <p>$B$H$7$?>l9g!"(B<code>index.html</code> $B$H(B <code>index.txt</code>
-    $B$N$I$A$i$b%G%#%l%/%H%jFb$KB8:_$7$J$$>l9g!"(BCGI $B%9%/%j%W%H(B
-    <code>/cgi-bin/index.pl</code> $B$,<B9T$5$l$^$9!#(B</p>
+    <p>とした場合、<code>index.html</code> と <code>index.txt</code>
+    のどちらもディレクトリ内に存在しない場合、CGI スクリプト
+    <code>/cgi-bin/index.pl</code> が実行されます。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>DirectorySlash</name>
-<description>$B%Q%9KvHx$N%9%i%C%7%e$G%j%@%$%l%/%H$9$k$+$I$&$+$N%*%s%*%U$r%H%0%k$5$;$k(B</description>
+<description>パス末尾のスラッシュでリダイレクトするかどうかのオンオフをトグルさせる</description>
 <syntax>DirectorySlash On|Off</syntax>
 <default>DirectorySlash On</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>Indexes</override>
-<compatibility>2.0.51 $B0J9_(B</compatibility>
+<compatibility>2.0.51 以降</compatibility>
 
 <usage>
-    <p>$BMW5a$N$"$C$?(B URL $B$,%G%#%l%/%H%j$r;X$9$+$I$&$+$r!"(B
-    <module>mod_dir</module> $B$,D4@0$9$k$Y$-$+$I$&$+$r(B
+    <p>要求のあった URL がディレクトリを指すかどうかを、
+    <module>mod_dir</module> が調整するべきかどうかを
     <directive>DirectorySlash</directive>
-    $B%G%#%l%/%F%#%V$G@_Dj$7$^$9!#(B</p>
+    ディレクティブで設定します。</p>
 
-    <p>$BE57?E*$K$O!"%f!<%6$,KvHx$N%9%i%C%7%eL5$7$G%j%=!<%9$X$N%j%/%(%9%H$rH/9T$7!"(B
-    $B$=$7$F!"$=$N%j%=!<%9$,%G%#%l%/%H%j$r;X$7$F$$$?>l9g!"(B<module>mod_dir</module>
-    $B$O!"KvHx$K%9%i%C%7%e$r(B<em>$BIU2C(B</em>$B$7$?>e$GF1$8%j%=!<%9$K%j%@%$%l%/%H$5$;$^$9!#(B
-    $B$3$N5sF0$K$O4v$D$+M}M3$,$"$j$^$9(B:</p>
+    <p>典型的には、ユーザが末尾のスラッシュ無しでリソースへのリクエストを発行し、
+    そして、そのリソースがディレクトリを指していた場合、<module>mod_dir</module>
+    は、末尾にスラッシュを<em>付加</em>した上で同じリソースにリダイレクトさせます。
+    この挙動には幾つか理由があります:</p>
 
     <ul>
-    <li>$B%f!<%6$O!":G=*E*$K$O%j%=!<%9$NJLL>(B URL $B$r%j%/%(%9%H$9$k$3$H$K$J$k!#(B</li>
-    <li><module>mod_autoindex</module> $B$,4|BTDL$j$KF0$/!#(B<module>mod_autoindex</module> 
-    $B$N@8@.$9$k%j%s%/$O%Q%9$r=PNO$7$^$;$s$N$G!"%9%i%C%7%e$,$J$$>l9g$O4V0c$C$?%Q%9$r(B
-    $B;X$7$F$7$^$&$3$H$K$J$j$^$9!#(B</li>
-    <li><directive module="mod_dir">DirectoryIndex</directive> $B$O!"(B
-    $BKvHx$K%9%i%C%7%e$,$D$$$F$$$k%j%/%(%9%H$K$D$$$F(B<em>$B$N$_(B</em>$BI>2A$5$l$k!#(B</li>
-    <li>HTML $B%Z!<%8$NAjBP(B URL $B;2>H$,@5$7$/F0:n$9$k!#(B</li>
+    <li>ユーザは、最終的にはリソースの別名 URL をリクエストすることになる。</li>
+    <li><module>mod_autoindex</module> が期待通りに動く。<module>mod_autoindex</module> 
+    の生成するリンクはパスを出力しませんので、スラッシュがない場合は間違ったパスを
+    指してしまうことになります。</li>
+    <li><directive module="mod_dir">DirectoryIndex</directive> は、
+    末尾にスラッシュがついているリクエストについて<em>のみ</em>評価される。</li>
+    <li>HTML ページの相対 URL 参照が正しく動作する。</li>
     </ul>
 
-    <p>$B$H$O$$$(!"$b$7$3$&$$$C$?8z2L$rK>$^$J$$!"$+$D!"(B
-    $B>e5-$N$h$&$JM}M3$,Ev$F$O$^$i$J$$>l9g$O!"%j%@%$%l%/%H$r<!$N$h$&$K$7$F%*%U$K$G$-$^$9(B:</p>
+    <p>とはいえ、もしこういった効果を望まない、かつ、
+    上記のような理由が当てはまらない場合は、リダイレクトを次のようにしてオフにできます:</p>
 
     <example>
         # see security warning below!<br />
@@ -147,16 +147,16 @@
         &lt;/Location&gt;
     </example>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#7Y9p(B</title>
-    <p>$BKvHx$N%9%i%C%7%e$G$N%j%@%$%l%/%H$r%*%U$K$9$k$H!"7k2LE*$K>pJsO31L$r(B
-    $B>7$/$3$H$K$J$k$+$b$7$l$^$;$s!#(B
-    <module>mod_autoindex</module> $B$,M-8z(B (<code>Options +Indexes</code>) $B$G!"(B
-    <directive module="mod_dir">DirectoryIndex</directive> $B$,M-8z$J%j%=!<%9(B ($BNc$($P(B
-    <code>index.html</code>) $B$r;X$7$F$$$F!"$^$?!"MW5a$N$"$C$?(B URL $B$KFCJL$J(B
-    $B%O%s%I%i$,@_Dj$5$l$F$$$J$$>l9g$r9M$($F$_$F$/$@$5$$!#(B
-    $B$3$N>l9gKvHx$K%9%i%C%7%e$N$D$$$F$$$k%j%/%(%9%H$KBP$7$F$O(B <code>index.html</code>
-    $B%U%!%$%k$,JV$5$l$^$9!#(B<strong>$B$7$+$7%9%i%C%7%e$N$J$$%j%/%(%9%H$KBP$7$F$O!"(B
-    $B%G%#%l%/%H%j$NFbMF0lMw$rJV$7$F$7$^$$$^$9!#(B</strong></p>
+    <note type="warning"><title>セキュリティ警告</title>
+    <p>末尾のスラッシュでのリダイレクトをオフにすると、結果的に情報漏洩を
+    招くことになるかもしれません。
+    <module>mod_autoindex</module> が有効 (<code>Options +Indexes</code>) で、
+    <directive module="mod_dir">DirectoryIndex</directive> が有効なリソース (例えば
+    <code>index.html</code>) を指していて、また、要求のあった URL に特別な
+    ハンドラが設定されていない場合を考えてみてください。
+    この場合末尾にスラッシュのついているリクエストに対しては <code>index.html</code>
+    ファイルが返されます。<strong>しかしスラッシュのないリクエストに対しては、
+    ディレクトリの内容一覧を返してしまいます。</strong></p>
     </note>
 </usage>
 </directivesynopsis>

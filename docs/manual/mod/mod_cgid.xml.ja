@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 425124 -->
@@ -23,37 +23,37 @@
 <modulesynopsis metafile="mod_cgid.xml.meta">
 
 <name>mod_cgid</name>
-<description>$B30It(B CGI $B%G!<%b%s$r;H$C$?(B CGI $B%9%/%j%W%H$N<B9T(B</description>
+<description>外部 CGI デーモンを使った CGI スクリプトの実行</description>
 <status>Base</status>
 <sourcefile>mod_cgid.c</sourcefile>
 <identifier>cgid_module</identifier>
-<compatibility>Unix $B$N%9%l%C%I(B MPM $B$N$_(B</compatibility>
+<compatibility>Unix のスレッド MPM のみ</compatibility>
 
 <summary>
-    <p>$B:GE,2=$,;\$5$l$F$$$k$3$H$H!"0J2<$G@bL@$5$l$F$$$kDI2C$N(B <directive
-    module="mod_cgid">ScriptSock</directive> $B%G%#%l%/%F%#%V$r=|$$$F$O!"(B
-    <module>mod_cgid</module> $B$O(B <module>mod_cgi</module> $B$HF1MM$N(B
-    $BF0:n$r$7$^$9!#(B<strong>Apache $B$H(B CGI $B$K4X$9$k>\:Y$O(B
-    <module>mod_cgi</module> $B$N35MW$rFI$s$G$/$@$5$$!#(B</strong></p>
+    <p>最適化が施されていることと、以下で説明されている追加の <directive
+    module="mod_cgid">ScriptSock</directive> ディレクティブを除いては、
+    <module>mod_cgid</module> は <module>mod_cgi</module> と同様の
+    動作をします。<strong>Apache と CGI に関する詳細は
+    <module>mod_cgi</module> の概要を読んでください。</strong></p>
 
-    <p>Unix $B%*%Z%l!<%F%#%s%0%7%9%F%`$NCf$K$O!"%^%k%A%9%l%C%I$N%5!<%P$+$i(B
-    $B%W%m%;%9$r(B fork $B$9$k$N$,Hs>o$K%3%9%H$N9b$$F0:n$K$J$C$F$$$k$b$N$,$"$j$^$9!#(B
-    $BM}M3$O!"?7$7$$%W%m%;%9$,?F%W%m%;%9$N%9%l%C%I$9$Y$F$rJ#@=$9$k$+$i$G$9!#(B
-    $B3F(B CGI $B5/F0;~$K$3$N%3%9%H$,$+$+$k$N$rKI$0$?$a$K!"(B<module>mod_cgid</module>
-    $B$O;R%W%m%;%9$r(B fork $B$7$F(B CGI $B%9%/%j%W%H$r<B9T$9$k$?$a$N(B
-    $B30It%G!<%b%s$r<B9T$7$^$9!#(B
-    $B<g%5!<%P$O(B unix $B%I%a%$%s%=%1%C%H$r;H$C$F$3$N%G!<%b%s$HDL?.$7$^$9!#(B</p>
+    <p>Unix オペレーティングシステムの中には、マルチスレッドのサーバから
+    プロセスを fork するのが非常にコストの高い動作になっているものがあります。
+    理由は、新しいプロセスが親プロセスのスレッドすべてを複製するからです。
+    各 CGI 起動時にこのコストがかかるのを防ぐために、<module>mod_cgid</module>
+    は子プロセスを fork して CGI スクリプトを実行するための
+    外部デーモンを実行します。
+    主サーバは unix ドメインソケットを使ってこのデーモンと通信します。</p>
 
-    <p>$B%3%s%Q%$%k;~$K%^%k%A%9%l%C%I(B MPM $B$,A*$P$l$?$H$-$O(B
-    <module>mod_cgi</module> $B$NBe$o$j$KI,$:$3$N%b%8%e!<%k$,;HMQ$5$l$^$9!#(B
-    $B%f!<%6$N%l%Y%k$G$O$3$N%b%8%e!<%k$N@_Dj$HF0:n$O(B <module>mod_cgi</module>
-    $B$H$^$C$?$/F1$8$G$9!#M#0l$NNc30$O(B <code>ScriptSock</code> $B%G%#%l%/%F%#%V$N(B
-    $BDI2C$G!"$3$N%G%#%l%/%F%#%V$O(B CGI $B%G!<%b%s$H$NDL?.MQ$N%=%1%C%H$NL>A0$r(B
-    $B;XDj$7$^$9!#(B</p>
+    <p>コンパイル時にマルチスレッド MPM が選ばれたときは
+    <module>mod_cgi</module> の代わりに必ずこのモジュールが使用されます。
+    ユーザのレベルではこのモジュールの設定と動作は <module>mod_cgi</module>
+    とまったく同じです。唯一の例外は <code>ScriptSock</code> ディレクティブの
+    追加で、このディレクティブは CGI デーモンとの通信用のソケットの名前を
+    指定します。</p>
 </summary>
 
 <seealso><module>mod_cgi</module></seealso>
-<seealso><a href="../suexec.html">CGI $B%W%m%0%i%`$r0c$&%f!<%6(B ID $B$G<B9T$9$k(B</a></seealso>
+<seealso><a href="../suexec.html">CGI プログラムを違うユーザ ID で実行する</a></seealso>
 
 <directivesynopsis location="mod_cgi">
 <name>ScriptLog</name>
@@ -69,20 +69,20 @@
 
 <directivesynopsis>
 <name>ScriptSock</name>
-<description>CGI $B%G!<%b%s$H$NDL?.$K;H$o$l$k%=%1%C%H$N%U%!%$%kL>$N@\F,<-(B</description>
+<description>CGI デーモンとの通信に使われるソケットのファイル名の接頭辞</description>
 <syntax>ScriptSock <var>file-path</var></syntax>
 <default>ScriptSock logs/cgisock</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B CGI $B%G!<%b%s$H$NDL?.$K;H$o$l$k%=%1%C%H$N(B
-    $B%U%!%$%kL>$N@\F,<-$r@_Dj$7$^$9!#$^$?!"%U%!%$%kL>$K$O%5!<%P$N%W%m%;%9(BID$B$,(B
-    $BDI2C$5$l$^$9!#%=%1%C%H$O(B Apache $B$,5/F0$5$l$?%f!<%6(B ($BDL>o(B root) $B$N(B
-    $B%Q!<%_%C%7%g%s$rMQ$$$F%*!<%W%s$5$l$^$9!#(BCGI $B%9%/%j%W%H$H$NDL?.$N(B
-    $B%;%-%e%j%F%#$rJ]$D$?$a$K!"%=%1%C%H$NB8:_$9$k%G%#%l%/%H%j$K(B
-    $BB>$N%f!<%6$,=q$-9~$_8"8B$r;}$C$F$$$J$$$h$&$K$9$k$3$H$,=EMW$G$9!#(B</p>
+    <p>このディレクティブは CGI デーモンとの通信に使われるソケットの
+    ファイル名の接頭辞を設定します。また、ファイル名にはサーバのプロセスIDが
+    追加されます。ソケットは Apache が起動されたユーザ (通常 root) の
+    パーミッションを用いてオープンされます。CGI スクリプトとの通信の
+    セキュリティを保つために、ソケットの存在するディレクトリに
+    他のユーザが書き込み権限を持っていないようにすることが重要です。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ScriptSock /var/run/cgid.sock
     </example>
 

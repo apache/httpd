@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE quickreference SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 395228:636495 (outdated) -->
@@ -21,21 +21,21 @@
 -->
 
 <quickreference metafile="quickreference.xml.meta">
-  <title>$B%G%#%l%/%F%#%V(B $B%/%$%C%/%j%U%!%l%s%9(B</title>
+  <title>ディレクティブ クイックリファレンス</title>
   <summary>
-    <p>$B%G%#%l%/%F%#%V(B $B%/%$%C%/%j%U%!%l%s%9$G$O!"3F(B Apache $B@_Dj%G%#%l%/%F%#%V$N(B
-    $B;HMQJ}K!!"%G%U%)%k%HCM!"%9%F!<%?%9$H%3%s%F%-%9%H$r<($7$F$$$^$9!#(B
-    $B3F%G%#%l%/%F%#%V$N!"$h$j>\$7$$>pJs$K4X$7$F$O(B
-    <a href="directive-dict.html">$B%G%#%l%/%F%#%V<-=q(B</a>$B$r(B
-    $B$4Mw2<$5$$!#(B</p>
+    <p>ディレクティブ クイックリファレンスでは、各 Apache 設定ディレクティブの
+    使用方法、デフォルト値、ステータスとコンテキストを示しています。
+    各ディレクティブの、より詳しい情報に関しては
+    <a href="directive-dict.html">ディレクティブ辞書</a>を
+    ご覧下さい。</p>
 
-    <p>$BBh(B 1 $BNsL\$O%G%#%l%/%F%#%V$NL>A0$H;HMQJ}K!$G$9!#(B
-    $BBh(B 2 $BNsL\$O(B ($B$b$7$"$l$P(B) $B%G%U%)%k%HCM$H$J$C$F$$$^$9!#(B
-    $B%G%U%)%k%HCM$,D9$9$.$FI=<($7$-$l$J$$>l9g$O!":G=i$NJ8;zNs$N8e$m$K(B
-    $B!V(B + $B!W$,B3$-$^$9!#(B</p>
+    <p>第 1 列目はディレクティブの名前と使用方法です。
+    第 2 列目は (もしあれば) デフォルト値となっています。
+    デフォルト値が長すぎて表示しきれない場合は、最初の文字列の後ろに
+    「 + 」が続きます。</p>
 
-    <p>$BBh(B 3, 4 $BNs$O!"2<$NI=$NCm<a$K=>$C$F!"(B
-    $B%G%#%l%/%F%#%V$N;HMQ$G$-$k%3%s%F%-%9%H$H!"(B
-    $B%G%#%l%/%F%#%V$N%9%F!<%?%9$,<($5$l$F$$$^$9!#(B</p>
+    <p>第 3, 4 列は、下の表の注釈に従って、
+    ディレクティブの使用できるコンテキストと、
+    ディレクティブのステータスが示されています。</p>
   </summary>
 </quickreference>

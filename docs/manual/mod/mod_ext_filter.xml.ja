@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -23,39 +23,39 @@
 <modulesynopsis metafile="mod_ext_filter.xml.meta">
 
 <name>mod_ext_filter</name>
-<description>$B%l%9%]%s%9$N%\%G%#$r%/%i%$%"%s%H$KAw$kA0$K30It%W%m%0%i%`$G=hM}$9$k(B</description>
+<description>レスポンスのボディをクライアントに送る前に外部プログラムで処理する</description>
 <status>Extension</status>
 <sourcefile>mod_ext_filter.c</sourcefile>
 <identifier>ext_filter_module</identifier>
 
 <summary>
-    <p><module>mod_ext_filter</module> $B$G$O(B <a href="../filter.html">$B%U%#%k%?(B</a>
-    $B$N47$l?F$7$s$@C1=c$J%W%m%0%i%_%s%0%b%G%k$,Ds6!$5$l$^$9!#$3$N%b%8%e!<%k$r(B
-    $B;H$($P!"I8=`F~NO$+$iFI$_9~$s$G!"I8=`=PNO$K=q$-=P$9%W%m%0%i%`(B
-    ($B$9$J$o$A(B Unix $B7A<0$N%U%#%k%?%3%^%s%I(B) $B$r(B Apache $B$N%U%#%k%?$K$9$k$3$H$,(B
-    $B$G$-$^$9!#$3$N%U%#%k%?$N5!9=$O!"(BApache API $B8~$1$K=q$+$l$?(B Apache
-    $B%5!<%P%W%m%;%9Fb$G<B9T$5$l$k@lMQ$N%U%#%k%?$h$j$b$:$C$HCY$$$G$9$,!"(B
-    $B0J2<$N$h$&$JMxE@$b$"$j$^$9!#(B</p>
+    <p><module>mod_ext_filter</module> では <a href="../filter.html">フィルタ</a>
+    の慣れ親しんだ単純なプログラミングモデルが提供されます。このモジュールを
+    使えば、標準入力から読み込んで、標準出力に書き出すプログラム
+    (すなわち Unix 形式のフィルタコマンド) を Apache のフィルタにすることが
+    できます。このフィルタの機構は、Apache API 向けに書かれた Apache
+    サーバプロセス内で実行される専用のフィルタよりもずっと遅いですが、
+    以下のような利点もあります。</p>
 
     <ul>
-      <li>$B$:$C$H%7%s%W%k$J%W%m%0%i%_%s%0%b%G%k(B</li>
+      <li>ずっとシンプルなプログラミングモデル</li>
 
-      <li>$B%W%m%0%i%`$,I8=`F~NO$+$iFI$s$GI8=`=PNO$K=q$/$b$N$G$"$k8B$j!"(B
-      $B$I$s$J%W%m%0%i%`8@8l$d%9%/%j%W%H8@8l$G$b;H$&$3$H$,$G$-$k(B</li>
+      <li>プログラムが標準入力から読んで標準出力に書くものである限り、
+      どんなプログラム言語やスクリプト言語でも使うことができる</li>
 
-      <li>$B4{B8$N%W%m%0%i%`$rJQ99$9$k$3$H$J$/(B Apache $B$N%U%#%k%?$H$7$F(B
-      $B;H$&$3$H$,$G$-$k(B</li>
+      <li>既存のプログラムを変更することなく Apache のフィルタとして
+      使うことができる</li>
     </ul>
 
-    <p>$B@-G=$NLdBj$K$h$j<B1?MQ$KE,$5$J$$$H$7$F$b!"%U%#%k%?$N%W%m%H%?%$%WMQ$N(B
-    $B4D6-$H$7$F$O(B <module>mod_ext_filter</module> $B$O;H$($^$9!#(B</p>
+    <p>性能の問題により実運用に適さないとしても、フィルタのプロトタイプ用の
+    環境としては <module>mod_ext_filter</module> は使えます。</p>
 
 </summary>
-<seealso><a href="../filter.html">$B%U%#%k%?(B</a></seealso>
+<seealso><a href="../filter.html">フィルタ</a></seealso>
 
-<section id="examples"><title>$BNc(B</title>
+<section id="examples"><title>例</title>
 
-    <section><title>$BB>$N%?%$%W$N%l%9%]%s%9$+$i(B HTML $B$r@8@.$9$k(B</title>
+    <section><title>他のタイプのレスポンスから HTML を生成する</title>
       <example>
         # mod_ext_filter directive to define a filter<br />
         # to HTML-ize text/c files using the external<br />
@@ -86,9 +86,9 @@
       </example>
     </section>
 
-    <section><title>$B%3%s%F%s%H%(%s%3!<%G%#%s%0$N%U%#%k%?$r<BAu$9$k(B</title>
-      <p>$BCm(B: $B$3$N(B gzip $B$NNc$O%G%bMQ$G$9!#<BMQE*$J<BAu$O(B
-      <module>mod_deflate</module> $B$r;2>H$7$F$/$@$5$$!#(B</p>
+    <section><title>コンテントエンコーディングのフィルタを実装する</title>
+      <p>注: この gzip の例はデモ用です。実用的な実装は
+      <module>mod_deflate</module> を参照してください。</p>
 
       <example>
         # mod_ext_filter directive to define the external filter<br />
@@ -108,7 +108,7 @@
       </example>
     </section>
 
-    <section><title>$B%5!<%P$rCY$/$9$k(B</title>
+    <section><title>サーバを遅くする</title>
       <example>
         # mod_ext_filter directive to define a filter<br />
         # which runs everything through cat; cat doesn't<br />
@@ -130,7 +130,7 @@
       </example>
     </section>
 
-    <section><title>sed $B$r;H$C$F1~EzCf$N%F%-%9%H$rCV49$9$k(B</title>
+    <section><title>sed を使って応答中のテキストを置換する</title>
       <example>
         # mod_ext_filter directive to define a filter which<br />
         # replaces text in the response<br />
@@ -150,7 +150,7 @@
       </example>
     </section>
 
-    <section><title>$BJL$N%U%#%k%?$N%H%l!<%9(B</title>
+    <section><title>別のフィルタのトレース</title>
       <example>
         # Trace the data read and written by mod_deflate<br />
         # for a particular client (IP 192.168.1.31)<br />
@@ -183,7 +183,7 @@
         &lt;/Directory&gt;
       </example>
 
-      <example><title>$B%G!<%?$r%H%l!<%9$9$k%U%#%k%?(B:</title>
+      <example><title>データをトレースするフィルタ:</title>
         #!/usr/local/bin/perl -w<br />
         use strict;<br />
         <br />
@@ -206,138 +206,138 @@
 
 <directivesynopsis>
 <name>ExtFilterDefine</name>
-<description>$B30It%U%#%k%?$rDj5A(B</description>
+<description>外部フィルタを定義</description>
 <syntax>ExtFilterDefine <var>filtername</var> <var>parameters</var></syntax>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p><directive>ExtFilterDefine</directive> $B$O!"<B9T$9$k%W%m%0%i%`$d(B
-    $B0z?t$J$I!"30It%U%#%k%?$NFC@-$rDj5A$7$^$9!#(B</p>
+    <p><directive>ExtFilterDefine</directive> は、実行するプログラムや
+    引数など、外部フィルタの特性を定義します。</p>
 
-    <p><var>filtername</var> $B$ODj5A$9$k%U%#%k%?$NL>A0$r;XDj$7$^$9!#(B
-    $B$3$NL>A0$O8e$G(B <directive module="core">SetOutputFilter</directive>
-    $B%G%#%l%/%F%#%V$G;XDj$G$-$^$9!#L>A0$OEPO?$5$l$k$9$Y$F$N%U%#%k%?$G(B
-    $B0l0U$G$J$/$F$O$J$j$^$;$s!#(B<em>$B8=;~E@$G$O!"%U%#%k%?$NEPO?(B API $B$+$i$O(B
-    $B%(%i!<$OJs9p$5$l$^$;$s!#$G$9$+$i!"=EJ#$9$kL>A0$r;H$C$F$7$^$C$?$H$-$G$b(B
-    $B%f!<%6$K$O$=$N$3$H$OJs9p$5$l$^$;$s!#(B</em></p>
+    <p><var>filtername</var> は定義するフィルタの名前を指定します。
+    この名前は後で <directive module="core">SetOutputFilter</directive>
+    ディレクティブで指定できます。名前は登録されるすべてのフィルタで
+    一意でなくてはなりません。<em>現時点では、フィルタの登録 API からは
+    エラーは報告されません。ですから、重複する名前を使ってしまったときでも
+    ユーザにはそのことは報告されません。</em></p>
 
-    <p>$BB3$/%Q%i%a!<%?$N=gHV$O4X78L5$/!"$=$l$i$O<B9T$9$k30It%3%^%s%I$H!"(B
-    $BB>$NFC@-$rDj5A$7$^$9!#(B<code>cmd=</code> $B$@$1$,I,?\$N%Q%i%a!<%?$G$9!#(B
-    $B;XDj2DG=$J%Q%i%a!<%?$O(B:</p>
+    <p>続くパラメータの順番は関係無く、それらは実行する外部コマンドと、
+    他の特性を定義します。<code>cmd=</code> だけが必須のパラメータです。
+    指定可能なパラメータは:</p>
 
     <dl>
       <dt><code>cmd=<var>cmdline</var></code></dt>
 
-      <dd><code>cmd=</code> $B%-!<%o!<%I$O<B9T$9$k30It%3%^%s%I$r;XDj$7$^$9!#(B
-      $B%W%m%0%i%`L>$N8e$K0z?t$,$"$k>l9g$O!"%3%^%s%I9T$O0zMQId$G0O$`(B
-      $BI,MW$,$"$j$^$9(B (<em>$BNc$($P(B</em>$B!"(B<code>cmd="<var>/bin/mypgm</var>
-      <var>arg1</var> <var>arg2</var>"</code> $B$N$h$&$K(B)$B!#%W%m%0%i%`$O(B
-      $B%7%'%k7PM3$G$J$/!"D>@\<B9T$5$l$^$9$N$G!"DL>o$N%7%'%kMQ$N(B
-      $B%(%9%1!<%W$OI,MW$"$j$^$;$s!#%W%m%0%i%`$N0z?t$O6uGr$G6h@Z$i$l$^$9!#(B
-      $B%W%m%0%i%`$N0z?t$N0lIt$H$J$kI,MW$N$"$k6uGr$O%P%C%/%9%Z!<%9$G%(%9%1!<%W(B
-      $B$G$-$^$9!#0z?t$N0lIt$K$J$k%P%C%/%9%i%C%7%e$O%P%C%/%9%i%C%7%e$G(B
-      $B%(%9%1!<%W$9$kI,MW$,$"$j$^$9!#I8=`$N(B CGI $B4D6-JQ?t$K2C$($F!"(B
-      $B4D6-JQ?t(B DOCUMENT_URI, DOCUMENT_PATH_INFO, and 
-      QUERY_STRING_UNESCAPED $B$,%W%m%0%i%`$N$?$a$K@_Dj$5$l$^$9!#(B</dd>
+      <dd><code>cmd=</code> キーワードは実行する外部コマンドを指定します。
+      プログラム名の後に引数がある場合は、コマンド行は引用符で囲む
+      必要があります (<em>例えば</em>、<code>cmd="<var>/bin/mypgm</var>
+      <var>arg1</var> <var>arg2</var>"</code> のように)。プログラムは
+      シェル経由でなく、直接実行されますので、通常のシェル用の
+      エスケープは必要ありません。プログラムの引数は空白で区切られます。
+      プログラムの引数の一部となる必要のある空白はバックスペースでエスケープ
+      できます。引数の一部になるバックスラッシュはバックスラッシュで
+      エスケープする必要があります。標準の CGI 環境変数に加えて、
+      環境変数 DOCUMENT_URI, DOCUMENT_PATH_INFO, and 
+      QUERY_STRING_UNESCAPED がプログラムのために設定されます。</dd>
 
       <dt><code>mode=<var>mode</var></code></dt>
 
-      <dd>$B1~Ez$r=hM}$9$k%U%#%k%?$K$O(B <code>mode=output</code> ($B%G%U%)%k%H(B)
-      $B$r;H$$$^$9!#%j%/%(%9%H$r=hM}$9$k%U%#%k%?$K$O(B <code>mode=input</code>
-      $B$r;H$$$^$9!#(B<code>mode=input</code> $B$O(B Apache 2.1 $B$+$i$N?7$7$$5!G=$G$9!#(B</dd>
+      <dd>応答を処理するフィルタには <code>mode=output</code> (デフォルト)
+      を使います。リクエストを処理するフィルタには <code>mode=input</code>
+      を使います。<code>mode=input</code> は Apache 2.1 からの新しい機能です。</dd>
 
       <dt><code>intype=<var>imt</var></code></dt>
 
-      <dd>$B$3$N%Q%i%a!<%?$O%U%#%k%?$5$l$k$Y$-%I%-%e%a%s%H$N(B
-      $B%$%s%?!<%M%C%H%a%G%#%"%?%$%W(B (<em>$B$9$J$o$A(B</em>$B!"(BMIME $B%?%$%W(B) $B$r(B
-      $B;XDj$7$^$9!#%G%U%)%k%H$G$O$9$Y$F$N%I%-%e%a%s%H$,%U%#%k%?$5$l$^$9!#(B
-      <code>intype=</code> $B$,;XDj$5$l$F$$$l$P!"%U%#%k%?$O;XDj$5$l$F$$$J$$(B
-      $B%I%-%e%a%s%H$K$OE,MQ$5$l$J$/$J$j$^$9!#(B</dd>
+      <dd>このパラメータはフィルタされるべきドキュメントの
+      インターネットメディアタイプ (<em>すなわち</em>、MIME タイプ) を
+      指定します。デフォルトではすべてのドキュメントがフィルタされます。
+      <code>intype=</code> が指定されていれば、フィルタは指定されていない
+      ドキュメントには適用されなくなります。</dd>
 
       <dt><code>outtype=<var>imt</var></code></dt>
 
-      <dd>$B$3$N%Q%i%a!<%?$O%U%#%k%?$5$l$?%I%-%e%a%s%H$N(B
-      $B%$%s%?!<%M%C%H%a%G%#%"%?%$%W(B (<em>$B$9$J$o$A(B</em>$B!"(BMIME $B%?%$%W(B) $B$r(B
-      $B;XDj$7$^$9!#%U%#%k%?F0:n$K$H$b$J$C$F%$%s%?!<%M%C%H%a%G%#%"%?%$%W$,(B
-      $BJQ$o$k>l9g$KM-MQ$G$9!#%G%U%)%k%H$G$O%$%s%?!<%M%C%H%a%G%#%"%?%$%W$O(B
-      $BJQ99$5$l$^$;$s!#(B</dd>
+      <dd>このパラメータはフィルタされたドキュメントの
+      インターネットメディアタイプ (<em>すなわち</em>、MIME タイプ) を
+      指定します。フィルタ動作にともなってインターネットメディアタイプが
+      変わる場合に有用です。デフォルトではインターネットメディアタイプは
+      変更されません。</dd>
 
       <dt><code>PreservesContentLength</code></dt>
 
-      <dd><code>PreservesContentLength</code> $B%-!<%o!<%I$O%U%#%k%?$,(B
-      content length <transnote>$B%3%s%F%s%H$ND9$5(B</transnote>
-      $B$rJQ99$7$J$$$H$$$&$3$H$r;XDj$7$^$9!#$[$H$s$I$N%U%#%k%?$O(B
-      content length $B$rJQ99$9$k$?$a!"$3$l$O%G%U%)%k%H$G$O$"$j$^$;$s!#(B
-      $B%U%#%k%?$,D9$5$rJQ$($J$$$H$-$O!"$3$N%-!<%o!<%I$r;XDj$9$k$H(B
-      $B$h$$$G$7$g$&!#(B</dd>
+      <dd><code>PreservesContentLength</code> キーワードはフィルタが
+      content length <transnote>コンテントの長さ</transnote>
+      を変更しないということを指定します。ほとんどのフィルタは
+      content length を変更するため、これはデフォルトではありません。
+      フィルタが長さを変えないときは、このキーワードを指定すると
+      よいでしょう。</dd>
 
       <dt><code>ftype=<var>filtertype</var></code></dt>
 
-      <dd>$B$3$N%Q%i%a!<%?$O%U%#%k%?$,EPO?$5$l$k$Y$-%U%#%k%?%?%$%W$N(B
-      $B?tCM$r;XDj$7$^$9!#$[$H$s$I$N>l9g$O!"%G%U%)%k%H$N(B AP_FTYPE_RESOURCE $B$G(B
-      $B==J,$G$9!#%U%#%k%?$,%U%#%k%?%A%'!<%s$NJL$N>l=j$GF0:n$9$kI,MW$,$"$k(B
-      $B>l9g$O!"$3$N%Q%i%a!<%?$r;XDj$9$kI,MW$,$"$j$^$9!#;XDj2DG=$JCM$O(B
-      util_filter.h $B$N(B AP_FTYPE_foo $BDj5A$r;2>H$7$F$/$@$5$$!#(B</dd>
+      <dd>このパラメータはフィルタが登録されるべきフィルタタイプの
+      数値を指定します。ほとんどの場合は、デフォルトの AP_FTYPE_RESOURCE で
+      十分です。フィルタがフィルタチェーンの別の場所で動作する必要がある
+      場合は、このパラメータを指定する必要があります。指定可能な値は
+      util_filter.h の AP_FTYPE_foo 定義を参照してください。</dd>
 
       <dt><code>disableenv=<var>env</var></code></dt>
 
-      <dd>$B@_Dj$5$l$F$$$?>l9g$K%U%#%k%?$rL58z$K$9$k$?$a$N4D6-JQ?t$r(B
-      $B;XDj$7$^$9!#(B</dd>
+      <dd>設定されていた場合にフィルタを無効にするための環境変数を
+      指定します。</dd>
 
       <dt><code>enableenv=<var>env</var></code></dt>
 
-      <dd>$B$3$N%Q%i%a!<%?$O%U%#%k%?$,M-8z$K$J$k$?$a$K@_Dj$5$l$F$$$J$1$l$P(B
-      $B$J$i$J$$4D6-JQ?t$r;XDj$7$^$9!#(B</dd>
+      <dd>このパラメータはフィルタが有効になるために設定されていなければ
+      ならない環境変数を指定します。</dd>
     </dl>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ExtFilterOptions</name>
-<description><module>mod_ext_filter</module> $B$N%*%W%7%g%s$r@_Dj(B</description>
+<description><module>mod_ext_filter</module> のオプションを設定</description>
 <syntax>ExtFilterOptions <var>option</var> [<var>option</var>] ...</syntax>
 <default>ExtFilterOptions DebugLevel=0 NoLogStderr</default>
 <contextlist><context>directory</context></contextlist>
 
 <usage>
-    <p><directive>ExtFilterOptions</directive> $B%G%#%l%/%F%#%V$O(B
-    <module>mod_ext_filter</module> $B$NFCJL$J=hM}MQ$N%*%W%7%g%s$r(B
-    $B;XDj$7$^$9!#(B<var>Option</var> $B$K$O0J2<$N$I$l$+$r;XDj$7$^$9!#(B</p>
+    <p><directive>ExtFilterOptions</directive> ディレクティブは
+    <module>mod_ext_filter</module> の特別な処理用のオプションを
+    指定します。<var>Option</var> には以下のどれかを指定します。</p>
 
     <dl>
       <dt><code>DebugLevel=<var>n</var></code></dt>
 
       <dd>
-        <code>DebugLevel</code> $B$G(B <module>mod_ext_filter</module> 
-        $B$N@8@.$9$k%G%P%C%0%a%C%;!<%8$N%l%Y%k$r@_Dj$G$-$^$9!#(B
-        $B%G%U%)%k%H$G$O!"%G%P%C%0%a%C%;!<%8$O@8@.$5$l$^$;$s!#(B
-        $B$3$l$O(B <code>DebugLevel=0</code> $B$H@_Dj$9$k$N$HF1$8$G$9!#(B
-        $B?t;z$,Bg$-$/$J$l$P$J$k$[$I!"$h$jB?$/$N%G%P%C%0%a%C%;!<%8$,(B
-        $B@8@.$5$l!"%5!<%P$N@-G=$OMn$A$^$9!#?tCM$N<B:]$N0UL#$O(B
-        <code>mod_ext_filter.c</code> $B$N@hF,6a$/$N(B DBGLVL_ $BDj?t$N(B
-        $BDj5A$G@bL@$5$l$F$$$^$9!#(B
+        <code>DebugLevel</code> で <module>mod_ext_filter</module> 
+        の生成するデバッグメッセージのレベルを設定できます。
+        デフォルトでは、デバッグメッセージは生成されません。
+        これは <code>DebugLevel=0</code> と設定するのと同じです。
+        数字が大きくなればなるほど、より多くのデバッグメッセージが
+        生成され、サーバの性能は落ちます。数値の実際の意味は
+        <code>mod_ext_filter.c</code> の先頭近くの DBGLVL_ 定数の
+        定義で説明されています。
 
-        <p>$BCm(B: $B%G%P%C%0%a%C%;!<%8$r(B Apache $B$N%(%i!<%m%0$K(B
-        $BJ]B8$9$k$h$&$K$9$k$?$a$K$O!"(Bcore $B$N%G%#%l%/%F%#%V(B 
+        <p>注: デバッグメッセージを Apache のエラーログに
+        保存するようにするためには、core のディレクティブ 
         <directive module="core">LogLevel</directive> 
-        $B$r;H$&I,MW$,$"$j$^$9!#(B</p>
+        を使う必要があります。</p>
       </dd>
 
       <dt><code>LogStderr | NoLogStderr</code></dt>
 
-      <dd><code>LogStderr</code> $B%-!<%o!<%I$O30It%U%#%k%?%W%m%0%i%`$K$h$j(B
-      $BI8=`%(%i!<(B <transnote>stderr</transnote> $B$K=q$+$l$?%a%C%;!<%8$r(B
-      Apache $B$N%(%i!<%m%0$KJ]B8$9$k$h$&$K$7$^$9!#(B<code>NoLogStderr</code> $B$O(B
-      $B5U$KJ]B8$7$J$$$h$&$K$7$^$9!#(B</dd>
+      <dd><code>LogStderr</code> キーワードは外部フィルタプログラムにより
+      標準エラー <transnote>stderr</transnote> に書かれたメッセージを
+      Apache のエラーログに保存するようにします。<code>NoLogStderr</code> は
+      逆に保存しないようにします。</dd>
     </dl>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ExtFilterOptions LogStderr DebugLevel=0
     </example>
 
-    <p>$B$3$NNc$G$O!"%U%#%k%?$NI8=`=PNO$K=q$+$l$?%a%C%;!<%8$O(B
-    Apache $B$N%(%i!<%m%0$KJ]B8$5$l$^$9!#(B<module>mod_ext_filter</module> $B$+$i$O(B
-    $B%G%P%C%0%a%C%;!<%8$O@8@.$5$l$^$;$s!#(B</p>
+    <p>この例では、フィルタの標準出力に書かれたメッセージは
+    Apache のエラーログに保存されます。<module>mod_ext_filter</module> からは
+    デバッグメッセージは生成されません。</p>
 </usage>
 </directivesynopsis>
 

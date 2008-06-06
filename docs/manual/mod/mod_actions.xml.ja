@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -24,57 +24,57 @@
 
 <name>mod_actions</name> 
 
-<description>$B%a%G%#%"%?%$%W$d%j%/%(%9%H%a%=%C%I$K1~$8$F(B
-CGI $B%9%/%j%W%H$r<B9T$9$k5!G=$rDs6!(B</description>
+<description>メディアタイプやリクエストメソッドに応じて
+CGI スクリプトを実行する機能を提供</description>
 
 <status>Base</status>
 <sourcefile>mod_actions.c</sourcefile>
 <identifier>actions_module</identifier>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$K$OFs$D$N%G%#%l%/%F%#%V$,$"$j$^$9!#(B<directive
+    <p>このモジュールには二つのディレクティブがあります。<directive
     module="mod_actions">Action</directive>
-    $B%G%#%l%/%F%#%V$OFCDj$N(B MIME $B%?%$%W$N%U%!%$%k$r%j%/%(%9%H$5$l$?>l9g$K(B
-    CGI $B%9%/%j%W%H$,<B9T$5$l$k$h$&$K$7$^$9!#(B<directive
+    ディレクティブは特定の MIME タイプのファイルをリクエストされた場合に
+    CGI スクリプトが実行されるようにします。<directive
     module="mod_actions">Script</directive>
-    $B%G%#%l%/%F%#%V$O%j%/%(%9%H$GFCDj$N%a%=%C%I$,;HMQ$5$l$?$H$-$K(B CGI
-    $B%9%/%j%W%H$,<B9T$5$l$k$h$&$K$7$^$9!#(B
-    $B$3$l$O%U%!%$%k$r=hM}$9$k%9%/%j%W%H$N<B9T$r$:$C$H4JC1$K$7$^$9!#(B</p>
+    ディレクティブはリクエストで特定のメソッドが使用されたときに CGI
+    スクリプトが実行されるようにします。
+    これはファイルを処理するスクリプトの実行をずっと簡単にします。</p>
 </summary>
 
 <seealso><module>mod_cgi</module></seealso>
-<seealso><a href="../howto/cgi.html">CGI $B$K$h$kF0E*%3%s%F%s%D(B</a></seealso>
-<seealso><a href="../handler.html">Apache $B$N%O%s%I%i$N;HMQ(B</a></seealso>
+<seealso><a href="../howto/cgi.html">CGI による動的コンテンツ</a></seealso>
+<seealso><a href="../handler.html">Apache のハンドラの使用</a></seealso>
 
 <directivesynopsis>
 <name>Action</name>
-<description>$BFCDj$N%O%s%I%i$d%3%s%F%s%H%?%$%W$KBP$7$F(B CGI $B$r<B9T$9$k$h$&$K(B
-$B@_Dj(B</description>
+<description>特定のハンドラやコンテントタイプに対して CGI を実行するように
+設定</description>
 <syntax>Action <var>action-type</var> <var>cgi-script</var> [virtual]</syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>FileInfo</override>
-<compatibility><code>virtual</code> $B=$>~;R$H%O%s%I%iEO$7$O(B
-Apache 2.1 $B$GF3F~$5$l$^$7$?(B</compatibility>
+<compatibility><code>virtual</code> 修飾子とハンドラ渡しは
+Apache 2.1 で導入されました</compatibility>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B <var>action-type</var>
-    $B$,%j%/%(%9%H$5$l$?$H$-$K(B <var>cgi-script</var>
-    $B$,<B9T$5$l$k$H$$$&F0:n$rDI2C$7$^$9!#(B<var>cgi-script</var> $B$O(B
-    <directive module="mod_alias">ScriptAlias</directive> $B$d(B
-    <directive module="mod_mime">AddHandler</directive> $B$K$h$C$F(B
-    CGI $B%9%/%j%W%H$K@_Dj$5$l$?%j%=!<%9$X$N(B URL-path $B$G$9!#(B
-    <var>Action-type</var> $B$K$O(B
-    <a href="../handler.html">handler</a> $B$+(B MIME
-    $B%3%s%F%s%H%?%$%W$r;XDj$G$-$^$9!#%j%/%(%9%H$5$l$?%I%-%e%a%s%H$N(B URL
-    $B$H%U%!%$%k$N%Q%9$OI8=`(B CGI $B4D6-JQ?t(B <code>PATH_INFO</code> $B$H(B
-    <code>PATH_TRANSLATED</code> $B$r;H$C$FEA$($i$l$^$9!#(B
-    $BFCDj$N%j%/%(%9%H$KBP$7$F;HMQ$5$l$k%O%s%I%i$X$O!"(B
-    <code>REDIRECT_HANDLER</code> $BJQ?t$r;H$C$FEO$;$^$9!#(B</p>
+    <p>このディレクティブは <var>action-type</var>
+    がリクエストされたときに <var>cgi-script</var>
+    が実行されるという動作を追加します。<var>cgi-script</var> は
+    <directive module="mod_alias">ScriptAlias</directive> や
+    <directive module="mod_mime">AddHandler</directive> によって
+    CGI スクリプトに設定されたリソースへの URL-path です。
+    <var>Action-type</var> には
+    <a href="../handler.html">handler</a> か MIME
+    コンテントタイプを指定できます。リクエストされたドキュメントの URL
+    とファイルのパスは標準 CGI 環境変数 <code>PATH_INFO</code> と
+    <code>PATH_TRANSLATED</code> を使って伝えられます。
+    特定のリクエストに対して使用されるハンドラへは、
+    <code>REDIRECT_HANDLER</code> 変数を使って渡せます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       # Requests for files of a particular MIME content type:<br />
       Action image/gif /cgi-bin/images.cgi<br />
       <br />
@@ -83,20 +83,20 @@ Apache 2.1 $B$GF3F~$5$l$^$7$?(B</compatibility>
       Action my-file-type /cgi-bin/program.cgi<br />
     </example>
 
-    <p>$B:G=i$NNc$G$O!"(BMIME $B%3%s%F%s%H%?%$%W$,(B <code>image/gif</code>
-    $B$N%U%!%$%k$X$N%j%/%(%9%H$O!";XDj$7$?%9%/%j%W%H(B
-    <code>/cgi-bin/images.cgi</code> $B$G=hM}$5$l$^$9!#(B</p>
+    <p>最初の例では、MIME コンテントタイプが <code>image/gif</code>
+    のファイルへのリクエストは、指定したスクリプト
+    <code>/cgi-bin/images.cgi</code> で処理されます。</p>
 
-    <p>2 $BHVL\$NNc$G$O!"3HD%;R$,(B <code>.xyz</code> 
-    $B$N%U%!%$%k$X$N%j%/%(%9%H$O!";XDj$7$?%9%/%j%W%H(B
-    <code>/cgi-bin/program.cgi</code> $B$G=hM}$5$l$^$9!#(B</p>
+    <p>2 番目の例では、拡張子が <code>.xyz</code> 
+    のファイルへのリクエストは、指定したスクリプト
+    <code>/cgi-bin/program.cgi</code> で処理されます。</p>
 
-    <p>$B%*%W%7%g%s$N(B <code>virtual</code> $B=$>~;R$r;HMQ$9$k$H!"(B
-    $B%j%/%(%9%H$5$l$?%U%!%$%k$,<B:]$KB8:_$9$k$+$I$&$+$r8!::$7$J$$$h$&$K$G$-$^$9!#(B
-    $B$3$l$ONc$($P!"(B<directive>Action</directive> $B%G%#%l%/%F%#%V$r%P!<%A%c%k$J(B
-    Location $B$K;HMQ$7$?$$!"$H$$$C$?>l9g$KJXMx$G$9!#(B</p>
+    <p>オプションの <code>virtual</code> 修飾子を使用すると、
+    リクエストされたファイルが実際に存在するかどうかを検査しないようにできます。
+    これは例えば、<directive>Action</directive> ディレクティブをバーチャルな
+    Location に使用したい、といった場合に便利です。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       &lt;Location /news&gt;<br />
       <indent>
         SetHandler news-handler<br />
@@ -111,41 +111,41 @@ Apache 2.1 $B$GF3F~$5$l$^$7$?(B</compatibility>
 
 <directivesynopsis>
 <name>Script</name>
-<description>$BFCDj$N%j%/%(%9%H%a%=%C%I$KBP$7$F(B CGI $B%9%/%j%W%H$r(B
-$B<B9T$9$k$h$&$K@_Dj(B</description>
+<description>特定のリクエストメソッドに対して CGI スクリプトを
+実行するように設定</description>
 <syntax>Script <var>method</var> <var>cgi-script</var></syntax>
 <contextlist>
 <context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B <var>method</var>
-    $B$H$$$&%a%=%C%I$r;H$C$F%j%/%(%9%H$,9T$J$o$l$?$H$-$K(B
-    <var>cgi-script</var> $B$r<B9T$9$k$H$$$&F0:n$rDI2C$7$^$9!#(B
-    <var>cgi-script</var> $B$O(B
-    <directive module="mod_alias">ScriptAlias</directive> $B$d(B
-    <directive module="mod_mime">AddHandler</directive> $B$K$h$C$F(B
-    CGI $B%9%/%j%W%H$K@_Dj$5$l$?%j%=!<%9$X$N(B URL-path $B$G$9!#(B
-    $B%j%/%(%9%H$5$l$?%I%-%e%a%s%H$N(B URL $B$H%U%!%$%k$N%Q%9$OI8=`(B CGI
-    $B4D6-JQ?t(B <code>PATH_INFO</code> $B$H(B <code>PATH_TRANSLATED</code>
-    $B$r;H$C$FEA$($i$l$^$9!#(B</p>
+    <p>このディレクティブは <var>method</var>
+    というメソッドを使ってリクエストが行なわれたときに
+    <var>cgi-script</var> を実行するという動作を追加します。
+    <var>cgi-script</var> は
+    <directive module="mod_alias">ScriptAlias</directive> や
+    <directive module="mod_mime">AddHandler</directive> によって
+    CGI スクリプトに設定されたリソースへの URL-path です。
+    リクエストされたドキュメントの URL とファイルのパスは標準 CGI
+    環境変数 <code>PATH_INFO</code> と <code>PATH_TRANSLATED</code>
+    を使って伝えられます。</p>
 
     <note>
-      $BG$0U$N%a%=%C%IL>$r;HMQ$9$k$3$H$,$G$-$^$9!#(B
-      <strong>$B%a%=%C%IL>$OBgJ8;z>.J8;z$r6hJL$7$^$9(B</strong>$B!#$G$9$+$i!"(B
-      <code>Script PUT</code> $B$H(B <code>Script put</code>
-      $B$O$^$C$?$/0c$C$?8z2L$K$J$j$^$9!#(B
+      任意のメソッド名を使用することができます。
+      <strong>メソッド名は大文字小文字を区別します</strong>。ですから、
+      <code>Script PUT</code> と <code>Script put</code>
+      はまったく違った効果になります。
     </note>
 
-    <p><directive>Script</directive> $B%3%^%s%I$O%G%U%)%k%H$NF0:n$r(B
-    $BDI2C$9$k$@$1$G$"$k$3$H$K(B
-    $BCm0U$7$F$/$@$5$$!#$b$7(B CGI $B%9%/%j%W%H$,8F$P$l$?$j!"%j%/%(%9%H$5$l$?(B
-    $B%a%=%C%I$rFbIt$G07$&$3$H$N$G$-$kB>$N%j%=!<%9$,$"$l$P!"$=$l$,9T$J$o$l$^$9!#(B
-    <code>GET</code> $B%a%=%C%I$N(B <directive>Script</directive> $B$OLd9g$;(B
-    $B0z?t$,$"$k>l9g$K$N$_(B
-    (<em>$B$?$H$($P(B</em>$B!"(Bfoo.html?hi) $B8F$P$l$k$H$$$&$3$H$K$bCm0U$7$F$/$@$5$$!#(B
-    $B$=$&$G$J$$>l9g$O!"%j%/%(%9%H$ODL>oDL$j=hM}$5$l$^$9!#(B</p>
+    <p><directive>Script</directive> コマンドはデフォルトの動作を
+    追加するだけであることに
+    注意してください。もし CGI スクリプトが呼ばれたり、リクエストされた
+    メソッドを内部で扱うことのできる他のリソースがあれば、それが行なわれます。
+    <code>GET</code> メソッドの <directive>Script</directive> は問合せ
+    引数がある場合にのみ
+    (<em>たとえば</em>、foo.html?hi) 呼ばれるということにも注意してください。
+    そうでない場合は、リクエストは通常通り処理されます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       # For &lt;ISINDEX&gt;-style searching<br />
       Script GET /cgi-bin/search<br />
       <br />

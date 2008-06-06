@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -23,55 +23,55 @@
 <manualpage metafile="index.xml.meta">
 <parentdocument href="../"/>
 
-   <title>Apache $B%P!<%A%c%k%[%9%H@bL@=q(B</title>
+   <title>Apache バーチャルホスト説明書</title>
 
 <summary>
 
-    <p><cite>$B%P!<%A%c%k%[%9%H(B</cite>$B$H$$$&MQ8l$O!"(B1 $BBf$N%^%7%s>e$G(B
-    (<code>www.company1.com</code> and <code>www.company2.com</code> $B$N$h$&$J(B)
-    $BFs$D0J>e$N%&%'%V%5%$%H$r07$&1?MQJ}K!$N$3$H$r;X$7$^$9!#(B
-    $B%P!<%A%c%k%[%9%H$K$O!"3F%&%'%V%5%$%H$K0c$&(B IP $B%"%I%l%9$,$"$k(B
-    $B!V(B<a href="ip-based.html">IP $B%Y!<%9(B</a>$B!W$H!"$=$l$>$l$N(B IP $B%"%I%l%9$K(B
-    $BJ#?t$NL>A0$,$"$k!V(B<a href="name-based.html">$BL>A0%Y!<%9(B</a>$B!W$H$,$"$j$^$9!#(B
-    $BJ#?t$N%5%$%H$,J*M}E*$KF1$8%5!<%P$G07$o$l$F$$$k!"$H$$$&$3$H$O%(%s%I%f!<%6$K$O(B
-    $BL@$i$+$G$O$"$j$^$;$s!#(B</p>
+    <p><cite>バーチャルホスト</cite>という用語は、1 台のマシン上で
+    (<code>www.company1.com</code> and <code>www.company2.com</code> のような)
+    二つ以上のウェブサイトを扱う運用方法のことを指します。
+    バーチャルホストには、各ウェブサイトに違う IP アドレスがある
+    「<a href="ip-based.html">IP ベース</a>」と、それぞれの IP アドレスに
+    複数の名前がある「<a href="name-based.html">名前ベース</a>」とがあります。
+    複数のサイトが物理的に同じサーバで扱われている、ということはエンドユーザには
+    明らかではありません。</p>
 
-    <p>Apache $B$O!"FC$K<j$rF~$l$J$$>uBV$G(B IP $B%Y!<%9$N%P!<%A%c%k%[%9%H(B
-    $B$r%5%]!<%H$7$?:G=i$N%5!<%P$N0l$D$G$9!#%P!<%8%g%s(B 1.1 $B0J9_$N(B Apache
-    $B$G$O!"(BIP $B%Y!<%9$H%M!<%`%Y!<%9$N%P!<%A%c%k%[%9%H$NN>J}$r%5%]!<%H(B
-    $B$7$F$$$^$9!#%M!<%`%Y!<%9$N%P!<%A%c%k%[%9%H$O!"(B<em>$B%[%9%H%Y!<%9(B</em>$B$"$k$$$O(B
-    <em>$BHs(B IP $B%Y!<%9(B</em>$B$N%P!<%A%c%k%[%9%H$H8F$P$l$k$3$H$b$"$j$^$9!#(B</p>
+    <p>Apache は、特に手を入れない状態で IP ベースのバーチャルホスト
+    をサポートした最初のサーバの一つです。バージョン 1.1 以降の Apache
+    では、IP ベースとネームベースのバーチャルホストの両方をサポート
+    しています。ネームベースのバーチャルホストは、<em>ホストベース</em>あるいは
+    <em>非 IP ベース</em>のバーチャルホストと呼ばれることもあります。</p>
 
-    <p>$B0J2<$N%Z!<%8$G$O!"(BApache $B%P!<%8%g%s(B 1.3
-    $B0J9_$G$N%P!<%A%c%k%[%9%H$N%5%]!<%H$K$D$$$F$N>\:Y$r@bL@$7$^$9!#(B</p>
+    <p>以下のページでは、Apache バージョン 1.3
+    以降でのバーチャルホストのサポートについての詳細を説明します。</p>
 
 </summary>
 
 <seealso><module>mod_vhost_alias</module></seealso>
-<seealso><a href="name-based.html">$B%M!<%`%Y!<%9$N%P!<%A%c%k%[%9%H(B</a></seealso>
-<seealso><a href="ip-based.html">IP $B%Y!<%9$N%P!<%A%c%k%[%9%H(B</a></seealso>
-<seealso><a href="examples.html">$B%P!<%A%c%k%[%9%H$N0lHLE*$J@_DjNc(B</a></seealso>
-<seealso><a href="fd-limits.html">$B%U%!%$%k5-=R;R$N8B3&(B</a></seealso>
-<seealso><a href="mass.html">$BBgNL$N%P!<%A%c%k%[%9%H$N@_Dj(B</a></seealso>
-<seealso><a href="details.html">$B%P!<%A%c%k%[%9%H$N%^%C%A%s%0$K$D$$$F$N>\:Y(B</a></seealso>
+<seealso><a href="name-based.html">ネームベースのバーチャルホスト</a></seealso>
+<seealso><a href="ip-based.html">IP ベースのバーチャルホスト</a></seealso>
+<seealso><a href="examples.html">バーチャルホストの一般的な設定例</a></seealso>
+<seealso><a href="fd-limits.html">ファイル記述子の限界</a></seealso>
+<seealso><a href="mass.html">大量のバーチャルホストの設定</a></seealso>
+<seealso><a href="details.html">バーチャルホストのマッチングについての詳細</a></seealso>
 
-<section id="support"><title>$B%P!<%A%c%k%[%9%H$N%5%]!<%H(B</title>
+<section id="support"><title>バーチャルホストのサポート</title>
 
     <ul>
-      <li><a href="name-based.html">$B%M!<%`%Y!<%9$N%P!<%A%c%k%[%9%H(B</a>
-      ($B0l$D$N(B IP $B%"%I%l%9$KJ#?t$N%&%'%V%5%$%H(B)</li>
-      <li><a href="ip-based.html">IP $B%Y!<%9$N%P!<%A%c%k%[%9%H(B</a>
-      ($B3F%&%'%V%5%$%H$K(B IP $B%"%I%l%9(B)</li>
-      <li><a href="examples.html">$B%P!<%A%c%k%[%9%H$N0lHLE*$J@_DjNc(B</a></li>
-      <li><a href="fd-limits.html">$B%U%!%$%k5-=R;R$N8B3&(B</a>
-      ($B$^$?$O!"(B<em>$BB?2a$.$k%m%0%U%!%$%k(B</em>)</li>
-      <li><a href="mass.html">$BBgNL$N%P!<%A%c%k%[%9%H$N@_Dj(B</a></li>
-      <li><a href="details.html">$B%P!<%A%c%k%[%9%H$N%^%C%A%s%0$K$D$$$F$N>\:Y(B</a></li>
+      <li><a href="name-based.html">ネームベースのバーチャルホスト</a>
+      (一つの IP アドレスに複数のウェブサイト)</li>
+      <li><a href="ip-based.html">IP ベースのバーチャルホスト</a>
+      (各ウェブサイトに IP アドレス)</li>
+      <li><a href="examples.html">バーチャルホストの一般的な設定例</a></li>
+      <li><a href="fd-limits.html">ファイル記述子の限界</a>
+      (または、<em>多過ぎるログファイル</em>)</li>
+      <li><a href="mass.html">大量のバーチャルホストの設定</a></li>
+      <li><a href="details.html">バーチャルホストのマッチングについての詳細</a></li>
     </ul>
 
 </section>
 
-<section id="directives"><title>$B@_Dj%G%#%l%/%F%#%V(B</title>
+<section id="directives"><title>設定ディレクティブ</title>
 
     <ul>
       <li><directive type="section"
@@ -82,19 +82,19 @@
       <li><directive module="core">ServerPath</directive></li>
     </ul>
 
-    <p>$B%P!<%A%c%k%[%9%H$N@_Dj$N%G%P%C%0$r$9$k$K$O(B
-    Apache $B$N%3%^%s%I%i%$%s%9%$%C%A(B <code>-S</code> $B$,JXMx$G$9!#(B
-    $B$D$^$j!"0J2<$N%3%^%s%I$rF~NO$7$^$9(B:</p>
+    <p>バーチャルホストの設定のデバッグをするには
+    Apache のコマンドラインスイッチ <code>-S</code> が便利です。
+    つまり、以下のコマンドを入力します:</p>
 
     <example>
     /usr/local/apache2/bin/httpd -S
     </example>
 
-    <p>$B$3$N%3%^%s%I$O(B Apache $B$,@_Dj%U%!%$%k$r$I$&2r@O$7$?$+$K$D$$$F=PNO$7$^$9!#(B
-    IP $B%"%I%l%9$H%5!<%PL>$rCm0U?<$/D4$Y$l$P!"(B
-    $B@_Dj$N4V0c$$$r8+$D$1$k=u$1$K$J$k$G$7$g$&!#(B
-    ($BB>$N%3%^%s%I%i%$%s$N%*%W%7%g%s$O(B <program>httpd</program>
-    $B%W%m%0%i%`$N@bL@J8=q$r8+$F$/$@$5$$(B)</p>
+    <p>このコマンドは Apache が設定ファイルをどう解析したかについて出力します。
+    IP アドレスとサーバ名を注意深く調べれば、
+    設定の間違いを見つける助けになるでしょう。
+    (他のコマンドラインのオプションは <program>httpd</program>
+    プログラムの説明文書を見てください)</p>
 
 </section>
 </manualpage>

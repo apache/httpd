@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:648945 (outdated) -->
@@ -23,135 +23,135 @@
 <modulesynopsis metafile="mod_autoindex.xml.meta">
 
 <name>mod_autoindex</name>
-<description>Unix $B$N(B <code>ls</code> $B%3%^%s%I$d(B
-    Win32 $B$N(B <code>dir</code> $B%7%'%k%3%^%s%I$K;w$?(B
-    $B%G%#%l%/%H%j%$%s%G%C%/%9$r@8@.$9$k(B</description>
+<description>Unix の <code>ls</code> コマンドや
+    Win32 の <code>dir</code> シェルコマンドに似た
+    ディレクトリインデックスを生成する</description>
 <status>Base</status>
 <sourcefile>mod_autoindex.c</sourcefile>
 <identifier>autoindex_module</identifier>
 
 <summary> 
-      <p>$B%G%#%l%/%H%j$N%$%s%G%C%/%9$OFs$D$N>pJs8;$N$&$A$N(B
-      $B0l$D$+$i@8@.$G$-$^$9(B:</p>
+      <p>ディレクトリのインデックスは二つの情報源のうちの
+      一つから生成できます:</p>
 
     <ul>
-      <li>$BIaDL$O(B <code>index.html</code> $B$H8F$P$l$k(B
-      $B%f!<%6$K$h$C$F=q$+$l$?%U%!%$%k!#(B
+      <li>普通は <code>index.html</code> と呼ばれる
+      ユーザによって書かれたファイル。
       <directive module="mod_dir">DirectoryIndex</directive>
-      $B%G%#%l%/%F%#%V$G$3$N%U%!%$%kL>$r@_Dj$7$^$9!#(B
-      $B$3$l$O(B <module>mod_dir</module> $B$G@)8f$5$l$^$9!#(B</li>
+      ディレクティブでこのファイル名を設定します。
+      これは <module>mod_dir</module> で制御されます。</li>
 
-      <li>$B$b$7$/$O!"%5!<%P$K$h$C$F@8@.$5$l$?0lMw!#(B
-      $B$=$NB>$N%G%#%l%/%F%#%V$G$3$N0lMw$N=q<0$r@)8f$7$^$9!#(B
+      <li>もしくは、サーバによって生成された一覧。
+      その他のディレクティブでこの一覧の書式を制御します。
       <directive
       module="mod_autoindex">AddIcon</directive>, <directive
-      module="mod_autoindex">AddIconByEncoding</directive> $B$H(B
+      module="mod_autoindex">AddIconByEncoding</directive> と
       <directive module="mod_autoindex">AddIconByType</directive>
-      $B$r;H$&$3$H$G!"MM!9$J%U%!%$%k%?%$%W$KBP$7$F%"%$%3%s0lMw$r(B
-      $B%;%C%H$7$^$9!#$D$^$j!"%j%9%H$5$l$?%U%!%$%kKh$K!"(B
-      $B%U%!%$%k$K%^%C%A$7$?0lHV:G=i$N%"%$%3%s$,I=<($5$l$^$9!#(B
-      $B$3$l$i$O(B <module>mod_autoindex</module> $B$G@)8f$5$l$^$9!#(B</li>
+      を使うことで、様々なファイルタイプに対してアイコン一覧を
+      セットします。つまり、リストされたファイル毎に、
+      ファイルにマッチした一番最初のアイコンが表示されます。
+      これらは <module>mod_autoindex</module> で制御されます。</li>
     </ul>
-    <p>$BK>$`$J$i$P!"<+F0%$%s%G%C%/%9@8@.$r40A4$K=|5n(B ($B$"$k$$$OCV49(B)
-    $B$G$-$k$h$&$K!"$3$NFs$D$N5!G=$OJ,N%$5$l$F$$$^$9!#(B</p>
+    <p>望むならば、自動インデックス生成を完全に除去 (あるいは置換)
+    できるように、この二つの機能は分離されています。</p>
 
-    <p>$B<+F0%$%s%G%C%/%9@8@.$O(B <code>Options +Indexes</code>
-    $B$r;H$&$3$H$GM-8z$K$J$j$^$9!#>\:Y$K$D$$$F$O!"(B
+    <p>自動インデックス生成は <code>Options +Indexes</code>
+    を使うことで有効になります。詳細については、
     <directive module="core">Options</directive>
-    $B%G%#%l%/%F%#%V$r$4Mw2<$5$$!#(B</p>
+    ディレクティブをご覧下さい。</p>
 
-    <p>$B$b$7(B <code><a href="#indexoptions.fancyindexing"
-    >FancyIndexing</a></code>$B%*%W%7%g%s$,(B
+    <p>もし <code><a href="#indexoptions.fancyindexing"
+    >FancyIndexing</a></code>オプションが
     <directive module="autoindex">IndexOptions</directive>
-    $B%G%#%l%/%F%#%V$KM?$($i$l$F$$$k$J$i$P!"(B
-    $BNs$N@hF,$OI=<($N=gHV$r@)8f$9$k%j%s%/$K$J$j$^$9!#(B
-    $B@hF,$N%j%s%/$rA*Br$9$k$H!"0lMw$O:F@8@.$5$l$F(B
-    $B$=$NNs$NCM$G%=!<%H$5$l$^$9!#(B
-    $BF1$8@hF,$rB3$1$FA*Br$9$k$H!"8r8_$K>:=g$H9_=g$H$K$J$j$^$9!#(B
-    $B$3$l$i$NNs$N@hF,$N%j%s%/$O!"(B
+    ディレクティブに与えられているならば、
+    列の先頭は表示の順番を制御するリンクになります。
+    先頭のリンクを選択すると、一覧は再生成されて
+    その列の値でソートされます。
+    同じ先頭を続けて選択すると、交互に昇順と降順とになります。
+    これらの列の先頭のリンクは、
     <directive module="mod_autoindex">IndexOptions</directive>
-    $B%G%#%l%/%F%#%V$N(B
+    ディレクティブの
     <code>SuppressColumnSorting</code>
-    $B%*%W%7%g%s$G>C$9$3$H$,$G$-$^$9!#(B</p>
+    オプションで消すことができます。</p>
 
-    <p>"Size" $B$G%=!<%H$7$?>l9g$O!"MQ$$$i$l$k$N$O(B
-    <em>$B<B:]$N(B</em>$B%U%!%$%k$N%5%$%:$G$"$C$F!"(B
-    $BI=<($NCM$G$O$J$$$3$H$KCm0U$7$F$/$@$5$$(B -
-    $B$?$H$(N>J}$H$b$,(B "1K" $B$HI=<($5$l$F$$$?$H$7$F$b!"(B
-    1010 $B%P%$%H$N%U%!%$%k$OI,$:(B 1011
-    $B%P%$%H$N%U%!%$%k$h$j$bA0(B ($B>:=g$N>l9g(B) $B$KI=<($5$l$^$9!#(B</p>
+    <p>"Size" でソートした場合は、用いられるのは
+    <em>実際の</em>ファイルのサイズであって、
+    表示の値ではないことに注意してください -
+    たとえ両方ともが "1K" と表示されていたとしても、
+    1010 バイトのファイルは必ず 1011
+    バイトのファイルよりも前 (昇順の場合) に表示されます。</p>
 </summary>
 
 <section id="query">
-    <title>Autoindex $B%j%/%(%9%H%/%(%j!<0z?t(B</title>
+    <title>Autoindex リクエストクエリー引数</title>
 
-    <p>Apache 2.0.23 $B$G!"(B
-    $B%3%i%`%=!<%H$N$?$a$K%/%(%j!<0z?t$r:FJT@.$7$F!"(B
-    $B?7$7$$%/%(%j!<%*%W%7%g%s$N%0%k!<%W$rF3F~$7$^$7$?!#(B
-    $B=PNO$KBP$9$k%/%i%$%"%s%H$N$9$Y$F$N@)8f$r8zN(E*$KKu>C(B
-    $B$G$-$k$h$&$K!"(B
+    <p>Apache 2.0.23 で、
+    コラムソートのためにクエリー引数を再編成して、
+    新しいクエリーオプションのグループを導入しました。
+    出力に対するクライアントのすべての制御を効率的に抹消
+    できるように、
     <code><a href="#indexoptions.ignoreclient">IndexOptions
-    IgnoreClient</a></code> $B$,F3F~$5$l$^$7$?!#(B</p>
+    IgnoreClient</a></code> が導入されました。</p>
 
-    <p>$B%3%i%`%=!<%H$N%X%C%@$=$l<+BN$,!"(B
-    $B2<5-$N%=!<%H%/%(%j!<%*%W%7%g%s$rIU2C$9$k(B
-    $B<+J,<+?H$r;2>H$9$k%j%s%/$G$9!#(B
-    $B2<5-$N%*%W%7%g%s$N$I$l$G$b!"(B
-    $B%G%#%l%/%H%j%j%=!<%9$X$N%j%/%(%9%H$K2C$($k$3$H$,$G$-$^$9!#(B</p>
+    <p>コラムソートのヘッダそれ自体が、
+    下記のソートクエリーオプションを付加する
+    自分自身を参照するリンクです。
+    下記のオプションのどれでも、
+    ディレクトリリソースへのリクエストに加えることができます。</p>
 
     <ul>
-      <li><code>C=N</code> $B$O!"%U%!%$%kL>$G%=!<%H$7$^$9!#(B</li>
+      <li><code>C=N</code> は、ファイル名でソートします。</li>
 
-      <li><code>C=M</code> $B$O!"99?7F|;~!"(B
-      $B%G%#%l%/%H%j!"%U%!%$%kL>$N=g$G%=!<%H$7$^$9!#(B</li>
+      <li><code>C=M</code> は、更新日時、
+      ディレクトリ、ファイル名の順でソートします。</li>
 
-      <li><code>C=S</code> $B$O!"%5%$%:!"(B
-      $B%G%#%l%/%H%j!"%U%!%$%kL>$N=g$G%=!<%H$7$^$9!#(B</li>
+      <li><code>C=S</code> は、サイズ、
+      ディレクトリ、ファイル名の順でソートします。</li>
 
-      <li class="separate"><code>C=D</code> $B$O!"@bL@!"(B
-      $B%G%#%l%/%H%j!"%U%!%$%kL>$N=g$G%=!<%H$7$^$9!#(B</li>
+      <li class="separate"><code>C=D</code> は、説明、
+      ディレクトリ、ファイル名の順でソートします。</li>
 
-      <li><code>O=A</code> $B$O!">:=g$GI=$r%=!<%H$7$^$9!#(B</li>
+      <li><code>O=A</code> は、昇順で表をソートします。</li>
 
-      <li class="separate"><code>O=D</code> $B$O!"9_=g$GI=$r%=!<%H$7$^$9!#(B</li>
+      <li class="separate"><code>O=D</code> は、降順で表をソートします。</li>
 
-      <li><code>F=0</code> $B$O!"C1=c$JI=$N=q<0$K$7$^$9!#(B
-      (FancyIndex $B$G$O$"$j$^$;$s!#(B)</li>
+      <li><code>F=0</code> は、単純な表の書式にします。
+      (FancyIndex ではありません。)</li>
 
-      <li><code>F=1</code> $B$O!"(BFancyIndex 
-      $BI=<($NI=$N=q<0$K$7$^$9!#(B</li>
+      <li><code>F=1</code> は、FancyIndex 
+      表示の表の書式にします。</li>
 
-      <li><code>F=2</code> $B$O!"I=$r(B HTML 
-      $B$N%F!<%V%k$r;H$C$?(B FancyIndex $B$N=q<0$K$7$^$9!#(B</li>
+      <li><code>F=2</code> は、表を HTML 
+      のテーブルを使った FancyIndex の書式にします。</li>
 
       <li><code>V=0</code> 
-      $B$O!"%P!<%8%g%s$K$h$k%=!<%H$rL58z$K$7$^$9!#(B</li>
+      は、バージョンによるソートを無効にします。</li>
 
       <li class="separate"><code>V=1</code> 
-      $B$O!"%P!<%8%g%s$K$h$k%=!<%H$rM-8z$K$7$^$9!#(B</li>
+      は、バージョンによるソートを有効にします。</li>
 
       <li><code>P=<var>pattern</var></code> 
-      $B$O!"M?$($i$l$?(B <var>pattern</var>
-      $B$KE,9g$7$?%U%!%$%k$N$_$rI=<($7$^$9!#(B</li>
+      は、与えられた <var>pattern</var>
+      に適合したファイルのみを表示します。</li>
     </ul>
 
-    <p>"P ($B%Q%?!<%s$N(B P)" $B%/%(%j!<0z?t$O!"(B
-    $BDL>o$N(B <directive module="mod_autoindex">IndexIgnore</directive>
-    $B%G%#%l%/%F%#%V$,=hM}$5$l$?(B<em>$B8e(B</em>$B$K8!::$5$l!"(B
-    $B%U%!%$%kL>A4$F$,!"B>$N(B autoindex
-    $B%j%9%H=hM}$HF1MM$NH=Dj4p=`2<$KCV$+$lB3$1$k(B
-    $B$3$H$KCm0U$7$F$/$@$5$$!#(B
-    <module>mod_autoindex</module> $B$N%/%(%j!<0z?t%Q!<%5(B ($B2r@O(B) $B$O!"(B
-    $BG'<1ITG=$J%*%W%7%g%s$K$V$D$+$k$HB(:B$KDd;_$7$^$9!#(B
-    $B%/%(%j!<0z?t$O>e$NI=$K=>$C$F(B
-    $B@5$7$$7A<0$K$J$C$F$$$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p>"P (パターンの P)" クエリー引数は、
+    通常の <directive module="mod_autoindex">IndexIgnore</directive>
+    ディレクティブが処理された<em>後</em>に検査され、
+    ファイル名全てが、他の autoindex
+    リスト処理と同様の判定基準下に置かれ続ける
+    ことに注意してください。
+    <module>mod_autoindex</module> のクエリー引数パーサ (解析) は、
+    認識不能なオプションにぶつかると即座に停止します。
+    クエリー引数は上の表に従って
+    正しい形式になっていなければなりません。</p>
 
-    <p>$B2<$NC1=c$JNc$O!"$3$l$i$N%/%(%j!<%*%W%7%g%s$r(B
-    $BI=$7$^$9!#$3$l$r$=$N$^$^@Z$j<h$C$F(B HEADER.html 
-    $B%U%!%$%k$KJ]B8$9$k$3$H$b$G$-$^$9!#(B
-    mod_autoindex $B$,(B X=Go $BF~NO$K$V$D$+$kA0$K(B
-    $B0z?t$,A4$F2r<a$5$l$k$h$&$K!"(B
-    $BL$CN$N0z?t(B "X" $B$O%j%9%H$N:G8e$KCV$+$l$F$$$^$9!#(B</p>
+    <p>下の単純な例は、これらのクエリーオプションを
+    表します。これをそのまま切り取って HEADER.html 
+    ファイルに保存することもできます。
+    mod_autoindex が X=Go 入力にぶつかる前に
+    引数が全て解釈されるように、
+    未知の引数 "X" はリストの最後に置かれています。</p>
 
     <example>
       &lt;form action="" method="get"&gt;<br />
@@ -193,8 +193,8 @@
 
 <directivesynopsis>
 <name>AddAlt</name>
-<description>$B%"%$%3%s$NBe$o$j$K(B
-$BI=<($5$l$k!"%U%!%$%kL>$GA*Br$5$l$?BeBX%F%-%9%H(B</description>
+<description>アイコンの代わりに
+表示される、ファイル名で選択された代替テキスト</description>
 <syntax>AddAlt <var>string</var> <var>file</var> [<var>file</var>] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -203,19 +203,19 @@
 <override>Indexes</override>
 
 <usage>
-    <p><directive>AddAlt</directive> $B$O!"(B<code><a
+    <p><directive>AddAlt</directive> は、<code><a
     href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    $B$K$*$$$F!"%"%$%3%s$NBe$o$j$KI=<($9$kBeBX%F%-%9%H$rDs6!$7$^$9!#(B
-    <var>file</var> $B$O!"@bL@$9$k%U%!%$%k$N%U%!%$%k3HD%;R!"(B
-    $B%U%!%$%kL>$N0lIt!"%o%$%k%I%+!<%II=8=!"40A4$J%U%!%$%kL>$N(B
-    $B$I$l$+$K$J$j$^$9!#(B
-    <var>string</var> $B$K6uGr$,$"$k>l9g$O0zMQId(B  (<code>"</code>
-    $B$+(B <code>'</code>) $B$G0O$`I,MW$,$"$j$^$9!#(B
-    $B$3$NJ8;zNs$O!"%/%i%$%"%s%H$,2hA|$rI=<($G$-$J$$>l9g$d(B
-    $B2hA|$N%m!<%I$rL58z$K$7$F$$$k>l9g$d(B
-    $B%"%$%3%s$N<hF@$K<:GT$7$?$H$-$KI=<($5$l$^$9!#(B</p>
+    において、アイコンの代わりに表示する代替テキストを提供します。
+    <var>file</var> は、説明するファイルのファイル拡張子、
+    ファイル名の一部、ワイルドカード表現、完全なファイル名の
+    どれかになります。
+    <var>string</var> に空白がある場合は引用符  (<code>"</code>
+    か <code>'</code>) で囲む必要があります。
+    この文字列は、クライアントが画像を表示できない場合や
+    画像のロードを無効にしている場合や
+    アイコンの取得に失敗したときに表示されます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       AddAlt "PDF file" *.pdf<br />
       AddAlt Compressed *.gz *.zip *.Z
     </example>
@@ -224,8 +224,8 @@
 
 <directivesynopsis>
 <name>AddAltByEncoding</name>
-<description>$B%"%$%3%s$NBe$o$j$KI=<($5$l$k!"(BMIME $BId9f2=J}K!$GA*Br$5$l$?(B
-$BBeBX%F%-%9%H(B</description>
+<description>アイコンの代わりに表示される、MIME 符号化方法で選択された
+代替テキスト</description>
 <syntax>AddAltByEncoding <var>string</var> <var>MIME-encoding</var>
 [<var>MIME-encoding</var>] ...</syntax>
 <contextlist><context>server config</context>
@@ -235,19 +235,19 @@
 <override>Indexes</override>
 
 <usage>
-    <p><directive>AddAltByEncoding</directive> $B$O!"(B
+    <p><directive>AddAltByEncoding</directive> は、
     <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    $B$K$*$$$F!"%"%$%3%s$NBe$o$j$KI=<($9$kBeBXJ8;zNs$rDs6!$7$^$9!#(B
-    <var>MIME-encoding</var> $B$OM-8z$JId9f2=!"Nc$($P(B
+    において、アイコンの代わりに表示する代替文字列を提供します。
+    <var>MIME-encoding</var> は有効な符号化、例えば
     <code>x-compress</code>
-    $B$G$9!#(B 
-    <var>string</var> $B$K6uGr$,$"$k$H$-$O!"0zMQId(B (<code>"</code> $B$+(B
-    <code>'</code>) $B$G0O$`I,MW$,$"$j$^$9!#(B
-    $B$3$NJ8;zNs$O!"%/%i%$%"%s%H$,2hA|$rI=<($G$-$J$$>l9g$d(B
-    $B2hA|$N%m!<%I$rL58z$K$7$F$$$k>l9g$d(B
-    $B%"%$%3%s$N<hF@$K<:GT$7$?$H$-$KI=<($5$l$^$9!#(B</p>
+    です。 
+    <var>string</var> に空白があるときは、引用符 (<code>"</code> か
+    <code>'</code>) で囲む必要があります。
+    この文字列は、クライアントが画像を表示できない場合や
+    画像のロードを無効にしている場合や
+    アイコンの取得に失敗したときに表示されます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       AddAltByEncoding gzip x-gzip
     </example>
 </usage>
@@ -255,8 +255,8 @@
 
 <directivesynopsis>
 <name>AddAltByType</name>
-<description>$B%"%$%3%s$NBe$o$j$K(B
-$BI=<($5$l$k!"(BMIME $B%?%$%W$GA*Br$5$l$?BeBX%F%-%9%H(B</description>
+<description>アイコンの代わりに
+表示される、MIME タイプで選択された代替テキスト</description>
 <syntax>AddAltByType <var>string</var> <var>MIME-type</var>
 [<var>MIME-type</var>] ...</syntax>
 <contextlist><context>server config</context>
@@ -266,19 +266,19 @@
 <override>Indexes</override>
 
 <usage>
-    <p><directive>AddAltByType</directive> $B$O!"(B
+    <p><directive>AddAltByType</directive> は、
     <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    $B$K$*$$$F!"%"%$%3%s$NBe$o$j$KI=<($9$kBeBXJ8;zNs$r@_Dj$7$^$9!#(B
-    <var>MIME-type</var> $B$OM-8z$J%?%$%W!"Nc$($P(B
+    において、アイコンの代わりに表示する代替文字列を設定します。
+    <var>MIME-type</var> は有効なタイプ、例えば
     <code>text/html</code>
-    $B$G$9!#(B
-    <var>string</var> $B$K6uGr$,$"$k$H$-$O!"0zMQId(B (<code>"</code> $B$+(B
-    <code>'</code>) $B$G0O$`I,MW$,$"$j$^$9!#(B
-    $B$3$NJ8;zNs$O!"%/%i%$%"%s%H$,2hA|$rI=<($G$-$J$$>l9g$d(B
-    $B2hA|$N%m!<%I$rL58z$K$7$F$$$k>l9g$d(B
-    $B%"%$%3%s$N<hF@$K<:GT$7$?$H$-$KI=<($5$l$^$9!#(B</p>
+    です。
+    <var>string</var> に空白があるときは、引用符 (<code>"</code> か
+    <code>'</code>) で囲む必要があります。
+    この文字列は、クライアントが画像を表示できない場合や
+    画像のロードを無効にしている場合や
+    アイコンの取得に失敗したときに表示されます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       AddAltByType 'plain text' text/plain
     </example>
 </usage>
@@ -286,7 +286,7 @@
 
 <directivesynopsis>
 <name>AddDescription</name>
-<description>$B%U%!%$%k$KBP$7$FI=<($9$k@bL@(B</description>
+<description>ファイルに対して表示する説明</description>
 <syntax>AddDescription <var>string</var> <var>file</var> [<var>file</var>] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -296,50 +296,50 @@
 
 <usage>
     <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    $B$K$*$$$F!"%U%!%$%k$KBP$7$FI=<($9$k@bL@$r@_Dj$7$^$9!#(B
-    <var>file</var> $B$O@bL@$9$k%U%!%$%k$N%U%!%$%k3HD%;R!"(B
-    $B%U%!%$%kL>$N0lIt!"%o%$%k%I%+!<%II=8=!"40A4$J%U%!%$%kL>$N(B
-    $B$I$l$+$K$J$j$^$9!#(B
-    <var>string</var> $B$OFs=E0zMQId(B (<code>"</code>) $B$G0O$^$l$^$9!#(B</p>
+    において、ファイルに対して表示する説明を設定します。
+    <var>file</var> は説明するファイルのファイル拡張子、
+    ファイル名の一部、ワイルドカード表現、完全なファイル名の
+    どれかになります。
+    <var>string</var> は二重引用符 (<code>"</code>) で囲まれます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       AddDescription "The planet Mars" /web/pics/mars.gif
     </example>
 
-    <p>$BDL>o$N%G%U%)%k%H$N@bL@NN0h$O(B 23 $B%P%$%H$NI}$G$9!#(B
+    <p>通常のデフォルトの説明領域は 23 バイトの幅です。
     <code><a href="#indexoptions.suppressicon"
     >IndexOptions SuppressIcon</a></code>
-    $B%*%W%7%g%s$G(B 6 $B%P%$%HDI2C!"(B
+    オプションで 6 バイト追加、
     <code><a href="#indexoptions.suppresssize"
     >IndexOptions SuppressSize</a></code>
-    $B%*%W%7%g%s$G(B 7 $B%P%$%HDI2C!"(B
+    オプションで 7 バイト追加、
     <code><a href="#indexoptions.suppresslastmodified"
     >IndexOptions SuppressLastModified</a></code>
-    $B%*%W%7%g%s$G(B 19 $B%P%$%HDI2C$5$l$^$9!#(B
-    $B$G$9$+$i!"%G%U%)%k%H$N@bL@%3%i%`$N:GBgI}$O(B
-    55 $B%P%$%H$K$J$j$^$9!#(B</p>
+    オプションで 19 バイト追加されます。
+    ですから、デフォルトの説明コラムの最大幅は
+    55 バイトになります。</p>
 
-    <p>$B$3$N%3%i%`$NBg$-$5$r>e=q$-$7$?$j!"(B
-    $B@bL@$,L5@)8BD9$G$b$h$$$h$&$K$9$k$?$a$N>\:Y$K4X$7$F$O!"(B
+    <p>このコラムの大きさを上書きしたり、
+    説明が無制限長でもよいようにするための詳細に関しては、
     <a href="#indexoptions.descriptionwidth">DescriptionWidth</a>
-    $B$H$$$&(B
+    という
     <directive module="mod_autoindex">IndexOptions</directive> 
-    $B$N%-!<%o!<%I$r$4Mw2<$5$$!#(B</p>
+    のキーワードをご覧下さい。</p>
 
-    <note><title>$B7Y9p(B</title>
+    <note><title>警告</title>
       <p><directive>AddDescription</directive> 
-      $B$GDj5A$5$l$?@bL@%F%-%9%H$O!"%?%0$dJ8;zNs$H$$$C$?(B
-      HTML $B%^!<%/%"%C%W$r4^$`$3$H$,$G$-$^$9!#(B
-      $B$b$7!"@bL@%3%i%`$NI}$K$h$C$F%?%0IU$1$5$l$?MWAG$,4]$a9~$^$l$?(B
-       ($BB@;z$N8l6g$N:G8e$,@Z$l$k$H$$$C$?(B) $B>l9g!"(B
-      $B=PNO7k2L$O!"%G%#%l%/%H%j0lMw$N;D$j$NItJ,$K1F6A$rM?$($k$G$7$g$&!#(B</p>
+      で定義された説明テキストは、タグや文字列といった
+      HTML マークアップを含むことができます。
+      もし、説明コラムの幅によってタグ付けされた要素が丸め込まれた
+       (太字の語句の最後が切れるといった) 場合、
+      出力結果は、ディレクトリ一覧の残りの部分に影響を与えるでしょう。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddIcon</name>
-<description>$B%U%!%$%k$KI=<($9$k%"%$%3%s$rL>A0$GA*Br(B</description>
+<description>ファイルに表示するアイコンを名前で選択</description>
 <syntax>AddIcon <var>icon</var> <var>name</var>
 [<var>name</var>] ...</syntax>
 <contextlist><context>server config</context>
@@ -350,37 +350,37 @@
 
 <usage>
     <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    $B$K$*$$$F!"(B
-    <var>name</var> $B$G=*$o$k%U%!%$%k$NNY$KI=<($9$k%"%$%3%s$r@_Dj$7$^$9!#(B
-    <var>icon</var> $B$O!"(B(% $B$G%(%9%1!<%W$5$l$?(B) $B%"%$%3%s$X$NAjBP(B URL
-    $B$+!"B>$N=q<0(B (<var>alttext</var>, <var>url</var>) $B$G$9!#(B
-    $B$3$3$G(B <var>alttext</var>
-    $B$O!"Hs%0%i%U%#%+%k%V%i%&%68~$1$K%"%$%3%s$KIU$1$i$l$?%F%-%9%H%?%0$G$9!#(B
+    において、
+    <var>name</var> で終わるファイルの隣に表示するアイコンを設定します。
+    <var>icon</var> は、(% でエスケープされた) アイコンへの相対 URL
+    か、他の書式 (<var>alttext</var>, <var>url</var>) です。
+    ここで <var>alttext</var>
+    は、非グラフィカルブラウザ向けにアイコンに付けられたテキストタグです。
     </p>
 
-    <p><var>name</var> $B$O!"%G%#%l%/%H%j$KBP1~$9$k(B <code>^^DIRECTORY^^</code>
-    $B$+!"6uGr9T$KBP1~$9$k(B <code>^^BLANKICON^^</code>  ($B0lMw$,@5$7$/I=<($5$l$k$?$a$K(B) $B$+!"(B
-    $B%U%!%$%k3HD%;R$+!"%o%$%k%I%+!<%II=8=$+!"%U%!%$%kL>$N0lIt$+(B
-    $B40A4$J%U%!%$%kL>$G$9!#(B</p>
+    <p><var>name</var> は、ディレクトリに対応する <code>^^DIRECTORY^^</code>
+    か、空白行に対応する <code>^^BLANKICON^^</code>  (一覧が正しく表示されるために) か、
+    ファイル拡張子か、ワイルドカード表現か、ファイル名の一部か
+    完全なファイル名です。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       AddIcon (IMG,/icons/image.xbm) .gif .jpg .xbm<br />
       AddIcon /icons/dir.xbm ^^DIRECTORY^^<br />
       AddIcon /icons/backup.xbm *~
     </example>
     
-    <p>$B$b$72DG=$J$i!"(B
+    <p>もし可能なら、
     <directive>AddIcon</directive>
-    $B$h$j(B
+    より
     <directive module="mod_autoindex">AddIconByType</directive>
-    $B$rM%@hE*$K;H$&$Y$-$G$7$g$&!#(B</p>
+    を優先的に使うべきでしょう。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddIconByEncoding</name>
-<description>$B%U%!%$%k$KI=<($9$k%"%$%3%s$r(B MIME 
-$BId9f2=J}K!$GA*Br(B</description>
+<description>ファイルに表示するアイコンを MIME 
+符号化方法で選択</description>
 <syntax>AddIconByEncoding <var>icon</var> <var>MIME-encoding</var>
 [<var>MIME-encoding</var>] ...</syntax>
 <contextlist><context>server config</context>
@@ -391,17 +391,17 @@
 
 <usage>
     <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    $B$K$*$$$F!"%U%!%$%k$NNY$KI=<($9$k%"%$%3%s$r@_Dj$7$^$9!#(B
-    <var>icon</var> $B$O!"(B(% $B$G%(%9%1!<%W$5$l$?(B) $B%"%$%3%s$X$NAjBP(B URL
-    $B$+!"B>$N=q<0(B <code>(<var>alttext</var>, <var>url</var>)</code> $B$G$9!#(B
-    $B$3$3$G(B <var>alttext</var>
-    $B$O!"Hs%0%i%U%#%+%k%V%i%&%68~$1$K%"%$%3%s$KIU$1$i$l$?%F%-%9%H%?%0$G$9!#(B
+    において、ファイルの隣に表示するアイコンを設定します。
+    <var>icon</var> は、(% でエスケープされた) アイコンへの相対 URL
+    か、他の書式 <code>(<var>alttext</var>, <var>url</var>)</code> です。
+    ここで <var>alttext</var>
+    は、非グラフィカルブラウザ向けにアイコンに付けられたテキストタグです。
     </p>
 
-    <p><var>MIME-encoding</var> $B$O!"MW5a$5$l$?%(%s%3!<%I$K3:Ev$9$k(B
-    $B%o%$%k%I%+!<%II=8=$G$9!#(B</p>
+    <p><var>MIME-encoding</var> は、要求されたエンコードに該当する
+    ワイルドカード表現です。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       AddIconByEncoding /icons/compress.xbm x-compress
     </example>
 </usage>
@@ -409,8 +409,8 @@
 
 <directivesynopsis>
 <name>AddIconByType</name>
-<description>$B%U%!%$%k$NNY$KI=<($9$k%"%$%3%s$r(B
-MIME $B%?%$%W$K$h$C$FA*Br(B</description>
+<description>ファイルの隣に表示するアイコンを
+MIME タイプによって選択</description>
 <syntax>AddIconByType <var>icon</var> <var>MIME-type</var>
 [<var>MIME-type</var>] ...</syntax>
 <contextlist><context>server config</context>
@@ -421,17 +421,17 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
 
 <usage>
     <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    $B$K$*$$$F!"%U%!%$%k$NNY$KI=<($9$k%"%$%3%s$r@_Dj$7$^$9!#(B
-    <var>icon</var> $B$O!"(B(% $B$G%(%9%1!<%W$5$l$?(B) $B%"%$%3%s$X$NAjBP(B URL
-    $B$+!"B>$N=q<0(B <code>(<var>alttext</var>, <var>url</var>)</code> $B$G$9!#(B
-    $B$3$3$G(B <var>alttext</var>
-    $B$O!"Hs%0%i%U%#%+%k%V%i%&%68~$1$K%"%$%3%s$KIU$1$i$l$?%F%-%9%H%?%0$G$9!#(B
+    において、ファイルの隣に表示するアイコンを設定します。
+    <var>icon</var> は、(% でエスケープされた) アイコンへの相対 URL
+    か、他の書式 <code>(<var>alttext</var>, <var>url</var>)</code> です。
+    ここで <var>alttext</var>
+    は、非グラフィカルブラウザ向けにアイコンに付けられたテキストタグです。
     </p>
 
-    <p><var>MIME-type</var> $B$O!"MW5a$5$l$?%?%$%W$K3:Ev$9$k(B
-    $B%o%$%k%I%+!<%II=8=$G$9!#(B</p>
+    <p><var>MIME-type</var> は、要求されたタイプに該当する
+    ワイルドカード表現です。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       AddIconByType (IMG,/icons/image.xbm) image/*
     </example>
 </usage>
@@ -439,8 +439,8 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
 
 <directivesynopsis>
 <name>DefaultIcon</name>
-<description>$BFCDj$N%"%$%3%s$,2?$b@_Dj$5$l$F$$$J$$;~$K(B
-$B%U%!%$%k$KI=<($9$k%"%$%3%s(B</description>
+<description>特定のアイコンが何も設定されていない時に
+ファイルに表示するアイコン</description>
 <syntax>DefaultIcon <var>url-path</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -450,12 +450,12 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
 
 <usage>
     <p><code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    $B$K$*$$$F!"(B
-    $BFCDj$N%"%$%3%s$,$J$$>l9g$K%U%!%$%k$KI=<($9$k%"%$%3%s$r@_Dj$7$^$9!#(B
-    <var>url-path</var> $B$O!"(B(% $B$G%(%9%1!<%W$5$l$?(B) $B%"%$%3%s$X$NAjBP(B URL
-    $B$G$9!#(B</p>
+    において、
+    特定のアイコンがない場合にファイルに表示するアイコンを設定します。
+    <var>url-path</var> は、(% でエスケープされた) アイコンへの相対 URL
+    です。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       DefaultIcon /icon/unknown.xbm
     </example>
 </usage>
@@ -464,7 +464,7 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
 <directivesynopsis>
 <name>HeaderName</name>
 <description>
-$B%$%s%G%C%/%90lMw$N@hF,$KA^F~$5$l$k%U%!%$%k$NL>A0(B</description>
+インデックス一覧の先頭に挿入されるファイルの名前</description>
 <syntax>HeaderName <var>filename</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -474,71 +474,71 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
 
 <usage>
     <p><directive>HeaderName</directive> 
-    $B%G%#%l%/%F%#%V$O!"(B
-    $B%$%s%G%C%/%90lMw$N@hF,$KA^F~$9$k%U%!%$%k$NL>A0$r@_Dj$7$^$9!#(B
-    <var>Filename</var> $B$O<h$j9~$`%U%!%$%k$NL>A0$G$9!#(B</p>
+    ディレクティブは、
+    インデックス一覧の先頭に挿入するファイルの名前を設定します。
+    <var>Filename</var> は取り込むファイルの名前です。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       HeaderName HEADER.html
     </example>
 
     <note>
-      <p>HeaderName $B$b(B <directive
+      <p>HeaderName も <directive
       module="mod_autoindex">ReadmeName</directive> 
-      $B$bN>J}$H$b8=:_$O!"(B<var>filename</var> 
-      $B$r%$%s%G%C%/%9$5$l$F$$$k%G%#%l%/%H%j$KMQ$$$i$l$?(B URI
-      $B$KBP$9$kAjBP(B URI $B%Q%9$H$7$F07$$$^$9!#(B
-      <var>filename</var> $B$,%9%i%C%7%e$G;O$^$k>l9g$O!"(B
+      も両方とも現在は、<var>filename</var> 
+      をインデックスされているディレクトリに用いられた URI
+      に対する相対 URI パスとして扱います。
+      <var>filename</var> がスラッシュで始まる場合は、
       <directive module="core">DocumentRoot</directive>
-      $B$+$i$NAjBP%Q%9$H$J$j$^$9!#(B</p>
+      からの相対パスとなります。</p>
 
-      <example><title>$BNc(B</title>
+      <example><title>例</title>
         HeaderName /include/HEADER.html
       </example>
       
-      <p><var>filename</var> $B$O(B
-      $B%a%8%c!<%3%s%F%s%H%?%$%W$,(B "<code>text/*</code>" 
-       (<em>$BNc$($P(B</em>$B!"(B<code>text/html</code>, 
-      <code>text/plain</code> $BEy$G$9!#(B) 
-      $B$N%I%-%e%a%s%H$H$7$F2r7h(B
-      $B$5$l$J$1$l$P$J$j$^$;$s!#$3$l$O$D$^$j!"(B
-      $B$b$7(B CGI $B%9%/%j%W%H$N<B:]$N%U%!%$%k%?%$%W$,(B
-      $B<!$N%G%#%l%/%F%#%V$N$h$&$K$7$F<B:]$N=PNO$H$O0[$J$C$F(B
-      <code>text/html</code> $B$H$7$F%^!<%/$5$l$F$$$k>l9g!"(B
+      <p><var>filename</var> は
+      メジャーコンテントタイプが "<code>text/*</code>" 
+       (<em>例えば</em>、<code>text/html</code>, 
+      <code>text/plain</code> 等です。) 
+      のドキュメントとして解決
+      されなければなりません。これはつまり、
+      もし CGI スクリプトの実際のファイルタイプが
+      次のディレクティブのようにして実際の出力とは異なって
+      <code>text/html</code> としてマークされている場合、
       <var>filename</var>
-      $B$O(B CGI $B%9%/%j%W%H$r;2>H$9$k$+$bCN$l$J$$!"(B
-      $B$H$$$&$3$H$r0UL#$7$^$9(B:</p>
+      は CGI スクリプトを参照するかも知れない、
+      ということを意味します:</p>
 
       <example>
         AddType text/html .cgi
       </example>
 
-      <p><directive module="core">Options</directive> <code>MultiViews</code> $B$,(B
-      $BM-8z$K$J$C$F$$$k>l9g$O!"(B
-      <a href="../content-negotiation.html">$B%3%s%F%s%H%M%4%7%(!<%7%g%s(B</a>
-      $B$,9T$J$o$l$^$9!#(B
-      $B$b$7(B <var>filename</var> $B$,(B (CGI $B%9%/%j%W%H$G$J$$(B) $B@EE*$J(B 
-      <code>text/html</code> $B%I%-%e%a%s%H$G2r7h$5$l!"(B
+      <p><directive module="core">Options</directive> <code>MultiViews</code> が
+      有効になっている場合は、
+      <a href="../content-negotiation.html">コンテントネゴシエーション</a>
+      が行なわれます。
+      もし <var>filename</var> が (CGI スクリプトでない) 静的な 
+      <code>text/html</code> ドキュメントで解決され、
       <directive module="core">options</directive>
-      <code>Includes</code> $B$+(B <code>IncludesNOEXEC</code>
-      $B$,M-8z$K$J$C$F$$$k>l9g$O!"(B
-      $B%U%!%$%k$O%5!<%P!<%5%$%I%$%s%/%k!<%I$G=hM}$5$l$^$9(B
-      (<module>mod_include</module> $B%I%-%e%a%s%H$r;2>H$7$F2<$5$$(B)$B!#(B</p>
+      <code>Includes</code> か <code>IncludesNOEXEC</code>
+      が有効になっている場合は、
+      ファイルはサーバーサイドインクルードで処理されます
+      (<module>mod_include</module> ドキュメントを参照して下さい)。</p>
     </note>
 
-    <p>$B$b$7(B <directive>HeaderName</directive> $B$G;XDj$5$l$?%U%!%$%k$,(B
-    HTML $B%I%-%e%a%s%H$N3+;OItJ,(B (&lt;html&gt;, &lt;head&gt;, 
-    $BEy(B) $B$r4^$s$G$$$?$i!"(B
+    <p>もし <directive>HeaderName</directive> で指定されたファイルが
+    HTML ドキュメントの開始部分 (&lt;html&gt;, &lt;head&gt;, 
+    等) を含んでいたら、
     <a href="#indexoptions.suppresshtmlpreamble"><code>IndexOptions
     +SuppressHTMLPreamble</code></a>
-    $B$r@_Dj$7$F!"$3$l$i$N%?%0$,7+$jJV$5$l$J$$$h$&$K$7$?$$$H;W$&$G$7$g$&!#(B</p>
+    を設定して、これらのタグが繰り返されないようにしたいと思うでしょう。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>IndexIgnore</name>
-<description>$B%G%#%l%/%H%j0lMw$r9T$J$&:]$KL5;k$9$Y$-(B
-$B%U%!%$%k%j%9%H$KDI2C(B</description>
+<description>ディレクトリ一覧を行なう際に無視すべき
+ファイルリストに追加</description>
 <syntax>IndexIgnore <var>file</var> [<var>file</var>] ...</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -547,13 +547,13 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
 <override>Indexes</override>
 
 <usage>
-    <p><directive>IndexIgnore</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B%G%#%l%/%H%j$N0lMw$r9T$&:]$KL5;k$9$Y$-%U%!%$%k%j%9%H$KDI2C$7$^$9!#(B
-    <var>file</var> $B$O!"(B
-    $B%7%'%k7A<0$N%o%$%k%I%+!<%II=8=$+40A4$J%U%!%$%kL>$G$9!#(B
-    IndexIgnore $B$,J#?t$"$k>l9g$O!"L5;k$9$k%j%9%H$KDI2C$,9T$o$l!"(B
-    $BCV49$O9T$o$l$^$;$s!#%G%U%)%k%H$G$O%j%9%H$K$O(B <code>.</code>
-    ($B%+%l%s%H%G%#%l%/%H%j(B) $B$,4^$^$l$F$$$^$9!#(B</p>
+    <p><directive>IndexIgnore</directive> ディレクティブは、
+    ディレクトリの一覧を行う際に無視すべきファイルリストに追加します。
+    <var>file</var> は、
+    シェル形式のワイルドカード表現か完全なファイル名です。
+    IndexIgnore が複数ある場合は、無視するリストに追加が行われ、
+    置換は行われません。デフォルトではリストには <code>.</code>
+    (カレントディレクトリ) が含まれています。</p>
 
     <example>
       IndexIgnore README .htaccess *.bak *~
@@ -563,7 +563,7 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
 
 <directivesynopsis>
 <name>IndexOptions</name>
-<description>$B%G%#%l%/%H%j%$%s%G%C%/%9$NMM!9$J@_Dj9`L\(B
+<description>ディレクトリインデックスの様々な設定項目
 </description>
 <syntax>IndexOptions  [+|-]<var>option</var> [[+|-]<var>option</var>] ...</syntax>
 <contextlist><context>server config</context>
@@ -574,268 +574,268 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
 
 <usage>
     <p><directive>IndexOptions</directive> 
-    $B$O!"%G%#%l%/%H%j%$%s%G%C%/%9$N5sF0$r;XDj$7$^$9!#(B
-    <var>option</var> $B$O<!$N$I$l$+$G$9(B:</p>
+    は、ディレクトリインデックスの挙動を指定します。
+    <var>option</var> は次のどれかです:</p>
 
     <dl>
       <dt><a name="indexoptions.descriptionwidth"
                id="indexoptions.descriptionwidth"
       >DescriptionWidth=[<var>n</var> | *]</a>
-      (<em>2.0.23 $B0J9_(B</em>)</dt>
+      (<em>2.0.23 以降</em>)</dt>
 
       <dd><code>DescriptionWidth</code> 
-      $B%-!<%o!<%I$O@bL@%3%i%`$NI}$rJ8;z?t$G;XDj$9$k$3$H$,$G$-$^$9!#(B</dd>
+      キーワードは説明コラムの幅を文字数で指定することができます。</dd>
 
-      <dd><code>-DescriptionWidth</code> ($B$^$?$OHs@_Dj(B) $B$G!"(B
-      <module>mod_autoindex</module> $B$,:GE,$JI}$r7W;;$9$k$h$&$K$G$-$^$9!#(B</dd>
+      <dd><code>-DescriptionWidth</code> (または非設定) で、
+      <module>mod_autoindex</module> が最適な幅を計算するようにできます。</dd>
 
       <dd><code>DescriptionWidth=<var>n</var></code> 
-      $B$G!"%3%i%`I}$r(B <var>n</var> $B%P%$%H$K8GDj$7$^$9!#(B</dd>
+      で、コラム幅を <var>n</var> バイトに固定します。</dd>
 
       <dd><code>DescriptionWidth=*</code> 
-      $B$O!":GD9$N@bL@$K9g$o$;$FI,MW$JD9$5$^$G%3%i%`$r1d$P$7$^$9!#(B</dd>
+      は、最長の説明に合わせて必要な長さまでコラムを延ばします。</dd>
 
-      <dd><strong>$B@bL@$r4]$a9~$s$@>l9gFCM-$N4m81$K$D$$$F$O(B
+      <dd><strong>説明を丸め込んだ場合特有の危険については
       <directive module="mod_autoindex">AddDescription</directive>
-      $B%;%/%7%g%s$r$*FI$_2<$5$$!#(B</strong></dd>
+      セクションをお読み下さい。</strong></dd>
 
       <dt><a name="indexoptions.fancyindexing"
                id="indexoptions.fancyindexing">FancyIndexing</a></dt>
 
-      <dd>$B>~$jIU$-%$%s%G%C%/%9$r%*%s$K$7$^$9!#(B</dd>
+      <dd>飾り付きインデックスをオンにします。</dd>
 
       <dt><a name="indexoptions.foldersfirst"
                id="indexoptions.foldersfirst">FoldersFirst</a>
-      (<em>2.0.23 $B0J9_(B</em>)</dt>
+      (<em>2.0.23 以降</em>)</dt>
 
-      <dd>$B$3$N%*%W%7%g%s$,M-8z$K$J$C$?>l9g!"%5%V%G%#%l%/%H%j$N0lMw$O(B
-      <em>$BI,$:(B</em>$B:G=i$K8=$o$l$F!"$=$N%G%#%l%/%H%j$NDL>o$N%U%!%$%k$O(B
-      $B$=$N8e$KB3$-$^$9!#(B
-      $B0lMw$O4pK\E*$K$O!"%U%!%$%k$H%G%#%l%/%H%j$NFs$D$NItJ,$KJ,$1$i$l$F!"(B
-      $B$=$l$>$l$OJL!9$K%=!<%H$5$l!"$=$N8e%5%V%G%#%l%/%H%j$r@h$K$7$F(B
-      $BI=<($,9T$J$o$l$^$9!#Nc$($P%=!<%H=g$,L>A0$N9_=g$K$J$C$F$$$F!"(B
-      <code>FoldersFirst</code> $B$,M-8z$K$J$C$F$$$k>l9g$O!"(B
-      $B%5%V%G%#%l%/%H%j(B <code>Zed</code> $B$O%5%V%G%#%l%/%H%j(B
-      <code>Beta</code> $B$h$j$bA0$K%j%9%H$5$l!"DL>o$N%U%!%$%k(B
-      <code>Gamma</code> $B$d(B <code>Alpha</code>
-      $B$h$j$bA0$K%j%9%H$5$l$^$9!#(B<strong>$B$3$N%*%W%7%g%s$O(B
+      <dd>このオプションが有効になった場合、サブディレクトリの一覧は
+      <em>必ず</em>最初に現われて、そのディレクトリの通常のファイルは
+      その後に続きます。
+      一覧は基本的には、ファイルとディレクトリの二つの部分に分けられて、
+      それぞれは別々にソートされ、その後サブディレクトリを先にして
+      表示が行なわれます。例えばソート順が名前の降順になっていて、
+      <code>FoldersFirst</code> が有効になっている場合は、
+      サブディレクトリ <code>Zed</code> はサブディレクトリ
+      <code>Beta</code> よりも前にリストされ、通常のファイル
+      <code>Gamma</code> や <code>Alpha</code>
+      よりも前にリストされます。<strong>このオプションは
       <a href="#indexoptions.fancyindexing"><code>FancyIndexing</code></a>
-      $B$bM-8z$K$J$C$F$$$k$H$-$K$N$_!"8z2L$,$"$j$^$9!#(B</strong></dd>
+      も有効になっているときにのみ、効果があります。</strong></dd>
 
       <dt><a name="indexoptions.htmltable"
-               id="indexoptions.htmltable">HTMLTable</a> <em>($B<B83E*!"(B
-      Apache 2.0.23 $B0J9_(B)</em></dt>
+               id="indexoptions.htmltable">HTMLTable</a> <em>(実験的、
+      Apache 2.0.23 以降)</em></dt>
 
-      <dd>$B$3$N<B83E*$J%*%W%7%g%s$O(B FancyIndexing $B$H$H$b$K;XDj$9$k$3$H$G!"(B
-      $B>~$j$NIU$$$?%G%#%l%/%H%j0lMw$N$?$a$K%F!<%V%k$r;H$C$?C1=c$JI=$r:n$j$^$9!#(B
-      $B$3$l$O8E$$%V%i%&%6$r:.Mp$5$;$k$+$b$7$l$J$$$3$H$KCm0U$7$F$/$@$5$$!#(B
-      WinNT $B$d$=$NB>(B utf-8 
-      $B$,M-8z$J%W%i%C%H%[!<%`$N$h$&$K!"%U%!%$%kL>$d@bL@%F%-%9%H$,(B
-      $B1&FI$_$K$J$C$?$j:8FI$_$K$J$j$($k>l9g$OFC$KI,MW$G$9!#(B</dd>
+      <dd>この実験的なオプションは FancyIndexing とともに指定することで、
+      飾りの付いたディレクトリ一覧のためにテーブルを使った単純な表を作ります。
+      これは古いブラウザを混乱させるかもしれないことに注意してください。
+      WinNT やその他 utf-8 
+      が有効なプラットホームのように、ファイル名や説明テキストが
+      右読みになったり左読みになりえる場合は特に必要です。</dd>
 
       <dt><a name="indexoptions.iconsarelinks"
                id="indexoptions.iconsarelinks">IconsAreLinks</a></dt>
 
-      <dd>$B$3$l$O!"(BFancyIndexing $B$K$*$$$F!"(B
-      $B%"%$%3%s$b%U%!%$%kL>$X$N%j%s%/$N0lIt$K$7$^$9!#(B</dd>
+      <dd>これは、FancyIndexing において、
+      アイコンもファイル名へのリンクの一部にします。</dd>
 
       <dt><a name="indexoptions.iconheight"
                id="indexoptions.iconheight">IconHeight[=<var
 	       >pixels</var>]</a></dt>
 
-      <dd>$B$3$N%*%W%7%g%s$,!"(BIconWidth $B$H$H$b$K;H$o$l$F$$$k>l9g$O!"(B
-      $B%5!<%P$O%U%!%$%k%"%$%3%s$N$?$a$N(B <code>img</code>
-      $B%?%0$K(B <code>height</code> $B$H(B <code>width</code>
-      $BB0@-$r<h$j9~$`$h$&$K$J$j$^$9!#(B
-      $B$3$l$K$h$C$F!"%$%a!<%8A4$F$r%m!<%I$7=*$o$k$^$GBT$?$J$/$F$b!"(B
-      $B%V%i%&%6$O%Z!<%8%l%$%"%&%H$r$"$i$+$8$a7W;;$9$k$3$H$,$G$-$^$9!#(B
-      $B$3$N%*%W%7%g%s$K2?$bCM$,M?$($i$l$J$1$l$P!"(BApache
-      $B%=%U%H%&%'%"$GDs6!$5$l$F$$$k%"%$%3%s$NI8=`$N9b$5$,(B
-      $B%G%U%)%k%H$J$j$^$9!#(B</dd>
+      <dd>このオプションが、IconWidth とともに使われている場合は、
+      サーバはファイルアイコンのための <code>img</code>
+      タグに <code>height</code> と <code>width</code>
+      属性を取り込むようになります。
+      これによって、イメージ全てをロードし終わるまで待たなくても、
+      ブラウザはページレイアウトをあらかじめ計算することができます。
+      このオプションに何も値が与えられなければ、Apache
+      ソフトウェアで提供されているアイコンの標準の高さが
+      デフォルトなります。</dd>
 
       <dt><a name="indexoptions.iconwidth"
                id="indexoptions.iconwidth">IconWidth[=<var
 	       >pixels</var>]</a></dt>
 
-      <dd>$B$3$N%*%W%7%g%s$,!"(B<code>IconHeight</code> $B$H$H$b$K;H$o$l$F$$$k>l9g$O!"(B
-      $B%5!<%P$O%U%!%$%k%"%$%3%s$N$?$a$N(B <code>img</code>
-      $B%?%0$K(B <code>height</code> $B$H(B <code>width</code>
-      $BB0@-$r<h$j9~$`$h$&$K$J$j$^$9!#(B
-      $B$3$l$K$h$C$F!"%$%a!<%8A4$F$r%m!<%I$7=*$o$k$^$GBT$?$J$/$F$b!"(B
-      $B%V%i%&%6$O%Z!<%8%l%$%"%&%H$r$"$i$+$8$a7W;;$9$k$3$H$,$G$-$^$9!#(B
-      $B$3$N%*%W%7%g%s$K2?$bCM$,M?$($i$l$J$1$l$P!"(BApache
-      $B%=%U%H%&%'%"$GDs6!$5$l$F$$$k%"%$%3%s$NI8=`$N9b$5$,(B
-      $B%G%U%)%k%H$J$j$^$9!#(B</dd>
+      <dd>このオプションが、<code>IconHeight</code> とともに使われている場合は、
+      サーバはファイルアイコンのための <code>img</code>
+      タグに <code>height</code> と <code>width</code>
+      属性を取り込むようになります。
+      これによって、イメージ全てをロードし終わるまで待たなくても、
+      ブラウザはページレイアウトをあらかじめ計算することができます。
+      このオプションに何も値が与えられなければ、Apache
+      ソフトウェアで提供されているアイコンの標準の高さが
+      デフォルトなります。</dd>
 
       <dt><a name="indexoptions.ignorecase"
                id="indexoptions.ignorecase">IgnoreCase</a></dt>
 
-      <dd>$B$3$N%*%W%7%g%s$,M-8z$G$"$k$H!"%U%!%$%kL>$OBgJ8;z>.J8;z$r6hJL$;$:$K%=!<%H$5$l$^$9!#(B
-      $BNc$($P%U%!%$%kL>$,>:=g$G%=!<%H$5$l!"(BIgnoreCase $B$,M-8z$G$"$l$P!"(B
-      Zeta $B$O(B alfa $B$N8e$K%j%9%H$5$l$^$9(B
-      ($BCm0U(B: GAMMA $B$O>o$K(B gamma $B$NA0$K$J$j$^$9(B)$B!#(B</dd>
+      <dd>このオプションが有効であると、ファイル名は大文字小文字を区別せずにソートされます。
+      例えばファイル名が昇順でソートされ、IgnoreCase が有効であれば、
+      Zeta は alfa の後にリストされます
+      (注意: GAMMA は常に gamma の前になります)。</dd>
 
       <dt><a name="indexoptions.ignoreclient"
                id="indexoptions.ignoreclient">IgnoreClient</a></dt>
 
-      <dd>$B$3$N%*%W%7%g%s$G(B <module>mod_autoindex</module> $B$O!"(B
-      $B%/%i%$%"%s%H$+$i$NA4$F$N%/%(%j!<JQ?t$rL5;k$9$k$h$&$K$J$j$^$9!#(B
-      $B$3$l$O%=!<%H=g$b4^$_$^$9!#(B
-      ($B$D$^$j(B <code><a href="#indexoptions.suppresscolumnsorting"
+      <dd>このオプションで <module>mod_autoindex</module> は、
+      クライアントからの全てのクエリー変数を無視するようになります。
+      これはソート順も含みます。
+      (つまり <code><a href="#indexoptions.suppresscolumnsorting"
       >SuppressColumnSorting</a></code>
-      $B$r0E$K0UL#$7$^$9!#(B)</dd>
+      を暗に意味します。)</dd>
 
       <dt><a name="indexoptions.namewidth"
                id="indexoptions.namewidth">NameWidth=[<var>n</var> 
 	       | *]</a></dt>
 
-      <dd><code>NameWidth</code> $B%-!<%o!<%I$G%U%!%$%kL>%3%i%`$NI}$r%P%$%H?t$G(B
-      $B;XDj$G$-$^$9!#(B</dd>
+      <dd><code>NameWidth</code> キーワードでファイル名コラムの幅をバイト数で
+      指定できます。</dd>
 
-      <dd><code>-NameWidth</code> ($B$^$?$OHs@_Dj(B) $B$G!"(B
-      <module>mod_autoindex</module> $B$,:GE,$JI}$r7W;;$9$k$h$&$K$G$-$^$9!#(B</dd>
+      <dd><code>-NameWidth</code> (または非設定) で、
+      <module>mod_autoindex</module> が最適な幅を計算するようにできます。</dd>
 
       <dd><code>NameWidth=<var>n</var></code> 
-      $B$G!"%3%i%`I}$r(B <var>n</var> $B%P%$%H$K8GDj$7$^$9!#(B</dd>
+      で、コラム幅を <var>n</var> バイトに固定します。</dd>
 
       <dd><code>NameWidth=*</code>
-      $B$O!"I,MW$JD9$5$^$G%3%i%`$r1d$P$7$^$9!#(B</dd>
+      は、必要な長さまでコラムを延ばします。</dd>
 
       <dt><a name="indexoptions.scanhtmltitles"
                id="indexoptions.scanhtmltitles">ScanHTMLTitles</a></dt>
 
-      <dd>FancyIndexing $B$N$?$a$K!"(B
-       HTML $B%I%-%e%a%s%H$+$i%?%$%H%k$r<h$j=P$9$3$H$r2DG=$K$7$^$9!#(B
-      $B$b$7%U%!%$%k$K(B
+      <dd>FancyIndexing のために、
+       HTML ドキュメントからタイトルを取り出すことを可能にします。
+      もしファイルに
       <directive module="mod_autoindex">AddDescription</directive>
-      $B$G@bL@$,M?$($i$l$F$$$J$1$l$P!"(B
-      httpd $B$O(B <code>title</code> $B%?%0$NCM$rFI$`$?$a$K%I%-%e%a%s%H$rFI$_;O$a$^$9!#(B
-      $B$3$l$O(B CPU $B$d(B disk $B$KIi2Y$r$+$1$^$9!#(B</dd>
+      で説明が与えられていなければ、
+      httpd は <code>title</code> タグの値を読むためにドキュメントを読み始めます。
+      これは CPU や disk に負荷をかけます。</dd>
 
       <dt><a name="indexoptions.showforbidden"
                id="indexoptions.showforbidden">ShowForbidden</a></dt>
 
-      <dd>$B;XDj$7$?>l9g$G$"$C$F$b!"%5%V%j%/%(%9%H$N7k2L$,(B HTTP_UNAUTHORIZED $B$d(B
-      HTTP_FORBIDDEN $B$N%U%!%$%k$ODL>oDL$j1#$5$l$?>uBV$N$^$^!"(B
-      $B%U%!%$%k0lMw$,@8@.$5$l$^$9!#(B</dd>
+      <dd>指定した場合であっても、サブリクエストの結果が HTTP_UNAUTHORIZED や
+      HTTP_FORBIDDEN のファイルは通常通り隠された状態のまま、
+      ファイル一覧が生成されます。</dd>
 
       <dt><a name="indexoptions.suppresscolumnsorting"
                id="indexoptions.suppresscolumnsorting"
 	       >SuppressColumnSorting</a></dt>
 
-      <dd>$B$b$7;XDj$5$l$F$$$l$P!"(BApache $B$O(B
-      FancyIndexing $B$GI=<($5$l$F$$$k%G%#%l%/%H%j0lMw$G$N(B
-      $B%3%i%`$N@hF,$r!"%=!<%H$N$?$a$N%j%s%/$K$7$J$/$J$j$^$9!#(B
-      $B%G%U%)%k%H$N5sF0$O!"%j%s%/$H$7$^$9!#(B
-      $B%3%i%`$N@hF,$rA*$V$H%3%i%`$NCM$K=>$C$F%G%#%l%/%H%j%j%9%H$r(B
-      $B%=!<%H$7$^$9!#(B
-      <strong>Apache 2.0.23 $B0JA0$G$O!"$3$l$OF1;~$K(B
-      $B%=!<%HJ8;zNs$N$?$a$N%/%(%j!<0z?t$N2r@O$bL58z$K$7$^$9!#(B
+      <dd>もし指定されていれば、Apache は
+      FancyIndexing で表示されているディレクトリ一覧での
+      コラムの先頭を、ソートのためのリンクにしなくなります。
+      デフォルトの挙動は、リンクとします。
+      コラムの先頭を選ぶとコラムの値に従ってディレクトリリストを
+      ソートします。
+      <strong>Apache 2.0.23 以前では、これは同時に
+      ソート文字列のためのクエリー引数の解析も無効にします。
       </strong>
-      $B$3$N5sF0$O(B Apache 2.0.23 $B$G$O(B
+      この挙動は Apache 2.0.23 では
       <a href="#indexoptions.ignoreclient">IndexOptions
-      IgnoreClient</a> $B$G@)8f$5$l$k$h$&$K$J$C$F$$$^$9!#(B</dd>
+      IgnoreClient</a> で制御されるようになっています。</dd>
 
       <dt><a name="indexoptions.suppressdescription"
                id="indexoptions.suppressdescription"
 	       >SuppressDescription</a></dt>
 
-      <dd>$B$3$l$O(B FancyIndexing $B$K$*$1$k%U%!%$%k$N@bL@$r>C5n$7$^$9!#(B
-      $B%G%U%)%k%H$G$O!"@bL@$ODj5A$5$l$F$*$i$:!"(B
-      $B$3$N%*%W%7%g%s$r;H$&$HB>$N$?$a$K(B 23
-      $BJ8;z$N6uGr$r2T$0$3$H$,$G$-$^$9!#(B $B%U%!%$%k$N@bL@$K4X$9$k>pJs$O!"(B
+      <dd>これは FancyIndexing におけるファイルの説明を消去します。
+      デフォルトでは、説明は定義されておらず、
+      このオプションを使うと他のために 23
+      文字の空白を稼ぐことができます。 ファイルの説明に関する情報は、
       <directive module="mod_autoindex">AddDescription</directive> 
-      $B$r$4Mw2<$5$$!#$^$?!"@bL@$N%3%i%`%5%$%:$r@)8B$9$k(B
+      をご覧下さい。また、説明のコラムサイズを制限する
       <code><a href="#indexoptions.descriptionwidth">DescriptionWidth</a></code>
-      $B%$%s%G%C%/%9%*%W%7%g%s$b$4Mw2<$5$$!#(B</dd>
+      インデックスオプションもご覧下さい。</dd>
 
       <dt><a name="indexoptions.suppresshtmlpreamble"
                id="indexoptions.suppresshtmlpreamble"
 	       >SuppressHTMLPreamble</a></dt>
 
-      <dd>$BDL>o!"(B
+      <dd>通常、
       <directive module="mod_autoindex">HeaderName</directive>
-      $B%G%#%l%/%F%#%V$G;XDj$7$?%U%!%$%k$r(B
-      $B%G%#%l%/%H%j$,<B:]$K4^$s$G$$$l$P!"I8=`E*$J(B HTML $B%W%j%"%s%V%k(B
-      (<code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <em>$BEy(B</em>) $B$N8e$K!"(B
-      $B%b%8%e!<%k$O%U%!%$%k$NCf?H$r%$%s%/%k!<%I$7$^$9!#(B
-      <code>SuppressHTMLPreamble</code> $B%*%W%7%g%s$O!"(B
-      $B$3$N5sF0$rL58z$K$G$-$F!"(B
-      $B%b%8%e!<%k$,%X%C%@!<%U%!%$%k$NCf?H$+$iI=<($r;O$a$^$9!#(B
-      $B$3$N>l9g!"%X%C%@!<%U%!%$%k$O@5$7$$(B HTML
-      $BL?Na$r4^$s$G$$$J$1$l$P$J$j$^$;$s!#(B
-      $B%X%C%@!<%U%!%$%k$,B8:_$7$J$$>l9g$O!"%W%j%"%s%V%k$ODL>oDL$j(B
-      $B@8@.$5$l$^$9!#(B</dd>
+      ディレクティブで指定したファイルを
+      ディレクトリが実際に含んでいれば、標準的な HTML プリアンブル
+      (<code>&lt;html&gt;</code>, <code>&lt;head&gt;</code>, <em>等</em>) の後に、
+      モジュールはファイルの中身をインクルードします。
+      <code>SuppressHTMLPreamble</code> オプションは、
+      この挙動を無効にできて、
+      モジュールがヘッダーファイルの中身から表示を始めます。
+      この場合、ヘッダーファイルは正しい HTML
+      命令を含んでいなければなりません。
+      ヘッダーファイルが存在しない場合は、プリアンブルは通常通り
+      生成されます。</dd>
 
       <dt><a name="indexoptions.suppressicon"
                id="indexoptions.suppressicon">SuppressIcon</a> (<em>Apache
-      2.0.23 $B0J9_(B</em>)</dt>
+      2.0.23 以降</em>)</dt>
 
       <dd>
-      $B$3$l$O(B FancyIndexing $B$N0lMw$+$i%"%$%3%s$r>C5n$7$^$9!#(B
-      <code>SuppressIcon</code> $B$H(B <code>SuppressRules</code>
-      $B$HAH9g$o$;$k$3$H$K$h$C$F@5$7$$(B HTML 3.2 $B$N=PNO$,F@$i$l$^$9!#(B
-      $B@5$7$$(B HTML 3.2 $B=PNO$O!":G=*5,3J$K$*$$$F(B <code>img</code> $B$H(B <code>hr</code>
-      $B$,(B <code>pre</code> $B%V%m%C%/$KF~$k(B (FancyIndexing $B0lMw$G=q<0$K;H$o$l$F$$$^$9(B) 
-      $B$3$H$r6X;_$7$F$$$^$9!#(B</dd>
+      これは FancyIndexing の一覧からアイコンを消去します。
+      <code>SuppressIcon</code> と <code>SuppressRules</code>
+      と組合わせることによって正しい HTML 3.2 の出力が得られます。
+      正しい HTML 3.2 出力は、最終規格において <code>img</code> と <code>hr</code>
+      が <code>pre</code> ブロックに入る (FancyIndexing 一覧で書式に使われています) 
+      ことを禁止しています。</dd>
 
       <dt><a name="indexoptions.suppresslastmodified"
                id="indexoptions.suppresslastmodified"
 	       >SuppressLastModified</a></dt>
 
-      <dd>FancyIndexing $B0lMw$K$*$$$F:G=*99?7F|;~$NI=<($r>C5n$7$^$9!#(B</dd>
+      <dd>FancyIndexing 一覧において最終更新日時の表示を消去します。</dd>
 
       <dt><a name="indexoptions.suppressrules"
                id="indexoptions.suppressrules">SuppressRules</a>
-       (<em>Apache 2.0.23 $B0J9_(B</em>) </dt>
+       (<em>Apache 2.0.23 以降</em>) </dt>
 
-      <dd>$B%G%#%l%/%H%j0lMw$K$*$$$F?eJ?6h@Z$j@~(B (<code>hr</code> $B%?%0(B) $B$r>C5n$7$^$9!#(B
-      <code>SuppressIcon</code> $B$H(B <code>SuppressRules</code>
-      $B$HAH9g$o$;$k$3$H$K$h$C$F@5$7$$(B HTML 3.2 $B$N=PNO$,F@$i$l$^$9!#(B
-      $B@5$7$$(B HTML 3.2 $B=PNO$O!":G=*5,3J$K$*$$$F(B <code>img</code> $B$H(B <code>hr</code>
-      $B$,(B <code>pre</code> $B%V%m%C%/$KF~$k(B (FancyIndexing $B0lMw$G=q<0$K;H$o$l$F$$$^$9(B) 
-      $B$3$H$r6X;_$7$F$$$^$9!#(B</dd>
+      <dd>ディレクトリ一覧において水平区切り線 (<code>hr</code> タグ) を消去します。
+      <code>SuppressIcon</code> と <code>SuppressRules</code>
+      と組合わせることによって正しい HTML 3.2 の出力が得られます。
+      正しい HTML 3.2 出力は、最終規格において <code>img</code> と <code>hr</code>
+      が <code>pre</code> ブロックに入る (FancyIndexing 一覧で書式に使われています) 
+      ことを禁止しています。</dd>
 
       <dt><a name="indexoptions.suppresssize"
                id="indexoptions.suppresssize">SuppressSize</a></dt>
 
-      <dd>FancyIndexing $B0lMw$K$*$$$F%U%!%$%k%5%$%:$NI=<($r>C5n$7$^$9!#(B</dd>
+      <dd>FancyIndexing 一覧においてファイルサイズの表示を消去します。</dd>
 
       <dt><a name="indexoptions.trackmodified"
                id="indexoptions.trackmodified">TrackModified</a>
-	       (<em>Apache 2.0.23 $B0J9_(B</em>)</dt>
+	       (<em>Apache 2.0.23 以降</em>)</dt>
 
-      <dd>$B$3$l$O(B HTTP $B%X%C%@Cf$K!"(B
-      $B%j%9%H$5$l$?%G%#%l%/%H%j$N:G=*99?7F|$d(B ETag $BCM$r4^$a$^$9!#(B
-      $B$3$l$O!"%*%Z%l!<%F%#%s%0%7%9%F%`$d%U%!%$%k%7%9%F%`$,(B
-      $BE,@Z$J(B stat() $B$NJV$jCM$rJV$9>l9g$K$N$_M-8z$G$9!#(B
-      $B$$$/$D$+$N(B UNIX $B%7%9%F%`!"(BOS2 $B$N(B JFS $B$d(B Win32 $B$N(B NTFS
-      $B%\%j%e!<%`$O$=$&$J$C$F$$$^$9!#(B
-      $BNc$($P!"(BOS2 $B$H(B Win32 FAT $B%\%j%e!<%`$O$=$&$G$O$"$j$^$;$s!#(B
-      $B$3$N5!G=$,M-8z$K$J$k$H!"%/%i%$%"%s%H$d%W%m%-%7$O(B
-      <code>HEAD</code> $B%j%/%(%9%H$r9T$&$3$H$K$h$C$F!"(B
-      $B%U%!%$%k0lMw$NJQ2=$rDI@W$9$k$3$H$,$G$-$k$h$&$K$J$j$^$9!#(B
-      $B$$$/$D$+$N%*%Z%l!<%F%#%s%0%7%9%F%`$O!"?75,%U%!%$%k$d(B
-      $B0\F0%U%!%$%k$O@5$7$/DI@W$9$k$1$l$I$b!"(B
-      $B%G%#%l%/%H%jCf$N%U%!%$%k$N%5%$%:$dF|IU$ODI@W$J$$$H$$$&$3$H$K(B
-      $BCm0U$7$F$/$@$5$$!#(B
-      <strong>$B4{$KB8:_$9$k%U%!%$%k$N%5%$%:$dF|IU$N%9%?%s%W$,JQ2=$7$F$b!"(B
-      $BA4$F$N(B Unix $B%W%i%C%H%[!<%`$G$O!"(B
-      $B:G=*99?7F|%X%C%@!<$r99?7$7$^$;$s!#(B</strong>
-      $B$b$7$3$l$,=EMW$G$"$l$P!"(B
-      $B$3$N%*%W%7%g%s$rL58z$N$^$^$K$7$F$/$@$5$$!#(B</dd>
+      <dd>これは HTTP ヘッダ中に、
+      リストされたディレクトリの最終更新日や ETag 値を含めます。
+      これは、オペレーティングシステムやファイルシステムが
+      適切な stat() の返り値を返す場合にのみ有効です。
+      いくつかの UNIX システム、OS2 の JFS や Win32 の NTFS
+      ボリュームはそうなっています。
+      例えば、OS2 と Win32 FAT ボリュームはそうではありません。
+      この機能が有効になると、クライアントやプロキシは
+      <code>HEAD</code> リクエストを行うことによって、
+      ファイル一覧の変化を追跡することができるようになります。
+      いくつかのオペレーティングシステムは、新規ファイルや
+      移動ファイルは正しく追跡するけれども、
+      ディレクトリ中のファイルのサイズや日付は追跡ないということに
+      注意してください。
+      <strong>既に存在するファイルのサイズや日付のスタンプが変化しても、
+      全ての Unix プラットホームでは、
+      最終更新日ヘッダーを更新しません。</strong>
+      もしこれが重要であれば、
+      このオプションを無効のままにしてください。</dd>
 
       <dt><a name="indexoptions.versionsort"
                id="indexoptions.versionsort">VersionSort</a>
-      (<em>Apache 2.0a3 $B0J9_(B</em>)</dt>
+      (<em>Apache 2.0a3 以降</em>)</dt>
 
-      <dd><code>VersionSort</code> $B%-!<%o!<%I$O%P!<%8%g%sHV9f$r4^$s$@%U%!%$%k$,(B
-      $B<+A3$JJ}K!$G%=!<%H$5$l$k$h$&$K$7$^$9!#(B
-      $BJ8;zNs$ODL>oDL$j%=!<%H$5$l!"(B
-      $B$=$l0J30$N!"@bL@$dL>A0Cf$N?t$H$J$kItJ,J8;zNs$O(B
-      $B$=$N?tCM$GHf3S$5$l$^$9!#(B
+      <dd><code>VersionSort</code> キーワードはバージョン番号を含んだファイルが
+      自然な方法でソートされるようにします。
+      文字列は通常通りソートされ、
+      それ以外の、説明や名前中の数となる部分文字列は
+      その数値で比較されます。
 
-      <example><title>$BNc(B:</title>
+      <example><title>例:</title>
         foo-1.7<br />
         foo-1.7.2<br />
         foo-1.7.12<br />
@@ -844,7 +844,7 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
         foo-1.12
       </example>
 
-      <p>$BHV9f$,(B 0 $B$+$i;O$^$k>l9g$O!"C<?t$H9M$($i$l$^$9(B</p>
+      <p>番号が 0 から始まる場合は、端数と考えられます</p>
 
       <example>
         foo-1.001<br />
@@ -856,28 +856,28 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
 
       <dt><a name="indexoptions.xhtml"
                id="indexoptions.xhtml">XHTML</a>
-      (<em>Apache 2.0.49 $B0J9_(B</em>)</dt>
+      (<em>Apache 2.0.49 以降</em>)</dt>
 
-      <dd><code>XHTML</code> $B%-!<%o!<%I$r;XDj$9$k$H!"(B<module>mod_autoindex</module>
-      $B$O(B HTML 3.2 $B$NBe$o$j$K(B XHTML 1.0 $B$N%3!<%I$r=PNO$9$k$h$&$K$J$j$^$9!#(B</dd>
+      <dd><code>XHTML</code> キーワードを指定すると、<module>mod_autoindex</module>
+      は HTML 3.2 の代わりに XHTML 1.0 のコードを出力するようになります。</dd>
     </dl>
 
    <!--
      XXX: we should consider to allow sections inside <usage> 
      this would require some xslt changes...
    -->
-   <dl><dt>$BA}8:;XDj$G$-$k(B IndexOptions</dt>
+   <dl><dt>増減指定できる IndexOptions</dt>
    <dd>
-     <p>Apache 1.3.3 $B$G$O!"(B
+     <p>Apache 1.3.3 では、
      <directive>IndexOptions</directive> 
-     $B%G%#%l%/%F%#%V$N07$$$G4v$D$+$NBg$-$JJQ2=$,F3F~$5$l$^$7$?!#(B
-     $BFC$K!"(B</p>
+     ディレクティブの扱いで幾つかの大きな変化が導入されました。
+     特に、</p>
 
      <ul>
-     <li>$B0l$D$N%G%#%l%/%H%j$KBP$9$kJ#?t$N(B
+     <li>一つのディレクトリに対する複数の
      <directive>IndexOptions</directive> 
-     $B%G%#%l%/%F%#%V$O!"8=:_$G$O0l$D$K%^!<%8$5$l$^$9!#(B
-     $B>e$NNc$N7k2L$O!"(B
+     ディレクティブは、現在では一つにマージされます。
+     上の例の結果は、
 
      <example>
        &lt;Directory /foo&gt;
@@ -888,42 +888,42 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
        &lt;/Directory&gt;
      </example>
 
-     <p>$B$HF10l$K$J$j$^$9!#(B</p>
+     <p>と同一になります。</p>
 
      <example>
        IndexOptions HTMLTable SuppressColumnsorting
      </example>
      </li>
 
-     <li>$BA}8:9=J8(B
-     (<em>$B$9$J$o$A(B</em>$B!"(B'+' $B$d(B '-'
-     $B$N@\F,<-$,IU$/%-!<%o!<%I(B) $B$NDI2C!#(B</li>
+     <li>増減構文
+     (<em>すなわち</em>、'+' や '-'
+     の接頭辞が付くキーワード) の追加。</li>
      </ul>
 
-     <p>'+' $B$d(B '-' $B@\F,<-$NIU$$$?%-!<%o!<%I$K=P2q$&$H$=$l$O!"(B
-     $B$=$N;~E@$G$N(B <directive>IndexOptions</directive>
-     $B$N@_Dj(B ($B$3$l$O>eN.$N%G%#%l%/%H%j$r<u$17Q$.$^$9(B) 
-     $B$KBP$7$FE,1~$5$l$^$9!#(B
-     $B$7$+$7$J$,$i!"@\F,<-$NIU$+$J$$%-!<%o!<%I$,=hM}$5$l$?>l9g$O!"(B
-     $B<u$17Q$$$@%*%W%7%g%sA4$F$H$=$l$^$G=P2q$C$?A}8:@_DjA4$F$,(B
-     $B>C5n$5$l$^$9!#<!$NNc$r9M$($F$_$F$/$@$5$$(B:</p>
+     <p>'+' や '-' 接頭辞の付いたキーワードに出会うとそれは、
+     その時点での <directive>IndexOptions</directive>
+     の設定 (これは上流のディレクトリを受け継ぎます) 
+     に対して適応されます。
+     しかしながら、接頭辞の付かないキーワードが処理された場合は、
+     受け継いだオプション全てとそれまで出会った増減設定全てが
+     消去されます。次の例を考えてみてください:</p>
 
      <example>
        IndexOptions +ScanHTMLTitles -IconsAreLinks FancyIndexing<br />
        IndexOptions +SuppressSize
      </example>
 
-     <p>$BCf?H$N8z2L$O(B
+     <p>中身の効果は
      <code>IndexOptions&nbsp;FancyIndexing&nbsp;+SuppressSize</code>
-     $B$HF10l$G$9!#(B
-     $B@\F,<-$NIU$+$J$$(B <code>FancyIndexing</code>
-     $B$G$=$l0JA0$NA}8:%-!<%o!<%I$rL58z$K$5$l$F!"(B
-     $B$=$N8e$NN_@Q$,;O$^$k$+$i$G$9!#(B</p>
+     と同一です。
+     接頭辞の付かない <code>FancyIndexing</code>
+     でそれ以前の増減キーワードを無効にされて、
+     その後の累積が始まるからです。</p>
 
-     <p>$BL5>r7o$K(B <directive>IndexOptions</directive>
-     $B$r$"$k%G%#%l%/%H%j$G@_Dj$9$k$3$H$K$h$C$F(B
-     $B7Q>5$7$?@_Dj$r>C5n$7$F!"(B<code>+</code> $B$d(B <code>-</code>
-     $B@\F,<-$NIU$+$J$$%-!<%o!<%I$G@_Dj$7$F$/$@$5$$!#(B</p>
+     <p>無条件に <directive>IndexOptions</directive>
+     をあるディレクトリで設定することによって
+     継承した設定を消去して、<code>+</code> や <code>-</code>
+     接頭辞の付かないキーワードで設定してください。</p>
    </dd>
    </dl>
 </usage>
@@ -932,7 +932,7 @@ MIME $B%?%$%W$K$h$C$FA*Br(B</description>
 <directivesynopsis>
 <name>IndexOrderDefault</name>
 <description>
-$B%G%#%l%/%H%j%$%s%G%C%/%9$NI8=`$N=gHVIU$1$r@_Dj(B</description>
+ディレクトリインデックスの標準の順番付けを設定</description>
 <syntax>IndexOrderDefault Ascending|Descending
 Name|Date|Size|Description</syntax>
 <default>IndexOrderDefault Ascending Name</default>
@@ -943,34 +943,34 @@ Name|Date|Size|Description</syntax>
 <override>Indexes</override>
 
 <usage>
-    <p><directive>IndexOrderDefault</directive> $B%G%#%l%/%F%#%V$O(B
+    <p><directive>IndexOrderDefault</directive> ディレクティブは
     <code><a href="#indexoptions.fancyindexing">FancyIndexing</a></code>
-    $B%$%s%G%C%/%9%*%W%7%g%s$HJ;$;$FMQ$$$l$l$^$9!#(B
-    $B%G%U%)%k%H$G$O!"(BFancyIndexing 
-    $B$N%G%#%l%/%H%j0lMw$O%U%!%$%kL>$N>:=g$GI=<($5$l$^$9!#(B
+    インデックスオプションと併せて用いれれます。
+    デフォルトでは、FancyIndexing 
+    のディレクトリ一覧はファイル名の昇順で表示されます。
     <directive>IndexOrderDefault</directive>
-    $B$G!"=i4|>uBV$NI=<(=gHV$rJQ$($k$3$H$,$G$-$^$9!#(B</p>
+    で、初期状態の表示順番を変えることができます。</p>
 
     <p><directive>IndexOrderDefault</directive>
-    $B$OFs$D$N0z?t$r$H$j$^$9!#0l$DL\$O%=!<%H$NJ}8~$r;X<($9$k(B
-    <code>Ascending</code> $B$+(B <code>Descending</code> $B$N$$$:$l$+$G$9!#(B
-    $BFs$DL\$N0z?t$O(B <code>Name</code>, <code>Date</code>,
-    <code>Size</code> $B$+(B <code>Description</code> 
-    $B$N$$$:$l$+0l$D$N%-!<%o!<%I$G$"$C$F!"%W%i%$%^%j%-!<$r;XDj$7$^$9!#(B
-    $BFs$DL\$N%-!<$O(B<em>$B>o$K(B</em>$B%U%!%$%kL>$N>:=g$K$J$j$^$9!#(B</p>
+    は二つの引数をとります。一つ目はソートの方向を指示する
+    <code>Ascending</code> か <code>Descending</code> のいずれかです。
+    二つ目の引数は <code>Name</code>, <code>Date</code>,
+    <code>Size</code> か <code>Description</code> 
+    のいずれか一つのキーワードであって、プライマリキーを指定します。
+    二つ目のキーは<em>常に</em>ファイル名の昇順になります。</p>
 
-    <p>$B$3$N%G%#%l%/%F%#%V$H(B <code><a
+    <p>このディレクティブと <code><a
     href="#indexoptions.suppresscolumnsorting">SuppressColumnSorting</a></code>
-    $B%$%s%G%C%/%9%*%W%7%g%s$H$rAH$_9g$o$;$k$3$H$G!"(B
-    $B%G%#%l%/%H%j0lMw$r$"$kFCDj$N=gHV$G$N$_I=<($9$k$h$&$K$G$-$^$9!#(B
-    $B$3$l$O!"(B
-    $B%/%i%$%"%s%H$,JL$N=gHV$G%G%#%l%/%H%j0lMw$r%j%/%(%9%H$9$k$3$H$rKI$.$^$9!#(B</p>
+    インデックスオプションとを組み合わせることで、
+    ディレクトリ一覧をある特定の順番でのみ表示するようにできます。
+    これは、
+    クライアントが別の順番でディレクトリ一覧をリクエストすることを防ぎます。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>IndexStyleSheet</name>
-<description>$B%G%#%l%/%H%j%$%s%G%C%/%9$K(B CSS $B%9%?%$%k%7!<%H$rDI2C$9$k(B</description>
+<description>ディレクトリインデックスに CSS スタイルシートを追加する</description>
 <syntax>IndexStyleSheet <var>url-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context>
@@ -978,11 +978,11 @@ Name|Date|Size|Description</syntax>
 <override>Indexes</override>
 
 <usage>
-    <p><directive>IndexStyleSheet</directive> $B%G%#%l%/%F%#%V$O(B
-    $B%$%s%G%C%/%9I=<($K;HMQ$5$l$k(B CSS $B$N%U%!%$%kL>$r@_Dj$7$^$9!#(B
+    <p><directive>IndexStyleSheet</directive> ディレクティブは
+    インデックス表示に使用される CSS のファイル名を設定します。
     </p>
     <example>
-      <title>$BNc(B</title>
+      <title>例</title>
       IndexStyleSheet "/css/style.css"
     </example>
 </usage>
@@ -990,7 +990,7 @@ Name|Date|Size|Description</syntax>
 
 <directivesynopsis>
 <name>ReadmeName</name>
-<description>$B%$%s%G%C%/%90lMw$N:G8e$KA^F~$5$l$k%U%!%$%k$NL>A0(B</description>
+<description>インデックス一覧の最後に挿入されるファイルの名前</description>
 <syntax>ReadmeName <var>filename</var></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context>
@@ -999,25 +999,25 @@ Name|Date|Size|Description</syntax>
 <override>Indexes</override>
 
 <usage>
-    <p><directive>ReadmeName</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B%$%s%G%C%/%9$N=*$o$j$KIU$12C$($i$l$k%U%!%$%k$NL>A0$r@_Dj$7$^$9!#(B
-    <var>filename</var> $B$OA^F~$9$k%U%!%$%k$NL>A0$G!"(B
-    $B0lMw$N9T$o$l$F$$$k0LCV$+$iAjBPE*$J$b$N$H$7$F2r<a$5$l$^$9!#(B
-    <var>filename</var> $B$,%9%i%C%7%e$G;O$^$k>l9g$O!"(B
+    <p><directive>ReadmeName</directive> ディレクティブは、
+    インデックスの終わりに付け加えられるファイルの名前を設定します。
+    <var>filename</var> は挿入するファイルの名前で、
+    一覧の行われている位置から相対的なものとして解釈されます。
+    <var>filename</var> がスラッシュで始まる場合は、
     <directive module="core">DocumentRoot</directive>
-    $B$+$i$NAjBP%Q%9$H$J$j$^$9!#(B</p>
+    からの相対パスとなります。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ReadmeName FOOTER.html
     </example>
 
-    <example><title>$BNc(B 2</title>
+    <example><title>例 2</title>
     ReadmeName /include/FOOTER.html
     </example>
 
-    <p>$B$h$j>\:Y$K$^$G$3$N5sF0$K$D$$$F5-=R$7$F$$$k(B <directive
+    <p>より詳細にまでこの挙動について記述している <directive
     module="mod_autoindex">HeaderName</directive>
-    $B$b$4Mw2<$5$$!#(B</p>
+    もご覧下さい。</p>
 </usage>
 </directivesynopsis>
 

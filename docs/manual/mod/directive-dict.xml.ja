@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -22,274 +22,274 @@
 
 <manualpage metafile="directive-dict.xml.meta">
 
-  <title>$B%G%#%l%/%F%#%V$N2r@b$K;H$o$l$kMQ8l(B</title>
+  <title>ディレクティブの解説に使われる用語</title>
 
 <summary>
-    <p>$B$3$NJ8=q$O3F(B Apache <a href="directives.html">$B@_Dj%G%#%l%/%F%#%V(B</a>
-    $B$r@bL@$9$k$?$a$K;H$o$l$F$$$kMQ8l$r@bL@$7$^$9!#(B</p>
+    <p>この文書は各 Apache <a href="directives.html">設定ディレクティブ</a>
+    を説明するために使われている用語を説明します。</p>
 </summary>
-<seealso><a href="../configuring.html">$B@_Dj%U%!%$%k(B</a></seealso>
+<seealso><a href="../configuring.html">設定ファイル</a></seealso>
 
-<section id="Description"><title>$B@bL@(B</title>
+<section id="Description"><title>説明</title>
 
-<p>$B%G%#%l%/%F%#%V$NL\E*$N4JC1$J@bL@!#(B</p>
+<p>ディレクティブの目的の簡単な説明。</p>
 </section>
 
-<section id="Syntax"><title>$B9=J8(B</title>
+<section id="Syntax"><title>構文</title>
 
-    <p>$B@_Dj%U%!%$%kCf$N%G%#%l%/%F%#%V$N=q<0$r<($7$^$9!#(B
-    $B$3$N9=J8$O%G%#%l%/%F%#%VFCM-$J$N$G!">\:Y$O%G%#%l%/%F%#%V$N@bL@$r(B
-    $B;2>H$7$F$/$@$5$$!#0lHLE*$K!"%G%#%l%/%F%#%VL>$N8e$K$O(B
-    $B6uGr$K$h$jJ,3d$5$l$?$$$/$D$+$N0z?t$,B3$-$^$9!#(B
-    $B0z?t$,6uGr$r4^$`$H$-$OFs=E0zMQId(B ($BLuCm(B: ")
-    $B$G0O$^$l$F$$$^$9!#(B $B%*%W%7%g%J%k$J0z?t$O3g8L(B
-    ($BLuCm(B: []) $B$G0O$^$l$F$$$^$9!#(B
-    $B0z?t$,J#?t$NCM$r<h$jF@$k>l9g$O!"$=$l$i$NCM$O?bD>$NK@(B "|"
-    $B$G(B $BJ,3d$5$l$F$$$^$9!#(B
-    $BJQ99$5$l$J$$%F%-%9%H$O%G%U%)%k%H$N%U%)%s%H$GI=<($5$l!"CV49$NI,MW$J(B
-    $B0z?t$O(B<em>$B6/D4$5$l$F(B</em>$BI=<($5$l$^$9!#(B
-    $B0z?t$N?t$,JQ$o$k%G%#%l%/%F%#%V$O:G8e$N(B
-    $B0z?t$,7+$jJV$5$l$k$3$H$r<($9$?$a$K(B "..."
-    $B$G=*$o$j$^$9!#(B</p>
+    <p>設定ファイル中のディレクティブの書式を示します。
+    この構文はディレクティブ特有なので、詳細はディレクティブの説明を
+    参照してください。一般的に、ディレクティブ名の後には
+    空白により分割されたいくつかの引数が続きます。
+    引数が空白を含むときは二重引用符 (訳注: ")
+    で囲まれています。 オプショナルな引数は括弧
+    (訳注: []) で囲まれています。
+    引数が複数の値を取り得る場合は、それらの値は垂直の棒 "|"
+    で 分割されています。
+    変更されないテキストはデフォルトのフォントで表示され、置換の必要な
+    引数は<em>強調されて</em>表示されます。
+    引数の数が変わるディレクティブは最後の
+    引数が繰り返されることを示すために "..."
+    で終わります。</p>
 
     <p>
-    $B%G%#%l%/%F%#%V$OB?$/$N0c$&7?$N0z?t$r$H$j$^$9!#$$$/$D$+!"NI$/(B
-    $B;H$o$l$k$b$N$r0J2<$GDj5A$7$^$9!#(B</p>
+    ディレクティブは多くの違う型の引数をとります。いくつか、良く
+    使われるものを以下で定義します。</p>
 
     <dl>
       <dt><em>URL</em></dt>
 
       <dd><code>http://www.example.com/path/to/file.html</code>
-      $B$N$h$&$K!"(B
-      $B%9%-!<%`!"%[%9%HL>!"%Q%9L>(B($B>JN,2DG=(B)$B$r4^$s$G$$$k40A4$J(B
-      Uniform Resource Locator$B!#(B</dd>
+      のように、
+      スキーム、ホスト名、パス名(省略可能)を含んでいる完全な
+      Uniform Resource Locator。</dd>
 
       <dt><em>URL-path</em></dt>
 
-      <dd><code>/path/to/file.html</code> $B$N$h$&$K!"%9%-!<%`$H(B
-      $B%[%9%HL>$N8e$KB3$/(B <em>url</em>
-      $B$N0lIt!#(B<em>url-path</em> $B$O(B
-      $B%U%!%$%k%7%9%F%`$+$i$N;kE@$G$O$J$/!"(B
-      $B%&%'%V$+$i$N;kE@$G%j%=!<%9$rI=8=$7$^$9!#(B</dd>
+      <dd><code>/path/to/file.html</code> のように、スキームと
+      ホスト名の後に続く <em>url</em>
+      の一部。<em>url-path</em> は
+      ファイルシステムからの視点ではなく、
+      ウェブからの視点でリソースを表現します。</dd>
 
       <dt><em>file-path</em></dt>
 
       <dd><code>/usr/local/apache/htdocs/path/to/file.html</code>
-      $B$N$h$&$K!"(B
-      $B%k!<%H%G%#%l%/%H%j$+$i;O$^$k%m!<%+%k$N%U%!%$%k%7%9%F%`>e$N%U%!%$%k$X$N%Q%9!#(B
-      $BDL>o!"%9%i%C%7%e$G;O$^$i$J$$(B <em>file-path</em> $B$O(B <a
+      のように、
+      ルートディレクトリから始まるローカルのファイルシステム上のファイルへのパス。
+      通常、スラッシュで始まらない <em>file-path</em> は <a
       href="core.html#serverroot">ServerRoot</a>
-      $B$+$i$NAjBP%Q%9$H$7$F(B $B07$o$l$^$9!#(B</dd>
+      からの相対パスとして 扱われます。</dd>
 
       <dt><em>directory-path</em></dt>
 
       <dd><code>/usr/local/apache/htdocs/path/to/</code>
-      $B$N$h$&$K!"(B
-      $B%k!<%H%G%#%l%/%H%j$+$i;O$^$k%m!<%+%k$N%U%!%$%k%7%9%F%`$N%G%#%l%/%H%j$X$N(B
-      $B%Q%9!#(B</dd>
+      のように、
+      ルートディレクトリから始まるローカルのファイルシステムのディレクトリへの
+      パス。</dd>
 
       <dt><em>filename</em></dt>
 
-      <dd><code>file.html</code> $B$N$h$&$K!"%Q%9>pJs$NIU$$$F$$$J$$(B
-      $B%U%!%$%kL>!#(B</dd>
+      <dd><code>file.html</code> のように、パス情報の付いていない
+      ファイル名。</dd>
 
       <dt><em>regex</em></dt>
 
-      <dd>Perl $B8_49$N(B<a href="../glossary.html#regex">$B@55,I=8=(B</a>$B$G$9!#(B
-      $B%G%#%l%/%F%#%V$NDj5A$,(B <em>regex</em>
-      $B$,2?$KBP$7$F%^%C%A$r9T$J$&$N$+$r;XDj$7$^$9!#(B</dd>
+      <dd>Perl 互換の<a href="../glossary.html#regex">正規表現</a>です。
+      ディレクティブの定義が <em>regex</em>
+      が何に対してマッチを行なうのかを指定します。</dd>
 
       <dt><em>extension</em></dt>
 
-      <dd>$B0lHLE*$K$O(B <em>filename</em>
-      $B$N:G8e$N%I%C%H$N8e$NItJ,$G$9!#(B $B$7$+$7!"(BApache
-      $B$OJ#?t$N%U%!%$%k$N3HD%;R$rG'<1$7$^$9$N$G!"(B<em>filename</em>
-      $B$KJ#?t$N%I%C%H$,$"$k$H!":G=i$N%I%C%H$N8e$N!"$=$l$>$l$N%I%C%H$GJ,N%$5$l$?ItJ,$,(B
-      <em>extension</em> ($BLuCm(B: $B3HD%;R(B)
-      $B$K$J$j$^$9!#Nc$($P!"(B<em>filename</em>
+      <dd>一般的には <em>filename</em>
+      の最後のドットの後の部分です。 しかし、Apache
+      は複数のファイルの拡張子を認識しますので、<em>filename</em>
+      に複数のドットがあると、最初のドットの後の、それぞれのドットで分離された部分が
+      <em>extension</em> (訳注: 拡張子)
+      になります。例えば、<em>filename</em>
       <code>file.html.en</code>
-      $B$K$OFs$D$N3HD%;R$,$"$j$^$9!#(B<code>.html</code> $B$H(B
-      <code>.en</code> $B$G$9!#(BApache
-      $B$N%G%#%l%/%F%#%V$G$O!"(B<em>extension</em>
-      $B$O%I%C%HIU$-$G$bL5$7$G$b;XDj$G$-$^$9!#$5$i$K!"(B<em>extension</em>
-      $B$O(B $BBgJ8;z>.J8;z$r6hJL$7$^$;$s!#(B</dd>
+      には二つの拡張子があります。<code>.html</code> と
+      <code>.en</code> です。Apache
+      のディレクティブでは、<em>extension</em>
+      はドット付きでも無しでも指定できます。さらに、<em>extension</em>
+      は 大文字小文字を区別しません。</dd>
 
       <dt><em>MIME-type</em></dt>
 
-      <dd><code>text/html</code> $B$N$h$&$K!"%9%i%C%7%e$GJ,N%$5$l$?(B
-      $B<g%U%)!<%^%C%H$HI{%U%)!<%^%C%H$K$h$C$F%U%!%$%k$N7A<0$r(B
-      $BI=$9J}K!$G$9!#(B</dd>
+      <dd><code>text/html</code> のように、スラッシュで分離された
+      主フォーマットと副フォーマットによってファイルの形式を
+      表す方法です。</dd>
 
       <dt><em>env-variable</em></dt>
 
-      <dd>Apache $B$N@_Dj$K$h$jDj5A$5$l$k(B <a
-      href="../env.html">$B4D6-JQ?t(B</a>$B$NL>A0$G$9!#$3$l$O%*%Z%l!<%F%#%s%0%7%9%F%`$N(B
-      $B4D6-JQ?t$HF1$8$H$O8B$i$J$$$3$H$KCm0U$7$F$/$@$5$$!#>\:Y$O(B <a
-      href="../env.html">$B4D6-JQ?t$N@bL@(B</a>$B$r;2>H$7$F$/$@$5$$!#(B</dd>
+      <dd>Apache の設定により定義される <a
+      href="../env.html">環境変数</a>の名前です。これはオペレーティングシステムの
+      環境変数と同じとは限らないことに注意してください。詳細は <a
+      href="../env.html">環境変数の説明</a>を参照してください。</dd>
     </dl>
   </section>
 
-<section id="Default"><title>$B%G%U%)%k%H(B</title>
+<section id="Default"><title>デフォルト</title>
 
-    <p>$B%G%#%l%/%F%#%V$K%G%U%)%k%HCM(B
-    (<em>$B$9$J$o$A(B</em>$B!"@_Dj%U%!%$%k$+$i(B
-    $B>JN,$5$l$F$$$F$b!"(BApache
-    $B%&%'%V%5!<%P$OFCDj$NCM$K@_Dj$5$l$F$$$k$+$N$h$&$K(B
-    $BF0:n$7$^$9(B) $B$,$"$k>l9g$O$3$3$K5-=R$5$l$^$9!#(B
-    $B%G%U%)%k%HCM$NL5$$>l9g!"$3$3$O(B "<em>None</em>" $B$H(B
-    $B=q$+$l$^$9!#$3$3$G=q$+$l$F$$$k%G%U%)%k%H$O%5!<%P$H6&$KG[I[$5$l$F$$$k(B
-    $B%G%U%)%k%H$N(B httpd.conf
-    $BFb$K=q$+$l$F$$$k%G%#%l%/%F%#%V$NCM$H(B
-    $B0c$&2DG=@-$,$"$k$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    <p>ディレクティブにデフォルト値
+    (<em>すなわち</em>、設定ファイルから
+    省略されていても、Apache
+    ウェブサーバは特定の値に設定されているかのように
+    動作します) がある場合はここに記述されます。
+    デフォルト値の無い場合、ここは "<em>None</em>" と
+    書かれます。ここで書かれているデフォルトはサーバと共に配布されている
+    デフォルトの httpd.conf
+    内に書かれているディレクティブの値と
+    違う可能性があることに注意してください。</p>
 </section>
 
-<section id="Context"><title>$B%3%s%F%-%9%H(B</title>
+<section id="Context"><title>コンテキスト</title>
 
     <p>
-    $B$3$l$O!"%5!<%P$N@_Dj%U%!%$%kCf$N$I$3$G%G%#%l%/%F%#%V$,M-8z$J$N$+$r<($7$^$9!#(B
-    $B<!$K<($9CM$,0l$D0J>e%+%s%^6h@Z$j$GNs5s$5$l$F$$$^$9!#(B</p>
+    これは、サーバの設定ファイル中のどこでディレクティブが有効なのかを示します。
+    次に示す値が一つ以上カンマ区切りで列挙されています。</p>
 
     <dl>
-      <dt>$B%5!<%P@_Dj%U%!%$%k(B</dt>
+      <dt>サーバ設定ファイル</dt>
 
-      <dd>$B$3$l$O!"%5!<%P@_Dj%U%!%$%k(B
-      (<em>$BNc$($P(B</em>$B!"(B<code>httpd.conf</code>,
+      <dd>これは、サーバ設定ファイル
+      (<em>例えば</em>、<code>httpd.conf</code>,
       <code>srm.conf</code>, <code>access.conf</code>)
-      $BFb$G$O;HMQ$G$-$^$9$,!"(B
-      <directive module="core" type="section">VirtualHost</directive> $B$d(B
-      <directive module="core" type="section">Directory</directive> $B$NCf$G$O(B
-      <strong>$B;HMQ$G$-$J$$(B</strong>$B$3$H$r<($7$^$9!#(B
-      <code>.htaccess</code>$B%U%!%$%k$G$N;HMQ$O5v2D$5$l$F$$$^$;$s!#(B</dd>
+      内では使用できますが、
+      <directive module="core" type="section">VirtualHost</directive> や
+      <directive module="core" type="section">Directory</directive> の中では
+      <strong>使用できない</strong>ことを示します。
+      <code>.htaccess</code>ファイルでの使用は許可されていません。</dd>
 
-      <dt>$B%P!<%A%c%k%[%9%H(B</dt>
+      <dt>バーチャルホスト</dt>
 
-      <dd>$B$3$l$O!"%5!<%P@_Dj%U%!%$%k$N(B
+      <dd>これは、サーバ設定ファイルの
       <directive module="core" type="section">VirtualHost</directive>
-      $B$NCf$G;HMQ$G$-$k$3$H$r<($7$^$9!#(B</dd>
+      の中で使用できることを示します。</dd>
 
-      <dt>$B%G%#%l%/%H%j(B</dt>
+      <dt>ディレクトリ</dt>
 
-      <dd>$B$3$l$O!"%5!<%P@_Dj%U%!%$%k$N(B
+      <dd>これは、サーバ設定ファイルの
       <directive module="core" type="section">Directory</directive>, 
       <directive module="core" type="section">Location</directive>, 
       <directive module="core" type="section">Files</directive>, 
       <directive module="mod_proxy" type="section">Proxy</directive>
-      $B%3%s%F%J$NCf$G!"(B <a
-      href="../sections.html">$B@_Dj%;%/%7%g%s(B</a>
-      $B$G@bL@$5$l$F$$$k@)8B$N2<$G;HMQ$G$-$k$3$H$r<($7$^$9!#(B</dd>
+      コンテナの中で、 <a
+      href="../sections.html">設定セクション</a>
+      で説明されている制限の下で使用できることを示します。</dd>
 
       <dt>.htaccess</dt>
 
-      <dd>$B$3$l$O!"%G%#%l%/%H%j(B<em>$BKh(B</em>$B$N(B
-      <code>.htaccess</code> $B%U%!%$%kFb$G(B
-      $B;HMQ2DG=$G$"$k$3$H$r<($7$^$9!#(B $B$?$@!"(B<a
-      href="#Override">$B>e=q$-(B</a>
-      $B$N@_Dj$K$h$C$F$O!"=hM}$5$l$J$$$+$b$7$l$^$;$s!#(B</dd>
+      <dd>これは、ディレクトリ<em>毎</em>の
+      <code>.htaccess</code> ファイル内で
+      使用可能であることを示します。 ただ、<a
+      href="#Override">上書き</a>
+      の設定によっては、処理されないかもしれません。</dd>
     </dl>
 
     <p>
-    $B%G%#%l%/%F%#%V$O;X<($5$l$?%3%s%F%-%9%H$G(B<em>$B$N$_(B</em>$B5v2D$5$l$^$9!#(B
-    $BB>$N>l=j$G;H$*$&$H$9$k$H!"%5!<%P$,$=$N%3%s%F%-%9%H$r@5$7$/07$($J$/(B
-    $B$J$k$h$&$J@_Dj%(%i!<$,H/@8$9$k$+!"%5!<%P$,$^$C$?$/F0:n$7$J$/$J$k!"(B
-    <em>$B$9$J$o$A(B</em>$B!"%5!<%P$,5/F0$7$J$/$J$k$H$$$&$3$H$K$J$j$^$9!#(B</p>
+    ディレクティブは指示されたコンテキストで<em>のみ</em>許可されます。
+    他の場所で使おうとすると、サーバがそのコンテキストを正しく扱えなく
+    なるような設定エラーが発生するか、サーバがまったく動作しなくなる、
+    <em>すなわち</em>、サーバが起動しなくなるということになります。</p>
 
     <p>
-    $B%G%#%l%/%F%#%V$NM-8z$J0LCV$O!"<B:]$O5s$2$i$l$F$$$k%3%s%F%-%9%H$N(B
-    $BO@M}OB(B ($BLuCm(B: Boolen OR)
-    $B$K$J$j$^$9!#8@$$49$($k$H!"(B
-    "<code>$B%5!<%P@_Dj%U%!%$%k!"(B.htaccess</code>" $B$GM-8z$@$H(B
-    $B5-$5$l$F$$$k%G%#%l%/%F%#%V$O(B <code>httpd.conf</code>
-    $B%U%!%$%k$H(B <code>.htaccess</code>
-    $B%U%!%$%k$H$GM-8z$G$9$,!"(B <directive module="core"
+    ディレクティブの有効な位置は、実際は挙げられているコンテキストの
+    論理和 (訳注: Boolen OR)
+    になります。言い換えると、
+    "<code>サーバ設定ファイル、.htaccess</code>" で有効だと
+    記されているディレクティブは <code>httpd.conf</code>
+    ファイルと <code>.htaccess</code>
+    ファイルとで有効ですが、 <directive module="core"
     type="section">Directory</directive>
-    $B$d(B <directive module="core" type="section">VirtualHost</directive>
-    $B$NCf$G$O;HMQ$G$-$^$;$s!#(B</p>
+    や <directive module="core" type="section">VirtualHost</directive>
+    の中では使用できません。</p>
 </section>
 
-<section id="Override"><title>$B>e=q$-(B</title>
+<section id="Override"><title>上書き</title>
 
-    <p>$B$3$N%G%#%l%/%F%#%V$NB0@-$O!"(B<code>.htaccess</code>
-    $B%U%!%$%kCf$K(B
-    $B%G%#%l%/%F%#%V$,8=$l$?$H$-$K!"$=$l$N=hM}$rM-8z$K$9$k$?$a$K(B
-    $B$I$N@_Dj$N>e=q$-$,I,MW$+$r<($7$^$9!#(B $B%G%#%l%/%F%#%V$N(B
-    <a href="#Context">$B%3%s%F%-%9%H(B</a>
-    $B$,!"(B<code>.htaccess</code>
-    $B%U%!%$%kCf$G$O5v2D$7$F$$$J$$>l9g$O!"(B $B$3$NB0@-$O(B
-    "<em>$BE,MQIT2D(B</em>" $B$H=q$+$l$^$9!#(B</p>
+    <p>このディレクティブの属性は、<code>.htaccess</code>
+    ファイル中に
+    ディレクティブが現れたときに、それの処理を有効にするために
+    どの設定の上書きが必要かを示します。 ディレクティブの
+    <a href="#Context">コンテキスト</a>
+    が、<code>.htaccess</code>
+    ファイル中では許可していない場合は、 この属性は
+    "<em>適用不可</em>" と書かれます。</p>
 
-    <p>$B>e=q$-$O!"(B<directive module="core">AllowOverride</directive>
-    $B%G%#%l%/%F%#%V$K$h$C$FM-8z$K$5$l!"(B
-    $BFCDj$N%9%3!<%W(B($B%G%#%l%/%H%j$J$I(B)$B$H!"(B
-    $B$5$i$K2<0L$N%l%Y%k$N(B <directive module="core">AllowOverride</directive>
-    $B$G=$@5$5$l$J$$8B$j!"(B $B$=$NG[2<$KBP$7$FE,MQ$5$l$^$9!#(B
-    $B%G%#%l%/%F%#%V$N%I%-%e%a%s%H$O<h$jF@$k>e=q$-$NL>A0$b5s$2$^$9!#(B</p>
+    <p>上書きは、<directive module="core">AllowOverride</directive>
+    ディレクティブによって有効にされ、
+    特定のスコープ(ディレクトリなど)と、
+    さらに下位のレベルの <directive module="core">AllowOverride</directive>
+    で修正されない限り、 その配下に対して適用されます。
+    ディレクティブのドキュメントは取り得る上書きの名前も挙げます。</p>
 </section>
 
-<section id="Status"><title>$B%9%F!<%?%9(B</title>
+<section id="Status"><title>ステータス</title>
 
-    <p>$B$3$l$O%G%#%l%/%F%#%V$,(B Apache
-    $B%&%'%V%5!<%P$K$I$l$/$i$$$-$D$/AH$_9~$^$l$F$$$k$+$r(B
-    $B<($7$^$9!#8@$$49$($l$P!"%G%#%l%/%F%#%V$H$=$N5!G=$rMxMQ$9$k$?$a$K!"(B
-    $B%b%8%e!<%k$N?t$rA}$d$7$F!"%5!<%P$r:F%3%s%Q%$%k$9$kI,MW$,$"$k$+$b$7$l$J$$(B
-    $B$H$$$&$3$H$r<($7$^$9!#(B
-    $B$3$NB0@-$,<h$jF@$kCM$O0J2<$N$b$N$G$9(B:</p>
+    <p>これはディレクティブが Apache
+    ウェブサーバにどれくらいきつく組み込まれているかを
+    示します。言い換えれば、ディレクティブとその機能を利用するために、
+    モジュールの数を増やして、サーバを再コンパイルする必要があるかもしれない
+    ということを示します。
+    この属性が取り得る値は以下のものです:</p>
 
     <dl>
       <dt>Core</dt>
 
-      <dd>"Core" $B$N%G%#%l%/%F%#%V$O(B Apache
-      $B%&%'%V%5!<%P$N4pK\$H$J$k$Y$-$b$N$G$"$j!"(B
-      $B>o$K;HMQ2DG=$G$"$k$3$H$r<($7$^$9!#(B</dd>
+      <dd>"Core" のディレクティブは Apache
+      ウェブサーバの基本となるべきものであり、
+      常に使用可能であることを示します。</dd>
 
       <dt>MPM</dt>
 
-      <dd>"MPM" $B$N%G%#%l%/%F%#%V$O(B<a
-      href="../mpm.html">$B%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B</a>$B$GDs6!$5$l$F$$$^$9!#(B
-      $B$3$N<oN`$N%G%#%l%/%F%#%V$O%G%#%l%/%F%#%V$NDj5A$N(B<a
-      href="#Module">$B%b%8%e!<%k(B</a>$B$N9T$K;H$C$F$$$k%b%8%e!<%k$NL>A0$,=q$+$l$F$$$k(B
-      $B>l9g$K$N$_;HMQ2DG=$G$9!#(B</dd>
+      <dd>"MPM" のディレクティブは<a
+      href="../mpm.html">マルチプロセッシングモジュール</a>で提供されています。
+      この種類のディレクティブはディレクティブの定義の<a
+      href="#Module">モジュール</a>の行に使っているモジュールの名前が書かれている
+      場合にのみ使用可能です。</dd>
 
       <dt>Base</dt>
 
-      <dd>"Base" $B$N%G%#%l%/%F%#%V$O(B
-      $B%G%U%)%k%H$G%5!<%P$KAH$_9~$^$l$F$$$kI8=`%b%8%e!<%k$NCf$N0l$D$G%5(B
-      $B%]!<%H$5$l$F$$$F!"$o$6$o$6@_Dj$+$i%b%8%e!<%k$r:o=|$7$?$H$-$r=|$$$F!"(B
-      $BDL>o$G$O;HMQ2DG=$G$"$k$3$H$r<($7$^$9!#(B</dd>
+      <dd>"Base" のディレクティブは
+      デフォルトでサーバに組み込まれている標準モジュールの中の一つでサ
+      ポートされていて、わざわざ設定からモジュールを削除したときを除いて、
+      通常では使用可能であることを示します。</dd>
 
       <dt>Extension</dt>
 
-      <dd>"Extension" $B$N%G%#%l%/%F%#%V$O!"(B Apache
-      $B%5!<%P$NG[I[J*$KF1:-$5$l$F$$$k%b%8%e!<%k$N0l$D$GDs6!$5$l$F$$$k$b$N$N!"(B
-      $BDL>o$G$O%5!<%P$KAH$_9~$^$l$F$$$J$$$3$H$r<($7$^$9!#(B
-      $B%G%#%l%/%F%#%V$H$=$N5!G=$rM-8z$K$9$k$K$O!"%5!<%P%S%k%IMQ$N@_Dj%U%!%$%k$r(B
-      $BJQ99$7$F(B Apache
-      $B$r:F%3%s%Q%$%k$9$kI,MW$,$"$j$^$9!#(B</dd>
+      <dd>"Extension" のディレクティブは、 Apache
+      サーバの配布物に同梱されているモジュールの一つで提供されているものの、
+      通常ではサーバに組み込まれていないことを示します。
+      ディレクティブとその機能を有効にするには、サーバビルド用の設定ファイルを
+      変更して Apache
+      を再コンパイルする必要があります。</dd>
 
       <dt>Experimental</dt>
 
-      <dd>"Experimental" $B$N%G%#%l%/%F%#%V$O!"(BApache
-      $BG[I[J*$K(B
-      $BF1:-$5$l$F$$$k$b$N$N!";n$7$?$$>l9g$O<+8J@UG$$G9T$J$&(B
-      $BI,MW$,$"$k$H$$$&$3$H$r<($7$^$9!#%G%#%l%/%F%#%V$O!"$9$Y$F$N%I%-%e%a%s%H$r(B
-      $B40A4$K$=$m$o$;$k$?$a$K2r@b$5$l$F$$$^$9$,!"%5%]!<%H$5$l$F$$$k$H$O8B$j$^$;$s!#(B
-      $B%G%#%l%/%F%#%V$rDs6!$9$k%b%8%e!<%k$O%G%U%)%k%H$GAH$_9~$^$l$F$$$k$+$b(B
-      $B$7$l$^$;$s$7!"$=$&$G$J$$$+$b$7$l$^$;$s!#;HMQ2DG=$+$I$&$+$O!"(B
-      $B%G%#%l%/%F%#%V$H%b%8%e!<%k$N@bL@$r$7$F$$$k%Z!<%8$N@hF,$rD4$Y$F$/$@$5$$!#(B</dd>
+      <dd>"Experimental" のディレクティブは、Apache
+      配布物に
+      同梱されているものの、試したい場合は自己責任で行なう
+      必要があるということを示します。ディレクティブは、すべてのドキュメントを
+      完全にそろわせるために解説されていますが、サポートされているとは限りません。
+      ディレクティブを提供するモジュールはデフォルトで組み込まれているかも
+      しれませんし、そうでないかもしれません。使用可能かどうかは、
+      ディレクティブとモジュールの説明をしているページの先頭を調べてください。</dd>
     </dl>
 </section>
 
-<section id="Module"><title>$B%b%8%e!<%k(B</title>
+<section id="Module"><title>モジュール</title>
 
     <p>
-    $B$3$l$OC1=c$K%G%#%l%/%F%#%V$,Dj5A$5$l$F$$$k%b%8%e!<%k$NL>A0$r5-:\$7$^$9!#(B</p>
+    これは単純にディレクティブが定義されているモジュールの名前を記載します。</p>
 </section>
 
-<section id="Compatibility"><title>$B8_49@-(B</title>
+<section id="Compatibility"><title>互換性</title>
 
-    <p>$B%G%#%l%/%F%#%V$,(B Apache 2
-    $B$NG[I[$KAH$_9~$^$l$F$$$J$+$C$?>l9g!"(B
-    $B%G%#%l%/%F%#%V$,F3F~$5$l$?%P!<%8%g%s$,$3$3$K=q$+$l$F$$$^$9!#(B
-    $B$^$?!"%G%#%l%/%F%#%V$,FCDj$N%W%i%C%H%U%)!<%`$K$N$_B8:_$9$k$H$-$b(B
-    $B$3$3$K=q$+$l$F$$$^$9!#(B</p>
+    <p>ディレクティブが Apache 2
+    の配布に組み込まれていなかった場合、
+    ディレクティブが導入されたバージョンがここに書かれています。
+    また、ディレクティブが特定のプラットフォームにのみ存在するときも
+    ここに書かれています。</p>
 </section>
 </manualpage>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:574882 (outdated) -->
@@ -23,24 +23,24 @@
 <modulesynopsis metafile="mod_authn_dbm.xml.meta">
 
 <name>mod_authn_dbm</name>
-<description>DBM $B%U%!%$%k$rMQ$$$?%f!<%6G'>Z(B</description>
+<description>DBM ファイルを用いたユーザ認証</description>
 <status>Extension</status>
 <sourcefile>mod_authn_dbm.c</sourcefile>
 <identifier>authn_dbm_module</identifier>
-<compatibility>Apache 2.1 $B0J9_(B</compatibility>
+<compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
-    <p>$BK\%b%8%e!<%k$O(B <module>mod_auth_digest</module> $B$d(B
-    <module>mod_auth_basic</module> $B$H$$$C$?G'>Z%U%m%s%H%(%s%I$KBP$7$F!"(B
-    <dfn>dbm</dfn> $B%Q%9%o!<%I%U%!%$%kFb$+$i$N%f!<%68!:w$K$h$k(B
-    $B%f!<%6G'>Z5!G=$rDs6!$7$^$9!#;w$?$h$&$J5!G=$O(B <module>mod_authn_file</module>
-    $B$G$bDs6!$5$l$F$$$^$9!#(B</p>
+    <p>本モジュールは <module>mod_auth_digest</module> や
+    <module>mod_auth_basic</module> といった認証フロントエンドに対して、
+    <dfn>dbm</dfn> パスワードファイル内からのユーザ検索による
+    ユーザ認証機能を提供します。似たような機能は <module>mod_authn_file</module>
+    でも提供されています。</p>
 
-    <p><module>mod_auth_basic</module> $B$d(B <module>mod_auth_digest</module>
-    $B$r;HMQ$9$k:]$K$O!"$3$N%b%8%e!<%k$O(B
-    <directive module="mod_auth_basic">AuthBasicProvider</directive> $B$d(B
+    <p><module>mod_auth_basic</module> や <module>mod_auth_digest</module>
+    を使用する際には、このモジュールは
+    <directive module="mod_auth_basic">AuthBasicProvider</directive> や
     <directive module="mod_auth_digest">AuthDigestPrivider</directive>
-    $B$G(B <code>dbm</code> $B$H;XDj$9$k$3$H$G5/F0$5$l$^$9!#(B</p>
+    で <code>dbm</code> と指定することで起動されます。</p>
 </summary>
 
 <seealso><directive module="core">AuthName</directive></seealso>
@@ -54,51 +54,51 @@
 
 <directivesynopsis>
 <name>AuthDBMUserFile</name>
-<description>$BG'>ZMQ$N%f!<%6$H%Q%9%o!<%I$N%j%9%H$rJ];}$7$F$$$k(B
-$B%G!<%?%Y!<%9%U%!%$%kL>$r@_Dj$9$k(B</description>
+<description>認証用のユーザとパスワードのリストを保持している
+データベースファイル名を設定する</description>
 <syntax>AuthDBMUserFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthDBMUserFile</directive> $B%G%#%l%/%F%#%V$O(B
-    $BG'>ZMQ$N%f!<%6$H%Q%9%o!<%I$N%j%9%H$rJ];}$7$F$$$k(B DBM $B%U%!%$%k$N(B
-    $BL>A0$r@_Dj$7$^$9!#(B<var>File-path</var> $B$O%f!<%6%U%!%$%k$X$N(B
-    $B@dBP%Q%9$G$9!#(B</p>
+    <p><directive>AuthDBMUserFile</directive> ディレクティブは
+    認証用のユーザとパスワードのリストを保持している DBM ファイルの
+    名前を設定します。<var>File-path</var> はユーザファイルへの
+    絶対パスです。</p>
 
-    <p>$B%f!<%6%U%!%$%k$N%-!<$O%f!<%6L>$G$9!#%f!<%6$KBP$7$FJV$5$l$kCM$O(B
-    $B0E9f2=$5$l$?%Q%9%o!<%I$G!"$=$N8e$K!"%3%m%s$KB3$$$FG$0U$N%G!<%?$,(B
-    $BB3$$$F$$$k$3$H$b$"$j$^$9!#%3%m%s$H$=$N8e$N%G!<%?$O%5!<%P$O(B
-    $BL5;k$7$^$9!#(B</p>
+    <p>ユーザファイルのキーはユーザ名です。ユーザに対して返される値は
+    暗号化されたパスワードで、その後に、コロンに続いて任意のデータが
+    続いていることもあります。コロンとその後のデータはサーバは
+    無視します。</p>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
-      <p><directive>AuthDBMUserFile </directive> $B$O!"(B
-      $B%&%'%V%5!<%P$N%I%-%e%a%s%H%D%j!<$N30B&$KJ]4I$9$k$h$&$K$7$F$/$@$5$$!#(B
-      $BJ]8n$7$h$&$H$7$F$$$k%G%#%l%/%H%j0J2<$K$O(B
-      <strong>$BCV$+$J$$$G2<$5$$(B</strong>$B!#(B
-      $B$=$&$7$J$$$H%/%i%$%"%s%H$,(B <directive>AuthUserFile</directive> $B$r(B
-      $B%@%&%s%m!<%I$G$-$F$7$^$$$^$9!#(B</p>
+    <note type="warning"><title>セキュリティ</title>
+      <p><directive>AuthDBMUserFile </directive> は、
+      ウェブサーバのドキュメントツリーの外側に保管するようにしてください。
+      保護しようとしているディレクトリ以下には
+      <strong>置かないで下さい</strong>。
+      そうしないとクライアントが <directive>AuthUserFile</directive> を
+      ダウンロードできてしまいます。</p>
     </note>
 
-    <p>$B=EMW$J8_49@-$K4X$9$kCm0U(B: apache module $B$N(B <code>dbmopen</code> $B$N<BAu$O(B
-    $BJ8;zNs$,(B NULL $B$G=*$o$C$F$$$k$3$H$K0MB8$9$k$N$G$O$J$/!"(BDBM $B%G!<%?%9%H%i%/%A%c(B
-    $B$N%O%C%7%eCM$NJ8;zNs$ND9$5$rFI$_<h$j$^$9!#(BNetscape $B%&%'%V%5!<%P$J$I!"(B
-    $B%"%W%j%1!<%7%g%s$NCf$K$OJ8;zNs$,(B NULL $B$G=*$o$C$F$$$k$3$H$K0MB8$7$F$$$k(B
-    $B$b$N$,$"$j$^$9!#$G$9$+$i!"0[$J$k%"%W%j%1!<%7%g%s4V$G$N(B DBM $B%U%!%$%k$N(B
-    $B;HMQ$KLdBj$,$"$k>l9g$O!"$3$l$,860x$K$J$C$F$$$k2DG=@-$,$"$j$^$9!#(B</p>
+    <p>重要な互換性に関する注意: apache module の <code>dbmopen</code> の実装は
+    文字列が NULL で終わっていることに依存するのではなく、DBM データストラクチャ
+    のハッシュ値の文字列の長さを読み取ります。Netscape ウェブサーバなど、
+    アプリケーションの中には文字列が NULL で終わっていることに依存している
+    ものがあります。ですから、異なるアプリケーション間での DBM ファイルの
+    使用に問題がある場合は、これが原因になっている可能性があります。</p>
 
-    <p>Apache $B$K$O(B <program>dbmmanage</program> $B$H$$$&(B
-    perl $B%9%/%j%W%H$,4^$^$l$F$$$^$9!#$3$N%W%m%0%i%`$r;H$C$F$3$N(B
-    $B%b%8%e!<%k$,;HMQ$9$k(B DBM $B%U%)!<%^%C%H$N%Q%9%o!<%I%U%!%$%k$r:n@.$7$?$j(B
-    $B99?7$7$?$j$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>Apache には <program>dbmmanage</program> という
+    perl スクリプトが含まれています。このプログラムを使ってこの
+    モジュールが使用する DBM フォーマットのパスワードファイルを作成したり
+    更新したりすることができます。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthDBMType</name>
-<description>$B%Q%9%o!<%I$rJ]B8$9$k$?$a$KI,MW$J%G!<%?%Y!<%9%U%!%$%k$N<oN`$r(B
-$B@_Dj$9$k(B</description>
+<description>パスワードを保存するために必要なデータベースファイルの種類を
+設定する</description>
 <syntax>AuthDBMType default|SDBM|GDBM|NDBM|DB</syntax>
 <default>AuthDBMType default</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -106,13 +106,13 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p>$B%Q%9%o!<%I$rJ]B8$9$k$?$a$K;HMQ$9$k%G!<%?%Y!<%9%U%!%$%k$N<oN`$r(B
-    $B@_Dj$7$^$9!#%G%U%)%k%H$N%G!<%?%Y!<%9$N<oN`$O%3%s%Q%$%k;~$K7h$^$j$^$9!#(B
-    $BB>$N<oN`$N%G!<%?%Y!<%9$,;HMQ2DG=$+$I$&$+$b(B <a href="../install.html#dbm"
-    >$B%3%s%Q%$%k;~$N@_Dj(B</a>$B$K0MB8$7$^$9!#(B</p>
+    <p>パスワードを保存するために使用するデータベースファイルの種類を
+    設定します。デフォルトのデータベースの種類はコンパイル時に決まります。
+    他の種類のデータベースが使用可能かどうかも <a href="../install.html#dbm"
+    >コンパイル時の設定</a>に依存します。</p>
 
-    <p>$B%Q%9%o!<%I%U%!%$%k$r:n@.$9$k$N$K;HMQ$9$k%W%m%0%i%`$,F1$8<oN`$N%G!<%?%Y!<%9$r(B
-    $B;HMQ$9$k$h$&$K@_Dj$9$k$3$H$OHs>o$K=EMW$G$9!#(B</p>
+    <p>パスワードファイルを作成するのに使用するプログラムが同じ種類のデータベースを
+    使用するように設定することは非常に重要です。</p>
 </usage>
 </directivesynopsis>
 

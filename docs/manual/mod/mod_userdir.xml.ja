@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:657842 (outdated) -->
@@ -23,81 +23,81 @@
 <modulesynopsis metafile="mod_userdir.xml.meta">
 
 <name>mod_userdir</name>
-<description>$B%f!<%6@lMQ$N%G%#%l%/%H%j$rDs6!(B
+<description>ユーザ専用のディレクトリを提供
   </description>
 <status>Base</status>
 <sourcefile>mod_userdir.c</sourcefile>
 <identifier>userdir_module</identifier>
 
 <summary>
-<p>$B$3$N%b%8%e!<%k$O!"(B
+<p>このモジュールは、
 <code>http://example.com/~user/</code>
-$B9=J8$r;H$C$F%f!<%6@lMQ%G%#%l%/%H%j$K%"%/%;%9$G$-$k$h$&$K$7$^$9!#(B</p>
+構文を使ってユーザ専用ディレクトリにアクセスできるようにします。</p>
 </summary>
 
-<seealso><a href="../urlmapping.html">URL $B$+$i(B
-$B%U%!%$%k%7%9%F%`$X$N%^%C%T%s%0(B</a></seealso>
+<seealso><a href="../urlmapping.html">URL から
+ファイルシステムへのマッピング</a></seealso>
 <seealso><a href="../howto/public_html.html">public_html
-$B%A%e!<%H%j%"%k(B</a></seealso>
+チュートリアル</a></seealso>
 
 <directivesynopsis>
 
 <name>UserDir</name>
-<description>$B%f!<%6@lMQ%G%#%l%/%H%j$N0LCV(B</description>
+<description>ユーザ専用ディレクトリの位置</description>
 <syntax>UserDir <em>directory-filename</em></syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
 
 <usage>
 
-    <p><directive>UserDir</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B%f!<%6$N%I%-%e%a%s%H$X$N%j%/%(%9%H$r<u$1$?;~$K;H$&(B
-    $B%f!<%6$N%[!<%`%G%#%l%/%H%jCf$N!"<B:]$N%G%#%l%/%H%j$r(B
-    $B@_Dj$7$^$9!#(B
-    <em>directory-filename</em> $B$K$O<!$N$I$l$+$r;XDj$7$^$9(B:</p>
+    <p><directive>UserDir</directive> ディレクティブは、
+    ユーザのドキュメントへのリクエストを受けた時に使う
+    ユーザのホームディレクトリ中の、実際のディレクトリを
+    設定します。
+    <em>directory-filename</em> には次のどれかを指定します:</p>
 
     <ul>
-      <li>$B%G%#%l%/%H%jL>$+2<$K<($9$h$&$J%Q%?!<%s!#(B</li>
+      <li>ディレクトリ名か下に示すようなパターン。</li>
 
-      <li><code>disabled</code> $B%-!<%o!<%I!#(B
-      <code>enabled</code> $B%-!<%o!<%I(B ($B2<5-;2>H(B) $B$GL@<(E*$K(B
-      $B;XDj$5$l$?%f!<%60J30$N(B
-      <em>$BA4$F$N(B</em>$B%f!<%6L>(B-$B%G%#%l%/%H%jJQ49$r(B
-      $B$7$J$$$h$&$K$7$^$9!#(B</li>
+      <li><code>disabled</code> キーワード。
+      <code>enabled</code> キーワード (下記参照) で明示的に
+      指定されたユーザ以外の
+      <em>全ての</em>ユーザ名-ディレクトリ変換を
+      しないようにします。</li>
 
-      <li><code>disabled</code> $B%-!<%o!<%I$H!"%9%Z!<%96h@Z$j$N%f!<%6L>%j%9%H!#(B
-      $B$3$N%j%9%HCf$K4^$^$l$k%f!<%6L>$KBP$7$F$O!"$?$H$((B
-      <code>enabled</code> $B@a$K$"$C$?$H$7$F$b!"(B
-      <em>$B7h$7$F(B</em>$B%G%#%l%/%H%jJQ49$O9T$o$l$^$;$s!#(B</li>
+      <li><code>disabled</code> キーワードと、スペース区切りのユーザ名リスト。
+      このリスト中に含まれるユーザ名に対しては、たとえ
+      <code>enabled</code> 節にあったとしても、
+      <em>決して</em>ディレクトリ変換は行われません。</li>
 
-      <li><code>enebled</code> $B%-!<%o!<%I$H%9%Z!<%96h@Z$j$N%f!<%6L>%j%9%H!#(B
-      $BA4BN$G$OJQ49$,L58z$K$J$C$F$$$?$H$$$?$H$7$F$b!"(B
-      $B$3$l$i$N%f!<%6L>$K$O%G%#%l%/%H%jJQ49$,9T$o$l$^$9!#(B
-      $B$?$@$7!"(B<code>disabled</code> $B@a$K$b$"$l$PJQ49$O$5$l$^$;$s!#(B
+      <li><code>enebled</code> キーワードとスペース区切りのユーザ名リスト。
+      全体では変換が無効になっていたといたとしても、
+      これらのユーザ名にはディレクトリ変換が行われます。
+      ただし、<code>disabled</code> 節にもあれば変換はされません。
       </li>
     </ul>
 
-    <p>$B$b$7(B <code>enabled</code> $B$b(B <code>disabled</code>
-    $B%-!<%o!<%I$b(B <code>UserDir</code> $B$K8=$o$l$F$$$J$1$l$P!"(B
-    $B0z?t$O%U%!%$%kL>%Q%?!<%s$H$7$F07$o$l!"(B
-    $BL>A0$+$i%G%#%l%/%H%j$X$NJQ49$N;XDj$r9T$J$&;~$K;H$o$l$^$9!#(B
+    <p>もし <code>enabled</code> も <code>disabled</code>
+    キーワードも <code>UserDir</code> に現われていなければ、
+    引数はファイル名パターンとして扱われ、
+    名前からディレクトリへの変換の指定を行なう時に使われます。
     <code>http://www.foo.com/~bob/one/two.html</code>
-    $B$X$N%j%/%(%9%H$O<!$N$h$&$KJQ49$5$l$^$9(B:</p>
+    へのリクエストは次のように変換されます:</p>
 
 <table>
-<tr><th>UserDir $B%G%#%l%/%F%#%V(B</th>
-<th>$BJQ498e$N%Q%9(B</th></tr>
+<tr><th>UserDir ディレクティブ</th>
+<th>変換後のパス</th></tr>
 <tr><td>UserDir public_html</td><td>~bob/public_html/one/two.html</td></tr>
 <tr><td>UserDir /usr/web</td><td>/usr/web/bob/one/two.html</td></tr>
 <tr><td>UserDir /home/*/www</td><td>/home/bob/www/one/two.html</td></tr>
 </table>
 
-    <p>$B<!$N%G%#%l%/%F%#%V$O%/%i%$%"%s%H$KBP$7$F%j%@%$%l%/%H$r(B
-    $BAw?.$7$^$9(B:</p>
+    <p>次のディレクティブはクライアントに対してリダイレクトを
+    送信します:</p>
 
 <table>
-<tr><th>UserDir $B%G%#%l%/%F%#%V(B</th>
-<th>$BJQ498e$N%Q%9(B</th></tr>
+<tr><th>UserDir ディレクティブ</th>
+<th>変換後のパス</th></tr>
 <tr><td>UserDir http://www.foo.com/users</td><td>http://www.foo.com/users/bob/one/two.html</td></tr>
 <tr><td>UserDir
 http://www.foo.com/*/usr</td><td>http://www.foo.com/bob/usr/one/two.html</td></tr>
@@ -106,63 +106,63 @@ http://www.foo.com/~*/</td><td>http://www.foo.com/~bob/one/two.html</td></tr>
 </table> 
 
 <note>
-      <strong>$B$3$N%G%#%l%/%F%#%V$r;H$&$H$-$OCm0U$7$F$/$@$5$$(B;
-      "<code>UserDir ./</code>" $B$O(B
-      "<code>/~root</code>" $B$+$i(B "<code>/</code>" $B$X%^%C%W$7$^$9$,!"(B
-      $B$3$l$OK>$^$7$$F0:n$G$O$J$$$G$7$g$&!#(B
-      "<code>UserDir disabled root</code>" $B@k8@$r(B
-      $B@_Dj$NCf$K4^$a$F$*$/$3$H$r6/$/$*A&$a$7$^$9!#(B
-      $BDI2C>pJs$K(B <directive module="core">Directory</directive>
-      $B%G%#%l%/%F%#%V$d(B
-      <a href="../misc/security_tips.html">$B%;%-%e%j%F%#(B
-      Tips</a> $B$N%Z!<%8$b$4Mw2<$5$$!#(B</strong>
+      <strong>このディレクティブを使うときは注意してください;
+      "<code>UserDir ./</code>" は
+      "<code>/~root</code>" から "<code>/</code>" へマップしますが、
+      これは望ましい動作ではないでしょう。
+      "<code>UserDir disabled root</code>" 宣言を
+      設定の中に含めておくことを強くお薦めします。
+      追加情報に <directive module="core">Directory</directive>
+      ディレクティブや
+      <a href="../misc/security_tips.html">セキュリティ
+      Tips</a> のページもご覧下さい。</strong>
 </note>
 
-<p>$BDI2C$NNc(B:</p>
+<p>追加の例:</p>
 
-<p>$B>/?t$N%f!<%6$N$_$,(B <code>UserDir</code>
-$B%G%#%l%/%H%j$rMxMQ$7!"$=$l0J30$K$OMxMQ$5$;$?$/$J$$>l9g$O(B
-$B<!$r;H$$$^$7$g$&(B:</p>
+<p>少数のユーザのみが <code>UserDir</code>
+ディレクトリを利用し、それ以外には利用させたくない場合は
+次を使いましょう:</p>
 
 <example>
 UserDir disabled<br />
 UserDir enabled user1 user2 user3
 </example>
 
-<p>$BBgItJ,$N%f!<%6$O(B <code>UserDir</code> $B%G%#%l%/%H%j$rMxMQ$9$k$1$l$I!"(B
-$B>/?t$N?M$OIT5v2D$K$7$?$$>l9g$O!"<!$r;H$$$^$7$g$&(B:</p>
+<p>大部分のユーザは <code>UserDir</code> ディレクトリを利用するけれど、
+少数の人は不許可にしたい場合は、次を使いましょう:</p>
 
 <example>
 UserDir enabled<br />
 UserDir disabled user4 user5 user6
 </example>
 
-<p>$BB>$N%f!<%6%G%#%l%/%H%j$r;XDj$9$k$3$H$b$G$-$^$9!#(B
-$B<!$N$h$&$J%3%^%s%I$r;H$&$H(B:</p>
+<p>他のユーザディレクトリを指定することもできます。
+次のようなコマンドを使うと:</p>
 
 <example>
 Userdir public_html /usr/web http://www.foo.com/
 </example>
 
-<p>http://www.foo.com/~bob/one/two.html $B$X$N%j%/%(%9%H$O$^$:(B
-~bob/public_html/one/two.html $B$N%Z!<%8$rD4$Y!"$=$N<!$K(B
-/usr/web/bob/one/two.html $B$rD4$Y!":G8e$K(B http://www.foo.com/bob/one/two.html
-$B$X$N%j%@%$%l%/%H$rAw$j$^$9!#(B</p>
+<p>http://www.foo.com/~bob/one/two.html へのリクエストはまず
+~bob/public_html/one/two.html のページを調べ、その次に
+/usr/web/bob/one/two.html を調べ、最後に http://www.foo.com/bob/one/two.html
+へのリダイレクトを送ります。</p>
 
-<p>$B%j%@%$%l%/%H$r2C$($k>l9g$O!"%j%9%H$N:G8e$NA*Br;h$G$J$1$l$P$J$j$^$;$s!#(B
-Apache $B$O%j%@%$%l%/%H$,@.8y$9$k$+$I$&$+$r7h$a$k$3$H$O$G$-$^$;$s$N$G!"(B
-$B%j%9%H$NA0$NJ}$K%j%@%$%l%/%H$r=q$/$H!"$=$l$,I,$:;HMQ$5$l$kA*Br;h$K(B
-$B$J$C$F$7$^$$$^$9!#(B</p>
+<p>リダイレクトを加える場合は、リストの最後の選択肢でなければなりません。
+Apache はリダイレクトが成功するかどうかを決めることはできませんので、
+リストの前の方にリダイレクトを書くと、それが必ず使用される選択肢に
+なってしまいます。</p>
 
-<p>2.1.4 $B0J9_$G$O!"%f!<%6%G%#%l%/%H%jCV495!G=$O%G%U%)%k%H$G$O5/F0$7$^$;$s!#(B
-$B$=$l0JA0$N%P!<%8%g%s$G$O!"(B<directive module="mod_userdir">UserDir</directive>
-$B%G%#%l%/%F%#%V$,B8:_$7$J$1$l$P!"(B<code>UserDir public_html</code> 
-$B$G$"$k$H2>Dj$5$l$F$$$^$7$?!#(B</p>
+<p>2.1.4 以降では、ユーザディレクトリ置換機能はデフォルトでは起動しません。
+それ以前のバージョンでは、<directive module="mod_userdir">UserDir</directive>
+ディレクティブが存在しなければ、<code>UserDir public_html</code> 
+であると仮定されていました。</p>
 
 </usage>
 
 <seealso><a href="../howto/public_html.html">public_html
-$B%A%e!<%H%j%"%k(B</a></seealso>
+チュートリアル</a></seealso>
 
 </directivesynopsis>
 </modulesynopsis>

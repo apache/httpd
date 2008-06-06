@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -23,22 +23,22 @@
 <modulesynopsis metafile="mod_authz_default.xml.meta">
 
 <name>mod_authz_default</name>
-<description>$B>5G'%U%)!<%k%P%C%/%b%8%e!<%k(B</description>
+<description>承認フォールバックモジュール</description>
 <status>Base</status>
 <sourcefile>mod_authz_default.c</sourcefile>
 <identifier>authz_default_module</identifier>
-<compatibility>Apache 2.1 $B0J9_(B</compatibility>
+<compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$O(B <module>mod_authz_user</module> $B$d(B
-    <module>mod_authz_groupfile</module> $B$H$$$C$?>5G'%b%8%e!<%k$r(B
-    $B@_Dj$7$J$+$C$?>l9g$N%U%)!<%k%P%C%/%b%8%e!<%k$H$7$F@_7W$5$l$F$$$^$9!#(B
-    $B$I$N$h$&$J>5G'%j%/%(%9%H$bC1$K5qH]$7$^$9!#(B</p>
+    <p>このモジュールは <module>mod_authz_user</module> や
+    <module>mod_authz_groupfile</module> といった承認モジュールを
+    設定しなかった場合のフォールバックモジュールとして設計されています。
+    どのような承認リクエストも単に拒否します。</p>
 </summary>
 
 <directivesynopsis>
 <name>AuthzDefaultAuthoritative</name>
-<description>$B>5G'$,Dc0L$N%b%8%e!<%k$KEO$5$l$k$+$I$&$+$r@_Dj$9$k(B</description>
+<description>承認が低位のモジュールに渡されるかどうかを設定する</description>
 <syntax>AuthzDefaultAuthoritative On|Off</syntax>
 <default>AuthzDefaultAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -46,17 +46,17 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthzDefaultAuthoritative</directive> $B%G%#%l%/%F%#%V$r(B
-    $BL@<(E*$K(B <code>Off</code> $B$K@_Dj$9$k$H(B
-    $BG'>Z$r<!$N(B (<code>modules.c</code> $B%U%!%$%k$GDj5A$5$l$F$$$k(B)
-    $BDc0L$N%b%8%e!<%k$KEO$9$3$H$r5v2D$7$^$9!#(B</p>
+    <p><directive>AuthzDefaultAuthoritative</directive> ディレクティブを
+    明示的に <code>Off</code> に設定すると
+    認証を次の (<code>modules.c</code> ファイルで定義されている)
+    低位のモジュールに渡すことを許可します。</p>
 
-    <note><title>$BCm0U(B</title>
-      <p><module>mod_authz_default</module> $B<+BN$,(B<em>$B$H$F$bDc$$(B</em>
-      $B%l%Y%k$H$7$FDj5A$5$l$F$$$^$9$N$G!"DL>o$O$3$l$h$j$bDc<!$N(B
-      $B%b%8%e!<%k$OB8:_$7$^$;$s!#$G$9$+$i(B
-      <directive>AuthDefaultAuthoritative</directive> $B$O%G%U%)%k%H(B
-      (<code>On</code>) $B$N$^$^$K$7$?$[$&$,NI$$$G$7$g$&!#(B</p>
+    <note><title>注意</title>
+      <p><module>mod_authz_default</module> 自体が<em>とても低い</em>
+      レベルとして定義されていますので、通常はこれよりも低次の
+      モジュールは存在しません。ですから
+      <directive>AuthDefaultAuthoritative</directive> はデフォルト
+      (<code>On</code>) のままにしたほうが良いでしょう。</p>
     </note>
 </usage>
 </directivesynopsis>

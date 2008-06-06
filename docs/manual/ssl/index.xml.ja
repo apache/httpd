@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -23,32 +23,32 @@
 <manualpage metafile="index.xml.meta">
 <parentdocument href="../"/>
 
-  <title>Apache $B$N(B SSL/TLS $B0E9f2=(B</title>
+  <title>Apache の SSL/TLS 暗号化</title>
 
 <summary>
-<p>Apache HTTP $B%5!<%P%b%8%e!<%k(B <module>mod_ssl</module> $B$,(B
+<p>Apache HTTP サーバモジュール <module>mod_ssl</module> が
 <a href="http://www.openssl.org/">OpenSSL</a>
-$B%i%$%V%i%j$X$N%$%s%?!<%U%'!<%9$rDs6!$7$F$$$^$9$,!"$3$l$O(B
-Secure Sockts Layer $B$H(B Transport Layer Security
-$B%W%m%H%3%k$rMQ$$$?6/NO$J0E9f2=$rDs6!$7$^$9!#(B
-$B$3$N%b%8%e!<%k$d$3$NJ8=q$O(B Ralf S. Engelschall $B$N(B mod_ssl
-$B%W%m%8%'%/%H$K4p$E$$$F$$$^$9!#(B</p>
+ライブラリへのインターフェースを提供していますが、これは
+Secure Sockts Layer と Transport Layer Security
+プロトコルを用いた強力な暗号化を提供します。
+このモジュールやこの文書は Ralf S. Engelschall の mod_ssl
+プロジェクトに基づいています。</p>
 </summary>
 
 <section id="documentation"><title>Documentation</title>
 <ul>
-<li><a href="ssl_intro.html">$B$O$8$a$K(B</a></li>
-<li><a href="ssl_compat.html">$B8_49@-(B</a></li>
+<li><a href="ssl_intro.html">はじめに</a></li>
+<li><a href="ssl_compat.html">互換性</a></li>
 <li><a href="ssl_howto.html">How-To</a></li>
-<li><a href="ssl_faq.html">$B$h$/$"$k<ALd(B</a></li>
-<li><a href="../glossary.html">$BMQ8l(B</a></li>
+<li><a href="ssl_faq.html">よくある質問</a></li>
+<li><a href="../glossary.html">用語</a></li>
 </ul>
 </section>
 
 <section id="mod-ssl"><title>mod_ssl</title>
-<p>$B$3$N%b%8%e!<%k$GDs6!$5$l$k%G%#%l%/%F%#%V$d4D6-JQ?t$K4X$9$k(B
-$B>\$7$$J8=q$O!"(B<a href="../mod/mod_ssl.html">mod_ssl
-$B%j%U%!%l%s%9(B</a>$B$r$4Mw2<$5$$!#(B</p>
+<p>このモジュールで提供されるディレクティブや環境変数に関する
+詳しい文書は、<a href="../mod/mod_ssl.html">mod_ssl
+リファレンス</a>をご覧下さい。</p>
 </section>
 
 </manualpage>

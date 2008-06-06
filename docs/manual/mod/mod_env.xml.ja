@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -23,23 +23,23 @@
 <modulesynopsis metafile="mod_env.xml.meta">
 
 <name>mod_env</name>
-<description>CGI $B%9%/%j%W%H5Z$S(B SSI
-$B%Z!<%8$KEO$5$l$k4D6-JQ?t$rJQ99$9$k5!G=$rDs6!$9$k(B</description>
+<description>CGI スクリプト及び SSI
+ページに渡される環境変数を変更する機能を提供する</description>
 <status>Base</status>
 <sourcefile>mod_env.c</sourcefile>
 <identifier>env_module</identifier>
 <summary>
-    <p>$B$3$N%b%8%e!<%k$K$h$j(B CGI $B%9%/%j%W%H$H(B SSI
-    $B%Z!<%8$KE,MQ$5$l$k4D6-JQ?t$r@)8f$9$k$3$H$,$G$-$k$h$&$K$J$j$^$9!#(B
-    $B4D6-JQ?t$O(B <program>httpd</program> $B%W%m%;%9$r5/F0$7$?%7%'%k$+$iEO$5$l$^$9!#$^$?!"(B
-    $B@_Dj%U%!%$%k$G4D6-JQ?t$r@_Dj$7$?$j!":o=|$7$?$j$9$k$3$H$,$G$-$^$9!#(B
+    <p>このモジュールにより CGI スクリプトと SSI
+    ページに適用される環境変数を制御することができるようになります。
+    環境変数は <program>httpd</program> プロセスを起動したシェルから渡されます。また、
+    設定ファイルで環境変数を設定したり、削除したりすることができます。
     </p>
 </summary>
-<seealso><a href="../env.html">$B4D6-JQ?t(B</a></seealso>
+<seealso><a href="../env.html">環境変数</a></seealso>
 
 <directivesynopsis>
 <name>PassEnv</name>
-<description>$B%7%'%k$+$i$N4D6-JQ?t$rEO$9(B</description>
+<description>シェルからの環境変数を渡す</description>
 <syntax>PassEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</syntax>
 <contextlist>
@@ -49,10 +49,10 @@
 
 <usage>
 
-    <p><program>httpd</program> $B%W%m%;%9$r5/F0$7$?%7%'%k$N4D6-$+$i(B CGI $B%9%/%j%W%H$H(B
-    SSI $B%Z!<%8$KEO$94D6-JQ?t$r0l$D0J>e;XDj$7$^$9!#(B</p>
+    <p><program>httpd</program> プロセスを起動したシェルの環境から CGI スクリプトと
+    SSI ページに渡す環境変数を一つ以上指定します。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       PassEnv LD_LIBRARY_PATH
     </example>
 </usage>
@@ -60,17 +60,17 @@
 
 <directivesynopsis>
 <name>SetEnv</name>
-<description>$B4D6-JQ?t$r@_Dj$9$k(B</description>
+<description>環境変数を設定する</description>
 <syntax>SetEnv <var>env-variable</var> <var>value</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p>$B4D6-JQ?t$r@_Dj$7!"$=$l$r(B CGI $B%9%/%j%W%H$H(B SSI
-    $B%Z!<%8$KEO$9$h$&$K$7$^$9!#(B</p>
+    <p>環境変数を設定し、それを CGI スクリプトと SSI
+    ページに渡すようにします。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       SetEnv SPECIAL_PATH /foo/bin
     </example>
 </usage>
@@ -78,7 +78,7 @@
 
 <directivesynopsis>
 <name>UnsetEnv</name>
-<description>$B4D6-$+$iJQ?t$r<h$j=|$/(B</description>
+<description>環境から変数を取り除く</description>
 <syntax>UnsetEnv <var>env-variable</var> [<var>env-variable</var>]
 ...</syntax>
 <contextlist>
@@ -87,10 +87,10 @@
 <override>FileInfo</override>
 
 <usage>
-    <p>CGI $B%9%/%j%W%H$H(B SSI
-    $B%Z!<%8$KEO$5$l$k4D6-JQ?t$+$i;XDj$5$l$?4D6-JQ?t$r<h$j=|$-$^$9!#(B</p>
+    <p>CGI スクリプトと SSI
+    ページに渡される環境変数から指定された環境変数を取り除きます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       UnsetEnv LD_LIBRARY_PATH
     </example>
 </usage>

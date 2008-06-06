@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 395228:655869 (outdated) -->
@@ -23,123 +23,123 @@
 <modulesynopsis metafile="mod_proxy_ajp.xml.meta">
 
 <name>mod_proxy_ajp</name>
-<description><module>mod_proxy</module> $B$G(B AJP 
-$B$r%5%]!<%H$9$k$?$a$N%b%8%e!<%k(B</description>
+<description><module>mod_proxy</module> で AJP 
+をサポートするためのモジュール</description>
 <status>Extension</status>
 <sourcefile>proxy_ajp.c</sourcefile>
 <identifier>proxy_ajp_module</identifier>
 
 <summary>
-    <p>$BK\%b%8%e!<%k$K$O(B <module>mod_proxy</module> $B$,(B<em>$BI,MW$G$9(B</em>$B!#(B
-    <code>Apache JServ Protocol version 1.3</code> ($B0J9_(B <em>AJP13</em>)
-    $B$r%5%]!<%H$7$^$9!#(B</p>
+    <p>本モジュールには <module>mod_proxy</module> が<em>必要です</em>。
+    <code>Apache JServ Protocol version 1.3</code> (以降 <em>AJP13</em>)
+    をサポートします。</p>
 
-    <p><code>AJP13</code> $B%W%m%H%3%k$r07$($k$h$&$K$9$k$K$O(B
-    <module>mod_proxy</module> $B$H(B <module>mod_proxy_ajp</module>
-    $B$r%5!<%P$KAH$_9~$`I,MW$,$"$j$^$9!#(B</p>
+    <p><code>AJP13</code> プロトコルを扱えるようにするには
+    <module>mod_proxy</module> と <module>mod_proxy_ajp</module>
+    をサーバに組み込む必要があります。</p>
 
-    <note type="warning"><title>$B7Y9p(B</title>
+    <note type="warning"><title>警告</title>
       <p><a href="#access"
-      >$B0BA4$J%5!<%P$K$9$k(B</a>$B$^$G%W%m%/%75!G=$OM-8z$K$7$J$$$G$/$@$5$$!#(B
-      $B%*!<%W%s%W%m%-%7%5!<%P$O$"$J$?<+?H$N%M%C%H%o!<%/$K$H$C$F$b!"(B
-      $B%$%s%?!<%M%C%HA4BN$K$H$C$F$b4m81$G$9!#(B</p>
+      >安全なサーバにする</a>までプロクシ機能は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
     </note>
 </summary>
 
 <seealso><module>mod_proxy</module></seealso>
 
-<section id="overviewprotocol"><title>$B%W%m%H%3%k$N35MW(B</title>
-    <p><code>AJP13</code> $B%W%m%H%3%k$O%Q%1%C%H;X8~$G$9!#(B
-    $B2DFI$J%W%l!<%s%F%-%9%H7A<0$G$O$J$/%P%$%J%j7A<0$K$J$C$?$N$O!"(B
-    $B$*$=$i$/%Q%U%)!<%^%s%9>e$NM}M3$K$h$j$^$9!#(B
-    $B%&%'%V%5!<%P$O%5!<%V%l%C%H%3%s%F%J$H(B TCP $B%3%M%/%7%g%s$GDL?.$7$^$9!#(B
-    $B%=%1%C%H@8@.$O=E$$=hM}$J$N$G!"Ii2Y$r8:$i$9$?$a$K!"%5!<%V%l%C%H%3%s%F%J$H$N(B
-    TCP $B@\B3$r0];}$7!"J#?t$N%j%/%(%9%H!&%l%9%]%s%9=hM}%5%$%/%k$KBP$7$F0l$D$N(B
-    $B%3%M%/%7%g%s$r;H$$$^$o$9$h$&$K$J$C$F$$$^$9!#(B</p>
-    <p>$B$"$k%j%/%(%9%H$K%3%M%/%7%g%s$,3d$jEv$F$i$l$k$H!"$=$N=hM}%5%$%/%k$,(B
-    $B40N;$9$k$^$GB>$N$b$N$K;H$o$l$k$3$H$O$"$j$^$;$s!#(B
-    $B$D$^$j%3%M%/%7%g%s>e$G$O!"%j%/%(%9%H$NF1;~=hM}$O9T$o$l$^$;$s!#(B
-    $B$3$N$?$a!"%3%M%/%7%g%sN>C<$G$N<B9T$9$k%3!<%I$r4J7i$K$G$-$k0lJ}$G!"(B
-    $BF1;~$K3+$/%3%M%/%7%g%s$OB?$/$J$C$F$$$^$9!#(B</p>
-    <p>$B%5!<%V%l%C%H%3%s%F%J$X$N%3%M%/%7%g%s$r3+$$$?8e$O!"%3%M%/%7%g%s$N>uBV$O(B
-    $B<!$N$I$l$+$K$J$j$^$9(B:</p>
+<section id="overviewprotocol"><title>プロトコルの概要</title>
+    <p><code>AJP13</code> プロトコルはパケット指向です。
+    可読なプレーンテキスト形式ではなくバイナリ形式になったのは、
+    おそらくパフォーマンス上の理由によります。
+    ウェブサーバはサーブレットコンテナと TCP コネクションで通信します。
+    ソケット生成は重い処理なので、負荷を減らすために、サーブレットコンテナとの
+    TCP 接続を維持し、複数のリクエスト・レスポンス処理サイクルに対して一つの
+    コネクションを使いまわすようになっています。</p>
+    <p>あるリクエストにコネクションが割り当てられると、その処理サイクルが
+    完了するまで他のものに使われることはありません。
+    つまりコネクション上では、リクエストの同時処理は行われません。
+    このため、コネクション両端での実行するコードを簡潔にできる一方で、
+    同時に開くコネクションは多くなっています。</p>
+    <p>サーブレットコンテナへのコネクションを開いた後は、コネクションの状態は
+    次のどれかになります:</p>
     <ul>
-    <li> Idle <br />$B%3%M%/%7%g%s>e$G=hM}$5$l$F$$$k%j%/%(%9%H$O$"$j$^$;$s!#(B</li>
-    <li> Assigned <br />$B%3%M%/%7%g%s$O%j%/%(%9%H$r=hM}Cf$G$9!#(B</li>
+    <li> Idle <br />コネクション上で処理されているリクエストはありません。</li>
+    <li> Assigned <br />コネクションはリクエストを処理中です。</li>
     </ul>
-    <p>$B%3%M%/%7%g%s$,FCDj$N%j%/%(%9%H$K%"%5%$%s$5$l$k$H!"4pK\E*$J>pJs(B ($BNc$($P(B
-    HTTP $B%X%C%@Ey(B) $B$,05=L$5$l$?7A(B ($BNc$($PDL>o$NJ8;zNs$O@0?t$K%(%s%3!<%I$5$l$^$9(B)
-    $B$GE>Aw$5$l$^$9!#>\:Y$O2<5-$N!V%j%/%(%9%H%Q%1%C%H$N9=B$!W$r;2>H$7$F$/$@$5$$!#(B
-    $B%j%/%(%9%H$K%\%G%#$,B8:_(B <code>(content-length > 0)</code> $B$9$l$P!"(B
-    $B4pK\E*$J>pJs$ND>8e$KJL%Q%1%C%H$GE>Aw$5$l$^$9!#(B</p>
-    <p>$B$3$N;~E@$G$*$=$i$/!"%5!<%V%l%C%H%3%s%F%J$O=hM}$r3+;O$G$-$k$h$&$K$J$j$^$9!#(B
-    $B$G$9$N$G!"<!$N%a%C%;!<%8$r%&%'%V%5!<%P$KLa$7$FCN$i$;$i$l$k$h$&$K$J$j$^$9!#(B</p>
+    <p>コネクションが特定のリクエストにアサインされると、基本的な情報 (例えば
+    HTTP ヘッダ等) が圧縮された形 (例えば通常の文字列は整数にエンコードされます)
+    で転送されます。詳細は下記の「リクエストパケットの構造」を参照してください。
+    リクエストにボディが存在 <code>(content-length > 0)</code> すれば、
+    基本的な情報の直後に別パケットで転送されます。</p>
+    <p>この時点でおそらく、サーブレットコンテナは処理を開始できるようになります。
+    ですので、次のメッセージをウェブサーバに戻して知らせられるようになります。</p>
     <ul>
-    <li>SEND_HEADERS <br/>$B%V%i%&%6$K%X%C%@$rAw?.$7$^$9!#(B</li>
-    <li>SEND_BODY_CHUNK <br/>$B%V%i%&%6$K%\%G%#%G!<%?$N%A%c%s%/$rAw$j$^$9!#(B
+    <li>SEND_HEADERS <br/>ブラウザにヘッダを送信します。</li>
+    <li>SEND_BODY_CHUNK <br/>ブラウザにボディデータのチャンクを送ります。
     </li>
-    <li>GET_BODY_CHUNK <br/>$B%j%/%(%9%H$N%G!<%?$rA4$F<u$1<h$j=*$o$C$F$$$J$$$H$-$K!"(B
-    $B;D$C$F$$$k%G!<%?$r<u$1<h$j$^$9!#%Q%1%C%H$K$"$kDj$^$C$?:GBgD9$,$"$j!"G$0U$N(B
-    $BBg$-$5$N%G!<%?$,%j%/%(%9%H$N%\%G%#$H$7$F4^$^$l$&$k>l9g(B 
-    ($BNc$($P%U%!%$%k$N%"%C%W%m!<%I$N>l9g(B) $B$KI,MW$H$J$j$^$9!#(B
-    ($BCm(B: HTTP $B$N%A%c%s%/E>Aw$H$O4XO"$"$j$^$;$s!#(B)</li>
-    <li>END_RESPONSE <br/>$B%j%/%(%9%H=hM}%5%$%/%k$r=*N;$7$^$9!#(B</li>
+    <li>GET_BODY_CHUNK <br/>リクエストのデータを全て受け取り終わっていないときに、
+    残っているデータを受け取ります。パケットにある定まった最大長があり、任意の
+    大きさのデータがリクエストのボディとして含まれうる場合 
+    (例えばファイルのアップロードの場合) に必要となります。
+    (注: HTTP のチャンク転送とは関連ありません。)</li>
+    <li>END_RESPONSE <br/>リクエスト処理サイクルを終了します。</li>
     </ul>
-    <p>$B8D!9$N%a%C%;!<%8$O$=$l$>$l0[$J$k%G!<%?%Q%1%C%H7A<0$K$J$C$F$$$^$9!#(B
-    $B8e=R$N!V%l%9%]%s%9%Q%1%C%H$N9=B$!W$r;2>H$7$F$/$@$5$$!#(B</p>
+    <p>個々のメッセージはそれぞれ異なるデータパケット形式になっています。
+    後述の「レスポンスパケットの構造」を参照してください。</p>
 </section>
 
-<section id="basppacketstruct"><title>$B4pK\%Q%1%C%H9=B$(B</title>
-    <p>$B$3$N%W%m%H%3%k$K$O(B XDR $B$+$i<u$17Q$$$@ItJ,$,>/$7$"$j$^$9$,!"B?$/$NE@$G(B
-    $B0[$J$j$^$9(B ($BNc$($P(B 4 $B%P%$%H%"%i%$%a%s%H$G$J$$$3$H$J$I(B) $B!#(B</p>
-    <p>$B%P%$%H%*!<%@!<(B: $B8D!9$N%P%$%H$N%(%s%G%#%"%s$,$I$&$J$C$F$$$k$+$O!"(B
-    $B;d$O>\$7$/$J$$$N$G$9$,!"%j%H%k%(%s%G%#%"%s$K$J$C$F$$$k$H;W$$$^$9!#(B
-    XDR $B;EMM$G$=$&$J$C$F$$$k$N$H!"AG@2$i$7$$$3$H$K(B sys/socket $B%i%$%V%i%j$,(B
-    (C $B$G(B) $B$=$&$$$&Iw$K$G$-$F$$$k$N$G$=$&$J$N$@$H;W$$$^$7$?!#(B
-    $B%=%1%C%H8F$S=P$7$NFbIt$K$D$$$F$h$j>\$7$$J}$,$$$i$C$7$c$$$^$7$?$i!"(B
-    $B$465<x$/$@$5$$!#(B</p>
-    <p>$B%W%m%H%3%k$K$O(B 4 $B$D$N%G!<%?%?%$%W$,$"$j$^$9(B: byte, boolean, 
-    integer, string $B$G$9!#(B</p>
+<section id="basppacketstruct"><title>基本パケット構造</title>
+    <p>このプロトコルには XDR から受け継いだ部分が少しありますが、多くの点で
+    異なります (例えば 4 バイトアライメントでないことなど) 。</p>
+    <p>バイトオーダー: 個々のバイトのエンディアンがどうなっているかは、
+    私は詳しくないのですが、リトルエンディアンになっていると思います。
+    XDR 仕様でそうなっているのと、素晴らしいことに sys/socket ライブラリが
+    (C で) そういう風にできているのでそうなのだと思いました。
+    ソケット呼び出しの内部についてより詳しい方がいらっしゃいましたら、
+    ご教授ください。</p>
+    <p>プロトコルには 4 つのデータタイプがあります: byte, boolean, 
+    integer, string です。</p>
     <dl>
-    <dt><strong>Byte</strong></dt><dd>$B%P%$%H0l$D$G$9!#(B</dd>
+    <dt><strong>Byte</strong></dt><dd>バイト一つです。</dd>
     <dt><strong>Boolean</strong></dt>
-      <dd>$B%P%$%H0l$D$G!"(B<code>1 = true</code>, <code>0 = false</code> $B$G$9!#(B
-      (C $B$N$h$&$K(B) $BHsNm$r??$H$7$F07$C$F$7$^$&$H!"$"$k>l9g$OF0$/$+$b$7$l$^$;$s$7!"(B
-      $BF0$+$J$$$+$b$7$l$^$;$s!#(B</dd>
+      <dd>バイト一つで、<code>1 = true</code>, <code>0 = false</code> です。
+      (C のように) 非零を真として扱ってしまうと、ある場合は動くかもしれませんし、
+      動かないかもしれません。</dd>
     <dt><strong>Integer</strong></dt>
-      <dd><code>0 $B$+$i(B 2^16 (32768)</code> $B$NHO0O$N?t;z!#9b<!$N(B 2 $B%P%$%H$,(B
-      $B@h$K3JG<$5$l$^$9!#(B</dd>
+      <dd><code>0 から 2^16 (32768)</code> の範囲の数字。高次の 2 バイトが
+      先に格納されます。</dd>
     <dt><strong>String</strong></dt>
-      <dd>$B2DJQD9$NJ8;zNs(B (2^16 $B$,D9$5$N>e8B(B) $B!#D9$5>pJs$N%Q%1%C%H(B 2 $B%P%$%H$N8e$K(B
-      $BJ8;zNs(B ($B=*C<J8;z(B '\0' $B$r4^$`(B) $B$,B3$/7A<0$G%(%s%3!<%I$5$l$^$9!#(B
-      $B%(%s%3!<%I$5$l$F$$$kD9$5>pJs$O:G8e$N(B '\0' $B$r(B<strong>$B%+%&%s%H$7$J$$(B</strong>
-      $B$3$H$KCm0U$7$F$/$@$5$$!=!=$3$l$O(B <code>strlen</code> $B$HF1MM$G$9!#(B
-      $B$3$l$i$N=*C<J8;z$r%9%-%C%W$9$k$?$a$K!"$"$^$j0UL#$NL5$$%$%s%/%j%a%s%HJ8(B
-      $B$r$?$/$5$s=q$+$J$$$H$$$1$J$$$N$O!"(B
-      Java $B$NB&$+$i8+$k$H>/$7J6$i$o$7$/46$8$i$l$k$+$b$7$l$^$;$s!#(B
-      $B$3$&$J$C$?M}M3$O$*$=$i$/!"(BServlet $B%3%s%F%J$+$iJV$5$l$kJ8;zNs$rFI$_=P$9;~$K!"(B
-      $B8zN($h$/(B C $B$N%3!<%I$r=q$1$k$h$&$K$9$k!=!=%5!<%V%l%C%H$+$iJV$5$l$k(B
-      $BJ8;zNs$O(B \0 $BJ8;z$G=*C<$5$l$F$$$k$N$G!"(BC $B$N%3!<%I$G$O$o$6$o$6%3%T!<$r$;$:$K!"(B
-      $B0l$D$N%P%C%U%!$X$N%j%U%!%l%s%9$r<h$j2s$9$h$&$K=q$/$3$H$,$G$-$k!=!=(B
-      $B$?$a$@$H;W$o$l$^$9!#(B
-      '\0' $BJ8;z$,$J$$>l9g$O!"(BC $B$G$OJ8;zNs$N5,B'$K9g$&$h$&$K%3%T!<$7$J$1$l$P(B
-      $B$$$1$J$/$J$C$F$7$^$$$^$9!#(B</dd>
+      <dd>可変長の文字列 (2^16 が長さの上限) 。長さ情報のパケット 2 バイトの後に
+      文字列 (終端文字 '\0' を含む) が続く形式でエンコードされます。
+      エンコードされている長さ情報は最後の '\0' を<strong>カウントしない</strong>
+      ことに注意してください――これは <code>strlen</code> と同様です。
+      これらの終端文字をスキップするために、あまり意味の無いインクリメント文
+      をたくさん書かないといけないのは、
+      Java の側から見ると少し紛らわしく感じられるかもしれません。
+      こうなった理由はおそらく、Servlet コンテナから返される文字列を読み出す時に、
+      効率よく C のコードを書けるようにする――サーブレットから返される
+      文字列は \0 文字で終端されているので、C のコードではわざわざコピーをせずに、
+      一つのバッファへのリファレンスを取り回すように書くことができる――
+      ためだと思われます。
+      '\0' 文字がない場合は、C では文字列の規則に合うようにコピーしなければ
+      いけなくなってしまいます。</dd>
     </dl>
 
-  <section><title>$B%Q%1%C%H%5%$%:(B</title>
-    <p>$BB?$/$N%3!<%I$G$=$&$J$C$F$$$k$N$G$9$,!"%Q%1%C%H%5%$%:$N:GBg%5%$%:$O(B
-    <code>8 * 1024 (8K)</code> $B$G$9!#%Q%1%C%H$N<B:]$ND9$5$O%X%C%@$K(B
-    $B%(%s%3!<%I$5$l$FF~$C$F$$$^$9!#(B</p>
+  <section><title>パケットサイズ</title>
+    <p>多くのコードでそうなっているのですが、パケットサイズの最大サイズは
+    <code>8 * 1024 (8K)</code> です。パケットの実際の長さはヘッダに
+    エンコードされて入っています。</p>
   </section>
-  <section><title>$B%Q%1%C%H%X%C%@(B</title>
-    <p>$B%5!<%P$+$i%3%s%F%J$KAw=P$5$l$k%Q%1%C%H$O(B <code>0x1234</code> $B$G;O$^$j$^$9!#(B
-    $B%3%s%F%J$+$i%5!<%P$KAw$i$l$k%Q%1%C%H$O(B <code>AB</code> (ASCII $B%3!<%I(B A $B$H(B
-    ASCII $B%3!<%I(B B) $B$G;O$^$j$^$9!#$3$NFs%P%$%H$N8e$K!"%Z%$%m!<%ID9$,(B ($B>e5-$N7A<0$G(B) 
-    $BB3$-$^$9!#$3$N$?$a!"%Z%$%m!<%ID9$N:GBgCM$O(B 2^16 $B$K$G$-$k$h$&$K;W$($^$9$,!"(B
-    $B<B:]$K$O%3!<%I$G$O:GBgCM$O(B 8K $B$K@_Dj$5$l$F$$$^$9!#(B</p>
+  <section><title>パケットヘッダ</title>
+    <p>サーバからコンテナに送出されるパケットは <code>0x1234</code> で始まります。
+    コンテナからサーバに送られるパケットは <code>AB</code> (ASCII コード A と
+    ASCII コード B) で始まります。この二バイトの後に、ペイロード長が (上記の形式で) 
+    続きます。このため、ペイロード長の最大値は 2^16 にできるように思えますが、
+    実際にはコードでは最大値は 8K に設定されています。</p>
     <table>
       <tr>
-        <td colspan="6"><em>$B%Q%1%C%H7A<0(B (Server->Container)</em></td>
+        <td colspan="6"><em>パケット形式 (Server->Container)</em></td>
       </tr>
       <tr>
         <td>Byte</td>
@@ -153,13 +153,13 @@
         <td>Contents</td>
         <td>0x12</td>
         <td>0x34</td>
-        <td colspan="2">$B%G!<%?D9(B (n)</td>
+        <td colspan="2">データ長 (n)</td>
         <td>Data</td>
       </tr>
     </table>
     <table>
       <tr>
-        <td colspan="6"><em>$B%Q%1%C%H7A<0(B (Container->Server)</em></td>
+        <td colspan="6"><em>パケット形式 (Container->Server)</em></td>
       </tr>
       <tr>
         <td>Byte</td>
@@ -173,98 +173,98 @@
         <td>Contents</td>
         <td>A</td>
         <td>B</td>
-        <td colspan="2">$B%G!<%?D9(B (n)</td>
+        <td colspan="2">データ長 (n)</td>
         <td>Data</td>
       </tr>
     </table>
-    <p>$B$[$H$s$I$N%Q%1%C%H$G!"%Z%$%m!<%I$N:G=i$N%P%$%H$,%a%C%;!<%8$N7?$r%(%s%3!<%I(B
-     $B$7$F$$$^$9!#Nc30$O%5!<%P$+$i%3%s%F%J$KAw$i$l$k%j%/%(%9%H%\%G%#%Q%1%C%H$G$9(B
-     $B!=!=$3$l$i$OI8=`E*$J%Q%1%C%H7A<0(B (<code>0x1234</code> $B$H%Q%1%C%HD9(B)
-     $B$G$9$,!"$=$N8e$KB3$/%W%l%U%#%C%/%9%3!<%I$,$"$j$^$;$s!#(B</p>
-     <p>$B%&%'%V%5!<%P$O<!$N%a%C%;!<%8$r%5!<%V%l%C%H%3%s%F%J$KAw=P$G$-$^$9!#(B</p>
+    <p>ほとんどのパケットで、ペイロードの最初のバイトがメッセージの型をエンコード
+     しています。例外はサーバからコンテナに送られるリクエストボディパケットです
+     ――これらは標準的なパケット形式 (<code>0x1234</code> とパケット長)
+     ですが、その後に続くプレフィックスコードがありません。</p>
+     <p>ウェブサーバは次のメッセージをサーブレットコンテナに送出できます。</p>
     <table>
       <tr>
-        <td>$B%3!<%I(B</td>
-        <td>$B%Q%1%C%H$N7?(B</td>
-        <td>$B0UL#(B</td>
+        <td>コード</td>
+        <td>パケットの型</td>
+        <td>意味</td>
       </tr>
       <tr>
         <td>2</td>
         <td>Forward Request</td>
-        <td>$B%j%/%(%9%H=hM}%5%$%/%k$r8eB3$N%G!<%?$H$H$b$K3+;O$9$k!#(B</td>
+        <td>リクエスト処理サイクルを後続のデータとともに開始する。</td>
       </tr>
       <tr>
         <td>7</td>
         <td>Shutdown</td>
-        <td>$B%&%'%V%5!<%P$,%3%s%F%J$K!"%3%s%F%J$r=*N;$9$k$h$&$KEA$($k!#(B</td>
+        <td>ウェブサーバがコンテナに、コンテナを終了するように伝える。</td>
       </tr>
       <tr>
         <td>8</td>
         <td>Ping</td>
-        <td>$B%&%'%V%5!<%P$,%3%s%F%J$K@)8f$r<u$1;}$D$h$&$KEA$($k(B 
-        ($B%;%-%e%"%m%0%$%s%U%'!<%:(B) $B!#(B</td>
+        <td>ウェブサーバがコンテナに制御を受け持つように伝える 
+        (セキュアログインフェーズ) 。</td>
       </tr>
       <tr>
         <td>10</td>
         <td>CPing</td>
-        <td>$B%&%'%V%5!<%P$,%3%s%F%J$K(B CPong $B$GB(:B$K1~Ez$9$k$h$&$KEA$($k!#(B</td>
+        <td>ウェブサーバがコンテナに CPong で即座に応答するように伝える。</td>
       </tr>
       <tr>
         <td>none</td>
         <td>Data</td>
-        <td>$B%5%$%:(B (2 $B%P%$%H(B) $B$H$=$l$KB3$/%\%G%#%G!<%?!#(B</td>
+        <td>サイズ (2 バイト) とそれに続くボディデータ。</td>
       </tr>
     </table>
-    <p>$B4pK\E*$J%;%-%e%j%F%#$r3NJ]$9$k$?$a!"%[%9%H$5$l$F$$$k%^%7%s$HF10l$N(B
-    $B%^%7%s$+$i$N%j%/%(%9%H$KBP$7$F$N$_!"%3%s%F%J$O<B:]$K(B <code>Shutdown</code>
-    $B$r<B9T$7$^$9!#(B</p>
-    <p>$B:G=i$N(B <code>Data</code> $B%Q%1%C%H$O!"(B<code>Forward Request</code> 
-    $B$ND>8e$K%&%'%V%5!<%P$+$iAw$i$l$^$9!#(B</p>
-    <p>$B%5!<%V%l%C%H%3%s%F%J$O%&%'%V%5!<%P$K!"<!$N%?%$%W$N%a%C%;!<%8$rAw$k$3$H$,(B
-    $B$G$-$^$9(B :</p>
+    <p>基本的なセキュリティを確保するため、ホストされているマシンと同一の
+    マシンからのリクエストに対してのみ、コンテナは実際に <code>Shutdown</code>
+    を実行します。</p>
+    <p>最初の <code>Data</code> パケットは、<code>Forward Request</code> 
+    の直後にウェブサーバから送られます。</p>
+    <p>サーブレットコンテナはウェブサーバに、次のタイプのメッセージを送ることが
+    できます :</p>
     <table>
       <tr>
-        <td>$B%3!<%I(B</td>
-        <td>$B%Q%1%C%H$N7?(B</td>
-        <td>$B0UL#(B</td>
+        <td>コード</td>
+        <td>パケットの型</td>
+        <td>意味</td>
       </tr>
       <tr>
         <td>3</td>
         <td>Send Body Chunk</td>
-        <td>$B%5!<%V%l%C%H%3%s%F%J$+$i%&%'%V%5!<%P$K(B
-        ($B$=$7$F$*$=$i$/$=$N$^$^%V%i%&%6$K(B)$B!"%\%G%#$N%A%c%s%/$rAw$k!#(B</td>
+        <td>サーブレットコンテナからウェブサーバに
+        (そしておそらくそのままブラウザに)、ボディのチャンクを送る。</td>
       </tr>
       <tr>
         <td>4</td>
         <td>Send Headers</td>
-        <td>$B%5!<%V%l%C%H%3%s%F%J$+$i%&%'%V%5!<%P$K(B ($B$=$7$F$*$=$i$/$=$N$^$^%V%i%&%6$K(B)
-        $B%l%9%]%s%9%X%C%@$rAw$k!#(B</td>
+        <td>サーブレットコンテナからウェブサーバに (そしておそらくそのままブラウザに)
+        レスポンスヘッダを送る。</td>
       </tr>
       <tr>
         <td>5</td>
         <td>End Response</td>
-        <td>$B%l%9%]%s%9(B ($B$D$^$j%j%/%(%9%H=hM}%5%$%/%k(B) $B=*N;$NL\0u$rAw$k!#(B
+        <td>レスポンス (つまりリクエスト処理サイクル) 終了の目印を送る。
         </td>
       </tr>
       <tr>
         <td>6</td>
         <td>Get Body Chunk</td>
-        <td>$B$^$@A4$FE>Aw$5$l$F$$$J$$>l9g!";D$C$F$$$k%j%/%(%9%H$N%G!<%?$r<u$1<h$k!#(B
+        <td>まだ全て転送されていない場合、残っているリクエストのデータを受け取る。
         </td>
       </tr>
       <tr>
         <td>9</td>
-        <td>CPong $B1~Ez(B</td>
-        <td>CPing $B%j%/%(%9%H$K1~Ez$9$k!#(B</td>
+        <td>CPong 応答</td>
+        <td>CPing リクエストに応答する。</td>
       </tr>
     </table>
-    <p>$B>e5-%a%C%;!<%8$O!"$=$l$>$lFbIt9=B$$,0[$J$C$F$$$^$9!#>\:Y$O2<5-$r$4Mw$/$@$5$$!#(B
+    <p>上記メッセージは、それぞれ内部構造が異なっています。詳細は下記をご覧ください。
     </p>
   </section>
 </section>
-<section id="rpacetstruct"><title>$B%j%/%(%9%H%Q%1%C%H9=B$(B</title>
-    <p>$B%5!<%P$+$i%3%s%F%J$XAw$i$l$k%a%C%;!<%8$,(B
-    <em>Forward Request</em> $B7?$N>l9g(B :</p>
+<section id="rpacetstruct"><title>リクエストパケット構造</title>
+    <p>サーバからコンテナへ送られるメッセージが
+    <em>Forward Request</em> 型の場合 :</p>
     <example><pre>
 AJP13_FORWARD_REQUEST :=
     prefix_code      (byte) 0x02 = JK_AJP13_FORWARD_REQUEST
@@ -281,7 +281,7 @@ AJP13_FORWARD_REQUEST :=
     attributes      *(attribut_name attribute_value)
     request_terminator (byte) OxFF
     </pre></example>
-    <p><code>request_headers</code> $B$O<!$N$h$&$J9=B$$K$J$C$F$$$^$9(B :
+    <p><code>request_headers</code> は次のような構造になっています :
     </p><example><pre>
 req_header_name := 
     sc_req_header_name | (string)  [see below for how this is parsed]
@@ -290,24 +290,24 @@ sc_req_header_name := 0xA0xx (integer)
 
 req_header_value := (string)
 </pre></example>
-    <p><code>$BB0@-(B</code> $B$O%*%W%7%g%s$G!"<!$N$h$&$J9=B$$r$7$F$$$^$9(B :</p>
+    <p><code>属性</code> はオプションで、次のような構造をしています :</p>
     <example><pre>
 attribute_name := sc_a_name | (sc_a_req_attribute string)
 
 attribute_value := (string)
 
     </pre></example>
-    <p>$B$b$C$H$b=EMW$J%X%C%@$O(B <code>content-length</code> $B$@$H$$$&$3$H$K(B
-    $BCm0U$7$F$/$@$5$$!#%3%s%F%J$O<!$N%Q%1%C%H$rC5$9$+$I$&$+$r!"(B
-    $B$=$l$r8+$F7h$a$k$+$i$G$9!#(B</p>
-  <section><title>Forward Request $BMWAG$N>\:Y$J@bL@(B
+    <p>もっとも重要なヘッダは <code>content-length</code> だということに
+    注意してください。コンテナは次のパケットを探すかどうかを、
+    それを見て決めるからです。</p>
+  <section><title>Forward Request 要素の詳細な説明
   </title></section>
   <section><title>Request prefix</title>
-    <p>$B%j%/%(%9%H$K$D$$$F$OA4$F!"$3$NCM$O(B 2 $B$K$J$j$^$9!#B>$N(B Prefix $B%3!<%I$N>\:Y$O(B
-    $B>e5-$r$4Mw$/$@$5$$!#(B</p>
+    <p>リクエストについては全て、この値は 2 になります。他の Prefix コードの詳細は
+    上記をご覧ください。</p>
   </section>
   <section><title>Method</title>
-    <p>HTTP $B%a%=%C%I$O(B 1 $B%P%$%H$K%(%s%3!<%I$5$l$^$9(B :</p>
+    <p>HTTP メソッドは 1 バイトにエンコードされます :</p>
     <table>
       <tr><td>Command Name</td><td>Code</td></tr>
       <tr><td>OPTIONS</td><td>1</td></tr>
@@ -338,25 +338,25 @@ attribute_value := (string)
       <tr><td>BASELINE_CONTROL</td><td>26</td></tr>
       <tr><td>MKACTIVITY</td><td>27</td></tr>
     </table>
-    <p>$B:#8e$N(B ajp13 $B%P!<%8%g%s$G$O!"$3$N0lMw$K$J$$!":#8eDI2C$5$l$k%a%=%C%I$r(B
-    $BAw$k$+$b$7$l$^$;$s!#(B</p>
+    <p>今後の ajp13 バージョンでは、この一覧にない、今後追加されるメソッドを
+    送るかもしれません。</p>
   </section>
   <section><title>protocol, req_uri, remote_addr, remote_host, server_name,
   server_port, is_ssl</title>
-    <p>$B$3$l$i$O$^$5$KJ8;zDL$j$N$b$N$G$9!#$I$l$bI,MW$G!"%j%/%(%9%H$NKh2s$K$D$-(B
-    $BAw$i$l$^$9!#(B</p>
+    <p>これらはまさに文字通りのものです。どれも必要で、リクエストの毎回につき
+    送られます。</p>
   </section>
   <section><title>Headers</title>
-    <p><code>request_headers</code> $B$N9=B$$O<!$N$h$&$J$b$N$G$9(B :
-    $B$^$:%X%C%@$N?t(B <code>num_headers</code> $B$,%(%s%3!<%I$5$l$^$9!#(B
-    $B<!$K%X%C%@L>(B <code>req_header_name</code> / $BCM(B <code>req_header_value</code>
-    $B$NAH$,B3$-$^$9!#8zN($N$?$a!"0lHLE*$J%X%C%@$O@0?t$G%(%s%3!<%I$7$FE>Aw$7$^$9!#(B
-    $B%X%C%@L>$,4pK\%X%C%@$N0lMw$KL5$$>l9g$O!"DL>oDL$j(B ($BJ8;zNs$H$7$F!"D9$5(B
-    $B%W%l%U%#%C%/%9IU$-$G(B) $BE>Aw$5$l$^$9!#0lHLE*$J%X%C%@(B 
-    <code>sc_req_header_name</code> $B$N0lMw$H$=$N%3!<%I$O<!$NDL$j$G$9(B 
-    ($B$I$l$bBgJ8;z>.J8;z$r6hJL$7$^$9(B) :</p>
+    <p><code>request_headers</code> の構造は次のようなものです :
+    まずヘッダの数 <code>num_headers</code> がエンコードされます。
+    次にヘッダ名 <code>req_header_name</code> / 値 <code>req_header_value</code>
+    の組が続きます。効率のため、一般的なヘッダは整数でエンコードして転送します。
+    ヘッダ名が基本ヘッダの一覧に無い場合は、通常通り (文字列として、長さ
+    プレフィックス付きで) 転送されます。一般的なヘッダ 
+    <code>sc_req_header_name</code> の一覧とそのコードは次の通りです 
+    (どれも大文字小文字を区別します) :</p>
     <table>
-      <tr><td>$BL>A0(B</td><td>$B%3!<%I$NCM(B</td><td>$B%3!<%IL>(B</td></tr>
+      <tr><td>名前</td><td>コードの値</td><td>コード名</td></tr>
       <tr><td>accept</td><td>0xA001</td><td>SC_REQ_ACCEPT</td></tr>
       <tr><td>accept-charset</td><td>0xA002</td><td>SC_REQ_ACCEPT_CHARSET
       </td></tr>
@@ -378,32 +378,32 @@ attribute_value := (string)
       <tr><td>referer</td><td>0xA00D</td><td>SC_REQ_REFERER</td></tr>
       <tr><td>user-agent</td><td>0xA00E</td><td>SC_REQ_USER_AGENT</td></tr>
     </table>
-    <p>$B$3$l$rFI$_9~$`(B Java $B$N%3!<%I$G$O!":G=i$N(B 2 $B%P%$%H@0?t$r<h$j9~$_!"(B
-    $BL\0u$K$J$k%P%$%H(B <code>'0xA0'</code> $B$G$"$l$P!"%X%C%@L>$NG[Ns$N(B
-    $B%$%s%G%C%/%9$r;H$$$^$9!#@hF,%P%$%H$,(B <code>0xA0</code> $B$G$J$$>l9g$O!"(B
-    $B@hF,(B 2 $B%P%$%H$OJ8;zNsD9$rI=$9@0?t$G$"$k$H2r<a$7!"FI$_9~$_$O$8$a$^$9!#(B</p>
-    <p>$B%X%C%@L>$ND9$5$O(B <code>0x9999 (==0xA000 -1)</code> $B0J>e$K$J$i$J$$$H$$$&(B
-    $B2>Dj$N2<$KF0$$$F$$$F!">/$7$"$$$^$$$G$9$,9gM}E*$J5sF0$K$J$C$F$$$^$9!#(B</p>
-    <note><title>$BCm(B:</title>
-    <code>content-length</code> $B%X%C%@$O$H$F$b=EMW$G$9!#(B
-    $BB8:_$7$F$$$FHs%<%m$G$"$l$P!"%j%/%(%9%H$K$O%\%G%#$,$"$k(B ($BNc$($P(B POST 
-    $B%j%/%(%9%H(B) $B$H?dB,$7!"$=$N%\%G%#$r<h$j9~$`$?$a$K(B
-    $BD>8e$N%Q%1%C%H$rF~NO%9%H%j!<%`$+$iFI$_9~$_$O$8$a$^$9!#(B
+    <p>これを読み込む Java のコードでは、最初の 2 バイト整数を取り込み、
+    目印になるバイト <code>'0xA0'</code> であれば、ヘッダ名の配列の
+    インデックスを使います。先頭バイトが <code>0xA0</code> でない場合は、
+    先頭 2 バイトは文字列長を表す整数であると解釈し、読み込みはじめます。</p>
+    <p>ヘッダ名の長さは <code>0x9999 (==0xA000 -1)</code> 以上にならないという
+    仮定の下に動いていて、少しあいまいですが合理的な挙動になっています。</p>
+    <note><title>注:</title>
+    <code>content-length</code> ヘッダはとても重要です。
+    存在していて非ゼロであれば、リクエストにはボディがある (例えば POST 
+    リクエスト) と推測し、そのボディを取り込むために
+    直後のパケットを入力ストリームから読み込みはじめます。
     </note>
   </section>
-  <section><title>$BB0@-(B</title>
-    <p><code>?</code> $B%W%l%U%#%C%/%9$G;O$^$kB0@-(B ($BNc(B <code>?context</code>)
-    $B$O!#>JN,2DG=$G$9!#$=$l$>$lB0@-$N7?$r<($9(B 1 $B%P%$%H$N%3!<%I$H!"(B
-    $BCM$NJ8;zNs$,B3$-$^$9!#(B
-    $B$3$l$i$O=gITF1$GAw$k$3$H$,$G$-$^$9(B (C $B$N%3!<%I$O>o$K2<$N0lMw=g$K(B
-    $BAw$k$h$&$G$9$,(B) $B!#(B
-    $B%*%W%7%g%s$NB0@-$N%j%9%H$N:G8e$K$O!"FCJL$J=*N;%3!<%I$,Aw$i$l$^$9!#(B
-    $B%3!<%I$N0lMw$O(B : </p>
+  <section><title>属性</title>
+    <p><code>?</code> プレフィックスで始まる属性 (例 <code>?context</code>)
+    は。省略可能です。それぞれ属性の型を示す 1 バイトのコードと、
+    値の文字列が続きます。
+    これらは順不同で送ることができます (C のコードは常に下の一覧順に
+    送るようですが) 。
+    オプションの属性のリストの最後には、特別な終了コードが送られます。
+    コードの一覧は : </p>
     <table>
       <tr><td>Information</td><td>Code Value</td><td>Note</td></tr>
-      <tr><td>?context</td><td>0x01</td><td>$BL$<BAu(B
+      <tr><td>?context</td><td>0x01</td><td>未実装
       </td></tr>
-      <tr><td>?servlet_path</td><td>0x02</td><td>$BL$<BAu(B
+      <tr><td>?servlet_path</td><td>0x02</td><td>未実装
       </td></tr>
       <tr><td>?remote_user</td><td>0x03</td><td></td></tr>
       <tr><td>?auth_type</td><td>0x04</td><td></td></tr>
@@ -417,33 +417,33 @@ attribute_value := (string)
       <tr><td>?ssl_key_size</td><td>0x0B</td><td></td></tr>
       <tr><td>are_done</td><td>0xFF</td><td>request_terminator</td></tr>
     </table>
-    <p><code>context</code> $B$H(B <code>servlet_path</code> $B$O8=:_$N(B C $B$N(B
-    $B%3!<%I$G$O%;%C%H$5$l$F$$$^$;$s!#$^$?!"$[$H$s$I$N(B Java $B$N%3!<%I$G$b!"(B
-    $B$3$N%U%#!<%k%I$G2?$,Aw$i$l$F$bL5;k$5$l$^$9(B ($B$3$l$i$N%3!<%I$N8e$KJ8;zNs$,(B
-    $BAw$i$l$k$H2u$l$k$b$N$b$"$j$^$9(B)$B!#(B
-    $B$3$l$,%P%0$J$N$+!"C1$KL$<BAu$J$N$+!"Nr;KE*7P0^$G;D$C$F$$$k%3!<%I$J$N$+(B
-    $BJ,$+$j$^$;$s$,!"%3%M%/%7%g%s$NN>B&$H$b$G8+Ev$?$j$^$;$s!#(B</p>
-    <p><code>remote_user</code> $B$H(B <code>auth_type</code> $B$O$*$=$i$/(B
-    HTTP $B%l%Y%k$NG'>Z$r;2>H$7$F$$$F!"%j%b!<%H%f!<%6$N%f!<%6L>$HG'>Z$K;HMQ$7$?(B
-    $B%?%$%W(B ($BNc(B Basic, Digest) $B$K$D$$$F$d$j<h$j$7$^$9!#(B</p>
+    <p><code>context</code> と <code>servlet_path</code> は現在の C の
+    コードではセットされていません。また、ほとんどの Java のコードでも、
+    このフィールドで何が送られても無視されます (これらのコードの後に文字列が
+    送られると壊れるものもあります)。
+    これがバグなのか、単に未実装なのか、歴史的経緯で残っているコードなのか
+    分かりませんが、コネクションの両側ともで見当たりません。</p>
+    <p><code>remote_user</code> と <code>auth_type</code> はおそらく
+    HTTP レベルの認証を参照していて、リモートユーザのユーザ名と認証に使用した
+    タイプ (例 Basic, Digest) についてやり取りします。</p>
     <p><code>query_string</code>, <code>ssl_cert</code>, 
     <code>ssl_cipher</code>, <code>ssl_session</code> 
-    $B$O(B HTTP $B$H(B HTTPS $B$NBP1~$9$kItJ,$r;2>H$7$^$9!#(B</p>
-    <p><code>jvm_route</code> $B$O%9%F%#%C%-!<%;%C%7%g%s$N%5%]!<%H!=!=(B
-    $B%m!<%I%P%i%s%9$7$F$$$kJ#?t$N%5!<%PCf$NFCDj$N(B Tomcat $B%$%s%9%?%s%9$H!"(B
-    $B%f!<%6$N%;%C%7%g%s$H$rI3IU$1$k5!G=!=!=$K;H$o$l$^$9!#(B</p>
-    <p>$B$3$N4pK\B0@-0lMw$KL5$$$b$N$K$D$$$F$O!"(B<code>req_attribute</code>
-    $B%3!<%I(B <code>0x0A</code> $B7PM3$GB0@-$r2?8D$G$bAw$k$3$H$,$G$-$^$9!#(B
-    $BB0@-$NL>A0$HCM$NJ8;zNs$NAH$r!"$=$l$>$l$3$N%3!<%I$ND>8e$KAw$j$^$9!#(B
-    $B4D6-JQ?t$O$3$NJ}K!$GEA$($i$l$^$9!#(B</p>
-    <p>$B:G8e$KB0@-$,A4$FAw?.$5$l$?8e$K!"B0@-$N=*C<$r<($9(B <code>0xFF</code> 
-    $B$,Aw=P$5$l$^$9!#$3$N?.9f$OB0@-$N0lMw$N=*$o$j$r<($9$HF1;~$K!"%j%/%(%9%H(B
-    $B%Q%1%C%H$N=*C<$r$b<($7$F$$$^$9!#(B</p>
+    は HTTP と HTTPS の対応する部分を参照します。</p>
+    <p><code>jvm_route</code> はスティッキーセッションのサポート――
+    ロードバランスしている複数のサーバ中の特定の Tomcat インスタンスと、
+    ユーザのセッションとを紐付ける機能――に使われます。</p>
+    <p>この基本属性一覧に無いものについては、<code>req_attribute</code>
+    コード <code>0x0A</code> 経由で属性を何個でも送ることができます。
+    属性の名前と値の文字列の組を、それぞれこのコードの直後に送ります。
+    環境変数はこの方法で伝えられます。</p>
+    <p>最後に属性が全て送信された後に、属性の終端を示す <code>0xFF</code> 
+    が送出されます。この信号は属性の一覧の終わりを示すと同時に、リクエスト
+    パケットの終端をも示しています。</p>
   </section>
 </section>
 
-<section id="resppacketstruct"><title>$B%l%9%]%s%9%Q%1%C%H9=B$(B</title>
-    <p>$B%3%s%F%J$,%5!<%P$KAw$jJV$9$3$H$N$G$-$k%a%C%;!<%8(B:</p>
+<section id="resppacketstruct"><title>レスポンスパケット構造</title>
+    <p>コンテナがサーバに送り返すことのできるメッセージ:</p>
     <example><pre>
 AJP13_SEND_BODY_CHUNK :=
   prefix_code   3
@@ -474,19 +474,19 @@ AJP13_GET_BODY_CHUNK :=
   prefix_code       6
   requested_length  (integer)
     </pre></example>
-  <section><title>$B>\:Y(B :</title></section>
+  <section><title>詳細 :</title></section>
   <section><title>Send Body Chunk</title>
-    <p>$B%A%c%s%/$O4pK\E*$K$O%P%$%J%j%G!<%?$G!"%V%i%&%6$KD>@\Aw$i$l$^$9!#(B</p>
+    <p>チャンクは基本的にはバイナリデータで、ブラウザに直接送られます。</p>
   </section>
   <section><title>Send Headers</title>
-    <p>$B%9%F!<%?%9%3!<%I$H%a%C%;!<%8$,DL>o$N(B HTTP $B$NDL?.$K$O$"$j$^$9(B ($BNc(B 
-    <code>200</code> $B$H(B <code>OK</code>)$B!#%l%9%]%s%9%X%C%@L>$O!"(B
-    $B%j%/%(%9%H%X%C%@L>$HF1MM$NJ}K!$G%(%s%3!<%I$5$l$^$9!#(B
-    $B%3!<%I$HJ8;zNs$NH=JLJ}K!$N>\:Y$K4X$7$F$O!">e5-$N(B header_encoding 
-    $B$r;2>H$7$F$/$@$5$$!#(B
-    $B0lHLE*$J%X%C%@$N%3!<%I$O(B :</p>
+    <p>ステータスコードとメッセージが通常の HTTP の通信にはあります (例 
+    <code>200</code> と <code>OK</code>)。レスポンスヘッダ名は、
+    リクエストヘッダ名と同様の方法でエンコードされます。
+    コードと文字列の判別方法の詳細に関しては、上記の header_encoding 
+    を参照してください。
+    一般的なヘッダのコードは :</p>
     <table>
-      <tr><td>$BL>A0(B</td><td>$B%3!<%I$NCM(B</td></tr>
+      <tr><td>名前</td><td>コードの値</td></tr>
       <tr><td>Content-Type</td><td>0xA001</td></tr>
       <tr><td>Content-Language</td><td>0xA002</td></tr>
       <tr><td>Content-Length</td><td>0xA003</td></tr>
@@ -499,25 +499,25 @@ AJP13_GET_BODY_CHUNK :=
       <tr><td>Status</td><td>0xA00A</td></tr>
       <tr><td>WWW-Authenticate</td><td>0xA00B</td></tr>
     </table>
-    <p>$B%3!<%I$+%X%C%@J8;zNs$ND>8e$K$O!"%X%C%@$NCM$,%(%s%3!<%I$5$l$^$9!#(B</p>
+    <p>コードかヘッダ文字列の直後には、ヘッダの値がエンコードされます。</p>
   </section>
   <section><title>End Response</title>
-    <p>$B%j%/%(%9%H=hM}%5%$%/%k$N=*N;$rCN$i$;$^$9!#(B<code>reuse</code> $B%U%i%0$,??(B
-    <code>(==1)</code> $B$N>l9g!"8=:_;HMQ$7$F$$$k(B TCP $B%3%M%/%7%g%s$O<!$N?7$7$$(B
-    $B%j%/%(%9%H$K;H$($k$h$&$K$J$j$^$9!#(B<code>reuse</code> $B$,56(B (C $B$N%3!<%I$G$O(B
-    1 $B0J30$NA4$F(B) $B$N>l9g$O!"%3%M%/%7%g%s$rJD$8$k$3$H$K$J$j$^$9!#(B</p>
+    <p>リクエスト処理サイクルの終了を知らせます。<code>reuse</code> フラグが真
+    <code>(==1)</code> の場合、現在使用している TCP コネクションは次の新しい
+    リクエストに使えるようになります。<code>reuse</code> が偽 (C のコードでは
+    1 以外の全て) の場合は、コネクションを閉じることになります。</p>
   </section>
   <section><title>Get Body Chunk</title>
-    <p>($B%\%G%#$N%5%$%:$,Bg$-$9$.$F:G=i$N%Q%1%C%H$K<}$^$i$J$$>l9g$d!"(B
-    $B%j%/%(%9%H$,%A%c%s%/E>Aw$5$l$?>l9g$J$I$K$O!"(B) $B%3%s%F%J$O%j%/%(%9%H$+$i$N(B
-    $B%G!<%?FI$_9~$_MW5a$r$7$^$9!#%5!<%PB&$O$=$l$KBP$7$F!":G>.(B 
-    <code>request_length</code> $B:GBg(B <code>(8186 (8 Kbytes - 6))</code> 
-    $B$NHO0O$G!"L$E>Aw$G;D$C$F$$$k%j%/%(%9%H%\%G%#$NBg$-$5$N%G!<%?$r(B
-    $BAw$jJV$7$^$9!#(B<br />
-    $B%\%G%#$K$=$l0J>e%G!<%?$,;D$C$F$$$J$$>l9g(B ($B$D$^$j%5!<%V%l%C%H$,(B
-    $B%\%G%#$N:G8e$rD6$($FFI$_9~$b$&$H$7$?>l9g(B) $B!"%5!<%P$O(B
-    $B%Z%$%m!<%ID9(B 0 $B$N(B<em>$B6u%Q%1%C%H(B</em><code>(0x12,0x34,0x00,0x00)</code>
-    $B$rAw$jJV$7$^$9!#(B</p>
+    <p>(ボディのサイズが大きすぎて最初のパケットに収まらない場合や、
+    リクエストがチャンク転送された場合などには、) コンテナはリクエストからの
+    データ読み込み要求をします。サーバ側はそれに対して、最小 
+    <code>request_length</code> 最大 <code>(8186 (8 Kbytes - 6))</code> 
+    の範囲で、未転送で残っているリクエストボディの大きさのデータを
+    送り返します。<br />
+    ボディにそれ以上データが残っていない場合 (つまりサーブレットが
+    ボディの最後を超えて読み込もうとした場合) 、サーバは
+    ペイロード長 0 の<em>空パケット</em><code>(0x12,0x34,0x00,0x00)</code>
+    を送り返します。</p>
   </section>
 </section>
 

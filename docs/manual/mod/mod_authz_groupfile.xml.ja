@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:574882 (outdated) -->
@@ -23,17 +23,17 @@
 <modulesynopsis metafile="mod_authz_groupfile.xml.meta">
 
 <name>mod_authz_groupfile</name>
-<description>$B%W%l!<%s%F%-%9%H%U%!%$%k$rMQ$$$?%0%k!<%W>5G'(B</description>
+<description>プレーンテキストファイルを用いたグループ承認</description>
 <status>Base</status>
 <sourcefile>mod_authz_groupfile.c</sourcefile>
 <identifier>authz_groupfile_module</identifier>
-<compatibility>Apache 2.1 $B0J9_(B</compatibility>
+<compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$OG'>Z$5$l$?%f!<%6$,%0%k!<%W$N%a%s%P!<$+(B
-    $BH]$+$K$h$C$F%&%'%V%5%$%H$N0lIt$X$N%"%/%;%9$r5v2D$9$k$+5qH]$9$k$+$N(B
-    $B>5G'5!G=$rDs6!$7$^$9!#F1MM$N5!G=$O(B <module>mod_authz_dbm</module>
-    $B$K$h$C$F$bDs6!$5$l$F$$$^$9!#(B</p>
+    <p>このモジュールは認証されたユーザがグループのメンバーか
+    否かによってウェブサイトの一部へのアクセスを許可するか拒否するかの
+    承認機能を提供します。同様の機能は <module>mod_authz_dbm</module>
+    によっても提供されています。</p>
 </summary>
 
 <seealso><directive module="core">Require</directive></seealso>
@@ -41,48 +41,48 @@
 
 <directivesynopsis>
 <name>AuthGroupFile</name>
-<description>$B>ZG'$K;HMQ$9$k%f!<%6%0%k!<%W$N0lMw$,3JG<$5$l$F$$$k!"(B
-$B%F%-%9%H%U%!%$%k$NL>A0$r@_Dj$9$k(B</description>
+<description>証認に使用するユーザグループの一覧が格納されている、
+テキストファイルの名前を設定する</description>
 <syntax>AuthGroupFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthGroupFile</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B>ZG'$K;HMQ$9$k%f!<%6%0%k!<%W$N0lMw$,3JG<$5$l$F$$$k!"(B
-    $B%F%-%9%H%U%!%$%k$NL>A0$r@_Dj$7$^$9!#(B
-    <var>file-path</var> $B$O%0%k!<%W%U%!%$%k$X$N%Q%9$G$9!#(B
-    $B@dBP%Q%9$G$J$1$l$P!"(B
+    <p><directive>AuthGroupFile</directive> ディレクティブは、
+    証認に使用するユーザグループの一覧が格納されている、
+    テキストファイルの名前を設定します。
+    <var>file-path</var> はグループファイルへのパスです。
+    絶対パスでなければ、
     <directive module="core">ServerRoot</directive>
-    $B$+$i$NAjBP%Q%9$H$7$F07$o$l$^$9!#(B</p>
+    からの相対パスとして扱われます。</p>
 
-    <p>$B%0%k!<%W%U%!%$%k3F9T$O!"%0%k!<%WL>!"%3%m%s!"$=$7$F(B
-    $B%9%Z!<%96h@Z$j$G$=$N%a%s%P!<$N%f!<%6L>$r5-=R$7$^$9!#(B</p>
+    <p>グループファイル各行は、グループ名、コロン、そして
+    スペース区切りでそのメンバーのユーザ名を記述します。</p>
 
-    <example><title>$BNc(B:</title>
+    <example><title>例:</title>
       mygroup: bob joe anne
     </example> 
 
-    <p>$BBg$-$J%U%!%$%k$rC5:w$9$k$N$O!"(B<em>$BHs>o$K(B</em>$B8zN($,0-$$$H$$$&E@$K(B
-    $BCm0U$7$F$/$@$5$$!#$=$N$h$&$J>l9g$O!"(B
+    <p>大きなファイルを探索するのは、<em>非常に</em>効率が悪いという点に
+    注意してください。そのような場合は、
     <directive module="mod_authz_dbm">AuthDBMGroupFile</directive>
-    $B$NJ}$,$:$C$HNI$$@-G=$rH/4x$7$^$9!#(B</p>
+    の方がずっと良い性能を発揮します。</p>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
-      <p><directive>AuthGroupFile</directive> $B$O!"(B
-      $B%&%'%V%5!<%P$N%I%-%e%a%s%H%D%j!<$N30B&$K(B
-      $BJ]4I$9$k$h$&$K$7$F$/$@$5$$!#(B
-      $BJ]8n$7$h$&$H$7$F$$$k%G%#%l%/%H%j0J2<$K$O!"(B<em>$BCV$+$J$$$G2<$5$$(B</em>$B!#(B
-      $B$=$&$7$J$$$H%/%i%$%"%s%H$,(B <directive>AuthGroupFile</directive> $B$r(B
-      $B%@%&%s%m!<%I$G$-$F$7$^$&2DG=@-$,$"$j$^$9!#(B</p>
+    <note type="warning"><title>セキュリティ</title>
+      <p><directive>AuthGroupFile</directive> は、
+      ウェブサーバのドキュメントツリーの外側に
+      保管するようにしてください。
+      保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
+      そうしないとクライアントが <directive>AuthGroupFile</directive> を
+      ダウンロードできてしまう可能性があります。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthzGroupFileAuthoritative</name>
-<description>$B>5G'$,2<0L$N%b%8%e!<%k$KEO$5$l$k$+$I$&$+$r@_Dj$9$k(B</description>
+<description>承認が下位のモジュールに渡されるかどうかを設定する</description>
 <syntax>AuthzGroupFileAuthoritative On|Off</syntax>
 <default>AuthzGroupFileAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -90,24 +90,24 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthzGroupFileAuthoritative</directive> $B%G%#%l%/%F%#%V$r(B
-    $BL@<(E*$K(B <code>Off</code> $B$K@_Dj$9$k$H(B userID $B$KBP1~$9$k(B
-    <strong>$B%0%k!<%W$,$J$$>l9g$K(B</strong>$B!"(B
-    (<code>module.c</code> $B$GDj5A$5$l$F$$$k(B) $B2<0L$N%b%8%e!<%k$K%0%k!<%W>5G'$r(B
-    $BEO$9$3$H$r5v2D$7$^$9!#(B</p>
+    <p><directive>AuthzGroupFileAuthoritative</directive> ディレクティブを
+    明示的に <code>Off</code> に設定すると userID に対応する
+    <strong>グループがない場合に</strong>、
+    (<code>module.c</code> で定義されている) 下位のモジュールにグループ承認を
+    渡すことを許可します。</p>
 
 
-    <p>$B%G%U%)%k%H$G$O@)8f$OEO$5$l$:!"L$CN$N%0%k!<%W$N>l9g$O(B Authentication
-    Required $B1~Ez$,JV$5$l$^$9!#$G$9$+$i!"$3$l$r@_Dj$7$J$$$H(B
-    $B%7%9%F%`$r0BA4$KJ]$D$3$H$,$G$-!"(BNCSA $B8_49$N?6$kIq$$$r$5$;$k$3$H$K$J$j$^$9!#(B</p>
+    <p>デフォルトでは制御は渡されず、未知のグループの場合は Authentication
+    Required 応答が返されます。ですから、これを設定しないと
+    システムを安全に保つことができ、NCSA 互換の振る舞いをさせることになります。</p>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
-      <p>$B%f!<%6$N(B <code>.htaccess</code> $B%U%!%$%k$GB>$N>5G'<jCJ$X$N(B
-      $B0Q>y$,$G$-$k$h$&$K$9$k$3$H$N0UL#$9$k$H$3$m$O==J,$K9MN8$7$F$*$$$F$/$@$5$$!#(B
-      $B$=$7$F$=$l$,!"K\Ev$KK>$`5sF0$G$"$k$3$H$r3N$+$a$F$/$@$5$$!#(B
-      $BDL>o$O0l$D$N(B <code>.htpasswd</code> $B%U%!%$%k$r0BA4$K$9$kJ}$,(B
-      $B$h$jB?$/$N%"%/%;%9%$%s%?%U%'!<%9$r;}$D$+$b$7$l$J$$%G!<%?%Y!<%9$r(B
-      $B0BA4$K$9$k$h$j$b4JC1$G$9!#(B</p>
+    <note type="warning"><title>セキュリティ</title>
+      <p>ユーザの <code>.htaccess</code> ファイルで他の承認手段への
+      委譲ができるようにすることの意味するところは十分に考慮しておいてください。
+      そしてそれが、本当に望む挙動であることを確かめてください。
+      通常は一つの <code>.htpasswd</code> ファイルを安全にする方が
+      より多くのアクセスインタフェースを持つかもしれないデータベースを
+      安全にするよりも簡単です。</p>
     </note>
 </usage>
 </directivesynopsis>

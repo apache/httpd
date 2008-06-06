@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -22,16 +22,16 @@
 
 <manualpage metafile="sections.xml.meta">
 
-<title>$B%;%/%7%g%s$N@_Dj(B</title>
+<title>セクションの設定</title>
 
-<summary> <p><a href="configuring.html">$B@_Dj%U%!%$%k(B</a>$BCf$N%G%#%l%/%F%#%V$O(B
-$B%5!<%PA4BN$KE,MQ$5$l$?$j!"FCDj$N%G%#%l%/%H%j$d%U%!%$%k!"%[%9%H!"(BURL $B$K$N$_(B
-$BE,MQ$5$l$k$h$&$K@)8B$7$?$j$9$k$3$H$,$G$-$^$9!#$3$NJ8=q$O@_DjMQ$N%;%/%7%g%s$N(B
-$B%3%s%F%J$d(B <code>.htaccess</code> $B%U%!%$%k$r;H$C$FB>$N@_Dj%G%#%l%/%F%#%V$N(B
-$B%9%3!<%W$rJQ99$9$kJ}K!$r@bL@$7$^$9!#(B</p>
+<summary> <p><a href="configuring.html">設定ファイル</a>中のディレクティブは
+サーバ全体に適用されたり、特定のディレクトリやファイル、ホスト、URL にのみ
+適用されるように制限したりすることができます。この文書は設定用のセクションの
+コンテナや <code>.htaccess</code> ファイルを使って他の設定ディレクティブの
+スコープを変更する方法を説明します。</p>
 </summary>
 
-<section id="types"><title>$B@_DjMQ%;%/%7%g%s%3%s%F%J$N<oN`(B</title>
+<section id="types"><title>設定用セクションコンテナの種類</title>
 
 <related>
 <modulelist>
@@ -53,21 +53,21 @@
 </directivelist>
 </related>
 
-<p>$B%3%s%F%J$K$OFs$D$N4pK\$H$J$k<oN`$,$"$j$^$9!#$[$H$s$I$N%3%s%F%J$O(B
-$B3F%j%/%(%9%H$KBP$7$FI>2A$5$l$^$9!#$=$N>l9g!"%3%s%F%JCf$N%G%#%l%/%F%#%V$O(B
-$B%3%s%F%J$K%^%C%A$9$k%j%/%(%9%H$K$N$_E,MQ$5$l$^$9!#(B
-$B0lJ}!"(B<directive type="section"
- module="core">IfDefine</directive> $B%3%s%F%J$H(B <directive
-type="section" module="core">IfModule</directive> $B%3%s%F%J$O(B
-$B%5!<%P$N5/F0;~$H:F5/F0;~$K$N$_I>2A$5$l$^$9!#5/F0;~$K>r7o$,??$G$"$l$P!"(B
-$B%3%s%F%JCf$N%G%#%l%/%F%#%V$O$9$Y$F$N%j%/%(%9%H$KE,MQ$5$l$^$9!#>r7o$,(B
-$B56$G$"$l$P!"%3%s%F%JCf$N%G%#%l%/%F%#%V$OL5;k$5$l$^$9!#(B</p>
+<p>コンテナには二つの基本となる種類があります。ほとんどのコンテナは
+各リクエストに対して評価されます。その場合、コンテナ中のディレクティブは
+コンテナにマッチするリクエストにのみ適用されます。
+一方、<directive type="section"
+ module="core">IfDefine</directive> コンテナと <directive
+type="section" module="core">IfModule</directive> コンテナは
+サーバの起動時と再起動時にのみ評価されます。起動時に条件が真であれば、
+コンテナ中のディレクティブはすべてのリクエストに適用されます。条件が
+偽であれば、コンテナ中のディレクティブは無視されます。</p>
 
-<p><directive type="section" module="core">IfDefine</directive> $B%G%#%l%/%F%#%V$O(B
-<program>httpd</program> $B%3%^%s%I%i%$%s$GE,@Z$J%Q%i%a!<%?$,Dj5A$5$l$?$H$-$K$N$_(B
-$BE,MQ$5$l$k%G%#%l%/%F%#%V$r0O$$$^$9!#Nc$($P<!$N@_Dj$G$O!"%5!<%P$,(B
-<code>httpd -DClosedForNow</code> $B$r;H$C$F5/F0$5$l$?$H$-$@$1$9$Y$F$N(B
-$B%j%/%(%9%H$rJL$N%5%$%H$K%j%@%$%l%/%H$7$^$9(B:</p>
+<p><directive type="section" module="core">IfDefine</directive> ディレクティブは
+<program>httpd</program> コマンドラインで適切なパラメータが定義されたときにのみ
+適用されるディレクティブを囲います。例えば次の設定では、サーバが
+<code>httpd -DClosedForNow</code> を使って起動されたときだけすべての
+リクエストを別のサイトにリダイレクトします:</p>
 
 <example>
 &lt;IfDefine ClosedForNow&gt;<br />
@@ -75,20 +75,20 @@ Redirect / http://otherserver.example.com/<br />
 &lt;/IfDefine&gt;
 </example>
 
-<p><directive type="section" module="core">IfModule</directive> $B$O(B
-$BHs>o$K;w$F$$$^$9$,!"Be$o$j$K%5!<%P>e$G%b%8%e!<%k$,;HMQ2DG=$J>l9g$K$N$_(B
-$BE,MQ2DG=$J%G%#%l%/%F%#%V$r0O$$$^$9!#%b%8%e!<%k$O%5!<%P$K(B
-$B@EE*$KAH$_9~$^$l$F$$$k$+!"F0E*$KAH$_9~$`$h$&$K$J$C$F$$$F!"@_Dj%U%!%$%kCf$G(B
-<directive module="mod_so">LoadModule</directive> $B$N9T$,$h$jA0$N(B
-$BItJ,$K=q$+$l$F$$$kI,MW$,$"$j$^$9!#$3$N%G%#%l%/%F%#%V$OFCDj$N%b%8%e!<%k$N(B
-$BB8:_$K4X$o$i$:@_Dj%U%!%$%k$,F0:n$9$kI,MW$,$"$k>l9g$K$N$_;H$C$F$/$@$5$$!#(B
-$B>o$KF0:n$7$FM_$7$$%G%#%l%/%F%#%V$r0O$`$?$a$K;H$&$Y$-$G$O$"$j$^$;$s!#(B
-$BB8:_$7$J$$%b%8%e!<%k$K4X$9$kM-MQ$J%(%i!<%a%C%;!<%8$NH/@8$rM^@)$7$F$7$^$$$^$9$N$G!#(B
+<p><directive type="section" module="core">IfModule</directive> は
+非常に似ていますが、代わりにサーバ上でモジュールが使用可能な場合にのみ
+適用可能なディレクティブを囲います。モジュールはサーバに
+静的に組み込まれているか、動的に組み込むようになっていて、設定ファイル中で
+<directive module="mod_so">LoadModule</directive> の行がより前の
+部分に書かれている必要があります。このディレクティブは特定のモジュールの
+存在に関わらず設定ファイルが動作する必要がある場合にのみ使ってください。
+常に動作して欲しいディレクティブを囲むために使うべきではありません。
+存在しないモジュールに関する有用なエラーメッセージの発生を抑制してしまいますので。
 </p>
 
-<p>$B<!$NNc$G$O!"(B<module>mod_mime_magic</module> $B$,$"$k$H$-$K$N$_(B <directive
-module="mod_mime_magic">MimeMagicFiles</directive> $B%G%#%l%/%F%#%V$,(B
-$BE,MQ$5$l$^$9!#(B</p>
+<p>次の例では、<module>mod_mime_magic</module> があるときにのみ <directive
+module="mod_mime_magic">MimeMagicFiles</directive> ディレクティブが
+適用されます。</p>
 
 <example>
 &lt;IfModule mod_mime_magic.c&gt;<br />
@@ -96,41 +96,41 @@ MimeMagicFile conf/magic<br />
 &lt;/IfModule&gt;
 </example>
 
-<p><directive type="section" module="core">IfDefine</directive> $B%G%#%l%/%F%#%V$H(B
-<directive type="section" module="core">IfModule</directive> $B%G%#%l%/%F%#%V$O(B
-$B%F%9%H$NA0$K(B "!" $B$rIU$1$k$3$H$GH]Dj$N>r7o$rE,MQ$9$k$3$H$,$G$-$^$9!#(B
-$B$^$?!"$3$l$i$N%;%/%7%g%s$O$h$jJ#;($J@)8B$r2]$9$?$a$KF~$l;R$K$9$k$3$H$,$G$-$^$9!#(B
+<p><directive type="section" module="core">IfDefine</directive> ディレクティブと
+<directive type="section" module="core">IfModule</directive> ディレクティブは
+テストの前に "!" を付けることで否定の条件を適用することができます。
+また、これらのセクションはより複雑な制限を課すために入れ子にすることができます。
 </p>
 </section>
 
-<section id="file-and-web"><title>$B%U%!%$%k%7%9%F%`$H%&%'%V6u4V(B</title>
+<section id="file-and-web"><title>ファイルシステムとウェブ空間</title>
 
-<p>$B:G$b$h$/;H$o$l$k@_Dj$N%;%/%7%g%s%3%s%F%J$O%U%!%$%k%7%9%F%`$d%&%'%V6u4V$N(B
-$BFCDj$N>l=j$N@_Dj$rJQ99$9$k$b$N$G$9!#$^$:!"$3$NFs$D$N0c$$$rM}2r$9$k$3$H$,(B
-$BBg@Z$G$9!#%U%!%$%k%7%9%F%`$O%*%Z%l!<%F%#%s%0%7%9%F%`$+$i8+$?%G%#%9%/$NFbMF$G$9!#(B
-$B$?$H$($P!"%G%U%)%k%H$N%$%s%9%H!<%k$G$O(B Apache $B$O(B Unix $B%U%!%$%k%7%9%F%`$G$O(B
-<code>/usr/local/apache2</code> $B$K!"(BWindows $B%U%!%$%k%7%9%F%`$G$O(B
-<code>"c:/Program Files/Apache Group/Apache2"</code> $B$KB8:_$7$^$9!#(B
-(Apache $B$G$O(B Windows $B$G$b%Q%9%;%Q%l!<%?$H$7$F%9%i%C%7%e$r;H$&$3$H$K(B
-$B5$$r$D$1$F$/$@$5$$!#(B) $BBP>HE*$K!"%&%'%V6u4V$O$"$J$?$N%5%$%H$r(B
-$B%&%'%V%5!<%P$+$iG[?.$5$l$k$b$N$H$7$F8+$?$b$N$G!"%/%i%$%"%s%H$K8+$($k$b$N$G$9!#(B
-$B%G%U%)%k%H$N(B Unix $B>e$N(B Apache $B$N%$%s%9%H!<%k$G$O%&%'%V6u4V$N(B
-<code>/dir/</code> $B$H$$$&%Q%9$O%U%!%$%k%7%9%F%`$N(B
-<code>/usr/local/apache2/htdocs/dir/</code> $B$H$$$&%Q%9$KBP1~$7$^$9!#(B
-$B%&%'%V%Z!<%8$O%G!<%?%Y!<%9$dB>$N>l=j$+$iF0E*$K@8@.$9$k$3$H$b$G$-$^$9$N$G!"(B
-$B%&%'%V6u4V$O%U%!%$%k%7%9%F%`$KD>@\%^%C%W$9$kI,MW$O$"$j$^$;$s!#(B</p>
+<p>最もよく使われる設定のセクションコンテナはファイルシステムやウェブ空間の
+特定の場所の設定を変更するものです。まず、この二つの違いを理解することが
+大切です。ファイルシステムはオペレーティングシステムから見たディスクの内容です。
+たとえば、デフォルトのインストールでは Apache は Unix ファイルシステムでは
+<code>/usr/local/apache2</code> に、Windows ファイルシステムでは
+<code>"c:/Program Files/Apache Group/Apache2"</code> に存在します。
+(Apache では Windows でもパスセパレータとしてスラッシュを使うことに
+気をつけてください。) 対照的に、ウェブ空間はあなたのサイトを
+ウェブサーバから配信されるものとして見たもので、クライアントに見えるものです。
+デフォルトの Unix 上の Apache のインストールではウェブ空間の
+<code>/dir/</code> というパスはファイルシステムの
+<code>/usr/local/apache2/htdocs/dir/</code> というパスに対応します。
+ウェブページはデータベースや他の場所から動的に生成することもできますので、
+ウェブ空間はファイルシステムに直接マップする必要はありません。</p>
 
-<section id="filesystem"><title>$B%U%!%$%k%7%9%F%`%3%s%F%J(B</title>
+<section id="filesystem"><title>ファイルシステムコンテナ</title>
 
-<p><directive type="section" module="core">Directory</directive> $B%G%#%l%/%F%#%V$H(B
-<directive type="section" module="core">Files</directive> $B%G%#%l%/%F%#%V!"$=$l$H(B
-$B$=$l$i$N@55,I=8=HG$O%G%#%l%/%F%#%V$r%U%!%$%k%7%9%F%`$N0lItJ,$KBP$7$FE,MQ$7$^$9!#(B
-<directive type="section" module="core">Directory</directive> $B%;%/%7%g%s$N(B
-$BCf$N%G%#%l%/%F%#%V$O;XDj$5$l$?%G%#%l%/%H%j$H$=$N$9$Y$F$N%5%V%G%#%l%/%H%j$K(B
-$BE,MQ$5$l$^$9!#(B<a href="howto/htaccess.html">.htaccess $B%U%!%$%k(B</a>$B$r(B
-$B;H$&$3$H$G$bF1$88z2L$rF@$k$3$H$,$G$-$^$9!#Nc$($P!"<!$N@_Dj$G$O(B
-<code>/var/web/dir1</code> $B$H$9$Y$F$N%5%V%G%#%l%/%H%j$KBP$7$F(B
-$B%G%#%l%/%H%j%$%s%G%C%/%9$r9T$J$$$^$9!#(B</p>
+<p><directive type="section" module="core">Directory</directive> ディレクティブと
+<directive type="section" module="core">Files</directive> ディレクティブ、それと
+それらの正規表現版はディレクティブをファイルシステムの一部分に対して適用します。
+<directive type="section" module="core">Directory</directive> セクションの
+中のディレクティブは指定されたディレクトリとそのすべてのサブディレクトリに
+適用されます。<a href="howto/htaccess.html">.htaccess ファイル</a>を
+使うことでも同じ効果を得ることができます。例えば、次の設定では
+<code>/var/web/dir1</code> とすべてのサブディレクトリに対して
+ディレクトリインデックスを行ないます。</p>
 
 <example>
 &lt;Directory /var/web/dir1&gt;<br />
@@ -138,11 +138,11 @@ Options +Indexes<br />
 &lt;/Directory&gt;
 </example>
 
-<p><directive type="section" module="core">Files</directive> $B%;%/%7%g%s$N(B
-$BCf$K$"$k%G%#%l%/%F%#%V$O$I$N%G%#%l%/%H%j$K$"$k$+$K4X$o$i$:!";XDj$5$l$?L>A0$N(B
-$B$9$Y$F$N%U%!%$%k$KE,MQ$5$l$^$9!#$G$9$+$iNc$($P0J2<$N@_Dj%G%#%l%/%F%#%V$,(B
-$B@_Dj%U%!%$%k$N<g%;%/%7%g%s$K=q$+$l$?$H$-$K$O!"$9$Y$F$N>l=j$N(B
-<code>private.html</code> $B$H$$$&L>A0$N%U%!%$%k$X$N%"%/%;%9$r5qH]$7$^$9!#(B</p>
+<p><directive type="section" module="core">Files</directive> セクションの
+中にあるディレクティブはどのディレクトリにあるかに関わらず、指定された名前の
+すべてのファイルに適用されます。ですから例えば以下の設定ディレクティブが
+設定ファイルの主セクションに書かれたときには、すべての場所の
+<code>private.html</code> という名前のファイルへのアクセスを拒否します。</p>
 
 <example>
 &lt;Files private.html&gt;<br />
@@ -151,15 +151,15 @@ Deny from all<br />
 &lt;/Files&gt;
 </example>
 
-<p>$B%U%!%$%k%7%9%F%`$NFCDj$N>l=j$K$"$k%U%!%$%k$r;XDj$9$k$?$a$K!"(B
-<directive type="section" module="core">Files</directive> $B%;%/%7%g%s$H(B
-<directive type="section" module="core">Directory</directive> $B%;%/%7%g%s$r(B
-$BAH$_9g$o$;$k$3$H$,$G$-$^$9!#Nc$($P!"<!$N@_Dj$G$O(B
+<p>ファイルシステムの特定の場所にあるファイルを指定するために、
+<directive type="section" module="core">Files</directive> セクションと
+<directive type="section" module="core">Directory</directive> セクションを
+組み合わせることができます。例えば、次の設定では
 <code>/var/web/dir1/private.html</code>, 
 <code>/var/web/dir1/subdir2/private.html</code>, 
-<code>/var/web/dir1/subdir3/private.html</code> $B$J$I!"(B
-<code>/var/web/dir1/</code> $B%G%#%l%/%H%j$N2<$K$"$k$9$Y$F$N(B
-<code>private.html</code> $B$X$N%"%/%;%9$r5qH]$7$^$9!#(B</p>
+<code>/var/web/dir1/subdir3/private.html</code> など、
+<code>/var/web/dir1/</code> ディレクトリの下にあるすべての
+<code>private.html</code> へのアクセスを拒否します。</p>
 
 <example>
 &lt;Directory /var/web/dir1&gt;<br />
@@ -171,18 +171,18 @@ Deny from all<br />
 </example>
 </section>
 
-<section id="webspace"><title>$B%&%'%V6u4V%3%s%F%J(B</title>
+<section id="webspace"><title>ウェブ空間コンテナ</title>
 
-<p>$B0lJ}!"(B<directive type="section" module="core">Location</directive>
-$B%G%#%l%/%F%#%V$H$=$N@55,I=8=HG$O%&%'%V6u4V>e$NFbMF$KBP$7$F@_Dj$rJQ99$7$^$9!#(B
-$B$?$H$($P!"<!$N@_Dj$G$O(B /private $B$G;O$^$k(B URL $B%Q%9$X$N%"%/%;%9$r@)8B$7$^$9!#(B
-$B6qBNE*$K$O!"(B
+<p>一方、<directive type="section" module="core">Location</directive>
+ディレクティブとその正規表現版はウェブ空間上の内容に対して設定を変更します。
+たとえば、次の設定では /private で始まる URL パスへのアクセスを制限します。
+具体的には、
 <code>http://yoursite.example.com/private</code>,
 <code>http://yoursite.example.com/private123</code>, 
 <code>http://yoursite.example.com/private/dir/file.html</code> 
-$B$X$N%j%/%(%9%H$d!"(B
-$BB>$NF1MM$K(B <code>/private</code> $BJ8;zNs$G;O$^$k%j%/%(%9%H$K(B
-$BE,MQ$5$l$^$9!#(B</p>
+へのリクエストや、
+他の同様に <code>/private</code> 文字列で始まるリクエストに
+適用されます。</p>
 
 <example>
 &lt;Location /private&gt;<br />
@@ -192,11 +192,11 @@ Deny from all<br />
 </example>
 
 <p><directive type="section" module="core">Location</directive>
-$B%G%#%l%/%F%#%V$O%U%!%$%k%7%9%F%`$H4X78$"$kI,MW$,A4$/$"$j$^$;$s!#(B
-$B$?$H$($P<!$NNc$G$O!"$I$N$h$&$K$7$FFCDj$N(B URL $B$r(B
-<module>mod_status</module>$B$GDs6!$5$l$F$$$k(B Apache 
-$BFbIt%O%s%I%i$K%^%C%W$9$k$+$r<($7$F$$$^$9!#%U%!%$%k%7%9%F%`$K(B
-<code>server-status</code> $B$H$$$&%U%!%$%k$,B8:_$9$kI,MW$O$"$j$^$;$s!#(B</p>
+ディレクティブはファイルシステムと関係ある必要が全くありません。
+たとえば次の例では、どのようにして特定の URL を
+<module>mod_status</module>で提供されている Apache 
+内部ハンドラにマップするかを示しています。ファイルシステムに
+<code>server-status</code> というファイルが存在する必要はありません。</p>
 
 <example>
 &lt;Location /server-status&gt;<br />
@@ -205,30 +205,30 @@ SetHandler server-status<br />
 </example>
 </section>
 
-<section id="wildcards"><title>$B%o%$%k%I%+!<%I$H@55,I=8=(B</title>
+<section id="wildcards"><title>ワイルドカードと正規表現</title>
 
 <p><directive type="section" module="core">Directory</directive>, 
 <directive type="section" module="core">Files</directive>, 
 <directive type="section" module="core">Location</directive> 
-$B%G%#%l%/%F%#%V$G$O!"(B C $BI8=`%i%$%V%i%j$N(B <code>fnmatch</code> $B$N$h$&$K(B
-shell $B%9%?%$%k$N%o%$%k%I%+!<%I%-%c%i%/%?$,;HMQ$G$-$^$9!#(B
-"*" $BJ8;z$OG$0U$NJ8;zNs$K%^%C%A$7!"(B"?" $BJ8;z$OG$0U$N(B 1 $BJ8;z$K%^%C%A$7!"(B
-"[<em>seq</em>]" $B$O(B <em>seq</em> $B$NG$0U$NJ8;z$K%^%C%A$7$^$9!#(B
-"/" $BJ8;z$O$I$N%o%$%k%I%+!<%I$G$b%^%C%A$5$l$^$;$s!#(B
-$BL@<(E*$K;XDj$9$kI,MW$,$"$j$^$9!#(B</p>
+ディレクティブでは、 C 標準ライブラリの <code>fnmatch</code> のように
+shell スタイルのワイルドカードキャラクタが使用できます。
+"*" 文字は任意の文字列にマッチし、"?" 文字は任意の 1 文字にマッチし、
+"[<em>seq</em>]" は <em>seq</em> の任意の文字にマッチします。
+"/" 文字はどのワイルドカードでもマッチされません。
+明示的に指定する必要があります。</p>
 
-<p>$B$3$l$h$j=@Fp$J%^%C%A%s%0$,I,MW$J>l9g$O!"$3$l$i$N%3%s%F%J$K@55,I=8=(B
-(regex) $BHG$G$"$k(B
+<p>これより柔軟なマッチングが必要な場合は、これらのコンテナに正規表現
+(regex) 版である
 <directive type="section" module="core">DirectoryMatch</directive>, 
 <directive type="section" module="core">FilesMatch</directive>, 
 <directive type="section" module="core">LocationMatch</directive>
-$B$,$"$j!"%^%C%A$rA*Br$9$k$N$K(B perl $B8_49(B<a href="glossary.html#regex"
->$B@55,I=8=(B</a>$B$r;HMQ$G$-$^$9!#$7$+$7!"<!$N@_Dj$N%^!<%8$KL\$rDL$7$F!"(B
-regex $B%;%/%7%g%s$r;HMQ$9$k$3$H$G!"%G%#%l%/%F%#%V$NE,MQ$,$I$N$h$&$K(B
-$BJQ2=$9$k$+GD0.$7$F$*$$$F$/$@$5$$!#(B</p>
+があり、マッチを選択するのに perl 互換<a href="glossary.html#regex"
+>正規表現</a>を使用できます。しかし、次の設定のマージに目を通して、
+regex セクションを使用することで、ディレクティブの適用がどのように
+変化するか把握しておいてください。</p>
 
-<p>$BA4%f!<%6%G%#%l%/%H%j$N@_Dj$rJQ99$9$k!"Hs(B regex
-$B%o%$%k%I%+!<%I%;%/%7%g%s$O<!$N$h$&$K$J$j$^$9!#(B</p>
+<p>全ユーザディレクトリの設定を変更する、非 regex
+ワイルドカードセクションは次のようになります。</p>
 
 <example>
 &lt;Directory /home/*/public_html&gt;<br />
@@ -236,8 +236,8 @@ Options Indexes<br />
 &lt;/Directory&gt;
 </example>
 
-<p>regex $B%;%/%7%g%s$r;HMQ$9$k$3$H$G!"2hA|%U%!%$%k$NB?$/$N%?%$%W$KBP$9$k(B
-$B%"%/%;%9$r0lEY$K5qH]$G$-$^$9!#(B</p>
+<p>regex セクションを使用することで、画像ファイルの多くのタイプに対する
+アクセスを一度に拒否できます。</p>
 <example>
 &lt;FilesMatch \.(?i:gif|jpe?g|png)$&gt;<br />
 Order allow,deny<br />
@@ -247,25 +247,25 @@ Deny from all<br />
 
 </section>
 
-<section id="whichwhen"><title>$B$$$D2?$r;H$&$+(B</title>
+<section id="whichwhen"><title>いつ何を使うか</title>
 
-<p>$B%U%!%$%k%7%9%F%`%3%s%F%J$H%&%'%V6u4V%3%s%F%J$r;H$$J,$1$k$N$O!"(B
-$B<B:]$K$OHs>o$K4JC1$G$9!#%U%!%$%k%7%9%F%`$K0MB8$9$k(B
-$B%*%V%8%'%/%H$K%G%#%l%/%F%#%V$rE,1~$9$k>l9g$O!"I,$:(B
-<directive type="section" module="core">Directory</directive> $B$+(B
+<p>ファイルシステムコンテナとウェブ空間コンテナを使い分けるのは、
+実際には非常に簡単です。ファイルシステムに依存する
+オブジェクトにディレクティブを適応する場合は、必ず
+<directive type="section" module="core">Directory</directive> か
 <directive type="section" module="core">Files</directive>
-$B$r;HMQ$7$^$9!#%U%!%$%k%7%9%F%`$K0MB8$7$J$$%*%V%8%'%/%H(B
-($B%G!<%?%Y!<%9$+$i@8@.$5$l$k%&%'%V%Z!<%8$J$I(B) 
-$B$K%G%#%l%/%F%#%V$rE,MQ$9$k:]$K$O!"(B
+を使用します。ファイルシステムに依存しないオブジェクト
+(データベースから生成されるウェブページなど) 
+にディレクティブを適用する際には、
 <directive type="section" module="core">Location</directive>
-$B$r;HMQ$7$^$9!#(B</p>
+を使用します。</p>
 
-<p>$B%U%!%$%k%7%9%F%`>e$N%*%V%8%'%/%H$X$N%"%/%;%9$r@)8B$9$k$?$a$K!"(B
+<p>ファイルシステム上のオブジェクトへのアクセスを制限するために、
 <directive type="section" module="core">Location</directive>
-$B$r7h$7$F;HMQ$J$$$h$&$K$7$^$7$g$&!#(B
-$BF10l$N%U%!%$%k%7%9%F%`0LCV$K%^%C%W$7$F$$$k!"%&%'%V6u4V0LCV(B (URL)
-$B$,B??t$"$C$F!"@_Dj$7$?@)8B$r1*2s$5$l$F$7$^$&$+$b$7$l$J$$$+$i$G$9!#(B
-$BNc$($P<!$N@_Dj$r9M$($F$_$^$7$g$&!#(B</p>
+を決して使用ないようにしましょう。
+同一のファイルシステム位置にマップしている、ウェブ空間位置 (URL)
+が多数あって、設定した制限を迂回されてしまうかもしれないからです。
+例えば次の設定を考えてみましょう。</p>
 
 <example>
 &lt;Location /dir/&gt;<br />
@@ -275,51 +275,51 @@ Deny from all<br />
 </example>
 
 <p><code>http://yoursite.example.com/dir/</code>
-$B$X$N%j%/%(%9%H$G$O>e<j$/F0:n$7$^$9!#$7$+$7BgJ8;z>.J8;z$r6hJL$7$J$$(B
-$B%U%!%$%k%7%9%F%`$r;H$C$F$$$?$i$I$&$J$k$G$7$g$&(B?
+へのリクエストでは上手く動作します。しかし大文字小文字を区別しない
+ファイルシステムを使っていたらどうなるでしょう?
 <code>http://yoursite.example.com/DIR/</code> 
-$B$X$N%j%/%(%9%H$G4JC1$K%"%/%;%9@)8B$r1*2s$5$l$F$7$^$$$^$9!#$3$l$KBP$7$F(B
+へのリクエストで簡単にアクセス制限を迂回されてしまいます。これに対して
 <directive type="section" module="core">Directory</directive>
-$B%G%#%l%/%F%#%V$r;HMQ$9$k$H!"$I$N$h$&$K8F$S=P$5$l$?$+$K4X$o$i$:(B
-$B$=$N>l=j$+$iDs6!$5$l$kFbMF$KE,MQ$5$l$^$9!#(B
-($BNc30$O%U%!%$%k%7%9%F%`$N%j%s%/$G$9!#%7%s%\%j%C%/%j%s%/$r;H$C$F!"(B
-$BF10l$N%G%#%l%/%H%j$rJ#?t$N%U%!%$%k%7%9%F%`$K@_CV$G$-$^$9!#(B
+ディレクティブを使用すると、どのように呼び出されたかに関わらず
+その場所から提供される内容に適用されます。
+(例外はファイルシステムのリンクです。シンボリックリンクを使って、
+同一のディレクトリを複数のファイルシステムに設置できます。
 <directive type="section" module="core">Directory</directive>
-$B%G%#%l%/%F%#%V$O%Q%9L>$r%j%;%C%H$9$k$3$H$J$/%7%s%\%j%C%/%j%s%/$r(B
-$BC)$j$^$9!#$G$9$+$i!"9bEY$J%;%-%e%j%F%#$,MW5a$5$l$k>l9g$O!"(B
-$BE,@Z$K(B <directive module="core">Options</directive> 
-$B%G%#%l%/%F%#%V$r;HMQ$7$F%7%s%\%j%C%/%j%s%/$rL58z$K$9$k$Y$-$G$9!#(B)</p>
+ディレクティブはパス名をリセットすることなくシンボリックリンクを
+辿ります。ですから、高度なセキュリティが要求される場合は、
+適切に <directive module="core">Options</directive> 
+ディレクティブを使用してシンボリックリンクを無効にするべきです。)</p>
 
-<p>$BBgJ8;z>.J8;z$r6hJL$9$k%U%!%$%k%7%9%F%`$r;HMQ$7$F$$$k$+$i>e5-$N$3$H$O(B
-$BL54X78$@$H;W$o$l$k$+$b$7$l$^$;$s$,!"(B
-$BF10l$N%U%!%$%k%7%9%F%`0LCV$KJ#?t$N%&%'%V6u4V0LCV$r%^%C%W$9$kJ}K!$O!"(B
-$BB>$K$$$/$i$G$b$"$k$H$$$&$3$H$r3P$($F$$$F$/$@$5$$!#(B
-$B$G$9$+$i$G$-$k8B$j%U%!%$%k%7%9%F%`%3%s%F%J$r;HMQ$7$F$/$@$5$$!#(B
-$B$7$+$7$J$,$i0l$D$@$1Nc30$,$"$j$^$9!#(B
-<code>&lt;Location /&gt;</code> $B%;%/%7%g%s$O$I$s$J(B URL 
-$B$K$b4X$o$i$:E,MQ$5$l$k$N$G!"40A4$K0BA4$G$9!#(B</p>
+<p>大文字小文字を区別するファイルシステムを使用しているから上記のことは
+無関係だと思われるかもしれませんが、
+同一のファイルシステム位置に複数のウェブ空間位置をマップする方法は、
+他にいくらでもあるということを覚えていてください。
+ですからできる限りファイルシステムコンテナを使用してください。
+しかしながら一つだけ例外があります。
+<code>&lt;Location /&gt;</code> セクションはどんな URL 
+にも関わらず適用されるので、完全に安全です。</p>
 </section>
 
 </section>
 
-<section id="virtualhost"><title>$B%P!<%A%c%k%[%9%H(B</title>
+<section id="virtualhost"><title>バーチャルホスト</title>
 
 <p><directive type="section" module="core">VirtualHost</directive>
-$B%3%s%F%J$OFCDj$N%[%9%H$KE,MQ$9$k%G%#%l%/%F%#%V$r3JG<$7$^$9!#(B
-$B0lBf$N%^%7%s$GJ#?t$N%[%9%H$r0[$J$k@_Dj$GDs6!$7$?$$$H$-$KM-MQ$G$9!#(B
-$B>\:Y$K4X$7$F$O(B<a href="vhosts/">$B%P!<%A%c%k%[%9%H%I%-%e%a%s%H(B</a>$B$r(B
-$B$4Mw2<$5$$!#(B</p>
+コンテナは特定のホストに適用するディレクティブを格納します。
+一台のマシンで複数のホストを異なる設定で提供したいときに有用です。
+詳細に関しては<a href="vhosts/">バーチャルホストドキュメント</a>を
+ご覧下さい。</p>
 </section>
 
-<section id="proxy"><title>$B%W%m%/%7(B</title>
+<section id="proxy"><title>プロクシ</title>
 
 <p><directive type="section" module="mod_proxy">Proxy</directive>
-$B$H(B <directive type="section" module="mod_proxy">ProxyMatch</directive>
-$B%3%s%F%J$O!"FCDj$N(B URL $B$K%^%C%A$9$k(B <module>mod_proxy</module>
-$B%W%m%/%7%5!<%P$r7PM3$7$F%"%/%;%9$7$?%5%$%H$KBP$7$F$N$_E,MQ$5$l$k(B
-$B@_Dj%G%#%l%/%F%#%V$r3JG<$7$^$9!#Nc$($P<!$N@_Dj$O!"(B<code>cnn.com</code> 
-$B%&%'%V%5%$%H$K%"%/%;%9$9$k$?$a$KMQ$$$i$l$k%W%m%/%7%5!<%P$r(B
-$B@)8B$7$^$9!#(B</p>
+と <directive type="section" module="mod_proxy">ProxyMatch</directive>
+コンテナは、特定の URL にマッチする <module>mod_proxy</module>
+プロクシサーバを経由してアクセスしたサイトに対してのみ適用される
+設定ディレクティブを格納します。例えば次の設定は、<code>cnn.com</code> 
+ウェブサイトにアクセスするために用いられるプロクシサーバを
+制限します。</p>
 
 <example>
 &lt;Proxy http://cnn.com/*&gt;<br />
@@ -329,13 +329,13 @@ Deny from all<br />
 </example>
 </section>
 
-<section id="whatwhere"><title>$B$I$N%G%#%l%/%F%#%V$,;H$($k$N(B?</title>
+<section id="whatwhere"><title>どのディレクティブが使えるの?</title>
 
-<p>$B$I$N%?%$%W$N@_Dj%;%/%7%g%s$G$I$N%G%#%l%/%F%#%V$,;HMQ$G$-$k$+$O!"(B
-$B%G%#%l%/%F%#%V$N(B <a href="mod/directive-dict.html#Context">Context</a>
-$B$r8+$F$/$@$5$$!#(B
+<p>どのタイプの設定セクションでどのディレクティブが使用できるかは、
+ディレクティブの <a href="mod/directive-dict.html#Context">Context</a>
+を見てください。
 <directive type="section" module="core">Directory</directive>
-$B$G;HMQ2DG=$J$b$N$OA4$F!"F1MM$K(B
+で使用可能なものは全て、同様に
 <directive type="section" module="core">DirectoryMatch</directive>,
 <directive type="section" module="core">Files</directive>,
 <directive type="section" module="core">FilesMatch</directive>,
@@ -343,89 +343,89 @@ Deny from all<br />
 <directive type="section" module="core">LocationMatch</directive>,
 <directive type="section" module="mod_proxy">Proxy</directive>,
 <directive type="section" module="mod_proxy">ProxyMatch</directive>
-$B%;%/%7%g%s$G;HMQ2DG=$G$9!#$7$+$7$J$,$i4v$D$+Nc30$bB8:_$7$^$9!#(B</p>
+セクションで使用可能です。しかしながら幾つか例外も存在します。</p>
 
 <ul>
-<li><directive module="core">AllowOverride</directive> $B%G%#%l%/%F%#%V$O(B
+<li><directive module="core">AllowOverride</directive> ディレクティブは
 <directive type="section" module="core">Directory</directive>
-$B%;%/%7%g%s$G$N$_;HMQ2DG=$G$9!#(B</li>
+セクションでのみ使用可能です。</li>
 
-<li><code>FollowSymLinks</code> $B$H(B <code>SymLinksIfOwnerMatch</code> $B$N(B
-<directive module="core">Options</directive> $B$O!"(B
+<li><code>FollowSymLinks</code> と <code>SymLinksIfOwnerMatch</code> の
+<directive module="core">Options</directive> は、
 <directive type="section" module="core">Directory</directive>
-$B%;%/%7%g%s$+(B <code>.htaccess</code> $B%U%!%$%k$G$N$_;HMQ2DG=$G$9!#(B</li>
+セクションか <code>.htaccess</code> ファイルでのみ使用可能です。</li>
 
-<li><directive module="core">Options</directive> $B%G%#%l%/%F%#%V$O!"(B
+<li><directive module="core">Options</directive> ディレクティブは、
 <directive type="section" module="core">Files</directive>
-$B$H(B <directive type="section" module="core">FilesMatch</directive>
-$B%;%/%7%g%s$G$O;HMQ$G$-$^$;$s!#(B</li>
+と <directive type="section" module="core">FilesMatch</directive>
+セクションでは使用できません。</li>
 </ul>
 </section>
 
-<section id="mergin"><title>$B%;%/%7%g%s$N%^!<%8J}K!(B</title>
+<section id="mergin"><title>セクションのマージ方法</title>
 
-    <p>$B%^!<%8$N=gHV$O0J2<$N$h$&$K$J$C$F$$$^$9(B:</p>
+    <p>マージの順番は以下のようになっています:</p>
 
     <ol>
       <li><directive
-      type="section" module="core">Directory</directive> ($B@55,I=8=L5$7(B) $B$H(B
-      <code>.htaccess</code> $B$rF1;~$K(B (<code>.htaccess</code> $B$,5v2D$5$l$F$$$l$P!"$=$l$,(B
-      <directive type="section" module="core">Directory</directive> $B$r>e=q$-$7$^$9(B)
+      type="section" module="core">Directory</directive> (正規表現無し) と
+      <code>.htaccess</code> を同時に (<code>.htaccess</code> が許可されていれば、それが
+      <directive type="section" module="core">Directory</directive> を上書きします)
       </li>
 
       <li><directive type="section" module="core">DirectoryMatch</directive>
-      ($B$H(B <code>&lt;Directory ~&gt;</code></li>
+      (と <code>&lt;Directory ~&gt;</code></li>
 
-      <li><directive type="section" module="core">Files</directive> $B$H(B
-      <directive type="section" module="core">FilesMatch</directive> $B$rF1;~$K(B</li>
+      <li><directive type="section" module="core">Files</directive> と
+      <directive type="section" module="core">FilesMatch</directive> を同時に</li>
 
-      <li><directive type="section" module="core">Location</directive> $B$H(B
-      <directive type="section" module="core">LocationMatch</directive> $B$rF1;~$K(B</li>
+      <li><directive type="section" module="core">Location</directive> と
+      <directive type="section" module="core">LocationMatch</directive> を同時に</li>
     </ol>
 
     <p><directive type="section" module="core">Directory</directive>
-    $B0J30$O!"$=$l$>$l$N%0%k!<%W$O@_Dj%U%!%$%k$K8=$l$?=gHV$K=hM}$5$l$^$9!#(B
-    <directive type="section" module="core">Directory</directive> ($B>e$N%0%k!<%W(B 1)
-    $B$O%G%#%l%/%H%j$,C;$$$b$N$+$iD9$$$b$N$X$H=hM}$5$l$^$9!#$G$9$+$i!"(B
-    $BNc$($P(B <code>&lt;Directory /var/web/dir1&gt;</code> $B$O(B
-    <code>&lt;Directory /var/web/dir/subdir&gt;</code> $B$NA0$K=hM}$5$l$^$9!#J#?t$N(B
+    以外は、それぞれのグループは設定ファイルに現れた順番に処理されます。
+    <directive type="section" module="core">Directory</directive> (上のグループ 1)
+    はディレクトリが短いものから長いものへと処理されます。ですから、
+    例えば <code>&lt;Directory /var/web/dir1&gt;</code> は
+    <code>&lt;Directory /var/web/dir/subdir&gt;</code> の前に処理されます。複数の
     <directive
-    type="section" module="core">Directory</directive> $B%;%/%7%g%s$,(B
-    $BF1$8%G%#%l%/%H%j$K(B
-    $BE,MQ$5$l$k>l9g$O!"@_Dj%U%!%$%kCf$N=gHV$K=>$C$F=hM}$5$l$^$9!#(B
+    type="section" module="core">Directory</directive> セクションが
+    同じディレクトリに
+    適用される場合は、設定ファイル中の順番に従って処理されます。
     <directive module="core">Include</directive>
-    $B$K$h$C$FA^F~$5$l$?@_Dj$O(B $BA^F~$7$F$$$k%U%!%$%k$N(B
+    によって挿入された設定は 挿入しているファイルの
     <directive module="core">Include</directive>
-    $B%G%#%l%/%F%#%V$N0LCV$K$"$C$?$+$N$h$&$K07$o$l$^$9!#(B</p>
+    ディレクティブの位置にあったかのように扱われます。</p>
 
     <p><directive type="section"
-    module="core">VirtualHost</directive> $B%;%/%7%g%sCf$N%;%/%7%g%s$O(B
-    $B%P!<%A%c%k%[%9%H$NDj5A$N30B&$NBP1~$9$k%;%/%7%g%s$N(B
-    <em>$B8e(B</em>$B$KE,MQ$5$l$^$9!#$3$l$K$h$j%P!<%A%c%k%[%9%H$,(B
-    $B%a%$%s$N%5!<%P@_Dj$r>e=q$-$G$-$k$h$&$J$j$^$9!#(B</p>
+    module="core">VirtualHost</directive> セクション中のセクションは
+    バーチャルホストの定義の外側の対応するセクションの
+    <em>後</em>に適用されます。これによりバーチャルホストが
+    メインのサーバ設定を上書きできるようなります。</p>
 
-    <p><module>mod_proxy</module> $B$G%j%/%(%9%H$,=hM}$5$l$k>l9g$O!"(B
-    $B=hM}=gHV$N$&$A!"(B<directive module="core" 
-    type="section">Directory</directive> $B%3%s%F%J$NItJ,$,(B
+    <p><module>mod_proxy</module> でリクエストが処理される場合は、
+    処理順番のうち、<directive module="core" 
+    type="section">Directory</directive> コンテナの部分が
     <directive module="mod_proxy" type="section">Proxy</directive>
-    $B%3%s%F%J$K<h$C$FBe$o$i$l$^$9!#(B</p>
+    コンテナに取って代わられます。</p>
 
-    <p>$B8e$N%;%/%7%g%s$N%G%#%l%/%F%#%V$,A0$N%;%/%7%g%s$N$b$N$r>e=q$-$7$^$9!#(B</p>
+    <p>後のセクションのディレクティブが前のセクションのものを上書きします。</p>
 
 
-<note><title>$B5;=Q%a%b(B</title>
-      $B<B:]$K$O!"L>A0$rJQ49$9$kCJ3,(B (URL
-      $B$r%U%!%$%kL>$K%^%C%W$9$k$?$a$K(B <code>Alias</code> $B$d(B
-      <code>DocumentRoot</code> $B$,;HMQ$5$l$k$H$3$m(B) $B$ND>A0$K(B
+<note><title>技術メモ</title>
+      実際には、名前を変換する段階 (URL
+      をファイル名にマップするために <code>Alias</code> や
+      <code>DocumentRoot</code> が使用されるところ) の直前に
       <directive type="section" module="core">Location</directive>/<directive type="section" module="core">LocationMatch</directive>
-      $B$,9T$J$o$l$^$9!#(B
-      $B$3$l$i$rE,MQ$7$?7k2L$OJQ49$,=*$o$C$?8e$K40A4$K<N$F$i$l$^$9!#(B
+      が行なわれます。
+      これらを適用した結果は変換が終わった後に完全に捨てられます。
 </note>
-<section id="merge-examples"><title>$BNc(B</title>
+<section id="merge-examples"><title>例</title>
 
-<p>$B<!$O%^!<%8$N=gHV$r<($9$?$a$NWs0UE*$JNc$K$J$C$F$$$^$9!#(B
-$B%j%/%(%9%HA4$F$KE,MQ$5$l$k$H$7$F!"K\Nc$N%G%#%l%/%F%#%V$O(B
-A &gt; B &gt; C &gt; D &gt; E $B$N=gHV$KE,MQ$5$l$^$9!#(B</p>
+<p>次はマージの順番を示すための恣意的な例になっています。
+リクエスト全てに適用されるとして、本例のディレクティブは
+A &gt; B &gt; C &gt; D &gt; E の順番に適用されます。</p>
 
 <example>
 &lt;Location /&gt;<br />
@@ -452,12 +452,12 @@ A<br />
 <br />
 </example>
 
-<p>$B$b$C$H6qBNE*$J!"<!$NNc$r9M$($F$_$^$7$g$&!#(B
+<p>もっと具体的な、次の例を考えてみましょう。
 <directive module="core" type="section">Directory</directive> 
-$B%;%/%7%g%s$K@_CV$5$l$?%"%/%;%9@)8B$K4X$o$i$:!"(B
+セクションに設置されたアクセス制限に関わらず、
 <directive module="core" type="section">Location</directive>
-$B%;%/%7%g%s$,:G8e$KI>2A$5$l$F!"%5!<%P$X$N%"%/%;%9$O@)8B$5$l$^$;$s!#(B
-$B8@$$49$($l$P!"%^!<%8$N=gHV$O=EMW$G!"Cm0U$7$F;HMQ$7$F$/$@$5$$(B!</p>
+セクションが最後に評価されて、サーバへのアクセスは制限されません。
+言い換えれば、マージの順番は重要で、注意して使用してください!</p>
 
 <example>
 &lt;Location /&gt;<br />

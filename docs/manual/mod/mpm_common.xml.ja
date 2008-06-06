@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 478131:658305 (outdated) -->
@@ -23,15 +23,15 @@
 <modulesynopsis metafile="mpm_common.xml.meta">
 
 <name>mpm_common</name>
-<description>$BFs$D0J>e$N%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B (MPM)
-$B$G<BAu$5$l$F$$$k%G%#%l%/%F%#%V$N%3%l%/%7%g%s(B</description>
+<description>二つ以上のマルチプロセッシングモジュール (MPM)
+で実装されているディレクティブのコレクション</description>
 <status>MPM</status>
 
 <directivesynopsis>
 <name>AcceptMutex</name>
-<description>$BJ#?t$N;R%W%m%;%9$,%M%C%H%o!<%/%=%1%C%H$G%j%/%(%9%H$r(B
-accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$?$a$K(B
-$B;H$&J}K!(B</description>
+<description>複数の子プロセスがネットワークソケットでリクエストを
+accept しようとしているときに、Apache がそれらの子プロセスを直列化するために
+使う方法</description>
 <syntax>AcceptMutex Default|<var>method</var></syntax>
 <default>AcceptMutex Default</default>
 <contextlist><context>server config</context></contextlist>
@@ -40,223 +40,223 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 </modulelist>
 
 <usage>
-    <p><directive>AcceptMutex</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B%M%C%H%o!<%/%=%1%C%H$N%j%/%(%9%H$r(B accept $B$7$h$&$H$7$F$$$kJ#?t$N;R%W%m%;%9$r(B
-    Apache $B$,D>Ns2=$9$k$?$a$K;H$&J}K!(B($B$HI,MW$J$i%m%C%/%U%!%$%k$N>l=j(B)$B$r@_Dj$7$^$9!#(B
-    Apache 2.0 $B0JA0$O!"$3$N%a%=%C%I$O%3%s%Q%$%k;~$K$N$_A*Br$G$-$^$7$?!#(B
-    $B:GE,$JJ}K!$O!"%"!<%-%F%/%A%c$d%W%i%C%H%[!<%`$KBg$-$/0MB8$7$^$9!#(B
-    $B>\:Y$K4X$7$F$O!"(B<a 
-    href="../misc/perf-tuning.html">$B@-G=$N%A%e!<%K%s%0(B</a>
-    $B%I%-%e%a%s%H$r$4Mw2<$5$$!#(B</p>
+    <p><directive>AcceptMutex</directive> ディレクティブは、
+    ネットワークソケットのリクエストを accept しようとしている複数の子プロセスを
+    Apache が直列化するために使う方法(と必要ならロックファイルの場所)を設定します。
+    Apache 2.0 以前は、このメソッドはコンパイル時にのみ選択できました。
+    最適な方法は、アーキテクチャやプラットホームに大きく依存します。
+    詳細に関しては、<a 
+    href="../misc/perf-tuning.html">性能のチューニング</a>
+    ドキュメントをご覧下さい。</p>
 
-    <p>$B$3$N%G%#%l%/%F%#%V$,(B <code>Default</code>
-    $B$K@_Dj$5$l$F$$$l$P!"%3%s%Q%$%k;~$KA*Br$5$l$?%G%U%)%k%HCM$,;H$o$l$^$9!#(B
-    $BB>$N;HMQ2DG=$J%a%=%C%I$N0lMw$O2<$K$"$j$^$9!#(B
-    $BA4$F$N%a%=%C%I$,A4$F$N%W%i%C%H%[!<%`$G;HMQ2DG=$G$"$k$o$1$G$O$J$$!"(B
-    $B$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#(B
-    $B;HMQ2DG=$G$J$$%a%=%C%I$,;XDj$5$l$?>l9g$O!"(B
-    $B;HMQ2DG=$J%a%=%C%I$N0lMw$r4^$s$@%a%C%;!<%8$,(B
-    $B%(%i!<%m%0$K=PNO$5$l$^$9!#(B</p>
+    <p>このディレクティブが <code>Default</code>
+    に設定されていれば、コンパイル時に選択されたデフォルト値が使われます。
+    他の使用可能なメソッドの一覧は下にあります。
+    全てのメソッドが全てのプラットホームで使用可能であるわけではない、
+    ということに注意してください。
+    使用可能でないメソッドが指定された場合は、
+    使用可能なメソッドの一覧を含んだメッセージが
+    エラーログに出力されます。</p>
 
     <dl>
       <dt><code>flock&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
-      <dd>$B%*%W%7%g%s$N(B <var>/path/to/lockfile</var>
-      $B%Q%i%a!<%?$GDj5A$7$?%U%!%$%k$N%m%C%/$K!"(B
-      <code>flock(2)</code> $B%7%9%F%`%3!<%k$r;H$$$^$9!#(B
-      $B%m%C%/%U%!%$%k$N;XDj$K$O(B <directive module="mpm_common">LockFile</directive> 
-      $B%G%#%l%/%F%#%V$r;H$&$3$H$b=PMh$^$9(B($BHs?d>)$G$9(B)$B!#(B</dd>
+      <dd>オプションの <var>/path/to/lockfile</var>
+      パラメータで定義したファイルのロックに、
+      <code>flock(2)</code> システムコールを使います。
+      ロックファイルの指定には <directive module="mpm_common">LockFile</directive> 
+      ディレクティブを使うことも出来ます(非推奨です)。</dd>
 
       <dt><code>fcntl&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
-      <dd>$B%*%W%7%g%s$N(B <var>/path/to/lockfile</var>
-      $B%Q%i%a!<%?$GDj5A$7$?%U%!%$%k$N%m%C%/$K!"(B
-      <code>fcntl(2)</code> $B%7%9%F%`%3!<%k$r;H$$$^$9!#(B
-      $B%m%C%/%U%!%$%k$N;XDj$K$O(B <directive module="mpm_common">LockFile</directive> 
-      $B%G%#%l%/%F%#%V$r;H$&$3$H$b=PMh$^$9(B($BHs?d>)$G$9(B)$B!#(B</dd>
+      <dd>オプションの <var>/path/to/lockfile</var>
+      パラメータで定義したファイルのロックに、
+      <code>fcntl(2)</code> システムコールを使います。
+      ロックファイルの指定には <directive module="mpm_common">LockFile</directive> 
+      ディレクティブを使うことも出来ます(非推奨です)。</dd>
 
       <dt><code>file&lt;<var>:/path/to/lockfile</var>&gt;</code></dt>
-      <dd>$B;HMQ$G$-$k%U%!%$%k%m%C%/%k!<%A%s$NCf$G:GE,$J$b$N$r;H$$$^$9!#(B
-      $B6qBNE*$K$O!"(B<code>fcntl</code> $B$,;HMQ2DG=$J>l9g$O$=$l$r;H$$!"$=$&$G$J$$>l9g$O(B
-      <code>flock</code> $B$r;n$7$^$9!#(B
-      $B$3$N@_Dj$O%W%i%C%H%[!<%`$H(B <glossary>APR</glossary> $B$,Fs$D$N$&$A>/$J$/$H$b(B
-      $B0l$D$r%5%]!<%H$7$F$$$k>l9g$N$_;HMQ2DG=$G$9!#(B</dd>
+      <dd>使用できるファイルロックルーチンの中で最適なものを使います。
+      具体的には、<code>fcntl</code> が使用可能な場合はそれを使い、そうでない場合は
+      <code>flock</code> を試します。
+      この設定はプラットホームと <glossary>APR</glossary> が二つのうち少なくとも
+      一つをサポートしている場合のみ使用可能です。</dd>
 
       <dt><code>posixsem</code></dt>
-      <dd>$BGSB>=hM}$N<BAu$K(B POSIX $B8_49%;%^%U%)$r;HMQ$7$^$9(B</dd>
+      <dd>排他処理の実装に POSIX 互換セマフォを使用します</dd>
 
       <dt><code>sysvsem</code></dt>
-      <dd>$BGSB>=hM}$N<BAu$K(B SySV $B7A<0$N%;%^%U%)$r;H$$$^$9!#(B</dd>
+      <dd>排他処理の実装に SySV 形式のセマフォを使います。</dd>
 
       <dt><code>sem</code></dt>
-      <dd>$B;HMQ$G$-$k%;%^%U%)%k!<%A%s$NCf$G:GE,$J$b$N$r;H$$$^$9!#(B
-      $B6qBNE*$K$O!"(BPosix $B8_49%;%^%U%)$,;HMQ2DG=$J>l9g$O$=$l$r;H$$!"$=$&$G$J$$>l9g$O(B
-      SystemV IPC $B7A<0$N%;%^%U%)$r;n$7$^$9!#(B
-      $B$3$N@_Dj$O%W%i%C%H%[!<%`$H(B <glossary>APR</glossary> $B$,Fs$D$N$&$A>/$J$/$H$b(B
-      $B0l$D$r%5%]!<%H$7$F$$$k>l9g$N$_;HMQ2DG=$G$9!#(B</dd>
+      <dd>使用できるセマフォルーチンの中で最適なものを使います。
+      具体的には、Posix 互換セマフォが使用可能な場合はそれを使い、そうでない場合は
+      SystemV IPC 形式のセマフォを試します。
+      この設定はプラットホームと <glossary>APR</glossary> が二つのうち少なくとも
+      一つをサポートしている場合のみ使用可能です。</dd>
 
       <dt><code>pthread</code></dt>
-      <dd>POSIX Threads (PThreads) $B5,3J$G<BAu$5$l$F$$$k(B
-      POSIX $BGSB>=hM}$r;H$$$^$9!#(B</dd>
+      <dd>POSIX Threads (PThreads) 規格で実装されている
+      POSIX 排他処理を使います。</dd>
 
     </dl>
 
-    <p>$B%3%s%Q%$%k;~$K%7%9%F%`$N%G%U%)%k%H$KA*$P$l$?$b$N$,2?$+$r8+$?$$>l9g$O!"(B
-    <directive module="core">LogLevel</directive> $B$r(B <code>debug</code>
-    $B$K@_Dj$9$k$H$h$$$G$7$g$&!#%G%U%)%k%H$N(B <directive>AcceptMutex</directive>
-    $B$,(B <directive module="core">ErrorLog</directive> $B$K=q$-9~$^$l$^$9!#(B</p>
+    <p>コンパイル時にシステムのデフォルトに選ばれたものが何かを見たい場合は、
+    <directive module="core">LogLevel</directive> を <code>debug</code>
+    に設定するとよいでしょう。デフォルトの <directive>AcceptMutex</directive>
+    が <directive module="core">ErrorLog</directive> に書き込まれます。</p>
 
-  <note type="warning"><title>$B7Y9p(B</title>
-     <p>$B$[$H$s$I$N%7%9%F%`$K$*$$$F$O!"(B<code>pthread</code> $B%*%W%7%g%s$,(B
-     $BA*$P$l$F$$$k$H!";R%W%m%;%9$,(B <code>AcceptCntl</code> mutex $B$r(B
-     $BJ];}$7$F$$$k$H$-$K0[>o=*N;$7$?>l9g!"%5!<%P$O%j%/%(%9%H$X$N1~Ez$r(B
-     $BDd;_$7$F$7$^$$$^$9!#$3$l$,H/@8$7$?>l9g$O!"%5!<%P$rI|5l$5$;$k$?$a$K$O(B
-     $B<jF0$G:F5/F0$5$;$kI,MW$,$"$j$^$9!#(B</p>
+  <note type="warning"><title>警告</title>
+     <p>ほとんどのシステムにおいては、<code>pthread</code> オプションが
+     選ばれていると、子プロセスが <code>AcceptCntl</code> mutex を
+     保持しているときに異常終了した場合、サーバはリクエストへの応答を
+     停止してしまいます。これが発生した場合は、サーバを復旧させるためには
+     手動で再起動させる必要があります。</p>
 
-     <p>Solaris $B$ONc30$G!"(BApache $B$b;HMQ$7$F$$$k!";R%W%m%;%9$,(B mutex $B$r(B
-     $BJ];}$7$F0[>o=*N;$7$?8e$K(B mutex $B$rI|5l$5$;$k$?$a$N5!9=$rDs6!$r$7$F$$$^$9!#(B</p>
-     <p>$B8f;HMQ$N%7%9%F%`$,(B <code>pthread_mutexattr_setrobust_np()</code> $B4X?t$r(B
-     $B<BAu$7$F$$$k>l9g$O!"(B<code>pthread</code> $B%*%W%7%g%s$r0BA4$K;HMQ$G$-$k(B
-     $B2DG=@-$,$"$j$^$9!#(B</p>
+     <p>Solaris は例外で、Apache も使用している、子プロセスが mutex を
+     保持して異常終了した後に mutex を復旧させるための機構を提供をしています。</p>
+     <p>御使用のシステムが <code>pthread_mutexattr_setrobust_np()</code> 関数を
+     実装している場合は、<code>pthread</code> オプションを安全に使用できる
+     可能性があります。</p>
   </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CoreDumpDirectory</name>
-<description>Apache $B$,%3%"%@%s%W$9$kA0$K0\F0$r;n$_$k%G%#%l%/%H%j(B
+<description>Apache がコアダンプする前に移動を試みるディレクトリ
 </description>
 <syntax>CoreDumpDirectory <var>directory</var></syntax>
-<default>$B%G%U%)%k%H$N@_Dj$O@bL@J8$rFI$s$G$/$@$5$$(B</default>
+<default>デフォルトの設定は説明文を読んでください</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_winnt</module><module>perchild</module><module>prefork</module>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p>Apache $B$,%3%"%@%s%W$9$kA0$K0\F0$r;n$_$k%G%#%l%/%H%j$r@)8f$7$^$9!#(B
-    $B%G%U%)%k%HCM$O(B <directive module="core">ServerRoot</directive>
-    $B%G%#%l%/%H%j$G$9$,!"$3$N%G%#%l%/%H%j$O%5!<%P$N<B9T$5$l$F$$$k%f!<%68"8B$G(B
-    $B=q$-9~$_2DG=$G$"$k$Y$-$G$O$J$$$N$G!"DL>o$O%3%"%@%s%W$O=q$-9~$^$l$^$;$s!#(B
-    $B%G%P%C%0$N$?$a$K%3%"%@%s%W$,I,MW$G$"$l$P!"(B
-    $B$3$N%G%#%l%/%F%#%V$r;H$C$FB>$N0LCV$K%3%"%@%s%W$r=q$-=P$9$h$&$K$G$-$^$9!#(B</p>
+    <p>Apache がコアダンプする前に移動を試みるディレクトリを制御します。
+    デフォルト値は <directive module="core">ServerRoot</directive>
+    ディレクトリですが、このディレクトリはサーバの実行されているユーザ権限で
+    書き込み可能であるべきではないので、通常はコアダンプは書き込まれません。
+    デバッグのためにコアダンプが必要であれば、
+    このディレクティブを使って他の位置にコアダンプを書き出すようにできます。</p>
 
-    <note><title>Linux $B$G$N%3%"%@%s%W(B</title>
-      <p>Apache $B$,(B root $B$H$7$F5/F0$5$l$F!"JL$N%f!<%6$N8"8B$K0J9_$7$?>l9g$O(B
-      Linux $B$N%+!<%M%k$O%G%#%l%/%H%j$,%W%m%;%9$N8"8B$G=q$-9~$_2DG=$J>l9g$G$5$($b(B
-      $B%3%"%@%s%W$r(B<em>$BL58z(B</em>$B$K$7$^$9!#(BApache (2.0.46 $B0J9_(B) $B$O(B
-      Linux 2.4 $B0J9_$G$O%3%"%@%s%W$r9T$J$&$h$&$K:F;XDj$7$^$9$,!"$=$l$O(B
-      <directive>CoreDumpDirectory</directive> $B$rL@<(E*$K@_Dj$7$?$H$-$K(B
-      $B8B$j$^$9!#(B</p>
+    <note><title>Linux でのコアダンプ</title>
+      <p>Apache が root として起動されて、別のユーザの権限に以降した場合は
+      Linux のカーネルはディレクトリがプロセスの権限で書き込み可能な場合でさえも
+      コアダンプを<em>無効</em>にします。Apache (2.0.46 以降) は
+      Linux 2.4 以降ではコアダンプを行なうように再指定しますが、それは
+      <directive>CoreDumpDirectory</directive> を明示的に設定したときに
+      限ります。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>EnableExceptionHook</name>
-<description>$B%/%i%C%7%e$N8e$KNc30%O%s%I%i$r<B9T$9$k%U%C%/$rM-8z$K$9$k(B</description>
+<description>クラッシュの後に例外ハンドラを実行するフックを有効にする</description>
 <syntax>EnableExceptionHook On|Off</syntax>
 <default>EnableExceptionHook Off</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>leader</module><module>perchild</module>
 <module>prefork</module><module>threadpool</module>
 <module>worker</module></modulelist>
-<compatibility>2.0.49 $B0J9_(B</compatibility>
+<compatibility>2.0.49 以降</compatibility>
 
 <usage>
-    <p>$B0BA4>e$NM}M3$+$i!"(B<code>--enable-exception-hook</code> configure
-    $B%*%W%7%g%s$rM-8z$K$7$?>l9g$K$N$_!"$3$N%G%#%l%/%F%#%V$rMxMQ$G$-$^$9!#(B
-    $B30It%b%8%e!<%k$r%W%i%0%$%s$7$F!";R$,%/%i%C%7%e$7$?8e$K2?$+<B9T$G$-$k$h$&$J(B
-    $B%U%C%/$rM-8z$K$7$^$9!#(B</p>
+    <p>安全上の理由から、<code>--enable-exception-hook</code> configure
+    オプションを有効にした場合にのみ、このディレクティブを利用できます。
+    外部モジュールをプラグインして、子がクラッシュした後に何か実行できるような
+    フックを有効にします。</p>
     
-    <p>$B$3$N$h$&$J30It%b%8%e!<%k$O!"4{$KFs$DB8:_$7$F$$$F!"(B
-    <code>mod_whatkilledus</code> $B$H(B <code>mod_backtrace</code>
-    $B$,$3$N%U%C%/$r3hMQ$7$^$9!#$3$l$i$N>\:Y$K$D$$$F$O(B Jeff Trawick 
-    $B$5$s$N(B <a href="http://www.apache.org/~trawick/exception_hook.html"
-    >EnableExceptionHook site</a> $B$r;2>H$7$F$/$@$5$$!#(B</p>
+    <p>このような外部モジュールは、既に二つ存在していて、
+    <code>mod_whatkilledus</code> と <code>mod_backtrace</code>
+    がこのフックを活用します。これらの詳細については Jeff Trawick 
+    さんの <a href="http://www.apache.org/~trawick/exception_hook.html"
+    >EnableExceptionHook site</a> を参照してください。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>GracefulShutdownTimeout</name>
-<description>$B2:$d$+$JDd;_$r$+$1$?8e!"=*N;$9$k$^$GBT$D;~4V(B</description>
+<description>穏やかな停止をかけた後、終了するまで待つ時間</description>
 <syntax>GracefulShutDownTimeout <var>seconds</var></syntax>
 <default>GracefulShutDownTimeout 0</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>prefork</module><module>worker</module>
 <module>event</module></modulelist>
-<compatibility>2.2 $B0J9_(B</compatibility>
+<compatibility>2.2 以降</compatibility>
 
 <usage>
-    <p><directive>GracefulShutdownTimeout</directive> $B$K$O(B
-    $B%5!<%P!<$,(B "graceful-stop" $B%7%0%J%k$r<u$1<h$C$F$+$i8=:_$N(B
-    $B%j%/%(%9%H$N=hM}$r:GBg$G2?IC4VB3$1$k$+$r;XDj$7$^$9!#(B</p>
+    <p><directive>GracefulShutdownTimeout</directive> には
+    サーバーが "graceful-stop" シグナルを受け取ってから現在の
+    リクエストの処理を最大で何秒間続けるかを指定します。</p>
 
-    <p>$B$3$NCM$r%<%m$K@_Dj$9$k$H!"=hM}Cf$H$7$F;D$C$F$$$k%j%/%(%9%H$,(B
-    $BA4$F40N;$9$k$^$G%5!<%P!<$O=*N;$7$^$;$s!#(B</p>
+    <p>この値をゼロに設定すると、処理中として残っているリクエストが
+    全て完了するまでサーバーは終了しません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Group</name>
-<description>$B%j%/%(%9%H$K1~Ez$9$k:]$K=jB0$9$k%0%k!<%W(B</description>
+<description>リクエストに応答する際に所属するグループ</description>
 <syntax>Group <var>unix-group</var></syntax>
 <default>Group #-1</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpmt_os2</module><module>perchild</module><module>prefork</module>
 <module>threadpool</module><module>worker</module></modulelist>
-<compatibility>Apache 2.0 $B0J9_$G!"%0%m!<%P%k@_Dj$G$N$_M-8z$G$9!#(B</compatibility>
+<compatibility>Apache 2.0 以降で、グローバル設定でのみ有効です。</compatibility>
 
 <usage>
-    <p><directive>Group</directive> $B%G%#%l%/%F%#%V$G!"(B
-    $B%j%/%(%9%H$K1~Ez$9$k:]$K=jB0$7$F$*$/%0%k!<%W$r@_Dj$7$^$9!#(B
-    $B$3$N%G%#%l%/%F%#%V$r;HMQ$9$k$?$a$K$O!"(B
-    $B%5!<%P$O:G=i$K(B <code>root</code> $B8"8B$G5/F0$5$l$F$$$kI,MW$,$"$j$^$9!#(B
-    $BHs(B root $B%f!<%6$G%5!<%P$r5/F0$7$?>l9g$O!";XDj$7$?%0%k!<%W$KJQ2=$G$-$:$K!"(B
-    $B7k2LE*$K5/F0$7$?%f!<%6$NB0$9$k%0%k!<%W$G<B9T$5$l$k$3$H$K$J$j$^$9!#(B
-    <var>unix-group</var> $B$O<!$N$&$A$N$$$:$l$+$G$9(B:</p>
+    <p><directive>Group</directive> ディレクティブで、
+    リクエストに応答する際に所属しておくグループを設定します。
+    このディレクティブを使用するためには、
+    サーバは最初に <code>root</code> 権限で起動されている必要があります。
+    非 root ユーザでサーバを起動した場合は、指定したグループに変化できずに、
+    結果的に起動したユーザの属するグループで実行されることになります。
+    <var>unix-group</var> は次のうちのいずれかです:</p>
 
     <dl>
-      <dt>$B%0%k!<%WL>(B</dt>
-      <dd>$B%0%k!<%W$rL>A0$G;2>H$7$^$9(B</dd>
+      <dt>グループ名</dt>
+      <dd>グループを名前で参照します</dd>
 
-      <dt><code>#</code> $B$KB3$$$F%0%k!<%WHV9f(B</dt>
-      <dd>$B%0%k!<%W$rHV9f$G;2>H$7$^$9!#(B</dd>
+      <dt><code>#</code> に続いてグループ番号</dt>
+      <dd>グループを番号で参照します。</dd>
     </dl>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       Group www-group
     </example>
 
-    <p>$B%5!<%P$r<B9T$9$k$?$a$KFCDj$N?7$7$$%0%k!<%W$r@_Dj$9$k$3$H$r(B
-    $B$*A&$a$7$^$9!#(B<code>nobody</code> $B$r;HMQ$9$k4IM}<T$b$$$^$9$,!"(B
-    $B2DG=$G$"$C$?$jK>$^$7$$Lu$G$OI,$:$7$b$"$j$^$;$s!#(B</p>
+    <p>サーバを実行するために特定の新しいグループを設定することを
+    お薦めします。<code>nobody</code> を使用する管理者もいますが、
+    可能であったり望ましい訳では必ずしもありません。</p>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
-      <p>$B@53N$K$I$s$J$3$H$r$d$C$F$$$k$N$+!"$=$N4m81@-$rCN$i$J$$$G!"(B
-      <directive>Group</directive> ($B$d(B <directive
-      module="mpm_common">User</directive>) $B$r(B
-      <code>root</code> $B$K(B $B@_Dj$7$J$$$G$/$@$5$$!#(B</p>
+    <note type="warning"><title>セキュリティ</title>
+      <p>正確にどんなことをやっているのか、その危険性を知らないで、
+      <directive>Group</directive> (や <directive
+      module="mpm_common">User</directive>) を
+      <code>root</code> に 設定しないでください。</p>
     </note>
 
-    <p>$BFC5-;v9`(B: $B$3$N%G%#%l%/%F%#%V$r(B
+    <p>特記事項: このディレクティブを
     <directive module="core" type="section">VirtualHost</directive>
-    $B$G;HMQ$9$k$3$H$O%5%]!<%H$5$l$J$/$J$j$^$7$?!#(BApache 2.0 $B$G(B
-    <program>suexec</program> $B$r@_Dj$7$?$$>l9g$O!"(B
+    で使用することはサポートされなくなりました。Apache 2.0 で
+    <program>suexec</program> を設定したい場合は、
     <directive module="mod_suexec">SuexecUserGroup</directive>
-    $B$r;HMQ$7$F$/$@$5$$!#(B</p>
+    を使用してください。</p>
 
-    <note><title>$BCm0U(B</title>
-      <p><directive>Group</directive> $B%G%#%l%/%F%#%V$O(B
-      <module>beos</module> $B$H(B <module>mpmt_os2</module> MPM
-      $B$K$bB8:_$7$^$9$,!"<B<AE*$KL58z$G!"8_49@-$N$?$a$@$1$KB8:_$7$^$9!#(B</p>
+    <note><title>注意</title>
+      <p><directive>Group</directive> ディレクティブは
+      <module>beos</module> と <module>mpmt_os2</module> MPM
+      にも存在しますが、実質的に無効で、互換性のためだけに存在します。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>PidFile</name>
-<description>$B%G!<%b%s$N%W%m%;%9(B ID
-$B$r%5!<%P$,5-O?$9$k$?$a$N%U%!%$%k(B</description>
+<description>デーモンのプロセス ID
+をサーバが記録するためのファイル</description>
 <syntax>PidFile <var>filename</var></syntax>
 <default>PidFile logs/httpd.pid</default>
 <contextlist><context>server config</context></contextlist>
@@ -266,40 +266,40 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p><directive>PidFile</directive> $B%G%#%l%/%F%#%V$G!"(B
-    $B%G!<%b%s$N%W%m%;%9(B ID $B$r%5!<%P$,5-O?$9$k%U%!%$%k$r@_Dj$7$^$9!#(B
-    $B%U%!%$%kL>$,@dBP%Q%9$G$J$$>l9g$O!"(B
+    <p><directive>PidFile</directive> ディレクティブで、
+    デーモンのプロセス ID をサーバが記録するファイルを設定します。
+    ファイル名が絶対パスでない場合は、
     <directive module="core">ServerRoot</directive>
-    $B$+$i$NAjBPE*$J$b$N$H$7$F07$o$l$^$9!#(B</p>
+    からの相対的なものとして扱われます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
     PidFile /var/run/apache.pid
     </example>
 
-    <p>$B%5!<%P$,(B <directive module="core">ErrorLog</directive>
-    $B$d(B <directive module="mod_log_config">TransferLog</directive>
-    $B$rJD$8$F3+$-D>$7$?$j!"@_Dj%U%!%$%k$r(B
-    $B:FFI9~$7$?$j$5$;$k$?$a$K!"%5!<%P$K%7%0%J%k$rAw$k$3$H$,$G$-$k$H(B
-    $BJXMx$J$3$H$,$"$j$^$9!#(B
-    $B$3$l$O(B SIGHUP (kill -1) $B%7%0%J%k$r(B <directive>PidFile</directive>
-    $B$K=q$+$l$F$$$k%W%m%;%9(B ID $B$KAw$k$3$H$G$G$-$^$9!#(B</p>
+    <p>サーバが <directive module="core">ErrorLog</directive>
+    や <directive module="mod_log_config">TransferLog</directive>
+    を閉じて開き直したり、設定ファイルを
+    再読込したりさせるために、サーバにシグナルを送ることができると
+    便利なことがあります。
+    これは SIGHUP (kill -1) シグナルを <directive>PidFile</directive>
+    に書かれているプロセス ID に送ることでできます。</p>
 
-    <p><directive>PidFile</directive> $B$K$O!"%m%0%U%!%$%k$N@_CV0LCV$d(B
-    <a href="../misc/security_tips.html#serverroot">$B%;%-%e%j%F%#(B</a>
-    $B$HA4$/F1$8Cm0UE@$,$"$j$^$9!#(B</p>
+    <p><directive>PidFile</directive> には、ログファイルの設置位置や
+    <a href="../misc/security_tips.html#serverroot">セキュリティ</a>
+    と全く同じ注意点があります。</p>
 
-    <note><title>$BCm0U(B</title>
-      <p>Apache 2 $B$G$O!"(B
+    <note><title>注意</title>
+      <p>Apache 2 では、
       <program>apachectl</program>
-      $B%9%/%j%W%H$N$_$r;HMQ$7$F%5!<%P$N(B ($B:F(B) $B5/F0$dDd;_$r(B
-      $B9T$J$&$3$H$r?d>)$7$F$$$^$9!#(B</p>
+      スクリプトのみを使用してサーバの (再) 起動や停止を
+      行なうことを推奨しています。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>Listen</name>
-<description>$B%5!<%P$,(B listen $B$9$k(BIP $B%"%I%l%9$H%]!<%HHV9f(B</description>
+<description>サーバが listen するIP アドレスとポート番号</description>
 <syntax>Listen [<var>IP-address</var>:]<var>portnumber</var> [<var>protocol</var>]</syntax>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
@@ -308,85 +308,85 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <module>prefork</module><module>threadpool</module><module>worker</module>
 <module>event</module>
 </modulelist>
-<compatibility>Apache 2.0 $B$+$iI,?\%G%#%l%/%F%#%V!#(B<var>protocol</var>
-$B0z?t$O(B 2.1.5 $B$GDI2C!#(B</compatibility>
+<compatibility>Apache 2.0 から必須ディレクティブ。<var>protocol</var>
+引数は 2.1.5 で追加。</compatibility>
 
 <usage>
-    <p><directive>Listen</directive> $B%G%#%l%/%F%#%V$O(B Apache
-    $B$,FCDj$N(B IP $B%"%I%l%9$d%]!<%HHV9f$@$1$r(B listen $B$9$k$h$&$K;XDj$7$^$9!#(B
-    $B%G%U%)%k%H$G$OA4$F$N(B IP $B%$%s%?!<%U%'!<%9$N%j%/%(%9%H$K1~Ez$7$^$9!#(B
-    <directive>Listen</directive> $B%G%#%l%/%F%#%V$O(B
-    $B8=:_$OI,?\$N%G%#%l%/%F%#%V$H$J$j$^$7$?!#(B
-    $B$b$7@_Dj%U%!%$%k$K$J$1$l$P!"%5!<%P$O5/F0$K<:GT$7$^$9!#(B
-    $B$3$l$O0JA0$N%P!<%8%g%s$N(B Apache $B$+$iJQ99$N$"$C$?ItJ,$G$9!#(B</p>
+    <p><directive>Listen</directive> ディレクティブは Apache
+    が特定の IP アドレスやポート番号だけを listen するように指定します。
+    デフォルトでは全ての IP インターフェースのリクエストに応答します。
+    <directive>Listen</directive> ディレクティブは
+    現在は必須のディレクティブとなりました。
+    もし設定ファイルになければ、サーバは起動に失敗します。
+    これは以前のバージョンの Apache から変更のあった部分です。</p>
 
-    <p><directive>Listen</directive> $B%G%#%l%/%F%#%V$G$O!"FCDj$N%]!<%H$"$k$$$O(B
-    $B%"%I%l%9$H%]!<%H$NAH$_9g$o$;$+$iF~$C$F$/$k%j%/%(%9%H$KBP$7$F(B
-    $B1~Ez$9$k$h$&$K;XDj$7$^$9!#(B
-    $B$b$7%]!<%HHV9f$@$1$,;XDj$5$l$?>l9g$O!"%5!<%P$OA4%$%s%?!<%U%'!<%9$N(B
-    $B;XDj$5$l$?%]!<%HHV9f$KBP$7$F(B listen $B$7$^$9!#(B
-    IP $B%"%I%l%9$,%]!<%H$H$H$b$K;XDj$5$l$?>l9g$O!"(B
-    $B%5!<%P$O;XDj$5$l$?%]!<%H$H%$%s%?!<%U%'!<%9$KBP$7$F(B listen 
-    $B$7$^$9!#(B</p>
+    <p><directive>Listen</directive> ディレクティブでは、特定のポートあるいは
+    アドレスとポートの組み合わせから入ってくるリクエストに対して
+    応答するように指定します。
+    もしポート番号だけが指定された場合は、サーバは全インターフェースの
+    指定されたポート番号に対して listen します。
+    IP アドレスがポートとともに指定された場合は、
+    サーバは指定されたポートとインターフェースに対して listen 
+    します。</p>
 
-    <p>$BJ#?t$N%"%I%l%9$H%]!<%H$KBP$7$F(B listen $B$9$k$h$&$K!"(B
-    $BJ#?t$N(B <directive>Listen</directive> $B%G%#%l%/%F%#%V$r;H$&$3$H$b$G$-$^$9!#(B
-    $B%5!<%P$ONs5s$5$l$?%"%I%l%9$H%]!<%HA4$F$+$i$N%j%/%(%9%H$KBP$7$F(B
-    $B1~Ez$7$^$9!#(B</p>
+    <p>複数のアドレスとポートに対して listen するように、
+    複数の <directive>Listen</directive> ディレクティブを使うこともできます。
+    サーバは列挙されたアドレスとポート全てからのリクエストに対して
+    応答します。</p>
 
-    <p>$BNc$($P!"%5!<%P$,(B 80 $BHV%]!<%H$H(B 8000 $BHV%]!<%H$NN>J}$N(B
-    $B%3%M%/%7%g%s$r<u$1F~$l$k>l9g$O!"<!$N$h$&$K$7$^$9!#(B</p>
+    <p>例えば、サーバが 80 番ポートと 8000 番ポートの両方の
+    コネクションを受け入れる場合は、次のようにします。</p>
 
     <example>
        Listen 80<br />
        Listen 8000
     </example>
 
-    <p>$BFs$D$NFCDj$N%$%s%?!<%U%'!<%9$H%]!<%HHV9f$+$i$N%3%M%/%7%g%s$r(B
-    $B<u$1F~$l$k$h$&$K$9$k$K$O!"<!$N$h$&$K$7$^$9!#(B</p>
+    <p>二つの特定のインターフェースとポート番号からのコネクションを
+    受け入れるようにするには、次のようにします。</p>
 
     <example>
        Listen 192.170.2.1:80<br />
        Listen 192.170.2.5:8000
     </example>
 
-    <p>IPv6 $B%"%I%l%9$O3Q3g8L$G0O$^$J$1$l$P$J$j$^$;$s!#(B
-    $BNc$($P<!$NNc$N$h$&$K$G$9!#(B</p>
+    <p>IPv6 アドレスは角括弧で囲まなければなりません。
+    例えば次の例のようにです。</p>
 
     <example>
        Listen [2001:db8::a00:20ff:fea7:ccea]:80
     </example>
 
-    <p><var>protocol</var> $B%*%W%7%g%s0z?t$ODL>o$N@_Dj$G$OI,MW$"$j$^$;$s!#(B
-       $BL5;XDj$N>l9g!"(B443 $BHV%]!<%H$K$O(B <code>https</code> $B$,!"B>$N%]!<%H$K$O(B
-       <code>http</code> $B$,%G%U%)%k%HCM$H$7$F;HMQ$5$l$^$9!#(B
-       protocol $B;XDj$O!"$I$N%b%8%e!<%k$,%j%/%(%9%H$r=hM}$9$k$+$r7hDj$7!"(B
+    <p><var>protocol</var> オプション引数は通常の設定では必要ありません。
+       無指定の場合、443 番ポートには <code>https</code> が、他のポートには
+       <code>http</code> がデフォルト値として使用されます。
+       protocol 指定は、どのモジュールがリクエストを処理するかを決定し、
        <directive module="core">AcceptFilter</directive> 
-       $B$K$h$k%W%m%H%3%kFCM-$N:GE,2=$r9T$&$h$&$K$7$^$9!#(B</p>
+       によるプロトコル特有の最適化を行うようにします。</p>
 
-    <p>$BHsI8=`$J%]!<%H$G1?MQ$7$F$$$k:]$K$N$_(B protocol $B;XDj$,I,MW$K$J$j$^$9!#(B
-       $B$?$H$($P(B <code>https</code> $B$J%5%$%H$r(B 8443 $BHV%]!<%H$G1?MQ$7$F$$$k>l9g(B :</p>
+    <p>非標準なポートで運用している際にのみ protocol 指定が必要になります。
+       たとえば <code>https</code> なサイトを 8443 番ポートで運用している場合 :</p>
 
     <example>
       Listen 192.170.2.1:8443 https
     </example>
 
-    <note><title>$B%(%i!<>r7o(B</title>
-      $BF10l(B IP $B%"%I%l%9$H%]!<%H$NAH$K!"J#?t$N(B <directive>Listen</directive> 
-      $B%G%#%l%/%F%#%V$r;XDj$7$F$7$^$&$H!"(B<code>Address already in use</code> 
-      $B$H$$$&%(%i!<%a%C%;!<%8$r<u$1$k$3$H$K$J$j$^$9!#(B
+    <note><title>エラー条件</title>
+      同一 IP アドレスとポートの組に、複数の <directive>Listen</directive> 
+      ディレクティブを指定してしまうと、<code>Address already in use</code> 
+      というエラーメッセージを受けることになります。
     </note>
 
 </usage>
 
-<seealso><a href="../dns-caveats.html">DNS $B$NLdBj(B</a></seealso>
+<seealso><a href="../dns-caveats.html">DNS の問題</a></seealso>
 <seealso><a href="../bind.html">Apache
-$B$,;HMQ$9$k%"%I%l%9$H%]!<%H$N@_Dj(B</a></seealso>
+が使用するアドレスとポートの設定</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ListenBackLog</name>
-<description>$BJ]N1>uBV$N%3%M%/%7%g%s$N%-%e!<$N:GBgD9(B</description>
+<description>保留状態のコネクションのキューの最大長</description>
 <syntax>ListenBacklog <var>backlog</var></syntax>
 <default>ListenBacklog 511</default>
 <contextlist><context>server config</context></contextlist>
@@ -396,24 +396,24 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p>$BJ]N1>uBV$N%3%M%/%7%g%s$N%-%e!<$N:GBgD9$G$9!#(B
-    $B0lHLE*$K$OD4@0$9$kI,MW$O$"$j$^$;$s$7!"D4@0$OK>$^$7$/$"$j$^$;$s!#(B
-    $B$7$+$7!"(BTCP SYN $B%U%i%C%I%"%?%C%/$N>u672<$K$*$+$l$k>l9g$K!"(B
-    $BA}$d$7$?J}$,K>$^$7$$%7%9%F%`$b$"$j$^$9!#(B
-    <code>listen(2)</code> $B%7%9%F%`%3!<%k$N%P%C%/%m%0%Q%i%a!<%?$r(B
-    $B$4Mw2<$5$$!#(B</p>
+    <p>保留状態のコネクションのキューの最大長です。
+    一般的には調整する必要はありませんし、調整は望ましくありません。
+    しかし、TCP SYN フラッドアタックの状況下におかれる場合に、
+    増やした方が望ましいシステムもあります。
+    <code>listen(2)</code> システムコールのバックログパラメータを
+    ご覧下さい。</p>
 
-    <p>$B$3$NCM$O(B OS $B$K$h$j!">.$5$J?t$KM^$($i$l$^$9!#(B
-    $BCM$O(B OS $BKh$K0[$J$C$F$$$^$9!#$^$?B?$/$N(B OS $B$G$O!"(B
-    $B%P%C%/%m%0$H$7$F;XDj$5$l$F$$$kCM$A$g$&$I$^$G;H$C$F$$$k$o$1$G$O$J$/!"(B
-    $B@_Dj$5$l$F$$$kCM$K4p$E$$$F(B ($BDL>o$O@_DjCM$h$j$bBg$-$JCM$r(B)
-    $B;H$C$F$$$k$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    <p>この値は OS により、小さな数に抑えられます。
+    値は OS 毎に異なっています。また多くの OS では、
+    バックログとして指定されている値ちょうどまで使っているわけではなく、
+    設定されている値に基づいて (通常は設定値よりも大きな値を)
+    使っていることに注意してください。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>LockFile</name>
-<description>$B<uIU$rD>Ns2=$9$k$?$a$N%m%C%/%U%!%$%k$N0LCV(B<em>($BHs?d>)(B)</em></description>
+<description>受付を直列化するためのロックファイルの位置<em>(非推奨)</em></description>
 <syntax>LockFile <var>filename</var></syntax>
 <default>LockFile logs/accept.lock</default>
 <contextlist><context>server config</context></contextlist>
@@ -423,27 +423,27 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
 <usage>
     <p><directive module="mpm_common">AcceptMutex</directive>
-    $B$,(B <code>fcntl</code> $B$d(B <code>flock</code>
-    $B$K@_Dj$5$l$F;HMQ$5$l$F$$$k>l9g$K!";HMQ$5$l$k%m%C%/%U%!%$%k$X$N%Q%9$r(B
-    <directive>LockFile</directive> $B%G%#%l%/%F%#%V$G@_Dj$7$^$9!#(B
-    $B$3$N%G%#%l%/%F%#%V$ODL>o$O$=$N$^$^$K$7$F$*$-$^$9!#(B
-    $B<g$K(B <code>logs</code> $B%G%#%l%/%H%j$,(B NFS
-    $B$G%^%&%s%H$5$l$F$$$k>l9g$J$I$KCM$rJQ$($^$9!#(B
-    $B$J$<$J$i(B<strong>$B%m%C%/%U%!%$%k$O%m!<%+%k%G%#%9%/$K(B
-    $BJ]B8$5$l$J$1$l$P$J$i$J$$(B</strong>$B$+$i$G$9!#(B
-    $B%a%$%s%5!<%P%W%m%;%9$N(B PID $B$,%U%!%$%kL>$K<+F0E*$KIU2C$5$l$^$9!#(B</p>
+    が <code>fcntl</code> や <code>flock</code>
+    に設定されて使用されている場合に、使用されるロックファイルへのパスを
+    <directive>LockFile</directive> ディレクティブで設定します。
+    このディレクティブは通常はそのままにしておきます。
+    主に <code>logs</code> ディレクトリが NFS
+    でマウントされている場合などに値を変えます。
+    なぜなら<strong>ロックファイルはローカルディスクに
+    保存されなければならない</strong>からです。
+    メインサーバプロセスの PID がファイル名に自動的に付加されます。</p>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
+    <note type="warning"><title>セキュリティ</title>
       <p><code>/var/tmp</code>
-      $B$H$$$C$?!"C/$G$b=q$-9~$a$k%G%#%l%/%H%j$K%U%!%$%k$r(B
-      <em>$BCV$+$J$$(B</em>$BJ}$,$h$$$G$9!#$J$<$J$i!"%5!<%P$,5/F0;~$K:n@.$9$k(B
-      $B%m%C%/%U%!%$%k$N:n@.<+BN$rK832$9$k$3$H$K$h$C$F!"(B
-      $BC/$G$b%5!<%S%95qH]%"%?%C%/$r0z$-5/$3$9$3$H$,$G$-$k$+$i$G$9!#(B</p>
+      といった、誰でも書き込めるディレクトリにファイルを
+      <em>置かない</em>方がよいです。なぜなら、サーバが起動時に作成する
+      ロックファイルの作成自体を妨害することによって、
+      誰でもサービス拒否アタックを引き起こすことができるからです。</p>
     </note>
-    <note type="warning"><title>$BHs?d>)(B</title>
-      <p>$B$3$N%G%#%l%/%F%#%V$OHs?d>)$G$9!#(B <directive 
+    <note type="warning"><title>非推奨</title>
+      <p>このディレクティブは非推奨です。 <directive 
       module="mpm_common">AcceptMutex</directive>
-      $B%G%#%l%/%F%#%V$GGSB>=hM}$NJ}K!$N;XDj$H$H$b$K%m%C%/%U%!%$%k$N>l=j$b;XDj$7$F$/$@$5$$!#(B</p>
+      ディレクティブで排他処理の方法の指定とともにロックファイルの場所も指定してください。</p>
     </note>
 
 </usage>
@@ -452,52 +452,52 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
 <directivesynopsis>
 <name>MaxClients</name>
-<description>$B%j%/%(%9%H$K1~Ez$9$k$?$a$K:n@.$5$l$k(B
-$B;R%W%m%;%9$N:GBg8D?t(B</description>
+<description>リクエストに応答するために作成される
+子プロセスの最大個数</description>
 <syntax>MaxClients <var>number</var></syntax>
-<default>$B>\:Y$O;HMQK!$r$4Mw2<$5$$!#(B</default>
+<default>詳細は使用法をご覧下さい。</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
 <usage>
-    <p><directive>MaxClients</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B1~Ez$9$k$3$H$N$G$-$kF1;~%j%/%(%9%H?t$r@_Dj$7$^$9!#(B
-    <directive>MaxClients</directive> $B@)8B?t$r1[$($k%3%M%/%7%g%s$ODL>o!"(B
+    <p><directive>MaxClients</directive> ディレクティブは、
+    応答することのできる同時リクエスト数を設定します。
+    <directive>MaxClients</directive> 制限数を越えるコネクションは通常、
     <directive module="mpm_common">ListenBacklog</directive>
-    $B%G%#%l%/%F%#%V$G@_Dj$7$??t$^$G%-%e!<$KF~$j$^$9!#(B
-    $BB>$N%j%/%(%9%H$N:G8e$^$GC#$7$F;R%W%m%;%9$,6u$/$H!"(B
-    $B<!$N%3%M%/%7%g%s$K1~Ez$7$^$9!#(B</p>
+    ディレクティブで設定した数までキューに入ります。
+    他のリクエストの最後まで達して子プロセスが空くと、
+    次のコネクションに応答します。</p>
 
-    <p>$B%9%l%C%I$rMQ$$$J$$%5!<%P(B (<em>$B$9$J$o$A(B</em> <module>prefork</module>)
-    $B$G$O!"(B<directive>MaxClients</directive>
-    $B$O!"%j%/%(%9%H$K1~Ez$9$k$?$a$K5/F0$5$l$k(B
-    $B;R%W%m%;%9$N:GBg?t$H$J$j$^$9!#(B
-    $B%G%U%)%k%HCM$O(B <code>256</code> $B$G!"$3$l$rA}2C$5$;$?$$>l9g$O!"(B
+    <p>スレッドを用いないサーバ (<em>すなわち</em> <module>prefork</module>)
+    では、<directive>MaxClients</directive>
+    は、リクエストに応答するために起動される
+    子プロセスの最大数となります。
+    デフォルト値は <code>256</code> で、これを増加させたい場合は、
     <directive module="mpm_common">ServerLimit</directive>
-    $B$NCM$bA}2C$5$;$kI,MW$,$"$j$^$9!#(B</p>
+    の値も増加させる必要があります。</p>
 
-    <p>$B%9%l%C%I$rMQ$$$k%5!<%P$d!"%O%$%V%j%C%I%5!<%P(B (<em>$B$9$J$o$A(B</em>
+    <p>スレッドを用いるサーバや、ハイブリッドサーバ (<em>すなわち</em>
     <module>beos</module> <module>worker</module>)
-    $B$G$O!"(B<directive>MaxClients</directive> 
-    $B$O!"%/%i%$%"%s%H$K1~Ez$G$-$k%9%l%C%I$NAm?t$r@)8B$7$^$9!#(B
-    <module>beos</module> $B$G$N%G%U%)%k%HCM$O(B <code>50</code> $B$G$9!#(B
-    $B%O%$%V%j%C%I(B MPM $B$G$N%G%U%)%k%HCM$O(B <code>16</code>
+    では、<directive>MaxClients</directive> 
+    は、クライアントに応答できるスレッドの総数を制限します。
+    <module>beos</module> でのデフォルト値は <code>50</code> です。
+    ハイブリッド MPM でのデフォルト値は <code>16</code>
     <directive module="mpm_common">ServerLimit</directive>
-    $B$N(B <code>25</code> $BG\(B (<directive
-    module="mpm_common">ThreadsPerChild</directive>) $B$G$9!#(B
+    の <code>25</code> 倍 (<directive
+    module="mpm_common">ThreadsPerChild</directive>) です。
     <directive>MaxClients</directive>
-    $B$r(B 16 $B%W%m%;%90J>eI,MW$JCM$^$GA}2C$5$;$?$$>l9g$O!"(B
+    を 16 プロセス以上必要な値まで増加させたい場合は、
     <directive module="mpm_common">ServerLimit</directive>
-    $B$bA}2C$5$;$kI,MW$,$"$j$^$9!#(B</p>
+    も増加させる必要があります。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>MaxMemFree</name>
-<description><code>free()</code> $B$,8F$P$l$J$$8B$j!"(B
-$B<g%a%b%j%"%m%1!<%?$,J];}$7B3$1$i$l$k%a%b%j$N:GBgNL(B</description>
+<description><code>free()</code> が呼ばれない限り、
+主メモリアロケータが保持し続けられるメモリの最大量</description>
 <syntax>MaxMemFree <var>KBytes</var></syntax>
 <default>MaxMemFree 0</default>
 <contextlist><context>server config</context></contextlist>
@@ -506,16 +506,16 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <module>threadpool</module><module>worker</module><module>mpm_winnt</module></modulelist>
 
 <usage>
-    <p><directive>MaxMemFree</directive> $B%G%#%l%/%F%#%V$O(B
-    <code>free()</code> $B$,8F$P$l$J$$8B$j!"(B
-    $B<g%"%m%1!<%?$,J];}$G$-$k6u$N%a%b%j$N:GBgCM$r%-%m%P%$%HC10L$G@_Dj$7$^$9!#(B
-    $B@_Dj$5$l$F$$$J$$$+!"Nm$K@_Dj$5$l$F$$$k$H$-$O!"L5@)8B$K$J$j$^$9!#(B</p>
+    <p><directive>MaxMemFree</directive> ディレクティブは
+    <code>free()</code> が呼ばれない限り、
+    主アロケータが保持できる空のメモリの最大値をキロバイト単位で設定します。
+    設定されていないか、零に設定されているときは、無制限になります。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>MaxRequestsPerChild</name>
-<description>$B8D!9$N;R%5!<%P$,2TF/Cf$K07$&%j%/%(%9%H?t$N>e8B(B</description>
+<description>個々の子サーバが稼働中に扱うリクエスト数の上限</description>
 <syntax>MaxRequestsPerChild <var>number</var></syntax>
 <default>MaxRequestsPerChild 10000</default>
 <contextlist><context>server config</context></contextlist>
@@ -525,43 +525,43 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p><directive>MaxRequestsPerChild</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B8D!9$N;R%5!<%P%W%m%;%9$,07$&$3$H$N$G$-$k%j%/%(%9%H$N@)8B?t$r(B
-    $B@_Dj$7$^$9!#(B<directive>MaxRequestsPerChild</directive>
-    $B8D$N%j%/%(%9%H$N8e$K!";R%W%m%;%9$O=*N;$7$^$9!#(B
-    <directive>MaxRequestsPerChild</directive> $B$,(B <code>0</code>
-    $B$K@_Dj$5$l$F$$$k>l9g$O!"%W%m%;%9$O4|8B@Z$l$K$h$j=*N;$9$k$3$H$O$"$j$^$;$s!#(B</p>
+    <p><directive>MaxRequestsPerChild</directive> ディレクティブは、
+    個々の子サーバプロセスが扱うことのできるリクエストの制限数を
+    設定します。<directive>MaxRequestsPerChild</directive>
+    個のリクエストの後に、子プロセスは終了します。
+    <directive>MaxRequestsPerChild</directive> が <code>0</code>
+    に設定されている場合は、プロセスは期限切れにより終了することはありません。</p>
 
-    <note><title>$B$=$NB>$N%G%U%)%k%HCM(B</title>
-      <p><module>mpm_netware</module> $B$H(B <module>mpm_winnt</module>
-      $B$G$N%G%U%)%k%HCM$O(B <code>0</code> $B$G$9!#(B</p>
+    <note><title>その他のデフォルト値</title>
+      <p><module>mpm_netware</module> と <module>mpm_winnt</module>
+      でのデフォルト値は <code>0</code> です。</p>
     </note>
 
     <p><directive>MaxRequestsPerChild</directive>
-    $B$rHs%<%m$K@)8B$9$k$3$H$K$O!"Fs$D$NMxE@$,$"$j$^$9(B:</p>
+    を非ゼロに制限することには、二つの利点があります:</p>
 
     <ul>
-      <li>($B6vH/E*$J(B) $B%a%b%j!<%j!<%/$,5/$3$C$?>l9g$K(B
-      $B%W%m%;%9$,>CHq$9$k%a%b%j$NAmNL$r@)8B$G$-$k(B</li>
+      <li>(偶発的な) メモリーリークが起こった場合に
+      プロセスが消費するメモリの総量を制限できる</li>
 
-      <li>$B%W%m%;%9$KM-8B$N%i%$%U%?%$%`$r@_Dj$9$k$3$H$G!"(B
-      $B%5!<%PIi2Y$,2<$,$C$?;~$K%W%m%;%9?t$r>/$J$/$9$k$3$H$,$G$-$k(B</li>
+      <li>プロセスに有限のライフタイムを設定することで、
+      サーバ負荷が下がった時にプロセス数を少なくすることができる</li>
     </ul>
 
-    <note><title>$BCm(B</title>
-      <p><directive module="core">KeepAlive</directive> $B%j%/%(%9%H$N>l9g$O!"(B
-      $B0l$DL\$N%j%/%(%9%H$@$1$,$3$N@)8B$K3:Ev$7$^$9!#(B
-      $B<B8zE*$K$O!"0l$D$N;R%W%m%;%9$"$?$j$N(B<em>$B%3%M%/%7%g%s(B</em>$B?t$r(B
-      $B@)8B$9$k$h$&$K5sF0$,JQ2=$7$^$9!#(B</p>
+    <note><title>注</title>
+      <p><directive module="core">KeepAlive</directive> リクエストの場合は、
+      一つ目のリクエストだけがこの制限に該当します。
+      実効的には、一つの子プロセスあたりの<em>コネクション</em>数を
+      制限するように挙動が変化します。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>MaxSpareThreads</name>
-<description>$B%"%$%I%k%9%l%C%I$N:GBg?t(B</description>
+<description>アイドルスレッドの最大数</description>
 <syntax>MaxSpareThreads <var>number</var></syntax>
-<default>$B>\:Y$O;HMQK!$r$4Mw2<$5$$!#(B</default>
+<default>詳細は使用法をご覧下さい。</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_netware</module><module>mpmt_os2</module>
@@ -569,51 +569,51 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 </modulelist>
 
 <usage>
-    <p>$B%"%$%I%k$J%9%l%C%I$N:GBg?t$G$9!#0[$J$k(B MPM $B$G$O$=$l$>$l!"(B
-    $B$3$N%G%#%l%/%F%#%V$O0[$J$k<h$j07$o$lJ}$r$5$l$^$9!#(B</p>
+    <p>アイドルなスレッドの最大数です。異なる MPM ではそれぞれ、
+    このディレクティブは異なる取り扱われ方をされます。</p>
 
-    <p><module>perchild</module> $B$G$O!"(B
-    $B%G%U%)%k%H$O(B <code>MaxSpareThreads 10</code> $B$G$9!#(B
-    $B$3$N(B MPM $B$O%"%$%I%k%9%l%C%I?t$r!"$=$l$>$l$N;R%W%m%;%9$4$H$K4F;k$7$^$9!#(B
-    $B;R%W%m%;%9$K%"%$%I%k%9%l%C%I$,B?$9$.$k>l9g$O!"(B
-    $B%5!<%P$O$=$N;R%W%m%;%9$K4^$^$l$k%9%l%C%I$r=*N;$7;O$a$^$9!#(B</p>
+    <p><module>perchild</module> では、
+    デフォルトは <code>MaxSpareThreads 10</code> です。
+    この MPM はアイドルスレッド数を、それぞれの子プロセスごとに監視します。
+    子プロセスにアイドルスレッドが多すぎる場合は、
+    サーバはその子プロセスに含まれるスレッドを終了し始めます。</p>
 
     <p><module>worker</module>, <module>leader</module>,
-    <module>threadpool</module> $B$G$O!"(B
-    $B%G%U%)%k%H$O(B <code>MaxSpareThreads 250</code> $B$G$9!#(B
-    $B$3$N(B MPM $B$O%"%$%I%k%9%l%C%I?t$r%5!<%PA4BN$G4F;k$7$^$9!#(B
-    $B%5!<%P$G%"%$%I%k%9%l%C%I?t$,B?$9$.$k>l9g$O!"(B
-    $B$3$N?t;z$h$j$b>/$J$$?t$K$J$k$^$G;R%W%m%;%9$r=*N;$7$^$9!#(B</p>
+    <module>threadpool</module> では、
+    デフォルトは <code>MaxSpareThreads 250</code> です。
+    この MPM はアイドルスレッド数をサーバ全体で監視します。
+    サーバでアイドルスレッド数が多すぎる場合は、
+    この数字よりも少ない数になるまで子プロセスを終了します。</p>
 
-    <p><module>mpm_netware</module> $B$G$O!"(B
-    $B%G%U%)%k%H$O(B <code>MaxSpareThreads 100</code> $B$G$9!#(B
-    $B$3$N(B MPM $B$O%7%s%0%k%W%m%;%9$G<B9T$5$l$^$9$N$G!"(B
-    $B%9%Z%"%9%l%C%I?t$b%5!<%PA4BN$G4*Dj$7$^$9!#(B</p>
+    <p><module>mpm_netware</module> では、
+    デフォルトは <code>MaxSpareThreads 100</code> です。
+    この MPM はシングルプロセスで実行されますので、
+    スペアスレッド数もサーバ全体で勘定します。</p>
 
-    <p><module>beos</module> $B$H(B <module>mpmt_os2</module> $B$O(B
-    <module>mpm_netware</module> $B$H;w$?5sF0$r$7$^$9!#(B
-    <module>beos</module> $B$G$N%G%U%)%k%HCM$O(B <code>MaxSpareThreads 50</code>
-    $B$G$9!#(B<module>mpmt_os2</module> $B$G$N%G%U%)%k%HCM$O(B <code>10</code>
-    $B$G$9!#(B</p>
+    <p><module>beos</module> と <module>mpmt_os2</module> は
+    <module>mpm_netware</module> と似た挙動をします。
+    <module>beos</module> でのデフォルト値は <code>MaxSpareThreads 50</code>
+    です。<module>mpmt_os2</module> でのデフォルト値は <code>10</code>
+    です。</p>
 
-    <note><title>$B@)8B;v9`(B</title>
-      <p><directive>MaxSpareThreads</directive> $B$N<h$kCM$K$O@)8B$,$"$j$^$9!#(B
-      Apache $B$O<!$N5,B'$K=>$C$F<+F0E*$KJd@5$7$^$9!#(B</p>
+    <note><title>制限事項</title>
+      <p><directive>MaxSpareThreads</directive> の取る値には制限があります。
+      Apache は次の規則に従って自動的に補正します。</p>
       <ul>
-        <li><module>perchild</module> $B$G$O!"(B
-        <directive>MaxSpareThreads</directive> $B$,(B
+        <li><module>perchild</module> では、
+        <directive>MaxSpareThreads</directive> が
         <directive module="mpm_common">ThreadLimit</directive>
-        $B$HEy$7$$$+$=$l0J2<$G$"$kI,MW$,$"$j$^$9!#(B</li>
+        と等しいかそれ以下である必要があります。</li>
 
-        <li><module>mpm_netware</module> $B$O(B
+        <li><module>mpm_netware</module> は
         <directive module="mpm_common">MinSpareThreads</directive>
-        $B$h$j$bBg$-$$I,MW$,$"$j$^$9!#(B</li>
+        よりも大きい必要があります。</li>
 
         <li><module>leader</module>, <module>threadpool</module>, 
-        <module>worker</module> $B$G$O!"(B
-        <directive module="mpm_common">MinSpareThreads</directive> $B$H(B
+        <module>worker</module> では、
+        <directive module="mpm_common">MinSpareThreads</directive> と
         <directive module="mpm_common">ThreadsPerChild</directive>
-        $B$G7h$^$kAmOB$HEy$7$$$+Bg$-$$I,MW$,$"$j$^$9!#(B</li>
+        で決まる総和と等しいか大きい必要があります。</li>
       </ul>
     </note>
 </usage>
@@ -623,10 +623,10 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
 <directivesynopsis>
 <name>MinSpareThreads</name>
-<description>$B%j%/%(%9%H$K1~Ez$9$k$3$H$N$G$-$k(B
-$B%"%$%I%k%9%l%C%I?t$N:G>.?t(B</description>
+<description>リクエストに応答することのできる
+アイドルスレッド数の最小数</description>
 <syntax>MinSpareThreads <var>number</var></syntax>
-<default>$B>\:Y$O;HMQJ}K!$r$4Mw2<$5$$!#(B</default>
+<default>詳細は使用方法をご覧下さい。</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>leader</module>
 <module>mpm_netware</module><module>mpmt_os2</module>
@@ -634,37 +634,37 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 </modulelist>
 
 <usage>
-    <p>$B%j%/%(%9%H$K1~Ez$9$k%9%l%C%I?t$N:G>.CM$G$9!#(B
-    $B0[$J$k(B MPM $B$G$O$=$l$>$l!"(B
-    $B$3$N%G%#%l%/%F%#%V$O0[$J$k<h$j07$o$lJ}$r$7$^$9!#(B</p>
+    <p>リクエストに応答するスレッド数の最小値です。
+    異なる MPM ではそれぞれ、
+    このディレクティブは異なる取り扱われ方をします。</p>
 
-    <p><module>perchild</module> $B$G$O!"(B
-    $B%G%U%)%k%H$O(B <code>MinSpareThreads 5</code> $B$G!"(B
-    $B%"%$%I%k%9%l%C%I?t$r;R%W%m%;%9Kh$K4F;k$7$^$9!#(B
-    $B$b$7;R%W%m%;%9$K==J,$J?t$N%9%l%C%I$,$J$1$l$P!"(B
-    $B%5!<%P$O$=$N;R%W%m%;%9$K?7$7$$%9%l%C%I$r:n$j;O$a$^$9!#(B
-    $B$G$9$+$i!"(B<directive module="perchild">NumServers</directive>
-    $B$r(B <code>10</code> $B$K!"(B<directive>MinSpareThreads</directive> $B$r(B
-    <code>5</code> $B$K$7$?>l9g$O!":G>.$G$b(B 50 $B$N%"%$%I%k%9%l%C%I$,(B
-    $B%7%9%F%`>e$K$"$k$3$H$K$J$j$^$9!#(B</p>
+    <p><module>perchild</module> では、
+    デフォルトは <code>MinSpareThreads 5</code> で、
+    アイドルスレッド数を子プロセス毎に監視します。
+    もし子プロセスに十分な数のスレッドがなければ、
+    サーバはその子プロセスに新しいスレッドを作り始めます。
+    ですから、<directive module="perchild">NumServers</directive>
+    を <code>10</code> に、<directive>MinSpareThreads</directive> を
+    <code>5</code> にした場合は、最小でも 50 のアイドルスレッドが
+    システム上にあることになります。</p>
 
     <p><module>worker</module>, <module>leader</module>,
-    <module>threadpool</module> $B$G$O!"(B
-    $B%G%U%)%k%H$O(B <code>MinSpareThreads 75</code> $B$G!"(B
-    $B%"%$%I%k%9%l%C%I?t$r%5!<%PA4BN$G4F;k$7$^$9!#(B
-    $B$b$7%5!<%P$K==J,$J?t$N%"%$%I%k%9%l%C%I$,$J$1$l$P!"(B
-    $B%"%$%I%k%9%l%C%I?t$,$3$N?t$h$j$bBg$-$/$J$k$^$G(B
-    $B?7$7$$;R%W%m%;%9$,@8@.$5$l$^$9!#(B</p>
+    <module>threadpool</module> では、
+    デフォルトは <code>MinSpareThreads 75</code> で、
+    アイドルスレッド数をサーバ全体で監視します。
+    もしサーバに十分な数のアイドルスレッドがなければ、
+    アイドルスレッド数がこの数よりも大きくなるまで
+    新しい子プロセスが生成されます。</p>
 
-    <p><module>mpm_netware</module> $B$G$O!"(B
-    $B%G%U%)%k%H$O(B <code>MinSpareThreads 10</code> $B$G!"(B
-    $B%7%s%0%k%W%m%;%9(B MPM $B$G$9$N$G!"%5!<%PA4BN$G4IM}$5$l$^$9!#(B</p>
+    <p><module>mpm_netware</module> では、
+    デフォルトは <code>MinSpareThreads 10</code> で、
+    シングルプロセス MPM ですので、サーバ全体で管理されます。</p>
 
-    <p><module>beos</module> $B$H(B <module>mpmt_os2</module> $B$O!"(B
-    <module>mpm_netware</module>$B$K$h$/;w$F$$$^$9!#(B
-    <module>beos</module> $B$G$N%G%U%)%k%H$O(B <code>MinSpareThreads 1</code>
-    $B$G$9!#(B<module>mpmt_os2</module> $B$G$N%G%U%)%k%H$O(B
-    <code>5</code> $B$G$9!#(B</p>
+    <p><module>beos</module> と <module>mpmt_os2</module> は、
+    <module>mpm_netware</module>によく似ています。
+    <module>beos</module> でのデフォルトは <code>MinSpareThreads 1</code>
+    です。<module>mpmt_os2</module> でのデフォルトは
+    <code>5</code> です。</p>
 </usage>
 <seealso><directive module="mpm_common">MaxSpareThreads</directive></seealso>
 <seealso><directive module="mpm_common">StartServers</directive></seealso>
@@ -672,8 +672,8 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 
 <directivesynopsis>
 <name>ScoreBoardFile</name>
-<description>$B;R%W%m%;%9$HO"7H$9$k$?$a$N%G!<%?$rJ]B8$9$k(B
-$B%U%!%$%k$N0LCV(B</description>
+<description>子プロセスと連携するためのデータを保存する
+ファイルの位置</description>
 <syntax>ScoreBoardFile <var>file-path</var></syntax>
 <default>ScoreBoardFile logs/apache_status</default>
 <contextlist><context>server config</context></contextlist>
@@ -682,33 +682,33 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p>Apache $B$O?F%W%m%;%9$H;R%W%m%;%94V$NDL?.$K%9%3%"%\!<%I$rMQ$$$^$9!#(B
-    $B$3$NDL?.5!G=$K%U%!%$%k$rI,MW$H$9$k%"!<%-%F%/%A%c$b$"$j$^$9!#(B
-    $B%U%!%$%k$,;XDj$5$l$F$$$J$1$l$P!"(BApache $B$O$^$:%a%b%j>e(B
-    ($BF?L>6&M-%a%b%j(B) $B$K%9%3%"%\!<%I$r:n$m$&$H$7!"$=$l$,<:GT$9$k$H(B
-    $B%G%#%9%/>e$K%U%!%$%k(B ($B%U%!%$%k%Y!<%9$N6&M-%a%b%j(B) $B$r:n$m$&$H$7$^$9!#(B
-    $B$3$N%G%#%l%/%F%#%V$r;XDj$9$k$H!"(BApache
-    $B$OI,$:%G%#%9%/$K%U%!%$%k$r@8@.$7$^$9!#(B</p>
+    <p>Apache は親プロセスと子プロセス間の通信にスコアボードを用います。
+    この通信機能にファイルを必要とするアーキテクチャもあります。
+    ファイルが指定されていなければ、Apache はまずメモリ上
+    (匿名共有メモリ) にスコアボードを作ろうとし、それが失敗すると
+    ディスク上にファイル (ファイルベースの共有メモリ) を作ろうとします。
+    このディレクティブを指定すると、Apache
+    は必ずディスクにファイルを生成します。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ScoreBoardFile /var/run/apache_status
     </example>
 
-    <p>$B%U%!%$%k%Y!<%9$N6&M-%a%b%j$O!"%5!<%I%Q!<%F%#!<@=$N%"%W%j%1!<%7%g%s$G(B
-    $B%9%3%"%\!<%I$KD>@\%"%/%;%9$9$kI,MW$,$"$k>l9g$KLr$KN)$A$^$9!#(B</p>
+    <p>ファイルベースの共有メモリは、サードパーティー製のアプリケーションで
+    スコアボードに直接アクセスする必要がある場合に役に立ちます。</p>
 
-    <p><directive>ScoreBoardFile</directive> $B$r;H$&>l9g!"(B
-    RAM $B%G%#%9%/>e$KCV$/$H%9%T!<%I$,8~>e$9$k$G$7$g$&!#(B
-    $B$7$+$7!"%m%0%U%!%$%k$N@_CV0LCV$d(B
-    <a href="../misc/security_tips.html">$B%;%-%e%j%F%#(B</a>
-    $B$HF1MM$NCm0UE@$,$"$k$N$G!"Cm0U$7$F$/$@$5$$!#(B</p>
+    <p><directive>ScoreBoardFile</directive> を使う場合、
+    RAM ディスク上に置くとスピードが向上するでしょう。
+    しかし、ログファイルの設置位置や
+    <a href="../misc/security_tips.html">セキュリティ</a>
+    と同様の注意点があるので、注意してください。</p>
 </usage>
-<seealso><a href="../stopping.html">Apache $B$NDd;_$H:F5/F0(B</a></seealso>
+<seealso><a href="../stopping.html">Apache の停止と再起動</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ReceiveBufferSize</name>
-<description>TCP $B<u?.%P%C%U%!%5%$%:(B</description>
+<description>TCP 受信バッファサイズ</description>
 <syntax>ReceiveBufferSize <var>bytes</var></syntax>
 <default>ReceiveBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
@@ -718,15 +718,15 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <module>worker</module></modulelist>
 
 <usage>
-    <p>$B%5!<%P$O(B TCP $B<u?.%P%C%U%!%5%$%:$r;XDj$5$l$?%P%$%H?t$K@_Dj$7$^$9!#(B</p>
+    <p>サーバは TCP 受信バッファサイズを指定されたバイト数に設定します。</p>
 
-    <p><code>0</code>$B$K$7$?>l9g!"(BOS $B$N%G%U%)%k%HCM$,;HMQ$5$l$^$9!#(B</p>
+    <p><code>0</code>にした場合、OS のデフォルト値が使用されます。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>SendBufferSize</name>
-<description>TCP $B%P%C%U%!%5%$%:(B</description>
+<description>TCP バッファサイズ</description>
 <syntax>SendBufferSize <var>bytes</var></syntax>
 <default>SendBufferSize 0</default>
 <contextlist><context>server config</context></contextlist>
@@ -736,326 +736,326 @@ accept $B$7$h$&$H$7$F$$$k$H$-$K!"(BApache $B$,$=$l$i$N;R%W%m%;%9$rD>Ns2=$9$k$
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p>$B%5!<%P$O(B TCP $BAw?.%P%C%U%!%5%$%:$r;XDj$5$l$?%P%$%H?t$K@_Dj$7$^$9!#(B
-    $B9bB.$G9b%l%$%F%s%7$J4D6-$G(B
-    (<em>$BNc(B</em> 100ms $BDxEY!"BgN&2#CG9bB.DL?.O)$J$I(B)
-    $B8E$$0lHLE*$J(B OS $B$N%G%U%)%k%HCM$rA}$d$9$N$KHs>o$KJXMx$G$9!#(B</p>
+    <p>サーバは TCP 送信バッファサイズを指定されたバイト数に設定します。
+    高速で高レイテンシな環境で
+    (<em>例</em> 100ms 程度、大陸横断高速通信路など)
+    古い一般的な OS のデフォルト値を増やすのに非常に便利です。</p>
 
-    <p><code>0</code>$B$K$7$?>l9g!"(BOS $B$N%G%U%)%k%HCM$,;HMQ$5$l$^$9!#(B</p>
+    <p><code>0</code>にした場合、OS のデフォルト値が使用されます。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ServerLimit</name>
-<description>$B@_Dj2DG=$J%5!<%P%W%m%;%9?t$N>e8B(B</description>
+<description>設定可能なサーバプロセス数の上限</description>
 <syntax>ServerLimit <var>number</var></syntax>
-<default>$B>\:Y$O;HMQK!$r;2>H(B</default>
+<default>詳細は使用法を参照</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>leader</module><module>perchild</module>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
 <usage>
-    <p><module>prefork</module> MPM $B$N>l9g$O!"$3$N%G%#%l%/%F%#%V$O(B
-    Apache $B%W%m%;%92TF/Cf$K$*$1$k(B
+    <p><module>prefork</module> MPM の場合は、このディレクティブは
+    Apache プロセス稼働中における
     <directive module="mpm_common">MaxClients</directive>
-    $B$K@_Dj2DG=$J>e8BCM$r@_Dj$9$k$3$H$K$J$j$^$9(B
-    ($BLuCm(B: prefork $B$N>l9g$OF1;~%/%i%$%"%s%H?t(B = $B%5!<%P%W%m%;%9?t$J$N$G(B) $B!#(B
-    <module>worker</module> MPM $B$N>l9g$K$O!"$3$N%G%#%l%/%F%#%V$O(B
+    に設定可能な上限値を設定することになります
+    (訳注: prefork の場合は同時クライアント数 = サーバプロセス数なので) 。
+    <module>worker</module> MPM の場合には、このディレクティブは
     <directive module="mpm_common">ThreadLimit</directive>
-    $B%G%#%l%/%F%#%V$HAH$_9g$o$;$F!"(B
-    Apache $B%W%m%;%92TF/Cf$K$*$1$k(B
+    ディレクティブと組み合わせて、
+    Apache プロセス稼働中における
     <directive module="mpm_common">MaxClients</directive>
-    $B$K@_Dj2DG=$J>e8BCM$r@_Dj$9$k$3$H$K$J$j$^$9!#(B
-    $B:F5/F0Cf$K$3$N%G%#%l%/%F%#%V$rJQ99$7$F$bL5;k$5$l$^$9$,!"(B
+    に設定可能な上限値を設定することになります。
+    再起動中にこのディレクティブを変更しても無視されますが、
     <directive module="mpm_common">MaxClients</directive>
-    $B$O:F5/F0Cf$K=$@5$9$k$3$H$,$G$-$^$9!#(B</p>
+    は再起動中に修正することができます。</p>
 
-    <p>$B$3$N%G%#%l%/%F%#%V$r;HMQ$9$k:]$OFC$KCm0U$7$F$/$@$5$$!#(B
-    <directive>ServerLimit</directive> $B$,I,MW0J>e$KBg$-$JCM$K(B
-    $B@_Dj$5$l$?>l9g$O!"M>7W$JL$;HMQ6&M-%a%b%j$,3d$jEv$F$i$l$^$9!#(B
-    <directive>ServerLimit</directive> $B$H(B
+    <p>このディレクティブを使用する際は特に注意してください。
+    <directive>ServerLimit</directive> が必要以上に大きな値に
+    設定された場合は、余計な未使用共有メモリが割り当てられます。
+    <directive>ServerLimit</directive> と
     <directive module="mpm_common">MaxClients</directive>
-    $B$,%7%9%F%`$N07$($kHO0O$r1[$($?@_DjCM$K$J$C$F$$$k$H!"(B
-    Apache $B$O5/F0$7$J$$$+!"5/F0$7$F$bIT0BDj$K$J$k$G$7$g$&!#(B</p>
+    がシステムの扱える範囲を越えた設定値になっていると、
+    Apache は起動しないか、起動しても不安定になるでしょう。</p>
 
-    <p><module>prefork</module> MPM $B$G$O!"(B
+    <p><module>prefork</module> MPM では、
     <directive module="mpm_common">MaxClients</directive>
-    $B$r(B 256 ($B%G%U%)%k%H(B) $B$h$j$bBg$-$JCM$K@_Dj$9$kI,MW$,$"$k;~$K$@$1;HMQ$7$F$/$@$5$$!#(B
-    $B4uK>$N(B <directive module="mpm_common">MaxClients</directive>
-    $B?t$H$/$i$Y$F!"I,MW0J>e$KBg$-$JCM$r;XDj$9$k$3$H$OHr$1$F$/$@$5$$!#(B</p>
+    を 256 (デフォルト) よりも大きな値に設定する必要がある時にだけ使用してください。
+    希望の <directive module="mpm_common">MaxClients</directive>
+    数とくらべて、必要以上に大きな値を指定することは避けてください。</p>
 
     <p><module>worker</module>, <module>leader</module>, 
-    <module>threadpool</module> MPM $B$G$O!"(B
-    <directive module="mpm_common">MaxClients</directive> $B$H(B
+    <module>threadpool</module> MPM では、
+    <directive module="mpm_common">MaxClients</directive> と
     <directive module="mpm_common">ThreadsPerChild</directive>
-    $B$N@_Dj$G(B 16 $B%5!<%P%W%m%;%9(B ($B%G%U%)%k%H(B) 
-    $B0J>eI,MW$K$J$k>l9g$K$N$_;HMQ$7$F$/$@$5$$!#4uK>$N(B
-    <directive module="mpm_common">MaxClients </directive> $B$H(B
+    の設定で 16 サーバプロセス (デフォルト) 
+    以上必要になる場合にのみ使用してください。希望の
+    <directive module="mpm_common">MaxClients </directive> と
     <directive module="mpm_common">ThreadsPerChild</directive>
-    $B$H$/$i$Y$F!"I,MW$H$J$k%5!<%P%W%m%;%9?t0J>e$KBg$-$JCM$r(B
-    $B@_Dj$9$k$3$H$OHr$1$F$/$@$5$$!#(B</p>
+    とくらべて、必要となるサーバプロセス数以上に大きな値を
+    設定することは避けてください。</p>
 
-    <p><module>perchild</module> MPM $B$G$O!"(B
-    <directive module="perchild">NumServers</directive> $B$r(B 8 ($B%G%U%)%k%H(B)
-    $B$h$m$$$bBg$-$JCM$K@_Dj$9$kI,MW$,$"$k$H$-$K$N$_;HMQ$7$F$/$@$5$$!#(B</p>
+    <p><module>perchild</module> MPM では、
+    <directive module="perchild">NumServers</directive> を 8 (デフォルト)
+    よろいも大きな値に設定する必要があるときにのみ使用してください。</p>
 
-    <note><title>$BCm0U(B</title>
-      <p><code>ServerLimit 20000</code> $B$H$$$&@)8BIU$-$G%3%s%Q%$%k$5$l$F$$$^$9(B
-      (<module>prefork</module> MPM $B$G$O(B <code>200000</code>) $B!#(B
-      $B$3$l$O%9%Z%k%_%9$K$h$C$F8m$C$F9s$$>u67$K$J$k$N$r!"(B
-      $B2sHr$9$k$?$a$N=hCV$G$9!#(B</p>
+    <note><title>注意</title>
+      <p><code>ServerLimit 20000</code> という制限付きでコンパイルされています
+      (<module>prefork</module> MPM では <code>200000</code>) 。
+      これはスペルミスによって誤って酷い状況になるのを、
+      回避するための処置です。</p>
     </note>
 </usage>
-<seealso><a href="../stopping.html">Apache $B$NDd;_$H:F5/F0(B</a></seealso>
+<seealso><a href="../stopping.html">Apache の停止と再起動</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>StartServers</name>
-<description>$B5/F0;~$K@8@.$5$l$k;R%5!<%P%W%m%;%9$N?t(B</description>
+<description>起動時に生成される子サーバプロセスの数</description>
 <syntax>StartServers <var>number</var></syntax>
-<default>$B>\:Y$O;HMQJ}K!$r;2>H(B</default>
+<default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>leader</module><module>mpmt_os2</module>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
 
 <usage>
-    <p><directive>StartServers</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B5/F0;~$K@8@.$5$l$k;R%5!<%P%W%m%;%9$N?t$r@_Dj$7$^$9!#(B
-    $B%W%m%;%9?t$OIi2Y$K1~$8$FF0E*$K@)8f$5$l$^$9$N$G!"(B
-    $BDL>o$O$3$NCM$rD4@0$9$kM}M3$O$"$^$j$J$$$G$7$g$&!#(B</p>
+    <p><directive>StartServers</directive> ディレクティブは、
+    起動時に生成される子サーバプロセスの数を設定します。
+    プロセス数は負荷に応じて動的に制御されますので、
+    通常はこの値を調整する理由はあまりないでしょう。</p>
 
-    <p>$B%G%U%)%k%HCM$O(B MPM $B$4$H$K0[$J$j$^$9!#(B
+    <p>デフォルト値は MPM ごとに異なります。
     <module>leader</module>, <module>threadpool</module>, 
-    <module>worker</module> $B$O(B <code>StartServers 3</code> $B$G$9!#(B
-    <module>prefork</module> $B$O(B <code>5</code> $B$G!"(B
-    <module>mpmt_os2</module> $B$O(B <code>2</code> $B$G$9!#(B</p>
+    <module>worker</module> は <code>StartServers 3</code> です。
+    <module>prefork</module> は <code>5</code> で、
+    <module>mpmt_os2</module> は <code>2</code> です。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>StartThreads</name>
-<description>$B5/F0;~$K@8@.$5$l$k%9%l%C%I$N?t(B</description>
+<description>起動時に生成されるスレッドの数</description>
 <syntax>StartThreads <var>number</var></syntax>
-<default>$B>\:Y$O;HMQJ}K!$r;2>H(B</default>
+<default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>beos</module><module>mpm_netware</module>
 <module>perchild</module></modulelist>
 
 <usage>
-    <p>$B5/F0;~$K@8@.$5$l$k%9%l%C%I$N?t$G$9!#(B
-    $B%9%l%C%I?t$OIi2Y$K1~$8$FF0E*$K@)8f$5$l$^$9$N$G!"(B
-    $BDL>o$O$3$NCM$rD4@0$9$kM}M3$O$"$^$j$J$$$G$7$g$&!#(B</p>
+    <p>起動時に生成されるスレッドの数です。
+    スレッド数は負荷に応じて動的に制御されますので、
+    通常はこの値を調整する理由はあまりないでしょう。</p>
 
-    <p><module>perchild</module> $B$G$N%G%U%)%k%H$O(B
-    <code>StartThreads 5</code> $B$G!"$3$N%G%#%l%/%F%#%V$O5/F0;~$K(B
-    $B%W%m%;%9Kh$N%9%l%C%I?t$rDI@W$7$^$9!#(B</p>
+    <p><module>perchild</module> でのデフォルトは
+    <code>StartThreads 5</code> で、このディレクティブは起動時に
+    プロセス毎のスレッド数を追跡します。</p>
 
-    <p><module>mpm_netware</module> $B$G$N%G%U%)%k%H$O(B
-    <code>StartThreads 50</code> $B$G!"(B
-    $B$3$N>l9g%W%m%;%9$O0l$D$7$+$J$$$N$G!"(B
-    $B5/F0;~$K%j%/%(%9%H$K1~Ez$9$k%9%l%C%I$NAm?t$H$J$j$^$9!#(B</p>
+    <p><module>mpm_netware</module> でのデフォルトは
+    <code>StartThreads 50</code> で、
+    この場合プロセスは一つしかないので、
+    起動時にリクエストに応答するスレッドの総数となります。</p>
 
-    <p><module>beos</module> $B$G$N%G%U%)%k%H$O(B <code>StartThreads
-    10</code> $B$G$9!#(B
-    $B$^$?!"5/F0;~$K@8@.$5$l$k%9%l%C%I$NAm?t$K$bH?1G$5$l$^$9!#(B</p>
+    <p><module>beos</module> でのデフォルトは <code>StartThreads
+    10</code> です。
+    また、起動時に生成されるスレッドの総数にも反映されます。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ThreadLimit</name>
-<description>$B@_Dj2DG=$J;R%W%m%;%9Kh$N%9%l%C%I?t$N>e8B$r(B
-$B@_Dj$7$^$9(B</description>
+<description>設定可能な子プロセス毎のスレッド数の上限を
+設定します</description>
 <syntax>ThreadLimit <var>number</var></syntax>
-<default>$B>\:Y$O;HMQJ}K!$r;2>H(B</default>
+<default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>leader</module><module>mpm_winnt</module>
 <module>perchild</module><module>threadpool</module><module>worker</module>
 </modulelist>
-<compatibility>Apache 2.0.41 $B$H$=$l0J9_$N(B <module>mpm_winnt</module> 
-$B$GMxMQ2DG=(B</compatibility>
+<compatibility>Apache 2.0.41 とそれ以降の <module>mpm_winnt</module> 
+で利用可能</compatibility>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B
-    Apache $B%W%m%;%92TF/Cf$K$*$1$k(B
+    <p>このディレクティブは
+    Apache プロセス稼働中における
     <directive module="mpm_common">ThreadsPerChild</directive>
-    $B$K@_Dj2DG=$J>e8BCM$r@_Dj$7$^$9!#:F5/F0;~$K$3$N%G%#%l%/%F%#%V$NCM$r(B
-    $BJQ99$7$F$bL5;k$5$l$^$9$,!"(B
+    に設定可能な上限値を設定します。再起動時にこのディレクティブの値を
+    変更しても無視されますが、
     <directive module="mpm_common">ThreadsPerChild</directive>
-    $B$O:F5/F0Cf$K!"$3$N%G%#%l%/%F%#%V$G;XDj$5$l$?>e8BCM$^$G(B
-    $BJQ99$9$k$3$H$,$G$-$^$9!#(B</p>
+    は再起動中に、このディレクティブで指定された上限値まで
+    変更することができます。</p>
 
-    <p>$B$3$N%G%#%l%/%F%#%V$r;HMQ$9$k:]$OFC$KCm0U$7$F$/$@$5$$!#(B
-    <directive>ThreadLimit</directive> $B$,(B
+    <p>このディレクティブを使用する際は特に注意してください。
+    <directive>ThreadLimit</directive> が
     <directive module="mpm_common">ThreadsPerChild</directive>
-    $B$h$j$b$:$C$HBg$-$JCM$K@_Dj$5$l$?>l9g$O!"(B
-    $BM>7W$JL$;HMQ6&M-%a%b%j$,3d$jEv$F$i$l$F$7$^$$$^$9!#(B
-    <directive>ThreadLimit</directive> $B$,(B
+    よりもずっと大きな値に設定された場合は、
+    余計な未使用共有メモリが割り当てられてしまいます。
+    <directive>ThreadLimit</directive> が
     <directive module="mpm_common">ThreadsPerChild</directive>
-    $B$NN>J}$,%7%9%F%`$N07$($kHO0O$rD6$($F$$$k>l9g$O!"(B
-    Apache $B$O5/F0$7$J$$$+!"5/F0$7$?$H$7$F$bIT0BDj$K$J$k$G$7$g$&!#(B
-    $B$3$N%G%#%l%/%F%#%V$NCM$O:#;HMQ$7$F$$$k(B Apache $B$N(B <directive
-    module="mpm_common">ThreadsPerChild</directive> $B$NM=A[>e8BCM$r(B
-    $BD6$($?CM$K$O@_Dj$7$J$$$G$/$@$5$$!#(B
+    の両方がシステムの扱える範囲を超えている場合は、
+    Apache は起動しないか、起動したとしても不安定になるでしょう。
+    このディレクティブの値は今使用している Apache の <directive
+    module="mpm_common">ThreadsPerChild</directive> の予想上限値を
+    超えた値には設定しないでください。
     </p>
 
-    <p><directive>ThreadLimit</directive> $B$N%G%U%)%k%HCM$O(B
-    <module>mpm_winnt</module> $B$N$H$-$O(B <code>1920</code> $B$G!"(B
-    $BB>$N>l9g$O(B <code>64</code> $B$G$9!#(B</p>
+    <p><directive>ThreadLimit</directive> のデフォルト値は
+    <module>mpm_winnt</module> のときは <code>1920</code> で、
+    他の場合は <code>64</code> です。</p>
 
-    <note><title>$BCm0U(B</title>
+    <note><title>注意</title>
       <p><code>ThreadLimit 20000</code> (<module>mpm_winnt</module>
-      $B$N>l9g$O(B <code>ThreadLimit 15000</code> )
-      $B$H$$$&@)8BIU$-$G%3%s%Q%$%k$5$l$F$$$^$9!#(B
-      $B$3$l$O%9%Z%k%_%9$K$h$C$F8m$C$F9s$$>u67$K$J$k$N$r!"(B
-      $B2sHr$9$k$?$a$N=hCV$G$9!#(B</p>
+      の場合は <code>ThreadLimit 15000</code> )
+      という制限付きでコンパイルされています。
+      これはスペルミスによって誤って酷い状況になるのを、
+      回避するための処置です。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ThreadsPerChild</name>
-<description>$B;R%W%m%;%9$=$l$>$l$K@8@.$5$l$k%9%l%C%I?t(B</description>
+<description>子プロセスそれぞれに生成されるスレッド数</description>
 <syntax>ThreadsPerChild <var>number</var></syntax>
-<default>$B>\:Y$O;HMQJ}K!$r;2>H(B</default>
+<default>詳細は使用方法を参照</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>leader</module><module>mpm_winnt</module>
 <module>threadpool</module><module>worker</module></modulelist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O!"$=$l$>$l$N;R%W%m%;%9$G@8@.$5$l$k(B
-    $B%9%l%C%I?t$r@_Dj$7$^$9!#(B
-    $B;R%W%m%;%9$O3+;O;~$K$3$l$i$N%9%l%C%I$r@8@.$7$F!"(B
-    $B$=$N8e$O@8@.$7$^$;$s!#(B<module>mpm_winnt</module> $B$N$h$&$J!"(B
-    $B;R%W%m%;%9$,0l$D$7$+$J$$$h$&$J(B MPM $B$rMxMQ$7$F$$$k$N$G$"$l$P!"(B
-    $B$3$NCM$O%5!<%P$NIi2YA4BN$r==J,<h$j07$($kDxEY$K!"(B
-    $BBg$-$/$J$1$l$P$J$j$^$;$s!#(B<module>worker</module> $B$N$h$&$J!"(B
-    $B;R%W%m%;%9$,J#?t$"$k$h$&$J(B MPM $B$rMxMQ$7$F$$$k$N$G$"$l$P!"(B
-    $B%5!<%P$NDL>oIi2Y$r==J,07$($kDxEY$K!"(B
-    <em>$B%9%l%C%IAm?t(B</em>$B$,B?$/$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p>このディレクティブは、それぞれの子プロセスで生成される
+    スレッド数を設定します。
+    子プロセスは開始時にこれらのスレッドを生成して、
+    その後は生成しません。<module>mpm_winnt</module> のような、
+    子プロセスが一つしかないような MPM を利用しているのであれば、
+    この値はサーバの負荷全体を十分取り扱える程度に、
+    大きくなければなりません。<module>worker</module> のような、
+    子プロセスが複数あるような MPM を利用しているのであれば、
+    サーバの通常負荷を十分扱える程度に、
+    <em>スレッド総数</em>が多くなければなりません。</p>
 
-    <p><module>mpm_winnt</module>$B$G$N(B <directive>ThreadsPerChild</directive>
-    $B$N%G%U%)%k%HCM$O(B <code>64</code> $B$G!"B>$N>l9g$O(B
-    <code>25</code> $B$G$9!#(B</p>
+    <p><module>mpm_winnt</module>での <directive>ThreadsPerChild</directive>
+    のデフォルト値は <code>64</code> で、他の場合は
+    <code>25</code> です。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ThreadStackSize</name>
-<description>$B%/%i%$%"%s%H$N%3%M%/%7%g%s$r<u$1;}$D%9%l%C%I$,;HMQ$9$k(B
-$B%9%?%C%/$N%P%$%H?t(B</description> 
+<description>クライアントのコネクションを受け持つスレッドが使用する
+スタックのバイト数</description> 
 <syntax>ThreadStackSize <var>size</var></syntax>
-<default>NetWare $B$G$O(B 65536$B!#B>$N(B OS $B$G$O0c$C$?CM(B</default>
+<default>NetWare では 65536。他の OS では違った値</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>leader</module><module>mpm_netware</module>
 <module>mpm_winnt</module><module>perchild</module>
 <module>threadpool</module><module>worker</module>
 </modulelist>
-<compatibility>2.1 $B0J9_(B</compatibility>
+<compatibility>2.1 以降</compatibility>
 
 <usage>
-    <p>$B%/%i%$%"%s%H%3%M%/%7%g%s$r<u$1;}$A!"%3%M%/%7%g%s=hM}$KI,MW$J%b%8%e!<%k$N(B
-    $B8F$S=P$7$r9T$J$C$F$$$k%9%l%C%I$N!"(B($B<+F0JQ?tMQ$N(B) $B%9%?%C%/%5%$%:$O(B
-    <directive>ThreadStackSize</directive> $B%G%#%l%/%F%#%V$G;XDj$7$^$9!#(B
-    $BBgDq$N>l9g(B OS $B$N;XDj$7$F$$$k%9%?%C%/%5%$%:$N%G%U%)%k%HCM$O(B
-    $BE,@Z$J$b$N$G$9$,!"D4@0$,I,MW$K$J$k>l9g$b$"$j$^$9(B:</p>
+    <p>クライアントコネクションを受け持ち、コネクション処理に必要なモジュールの
+    呼び出しを行なっているスレッドの、(自動変数用の) スタックサイズは
+    <directive>ThreadStackSize</directive> ディレクティブで指定します。
+    大抵の場合 OS の指定しているスタックサイズのデフォルト値は
+    適切なものですが、調整が必要になる場合もあります:</p>
 
     <ul>
-      <li>$B%9%l%C%I%9%?%C%/%5%$%:$N%G%U%)%k%HCM$,Hf3SE*>.$5$/@_Dj$5$l$F$$$k(B
-      $B%W%i%C%H%[!<%`(B ($BNc$($P(B HP-UX) $B$G$O!"<+F0JQ?tMQ$NNN0h$GBg$-$JMFNL$r(B
-      $B;HMQ$9$k%5!<%I%Q!<%F%#@=%b%8%e!<%k$N$?$a$K(B Apache $B$,%/%i%C%7%e$9$k(B
-      $B>l9g$b$"$j$^$9!#$=$N%b%8%e!<%k$OB>$N%W%i%C%H%[!<%`$G$O(B
-      $B%9%?%C%/%5%$%:$,Bg$-$$$?$a$K!"2wD4$KF0:n$9$k$+$b$7$l$^$;$s!#(B
-      $B$3$N%?%$%W$N%/%i%C%7%e$O!"(B<directive>ThreadStackSize</directive>
-      $B$G(B OS $B$N%G%U%)%k%HCM$h$jBg$-$JCM$r;XDj$9$k$3$H$G2r7h$7$^$9!#(B
-      $B%5!<%I%Q!<%F%#@=%b%8%e!<%k$G$3$N=hCV$,I,MW$G$"$k$H5-:\$5$l$F$$$k(B
-      $B>l9g$+!"(BApache $B$N=PNO$9$k%a%C%;!<%8$G%9%l%C%I%9%?%C%/%5%$%:$,(B
-      $B>.$5$9$.$k$H;XE&$5$l$F$$$k>l9g$K$N$_!"$3$ND4@0$r$7$F$/$@$5$$!#(B</li>
+      <li>スレッドスタックサイズのデフォルト値が比較的小さく設定されている
+      プラットホーム (例えば HP-UX) では、自動変数用の領域で大きな容量を
+      使用するサードパーティ製モジュールのために Apache がクラッシュする
+      場合もあります。そのモジュールは他のプラットホームでは
+      スタックサイズが大きいために、快調に動作するかもしれません。
+      このタイプのクラッシュは、<directive>ThreadStackSize</directive>
+      で OS のデフォルト値より大きな値を指定することで解決します。
+      サードパーティ製モジュールでこの処置が必要であると記載されている
+      場合か、Apache の出力するメッセージでスレッドスタックサイズが
+      小さすぎると指摘されている場合にのみ、この調整をしてください。</li>
 
-      <li>$B%G%U%)%k%H%9%l%C%I%9%?%C%/%5%$%:$,!"(BWeb $B%5!<%PMQES$KI,MW$JNL$h$j$b(B
-      $BL@$i$+$KBg$-$9$.$k>l9g!"(B<directive>ThreadStackSize</directive> 
-      $B$r(B OS $B$N%G%U%)%k%HCM$h$j$b>.$5$JCM$K$9$k$3$H$G!";R%W%m%;%9$"$?$j$N(B
-      $B%9%l%C%I?t$r$h$jB?$/;}$?$;$i$l$k$h$&$K$J$j$^$9!#(B
-      $B$3$N%?%$%W$ND4@0$O!"%F%9%H4D6-$G%&%'%V%5!<%P$r40A4$K(B
-      $B%F%9%H$G$-$k>l9g$K8B$C$F9T$J$&$Y$-$G$9!#(B
-      $B$^$l$KB??t$N%9%?%C%/$,MW5a$5$l$k%j%/%(%9%H$r<u$1$k$3$H$,$"$k$+$b(B
-      $B$7$l$J$$$+$i$G$9!#(B
-      Web $B%5!<%P$N@_Dj$rJQ99$9$k$H!"8=:_$N(B <directive>ThreadStackSize</directive> 
-      $B$N@_Dj$,<h$j>C$5$l$k>l9g$,$"$j$^$9!#(B</li>
+      <li>デフォルトスレッドスタックサイズが、Web サーバ用途に必要な量よりも
+      明らかに大きすぎる場合、<directive>ThreadStackSize</directive> 
+      を OS のデフォルト値よりも小さな値にすることで、子プロセスあたりの
+      スレッド数をより多く持たせられるようになります。
+      このタイプの調整は、テスト環境でウェブサーバを完全に
+      テストできる場合に限って行なうべきです。
+      まれに多数のスタックが要求されるリクエストを受けることがあるかも
+      しれないからです。
+      Web サーバの設定を変更すると、現在の <directive>ThreadStackSize</directive> 
+      の設定が取り消される場合があります。</li>
     </ul>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>User</name>
-<description>$B%j%/%(%9%H$K1~Ez$9$k:]$KMQ$$$k%f!<%6(B ID</description>
+<description>リクエストに応答する際に用いるユーザ ID</description>
 <syntax>User <var>unix-userid</var></syntax>
 <default>User #-1</default>
 <contextlist><context>server config</context></contextlist>
 <modulelist><module>leader</module><module>perchild</module>
 <module>prefork</module><module>threadpool</module><module>worker</module>
 </modulelist>
-<compatibility>Apache 2.0 $B0J9_$G!"%0%m!<%P%k@_Dj$G$N$_M-8z$G$9!#(B
+<compatibility>Apache 2.0 以降で、グローバル設定でのみ有効です。
 </compatibility>
 
 <usage>
-    <p><directive>User</directive> $B%G%#%l%/%F%#%V$O(B
-    $B%5!<%P$,%j%/%(%9%H$K1~Ez$9$k:]$KMQ$$$k%f!<%6(B ID $B$r@_Dj$7$^$9!#(B
-    $B$3$N%G%#%l%/%F%#%V$r;HMQ$9$k$?$a$K$O!"%9%?%s%I%"%m%s7?$N(B
-    $B%5!<%P$O:G=i$K(B <code>root</code> $B8"8B$G5/F0$5$l$F$$$kI,MW$,$"$j$^$9!#(B
-    $BHs(B root $B%f!<%6$G%5!<%P$r5/F0$7$?>l9g$O!"(B
-    $B8"8B$NDc$$%f!<%6$X$HJQ$o$k$3$H$,$G$-$:!"(B
-    $B7k6I85$N%f!<%6$N%W%m%;%9$H$7$F<B9T$5$lB3$1$^$9!#(B
-    <code>root</code> $B$G5/F0$7$?>l9g$K?F%W%m%;%9$,(B root
-    $B$H$7$F<B9T$5$l$F$$$k$N$O@5>o$JF0:n$G$9!#(B
-    <var>Unix-userid</var> $B$O<!$N$I$l$+$G$9!#(B</p>
+    <p><directive>User</directive> ディレクティブは
+    サーバがリクエストに応答する際に用いるユーザ ID を設定します。
+    このディレクティブを使用するためには、スタンドアロン型の
+    サーバは最初に <code>root</code> 権限で起動されている必要があります。
+    非 root ユーザでサーバを起動した場合は、
+    権限の低いユーザへと変わることができず、
+    結局元のユーザのプロセスとして実行され続けます。
+    <code>root</code> で起動した場合に親プロセスが root
+    として実行されているのは正常な動作です。
+    <var>Unix-userid</var> は次のどれかです。</p>
 
     <dl>
-      <dt>$B%f!<%6L>(B</dt>
-      <dd>$B%f!<%6$rL>A0$G;2>H$7$^$9!#(B</dd>
+      <dt>ユーザ名</dt>
+      <dd>ユーザを名前で参照します。</dd>
 
-      <dt># $B$KB3$$$F%f!<%6HV9f(B</dt>
-      <dd>$B%f!<%6$rHV9f$G;2>H$7$^$9!#(B</dd>
+      <dt># に続いてユーザ番号</dt>
+      <dd>ユーザを番号で参照します。</dd>
     </dl>
 
-    <p>$B$3$N%f!<%6$O!"30It$K8+$;$k$h$&$K0U?^$7$F$$$J$$%U%!%$%k$K!"(B
-    $B%"%/%;%92DG=$K$J$C$F$7$^$&$h$&$J8"8B$r;}$D$Y$-$G$O$J$$$G$9$7!"(B
-    $BF1MM$K(B HTTP $B%j%/%(%9%H$KBP$7$F1~Ez$9$k$h$&$K0U?^$7$F$$$J$$(B
-    $B<B9T%3!<%I$r!"<B9T$G$-$k$h$&$J8"8B$r;}$D$Y$-$G$O$J$$$G$9!#(B
-    $B%5!<%P$r<B9T$9$k$?$a$KFCDj$N?7$7$$%f!<%6$H%0%k!<%W$r(B
-    $B@_Dj$9$k$3$H$r$*A&$a$$$?$7$^$9!#(B
-    <code>nobody</code> $B%f!<%6$r;HMQ$9$k4IM}<T$b$$$^$9$,!"(B
-    $B$3$l$,>o$KK>$^$7$$$o$1$G$O$"$j$^$;$s!#(B
-    $B$J$<$J$i(B <code>nobody</code> $B%f!<%6$O!"%7%9%F%`$G(B
-    $BB>$NLr3d$rC4$C$F$$$k$+$bCN$l$J$$$+$i$G$9!#(B</p>
+    <p>このユーザは、外部に見せるように意図していないファイルに、
+    アクセス可能になってしまうような権限を持つべきではないですし、
+    同様に HTTP リクエストに対して応答するように意図していない
+    実行コードを、実行できるような権限を持つべきではないです。
+    サーバを実行するために特定の新しいユーザとグループを
+    設定することをお薦めいたします。
+    <code>nobody</code> ユーザを使用する管理者もいますが、
+    これが常に望ましいわけではありません。
+    なぜなら <code>nobody</code> ユーザは、システムで
+    他の役割を担っているかも知れないからです。</p>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
-      <p>$B@53N$K$I$s$J$3$H$r$d$C$F$$$k$N$+!"$=$N4m81@-$rCN$i$J$$$G!"(B
-      <directive>User</directive> ($B$d(B <directive
-      module="mpm_common">Group</directive>) $B$r(B <code>root</code> $B$K(B
-      $B@_Dj$7$J$$$G$/$@$5$$!#(B</p>
+    <note type="warning"><title>セキュリティ</title>
+      <p>正確にどんなことをやっているのか、その危険性を知らないで、
+      <directive>User</directive> (や <directive
+      module="mpm_common">Group</directive>) を <code>root</code> に
+      設定しないでください。</p>
     </note>
 
-    <p><module>perchild</module> MPM $B$G$O!"0[$J$k%f!<%6(B ID
-    $B$GJ#?t$N%P!<%A%c%k%[%9%H$rF0$+$9$3$H$rL\E*$H$7$F$$$^$9$,!"(B
-    <directive>User</directive> $B$O!"<g%5!<%P$N%f!<%6(B ID 
-    $B$H!"(B<directive module="perchild">AssignUserID</directive>
-    $B%G%#%l%/%F%#%V$r;}$?$J$$(B <directive type="section"
-    module="core">VirtualHost</directive> $B%;%/%7%g%s$X$N(B
-    $B%U%)!<%k%P%C%/$H$rDj5A$9$k$3$H$K$J$j$^$9!#(B</p>
+    <p><module>perchild</module> MPM では、異なるユーザ ID
+    で複数のバーチャルホストを動かすことを目的としていますが、
+    <directive>User</directive> は、主サーバのユーザ ID 
+    と、<directive module="perchild">AssignUserID</directive>
+    ディレクティブを持たない <directive type="section"
+    module="core">VirtualHost</directive> セクションへの
+    フォールバックとを定義することになります。</p>
 
-    <p>$BFC5-;v9`(B: $B$3$N%G%#%l%/%F%#%V$r(B
+    <p>特記事項: このディレクティブを
     <directive module="core" type="section">VirtualHost</directive>
-    $B$G;HMQ$9$k$3$H$O%5%]!<%H$5$l$J$/$J$j$^$7$?!#(B
-    <program>suexec</program> $B8~$1$K%5!<%P$r@_Dj$9$k$N$G$"$l$P!"(B
+    で使用することはサポートされなくなりました。
+    <program>suexec</program> 向けにサーバを設定するのであれば、
     <directive module="mod_suexec">SuexecUserGroup</directive>
-    $B$r;HMQ$7$F$/$@$5$$!#(B</p>
+    を使用してください。</p>
 
-    <note><title>$BCm0U(B</title>
-      <p><directive>User</directive> $B%G%#%l%/%F%#%V$O(B
-      <module>beos</module> $B$H(B <module>mpmt_os2</module> MPM
-      $B$K$bB8:_$7$^$9$,!"<B<AE*$KL58z$G!"8_49@-$N$?$a$@$1$KB8:_$7$^$9!#(B</p>
+    <note><title>注意</title>
+      <p><directive>User</directive> ディレクティブは
+      <module>beos</module> と <module>mpmt_os2</module> MPM
+      にも存在しますが、実質的に無効で、互換性のためだけに存在します。</p>
     </note>
 </usage>
 </directivesynopsis>
