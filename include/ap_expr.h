@@ -141,7 +141,8 @@ AP_DECLARE(apr_status_t) ap_expr_init(apr_pool_t *pool);
  * @param str The string to evaluate
  * @return The evaluated string
  */
-AP_DECLARE(const char*) ap_expr_string(request_rec *r, const char *str);
+AP_DECLARE_NONSTD(const char*) ap_expr_string(request_rec *r, 
+                                              const char *str);
 
 #ifdef __cplusplus
 }
