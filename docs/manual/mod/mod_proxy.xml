@@ -511,6 +511,23 @@ expressions</description>
 </directivesynopsis>
 
 <directivesynopsis>
+<name>BalancerMember</name>
+<description>Add a member to a load balancing group</description>
+<syntax>BalancerMember <var>url</var> [<var
+                >key=value [key=value ...]]</var></syntax>
+<contextlist><context>directory</context>
+</contextlist>
+<compatibility>BalancerMember is only available in Apache 2.2
+        and later.</compatibility>
+<usage>
+    <p>This directive adds a member to a load balancing group. It must be used
+    within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
+    directive, and can take any of the parameters available to
+    <directive module="mod_proxy">ProxyPass</directive> directives.</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
 <name>ProxySet</name>
 <description>Set various Proxy balancer or member parameters</description>
 <syntax>ProxySet <var>url</var> <var>key=value [key=value ...]</var></syntax>
@@ -1046,23 +1063,6 @@ proxy</description>
     all.</p>
 </usage>
 </directivesynopsis>
-<directivesynopsis>
-
-<name>BalancerMember</name>
-<description>Add a member to a load balancing group</description>
-<syntax>BalancerMember <var>url</var> [<var
-                >key=value [key=value ...]]</var></syntax>
-<contextlist><context>directory</context>
-</contextlist>
-<compatibility>BalancerMember is only available in Apache 2.2
-        and later.</compatibility>
-<usage>
-    <p>This directive adds a member to a load balancing group. It must be used
-    within a <code>&lt;Proxy <var>balancer://</var>...&gt;</code> container
-    directive, and can take any of the parameters available to
-    <directive module="mod_proxy">ProxyPass</directive> directives.</p>
-</usage>
-</directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyBlock</name>
@@ -1395,27 +1395,6 @@ header for proxied requests</description>
 </directivesynopsis>
 
 <directivesynopsis>
-<name>ProxyStatus</name>
-<description>Show Proxy LoadBalancer status in mod_status</description>
-<syntax>ProxyStatus Off|On|Full</syntax>
-<default>ProxyStatus Off</default>
-<contextlist><context>server config</context>
-<context>virtual host</context>
-</contextlist>
-<compatibility>Available in version 2.2 and later</compatibility>
-
-<usage>
-    <p>This directive determines whether or not proxy
-    loadbalancer status data is displayed via the <module>mod_status</module>
-    server-status page.</p>
-    <note><title>Note</title>
-      <p><strong>Full</strong> is synonymous with <strong>On</strong></p>
-    </note>
-
-</usage>
-</directivesynopsis>
-
-<directivesynopsis>
 <name>ProxyPassInterpolateEnv</name>
 <description>Enable Environment Variable interpolation in Reverse Proxy configurations</description>
 <syntax>ProxyPassInterpolateEnv On|Off</syntax>
@@ -1442,6 +1421,27 @@ header for proxied requests</description>
     variable <code>varname</code> for the string <code>${varname}</code>
     in configuration directives.</p>
     <p>Keep this turned off (for server performance) unless you need it!</p>
+</usage>
+</directivesynopsis>
+
+<directivesynopsis>
+<name>ProxyStatus</name>
+<description>Show Proxy LoadBalancer status in mod_status</description>
+<syntax>ProxyStatus Off|On|Full</syntax>
+<default>ProxyStatus Off</default>
+<contextlist><context>server config</context>
+<context>virtual host</context>
+</contextlist>
+<compatibility>Available in version 2.2 and later</compatibility>
+
+<usage>
+    <p>This directive determines whether or not proxy
+    loadbalancer status data is displayed via the <module>mod_status</module>
+    server-status page.</p>
+    <note><title>Note</title>
+      <p><strong>Full</strong> is synonymous with <strong>On</strong></p>
+    </note>
+
 </usage>
 </directivesynopsis>
 
