@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 151408:659902 (outdated) -->
@@ -22,14 +22,14 @@
 
 <manualpage metafile="filter.xml.meta">
 
-  <title>$B%U%#%k%?(B</title>
+  <title>フィルタ</title>
 
   <summary>
-    <p>Apache $B$G$N%U%#%k%?$N;H$$J}$K$D$$$F5-=R$7$F$$$^$9!#(B</p>
+    <p>Apache でのフィルタの使い方について記述しています。</p>
   </summary>
 
   <section id="filters">
-    <title>$B%U%#%k%?(B</title>
+    <title>フィルタ</title>
     <related>
       <modulelist>
         <module>mod_deflate</module>
@@ -48,40 +48,40 @@
       </directivelist>
     </related>
 
-    <p><em>$B%U%#%k%?(B</em> $B$H$O!"%5!<%P$,Aw<u?.$7$?%G!<%?$K(B
-    $BE,MQ$5$l$k=hM}%W%m%;%9$N$3$H$r$$$$$^$9!#%/%i%$%"%s%H$+$i%5!<%P$K(B
-    $BAw$i$l$?%G!<%?$O(B <em>$BF~NO%U%#%k%?(B</em> $B$K$h$C$F!"%5!<%P$+$i(B
-    $B%/%i%$%"%s%H$KAw$i$l$k%G!<%?$O(B<em>$B=PNO%U%#%k%?(B</em>$B$K$h$C$F(B
-    $B=hM}$5$l$^$9!#J#?t$N%U%#%k%?$rE,MQ$9$k$3$H$,$G$-!"(B
-    $B$=$N=gHV$r87L)$K;XDj$9$k$3$H$b$G$-$^$9!#(B</p>
+    <p><em>フィルタ</em> とは、サーバが送受信したデータに
+    適用される処理プロセスのことをいいます。クライアントからサーバに
+    送られたデータは <em>入力フィルタ</em> によって、サーバから
+    クライアントに送られるデータは<em>出力フィルタ</em>によって
+    処理されます。複数のフィルタを適用することができ、
+    その順番を厳密に指定することもできます。</p>
 
-    <p>Apache $BFbIt$G$O!"%A%c%s%/(B ($B%G!<%?$N$V$D@Z$j(B) $B$r9T$C$?$j!"(B
-    $B%P%$%HHO0O$N;XDj$5$l$?%j%/%(%9%H$r07$C$?$j$H$$$C$?5!G=$r(B
-    $B9T$&:]$K!"%U%#%k%?$,;H$o$l$F$$$^$9!#$=$l$K2C$($F!"(B
-    $B<B9T;~$N@_Dj%G%#%l%/%F%#%V$GA*Br$,2DG=$J%U%#%k%?$r(B
-    $B%b%8%e!<%k$,Ds6!$G$-$^$9!#(B
-    $B%G!<%?$KE,1~$5$l$k%U%#%k%?$N%;%C%H$O!"(B
+    <p>Apache 内部では、チャンク (データのぶつ切り) を行ったり、
+    バイト範囲の指定されたリクエストを扱ったりといった機能を
+    行う際に、フィルタが使われています。それに加えて、
+    実行時の設定ディレクティブで選択が可能なフィルタを
+    モジュールが提供できます。
+    データに適応されるフィルタのセットは、
     <directive module="core">SetInputFilter</directive>,
     <directive module="core">SetOutputFilter</directive>,
     <directive module="core">AddInputFilter</directive>,
     <directive module="core">AddOutputFilter</directive>,
     <directive module="mod_mime">RemoveInputFilter</directive>,
     <directive module="mod_mime">RemoveOutputFilter</directive>
-    $B%G%#%l%/%F%#%V$G@)8f$G$-$^$9!#(B</p>
+    ディレクティブで制御できます。</p>
 
-    <p>$B8=9T$N(B Apache HTTP $B%5!<%P$NG[I[$G$O!"(B
-    $B<!$N%f!<%6A*Br2DG=$J%U%#%k%?$,Ds6!$5$l$F$$$^$9!#(B</p>
+    <p>現行の Apache HTTP サーバの配布では、
+    次のユーザ選択可能なフィルタが提供されています。</p>
 
     <dl>
       <dt>INCLUDES</dt>
-      <dd><module>mod_include</module> $B$G(B Server-Side Include $B$r$7$^$9!#(B</dd>
+      <dd><module>mod_include</module> で Server-Side Include をします。</dd>
       <dt>DEFLATE</dt>
       <dd><module>mod_deflate</module>
-      $B$r;H$C$F!"%/%i%$%"%s%H$KAw?.$9$kA0$K=PNO$r05=L$7$^$9!#(B</dd>
+      を使って、クライアントに送信する前に出力を圧縮します。</dd>
     </dl>
 
-    <p>$B$^$?!"(B<module>mod_ext_filter</module> $B%b%8%e!<%k$G(B
-    $B30It%W%m%0%i%`$r%U%#%k%?$H$7$F;XDj$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>また、<module>mod_ext_filter</module> モジュールで
+    外部プログラムをフィルタとして指定することができます。</p>
   </section>
 </manualpage>
 

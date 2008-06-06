@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420993 -->
@@ -27,62 +27,62 @@
 <status>Extension</status>
 <sourcefile>mod_ident.c</sourcefile>
 <identifier>ident_module</identifier>
-<compatibility>Apache 2.1 $B$G;HMQ2DG=(B</compatibility>
+<compatibility>Apache 2.1 で使用可能</compatibility>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$O%j%b!<%H%[%9%H$N(B <a
-    href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> $B8_49%G!<%b%s(B
-    $B$K%3%M%/%7%g%s$N=jM-<T$r?V$-$^$9!#(B</p>
+    <p>このモジュールはリモートホストの <a
+    href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> 互換デーモン
+    にコネクションの所有者を訊きます。</p>
 </summary>
 <seealso><module>mod_log_config</module></seealso>
 
 <directivesynopsis>
 <name>IdentityCheck</name>
-<description>$B%j%b!<%H%f!<%6$N(B RFC 1413 $B$K$h$k%"%$%G%s%F%#%F%#$N%m%.%s%0$r(B
-$BM-8z$K$9$k(B</description>
+<description>リモートユーザの RFC 1413 によるアイデンティティのロギングを
+有効にする</description>
 <syntax>IdentityCheck On|Off</syntax>
 <default>IdentityCheck Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
-<compatibility>Apache 2.1 $B$G(B core $B$+$i0\F0(B</compatibility>
+<compatibility>Apache 2.1 で core から移動</compatibility>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O!"%/%i%$%"%s%H%^%7%s>e$G(B
-    identd $B$d$=$l$KN`;w$7$?%G!<%b%s$,F0:n$7$F$$$k$H$-$K!"(B
-    $B$=$l$>$l$N@\B3$KBP$7$F(B <a href="http://www.ietf.org/rfc/rfc1413.txt"
-    >RFC 1413</a> $B$K=`=h$7$?%j%b!<%H%f!<%6$N(B
-    $BL>A0$N%m%.%s%0$r9T$J$&$h$&$K$7$^$9!#(B
-    $B$3$N>pJs$O!"(B<code>%...l</code> <a href="mod_log_config.html#formats"
-    >$B%U%)!<%^%C%HJ8;zNs(B</a>$B$r;H$C$F%"%/%;%9%m%0$K<}=8$5$l$^$9!#(B</p>
+    <p>このディレクティブは、クライアントマシン上で
+    identd やそれに類似したデーモンが動作しているときに、
+    それぞれの接続に対して <a href="http://www.ietf.org/rfc/rfc1413.txt"
+    >RFC 1413</a> に準処したリモートユーザの
+    名前のロギングを行なうようにします。
+    この情報は、<code>%...l</code> <a href="mod_log_config.html#formats"
+    >フォーマット文字列</a>を使ってアクセスログに収集されます。</p>
 
     <note>
-      $B$3$3$GF@$i$l$?>pJs$O4JC1$J%f!<%6DI@W$K;H$&0J30$O!"(B
-      $B$^$C$?$/?.Mj$9$k$Y$-$G$O$"$j$^$;$s!#(B</note>
+      ここで得られた情報は簡単なユーザ追跡に使う以外は、
+      まったく信頼するべきではありません。</note>
 
-    <p>$B$9$Y$F$N%j%/%(%9%H$KBP$7$F%k%C%/%"%C%W$,9T$J$o$l$^$9$N$G!"(B
-    $B?<9o$JCY1d$NLdBj$r5/$3$9$+$b$7$l$J$$$3$H$KCm0U$7$F$/$@$5$$!#(B
-    ($BLuCm(B: $BNc$($P%/%i%$%"%s%HB&$K(B) $B%U%!%$%"%&%)!<%k$d%W%m%-%7%5!<%P$,$"$k$H!"(B
-    $B%k%C%/%"%C%W$,<:GT$7!"3F%j%/%(%9%H$K(B <directive module="mod_ident"
-    >IdentityCheckTimeout</directive>$B$GDj5A$5$l$F$$$kCY1d$,2C$o$k$3$H$K(B
-    $B$J$k2DG=@-$,$"$j$^$9!#(B
-    $B=>$C$F!"0lHLE*$K$O%$%s%?!<%M%C%H$+$i%"%/%;%92DG=$J%Q%V%j%C%/$J%5!<%P$G(B
-    $BM-1W$J$b$N$G$O$"$j$^$;$s!#(B</p>
+    <p>すべてのリクエストに対してルックアップが行なわれますので、
+    深刻な遅延の問題を起こすかもしれないことに注意してください。
+    (訳注: 例えばクライアント側に) ファイアウォールやプロキシサーバがあると、
+    ルックアップが失敗し、各リクエストに <directive module="mod_ident"
+    >IdentityCheckTimeout</directive>で定義されている遅延が加わることに
+    なる可能性があります。
+    従って、一般的にはインターネットからアクセス可能なパブリックなサーバで
+    有益なものではありません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>IdentityCheckTimeout</name>
-<description>Ident $B%j%/%(%9%H$,%?%$%`%"%&%H$9$k$^$G$N4|4V$r7h$a$k(B</description>
+<description>Ident リクエストがタイムアウトするまでの期間を決める</description>
 <syntax>IdentityCheckTimeout <var>seconds</var></syntax>
 <default>IdentityCheckTimeout 30</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context></contextlist>
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B ident $B%j%/%(%9%H$N%?%$%`%"%&%H;~4V$r7h$a$^$9!#(B
-    $B%G%U%)%k%H$NCM$G$"$k(B 30 $BIC$O!"<g$K%M%C%H%o!<%/CY1d$N9MN8$N$?$a$K(B <a
-    href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> $B$K$h$j(B
-    $B?d>)$5$l$F$$$^$9!#$7$+$7!"$*$=$i$/%m!<%+%k%M%C%H%o!<%/$NB.EY$K(B
-    $B9g$o$;$F%?%$%`%"%&%HCM$rD4@a$9$k$N$,$h$$$G$7$g$&!#(B</p>
+    <p>このディレクティブは ident リクエストのタイムアウト時間を決めます。
+    デフォルトの値である 30 秒は、主にネットワーク遅延の考慮のために <a
+    href="http://www.ietf.org/rfc/rfc1413.txt">RFC 1413</a> により
+    推奨されています。しかし、おそらくローカルネットワークの速度に
+    合わせてタイムアウト値を調節するのがよいでしょう。</p>
 </usage>
 </directivesynopsis>
 

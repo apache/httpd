@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 193037:659902 (outdated) -->
@@ -23,69 +23,69 @@
 <modulesynopsis metafile="mod_mime.xml.meta">
 
 <name>mod_mime</name>
-<description>$B%j%/%(%9%H$5$l$?%U%!%$%k$N3HD%;R$H%U%!%$%k$N?6$kIq$$(B
-    ($B%O%s%I%i$H%U%#%k%?(B)$B!"FbMF(B (MIME $B%?%$%W!"8@8l!"J8;z%;%C%H!"%(%s%3!<%G%#%s%0(B)
-    $B$H$r4XO"IU$1$k(B</description>
+<description>リクエストされたファイルの拡張子とファイルの振る舞い
+    (ハンドラとフィルタ)、内容 (MIME タイプ、言語、文字セット、エンコーディング)
+    とを関連付ける</description>
 <status>Base</status>
 <sourcefile>mod_mime.c</sourcefile>
 <identifier>mime_module</identifier>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$O3HD%;R$r;H$C$F$$$m$$$m$J!V%a%?>pJs!W$r%U%!%$%k$K(B
-    $B4XO"IU$1$k$?$a$K;HMQ$5$l$^$9!#$3$N>pJs$O%I%-%e%a%s%H$N%U%!%$%kL>$H(B
-    MIME $B%?%$%W!"8@8l!"J8;z%;%C%H!"%(%s%3!<%G%#%s%0$H$r4XO"IU$1$^$9!#(B
-    $B$3$N>pJs$O%V%i%&%6$KAw$i$l$^$9$7!"J#?t$N%U%!%$%k$NCf$+$i%f!<%6$N9%$_$N(B
-    $B$b$N$,A*$P$l$k$h$&$K!"%3%s%F%s%H%M%4%7%(!<%7%g%s$G$b;H$o$l$^$9!#(B
-    <a href="../content-negotiation.html">$B%3%s%F%s%H%M%4%7%(!<%7%g%s(B</a>
-    $B$K4X$9$k>\$7$$>pJs$O(B <module>mod_negotiation</module>
-    $B$r$4Mw2<$5$$!#(B</p>
+    <p>このモジュールは拡張子を使っていろいろな「メタ情報」をファイルに
+    関連付けるために使用されます。この情報はドキュメントのファイル名と
+    MIME タイプ、言語、文字セット、エンコーディングとを関連付けます。
+    この情報はブラウザに送られますし、複数のファイルの中からユーザの好みの
+    ものが選ばれるように、コンテントネゴシエーションでも使われます。
+    <a href="../content-negotiation.html">コンテントネゴシエーション</a>
+    に関する詳しい情報は <module>mod_negotiation</module>
+    をご覧下さい。</p>
 
-    <p><directive module="mod_mime">AddCharset</directive> $B%G%#%l%/%F%#%V!"(B
-    <directive module="mod_mime">AddEncoding</directive> $B%G%#%l%/%F%#%V!"(B
-    <directive module="mod_mime">AddHandler</directive> $B%G%#%l%/%F%#%V!"(B
-    <directive module="mod_mime">AddLanguage</directive> $B%G%#%l%/%F%#%V!"(B
-    <directive module="mod_mime">AddType</directive> $B%G%#%l%/%F%#%V$O$9$Y$F!"(B
-    $B%U%!%$%k$N3HD%;R$r%a%?>pJs$K%^%C%W$9$k$?$a$K;HMQ$5$l$^$9!#(B
-    $B$=$l$>$l!"%I%-%e%a%s%H$NJ8;z%;%C%H(B ($BLuCm(B: charset)$B!"(Bcontent-encoding,
-    content-language, MIME $B%?%$%W(B (content-type) $B$r@_Dj$7$^$9!#(B
-    <directive module="mod_mime">TypesConfig</directive> $B%G%#%l%/%F%#%V$O3HD%;R$r(B
-    MIME $B%?%$%W$K%^%C%W$9$k%U%!%$%k$r;XDj$9$k$?$a$K;HMQ$5$l$^$9!#(B</p>
+    <p><directive module="mod_mime">AddCharset</directive> ディレクティブ、
+    <directive module="mod_mime">AddEncoding</directive> ディレクティブ、
+    <directive module="mod_mime">AddHandler</directive> ディレクティブ、
+    <directive module="mod_mime">AddLanguage</directive> ディレクティブ、
+    <directive module="mod_mime">AddType</directive> ディレクティブはすべて、
+    ファイルの拡張子をメタ情報にマップするために使用されます。
+    それぞれ、ドキュメントの文字セット (訳注: charset)、content-encoding,
+    content-language, MIME タイプ (content-type) を設定します。
+    <directive module="mod_mime">TypesConfig</directive> ディレクティブは拡張子を
+    MIME タイプにマップするファイルを指定するために使用されます。</p>
 
-    <p>$B$5$i$K!"(B<module>mod_mime</module> $B$O%3%s%F%s%D$r:n@.!"=hM}$9$k(B
-    <a href="../handler.html">$B%O%s%I%i(B</a> $B$H(B <a href="../filter.html">$B%U%#%k%?(B</a>
-    $B$r@_Dj$9$k$3$H$,$G$-$^$9!#(B<directive
-    module="mod_mime">AddHandler</directive> $B%G%#%l%/%F%#%V!"(B<directive
-    module="mod_mime">AddOutputFilter</directive> $B%G%#%l%/%F%#%V!"(B<directive
-    module="mod_mime">AddInputFilter</directive> $B%G%#%l%/%F%#%V$O(B
-    $B%I%-%e%a%s%H$r07$&%b%8%e!<%k$d%9%/%j%W%H$r@)8f$7$^$9!#(B
-    <directive module="mod_mime">MultiviewsMatch</directive> $B%G%#%l%/%F%#%V$O(B
-    $B$3$l$i$N%G%#%l%/%F%#%V$,;XDj$7$?%U%!%$%k$N3HD%;R$r(B
-    <module>mod_negotiation</module> $B$,(B Multiviews $B$N%^%C%A$r$H$k$H$-$K(B
-    $B9MN8$9$k$h$&$K$G$-$^$9!#(B</p>
+    <p>さらに、<module>mod_mime</module> はコンテンツを作成、処理する
+    <a href="../handler.html">ハンドラ</a> と <a href="../filter.html">フィルタ</a>
+    を設定することができます。<directive
+    module="mod_mime">AddHandler</directive> ディレクティブ、<directive
+    module="mod_mime">AddOutputFilter</directive> ディレクティブ、<directive
+    module="mod_mime">AddInputFilter</directive> ディレクティブは
+    ドキュメントを扱うモジュールやスクリプトを制御します。
+    <directive module="mod_mime">MultiviewsMatch</directive> ディレクティブは
+    これらのディレクティブが指定したファイルの拡張子を
+    <module>mod_negotiation</module> が Multiviews のマッチをとるときに
+    考慮するようにできます。</p>
 
-    <p><module>mod_mime</module> $B$O%a%?>pJs$r%U%!%$%kL>$H4XO"IU$1$^$9$,!"(B
-    <module>core</module> $B%5!<%P$K$O$"$k%3%s%F%J(B
-    (<em>$B$?$H$($P(B</em>, <directive type="section"
+    <p><module>mod_mime</module> はメタ情報をファイル名と関連付けますが、
+    <module>core</module> サーバにはあるコンテナ
+    (<em>たとえば</em>, <directive type="section"
     module="core">Location</directive>, <directive type="section"
     module="core">Directory</directive>, <directive type="section"
-    module="core">Files</directive>) $B$NCf$N$9$Y$F$N%U%!%$%k$rFCDj$N(B
-    $B%a%?>pJs$H4XO"IU$1$k%G%#%l%/%F%#%V$,$"$j$^$9!#$3$l$i$N%G%#%l%/%F%#%V$K$O(B
+    module="core">Files</directive>) の中のすべてのファイルを特定の
+    メタ情報と関連付けるディレクティブがあります。これらのディレクティブには
     <directive
     module="core">ForceType</directive>, <directive
     module="core">SetHandler</directive>, <directive
     module="core">SetInputFilter</directive>, <directive
-    module="core">SetOutputFilter</directive> $B$,$"$j$^$9!#(B
-    $B%3%"$N%G%#%l%/%F%#%V$O(B <module>mod_mime</module> $B$K$h$jDj5A$5$l$?(B
-    $B%U%!%$%kL>$N3HD%;R$N%^%C%T%s%0$9$Y$F$r>e=q$-$7$^$9!#(B</p>
+    module="core">SetOutputFilter</directive> があります。
+    コアのディレクティブは <module>mod_mime</module> により定義された
+    ファイル名の拡張子のマッピングすべてを上書きします。</p>
 
-    <p>$B%U%!%$%k$N%a%?>pJs$rJQ$($F$b(B <code>Last-Modified</code>
-    $B%X%C%@$NCM$OJQ$o$i$J$$$3$H$KCm0U$7$F$/$@$5$$!#$G$9$+$i!"(B
-    $B$=$l$i$rJQ99$7$?>l9g$O!"%/%i%$%"%s%H$d%W%m%-%7$G0JA0$K%-%c%C%7%e$5$l$?(B
-    $B%3%T!<$,$=$N$H$-$N%X%C%@$H$H$b$K;H$o$l$k2DG=@-$,$"$j$^$9!#(B
-    $B%a%?>pJs(B ($B8@8l!"%3%s%F%s%H%?%$%W!"J8;z%;%C%H!"%(%s%3!<%G%#%s%0(B) $B$r(B
-    $BJQ99$7$?$H$-$O!"$9$Y$F$NK,Ld<T$,@5$7$$%3%s%F%s%H%X%C%@$r(B
-    $B<u$1<h$k$h$&$K!"1F6A$r<u$1$k%U%!%$%k$K(B 'touch' $B%3%^%s%I$r<B9T$9$k(B
-    ($B:G=*99?7F|$r99?7$9$k(B) $BI,MW$,$"$k$+$b$7$l$^$;$s!#(B</p>
+    <p>ファイルのメタ情報を変えても <code>Last-Modified</code>
+    ヘッダの値は変わらないことに注意してください。ですから、
+    それらを変更した場合は、クライアントやプロキシで以前にキャッシュされた
+    コピーがそのときのヘッダとともに使われる可能性があります。
+    メタ情報 (言語、コンテントタイプ、文字セット、エンコーディング) を
+    変更したときは、すべての訪問者が正しいコンテントヘッダを
+    受け取るように、影響を受けるファイルに 'touch' コマンドを実行する
+    (最終更新日を更新する) 必要があるかもしれません。</p>
 </summary>
 
 <seealso><directive
@@ -97,126 +97,126 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <seealso><directive module="core">SetInputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
 
-<section id="multipleext"><title>$BJ#?t$N3HD%;R$N$"$k%U%!%$%k(B</title>
-    <p>$B%U%!%$%k$OJ#?t$N3HD%;R$r;}$D$3$H$,$G$-!"3HD%;R$N=gHV$O(B<em
-    >$BDL>o$O(B</em>$B4X78$"$j$^$;$s!#Nc$($P!"%U%!%$%k(B <code>welcome.html.fr</code>
-    $B$,%3%s%F%s%H%?%$%W$O(B <code>text/html</code>
-    $B$K!"8@8l$O%U%i%s%98l$K%^%C%W$5$l$k>l9g!"(B<code>welcome.fr.html</code>
-    $B$b$^$C$?$/F1$8>pJs$K%^%C%W$5$l$^$9!#(B
-    $BF1$8%a%?>pJs$K%^%C%W$5$l$k3HD%;R$,J#?t$"$k$H$-$K$O!"8@8l$H(B
-    $B%3%s%F%s%H%(%s%3!<%G%#%s%0$r=|$$$F!"(B
-    $B1&B&$K$"$k$b$N$,;HMQ$5$l$^$9!#$?$H$($P!"(B<code>.gif</code> $B$,(B MIME
-    $B%?%$%W(B <code>image/gif</code> $B$K%^%C%W$5$l!"(B<code>.html</code>
-    $B$,(B MIME $B%?%$%W(B <code>text/html</code>
-    $B$K%^%C%W$5$l$k>l9g$O!"%U%!%$%k(B <code>welcome.gif.html</code> $B$O(B
-    MIME $B%?%$%W(B <code>text/html</code> $B$K4XO"IU$1$i$l$^$9!#(B</p>
+<section id="multipleext"><title>複数の拡張子のあるファイル</title>
+    <p>ファイルは複数の拡張子を持つことができ、拡張子の順番は<em
+    >通常は</em>関係ありません。例えば、ファイル <code>welcome.html.fr</code>
+    がコンテントタイプは <code>text/html</code>
+    に、言語はフランス語にマップされる場合、<code>welcome.fr.html</code>
+    もまったく同じ情報にマップされます。
+    同じメタ情報にマップされる拡張子が複数あるときには、言語と
+    コンテントエンコーディングを除いて、
+    右側にあるものが使用されます。たとえば、<code>.gif</code> が MIME
+    タイプ <code>image/gif</code> にマップされ、<code>.html</code>
+    が MIME タイプ <code>text/html</code>
+    にマップされる場合は、ファイル <code>welcome.gif.html</code> は
+    MIME タイプ <code>text/html</code> に関連付けられます。</p>
 
-    <p>$B%j%=!<%9$KJ#?t$N8@8l$d%(%s%3!<%G%#%s%0$r4XO"IU$1$k$3$H(B
-    $B$,$G$-$k$?$a!"(B
-    <a href="#charset-lang">$B8@8l(B</a>$B$H(B<a href="#contentencoding"
-    >$B%3%s%F%s%H%(%s%3!<%G%#%s%0(B</a>$B$OA0$N$b$N$KDI2C$5$l$F$$$-$^$9!#(B
-    $B$?$H$($P!"%U%!%$%k(B <code>welcome.html.en.de</code> $B$O(B
-    <code>Content-Language: en, de</code> $B$H(B <code>Content-Type:
-    text/html</code> $B$H$7$FAw?.$5$l$^$9!#(B</p>
+    <p>リソースに複数の言語やエンコーディングを関連付けること
+    ができるため、
+    <a href="#charset-lang">言語</a>と<a href="#contentencoding"
+    >コンテントエンコーディング</a>は前のものに追加されていきます。
+    たとえば、ファイル <code>welcome.html.en.de</code> は
+    <code>Content-Language: en, de</code> と <code>Content-Type:
+    text/html</code> として送信されます。</p>
 
-    <p>$BJ#?t$N3HD%;R$N$"$k%U%!%$%k$,(B MIME
-    $B%?%$%W$H%O%s%I%i$NN>J}$K4XO"IU$1$i$l$F$$$k$H$-$OCm0U$9$kI,MW$,$"$j$^$9!#(B
-    $B$=$N>l9g!"IaDL$O%j%/%(%9%H$,%O%s%I%i$K4XO"IU$1$i$l$?(B
-    $B%b%8%e!<%k$K$h$C$F07$o$l$k$3$H$K$J$j$^$9!#$?$H$($P!"3HD%;R(B
-    <code>.imap</code> $B$,(B (<module>mod_imagemap</module> $B$N(B) <code>imap-file</code>
-    $B$K%^%C%W$5$l$F$$$F!"(B<code>.html</code> $B$,(B MIME $B%?%$%W(B <code>text/html</code>
-    $B$K%^%C%W$5$l$F$$$k$H$-$O!"%U%!%$%k(B <code>world.imap.html</code> $B$O(B
-    <code>imap-file</code> $B%O%s%I%i$H(B <code>text/html</code> MIME
-    $B%?%$%W$K4XO"IU$1$i$l$^$9!#%U%!%$%k$,=hM}$5$l$k$H$-$O(B <code>imap-file</code>
-    $B%O%s%I%i$,;HMQ$5$l$^$9$N$G!"$=$N%U%!%$%k$O(B <module>mod_imagemap</module>
-    $B$N%$%a!<%8%^%C%W%U%!%$%k$H$7$F07$o$l$k$3$H$K$J$j$^$9!#(B</p>
+    <p>複数の拡張子のあるファイルが MIME
+    タイプとハンドラの両方に関連付けられているときは注意する必要があります。
+    その場合、普通はリクエストがハンドラに関連付けられた
+    モジュールによって扱われることになります。たとえば、拡張子
+    <code>.imap</code> が (<module>mod_imagemap</module> の) <code>imap-file</code>
+    にマップされていて、<code>.html</code> が MIME タイプ <code>text/html</code>
+    にマップされているときは、ファイル <code>world.imap.html</code> は
+    <code>imap-file</code> ハンドラと <code>text/html</code> MIME
+    タイプに関連付けられます。ファイルが処理されるときは <code>imap-file</code>
+    ハンドラが使用されますので、そのファイルは <module>mod_imagemap</module>
+    のイメージマップファイルとして扱われることになります。</p>
 </section>
 
-<section id="contentencoding"><title>$B%3%s%F%s%H%(%s%3!<%G%#%s%0(B</title>
-    <p>$BFCDj$N(B MIME $B%?%$%W$N%U%!%$%k$O%$%s%?!<%M%C%H$G$NE>Aw$r4JC1$K$9$k$?$a$K!"(B
-    $B$5$i$KId9f2=$9$k$3$H$,$G$-$^$9!#$3$l$ODL>o$O(B <code>gzip</code> $B$N(B
-    $B$h$&$J05=L$N$3$H$r;X$7$^$9$,!"(B<code>pgp</code> $B$N$h$&$J0E9f2=$d!"(B
-    $B%P%$%J%j%U%!%$%k$r(B ASCII ($B%F%-%9%H(B) $B7A<0$GAw$k$?$a$K9M0F$5$l$?(B
-    UUencoding $B$N$3$H$r;X$9$3$H$b$"$j$^$9!#(B</p>
+<section id="contentencoding"><title>コンテントエンコーディング</title>
+    <p>特定の MIME タイプのファイルはインターネットでの転送を簡単にするために、
+    さらに符号化することができます。これは通常は <code>gzip</code> の
+    ような圧縮のことを指しますが、<code>pgp</code> のような暗号化や、
+    バイナリファイルを ASCII (テキスト) 形式で送るために考案された
+    UUencoding のことを指すこともあります。</p>
 
     <p><a href="http://www.ietf.org/rfc/rfc2616.txt">HTTP/1.1 RFC</a> 
-    14.11 $B@a$G$O<!$N$h$&$K5-=R$5$l$F$$$^$9!#(B</p>
+    14.11 節では次のように記述されています。</p>
 
     <blockquote cite="http://www.ietf.org/rfc/rfc2616.txt">
-      <p>Content-Encoding $B%(%s%F%#%F%#%X%C%@%U%#!<%k%I$O%a%G%#%"%?%$%W$N(B
-      $B=$>~;R$H$7$F;H$o$l$^$9!#$=$l$,B8:_$7$F$$$l$P!"CM$O%(%s%F%#%F%#%\%G%#$K(B
-      $B$I$NDI2C$NId9f2=$,E,MQ$5$l$?$+$r<($7!"(BContent-Type $B%X%C%@%U%#!<%k%I$K(B
-      $B=q$+$l$F$$$k%a%G%#%"%?%$%W$rF@$k$?$a$K$I$NI|9f5!9=$rE,MQ$9$Y$-$+!"$b(B
-      $B<($7$F$$$k$3$H$K$J$j$^$9!#(BContent-Encoding $B$O<g$K!"85$N%a%G%#%"%?%$%W$N(B
-      $BF10l@-$r<:$&$3$H$J$/%I%-%e%a%s%H$r05=L$9$k$3$H$r2DG=$K$9$k$?$a$K(B
-      $B;HMQ$5$l$^$9!#(B</p>
+      <p>Content-Encoding エンティティヘッダフィールドはメディアタイプの
+      修飾子として使われます。それが存在していれば、値はエンティティボディに
+      どの追加の符号化が適用されたかを示し、Content-Type ヘッダフィールドに
+      書かれているメディアタイプを得るためにどの復号機構を適用すべきか、も
+      示していることになります。Content-Encoding は主に、元のメディアタイプの
+      同一性を失うことなくドキュメントを圧縮することを可能にするために
+      使用されます。</p>
     </blockquote>
 
-    <p>$BJ#?t$N%U%!%$%k3HD%;R(B ($BJ#?t$N3HD%;R$K$D$$$F$O(B <a
-    href="#multipleext">$B>e$N@a(B</a> $B$r;2>H(B) $B;H$&$3$H$G!"(B
-    $B%U%!%$%k$N(B<em>$B%?%$%W(B</em>$B$d(B<em>$B%(%s%3!<%G%#%s%0(B</em>$B$r;XDj$9$k$3$H$,(B
-    $B$G$-$^$9!#(B</p>
+    <p>複数のファイル拡張子 (複数の拡張子については <a
+    href="#multipleext">上の節</a> を参照) 使うことで、
+    ファイルの<em>タイプ</em>や<em>エンコーディング</em>を指定することが
+    できます。</p>
 
-    <p>$B$?$H$($P!"(BMicrosoft Word $B$N%I%-%e%a%s%H$,$"$j!"%5%$%:$r>.$5$/$9$k$?$a$K(B
-    pkzip $B$5$l$F$$$k$H$7$^$9!#(B<code>.doc</code> $B3HD%;R$,(B Microsoft Word $B$N(B
-    $B%U%!%$%k%?%$%W$H4XO"IU$1$i$l$F$$$F!"(B<code>.zip</code> $B3HD%;R$,(B
-    pkzip $B%U%!%$%k%(%s%3!<%G%#%s%0$H4XO"IU$1$i$l$F$$$k$H!"%U%!%$%k(B
-    <code>Resume.doc.zip</code> $B$O(B pkzip $B$5$l$?(B Word $B%I%-%e%a%s%H$G$"$k(B
-    $B$H$$$&$3$H$,$o$+$j$^$9!#(B</p>
+    <p>たとえば、Microsoft Word のドキュメントがあり、サイズを小さくするために
+    pkzip されているとします。<code>.doc</code> 拡張子が Microsoft Word の
+    ファイルタイプと関連付けられていて、<code>.zip</code> 拡張子が
+    pkzip ファイルエンコーディングと関連付けられていると、ファイル
+    <code>Resume.doc.zip</code> は pkzip された Word ドキュメントである
+    ということがわかります。</p>
 
-    <p>$B%/%i%$%"%s%H$N%V%i%&%6$K%(%s%3!<%G%#%s%0J}K!$rCN$i$;$k$?$a$K!"(B
-    Apache $B$O%j%=!<%9$H6&$K(B <code>Content-Encoding</code> $B%X%C%@$r(B
-    $BAw$j$^$9!#(B</p>
+    <p>クライアントのブラウザにエンコーディング方法を知らせるために、
+    Apache はリソースと共に <code>Content-Encoding</code> ヘッダを
+    送ります。</p>
 
     <example>Content-encoding: pkzip</example>
 </section>
 
-<section id="charset-lang"><title>$BJ8;z%;%C%H$H8@8l(B</title>
-    <p>$B%U%!%$%k%?%$%W$H%U%!%$%k%(%s%3!<%G%#%s%0$NB>$K=EMW$J>pJs$O(B
-    $B%I%-%e%a%s%H$N=q$+$l$F$$$k8@8l$H!"$I$NJ8;z%;%C%H$G%U%!%$%k$,I=<((B
-    $B$5$l$k$Y$-$+!"$H$$$&$b$N$G$9!#$?$H$($P!"%I%-%e%a%s%H$O%Y%H%J%`$N(B
-    $B%"%k%U%!%Y%C%H$d%-%j%kJ8;z$G=q$+$l$F$$$F!"$=$N$h$&$KI=<($5$l$k(B
-    $BI,MW$,$"$k$+$b$7$l$^$;$s!#$3$N>pJs$b$^$?!"(BHTTP $B%X%C%@$G(B
-    $BAw?.$5$l$^$9!#(B</p>
+<section id="charset-lang"><title>文字セットと言語</title>
+    <p>ファイルタイプとファイルエンコーディングの他に重要な情報は
+    ドキュメントの書かれている言語と、どの文字セットでファイルが表示
+    されるべきか、というものです。たとえば、ドキュメントはベトナムの
+    アルファベットやキリル文字で書かれていて、そのように表示される
+    必要があるかもしれません。この情報もまた、HTTP ヘッダで
+    送信されます。</p>
 
-    <p>$BJ8;z%;%C%H!"8@8l!"%(%s%3!<%G%#%s%0!"(Bmime $B%?%$%W$O$9$Y$F(B
-    $B%3%s%F%s%H%M%4%7%(!<%7%g%s(B (<module>mod_negotiation</module> $B;2>H(B)
-    $B$N:GCf$K!"J#?t$NJ8;z%;%C%H!"8@8l!"%(%s%3!<%G%#%s%0!"(BMIME $B%?%$%W$+$i$J$k(B
-    $BBeBXJ*$,$"$k$H$-$K$I$N%I%-%e%a%s%H$r%/%i%$%"%s%H$KAw$k$N$+$r(B
-    $B7hDj$9$k$H$-$K;H$o$l$^$9!#(B<directive module="mod_mime">AddCharset</directive>,
+    <p>文字セット、言語、エンコーディング、mime タイプはすべて
+    コンテントネゴシエーション (<module>mod_negotiation</module> 参照)
+    の最中に、複数の文字セット、言語、エンコーディング、MIME タイプからなる
+    代替物があるときにどのドキュメントをクライアントに送るのかを
+    決定するときに使われます。<directive module="mod_mime">AddCharset</directive>,
     <directive module="mod_mime">AddEncoding</directive>, <directive
     module="mod_mime">AddLanguage</directive>,
-    <directive module="mod_mime">AddType</directive> $B$N3F%G%#%l%/%F%#%V$G:n@.$5$l$?(B
-    $B3HD%;R$N4XO"IU$1(B ($B$H(B <directive module="mod_mime_magic"
-    >MimeMagicFile</directive> $B$G%j%9%H$5$l$F$$$k(B
-    $B3HD%;R(B) $B$,$3$NA*Br$K;22C$7$^$9!#(B<directive module="mod_mime"
+    <directive module="mod_mime">AddType</directive> の各ディレクティブで作成された
+    拡張子の関連付け (と <directive module="mod_mime_magic"
+    >MimeMagicFile</directive> でリストされている
+    拡張子) がこの選択に参加します。<directive module="mod_mime"
     >AddHandler</directive>,
     <directive module="mod_mime">AddInputFilter</directive>,
-    <directive module="mod_mime">AddOutputFilter</directive> $B$N(B
-    $B3F%G%#%l%/%F%#%V$G$N$_4XO"IU$1$i$l$F$$$k3HD%;R$O(B
-    <directive module="mod_mime">MultiviewsMatch</directive> $B%G%#%l%/%F%#%V$r(B
-    $B;H$&$3$H$G%^%C%A$N(B
-    $B=hM}$K4^$a$k$3$H$b30$9$3$H$b$G$-$^$9!#(B</p>
+    <directive module="mod_mime">AddOutputFilter</directive> の
+    各ディレクティブでのみ関連付けられている拡張子は
+    <directive module="mod_mime">MultiviewsMatch</directive> ディレクティブを
+    使うことでマッチの
+    処理に含めることも外すこともできます。</p>
 
     <section id="charset"><title>Charset</title>
-      <p>$B$5$i$K>pJs$rEA$($k$?$a$K!"(BApache $B$OJ8=q$N8@8l$r(B
-      <code>Content-Language</code> $B%X%C%@$GAw$k$3$H$b$"$j$^$9!#(B
-      $B$^$?!">pJs$r@5$7$/I=<($9$k$?$a$K;HMQ$9$Y$-J8;z%;%C%H$r<($9$?$a$K(B
-      <code>Conten-Type</code> $B%X%C%@$K>pJs$rDI2C$9$k$3$H$b$"$j$^$9!#(B</p>
+      <p>さらに情報を伝えるために、Apache は文書の言語を
+      <code>Content-Language</code> ヘッダで送ることもあります。
+      また、情報を正しく表示するために使用すべき文字セットを示すために
+      <code>Conten-Type</code> ヘッダに情報を追加することもあります。</p>
 
       <example>
         Content-Language: en, fr<br />
 	Content-Type: text/plain; charset=ISO-8859-1
       </example>
 
-      <p>$B8@8l$N;XDj$OFsJ8;z$NC;=L7A$G9T$J$o$l$^$9!#(B<code>charset</code> $B$,(B
-      $B;HMQ$9$Y$-J8;z%;%C%H$NL>A0$G$9!#(B</p>
+      <p>言語の指定は二文字の短縮形で行なわれます。<code>charset</code> が
+      使用すべき文字セットの名前です。</p>
     </section>
 </section>
 
 <directivesynopsis>
 <name>AddCharset</name>
-<description>$B%U%!%$%kL>$N3HD%;R$r;XDj$5$l$?J8;z%;%C%H$K%^%C%W$9$k(B</description>
+<description>ファイル名の拡張子を指定された文字セットにマップする</description>
 <syntax>AddCharset <var>charset</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -224,32 +224,32 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>AddCharset</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $BM?$($i$l$?3HD%;R$r;XDj$5$l$?(B charset $B$K%^%C%W$7$^$9!#(B<var>charset</var> 
-    $B$O!"3HD%;R(B <var>extension</var> $B$r4^$s$G$$$k%U%!%$%kL>$N(B 
+    <p><directive>AddCharset</directive> ディレクティブは、
+    与えられた拡張子を指定された charset にマップします。<var>charset</var> 
+    は、拡張子 <var>extension</var> を含んでいるファイル名の 
     <a href="http://www.iana.org/assignments/character-sets">MIME charset
-    $B%Q%i%a!<%?(B</a>$B$G$9!#?7$7$$%^%C%T%s%0$O4{$K$"$kB>$N%^%C%T%s%0$KDI2C$5$l!"F1$83HD%;R(B
-    <var>extension</var> $B$N$?$a$N%^%C%T%s%0$r>e=q$-$7$^$9!#(B</p>
+    パラメータ</a>です。新しいマッピングは既にある他のマッピングに追加され、同じ拡張子
+    <var>extension</var> のためのマッピングを上書きします。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       AddLanguage ja .ja<br />
       AddCharset EUC-JP .euc<br />
       AddCharset ISO-2022-JP .jis<br />
       AddCharset SHIFT_JIS .sjis
     </example>
 
-    <p>$B$3$N>l9g!"%I%-%e%a%s%H(B <code>xxxx.ja.jis</code> $B$O(B charset $B$,(B
-    <code>ISO-2022-JP</code> $B$NF|K\8l$N%I%-%e%a%s%H$H$7$F07$o$l$^$9(B
-    (<code>xxxx.jis.ja</code> $B$bF1MM(B)$B!#(B<directive>AddCharset</directive>
-    $B%G%#%l%/%F%#%V$O!"%I%-%e%a%s%H$,E,@Z$K2r<a$5$lI=<($5$l$k$h$&$K!"(B
-    $B%I%-%e%a%s%H$N(B charset $B$N>pJs$r%/%i%$%"%s%H$K65$($k$?$a$KLr$KN)$A$^$9!#(B
-    $B$^$?!"%5!<%P$,%/%i%$%"%s%H$N(B charset
-    $B$NM%@hEY$K4p$E$$$FJ#?t$N%I%-%e%a%s%H$NCf$+$i%I%-%e%a%s%H$rA*$V(B<a
+    <p>この場合、ドキュメント <code>xxxx.ja.jis</code> は charset が
+    <code>ISO-2022-JP</code> の日本語のドキュメントとして扱われます
+    (<code>xxxx.jis.ja</code> も同様)。<directive>AddCharset</directive>
+    ディレクティブは、ドキュメントが適切に解釈され表示されるように、
+    ドキュメントの charset の情報をクライアントに教えるために役に立ちます。
+    また、サーバがクライアントの charset
+    の優先度に基づいて複数のドキュメントの中からドキュメントを選ぶ<a
     href="../content-negotiation.html"
-    >$B%3%s%F%s%H%M%4%7%(!<%7%g%s(B</a>$B$N$?$a$K$bLr$KN)$A$^$9!#(B</p>
+    >コンテントネゴシエーション</a>のためにも役に立ちます。</p>
 
-    <p>$B0z?t(B <var>extension</var>$B$OBgJ8;z>.J8;z$r6hJL$;$:!"(B
-    $B:G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p>引数 <var>extension</var>は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 <seealso><directive module="core">AddDefaultCharset</directive></seealso>
@@ -257,8 +257,8 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <directivesynopsis>
 <name>AddEncoding</name>
-<description>$B%U%!%$%kL>$N3HD%;R$r;XDj$5$l$?%(%s%3!<%G%#%s%0(B
-$B$K%^%C%W$9$k(B</description>
+<description>ファイル名の拡張子を指定されたエンコーディング
+にマップする</description>
 <syntax>AddEncoding <var>MIME-enc</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -266,46 +266,46 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>AddEncoding</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $BM?$($i$l$?3HD%;R$r;XDj$5$l$?%(%s%3!<%G%#%s%0$K%^%C%W$7$^$9!#(B
-    <var>MIME-enc</var> $B$O!"3HD%;R(B <var>extension</var>
-    $B$r4^$s$@%I%-%e%a%s%H$K;HMQ$9$k(B MIME $B%(%s%3!<%G%#%s%0$G$9!#(B
-    $B$3$N?7$7$$%^%C%T%s%0$O4{$K$"$kB>$N%^%C%T%s%0$KDI2C$5$l!"(B
-    $BF1$83HD%;R(B <var>extension</var> $B$N$?$a$N%^%C%T%s%0$r>e=q$-$7$^$9!#(B</p>
+    <p><directive>AddEncoding</directive> ディレクティブは、
+    与えられた拡張子を指定されたエンコーディングにマップします。
+    <var>MIME-enc</var> は、拡張子 <var>extension</var>
+    を含んだドキュメントに使用する MIME エンコーディングです。
+    この新しいマッピングは既にある他のマッピングに追加され、
+    同じ拡張子 <var>extension</var> のためのマッピングを上書きします。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       <code>AddEncoding x-gzip .gz<br />
        AddEncoding x-compress .Z</code>
     </example>
 
-    <p>$B$3$l$O!"3HD%;R(B <code>.gz</code> $B$r4^$`%U%!%$%kL>$,(B <code>x-gzip</code>
-    $B%(%s%3!<%G%#%s%0$r;H$C$F%(%s%3!<%I$5$l$F$$$k$3$H$H!"3HD%;R(B <code>.Z</code>
-    $B$r4^$`%U%!%$%kL>$,(B <code>x-compress</code>
-    $B$G%(%s%3!<%I$5$l$F$$$k$3$H$r;XDj$7$^$9!#(B</p>
+    <p>これは、拡張子 <code>.gz</code> を含むファイル名が <code>x-gzip</code>
+    エンコーディングを使ってエンコードされていることと、拡張子 <code>.Z</code>
+    を含むファイル名が <code>x-compress</code>
+    でエンコードされていることを指定します。</p>
 
-    <p>$B8E$$%/%i%$%"%s%H$O(B <code>x-zip</code> $B$H(B <code>x-compress</code>
-    $B$,JV$C$F$/$k$3$H$r4|BT$7$^$9$,!"I8=`5,3J$G$O$=$l$>$l(B
-    <code>gzip</code> $B$H(B <code>compress</code>
-    $B$HEy2A$G$"$k$3$H$K$J$C$F$$$^$9!#(BApache
-    $B$O!"%3%s%F%s%H%(%s%3!<%G%#%s%0$NHf3S$r$9$k$H$-$K$O!"@hF,$K$"$k(B
-    <code>x-</code> $B$rL5;k$7$^$9!#(BApache
-    $B$,%(%s%3!<%G%#%s%0IU$-$G1~Ez$rJV$9$H$-$O!"%/%i%$%"%s%H$,MW5a$7$?7A<0(B
-    (<em>$B$9$J$o$A(B</em>$B!"(B<code>x-foo</code> $B$d(B <code>foo</code>)
-    $B$r;HMQ$7$^$9!#MW$9$k$K!"$3$NFs$D$N%(%s%3!<%G%#%s%0$N>l9g$O>o$K(B
-    <code>x-gzip</code> $B$H(B <code>x-compress</code>
-    $B$r;H$&$Y$-$G$"$k!"$H$$$&$3$H$G$9!#(B<code>deflate</code>
-    $B$N$h$&$J$h$j?7$7$$%(%s%3!<%G%#%s%0$G$O!"(B<code>x-</code>
-    $B$J$7$G;XDj$7$F$/$@$5$$!#(B
+    <p>古いクライアントは <code>x-zip</code> と <code>x-compress</code>
+    が返ってくることを期待しますが、標準規格ではそれぞれ
+    <code>gzip</code> と <code>compress</code>
+    と等価であることになっています。Apache
+    は、コンテントエンコーディングの比較をするときには、先頭にある
+    <code>x-</code> を無視します。Apache
+    がエンコーディング付きで応答を返すときは、クライアントが要求した形式
+    (<em>すなわち</em>、<code>x-foo</code> や <code>foo</code>)
+    を使用します。要するに、この二つのエンコーディングの場合は常に
+    <code>x-gzip</code> と <code>x-compress</code>
+    を使うべきである、ということです。<code>deflate</code>
+    のようなより新しいエンコーディングでは、<code>x-</code>
+    なしで指定してください。
     </p>
 
-    <p>$B0z?t(B <var>extension</var> $B$OBgJ8;z>.J8;z$r6hJL$;$:!"(B
-    $B:G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddHandler</name>
-<description>$B%U%!%$%kL>$N3HD%;R$r;XDj$5$l$?%O%s%I%i$K%^%C%W$9$k(B</description>
+<description>ファイル名の拡張子を指定されたハンドラにマップする</description>
 <syntax>AddHandler <var>handler-name</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -313,52 +313,52 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <override>FileInfo</override>
 
 <usage>
-    <p>$B3HD%;R(B <var>extension</var> $B$,L>A0$K$"$k%U%!%$%k$O;XDj$5$l$?(B <a
-    href="../handler.html">handler-name</a> $B$K07$o$l$^$9!#(B
-    $B$3$N?7$7$$%^%C%T%s%0$O4{$K$"$kB>$N%^%C%T%s%0$KDI2C$5$l!"(B
-    $BF1$83HD%;R(B <var>extension</var>
-    $B$N$?$a$N%^%C%T%s%0$r>e=q$-$7$^$9!#$?$H$($P!"3HD%;R(B
-    "<code>.cgi</code>" $B$G=*$o$k%U%!%$%k$r(B CGI
-    $B%9%/%j%W%H$H$7$F07$$$?$$$H$-$O!"0J2<$N@_Dj$r$7$^$9!#(B</p>
+    <p>拡張子 <var>extension</var> が名前にあるファイルは指定された <a
+    href="../handler.html">handler-name</a> に扱われます。
+    この新しいマッピングは既にある他のマッピングに追加され、
+    同じ拡張子 <var>extension</var>
+    のためのマッピングを上書きします。たとえば、拡張子
+    "<code>.cgi</code>" で終わるファイルを CGI
+    スクリプトとして扱いたいときは、以下の設定をします。</p>
 
     <example>
       AddHandler cgi-script .cgi
     </example>
 
-    <p>$B$3$l$r(B httpd.conf $B%U%!%$%k$K5-=R$9$k$3$H$G!"3HD%;R(B
-    "<code>.cgi</code>" $B$N%U%!%$%k$O(B CGI $B%W%m%0%i%`$H$7$F07$o$l$^$9!#(B
+    <p>これを httpd.conf ファイルに記述することで、拡張子
+    "<code>.cgi</code>" のファイルは CGI プログラムとして扱われます。
     </p>
 
-    <p>$B0z?t(B <var>extension</var> $B$OBgJ8;z>.J8;z$r6hJL$;$:!"(B
-    $B:G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
 </usage>
 <seealso><directive module="core">SetHandler</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddInputFilter</name>
-<description>$B%U%!%$%k$N3HD%;R$r%/%i%$%"%s%H$N%j%/%(%9%H$r=hM}$9$k(B
-    $B%U%#%k%?$K%^%C%W$9$k(B</description>
+<description>ファイルの拡張子をクライアントのリクエストを処理する
+    フィルタにマップする</description>
 <syntax>AddInputFilter <var>filter</var>[;<var>filter</var>...]
 <var>extension</var> [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>2.0.26 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>2.0.26 以降で使用可能</compatibility>
 
 <usage>
-    <p><directive>AddInputFilter</directive> $B$O%U%!%$%k$N3HD%;R(B
-    <var>extension</var> $B$r%/%i%$%"%s%H$N%j%/%(%9%H$d(B POST $B$,%5!<%P$KMh$?$H$-$K(B
-    $B=hM}$r$9$k(B<a href="../filter.html">$B%U%#%k%?(B</a>$B$K%^%C%W$7$^$9!#(B
-    $B$3$l$O!"(B<directive module="core">SetInputFilter</directive> $B%G%#%l%/%F%#%V$b(B
-    $B4^$a!"B>$N>l=j$GDj5A$5$l$F$$$k%U%#%k%?$K2C$($i$l$^$9!#(B
-    $B$3$N%^%C%T%s%0$O$9$G$K$"$k$b$N$h$jM%@h$5$l$F%^!<%8$5$l!"(B
-    $BF1$8(B <var>extension</var> $B$KBP$9$k4{B8$N%^%C%T%s%0$r>e=q$-$7$^$9!#(B</p>
+    <p><directive>AddInputFilter</directive> はファイルの拡張子
+    <var>extension</var> をクライアントのリクエストや POST がサーバに来たときに
+    処理をする<a href="../filter.html">フィルタ</a>にマップします。
+    これは、<directive module="core">SetInputFilter</directive> ディレクティブも
+    含め、他の場所で定義されているフィルタに加えられます。
+    このマッピングはすでにあるものより優先されてマージされ、
+    同じ <var>extension</var> に対する既存のマッピングを上書きします。</p>
 
-    <p>$BJ#?t$N%U%#%k%?$r;XDj$9$k$H$-$O!"%G!<%?$r=hM}$9$k=gHV$K%;%_%3%m%s$G(B
-    $B7R$$$G=q$/I,MW$,$"$j$^$9!#%U%#%k%?$H(B <var>extension</var> $B$H$N(B
-    $BN>J}$N0z?t$OBgJ8;z>.J8;z$r6hJL$;$:!"3HD%;R$N:G=i$N%I%C%H$O(B
-    $B$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
+    繋いで書く必要があります。フィルタと <var>extension</var> との
+    両方の引数は大文字小文字を区別せず、拡張子の最初のドットは
+    あってもなくても構いません。</p>
 </usage>
 <seealso><directive module="mod_mime">RemoveInputFilter</directive></seealso>
 <seealso><directive module="core">SetInputFilter</directive></seealso>
@@ -366,7 +366,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <directivesynopsis>
 <name>AddLanguage</name>
-<description>$B%U%!%$%kL>$r;XDj$5$l$?8@8l$K%^%C%W(B</description>
+<description>ファイル名を指定された言語にマップ</description>
 <syntax>AddLanguage <var>MIME-lang</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -374,30 +374,30 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>AddLanguage</directive> $B%G%#%l%/%F%#%V$O!"M?$($i$l$?3HD%;R$r;XDj$5$l$?(B
-    content language $B$K%^%C%W$7$^$9!#(B<var>MIME-lang</var> $B$O!"3HD%;R(B
-    <var>extension</var> $B$r4^$s$G$$$k%U%!%$%kL>$N(B MIME $B$K$*$1$k8@8l$G$9!#(B
-    $B$3$N?7$7$$%^%C%T%s%0$O4{$K$"$k%^%C%T%s%0$KDI2C$5$l!"F1$83HD%;R(B
-    <var>extension</var> $B$N$?$a$N%^%C%T%s%0$r>e=q$-$7$^$9!#(B</p>
+    <p><directive>AddLanguage</directive> ディレクティブは、与えられた拡張子を指定された
+    content language にマップします。<var>MIME-lang</var> は、拡張子
+    <var>extension</var> を含んでいるファイル名の MIME における言語です。
+    この新しいマッピングは既にあるマッピングに追加され、同じ拡張子
+    <var>extension</var> のためのマッピングを上書きします。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       AddEncoding x-compress .Z<br />
       AddLanguage en .en<br />
       AddLanguage fr .fr
     </example>
 
-    <p>$B$3$N>l9g!"(B<code>xxxx.en.Z</code> $B%I%-%e%a%s%H$O(B compress
-    $B$5$l$?1Q8l$N%I%-%e%a%s%H$H$7$F07$o$l$^$9(B (<code>xxxx.Z.en</code>
-    $B$bF1MM(B)$B!#(Bcontent language $B$O%/%i%$%"%s%H$KDLCN$5$l$^$9$,!"(B
-    $B%V%i%&%6$,$3$N>pJs$r;H$&$3$H$O$*$=$i$/$"$j$^$;$s!#(B
+    <p>この場合、<code>xxxx.en.Z</code> ドキュメントは compress
+    された英語のドキュメントとして扱われます (<code>xxxx.Z.en</code>
+    も同様)。content language はクライアントに通知されますが、
+    ブラウザがこの情報を使うことはおそらくありません。
     <directive>AddLanguage</directive>
-    $B%G%#%l%/%F%#%V$O!"%5!<%P$,%/%i%$%"%s%H$N8@8l$NM%@hEY$K4p$E$$$FJ#?t$N(B
-    $B%I%-%e%a%s%H$NCf$+$i%I%-%e%a%s%H$rA*$V(B<a
+    ディレクティブは、サーバがクライアントの言語の優先度に基づいて複数の
+    ドキュメントの中からドキュメントを選ぶ<a
     href="../content-negotiation.html"
-    >$B%3%s%F%s%H%M%4%7%(!<%7%g%s(B</a>$B$N$?$a$K$h$jLr$KN)$A$^$9!#(B</p>
+    >コンテントネゴシエーション</a>のためにより役に立ちます。</p>
 
-    <p>$BJ#?t$N8@8l$,F1$83HD%;R$K3d$jEv$F$i$l$F$$$k$H$-$O!"(B
-    $B:G8e$N$b$N$,;HMQ$5$l$^$9!#$9$J$o$A!"<!$N$h$&$J>l9g!"(B</p>
+    <p>複数の言語が同じ拡張子に割り当てられているときは、
+    最後のものが使用されます。すなわち、次のような場合、</p>
 
     <example>
       AddLanguage en .en<br />
@@ -405,48 +405,48 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
       AddLanguage en-us .en
     </example>
 
-    <p>$B3HD%;R(B <code>.en</code> $B$N$"$k%I%-%e%a%s%H$O(B
-    <code>en-us</code> $B$H$7$F07$o$l$^$9!#(B</p>
+    <p>拡張子 <code>.en</code> のあるドキュメントは
+    <code>en-us</code> として扱われます。</p>
 
-    <p>$B0z?t(B <var>extension</var> $B$OBgJ8;z>.J8;z$r6hJL$;$:!"(B
-    $B:G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
 </usage>
 <seealso><module>mod_negotiation</module></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AddOutputFilter</name>
-<description>$B%U%!%$%kL>$N3HD%;R$r%5!<%P$+$i$N1~Ez$r=hM}$9$k%U%#%k%?$K(B
-    $B%^%C%W$9$k(B</description>
+<description>ファイル名の拡張子をサーバからの応答を処理するフィルタに
+    マップする</description>
 <syntax>AddOutputFilter <var>filter</var>[;<var>filter</var>...]
 <var>extension</var> [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>2.0.26 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>2.0.26 以降で使用可能</compatibility>
 
 <usage>
-    <p><directive>AddOutputFilter</directive> $B%G%#%l%/%F%#%V$O(B
-    $B3HD%;R(B <var>extension</var> $B$r%5!<%P$N1~Ez$,%/%i%$%"%s%H$KAw$i$l$k(B
-    $BA0$K=hM}$9$k(B<a href="../filter.html">$B%U%#%k%?(B</a>$B$rDj5A$7$^$9!#(B
-    $B$3$l$O(B <directive module="core">SetOutputFilter</directive>
-    $B%G%#%l%/%F%#%V$H(B <directive module="core"
-    >AddOutputFilterByType</directive> $B%G%#%l%/%F%#%V(B
-    $B$r4^$a!"B>$N>l=j$GDj5A$5$l$F$$$k%U%#%k%?$K2C$($i$l$^$9!#(B
-    $B$3$N?7$7$$%^%C%T%s%0$O4{$K$"$k%^%C%T%s%0$KDI2C$5$l!"F1$83HD%;R(B
-    <var>extension</var> $B$N$?$a$N%^%C%T%s%0$r>e=q$-$7$^$9!#(B</p>
+    <p><directive>AddOutputFilter</directive> ディレクティブは
+    拡張子 <var>extension</var> をサーバの応答がクライアントに送られる
+    前に処理する<a href="../filter.html">フィルタ</a>を定義します。
+    これは <directive module="core">SetOutputFilter</directive>
+    ディレクティブと <directive module="core"
+    >AddOutputFilterByType</directive> ディレクティブ
+    を含め、他の場所で定義されているフィルタに加えられます。
+    この新しいマッピングは既にあるマッピングに追加され、同じ拡張子
+    <var>extension</var> のためのマッピングを上書きします。</p>
 
-    <p>$BNc$($P!"0J2<$N@_Dj$O$9$Y$F$N(B <code>.shtml</code> $B%U%!%$%k$r(B SSI $B$G=hM}$7!"(B
-    $B$=$N=PNO$r(B <module>mod_deflate</module> $B$r;H$C$F05=L$7$^$9!#(B</p>
+    <p>例えば、以下の設定はすべての <code>.shtml</code> ファイルを SSI で処理し、
+    その出力を <module>mod_deflate</module> を使って圧縮します。</p>
 
     <example>
       AddOutputFilter INCLUDES;DEFLATE shtml
     </example>
 
-    <p>$BJ#?t$N%U%#%k%?$r;XDj$9$k$H$-$O!"%G!<%?$r=hM}$9$k=gHV$K%;%_%3%m%s$G(B
-    $B7R$$$G=q$/I,MW$,$"$j$^$9!#(B<var>filter</var> $B$H(B <var>extension</var> $B$N(B
-    $BN>0z?t$OBgJ8;z>.J8;z$r6hJL$;$:!"3HD%;R$N:G=i$N%I%C%H$O(B
-    $B$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p>複数のフィルタを指定するときは、データを処理する順番にセミコロンで
+    繋いで書く必要があります。<var>filter</var> と <var>extension</var> の
+    両引数は大文字小文字を区別せず、拡張子の最初のドットは
+    あってもなくても構いません。</p>
 </usage>
 <seealso><directive module="mod_mime">RemoveOutputFilter</directive></seealso>
 <seealso><directive module="core">SetOutputFilter</directive></seealso>
@@ -454,7 +454,7 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <directivesynopsis>
 <name>AddType</name>
-<description>$B%U%!%$%kL>$N3HD%;R$r;XDj$5$l$?%3%s%F%s%H%?%$%W$K%^%C%W(B</description>
+<description>ファイル名の拡張子を指定されたコンテントタイプにマップ</description>
 <syntax>AddType <var>MIME-type</var> <var>extension</var>
 [<var>extension</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
@@ -462,28 +462,28 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>AddType</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $BM?$($i$l$?3HD%;R$r;XDj$5$l$?%3%s%F%s%H%?%$%W$K%^%C%W$7$^$9!#(B
-    <var>MIME-type</var> $B$O3HD%;R(B <var>extension</var>
-    $B$r4^$s$@%I%-%e%a%s%H$K;HMQ$9$k(B MIME $B%?%$%W$G$9!#(B
-    $B$3$N?7$7$$%^%C%T%s%0$O4{$K$"$k%^%C%T%s%0$KDI2C$5$l!"F1$83HD%;R(B
-    <var>extension</var> $B$N$?$a$N%^%C%T%s%0$r>e=q$-$7$^$9!#(B
-    $B$3$N%G%#%l%/%F%#%V$O(B MIME $B%?%$%W%U%!%$%k(B (<directive
-    module="mod_mime">TypesConfig</directive> $B%G%#%l%/%F%#%V$r;2>H(B)
-    $B$KL5$$%^%C%T%s%0$rDI2C$9$k$?$a$K;HMQ$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p><directive>AddType</directive> ディレクティブは、
+    与えられた拡張子を指定されたコンテントタイプにマップします。
+    <var>MIME-type</var> は拡張子 <var>extension</var>
+    を含んだドキュメントに使用する MIME タイプです。
+    この新しいマッピングは既にあるマッピングに追加され、同じ拡張子
+    <var>extension</var> のためのマッピングを上書きします。
+    このディレクティブは MIME タイプファイル (<directive
+    module="mod_mime">TypesConfig</directive> ディレクティブを参照)
+    に無いマッピングを追加するために使用することができます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       AddType image/gif .gif
     </example>
 
     <note>
-      $B?7$7$$(B MIME $B%?%$%W$O!"(B<directive module="mod_mime">TypesConfig</directive>
-      $B%U%!%$%k$rJQ99$9$k$N$G$O$J$/!"(B<directive>AddType</directive>
-      $B%G%#%l%/%F%#%V$r;H$C$FDI2C$9$k$3$H$,?d>)$5$l$F$$$^$9!#(B
+      新しい MIME タイプは、<directive module="mod_mime">TypesConfig</directive>
+      ファイルを変更するのではなく、<directive>AddType</directive>
+      ディレクティブを使って追加することが推奨されています。
     </note>
 
-    <p>$B0z?t(B <var>extension</var> $B$OBgJ8;z>.J8;z$r6hJL$;$:!"(B
-    $B:G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p>引数 <var>extension</var> は大文字小文字を区別せず、
+    最初のドットはあってもなくても構いません。</p>
 </usage>
 <seealso><directive module="core">DefaultType</directive></seealso>
 <seealso><directive module="core">ForceType</directive></seealso>
@@ -491,50 +491,50 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <directivesynopsis>
 <name>MultiviewsMatch</name>
-<description>MultiViews $B$G$N%^%C%A%s%0$N8!:w$K4^$^$;$k(B
-$B%U%!%$%k$N%?%$%W$r;XDj$9$k(B</description>
+<description>MultiViews でのマッチングの検索に含ませる
+ファイルのタイプを指定する</description>
 <syntax>MultiviewsMatch Any|NegotiatedOnly|Filters|Handlers
 [Handlers|Filters]</syntax>
 <default>MultiviewsMatch NegotiatedOnly</default>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>2.0.26 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>2.0.26 以降で使用可能</compatibility>
 
 <usage>
-    <p><directive>MultiviewsMatch</directive> $B$r;HMQ$9$k$3$H$G!"(B
-    <a href="mod_negotiation.html">mod_negotiation</a> $B$N(B
-    Multiviews $B$K(B 3 $B<oN`$N0[$J$k5sF0$r$5$;$k$3$H$,$G$-$^$9!#(B
-    Multiviews $B$r;HMQ$9$k$H!"%U%!%$%k(B ($BNc(B <code>index.html</code>)
-    $B$KBP$9$k%j%/%(%9%H$KBP$7$F!"%M%4%7%(!<%7%g%s$9$k3HD%;R$,%Y!<%9$KIU$$$?$b$N(B
-    (<code>index.html.en</code>, <code>index.html.fr</code> $B$d(B
+    <p><directive>MultiviewsMatch</directive> を使用することで、
+    <a href="mod_negotiation.html">mod_negotiation</a> の
+    Multiviews に 3 種類の異なる挙動をさせることができます。
+    Multiviews を使用すると、ファイル (例 <code>index.html</code>)
+    に対するリクエストに対して、ネゴシエーションする拡張子がベースに付いたもの
+    (<code>index.html.en</code>, <code>index.html.fr</code> や
     <code>index.html.gz</code>)
-    $B$r%^%C%A$5$;$k$3$H$,$G$-$^$9!#(B</p>
+    をマッチさせることができます。</p>
 
-    <p><code>NegotiatedOnly</code> $B%*%W%7%g%s$G$O!"%Y!<%9L>$KB3$/3HD%;RA4$F$,(B
-    $B%3%s%F%s%H%M%4%7%(!<%7%g%s$G(B <module>mod_mime</module>
-    $B$,G'<1$9$k3HD%;R(B (<em>$BNc(B</em> $BJ8;z%;%C%H!"%3%s%F%s%H%?%$%W!"8@8l$d%(%s%3!<%G%#%s%0(B)
-    $B$K4XO"IU$1$i$l$F$$$J$1$l$P$J$j$^$;$s!#$3$l$OI{:nMQ$N:G$b>/$J$$(B
-    $B:G$bE*3N$J<BAu$G!"%G%U%)%k%H$K$J$C$F$$$^$9!#(B</p>
+    <p><code>NegotiatedOnly</code> オプションでは、ベース名に続く拡張子全てが
+    コンテントネゴシエーションで <module>mod_mime</module>
+    が認識する拡張子 (<em>例</em> 文字セット、コンテントタイプ、言語やエンコーディング)
+    に関連付けられていなければなりません。これは副作用の最も少ない
+    最も的確な実装で、デフォルトになっています。</p>
 
-    <p>$B%O%s%I%i$H%U%#%k%?$NN>J}$b$7$/$OJRJ}$H4XO"IU$1$i$l$?3HD%;R$r4^$a$k$K$O!"(B
-    <directive>MultiviewsMatch</directive> $B%G%#%l%/%F%#%V$K(B <code>Handlers</code>,
-    <code>Filters</code> $B$^$?$O$=$NN>J}$N%*%W%7%g%s$r%;%C%H$7$^$9!#(B
-    $B$b$7B>$N>r7o$,F1$8$G$"$l$P!":G$b>.$5$$%U%!%$%k$,Aw?.$5$l$^$9!#(B
-    $BNc$($P!"(B500 $BJ8;z$N(B <code>index.html.cgi</code> $B$H(B 1000 $B%P%$%H$N(B 
-    <code>index.html.pl</code> $B$G$"$l$P!"(B<code>.cgi</code> 
-    $B$N%U%!%$%k$,M%@h$5$l$^$9!#(B<code>.asis</code> $B%U%!%$%k$rMxMQ$7$F$$$k%f!<%6$O!"(B
-    <code>.asis</code> $B%U%!%$%k$,(B <code>asis-handler</code> $B$K4XO"IU$1$i$l$F$$$k$H$-$K$O!"(B
-    $B%O%s%I%i%*%W%7%g%s$N;HMQ$r9%$`$G$7$g$&!#(B</p>
+    <p>ハンドラとフィルタの両方もしくは片方と関連付けられた拡張子を含めるには、
+    <directive>MultiviewsMatch</directive> ディレクティブに <code>Handlers</code>,
+    <code>Filters</code> またはその両方のオプションをセットします。
+    もし他の条件が同じであれば、最も小さいファイルが送信されます。
+    例えば、500 文字の <code>index.html.cgi</code> と 1000 バイトの 
+    <code>index.html.pl</code> であれば、<code>.cgi</code> 
+    のファイルが優先されます。<code>.asis</code> ファイルを利用しているユーザは、
+    <code>.asis</code> ファイルが <code>asis-handler</code> に関連付けられているときには、
+    ハンドラオプションの使用を好むでしょう。</p>
 
-    <p>$B:G8e$K!"(B<module>mod_mime</module> $B$,G'<1$7$J$$3HD%;R$G$"$m$&$H$b!"(B
-    $B$I$s$J3HD%;R$G$b%^%C%A$5$;$k(B <code>Any</code> $B$,;HMQ$G$-$^$9!#(B
-    $B$3$N5sF0$O(B Apache 1.3 $B$N$H$-$HF1$8$b$N$G!"M=4|$7$J$$F0:n!"Nc$($P(B <code>.old</code> $B$d(B
-    <code>.bak</code> $B%U%!%$%k$H$$$C$?%&%'%V%^%9%?$,Aw?.$r0U?^$7$F$$$J$$(B
-    $B%U%!%$%k$rAw?.$9$k!"$H$$$C$?F0:n$r9T$J$&2DG=@-$,$"$j$^$9!#(B</p>
+    <p>最後に、<module>mod_mime</module> が認識しない拡張子であろうとも、
+    どんな拡張子でもマッチさせる <code>Any</code> が使用できます。
+    この挙動は Apache 1.3 のときと同じもので、予期しない動作、例えば <code>.old</code> や
+    <code>.bak</code> ファイルといったウェブマスタが送信を意図していない
+    ファイルを送信する、といった動作を行なう可能性があります。</p>
 
-    <p>$BNc$($P<!$N@_Dj$G$O!"%O%s%I%i$d%U%#%k%?$,(B Multiviews $B$K;22C$9$k$3$H$,(B
-    $B$G$-$^$9$7!"L$CN$N%U%!%$%k$O=|30$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>例えば次の設定では、ハンドラやフィルタが Multiviews に参加することが
+    できますし、未知のファイルは除外することができます。</p>
 
     <example>
       MultiviewsMatch Handlers Filters
@@ -547,35 +547,35 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <directivesynopsis>
 <name>DefaultLanguage</name>
-<description>$B$"$k%9%3!<%W$N$9$Y$F$N%U%!%$%k$r;XDj$5$l$?8@8l$K(B
-$B@_Dj$9$k(B</description>
+<description>あるスコープのすべてのファイルを指定された言語に
+設定する</description>
 <syntax>DefaultLanguage <var>MIME-lang</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context><context>.htaccess</context></contextlist>
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>DefaultLanguage</directive> $B%G%#%l%/%F%#%V$O!"(BApache
-    $B$,%G%#%l%/%F%#%V$N%9%3!<%W(B (<em>$BNc$($P(B</em>$B!"$=$N;~E@$N(B
+    <p><directive>DefaultLanguage</directive> ディレクティブは、Apache
+    がディレクティブのスコープ (<em>例えば</em>、その時点の
     <directive module="core" type="section">Directory</directive>
-    $B$NHO0O(B) $B$K$"$k!"L@<(E*$J8@8l3HD%;R(B
-    (<directive module="mod_mime">AddLanguage</directive> $B$G@_Dj$5$l$k(B
-    <code>.fr</code> $B$d(B <code>.de</code>) $B$N$J$$A4$F$N%U%!%$%k$r!";XDj$5$l$?(B
-    <var>MIME-lang</var> $B8@8l$G$"$k$H$_$J$9$h$&$K$7$^$9!#(B
-    $B$3$l$K$h$j!"$9$Y$F$N%U%!%$%kL>$rJQ$($k$3$H$J$/!"(B
-    $B%G%#%l%/%H%j$,%*%i%s%@8l$N%3%s%F%s%H$r4^$s$G$$$k!"(B
-    $B$H$$$&$h$&$J$3$H$r;XDj$9$k$3$H$,$G$-$^$9!#(B
-    $B3HD%;R$r;HMQ$7$F8@8l$r;XDj$9$kJ}K!$H0c$$!"(B
+    の範囲) にある、明示的な言語拡張子
+    (<directive module="mod_mime">AddLanguage</directive> で設定される
+    <code>.fr</code> や <code>.de</code>) のない全てのファイルを、指定された
+    <var>MIME-lang</var> 言語であるとみなすようにします。
+    これにより、すべてのファイル名を変えることなく、
+    ディレクトリがオランダ語のコンテントを含んでいる、
+    というようなことを指定することができます。
+    拡張子を使用して言語を指定する方法と違い、
     <directive>DefaultLanguage</directive>
-    $B$O0l$D$N8@8l$7$+;XDj$G$-$J$$$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    は一つの言語しか指定できないことに注意してください。</p>
 
     <p><directive>DefaultLanguage</directive>
-    $B%G%#%l%/%F%#%V$,M-8z$G$J$/!"%U%!%$%k$K(B
+    ディレクティブが有効でなく、ファイルに
     <directive module="mod_mime">AddLanguage</directive>
-    $B$G@_Dj$5$l$?8@8l$N3HD%;R$,$J$$$H$-$O!"(B
-    $B%U%!%$%k$K$O8@8lB0@-$,$J$$$H$_$J$5$l$^$9!#(B</p>
+    で設定された言語の拡張子がないときは、
+    ファイルには言語属性がないとみなされます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       DefaultLanguage en
     </example>
 </usage>
@@ -584,63 +584,63 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <directivesynopsis>
 <name>ModMimeUsePathInfo</name>
-<description><code>path_info</code> $B%3%s%]!<%M%s%H$r%U%!%$%kL>$N0lIt$H$7$F07$&$h$&$K(B
-<module>mod_mime</module> $B$KDLCN$9$k(B</description>
+<description><code>path_info</code> コンポーネントをファイル名の一部として扱うように
+<module>mod_mime</module> に通知する</description>
 <syntax>ModMimeUsePathInfo On|Off</syntax>
 <default>ModMimeUsePathInfo Off</default>
 <contextlist><context>directory</context></contextlist>
-<compatibility>Apache 2.0.41 $B0J9_(B</compatibility>
+<compatibility>Apache 2.0.41 以降</compatibility>
 
 <usage>
-    <p><directive>ModMimeUsePathInfo</directive> $B%G%#%l%/%F%#%V$O!"(B
-    <module>mod_mime</module> $B$N;}$D%G%#%l%/%F%#%V$r(B
-    $B%j%/%(%9%H$KE,MQ$5$;$k$?$a$K!"%U%!%$%kL>$H(B <code>path_info</code> URL 
-    $B%3%s%]!<%M%s%H$r7k9g$5$;$k$?$a$K;HMQ$7$^$9!#(B
-    $B%G%U%)%k%H$G$O!V(B <code>Off</code> $B!W$G!"(B<code>path_info</code>
-    $B%3%s%]!<%M%s%H$OL5;k$5$l$^$9!#(B</p>
+    <p><directive>ModMimeUsePathInfo</directive> ディレクティブは、
+    <module>mod_mime</module> の持つディレクティブを
+    リクエストに適用させるために、ファイル名と <code>path_info</code> URL 
+    コンポーネントを結合させるために使用します。
+    デフォルトでは「 <code>Off</code> 」で、<code>path_info</code>
+    コンポーネントは無視されます。</p>
 
-    <p>$B$3$N%G%#%l%/%F%#%V$O!"%P!<%A%c%k%U%!%$%k%7%9%F%`$r;HMQ$7$F$$$k:]$K(B
-    $B?d>)$5$l$k%G%#%l%/%F%#%V$G$9!#(B</p>
+    <p>このディレクティブは、バーチャルファイルシステムを使用している際に
+    推奨されるディレクティブです。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ModMimeUsePathInfo On
     </example>
 
-    <p><code>/bar</code> $B$,B8:_$7$F(B (foo.shtml $B$OB8:_$7$J$$(B)
-    <directive>ModMimeUsePathInfo</directive> $B$,(B <code>On</code> $B$G$"$k$H$7$F!"(B
-    <code>/bar/foo.shtml</code> $B$KBP$9$k%j%/%(%9%H$rH/9T$7$?>l9g!"(B
-    <module>mod_mime</module> $B$OF~$C$F$-$?%j%/%(%9%H$r(B
-    <code>/bar/foo.shtml</code> $B$H$7$F07$$!"(B
-    <code>AddOutputFileter INCLUDES .shtml</code> $B$N$h$&$J%G%#%l%/%F%#%V$O(B
-    <code>INCLUDES</code> $B%U%#%k%?$r%j%/%(%9%H$KIU2C$5$;$^$9!#(B
-    <directive>ModMimeUsePathInfo</directive> $B$,@_Dj$5$l$J$1$l$P!"(B
-    <code>INCLUDES</code> $B%U%#%k%?$OIU2C$5$l$^$;$s!#(B</p>
+    <p><code>/bar</code> が存在して (foo.shtml は存在しない)
+    <directive>ModMimeUsePathInfo</directive> が <code>On</code> であるとして、
+    <code>/bar/foo.shtml</code> に対するリクエストを発行した場合、
+    <module>mod_mime</module> は入ってきたリクエストを
+    <code>/bar/foo.shtml</code> として扱い、
+    <code>AddOutputFileter INCLUDES .shtml</code> のようなディレクティブは
+    <code>INCLUDES</code> フィルタをリクエストに付加させます。
+    <directive>ModMimeUsePathInfo</directive> が設定されなければ、
+    <code>INCLUDES</code> フィルタは付加されません。</p>
 </usage>
 <seealso><directive module="core">AcceptPathInfo</directive></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveCharset</name>
-<description>$B%U%!%$%k$N3HD%;R$K4XO"IU$1$i$l$?$9$Y$F$NJ8;z%;%C%H(B
-$B$r2r=|$9$k(B</description>
+<description>ファイルの拡張子に関連付けられたすべての文字セット
+を解除する</description>
 <syntax>RemoveCharset <var>extension</var> [<var>extension</var>]
 ...</syntax>
 <contextlist><context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>2.0.24 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>2.0.24 以降で使用可能</compatibility>
 
 <usage>
-    <p><directive>RemoveCharset</directive> $B%G%#%l%/%F%#%V(B
-    $B$OM?$($i$l$?3HD%;R$K4XO"IU$1$i$l$?J8;z%;%C%H$r<h$j>C$7$^$9!#(B
-    $B$3$l$K$h$j!"%5%V%G%#%l%/%H%j$K$"$k(B <code>.htaccess</code>
-    $B%U%!%$%k$,?F%G%#%l%/%H%j$d%5!<%P$N@_Dj%U%!%$%k(B
-    $B$+$i7Q>5$7$?4XO"IU$1$r<h$j>C$9$3$H$,$G$-$^$9!#Nc$($P(B:</p>
+    <p><directive>RemoveCharset</directive> ディレクティブ
+    は与えられた拡張子に関連付けられた文字セットを取り消します。
+    これにより、サブディレクトリにある <code>.htaccess</code>
+    ファイルが親ディレクトリやサーバの設定ファイル
+    から継承した関連付けを取り消すことができます。例えば:</p>
 
-    <p><var>extension</var> $B$OBgJ8;z>.J8;z$r6hJL$7$^$;$s!#(B
-    $B$^$?!":G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p><var>extension</var> は大文字小文字を区別しません。
+    また、最初のドットはあってもなくても構いません。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       RemoveCharset .html .shtml
     </example>
 </usage>
@@ -648,8 +648,8 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <directivesynopsis>
 <name>RemoveEncoding</name>
-<description>$B%U%!%$%k$N3HD%;R$K4XO"IU$1$i$l$?$9$Y$F$N%3%s%F%s%H%(%s%3!<%G%#%s%0(B
-$B$r2r=|$9$k(B</description>
+<description>ファイルの拡張子に関連付けられたすべてのコンテントエンコーディング
+を解除する</description>
 <syntax>RemoveEncoding <var>extension</var> [<var>extension</var>]
 ...</syntax>
 <contextlist><context>virtual host</context><context>directory</context>
@@ -657,11 +657,11 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>RemoveEncoding</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $BM?$($i$l$?3HD%;R$K4XO"IU$1$i$l$?%(%s%3!<%G%#%s%0$r<h$j>C$7$^$9!#(B
-    $B$3$l$K$h$j!"%5%V%G%#%l%/%H%j$K$"$k(B <code>.htaccess</code>
-    $B%U%!%$%k$,?F%G%#%l%/%H%j$d%5!<%P$N@_Dj%U%!%$%k$+$i7Q>5$7$?4XO"IU$1$r(B
-    $B<h$j>C$9$3$H$,$G$-$^$9!#(B</p>
+    <p><directive>RemoveEncoding</directive> ディレクティブは、
+    与えられた拡張子に関連付けられたエンコーディングを取り消します。
+    これにより、サブディレクトリにある <code>.htaccess</code>
+    ファイルが親ディレクトリやサーバの設定ファイルから継承した関連付けを
+    取り消すことができます。</p>
 
     <example><title>/foo/.htaccess:</title>
       AddEncoding x-gzip .gz<br />
@@ -673,28 +673,28 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
       &lt;/Files&gt;
     </example>
 
-    <p>$B$3$l$O!"(B<code>foo.gz</code> $B$O(B gzip
-    $B$G%(%s%3!<%I$5$l$F$$$k$3$H$r;XDj$7$^$9$,!"(B<code>foo.gz.asc</code>
-    $B$O%(%s%3!<%I$5$l$F$$$J$$%W%l!<%s%F%-%9%H$N(B
-    $B%U%!%$%k$G$"$k$H$$$&$3$H$r;XDj$7$^$9!#(B</p>
+    <p>これは、<code>foo.gz</code> は gzip
+    でエンコードされていることを指定しますが、<code>foo.gz.asc</code>
+    はエンコードされていないプレーンテキストの
+    ファイルであるということを指定します。</p>
 
-    <note><title>$BCm0U(B</title>
-      <p><directive>RemoveEncoding</directive> $B$O(B
+    <note><title>注意</title>
+      <p><directive>RemoveEncoding</directive> は
       <directive module="mod_mime">AddEncoding</directive>
-      $B%G%#%l%/%F%#%V$N(B<em>$B8e(B</em>$B$G=hM}$5$l$^$9$N$G!"(B
-      $BF1$8%G%#%l%/%H%j$N@_DjCf$KN>J}$,8=$l$k$H!"(B
-      $B8e<T$N8z2L$,BG$A>C$5$l$k2DG=@-$,$"$j$^$9!#(B</p>
+      ディレクティブの<em>後</em>で処理されますので、
+      同じディレクトリの設定中に両方が現れると、
+      後者の効果が打ち消される可能性があります。</p>
     </note>
 
-    <p><var>extension</var> $B$OBgJ8;z>.J8;z$r6hJL$7$^$;$s!#(B
-    $B$^$?!":G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p><var>extension</var> は大文字小文字を区別しません。
+    また、最初のドットはあってもなくても構いません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveHandler</name>
-<description>$B%U%!%$%k$N3HD%;R$K4XO"IU$1$i$l$?$9$Y$F$N%O%s%I%i$r(B
-$B2r=|$9$k(B</description>
+<description>ファイルの拡張子に関連付けられたすべてのハンドラを
+解除する</description>
 <syntax>RemoveHandler <var>extension</var> [<var>extension</var>]
 ...</syntax>
 <contextlist><context>virtual host</context><context>directory</context>
@@ -702,11 +702,11 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>RemoveHandler</directive> $B%G%#%l%/%F%#%V(B
-    $B$OM?$($i$l$?3HD%;R$K4XO"IU$1$i$l$?%O%s%I%i$r<h$j>C$7$^$9!#(B
-    $B$3$l$K$h$j!"%5%V%G%#%l%/%H%j$K$"$k(B <code>.htaccess</code>
-    $B%U%!%$%k$,?F%G%#%l%/%H%j$d%5!<%P$N@_Dj%U%!%$%k(B
-    $B$+$i7Q>5$7$?4XO"IU$1$r<h$j>C$9$3$H$,$G$-$^$9!#$?$H$($P(B:</p>
+    <p><directive>RemoveHandler</directive> ディレクティブ
+    は与えられた拡張子に関連付けられたハンドラを取り消します。
+    これにより、サブディレクトリにある <code>.htaccess</code>
+    ファイルが親ディレクトリやサーバの設定ファイル
+    から継承した関連付けを取り消すことができます。たとえば:</p>
 
     <example><title>/foo/.htaccess:</title>
       AddHandler server-parsed .html
@@ -716,35 +716,35 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
       RemoveHandler .html
     </example>
 
-    <p>$B$3$l$O!"(B<code>/foo/bar</code> $B%G%#%l%/%H%j$N(B <code>.html</code>
-    $B%U%!%$%k$O(B SSI (<module>mod_include</module> $B%b%8%e!<%k;2>H(B) $B$G$O$J$/!"(B
-    $BIaDL$N%U%!%$%k$H$7$F07$o$l$k$h$&$K$9$k8z2L$,$"$j$^$9!#(B
+    <p>これは、<code>/foo/bar</code> ディレクトリの <code>.html</code>
+    ファイルは SSI (<module>mod_include</module> モジュール参照) ではなく、
+    普通のファイルとして扱われるようにする効果があります。
     </p>
 
-    <p><var>extension</var> $B$OBgJ8;z>.J8;z$r6hJL$7$^$;$s!#(B
-    $B$^$?!":G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p><var>extension</var> は大文字小文字を区別しません。
+    また、最初のドットはあってもなくても構いません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveInputFilter</name>
-<description>$B%U%!%$%k3HD%;R$K4XO"IU$1$i$l$?F~NO%U%#%k%?$r2r=|$9$k(B</description>
+<description>ファイル拡張子に関連付けられた入力フィルタを解除する</description>
 <syntax>RemoveInputFilter <var>extension</var> [<var>extension</var>]
 ...</syntax>
 <contextlist><context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>2.0.26 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>2.0.26 以降で使用可能</compatibility>
 
 <usage>
-    <p><directive>RemoveInputFilter</directive> $B%G%#%l%/%F%#%V$O(B
-    $B;XDj$5$l$?%U%!%$%k3HD%;R$K4XO"IU$1$i$l$?F~NO%U%#%k%?$r2r=|$7$^$9!#(B
-    $B$3$l$rMxMQ$9$k$3$H$G!"?F%G%#%l%/%H%j$d%5!<%P@_Dj%U%!%$%k$+$i(B
-    $B7Q>5$7$?4XO"IU$1$r(B $B%5%V%G%#%l%/%H%jFb$K$*$$$F(B
-    <code>.htaccess</code> $B%U%!%$%k$G<h$j>C$9$3$H$,$G$-$^$9!#(B</p>
+    <p><directive>RemoveInputFilter</directive> ディレクティブは
+    指定されたファイル拡張子に関連付けられた入力フィルタを解除します。
+    これを利用することで、親ディレクトリやサーバ設定ファイルから
+    継承した関連付けを サブディレクトリ内において
+    <code>.htaccess</code> ファイルで取り消すことができます。</p>
 
-    <p><var>extension</var> $B0z?t$OBgJ8;z>.J8;z$r6hJL$7$^$;$s!#$^$?!"(B
-    $B:G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p><var>extension</var> 引数は大文字小文字を区別しません。また、
+    最初のドットはあってもなくても構いません。</p>
 </usage>
 <seealso><directive module="mod_mime">AddInputFilter</directive></seealso>
 <seealso><directive module="core">SetInputFilter</directive></seealso>
@@ -752,47 +752,47 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <directivesynopsis>
 <name>RemoveLanguage</name>
-<description>$B%U%!%$%k3HD%;R$K4XO"IU$1$i$l$?8@8l$r2r=|$9$k(B</description>
+<description>ファイル拡張子に関連付けられた言語を解除する</description>
 <syntax>RemoveLanguage <var>extension</var> [<var>extension</var>]
 ...</syntax>
 <contextlist><context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>2.0.24 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>2.0.24 以降で使用可能</compatibility>
 
 <usage>
-    <p><directive>RemoveLanguage</directive> $B%G%#%l%/%F%#%V$O(B
-    $B;XDj$5$l$?%U%!%$%k3HD%;R$K4XO"IU$1$i$l$?8@8l$r2r=|$7$^$9!#(B
-    $B$3$l$rMxMQ$9$k$3$H$G!"?F%G%#%l%/%H%j$d%5!<%P@_Dj%U%!%$%k$+$i(B
-    $B7Q>5$7$?4XO"IU$1$r(B $B%5%V%G%#%l%/%H%jFb$K$*$$$F(B
-    <code>.htaccess</code> $B%U%!%$%k$G<h$j>C$9$3$H$,$G$-$^$9!#(B</p>
+    <p><directive>RemoveLanguage</directive> ディレクティブは
+    指定されたファイル拡張子に関連付けられた言語を解除します。
+    これを利用することで、親ディレクトリやサーバ設定ファイルから
+    継承した関連付けを サブディレクトリ内において
+    <code>.htaccess</code> ファイルで取り消すことができます。</p>
 
-    <p><var>extension</var> $B0z?t$OBgJ8;z>.J8;z$r6hJL$7$^$;$s!#$^$?!"(B
-    $B:G=i$N%I%C%H$O$D$$$F$b$D$+$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p><var>extension</var> 引数は大文字小文字を区別しません。また、
+    最初のドットはついてもつかなくても構いません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>RemoveOutputFilter</name>
-<description>$B%U%!%$%k3HD%;R$K4XO"IU$1$i$l$?=PNO%U%#%k%?$r2r=|$9$k(B</description>
+<description>ファイル拡張子に関連付けられた出力フィルタを解除する</description>
 <syntax>RemoveOutputFilter <var>extension</var> [<var>extension</var>]
 ...</syntax>
 <contextlist><context>virtual host</context><context>directory</context>
 <context>.htaccess</context></contextlist>
 <override>FileInfo</override>
-<compatibility>2.0.26 $B0J9_$G$N$_;HMQ2DG=(B</compatibility>
+<compatibility>2.0.26 以降でのみ使用可能</compatibility>
 
 <usage>
-    <p><directive>RemoveOutputFilter</directive> $B%G%#%l%/%F%#%V$O(B
-    $B;XDj$5$l$?%U%!%$%k3HD%;R$K4XO"IU$1$i$l$?=PNO%U%#%k%?$r2r=|$7$^$9!#(B
-    $B$3$l$rMxMQ$9$k$3$H$G!"?F%G%#%l%/%H%j$d%5!<%P@_Dj%U%!%$%k$+$i(B
-    $B7Q>5$7$?4XO"IU$1$r(B $B%5%V%G%#%l%/%H%jFb$K$*$$$F(B
-    <code>.htaccess</code> $B%U%!%$%k$G<h$j>C$9$3$H$,$G$-$^$9!#(B</p>
+    <p><directive>RemoveOutputFilter</directive> ディレクティブは
+    指定されたファイル拡張子に関連付けられた出力フィルタを解除します。
+    これを利用することで、親ディレクトリやサーバ設定ファイルから
+    継承した関連付けを サブディレクトリ内において
+    <code>.htaccess</code> ファイルで取り消すことができます。</p>
 
-    <p><var>extension</var> $B$OBgJ8;z>.J8;z$r6hJL$7$^$;$s!#(B
-    $B$^$?!":G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p><var>extension</var> は大文字小文字を区別しません。
+    また、最初のドットはあってもなくても構いません。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       RemoveOutputFilter shtml
     </example>
 </usage>
@@ -801,8 +801,8 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 
 <directivesynopsis>
 <name>RemoveType</name>
-<description>$B%U%!%$%k$N3HD%;R$H4XO"IU$1$i$l$?%3%s%F%s%H%?%$%W$r(B
-$B2r=|$9$k(B</description>
+<description>ファイルの拡張子と関連付けられたコンテントタイプを
+解除する</description>
 <syntax>RemoveType <var>extension</var> [<var>extension</var>]
 ...</syntax>
 <contextlist><context>virtual host</context><context>directory</context>
@@ -810,78 +810,78 @@ module="mod_mime_magic">MimeMagicFile</directive></seealso>
 <override>FileInfo</override>
 
 <usage>
-    <p><directive>RemoveType</directive> $B%G%#%l%/%F%#%V$OM?$($i$l$?3HD%;R$N(B
-    MIME $B%?%$%W$N4XO"IU$1$r<h$j>C$7$^$9!#$3$l$K$h$j!"(B
-    $B%5%V%G%#%l%/%H%j$K$"$k(B <code>.htaccess</code>
-    $B%U%!%$%k$,?F%G%#%l%/%H%j$d%5!<%P$N@_Dj%U%!%$%k$+$i7Q>5$7$?(B
-    $B4XO"IU$1$r<h$j>C$9$3$H$,$G$-$^$9!#$?$H$($P(B:</p>
+    <p><directive>RemoveType</directive> ディレクティブは与えられた拡張子の
+    MIME タイプの関連付けを取り消します。これにより、
+    サブディレクトリにある <code>.htaccess</code>
+    ファイルが親ディレクトリやサーバの設定ファイルから継承した
+    関連付けを取り消すことができます。たとえば:</p>
 
     <example><title>/foo/.htaccess:</title>
       RemoveType .cgi
     </example>
 
-    <p>$B$3$l$O(B <code>/foo/</code> $B%G%#%l%/%H%j0J2<$N(B <code>.cgi</code>
-    $B%U%!%$%k$NFCJL$J07$$$r<h$j>C$7$^$9!#%U%!%$%k$O(B <directive
-    module="core">DefaultType</directive> $B$H$7$F07$o$l$^$9!#(B</p>
+    <p>これは <code>/foo/</code> ディレクトリ以下の <code>.cgi</code>
+    ファイルの特別な扱いを取り消します。ファイルは <directive
+    module="core">DefaultType</directive> として扱われます。</p>
 
-    <note><title>$BCm0U(B</title>
-      <p><directive>RemoveType</directive> $B%G%#%l%/%F%#%V$O(B
+    <note><title>注意</title>
+      <p><directive>RemoveType</directive> ディレクティブは
       <directive module="mod_mime">AddType</directive> 
-      $B%G%#%l%/%F%#%V$N(B<em>$B8e(B</em>$B$K=hM}$5$l$^$9$N$G!"(B
-      $BN>J}$,F1$8%G%#%l%/%H%j$N@_DjCf$K8=$l$?>l9g!"(B
-      $B8e<T$N8z2L$,BG$A>C$5$l$k2DG=@-$,$"$j$^$9!#(B</p>
+      ディレクティブの<em>後</em>に処理されますので、
+      両方が同じディレクトリの設定中に現れた場合、
+      後者の効果が打ち消される可能性があります。</p>
     </note>
 
-    <p><var>extension</var> $B$OBgJ8;z>.J8;z$r6hJL$7$^$;$s!#(B
-    $B$^$?!":G=i$N%I%C%H$O$"$C$F$b$J$/$F$b9=$$$^$;$s!#(B</p>
+    <p><var>extension</var> は大文字小文字を区別しません。
+    また、最初のドットはあってもなくても構いません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>TypesConfig</name>
-<description><code>mime.types</code> $B%U%!%$%k$N0LCV(B</description>
+<description><code>mime.types</code> ファイルの位置</description>
 <syntax>TypesConfig <var>file-path</var></syntax>
 <default>TypesConfig conf/mime.types</default>
 <contextlist><context>server config</context></contextlist>
 
 <usage>
-    <p><directive>TypesConfig</directive> $B%G%#%l%/%F%#%V$O!"(BMIME
-    $B%?%$%W@_Dj%U%!%$%k$N0LCV$r@_Dj$7$^$9!#(B<var>filename</var> $B$O(B
-    <directive module="core">ServerRoot</directive> $B$+$i$NAjBP%Q%9$G$9!#(B
-    $B$3$N%U%!%$%k$O%U%!%$%k$N3HD%;R$+$i%3%s%F%s%H%?%$%W$X$N(B
-    $B%G%U%)%k%H$N%^%C%T%s%0$r@_Dj$7$^$9!#(B
-    $B$[$H$s$I$N4IM}<T$O!"$h$/;H$o$l$k%U%!%$%kL>$N3HD%;R$r(B
-    IANA $B$KEPO?$5$l$?%3%s%F%s%H%?%$%W$K4XO"IU$1$F$$$k!"(B
-    Apache $B$N(B <code>mime.types</code> $B%U%!%$%k$r;H$$$^$9!#(B
-    $B8=:_$N0lMw$O(B <a href=
+    <p><directive>TypesConfig</directive> ディレクティブは、MIME
+    タイプ設定ファイルの位置を設定します。<var>filename</var> は
+    <directive module="core">ServerRoot</directive> からの相対パスです。
+    このファイルはファイルの拡張子からコンテントタイプへの
+    デフォルトのマッピングを設定します。
+    ほとんどの管理者は、よく使われるファイル名の拡張子を
+    IANA に登録されたコンテントタイプに関連付けている、
+    Apache の <code>mime.types</code> ファイルを使います。
+    現在の一覧は <a href=
     "http://www.iana.org/assignments/media-types/index.html"
     >http://www.iana.org/assignments/media-types/index.html</a>
-    $B$G4IM}$5$l$F$$$^$9!#$3$l$O!"<gMW$J%a%G%#%"%?%$%W$NDj5A$rDs6!$7$F!"(B
-    $BI,MW$H$3$m$r(B <directive module="mod_mime">AddType</directive> $B$G(B
-    $B>e=q$-$9$k!"$H$$$&J}K!$G(B <code>httpd.conf</code> $B$r4JN,$K$7$^$9!#(B
-    <code>mime.types</code> $B$O%5!<%P$r%"%C%W%0%l!<%I$7$?$H$-$K(B
-    $BCV$-49$($i$l$k$+$b$7$l$J$$$N$G!"$=$N%U%!%$%k$rD>@\(B
-    $BJT=8$7$J$$$G$/$@$5$$!#(B</p>
+    で管理されています。これは、主要なメディアタイプの定義を提供して、
+    必要ところを <directive module="mod_mime">AddType</directive> で
+    上書きする、という方法で <code>httpd.conf</code> を簡略にします。
+    <code>mime.types</code> はサーバをアップグレードしたときに
+    置き換えられるかもしれないので、そのファイルを直接
+    編集しないでください。</p>
 
-    <p>$B%U%!%$%k$O!"(B<directive module="mod_mime">AddType</directive>
-    $B%G%#%l%/%F%#%V$N0z?t$HF1$87A<0$N9T$G9=@.$5$l$^$9!#(B</p>
+    <p>ファイルは、<directive module="mod_mime">AddType</directive>
+    ディレクティブの引数と同じ形式の行で構成されます。</p>
 
     <example>
       <var>MIME-type</var> [<var>extension</var>] ...
     </example>
 
-    <p>$B3HD%;R$NBgJ8;z>.J8;z$O6hJL$5$l$^$;$s!#6u9T$d%O%C%7%e(B (`#') 
-    $B$G;O$^$k9T$OL5;k$5$l$^$9!#(B</p>
+    <p>拡張子の大文字小文字は区別されません。空行やハッシュ (`#') 
+    で始まる行は無視されます。</p>
 
     <note>
-      (1) IANA $B$K4{$KEPO?$5$l$F$$$k!"$"$k$$$O(B (2)
-      $B9-$/<u$1F~$l$i$l$F$$$F%W%i%C%H%[!<%`4V$G%U%!%$%k3HD%;R$K>WFM$,$J$$!"(B
-      $B$H$$$&>l9g$G$J$1$l$P!"G[I[Cf$N(B <code>mime.types</code>
-      $B%U%!%$%k$K?7$?$J$b$N$rEPO?$9$k$h$&$K(B
-      Apache HTTP Server Project $B$K%j%/%(%9%H$7$J$$$G$/$@$5$$!#(B
-      <code>category/x-subtype</code> $B$N%j%/%(%9%H$O<+F0E*$K5Q2<$5$l$^$9$7!"(B
-      $B8@8l$dJ8;z%;%C%H$NL>A06u4V$G4{$K;HMQ$5$l$F$$$F!">WFM$N2DG=@-$N$"$k(B
-      2 $BJ8;z$N3HD%;R$b5Q2<$5$l$^$9!#(B
+      (1) IANA に既に登録されている、あるいは (2)
+      広く受け入れられていてプラットホーム間でファイル拡張子に衝突がない、
+      という場合でなければ、配布中の <code>mime.types</code>
+      ファイルに新たなものを登録するように
+      Apache HTTP Server Project にリクエストしないでください。
+      <code>category/x-subtype</code> のリクエストは自動的に却下されますし、
+      言語や文字セットの名前空間で既に使用されていて、衝突の可能性のある
+      2 文字の拡張子も却下されます。
     </note>
 </usage>
 <seealso><module>mod_mime_magic</module></seealso>

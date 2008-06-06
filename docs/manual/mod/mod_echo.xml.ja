@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:654507 (outdated) -->
@@ -23,33 +23,33 @@
 <modulesynopsis metafile="mod_echo.xml.meta">
 
 <name>mod_echo</name>
-<description>$B%W%m%H%3%k%b%8%e!<%k$N35MW$r<($9$?$a$NC1=c$J%(%3!<%5!<%P(B
+<description>プロトコルモジュールの概要を示すための単純なエコーサーバ
 </description>
 <status>Experimental</status>
 <sourcefile>mod_echo.c</sourcefile>
 <identifier>echo_module</identifier>
-<compatibility>Apache 2.0 $B0J9_(B</compatibility>
+<compatibility>Apache 2.0 以降</compatibility>
 
 <summary>
-    <p>$BK\%b%8%e!<%k$O%3%s%;%W%H$rEA$($k$?$a$N%W%m%H%3%k%b%8%e!<%k$N(B
-    $B<BAuNc$H$J$C$F$$$^$9!#C1=c$J%(%3!<%5!<%P$rDs6!$7$^$9!#(B
-    Telnet $B$G@\B3$7!"J8;zNs$rAw?.$9$k$H!"%(%3!<$rJV$7$^$9!#(B</p>
+    <p>本モジュールはコンセプトを伝えるためのプロトコルモジュールの
+    実装例となっています。単純なエコーサーバを提供します。
+    Telnet で接続し、文字列を送信すると、エコーを返します。</p>
 </summary>
 
 <directivesynopsis>
 
 <name>ProtocolEcho</name>
-<description>$B%(%3!<%5!<%P$NM-8zL58z$r@_Dj$7$^$9!#(B</description>
+<description>エコーサーバの有効無効を設定します。</description>
 <syntax>ProtocolEcho On|Off</syntax>
 <contextlist><context>server config</context>
 <context>virtual host</context></contextlist>
-<compatibility>Apache 2.0 $B0J9_(B</compatibility>
+<compatibility>Apache 2.0 以降</compatibility>
 
 <usage>
-    <p><directive>ProtocolEcho</directive> $B%G%#%l%/%F%#%V$G(B
-    $B%(%3!<%5!<%P$NM-8zL58z$r@_Dj$7$^$9!#(B</p>
+    <p><directive>ProtocolEcho</directive> ディレクティブで
+    エコーサーバの有効無効を設定します。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ProtocolEcho On
     </example>
 </usage>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE moduleindex SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -21,16 +21,16 @@
 -->
 
 <moduleindex metafile="index.xml.meta">
-  <title>$B%b%8%e!<%k0lMw(B</title>
+  <title>モジュール一覧</title>
   <summary>
     <p>
-      $B0J2<$O(B Apache $B$NG[I[$N0lIt$H$7$FG[$i$l$F$$$k$9$Y$F$N%b%8%e!<%k$N(B
-      $B0lMw$G$9!#$9$Y$F$N(B <a href="directives.html">Apache
-      $B%G%#%l%/%F%#%V(B</a> $B$N%"%k%U%!%Y%C%H=g$N%j%9%H$b8+$F$/$@$5$$!#(B
+      以下は Apache の配布の一部として配られているすべてのモジュールの
+      一覧です。すべての <a href="directives.html">Apache
+      ディレクティブ</a> のアルファベット順のリストも見てください。
     </p>
   </summary>
-  <seealso><a href="../mpm.html">$B%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B (MPMs)</a>
+  <seealso><a href="../mpm.html">マルチプロセッシングモジュール (MPMs)</a>
   </seealso>
-  <seealso><a href="quickreference.html">$B%G%#%l%/%F%#%V(B $B%/%$%C%/%j%U%!%l%s%9(B</a>
+  <seealso><a href="quickreference.html">ディレクティブ クイックリファレンス</a>
   </seealso>
 </moduleindex>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -23,50 +23,50 @@
 <modulesynopsis metafile="mod_dav_fs.xml.meta">
 
 <name>mod_dav_fs</name> 
-<description><module>mod_dav</module> $B$N$?$a$N%U%!%$%k%7%9%F%`%W%m%P%$%@(B</description>
+<description><module>mod_dav</module> のためのファイルシステムプロバイダ</description>
 <status>Extension</status>
 <sourcefile>mod_dav_fs.c</sourcefile>
 <identifier>dav_fs_module</identifier>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$O(B <module>mod_dav</module>
-    $B$N%5!<%S%9$r(B<em>$BI,MW$H$7$^$9(B</em>$B!#(B<module>mod_dav</module>
-    $B$N%5%]!<%H%b%8%e!<%k$H$7$FF0:n$7!"%5!<%P%U%!%$%k%7%9%F%`>e$K(B
-    $B0LCV$9$k%j%=!<%9$X$N%"%/%;%9$rDs6!$7$^$9!#$3$N%W%m%P%$%@$N@5<0$JL>A0$O(B
-    <code>filesystem</code> $B$G$9!#(B<module>mod_dav</module>
-    $B%P%C%/%(%s%I%W%m%P%$%@$O(B <directive module="mod_dav">Dav</directive>
-    $B%G%#%l%/%F%#%V$r;HMQ$7$F5/F0$5$l$^$9!#(B</p>
+    <p>このモジュールは <module>mod_dav</module>
+    のサービスを<em>必要とします</em>。<module>mod_dav</module>
+    のサポートモジュールとして動作し、サーバファイルシステム上に
+    位置するリソースへのアクセスを提供します。このプロバイダの正式な名前は
+    <code>filesystem</code> です。<module>mod_dav</module>
+    バックエンドプロバイダは <directive module="mod_dav">Dav</directive>
+    ディレクティブを使用して起動されます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       Dav filesystem
     </example>
 
-    <p><code>filesystem</code> $B$O(B <module>mod_dav</module>
-    $B$N%G%U%)%k%H%W%m%P%$%@$K$J$C$F$$$^$9$+$i!"Be$o$j$KC1$K(B
-    <code>On</code> $B$H;XDj$9$k$3$H$b$G$-$^$9!#(B</p>
+    <p><code>filesystem</code> は <module>mod_dav</module>
+    のデフォルトプロバイダになっていますから、代わりに単に
+    <code>On</code> と指定することもできます。</p>
 </summary>
 <seealso><module>mod_dav</module></seealso>
 
 <directivesynopsis>
 <name>DavLockDB</name>
-<description>DAV $B%m%C%/%G!<%?%Y!<%9$N0LCV(B</description>
+<description>DAV ロックデータベースの位置</description>
 <syntax>DavLockDB <var>file-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>$B%m%C%/%G!<%?%Y!<%9$X$N%U%k%Q%9$r!"3HD%;R$r=|$$$?7A$G(B
-    $B;XDj$9$k$K$O!"(B<directive>DavLockDB</directive>
-    $B$r;H$$$^$9!#%Q%9$,@dBP%Q%9$G$J$1$l$P!"(B<directive module=
-    "core">ServerRoot</directive> $B$+$i$NAjBP%Q%9$H2r<a$5$l$^$9!#(B
-    <module>mod_dav_fs</module> $B<BAu$G$O!"%f!<%6%m%C%/$r(B
-    $BDI@W$9$k$?$a$K(B SDBM $B%G!<%?%Y!<%9$r;H$$$^$9!#(B</p>
+    <p>ロックデータベースへのフルパスを、拡張子を除いた形で
+    指定するには、<directive>DavLockDB</directive>
+    を使います。パスが絶対パスでなければ、<directive module=
+    "core">ServerRoot</directive> からの相対パスと解釈されます。
+    <module>mod_dav_fs</module> 実装では、ユーザロックを
+    追跡するために SDBM データベースを使います。</p>
 
     <!-- XXX: someone should add that tool to the support directory...
     The utility <code>modules/dav/util/lockview</code> can be used from
     the server to display all locks in a lock database.</p> -->
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       DavLockDB logs/DavLock
     </example>
 </usage>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420993:533344 (outdated) -->
@@ -23,50 +23,50 @@
 <modulesynopsis metafile="mod_log_forensic.xml.meta">
 
 <name>mod_log_forensic</name>
-<description>$B%5!<%P$KAw$i$l$?%j%/%(%9%H$N(B forensic $B%m%.%s%0(B</description>
+<description>サーバに送られたリクエストの forensic ロギング</description>
 <status>Extension</status>
 <sourcefile>mod_log_forensic.c</sourcefile>
 <identifier>log_forensic_module</identifier>
-<compatibility><module>mod_unique_id</module> $B$O%P!<%8%g%s(B 2.1 $B$+$i$OI,?\$G$O(B
-$B$J$/$J$C$?(B</compatibility>
+<compatibility><module>mod_unique_id</module> はバージョン 2.1 からは必須では
+なくなった</compatibility>
 
 <summary>
-    <p>$B$3$N%b%8%e!<%k$O%/%i%$%"%s%H%j%/%(%9%H$N(B forensic $B%m%.%s%0$r(B
-    $B9T$J$$$^$9!#%m%0<}=8$O%j%/%(%9%H$N=hM}$NA0$H8e$K9T$J$o$l$^$9$N$G!"(B
-    forensic $B%m%0$O3F%j%/%(%9%H$KBP$7$FFs9T%m%0<}=8$7$^$9!#(B
-    Forensic $B%m%,!<$OHs>o$K87L)$G$9!#$3$l$O0J2<$N$3$H$r0UL#$7$^$9(B:</p>
+    <p>このモジュールはクライアントリクエストの forensic ロギングを
+    行ないます。ログ収集はリクエストの処理の前と後に行なわれますので、
+    forensic ログは各リクエストに対して二行ログ収集します。
+    Forensic ロガーは非常に厳密です。これは以下のことを意味します:</p>
 
     <ul>
-    <li>$B%U%)!<%^%C%H$O8GDj$G$9!#<B9T;~$K%m%.%s%0%U%)!<%^%C%H$rJQ99$9$k$3$H$O(B
-    $B$G$-$^$;$s!#(B</li>
-    <li>$B%G!<%?$r=q$1$J$$>l9g$O;R%W%m%;%9$O$=$N>l$G=*N;$7!"$5$i$K%3%"$r(B
-    $B%@%s%W$9$k$+$b$7$l$^$;$s(B (<directive module="mpm_common"
-    >CoreDumpDirectory</directive> $B%G%#%l%/%F%#%V$N@_Dj$K0M$j$^$9(B)$B!#(B</li>
+    <li>フォーマットは固定です。実行時にロギングフォーマットを変更することは
+    できません。</li>
+    <li>データを書けない場合は子プロセスはその場で終了し、さらにコアを
+    ダンプするかもしれません (<directive module="mpm_common"
+    >CoreDumpDirectory</directive> ディレクティブの設定に依ります)。</li>
     </ul>
 
-    <p>Forensic $B%m%0$N=PNO$r8!::$9$k$?$a$K$O!"(B
-    $BG[I[J*$N(B support $B%G%#%l%/%H%j$K$"$k(B <code>check_forensic</code> 
-    $B%9%/%j%W%H$,Lr$KN)$D$G$7$g$&!#(B</p>
+    <p>Forensic ログの出力を検査するためには、
+    配布物の support ディレクトリにある <code>check_forensic</code> 
+    スクリプトが役に立つでしょう。</p>
 </summary>
-<seealso><a href="../logs.html">Apache $B%m%0%U%!%$%k(B</a></seealso>
+<seealso><a href="../logs.html">Apache ログファイル</a></seealso>
 <seealso><module>mod_log_config</module></seealso>
 
-<section id="formats"><title>Forensic $B%m%0%U%)!<%^%C%H(B</title>
-    <p>$B3F%j%/%(%9%H$O(B2$B2s%m%0<}=8$5$l$^$9!#:G=i$O%j%/%(%9%H$,=hM}$5$l$k(B
-    <em>$BA0(B</em> ($B$D$^$j!"%X%C%@$r<u$1<h$C$?8e(B) $B$G$9!#(B2$BEYL\$N%m%0$O(B
-    $B%j%/%(%9%H$,=hM}$5$l$?(B<em>$B8e(B</em>$B!"DL>o$N%m%0<}=8$HF1$8$H$-$K(B
-    $B9T$J$o$l$^$9!#(B</p>
+<section id="formats"><title>Forensic ログフォーマット</title>
+    <p>各リクエストは2回ログ収集されます。最初はリクエストが処理される
+    <em>前</em> (つまり、ヘッダを受け取った後) です。2度目のログは
+    リクエストが処理された<em>後</em>、通常のログ収集と同じときに
+    行なわれます。</p>
 
-    <p>$B3F%j%/%(%9%H$r<1JL$9$k$?$a$K!"%j%/%(%9%H$K$O(B
-    $B0l0U$J%j%/%(%9%H(B ID $B$,3d$jEv$F$i$l$^$9!#$3$N(B forensic ID $B$O(B
-    $B%U%)!<%^%C%HJ8;zNs(B <code>%{forensic-id}n</code> $B$r;H$&$3$H$G(B
-    $BDL>o$N(B transfer $B%m%0$K%m%0<}=8$9$k$3$H$b$G$-$^$9!#(B
-    <module>mod_unique_id</module> $B$r;H$C$F$$$k>l9g$O!"$=$l$,@8@.$9$k(B
-    ID $B$,;H$o$l$^$9!#(B</p>
+    <p>各リクエストを識別するために、リクエストには
+    一意なリクエスト ID が割り当てられます。この forensic ID は
+    フォーマット文字列 <code>%{forensic-id}n</code> を使うことで
+    通常の transfer ログにログ収集することもできます。
+    <module>mod_unique_id</module> を使っている場合は、それが生成する
+    ID が使われます。</p>
 
-    <p>$B:G=i$N9T$O(B forensic ID$B!"%j%/%(%9%H9T$H<u$1<h$C$?$9$Y$F$N%X%C%@$r(B
-    $B%Q%$%WJ8;z(B (<code>|</code>) $B$GJ,N%$7$F%m%0<}=8$7$^$9!#(B
-    $BNc$($P0J2<$N$h$&$K$J$j$^$9(B ($B<B:]$O$9$Y$FF1$89T$K$J$j$^$9(B):</p>
+    <p>最初の行は forensic ID、リクエスト行と受け取ったすべてのヘッダを
+    パイプ文字 (<code>|</code>) で分離してログ収集します。
+    例えば以下のようになります (実際はすべて同じ行になります):</p>
 
     <example>
         +yQtJf8CoAB4AAFNXBIEAAAAA|GET /manual/de/images/down.gif
@@ -75,71 +75,71 @@
         Firefox/0.8|Accept:image/png, <var>etc...</var>
     </example>
 
-    <p>$B:G=i$N%W%i%9J8;z$,$3$N%m%0$O:G=i$N%m%0$G$"$k$3$H$r<($7$^$9!#(B
-    $BFsHVL\$N9T$O%^%$%J%9J8;z$H(B ID $B$N$_$G$9(B:</p>
+    <p>最初のプラス文字がこのログは最初のログであることを示します。
+    二番目の行はマイナス文字と ID のみです:</p>
 
     <example>
       -yQtJf8CoAB4AAFNXBIEAAAAA
     </example>
 
-    <p><code>check_forensic</code> $B%9%/%j%W%H$O0z?t$H$7$F%m%0%U%!%$%k$NL>A0$r(B
-    $B<h$j$^$9!#(B<code>+</code>/<code>-</code> $B$N(B ID $B$NAH$rD4$Y!"40N;$7$F$$$J$$(B
-    $B%j%/%(%9%H$,$"$k>l9g$O7Y9p$rH/$7$^$9!#(B</p>
+    <p><code>check_forensic</code> スクリプトは引数としてログファイルの名前を
+    取ります。<code>+</code>/<code>-</code> の ID の組を調べ、完了していない
+    リクエストがある場合は警告を発します。</p>
 </section>
 
-<section id="security"><title>$B%;%-%e%j%F%#$NLdBj(B</title>
-    <p>$B%m%0%U%!%$%k$,J]B8$5$l$k%G%#%l%/%H%j$,%5!<%P$r5/F0$7$?%f!<%6(B
-    $B0J30$G=q$-9~$_2DG=$K$J$C$F$$$k$H$-$K%;%-%e%j%F%#$,GK$i$l$k2DG=@-$,(B
-    $B$"$k$3$H$K$D$$$F$N>\:Y$O(B<a
-    href="../misc/security_tips.html#serverroot">$B%;%-%e%j%F%#$N$3$D(B</a>$B$r(B
-    $B;2>H$7$F$/$@$5$$!#(B</p>
+<section id="security"><title>セキュリティの問題</title>
+    <p>ログファイルが保存されるディレクトリがサーバを起動したユーザ
+    以外で書き込み可能になっているときにセキュリティが破られる可能性が
+    あることについての詳細は<a
+    href="../misc/security_tips.html#serverroot">セキュリティのこつ</a>を
+    参照してください。</p>
 </section>
 
 <directivesynopsis>
 <name>ForensicLog</name>
-<description>Forensic $B%m%0$N%U%!%$%kL>$r@_Dj$9$k(B</description>
+<description>Forensic ログのファイル名を設定する</description>
 <syntax>ForensicLog <var>filename</var>|<var>pipe</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>ForensicLog</directive> $B%G%#%l%/%F%#%V$O(B forensic $B2r@O$N$?$a$N(B
-    $B%5!<%P$X$N%j%/%(%9%H$r%m%0<}=8$K;H$$$^$9!#(B
-    $B3F%m%0%(%s%H%j$K$O!"IaDL$N(B <directive module="mod_log_config"
-    >CustomLog</directive> $B%G%#%l%/%F%#%V$r;H$C$F%j%/%(%9%H$H4XO"IU$1$k$3$H$N(B
-    $B$G$-$k(B
-    $B0l0U$J(B ID $B$,3d$jEv$F$i$l$^$9!#(B<module>mod_log_forensic</module> $B$O(B
-    <code>forensic-id</code> $B$H$$$&%H!<%/%s$r:n@.$7!"%U%)!<%^%C%HJ8;zNs(B
-    <code>%{forensic-id}n</code> $B$r;H$&$3$H$G$=$N%H!<%/%s$r(B transfer $B%m%0$K(B
-    $BDI2C$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p><directive>ForensicLog</directive> ディレクティブは forensic 解析のための
+    サーバへのリクエストをログ収集に使います。
+    各ログエントリには、普通の <directive module="mod_log_config"
+    >CustomLog</directive> ディレクティブを使ってリクエストと関連付けることの
+    できる
+    一意な ID が割り当てられます。<module>mod_log_forensic</module> は
+    <code>forensic-id</code> というトークンを作成し、フォーマット文字列
+    <code>%{forensic-id}n</code> を使うことでそのトークンを transfer ログに
+    追加することができます。</p>
 
-    <p>$B0z?t$O%m%0$,=q$-=P$5$l$k0LCV$r;XDj$7!"0J2<$N(B 2$B<oN`$NCM$N$I$A$i$+$r(B
-    $B<h$k$3$H$,$G$-$^$9(B:</p>
+    <p>引数はログが書き出される位置を指定し、以下の 2種類の値のどちらかを
+    取ることができます:</p>
 
     <dl>
       <dt><var>filename</var></dt>
-      <dd><directive module="core">ServerRoot</directive> $B$+$i$N(B
-      $BAjBP%U%!%$%kL>(B</dd>
+      <dd><directive module="core">ServerRoot</directive> からの
+      相対ファイル名</dd>
 
       <dt><var>pipe</var></dt>
-      <dd>$B%Q%$%WJ8;z(B "<code>|</code>" $B$H!"$=$N8e$K%m%0>pJs$rI8=`F~NO$+$i(B
-      $B<u$1<h$k%W%m%0%i%`!#%W%m%0%i%`L>$O(B <directive
-      module="core">ServerRoot</directive> $B$+$i$NAjBP%Q%9$H$7$F$b(B
-      $B;XDj$G$-$^$9!#(B
+      <dd>パイプ文字 "<code>|</code>" と、その後にログ情報を標準入力から
+      受け取るプログラム。プログラム名は <directive
+      module="core">ServerRoot</directive> からの相対パスとしても
+      指定できます。
 
-      <note type="warning"><title>$B%;%-%e%j%F%#(B:</title>
-      <p>$B%W%m%0%i%`$r;H$&>l9g!"$=$N%W%m%0%i%`$O(B <program>httpd</program> $B$r5/F0$7$?%f!<%6$G(B
-      $B<B9T$5$l$^$9!#$D$^$j!"%5!<%P$,(B root $B$G<B9T$5$l$?>l9g$O(B root $B$G(B
-      $B<B9T$5$l$k$H$$$&$3$H$G$9!#%W%m%0%i%`$,0BA4$G$"$k$+!"$h$j8"8B$N>/$J$$(B
-      $B%f!<%6$K@Z$jBX$($k$h$&$K$J$C$F$$$k$3$H$r3N$+$a$F$/$@$5$$!#(B</p>
+      <note type="warning"><title>セキュリティ:</title>
+      <p>プログラムを使う場合、そのプログラムは <program>httpd</program> を起動したユーザで
+      実行されます。つまり、サーバが root で実行された場合は root で
+      実行されるということです。プログラムが安全であるか、より権限の少ない
+      ユーザに切り替えるようになっていることを確かめてください。</p>
       </note>
 
-      <note><title>$BCm(B</title>
-        <p>Unix $B0J30$N%W%i%C%H%U%)!<%`$G%U%!%$%kL>$rF~NO$9$k$H$-$O!"(B
-        $B%W%i%C%H%U%)!<%`$,%P%C%/%9%i%C%7%e$N;HMQ$r5v2D$7$F$$$k>l9g$G$b!"(B
-        $B%9%i%C%7%e$N$_$,;H$o$l$k$h$&$K5$$r$D$1$F$/$@$5$$!#(B
-        $BIaDL$O@_Dj%U%!%$%k$9$Y$F$K$*$$$F!"%9%i%C%7%e$NJ}$r;HMQ$9$k$h$&$K(B
-        $B$7$F$/$@$5$$!#(B</p>
+      <note><title>注</title>
+        <p>Unix 以外のプラットフォームでファイル名を入力するときは、
+        プラットフォームがバックスラッシュの使用を許可している場合でも、
+        スラッシュのみが使われるように気をつけてください。
+        普通は設定ファイルすべてにおいて、スラッシュの方を使用するように
+        してください。</p>
       </note></dd>
     </dl>
 </usage>

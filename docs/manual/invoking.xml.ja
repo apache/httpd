@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 395228:567441 (outdated) -->
@@ -22,130 +22,130 @@
 
 <manualpage metafile="invoking.xml.meta">
 
-  <title>Apache $B$N5/F0(B</title>
+  <title>Apache の起動</title>
 
 <summary>
-    <p>Windows $B>e$G$O!"(BApache $B$ODL>o$O(B
-    Windows NT, 2000, XP $B$G$O%5!<%S%9$H$7$F!"(BWindows 9x, ME 
-    $B$G$O%3%s%=!<%k%"%W%j%1!<%7%g%s$H$7$F<B9T$5$l$^$9!#(B
-    $B>\:Y$K4X$7$F$O!"!V(B<a href="platform/windows.html#winsvc">
-    $B%5!<%S%9$H$7$F<B9T$9$k(B</a>$B!W$H!V(B<a 
+    <p>Windows 上では、Apache は通常は
+    Windows NT, 2000, XP ではサービスとして、Windows 9x, ME 
+    ではコンソールアプリケーションとして実行されます。
+    詳細に関しては、「<a href="platform/windows.html#winsvc">
+    サービスとして実行する</a>」と「<a 
     href="platform/windows.html#wincons">
-    $B%3%s%=!<%k%"%W%j%1!<%7%g%s$H$7$F<B9T$9$k(B</a>$B!W$r$4Mw2<$5$$!#(B</p>
+    コンソールアプリケーションとして実行する</a>」をご覧下さい。</p>
 
-    <p>Unix$B$G$O!"(B<program>httpd</program> 
-    $B%W%m%0%i%`$,!"%P%C%/%0%i%&%s%I$G>o$K%j%/%(%9%H=hM}$r9T$&(B
-    $B%G!<%b%s$H$7$F<B9T$5$l$^$9!#$3$NJ8=q$G$O$I$N$h$&$K(B
-    <program>httpd</program> $B$r5/F0$9$k$+$K$D$$$F5-=R$7$F$$$^$9!#(B</p>
+    <p>Unixでは、<program>httpd</program> 
+    プログラムが、バックグラウンドで常にリクエスト処理を行う
+    デーモンとして実行されます。この文書ではどのように
+    <program>httpd</program> を起動するかについて記述しています。</p>
 </summary>
 
-<seealso><a href="stopping.html">$BDd;_$H:F5/F0(B</a></seealso>
+<seealso><a href="stopping.html">停止と再起動</a></seealso>
 <seealso><program>httpd</program></seealso>
 <seealso><program>apachectl</program></seealso>
 
-<section id="startup"><title>Apache $B$N5/F0J}K!(B</title>
+<section id="startup"><title>Apache の起動方法</title>
 
-    <p>$B$b$7!"@_Dj%U%!%$%kCf$G;XDj$5$l$F$$$k(B
+    <p>もし、設定ファイル中で指定されている
     <directive module="mpm_common">Listen</directive>
-    $B$,%G%U%)%k%H$N(B 80 ($B$b$7$/$O(B 1024 $B0J2<$NB>$N%]!<%H(B)
-    $B$G$"$k>l9g$O!"(BApache $B$r5/F0$9$k$?$a$K$O(B root
-    $B8"8B$,I,MW$K$J$j$^$9$,!"(B
-    $B$3$l$O$3$NFC8"%]!<%H$K%P%$%s%I$9$k$?$a$G$9!#(B
-    $B5/F0$7$F!"0lEY%m%0%U%!%$%k$r3+$/$H$$$C$?=`Hw$N$?$a$N(B
-    $BF0:n$r4v$D$+<B9T$7$?8e$O!"%/%i%$%"%s%H$+$i$N%j%/%(%9%H$KBP$9$k(B
-    listen $B$H1~Ez$r<B:]$K9T$&(B<em>$B;R(B</em>$B%W%m%;%9$r5/F0$7$^$9!#(B
-    $B%a%$%s$N(B <program>httpd</program> $B%W%m%;%9$O(B root $B8"8B$GAv$jB3$1$^$9$,!"(B
-    $B;R%W%m%;%9$O$b$C$HDc$$8"8B$GAv$j$^$9!#(B
-    $B$3$l$OA*Br$7$?(B<a 
-    href="mpm.html">$B%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B</a>$B$G@)8f$5$l$^$9!#(B</p>
+    がデフォルトの 80 (もしくは 1024 以下の他のポート)
+    である場合は、Apache を起動するためには root
+    権限が必要になりますが、
+    これはこの特権ポートにバインドするためです。
+    起動して、一度ログファイルを開くといった準備のための
+    動作を幾つか実行した後は、クライアントからのリクエストに対する
+    listen と応答を実際に行う<em>子</em>プロセスを起動します。
+    メインの <program>httpd</program> プロセスは root 権限で走り続けますが、
+    子プロセスはもっと低い権限で走ります。
+    これは選択した<a 
+    href="mpm.html">マルチプロセッシングモジュール</a>で制御されます。</p>
 
-    <p>$B?d>)$N(B <program>httpd</program> $B<B9T%W%m%0%i%`$N5/F0J}K!$O!"(B
+    <p>推奨の <program>httpd</program> 実行プログラムの起動方法は、
     <program>apachectl</program>
-    $B@)8f%9%/%j%W%H$r;HMQ$9$kJ}K!$G$9!#$3$N%9%/%j%W%H$O!"(B<program>httpd</program> 
-    $B$,%*%Z%l!<%F%#%s%0%7%9%F%`>e$G@5>o$KF0:n$9$k$h$&$KI,MW$J4D6-JQ?t$r(B
-    $BE,@Z$K@_Dj$7$F!"(B<program>httpd</program> $B%P%$%J%j$r5/F0$7$^$9!#(B
-    <program>apachectl</program> $B$O$I$s$J%3%^%s%I%i%$%s0z?t$bDL2a$5$;$^$9$N$G!"(B
-    <program>httpd</program> $B$N$I$N%3%^%s%I%i%$%s%*%W%7%g%s$b(B
-    <program>apchectl</program> $B$N%*%W%7%g%s$H$7$F;HMQ$G$-$^$9!#(B
-    $B$^$?!"(B<program>apchectl</program> $B%9%/%j%W%H$rD>@\JT=8$7!"(B
-    $B%9%/%j%W%H@hF,IU6a$N(B <code>HTTPD</code> $BJQ?t$rJQ99$9$k$3$H$G!"(B
-    <program>httpd</program> $B%P%$%J%j$N@5$7$$0LCV$r;XDj$7$?$j!"(B<em>$B>o$K(B</em>
-    $BIU2C$5$;$k%3%^%s%I%i%$%s0z?t$r;XDj$7$?$j$9$k$3$H$,$G$-$^$9!#(B</p>
+    制御スクリプトを使用する方法です。このスクリプトは、<program>httpd</program> 
+    がオペレーティングシステム上で正常に動作するように必要な環境変数を
+    適切に設定して、<program>httpd</program> バイナリを起動します。
+    <program>apachectl</program> はどんなコマンドライン引数も通過させますので、
+    <program>httpd</program> のどのコマンドラインオプションも
+    <program>apchectl</program> のオプションとして使用できます。
+    また、<program>apchectl</program> スクリプトを直接編集し、
+    スクリプト先頭付近の <code>HTTPD</code> 変数を変更することで、
+    <program>httpd</program> バイナリの正しい位置を指定したり、<em>常に</em>
+    付加させるコマンドライン引数を指定したりすることができます。</p>
 
-    <p><code>httpd</code> $B$,5/F0$5$l$F$^$::G=i$K$9$k$3$H$O!"(B
-    <a href="configuring.html">$B@_Dj%U%!%$%k(B</a>
-    <code>httpd.conf</code> $B$N0LCV$rFCDj$7$FFI$_9~$`$3$H$G$9!#(B
-    $B$3$N%U%!%$%k$N0LCV$O%3%s%Q%$%k;~$K@_Dj$5$l$^$9$,!"<B9T;~$K(B
-    <code>-f</code> $B%3%^%s%I%i%$%s%*%W%7%g%s$r;H$C$F(B
-    $B0LCV$r;XDj$9$k$3$H$b$G$-$^$9!#Nc$($P<!$N$h$&$K$G$9!#(B</p>
+    <p><code>httpd</code> が起動されてまず最初にすることは、
+    <a href="configuring.html">設定ファイル</a>
+    <code>httpd.conf</code> の位置を特定して読み込むことです。
+    このファイルの位置はコンパイル時に設定されますが、実行時に
+    <code>-f</code> コマンドラインオプションを使って
+    位置を指定することもできます。例えば次のようにです。</p>
 
 <example>/usr/local/apache2/bin/apachectl -f
       /usr/local/apache2/conf/httpd.conf</example>
 
-    <p>$B%9%?!<%H%"%C%W$,K|;v>e<j$/$$$C$?$i!"%5!<%P$O%?!<%_%J%k$+$i(B
-    $B@Z$jN%$5$l$F!"%3%^%s%I%W%m%s%W%H$,B(:B$KLa$C$F$/$k$G$7$g$&!#(B
-    $B$3$l$O%5!<%P$,5/F0$7$F$$$k>uBV$r<($7$F$$$^$9!#(B
-    $B$=$N8e$O%V%i%&%6$G%5!<%P$K@\B3$7$F!"(B
+    <p>スタートアップが万事上手くいったら、サーバはターミナルから
+    切り離されて、コマンドプロンプトが即座に戻ってくるでしょう。
+    これはサーバが起動している状態を示しています。
+    その後はブラウザでサーバに接続して、
     <directive module="core">DocumentRoot</directive>
-    $B%G%#%l%/%H%j$N%F%9%H%Z!<%8$d$=$3$+$i%j%s%/$5$l$F$$$k(B
-    $B%m!<%+%k$N%I%-%e%a%s%H$r8+$k$3$H$,$G$-$k$G$7$g$&!#(B</p>
+    ディレクトリのテストページやそこからリンクされている
+    ローカルのドキュメントを見ることができるでしょう。</p>
 </section>
 
-<section id="errors"><title>$B5/F0;~$N%(%i!<(B</title>
+<section id="errors"><title>起動時のエラー</title>
 
-    <p>Apache $B$O!"5/F0;~$KCWL?E*$JLdBj$KAx6x$9$k$H!"(B
-    $B=*N;$9$kA0$K!"%3%s%=!<%k$+(B
+    <p>Apache は、起動時に致命的な問題に遭遇すると、
+    終了する前に、コンソールか
     <directive module="core">ErrorLog</directive>
-    $B$N$I$A$i$+$KLdBj$r5-=R$7$?%a%C%;!<%8$r=PNO$7$^$9!#(B
-    $B:G$b$h$/$"$k%(%i!<%a%C%;!<%8$O(B
-    $B!V(B<code>Unable to bind to Port ...</code>$B!W(B
-    $B$G$9!#$3$N%a%C%;!<%8$OIaDL$O<!$N$I$A$i$+$,860x$G$9!#(B</p>
+    のどちらかに問題を記述したメッセージを出力します。
+    最もよくあるエラーメッセージは
+    「<code>Unable to bind to Port ...</code>」
+    です。このメッセージは普通は次のどちらかが原因です。</p>
 
     <ul>
-      <li>root $B$G%m%0%$%s$7$F$$$J$$;~$K!"(B
-      $BFC8"%]!<%H$G%5!<%P$r5/F0$7$h$&$H$7$?!#(B</li>
+      <li>root でログインしていない時に、
+      特権ポートでサーバを起動しようとした。</li>
 
-      <li>$BF1$8%]!<%H$K4{$K%P%$%s%I$5$l$F$$$k(B Apache
-      $B$,$b$&0l$D$"$k$H$-$dB>$N%&%'%V%5!<%P$,B8:_$7$F$$$k;~$K!"(B
-      $B%5!<%P$r3+;O$7$h$&$H$7$?!#(B</li>
+      <li>同じポートに既にバインドされている Apache
+      がもう一つあるときや他のウェブサーバが存在している時に、
+      サーバを開始しようとした。</li>
     </ul>
 
-    <p>$B$h$jB?$/$NLdBj2r7h$NJ}:v$N@bL@$O!"(B
-    Apache <a href="faq/">FAQ</a> $B$r$4Mw2<$5$$!#(B</p>
+    <p>より多くの問題解決の方策の説明は、
+    Apache <a href="faq/">FAQ</a> をご覧下さい。</p>
 </section>
 
-<section id="boot"><title>$B%V!<%H;~$N5/F0(B</title>
+<section id="boot"><title>ブート時の起動</title>
 
-    <p>$B%7%9%F%`$,%j%V!<%H$7$?8e$G$b(B
-    $B%5!<%P$,<B9T$5$lB3$1$k$h$&$K$7$?$$>l9g$O!"(B
+    <p>システムがリブートした後でも
+    サーバが実行され続けるようにしたい場合は、
     <program>apachectl</program>
-    $B$r8F$S=P$9$b$N$r%7%9%F%`%9%?!<%H%"%C%W%U%!%$%k(B
-    ($BDL>o(B <code>rc.local</code> $B$d(B <code>rc.N</code>
-    $BFb$N%U%!%$%k(B) $B$KDI2C$7$J$1$l$P$J$j$^$;$s!#(B
-    $B$3$NJ}K!$G$O(B Apache $B$r(B root $B8"8B$G5/F0$7$^$9!#(B
-    $B$3$l$r$9$kA0$K!"%;%-%e%j%F%#$d%"%/%;%9@)8B$,(B
-    $BE,@Z$K@_Dj$5$l$F$$$F$$$k$3$H$r3NG'$7$F$/$@$5$$!#(B</p>
+    を呼び出すものをシステムスタートアップファイル
+    (通常 <code>rc.local</code> や <code>rc.N</code>
+    内のファイル) に追加しなければなりません。
+    この方法では Apache を root 権限で起動します。
+    これをする前に、セキュリティやアクセス制限が
+    適切に設定されていていることを確認してください。</p>
 
-    <p><program>apachectl</program> $B%9%/%j%W%H$ODL>o$O!"I8=`E*$J(B SysV init 
-    $B%9%/%j%W%H$H$7$FF0:n$9$k$h$&$K@_7W$5$l$F$$$^$9!#(B
+    <p><program>apachectl</program> スクリプトは通常は、標準的な SysV init 
+    スクリプトとして動作するように設計されています。
     <code>start</code>, <code>restart</code>, <code>stop</code>
-    $B$H$$$C$?0z?t$r$H$C$F!"(B<program>httpd</program> 
-    $B$X$NE,@Z$J%7%0%J%k$KJQ49$7$^$9!#(B
-    $B$G$9$+$i!"DL>o$OC1$KE,@Z$J(B init $B%G%#%l%/%H%jFb$+$i(B
-    <program>apachectl</program> $B$X%j%s%/$9$k$3$H$,$G$-$^$9!#$7$+$7!"(B
-    $BG0$N$?$a%7%9%F%`$NMW5a$K9gCW$7$F$$$k$3$H$r3NG'$7$F$/$@$5$$!#(B</p>
+    といった引数をとって、<program>httpd</program> 
+    への適切なシグナルに変換します。
+    ですから、通常は単に適切な init ディレクトリ内から
+    <program>apachectl</program> へリンクすることができます。しかし、
+    念のためシステムの要求に合致していることを確認してください。</p>
 </section>
 
-<section id="info"><title>$BDI2C>pJs(B</title>
+<section id="info"><title>追加情報</title>
 
-    <p><program>httpd</program> $B$d(B
-    <program>apachectl</program>$B!"%5!<%P$K4^$^$l$F$$$?$=$NB>Jd=u%W%m%0%i%`$N!"(B
-    $B%3%^%s%I%i%$%s%*%W%7%g%s$K4X$9$kDI2C>pJs$O!"(B
-    <a href="programs/">$B%5!<%P$HJd=u%W%m%0%i%`(B</a>$B%Z!<%8$K(B
-    $B5-:\$5$l$F$$$^$9!#(B
-    Apache $BG[I[$K4^$^$l$F$$$kA4(B<a href="mod/">$B%b%8%e!<%k(B</a>$B!"(B
-    $B$=$l$K$h$C$FDs6!$5$l$k(B<a href="mod/directives.html">$B%G%#%l%/%F%#%V(B</a>
-    $B$N%I%-%e%a%s%H$b$"$j$^$9!#(B</p>
+    <p><program>httpd</program> や
+    <program>apachectl</program>、サーバに含まれていたその他補助プログラムの、
+    コマンドラインオプションに関する追加情報は、
+    <a href="programs/">サーバと補助プログラム</a>ページに
+    記載されています。
+    Apache 配布に含まれている全<a href="mod/">モジュール</a>、
+    それによって提供される<a href="mod/directives.html">ディレクティブ</a>
+    のドキュメントもあります。</p>
 </section>
 
 </manualpage>

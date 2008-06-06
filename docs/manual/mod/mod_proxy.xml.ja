@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 189754:661107 (outdated) -->
@@ -23,43 +23,43 @@
 <modulesynopsis metafile="mod_proxy.xml.meta">
 
 <name>mod_proxy</name>
-<description>HTTP/1.1 $B%W%m%-%7(B/$B%2!<%H%&%'%$%5!<%P(B</description>
+<description>HTTP/1.1 プロキシ/ゲートウェイサーバ</description>
 <status>Extension</status>
 <sourcefile>mod_proxy.c</sourcefile>
 <identifier>proxy_module</identifier>
 
 <summary>
-    <note type="warning"><title>$B7Y9p(B</title>
+    <note type="warning"><title>警告</title>
       <p><a href="#access"
-      >$B%5!<%P$r0BA4$K$9$k(B</a>$B$^$G(B <directive module="mod_proxy"
-      >ProxyRequests</directive> $B$OM-8z$K$7$J$$$G$/$@$5$$!#(B
-      $B%*!<%W%s%W%m%-%7%5!<%P$O$"$J$?<+?H$N%M%C%H%o!<%/$K$H$C$F$b!"(B
-      $B%$%s%?!<%M%C%HA4BN$K$H$C$F$b4m81$G$9!#(B</p>
+      >サーバを安全にする</a>まで <directive module="mod_proxy"
+      >ProxyRequests</directive> は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
     </note>
 
-    <p>$B$3$N%b%8%e!<%k$O(B Apache $B$N%W%m%-%7(B/$B%2!<%H%&%'%$5!G=$r<BAu$7$F$$$^$9!#(B
+    <p>このモジュールは Apache のプロキシ/ゲートウェイ機能を実装しています。
     <code>AJP13</code> (Apache JServe Protocol version 1.3),
-    <code>FTP</code>, <code>CONNECT</code> (SSL $BMQ(B),
+    <code>FTP</code>, <code>CONNECT</code> (SSL 用),
     <code>HTTP/0.9</code>, <code>HTTP/1.0</code>, <code>HTTP/1.1</code>
-    $B$N%W%m%-%75!G=$r<BAu$7$F$$$^$9!#$3$l$i$N%W%m%H%3%k$d$=$NB>$N%W%m%H%3%kMQ$N(B
-    $B%W%m%-%75!G=$r;}$C$?!"B>$N%b%8%e!<%k$K@\B3$9$k$h$&$K$b@_Dj$G$-$^$9!#(B</p>
+    のプロキシ機能を実装しています。これらのプロトコルやその他のプロトコル用の
+    プロキシ機能を持った、他のモジュールに接続するようにも設定できます。</p>
 
-    <p>Apache $B$N%W%m%-%75!G=$O(B <module>mod_proxy</module> $B$NB>$K!"(B
-    $B$$$/$D$+$N%b%8%e!<%k$KJ,3d$5$l$F$$$^$9(B:
+    <p>Apache のプロキシ機能は <module>mod_proxy</module> の他に、
+    いくつかのモジュールに分割されています:
     <module>mod_proxy_http</module>, <module>mod_proxy_ftp</module>,
     <module>mod_proxy_ajp</module>, <module>mod_proxy_balancer</module>, 
-    <module>mod_proxy_connect</module> $B$G$9!#$G$9$+$i!"(B
-    $BFCDj$N%W%m%-%7$N5!G=$r;H$$$?$$>l9g$O!"(B<module>mod_proxy</module> <em>$B$H(B</em>
-    $B3:Ev$9$k%b%8%e!<%k$r%5!<%P$K(B ($B%3%s%Q%$%k;~$K@EE*$K9T$J$&$+(B
-    <directive module="mod_so">LoadModule</directive> $B$GF0E*$KFI$_9~$`$+$7$F(B) 
-    $BAH$_9~$`I,MW$,$"$j$^$9!#(B</p>
+    <module>mod_proxy_connect</module> です。ですから、
+    特定のプロキシの機能を使いたい場合は、<module>mod_proxy</module> <em>と</em>
+    該当するモジュールをサーバに (コンパイル時に静的に行なうか
+    <directive module="mod_so">LoadModule</directive> で動的に読み込むかして) 
+    組み込む必要があります。</p>
 
-    <p>$B$3$l$K2C$($F!"B>$N%b%8%e!<%k$K$h$C$F3HD%5!G=$,Ds6!$5$l$F$$$^$9!#(B
-    $B%-%c%C%7%e$O(B <module>mod_cache</module> $B$H4XO"%b%8%e!<%k$G(B
-    $BDs6!$5$l$F$$$^$9!#(BSSL/TLS $B$G1s3V%5!<%P$K@\B3$9$k5!G=$O(B
-    <module>mod_ssl</module> $B$N(B <code>SSLProxy*</code> $B%G%#%l%/%F%#%V$G(B
-    $BDs6!$5$l$F$$$^$9!#$3$l$i$N5!G=$rMxMQ$9$k$?$a$K$O!"3:Ev$9$k%b%8%e!<%k$r(B
-    $BAH$_9~$s$G@_Dj$7$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p>これに加えて、他のモジュールによって拡張機能が提供されています。
+    キャッシュは <module>mod_cache</module> と関連モジュールで
+    提供されています。SSL/TLS で遠隔サーバに接続する機能は
+    <module>mod_ssl</module> の <code>SSLProxy*</code> ディレクティブで
+    提供されています。これらの機能を利用するためには、該当するモジュールを
+    組み込んで設定しなければなりません。</p>
 </summary>
 <seealso><module>mod_cache</module></seealso>
 <seealso><module>mod_proxy_http</module></seealso>
@@ -68,66 +68,66 @@
 <seealso><module>mod_proxy_balancer</module></seealso>
 <seealso><module>mod_ssl</module></seealso>
 
-    <section id="forwardreverse"><title>$B%U%)%o!<%I%W%m%-%7$H%j%P!<%9%W%m%-%7(B</title>
-      <p>Apache $B$O(B<dfn>$B%U%)%o!<%I(B</dfn>$B%W%m%-%7$H$7$F$b!"(B
-      <dfn>$B%j%P!<%9(B</dfn>$B%W%m%-%7$H$7$F$b@_Dj$9$k$3$H$,$G$-$^$9!#(B</p>
+    <section id="forwardreverse"><title>フォワードプロキシとリバースプロキシ</title>
+      <p>Apache は<dfn>フォワード</dfn>プロキシとしても、
+      <dfn>リバース</dfn>プロキシとしても設定することができます。</p>
 
-      <p>$BDL>o$N(B<dfn>$B%U%)%o!<%I%W%m%-%7(B</dfn>$B$O%/%i%$%"%s%H$H(B
-      <em>$B%*%j%8%s%5!<%P(B</em> <transnote>$B%3%s%F%s%D@8@.85$N%5!<%P(B</transnote>
-      $B$N4V$K0LCV$9$kCf4V%5!<%P$G$9!#(B
-      $B%*%j%8%s%5!<%P$+$i%3%s%F%s%D$r<hF@$9$k2aDx$G$O!"%/%i%$%"%s%H$O(B
-      $B9T$-@h$H$7$F%*%j%8%s%5!<%P$r;XDj$7$D$D%W%m%-%7$K%j%/%(%9%H$rAw$j!"(B
-      $B%W%m%-%7$O%*%j%8%s%5!<%P$+$i%3%s%F%s%D<hF@$N%j%/%(%9%H$rAw$j!"(B
-      $B%3%s%F%s%D$,<hF@$G$-$l$P$=$l$r%/%i%$%"%s%H$KJV$7$^$9!#(B
-      $B%/%i%$%"%s%H$,B>$N%5%$%H$K%U%)%o!<%I%W%m%/%77PM3$G%"%/%;%9$9$k$K$O!"(B
-      $BFCJL$K$=$lMQ$N@_Dj$r$7$J$1$l$P$J$j$^$;$s!#(B</p>
+      <p>通常の<dfn>フォワードプロキシ</dfn>はクライアントと
+      <em>オリジンサーバ</em> <transnote>コンテンツ生成元のサーバ</transnote>
+      の間に位置する中間サーバです。
+      オリジンサーバからコンテンツを取得する過程では、クライアントは
+      行き先としてオリジンサーバを指定しつつプロキシにリクエストを送り、
+      プロキシはオリジンサーバからコンテンツ取得のリクエストを送り、
+      コンテンツが取得できればそれをクライアントに返します。
+      クライアントが他のサイトにフォワードプロクシ経由でアクセスするには、
+      特別にそれ用の設定をしなければなりません。</p>
 
-      <p>$B%U%)%o!<%I%W%m%-%7$N0lHLE*$J;HMQJ}K!$O!"%U%!%$%"%&%)!<%k$K$h$C$F(B
-      $B@)8B$5$l$F$$$kFbIt$N%/%i%$%"%s%H$K%$%s%?!<%M%C%H$X$N%"%/%;%9$r(B
-      $BDs6!$9$k$b$N$G$9!#%U%)%o!<%I%W%m%-%7$O%M%C%H%o!<%/$N;HMQNL$r(B
-      $B8:$i$9$?$a$K(B (<module>mod_cache</module> $B$GDs6!$5$l$F$$$k(B) 
-      $B%-%c%C%7%e5!G=$rMQ$$$k$3$H$b$G$-$^$9!#(B</p>
+      <p>フォワードプロキシの一般的な使用方法は、ファイアウォールによって
+      制限されている内部のクライアントにインターネットへのアクセスを
+      提供するものです。フォワードプロキシはネットワークの使用量を
+      減らすために (<module>mod_cache</module> で提供されている) 
+      キャッシュ機能を用いることもできます。</p>
 
-      <p>$B%U%)%o!<%I%W%m%-%7$O(B <directive
-      module="mod_proxy">ProxyRequests</directive> $B%G%#%l%/%F%#%V$G(B
-      $BM-8z$K$J$j$^$9!#%U%)%o!<%I%W%m%-%7$G$O!"%/%i%$%"%s%H$OK\Ev$N?H85$r(B
-      $B1#$7$FG$0U$N%5%$%H$K%"%/%;%9$G$-$k$h$&$K$J$k$?$a!"%U%)%o!<%I%W%m%-%7$r(B
-      $BM-8z$K$9$kA0$K!">5G'$5$l$?%/%i%$%"%s%H$N$_$,%W%m%-%7$K%"%/%;%9$G$-$k$h$&$K(B
-      <a href="#access">$B%5!<%P$r0BA4$K$9$k(B</a>$B$3$H$,=EMW$G$9!#(B</p>
+      <p>フォワードプロキシは <directive
+      module="mod_proxy">ProxyRequests</directive> ディレクティブで
+      有効になります。フォワードプロキシでは、クライアントは本当の身元を
+      隠して任意のサイトにアクセスできるようになるため、フォワードプロキシを
+      有効にする前に、承認されたクライアントのみがプロキシにアクセスできるように
+      <a href="#access">サーバを安全にする</a>ことが重要です。</p>
 
-      <p>$B0lJ}(B<dfn>$B%j%P!<%9%W%m%-%7(B</dfn>$B$O!"%/%i%$%"%s%H$K$OIaDL$N(B
-      $B%&%'%V%5!<%P$N$h$&$K8+$($^$9!#%/%i%$%"%s%HB&$KFCJL$J@_Dj$OI,MW$"$j$^$;$s!#(B
-      $B%/%i%$%"%s%H$O%j%P!<%9%W%m%-%7$NL>A06u4V$KBP$7$FDL>o$N%3%s%F%s%D$X$N(B
-      $B%j%/%(%9%H$r9T$J$$$^$9!#%W%m%-%7$O%j%/%(%9%H$r$I$3$KAw$l$PNI$$$+$rH=Dj$7!"(B
-      $B$"$?$+$b<+J,<+?H$,%*%j%8%s%5!<%P$G$"$C$?$+$N$h$&$K%/%i%$%"%s%H$K(B
-      $B%3%s%F%s%D$rJV$7$^$9!#(B</p>
+      <p>一方<dfn>リバースプロキシ</dfn>は、クライアントには普通の
+      ウェブサーバのように見えます。クライアント側に特別な設定は必要ありません。
+      クライアントはリバースプロキシの名前空間に対して通常のコンテンツへの
+      リクエストを行ないます。プロキシはリクエストをどこに送れば良いかを判定し、
+      あたかも自分自身がオリジンサーバであったかのようにクライアントに
+      コンテンツを返します。</p>
 
-      <p>$B%j%P!<%9%W%m%-%7$N$h$/$"$kMxMQJ}K!$O!"%$%s%?!<%M%C%H%f!<%6$K(B
-      $B%U%!%$%"%&%)!<%k$NCf$K$"$k%5!<%P$K%"%/%;%9$rM?$($k$H$$$&$b$N$G$9!#(B
-      $B%j%P!<%9%W%m%-%7$OJ#?t$N%P%C%/%(%s%I%5!<%P$XIi2YJ,;6$r$9$k$?$a$K(B
-      $B;H$C$?$j!"CY$$%P%C%/%(%s%I%(%s%I%5!<%P$N$?$a$K%-%c%C%7%e5!G=$rDs6!$7$?$j(B
-      $B$9$k$?$a$K;H$($^$9!#$^$?!"%j%P!<%9%W%m%-%7$OJ#?t$N%5!<%P$r(B
-      $BF1$8(B URL $B6u4V$K$^$H$a$k$?$a$K;H$&$3$H$b$G$-$^$9!#(B</p>
+      <p>リバースプロキシのよくある利用方法は、インターネットユーザに
+      ファイアウォールの中にあるサーバにアクセスを与えるというものです。
+      リバースプロキシは複数のバックエンドサーバへ負荷分散をするために
+      使ったり、遅いバックエンドエンドサーバのためにキャッシュ機能を提供したり
+      するために使えます。また、リバースプロキシは複数のサーバを
+      同じ URL 空間にまとめるために使うこともできます。</p>
 
-      <p>$B%j%P!<%9%W%m%-%7$O(B <directive
-      module="mod_proxy">ProxyPass</directive> $B%G%#%l%/%F%#%V$d(B
+      <p>リバースプロキシは <directive
+      module="mod_proxy">ProxyPass</directive> ディレクティブや
       <directive
-      module="mod_rewrite">RewriteRule</directive> $B%G%#%l%/%F%#%V$N(B
-      <code>[P]</code> $B%U%i%0$r;H$&$3$H$GM-8z$K$J$j$^$9!#%j%P!<%9%W%m%-%7$N(B
-      $B@_Dj$N$?$a$K(B <directive
-      module="mod_proxy">ProxyRequests</directive> $B$r@_Dj$9$kI,MW$O(B
-      <em>$B$"$j$^$;$s(B</em>$B!#(B</p>
+      module="mod_rewrite">RewriteRule</directive> ディレクティブの
+      <code>[P]</code> フラグを使うことで有効になります。リバースプロキシの
+      設定のために <directive
+      module="mod_proxy">ProxyRequests</directive> を設定する必要は
+      <em>ありません</em>。</p>
     </section> <!-- /forwardreverse -->
 
-    <section id="examples"><title>$B4pK\$NNc(B</title>
+    <section id="examples"><title>基本の例</title>
 
-    <p>$B0J2<$NNc$O<j;O$a$N4JC1$JNc$G$9!#8D!9$N%G%#%l%/%F%#%V$N0UL#$O(B
-    $B$=$l$>$l$N@bL@$r$*FI$_$/$@$5$$!#(B</p>
+    <p>以下の例は手始めの簡単な例です。個々のディレクティブの意味は
+    それぞれの説明をお読みください。</p>
 
-    <p>$B$^$?%-%c%C%7%e5!G=$rM-8z$K$7$?$$>l9g$O!"(B<module>mod_cache</module> 
-    $B$N@bL@$rFI$s$G$/$@$5$$!#(B</p>
+    <p>またキャッシュ機能を有効にしたい場合は、<module>mod_cache</module> 
+    の説明を読んでください。</p>
 
-    <example><title>$B%U%)%o!<%I%W%m%-%7(B</title>
+    <example><title>フォワードプロキシ</title>
     ProxyRequests On<br />
     ProxyVia On<br />
     <br />
@@ -140,7 +140,7 @@
     &lt;/Proxy&gt;
     </example>
 
-    <example><title>$B%j%P!<%9%W%m%-%7(B</title>
+    <example><title>リバースプロキシ</title>
     ProxyRequests Off<br />
     <br />
     &lt;Proxy *&gt;<br />
@@ -156,10 +156,10 @@
     </section> <!-- /examples -->
 
 
-    <section id="access"><title>$B%W%m%-%7$X$N%"%/%;%9@)8f(B</title>
-      <p>$B%W%m%-%7$N%"%/%;%9$O0J2<$N$h$&$K(B <directive
-      module="mod_proxy" type="section">Proxy</directive> $B%3%s%F%J$NCf$K(B
-      $B%G%#%l%/%F%#%V$r=q$/$3$H$G@)8f$G$-$^$9(B:</p>
+    <section id="access"><title>プロキシへのアクセス制御</title>
+      <p>プロキシのアクセスは以下のように <directive
+      module="mod_proxy" type="section">Proxy</directive> コンテナの中に
+      ディレクティブを書くことで制御できます:</p>
 
       <example>
         &lt;Proxy *&gt;<br />
@@ -171,168 +171,168 @@
         &lt;/Proxy&gt;
       </example>
 
-      <p>$B%"%/%;%9@)8f$N$?$a$N%G%#%l%/%F%#%V$N$h$j>\$7$$>pJs$O(B
-      <module>mod_authz_host</module> $B$r$*FI$_$/$@$5$$!#(B</p>
+      <p>アクセス制御のためのディレクティブのより詳しい情報は
+      <module>mod_authz_host</module> をお読みください。</p>
 
       <p>(<directive
-      module="mod_proxy">ProxyRequests</directive> $B%G%#%l%/%F%#%V$r(B
-      $B;H$C$F(B) $B%U%)%o!<%I%W%m%-%7$r@_Dj$7$F$$$k>l9g$O!"87$7$/%"%/%;%9(B
-      $B@)8B$r9T$J$&$3$H$,Hs>o$KBg@Z$G$9!#$=$&$7$J$$$H!"G$0U$N%/%i%$%"%s%H$,(B
-      $B?H85$rL@$+$9$3$H$J$/G$0U$N%[%9%H$K%"%/%;%9$9$k$?$a$K%5!<%P$r;H$&$3$H$,(B
-      $B$G$-$F$7$^$$$^$9!#$3$l$O$"$J$?<+?H$N%M%C%H%o!<%/$K$H$C$F$b!"%$%s%?!<%M%C%H(B
-      $BA4BN$K$H$C$F$b4m81$J$3$H$G$9!#(B(<code>ProxyRequests Off</code> $B$K$7$F(B
+      module="mod_proxy">ProxyRequests</directive> ディレクティブを
+      使って) フォワードプロキシを設定している場合は、厳しくアクセス
+      制限を行なうことが非常に大切です。そうしないと、任意のクライアントが
+      身元を明かすことなく任意のホストにアクセスするためにサーバを使うことが
+      できてしまいます。これはあなた自身のネットワークにとっても、インターネット
+      全体にとっても危険なことです。(<code>ProxyRequests Off</code> にして
       <directive
-      module="mod_proxy">ProxyPass</directive> $B%G%#%l%/%F%#%V$r;H$C$F(B)
-      $B%j%P!<%9%W%m%-%7$r;H$C$F$$$k>l9g$K$O!"%/%i%$%"%s%H$O$"$J$?$,L@<(E*$K(B
-      $B@_Dj$7$?%[%9%H$K$7$+%"%/%;%9$G$-$J$$$?$a!"%U%)%o!<%I%W%m%-%7$N$H$-(B
-      $B$[$I%"%/%;%9@)8f$KNO$rCm$,$J$/$F$bBg>fIW$G$9!#(B</p>
+      module="mod_proxy">ProxyPass</directive> ディレクティブを使って)
+      リバースプロキシを使っている場合には、クライアントはあなたが明示的に
+      設定したホストにしかアクセスできないため、フォワードプロキシのとき
+      ほどアクセス制御に力を注がなくても大丈夫です。</p>
 
     </section> <!-- /access -->
 
-   <section id="ftp-proxy"><title>FTP $B%W%m%-%7(B</title>
+   <section id="ftp-proxy"><title>FTP プロキシ</title>
 
 
-    <section id="mimetypes"><title>$B$I$&$7$F%U%!%$%k%?%$%W$,(B <var>xxx</var>
-    $B$N%U%!%$%k$r(B FTP $B$G%@%&%s%m!<%I$G$-$J$$$N(B?</title>
-      <p>$B$*$=$i$/!"%W%m%-%7$N(B mime.types $B@_Dj%U%!%$%k$G$=$N%U%!%$%k%?%$%W$,(B
-      <code>application/octet-stream</code> $B$G$"$k$HDj5A$5$l$F$$$J$$$N$G$7$g$&!#(B
-      $B0J2<$N$h$&$J$b$N$,Lr$KN)$D$+$b$7$l$^$;$s(B:</p>
+    <section id="mimetypes"><title>どうしてファイルタイプが <var>xxx</var>
+    のファイルを FTP でダウンロードできないの?</title>
+      <p>おそらく、プロキシの mime.types 設定ファイルでそのファイルタイプが
+      <code>application/octet-stream</code> であると定義されていないのでしょう。
+      以下のようなものが役に立つかもしれません:</p>
 
       <example>
 <pre>application/octet-stream   bin dms lha lzh exe class tgz taz</pre>
       </example>
-        <p>$BJL$NJ}K!$H$7$F!"$9$Y$F$N%G%U%)%k%H$r%P%$%J%j$K$9$k$3$H$b$G$-$^$9(B:</p>
+        <p>別の方法として、すべてのデフォルトをバイナリにすることもできます:</p>
       <example>
 <pre>DefaultType application/octet-stream</pre>
       </example>
     </section> <!-- /mimetypes -->
 
-    <section id="type"><title>$B%U%!%$%k(B <var>xxx</var> $B$r(B FTP $B$N(B ASCII $B%@%&%s%m!<%I(B
-    $B$K$5$;$k$N$O$I$&$9$l$P$h$$$N(B?</title>
-      <p>$B$^$l$K!"(B($B%G%U%)%k%H$NE>Aw$O(B <code>binary</code> $B%b!<%I$G(B) $BFCDj$N(B
-      $B%U%!%$%k$N$_(B FTP $B$N(B <code>ASCII</code> $BE>AwJ}K!$r;H$o$J$1$l$P$J$i$J$$(B
-      $B>l9g$K$O!"%j%/%(%9%H$N:G8e$K(B <code>;type=a</code> $B$rIU$1$k$3$H$G(B
-      <module>mod_proxy</module> $B$K(B ASCII $BE>Aw$r$5$;$k$3$H$,$G$-$^$9!#(B
-      ($B$?$@$7!"(BFTP $B$N%G%#%l%/%H%j0lMw$O>o$K(B ASCII $B%b!<%I$G9T$J$o$l$^$9!#(B)</p>
+    <section id="type"><title>ファイル <var>xxx</var> を FTP の ASCII ダウンロード
+    にさせるのはどうすればよいの?</title>
+      <p>まれに、(デフォルトの転送は <code>binary</code> モードで) 特定の
+      ファイルのみ FTP の <code>ASCII</code> 転送方法を使わなければならない
+      場合には、リクエストの最後に <code>;type=a</code> を付けることで
+      <module>mod_proxy</module> に ASCII 転送をさせることができます。
+      (ただし、FTP のディレクトリ一覧は常に ASCII モードで行なわれます。)</p>
     </section> <!-- /type -->
 
-    <section id="ftpnonget"><title>FTP $B$N%"%C%W%m!<%I$O$I$&$9$l$P$h$$$N(B?</title>
-      <p>$B8=;~E@$G$O!"(Bmod_proxy $B$N(B FTP $B%5%]!<%H$O(B GET $B$N$_$G$9!#$b$A$m$s(B
-      Apache $B$N(B $B%W%m%-%7$r;H$C$F(B HTTP $B$N%"%C%W%m!<%I(B (POST $B$d(B PUT) $B$r(B
-      $B$9$k$3$H$O$G$-$^$9!#(B</p>
+    <section id="ftpnonget"><title>FTP のアップロードはどうすればよいの?</title>
+      <p>現時点では、mod_proxy の FTP サポートは GET のみです。もちろん
+      Apache の プロキシを使って HTTP のアップロード (POST や PUT) を
+      することはできます。</p>
     </section>
 
-    <section id="percent2fhck"><title>$B%[!<%`%G%#%l%/%H%j$N30$N(B FTP $B%U%!%$%k$K(B
-      $B%"%/%;%9$9$k$K$O$I$&$9$l$P$h$$$N(B?</title>
-      <p>FTP URI $B$O%m%0%$%s$7$F$$$k%f!<%6$N%[!<%`%G%#%l%/%H%j$+$i$N(B
-      $BAjBP%Q%9$H$7$F07$o$l$^$9!#;DG0$J$3$H$K!"(B/../ $B$O%V%i%&%6$K$h$j2r<a$5$l!"(B
-      $B<B:]$K(B FTP $B%5!<%P$K$OAw$i$l$J$$$?$a!"(B/../ $B$r;H$C$F>e0L$N%G%#%l%/%H%j$K(B
-      $BE~C#$9$k$3$H$O$G$-$^$;$s!#$3$NLdBj$r2r7h$9$k$?$a$K!"$$$o$f$k(B
-      <dfn>Squid %2f $B%O%C%/(B</dfn> $B$r(B Apache $B$N(B FTP $B%W%m%-%7$O<BAu$7$F$$$^$9!#(B
-      $B$3$l$O(B <a
-      href="http://www.squid-cache.org/">Squid Proxy $B%-%c%C%7%e(B</a> $B$N$h$&$J(B
-      $BB>$N$h$/;H$o$l$F$$$k%W%m%-%7%5!<%P$G$b<h$i$l$F$$$kJ}K!$G$9!#(B
-      $B%j%/%(%9%H$N%Q%9$N@hF,$K(B <code>/%2f</code> $B$rIU$1$k$3$H$G!"%W%m%-%7$K(B
-      FTP $B$N3+;O%G%#%l%/%H%j$r(B ($B%[!<%`%G%#%l%/%H%j$NBe$o$j$K(B) <code>/</code>
-      $B$KJQ$($k$3$H$,$G$-$^$9!#Nc$($P!"(B<code>/etc/motd</code> $B$r<hF@$9$k$?$a$K$O(B
-      $B<!$N(B URL $B$r;H$$$^$9(B:</p>
+    <section id="percent2fhck"><title>ホームディレクトリの外の FTP ファイルに
+      アクセスするにはどうすればよいの?</title>
+      <p>FTP URI はログインしているユーザのホームディレクトリからの
+      相対パスとして扱われます。残念なことに、/../ はブラウザにより解釈され、
+      実際に FTP サーバには送られないため、/../ を使って上位のディレクトリに
+      到達することはできません。この問題を解決するために、いわゆる
+      <dfn>Squid %2f ハック</dfn> を Apache の FTP プロキシは実装しています。
+      これは <a
+      href="http://www.squid-cache.org/">Squid Proxy キャッシュ</a> のような
+      他のよく使われているプロキシサーバでも取られている方法です。
+      リクエストのパスの先頭に <code>/%2f</code> を付けることで、プロキシに
+      FTP の開始ディレクトリを (ホームディレクトリの代わりに) <code>/</code>
+      に変えることができます。例えば、<code>/etc/motd</code> を取得するためには
+      次の URL を使います:</p>
 
       <example>
         ftp://<var>user</var>@<var>host</var>/%2f/etc/motd
       </example>
     </section> <!-- /percent2fhck -->
 
-    <section id="ftppass"><title>$B%V%i%&%6$N(B URL $BI=<($G(B FTP $B$NJ?J8%Q%9%o!<%I$r(B
-    $B1#$9$K$O$I$&$9$l$P$h$$$N(B?</title>
-      <p>FTP $B%5!<%P$K%f!<%6L>$H%Q%9%o!<%I$r;H$C$F%m%0%$%s$9$k$?$a$K!"(B
-      Apache $B$O0[$J$kJ}K!$r;H$$$^$9!#(BURL $B$K%f!<%6L>$H%Q%9%o!<%I$,$^$C$?$/(B
-      $B$J$$>l9g$O!"(BApache $B$O(B FTP $B%5!<%P$K(B anonymous $B%m%0%$%s$rAw$j$^$9!#(B
-      <em>$B$D$^$j(B</em>$B!"(B</p>
+    <section id="ftppass"><title>ブラウザの URL 表示で FTP の平文パスワードを
+    隠すにはどうすればよいの?</title>
+      <p>FTP サーバにユーザ名とパスワードを使ってログインするために、
+      Apache は異なる方法を使います。URL にユーザ名とパスワードがまったく
+      ない場合は、Apache は FTP サーバに anonymous ログインを送ります。
+      <em>つまり</em>、</p>
 
       <example>
         user: anonymous<br />
         password: apache_proxy@
       </example>
 
-      <p>$B$3$l$O(B anonymous $B%"%/%;%9$,@_Dj$5$l$?(B
-      $B$9$Y$F$N(B FTP $B%5!<%P$KBP$7$FF0:n$7$^$9!#(B</p>
+      <p>これは anonymous アクセスが設定された
+      すべての FTP サーバに対して動作します。</p>
 
-      <p>$B%f!<%6L>$r;H$C$?8D?MJL$N%m%0%$%s$K$O!"(BURL $B$K%f!<%6L>$rF~$l$k$3$H$,(B
-      $B$G$-$^$9(B:</p>
+      <p>ユーザ名を使った個人別のログインには、URL にユーザ名を入れることが
+      できます:</p>
 
       <example>
         ftp://<var>username</var>@<var>host</var>/myfile
       </example>
 
-      <p>$B$3$N%f!<%6L>$,M?$($i$l$?$H$-$K!"(BFTP $B%5!<%P$,%Q%9%o!<%I$rMW5a$9$l$P(B
-      ($B$b$A$m$s$=$&$9$Y$-$J$N$G$9$,(B)$B!"(BApache $B$O(B <code>401</code>
-      (Authorization required) $B$rJV$7$^$9!#$3$l$K$h$j!"%V%i%&%6$O%f!<%6L>(B
-      $B%Q%9%o!<%I$NF~NO%@%$%"%m%0$rI=<($7$^$9!#%Q%9%o!<%I$,F~NO$5$l$?8e!"(B
-      $B:F$S@\B3$r;n$_!"@.8y$9$l$P%j%/%(%9%H$7$?%j%=!<%9$,I=<($5$l$^$9!#(B
-      $B$3$NJ}K!$NMxE@$O%V%i%&%6$,%Q%9%o!<%I$rJ?J8$GI=<($7$J$$$3$H$G$9!#(B
-      ($B$b$7:G=i$+$i(B</p>
+      <p>このユーザ名が与えられたときに、FTP サーバがパスワードを要求すれば
+      (もちろんそうすべきなのですが)、Apache は <code>401</code>
+      (Authorization required) を返します。これにより、ブラウザはユーザ名
+      パスワードの入力ダイアログを表示します。パスワードが入力された後、
+      再び接続を試み、成功すればリクエストしたリソースが表示されます。
+      この方法の利点はブラウザがパスワードを平文で表示しないことです。
+      (もし最初から</p>
 
       <example>
         ftp://<var>username</var>:<var>password</var>@<var>host</var>/myfile
       </example>
 
-      <p>$B$HF~NO$7$?>l9g$K$OI=<($5$l$F$7$^$$$^$9!#(B)</p>
+      <p>と入力した場合には表示されてしまいます。)</p>
 
-      <note><title>$BCm(B</title>
-        <p>$BAw?.$5$l$k%Q%9%o!<%I$O!"0E9f2=$5$l$FAw$i$l$k$o$1$G$O$"$j$^$;$s!#(B
-        $B%V%i%&%6$H(B Apache $B%W%m%-%7%5!<%P$O(B base64 $B$GId9f2=$5$l$?(B
-        $BJ8;zNs$H$7$F!"(BApache $B%W%m%-%7$H(B FTP $B%5!<%P$N4V$OJ?J8$H$7$FAw$i$l$^$9!#(B
-        $B$G$9$+$i!"(BHTTP $B$r;H$C$F(B HTTP $B$r%"%/%;%9$9$kA0(B ($B$b$7$/$O!"$=$b$=$b(B
-        $B8D?ME*$J%U%!%$%k$r(B FTP $B$G%"%/%;%9$9$kA0(B) $B$K$h$/9M$($kI,MW$,$"$j$^$9!#(B
-        $B0BA4$G$J$$DL?.O)$r;H$C$?>l9g$O!"EpD0<T$KESCf$G%Q%9%o!<%I$rEp$^$l$k(B
-        $B2DG=@-$,$"$j$^$9!#(B</p>
+      <note><title>注</title>
+        <p>送信されるパスワードは、暗号化されて送られるわけではありません。
+        ブラウザと Apache プロキシサーバは base64 で符号化された
+        文字列として、Apache プロキシと FTP サーバの間は平文として送られます。
+        ですから、HTTP を使って HTTP をアクセスする前 (もしくは、そもそも
+        個人的なファイルを FTP でアクセスする前) によく考える必要があります。
+        安全でない通信路を使った場合は、盗聴者に途中でパスワードを盗まれる
+        可能性があります。</p>
       </note>
     </section> <!-- /ftppass -->
    </section> <!-- /ftpproxy -->
-    <section id="startup"><title>$BCY$$5/F0(B</title>
+    <section id="startup"><title>遅い起動</title>
       <p><directive module="mod_proxy"
-      >ProxyBlock</directive> $B%G%#%l%/%F%#%V$r;H$C$F$$$k>l9g!"(B
-      $B8e$N%F%9%H$N$?$a$K5/F0;~$K%[%9%H$N(B
-      IP $B%"%I%l%9$,D4$Y$i$l$F%-%c%C%7%e$5$l$^$9!#%[%9%HL>$N%k%C%/%"%C%W$N(B
-      $BB.$5$K$h$C$F$O!"?tIC(B ($B$+$=$l0J>e(B) $B$+$+$k$+$b$7$l$^$;$s!#(B</p>
+      >ProxyBlock</directive> ディレクティブを使っている場合、
+      後のテストのために起動時にホストの
+      IP アドレスが調べられてキャッシュされます。ホスト名のルックアップの
+      速さによっては、数秒 (かそれ以上) かかるかもしれません。</p>
     </section> <!-- /startup -->
 
-    <section id="intranet"><title>$B%$%s%H%i%M%C%H%W%m%-%7(B</title>
-      <p>$B%$%s%H%i%M%C%H$K$"$k(B Apache $B%W%m%-%7%5!<%P$O30It$X$N%j%/%(%9%H$r(B
-      $B2q<R$N%U%!%$%"%&%)!<%k$rDL$7$FAw$i$J$1$l$P$J$j$^$;$s!#(B($B$3$N$?$a$K$O(B
-      $B8D!9$N(B <var>scheme</var> $B$K$D$$$F$=$l$>$l!"%U%!%$%"%&%)!<%k$N(B
-      $B%W%m%-%7$K%U%)%o!<%I$5$l$k$h$&$K(B
-      <directive module="mod_proxy">ProxyRemote</directive> $B%G%#%l%/%F%#%V$r(B
-      $B@_Dj$7$F$/$@$5$$(B)$B!#$7$+$7%$%s%H%i%M%C%HFb$N%j%=!<%9$K%"%/%;%9$9$k$H$-$O!"(B
-      $B%U%!%$%"%&%)!<%k$rDL$5$J$$$G$b%"%/%;%9$G$-$^$9!#(B
-      $B$I$N%[%9%H$,%$%s%H%i%M%C%H$KB0$7!"D>@\%"%/%;%9$9$Y$-$+$r;XDj$9$k$K$O!"(B
-      <directive module="mod_proxy">NoProxy</directive> $B%G%#%l%/%F%#%V$,(B
-      $BLr$KN)$A$^$9!#(B</p>
+    <section id="intranet"><title>イントラネットプロキシ</title>
+      <p>イントラネットにある Apache プロキシサーバは外部へのリクエストを
+      会社のファイアウォールを通して送らなければなりません。(このためには
+      個々の <var>scheme</var> についてそれぞれ、ファイアウォールの
+      プロキシにフォワードされるように
+      <directive module="mod_proxy">ProxyRemote</directive> ディレクティブを
+      設定してください)。しかしイントラネット内のリソースにアクセスするときは、
+      ファイアウォールを通さないでもアクセスできます。
+      どのホストがイントラネットに属し、直接アクセスすべきかを指定するには、
+      <directive module="mod_proxy">NoProxy</directive> ディレクティブが
+      役に立ちます。</p>
 
-      <p>$B%$%s%H%i%M%C%HFb$N%f!<%6$O(B WWW $B$N%j%/%(%9%H$G%m!<%+%k%I%a%$%s$r(B
-      $B>JN,$9$k$3$H$,$h$/$"$j$^$9!#(B<code>http://somehost.example.com/</code> 
-      $B$H$$$&%j%/%(%9%H$NBe$o$j$K(B "http://somehost/" $B$r%j%/%(%9%H$7$?$j$7$^$9!#(B
-      $B$3$N$h$&$J%j%/%(%9%H$r<u$1IU$1!"%5!<%P$K@_Dj$5$l$F$$$k%m!<%+%k%I%a%$%s$,(B
-      $B0EL[$N$&$A$K;H$o$l$F$$$k$H2r<a$7$F!"C1=c$K%j%/%(%9%H$r=hM}$9$k$b$N$b(B
-      $B>&MQ%W%m%-%7%5!<%P$NCf$K$O$"$j$^$9!#(B
-      $B%5!<%P$,(B <a
-      href="#proxyrequests">$B%W%m%-%7$N%5!<%S%9MQ$K@_Dj$5$l$F$$$F(B</a>
-      <directive module="mod_proxy">ProxyDomain</directive> $B%G%#%l%/%F%#%V$,(B
-      $B;HMQ$5$l$?>l9g$K$O!"(BApache $B$O%/%i%$%"%s%H$K%j%@%$%l%/%H1~Ez$rAw$C$F!"(B
-      $B@5$7$$!"40A4$J(B (<transnote>fully qualified</transnote>) 
-      $B%5!<%P$N%"%I%l%9$KAw$k$3$H$,$G$-$^$9!#$3$N$h$&$K(B
-      $B%j%@%$%l%/%H$9$k$H!"%f!<%6$N%V%C%/%^!<%/$,@5$7$$40A4$J%[%9%HL>$r4^$`(B
-      $B$3$H$K$b$J$k$?$a!"$h$j9%$^$7$$J}K!$H8@$($k$G$7$g$&!#(B</p>
+      <p>イントラネット内のユーザは WWW のリクエストでローカルドメインを
+      省略することがよくあります。<code>http://somehost.example.com/</code> 
+      というリクエストの代わりに "http://somehost/" をリクエストしたりします。
+      このようなリクエストを受け付け、サーバに設定されているローカルドメインが
+      暗黙のうちに使われていると解釈して、単純にリクエストを処理するものも
+      商用プロキシサーバの中にはあります。
+      サーバが <a
+      href="#proxyrequests">プロキシのサービス用に設定されていて</a>
+      <directive module="mod_proxy">ProxyDomain</directive> ディレクティブが
+      使用された場合には、Apache はクライアントにリダイレクト応答を送って、
+      正しい、完全な (<transnote>fully qualified</transnote>) 
+      サーバのアドレスに送ることができます。このように
+      リダイレクトすると、ユーザのブックマークが正しい完全なホスト名を含む
+      ことにもなるため、より好ましい方法と言えるでしょう。</p>
     </section> <!-- /intranet -->
 
-    <section id="envsettings"><title>$B%W%m%H%3%k$ND4@0(B</title>
-      <p>Keepalive $B$d(B HTTP/1.1 $B$rE,@Z$K<BAu$7$F$$$J$$%"%W%j%1!<%7%g%s%5!<%P$,(B
-      $B$"$k>u67$G!"(BHTTP/1.0 $B$G(B keepalive $B$rL5$7$K$7$F%j%/%(%9%H$rAw$k$?$a$N(B
-      $B4D6-JQ?t$,Fs$D$"$j$^$9!#$3$l$i$O(B <directive module="mod_env"
-      >SetEnv</directive> $B%G%#%l%/%F%#%V$G@_Dj$7$^$9!#(B</p>
+    <section id="envsettings"><title>プロトコルの調整</title>
+      <p>Keepalive や HTTP/1.1 を適切に実装していないアプリケーションサーバが
+      ある状況で、HTTP/1.0 で keepalive を無しにしてリクエストを送るための
+      環境変数が二つあります。これらは <directive module="mod_env"
+      >SetEnv</directive> ディレクティブで設定します。</p>
 
-      <p><code>force-proxy-request-1.0</code> $B$H(B <code>proxy-nokeepalive</code>
-      $B$,$=$N4D6-JQ?t$G$9!#(B</p>
+      <p><code>force-proxy-request-1.0</code> と <code>proxy-nokeepalive</code>
+      がその環境変数です。</p>
 
       <example>
         &lt;Location /buggyappserver/&gt;<br />
@@ -347,18 +347,18 @@
 
 <directivesynopsis type="section">
 <name>Proxy</name>
-<description>$B%W%m%-%7$5$l$k%j%=!<%9$KE,MQ$5$l$k%3%s%F%J(B</description>
+<description>プロキシされるリソースに適用されるコンテナ</description>
 <syntax>&lt;Proxy <var>wildcard-url</var>&gt; ...&lt;/Proxy&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive type="section">Proxy</directive> $B%;%/%7%g%sCf$N(B
-    $B%G%#%l%/%F%#%V$O%^%C%A$9$k%W%m%-%7$5$l$k%3%s%F%s%D$K$N$_E,MQ$5$l$^$9!#(B
-    $B%7%'%k7A<0$N%o%$%k%I%+!<%I$,;H$($^$9!#(B</p>
+    <p><directive type="section">Proxy</directive> セクション中の
+    ディレクティブはマッチするプロキシされるコンテンツにのみ適用されます。
+    シェル形式のワイルドカードが使えます。</p>
 
-    <p>$BNc$($P!"<!$N@_Dj$O(B <code>yournetwork.example.com</code> $B$N(B
-    $B%[%9%H$K$N$_%W%m%-%7%5!<%P$r7PM3$7$?%"%/%;%9$r5v2D$7$^$9(B:</p>
+    <p>例えば、次の設定は <code>yournetwork.example.com</code> の
+    ホストにのみプロキシサーバを経由したアクセスを許可します:</p>
 
     <example>
       &lt;Proxy *&gt;<br />
@@ -370,9 +370,9 @@
       &lt;/Proxy&gt;
     </example>
 
-    <p>$B<!$NNc$O(B <code>example.com</code> $B$N(B <code>foo</code> $B%G%#%l%/%H%j$N(B
-    $B$9$Y$F$N%U%!%$%k$KBP$7$F!"%W%m%-%7%5!<%P$rDL$7$FAw$i$l$?$H$-$K$O(B
-    <code>INCLUDES</code> $B%U%#%k%?$rDL$7$FAw$k$h$&$K@_Dj$7$^$9(B:</p>
+    <p>次の例は <code>example.com</code> の <code>foo</code> ディレクトリの
+    すべてのファイルに対して、プロキシサーバを通して送られたときには
+    <code>INCLUDES</code> フィルタを通して送るように設定します:</p>
 
     <example>
       &lt;Proxy http://example.com/foo/*&gt;<br />
@@ -388,343 +388,343 @@
 
 <directivesynopsis>
 <name>ProxyBadHeader</name>
-<description>$B1~Ez$K$*$+$7$J%X%C%@$,$"$k>l9g$N07$$J}$r7h$a$k(B</description>
+<description>応答におかしなヘッダがある場合の扱い方を決める</description>
 <syntax>ProxyBadHeader IsError|Ignore|StartBody</syntax>
 <default>ProxyBadHeader IsError</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>2.0.44 $B0J9_(B</compatibility>
+<compatibility>2.0.44 以降</compatibility>
 
 <usage>
-    <p><directive>ProxyBadHeader</directive> $B%G%#%l%/%F%#%V$O9=J8E*$K(B
-    $B4V0c$C$?%X%C%@(B (<em>$B$D$^$j(B</em> $B%3%m%s$r4^$^$J$$$b$N(B) $B$r<u$1<h$C$?$H$-$K(B
-    <module>mod_proxy</module> $B$,$I$&?6$kIq$&$+$r7h$a$^$9!#0J2<$N0z?t$r(B
-    $B<h$k$3$H$,$G$-$^$9(B:</p>
+    <p><directive>ProxyBadHeader</directive> ディレクティブは構文的に
+    間違ったヘッダ (<em>つまり</em> コロンを含まないもの) を受け取ったときに
+    <module>mod_proxy</module> がどう振る舞うかを決めます。以下の引数を
+    取ることができます:</p>
 
     <dl>
     <dt><code>IsError</code></dt>
-    <dd>$B%j%/%(%9%H$rCf;_$7$F(B 502 (Bad Gateway) $B1~Ez$rJV$9!#(B
-    $B$3$l$,%G%U%)%k%H$NF0:n$G$9!#(B</dd>
+    <dd>リクエストを中止して 502 (Bad Gateway) 応答を返す。
+    これがデフォルトの動作です。</dd>
 
     <dt><code>Ignore</code></dt>
-    <dd>$B4V0c$C$?%X%C%@9T$r$=$b$=$bB8:_$7$J$+$C$?$b$N$H$7$F07$&!#(B</dd>
+    <dd>間違ったヘッダ行をそもそも存在しなかったものとして扱う。</dd>
 
     <dt><code>StartBody</code></dt>
-    <dd>$B4V0c$C$?%X%C%@9T$r<u$1<h$C$?$i!"%X%C%@$NFI$_9~$_$r=*N;$7$F!"(B
-    $B$=$l0J9_$N;D$j$r%\%G%#$H$7$F07$&!#$3$l$O%X%C%@$H%\%G%#$N4V$K6u9T$rF~$lK:$l$F(B
-    $B$7$^$C$F$$$k$h$&$J!"$-$A$s$HF0:n$7$F$$$J$$%P%C%/%(%s%I%5!<%P$,$"$k$H$-$K!"(B
-    $BLdBj$r2sHr$9$k$N$KLr$KN)$A$^$9!#(B</dd>
+    <dd>間違ったヘッダ行を受け取ったら、ヘッダの読み込みを終了して、
+    それ以降の残りをボディとして扱う。これはヘッダとボディの間に空行を入れ忘れて
+    しまっているような、きちんと動作していないバックエンドサーバがあるときに、
+    問題を回避するのに役に立ちます。</dd>
     </dl>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis type="section">
 <name>ProxyMatch</name>
-<description>$B@55,I=8=$G$N%^%C%A$K$h$k%W%m%-%7%j%=!<%9MQ$N%G%#%l%/%F%#%V%3%s%F%J(B</description>
+<description>正規表現でのマッチによるプロキシリソース用のディレクティブコンテナ</description>
 <syntax>&lt;ProxyMatch <var>regex</var>&gt; ...&lt;/ProxyMatch&gt;</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive type="section">ProxyMatch</directive> $B$O(B URL $B$N%^%C%A$K(B
-    $B@55,I=8=$rMQ$$$k$3$H$r=|$$$F(B <directive type="section"
-    >Proxy</directive> $B%G%#%l%/%F%#%V$HF1$8$G$9!#(B</p>
+    <p><directive type="section">ProxyMatch</directive> は URL のマッチに
+    正規表現を用いることを除いて <directive type="section"
+    >Proxy</directive> ディレクティブと同じです。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyPreserveHost</name>
-<description>$B%W%m%-%7%j%/%(%9%H$K!"<u$1IU$1$?(B Host HTTP $B%X%C%@$r;H$&(B</description>
+<description>プロキシリクエストに、受け付けた Host HTTP ヘッダを使う</description>
 <syntax>ProxyPreserveHost On|Off</syntax>
 <default>ProxyPreserveHost Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Apache 2.0.31 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>Apache 2.0.31 以降で使用可能</compatibility>
 
 <usage>
-    <p>$B$3$N%*%W%7%g%s$,M-8z$K$J$C$F$$$k>l9g!"(B<directive>ProxyPass</directive>
-    $B$G;XDj$7$?%[%9%HL>$NBe$o$j$K!"<u$1IU$1$?%j%/%(%9%H$N(B Host: $B9T$r(B
-    $B%W%m%-%7@h$N%[%9%H$KAw$j$^$9!#(B</p>
+    <p>このオプションが有効になっている場合、<directive>ProxyPass</directive>
+    で指定したホスト名の代わりに、受け付けたリクエストの Host: 行を
+    プロキシ先のホストに送ります。</p>
 
-    <p>$B$3$N%*%W%7%g%s$ODL>o$O(B <code>Off</code> $B$K@_Dj$7$F$/$@$5$$!#(B
-    $B$[$H$s$I$N>l9g!"$3$l$OBgNL$NL>A0%Y!<%9$N%P!<%A%c%k%[%9%F%#%s%0$r9T$J$C$F$$$F!"(B
-    $B85!9$N(B Host $B%X%C%@$r%P%C%/%(%s%I%5!<%P$,2r<a$9$kI,MW$N$"$k$H$-$N$h$&$J!"(B
-    $BFCJL$J@_Dj$,I,MW$J>l9g$K$N$_M-MQ$G$9!#(B</p>
+    <p>このオプションは通常は <code>Off</code> に設定してください。
+    ほとんどの場合、これは大量の名前ベースのバーチャルホスティングを行なっていて、
+    元々の Host ヘッダをバックエンドサーバが解釈する必要のあるときのような、
+    特別な設定が必要な場合にのみ有用です。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyRequests</name>
-<description>$B%U%)%o!<%I(B ($BI8=`$N(B) $B%W%m%-%7%j%/%(%9%H$rM-8z$K$9$k(B</description>
+<description>フォワード (標準の) プロキシリクエストを有効にする</description>
 <syntax>ProxyRequests On|Off</syntax>
 <default>ProxyRequests Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>$B$3$l$O(B Apache $B$N%U%)%o!<%I%W%m%-%7%5!<%P$H$7$F$NF0:n$r(B
-    $BM-8z$b$7$/$OL58z$K$7$^$9!#(B(ProxyRequests $B$r(B <code>Off</code> $B$K(B
-    $B@_Dj$7$F$b!"(B<directive module="mod_proxy">ProxyPass</directive> 
-    $B$N@_Dj$OL58z$K$J$j$^$;$s!#(B)</p>
+    <p>これは Apache のフォワードプロキシサーバとしての動作を
+    有効もしくは無効にします。(ProxyRequests を <code>Off</code> に
+    設定しても、<directive module="mod_proxy">ProxyPass</directive> 
+    の設定は無効になりません。)</p>
 
-    <p>$BDL>o$N%j%P!<%9%W%m%-%7$N@_Dj$G$O!"$3$N%*%W%7%g%s$O(B <code>Off</code>
-    $B$K@_Dj$7$F$/$@$5$$!#(B</p>
+    <p>通常のリバースプロキシの設定では、このオプションは <code>Off</code>
+    に設定してください。</p>
 
-    <p>HTTP $B$d(B FTP $B%5%$%H$X$N%W%m%-%7$N5!G=$rM-8z$K$7$?$$>l9g$O!"(B
-    <module>mod_proxy_http</module> $B$d(B <module>mod_proxy_ftp</module> $B$,(B
-    $B%5!<%P$KAH$_9~$^$l$F$$$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p>HTTP や FTP サイトへのプロキシの機能を有効にしたい場合は、
+    <module>mod_proxy_http</module> や <module>mod_proxy_ftp</module> が
+    サーバに組み込まれていなければなりません。</p>
 
-    <note type="warning"><title>$B7Y9p(B</title>
+    <note type="warning"><title>警告</title>
       <p><a href="#access"
-      >$B%5!<%P$r0BA4$K$9$k(B</a>$B$^$G(B <directive module="mod_proxy"
-      >ProxyRequests</directive> $B$OM-8z$K$7$J$$$G$/$@$5$$!#(B
-      $B%*!<%W%s%W%m%-%7%5!<%P$O$"$J$?<+?H$N%M%C%H%o!<%/$K$H$C$F$b!"(B
-      $B%$%s%?!<%M%C%HA4BN$K$H$C$F$b4m81$G$9!#(B</p>
+      >サーバを安全にする</a>まで <directive module="mod_proxy"
+      >ProxyRequests</directive> は有効にしないでください。
+      オープンプロキシサーバはあなた自身のネットワークにとっても、
+      インターネット全体にとっても危険です。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyRemote</name>
-<description>$BFCDj$N%j%/%(%9%H$r07$&;~$K;H$o$l$k%j%b!<%H%W%m%-%7$r;XDj$9$k(B</description>
+<description>特定のリクエストを扱う時に使われるリモートプロキシを指定する</description>
 <syntax>ProxyRemote <var>match</var> <var>remote-server</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O$3$N%W%m%-%7$KBP$9$k%j%b!<%H%W%m%-%7$rDj5A$7$^$9!#(B
-    <var>match</var> $B$O%j%b!<%H%5!<%P$,%5%]!<%H$9$k(B URL $B%9%-!<%`!"(B
-    $B%j%b!<%H%5!<%P$,;H$&$O$:$N(B URL $B$N0lItJ,!"%5!<%P$,$9$Y$F$N(B
-    $B%j%/%(%9%H$K;H$o$l$k$3$H$r<($9(B <code>*</code> $B$N$I$l$+$K$J$j$^$9!#(B
-    <var>remote-server</var> $B$O%j%b!<%H%5!<%P$NItJ,(B URL $B$G$9!#9=J8(B:</p>
+    <p>このディレクティブはこのプロキシに対するリモートプロキシを定義します。
+    <var>match</var> はリモートサーバがサポートする URL スキーム、
+    リモートサーバが使うはずの URL の一部分、サーバがすべての
+    リクエストに使われることを示す <code>*</code> のどれかになります。
+    <var>remote-server</var> はリモートサーバの部分 URL です。構文:</p>
 
     <example>
       <dfn>remote-server</dfn> =
           <var>scheme</var>://<var>hostname</var>[:<var>port</var>]
     </example>
 
-    <p><var>scheme</var> $B$O<B:]>e%j%b!<%H%5!<%P$H$NDL?.$K;H$o$l$k%W%m%H%3%k$r(B
-    $B7hDj$7$^$9!#$3$N%b%8%e!<%k$G$O(B <code>http</code> $B$@$1$,%5%]!<%H$5$l$F(B
-    $B$$$^$9!#(B</p>
+    <p><var>scheme</var> は実際上リモートサーバとの通信に使われるプロトコルを
+    決定します。このモジュールでは <code>http</code> だけがサポートされて
+    います。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ProxyRemote http://goodguys.com/ http://mirrorguys.com:8000<br />
       ProxyRemote * http://cleversite.com<br />
       ProxyRemote ftp http://ftpproxy.mydomain.com:8080
     </example>
 
-    <p>$B$3$NNc$G$O!"%W%m%-%7$O(B FTP $B%j%/%(%9%H$rJL$N(B HTTP $B%j%/%(%9%H$GJq$s$G(B
-    $B$=$N$h$&$J%j%/%(%9%H$r07$($kJL$N%W%m%-%7$KE>Aw$7$^$9!#(B</p>
+    <p>この例では、プロキシは FTP リクエストを別の HTTP リクエストで包んで
+    そのようなリクエストを扱える別のプロキシに転送します。</p>
 
-    <p>$B$3$N%*%W%7%g%s$O%j%P!<%9%W%m%-%7$N@_Dj$b%5%]!<%H$7$^$9!#(B
-    $B%5!<%P$,JL$N%U%)%o!<%I%W%m%-%7$N8e$m$K1#$5$l$F$$$k>l9g$G$b(B
-    $B%P%C%/%(%s%I%&%'%V%5!<%P$r%P!<%A%c%k%[%9%H$N(B URL $B6u4V$KF~$l$k$3$H$,(B
-    $B$G$-$^$9!#(B</p>
+    <p>このオプションはリバースプロキシの設定もサポートします。
+    サーバが別のフォワードプロキシの後ろに隠されている場合でも
+    バックエンドウェブサーバをバーチャルホストの URL 空間に入れることが
+    できます。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyRemoteMatch</name>
-<description>$B@55,I=8=$G$N%^%C%A$K$h$k%j%/%(%9%H$r07$&%j%b!<%H%W%m%-%7$N;XDj(B</description>
+<description>正規表現でのマッチによるリクエストを扱うリモートプロキシの指定</description>
 <syntax>ProxyRemoteMatch <var>regex</var> <var>remote-server</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>ProxyRemoteMatch</directive> $B$O:G=i$N0z?t$,%j%/%(%9%H$5$l$?(B
-    URL $B$K%^%C%A$9$k@55,I=8=$G$"$k$3$H$r=|$1$P(B <directive
-    module="mod_proxy">ProxyRemote</directive> $B%G%#%l%/%F%#%V$HF1$8$G$9!#(B</p>
+    <p><directive>ProxyRemoteMatch</directive> は最初の引数がリクエストされた
+    URL にマッチする正規表現であることを除けば <directive
+    module="mod_proxy">ProxyRemote</directive> ディレクティブと同じです。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyPass</name>
-<description>$B%j%b!<%H%5!<%P$r%m!<%+%k%5!<%P$N(B URL $B6u4V$K%^%C%W$9$k(B</description>
+<description>リモートサーバをローカルサーバの URL 空間にマップする</description>
 <syntax>ProxyPass [<var>path</var>] !|<var>url</var> [<var>key=value</var> <var>key=value</var> ...]]</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O%j%b!<%H%5!<%P$r%m!<%+%k%5!<%P$NL>A06u4V$K(B
-    $B%^%C%W$G$-$k$h$&$K$7$^$9!#%m!<%+%k%5!<%P$ODL>o$N0UL#$G$N%W%m%-%7$H(B
-    $B$7$F$OF0:n$;$:!"%j%b!<%H%5!<%P$N%_%i!<$H$7$F?6$kIq$$$^$9!#(B
-    <var>path</var> $B$O%m!<%+%k$N2>A[%Q%9$NL>A0$G$9!#(B<var>url</var> $B$O(B
-    $B%j%b!<%H%5!<%P$NItJ,(B URL $B$K$J$j!"%/%(%j!<J8;zNs$r4^$`$3$H$O$G$-$^$;$s!#(B</p>
+    <p>このディレクティブはリモートサーバをローカルサーバの名前空間に
+    マップできるようにします。ローカルサーバは通常の意味でのプロキシと
+    しては動作せず、リモートサーバのミラーとして振る舞います。
+    <var>path</var> はローカルの仮想パスの名前です。<var>url</var> は
+    リモートサーバの部分 URL になり、クエリー文字列を含むことはできません。</p>
 
-    <note type="warning"><directive>ProxyPass</directive> $B%G%#%l%/%F%#%V$r(B
-    $B;H$C$F$$$k$H$-$O(B <directive
-    module="mod_proxy">ProxyRequests</directive> $B%G%#%l%/%F%#%V$ODL>o$O(B
-    <strong>off</strong> $B$K@_Dj$5$l$F$$$k$Y$-$G$9!#(B</note>
+    <note type="warning"><directive>ProxyPass</directive> ディレクティブを
+    使っているときは <directive
+    module="mod_proxy">ProxyRequests</directive> ディレクティブは通常は
+    <strong>off</strong> に設定されているべきです。</note>
 
-    <p>$B%m!<%+%k%5!<%P$N%"%I%l%9$,(B <code>http://example.com/</code> $B$G$"$k$H(B
-    $B$7$^$9!#$9$k$H!"(B</p>
+    <p>ローカルサーバのアドレスが <code>http://example.com/</code> であると
+    します。すると、</p>
 
     <example>
       ProxyPass /mirror/foo/ http://backend.example.com/
     </example>
 
-    <p>$B$H@_Dj$9$k$H(B <code>http://example.com/mirror/foo/bar</code> $B$X$N(B
-    $B%j%/%(%9%H$,FbItE*$K(B <code>http://backend.example.com/bar</code> $B$X$N(B
-    $B%W%m%-%7%j%/%(%9%H$KJQ49$5$l$k$3$H$K$J$j$^$9!#(B</p>
+    <p>と設定すると <code>http://example.com/mirror/foo/bar</code> への
+    リクエストが内部的に <code>http://backend.example.com/bar</code> への
+    プロキシリクエストに変換されることになります。</p>
 
-    <p>$B%5%V%G%#%l%/%H%j$r%j%P!<%9%W%m%-%7$7$?$/$J$$$H$-$K(B <code>!</code> $B$O(B
-    $BLr$KN)$A$^$9!#(B<em>$BNc$($P(B</em>$B!"(B</p>
+    <p>サブディレクトリをリバースプロキシしたくないときに <code>!</code> は
+    役に立ちます。<em>例えば</em>、</p>
 
     <example>
       ProxyPass /mirror/foo/i !<br />
       ProxyPass /mirror/foo http://backend.example.com
     </example>
 
-    <p>$B$O(B <code>/mirror/foo/i</code> $B$r(B<em>$B=|$/(B</em>
-    <code>/mirror/foo</code> $B$X$N$9$Y$F$N%j%/%(%9%H$r(B
-    <code>backend.example.com</code> $B$K%W%m%-%7$7$^$9!#(B</p>
+    <p>は <code>/mirror/foo/i</code> を<em>除く</em>
+    <code>/mirror/foo</code> へのすべてのリクエストを
+    <code>backend.example.com</code> にプロキシします。</p>
 
-    <note><title>$BCm(B</title>
-      <p>$B=gHV$O=EMW$G$9!#0lHLE*$J(B <directive>ProxyPass</directive>
-      $B%G%#%l%/%F%#%V$N(B<em>$BA0$K(B</em>
-      $B=|30%G%#%l%/%F%#%V$rCV$/I,MW$,$"$j$^$9!#(B</p>
+    <note><title>注</title>
+      <p>順番は重要です。一般的な <directive>ProxyPass</directive>
+      ディレクティブの<em>前に</em>
+      除外ディレクティブを置く必要があります。</p>
     </note>
 
-    <p>2.1 $B$N?75!G=$G!"%P%C%/%(%s%I%5!<%P$H$N@\B3$K%W!<%k$5$l$?%3%M%/%7%g%s$r(B
-    $B;H$($k$h$&$K$J$j$^$7$?!#(B<code>key=value</code> $B7A<0$N%Q%i%a!<%?$G(B
-    $B$3$N%3%M%/%7%g%s%W!<%j%s%0$ND4@0$,$G$-$^$9!#(B<code>Hard Maximum</code> 
-    $B$N%G%U%)%k%HCM$O!"M-8z$K$J$C$F$$$k(B MPM $B$G$N%W%m%;%9Ev$?$j$N%9%l%C%I?t$H(B
-    $BF1$8?t$N%3%M%/%7%g%s?t$G$9!#(Bprefork MPM $B$G$ODL>o$O(B 1 $B$G!"(Bworker MPM $B$G$O(B
-    <directive>ThreadsPerChild</directive> $B$GD4@0$5$l$^$9!#(B</p>
+    <p>2.1 の新機能で、バックエンドサーバとの接続にプールされたコネクションを
+    使えるようになりました。<code>key=value</code> 形式のパラメータで
+    このコネクションプーリングの調整ができます。<code>Hard Maximum</code> 
+    のデフォルト値は、有効になっている MPM でのプロセス当たりのスレッド数と
+    同じ数のコネクション数です。prefork MPM では通常は 1 で、worker MPM では
+    <directive>ThreadsPerChild</directive> で調整されます。</p>
 
-    <p><code>min</code> $B$N@_Dj$G!"%P%C%/%(%s%I%5!<%P$H$N4V$K2?K\$N%3%M%/%7%g%s$r(B
-    $B>o;~3+$/$+$,7h$^$j$^$9!#(BSoft Maximum <code>smax</code> $B$N?t$K(B
-    $BC#$9$k$^$GI,MW$K1~$8$F%3%M%/%7%g%s$O@8@.$5$l$^$9!#(B<code>smax</code>
-    $B$rD6$($??t$N%3%M%/%7%g%s$O!"@8B8;~4V(B <code>ttl</code> $B$G@ZCG$5$l$^$9!#(B
-    $B%P%C%/%(%s%I%5!<%P$H(B Hard Maximum <code>max</code> $B$N?t0J>e$N%3%M%/%7%g%s$r(B
-    $B@8@.$9$k$3$H$O$"$j$^$;$s!#(B</p>
+    <p><code>min</code> の設定で、バックエンドサーバとの間に何本のコネクションを
+    常時開くかが決まります。Soft Maximum <code>smax</code> の数に
+    達するまで必要に応じてコネクションは生成されます。<code>smax</code>
+    を超えた数のコネクションは、生存時間 <code>ttl</code> で切断されます。
+    バックエンドサーバと Hard Maximum <code>max</code> の数以上のコネクションを
+    生成することはありません。</p>
 
     <example>
         ProxyPass /example http://backend.example.com smax=5 max=20 ttl=120 retry=300
     </example>
 
     <table>
-    <tr><th>$B%Q%i%a!<%?(B</th>
-        <th>$B%G%U%)%k%HCM(B</th>
-        <th>$B@bL@(B</th></tr>
+    <tr><th>パラメータ</th>
+        <th>デフォルト値</th>
+        <th>説明</th></tr>
     <tr><td>min</td>
         <td>0</td>
-        <td>$B%P%C%/%(%s%I%5!<%P$H$N@\B3$G(B
-            $B>o$K3+$$$F$$$k%3%M%/%7%g%s?t$N:G>.CM(B</td></tr>
+        <td>バックエンドサーバとの接続で
+            常に開いているコネクション数の最小値</td></tr>
     <tr><td>max</td>
         <td>1...n</td>
-        <td>$B%P%C%/%(%s%I%5!<%P$H$N@\B3?t$N(B Hard Maximum
-        <transnote>$B%O!<%I%j%_%C%H(B</transnote>$B!#(B
-        $B%G%U%)%k%HCM$O!";HMQ$7$F$$$k(B MPM $B$N%W%m%;%9$"$?$j$N%9%l%C%I?t$K$J$C$F$$$^$9!#(B
-        Prefork MPM $B$G$O>o$K(B 1 $B$G!"(BWorker MPM $B$G$O(B <directive>ThreadsPerChild</directive>
-        $B$GD4@a$G$-$^$9!#(BHard Maximum $B0J>e$K%P%C%/%(%s%I%5!<%P$H$N%3%M%/%7%g%s$r(B
-        $B@8@.$9$k$3$H$O$"$j$^$;$s!#(B</td></tr>
+        <td>バックエンドサーバとの接続数の Hard Maximum
+        <transnote>ハードリミット</transnote>。
+        デフォルト値は、使用している MPM のプロセスあたりのスレッド数になっています。
+        Prefork MPM では常に 1 で、Worker MPM では <directive>ThreadsPerChild</directive>
+        で調節できます。Hard Maximum 以上にバックエンドサーバとのコネクションを
+        生成することはありません。</td></tr>
     <tr><td>smax</td>
         <td>max</td>
-        <td>$B@\B3?t$N(B Soft Maximum <transnote>$B%=%U%H%j%_%C%H(B</transnote>$B$^$G!"(B
-        $B%3%M%/%7%g%s$OI,MW$K1~$8$F@8@.$5$l$^$9!#(B
-        <code>smax</code> $B$rD6$($??t$N%3%M%/%7%g%s$O@8B8;~4V(B <code>ttl</code>
-        $B$G@ZCG$5$l$^$9!#(B
+        <td>接続数の Soft Maximum <transnote>ソフトリミット</transnote>まで、
+        コネクションは必要に応じて生成されます。
+        <code>smax</code> を超えた数のコネクションは生存時間 <code>ttl</code>
+        で切断されます。
     </td></tr>
     <tr><td>ttl</td>
         <td>-</td>
-        <td><code>smax</code> $B?t$rD6$($?Hs3hF0>uBV$N%3%M%/%7%g%s$N@8B8;~4V$r!"(B
-        $BIC$G;XDj$7$^$9!#$3$N4|4VFb$K;HMQ$5$l$J$+$C$?%3%M%/%7%g%s$O!"(B
-        $BA4$FJD$8$i$l$^$9!#(B
+        <td><code>smax</code> 数を超えた非活動状態のコネクションの生存時間を、
+        秒で指定します。この期間内に使用されなかったコネクションは、
+        全て閉じられます。
     </td></tr>
     <tr><td>timeout</td>
         <td><directive>Timeout</directive></td>
-        <td>$B%3%M%/%7%g%s%?%$%`%"%&%H$rIC$G;XDj$7$^$9!#FC$K;XDj$5$l$J$1$l$P!"(B
-        $B%U%j!<$J%3%M%/%7%g%s$r<hF@$G$-$k$^$GBT$A$^$9!#$3$N%G%#%l%/%F%#%V$O(B
-        <code>max</code> $B%Q%i%a!<%?$H9g$o$;$F;H$&$3$H$G!"%P%C%/%(%s%I%5!<%P$H$N(B
-        $B@\B3?t$r@)8f$9$k$N$K;H$$$^$9!#(B
+        <td>コネクションタイムアウトを秒で指定します。特に指定されなければ、
+        フリーなコネクションを取得できるまで待ちます。このディレクティブは
+        <code>max</code> パラメータと合わせて使うことで、バックエンドサーバとの
+        接続数を制御するのに使います。
     </td></tr>
     <tr><td>acquire</td>
         <td>-</td>
-        <td>$B@_Dj$9$k$H!"%3%M%/%7%g%s%W!<%k$+$i%U%j!<$N%3%M%/%7%g%s$r<hF@$9$k$?$a$K(B
-        $BBT5!$9$kBT$A;~4V$N:GBgCM$K$J$j$^$9!#%U%j!<$N%3%M%/%7%g%s$,%W!<%k$K$J$+$C$?>l9g$O!"(B
-        <code>SERVER_BUSY</code> $B%9%F!<%?%9$,%/%i%$%"%s%H$KJV$5$l$^$9!#(B
+        <td>設定すると、コネクションプールからフリーのコネクションを取得するために
+        待機する待ち時間の最大値になります。フリーのコネクションがプールになかった場合は、
+        <code>SERVER_BUSY</code> ステータスがクライアントに返されます。
     </td></tr>
     <tr><td>keepalive</td>
         <td>Off</td>
-        <td>$B%P%C%/%(%s%I%5!<%P$H(B Apache $B$N4V$K%U%!%$%"!<%&%)!<%k$,$"$k>l9g$K$O!"(B
-        $B$3$N%Q%i%a!<%?$r;H$C$F$/$@$5$$!#%U%!%$%"%&%)!<%k$O1}!9$K$7$F!"(B
-        $BHs3hF0>uBV$N%3%M%/%7%g%s$rMn$H$=$&$H$7$^$9!#(B
-        $B$3$N%U%i%0$O(B OS $B$K;X<($7$F!"(B<code>KEEP_ALIVE</code> $B%a%C%;!<%8$rHs3hF0>uBV$N(B
-        $B%3%M%/%7%g%s$G$bAw$k$h$&$K$7$^$9(B ($B4V3V$O(B OS $B$N%0%m!<%P%k@_Dj$K0MB8$7!"(B
-        $BDL>o$O(B 120ms $B4V3V(B) $B!#$3$l$K$h$C$F%U%!%$%"%&%)!<%k$K$h$C$F%3%M%/%7%g%s$,(B
-        $BMn$H$5$l$k$3$H$rKI$2$^$9!#(Bkeepalive $B$rM-8z$K$9$k$K$O!"$3$N%W%m%Q%F%#$r(B
-        <code>On</code> $B$K$7$F$/$@$5$$!#(B
+        <td>バックエンドサーバと Apache の間にファイアーウォールがある場合には、
+        このパラメータを使ってください。ファイアウォールは往々にして、
+        非活動状態のコネクションを落とそうとします。
+        このフラグは OS に指示して、<code>KEEP_ALIVE</code> メッセージを非活動状態の
+        コネクションでも送るようにします (間隔は OS のグローバル設定に依存し、
+        通常は 120ms 間隔) 。これによってファイアウォールによってコネクションが
+        落とされることを防げます。keepalive を有効にするには、このプロパティを
+        <code>On</code> にしてください。
     </td></tr>
     <tr><td>retry</td>
         <td>60</td>
-        <td>$B%3%M%/%7%g%s$r%W!<%j%s%0$9$k$?$a$N!"%j%H%i%$$N%?%$%`%"%&%H$rIC$G(B
-        $B;XDj$7$^$9!#%P%C%/%(%s%I%5!<%P$X$N%3%M%/%7%g%s%W!<%j%s%0$,<:GT$7$?>l9g$O!"(B
-        $B%?%$%`%"%&%H$N4|4V$,2a$.$k$^$G!"$=$N%5!<%P$K%j%/%(%9%H$r%U%)%o!<%I$7$^$;$s!#(B
-        $B$3$N5!G=$r;H$&$H!"%P%C%/%(%s%I%5!<%P$r%a%s%F%J%s%9$N$?$a$K%7%c%C%H%@%&%s$7!"(B
-        $B8e$G%*%s%i%$%s$KI|5"$5$;$k$H$$$C$?$3$H$,$G$-$^$9!#(B
+        <td>コネクションをプーリングするための、リトライのタイムアウトを秒で
+        指定します。バックエンドサーバへのコネクションプーリングが失敗した場合は、
+        タイムアウトの期間が過ぎるまで、そのサーバにリクエストをフォワードしません。
+        この機能を使うと、バックエンドサーバをメンテナンスのためにシャットダウンし、
+        後でオンラインに復帰させるといったことができます。
     </td></tr>
     <tr><td>loadfactor</td>
         <td>1</td>
-        <td>$B%o!<%+!<$"$?$j$NIi2Y78?t$G$9!#(BBalancerMember $B$G;H$$$^$9!#(B
-        1 $B$+$i(B 100 $B$^$G$N?t;z$G$=$N%o!<%+!<$KBP$9$k@55,2=$5$l$?Ii2YN($r;XDj$7$^$9!#(B
+        <td>ワーカーあたりの負荷係数です。BalancerMember で使います。
+        1 から 100 までの数字でそのワーカーに対する正規化された負荷率を指定します。
     </td></tr>
     <tr><td>route</td>
         <td>-</td>
-        <td>$B%m!<%I%P%i%s%5$G;H$C$?>l9g!"%o!<%+!<$N%k!<%F%#%s%0$r$7$^$9!#(B
-        $B%k!<%H$O%;%C%7%g%s(B ID $B$KIU2C$5$l$?CM$K$J$j$^$9!#(B
+        <td>ロードバランサで使った場合、ワーカーのルーティングをします。
+        ルートはセッション ID に付加された値になります。
     </td></tr>
     <tr><td>redirect</td>
         <td>-</td>
-        <td>$B%o!<%+!<$N%j%@%$%l%/%7%g%s7PO)$G$9!#$3$NCM$ODL>o$O!"(B
-        $B0BA4$K%/%i%9%?$+$i%N!<%I$r<h$j5n$k@_Dj$rF0E*$KF~$l$k$?$a$K;H$$$^$9!#(B
-        $B%;%C%7%g%s(B ID $B$NL5$$%j%/%(%9%HA4$F$r;XDj$7$?>l9g$O!"(B
-        $B$3$NCM$HF1$8%k!<%F%#%s%0%Q%i%a!<%?$r;}$D(B 
-        BalancerMember $B$K%j%@%$%l%/%H$5$l$^$9!#(B
+        <td>ワーカーのリダイレクション経路です。この値は通常は、
+        安全にクラスタからノードを取り去る設定を動的に入れるために使います。
+        セッション ID の無いリクエスト全てを指定した場合は、
+        この値と同じルーティングパラメータを持つ 
+        BalancerMember にリダイレクトされます。
     </td></tr>
 
     </table>
 
-    <p>Proxy $B%G%#%l%/%F%#%V$N%9%-!<%`$,(B <code>balancer://</code> $B$K$J$C$F$$$k>l9g$O!"(B
-    $B%P%C%/%(%s%I%5!<%P$H<B:]$K$ODL?.$7$J$$2>A[%o!<%+!<$,@8@.$5$l$^$9!#(B
-    $B$3$N%o!<%+!<$O4v$D$+$N(B "$BK\J*$N(B" $B%o!<%+!<$N4IM}$r$D$+$5$I$j$^$9!#(B
-    $B$3$N>l9g%Q%i%a!<%?$O!"$3$N2>A[%o!<%+!<$KBP$7$F@_Dj$5$l$^$9!#(B
+    <p>Proxy ディレクティブのスキームが <code>balancer://</code> になっている場合は、
+    バックエンドサーバと実際には通信しない仮想ワーカーが生成されます。
+    このワーカーは幾つかの "本物の" ワーカーの管理をつかさどります。
+    この場合パラメータは、この仮想ワーカーに対して設定されます。
     </p>
     <table>
-    <tr><th>$B%Q%i%a!<%?(B</th>
-        <th>$B%G%U%)%k%HCM(B</th>
-        <th>$B@bL@(B</th></tr>
+    <tr><th>パラメータ</th>
+        <th>デフォルト値</th>
+        <th>説明</th></tr>
     <tr><td>lbmethod</td>
         <td>-</td>
-        <td>Balancer $B$N%m!<%I%P%i%s%9J}K!!#;HMQ$9$k%m!<%I%P%i%s%9$N(B
-        $B%9%1%8%e!<%j%s%0J}K!$rA*$S$^$9!#=hM}$7$?%j%/%(%9%H$N?t$G=E$_IU$1$9$k(B
-        <code>byrequests</code> $B$+!"E>AwNL$N%P%$%H?t$G=E$_IU$1$9$k(B
-        <code>bytraffic</code> $B$r@_Dj$G$-$^$9!#%G%U%)%k%H$O(B
-        <code>byrequests</code> $B$G$9!#(B
+        <td>Balancer のロードバランス方法。使用するロードバランスの
+        スケジューリング方法を選びます。処理したリクエストの数で重み付けする
+        <code>byrequests</code> か、転送量のバイト数で重み付けする
+        <code>bytraffic</code> を設定できます。デフォルトは
+        <code>byrequests</code> です。
     </td></tr>
     <tr><td>stickysession</td>
         <td>-</td>
-        <td>$B%P%i%s%5!<$N%9%F%#%C%-!<%;%C%7%g%sL>$G$9!#DL>o$O$3$NCM$O(B <code>JSESSIONID</code>
-        $B$d(B <code>PHPSESSIONID</code> $B$H$$$C$?$b$N$K$J$j$^$9$,!"$3$NCM$O(B
-        $B%P%C%/%(%s%I%"%W%j%1!<%7%g%s$N%5%]!<%H$9$k%;%C%7%g%s$K0MB8$7$^$9!#(B
+        <td>バランサーのスティッキーセッション名です。通常はこの値は <code>JSESSIONID</code>
+        や <code>PHPSESSIONID</code> といったものになりますが、この値は
+        バックエンドアプリケーションのサポートするセッションに依存します。
     </td></tr>
     <tr><td>nofailover</td>
         <td>Off</td>
-        <td><code>On</code> $B$K$J$C$F$$$k$H!"%o!<%+!<$,%(%i!<$r5/$3$7$?$j(B
-        $BL58z$K$J$C$F$$$k>l9g$K%;%C%7%g%s$,@Z$l$^$9!#(B
-        $B%P%C%/%(%s%I%5!<%P$,%;%C%7%g%s%l%W%j%1!<%7%g%s$r%5%]!<%H$7$F$$$J$$>l9g$O!"(B
-        On $B$K$7$F$/$@$5$$!#(B
+        <td><code>On</code> になっていると、ワーカーがエラーを起こしたり
+        無効になっている場合にセッションが切れます。
+        バックエンドサーバがセッションレプリケーションをサポートしていない場合は、
+        On にしてください。
     </td></tr>
     <tr><td>timeout</td>
         <td>0</td>
-        <td>$B%P%i%s%5!<$N%?%$%`%"%&%H$rIC$G;XDj$7$^$9!#(B
-        $B$3$NCM$r@_Dj$9$k$H!"%U%j!<$N%o!<%+!<$r<hF@$9$k$^$G$N:GBgBT5!;~4V$K$J$j$^$9!#(B
-        $B%G%U%)%k%H$G$OBT5!$7$^$;$s!#(B
+        <td>バランサーのタイムアウトを秒で指定します。
+        この値を設定すると、フリーのワーカーを取得するまでの最大待機時間になります。
+        デフォルトでは待機しません。
     </td></tr>
     <tr><td>maxattempts</td>
         <td>1</td>
-        <td>$B%U%'%$%k%*!<%P!<$r;n$_$k:GBg$N2s?t$r;XDj$7$^$9!#(B
+        <td>フェイルオーバーを試みる最大の回数を指定します。
     </td></tr>
     
     </table>
@@ -742,46 +742,46 @@
     </example>
 
     <p><directive type="section" module="core"
-    >Location</directive> $B%;%/%7%g%s$NCf$G;H$o$l$?>l9g!":G=i$N0z?t$O(B
-    $B>JN,$5$l!"%m!<%+%k%G%#%l%/%H%j$O(B <directive type="section" module="core"
-    >Location</directive> $B$+$i<hF@$5$l$^$9!#(B</p>
+    >Location</directive> セクションの中で使われた場合、最初の引数は
+    省略され、ローカルディレクトリは <directive type="section" module="core"
+    >Location</directive> から取得されます。</p>
 
-    <p>$B$h$j=@Fp$J%j%P!<%9%W%m%-%7$N@_Dj$,I,MW$J>l9g$O!"(B<code>[P]</code>
-    $B%U%i%0IU$-$N(B <directive module="mod_rewrite">RewriteRule</directive>
-    $B%G%#%l%/%F%#%V$r;2>H$7$F$/$@$5$$!#(B</p>
+    <p>より柔軟なリバースプロキシの設定が必要な場合は、<code>[P]</code>
+    フラグ付きの <directive module="mod_rewrite">RewriteRule</directive>
+    ディレクティブを参照してください。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyPassReverse</name>
-<description>$B%j%P!<%9%W%m%-%7$5$l$?%5!<%P$+$iAw$i$l$?(B HTTP $B1~Ez%X%C%@$N(B
-URL $B$rD4@0$9$k(B</description>
+<description>リバースプロキシされたサーバから送られた HTTP 応答ヘッダの
+URL を調整する</description>
 <syntax>ProxyPassReverse [<var>path</var>] <var>url</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O(B Apache $B$K(B HTTP $B%j%@%$%l%/%H1~Ez$N(B
+    <p>このディレクティブは Apache に HTTP リダイレクト応答の
     <code>Location</code>, <code>Content-Location</code>, <code>URI</code>
-    $B%X%C%@$ND4@0$r$5$;$^$9!#$3$l$O!"(BApache $B$,%j%P!<%9%W%m%-%7$H$7$F;H$o$l$F$$$k(B
-    $B$H$-$K!"%j%P!<%9%W%m%-%7$rDL$5$J$$$G%"%/%;%9$9$k$3$H$rKI$0$?$a$K(B
-    $B=EMW$G$9!#$3$l$K$h$j%P%C%/%(%s%I%5!<%P$N(B HTTP $B%j%@%$%l%/%H$,(B
-    $B%j%P!<%9%W%m%-%7$H%P%C%/%(%s%I$N4V$G07$o$l$k$h$&$K$J$j$^$9!#(B</p>
+    ヘッダの調整をさせます。これは、Apache がリバースプロキシとして使われている
+    ときに、リバースプロキシを通さないでアクセスすることを防ぐために
+    重要です。これによりバックエンドサーバの HTTP リダイレクトが
+    リバースプロキシとバックエンドの間で扱われるようになります。</p>
 
-    <p>$B%G%#%l%/%F%#%V$GL@<($5$l$F$$$k(B HTTP $B1~Ez%X%C%@$N$_$,=q$-49$($i$l$^$9!#(B
-    Apache $B$OB>$N1~Ez%X%C%@$r=q$-49$($?$j!"(BHTML $B%Z!<%8$NCf$N(B URL $B;2>H$r(B
-    $B=q$-49$($?$j$9$k$3$H$O$"$j$^$;$s!#(BHTML $B$NCf$r8+$F!"(BURL $B;2>H$r=q$-49$($k(B
-    $B%b%8%e!<%k$K(B Nick Kew $B$5$s$N(B <a
+    <p>ディレクティブで明示されている HTTP 応答ヘッダのみが書き換えられます。
+    Apache は他の応答ヘッダを書き換えたり、HTML ページの中の URL 参照を
+    書き換えたりすることはありません。HTML の中を見て、URL 参照を書き換える
+    モジュールに Nick Kew さんの <a
     href="http://apache.webthing.com/mod_proxy_html/"
-    >mod_proxy_html</a> $B$,$"$j$^$9!#(B</p>
+    >mod_proxy_html</a> があります。</p>
 
-    <p><var>path</var> $B$O%m!<%+%k2>A[%Q%9$NL>A0$G$9!#(B<var>url</var> $B$O(B
-    $B%j%b!<%H%5!<%P$NItJ,(B URL $B$G$9!#$3$l$i$O(B <directive module="mod_proxy"
-    >ProxyPass</directive> $B%G%#%l%/%F%#%V$HF1MM$G$9!#(B</p>
+    <p><var>path</var> はローカル仮想パスの名前です。<var>url</var> は
+    リモートサーバの部分 URL です。これらは <directive module="mod_proxy"
+    >ProxyPass</directive> ディレクティブと同様です。</p>
 
-    <p>$BNc$($P!"%m!<%+%k%5!<%P$N%"%I%l%9$,(B <code>http://example.com/</code>
-    $B$@$H$7$^$9!#$9$k$H(B</p>
+    <p>例えば、ローカルサーバのアドレスが <code>http://example.com/</code>
+    だとします。すると</p>
 
     <example>
       ProxyPass         /mirror/foo/ http://backend.example.com/<br />
@@ -790,139 +790,139 @@ URL $B$rD4@0$9$k(B</description>
       ProxyPassReverseCookiePath  /  /mirror/foo/
     </example>
 
-    <p>$B$H$$$&@_Dj$r$9$k$H!"(B<code>http://example.com/mirror/foo/bar</code>
-    $B$X$N%m!<%+%k%j%/%(%9%H$,(B <code>http://backend.example.com/bar</code>
-    $B$X$N%W%m%-%7%j%/%(%9%H$KFbIt$G%j%@%$%l%/%H$5$l$k$@$1$G$O$"$j$^$;$s(B
-    ($B$3$l$O(B <code>ProxyPass</code> $B$N5!G=$G$9(B)$B!#(B<code>backend.example.com</code>
-    $B$,Aw$k%j%@%$%l%/%H$NLLE]$b$_$^$9!#(B<code>http://backend.example.com/bar</code>
-    $B$,(B <code>http://backend.example.com/quux</code> $B$K%j%@%$%l%/%H$5$l$?$H$-!"(B
-    Apache $B$O(B HTTP $B%j%@%$%l%/%H1~Ez$r%/%i%$%"%s%H$KAw$kA0$K!"(B
-    <code>http://example.com/mirror/foo/quux</code> $B$KJQ99$7$^$9!#(B
-    URL $B$r9=@.$9$k$N$K;H$o$l$k%[%9%HL>$O(B <directive
-    module="core">UseCanonicalName</directive> $B$N@_Dj$K1~$8$FA*Br$5$l$k$3$H$K(B
-    $BCm0U$7$F$/$@$5$$!#(B</p>
+    <p>という設定をすると、<code>http://example.com/mirror/foo/bar</code>
+    へのローカルリクエストが <code>http://backend.example.com/bar</code>
+    へのプロキシリクエストに内部でリダイレクトされるだけではありません
+    (これは <code>ProxyPass</code> の機能です)。<code>backend.example.com</code>
+    が送るリダイレクトの面倒もみます。<code>http://backend.example.com/bar</code>
+    が <code>http://backend.example.com/quux</code> にリダイレクトされたとき、
+    Apache は HTTP リダイレクト応答をクライアントに送る前に、
+    <code>http://example.com/mirror/foo/quux</code> に変更します。
+    URL を構成するのに使われるホスト名は <directive
+    module="core">UseCanonicalName</directive> の設定に応じて選択されることに
+    注意してください。</p>
 
-    <p><directive>ProxyPassReverse</directive> $B%G%#%l%/%F%#%V$O(B
-    $BBP1~$9$k(B <directive module="mod_proxy"
-    >ProxyPass</directive> $B%G%#%l%/%F%#%V$K$O0MB8$7$J$$$?$a!"(B
-    <module>mod_rewrite</module> $B$N%W%m%-%7DL2a5!G=(B
-    (<code>RewriteRule ...  [P]</code>) $B$HJ;$;$F;HMQ$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p><directive>ProxyPassReverse</directive> ディレクティブは
+    対応する <directive module="mod_proxy"
+    >ProxyPass</directive> ディレクティブには依存しないため、
+    <module>mod_rewrite</module> のプロキシ通過機能
+    (<code>RewriteRule ...  [P]</code>) と併せて使用することができます。</p>
 
     <p><directive type="section" module="core"
-    >Location</directive> $B%;%/%7%g%s$NCf$G;H$o$l$?>l9g$O!"(B
-    $B:G=i$N0z?t$O>JN,$5$l!"%m!<%+%k%G%#%l%/%H%j$O(B <directive
-    type="section" module="core">Location</directive> $B$+$i<hF@$5$l$^$9!#(B</p>
+    >Location</directive> セクションの中で使われた場合は、
+    最初の引数は省略され、ローカルディレクトリは <directive
+    type="section" module="core">Location</directive> から取得されます。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyPassReverseCookieDomain</name>
-<description>$B%j%P!<%9%W%m%-%7%5!<%P$+$i$N(B Set-Cookie $B%X%C%@$N(B Domain $BJ8;zNs$r(B
-$BD4@0$9$k(B</description>
+<description>リバースプロキシサーバからの Set-Cookie ヘッダの Domain 文字列を
+調整する</description>
 <syntax>ProxyPassReverseCookieDomain <var>internal-domain</var> <var>public-domain</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 <usage>
-<p>$B;HMQK!$O4pK\E*$K(B
-<directive module="mod_proxy">ProxyPassReverse</directive> $B$HF1$8$G$9$,!"(B
-$B%X%C%@$N(B URL $B$NBe$o$j$K(B <code>Set-Cookie</code> $B%X%C%@$N(B
-<code>domain</code> $BJ8;zNs$r=q$-49$($^$9!#(B</p>
+<p>使用法は基本的に
+<directive module="mod_proxy">ProxyPassReverse</directive> と同じですが、
+ヘッダの URL の代わりに <code>Set-Cookie</code> ヘッダの
+<code>domain</code> 文字列を書き換えます。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyPassReverseCookiePath</name>
-<description>Reverse $B%W%m%-%7%5!<%P$+$i$N(B Set-Cookie $B%X%C%@$N(B Path $BJ8;zNs$r(B
-$BD4@0$9$k(B</description>
+<description>Reverse プロキシサーバからの Set-Cookie ヘッダの Path 文字列を
+調整する</description>
 <syntax>ProxyPassReverseCookiePath <var>internal-path</var> <var>public-path</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 <context>directory</context>
 </contextlist>
 <usage>
-<p>$B;HMQK!$O4pK\E*$K(B
-<directive module="mod_proxy">ProxyPassReverse</directive> $B$HF1$8$G$9$,!"(B
-$B%X%C%@$N(B URL $B$NBe$o$j$K(B <code>Set-Cookie</code> $B%X%C%@$N(B
-<code>path</code> $BJ8;zNs$r=q$-49$($^$9!#(B</p>
+<p>使用法は基本的に
+<directive module="mod_proxy">ProxyPassReverse</directive> と同じですが、
+ヘッダの URL の代わりに <code>Set-Cookie</code> ヘッダの
+<code>path</code> 文字列を書き換えます。</p>
 </usage>
 </directivesynopsis>
 
 
 <directivesynopsis>
 <name>AllowCONNECT</name>
-<description>$B%W%m%-%7$r7PM3$7$F!"$I$N%]!<%H$K(B <code>CONNECT</code>
-$B$G$-$k$+$r;XDj$9$k(B</description>
+<description>プロキシを経由して、どのポートに <code>CONNECT</code>
+できるかを指定する</description>
 <syntax>AllowCONNECT <var>port</var> [<var>port</var>] ...</syntax>
 <default>AllowCONNECT 443 563</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>AllowCONNECT</directive> $B$O%W%m%-%7$N(B <code>CONNECT</code>
-    $B%a%=%C%I$,@\B3$r5v2D$9$k%]!<%HHV9f$N%j%9%H$r;XDj$7$^$9!#(B
-    $B:#F|$N%V%i%&%6$O!"(B<code>https</code> $B%3%M%/%7%g%s$,MW5a$5$l$F$$$F!"(B
-    HTTP $B>e$G$N%W%m%-%7$K$h$k%H%s%M%j%s%0$,$G$-$k$H$-$K!"(B
-    $B$3$N%a%=%C%I$r;H$$$^$9!#(B</p>
+    <p><directive>AllowCONNECT</directive> はプロキシの <code>CONNECT</code>
+    メソッドが接続を許可するポート番号のリストを指定します。
+    今日のブラウザは、<code>https</code> コネクションが要求されていて、
+    HTTP 上でのプロキシによるトンネリングができるときに、
+    このメソッドを使います。</p>
 
-    <p>$B%G%U%)%k%H$N@_Dj$G$O!"(Bhttps $B$N%G%U%)%k%H%]!<%H(B (<code>443</code>) $B$H(B
-    $B%G%U%)%k%H$N(B snews $B%]!<%H(B (<code>563</code>) $B$,M-8z$K$J$C$F$$$^$9!#(B
-    $B$3$N%G%U%)%k%H$r>e=q$-$7$F!"%j%9%H$K5-:\$7$?%]!<%H$K$N$_@\B3$r5v2D$7$?$$>l9g!"(B
-    <directive>AllowCONNECT</directive> $B%G%#%l%/%F%#%V$r;HMQ$7$^$9!#(B</p>
+    <p>デフォルトの設定では、https のデフォルトポート (<code>443</code>) と
+    デフォルトの snews ポート (<code>563</code>) が有効になっています。
+    このデフォルトを上書きして、リストに記載したポートにのみ接続を許可したい場合、
+    <directive>AllowCONNECT</directive> ディレクティブを使用します。</p>
 
-    <p><code>CONNECT</code> $B$r;HMQ$9$k$K$O!"(B<module>mod_proxy_connect</module> 
-    $B$,%5!<%P$KAH$_9~$^$l$F$$$J$1$l$P$J$i$J$$$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    <p><code>CONNECT</code> を使用するには、<module>mod_proxy_connect</module> 
+    がサーバに組み込まれていなければならないことに注意してください。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyBlock</name>
-<description>$B%W%m%-%7@\B3$r6X;_$9$k8l6g!"%[%9%HL>!"%I%a%$%s$r;XDj$9$k(B</description>
+<description>プロキシ接続を禁止する語句、ホスト名、ドメインを指定する</description>
 <syntax>ProxyBlock *|<var>word</var>|<var>host</var>|<var>domain</var>
 [<var>word</var>|<var>host</var>|<var>domain</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>ProxyBlock</directive> $B%G%#%l%/%F%#%V$O6uGr$G6h@Z$i$l$?(B
-    $B8l6g!"%[%9%HL>!"%I%a%$%s$N%j%9%H$r;XDj$7$^$9!#%5%$%HL>$K$=$N8l6g!"%[%9%HL>!"(B
-    $B%I%a%$%s$r4^$`%5%$%H$X$N(B HTTP$B!"(BHTTPS$B!"(BFTP $B$K$h$k%I%-%e%a%s%H$N%j%/%(%9%H$O(B
-    $B%W%m%-%7%5!<%P$K$h$j(B<em>$B%V%m%C%/$5$l$^$9(B</em>$B!#%W%m%-%7%b%8%e!<%k$O(B
-    $B5/F0;~$K%[%9%HL>$H;W$7$-9`L\$N(B IP $B%"%I%l%9$rD4$Y!"8e$N%F%9%H$N$?$a$K(B
-    $B%-%c%C%7%e$7$^$9!#$3$l$K$h$j!"%5!<%P$N5/F0$,>/$7CY$/$J$k$+$b$7$l$^$;$s!#(B</p>
+    <p><directive>ProxyBlock</directive> ディレクティブは空白で区切られた
+    語句、ホスト名、ドメインのリストを指定します。サイト名にその語句、ホスト名、
+    ドメインを含むサイトへの HTTP、HTTPS、FTP によるドキュメントのリクエストは
+    プロキシサーバにより<em>ブロックされます</em>。プロキシモジュールは
+    起動時にホスト名と思しき項目の IP アドレスを調べ、後のテストのために
+    キャッシュします。これにより、サーバの起動が少し遅くなるかもしれません。</p>
 
     <example><title>Example</title>
       ProxyBlock joes-garage.com some-host.co.uk rocky.wotsamattau.edu
     </example>
 
-    <p><code>rocky.wotsamattau.edu</code> $B$,(B IP $B%"%I%l%9$G;2>H$5$l$?$H$-$G$b(B
-    $B%^%C%A$7$^$9!#(B</p>
+    <p><code>rocky.wotsamattau.edu</code> が IP アドレスで参照されたときでも
+    マッチします。</p>
 
-    <p><code>wotsamattau.edu</code> $B$N%^%C%A$K$O(B <code>wotsamattau</code>
-    $B$@$1$G$b==J,$G$9!#(B</p>
+    <p><code>wotsamattau.edu</code> のマッチには <code>wotsamattau</code>
+    だけでも十分です。</p>
 
     <example>
       ProxyBlock *
     </example>
 
-    <p>$B$O$9$Y$F$N%5%$%H$X$N@\B3$r%V%m%C%/$9$k$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    <p>はすべてのサイトへの接続をブロックすることに注意してください。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyReceiveBufferSize</name>
-<description>$B%W%m%-%7$5$l$k(B HTTP $B$H(B FTP $B@\B3$N$?$a$N%M%C%H%o!<%/%P%C%U%!%5%$%:(B</description>
+<description>プロキシされる HTTP と FTP 接続のためのネットワークバッファサイズ</description>
 <syntax>ProxyReceiveBufferSize <var>bytes</var></syntax>
 <default>ProxyReceiveBufferSize 0</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>ProxyReceiveBufferSize</directive> $B%G%#%l%/%F%#%V$O(B
-    $B%9%k!<%W%C%H$r>e$2$k$?$a$KL@<(E*$K(B (TCP/IP) $B%M%C%H%o!<%/%P%C%U%!$N%5%$%:$r(B
-    $B@_Dj$7$^$9!#CM$O(B <code>512</code> $B0J>e$+!"%7%9%F%`$N%G%U%)%k%H$N%P%C%U%!(B
-    $B%5%$%:$r0UL#$9$k(B <code>0</code> $B$G$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p><directive>ProxyReceiveBufferSize</directive> ディレクティブは
+    スループットを上げるために明示的に (TCP/IP) ネットワークバッファのサイズを
+    設定します。値は <code>512</code> 以上か、システムのデフォルトのバッファ
+    サイズを意味する <code>0</code> でなければなりません。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ProxyReceiveBufferSize 2048
     </example>
 </usage>
@@ -930,37 +930,37 @@ URL $B$rD4@0$9$k(B</description>
 
 <directivesynopsis>
 <name>ProxyIOBufferSize</name>
-<description>$BFbIt%G!<%?%9%k!<%W%C%H%P%C%U%!$N%5%$%:$r7hDj$9$k(B</description>
+<description>内部データスループットバッファのサイズを決定する</description>
 <syntax>ProxyIOBufferSize <var>bytes</var></syntax>
 <default>ProxyIOBufferSize 8192</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>ProxyIOBufferSize</directive> $B%G%#%l%/%F%#%V$OF~NO$H(B
-    $B=PNOMQ$N0l;~%a%b%j$H$7$F;H$o$l$kFbIt%P%C%U%!$N%5%$%:$rD4@0$7$^$9!#(B
-    $B%5%$%:$O(B <code>8192</code> $B0J2<$G$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p><directive>ProxyIOBufferSize</directive> ディレクティブは入力と
+    出力用の一時メモリとして使われる内部バッファのサイズを調整します。
+    サイズは <code>8192</code> 以下でなければなりません。</p>
 
-    <p>$B$[$H$s$I$9$Y$F$N>l9g!"$3$NCM$rJQ99$9$kM}M3$O$"$j$^$;$s!#(B</p>
+    <p>ほとんどすべての場合、この値を変更する理由はありません。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyMaxForwards</name>
-<description>$B%j%/%(%9%H$,%U%)%o!<%I$5$l$k%W%m%-%7$N:GBg?t(B</description>
+<description>リクエストがフォワードされるプロキシの最大数</description>
 <syntax>ProxyMaxForwards <var>number</var></syntax>
 <default>ProxyMaxForwards 10</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Apache 2.0 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>Apache 2.0 以降で使用可能</compatibility>
 
 <usage>
-    <p><directive>ProxyMaxForwards</directive> $B%G%#%l%/%F%#%V$O(B
-    $B%j%/%(%9%H$K(B <code>Max-Forwards</code> $B%X%C%@$,;XDj$5$l$F$$$J$$>l9g$K(B
-    $B%j%/%(%9%H$,DL2a2DG=$J%W%m%-%7$N:GBg?t$r@_Dj$7$^$9!#$3$l$O(B
-    $B%W%m%-%7$NL58B%k!<%W$d(B DoS $B967b$rKI$0$?$a$K@_Dj$5$l$F$$$^$9!#(B</p>
+    <p><directive>ProxyMaxForwards</directive> ディレクティブは
+    リクエストに <code>Max-Forwards</code> ヘッダが指定されていない場合に
+    リクエストが通過可能なプロキシの最大数を設定します。これは
+    プロキシの無限ループや DoS 攻撃を防ぐために設定されています。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ProxyMaxForwards 15
     </example>
 </usage>
@@ -968,166 +968,166 @@ URL $B$rD4@0$9$k(B</description>
 
 <directivesynopsis>
 <name>NoProxy</name>
-<description>$BD>@\@\B3$9$k(B $B%[%9%H!"%I%a%$%s!"%M%C%H%o!<%/(B</description>
+<description>直接接続する ホスト、ドメイン、ネットワーク</description>
 <syntax>NoProxy <var>host</var> [<var>host</var>] ...</syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O%$%s%H%i%M%C%HCf$N(B Apache $B%W%m%-%7%5!<%P$K$N$_(B
-    $BM-MQ$G$9!#(B<directive>NoProxy</directive> $B%G%#%l%/%F%#%V$O6uGr6h@Z$j$G!"(B
-    $B%5%V%M%C%H!"(BIP $B%"%I%l%9!"%[%9%H!"%I%a%$%s$N%j%9%H$r;XDj$7$^$9!#(B
-    $B$3$l$i$N$I$l$+$K%^%C%A$9$k%[%9%H$X$N%j%/%(%9%H$O(B <directive
-    module="mod_proxy">ProxyRemote</directive> $B$G@_Dj$5$l$?%W%m%-%7%5!<%P$K(B
-    $B%U%)%o!<%I$5$l$:!"D>@\=hM}$5$l$^$9!#(B</p>
+    <p>このディレクティブはイントラネット中の Apache プロキシサーバにのみ
+    有用です。<directive>NoProxy</directive> ディレクティブは空白区切りで、
+    サブネット、IP アドレス、ホスト、ドメインのリストを指定します。
+    これらのどれかにマッチするホストへのリクエストは <directive
+    module="mod_proxy">ProxyRemote</directive> で設定されたプロキシサーバに
+    フォワードされず、直接処理されます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ProxyRemote  *  http://firewall.mycompany.com:81<br />
       NoProxy         .mycompany.com 192.168.112.0/21
     </example>
 
-    <p><directive>NoProxy</directive> $B%G%#%l%/%F%#%V$N(B <var>host</var> $B0z?t$O(B
-    $B0J2<$N<oN`$N$I$l$+$G$9(B:</p>
+    <p><directive>NoProxy</directive> ディレクティブの <var>host</var> 引数は
+    以下の種類のどれかです:</p>
 
     <dl>
     <!-- ===================== Domain ======================= -->
     <dt><var><a name="domain" id="domain">Domain</a></var></dt>
     <dd>
-    <p><dfn>Domain</dfn> $B$O@hF,$K%T%j%*%I$NCe$$$?ItJ,(B DNS $B%I%a%$%sL>$G$9!#(B
-    $BF10l(B DNS $B%I%a%$%s5Z$S%>!<%s(B (<em>$B$9$J$o$A(B</em>$B!"%[%9%HL>$NKvHx$,$9$Y$F(B
-    <var>Domain</var> $B$G=*$o$C$F$$$k$H$$$&$3$H(B) $B$KB0$9$k%[%9%H$N%j%9%H$r(B
-    $BI=$7$^$9(B)$B!#(B</p>
+    <p><dfn>Domain</dfn> は先頭にピリオドの着いた部分 DNS ドメイン名です。
+    同一 DNS ドメイン及びゾーン (<em>すなわち</em>、ホスト名の末尾がすべて
+    <var>Domain</var> で終わっているということ) に属するホストのリストを
+    表します)。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       .com .apache.org.
     </example>
 
-    <p><var>Domain</var> $B$r(B <a href="#hostname"
-    >Hostname</a> $B$H6hJL$9$k$?$a$K(B ($B0UL#E*$K$b9=J8E*$K$b!#(BDNS $B%I%a%$%s$b(B
-    DNS $B$N(B A $B%l%3!<%I$r;}$D$3$H$,$G$-$k$N$G$9(B!)$B!"(B<var>Domain</var> $B$O(B
-    $B>o$K%T%j%*%I$G;O$^$j$^$9!#(B</p>
+    <p><var>Domain</var> を <a href="#hostname"
+    >Hostname</a> と区別するために (意味的にも構文的にも。DNS ドメインも
+    DNS の A レコードを持つことができるのです!)、<var>Domain</var> は
+    常にピリオドで始まります。</p>
     
-    <note><title>$BCm(B</title>
-      <p>$B%I%a%$%sL>$NHf3S$OBgJ8;z>.J8;z$r6hJL$;$:$K9T$J$o$l!"(B<var>Domain</var>
-      $B$O>o$K(B DNS $B%D%j!<$N%k!<%H$+$i;O$^$k$b$N$H$_$J$5$l$^$9!#$G$9$+$i!"(B
-      $B<!$NFs$D$N%I%a%$%s(B <code>.MyDomain.com</code> $B$H(B
-      <code>.mydomain.com.</code> ($B:G8e$N%T%j%*%I$KCmL\(B) $B$OF10l$G$"$k$H(B
-      $B$_$J$5$l$^$9!#%I%a%$%s$NHf3S$O(B DNS $B%k%C%/%"%C%W$J$7$G9T$J$o$l$k$?$a!"(B
-      $B%5%V%M%C%H$NHf3S$h$j$b$:$C$H8zN(E*$G$9!#(B</p>
+    <note><title>注</title>
+      <p>ドメイン名の比較は大文字小文字を区別せずに行なわれ、<var>Domain</var>
+      は常に DNS ツリーのルートから始まるものとみなされます。ですから、
+      次の二つのドメイン <code>.MyDomain.com</code> と
+      <code>.mydomain.com.</code> (最後のピリオドに注目) は同一であると
+      みなされます。ドメインの比較は DNS ルックアップなしで行なわれるため、
+      サブネットの比較よりもずっと効率的です。</p>
     </note></dd>
 
     <!-- ===================== SubNet ======================= -->
     <dt><var><a name="subnet" id="subnet">SubNet</a></var></dt>
     <dd>
-    <p><dfn>SubNet</dfn> $B$O?tCM7A<0(B ($B%I%C%H$G6h@Z$i$l$?;M$D$N?t;z(B) $B$N(B
-    $BItJ,%$%s%?!<%M%C%H%"%I%l%9$G$9!#8e$K%9%i%C%7%e$H(B <var>Subnet</var>
-    $B$N0UL#$N$"$k%S%C%H?t$r;XDj$9$k%M%C%H%^%9%/$H$rB3$1$k$3$H$,$G$-$^$9!#(B
-    $B6&DL$N%M%C%H%o!<%/%$%s%?%U%'!<%9$r;H$C$FE~C#$9$k$3$H$N$G$-$k%5%V%M%C%H$r(B
-    $BI=$9$?$a$K;H$o$l$^$9!#L@<(E*$K%M%C%H%^%9%/$r;XDj$7$J$$>l9g$O(B
-    $B:G8e$N>JN,$5$l$?(B ($B$b$7$/$OCM$,(B 0 $B$N(B) $B?t;z$,%^%9%/$r;XDj$7$^$9!#(B
-    ($B$3$N>l9g$O!"%M%C%H%^%9%/$O(B 8 $B%S%C%HC10L$G$7$+;XDj$G$-$^$;$s!#(B)
-    $BNc(B:</p>
+    <p><dfn>SubNet</dfn> は数値形式 (ドットで区切られた四つの数字) の
+    部分インターネットアドレスです。後にスラッシュと <var>Subnet</var>
+    の意味のあるビット数を指定するネットマスクとを続けることができます。
+    共通のネットワークインタフェースを使って到達することのできるサブネットを
+    表すために使われます。明示的にネットマスクを指定しない場合は
+    最後の省略された (もしくは値が 0 の) 数字がマスクを指定します。
+    (この場合は、ネットマスクは 8 ビット単位でしか指定できません。)
+    例:</p>
 
     <dl>
-    <dt><code>192.168</code> $B$b$7$/$O(B <code>192.168.0.0</code></dt>
-    <dd>$B%5%V%M%C%H(B 192.168.0.0 $B$H0EL[$N(B 16 $B%S%C%HM-8z$J%M%C%H%^%9%/(B
-    (<code>255.255.0.0</code> $B$H$$$&%M%C%H%^%9%/$N7A<0$G;H$o$l$k$3$H$b(B
-    $B$"$j$^$9(B)</dd>
+    <dt><code>192.168</code> もしくは <code>192.168.0.0</code></dt>
+    <dd>サブネット 192.168.0.0 と暗黙の 16 ビット有効なネットマスク
+    (<code>255.255.0.0</code> というネットマスクの形式で使われることも
+    あります)</dd>
     <dt><code>192.168.112.0/21</code></dt>
-    <dd>$B%5%V%M%C%H(B<code>192.168.112.0/21</code> $B$H(B 21 $B%S%C%HM-8z$J(B
-    $B%M%C%H%^%9%/(B (<code>255.255.248.0</code> $B$H$$$&7A<0$G;H$o$l$k$3$H$b(B
-    $B$"$j$^$9(B)</dd>
+    <dd>サブネット<code>192.168.112.0/21</code> と 21 ビット有効な
+    ネットマスク (<code>255.255.248.0</code> という形式で使われることも
+    あります)</dd>
     </dl>
 
-    <p>$BFCJL$J>l9g$K!"(B32 $B%S%C%HM-8z$J(B <em>SubNet</em> $B$O(B
-    <var><a href="#ipadr">IPAddr</a></var> $B$HF1Ey$G!"(B
-    0 $B%S%C%HM-8z$J(B <var>SubNet</var> (<em>$BNc$($P(B</em>$B!"(B0.0.0.0/0) $B$O(B
-    $B$9$Y$F$N(B IP $B%"%I%l%9$K%^%C%A$9$kDj?t(B <var>_Default_</var> $B$HF1$8$G$9!#(B</p>
+    <p>特別な場合に、32 ビット有効な <em>SubNet</em> は
+    <var><a href="#ipadr">IPAddr</a></var> と同等で、
+    0 ビット有効な <var>SubNet</var> (<em>例えば</em>、0.0.0.0/0) は
+    すべての IP アドレスにマッチする定数 <var>_Default_</var> と同じです。</p>
     </dd>
 
     <!-- ===================== IPAddr ======================= -->
     <dt><var><a name="ipaddr" id="ipaddr">IPAddr</a></var></dt>
     <dd>
-    <p><dfn>IPAddr</dfn> $B$O?tCM7A<0(B ($B%I%C%H$G6h@Z$i$l$?;M$D$N?t;z(B) $B$N(B
-    $B40A4%$%s%?!<%M%C%H%"%I%l%9$G$9!#DL>o$O$3$N%"%I%l%9$O%[%9%H$r(B
-    $BI=$7$^$9$,!"I,$:$7$b%"%I%l%9$KBP1~$9$k(B DNS $B%I%a%$%sL>$,$"$k$o$1$G$O(B
-    $B$"$j$^$;$s!#(B</p>
+    <p><dfn>IPAddr</dfn> は数値形式 (ドットで区切られた四つの数字) の
+    完全インターネットアドレスです。通常はこのアドレスはホストを
+    表しますが、必ずしもアドレスに対応する DNS ドメイン名があるわけでは
+    ありません。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       192.168.123.7
     </example>
     
-    <note><title>$BCm(B</title>
-      <p><var>IPAddr</var> $B$O(B DNS $B%7%9%F%`$K$h$j2r7h$5$l$kI,MW$,$J$$$N$G!"(B
-      apache $B$N@-G=$,8~>e$9$k$+$b$7$l$^$;$s!#(B</p>
+    <note><title>注</title>
+      <p><var>IPAddr</var> は DNS システムにより解決される必要がないので、
+      apache の性能が向上するかもしれません。</p>
     </note></dd>
 
     <!-- ===================== Hostname ======================= -->
     <dt><var><a name="hostname" id="hostname">Hostname</a></var></dt>
     <dd>
-    <p><dfn>Hostname</dfn> $B$O(B DNS $B%I%a%$%s%5!<%S%9$K$h$j0l$D$b$7$/$O(B
-    $BJ#?t$N(B <var><a href="#ipaddr">IPAddr</a></var> $B$K2r7h2DG=$J(B
-    $B40A4$J(B DNS $B%I%a%$%sL>$G$9!#$3$l$O(B (<var><a href="#domain">Domain</a></var>
-    $B$H0c$C$F!"@bL@$O>e5-$r;2>H(B) $BO@M}E*$J%[%9%H$rI=$7!">/$/$H$b0l$D$N(B
-    <var><a href="#ipaddr">IPAddr</a></var> ($B$b$7$/$O0c$&(B
-    <var><a href="#ipaddr">IPAddr</a></var> $B$N%[%9%H$N%j%9%H(B) $B$K2r7h(B
-    $B$5$l$J$1$l$P$J$j$^$;$s(B)$B!#(B</p>
+    <p><dfn>Hostname</dfn> は DNS ドメインサービスにより一つもしくは
+    複数の <var><a href="#ipaddr">IPAddr</a></var> に解決可能な
+    完全な DNS ドメイン名です。これは (<var><a href="#domain">Domain</a></var>
+    と違って、説明は上記を参照) 論理的なホストを表し、少くとも一つの
+    <var><a href="#ipaddr">IPAddr</a></var> (もしくは違う
+    <var><a href="#ipaddr">IPAddr</a></var> のホストのリスト) に解決
+    されなければなりません)。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       prep.ai.mit.edu<br />
       www.apache.org
     </example>
 
-    <note><title>$BCm(B</title>
-      <p>$BB?$/$N>l9g!"(B<var>Hostname</var> $B$NBe$o$j$K(B <var><a
-      href="#ipaddr">IPAddr</a></var> $B$r;XDj$7$?J}$,!"(BDNS $B%k%C%/%"%C%W$r(B
-      $BHr$1$k$3$H$,$G$-$k$?$a!"8zN($,NI$/$J$j$^$9!#(BApache $B$NL>A02r7h$O(B
-      $B%M!<%`%5!<%P$X$N@\B3$,CY$$(B PPP $B>e$N>l9g$J$I$K$+$J$j;~4V$r<h$i$l$k(B
-      $B$3$H$,$"$j$^$9!#(B</p>
-      <p><var>Hostname</var> $B$NHf3S$OBgJ8;z>.J8;z$r6hJL$;$:$K9T$J$o$l!"(B
-      <var>Hostname</var> $B$O>o$K(B DNS $B%D%j!<$N%k!<%H$+$i;O$^$k$b$N$H$_$J$5$l$^$9!#(B
-      $B$G$9$+$i!"Fs$D$N%I%a%$%s(B <code>WWW.MyDomain.com</code> $B$H(B
-      <code>www.mydomain.com.</code> ($B:G8e$N%T%j%*%I$KCmL\(B) $B$OF10l$G$"$k$H(B
-      $B$_$J$5$l$^$9!#(B</p>
+    <note><title>注</title>
+      <p>多くの場合、<var>Hostname</var> の代わりに <var><a
+      href="#ipaddr">IPAddr</a></var> を指定した方が、DNS ルックアップを
+      避けることができるため、効率が良くなります。Apache の名前解決は
+      ネームサーバへの接続が遅い PPP 上の場合などにかなり時間を取られる
+      ことがあります。</p>
+      <p><var>Hostname</var> の比較は大文字小文字を区別せずに行なわれ、
+      <var>Hostname</var> は常に DNS ツリーのルートから始まるものとみなされます。
+      ですから、二つのドメイン <code>WWW.MyDomain.com</code> と
+      <code>www.mydomain.com.</code> (最後のピリオドに注目) は同一であると
+      みなされます。</p>
      </note></dd>
     </dl>
 </usage>
-<seealso><a href="../dns-caveats.html">DNS $B$K4X$9$kLdBj(B</a></seealso>
+<seealso><a href="../dns-caveats.html">DNS に関する問題</a></seealso>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyTimeout</name>
-<description>$B%W%m%-%7$5$l$?%j%/%(%9%H$N%M%C%H%o!<%/%?%$%`%"%&%H(B</description>
+<description>プロキシされたリクエストのネットワークタイムアウト</description>
 <syntax>ProxyTimeout <var>seconds</var></syntax>
 <default>ProxyTimeout 300</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>Apache 2.0.31 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>Apache 2.0.31 以降で使用可能</compatibility>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O%f!<%6$,%W%m%-%7%j%/%(%9%H$N%?%$%`%"%&%H$r(B
-    $B;XDj$G$-$k$h$&$K$7$^$9!#$3$l$O%O%s%0$7$F$7$^$&CY$$!"$b$7$/$O5sF0$N(B
-    $B2x$7$$%5!<%P$,$"$j!"%5!<%P$,%G!<%?$rJV$9$^$G$R$?$9$iBT$AB3$1$k$h$j$b(B
-    $B%?%$%`%"%&%H$rJV$7$F$h$j4K$d$+$K(B<transnote>graceful $B$K(B</transnote>
-    $B<:GT$5$;$?$$>l9g$KLr$KN)$A$^$9!#(B</p>
+    <p>このディレクティブはユーザがプロキシリクエストのタイムアウトを
+    指定できるようにします。これはハングしてしまう遅い、もしくは挙動の
+    怪しいサーバがあり、サーバがデータを返すまでひたすら待ち続けるよりも
+    タイムアウトを返してより緩やかに<transnote>graceful に</transnote>
+    失敗させたい場合に役に立ちます。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyDomain</name>
-<description>$B%W%m%-%7$5$l$?%j%/%(%9%H$N%G%U%)%k%H$N%I%a%$%sL>(B</description>
+<description>プロキシされたリクエストのデフォルトのドメイン名</description>
 <syntax>ProxyDomain <var>Domain</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O%$%s%H%i%M%C%HFb$N(B Apache $B%W%m%-%7%5!<%P$K$N$_(B
-    $BM-MQ$G$9!#(B<directive>ProxyDomain</directive> $B%G%#%l%/%F%#%V$O(B
-    apache $B%W%m%-%7%5!<%P$,B0$9$k%G%U%)%k%H$N%I%a%$%s$r;XDj$7$^$9!#(B
-    $B%I%a%$%sL>$NL5$$%j%/%(%9%H$r<u$1$?>l9g!"@_Dj$5$l$?(B <var>Domain</var>
-    $B$,DI2C$5$l$?F1$8%[%9%H$X$N%j%@%$%l%/%H1~Ez$,JV$5$l$^$9!#(B</p>
+    <p>このディレクティブはイントラネット内の Apache プロキシサーバにのみ
+    有用です。<directive>ProxyDomain</directive> ディレクティブは
+    apache プロキシサーバが属するデフォルトのドメインを指定します。
+    ドメイン名の無いリクエストを受けた場合、設定された <var>Domain</var>
+    が追加された同じホストへのリダイレクト応答が返されます。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       ProxyRemote  *  http://firewall.mycompany.com:81<br />
       NoProxy         .mycompany.com 192.168.112.0/21<br />
       ProxyDomain     .mycompany.com
@@ -1137,56 +1137,56 @@ URL $B$rD4@0$9$k(B</description>
 
 <directivesynopsis>
 <name>ProxyVia</name>
-<description>$B%W%m%-%7$5$l$?%j%/%(%9%H$N(B <code>Via</code> HTTP $B1~Ez%X%C%@(B
-$B$K$h$jDs6!$5$l$k>pJs(B</description>
+<description>プロキシされたリクエストの <code>Via</code> HTTP 応答ヘッダ
+により提供される情報</description>
 <syntax>ProxyVia On|Off|Full|Block</syntax>
 <default>ProxyVia Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O%W%m%-%7$N(B <code>Via:</code> HTTP $B%X%C%@$N;HMQ$r(B
-    $B@)8f$7$^$9!#A[Dj$5$l$F$$$k;H$$J}$O!"%W%m%-%7%5!<%P$,$$$/$D$b7R$,$C$F$$$k$H$-$K(B
-    $B%W%m%-%7%j%/%(%9%H$NN.$l$r@)8f$9$k$3$H$G$9!#(B<code>Via:</code> $B%X%C%@9T$N(B
-    $B@bL@$O(B <a
+    <p>このディレクティブはプロキシの <code>Via:</code> HTTP ヘッダの使用を
+    制御します。想定されている使い方は、プロキシサーバがいくつも繋がっているときに
+    プロキシリクエストの流れを制御することです。<code>Via:</code> ヘッダ行の
+    説明は <a
     href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> (HTTP/1.1)
-    $B$N(B 14.45 $B@a$rFI$s$G$/$@$5$$!#(B</p>
+    の 14.45 節を読んでください。</p>
 
     <ul>
-    <li>$B%G%U%)%k%H$N(B <code>Off</code> $B$K@_Dj$5$l$F$$$k$H!"FCJL$J=hM}$O(B
-    $B9T$J$o$l$^$;$s!#%j%/%(%9%H$d%j%W%i%$$K(B <code>Via:</code> $B%X%C%@$,$"$l$P!"(B
-    $BJQ99$5$l$:$K$=$N$^$^EO$7$^$9!#(B</li>
+    <li>デフォルトの <code>Off</code> に設定されていると、特別な処理は
+    行なわれません。リクエストやリプライに <code>Via:</code> ヘッダがあれば、
+    変更されずにそのまま渡します。</li>
 
-    <li><code>On</code> $B$K@_Dj$5$l$F$$$l$P!"3F%j%/%(%9%H$H%j%W%i%$$K(B
-    <code>Via:</code> $B9T$,DI2C$5$l$^$9!#(B</li>
+    <li><code>On</code> に設定されていれば、各リクエストとリプライに
+    <code>Via:</code> 行が追加されます。</li>
 
-    <li><code>Full</code> $B$K@_Dj$5$l$F$$$l$P!"(B<code>Via:</code> $B%X%C%@$O(B
-    $B%3%a%s%HItJ,$K(B Apache $B%5!<%P$N%P!<%8%g%s$b4^$`$h$&$K$J$j$^$9!#(B</li>
+    <li><code>Full</code> に設定されていれば、<code>Via:</code> ヘッダは
+    コメント部分に Apache サーバのバージョンも含むようになります。</li>
 
-    <li><code>Block</code> $B$K@_Dj$5$l$F$$$l$P!"$9$Y$F$N%W%m%-%7%j%/%(%9%H$+$i(B
-    <code>Via:</code> $B%X%C%@$,<h$j=|$+$l$^$9!#?7$?$K(B <code>Via:</code> $B$,(B
-    $B@8@.$5$l$k$3$H$O$"$j$^$;$s!#(B</li>
+    <li><code>Block</code> に設定されていれば、すべてのプロキシリクエストから
+    <code>Via:</code> ヘッダが取り除かれます。新たに <code>Via:</code> が
+    生成されることはありません。</li>
     </ul>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>ProxyErrorOverride</name>
-<description>$B%W%m%-%7$5$l$?%3%s%F%s%D$N%(%i!<%Z!<%8$r>e=q$-$9$k(B</description>
+<description>プロキシされたコンテンツのエラーページを上書きする</description>
 <syntax>ProxyErrorOverride On|Off</syntax>
 <default>ProxyErrorOverride Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
-<compatibility>$B%P!<%8%g%s(B 2.0 $B0J9_$G;HMQ2DG=(B</compatibility>
+<compatibility>バージョン 2.0 以降で使用可能</compatibility>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$O%j%P!<%9%W%m%-%7$r;HMQ$7$F$$$F!"(B
-    $B%(%s%I%f!<%6$KAw$i$l$k%(%i!<%Z!<%8$N308+$r6&DL$N$b$N$K$7$?$$$H$-$K(B
-    $BM-MQ$G$9!#$3$N%G%#%l%/%F%#%V$O(B (<module>mod_include</module> $B$N(B SSI $B$K$h$C$F(B)
-    $B%$%s%/%k!<%I$5$l$?%U%!%$%k$,%(%i!<%3!<%I$r<hF@$7$F!"@5$7$/F0:n$r(B
-    $B$9$k$h$&$K$b$7$^$9(B ($B%G%U%)%k%H$NF0:n$O!"%W%m%-%7$5$l$?%5!<%P$N(B
-    $B%(%i!<%Z!<%8$NI=<($G!"$3$N%G%#%l%/%F%#%V$rM-8z$K$9$k$H(B SSI $B$N%(%i!<(B
-    $B%a%C%;!<%8$rI=<($7$^$9(B)$B!#(B</p>
+    <p>このディレクティブはリバースプロキシを使用していて、
+    エンドユーザに送られるエラーページの外見を共通のものにしたいときに
+    有用です。このディレクティブは (<module>mod_include</module> の SSI によって)
+    インクルードされたファイルがエラーコードを取得して、正しく動作を
+    するようにもします (デフォルトの動作は、プロキシされたサーバの
+    エラーページの表示で、このディレクティブを有効にすると SSI のエラー
+    メッセージを表示します)。</p>
 </usage>
 </directivesynopsis>
 

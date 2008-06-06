@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:420990 (outdated) -->
@@ -23,24 +23,24 @@
 <modulesynopsis metafile="mod_auth_basic.xml.meta">
 
 <name>mod_auth_basic</name>
-<description>$B4pK\G'>Z(B</description>
+<description>基本認証</description>
 <status>Base</status>
 <sourcefile>mod_auth_basic.c</sourcefile>
 <identifier>auth_basic_module</identifier>
-<compatibility>Apache 2.1 $B0J9_(B</compatibility>
+<compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
-    <p>$BM?$($i$l$?%W%m%P%$%@(B ($BLuCm(B: $BG'>Z$G$N>H2q$r9T$&Ld$$9g$o$;@h(B) 
-    $B$G%f!<%6$r8!:w$7!"(BHTTP $B4pK\G'>Z$G%"%/%;%9@)8B$G$-$k$h$&$K$J$j$^$9!#(B
-    HTTP $B%@%$%8%'%9%HG'>Z$K$D$$$F$O(B <module>mod_auth_digest</module>
-    $B$GDs6!$5$l$^$9!#(B</p>
+    <p>与えられたプロバイダ (訳注: 認証での照会を行う問い合わせ先) 
+    でユーザを検索し、HTTP 基本認証でアクセス制限できるようになります。
+    HTTP ダイジェスト認証については <module>mod_auth_digest</module>
+    で提供されます。</p>
 </summary>
 <seealso><directive module="core">AuthName</directive></seealso>
 <seealso><directive module="core">AuthType</directive></seealso>
 
 <directivesynopsis>
 <name>AuthBasicProvider</name>
-<description>$B$3$N0LCV$KBP$9$kG'>Z%W%m%P%$%@$r@_Dj$7$^$9!#(B</description>
+<description>この位置に対する認証プロバイダを設定します。</description>
 <syntax>AuthBasicProvider On|Off|<var>provider-name</var>
 [<var>provider-name</var>] ...</syntax>
 <default>AuthBasicProvider On</default>
@@ -48,13 +48,13 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthBasicProvider</directive> $B%G%#%l%/%F%#%V$G!"(B
-    $B$3$N0LCV$KBP$9$k%f!<%6G'>Z$KMQ$$$i$l$kG'>Z%W%m%P%$%@$r@_Dj$7$^$9!#(B
-    <code>On</code> $B$K@_Dj$9$k$H%G%U%)%k%H$NG'>Z%W%m%P%$%@(B
-    (<code>file</code>) $B$,;HMQ$5$l$^$9!#(B<code>file</code>
-    $B%W%m%P%$%@$O(B <module>mod_authn_file</module>
-    $B%b%8%e!<%k$G<BAu$5$l$F$$$^$9$N$G!"(B
-    $B$3$N%b%8%e!<%k$,%5!<%P$KF~$C$F$$$k$3$H$r3NG'$7$F$/$@$5$$!#(B</p>
+    <p><directive>AuthBasicProvider</directive> ディレクティブで、
+    この位置に対するユーザ認証に用いられる認証プロバイダを設定します。
+    <code>On</code> に設定するとデフォルトの認証プロバイダ
+    (<code>file</code>) が使用されます。<code>file</code>
+    プロバイダは <module>mod_authn_file</module>
+    モジュールで実装されていますので、
+    このモジュールがサーバに入っていることを確認してください。</p>
 
     <example><title>Example</title>
       &lt;Location /secure&gt;<br />
@@ -67,19 +67,19 @@
       &lt;/Location&gt;
     </example>
 
-    <p>$BG'>Z%W%m%P%$%@$K$D$$$F$O(B
-    <module>mod_authn_dbm</module> $B$H(B <module>mod_authn_file</module>
-    $B$r$4Mw2<$5$$!#(B</p>
+    <p>認証プロバイダについては
+    <module>mod_authn_dbm</module> と <module>mod_authn_file</module>
+    をご覧下さい。</p>
 
-    <p><code>Off</code> $B$O%W%m%P%$%@%j%9%H$r%/%j%"$7$F!"%G%U%)%k%H$N(B
-    $B>uBV$KLa$7$^$9!#(B</p>
+    <p><code>Off</code> はプロバイダリストをクリアして、デフォルトの
+    状態に戻します。</p>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthBasicAuthoritative</name>
-<description>$BG'>Z$H>5G'$r!"$h$jDc$$%l%Y%k$N%b%8%e!<%k$K0\9T$5$;$k$+$r(B
-$B@_Dj$7$^$9!#(B</description>
+<description>認証と承認を、より低いレベルのモジュールに移行させるかを
+設定します。</description>
 <syntax>AuthBasicAuthoritative On|Off</syntax>
 <default>AuthBasicAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context></contextlist>
@@ -87,26 +87,26 @@
 
 <usage>
     <p><directive>AuthBasicAuthoritative</directive>
-    $B%G%#%l%/%F%#%V$GL@<(E*$K(B <code>Off</code>$B$K@_Dj$9$k$H!"(B
-    $BM?$($i$l$?G'>Z%f!<%6(B ID $B$KBP$7$F(B<strong>$B%f!<%6(B ID $B$,$J$$(B</strong>
-    $B$^$?$O(B<strong>$B%k!<%k$,$J$$(B</strong>$B>l9g$K!"(B
-    $BG'>Z$H>5G'$NN>J}$N%W%m%;%9$,!"(B
-    $B$h$jDc$$%l%Y%k$N%b%8%e!<%k(B (<code>modules.c</code> $B%U%!%$%k$GDj5A(B) $B$K0\9T$9$k$h$&$K$G$-$^$9!#(B
-    $B%f!<%6(B ID $B$,$"$k!"$+$D$^$?$O!"%k!<%k$,;XDj$5$l$F$$$k>l9g$O!"(B
-    $BDL>o$N%Q%9%o!<%I$H%"%/%;%9%A%'%C%/$,E,MQ$5$l$F!"(B
-    $BG'>Z$K<:GT$9$k$H(B "Authentication Required" $B1~Ez$,JV$5$l$^$9!#(B</p>
+    ディレクティブで明示的に <code>Off</code>に設定すると、
+    与えられた認証ユーザ ID に対して<strong>ユーザ ID がない</strong>
+    または<strong>ルールがない</strong>場合に、
+    認証と承認の両方のプロセスが、
+    より低いレベルのモジュール (<code>modules.c</code> ファイルで定義) に移行するようにできます。
+    ユーザ ID がある、かつまたは、ルールが指定されている場合は、
+    通常のパスワードとアクセスチェックが適用されて、
+    認証に失敗すると "Authentication Required" 応答が返されます。</p>
 
-    <p>$B$G$9$+$i!"Fs$D0J>e$N%b%8%e!<%k$N%G!<%?%Y!<%9$GF10l$N(B
-    $B%f!<%6(B ID $B$,8=$o$l$?$j!"(B
-    $B$^$?$O!"@5$7$$(B <directive module="core">Require</directive>
-    $B%G%#%l%/%F%#%V$,Fs$D0J>e$N%b%8%e!<%k$G8=$o$l$?$j$7$?>l9g$O!"(B
-    $B0l$DL\$N%b%8%e!<%k$,G'Dj$r9T$C$F!"(B<directive>AuthAuthoritative</directive>
-    $B@_Dj$K4X$o$i$:!"%"%/%;%9$O0\9T$7$^$;$s!#(B</p>
+    <p>ですから、二つ以上のモジュールのデータベースで同一の
+    ユーザ ID が現われたり、
+    または、正しい <directive module="core">Require</directive>
+    ディレクティブが二つ以上のモジュールで現われたりした場合は、
+    一つ目のモジュールが認定を行って、<directive>AuthAuthoritative</directive>
+    設定に関わらず、アクセスは移行しません。</p>
 
-    <p>$B%G%U%)%k%H$G$O!"@)8f$O0\9T$7$^$;$s!#$=$7$F!"L$CN$N%f!<%6(B ID $B$d(B
-    $B%k!<%k$,$"$C$F$b(B "Authentication Required" $B1~Ez$,JV$5$l$^$9!#(B
-    $B$G$9$+$i!"$3$N%G%#%l%/%F%#%V$r@_Dj$7$J$$$3$H$G%7%9%F%`$N0BA4$r0];}$G$-$F!"$^$?!"(B
-    NCSA $B=`5r$N5sF0$r6/@)$G$-$^$9!#(B</p>
+    <p>デフォルトでは、制御は移行しません。そして、未知のユーザ ID や
+    ルールがあっても "Authentication Required" 応答が返されます。
+    ですから、このディレクティブを設定しないことでシステムの安全を維持できて、また、
+    NCSA 準拠の挙動を強制できます。</p>
 </usage>
 </directivesynopsis>
 

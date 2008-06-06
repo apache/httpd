@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:504183 (outdated) -->
@@ -23,44 +23,44 @@
 <modulesynopsis metafile="mod_cache.xml.meta">
 
 <name>mod_cache</name>
-<description>URI $B$r%-!<$K$7$?%3%s%F%s%D$N%-%c%C%7%e(B</description>
+<description>URI をキーにしたコンテンツのキャッシュ</description>
 <status>Extension</status>
 <sourcefile>mod_cache.c</sourcefile>
 <identifier>cache_module</identifier>
 
 <summary>
     <note type="warning">
-      $B$3$l$O<B83E*$J%b%8%e!<%k$G$9!#J8=q$b$^$@3+H/Cf$G$9(B...
+      これは実験的なモジュールです。文書もまだ開発中です...
     </note>
 
-    <p><module>mod_cache</module> $B$O%m!<%+%k$N%3%s%F%s%D$d%W%m%-%7$5$l$?(B
-    $B%3%s%F%s%D$r%-%c%C%7%e$9$k$?$a$K;H$o$l$k(B <a
-    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> $B=`5r$N(B
-    HTTP $B%3%s%F%s%D%-%c%C%7%e$r<BAu$7$F$$$^$9!#(B<module>mod_cache</module>
-    $B$NF0:n$K$O%9%H%l!<%8$r4IM}$9$k%b%8%e!<%k$,I,MW$G$9!#I8=`(B
-    Apache $BG[I[$K$OFs$D%9%H%l!<%84IM}%b%8%e!<%k$,4^$^$l$F$$$^$9(B:</p>
+    <p><module>mod_cache</module> はローカルのコンテンツやプロキシされた
+    コンテンツをキャッシュするために使われる <a
+    href="http://www.ietf.org/rfc/rfc2616.txt">RFC 2616</a> 準拠の
+    HTTP コンテンツキャッシュを実装しています。<module>mod_cache</module>
+    の動作にはストレージを管理するモジュールが必要です。標準
+    Apache 配布には二つストレージ管理モジュールが含まれています:</p>
     
     <dl>
     <dt><module>mod_disk_cache</module></dt>
-    <dd>$B%G%#%9%/$r;HMQ$7$?%9%H%l!<%84IM}5!9=$r<BAu$7$F$$$^$9!#(B</dd>
+    <dd>ディスクを使用したストレージ管理機構を実装しています。</dd>
 
     <dt><module>mod_mem_cache</module></dt>
-    <dd>$B%a%b%j$r;HMQ$7$?%9%H%l!<%84IM}5!9=$r<BAu$7$F$$$^$9!#(B
-    <module>mod_mem_cache</module> $B$O<!$NFs$D$N%b!<%I$N$I$A$i$+$GF0:n$9$k(B
-    $B$h$&$K@_Dj$G$-$^$9(B: $B%*!<%W%s$5$l$F$$$k%U%!%$%k5-=R;R$r%-%c%C%7%e$9$k%b!<%I$+!"(B
-    $B%R!<%W>e$G$N%*%V%8%'%/%H$N<+BN$r%-%c%C%7%e$r$9$k%b!<%I$G$9!#(B
-    <module>mod_mem_cache</module> $B$O%m!<%+%k$G@8@.$5$l$k%3%s%F%s%D$d!"(B
-    <module>mod_proxy</module> $B$,(B
-    <directive module="mod_proxy">ProxyPass</directive> $B$r;H$C$F@_Dj$5$l$F$$$k(B
-    $B$H$-$N(B ($B$D$^$j(B<dfn>$B%j%P!<%9%W%m%-%7(B</dfn> $B$G$N(B) $B%P%C%/%(%s%I%5!<%P$N(B
-    $B%3%s%F%s%D$r%-%c%C%7%e$9$k$N$K;H$($^$9!#(B</dd>
+    <dd>メモリを使用したストレージ管理機構を実装しています。
+    <module>mod_mem_cache</module> は次の二つのモードのどちらかで動作する
+    ように設定できます: オープンされているファイル記述子をキャッシュするモードか、
+    ヒープ上でのオブジェクトの自体をキャッシュをするモードです。
+    <module>mod_mem_cache</module> はローカルで生成されるコンテンツや、
+    <module>mod_proxy</module> が
+    <directive module="mod_proxy">ProxyPass</directive> を使って設定されている
+    ときの (つまり<dfn>リバースプロキシ</dfn> での) バックエンドサーバの
+    コンテンツをキャッシュするのに使えます。</dd>
     </dl>
 
-    <p>$B%3%s%F%s%D$N%-%c%C%7%e$X$NJ]B8$H<hF@$O(B URI $B$K4p$E$$$?%-!<$,;H$o$l$^$9!#(B
-    $B%"%/%;%9J]8n$N$+$1$i$l$F$$$k%3%s%F%s%D$O%-%c%C%7%e$5$l$^$;$s!#(B</p>
+    <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
+    アクセス保護のかけられているコンテンツはキャッシュされません。</p>
 </summary>
 
-<section id="related"><title>$B4XO"%b%8%e!<%k$H%G%#%l%/%F%#%V(B</title>
+<section id="related"><title>関連モジュールとディレクティブ</title>
     <related>
       <modulelist>
         <module>mod_disk_cache</module>
@@ -83,7 +83,7 @@
     </related>
 </section>
 
-<section id="sampleconf"><title>$B%5%s%W%k@_Dj(B</title>
+<section id="sampleconf"><title>サンプル設定</title>
     <example><title>Sample httpd.conf</title>
       #<br />
       # Sample Cache Configuration<br />
@@ -121,30 +121,30 @@
 
 <directivesynopsis>
 <name>CacheEnable</name>
-<description>$B;XDj$7$?%9%H%l!<%84IM}J}<0$r;H$C$F$N%-%c%C%7%e$rM-8z$K$9$k(B</description>
+<description>指定したストレージ管理方式を使ってのキャッシュを有効にする</description>
 <syntax>CacheEnable <var>cache_type</var> <var>url-string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheEnable</directive> $B%G%#%l%/%F%#%V$G(B <module>mod_cache</module> 
-    $B%b%8%e!<%k$,(B <var>url-string</var> $B0J2<$N(B URL $B$r%-%c%C%7%e$9$k$h$&$K$7$^$9!#(B
-    $B%-%c%C%7%e%9%H%l!<%84IM}J}<0$O(B <var>cache_type</var> $B0z?t$G;XDj$7$^$9!#(B
-    <var>cache_type</var> <code> mem</code> $B$G!"(B
-    <module>mod_mem_cache</module> $B$G<BAu$5$l$F$$$k%a%b%j$r;H$C$?%9%H%l!<%8(B
-    $B4IM}J}<0$r;H$&$h$&$K(B <module>mod_cache</module> $B$K;X<($7$^$9!#(B
-    <var>cache_type</var> <code>disk</code> $B$G!"(B
-    <module>mod_disk_cache</module> $B$G<BAu$5$l$F$$$k%G%#%9%/$r;H$C$?%9%H%l!<%8(B
-    $B4IM}$r;H$&$h$&$K(B <module>mod_cache</module> $B$K;X<($7$^$9!#(B
-    <var>cache_type</var> <code>fd</code> $B$O(B <module>mod_cache</module> $B$K(B
-    <module>mod_mem_cache</module> $B$K$h$j<BAu$5$l$F$$$k%U%!%$%k5-=R;R$N(B
-    $B%-%c%C%7%e$r;H$&$h$&$K;X<($7$^$9!#(B</p>
+    <p><directive>CacheEnable</directive> ディレクティブで <module>mod_cache</module> 
+    モジュールが <var>url-string</var> 以下の URL をキャッシュするようにします。
+    キャッシュストレージ管理方式は <var>cache_type</var> 引数で指定します。
+    <var>cache_type</var> <code> mem</code> で、
+    <module>mod_mem_cache</module> で実装されているメモリを使ったストレージ
+    管理方式を使うように <module>mod_cache</module> に指示します。
+    <var>cache_type</var> <code>disk</code> で、
+    <module>mod_disk_cache</module> で実装されているディスクを使ったストレージ
+    管理を使うように <module>mod_cache</module> に指示します。
+    <var>cache_type</var> <code>fd</code> は <module>mod_cache</module> に
+    <module>mod_mem_cache</module> により実装されているファイル記述子の
+    キャッシュを使うように指示します。</p>
 
-    <p>($B2<$NNc$N$h$&$K(B) <directive>CacheEnable</directive> $B%G%#%l%/%F%#%V$N(B
-    URL $B6u4V$,=EJ#$7$F$$$k$H$-$O!"3:Ev$9$k%9%H%l!<%8J}<0$r=g$K;n$7$F!"(B
-    $B<B:]$K%j%/%(%9%H$N=hM}$,$G$-$k$H!"$=$NJ}<0$G=hM}$7$^$9!#(B
-    $B%9%H%l!<%84IM}J}<0$,<B9T$5$l$k=gHV$O@_Dj%U%!%$%kCf$N(B
-    <directive>CacheEnable</directive> $B$N=gHV$K$h$j7hDj$5$l$^$9!#(B</p>
+    <p>(下の例のように) <directive>CacheEnable</directive> ディレクティブの
+    URL 空間が重複しているときは、該当するストレージ方式を順に試して、
+    実際にリクエストの処理ができると、その方式で処理します。
+    ストレージ管理方式が実行される順番は設定ファイル中の
+    <directive>CacheEnable</directive> の順番により決定されます。</p>
 
     <example>
       CacheEnable  mem   /manual<br />
@@ -156,17 +156,17 @@
 
 <directivesynopsis>
 <name>CacheDisable</name>
-<description>$BFCDj$N(B URL $B$r%-%c%C%7%e$7$J$$(B</description>
+<description>特定の URL をキャッシュしない</description>
 <syntax>CacheDisable <var> url-string</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheDisable</directive> $B%G%#%l%/%F%#%V$G(B
-    <module>mod_cache</module> $B%b%8%e!<%k$,(B <var>url-string</var> $B0J2<$N(B
-    URL $B$r%-%c%C%7%e(B<em>$B$7$J$$(B</em>$B$h$&$K$7$^$9!#(B</p>
+    <p><directive>CacheDisable</directive> ディレクティブで
+    <module>mod_cache</module> モジュールが <var>url-string</var> 以下の
+    URL をキャッシュ<em>しない</em>ようにします。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       CacheDisable /local_files
     </example>
 </usage>
@@ -174,18 +174,18 @@
 </directivesynopsis>
 <directivesynopsis>
 <name>CacheMaxExpire</name>
-<description>$B%I%-%e%a%s%H$r%-%c%C%7%e$9$k:GBg;~4V$rIC?t$G8=$7$?$b$N(B</description>
+<description>ドキュメントをキャッシュする最大時間を秒数で現したもの</description>
 <syntax>CacheMaxExpire <var>seconds</var></syntax>
-<default>CacheMaxExpire 86400 ($B0lF|(B)</default>
+<default>CacheMaxExpire 86400 (一日)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheMaxExpire</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B%-%c%C%7%e$9$k(B HTTP $B%I%-%e%a%s%H$r!"85$N%5!<%P$KLd$$9g$o$;$J$$$^$^:GBg2?IC(B
-    $BJ];}$7$F$b$h$$$+$r;XDj$7$^$9!#$D$^$j!"%I%-%e%a%s%H$O:GBg$G$3$NIC?t4V$V$s8E$/(B
-    $B$J$k$3$H$K$J$j$^$9!#$3$N:GBgCM$O!"(B($BLuCm(B:$B%l%9%]%s%9Cf$G(B)$B%I%-%e%a%s%H$H6&$K(B
-    $B%I%-%e%a%s%H$N4|F|$,Ds6!$5$l$F$$$k>l9g$G$bE,MQ$5$l$^$9!#(B</p>
+    <p><directive>CacheMaxExpire</directive> ディレクティブは、
+    キャッシュする HTTP ドキュメントを、元のサーバに問い合わせないまま最大何秒
+    保持してもよいかを指定します。つまり、ドキュメントは最大でこの秒数間ぶん古く
+    なることになります。この最大値は、(訳注:レスポンス中で)ドキュメントと共に
+    ドキュメントの期日が提供されている場合でも適用されます。</p>
 
     <example>
       CacheMaxExpire 604800
@@ -195,17 +195,17 @@
 
 <directivesynopsis>
 <name>CacheDefaultExpire</name>
-<description>$B4|F|$,;XDj$5$l$F$$$J$$$H$-$K%I%-%e%a%s%H$r%-%c%C%7%e$9$k%G%U%)%k%H$N4|4V(B</description>
+<description>期日が指定されていないときにドキュメントをキャッシュするデフォルトの期間</description>
 <syntax>CacheDefaultExpire <var>seconds</var></syntax>
-<default>CacheDefaultExpire 3600 (1$B;~4V(B)</default>
+<default>CacheDefaultExpire 3600 (1時間)</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheDefaultExpire</directive> $B%G%#%l%/%F%#%V$O!"%I%-%e%a%s%H$K(B
-    $BM-8z4|8B(B (expiry) $B$d:G=*=$@5;~9o(B (last-modified) $B$,;XDj$5$l$F$$$J$$>l9g$N(B
-    $B%G%U%)%k%H$N;~4V$r;XDj$7$^$9!#(B<directive>CacheMaxExpire</directive> 
-    $B%G%#%l%/%F%#%V$G;XDj$5$l$?CM$O$3$N@_Dj$r>e=q$-(B<em>$B$7$^$;$s(B</em>$B!#(B</p>
+    <p><directive>CacheDefaultExpire</directive> ディレクティブは、ドキュメントに
+    有効期限 (expiry) や最終修正時刻 (last-modified) が指定されていない場合の
+    デフォルトの時間を指定します。<directive>CacheMaxExpire</directive> 
+    ディレクティブで指定された値はこの設定を上書き<em>しません</em>。</p>
 
     <example>
       CacheDefaultExpire 86400
@@ -215,21 +215,21 @@
 
 <directivesynopsis>
 <name>CacheIgnoreNoLastMod</name>
-<description>$B1~Ez$K(B Last Modified $B$,L5$/$F$b5$$K$7$J$$$h$&$K$9$k(B</description>
+<description>応答に Last Modified が無くても気にしないようにする</description>
 <syntax>CacheIgnoreNoLastMod On|Off</syntax>
 <default>CacheIgnoreNoLastMod Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>$BDL>o!"(BLast-Modified $B$K$h$k:G=*=$@5;~9o$NL5$$%I%-%e%a%s%H$O%-%c%C%7%e(B
-    $B$5$l$^$;$s!#(B($BNc$($P(B <module>mod_include</module> $B$K$h$k=hM}$N$H$-$J$I$K(B)
-    Last-Modified $B;~9o$,>C5n$5$l$?$j!"$=$b$=$b:G=i$+$iDs6!$5$l$F$$$J$$(B
-    $B>u67$,$"$j$^$9!#(B<directive>CacheIgnoreNoLastMod</directive> 
-    $B%G%#%l%/%F%#%V$r;H$&$H!"(BLast-Modified $BF|;~$,;XDj$5$l$F$$$J$$(B
-    $B%I%-%e%a%s%H$G$b%-%c%C%7%e$9$k$h$&$K;XDj$G$-$^$9!#%I%-%e%a%s%H$K(B
-    $B:G=*=$@5;~9o(B (Last-Modified) $BM-8z4|8B(B (expiry) $B$,$J$$>l9g$O!"M-8z4|8B$N(B
-    $B@8@.$K(B <directive>CacheDefaultExpire</directive> $B$,;H$o$l$^$9!#(B</p>
+    <p>通常、Last-Modified による最終修正時刻の無いドキュメントはキャッシュ
+    されません。(例えば <module>mod_include</module> による処理のときなどに)
+    Last-Modified 時刻が消去されたり、そもそも最初から提供されていない
+    状況があります。<directive>CacheIgnoreNoLastMod</directive> 
+    ディレクティブを使うと、Last-Modified 日時が指定されていない
+    ドキュメントでもキャッシュするように指定できます。ドキュメントに
+    最終修正時刻 (Last-Modified) 有効期限 (expiry) がない場合は、有効期限の
+    生成に <directive>CacheDefaultExpire</directive> が使われます。</p>
 
     <example>
       CacheIgnoreNoLastMod On
@@ -239,31 +239,31 @@
 
 <directivesynopsis>
 <name>CacheIgnoreCacheControl</name>
-<description>$B%-%c%C%7%e$5$l$F$$$k%3%s%F%s%D$rJV$5$J$$$h$&$K%/%i%$%"%s%H$+$i(B
-$B%j%/%(%9%H$5$l$F$bL5;k$9$k(B</description>
+<description>キャッシュされているコンテンツを返さないようにクライアントから
+リクエストされても無視する</description>
 <syntax>CacheIgnoreCacheControl On|Off</syntax>
 <default>CacheIgnoreCacheControl Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>Cache-Control: no-cache $B%X%C%@$d(B Pragma: no-store $B%X%C%@$N$"$k%j%/%(%9%H$K(B
-    $BBP$7$F$O!"DL>o%-%c%C%7%e$r;H$$$^$;$s!#(B<directive>CacheIgnoreCacheControl</directive> 
-    $B%G%#%l%/%F%#%V$r;H$&$H!"$3$NF0:n$r>e=q$-$G$-$^$9!#(B
-    <directive>CacheIgnoreCacheControl</directive> On $B$H$9$k$H!"(B
-    $B%j%/%(%9%H$K(B no-cache $B$H$$$&CM$,$"$C$F$b!"%-%c%C%7%e$r;H$C$F%I%-%e%a%s%H$r(B
-    $BJV$9$h$&$K$J$j$^$9!#G'>Z$rI,MW$H$9$k%I%-%e%a%s%H$O(B<em>$B7h$7$F(B</em>
-    $B%-%c%C%7%e$5$l$^$;$s!#(B</p>
+    <p>Cache-Control: no-cache ヘッダや Pragma: no-store ヘッダのあるリクエストに
+    対しては、通常キャッシュを使いません。<directive>CacheIgnoreCacheControl</directive> 
+    ディレクティブを使うと、この動作を上書きできます。
+    <directive>CacheIgnoreCacheControl</directive> On とすると、
+    リクエストに no-cache という値があっても、キャッシュを使ってドキュメントを
+    返すようになります。認証を必要とするドキュメントは<em>決して</em>
+    キャッシュされません。</p>
 
     <example>
       CacheIgnoreCacheControl On
     </example>
 
-    <note type="warning"><title>$B7Y9p(B</title>
-       $B$3$N%G%#%l%/%F%#%V$r;H$&$H!"%I%-%e%a%s%H<hF@;~$K%-%c%C%7%e$r;H$o$J$$$h$&$K(B
-       $B%/%i%$%"%s%H$,%j%/%(%9%H$7$F$$$k$K$b$+$+$o$i$:!"%-%c%C%7%e$r(B
-       $B;H$&$h$&$K$J$j$^$9!#$=$N7k2L!"(B
-       $B8E$$%3%s%F%s%D$,Aw$i$lB3$1$k$3$H$K$J$C$F$7$^$&$+$b$7$l$^$;$s!#(B
+    <note type="warning"><title>警告</title>
+       このディレクティブを使うと、ドキュメント取得時にキャッシュを使わないように
+       クライアントがリクエストしているにもかかわらず、キャッシュを
+       使うようになります。その結果、
+       古いコンテンツが送られ続けることになってしまうかもしれません。
     </note>
 </usage>
 <seealso><directive module="mod_cache">CacheStorePrivate</directive></seealso>
@@ -272,8 +272,8 @@
 
 <directivesynopsis>
 <name>CacheLastModifiedFactor</name>
-<description>LastModified $B$NF|IU$K4p$E$$$FM-8z4|8B(B (expiry) 
-$B$r7W;;$9$k$?$a$N=E$_$r;XDj$9$k(B
+<description>LastModified の日付に基づいて有効期限 (expiry) 
+を計算するための重みを指定する
 </description>
 <syntax>CacheLastModifiedFactor <var>float</var></syntax>
 <default>CacheLastModifiedFactor 0.1</default>
@@ -281,24 +281,24 @@
 </contextlist>
 
 <usage>
-    <p>$B%I%-%e%a%s%H$K(B Last-Modified $B$NF|IU$,L5$$$1$l$I$bM-8z4|8B(B (expiry) 
-    $B$NF|IU$,$"$k$H$$$&$H$-$K!"M-8z4|8B$r:G=*=$@5;~9o$+$i$N7P2a;~4V$H$7$F(B
-    $B7W;;$9$k$h$&$K$G$-$^$9!#M-8z4|8B$r<!$N7W;;<0$K=>$C$F@8@.$9$k$N$G$9$,!"(B
-    $B$=$N$H$-$K;H$o$l$k(B <var>factor</var> $B$r(B
-    <directive>CacheLastModifiedFactor</directive> $B%G%#%l%/%F%#%V$G;XDj$7$^$9!#(B
+    <p>ドキュメントに Last-Modified の日付が無いけれども有効期限 (expiry) 
+    の日付があるというときに、有効期限を最終修正時刻からの経過時間として
+    計算するようにできます。有効期限を次の計算式に従って生成するのですが、
+    そのときに使われる <var>factor</var> を
+    <directive>CacheLastModifiedFactor</directive> ディレクティブで指定します。
     </p>
 
     <p><code>expiry-period = time-since-last-modified-date * <var>factor</var>
     expiry-date = current-date + expiry-period</code></p>
 
-    <p>$BNc$($P!"%I%-%e%a%s%H$,(B 10 $B;~4VA0$K:G8e$K=$@5$5$l$F$$$F!"(B
-    <var>factor</var> $B$,(B 0.1 $B$G$"$l$P!"4|F|$O(B 10*0.1 = 1 $B;~4V$K(B
-    $B@_Dj$5$l$^$9!#8=:_;~9o$,(B 3:00pm $B$G$"$l$P!"7W;;$5$l$?4|F|$O(B
-    3:00pm + 1hour = 4:00pm $B$K$J$j$^$9!#(B</p>
+    <p>例えば、ドキュメントが 10 時間前に最後に修正されていて、
+    <var>factor</var> が 0.1 であれば、期日は 10*0.1 = 1 時間に
+    設定されます。現在時刻が 3:00pm であれば、計算された期日は
+    3:00pm + 1hour = 4:00pm になります。</p>
 
-    <p>$B4|F|$,(B <directive>CacheMaxExpire</directive> $B$G@_Dj$5$l$F$$$kCM(B
-    $B$h$jBg$-$/$J$C$F$7$^$C$F$$$k>l9g$O!"(B<directive>CacheMaxExpire</directive>
-    $B$N@_DjCM$,M%@h$5$l$^$9!#(B</p>
+    <p>期日が <directive>CacheMaxExpire</directive> で設定されている値
+    より大きくなってしまっている場合は、<directive>CacheMaxExpire</directive>
+    の設定値が優先されます。</p>
 
     <example>
       CacheLastModifiedFactor 0.5
@@ -308,7 +308,7 @@
 
 <directivesynopsis>
 <name>CacheIgnoreHeaders</name>
-<description>$B;XDj$5$l$?(B HTTP $B%X%C%@$r%-%c%C%7%e$KJ]B8$7$J$$!#(B
+<description>指定された HTTP ヘッダをキャッシュに保存しない。
 </description>
 <syntax>CacheIgnoreHeaders <var>header-string</var> [<var>header-string</var>] ...</syntax>
 <default>CacheIgnoreHeaders None</default>
@@ -316,10 +316,10 @@
 </contextlist>
 
 <usage>
-    <p>RFC 2616 $B$K$h$k$H!"(Bhop-by-hop HTTP $B%X%C%@$O%-%c%C%7%e$K$OJ]4I$5$l$^$;$s!#(B
-    $B0J2<$N%X%C%@$O(B hop-by-hop $B%X%C%@$K3:Ev$7$^$9$N$G!"(B
+    <p>RFC 2616 によると、hop-by-hop HTTP ヘッダはキャッシュには保管されません。
+    以下のヘッダは hop-by-hop ヘッダに該当しますので、
     <directive>CacheIgnoreHeaders</directive>
-    $B$N@_Dj$K(B<em>$B4X78$J$/(B</em>$B%-%c%C%7%e$K$OJ]4I$5$l$^$;$s(B:</p>
+    の設定に<em>関係なく</em>キャッシュには保管されません:</p>
     <ul>
       <li><code>Connection</code></li>
       <li><code>Keep-Alive</code></li>
@@ -331,58 +331,58 @@
       <li><code>Upgrade</code></li>
     </ul>
 
-    <p><directive>CacheIgnoreHeaders</directive> $B$G(B
-    $B%-%c%C%7%e$KJ]4I$7$J$$DI2C$N(B HTTP $B%X%C%@$r;XDj$7$^$9!#(B
-    $BNc$($P!"%/%C%-!<$r%-%c%C%7%e$KJ]4I$7$J$$$h$&$K$7$?J}$,$h$$>l9g$b(B
-    $B$"$k$G$7$g$&!#(B</p>
+    <p><directive>CacheIgnoreHeaders</directive> で
+    キャッシュに保管しない追加の HTTP ヘッダを指定します。
+    例えば、クッキーをキャッシュに保管しないようにした方がよい場合も
+    あるでしょう。</p>
 
-    <p><directive>CacheIgnoreHeaders</directive> $B$N0z?t$O!"(B
-    $B%-%c%C%7%e$KJ]4I$7$J$$(B HTTP $B%X%C%@$r6uGr6h@Z$j$K$7$?%j%9%H7A<0$G$9!#(B
-    $B%-%c%C%7%e$KJ]4I$7$J$$%X%C%@$,(B hop-by-hop $B%X%C%@$@$1$N>l9g(B
-    (RFC 2616 $B=`5r$NF0:n$N$H$-(B) $B$O!"(B
-    <directive>CacheIgnoreHeaders</directive> $B$r(B <code>None</code>
-    $B$K@_Dj$G$-$^$9!#(B</p>
+    <p><directive>CacheIgnoreHeaders</directive> の引数は、
+    キャッシュに保管しない HTTP ヘッダを空白区切りにしたリスト形式です。
+    キャッシュに保管しないヘッダが hop-by-hop ヘッダだけの場合
+    (RFC 2616 準拠の動作のとき) は、
+    <directive>CacheIgnoreHeaders</directive> を <code>None</code>
+    に設定できます。</p>
 
-    <example><title>$BNc(B 1</title>
+    <example><title>例 1</title>
       CacheIgnoreHeaders Set-Cookie
     </example>
 
-    <example><title>$BNc(B 2</title>
+    <example><title>例 2</title>
       CacheIgnoreHeaders None
     </example>
 
-    <note type="warning"><title>$B7Y9p(B:</title>
-      <code>Expires</code> $B$N$h$&$JE,@Z$N%-%c%C%7%e4IM}$N$?$a$KI,MW$J(B
-      $B%X%C%@$,(B <directive>CacheIgnoreHeaders</directive> $B$N@_Dj$K$h$j(B
-      $BJ]4I$5$l$F$$$J$$$H$-$O!"(Bmod_cache $B$NF0:n$ODj5A$5$l$F$$$^$;$s!#(B
+    <note type="warning"><title>警告:</title>
+      <code>Expires</code> のような適切のキャッシュ管理のために必要な
+      ヘッダが <directive>CacheIgnoreHeaders</directive> の設定により
+      保管されていないときは、mod_cache の動作は定義されていません。
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>CacheStorePrivate</name>
-<description>private $B$H;XDj$5$l$F$$$k%l%9%]%s%9$N%-%c%C%7%e$r;n$_$k!#(B</description>
+<description>private と指定されているレスポンスのキャッシュを試みる。</description>
 <syntax>CacheStorePrivate On|Off</syntax>
 <default>CacheStorePrivate Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>$BDL>o(B Cache-Control: private $B%X%C%@$N$D$$$F$$$k%l%9%]%s%9$O(B
-       $B%-%c%C%7%e$5$l$^$;$s!#(B<directive>CacheStorePrivate</directive> 
-       $B%G%#%l%/%F%#%V$G$3$N5sF0$r>e=q$-$G$-$^$9!#(B
-       <directive>CacheStorePrivate</directive> On $B$G(B private $B%X%C%@$N$D$$$F$$$k(B
-       $B%j%=!<%9$KBP$7$F$b%-%c%C%7%e$r;n$_$k$h$&$K$J$j$^$9!#(B
-       $B$?$@$7G'>Z$N5a$a$i$l$k%j%=!<%9$O(B <em>$B7h$7$F(B</em> $B%-%c%C%7%e$5$l$^$;$s!#(B</p>
+    <p>通常 Cache-Control: private ヘッダのついているレスポンスは
+       キャッシュされません。<directive>CacheStorePrivate</directive> 
+       ディレクティブでこの挙動を上書きできます。
+       <directive>CacheStorePrivate</directive> On で private ヘッダのついている
+       リソースに対してもキャッシュを試みるようになります。
+       ただし認証の求められるリソースは <em>決して</em> キャッシュされません。</p>
 
     <example>
       CacheStorePrivate On
     </example>
 
-    <note type="warning"><title>$B7Y9p(B:</title>
-       $B>eN.%5!<%P$,%-%c%C%7%e$7$J$$$h$&$K;XDj$7$F$-$F$b!"(B
-       $B$=$l$rL5;k$7$F%-%c%C%7%e$9$k$h$&$K$J$j$^$9!#(B
-       $BK>$^$7$$5sF0$K$J$k$N$O!"K\Ev$K(B 'private' $B$J%-%c%C%7%e$K$D$$$F$N$_$G$7$g$&!#(B
+    <note type="warning"><title>警告:</title>
+       上流サーバがキャッシュしないように指定してきても、
+       それを無視してキャッシュするようになります。
+       望ましい挙動になるのは、本当に 'private' なキャッシュについてのみでしょう。
     </note>
 </usage>
 <seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>
@@ -391,30 +391,30 @@
 
 <directivesynopsis>
 <name>CacheStoreNoStore</name>
-<description>no-store $B$H;XDj$5$l$F$$$k%l%9%]%s%9$N%-%c%C%7%e$r;n$_$k!#(B</description>
+<description>no-store と指定されているレスポンスのキャッシュを試みる。</description>
 <syntax>CacheStoreNoStore On|Off</syntax>
 <default>CacheStoreNoStore Off</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p>$BDL>o(B Cache-Control: no-store $B%X%C%@$N$D$$$F$$$k%l%9%]%s%9$O(B
-       $B%-%c%C%7%e$5$l$^$;$s!#(B<directive>CacheStoreNoCache</directive> 
-       $B%G%#%l%/%F%#%V$G$3$N5sF0$r>e=q$-$G$-$^$9!#(B
-       <directive>CacheStoreNoCache</directive> On $B$G(B no-store $B%X%C%@$N$D$$$F$$$k(B
-       $B%j%=!<%9$KBP$7$F$b%-%c%C%7%e$r;n$_$k$h$&$K$J$j$^$9!#(B
-       $B$?$@$7G'>Z$N5a$a$i$l$k%j%=!<%9$O(B <em>$B7h$7$F(B</em> $B%-%c%C%7%e$5$l$^$;$s!#(B</p>
+    <p>通常 Cache-Control: no-store ヘッダのついているレスポンスは
+       キャッシュされません。<directive>CacheStoreNoCache</directive> 
+       ディレクティブでこの挙動を上書きできます。
+       <directive>CacheStoreNoCache</directive> On で no-store ヘッダのついている
+       リソースに対してもキャッシュを試みるようになります。
+       ただし認証の求められるリソースは <em>決して</em> キャッシュされません。</p>
 
     <example>
       CacheStoreNoStore On
     </example>
 
-    <note type="warning"><title>$B7Y9p(B:</title>
-       RFC 2616 $B$K5-:\$5$l$F$$$k$h$&$K(B no-store $B%G%#%l%/%F%#%V$O!"(B
-       "$BITCm0U$K$h$k5!L)>pJs$NO31L$d;DN1(B ($B%P%C%/%"%C%W%F!<%WEy(B) $B$rKI$0(B"
-       $BL\E*$G;H$o$l$^$9$,!"$3$N%*%W%7%g%s$rM-8z$K$9$k$H!"(B
-       $B5!L)>pJs$rJ];}$9$k$3$H$K$J$C$F$7$^$$$^$9!#(B
-       $B$G$9$N$G!"$3$3$G7Y9p$7$F$*$-$^$9!#(B
+    <note type="warning"><title>警告:</title>
+       RFC 2616 に記載されているように no-store ディレクティブは、
+       "不注意による機密情報の漏洩や残留 (バックアップテープ等) を防ぐ"
+       目的で使われますが、このオプションを有効にすると、
+       機密情報を保持することになってしまいます。
+       ですので、ここで警告しておきます。
     </note>
 </usage>
 <seealso><directive module="mod_cache">CacheIgnoreCacheControl</directive></seealso>

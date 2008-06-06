@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 395228:420990 (outdated) -->
@@ -22,14 +22,14 @@
 
 <manualpage metafile="handler.xml.meta">
 
-  <title>Apache $B$N%O%s%I%i$N;HMQ(B</title>
+  <title>Apache のハンドラの使用</title>
 
   <summary>
-    <p>Apache $B$N%O%s%I%i$N;HMQ$K4X$7$F5-=R$7$F$$$^$9!#(B</p>
+    <p>Apache のハンドラの使用に関して記述しています。</p>
   </summary>
 
   <section id="definition">
-    <title>$B%O%s%I%i$H$O(B</title>
+    <title>ハンドラとは</title>
     <related>
       <modulelist>
         <module>mod_actions</module>
@@ -50,85 +50,85 @@
     </related>
 
 
-    <p>$B!V%O%s%I%i!W$H$O!"%U%!%$%k$,8F$P$l$?$H$-$K<B9T$5$l$kF0:n$N(B
-    Apache $B$K$*$1$kFbItI=8=$G$9!#(B
-    $BDL>o!"%U%!%$%k$O%U%!%$%k7?$K4p$E$$$?0EL[$N%O%s%I%i$,$"$j$^$9!#(B
-    $BIaDL$O$9$Y$F$N%U%!%$%k$OC1$K%5!<%P$K07$o$l$^$9$,!"(B
-    $B%U%!%$%k%?%$%W$NCf$K$OJL$K!V%O%s%I%k!W(B($BLuCm(B: $B07$&(B)
-    $B$5$l$k$b$N$b$"$j$^$9!#(B</p>
+    <p>「ハンドラ」とは、ファイルが呼ばれたときに実行される動作の
+    Apache における内部表現です。
+    通常、ファイルはファイル型に基づいた暗黙のハンドラがあります。
+    普通はすべてのファイルは単にサーバに扱われますが、
+    ファイルタイプの中には別に「ハンドル」(訳注: 扱う)
+    されるものもあります。</p>
 
-    <p>Apache 1.1 $B$G$O!"%O%s%I%i$rL@<(E*$K;HMQ$9$k5!G=$,DI2C$5$l$^$7$?!#(B
-    $B%U%!%$%k$N3HD%;R$dCV$$$F$$$k>l=j$K4p$E$$$F!"(B
-    $B%U%!%$%k7?$H4X78$J$/%O%s%I%i$r;XDj$9$k$3$H$,$G$-$^$9!#(B
-    $B$3$l$O$h$jM%2m$J2r7hK!$H$$$&E@$H!"%U%!%$%k$K%?%$%W(B<strong>$B$H(B</strong
-    >$B%O%s%I%i$NN>J}$r4XO"IU$1$k$3$H$,$G$-$k$H$$$&E@$GM%$l$F$$$^$9!#(B
+    <p>Apache 1.1 では、ハンドラを明示的に使用する機能が追加されました。
+    ファイルの拡張子や置いている場所に基づいて、
+    ファイル型と関係なくハンドラを指定することができます。
+    これはより優雅な解決法という点と、ファイルにタイプ<strong>と</strong
+    >ハンドラの両方を関連付けることができるという点で優れています。
     (<a href="mod/mod_mime.html#multipleext"
-    >$BJ#?t$N3HD%;R$N$"$k%U%!%$%k(B</a>$B$b;2>H$7$F$/$@$5$$(B)$B!#(B</p>
+    >複数の拡張子のあるファイル</a>も参照してください)。</p>
 
-    <p>$B%O%s%I%i$O%5!<%P$KAH$_9~$s$@$j!"%b%8%e!<%k$H$7$F4^$a$?$j!"(B
+    <p>ハンドラはサーバに組み込んだり、モジュールとして含めたり、
     <directive module="mod_actions">Action</directive>
-    $B%G%#%l%/%F%#%V$H$7$FDI2C$7$?$j$9$k$3$H$,$G$-$^$9!#(B
-    $B0J2<$OI8=`G[I[$KAH$_9~$^$l$F$$$k%O%s%I%i$G$9!#(B
+    ディレクティブとして追加したりすることができます。
+    以下は標準配布に組み込まれているハンドラです。
     </p>
 
     <ul>
       <li><strong>default-handler</strong>:<code>default_handelr()</code>
-      $B$r;H$C$F%U%!%$%k$rAw$j$^$9!#(B
-      $B@EE*$J%3%s%F%s%D$r07$&$H$-$K%G%U%)%k%H$G;HMQ$5$l$k%O%s%I%i$G$9!#(B
+      を使ってファイルを送ります。
+      静的なコンテンツを扱うときにデフォルトで使用されるハンドラです。
       (<module>core</module>)</li>
 
       <li><strong>send-as-is</strong>:
-      HTTP $B%X%C%@$N$"$k%U%!%$%k$r$=$N$^$^Aw$j$^$9!#(B
+      HTTP ヘッダのあるファイルをそのまま送ります。
       (<module>mod_asis</module>)</li>
 
-      <li><strong>cgi-script</strong>: $B%U%!%$%k$r(B CGI
-      $B%9%/%j%W%H$H$7$F07$$$^$9!#(B
+      <li><strong>cgi-script</strong>: ファイルを CGI
+      スクリプトとして扱います。
       (<module>mod_cgi</module>)</li>
 
       <li><strong>imap-file</strong>:
-      $B%$%a!<%8%^%C%W$N%k!<%k%U%!%$%k$H$7$F2r@O$7$^$9!#(B
+      イメージマップのルールファイルとして解析します。
       (<module>mod_imagemap</module>)</li>
 
-      <li><strong>server-info</strong>: $B%5!<%P$N@_Dj>pJs$r<hF@$7$^$9!#(B
+      <li><strong>server-info</strong>: サーバの設定情報を取得します。
       (<module>mod_info</module>)</li>
 
-      <li><strong>server-status</strong>: $B%5!<%P$N>uBVJs9p$r<hF@$7$^$9!#(B
+      <li><strong>server-status</strong>: サーバの状態報告を取得します。
       (<module>mod_status</module>)</li>
 
       <li><strong>type-map</strong>:
-      $B%3%s%F%s%H%M%4%7%(!<%7%g%s$N$?$a$N%?%$%W%^%C%W$H$7$F2r@O$7$^$9!#(B
+      コンテントネゴシエーションのためのタイプマップとして解析します。
       (<module>mod_negotiation</module>)</li>
     </ul>
   </section>
   <section id="examples">
-    <title>$BNc(B</title>
+    <title>例</title>
 
     <section id="example1">
-      <title>CGI $B%9%/%j%W%H$rMQ$$$F@EE*$J%3%s%F%s%D$rJQ99$9$k(B</title>
+      <title>CGI スクリプトを用いて静的なコンテンツを変更する</title>
 
-      <p>$B0J2<$N%G%#%l%/%F%#%V$K$h$C$F!"3HD%;R$,(B <code>html</code>
-      $B$G$"$k%U%!%$%k$O(B <code>footer.pl</code>
-      CGI $B%9%/%j%W%H$r5/F0$9$k$h$&$K$J$j$^$9!#(B</p>
+      <p>以下のディレクティブによって、拡張子が <code>html</code>
+      であるファイルは <code>footer.pl</code>
+      CGI スクリプトを起動するようになります。</p>
 
       <example>
         Action add-footer /cgi-bin/footer.pl<br/>
         AddHandler add-footer .html
       </example>
 
-      <p>CGI $B%9%/%j%W%H$O4uK>$N=$@5$dDI2C$r9T$J$C$F!"85!9MW5a$5$l$?J8=q(B
-      ($B4D6-JQ?t(B <code>PATH_TRANSLATED</code>
-      $B$G;X$5$l$F$$$^$9(B) $B$rAw$k@UG$$,$"$j$^$9!#(B
+      <p>CGI スクリプトは希望の修正や追加を行なって、元々要求された文書
+      (環境変数 <code>PATH_TRANSLATED</code>
+      で指されています) を送る責任があります。
       </p>
 
     </section>
     <section id="example2">
-      <title>HTTP $B%X%C%@$N$"$k%U%!%$%k(B</title>
+      <title>HTTP ヘッダのあるファイル</title>
 
-      <p>$B0J2<$N%G%#%l%/%F%#%V$O(B <code>send-as-is</code>
-      $B%O%s%I%i$r;HMQ$9$k$h$&$K;X<($7$^$9!#$3$N%O%s%I%i$O<+J,<+?H$N(B HTTP
-      $B%X%C%@$r;}$C$F$$$k%U%!%$%k$K;HMQ$5$l$^$9!#$3$3$G$O!"3HD%;R$K4X$o$i$:!"(B
-      <code>/web/htdocs/asis</code> $B%G%#%l%/%H%j$K$"$kA4$F$N%U%!%$%k$O(B
-      <code>send-as-is</code> $B%O%s%I%i$K$h$C$F07$o$l$^$9!#(B</p>
+      <p>以下のディレクティブは <code>send-as-is</code>
+      ハンドラを使用するように指示します。このハンドラは自分自身の HTTP
+      ヘッダを持っているファイルに使用されます。ここでは、拡張子に関わらず、
+      <code>/web/htdocs/asis</code> ディレクトリにある全てのファイルは
+      <code>send-as-is</code> ハンドラによって扱われます。</p>
 
       <example>
         &lt;Directory /web/htdocs/asis&gt;<br/>
@@ -139,24 +139,24 @@
     </section>
   </section>
   <section id="programmer">
-    <title>$B%W%m%0%i%^8~$1$N%a%b(B</title>
+    <title>プログラマ向けのメモ</title>
 
-    <p>$B%O%s%I%i$N5!G=$r<BAu$9$k$?$a$K!"MxMQ$9$k$HJXMx$+$b$7$l$J$$$b$N$,(B
+    <p>ハンドラの機能を実装するために、利用すると便利かもしれないものが
     <a href="developer/API.html">Apache API</a>
-    $B$KDI2C$5$l$^$7$?!#>\$7$/8@$&$H!"(B<code>request_rec</code>
-    $B9=B$BN$K?7$7$$%l%3!<%I$,DI2C$5$l$?$H$$$&$3$H$G$9!#(B</p>
+    に追加されました。詳しく言うと、<code>request_rec</code>
+    構造体に新しいレコードが追加されたということです。</p>
 
     <example>
      char *handler
     </example>
 
-    <p>$B$b$7%b%8%e!<%k$,%O%s%I%i$K4X$o$j$?$$>l9g!"(B
-    $B$d$i$J$1$l$P$J$i$J$$$3$H$O!"%j%/%(%9%H$,(B <code>invoke_handler</code>
-    $B%9%F!<%8$KC#$9$k0JA0$K(B <code>r-&gt;handler</code>
-    $B$r@_Dj$9$k$3$H$@$1$G$9!#%O%s%I%i$O%3%s%F%s%H%?%$%W$NBe$o$j$K(B
-    $B%O%s%I%iL>$r;H$&$h$&$K$J$C$F$$$k$3$H0J30$O!"0JA0$HF1$8$h$&$K<BAu$5$l$F$$$^$9!#(B
-    $BI,$:MW5a$5$l$F$$$k$o$1$G$O$"$j$^$;$s$,!"%a%G%#%"%?%$%W(B
-    $B$NL>A06u4V$r?/$5$J$$$h$&$K!"%O%s%I%i$NL>A0$K$O%9%i%C%7%e$r4^$^$J$$!"(B
-    $B%@%C%7%e(B ($BLuCm(B: "-") $B$GJ,N%$5$l$?L>A0$rIU$1$k=,47$K$J$C$F$$$^$9!#(B</p>
+    <p>もしモジュールがハンドラに関わりたい場合、
+    やらなければならないことは、リクエストが <code>invoke_handler</code>
+    ステージに達する以前に <code>r-&gt;handler</code>
+    を設定することだけです。ハンドラはコンテントタイプの代わりに
+    ハンドラ名を使うようになっていること以外は、以前と同じように実装されています。
+    必ず要求されているわけではありませんが、メディアタイプ
+    の名前空間を侵さないように、ハンドラの名前にはスラッシュを含まない、
+    ダッシュ (訳注: "-") で分離された名前を付ける習慣になっています。</p>
   </section>
 </manualpage>

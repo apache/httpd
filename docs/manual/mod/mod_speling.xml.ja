@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 395228:420990 (outdated) -->
@@ -23,9 +23,9 @@
 <modulesynopsis metafile="mod_speling.xml.meta">
 
 <name>mod_speling</name>
-<description>$B%f!<%6$,F~NO$7$?$G$"$m$&4V0c$C$?(B URL $B$r!"(B
-$BBgJ8;z>.J8;z$N6hJL$rL5;k$9$k$3$H$H0l$D0J2<$NDV$j4V0c$$$r5vMF$9$k$3$H$G(B
-$B=$@5$r;n$_$k(B</description>
+<description>ユーザが入力したであろう間違った URL を、
+大文字小文字の区別を無視することと一つ以下の綴り間違いを許容することで
+修正を試みる</description>
 <status>Extension</status>
 <sourcefile>mod_speling.c</sourcefile>
 <identifier>speling_module</identifier>
@@ -33,38 +33,38 @@
 
 <summary>
 
-    <p>$B%j%/%(%9%H$NDV$j$,4V0c$C$F$$$?$j!"(B
-    $BBgJ8;z>.J8;z$,0c$C$F$$$?$j$9$k$?$a$K!"(BApache $B$N%3%"%5!<%P$,(B
-    $B%I%-%e%a%s%H$X$N%j%/%(%9%H$X$N1~Ez$r@5$7$/Ds6!$G$-$J$$$3$H$,$"$j$^$9!#(B
-    $B$3$N%b%8%e!<%k$O!"B>$N$9$Y$F$N%b%8%e!<%k$,$"$-$i$a$?8e$G$"$C$?$H$7$F$b!"(B
-    $B%j%/%(%9%H$K9g$&%I%-%e%a%s%H$r8+$D$1$h$&$H$9$k$3$H$K$h$j$3$NLdBj$N(B
-    $B2r7h$r;n$_$^$9!#$3$N%b%8%e!<%k$O%j%/%(%9%H$5$l$?%G%#%l%/%H%j$K$"$k(B
-    $B$=$l$>$l$N%I%-%e%a%s%H$NL>A0$H!"%j%/%(%9%H$5$l$?%I%-%e%a%s%H$NL>A0$H$r(B
-    <strong>$BBgJ8;z>.J8;z$N6hJL$rL5;k$7(B</strong>$B!"(B<strong>$B0lJ8;z$^$G$N(B
-    $BDV$j$N4V0c$$(B</strong> ($BJ8;z$NA^F~(B/$B>JN,(B/$BNY9g$&J8;z$NCV49!"4V0c$C$?J8;z(B)
-    $B$r5v2D$7$FHf3S$9$k$3$H$K$h$j!"L\E*$rC#@.$7$h$&$H$7$^$9!#(B
-    $B$3$NJ}K!$G%j%/%(%9%H$K9g$&%I%-%e%a%s%H$N0lMw$,:n@.$5$l$^$9!#(B</p>
+    <p>リクエストの綴りが間違っていたり、
+    大文字小文字が違っていたりするために、Apache のコアサーバが
+    ドキュメントへのリクエストへの応答を正しく提供できないことがあります。
+    このモジュールは、他のすべてのモジュールがあきらめた後であったとしても、
+    リクエストに合うドキュメントを見つけようとすることによりこの問題の
+    解決を試みます。このモジュールはリクエストされたディレクトリにある
+    それぞれのドキュメントの名前と、リクエストされたドキュメントの名前とを
+    <strong>大文字小文字の区別を無視し</strong>、<strong>一文字までの
+    綴りの間違い</strong> (文字の挿入/省略/隣合う文字の置換、間違った文字)
+    を許可して比較することにより、目的を達成しようとします。
+    この方法でリクエストに合うドキュメントの一覧が作成されます。</p>
 
-    <p>$B%G%#%l%/%H%j$r%9%-%c%s$7$?8e$K!"(B</p>
+    <p>ディレクトリをスキャンした後に、</p>
 
     <ul>
-      <li>$BE,@Z$J%I%-%e%a%s%H$,8+$D$+$i$J$+$C$?>l9g!"(B
-      Apache $B$O$$$D$b$HF1$8$h$&$K=hM}$r$7!"(B
-      $B!V%I%-%e%a%s%H$,8+$D$+$i$J$$!W$H$$$&%(%i!<$rJV$7$^$9!#(B</li>
+      <li>適切なドキュメントが見つからなかった場合、
+      Apache はいつもと同じように処理をし、
+      「ドキュメントが見つからない」というエラーを返します。</li>
 
-      <li>$B%j%/%(%9%H$K!V$[$H$s$I!W9g$&%I%-%e%a%s%H$,0l$D$@$18+$D$+$C$?>l9g!"(B
-       $B$=$l$,%j%@%$%l%/%H1~Ez$H$7$FJV$5$l$^$9!#(B</li>
+      <li>リクエストに「ほとんど」合うドキュメントが一つだけ見つかった場合、
+       それがリダイレクト応答として返されます。</li>
 
-      <li>$B$h$/;w$?%I%-%e%a%s%H$,J#?t8+$D$+$C$?>l9g!"(B
-      $B$=$N%j%9%H$,%/%i%$%"%s%H$KJV$5$l!"(B
-      $B%/%i%$%"%s%H$,@5$7$$8uJd$rA*Br$G$-$k$h$&$K$7$^$9!#(B</li>
+      <li>よく似たドキュメントが複数見つかった場合、
+      そのリストがクライアントに返され、
+      クライアントが正しい候補を選択できるようにします。</li>
     </ul>
 
 </summary>
 
 <directivesynopsis>
 <name>CheckSpelling</name>
-<description>spelling $B%b%8%e!<%k$r;HMQ$9$k$h$&$K$9$k(B</description>
+<description>spelling モジュールを使用するようにする</description>
 <syntax>CheckSpelling on|off</syntax>
 <default>CheckSpelling Off</default>
 <contextlist>
@@ -74,43 +74,43 @@
 <context>.htaccess</context>
 </contextlist>
 <override>Options</override>
-<compatibility>CheckSpelling $B$O(B Apache 1.1 $B$G$OJLG[I[$N%b%8%e!<%k$G!"(B
-$BBgJ8;z>.J8;z$N4V0c$$$N$_$N5!G=$G$7$?!#(BApache 1.3 $B$G(B Apache $B$NG[I[$K(B
-$B4^$^$l$k$h$&$K$J$j$^$7$?!#(BApache 1.3.2 $B$h$jA0$G$O(B <code>CheckSpelling</code>
-$B%G%#%l%/%F%#%V$O!V%5!<%P!W$H!V%P!<%A%c%k%[%9%H!W%3%s%F%-%9%H$G$N$_(B
-$B;HMQ2DG=$G$7$?(B</compatibility>
+<compatibility>CheckSpelling は Apache 1.1 では別配布のモジュールで、
+大文字小文字の間違いのみの機能でした。Apache 1.3 で Apache の配布に
+含まれるようになりました。Apache 1.3.2 より前では <code>CheckSpelling</code>
+ディレクティブは「サーバ」と「バーチャルホスト」コンテキストでのみ
+使用可能でした</compatibility>
 
 <usage>
-    <p>$B$3$N%G%#%l%/%F%#%V$ODV$jMQ$N%b%8%e!<%k$r;HMQ$9$k$+$I$&$+$r(B
-    $B7h$a$^$9!#;HMQ;~$K$O!"0J2<$N$3$H$r3P$($F$*$$$F$/$@$5$$(B</p>
+    <p>このディレクティブは綴り用のモジュールを使用するかどうかを
+    決めます。使用時には、以下のことを覚えておいてください</p>
 
     <ul>
-      <li>$BF1;~$K$?$/$5$s$NDV$j$ND{@5$r9T$J$o$J$1$l$P$J$i$J$$$H$-$O!"(B
-      $B$=$N$?$a$K9T$J$o$l$k%G%#%l%/%H%j$N%9%-%c%s$,%5!<%P$N@-G=$K(B
-      $B1F6A$rM?$($^$9!#(B</li>
+      <li>同時にたくさんの綴りの訂正を行なわなければならないときは、
+      そのために行なわれるディレクトリのスキャンがサーバの性能に
+      影響を与えます。</li>
 
-      <li>$B%I%-%e%a%s%H$NCf$KDV$j$N!VD{@5!W$K$h$j(B
-      $B0U?^$;$:9g$C$F$7$^$&$h$&$J=EMW$J%U%!%$%k$,$J$$$h$&$K$7$F$/$@$5$$!#(B
+      <li>ドキュメントの中に綴りの「訂正」により
+      意図せず合ってしまうような重要なファイルがないようにしてください。
       </li>
 
-      <li>$B%b%8%e!<%k$O%f!<%6L>$NDV$j$N4V0c$$(B
-      (<code>http://my.host/~apahce/</code> $B$N$h$&$K(B)
-      $B$rD{@5$9$k$3$H$O$G$-$^$;$s!#(B
-      $BD{@5$G$-$k$N$O%U%!%$%kL>$H%G%#%l%/%H%jL>$@$1$G$9!#(B</li>
+      <li>モジュールはユーザ名の綴りの間違い
+      (<code>http://my.host/~apahce/</code> のように)
+      を訂正することはできません。
+      訂正できるのはファイル名とディレクトリ名だけです。</li>
 
-      <li>$BDV$j$ND{@5$OB8:_$9$k%U%!%$%k$K87L)$KE,MQ$5$l$^$9$N$G!"(B
+      <li>綴りの訂正は存在するファイルに厳密に適用されますので、
       <code>&lt;Location /status&gt;</code>
-      $B$O%M%4%7%(!<%7%g%s$N7k2L$N%U%!%$%k(B "<code>/stats.html</code>"
-      $B$H$7$F4V0c$C$F07$o$l$k$+$b$7$l$^$;$s!#(B</li>
+      はネゴシエーションの結果のファイル "<code>/stats.html</code>"
+      として間違って扱われるかもしれません。</li>
     </ul>
 
     <!-- XXX: is that really true?! -nd -->
-    <p><a href="mod_dav.html">DAV</a> $B$,M-8z$J%G%#%l%/%H%j$G$O(B
-    <module>mod_speling</module> $B$OM-8z$K$7$J$$$G$/$@$5$$!#(B
-    $B?7$7$/:n@.$7$?%j%=!<%9L>$r4{$KB8:_$9$k%U%!%$%kL>$K!V=$@5!W$7$h$&$H$9$k!"(B
-    $BNc$($P!"?75,%I%-%e%a%s%H(B <code>doc43.html</code> $B$,4{$KB8:_$9$k(B
-    <code>doc34.html</code> $B$K%j%@%$%l%/%H$5$l$F!"(B
-    $B4|BT$H$O0c$&5sF0$K$J$k$+$i$G$9!#(B</p>
+    <p><a href="mod_dav.html">DAV</a> が有効なディレクトリでは
+    <module>mod_speling</module> は有効にしないでください。
+    新しく作成したリソース名を既に存在するファイル名に「修正」しようとする、
+    例えば、新規ドキュメント <code>doc43.html</code> が既に存在する
+    <code>doc34.html</code> にリダイレクトされて、
+    期待とは違う挙動になるからです。</p>
 </usage>
 
 </directivesynopsis>

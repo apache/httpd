@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.en.xsl"?>
 <!-- English Revision: 420993:462914 (outdated) -->
@@ -23,33 +23,33 @@
 <manualpage metafile="modules.xml.meta">
 <parentdocument href="./">Developer Documentation</parentdocument>
 
-<title>$B%b%8%e!<%k$N(B Apache 1.3 $B$+$i(B Apache 2.0 $B$X$N0\?"(B</title>
+<title>モジュールの Apache 1.3 から Apache 2.0 への移植</title>
 
 <summary>
-    <p>$B$3$NJ8=q$O(B <code>mod_mmap_static</code> $B%b%8%e!<%k$r(B Apache 2.0 $BMQ$K0\?"$7$?;~$K(B
-    $B3X$s$@7P83$r$b$H$K=q$$$?!":G=i$N<j0z$-=q$G$9!#$^$@$^$@40A4$8$c$J$$$7!"(B
-    $B$R$g$C$H$9$k$H4V0c$C$F$$$kItJ,$b$"$k$+$b$7$l$^$;$s$,!"(B
-    $B<h$C3]$j$K$O$J$k$G$7$g$&!#(B</p>
+    <p>この文書は <code>mod_mmap_static</code> モジュールを Apache 2.0 用に移植した時に
+    学んだ経験をもとに書いた、最初の手引き書です。まだまだ完全じゃないし、
+    ひょっとすると間違っている部分もあるかもしれませんが、
+    取っ掛りにはなるでしょう。</p>
 </summary>
 
-<section id="easy"><title>$B4JC1$JJQ99E@(B</title>
+<section id="easy"><title>簡単な変更点</title>
 
-    <section id="cleanup"><title>$B%/%j!<%s%J%C%W(B $B%k!<%A%s(B</title>
-      <p>$B%/%j!<%s%J%C%W%k!<%A%s$O(B <code>apr_status_t</code> $B7?$G$"$kI,MW$,$"$j$^$9!#(B
-      $B$=$7$F!"(Bapr_status_t $B7?$NCM$rJV$5$J$/$F$O$J$j$^$;$s!#(B
-      $B%/%j!<%s%J%C%WCf$N%(%i!<$rDLCN$9$kI,MW$,$J$1$l$P!"JV$jCM$OIaDL!"(B
-      <code>ARP_SUCCESS</code> $B$G$9!#$?$H$(%(%i!<$rDLCN$7$?$H$7$F$b!"(B
-      $B$9$Y$F$N%3!<%I$,$=$NDLCN$r%A%'%C%/$7$?$j!"(B
-      $B%(%i!<$K1~$8$?F0:n$r$9$k$o$1$G$O$J$$$3$H$K5$$r$D$1$F$/$@$5$$!#(B</p>
+    <section id="cleanup"><title>クリーンナップ ルーチン</title>
+      <p>クリーンナップルーチンは <code>apr_status_t</code> 型である必要があります。
+      そして、apr_status_t 型の値を返さなくてはなりません。
+      クリーンナップ中のエラーを通知する必要がなければ、返り値は普通、
+      <code>ARP_SUCCESS</code> です。たとえエラーを通知したとしても、
+      すべてのコードがその通知をチェックしたり、
+      エラーに応じた動作をするわけではないことに気をつけてください。</p>
     </section>
 
 
-    <section id="init"><title>$B=i4|2=%k!<%A%s(B</title>
+    <section id="init"><title>初期化ルーチン</title>
 
-    <p>$B=i4|2=%k!<%A%s$O=hM}A4BN$+$i8+$F$7$C$/$j$/$k$h$&$J0UL#$rI=$9$h$&$K!"(B
-    $BL>A0$,JQ99$5$l$^$7$?!#$G$9$+$i!"(B<code>mmap_init</code> $B$+$i(B <code>mmap_post_config</code>
-    $B$N$h$&$K$A$g$C$HJQ99$5$l$^$7$?!#(B
-    $BEO$5$l$k0z?t$OBgI}$KJQ99$5$l!"<!$N$h$&$K$J$j$^$7$?!#(B</p>
+    <p>初期化ルーチンは処理全体から見てしっくりくるような意味を表すように、
+    名前が変更されました。ですから、<code>mmap_init</code> から <code>mmap_post_config</code>
+    のようにちょっと変更されました。
+    渡される引数は大幅に変更され、次のようになりました。</p>
 
       <ul>
         <li><code>apr_pool_t *p</code></li>
@@ -59,11 +59,11 @@
       </ul>
     </section>
 
-    <section id="datatypes"><title>$B%G!<%?7?(B</title>
-      <p>$B%G!<%?7?$N$[$H$s$I$O(B <a
-      href="http://apr.apache.org/">APR</a> $B$K0\$5$l$^$7$?!#$D$^$j!"(B
-      $B$$$/$D$+$NL>A0$,A0=R$N$h$&$KJQ99$5$l$F$$$^$9!#(B
-      $B;\$9$Y$-JQ99E@$N4JC1$J0lMw$r0J2<$K<($7$^$9!#(B</p>
+    <section id="datatypes"><title>データ型</title>
+      <p>データ型のほとんどは <a
+      href="http://apr.apache.org/">APR</a> に移されました。つまり、
+      いくつかの名前が前述のように変更されています。
+      施すべき変更点の簡単な一覧を以下に示します。</p>
 
       <ul>
         <li><code>pool</code> becomes <code>apr_pool_t</code></li>
@@ -72,22 +72,22 @@
     </section>
 </section>
 
-<section id="messy"><title>$B$b$C$HLq2p$JJQ99E@!D(B</title>
+<section id="messy"><title>もっと厄介な変更点…</title>
 
-    <section id="register-hooks"><title>$B%U%C%/$NEPO?(B</title>
-      <p>$B?7$7$$%"!<%-%F%/%A%c$G$O:n@.$7$?4X?t$r8F$S=P$9$N$K(B
-      $B0lO"$N%U%C%/$r;HMQ$7$^$9!#$3$N%U%C%/$O!"?7$7$$4X?t(B
-      <code>static void register_hooks(void)</code> $B$r;H$C$FEPO?$9$k$h$&!"(B
-      $B%b%8%e!<%k$K=q$-B-$5$J$/$F$O$J$j$^$;$s!#(B
-      $B$3$N4X?t$O!"$J$K$r$9$Y$-$+0lC6M}2r$7$F$7$^$($P!"(B
-      $B==J,$K$o$+$j$d$9$$$b$N$G$9!#(B
-      $B%j%/%(%9%H$N=hM}$N$"$k%9%F!<%8$G8F$S=P$5$J$/$F$O$J$i$J$$(B
-      $B4X?t$OEPO?$9$kI,MW$,$"$j$^$9!#%O%s%I%i$OEPO?$9$kI,MW$O$"$j$^$;$s!#(B
-      $B4X?t$rEPO?$G$-$k%U%'!<%:$O$?$/$5$s$"$j$^$9!#(B
-      $B$=$l$>$l$N%U%'!<%:$G!"4X?t$r8F$S=P$9AjBPE*$J=gHV$O!"(B
-      $B$+$J$j$NDxEY@)8f$G$-$^$9!#(B</p>
+    <section id="register-hooks"><title>フックの登録</title>
+      <p>新しいアーキテクチャでは作成した関数を呼び出すのに
+      一連のフックを使用します。このフックは、新しい関数
+      <code>static void register_hooks(void)</code> を使って登録するよう、
+      モジュールに書き足さなくてはなりません。
+      この関数は、なにをすべきか一旦理解してしまえば、
+      十分にわかりやすいものです。
+      リクエストの処理のあるステージで呼び出さなくてはならない
+      関数は登録する必要があります。ハンドラは登録する必要はありません。
+      関数を登録できるフェーズはたくさんあります。
+      それぞれのフェーズで、関数を呼び出す相対的な順番は、
+      かなりの程度制御できます。</p>
 
-    <p>$B0J2<$O!"(B<code>mod_mmap_static</code> $B$KDI2C$7$?%3!<%I$G$9(B:</p>
+    <p>以下は、<code>mod_mmap_static</code> に追加したコードです:</p>
 
       <example><pre>
 static void register_hooks(void)
@@ -98,18 +98,18 @@ static void register_hooks(void)
 };</pre>
       </example>
 
-    <p>$B$3$3$G$O8F$S$@$9$Y$-Fs$D$N4X?t$rEPO?$7$F$$$^$9!#0l$D$O(B
-    <code>post_config</code> $B%9%F!<%8MQ(B ($B$[$H$s$I$9$Y$F$N%b%8%e!<%k(B
-    $B$O$3$l$,I,MW$G$9(B) $B$G!"$b$&0l$D$O(B <code>translate_name</code> $B%U%'!<%:MQ$G$9!#(B
-    $B$=$l$>$l$N4X?t$OL>A0$O0c$&$1$l$I$b7A<0$OF1$8$G$"$k$3$H$KCm0U$7$F$/$@$5$$!#(B
-    $B$=$l$G$O!"7A<0$O$I$N$h$&$K$J$C$F$$$k$G$7$g$&$+(B?</p>
+    <p>ここでは呼びだすべき二つの関数を登録しています。一つは
+    <code>post_config</code> ステージ用 (ほとんどすべてのモジュール
+    はこれが必要です) で、もう一つは <code>translate_name</code> フェーズ用です。
+    それぞれの関数は名前は違うけれども形式は同じであることに注意してください。
+    それでは、形式はどのようになっているでしょうか?</p>
 
       <example>
         ap_hook_<var>phase_name</var>(<var>function_name</var>,
         <var>predecessors</var>, <var>successors</var>, <var>position</var>);
       </example>
 
-    <p>$B;0$D$N0LCV$,Dj5A$5$l$F$$$^$9!D(B</p>
+    <p>三つの位置が定義されています…</p>
 
       <ul>
         <li><code>HOOK_FIRST</code></li>
@@ -117,22 +117,22 @@ static void register_hooks(void)
         <li><code>HOOK_LAST</code></li>
       </ul>
 
-    <p>$B0LCV$rDj5A$9$k$K$O!">e5-$N!V0LCV!W$r;XDj$7!"(B
-    $B=$>~;R$G$"$k!V@h9T!W$H!V8e9T!W$G<j$r2C$($^$9!#(B
-   $B!V@h9T!W!V8e9T!W$O!"8F$P$l$k$Y$-4X?t$N%j%9%H$G$9!#(B
-   $B!V@h9T!W$O4X?t$N<B9TA0$K8F$P$l$k$b$N$G!"(B
-   $B!V8e9T!W$O<B9T8e$K8F$P$l$k$b$N$G$9!#(B</p>
+    <p>位置を定義するには、上記の「位置」を指定し、
+    修飾子である「先行」と「後行」で手を加えます。
+   「先行」「後行」は、呼ばれるべき関数のリストです。
+   「先行」は関数の実行前に呼ばれるもので、
+   「後行」は実行後に呼ばれるものです。</p>
 
-    <p><code>mod_mmap_static</code> $B$N>l9g!"(B<code>post_config</code>
-    $B%9%F!<%8$G$OI,MW$"$j$^$;$s$,!"(B
-    <code>mmap_static_xlat</code> $B$,(B core $B%b%8%e!<%k$,L>A0$NJQ49$r<B9T$7$?8e$K(B
-    <strong>$B8F$P$l$J$1$l$P$J$j$^$;$s(B</strong>$B!#(B
-    $B$=$3$G(B aszPre $B$r;H$C$F(B <code>HOOK_LAST</code> $B$N=$>~;R$rDj5A$7$F$$$^$9!#(B</p>
+    <p><code>mod_mmap_static</code> の場合、<code>post_config</code>
+    ステージでは必要ありませんが、
+    <code>mmap_static_xlat</code> が core モジュールが名前の変換を実行した後に
+    <strong>呼ばれなければなりません</strong>。
+    そこで aszPre を使って <code>HOOK_LAST</code> の修飾子を定義しています。</p>
   </section>
 
-    <section id="moddef"><title>$B%b%8%e!<%k$NDj5A(B</title>
-      <p>$B%b%8%e!<%k$NDj5A$r:n@.$9$k:]$KCm0U$7$J$1$l$P$J$i$J$$(B
-      $B%9%F!<%8$N?t$O7c8:$7$F$$$^$9!#8E$$Dj5A$O<!$N$h$&$K$J$C$F$$$^$7$?!#(B</p>
+    <section id="moddef"><title>モジュールの定義</title>
+      <p>モジュールの定義を作成する際に注意しなければならない
+      ステージの数は激減しています。古い定義は次のようになっていました。</p>
 
       <example><pre>
 module MODULE_VAR_EXPORT <var>module_name</var>_module =
@@ -159,7 +159,7 @@ module MODULE_VAR_EXPORT <var>module_name</var>_module =
 };</pre>
       </example>
 
-    <p>$B?7$7$$9=B$BN$O$H$C$F$b%7%s%W%k$G$9!D(B</p>
+    <p>新しい構造体はとってもシンプルです…</p>
       <example><pre>
 module MODULE_VAR_EXPORT <var>module_name</var>_module =
 {
@@ -174,98 +174,98 @@ module MODULE_VAR_EXPORT <var>module_name</var>_module =
 };</pre>
       </example>
 
-    <p>$B$3$N$&$A$N$$$/$D$+$O8E$$$b$N$+$i?7$7$$$b$N$KD>@\FI$_BX$($i$l$k$b$N$G!"(B
-    $B$$$/$D$+$O$=$&$G$O$"$j$^$;$s!#$I$&$9$l$P$$$$$N$+$rMWLs$7$F$_$^$9!#(B</p>
+    <p>このうちのいくつかは古いものから新しいものに直接読み替えられるもので、
+    いくつかはそうではありません。どうすればいいのかを要約してみます。</p>
 
-    <p>$BD>@\FI$_BX$($i$l$k%9%F!<%8(B:</p>
+    <p>直接読み替えられるステージ:</p>
 
     <dl>
-      <dt><code>/* $B%G%#%l%/%H%j@_Dj:n@.4X?t(B */</code></dt>
-      <dd><code>/* $B%G%#%l%/%H%jKh@_Dj9=B$BN:n@.(B */</code></dd>
+      <dt><code>/* ディレクトリ設定作成関数 */</code></dt>
+      <dd><code>/* ディレクトリ毎設定構造体作成 */</code></dd>
 
-      <dt><code>/* $B%5!<%P@_Dj:n@.4X?t(B */</code></dt>
-      <dd><code>/* $B%5!<%PKh@_Dj9=B$BN:n@.(B */</code></dd>
+      <dt><code>/* サーバ設定作成関数 */</code></dt>
+      <dd><code>/* サーバ毎設定構造体作成 */</code></dd>
 
-      <dt><code>/* $B%G%#%l%/%H%j@_Dj%^!<%84X?t(B */</code></dt>
-      <dd><code>/* $B%G%#%l%/%H%jKh@_Dj9=B$BN%^!<%8(B */</code></dd>
+      <dt><code>/* ディレクトリ設定マージ関数 */</code></dt>
+      <dd><code>/* ディレクトリ毎設定構造体マージ */</code></dd>
 
-      <dt><code>/* $B%5!<%P@_Dj%^!<%84X?t(B */</code></dt>
-      <dd><code>/* $B%5!<%PKh@_Dj9=B$BN:n@.%^!<%8(B */</code></dd>
+      <dt><code>/* サーバ設定マージ関数 */</code></dt>
+      <dd><code>/* サーバ毎設定構造体作成マージ */</code></dd>
 
-      <dt><code>/* $B%3%^%s%I!&%F!<%V%k(B */</code></dt>
-      <dd><code>/* $B%3%^%s%I(B apr_table_t */</code></dd>
+      <dt><code>/* コマンド・テーブル */</code></dt>
+      <dd><code>/* コマンド apr_table_t */</code></dd>
 
-      <dt><code>/* $B%O%s%I%i(B */</code></dt>
-      <dd><code>/* $B%O%s%I%i(B */</code></dd>
+      <dt><code>/* ハンドラ */</code></dt>
+      <dd><code>/* ハンドラ */</code></dd>
     </dl>
 
-    <p>$B8E$$4X?t$N;D$j$N$b$N$O%U%C%/$H$7$FEPO?$5$l$k$Y$-$G$9!#(B
-    $B8=;~E@$G<!$N$h$&$J%U%C%/!&%9%F!<%8$,Dj5A$5$l$F$$$^$9!D(B</p>
+    <p>古い関数の残りのものはフックとして登録されるべきです。
+    現時点で次のようなフック・ステージが定義されています…</p>
 
     <dl>
       <dt><code>ap_hook_post_config</code></dt>
-      <dd>($B0JA0$N(B <code>_init</code> $B%k!<%A%s$,EPO?$5$l$k$Y$->l=j$G$9(B)</dd>
+      <dd>(以前の <code>_init</code> ルーチンが登録されるべき場所です)</dd>
 
       <dt><code>ap_hook_http_method</code></dt>
-      <dd>($B%j%/%(%9%H$+$i(B HTTP $B%a%=%C%I$r<hF@$7$^$9(B ($B8_49MQ(B))</dd>
+      <dd>(リクエストから HTTP メソッドを取得します (互換用))</dd>
 
       <dt><code>ap_hook_open_logs</code></dt>
-      <dd>($BFCDj$N%m%0$N%*!<%W%s(B)</dd>
+      <dd>(特定のログのオープン)</dd>
 
       <dt><code>ap_hook_auth_checker</code></dt>
-      <dd>($B%j%=!<%9$,8"8B$rI,MW$H$9$k$+$I$&$+$N3NG'(B)</dd>
+      <dd>(リソースが権限を必要とするかどうかの確認)</dd>
 
       <dt><code>ap_hook_access_checker</code></dt>
-      <dd>($B%b%8%e!<%k8GM-$N@)Ls$N3NG'(B)</dd>
+      <dd>(モジュール固有の制約の確認)</dd>
 
       <dt><code>ap_hook_check_user_id</code></dt>
-      <dd>($B%f!<%6(B ID $B$H%Q%9%o!<%I$N3NG'(B)</dd>
+      <dd>(ユーザ ID とパスワードの確認)</dd>
 
       <dt><code>ap_hook_default_port</code></dt>
-      <dd>($B%5!<%P$N%G%U%)%k%H!&%]!<%H$N<hF@(B)</dd>
+      <dd>(サーバのデフォルト・ポートの取得)</dd>
 
       <dt><code>ap_hook_pre_connection</code></dt>
-      <dd>($B=hM}$ND>A0$KI,MW$J$3$H$r<B9T!#$?$@$7(B accept $BD>8e$K8F$P$l$k(B)</dd>
+      <dd>(処理の直前に必要なことを実行。ただし accept 直後に呼ばれる)</dd>
 
       <dt><code>ap_hook_process_connection</code></dt>
-      <dd>($B%W%m%H%3%k$N=hM}(B)</dd>
+      <dd>(プロトコルの処理)</dd>
 
       <dt><code>ap_hook_child_init</code></dt>
-      <dd>($B;R%W%m%;%k5/F0D>8e(B)</dd>
+      <dd>(子プロセル起動直後)</dd>
 
       <dt><code>ap_hook_create_request</code></dt>
       <dd>(??)</dd>
 
       <dt><code>ap_hook_fixups</code></dt>
-      <dd>($B1~EzFbMF$N@8@.$rJQ99$9$k%i%9%H!&%A%c%s%9(B)</dd>
+      <dd>(応答内容の生成を変更するラスト・チャンス)</dd>
 
       <dt><code>ap_hook_handler</code></dt>
-      <dd>($B1~EzFbMF$N@8@.(B)</dd>
+      <dd>(応答内容の生成)</dd>
 
       <dt><code>ap_hook_header_parser</code></dt>
-      <dd>($B%b%8%e!<%k$K%X%C%@$N>H2q$r$5$;$k!#$[$H$s$I$N%b%8%e!<%k$G$O;H$o$l$^$;$s!#(Bpost_read_request $B$r;H$$$^$9(B)</dd>
+      <dd>(モジュールにヘッダの照会をさせる。ほとんどのモジュールでは使われません。post_read_request を使います)</dd>
 
       <dt><code>ap_hook_insert_filter</code></dt>
-      <dd>($B%U%#%k%?!&%A%'%$%s$K%U%#%k%?$rA^F~(B)</dd>
+      <dd>(フィルタ・チェインにフィルタを挿入)</dd>
 
       <dt><code>ap_hook_log_transaction</code></dt>
-      <dd>($B%j%/%(%9%H$K$D$$$F$N>pJs$r5-O?$9$k(B)</dd>
+      <dd>(リクエストについての情報を記録する)</dd>
 
       <dt><code>ap_hook_optional_fn_retrieve</code></dt>
-      <dd>($B%*%W%7%g%s$H$7$FEPO?$5$l$?4X?t$N<hF@(B)</dd>
+      <dd>(オプションとして登録された関数の取得)</dd>
 
       <dt><code>ap_hook_post_read_request</code></dt>
-      <dd>($B%j%/%(%9%H$rFI$_$3$s$@8e!"B>$N%U%'!<%:$NA0$K8F$P$l$k(B)</dd>
+      <dd>(リクエストを読みこんだ後、他のフェーズの前に呼ばれる)</dd>
 
       <dt><code>ap_hook_quick_handler</code></dt>
-      <dd>$B%j%/%(%9%H$N=hM}$,;O$^$kA0$K8F$P$l$k!#%-%c%C%7%e%b%8%e!<%k$,(B
-      $B;HMQ$7$F$$$k(B</dd>
+      <dd>リクエストの処理が始まる前に呼ばれる。キャッシュモジュールが
+      使用している</dd>
 
       <dt><code>ap_hook_translate_name</code></dt>
-      <dd>(URI $B$r%U%!%$%kL>$KJQ49$9$k(B)</dd>
+      <dd>(URI をファイル名に変換する)</dd>
 
       <dt><code>ap_hook_type_checker</code></dt>
-      <dd>($BJ8=q7?$N7hDj$H@_Dj!#$"$k$$$O$=$NJRJ}(B)</dd>
+      <dd>(文書型の決定と設定。あるいはその片方)</dd>
     </dl>
   </section>
 </section>

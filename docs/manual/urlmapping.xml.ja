@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 151408:567425 (outdated) -->
@@ -22,14 +22,14 @@
 
 <manualpage metafile="urlmapping.xml.meta">
 
-  <title>URL $B$+$i%U%!%$%k%7%9%F%`>e$N0LCV$X$N%^%C%W(B</title>
+  <title>URL からファイルシステム上の位置へのマップ</title>
 
   <summary>
-    <p>$B$3$NJ8=q$O(B Apache $B$,%j%/%(%9%H$N(B URL $B$+$iAw?.$9$k%U%!%$%k$N(B
-    $B%U%!%$%k%7%9%F%`>e$N0LCV$r7hDj$9$kJ}K!$r@bL@$7$^$9!#(B</p>
+    <p>この文書は Apache がリクエストの URL から送信するファイルの
+    ファイルシステム上の位置を決定する方法を説明します。</p>
   </summary>
 
-<section id="related"><title>$B4XO"$9$k%b%8%e!<%k$H%G%#%l%/%F%#%V(B</title>
+<section id="related"><title>関連するモジュールとディレクティブ</title>
 
 <related>
 <modulelist>
@@ -64,158 +64,158 @@
 
 <section id="documentroot"><title>DocumentRoot</title>
 
-    <p>$B%j%/%(%9%H$KBP$7$F$I$N%U%!%$%k$rAw?.$9$k$+$r7hDj$9$k$H$-$N(B
-    Apache $B$N%G%U%)%k%H$NF0:n$O!"%j%/%(%9%H$N(B URL-Path (URL $B$N%[%9%HL>$H(B
-    $B%]!<%HHV9f$N8e$KB3$/ItJ,(B) $B$r<h$j=P$7$F@_Dj%U%!%$%k$G;XDj$5$l$F$$$k(B
+    <p>リクエストに対してどのファイルを送信するかを決定するときの
+    Apache のデフォルトの動作は、リクエストの URL-Path (URL のホスト名と
+    ポート番号の後に続く部分) を取り出して設定ファイルで指定されている
     <directive module="core">DocumentRoot</directive> 
-    $B$N:G8e$KDI2C$9$k!"$H$$$&$b$N$G$9!#$G$9$+$i!"(B
+    の最後に追加する、というものです。ですから、
     <directive module="core">DocumentRoot</directive> 
-    $B$N2<$N%G%#%l%/%H%j$d%U%!%$%k$,%&%'%V$+$i8+$($k4pK\$N%I%-%e%a%s%H$NLZ9=B$$r(B
-    $B$J$7$^$9!#(B</p>
+    の下のディレクトリやファイルがウェブから見える基本のドキュメントの木構造を
+    なします。</p>
 
-    <p>Apache $B$K$O%5!<%P$,J#?t$N%[%9%H$X$N%j%/%(%9%H$r<u$1<h$k(B
-    <a href="vhosts/">$B%P!<%A%c%k%[%9%H(B</a> $B$N5!G=$b$"$j$^$9!#(B
-    $B$3$N>l9g!"$=$l$>$l$N%P!<%A%c%k%[%9%H$KBP$7$F0c$&(B
+    <p>Apache にはサーバが複数のホストへのリクエストを受け取る
+    <a href="vhosts/">バーチャルホスト</a> の機能もあります。
+    この場合、それぞれのバーチャルホストに対して違う
     <directive module="core">DocumentRoot</directive>
-    $B$r;XDj$9$k$3$H$,$G$-$^$9!#$^$?!"(B<module>mod_vhost_alias</module>
-    $B%b%8%e!<%k$K$h$jDs6!$5$l$k%G%#%l%/%F%#%V$r;H$C$F!"(B
-    $BAw?.$9$k$?$a$N%3%s%F%s%D$N>l=j$r%j%/%(%9%H$5$l$?(B IP
-    $B%"%I%l%9$d%[%9%HL>$+$iF0E*$K7h$a$k$3$H$b$G$-$^$9!#(B</p>
+    を指定することができます。また、<module>mod_vhost_alias</module>
+    モジュールにより提供されるディレクティブを使って、
+    送信するためのコンテンツの場所をリクエストされた IP
+    アドレスやホスト名から動的に決めることもできます。</p>
 </section>
 
-<section id="outside"><title>DocumentRoot $B30$N%U%!%$%k(B</title>
+<section id="outside"><title>DocumentRoot 外のファイル</title>
 
-    <p>$B%U%!%$%k%7%9%F%`>e$N!"(B
-    $B87L)$K$O(B <directive module="core">DocumentRoot</directive>
-    $B$N2<$K$O$J$$ItJ,$X$N%&%'%V%"%/%;%9$r5v2D$9$kI,MW$,$"$k(B
-    $B>l9g$,$h$/$"$j$^$9!#(BApache $B$O$3$N$?$a$KJ#?t$NJ}K!$rMQ0U$7$F$$$^$9!#(B
-    Unix $B%7%9%F%`$G$O!"%U%!%$%k%7%9%F%`$NB>$NItJ,$r%7%s%\%j%C%/%j%s%/$r(B
-    $B;H$C$F(B <directive module="core">DocumentRoot</directive>
-    $B$N2<$K;}$C$F$/$k$3$H$,$G$-$^$9!#%;%-%e%j%F%#>e$NM}M3$K$h$j!"(B
-    Apache $B$O3:Ev$9$k%G%#%l%/%H%j$N(B
-    <directive module="core">Options</directive> $B$N@_Dj$K(B
-    <code>FollowSymLinks</code> $B$+(B <code>SymLinksIfOwnerMatch</code> $B$,(B
-    $B$"$k>l9g$K$N$_%7%s%\%j%C%/%j%s%/$r$?$I$j$^$9!#(B</p>
+    <p>ファイルシステム上の、
+    厳密には <directive module="core">DocumentRoot</directive>
+    の下にはない部分へのウェブアクセスを許可する必要がある
+    場合がよくあります。Apache はこのために複数の方法を用意しています。
+    Unix システムでは、ファイルシステムの他の部分をシンボリックリンクを
+    使って <directive module="core">DocumentRoot</directive>
+    の下に持ってくることができます。セキュリティ上の理由により、
+    Apache は該当するディレクトリの
+    <directive module="core">Options</directive> の設定に
+    <code>FollowSymLinks</code> か <code>SymLinksIfOwnerMatch</code> が
+    ある場合にのみシンボリックリンクをたどります。</p>
 
-    <p>$BBe$o$j$NJ}K!$H$7$F!"(B<directive module="mod_alias">Alias</directive>
-    $B%G%#%l%/%F%#%V$r;H$C$F%U%!%$%k%7%9%F%`$NG$0U$NItJ,$r%&%'%V$N6u4V$K(B
-    $B%^%C%W$G$-$^$9!#$?$H$($P!"(B</p>
+    <p>代わりの方法として、<directive module="mod_alias">Alias</directive>
+    ディレクティブを使ってファイルシステムの任意の部分をウェブの空間に
+    マップできます。たとえば、</p>
 
 <example>Alias /docs /var/web</example>
 
-    <p>$B$H$$$&@_Dj$N$H$-$O!"(BURL
-    <code>http://www.example.com/docs/dir/file.html</code> $B$K$O(B
-    <code>/var/web/dir/file.html</code> $B$,Aw?.$5$l$^$9!#(B
-    <directive module="mod_alias">ScriptAlias</directive> $B$b!"(B
-    $BBP>]$H$J$C$F$$$k%Q%9$,(B CGI $B%9%/%j%W%H$H$7$F07$o$l$k$H$$$&DI2C$N(B
-    $B8z2L0J30$OF1$8$h$&$KF0:n$7$^$9!#(B</p>
+    <p>という設定のときは、URL
+    <code>http://www.example.com/docs/dir/file.html</code> には
+    <code>/var/web/dir/file.html</code> が送信されます。
+    <directive module="mod_alias">ScriptAlias</directive> も、
+    対象となっているパスが CGI スクリプトとして扱われるという追加の
+    効果以外は同じように動作します。</p>
 
-    <p>$B$b$C$H=@Fp$J@_Dj$,I,MW$J>u67$G$O!"(B
-    <directive module="mod_alias">AliasMatch</directive> $B%G%#%l%/%F%#%V$d(B
-    <directive module="mod_alias">ScriptAliasMatch</directive> $B%G%#%l%/%F%#%V(B
-    $B$r;H$C$F6/NO$J@55,I=8=$K4p$E$$$?%^%C%A$HCV49$r9T$J$&$3$H$,$G$-$^$9!#(B
-    $B$?$H$($P!"(B</p>
+    <p>もっと柔軟な設定が必要な状況では、
+    <directive module="mod_alias">AliasMatch</directive> ディレクティブや
+    <directive module="mod_alias">ScriptAliasMatch</directive> ディレクティブ
+    を使って強力な正規表現に基づいたマッチと置換を行なうことができます。
+    たとえば、</p>
 
 <example>ScriptAliasMatch ^/~([a-zA-Z0-9]+)/cgi-bin/(.+)
       /home/$1/cgi-bin/$2</example>
 
-    <p>$B$O(B <code>http://example.com/~user/cgi-bin/script.cgi</code> $B$X$N(B
-    $B%j%/%(%9%H$r(B <code>/home/user/cgi-bin/script.cgi</code> $B$H$$$&%Q%9$X(B
-    $B%^%C%W$7!"$3$N%^%C%W$N7k2L$H$7$F$N%U%!%$%k$r(B CGI $B%9%/%j%W%H$H$7$F(B
-    $B07$$$^$9!#(B</p>
+    <p>は <code>http://example.com/~user/cgi-bin/script.cgi</code> への
+    リクエストを <code>/home/user/cgi-bin/script.cgi</code> というパスへ
+    マップし、このマップの結果としてのファイルを CGI スクリプトとして
+    扱います。</p>
 </section>
 
-<section id="user"><title>$B%f!<%6%G%#%l%/%H%j(B</title>
+<section id="user"><title>ユーザディレクトリ</title>
 
-    <p>$BEAE}E*$K(B Unix $B%7%9%F%`$G$O%f!<%6(B <em>user</em> $B$N%[!<%`%G%#%l%/%H%j$r(B
-    <code>~user/</code> $B$H$7$F;2>H$G$-$^$9!#(B<module>mod_userdir</module> 
-    $B%b%8%e!<%k$O$3$N35G0$r%&%'%V$K3HD%$7$F!"(B
-    $B$=$l$>$l$N%f!<%6$N%[!<%`%G%#%l%/%H%j$N%U%!%$%k$r(B
-    $B0J2<$N$h$&$J(B URL $B$r;H$C$F%"%/%;%9$G$-$k$h$&$K$7$^$9!#(B</p>
+    <p>伝統的に Unix システムではユーザ <em>user</em> のホームディレクトリを
+    <code>~user/</code> として参照できます。<module>mod_userdir</module> 
+    モジュールはこの概念をウェブに拡張して、
+    それぞれのユーザのホームディレクトリのファイルを
+    以下のような URL を使ってアクセスできるようにします。</p>
 
 <example>http://www.example.com/~user/file.html</example>
 
-    <p>$B%;%-%e%j%F%#$N4QE@$+$i!"%&%'%V$+$i%f!<%6$N%[!<%`%G%#%l%/%H%j$X(B
-    $BD>@\%"%/%;%9$G$-$k$h$&$K$9$k$3$H$OE,@Z$G$O$"$j$^$;$s!#$G$9$+$i!"(B
-    <directive module="mod_userdir">UserDir</directive> $B%G%#%l%/%F%#%V$K$O(B
-    $B%f!<%6$N%[!<%`%G%#%l%/%H%j$N2<$N!"%&%'%V%U%!%$%k$N(B
-    $BCV$+$l$F$$$k%G%#%l%/%H%j$r;XDj$7$^$9!#%G%U%)%k%H$N@_Dj$N(B
-    <code>Userdir public_html</code> $B$r;H$&$H!">e$N(B URL $B$O(B
-    <code>/home/user/public_html/file.html</code> $B$H$$$&$h$&$J%U%!%$%k$K(B
-    $B%^%C%W$5$l$^$9!#$3$3$G!"(B<code>/home/user/</code> $B$O(B
-    <code>/etc/passwd</code> $B$G;XDj$5$l$F$$$k%f!<%6$N%[!<%`%G%#%l%/%H%j$G$9!#(B</p>
+    <p>セキュリティの観点から、ウェブからユーザのホームディレクトリへ
+    直接アクセスできるようにすることは適切ではありません。ですから、
+    <directive module="mod_userdir">UserDir</directive> ディレクティブには
+    ユーザのホームディレクトリの下の、ウェブファイルの
+    置かれているディレクトリを指定します。デフォルトの設定の
+    <code>Userdir public_html</code> を使うと、上の URL は
+    <code>/home/user/public_html/file.html</code> というようなファイルに
+    マップされます。ここで、<code>/home/user/</code> は
+    <code>/etc/passwd</code> で指定されているユーザのホームディレクトリです。</p>
 
-    <p><directive module="mod_userdir">Userdir</directive> $B$K$O!"(B
-    <code>/etc/passwd</code> $B$K%[!<%`%G%#%l%/%H%j$N0LCV$,=q$+$l$F$$$J$$(B
-    $B%7%9%F%`$G$b;H$&$3$H$N$G$-$kB>$N7A<0$b$"$j$^$9!#(B</p>
+    <p><directive module="mod_userdir">Userdir</directive> には、
+    <code>/etc/passwd</code> にホームディレクトリの位置が書かれていない
+    システムでも使うことのできる他の形式もあります。</p>
 
-    <p>$BCf$K$O%7%s%\%k(B "~" (<code>%7e</code> $B$N$h$&$KId9f2=$5$l$k$3$H$,B?$$(B)
-    $B$r3J9%$,0-$$$H;W$C$F!"%f!<%6$N%G%#%l%/%H%j$rI=$9$?$a$KJL$NJ8;zNs$N(B
-    $B;HMQ$r9%$`?M$,$$$^$9!#(Bmod_userdir $B$O$3$N5!G=$r%5%]!<%H$7$F$$$^$;$s!#(B
-    $B$7$+$7!"%f!<%6$N%[!<%`%G%#%l%/%H%j$,5,B'E*$J9=@.$N$H$-$O!"(B
-    <directive module="mod_alias">AliasMatch</directive> $B$r;H$C$FK>$_$N(B
-    $B8z2L$rC#@.$9$k$3$H$,$G$-$^$9!#$?$H$($P!"(B
-    <code>http://www.example.com/upages/user/file.html</code> $B$,(B
-    <code>/home/user/public_html/file.html</code> $B$K%^%C%W$5$l$k$h$&$K$9$k$K$O!"(B
-    $B0J2<$N$h$&$K(B <code>AliasMatch</code> $B%G%#%l%/%F%#%V$r;H$$$^$9(B:</p>
+    <p>中にはシンボル "~" (<code>%7e</code> のように符号化されることが多い)
+    を格好が悪いと思って、ユーザのディレクトリを表すために別の文字列の
+    使用を好む人がいます。mod_userdir はこの機能をサポートしていません。
+    しかし、ユーザのホームディレクトリが規則的な構成のときは、
+    <directive module="mod_alias">AliasMatch</directive> を使って望みの
+    効果を達成することができます。たとえば、
+    <code>http://www.example.com/upages/user/file.html</code> が
+    <code>/home/user/public_html/file.html</code> にマップされるようにするには、
+    以下のように <code>AliasMatch</code> ディレクティブを使います:</p>
 
 <example>AliasMatch ^/upages/([a-zA-Z0-9]+)/?(.*)
       /home/$1/public_html/$2</example>
 </section>
 
-<section id="redirect"><title>URL $B%j%@%$%l%/%7%g%s(B</title>
+<section id="redirect"><title>URL リダイレクション</title>
 
-    <p>$B>e$N@a$G@bL@$7$?@_DjMQ$N%G%#%l%/%F%#%V$O(B Apache $B$K(B
-    $B%U%!%$%k%7%9%F%`$NFCDj$N>l=j$+$i%3%s%F%s%D$r<h$C$F$-$F(B
-    $B%/%i%$%"%s%H$KAw$jJV$9$h$&$K$7$^$9!#$H$-$K$O!"$=$NBe$o$j$K(B
-    $B%/%i%$%"%s%H$K%j%/%(%9%H$5$l$?%3%s%F%s%D$OJL$N(B URL $B$K$"$k$3$H$r(B
-    $BCN$i$;$F!"%/%i%$%"%s%H$,?7$7$$(B URL $B$X?7$7$$%j%/%(%9%H$r9T$J$&$h$&$K(B
-    $B$9$kJ}$,K>$^$7$$$3$H$,$"$j$^$9!#$3$l$O(B<em>$B%j%@%$%l%/%7%g%s(B</em>$B$H(B
-    $B8F$P$l$F$$$F!"(B<directive module="mod_alias">Redirect</directive>
-    $B%G%#%l%/%F%#%V$K$h$j<BAu$5$l$F$$$^$9!#$?$H$($P!"(B
-    <directive module="core">DocumentRoot</directive> $B$N2<$N%G%#%l%/%H%j(B
-    <code>/foo/</code> $B$,?7$7$$%G%#%l%/%H%j(B <code>/bar/</code> $B$K0\F0$7$?$H$-$O!"(B
-    $B0J2<$N$h$&$K$7$F%/%i%$%"%s%H$,?7$7$$>l=j$N%3%s%F%s%D$r%j%/%(%9%H$9$k$h$&$K(B
-    $B;X<($9$k$3$H$,$G$-$^$9(B:</p>
+    <p>上の節で説明した設定用のディレクティブは Apache に
+    ファイルシステムの特定の場所からコンテンツを取ってきて
+    クライアントに送り返すようにします。ときには、その代わりに
+    クライアントにリクエストされたコンテンツは別の URL にあることを
+    知らせて、クライアントが新しい URL へ新しいリクエストを行なうように
+    する方が望ましいことがあります。これは<em>リダイレクション</em>と
+    呼ばれていて、<directive module="mod_alias">Redirect</directive>
+    ディレクティブにより実装されています。たとえば、
+    <directive module="core">DocumentRoot</directive> の下のディレクトリ
+    <code>/foo/</code> が新しいディレクトリ <code>/bar/</code> に移動したときは、
+    以下のようにしてクライアントが新しい場所のコンテンツをリクエストするように
+    指示することができます:</p>
 
 <example>Redirect permanent /foo/
       http://www.example.com/bar/</example>
 
-    <p>$B$3$l$O!"(B<code>/foo/</code> $B$G;O$^$k$9$Y$F$N(B URL-Path $B$r!"(B
-    <code>www.example.com</code> $B%5!<%P$N(B <code>/bar/</code> $B$,(B
-    <code>/foo/</code> $B$KCV49$5$l$?$b$N$K%j%@%$%l%/%H$7$^$9!#(B
-    $B%5!<%P$O<+J,<+?H$N%5!<%P$@$1$G$J$/!"$I$N%5!<%P$K$G$b%/%i%$%"%s%H$r(B
-    $B%j%@%$%l%/%H$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>これは、<code>/foo/</code> で始まるすべての URL-Path を、
+    <code>www.example.com</code> サーバの <code>/bar/</code> が
+    <code>/foo/</code> に置換されたものにリダイレクトします。
+    サーバは自分自身のサーバだけでなく、どのサーバにでもクライアントを
+    リダイレクトすることができます。</p>
 
-    <p>Apache $B$O$h$jJ#;($J=q$-49$($NLdBj$N$?$a$K!"(B
-    <directive module="mod_alias">RedirectMatch</directive> $B%G%#%l%/%F%#%V$r(B
-    $BDs6!$7$F$$$^$9!#$?$H$($P!"%5%$%H$N%[!<%`%Z!<%8$r0c$&%5%$%H$K%j%@%$%l%/%H(B
-    $B$9$k$1$l$I!"B>$N%j%/%(%9%H$O$=$N$^$^07$&!"$H$$$&$H$-$O0J2<$N@_Dj$r(B
-    $B;H$$$^$9(B:</p>
+    <p>Apache はより複雑な書き換えの問題のために、
+    <directive module="mod_alias">RedirectMatch</directive> ディレクティブを
+    提供しています。たとえば、サイトのホームページを違うサイトにリダイレクト
+    するけれど、他のリクエストはそのまま扱う、というときは以下の設定を
+    使います:</p>
 
 <example>RedirectMatch permanent ^/$
       http://www.example.com/startpage.html</example>
 
-    <p>$B$"$k$$$O!"0l;~E*$K%5%$%H$N$9$Y$F$N%Z!<%8$rB>$N%5%$%H$NFCDj$N(B
-    $B%Z!<%8$X%j%@%$%l%/%H$9$k$H$-$O!"0J2<$r;H$$$^$9(B:</p>
+    <p>あるいは、一時的にサイトのすべてのページを他のサイトの特定の
+    ページへリダイレクトするときは、以下を使います:</p>
 
 <example>RedirectMatch temp .*
       http://othersite.example.com/startpage.html</example>
 </section>
 
-<section id="proxy"><title>$B%j%P!<%9%W%m%-%7(B</title>
+<section id="proxy"><title>リバースプロキシ</title>
 
-<p>Apache $B$O1s3VCO$K$"$k%I%-%e%a%s%H$r%m!<%+%k$N%5!<%P$N(B URL $B6u4V$K(B
-$B;}$C$F$/$k$3$H$b$G$-$^$9!#$3$N<jK!$O(B<em>$B%j%P!<%9%W%m%-%7(B</em>$B$H8F$P$l$F$$$^$9!#(B
-$B%&%'%V%5!<%P$,1s3VCO$N%I%-%e%a%s%H$r<hF@$7$F%/%i%$%"%s%H$KAw$jJV$9$N$,(B
-$B%W%m%-%7%5!<%P$NF0:n$N$h$&$K8+$($k$+$i$G$9!#%/%i%$%"%s%H$K$O%I%-%e%a%s%H$,(B
-$B%j%P!<%9%W%m%-%7%5!<%P$+$iAw$i$l$F$-$F$$$k$h$&$K8+$($kE@$,DL>o$N(B
-$B%W%m%-%7$H$O0[$J$j$^$9!#(B</p>
+<p>Apache は遠隔地にあるドキュメントをローカルのサーバの URL 空間に
+持ってくることもできます。この手法は<em>リバースプロキシ</em>と呼ばれています。
+ウェブサーバが遠隔地のドキュメントを取得してクライアントに送り返すのが
+プロキシサーバの動作のように見えるからです。クライアントにはドキュメントが
+リバースプロキシサーバから送られてきているように見える点が通常の
+プロキシとは異なります。</p>
 
-<p>$B<!$NNc$G$O!"%/%i%$%"%s%H$,(B <code>/foo/</code> $B%G%#%l%/%H%j$N2<$K$"$k(B
-$B%I%-%e%a%s%H$r%j%/%(%9%H$9$k$H!"%5!<%P$,(B <code>internal.example.com</code> $B$N(B
-<code>/bar/</code> $B%G%#%l%/%H%j$+$i<hF@$7$F!"$5$b%m!<%+%k%5!<%P$+$i$N(B
-$B%I%-%e%a%s%H$N$h$&$K$7$F%/%i%$%"%s%H$KJV$7$^$9!#(B</p>
+<p>次の例では、クライアントが <code>/foo/</code> ディレクトリの下にある
+ドキュメントをリクエストすると、サーバが <code>internal.example.com</code> の
+<code>/bar/</code> ディレクトリから取得して、さもローカルサーバからの
+ドキュメントのようにしてクライアントに返します。</p>
 
 <example>
 ProxyPass /foo/ http://internal.example.com/bar/<br />
@@ -224,76 +224,76 @@ ProxyPassReverseCookieDomain internal.example.com public.example.com<br />
 ProxyPassReverseCookiePath /foo/ /bar/
 </example>
 
-<p><directive module="mod_proxy">ProxyPass</directive> $B%G%#%l%/%F%#%V$O(B
-$B%5!<%P$,E,@Z$J%I%-%e%a%s%H$r<hF@$9$k$h$&$K@_Dj$7!"(B
-<directive module="mod_proxy">ProxyPassReverse</directive> $B%G%#%l%/%F%#%V$O(B
-<code>internal.example.com</code> $B$+$i$N%j%@%$%l%/%H$,%m!<%+%k%5!<%P$N(B
-$BE,@Z$J%G%#%l%/%H%j$r;X$9$h$&$K=q$-49$($^$9!#(B
-$BF1MM$K(B <directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>
-$B$H(B <directive module="mod_proxy">ProxyPassReverseCookiePath</directive>
-$B$G%P%C%/%(%s%IB&%5!<%P$NH/9T$7$?(B Cookie $B$r=q$-49$($k$3$H$,$G$-$^$9!#(B</p>
-<p>$B$?$@$7!"%I%-%e%a%s%H$NCf$N%j%s%/$O=q$-49$($i$l$J$$!"(B
-$B$H$$$&$3$H$OCN$C$F$*$$$F$/$@$5$$!#(B
-$B$G$9$+$i!"(B<code>internal.example.com</code> $B$X$N@dBP%Q%9$K$h$k%j%s%/$G$O!"(B
-$B%/%i%$%"%s%H$,%W%m%-%7%5!<%P$rH4$1=P$7$F(B <code>internal.example.com</code> $B$K(B
-$BD>@\%j%/%(%9%H$rAw$k!"$H$$$&$3$H$K$J$j$^$9!#(B
-$B%5!<%I%Q!<%F%#@=%b%8%e!<%k$N(B <a 
+<p><directive module="mod_proxy">ProxyPass</directive> ディレクティブは
+サーバが適切なドキュメントを取得するように設定し、
+<directive module="mod_proxy">ProxyPassReverse</directive> ディレクティブは
+<code>internal.example.com</code> からのリダイレクトがローカルサーバの
+適切なディレクトリを指すように書き換えます。
+同様に <directive module="mod_proxy">ProxyPassReverseCookieDomain</directive>
+と <directive module="mod_proxy">ProxyPassReverseCookiePath</directive>
+でバックエンド側サーバの発行した Cookie を書き換えることができます。</p>
+<p>ただし、ドキュメントの中のリンクは書き換えられない、
+ということは知っておいてください。
+ですから、<code>internal.example.com</code> への絶対パスによるリンクでは、
+クライアントがプロキシサーバを抜け出して <code>internal.example.com</code> に
+直接リクエストを送る、ということになります。
+サードパーティ製モジュールの <a 
 href="http://apache.webthing.com/mod_proxy_html/">mod_proxy_html</a>
-$B$O!"(BHTML $B$H(B XHTML $BCf$N%j%s%/$r=q$-49$($k$3$H$,$G$-$^$9!#(B</p>
+は、HTML と XHTML 中のリンクを書き換えることができます。</p>
 </section>
 
-<section id="rewrite"><title>$B%j%i%$%H%(%s%8%s(B</title>
+<section id="rewrite"><title>リライトエンジン</title>
 
-    <p>$B$h$j0lAX6/NO$JCV49$,I,MW$J$H$-$O!"(B<module>mod_rewrite</module>
-    $B$,Ds6!$9$k%j%i%$%H%(%s%8%s$,Lr$KN)$D$G$7$g$&!#(B
-    $B$3$N%b%8%e!<%k$K$h$jDs6!$5$l$k%G%#%l%/%F%#%V$O(B
-    $B%V%i%&%6$N<oN`!"%j%/%(%9%H85$N(B IP $B%"%I%l%9$J$I$N%j%/%(%9%H$NFCD'$r(B
-    $B;H$C$FAw$jJV$9%3%s%F%s%D$N>l=j$r7h$a$^$9!#$5$i$K!"(B<module>mod_rewrite</module>
-    $B$O30It$N%G!<%?%Y!<%9%U%!%$%k$d%W%m%0%i%`$r;H$C$F%j%/%(%9%H$N07$$J}$r(B
-    $B7h$a$k$3$H$b$G$-$^$9!#%j%i%$%H%(%s%8%s$O>e$G5s$2$i$l$F$$$k;0$D$N%^%C%T%s%0(B
-    $B$9$Y$F$r9T$J$&$3$H$,$G$-$^$9(B: $BFbIt$N%j%@%$%l%/%H(B ($B%(%$%j%"%9(B)$B!"(B
-    $B30It$N%j%@%$%l%/%H!"%W%m%-%7$G$9!#(Bmod_rewrite $B$r;H$&B?$/$N<BMQE*$JNc$O(B
-    <a href="misc/rewriteguide.html">URL $B%j%i%$%H%,%$%I(B</a>
-    $B$G@bL@$5$l$F$$$^$9!#(B</p>
+    <p>より一層強力な置換が必要なときは、<module>mod_rewrite</module>
+    が提供するリライトエンジンが役に立つでしょう。
+    このモジュールにより提供されるディレクティブは
+    ブラウザの種類、リクエスト元の IP アドレスなどのリクエストの特徴を
+    使って送り返すコンテンツの場所を決めます。さらに、<module>mod_rewrite</module>
+    は外部のデータベースファイルやプログラムを使ってリクエストの扱い方を
+    決めることもできます。リライトエンジンは上で挙げられている三つのマッピング
+    すべてを行なうことができます: 内部のリダイレクト (エイリアス)、
+    外部のリダイレクト、プロキシです。mod_rewrite を使う多くの実用的な例は
+    <a href="misc/rewriteguide.html">URL リライトガイド</a>
+    で説明されています。</p>
 </section>
 
 <section id="notfound"><title>File Not Found</title>
 
-    <p>$BI,$:!"%j%/%(%9%H$5$l$?(B URL $B$KBP1~$9$k%U%!%$%k$,%U%!%$%k%7%9%F%`$K(B
-    $BL5$$$H$$$&>l9g$,H/@8$7$^$9!#$3$l$,5/$3$k$N$K$O$$$/$D$+$NM}M3$,$"$j$^$9!#(B
-    $B>l9g$K$h$C$F$O!"%I%-%e%a%s%H$rJL$N>l=j$K0\F0$7$?7k2L$G$"$k$3$H$,$"$j$^$9!#(B
-    $B$3$N>l9g$O!"%/%i%$%"%s%H$K%j%=!<%9$N?7$7$$0LCV$rCN$i$;$k$?$a$K(B
-    <a href="#redirect">URL $B%j%@%$%l%/%7%g%s(B</a>$B$r;H$&$N$,:GA1$NJ}K!$G$9!#(B
-    $B$=$&$9$k$3$H$K$h$C$F!"%j%=!<%9$O?7$7$$0LCV$K0\F0$7$F$$$k$1$l$I$b!"(B
-    $B8E$$%V%C%/%^!<%/$d%j%s%/$,F0:n$7B3$1$k$h$&$K$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>必ず、リクエストされた URL に対応するファイルがファイルシステムに
+    無いという場合が発生します。これが起こるのにはいくつかの理由があります。
+    場合によっては、ドキュメントを別の場所に移動した結果であることがあります。
+    この場合は、クライアントにリソースの新しい位置を知らせるために
+    <a href="#redirect">URL リダイレクション</a>を使うのが最善の方法です。
+    そうすることによって、リソースは新しい位置に移動しているけれども、
+    古いブックマークやリンクが動作し続けるようにすることができます。</p>
 
-    <p>"File Not Found" $B%(%i!<$N$b$&0l$D$N$h$/$"$kM}M3$O!"(B
-    $B%V%i%&%6$X$ND>@\F~NO$d(B HTML $B%j%s%/$+$i$N6vH/E*$J(B URL $B$NF~NO4V0c$$$G$9!#(B
-    Apache $B$O$3$NLdBj$r2~A1$9$k$?$a$K!"(B<module>mod_speling</module>
-    $B%b%8%e!<%k(B ($B0U?^E*$JDV$j4V0c$$(B)
-    ($BLuCm(B: $B@5$7$/$O(B spelling) $B$rDs6!$7$F$$$^$9!#$3$N%b%8%e!<%k$,(B
-    $B;HMQ$5$l$F$$$k$H$-$O!"(B"File Not Found" $B%(%i!<$r2#<h$j$7$F!"(B
-    $B;w$?%U%!%$%kL>$N%j%=!<%9$rC5$7$^$9!#$b$70l$D$@$18+$D$+$C$?>l9g$O(B
-    mod_speling $B$O%/%i%$%"%s%H$K@5$7$$0LCV$rCN$i$;$k$?$a$K(B HTTP $B%j%@%$%l%/%H$r(B
-    $BAw$j$^$9!#$b$7J#?t$N!V6a$$!W%U%!%$%k$,8+$D$+$C$?>l9g$O!"$=$l$i(B
-    $BBeBX$H$J$j$($k$b$N$N%j%9%H$,%/%i%$%"%s%H$KI=<($5$l$^$9!#(B</p>
+    <p>"File Not Found" エラーのもう一つのよくある理由は、
+    ブラウザへの直接入力や HTML リンクからの偶発的な URL の入力間違いです。
+    Apache はこの問題を改善するために、<module>mod_speling</module>
+    モジュール (意図的な綴り間違い)
+    (訳注: 正しくは spelling) を提供しています。このモジュールが
+    使用されているときは、"File Not Found" エラーを横取りして、
+    似たファイル名のリソースを探します。もし一つだけ見つかった場合は
+    mod_speling はクライアントに正しい位置を知らせるために HTTP リダイレクトを
+    送ります。もし複数の「近い」ファイルが見つかった場合は、それら
+    代替となりえるもののリストがクライアントに表示されます。</p>
 
-    <p>mod_speling $B$NHs>o$KM-MQ$J5!G=$O!"BgJ8;z>.J8;z$r6hJL$;$:$K(B
-    $B%U%!%$%kL>$rHf3S$9$k$b$N$G$9!#$3$l$O(B URL $B$H(B unix $B$N(B
-    $B%U%!%$%k%7%9%F%`$,N>J}$H$bBgJ8;z>.J8;z$r6hJL$9$k$b$N$G$"$k!"(B
-    $B$H$$$&$3$H$r%f!<%6$,CN$i$J$$%7%9%F%`$GLr$KN)$A$^$9!#$?$@$7!"(B
-    $B;~@^$N(B URL $BD{@5DxEY$G:Q$^$:!"(Bmod_speling $B$r$h$jB?$/;HMQ$9$k$H!"%5!<%P$K(B
-    $B$5$i$J$kIi2Y$,$+$+$j$^$9!#$9$Y$F$N!V@5$7$/$J$$!W%j%/%(%9%H$N8e$K(B
-    URL $B$N%j%@%$%l%/%H$H%/%i%$%"%s%H$+$i$N?7$7$$%j%/%(%9%H$,$/$k$3$H$K(B
-    $B$J$j$^$9$+$i!#(B</p>
+    <p>mod_speling の非常に有用な機能は、大文字小文字を区別せずに
+    ファイル名を比較するものです。これは URL と unix の
+    ファイルシステムが両方とも大文字小文字を区別するものである、
+    ということをユーザが知らないシステムで役に立ちます。ただし、
+    時折の URL 訂正程度で済まず、mod_speling をより多く使用すると、サーバに
+    さらなる負荷がかかります。すべての「正しくない」リクエストの後に
+    URL のリダイレクトとクライアントからの新しいリクエストがくることに
+    なりますから。</p>
 
-    <p>$B%3%s%F%s%D$N0LCV$r7h$a$h$&$H$9$k$9$Y$F$N;n$_$,<:GT$9$k$H!"(B
-    Apache $B$O!"(BHTTP $B%9%F!<%?%9%3!<%I(B 404 (file not found) $B$H6&$K(B
-    $B%(%i!<%Z!<%8$rJV$7$^$9!#$3$N%(%i!<%Z!<%8$N304Q$O(B
+    <p>コンテンツの位置を決めようとするすべての試みが失敗すると、
+    Apache は、HTTP ステータスコード 404 (file not found) と共に
+    エラーページを返します。このエラーページの外観は
     <directive module="core">ErrorDocument</directive> 
-    $B%G%#%l%/%F%#%V$G@)8f$5$l!"(B
-    <a href="custom-error.html">$B%+%9%?%`%(%i!<%l%9%]%s%9(B</a> $B$G(B
-    $B@bL@$5$l$F$$$k$h$&$K!"=@Fp$J@_Dj$r9T$J$&$3$H$,$G$-$^$9!#(B</p>
+    ディレクティブで制御され、
+    <a href="custom-error.html">カスタムエラーレスポンス</a> で
+    説明されているように、柔軟な設定を行なうことができます。</p>
 </section>
 
 </manualpage>

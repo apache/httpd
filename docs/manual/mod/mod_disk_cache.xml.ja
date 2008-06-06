@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:515267 (outdated) -->
@@ -23,46 +23,46 @@
 <modulesynopsis metafile="mod_disk_cache.xml.meta">
 
 <name>mod_disk_cache</name>
-<description>URI $B$r%-!<$K$7$?%3%s%F%s%D%-%c%C%7%e%9%H%l!<%84IM}(B</description>
+<description>URI をキーにしたコンテンツキャッシュストレージ管理</description>
 <status>Extension</status>
 <sourcefile>mod_disk_cache.c</sourcefile>
 <identifier>disk_cache_module</identifier>
 
 <summary>
-    <p><module>mod_disk_cache</module> $B$O%G%#%9%/$r;HMQ$7$?%9%H%l!<%8(B
-    $B4IM}5!9=$r<BAu$7$F$$$^$9!#<g$K(B
-    <module>mod_cache</module> $B$HAH$_9g$o$;$F;H$o$l$^$9!#(B</p>
+    <p><module>mod_disk_cache</module> はディスクを使用したストレージ
+    管理機構を実装しています。主に
+    <module>mod_cache</module> と組み合わせて使われます。</p>
 
-    <p>$B%3%s%F%s%D$N%-%c%C%7%e$X$NJ]B8$H<hF@$O(B URI $B$K4p$E$$$?%-!<$,;H$o$l$^$9!#(B
-    $B%"%/%;%9J]8n$N$+$1$i$l$F$$$k%3%s%F%s%D$O%-%c%C%7%e$5$l$^$;$s!#(B</p>
+    <p>コンテンツのキャッシュへの保存と取得は URI に基づいたキーが使われます。
+    アクセス保護のかけられているコンテンツはキャッシュされません。</p>
 
-    <p>$B%-%c%C%7%e$NBg$-$5$r:GBg%l%Y%k$G0];}$9$k$?$a$K(B
-    <program>htcacheclean</program> $B$r;H$&$3$H$,$G$-$^$9!#(B</p>
+    <p>キャッシュの大きさを最大レベルで維持するために
+    <program>htcacheclean</program> を使うことができます。</p>
 
-    <note><title>$BCm(B:</title>
-      <p><module>mod_disk_cache</module> $B$O(B
-      <module>mod_cache</module> $B$rI,MW$H$7$^$9(B</p>
+    <note><title>注:</title>
+      <p><module>mod_disk_cache</module> は
+      <module>mod_cache</module> を必要とします</p>
     </note>
 </summary>
 
 <directivesynopsis>
 <name>CacheRoot</name>
-<description>$B%-%c%C%7%e%U%!%$%k$,J]4I$5$l$k%k!<%H%G%#%l%/%H%j(B</description>
+<description>キャッシュファイルが保管されるルートディレクトリ</description>
 <syntax>CacheRoot <var>directory</var></syntax>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheRoot</directive> $B%G%#%l%/%F%#%V$O%-%c%C%7%e%U%!%$%k$r(B
-    $BJ]4I$9$k$?$a$N%G%#%9%/>e$N%G%#%l%/%H%j$r;XDj$7$^$9!#(B<module
-    >mod_disk_cache</module> $B%b%8%e!<%k$,(B Apache $B%5!<%P$K%m!<%I$5$l$F(B
-    $B$$$k$+!"AH$_9~$^$l$F$$$l$P!"$3$N%G%#%l%/%F%#%V$O(B<em>$BI,$:(B</em>
-    $BDj5A$7$J$1$l$P$J$j$^$;$s!#(B
-    <directive>CacheRoot</directive> $B$NCM$r;XDj$7$J$1$l$P!"(B
-    $B@_Dj%U%!%$%k$N=hM}$G%(%i!<$K$J$j$^$9!#(B<directive
-    module="mod_disk_cache">CacheDirLevels</directive> $B%G%#%l%/%F%#%V$H(B <directive
-    module="mod_disk_cache">CacheDirLength</directive> $B%G%#%l%/%F%#%V$,(B
-    $B;XDj$5$l$?%k!<%H%G%#%l%/%H%j2<$N%G%#%l%/%H%j9=@.$rDj5A$7$^$9!#(B</p>
+    <p><directive>CacheRoot</directive> ディレクティブはキャッシュファイルを
+    保管するためのディスク上のディレクトリを指定します。<module
+    >mod_disk_cache</module> モジュールが Apache サーバにロードされて
+    いるか、組み込まれていれば、このディレクティブは<em>必ず</em>
+    定義しなければなりません。
+    <directive>CacheRoot</directive> の値を指定しなければ、
+    設定ファイルの処理でエラーになります。<directive
+    module="mod_disk_cache">CacheDirLevels</directive> ディレクティブと <directive
+    module="mod_disk_cache">CacheDirLength</directive> ディレクティブが
+    指定されたルートディレクトリ下のディレクトリ構成を定義します。</p>
 
     <example>
       CacheRoot c:/cacheroot
@@ -72,22 +72,22 @@
 
 <directivesynopsis>
 <name>CacheDirLevels</name>
-<description>$B%-%c%C%7%e$N%5%V%G%#%l%/%H%j$N?<$5$N?t(B</description>
+<description>キャッシュのサブディレクトリの深さの数</description>
 <syntax>CacheDirLevels <var>levels</var></syntax>
 <default>CacheDirLevels 3</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheDirLevels</directive> $B%G%#%l%/%F%#%V$O%-%c%C%7%e$N(B
-    $B%5%V%G%#%l%/%H%j$N?<$5$r@_Dj$7$^$9!#%-%c%C%7%e%G!<%?$O(B <directive
-    module="mod_disk_cache">CacheRoot</directive> $B%G%#%l%/%H%j$+$i(B
-    $B$3$N%G%#%l%/%H%j$N?<$5J,2<$N%G%#%l%/%H%j$KJ]B8$5$l$^$9!#(B</p>
+    <p><directive>CacheDirLevels</directive> ディレクティブはキャッシュの
+    サブディレクトリの深さを設定します。キャッシュデータは <directive
+    module="mod_disk_cache">CacheRoot</directive> ディレクトリから
+    このディレクトリの深さ分下のディレクトリに保存されます。</p>
 
     <note>
       <p><directive>CacheDirLevels</directive>*
-      <directive module="mod_disk_cache">CacheDirLength</directive> $B$N(B
-      $B7k2L$O(B 20 $B0JFb$G$J$1$l$P$J$j$^$;$s!#(B</p>
+      <directive module="mod_disk_cache">CacheDirLength</directive> の
+      結果は 20 以内でなければなりません。</p>
     </note>
 
     <example>
@@ -98,20 +98,20 @@
 
 <directivesynopsis>
 <name>CacheDirLength</name>
-<description>$B%5%V%G%#%l%/%H%jL>$NJ8;z?t(B</description>
+<description>サブディレクトリ名の文字数</description>
 <syntax>CacheDirLength <var>length</var></syntax>
 <default>CacheDirLength 2</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheDirLength</directive> $B%G%#%l%/%F%#%V$O%-%c%C%7%e(B
-    $B3,AX$N3F%5%V%G%#%l%/%H%j$NJ8;z?t$r@_Dj$7$^$9!#(B</p>
+    <p><directive>CacheDirLength</directive> ディレクティブはキャッシュ
+    階層の各サブディレクトリの文字数を設定します。</p>
 
     <note>
       <p><directive>CacheDirLevels</directive>*
-      <directive module="mod_disk_cache">CacheDirLength</directive> $B$N(B
-      $B7k2L$O(B 20 $B0JFb$G$J$1$l$P$J$j$^$;$s!#(B</p>
+      <directive module="mod_disk_cache">CacheDirLength</directive> の
+      結果は 20 以内でなければなりません。</p>
     </note>
 
     <example>
@@ -122,15 +122,15 @@
 
 <directivesynopsis>
 <name>CacheMinFileSize</name>
-<description>$B%-%c%C%7%e$KJ]4I$5$l$k%I%-%e%a%s%H$N:G>.8B$N(B ($B%P%$%H$G$N(B) $BBg$-$5(B</description>
+<description>キャッシュに保管されるドキュメントの最小限の (バイトでの) 大きさ</description>
 <syntax>CacheMinFileSize <var>bytes</var></syntax>
 <default>CacheMinFileSize 1</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheMinFileSize</directive> $B%G%#%l%/%F%#%V$O!"%I%-%e%a%s%H$r(B
-    $B%-%c%C%7%e$9$k$+$I$&$+$rH=Dj$9$k!":G>.$N%5%$%:$r%P%$%H?t$G@_Dj$7$^$9!#(B</p>
+    <p><directive>CacheMinFileSize</directive> ディレクティブは、ドキュメントを
+    キャッシュするかどうかを判定する、最小のサイズをバイト数で設定します。</p>
 
     <example>
       CacheMinFileSize 64
@@ -140,15 +140,15 @@
 
 <directivesynopsis>
 <name>CacheMaxFileSize</name>
-<description>$B%-%c%C%7%e$KJ]4I$5$l$k%I%-%e%a%s%H$N:GBg$N(B ($B%P%$%H$G$N(B) $B%5%$%:(B</description>
+<description>キャッシュに保管されるドキュメントの最大の (バイトでの) サイズ</description>
 <syntax>CacheMaxFileSize <var>bytes</var></syntax>
 <default>CacheMaxFileSize 1000000</default>
 <contextlist><context>server config</context><context>virtual host</context>
 </contextlist>
 
 <usage>
-    <p><directive>CacheMaxFileSize</directive> $B%G%#%l%/%F%#%V$O!"%I%-%e%a%s%H$r(B
-    $B%-%c%C%7%e$9$k$+$I$&$+$rH=Dj$9$k!":GBg$N%5%$%:$r%P%$%H?t$G@_Dj$7$^$9!#(B</p>
+    <p><directive>CacheMaxFileSize</directive> ディレクティブは、ドキュメントを
+    キャッシュするかどうかを判定する、最大のサイズをバイト数で設定します。</p>
 
     <example>
       CacheMaxFileSize 64000

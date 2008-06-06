@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 659902 -->
@@ -21,96 +21,96 @@
 -->
 
 <manualpage metafile="ip-based.xml.meta">
-<parentdocument href="./">$B%P!<%A%c%k%[%9%H(B</parentdocument>
-   <title>Apache $B$N(B IP $B%Y!<%9$N%P!<%A%c%k%[%9%H%5%]!<%H(B</title>
+<parentdocument href="./">バーチャルホスト</parentdocument>
+   <title>Apache の IP ベースのバーチャルホストサポート</title>
 
 <seealso>
-<a href="name-based.html">$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H%5%]!<%H(B</a>
+<a href="name-based.html">名前ベースのバーチャルホストサポート</a>
 </seealso>
 
-<section id="requirements"><title>$B%7%9%F%`MW7o(B</title>
+<section id="requirements"><title>システム要件</title>
 
-    <p><cite>IP $B%Y!<%9(B</cite> $B$H$$$&L>A0$,<($9$h$&$K!"%5!<%P$K$O(B
-    <strong>IP $B%Y!<%9$N%P!<%A%c%k%[%9%H$=$l$>$l$K$D$-!"JL!9$N(B IP $B%"%I%l%9$,(B
-    $BI,MW$G$9(B</strong>$B!#J#?t$NJ*M}%3%M%/%7%g%s$r;}$C$F$$$k%^%7%s$rMQ0U$9$k$+!"(B
-    $B:G6a$N%*%Z%l!<%F%#%s%0%7%9%F%`$G%5%]!<%H$5$l$F$$$k%P!<%A%c%k(B
-    $B%$%s%?%U%'!<%9(B ($B>\:Y$O%7%9%F%`$N@bL@=q$rFI$s$G$/$@$5$$!#$?$$$F$$$O(B
-    "ip $B%(%$%j%"%9(B" $B$H8F$P$l$F$$$F!"@_Dj$K$OIaDL(B "ifconfig" $B%3%^%s%I$r(B
-    $B;H$$$^$9(B) $B$r;H$&$+$G<B8=$G$-$^$9!#(B</p>
+    <p><cite>IP ベース</cite> という名前が示すように、サーバには
+    <strong>IP ベースのバーチャルホストそれぞれにつき、別々の IP アドレスが
+    必要です</strong>。複数の物理コネクションを持っているマシンを用意するか、
+    最近のオペレーティングシステムでサポートされているバーチャル
+    インタフェース (詳細はシステムの説明書を読んでください。たいていは
+    "ip エイリアス" と呼ばれていて、設定には普通 "ifconfig" コマンドを
+    使います) を使うかで実現できます。</p>
 </section>
 
-<section id="howto"><title>Apache $B$N@_DjJ}K!(B</title>
+<section id="howto"><title>Apache の設定方法</title>
 
-    <p>$BJ#?t$N%[%9%H$r%5%]!<%H$9$k$h$&$K(B Apache $B$r@_Dj$9$kJ}K!$O(B
-    $BFsDL$j$"$j$^$9!#JL$N(B <program>httpd</program> $B%G!<%b%s$r3F%[%9%HKh$K<B9T$9$k$+!"(B
-    $B$9$Y$F$N%P!<%A%c%k%[%9%H$r%5%]!<%H$9$k%G!<%b%s$r0l$D<B9T$9$k$+$G$9!#(B</p>
+    <p>複数のホストをサポートするように Apache を設定する方法は
+    二通りあります。別の <program>httpd</program> デーモンを各ホスト毎に実行するか、
+    すべてのバーチャルホストをサポートするデーモンを一つ実行するかです。</p>
 
-    <p>$B0J2<$N$H$-$K$OJ#?t$N%G!<%b%s$r;H$&$HNI$$$G$7$g$&(B:</p>
+    <p>以下のときには複数のデーモンを使うと良いでしょう:</p>
 
     <ul>
-      <li>$B2q<R(B1 $B$O%&%'%V7PM30J30$G$O2q<R(B2 $B$+$i$O%G!<%?$rFI$^$l$?$/$J$$!"(B
-      $B$H$$$C$?%;%-%e%j%F%#$NJ,N%$NLdBj$,$"$k$H$-!#$3$N>l9g!"$=$l$>$l(B
+      <li>会社1 はウェブ経由以外では会社2 からはデータを読まれたくない、
+      といったセキュリティの分離の問題があるとき。この場合、それぞれ
       <directive
       module="mpm_common">User</directive>, <directive
       module="mpm_common">Group</directive>, <directive
       module="mpm_common">Listen</directive>, <directive
-      module="core">ServerRoot</directive> $B$N@_Dj$,0c$&Fs$D$N%G!<%b%s$r(B
-      $B<B9T$9$kI,MW$,$"$j$^$9!#(B</li>
+      module="core">ServerRoot</directive> の設定が違う二つのデーモンを
+      実行する必要があります。</li>
 
-      <li>$B%^%7%s$N$9$Y$F$N(B IP $B%(%$%j%"%9$r(B listen $B$9$k$@$1$N(B
-      $B%a%b%j$H%U%!%$%k5-=R;R$NM>M5$,$"$k$H$-!#(B<directive
-      module="mpm_common">Listen</directive> $B$O!V%o%$%k%I%+!<%I!W(B
-      $B%"%I%l%9$+!"FCDj$N%"%I%l%9$N$_$r(B listen $B$9$k$3$H$,$G$-$^$9!#(B
-      $B$G$9$+$i!"2?$i$+$NM}M3$GFCDj$N%"%I%l%9$r(B listen $B$7$J$1$P$J$i$J$$(B
-      $B$H$-$O!"$=$NFCDj$N%"%I%l%9$r$9$Y$F(B listen $B$9$kI,MW$,$"$j$^$9!#(B
-      ($B$?$@$7!"0l$D$N(B <program>httpd</program> $B$,(B N-1 $B8D$N%"%I%l%9$r(B listen $B$7!"(B
-      $BJL$N(B <program>httpd</program> $B$,;D$j$N%"%I%l%9$r(B listen $B$9$k$H$$$C$?$3$H$O2DG=$G$9!#(B)</li>
+      <li>マシンのすべての IP エイリアスを listen するだけの
+      メモリとファイル記述子の余裕があるとき。<directive
+      module="mpm_common">Listen</directive> は「ワイルドカード」
+      アドレスか、特定のアドレスのみを listen することができます。
+      ですから、何らかの理由で特定のアドレスを listen しなけばならない
+      ときは、その特定のアドレスをすべて listen する必要があります。
+      (ただし、一つの <program>httpd</program> が N-1 個のアドレスを listen し、
+      別の <program>httpd</program> が残りのアドレスを listen するといったことは可能です。)</li>
     </ul>
 
-    <p>$B0J2<$N$H$-$K$OC1FH$N%G!<%b%s$r;H$&$HNI$$$G$7$g$&(B:</p>
+    <p>以下のときには単独のデーモンを使うと良いでしょう:</p>
 
     <ul>
-      <li>$B%P!<%A%c%k%[%9%H4V$G$N(B httpd $B$N@_Dj$r6&M-$7$F$b$h$$$H$-!#(B</li>
+      <li>バーチャルホスト間での httpd の設定を共有してもよいとき。</li>
 
-      <li>$B%^%7%s$,B?$/$N%j%/%(%9%H$r07$&$?$a!"JL%G!<%b%s$r<B9T$9$k$3$H$K$h$k(B
-      $B@-G=$NDc2<$N1F6A$,Cx$7$$$H$-!#(B</li>
+      <li>マシンが多くのリクエストを扱うため、別デーモンを実行することによる
+      性能の低下の影響が著しいとき。</li>
     </ul>
 
 </section>
 
-<section id="multiple"><title>$BJ#?t%G!<%b%s$N@_Dj(B</title>
+<section id="multiple"><title>複数デーモンの設定</title>
 
-    <p>$B3F%P!<%A%c%k%[%9%H$KBP$7$FJL$N(B <program>httpd</program> $B$N%$%s%9%H!<%k$r9T$J$$$^$9!#(B
-    $B@_Dj%U%!%$%kCf$N(B <directive module="mpm_common">Listen</directive> 
-    $B%G%#%l%/%F%#%V$r;H$C$F!"(B
-    $B3F%$%s%9%H!<%k$G%G!<%b%s$,07$&(B IP $B%"%I%l%9(B ($B%P!<%A%c%k%[%9%H(B) 
-    $B$rA*Br$7$^$9!#Nc$($P(B</p>
+    <p>各バーチャルホストに対して別の <program>httpd</program> のインストールを行ないます。
+    設定ファイル中の <directive module="mpm_common">Listen</directive> 
+    ディレクティブを使って、
+    各インストールでデーモンが扱う IP アドレス (バーチャルホスト) 
+    を選択します。例えば</p>
 
     <example>
     Listen www.smallco.com:80
     </example>
 
-    <p>$B$3$3$G!"%[%9%HL>$NBe$o$j$K(B IP $B%"%I%l%9$r;H$&J}$,?d>)$5$l$F$$$k$3$H$K(B
-    $BCm0U$7$F$*$$$F$/$@$5$$(B
-    (<a href="../dns-caveats.html">DNS $B$NCm0U;v9`(B</a> $B;2>H(B)$B!#(B</p>
+    <p>ここで、ホスト名の代わりに IP アドレスを使う方が推奨されていることに
+    注意しておいてください
+    (<a href="../dns-caveats.html">DNS の注意事項</a> 参照)。</p>
 
 </section>
 
-<section id="single"><title>$BJ#?t$N%P!<%A%c%k%[%9%H$N@_Dj$r$7$?(B
-$B%G!<%b%s$r0l$D@_Dj$9$k(B</title>
+<section id="single"><title>複数のバーチャルホストの設定をした
+デーモンを一つ設定する</title>
 
-    <p>$B$3$N>l9g$O!"0l$D$N(B <program>httpd</program> $B$,<g%5!<%P$H$9$Y$F$N%P!<%A%c%k%[%9%H$N%j%/%(%9%H$r(B
-    $B=hM}$7$^$9!#@_Dj%U%!%$%k$N(B <directive
-    module="core">VirtualHost</directive> $B%G%#%l%/%F%#%V$r;H$C$F!"(B
+    <p>この場合は、一つの <program>httpd</program> が主サーバとすべてのバーチャルホストのリクエストを
+    処理します。設定ファイルの <directive
+    module="core">VirtualHost</directive> ディレクティブを使って、
     <directive
     module="core">ServerAdmin</directive>, <directive
     module="core">ServerName</directive>, <directive
     module="core">DocumentRoot</directive>, <directive
     module="core">ErrorLog</directive>, <directive
     module="mod_log_config">TransferLog</directive>
-    $B$d(B <directive module="mod_log_config">CustomLog</directive>
-    $B@_Dj%G%#%l%/%F%#%V$NCM$,3F%[%9%HKh$K0[$J$kCM$K@_Dj$5$l$k$h$&$K$7$^$9!#(B
-    $BNc$($P(B</p>
+    や <directive module="mod_log_config">CustomLog</directive>
+    設定ディレクティブの値が各ホスト毎に異なる値に設定されるようにします。
+    例えば</p>
 
     <example>
     &lt;VirtualHost www.smallco.com&gt;<br />
@@ -130,29 +130,29 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p>$B$3$3$G!"%[%9%HL>$NBe$o$j$K(B IP $B%"%I%l%9$r;H$&J}$,?d>)$5$l$F$$$k$3$H$K(B
-    $BCm0U$7$F$*$$$F$/$@$5$$(B
-    (<a href="../dns-caveats.html">DNS $B$NCm0U;v9`(B</a> $B;2>H(B)$B!#(B</p>
+    <p>ここで、ホスト名の代わりに IP アドレスを使う方が推奨されていることに
+    注意しておいてください
+    (<a href="../dns-caveats.html">DNS の注意事項</a> 参照)。</p>
 
-    <p>$B%W%m%;%9@8@.$r@)8f$9$k%G%#%l%/%F%#%V$d$=$NB>$N$$$/$D$+$N%G%#%l%/%F%#%V$r(B
-    $B=|$$$F!"$[$\(B<strong>$B$9$Y$F(B</strong>$B$N@_Dj%G%#%l%/%F%#%V$r(B VirtualHost
-    $B%G%#%l%/%F%#%V$NCf$K=q$/$3$H$,$G$-$^$9!#%G%#%l%/%F%#%V$,(B VirtualHost
-    $B%G%#%l%/%F%#%V$G;HMQ$G$-$k$+$I$&$+$O(B <a href="../mod/directives.html"
-    >$B%G%#%l%/%F%#%V:w0z(B</a>$B$r;H$C$F(B<a
-    href="../mod/directive-dict.html#Context">$B%3%s%F%-%9%H(B</a>$B$N(B
-    $BMs$rD4$Y$F$/$@$5$$!#(B</p>
+    <p>プロセス生成を制御するディレクティブやその他のいくつかのディレクティブを
+    除いて、ほぼ<strong>すべて</strong>の設定ディレクティブを VirtualHost
+    ディレクティブの中に書くことができます。ディレクティブが VirtualHost
+    ディレクティブで使用できるかどうかは <a href="../mod/directives.html"
+    >ディレクティブ索引</a>を使って<a
+    href="../mod/directive-dict.html#Context">コンテキスト</a>の
+    欄を調べてください。</p>
 
-    <p><a href="../suexec.html">suEXEC$B%i%C%Q!<(B</a>$B$r;H$C$F$$$k>l9g$O!"(B
+    <p><a href="../suexec.html">suEXECラッパー</a>を使っている場合は、
     <directive module="mod_suexec">SuexecUserGroup</directive>
-    $B%G%#%l%/%F%#%V$r(B VirtualHost
-    $B%G%#%l%/%F%#%V$NCf$G;HMQ$9$k$3$H$,$G$-$^$9!#(B</p>
+    ディレクティブを VirtualHost
+    ディレクティブの中で使用することができます。</p>
 
-    <p><em>$B%;%-%e%j%F%#(B:</em> $B%m%0%U%!%$%k$r=q$/>l=j$r;XDj$9$k$H$-$O!"(B
-    Apache $B$r5/F0$7$?%f!<%60J30$,$=$N%G%#%l%/%H%j$K=q$-9~$_8"8B$r(B
-    $B;}$C$F$$$k>l9g$K%;%-%e%j%F%#>e$N4m81$,$"$k$3$H$KCm0U$7$F$/$@$5$$!#(B
-    $B>\:Y$O(B<a
-    href="../misc/security_tips.html">$B%;%-%e%j%F%#$N$3$D(B</a>$B%I%-%e%a%s%H$r(B
-    $B;2>H$7$F$/$@$5$$!#(B</p>
+    <p><em>セキュリティ:</em> ログファイルを書く場所を指定するときは、
+    Apache を起動したユーザ以外がそのディレクトリに書き込み権限を
+    持っている場合にセキュリティ上の危険があることに注意してください。
+    詳細は<a
+    href="../misc/security_tips.html">セキュリティのこつ</a>ドキュメントを
+    参照してください。</p>
 
 </section>
 </manualpage>

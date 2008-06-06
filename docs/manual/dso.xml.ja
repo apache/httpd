@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 420990:587444 (outdated) -->
@@ -22,25 +22,25 @@
 
 <manualpage metafile="dso.xml.meta">
 
-  <title>$BF0E*6&M-%*%V%8%'%/%H(B (DSO) $B%5%]!<%H(B</title>
+  <title>動的共有オブジェクト (DSO) サポート</title>
 
   <summary>
-    <p>Apache HTTP $B%5!<%P$O%b%8%e!<%k2=$5$l$?%W%m%0%i%`$G!"(B
-    $B4IM}<T$,%b%8%e!<%k$rA*Br$9$k$3$H$G%5!<%P$KAH$_9~$`5!G=$rA*$V$3$H$,$G$-$^$9!#(B
-    $B%b%8%e!<%k$O%5!<%P$,%S%k%I$5$l$k$H$-$K(B <program>httpd</program> $B%P%$%J%j$K(B
-    $B@EE*$KAH$_9~$`$3$H$,$G$-$^$9!#$b$7$/$O!"(B<program>httpd</program> $B%P%$%J%j$H$O(B
-    $BJL$KB8:_$9$kF0E*6&M-%*%V%8%'%/%H(B ($BLuCm(B: Dynamic Shared Object)
-    (DSO) $B$H$7$F%3%s%Q%$%k$9$k$3$H$b(B
-    $B$G$-$^$9!#(BDSO $B%b%8%e!<%k$O%5!<%P$,%S%k%I$5$l$k$H$-$K%3%s%Q%$%k$7$?$j!"(B
-    Apache $B3HD%%D!<%k(B (<program>apxs</program>) $B$r(B
-    $B;H$C$F8e$G%3%s%Q%$%k$7$FDI2C$7$?$j$G$-$^$9!#(B</p>
+    <p>Apache HTTP サーバはモジュール化されたプログラムで、
+    管理者がモジュールを選択することでサーバに組み込む機能を選ぶことができます。
+    モジュールはサーバがビルドされるときに <program>httpd</program> バイナリに
+    静的に組み込むことができます。もしくは、<program>httpd</program> バイナリとは
+    別に存在する動的共有オブジェクト (訳注: Dynamic Shared Object)
+    (DSO) としてコンパイルすることも
+    できます。DSO モジュールはサーバがビルドされるときにコンパイルしたり、
+    Apache 拡張ツール (<program>apxs</program>) を
+    使って後でコンパイルして追加したりできます。</p>
 
-    <p>$B$3$NJ8=q$O(B DSO $B%b%8%e!<%k$N;H$$J}$H!";EAH$_$K$D$$$F(B
-    $B@bL@$7$^$9!#(B</p>
+    <p>この文書は DSO モジュールの使い方と、仕組みについて
+    説明します。</p>
   </summary>
 
 
-<section id="implementation"><title>$B<BAu(B</title>
+<section id="implementation"><title>実装</title>
 
 <related>
 <modulelist>
@@ -51,44 +51,44 @@
 </directivelist>
 </related>
 
-    <p>$B8D!9$N(B Apache $B%b%8%e!<%k$r%m!<%I$9$k$?$a$N(B DSO $B%5%]!<%H$O(B
-    <module>mod_so.c</module> $B$H$$$&%b%8%e!<%k$N5!G=$K4p$E$$$F$$$^$9!#(B
-    $B$3$N%b%8%e!<%k(B $B$O(B Apache $B$N%3%"$K@EE*$KAH$_9~$^$l$F$$$kI,MW$,$"$j$^$9!#(B
-    $B$=$l$O(B <module>core.c</module> $B0J30$G$O(B DSO $B$K$G$-$J$$M#0l$N(B
-    $B%b%8%e!<%k$G$9!#;v<B>e!"B>$N$9$Y$F$N(B Apache $B$N%b%8%e!<%k$O!"(B
-    <a href="install.html">$B%$%s%9%H!<%k$NJ8=q(B</a>$B$G@bL@$5$l$F$$$k$h$&$K!"(B
-    <program>configure</program> $B$N(B
-    <code>--enable-<em>module</em>=shared</code> $B%*%W%7%g%s$G$=$l$>$l$r(B
-    DSO $B%S%k%I$K$9$k$3$H$K$h$j!"(BDSO $B%b%8%e!<%k$K$9$k$3$H$,$G$-$^$9!#(B
-    <code>mod_foo.so</code> $B$N$h$&$J(B DSO $B$K%b%8%e!<%k$,%3%s%Q%$%k$5$l$l$P!"(B
-    <code>httpd.conf</code> $B%U%!%$%kCf$G(B <module>mod_so</module> $B$N(B
+    <p>個々の Apache モジュールをロードするための DSO サポートは
+    <module>mod_so.c</module> というモジュールの機能に基づいています。
+    このモジュール は Apache のコアに静的に組み込まれている必要があります。
+    それは <module>core.c</module> 以外では DSO にできない唯一の
+    モジュールです。事実上、他のすべての Apache のモジュールは、
+    <a href="install.html">インストールの文書</a>で説明されているように、
+    <program>configure</program> の
+    <code>--enable-<em>module</em>=shared</code> オプションでそれぞれを
+    DSO ビルドにすることにより、DSO モジュールにすることができます。
+    <code>mod_foo.so</code> のような DSO にモジュールがコンパイルされれば、
+    <code>httpd.conf</code> ファイル中で <module>mod_so</module> の
     <directive module="mod_so">LoadModule</directive>
-    $B%G%#%l%/%F%#%V$r;H$&$3$H$G%5!<%P$N5/F0$d:F5/F0;~$K$3$N%b%8%e!<%k$r(B
-    $B%m!<%I$9$k$h$&$K$G$-$^$9!#(B</p>
+    ディレクティブを使うことでサーバの起動や再起動時にこのモジュールを
+    ロードするようにできます。</p>
 
-    <p>Apache $B%b%8%e!<%kMQ$N(B ($BFC$K%5!<%I%Q!<%F%#%b%8%e!<%k$N(B) DSO $B%U%!%$%k$N(B
-    $B:n@.$r4JC1$K$9$k$?$a$K!"(B<program>apxs</program>
-    (<dfn>APache eXtenSion</dfn>) $B$H$$$&?7$7$$%5%]!<%H%W%m%0%i%`$,$"$j$^$9!#(B
-    Apache $B$N%=!<%9%D%j!<$N(B<em>$B30$G(B</em> DSO $B%b%8%e!<%k$r%S%k%I$9$k$?$a$K(B
-    $B;H$&$3$H$,$G$-$^$9!#H/A[$OC1=c$G$9(B: Apache $B$N%$%s%9%H!<%k;~$N(B
-    <program>configure</program>$B!"(B<code>make install</code> $B$N$H$-$K(B Apache $B$N(B
-    C $B%X%C%@$r%$%s%9%H!<%k$7!"(BDSO $B%S%k%IMQ$N%W%i%C%H%U%)!<%`0MB8$N(B
-    $B%3%s%Q%$%i$H%j%s%+$N%U%i%0$r(B <program>apxs</program> $B%W%m%0%i%`$KDI2C$7$^$9!#(B
-    $B$3$l$K$h$j!"%f!<%6$,(B Apache $B$NG[I[%=!<%9%D%j!<$J$7$G!"$5$i$K(B
-    DSO $B%5%]!<%H$N$?$a$N%W%i%C%H%U%)!<%`0MB8$N%3%s%Q%$%i$d%j%s%+$N(B
-    $B%U%i%0$r$$$8$k$3$H$J$/(B Apache $B$N%b%8%e!<%k$N%=!<%9$r%3%s%Q%$%k(B
-    $B$G$-$k$h$&$K$J$j$^$9!#(B</p>
+    <p>Apache モジュール用の (特にサードパーティモジュールの) DSO ファイルの
+    作成を簡単にするために、<program>apxs</program>
+    (<dfn>APache eXtenSion</dfn>) という新しいサポートプログラムがあります。
+    Apache のソースツリーの<em>外で</em> DSO モジュールをビルドするために
+    使うことができます。発想は単純です: Apache のインストール時の
+    <program>configure</program>、<code>make install</code> のときに Apache の
+    C ヘッダをインストールし、DSO ビルド用のプラットフォーム依存の
+    コンパイラとリンカのフラグを <program>apxs</program> プログラムに追加します。
+    これにより、ユーザが Apache の配布ソースツリーなしで、さらに
+    DSO サポートのためのプラットフォーム依存のコンパイラやリンカの
+    フラグをいじることなく Apache のモジュールのソースをコンパイル
+    できるようになります。</p>
 </section>
 
-<section id="usage"><title>$B;HMQK!$N35MW(B</title>
+<section id="usage"><title>使用法の概要</title>
 
-    <p>Apache 2.2 $B$N(B DSO $B5!G=$N35N,$rCN$k$3$H$,$G$-$k$?$a$N!"(B
-    $BC;$/4J7i$J35MW$G$9(B:</p>
+    <p>Apache 2.2 の DSO 機能の概略を知ることができるための、
+    短く簡潔な概要です:</p>
 
     <ol>
       <li>
-        <em>$BG[I[$5$l$F$$$k(B</em> Apache $B%b%8%e!<%k!"2>$K(B <code>mod_foo.c</code>
-        $B$H$7$F!"$=$l$r(B DSO <code>mod_foo.so</code> $B$K%S%k%I!"%$%s%9%H!<%k(B: 
+        <em>配布されている</em> Apache モジュール、仮に <code>mod_foo.c</code>
+        として、それを DSO <code>mod_foo.so</code> にビルド、インストール: 
 
 <example>
 $ ./configure --prefix=/path/to/install --enable-foo=shared<br />
@@ -97,8 +97,8 @@ $ make install
       </li>
 
       <li>
-        <em>$B%5!<%I%Q!<%F%#(B</em> Apache $B%b%8%e!<%k!"2>$K(B <code>mod_foo.c</code>
-        $B$H$7$F!"$=$l$r(B DSO <code>mod_foo.so</code> $B$K%S%k%I!"%$%s%9%H!<%k(B:
+        <em>サードパーティ</em> Apache モジュール、仮に <code>mod_foo.c</code>
+        として、それを DSO <code>mod_foo.so</code> にビルド、インストール:
 
 <example>
 $ ./configure --add-module=<var>module_type</var>:/path/to/3rdparty/mod_foo.c \<br />
@@ -110,8 +110,8 @@ $ make install
       </li>
 
       <li>
-        $B6&M-%b%8%e!<%k$N(B <em>$B8e!9$N%$%s%9%H!<%k(B</em> $B$N$?$a$K(B
-        Apache $B$r@_Dj(B:
+        共有モジュールの <em>後々のインストール</em> のために
+        Apache を設定:
 
 <example>
 $ ./configure --enable-so<br />
@@ -120,9 +120,9 @@ $ make install
       </li>
 
       <li>
-        <em>$B%5!<%I%Q!<%F%#(B</em> Apache $B%b%8%e!<%k!"2>$K(B <code>mod_foo.c</code>
-        $B$H$7$F!"$=$l$r(B <program>apxs</program> $B$r;H$C$F(B
-        Apache $B%=!<%9%D%j!<$N(B<em>$B30$G(B</em> DSO $B$K%S%k%I!"%$%s%9%H!<%k(B:
+        <em>サードパーティ</em> Apache モジュール、仮に <code>mod_foo.c</code>
+        として、それを <program>apxs</program> を使って
+        Apache ソースツリーの<em>外で</em> DSO にビルド、インストール:
 
 <example>
 $ cd /path/to/3rdparty<br />
@@ -132,161 +132,161 @@ $ apxs -i -a -n foo mod_foo.la
       </li>
     </ol>
 
-    <p>$B$I$N>l9g$K$*$$$F$b!"6&M-%b%8%e!<%k$r%3%s%Q%$%k$7$?8e$G!"(B
-    <code>httpd.conf</code> $B$G(B 
+    <p>どの場合においても、共有モジュールをコンパイルした後で、
+    <code>httpd.conf</code> で 
     <directive module="mod_so">LoadModule</directive>
-    $B%G%#%l%/%F%#%V$r;H$C$F(B Apache $B$,%b%8%e!<%k$r;HMQ$9$k$h$&$K(B
-    $B$7$J$1$l$P$J$j$^$;$s!#(B</p>
+    ディレクティブを使って Apache がモジュールを使用するように
+    しなければなりません。</p>
 </section>
 
-<section id="background"><title>$BGX7J(B</title>
+<section id="background"><title>背景</title>
 
-    <p>$B:G6a$N(B Unix $B7O$N(B OS $B$K$O(B <em>$BF0E*6&M-%*%V%8%'%/%H(B</em> (DSO)
-    $B$NF0E*%j%s%/(B/$B%m!<%I$H$$$&5$$N$-$$$?5!9=$,(B
-    $BB8:_$7$^$9!#$3$l$O!"<B9T;~$K%W%m%0%i%`$N%"%I%l%96u4V$K(B
-    $B%m!<%I$G$-$k$h$&$JFCJL$J7A<0$G%W%m%0%i%`$r%S%k%I$9$k$3$H$r(B
-    $B2DG=$K$7$^$9!#(B</p>
+    <p>最近の Unix 系の OS には <em>動的共有オブジェクト</em> (DSO)
+    の動的リンク/ロードという気のきいた機構が
+    存在します。これは、実行時にプログラムのアドレス空間に
+    ロードできるような特別な形式でプログラムをビルドすることを
+    可能にします。</p>
 
-    <p>$B$3$N%m!<%I$OFs$D$NJ}K!$G9T$J$&$3$H$,$G$-$^$9(B: $B<B9T%W%m%0%i%`$,(B
-    $B5/F0$5$l$?$H$-$K(B <code>ld.so</code> $B$H$$$&%7%9%F%`%W%m%0%i%`(B
-    $B$K$h$j<+F0E*$K9T$J$o$l$kJ}K!$H!"<B9T%W%m%0%i%`Cf$+$i!"%7%9%F%`%3!<%k(B
-    <code>dlopen()/dlsym()</code> $B$K$h$k(B Unix $B%m!<%@$X$N(B
-    $B%W%m%0%i%`%7%9%F%`$N%$%s%?%U%'!<%9$r;H$C$F<jF0$G9T$J$&J}K!$H$,(B
-    $B$"$j$^$9!#(B</p>
+    <p>このロードは二つの方法で行なうことができます: 実行プログラムが
+    起動されたときに <code>ld.so</code> というシステムプログラム
+    により自動的に行なわれる方法と、実行プログラム中から、システムコール
+    <code>dlopen()/dlsym()</code> による Unix ローダへの
+    プログラムシステムのインタフェースを使って手動で行なう方法とが
+    あります。</p>
 
-    <p>$B:G=i$NJ}K!$G$O(B DSO $B$OIaDL$O(B<em>$B6&M-%i%$%V%i%j(B</em>$B$d(B <em>DSO
-    $B%i%$%V%i%j(B</em> $B$H8F$P$l$F$$$F!"(BDSO $B$NL>A0$O(B
-    <code>libfoo.so</code> $B$d(B <code>libfoo.so.1.2</code> $B$N$h$&$K$J$C$F$$$^$9!#(B
-    $B$3$l$i$O%7%9%F%`%G%#%l%/%H%j(B ($BDL>o(B <code>/usr/lib</code>) $B$KB8:_$7!"(B
-    $B<B9T%W%m%0%i%`$X$N%j%s%/$O%S%k%I;~$K(B <code>-lfoo</code> $B$r%j%s%+$K(B
-    $B;XDj$9$k$3$H$G3NN)$5$l$^$9!#$3$l$K$h$j%i%$%V%i%j$X$N;2>H$,<B9T%W%m%0%i%`$N(B
-    $B%U%!%$%k$K=q$-9~$^$l$F!"5/F0;~$K(B Unix $B$N%m!<%@$,(B <code>/usr/lib</code> $B$d!"(B
-    $B%j%s%+$N(B <code>-R</code> $B$N$h$&$J%*%W%7%g%s$K$h$j%O!<%I%3!<%I$5$l$?%Q%9!"(B
-    $B4D6-JQ?t(B <code>LD_LIBRARY_PATH</code> $B$K$h$j@_Dj$5$l$?%Q%9!"$NCf$+$i(B
-    <code>libfoo.so</code> $B$N>l=j$r8+$D$1$k$3$H$,$G$-$^$9!#$=$l$+$i!"(B
-    $B<B9T%W%m%0%i%`Cf$N(B ($B$^$@L$2r7h$N(B) $B%7%s%\%k$r(B DSO $B$K$"$k%7%s%\%k$G(B
-    $B2r7h$7$^$9!#(B</p>
+    <p>最初の方法では DSO は普通は<em>共有ライブラリ</em>や <em>DSO
+    ライブラリ</em> と呼ばれていて、DSO の名前は
+    <code>libfoo.so</code> や <code>libfoo.so.1.2</code> のようになっています。
+    これらはシステムディレクトリ (通常 <code>/usr/lib</code>) に存在し、
+    実行プログラムへのリンクはビルド時に <code>-lfoo</code> をリンカに
+    指定することで確立されます。これによりライブラリへの参照が実行プログラムの
+    ファイルに書き込まれて、起動時に Unix のローダが <code>/usr/lib</code> や、
+    リンカの <code>-R</code> のようなオプションによりハードコードされたパス、
+    環境変数 <code>LD_LIBRARY_PATH</code> により設定されたパス、の中から
+    <code>libfoo.so</code> の場所を見つけることができます。それから、
+    実行プログラム中の (まだ未解決の) シンボルを DSO にあるシンボルで
+    解決します。</p>
 
-    <p>$BIaDL$O<B9T%W%m%0%i%`Cf$N%7%s%\%k$O(B DSO $B$+$i$O;2>H$5$l$^$;$s(B
-    (DSO $B$O0lHLE*$J%3!<%I$K$h$k:FMxMQ2DG=$J%i%$%V%i%j$G$9$N$G(B)$B!#(B
-    $B$G$9$+$i!"$5$i$J$k%7%s%\%k$N2r7h$OI,MW$"$j$^$;$s!#(B
-    $B%7%s%\%k$O(B Unix $B%m!<%@$K$h$j40A4$J2r7h$,9T$J$o$l$^$9$N$G!"<B9T%U%!%$%k<+?H$O(B
-    $B2?$b$9$kI,MW$,$"$j$^$;$s!#(B($B<B:]$N$H$3$m!"@EE*$G$J$$J}K!$G%j%s%/$5$l$F$$$k(B
-    $B$9$Y$F$N<B9T%W%m%0%i%`$KAH$_9~$^$l$F$$$k3+;OMQ$N%3!<%I$N0lIt$K(B
-    <code>ld.so</code> $B$r5/F0$9$k%3!<%I$,4^$^$l$F$$$^$9(B)$B!#$h$/;H$o$l$k(B
-    $B%i%$%V%i%j$NF0E*%m!<%I$NMxE@$OL@$i$+$G$9!#%i%$%V%i%j$N%3!<%I$O(B
-    $B%7%9%F%`%i%$%V%i%j$K(B <code>libc.so</code> $B$N$h$&$K$7$F0lEYJ]B8$9$k$@$1$G$h$/!"(B
-    $B%W%m%0%i%`$N$?$a$KI,MW$J%G%#%9%/$NNN0h$r@aLs$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>普通は実行プログラム中のシンボルは DSO からは参照されません
+    (DSO は一般的なコードによる再利用可能なライブラリですので)。
+    ですから、さらなるシンボルの解決は必要ありません。
+    シンボルは Unix ローダにより完全な解決が行なわれますので、実行ファイル自身は
+    何もする必要がありません。(実際のところ、静的でない方法でリンクされている
+    すべての実行プログラムに組み込まれている開始用のコードの一部に
+    <code>ld.so</code> を起動するコードが含まれています)。よく使われる
+    ライブラリの動的ロードの利点は明らかです。ライブラリのコードは
+    システムライブラリに <code>libc.so</code> のようにして一度保存するだけでよく、
+    プログラムのために必要なディスクの領域を節約することができます。</p>
 
-    <p>$BFs$D$a$NJ}K!$G$O(B DSO $B$OIaDL$O(B<em>$B6&M-%*%V%8%'%/%H(B</em>$B$d(B
-    <em>DSO $B%U%!%$%k(B</em>$B$H8F$P$l$F$$$F!"G$0U$N3HD%;R$rIU$1$k$3$H$,$G$-$^$9(B
-    ($B$?$@$7!"I8=`E*$JL>A0$O(B <code>foo.so</code> $B$G$9(B)$B!#(B
-    $B$3$l$i$N%U%!%$%k$ODL>o$O%W%m%0%i%`@lMQ$N%G%#%l%/%H%j$KCV$+$l!"(B
-    $B$3$l$i$r;H$&<B9T%W%m%0%i%`$X$N%j%s%/$O<+F0E*$K$O$5$l$^$;$s!#(B
-    $B$G$9$N$G!"<B9T%W%m%0%i%`$O(B <code>dlopen()</code> $B$r;H$C$F(B
-    $B<B9T;~$K<jF0$G(B DSO $B$r%W%m%0%i%`$N%"%I%l%96u4V$K%m!<%I$9$kI,MW$,$"$j$^$9!#(B
-    $B$3$N;~E@$G$O<B9T%W%m%0%i%`$KBP$7$F(B DSO $B$N%7%s%\%k$N2r7h$O9T$J$o$l$^$;$s!#(B
-    $B$7$+$7!"$=$NBe$o$j$K(B Unix $B$N%m!<%@$,(B DSO $B$N(B ($B$^$@L$2r7h$N(B) $B%7%s%\%k$r(B
-    $B<B9T%W%m%0%i%`$K$h$j%(%/%9%]!<%H$5$l$?%7%s%\%k$H4{$K%m!<%I$5$l$?(B
-    DSO $B%i%$%V%i%j$K$h$j%(%/%9%]!<%H$5$l$?%7%s%\%k(B ($BFC$K!"$I$3$K$G$b$"$k(B
-    <code>libc.so</code> $B$N$9$Y$F$N%7%s%\%k(B) $B$G<+F0E*$K2r7h$7$^$9!#(B
-    $B$3$&$9$k$3$H$G!"(BDSO $B$O:G=i$+$i@EE*$K%j%s%/$5$l$F$$$?$+$N$h$&$K!"(B
-    $B<B9T%W%m%0%i%`$N%7%s%\%k$rCN$k$3$H$,$G$-$^$9!#(B</p>
+    <p>二つめの方法では DSO は普通は<em>共有オブジェクト</em>や
+    <em>DSO ファイル</em>と呼ばれていて、任意の拡張子を付けることができます
+    (ただし、標準的な名前は <code>foo.so</code> です)。
+    これらのファイルは通常はプログラム専用のディレクトリに置かれ、
+    これらを使う実行プログラムへのリンクは自動的にはされません。
+    ですので、実行プログラムは <code>dlopen()</code> を使って
+    実行時に手動で DSO をプログラムのアドレス空間にロードする必要があります。
+    この時点では実行プログラムに対して DSO のシンボルの解決は行なわれません。
+    しかし、その代わりに Unix のローダが DSO の (まだ未解決の) シンボルを
+    実行プログラムによりエクスポートされたシンボルと既にロードされた
+    DSO ライブラリによりエクスポートされたシンボル (特に、どこにでもある
+    <code>libc.so</code> のすべてのシンボル) で自動的に解決します。
+    こうすることで、DSO は最初から静的にリンクされていたかのように、
+    実行プログラムのシンボルを知ることができます。</p>
 
-    <p>$B:G8e$K!"(BDSO $B$N(B API $B$rMxE@$r@8$+$9$?$a$K!"%W%m%0%i%`$O(B
-    $B8e$G%G%#%9%Q%C%A%F!<%V%k(B<em>$B$J$I(B</em>$B$G%7%s%\%k$r;H$&$3$H$,$G$-$k$h$&$K!"(B
-    <code>dlsym()</code> $B$r;H$C$F$$$/$D$+$N%7%s%\%k$r2r7h$7$^$9!#(B
-    $B$9$J$o$A(B: $B<B9T%W%m%0%i%`$OI,MW$J$9$Y$F$N%7%s%\%k$r<jF0$G2r7h$7$J$1$l$P(B
-    $B$J$j$^$;$s!#$3$N5!9=$NMxE@$O%W%m%0%i%`$N%*%W%7%g%J%k$JItJ,$O(B
-    $BI,MW$K$J$k$^$G%m!<%I$9$kI,MW$,$J$$(B ($B$@$+$i%a%b%j$b>CHq$7$J$$(B)
-    $B$3$H$G$9!#I,MW$J$i$P!"4pK\%W%m%0%i%`$N5!G=$r3HD%$9$k$?$a$K(B
-    $B$3$l$i$NItJ,$rF0E*$K%m!<%I$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>最後に、DSO の API を利点を生かすために、プログラムは
+    後でディスパッチテーブル<em>など</em>でシンボルを使うことができるように、
+    <code>dlsym()</code> を使っていくつかのシンボルを解決します。
+    すなわち: 実行プログラムは必要なすべてのシンボルを手動で解決しなければ
+    なりません。この機構の利点はプログラムのオプショナルな部分は
+    必要になるまでロードする必要がない (だからメモリも消費しない)
+    ことです。必要ならば、基本プログラムの機能を拡張するために
+    これらの部分を動的にロードすることができます。</p>
 
-    <p>$B$3$N(B DSO $B5!9=$O4JC1$J$h$&$K8+$($^$9$,!">/$J$/$H$b0l$DFq$7$$E@$,(B
-    $B$"$j$^$9(B: $B%W%m%0%i%`$r3HD%$9$k$?$a$K(B DSO $B$r;H$C$F$$$k$H$-$K!"(B
-    DSO $B$,<B9T%W%m%0%i%`$+$i%7%s%\%k$r2r7h$9$kE@$G$9(B ($BFsHVL\$NJ}K!(B)$B!#(B
-    $B$3$l$O$J$<$G$7$g$&$+!#$=$l$O!"(BDSO $B$N%7%s%\%k$r<B9T%W%m%0%i%`$N(B
-    $B%7%s%\%k$+$i!V5U2r7h!W$9$k$H$$$&$N$O%i%$%V%i%j$N@_7W(B
-    ($B%i%$%V%i%j$O$=$l$r;HMQ$9$k%W%m%0%i%`$N$3$H$O2?$b(B
-    $BCN$i$J$$(B) $B$KH?$7$F$$$F!"$3$N5!G=$O$9$Y$F$N%W%i%C%H%U%)!<%`$K(B
-    $B$"$k$o$1$G$O$J$/!"I8=`2=$b$5$l$F$$$J$$$+$i$G$9!#(B
-    $B<B:]$K$O<B9T%W%m%0%i%`$N%0%m!<%P%k$J%7%s%\%k$O:F%(%/%9%]!<%H$5$l$k$3$H$O(B
-    $B$"$^$j$J$/!"(BDSO $B$+$i;H$&$3$H$,$G$-$^$;$s!#%j%s%+$K%0%m!<%P%k%7%s%\%k$9$Y$F$r(B
-    $B%(%/%9%]!<%H$9$k$h$&$K$5$;$kJ}K!$r8+$D$1$k$3$H$,!"<B9T;~$K%W%m%0%i%`$r(B
-    $B3HD%$9$k$?$a$K(B DSO $B$r;H$&$H$-$N0lHV$NLdBj$G$9!#(B</p>
+    <p>この DSO 機構は簡単なように見えますが、少なくとも一つ難しい点が
+    あります: プログラムを拡張するために DSO を使っているときに、
+    DSO が実行プログラムからシンボルを解決する点です (二番目の方法)。
+    これはなぜでしょうか。それは、DSO のシンボルを実行プログラムの
+    シンボルから「逆解決」するというのはライブラリの設計
+    (ライブラリはそれを使用するプログラムのことは何も
+    知らない) に反していて、この機能はすべてのプラットフォームに
+    あるわけではなく、標準化もされていないからです。
+    実際には実行プログラムのグローバルなシンボルは再エクスポートされることは
+    あまりなく、DSO から使うことができません。リンカにグローバルシンボルすべてを
+    エクスポートするようにさせる方法を見つけることが、実行時にプログラムを
+    拡張するために DSO を使うときの一番の問題です。</p>
 
-    <p>$B6&M-%i%$%V%i%j$N%"%W%m!<%A$,IaDL$NJ}K!$G$9!#(BDSO $B5!9=$O$=$N$?$a$K(B
-    $B@_7W$5$l$?$b$N$G$9$+$i!#$7$?$,$C$F!"$=$NJ}K!$O%*%Z%l!<%F%#%s%0%7%9%F%`$,(B
-    $BDs6!$9$k$[$H$s$I$9$Y$F$N<oN`$N%i%$%V%i%j$G;H$o$l$F$$$^$9!#(B
-    $B0lJ}!"%W%m%0%i%`$N3HD%$N$?$a$K6&M-%*%V%8%'%/%H$r;HMQ$9$k!"$H$$$&J}$O(B
-    $B$"$^$j;H$o$l$F$$$^$;$s!#(B</p>
+    <p>共有ライブラリのアプローチが普通の方法です。DSO 機構はそのために
+    設計されたものですから。したがって、その方法はオペレーティングシステムが
+    提供するほとんどすべての種類のライブラリで使われています。
+    一方、プログラムの拡張のために共有オブジェクトを使用する、という方は
+    あまり使われていません。</p>
 
-    <p>1998 $BG/$N;~E@$G!"<B9T;~$K<B:]$K5!G=3HD%$N$?$a$K(B DSO $B5!9=$r;H$C$F$$$k(B
-    $B%=%U%H%&%'%"%Q%C%1!<%8$O>/$7$@$1$G$7$?(B: Perl 5 (XS $B5!9=$H(B DnaLoader $B%b%8%e!<%k(B
-    $B$K$h$k$b$N(B)$B!"(BNetscape $B%5!<%P(B<em>$B$J$I(B</em>$B$G$9!#(BApache $B$O$9$G$K(B
-    $B%b%8%e!<%k$N35G0$r;H$C$F5!G=3HD%$r$7$F$$$F!"FbItE*$K%G%#%9%Q%C%A%j%9%H$K(B
-    $B4p$E$$$?30It%b%8%e!<%k$N(B Apache $B%3%"5!G=$X$N%j%s%/$r9T$J$C$F$$$^$7$?$N$G!"(B
-    $B%P!<%8%g%s(B 1.3 $B$+$i!"(BApache $B$b(B DSO $B5!9=$r;H$&Cg4V$K$J$j$^$7$?!#(B
-    Apache $B$O<B9T;~$K(B DSO $B$r;H$C$F%b%8%e!<%k$r%m!<%I$9$k$h$&$K$9$G$K(B
-    $B1?L?IU$1$i$l$F$$$?$N$G$9!#(B</p>
+    <p>1998 年の時点で、実行時に実際に機能拡張のために DSO 機構を使っている
+    ソフトウェアパッケージは少しだけでした: Perl 5 (XS 機構と DnaLoader モジュール
+    によるもの)、Netscape サーバ<em>など</em>です。Apache はすでに
+    モジュールの概念を使って機能拡張をしていて、内部的にディスパッチリストに
+    基づいた外部モジュールの Apache コア機能へのリンクを行なっていましたので、
+    バージョン 1.3 から、Apache も DSO 機構を使う仲間になりました。
+    Apache は実行時に DSO を使ってモジュールをロードするようにすでに
+    運命付けられていたのです。</p>
 </section>
 
-<section id="advantages"><title>$BMxE@$H7gE@(B</title>
+<section id="advantages"><title>利点と欠点</title>
 
-    <p>$B>e5-$N(B DSO $B$K4p$E$$$?5!G=$O0J2<$NMxE@$,$"$j$^$9(B:</p>
+    <p>上記の DSO に基づいた機能は以下の利点があります:</p>
 
     <ul>
-      <li>$B<B:]$N%5!<%P%W%m%;%9$rAH$_N)$F$k$?$a$K!"(B
-      $B%S%k%I;~$K(B <code>configure</code> $B$N%*%W%7%g%s$r;H$&Be$o$j$K(B
-      $B<B9T;~$K(B <code>httpd.conf</code> $B$N@_DjMQ%3%^%s%I(B
+      <li>実際のサーバプロセスを組み立てるために、
+      ビルド時に <code>configure</code> のオプションを使う代わりに
+      実行時に <code>httpd.conf</code> の設定用コマンド
       <directive module="mod_so">LoadModule</directive>
-      $B$r;H$&$3$H$,$G$-$^$9$N$G!"%5!<%P%Q%C%1!<%8$N=@Fp@-$,9b$^$j$^$7$?!#(B
-      $B$?$H$($P!"0l$D$N(B Apache $B$N%$%s%9%H!<%k$+$i(B
-      $B0c$&9=@.$N%5!<%P(B ($BI8=`HG$H(B SSL $BHG!":G>.9=@.$H3HD%HG(B [mod_perl, PHP3]
-      <em>$B$J$I(B</em>) $B$r<B9T$9$k$3$H$,$G$-$^$9!#(B</li>
+      を使うことができますので、サーバパッケージの柔軟性が高まりました。
+      たとえば、一つの Apache のインストールから
+      違う構成のサーバ (標準版と SSL 版、最小構成と拡張版 [mod_perl, PHP3]
+      <em>など</em>) を実行することができます。</li>
 
-      <li>$B%$%s%9%H!<%k$N8e$G$"$C$F$b!"%5!<%P$N%Q%C%1!<%8$r%5!<%I%Q!<%F%#(B
-      $B%b%8%e!<%k$G4JC1$K3HD%$G$-$k$h$&$K$J$j$^$7$?!#$3$l$O!"(BApache $B%3%"(B
-      $B%Q%C%1!<%8$H!"(BPHP3, mod_perl, mod_fastcgi <em>$B$J$I(B</em> $B$NDI2C$N(B
-      $B%Q%C%1!<%8$r:n@.$G$-$k$N$G!">/$J$/$H$b%Y%s%@$N%Q%C%1!<%84IM}<T$K$H$C$F(B
-      $BBg$-$JMxE@$,$"$j$^$9!#(B</li>
+      <li>インストールの後であっても、サーバのパッケージをサードパーティ
+      モジュールで簡単に拡張できるようになりました。これは、Apache コア
+      パッケージと、PHP3, mod_perl, mod_fastcgi <em>など</em> の追加の
+      パッケージを作成できるので、少なくともベンダのパッケージ管理者にとって
+      大きな利点があります。</li>
 
-      <li>Apache $B%b%8%e!<%k$N3+H/$,4JC1$K$J$j$^$9!#(B
-      $B$3$l$O(B DSO $B$H(B <program>apxs</program> $B$NAH$_9g$o$;$K$h$j!"(BApache $B%=!<%9%D%j!<$N(B
-      $B30$G:n6H$G$-!"3+H/Cf$N%b%8%e!<%k$N?7$7$$%P!<%8%g%s$r(B
-      $B<B9TCf$N(B Apache $B%5!<%P$KAH$_9~$`$?$a$K(B <code>apxs -i</code> $B$H(B
-      <code>apachectl restart</code> $B$r9T$J$&$@$1$GNI$/$J$k$+$i$G$9!#(B</li>
+      <li>Apache モジュールの開発が簡単になります。
+      これは DSO と <program>apxs</program> の組み合わせにより、Apache ソースツリーの
+      外で作業でき、開発中のモジュールの新しいバージョンを
+      実行中の Apache サーバに組み込むために <code>apxs -i</code> と
+      <code>apachectl restart</code> を行なうだけで良くなるからです。</li>
     </ul>
 
-    <p>DSO $B$K$O0J2<$N7gE@$,$"$j$^$9(B:</p>
+    <p>DSO には以下の欠点があります:</p>
 
     <ul>
-      <li>$B$9$Y$F$N%*%Z%l!<%F%#%s%0%7%9%F%`$,%W%m%0%i%`$N%"%I%l%96u4V$K(B
-      $B%3!<%I$rF0E*%m!<%I$9$k$3$H$r%5%]!<%H$7$F$$$k$o$G$O$J$$$N$G!"(B
-      $B%W%i%C%H%U%)!<%`$K$h$C$F$O(B DSO $B5!9=$O;H$($^$;$s!#(B</li>
+      <li>すべてのオペレーティングシステムがプログラムのアドレス空間に
+      コードを動的ロードすることをサポートしているわではないので、
+      プラットフォームによっては DSO 機構は使えません。</li>
 
-      <li>Unix $B$N%m!<%@$,%7%s%\%k$N2r7h$r$9$kI,MW$,$G$-$?$N$G!"(B
-      $B$=$N%*!<%P%X%C%I$K$h$j%5!<%P$N5/F0;~4V$,Ls(B 20% $BCY$/$J$C$F$$$^$9!#(B</li>
+      <li>Unix のローダがシンボルの解決をする必要ができたので、
+      そのオーバヘッドによりサーバの起動時間が約 20% 遅くなっています。</li>
 
-      <li>$B0LCVHs0MB8%3!<%I(B (PIC) ($BLuCm(B position independent code) $B$O(B
-      $BAjBP%"%I%l%9$N$?$a$KJ#;($J%"%;%s%V%i$N%H%j%C%/$,I,MW$J$3$H$,$"$j!"(B
-      $B$=$l$OI,$:$7$b@dBP%"%I%l%9$HF1$8$/$i$$$NB.EY$,$G$k$o$1$G$O$"$j$^$;$s$N$G!"(B
-      $B%W%i%C%H%U%)!<%`$K$h$C$F$O%5!<%P$N<B9TB.EY$,Ls(B 5% $BCY$/$J$j$^$9!#(B</li>
+      <li>位置非依存コード (PIC) (訳注 position independent code) は
+      相対アドレスのために複雑なアセンブラのトリックが必要なことがあり、
+      それは必ずしも絶対アドレスと同じくらいの速度がでるわけではありませんので、
+      プラットフォームによってはサーバの実行速度が約 5% 遅くなります。</li>
 
-      <li>DSO $B%b%8%e!<%k$O$9$Y$F$N%W%i%C%H%U%)!<%`$GB>$N(B DSO $B$K4p$E$$$?(B
-      $B%i%$%V%i%j$KBP$7$F%j%s%/$G$-$k(B (<code>ld -lfoo</code>)
-      $B$H$$$&$o$1$G$O$"$j$^$;$s$N$G(B ($B$?$H$($P!"(Ba.out $B$N%W%i%C%H%U%)!<%`$G$O(B
-      $B$3$N5!G=$O$"$j$^$;$s$,!"(BELF $B$N%W%i%C%H%U%)!<%`$K$O$"$j$^$9(B)$B!"(B
-      $B$9$Y$F$N<oN`$N%b%8%e!<%k$K(B DSO $B5!9=$r;H$($k$o$1$G$O$"$j$^$;$s!#(B
-      $B8@$$49$($k$H!"(BDSO $B%U%!%$%k$H$7$F%3%s%Q%$%k$5$l$?%b%8%e!<%k$N(B
-      $B;H$($k%7%s%\%k$O!"(B
-      Apache $B$N%3%"$N%7%s%\%k!"(BC $B%i%$%V%i%j(B (<code>libc</code>) $B$H(B
-      Apache $B%3%"$,;H$C$F$$$kB>$N$9$Y$F$N@EE*$J%i%$%V%i%j$HF0E*%i%$%V%i%j$N(B
-      $B%7%s%\%k!"(BPIC $B$K$h$k@EE*$J%i%$%V%i%j(B (<code>libfoo.a</code>) $B$N(B
-      $B%7%s%\%k$N$_$K@)8B$5$l$^$9!#$=$NB>$N%3!<%I$r;H$&J}K!$O!"(B
-      Apache $B%3%"<+?H$,$9$G$K$=$N%3!<%I$X$N;2>H$,$"$k$h$&$K$9$k$+!"(B
-      <code>dlopen ()</code> $B$r;H$C$F%3!<%I$r<+J,<+?H$G%m!<%I$9$k$+$N(B
-     $B$I$A$i$+$7$+$"$j$^$;$s!#(B</li>
+      <li>DSO モジュールはすべてのプラットフォームで他の DSO に基づいた
+      ライブラリに対してリンクできる (<code>ld -lfoo</code>)
+      というわけではありませんので (たとえば、a.out のプラットフォームでは
+      この機能はありませんが、ELF のプラットフォームにはあります)、
+      すべての種類のモジュールに DSO 機構を使えるわけではありません。
+      言い換えると、DSO ファイルとしてコンパイルされたモジュールの
+      使えるシンボルは、
+      Apache のコアのシンボル、C ライブラリ (<code>libc</code>) と
+      Apache コアが使っている他のすべての静的なライブラリと動的ライブラリの
+      シンボル、PIC による静的なライブラリ (<code>libfoo.a</code>) の
+      シンボルのみに制限されます。その他のコードを使う方法は、
+      Apache コア自身がすでにそのコードへの参照があるようにするか、
+      <code>dlopen ()</code> を使ってコードを自分自身でロードするかの
+     どちらかしかありません。</li>
     </ul>
 
 </section>

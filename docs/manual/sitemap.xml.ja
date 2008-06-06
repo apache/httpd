@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE sitemap SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 159098:587444 (outdated) -->
@@ -25,142 +25,142 @@
   <title>Site Map</title>
 
 <summary>
-<p>$B$3$N%Z!<%8$O8=;~E@$GMxMQ2DG=$J(B
-<a href="./">Apache HTTP $B%5!<%P%P!<%8%g%s(B &httpd.major;.&httpd.minor; $B$N%I%-%e%a%s%F!<%7%g%s(B</a>
-$B$N0lMw$G$9!#(B</p>
+<p>このページは現時点で利用可能な
+<a href="./">Apache HTTP サーババージョン &httpd.major;.&httpd.minor; のドキュメンテーション</a>
+の一覧です。</p>
 </summary>
 
 <category id="release">
-<title>$B%j%j!<%9$N%a%b(B</title>
-<page href="upgrading.html">1.3 $B$+$i(B 2.0 $B$X$N%"%C%W%0%l!<%I(B</page>
-<page href="new_features_2_0.html">Apache 2.0 $B$N?75!G=(B</page>
+<title>リリースのメモ</title>
+<page href="upgrading.html">1.3 から 2.0 へのアップグレード</page>
+<page href="new_features_2_0.html">Apache 2.0 の新機能</page>
 <page href="license.html">Apache License</page>
 </category>
 
 <category id="using">
-<title>Apache HTTP $B%5!<%P$N;HMQ(B</title>
-<page href="install.html">Apache $B$N%3%s%Q%$%k$H%$%s%9%H!<%k(B</page>
-<page href="invoking.html">Apache $B$N5/F0(B</page>
-<page href="stopping.html">$B%5!<%P$NDd;_$H:F5/F0(B</page>
-<page href="configuring.html">$B@_Dj%U%!%$%k(B</page>
-<page href="sections.html">Directory, Location, Files $B%;%/%7%g%s$NF0:nJ}K!(B</page>
-<page href="server-wide.html">$B%5!<%PA4BN$N@_Dj(B</page>
-<page href="logs.html">$B%m%0%U%!%$%k(B</page>
-<page href="urlmapping.html">URL $B$+$i%U%!%$%k%7%9%F%`>e$N0LCV$X$N%^%C%W(B</page>
-<page href="misc/security_tips.html">$B%;%-%e%j%F%#$N%3%D(B</page>
-<page href="dso.html">$BF0E*6&M-%*%V%8%'%/%H(B (DSO) $B%5%]!<%H(B</page>
-<page href="content-negotiation.html">$B%3%s%F%s%H%M%4%7%(!<%7%g%s(B</page>
-<page href="custom-error.html">$B%+%9%?%`%(%i!<%l%9%]%s%9(B</page>
-<page href="bind.html">Apache $B$,;HMQ$9$k%"%I%l%9$H%]!<%H$N@_Dj(B</page>
-<page href="mpm.html">$B%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B (MPM)</page>
-<page href="env.html">Apache $B$K$*$1$k4D6-JQ?t(B</page>
-<page href="handler.html">Apache $B$N%O%s%I%i$N;HMQ(B</page>
-<page href="filter.html">$B%U%#%k%?(B</page>
-<page href="suexec.html">suEXEC $B%5%]!<%H(B</page>
-<page href="misc/perf-tuning.html">$B@-G=$K4X$9$k%R%s%H(B</page>
-<page href="misc/rewriteguide.html">URL $B%j%i%$%H%,%$%I(B</page>
+<title>Apache HTTP サーバの使用</title>
+<page href="install.html">Apache のコンパイルとインストール</page>
+<page href="invoking.html">Apache の起動</page>
+<page href="stopping.html">サーバの停止と再起動</page>
+<page href="configuring.html">設定ファイル</page>
+<page href="sections.html">Directory, Location, Files セクションの動作方法</page>
+<page href="server-wide.html">サーバ全体の設定</page>
+<page href="logs.html">ログファイル</page>
+<page href="urlmapping.html">URL からファイルシステム上の位置へのマップ</page>
+<page href="misc/security_tips.html">セキュリティのコツ</page>
+<page href="dso.html">動的共有オブジェクト (DSO) サポート</page>
+<page href="content-negotiation.html">コンテントネゴシエーション</page>
+<page href="custom-error.html">カスタムエラーレスポンス</page>
+<page href="bind.html">Apache が使用するアドレスとポートの設定</page>
+<page href="mpm.html">マルチプロセッシングモジュール (MPM)</page>
+<page href="env.html">Apache における環境変数</page>
+<page href="handler.html">Apache のハンドラの使用</page>
+<page href="filter.html">フィルタ</page>
+<page href="suexec.html">suEXEC サポート</page>
+<page href="misc/perf-tuning.html">性能に関するヒント</page>
+<page href="misc/rewriteguide.html">URL リライトガイド</page>
 </category>
 
 <category id="vhosts">
-<title>Apache $B%P!<%A%c%k%[%9%H%I%-%e%a%s%H(B</title>
-<page separate="yes" href="vhosts/">$B35N,(B</page>
-<page href="vhosts/name-based.html">$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H(B</page>
-<page href="vhosts/ip-based.html">IP $B%Y!<%9$N%P!<%A%c%k%[%9%H$N%5%]!<%H(B</page>
-<page href="vhosts/mass.html">$BF0E*$K@_Dj$5$l$?Bg5,LO%P!<%A%c%k%[%9%H(B</page>
-<page href="vhosts/examples.html">VirtualHost $B$NNc(B</page>
-<page href="vhosts/details.html">$B%P!<%A%c%k%[%9%H$N%^%C%A%s%0$N>\$7$$@bL@(B</page>
-<page href="vhosts/fd-limits.html">$B%U%!%$%k5-=R;R$N8B3&(B</page>
-<page href="dns-caveats.html">DNS $B$H(B Apache $B$H$K4X78$9$kLdBj(B</page>
+<title>Apache バーチャルホストドキュメント</title>
+<page separate="yes" href="vhosts/">概略</page>
+<page href="vhosts/name-based.html">名前ベースのバーチャルホスト</page>
+<page href="vhosts/ip-based.html">IP ベースのバーチャルホストのサポート</page>
+<page href="vhosts/mass.html">動的に設定された大規模バーチャルホスト</page>
+<page href="vhosts/examples.html">VirtualHost の例</page>
+<page href="vhosts/details.html">バーチャルホストのマッチングの詳しい説明</page>
+<page href="vhosts/fd-limits.html">ファイル記述子の限界</page>
+<page href="dns-caveats.html">DNS と Apache とに関係する問題</page>
 </category>
 
 <category id="faq">
-<title>Apache $B%5!<%P$N$h$/$"$k<ALd(B</title>
-<page href="faq/">$B35N,(B</page>
-<page href="faq/support.html">$B%5%]!<%H(B</page>
-<page href="faq/error.html">$B%(%i!<%a%C%;!<%8(B</page>
+<title>Apache サーバのよくある質問</title>
+<page href="faq/">概略</page>
+<page href="faq/support.html">サポート</page>
+<page href="faq/error.html">エラーメッセージ</page>
 </category>
 
 <category id="ssl">
-<title>Apache $B$N(B SSL/TLS $B0E9f2=(B</title>
-<page separate="yes" href="ssl/">$B35N,(B</page>
-<page href="ssl/ssl_intro.html">SSL/TLS $B0E9f2=(B: $BF~Lg(B</page>
-<page href="ssl/ssl_compat.html">SSL/TLS $B0E9f2=(B: $B8_49@-(B</page>
-<page href="ssl/ssl_howto.html">SSL/TLS $B0E9f2=(B: $B%O%&%D!<(B</page>
-<page href="ssl/ssl_faq.html">SSL/TLS $B0E9f2=(B: FAQ</page>
+<title>Apache の SSL/TLS 暗号化</title>
+<page separate="yes" href="ssl/">概略</page>
+<page href="ssl/ssl_intro.html">SSL/TLS 暗号化: 入門</page>
+<page href="ssl/ssl_compat.html">SSL/TLS 暗号化: 互換性</page>
+<page href="ssl/ssl_howto.html">SSL/TLS 暗号化: ハウツー</page>
+<page href="ssl/ssl_faq.html">SSL/TLS 暗号化: FAQ</page>
 </category>
 
 <category id="howto">
-<title>$B%,%$%I!"%A%e!<%H%j%"%k!"%O%&%D!<(B</title>
-<page separate="yes" href="howto/">$B35N,(B</page>
-<page href="howto/auth.html">$BG'>Z(B</page>
-<page href="howto/cgi.html">CGI $B$K$h$kF0E*%3%s%F%s%D(B</page>
-<page href="howto/ssi.html">Server Side Includes $BF~Lg(B</page>
-<page href="howto/htaccess.html">.htaccess $B%U%!%$%k(B</page>
-<page href="howto/public_html.html">$B%f!<%6Kh$N%&%'%V%G%#%l%/%H%j(B</page>
+<title>ガイド、チュートリアル、ハウツー</title>
+<page separate="yes" href="howto/">概略</page>
+<page href="howto/auth.html">認証</page>
+<page href="howto/cgi.html">CGI による動的コンテンツ</page>
+<page href="howto/ssi.html">Server Side Includes 入門</page>
+<page href="howto/htaccess.html">.htaccess ファイル</page>
+<page href="howto/public_html.html">ユーザ毎のウェブディレクトリ</page>
 </category>
 
 <category id="platform">
-<title>$B%W%i%C%H%U%)!<%`8GM-$N>pJs(B</title>
-<page separate="yes" href="platform/">$B35N,(B</page>
-<page href="platform/windows.html">Microsoft Windows $B$G$N(B Apache $B$N;HMQ(B</page>
-<page href="platform/win_compiling.html">Microsoft Windows $B$G$N(B Apache
-$B$N%3%s%Q%$%k(B</page>
-<page href="platform/netware.html">Novell NetWare $B$G(B Apache $B$r;H$&(B</page>
-<page href="platform/perf-hp.html">HPUX $B$G9b@-G=%&%'%V%5!<%P$r<B9T$9$k(B</page>
-<page href="platform/ebcdic.html">EBCDIC $BHG(B Apache</page>
+<title>プラットフォーム固有の情報</title>
+<page separate="yes" href="platform/">概略</page>
+<page href="platform/windows.html">Microsoft Windows での Apache の使用</page>
+<page href="platform/win_compiling.html">Microsoft Windows での Apache
+のコンパイル</page>
+<page href="platform/netware.html">Novell NetWare で Apache を使う</page>
+<page href="platform/perf-hp.html">HPUX で高性能ウェブサーバを実行する</page>
+<page href="platform/ebcdic.html">EBCDIC 版 Apache</page>
 </category>
 
 <category id="programs">
-<title>Apache HTTP $B%5!<%P$H%5%]!<%H%W%m%0%i%`(B</title>
-<page separate="yes" href="programs/">$B35N,(B</page>
-<page href="programs/httpd.html">$B%^%K%e%"%k%Z!<%8(B: httpd</page>
-<page href="programs/ab.html">$B%^%K%e%"%k%Z!<%8(B: ab</page>
-<page href="programs/apachectl.html">$B%^%K%e%"%k%Z!<%8(B: apachectl</page>
-<page href="programs/apxs.html">$B%^%K%e%"%k%Z!<%8(B: apxs</page>
-<page href="programs/configure.html">$B%^%K%e%"%k%Z!<%8(B: configure</page>
-<page href="programs/dbmmanage.html">$B%^%K%e%"%k%Z!<%8(B: dbmmanage</page>
-<page href="programs/htcacheclean.html">$B%^%K%e%"%k%Z!<%8(B: htcacheclean</page>
-<page href="programs/htdbm.html">$B%^%K%e%"%k%Z!<%8(B: htdbm</page>
-<page href="programs/htdigest.html">$B%^%K%e%"%k%Z!<%8(B: htdigest</page>
-<page href="programs/htpasswd.html">$B%^%K%e%"%k%Z!<%8(B: htpasswd</page>
-<page href="programs/logresolve.html">$B%^%K%e%"%k%Z!<%8(B: logresolve</page>
-<page href="programs/rotatelogs.html">$B%^%K%e%"%k%Z!<%8(B: rotatelogs</page>
-<page href="programs/suexec.html">$B%^%K%e%"%k%Z!<%8(B: suexec</page>
-<page href="programs/other.html">$BB>$N%W%m%0%i%`(B</page>
+<title>Apache HTTP サーバとサポートプログラム</title>
+<page separate="yes" href="programs/">概略</page>
+<page href="programs/httpd.html">マニュアルページ: httpd</page>
+<page href="programs/ab.html">マニュアルページ: ab</page>
+<page href="programs/apachectl.html">マニュアルページ: apachectl</page>
+<page href="programs/apxs.html">マニュアルページ: apxs</page>
+<page href="programs/configure.html">マニュアルページ: configure</page>
+<page href="programs/dbmmanage.html">マニュアルページ: dbmmanage</page>
+<page href="programs/htcacheclean.html">マニュアルページ: htcacheclean</page>
+<page href="programs/htdbm.html">マニュアルページ: htdbm</page>
+<page href="programs/htdigest.html">マニュアルページ: htdigest</page>
+<page href="programs/htpasswd.html">マニュアルページ: htpasswd</page>
+<page href="programs/logresolve.html">マニュアルページ: logresolve</page>
+<page href="programs/rotatelogs.html">マニュアルページ: rotatelogs</page>
+<page href="programs/suexec.html">マニュアルページ: suexec</page>
+<page href="programs/other.html">他のプログラム</page>
 </category>
 
 <category id="misc">
-<title>Apache $B$=$NB>(B</title>
-<page separate="yes" href="misc/">$B35N,(B</page>
-<page href="misc/relevant_standards.html">$B4XO"$9$kI8=`5,3J(B</page>
+<title>Apache その他</title>
+<page separate="yes" href="misc/">概略</page>
+<page href="misc/relevant_standards.html">関連する標準規格</page>
 </category>
 
 <category id="modules">
-<title>Apache $B%b%8%e!<%k(B</title>
-<page href="mod/module-dict.html">Apache $B%G%#%l%/%F%#%V$N@bL@$K;H$o$l$kMQ8l(B</page>
-<page href="mod/directive-dict.html">Apache $B%G%#%l%/%F%#%V$r@bL@$K;H$o$l$kMQ8l(B</page>
+<title>Apache モジュール</title>
+<page href="mod/module-dict.html">Apache ディレクティブの説明に使われる用語</page>
+<page href="mod/directive-dict.html">Apache ディレクティブを説明に使われる用語</page>
 </category>
 
 <category id="developer">
-<title>$B3+H/<T$N$?$a$N%I%-%e%a%s%H(B</title>
-<page separate="yes" href="developer/">$B35N,(B</page>
-<page href="developer/API.html">Apache API $B%a%b(B</page>
+<title>開発者のためのドキュメント</title>
+<page separate="yes" href="developer/">概略</page>
+<page href="developer/API.html">Apache API メモ</page>
 <page href="developer/debugging.html">APR
-$B$N%a%b%j%"%m%1!<%7%g%s$N%G%P%C%0(B</page>
-<page href="developer/documenting.html">Apache 2.0 $B$N@bL@$r=q$/(B</page>
-<page href="developer/hooks.html">Apache 2.0 $B%U%C%/4X?t(B</page>
-<page href="developer/modules.html">Apache 1.3 $B$+$i(B Apache 2.0 $B$K%b%8%e!<%k$r(B
-$B0\?"$9$k(B</page>
-<page href="developer/request.html">Apache 2.0 $B$N%j%/%(%9%H=hM}(B</page>
-<page href="developer/filters.html">Apache 2.0 $B$N%U%#%k%?$NF0:n$N;EJ}(B</page>
+のメモリアロケーションのデバッグ</page>
+<page href="developer/documenting.html">Apache 2.0 の説明を書く</page>
+<page href="developer/hooks.html">Apache 2.0 フック関数</page>
+<page href="developer/modules.html">Apache 1.3 から Apache 2.0 にモジュールを
+移植する</page>
+<page href="developer/request.html">Apache 2.0 のリクエスト処理</page>
+<page href="developer/filters.html">Apache 2.0 のフィルタの動作の仕方</page>
 </category>
 
 <category id="index">
-<title>$BMQ8l=8$H:w0z(B</title>
-<page href="glossary.html">$BMQ8l=8(B</page>
-<page href="mod/">$B%b%8%e!<%k:w0z(B</page>
-<page href="mod/directives.html">$B%G%#%l%/%F%#%V:w0z(B</page>
-<page href="mod/quickreference.html">$B%G%#%l%/%F%#%V(B $B%/%$%C%/%j%U%!%l%s%9(B</page>
+<title>用語集と索引</title>
+<page href="glossary.html">用語集</page>
+<page href="mod/">モジュール索引</page>
+<page href="mod/directives.html">ディレクティブ索引</page>
+<page href="mod/quickreference.html">ディレクティブ クイックリファレンス</page>
 </category>
 
 </sitemap>

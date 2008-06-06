@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -23,24 +23,24 @@
 <modulesynopsis metafile="mod_authn_file.xml.meta">
 
 <name>mod_authn_file</name>
-<description>$B%F%-%9%H%U%!%$%k$rMQ$$$?%f!<%6G'>Z(B</description>
+<description>テキストファイルを用いたユーザ認証</description>
 <status>Base</status>
 <sourcefile>mod_authn_file.c</sourcefile>
 <identifier>authn_file_module</identifier>
-<compatibility>Apache 2.1 $B0J9_(B</compatibility>
+<compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
-    <p>$BK\%b%8%e!<%k$O(B <module>mod_auth_digest</module> $B$d(B
-    <module>mod_auth_basic</module> $B$H$$$C$?G'>Z%U%m%s%H%(%s%I$KBP$7$F!"(B
-    $B%W%l%$%s%F%-%9%H$N%Q%9%o!<%I%U%!%$%kFb$+$i%f!<%6$r8!:w$9$k$3$H$G!"(B
-    $B%f!<%6G'>Z5!G=$rDs6!$7$^$9!#;w$?$h$&$J5!G=$O(B <module>mod_authn_dbm</module>
-    $B$G$bDs6!$5$l$F$$$^$9!#(B</p>
+    <p>本モジュールは <module>mod_auth_digest</module> や
+    <module>mod_auth_basic</module> といった認証フロントエンドに対して、
+    プレインテキストのパスワードファイル内からユーザを検索することで、
+    ユーザ認証機能を提供します。似たような機能は <module>mod_authn_dbm</module>
+    でも提供されています。</p>
 
-    <p><module>mod_auth_basic</module> $B$d(B <module>mod_auth_digest</module>
-    $B$r;HMQ$9$k:]$K$O!"(B
-    <directive module="mod_auth_basic">AuthBasicProvider</directive> $B$d(B
+    <p><module>mod_auth_basic</module> や <module>mod_auth_digest</module>
+    を使用する際には、
+    <directive module="mod_auth_basic">AuthBasicProvider</directive> や
     <directive module="mod_auth_digest">AuthDigestPrivider</directive>
-    $B$G(B <code>file</code> $B$H;XDj$9$k$3$H$G$3$N%b%8%e!<%k$O5/F0$5$l$^$9!#(B</p>
+    で <code>file</code> と指定することでこのモジュールは起動されます。</p>
 </summary>
 <seealso>
   <directive module="mod_auth_basic">AuthBasicProvider</directive>
@@ -53,71 +53,71 @@
  
 <directivesynopsis>
 <name>AuthUserFile</name>
-<description>$BG'>Z$K;HMQ$9$k%f!<%6$H%Q%9%o!<%I$N0lMw$,3JG<$5$l$F$$$k!"(B
-$B%F%-%9%H%U%!%$%k$NL>A0$r@_Dj$9$k(B</description>
+<description>認証に使用するユーザとパスワードの一覧が格納されている、
+テキストファイルの名前を設定する</description>
 <syntax>AuthUserFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthUserFile</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B%f!<%6G'>Z$N$?$a$N%f!<%6$H%Q%9%o!<%I$N0lMw$r3JG<$7$?(B
-    $B%F%-%9%H%U%!%$%k$NL>A0$r@_Dj$7$^$9!#(B<var>file-path</var>
-    $B$O%f!<%6%U%!%$%k$X$N%Q%9$G$9!#(B
-    $B$b$7@dBP%Q%9$G$J$1$l$P!"(B
+    <p><directive>AuthUserFile</directive> ディレクティブは、
+    ユーザ認証のためのユーザとパスワードの一覧を格納した
+    テキストファイルの名前を設定します。<var>file-path</var>
+    はユーザファイルへのパスです。
+    もし絶対パスでなければ、
     <directive module="core">ServerRoot</directive>
-    $B$+$i$NAjBP%Q%9$H$7$F07$o$l$^$9!#(B</p>
+    からの相対パスとして扱われます。</p>
 
-    <p>$B%f!<%6%U%!%$%k$N3F9T$K$O!"%f!<%6L>!"%3%m%s!"(B
-    $B0E9f2=$7$?%Q%9%o!<%I$r5-=R$7$^$9!#(B
-    $BF10l%f!<%6(B ID $B$,J#?t2sEPO?$5$l$?;~$O!"(B
+    <p>ユーザファイルの各行には、ユーザ名、コロン、
+    暗号化したパスワードを記述します。
+    同一ユーザ ID が複数回登録された時は、
     <module>mod_authn_file</module>
-    $B$O:G=i$K8+$D$+$C$?%Q%9%o!<%I$r;HMQ$7$FG'>Z$7$^$9!#(B</p>
+    は最初に見つかったパスワードを使用して認証します。</p>
 
-    <p>$B%P%$%J%jG[I[$N0lIt$H$7$F%$%s%9%H!<%k$5$l$k$+!"(B
-    $B$"$k$$$O(B <code>src/support</code> $B$K$"$k(B
+    <p>バイナリ配布の一部としてインストールされるか、
+    あるいは <code>src/support</code> にある
     <program>htpasswd</program>
-    $B%f!<%F%#%j%F%#$G!"$3$N(B <em>HTTP $B4pK\G'>Z(B</em>
-    $BMQ%Q%9%o!<%I%U%!%$%k$r%a%$%s%F%J%s%9$7$^$9!#(B
-    $B>\:Y$O(B <a href="../programs/htpasswd.html">man
-    $B%Z!<%8(B</a>$B$r$4MwD:$/$H$7$F!"4JC1$K$O(B:</p>
+    ユーティリティで、この <em>HTTP 基本認証</em>
+    用パスワードファイルをメインテナンスします。
+    詳細は <a href="../programs/htpasswd.html">man
+    ページ</a>をご覧頂くとして、簡単には:</p>
 
-    <p>$B=i4|(B ID <code>username</code> $B$G!"(B<code>Filename</code>
-    $B$H$$$&%Q%9%o!<%I%U%!%$%k$r@8@.$7$^$9!#(B
-    $B<!$N%3%^%s%I$rH/9T$9$k$H%Q%9%o!<%I$,MW5a$5$l$^$9(B:</p>
+    <p>初期 ID <code>username</code> で、<code>Filename</code>
+    というパスワードファイルを生成します。
+    次のコマンドを発行するとパスワードが要求されます:</p>
 
     <example>
       htpasswd -c Filename username
     </example>
 
-    <p>$B%Q%9%o!<%I%U%!%$%k(B <code>Filename</code> $B$K!"(B<code>username2</code>
-    $B$rDI2C$7$?$j=$@5$7$?$j$7$^$9(B:</p>
+    <p>パスワードファイル <code>Filename</code> に、<code>username2</code>
+    を追加したり修正したりします:</p>
 
     <example>
       htpasswd Filename username2
     </example>
 
-    <p>($BLuCm(B: $BHs>o$KB?$/$N%f!<%6$rEPO?$9$k$HBg$-$J%U%!%$%k$K$J$j$^$9$,(B)
-    $BBg$-$J%F%-%9%H%U%!%$%k$r8!:w$9$k$N$O(B<em>$BHs>o$K8zN($,0-$$(B</em>
-    $B$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#$=$N$h$&$JI,MW$N$"$k;~$O!"(B
+    <p>(訳注: 非常に多くのユーザを登録すると大きなファイルになりますが)
+    大きなテキストファイルを検索するのは<em>非常に効率が悪い</em>
+    ということに注意してください。そのような必要のある時は、
     <directive module="mod_authn_dbm">AuthDBMUserFile</directive>
-    $B$rBe$o$j$K;H$C$F$/$@$5$$!#(B</p>
+    を代わりに使ってください。</p>
 
-    <p><em>HTTP $B%@%$%8%'%9%HG'>Z(B</em>$B$r;HMQ$9$k>l9g$O!"(B
+    <p><em>HTTP ダイジェスト認証</em>を使用する場合は、
     <a href="../programs/htpasswd.html">htpasswd</a>
-    $B%W%m%0%i%`$G$OIT==J,$G$9!#$=$NBe$o$j$K(B
+    プログラムでは不十分です。その代わりに
     <program>htdigest</program>
-    $B$r;HMQ$7$F$/$@$5$$!#%@%$%8%'%9%HG'>ZMQ$N%G!<%?$H(B
-    $B4pK\G'>ZMQ$N%G!<%?$rF10l%U%!%$%k$K:.$<$FJ]B8$G$-$J$$!"(B
-    $B$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    を使用してください。ダイジェスト認証用のデータと
+    基本認証用のデータを同一ファイルに混ぜて保存できない、
+    ということに注意してください。</p>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
+    <note type="warning"><title>セキュリティ</title>
     <p><directive>AuthUserFile </directive>
-        $B$O!"%&%'%V%5!<%P$N%I%-%e%a%s%H%D%j!<$N30B&$KJ]4I$9$k$h$&$K$7$F$/$@$5$$!#(B
-        $BJ]8n$7$h$&$H$7$F$$$k%G%#%l%/%H%j0J2<$K$O!"(B<strong>$BCV$+$J$$$G2<$5$$(B</strong>$B!#(B
-        $B$=$&$7$J$$$H(B <directive>AuthUserFile</directive> $B$O(B
-        $B%@%&%s%m!<%I$G$-$F$7$^$$$^$9!#(B</p>
+        は、ウェブサーバのドキュメントツリーの外側に保管するようにしてください。
+        保護しようとしているディレクトリ以下には、<strong>置かないで下さい</strong>。
+        そうしないと <directive>AuthUserFile</directive> は
+        ダウンロードできてしまいます。</p>
     </note>
 </usage>
 </directivesynopsis>

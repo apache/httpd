@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -23,22 +23,22 @@
 <modulesynopsis metafile="mod_authn_default.xml.meta">
 
 <name>mod_authn_default</name>
-<description>$BG'>Z%U%)!<%k%P%C%/%b%8%e!<%k(B</description>
+<description>認証フォールバックモジュール</description>
 <status>Base</status>
 <sourcefile>mod_authn_default.c</sourcefile>
 <identifier>authn_default_module</identifier>
-<compatibility>Apache 2.1 $B0J9_(B</compatibility>
+<compatibility>Apache 2.1 以降</compatibility>
 
 <summary>
-    <p><module>mod_auth_basic</module> $B$N$h$&$JG'>Z%b%8%e!<%k$r(B
-    $B@_Dj$7$J$+$C$?>l9g$O!"K\%b%8%e!<%k$,%U%)!<%k%P%C%/$H$J$j$^$9!#(B
-    $B%f!<%6$+$iDs<($5$l$?$I$s$J>Z=q$bC1$K5qH]$7$^$9!#(B</p>
+    <p><module>mod_auth_basic</module> のような認証モジュールを
+    設定しなかった場合は、本モジュールがフォールバックとなります。
+    ユーザから提示されたどんな証書も単に拒否します。</p>
 </summary>
 
 <directivesynopsis>
 <name>AuthDefaultAuthoritative</name>
-<description>$B<!$NDc<!%l%Y%k$NG'>Z%b%8%e!<%k$K@)8f$rEO$9$+$I$&$+$r(B
-$B@_Dj$7$^$9(B</description>
+<description>次の低次レベルの認証モジュールに制御を渡すかどうかを
+設定します</description>
 <syntax>AuthDefaultAuthoritative On|Off</syntax>
 <default>AuthDefaultAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -46,18 +46,18 @@
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthDefaultAuthoritative</directive> $B%G%#%l%/%F%#%V$r(B
-    $BL@<(E*$K(B <code>Off</code> $B$K@_Dj$9$k$H!"(B
-    $BG'>Z$r<!$N(B (<code>modules.c</code> $B%U%!%$%k$GDj5A$5$l$F$$$k(B)
-    $BDc<!%l%Y%k$N%b%8%e!<%k$KEO$7$^$9!#(B
+    <p><directive>AuthDefaultAuthoritative</directive> ディレクティブを
+    明示的に <code>Off</code> に設定すると、
+    認証を次の (<code>modules.c</code> ファイルで定義されている)
+    低次レベルのモジュールに渡します。
     </p>
 
-    <note><title>$BCm0U(B</title>
-      <p><module>mod_authn_default</module> $B<+BN$,(B<em>$B$H$F$bDc$$(B</em>
-      $B%l%Y%k$H$7$FDj5A$5$l$F$$$^$9$N$G!"DL>o$O$3$l$h$j$bDc<!$N(B
-      $B%b%8%e!<%k$OB8:_$7$^$;$s!#$G$9$+$i(B
-      <directive>AuthDefaultAuthoritative</directive> $B$O%G%U%)%k%H(B
-      (<code>On</code>) $B$N$^$^$K$7$?$[$&$,NI$$$G$7$g$&!#(B</p>
+    <note><title>注意</title>
+      <p><module>mod_authn_default</module> 自体が<em>とても低い</em>
+      レベルとして定義されていますので、通常はこれよりも低次の
+      モジュールは存在しません。ですから
+      <directive>AuthDefaultAuthoritative</directive> はデフォルト
+      (<code>On</code>) のままにしたほうが良いでしょう。</p>
     </note>
 </usage>
 </directivesynopsis>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:659902 (outdated) -->
@@ -21,41 +21,41 @@
 -->
 
 <manualpage metafile="examples.xml.meta">
-<parentdocument href="./">$B%P!<%A%c%k%[%9%H(B</parentdocument>
-    <title>$B%P!<%A%c%k%[%9%H$NNc(B</title>
+<parentdocument href="./">バーチャルホスト</parentdocument>
+    <title>バーチャルホストの例</title>
 
 <summary>
 
-    <p>$B$3$NJ8=q$O!"%P!<%A%c%k%[%9%H$N@_Dj$N:]$K(B
-    $B$h$/$"$k<ALd$KEz$($k$b$N$G$9!#A[Dj$7$F$$$kBP>]$O(B <a
-    href="name-based.html">$BL>A0%Y!<%9(B</a> $B$d(B <a
-    href="ip-based.html">IP $B%Y!<%9(B</a> $B$N%P!<%A%c%k%[%9%H$r;H$C$F(B
-    $B0l$D$N%5!<%P$GJ#?t$N%&%'%V%5%$%H$r1?MQ$7$F$$$k>u67$G$9!#(B
+    <p>この文書は、バーチャルホストの設定の際に
+    よくある質問に答えるものです。想定している対象は <a
+    href="name-based.html">名前ベース</a> や <a
+    href="ip-based.html">IP ベース</a> のバーチャルホストを使って
+    一つのサーバで複数のウェブサイトを運用している状況です。
     </p>
 
 </summary>
 
-  <section id="purename"><title>$B0l$D$N(B IP $B%"%I%l%9$G$$$/$D$+$NL>A0%Y!<%9$N(B
-    $B%&%'%V%5%$%H$r<B9T$9$k(B</title>
+  <section id="purename"><title>一つの IP アドレスでいくつかの名前ベースの
+    ウェブサイトを実行する</title>
 
-    <p>$B%5!<%P$O(B IP $B%"%I%l%9$r0l$D3d$jEv$F$i$l$F$$$F!"(BDNS $B$G%^%7%s$K(B
-    $BJ#?t$NL>A0(B (CNAME) $B$,;XDj$5$l$F$$$^$9!#$3$N%^%7%s$G(B
-    <code>www.example.com</code> $B$H(B <code>www.example.org</code>
-    $B$N$?$a$N%&%'%V%5!<%P$r<B9T$5$;$?$$$H$7$^$9!#(B</p>
+    <p>サーバは IP アドレスを一つ割り当てられていて、DNS でマシンに
+    複数の名前 (CNAME) が指定されています。このマシンで
+    <code>www.example.com</code> と <code>www.example.org</code>
+    のためのウェブサーバを実行させたいとします。</p>
 
-    <note><title>$BCm(B</title><p>
-          Apache $B%5!<%P$N@_Dj$G%P!<%A%c%k%[%9%H$N@_Dj$r$7$?$@$1$G!"(B
-          $BCN$i$J$$4V$K$=$N%[%9%HL>$KBP1~$9$k(B DNS $B$N%(%s%H%j$,(B
-          $B:n@.$5$l$?$j$O$7$^$;$s!#$=$N%5!<%P$N(B IP $B%"%I%l%9$K2r7h$5$l$k(B
-          $B$h$&$K(B DNS $B$KL>A0$rEPO?$7$J$1$l$P(B<em>$B$J$j$^$;$s(B</em>$B!#(B
-          $B$=$&$G$J$$$HC/$b$"$J$?$N%&%'%V%5%$%H$r8+$k$3$H$O$G$-$^$;$s!#(B
-          $B%m!<%+%k$G$N%F%9%H$N$?$a$K(B <code>hosts</code> $B%U%!%$%k$K(B
-          $B%(%s%H%j$rDI2C$9$k$3$H$b$G$-$^$9$,!"$3$N>l9g$O$=$N(B
-          hosts $B%(%s%H%j$N$"$k%^%7%s$+$i$7$+F0:n$7$^$;$s!#(B</p>
+    <note><title>注</title><p>
+          Apache サーバの設定でバーチャルホストの設定をしただけで、
+          知らない間にそのホスト名に対応する DNS のエントリが
+          作成されたりはしません。そのサーバの IP アドレスに解決される
+          ように DNS に名前を登録しなければ<em>なりません</em>。
+          そうでないと誰もあなたのウェブサイトを見ることはできません。
+          ローカルでのテストのために <code>hosts</code> ファイルに
+          エントリを追加することもできますが、この場合はその
+          hosts エントリのあるマシンからしか動作しません。</p>
     </note>
 
     <example>
-    <title>$B%5!<%P@_Dj(B</title>
+    <title>サーバ設定</title>
 
     # Ensure that Apache listens on port 80<br />
     Listen 80<br />
@@ -84,18 +84,18 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p>$B%"%9%?%j%9%/$O$9$Y$F$N%"%I%l%9$K%^%C%A$7$^$9$N$G!"<g%5!<%P$O(B
-    $B%j%/%(%9%H$r07$$$^$;$s!#(B<code>www.example.com</code> $B$O(B
-    $B:G=i$K$"$k$?$a!"M%@h=g0L$O0lHV9b$/$J$j!"(B<cite>default</cite> $B$b$7$/$O(B
-    <cite>primary</cite>  $B$N%5!<%P$H9M$($k$3$H$,$G$-$^$9!#$D$^$j!"%j%/%(%9%H$,(B
-    $B$I$N(B <code>ServerName</code> $B%G%#%l%/%F%#%V$K$b%^%C%A$7$J$$>l9g!"(B
-    $B0lHV:G=i$N(B <code>VirtualHost</code> $B$K$h$j07$o$l$^$9!#(B</p>
+    <p>アスタリスクはすべてのアドレスにマッチしますので、主サーバは
+    リクエストを扱いません。<code>www.example.com</code> は
+    最初にあるため、優先順位は一番高くなり、<cite>default</cite> もしくは
+    <cite>primary</cite>  のサーバと考えることができます。つまり、リクエストが
+    どの <code>ServerName</code> ディレクティブにもマッチしない場合、
+    一番最初の <code>VirtualHost</code> により扱われます。</p>
 
-    <note><title>$BCm(B</title>
+    <note><title>注</title>
 
-          <p><code>*</code> $B$r%7%9%F%`$N<B:]$N(B IP $B%"%I%l%9$KCV$-49$($k(B
-          $B$3$H$b$G$-$^$9!#$=$N>l9g$O(B <code>VirtualHost</code> $B$N0z?t$O(B
-          <code>NameVirtualHost</code> $B$N0z?t$HF1$8$K(B<em>$B$7$J$1$l$P$J$j$^$;$s(B
+          <p><code>*</code> をシステムの実際の IP アドレスに置き換える
+          こともできます。その場合は <code>VirtualHost</code> の引数は
+          <code>NameVirtualHost</code> の引数と同じに<em>しなければなりません
           </em>:</p>
 
             <example>
@@ -105,37 +105,37 @@
  		        # etc ...
             </example>
 
-          <p>$B$7$+$7!"(BIP $B%"%I%l%9$,M=B,IT2DG=$J%7%9%F%`(B
-          $B!=!=Nc$($P%W%m%P%$%@$+$iF0E*$K(B IP $B%"%I%l%9$r<hF@$7$F2?$i$+$N(B
-          $B%@%$%J%_%C%/(B DNS $B$r;H$C$F$$$k>l9g$J$I!=!=$K$*$$$F$O!"(B<code>*</code> 
-          $B;XDj$O$5$i$KJXMx$G$9!#(B<code>*</code> $B$O$9$Y$F$N(B IP $B%"%I%l%9$K(B
-          $B%^%C%A$7$^$9$N$G!"$3$N@_Dj$K$7$F$*$1$P(B IP $B%"%I%l%9$,JQ99$5$l$F$b(B
-          $B@_DjJQ99$;$:$KF0:n$7$^$9!#(B</p>
+          <p>しかし、IP アドレスが予測不可能なシステム
+          ――例えばプロバイダから動的に IP アドレスを取得して何らかの
+          ダイナミック DNS を使っている場合など――においては、<code>*</code> 
+          指定はさらに便利です。<code>*</code> はすべての IP アドレスに
+          マッチしますので、この設定にしておけば IP アドレスが変更されても
+          設定変更せずに動作します。</p>
     </note>
 
-    <p>$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%F%#%s%0$G$O$[$\$9$Y$F$N>u67$G!"(B
-    $B>e5-$N@_Dj$G4uK>$N@_Dj$K$J$C$F$$$k$3$H$G$7$g$&!#(B
-    $B<B:]$3$N@_Dj$,F0:n$7$J$$$N$O!"(BIP $B%"%I%l%9$d%]!<%H$N0c$$$K$h$C$F(B
-    $B0c$&%3%s%F%s%D$rAw$k$H$-$@$1$G$9!#(B</p>
+    <p>名前ベースのバーチャルホスティングではほぼすべての状況で、
+    上記の設定で希望の設定になっていることでしょう。
+    実際この設定が動作しないのは、IP アドレスやポートの違いによって
+    違うコンテンツを送るときだけです。</p>
 
     </section>
 
-    <section id="twoips"><title>$BJ#?t$N(B IP $B%"%I%l%9$N$"$k%[%9%H$GL>A0%Y!<%9$N(B
-    $B%[%9%F%#%s%0$r9T$J$&(B</title>
+    <section id="twoips"><title>複数の IP アドレスのあるホストで名前ベースの
+    ホスティングを行なう</title>
  
     <note>
-    <title>$BCm(B</title><p>$B$3$3$G@bL@$5$l$F$$$kJ}K!$O(B IP $B%"%I%l%9$,(B
-    $B2?8D$"$C$F$bF1MM$K$G$-$^$9!#(B</p>
+    <title>注</title><p>ここで説明されている方法は IP アドレスが
+    何個あっても同様にできます。</p>
     </note>
 
-    <p>$B%5!<%P$K$OFs$D(B IP $B%"%I%l%9$,$D$$$F$$$^$9!#0l$DL\(B
-    (<code>172.20.30.40</code>) $B$G$O<g%5!<%P(B 
-    <code>server.domain.com</code> $B$r07$$!"$b$&0lJ}(B
-    (<code>172.20.30.50</code>) $B$G$OFs$D$+$=$l0J>e$N?t$N(B
-    $B%P!<%A%c%k%[%9%H$r07$$$^$9!#(B</p>
+    <p>サーバには二つ IP アドレスがついています。一つ目
+    (<code>172.20.30.40</code>) では主サーバ 
+    <code>server.domain.com</code> を扱い、もう一方
+    (<code>172.20.30.50</code>) では二つかそれ以上の数の
+    バーチャルホストを扱います。</p>
 
     <example>
-    <title>$B%5!<%P$N@_Dj(B</title>
+    <title>サーバの設定</title>
 
     Listen 80<br />
 		<br />
@@ -167,29 +167,29 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p><code>172.20.30.50</code> $B0J30$N%"%I%l%9$X$N%j%/%(%9%H$O<g%5!<%P(B
-    $B$,07$$$^$9!#(B<code>172.20.30.50</code> $B$X$N!"L$CN$N%[%9%HL>$^$?$O(B
-    <code>Host:</code> $B%X%C%@$J$7$N%j%/%(%9%H$O(B <code>www.example.com</code>
-    $B$,07$$$^$9!#(B</p>
+    <p><code>172.20.30.50</code> 以外のアドレスへのリクエストは主サーバ
+    が扱います。<code>172.20.30.50</code> への、未知のホスト名または
+    <code>Host:</code> ヘッダなしのリクエストは <code>www.example.com</code>
+    が扱います。</p>
 
     </section>
 
-    <section id="intraextra"><title>$B0c$&(B IP $B%"%I%l%9(B ($BNc$($P!"FbIt$H30It%"%I%l%9(B)
-    $B$GF1$8%3%s%F%s%D$rAw$k(B</title>
+    <section id="intraextra"><title>違う IP アドレス (例えば、内部と外部アドレス)
+    で同じコンテンツを送る</title>
 
-    <p>$B%5!<%P%^%7%s$O(B IP $B%"%I%l%9$rFs$D(B (<code>192.168.1.1</code>
-    $B$H(B <code>172.20.30.40</code>) $B;}$C$F$$$^$9!#$3$N%^%7%s$OFbIt(B
-    ($B%$%s%H%i%M%C%H(B) $B$H(B $B30It(B ($B%$%s%?!<%M%C%H(B) $B$N%M%C%H%o!<%/$N4V$K(B
-    $B$"$j$^$9!#(B<code>server.example.com</code> $B$O%M%C%H%o!<%/$N30$+$i$O(B
-    $B30It%"%I%l%9(B (<code>172.20.30.40</code>) $B$H$7$F2r7h$5$l$^$9$,!"(B
-    $B%M%C%H%o!<%/$NCf$+$i$OFbIt%"%I%l%9(B (<code>192.168.1.1</code>) 
-    $B$H$7$F2r7h$5$l$^$9!#(B</p>
+    <p>サーバマシンは IP アドレスを二つ (<code>192.168.1.1</code>
+    と <code>172.20.30.40</code>) 持っています。このマシンは内部
+    (イントラネット) と 外部 (インターネット) のネットワークの間に
+    あります。<code>server.example.com</code> はネットワークの外からは
+    外部アドレス (<code>172.20.30.40</code>) として解決されますが、
+    ネットワークの中からは内部アドレス (<code>192.168.1.1</code>) 
+    として解決されます。</p>
 
-    <p><code>VirtualHost</code> $B0l$D$@$1$G%5!<%P$,FbIt$N%j%/%(%9%H$H(B
-    $B30It$N%j%/%(%9%H$NN>J}$KF1$8%3%s%F%s%D$G1~Ez$9$k$h$&$K$G$-$^$9!#(B</p>
+    <p><code>VirtualHost</code> 一つだけでサーバが内部のリクエストと
+    外部のリクエストの両方に同じコンテンツで応答するようにできます。</p>
 
     <example>
-    <title>$B%5!<%P$N@_Dj(B</title>
+    <title>サーバの設定</title>
 
     NameVirtualHost 192.168.1.1<br />
     NameVirtualHost 172.20.30.40<br />
@@ -203,29 +203,29 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p>$B$3$l$G$I$A$i$N%M%C%H%o!<%/$+$i$N%j%/%(%9%H$bF1$8(B <code>VirtualHost</code>
-    $B$G07$o$l$k$h$&$K$J$j$^$9!#(B</p>
+    <p>これでどちらのネットワークからのリクエストも同じ <code>VirtualHost</code>
+    で扱われるようになります。</p>
 
-    <note><title>$BCm(B:</title><p>$BFbIt%M%C%H%o!<%/$G$O40A4$J%[%9%HL>$N(B
-          <code>server.example.com</code> $B$NBe$o$j$K!"C1$K(B <code>server</code>
-          $B$r;H$&$3$H$,$G$-$^$9!#(B</p>
+    <note><title>注:</title><p>内部ネットワークでは完全なホスト名の
+          <code>server.example.com</code> の代わりに、単に <code>server</code>
+          を使うことができます。</p>
 
-          <p>$B>e$NNc$G$O!"(BIP $B%"%I%l%9$N%j%9%H$r!"$9$Y$F$N%"%I%l%9$K(B
-           $BF1$8%3%s%F%s%D$G1~Ez$9$k(B <code>*</code> $B$KCV$-49$($i$l$^$9!#(B</p>
+          <p>上の例では、IP アドレスのリストを、すべてのアドレスに
+           同じコンテンツで応答する <code>*</code> に置き換えられます。</p>
     </note>
 
     </section>
 
-    <section id="port"><title>$B0c$&%]!<%H$G0c$&%5%$%H$r1?1D$9$k(B</title>
+    <section id="port"><title>違うポートで違うサイトを運営する</title>
 
-    <p>$BF1$8(B IP $B$KJ#?t$N%I%a%$%s$,$"$j!"$5$i$KJ#?t$N%]!<%H$r;H$C$F(B
-    $B%j%/%(%9%H$r07$$$?$$$H$-$,$"$j$^$9!#(B"NameVirtualHost" $B%?%0$NCf$G(B
-    $B%]!<%H$rDj5A$9$k$3$H$G!"$3$l$rF0:n$5$;$i$l$^$9!#(B
-    NameVirtualHost name:port $BL5$7$d(B Listen $B%G%#%l%/%F%#%V$G(B
-    &lt;VirtualHost name:port&gt; $B$r;H$*$&$H$7$F$b!"$=$N@_Dj$OF0:n$7$^$;$s!#(B</p>
+    <p>同じ IP に複数のドメインがあり、さらに複数のポートを使って
+    リクエストを扱いたいときがあります。"NameVirtualHost" タグの中で
+    ポートを定義することで、これを動作させられます。
+    NameVirtualHost name:port 無しや Listen ディレクティブで
+    &lt;VirtualHost name:port&gt; を使おうとしても、その設定は動作しません。</p>
 
     <example>
-    <title>$B%5!<%P$N@_Dj(B</title>
+    <title>サーバの設定</title>
 
     Listen 80<br />
     Listen 8080<br />
@@ -264,14 +264,14 @@
 
     </section>
 
-    <section id="ip"><title>IP $B%Y!<%9$N%P!<%A%c%k%[%9%F%#%s%0(B</title>
+    <section id="ip"><title>IP ベースのバーチャルホスティング</title>
 
-    <p>$B%5!<%P$O(B <code>www.example.com</code> $B$H(B <code>www.example.org</code>
-    $B$K$=$l$>$l2r7h$5$l$k!"Fs$D$N(B IP $B%"%I%l%9(B (<code>172.20.30.40</code> $B$H(B
-    <code>172.20.30.50</code>) $B$,$"$j$^$9!#(B</p>
+    <p>サーバは <code>www.example.com</code> と <code>www.example.org</code>
+    にそれぞれ解決される、二つの IP アドレス (<code>172.20.30.40</code> と
+    <code>172.20.30.50</code>) があります。</p>
 
     <example>
-    <title>$B%5!<%P$N@_Dj(B</title>
+    <title>サーバの設定</title>
 
     Listen 80<br />
 		<br />
@@ -290,22 +290,22 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p><code>&lt;VirtualHost&gt;</code> $B%G%#%l%/%F%#%V$N$I$l$G$b(B
-    $B;XDj$5$l$F$$$J$$%"%I%l%9(B ($BNc$($P(B <code>localhost</code>) $B$O!"(B
-    $B<g%5!<%P$,$"$l$P$=$3$K9T$-$^$9!#(B</p>
+    <p><code>&lt;VirtualHost&gt;</code> ディレクティブのどれでも
+    指定されていないアドレス (例えば <code>localhost</code>) は、
+    主サーバがあればそこに行きます。</p>
 
     </section>
 
-    <section id="ipport"><title>$B%]!<%H%Y!<%9$H(B IP $B%Y!<%9$N:.$6$C$?(B
-    $B%P!<%A%c%k%[%9%H(B</title>
+    <section id="ipport"><title>ポートベースと IP ベースの混ざった
+    バーチャルホスト</title>
 
-    <p>$B%5!<%P%^%7%s$O$=$l$>$l(B <code>www.example.com</code> $B$H(B
-    <code>www.example.org</code> $B$K$=$l$>$l2r7h$5$l$k!"(BIP $B%"%I%l%9$rFs$D(B
-    (<code>172.20.30.40</code> $B$H(B <code>172.20.30.50</code>) $B;}$C$F$$$^$9!#(B
-    $B$I$A$i$b%]!<%H(B 80 $B$H(B 8080 $B$G%[%9%H$rAv$i$;$^$9!#(B</p>
+    <p>サーバマシンはそれぞれ <code>www.example.com</code> と
+    <code>www.example.org</code> にそれぞれ解決される、IP アドレスを二つ
+    (<code>172.20.30.40</code> と <code>172.20.30.50</code>) 持っています。
+    どちらもポート 80 と 8080 でホストを走らせます。</p>
 
     <example>
-    <title>$B%5!<%P$N@_Dj(B</title>
+    <title>サーバの設定</title>
 
     Listen 172.20.30.40:80<br />
     Listen 172.20.30.40:8080<br />
@@ -343,14 +343,14 @@
 
     </section>
 
-    <section id="mixed"><title>$BL>A0%Y!<%9$H(B IP $B%Y!<%9$r:.$<$?(B
-    $B%P!<%A%c%k%[%9%H(B</title>
+    <section id="mixed"><title>名前ベースと IP ベースを混ぜた
+    バーチャルホスト</title>
 
-    <p>$B$$$/$D$+$N%^%7%s$G$OL>A0%Y!<%9$N!"$=$NB>$G$O(B IP $B%Y!<%9$N%P!<%A%c%k(B
-    $B%[%9%H$r$7$^$9!#(B</p>
+    <p>いくつかのマシンでは名前ベースの、その他では IP ベースのバーチャル
+    ホストをします。</p>
 
     <example>
-    <title>$B%5!<%P$N@_Dj(B</title>
+    <title>サーバの設定</title>
 
     Listen 80<br />
 		<br />
@@ -395,14 +395,14 @@
 
     </section>
 
-    <section id="proxy"><title><code>Virtual_host</code> $B$H(B
-    mod_proxy $B$rJ;MQ$9$k(B</title>
+    <section id="proxy"><title><code>Virtual_host</code> と
+    mod_proxy を併用する</title>
 
-    <p>$B<!$NNc$O!"%U%m%s%HB&$N%P!<%A%c%k%[%9%H$GB>$N%^%7%s$X%W%m%/%7$7$^$9!#(B
-    $BNc$G$O(B <code>192.168.111.2</code> $B$N%^%7%s$G$O%P!<%A%c%k%[%9%HL>$O(B
-    $BF1$8L>A0$G@_Dj$5$l$F$$$^$9!#J#?t$N%[%9%HL>$r0lBf$N%^%7%s$K%W%m%/%7$9$k(B
-    $B>l9g$O!"(B<directive module="mod_proxy">ProxyPreserveHost On</directive>
-    $B%G%#%l%/%F%#%V$r;H$C$F!"4uK>$N%[%9%HL>$rEO$;$k$h$&$K$J$j$^$9!#(B
+    <p>次の例は、フロント側のバーチャルホストで他のマシンへプロクシします。
+    例では <code>192.168.111.2</code> のマシンではバーチャルホスト名は
+    同じ名前で設定されています。複数のホスト名を一台のマシンにプロクシする
+    場合は、<directive module="mod_proxy">ProxyPreserveHost On</directive>
+    ディレクティブを使って、希望のホスト名を渡せるようになります。
     </p>
 
     <example>
@@ -416,18 +416,18 @@
 
     </section>
 
-    <section id="default"><title><code>_default_</code> $B$N%P!<%A%c%k%[%9%H$r(B
-    $B;H$&(B</title> 
+    <section id="default"><title><code>_default_</code> のバーチャルホストを
+    使う</title> 
 
-    <section id="defaultallports"><title>$B$9$Y$F$N%]!<%H$KBP$9$k(B
-    <code>_default_</code> $B%P!<%A%c%k%[%9%H(B</title>
+    <section id="defaultallports"><title>すべてのポートに対する
+    <code>_default_</code> バーチャルホスト</title>
 
-    <p>$BL$;XDj$N(B IP $B%"%I%l%9$H%]!<%H!"(B<em>$B$D$^$j(B</em>$BB>$N%P!<%A%c%k%[%9%H$K(B
-    $B;H$o$l$F$$$J$$%"%I%l%9$H%]!<%H$NAH$_9g$o$;!"$X$N(B<em>$B$9$Y$F$N(B</em>$B%j%/%(%9%H$r(B
-    $B<u$1<h$j$^$9!#(B</p>
+    <p>未指定の IP アドレスとポート、<em>つまり</em>他のバーチャルホストに
+    使われていないアドレスとポートの組み合わせ、への<em>すべての</em>リクエストを
+    受け取ります。</p>
 
     <example>
-    <title>$B%5!<%P$N@_Dj(B</title>
+    <title>サーバの設定</title>
 
     &lt;VirtualHost _default_:*&gt;<br />
     <indent>
@@ -436,30 +436,30 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p>$B$3$N$h$&$K%o%$%k%I%+!<%I$N%]!<%H$G%G%U%)%k%H$N%P!<%A%c%k%[%9%H$r(B
-    $B;XDj$9$k$H!"<g%5!<%P$K%j%/%(%9%H$,9T$/$N$rKI$2$^$9!#(B</p>
+    <p>このようにワイルドカードのポートでデフォルトのバーチャルホストを
+    指定すると、主サーバにリクエストが行くのを防げます。</p>
 
-    <p>$B%G%U%)%k%H$N%P!<%A%c%k%[%9%H$OL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$K(B
-    $B;H$o$l$F$$$k%"%I%l%9$H%]!<%H$NAH$KAw$i$l$?%j%/%(%9%H$r07$&$3$H$O(B
-    $B$"$j$^$;$s!#%j%/%(%9%H$,ITL@$J(B <code>Host:</code> $B%X%C%@$d$=$N(B
-    $B%X%C%@$,$J$+$C$?$j$9$k>l9g$O4pK\L>A0%Y!<%9%P!<%A%c%k%[%9%H(B ($B$=$N(B
-    $B%"%I%l%9$H%]!<%H$G@_Dj%U%!%$%kCf$G:G=i$N%P!<%A%c%k%[%9%H(B) $B$K$h$j(B
-    $B07$o$l$^$9!#(B</p>
+    <p>デフォルトのバーチャルホストは名前ベースのバーチャルホストに
+    使われているアドレスとポートの組に送られたリクエストを扱うことは
+    ありません。リクエストが不明な <code>Host:</code> ヘッダやその
+    ヘッダがなかったりする場合は基本名前ベースバーチャルホスト (その
+    アドレスとポートで設定ファイル中で最初のバーチャルホスト) により
+    扱われます。</p>
 
-    <p>$B$I$s$J%j%/%(%9%H$G$b(B <directive module="mod_alias">AliasMatch</directive>
-    $B$d(B <directive module="mod_rewrite">RewriteRule</directive> $B$r;H$C$F(B
-    $BC10l$N>pJs%Z!<%8(B ($B$d%9%/%j%W%H(B) $B$K=q$-49$($k$3$H$,$G$-$^$9!#(B</p>
+    <p>どんなリクエストでも <directive module="mod_alias">AliasMatch</directive>
+    や <directive module="mod_rewrite">RewriteRule</directive> を使って
+    単一の情報ページ (やスクリプト) に書き換えることができます。</p>
     </section>
 
-    <section id="defaultdifferentports"><title>$B0c$&%]!<%H$N$?$a$N(B
-    <code>_default_</code> $B%P!<%A%c%k%[%9%H(B</title>
+    <section id="defaultdifferentports"><title>違うポートのための
+    <code>_default_</code> バーチャルホスト</title>
 
-    <p>$B0l$D$a$N@_Dj$H$[$\F1$8$G$9$,!"%5!<%P$OJ#?t$N%]!<%H$r(B listen $B$7$F$*$j!"(B
-    80 $BHV%]!<%H$KBP$7$FFs$D$a$N(B <code>_default_</code> $B%P!<%A%c%k%[%9%H$r(B
-    $B@_Dj$7$?$$>l9g$G$9!#(B</p>
+    <p>一つめの設定とほぼ同じですが、サーバは複数のポートを listen しており、
+    80 番ポートに対して二つめの <code>_default_</code> バーチャルホストを
+    設定したい場合です。</p>
 
     <example>
-    <title>$B%5!<%P$N@_Dj(B</title>
+    <title>サーバの設定</title>
 
     &lt;VirtualHost _default_:80&gt;<br />
     <indent>
@@ -476,20 +476,20 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p>80 $BHV%]!<%H$N%G%U%)%k%H%P!<%A%c%k%[%9%H(B ($B%o%$%k%I%+!<%I%]!<%H$N(B
-    $B%G%U%)%k%H%P!<%A%c%k%[%9%H$h$j$bA0$K=q$+$l$F$$$J$1$l$P(B<em>$B$J$j$^$;$s(B</em>) $B$O(B
-    $BL$;XDj$N(B IP $B%"%I%l%9$KAw$i$l$?$9$Y$F$N%j%/%(%9%H$r07$$$^$9!#(B
-    $B<g%5!<%P$O%j%/%(%9%H$r07$$$^$;$s!#(B</p>
+    <p>80 番ポートのデフォルトバーチャルホスト (ワイルドカードポートの
+    デフォルトバーチャルホストよりも前に書かれていなければ<em>なりません</em>) は
+    未指定の IP アドレスに送られたすべてのリクエストを扱います。
+    主サーバはリクエストを扱いません。</p>
     </section>
 
-    <section id="defaultoneport"><title>$B0l$D$N%]!<%H$KBP$7$F$@$1$N(B
-    <code>_default_</code> $B%P!<%A%c%k%[%9%H(B</title>
+    <section id="defaultoneport"><title>一つのポートに対してだけの
+    <code>_default_</code> バーチャルホスト</title>
 
-    <p>80 $BHV%]!<%H$K$O%G%U%)%k%H$N%P!<%A%c%k%[%9%H$,I,MW$G!"B>$N(B
-    $B%P!<%A%c%k%[%9%H$O%G%U%)%k%H$,I,MW$J$$>l9g$G$9!#(B</p>
+    <p>80 番ポートにはデフォルトのバーチャルホストが必要で、他の
+    バーチャルホストはデフォルトが必要ない場合です。</p>
 
     <example>
-    <title>$B%5!<%P$N@_Dj(B</title>
+    <title>サーバの設定</title>
 
     &lt;VirtualHost _default_:80&gt;<br />
     DocumentRoot /www/default<br />
@@ -497,28 +497,28 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p>80 $BHV%]!<%H$X$N%"%I%l%9L$;XDj$N%j%/%(%9%H$O%G%U%)%k%H$N%P!<%A%c%k(B
-    $B%[%9%H$+$iAw$i$l$^$9!#B>$NL$;XDj$N%"%I%l%9$H%]!<%H$X$N%j%/%(%9%H$O(B
-    $B<g%5!<%P$+$iAw$i$l$^$9!#(B</p>
+    <p>80 番ポートへのアドレス未指定のリクエストはデフォルトのバーチャル
+    ホストから送られます。他の未指定のアドレスとポートへのリクエストは
+    主サーバから送られます。</p>
     </section>
 
   </section>
 
-  <section id="migrate"><title>$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$+$i(B IP $B%Y!<%9$N(B
-    $B%P!<%A%c%k%[%9%H$K0\9T$9$k(B</title>
+  <section id="migrate"><title>名前ベースのバーチャルホストから IP ベースの
+    バーチャルホストに移行する</title>
 
-    <p>$B%[%9%HL>$,L>A0(B <code>www.example.org</code> $B$N%P!<%A%c%k%[%9%H(B
-    (<a href="#name">$BL>A0%Y!<%9(B</a>$B$NNc$N(B 2 $BHVL\$N@_Dj(B) $B$,@lMQ$N(B IP $B%"%I%l%9$r(B
-    $BF@$?$H$7$^$9!#L>A0%Y!<%9$N%P!<%A%c%k%[%9%H$N8E$$(B IP $B%"%I%l%9$r(B
-    $B%-%c%C%7%e$7$F$$$k%M!<%`%5!<%P$d%W%m%-%7$N$?$a$K0\9T4|4VCf$ON>J}$N(B
-    $B%P!<%A%c%k%[%9%H$rDs6!$7$?$$$H$7$^$9!#(B</p>
+    <p>ホスト名が名前 <code>www.example.org</code> のバーチャルホスト
+    (<a href="#name">名前ベース</a>の例の 2 番目の設定) が専用の IP アドレスを
+    得たとします。名前ベースのバーチャルホストの古い IP アドレスを
+    キャッシュしているネームサーバやプロキシのために移行期間中は両方の
+    バーチャルホストを提供したいとします。</p>
 
-    <p>$BEz$O4JC1$G$9!#C1$K?7$7$$(B IP $B%"%I%l%9(B (<code>172.20.30.50</code>)
-    $B$r(B <code>VirtualHost</code> $B%G%#%l%/%F%#%V$KDI2C$9$k$3$H$G(B
-    $B$G$-$^$9!#(B</p>
+    <p>答は簡単です。単に新しい IP アドレス (<code>172.20.30.50</code>)
+    を <code>VirtualHost</code> ディレクティブに追加することで
+    できます。</p>
   
     <example>
-    <title>$B%5!<%P@_Dj(B</title>
+    <title>サーバ設定</title>
 
     Listen 80<br />
     ServerName www.example.com<br />
@@ -544,27 +544,27 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p>$B$3$N%P!<%A%c%k%[%9%H$O?7$7$$%"%I%l%9(B (IP $B%Y!<%9$N%P!<%A%c%k%[%9%H$H$7$F(B)
-    $B$H8E$$%"%I%l%9(B($BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$H$7$F(B) $B$NN>J}$+$i(B
-    $B%"%/%;%9$G$-$^$9!#(B</p>
+    <p>このバーチャルホストは新しいアドレス (IP ベースのバーチャルホストとして)
+    と古いアドレス(名前ベースのバーチャルホストとして) の両方から
+    アクセスできます。</p>
 
     </section>
 
-    <section id="serverpath"><title><code>ServerPath</code> $B%G%#%l%/%F%#%V$r(B
-    $B;H$&(B</title>
+    <section id="serverpath"><title><code>ServerPath</code> ディレクティブを
+    使う</title>
 
-    <p>$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$,Fs$D$"$k%5!<%P$,$"$k$H$7$^$9!#(B
-    $B@5$7$$%P!<%A%c%k%[%9%H$rF@$k$?$a$K$O%/%i%$%"%s%H$O@5$7$$(B
-    <code>Host:</code> $B%X%C%@$rAw$i$J$1$l$P$J$j$^$;$s!#(B
-    $B8E$$(B HTTP/1.0 $B$O$=$N$h$&$J%X%C%@$rAw$i$J$$$N$G!"(BApache $B$O%/%i%$%"%s%H$,(B
-    $B$I$N%P!<%A%c%k%[%9%H$r0U?^$7$?$N$+$5$C$Q$j$o$+$j$^$;$s(B
-    ($B$J$N$G!"<g%P!<%A%c%k%[%9%H$G%j%/%(%9%H$r07$$$^$9(B)$B!#(B
-    $B2DG=$J8B$j$N2<0L8_49@-$rF@$k$?$a!"L>A0%Y!<%9$N%P!<%A%c%k%[%9%H$N(B
-    URL $B@\F,<-$X$N%j%s%/$N=q$+$l$?%Z!<%8$rJV$9!"(B
-    $B<g%P!<%A%c%k%[%9%H$,:n@.$5$l$^$9!#(B</p>
+    <p>名前ベースのバーチャルホストが二つあるサーバがあるとします。
+    正しいバーチャルホストを得るためにはクライアントは正しい
+    <code>Host:</code> ヘッダを送らなければなりません。
+    古い HTTP/1.0 はそのようなヘッダを送らないので、Apache はクライアントが
+    どのバーチャルホストを意図したのかさっぱりわかりません
+    (なので、主バーチャルホストでリクエストを扱います)。
+    可能な限りの下位互換性を得るため、名前ベースのバーチャルホストの
+    URL 接頭辞へのリンクの書かれたページを返す、
+    主バーチャルホストが作成されます。</p>
 
     <example>
-    <title>$B%5!<%P$N@_Dj(B</title>
+    <title>サーバの設定</title>
 
     NameVirtualHost 172.20.30.40<br />
 		<br />
@@ -601,22 +601,22 @@
     &lt;/VirtualHost&gt;
     </example>
 
-    <p><directive module="core">ServerPath</directive> $B%G%#%l%/%F%#%V$N@_Dj$K(B
-    $B$h$j!"(BURL <code>http://www.sub1.domain.tld/sub1/</code> $B$O(B
-    <em>$B>o$K(B</em> sub1-vhost $B$K$h$j07$o$l$^$9!#(BURL
-    <code>http://www.sub1.domain.tld/</code> $B$X$N%j%/%(%9%H$O(B
-    $B%/%i%$%"%s%H$,@5$7$$(B <code>Host:</code> $B%X%C%@$rAw$C$?$H$-$K$N$_(B
-    sub1-vhost $B$+$iAw$i$l$^$9!#(B<code>Host:</code> $B%X%C%@$,$J$1$l$P(B
-    $B%/%i%$%"%s%H$O<g%[%9%H$N>pJs%Z!<%8$rF@$^$9!#(B</p>
+    <p><directive module="core">ServerPath</directive> ディレクティブの設定に
+    より、URL <code>http://www.sub1.domain.tld/sub1/</code> は
+    <em>常に</em> sub1-vhost により扱われます。URL
+    <code>http://www.sub1.domain.tld/</code> へのリクエストは
+    クライアントが正しい <code>Host:</code> ヘッダを送ったときにのみ
+    sub1-vhost から送られます。<code>Host:</code> ヘッダがなければ
+    クライアントは主ホストの情報ページを得ます。</p>
 
-    <p>$B0l$D4qL/$JF0:n$r$9$kE@$,$"$k$3$H$O3P$($F$*$$$F$/$@$5$$!#(B
-    <code>http://www.sub2.domain.tld/sub1/</code> $B$X$N%j%/%(%9%H$b(B
-    <code>Host:</code> $B%X%C%@$,$J$1$l$P(B sub1-vhost $B$K$h$j07$o$l$^$9!#(B</p>
+    <p>一つ奇妙な動作をする点があることは覚えておいてください。
+    <code>http://www.sub2.domain.tld/sub1/</code> へのリクエストも
+    <code>Host:</code> ヘッダがなければ sub1-vhost により扱われます。</p>
 
-    <p>$B@5$7$$(B <code>Host:</code> $B%X%C%@$rAw$C$?%/%i%$%"%s%H$O$I$A$i$N(B
-    URL$B!"(B<em>$B$D$^$j(B</em>$B@\F,<-$,$"$kJ}$bL5$$J}$b;H$($k$h$&$K(B
-    <directive module="mod_rewrite">RewriteRule</directive> $B%G%#%l%/%F%#%V$,(B
-    $B;H$o$l$F$$$^$9!#(B</p>
+    <p>正しい <code>Host:</code> ヘッダを送ったクライアントはどちらの
+    URL、<em>つまり</em>接頭辞がある方も無い方も使えるように
+    <directive module="mod_rewrite">RewriteRule</directive> ディレクティブが
+    使われています。</p>
   </section>
 
 </manualpage>

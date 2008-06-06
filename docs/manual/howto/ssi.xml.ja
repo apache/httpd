@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 659902 -->
@@ -21,16 +21,16 @@
 -->
 
 <manualpage metafile="ssi.xml.meta">
-<parentdocument href="./">How-To / $B%A%e!<%H%j%"%k(B</parentdocument>
+<parentdocument href="./">How-To / チュートリアル</parentdocument>
 
-<title>Apache $B%A%e!<%H%j%"%k(B: Server Side Includes $BF~Lg(B</title>
+<title>Apache チュートリアル: Server Side Includes 入門</title>
 
 <summary>
-<p>$B%5!<%P%5%$%I%$%s%/%k!<%I$K$h$C$F!"4{B8$N(B HTML
-$B%I%-%e%a%s%H$KF0E*$J%3%s%F%s%D$rDI2C$9$k$3$H$,$G$-$^$9!#(B</p>
+<p>サーバサイドインクルードによって、既存の HTML
+ドキュメントに動的なコンテンツを追加することができます。</p>
 </summary>
 
-<section id="related"><title>$B$O$8$a$K(B</title>
+<section id="related"><title>はじめに</title>
  <related>
     <modulelist>
     <module>mod_include</module>
@@ -47,149 +47,149 @@
     </directivelist>
 </related>
 
-    <p>$B$3$N5-;v$O!"DL>o$OC1$K(B SSI $B$H8F$P$l$k(B Server Side Includes
-    $B$r07$$$^$9!#$3$N5-;v$K$*$$$F$O!"%5!<%P$G$N(B SSI $B$r5v2D$9$k$?$a$N@_Dj$H!"(B
-    $B8=:_$N(B HTML $B%Z!<%8$KF0E*$J%3%s%F%s%D$r2C$($k$?$a$N$$$/$D$+$N4pK\E*$J(B
-    SSI $B5;=Q$r>R2p$7$^$9!#(B</p>
+    <p>この記事は、通常は単に SSI と呼ばれる Server Side Includes
+    を扱います。この記事においては、サーバでの SSI を許可するための設定と、
+    現在の HTML ページに動的なコンテンツを加えるためのいくつかの基本的な
+    SSI 技術を紹介します。</p>
 
-    <p>$B5-;v$N8eH>$G$O!"(BSSI $B%G%#%l%/%F%#%V$G(B SSI
-    $B$H6&$K<B9T$9$k$3$H$,$G$-$k>r7oJ8$N$h$&$J(B
-    $B4vJ,9bEY$J;vJA$K$D$$$F=R$Y$F$$$^$9!#(B</p>
+    <p>記事の後半では、SSI ディレクティブで SSI
+    と共に実行することができる条件文のような
+    幾分高度な事柄について述べています。</p>
 
 </section>
 
-<section id="what"><title>SSI $B$H$O(B ?</title>
+<section id="what"><title>SSI とは ?</title>
 
-    <p>SSI (Server Side Includes) $B$O!"(BHTML
-    $B%Z!<%8Cf$KG[CV$5$l$k%G%#%l%/%F%#%V$G$"$j!"(B
-    $B%5!<%P$G%Z!<%8$rDs6!$9$k;~$KI>2A$5$l$^$9!#(BSSI $B$O!"(BCGI
-    $B%W%m%0%i%`$d$=$NB>$NF0E*$J5;=Q$GA4$F$N%Z!<%8$rDs6!$;$:$K!"(B
-    $BF0E*$K@8@.$5$l$?%3%s%F%s%D$r8=:_$N(B HTML $B%Z!<%8$K2C$($^$9!#(B</p>
+    <p>SSI (Server Side Includes) は、HTML
+    ページ中に配置されるディレクティブであり、
+    サーバでページを提供する時に評価されます。SSI は、CGI
+    プログラムやその他の動的な技術で全てのページを提供せずに、
+    動的に生成されたコンテンツを現在の HTML ページに加えます。</p>
 
-    <p>$B$I$&$$$&>l9g$K(B SSI $B$r;H$$!"$I$&$$$&>l9g$K%W%m%0%i%`$G(B
-    $B%Z!<%8$r40A4$K@8@.$9$k$+$O!"%Z!<%8$N$&$A$I$NDxEY$,@EE*$G$"$j!"(B
-    $B%Z!<%8$,Ds6!$5$l$k$?$S$K:F7W;;$9$kI,MW$,$I$NDxEY$"$k$+$GDL>o$O7hDj$7$^$9!#(B
-    SSI $B$O8=:_;~9o$N$h$&$J>.$5$$>pJs$r2C$($k$K$O$&$C$F$D$1$NJ}K!$G$9!#(B
-    $B$7$+$7!"$=$N%Z!<%8$N$[$H$s$I$NItJ,$,Ds6!;~$K@8@.$5$l$k>l9g$O!"(B
-    $BB>$NJ}K!$rC5$9I,MW$,$"$j$^$9!#(B</p>
+    <p>どういう場合に SSI を使い、どういう場合にプログラムで
+    ページを完全に生成するかは、ページのうちどの程度が静的であり、
+    ページが提供されるたびに再計算する必要がどの程度あるかで通常は決定します。
+    SSI は現在時刻のような小さい情報を加えるにはうってつけの方法です。
+    しかし、そのページのほとんどの部分が提供時に生成される場合は、
+    他の方法を探す必要があります。</p>
 </section>
 
 <section id="configuring">
-<title>SSI $B$r5v2D$9$k$?$a$N%5!<%P$N@_Dj(B</title>
+<title>SSI を許可するためのサーバの設定</title>
 
-    <p>$B%5!<%P$G(B SSI $B$r5v2D$9$k$K$O!"(B<code>httpd.conf</code>
-    $B%U%!%$%k$^$?$O(B <code>.htaccess</code>
-    $B%U%!%$%k$K<!$N%G%#%l%/%F%#%V$r;XDj$9$kI,MW$,$"$j$^$9(B:</p>
+    <p>サーバで SSI を許可するには、<code>httpd.conf</code>
+    ファイルまたは <code>.htaccess</code>
+    ファイルに次のディレクティブを指定する必要があります:</p>
 <example>
         Options +Includes
 </example>
 
-    <p>$B$3$N;XDj$O!"%U%!%$%k$r(B SSI
-    $B%G%#%l%/%F%#%V$G2r@O$5$;$k$3$H$r5v2D$9$k$H$$$&$3$H$r(B Apache
-    $B$KEA$($^$9!#$[$H$s$I$N@_Dj$G$O$*8_$$$r>e=q$-$G$-$k!"J#?t$N(B
-    <directive module="core">Options</directive> $B$,$"$k$3$H$K(B
-    $BCm0U$7$F$/$@$5$$!#$*$=$i$/!"@_Dj$,:G8e$KI>2A$5$l$k$3$H$r(B
-    $BJ]>Z$5$l$k$?$a$K!"(BSSI $B$r;HMQ$7$?$$%G%#%l%/%H%j$K(B <code>Options</code>
-    $B%G%#%l%/%F%#%V$rE,MQ$9$kI,MW$,$"$k$G$7$g$&!#(B</p>
+    <p>この指定は、ファイルを SSI
+    ディレクティブで解析させることを許可するということを Apache
+    に伝えます。ほとんどの設定ではお互いを上書きできる、複数の
+    <directive module="core">Options</directive> があることに
+    注意してください。おそらく、設定が最後に評価されることを
+    保証されるために、SSI を使用したいディレクトリに <code>Options</code>
+    ディレクティブを適用する必要があるでしょう。</p>
 
-    <p>$BA4$F$N%U%!%$%k$,(B SSI
-    $B%G%#%l%/%F%#%V$G2r@O$5$l$k$H$$$&$o$1$G$O$"$j$^$;$s!#(B
-    $B$I$N%U%!%$%k$,2r@O$5$l$k$+$r(B Apache $B$KEA$($kI,MW$,$"$j$^$9!#(B
-    $B$3$l$r9T$J$&$K$OFs$DJ}K!$,$"$j$^$9!#(B
-    $B<!$N%G%#%l%/%F%#%V$r;H$&$3$H$G!"Nc$($P(B <code>.shtml</code>
-    $B$N$h$&$JFCJL$J%U%!%$%k3HD%;R$r;}$D%U%!%$%k$r2r@O$9$k$h$&(B
-    Apache $B$KEA$($k$3$H$,$G$-$^$9(B:</p>
+    <p>全てのファイルが SSI
+    ディレクティブで解析されるというわけではありません。
+    どのファイルが解析されるかを Apache に伝える必要があります。
+    これを行なうには二つ方法があります。
+    次のディレクティブを使うことで、例えば <code>.shtml</code>
+    のような特別なファイル拡張子を持つファイルを解析するよう
+    Apache に伝えることができます:</p>
 <example>
         AddType text/html .shtml<br />
         AddOutputFilter INCLUDES .shtml
 </example>
 
-    <p>$B$3$NJ}K!$N7gE@$O!"$b$78=:_$N%Z!<%8$K(B SSI $B%G%#%l%/%F%#%V$r2C$($?$$>l9g!"(B
-    $B$=$l$i$N%G%#%l%/%F%#%V$,<B9T$5$l$k$h$&$K(B 
-    <code>.shtml</code> $B3HD%;R$K$9$k$?$a!"$=$N%Z!<%8$NL>A0$H!"(B
-    $B$=$N%Z!<%8$X$NA4$F$N%j%s%/$rJQ99$7$J$1$l$P$J$i$J$$$3$H$G$9!#(B</p>
+    <p>この方法の欠点は、もし現在のページに SSI ディレクティブを加えたい場合、
+    それらのディレクティブが実行されるように 
+    <code>.shtml</code> 拡張子にするため、そのページの名前と、
+    そのページへの全てのリンクを変更しなければならないことです。</p>
 
-    <p>$B$b$&0l$D$NJ}K!$O!"(B<directive module="mod_include">XBitHack</directive>
-    $B%G%#%l%/%F%#%V$r;HMQ$9$k$3$H$G$9(B:</p>
+    <p>もう一つの方法は、<directive module="mod_include">XBitHack</directive>
+    ディレクティブを使用することです:</p>
 <example>
         XBitHack on
 </example>
 
     <p><directive module="mod_include">XBitHack</directive> 
-    $B$O!"%U%!%$%k$N<B9T%S%C%H$,N)$C$F$$$k>l9g!"(B
-    SSI $B%G%#%l%/%F%#%V$K$h$j2r@O$9$k$3$H$r(B Apache $B$KEA$($^$9!#(B
-    $B=>$C$F!"(BSSI $B%G%#%l%/%F%#%V$r8=:_$N%Z!<%8$K2C$($k$?$a$K$O!"(B
-    $B%U%!%$%kL>$rJQ99$7$J$/$F$b$h$/!"C1$K(B <code>chmod</code>
-    $B$r;HMQ$7$F%U%!%$%k$r<B9T2DG=$K$9$k$@$1$G:Q$_$^$9!#(B</p>
+    は、ファイルの実行ビットが立っている場合、
+    SSI ディレクティブにより解析することを Apache に伝えます。
+    従って、SSI ディレクティブを現在のページに加えるためには、
+    ファイル名を変更しなくてもよく、単に <code>chmod</code>
+    を使用してファイルを実行可能にするだけで済みます。</p>
 <example>
         chmod +x pagename.html
 </example>
 
-    <p>$B9T$J$&$Y$-$G$O$J$$$3$H$K4X$9$kC;$$%3%a%s%H!#;~!9C/$+$,!"A4$F$N(B
-    <code>.html</code> $B%U%!%$%k$r(B SSI $B$G2r@O$9$k$h$&(B Apache $B$KEA$($l$P!"(B
-    $B$o$6$o$6(B <code>.shtml</code> $B$H$$$&%U%!%$%kL>$K$9$kI,MW$,$J$$$H$$$C$F(B
-    $BA&$a$k$N$r8+$k$3$H$G$7$g$&!#$3$&$$$&?M$?$A$O!"$*$=$i$/(B
+    <p>行なうべきではないことに関する短いコメント。時々誰かが、全ての
+    <code>.html</code> ファイルを SSI で解析するよう Apache に伝えれば、
+    わざわざ <code>.shtml</code> というファイル名にする必要がないといって
+    薦めるのを見ることでしょう。こういう人たちは、おそらく
     <directive module="mod_include">XBitHack</directive>
-    $B$K$D$$$FJ9$$$?$3$H$,$J$$$N$G$7$g$&!#(B
-    $B$3$NJ}K!$K$D$$$FCm0U$9$k$3$H$O!"$?$H$((B SSI
-    $B%G%#%l%/%F%#%V$rA4$/4^$^$J$$>l9g$G$b!"(BApache $B$,%/%i%$%"%s%H$K(B
-    $BAw$kA4$F$N%U%!%$%k$r:G8e$^$GFI$_9~$^$;$k$3$H$K$J$j$^$9!#(B
-    $B$3$NJ}K!$O$+$J$j=hM}$rCY$/$9$k$b$N$G$"$j!"NI$/$J$$%"%$%G%"$G$9!#(B</p>
+    について聞いたことがないのでしょう。
+    この方法について注意することは、たとえ SSI
+    ディレクティブを全く含まない場合でも、Apache がクライアントに
+    送る全てのファイルを最後まで読み込ませることになります。
+    この方法はかなり処理を遅くするものであり、良くないアイデアです。</p>
 
-    <p>$B$b$A$m$s!"(BWindows $B$G$O$=$N$h$&$J<B9T%S%C%H$r%;%C%H(B
-    $B$9$k$h$&$J$b$N$O$"$j$^$;$s$N$G%*%W%7%g%s$,>/$7@)8B$5$l$F$$$^$9!#(B</p>
+    <p>もちろん、Windows ではそのような実行ビットをセット
+    するようなものはありませんのでオプションが少し制限されています。</p>
 
-    <p>$B%G%U%)%k%H$N@_Dj$G$O!"(BApache $B$O(B SSI $B%Z!<%8$K$D$$$F:G=*JQ99;~9o$d(B
-    $B%3%s%F%s%D$ND9$5$r(B HTTP $B%X%C%@$KAw$j$^$;$s!#(B
-    $BF0E*$J%3%s%F%s%D$G$"$k$?$a!"$=$l$i$NCM$r7W;;$9$k$N$,Fq$7$$$+$i$G$9!#(B
-    $B$3$N$?$a%I%-%e%a%s%H$,%-%c%C%7%e$5$l$J$/$J$j!"(B
-    $B7k2L$H$7$F%/%i%$%"%s%H$N@-G=$,CY$/$J$C$?$h$&$K46$8$5$;$k$3$H$K$J$j$^$9!#(B
-    $B$3$l$r2r7h$9$kJ}K!$,Fs$D$"$j$^$9(B:</p>
+    <p>デフォルトの設定では、Apache は SSI ページについて最終変更時刻や
+    コンテンツの長さを HTTP ヘッダに送りません。
+    動的なコンテンツであるため、それらの値を計算するのが難しいからです。
+    このためドキュメントがキャッシュされなくなり、
+    結果としてクライアントの性能が遅くなったように感じさせることになります。
+    これを解決する方法が二つあります:</p>
 
     <ol>
-      <li><code>XBitHack Full</code> $B@_Dj$r;HMQ$9$k!#(B
-      $B$3$N@_Dj$K$h$j!"$b$H$b$HMW5a$5$l$?%U%!%$%k$N;~9o$r;2>H$7!"(B
-      $BFI$_9~$^$l$k%U%!%$%k$NJQ99;~9o$rL5;k$7$F:G=*JQ99;~9o$r7hDj$9$k$h$&(B
-      Apache $B$KEA$($^$9!#(B</li>
+      <li><code>XBitHack Full</code> 設定を使用する。
+      この設定により、もともと要求されたファイルの時刻を参照し、
+      読み込まれるファイルの変更時刻を無視して最終変更時刻を決定するよう
+      Apache に伝えます。</li>
 
       <li><a href="../mod/mod_expires.html">mod_expires</a>
-      $B$GDs6!$5$l$F$$$k%G%#%l%/%F%#%V$r;HMQ$7$F!"(B
-      $B%U%!%$%k$,L58z$K$J$k;~9o$rL@<($7$^$9!#$3$l$K$h$j!"(B
-      $B%V%i%&%6$H%W%m%-%7$K%-%c%C%7%e$,M-8z$G$"$k$3$H$rDLCN$7$^$9!#(B</li>
+      で提供されているディレクティブを使用して、
+      ファイルが無効になる時刻を明示します。これにより、
+      ブラウザとプロキシにキャッシュが有効であることを通知します。</li>
     </ol>
 </section>
 
-<section id="basic"><title>$B4pK\E*$J(B SSI $B%G%#%l%/%F%#%V(B</title>
+<section id="basic"><title>基本的な SSI ディレクティブ</title>
 
-    <p>SSI $B%G%#%l%/%F%#%V$O0J2<$NJ8K!$G5-=R$7$^$9(B:</p>
+    <p>SSI ディレクティブは以下の文法で記述します:</p>
 <example>
         &lt;!--#element attribute=value attribute=value ... --&gt;
 </example>
 
-    <p>HTML $B$N%3%a%s%H$N$h$&$J=q<0$r$7$F$$$k$N$G!"$b$7(B SSI
-    $B$r@5$7$/F0:n2DG=$K$7$J$1$l$P!"%V%i%&%6$O$=$l$rL5;k$9$k$G$7$g$&!#(B
-    $B$7$+$7!"(BHTML $B%=!<%9Cf$G$O8+$($^$9!#$b$7(B SSI $B$r@5$7$/@_Dj$7$?$J$i!"(B
-    $B%G%#%l%/%F%#%V$O$=$N7k2L$HCV$-49$($i$l$^$9!#(B</p>
+    <p>HTML のコメントのような書式をしているので、もし SSI
+    を正しく動作可能にしなければ、ブラウザはそれを無視するでしょう。
+    しかし、HTML ソース中では見えます。もし SSI を正しく設定したなら、
+    ディレクティブはその結果と置き換えられます。</p>
 
-    <p>element $B$O$?$/$5$s$"$k$b$N$+$i0l$D;XDj$9$k$3$H$,$G$-$^$9!#(B
-    $B;XDj$G$-$k$b$N$NBgB??t$K$D$$$F$O!"<!2s$b$&>/$7>\$7$/@bL@$7$^$9!#(B
-    $B$3$3$G$O!"(BSSI $B$G9T$J$&$3$H$,$G$-$kNc$r$$$/$D$+<($7$^$9!#(B</p>
+    <p>element はたくさんあるものから一つ指定することができます。
+    指定できるものの大多数については、次回もう少し詳しく説明します。
+    ここでは、SSI で行なうことができる例をいくつか示します。</p>
 
-<section id="todaysdate"><title>$B:#F|$NF|IU(B</title>
+<section id="todaysdate"><title>今日の日付</title>
 
 <example>
         &lt;!--#echo var="DATE_LOCAL" --&gt;
 </example>
 
-    <p><code>echo</code> $BMWAG$OC1$KJQ?t$NCM$r=PNO$7$^$9!#(B
-    CGI $B%W%m%0%i%`$KMxMQ2DG=$J4D6-JQ?t$NA4$F$N(B
-    $B%;%C%H$r4^$`B?$/$NI8=`JQ?t$,$"$j$^$9!#$^$?!"(B<code>set</code>
-    $BMWAG$rMQ$$$k$3$H$G!"FH<+$NJQ?t$rDj5A$9$k$3$H$,$G$-$^$9!#(B
+    <p><code>echo</code> 要素は単に変数の値を出力します。
+    CGI プログラムに利用可能な環境変数の全ての
+    セットを含む多くの標準変数があります。また、<code>set</code>
+    要素を用いることで、独自の変数を定義することができます。
     </p>
 
-    <p>$B=PNO$5$l$kF|IU$N=q<0$,9%$-$G$O$J$$>l9g!"$=$N=q<0$r=$@5$9$k$?$a$K!"(B
-    <code>config</code> $BMWAG$K(B <code>timefmt</code>
-    $BB0@-$r;HMQ$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>出力される日付の書式が好きではない場合、その書式を修正するために、
+    <code>config</code> 要素に <code>timefmt</code>
+    属性を使用することができます。</p>
 
 <example>
         &lt;!--#config timefmt="%A %B %d, %Y" --&gt;<br />
@@ -197,21 +197,21 @@
 </example>
 </section>
 
-<section id="lastmodified"><title>$B%U%!%$%k$NJQ99F|(B</title>
+<section id="lastmodified"><title>ファイルの変更日</title>
 
 <example>
         This document last modified &lt;!--#flastmod file="index.html" --&gt;
 </example>
 
-    <p>$B$3$NMWAG$b(B <code>timefmt</code>
-    $B%U%)!<%^%C%H$N@_Dj$K=>$$$^$9!#(B</p>
+    <p>この要素も <code>timefmt</code>
+    フォーマットの設定に従います。</p>
 </section>
 
-<section id="cgi"><title>CGI $B%W%m%0%i%`$N7k2L$r<h$j9~$`(B</title>
+<section id="cgi"><title>CGI プログラムの結果を取り込む</title>
 
-    <p>$B$3$l$O!"A4$F$N?M$N$*5$$KF~$j$G$"$k(B ``$B%R%C%H%+%&%s%?(B'' $B$N$h$&$J(B
-    CGI $B%W%m%0%i%`$N7k2L$r=PNO$9$k(B SSI
-    $B$N$h$j0lHLE*$J;HMQ$N$&$A$N0l$D$G$9!#(B</p>
+    <p>これは、全ての人のお気に入りである ``ヒットカウンタ'' のような
+    CGI プログラムの結果を出力する SSI
+    のより一般的な使用のうちの一つです。</p>
 
 <example>
         &lt;!--#include virtual="/cgi-bin/counter.pl" --&gt;
@@ -221,187 +221,187 @@
 </section>
 
 <section id="additionalexamples">
-<title>$BDI2C$NNc(B</title>
+<title>追加の例</title>
 
-    <p>$B0J2<$O!"(BSSI $B$r;HMQ$7$F(B HTML
-    $B%I%-%e%a%s%H$K$*$$$F$G$-$k$3$H$N$$$/$D$+$NFCJL$JNc$G$9!#(B</p>
+    <p>以下は、SSI を使用して HTML
+    ドキュメントにおいてできることのいくつかの特別な例です。</p>
 
-<section id="docmodified"><title>$B$$$D$3$N%I%-%e%a%s%H$O=$@5$5$l$?$N$+(B
+<section id="docmodified"><title>いつこのドキュメントは修正されたのか
 ?</title>
 
-    <p>$B@h$K!"%I%-%e%a%s%H$,:G8e$KJQ99$5$l$?$N$O$$$D$+$r(B
-    $B%f!<%6$KDLCN$9$k$?$a$K(B SSI $B$r;HMQ$9$k$3$H$,$G$-$k$3$H$r=R$Y$^$7$?!#(B
-    $B$7$+$7$J$,$i!"<B:]$NJ}K!$O!"$$$/$V$sLdBj$N$^$^$K$7$F$*$-$^$7$?!#(B
-    HTML $B%I%-%e%a%s%H$KG[CV$5$l$?<!$N%3!<%I$O!"%Z!<%8$K$=$N$h$&$J(B
-    $B%?%$%`%9%?%s%W$rF~$l$k$G$7$g$&!#$b$A$m$s!">e=R$N$h$&$K!"(B
-    SSI $B$r@5$7$/F0:n2DG=$K$7$F$*$/I,MW$,$"$j$^$9!#(B</p>
+    <p>先に、ドキュメントが最後に変更されたのはいつかを
+    ユーザに通知するために SSI を使用することができることを述べました。
+    しかしながら、実際の方法は、いくぶん問題のままにしておきました。
+    HTML ドキュメントに配置された次のコードは、ページにそのような
+    タイムスタンプを入れるでしょう。もちろん、上述のように、
+    SSI を正しく動作可能にしておく必要があります。</p>
 <example>
         &lt;!--#config timefmt="%A %B %d, %Y" --&gt;<br />
         This file last modified &lt;!--#flastmod file="ssi.shtml" --&gt;
 </example>
 
-    <p>$B$b$A$m$s!"(B<code>ssi.shtml</code>
-    $B$NItJ,$r<B:]$NEv3:%U%!%$%kL>$HCV$-49$($kI,MW$,$"$j$^$9!#(B
-    $B$b$7!"$"$i$f$k%U%!%$%k$KD%$k$3$H$,$G$-$k0lHLE*$J%3!<%I$rC5$7$F$$$k$J$i!"(B
-    $B$3$l$OITJX$G$"$k$+$b$7$l$^$;$s!#$*$=$i$/$=$N>l9g$O!"(B
-    $B$=$&$9$kBe$o$j$KJQ?t(B <code>LAST_MODIFIED</code>
-    $B$r;HMQ$7$?$$$H9M$($k$G$7$g$&(B:</p>
+    <p>もちろん、<code>ssi.shtml</code>
+    の部分を実際の当該ファイル名と置き換える必要があります。
+    もし、あらゆるファイルに張ることができる一般的なコードを探しているなら、
+    これは不便であるかもしれません。おそらくその場合は、
+    そうする代わりに変数 <code>LAST_MODIFIED</code>
+    を使用したいと考えるでしょう:</p>
 <example>
         &lt;!--#config timefmt="%D" --&gt;<br />
         This file last modified &lt;!--#echo var="LAST_MODIFIED" --&gt;
 </example>
 
     <p><code>timefmt</code>
-    $B=q<0$K$D$$$F$N$h$j>\:Y$K$D$$$F$O!"$*9%$_$N8!:w%5%$%H$K9T$-!"(B
-    <code>strftime</code> $B$G8!:w$7$F$_$F$/$@$5$$!#J8K!$OF1$8$G$9!#(B</p>
+    書式についてのより詳細については、お好みの検索サイトに行き、
+    <code>strftime</code> で検索してみてください。文法は同じです。</p>
 </section>
 
 <section id="standard-footer">
-<title>$BI8=`$N%U%C%?$rA^F~$9$k(B</title>
+<title>標準のフッタを挿入する</title>
 
-    <p>$B$b$7?t%Z!<%8$rD6$($k%Z!<%8$r;}$D%5%$%H$r4IM}$7$F$$$k$J$i$P!"(B
-    $BA4%Z!<%8$KBP$7$FJQ9`$r9T$J$&$3$H$,K\Ev$K6lDK$H$J$jF@$k$3$H$,(B
-    $BJ,$+$k$G$7$g$&!#A4$F$N%Z!<%8$KEO$C$F$"$k<o$NI8=`E*$J304Q$r(B
-    $B0];}$7$h$&$H$7$F$$$k$J$i$PFC$K$=$&$G$7$g$&!#(B</p>
+    <p>もし数ページを超えるページを持つサイトを管理しているならば、
+    全ページに対して変項を行なうことが本当に苦痛となり得ることが
+    分かるでしょう。全てのページに渡ってある種の標準的な外観を
+    維持しようとしているならば特にそうでしょう。</p>
 
-    <p>$B%X%C%@$d%U%C%?MQ$NA^F~MQ%U%!%$%k$r;HMQ$9$k$3$H$G!"(B
-    $B$3$N$h$&$J99?7$K$+$+$kIiC4$r8:$i$9$3$H$,$G$-$^$9!#(B
-    $B0l$D$N%U%C%?%U%!%$%k$r:n@.$7!"$=$l$r(B <code>include</code>
-    SSI $B%3%^%s%I$G3F%Z!<%8$KF~$l$k$@$1$G:Q$_$^$9!#(B<code>include</code>
-    $BMWAG$O!"(B<code>file</code> $BB0@-$^$?$O(B <code>virtual</code>
-    $BB0@-$N$$$:$l$+$r;HMQ$7$F$I$N%U%!%$%k$rA^F~$9$k$+$r7h$a$k$3$H$,$G$-$^$9!#(B
-    <code>file</code> $BB0@-$O!"(B<em>$B%+%l%s%H%G%#%l%/%H%j$+$i$NAjBP%Q%9$G<($5$l$?(B
-    </em>$B%U%!%$%k%Q%9$G$9!#(B
-    $B$=$l$O(B / $B$G;O$^$k@dBP%U%!%$%k%Q%9$K$O$G$-$:!"$^$?!"$=$N%Q%9$N0lIt$K(B ../
-    $B$r4^$`$3$H$,$G$-$J$$$3$H$r0UL#$7$^$9!#(B<code>virtual</code>
-    $BB0@-$O!"$*$=$i$/$h$jJXMx$@$H;W$$$^$9$,!"Ds6!$9$k%I%-%e%a%s%H$+$i$NAjBP(B
-    URL $B$G;XDj$9$Y$-$G$9!#$=$l$O(B / $B$G;O$a$k$3$H$,$G$-$^$9$,!"(B
-    $BDs6!$9$k%U%!%$%k$HF1$8%5!<%P>e$KB8:_$7$J$/$F$O$J$j$^$;$s!#(B</p>
+    <p>ヘッダやフッタ用の挿入用ファイルを使用することで、
+    このような更新にかかる負担を減らすことができます。
+    一つのフッタファイルを作成し、それを <code>include</code>
+    SSI コマンドで各ページに入れるだけで済みます。<code>include</code>
+    要素は、<code>file</code> 属性または <code>virtual</code>
+    属性のいずれかを使用してどのファイルを挿入するかを決めることができます。
+    <code>file</code> 属性は、<em>カレントディレクトリからの相対パスで示された
+    </em>ファイルパスです。
+    それは / で始まる絶対ファイルパスにはできず、また、そのパスの一部に ../
+    を含むことができないことを意味します。<code>virtual</code>
+    属性は、おそらくより便利だと思いますが、提供するドキュメントからの相対
+    URL で指定すべきです。それは / で始めることができますが、
+    提供するファイルと同じサーバ上に存在しなくてはなりません。</p>
 <example>
         &lt;!--#include virtual="/footer.html" --&gt;
 </example>
 
-    <p>$B;d$O:G8e$NFs$D$rAH$_9g$o$;$F!"(B<code>LAST_MODIFIED</code>
-    $B%G%#%l%/%F%#%V$r%U%C%?%U%!%$%k$NCf$KCV$/$3$H$,$h$/$"$j$^$9!#(B
-    SSI $B%G%#%l%/%F%#%V$O!"A^F~MQ$N%U%!%$%k$K4^$^$;$?$j!"(B
-    $BA^F~%U%!%$%k$N%M%9%H$r$7$?$j$9$k$3$H$,$G$-$^$9!#$9$J$o$A!"(B
-    $BA^F~MQ$N%U%!%$%k$OB>$N%U%!%$%k$r:F5"E*$KA^F~$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>私は最後の二つを組み合わせて、<code>LAST_MODIFIED</code>
+    ディレクティブをフッタファイルの中に置くことがよくあります。
+    SSI ディレクティブは、挿入用のファイルに含ませたり、
+    挿入ファイルのネストをしたりすることができます。すなわち、
+    挿入用のファイルは他のファイルを再帰的に挿入することができます。</p>
 </section>
 
 </section>
 
 <section id="config">
-<title>$BB>$K2?$,@_Dj$G$-$k$N$+(B ?</title>
+<title>他に何が設定できるのか ?</title>
 
-    <p>$B;~9o=q<0$r(B <code>config</code> $B$G@_Dj$G$-$k$3$H$K2C$($F!"(B
-    $B99$KFs$D(B <code>config</code> $B$G@_Dj$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>時刻書式を <code>config</code> で設定できることに加えて、
+    更に二つ <code>config</code> で設定することができます。</p>
 
-    <p>$BDL>o!"(BSSI $B%G%#%l%/%F%#%V$G2?$+$,$&$^$/$$$+$J$$$H$-$O!"(B
-    $B<!$N%a%C%;!<%8$,=PNO$5$l$^$9!#(B</p>
+    <p>通常、SSI ディレクティブで何かがうまくいかないときは、
+    次のメッセージが出力されます。</p>
 <example>
         [an error occurred while processing this directive]
 </example>
 
-    <p>$B$3$N%a%C%;!<%8$rB>$N$b$N$K$7$?$$>l9g!"(B<code>config</code>
-    $BMWAG$N(B <code>errmsg</code> $BB0@-$GJQ99$9$k$3$H$,$G$-$^$9(B:</p>
+    <p>このメッセージを他のものにしたい場合、<code>config</code>
+    要素の <code>errmsg</code> 属性で変更することができます:</p>
 <example>
         &lt;!--#config errmsg="[It appears that you don't know how to use SSI]" --&gt;
 </example>
 
-    <p>$B$*$=$i$/!"%(%s%I%f!<%6$O$3$N%a%C%;!<%8$r7h$7$F8+$k$3$H$O$"$j$^$;$s!#(B
-    $B$J$<$J$i!"$=$N%5%$%H$,@8$-$?>uBV$K$J$kA0$K(B SSI $B%G%#%l%/%F%#%V$K4X$9$k(B
-    $BA4$F$NLdBj$r2r7h$7$F$$$k$O$:$@$+$i$G$9!#(B($B$=$&$G$9$h$M(B?)</p>
+    <p>おそらく、エンドユーザはこのメッセージを決して見ることはありません。
+    なぜなら、そのサイトが生きた状態になる前に SSI ディレクティブに関する
+    全ての問題を解決しているはずだからです。(そうですよね?)</p>
 
-    <p>$B$=$7$F!"(B<code>config</code> $B$K$*$$$F(B <code>sizefmt</code>
-    $BB0@-$r;HMQ$9$k$3$H$G!"(B
-    $BJV$5$l$k%U%!%$%k%5%$%:$N=q<0$r@_Dj$9$k$3$H$,$G$-$^$9!#(B
-    $B%P%$%H?t$K$O(B <code>bytes</code> $B$r!"E,Ev$K(B Kb $B$d(B Mb
-    $B$KC;=L$5$;$k$K$O(B <code>abbrev</code> $B$r;XDj$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>そして、<code>config</code> において <code>sizefmt</code>
+    属性を使用することで、
+    返されるファイルサイズの書式を設定することができます。
+    バイト数には <code>bytes</code> を、適当に Kb や Mb
+    に短縮させるには <code>abbrev</code> を指定することができます。</p>
     </section>
 
 <section id="exec">
-    <title>$B%3%^%s%I$N<B9T(B</title>
+    <title>コマンドの実行</title>
 
-    <p>$B:#8e?t%v7n$N$&$A$K!">.$5$J(B CGI $B%W%m%0%i%`$H(B SSI
-    $B$r;HMQ$9$k5-;v$r=P$7$?$$$H9M$($F$$$^$9!#$3$3$G$O$=$l$H$OJL$K!"(B
-    <code>exec</code> $BMWAG$K$h$C$F9T$J$&$3$H$,$G$-$k$3$H$r<($7$^$9!#(B
-    SSI $B$K%7%'%k(B ($B@53N$K$O(B <code>/bin/sh</code>$B!#(BWin32 $B$J$i$P(B DOS $B%7%'%k(B)
-    $B$r;HMQ$7$F%3%^%s%I$r<B9T$5$;$k$3$H$,$G$-$^$9!#(B
-    $B2<5-$NNc$G$O!"%G%#%l%/%H%j%j%9%H=PNO$r9T$J$$$^$9!#(B</p>
+    <p>今後数ヶ月のうちに、小さな CGI プログラムと SSI
+    を使用する記事を出したいと考えています。ここではそれとは別に、
+    <code>exec</code> 要素によって行なうことができることを示します。
+    SSI にシェル (正確には <code>/bin/sh</code>。Win32 ならば DOS シェル)
+    を使用してコマンドを実行させることができます。
+    下記の例では、ディレクトリリスト出力を行ないます。</p>
 <example>
         &lt;pre&gt;<br />
         &lt;!--#exec cmd="ls" --&gt;<br />
         &lt;/pre&gt;
 </example>
 
-    <p>Windows $B>e$G$O!"(B</p>
+    <p>Windows 上では、</p>
 <example>
         &lt;pre&gt;<br />
         &lt;!--#exec cmd="dir" --&gt;<br />
         &lt;/pre&gt;
 </example>
 
-    <p>Windows $B>e$G$O!"$3$N%G%#%l%/%F%#%V$K$h$C$F$$$/$D$+$N4qL/$J(B
-    $B=q<0$K5$$E$/$G$7$g$&!#$J$<$J$i(B <code>dir</code> $B$N=PNO$,J8;zNs(B
-    ``&lt;<code>dir</code>&gt;'' $B$r4^$_!"%V%i%&%6$r:.Mp$5$;$k$+$i$G$9!#(B</p>
+    <p>Windows 上では、このディレクティブによっていくつかの奇妙な
+    書式に気づくでしょう。なぜなら <code>dir</code> の出力が文字列
+    ``&lt;<code>dir</code>&gt;'' を含み、ブラウザを混乱させるからです。</p>
 
-    <p>$B$3$N5!G=$OHs>o$K4m81$G$"$j!"$I$s$J%3!<%I$G$b(B <code>exec</code>
-    $B%?%0$KKd$a9~$^$l$F$7$^$($P<B9T$9$k$3$H$KCm0U$7$F$/$@$5$$!#Nc$($P(B 
-    `` $B%2%9%H%V%C%/(B '' $B$N$h$&$K!"$b$7!"(B
-    $B%f!<%6$,%Z!<%8$NFbMF$rJT=8$G$-$k>u67$K$"$k$J$i$P!"(B
-    $B$3$N5!G=$r3N<B$KM^@)$7$F$/$@$5$$!#(B<code>Options</code>
-    $B%G%#%l%/%F%#%V$N(B <code>IncludesNOEXEC</code> $B0z?t$r;XDj$9$k$3$H$G!"(B
-    SSI $B$O5v2D$9$k$1$l$I(B <code>exec</code>
-    $B5!G=$O5v2D$7$J$$$h$&$K$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>この機能は非常に危険であり、どんなコードでも <code>exec</code>
+    タグに埋め込まれてしまえば実行することに注意してください。例えば 
+    `` ゲストブック '' のように、もし、
+    ユーザがページの内容を編集できる状況にあるならば、
+    この機能を確実に抑制してください。<code>Options</code>
+    ディレクティブの <code>IncludesNOEXEC</code> 引数を指定することで、
+    SSI は許可するけれど <code>exec</code>
+    機能は許可しないようにすることができます。</p>
     </section>
 
 <section id="advanced">
-<title>$B9bEY$J(B SSI $B%F%/%K%C%/(B</title>
+<title>高度な SSI テクニック</title>
 
-    <p>$B%3%s%F%s%D$r=PNO$9$k$3$H$K2C$(!"(BApache SSI $B$OJQ?t$r@_Dj$7!"(B
-    $B$=$7$FHf3S$H>r7oJ,4t$K$=$NJQ?t$r;HMQ$G$-$k5!G=$rDs6!$7$F$$$^$9!#(B
+    <p>コンテンツを出力することに加え、Apache SSI は変数を設定し、
+    そして比較と条件分岐にその変数を使用できる機能を提供しています。
     </p>
 
-<section id="caveat"><title>$B7Y9p(B</title>
+<section id="caveat"><title>警告</title>
 
-    <p>$B$3$N5-;v$G=R$Y$?BgItJ,$N5!G=$O!"(BApache 1.2
-    $B0J9_$r;HMQ$7$F$$$k>l9g$N$_MxMQ2DG=$G$9!#$b$A$m$s!"$b$7(B Apache 1.2
-    $B0J9_$r;HMQ$7$F$J$$>l9g!"D>$A$K%"%C%W%0%l!<%I$9$kI,MW$,$"$j$^$9!#(B
-    $B$5$!!":#$=$l$r9T$J$$$J$5$$!#$=$l$^$GBT$C$F$$$^$9!#(B</p>
+    <p>この記事で述べた大部分の機能は、Apache 1.2
+    以降を使用している場合のみ利用可能です。もちろん、もし Apache 1.2
+    以降を使用してない場合、直ちにアップグレードする必要があります。
+    さぁ、今それを行ないなさい。それまで待っています。</p>
 </section>
 
-<section id="variables"><title>$BJQ?t$r@_Dj$9$k(B</title>
+<section id="variables"><title>変数を設定する</title>
 
-    <p><code>set</code> $B%G%#%l%/%F%#%V$r;HMQ$7$F!"(B
-    $B8e$G;HMQ$9$k$?$a$KJQ?t$r@_Dj$9$k$3$H$,$G$-$^$9!#(B
-    $B$3$l$O8e$N@bL@$GI,MW$K$J$k$N$G!"$3$3$G$=$l$K$D$$$F=R$Y$F$$$^$9!#(B
-    $BJ8K!$O0J2<$N$H$*$j$G$9(B:</p>
+    <p><code>set</code> ディレクティブを使用して、
+    後で使用するために変数を設定することができます。
+    これは後の説明で必要になるので、ここでそれについて述べています。
+    文法は以下のとおりです:</p>
 <example>
         &lt;!--#set var="name" value="Rich" --&gt;
 </example>
 
-    <p>$B$3$N$h$&$KC1=c$KJ8;z$I$*$j$K@_Dj$9$k$3$H$K2C$(!"(B
-    <a href="../env.html">$B4D6-JQ?t(B</a>$B$d>e5-$NJQ?t(B
-    ($BNc$($P(B <code>LAST_MODIFIED</code> $B$N$h$&$J(B)
-    $B$r4^$`B>$N$"$i$f$kJQ?t$rCM$r@_Dj$9$k$N$K;HMQ$9$k$3$H$,$G$-$^$9!#(B
-    $BJQ?tL>$NA0$K%I%k5-9f(B ($) $B$r;HMQ$9$k$3$H$G!"(B
-    $B$=$l$,%j%F%i%kJ8;zNs$G$O$J$/$FJQ?t$G$"$k$3$H$r<($7$^$9!#(B</p>
+    <p>このように単純に文字どおりに設定することに加え、
+    <a href="../env.html">環境変数</a>や上記の変数
+    (例えば <code>LAST_MODIFIED</code> のような)
+    を含む他のあらゆる変数を値を設定するのに使用することができます。
+    変数名の前にドル記号 ($) を使用することで、
+    それがリテラル文字列ではなくて変数であることを示します。</p>
 <example>
         &lt;!--#set var="modified" value="$LAST_MODIFIED" --&gt;
 </example>
 
-    <p>$B%I%k5-9f(B ($) $B$rJ8;z$H$7$FJQ?t$NCM$KF~$l$k$K$O!"(B
-    $B%P%C%/%9%i%C%7%e$K$h$C$F%I%k5-9f$r%(%9%1!<%W$9$kI,MW$,$"$j$^$9!#(B</p>
+    <p>ドル記号 ($) を文字として変数の値に入れるには、
+    バックスラッシュによってドル記号をエスケープする必要があります。</p>
 <example>
         &lt;!--#set var="cost" value="\$100" --&gt;
 </example>
 
-    <p>$B:G8e$K$J$j$^$9$,!"D9$$J8;zNs$NCf$KJQ?t$rCV$-$?$$>l9g$G!"(B
-    $BJQ?tL>$,B>$NJ8;z$H$V$D$+$k2DG=@-$,$"$j!"(B
-    $B$=$l$i$NJ8;z$K$D$$$F:.Mp$7$F$7$^$&>l9g!"$3$N:.Mp$r<h$j=|$/$?$a!"(B
-    $BJQ?tL>$rCf3g8L$G0O$`$3$H$,$G$-$^$9(B
-    ($B$3$l$K$D$$$F$NNI$$Nc$r<($9$N$OFq$7$$$N$G$9$,!"(B
-    $B$*$=$i$/J,$+$C$F$$$?$@$1$k$G$7$g$&(B)$B!#(B
+    <p>最後になりますが、長い文字列の中に変数を置きたい場合で、
+    変数名が他の文字とぶつかる可能性があり、
+    それらの文字について混乱してしまう場合、この混乱を取り除くため、
+    変数名を中括弧で囲むことができます
+    (これについての良い例を示すのは難しいのですが、
+    おそらく分かっていただけるでしょう)。
     </p>
 <example>
         &lt;!--#set var="date" value="${DATE_LOCAL}_${DATE_GMT}" --&gt;
@@ -409,18 +409,18 @@
 </section>
 
 <section id="conditional">
-<title>$B>r7o<0(B</title>
+<title>条件式</title>
 
-    <p>$B$5$F!"JQ?t$r;}$C$F$$$F!"(B
-    $B$=$l$i$NCM$r@_Dj$7$FHf3S$9$k$3$H$,$G$-$k$N$G$9$+$i!"(B
-    $B>r7o$rI=$9$?$a$K$=$l$i$r;HMQ$9$k$3$H$,$G$-$^$9!#$3$l$K$h$j(B
-    SSI $B$O$"$k<o$N>.$5$J%W%m%0%i%_%s%08@8l$K$J$C$F$$$^$9!#(B
-    <module>mod_include</module> $B$O>r7o$rI=8=$9$k$?$a$K(B <code>if</code>,
+    <p>さて、変数を持っていて、
+    それらの値を設定して比較することができるのですから、
+    条件を表すためにそれらを使用することができます。これにより
+    SSI はある種の小さなプログラミング言語になっています。
+    <module>mod_include</module> は条件を表現するために <code>if</code>,
     <code>elif</code>, <code>else</code>, <code>endif</code>
-    $B9=B$$rDs6!$7$F$$$^$9!#$3$l$K$h$C$F!"(B
-    $B0l$D$N<B:]$N%Z!<%8$+$iJ#?t$NO@M}%Z!<%8$r8z2LE*$K@8@.$9$k$3$H$,$G$-$^$9!#(B</p>
+    構造を提供しています。これによって、
+    一つの実際のページから複数の論理ページを効果的に生成することができます。</p>
 
-    <p>$B>r7o9=B$$O0J2<$N$H$*$j$G$9(B:</p>
+    <p>条件構造は以下のとおりです:</p>
 <example>
     &lt;!--#if expr="test_condition" --&gt;<br />
     &lt;!--#elif expr="test_condition" --&gt;<br />
@@ -429,24 +429,24 @@
 </example>
 
     <p><em>test_condition</em>
-    $B$O$"$i$f$k<oN`$NO@M}E*Hf3S$r$9$k$3$H$,$G$-$^$9!#(B
-    $BCM$rHf3S$7$?$j!"$=$NCM$,(B ``$B??(B'' $B$+$I$&$+$rI>2A$7$^$9(B
-    ($B6u$G$J$$$J$iM?$($i$l$?J8;zNs$O??$G$9(B)$B!#(B
-    $BMxMQ2DG=$JHf3S1i;;;R$NA4$F$N%j%9%H$K$D$$$F$O!"(B
-    <module>mod_include</module> $B%I%-%e%a%s%F!<%7%g%s$r;2>H$7$F$/$@$5$$!#(B
-    $B$3$3$G$O!"$3$N9=B$$r$I$&;HMQ$9$k$+$NNc$r$$$/$D$+<($7$^$9!#(B</p>
+    はあらゆる種類の論理的比較をすることができます。
+    値を比較したり、その値が ``真'' かどうかを評価します
+    (空でないなら与えられた文字列は真です)。
+    利用可能な比較演算子の全てのリストについては、
+    <module>mod_include</module> ドキュメンテーションを参照してください。
+    ここでは、この構造をどう使用するかの例をいくつか示します。</p>
 
-    <p>$B@_Dj%U%!%$%k$G<!$N9T$r5-=R$7$^$9(B:</p>
+    <p>設定ファイルで次の行を記述します:</p>
 <example>
         BrowserMatchNoCase macintosh Mac<br />
         BrowserMatchNoCase MSIE InternetExplorer
 </example>
 
-    <p>$B$3$l$O%/%i%$%"%s%H$,(B Macintosh
-    $B>e$G%$%s%?!<%M%C%H%(%/%9%W%m!<%i$,F0$$$F$$$k>l9g!"4D6-JQ?t(B
-    ``Mac'' $B$H(B ``InternetExplorer'' $B$r??$H@_Dj$7$^$9!#(B</p>
+    <p>これはクライアントが Macintosh
+    上でインターネットエクスプローラが動いている場合、環境変数
+    ``Mac'' と ``InternetExplorer'' を真と設定します。</p>
 
-    <p>$B<!$K!"(BSSI $B$,2DG=$K$J$C$?%I%-%e%a%s%H$G0J2<$r9T$J$$$^$9(B:
+    <p>次に、SSI が可能になったドキュメントで以下を行ないます:
     </p>
 <example>
         &lt;!--#if expr="${Mac} &amp;&amp; ${InternetExplorer}" --&gt;<br />
@@ -456,26 +456,26 @@
         &lt;!--#endif --&gt;
 </example>
 
-    <p>Mac $B>e$N(B IE $B$KBP$7$F2?$+;W$&$H$3$m$,$"$k$o$1$G$"$j$^$;$s!#(B
-    $BB>$G$O<B9T$G$-$F$$$k$$$/$D$+$N(B JavaScript $B$r(B Mac $B>e$N(B IE
-    $B$G<B9T$5$;$k$N$K!"@h=5?t;~4V6lO+$7$?$H$$$&$@$1$N$3$H$G$9!#(B
-    $B>e$NNc$O$=$N;CDjE*$JBP=hJ}K!$G$9!#(B</p>
+    <p>Mac 上の IE に対して何か思うところがあるわけでありません。
+    他では実行できているいくつかの JavaScript を Mac 上の IE
+    で実行させるのに、先週数時間苦労したというだけのことです。
+    上の例はその暫定的な対処方法です。</p>
 
-    <p>$BB>$N$I$s$JJQ?t(B ($B$"$J$?$,Dj5A$9$k$b$N!"(B
-    $B$^$?$OIaDL$N4D6-JQ?t$N$$$:$l$+(B) $B$b!">r7oJ8$K;HMQ$9$k$3$H$,$G$-$^$9!#(B
-    Apache $B$O(B <code>SetEnvIf</code> $B%G%#%l%/%F%#%V$dB>$N4XO"(B
-    $B%G%#%l%/%F%#%V$r;HMQ$7$F4D6-JQ?t$r@_Dj$9$k$3$H$,$G$-$^$9!#(B
-    $B$3$N5!G=$K$h$j!"(BCGI
-    $B$KMj$k$3$H$J$/$+$J$jJ#;($JF0E*$J$3$H$r$5$;$k$3$H$,$G$-$^$9!#(B</p>
+    <p>他のどんな変数 (あなたが定義するもの、
+    または普通の環境変数のいずれか) も、条件文に使用することができます。
+    Apache は <code>SetEnvIf</code> ディレクティブや他の関連
+    ディレクティブを使用して環境変数を設定することができます。
+    この機能により、CGI
+    に頼ることなくかなり複雑な動的なことをさせることができます。</p>
 </section>
 </section>
 
-<section id="conclusion"><title>$B=*$o$j$K(B</title>
+<section id="conclusion"><title>終わりに</title>
 
-    <p>SSI $B$O3N$+$K(B CGI
-    $B$dF0E*$J%&%'%V%Z!<%8$r@8@.$9$kB>$N5;=Q$KBe$o$k$b$N$G$O$"$j$^$;$s!#(B
-    $B$7$+$7!"$?$/$5$s$NM>J,$J:n6H$r$;$:$K!"(B
-    $B>/NL$NF0E*$J%3%s%F%s%D$r2C$($k$K$O$9$0$l$?J}K!$G$9!#(B</p>
+    <p>SSI は確かに CGI
+    や動的なウェブページを生成する他の技術に代わるものではありません。
+    しかし、たくさんの余分な作業をせずに、
+    少量の動的なコンテンツを加えるにはすぐれた方法です。</p>
 </section>
 
 </manualpage>

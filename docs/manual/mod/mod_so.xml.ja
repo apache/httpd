@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -23,107 +23,107 @@
 <modulesynopsis metafile="mod_so.xml.meta">
 
 <name>mod_so</name>
-<description>$B5/F0;~$d:F5/F0;~$K<B9T%3!<%I$H%b%8%e!<%k$r%5!<%P$K%m!<%I$9$k(B
+<description>起動時や再起動時に実行コードとモジュールをサーバにロードする
 </description>
 <status>Extension</status>
 <sourcefile>mod_so.c</sourcefile>
 <identifier>so_module</identifier>
-<compatibility>$B$3$N%b%8%e!<%k$O(B Window $B$G$O(B ($B>o$K4^$^$l$F$$$k(B) Base
-$B%b%8%e!<%k$G$9(B</compatibility>
+<compatibility>このモジュールは Window では (常に含まれている) Base
+モジュールです</compatibility>
 
 <summary>
 
-    <p>$B$$$/$D$+$N%*%Z%l!<%F%#%s%0%7%9%F%`$G$O!"%5!<%P$N:F%3%s%Q%$%k$r$9$kBe$o$j$K!"(B
-    $B$3$N%b%8%e!<%k$r;HMQ$7$F(B
-    <a href="../dso.html">$BF0E*6&M-%*%V%8%'%/%H(B</a>
-    (DSO) $B5!9=$K$h$j!"<B9T;~$K(B Apache $B$K%b%8%e!<%k$rFI$_9~$^$;$k$3$H$,(B
-    $B$G$-$^$9!#(B</p>
+    <p>いくつかのオペレーティングシステムでは、サーバの再コンパイルをする代わりに、
+    このモジュールを使用して
+    <a href="../dso.html">動的共有オブジェクト</a>
+    (DSO) 機構により、実行時に Apache にモジュールを読み込ませることが
+    できます。</p>
 
-    <p>Unix $B>e$G$O!"FI$_9~$^$l$k%3!<%I$ODL>o$O6&M-%*%V%8%'%/%H%U%!%$%k(B
-    ($BIaDL(B <code>.so</code> $B$H$$$&3HD%;R$,IU$$$F$$$^$9(B) $B$+$i$G$9!#(B
-    Windows $B>e$G$O$3$N%b%8%e!<%k$N3HD%;R$O(B <code>.so</code> $B$+(B <code>.dll</code>
-    $B$G$9!#(B</p>
+    <p>Unix 上では、読み込まれるコードは通常は共有オブジェクトファイル
+    (普通 <code>.so</code> という拡張子が付いています) からです。
+    Windows 上ではこのモジュールの拡張子は <code>.so</code> か <code>.dll</code>
+    です。</p>
 
-    <note type="warning"><title>$B7Y9p(B</title>
-    <p>Apache 1.3 $B$N%b%8%e!<%k$rD>@\(B Apache 2.0 $B$G;H$&$3$H$O$G$-$^$;$s(B
-    $B!=(B $B%b%8%e!<%k$O(B Apache 2.0 $BMQ$KF0E*$K%m!<%I$5$l$k$+!"(B
-    $BD>@\AH$_9~$^$l$k$?$a$K=$@5$5$l$J$1$l$P$J$j$^$;$s!#(B</p>
+    <note type="warning"><title>警告</title>
+    <p>Apache 1.3 のモジュールを直接 Apache 2.0 で使うことはできません
+    ― モジュールは Apache 2.0 用に動的にロードされるか、
+    直接組み込まれるために修正されなければなりません。</p>
     </note>
 </summary>
 
-<section><title>Windows $BMQ$N%m!<%I2DG=$J%b%8%e!<%k$r:n@.$9$k(B</title>
+<section><title>Windows 用のロード可能なモジュールを作成する</title>
 
-    <note><title>$BCm(B</title>
-    <p>Apache 1.3.15 $B$H(B 2.0 $B$H$G(B Windows $B$N%b%8%e!<%kL>$N7A<0$OJQ99$5$l$^$7$?(B
-    $B!=(B $B%b%8%e!<%k$O(B mod_foo.so $B$H$$$&L>A0$K$J$j$^$7$?!#(B</p>
+    <note><title>注</title>
+    <p>Apache 1.3.15 と 2.0 とで Windows のモジュール名の形式は変更されました
+    ― モジュールは mod_foo.so という名前になりました。</p>
 
-    <p>$B$^$@(B mod_so $B$G(B ApacheModuleFoo.dll $B$H$$$&L>A0$N%b%8%e!<%k$b(B
-    $B%m!<%I$5$l$^$9$,!"?7$7$$L>A0$NIU$1J}$r;H$&J}$,9%$^$l$^$9!#%b%8%e!<%k$r(B
-    2.0 $BMQ$K0\?"$7$F$$$k$N$G$"$l$P!"(B2.0 $B$N=,47$K9g$&$h$&$KL>A0$r(B
-    $B=$@5$7$F$/$@$5$$!#(B</p></note>
+    <p>まだ mod_so で ApacheModuleFoo.dll という名前のモジュールも
+    ロードされますが、新しい名前の付け方を使う方が好まれます。モジュールを
+    2.0 用に移植しているのであれば、2.0 の習慣に合うように名前を
+    修正してください。</p></note>
 
-    <p>Apache $B$N%b%8%e!<%k(B API $B$O(B UNIX $B$H(B Windows $B4V$G$OJQ99$5$l$F$$$^$;$s!#(B
-    $BB?$/$N%b%8%e!<%k$OA4$/JQ99$J$7!"$b$7$/$O4JC1$JJQ99$K$h$j(B Windows 
-    $B$G<B9T$G$-$k$h$&$K$J$j$^$9!#$?$@$7!"$=$l0J30$N(B Windows $B$K$OL5$$(B Unix
-    $B%"!<%-%F%/%A%c!<$N5!G=$K0MB8$7$?%b%8%e!<%k$OF0:n$7$^$;$s!#(B</p>
+    <p>Apache のモジュール API は UNIX と Windows 間では変更されていません。
+    多くのモジュールは全く変更なし、もしくは簡単な変更により Windows 
+    で実行できるようになります。ただし、それ以外の Windows には無い Unix
+    アーキテクチャーの機能に依存したモジュールは動作しません。</p>
 
-    <p>$B%b%8%e!<%k$,<B:]$KF0:n$9$k$H$-$O!"(B
-    $BFs$D$NJ}K!$N$I$A$i$+$G%5!<%P$KDI2C$9$k$3$H$,$G$-$^$9!#$^$:!"(BUnix
-    $B$HF1MM$K%5!<%P$K%3%s%Q%$%k$7$FAH$_9~$`$3$H$,$G$-$^$9!#(BWindows
-    $BMQ$N(B Apache $B$O(B Unix $BMQ$N(B Apache $B$K$"$k(B <code>Configure</code>
-    $B%W%m%0%i%`$,$"$j$^$;$s$N$G!"%b%8%e!<%k$N%=!<%9%U%!%$%k$r(B
-    ApacheCore $B%W%m%8%'%/%H%U%!%$%k$KDI2C$7!"%7%s%\%k$r(B
-    <code>os\win32\modules.c</code> $B%U%!%$%k$KDI2C$9$kI,MW$,$"$j$^$9!#(B</p>
+    <p>モジュールが実際に動作するときは、
+    二つの方法のどちらかでサーバに追加することができます。まず、Unix
+    と同様にサーバにコンパイルして組み込むことができます。Windows
+    用の Apache は Unix 用の Apache にある <code>Configure</code>
+    プログラムがありませんので、モジュールのソースファイルを
+    ApacheCore プロジェクトファイルに追加し、シンボルを
+    <code>os\win32\modules.c</code> ファイルに追加する必要があります。</p>
 
-    <p>$BFs$DL\$O%b%8%e!<%k$r(B DLL $B$H$7$F%3%s%Q%$%k$9$kJ}K!$G$9!#(B
-    DLL $B$O6&M-%i%$%V%i%j$G!"<B9T;~$K(B
+    <p>二つ目はモジュールを DLL としてコンパイルする方法です。
+    DLL は共有ライブラリで、実行時に
     <code><directive>LoadModule</directive></code>
-    $B%G%#%l%/%F%#%V$K$h$j%5!<%P$KFI$_9~$`$3$H$,$G$-$^$9!#$3$l$i$N%b%8%e!<%k(B
-    DLL $B$O$=$N$^$^G[I[$9$k$3$H$,2DG=$G!"%5!<%P$r:F%3%s%Q%$%k$9$k$3$H$J$/!"(BWindows
-    $BMQ$N(B Apache $B$N$9$Y$F$N%$%s%9%H!<%k$G<B9T$9$k$3$H$,$G$-$^$9!#(B</p>
+    ディレクティブによりサーバに読み込むことができます。これらのモジュール
+    DLL はそのまま配布することが可能で、サーバを再コンパイルすることなく、Windows
+    用の Apache のすべてのインストールで実行することができます。</p>
 
-    <p>$B%b%8%e!<%k(B DLL $B$r:n@.$9$k$?$a$K$O!"(B
-    $B%b%8%e!<%k$N:n@.$K>.$5$JJQ99$r9T$J$&I,MW$,$"$j$^$9!#(B
-    $B$D$^$j!"%b%8%e!<%k$N%l%3!<%I(B ($B$3$l$O8e$G:n@.$5$l$^$9!#(B
-    $B0J2<$r;2>H$7$F$/$@$5$$(B) $B$,(B DLL $B$+$i%(%/%9%]!<%H$5$l$J$1$l$P$J$j$^$;$s!#(B
-    $B$3$l$r9T$J$&$K$O!"(B<code>AP_MODULE_DECLARE_DATA</code> (Apache
-    $B$N%X%C%@%U%!%$%k$GDj5A$5$l$F$$$^$9(B) $B$r%b%8%e!<%k$N%b%8%e!<%k%l%3!<%I(B
-    $BDj5A$NItJ,$KDI2C$7$F$/$@$5$$!#$?$H$($P!"%b%8%e!<%k$K(B</p>
+    <p>モジュール DLL を作成するためには、
+    モジュールの作成に小さな変更を行なう必要があります。
+    つまり、モジュールのレコード (これは後で作成されます。
+    以下を参照してください) が DLL からエクスポートされなければなりません。
+    これを行なうには、<code>AP_MODULE_DECLARE_DATA</code> (Apache
+    のヘッダファイルで定義されています) をモジュールのモジュールレコード
+    定義の部分に追加してください。たとえば、モジュールに</p>
 <example>
     module foo_module;
 </example>
 
-    <p>$B$,$"$k$H$9$k$H!"$=$l$r<!$N$b$N$GCV$-49$($F$/$@$5$$!#(B</p>
+    <p>があるとすると、それを次のもので置き換えてください。</p>
 <example>
     module AP_MODULE_DECLARE_DATA foo_module;
 </example>
 
-    <p>Unix $B>e$G$b$3$N%b%8%e!<%k$r(B
-    $BJQ99L5$7$G;H$$B3$1$i$l$k$h$&$K!"$3$N%^%/%m$O(B Windows
-    $B>e$G$N$_8zNO$r;}$A$^$9!#(B<code>.DEF</code>
-    $B%U%!%$%k$NJ}$rNI$/CN$C$F$$$k$H$$$&>l9g$O!"(B
-    $BBe$o$j$K$=$l$r;H$C$F%b%8%e!<%k%l%3!<%I$r(B
-    $B%(%/%9%]!<%H$9$k$3$H$b$G$-$^$9!#(B</p>
-    <p>$B$5$"!"$"$J$?$N%b%8%e!<%k$N(B DLL $B$r:n@.$7$^$7$g$&!#$3$l$r!"(B
-    libhttpd.lib $B6&M-%i%$%V%i%j$,%3%s%Q%$%k$5$l$?$H$-$K:n@.$5$l$?(B
-    ibhttpd.lib $B%(%/%9%]!<%H%i%$%V%i%j$H%j%s%/$7$F$/$@$5$$!#$3$N;~$K!"(B
-    Apache $B$N%X%C%@%U%!%$%k$,@5$7$$0LCV$K$"$k$h$&$K!"(B
-    $B%3%s%Q%$%i$N@_Dj$rJQ$($kI,MW$,$"$k$+$b$7$l$^$;$s!#(B
-    $B$3$N%i%$%V%i%j$O%5!<%P%k!<%H$N(B modules $B%G%#%l%/%H%j$K$"$j$^$9!#(B
-    $B%S%k%I4D6-$,@5$7$/@_Dj$5$l$k$h$&$K!"4{B8$N%b%8%e!<%kMQ$N(B .dsp $B$r(B
-    $B<h$C$F$/$k$N$,0lHVNI$$$G$7$g$&!#$b$7$/$O!"$"$J$?$N(B .dsp $B$H(B
-    $B%3%s%Q%$%i$H%j%s%/$N%*%W%7%g%s$rHf3S$9$k!"$H$$$&$b$N$G$bNI$$$G$9!#(B</p>
+    <p>Unix 上でもこのモジュールを
+    変更無しで使い続けられるように、このマクロは Windows
+    上でのみ効力を持ちます。<code>.DEF</code>
+    ファイルの方を良く知っているという場合は、
+    代わりにそれを使ってモジュールレコードを
+    エクスポートすることもできます。</p>
+    <p>さあ、あなたのモジュールの DLL を作成しましょう。これを、
+    libhttpd.lib 共有ライブラリがコンパイルされたときに作成された
+    ibhttpd.lib エクスポートライブラリとリンクしてください。この時に、
+    Apache のヘッダファイルが正しい位置にあるように、
+    コンパイラの設定を変える必要があるかもしれません。
+    このライブラリはサーバルートの modules ディレクトリにあります。
+    ビルド環境が正しく設定されるように、既存のモジュール用の .dsp を
+    取ってくるのが一番良いでしょう。もしくは、あなたの .dsp と
+    コンパイラとリンクのオプションを比較する、というものでも良いです。</p>
 
-    <p>$B$3$l$G(B DLL $BHG$N%b%8%e!<%k$,:n@.$5$l$F$$$k$O$:$G$9!#(B
-    $B%5!<%P%k!<%H$N(B <code>modules</code>
-    $B%G%#%l%/%H%j$K%b%8%e!<%k$rCV$$$F!"(B
+    <p>これで DLL 版のモジュールが作成されているはずです。
+    サーバルートの <code>modules</code>
+    ディレクトリにモジュールを置いて、
     <code><directive>LoadModule</directive></code>
-    $B%G%#%l%/%F%#%V$r;H$C$FFI$_9~$s$G$/$@$5$$!#(B</p>
+    ディレクティブを使って読み込んでください。</p>
 </section>
 
 <directivesynopsis>
 <name>LoadFile</name>
-<description>$B;XDj$5$l$?%*%V%8%'%/%H%U%!%$%k$d%i%$%V%i%j$r%j%s%/$9$k(B</description>
+<description>指定されたオブジェクトファイルやライブラリをリンクする</description>
 <syntax>LoadFile <em>filename</em> [<em>filename</em>] ...</syntax>
 <contextlist>
 <context>server config</context>
@@ -131,13 +131,13 @@
 
 <usage>
 
-    <p>LoadFile $B%G%#%l%/%F%#%V$O!"%5!<%P$,5/F0$5$l$?$H$-$d:F5/F0$5$l$?$H$-$K!"(B
-    $B;XDj$5$l$?%*%V%8%'%/%H%U%!%$%k$d%i%$%V%i%j$r%j%s%/$7$^$9!#(B
-    $B$3$l$O%b%8%e!<%k$,F0:n$9$k$?$a$KI,MW$K$J$k$+$b$7$l$J$$DI2C$N(B
-    $B%3!<%I$rFI$_9~$`$?$a$K;HMQ$5$l$^$9!#(B<em>Filename</em> $B$O@dBP%Q%9$+!"(B<a
-    href="core.html#serverroot">ServerRoot</a> $B$+$i$NAjBP%Q%9$G$9!#(B</p>
+    <p>LoadFile ディレクティブは、サーバが起動されたときや再起動されたときに、
+    指定されたオブジェクトファイルやライブラリをリンクします。
+    これはモジュールが動作するために必要になるかもしれない追加の
+    コードを読み込むために使用されます。<em>Filename</em> は絶対パスか、<a
+    href="core.html#serverroot">ServerRoot</a> からの相対パスです。</p>
 
-    <p>$BNc(B:</p>
+    <p>例:</p>
 
     <example>LoadFile libexec/libxmlparse.so</example>
 
@@ -146,8 +146,8 @@
 
 <directivesynopsis>
 <name>LoadModule</name>
-<description>$B%*%V%8%'%/%H%U%!%$%k$d%i%$%V%i%j$r%j%s%/$7!";HMQ%b%8%e!<%k$N(B
-$B%j%9%H$KDI2C$9$k(B</description>
+<description>オブジェクトファイルやライブラリをリンクし、使用モジュールの
+リストに追加する</description>
 <syntax>LoadModule <em>module filename</em></syntax>
 <contextlist>
 <context>server config</context>
@@ -155,20 +155,20 @@
 
 <usage>
 
-    <p>LoadModule $B%G%#%l%/%F%#%V$O(B <em>filename</em>
-    $B$H$$$&%*%V%8%'%/%H%U%!%$%k$*$h$S%i%$%V%i%j$r%j%s%/$7!"(B<em>module</em>
-    $B$H$$$&L>A0$N%b%8%e!<%k$N9=B$$r%"%/%F%#%V$J%b%8%e!<%k$N%j%9%H$KDI2C$7$^$9!#(B
-    <em>Module</em> $B$O%U%!%$%kCf$N(B <code>module</code>
-    $B7?$N30ItJQ?t$NL>A0$G!"%b%8%e!<%k$N%I%-%e%a%s%H$K(B
+    <p>LoadModule ディレクティブは <em>filename</em>
+    というオブジェクトファイルおよびライブラリをリンクし、<em>module</em>
+    という名前のモジュールの構造をアクティブなモジュールのリストに追加します。
+    <em>Module</em> はファイル中の <code>module</code>
+    型の外部変数の名前で、モジュールのドキュメントに
     <a href="module-dict.html#moduleidentifier"
-    >$B%b%8%e!<%k<1JL;R(B</a>$B$H$7$F=q$+$l$F$$$k$b$N$G$9!#Nc(B :</p>
+    >モジュール識別子</a>として書かれているものです。例 :</p>
 
     <example>
       LoadModule status_module modules/mod_status.so
     </example>
 
-    <p>$B$3$l$O(B ServerRoot $B$N(B modules $B%5%V%G%#%l%/%H%j$+$i;XDj$5$l$?L>A0$N(B
-    $B%b%8%e!<%k$r%m!<%I$7$^$9!#(B</p>
+    <p>これは ServerRoot の modules サブディレクトリから指定された名前の
+    モジュールをロードします。</p>
 </usage>
 
 </directivesynopsis>

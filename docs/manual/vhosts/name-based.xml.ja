@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:659902 (outdated) -->
@@ -21,59 +21,59 @@
 -->
 
 <manualpage metafile="name-based.xml.meta">
-<parentdocument href="./">$B%P!<%A%c%k%[%9%H(B</parentdocument>
-<title>$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H(B</title>
+<parentdocument href="./">バーチャルホスト</parentdocument>
+<title>名前ベースのバーチャルホスト</title>
 
 <summary>
-    <p>$B$3$NJ8=q$G$OL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$r$I$s$J$H$-!"(B
-    $B$I$&$d$C$F;H$&$+$r@bL@$7$^$9!#(B</p>
+    <p>この文書では名前ベースのバーチャルホストをどんなとき、
+    どうやって使うかを説明します。</p>
 </summary>
 
-<seealso><a href="ip-based.html">$B%M!<%`%Y!<%9$N%P!<%A%c%k%[%9%H(B</a></seealso>
-<seealso><a href="details.html">$B%P!<%A%c%k%[%9%H$N%^%C%A%s%0$K$D$$$F$N>\:Y(B</a></seealso>
-<seealso><a href="mass.html">$BBgNL$N%P!<%A%c%k%[%9%H$NF0E*$J@_Dj(B</a></seealso>
-<seealso><a href="examples.html">$B%P!<%A%c%k%[%9%H$N0lHLE*$J@_DjNc(B</a></seealso>
-<seealso><a href="examples.html#serverpath">ServerPath $B@_DjNc(B</a></seealso>
+<seealso><a href="ip-based.html">ネームベースのバーチャルホスト</a></seealso>
+<seealso><a href="details.html">バーチャルホストのマッチングについての詳細</a></seealso>
+<seealso><a href="mass.html">大量のバーチャルホストの動的な設定</a></seealso>
+<seealso><a href="examples.html">バーチャルホストの一般的な設定例</a></seealso>
+<seealso><a href="examples.html#serverpath">ServerPath 設定例</a></seealso>
 
-<section id="namevip"><title>$BL>A0%Y!<%9$H(B IP $B%Y!<%9$N%P!<%A%c%k%[%9%H$NHf3S(B</title>
+<section id="namevip"><title>名前ベースと IP ベースのバーチャルホストの比較</title>
 
-    <p>IP $B%Y!<%9$N%P!<%A%c%k%[%9%H$G$O!"1~Ez$9$k(B
-    $B%P!<%A%c%k%[%9%H$X$N%3%M%/%7%g%s$r7hDj$9$k$?$a$K(B IP
-    $B%"%I%l%9$r;HMQ$7$^$9!#$G$9$+$i!"$=$l$>$l$N%[%9%H$K8D!9$K(B IP
-    $B%"%I%l%9$,I,MW$K$J$j$^$9!#$3$l$KBP$7$FL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$G$O!"(B
-    $B%/%i%$%"%s%H$,(B HTTP $B%X%C%@$N0lIt$H$7$F%[%9%HL>$r9p$2$k!"(B
-    $B$H$$$&$3$H$K0MB8$7$^$9!#$3$N5;=Q$GF10l(B IP 
-    $B%"%I%l%9$r0[$J$kB??t$N%[%9%H$G6&M-$7$F$$$^$9!#(B</p>
+    <p>IP ベースのバーチャルホストでは、応答する
+    バーチャルホストへのコネクションを決定するために IP
+    アドレスを使用します。ですから、それぞれのホストに個々に IP
+    アドレスが必要になります。これに対して名前ベースのバーチャルホストでは、
+    クライアントが HTTP ヘッダの一部としてホスト名を告げる、
+    ということに依存します。この技術で同一 IP 
+    アドレスを異なる多数のホストで共有しています。</p>
 
-    <p>$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$ODL>oC1=c$G!"$=$l$>$l$N%[%9%HL>$H(B
-    $B$=$l$KBP1~$9$k@53N$J(B IP $B%"%I%l%9$r(B DNS $B$G@_Dj$7!"0[$J$k(B
-    $B%[%9%HL>$r6hJL$9$k$h$&$K(B Apache HTTP $B%5!<%P$r@_Dj$9$k$@$1$G$9!#(B
-    $B$5$i$K!"L>A0%Y!<%9$N%P!<%A%c%k%[%9%H$OITB-$9$k(B IP
-    $B%"%I%l%9$N<{MW$r4KOB$7$^$9!#$7$?$,$C$F!"(BIP $B%Y!<%9$N%P!<%A%c%k%[%9%H$r(B
-    $BA*Br$9$Y$-FCDj$NM}M3$,$J$1$l$PL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$r;H$&$Y$-$G$9!#(B
-    IP $B%Y!<%9$N%P!<%A%c%k%[%9%H$r;HMQ$9$k$3$H$r9MN8$9$kM}M3$H$7$F!"(B</p>
+    <p>名前ベースのバーチャルホストは通常単純で、それぞれのホスト名と
+    それに対応する正確な IP アドレスを DNS で設定し、異なる
+    ホスト名を区別するように Apache HTTP サーバを設定するだけです。
+    さらに、名前ベースのバーチャルホストは不足する IP
+    アドレスの需要を緩和します。したがって、IP ベースのバーチャルホストを
+    選択すべき特定の理由がなければ名前ベースのバーチャルホストを使うべきです。
+    IP ベースのバーチャルホストを使用することを考慮する理由として、</p>
 
     <ul> 
-      <li>$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$KBP1~$7$F$$$J$$8E$$%/%i%$%"%s%H$,$"$k(B
-      $BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$,F/$/$?$a$K$O!"%/%i%$%"%s%H$O(B
-      HTTP $B%[%9%H%X%C%@$rAw$C$F$3$J$1$l$P$J$j$^$;$s!#(B
-      $B$3$l$O(B HTTP/1.1 $B$N;EMM$GMW5a$5$l$F$$$F!"$9$Y$F$N8=BeE*$J(B
-      HTTP/1.0 $B%V%i%&%6$G$b3HD%$H$7$F<BAu$5$l$F$$$^$9!#(B
-      $B$H$F$b8E$$%/%i%$%"%s%H$r%5%]!<%H$7$D$D!"L>A0%Y!<%9$N(B
-      $B%P!<%A%c%k%[%9%H$r9T$$$?$$>l9g$O!"$3$NJ8=q$N:G8e$NJ}$K(B
-      $B=q$+$l$F$$$k2r7h:v$K$J$k$+$b$7$l$J$$J}K!$r8+$F$/$@$5$$!#(B</li>
+      <li>名前ベースのバーチャルホストに対応していない古いクライアントがある
+      名前ベースのバーチャルホストが働くためには、クライアントは
+      HTTP ホストヘッダを送ってこなければなりません。
+      これは HTTP/1.1 の仕様で要求されていて、すべての現代的な
+      HTTP/1.0 ブラウザでも拡張として実装されています。
+      とても古いクライアントをサポートしつつ、名前ベースの
+      バーチャルホストを行いたい場合は、この文書の最後の方に
+      書かれている解決策になるかもしれない方法を見てください。</li>
 
-      <li>$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$O(B SSL $B%W%m%H%3%k$NFCD'$K$h$j!"(B
-      SSL $B%;%-%e%"%5!<%P$K$O;H$($^$;$s!#(B</li>
+      <li>名前ベースのバーチャルホストは SSL プロトコルの特徴により、
+      SSL セキュアサーバには使えません。</li>
 
-      <li>$B%*%Z%l!<%F%#%s%0%7%9%F%`$d%M%C%H%o!<%/AuCV$N$J$+$K$O!"(B
-      $BJL$N(B IP $B%"%I%l%9>e$G$J$$>l9g!"J#?t$N%[%9%H$rJL07$$$G$-$J$$$h$&$J(B
-      $BBS0h4IM}$NJ}K!$r<BAu$7$F$$$k$b$N$,$"$j$^$9!#(B</li>
+      <li>オペレーティングシステムやネットワーク装置のなかには、
+      別の IP アドレス上でない場合、複数のホストを別扱いできないような
+      帯域管理の方法を実装しているものがあります。</li>
     </ul>
 
 </section>
 
-<section id="using"><title>$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$rMxMQ$9$k(B</title>
+<section id="using"><title>名前ベースのバーチャルホストを利用する</title>
 
 <related>
     <modulelist>
@@ -91,53 +91,53 @@
     </directivelist>
 </related>
 
-    <p>$BL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$r;H$&$K$O!"$=$N%[%9%H$X$N(B
-    $B%j%/%(%9%H$r<u$1IU$1$k%5!<%P$N(B IP $B%"%I%l%9(B ($B$b$7$+$7$?$i%]!<%H$b(B)
-    $B$r;XDj$9$kI,MW$,$"$j$^$9!#(B
-    $B$3$l$O(B <directive module="core">NameVirtualHost</directive>
-    $B%G%#%l%/%F%#%V$G@_Dj$7$^$9!#DL>o!"(B<directive 
-    module="core">NameVirtualHost</directive> $B$G(B
-    <code>*</code> $B$NB0@-$r;H$C$F%5!<%P$NA4$F$N(B IP $B%"%I%l%9$r;H$$$^$9!#(B
-    ($BNc$($P(B SSL $B$N;HMQ$J$I$G(B) $BJ#?t$N%]!<%H$r;H$&$3$H$r7W2h$7$F$$$k$N$G$"$l$P!"(B
-    $B0z?t$K(B <code>*:80</code> $B$N$h$&$K%]!<%H$b4^$a$k$h$&$K$7$F$/$@$5$$!#(B
-    <directive module="core">NameVirtualHost</directive> $B%G%#%l%/%F%#%V$G(B
-    IP $B%"%I%l%9$r=q$$$F$b!"(B
-    $B<+F0E*$K%5!<%P$,$=$N(B IP $B%"%I%l%9$r%j%C%9%s$9$k$H$$$&$3$H$O$J$$$3$H$K(B
-    $BCm0U$7$F$/$@$5$$!#>\:Y$O!V(B<a href="../bind.html">Apache $B$N;H$&%"%I%l%9$H(B
-    $B%]!<%H$r@_Dj$9$k(B</a>$B!W$rFI$s$G$/$@$5$$!#$5$i$K!"$3$3$G;XDj$5$l$?(B
-    IP $B%"%I%l%9$OA4$F%5!<%P$N%M%C%H%o!<%/%$%s%?!<%U%'!<%9$H4XO"IU$1$i$l$F(B
-    $B$$$J$1$l$P$J$j$^$;$s!#(B</p>
+    <p>名前ベースのバーチャルホストを使うには、そのホストへの
+    リクエストを受け付けるサーバの IP アドレス (もしかしたらポートも)
+    を指定する必要があります。
+    これは <directive module="core">NameVirtualHost</directive>
+    ディレクティブで設定します。通常、<directive 
+    module="core">NameVirtualHost</directive> で
+    <code>*</code> の属性を使ってサーバの全ての IP アドレスを使います。
+    (例えば SSL の使用などで) 複数のポートを使うことを計画しているのであれば、
+    引数に <code>*:80</code> のようにポートも含めるようにしてください。
+    <directive module="core">NameVirtualHost</directive> ディレクティブで
+    IP アドレスを書いても、
+    自動的にサーバがその IP アドレスをリッスンするということはないことに
+    注意してください。詳細は「<a href="../bind.html">Apache の使うアドレスと
+    ポートを設定する</a>」を読んでください。さらに、ここで指定された
+    IP アドレスは全てサーバのネットワークインターフェースと関連付けられて
+    いなければなりません。</p>
 
-    <p>$B<!$O!"07$&%[%9%H$=$l$>$l$KBP$7$F(B <directive type="section"
-    module="core">VirtualHost</directive> $B%V%m%C%/$r(B
-    $B:n@.$7$F$/$@$5$$!#(B<directive module="core" type="section">VirtualHost</directive>
-    $B%G%#%l%/%F%#%V$N0z?t$O(B <directive module="core">NameVirtualHost</directive>
-    $B%G%#%l%/%F%#%V$N0z?t$HF1$8$K$7$F$/$@$5$$(B ($B$9$J$o$A!"(BIP $B%"%I%l%9$+!"A4$F$N%"%I%l%9$r0UL#$9$k(B
-    <code>*</code>)$B!#$=$l$>$l$N(B <directive module="core" type="section">VirtualHost</directive>
-    $B%G%#%l%/%F%#%V$NCf$K$O!":GDc8B!"$I$N%[%9%H$,07$o$l$k$+$r<($9(B <directive
-    module="core">ServerName</directive> $B%G%#%l%/%F%#%V$H!"(B
-    $B$=$N%[%9%HMQ$N%3%s%F%s%D$,%U%!%$%k%7%9%F%`>e$N$I$3$K$"$k$+$r<($9(B
-    <directive module="core">DocumentRoot</directive> $B%G%#%l%/%F%#%V$r(B
-    $B=q$/I,MW$,$"$j$^$9!#(B</p>
+    <p>次は、扱うホストそれぞれに対して <directive type="section"
+    module="core">VirtualHost</directive> ブロックを
+    作成してください。<directive module="core" type="section">VirtualHost</directive>
+    ディレクティブの引数は <directive module="core">NameVirtualHost</directive>
+    ディレクティブの引数と同じにしてください (すなわち、IP アドレスか、全てのアドレスを意味する
+    <code>*</code>)。それぞれの <directive module="core" type="section">VirtualHost</directive>
+    ディレクティブの中には、最低限、どのホストが扱われるかを示す <directive
+    module="core">ServerName</directive> ディレクティブと、
+    そのホスト用のコンテンツがファイルシステム上のどこにあるかを示す
+    <directive module="core">DocumentRoot</directive> ディレクティブを
+    書く必要があります。</p>
 
-    <note><title>$B%a%$%s%[%9%H$O$J$/$J$j$^$9(B</title>
-        <p>$B4{$K$"$k%&%'%V%5!<%P$K%P!<%A%c%k%[%9%H$rDI2C$9$k>l9g!"(B
-        $B4{B8$N%&%'%V%5!<%P$KBP$7$F$b(B <directive module="core"
+    <note><title>メインホストはなくなります</title>
+        <p>既にあるウェブサーバにバーチャルホストを追加する場合、
+        既存のウェブサーバに対しても <directive module="core"
         type="section">VirtualHost</directive>
-        $B%V%m%C%/$r:n$i$J$1$l$P$J$j$^$;$s!#$3$N%P!<%A%c%k%[%9%H$N(B
-        <directive module="core">ServerName</directive> $B$H(B
+        ブロックを作らなければなりません。このバーチャルホストの
+        <directive module="core">ServerName</directive> と
         <directive module="core">DocumentRoot</directive>
-        $B$O!"%0%m!<%P%k$J(B <directive module="core">ServerName</directive> $B$H(B
+        は、グローバルな <directive module="core">ServerName</directive> と
         <directive module="core">DocumentRoot</directive>
-        $B$HF1$8$b$N$K$7$^$9!#$^$?!"$3$N%P!<%A%c%k%[%9%H$r@_Dj%U%!%$%k$NCf$G(B
-        $B@hF,$KCV$$$F!"%G%U%)%k%H%[%9%H$H$7$FF0:n$9$k$h$&$K$7$^$9!#(B</p>
+        と同じものにします。また、このバーチャルホストを設定ファイルの中で
+        先頭に置いて、デフォルトホストとして動作するようにします。</p>
     </note>
 
-    <p>$B$?$H$($P!"(B<code>www.domain.tld</code> $B$rF0$+$7$F$$$F!"(B
-    $B$5$i$K%P!<%A%c%k%[%9%H(B <code>www.otherdomain.tld</code>
-    $B$rDI2C$9$k$H$7$^$7$g$&!#$3$N%P!<%A%c%k%[%9%H$OF10l(B IP $B$r;X$7$F$$$k$H$7$^$9!#(B
-    $B$=$N$h$&$J>l9g$O!"(B<code>httpd.conf</code>
-    $B$K0J2<$N$h$&$J%3!<%I$rDI2C$9$k$@$1$G$9(B</p>
+    <p>たとえば、<code>www.domain.tld</code> を動かしていて、
+    さらにバーチャルホスト <code>www.otherdomain.tld</code>
+    を追加するとしましょう。このバーチャルホストは同一 IP を指しているとします。
+    そのような場合は、<code>httpd.conf</code>
+    に以下のようなコードを追加するだけです</p>
 
     <example>
         NameVirtualHost *:80<br />
@@ -157,98 +157,98 @@
         &lt;/VirtualHost&gt;<br />
     </example>
 
-    <p><directive module="core">NameVirtualHost</directive> $B5Z$S(B
-    <directive module="core">VirtualHost</directive> $B$N$I$A$i$N>l9g$b!"(B
-    * $B$NItJ,$K$OL@<(E*$K(B IP $B%"%I%l%9$r;XDj$9$k$3$H$,$G$-$^$9!#(B
-    $BNc$($P!"$"$k(B IP $B%"%I%l%9$G$OL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$r;H$$$?$$0lJ}$G!"(B
-    $BJL$N(B IP $B%"%I%l%9$G$O!"B>$N(B IP $B%Y!<%9$N%P!<%A%c%k%[%9%H$d(B
-    $BJLAH$NL>A0%Y!<%9$N%P!<%A%c%k%[%9%H$r;H$$$?$$>l9g!"(B
-    $B$=$&@_Dj$9$k$3$H$K$J$k$G$7$g$&!#(B</p>
+    <p><directive module="core">NameVirtualHost</directive> 及び
+    <directive module="core">VirtualHost</directive> のどちらの場合も、
+    * の部分には明示的に IP アドレスを指定することができます。
+    例えば、ある IP アドレスでは名前ベースのバーチャルホストを使いたい一方で、
+    別の IP アドレスでは、他の IP ベースのバーチャルホストや
+    別組の名前ベースのバーチャルホストを使いたい場合、
+    そう設定することになるでしょう。</p>
 
-    <p>$BJ#?t$NL>A0$G%5!<%P%"%/%;%9$,$G$-$k$h$&$K$7$?$$$3$H$bB?$$$G$7$g$&!#(B
-    $B$3$N$h$&$J$3$H$O!"(B<directive module="core"
-    >ServerAlias</directive> $B%G%#%l%/%F%#%V$r(B <directive module="core"
+    <p>複数の名前でサーバアクセスができるようにしたいことも多いでしょう。
+    このようなことは、<directive module="core"
+    >ServerAlias</directive> ディレクティブを <directive module="core"
     type="section">VirtualHost</directive>
-    $B%;%/%7%g%s$K5-=R$9$k$3$H$G<B8=$G$-$^$9!#(B
-    $BNc$($P>e5-$N(B <directive module="core" 
-    type="section">VirtualHost</directive> $B$NNc$G$"$l$P!"(B
-    $B<!$N$h$&$K0lMw$K5s$2$i$l$?L>A0$,!"(B
-    $B%f!<%6$,F10l$N%&%'%V%5%$%H$H$7$FL\$K$7$F;HMQ$G$-$k%5!<%PL>$G$"$k!"(B
-    $B$H(B <directive module="core">ServerAlias</directive>
-    $B%G%#%l%/%F%#%V$G;XDj$G$-$^$9!#(B</p> 
+    セクションに記述することで実現できます。
+    例えば上記の <directive module="core" 
+    type="section">VirtualHost</directive> の例であれば、
+    次のように一覧に挙げられた名前が、
+    ユーザが同一のウェブサイトとして目にして使用できるサーバ名である、
+    と <directive module="core">ServerAlias</directive>
+    ディレクティブで指定できます。</p> 
 
     <example>
         ServerAlias domain.tld *.domain.tld
     </example>
 
-    <p><code>domain.tld</code> $B%I%a%$%s$X$NA4$F$N%[%9%H$X$N%j%/%(%9%H$O(B
-    <code>www.domain.tld</code> $B$N%P!<%A%c%k%[%9%H$,=hM}$7$^$9!#(B
-    $BL>A0$r%^%C%A$5$;$k$?$a$K!"%o%$%k%I%+!<%IJ8;z(B * $B$d(B ? 
-    $B$r;HMQ$9$k$3$H$b$G$-$^$9!#$b$A$m$s;W$$$D$-$NL>A0$r:n$C$F!"(B
-    <directive module="core">ServerName</directive> $B$d(B 
+    <p><code>domain.tld</code> ドメインへの全てのホストへのリクエストは
+    <code>www.domain.tld</code> のバーチャルホストが処理します。
+    名前をマッチさせるために、ワイルドカード文字 * や ? 
+    を使用することもできます。もちろん思いつきの名前を作って、
+    <directive module="core">ServerName</directive> や 
     <directive module="core">ServerAlias</directive>
-    $B$K$=$NL>A0$r=q$/$H$$$C$?$3$H$O$G$-$^$;$s!#$^$:$O!"(B
-    $B$3$l$i$NL>A0$,(B $B%5!<%P$KIU$1$i$l$?(B IP $B%"%I%l%9$K%^%C%W$5$l$k$h$&$K(B
-    DNS $B%5!<%P$rE,@Z$K@_Dj$7$J$1$l$P$J$j$^$;$s!#(B</p>
+    にその名前を書くといったことはできません。まずは、
+    これらの名前が サーバに付けられた IP アドレスにマップされるように
+    DNS サーバを適切に設定しなければなりません。</p>
 
-    <p>$B:G8e$K!"(B<directive module="core"
-    type="section">VirtualHost</directive> $B%3%s%F%J$NCf$K(B
-    $BB>$N%G%#%l%/%F%#%V$r=q$/$3$H$G!"%P!<%A%c%k%[%9%H$N@_Dj$r:Y$+$/D4@0(B
-    $B$9$k$3$H$,$G$-$^$9!#(B
-    $B$[$H$s$I$N%G%#%l%/%F%#%V$O$3$l$i$N%3%s%F%J$K@_CV$9$k$3$H$,$G$-$F!"(B
-    $BJQ99E@$O$=$N%P!<%A%c%k%[%9%H$KBP$7$F$N$_M-8z$K$J$j$^$9!#(B
-    $B$I$N%G%#%l%/%F%#%V$r=q$/$3$H$,$G$-$k$+$O!"%G%#%l%/%F%#%V$N(B <a
-    href="../mod/directive-dist.html#context">$B%3%s%F%-%9%H(B</a> $B$r(B
-    $BD4$Y$F$/$@$5$$!#(B<em>$B<g%5!<%P%3%s%F%-%9%H(B</em>
+    <p>最後に、<directive module="core"
+    type="section">VirtualHost</directive> コンテナの中に
+    他のディレクティブを書くことで、バーチャルホストの設定を細かく調整
+    することができます。
+    ほとんどのディレクティブはこれらのコンテナに設置することができて、
+    変更点はそのバーチャルホストに対してのみ有効になります。
+    どのディレクティブを書くことができるかは、ディレクティブの <a
+    href="../mod/directive-dist.html#context">コンテキスト</a> を
+    調べてください。<em>主サーバコンテキスト</em>
     (<directive module="core" type="section">VirtualHost</directive>
-    $B%3%s%F%J$N30(B) $B$N@_DjMQ%G%#%l%/%F%#%V$O%P!<%A%c%k%[%9%H$G$N@_Dj$G(B
-    $B>e=q$-$5$l$J$$>l9g$N$_;HMQ$5$l$^$9!#(B</p>
+    コンテナの外) の設定用ディレクティブはバーチャルホストでの設定で
+    上書きされない場合のみ使用されます。</p>
 
-    <p>$B%j%/%(%9%H$,Mh$k$H!"%5!<%P$O$^$::G=i$K(B <directive module="core"
+    <p>リクエストが来ると、サーバはまず最初に <directive module="core"
     type="section">NameVirtualHost</directive>
-    $B$K%^%C%A$9$k(B IP $B%"%I%l%9$+$I$&$+$r%A%'%C%/$7$^$9!#%^%C%A$9$l$P(B
-    $B%^%C%A$7$?(B IP $B%"%I%l%9$N(B <directive module="core" 
+    にマッチする IP アドレスかどうかをチェックします。マッチすれば
+    マッチした IP アドレスの <directive module="core" 
     type="section">VirtualHost</directive>
-    $B$N$=$l$>$l$N%;%/%7%g%s$NCf$+$i(B 
-    <directive module="core">ServerName</directive> $B$+(B
+    のそれぞれのセクションの中から 
+    <directive module="core">ServerName</directive> か
     <directive module="core">ServerAlias</directive> 
-    $B$KMW5a$5$l$?%[%9%HL>$,$"$k$+C5$7$^$9!#(B
-    $B8+$D$+$l$P$=$N%5!<%PMQ$N@_Dj$r;H$$$^$9!#%^%C%A$9$k%P!<%A%c%k%[%9%H(B
-    $B$,8+$D$+$i$J$1$l$P!"%^%C%A$7$?(B IP $B%"%I%l%9$N(B 
-    <strong>$B%j%9%H$N:G=i$K$"$k%P!<%A%c%k%[%9%H(B</strong> $B$,;H$o$l$^$9!#(B</p>
+    に要求されたホスト名があるか探します。
+    見つかればそのサーバ用の設定を使います。マッチするバーチャルホスト
+    が見つからなければ、マッチした IP アドレスの 
+    <strong>リストの最初にあるバーチャルホスト</strong> が使われます。</p>
 
-    <p>$B7k2L$H$7$F!"%j%9%H$N:G=i$N%P!<%A%c%k%[%9%H$,(B <em>$B%G%U%)%k%H(B</em> $B$N(B
-    $B%P!<%A%c%k%[%9%H$K$J$j$^$9!#(BIP $B%"%I%l%9$,(B <directive 
+    <p>結果として、リストの最初のバーチャルホストが <em>デフォルト</em> の
+    バーチャルホストになります。IP アドレスが <directive 
     module="core">NameVirtualHost</directive>
-    $B%G%#%l%/%F%#%V$K%^%C%A$7$?>l9g$O!"(B<em>$B%a%$%s$N%5!<%P(B</em> $B$N(B
+    ディレクティブにマッチした場合は、<em>メインのサーバ</em> の
     <directive module="core">DocumentRoot</directive> 
-    $B$O(B<strong>$B7h$7$F;H$o$l$^$;$s(B</strong>
-    $B$I$N%P!<%A%c%k%[%9%H$K$b%^%C%A$7$J$$%j%/%(%9%H$KBP$7$F!"(B
-    $BFCJL$J@_Dj$r$7$?$$$N$G$"$l$P!"@_Dj%U%!%$%kCf$N:G=i$N(B
-    <code>&lt;VirtualHost&gt;</code> $B%3%s%F%J$K$=$l$r5-=R$7$F$/$@$5$$!#(B</p>
+    は<strong>決して使われません</strong>
+    どのバーチャルホストにもマッチしないリクエストに対して、
+    特別な設定をしたいのであれば、設定ファイル中の最初の
+    <code>&lt;VirtualHost&gt;</code> コンテナにそれを記述してください。</p>
 
 </section>
 
-<section id="compat"><title>$B8E$$%V%i%&%6$H$N8_49@-(B</title>
+<section id="compat"><title>古いブラウザとの互換性</title>
 
-    <p>$B0JA0=R$Y$?$h$&$K!"L>A0%Y!<%9$N%P!<%A%c%k%[%9%H$,@5$7$/F0:n$9$k(B
-    $B$?$a$KI,MW$J>pJs$rAw$C$F$3$J$$%/%i%$%"%s%H$,0MA3$H$7$FB8:_$7$F$$$^$9!#(B
-    $B$=$N$h$&$J%/%i%$%"%s%H$KBP$7$F$O!"3:Ev$9$k(B IP $B%"%I%l%9$K$D$$$F!"(B
-    $B0lHV:G=i$K@_Dj$5$l$F$$$k%P!<%A%c%k%[%9%H(B
-    (<cite>$B%W%i%$%^%j(B</cite>$B$NL>A0%Y!<%9$N%P!<%A%c%k%[%9%H(B)
-    $B$+$i%Z!<%8$,Aw$jJV$5$l$^$9!#(B</p>
+    <p>以前述べたように、名前ベースのバーチャルホストが正しく動作する
+    ために必要な情報を送ってこないクライアントが依然として存在しています。
+    そのようなクライアントに対しては、該当する IP アドレスについて、
+    一番最初に設定されているバーチャルホスト
+    (<cite>プライマリ</cite>の名前ベースのバーチャルホスト)
+    からページが送り返されます。</p>
 
-    <note><title>$B$I$N$0$i$$8E$$$N(B ?</title>
-    <p>$B!V8E$$!W$HI=8=$7$F$$$k>l9g!"K\Ev$K8E$$$3$H$r0UL#$7$F;H$C$F$$$^$9!#(B
-    $BIT9,$K$7$F:#8=:_$G$b$3$N$h$&$J8E$$%V%i%&%6$KAx6x$9$k$3$H$,$"$j$^$9!#(B
-    $B8=:_$N%V%i%&%6$OA4$F!"L>A0%Y!<%9$N%P!<%A%c%k%[%9%H$KI,MW$J(B
-    <code>Host</code> $B%X%C%@$rAw$j$^$9!#(B</p>
+    <note><title>どのぐらい古いの ?</title>
+    <p>「古い」と表現している場合、本当に古いことを意味して使っています。
+    不幸にして今現在でもこのような古いブラウザに遭遇することがあります。
+    現在のブラウザは全て、名前ベースのバーチャルホストに必要な
+    <code>Host</code> ヘッダを送ります。</p>
     </note>
 
     <p><a href="../mod/core.html#serverpath"><code>ServerPath</code></a>
-    $B%G%#%l%/%F%#%V$GBP=h$,2DG=$G$9!#$A$g$C$HIT3J9%$G$9$1$l$I$b!#(B</p>
+    ディレクティブで対処が可能です。ちょっと不格好ですけれども。</p>
 
-    <p>$B@_DjNc(B</p>
+    <p>設定例</p>
 
     <example>
         NameVirtualHost 111.22.33.44<br />
@@ -262,28 +262,28 @@
         &lt;/VirtualHost&gt;<br />
     </example>
 
-    <p>$B$3$NNc$K$O$I$&$$$&0UL#$,$"$k$G$7$g$&$+(B? $B$3$l$O(B
-    "<code>/domain</code>" $B$G;O$^$k(B URI $B$X$N%j%/%(%9%H$O$9$Y$F!"(B
-    $B%P!<%A%c%k%[%9%H(B <code>www.domain.tld</code> $B$G=hM}$5$l$k!"(B
-    $B$H$$$&0UL#$G$9!#$D$^$j!"$9$Y$F$N%/%i%$%"%s%H$G(B
-    <code>http://www.domain.tld/domain/</code> $B$G%"%/%;%9$G$-$k%Z!<%8$,!"(B
-    <code>Host:</code> $B%X%C%@$rAw$C$F$/$k%/%i%$%"%s%H$G$"$l$P(B
-    <code>http://www.domain.tld/</code> $B$H$7$F$b%"%/%;%9$G$-$k!"(B
-    $B$H$$$&0UL#$G$9!#(B</p>
+    <p>この例にはどういう意味があるでしょうか? これは
+    "<code>/domain</code>" で始まる URI へのリクエストはすべて、
+    バーチャルホスト <code>www.domain.tld</code> で処理される、
+    という意味です。つまり、すべてのクライアントで
+    <code>http://www.domain.tld/domain/</code> でアクセスできるページが、
+    <code>Host:</code> ヘッダを送ってくるクライアントであれば
+    <code>http://www.domain.tld/</code> としてもアクセスできる、
+    という意味です。</p>
 
-    <p>$B$3$l$,F0:n$9$k$h$&$K$9$k$K$O!"(B
-    $B%W%i%$%^%j$N%P!<%A%c%k%[%9%H$N%Z!<%8$K(B
-    <code>http://www.domain.tld/domain/</code> $B$X$N%j%s%/$r@_CV$7$^$9!#(B
-    $B$=$7$F!"%P!<%A%c%k%[%9%H$N%Z!<%8$G$O!"=c?h$JAjBP%j%s%/(B (<em>$BNc(B:</em>
-    "<code>file.html</code>" $B$d(B "<code>../icons/image.gif</code>")$B!"(B
-    $B$"$k$$$O(B <code>/domain/</code> $B$G;O$^$k%j%s%/(B (<em>$BNc(B:</em>
-    "<code>http://www.domain.tld/domain/misc/file.html</code>" $B$d(B
-    "<code>/domain/misc/file.html</code>") $B$@$1$r@_CV$7$^$9!#(B</p>
+    <p>これが動作するようにするには、
+    プライマリのバーチャルホストのページに
+    <code>http://www.domain.tld/domain/</code> へのリンクを設置します。
+    そして、バーチャルホストのページでは、純粋な相対リンク (<em>例:</em>
+    "<code>file.html</code>" や "<code>../icons/image.gif</code>")、
+    あるいは <code>/domain/</code> で始まるリンク (<em>例:</em>
+    "<code>http://www.domain.tld/domain/misc/file.html</code>" や
+    "<code>/domain/misc/file.html</code>") だけを設置します。</p>
 
-    <p>$B$3$l$K$O!"4vJ,$+$N5,N'$,I,MW$H$J$j$^$9$,!"(B
-    $B$3$N$h$&$J%,%$%I%i%$%s$rCi<B$K<i$k$3$H$K$h$j!"$?$$$F$$$N>l9g!"(B
-    $B$9$Y$F$N%V%i%&%6$G(B $B!=(B $B?7$7$$%V%i%&%6$G$b8E$$$b$N$G$b(B $B!=(B
-    $B:n@.$7$?%Z!<%8$,8+$($k$H$$$&$3$H$rJ]>Z$7$^$9!#(B</p>
+    <p>これには、幾分かの規律が必要となりますが、
+    このようなガイドラインを忠実に守ることにより、たいていの場合、
+    すべてのブラウザで ― 新しいブラウザでも古いものでも ―
+    作成したページが見えるということを保証します。</p>
 
 </section>
 </manualpage>

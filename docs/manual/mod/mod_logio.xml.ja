@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990:630289 (outdated) -->
@@ -23,52 +23,52 @@
 <modulesynopsis metafile="mod_logio.xml.meta">
 
 <name>mod_logio</name>
-<description>$B%j%/%(%9%HKh$KF~NO%P%$%H?t$H=PNO%P%$%H?t$H$r%m%.%s%0(B</description>
+<description>リクエスト毎に入力バイト数と出力バイト数とをロギング</description>
 <status>Extension</status>
 <sourcefile>mod_logio.c</sourcefile>
 <identifier>logio_module</identifier>
 
 <summary>
 
-    <p>$B$3$N%b%8%e!<%k$O%j%/%(%9%H$4$H$K<u$1<h$C$?%P%$%H?t$H(B
-    $BAw?.$7$?%P%$%H?t$N%m%.%s%0$r9T$J$&5!G=$rDs6!$7$^$9!#(B
-    $B5-O?$5$l$k?t;z$O%j%/%(%9%H$N%X%C%@$H%l%9%]%s%9$NK\BN$r(B
-    $BH?1G$7$?!"<B:]$K%M%C%H%o!<%/$G<u$1<h$C$?%P%$%HCM$G$9!#(B
-    $BF~NO$G$O(B SSL/TLS $B$NA0$K!"=PNO$G$O(B SSL/TLS $B$N8e$K?t$($k$N$G!"(B
-    $B?t;z$O0E9f$K$h$kJQ2=$b@5$7$/H?1G$7$?$b$N$K$J$j$^$9!#(B</p>
+    <p>このモジュールはリクエストごとに受け取ったバイト数と
+    送信したバイト数のロギングを行なう機能を提供します。
+    記録される数字はリクエストのヘッダとレスポンスの本体を
+    反映した、実際にネットワークで受け取ったバイト値です。
+    入力では SSL/TLS の前に、出力では SSL/TLS の後に数えるので、
+    数字は暗号による変化も正しく反映したものになります。</p>
 
-    <p>$B$3$N%b%8%e!<%k$N;HMQ$K$O(B <module>mod_log_config</module> $B%b%8%e!<%k$,(B
-    $BI,MW$G$9!#(B</p>
+    <p>このモジュールの使用には <module>mod_log_config</module> モジュールが
+    必要です。</p>
 
 </summary>
 
 <seealso><module>mod_log_config</module></seealso>
-<seealso><a href="../logs.html">Apache $B%m%0%U%!%$%k(B</a></seealso>
+<seealso><a href="../logs.html">Apache ログファイル</a></seealso>
 
 <section id="formats">
-<title>$B%+%9%?%`%m%0=q<0(B</title>
+<title>カスタムログ書式</title>
 
-    <p>$B$3$N%b%8%e!<%k$O?7$7$$%m%.%s%0MQ%G%#%l%/%F%#%V$r2C$($^$9!#(B
-    $B%j%/%(%9%H<+?H$NFCD'$O%U%)!<%^%C%HJ8;zNs$K!"0J2<$NMM$KCV49$5$l$k(B
-     "<code>%</code>" $B%G%#%l%/%F%#%V$r(B
-    $BF~$l$k$3$H$G%m%0<}=8$5$l$^$9(B:</p>
+    <p>このモジュールは新しいロギング用ディレクティブを加えます。
+    リクエスト自身の特徴はフォーマット文字列に、以下の様に置換される
+     "<code>%</code>" ディレクティブを
+    入れることでログ収集されます:</p>
 
     <table border="1" style="zebra">
-    <tr><th>$B%U%)!<%^%C%HJ8;zNs(B</th>
-        <th>$B@bL@(B</th></tr>
+    <tr><th>フォーマット文字列</th>
+        <th>説明</th></tr>
 
     <tr><td><code>%...I</code></td>
-        <td>$B%j%/%(%9%H$H%X%C%@$r4^$`!"<u$1<h$C$?%P%$%H?t!#(B
-        0 $B$K$O$J$i$J$$!#(B</td></tr>
+        <td>リクエストとヘッダを含む、受け取ったバイト数。
+        0 にはならない。</td></tr>
 
     <tr><td><code>%...O</code></td>
-        <td>$B%X%C%@$r4^$`!"Aw?.$7$?%P%$%H?t!#(B0 $B$K$O$J$i$J$$!#(B</td></tr>
+        <td>ヘッダを含む、送信したバイト数。0 にはならない。</td></tr>
     </table>
 
-    <p>$BDL>o!"$3$N5!G=$O0J2<$NMM$K;HMQ$5$l$^$9(B:</p>
+    <p>通常、この機能は以下の様に使用されます:</p>
 
     <dl>
-      <dt>$B7k9g(B I/O $B%m%0=q<0(B:</dt>
+      <dt>結合 I/O ログ書式:</dt>
       <dd><code>"%h %l %u %t \"%r\" %&gt;s %b \"%{Referer}i\"
       \"%{User-agent}i\" %I %O"</code></dd>
     </dl>

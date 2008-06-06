@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:659902 (outdated) -->
@@ -23,281 +23,281 @@
 <manualpage metafile="ssl_intro.xml.meta">
 <parentdocument href="./">SSL/TLS</parentdocument>
 
-  <title>SSL/TLS $B0E9f2=(B: $B$O$8$a$K(B</title>
+  <title>SSL/TLS 暗号化: はじめに</title>
 
 <summary>
 <blockquote>
-<p>$BI8=`5,3J$NNI$$=j$O!"$?$/$5$s$N5,3J$+$iA*$Y$k$H$$$&$3$H$@!#(B
-$B$=$7$F!"$b$7K\Ev$K$I$N5,3J$b5$$KF~$i$J$1$l$P!"(B
-$B0lG/BT$D$@$1$GC5$7$F$$$?5,3J$,8=$l$k!#(B</p>
+<p>標準規格の良い所は、たくさんの規格から選べるということだ。
+そして、もし本当にどの規格も気に入らなければ、
+一年待つだけで探していた規格が現れる。</p>
 
 <p class="cite">-- <cite>A. Tanenbaum</cite>, "Introduction to
 Computer Networks"</p>
 </blockquote>
 
 <p>
-$BF~Lg$H$$$&$3$H$G!"$3$N>O$O(B Web$B!"(BHTTP$B!"(BApache $B$KDL$8$F$$$k(B
-$BFI<T8~$1$G$9$,!"%;%-%e%j%F%#@lLg2H8~$1$G$O$"$j$^$;$s!#(B
-SSL $B%W%m%H%3%k$N7hDjE*$J<j0z$-$G$"$k$D$b$j$O$"$j$^$;$s!#(B
-$B$^$?!"AH?%Fb$NG'>Z4IM}$N$?$a$NFCDj$N%F%/%K%C%/$d!"(B
-$BFC5v$dM"=P5,@)$J$I$N=EMW$JK!E*$JLdBj$K$D$$$F$b07$$$^$;$s!#(B
-$B$`$7$m!"99$J$k8&5f$X$N=PH/E@$H$7$F?'!9$J35G0!"Dj5A!"Nc$rJB$Y$k$3$H$G(B
- mod_ssl $B$N%f!<%6$K4pACCN<1$rDs6!$9$k;v$rL\E*$H$7$F$$$^$9!#(B</p>
+入門ということで、この章は Web、HTTP、Apache に通じている
+読者向けですが、セキュリティ専門家向けではありません。
+SSL プロトコルの決定的な手引きであるつもりはありません。
+また、組織内の認証管理のための特定のテクニックや、
+特許や輸出規制などの重要な法的な問題についても扱いません。
+むしろ、更なる研究への出発点として色々な概念、定義、例を並べることで
+ mod_ssl のユーザに基礎知識を提供する事を目的としています。</p>
 
-<p>$B$3$3$K<($5$l$?FbMF$O<g$K!"86Cx<T$N5v2D$N2<(B
-The Open Group Research Institute $B$N(B <a
+<p>ここに示された内容は主に、原著者の許可の下
+The Open Group Research Institute の <a
 href="http://home.earthlink.net/~fjhirsch/">Frederick J. Hirsch</a>
- $B;a$N5-;v(B <a
+ 氏の記事 <a
 href="http://home.earthlink.net/~fjhirsch/Papers/wwwj/article.html">
-Introducing SSL and Certificates using SSLeay</a> $B$r4p$K$7$F$$$^$9!#(B
-$B;a$N5-;v$O(B <a
+Introducing SSL and Certificates using SSLeay</a> を基にしています。
+氏の記事は <a
 href="http://www.ora.com/catalog/wjsum97/">Web Security: A Matter of
 Trust</a>, World Wide Web Journal, Volume 2, Issue 3, Summer 1997
-$B$K7G:\$5$l$^$7$?!#(B
-$B9NDjE*$J0U8+$O(B <a
-href="mailto:hirsch@fjhirsch.com">Frederick Hirsch</a> $B;a(B
- ($B855-;v$NCx<T(B) $B$XA4$F$N6l>p$O(B <a
+に掲載されました。
+肯定的な意見は <a
+href="mailto:hirsch@fjhirsch.com">Frederick Hirsch</a> 氏
+ (元記事の著者) へ全ての苦情は <a
 href="mailto:rse@engelschall.com">Ralf S. Engelschall</a> (
-<module>mod_ssl</module> $B$N:n<T(B) $B$X$*4j$$$7$^$9!#(B
-[$BLuCm(B: $BLu$K$D$$$F$O(B <a
+<module>mod_ssl</module> の作者) へお願いします。
+[訳注: 訳については <a
 href="mailto:apache-docs@ml.apache.or.jp">
-Apache $B%I%-%e%a%s%HK]Lu%W%m%8%'%/%H(B</a>
-$B$X$*4j$$$7$^$9!#(B]</p>
+Apache ドキュメント翻訳プロジェクト</a>
+へお願いします。]</p>
 </summary>
 
 <section id="cryptographictech">
-<title>$B0E9f2=5;=Q(B</title>
-<p>SSL $B$rM}2r$9$k$K$O!"0E9f%"%k%4%j%:%`!"(B
-$B%a%C%;!<%8%@%$%8%'%9%H4X?t(B($BJLL>(B: $B0lJ}8~4X?t!"%O%C%7%e4X?t(B)$B!"(B
-$BEE;R=pL>$J$I$X$NM}2r$,I,MW$G$9!#(B
-$B$3$l$i$N5;=Q$OK\$,4]$4$HI,MW$JBjL\$G(B
-($BNc$($P(B [<a href="#AC96">AC96</a>] $B$r;2>H(B)$B!"(B
-$B%W%i%$%P%7!<!"?.MQ!"G'>Z$J$I$N5;=Q$N4pAC$H$J$C$F$$$^$9!#(B</p>
+<title>暗号化技術</title>
+<p>SSL を理解するには、暗号アルゴリズム、
+メッセージダイジェスト関数(別名: 一方向関数、ハッシュ関数)、
+電子署名などへの理解が必要です。
+これらの技術は本が丸ごと必要な題目で
+(例えば [<a href="#AC96">AC96</a>] を参照)、
+プライバシー、信用、認証などの技術の基礎となっています。</p>
 
 <section id="cryptographicalgo">
-<title>$B0E9f%"%k%4%j%:%`(B</title>
-    <p>$BNc$($P!"%"%j%9$,Aw6b$N$?$a$K6d9T$K%a%C%;!<%8$rAw$j$?$$$H$7$^$9!#(B
-    $B8}:BHV9f$dAw6b$N6b3[$,4^$^$l$k$?$a!"(B
-    $B%"%j%9$O$=$N%a%C%;!<%8$rHkL)$K$7$?$$$H;W$$$^$9!#(B
-    $B2r7hJ}K!$N0l$D$O0E9f%"%k%4%j%:%`$r;H$C$F!"%a%C%;!<%8$r(B
-    $BFI$^$;$?$$?M0J30$OFI$`$3$H$,$G$-$J$$0E9f2=$5$l$?(B
-    $B7ABV$KJQ$($F$7$^$&$3$H$G$9!#(B
-    $B$=$N7ABV$K$J$k$H!"(B
-    $B%a%C%;!<%8$OHkL)$N80$K$h$C$F$N$_2r<a$9$k$3$H$,$G$-$^$9!#(B
-    $B80$J$7$G$O!"%a%C%;!<%8$OLr$KN)$A$^$;$s!#(B
-    $BNI$$0E9f%"%k%4%j%:%`$O!"?/F~<T$,85$N%F%-%9%H$r2rFI$9$k$3$H$r(B
-    $BHs>o$KFq$7$/$9$k$?$a!"EXNO$,3d$K9g$o$J$/$5$;$^$9!#(B</p>
+<title>暗号アルゴリズム</title>
+    <p>例えば、アリスが送金のために銀行にメッセージを送りたいとします。
+    口座番号や送金の金額が含まれるため、
+    アリスはそのメッセージを秘密にしたいと思います。
+    解決方法の一つは暗号アルゴリズムを使って、メッセージを
+    読ませたい人以外は読むことができない暗号化された
+    形態に変えてしまうことです。
+    その形態になると、
+    メッセージは秘密の鍵によってのみ解釈することができます。
+    鍵なしでは、メッセージは役に立ちません。
+    良い暗号アルゴリズムは、侵入者が元のテキストを解読することを
+    非常に難しくするため、努力が割に合わなくさせます。</p>
 
-    <p>$B0E9f%"%k%4%j%:%`$K$O(B
-    $B=>Mh7?$H8x3+80$NFs$D$N<oN`$,$"$j$^$9!#(B</p>
+    <p>暗号アルゴリズムには
+    従来型と公開鍵の二つの種類があります。</p>
 
     <dl>
-    <dt>$B=>Mh7?0E9f(B</dt>
-    <dd>$BBP>N0E9f$H$7$F$bCN$i$l!"(B
-    $BAw?.<T$H<u?.<T$,80$r6&M-$9$k$3$H$,I,MW$G$9!#(B
-    $B80$H$O!"%a%C%;!<%8$r0E9f2=$7$?$jI|9f$9$k$N$K;H$o$l$kHkL)(B
-    $B$N>pJs$N$3$H$G$9!#(B
-    $B$b$7!"$3$N80$,HkL)$J$i!"Aw?.<T$H<u?.<T0J30$OC/$b%a%C%;!<%8$rFI(B
-    $B$`$3$H$,$G$-$^$;$s!#(B
-    $B$b$7$b!"%"%j%9$H6d9T$,HkL)$N80$rCN$C$F$$$k$J$i!"(B
-    $BH`$i$O$*8_$$$KHkL)$N%a%C%;!<%8$rAw$k$3$H$,$G$-$k$G$7$g$&!#(B
-    $B$?$@$7!";vA0$KFbL)$K80$rA*$V$H$$$&;E;v$OLdBj$r4^$s$G$$$^$9!#(B</dd>
+    <dt>従来型暗号</dt>
+    <dd>対称暗号としても知られ、
+    送信者と受信者が鍵を共有することが必要です。
+    鍵とは、メッセージを暗号化したり復号するのに使われる秘密
+    の情報のことです。
+    もし、この鍵が秘密なら、送信者と受信者以外は誰もメッセージを読
+    むことができません。
+    もしも、アリスと銀行が秘密の鍵を知っているなら、
+    彼らはお互いに秘密のメッセージを送ることができるでしょう。
+    ただし、事前に内密に鍵を選ぶという仕事は問題を含んでいます。</dd>
 
-    <dt>$B8x3+800E9f(B</dt>
-    <dd>$BHsBP>N0E9f$H$7$F$bCN$i$l!"(B
-    $B%a%C%;!<%8$r0E9f2=$9$k$3$H$N$G$-$kFs$D$N80(B
-    $B$r;HMQ$9$k%"%k%4%j%:%`$rDj5A$9$k$3$H$G80$N$d$j<h$j$NLdBj$r2r7h(B
-    $B$7$^$9!#(B
-    $B$b$7!"$"$k80$,0E9f2=$K;H$o$l$?$J$i!"(B
-    $B$b$&JRJ}$N80$GI|9f$7$J$1$l$P$$$1$^$;$s!#(B
-    $B$3$NJ}<0$K$h$C$F!"0l$D$N80$r8xI=$7$F(B($B8x3+80(B)$B!"(B
-    $B$b$&JRJ}$rHkL)$K$7$F$*$/(B($BHkL)80(B)$B$@$1$G!"(B
-    $B0BA4$J%a%C%;!<%8$r<u$1<h$k$3$H$,$G$-$^$9!#(B</dd>
+    <dt>公開鍵暗号</dt>
+    <dd>非対称暗号としても知られ、
+    メッセージを暗号化することのできる二つの鍵
+    を使用するアルゴリズムを定義することで鍵のやり取りの問題を解決
+    します。
+    もし、ある鍵が暗号化に使われたなら、
+    もう片方の鍵で復号しなければいけません。
+    この方式によって、一つの鍵を公表して(公開鍵)、
+    もう片方を秘密にしておく(秘密鍵)だけで、
+    安全なメッセージを受け取ることができます。</dd>
     </dl>
 
-    <p>$BC/$b$,0E9f2=$5$l$?%a%C%;!<%8$r8x3+80$K$h$C$F0E9f2=(B
-    $B$9$k$3$H$,$G$-$^$9$,!"HkL)80$N;}$A<g$@$1$,$=$l$rFI$`$3$H$,(B
-    $B$G$-$^$9!#(B
-    $B$3$NJ}K!$G!"6d9T$N8x3+80$r;H$C$F0E9f2=$9$k$3$H$G!"(B
-    $B%"%j%9$OHkL)$N%a%C%;!<%8$rAw$k$3$H$,$G$-$^$9!#(B
-    $B6d9T$N$_$,I|9f$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>誰もが暗号化されたメッセージを公開鍵によって暗号化
+    することができますが、秘密鍵の持ち主だけがそれを読むことが
+    できます。
+    この方法で、銀行の公開鍵を使って暗号化することで、
+    アリスは秘密のメッセージを送ることができます。
+    銀行のみが復号することができます。</p>
 </section>
 
 <section id="messagedigests">
-<title>$B%a%C%;!<%8%@%$%8%'%9%H(B</title>
-    <p>$B%"%j%9$O%a%C%;!<%8$rHkL)$K$9$k$3$H$,$G$-$^$9$,!"(B
-    $BC/$+$,Nc$($P<+J,$KAw6b$9$k$h$&$K%a%C%;!<%8$rJQ99$7$?$j!"(B
-    $BJL$N$b$N$KCV$-49$($F$7$^$&$+$b$7$l$J$$$H$$$&LdBj$,$"$j$^$9!#(B
-    $B%"%j%9$N%a%C%;!<%8$N?.MQ$rJ]>Z$9$kJ}K!$N0l$D$O!"(B
-    $B%a%C%;!<%8$N4J7i$J%@%$%8%'%9%H$r:n$C$F!"$=$l$b6d9T$KAw$k$H$$$&$b$N$G$9!#(B
-    $B%a%C%;!<%8$r<u$1<h$k$H6d9T$b%@%$%8%'%9%H$r:n@.$7!"(B
-    $B%"%j%9$,Aw$C$?$b$N$HHf$Y$^$9!#$b$70lCW$7$?$J$i!"(B
-    $B<u$1<h$C$?%a%C%;!<%8$OL5=}$@$H$$$&$3$H$K$J$j$^$9!#(B</p>
+<title>メッセージダイジェスト</title>
+    <p>アリスはメッセージを秘密にすることができますが、
+    誰かが例えば自分に送金するようにメッセージを変更したり、
+    別のものに置き換えてしまうかもしれないという問題があります。
+    アリスのメッセージの信用を保証する方法の一つは、
+    メッセージの簡潔なダイジェストを作って、それも銀行に送るというものです。
+    メッセージを受け取ると銀行もダイジェストを作成し、
+    アリスが送ったものと比べます。もし一致したなら、
+    受け取ったメッセージは無傷だということになります。</p>
 
-    <p>$B$3$N$h$&$JMWLs$O(B<dfn>$B%a%C%;!<%8%@%$%8%'%9%H(B</dfn>$B!"(B
-    <em>$B0lJ}9T4X?t(B</em>$B!"$^$?$O(B<em>$B%O%C%7%e4X?t(B</em>$B$H8F$P$l$^$9!#(B
-    $B%a%C%;!<%8%@%$%8%'%9%H$OD9$$2DJQD9$N%a%C%;!<%8$+$i(B
-    $BC;$$8GDjD9$NI=8=$r:n$k$N$K;H$o$l$^$9!#(B
-    $B%@%$%8%'%9%H%"%k%4%j%:%`$O%a%C%;!<%8$+$i(B
-    $B0l0U$J%@%$%8%'%9%H$r@8@.$9$k$h$&$K:n$i$l$F$$$^$9!#(B
-    $B%a%C%;!<%8%@%$%8%'%9%H$O%@%$%8%'%9%H$+$i85$N%a%C%;!<%8$r(B
-    $BH=Dj$9$k$N$,$H$F$bFq$7$$$h$&$K$G$-$F$$$^$9!#(B
-    $B$^$?!"F1$8MWLs$r:n@.$9$kFs$D$N%a%C%;!<%8$rC5$9$N$OIT2DG=$G$9!#(B
-    $B$h$C$F!"F1$8MWLs$r;H$C$F%a%C%;!<%8$rCV$-49$($k$H$$$&(B
-    $B2DG=@-$rGS=|$7$F$$$^$9!#(B</p>
+    <p>このような要約は<dfn>メッセージダイジェスト</dfn>、
+    <em>一方行関数</em>、または<em>ハッシュ関数</em>と呼ばれます。
+    メッセージダイジェストは長い可変長のメッセージから
+    短い固定長の表現を作るのに使われます。
+    ダイジェストアルゴリズムはメッセージから
+    一意なダイジェストを生成するように作られています。
+    メッセージダイジェストはダイジェストから元のメッセージを
+    判定するのがとても難しいようにできています。
+    また、同じ要約を作成する二つのメッセージを探すのは不可能です。
+    よって、同じ要約を使ってメッセージを置き換えるという
+    可能性を排除しています。</p>
 
-<p>$B%"%j%9$X$N$b$&0l$D$NLdBj$O!"$3$N%@%$%8%'%9%H$r0BA4$KAw$kJ}K!$rC5$9$3$H$G$9!#(B
-$B$3$l$,$G$-$l$P!"%a%C%;!<%8$N?.MQ$,J]>Z$5$l$^$9!#(B
-$B0l$D$NJ}K!$O$3$N%@%$%8%'%9%H$KEE;R=pL>$r4^$`$3$H$G$9!#(B</p>
+<p>アリスへのもう一つの問題は、このダイジェストを安全に送る方法を探すことです。
+これができれば、メッセージの信用が保証されます。
+一つの方法はこのダイジェストに電子署名を含むことです。</p>
 </section>
 
-<section id="digitalsignatures"><title>$BEE;R=pL>(B</title>
-<p>$B%"%j%9$,6d9T$K%a%C%;!<%8$rAw$C$?$H$-!"6d9T$O!"(B
-$B?/F~<T$,H`=w$K$J$j$9$^$7$FH`=w$N8}:B$X$N<h0z$r?=@A$7$F$$$J$$$+!"(B
-$B%a%C%;!<%8$,K\Ev$KH`=w$+$i$N$b$N$+3N<B$KJ,$+$i$J$1$l$P$$$1$^$;$s!#(B
-$B%"%j%9$K$h$C$F:n@.$5$l!"%a%C%;!<%8$K4^$^$l$?(B
-<em>$BEE;R=pL>(B</em>$B$,$3$3$GLr$KN)$A$^$9!#(B</p>
+<section id="digitalsignatures"><title>電子署名</title>
+<p>アリスが銀行にメッセージを送ったとき、銀行は、
+侵入者が彼女になりすまして彼女の口座への取引を申請していないか、
+メッセージが本当に彼女からのものか確実に分からなければいけません。
+アリスによって作成され、メッセージに含まれた
+<em>電子署名</em>がここで役に立ちます。</p>
 
-<p>$BEE;R=pL>$O%a%C%;!<%8$N%@%$%8%'%9%H$d$=$NB>$N>pJs(B($B=hM}HV9f$J$I(B)$B$r(B
-$BAw?.<T$NHkL)80$G0E9f2=$9$k$3$H$G:n$i$l$^$9!#(B
-$BC/$b$,8x3+80$r;H$C$F=pL>$r(B<em>$BI|9f(B</em>$B$9$k$3$H$,$G$-$^$9$,!"(B
-$B=pL><T$N$_$,HkL)80$rCN$C$F$$$^$9!#(B
-$B$3$l$O!"H`$i$N$_$,=pL>$7$($?$3$H$r0UL#$7$^$9!#(B
-$B%@%$%8%'%9%H$rEE;R=pL>$K4^$`$3$H$O!"(B
-$B$=$N=pL>$,$=$N%a%C%;!<%8$N$_$KM-8z$G$"$k$3$H$r0UL#$7$^$9!#(B
-$B$3$l$O!"C/$b%@%$%8%'%9%H$rJQ$($F=pL>$r$9$k$3$H$,$G$-$J$$$?$a!"(B
-$B%a%C%;!<%8$N?.MQ$bJ]>Z$7$^$9!#(B</p>
+<p>電子署名はメッセージのダイジェストやその他の情報(処理番号など)を
+送信者の秘密鍵で暗号化することで作られます。
+誰もが公開鍵を使って署名を<em>復号</em>することができますが、
+署名者のみが秘密鍵を知っています。
+これは、彼らのみが署名しえたことを意味します。
+ダイジェストを電子署名に含むことは、
+その署名がそのメッセージのみに有効であることを意味します。
+これは、誰もダイジェストを変えて署名をすることができないため、
+メッセージの信用も保証します。</p>
 
-<p>$B?/F~<T$,=pL>$rK5<u$7$F8eF|$K:FMxMQ$9$k$N$rKI$0$?$a(B
-$BEE;R=pL>$K$O0l0U$J=hM}HV9f$,4^$^$l$^$9!#(B
-$B$3$l$O!"%"%j%9$,$=$s$J%a%C%;!<%8$OAw$C$F$$$J$$$H8@$&:>5=(B
-$B$+$i6d9T$r<i$j$^$9!#(B
-$BH`=w$@$1$,=pL>$7$($?$+$i$G$9!#(B($BH]G'KI;_(B)</p>
+<p>侵入者が署名を傍受して後日に再利用するのを防ぐため
+電子署名には一意な処理番号が含まれます。
+これは、アリスがそんなメッセージは送っていないと言う詐欺
+から銀行を守ります。
+彼女だけが署名しえたからです。(否認防止)</p>
 </section>
 </section>
 <!-- /cryptographictech -->
 
 <section id="certificates">
-<title>$B>ZL@=q(B</title>
-<p>$B%"%j%9$OHkL)$N%a%C%;!<%8$r6d9T$KAw$j!"(B
-$B=pL>$r$7$F!"%a%C%;!<%8$N?.MQ$rJ]>Z$9$k$3$H$,$G$-$k$*$&$K$J$j$^$7$?$,!"(B
-$BDL?.$7$F$$$kAj<j$,K\Ev$K6d9T$J$N$+3N$+$a$J$/$F$O$$$1$^$;$s!#(B
-$B$3$l$O!"H`=w$,;H$&8x3+80$,6d9T$NHkL)80$HBP$K$J$C$F$$$k$b$N$+!"(B
-$BH`=w$O3N$+$a$J$/$F$O$$$1$J$$$H$$$&$3$H$r0UL#$7$^$9!#(B
-$BF1MM$K!"6d9T$O%a%C%;!<%8$N=pL>$,K\Ev$K%"%j%9$N=pL>$+3NG'$9$kI,MW$,(B
-$B$"$j$^$9!#(B</p>
+<title>証明書</title>
+<p>アリスは秘密のメッセージを銀行に送り、
+署名をして、メッセージの信用を保証することができるおうになりましたが、
+通信している相手が本当に銀行なのか確かめなくてはいけません。
+これは、彼女が使う公開鍵が銀行の秘密鍵と対になっているものか、
+彼女は確かめなくてはいけないということを意味します。
+同様に、銀行はメッセージの署名が本当にアリスの署名か確認する必要が
+あります。</p>
 
-<p>$B$b$7N><T$K?H85$r>ZL@$7!"8x3+80$r3NG'$7!"$^$??.Mj$5$l$?5!4X$,=pL>(B
-$B$7$?>ZL@=q$,$"$l$P!"N><T$H$bDL?.Aj<j$K$D$$$F@5$7$$Aj<j$@$H(B
-$B3N?.$9$k$3$H$,$G$-$^$9!#(B
-$B$=$N$h$&$J?.Mj$5$l$?5!4X$O(B<em>$BG'>Z6I(B</em>
- (Certificate Authority $B$^$?$O(B CA) $B$H8F$P$l!"(B
-$B>ZL@=q(B (certificate) $B$,G'>Z(B (authentication) $B$K;H$o$l$^$9!#(B</p>
+<p>もし両者に身元を証明し、公開鍵を確認し、また信頼された機関が署名
+した証明書があれば、両者とも通信相手について正しい相手だと
+確信することができます。
+そのような信頼された機関は<em>認証局</em>
+ (Certificate Authority または CA) と呼ばれ、
+証明書 (certificate) が認証 (authentication) に使われます。</p>
 
 <section id="certificatecontents">
-<title>$B>ZL@=q$NFbMF(B</title>
-    <p>$B>ZL@=q$O8x3+80$H8D?M!"%5!<%P!"$=$NB>$N<gBN$N<B:_$N?H85$r(B
-    $B4XO"IU$1$^$9!#(B
-    <a href="#table1">$BI=(B1</a>$B$K<($5$l$k$h$&$K>ZL@BP>]$N>pJs$O(B
-    $B?H85>ZL@$N>pJs(B($B<1JLL>(B)$B$H8x3+80$,4^$^$l$^$9!#(B
-    $B>ZL@=q$O$^$?!"G'>Z6I$N?H85>ZL@$H=pL>!"$=$7$F>ZL@=q$NM-8z4|4V$r(B
-    $B4^$_$^$9!#(B
-    $B%7%j%"%k%J%s%P!<$J$I$NG'>Z6I$N4IM}>e$N>pJs$d(B
-    $B$=$NB>$NDI2C$N>pJs$,4^$^$l$F$$$k$+$b$7$l$^$;$s!#(B</p>
+<title>証明書の内容</title>
+    <p>証明書は公開鍵と個人、サーバ、その他の主体の実在の身元を
+    関連付けます。
+    <a href="#table1">表1</a>に示されるように証明対象の情報は
+    身元証明の情報(識別名)と公開鍵が含まれます。
+    証明書はまた、認証局の身元証明と署名、そして証明書の有効期間を
+    含みます。
+    シリアルナンバーなどの認証局の管理上の情報や
+    その他の追加の情報が含まれているかもしれません。</p>
 
     <section id="table1">
-    <title>$BI=(B1: $B>ZL@=q>pJs(B</title>
+    <title>表1: 証明書情報</title>
     <table>
     <columnspec><column width=".35"/><column width=".35"/>
     </columnspec>
-    <tr><th>$B>ZL@BP>](B</th>
-        <td>$B<1JLL>!"8x3+80(B</td></tr>
-    <tr><th>$BH/9T<T(B</th>
-        <td>$B<1JLL>!"8x3+80(B</td></tr>
-    <tr><th>$BM-8z4|4V(B</th>
-        <td>$B3+;OF|!"<:8zF|(B</td></tr>
-    <tr><th>$B4IM}>pJs(B</th>
-        <td>$B%P!<%8%g%s!"%7%j%"%k%J%s%P!<(B</td></tr>
-    <tr><th>$B3HD%>pJs(B</th>
-        <td>$B4pK\E*$J@)Ls!"%M%C%H%9%1!<%W%U%i%C%0!"$=$NB>(B</td></tr>
+    <tr><th>証明対象</th>
+        <td>識別名、公開鍵</td></tr>
+    <tr><th>発行者</th>
+        <td>識別名、公開鍵</td></tr>
+    <tr><th>有効期間</th>
+        <td>開始日、失効日</td></tr>
+    <tr><th>管理情報</th>
+        <td>バージョン、シリアルナンバー</td></tr>
+    <tr><th>拡張情報</th>
+        <td>基本的な制約、ネットスケープフラッグ、その他</td></tr>
     </table>
     </section>
 
-    <p>$B<1JLL>(B($B%G%#%9%F%#%s%0%$%C%7%e!&%M!<%`(B)$B$OFCDj$N>u67$K$*$1$k(B
-    $B?HJ,>ZL@$rDs6!$9$k$N$K;H$o$l$F$$$^$9!#Nc$($P!"$"$k?M$O(B
-    $B;dMQ$H2q<R$H$GJL!9$N?HJ,>ZL@$r;}$D$+$b$7$l$^$;$s!#(B
+    <p>識別名(ディスティングイッシュ・ネーム)は特定の状況における
+    身分証明を提供するのに使われています。例えば、ある人は
+    私用と会社とで別々の身分証明を持つかもしれません。
     
-    $B<1JLL>$O(B X.509 $BI8=`5,3J(B [<a
-    href="#X509">X509</a>] $B$GDj5A$5$l$F$$$^$9!#(B
-    X.509 $BI8=`5,3J$O!"9`L\!"9`L\L>!"$=$7$F9`L\$NN,>N$rDj5A$7$F$$$^$9!#(B(<a href="#table2">$BI=(B
-    2</a> $B;2>H(B)</p>
+    識別名は X.509 標準規格 [<a
+    href="#X509">X509</a>] で定義されています。
+    X.509 標準規格は、項目、項目名、そして項目の略称を定義しています。(<a href="#table2">表
+    2</a> 参照)</p>
 
     <section id="table2">
-    <title>$BI=(B 2: $B<1JLL>>pJs(B</title>
+    <title>表 2: 識別名情報</title>
     <table border="1">
     <columnspec><column width=".25"/><column width=".15"/>
       <column width=".3"/><column width=".25"/></columnspec>
-    <tr><th>$B<1JLL>9`L\(B</th>
-        <th>$BN,>N(B</th>
-        <th>$B@bL@(B</th>
-        <th>$BNc(B</th></tr>
-    <tr><td>Common Name ($B%3%b%s%M!<%`(B)</td>
+    <tr><th>識別名項目</th>
+        <th>略称</th>
+        <th>説明</th>
+        <th>例</th></tr>
+    <tr><td>Common Name (コモンネーム)</td>
         <td>CN</td>
-        <td>$BG'>Z$5$l$kL>A0(B<br />
-        SSL$B@\B3$9$k(BURL</td>
+        <td>認証される名前<br />
+        SSL接続するURL</td>
         <td>CN=www.example.com</td></tr>
-    <tr><td>Organization or Company ($BAH?%L>(B)</td>
+    <tr><td>Organization or Company (組織名)</td>
         <td>O</td>
-        <td>$BCDBN$N@5<01Q8lAH?%L>(B</td>
+        <td>団体の正式英語組織名</td>
         <td>O=Example Japan K.K.</td></tr>
-    <tr><td>Organizational Unit ($BItLgL>(B)</td>
+    <tr><td>Organizational Unit (部門名)</td>
         <td>OU</td>
-        <td>$BIt=pL>$J$I(B</td>
+        <td>部署名など</td>
         <td>OU=Customer Service</td></tr>
-    <tr><td>City/Locality ($B;T6hD.B<(B)</td>
+    <tr><td>City/Locality (市区町村)</td>
         <td>L</td>
-        <td>$B=j:_$7$F$k;T6hD.B<(B</td>
+        <td>所在してる市区町村</td>
         <td>L=Sapporo</td></tr>
-    <tr><td>State/Province ($BETF;I\8)(B)</td>
+    <tr><td>State/Province (都道府県)</td>
         <td>ST</td>
-        <td>$B=j:_$7$F$kETF;I\8)(B</td>
+        <td>所在してる都道府県</td>
         <td>ST=Hokkaido</td></tr>
-    <tr><td>Country($B9q(B)</td>
+    <tr><td>Country(国)</td>
         <td>C</td>
-        <td>$B=j:_$7$F$$$k9qL>$N(B ISO $B%3!<%I(B<br />
-        $BF|K\$N>l9g(B JP
+        <td>所在している国名の ISO コード<br />
+        日本の場合 JP
         </td>
         <td>C=JP</td></tr>
     </table>
     </section>
 
-    <p>$BG'>Z6I$O$I$N9`L\$,>JN,2DG=$G$I$l$,I,?\$+$NJ}?K$rDj5A$9$k(B
-    $B$+$b$7$l$^$;$s!#9`L\$NFbMF$K$D$$$F$bG'>Z6I$d>ZL@=q$N%f!<%6$+$i$N(B
-    $BMW7o$,$"$k$+$b$7$l$^$;$s!#(B
-    $BNc$($P!"%M%C%H%9%1!<%W$N%V%i%&%6$O%5!<%P$N>ZL@=q$N(B
-     Common Name ($B%3%b%s%M!<%`(B)$B$,%5!<%P$N%I%a%$%sL>$N(B
+    <p>認証局はどの項目が省略可能でどれが必須かの方針を定義する
+    かもしれません。項目の内容についても認証局や証明書のユーザからの
+    要件があるかもしれません。
+    例えば、ネットスケープのブラウザはサーバの証明書の
+     Common Name (コモンネーム)がサーバのドメイン名の
      <code>*.example.com</code> 
-    $B$H$$$&$h$&$J%o%$%k%I%+!<%I$N%Q%?!<%s$K%^%C%A$9$k$3$H(B
-    $B$rMW5a$7$^$9!#(B</p>
+    というようなワイルドカードのパターンにマッチすること
+    を要求します。</p>
 
-    <p>$B%P%$%J%j7A<0$N>ZL@=q$O(B ASN.1 $BI=5-K!(B
-     [<a href="#X208">X208</a>] [<a href="#PKCS">PKCS</a>] $B$G(B
-    $BDj5A$5$l$F$$$^$9!#(B
-    $B$3$NI=5-K!$OFbMF$r$I$N$h$&$K5-=R$9$k$+$rDj5A$7!"(B
-    $BId9f2=$N5,Dj$,$3$N>pJs$,$I$N$h$&$K%P%$%J%j7A<0$KJQ49$5$l$k$+$r(B
-    $BDj5A$7$^$9!#(B
-    $B>ZL@=q$N%P%$%J%jId9f2=$O(B Distinguished Encoding
-    Rules (DER) $B$GDj5A$5$l!"$=$l$O$h$j0lHLE*$J(B Basic Encoding Rules
-    (BER) $B$K4p$E$$$F$$$^$9!#(B
-    $B%P%$%J%j7A<0$r07$&$3$H$N$G$-$J$$Aw?.$G$O!"(B
-    $B%P%$%J%j7A<0$O(B Base64 $BId9f2=(B [<a href="#MIME">MIME</a>] $B$G(B
-    ASCII $B7A<0$KJQ49$5$l$k$3$H$,$"$j$^$9!#(B
-    $B$3$N$h$&$KId9f2=$5$l!"0J2<$NNc$K<($5$l$k$h$&$K6h@Z$j9T$K(B
-    $B64$^$l$?$b$N$O(B PEM $BId9f2=$5$l$?$H8@$$$^$9!#(B
-    (PEM $B$NL>A0$O(B "Privacy Enhanced Mail" $B$KM3Mh$7$^$9(B)</p>
+    <p>バイナリ形式の証明書は ASN.1 表記法
+     [<a href="#X208">X208</a>] [<a href="#PKCS">PKCS</a>] で
+    定義されています。
+    この表記法は内容をどのように記述するかを定義し、
+    符号化の規定がこの情報がどのようにバイナリ形式に変換されるかを
+    定義します。
+    証明書のバイナリ符号化は Distinguished Encoding
+    Rules (DER) で定義され、それはより一般的な Basic Encoding Rules
+    (BER) に基づいています。
+    バイナリ形式を扱うことのできない送信では、
+    バイナリ形式は Base64 符号化 [<a href="#MIME">MIME</a>] で
+    ASCII 形式に変換されることがあります。
+    このように符号化され、以下の例に示されるように区切り行に
+    挟まれたものは PEM 符号化されたと言います。
+    (PEM の名前は "Privacy Enhanced Mail" に由来します)</p>
 
     <example>
-    <title>PEM $BId9f2=$5$l$?>ZL@=q$NNc(B (example.crt)</title>
+    <title>PEM 符号化された証明書の例 (example.crt)</title>
     <pre>-----BEGIN CERTIFICATE-----
 MIIC7jCCAlegAwIBAgIBATANBgkqhkiG9w0BAQQFADCBqTELMAkGA1UEBhMCWFkx
 FTATBgNVBAgTDFNuYWtlIERlc2VydDETMBEGA1UEBxMKU25ha2UgVG93bjEXMBUG
@@ -320,86 +320,86 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 </section>
 
 <section id="certificateauthorities">
-<title>$BG'>Z6I(B</title>
-    <p>$B$^$:>ZL@=q$N?=@A$N>pJs$r3NG'$9$k$3$H$G!"(B
-    $BG'>Z6I$OHkL)80$N;}$A<g$N?H85$rJ]>Z$7$^$9!#(B
-    $BNc$($P!"%"%j%9$,8D?M>ZL@=q$r?=@A$7$?$H$9$k$H!"(B
-    $BG'>Z6I$O%"%j%9$,>ZL@=q$N?=@A$,<gD%$9$kDL$j$N(B
-    $B?MJ*$@$H$$$&$3$H$r3NG'$7$J$/$F$O$$$1$^$;$s!#(B</p>
+<title>認証局</title>
+    <p>まず証明書の申請の情報を確認することで、
+    認証局は秘密鍵の持ち主の身元を保証します。
+    例えば、アリスが個人証明書を申請したとすると、
+    認証局はアリスが証明書の申請が主張する通りの
+    人物だということを確認しなくてはいけません。</p>
 
     <section id="certificatechains">
-    <title>$B>ZL@=q3,AX9=B$(B</title>
-        <p>$BG'>Z6I$OB>$NG'>Z6I$X$N>ZL@=q$rH/9T$9$k$3$H$,$G$-$^$9!#(B
-        $BL$CN$N>ZL@=q$rD4$Y$k;~$K!"%"%j%9$O$=$N>ZL@=q$NH/9T<T(B
-        $B$K<+?.$,;}$F$k$^$G!"H/9T<T$N>ZL@=q$r(B
-        $B$=$N>e0L3,AX$NG'>Z6I$r$?$I$C$FD4$Y$kI,MW$,$"$j$^$9!#(B
-        $B!V0-<A$J!W>ZL@=q$N4m81@-$r8:$i$9$?$a!"(B
-        $BH`=w$O8B$i$l$?O":?$NH/9T<T$N$_?.Mj$9$k$h$&$K(B
-        $B7h$a$k$3$H$b$G$-$^$9!#(B</p>
+    <title>証明書階層構造</title>
+        <p>認証局は他の認証局への証明書を発行することができます。
+        未知の証明書を調べる時に、アリスはその証明書の発行者
+        に自信が持てるまで、発行者の証明書を
+        その上位階層の認証局をたどって調べる必要があります。
+        「悪質な」証明書の危険性を減らすため、
+        彼女は限られた連鎖の発行者のみ信頼するように
+        決めることもできます。</p>
     </section>
 
     <section id="rootlevelca">
-    <title>$B:G>e0LG'>Z6I$N:n@.(B</title>
-        <p>$BA0$K=R$Y$?$h$&$K!"A4$F$N>ZL@=q$K$D$$$F!"(B
-        $B:G>e0L$NG'>Z6I(B(CA)$B$^$G$=$l$>$l$NH/9T<T$,(B
-        $BBP>]$N?H85>ZL@$NM-8z@-$rL@$i$+$K$9$kI,MW$,$"$j$^$9!#(B
-        $BLdBj$O!"C/$,$=$N:G>e0L$NG'>Z5!4X$N>ZL@=q$rJ]>Z$9$k$N$+!"(B
-        $B$H$$$&$3$H$G$9!#(B
-        $B$3$N$h$&$J>l9g$K8B$j!">ZL@=q$O!V<+8J=pL>!W$5$l$^$9!#(B
-        $B$D$^$j!">ZL@=q$NH/9T<T$H>ZL@BP>]$,F1$8$H$$$&$3$H$K$J$j$^$9!#(B
-        $B$=$N7k2L!"<+8J=pL>$5$l$?>ZL@=q$r?.MQ$9$k$K$O(B
-        $B:Y?4$NCm0U$,I,MW$G$9!#(B
-        $B:G>e0LG'>Z6I$,8x3+80$r9-$/8xI=$9$k$3$H$G!"(B
-        $B$=$N80$r?.Mj$9$k%j%9%/$rDc$/$9$k$3$H$,$G$-$^$9!#(B
-        $B$b$7!"B>?M$,$=$NG'>Z6I$K$J$j$9$^$7$?;~$K!"$=$l$,O*8+$7$d(B
-        $B$9$$$+$i$G$9!#(B
-        $BB?$/$N%V%i%&%6$OM-L>$JG'>Z6I$r?.Mj$9$k$h$&$K(B
-        $B@_Dj$5$l$F$$$^$9!#(B</p>
+    <title>最上位認証局の作成</title>
+        <p>前に述べたように、全ての証明書について、
+        最上位の認証局(CA)までそれぞれの発行者が
+        対象の身元証明の有効性を明らかにする必要があります。
+        問題は、誰がその最上位の認証機関の証明書を保証するのか、
+        ということです。
+        このような場合に限り、証明書は「自己署名」されます。
+        つまり、証明書の発行者と証明対象が同じということになります。
+        その結果、自己署名された証明書を信用するには
+        細心の注意が必要です。
+        最上位認証局が公開鍵を広く公表することで、
+        その鍵を信頼するリスクを低くすることができます。
+        もし、他人がその認証局になりすました時に、それが露見しや
+        すいからです。
+        多くのブラウザは有名な認証局を信頼するように
+        設定されています。</p>
 
         <p><a href="http://www.thawte.com/">Thawte</a> 
-        $B$d(B <a href="http://www.verisign.com/">VeriSign</a> 
-        $B$N$h$&$JB?$/$N2q<R$,G'>Z6I$H$7$F3+@_$7$^$7$?!#(B
-        $B$3$N$h$&$J2q<R$O0J2<$N%5!<%S%9$rDs6!$7$^$9(B:</p>
+        や <a href="http://www.verisign.com/">VeriSign</a> 
+        のような多くの会社が認証局として開設しました。
+        このような会社は以下のサービスを提供します:</p>
 
         <ul>
-        <li>$B>ZL@=q?=@A$N3NG'(B</li>
-        <li>$B>ZL@=q?=@A$N=hM}(B</li>
-        <li>$B>ZL@=q$NH/9T$H4IM}(B</li>
+        <li>証明書申請の確認</li>
+        <li>証明書申請の処理</li>
+        <li>証明書の発行と管理</li>
         </ul>
 
-        <p>$B<+J,$GG'>Z6I$r:n$k$3$H$b2DG=$G$9!#(B
-        $B%$%s%?!<%M%C%H4D6-$G$O4m81$G$9$,!"(B
-        $B8D?M$d%5!<%P$N?H85>ZL@$,4JC1$K9T$($kAH?%$N(B
-        $B%$%s%H%i%M%C%HFb$G$OLr$KN)$D$+$b$7$l$^$;$s!#(B</p>
+        <p>自分で認証局を作ることも可能です。
+        インターネット環境では危険ですが、
+        個人やサーバの身元証明が簡単に行える組織の
+        イントラネット内では役に立つかもしれません。</p>
     </section>
 
     <section id="certificatemanagement">
-    <title>$B>ZL@=q4IM}(B</title>
-        <p>$BG'>Z6I$N3+@_$OE0Dl$7$?4IM}!"5;=Q!"1?MQ$NBN@)$rI,MW$H$9$k(B
-        $B@UG$$N$"$k;E;v$G$9!#(B
-        $BG'>Z6I$O>ZL@=q$rH/9T$9$k$@$1$G$J$/!"(B
-        $B4IM}$b$7$J$1$l$P$J$j$^$;$s!#(B
-        $B6qBNE*$K$O!">ZL@=q$,$$$D$^$GM-8z$+$r7hDj$7!"99?7$7!"(B
-        $B$^$?4{$KH/9T$5$l$?$,<:8z$7$?>ZL@=q$N%j%9%H(B
-        (Certificate Revocation Lists $B$^$?$O(B CRL)
-        $B$r4IM}$7$J$1$l$P$$$1$^$;$s!#(B
-        $BNc$($P!"%"%j%9$,2q<R$+$i<R0w$H$7$F>ZL@=q$rM?$($i$l$?$H$7$^$9!#(B
-        $B$=$7$F!"%"%j%9$,2q<R$r<-$a$k$H$-$K$O>ZL@=q$r<h$j>C$5$J$1$l$P(B
-        $B$$$1$J$$$H$7$^$9!#(B
-        $B>ZL@=q$O<!!9$H?M$KEO$5$l$F$$$/$b$N$J$N$G!"(B
-        $B>ZL@=q$=$N$b$N$+$i!"$=$l$,<h$j>C$5$l$?$+H=CG$9$k$3$H$O(B
-        $BIT2DG=$G$9!#(B
-        $B$h$C$F!">ZL@=q$NM-8z@-$rD4$Y$k$H$-$K$O!"(B
-        $BG'>Z6I$KO"Mm$7$F(B CRL $B$r>H9g$9$kI,MW$,$"$j$^$9!#(B
-        $BIaDL$3$N2aDx$O<+F02=$5$l$F$$$k$b$N$G$O$"$j$^$;$s!#(B</p>
+    <title>証明書管理</title>
+        <p>認証局の開設は徹底した管理、技術、運用の体制を必要とする
+        責任のある仕事です。
+        認証局は証明書を発行するだけでなく、
+        管理もしなければなりません。
+        具体的には、証明書がいつまで有効かを決定し、更新し、
+        また既に発行されたが失効した証明書のリスト
+        (Certificate Revocation Lists または CRL)
+        を管理しなければいけません。
+        例えば、アリスが会社から社員として証明書を与えられたとします。
+        そして、アリスが会社を辞めるときには証明書を取り消さなければ
+        いけないとします。
+        証明書は次々と人に渡されていくものなので、
+        証明書そのものから、それが取り消されたか判断することは
+        不可能です。
+        よって、証明書の有効性を調べるときには、
+        認証局に連絡して CRL を照合する必要があります。
+        普通この過程は自動化されているものではありません。</p>
 
-        <note><title>$BCm0U(B</title>
-        <p>$B%G%U%)%k%H$G%V%i%&%6$K@_Dj$5$l$F$$$J$$G'>Z6I$r;H$C$?>l9g!"(B
-        $BG'>Z6I$N>ZL@=q$r%V%i%&%6$KFI$_9~$s$G!"(B
-        $B%V%i%&%6$,$=$NG'>Z6I$K$h$C$F=pL>$5$l$?%5!<%P$N>ZL@=q$r(B
-        $BM-8z2=$9$kI,MW$,$"$j$^$9!#(B
-        $B0lEYFI$_9~$^$l$k$H!"$=$NG'>Z6I$K$h$C$F=pL>$5$l$?A4$F$N(B
-        $B>ZL@=q$r<u$1F~$l$k$?$a!"4m81$rH<$$$^$9!#(B</p>
+        <note><title>注意</title>
+        <p>デフォルトでブラウザに設定されていない認証局を使った場合、
+        認証局の証明書をブラウザに読み込んで、
+        ブラウザがその認証局によって署名されたサーバの証明書を
+        有効化する必要があります。
+        一度読み込まれると、その認証局によって署名された全ての
+        証明書を受け入れるため、危険を伴います。</p>
         </note>
     </section>
 </section>
@@ -409,267 +409,267 @@ dUHzICxBVC1lnHyYGjDuAMhe396lYAn8bCld1/L4NMGBCQ==
 
 <section id="ssl">
 <title>Secure Sockets Layer (SSL)</title>
-<p>Secure Sockets Layer $B%W%m%H%3%k$O?.Mj@-$N$"$k%3%M%/%7%g%s7?$N(B
-$B%M%C%H%o!<%/AX$N%W%m%H%3%k(B($BNc$($P!"(BTCP/IP)$B$H(B
-$B%"%W%j%1!<%7%g%sAX$N%W%m%H%3%k(B($BNc$($P!"(BHTTP)
-$B$N4V$KCV$/$3$H$,$G$-$^$9!#(B
-SSL $B$O!"Aj8_G'>Z$K$h$C$F%5!<%P$H%/%i%$%"%s%H4V$N0BA4$JDL?.$r!"(B
-$BEE;R=pL>$K$h$C$F%G!<%?$N40A4@-$r!"(B
-$B$=$7$F0E9f2=$K$h$C$F%W%i%$%P%7$rDs6!$7$^$9!#(B</p>
+<p>Secure Sockets Layer プロトコルは信頼性のあるコネクション型の
+ネットワーク層のプロトコル(例えば、TCP/IP)と
+アプリケーション層のプロトコル(例えば、HTTP)
+の間に置くことができます。
+SSL は、相互認証によってサーバとクライアント間の安全な通信を、
+電子署名によってデータの完全性を、
+そして暗号化によってプライバシを提供します。</p>
 
-<p>SSL $B%W%m%H%3%k$O0E9f2=!"%@%$%8%'%9%H!"EE;R=pL>$K$D$$$F!"(B
-$BMM!9$J%"%k%4%j%:%`$r%5%]!<%H$9$k$h$&$K$G$-$F$$$^$9!#(B
-$B$3$&$9$k$3$H$G!"K!$dM"=P$N5,@)$r9MN8$KF~$l$F!"%5!<%P$K9g$o$;$?(B
-$B%"%k%4%j%:%`$rA*$V$3$H$,$G$-!"$^$?!"?7$7$$%"%k%4%j%:%`$r(B
-$BMxMQ$7$F$$$/$3$H$b2DG=$K$7$F$$$^$9!#(B
-$B%"%k%4%j%:%`$NA*Br$O%W%m%H%3%k%;%C%7%g%s3+;O;~$K(B
-$B%5!<%P$H%/%i%$%"%s%H4V$G<h$j7h$a$i$l$^$9!#(B</p>
+<p>SSL プロトコルは暗号化、ダイジェスト、電子署名について、
+様々なアルゴリズムをサポートするようにできています。
+こうすることで、法や輸出の規制を考慮に入れて、サーバに合わせた
+アルゴリズムを選ぶことができ、また、新しいアルゴリズムを
+利用していくことも可能にしています。
+アルゴリズムの選択はプロトコルセッション開始時に
+サーバとクライアント間で取り決められます。</p>
 
 <section id="table4">
-<title>$BI=(B4: SSL $B%W%m%H%3%k$N%P!<%8%g%s(B</title>
+<title>表4: SSL プロトコルのバージョン</title>
     <table border="1">
     <columnspec><column width=".15"/><column width=".2"/>
      <column width=".30"/><column width=".25"/></columnspec>
-    <tr><th>$B%P!<%8%g%s(B</th>
-        <th>$B=PE5(B</th>
-        <th>$B@bL@(B</th>
-        <th>$B%V%i%&%6$N%5%]!<%H(B</th></tr>
+    <tr><th>バージョン</th>
+        <th>出典</th>
+        <th>説明</th>
+        <th>ブラウザのサポート</th></tr>
     <tr><td>SSL v2.0</td>
-        <td>Vendor Standard (Netscape Corp. $B$h$j(B) [<a href="#SSL2"
+        <td>Vendor Standard (Netscape Corp. より) [<a href="#SSL2"
         >SSL2</a>]</td>
-        <td>$B<BAu$,8=B8$9$k=i$a$F$N(B SSL $B%W%m%H%3%k(B</td>
+        <td>実装が現存する初めての SSL プロトコル</td>
         <td>- NS Navigator 1.x/2.x<br />
         - MS IE 3.x<br />
         - Lynx/2.8+OpenSSL</td></tr>
     <tr><td>SSL v3.0</td>
-        <td>Expired Internet Draft (Netscape Corp. $B$h$j(B) [<a href="#SSL3"
+        <td>Expired Internet Draft (Netscape Corp. より) [<a href="#SSL3"
         >SSL3</a>]</td>
-        <td>$BFCDj$N%;%-%e%j%F%#967b$rKI$0$?$a$N2~D{!"(B
-        $BHs(BRSA $B0E9f$NDI2C!">ZL@=q3,AX9=B$$N%5%]!<%H(B</td>
+        <td>特定のセキュリティ攻撃を防ぐための改訂、
+        非RSA 暗号の追加、証明書階層構造のサポート</td>
         <td>- NS Navigator 2.x/3.x/4.x<br />
         - MS IE 3.x/4.x<br />
         - Lynx/2.8+OpenSSL</td></tr>
     <tr><td>TLS v1.0</td>
-        <td>Proposed Internet Standard (IETF $B$h$j(B) [<a href="#TLS1"
+        <td>Proposed Internet Standard (IETF より) [<a href="#TLS1"
         >TLS1</a>]</td>
-        <td>MAC $B%l%$%d$r(B HMAC $B$X99?7!"%V%m%C%/0E9f$N(B block
-        padding$B!"%a%C%;!<%8=g=x$NI8=`2=!"7Y9pJ8$N=<<B$J$I$N$?$a(B
-        SSL 3.0 $B$r2~D{!#(B</td>
+        <td>MAC レイヤを HMAC へ更新、ブロック暗号の block
+        padding、メッセージ順序の標準化、警告文の充実などのため
+        SSL 3.0 を改訂。</td>
         <td>- Lynx/2.8+OpenSSL</td></tr>
     </table>
 </section>
 
-<p><a href="#table4">$BI=(B4</a>$B$K<($5$l$k$H$*$j!"(BSSL $B%W%m%H%3%k$K$O(B
-$B$$$/$D$b$N%P!<%8%g%s$,$"$j$^$9!#(B
-$BI=$K$b=q$+$l$F$$$k$h$&$K!"(BSSL 3.0 $B$NMxE@$N0l$D$O(B
-$B>ZL@=q3,AX9=B$$r%5%]!<%H$9$k$3$H$G$9!#(B
-$B$3$N5!G=$K$h$C$F!"%5!<%P$O<+J,$N>ZL@=q$K2C$($F!"(B
-$BH/9T<T$N>ZL@=q$r%V%i%&%6$KEO$9$3$H$,$G$-$^$9!#(B
-$B>ZL@=q3,AX9=B$$K$h$C$F!"(B
-$B%V%i%&%6$KH/9T<T$N>ZL@=q$,D>@\EPO?$5$l$F$$$J$/$F$b!"(B
-$B3,AX$NCf$K4^$^$l$F$$$l$P!"(B
-$B%V%i%&%6$O%5!<%P$N>ZL@=q$rM-8z2=$9$k$3$H$,$G$-$^$9!#(B
-SSL 3.0 $B$O8=:_(B Internet Engineering Task Force (IETF) 
-$B$K$h$C$F3+H/$5$l$F$$$k(B Transport Layer Security 
-[<a href="#TLS1">TLS</a>] $B%W%m%H%3%kI8=`5,3J$N4pAC$H$J$C$F$$$^$9!#(B</p>
+<p><a href="#table4">表4</a>に示されるとおり、SSL プロトコルには
+いくつものバージョンがあります。
+表にも書かれているように、SSL 3.0 の利点の一つは
+証明書階層構造をサポートすることです。
+この機能によって、サーバは自分の証明書に加えて、
+発行者の証明書をブラウザに渡すことができます。
+証明書階層構造によって、
+ブラウザに発行者の証明書が直接登録されていなくても、
+階層の中に含まれていれば、
+ブラウザはサーバの証明書を有効化することができます。
+SSL 3.0 は現在 Internet Engineering Task Force (IETF) 
+によって開発されている Transport Layer Security 
+[<a href="#TLS1">TLS</a>] プロトコル標準規格の基礎となっています。</p>
 
 <section id="session">
-<title>$B%;%C%7%g%s$N3NN)(B</title>
-    <p><a href="#figure1">$B?^(B1</a>$B$G<($5$l$k$h$&$K!"(B
-    $B%;%C%7%g%s$N3NN)$O%/%i%$%"%s%H$H%5!<%P4V$N(B
-    $B%O%s%I%7%'!<%/%7!<%/%(%s%9$K$h$C$F9T$J$o$l$^$9!#(B
-    $B%5!<%P$,>ZL@=q$rDs6!$9$k$+!"%/%i%$%"%s%H$N>ZL@=q$r%j%/%(%9%H$9$k$+(B
-    $B$H$$$&%5!<%P$N@_Dj$K$h$j!"$3$N%7!<%/%(%s%9$O0[$J$k$b$N$H$J$j$^$9!#(B
-    $B0E9f>pJs$N4IM}$N$?$a$K!"DI2C$N%O%s%I%7%'!<%/2aDx$,I,MW$K$J$k(B
-    $B>l9g$b$"$j$^$9$,!"$3$N5-;v$G$O(B
-    $B$h$/$"$k%7%J%j%*$r<jC;$K@bL@$7$^$9!#(B
-    $BA4$F$N2DG=@-$K$D$$$O!"(BSSL $B;EMM=q$r;2>H$7$F$/$@$5$$!#(B</p>
+<title>セッションの確立</title>
+    <p><a href="#figure1">図1</a>で示されるように、
+    セッションの確立はクライアントとサーバ間の
+    ハンドシェークシークエンスによって行なわれます。
+    サーバが証明書を提供するか、クライアントの証明書をリクエストするか
+    というサーバの設定により、このシークエンスは異なるものとなります。
+    暗号情報の管理のために、追加のハンドシェーク過程が必要になる
+    場合もありますが、この記事では
+    よくあるシナリオを手短に説明します。
+    全ての可能性についは、SSL 仕様書を参照してください。</p>
 
-    <note><title>$BCm0U(B</title>
-    <p>$B0lEY(B SSL $B%;%C%7%g%s$,3NN)$9$k$H!"%;%C%7%g%s$r:FMxMQ$9$k$3$H$G!"(B
-    $B%;%C%7%g%s$r3+;O$9$k$?$a$NB?$/$N2aDx$r7+$jJV$9$H$$$&(B
-    $B%Q%U%)!<%^%s%9$NB;<:$rKI$.$^$9!#(B
-    $B$=$N$?$a!"%5!<%P$OA4$F$N%;%C%7%g%s$K0l0U$J%;%C%7%g%s<1JLL>$r(B
-    $B3d$jEv$F!"%5!<%P$K%-%c%C%7%e$7!"%/%i%$%"%s%H$O<!2s$+$i(B
-    ($B<1JLL>$,%5!<%P$N%-%c%C%7%e$G4|8B@Z$l$K$J$k$^$G$O(B)
-    $B%O%s%I%7%'!<%/$J$7$G@\B3$9$k$3$H$,$G$-$^$9!#(B</p>
+    <note><title>注意</title>
+    <p>一度 SSL セッションが確立すると、セッションを再利用することで、
+    セッションを開始するための多くの過程を繰り返すという
+    パフォーマンスの損失を防ぎます。
+    そのため、サーバは全てのセッションに一意なセッション識別名を
+    割り当て、サーバにキャッシュし、クライアントは次回から
+    (識別名がサーバのキャッシュで期限切れになるまでは)
+    ハンドシェークなしで接続することができます。</p>
     </note>
 
     <p class="figure">
     <img 
     src="../images/ssl_intro_fig1.gif" alt="" width="423" height="327" /><br />
-    <a id="figure1" name="figure1"><dfn>$B?^(B1</dfn></a>: SSL
-    $B%O%s%I%7%'!<%/%7!<%/%(%s%935N,(B</p>
+    <a id="figure1" name="figure1"><dfn>図1</dfn></a>: SSL
+    ハンドシェークシークエンス概略</p>
 
-    <p>$B%5!<%P$H%/%i%$%"%s%H$G;H$o$l$k(B
-    $B%O%s%I%7%'!<%/%7!<%/%(%s%9$NMWAG$r0J2<$K<($7$^$9(B:</p>
+    <p>サーバとクライアントで使われる
+    ハンドシェークシークエンスの要素を以下に示します:</p>
 
     <ol>
-    <li>$B%G!<%?DL?.$K;H$o$l$k0E9f%9%$!<%H$N<h$j7h$a(B</li>
-    <li>$B%/%i%$%"%s%H$H%5!<%P4V$G$N%;%C%7%g%s80$N3NN)$H6&M-(B</li>
-    <li>$B%*%W%7%g%s$H$7$F!"%/%i%$%"%s%H$KBP$9$k%5!<%P$NG'>Z(B</li>
-    <li>$B%*%W%7%g%s$H$7$F!"%5!<%P$KBP$9$k%/%i%$%"%s%H$NG'>Z(B</li>
+    <li>データ通信に使われる暗号スイートの取り決め</li>
+    <li>クライアントとサーバ間でのセッション鍵の確立と共有</li>
+    <li>オプションとして、クライアントに対するサーバの認証</li>
+    <li>オプションとして、サーバに対するクライアントの認証</li>
     </ol>
 
-    <p>$BBh0l%9%F%C%W$N0E9f%9%$!<%H<h$j7h$a$K$h$C$F!"(B
-    $B%5!<%P$H%/%i%$%"%s%H$O$=$l$>$l$K$"$C$?(B
-    $B0E9f%9%$!<%H$rA*$V$3$H$,$G$-$^$9!#(B
-    SSL3.0 $B%W%m%H%3%k$N;EMM=q$O(B 31 $B$N0E9f%9%$!<%H$rDj5A$7$F$$$^$9!#(B
-    $B0E9f%9%$!<%H$O0J2<$N%3%s%]!<%M%s%H$K$h$jDj5A$5$l$F$$$^$9(B:</p>
+    <p>第一ステップの暗号スイート取り決めによって、
+    サーバとクライアントはそれぞれにあった
+    暗号スイートを選ぶことができます。
+    SSL3.0 プロトコルの仕様書は 31 の暗号スイートを定義しています。
+    暗号スイートは以下のコンポーネントにより定義されています:</p>
 
     <ul>
-    <li>$B80$N8r49<jCJ(B</li>
-    <li>$B%G!<%?DL?.$N0E9f=Q(B</li>
-    <li>Message Authentication Code (MAC) $B:n@.$N$?$a$N(B
-    $B%a%C%;!<%8%@%$%8%'%9%H(B</li>
+    <li>鍵の交換手段</li>
+    <li>データ通信の暗号術</li>
+    <li>Message Authentication Code (MAC) 作成のための
+    メッセージダイジェスト</li>
     </ul>
 
-    <p>$B$3$l$i$N;0$D$NMWAG$O0J2<$N%;%/%7%g%s$G@bL@$5$l$F$$$^$9!#(B</p>
+    <p>これらの三つの要素は以下のセクションで説明されています。</p>
 </section>
 
 <section id="keyexchange">
-<title>$B80$N8r49<jCJ(B</title>
-    <p>$B80$N8r49<jCJ$O%"%W%j%1!<%7%g%s$N%G!<%?DL?.$K;H$o$l!"(B
-    $B6&M-$5$l$kBP>N0E9f80$r$I$N$h$&$K$,%/%i%$%"%s%H$H%5!<%P$G(B
-    $B<h$j7h$a$k$+$rDj5A$7$^$9!#(B
-    SSL 2.0 $B$O(B RSA $B808r49$7$+;H$$$^$;$s$,!"(B
-    SSL 3.0 $B$O>ZL@=q$,;H$o$l$k$H$-$O(B RSA $B808r49$r;H$$!"(B
-    $B>ZL@=q$,L5$/!"%/%i%$%"%s%H$H%5!<%P$N;vA0$NDL?.$,L5$$>l9g$O(B
-    Diffie-Hellman $B808r49$r;H$&(B
-    $B$J$IMM!9$J808r49%"%k%4%j%:%`$r%5%]!<%H$7$^$9!#(B</p>
+<title>鍵の交換手段</title>
+    <p>鍵の交換手段はアプリケーションのデータ通信に使われ、
+    共有される対称暗号鍵をどのようにがクライアントとサーバで
+    取り決めるかを定義します。
+    SSL 2.0 は RSA 鍵交換しか使いませんが、
+    SSL 3.0 は証明書が使われるときは RSA 鍵交換を使い、
+    証明書が無く、クライアントとサーバの事前の通信が無い場合は
+    Diffie-Hellman 鍵交換を使う
+    など様々な鍵交換アルゴリズムをサポートします。</p>
 
-    <p>$B80$N8r49J}K!$K$*$1$k0l$D$NA*Br;h$OEE;R=pL>$G$9!#(B
-    $BEE;R=pL>$r;H$&$+$I$&$+!"$^$?!"(B
-    $B$I$N<oN`$N=pL>$r;H$&$+$H$$$&A*Br$,$"$j$^$9!#(B
-    $BHkL)80$G=pL>$9$k$3$H$G6&M-80$r@8@.$9$7!">pJs8r49$9$k;~$N(B
-    $B%^%s!&%$%s!&%6!&%_%I%k967b$rKI$0$3$H$,$G$-$^$9!#(B
+    <p>鍵の交換方法における一つの選択肢は電子署名です。
+    電子署名を使うかどうか、また、
+    どの種類の署名を使うかという選択があります。
+    秘密鍵で署名することで共有鍵を生成すし、情報交換する時の
+    マン・イン・ザ・ミドル攻撃を防ぐことができます。
     [<a href="#AC96">AC96</a>, p516]</p>
 </section>
 
 <section id="ciphertransfer">
-<title>$B%G!<%?DL?.$N0E9f=Q(B</title>
-    <p>SSL $B$O%;%C%7%g%s$N%a%C%;!<%8$N0E9f2=$KA0=R$7$?(B
-    $B=>Mh7?0E9f(B($BBP>N0E9f(B)$B$rMQ$$$^$9!#(B
-    $B0E9f2=$7$J$$$H$$$&A*Br;h$b4^$a6e$D$NA*Br;h$,$"$j$^$9(B:</p>
+<title>データ通信の暗号術</title>
+    <p>SSL はセッションのメッセージの暗号化に前述した
+    従来型暗号(対称暗号)を用います。
+    暗号化しないという選択肢も含め九つの選択肢があります:</p>
 
     <ul>
-    <li>$B0E9f2=$J$7(B</li>
-    <li>$B%9%H%j!<%`0E9f(B
+    <li>暗号化なし</li>
+    <li>ストリーム暗号
         <ul>
-        <li>40-bit $B80$G$N(B RC4</li>
-        <li>128-bit $B80$G$N(B RC4</li>
+        <li>40-bit 鍵での RC4</li>
+        <li>128-bit 鍵での RC4</li>
         </ul></li>
-    <li>CBC $B%V%m%C%/0E9f(B
-        <ul><li>40 bit $B80$G$N(B RC2</li>
-        <li>40 bit $B80$G$N(B DES</li>
-        <li>56 bit $B80$G$N(B DES</li>
-        <li>168 bit $B80$G$N(B Triple-DES</li>
-        <li>Idea (128 bit $B80(B)</li>
-        <li>Fortezza (96 bit $B80(B)</li>
+    <li>CBC ブロック暗号
+        <ul><li>40 bit 鍵での RC2</li>
+        <li>40 bit 鍵での DES</li>
+        <li>56 bit 鍵での DES</li>
+        <li>168 bit 鍵での Triple-DES</li>
+        <li>Idea (128 bit 鍵)</li>
+        <li>Fortezza (96 bit 鍵)</li>
         </ul></li>
     </ul>
 
-    <p>$B$3$3$G$N(B CBC $B$H$O0E9f%V%m%C%/O":?(B (Cipher Block Chaining)
-     $B$NN,$G!"0l$DA0$N0E9f2=$5$l$?0E9fJ8$N0lIt$,(B
-    $B%V%m%C%/$N0E9f2=$K;H$o$l$k$3$H$r0UL#$7$^$9!#(B
-    DES $B$O%G!<%?0E9f2=I8=`5,3J(B (Data Encryption Standard)
-     [<a href="#AC96">AC96</a>, ch12] $B$NN,$G!"(B
-    DES40 $B$d(B 3DES_EDE $B$r4^$`$$$/$D$b$N<oN`$,$"$j$^$9!#(B
-    Idea $B$O:G9b$J$b$N$N0l$D$G!"0E9f=QE*$K$O8=:_$"$kCf$G(B
-    $B:G$b6/NO$J$b$N$G$9!#(B
-    RC2 $B$O(B RSA DSI $B$K$h$kFH@jE*$J%"%k%4%j%:%`$G$9!#(B
+    <p>ここでの CBC とは暗号ブロック連鎖 (Cipher Block Chaining)
+     の略で、一つ前の暗号化された暗号文の一部が
+    ブロックの暗号化に使われることを意味します。
+    DES はデータ暗号化標準規格 (Data Encryption Standard)
+     [<a href="#AC96">AC96</a>, ch12] の略で、
+    DES40 や 3DES_EDE を含むいくつもの種類があります。
+    Idea は最高なものの一つで、暗号術的には現在ある中で
+    最も強力なものです。
+    RC2 は RSA DSI による独占的なアルゴリズムです。
      [<a href="#AC96">AC96</a>,
     ch13]</p>
 </section>
 
 <section id="digestfuntion">
-<title>$B%@%$%8%'%9%H4X?t(B</title>
+<title>ダイジェスト関数</title>
     <p>
-    $B%@%$%8%'%9%H4X?t$NA*Br$O%l%3!<%I%f%K%C%H$+$i$I$N$h$&$K%@%$%8%'%9%H$,@8@.$5$l$k$+$r7hDj$7$^$9!#(B
-    SSL $B$O0J2<$r%5%]!<%H$7$^$9(B:</p>
+    ダイジェスト関数の選択はレコードユニットからどのようにダイジェストが生成されるかを決定します。
+    SSL は以下をサポートします:</p>
 
     <ul>
-    <li>$B%@%$%8%'%9%H$J$7(B</li>
-    <li>MD5 (128-bit $B%O%C%7%e(B)</li>
-    <li>Secure Hash Algorithm (SHA-1) (160-bit $B%O%C%7%e(B)</li>
+    <li>ダイジェストなし</li>
+    <li>MD5 (128-bit ハッシュ)</li>
+    <li>Secure Hash Algorithm (SHA-1) (160-bit ハッシュ)</li>
     </ul>
 
-    <p>$B%a%C%;!<%8%@%$%8%'%9%H$O(B Message Authentication Code (MAC) 
-    $B$N@8@.$K;H$o$l!"%a%C%;!<%8$H6&$K0E9f2=$5$l!"%a%C%;!<%8$N?.MQ$r(B
-    $BDs6!$7!"%j%W%l%$967b$rKI$.$^$9!#(B</p>
+    <p>メッセージダイジェストは Message Authentication Code (MAC) 
+    の生成に使われ、メッセージと共に暗号化され、メッセージの信用を
+    提供し、リプレイ攻撃を防ぎます。</p>
 </section>
 
 <section id="handshake">
-<title>$B%O%s%I%7%'!<%/%7!<%/%(%s%9%W%m%H%3%k(B</title>
-    <p>$B%O%s%I%7%'!<%/%7!<%/%(%s%9$O;0$D$N%W%m%H%3%k$r;H$$$^$9(B:</p>
+<title>ハンドシェークシークエンスプロトコル</title>
+    <p>ハンドシェークシークエンスは三つのプロトコルを使います:</p>
 
     <ul>
-    <li><dfn>SSL $B%O%s%I%7%'!<%/%W%m%H%3%k(B</dfn>$B$O(B
-    $B%/%i%$%"%s%H$H%5!<%P4V$G$N(B SSL $B%;%C%7%g%s$N3NN)$K;H$o$l$^$9!#(B</li>
-    <li><dfn>SSL $B0E9f;EMMJQ99%W%m%H%3%k(B</dfn>$B$O(B
-    $B%;%C%7%g%s$G$N0E9f%9%$!<%H$N<h$j7h$a$K;H$o$l$^$9!#(B</li>
-    <li><dfn>SSL $B7Y9p%W%m%H%3%k(B</dfn>$B$O(B
-    $B%/%i%$%"%s%H%5!<%P4V$G(B SSL $B%(%i!<$rEAC#$9$k$N$K;H$o$l$^$9!#(B</li>
+    <li><dfn>SSL ハンドシェークプロトコル</dfn>は
+    クライアントとサーバ間での SSL セッションの確立に使われます。</li>
+    <li><dfn>SSL 暗号仕様変更プロトコル</dfn>は
+    セッションでの暗号スイートの取り決めに使われます。</li>
+    <li><dfn>SSL 警告プロトコル</dfn>は
+    クライアントサーバ間で SSL エラーを伝達するのに使われます。</li>
     </ul>
 
-    <p>$B;0$D$N%W%m%H%3%k$O!"%"%W%j%1!<%7%g%s%W%m%H%3%k%G!<%?$H$H$b$K!"(B
-    <a href="#figure2">$B?^(B2</a>$B$K<($9$H$*$j(B <dfn>SSL $B%l%3!<%I%W%m%H%3%k(B</dfn>
-    $B$G%+%W%;%k2=$5$l$^$9!#(B
-    $B%+%W%;%k2=$5$l$?%W%m%H%3%k$O%G!<%?$r8!::$7$J$$(B
-    $B2<AX$N%W%m%H%3%k$K$h$C$F%G!<%?$H$7$FEAC#$5$l$^$9!#(B
-    $B%+%W%;%k2=$5$l$?%W%m%H%3%k$O2<AX$N%W%m%H%3%k$K4X$7$F0l@Z4XCN$7$^$;$s!#(B</p>
+    <p>三つのプロトコルは、アプリケーションプロトコルデータとともに、
+    <a href="#figure2">図2</a>に示すとおり <dfn>SSL レコードプロトコル</dfn>
+    でカプセル化されます。
+    カプセル化されたプロトコルはデータを検査しない
+    下層のプロトコルによってデータとして伝達されます。
+    カプセル化されたプロトコルは下層のプロトコルに関して一切関知しません。</p>
 
     <p class="figure">
     <img src="../images/ssl_intro_fig2.gif" alt="" width="428"
         height="217" /><br />
-    <a id="figure2" name="figure2"><dfn>$B?^(B2</dfn></a>: SSL $B%W%m%H%3%k%9%?%C%/(B
+    <a id="figure2" name="figure2"><dfn>図2</dfn></a>: SSL プロトコルスタック
     </p>
 
     <p>
-    $B%l%3!<%I%W%m%H%3%k$K$h$k(B SSL $B%3%s%H%m!<%k%W%m%H%3%k$N%+%W%;%k2=$O!"(B
-    $B%"%/%F%#%V$J%;%C%7%g%s$NFs2sL\$NDL?.$,$"$C$?>l9g!"(B
-    $B%3%s%H%m!<%k%W%m%H%3%k$,0BA4$G$"$k$3$H$r0UL#$7$^$9!#(B
-    $B4{$K%;%C%7%g%s$,L5$$>l9g$O!"(BNull $B0E9f%9%$!<%H$,;H$o$l!"(B
-    $B0E9f2=$O9T$J$o$l$:!"%;%C%7%g%s$,3NN)$9$k$^$G$O(B
-    $B%@%$%8%'%9%H$bL5$$>uBV$H$J$j$^$9!#(B</p>
+    レコードプロトコルによる SSL コントロールプロトコルのカプセル化は、
+    アクティブなセッションの二回目の通信があった場合、
+    コントロールプロトコルが安全であることを意味します。
+    既にセッションが無い場合は、Null 暗号スイートが使われ、
+    暗号化は行なわれず、セッションが確立するまでは
+    ダイジェストも無い状態となります。</p>
 </section>
 
 <section id="datatransfer">
-<title>$B%G!<%?DL?.(B</title>
-    <p><a href="#figure3">$B?^(B3</a>$B$K<($5$l$k(B SSL $B%l%3!<%I%W%m%H%3%k(B
-    $B$O%/%i%$%"%s%H$H%5!<%P4V$N%"%W%j%1!<%7%g%s$d(B
-    SSL $B%3%s%H%m!<%k%G!<%?$NDL?.$K;H$o$l$^$9!#(B
-    $B$3$N%G!<%?$O$h$j>.$5$$%f%K%C%H$KJ,$1$i$l$?$j!"(B
-    $B$$$/$D$+$N9b5i%W%m%H%3%k$r$^$H$a$F0l%f%K%C%H$H$7$FDL?.$,(B
-    $B9T$J$o$l$k$3$H$b$"$j$^$9!#(B
-    $B%G!<%?$r05=L$7!"%@%$%8%'%9%H=pL>$rE:IU$7$F!"(B
-    $B$3$l$i$N%f%K%C%H$r0E9f2=$7$?$N$A!"%Y!<%9$H$J$C$F$$$k(B
-    $B?.Mj@-$N$"$k%H%i%s%9%]!<%H%W%m%H%3%k$rMQ$$$k$+$b$7$l$^$;$s!#(B
-    ($BCm0U(B: $B8=:_%a%8%c!<$J(B SLL $B<BAu$G05=L$r%5%]!<%H$7$F$$$k$b$N$O$"$j$^$;$s(B)</p>
+<title>データ通信</title>
+    <p><a href="#figure3">図3</a>に示される SSL レコードプロトコル
+    はクライアントとサーバ間のアプリケーションや
+    SSL コントロールデータの通信に使われます。
+    このデータはより小さいユニットに分けられたり、
+    いくつかの高級プロトコルをまとめて一ユニットとして通信が
+    行なわれることもあります。
+    データを圧縮し、ダイジェスト署名を添付して、
+    これらのユニットを暗号化したのち、ベースとなっている
+    信頼性のあるトランスポートプロトコルを用いるかもしれません。
+    (注意: 現在メジャーな SLL 実装で圧縮をサポートしているものはありません)</p>
 
     <p class="figure">
     <img src="../images/ssl_intro_fig3.gif" alt="" width="423"
         height="323" /><br />
-    <a id="figure3" name="figure3"><dfn>$B?^(B 3</dfn></a>: SSL $B%l%3!<%I%W%m%H%3%k(B
+    <a id="figure3" name="figure3"><dfn>図 3</dfn></a>: SSL レコードプロトコル
     </p>
 </section>
 
 <section id="securehttp">
-<title>HTTP $BDL?.$N0BA42=(B</title>
-    <p>$B$h$/$"$k(B SSL $B$N;H$$J}$O%V%i%&%6$H%&%'%V%5!<%P4V$N(B HTTP $BDL?.(B
-    $B$N0BA42=$G$9!#(B
-    $B$3$l$O!"=>Mh$N0BA4$G$O$J$$(B HTTP $B$N;HMQ$r=|30$9$k$b$N$G$O$"$j$^$;$s!#(B
-    $B0BA42=$5$l$?$b$N$O<g$K(B SSH $B>e$NIaDL$N(B HTTP $B$G!"(BHTTPS $B$H8F$P$l$^$9!#(B
-    $BBg$-$J0c$$$O!"(BURL $B%9%-!<%`$K(B <code>http</code> $B$NBe$o$j$K(B <code>https</code>
-    $B$rMQ$$!"%5!<%P$,JL$N%]!<%H$r;H$&$3$H$G$9(B ($B%G%U%)%k%H$G$O(B443)$B!#(B
-    $B$3$l$,<g$K(B <module
-    >mod_ssl</module> $B$,(B Apache $B%&%'%V%5!<%P$KDs6!$9$k5!G=$G$9!#(B</p>
+<title>HTTP 通信の安全化</title>
+    <p>よくある SSL の使い方はブラウザとウェブサーバ間の HTTP 通信
+    の安全化です。
+    これは、従来の安全ではない HTTP の使用を除外するものではありません。
+    安全化されたものは主に SSH 上の普通の HTTP で、HTTPS と呼ばれます。
+    大きな違いは、URL スキームに <code>http</code> の代わりに <code>https</code>
+    を用い、サーバが別のポートを使うことです (デフォルトでは443)。
+    これが主に <module
+    >mod_ssl</module> が Apache ウェブサーバに提供する機能です。</p>
 </section>
 </section>
 <!-- /ssl -->
 
 <section id="references">
-<title>$B;29MJ88%(B</title>
+<title>参考文献</title>
 <dl>
 <dt><a id="AC96" name="AC96">[AC96]</a></dt>
 <dd>Bruce Schneier, <q>Applied Cryptography</q>, 2nd Edition, Wiley,

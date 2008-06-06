@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 395228:527129 (outdated) -->
@@ -22,45 +22,45 @@
 
 <manualpage metafile="install.xml.meta">
 
-  <title>$B%3%s%Q%$%k$H%$%s%9%H!<%k(B</title>
+  <title>コンパイルとインストール</title>
 
 <summary>
 
-    <p>$B$3$NJ8=q$G07$&HO0O$O!"(BUnix $B$d(B Unix $B$KN`;w$7$?%7%9%F%`$G$N(B
-    Apache $B$N%3%s%Q%$%k$H%$%s%9%H!<%k$G$9!#(B Windows $B$K$*$1$k(B
-    $B%3%s%Q%$%k$H%$%s%9%H!<%k$K4X$7$F$O!V(B<a
+    <p>この文書で扱う範囲は、Unix や Unix に類似したシステムでの
+    Apache のコンパイルとインストールです。 Windows における
+    コンパイルとインストールに関しては「<a
     href="platform/windows.html">Microsoft
-    Windows $B$G(B Apache $B$r;H$&(B</a>$B!W$r$4Mw2<$5$$!#(B
-    $B$=$NB>$N%W%i%C%H%[!<%`$K4X$7$F$O!V(B<a 
-    href="platform/">$B%W%i%C%H%[!<%`(B</a>$B!W$r$4Mw2<$5$$!#(B</p>
+    Windows で Apache を使う</a>」をご覧下さい。
+    その他のプラットホームに関しては「<a 
+    href="platform/">プラットホーム</a>」をご覧下さい。</p>
 
-    <p>Apache 2.0 $B$G$OB>$N(B Open Source $B%W%m%8%'%/%H$HF1MM!"(B
-    $B%S%k%I4D6-9=C[$K(B <code>libtool</code> $B$H(B <code>autoconf</code>
-    $B$r;H$&$h$&$K$J$C$F$$$^$9!#(B</p>
+    <p>Apache 2.0 では他の Open Source プロジェクトと同様、
+    ビルド環境構築に <code>libtool</code> と <code>autoconf</code>
+    を使うようになっています。</p>
 
-    <p>$B%^%$%J!<%P!<%8%g%s$+$i$=$N<!$N%P!<%8%g%s$K%"%C%W%0%l!<%I$9$k(B
-    (2.2.50 $B$+$i(B 2.2.51 $B$XEy(B) $B>l9g$O!"$^$:(B <a href="#upgrading">
-    $B%"%C%W%0%l!<%I(B</a>$B$r$4Mw2<$5$$!#(B</p>
+    <p>マイナーバージョンからその次のバージョンにアップグレードする
+    (2.2.50 から 2.2.51 へ等) 場合は、まず <a href="#upgrading">
+    アップグレード</a>をご覧下さい。</p>
 
 </summary>
 
-<seealso><a href="programs/configure.html">$B%=!<%9%D%j!<$N@_Dj(B</a></seealso>
-<seealso><a href="invoking.html">Apache$B$N5/F0(B</a></seealso>
-<seealso><a href="stopping.html">Apache$B$NDd;_$H:F5/F0(B</a></seealso>
+<seealso><a href="programs/configure.html">ソースツリーの設定</a></seealso>
+<seealso><a href="invoking.html">Apacheの起動</a></seealso>
+<seealso><a href="stopping.html">Apacheの停止と再起動</a></seealso>
 
-<section id="overview"><title>$B35MW(B ($B$;$C$+$A$J?M8~$1(B)</title>
+<section id="overview"><title>概要 (せっかちな人向け)</title>
 
     <table>
       <columnspec><column width=".13"/><column width=".80"/></columnspec>
       <tr>
-        <td><a href="#download">$B%@%&%s%m!<%I(B</a></td>
+        <td><a href="#download">ダウンロード</a></td>
 
         <td><code>$ lynx http://httpd.apache.org/download.cgi</code>
         </td>
       </tr>
 
       <tr>
-        <td><a href="#extract">$BE83+(B</a></td>
+        <td><a href="#extract">展開</a></td>
 
         <td><code>$ gzip -d httpd-<em>NN</em>.tar.gz<br />
          $ tar xvf httpd-<em>NN</em>.tar<br />
@@ -68,198 +68,198 @@
       </tr>
 
       <tr>
-        <td><a href="#configure">$B@_Dj(B</a></td>
+        <td><a href="#configure">設定</a></td>
 
         <td><code>$ ./configure --prefix=<em>PREFIX</em></code>
         </td>
       </tr>
 
       <tr>
-        <td><a href="#compile">$B%3%s%Q%$%k(B</a></td>
+        <td><a href="#compile">コンパイル</a></td>
 
         <td><code>$ make</code> </td>
       </tr>
 
       <tr>
-        <td><a href="#install">$B%$%s%9%H!<%k(B</a></td>
+        <td><a href="#install">インストール</a></td>
 
         <td><code>$ make install</code> </td>
       </tr>
 
       <tr>
-        <td><a href="#customize">$B%+%9%?%^%$%:(B</a></td>
+        <td><a href="#customize">カスタマイズ</a></td>
 
         <td><code>$ vi <em>PREFIX</em>/conf/httpd.conf</code> </td>
       </tr>
 
       <tr>
-        <td><a href="#test">$B%F%9%H(B</a></td>
+        <td><a href="#test">テスト</a></td>
 
         <td><code>$ <em>PREFIX</em>/bin/apachectl -k start</code>
         </td>
       </tr>
     </table>
 
-    <p><em>NN</em> $B$O:G?7$N%P!<%8%g%s%J%s%P!<$K!"(B
-    <em>PREFIX</em> $B$O%$%s%9%H!<%k$9$k%5!<%P$G$N%U%!%$%k%7%9%F%`$N%Q%9$K!"(B
-    $BCV$-49$($F$/$@$5$$!#(B<em>PREFIX</em> $B$r;XDj$7$J$+$C$?>l9g$O!"(B
-    $B%G%U%)%k%H$N(B <code>/usr/local/apache2</code> $B$K$J$j$^$9!#(B</p>
+    <p><em>NN</em> は最新のバージョンナンバーに、
+    <em>PREFIX</em> はインストールするサーバでのファイルシステムのパスに、
+    置き換えてください。<em>PREFIX</em> を指定しなかった場合は、
+    デフォルトの <code>/usr/local/apache2</code> になります。</p>
 
-    <p>Apache httpd $B$N%3%s%Q%$%k$H%$%s%9%H!<%k$KI,MW$J$b$N$r$O$8$a$H$7$F!"(B
-    $B%3%s%Q%$%k$H%$%s%9%H!<%k$K$D$$$F$O!"<!$K>\$7$/5-=R$5$l$F$$$^$9!#(B</p>
+    <p>Apache httpd のコンパイルとインストールに必要なものをはじめとして、
+    コンパイルとインストールについては、次に詳しく記述されています。</p>
 </section>
 
-<section id="requirements"><title>$BI,MW$J$b$N(B</title>
+<section id="requirements"><title>必要なもの</title>
 
-    <p>Apache $B$N%S%k%I$K$O<!$N$b$N$,I,MW$G$9(B:</p>
+    <p>Apache のビルドには次のものが必要です:</p>
 
     <dl>
-      <dt>$B%G%#%9%/%9%Z!<%9(B</dt>
-      <dd>$B%G%#%9%/$K>/$J$/$H$b(B 50 MB $B$N0l;~E*$J6u$-MFNL$,$"$k$h$&$K(B
-      $B5$$rIU$1$F$/$@$5$$!#%$%s%9%H!<%k8e$O(B Apache $B$O(B 10 MB $BDxEY$N(B
-      $B%G%#%9%/%9%Z!<%9$r@j$a$^$9!#<B:]$KI,MW$K$J$k%G%#%9%/%9%Z!<%9$O!"(B
-      $B@_Dj%*%W%7%g%s$d%5!<%I%Q!<%F%#!<@=%b%8%e!<%k$r$I$&A*Br$9$k$+$K$h$C$F(B
-      $BBg$-$/JQ$o$k$G$7$g$&!#(B</dd>
+      <dt>ディスクスペース</dt>
+      <dd>ディスクに少なくとも 50 MB の一時的な空き容量があるように
+      気を付けてください。インストール後は Apache は 10 MB 程度の
+      ディスクスペースを占めます。実際に必要になるディスクスペースは、
+      設定オプションやサードパーティー製モジュールをどう選択するかによって
+      大きく変わるでしょう。</dd>
 
-      <dt>ANSI-C $B%3%s%Q%$%i$H%S%k%I%7%9%F%`(B</dt>
-      <dd>ANSI-C $B%3%s%Q%$%i$r%$%s%9%H!<%k$7$F$*$$$F2<$5$$!#$*A&$a$O(B <a
+      <dt>ANSI-C コンパイラとビルドシステム</dt>
+      <dd>ANSI-C コンパイラをインストールしておいて下さい。お薦めは <a
       href="http://www.gnu.org/">Free Software Foundation (FSF)</a>
-      $B$K$h$k(B <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
-      compiler (GCC)</a> $B$G$9!#(BGCC $B$,$J$$>l9g$O!"(B
-      $B>/$J$/$H$bDs6!$5$l$F$$$k%3%s%Q%$%i$,(B ANSI $B=`5r$G$"$k$3$H$r3NG'$7$F$*$$$F2<$5$$!#(B
-      $B$=$l$+$i!"JQ?t(B <code>PATH</code> $B$K$O(B <code>make</code>
-      $B$H$$$C$?4pK\E*$J%S%k%I%D!<%k$,4^$^$l$F$$$kI,MW$,$"$j$^$9!#(B</dd>
+      による <a href="http://www.gnu.org/software/gcc/gcc.html">GNU C
+      compiler (GCC)</a> です。GCC がない場合は、
+      少なくとも提供されているコンパイラが ANSI 準拠であることを確認しておいて下さい。
+      それから、変数 <code>PATH</code> には <code>make</code>
+      といった基本的なビルドツールが含まれている必要があります。</dd>
 
-      <dt>$B;~9o$r@53N$K$9$k(B</dt>
-      <dd>HTTP $B%W%m%H%3%k$NMWAG$OF|;~$N;~9o$GI=8=$5$l$F$$$^$9!#$G$9$+$i!"(B
-      $B@53N$J;~9o$K%7%s%/%m$5$;$k5!G=$r%7%9%F%`$K@_Dj$9$k$3$H$r6cL#$7$F$_$F2<$5$$!#(B
-      Network Time Protocol (NTP) $B$r%Y!<%9$H$7$?(B ntpdate $B$d(B xntpd $B%W%m%0%i%`$,(B
-      $B$3$NL\E*$K$h$/MQ$$$i$l$^$9!#(BNTP $B%=%U%H%&%'%"$d8x3+(B NTP 
-      $B%5!<%P$K4X$9$k>\:Y$O!"(B<a
-      href="http://www.ntp.org">NTP $B%[!<%`%Z!<%8(B</a> $B$r$4Mw2<$5$$!#(B</dd>
+      <dt>時刻を正確にする</dt>
+      <dd>HTTP プロトコルの要素は日時の時刻で表現されています。ですから、
+      正確な時刻にシンクロさせる機能をシステムに設定することを吟味してみて下さい。
+      Network Time Protocol (NTP) をベースとした ntpdate や xntpd プログラムが
+      この目的によく用いられます。NTP ソフトウェアや公開 NTP 
+      サーバに関する詳細は、<a
+      href="http://www.ntp.org">NTP ホームページ</a> をご覧下さい。</dd>
 
       <dt><a href="http://www.perl.org/">Perl 5</a>
-      [$B%*%W%7%g%s(B]</dt>
-      <dd>$BDs6!$5$l$F$$$k%9%/%j%W%H4v$D$+!"Nc$($P(B <program>apxs</program> $B$d(B
-      <program>dbmmanage</program> $B$O(B
-      Perl $B$G=q$+$l$F$$$k$N$G!"(BPerl 
-      5 $B%$%s%?%W%j%?$,I,MW$K$J$j$^$9(B (5.003 $B0J9_(B)$B!#(B
-      Perl $B%$%s%?%W%j%?$rJ#?t%$%s%9%H!<%k$7$F$$$k(B ($B$?$H$($PA4BN$N%7%9%F%`$N0lIt(B
-      $B$H$7$F%$%s%9%H!<%k$5$l$F$$$k(B Perl 4 $B$H!"<+J,$GDI2C$G%$%s%9%H!<%k$7$?(B
-      Perl 5 $B$,$"$k$J$I$N(B) $B>l9g!"(B<code>--with-perl</code> $B%*%W%7%g%s(B ($B2<5-;2>H(B)
-      $B$r;H$C$F(B <program>configure</program> $B$,0U?^$7$?$b$N$r;H$&$h$&$K(B
-      $BL@<(E*$K;XDj$9$k$HNI$$$G$7$g$&!#(B
-      <program>configure</program> $B%9%/%j%W%H$G(B Perl 5 $B%$%s%?%W%j%?$,(B
-      $B8+$D$+$i$J$$>l9g$O!"$3$N1F6A$r<u$1$k%5%]!<%H%9%/%j%W%H$,;H$($J$/$J$j$^$9!#(B
-      $B$b$A$m$s!"(BApache httpd $B$N%3%s%Q%$%k$H%$%s%9%H!<%k$OLdBj$J$/9T$($^$9!#(B</dd>
+      [オプション]</dt>
+      <dd>提供されているスクリプト幾つか、例えば <program>apxs</program> や
+      <program>dbmmanage</program> は
+      Perl で書かれているので、Perl 
+      5 インタプリタが必要になります (5.003 以降)。
+      Perl インタプリタを複数インストールしている (たとえば全体のシステムの一部
+      としてインストールされている Perl 4 と、自分で追加でインストールした
+      Perl 5 があるなどの) 場合、<code>--with-perl</code> オプション (下記参照)
+      を使って <program>configure</program> が意図したものを使うように
+      明示的に指定すると良いでしょう。
+      <program>configure</program> スクリプトで Perl 5 インタプリタが
+      見つからない場合は、この影響を受けるサポートスクリプトが使えなくなります。
+      もちろん、Apache httpd のコンパイルとインストールは問題なく行えます。</dd>
     </dl>
 </section>
 
-<section id="download"><title>$B%@%&%s%m!<%I(B</title>
+<section id="download"><title>ダウンロード</title>
 
-    <p>Apache HTTP $B%5!<%P$O(B <a
+    <p>Apache HTTP サーバは <a
     href="http://httpd.apache.org/download.cgi">Apache HTTP
-    $B%5!<%P%@%&%s%m!<%I%5%$%H(B</a>$B$+$i%@%&%s%m!<%I$G$-$^$9$7!"(B
-    $BF1$8>l=j$K4v$D$+$N%_%i!<%5%$%H$b%j%9%H$7$F$$$^$9!#(B
-    UNIX $B$KN`;w$9$k%7%9%F%`$G(B Apache $B$r;H$&%f!<%6$O!"%=!<%9$r(B
-    $B%@%&%s%m!<%I$7$F%S%k%I$7$?$[$&$,NI$$$G$7$g$&!#(B
-    $B%S%k%I$N<j=g!J2<5-!K$O4JC1$G$9$7!"$=$N$*$+$2$G%K!<%:$K(B
-    $B8+9g$C$?%+%9%?%^%$%:$r4JC1$K$G$-$^$9!#(B
-    $B$5$i$K!"%P%$%J%j$N%j%j!<%9$O%=!<%9%j%j!<%9$h$j$b(B
-    $BCY$l$F$$$k$3$H$,$h$/$"$j$^$9!#(B
-    $B$=$l$G$b%P%$%J%j$r%@%&%s%m!<%I$7$?$N$G$"$l$P!"(B
-    $B%G%#%9%H%j%S%e!<%7%g%s$NCf$K$"$k(B <code>INSSTALL.bindist</code> 
-    $B%U%!%$%k$N@bL@$K=>$C$F$/$@$5$$!#(B</p>
+    サーバダウンロードサイト</a>からダウンロードできますし、
+    同じ場所に幾つかのミラーサイトもリストしています。
+    UNIX に類似するシステムで Apache を使うユーザは、ソースを
+    ダウンロードしてビルドしたほうが良いでしょう。
+    ビルドの手順（下記）は簡単ですし、そのおかげでニーズに
+    見合ったカスタマイズを簡単にできます。
+    さらに、バイナリのリリースはソースリリースよりも
+    遅れていることがよくあります。
+    それでもバイナリをダウンロードしたのであれば、
+    ディストリビューションの中にある <code>INSSTALL.bindist</code> 
+    ファイルの説明に従ってください。</p>
 
-    <p>$B%@%&%s%m!<%I8e!"%@%&%s%m!<%I$7$?$b$N$,(B Apache HTTP 
-    $B%5!<%P$N40A4$G2~cb$5$l$F$$$J$$%P!<%8%g%s$G$"$k$3$H$r(B
-    $B8!>Z$9$k$3$H$,=EMW$G$9!#$3$l$O%@%&%s%m!<%I$7$?(B tarball $B$N(B PGP $B=pL>$r(B
-    $B%F%9%H$9$k$3$H$K$h$C$F8!>Z$7$^$9!#(B
-    $B$3$N<j=g$N>\:Y$O(B <a 
-    href="http://httpd.apache.org/download.cgi#verify">$B%@%&%s%m!<%I(B
-    $B%Z!<%8(B</a> $B$K$"$j!"$5$i$K>\$7$$Nc$O(B <a
-    href="http://httpd.apache.org/dev/verification.html">PGP $B$N;HMQ(B
-    </a> $B$K5-:\$5$l$F$$$^$9!#(B</p>
+    <p>ダウンロード後、ダウンロードしたものが Apache HTTP 
+    サーバの完全で改竄されていないバージョンであることを
+    検証することが重要です。これはダウンロードした tarball の PGP 署名を
+    テストすることによって検証します。
+    この手順の詳細は <a 
+    href="http://httpd.apache.org/download.cgi#verify">ダウンロード
+    ページ</a> にあり、さらに詳しい例は <a
+    href="http://httpd.apache.org/dev/verification.html">PGP の使用
+    </a> に記載されています。</p>
 
 </section>
 
-<section id="extract"><title>$BE83+(B</title>
+<section id="extract"><title>展開</title>
 
-    <p>Apache HTTPD $B$N(B tarball
-    $B$+$i%=!<%9%U%!%$%k$rE83+$7$F<h$j=P$9$H$O!"(B
-    $BC1$J$k05=L$N2r=|$H(B tar $B$NE83+$G$9(B:</p>
+    <p>Apache HTTPD の tarball
+    からソースファイルを展開して取り出すとは、
+    単なる圧縮の解除と tar の展開です:</p>
 
 <example>
 $ gzip -d httpd-<em>NN</em>.tar.gz<br />
 $ tar xvf httpd-<em>NN</em>.tar
 </example>
 
-    <p>$BG[I[MQ$N%=!<%9%3!<%I$,$"$k8=:_$$$k%G%#%l%/%H%j$N2<$K!"(B
-    $B?7$7$$%G%#%l%/%H%j$,:n$i$l$^$9!#(B
-    $B%5!<%P$r%3%s%Q%$%k$9$kCJ3,$K?J$`A0$K!"$=$N%G%#%l%/%H%j$K(B
-    <code>cd</code> $B$G0\F0$7$F$/$@$5$$!#(B</p>
+    <p>配布用のソースコードがある現在いるディレクトリの下に、
+    新しいディレクトリが作られます。
+    サーバをコンパイルする段階に進む前に、そのディレクトリに
+    <code>cd</code> で移動してください。</p>
 </section>
 
-<section id="configure"><title>$B%=!<%9%D%j!<$r@_Dj$9$k(B</title>
+<section id="configure"><title>ソースツリーを設定する</title>
 
-    <p>$B<!$N%9%F%C%W$O!"$"$J$?$N%W%i%C%H%[!<%`$H(B
-    $B8D?ME*$JMW5a$K9g$&$h$&$K(B Apache
-    $B%=!<%9%D%j!<$r@_Dj$9$k$3$H$G$9!#(B
-    $B$3$l$OG[I[%G%#%l%/%H%j$N%k!<%H%G%#%l%/%H%j$K$"$k!"(B
+    <p>次のステップは、あなたのプラットホームと
+    個人的な要求に合うように Apache
+    ソースツリーを設定することです。
+    これは配布ディレクトリのルートディレクトリにある、
     <program>configure</program>
-    $B%9%/%j%W%H$G9T$J$$$^$9!#(B
-     (Apache $B%=!<%9%D%j!<$NL$%j%j!<%9(B
-    $BHG$r%@%&%s%m!<%I$7$?3+H/<T$O!"<!$N%9%F%C%W$K?J$`A0$K(B
-    <code>autoconf</code> $B$H(B<code>libtool</code>
-    $B$r%$%s%9%H!<%k$7$F(B <code>buildconf</code>
-    $B$r<B9T$9$kI,MW$,$"$j$^$9!#(B
-    $B8x<0%j%j!<%9$G$O$3$N:n6H$OI,MW$"$j$^$;$s!#(B) </p>
+    スクリプトで行ないます。
+     (Apache ソースツリーの未リリース
+    版をダウンロードした開発者は、次のステップに進む前に
+    <code>autoconf</code> と<code>libtool</code>
+    をインストールして <code>buildconf</code>
+    を実行する必要があります。
+    公式リリースではこの作業は必要ありません。) </p>
 
-    <p>$B%G%U%)%k%H%*%W%7%g%s$r;H$C$F%=!<%9%D%j!<$rA4$F@_Dj$9$k(B
-    $B$N$G$"$l$P!"C1=c$K(B <code>./configure</code> $B$H%?%$%W$7$F$/$@$5$$!#(B
-    $B%G%U%)%k%H%*%W%7%g%s$rJQ99$G$-$k$h$&$K!"(B<program>configure</program>
-    $B$K$OMM!9$JJQ?t$d%3%^%s%I%i%$%s%*%W%7%g%s$,MQ0U$5$l$F$$$^$9!#(B</p>
+    <p>デフォルトオプションを使ってソースツリーを全て設定する
+    のであれば、単純に <code>./configure</code> とタイプしてください。
+    デフォルトオプションを変更できるように、<program>configure</program>
+    には様々な変数やコマンドラインオプションが用意されています。</p>
 
-    <p>$B:G$b=EMW$J%*%W%7%g%s$O!"(BApache $B$,$3$N8e$G%$%s%9%H!<%k$5$l$k0LCV(B
-    <code>--prefix</code> $B$G$9!#(BApache $B$O!"$3$N%$%s%9%H!<%k0LCV$K(B
-    $B$*$$$F@5>o$KF0:n$9$k$h$&$K@_Dj$7$J$1$l$P$J$i$J$$$+$i$G$9!#(B
-    $B$5$i$K>\:Y$J%U%!%$%k0LCV$N@)8f$ODI2C$N(B <a
-    href="programs/configure.html#installationdirectories">$B@_Dj%*%W%7%g%s(B
-    </a> $B$G$G$-$^$9!#(B</p>
+    <p>最も重要なオプションは、Apache がこの後でインストールされる位置
+    <code>--prefix</code> です。Apache は、このインストール位置に
+    おいて正常に動作するように設定しなければならないからです。
+    さらに詳細なファイル位置の制御は追加の <a
+    href="programs/configure.html#installationdirectories">設定オプション
+    </a> でできます。</p>
 
-    <p>$B$3$N;~E@$G!"(B<a href="mod/">$B%b%8%e!<%k(B</a> $B$rM-8z$K$7$?$j(B
-    $BL58z$K$7$?$j$9$k$3$H$G(B Apache $BK\BN$K4^$^$l$k(B <a 
-    href="programs/configure.html#optionalfeatures">$B5!G=(B</a>
-    $B$r;XDj$G$-$^$9!#(BApache $BK\BN$K$O%G%U%)%k%H$G!"%b%8%e!<%k$N(B <a 
-    href="mod/module-dict.html#Status">Base</a> $B%;%C%H$,(B
-    $B4^$^$l$^$9!#$=$NB>$N%b%8%e!<%k$O(B 
-    <code>--enable-<var>module</var></code> $B%*%W%7%g%s$G(B
-    $BM-8z$K$J$j$^$9!#$3$3$G(B <var>module</var> $B$O%b%8%e!<%k$NL>A0$G!"(B
-    $B$D$^$j$=$l$O%b%8%e!<%k$NL>A0$+$i(B <code>mod_</code> $BJ8;zNs$r<h$j=|$$$?8e$K(B
-    $B%"%s%@!<%9%3%"$r%@%C%7%e$GCV49$7$?J8;zNs$G$9!#(B
-    $B$3$l$H$OJL$NJ}K!$G(B <code>--enable-<var>module</var>=shared</code>
-    $B%*%W%7%g%s$r;H$C$F!"%b%8%e!<%k$r(B<a href="dso.html">
-    $B%7%'%"!<%I%*%V%8%'%/%H(B (DSO)</a> -- $B<B9T;~$K%m!<%I$7$?$j(B
-    $B%"%s%m!<%I$7$?$j$G$-$k7A<0(B -- $B$H$7$F%3%s%Q%$%k$9$k$3$H$b$G$-$^$9!#(B
-    $BF1MM$K!"(B<code>--disable-<var>module</var></code> $B%*%W%7%g%s$G(B
-    Base $B%b%8%e!<%k$rL58z2=$9$k$3$H$b$G$-$^$9!#(B
-    $B$3$l$i$N%*%W%7%g%s$r;H$C$F$$$k$H$-$K!"$b$7;XDj$7$?%b%8%e!<%k$,B8:_$7$J$/$F$b(B
-    <program>configure</program> $B$O7Y9p$r>e$2$k$3$H$J$/!"C1=c$K%*%W%7%g%s$r(B
-    $BL5;k$9$k$3$H$K5$$r$D$1$F$/$@$5$$!#(B</p>
+    <p>この時点で、<a href="mod/">モジュール</a> を有効にしたり
+    無効にしたりすることで Apache 本体に含まれる <a 
+    href="programs/configure.html#optionalfeatures">機能</a>
+    を指定できます。Apache 本体にはデフォルトで、モジュールの <a 
+    href="mod/module-dict.html#Status">Base</a> セットが
+    含まれます。その他のモジュールは 
+    <code>--enable-<var>module</var></code> オプションで
+    有効になります。ここで <var>module</var> はモジュールの名前で、
+    つまりそれはモジュールの名前から <code>mod_</code> 文字列を取り除いた後に
+    アンダースコアをダッシュで置換した文字列です。
+    これとは別の方法で <code>--enable-<var>module</var>=shared</code>
+    オプションを使って、モジュールを<a href="dso.html">
+    シェアードオブジェクト (DSO)</a> -- 実行時にロードしたり
+    アンロードしたりできる形式 -- としてコンパイルすることもできます。
+    同様に、<code>--disable-<var>module</var></code> オプションで
+    Base モジュールを無効化することもできます。
+    これらのオプションを使っているときに、もし指定したモジュールが存在しなくても
+    <program>configure</program> は警告を上げることなく、単純にオプションを
+    無視することに気をつけてください。</p>
 
-    <p>$B>e5-$K2C$($F!"(B<program>configure</program> $B%9%/%j%W%H$K!"(B
-    $B%3%s%Q%$%i!"%i%$%V%i%j!"%X%C%@%U%!%$%k$N0LCV$rDI2C>pJs$H$7$FEO$9(B
-    $BI,MW$,$"$k>l9g$,$"$j$^$9!#$3$N$h$&$J>l9g$K$O!"4D6-JQ?t$"$k$$$O(B
-    $B%3%^%s%I%i%$%s%*%W%7%g%s$G(B <program>configure</program> $B$KEO$7$^$9!#(B
-    $B>\:Y$K4X$7$F$O(B <program>configure</program> $B%^%K%e%"%k%Z!<%8(B
-    $B$r$4Mw$/$@$5$$!#(B</p>
+    <p>上記に加えて、<program>configure</program> スクリプトに、
+    コンパイラ、ライブラリ、ヘッダファイルの位置を追加情報として渡す
+    必要がある場合があります。このような場合には、環境変数あるいは
+    コマンドラインオプションで <program>configure</program> に渡します。
+    詳細に関しては <program>configure</program> マニュアルページ
+    をご覧ください。</p>
 
-    <p>$B$A$g$C$H$I$s$J$3$H$,$G$-$k$+$r8+$;$^$7$g$&!#(B
-    $B$3$3$GE57?E*$JNc$H$7$F!"(B<code>/sw/pkg/apache</code> 
-    $B$H$$$&%$%s%9%H!<%k%D%j!<$G%3%s%Q%$%i$H%U%i%0$r;XDj$7$F!"(B
-    $B$5$i$KFs$D$NDI2C%b%8%e!<%k(B <module>mod_rewrite</module> $B$H(B
-    <module>mod_speling</module> $B$r8e$G(B DSO 
-    $B%a%+%K%:%`$G%m!<%I$9$k$h$&$K%3%s%Q%$%k$7$F$_$^$9(B:</p>
+    <p>ちょっとどんなことができるかを見せましょう。
+    ここで典型的な例として、<code>/sw/pkg/apache</code> 
+    というインストールツリーでコンパイラとフラグを指定して、
+    さらに二つの追加モジュール <module>mod_rewrite</module> と
+    <module>mod_speling</module> を後で DSO 
+    メカニズムでロードするようにコンパイルしてみます:</p>
 
 <example>
       $ CC="pgcc" CFLAGS="-O2" \<br />
@@ -268,103 +268,103 @@ $ tar xvf httpd-<em>NN</em>.tar
        --enable-speling=shared
 </example>
 
-    <p><program>configure</program> $B$r<B9T$7$?$i!"%7%9%F%`$N5!G=$r(B
-    $B%F%9%H$7$?$j!"8e$G%5!<%P$r%3%s%Q%$%k$9$k$?$a$KI,MW$J(B Makefile
-    $B$r@8@.$7$?$j$9$k$N$K?tJ,4V$+$+$k$G$7$g$&!#(B</p>
+    <p><program>configure</program> を実行したら、システムの機能を
+    テストしたり、後でサーバをコンパイルするために必要な Makefile
+    を生成したりするのに数分間かかるでしょう。</p>
 
-    <p>$B8D!9$N(B <program>configure</program> $B%*%W%7%g%s$N>\:Y$K4X$7$F$O(B
-    <program>configure</program> $B%^%K%e%"%k%Z!<%8(B
-    $B$r$4Mw$/$@$5$$!#(B</p>
+    <p>個々の <program>configure</program> オプションの詳細に関しては
+    <program>configure</program> マニュアルページ
+    をご覧ください。</p>
 </section>
 
-<section id="compile"><title>$B%S%k%I(B</title>
+<section id="compile"><title>ビルド</title>
 
-    <p>$B$3$l$G(B Apache $B$NMM!9$J%Q!<%D$r%S%k%I$9$k$3$H$,$G$-$^$9!#(B
-    $B<!$N%3%^%s%I$rC1=c$K<B9T$9$k$@$1$G$9(B:</p>
+    <p>これで Apache の様々なパーツをビルドすることができます。
+    次のコマンドを単純に実行するだけです:</p>
 
 <example>$ make</example>
 
-    <p>$B4pK\E*$J@_Dj$r$9$k$N$K?tJ,$+$+$j$^$9$,!"(B
-    $B$"$i$+$8$a$4N;>5$/$@$5$$!#(B
-    $B$^$?!";~4V$O%O!<%I%&%'%"$dM-8z$K$7$?%b%8%e!<%k$N?t$K(B
-    $BBg$-$/0MB8$9$k$G$7$g$&!#(B</p>
+    <p>基本的な設定をするのに数分かかりますが、
+    あらかじめご了承ください。
+    また、時間はハードウェアや有効にしたモジュールの数に
+    大きく依存するでしょう。</p>
 </section>
 
-<section id="install"><title>$B%$%s%9%H!<%k(B</title>
+<section id="install"><title>インストール</title>
 
-    <p>$B$5$F!"@_Dj$7$?%$%s%9%H!<%k(B <em>PREFIX</em> 
-     ($BA0=R$N(B <code>--prefix</code> $B%*%W%7%g%s$r;2>H(B) 
-    $B0J2<$K%Q%C%1!<%8$r%$%s%9%H!<%k$9$kCJ3,$K$J$j$^$7$?!#(B
-    $B<!$N%3%^%s%I$r<B9T$7$F$/$@$5$$(B:</p>
+    <p>さて、設定したインストール <em>PREFIX</em> 
+     (前述の <code>--prefix</code> オプションを参照) 
+    以下にパッケージをインストールする段階になりました。
+    次のコマンドを実行してください:</p>
 
 <example>$ make install</example>
 
-    <p>$B%"%C%W%0%l!<%I$9$k>l9g$O!"%$%s%9%H!<%k$G$O@_Dj%U%!%$%k$d(B
-    $B%I%-%e%a%s%H%U%!%$%k$N>e=q$-$O9T$$$^$;$s!#(B</p>
+    <p>アップグレードする場合は、インストールでは設定ファイルや
+    ドキュメントファイルの上書きは行いません。</p>
 </section>
 
-<section id="customize"><title>$B%+%9%?%^%$%:(B</title>
+<section id="customize"><title>カスタマイズ</title>
 
-    <p>$B<!$K(B <code><em>PREFIX</em>/conf/</code> $B0J2<$K$"$k(B <a
-    href="configuring.html">$B@_Dj%U%!%$%k(B</a>$B$rJT=8$7$F!"(B
-    Apache HTTP $B%5!<%P$r%+%9%?%^%$%:$7$^$9!#(B</p>
+    <p>次に <code><em>PREFIX</em>/conf/</code> 以下にある <a
+    href="configuring.html">設定ファイル</a>を編集して、
+    Apache HTTP サーバをカスタマイズします。</p>
 
 <example>$ vi <em>PREFIX</em>/conf/httpd.conf</example>
 
-    <p><a href="./">docs/manual/</a> $B$N(B Apache $B%^%K%e%"%k$r$6$C$H8+$F$/$@$5$$!#(B
-    $B$^$?$O!"(B<a
+    <p><a href="./">docs/manual/</a> の Apache マニュアルをざっと見てください。
+    または、<a
     href="http://httpd.apache.org/docs/&httpd.docs;/"
     >http://httpd.apache.org/docs/&httpd.docs;/</a>
-    $B$K$"$k%^%K%e%"%k:G?7HG!"(B<a
-    href="mod/directives.html">$B@_Dj%G%#%l%/%F%#%V(B</a>$B$KEv$?$C$F$_$F$/$@$5$$!#(B</p>
+    にあるマニュアル最新版、<a
+    href="mod/directives.html">設定ディレクティブ</a>に当たってみてください。</p>
 </section>
 
-<section id="test"><title>$B%F%9%H(B</title>
+<section id="test"><title>テスト</title>
 
-    <p>$B<!$N%3%^%s%I$r<B9T$7$F(B Apache HTTP $B%5!<%P$r(B<a
-    href="invoking.html">$B3+;O(B</a>$B$G$-$^$9(B:</p>
+    <p>次のコマンドを実行して Apache HTTP サーバを<a
+    href="invoking.html">開始</a>できます:</p>
 
 <example>$ <em>PREFIX</em>/bin/apachectl -k start</example>
 
-    <p>URL <code>http://localhost/</code> $B$rDL$7$F:G=i$N%I%-%e%a%s%H$KBP$9$k(B
-    $B%j%/%(%9%H$rH/9T$9$k;v$,$G$-$k$O$:$G$9!#$3$l$G8+$($k(B
-    $B%&%'%V%Z!<%8$O(B <directive module="core">DocumentRoot</directive>
-    $B0J2<$KCV$+$l$?$b$N$G!"DL>o$O(B
-    <code><em>PREFIX</em>/htdocs/</code> $B$G$7$g$&!#(B
-    $B%5!<%P$r:F$S(B<a href="stopping.html">$BDd;_(B</a>$B$9$k$K$O!"(B
-    $B<!$N%3%^%s%I$r<B9T$7$^$9(B:</p>
+    <p>URL <code>http://localhost/</code> を通して最初のドキュメントに対する
+    リクエストを発行する事ができるはずです。これで見える
+    ウェブページは <directive module="core">DocumentRoot</directive>
+    以下に置かれたもので、通常は
+    <code><em>PREFIX</em>/htdocs/</code> でしょう。
+    サーバを再び<a href="stopping.html">停止</a>するには、
+    次のコマンドを実行します:</p>
 
 <example>$ <em>PREFIX</em>/bin/apachectl -k stop</example>
 </section>
-<section id="upgrading"><title>$B%"%C%W%0%l!<%I(B</title>
+<section id="upgrading"><title>アップグレード</title>
 
-    <p>$B%"%C%W%0%l!<%I$G$^$:9T$J$&$Y$-$3$H$O!"%j%j!<%9%"%J%&%s%9$H(B
-    $B%=!<%9%G%#%9%H%j%S%e!<%7%g%s$KF~$C$F$$$k(B <code>CHANGES</code> $B$rFI$s$G!"(B
-    $B<+?H$N%5%$%H$KBP$7$F1F6A$r5Z$\$9JQ99E@$rC5$9$3$H$G$9!#(B
-    $B%a%8%c!<%j%j!<%94V$NJQ99$r$9$k>l9g(B ($BNc$($P(B 1.3 $B$+$i(B 2.0 $B$X!"(B2.0 $B$+$i(B 2.2 $B$X(B)
-    $B$O!"%3%s%Q%$%k;~$d<B9T;~$N@_Dj$KBg$-$J:90[$,$"$k$G$7$g$&$+$i!"(B
-    $B<jF0$ND4@0$,I,MW$K$J$k$G$7$g$&!#%b%8%e!<%k$bA4$F!"(BAPI
-    $B$NJQ99$K9g$o$;$k$?$a$K%"%C%W%0%l!<%I$,I,MW$K$J$k$G$7$g$&!#(B</p>
+    <p>アップグレードでまず行なうべきことは、リリースアナウンスと
+    ソースディストリビューションに入っている <code>CHANGES</code> を読んで、
+    自身のサイトに対して影響を及ぼす変更点を探すことです。
+    メジャーリリース間の変更をする場合 (例えば 1.3 から 2.0 へ、2.0 から 2.2 へ)
+    は、コンパイル時や実行時の設定に大きな差異があるでしょうから、
+    手動の調整が必要になるでしょう。モジュールも全て、API
+    の変更に合わせるためにアップグレードが必要になるでしょう。</p>
 
-    <p>$B%^%$%J!<%P!<%8%g%s$+$i<!$N%P!<%8%g%s$K%"%C%W%0%l!<%I$9$k>l9g(B
-    ($BNc$($P(B 2.2.55 $B$+$i(B 2.2.57 $B$X(B) $B$O!"$b$C$H4JC1$G$9!#(B
-    <code>make install</code> $B$r<B9T$7$F$b:#$"$k%I%-%e%a%s%H!"(B
-    $B%m%0%U%!%$%k!"@_Dj%U%!%$%k$O>e=q$-$5$l$^$;$s!#(B
-    $B$5$i$K!"%^%$%J!<%P!<%8%g%s4V$G$O(B <program>configure</program> $B%*%W%7%g%s!"(B
-    $B<B9T;~$N@_Dj!"%b%8%e!<%k(B API $B$KIT@09g$,5/$3$i$J$$$h$&$K!"(B
-    $B3+H/<T$O:GBg8B$NEXNO$r$7$F$$$^$9!#(B
-    $BBgDq$N>l9g!"F10l$N(B <program>configure</program> $B%3%^%s%I%i%$%s!"(B
-    $BF10l$N@_Dj%U%!%$%k!"%b%8%e!<%kA4$F$,@5>o$KF0:n$9$k$O$:$G$9!#(B</p>
+    <p>マイナーバージョンから次のバージョンにアップグレードする場合
+    (例えば 2.2.55 から 2.2.57 へ) は、もっと簡単です。
+    <code>make install</code> を実行しても今あるドキュメント、
+    ログファイル、設定ファイルは上書きされません。
+    さらに、マイナーバージョン間では <program>configure</program> オプション、
+    実行時の設定、モジュール API に不整合が起こらないように、
+    開発者は最大限の努力をしています。
+    大抵の場合、同一の <program>configure</program> コマンドライン、
+    同一の設定ファイル、モジュール全てが正常に動作するはずです。</p>
 
-    <p>$B%^%$%J!<%P!<%8%g%s$G%"%C%W%0%l!<%I$9$k>l9g$O!"(B
-    $B4{$K%$%s%9%H!<%k$5$l$F$$$k%5!<%P$N(B <code>build</code> $B%G%#%l%/%H%jFb$+!"(B
-    $B0JA0%$%s%9%H!<%k$K;H$C$?%=!<%9%3!<%I%D%j!<$N:G>e0L%G%#%l%/%H%jFb$K$"$k!"(B
-    <code>config.nice</code> $B%U%!%$%k$rC5$7$F$/$@$5$$!#(B
-    $B$3$N%U%!%$%k$K$O%=!<%9%D%j!<$r@_Dj$7$?;~$K;H$C$?(B
-    <program>configure</program> $B%3%^%s%I%i%$%s$,!"$=$N$^$^F~$C$F$$$^$9!#(B
-    $B<!$N%P!<%8%g%s$K%"%C%W%0%l!<%I$9$k>l9g$O(B <code>config.nice</code>
-    $B%U%!%$%k$r?7$7$$%P!<%8%g%s$N%=!<%9%D%j!<$K%3%T!<$7!"(B
-    $BI,MW$G$"$l$P$=$l$rJT=8$7$?8e$K!"<!$N$h$&$K<B9T$7$^$9!#(B</p>
+    <p>マイナーバージョンでアップグレードする場合は、
+    既にインストールされているサーバの <code>build</code> ディレクトリ内か、
+    以前インストールに使ったソースコードツリーの最上位ディレクトリ内にある、
+    <code>config.nice</code> ファイルを探してください。
+    このファイルにはソースツリーを設定した時に使った
+    <program>configure</program> コマンドラインが、そのまま入っています。
+    次のバージョンにアップグレードする場合は <code>config.nice</code>
+    ファイルを新しいバージョンのソースツリーにコピーし、
+    必要であればそれを編集した後に、次のように実行します。</p>
 
     <example>
     $ ./config.nice<br />
@@ -374,12 +374,12 @@ $ tar xvf httpd-<em>NN</em>.tar
     $ <em>PREFIX</em>/bin/apachectl -k start<br />
     </example>
 
-    <note type="warning">$B?7$7$$%P!<%8%g%s$r;HMQ$9$k>l9g$O!"(B
-    $B<B:]$K1?MQ$r;O$a$kA0$K!"I,$:<+J,MQ$N4D6-$G%F%9%H$9$Y$-$G$9!#(B
-    $B:G=*E*$K%"%C%W%0%l!<%I$9$kA0$K!"Hs8_49@-$,$J$$$+$r%F%9%H$9$k$?$a$K!"(B
-    $BNc$($P!"0[$J$k(B <code>--prefix</code> $B$H0[$J$k%]!<%H(B (<directive
-    module="mpm_common">Listen</directive> $B%G%#%l%/%F%#%V$G@_Dj$7$^$9(B) 
-    $B$r;HMQ$9$k$3$H$G!"8E$$%P!<%8%g%s$K1F6A$rM?$($:$K?7$7$$%P!<%8%g%s$r(B
-    $B%$%s%9%H!<%k$7!"<B9T$G$-$^$9!#(B</note>
+    <note type="warning">新しいバージョンを使用する場合は、
+    実際に運用を始める前に、必ず自分用の環境でテストすべきです。
+    最終的にアップグレードする前に、非互換性がないかをテストするために、
+    例えば、異なる <code>--prefix</code> と異なるポート (<directive
+    module="mpm_common">Listen</directive> ディレクティブで設定します) 
+    を使用することで、古いバージョンに影響を与えずに新しいバージョンを
+    インストールし、実行できます。</note>
 </section>
 </manualpage>

@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -22,87 +22,87 @@
 
 <manualpage metafile="mpm.xml.meta">
 
-  <title>$B%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B (MPM)</title>
+  <title>マルチプロセッシングモジュール (MPM)</title>
 
 <summary>
-<p>$B$3$NJ8=q$G$O%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k$,$I$N$h$&$J$b$N$G!"(B
-Apache HTTP $B%5!<%P$G$I$N$h$&$K;HMQ$5$l$k$+$K$D$$$F2r@b$7$F$$$^$9!#(B</p>
+<p>この文書ではマルチプロセッシングモジュールがどのようなもので、
+Apache HTTP サーバでどのように使用されるかについて解説しています。</p>
 </summary>
 
-<section id="introduction"><title>$B$O$8$a$K(B</title>
+<section id="introduction"><title>はじめに</title>
 
-    <p>Apache HTTP $B%5!<%P$O0[$J$kI}9-$$4D6-!"B?<oB?MM$J%W%i%C%H%[!<%`$G(B
-    $BF0:n$9$k$h$&$K!"%Q%o%U%k$G=@Fp@-$KIY$s$@@_7W$K$J$C$F$$$^$9!#(B
-    $B0[$J$k%W%i%C%H%[!<%`!&0[$J$k4D6-$G$O$7$P$7$P!"(B
-    $B0[$J$k5!G=$,I,MW$K$J$C$?$j!"(B
-    $BF1$85!G=$G$b8zN($N$?$a$K0[$J$k<BAu$,I,MW$K$J$C$?$j$7$^$9!#(B
-    Apache $B$G$O%b%8%e!<%k2=$5$l$?@_7W$K$h$jI}9-$$4D6-$KE,1~$7$F$-$^$7$?!#(B
-    $B$3$N@_7W$N$*$+$2$G!"4IM}<T$O(B
-    $B%3%s%Q%$%k;~$^$?$O<B9T;~$K$I$N%b%8%e!<%k$r%m!<%I$9$k$+A*$V$3$H$K$h$C$F!"(B
-    $B$I$N5!G=$r%5!<%P$K<h$j9~$`$+A*Br$9$k$3$H$,$G$-$^$9!#(B</p>
+    <p>Apache HTTP サーバは異なる幅広い環境、多種多様なプラットホームで
+    動作するように、パワフルで柔軟性に富んだ設計になっています。
+    異なるプラットホーム・異なる環境ではしばしば、
+    異なる機能が必要になったり、
+    同じ機能でも効率のために異なる実装が必要になったりします。
+    Apache ではモジュール化された設計により幅広い環境に適応してきました。
+    この設計のおかげで、管理者は
+    コンパイル時または実行時にどのモジュールをロードするか選ぶことによって、
+    どの機能をサーバに取り込むか選択することができます。</p>
 
-    <p>Apache 2.0 $B$G$O!"(B
-    $B$3$N%b%8%e!<%k2=$5$l$?@_7W$r%5!<%P$N4pK\5!G=$K$^$G3HD%$7$^$7$?!#(B
-    $B%5!<%P$K$O@:A*$5$l$?%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B (MPM) 
-    $B$,IU$$$F$-$F!"$3$l$i$O%^%7%s$N%M%C%H%o!<%/%]!<%H$r%P%$%s%I$7$?$j!"(B
-    $B%j%/%(%9%H$r<u$1IU$1$?$j!"%j%/%(%9%H$r07$&$h$&;R%W%m%;%9$K3d$jEv$F$?$j!"(B
-    $B$H$$$C$?Lr3d$r;}$A$^$9!#(B</p>
+    <p>Apache 2.0 では、
+    このモジュール化された設計をサーバの基本機能にまで拡張しました。
+    サーバには精選されたマルチプロセッシングモジュール (MPM) 
+    が付いてきて、これらはマシンのネットワークポートをバインドしたり、
+    リクエストを受け付けたり、リクエストを扱うよう子プロセスに割り当てたり、
+    といった役割を持ちます。</p>
 
-    <p>$B%b%8%e!<%k2=$5$l$?@_7W$r%5!<%P$N$3$N%l%Y%k$^$G3HD%$9$k$3$H$G(B
-    $BFs$D$N=EMW$JMxE@$,@8$^$l$^$9(B:</p>
+    <p>モジュール化された設計をサーバのこのレベルまで拡張することで
+    二つの重要な利点が生まれます:</p>
 
     <ul>
-      <li>Apache $B$OI}9-$$%*%Z%l!<%F%#%s%0%7%9%F%`$r(B
-      $B$h$jH~$7$/8zN(E*$K%5%]!<%H$G$-$^$9!#(B
-      $BFC$K(B Windows $BHG$N(B Apache $B$O?oJ,8zN(E*$K$J$j$^$7$?!#(B
-      $B$J$<$J$i(B <module>mpm_winnt</module>
-      $B$K$h$C$F!"(BApache 1.3 $B$GMQ$$$i$l$F$$$?(B POSIX 
-      $B%l%$%d$NBe$o$j$K%M%$%F%#%V$N%M%C%H%o!<%/5!G=$r(B
-      $BMxMQ$G$-$k$+$i$G$9!#(B
-      $BFCJL2=$5$l$?(B MPM 
-      $B$r<BAu$7$?B>$N%*%Z%l!<%F%#%s%0%7%9%F%`$G$b!"(B
-      $BF1MM$K$3$NMxE@$O@8$^$l$^$9!#(B</li>
+      <li>Apache は幅広いオペレーティングシステムを
+      より美しく効率的にサポートできます。
+      特に Windows 版の Apache は随分効率的になりました。
+      なぜなら <module>mpm_winnt</module>
+      によって、Apache 1.3 で用いられていた POSIX 
+      レイヤの代わりにネイティブのネットワーク機能を
+      利用できるからです。
+      特別化された MPM 
+      を実装した他のオペレーティングシステムでも、
+      同様にこの利点は生まれます。</li>
 
-      <li>$B%5!<%P$OFCDj$N%5%$%H8~$1$K!"$h$j>e<j$K%+%9%?%^%$%:$G$-$^$9!#(B
-      $BNc$($P!"Hs>o$KBg$-$J%9%1!<%i%S%j%F%#$rI,MW$H$9$k%5%$%H$G$O!"(B
-      <module>worker</module> $B$d(B <module>event</module> $B$H$$$C$?%9%l%C%I2=$5$l$?(B
-      MPM $B$rMxMQ$G$-$k0lJ}$G!"0BDj@-$d8E$$%=%U%H%&%'%"$H$N8_49@-$r(B
-      $BI,MW$H$9$k%5%$%H$G$O(B <module>prefork</module>
-      $B$,MxMQ$G$-$^$9!#(B</li>
+      <li>サーバは特定のサイト向けに、より上手にカスタマイズできます。
+      例えば、非常に大きなスケーラビリティを必要とするサイトでは、
+      <module>worker</module> や <module>event</module> といったスレッド化された
+      MPM を利用できる一方で、安定性や古いソフトウェアとの互換性を
+      必要とするサイトでは <module>prefork</module>
+      が利用できます。</li>
     </ul>
 
-    <p>$B%f!<%6%l%Y%k$G$O!"(BMPM $B$OB>$N(B Apache 
-    $B%b%8%e!<%k$HF1Ey$K8+$($^$9!#(B
-    $B<g$J0c$$$O!"$$$D$G$bM#0l$N(B MPM 
-    $B$,%m!<%I$5$l$J$1$l$P$J$i$J$$$H$$$&E@$G$9!#(B
-    $BMxMQ2DG=$J(B MPM $B$O(B 
-    <a href="mod/">module $B%$%s%G%C%/%9(B</a>$B$K$"$j$^$9!#(B</p>
+    <p>ユーザレベルでは、MPM は他の Apache 
+    モジュールと同等に見えます。
+    主な違いは、いつでも唯一の MPM 
+    がロードされなければならないという点です。
+    利用可能な MPM は 
+    <a href="mod/">module インデックス</a>にあります。</p>
 
 </section>
 
-<section id="choosing"><title>MPM $B$rA*$V(B</title>
+<section id="choosing"><title>MPM を選ぶ</title>
 
-    <p>MPM $B$O@_DjCf$KA*Br$7$F!"%5!<%PFbIt$K%3%s%Q%$%k$5$l$J$1$l$P(B
-    $B$J$j$^$;$s!#(B
-    $B%3%s%Q%$%i$O!"%9%l%C%I$,;HMQ$5$l$F$$$k>l9g$KMM!9$J5!G=$r:GE,2=$G$-$^$9$,!"(B
-    $B$=$N$?$a$K$O$=$b$=$b%9%l%C%I$,;H$o$l$F$$$k$H$$$&$3$H$rCN$kI,MW$,$"$j$^$9!#(B</p>
+    <p>MPM は設定中に選択して、サーバ内部にコンパイルされなければ
+    なりません。
+    コンパイラは、スレッドが使用されている場合に様々な機能を最適化できますが、
+    そのためにはそもそもスレッドが使われているということを知る必要があります。</p>
 
-    <p>$BK>$_$N(B MPM $B$r<B:]$KA*$V$?$a$K$O!"(B<program>configure</program> $B%9%/%j%W%H$G(B
-    <code>--with-mpm=<em>NAME</em></code> $B0z?t$rMQ$$$F$/$@$5$$!#(B
-    <em>NAME</em> $B$OK>$_$N(B MPM $B$NL>A0$G$9!#(B</p>
+    <p>望みの MPM を実際に選ぶためには、<program>configure</program> スクリプトで
+    <code>--with-mpm=<em>NAME</em></code> 引数を用いてください。
+    <em>NAME</em> は望みの MPM の名前です。</p>
 
-    <p>$B%5!<%P%3%s%Q%$%k8e$O!"$I$N(B MPM $B$,A*Br$5$l$?$+$r(B
-    <code>./httpd -l</code> $B$G3N$+$a$k$3$H$,$G$-$^$9!#(B
-    $B$3$N%3%^%s%I$O!"(BMPM
-    $B$r4^$a!"%5!<%P$K%3%s%Q%$%k$GAH$_9~$^$l$?%b%8%e!<%kA4$F$r(B
-    $BNs5s$7$^$9!#(B</p>
+    <p>サーバコンパイル後は、どの MPM が選択されたかを
+    <code>./httpd -l</code> で確かめることができます。
+    このコマンドは、MPM
+    を含め、サーバにコンパイルで組み込まれたモジュール全てを
+    列挙します。</p>
 </section>
 
-<section id="defaults"><title>MPM $B%G%U%)%k%HCM(B</title>
+<section id="defaults"><title>MPM デフォルト値</title>
 
-<p>$B<!I=$KMM!9$J(B OS $B8~$1$N%G%U%)%k%H$N(B MPM $B0lMw$r7G:\$7$F$$$^$9!#(B
-$B%3%s%Q%$%k;~$K0U?^E*$KB>$rA*Br$7$J$1$l$P!"<+F0E*$K$3$l$i$N(B MPM
-$B$,A*Br$5$l$^$9!#(B</p>
+<p>次表に様々な OS 向けのデフォルトの MPM 一覧を掲載しています。
+コンパイル時に意図的に他を選択しなければ、自動的にこれらの MPM
+が選択されます。</p>
 
 <table>
 <columnspec><column width=".2"/><column width=".2"/></columnspec>

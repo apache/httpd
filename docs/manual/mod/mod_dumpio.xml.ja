@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420993:559006 (outdated) -->
@@ -23,45 +23,45 @@
 <modulesynopsis metafile="mod_dumpio.xml.meta">
 
 <name>mod_dumpio</name>
-<description>$BK>$`$h$&$K$9$Y$F$N(B I/O $B$r%(%i!<%m%0$K%@%s%W$9$k(B</description>
+<description>望むようにすべての I/O をエラーログにダンプする</description>
 <status>Extension</status>
 <sourcefile>mod_dumpio.c</sourcefile>
 <identifier>dumpio_module</identifier>
 
 <summary>
-    <p><code>mod_dumpio</code> $B$r;H$&$H!"(BApache $B$,<u$1<h$C$?$9$Y$F$NF~NO$H(B
-    Apache $B$K$h$jAw$i$l$?$9$Y$F$N=PNO$H$N!"N>J}$b$7$/$O$I$A$i$+0lJ}$r!"(B
-    $B%(%i!<%m%0%U%!%$%k$K%m%0<}=8(B <transnote>$B%@%s%W(B dump</transnote>
-    $B$G$-$^$9!#(B</p>
+    <p><code>mod_dumpio</code> を使うと、Apache が受け取ったすべての入力と
+    Apache により送られたすべての出力との、両方もしくはどちらか一方を、
+    エラーログファイルにログ収集 <transnote>ダンプ dump</transnote>
+    できます。</p>
 
-    <p>$B%G!<%?$N%m%.%s%0$O!"(BSSL $BI|9f2=$ND>8e(B ($BF~NO(B) $B$H(B SSL
-    $B0E9f2=$ND>A0(B ($B=PNO(B) $B$K9T$J$o$l$^$9!#$4A[A|$NDL$j!"(B
-    $B$3$N%b%8%e!<%k$O$H$F$D$b$J$$%G!<%?NL$r=PNO$7$^$9$N$G!"(B
-    $BLdBj$r%G%P%C%0$7$F$$$k$H$-$K$N$_;HMQ$9$k$h$&$K$7$F$/$@$5$$!#(B</p>
+    <p>データのロギングは、SSL 復号化の直後 (入力) と SSL
+    暗号化の直前 (出力) に行なわれます。ご想像の通り、
+    このモジュールはとてつもないデータ量を出力しますので、
+    問題をデバッグしているときにのみ使用するようにしてください。</p>
 </summary>
 
 <section id="enable">
-    <title>dumpio $B%5%]!<%H$rM-8z$K$9$k(B</title>
+    <title>dumpio サポートを有効にする</title>
 
-    <p>$B$3$N%b%8%e!<%k$rM-8z$K$9$k$K$O!"%b%8%e!<%k$,%3%s%Q%$%k$5$l$F$$$F!"(B
-    $B<B9T$9$k(B Apache $B$N@_Dj$G%5!<%P$KAH$_9~$^$l$F$$$kI,MW$,$"$j$^$9!#(B
-    $B%m%.%s%05!G=$O!"0J2<$N%G%#%l%/%F%#%V$r;H$C$FM-8z$K$7$?$j(B
-    $BL58z$K$7$?$j$G$-$^$9!#(B</p>
+    <p>このモジュールを有効にするには、モジュールがコンパイルされていて、
+    実行する Apache の設定でサーバに組み込まれている必要があります。
+    ロギング機能は、以下のディレクティブを使って有効にしたり
+    無効にしたりできます。</p>
 </section>
 
 <directivesynopsis>
 
 <name>DumpIOInput</name>
-<description>$B%(%i!<%m%0$K$9$Y$F$NF~NO%G!<%?$r%@%s%W(B</description>
+<description>エラーログにすべての入力データをダンプ</description>
 <syntax>DumpIOInput On|Off</syntax>
 <default>DumpIOInput Off</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>DumpIOInput $B$O(B Apache 2.1.3 $B0J9_$N$_$G;HMQ2DG=(B</compatibility>
+<compatibility>DumpIOInput は Apache 2.1.3 以降のみで使用可能</compatibility>
 
 <usage>
-    <p>$B$9$Y$F$NF~NO$N%@%s%W$rM-8z$K$7$^$9!#(B</p>
+    <p>すべての入力のダンプを有効にします。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       DumpIOInput On
     </example>
 </usage>
@@ -71,16 +71,16 @@
 <directivesynopsis>
 
 <name>DumpIOOutput</name>
-<description>$B%(%i!<%m%0$K$9$Y$F$N=PNO%G!<%?$r%@%s%W(B</description>
+<description>エラーログにすべての出力データをダンプ</description>
 <syntax>DumpIOOutput On|Off</syntax>
 <default>DumpIOOutput Off</default>
 <contextlist><context>server config</context></contextlist>
-<compatibility>DumpIOOutput $B$O(B Apache 2.1.3 $B0J9_$G$N$_;HMQ2DG=(B</compatibility>
+<compatibility>DumpIOOutput は Apache 2.1.3 以降でのみ使用可能</compatibility>
 
 <usage>
-    <p>$B$9$Y$F$N=PNO$N%@%s%W$rM-8z$K$7$^$9!#(B</p>
+    <p>すべての出力のダンプを有効にします。</p>
 
-    <example><title>$BNc(B</title>
+    <example><title>例</title>
       DumpIOOutput On
     </example>
 </usage>

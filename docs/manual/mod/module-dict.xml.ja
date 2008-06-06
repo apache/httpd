@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 420990 -->
@@ -22,88 +22,88 @@
 
 <manualpage metafile="module-dict.xml.meta">
 
-  <title>Apache $B%b%8%e!<%k$N2r@b$G;HMQ$9$kMQ8l(B</title>
+  <title>Apache モジュールの解説で使用する用語</title>
 
 <summary>
-    <p>$B$3$NJ8=q$O(B Apache $B$N3F(B <a href="./">$B%b%8%e!<%k(B</a> $B$r@bL@$9$k$?$a$K(B
-    $B;H$o$l$F$$$kMQ8l$r@bL@$7$^$9!#(B</p>
+    <p>この文書は Apache の各 <a href="./">モジュール</a> を説明するために
+    使われている用語を説明します。</p>
 </summary>
 
-<section id="Description"><title>$B@bL@(B</title>
+<section id="Description"><title>説明</title>
 
-<p>$B%b%8%e!<%k$NL\E*$NC;$$@bL@!#(B</p>
+<p>モジュールの目的の短い説明。</p>
 </section>
 
-<section id="Status"><title>$B%9%F!<%?%9(B</title>
+<section id="Status"><title>ステータス</title>
 
-    <p>$B$3$l$O!"$=$N%b%8%e!<%k$,(B Apache
-    $B%&%'%V%5!<%P$K$I$l$/$i$$L)@\$KAH$_9~$^$l$F$$$k$+$r<($7$^$9!#(B
-    $B8@$$49$($l$P!"%b%8%e!<%k$rAH$_9~$_!"$=$N5!G=$rMxMQ$9$k$?$a$K!"(B
-    $B%5!<%P$r:F%3%s%Q%$%k$9$kI,MW$,$"$k$+$b$7$l$J$$$H$$$&$3$H$r<($7$^$9!#(B
-    $B$3$NB0@-$,<h$jF@$kCM$O0J2<$N$b$N$G$9(B:</p>
+    <p>これは、そのモジュールが Apache
+    ウェブサーバにどれくらい密接に組み込まれているかを示します。
+    言い換えれば、モジュールを組み込み、その機能を利用するために、
+    サーバを再コンパイルする必要があるかもしれないということを示します。
+    この属性が取り得る値は以下のものです:</p>
     <dl>
       <dt>MPM</dt>
 
-      <dd>$B%9%F!<%?%9$,(B "MPM" $B$N%b%8%e!<%k$O(B<a
-      href="../mpm.html">$B%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B</a>$B$G$9!#(B
-      $BB>$N<oN`$N%b%8%e!<%k$H$O0c$C$F!"(BApache $B$O>o$K(B MPM $B$r0l$D$@$1(B
-      $B;HMQ$7B3$1$^$9!#$3$N<oN`$N%b%8%e!<%k$O4pK\E*$J%j%/%(%9%H$N07$$$H(B
-      $B%G%#%9%Q%C%A$r9T$J$$$^$9!#(B</dd>
+      <dd>ステータスが "MPM" のモジュールは<a
+      href="../mpm.html">マルチプロセッシングモジュール</a>です。
+      他の種類のモジュールとは違って、Apache は常に MPM を一つだけ
+      使用し続けます。この種類のモジュールは基本的なリクエストの扱いと
+      ディスパッチを行ないます。</dd>
 
       <dt>Base</dt>
 
-      <dd>$B%9%F!<%?%9$,(B &quot;Base&quot;
-      $B$N%b%8%e!<%k$O!"%G%U%)%k%H$G%3%s%Q%$%k$5$l$F$o$6$o$6@_Dj$+$i(B
-      $B%b%8%e!<%k$r:o=|$7$F$$$J$$8B$j!"DL>o$OMxMQ2DG=$G$9!#(B
+      <dd>ステータスが &quot;Base&quot;
+      のモジュールは、デフォルトでコンパイルされてわざわざ設定から
+      モジュールを削除していない限り、通常は利用可能です。
       </dd>
 
       <dt>Extension</dt>
 
-      <dd>$B%9%F!<%?%9$,(B &quot;Extension&quot; $B$N%b%8%e!<%k$O!"(B
-      $B%G%U%)%k%H$G$O%3%s%Q%$%k$5$l$:!"%5!<%P$K$bFI$_9~$^$l$^$;$s!#(B
-      $B$=$N%b%8%e!<%k$H$=$N5!G=$rM-8z$K$9$k$K$O!"(B
-      $B%5!<%P$r%S%k%I$9$k$?$a$N@_Dj$rJQ99$7$F!"(BApache
-      $B$r:F%3%s%Q%$%k$9$kI,MW$,$"$j$^$9!#(B</dd>
+      <dd>ステータスが &quot;Extension&quot; のモジュールは、
+      デフォルトではコンパイルされず、サーバにも読み込まれません。
+      そのモジュールとその機能を有効にするには、
+      サーバをビルドするための設定を変更して、Apache
+      を再コンパイルする必要があります。</dd>
       <dt>Experimental</dt>
 
-      <dd>$B%9%F!<%?%9$,(B &quot;Experimental&quot; $B$N%b%8%e!<%k$O!"(B
-      Apache $BG[I[J*$KF1:-$5$l$F$$$^$9$,!"(B
-      $B;HMQ$9$k>l9g$O<+8J@UG$$G9T$J$&I,MW$,$"$j$^$9!#(B
-      $B$=$N%b%8%e!<%k$O!"%I%-%e%a%s%H$b40@.$K8~$1$F:n@.Cf$G$9$7!"(B
-      $B%5%]!<%H$5$l$k$F$$$k$H$O8B$j$^$;$s!#(B</dd>
+      <dd>ステータスが &quot;Experimental&quot; のモジュールは、
+      Apache 配布物に同梱されていますが、
+      使用する場合は自己責任で行なう必要があります。
+      そのモジュールは、ドキュメントも完成に向けて作成中ですし、
+      サポートされるているとは限りません。</dd>
       <dt>External</dt>
 
-      <dd>$B%9%F!<%?%9$,(B &quot;External&quot; $B$N%b%8%e!<%k$O!"4pK\(B Apache
-      $BG[I[$KF1:-$5$l$^$;$s(B (&quot;$B%5!<%I%Q!<%F%#!<%b%8%e!<%k(B&quot;)$B!#(B
-      $B$=$N$?$a!"2f!9$K@UG$$O$"$j$^$;$s$7!"(B
-      $B$=$N%b%8%e!<%k$N%5%]!<%H$b$7$F$$$^$;$s!#(B</dd>
+      <dd>ステータスが &quot;External&quot; のモジュールは、基本 Apache
+      配布に同梱されません (&quot;サードパーティーモジュール&quot;)。
+      そのため、我々に責任はありませんし、
+      そのモジュールのサポートもしていません。</dd>
     </dl>
 </section>
 
-<section id="SourceFile"><title>$B%=!<%9%U%!%$%k(B</title>
+<section id="SourceFile"><title>ソースファイル</title>
 
-    <p>$B$3$l$OC1=c$K!"(B
-    $B$=$N%b%8%e!<%k$KI,MW$J%3!<%I$r4^$`%=!<%9%U%!%$%k$NL>A0$rNs5s$7$?$b$N$G$9!#(B
-    $B$3$l$O!"(B<directive module="core" type="section">IfModule</directive>
-    $B%G%#%l%/%F%#%V$G;HMQ$5$l$kL>A0$G$b$"$j$^$9!#(B
+    <p>これは単純に、
+    そのモジュールに必要なコードを含むソースファイルの名前を列挙したものです。
+    これは、<directive module="core" type="section">IfModule</directive>
+    ディレクティブで使用される名前でもあります。
     </p>
 </section>
 
-<section id="ModuleIdentifier"><title>$B%b%8%e!<%k<1JL;R(B</title>
+<section id="ModuleIdentifier"><title>モジュール識別子</title>
 
-    <p>$B$3$NJ8;zNs$O!"%b%8%e!<%k$NF0E*FI$_9~$_$r9T$J$&$H$-$K;HMQ$9$k(B <directive
+    <p>この文字列は、モジュールの動的読み込みを行なうときに使用する <directive
     module="mod_so">LoadModule</directive>
-    $B%G%#%l%/%F%#%V$K$*$$$F;HMQ$5$l$k%b%8%e!<%k$N<1JL;R$G$9!#(B
-    $B>\$7$/=q$/$H!"%=!<%9%U%!%$%kFb$N(B module $B%?%$%W$N30ItJQ?t$NL>A0$G$9!#(B
+    ディレクティブにおいて使用されるモジュールの識別子です。
+    詳しく書くと、ソースファイル内の module タイプの外部変数の名前です。
     </p>
 </section>
 
-<section id="Compatibility"><title>$B8_49@-(B</title>
+<section id="Compatibility"><title>互換性</title>
 
-    <p>$B$"$k%b%8%e!<%k$,(B Apache $B%P!<%8%g%s(B 2
-    $B$NG[I[$K4^$^$l$F$$$J$+$C$?>l9g!"(B
-    $B$=$N%b%8%e!<%k$,F3F~$5$l$?%P!<%8%g%s$,$3$3$K=q$+$l$F$$$^$9!#(B
-    $B$^$?!"%b%8%e!<%k$,FCDj$N%W%i%C%H%U%)!<%`$K$N$_B8:_$9$k$H$-$b(B
-    $B>\:Y$O$3$3$K=q$+$l$F$$$^$9!#(B</p>
+    <p>あるモジュールが Apache バージョン 2
+    の配布に含まれていなかった場合、
+    そのモジュールが導入されたバージョンがここに書かれています。
+    また、モジュールが特定のプラットフォームにのみ存在するときも
+    詳細はここに書かれています。</p>
 </section>
 </manualpage>

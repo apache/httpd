@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "../style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 151408:659902 (outdated) -->
@@ -21,24 +21,24 @@
 -->
 
 <manualpage metafile="public_html.xml.meta">
-<parentdocument href="./">How-To / $B%A%e!<%H%j%"%k(B</parentdocument>
+<parentdocument href="./">How-To / チュートリアル</parentdocument>
 
-  <title>$B%f!<%6Kh$N%&%'%V%G%#%l%/%H%j(B</title>
+  <title>ユーザ毎のウェブディレクトリ</title>
 
 <summary>
-<p>$BJ#?t$N%f!<%6$N$$$k%7%9%F%`$G$O!"(B<directive 
-    module="mod_userdir">UserDir</directive> $B%G%#%l%/%F%#%V$r;H$C$F(B
-    $B3F%f!<%6$,%[!<%`%G%#%l%/%H%j$K%&%'%V%5%$%H$r9=C[$G$-$k$h$&$K@_Dj$9$k$3$H$,(B
-    $B2DG=$G$9!#(BURL <code>http://example.com/~username/</code> $B$rK,$l$??M$O(B
-    "<code>username</code>" $B$H$$$&%f!<%6$N(B <directive
-    module="mod_userdir">UserDir</directive> $B%G%#%l%/%F%#%V$G;XDj$5$l$?(B
-    $B%5%V%G%#%l%/%H%j$+$i%3%s%F%s%D$rF@$k$3$H$K$J$j$^$9!#(B</p>
+<p>複数のユーザのいるシステムでは、<directive 
+    module="mod_userdir">UserDir</directive> ディレクティブを使って
+    各ユーザがホームディレクトリにウェブサイトを構築できるように設定することが
+    可能です。URL <code>http://example.com/~username/</code> を訪れた人は
+    "<code>username</code>" というユーザの <directive
+    module="mod_userdir">UserDir</directive> ディレクティブで指定された
+    サブディレクトリからコンテンツを得ることになります。</p>
 </summary>
 
-<seealso><a href="../urlmapping.html">URL $B$+$i%U%!%$%k%7%9%F%`$X$N%^%C%T%s%0(B</a></seealso>
+<seealso><a href="../urlmapping.html">URL からファイルシステムへのマッピング</a></seealso>
 
   <section id="related">
-    <title>$B%f!<%6Kh$N%&%'%V%G%#%l%/%H%j(B</title>
+    <title>ユーザ毎のウェブディレクトリ</title>
     <related>
       <modulelist>
         <module>mod_userdir</module>
@@ -52,77 +52,77 @@
     </section>
 
     <section id="userdir">
-    <title>UserDir $B$r;H$C$F%U%!%$%k$N%Q%9$r@_Dj$9$k(B</title>
+    <title>UserDir を使ってファイルのパスを設定する</title>
 
-    <p><directive module="mod_userdir">UserDir</directive> $B%G%#%l%/%F%#%V$O(B
-    $B%f!<%6Kh$N%3%s%F%s%D$,FI$_9~$^$l$k%G%#%l%/%H%j$r;XDj$7$^$9!#(B
-    $B$3$N%G%#%l%/%F%#%V$O$$$m$$$m0c$C$?7A<0$r<h$k$3$H$,$G$-$^$9!#(B</p>
+    <p><directive module="mod_userdir">UserDir</directive> ディレクティブは
+    ユーザ毎のコンテンツが読み込まれるディレクトリを指定します。
+    このディレクティブはいろいろ違った形式を取ることができます。</p>
 
-    <p>$B%9%i%C%7%e$G;O$^$i$J$$%Q%9$,M?$($i$l$?$H$-$O!"%f!<%6$N%[!<%`%G%#%l%/%H%j(B
-    $B$+$i$NAjBP%Q%9$H$_$J$5$l$^$9!#<!$N@_Dj$,$"$C$?$H$-$K(B:</p>
+    <p>スラッシュで始まらないパスが与えられたときは、ユーザのホームディレクトリ
+    からの相対パスとみなされます。次の設定があったときに:</p>
 
     <example>
       UserDir public_html
     </example>
 
-    <p>URL <code>http://example.com/~rbowen/file.html</code> $B$O(B
-    $B%Q%9(B <code>/home/rbowen/public_html/file.html</code> $B$X(B
-    $BJQ49$5$l$^$9!#(B</p>
+    <p>URL <code>http://example.com/~rbowen/file.html</code> は
+    パス <code>/home/rbowen/public_html/file.html</code> へ
+    変換されます。</p>
 
-    <p>$B%Q%9$,%9%i%C%7%e$G;O$^$k$H$-$O!"%G%#%l%/%H%j%Q%9$O$=$N%Q%9$K(B
-    $B%f!<%6L>$r2C$($?$b$N$+$i$J$j$^$9!#<!$N@_Dj$N$H$-(B:</p>
+    <p>パスがスラッシュで始まるときは、ディレクトリパスはそのパスに
+    ユーザ名を加えたものからなります。次の設定のとき:</p>
 
     <example>
       UserDir /var/html
     </example>
 
-    <p>URL <code>http://example.com/~rbowen/file.html</code> $B$O(B
-    $B%Q%9(B <code>/var/html/rbowen/file.html</code> $B$XJQ49$5$l$^$9!#(B</p>
+    <p>URL <code>http://example.com/~rbowen/file.html</code> は
+    パス <code>/var/html/rbowen/file.html</code> へ変換されます。</p>
 
-    <p>$B%"%9%?%j%9%/(B (*) $B$r4^$`%Q%9$,;XDj$5$l$?$H$-$O!"%"%9%?%j%9%/$r(B
-    $B%f!<%6L>$GCV49$7$?$b$N$,;HMQ$5$l$^$9!#$3$N$h$&$J@_Dj$@$H(B:</p>
+    <p>アスタリスク (*) を含むパスが指定されたときは、アスタリスクを
+    ユーザ名で置換したものが使用されます。このような設定だと:</p>
 
     <example>
       UserDir /var/www/*/docs
     </example>
 
-    <p>URL <code>http://example.com/~rbowen/file.html</code> $B$O(B
-    $B%Q%9(B <code>/var/www/rbowen/docs/file.html</code> $B$XJQ49$5$l$^$9!#(B</p>
+    <p>URL <code>http://example.com/~rbowen/file.html</code> は
+    パス <code>/var/www/rbowen/docs/file.html</code> へ変換されます。</p>
 
   </section>
 
   <section id="enable">
-    <title>$B$3$N5!G=$r;HMQ$G$-$k%f!<%6$r@)8B$9$k(B</title>
+    <title>この機能を使用できるユーザを制限する</title>
 
-    <p>UserDir $B$N%I%-%e%a%s%H$K<($5$l$F$$$k9=J8$r;H$&$3$H$G!"(B
-    $B$I$N%f!<%6$,$3$N5!G=$r;H$&$3$H$,$G$-$k$+$r@)8B$9$k$3$H$,$G$-$^$9(B:</p>
+    <p>UserDir のドキュメントに示されている構文を使うことで、
+    どのユーザがこの機能を使うことができるかを制限することができます:</p>
 
     <example>
       UserDir enabled<br />
       UserDir disabled root jro fish
     </example>
 
-    <p>$B>e$N@_Dj$O(B <code>dissabled</code> $BJ8$N%f!<%60J30$N$9$Y$F$N%f!<%6$K(B
-    $BBP$7$F(B UserDir $B$N5!G=$rM-8z$K$7$^$9!#F1MM$K$7$F!"0J2<$N$h$&$K(B
-    $B?tL>$N%f!<%60J30$KBP$7$F$3$N5!G=$rL58z$K$9$k$3$H$b$G$-$^$9(B:</p>
+    <p>上の設定は <code>dissabled</code> 文のユーザ以外のすべてのユーザに
+    対して UserDir の機能を有効にします。同様にして、以下のように
+    数名のユーザ以外に対してこの機能を無効にすることもできます:</p>
 
     <example>
       UserDir disabled<br />
       UserDir enabled rbowen krietz
     </example>
 
-    <p>$BB>$NNc$O(B <directive module="mod_userdir">UserDir</directive>
-    $B$N@bL@$r;2>H$7$F$/$@$5$$!#(B</p>
+    <p>他の例は <directive module="mod_userdir">UserDir</directive>
+    の説明を参照してください。</p>
 
   </section>
 
   <section id="cgi">
-  <title>$B%f!<%6Kh$N(B CGI $B%G%#%l%/%H%j(B</title>
+  <title>ユーザ毎の CGI ディレクトリ</title>
 
-   <p>$B$=$l$>$l$N%f!<%6$K@lMQ$N(B cgi-bin $B%G%#%l%/%H%j$rM?$($k$?$a$K!"(B
+   <p>それぞれのユーザに専用の cgi-bin ディレクトリを与えるために、
     <directive module="core" type="section">Directory</directive>
-    $B$r;H$C$F%f!<%6$N%[!<%`%G%#%l%/%H%j$N;XDj$5$l$?NN0h$KBP$7$F(B CGI $B$rM-8z$K(B
-    $B$9$k$3$H$,$G$-$^$9!#(B</p>
+    を使ってユーザのホームディレクトリの指定された領域に対して CGI を有効に
+    することができます。</p>
 
     <example>
       &lt;Directory /home/*/public_html/cgi-bin/&gt;<br />
@@ -131,10 +131,10 @@
        &lt;/Directory&gt;
     </example>
 
-    <p>$B$=$7$F!"(B<code>UserDir</code> $B$,(B
-    <code>public_html</code> $B$K@_Dj$5$l$F$$$k$H2>Dj$9$k$H!"(B
-    $B$=$N%G%#%l%/%H%j$N(B CGI $B%W%m%0%i%`(B <code>example.cgi</code>
-    $B$O0J2<$NMM$K8F$S=P$5$l$k$3$H$,$G$-$^$9(B:</p>
+    <p>そして、<code>UserDir</code> が
+    <code>public_html</code> に設定されていると仮定すると、
+    そのディレクトリの CGI プログラム <code>example.cgi</code>
+    は以下の様に呼び出されることができます:</p>
 
     <example>
     http://example.com/~rbowen/cgi-bin/example.cgi
@@ -143,15 +143,15 @@
     </section>
 
     <section id="htaccess">
-    <title>$B%f!<%6$K$h$k@_DjJQ99$r5v2D(B</title>
+    <title>ユーザによる設定変更を許可</title>
 
-    <p>$B%f!<%6$KH`$i$N%&%'%V6u4V$G$N%5!<%P$N@_Dj$NJQ99$r5v2D$9$k>l9g!"(B
-    $B%f!<%6$O(B <code>.htaccess</code> $B%U%!%$%k$r;H$C$F@_Dj$rJQ99$9$kI,MW$,$"$j$^$9!#(B
-    <directive module="core">AllowOverride</directive> $B$NCM$r(B
-    $B%f!<%6$,JQ99$9$k$3$H$r5v2D$7$?$$%G%#%l%/%F%#%V$KBP$7$F==J,$J$b$N$K(B
-    $B@_Dj$7$F$$$k$3$H$r3NG'$7$F$/$@$5$$!#$3$N5!G=$,$I$N$h$&$K$7$FF0:n$7$F$$$k$+(B
-    $B$N>\:Y$O(B <a href="htaccess.html">.htaccess $B%A%e!<%H%j%"%k(B</a> $B$rFI$s$G(B
-    $B$/$@$5$$!#(B</p>
+    <p>ユーザに彼らのウェブ空間でのサーバの設定の変更を許可する場合、
+    ユーザは <code>.htaccess</code> ファイルを使って設定を変更する必要があります。
+    <directive module="core">AllowOverride</directive> の値を
+    ユーザが変更することを許可したいディレクティブに対して十分なものに
+    設定していることを確認してください。この機能がどのようにして動作しているか
+    の詳細は <a href="htaccess.html">.htaccess チュートリアル</a> を読んで
+    ください。</p>
 
   </section>
 

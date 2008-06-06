@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE indexpage SYSTEM "./style/sitemap.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 420993:636028 (outdated) -->
@@ -23,71 +23,71 @@
 <indexpage metafile="index.xml.meta">
 <parentdocument href="http://httpd.apache.org/docs-project/" />
 
-<title>Apache HTTP $B%5!<%P(B $B%P!<%8%g%s(B &httpd.major;.&httpd.minor;
-$B%I%-%e%a%s%H(B</title>
+<title>Apache HTTP サーバ バージョン &httpd.major;.&httpd.minor;
+ドキュメント</title>
 
-<category id="release"><title>$B%j%j!<%9%N!<%H(B</title>
-    <page href="new_features_2_4.html">Apache 2.3/2.4 $B$N?75!G=(B</page>
-    <page href="new_features_2_2.html">Apache 2.1/2.2 $B$N?75!G=(B</page>
-    <page href="new_features_2_0.html">Apache 2.0 $B$N?75!G=(B</page>
-    <page href="upgrading.html">2.2 $B$+$i(B 2.4 $B$X$N%"%C%W%0%l!<%I(B</page>
-    <page href="license.html">Apache $B%i%$%;%s%9(B</page>
+<category id="release"><title>リリースノート</title>
+    <page href="new_features_2_4.html">Apache 2.3/2.4 の新機能</page>
+    <page href="new_features_2_2.html">Apache 2.1/2.2 の新機能</page>
+    <page href="new_features_2_0.html">Apache 2.0 の新機能</page>
+    <page href="upgrading.html">2.2 から 2.4 へのアップグレード</page>
+    <page href="license.html">Apache ライセンス</page>
 </category>
 
-<category id="manual"><title>$B%j%U%!%l%s%9%^%K%e%"%k(B</title>
-    <page href="install.html">$B%3%s%Q%$%k$H%$%s%9%H!<%k(B</page>
-    <page href="invoking.html">$B5/F0(B</page>
-    <page href="stopping.html">$B=*N;$H:F5/F0(B</page>
-    <page href="mod/directives.html">$B<B9T$N@_DjMQ%G%#%l%/%F%#%V(B</page>
-    <page href="mod/quickreference.html">$B%G%#%l%/%F%#%V(B $B%/%$%C%/%j%U%!%l%s%9(B</page>
-    <page href="mod/">$B%b%8%e!<%k(B</page>
-    <page href="mpm.html">$B%^%k%A%W%m%;%C%7%s%0%b%8%e!<%k(B (MPM)</page>
-    <page href="filter.html">$B%U%#%k%?(B</page>
-    <page href="handler.html">$B%O%s%I%i(B</page>
-    <page href="programs/">$B%5!<%P$H%5%]!<%H%W%m%0%i%`(B</page>
-    <page href="glossary.html">$BMQ8l=8(B</page>
+<category id="manual"><title>リファレンスマニュアル</title>
+    <page href="install.html">コンパイルとインストール</page>
+    <page href="invoking.html">起動</page>
+    <page href="stopping.html">終了と再起動</page>
+    <page href="mod/directives.html">実行の設定用ディレクティブ</page>
+    <page href="mod/quickreference.html">ディレクティブ クイックリファレンス</page>
+    <page href="mod/">モジュール</page>
+    <page href="mpm.html">マルチプロセッシングモジュール (MPM)</page>
+    <page href="filter.html">フィルタ</page>
+    <page href="handler.html">ハンドラ</page>
+    <page href="programs/">サーバとサポートプログラム</page>
+    <page href="glossary.html">用語集</page>
 </category>    
 
-<category id="usersguide"><title>$B%f!<%6$N<j0z(B</title>
-    <page href="bind.html">$B%"%I%l%9$H%]!<%H$N%P%$%s%I(B</page>
-    <page href="configuring.html">$B@_Dj%U%!%$%k(B</page>
-    <page href="sections.html">$B%;%/%7%g%s$N@_Dj(B</page>
-    <page href="caching.html">$B%-%c%C%7%e5!G=(B</page>
-    <page href="content-negotiation.html">$B%3%s%F%s%H%M%4%7%(!<%7%g%s(B</page>
-    <page href="dso.html">$BF0E*6&M-%*%V%8%'%/%H(B (DSO)</page>
-    <page href="env.html">$B4D6-JQ?t(B</page>
-    <page href="logs.html">$B%m%0%U%!%$%k(B</page>
-    <page href="urlmapping.html">URL $B$r%U%!%$%k%7%9%F%`$K%^%C%W$9$k(B</page>
-    <page href="misc/perf-tuning.html">$B@-G=$K4X$9$kD4@0(B</page>
-    <page href="misc/security_tips.html">$B%;%-%e%j%F%#>pJs(B</page>
-    <page href="server-wide.html">$B%5!<%PA4BN$N@_Dj(B</page>
-    <page href="ssl/">SSL/TLS $B$K$h$k0E9f2=(B</page>
-    <page href="suexec.html">CGI $B$N(B Suexec $B<B9T(B</page>
-    <page href="rewrite/">URL Rewriting $B$N<j0z$-(B</page>
-    <page href="vhosts/">$B%P!<%A%c%k%[%9%H(B</page>
+<category id="usersguide"><title>ユーザの手引</title>
+    <page href="bind.html">アドレスとポートのバインド</page>
+    <page href="configuring.html">設定ファイル</page>
+    <page href="sections.html">セクションの設定</page>
+    <page href="caching.html">キャッシュ機能</page>
+    <page href="content-negotiation.html">コンテントネゴシエーション</page>
+    <page href="dso.html">動的共有オブジェクト (DSO)</page>
+    <page href="env.html">環境変数</page>
+    <page href="logs.html">ログファイル</page>
+    <page href="urlmapping.html">URL をファイルシステムにマップする</page>
+    <page href="misc/perf-tuning.html">性能に関する調整</page>
+    <page href="misc/security_tips.html">セキュリティ情報</page>
+    <page href="server-wide.html">サーバ全体の設定</page>
+    <page href="ssl/">SSL/TLS による暗号化</page>
+    <page href="suexec.html">CGI の Suexec 実行</page>
+    <page href="rewrite/">URL Rewriting の手引き</page>
+    <page href="vhosts/">バーチャルホスト</page>
 </category>
 
-<category id="howto"><title>How-To / $B%A%e!<%H%j%"%k(B</title>
-    <page href="howto/auth.html">$BG'>Z!">5G'!"%"%/%;%9@)8f(B
+<category id="howto"><title>How-To / チュートリアル</title>
+    <page href="howto/auth.html">認証、承認、アクセス制御
     </page>
-    <page href="howto/cgi.html">CGI: $BF0E*%3%s%F%s%D(B</page>
-    <page href="howto/htaccess.html">.htaccess $B%U%!%$%k(B</page>
+    <page href="howto/cgi.html">CGI: 動的コンテンツ</page>
+    <page href="howto/htaccess.html">.htaccess ファイル</page>
     <page href="howto/ssi.html">Server Side Includes (SSI)</page>
-    <page href="howto/public_html.html">$B%f!<%6@lMQ%G%#%l%/%H%j(B
+    <page href="howto/public_html.html">ユーザ専用ディレクトリ
     (public_html)</page>
 </category>
 
-<category id="platform"><title>$B%W%i%C%H%U%)!<%`8GM-$N>pJs(B</title>
+<category id="platform"><title>プラットフォーム固有の情報</title>
     <page href="platform/windows.html">Microsoft Windows</page>
     <page href="platform/netware.html">Novell NetWare</page>
-    <page href="platform/ebcdic.html">EBCDIC $BHG(B</page>
+    <page href="platform/ebcdic.html">EBCDIC 版</page>
 </category>
 
-<category id="other"><title>$B$=$NB>(B</title>
-    <page href="faq/">$B$h$/$"$k<ALd(B (FAQ)</page>
-    <page href="sitemap.html">$B%5%$%H%^%C%W(B</page>
-    <page href="developer/">$B3+H/<T$N$?$a$N%I%-%e%a%s%H(B</page>
-    <page href="misc/">$B$=$NB>(B</page>
+<category id="other"><title>その他</title>
+    <page href="faq/">よくある質問 (FAQ)</page>
+    <page href="sitemap.html">サイトマップ</page>
+    <page href="developer/">開発者のためのドキュメント</page>
+    <page href="misc/">その他</page>
 </category>
 
 </indexpage>

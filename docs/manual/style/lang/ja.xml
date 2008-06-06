@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE language SYSTEM "../lang.dtd">
 <!-- English revision: 106753 -->
 
@@ -39,37 +39,37 @@
         <message id="nativename">Japanese</message>
 
         <!-- Used for the moduleindex -->
-        <message id="corefeatures">$B%3%"5!G=$H(B MPM</message>
-        <message id="othermodules">$BB>$N%b%8%e!<%k(B</message>
-        <message id="obsoletemodules">$B5l<0$N%b%8%e!<%k(B</message>
+        <message id="corefeatures">コア機能と MPM</message>
+        <message id="othermodules">他のモジュール</message>
+        <message id="obsoletemodules">旧式のモジュール</message>
 
         <!-- Used for the modulesynopsis and sitemap -->
-        <message id="obsoleteapachemodule">$B5l<0$N(B Apache Module</message>
-        <message id="apachemodule">Apache $B%b%8%e!<%k(B</message>
-        <message id="apachecore">Apache $B%3%"5!G=(B</message>
-        <message id="apachempmcommon">Apache MPM $B6&DL%G%#%l%/%F%#%V(B</message>
+        <message id="obsoleteapachemodule">旧式の Apache Module</message>
+        <message id="apachemodule">Apache モジュール</message>
+        <message id="apachecore">Apache コア機能</message>
+        <message id="apachempmcommon">Apache MPM 共通ディレクティブ</message>
         <message id="apachempm">Apache MPM</message>
 
         <!-- Used in description box for modulesynopsis -->
-        <message id="description">$B@bL@(B</message>
-        <message id="seealso">$B;2>H(B</message>
-        <message id="topics">$B%H%T%C%/(B</message>
-        <message id="status">$B%9%F!<%?%9(B</message>
-        <message id="moduleidentifier">$B%b%8%e!<%k<1JL;R(B</message>
-        <message id="sourcefile">$B%=!<%9%U%!%$%k(B</message>
-        <message id="compatibility">$B8_49@-(B</message>
+        <message id="description">説明</message>
+        <message id="seealso">参照</message>
+        <message id="topics">トピック</message>
+        <message id="status">ステータス</message>
+        <message id="moduleidentifier">モジュール識別子</message>
+        <message id="sourcefile">ソースファイル</message>
+        <message id="compatibility">互換性</message>
 
         <!-- Used in manualpage -->
-        <message id="relatedmodules">$B4XO"%b%8%e!<%k(B</message>
-        <message id="relateddirectives">$B4XO"%G%#%l%/%F%#%V(B</message>
+        <message id="relatedmodules">関連モジュール</message>
+        <message id="relateddirectives">関連ディレクティブ</message>
 
         <!-- Used in description box for directives -->
-        <message id="syntax">$B9=J8(B</message>
-        <message id="default">$B%G%U%)%k%H(B</message>
-        <message id="context">$B%3%s%F%-%9%H(B</message>
-        <message id="override">$B>e=q$-(B</message>
-        <message id="status">$B%9%F!<%?%9(B</message>
-        <message id="module">$B%b%8%e!<%k(B</message>
+        <message id="syntax">構文</message>
+        <message id="default">デフォルト</message>
+        <message id="context">コンテキスト</message>
+        <message id="override">上書き</message>
+        <message id="status">ステータス</message>
+        <message id="module">モジュール</message>
 
         <!-- Status descriptions -->
         <message id="base" letter="B">Base</message>
@@ -80,50 +80,50 @@
         <message id="external" letter="T">External</message>
 
         <!-- Used in directive context lists -->
-        <message id="serverconfig" letter="s">$B%5!<%P@_Dj%U%!%$%k(B</message>
-        <message id="virtualhost" letter="v">$B%P!<%A%c%k%[%9%H(B</message>
-        <message id="directory" letter="d">$B%G%#%l%/%H%j(B</message>
+        <message id="serverconfig" letter="s">サーバ設定ファイル</message>
+        <message id="virtualhost" letter="v">バーチャルホスト</message>
+        <message id="directory" letter="d">ディレクトリ</message>
         <message id="htaccess" letter="h">.htaccess</message>
 
         <!-- Used for directive lists -->
-        <message id="directives">$B%G%#%l%/%F%#%V(B</message>
+        <message id="directives">ディレクティブ</message>
         <!-- the optional attribute replace-space-with takes a string.
              if present, the space between <directive name> and 'Directive'
              in directivesynopsis headings will be replaced by the given string.
              (see de.xml for an example) -->
-        <message id="directive">$B%G%#%l%/%F%#%V(B</message>
-        <message id="nodirectives">$B$3$N%b%8%e!<%k$K%G%#%l%/%F%#%V$O$"$j$^$;$s!#(B</message>
+        <message id="directive">ディレクティブ</message>
+        <message id="nodirectives">このモジュールにディレクティブはありません。</message>
 
         <!-- Used in summaries -->
-        <message id="summary">$B35MW(B</message>
+        <message id="summary">概要</message>
 
         <!-- Used for translation notes -->
-        <message id="transnote">$BLuCm(B:</message>
+        <message id="transnote">訳注:</message>
 
         <!-- Used for glossary link titles -->
-        <message id="glossarylink">$BMQ8l=8$r;2>H(B</message>
+        <message id="glossarylink">用語集を参照</message>
 
         <!-- Used in headers and footers -->
-        <message id="apachetitle">- Apache HTTP $B%5!<%P(B</message>
-        <message id="apachehttpserver">Apache HTTP $B%5!<%P(B
-            $B%P!<%8%g%s(B &httpd.major;.&httpd.minor;</message>
+        <message id="apachetitle">- Apache HTTP サーバ</message>
+        <message id="apachehttpserver">Apache HTTP サーバ
+            バージョン &httpd.major;.&httpd.minor;</message>
         <message id="apachedocalt">[APACHE DOCUMENTATION]</message>
         <message id="search">Google Search</message> <!-- search button -->
-        <message id="index">$B:w0z(B</message> <!-- deprecated -->
-        <message id="home">$B%[!<%`(B</message> <!-- deprecated -->
+        <message id="index">索引</message> <!-- deprecated -->
+        <message id="home">ホーム</message> <!-- deprecated -->
 
         <!-- breadcrumb links -->
         <message id="apache">Apache</message>
-        <message id="http-server">HTTP $B%5!<%P(B</message>
-        <message id="documentation">$B%I%-%e%a%s%F!<%7%g%s(B</message>
-        <message id="version">$B%P!<%8%g%s(B
+        <message id="http-server">HTTP サーバ</message>
+        <message id="documentation">ドキュメンテーション</message>
+        <message id="version">バージョン
             &httpd.major;.&httpd.minor;</message>
 
         <!-- super menu -->
-        <message id="modules">$B%b%8%e!<%k(B</message>
+        <message id="modules">モジュール</message>
         <message id="faq">FAQ</message>
-        <message id="glossary">$BMQ8l(B</message>
-        <message id="sitemap">$B%5%$%H%^%C%W(B</message>
+        <message id="glossary">用語</message>
+        <message id="sitemap">サイトマップ</message>
 
         <!-- footer line -->
         <message id="before-license">Licensed under the</message>

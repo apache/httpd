@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp" ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 327999:587444 (outdated) -->
@@ -22,17 +22,17 @@
 
 <manualpage metafile="bind.xml.meta">
 
-  <title>$B%P%$%s%I(B</title>
+  <title>バインド</title>
 
   <summary>
-    <p>Apache $B$,;HMQ$9$k%"%I%l%9$H%]!<%H$N@_Dj$r$7$^$9!#(B</p>
+    <p>Apache が使用するアドレスとポートの設定をします。</p>
   </summary>
 
-  <seealso><a href="vhosts/">$B%P!<%A%c%k%[%9%H(B</a></seealso>
-  <seealso><a href="dns-caveats.html">DNS $B$NLdBj(B</a></seealso>
+  <seealso><a href="vhosts/">バーチャルホスト</a></seealso>
+  <seealso><a href="dns-caveats.html">DNS の問題</a></seealso>
 
   <section id="overview">
-    <title>$B35MW(B</title>
+    <title>概要</title>
 
     <related>
       <modulelist>
@@ -46,36 +46,36 @@
     </related>
 
 
-    <p>Apache $B$O5/F0;~$K!"%m!<%+%k%^%7%s$N$"$k%]!<%H$*$h$S%"%I%l%9(B
-    $B$KBP$7$F@\B3$7!"%j%/%(%9%H$,Mh$k$N$rBT$A$^$9!#(B
-    $B%G%U%)%k%H$G$O%^%7%s$N$9$Y$F$N%"%I%l%9$KBP$7$F(B listen $B$7$^$9!#(B
-    $B$7$+$7$J$,$i!"FCDj$N%]!<%H$+!"FCDj$N%"%I%l%9$N$_$+!"(B
-    $B$^$?$O$=$l$i$NAH$_9g$o$;$N$$$:$l$+$r(B listen $B$9$k$h$&$K$9$kI,MW$,$"$j$^$9!#(B
-    $B$3$l$O!"0[$J$k(B IP $B%"%I%l%9!"%[%9%HL>!"%]!<%H$KBP$9$k(B Apache
-    $B$N1~EzJ}K!$r7hDj$9$k%P!<%A%c%k%[%9%H5!G=$HAH$_9g$o$;$F;H$o$l$^$9!#(B</p>
+    <p>Apache は起動時に、ローカルマシンのあるポートおよびアドレス
+    に対して接続し、リクエストが来るのを待ちます。
+    デフォルトではマシンのすべてのアドレスに対して listen します。
+    しかしながら、特定のポートか、特定のアドレスのみか、
+    またはそれらの組み合わせのいずれかを listen するようにする必要があります。
+    これは、異なる IP アドレス、ホスト名、ポートに対する Apache
+    の応答方法を決定するバーチャルホスト機能と組み合わせて使われます。</p>
 
     <p><directive module="mpm_common">Listen</directive>
-    $B%G%#%l%/%F%#%V$G!"FCDj$N%]!<%H$d%"%I%l%9!&%]!<%H$NAH$+$i$N$_F~$C$F$/$k(B
-    $B%j%/%(%9%H$r<u$1IU$1$k$h$&$K$G$-$^$9!#(B
-    $B$b$7%]!<%HHV9f$N$_$,(B <directive module="mpm_common">Listen</directive>
-    $B%G%#%l%/%F%#%V$G;XDj$5$l$?>l9g$O!"(B
-    $B$9$Y$F$N%$%s%?!<%U%'!<%9$NM?$($i$l$?%]!<%HHV9f$r(B
-    listen $B$7$^$9!#(B IP $B%"%I%l%9$,%]!<%HHV9f$HF1;~$KM?$($i$l$?>l9g$O!"(B
-    $B%5!<%P$OM?$($i$l$?%]!<%H$H%$%s%?!<%U%'!<%9$r(B listen $B$7$^$9!#(B
-    $BJ#?t$N(B <directive module="mpm_common">Listen</directive> $B%G%#%l%/%F%#%V$rMQ$$$F(B
-    $B$$$/$D$+$N(B listen $B$9$k%"%I%l%9$H%]!<%H$r;XDj$G$-$^$9!#(B
-    $B%5!<%P$O%j%9%H$5$l$?%"%I%l%9$d%]!<%H$+$i$N$9$Y$F$N%j%/%(%9%H$K(B
-    $BBP$7$F1~Ez$7$^$9!#(B</p>
+    ディレクティブで、特定のポートやアドレス・ポートの組からのみ入ってくる
+    リクエストを受け付けるようにできます。
+    もしポート番号のみが <directive module="mpm_common">Listen</directive>
+    ディレクティブで指定された場合は、
+    すべてのインターフェースの与えられたポート番号を
+    listen します。 IP アドレスがポート番号と同時に与えられた場合は、
+    サーバは与えられたポートとインターフェースを listen します。
+    複数の <directive module="mpm_common">Listen</directive> ディレクティブを用いて
+    いくつかの listen するアドレスとポートを指定できます。
+    サーバはリストされたアドレスやポートからのすべてのリクエストに
+    対して応答します。</p>
 
-    <p>$B$?$H$($P!"%]!<%H(B 80 $B$H(B 8000 $B$NN>J}$KBP$7$F$N@\B3$r<u$1IU$1$k$K$O(B</p>
+    <p>たとえば、ポート 80 と 8000 の両方に対しての接続を受け付けるには</p>
 
     <example>
       Listen 80<br />
       Listen 8000
     </example>
 
-    <p>$B$H$7$^$9!#(B
-    $BFs$D$N;XDj$5$l$?%$%s%?%U%'!<%9$H%]!<%HHV9f$KBP$7$F$N@\B3$r<u$1IU$1$k$K$O!"(B
+    <p>とします。
+    二つの指定されたインタフェースとポート番号に対しての接続を受け付けるには、
     </p>
 
     <example>
@@ -83,8 +83,8 @@
       Listen 192.0.2.5:8000
     </example>
 
-    <p>$B$H$7$^$9!#(B
-    IPv6 $B%"%I%l%9$O!"3Q3g8L$G<!$NNc$N$h$&$K0O$^$J$1$l$P$$$1$^$;$s!#(B</p>
+    <p>とします。
+    IPv6 アドレスは、角括弧で次の例のように囲まなければいけません。</p>
 
     <example>
       Listen [2001:db8::a00:20ff:fea7:ccea]:80
@@ -92,82 +92,82 @@
   </section>
 
   <section id="ipv6">
-    <title>IPv6 $B$NFC5-;v9`(B</title>
+    <title>IPv6 の特記事項</title>
 
-    <p>$BB?$/$N%W%i%C%H%[!<%`$G(B IPv6 $B$,%5%]!<%H$5$l$F$-$F$$$F!"(B
-    <glossary>APR</glossary> $B$O$3$l$i$N$[$H$s$I$G(B IPv6 $B$r%5%]!<%H$7$F$$$k$N$G!"(B
-    Apache $B$O(B IPv6 $B%=%1%C%H$r3d$jEv$F$F(B IPv6
-    $B7PM3$GAw$i$l$F$-$?%j%/%(%9%H$r07$&$3$H$,$G$-$^$9!#(B</p>
+    <p>多くのプラットホームで IPv6 がサポートされてきていて、
+    <glossary>APR</glossary> はこれらのほとんどで IPv6 をサポートしているので、
+    Apache は IPv6 ソケットを割り当てて IPv6
+    経由で送られてきたリクエストを扱うことができます。</p>
 
-    <p>IPv6 $B%=%1%C%H$,(B IPv4 $B$H(B IPv6 $B%3%M%/%7%g%s$NN>J}$r07$&$3$H$,$G$-$k$+(B
-    $B$I$&$+$O!"(BApache $B4IM}<T$K$H$C$FLq2p$JLdBj$G$9!#(B
-    IPv4 $B%3%M%/%7%g%s$r(B IPv6 $B%=%1%C%H$G07$&>l9g$O!"(B
-    IPv4 $B%^%C%W$5$l$?(B IPv6 $B%"%I%l%9$r;HMQ$7$F$$$F!"(B
-    $B$[$H$s$I$N%W%i%C%H%[!<%`$G$O%G%U%)%k%H$G;HMQ2DG=$G$9$,!"(B
-    FreeBSD, NetBSD, OpenBSD $B$G$O!"%7%9%F%`A4BN$H$7$F$N%]%j%7!<$H$N@09g@-$+$i!"(B
-    $B%G%U%)%k%H$G$O;HMQIT2D$K@_Dj$5$l$F$$$^$9!#(B
-    $B$3$l$i$N%G%U%)%k%H$G;HMQIT2D$N%W%i%C%H%[!<%`$G$"$C$F$b!"(B
-    $BFCJL$J(B <program>configure</program> $B$N(B
-    $B@_Dj%Q%i%a!<%?$G(B Apache $B$N5sF0$rJQ2=$5$;$k$3$H$,$G$-$^$9!#(B</p>
+    <p>IPv6 ソケットが IPv4 と IPv6 コネクションの両方を扱うことができるか
+    どうかは、Apache 管理者にとって厄介な問題です。
+    IPv4 コネクションを IPv6 ソケットで扱う場合は、
+    IPv4 マップされた IPv6 アドレスを使用していて、
+    ほとんどのプラットホームではデフォルトで使用可能ですが、
+    FreeBSD, NetBSD, OpenBSD では、システム全体としてのポリシーとの整合性から、
+    デフォルトでは使用不可に設定されています。
+    これらのデフォルトで使用不可のプラットホームであっても、
+    特別な <program>configure</program> の
+    設定パラメータで Apache の挙動を変化させることができます。</p>
 
-    <p>$B0lJ}$G!"(BLinux $B$d(B Tru64 $B$H$$$C$?%W%i%C%H%[!<%`$G(B IPv4 $B$H(B IPv6
-    $B$NN>J}$r07$&$K$O!"%^%C%W%H%"%I%l%9$r;HMQ$9$k(B<strong>$B0J30$NJ}K!$O$"$j$^$;$s(B</strong>$B!#(B
-    IPv4 $B$H(B IPv6 $B$N%3%M%/%7%g%s$r:G>.8B$N%=%1%C%H$G07$$$?$$$N$G$"$l$P!"(B
-    IPv4 $B%^%C%W$N(B IPv6 $B%"%I%l%9$r;HMQ$9$kI,MW$,$"$j!"(B
+    <p>一方で、Linux や Tru64 といったプラットホームで IPv4 と IPv6
+    の両方を扱うには、マップトアドレスを使用する<strong>以外の方法はありません</strong>。
+    IPv4 と IPv6 のコネクションを最小限のソケットで扱いたいのであれば、
+    IPv4 マップの IPv6 アドレスを使用する必要があり、
     <code>--enable-v4-mapped</code> <program>configure</program>
-    $B%*%W%7%g%s$r;XDj$7$^$9!#(B</p>
+    オプションを指定します。</p>
 
-    <p><code>--enable-v4-mapped</code> $B$O!"(B
-    FreeBSD, NetBSD, OpenBSD $B0J30$NA4$F$N%W%i%C%H%[!<%`$G$N%G%U%)%k%H$G$9!#(B
-    $B$G$9$+$i!"$*$=$i$/$*<j85$N(B Apache $B$O$3$N@_Dj$G%S%k%I$5$l$F$$$k$G$7$g$&!#(B</p>
+    <p><code>--enable-v4-mapped</code> は、
+    FreeBSD, NetBSD, OpenBSD 以外の全てのプラットホームでのデフォルトです。
+    ですから、おそらくお手元の Apache はこの設定でビルドされているでしょう。</p>
 
-    <p>$B%W%i%C%H%U%)!<%`$d(B APR $B$,2?$r%5%]!<%H$9$k$+$K4X$o$i$:!"(B
-    IPv4 $B%3%M%/%7%g%s$N$_$r07$&$h$&$K$7$?$$>l9g$O!"(B
-    $B<!$NNc$N$h$&$KA4$F$N(B
-    <directive module="mpm_common">Listen</directive> $B%G%#%l%/%F%#%V$G(B
-    IPv4 $B%"%I%l%9$r;XDj$7$F$/$@$5$$!#(B</p>
+    <p>プラットフォームや APR が何をサポートするかに関わらず、
+    IPv4 コネクションのみを扱うようにしたい場合は、
+    次の例のように全ての
+    <directive module="mpm_common">Listen</directive> ディレクティブで
+    IPv4 アドレスを指定してください。</p>
 
     <example>
       Listen 0.0.0.0:80<br />
       Listen 192.0.2.1:80
     </example>
 
-    <p>$B>r7o$rK~$?$9%W%i%C%H%[!<%`$G!"(BApache $B$,(B
-    IPv4 $B$H(B IPv6 $B$N%3%M%/%7%g%s$r8DJL$N%=%1%C%H$G07$&$h$&$K$7$?$$>l9g(B
-    ($B$D$^$j(B IPv4 $B%^%C%W$N%"%I%l%9$rL58z$K$7$?$$>l9g(B)
-    $B$O!"(B<code>--disable-v4-mapped</code>
+    <p>条件を満たすプラットホームで、Apache が
+    IPv4 と IPv6 のコネクションを個別のソケットで扱うようにしたい場合
+    (つまり IPv4 マップのアドレスを無効にしたい場合)
+    は、<code>--disable-v4-mapped</code>
     <program>configure</program>
-    $B%*%W%7%g%s$r;XDj$7$F!"<!$N$h$&$K8DJL;XDj$N(B
+    オプションを指定して、次のように個別指定の
     <directive module="mpm_common">Listen</directive>
-    $B%G%#%l%/%F%#%V$r;HMQ$7$F$/$@$5$$!#(B
-    <code>--disable-v4-mapped</code> $B$O!"(B
-    FreeBSD, NetBSD, OpenBSD $B%W%i%C%H%[!<%`$G$N%G%U%)%k%H$G$9!#(B</p>
+    ディレクティブを使用してください。
+    <code>--disable-v4-mapped</code> は、
+    FreeBSD, NetBSD, OpenBSD プラットホームでのデフォルトです。</p>
   </section>
 
   <section id="virtualhost">
-    <title>$B%P!<%A%c%k%[%9%H$KBP$7$F$I$&F/$/$N$+(B</title>
+    <title>バーチャルホストに対してどう働くのか</title>
 
     <p><directive module="mpm_common">Listen</directive>
-    $B$G%P!<%A%c%k%[%9%H$,<BAu$5$l$k$o$1$G$O$"$j$^$;$s!#(B
-    Listen $B$OC1$K%a%$%s%5!<%P$K$I$N%"%I%l%9$H%]!<%H$r(B listen $B$9$Y$-$+$r(B
-    $B65$($k$@$1$G$9!#(B
+    でバーチャルホストが実装されるわけではありません。
+    Listen は単にメインサーバにどのアドレスとポートを listen すべきかを
+    教えるだけです。
     <directive module="core" type="section">VirtualHost</directive>
-    $B%G%#%l%/%F%#%V$,;H$o$l$J$$>l9g$O!"(B
-    $B<u$1F~$l$?%j%/%(%9%H$9$Y$F$KBP$7$FA4$/F1$85sF0$r$7$^$9!#(B
-    $B$7$+$7$J$,$i(B
+    ディレクティブが使われない場合は、
+    受け入れたリクエストすべてに対して全く同じ挙動をします。
+    しかしながら
     <directive module="core" type="section">VirtualHost</directive>
-    $B$r;H$C$F!"(B
-    $B0l$D0J>e$N%"%I%l%9$d%]!<%H$KBP$7$F0[$J$k5sF0$r$9$k$h$&$K(B
-    $B;XDj$9$k$3$H$,$G$-$^$9!#(B
-    VirtualHost $B$r<BAu$9$k$K$O!";HMQ$9$k%"%I%l%9$H%]!<%H$r(B
-    $B$^$:=i$a$K%5!<%P$KDLCN$7$J$1$l$P$J$j$^$;$s!#(B
-    $B$=$7$F!"$=$N;XDj$7$?%"%I%l%9$H%]!<%H$G$N(B
-    $B$3$N%P!<%A%c%k%[%9%H$N5sF0$r@_Dj$9$k$?$a$K!"(B
+    を使って、
+    一つ以上のアドレスやポートに対して異なる挙動をするように
+    指定することができます。
+    VirtualHost を実装するには、使用するアドレスとポートを
+    まず初めにサーバに通知しなければなりません。
+    そして、その指定したアドレスとポートでの
+    このバーチャルホストの挙動を設定するために、
     <directive module="core" type="section">VirtualHost</directive>
-    $B%;%/%7%g%s$r:n$j$^$9!#$b$7(B
+    セクションを作ります。もし
     <directive module="core" type="section">VirtualHost</directive>
-    $B$,(B listen $B$7$F$$$J$$%"%I%l%9$H%]!<%H$KBP$7$F(B
-    $B@_Dj$5$l$F$7$^$&$H!"(B
-    $B$=$l$K$O%"%/%;%9$G$-$J$$$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#(B</p>
+    が listen していないアドレスとポートに対して
+    設定されてしまうと、
+    それにはアクセスできないということに注意してください。</p>
   </section>
 </manualpage>
