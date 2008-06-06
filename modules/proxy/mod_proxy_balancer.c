@@ -25,7 +25,7 @@
 
 module AP_MODULE_DECLARE_DATA proxy_balancer_module;
 
-static apr_uuid_t balancer_nonce;
+static char balancer_nonce[APR_UUID_FORMATTED_LENGTH + 1];
 
 static int proxy_balancer_canon(request_rec *r, char *url)
 {
@@ -628,6 +628,7 @@ static int balancer_init(apr_pool_t *p, apr_pool_t *plog,
 {
     void *data;
     const char *userdata_key = "mod_proxy_balancer_init";
+    apr_uuid_t uuid;
 
     /* balancer_init() will be called twice during startup.  So, only
      * set up the static data the second time through. */
@@ -638,7 +639,10 @@ static int balancer_init(apr_pool_t *p, apr_pool_t *plog,
         return OK;
     }
 
-    apr_uuid_get(&balancer_nonce);
+    /* Retrieve a UUID and store the nonce for the lifetime of
+     * the process. */
+    apr_uuid_get(&uuid);
+    apr_uuid_format(balancer_nonce, &uuid);
 
     return OK;
 }
@@ -656,9 +660,6 @@ static int balancer_handler(request_rec *r)
     int access_status;
     int i, n;
     const char *name;
-    char nonce[APR_UUID_FORMATTED_LENGTH + 1];
-
-    apr_uuid_format(nonce, &balancer_nonce);
 
     /* is this for us? */
     if (strcmp(r->handler, "balancer-manager"))
@@ -692,7 +693,7 @@ static int balancer_handler(request_rec *r)
     /* Check that the supplied nonce matches this server's nonce;
      * otherwise ignore all parameters, to prevent a CSRF attack. */
     if ((name = apr_table_get(params, "nonce")) == NULL 
-        || strcmp(nonce, name) != 0) {
+        || strcmp(balancer_nonce, name) != 0) {
         apr_table_clear(params);
     }
 
@@ -833,7 +834,7 @@ static int balancer_handler(request_rec *r)
                 ap_rvputs(r, "<tr>\n<td><a href=\"", r->uri, "?b=",
                           balancer->name + sizeof("balancer://") - 1, "&w=",
                           ap_escape_uri(r->pool, worker->name),
-                          "&nonce=", nonce, 
+                          "&nonce=", balancer_nonce, 
                           "\">", NULL);
                 ap_rvputs(r, worker->name, "</a></td>", NULL);
                 ap_rvputs(r, "<td>", ap_escape_html(r->pool, worker->s->route),
@@ -897,8 +898,8 @@ static int balancer_handler(request_rec *r)
             ap_rvputs(r, "<input type=hidden name=\"b\" ", NULL);
             ap_rvputs(r, "value=\"", bsel->name + sizeof("balancer://") - 1,
                       "\">\n</form>\n", NULL);
-            ap_rvputs(r, "<input type=hidden name=\"nonce\" value=\"", nonce, "\">\n",
-                      NULL);
+            ap_rvputs(r, "<input type=hidden name=\"nonce\" value=\"", 
+                      balancer_nonce, "\">\n", NULL);
             ap_rputs("<hr />\n", r);
         }
         ap_rputs(ap_psignature("",r), r);
