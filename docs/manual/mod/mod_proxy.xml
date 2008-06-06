@@ -704,7 +704,8 @@ expressions</description>
     thus, disable its persistent connection and pool for that backend.
     This helps in various situations where a firewall between Apache and
     the backend server (regardless of protocol) tends to silently
-    drop connections. To disable connection pooling reuse,
+    drop connections or when backends themselves may be under round-
+    robin DNS. To disable connection pooling reuse,
     set this property value to <code>On</code>. 
     </td></tr>
     <tr><td>flushpackets</td>
