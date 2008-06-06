@@ -598,6 +598,14 @@ expressions</description>
     <code>http://example.com/mirror/foo/bar</code> to be internally converted
     into a proxy request to <code>http://backend.example.com/bar</code>.</p>
 
+    <note type="warning">
+    <p>If the first argument ends with a trailing <strong>/</strong>, the second
+       argument should also end with a trailing <strong>/</strong> and vice
+       versa. Otherwise the resulting requests to the backend may miss some
+       needed slashes and do not deliver the expected results.
+    </p>
+    </note>
+
     <p>The <code>!</code> directive is useful in situations where you don't want
     to reverse-proxy a subdirectory, <em>e.g.</em></p>
 
@@ -672,7 +680,7 @@ expressions</description>
     This helps in various situations where a firewall between Apache and
     the backend server (regardless of protocol) tends to silently
     drop connections or when backends themselves may be under round-
-    robin DNS. To prevent mod_proxy from reusing the backend connection,
+    robin DNS. To disable connection pooling reuse,
     set this property value to <code>On</code>. 
     </td></tr>
     <tr><td>flushpackets</td>
@@ -820,7 +828,7 @@ expressions</description>
     <p>A sample balancer setup</p>
     <example>
       ProxyPass /special-area http://special.example.com/ smax=5 max=10<br />
-      ProxyPass / balancer://mycluster stickysession=JSESSIONID|jsessionid nofailover=On<br />
+      ProxyPass / balancer://mycluster/ stickysession=JSESSIONID|jsessionid nofailover=On<br />
       &lt;Proxy balancer://mycluster&gt;<br />
       <indent>
         BalancerMember http://1.2.3.4:8009<br />
