@@ -1,4 +1,4 @@
-<?xml version='1.0' encoding='iso-2022-jp' ?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE manualpage SYSTEM "./style/manualpage.dtd">
 <?xml-stylesheet type="text/xsl" href="./style/manual.ja.xsl"?>
 <!-- English Revision: 421174 -->
@@ -22,187 +22,187 @@
 
 <manualpage metafile="upgrading.xml.meta">
 
-<title>1.3 $B$+$i(B 2.0 $B$X$N%"%C%W%0%l!<%I(B</title>
+<title>1.3 から 2.0 へのアップグレード</title>
 
 <summary>
-  <p>$B%"%C%W%0%l!<%I$r4JC1$K$9$k$?$a$K!"4{B8$N(B Apache $B%f!<%6$K(B
-  $BHs>o$K=EMW$J>pJs$r$3$NJ8=q$K$^$H$a$F$$$^$9!#$3$l$OC;$$(B
-  $BCm0U=q$-$H$7$F=q$+$l$F$$$^$9!#$h$j>\$7$$>pJs$O(B
-  <a href="new_features_2_0.html">$B?75!G=(B</a>$B$NJ8=q$d(B
-  <code>src/CHANGES</code> $B%U%!%$%k$G8+$D$1$i$l$k$H;W$$$^$9!#(B</p>
+  <p>アップグレードを簡単にするために、既存の Apache ユーザに
+  非常に重要な情報をこの文書にまとめています。これは短い
+  注意書きとして書かれています。より詳しい情報は
+  <a href="new_features_2_0.html">新機能</a>の文書や
+  <code>src/CHANGES</code> ファイルで見つけられると思います。</p>
 </summary>
-<seealso><a href="new_features_2_0.html">Apache 2.0 $B?75!G=$N35MW(B</a></seealso>
+<seealso><a href="new_features_2_0.html">Apache 2.0 新機能の概要</a></seealso>
 
   <section id="compile-time">
-    <title>$B%3%s%Q%$%k;~$N@_Dj$NJQ99(B</title>
+    <title>コンパイル時の設定の変更</title>
 
     <ul>
-      <li>Apache $B$O(B <a href="install.html">$B%S%k%I=hM}$N@_Dj(B</a>
-      $B$K(B <code>autoconf</code> $B$H(B <code>libtool</code> $B$r;H$&$h$&$K$J$j$^$7$?!#(B
-      $B$3$N%7%9%F%`$O(B Apache 1.3 $B$N(B APACI $B%7%9%F%`$H;w$F$$$^$9$,!"(B
-      $B$^$C$?$/F1$8$H$$$&$o$1$G$O$"$j$^$;$s!#(B</li>
+      <li>Apache は <a href="install.html">ビルド処理の設定</a>
+      に <code>autoconf</code> と <code>libtool</code> を使うようになりました。
+      このシステムは Apache 1.3 の APACI システムと似ていますが、
+      まったく同じというわけではありません。</li>
 
-      <li>$BDL>o$N%3%s%Q%$%k$9$k$+$I$&$+$rA*Br$G$-$k%b%8%e!<%k72$K2C$($F!"(B
-      Apache 2.0 $B$O(B
-      $B%j%/%(%9%H=hM}$N<g$JItJ,$r(B <a href="mpm.html">$B%^%k%A%W%m%;%C%7%s%0(B
-      $B%b%8%e!<%k(B</a> (MPM) $B$K0\F0$7$^$7$?!#(B</li>
+      <li>通常のコンパイルするかどうかを選択できるモジュール群に加えて、
+      Apache 2.0 は
+      リクエスト処理の主な部分を <a href="mpm.html">マルチプロセッシング
+      モジュール</a> (MPM) に移動しました。</li>
     </ul>
   </section>
 
   <section id="run-time">
-    <title>$B<B9T;~$N@_Dj$NJQ99(B</title>
+    <title>実行時の設定の変更</title>
 
     <ul>
-      <li>Apache 1.3 $B$N;~$K%3%"%5!<%P$K$"$C$?B?$/$N%G%#%l%/%F%#%V$O(B
-      MPM $B$K0\F0$7$^$7$?!#%5!<%P$K(B Apache 1.3 $B$H$G$-$k$@$1F1$8?6$kIq$$$r(B
-      $B$5$;$?$$>l9g$O!"(B<module>prefork</module> MPM $B$r(B
-      $BA*$s$G$/$@$5$$!#B>$N(B MPM $B$O%W%m%;%9$N:n@.$d%j%/%(%9%H$N=hM}$N(B
-      $B@)8f$K0[$J$C$?%G%#%l%/%F%#%V$r;H$$$^$9!#(B</li>
+      <li>Apache 1.3 の時にコアサーバにあった多くのディレクティブは
+      MPM に移動しました。サーバに Apache 1.3 とできるだけ同じ振る舞いを
+      させたい場合は、<module>prefork</module> MPM を
+      選んでください。他の MPM はプロセスの作成やリクエストの処理の
+      制御に異なったディレクティブを使います。</li>
 
-      <li><a href="mod/mod_proxy.html">Proxy $B%b%8%e!<%k(B</a> $B$O(B
-      HTTP/1.1 $B$KBP1~$9$k$?$a$K:F9=@.$5$l$^$7$?!#=EMW$JJQ99E@$H$7$F$O!"(B
-      $B%W%m%-%7$N%"%/%;%9@)8f$,(B <code>&lt;Directory proxy:&gt;</code> $B%V%m%C%/$N(B
-      $BBe$o$j$K(B <directive module="mod_proxy" type="section">Proxy</directive>
-      $B%V%m%C%/$KCV$+$l$k$h$&$K$J$C$?!"$H$$$&$b$N$,$"$j$^$9!#(B</li>
+      <li><a href="mod/mod_proxy.html">Proxy モジュール</a> は
+      HTTP/1.1 に対応するために再構成されました。重要な変更点としては、
+      プロキシのアクセス制御が <code>&lt;Directory proxy:&gt;</code> ブロックの
+      代わりに <directive module="mod_proxy" type="section">Proxy</directive>
+      ブロックに置かれるようになった、というものがあります。</li>
 
-      <li>$B%b%8%e!<%k$NCf$K$O!"(B<code>PATH_INFO</code> ($BK\Ev$N%U%!%$%kL>$N8e$KB3$/(B
-      $B%Q%9>pJs(B) $B$N07$$$,JQ$o$C$?$b$N$,$"$j$^$9!#0JA0$O%O%s%I%i$H$7$F(B
-      $B<BAu$5$l$F$$$?$b$N$,%U%#%k%?$H$7$F<BAu$5$l$k$h$&$K$J$C$?$b$N$O(B
-      <code>PATH_INFO</code> $B$N$"$k%j%/%(%9%H$r<u$1IU$1$^$;$s!#(B<a
-      href="mod/mod_include.html">INCLUDES</a> $B$d(B
-      <a href="http://www.php.net/">PHP</a> $B$J$I$N%U%#%k%?$O(B
-      $B%3%"%O%s%I%i$N>e$K<BAu$5$l$F$$$^$9$N$G!"(B<code>PATH_INFO</code>
-      $BIU$-$N%j%/%(%9%H$r5qH]$7$^$9!#(B
+      <li>モジュールの中には、<code>PATH_INFO</code> (本当のファイル名の後に続く
+      パス情報) の扱いが変わったものがあります。以前はハンドラとして
+      実装されていたものがフィルタとして実装されるようになったものは
+      <code>PATH_INFO</code> のあるリクエストを受け付けません。<a
+      href="mod/mod_include.html">INCLUDES</a> や
+      <a href="http://www.php.net/">PHP</a> などのフィルタは
+      コアハンドラの上に実装されていますので、<code>PATH_INFO</code>
+      付きのリクエストを拒否します。
       <directive module="core">AcceptPathInfo</directive>
-      $B%G%#%l%/%F%#%V$r;H$C$F%3%"%O%s%I%i$,(B <code>PATH_INFO</code>
-      $BIU$-$N%j%/%(%9%H$r<u$1IU$1$k$h$&$K$G$-!"$=$l$K$h$C$F(B SSI $BEy$G(B
-      <code>PATH_INFO</code> $B$r;H$&5!G=$rI|3h$5$;$k$3$H$,$G$-$^$9!#(B</li>
+      ディレクティブを使ってコアハンドラが <code>PATH_INFO</code>
+      付きのリクエストを受け付けるようにでき、それによって SSI 等で
+      <code>PATH_INFO</code> を使う機能を復活させることができます。</li>
 
       <li><directive module="mod_negotiation">CacheNegotiatedDocs</directive>
-      $B%G%#%l%/%F%#%V$O(B <code>on</code> $B$b$7$/$O(B <code>off</code> $B$H$$$&0z?t$r(B
-      $B<h$k$h$&$K$J$j$^$7$?!#4{$KB8:_$7$F$$$k(B
-      <directive>CacheNegotiatedDocs</directive> $B$O(B
+      ディレクティブは <code>on</code> もしくは <code>off</code> という引数を
+      取るようになりました。既に存在している
+      <directive>CacheNegotiatedDocs</directive> は
       <code>CacheNegotiatedDocs on</code>
-      $B$KCV$-49$($F$/$@$5$$!#(B</li>
+      に置き換えてください。</li>
 
       <li>
         <directive module="core">ErrorDocument</directive>
-	$B%G%#%l%/%F%#%V$O%F%-%9%H%a%C%;!<%8$r(B
-        $B<($9$?$a$K0z?t$N:G=i$K;H$o$l$F$$$?0zMQId$r;H$o$J$$$h$&$K$J$j$^$7$?!#(B
-        $BBe$o$j$K!"%a%C%;!<%8$rFs=E0zMQId$G0O$`$h$&$K$J$C$F$$$^$9!#(B
-        $BNc$($P!"4{B8$N(B
+	ディレクティブはテキストメッセージを
+        示すために引数の最初に使われていた引用符を使わないようになりました。
+        代わりに、メッセージを二重引用符で囲むようになっています。
+        例えば、既存の
 
         <example>
           ErrorDocument 403 "Some Message
         </example>
-        $B$O(B
+        は
 
         <example>
           ErrorDocument 403 "Some Message"
         </example>
 
-        $B$KCV$-49$($kI,MW$,$"$j$^$9!#(B
-        $BFsHVL\$N0z?t$O!"M-8z$J(B URL $B$d%Q%9L>$G$J$$8B$j(B
-        $B%F%-%9%H%a%C%;!<%8$H$7$F07$o$l$^$9!#(B
+        に置き換える必要があります。
+        二番目の引数は、有効な URL やパス名でない限り
+        テキストメッセージとして扱われます。
       </li>
 
-      <li><code>AccessConfig</code> $B%G%#%l%/%F%#%V$H(B
-      <code>ResourceConfig</code> $B%G%#%l%/%F%#%V$O:o=|$5$l$^$7$?!#(B
-      $B$3$l$i$N%G%#%l%/%F%#%V$OF1Ey$N5!G=$r;}$D(B
-      <directive module="core">Include</directive> $B$G(B
-      $BCV$-49$($k$3$H$,$G$-$^$9!#@_Dj%U%!%$%k$K<h$j9~$`Be$o$j$K!"(B
-      $B>e$N%G%#%l%/%F%#%V$N%G%U%)%k%HCM$r;H$C$F$$$?>l9g$O!"(B
-      <code>httpd.conf</code> $B$K(B <code>Include conf/access.conf</code> $B$H(B
-      <code>Include conf/srm.conf</code> $B$rDI2C$9$kI,MW$,$"$k$G$7$g$&!#(B
-      $B0JA0$N%G%#%l%/%F%#%V$K$h$k=gHV$N$h$&$K(B Apache $B$,@_Dj%U%!%$%k$r(B
-      $BFI$_9~$`$h$&$K$9$k$?$a$K$O!"(B<code>httpd.conf</code> $B$N:G8e$K(B
-      <code>srm.conf</code>$B!"(B<code>access.conf</code> $B$N=g$K$=$l$>$l(B
+      <li><code>AccessConfig</code> ディレクティブと
+      <code>ResourceConfig</code> ディレクティブは削除されました。
+      これらのディレクティブは同等の機能を持つ
+      <directive module="core">Include</directive> で
+      置き換えることができます。設定ファイルに取り込む代わりに、
+      上のディレクティブのデフォルト値を使っていた場合は、
+      <code>httpd.conf</code> に <code>Include conf/access.conf</code> と
+      <code>Include conf/srm.conf</code> を追加する必要があるでしょう。
+      以前のディレクティブによる順番のように Apache が設定ファイルを
+      読み込むようにするためには、<code>httpd.conf</code> の最後に
+      <code>srm.conf</code>、<code>access.conf</code> の順にそれぞれ
       <directive module="core">Include</directive>
-      $B%G%#%l%/%F%#%V$r=q$$$F$/$@$5$$!#(B</li>
+      ディレクティブを書いてください。</li>
 
-      <li><code>BindAddress</code> $B%G%#%l%/%F%#%V$H(B <code>Port</code>
-      $B%G%#%l%/%F%#%V$O:o=|$5$l$^$7$?!#F1Ey$N5!G=$O$h$j=@Fp$J(B
+      <li><code>BindAddress</code> ディレクティブと <code>Port</code>
+      ディレクティブは削除されました。同等の機能はより柔軟な
       <directive module="mpm_common">Listen</directive>
-      $B%G%#%l%/%F%#%V$K$h$jDs6!$5$l$F$$$^$9!#(B</li>
+      ディレクティブにより提供されています。</li>
 
-      <li><code>Port</code> $B%G%#%l%/%F%#%V$O(B Apache-1.3 $B$K$O<+8J;2>H(B URL $B$G(B
-      $B;H$o$l$k%]!<%HHV9f$r@_Dj$9$k!"$H$$$&;HMQK!$b$"$j$^$7$?!#(B
-      $B$3$l$O(B Apache-2.0 $B$G$O?7$7$$(B
+      <li><code>Port</code> ディレクティブは Apache-1.3 には自己参照 URL で
+      使われるポート番号を設定する、という使用法もありました。
+      これは Apache-2.0 では新しい
       <directive module="core">ServerName</directive>
-      $B9=J8$K$h$C$F9T$J$$$^$9!#0l$D$N%G%#%l%/%F%#%V$G%[%9%HL>(B<em>$B$H(B</em>
-      $B<+8J;2>H(B URL $B$NN>J}$r@_Dj$G$-$k$h$&$K9=J8$,JQ99$5$l$^$7$?!#(B</li>
+      構文によって行ないます。一つのディレクティブでホスト名<em>と</em>
+      自己参照 URL の両方を設定できるように構文が変更されました。</li>
 
-      <li><code>ServerName</code> $B%G%#%l%/%F%#%V$O:o=|$5$l$^$7$?!#(B
-      $B%j%/%(%9%H$r07$&J}K!$O(B MPM $B$NA*Br$K$h$j7hDj$5$l$k$h$&$K$J$j$^$7$?!#(B
-      $B8=;~E@$G$O(B inetd $B$+$i5/F0$5$l$k$h$&$K@_7W$5$l$?(B MPM $B$O$"$j$^$;$s!#(B</li>
+      <li><code>ServerName</code> ディレクティブは削除されました。
+      リクエストを扱う方法は MPM の選択により決定されるようになりました。
+      現時点では inetd から起動されるように設計された MPM はありません。</li>
 
-      <li><code>AgentLog</code> $B%G%#%l%/%F%#%V!"(B
-      <code>RefererLog</code> $B%G%#%l%/%F%#%V!"(B
-      <code>RefererIgnore</code> $B%G%#%l%/%F%#%V$rDs6!$7$F$$$?(B
-      <code>mod_log_agent</code> $B$H(B <code>mod_log_referer</code>
-      $B%b%8%e!<%k$O:o=|$5$l$^$7$?!#(B
-      Agent $B%m%0$H(B refere $B%m%0$O(B <directive>mod_log_config</directive> $B$N(B
+      <li><code>AgentLog</code> ディレクティブ、
+      <code>RefererLog</code> ディレクティブ、
+      <code>RefererIgnore</code> ディレクティブを提供していた
+      <code>mod_log_agent</code> と <code>mod_log_referer</code>
+      モジュールは削除されました。
+      Agent ログと refere ログは <directive>mod_log_config</directive> の
       <directive module="mod_log_config">CustomLog</directive>
-      $B%G%#%l%/%F%#%V$K$h$j<B8=2DG=$G$9!#(B</li>
+      ディレクティブにより実現可能です。</li>
 
-      <li><code>AddModule</code> $B%G%#%l%/%F%#%V$H(B <code>ClearModuleList</code>
-      $B%G%#%l%/%F%#%V$O:o=|$5$l$^$7$?!#$3$l$i$N%G%#%l%/%F%#%V$O!"(B
-      $B%b%8%e!<%k$,@5$7$$=gHV$G8F$P$l$k$h$&$K$9$k$?$a$K;H$o$l$F$$$^$7$?!#(B
-      Apache 2.0 $B$N?7(B API $B$O%b%8%e!<%k$,L@<(E*$K=gHV$r;XDj$G$-$k$h$&$K(B
-      $B$J$C$F$*$j!"$3$l$i$N%G%#%l%/%F%#%V$OI,MW$J$/$J$j$^$7$?!#(B</li>
+      <li><code>AddModule</code> ディレクティブと <code>ClearModuleList</code>
+      ディレクティブは削除されました。これらのディレクティブは、
+      モジュールが正しい順番で呼ばれるようにするために使われていました。
+      Apache 2.0 の新 API はモジュールが明示的に順番を指定できるように
+      なっており、これらのディレクティブは必要なくなりました。</li>
 
-      <li><code>FancyIndexing</code> $B%G%#%l%/%F%#%V$O:o=|$5$l$^$7$?!#(B
-      $BF1$85!G=$O(B <directive module="mod_autoindex">IndexOptions</directive>
-      $B%G%#%l%/%F%#%V$N(B <code>FancyIndexing</code> $B%*%W%7%g%s$G(B
-      $B<B8=$G$-$^$9!#(B</li>
+      <li><code>FancyIndexing</code> ディレクティブは削除されました。
+      同じ機能は <directive module="mod_autoindex">IndexOptions</directive>
+      ディレクティブの <code>FancyIndexing</code> オプションで
+      実現できます。</li>
 
-      <li><module>mod_negotiation</module> $B$K$h$k(B MultiViews 
-      $B%3%s%F%s%H%M%4%7%(!<%7%g%s5;=Q$O!"(B
-      $B%G%U%)%k%H$N%U%!%$%k%^%C%A%s%0$,$h$j87L)$J$b$N$KJQ99$5$l$^$7$?!#(B
-      <em>$B%M%4%7%(!<%H2DG=$J(B</em>$B%U%!%$%k$N>l9g$K$N$_A*Br$5$l$^$9!#(B
-      $B0JA0$N5sF0$O!"(B<directive module="mod_mime">MultiviewsMatch</directive>
-      $B%G%#%l%/%F%#%V$r;HMQ$9$k$3$H$GI|3h$G$-$^$9!#(B</li>
+      <li><module>mod_negotiation</module> による MultiViews 
+      コンテントネゴシエーション技術は、
+      デフォルトのファイルマッチングがより厳密なものに変更されました。
+      <em>ネゴシエート可能な</em>ファイルの場合にのみ選択されます。
+      以前の挙動は、<directive module="mod_mime">MultiviewsMatch</directive>
+      ディレクティブを使用することで復活できます。</li>
 
-      <li>(<em>$B%P!<%8%g%s(B 2.0.51 $B$+$i(B</em>)
-      <p><code>ErrorHeader</code> $B%G%#%l%/%F%#%V$OITE,@Z$JL>A0(B
-      $B$@$C$?$?$a$KGQ;_$5$l!"$=$N5!G=$O(B <directive module="mod_headers"
-      >Header</directive> $B%G%#%l%/%F%#%V$KE}9g$5$l$^$7$?!#(B
-      $BK>$_$NF0:n$rF@$k$?$a$K$O(B ErrorHeader $B$NBe$o$j$K(B</p>
+      <li>(<em>バージョン 2.0.51 から</em>)
+      <p><code>ErrorHeader</code> ディレクティブは不適切な名前
+      だったために廃止され、その機能は <directive module="mod_headers"
+      >Header</directive> ディレクティブに統合されました。
+      望みの動作を得るためには ErrorHeader の代わりに</p>
 
       <example>
         Header always set foo bar
       </example>
 
-      <p>$B$r;H$C$F$/$@$5$$!#(B</p></li>
+      <p>を使ってください。</p></li>
     </ul>
   </section>
 
   <section id="misc">
-    <title>$B$=$NB>$NJQ99(B</title>
+    <title>その他の変更</title>
 
     <ul>
-      <li>Apache 1.3 $B$G<B83E*$J%b%8%e!<%k$@$C$?(B
-      <directive>mod_auth_digest</directive> $B$O(B
-      $BI8=`%b%8%e!<%k$K$J$j$^$7$?!#(B</li>
+      <li>Apache 1.3 で実験的なモジュールだった
+      <directive>mod_auth_digest</directive> は
+      標準モジュールになりました。</li>
 
-      <li>Apache 1.3 $B$G<B83E*$J%b%8%e!<%k$@$C$?(B <code>mod_mmap_static</code> $B$O(B
-      <module>mod_file_cache</module> $B$GCV$-49$($i$l$^$7$?!#(B</li>
+      <li>Apache 1.3 で実験的なモジュールだった <code>mod_mmap_static</code> は
+      <module>mod_file_cache</module> で置き換えられました。</li>
 
-      <li>Apache $B$NG[I[$OFHN)$7$?(B <code>src</code> $B%G%#%l%/%H%j$,(B
-      $B$J$/$J$k$h$&$K!"40A4$K:F9=@.$5$l$^$7$?!#$=$NBe$o$j$K!"(B
-      $B%=!<%9$O<g%G%#%l%/%H%j$KO@M}E*$KG[CV$5$l$k$h$&$K$J$j!"(B
-      $B%3%s%Q%$%k$5$l$?%5!<%P$N%$%s%9%H!<%k$OJL%G%#%l%/%H%j$X(B
-      $B9T$J$&$h$&$K$J$j$^$7$?!#(B</li>
+      <li>Apache の配布は独立した <code>src</code> ディレクトリが
+      なくなるように、完全に再構成されました。その代わりに、
+      ソースは主ディレクトリに論理的に配置されるようになり、
+      コンパイルされたサーバのインストールは別ディレクトリへ
+      行なうようになりました。</li>
     </ul>
   </section>
 
   <section id="third-party">
-    <title>$B%5!<%I%Q!<%F%#%b%8%e!<%k(B</title>
+    <title>サードパーティモジュール</title>
 
-    <p>Apache 2.0 $B$N%5!<%P(B API $B$K$OB?$/$NJQ99$,2C$($i$l$^$7$?!#(B
-    Apache 1.3 $BMQ$N4{B8$N%b%8%e!<%k$O(B Apache 2.0 $B$G$O=$@5$J$7$G$O(B
-    $BF0$-(B<strong>$B$^$;$s(B</strong>$B!#>\:Y$O(B <a
-    href="developer/">$B3+H/<T8~$1J8=q(B</a> $B$K$"$j$^$9!#(B</p>
+    <p>Apache 2.0 のサーバ API には多くの変更が加えられました。
+    Apache 1.3 用の既存のモジュールは Apache 2.0 では修正なしでは
+    動き<strong>ません</strong>。詳細は <a
+    href="developer/">開発者向け文書</a> にあります。</p>
   </section>
 
 </manualpage>

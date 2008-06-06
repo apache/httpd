@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="iso-2022-jp"?>
+<?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE modulesynopsis SYSTEM "../style/modulesynopsis.dtd">
 <?xml-stylesheet type="text/xsl" href="../style/manual.ja.xsl"?>
 <!-- English Revision: 106090:421174 (outdated) -->
@@ -23,19 +23,19 @@
 <modulesynopsis metafile="mod_auth.xml.meta">
 
 <name>mod_auth</name>
-<description>$B%F%-%9%H%U%!%$%k$rMQ$$$?%f!<%6G'>Z(B</description>
+<description>テキストファイルを用いたユーザ認証</description>
 <status>Base</status>
 <sourcefile>mod_auth.c</sourcefile>
 <identifier>auth_module</identifier>
-<compatibility>2.1 $B$h$jA0$N%P!<%8%g%s$G$N$_;HMQ2DG=(B</compatibility>
+<compatibility>2.1 より前のバージョンでのみ使用可能</compatibility>
 
 <summary>
-    <p>$B%W%l%$%s%F%-%9%H$N%Q%9%o!<%I%U%!%$%k$H%0%k!<%W%U%!%$%k$r8!::$7$F(B
-    $B%f!<%6$rC5$9$3$H$G!"(BHTTP $B4pK\G'>Z$G%"%/%;%9@)8B$G$-$k$h$&$K$7$^$9!#(B
-    $B;w$?$h$&$J5!G=$G!"$b$C$HBg$-$J%9%1!<%i%S%j%F%#$r;}$C$?$b$N$O!"(B
-    <module>mod_auth_dbm</module> $B$GDs6!$5$l$F$$$^$9!#(B
-    $B$^$?!"(BHTTP $B%@%$%8%'%9%HG'>Z$O(B <module>mod_auth_digest</module>
-    $B$GDs6!$5$l$F$$$^$9!#(B</p>
+    <p>プレインテキストのパスワードファイルとグループファイルを検査して
+    ユーザを探すことで、HTTP 基本認証でアクセス制限できるようにします。
+    似たような機能で、もっと大きなスケーラビリティを持ったものは、
+    <module>mod_auth_dbm</module> で提供されています。
+    また、HTTP ダイジェスト認証は <module>mod_auth_digest</module>
+    で提供されています。</p>
 
 </summary>
 <seealso><directive module="core">Require</directive></seealso>
@@ -45,107 +45,107 @@
 
 <directivesynopsis>
 <name>AuthGroupFile</name>
-<description>$BG'>Z$K;HMQ$9$k%f!<%6%0%k!<%W$N0lMw$,3JG<$5$l$F$$$k!"(B
-$B%F%-%9%H%U%!%$%k$NL>A0$r@_Dj$9$k(B</description>
+<description>認証に使用するユーザグループの一覧が格納されている、
+テキストファイルの名前を設定する</description>
 <syntax>AuthGroupFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthGroupFile</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $BG'>Z$K;HMQ$9$k%f!<%6%0%k!<%W$N0lMw$,3JG<$5$l$F$$$k!"(B
-    $B%F%-%9%H%U%!%$%k$NL>A0$r@_Dj$7$^$9!#(B
-    <var>file-path</var> $B$O%0%k!<%W%U%!%$%k$X$N%Q%9$G$9!#(B
-    $B$b$7@dBP%Q%9$G$J$1$l$P!"(B
+    <p><directive>AuthGroupFile</directive> ディレクティブは、
+    認証に使用するユーザグループの一覧が格納されている、
+    テキストファイルの名前を設定します。
+    <var>file-path</var> はグループファイルへのパスです。
+    もし絶対パスでなければ、
     <directive module="core">ServerRoot</directive>
-    $B$+$i$NAjBP%Q%9$H$7$F07$o$l$^$9!#(B</p>
+    からの相対パスとして扱われます。</p>
 
-    <p>$B%0%k!<%W%U%!%$%k3F9T$O!"%0%k!<%WL>!"%3%m%s!"$=$7$F(B
-    $B%9%Z!<%96h@Z$j$G$=$N%a%s%P!<$N%f!<%6L>$r5-=R$7$^$9!#(B</p>
+    <p>グループファイル各行は、グループ名、コロン、そして
+    スペース区切りでそのメンバーのユーザ名を記述します。</p>
 
-    <example><title>$BNc(B:</title>
+    <example><title>例:</title>
       mygroup: bob joe anne
     </example> 
 
-    <p>$BBg$-$J%U%!%$%k$rC5:w$9$k$N$O!"(B<em>$BHs>o$K(B</em>$B8zN($,0-$$$H$$$&E@$K(B
-    $BCm0U$7$F$/$@$5$$!#$=$N$h$&$J>l9g$O!"(B
+    <p>大きなファイルを探索するのは、<em>非常に</em>効率が悪いという点に
+    注意してください。そのような場合は、
     <directive module="mod_auth_dbm">AuthDBMGroupFile</directive>
-    $B$NJ}$,$:$C$HNI$$@-G=$rH/4x$7$^$9!#(B</p>
+    の方がずっと良い性能を発揮します。</p>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
-      <p><directive>AuthGroupFile</directive> $B$O!"(B
-      $B%&%'%V%5!<%P$N%I%-%e%a%s%H%D%j!<$N30B&$K(B
-      $BJ]4I$9$k$h$&$K$7$F$/$@$5$$!#(B
-      $BJ]8n$7$h$&$H$7$F$$$k%G%#%l%/%H%j0J2<$K$O!"(B<em>$BCV$+$J$$$G2<$5$$(B</em>$B!#(B
-      $B$=$&$7$J$$$H(B <directive>AuthGroupFile</directive> $B$O(B
-      $B%@%&%s%m!<%I$G$-$F$7$^$$$^$9!#(B</p>
+    <note type="warning"><title>セキュリティ</title>
+      <p><directive>AuthGroupFile</directive> は、
+      ウェブサーバのドキュメントツリーの外側に
+      保管するようにしてください。
+      保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
+      そうしないと <directive>AuthGroupFile</directive> は
+      ダウンロードできてしまいます。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthUserFile</name>
-<description>$BG'>Z$K;HMQ$9$k%f!<%6$H%Q%9%o!<%I$N0lMw$,3JG<$5$l$F$$$k!"(B
-$B%F%-%9%H%U%!%$%k$NL>A0$r@_Dj$9$k(B</description>
+<description>認証に使用するユーザとパスワードの一覧が格納されている、
+テキストファイルの名前を設定する</description>
 <syntax>AuthUserFile <var>file-path</var></syntax>
 <contextlist><context>directory</context><context>.htaccess</context>
 </contextlist>
 <override>AuthConfig</override>
 
 <usage>
-    <p><directive>AuthUserFile</directive> $B%G%#%l%/%F%#%V$O!"(B
-    $B%f!<%6G'>Z$N$?$a$N%f!<%6$H%Q%9%o!<%I$N0lMw$r3JG<$7$?(B
-    $B%F%-%9%H%U%!%$%k$NL>A0$r@_Dj$7$^$9!#(B<var>file-path</var>
-    $B$O%f!<%6%U%!%$%k$X$N%Q%9$G$9!#(B
-    $B$b$7@dBP%Q%9$G$J$1$l$P(B
-    (<em>$B$D$^$j(B</em> $B%9%i%C%7%e$G;O$^$i$J$$%Q%9$G$"$l$P(B)
-    $B!"(B<directive module="core">ServerRoot</directive>
-    $B$+$i$NAjBP%Q%9$H$7$F07$o$l$^$9!#(B</p>
+    <p><directive>AuthUserFile</directive> ディレクティブは、
+    ユーザ認証のためのユーザとパスワードの一覧を格納した
+    テキストファイルの名前を設定します。<var>file-path</var>
+    はユーザファイルへのパスです。
+    もし絶対パスでなければ
+    (<em>つまり</em> スラッシュで始まらないパスであれば)
+    、<directive module="core">ServerRoot</directive>
+    からの相対パスとして扱われます。</p>
 
-    <p>$B%f!<%6%U%!%$%k$N3F9T$K$O!"%f!<%6L>!"%3%m%s!"(B
-    $B0E9f2=$7$?%Q%9%o!<%I$r5-=R$7$^$9!#(B
-    $BF10l%f!<%6(B ID $B$,J#?t2sEPO?$5$l$?;~$O!"(B<module>mod_auth</module> $B$O(B
-    $B%Q%9%o!<%I$N8!>Z$K$O:G=i$NEPO?$r;HMQ$7$^$9!#(B</p>
+    <p>ユーザファイルの各行には、ユーザ名、コロン、
+    暗号化したパスワードを記述します。
+    同一ユーザ ID が複数回登録された時は、<module>mod_auth</module> は
+    パスワードの検証には最初の登録を使用します。</p>
 
-    <p>$B%P%$%J%jG[I[$N0lIt$H$7$F%$%s%9%H!<%k$5$l$k$+!"(B
-    $B$"$k$$$O(B <code>src/support</code> $B$K$"$k(B
+    <p>バイナリ配布の一部としてインストールされるか、
+    あるいは <code>src/support</code> にある
     <a href="../programs/htpasswd.html">htpasswd</a>
-    $B%f!<%F%#%j%F%#$G!"$3$N%Q%9%o!<%I%U%!%$%k$r%a%$%s%F%J%s%9$7$^$9!#(B
-    $B>\:Y$O(B <a href="../programs/htpasswd.html">man</a> $B%Z!<%8$r$4MwD:$/$H$7$F!"(B
-    $B4JC1$K$O(B:</p>
+    ユーティリティで、このパスワードファイルをメインテナンスします。
+    詳細は <a href="../programs/htpasswd.html">man</a> ページをご覧頂くとして、
+    簡単には:</p>
 
-    <p>$B=i4|(B ID <code>username</code> $B$G!"(B<code>Filename</code>
-    $B$H$$$&%Q%9%o!<%I%U%!%$%k$r@8@.$7$^$9!#(B
-    $B<!$N%3%^%s%I$rH/9T$9$k$H%Q%9%o!<%I$,MW5a$5$l$^$9(B:</p>
+    <p>初期 ID <code>username</code> で、<code>Filename</code>
+    というパスワードファイルを生成します。
+    次のコマンドを発行するとパスワードが要求されます:</p>
 
     <example>htpasswd -c Filename username</example>
 
-    <p>$B%Q%9%o!<%I%U%!%$%k(B <code>Filename</code> $B$K!"(B<code>username2</code>
-    $B$rDI2C$7$?$j=$@5$7$?$j$7$^$9(B:</p>
+    <p>パスワードファイル <code>Filename</code> に、<code>username2</code>
+    を追加したり修正したりします:</p>
 
     <example>htpasswd Filename username2</example>
 
-    <p>($BLuCm(B: $BHs>o$KB?$/$N%f!<%6$rEPO?$9$k$HBg$-$J%U%!%$%k$K$J$j$^$9$,(B)
-    $BBg$-$J%F%-%9%H%U%!%$%k$r8!:w$9$k$N$O(B<em>$BHs>o$K(B</em>$B8zN($,0-$$(B
-    $B$H$$$&$3$H$KCm0U$7$F$/$@$5$$!#$=$N$h$&$JI,MW$N$"$k;~$O!"(B
+    <p>(訳注: 非常に多くのユーザを登録すると大きなファイルになりますが)
+    大きなテキストファイルを検索するのは<em>非常に</em>効率が悪い
+    ということに注意してください。そのような必要のある時は、
     <directive module="mod_auth_dbm">AuthDBMUserFile</directive>
-    $B$rBe$o$j$K;H$C$F$/$@$5$$!#(B</p>
+    を代わりに使ってください。</p>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
+    <note type="warning"><title>セキュリティ</title>
       <p><directive>AuthUserFile </directive>
-      $B$O!"%&%'%V%5!<%P$N%I%-%e%a%s%H%D%j!<$N30B&$KJ]4I$9$k$h$&$K$7$F$/$@$5$$!#(B
-      $BJ]8n$7$h$&$H$7$F$$$k%G%#%l%/%H%j0J2<$K$O!"(B<em>$BCV$+$J$$$G2<$5$$(B</em>$B!#(B
-      $B$=$&$7$J$$$H(B <directive>AuthUserFile</directive> $B$O(B
-      $B%@%&%s%m!<%I$G$-$F$7$^$$$^$9!#(B</p>
+      は、ウェブサーバのドキュメントツリーの外側に保管するようにしてください。
+      保護しようとしているディレクトリ以下には、<em>置かないで下さい</em>。
+      そうしないと <directive>AuthUserFile</directive> は
+      ダウンロードできてしまいます。</p>
     </note>
 </usage>
 </directivesynopsis>
 
 <directivesynopsis>
 <name>AuthAuthoritative</name>
-<description>$BG'>Z$H>5G'%W%m%;%9$r!"(B
-$B$h$jDc$$%l%Y%k$N%b%8%e!<%k$K0\9T$5$;$k$+$I$&$+$r@_Dj$9$k(B</description>
+<description>認証と承認プロセスを、
+より低いレベルのモジュールに移行させるかどうかを設定する</description>
 <syntax>AuthAuthoritative On|Off</syntax>
 <default>AuthAuthoritative On</default>
 <contextlist><context>directory</context><context>.htaccess</context>
@@ -154,52 +154,52 @@
 
 <usage>
     <p><directive>AuthAuthoritative</directive>
-    $B%G%#%l%/%F%#%V$GL@<(E*$K(B <code>Off</code> $B$K@_Dj$9$k$H!"(B
-    $BM?$($i$l$?G'>Z%f!<%6(B ID $B$KBP$7$F(B<strong>$B%f!<%6(B ID $B$,$J$$(B</strong>
-    $B$^$?$O(B<strong>$B%k!<%k$,$J$$(B</strong>$B>l9g$K!"(B
-    $BG'>Z$H>5G'$NN>J}$N%W%m%;%9$,!"(B
-    $B$h$jDc$$%l%Y%k$N%b%8%e!<%k(B (<code>Configuration</code> $B$H(B 
-    <code>modules.c</code> $B%U%!%$%k$GDj5A(B) $B$K0\9T$9$k$h$&$K$G$-$^$9!#(B
-    $B%f!<%6(B ID $B$,$"$k!"$+$D$^$?$O!"%k!<%k$,;XDj$5$l$F$$$k>l9g$O!"(B
-    $BDL>o$N%Q%9%o!<%I$H%"%/%;%9%A%'%C%/$,E,MQ$5$l$F!"(B
-    $BG'>Z$K<:GT$9$k$H(B "Authentication Required" $B1~Ez$,JV$5$l$^$9!#(B</p>
+    ディレクティブで明示的に <code>Off</code> に設定すると、
+    与えられた認証ユーザ ID に対して<strong>ユーザ ID がない</strong>
+    または<strong>ルールがない</strong>場合に、
+    認証と承認の両方のプロセスが、
+    より低いレベルのモジュール (<code>Configuration</code> と 
+    <code>modules.c</code> ファイルで定義) に移行するようにできます。
+    ユーザ ID がある、かつまたは、ルールが指定されている場合は、
+    通常のパスワードとアクセスチェックが適用されて、
+    認証に失敗すると "Authentication Required" 応答が返されます。</p>
 
-    <p>$B$G$9$+$i!"Fs$D0J>e$N%b%8%e!<%k$N%G!<%?%Y!<%9$GF10l$N(B
-    $B%f!<%6(B ID $B$,8=$o$l$?$j!"(B
-    $B$^$?$O!"@5$7$$(B <directive module="core">Require</directive>
-    $B%G%#%l%/%F%#%V$,Fs$D0J>e$N%b%8%e!<%k$G8=$o$l$?$j$7$?>l9g$O!"(B
-    $B0l$DL\$N%b%8%e!<%k$,G'Dj$r9T$C$F!"(B<directive>AuthAuthoritative</directive>
-    $B$N@_Dj$K4X$o$i$:!"(B
-    $B%"%/%;%9$O0\9T$7$^$;$s!#(B</p>
+    <p>ですから、二つ以上のモジュールのデータベースで同一の
+    ユーザ ID が現われたり、
+    または、正しい <directive module="core">Require</directive>
+    ディレクティブが二つ以上のモジュールで現われたりした場合は、
+    一つ目のモジュールが認定を行って、<directive>AuthAuthoritative</directive>
+    の設定に関わらず、
+    アクセスは移行しません。</p>
 
-    <p>$B0lHLE*$J;HMQK!$O!"(B<module>mod_auth_dbm</module>,
+    <p>一般的な使用法は、<module>mod_auth_dbm</module>,
     <code>mod_auth_msql</code>, <module>mod_auth_anon</module>
-    $B$H$$$C$?%G!<%?%Y!<%9%b%8%e!<%k$N0l$D$HAH$_9g$o$;$k$3$H$G$9!#(B
-    $B$3$l$i$N%b%8%e!<%k$OB?$/$N%f!<%6;q3J8!::$rDs6!$7$F$/$l$^$9!#(B
-    $B$7$+$7!">/?t$N(B ($B4IM}<T4XO"$N(B) $B%"%/%;%9$O(B
+    といったデータベースモジュールの一つと組み合わせることです。
+    これらのモジュールは多くのユーザ資格検査を提供してくれます。
+    しかし、少数の (管理者関連の) アクセスは
     <directive module="mod_auth">AuthUserFile</directive>
-    $B$GNI$/J]8n$5$l$?!"$h$jDc%l%Y%k$K0\9T$9$k$h$&$K$7$^$9!#(B</p>
+    で良く保護された、より低レベルに移行するようにします。</p>
 
-    <p>$B%G%U%)%k%H$G$O!"@)8f$O0\9T$7$^$;$s!#$=$7$F!"L$CN$N%f!<%6(B ID $B$d(B
-    $B%k!<%k$,$"$C$F$b(B "Authentication Required" $B1~Ez$,JV$5$l$^$9!#(B
-    $B$G$9$+$i!"$3$N%G%#%l%/%F%#%V@_Dj$7$J$$$3$H$G%7%9%F%`$N0BA4$r0];}$G$-$F!"$^$?!"(B
-    NCSA $B=`5r$N5sF0$r6/@)$G$-$^$9!#(B</p>
+    <p>デフォルトでは、制御は移行しません。そして、未知のユーザ ID や
+    ルールがあっても "Authentication Required" 応答が返されます。
+    ですから、このディレクティブ設定しないことでシステムの安全を維持できて、また、
+    NCSA 準拠の挙動を強制できます。</p>
 
-    <note type="warning"><title>$B%;%-%e%j%F%#(B</title>
-      <p>$B%f!<%6$,<+J,<+?H$G:n@.$7$?(B
-      .htaccess $B%U%!%$%k$GG'>Z$G$-$k$h$&$K$9$k$3$H$N1F6A$r(B
-      $B9MN8$KF~$l$F$*$$$F$/$@$5$$!#$=$7$F!"(B
-      $B$=$l$,K\Ev$K4uK>$N5sF0$G$"$k$+$I$&$+$r8!F$$7$F$/$@$5$$!#(B
-      $B0lHLE*$K8@$C$F!"(BmSQL $B$H$$$C$?%G!<%?%Y!<%9$N%;%-%e%j%F%#J]8n$h$j$b!"(B
-      $BC1=c$K0l$D$N%U%!%$%k(B .htpasswd $B$N%;%-%e%j%F%#$rJ]8n$9$kJ}$,MF0W$G$9!#(B
-      <directive module="mod_auth">AuthUserFile</directive> $B$H(B
-      <directive module="mod_auth">AuthGroupFile</directive> $B$O!"(B
-      $B%&%'%V%5!<%P$N%I%-%e%a%s%H%D%j!<$N30B&$KJ]4I$9$k(B
-      $B$h$&$K$7$F$/$@$5$$!#J]8n$7$h$&$H$7$F$$$k%G%#%l%/%H%j0J2<$K$O!"(B
-      <em>$BCV$+$J$$$G2<$5$$(B</em>$B!#$=$&$7$J$$$H(B 
-      <directive module="mod_auth">AuthUserFile</directive> $B$H(B
+    <note type="warning"><title>セキュリティ</title>
+      <p>ユーザが自分自身で作成した
+      .htaccess ファイルで認証できるようにすることの影響を
+      考慮に入れておいてください。そして、
+      それが本当に希望の挙動であるかどうかを検討してください。
+      一般的に言って、mSQL といったデータベースのセキュリティ保護よりも、
+      単純に一つのファイル .htpasswd のセキュリティを保護する方が容易です。
+      <directive module="mod_auth">AuthUserFile</directive> と
+      <directive module="mod_auth">AuthGroupFile</directive> は、
+      ウェブサーバのドキュメントツリーの外側に保管する
+      ようにしてください。保護しようとしているディレクトリ以下には、
+      <em>置かないで下さい</em>。そうしないと 
+      <directive module="mod_auth">AuthUserFile</directive> と
       <directive module="mod_auth">AuthGroupFile</directive>
-      $B$O%@%&%s%m!<%I$G$-$F$7$^$$$^$9!#(B</p>
+      はダウンロードできてしまいます。</p>
     </note>
 </usage>
 </directivesynopsis>
