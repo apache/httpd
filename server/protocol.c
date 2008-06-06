@@ -1648,6 +1648,14 @@ AP_DECLARE(void) ap_send_interim_response(request_rec *r, int send_headers)
                       "Status is %d - not sending interim response", r->status);
         return;
     }
+    if ((r->status == HTTP_CONTINUE) && !r->expecting_100) {
+        /*
+         * Don't send 100-Continue when there was no Expect: 100-continue
+         * in the request headers. For origin servers this is a SHOULD NOT
+         * for proxies it is a MUST NOT according to RFC 2616 8.2.3
+         */
+        return;
+    }
 
     x.f = r->connection->output_filters;
     x.bb = apr_brigade_create(r->pool, r->connection->bucket_alloc);
